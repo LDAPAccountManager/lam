@@ -230,7 +230,7 @@ class ldapPublicKey extends baseModule {
 	 * @param array $attributes attributes of LDAP account
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
 	 * @param array $readOnlyFields list of read-only fields
-	 * @return array list of meta HTML elements (field name => htmlTableRow)
+	 * @return array list of meta HTML elements (field name => htmlResponsiveRow)
 	 */
 	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		$return = array();
@@ -254,10 +254,10 @@ class ldapPublicKey extends baseModule {
 			$uploadStatus->colspan = 7;
 			$keyTable->addElement($uploadStatus, true);
 			$keyLabel = new htmlOutputText($this->getSelfServiceLabel('sshPublicKey', _('SSH public keys')));
-			$keyLabel->alignment = htmlElement::ALIGN_TOP;
-			$keyCells = array($keyLabel, $keyTable);
-			$keyRow = new htmlTableRow($keyCells);
-			$return['sshPublicKey'] = $keyRow;
+			$row = new htmlResponsiveRow();
+			$row->addLabel($keyLabel);
+			$row->addField($keyTable);
+			$return['sshPublicKey'] = $row;
 		}
 		return $return;
 	}

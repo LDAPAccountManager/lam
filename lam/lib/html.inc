@@ -3280,6 +3280,24 @@ class htmlResponsiveRow extends htmlElement {
 	}
 
 	/**
+	 * Adds the content as a typical label with 12/6/6 columns and CSS class "responsiveLabel".
+	 *
+	 * @param htmlElement $content label
+	 */
+	public function addLabel($content) {
+		$this->add($content, 12, 6, 6, 'responsiveLabel');
+	}
+
+	/**
+	 * Adds the content as a typical field with 12/6/6 columns and CSS class "responsiveField".
+	 *
+	 * @param htmlElement $content field
+	 */
+	public function addField($content) {
+		$this->add($content, 12, 6, 6, 'responsiveField');
+	}
+
+	/**
 	 * Prints the HTML code for this element.
 	 *
 	 * @param string $module Name of account module

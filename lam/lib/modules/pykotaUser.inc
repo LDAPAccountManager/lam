@@ -950,16 +950,16 @@ class pykotaUser extends baseModule {
 			$pykotaBalance = '';
 			if (isset($attributes['pykotaBalance'][0])) $pykotaBalance = $attributes['pykotaBalance'][0];
 			$row = new htmlResponsiveRow();
-			$row->add(new htmlOutputText($this->getSelfServiceLabel('pykotaBalance', _('Balance'))), 12, 6, 6, 'responsiveLabel');
-			$row->add(new htmlOutputText($pykotaBalance), 12, 6, 6, 'responsiveField');
+			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('pykotaBalance', _('Balance'))));
+			$row->addField(new htmlOutputText($pykotaBalance));
 			$return['pykotaBalance'] = $row;
 		}
 		if (in_array('pykotaLifeTimePaid', $fields)) {
 			$pykotaLifeTimePaid = '';
 			if (isset($attributes['pykotaLifeTimePaid'][0])) $pykotaLifeTimePaid = $attributes['pykotaLifeTimePaid'][0];
 			$row = new htmlResponsiveRow();
-			$row->add(new htmlOutputText($this->getSelfServiceLabel('pykotaLifeTimePaid', _('Total paid'))), 12, 6, 6, 'responsiveLabel');
-			$row->add(new htmlOutputText($pykotaLifeTimePaid), 12, 6, 6, 'responsiveField');
+			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('pykotaLifeTimePaid', _('Total paid'))));
+			$row->addField(new htmlOutputText($pykotaLifeTimePaid));
 			$return['pykotaLifeTimePaid'] = $row;
 		}
 		// payment history

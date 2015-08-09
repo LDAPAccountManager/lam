@@ -2254,8 +2254,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 				$sambaPwdLastSet = date('d.m.Y H:i', $attributes['sambaPwdLastSet'][0]);
 			}
 			$row = new htmlResponsiveRow();
-			$row->add(new htmlOutputText($this->getSelfServiceLabel('sambaPwdLastSet', _('Last password change'))), 12, 6, 6, 'responsiveLabel');
-			$row->add(new htmlOutputText($sambaPwdLastSet), 12, 6, 6, 'responsiveField');
+			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('sambaPwdLastSet', _('Last password change'))));
+			$row->addField(new htmlOutputText($sambaPwdLastSet));
 			$return['sambaPwdLastSet'] = $row;
 		}
 		return $return;

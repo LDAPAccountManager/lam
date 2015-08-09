@@ -789,7 +789,7 @@ class kolabUser extends baseModule {
 	 * @param array $attributes attributes of LDAP account
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
 	 * @param array $readOnlyFields list of read-only fields
-	 * @return array list of meta HTML elements (field name => htmlTableRow)
+	 * @return array list of meta HTML elements (field name => htmlResponsiveRow)
 	 */
 	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		if ($passwordChangeOnly) {
@@ -842,10 +842,10 @@ class kolabUser extends baseModule {
 				$delegateContainer->addElement(new htmlTableExtendedInputCheckbox('new_delegate', false, _("Add"), null, false), true);
 			}
 			$delegateLabel = new htmlOutputText($this->getSelfServiceLabel('kolabDelegate', _('Delegates')));
-			$delegateLabel->alignment = htmlElement::ALIGN_TOP;
-			$return['kolabDelegate'] = new htmlTableRow(array(
-				$delegateLabel, $delegateContainer
-			));
+			$row = new htmlResponsiveRow();
+			$row->addLabel($delegateLabel);
+			$row->addField($delegateContainer);
+			$return['kolabDelegate'] = $row;
 		}
 		// invitation policies
 		if (in_array('kolabInvitationPolicy', $fields)) {
@@ -890,10 +890,10 @@ class kolabUser extends baseModule {
 				$invitationContainer->addElement(new htmlTableExtendedInputCheckbox('addInvPol', false, _("Add"), null, false), true);
 			}
 			$invitationLabel = new htmlOutputText($this->getSelfServiceLabel('kolabInvitationPolicy', _('Invitation policy')));
-			$invitationLabel->alignment = htmlElement::ALIGN_TOP;
-			$return['kolabInvitationPolicy'] = new htmlTableRow(array(
-				$invitationLabel, $invitationContainer
-			));
+			$row = new htmlResponsiveRow();
+			$row->addLabel($invitationLabel);
+			$row->addField($invitationContainer);
+			$return['kolabInvitationPolicy'] = $row;
 		}
 		return $return;
 	}

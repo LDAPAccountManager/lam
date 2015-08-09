@@ -2681,8 +2681,8 @@ class posixAccount extends baseModule implements passwordService {
 				$cnField = new htmlOutputText($cn);
 			}
 			$row = new htmlResponsiveRow();
-			$row->add(new htmlOutputText($this->getSelfServiceLabel('cn', _('Common name'))), 12, 6, 6, 'responsiveLabel');
-			$row->add($cnField, 12, 6, 6, 'responsiveField');
+			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('cn', _('Common name'))));
+			$row->addField($cnField);
 			$return['cn'] = $row;
 		}
 		if (in_array('loginShell', $fields)) {
@@ -2694,8 +2694,8 @@ class posixAccount extends baseModule implements passwordService {
 				$loginShellField = new htmlOutputText($loginShell);
 			}
 			$row = new htmlResponsiveRow();
-			$row->add(new htmlOutputText($this->getSelfServiceLabel('loginShell', _('Login shell'))), 12, 6, 6, 'responsiveLabel');
-			$row->add($loginShellField, 12, 6, 6, 'responsiveField');
+			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('loginShell', _('Login shell'))));
+			$row->addField($loginShellField);
 			$return['loginShell'] = $row;
 		}
 		return $return;

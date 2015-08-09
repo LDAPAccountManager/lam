@@ -743,8 +743,8 @@ class shadowAccount extends baseModule implements passwordService {
 				$shadowLastChange = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
 			}
 			$row = new htmlResponsiveRow();
-			$row->add(new htmlOutputText($this->getSelfServiceLabel('shadowLastChange', _('Last password change'))), 12, 6, 6, 'responsiveLabel');
-			$row->add(new htmlOutputText($shadowLastChange), 12, 6, 6, 'responsiveField');
+			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('shadowLastChange', _('Last password change'))));
+			$row->addField(new htmlOutputText($shadowLastChange));
 			$return['shadowLastChange'] = $row;
 		}
 		return $return;
