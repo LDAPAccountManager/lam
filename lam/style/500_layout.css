@@ -672,6 +672,10 @@ h4.schema_oclass_sub {
 
 /** responsive styles */
 
+.row input {
+	width: 100%;
+}
+
 div.dialog-page {
 	float: left;
 }

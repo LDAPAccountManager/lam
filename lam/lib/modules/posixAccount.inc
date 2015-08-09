@@ -42,7 +42,7 @@ class posixAccount extends baseModule implements passwordService {
 	// Variables
 	/** delimiter for lamdaemon commands */
 	private static $SPLIT_DELIMITER = "###x##y##x###";
-	
+
 	/* These two variables keep an array of groups the user is also member of. */
 	/** current group list */
 	private $groups;
@@ -66,7 +66,7 @@ class posixAccount extends baseModule implements passwordService {
 	private $cachedUIDList = null;
 	/** caches the list of known user names */
 	private $cachedUserNameList = null;
-	
+
 	/** replacements for common umlauts */
 	private $umlautReplacements = array(
 		'ä' => 'ae', 'Ä' => 'Ae', 'ö' => 'oe', 'Ö' => 'Oe', 'ü' => 'ue', 'Ü' => 'Ue',
@@ -84,7 +84,7 @@ class posixAccount extends baseModule implements passwordService {
 		// make optional if needed
 		$this->autoAddObjectClasses = !$this->isOptional();
 	}
-	
+
 	/**
 	 *  This function fills the error message array with messages.
 	**/
@@ -134,7 +134,7 @@ class posixAccount extends baseModule implements passwordService {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -145,7 +145,7 @@ class posixAccount extends baseModule implements passwordService {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -294,7 +294,7 @@ class posixAccount extends baseModule implements passwordService {
 				$configContainerOptions->addElement(new htmlOutputText(' '));
 				$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('posixAccount_hideposixGroups', false, _('Unix groups'), null, false));
 			}
-		}		
+		}
 		$hiddenOptionsContainer->addElement($configContainerOptions);
 		$configOptionsContainer->addElement($hiddenOptionsContainer, true);
 		$advancedOptions = new htmlTable();
@@ -303,7 +303,7 @@ class posixAccount extends baseModule implements passwordService {
 		$advancedOptionsAccordion = new htmlAccordion('posixAccountAdvancedOptions', array(_('Advanced options') => $advancedOptions), false);
 		$advancedOptionsAccordion->colspan = 5;
 		$configOptionsContainer->addElement($advancedOptionsAccordion);
-		
+
 		$return['config_options']['all'] = $configOptionsContainer;
 		// upload
 		$return['upload_preDepends'] = array('inetOrgPerson');
@@ -430,7 +430,7 @@ class posixAccount extends baseModule implements passwordService {
 					'description' => _('Gecos'),
 					'help' => 'gecos',
 					'example' => _('pc01,Room 2.34')
-				); 
+				);
 			}
 		}
 		// available PDF fields
@@ -718,7 +718,7 @@ class posixAccount extends baseModule implements passwordService {
 		if (isset($this->orig[$pwdAttrName][0]) && isset($this->attributes[$pwdAttrName][0])) {
 			if ((pwd_is_enabled($this->orig[$pwdAttrName][0]) && pwd_is_enabled($this->attributes[$pwdAttrName][0]))
 				|| (!pwd_is_enabled($this->orig[$pwdAttrName][0]) && !pwd_is_enabled($this->attributes[$pwdAttrName][0]))) {
-				$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordStatusChange'][0] = 'unchanged'; 
+				$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordStatusChange'][0] = 'unchanged';
 			}
 			elseif (pwd_is_enabled($this->orig[$pwdAttrName][0])) {
 				$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordStatusChange'][0] = 'locked';
@@ -743,7 +743,7 @@ class posixAccount extends baseModule implements passwordService {
 					$this->groups[] = $this->getGroupName($this->attributes['gidNumber'][0]);
 				}
 			}
-	
+
 			// Set additional group memberships
 			if (isset($this->orig['uid'][0]) && ($this->orig['uid'][0] != '') && ($this->attributes['uid'][0] != $this->orig['uid'][0])) {
 				// find affected groups
@@ -788,7 +788,7 @@ class posixAccount extends baseModule implements passwordService {
 
 	/**
 	 * Runs the postmodify actions.
-	 * 
+	 *
 	 * @see baseModule::postModifyActions()
 	 *
 	 * @param boolean $newAccount
@@ -976,7 +976,7 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		return $messages;
 	}
-	
+
 	/**
 	* Additional LDAP operations on delete.
 	*
@@ -1010,7 +1010,7 @@ class posixAccount extends baseModule implements passwordService {
 
 	/**
 	 * Allows the module to run commands before the LDAP entry is deleted.
-	 * 
+	 *
 	 * @return array Array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	function preDeleteActions() {
@@ -1063,7 +1063,7 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		return $return;
 	}
-	
+
 	/**
 	* Processes user input of the primary module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
@@ -1412,7 +1412,7 @@ class posixAccount extends baseModule implements passwordService {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -1428,7 +1428,7 @@ class posixAccount extends baseModule implements passwordService {
 				return $return;
 			}
 			$shelllist = $this->getShells(); // list of all valid shells
-	
+
 			// set default values
 			if (empty($this->attributes['uid'][0])) {
 				if ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
@@ -1474,7 +1474,7 @@ class posixAccount extends baseModule implements passwordService {
 					$this->attributes['cn'][0] = $_POST['uid'];
 				}
 			}
-			
+
 			$userName = '';
 			if (isset($this->attributes['uid'][0])) $userName = $this->attributes['uid'][0];
 			$uidLabel = _("User name");
@@ -1506,7 +1506,7 @@ class posixAccount extends baseModule implements passwordService {
 			$gidNumberSelect = new htmlTableExtendedSelect('gidNumber', $groups, $primaryGroup, _('Primary group'), 'gidNumber');
 			$gidNumberSelect->setHasDescriptiveElements(true);
 			$return->addElement($gidNumberSelect, true);
-	
+
 			if ($this->get_scope()=='user') {
 				// additional groups
 				if (!$this->isBooleanConfigOptionSet('posixAccount_hidegon') || !$this->isBooleanConfigOptionSet('posixAccount_hideposixGroups')) {
@@ -1620,7 +1620,7 @@ class posixAccount extends baseModule implements passwordService {
 			$groups = array_flip($groups);
 			unset ($groups[$group]);
 			$groups = array_flip($groups);
-	
+
 			$unixContainer = new htmlTable();
 			$unixContainer->alignment = htmlElement::ALIGN_TOP;
 			$unixContainer->addElement(new htmlSubTitle(_("Unix groups")), true);
@@ -1630,12 +1630,12 @@ class posixAccount extends baseModule implements passwordService {
 					$unixContainer->addElement(new htmlOutputText($group), true);
 				}
 			}
-			else {		
+			else {
 				$unixContainer->addElement(new htmlOutputText(_("Selected groups")));
 				$unixContainer->addElement(new htmlOutputText(''));
 				$unixContainer->addElement(new htmlOutputText(_("Available groups")));
 				$unixContainer->addNewLine();
-				
+
 				$remSelect = new htmlSelect('removegroups', $this->groups, null, 15);
 				$remSelect->setMultiSelect(true);
 				$remSelect->setTransformSingleSelect(false);
@@ -1650,7 +1650,7 @@ class posixAccount extends baseModule implements passwordService {
 				$addSelect->setTransformSingleSelect(false);
 				$unixContainer->addElement($addSelect, true);
 			}
-		
+
 			$return->addElement($unixContainer);
 		}
 
@@ -1658,9 +1658,9 @@ class posixAccount extends baseModule implements passwordService {
 			if (!$this->isBooleanConfigOptionSet('posixAccount_hideposixGroups')) {
 				$return->addElement(new htmlSpacer('100px', null));
 			}
-			
+
 			$gons = $this->findGroupOfNames();
-			
+
 			$gonContainer = new htmlTable();
 			$gonContainer->alignment = htmlElement::ALIGN_TOP;
 			$gonContainer->addElement(new htmlSubTitle(_("Groups of names")), true);
@@ -1668,7 +1668,7 @@ class posixAccount extends baseModule implements passwordService {
 			$gonContainer->addElement(new htmlOutputText(''));
 			$gonContainer->addElement(new htmlOutputText(_("Available groups")));
 			$gonContainer->addNewLine();
-			
+
 			$selectedGons = array();
 			for ($i = 0; $i < sizeof($this->gonList); $i++) {
 				if (isset($gons[$this->gonList[$i]])) {
@@ -1681,7 +1681,7 @@ class posixAccount extends baseModule implements passwordService {
 					$availableGons[$attr['cn'][0]] = $dn;
 				}
 			}
-			
+
 			$remGonSelect = new htmlSelect('removegons', $selectedGons, null, 15);
 			$remGonSelect->setMultiSelect(true);
 			$remGonSelect->setTransformSingleSelect(false);
@@ -1700,7 +1700,7 @@ class posixAccount extends baseModule implements passwordService {
 			$gonContainer->addNewLine();
 			$return->addElement($gonContainer);
 		}
-		
+
 		$return->addNewLine();
 
 		$backGroup = new htmlGroup();
@@ -2458,7 +2458,7 @@ class posixAccount extends baseModule implements passwordService {
 			$errors = array();
 			if (($result != false) && (sizeof($result) == 1)) {
 				$parts = explode(",", $result[0]);
-				if (in_array($parts[0], array('ERROR', 'WARN'))) { 
+				if (in_array($parts[0], array('ERROR', 'WARN'))) {
 					$errors[] = $parts;
 				}
 			}
@@ -2577,7 +2577,7 @@ class posixAccount extends baseModule implements passwordService {
 
 	/**
 	 * Gets the free UID numbers from an Samba pool entry in LDAP.
-	 * 
+	 *
 	 * @param integer $count number of needed free UIDs.
 	 * @param array $errors list of error messages where errors can be added
 	 * @return mixed null if no UIDs are free else an array of free UIDs
@@ -2610,7 +2610,7 @@ class posixAccount extends baseModule implements passwordService {
 
 	/**
 	 * Gets the free UID numbers from a domain info entry in LDAP.
-	 * 
+	 *
 	 * @param integer $count number of needed free UIDs.
 	 * @param array $errors list of error messages where errors can be added
 	 * @return mixed null if no UIDs are free else an array of free UIDs
@@ -2650,28 +2650,25 @@ class posixAccount extends baseModule implements passwordService {
 	 * @param array $attributes attributes of LDAP account
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
 	 * @param array $readOnlyFields list of read-only fields
-	 * @return array list of meta HTML elements (field name => htmlTableRow)
+	 * @return array list of meta HTML elements (field name => htmlResponsiveRow)
 	 */
 	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		$return = array();
 		if (in_array('password', $fields)) {
-			$pwdTable = new htmlTable();
-			$pwdTable->colspan = 3;
+			$row = new htmlResponsiveRow();
 			if (!empty($this->selfServiceSettings->moduleSettings['posixAccount_useOldPwd']) && ($this->selfServiceSettings->moduleSettings['posixAccount_useOldPwd'][0] == 'true')) {
-				$pwd0 = new htmlTableExtendedInputField(_('Old password'), 'posixAccount_passwordOld');
+				$pwd0 = new htmlResponsiveInputField(_('Old password'), 'posixAccount_passwordOld');
 				$pwd0->setIsPassword(true, true);
-				$pwdTable->addElement($pwd0, true);
+				$row->add($pwd0, 12);
 			}
-			$pwd1 = new htmlTableExtendedInputField($this->getSelfServiceLabel('password', _('New password')), 'posixAccount_password');
+			$pwd1 = new htmlResponsiveInputField($this->getSelfServiceLabel('password', _('New password')), 'posixAccount_password');
 			$pwd1->setIsPassword(true, true);
-			$pwdTable->addElement($pwd1, true);
-			$pwd2 = new htmlTableExtendedInputField(_('Reenter password'), 'posixAccount_password2');
+			$row->add($pwd1, 12);
+			$pwd2 = new htmlResponsiveInputField(_('Reenter password'), 'posixAccount_password2');
 			$pwd2->setIsPassword(true);
 			$pwd2->setSameValueFieldID('posixAccount_password');
-			$pwdTable->addElement($pwd2);
-			$return['password'] = new htmlTableRow(array(
-				$pwdTable
-			));
+			$row->add($pwd2, 12);
+			$return['password'] = $row;
 		}
 		if ($passwordChangeOnly) {
 			return $return; // only password fields as long no LDAP content can be read
@@ -2683,9 +2680,10 @@ class posixAccount extends baseModule implements passwordService {
 			if (in_array('cn', $readOnlyFields)) {
 				$cnField = new htmlOutputText($cn);
 			}
-			$return['cn'] = new htmlTableRow(array(
-				new htmlOutputText($this->getSelfServiceLabel('cn', _('Common name'))), $cnField
-			));
+			$row = new htmlResponsiveRow();
+			$row->add(new htmlOutputText($this->getSelfServiceLabel('cn', _('Common name'))), 12, 6, 6, 'responsiveLabel');
+			$row->add($cnField, 12, 6, 6, 'responsiveField');
+			$return['cn'] = $row;
 		}
 		if (in_array('loginShell', $fields)) {
 			$shelllist = $this->getShells(); // list of all valid shells
@@ -2695,9 +2693,10 @@ class posixAccount extends baseModule implements passwordService {
 			if (in_array('loginShell', $readOnlyFields)) {
 				$loginShellField = new htmlOutputText($loginShell);
 			}
-			$return['loginShell'] = new htmlTableRow(array(
-				new htmlOutputText($this->getSelfServiceLabel('loginShell', _('Login shell'))), $loginShellField
-			));
+			$row = new htmlResponsiveRow();
+			$row->add(new htmlOutputText($this->getSelfServiceLabel('loginShell', _('Login shell'))), 12, 6, 6, 'responsiveLabel');
+			$row->add($loginShellField, 12, 6, 6, 'responsiveField');
+			$return['loginShell'] = $row;
 		}
 		return $return;
 	}
@@ -2710,7 +2709,7 @@ class posixAccount extends baseModule implements passwordService {
 	 * <br>del: array of attributes to remove
 	 * <br>mod: array of attributes to modify
 	 * <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
-	 * 
+	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
 	 *
 	 * @param string $fields input fields
@@ -2789,7 +2788,7 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * This method specifies if a module manages password attributes.
 	 * @see passwordService::managesPasswordAttributes
@@ -2802,13 +2801,13 @@ class posixAccount extends baseModule implements passwordService {
 
 	/**
 	 * Specifies if this module supports to force that a user must change his password on next login.
-	 * 
+	 *
 	 * @return boolean force password change supported
 	 */
 	public function supportsForcePasswordChange() {
 		return false;
 	}
-	
+
 	/**
 	 * This function is called whenever the password should be changed. Account modules
 	 * must change their password attributes only if the modules list contains their module name.
@@ -2853,7 +2852,7 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		return array();
 	}
-	
+
 	/**
 	 * Returns the group ID of the given group.
 	 *
@@ -2867,7 +2866,7 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns the group name of the group with the given group ID.
 	 *
@@ -2881,7 +2880,7 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns the group DN of the given group.
 	 *
@@ -2895,7 +2894,7 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Finds all existing LDAP groups.
 	 *
@@ -2927,7 +2926,7 @@ class posixAccount extends baseModule implements passwordService {
 		$this->groupCache = $return;
 		return $return;
 	}
-	
+
 	/**
 	 * Finds all existing LDAP group of names.
 	 *
@@ -2967,7 +2966,7 @@ class posixAccount extends baseModule implements passwordService {
 		$this->gonCache = $return;
 		return $return;
 	}
-	
+
 	/**
 	 * Returns a list of existing UID numbers.
 	 *
@@ -3008,20 +3007,20 @@ class posixAccount extends baseModule implements passwordService {
 		sort($this->cachedUIDList, SORT_NUMERIC);
 		return $this->cachedUIDList;
 	}
-	
+
 	/**
 	 * Checks if the given user name already exists in LDAP.
-	 * 
+	 *
 	 * @param String $userName user name
 	 * @return boolean true if already exists
 	 */
 	private function userNameExists($userName) {
 		return in_array($userName, $this->getUserNames());
 	}
-	
+
 	/**
 	 * Returns a list of all user names in LDAP.
-	 * 
+	 *
 	 * @return array user names
 	 */
 	private function getUserNames() {
@@ -3058,10 +3057,10 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		return $this->cachedUserNameList;
 	}
-	
+
 	/**
 	 * Returns if LAM manages group of names entries.
-	 * 
+	 *
 	 * @return boolean group of names are active
 	 */
 	public static function areGroupOfNamesActive() {
@@ -3082,7 +3081,7 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Returns a suggestion for the user name.
 	 * By deafult this wil be the first character of the first name plus the last name.
@@ -3124,7 +3123,7 @@ class posixAccount extends baseModule implements passwordService {
 		$format = str_replace(array(' ', '_', '-'), array('', '', ''), $format);
 		return $format;
 	}
-	
+
 	/**
 	 * Returns if this account can be locked.
 	 * This is the case if a hashed password is set ("{" at the beginning).
@@ -3135,16 +3134,16 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Returns if the Unix part of the current account is locked.
-	 * 
+	 *
 	 * @return boolean password is locked
 	 */
 	public function isLocked() {
 		return isset($this->attributes[$this->getPasswordAttrName()][0]) && !pwd_is_enabled($this->attributes[$this->getPasswordAttrName()][0]);
 	}
-	
+
 	/**
 	 * Locks the user password of this account.
 	 */
@@ -3154,7 +3153,7 @@ class posixAccount extends baseModule implements passwordService {
 			$this->attributes[$pwdAttrName][0] = pwd_disable($this->attributes[$pwdAttrName][0]);
 		}
 	}
-	
+
 	/**
 	 * Unlocks the user password of this account.
 	 */
@@ -3164,28 +3163,28 @@ class posixAccount extends baseModule implements passwordService {
 			$this->attributes[$pwdAttrName][0] = pwd_enable($this->attributes[$pwdAttrName][0]);
 		}
 	}
-	
+
 	/**
 	 * Removes all Unix group memberships from this user.
 	 */
 	public function removeFromUnixGroups() {
 		$this->groups = array();
 	}
-	
+
 	/**
 	 * Removes all group of names memberships from this user.
 	 */
 	public function removeFromGONGroups() {
 		$this->gonList = array();
 	}
-	
+
 	/**
 	 * Returns the next possible user name based on the given one.
 	 * If the user name does not end with a number then a "2" is added.
 	 * User names with numbers at the end are simply increased by one.
 	 * <br>
-	 * <br>Attention: This user name might still be in use. This needs to be checked separately. 
-	 * 
+	 * <br>Attention: This user name might still be in use. This needs to be checked separately.
+	 *
 	 * @param String $userName user name
 	 * @return String new user name
 	 */
@@ -3236,10 +3235,10 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		return $userName;
 	}
-	
+
 	/**
 	 * Returns the list of possible login shells.
-	 * 
+	 *
 	 * @return array login shells
 	 */
 	private function getShells() {
@@ -3263,11 +3262,11 @@ class posixAccount extends baseModule implements passwordService {
 			'/bin/sh'
 		);
 	}
-	
+
 	/**
 	 * Returns if the cn attribute should be managed.
 	 * If Windows modules are active then cn will not be managed.
-	 * 
+	 *
 	 * @return boolean manage cn attribute
 	 */
 	private function manageCn() {
@@ -3282,10 +3281,10 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Returns if the Unix part can be added and removed.
-	 * 
+	 *
 	 * @return boolean is optional
 	 */
 	private function isOptional() {
@@ -3294,7 +3293,7 @@ class posixAccount extends baseModule implements passwordService {
 
 	/**
 	 * Returns if the Windows module is active.
-	 * 
+	 *
 	 * @return boolean is Windows
 	 */
 	private function isWindows() {
@@ -3304,7 +3303,7 @@ class posixAccount extends baseModule implements passwordService {
 	/**
 	 * Returns the password attribute.
 	 * Usually, this is userPassword. If Windows modules are active this is unixUserPassword.
-	 * 
+	 *
 	 * @return boolean attribute name
 	 */
 	private function getPasswordAttrName() {
@@ -3317,11 +3316,11 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		return $name;
 	}
-	
+
 	/**
 	 * Returns the home directory attribute.
 	 * Usually, this is homeDirectory. If Windows modules are active this is unixHomeDirectory.
-	 * 
+	 *
 	 * @return boolean attribute name
 	 */
 	private function getHomedirAttrName() {
@@ -3334,7 +3333,7 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		return $name;
 	}
-	
+
 	/**
 	 * Syncs the group of names with groups.
 	 */
@@ -3351,7 +3350,7 @@ class posixAccount extends baseModule implements passwordService {
 			}
 		}
 	}
-	
+
 }
 
 ?>
