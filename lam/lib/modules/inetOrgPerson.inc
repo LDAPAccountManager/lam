@@ -2476,7 +2476,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 	 * @param array $attributes attributes of LDAP account
 	 * @param boolean $passwordChangeOnly indicates that the user is only allowed to change his password and no LDAP content is readable
 	 * @param array $readOnlyFields list of read-only fields
-	 * @return array list of meta HTML elements (field name => htmlTableRow)
+	 * @return array list of meta HTML elements (field name => htmlResponsiveRow)
 	 */
 	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		$return = array();
@@ -2490,9 +2490,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('firstName', $readOnlyFields)) {
 				$firstNameField = new htmlOutputText($firstName);
 			}
-			$return['firstName'] = new htmlTableRow(array(
+			$return['firstName'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('firstName', _('First name'))), $firstNameField
-			));
+			);
 		}
 		if (in_array('lastName', $fields)) {
 			$lastName = '';
@@ -2501,9 +2501,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('lastName', $readOnlyFields)) {
 				$lastNameField = new htmlOutputText($lastName);
 			}
-			$return['lastName'] = new htmlTableRow(array(
+			$return['lastName'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('lastName', _('Last name'))), $lastNameField
-			));
+			);
 		}
 		if (in_array('mail', $fields)) {
 			$mail = '';
@@ -2512,9 +2512,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('mail', $readOnlyFields)) {
 				$mailField = new htmlOutputText($mail);
 			}
-			$return['mail'] = new htmlTableRow(array(
+			$return['mail'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('mail', _('Email address'))), $mailField
-			));
+			);
 		}
 		if (in_array('labeledURI', $fields)) {
 			$labeledURI = '';
@@ -2523,9 +2523,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('labeledURI', $readOnlyFields)) {
 				$labeledURIField = new htmlOutputText($labeledURI);
 			}
-			$return['labeledURI'] = new htmlTableRow(array(
+			$return['labeledURI'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('labeledURI', _('Web site'))), $labeledURIField
-			));
+			);
 		}
 		if (in_array('telephoneNumber', $fields)) {
 			$telephoneNumber = '';
@@ -2534,9 +2534,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('telephoneNumber', $readOnlyFields)) {
 				$telephoneNumberField = new htmlOutputText($telephoneNumber);
 			}
-			$return['telephoneNumber'] = new htmlTableRow(array(
+			$return['telephoneNumber'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('telephoneNumber', _('Telephone number'))), $telephoneNumberField
-			));
+			);
 		}
 		if (in_array('homePhone', $fields)) {
 			$homePhone = '';
@@ -2545,9 +2545,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('homePhone', $readOnlyFields)) {
 				$homePhoneField = new htmlOutputText($homePhone);
 			}
-			$return['homePhone'] = new htmlTableRow(array(
+			$return['homePhone'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('homePhone', _('Home telephone number'))), $homePhoneField
-			));
+			);
 		}
 		if (in_array('mobile', $fields)) {
 			$mobile = '';
@@ -2556,9 +2556,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('mobile', $readOnlyFields)) {
 				$mobileField = new htmlOutputText($mobile);
 			}
-			$return['mobile'] = new htmlTableRow(array(
+			$return['mobile'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('mobile', _('Mobile telephone number'))), $mobileField
-			));
+			);
 		}
 		if (in_array('faxNumber', $fields)) {
 			$faxNumber = '';
@@ -2567,9 +2567,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('faxNumber', $readOnlyFields)) {
 				$faxNumberField = new htmlOutputText($faxNumber);
 			}
-			$return['faxNumber'] = new htmlTableRow(array(
+			$return['faxNumber'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('faxNumber', _('Fax number'))), $faxNumberField
-			));
+			);
 		}
 		if (in_array('pager', $fields)) {
 			$pager = '';
@@ -2578,9 +2578,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('pager', $readOnlyFields)) {
 				$pagerField = new htmlOutputText($pager);
 			}
-			$return['pager'] = new htmlTableRow(array(
+			$return['pager'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('pager', _('Pager'))), $pagerField
-			));
+			);
 		}
 		if (in_array('street', $fields)) {
 			$street = '';
@@ -2589,9 +2589,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('street', $readOnlyFields)) {
 				$streetField = new htmlOutputText($street);
 			}
-			$return['street'] = new htmlTableRow(array(
+			$return['street'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('street', _('Street'))), $streetField
-			));
+			);
 		}
 		if (in_array('postalAddress', $fields)) {
 			$postalAddress = '';
@@ -2600,9 +2600,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('postalAddress', $readOnlyFields)) {
 				$postalAddressField = new htmlOutputText($postalAddress);
 			}
-			$return['postalAddress'] = new htmlTableRow(array(
+			$return['postalAddress'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('postalAddress', _('Postal address'))), $postalAddressField
-			));
+			);
 		}
 		if (in_array('registeredAddress', $fields)) {
 			$registeredAddress = '';
@@ -2611,9 +2611,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('registeredAddress', $readOnlyFields)) {
 				$registeredAddressField = new htmlOutputText($registeredAddress);
 			}
-			$return['registeredAddress'] = new htmlTableRow(array(
+			$return['registeredAddress'] = new htmlResponsiveRow(
 				new htmlOutputText(_('Registered address')), $registeredAddressField
-			));
+			);
 		}
 		if (in_array('postalCode', $fields)) {
 			$postalCode = '';
@@ -2622,9 +2622,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('postalCode', $readOnlyFields)) {
 				$postalCodeField = new htmlOutputText($postalCode);
 			}
-			$return['postalCode'] = new htmlTableRow(array(
+			$return['postalCode'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('postalCode', _('Postal code'))), $postalCodeField
-			));
+			);
 		}
 		if (in_array('postOfficeBox', $fields)) {
 			$postOfficeBox = '';
@@ -2633,9 +2633,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('postOfficeBox', $readOnlyFields)) {
 				$postOfficeBoxField = new htmlOutputText($postOfficeBox);
 			}
-			$return['postOfficeBox'] = new htmlTableRow(array(
+			$return['postOfficeBox'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('postOfficeBox', _('Post office box'))), $postOfficeBoxField
-			));
+			);
 		}
 		if (in_array('roomNumber', $fields)) {
 			$roomNumber = '';
@@ -2644,9 +2644,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('roomNumber', $readOnlyFields)) {
 				$roomNumberField = new htmlOutputText($roomNumber);
 			}
-			$return['roomNumber'] = new htmlTableRow(array(
+			$return['roomNumber'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('roomNumber', _('Room number'))), $roomNumberField
-			));
+			);
 		}
 		if (in_array('location', $fields)) {
 			$l = '';
@@ -2655,9 +2655,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('location', $readOnlyFields)) {
 				$lField = new htmlOutputText($l);
 			}
-			$return['location'] = new htmlTableRow(array(
+			$return['location'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('location', _('Location'))), $lField
-			));
+			);
 		}
 		if (in_array('state', $fields)) {
 			$st = '';
@@ -2666,9 +2666,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('state', $readOnlyFields)) {
 				$stField = new htmlOutputText($st);
 			}
-			$return['state'] = new htmlTableRow(array(
+			$return['state'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('state', _('State'))), $stField
-			));
+			);
 		}
 		if (in_array('carLicense', $fields)) {
 			$carLicense = '';
@@ -2677,9 +2677,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('carLicense', $readOnlyFields)) {
 				$carLicenseField = new htmlOutputText($carLicense);
 			}
-			$return['carLicense'] = new htmlTableRow(array(
+			$return['carLicense'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('carLicense', _('Car license'))), $carLicenseField
-			));
+			);
 		}
 		if (in_array('officeName', $fields)) {
 			$physicalDeliveryOfficeName = '';
@@ -2688,9 +2688,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('officeName', $readOnlyFields)) {
 				$physicalDeliveryOfficeNameField = new htmlOutputText($physicalDeliveryOfficeName);
 			}
-			$return['officeName'] = new htmlTableRow(array(
+			$return['officeName'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('officeName', _('Office name'))), $physicalDeliveryOfficeNameField
-			));
+			);
 		}
 		if (in_array('businessCategory', $fields)) {
 			$businessCategory = '';
@@ -2699,9 +2699,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('businessCategory', $readOnlyFields)) {
 				$businessCategoryField = new htmlOutputText($businessCategory);
 			}
-			$return['businessCategory'] = new htmlTableRow(array(
+			$return['businessCategory'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('businessCategory', _('Business category'))), $businessCategoryField
-			));
+			);
 		}
 		if (in_array('jpegPhoto', $fields)) {
 			if (isset($attributes['jpegPhoto'][0])) {
@@ -2716,21 +2716,19 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$photoSub->addElement($img, true);
 				if (!in_array('jpegPhoto', $readOnlyFields)) {
 					$photoSubSub = new htmlTable();
+					$upload = new htmlInputFileUpload('photoFile');
+					$upload->colspan = 2;
+					$photoSubSub->addElement($upload, true);
 					$photoSubSub->addElement(new htmlTableExtendedInputCheckbox('removeReplacePhoto', false, _('Remove/replace photo'), null, false));
-					$photoSubSub->addElement(new htmlInputFileUpload('photoFile'));
 					$photoSub->addElement($photoSubSub);
 				}
-				$photoRowCells = array(new htmlOutputText($this->getSelfServiceLabel('jpegPhoto', _('Photo'))), $photoSub);
-				$photoRow = new htmlTableRow($photoRowCells);
-				$return['jpegPhoto'] = $photoRow;
+				$return['jpegPhoto'] = new htmlResponsiveRow(new htmlOutputText($this->getSelfServiceLabel('jpegPhoto', _('Photo'))), $photoSub);
 			}
 			elseif (!in_array('jpegPhoto', $readOnlyFields)) {
 				$photoSub = new htmlTable();
 				$photoSub->addElement(new htmlTableExtendedInputFileUpload('photoFile', _('Add photo')));
 				$photoSub->addElement(new htmlHiddenInput('addPhoto', 'true'));
-				$photoRowCells = array(new htmlOutputText($this->getSelfServiceLabel('jpegPhoto', _('Photo'))), $photoSub);
-				$photoRow = new htmlTableRow($photoRowCells);
-				$return['jpegPhoto'] = $photoRow;
+				$return['jpegPhoto'] = new htmlResponsiveRow(new htmlOutputText($this->getSelfServiceLabel('jpegPhoto', _('Photo'))), $photoSub);
 			}
 		}
 		if (in_array('departmentNumber', $fields)) {
@@ -2740,9 +2738,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('departmentNumber', $readOnlyFields)) {
 				$departmentNumberField = new htmlOutputText($departmentNumber);
 			}
-			$return['departmentNumber'] = new htmlTableRow(array(
+			$return['departmentNumber'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('departmentNumber', _('Department'))), $departmentNumberField
-			));
+			);
 		}
 		if (in_array('initials', $fields)) {
 			$initials = '';
@@ -2751,9 +2749,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('initials', $readOnlyFields)) {
 				$initialsField = new htmlOutputText($initials);
 			}
-			$return['initials'] = new htmlTableRow(array(
+			$return['initials'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('initials', _('Initials'))), $initialsField
-			));
+			);
 		}
 		if (in_array('title', $fields)) {
 			$title = '';
@@ -2762,9 +2760,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('title', $readOnlyFields)) {
 				$titleField = new htmlOutputText($title);
 			}
-			$return['title'] = new htmlTableRow(array(
+			$return['title'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('title', _('Job title'))), $titleField
-			));
+			);
 		}
 		if (in_array('userCertificate', $fields)) {
 			$userCertificates = array();
@@ -2792,9 +2790,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$certTable->addElement($uploadStatus, true);
 			$certLabel = new htmlOutputText($this->getSelfServiceLabel('userCertificate', _('User certificates')));
 			$certLabel->alignment = htmlElement::ALIGN_TOP;
-			$userCertificatesCells = array($certLabel, $certTable);
-			$userCertificatesRow = new htmlTableRow($userCertificatesCells);
-			$return['userCertificate'] = $userCertificatesRow;
+			$return['userCertificate'] = new htmlResponsiveRow($certLabel, $certTable);
 		}
 		// ou
 		if (in_array('ou', $fields)) {
@@ -2823,9 +2819,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$ouField->setRightToLeftTextDirection(true);
 				$ouField->setSortElements(false);
 			}
-			$return['ou'] = new htmlTableRow(array(
+			$return['ou'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('ou', _('Organisational unit'))), $ouField
-			));
+			);
 		}
 		// description
 		if (in_array('description', $fields)) {
@@ -2835,9 +2831,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('description', $readOnlyFields)) {
 				$descriptionField = new htmlOutputText($description);
 			}
-			$return['description'] = new htmlTableRow(array(
+			$return['description'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('description', _('Description'))), $descriptionField
-			));
+			);
 		}
 		// uid
 		if (in_array('uid', $fields)) {
@@ -2847,9 +2843,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (in_array('uid', $readOnlyFields)) {
 				$uidField = new htmlOutputText($uid);
 			}
-			$return['uid'] = new htmlTableRow(array(
+			$return['uid'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('uid', _('User name'))), $uidField
-			));
+			);
 		}
 		return $return;
 	}
@@ -2871,14 +2867,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 				fwrite($out, $userCertificates[$i]);
 				fclose ($out);
 				$path = '../../tmp/' . $filename;
-				$saveLink = new htmlLink('', $path, '../../graphics/save.png');
-				$saveLink->setTitle(_('Save'));
-				$saveLink->setTargetWindow('_blank');
-				$certTable->addElement($saveLink);
-				$delLink = new htmlLink('', '#', '../../graphics/del.png');
-				$delLink->setTitle(_('Delete'));
-				$delLink->setOnClick('inetOrgPersonDeleteCertificate(' . $i . '); return false;');
-				$certTable->addElement($delLink);
 				if (function_exists('openssl_x509_parse')) {
 					$pem = @chunk_split(@base64_encode($userCertificates[$i]), 64, "\n");
 					if (!empty($pem)) {
@@ -2896,6 +2884,14 @@ class inetOrgPerson extends baseModule implements passwordService {
 						}
 					}
 				}
+				$saveLink = new htmlLink('', $path, '../../graphics/save.png');
+				$saveLink->setTitle(_('Save'));
+				$saveLink->setTargetWindow('_blank');
+				$certTable->addElement($saveLink);
+				$delLink = new htmlLink('', '#', '../../graphics/del.png');
+				$delLink->setTitle(_('Delete'));
+				$delLink->setOnClick('inetOrgPersonDeleteCertificate(' . $i . '); return false;');
+				$certTable->addElement($delLink);
 				$certTable->addNewLine();
 			}
 			$content->addElement($certTable, true);

@@ -3256,6 +3256,22 @@ class htmlResponsiveRow extends htmlElement {
 	private $cells = array();
 
 	/**
+	 * Creates a new responsive row.
+	 *
+	 * @param htmlElement $label label element if this is a simple label+field row
+	 * @param htmlElement $field field element if this is a simple label+field row
+	 */
+	public function __construct($label = null, $field = null) {
+		$this->cells = array();
+		if ($label != null) {
+			$this->addLabel($label);
+		}
+		if ($field != null) {
+			$this->addField($field);
+		}
+	}
+
+	/**
 	 * Adds a responsive cell to the row.
 	 *
 	 * @param htmlResponsiveCell $cell cell

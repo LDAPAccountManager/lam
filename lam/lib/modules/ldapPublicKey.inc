@@ -251,7 +251,6 @@ class ldapPublicKey extends baseModule {
 			// upload status
 			$uploadStatus = new htmlDiv('ldapPublicKey_upload_status_key', new htmlOutputText(''));
 			$uploadStatus->setCSSClasses(array('qq-upload-list'));
-			$uploadStatus->colspan = 7;
 			$keyTable->addElement($uploadStatus, true);
 			$keyLabel = new htmlOutputText($this->getSelfServiceLabel('sshPublicKey', _('SSH public keys')));
 			$row = new htmlResponsiveRow();
@@ -270,39 +269,38 @@ class ldapPublicKey extends baseModule {
 	 */
 	private function getSelfServiceKeys() {
 		$keys = $_SESSION[self::SESS_KEY_LIST];
-		$content = new htmlTable();
+		$content = new htmlResponsiveRow();
 		if (sizeof($keys) > 0) {
-			$keyTable = new htmlTable();
 			for ($i = 0; $i < sizeof($keys); $i++) {
+				$group = new htmlGroup();
 				$keyInput = new htmlInputField('sshPublicKey_' . $i, $keys[$i]);
 				$keyInput->setFieldMaxLength(16384);
-				$keyTable->addElement($keyInput);
+				$group->addElement($keyInput);
 				$delLink = new htmlLink('', '#', '../../graphics/del.png');
 				$delLink->setTitle(_('Delete'));
 				$delLink->setOnClick('ldapPublicKeyDeleteKey(' . $i . ', ' . sizeof($keys) . ');return false;');
-				$keyTable->addElement($delLink);
+				$group->addElement($delLink);
 				if ($i == (sizeof($keys) - 1)) {
 					$addLink = new htmlLink('', '#', '../../graphics/add.png');
 					$addLink->setTitle(_('Add'));
 					$addLink->setOnClick('ldapPublicKeyAddKey(' . sizeof($keys) . ');return false;');
-					$keyTable->addElement($addLink);
+					$group->addElement($addLink);
 				}
-				$keyTable->addNewLine();
+				$content->add($group, 12, 12, 12, 'nowrap');
 			}
-			$content->addElement($keyTable, true);
 		}
 		else {
 			$addLink = new htmlLink('', '#', '../../graphics/add.png');
 			$addLink->setTitle(_('Add'));
 			$addLink->setOnClick('ldapPublicKeyAddKey(' . sizeof($keys) . ');return false;');
-			$content->addElement($addLink, true);
+			$content->add($addLink, 12);
 		}
 		// upload button
 		$uploadButtons = new htmlGroup();
 		$uploadButtons->addElement(new htmlDiv('ldapPublicKeyKeyUploadId', new htmlOutputText('')), true);
 		$keyUpload = new htmlJavaScript('ldapPublicKeyUploadKey(\'ldapPublicKeyKeyUploadId\', ' . sizeof($keys) . ');');
 		$uploadButtons->addElement($keyUpload);
-		$content->addElement($uploadButtons, true);
+		$content->add($uploadButtons, 12);
 		return $content;
 	}
 
