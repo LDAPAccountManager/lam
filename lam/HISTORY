@@ -2,6 +2,7 @@ September 2015 5.1
   - IMAP: support Windows users
   - SSH public key: check uploaded files if in right format
   - LAM Pro:
+   -> Self Service optimized also for mobile devices
    -> MySQL support for cron jobs
    -> Self registration: support auto-numbering for attributes (e.g. to create Unix accounts)
 
