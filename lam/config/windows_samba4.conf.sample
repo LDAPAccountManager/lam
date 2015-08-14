@@ -1,0 +1,217 @@
+# LDAP Account Manager configuration
+#
+# Please do not modify this file manually. The configuration can be done completely by the LAM GUI.
+#
+###################################################################################################
+
+# server address (e.g. ldap://localhost:389 or ldaps://localhost:636)
+ServerURL: ldap://pdc.my-domain.com
+
+# list of users who are allowed to use LDAP Account Manager
+# names have to be seperated by semicolons
+# e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org
+Admins: cn=Administrator,cn=users,dc=my-domain,dc=com
+
+# password to change these preferences via webfrontend (default: lam)
+Passwd: {SSHA}D05GxzVwo3vmuNLSNmkPiJ8x5u8= JgqZFQ==
+
+# suffix of tree view
+# e.g. dc=yourdomain,dc=org
+treesuffix: dc=my-domain,dc=com
+
+# default language (a line from config/language)
+defaultLanguage: en_GB.utf8
+
+# Path to external Script
+scriptPath: 
+
+# Server of external Script
+scriptServer: 
+
+# Access rights for home directories
+scriptRights: 750
+
+# Number of minutes LAM caches LDAP searches.
+cachetimeout: 5
+
+# LDAP search limit.
+searchLimit: 0
+
+# Module settings
+
+modules: posixAccount_minUID: 10000
+modules: posixAccount_maxUID: 30000
+modules: posixAccount_minMachine: 50000
+modules: posixAccount_maxMachine: 60000
+modules: posixGroup_minGID: 10000
+modules: posixGroup_maxGID: 20000
+modules: posixGroup_pwdHash: SSHA
+modules: posixAccount_pwdHash: SSHA
+
+# List of active account types.
+activeTypes: user,group,host
+
+
+types: suffix_user: dc=my-domain,dc=com
+types: attr_user: #cn;#givenName;#sn;#mail
+types: modules_user: windowsUser
+
+types: suffix_group: dc=my-domain,dc=com
+types: attr_group: #cn;#member;#description
+types: modules_group: windowsGroup
+
+types: suffix_host: CN=Computers,dc=my-domain,dc=com
+types: attr_host: #cn;#description;#location
+types: modules_host: windowsHost
+
+types: suffix_smbDomain: dc=my-domain,dc=com
+types: attr_smbDomain: sambaDomainName:Domain name;sambaSID:Domain SID
+types: modules_smbDomain: sambaDomain
+
+# Password mail subject
+lamProMailSubject: Your password was reset
+
+# Password mail text
+lamProMailText: Dear @@givenName@@ @@sn@@,+::++::+your password was reset to: @@newPassword@@+::++::++::+Best regards+::++::+deskside support+::+
+
+
+
+# enable TLS encryption
+useTLS: no
+
+
+# Access level for this profile.
+accessLevel: 100
+
+
+# Login method.
+loginMethod: list
+
+
+# Search suffix for LAM login.
+loginSearchSuffix: dc=yourdomain,dc=org
+
+
+# Search filter for LAM login.
+loginSearchFilter: uid=%USER%
+
+
+# Bind DN for login search.
+loginSearchDN: 
+
+
+# Bind password for login search.
+loginSearchPassword: 
+
+
+# HTTP authentication for LAM login.
+httpAuthentication: false
+
+
+# Password mail from
+lamProMailFrom: 
+
+
+# Password mail reply-to
+lamProMailReplyTo: 
+
+
+# Password mail is HTML
+lamProMailIsHTML: false
+types: filter_user: 
+types: filter_group: 
+types: filter_host: 
+types: filter_smbDomain: 
+types: hidden_group: 
+types: hidden_host: 
+types: hidden_smbDomain: 
+tools: tool_hide_toolServerInformation: false
+tools: tool_hide_toolFileUpload: false
+tools: tool_hide_toolPDFEditor: false
+tools: tool_hide_toolOUEditor: false
+tools: tool_hide_toolProfileEditor: false
+tools: tool_hide_toolTests: false
+tools: tool_hide_toolSchemaBrowser: false
+modules: windowsGroup_hidemail: false
+types: hidden_user: 
+modules: customScripts_scripts: user postModify echo $INFO.userPasswordClearText$
+modules: customScripts_containsHTML: false
+modules: customScripts_hideCommand: false
+modules: zarafa_schema: ad
+modules: zarafaUser_hideQuotaOverride: false
+modules: zarafaUser_hideQuotaWarn: false
+modules: zarafaUser_hideQuotaSoft: false
+modules: zarafaUser_hideQuotaHard: false
+modules: zarafaUser_hideSendAsPrivilege: false
+modules: zarafaUser_hideSharedStoreOnly: false
+modules: zarafaUser_hideResourceType: false
+modules: zarafaUser_hideResourceCapacity: false
+modules: zarafaUser_hideAccount: false
+modules: zarafaUser_hideZarafaUserArchiveServers: false
+modules: zarafaUser_hideUserServer: false
+modules: zarafaUser_hideFeatures: false
+modules: zarafaUser_hideAliases: false
+modules: zarafaUser_sendAsAttribute: dn
+modules: zarafaGroup_hideSendAsPrivilege: false
+modules: zarafaServer_hideProxyURL: false
+types: hidden_zarafaAddressListType: 
+types: suffix_zarafaAddressListType: OU=zarafa,DC=samba4,DC=test
+types: filter_zarafaAddressListType: 
+types: attr_zarafaAddressListType: #cn;#zarafaBase;#zarafaFilter
+types: modules_zarafaAddressListType: zarafaAddressList
+types: hidden_zarafaDynamicGroupType: 
+types: suffix_zarafaDynamicGroupType: OU=zarafa,DC=samba4,DC=test
+types: filter_zarafaDynamicGroupType: 
+types: attr_zarafaDynamicGroupType: #cn;#mail;#zarafaaliases;#zarafaBase;#zarafaFilter
+types: modules_zarafaDynamicGroupType: zarafaDynamicGroup
+modules: windowsGroup_hideotherMailbox: false
+types: hideNewButton_user: 
+types: hideDeleteButton_user: 
+types: hideNewButton_group: 
+types: hideDeleteButton_group: 
+types: hideNewButton_host: 
+types: hideDeleteButton_host: 
+types: hideNewButton_zarafaDynamicGroupType: 
+types: hideDeleteButton_zarafaDynamicGroupType: 
+types: hideNewButton_zarafaAddressListType: 
+types: hideDeleteButton_zarafaAddressListType: 
+modules: windowsGroup_hidemanagedBy: true
+modules: passwordSelfReset_questions: Bla1?+::+Bla2?
+modules: posixGroup_gidGenerator: range
+modules: posixGroup_sambaIDPoolDN: 
+modules: posixGroup_gidCheckSuffix: 
+modules: posixAccount_uidGeneratorUsers: range
+modules: posixAccount_sambaIDPoolDNUsers: 
+modules: posixAccount_uidCheckSuffixUser: 
+modules: posixAccount_shells: /bin/bash+::+/bin/csh+::+/bin/dash+::+/bin/false+::+/bin/ksh+::+/bin/sh
+modules: posixAccount_hidegecos: false
+modules: posixAccount_primaryGroupAsSecondary: false
+modules: posixAccount_userNameSuggestion: @givenname@%sn%
+modules: windowsUser_domains: my-domain.com
+modules: windowsUser_hidesAMAccountName: false
+tools: tool_hide_toolMultiEdit: false
+
+
+# follow referrals
+followReferrals: false
+
+
+# paged results
+pagedResults: false
+
+
+# Allow alternate address
+lamProMailAllowAlternateAddress: true
+modules: windowsGroup_hidemsSFU30Name: true
+modules: windowsGroup_hidemsSFU30NisDomain: true
+modules: windowsUser_hidemsSFU30Name: true
+modules: windowsUser_hidemsSFU30NisDomain: true
+types: customLabel_user: 
+types: customLabel_group: 
+types: customLabel_host: 
+types: customLabel_zarafaDynamicGroupType: 
+types: customLabel_zarafaAddressListType: 
+types: readOnly_user: 
+types: readOnly_group: 
+types: readOnly_host: 
+types: readOnly_zarafaAddressListType: 

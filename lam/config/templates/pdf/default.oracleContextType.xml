@@ -1,0 +1,6 @@
+<pdf type="oracleContextType" filename="printLogo.jpg" headline="Database information">
+	<section name="_oracleService_cn">
+		<entry name="oracleService_orclNetDescString" />
+		<entry name="oracleService_description" />
+	</section>
+</pdf>
