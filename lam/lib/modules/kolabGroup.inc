@@ -33,12 +33,12 @@ $Id$
 * @package modules
 */
 class kolabGroup extends baseModule {
-	
+
 	/** cache for mail attribute */
 	private $mailCache = null;
 	/** cache for mailHost values */
 	private $mailHostCache = null;
-	
+
 	/**
 	* Creates a new kolabGroup object.
 	*
@@ -52,7 +52,7 @@ class kolabGroup extends baseModule {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -63,7 +63,7 @@ class kolabGroup extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -186,7 +186,7 @@ class kolabGroup extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -277,7 +277,7 @@ class kolabGroup extends baseModule {
 
 	/**
 	* This function will create the meta HTML code to show a page to mark an account for deletion.
-	* 
+	*
 	* @return htmlElement HTML meta data
 	*/
 	function display_html_deleteFlag() {
@@ -341,7 +341,7 @@ class kolabGroup extends baseModule {
 			}
 		}
 	}
-	
+
 	/**
 	* In this function the LDAP account is built up.
 	*
@@ -382,39 +382,13 @@ class kolabGroup extends baseModule {
 				}
 			}
 			// allowed recipients
-			if (!empty($rawAccounts[$i][$ids['kolabGroup_kolabAllowSMTPRecipient']])) {
-				$mails = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['kolabGroup_kolabAllowSMTPRecipient']]);
-				for ($m = 0; $m < sizeof($mails); $m++) {
-					if (get_preg($mails[$m], 'kolabEmailPrefix')) {
-						$partialAccounts[$i]['kolabAllowSMTPRecipient'][] = $mails[$m];
-					}
-					else {
-						$errMsg = $this->messages['kolabAllowSMTPRecipient'][1];
-						array_push($errMsg, array($i));
-						$messages[] = $errMsg;
-						break;
-					}
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'kolabGroup_kolabAllowSMTPRecipient', 'kolabAllowSMTPRecipient', 'kolabEmailPrefix', $this->messages['kolabAllowSMTPRecipient'][1], $messages, '/;[ ]*/');
 			// allowed senders
-			if (!empty($rawAccounts[$i][$ids['kolabGroup_kolabAllowSMTPSender']])) {
-				$mails = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['kolabGroup_kolabAllowSMTPSender']]);
-				for ($m = 0; $m < sizeof($mails); $m++) {
-					if (get_preg($mails[$m], 'kolabEmailPrefix')) {
-						$partialAccounts[$i]['kolabAllowSMTPSender'][] = $mails[$m];
-					}
-					else {
-						$errMsg = $this->messages['kolabAllowSMTPSender'][1];
-						array_push($errMsg, array($i));
-						$messages[] = $errMsg;
-						break;
-					}
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'kolabGroup_kolabAllowSMTPSender', 'kolabAllowSMTPSender', 'kolabEmailPrefix', $this->messages['kolabAllowSMTPSender'][1], $messages, '/;[ ]*/');
 		}
 		return $messages;
 	}
-	
+
 	/**
 	 * Returns a list of possible PDF entries for this account.
 	 *
@@ -428,10 +402,10 @@ class kolabGroup extends baseModule {
 		$this->addSimplePDFField($return, 'kolabAllowSMTPSender', _('Allowed senders'));
 		return $return;
 	}
-	
+
 	/**
 	 * Returns if the mail attribute should be managed.
-	 * 
+	 *
 	 * @return boolean manage mail attribute
 	 */
 	private function manageMail() {
@@ -462,7 +436,7 @@ class kolabGroup extends baseModule {
 			}
 		}
 	}
-	
+
 	/**
 	 * Loads the list of mail hosts into the cache.
 	 */
@@ -478,7 +452,7 @@ class kolabGroup extends baseModule {
 			}
 		}
 	}
-	
+
 }
 
 

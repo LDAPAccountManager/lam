@@ -36,7 +36,7 @@ class ieee802device extends baseModule {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -47,7 +47,7 @@ class ieee802device extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -98,7 +98,7 @@ class ieee802device extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -132,22 +132,11 @@ class ieee802device extends baseModule {
 		$messages = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
-			if (!in_array("ieee802Device", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "ieee802Device";
-			// add MACs
-			if ($rawAccounts[$i][$ids['ieee802Device_mac']] != "") {
-				$macs = explode(',', $rawAccounts[$i][$ids['ieee802Device_mac']]);
-				// check format
-				for ($m = 0; $m < sizeof($macs); $m++) {
-					if (get_preg($macs[$m], 'macAddress')) {
-						$partialAccounts[$i]['macAddress'][] = $macs[$m];
-					}
-					else {
-						$errMsg = $this->messages['macAddress'][1];
-						array_push($errMsg, array($i));
-						$messages[] = $errMsg;
-					}
-				}
+			if (!in_array("ieee802Device", $partialAccounts[$i]['objectClass'])) {
+				$partialAccounts[$i]['objectClass'][] = "ieee802Device";
 			}
+			// add MACs
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'ieee802Device_mac', 'macAddress', 'macAddress', $this->messages['macAddress'][1], $messages, '/,[ ]*/');
 		}
 		return $messages;
 	}

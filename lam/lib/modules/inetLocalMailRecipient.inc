@@ -36,7 +36,7 @@ class inetLocalMailRecipient extends baseModule {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -47,7 +47,7 @@ class inetLocalMailRecipient extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -137,7 +137,7 @@ class inetLocalMailRecipient extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -258,20 +258,7 @@ class inetLocalMailRecipient extends baseModule {
 			// add object class
 			if (!in_array("inetLocalMailRecipient", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "inetLocalMailRecipient";
 			// add local addresses
-			if ($rawAccounts[$i][$ids['inetLocalMailRecipient_localAdr']] != "") {
-				$adrs = explode(',', $rawAccounts[$i][$ids['inetLocalMailRecipient_localAdr']]);
-				// check format
-				for ($a = 0; $a < sizeof($adrs); $a++) {
-					if (get_preg($adrs[$a], 'mailLocalAddress')) {
-						$partialAccounts[$i]['mailLocalAddress'][] = $adrs[$a];
-					}
-					else {
-						$errMsg = $this->messages['localAdr'][1];
-						array_push($errMsg, array($i));
-						$messages[] = $errMsg;
-					}
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetLocalMailRecipient_localAdr', 'mailLocalAddress', 'mailLocalAddress', $this->messages['localAdr'][1], $messages, '/,[ ]*/');
 			// add routing address
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetLocalMailRecipient_routingAdr', 'mailRoutingAddress',
 				'email', $this->messages['mailRoutingAddress'][1], $messages);

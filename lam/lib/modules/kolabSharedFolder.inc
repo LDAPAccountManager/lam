@@ -33,13 +33,13 @@ $Id$
 * @package modules
 */
 class kolabSharedFolder extends baseModule { // TODO folder type
-	
+
 	/** cache for mailHost values */
 	private $mailHostCache = null;
-	
+
 	/** list of folder types (label => id) */
 	private $folderTypes = array();
-	
+
 	/**
 	* Creates a new kolabSharedFolder object.
 	*
@@ -60,7 +60,7 @@ class kolabSharedFolder extends baseModule { // TODO folder type
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -71,7 +71,7 @@ class kolabSharedFolder extends baseModule { // TODO folder type
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -264,7 +264,7 @@ class kolabSharedFolder extends baseModule { // TODO folder type
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -417,7 +417,7 @@ class kolabSharedFolder extends baseModule { // TODO folder type
 
 	/**
 	* This function will create the meta HTML code to show a page to mark an account for deletion.
-	* 
+	*
 	* @return htmlElement HTML meta data
 	*/
 	function display_html_deleteFlag() {
@@ -484,51 +484,11 @@ class kolabSharedFolder extends baseModule { // TODO folder type
 			// folder type
 			$partialAccounts[$i]['kolabFolderType'] = $rawAccounts[$i][$ids['kolabSharedFolder_kolabFolderType']];
 			// allowed recipients
-			if (!empty($rawAccounts[$i][$ids['kolabSharedFolder_kolabAllowSMTPRecipient']])) {
-				$mails = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['kolabSharedFolder_kolabAllowSMTPRecipient']]);
-				for ($m = 0; $m < sizeof($mails); $m++) {
-					if (get_preg($mails[$m], 'kolabEmailPrefix')) {
-						$partialAccounts[$i]['kolabAllowSMTPRecipient'][] = $mails[$m];
-					}
-					else {
-						$errMsg = $this->messages['kolabAllowSMTPRecipient'][1];
-						array_push($errMsg, array($i));
-						$messages[] = $errMsg;
-						break;
-					}
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'kolabSharedFolder_kolabAllowSMTPRecipient', 'kolabAllowSMTPRecipient', 'kolabEmailPrefix', $this->messages['kolabAllowSMTPRecipient'][1], $messages, '/;[ ]*/');
 			// allowed senders
-			if (!empty($rawAccounts[$i][$ids['kolabSharedFolder_kolabAllowSMTPSender']])) {
-				$mails = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['kolabSharedFolder_kolabAllowSMTPSender']]);
-				for ($m = 0; $m < sizeof($mails); $m++) {
-					if (get_preg($mails[$m], 'kolabEmailPrefix')) {
-						$partialAccounts[$i]['kolabAllowSMTPSender'][] = $mails[$m];
-					}
-					else {
-						$errMsg = $this->messages['kolabAllowSMTPSender'][1];
-						array_push($errMsg, array($i));
-						$messages[] = $errMsg;
-						break;
-					}
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'kolabSharedFolder_kolabAllowSMTPSender', 'kolabAllowSMTPSender', 'kolabEmailPrefix', $this->messages['kolabAllowSMTPSender'][1], $messages, '/;[ ]*/');
 			// add mail aliases
-			if ($rawAccounts[$i][$ids['kolabSharedFolder_aliases']] != "") {
-				$aliases = explode(',', $rawAccounts[$i][$ids['kolabSharedFolder_aliases']]);
-				// check format
-				for ($a = 0; $a < sizeof($aliases); $a++) {
-					if (get_preg($aliases[$a], 'email')) {
-						$partialAccounts[$i]['alias'][] = $aliases[$a];
-					}
-					// invalid format
-					else {
-						$errMsg = $this->messages['alias'][1];
-						array_push($errMsg, array($i));
-						$messages[] = $errMsg;
-					}
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'kolabSharedFolder_aliases', 'alias', 'email', $this->messages['alias'][1], $messages, '/,[ ]*/');
 			// add delegates
 			if ($rawAccounts[$i][$ids['kolabSharedFolder_delegates']] != "") {
 				$newDelegates = explode(',', $rawAccounts[$i][$ids['kolabSharedFolder_delegates']]);
@@ -548,7 +508,7 @@ class kolabSharedFolder extends baseModule { // TODO folder type
 		}
 		return $messages;
 	}
-	
+
 	/**
 	 * Returns a list of possible PDF entries for this account.
 	 *
@@ -575,7 +535,7 @@ class kolabSharedFolder extends baseModule { // TODO folder type
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Loads the list of mail hosts into the cache.
 	 */
@@ -591,7 +551,7 @@ class kolabSharedFolder extends baseModule { // TODO folder type
 			}
 		}
 	}
-	
+
 }
 
 
