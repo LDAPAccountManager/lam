@@ -1332,25 +1332,11 @@ class windowsUser extends baseModule implements passwordService {
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_telephoneNumber', 'telephoneNumber',
 				'telephone', $this->messages['telephoneNumber'][1], $errors);
 			// other telephone
-			if (isset($ids['windowsUser_otherTelephone']) && ($rawAccounts[$i][$ids['windowsUser_otherTelephone']] != "")) {
-				$valueList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['windowsUser_otherTelephone']]);
-				$partialAccounts[$i]['otherTelephone'] = $valueList;
-				for ($x = 0; $x < sizeof($valueList); $x++) {
-					if (!get_preg($valueList[$x], 'telephone')) {
-						$errMsg = $this->messages['otherTelephone'][1];
-						array_push($errMsg, array($i));
-						$errors[] = $errMsg;
-						break;
-					}
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_otherTelephone', 'otherTelephone', 'telephone', $this->messages['otherTelephone'][1], $errors, '/;[ ]*/');
 			// website
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_webSite', 'wWWHomePage');
 			// other websites
-			if (isset($ids['windowsUser_otherWebSites']) && ($rawAccounts[$i][$ids['windowsUser_otherWebSites']] != "")) {
-				$valueList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['windowsUser_otherWebSites']]);
-				$partialAccounts[$i]['url'] = $valueList;
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_otherWebSites', 'url', null, null, $errors, '/;[ ]*/');
 			// user account control
 			$userAccountControlAttr['userAccountControl'][0] = windowsUser::DEFAULT_ACCOUNT_CONTROL;
 			// deactivated
