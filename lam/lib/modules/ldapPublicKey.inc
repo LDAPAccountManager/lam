@@ -190,13 +190,7 @@ class ldapPublicKey extends baseModule {
 			// add object class
 			if (!in_array("ldapPublicKey", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "ldapPublicKey";
 			// add keys
-			if ($rawAccounts[$i][$ids['ldapPublicKey_sshPublicKey']] != "") {
-				$keys = explode(',', $rawAccounts[$i][$ids['ldapPublicKey_sshPublicKey']]);
-				// check format
-				for ($m = 0; $m < sizeof($keys); $m++) {
-					$partialAccounts[$i]['sshPublicKey'][] = $keys[$m];
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'ldapPublicKey_sshPublicKey', 'sshPublicKey', null, null, $messages, '/,[ ]*/');
 		}
 		return $messages;
 	}

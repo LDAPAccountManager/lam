@@ -670,21 +670,7 @@ class kolabUser extends baseModule {
 				}
 			}
 			// add mail aliases
-			if ($rawAccounts[$i][$ids['kolabUser_aliases']] != "") {
-				$aliases = explode(',', $rawAccounts[$i][$ids['kolabUser_aliases']]);
-				// check format
-				for ($a = 0; $a < sizeof($aliases); $a++) {
-					if (get_preg($aliases[$a], 'email')) {
-						$partialAccounts[$i]['alias'][] = $aliases[$a];
-					}
-					// invalid format
-					else {
-						$errMsg = $this->messages['alias'][1];
-						array_push($errMsg, array($i));
-						$messages[] = $errMsg;
-					}
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'kolabUser_aliases', 'alias', 'email', $this->messages['alias'][1], $messages, '/,[ ]*/');
 			// add delegates
 			if ($rawAccounts[$i][$ids['kolabUser_delegates']] != "") {
 				$newDelegates = explode(',', $rawAccounts[$i][$ids['kolabUser_delegates']]);
@@ -702,35 +688,9 @@ class kolabUser extends baseModule {
 				}
 			}
 			// allowed recipients
-			if (!empty($rawAccounts[$i][$ids['kolabUser_kolabAllowSMTPRecipient']])) {
-				$mails = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['kolabUser_kolabAllowSMTPRecipient']]);
-				for ($m = 0; $m < sizeof($mails); $m++) {
-					if (get_preg($mails[$m], 'kolabEmailPrefix')) {
-						$partialAccounts[$i]['kolabAllowSMTPRecipient'][] = $mails[$m];
-					}
-					else {
-						$errMsg = $this->messages['kolabAllowSMTPRecipient'][1];
-						array_push($errMsg, array($i));
-						$messages[] = $errMsg;
-						break;
-					}
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'kolabUser_kolabAllowSMTPRecipient', 'kolabAllowSMTPRecipient', 'kolabEmailPrefix', $this->messages['kolabAllowSMTPRecipient'][1], $messages, '/;[ ]*/');
 			// allowed senders
-			if (!empty($rawAccounts[$i][$ids['kolabUser_kolabAllowSMTPSender']])) {
-				$mails = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['kolabUser_kolabAllowSMTPSender']]);
-				for ($m = 0; $m < sizeof($mails); $m++) {
-					if (get_preg($mails[$m], 'kolabEmailPrefix')) {
-						$partialAccounts[$i]['kolabAllowSMTPSender'][] = $mails[$m];
-					}
-					else {
-						$errMsg = $this->messages['kolabAllowSMTPSender'][1];
-						array_push($errMsg, array($i));
-						$messages[] = $errMsg;
-						break;
-					}
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'kolabUser_kolabAllowSMTPSender', 'kolabAllowSMTPSender', 'kolabEmailPrefix', $this->messages['kolabAllowSMTPSender'][1], $messages, '/;[ ]*/');
 		}
 		return $messages;
 	}

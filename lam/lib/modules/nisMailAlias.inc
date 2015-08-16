@@ -40,10 +40,10 @@ class nisMailAlias extends baseModule {
 	private $cachedUserList = null;
 	/** display limit */
 	const DISPLAY_LIMIT = 50;
-	
+
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -54,7 +54,7 @@ class nisMailAlias extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -150,7 +150,7 @@ class nisMailAlias extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -299,7 +299,7 @@ class nisMailAlias extends baseModule {
 	function display_html_selectMail() {
 		return $this->display_html_select(true);
 	}
-	
+
 	/**
 	* Processes user input of the host/user selection page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
@@ -309,7 +309,7 @@ class nisMailAlias extends baseModule {
 	function process_selectMail() {
 		return $this->process_select();
 	}
-	
+
 	/**
 	* Displays the user selection.
 	*
@@ -318,7 +318,7 @@ class nisMailAlias extends baseModule {
 	function display_html_selectUser() {
 		return $this->display_html_select(false);
 	}
-	
+
 	/**
 	* Processes user input of the host/user selection page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
@@ -328,7 +328,7 @@ class nisMailAlias extends baseModule {
 	function process_selectUser() {
 		return $this->process_select();
 	}
-	
+
 	/**
 	* Displays the user/mail selection.
 	*
@@ -388,7 +388,7 @@ class nisMailAlias extends baseModule {
 		$return->addElement(new htmlHiddenInput('position', $position));
 		return $return;
 	}
-	
+
 	/**
 	* Processes user input of the host/user selection page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
@@ -411,7 +411,7 @@ class nisMailAlias extends baseModule {
 		}
 		return array();
 	}
-	
+
 	/**
 	* Controls if the module button the account page is visible and activated.
 	*
@@ -443,7 +443,6 @@ class nisMailAlias extends baseModule {
 			// add object class
 			if (!in_array("nisMailAlias", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "nisMailAlias";
 			// add alias name
-			// check format
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'nisMailAlias_alias', 'cn',
 				'nis_alias', $this->messages['alias'][1], $messages);
 			// add recipients

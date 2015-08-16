@@ -381,38 +381,11 @@ class puppetClient extends baseModule {
 				}
 			}
 			// environment
-			if ($rawAccounts[$i][$ids['puppetClient_environment']] != "") {
-				if (get_preg($rawAccounts[$i][$ids['puppetClient_environment']], 'ascii')) {
-					$partialAccounts[$i]['environment'] = explode(';', $rawAccounts[$i][$ids['puppetClient_environment']]);
-				}
-				else {
-					$errMsg = $this->messages['environment'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'puppetClient_environment', 'environment', 'ascii', $this->messages['environment'][1], $messages, '/;[ ]*/');
 			// classes
-			if ($rawAccounts[$i][$ids['puppetClient_puppetclass']] != "") {
-				if (get_preg($rawAccounts[$i][$ids['puppetClient_puppetclass']], 'ascii')) {
-					$partialAccounts[$i]['puppetclass'] = explode(';', $rawAccounts[$i][$ids['puppetClient_puppetclass']]);
-				}
-				else {
-					$errMsg = $this->messages['puppetclass'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'puppetClient_puppetclass', 'puppetclass', 'ascii', $this->messages['puppetclass'][1], $messages, '/;[ ]*/');
 			// variables
-			if ($rawAccounts[$i][$ids['puppetClient_puppetvar']] != "") {
-				if (get_preg($rawAccounts[$i][$ids['puppetClient_puppetvar']], 'ascii')) {
-					$partialAccounts[$i]['puppetvar'] = explode(';', $rawAccounts[$i][$ids['puppetClient_puppetvar']]);
-				}
-				else {
-					$errMsg = $this->messages['puppetvar'][1];
-					array_push($errMsg, array($i));
-					$messages[] = $errMsg;
-				}
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'puppetClient_puppetvar', 'puppetvar', 'ascii', $this->messages['puppetvar'][1], $messages, '/;[ ]*/');
 		}
 		return $messages;
 	}

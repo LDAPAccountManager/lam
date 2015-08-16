@@ -53,7 +53,7 @@ class posixGroup extends baseModule implements passwordService {
 	private $cachedUserToGIDList = null;
 	/** cache for existing groups */
 	private $cachedGroupNameList = null;
-	
+
 	/**
 	* In this function the LDAP account is built up.
 	*
@@ -70,14 +70,7 @@ class posixGroup extends baseModule implements passwordService {
 			if (!in_array("posixGroup", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "posixGroup";
 			if ($this->manageCnAttribute) {
 				// group name
-				if (get_preg($rawAccounts[$i][$ids['posixGroup_cn']], 'groupname')) {
-					$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['posixGroup_cn']];
-				}
-				else {
-					$errMsg = $this->messages['cn'][3];
-					array_push($errMsg, array($i));
-					$error_messages[] = $errMsg;
-				}
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'posixGroup_cn', 'cn', 'groupname', $this->messages['cn'][3], $error_messages);
 			}
 			// GID
 			if ($rawAccounts[$i][$ids['posixGroup_gid']] == "") {
@@ -164,9 +157,9 @@ class posixGroup extends baseModule implements passwordService {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return array HTML meta data
-	 * 
+	 *
 	 * @see baseModule::get_metaData()
 	 */
 	function display_html_attributes() {
@@ -300,12 +293,12 @@ class posixGroup extends baseModule implements passwordService {
 			}
 		}
 		$return->addElement(new htmlSubTitle(_("Group members")), true);
-		
+
 		$return->addElement(new htmlOutputText(_("Selected users")));
 		$return->addElement(new htmlOutputText(''));
 		$return->addElement(new htmlOutputText(_("Available users")));
 		$return->addNewLine();
-		
+
 		$remUsers = array();
 		if (isset($this->attributes['memberUid'])) {
 			$remUsers = $this->attributes['memberUid'];
@@ -345,7 +338,7 @@ class posixGroup extends baseModule implements passwordService {
 		$filterContainer->addElement(new htmlHelpLink('filter'));
 		$filterContainer->addElement(new htmlHiddenInput('filterValue', htmlspecialchars($filter)));
 		$return->addElement($filterContainer, true);
-		
+
 		// sync from group of names
 		$gon = $this->getAccountContainer()->getAccountModule('groupOfNames');
 		if ($gon == null) {
@@ -358,18 +351,18 @@ class posixGroup extends baseModule implements passwordService {
 			$syncButton->setIconClass('refreshButton');
 			$return->addElement($syncButton, true);
 		}
-		
+
 		// back button
 		$return->addElement(new htmlSpacer(null, '20px'), true);
 		$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')), true);
 		$return->addElement(new htmlEqualHeight(array('removeusers', 'addusers')));
-		
+
 		return $return;
 	}
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -456,7 +449,7 @@ class posixGroup extends baseModule implements passwordService {
 			);
 		}
 		if ($this->manageCnAttribute) {
-			array_unshift($return['upload_columns'], 
+			array_unshift($return['upload_columns'],
 				array(
 					'name' => 'posixGroup_cn',
 					'description' => _('Group name'),
@@ -638,7 +631,7 @@ class posixGroup extends baseModule implements passwordService {
 
 	/**
 	* This functin will be called when the module will be loaded
-	* 
+	*
 	* @param String $base the name of the {@link accountContainer} object ($_SESSION[$base])
 	*/
 	function init($base) {
@@ -886,10 +879,10 @@ class posixGroup extends baseModule implements passwordService {
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Syncs with group of names members.
-	 * 
+	 *
 	 * @return array list of status messages
 	 */
 	protected function syncGon() {
@@ -981,10 +974,10 @@ class posixGroup extends baseModule implements passwordService {
 			}
 		}
 	}
-	
+
 	/**
 	* Checks input values of module settings.
-	* 
+	*
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* If the input data is invalid the return value is an array that contains subarrays to build StatusMessages ('message type', 'message head', 'message text').
@@ -993,7 +986,7 @@ class posixGroup extends baseModule implements passwordService {
 	* @param array $scopes list of account types which are used
 	* @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
 	* @return array list of error messages
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	public function check_configOptions($scopes, &$options) {
@@ -1096,10 +1089,10 @@ class posixGroup extends baseModule implements passwordService {
 		}
 		return $ret;
 	}
-	
+
 	/**
 	 * Gets the free GID numbers from an Samba pool entry in LDAP.
-	 * 
+	 *
 	 * @param integer $count number of needed free GIDs.
 	 * @param array $errors list of error messages where errors can be added
 	 * @return mixed null if no GIDs are free else an array of free GIDs
@@ -1127,7 +1120,7 @@ class posixGroup extends baseModule implements passwordService {
 
 	/**
 	 * Gets the free GID numbers from an Windows domain info entry in LDAP.
-	 * 
+	 *
 	 * @param integer $count number of needed free GIDs.
 	 * @param array $errors list of error messages where errors can be added
 	 * @return mixed null if no GIDs are free else an array of free GIDs
@@ -1165,13 +1158,13 @@ class posixGroup extends baseModule implements passwordService {
 
 	/**
 	 * Specifies if this module supports to force that a user must change his password on next login.
-	 * 
+	 *
 	 * @return boolean force password change supported
 	 */
 	public function supportsForcePasswordChange() {
 		return false;
 	}
-	
+
 	/**
 	 * This function is called whenever the password should be changed. Account modules
 	 * must change their password attributes only if the modules list contains their module name.
@@ -1190,7 +1183,7 @@ class posixGroup extends baseModule implements passwordService {
 		$this->attributes[$this->passwordAttrName][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 		return array();
 	}
-	
+
 	/**
 	 * Returns a list of existing GID numbers.
 	 *
@@ -1214,7 +1207,7 @@ class posixGroup extends baseModule implements passwordService {
 		sort($this->cachedGIDList, SORT_NUMERIC);
 		return $this->cachedGIDList;
 	}
-	
+
 	/**
 	 * Returns a list of existing users and their GID numbers and cn.
 	 *
@@ -1249,20 +1242,20 @@ class posixGroup extends baseModule implements passwordService {
 		logNewMessage(LOG_DEBUG, print_r($result, true));
 		return $this->cachedUserToGIDList;
 	}
-	
+
 	/**
 	 * Checks if the given group name already exists in LDAP.
-	 * 
+	 *
 	 * @param String $groupName group name
 	 * @return boolean true if already exists
 	 */
 	private function groupNameExists($groupName) {
 		return in_array($groupName, $this->getGroupNames());
 	}
-	
+
 	/**
 	 * Returns a list of all group names in LDAP.
-	 * 
+	 *
 	 * @return array group names
 	 */
 	private function getGroupNames() {
@@ -1282,10 +1275,10 @@ class posixGroup extends baseModule implements passwordService {
 		}
 		return $this->cachedGroupNameList;
 	}
-	
+
 	/**
 	 * Returns if the Windows module is active.
-	 * 
+	 *
 	 * @return boolean is Windows
 	 */
 	private function isWindows() {
@@ -1300,7 +1293,7 @@ class posixGroup extends baseModule implements passwordService {
 		}
 		return false;
 	}
-	
+
 }
 
 ?>

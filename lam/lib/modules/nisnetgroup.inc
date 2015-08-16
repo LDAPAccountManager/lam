@@ -549,10 +549,7 @@ class nisnetgroup extends baseModule {
 				}
 			}
 			// members
-			if ($rawAccounts[$i][$ids['nisnetgroup_members']] != "") {
-				$members = explode(';', $rawAccounts[$i][$ids['nisnetgroup_members']]);
-				$partialAccounts[$i]['nisNetgroupTriple'] = $members;
-			}
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'nisnetgroup_members', 'nisNetgroupTriple', null, null, $messages, '/;[ ]*/');
 		}
 		return $messages;
 	}
