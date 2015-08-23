@@ -228,7 +228,7 @@ echo $_SESSION['header'];
 				echo _("Edit general settings");
 			?>
 		</title>
-	<?php 
+	<?php
 		// include all CSS files
 		$cssDirName = dirname(__FILE__) . '/../../style';
 		$cssDir = dir($cssDirName);
@@ -479,14 +479,20 @@ parseHtml(null, $globalFieldset, array(), false, $tabindex, 'user');
 
 /**
  * Formats an LDAP time string (e.g. from createTimestamp).
- * 
+ *
  * @param String $time LDAP time value
  * @return String formated time
  */
 function formatSSLTimestamp($time) {
 	$matches = array();
 	if (!empty($time)) {
-		return date('d.m.Y', $time);
+		$timeZone = 'UTC';
+		$sysTimeZone = @date_default_timezone_get();
+		if (!empty($sysTimeZone)) {
+			$timeZone = $sysTimeZone;
+		}
+		$date = new DateTime('@' . $time, new DateTimeZone($timeZone));
+		return $date->format('d.m.Y');
 	}
 	return '';
 }

@@ -551,7 +551,7 @@ class pykotaUser extends baseModule {
 				$errors[] = $this->messages['pykotaPayments'][0];
 			}
 			else {
-				$this->attributes['pykotaPayments'][] = date('Y-m-d H:i:s,00', time()) . ' # ' . $amount . ' # ' . $comment;
+				$this->attributes['pykotaPayments'][] = getFormattedTime('Y-m-d H:i:s,00') . ' # ' . $amount . ' # ' . $comment;
 				// new balance
 				$newBalance = 0.0;
 				if (!empty($this->attributes['pykotaBalance'][0])) {
@@ -754,7 +754,7 @@ class pykotaUser extends baseModule {
 			}
 			$this->attributes['pykotaBalance'][0] = $amount;
 			$this->attributes['pykotaLifeTimePaid'][0] = $amount;
-			$this->attributes['pykotaPayments'][] = date('Y-m-d H:i:s,00', time()) . ' # ' . $amount . ' # ';
+			$this->attributes['pykotaPayments'][] = getFormattedTime('Y-m-d H:i:s,00') . ' # ' . $amount . ' # ';
 		}
 	}
 
@@ -873,7 +873,7 @@ class pykotaUser extends baseModule {
 					if (!empty($rawAccounts[$i][$ids['pykotaUser_pykotaBalanceComment']])) {
 						$comment = base64_encode($rawAccounts[$i][$ids['pykotaUser_pykotaBalanceComment']]);
 					}
-					$partialAccounts[$i]['pykotaPayments'][0] = date('Y-m-d H:i:s,00', time()) . ' # ' . $balance . ' # ' . $comment;
+					$partialAccounts[$i]['pykotaPayments'][0] = getFormattedTime('Y-m-d H:i:s,00') . ' # ' . $balance . ' # ' . $comment;
 				}
 			}
 		}

@@ -1133,7 +1133,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideSambaPwdLastSet')) {
 					$sambaPwdLastSet = '';
 					if (!empty($this->attributes['sambaPwdLastSet'][0])) {
-						$sambaPwdLastSet = date('d.m.Y H:i', $this->attributes['sambaPwdLastSet'][0]);
+						$time = new DateTime('@' . $this->attributes['sambaPwdLastSet'][0], getTimeZone());
+						$sambaPwdLastSet = $time->format('d.m.Y H:i');
 					}
 					$return->addElement(new htmlOutputText(_('Last password change')));
 					$return->addElement(new htmlOutputText($sambaPwdLastSet));
@@ -2251,7 +2252,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 		if (in_array('sambaPwdLastSet', $fields)) {
 			$sambaPwdLastSet = '';
 			if (isset($attributes['sambaPwdLastSet'][0])) {
-				$sambaPwdLastSet = date('d.m.Y H:i', $attributes['sambaPwdLastSet'][0]);
+				$time = new DateTime('@' . $attributes['sambaPwdLastSet'][0], getTimeZone());
+				$sambaPwdLastSet = $time->format('d.m.Y H:i');
 			}
 			$row = new htmlResponsiveRow();
 			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('sambaPwdLastSet', _('Last password change'))));
@@ -2434,8 +2436,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 				if (!isset($domains[$i]->maxPwdAge) || ($domains[$i]->maxPwdAge < 0)) {
 					return $return;
 				}
-				$time = $this->attributes['sambaPwdLastSet'][0] + $domains[$i]->maxPwdAge;
-				return date('d.m.Y H:i', $time);
+				$timeVal = $this->attributes['sambaPwdLastSet'][0] + $domains[$i]->maxPwdAge;
+				$time = new DateTime('@' . $timeVal, getTimeZone());
+				return $time->format('d.m.Y H:i');
 			}
 		}
 		return $return;
@@ -2462,8 +2465,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 				if (!isset($domains[$i]->minPwdAge) || ($domains[$i]->minPwdAge < 0)) {
 					return $return;
 				}
-				$time = $this->attributes['sambaPwdLastSet'][0] + $domains[$i]->minPwdAge;
-				return date('d.m.Y H:i', $time);
+				$timeVal = $this->attributes['sambaPwdLastSet'][0] + $domains[$i]->minPwdAge;
+				$time = new DateTime('@' . $timeVal, getTimeZone());
+				return $time->format('d.m.Y H:i');
 			}
 		}
 		return $return;

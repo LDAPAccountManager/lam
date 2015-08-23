@@ -34,7 +34,7 @@ $Id$
 * @package types
 */
 class user extends baseType {
-	
+
 	/**
 	 * Constructs a new user type object.
 	 */
@@ -43,7 +43,7 @@ class user extends baseType {
 		$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another user');
 		$this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to user list');
 	}
-	
+
 	/**
 	* Returns the alias name of this account type.
 	*
@@ -52,7 +52,7 @@ class user extends baseType {
 	function getAlias() {
 		return _("Users");
 	}
-	
+
 	/**
 	* Returns the description of this account type.
 	*
@@ -61,7 +61,7 @@ class user extends baseType {
 	function getDescription() {
 		return _("User accounts (e.g. Unix, Samba and Kolab)");
 	}
-		
+
 	/**
 	* Returns the class name for the list object.
 	*
@@ -70,7 +70,7 @@ class user extends baseType {
 	function getListClassName() {
 		return "lamUserList";
 	}
-	
+
 	/**
 	* Returns the default attribute list for this account type.
 	*
@@ -211,10 +211,10 @@ class user extends baseType {
 		}
 		return $subtitle;
 	}
-	
+
 	/**
 	 * Builds the HTML code for the icon that shows the account status (locked/unlocked).
-	 * 
+	 *
 	 * @param accountContainer $container account container
 	 * @return String HTML code for icon
 	 */
@@ -304,10 +304,10 @@ class user extends baseType {
 		}
 		return $dialogDiv . '<a href="#"><img id="lam_accountStatus" alt="status" ' . $onClick . ' helptitle="' . _('Account status') . '" helpdata="' . $tipContent . '" height=16 width=16 src="../../graphics/' . $icon . '"></a>&nbsp;&nbsp;&nbsp;';
 	}
-	
+
 	/**
 	 * Builds the dialog to (un)lock parts of an account.
-	 * 
+	 *
 	 * @param boolean $unixAvailable Unix part is active
 	 * @param boolean $unixLocked Unix part is locked
 	 * @param boolean $sambaAvailable Samba part is active
@@ -324,9 +324,9 @@ class user extends baseType {
 							&& (!$sambaAvailable || $sambaLocked)
 							&& (!$ppolicyAvailable || $ppolicyLocked)
 							&& (!$windowsAvailable || $windowsLocked);
-		
+
 		$container = new htmlTable();
-		
+
 		// show radio buttons for lock/unlock
 		$radioDisabled = true;
 		$selectedRadio = 'lock';
@@ -356,13 +356,13 @@ class user extends baseType {
 			$container->addElement($radio, true);
 			$container->addElement(new htmlHiddenInput('lam_accountStatusAction', $selectedRadio), true);
 		}
-		
+
 		$container->addElement(new htmlHiddenInput('lam_accountStatusResult', 'cancel'), true);
-		
+
 		// locking part
 		if (!$fullyLocked) {
 			$lockContent = new htmlTable();
-			
+
 			if ($unixAvailable && !$unixLocked) {
 				$lockContent->addElement(new htmlImage('../../graphics/tux.png'));
 				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLockUnix', true, _('Unix'), null, false), true);
@@ -394,7 +394,7 @@ class user extends baseType {
 		// unlocking part
 		if ($partiallyLocked) {
 			$unlockContent = new htmlTable();
-			
+
 			if ($unixAvailable && $unixLocked) {
 				$unlockContent->addElement(new htmlImage('../../graphics/tux.png'));
 				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockUnix', true, _('Unix'), null, false), true);
@@ -411,30 +411,30 @@ class user extends baseType {
 				$unlockContent->addElement(new htmlImage('../../graphics/samba.png'));
 				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockWindows', true, _('Windows'), null, false), true);
 			}
-			
+
 			$unlockDiv = new htmlDiv('lam_accountStatusDialogUnlockDiv', $unlockContent);
 			if (!$fullyLocked) {
 				$unlockDiv->setCSSClasses(array('hidden'));
 			}
 			$container->addElement($unlockDiv, true);
 		}
-		
+
 		$div = new htmlDiv('lam_accountStatusDialog', $container);
 		$div->setCSSClasses(array('hidden'));
-							
+
 		$tabindex = 999;
 		ob_start();
 		parseHtml(null, $div, array(), false, $tabindex, 'user');
 		$output = ob_get_contents();
 		ob_clean();
-	
+
 		return $output;
 	}
 
 	/**
 	 * This function is called after the edit page is processed and before the page content is generated.
 	 * This can be used to run custom handlers after each page processing.
-	 * 
+	 *
 	 * @param accountContainer $container account container
 	 */
 	public function runEditPagePostAction(&$container) {
@@ -488,7 +488,7 @@ class user extends baseType {
 			}
 		}
 	}
-	
+
 }
 
 /**
@@ -496,37 +496,37 @@ class user extends baseType {
  *
  * @package lists
  * @author Roland Gruber
- * 
+ *
  */
 class lamUserList extends lamList {
-	
+
 	/** Controls if GID number is translated to group name */
 	private $trans_primary = false;
-	
+
 	/** Controls if the account status is shown */
 	private $showAccountStatus = false;
 
 	/** translates GID to group name */
 	private $trans_primary_hash = array();
-	
+
 	/** filter value for account status */
 	private $accountStatusFilter = null;
-	
+
 	/** ID for config option to translate primary group GIDs to group names */
 	const TRANS_PRIMARY_OPTION_NAME = "LU_TP";
 	/** ID for config option to show account status */
 	const ACCOUNT_STATUS_OPTION_NAME = "LU_AS";
-	
+
 	/** virtual attribute name for account status column */
 	const ATTR_ACCOUNT_STATUS = 'lam_virtual_account_status';
-	
+
 	/** filter value for locked accounts */
 	const FILTER_LOCKED = 2;
 	/** filter value for partially locked accounts */
 	const FILTER_SEMILOCKED = 3;
 	/** filter value for unlocked accounts */
 	const FILTER_UNLOCKED = 4;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -541,7 +541,7 @@ class lamUserList extends lamList {
 			'newEntry' => _("New user"),
 			'deleteEntry' => _("Delete selected users"));
 	}
-	
+
 	/**
 	 * Sets some internal parameters.
 	 */
@@ -550,9 +550,9 @@ class lamUserList extends lamList {
 		// generate hash table for group translation
 		if ($this->trans_primary == "on" && !$this->refresh && (sizeof($this->trans_primary_hash) == 0)) {
 			$this->refreshPrimaryGroupTranslation();
-		}		
+		}
 	}
-	
+
 	/**
 	 * Rereads the entries from LDAP.
 	 */
@@ -567,7 +567,7 @@ class lamUserList extends lamList {
 			$this->injectAccountStatusAttributeAndFilterByStatus();
 		}
 	}
-	
+
 	/**
 	 * Refreshes the GID to group name cache.
 	 */
@@ -617,7 +617,7 @@ class lamUserList extends lamList {
 					}
 				}
 			}
-			$imgNumber = getRandomNumber(); 
+			$imgNumber = getRandomNumber();
 			$jpeg_filename = 'jpg' . $imgNumber . '.jpg';
 			$outjpeg = @fopen(dirname(__FILE__) . '/../../tmp/' . $jpeg_filename, "wb");
 			fwrite($outjpeg, $entry[$attribute][0]);
@@ -646,12 +646,13 @@ class lamUserList extends lamList {
 		}
 		// expire dates
 		elseif ($attribute == 'shadowexpire') {
-			if (isset($entry[$attribute][0]) && ($entry[$attribute][0] != '')) {
-				echo date('d. m. Y', $entry[$attribute][0] * 24 * 3600);
+			if (!empty($entry[$attribute][0])) {
+				$time = new DateTime('@' . $entry[$attribute][0] * 24 * 3600, new DateTimeZone($_SESSION['config']->getTimeZone()));
+				echo $time->format('d.m.Y');
 			}
 		}
 		elseif ($attribute == 'sambakickofftime') {
-			if (isset($entry[$attribute][0]) && ($entry[$attribute][0] != '')) {
+			if (!empty($entry[$attribute][0])) {
 				if ($entry[$attribute][0] > 2147483648) {
 					echo "∞";
 				}
@@ -711,7 +712,7 @@ class lamUserList extends lamList {
 			$this->forceRefresh();
 		}
 	}
-	
+
 	/**
 	* Returns an hash array containing with all attributes to be shown and their descriptions.
 	* <br>Format: array(attribute => description)
@@ -727,13 +728,13 @@ class lamUserList extends lamList {
 		}
 		return $list;
 	}
-	
+
 	/**
 	 * Returns if the given attribute can be filtered.
 	 * If filtering is not possible then no filter box will be displayed.
 	 * <br>
 	 * <br>The user list allows no filtering for account status.
-	 * 
+	 *
 	 * @param String $attr attribute name
 	 * @return boolean filtering possible
 	 */
@@ -743,10 +744,10 @@ class lamUserList extends lamList {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Prints the content of a single attribute filter area.
-	 * 
+	 *
 	 * @param String $attrName attribute name
 	 * @param boolean $clearFilter true if filter value should be cleared
 	 */
@@ -773,10 +774,10 @@ class lamUserList extends lamList {
 		$filterInput->setOnchangeEvent('document.getElementsByName(\'apply_filter\')[0].click();');
 		parseHtml(null, $filterInput, array(), false, $this->tabindex, $this->type);
 	}
-	
+
 	/**
 	 * Builds the LDAP filter based on the filter entries in the GUI.
-	 * 
+	 *
 	 * @return String LDAP filter
 	 */
 	protected function buildLDAPAttributeFilter() {
@@ -791,13 +792,13 @@ class lamUserList extends lamList {
 		}
 		return $text;
 	}
-	
+
 	/**
 	 * Returns a list of additional LDAP attributes that should be read.
 	 * This can be used to show additional data even if the user selected other attributes to show in the list.
 	 * <br>
 	 * <br>The user list reads pwdAccountLockedTime, sambaAcctFlags and userPassword
-	 * 
+	 *
 	 * @return array additional attribute names
 	 */
 	protected function getAdditionalLDAPAttributesToRead() {
@@ -811,7 +812,7 @@ class lamUserList extends lamList {
 		}
 		return $attrs;
 	}
-	
+
 	/**
 	 * Injects values for the virtual account status attribute to make it sortable.
 	 */
@@ -829,11 +830,11 @@ class lamUserList extends lamList {
 			$hasLocked = ($unixAvailable && $unixLocked)
 							|| ($sambaAvailable && $sambaLocked)
 							|| ($ppolicyAvailable && $ppolicyLocked)
-							|| ($windowsAvailable && $windowsLocked); 
+							|| ($windowsAvailable && $windowsLocked);
 			$hasUnlocked = ($unixAvailable && !$unixLocked)
 							|| ($sambaAvailable && !$sambaLocked)
 							|| ($ppolicyAvailable && !$ppolicyLocked)
-							|| ($windowsAvailable && !$windowsLocked); 
+							|| ($windowsAvailable && !$windowsLocked);
 			$status = self::FILTER_UNLOCKED;
 			if ($hasLocked && $hasUnlocked) {
 				$status = self::FILTER_SEMILOCKED;
@@ -853,10 +854,10 @@ class lamUserList extends lamList {
 		}
 		$this->entries = array_values($this->entries);
 	}
-	
+
 	/**
 	 * Prints the account status.
-	 * 
+	 *
 	 * @param array $attrs LDAP attributes
 	 */
 	private function printAccountStatus(&$attrs) {
@@ -930,84 +931,84 @@ class lamUserList extends lamList {
 
 	/**
 	 * Returns if the Unix part exists.
-	 * 
+	 *
 	 * @param array $attrs LDAP attributes
 	 * @return boolean Unix part exists
 	 */
 	public static function isUnixAvailable(&$attrs) {
 		return (isset($attrs['objectclass']) && in_array_ignore_case('posixAccount', $attrs['objectclass']) && isset($attrs['userpassword'][0]));
 	}
-	
+
 	/**
 	 * Returns if the Unix part is locked.
-	 * 
+	 *
 	 * @param array $attrs LDAP attributes
 	 * @return boolean Unix part locked
 	 */
 	public static function isUnixLocked(&$attrs) {
 		return ((isset($attrs['userpassword'][0]) && !pwd_is_enabled($attrs['userpassword'][0])));
 	}
-	
+
 	/**
 	 * Returns if the Samba part exists.
-	 * 
+	 *
 	 * @param array $attrs LDAP attributes
 	 * @return boolean Samba part exists
 	 */
 	public static function isSambaAvailable(&$attrs) {
 		return (isset($attrs['objectclass']) && in_array_ignore_case('sambaSamAccount', $attrs['objectclass']));
 	}
-	
+
 	/**
 	 * Returns if the Samba part is locked.
-	 * 
+	 *
 	 * @param array $attrs LDAP attributes
 	 * @return boolean Samba part is locked
 	 */
 	public static function isSambaLocked(&$attrs) {
 		return (isset($attrs['sambaacctflags'][0]) && strpos($attrs['sambaacctflags'][0], "D"));
 	}
-	
+
 	/**
 	 * Returns if the PPolicy part exists.
-	 * 
+	 *
 	 * @param array $attrs LDAP attributes
 	 * @return boolean PPolicy part exists
 	 */
 	public static function isPPolicyAvailable(&$attrs) {
 		return in_array('ppolicyUser', $_SESSION['config']->get_AccountModules('user'));
 	}
-	
+
 	/**
 	 * Returns if the PPolicy part is locked.
-	 * 
+	 *
 	 * @param array $attrs LDAP attributes
 	 * @return boolean PPolicy part is locked
 	 */
 	public static function isPPolicyLocked(&$attrs) {
 		return (isset($attrs['pwdaccountlockedtime'][0]) && ($attrs['pwdaccountlockedtime'][0] != ''));
 	}
-	
+
 	/**
 	 * Returns if the Windows part exists.
-	 * 
+	 *
 	 * @param array $attrs LDAP attributes
 	 * @return boolean Windows part exists
 	 */
 	public static function isWindowsAvailable(&$attrs) {
 		return (isset($attrs['objectclass']) && in_array_ignore_case('user', $attrs['objectclass']) && isset($attrs['useraccountcontrol'][0]));
 	}
-	
+
 	/**
 	 * Returns if the Windows part is locked.
-	 * 
+	 *
 	 * @param array $attrs LDAP attributes
 	 * @return boolean Windows part is locked
 	 */
 	public static function isWindowsLocked(&$attrs) {
 		return windowsUser::isDeactivated($attrs);
 	}
-	
+
 }
 
 ?>

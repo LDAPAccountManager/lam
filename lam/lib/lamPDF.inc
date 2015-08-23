@@ -25,7 +25,7 @@ $Id$
  * LDAP Account Manager PDF printing library. It consists of lamPDF class,
  * the createModulePDF() function that may be called by other pages
  * and furthermore some helper functions.
- * 
+ *
  * @author Michael Duergner
  * @author Roland Gruber
  * @package PDF
@@ -33,23 +33,23 @@ $Id$
 
 /**
  * Creates a LAM information page in PDF format.
- * 
+ *
  * @package PDF
  * @author Michael Duergner
  * @author Roland Gruber
  */
 class lamPDF extends UFPDF {
-	
+
 	/**
 	 * format settings for page layout
 	 */
 	private $page_definitions;
-	
+
 	/**
 	* current active font name
 	*/
 	private $fontName;
-	
+
 	/**
 	* list of supported fonts
 	* format: <font name> => array(<file for default font style>, <file for bold>, <italic>, <bold italic>)
@@ -60,7 +60,7 @@ class lamPDF extends UFPDF {
 
 	/**
 	 * Creates a new lamPDF object.
-	 * 
+	 *
 	 * @param array $page_definitions page settings
 	 * @param String $fontName font name
 	 */
@@ -71,9 +71,9 @@ class lamPDF extends UFPDF {
 		}
 		// Call constructor of superclass
 		$this->FPDF('P','mm','A4');
-		
+
 		$this->page_definitions = $page_definitions;
-		
+
 		// Open PDF file and write some basic information
 		$this->Open();
 		$this->AddFont($this->fontName, '', $this->fontList[$this->fontName][0]);
@@ -123,7 +123,7 @@ class lamPDF extends UFPDF {
 		$this->Line(10,282,200,282);
 		$this->SetY(286);
 		$this->SetFont($this->fontName,"",7);
-		$this->Cell(0,5,_("This document was automatically created by LDAP Account Manager") . ' (' . date('Y-m-d H:i:s T') . ')',0,0,"C",0);
+		$this->Cell(0,5,_("This document was automatically created by LDAP Account Manager") . ' (' . getFormattedTime('Y-m-d H:i:s T') . ')',0,0,"C",0);
 	}
 }
 

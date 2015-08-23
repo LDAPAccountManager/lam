@@ -167,7 +167,7 @@ class shadowAccount extends baseModule implements passwordService {
 			'shadowLastChange' => _('Last password change'),
 			'shadowWarning' => _('Password warning'),
 			'shadowInactive' => _('Account inactive'),
-			'shadowExpire' => _('Password expiration'),
+			'shadowExpire' => _('Account expiration date'),
 			'shadowMinAge' => _('Minimum password age'),
 			'shadowMaxAge' => _('Maximum password age'),
 		);
@@ -542,13 +542,16 @@ class shadowAccount extends baseModule implements passwordService {
 	 * @return list of PDF entries (array(<PDF key> => <PDF lines>))
 	 */
 	function get_pdfEntries($pdfKeys) {
+		$timeZone = new DateTimeZone($_SESSION['config']->getTimeZone());
 		$shadowLastChange = '';
-		if (isset($this->attributes['shadowLastChange'][0])) {
-			$shadowLastChange = date('d. m. Y',$this->attributes['shadowLastChange'][0]*24*3600);
+		if (!empty($this->attributes['shadowLastChange'][0])) {
+			$time = new DateTime('@' . $this->attributes['shadowLastChange'][0]*24*3600, $timeZone);
+			$shadowLastChange = $time->format('d. m. Y');
 		}
 		$shadowExpire = '';
-		if (isset($this->attributes['shadowExpire'][0])) {
-			$shadowExpire = date('d. m. Y',$this->attributes['shadowExpire'][0]*24*3600);
+		if (!empty($this->attributes['shadowExpire'][0])) {
+			$time = new DateTime('@' . $this->attributes['shadowExpire'][0]*24*3600);
+			$shadowExpire = $time->format('d. m. Y');
 		}
 		$return = array();
 		$this->addPDFKeyValue($return, 'shadowLastChange', _('Last password change'), $shadowLastChange);
