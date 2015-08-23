@@ -227,7 +227,13 @@ function logNewMessage($level, $message) {
 		if (is_writable($cfg->logDestination)) {
 			$file = fopen($cfg->logDestination, 'a');
 			if ($file) {
-				fwrite($file, date('Y-m-d H:i:s') . ': ' . $message . "\n");
+				$timeZone = 'UTC';
+				$sysTimeZone = @date_default_timezone_get();
+				if (!empty($sysTimeZone)) {
+					$timeZone = $sysTimeZone;
+				}
+				$time = new DateTime(null, new DateTimeZone($timeZone));
+				fwrite($file, $time->format('Y-m-d H:i:s') . ': ' . $message . "\n");
 				fclose($file);
 			}
 		}
