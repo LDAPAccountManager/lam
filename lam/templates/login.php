@@ -419,6 +419,7 @@ function display_LoginPage($config_object, $cfgMain) {
 								$table->addElement($rememberLabel);
 								$table->addElement($gap);
 								$rememberGroup = new htmlGroup();
+								$rememberGroup->alignment = htmlElement::ALIGN_LEFT;
 								$doRemember = false;
 								if (isset($_COOKIE["lam_login_name"])) {
 									$doRemember = true;

@@ -1690,6 +1690,9 @@ class LAMConfig {
 	 * @return String $jobsDatabase database type
 	 */
 	public function getJobsDatabase() {
+		if (empty($this->jobsDatabase)) {
+			return 'SQLite';
+		}
 		return $this->jobsDatabase;
 	}
 
