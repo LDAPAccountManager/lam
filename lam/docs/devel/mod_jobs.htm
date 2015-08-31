@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+  <title>Module HowTo - Jobs</title>
+
+  
+  
+  <link rel="stylesheet" type="text/css" href="style/layout.css">
+
+  
+  <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
+
+</head><body>
+<div style="text-align: center;">
+<h1>Module HowTo - Jobs<br>
+</h1>
+<div style="text-align: left;"><br>
+Jobs can be used to run actions in regular intervals like daily.<br>
+They are configured on tab "Jobs" in LAM server profile.<br>
+<br>
+</div>
+<div style="text-align: left;">See ppolicyUser module for an example.<br>
+<br>
+<h2>Adding the job class</h2>
+The module defines the list of suuported jobs with function
+getSupportedJobs().<br>
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * Returns a list of jobs that can be run.<br>
+&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp; * @param LAMConfig $config configuration<br>
+&nbsp;&nbsp;&nbsp; * @return array list of jobs<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; public function getSupportedJobs(&amp;$config) {<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;return array(<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;new
+PPolicyPasswordNotifyJob()<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;);<br>
+&nbsp;&nbsp; &nbsp;}<br>
+      <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>The job class itself can be in the module file or in any file
+included
+by the module file. Please add the class definition in an interface
+check as the example below. The job interface is not loaded on all
+pages.<br>
+
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
+<tbody>
+<tr>
+<td style="vertical-align: top;">if (interface_exists('\LAM\JOB\Job')) {<br>
+      <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* Job to notify users about password expiration.<br>
+&nbsp;&nbsp;&nbsp; &nbsp;*<br>
+&nbsp;&nbsp;&nbsp; &nbsp;* @package jobs<br>
+&nbsp;&nbsp;&nbsp; &nbsp;*/<br>
+&nbsp;&nbsp;&nbsp; class PPolicyPasswordNotifyJob implements \LAM\JOB\Job {<br>
+[...]<br>
+      <br>
+}<br>
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<h2>Basic job attributes</h2>
+Each job needs to provide a unique name, icon, alias and job
+description. You need also to specify if multiple configurations of the
+same job are allowed on a server profile.<br>
+<br>
+If your job requires any configuration options then use get/checkConfigOptions() functions.<br>
+<br>
+<h2>Database</h2>
+Jobs can access a database to read and store data about job runs. Use
+this e.g. if you need to save any status information accross job runs.<br>
+Database access is specified with needsDatabaseAccess().<br>
+<br>
+There is a built-in database upgrade mechanism. Your job must return
+its current schema version with getDatabaseSchemaVersion() and LAM will
+call updateSchemaVersion() whenever it detects a higher version in job
+class than on database.<br>
+<br>
+<h2>Execution</h2>
+When jobs are run the the execute() function is called. Please put all your logic in there.<br>
+
+<span style="font-weight: bold;"></span>
+<h2><span style="font-weight: bold;"></span></h2>
+</div>
+</div>
+
+</body></html>

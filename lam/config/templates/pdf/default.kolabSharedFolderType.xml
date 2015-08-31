@@ -1,0 +1,11 @@
+<pdf type="kolabSharedFolderType" filename="printLogo.jpg" headline="Shared folder information" foldingmarks="no">
+	<section name="_kolabSharedFolder_cn">
+		<entry name="kolabSharedFolder_mailHost" />
+		<entry name="kolabSharedFolder_kolabTargetFolder" />
+		<entry name="kolabSharedFolder_kolabFolderType" />
+		<entry name="kolabSharedFolder_delegate" />
+		<entry name="kolabSharedFolder_aliases" />
+		<entry name="kolabSharedFolder_kolabAllowSMTPSender" />
+		<entry name="kolabSharedFolder_kolabAllowSMTPRecipient" />
+	</section>
+</pdf>
