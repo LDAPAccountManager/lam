@@ -1,3 +1,7 @@
+December 2015 5.2
+  - SSH public key: added possibility to add/remove SSH extension
+
+
 31.08.2015 5.1
   - IMAP: support Windows users
   - SSH public key: check uploaded files if in right format

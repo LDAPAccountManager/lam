@@ -95,7 +95,9 @@ class windowsUser extends baseModule implements passwordService {
 		$return['attributes'] = array('userPrincipalName', 'cn', 'sAMAccountName', 'description', 'displayName', 'givenName', 'initials',
 			'l', 'mail', 'otherTelephone', 'physicalDeliveryOfficeName', 'postalCode', 'postOfficeBox', 'sn', 'st',
 			'streetAddress', 'telephoneNumber', 'url', 'wWWHomePage', 'userAccountControl', 'profilePath', 'scriptPath',
-			'pwdLastSet', 'otherMailbox', 'homeDirectory', 'homeDrive', 'msSFU30Name', 'msSFU30NisDomain');
+			'pwdLastSet', 'otherMailbox', 'homeDirectory', 'homeDrive', 'msSFU30Name', 'msSFU30NisDomain', 'pwdLastSet',
+			'lastLogonTimestamp'
+		);
 		// help Entries
 		$return['help'] = array(
 			'cn' => array(
@@ -255,6 +257,14 @@ class windowsUser extends baseModule implements passwordService {
 			'msSFU30NisDomain' => array(
 				"Headline" => _('NIS domain'), 'attr' => 'msSFU30NisDomain',
 				"Text" => _('NIS domain name.')
+			),
+			'pwdLastSet' => array(
+				"Headline" => _('Last password change'), 'attr' => 'pwdLastSet',
+				"Text" => _('Time of user\'s last password change.')
+			),
+			'lastLogonTimestamp' => array(
+				"Headline" => _('Last login'), 'attr' => 'lastLogonTimestamp',
+				"Text" => _('Time of user\'s last login.')
 			),
 		);
 		// upload fields
@@ -534,6 +544,12 @@ class windowsUser extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
 			$return['PDF_fields']['msSFU30NisDomain'] = _('NIS domain');
 		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepwdLastSet')) {
+			$return['PDF_fields']['pwdLastSet'] = _('Last password change');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidelastLogonTimestamp')) {
+			$return['PDF_fields']['lastLogonTimestamp'] = _('Last login');
+		}
 		// self service search attributes
 		$return['selfServiceSearchAttributes'] = array('sAMAccountName', 'userPrincipalName');
 		// self service field settings
@@ -546,7 +562,8 @@ class windowsUser extends baseModule implements passwordService {
 			'l' => _('Location'),
 			'postOfficeBox' => _('Post office box'),
 			'postalCode' => _('Postal code'),
-			'unicodePwd' => _('Password')
+			'unicodePwd' => _('Password'),
+			'pwdLastSet' => _('Last password change (read-only)')
 		);
 		// possible self service read-only fields
 		$return['selfServiceReadOnlyFields'] = array('physicalDeliveryOfficeName', 'telephoneNumber',
@@ -565,6 +582,8 @@ class windowsUser extends baseModule implements passwordService {
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidesAMAccountName', true, _('User name (pre W2K)'), null, false));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidemsSFU30Name', true, _('NIS name'), null, false));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidemsSFU30NisDomain', true, _('NIS domain'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidepwdLastSet', false, _('Last password change'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidelastLogonTimestamp', false, _('Last login'), null, false));
 		$configContainer->addElement($configContainerOptions, true);
 		$return['config_options']['all'] = $configContainer;
 		return $return;
@@ -720,7 +739,7 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addSimpleInputTextField($containerLeft, 'wWWHomePage', _('Web site'));
 		$this->addMultiValueInputTextField($containerLeft, 'url', _('Other web sites'));
 
-		$containerLeft->addElement(new htmlSubTitle(_('Options')), true);
+		$containerLeft->addElement(new htmlSubTitle(_('Account')), true);
 		// locked out
 		$containerLeft->addElement(new htmlOutputText(_("Account is locked")));
 		$lockedOut = windowsUser::isLockedOut($this->attributes);
@@ -748,6 +767,18 @@ class windowsUser extends baseModule implements passwordService {
 		// require smartcard
 		$requireCard = windowsUser::isSmartCardRequired($this->attributes);
 		$containerLeft->addElement(new htmlTableExtendedInputCheckbox('requireCard', $requireCard, _("Require smartcard"), 'requireCard'), true);
+		// last password change
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepwdLastSet')) {
+			$containerLeft->addElement(new htmlOutputText(_('Last password change')));
+			$containerLeft->addElement(new htmlOutputText($this->formatPwdLastSet()));
+			$containerLeft->addElement(new htmlHelpLink('pwdLastSet'), true);
+		}
+		// last login
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidelastLogonTimestamp')) {
+			$containerLeft->addElement(new htmlOutputText(_('Last login')));
+			$containerLeft->addElement(new htmlOutputText($this->formatLastLogonTimestamp()));
+			$containerLeft->addElement(new htmlHelpLink('lastLogonTimestamp'), true);
+		}
 
 		$containerLeft->addElement(new htmlSubTitle(_('User profile')), true);
 		// profile path
@@ -1636,6 +1667,10 @@ class windowsUser extends baseModule implements passwordService {
 		else if (isset($this->attributes['INFO.userPasswordClearText'])) {
 			$this->addPDFKeyValue($return, 'password', _('Password'), $this->attributes['INFO.userPasswordClearText']);
 		}
+		// last password change
+		$this->addPDFKeyValue($return, 'pwdLastSet', _('Last password change'), $this->formatPwdLastSet());
+		// last login
+		$this->addPDFKeyValue($return, 'lastLogonTimestamp', _('Last login'), $this->formatLastLogonTimestamp());
 		return $return;
 	}
 
@@ -1729,6 +1764,11 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addSimpleSelfServiceTextField($return, 'l', _('Location'), $fields, $attributes, $readOnlyFields);
 		$this->addSimpleSelfServiceTextField($return, 'postOfficeBox', _('Post office box'), $fields, $attributes, $readOnlyFields);
 		$this->addSimpleSelfServiceTextField($return, 'postalCode', _('Postal code'), $fields, $attributes, $readOnlyFields);
+		// last password change
+		$row = new htmlResponsiveRow();
+		$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('pwdLastSet', _('Last password change'))));
+		$row->addField(new htmlOutputText($this->formatPwdLastSet($attributes)));
+		$return['pwdLastSet'] = $row;
 		return $return;
 	}
 
@@ -2117,6 +2157,54 @@ class windowsUser extends baseModule implements passwordService {
 			}
 		}
 		return array_values(array_unique($domains));
+	}
+
+	/**
+	 * Returns the formatted value for last password change.
+	 *
+	 * @param array $attributes user attributes ($this->attributes if null)
+	 * @return String last password change or " - "
+	 */
+	private function formatPwdLastSet($attributes = null) {
+		if ($attributes == null) {
+			$attributes = &$this->attributes;
+		}
+		if (!empty($attributes['pwdlastset'][0])) {
+			return $this->formatFileTime($attributes['pwdlastset'][0]);
+		}
+		elseif (empty($attributes['pwdLastSet'][0])) {
+			return ' - ';
+		}
+		return $this->formatFileTime($attributes['pwdLastSet'][0]);
+	}
+
+	/**
+	 * Returns the formatted value for last login.
+	 *
+	 * @return String last login or " - "
+	 */
+	private function formatLastLogonTimestamp() {
+		if (empty($this->attributes['lastLogonTimestamp'][0])) {
+			return ' - ';
+		}
+		return $this->formatFileTime($this->attributes['lastLogonTimestamp'][0]);
+	}
+
+	/**
+	 * Formats a value in file time (100 ns since 1601-01-01).
+	 *
+	 * @param integer $value time value
+	 * @return String formatted value
+	 */
+	private function formatFileTime($value) {
+		if (empty($value)) {
+			return '';
+		}
+		$seconds = substr($value, 0, -7);
+		$time = new DateTime('1601-01-01', new DateTimeZone('UTC'));
+		$time->add(new DateInterval('PT' . $seconds . 'S'));
+		$time->setTimezone(getTimeZone());
+		return $time->format('Y-m-d H:i:s');
 	}
 
 }

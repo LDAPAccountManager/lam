@@ -39,6 +39,17 @@ class ldapPublicKey extends baseModule {
 	const SESS_KEY_LIST = 'ldapPublicKey_keyList';
 
 	/**
+	* Creates a new sambaSamAccount object.
+	*
+	* @param string $scope account type (user, group, host)
+	*/
+	function __construct($scope) {
+		// call parent constructor
+		parent::__construct($scope);
+		$this->autoAddObjectClasses = false;
+	}
+
+	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
 	*
 	* @return boolean true if module fits
@@ -80,7 +91,15 @@ class ldapPublicKey extends baseModule {
 				"Headline" => _("File upload"), 'attr' => 'sshPublicKey',
 				"Text" => _("Upload a file with one or more keys. Each line contains one key.")
 			),
+			'autoAdd' => array(
+				"Headline" => _("Automatically add this extension"),
+				"Text" => _("This will enable the extension automatically if this profile is loaded.")
+			),
 		);
+		// profile options
+		$profileContainer = new htmlTable();
+		$profileContainer->addElement(new htmlTableExtendedInputCheckbox('ldapPublicKey_addExt', false, _('Automatically add this extension'), 'autoAdd'), true);
+		$return['profile_options'] = $profileContainer;
 		// upload fields
 		$return['upload_columns'] = array(
 			array(
@@ -117,17 +136,28 @@ class ldapPublicKey extends baseModule {
 	 */
 	function display_html_attributes() {
 		$return = new htmlTable();
-		$this->addMultiValueInputTextField($return, 'sshPublicKey', _('SSH public key'), false, '16384', false, null, '50');
-		// file upload
-		$return->addElement(new htmlSpacer(null, '20px'), true);
-		$return->addElement(new htmlOutputText(_('Upload file')));
-		$uploadGroup = new htmlGroup();
-		$uploadGroup->addElement(new htmlInputFileUpload('sshPublicKeyFile'));
-		$uploadGroup->addElement(new htmlSpacer('1px', null));
-		$uploadGroup->addElement(new htmlButton('sshPublicKeyFileSubmit', _('Upload')));
-		$uploadGroup->addElement(new htmlSpacer('5px', null));
-		$uploadGroup->addElement(new htmlHelpLink('upload'));
-		$return->addElement($uploadGroup);
+		if (in_array('ldapPublicKey', $this->attributes['objectClass'])) {
+			$this->addMultiValueInputTextField($return, 'sshPublicKey', _('SSH public key'), false, '16384', false, null, '50');
+			// file upload
+			$return->addElement(new htmlSpacer(null, '20px'), true);
+			$return->addElement(new htmlOutputText(_('Upload file')));
+			$uploadGroup = new htmlGroup();
+			$uploadGroup->addElement(new htmlInputFileUpload('sshPublicKeyFile'));
+			$uploadGroup->addElement(new htmlSpacer('1px', null));
+			$uploadGroup->addElement(new htmlButton('sshPublicKeyFileSubmit', _('Upload')));
+			$uploadGroup->addElement(new htmlSpacer('5px', null));
+			$uploadGroup->addElement(new htmlHelpLink('upload'));
+			$return->addElement($uploadGroup, true);
+
+			$return->addElement(new htmlSpacer(null, '30px'), true);
+
+			$remButton = new htmlButton('remObjectClass', _('Remove SSH public key extension'));
+			$remButton->colspan = 3;
+			$return->addElement($remButton);
+		}
+		else {
+			$return->addElement(new htmlButton('addObjectClass', _('Add SSH public key extension')));
+		}
 		return $return;
 	}
 
@@ -139,6 +169,23 @@ class ldapPublicKey extends baseModule {
 	*/
 	function process_attributes() {
 		$messages = array();
+		// add extension
+		if (isset($_POST['addObjectClass'])) {
+			$this->attributes['objectClass'][] = 'ldapPublicKey';
+			return array();
+		}
+		// remove extension
+		elseif (isset($_POST['remObjectClass'])) {
+			$this->attributes['objectClass'] = array_delete(array('ldapPublicKey'), $this->attributes['objectClass']);
+			if (!empty($this->attributes['sshPublicKey'])) {
+				unset($this->attributes['sshPublicKey']);
+			}
+			return array();
+		}
+		// skip processing if extension is not active
+		if (!in_array('ldapPublicKey', $this->attributes['objectClass'])) {
+			return array();
+		}
 		$this->processMultiValueInputTextField('sshPublicKey', $messages);
 		// file upload
 		if (isset($_POST['sshPublicKeyFileSubmit'])) {
@@ -173,6 +220,42 @@ class ldapPublicKey extends baseModule {
 		}
 		$this->attributes['sshPublicKey'] = array_values(array_unique($this->attributes['sshPublicKey']));
 		return $messages;
+	}
+
+	/**
+	* Returns a list of modifications which have to be made to the LDAP account.
+	*
+	* @return array list of modifications
+	* <br>This function returns an array with 3 entries:
+	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	* <br>"add" are attributes which have to be added to LDAP entry
+	* <br>"remove" are attributes which have to be removed from LDAP entry
+	* <br>"modify" are attributes which have to been modified in LDAP entry
+	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	*/
+	function save_attributes() {
+		if (!in_array('ldapPublicKey', $this->attributes['objectClass']) && !in_array('ldapPublicKey', $this->orig['objectClass'])) {
+			// skip saving if the extension was not added/modified
+			return array();
+		}
+		return parent::save_attributes();
+	}
+
+	/**
+	* Loads the values of an account profile into internal variables.
+	*
+	* @param array $profile hash array with profile values (identifier => value)
+	*/
+	function load_profile($profile) {
+		// profile mappings in meta data
+		parent::load_profile($profile);
+		// add extension
+		if (isset($profile['ldapPublicKey_addExt'][0]) && ($profile['ldapPublicKey_addExt'][0] == "true")) {
+			if (!in_array('ldapPublicKey', $this->attributes['objectClass'])) {
+				$this->attributes['objectClass'][] = 'ldapPublicKey';
+			}
+		}
 	}
 
 	/**
