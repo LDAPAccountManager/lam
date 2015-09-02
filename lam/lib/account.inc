@@ -1286,7 +1286,7 @@ function getTimeZone() {
 /**
  * Returns the current time in formatted form.
  *
- * @param unknown $format format to use (e.g. 'Y-m-d H:i:s,00')
+ * @param unknown $format format to use (e.g. 'Y-m-d H:i:s')
  */
 function getFormattedTime($format) {
 	$time = new DateTime(null, getTimeZone());
