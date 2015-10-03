@@ -546,7 +546,7 @@ Have fun!
         </section>
 
         <section>
-          <title>Suse/Fedora</title>
+          <title>Suse/Fedora/CentOS</title>
 
           <informaltable frame="none">
             <tgroup cols="2">
@@ -569,7 +569,12 @@ Have fun!
                   ldap-account-manager
                   ldap-account-manager-lamdaemon</emphasis> (if an older
                   version is installed)</para><para><emphasis role="bold">rpm
-                  -i &lt;path to LAM package&gt;</emphasis></para></entry>
+                  -i &lt;path to LAM
+                  package&gt;</emphasis></para><literallayout>
+</literallayout><para><emphasis role="bold">Note:</emphasis> The RPM packages
+                  for Fedora/CentOS do not contain a dependency to PHP due to
+                  the various package names for it. Please make sure that you
+                  install Apache/Nginx with PHP.</para></entry>
                 </row>
               </tbody>
             </tgroup>
