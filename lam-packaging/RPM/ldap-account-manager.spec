@@ -31,7 +31,6 @@ Requires:      php5-gettext
 Requires:      perl
 %endif
 %if %is_fedora
-Requires:      php
 Requires:      perl
 %endif
 
