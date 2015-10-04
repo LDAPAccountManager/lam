@@ -1,6 +1,7 @@
 December 2015 5.2
   - Windows: support for additional attributes
   - SSH public key: added possibility to add/remove SSH extension
+  - MIT Kerberos: set krbExtraData for new accounts
 
 
 31.08.2015 5.1
