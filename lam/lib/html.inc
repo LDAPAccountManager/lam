@@ -2349,6 +2349,8 @@ class htmlImage extends htmlElement {
 	private $alt;
 	/** title */
 	private $title;
+	/** onClick event */
+	private $onClick = null;
 
 	/**
 	 * Constructor.
@@ -2357,13 +2359,15 @@ class htmlImage extends htmlElement {
 	 * @param int $width image width (optional, default original size)
 	 * @param int $height image height (optional, default original size)
 	 * @param String $alt alt text (optional)
+	 * @param String $onClick onClick code (optional)
 	 */
-	function __construct($path, $width = null, $height = null, $alt = ' ', $title = null) {
+	function __construct($path, $width = null, $height = null, $alt = ' ', $title = null, $onClick = null) {
 		$this->path = htmlspecialchars($path);
 		$this->width = $width;
 		$this->height = $height;
 		$this->alt = htmlspecialchars($alt);
 		$this->title = $title;
+		$this->onClick = $onClick;
 	}
 
 	/**
@@ -2396,7 +2400,11 @@ class htmlImage extends htmlElement {
 		if (!empty($this->cssClasses)) {
 			$classes = 'class="' . implode(' ', $this->cssClasses) . '"';
 		}
-		echo '<img' . $path . $width . $height . $alt . $title . $classes . ">\n";
+		$onClick = '';
+		if ($this->onClick != null) {
+			$onClick = ' onclick="' . $this->onClick . '"';
+		}
+		echo '<img' . $path . $width . $height . $alt . $title . $classes . $onClick . ">\n";
 		return array();
 	}
 
