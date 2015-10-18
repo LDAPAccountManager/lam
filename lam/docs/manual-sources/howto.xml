@@ -1242,6 +1242,58 @@ Have fun!
       <para>Otherwise, remove the folder where you installed LAM via configure
       or by copying the files.</para>
     </section>
+
+    <section>
+      <title>Migration to a new server</title>
+
+      <para>To move LAM (Pro) from one server to another please follow these
+      steps:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Install LAM (Pro) on your new server</para>
+        </listitem>
+
+        <listitem>
+          <para>Copy the following files from the old server to the new one
+          (base directory for RPM/DEB is
+          /usr/share/ldap-account-manager/):</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>config/*.conf</para>
+            </listitem>
+
+            <listitem>
+              <para>config/config.cfg</para>
+            </listitem>
+
+            <listitem>
+              <para>config/pdf/*</para>
+            </listitem>
+
+            <listitem>
+              <para>config/profiles/*</para>
+            </listitem>
+
+            <listitem>
+              <para>config/selfService/*.* (needed for LAM Pro only)</para>
+            </listitem>
+          </itemizedlist>
+
+          <para>The files must be writable for the webserver user.</para>
+        </listitem>
+
+        <listitem>
+          <para>Open LAM (Pro) login page on new server and verify
+          installation. </para>
+        </listitem>
+
+        <listitem>
+          <para>Uninstall LAM (Pro) on old server.</para>
+        </listitem>
+      </orderedlist>
+    </section>
   </chapter>
 
   <chapter id="a_configuration">
