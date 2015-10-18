@@ -1286,7 +1286,7 @@ Have fun!
 
         <listitem>
           <para>Open LAM (Pro) login page on new server and verify
-          installation. </para>
+          installation.</para>
         </listitem>
 
         <listitem>
@@ -3819,6 +3819,9 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
         "user/myUser"). Select the values depending on your IMAP server
         settings.</para>
 
+        <para>You can specify a list of initial folder names to create for new
+        mailboxes. LAM will then create them with each new mailbox.</para>
+
         <screenshot>
           <mediaobject>
             <imageobject>
@@ -3835,6 +3838,33 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           <mediaobject>
             <imageobject>
               <imagedata fileref="images/imapAccess3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>IP addresses (LAM Pro)</title>
+
+        <para>You can manage the IP addresses of user accounts (e.g. assigned
+        by DHCP) with the ipHost module.</para>
+
+        <para><emphasis role="bold">Configuration</emphasis></para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/ipHostUser.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis role="bold">User editing</emphasis></para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/ipHostUser1.png" />
             </imageobject>
           </mediaobject>
         </screenshot>

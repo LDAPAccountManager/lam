@@ -2,6 +2,9 @@ December 2015 5.2
   - Windows: support for additional attributes
   - SSH public key: added possibility to add/remove SSH extension
   - MIT Kerberos: set krbExtraData for new accounts
+  - IMAP: allow to specify initial folders to create
+  - LAM Pro:
+   -> Users: allow to manage IP addresses with ipHost module
 
 
 31.08.2015 5.1

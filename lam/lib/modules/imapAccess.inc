@@ -116,41 +116,10 @@ class imapAccess extends baseModule {
 			'pathSeparator' => array(
 				"Headline" => _("Path separator"),
 				"Text" => _("This is the separator for the mailbox path. Usually, this is \".\" but e.g. Cyrus with \"unixhierarchysep\" will require \"/\".")),
+			'initialFolders' => array(
+				"Headline" => _("Initial folders"),
+				"Text" => _("Use this to provide a list of folders (e.g. Trash) to add for new accounts.")),
 		);
-		// configuration settings
-		$configContainer = new htmlTable();
-		$configServer = new htmlTableExtendedInputField(_('Server address'), 'ImapAccess_ImapServerAddress', '', 'ImapServerAddress');
-		$configServer->setRequired(true);
-		$configContainer->addElement($configServer, true);
-		$configContainer->addElement(new htmlTableExtendedSelect('ImapAccess_ImapServerEncriptionProtocol', array('TLS', 'SSL'), array('TLS'), _("Encryption protocol"), 'ImapServerEncryptionProtocol'), true);
-		$configCertValidate = new htmlTableExtendedSelect('ImapAccess_ImapValidateServerCert', array(_('Yes') => 'validate-cert', _('No') => 'novalidate-cert'), array('validate-cert'), _("Validate server certificate"), 'ImapValidateServerCert');
-		$configCertValidate->setHasDescriptiveElements(true);
-		$configContainer->addElement($configCertValidate, true);
-		$configUser = new htmlTableExtendedInputField(_('IMAP admin user'), 'ImapAccess_ImapAdmin', '', 'ImapAdmin');
-		$configUser->setRequired(true);
-		$configContainer->addElement($configUser, true);
-		$pwdSelectOptions = array(
-			_('LAM user password') => 'lam_user_pass',
-			_('Ask') => 'ask_pass',
-			_('Server profile') => 'config');
-		$configPasswordType = new htmlTableExtendedSelect('ImapAccess_ImapAdminPasswordSelect', $pwdSelectOptions, array('ask_pass'), _("IMAP password input"), 'ImapAdminPasswordSelect');
-		$configPasswordType->setHasDescriptiveElements(true);
-		$configPasswordType->setTableRowsToShow(array('config' => array('ImapAccess_ImapAdminPassword')));
-		$configPasswordType->setTableRowsToHide(array('lam_user_pass' => array('ImapAccess_ImapAdminPassword'), 'ask_pass' => array('ImapAccess_ImapAdminPassword')));
-		$configContainer->addElement($configPasswordType, true);
-		$adminPwdInput = new htmlTableExtendedInputField(_('Admin password'), 'ImapAccess_ImapAdminPassword', null, 'ImapAdminPasswordSelect');
-		$adminPwdInput->setIsPassword(true);
-		$adminPwdInput->setObfuscate(true);
-		$configContainer->addElement($adminPwdInput, true);
-		$mailDomainsInput = new htmlTableExtendedInputField(_('Mail domains'), 'ImapAccess_ImapDomain', '', 'ImapMailDomain');
-		$mailDomainsInput->setRequired(true);
-		$configContainer->addElement($mailDomainsInput, true);
-		$configContainer->addElement(new htmlTableExtendedInputField(_('Prefix for mailboxes'), 'ImapAccess_ImapUserPrefix', '', 'ImapUserPrefix'), true);
-		$configUserName = new htmlTableExtendedSelect('ImapAccess_UserNameAttribute', array('mail', 'uid', 'userPrincipalName'), array('mail'), _("User name attribute"), 'ImapUserNameAttr');
-		$configContainer->addElement($configUserName, true);
-		$configPathSeparator = new htmlTableExtendedSelect('ImapAccess_pathSeparator', array('.', '/'), array('.'), _("Path separator"), 'pathSeparator');
-		$configContainer->addElement($configPathSeparator, true);
-		$return['config_options']['all'] = $configContainer;
 		// configuration checks
 		$return['config_checks']['all']['ImapAccess_ImapServerAddress'] = array (
 			'type' => 'ext_preg',
@@ -418,11 +387,17 @@ class imapAccess extends baseModule {
 					$create_mailbox_arg = "{" . $imap_server_address . "}" . $prefix . $this->getSep() . $this->user;
 					if (imap_createmailbox($mbox, imap_utf7_encode($create_mailbox_arg))) {
 						$list = imap_list($mbox, "{" . $imap_server_address . "}", $prefix . $this->getSep() . $this->user);
-						if (is_array($list) && sizeof($list) == 1) {
-
-						}
-						else {
+						if (!is_array($list) || (sizeof($list) != 1)) {
 							$errors[] = $this->messages['managemailbox'][3];
+						}
+						// create initial folders
+						foreach ($this->getInitialFolders() as $folder) {
+							$created = imap_createmailbox($mbox, imap_utf7_encode($create_mailbox_arg . $this->getSep() . $folder));
+							if (!$created) {
+								$error = $this->messages['managemailbox'][2];
+								$error[] = htmlspecialchars($folder);
+								$errors[] = $error;
+							}
 						}
 					}
 					else {
@@ -472,6 +447,57 @@ class imapAccess extends baseModule {
 		if (isset($profile['ImapAccess_QuotaLimit'][0]) && $profile['ImapAccess_QuotaLimit'][0] != '') {
 			$this->profileQuotaLimit =  $profile['ImapAccess_QuotaLimit'][0];
 		}
+	}
+
+	/**
+	 * Returns a list of configuration options.
+	 *
+	 * @param array $scopes account types (user, group, host)
+	 * @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
+	 * @return mixed htmlElement or array of htmlElement
+	 *
+	 * @see htmlElement
+	 */
+	public function get_configOptions($scopes, $allScopes) {
+		// configuration settings
+		$configContainer = new htmlTable();
+		$configServer = new htmlTableExtendedInputField(_('Server address'), 'ImapAccess_ImapServerAddress', '', 'ImapServerAddress');
+		$configServer->setRequired(true);
+		$configContainer->addElement($configServer, true);
+		$configContainer->addElement(new htmlTableExtendedSelect('ImapAccess_ImapServerEncriptionProtocol', array('TLS', 'SSL'), array('TLS'), _("Encryption protocol"), 'ImapServerEncryptionProtocol'), true);
+		$configCertValidate = new htmlTableExtendedSelect('ImapAccess_ImapValidateServerCert', array(_('Yes') => 'validate-cert', _('No') => 'novalidate-cert'), array('validate-cert'), _("Validate server certificate"), 'ImapValidateServerCert');
+		$configCertValidate->setHasDescriptiveElements(true);
+		$configContainer->addElement($configCertValidate, true);
+		$configUser = new htmlTableExtendedInputField(_('IMAP admin user'), 'ImapAccess_ImapAdmin', '', 'ImapAdmin');
+		$configUser->setRequired(true);
+		$configContainer->addElement($configUser, true);
+		$pwdSelectOptions = array(
+			_('LAM user password') => 'lam_user_pass',
+			_('Ask') => 'ask_pass',
+			_('Server profile') => 'config');
+		$configPasswordType = new htmlTableExtendedSelect('ImapAccess_ImapAdminPasswordSelect', $pwdSelectOptions, array('ask_pass'), _("IMAP password input"), 'ImapAdminPasswordSelect');
+		$configPasswordType->setHasDescriptiveElements(true);
+		$configPasswordType->setTableRowsToShow(array('config' => array('ImapAccess_ImapAdminPassword')));
+		$configPasswordType->setTableRowsToHide(array('lam_user_pass' => array('ImapAccess_ImapAdminPassword'), 'ask_pass' => array('ImapAccess_ImapAdminPassword')));
+		$configContainer->addElement($configPasswordType, true);
+		$adminPwdInput = new htmlTableExtendedInputField(_('Admin password'), 'ImapAccess_ImapAdminPassword', null, 'ImapAdminPasswordSelect');
+		$adminPwdInput->setIsPassword(true);
+		$adminPwdInput->setObfuscate(true);
+		$configContainer->addElement($adminPwdInput, true);
+		$mailDomainsInput = new htmlTableExtendedInputField(_('Mail domains'), 'ImapAccess_ImapDomain', '', 'ImapMailDomain');
+		$mailDomainsInput->setRequired(true);
+		$configContainer->addElement($mailDomainsInput, true);
+		$configContainer->addElement(new htmlTableExtendedInputField(_('Prefix for mailboxes'), 'ImapAccess_ImapUserPrefix', '', 'ImapUserPrefix'), true);
+		$configContainer->addElement(new htmlTableExtendedInputTextarea('ImapAccess_initialFolders', '', 10, 3, _('Initial folders'), 'initialFolders'), true);
+		$configUserName = new htmlTableExtendedSelect('ImapAccess_UserNameAttribute', array('mail', 'uid', 'userPrincipalName'), array('mail'), _("User name attribute"), 'ImapUserNameAttr');
+		$configContainer->addElement($configUserName, true);
+		$configPathSeparator = new htmlTableExtendedSelect('ImapAccess_pathSeparator', array('.', '/'), array('.'), _("Path separator"), 'pathSeparator');
+		$configContainer->addElement($configPathSeparator, true);
+		$configContainer->addElement(new htmlEqualWidth(array('ImapAccess_ImapServerAddress', 'ImapAccess_initialFolders', 'ImapAccess_UserNameAttribute',
+					'ImapAccess_ImapServerEncriptionProtocol', 'ImapAccess_ImapValidateServerCert', 'ImapAccess_ImapAdminPasswordSelect',
+					'ImapAccess_pathSeparator'
+		)));
+		return $configContainer;
 	}
 
 	/**
@@ -671,6 +697,24 @@ class imapAccess extends baseModule {
 			return $this->moduleSettings['ImapAccess_pathSeparator'][0];
 		}
 		return '.'; // default
+	}
+
+	/**
+	 * Returns the list of initial folders to create for a new mailbox.
+	 *
+	 * @return array list of folders
+	 */
+	private function getInitialFolders() {
+		$list = array();
+		if (!empty($this->moduleSettings['ImapAccess_initialFolders'])) {
+			foreach ($this->moduleSettings['ImapAccess_initialFolders'] as $folder) {
+				$folder = trim($folder);
+				if (!empty($folder)) {
+					$list[] = $folder;
+				}
+			}
+		}
+		return $list;
 	}
 
 }
