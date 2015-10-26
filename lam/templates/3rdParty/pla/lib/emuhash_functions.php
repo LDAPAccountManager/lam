@@ -58,11 +58,6 @@ if (! function_exists('mhash') && ! function_exists('mhash_keygen_s2k')) {
 		function openssl_hash($openssl_hash_id,$password_clear) {
 			global $emuhash_emu;
 
-			if (PHP_VERSION < 6) {
-				$current_magic_quotes = @get_magic_quotes_runtime();
-				@set_magic_quotes_runtime(0);
-			}
-
 			$tmpfile = tempnam($emuhash_emu['tmpdir'],'emuhash');
 			$pwhandle = fopen($tmpfile,'w');
 
@@ -76,9 +71,6 @@ if (! function_exists('mhash') && ! function_exists('mhash_keygen_s2k')) {
 			$pass = fread($prog,1024);
 			pclose($prog);
 			unlink($tmpfile);
-
-			if (PHP_VERSION < 6)
-				@set_magic_quotes_runtime($current_magic_quotes);
 
 			return $pass;
 		}
