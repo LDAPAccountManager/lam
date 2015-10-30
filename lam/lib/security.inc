@@ -116,7 +116,9 @@ function checkClientIP() {
 		$allowedHosts = $cfg->allowedHostsSelfService;
 	}
 	// skip test if no hosts are defined
-	if ($allowedHosts == "") return;
+	if (empty($allowedHosts) || empty($_SERVER['REMOTE_ADDR'])) {
+		return;
+	}
 	$allowedHosts = explode(",", $allowedHosts);
 	$grantAccess = false;
 	for ($i = 0; $i < sizeof($allowedHosts); $i++) {
