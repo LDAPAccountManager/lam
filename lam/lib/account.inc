@@ -917,7 +917,14 @@ function compareDN(&$a, &$b) {
  * @return String formated time
  */
 function formatLDAPTimestamp($time) {
+	// Windows format:  20140118093807.0Z
+	// OpenLDAP format: 20140118093807Z
+	// cut off "Z"
 	$timeNumbers = substr($time, 0, -1);
+	// for Windows cut off ".0"
+	if (strpos($timeNumbers, '.') == (strlen($timeNumbers) - 2)) {
+		$timeNumbers = substr($timeNumbers, 0, -2);
+	}
 	$dateTime = DateTime::createFromFormat('YmdHis', $timeNumbers, new DateTimeZone('UTC'));
 	$dateTime->setTimezone(getTimeZone());
 	return $dateTime->format('d.m.Y H:i:s');
