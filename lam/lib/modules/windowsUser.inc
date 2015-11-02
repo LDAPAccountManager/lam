@@ -96,7 +96,7 @@ class windowsUser extends baseModule implements passwordService {
 			'l', 'mail', 'otherTelephone', 'physicalDeliveryOfficeName', 'postalCode', 'postOfficeBox', 'sn', 'st',
 			'streetAddress', 'telephoneNumber', 'url', 'wWWHomePage', 'userAccountControl', 'profilePath', 'scriptPath',
 			'pwdLastSet', 'otherMailbox', 'homeDirectory', 'homeDrive', 'msSFU30Name', 'msSFU30NisDomain', 'pwdLastSet',
-			'lastLogonTimestamp'
+			'lastLogonTimestamp', 'accountExpires'
 		);
 		// help Entries
 		$return['help'] = array(
@@ -266,6 +266,18 @@ class windowsUser extends baseModule implements passwordService {
 				"Headline" => _('Last login'), 'attr' => 'lastLogonTimestamp',
 				"Text" => _('Time of user\'s last login.')
 			),
+			'accountExpires' => array(
+				"Headline" => _('Account expiration date'), 'attr' => 'accountExpires',
+				"Text" => _('This is the date when the account will expire.')
+			),
+			'accountExpiresUpload' => array(
+				"Headline" => _('Account expiration date'), 'attr' => 'accountExpires',
+				"Text" => _('This is the date when the account will expire. Format: DD-MM-YYYY')
+			),
+			'accountExpiresProfile' => array(
+				"Headline" => _('Account expiration'), 'attr' => 'accountExpires',
+				"Text" => _('Number of days after which the account will expire.')
+			),
 		);
 		// upload fields
 		$return['upload_columns'] = array(
@@ -408,6 +420,12 @@ class windowsUser extends baseModule implements passwordService {
 				'values' => _('yes') . ', ' . _('no')
 			),
 			array(
+				'name' => 'windowsUser_accountExpires',
+				'description' => _('Account expiration date'),
+				'help' => 'accountExpiresUpload',
+				'example' => _('21-11-2030'),
+			),
+			array(
 				'name' => 'windowsUser_requireCard',
 				'description' => _('Require smartcard'),
 				'help' => 'requireCard',
@@ -490,7 +508,13 @@ class windowsUser extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
 			$profileContainer->addElement(new htmlTableExtendedInputField(_('NIS domain'), 'windowsUser_msSFU30NisDomain', null, 'msSFU30NisDomain'), true);
 		}
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Account expiration'), 'windowsUser_accountExpires', null, 'accountExpiresProfile'), true);
 		$return['profile_options'] = $profileContainer;
+		// profile checks
+		$return['profile_checks']['windowsUser_accountExpires'] = array(
+			'type' => 'ext_preg',
+			'regex' => 'digit',
+			'error_message' => $this->messages['accountExpires'][0]);
 		// profile mappings
 		$return['profile_mappings'] = array(
 			'windowsUser_displayName' => 'displayName',
@@ -534,6 +558,7 @@ class windowsUser extends baseModule implements passwordService {
 			'password' => _('Password'),
 			'homeDrive' => _('Home drive'),
 			'homeDirectory' => _('Home directory'),
+			'accountExpires' => _('Account expiration date'),
 		);
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidesAMAccountName', true)) {
 			$return['PDF_fields']['sAMAccountName'] = _('User name (pre W2K)');
@@ -563,7 +588,8 @@ class windowsUser extends baseModule implements passwordService {
 			'postOfficeBox' => _('Post office box'),
 			'postalCode' => _('Postal code'),
 			'unicodePwd' => _('Password'),
-			'pwdLastSet' => _('Last password change (read-only)')
+			'pwdLastSet' => _('Last password change (read-only)'),
+			'accountExpires' => _('Account expiration date (read-only)'),
 		);
 		// possible self service read-only fields
 		$return['selfServiceReadOnlyFields'] = array('physicalDeliveryOfficeName', 'telephoneNumber',
@@ -638,6 +664,8 @@ class windowsUser extends baseModule implements passwordService {
 		$this->messages['homeDirectory'][1] = array('ERROR', _('Account %s:') . ' windowsUser_homeDirectory', _('Homedirectory contains invalid characters.'));
 		$this->messages['msSFU30Name'][0] = array('ERROR', _('NIS name'), _('NIS name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['msSFU30Name'][1] = array('ERROR', _('Account %s:') . ' windowsUser_msSFU30Name', _('NIS name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['accountExpires'][0] = array('ERROR', _('Account expiration'), _('Please enter a number.'));
+		$this->messages['accountExpires'][1] = array('ERROR', _('Account %s:') . ' windowsUser_accountExpires', _('Please enter a valid date in format DD-MM-YYYY.'));
 	}
 
 	/**
@@ -767,6 +795,14 @@ class windowsUser extends baseModule implements passwordService {
 		// require smartcard
 		$requireCard = windowsUser::isSmartCardRequired($this->attributes);
 		$containerLeft->addElement(new htmlTableExtendedInputCheckbox('requireCard', $requireCard, _("Require smartcard"), 'requireCard'), true);
+		// account expiration
+		$containerLeft->addElement(new htmlOutputText(_('Account expiration date')));
+		$accountExpiresGroup = new htmlGroup();
+		$accountExpiresGroup->addElement(new htmlOutputText($this->formatAccountExpires()));
+		$accountExpiresGroup->addElement(new htmlSpacer('5px', null));
+		$accountExpiresGroup->addElement(new htmlAccountPageButton(get_class($this), 'accountExpires', 'edit', _('Change')));
+		$containerLeft->addElement($accountExpiresGroup);
+		$containerLeft->addElement(new htmlHelpLink('accountExpires'), true);
 		// last password change
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepwdLastSet')) {
 			$containerLeft->addElement(new htmlOutputText(_('Last password change')));
@@ -1045,6 +1081,115 @@ class windowsUser extends baseModule implements passwordService {
 			$this->attributes['msSFU30NisDomain'][0] = $_POST['msSFU30NisDomain'];
 		}
 
+		return $return;
+	}
+
+	/**
+	* This function will create the meta HTML code to show a page to change account expiration.
+	*
+	* @return htmlElement meta HTML code
+	*/
+	function display_html_accountExpires() {
+		$return = new htmlTable();
+		$attr = 'accountExpires';
+		$text = _('Account expiration date');
+		$help = "accountExpires";
+		$datetime = new DateTime('now', getTimeZone());
+		if (!empty($this->attributes[$attr][0]) && !($this->attributes[$attr][0] == '0')) {
+			$datetime = $this->getFileTime($this->attributes[$attr][0]);
+		}
+		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
+		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
+		for ( $i=2003; $i<=2050; $i++ ) $year[] = $i;
+		$return->addElement(new htmlOutputText($text));
+		$return->addElement(new htmlSelect('expire_day', $mday, array($datetime->format('d'))));
+		$return->addElement(new htmlSelect('expire_mon', $mon, array($datetime->format('m'))));
+		$return->addElement(new htmlSelect('expire_yea', $year, array($datetime->format('Y'))));
+		$return->addElement(new htmlHelpLink($help), true);
+		if ($this->getAccountContainer()->getAccountModule('shadowAccount') != null) {
+			$return->addElement(new htmlTableExtendedInputCheckbox('syncShadow', false, _('Set also for Shadow')), true);
+		}
+		if ($this->getAccountContainer()->getAccountModule('heimdalKerberos') != null) {
+			$return->addElement(new htmlTableExtendedInputCheckbox('syncHeimdal', false, _('Set also for Kerberos')), true);
+		}
+		if ($this->getAccountContainer()->getAccountModule('mitKerberos') != null) {
+			$return->addElement(new htmlTableExtendedInputCheckbox('syncMIT', false, _('Set also for Kerberos')), true);
+		}
+		if ($this->getAccountContainer()->getAccountModule('mitKerberosStructural') != null) {
+			$return->addElement(new htmlTableExtendedInputCheckbox('syncMITStructural', false, _('Set also for Kerberos')), true);
+		}
+		$return->addElement(new htmlSpacer(null, '10px'), true);
+		$buttons = new htmlTable();
+		$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'change' . $attr, _('Change')));
+		if (isset($this->attributes[$attr][0])) {
+			$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'del' . $attr, _('Remove')));
+		}
+		$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back' . $attr, _('Cancel')));
+		$buttons->colspan = 6;
+		$return->addElement($buttons);
+		return $return;
+	}
+
+	/**
+	* Processes user input of the account expiration page.
+	*
+	* @return array list of info/error messages
+	*/
+	function process_accountExpires() {
+		$return = array();
+		// find button name
+		$buttonName = '';
+		$postKeys = array_keys($_POST);
+		for ($i = 0; $i < sizeof($postKeys); $i++) {
+			if (strpos($postKeys[$i], 'form_subpage_windowsUser_attributes_') !== false) {
+				$buttonName = $postKeys[$i];
+			}
+		}
+		if (($buttonName == '') || (strpos($buttonName, '_back') !== false)) return array();
+		$attr = 'accountExpires';
+		// determine action
+		if (strpos($buttonName, '_change') !== false) {
+			// set new time
+			$this->setExpirationDate($_POST['expire_yea'], $_POST['expire_mon'], $_POST['expire_day']);
+			// sync other modules
+			if (isset($_POST['syncShadow']) && ($_POST['syncShadow'] == 'on')) {
+				$this->getAccountContainer()->getAccountModule('shadowAccount')->setExpirationDate(
+					$_POST['expire_yea'], $_POST['expire_mon'], $_POST['expire_day']);
+			}
+			if (isset($_POST['syncHeimdal']) && ($_POST['syncHeimdal'] == 'on')) {
+				$this->getAccountContainer()->getAccountModule('heimdalKerberos')->setExpirationDate(
+					$_POST['expire_yea'], $_POST['expire_mon'], $_POST['expire_day']);
+			}
+			if (isset($_POST['syncMIT']) && ($_POST['syncMIT'] == 'on')) {
+				$this->getAccountContainer()->getAccountModule('mitKerberos')->setExpirationDate(
+					$_POST['expire_yea'], $_POST['expire_mon'], $_POST['expire_day']);
+			}
+			if (isset($_POST['syncMITStructural']) && ($_POST['syncMITStructural'] == 'on')) {
+				$this->getAccountContainer()->getAccountModule('mitKerberosStructural')->setExpirationDate(
+					$_POST['expire_yea'], $_POST['expire_mon'], $_POST['expire_day']);
+			}
+		}
+		elseif (strpos($buttonName, '_del') !== false) {
+			// remove attribute value
+			unset($this->attributes[$attr]);
+			// sync other modules
+			if (isset($_POST['syncShadow']) && ($_POST['syncShadow'] == 'on')) {
+				$this->getAccountContainer()->getAccountModule('shadowAccount')->setExpirationDate(
+					null, null, null);
+			}
+			if (isset($_POST['syncHeimdal']) && ($_POST['syncHeimdal'] == 'on')) {
+				$this->getAccountContainer()->getAccountModule('heimdalKerberos')->setExpirationDate(
+					null, null, null);
+			}
+			if (isset($_POST['syncMIT']) && ($_POST['syncMIT'] == 'on')) {
+				$this->getAccountContainer()->getAccountModule('mitKerberos')->setExpirationDate(
+					null, null, null);
+			}
+			if (isset($_POST['syncMITStructural']) && ($_POST['syncMITStructural'] == 'on')) {
+				$this->getAccountContainer()->getAccountModule('mitKerberosStructural')->setExpirationDate(
+					null, null, null);
+			}
+		}
 		return $return;
 	}
 
@@ -1388,6 +1533,18 @@ class windowsUser extends baseModule implements passwordService {
 					$this->setIsNeverExpiring($userAccountControlAttr, $booleanOptions[$rawAccounts[$i][$ids['windowsUser_noExpire']]]);
 				}
 			}
+			// account expiration
+			if (!empty($rawAccounts[$i][$ids['windowsUser_accountExpires']])) {
+				if (get_preg($rawAccounts[$i][$ids['windowsUser_accountExpires']], 'date')) {
+					$dateParts = explode('-', $rawAccounts[$i][$ids['windowsUser_accountExpires']]);
+					$partialAccounts[$i]['accountExpires'] = $this->buildExpirationDate($dateParts[2], $dateParts[1], $dateParts[0]);
+				}
+				else {
+					$errMsg = $this->messages['accountExpires'][1];
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+			}
 			// require smartcard
 			if ($rawAccounts[$i][$ids['windowsUser_requireCard']] != "") {
 				if (!isset($booleanOptions[$rawAccounts[$i][$ids['windowsUser_requireCard']]])) {
@@ -1641,6 +1798,7 @@ class windowsUser extends baseModule implements passwordService {
 			$noExpire = _('yes');
 		}
 		$this->addPDFKeyValue($return, 'noExpire', _('Password does not expire'), $noExpire);
+		$this->addPDFKeyValue($return, 'accountExpires', _('Account expiration date'), $this->formatAccountExpires());
 		$requireCard = _('no');
 		if ($this->isSmartCardRequired($this->attributes)) {
 			$requireCard = _('yes');
@@ -1721,6 +1879,14 @@ class windowsUser extends baseModule implements passwordService {
 		if (!empty($profile['windowsUser_otherMailbox'][0])) {
 			$this->attributes['otherMailbox'] = preg_split('/;[ ]*/', $profile['windowsUser_otherMailbox'][0]);
 		}
+		// account expiration date
+		if (!empty($profile['windowsUser_accountExpires'][0]) && is_numeric($profile['windowsUser_accountExpires'][0])) {
+			$numDays = $profile['windowsUser_accountExpires'][0];
+			$date = new DateTime('now', getTimeZone());
+			$toAdd = new DateInterval('P' . $numDays . 'D');
+			$dateTarget = $date->add($toAdd);
+			$this->setExpirationDate($dateTarget->format('Y'), $dateTarget->format('m'), $dateTarget->format('d'));
+		}
 	}
 
 	/**
@@ -1769,6 +1935,11 @@ class windowsUser extends baseModule implements passwordService {
 		$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('pwdLastSet', _('Last password change'))));
 		$row->addField(new htmlOutputText($this->formatPwdLastSet($attributes)));
 		$return['pwdLastSet'] = $row;
+		// account expiration
+		$row = new htmlResponsiveRow();
+		$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('accountExpires', _('Account expiration date'))));
+		$row->addField(new htmlOutputText($this->formatAccountExpires($attributes)));
+		$return['accountExpires'] = $row;
 		return $return;
 	}
 
@@ -2191,6 +2362,23 @@ class windowsUser extends baseModule implements passwordService {
 	}
 
 	/**
+	 * Returns the formatted value for the account expiration date.
+	 *
+	 * @param array $attributes user attributes ($this->attributes if null)
+	 * @return String date or -
+	 */
+	private function formatAccountExpires($attributes = null) {
+		if ($attributes == null) {
+			$attributes = &$this->attributes;
+		}
+		if (empty($attributes['accountExpires'][0]) || ($attributes['accountExpires'][0] == '0')
+				|| ($attributes['accountExpires'][0] == '9223372036854775807')) {
+			return ' - ';
+		}
+		return $this->formatFileTime($attributes['accountExpires'][0]);
+	}
+
+	/**
 	 * Formats a value in file time (100 ns since 1601-01-01).
 	 *
 	 * @param integer $value time value
@@ -2205,6 +2393,55 @@ class windowsUser extends baseModule implements passwordService {
 		$time->add(new DateInterval('PT' . $seconds . 'S'));
 		$time->setTimezone(getTimeZone());
 		return $time->format('Y-m-d H:i:s');
+	}
+
+	/**
+	 * Returns a value in file time (100 ns since 1601-01-01).
+	 *
+	 * @param integer $value time value as int
+	 * @return DateTime time value
+	 */
+	private function getFileTime($value) {
+		if (empty($value)) {
+			return null;
+		}
+		$seconds = substr($value, 0, -7);
+		$time = new DateTime('1601-01-01', new DateTimeZone('UTC'));
+		$time->add(new DateInterval('PT' . $seconds . 'S'));
+		$time->setTimezone(getTimeZone());
+		return $time;
+	}
+
+	/**
+	 * Sets the expiration date of this account.
+	 * If all parameters are null the expiration date will be removed.
+	 *
+	 * @param String $year year (e.g. 2040)
+	 * @param String $month month (e.g. 8)
+	 * @param String $day day (e.g. 27)
+	 */
+	public function setExpirationDate($year, $month, $day) {
+		if (($year == null) && ($month == null) && ($day == null)) {
+			unset($this->attributes['accountExpires']);
+			return;
+		}
+		$this->attributes['accountExpires'][0] = $this->buildExpirationDate($year, $month, $day);
+	}
+
+	/**
+	 * Builds the value for the expiration date.
+	 *
+	 * @param int $year year
+	 * @param int $month month
+	 * @param int $day day
+	 */
+	private function buildExpirationDate($year, $month, $day) {
+		$timeBase = new DateTime('1601-01-01', getTimeZone());
+		$time = new DateTime("$year-$month-$day", getTimeZone());
+		$timeDiff = $time->diff($timeBase);
+		$days = $timeDiff->format('%a');
+		$seconds = $days * 24 * 3600 - ($time->getOffset());
+		return $seconds . '0000000';
 	}
 
 }

@@ -399,6 +399,10 @@ class shadowAccount extends baseModule implements passwordService {
 				$this->getAccountContainer()->getAccountModule('sambaSamAccount')->setExpirationDate(
 					$_POST['shadowExpire_yea'], $_POST['shadowExpire_mon'], $_POST['shadowExpire_day']);
 			}
+			if (isset($_POST['syncWindows']) && ($_POST['syncWindows'] == 'on')) {
+				$this->getAccountContainer()->getAccountModule('windowsUser')->setExpirationDate(
+					$_POST['shadowExpire_yea'], $_POST['shadowExpire_mon'], $_POST['shadowExpire_day']);
+			}
 			if (isset($_POST['syncHeimdal']) && ($_POST['syncHeimdal'] == 'on')) {
 				$this->getAccountContainer()->getAccountModule('heimdalKerberos')->setExpirationDate(
 					$_POST['shadowExpire_yea'], $_POST['shadowExpire_mon'], $_POST['shadowExpire_day']);
@@ -416,6 +420,10 @@ class shadowAccount extends baseModule implements passwordService {
 		elseif (isset($_POST['form_subpage_shadowAccount_attributes_del'])) {
 			unset($this->attributes['shadowExpire']);
 			// sync other modules
+			if (isset($_POST['syncWindows']) && ($_POST['syncWindows'] == 'on')) {
+				$this->getAccountContainer()->getAccountModule('windowsUser')->setExpirationDate(
+					null, null, null);
+			}
 			if (isset($_POST['syncSamba']) && ($_POST['syncSamba'] == 'on')) {
 				$this->getAccountContainer()->getAccountModule('sambaSamAccount')->setExpirationDate(
 					null, null, null);
@@ -460,6 +468,9 @@ class shadowAccount extends baseModule implements passwordService {
 		$return->addElement(new htmlHelpLink('shadowExpire'), true);
 		if ($this->getAccountContainer()->getAccountModule('sambaSamAccount') != null) {
 			$return->addElement(new htmlTableExtendedInputCheckbox('syncSamba', false, _('Set also for Samba 3')), true);
+		}
+		if ($this->getAccountContainer()->getAccountModule('windowsUser') != null) {
+			$return->addElement(new htmlTableExtendedInputCheckbox('syncWindows', false, _('Set also for Windows')), true);
 		}
 		if ($this->getAccountContainer()->getAccountModule('heimdalKerberos') != null) {
 			$return->addElement(new htmlTableExtendedInputCheckbox('syncHeimdal', false, _('Set also for Kerberos')), true);
