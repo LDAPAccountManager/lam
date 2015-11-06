@@ -63,7 +63,7 @@ class lamList {
 
 	/** sort column name */
 	protected $sortColumn;
-	
+
 	/** sort direction: 1 for ascending, -1 for descending */
 	protected $sortDirection = 1;
 
@@ -75,7 +75,7 @@ class lamList {
 
 	/** LDAP entries */
 	protected $entries;
-	
+
 	/** sort mapping for entries array(original index => sorted index) */
 	protected $sortMapping;
 
@@ -87,19 +87,19 @@ class lamList {
 
 	/** list of account specific labels */
 	protected $labels;
-	
+
 	/** configuration options */
 	private $configOptions;
-	
+
 	/** tabindex for GUI elements */
 	protected $tabindex = 1;
 
 	/** ID for list size config option */
 	const LIST_SIZE_OPTION_NAME = "L_SIZE";
-	
+
 	/** prefix for virtual (non-LDAP) attributes */
 	const VIRTUAL_ATTRIBUTE_PREFIX = 'lam_virtual_';
-	
+
 	/**
 	 * Constructor
 	 *
@@ -116,7 +116,7 @@ class lamList {
 		$this->configOptions = $this->listGetAllConfigOptions();
 		$this->listReadOptionsFromCookie();
 	}
-	
+
 	/**
 	 * Reads the list options from the cookie value.
 	 */
@@ -222,7 +222,7 @@ class lamList {
 					$foundFilter = $_POST["filter" . strtolower($this->attrArray[$i])];
 				}
 				if (isset($foundFilter) && ($foundFilter != '')) {
-					if (preg_match('/^([\p{L}\p{N} _\\*\\$\\.@-])+$/iu', $foundFilter)) { // \p{L} matches any Unicode letter
+					if (preg_match('/^([\p{L}\p{N} _\\*\\$\\.:@-])+$/iu', $foundFilter)) { // \p{L} matches any Unicode letter
 						$this->filters[strtolower($this->attrArray[$i])] = $foundFilter;
 					}
 					else {
@@ -232,7 +232,7 @@ class lamList {
 			}
 		}
 	}
-	
+
 	/**
 	* Determines the sort mapping and stores it in $this->sortMapping.
 	* The sort mapping is used to display the right rows when the account table is created.
@@ -332,10 +332,10 @@ class lamList {
 		}
 		echo "</tr></table>\n";
 	}
-	
+
 	/**
 	 * Returns the filter as text to be used as URL parameter.
-	 * 
+	 *
 	 * @return String filter text
 	 */
 	protected function getFilterAsTextForURL() {
@@ -401,10 +401,10 @@ class lamList {
 		}
 		echo "</tr></thead>\n";
 	}
-	
+
 	/**
 	 * Prints the content of a single attribute filter area.
-	 * 
+	 *
 	 * @param String $attrName attribute name
 	 * @param boolean $clearFilter true if filter value should be cleared
 	 */
@@ -421,12 +421,12 @@ class lamList {
 		$filterInput->setOnKeyPress("SubmitForm('apply_filter', event);");
 		parseHtml(null, $filterInput, array(), false, $this->tabindex, $this->type);
 	}
-	
+
 	/**
 	 * Returns if the given attribute can be filtered.
 	 * If filtering is not possible then no filter box will be displayed.
 	 * By default all attributes can be filtered.
-	 * 
+	 *
 	 * @param String $attr attribute name
 	 * @return boolean filtering possible
 	 */
@@ -488,10 +488,10 @@ class lamList {
 		echo "</tbody>\n";
 		echo "</table>\n";
 	}
-	
+
 	/**
 	 * Prints the tool image links (e.g. edit and delete) for each account.
-	 * 
+	 *
 	 * @param array $account LDAP attributes
 	 * @param String $id account ID
 	 */
@@ -528,7 +528,7 @@ class lamList {
 		parseHtml(null, $group, array(), false, $this->tabindex, $this->type);
 		echo "</td>\n";
 	}
-	
+
 	/**
 	 * Prints the content of a cell in the account list for a given LDAP entry and attribute.
 	 *
@@ -546,12 +546,12 @@ class lamList {
 			else {
 				echo htmlspecialchars($entry[$attribute], ENT_QUOTES, "UTF-8");
 			}
-		}		
+		}
 	}
 
 	/**
 	* Manages all POST actions (e.g. button pressed) for the account lists.
-	* 
+	*
 	* @return String HTML fragment to insert into beginning of account list
 	*/
 	protected function listDoPost() {
@@ -669,7 +669,7 @@ class lamList {
 		}
 		return '';
 	}
-	
+
 	/**
 	 * Shows the page where the user may select the PDF options.
 	 *
@@ -689,7 +689,7 @@ class lamList {
 		}
 		// get possible PDF structures
 		$pdf_structures = getPDFStructureDefinitions($this->type);
-		
+
 		$this->listPrintHeader();
 
 		echo "<div class=\"ui-tabs-nav " . $this->type . "-bright\">";
@@ -699,12 +699,12 @@ class lamList {
 			$refresh = '&amp;refresh=true';
 		}
 		echo "<form action=\"list.php?type=" . $this->type . $refresh . "\" method=\"post\">\n";
-		
+
 		$container = new htmlTable();
 		$container->addElement(new htmlSubTitle(_('Create PDF file')), true);
-		
+
 		$container->addElement(new htmlTableExtendedSelect('pdf_structure', $pdf_structures, array('default'), _('PDF structure'), '405'), true);
-		
+
 		$container->addElement(new htmlSpacer(null, '5px'), true);
 		$container->addElement(new htmlOutputText(_('Create for')));
 		// check if account object is already in session
@@ -721,7 +721,7 @@ class lamList {
 			);
 			$container->addElement(new htmlRadio('createFor', $radioOptions, 'DN'), true);
 		}
-		
+
 		$container->addElement(new htmlSpacer(null, '10px'), true);
 		$buttonContainer = new htmlTable();
 		$buttonContainer->colspan = 3;
@@ -734,15 +734,15 @@ class lamList {
 		}
 		$container->addElement(new htmlHiddenInput('clickedAccount', $id));
 		addSecurityTokenToMetaHTML($container);
-		
+
 		parseHtml(null, $container, array(), false, $this->tabindex, $this->type);
-		
+
 		$this->listPrintFooter();
 	}
 
 	/**
 	* Prints a combobox with possible sub-DNs.
-	* 
+	*
 	* @return htmlGroup OU selection (may be empty)
 	*/
 	protected function listShowOUSelection() {
@@ -798,7 +798,7 @@ class lamList {
 				$left->addElement($uploadButton);
 			}
 		}
-		
+
 		// OU selection and settings
 		$right = new htmlGroup();
 		$right->alignment = htmlElement::ALIGN_RIGHT;
@@ -811,30 +811,30 @@ class lamList {
 		$settingsLink->setOnClick('listShowSettingsDialog(\'' . _('Change list settings') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\');');
 		$settingsLink->setTitle(_('Change settings'));
 		$right->addElement($settingsLink);
-		
+
 		$this->addExtraInputElementsToTopArea($left, $right);
 		$table->addElement($left);
 		$table->addElement($right);
 		parseHtml(null, $table, array(), false, $this->tabindex, $this->type);
 	}
-	
+
 	/**
 	 * Can be used by subclasses to add e.g. additional buttons to the top area.
-	 * 
+	 *
 	 * @param htmlGroup $left left part
 	 * @param htmlGroup $right right part
 	 */
 	protected function addExtraInputElementsToTopArea(&$left, &$right) {
 		// only used by subclasses
 	}
-	
+
 	/**
 	 * Prints the HTML header.
 	 */
 	protected function listPrintHeader() {
 		include '../main_header.php';
 	}
-	
+
 	/**
 	 * Prints the HTML footer.
 	 */
@@ -978,10 +978,10 @@ class lamList {
 		$typeObj = new $this->type();
 		$this->possibleSuffixes = $typeObj->getSuffixList();
 	}
-	
+
 	/**
 	 * Builds the LDAP filter based on the filter entries in the GUI.
-	 * 
+	 *
 	 * @return String LDAP filter
 	 */
 	protected function buildLDAPAttributeFilter() {
@@ -991,7 +991,7 @@ class lamList {
 		}
 		return $text;
 	}
-	
+
 	/**
 	 * Forces a refresh of the LDAP data.
 	 * Function must be called before $this->refresh option is checked to load new LDAP data (e.g. in listGetParams).
@@ -1002,17 +1002,17 @@ class lamList {
 			unset($_GET['norefresh']);
 		}
 	}
-	
+
 	/**
 	 * Returns a list of additional LDAP attributes that should be read.
 	 * This can be used to show additional data even if the user selected other attributes to show in the list.
-	 * 
+	 *
 	 * @return array additional attribute names
 	 */
 	protected function getAdditionalLDAPAttributesToRead() {
 		return array();
 	}
-	
+
 	/**
 	 * Returns a list of lamListTool objects to display next to the edit/delete buttons.
 	 *
@@ -1021,7 +1021,7 @@ class lamList {
 	protected function getAdditionalTools() {
 		return array();
 	}
-	
+
 	/**
 	 * Returns a list of possible configuration options.
 	 *
@@ -1041,21 +1041,21 @@ class lamList {
 		echo "<div id=\"settingsDialog\" class=\"hidden\">\n";
 		echo "<form id=\"settingsDialogForm\" action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
 		echo '<table width="100%"><tr><td>';
-		
+
 		$configContainer = new htmlTable();
 		for ($i = 0; $i < sizeof($this->configOptions); $i++) {
 			$configContainer->mergeTableElements($this->configOptions[$i]->getMetaHTML());
 		}
 		$configContainer->addElement(new htmlHiddenInput('saveConfigOptions', 'ok'));
 		addSecurityTokenToMetaHTML($configContainer);
-		
+
 		parseHtml('', $configContainer, array(), false, $this->tabindex, $this->type);
 
 		echo "</td></tr></table>\n";
 		echo '</form>';
 		echo "</div>\n";
 	}
-	
+
 	/**
 	 * Returns the configuration option with the given ID.
 	 *
@@ -1069,7 +1069,7 @@ class lamList {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Called when the configuration options changed.
 	 */
@@ -1114,14 +1114,14 @@ class lamList {
  * @author Roland Gruber
  */
 class lamListTool {
-	
+
 	/** tool name */
 	private $name;
 	/** tool image */
 	private $image;
 	/** link target */
 	private $target;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -1159,7 +1159,7 @@ class lamListTool {
 	/**
 	 * Returns the PHP file (relative to 'templates/lists') which will be the target for this tool.
 	 * The target page will be opened with two GET parameters: DN and type (e.g. user)
-	 * 
+	 *
 	 * @return String page file (e.g. 'mytool.php')
 	 */
 	public function getLinkTarget() {
@@ -1175,12 +1175,12 @@ class lamListTool {
  * @author Roland Gruber
  */
 abstract class lamListOption {
-	
+
 	/** unique ID */
 	private $ID;
 	/** option value */
 	private $value;
-	
+
 	/**
 	 * Creates a new config option.
 	 *
@@ -1190,7 +1190,7 @@ abstract class lamListOption {
 	public function __construct($ID) {
 		$this->ID = $ID;
 	}
-	
+
 	/**
 	 * Returns the option ID.
 	 *
@@ -1199,14 +1199,14 @@ abstract class lamListOption {
 	public function getID() {
 		return $this->ID;
 	}
-	
+
 	/**
 	 * Fills the config option from POST data.
-	 * 
+	 *
 	 * @return array list of StatusMessages (array(<type>, <head line>, <body>))
 	 */
 	public abstract function fillFromPostData();
-	
+
 	/**
 	 * Returns the option value. The value must not contain "=" and ";".
 	 *
@@ -1215,7 +1215,7 @@ abstract class lamListOption {
 	public function getValue() {
 		return $this->value;
 	}
-	
+
 	/**
 	 * Sets the config option value. The value must not contain "=" and ";".
 	 *
@@ -1227,14 +1227,14 @@ abstract class lamListOption {
 		}
 		$this->value = $value;
 	}
-	
+
 	/**
 	 * Returns the meta HTML data to display this option.
-	 * 
+	 *
 	 * @return htmlTable meta HTML
 	 */
 	public abstract function getMetaHTML();
-	
+
 }
 
 /**
@@ -1244,10 +1244,10 @@ abstract class lamListOption {
  * @author Roland Gruber
  */
 class lamBooleanListOption extends lamListOption {
-	
+
 	/** option name */
 	private $name;
-	
+
 	/**
 	 * Creates a new boolean option.
 	 *
@@ -1259,7 +1259,7 @@ class lamBooleanListOption extends lamListOption {
 		parent::__construct($ID);
 		$this->name = $name;
 	}
-	
+
 	/**
 	 * Returns if this option is selected.
 	 *
@@ -1268,10 +1268,10 @@ class lamBooleanListOption extends lamListOption {
 	public function isSelected() {
 		return ($this->getValue() === "1");
 	}
-	
+
 	/**
 	 * Fills the config option from POST data.
-	 * 
+	 *
 	 * @return array list of StatusMessages (array(<type>, <head line>, <body>))
 	 */
 	public function fillFromPostData() {
@@ -1285,7 +1285,7 @@ class lamBooleanListOption extends lamListOption {
 
 	/**
 	 * Returns the meta HTML data to display this option.
-	 * 
+	 *
 	 * @return htmlTable meta HTML
 	 */
 	public function getMetaHTML() {
@@ -1303,14 +1303,14 @@ class lamBooleanListOption extends lamListOption {
  * @author Roland Gruber
  */
 class lamSelectListOption extends lamListOption {
-	
+
 	/** option name */
 	private $name;
 	/** possible select options */
 	private $options;
 	/** help ID */
 	private $helpID;
-	
+
 	/**
 	 * Creates a new selection list option.
 	 *
@@ -1324,7 +1324,7 @@ class lamSelectListOption extends lamListOption {
 		$this->name = $name;
 		$this->options = $options;
 	}
-	
+
 	/**
 	 * Sets the help ID.
 	 *
@@ -1333,10 +1333,10 @@ class lamSelectListOption extends lamListOption {
 	public function setHelpID($id) {
 		$this->helpID = $id;
 	}
-	
+
 	/**
 	 * Fills the config option from POST data.
-	 * 
+	 *
 	 * @return array list of StatusMessages (array(<type>, <head line>, <body>))
 	 */
 	public function fillFromPostData() {
@@ -1350,7 +1350,7 @@ class lamSelectListOption extends lamListOption {
 
 	/**
 	 * Returns the meta HTML data to display this option.
-	 * 
+	 *
 	 * @return htmlTable meta HTML
 	 */
 	public function getMetaHTML() {
@@ -1358,7 +1358,7 @@ class lamSelectListOption extends lamListOption {
 		$return->addElement(new htmlTableExtendedSelect($this->getID(), $this->options, array($this->getValue()), $this->name, $this->helpID));
 		return $return;
 	}
-	
+
 }
 
 ?>
