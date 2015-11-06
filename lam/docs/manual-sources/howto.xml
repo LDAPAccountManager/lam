@@ -7236,7 +7236,7 @@ OK (10 msec)</programlisting>
     <section>
       <title>Preparations</title>
 
-      <section>
+      <section id="openldapAcls">
         <title>OpenLDAP ACLs</title>
 
         <para>By default only a few administrative users have write access to
@@ -7267,7 +7267,7 @@ OK (10 msec)</programlisting>
         <para><emphasis role="bold">access to</emphasis></para>
 
         <para><emphasis role="bold">
-        attrs=mail,sn,givenName,telephoneNumber,mobile,facsimileTelephoneNumber,street,postalAddress,postOfficeBox,postalCode,roomNumber,shadowLastChange</emphasis></para>
+        attrs=mail,sn,givenName,telephoneNumber,mobile,facsimileTelephoneNumber,street,postalAddress,postOfficeBox,postalCode,roomNumber,shadowLastChange,passwordSelfResetAnswer,passwordSelfResetQuestion,passwordSelfResetBackupMail</emphasis></para>
 
         <para><emphasis role="bold"> by self write</emphasis></para>
 
@@ -8074,8 +8074,9 @@ OK (10 msec)</programlisting>
 
         <para><emphasis role="bold">Troubleshooting:</emphasis></para>
 
-        <para>If you get messages like "Unable to find user account." this can
-        have multiple reasons:</para>
+        <para>1. You get messages like "Unable to find user account."</para>
+
+        <para>This can have multiple reasons:</para>
 
         <itemizedlist>
           <listitem>
@@ -8094,6 +8095,15 @@ OK (10 msec)</programlisting>
 
         <para>Turn on logging in LAM's main configuration settings. The exact
         reason is logged on notice level.</para>
+
+        <para>2. You do not see security question and answer fields when
+        logged into self service.</para>
+
+        <para>Probably, the user does not have the object class
+        "passwordSelfReset" set. You can do this in admin interface. If you
+        have multiple users to change then use the <link
+        linkend="toolMultiEdit">Multi Edit Tool</link> to add the object
+        class.</para>
 
         <para><emphasis role="bold">New fields for self service
         page</emphasis></para>
