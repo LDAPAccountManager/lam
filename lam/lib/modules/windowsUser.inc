@@ -96,7 +96,8 @@ class windowsUser extends baseModule implements passwordService {
 			'l', 'mail', 'otherTelephone', 'physicalDeliveryOfficeName', 'postalCode', 'postOfficeBox', 'sn', 'st',
 			'streetAddress', 'telephoneNumber', 'url', 'wWWHomePage', 'userAccountControl', 'profilePath', 'scriptPath',
 			'pwdLastSet', 'otherMailbox', 'homeDirectory', 'homeDrive', 'msSFU30Name', 'msSFU30NisDomain', 'pwdLastSet',
-			'lastLogonTimestamp', 'accountExpires'
+			'lastLogonTimestamp', 'accountExpires', 'jpegPhoto', 'title', 'carLicense', 'employeeNumber', 'employeeType',
+			'businessCategory', 'departmentNumber', 'ou', 'o', 'manager'
 		);
 		// help Entries
 		$return['help'] = array(
@@ -277,6 +278,62 @@ class windowsUser extends baseModule implements passwordService {
 			'accountExpiresProfile' => array(
 				"Headline" => _('Account expiration'), 'attr' => 'accountExpires',
 				"Text" => _('Number of days after which the account will expire.')
+			),
+			'jpegPhoto' => array(
+				"Headline" => _("Add photo"), 'attr' => 'jpegPhoto',
+				"Text" => _("Please select an image file to upload. It must be in JPG format (.jpg/.jpeg).")
+			),
+			'title' => array (
+				"Headline" => _("Job title"), 'attr' => 'title',
+				"Text" => _("Job title of user: President, department manager, ...")
+			),
+			'carLicense' => array(
+				"Headline" => _("Car license"), 'attr' => 'carLicense',
+				"Text" => _("This can be used to specify if the user has a car license.")
+			),
+			'employeeNumber' => array(
+				"Headline" => _("Employee number"), 'attr' => 'employeeNumber',
+				"Text" => _("The user's unique employee number.")
+			),
+			'employeeType' => array (
+				"Headline" => _("Employee type"), 'attr' => 'employeeType',
+				"Text" => _("Employee type: Contractor, Employee, Intern, Temp, External, ...")
+			),
+			'businessCategory' => array(
+				"Headline" => _("Business category"), 'attr' => 'businessCategory',
+				"Text" => _("Business category (e.g. Administration, IT-Services, Manangement, ...)")
+			),
+			'businessCategoryList' => array(
+				"Headline" => _("Business category"), 'attr' => 'businessCategory',
+				"Text" => _("Business category (e.g. Administration, IT-Services, Manangement, ...)") . '. ' . _("Multiple values are separated by semicolon.")
+			),
+			'departmentNumber' => array(
+				"Headline" => _("Department"), 'attr' => 'departmentNumber',
+				"Text" => _("Here you can enter the user's department.")
+			),
+			'departmentNumberList' => array(
+				"Headline" => _("Department"), 'attr' => 'departmentNumber',
+				"Text" => _("Here you can enter the user's department.") . ' ' . _("Multiple values are separated by semicolon.")
+			),
+			'ou' => array(
+				"Headline" => _("Organisational unit"), 'attr' => 'ou',
+				"Text" => _("The user's organisational unit.")
+			),
+			'ouList' => array(
+				"Headline" => _("Organisational unit"), 'attr' => 'ou',
+				"Text" => _("The user's organisational unit.") . ' ' . _('Multiple values are separated by semicolon.')
+			),
+			'o' => array(
+				"Headline" => _("Organisation"), 'attr' => 'o',
+				"Text" => _("The user's organisation name.")
+			),
+			'oList' => array(
+				"Headline" => _("Organisation"), 'attr' => 'o',
+				"Text" => _("The user's organisation name.") . ' ' . _('Multiple values are separated by semicolon.')
+			),
+			'manager' => array (
+				"Headline" => _("Manager"), 'attr' => 'manager',
+				"Text" => _("This is the LDAP DN of the user's manager. Use this property to represent hierarchies in your company.")
 			),
 		);
 		// upload fields
@@ -496,6 +553,78 @@ class windowsUser extends baseModule implements passwordService {
 				'example' => _('domain'),
 			);
 		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_title',
+				'description' => _('Job title'),
+				'help' => 'title',
+				'example' => _('President'),
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidecarLicense', true)) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_carLicense',
+				'description' => _('Car license'),
+				'help' => 'carLicense',
+				'example' => _('yes'),
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeNumber', true)) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_employeeNumber',
+				'description' => _('Employee number'),
+				'help' => 'employeeNumber',
+				'example' => '123456',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeType', true)) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_employeeType',
+				'description' => _('Employee type'),
+				'help' => 'employeeType',
+				'example' => _('Temp'),
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_businessCategory',
+				'description' => _('Business category'),
+				'help' => 'businessCategoryList',
+				'example' => _('Administration'),
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_departmentNumber',
+				'description' => _('Department'),
+				'help' => 'departmentNumberList',
+				'example' => _('Administration'),
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_ou',
+				'description' => _('Organisational unit'),
+				'help' => 'ouList',
+				'example' => _('Administration'),
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideo', true)) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_o',
+				'description' => _('Organisation'),
+				'help' => 'oList',
+				'example' => _('YourCompany'),
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemanager', true)) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_manager',
+				'description' => _('Manager'),
+				'help' => 'manager',
+				'example' => _('uid=smiller,ou=People,dc=company,dc=com'),
+			);
+		}
 		// profile options
 		$profileContainer = new htmlTable();
 		$profileContainer->addElement(new htmlTableExtendedInputField(_('Common name'), 'windowsUser_cn', null, 'cn'), true);
@@ -509,12 +638,51 @@ class windowsUser extends baseModule implements passwordService {
 			$profileContainer->addElement(new htmlTableExtendedInputField(_('NIS domain'), 'windowsUser_msSFU30NisDomain', null, 'msSFU30NisDomain'), true);
 		}
 		$profileContainer->addElement(new htmlTableExtendedInputField(_('Account expiration'), 'windowsUser_accountExpires', null, 'accountExpiresProfile'), true);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
+			$profileContainer->addElement(new htmlTableExtendedInputField(_('Department'), 'windowsUser_departmentNumber', null, 'departmentNumberList'), true);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
+			$profileContainer->addElement(new htmlTableExtendedInputField(_('Organisational unit'), 'windowsUser_ou', null, 'ouList'), true);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideo', true)) {
+			$profileContainer->addElement(new htmlTableExtendedInputField(_('Organisation'), 'windowsUser_o', null, 'oList'), true);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)) {
+			$profileContainer->addElement(new htmlTableExtendedInputField(_('Job title'), 'windowsUser_title', null, 'title'), true);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeType', true)) {
+			$profileContainer->addElement(new htmlTableExtendedInputField(_('Employee type'), 'windowsUser_employeeType', null, 'employeeType'), true);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)) {
+		    $profileContainer->addElement(new htmlTableExtendedInputField(_('Business category'), 'windowsUser_businessCategory', null, 'businessCategory'), true);
+		}
 		$return['profile_options'] = $profileContainer;
 		// profile checks
 		$return['profile_checks']['windowsUser_accountExpires'] = array(
 			'type' => 'ext_preg',
 			'regex' => 'digit',
 			'error_message' => $this->messages['accountExpires'][0]);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)) {
+			$return['profile_checks']['windowsUser_title'] = array(
+				'type' => 'ext_preg',
+				'regex' => 'title',
+				'error_message' => $this->messages['title'][0]);
+			$return['profile_mappings']['windowsUser_title'] = 'title';
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeType', true)) {
+			$return['profile_checks']['windowsUser_employeeType'] = array(
+				'type' => 'ext_preg',
+				'regex' => 'employeeType',
+				'error_message' => $this->messages['employeeType'][0]);
+			$return['profile_mappings']['windowsUser_employeeType'] = 'employeeType';
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)) {
+		    $return['profile_checks']['windowsUser_businessCategory'] = array(
+		    	'type' => 'ext_preg',
+		    	'regex' => 'businessCategory',
+		    	'error_message' => $this->messages['businessCategory'][0]);
+		    $return['profile_mappings']['windowsUser_businessCategory'] = 'businessCategory';
+		}
 		// profile mappings
 		$return['profile_mappings'] = array(
 			'windowsUser_displayName' => 'displayName',
@@ -575,8 +743,37 @@ class windowsUser extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidelastLogonTimestamp')) {
 			$return['PDF_fields']['lastLogonTimestamp'] = _('Last login');
 		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)) {
+			$return['PDF_fields']['title'] = _('Job title');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidecarLicense', true)) {
+			$return['PDF_fields']['carLicense'] = _('Car license');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeNumber', true)) {
+			$return['PDF_fields']['employeeNumber'] = _('Employee number');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeType', true)) {
+			$return['PDF_fields']['employeeType'] = _('Employee type');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)) {
+			$return['PDF_fields']['businessCategory'] = _('Business category');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
+			$return['PDF_fields']['departmentNumber'] = _('Department');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
+			$return['PDF_fields']['ou'] = _('Organisational unit');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideo', true)) {
+			$return['PDF_fields']['o'] = _('Organisation');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemanager', true)) {
+			$return['PDF_fields']['manager'] = _('Manager');
+		}
 		// self service search attributes
-		$return['selfServiceSearchAttributes'] = array('sAMAccountName', 'userPrincipalName');
+		$return['selfServiceSearchAttributes'] = array('sAMAccountName', 'userPrincipalName',
+				'employeeNumber'
+		);
 		// self service field settings
 		$return['selfServiceFieldSettings'] = array(
 			'physicalDeliveryOfficeName' => _('Office name'),
@@ -594,24 +791,6 @@ class windowsUser extends baseModule implements passwordService {
 		// possible self service read-only fields
 		$return['selfServiceReadOnlyFields'] = array('physicalDeliveryOfficeName', 'telephoneNumber',
 			'wWWHomePage', 'streetAddress', 'st', 'l', 'postOfficeBox', 'postalCode');
-		// configuration options
-		$configContainer = new htmlTable();
-		$configContainerHead = new htmlTable();
-		$configContainerHead->addElement(new htmlTableExtendedInputTextarea('windowsUser_domains', '', 30, 3, _('Domains'), 'domains'));
-		$configContainer->addElement($configContainerHead, true);
-		$configContainer->addVerticalSpace('10px');
-		$configHiddenGroup = new htmlGroup();
-		$configHiddenGroup->addElement(new htmlOutputText(_('Hidden options')));
-		$configHiddenGroup->addElement(new htmlHelpLink('hiddenOptions'));
-		$configContainer->addElement($configHiddenGroup, true);
-		$configContainerOptions = new htmlTable();
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidesAMAccountName', true, _('User name (pre W2K)'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidemsSFU30Name', true, _('NIS name'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidemsSFU30NisDomain', true, _('NIS domain'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidepwdLastSet', false, _('Last password change'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidelastLogonTimestamp', false, _('Last login'), null, false));
-		$configContainer->addElement($configContainerOptions, true);
-		$return['config_options']['all'] = $configContainer;
 		return $return;
 	}
 
@@ -666,6 +845,12 @@ class windowsUser extends baseModule implements passwordService {
 		$this->messages['msSFU30Name'][1] = array('ERROR', _('Account %s:') . ' windowsUser_msSFU30Name', _('NIS name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['accountExpires'][0] = array('ERROR', _('Account expiration'), _('Please enter a number.'));
 		$this->messages['accountExpires'][1] = array('ERROR', _('Account %s:') . ' windowsUser_accountExpires', _('Please enter a valid date in format DD-MM-YYYY.'));
+		$this->messages['title'][0] = array('ERROR', _('Job title'), _('Please enter a valid job title!'));
+		$this->messages['title'][1] = array('ERROR', _('Account %s:') . ' windowsUser_title', _('Please enter a valid job title!'));
+		$this->messages['employeeType'][0] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
+		$this->messages['employeeType'][1] = array('ERROR', _('Account %s:') . ' windowsUser_employeeType', _('Please enter a valid employee type!'));
+		$this->messages['businessCategory'][0] = array('ERROR', _('Business category'), _('Please enter a valid business category!'));
+		$this->messages['businessCategory'][1] = array('ERROR', _('Account %s:') . ' windowsUser_businessCategory', _('Please enter a valid business category!'));
 	}
 
 	/**
@@ -1887,6 +2072,24 @@ class windowsUser extends baseModule implements passwordService {
 			$dateTarget = $date->add($toAdd);
 			$this->setExpirationDate($dateTarget->format('Y'), $dateTarget->format('m'), $dateTarget->format('d'));
 		}
+		// departments
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber')) {
+			if (isset($profile['windowsUser_departmentNumber'][0]) && $profile['windowsUser_departmentNumber'][0] != '') {
+				$departments = explode(';', $profile['windowsUser_departmentNumber'][0]);
+				// remove extra spaces and set attributes
+				$this->attributes['departmentNumber'] = array_map('trim', $departments);
+			}
+		}
+		// organizational unit
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideou') && isset($profile['windowsUser_ou'][0])) {
+			$oList = preg_split('/;[ ]*/', $profile['windowsUser_ou'][0]);
+			$this->attributes['ou'] = $oList;
+		}
+		// organisation
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideo') && isset($profile['windowsUser_o'][0])) {
+			$oList = preg_split('/;[ ]*/', $profile['windowsUser_o'][0]);
+			$this->attributes['o'] = $oList;
+		}
 	}
 
 	/**
@@ -2442,6 +2645,51 @@ class windowsUser extends baseModule implements passwordService {
 		$days = $timeDiff->format('%a');
 		$seconds = $days * 24 * 3600 - ($time->getOffset());
 		return $seconds . '0000000';
+	}
+
+	/**
+	* Returns a list of configuration options.
+	*
+	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
+	* <br>
+	* The field names are used as keywords to load and save settings.
+	* We recommend to use the module name as prefix for them (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
+	*
+	* @param array $scopes account types (user, group, host)
+	* @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
+	* @return mixed htmlElement or array of htmlElement
+	*
+	* @see htmlElement
+	*/
+	public function get_configOptions($scopes, $allScopes) {
+		// configuration options
+		$configContainer = new htmlTable();
+		$configContainerHead = new htmlTable();
+		$configContainerHead->addElement(new htmlTableExtendedInputTextarea('windowsUser_domains', '', 30, 3, _('Domains'), 'domains'));
+		$configContainer->addElement($configContainerHead, true);
+		$configContainer->addVerticalSpace('10px');
+		$configHiddenGroup = new htmlGroup();
+		$configHiddenGroup->addElement(new htmlOutputText(_('Hidden options')));
+		$configHiddenGroup->addElement(new htmlHelpLink('hiddenOptions'));
+		$configContainer->addElement($configHiddenGroup, true);
+		$configContainerOptions = new htmlTable();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidesAMAccountName', true, _('User name (pre W2K)'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidemsSFU30Name', true, _('NIS name'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidemsSFU30NisDomain', true, _('NIS domain'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidepwdLastSet', false, _('Last password change'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidelastLogonTimestamp', false, _('Last login'), null, false), true);
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidejpegPhoto', true, _('Photo'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidetitle', true, _('Job title'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidecarLicense', true, _('Car license'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideemployeeNumber', true, _('Employee number'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideemployeeType', true, _('Employee type'), null, false), true);
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidebusinessCategory', true, _('Business category'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidedepartmentNumber', true, _('Department'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideou', true, _('Organisational unit'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideo', true, _('Organisation'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidemanager', true, _('Manager'), null, false));
+		$configContainer->addElement($configContainerOptions, true);
+		return $configContainer;
 	}
 
 }
