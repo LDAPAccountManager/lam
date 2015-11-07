@@ -1133,7 +1133,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideSambaPwdLastSet')) {
 					$sambaPwdLastSet = '';
 					if (!empty($this->attributes['sambaPwdLastSet'][0])) {
-						$time = new DateTime('@' . $this->attributes['sambaPwdLastSet'][0], getTimeZone());
+						$time = new DateTime('@' . $this->attributes['sambaPwdLastSet'][0], new DateTimeZone('UTC'));
+						$time->setTimezone(getTimeZone());
 						$sambaPwdLastSet = $time->format('d.m.Y H:i');
 					}
 					$return->addElement(new htmlOutputText(_('Last password change')));
@@ -2252,7 +2253,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 		if (in_array('sambaPwdLastSet', $fields)) {
 			$sambaPwdLastSet = '';
 			if (isset($attributes['sambaPwdLastSet'][0])) {
-				$time = new DateTime('@' . $attributes['sambaPwdLastSet'][0], getTimeZone());
+				$time = new DateTime('@' . $attributes['sambaPwdLastSet'][0], new DateTimeZone('UTC'));
+				$time->setTimezone(getTimeZone());
 				$sambaPwdLastSet = $time->format('d.m.Y H:i');
 			}
 			$row = new htmlResponsiveRow();
@@ -2437,7 +2439,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 					return $return;
 				}
 				$timeVal = $this->attributes['sambaPwdLastSet'][0] + $domains[$i]->maxPwdAge;
-				$time = new DateTime('@' . $timeVal, getTimeZone());
+				$time = new DateTime('@' . $timeVal, new DateTimeZone('UTC'));
+				$time->setTimezone(getTimeZone());
 				return $time->format('d.m.Y H:i');
 			}
 		}
@@ -2466,7 +2469,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 					return $return;
 				}
 				$timeVal = $this->attributes['sambaPwdLastSet'][0] + $domains[$i]->minPwdAge;
-				$time = new DateTime('@' . $timeVal, getTimeZone());
+				$time = new DateTime('@' . $timeVal, new DateTimeZone('UTC'));
+				$time->setTimezone(getTimeZone());
 				return $time->format('d.m.Y H:i');
 			}
 		}

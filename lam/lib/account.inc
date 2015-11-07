@@ -1293,11 +1293,14 @@ function getTimeZoneOffsetHours() {
  * @return DateTimeZone time zone
  */
 function getTimeZone() {
-	if (empty($_SESSION['config'])) {
-		return new DateTimeZone('UTC');
+	$timeZoneName = 'UTC';
+	if (!empty($_SESSION['config'])) {
+		$timeZoneName = $_SESSION['config']->getTimeZone();
 	}
-	$timeZone = $_SESSION['config']->getTimeZone();
-	return new DateTimeZone($timeZone);
+	elseif (!empty($_SESSION['selfServiceProfile']->timeZone)) {
+		$timeZoneName = $_SESSION['selfServiceProfile']->timeZone;
+	}
+	return new DateTimeZone($timeZoneName);
 }
 
 /**

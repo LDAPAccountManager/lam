@@ -374,6 +374,8 @@ class selfServiceProfile {
 
 	public $followReferrals = 0;
 
+	public $timeZone = 'Europe/London';
+
 	/**
 	 * Constructor
 	 *
@@ -410,6 +412,7 @@ class selfServiceProfile {
 		$this->language = 'en_GB.utf8';
 		$this->enforceLanguage = true;
 		$this->followReferrals = 0;
+		$this->timeZone = 'Europe/London';
 	}
 
 }

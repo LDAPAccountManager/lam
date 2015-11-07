@@ -5,6 +5,7 @@ December 2015 5.2
   - IMAP: allow to specify initial folders to create
   - LAM Pro:
    -> Users: allow to manage IP addresses with ipHost module
+   -> Self Service: added time zone setting in self service profile
 
 
 31.08.2015 5.1

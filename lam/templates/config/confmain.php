@@ -201,7 +201,7 @@ echo "<div style=\"display: none;\">\n";
 	echo "<input name=\"moduleSettings\" type=\"submit\" value=\" \">";
 	echo "<input name=\"jobs\" type=\"submit\" value=\" \">";
 echo "</div>\n";
-	
+
 // tabs
 echo '<div class="ui-tabs ui-widget ui-widget-content ui-corner-all">';
 
@@ -326,6 +326,7 @@ $timezones = array_merge($timezones, DateTimeZone::listIdentifiers(DateTimeZone:
 $timezones = array_merge($timezones, DateTimeZone::listIdentifiers(DateTimeZone::EUROPE));
 $timezones = array_merge($timezones, DateTimeZone::listIdentifiers(DateTimeZone::INDIAN));
 $timezones = array_merge($timezones, DateTimeZone::listIdentifiers(DateTimeZone::PACIFIC));
+$timezones = array_merge($timezones, DateTimeZone::listIdentifiers(DateTimeZone::UTC));
 $languageSettingsContent->addElement(new htmlTableExtendedSelect('timeZone', $timezones, array($conf->getTimeZone()), _('Time zone'), '213'), true);
 $languageSettings = new htmlFieldset($languageSettingsContent, _("Language settings"), '../../graphics/language.png');
 $container->addElement($languageSettings, true);
@@ -367,31 +368,31 @@ $container->addElement(new htmlSpacer(null, '10px'), true);
 // LAM Pro settings
 if (isLAMProVersion()) {
 	$pwdMailContent = new htmlTable();
-	
+
 	$pwdMailFrom = new htmlTableExtendedInputField(_('From address'), 'pwdResetMail_from', $conf->getLamProMailFrom(), '550');
 	$pwdMailContent->addElement($pwdMailFrom, true);
-	
+
 	$pwdMailReplyTo = new htmlTableExtendedInputField(_('Reply-to address'), 'pwdResetMail_replyTo', $conf->getLamProMailReplyTo(), '554');
 	$pwdMailContent->addElement($pwdMailReplyTo, true);
-	
+
 	$pwdMailSubject = new htmlTableExtendedInputField(_('Subject'), 'pwdResetMail_subject', $conf->getLamProMailSubject(), '551');
 	$pwdMailContent->addElement($pwdMailSubject, true);
-	
+
 	$pwdMailIsHTML = false;
 	if ($conf->getLamProMailIsHTML() == 'true') {
 		$pwdMailIsHTML = true;
 	}
 	$pwdMailContent->addElement(new htmlTableExtendedInputCheckbox('pwdResetMail_isHTML',$pwdMailIsHTML , _('HTML format'), '553'), true);
-	
+
 	$pwdMailAllowAlternate = true;
 	if ($conf->getLamProMailAllowAlternateAddress() == 'false') {
 		$pwdMailAllowAlternate = false;
 	}
 	$pwdMailContent->addElement(new htmlTableExtendedInputCheckbox('pwdResetMail_allowAlternate',$pwdMailAllowAlternate , _('Allow alternate address'), '555'), true);
-	
+
 	$pwdMailBody = new htmlTableExtendedInputTextarea('pwdResetMail_body', $conf->getLamProMailText(), 50, 4, _('Text'), '552');
 	$pwdMailContent->addElement($pwdMailBody, true);
-	
+
 	$pwdMailFieldset = new htmlFieldset($pwdMailContent, _("Password mail settings"), '../../graphics/mailBig.png');
 	$container->addElement($pwdMailFieldset, true);
 	$container->addElement(new htmlSpacer(null, '10px'), true);
@@ -583,7 +584,7 @@ function checkInput() {
 	$conf->setLoginSearchSuffix($_POST['loginSearchSuffix']);
 	$conf->setLoginSearchPassword($_POST['loginSearchPassword']);
 	$conf->setLoginSearchDN($_POST['loginSearchDN']);
-	if ($_POST['loginMethod'] == LAMConfig::LOGIN_SEARCH) { // check only if search method 
+	if ($_POST['loginMethod'] == LAMConfig::LOGIN_SEARCH) { // check only if search method
 		if (!$conf->setLoginSearchDN($_POST['loginSearchDN'])) {
 			$errors[] = array("ERROR", _("Please enter a valid bind user."));
 		}
@@ -638,7 +639,7 @@ function checkInput() {
 			$toolSettings[$toolConfigID] = 'false';
 		}
 	}
-	$conf->setToolSettings($toolSettings);	
+	$conf->setToolSettings($toolSettings);
 	// check if password was changed
 	if (isset($_POST['passwd1']) && ($_POST['passwd1'] != '')) {
 		if ($_POST['passwd1'] != $_POST['passwd2']) {
