@@ -647,7 +647,7 @@ class lamUserList extends lamList {
 		// expire dates
 		elseif ($attribute == 'shadowexpire') {
 			if (!empty($entry[$attribute][0])) {
-				$time = new DateTime('@' . $entry[$attribute][0] * 24 * 3600, new DateTimeZone($_SESSION['config']->getTimeZone()));
+				$time = new DateTime('@' . $entry[$attribute][0] * 24 * 3600, getTimeZone());
 				echo $time->format('d.m.Y');
 			}
 		}

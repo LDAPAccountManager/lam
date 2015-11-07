@@ -553,16 +553,16 @@ class shadowAccount extends baseModule implements passwordService {
 	 * @return list of PDF entries (array(<PDF key> => <PDF lines>))
 	 */
 	function get_pdfEntries($pdfKeys) {
-		$timeZone = new DateTimeZone($_SESSION['config']->getTimeZone());
+		$timeZone = getTimeZone();
 		$shadowLastChange = '';
 		if (!empty($this->attributes['shadowLastChange'][0])) {
 			$time = new DateTime('@' . $this->attributes['shadowLastChange'][0]*24*3600, $timeZone);
-			$shadowLastChange = $time->format('d. m. Y');
+			$shadowLastChange = $time->format('d.m.Y');
 		}
 		$shadowExpire = '';
 		if (!empty($this->attributes['shadowExpire'][0])) {
 			$time = new DateTime('@' . $this->attributes['shadowExpire'][0]*24*3600);
-			$shadowExpire = $time->format('d. m. Y');
+			$shadowExpire = $time->format('d.m.Y');
 		}
 		$return = array();
 		$this->addPDFKeyValue($return, 'shadowLastChange', _('Last password change'), $shadowLastChange);

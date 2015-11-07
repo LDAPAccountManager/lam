@@ -1283,8 +1283,7 @@ function getCallingURL() {
  * @return int offset
  */
 function getTimeZoneOffsetHours() {
-	$timeZone = $_SESSION['config']->getTimeZone();
-	$dtz = new DateTimeZone($timeZone);
+	$dtz = getTimeZone();
 	return round($dtz->getOffset(new DateTime('UTC')) / 3600);
 }
 
