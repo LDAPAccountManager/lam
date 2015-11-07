@@ -335,6 +335,14 @@ class windowsUser extends baseModule implements passwordService {
 				"Headline" => _("Manager"), 'attr' => 'manager',
 				"Text" => _("This is the LDAP DN of the user's manager. Use this property to represent hierarchies in your company.")
 			),
+			'crop' => array(
+				"Headline" => _('Image cropping'),
+				"Text" => _('Uploaded images will be cropped to these maximum values.')
+			),
+			'photoUpload' => array(
+				"Headline" => _("Add photo"), 'attr' => 'jpegPhoto',
+				"Text" => _("Please select an image file to upload. It must be in JPG format (.jpg/.jpeg).")
+			),
 		);
 		// upload fields
 		$return['upload_columns'] = array(
@@ -851,6 +859,10 @@ class windowsUser extends baseModule implements passwordService {
 		$this->messages['employeeType'][1] = array('ERROR', _('Account %s:') . ' windowsUser_employeeType', _('Please enter a valid employee type!'));
 		$this->messages['businessCategory'][0] = array('ERROR', _('Business category'), _('Please enter a valid business category!'));
 		$this->messages['businessCategory'][1] = array('ERROR', _('Account %s:') . ' windowsUser_businessCategory', _('Please enter a valid business category!'));
+		$this->messages['file'][0] = array('ERROR', _('No file selected.'));
+		$this->messages['file'][1] = array('ERROR', _('Please upload a .jpg/.jpeg file.'));
+		$this->messages['file'][2] = array('ERROR', _('Unable to process this file.'));
+		$this->messages['file'][3] = array('ERROR', _('File is too large. Maximum allowed size is %s kB.'));
 	}
 
 	/**
@@ -1034,6 +1046,33 @@ class windowsUser extends baseModule implements passwordService {
 
 		$containerRight = new htmlTable();
 		$containerRight->alignment = htmlElement::ALIGN_TOP;
+		// photo
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidejpegPhoto', true)) {
+			$imageContainer = new htmlTable();
+			$imageContainer->alignment = htmlElement::ALIGN_TOP;
+			$photoFile = '../../graphics/userDefault.png';
+			$noPhoto = true;
+			if (isset($this->attributes['jpegPhoto'][0])) {
+				$jpeg_filename = 'jpg' . getRandomNumber() . '.jpg';
+				$outjpeg = @fopen(dirname(__FILE__) . '/../../tmp/' . $jpeg_filename, "wb");
+				fwrite($outjpeg, $this->attributes['jpegPhoto'][0]);
+				fclose ($outjpeg);
+				$photoFile = '../../tmp/' . $jpeg_filename;
+				$noPhoto = false;
+			}
+			$img = new htmlImage($photoFile);
+			$img->setCSSClasses(array('photo'));
+			$imageContainer->addElement($img, true);
+			if ($noPhoto) {
+				$imageContainer->addElement(new htmlAccountPageButton(get_class($this), 'photo', 'open', _('Add photo')));
+			}
+			else {
+				$imageContainer->addElement(new htmlButton('delPhoto', _('Delete photo')));
+			}
+			$containerRight->addElement($imageContainer, true);
+			$containerRight->addElement(new htmlSpacer(null, '20px'), true);
+		}
+		// groups
 		$containerRight->addElement(new htmlSubTitle(_('Groups')), true);
 		$containerRight->addElement(new htmlAccountPageButton(get_class($this), 'group', 'edit', _('Edit groups')), true);
 		$containerRight->addElement(new htmlSpacer(null, '10px'), true);
@@ -1458,6 +1497,79 @@ class windowsUser extends baseModule implements passwordService {
 			$this->groupList = array_delete($_POST['removegroups'], $this->groupList);
 		}
 		return array();
+	}
+
+	/**
+	* Displays the photo upload page.
+	*
+	* @return array meta HTML code
+	*/
+	function display_html_photo() {
+		$container = new htmlTable();
+		$label = _('Photo file (JPG format)');
+		if (extension_loaded('imagick')) {
+			$label = _('Photo file');
+		}
+		$container->addElement(new htmlTableExtendedInputFileUpload('photoFile', $label, 'photoUpload'), true);
+		$buttonContainer = new htmlTable();
+		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'submit', _('Add photo')));
+		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
+		$container->addElement($buttonContainer);
+		return $container;
+	}
+
+	/**
+	* Sets a new photo.
+	*/
+	function process_photo() {
+		if (!isset($_POST['form_subpage_' . get_class($this) . '_attributes_submit'])) {
+			return array();
+		}
+		$messages = array();
+		if ($_FILES['photoFile'] && ($_FILES['photoFile']['size'] > 0)) {
+			$name = $_FILES['photoFile']['name'];
+			$extension = strtolower(substr($name, strpos($name, '.') + 1));
+			if (!extension_loaded('imagick') && !($extension == 'jpg') && !($extension == 'jpeg')) {
+				$messages[] = $this->messages['file'][1];
+				return $messages;
+			}
+			$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
+			$data = fread($handle, 10000000);
+			if (!empty($this->moduleSettings['windowsUser_jpegPhoto_maxSize'][0]) && (strlen($data) > (1024 * $this->moduleSettings['windowsUser_jpegPhoto_maxSize'][0]))) {
+				$errMsg = $this->messages['file'][3];
+				$errMsg[] = null;
+				$errMsg[] = array($this->moduleSettings['windowsUser_jpegPhoto_maxSize'][0]);
+				return array($errMsg);
+			}
+			fclose($handle);
+			if (extension_loaded('imagick')) {
+				// convert to JPG if imagick extension is available
+				$image = new Imagick();
+				try {
+				$image->readImageBlob($data);
+				// resize if maximum values specified
+				if (!empty($this->moduleSettings['windowsUser_jpegPhoto_maxWidth'][0]) || !empty($this->moduleSettings['windowsUser_jpegPhoto_maxHeight'][0])) {
+					$maxWidth = empty($this->moduleSettings['windowsUser_jpegPhoto_maxWidth'][0]) ? $image->getimagewidth() : $this->moduleSettings['windowsUser_jpegPhoto_maxWidth'][0];
+					$maxHeight = empty($this->moduleSettings['windowsUser_jpegPhoto_maxHeight'][0]) ? $image->getimageheight() : $this->moduleSettings['windowsUser_jpegPhoto_maxHeight'][0];
+					$image->thumbnailimage($maxWidth, $maxHeight, true);
+				}
+				$image->setImageCompression(Imagick::COMPRESSION_JPEG);
+				$image->setImageFormat('jpeg');
+				$data = $image->getimageblob();
+				}
+				catch (Exception $e) {
+					$msg =  $this->messages['file'][2];
+					$msg[] = htmlspecialchars($e->getMessage());
+					$messages[] = $msg;
+					return $messages;
+				}
+			}
+			$this->attributes['jpegPhoto'][0] = $data;
+		}
+		else {
+			$messages[] = $this->messages['file'][0];
+		}
+		return $messages;
 	}
 
 	/**
@@ -2689,6 +2801,19 @@ class windowsUser extends baseModule implements passwordService {
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideo', true, _('Organisation'), null, false));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidemanager', true, _('Manager'), null, false));
 		$configContainer->addElement($configContainerOptions, true);
+		$advancedOptions = new htmlTable();
+		$advancedOptions->addElement(new htmlSubTitle(_('Photo')), true);
+		$photoTable = new htmlTable();
+		$photoTable->colspan = 2;
+		if (extension_loaded('imagick')) {
+			$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum width (px)'), 'windowsUser_jpegPhoto_maxWidth', null, 'crop'), true);
+			$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum height (px)'), 'windowsUser_jpegPhoto_maxHeight', null, 'crop'), true);
+		}
+		$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum file size (kB)'), 'windowsUser_jpegPhoto_maxSize'), true);
+		$advancedOptions->addElement($photoTable, true);
+		$advancedOptionsAccordion = new htmlAccordion('inetOrgPersonAdvancedOptions', array(_('Advanced options') => $advancedOptions), false);
+		$advancedOptionsAccordion->colspan = 5;
+		$configContainer->addElement($advancedOptionsAccordion);
 		return $configContainer;
 	}
 
