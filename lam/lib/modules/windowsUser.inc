@@ -55,6 +55,18 @@ class windowsUser extends baseModule implements passwordService {
 	private $pwdLastSet = null;
 	/** clear text password */
 	private $clearTextPassword;
+	/** cache for departments */
+	private $departmentCache = null;
+	/** organization cache */
+	private $oCache = null;
+	/** organizational unit cache */
+	private $ouCache = null;
+	/** title cache */
+	private $titleCache = null;
+	/** employee type cache */
+	private $employeeTypeCache = null;
+	/** business category cache */
+	private $businessCategoryCache = null;
 
 
 	/**
@@ -909,6 +921,7 @@ class windowsUser extends baseModule implements passwordService {
 	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
+		$this->initCache();
 		$containerLeft = new htmlTable();
 		$containerLeft->alignment = htmlElement::ALIGN_TOP;
 		if ($this->getAccountContainer()->isNewAccount && !isset($this->attributes['userAccountControl'][0])) {
@@ -947,7 +960,7 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addSimpleInputTextField($containerLeft, 'displayName', _('Display name'));
 		$this->addSimpleInputTextField($containerLeft, 'initials', _('Initials'));
 		$this->addSimpleInputTextField($containerLeft, 'description', _('Description'));
-
+		// address area
 		$containerLeft->addElement(new htmlSubTitle(_('Address')), true);
 		$this->addSimpleInputTextField($containerLeft, 'streetAddress', _('Street'), false, 20, true);
 		$this->addSimpleInputTextField($containerLeft, 'postOfficeBox', _('Post office box'));
@@ -955,7 +968,7 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addSimpleInputTextField($containerLeft, 'l', _('Location'));
 		$this->addSimpleInputTextField($containerLeft, 'st', _('State'));
 		$this->addSimpleInputTextField($containerLeft, 'physicalDeliveryOfficeName', _('Office name'));
-
+		// contact data area
 		$containerLeft->addElement(new htmlSubTitle(_('Contact data')), true);
 		$this->addSimpleInputTextField($containerLeft, 'mail', _('Email address'));
 		$this->addMultiValueInputTextField($containerLeft, 'otherMailbox', _('Email alias'));
@@ -963,7 +976,45 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addMultiValueInputTextField($containerLeft, 'otherTelephone', _('Other telephone numbers'));
 		$this->addSimpleInputTextField($containerLeft, 'wWWHomePage', _('Web site'));
 		$this->addMultiValueInputTextField($containerLeft, 'url', _('Other web sites'));
-
+		// work details area
+		if ($this->manageWorkDetails()) {
+			$containerLeft->addElement(new htmlSubTitle(_('Work details')), true);
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)) {
+				$this->addSimpleInputTextField($containerLeft, 'title', _('Job title'), false, null, false, array_slice($this->titleCache, 0, 300));
+			}
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidecarLicense', true)) {
+				$this->addSimpleInputTextField($containerLeft, 'carLicense', _('Car license'));
+			}
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeNumber', true)) {
+				$this->addSimpleInputTextField($containerLeft, 'employeeNumber', _('Employee number'));
+			}
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeType', true)) {
+				$this->addSimpleInputTextField($containerLeft, 'employeeType', _('Employee type'), false, null, false, array_slice($this->employeeTypeCache, 0, 300));
+			}
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory')) {
+				$this->addMultiValueInputTextField($containerLeft, 'businessCategory', _('Business category'), false, null, false, array_slice($this->businessCategoryCache, 0, 300));
+			}
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber')) {
+				$this->addMultiValueInputTextField($containerLeft, 'departmentNumber', _('Department'), false, null, false, array_slice($this->departmentCache, 0, 300));
+			}
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hideou')) {
+				$this->addMultiValueInputTextField($containerLeft, 'ou', _('Organisational unit'), false, null, false, array_slice($this->ouCache, 0, 300));
+			}
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hideo')) {
+				$this->addMultiValueInputTextField($containerLeft, 'o', _('Organisation'), false, null, false, array_slice($this->oCache, 0, 300));
+			}
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidemanager', true)) {
+				$containerLeft->addElement(new htmlOutputText(_('Manager')));
+				$managerGroup = new htmlGroup();
+				$managerVal = (empty($this->attributes['manager'][0])) ? '-' : getAbstractDN($this->attributes['manager'][0]);
+				$managerGroup->addElement(new htmlOutputText($managerVal));
+				$managerGroup->addElement(new htmlSpacer('5px', null));
+				$managerGroup->addElement(new htmlAccountPageButton(get_class($this), 'manager', 'change', _("Change")));
+				$containerLeft->addElement($managerGroup);
+				$containerLeft->addElement(new htmlHelpLink('manager'), true);
+			}
+		}
+		// account area
 		$containerLeft->addElement(new htmlSubTitle(_('Account')), true);
 		// locked out
 		$containerLeft->addElement(new htmlOutputText(_("Account is locked")));
@@ -1012,7 +1063,7 @@ class windowsUser extends baseModule implements passwordService {
 			$containerLeft->addElement(new htmlOutputText($this->formatLastLogonTimestamp()));
 			$containerLeft->addElement(new htmlHelpLink('lastLogonTimestamp'), true);
 		}
-
+		// user profile area
 		$containerLeft->addElement(new htmlSubTitle(_('User profile')), true);
 		// profile path
 		$this->addSimpleInputTextField($containerLeft, 'profilePath', _('Profile path'));
@@ -1093,6 +1144,24 @@ class windowsUser extends baseModule implements passwordService {
 		$container->addElement(new htmlSpacer('40px', null));
 		$container->addElement($containerRight);
 		return $container;
+	}
+
+	/**
+	 * Returns if any of the work details attributes should be managed.
+	 *
+	 * @return boolean has any work attributes to manage
+	 */
+	private function manageWorkDetails() {
+		$allHidden = $this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)
+				&& $this->isBooleanConfigOptionSet('windowsUser_hidecarLicense', true)
+				&& $this->isBooleanConfigOptionSet('windowsUser_hideemployeeNumber', true)
+				&& $this->isBooleanConfigOptionSet('windowsUser_hideemployeeType', true)
+				&& $this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)
+				&& $this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)
+				&& $this->isBooleanConfigOptionSet('windowsUser_hideou', true)
+				&& $this->isBooleanConfigOptionSet('windowsUser_hideo', true)
+				&& $this->isBooleanConfigOptionSet('windowsUser_hidemanager', true);
+		return !$allHidden;
 	}
 
 	/**
@@ -1304,7 +1373,38 @@ class windowsUser extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30Name', true)) {
 			$this->attributes['msSFU30NisDomain'][0] = $_POST['msSFU30NisDomain'];
 		}
-
+		// title
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidetitle')) {
+			$this->attributes['title'][0] = $_POST['title'];
+		}
+		// car license
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidecarLicense')) {
+			$this->attributes['carLicense'][0] = $_POST['carLicense'];
+		}
+		// employee number
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideemployeeNumber')) {
+			$this->attributes['employeeNumber'][0] = $_POST['employeeNumber'];
+		}
+		// employee type
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideemployeeType')) {
+			$this->attributes['employeeType'][0] = $_POST['employeeType'];
+		}
+		// business category
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidebusinessCategory')) {
+			$this->processMultiValueInputTextField('businessCategory', $return, 'businessCategory');
+		}
+		// department
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidedepartmentNumber')) {
+			$this->processMultiValueInputTextField('departmentNumber', $return);
+		}
+		// organizational unit
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideou')) {
+			$this->processMultiValueInputTextField('ou', $return);
+		}
+		// organisation
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideo')) {
+			$this->processMultiValueInputTextField('o', $return);
+		}
 		return $return;
 	}
 
@@ -1570,6 +1670,69 @@ class windowsUser extends baseModule implements passwordService {
 			$messages[] = $this->messages['file'][0];
 		}
 		return $messages;
+	}
+
+	/**
+	* This function will create the meta HTML code to show a page to change the manager attribute.
+	*
+	* @return htmlElement HTML meta data
+	*/
+	function display_html_manager() {
+		$return = new htmlTable();
+		if (!isset($this->attributes['manager'])) {
+			$this->attributes['manager'] = array();
+		}
+		// show list of possible new managers
+		$options = array();
+		$filter = get_ldap_filter('user');
+		$entries = searchLDAPByFilter('(|' . $filter . '(objectclass=organizationalRole))', array('dn'), array('user'));
+		for ($i = 0; $i < sizeof($entries); $i++) {
+			$entries[$i] = $entries[$i]['dn'];
+		}
+		// sort by DN
+		usort($entries, 'compareDN');
+		for ($i = 0; $i < sizeof($entries); $i++) {
+			$options[getAbstractDN($entries[$i])] = $entries[$i];
+		}
+		$selectedManager = array();
+		if (!empty($this->attributes['manager'][0])) {
+			$selectedManager[] = $this->attributes['manager'][0];
+		}
+		$size = 20;
+		if (sizeof($options) < 20) $size = sizeof($options);
+		$managerSelect = new htmlSelect('manager', $options, $selectedManager, $size);
+		$managerSelect->setHasDescriptiveElements(true);
+		$managerSelect->setRightToLeftTextDirection(true);
+		$managerSelect->setSortElements(false);
+		$managerSelect->setTransformSingleSelect(false);
+		$return->addElement($managerSelect, true);
+		$buttonTable = new htmlTable();
+		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'setManager', _('Change')));
+		$buttonTable->addSpace('5px');
+		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'removeManager', _('Remove')));
+		$buttonTable->addSpace('20px');
+		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'cancelManager', _('Cancel')));
+		$return->addElement($buttonTable);
+		return $return;
+	}
+
+	/**
+	* Processes user input of the manager page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @return array list of info/error messages
+	*/
+	function process_manager() {
+		$return = array();
+		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_removeManager'])) {
+			if (!empty($this->attributes['manager'])) {
+				unset($this->attributes['manager']);
+			}
+		}
+		elseif (isset($_POST['form_subpage_' . get_class($this) . '_attributes_setManager']) && isset($_POST['manager'])) {
+			$this->attributes['manager'][0] = $_POST['manager'];
+		}
+		return $return;
 	}
 
 	/**
@@ -2815,6 +2978,81 @@ class windowsUser extends baseModule implements passwordService {
 		$advancedOptionsAccordion->colspan = 5;
 		$configContainer->addElement($advancedOptionsAccordion);
 		return $configContainer;
+	}
+
+	/**
+	 * Loads cached data from LDAP such as departmets etc.
+	 */
+	private function initCache() {
+		if ($this->departmentCache != null) {
+			return;
+		}
+		$attrs = array();
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
+			$attrs[] = 'departmentNumber';
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
+			$attrs[] = 'ou';
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideo', true)) {
+			$attrs[] = 'o';
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)) {
+			$attrs[] = 'title';
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeType', true)) {
+			$attrs[] = 'employeeType';
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)) {
+			$attrs[] = 'businessCategory';
+		}
+		$departments = array();
+		$ous = array();
+		$os = array();
+		$titles = array();
+		$employeeTypes = array();
+		$businessCategories = array();
+		if (sizeof($attrs) > 0) {
+			$result = searchLDAPByFilter('(objectClass=user)', $attrs, array($this->get_scope()));
+			foreach ($result as $attributes) {
+				if (isset($attributes['departmentnumber'])) {
+					foreach ($attributes['departmentnumber'] as $val) {
+						$departments[] = $val;
+					}
+				}
+				if (isset($attributes['ou'])) {
+					foreach ($attributes['ou'] as $val) {
+						$ous[] = $val;
+					}
+				}
+				if (isset($attributes['o'])) {
+					foreach ($attributes['o'] as $val) {
+						$os[] = $val;
+					}
+				}
+				if (isset($attributes['title'])) {
+					foreach ($attributes['title'] as $val) {
+						$titles[] = $val;
+					}
+				}
+				if (isset($attributes['employeetype'])) {
+					foreach ($attributes['employeetype'] as $val) {
+						$employeeTypes[] = $val;
+					}
+				}
+				if (isset($attributes['businesscategory'])) {
+					foreach ($attributes['businesscategory'] as $val) {
+						$businessCategories[] = $val;
+					}
+				}
+			}
+		}
+		$this->departmentCache = array_values(array_unique($departments));
+		$this->oCache = array_values(array_unique($os));
+		$this->ouCache = array_values(array_unique($ous));
+		$this->titleCache = array_values(array_unique($titles));
+		$this->employeeTypeCache = array_values(array_unique($employeeTypes));
+		$this->businessCategoryCache = array_values(array_unique($businessCategories));
 	}
 
 }
