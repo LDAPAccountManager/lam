@@ -677,6 +677,18 @@ class windowsUser extends baseModule implements passwordService {
 		    $profileContainer->addElement(new htmlTableExtendedInputField(_('Business category'), 'windowsUser_businessCategory', null, 'businessCategory'), true);
 		}
 		$return['profile_options'] = $profileContainer;
+		// profile mappings
+		$return['profile_mappings'] = array(
+			'windowsUser_displayName' => 'displayName',
+			'windowsUser_cn' => 'cn',
+			'windowsUser_mail' => 'mail',
+			'windowsUser_scriptPath' => 'scriptPath',
+			'windowsUser_profilePath' => 'profilePath',
+			'windowsUser_homeDirectory' => 'homeDirectory',
+		);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
+			$return['profile_mappings']['windowsUser_msSFU30NisDomain'] = 'msSFU30NisDomain';
+		}
 		// profile checks
 		$return['profile_checks']['windowsUser_accountExpires'] = array(
 			'type' => 'ext_preg',
@@ -702,18 +714,6 @@ class windowsUser extends baseModule implements passwordService {
 		    	'regex' => 'businessCategory',
 		    	'error_message' => $this->messages['businessCategory'][0]);
 		    $return['profile_mappings']['windowsUser_businessCategory'] = 'businessCategory';
-		}
-		// profile mappings
-		$return['profile_mappings'] = array(
-			'windowsUser_displayName' => 'displayName',
-			'windowsUser_cn' => 'cn',
-			'windowsUser_mail' => 'mail',
-			'windowsUser_scriptPath' => 'scriptPath',
-			'windowsUser_profilePath' => 'profilePath',
-			'windowsUser_homeDirectory' => 'homeDirectory',
-		);
-		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
-			$return['profile_mappings']['windowsUser_msSFU30NisDomain'] = 'msSFU30NisDomain';
 		}
 		// available PDF fields
 		$return['PDF_fields'] = array(
@@ -871,6 +871,7 @@ class windowsUser extends baseModule implements passwordService {
 		$this->messages['employeeType'][1] = array('ERROR', _('Account %s:') . ' windowsUser_employeeType', _('Please enter a valid employee type!'));
 		$this->messages['businessCategory'][0] = array('ERROR', _('Business category'), _('Please enter a valid business category!'));
 		$this->messages['businessCategory'][1] = array('ERROR', _('Account %s:') . ' windowsUser_businessCategory', _('Please enter a valid business category!'));
+		$this->messages['manager'][0] = array('ERROR', _('Account %s:') . ' windowsUser_manager', _('This is not a valid DN!'));
 		$this->messages['file'][0] = array('ERROR', _('No file selected.'));
 		$this->messages['file'][1] = array('ERROR', _('Please upload a .jpg/.jpeg file.'));
 		$this->messages['file'][2] = array('ERROR', _('Unable to process this file.'));
@@ -1374,35 +1375,35 @@ class windowsUser extends baseModule implements passwordService {
 			$this->attributes['msSFU30NisDomain'][0] = $_POST['msSFU30NisDomain'];
 		}
 		// title
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidetitle', true)) {
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)) {
 			$this->attributes['title'][0] = $_POST['title'];
 		}
 		// car license
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidecarLicense', true)) {
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidecarLicense', true)) {
 			$this->attributes['carLicense'][0] = $_POST['carLicense'];
 		}
 		// employee number
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideemployeeNumber', true)) {
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeNumber', true)) {
 			$this->attributes['employeeNumber'][0] = $_POST['employeeNumber'];
 		}
 		// employee type
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideemployeeType', true)) {
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeType', true)) {
 			$this->attributes['employeeType'][0] = $_POST['employeeType'];
 		}
 		// business category
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidebusinessCategory', true)) {
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)) {
 			$this->processMultiValueInputTextField('businessCategory', $return, 'businessCategory');
 		}
 		// department
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidedepartmentNumber', true)) {
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
 			$this->processMultiValueInputTextField('departmentNumber', $return);
 		}
 		// organizational unit
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideou', true)) {
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
 			$this->processMultiValueInputTextField('ou', $return);
 		}
 		// organisation
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideo', true)) {
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideo', true)) {
 			$this->processMultiValueInputTextField('o', $return);
 		}
 		return $return;
@@ -2099,6 +2100,43 @@ class windowsUser extends baseModule implements passwordService {
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
 				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_msSFU30NisDomain', 'msSFU30NisDomain');
 			}
+			// title
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_title', 'title', 'title', $this->messages['title'][1], $errors);
+			}
+			// carLicense
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidecarLicense', true)) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_carLicense', 'carLicense');
+			}
+			// employee number
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeNumber', true)) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_employeeNumber', 'employeeNumber');
+			}
+			// employee type
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeType', true)) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_employeeType', 'employeeType',
+					'employeeType', $this->messages['employeeType'][1], $errors);
+			}
+			// business category
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_businessCategory', 'businessCategory', 'businessCategory', $this->messages['businessCategory'][1], $errors, '/;[ ]*/');
+			}
+			// departments
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_departmentNumber', 'departmentNumber', null, null, $errors, '/;[ ]*/');
+			}
+			// organisational unit
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_ou', 'ou', null, null, $errors, '/;[ ]*/');
+			}
+			// organisation
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hideo', true)) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_o', 'o', null, null, $errors, '/;[ ]*/');
+			}
+			// manager
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidemanager', true)) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_manager', 'manager', 'dn', $this->messages['manager'][0], $errors);
+			}
 		}
 		return $errors;
 	}
@@ -2248,6 +2286,15 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addSimplePDFField($return, 'wWWHomePage', _('Web site'));
 		$this->addSimplePDFField($return, 'msSFU30Name', _('NIS name'));
 		$this->addSimplePDFField($return, 'msSFU30NisDomain', _('NIS domain'));
+		$this->addSimplePDFField($return, 'title', _('Job title'));
+		$this->addSimplePDFField($return, 'carLicense', _('Car license'));
+		$this->addSimplePDFField($return, 'employeeNumber', _('Employee number'));
+		$this->addSimplePDFField($return, 'employeeType', _('Employee type'));
+		$this->addSimplePDFField($return, 'businessCategory', _('Business category'));
+		$this->addSimplePDFField($return, 'departmentNumber', _('Department'));
+		$this->addSimplePDFField($return, 'ou', _('Organisational unit'));
+		$this->addSimplePDFField($return, 'o', _('Organisation'));
+		$this->addSimplePDFField($return, 'manager', _('Manager'));
 		$deactivated = _('no');
 		if ($this->isDeactivated($this->attributes)) {
 			$deactivated = _('yes');
