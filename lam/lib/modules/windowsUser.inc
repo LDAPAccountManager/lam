@@ -991,16 +991,16 @@ class windowsUser extends baseModule implements passwordService {
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeType', true)) {
 				$this->addSimpleInputTextField($containerLeft, 'employeeType', _('Employee type'), false, null, false, array_slice($this->employeeTypeCache, 0, 300));
 			}
-			if (!$this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory')) {
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)) {
 				$this->addMultiValueInputTextField($containerLeft, 'businessCategory', _('Business category'), false, null, false, array_slice($this->businessCategoryCache, 0, 300));
 			}
-			if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber')) {
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
 				$this->addMultiValueInputTextField($containerLeft, 'departmentNumber', _('Department'), false, null, false, array_slice($this->departmentCache, 0, 300));
 			}
-			if (!$this->isBooleanConfigOptionSet('windowsUser_hideou')) {
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
 				$this->addMultiValueInputTextField($containerLeft, 'ou', _('Organisational unit'), false, null, false, array_slice($this->ouCache, 0, 300));
 			}
-			if (!$this->isBooleanConfigOptionSet('windowsUser_hideo')) {
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hideo', true)) {
 				$this->addMultiValueInputTextField($containerLeft, 'o', _('Organisation'), false, null, false, array_slice($this->oCache, 0, 300));
 			}
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidemanager', true)) {
@@ -1374,35 +1374,35 @@ class windowsUser extends baseModule implements passwordService {
 			$this->attributes['msSFU30NisDomain'][0] = $_POST['msSFU30NisDomain'];
 		}
 		// title
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidetitle')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidetitle', true)) {
 			$this->attributes['title'][0] = $_POST['title'];
 		}
 		// car license
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidecarLicense')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidecarLicense', true)) {
 			$this->attributes['carLicense'][0] = $_POST['carLicense'];
 		}
 		// employee number
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideemployeeNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideemployeeNumber', true)) {
 			$this->attributes['employeeNumber'][0] = $_POST['employeeNumber'];
 		}
 		// employee type
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideemployeeType')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideemployeeType', true)) {
 			$this->attributes['employeeType'][0] = $_POST['employeeType'];
 		}
 		// business category
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidebusinessCategory')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidebusinessCategory', true)) {
 			$this->processMultiValueInputTextField('businessCategory', $return, 'businessCategory');
 		}
 		// department
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidedepartmentNumber')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidedepartmentNumber', true)) {
 			$this->processMultiValueInputTextField('departmentNumber', $return);
 		}
 		// organizational unit
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideou')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideou', true)) {
 			$this->processMultiValueInputTextField('ou', $return);
 		}
 		// organisation
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideo')) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideo', true)) {
 			$this->processMultiValueInputTextField('o', $return);
 		}
 		return $return;
