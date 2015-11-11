@@ -292,6 +292,29 @@ $helpArray = array (
 					"Text" => _('Use this to enter an additional LDAP filter (e.g. "(cn!=admin)") to reduce the number of entries to modify.')),
 				"702" => array ("Headline" => _('Operations'),
 					"Text" => _('Please specify which attributes should be changed. The modify operation will also add an value if the attribute does not yet exist. To delete all values of an attribute please leave the value field empty.')),
+				// 800 - 899
+				// jobs
+				'800' => array(
+					"Headline" => _('From address'),
+					"Text" => _('This email address will be set as sender address of all mails. If empty the system default (php.ini) will be used.')
+				),
+				'801' => array(
+					"Headline" => _('Reply-to address'),
+					"Text" => _('This email address will be set as reply-to address of all mails.')
+				),
+				'802' => array(
+					"Headline" => _('Subject'),
+					"Text" => _('The subject of all mails.')
+				),
+				'803' => array(
+					"Headline" => _('Text'),
+					"Text" => _('The mail text of all mails.') .
+							_('You can use wildcards for LDAP attributes in the form @@attribute@@ (e.g. @@uid@@ for the user name).')
+				),
+				'804' => array(
+					"Headline" => _('Notification period'),
+					"Text" => _('Please enter the number of days before password expiration to send out the email.')
+				),
 );
 
 /* This is a sample help entry. Just copy this line an modify the values between the [] brackets.

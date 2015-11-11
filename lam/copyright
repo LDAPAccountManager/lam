@@ -7,9 +7,10 @@ time.
 * templates/lists/changePassword.php
 * templates/selfService/*
 * templates/config/jobs.php
-* lib/cron.*
-* lib/database.inc*
-* lib/jobs.inc*
+* lib/cron.inc
+* lib/database.inc
+* lib/jobs.inc
+* lib/passwordExpirationJob.inc
 * lib/modules/aliasEntry.inc
 * lib/modules/automount.inc
 * lib/modules/bindDLZ.inc
