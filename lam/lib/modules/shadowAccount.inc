@@ -764,6 +764,154 @@ class shadowAccount extends baseModule implements passwordService {
 		return $return;
 	}
 
+	/**
+	 * Returns a list of jobs that can be run.
+	 *
+	 * @param LAMConfig $config configuration
+	 * @return array list of jobs
+	 */
+	public function getSupportedJobs(&$config) {
+		return array(
+			new ShadowAccountPasswordNotifyJob()
+		);
+	}
+
+}
+
+if (interface_exists('\LAM\JOB\Job')) {
+
+	include_once dirname(__FILE__) . '/../passwordExpirationJob.inc';
+
+	/**
+	 * Job to notify users about password expiration.
+	 *
+	 * @package jobs
+	 */
+	class ShadowAccountPasswordNotifyJob extends \LAM\JOB\PasswordExpirationJob {
+
+		/**
+		 * Returns the technical name of the job.
+		 *
+		 * @return String name
+		 */
+		public function getName() {
+			return 'ShadowAccountPasswordNotifyJob';
+		}
+
+		/**
+		 * Returns the icon name of the job (relative to graphics folder).
+		 *
+		 * @return String icon
+		 */
+		public function getIcon() {
+			return 'mailBig.png';
+		}
+
+		/**
+		 * Returns the alias name of the job.
+		 *
+		 * @return String name
+		 */
+		public function getAlias() {
+			return _('Shadow: Notify users about password expiration');
+		}
+
+		/**
+		 * Returns the description of the job.
+		 *
+		 * @return String description
+		 */
+		public function getDescription() {
+			return _('This job sends out emails to inform your users that their passwords will expire soon.');
+		}
+
+		/**
+		 * Searches for users in LDAP.
+		 *
+		 * @param String $jobID unique job identifier
+		 * @param array $options config options (name => value)
+		 * @return array list of user attributes
+		 */
+		protected function findUsers($jobID, $options) {
+			// read users
+			$sysattrs = array('mail', 'shadowLastChange', 'shadowWarning', 'shadowMax', 'userPassword');
+			$attrs = $this->getAttrWildcards($jobID, $options);
+			$attrs = array_values(array_unique(array_merge($attrs, $sysattrs)));
+			$userResults = searchLDAPByFilter('(&(shadowLastChange=*)(shadowMax=*)(mail=*))', $attrs, array('user'));
+			return $userResults;
+		}
+
+		/**
+		 * Checks if a user needs to change his password.
+		 *
+		 * @param integer $jobID job ID
+		 * @param array $options job settings
+		 * @param PDO $pdo PDO
+		 * @param DateTime $now current time
+		 * @param array $policyOptions list of max age values (policy DN => maxAge)
+		 * @param array $user user attributes
+		 * @param boolean $isDryRun just do a dry run, nothing is modified
+		 */
+		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
+			// skip if user is locked
+			if (!empty($user['userpassword'][0]) && !pwd_is_enabled($user['userpassword'][0])) {
+				logNewMessage(LOG_DEBUG, $user['dn'] . ' is locked.');
+				return;
+			}
+			if ($user['shadowmax'][0] < 1) {
+				logNewMessage(LOG_DEBUG, $user['dn'] . ' does not expire.');
+				return;
+			}
+
+
+			// calculate time when password expires
+			$lastPwdTimeUnix = $user['shadowlastchange'][0] * 3600 * 24;
+			$lastPwdTime = new DateTime('@' . $lastPwdTimeUnix, new DateTimeZone('UTC'));
+			logNewMessage(LOG_DEBUG, "Last password change on " . $lastPwdTime->format('Y-m-d'));
+			$numDaysToWarn = $options[$this->getConfigPrefix() . '_mailNotificationPeriod' . $jobID][0];
+			if (!empty($user['shadowwarning'][0]) && ($user['shadowwarning'][0] > 0)) {
+				$numDaysToWarn += $user['shadowwarning'][0];
+			}
+			logNewMessage(LOG_DEBUG, "Number of days before warning " . $numDaysToWarn);
+			$numDaysToExpire = $user['shadowmax'][0];
+			$expireTime = $lastPwdTime->add(new DateInterval('P' . $numDaysToExpire . 'D'));
+			logNewMessage(LOG_DEBUG, "Password expires on " . $expireTime->format('Y-m-d'));
+			// skip already expired accounts
+			if ($expireTime <= $now) {
+				logNewMessage(LOG_DEBUG, $user['dn'] . ' already expired');
+				return;
+			}
+			// calculate time of notification
+			$notifyTime = clone $expireTime;
+			$notifyTime->sub(new DateInterval('P' . $numDaysToWarn . 'D'));
+			$notifyTime->setTimeZone(getTimeZone());
+			logNewMessage(LOG_DEBUG, "Password notification on " . $notifyTime->format('Y-m-d H:i'));
+			// skip if notification is in the future
+			if ($notifyTime > $now) {
+				logNewMessage(LOG_DEBUG, $user['dn'] . ' does not need notification yet.');
+				return;
+			}
+			$dbLastChange = $this->getDBLastPwdChangeTime($jobID, $pdo, $user['dn']);
+			// skip entries where mail was already sent
+			if ($dbLastChange == $user['shadowlastchange'][0]) {
+				logNewMessage(LOG_DEBUG, $user['dn'] . ' was already notified.');
+				return;
+			}
+			if ($isDryRun) {
+				// no action for dry run
+				logNewMessage(LOG_NOTICE, 'Not sending email to ' . $user['dn'] . ' because of dry run.');
+				return;
+			}
+			// send email
+			$success = $this->sendMail($options, $jobID, $user);
+			// update DB if mail was sent successfully
+			if ($success) {
+				$this->setDBLastPwdChangeTime($jobID, $pdo, $user['dn'], $user['shadowlastchange'][0]);
+			}
+		}
+
+	}
+
 }
 
 ?>

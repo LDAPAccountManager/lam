@@ -7,6 +7,7 @@ December 2015 5.2
   - LAM Pro:
    -> Users: allow to manage IP addresses with ipHost module
    -> Self Service: added time zone setting in self service profile
+   -> Shadow: added job to notify before Shadow password expires
 
 
 31.08.2015 5.1
