@@ -790,24 +790,6 @@ if (interface_exists('\LAM\JOB\Job')) {
 	class ShadowAccountPasswordNotifyJob extends \LAM\JOB\PasswordExpirationJob {
 
 		/**
-		 * Returns the technical name of the job.
-		 *
-		 * @return String name
-		 */
-		public function getName() {
-			return 'ShadowAccountPasswordNotifyJob';
-		}
-
-		/**
-		 * Returns the icon name of the job (relative to graphics folder).
-		 *
-		 * @return String icon
-		 */
-		public function getIcon() {
-			return 'mailBig.png';
-		}
-
-		/**
 		 * Returns the alias name of the job.
 		 *
 		 * @return String name
