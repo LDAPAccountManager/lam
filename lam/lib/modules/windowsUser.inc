@@ -2910,7 +2910,7 @@ class windowsUser extends baseModule implements passwordService {
 	 * @return String formatted value
 	 */
 	private function formatFileTime($value) {
-		if (empty($value)) {
+		if (empty($value) || ($value == '-1')) {
 			return '';
 		}
 		$seconds = substr($value, 0, -7);
