@@ -795,7 +795,7 @@ if (interface_exists('\LAM\JOB\Job')) {
 		 * @return String name
 		 */
 		public function getAlias() {
-			return _('Shadow: Notify users about password expiration');
+			return _('Shadow') . ': ' . _('Notify users about password expiration');
 		}
 
 		/**
