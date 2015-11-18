@@ -3102,6 +3102,166 @@ class windowsUser extends baseModule implements passwordService {
 		$this->businessCategoryCache = array_values(array_unique($businessCategories));
 	}
 
+	/**
+	 * Returns a list of jobs that can be run.
+	 *
+	 * @param LAMConfig $config configuration
+	 * @return array list of jobs
+	 */
+	public function getSupportedJobs(&$config) {
+		return array(
+			new WindowsPasswordNotifyJob()
+		);
+	}
+
+}
+
+if (interface_exists('\LAM\JOB\Job')) {
+
+	include_once dirname(__FILE__) . '/../passwordExpirationJob.inc';
+
+	/**
+	 * Job to notify users about password expiration.
+	 *
+	 * @package jobs
+	 */
+	class WindowsPasswordNotifyJob extends \LAM\JOB\PasswordExpirationJob {
+
+		/**
+		 * Returns the alias name of the job.
+		 *
+		 * @return String name
+		 */
+		public function getAlias() {
+			return _('Windows') . ': ' . _('Notify users about password expiration');
+		}
+
+		/**
+		 * Returns the description of the job.
+		 *
+		 * @return String description
+		 */
+		public function getDescription() {
+			return _('This job sends out emails to inform your users that their passwords will expire soon.');
+		}
+
+		/**
+		 * Returns a list of password policy options. The options are later passed to function checkSingleUser().
+		 * This reads the password policy to calculate expiration times later. Maxpwdage is the maximum amount of
+		 * time, in 100-nanosecond intervals, a password is valid.
+		 *
+		 * @return array options ('maxpwdage' => max age in ns)
+		 */
+		protected function getPolicyOptions() {
+			$userSuffix = $_SESSION['config']->get_Suffix('user');
+			if (empty($userSuffix)) {
+				logNewMessage(LOG_ERR, 'No user suffix set in server profile.');
+				return array();
+			}
+			// extract base DN from user suffix
+			$domainRoot = substr($userSuffix, stripos($userSuffix, 'dc='));
+			if (empty($domainRoot)) {
+				logNewMessage(LOG_ERR, "No domain root found in $userSuffix.");
+				return array();
+			}
+			logNewMessage(LOG_DEBUG, "Using $domainRoot as domain root");
+			$policyDN = 'cn=builtin,' . $domainRoot;
+			$policyAttrs = ldapGetDN($policyDN, array('maxPwdAge'));
+			if (empty($policyAttrs['maxpwdage'][0])) {
+				logNewMessage(LOG_ERR, 'No maxPwdAge found for this domain.');
+				return array();
+			}
+			$maxPwdAge = $policyAttrs['maxpwdage'][0];
+			logNewMessage(LOG_DEBUG, "Using maxPwdAge = $maxPwdAge.");
+			return array('maxpwdage' => $maxPwdAge);
+		}
+
+		/**
+		 * Searches for users in LDAP.
+		 *
+		 * @param String $jobID unique job identifier
+		 * @param array $options config options (name => value)
+		 * @return array list of user attributes
+		 */
+		protected function findUsers($jobID, $options) {
+			// read users
+			$sysattrs = array('mail', 'pwdLastSet', 'useraccountcontrol');
+			$attrs = $this->getAttrWildcards($jobID, $options);
+			$attrs = array_values(array_unique(array_merge($attrs, $sysattrs)));
+			$userResults = searchLDAPByFilter('(&(pwdLastSet=*)(mail=*))', $attrs, array('user'));
+			return $userResults;
+		}
+
+		/**
+		 * Checks if a user needs to change his password.
+		 *
+		 * @param integer $jobID job ID
+		 * @param array $options job settings
+		 * @param PDO $pdo PDO
+		 * @param DateTime $now current time
+		 * @param array $policyOptions list of max age values (policy DN => maxAge)
+		 * @param array $user user attributes
+		 * @param boolean $isDryRun just do a dry run, nothing is modified
+		 */
+		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
+			if (windowsUser::isNeverExpiring($user)) {
+				logNewMessage(LOG_DEBUG, $user['dn'] . ' does not expire.');
+				return;
+			}
+			if (empty($user['pwdlastset'][0]) || ($user['pwdlastset'][0] < 1)) {
+				logNewMessage(LOG_DEBUG, $user['dn'] . ' has no valid "pwdLastSet".');
+				return;
+			}
+			$maxPwdAge = $policyOptions['maxpwdage'];
+
+			// calculate time when password expires
+			$lastPwdTimeUnix = $user['shadowlastchange'][0] * 3600 * 24;
+			$lastPwdTime = new DateTime('@' . $lastPwdTimeUnix, new DateTimeZone('UTC'));
+			logNewMessage(LOG_DEBUG, "Last password change on " . $lastPwdTime->format('Y-m-d'));
+			$numDaysToWarn = $options[$this->getConfigPrefix() . '_mailNotificationPeriod' . $jobID][0];
+			if (!empty($user['shadowwarning'][0]) && ($user['shadowwarning'][0] > 0)) {
+				$numDaysToWarn += $user['shadowwarning'][0];
+			}
+			logNewMessage(LOG_DEBUG, "Number of days before warning " . $numDaysToWarn);
+			$numDaysToExpire = $user['shadowmax'][0];
+			$expireTime = $lastPwdTime->add(new DateInterval('P' . $numDaysToExpire . 'D'));
+			logNewMessage(LOG_DEBUG, "Password expires on " . $expireTime->format('Y-m-d'));
+			// skip already expired accounts
+			if ($expireTime <= $now) {
+				logNewMessage(LOG_DEBUG, $user['dn'] . ' already expired');
+				return;
+			}
+			// calculate time of notification
+			$notifyTime = clone $expireTime;
+			$notifyTime->sub(new DateInterval('P' . $numDaysToWarn . 'D'));
+			$notifyTime->setTimeZone(getTimeZone());
+			logNewMessage(LOG_DEBUG, "Password notification on " . $notifyTime->format('Y-m-d H:i'));
+			// skip if notification is in the future
+			if ($notifyTime > $now) {
+				logNewMessage(LOG_DEBUG, $user['dn'] . ' does not need notification yet.');
+				return;
+			}
+			$dbLastChange = $this->getDBLastPwdChangeTime($jobID, $pdo, $user['dn']);
+			// skip entries where mail was already sent
+			if ($dbLastChange == $user['shadowlastchange'][0]) {
+				logNewMessage(LOG_DEBUG, $user['dn'] . ' was already notified.');
+				return;
+			}
+			if ($isDryRun) {
+				// no action for dry run
+				logNewMessage(LOG_NOTICE, 'Not sending email to ' . $user['dn'] . ' because of dry run.');
+				return;
+			}
+			// send email
+			$success = $this->sendMail($options, $jobID, $user);
+			// update DB if mail was sent successfully
+			if ($success) {
+				$this->setDBLastPwdChangeTime($jobID, $pdo, $user['dn'], $user['shadowlastchange'][0]);
+			}
+		}
+
+	}
+
 }
 
 ?>
