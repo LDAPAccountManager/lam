@@ -34,7 +34,7 @@ $Id$
 * @package types
 */
 class host extends baseType {
-	
+
 	/**
 	 * Constructs a new host type object.
 	 */
@@ -43,7 +43,7 @@ class host extends baseType {
 		$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another host');
 		$this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to host list');
 	}
-	
+
 	/**
 	* Returns the alias name of this account type.
 	*
@@ -52,7 +52,7 @@ class host extends baseType {
 	function getAlias() {
 		return _("Hosts");
 	}
-	
+
 	/**
 	* Returns the description of this account type.
 	*
@@ -61,7 +61,7 @@ class host extends baseType {
 	function getDescription() {
 		return _("Host accounts (e.g. Samba)");
 	}
-		
+
 	/**
 	* Returns the class name for the list object.
 	*
@@ -70,7 +70,7 @@ class host extends baseType {
 	function getListClassName() {
 		return "lamHostList";
 	}
-	
+
 	/**
 	* Returns the default attribute list for this account type.
 	*
@@ -89,7 +89,7 @@ class host extends baseType {
 	function getListAttributeDescriptions() {
 		return array (
 			"uid" => _("Host name"),
-			"cn" => _("Host name"),
+			"cn" => _("Common name"),
 			"rid" => _("RID (Windows UID)"),
 			"description" => _("Host description"),
 			"uidnumber" => _("UID number"),
@@ -177,7 +177,7 @@ class host extends baseType {
  *
  * @package lists
  * @author Roland Gruber
- * 
+ *
  */
 class lamHostList extends lamList {
 
