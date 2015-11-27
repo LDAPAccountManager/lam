@@ -1421,7 +1421,7 @@ class windowsUser extends baseModule implements passwordService {
 		$help = "accountExpires";
 		$datetime = new DateTime('now', getTimeZone());
 		if (!empty($this->attributes[$attr][0]) && !($this->attributes[$attr][0] == '0')) {
-			$datetime = $this->getFileTime($this->attributes[$attr][0]);
+			$datetime = windowsUser::getFileTime($this->attributes[$attr][0]);
 		}
 		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
 		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
@@ -2926,7 +2926,7 @@ class windowsUser extends baseModule implements passwordService {
 	 * @param integer $value time value as int
 	 * @return DateTime time value
 	 */
-	private function getFileTime($value) {
+	public static function getFileTime($value) {
 		if (empty($value)) {
 			return null;
 		}
@@ -3185,7 +3185,7 @@ if (interface_exists('\LAM\JOB\Job')) {
 		 */
 		protected function findUsers($jobID, $options) {
 			// read users
-			$sysattrs = array('mail', 'pwdLastSet', 'useraccountcontrol');
+			$sysattrs = array('mail', 'pwdLastSet', 'accountExpires', 'useraccountcontrol');
 			$attrs = $this->getAttrWildcards($jobID, $options);
 			$attrs = array_values(array_unique(array_merge($attrs, $sysattrs)));
 			$userResults = searchLDAPByFilter('(&(pwdLastSet=*)(mail=*))', $attrs, array('user'));
@@ -3204,27 +3204,37 @@ if (interface_exists('\LAM\JOB\Job')) {
 		 * @param boolean $isDryRun just do a dry run, nothing is modified
 		 */
 		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
+			// skip if password does not expire at all
 			if (windowsUser::isNeverExpiring($user)) {
 				logNewMessage(LOG_DEBUG, $user['dn'] . ' does not expire.');
 				return;
 			}
+			// skip if no information about last password change
 			if (empty($user['pwdlastset'][0]) || ($user['pwdlastset'][0] < 1)) {
 				logNewMessage(LOG_DEBUG, $user['dn'] . ' has no valid "pwdLastSet".');
 				return;
 			}
+			// skip if account itself is expired
+			if (!empty($user['accountexpires'][0])) {
+				$accountExpiration = windowsUser::getFileTime($user['accountexpires'][0]);
+				if ($accountExpiration <= $now) {
+					logNewMessage(LOG_DEBUG, $user['dn'] . ' already expired');
+					return;
+				}
+			}
+			// skip if account is deactivated
+			if (windowsUser::isDeactivated($user)) {
+				logNewMessage(LOG_DEBUG, $user['dn'] . ' is deactivated.');
+				return;
+			}
 			$maxPwdAge = $policyOptions['maxpwdage'];
-
 			// calculate time when password expires
-			$lastPwdTimeUnix = $user['shadowlastchange'][0] * 3600 * 24;
-			$lastPwdTime = new DateTime('@' . $lastPwdTimeUnix, new DateTimeZone('UTC'));
+			$lastPwdTime = windowsUser::getFileTime($user['pwdlastset'][0]);
 			logNewMessage(LOG_DEBUG, "Last password change on " . $lastPwdTime->format('Y-m-d'));
 			$numDaysToWarn = $options[$this->getConfigPrefix() . '_mailNotificationPeriod' . $jobID][0];
-			if (!empty($user['shadowwarning'][0]) && ($user['shadowwarning'][0] > 0)) {
-				$numDaysToWarn += $user['shadowwarning'][0];
-			}
 			logNewMessage(LOG_DEBUG, "Number of days before warning " . $numDaysToWarn);
-			$numDaysToExpire = $user['shadowmax'][0];
-			$expireTime = $lastPwdTime->add(new DateInterval('P' . $numDaysToExpire . 'D'));
+			// expiration date = pwdLastSet - maxpwdage
+			$expireTime = windowsUser::getFileTime($user['pwdlastset'][0] - $maxPwdAge);
 			logNewMessage(LOG_DEBUG, "Password expires on " . $expireTime->format('Y-m-d'));
 			// skip already expired accounts
 			if ($expireTime <= $now) {
@@ -3243,7 +3253,7 @@ if (interface_exists('\LAM\JOB\Job')) {
 			}
 			$dbLastChange = $this->getDBLastPwdChangeTime($jobID, $pdo, $user['dn']);
 			// skip entries where mail was already sent
-			if ($dbLastChange == $user['shadowlastchange'][0]) {
+			if ($dbLastChange == $user['pwdlastset'][0]) {
 				logNewMessage(LOG_DEBUG, $user['dn'] . ' was already notified.');
 				return;
 			}
@@ -3256,7 +3266,7 @@ if (interface_exists('\LAM\JOB\Job')) {
 			$success = $this->sendMail($options, $jobID, $user);
 			// update DB if mail was sent successfully
 			if ($success) {
-				$this->setDBLastPwdChangeTime($jobID, $pdo, $user['dn'], $user['shadowlastchange'][0]);
+				$this->setDBLastPwdChangeTime($jobID, $pdo, $user['dn'], $user['pwdlastset'][0]);
 			}
 		}
 
