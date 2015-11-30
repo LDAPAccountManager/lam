@@ -500,7 +500,7 @@ class windowsUser extends baseModule implements passwordService {
 				'name' => 'windowsUser_accountExpires',
 				'description' => _('Account expiration date'),
 				'help' => 'accountExpiresUpload',
-				'example' => _('21-11-2030'),
+				'example' => '21-11-2030',
 			),
 			array(
 				'name' => 'windowsUser_requireCard',
