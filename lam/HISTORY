@@ -1,4 +1,4 @@
-December 2015 5.2
+15.12.2015 5.2
   - Windows: support for additional attributes (jpegPhoto, title, carLicense,
     employeeNumber, employeeType, businessCategory, departmentNumber, ou, o, manager)
   - SSH public key: added possibility to add/remove SSH extension
