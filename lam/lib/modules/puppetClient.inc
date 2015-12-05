@@ -442,6 +442,8 @@ class puppetClient extends baseModule {
 	public function get_profileOptions() {
 		$return = parent::get_profileOptions();
 		$possibleParentNodes = $this->getPossibleParentNodes();
+		array_unshift($possibleParentNodes, '-');
+		$possibleParentNodes = array_values($possibleParentNodes);
 		if (sizeof($possibleParentNodes) > 0) {
 			$return->addElement(new htmlTableExtendedSelect('puppetClient_parentnode', $possibleParentNodes, array(), _('Parent node'), 'parentnode'), true);
 		}
