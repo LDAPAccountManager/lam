@@ -3061,7 +3061,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
       </section>
 
       <section>
-        <title>Group of names (LAM Pro)</title>
+        <title>Group of names and group of members (LAM Pro)</title>
 
         <para>This module manages memberships in group of (unique) names and
         also group of members.</para>
@@ -3084,8 +3084,8 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
         </screenshot>
 
         <para>The module automatically detects if groups are based on
-        "groupOfNames" or "groupOfUniqueNames" and sets the correct
-        attribute.</para>
+        "groupOfNames", "groupOfUniqueNames" or "groupOfMembers" and sets the
+        correct attribute.</para>
 
         <screenshot>
           <mediaobject>
@@ -4637,7 +4637,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
     </section>
 
     <section id="a_groupOfNames">
-      <title>Group of (unique) names (LAM Pro)</title>
+      <title>Group of (unique) names and group of members (LAM Pro)</title>
 
       <para>These classes can be used to represent group relations. Since they
       allow DNs as members you can also use them to represent nested
@@ -4665,13 +4665,24 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
         </mediaobject>
       </screenshot>
 
-      <para>Then add the module "Group of names (groupOfNames)" or "Group of
-      unique names (groupOfUniqueNames)".</para>
+      <para>Then add the module "Group of names (groupOfNames)", "Group of
+      unique names (groupOfUniqueNames)" or "Group of members
+      (groupOfMembers)".</para>
 
       <screenshot>
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/groupOfNames4.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para></para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/groupOfMembers1.png" />
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -9251,7 +9262,7 @@ OK (10 msec)</programlisting>
 
             <entry>Group of (unique) names</entry>
 
-            <entry>groupOfNames, groupOfUniqueNames</entry>
+            <entry>groupOfNames, groupOfUniqueNames, groupOfMembers</entry>
 
             <entry>core.schema</entry>
 
