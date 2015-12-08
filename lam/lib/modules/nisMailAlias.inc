@@ -365,7 +365,7 @@ class nisMailAlias extends baseModule {
 		// load list with all mail addresses
 		$count = sizeof($options);
 		for ($i = 0; $i < $count; $i++) {
-			if (!get_preg($options[$i], $regex) || (($filter != '') && (strpos($options[$i], $filter) === false))) {
+			if (!get_preg($options[$i], $regex) || (!empty($filter) && !preg_match('/' . str_replace('*', '.*', $filter) . '/ui', $options[$i]))) {
 				unset($options[$i]);
 			}
 		}
