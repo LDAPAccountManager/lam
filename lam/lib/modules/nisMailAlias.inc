@@ -486,7 +486,15 @@ class nisMailAlias extends baseModule {
 		if ($this->cachedMailList != null) {
 			return $this->cachedMailList;
 		}
-		$this->cachedMailList = searchLDAPByAttribute('mail', '*', 'inetOrgPerson', array('mail'), array('user'));
+		$objectClass = 'inetOrgPerson';
+		$activeTypes = $_SESSION['config']->get_ActiveTypes();
+		if (in_array('user', $activeTypes)) {
+			$userModules = $_SESSION['config']->get_AccountModules('user');
+			if (in_array('windowsUser', $userModules)) {
+				$objectClass = 'user';
+			}
+		}
+		$this->cachedMailList = searchLDAPByAttribute('mail', '*', $objectClass, array('mail'), array('user'));
 		for ($i = 0; $i < sizeof($this->cachedMailList); $i++) {
 			$this->cachedMailList[$i] = $this->cachedMailList[$i]['mail'][0];
 		}
