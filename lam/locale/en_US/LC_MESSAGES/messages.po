@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LAM\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
-"PO-Revision-Date: 2015-11-30 19:25+0100\n"
+"PO-Revision-Date: 2015-12-15 18:08+0100\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: German <post@rolandgruber.de>\n"
 "Language: de\n"
@@ -246,8 +246,8 @@ msgstr "Account"
 #: ../lib/modules/zarafaDynamicGroup.inc:201
 #: ../lib/modules/zarafaDynamicGroup.inc:203
 #: ../lib/modules/zarafaDynamicGroup.inc:204
-#: ../lib/modules/zarafaDynamicGroup.inc:205 ../lib/modules/ipHost.inc:120
-#: ../lib/modules/ipHost.inc:121 ../lib/modules/asteriskAccount.inc:558
+#: ../lib/modules/zarafaDynamicGroup.inc:205 ../lib/modules/ipHost.inc:124
+#: ../lib/modules/ipHost.inc:125 ../lib/modules/asteriskAccount.inc:558
 #: ../lib/modules/asteriskAccount.inc:561
 #: ../lib/modules/asteriskAccount.inc:564
 #: ../lib/modules/asteriskAccount.inc:567
@@ -698,7 +698,7 @@ msgstr "Add EDU person extension"
 msgid "Add FreeRadius extension"
 msgstr "Add FreeRadius extension"
 
-#: ../lib/modules/ipHost.inc:171
+#: ../lib/modules/ipHost.inc:176
 msgid "Add IP address extension"
 msgstr "Add IP address extension"
 
@@ -5672,7 +5672,7 @@ msgid "IMAP password input"
 msgstr "IMAP password input"
 
 #: ../lib/types/dhcp.inc:96 ../lib/modules/ipHost.inc:55
-#: ../lib/modules/ipHost.inc:65 ../lib/modules/ipHost.inc:132
+#: ../lib/modules/ipHost.inc:65 ../lib/modules/ipHost.inc:137
 #: ../lib/modules/asteriskAccount.inc:227
 #: ../lib/modules/asteriskAccount.inc:295
 #: ../lib/modules/asteriskAccount.inc:522
@@ -5703,8 +5703,8 @@ msgstr "IP address of the peer. Valid only for realtime peers."
 msgid "IP address or domain name of the registration server."
 msgstr "IP address or domain name of the registration server."
 
-#: ../lib/modules/ipHost.inc:69 ../lib/modules/ipHost.inc:84
-#: ../lib/modules/ipHost.inc:106 ../lib/modules/ipHost.inc:249
+#: ../lib/modules/ipHost.inc:69 ../lib/modules/ipHost.inc:88
+#: ../lib/modules/ipHost.inc:110 ../lib/modules/ipHost.inc:303
 msgid "IP addresses"
 msgstr "IP addresses"
 
@@ -5715,6 +5715,10 @@ msgstr "IP addresses (\"A/AAAA\" records)"
 #: ../lib/modules/fixed_ip.inc:119
 msgid "IP list"
 msgstr "IP list"
+
+#: ../lib/modules/ipHost.inc:81 ../lib/modules/ipHost.inc:223
+msgid "IPs in DHCP"
+msgstr "IPs in DHCP"
 
 #: ../lib/modules/customFields.inc:514
 msgid "Icon"
@@ -6940,8 +6944,8 @@ msgid "Local members"
 msgstr "Local members"
 
 #: ../lib/types/host.inc:97 ../lib/modules/ipHost.inc:73
-#: ../lib/modules/ipHost.inc:93 ../lib/modules/ipHost.inc:109
-#: ../lib/modules/ipHost.inc:135 ../lib/modules/ipHost.inc:250
+#: ../lib/modules/ipHost.inc:97 ../lib/modules/ipHost.inc:113
+#: ../lib/modules/ipHost.inc:140 ../lib/modules/ipHost.inc:304
 #: ../lib/modules/windowsHost.inc:82 ../lib/modules/windowsHost.inc:106
 #: ../lib/modules/windowsHost.inc:121 ../lib/modules/windowsHost.inc:144
 #: ../lib/modules/windowsHost.inc:293 ../lib/modules/device.inc:77
@@ -7325,9 +7329,9 @@ msgstr "Managed by"
 msgid "Managed suffixes"
 msgstr "Managed suffixes"
 
-#: ../lib/modules/ipHost.inc:77 ../lib/modules/ipHost.inc:99
-#: ../lib/modules/ipHost.inc:110 ../lib/modules/ipHost.inc:159
-#: ../lib/modules/ipHost.inc:251 ../lib/modules/windowsUser.inc:347
+#: ../lib/modules/ipHost.inc:77 ../lib/modules/ipHost.inc:103
+#: ../lib/modules/ipHost.inc:114 ../lib/modules/ipHost.inc:164
+#: ../lib/modules/ipHost.inc:305 ../lib/modules/windowsUser.inc:347
 #: ../lib/modules/windowsUser.inc:643 ../lib/modules/windowsUser.inc:791
 #: ../lib/modules/windowsUser.inc:1008 ../lib/modules/windowsUser.inc:2297
 #: ../lib/modules/windowsUser.inc:3012 ../lib/modules/inetOrgPerson.inc:364
@@ -7886,7 +7890,7 @@ msgstr "Music on hold"
 msgid "Music to play on hold."
 msgstr "Music to play on hold."
 
-#: ../lib/modules/ipHost.inc:95 ../lib/modules/windowsHost.inc:108
+#: ../lib/modules/ipHost.inc:99 ../lib/modules/windowsHost.inc:108
 #: ../lib/modules/device.inc:111 ../lib/modules/windowsUser.inc:433
 #: ../lib/modules/inetOrgPerson.inc:398 ../lib/modules/inetOrgPerson.inc:406
 #: ../lib/modules/inetOrgPerson.inc:520
@@ -9124,7 +9128,7 @@ msgstr "Parent DN"
 
 #: ../lib/modules/puppetClient.inc:88 ../lib/modules/puppetClient.inc:134
 #: ../lib/modules/puppetClient.inc:154 ../lib/modules/puppetClient.inc:265
-#: ../lib/modules/puppetClient.inc:405 ../lib/modules/puppetClient.inc:446
+#: ../lib/modules/puppetClient.inc:405 ../lib/modules/puppetClient.inc:448
 msgid "Parent node"
 msgstr "Parent node"
 
@@ -11387,7 +11391,7 @@ msgstr "Remove EDU person extension"
 msgid "Remove FreeRadius extension"
 msgstr "Remove FreeRadius extension"
 
-#: ../lib/modules/ipHost.inc:166
+#: ../lib/modules/ipHost.inc:171
 msgid "Remove IP address extension"
 msgstr "Remove IP address extension"
 
@@ -13207,7 +13211,7 @@ msgstr "The IP address does not match the subnet."
 msgid "The IP address is already in use."
 msgstr "The IP address is already in use."
 
-#: ../lib/modules/ipHost.inc:119 ../lib/modules/ipHost.inc:120
+#: ../lib/modules/ipHost.inc:123 ../lib/modules/ipHost.inc:124
 #: ../lib/modules/asteriskAccount.inc:574
 #: ../lib/modules/asteriskAccount.inc:575 ../lib/modules/ppolicyUser.inc:100
 #: ../lib/modules/range.inc:505 ../lib/modules/range.inc:522
@@ -13657,6 +13661,10 @@ msgstr "The list's alternate email address."
 #: ../lib/modules/windowsGroup.inc:129
 msgid "The list's email address."
 msgstr "The list's email address."
+
+#: ../lib/modules/ipHost.inc:82
+msgid "The listed IPs were found in DHCP by matching the host's MAC address."
+msgstr "The listed IPs were found in DHCP by matching the host's MAC address."
 
 #: ../templates/config/mainmanage.php:147
 msgid ""
@@ -14764,7 +14772,7 @@ msgstr ""
 "\"uid\" and your user inputs \"miller\" then LAM will search for an account "
 "with uid=miller."
 
-#: ../lib/modules/zarafaDynamicGroup.inc:199 ../lib/modules/ipHost.inc:121
+#: ../lib/modules/zarafaDynamicGroup.inc:199 ../lib/modules/ipHost.inc:125
 #: ../lib/modules/posixGroup.inc:663 ../lib/modules/posixGroup.inc:664
 #: ../lib/modules/device.inc:142 ../lib/modules/eduPerson.inc:246
 #: ../lib/modules/eduPerson.inc:248 ../lib/modules/zarafaAddressList.inc:170
@@ -17521,7 +17529,7 @@ msgstr "test-start"
 msgid "true"
 msgstr "true"
 
-#: ../lib/modules/ipHost.inc:101 ../lib/modules/windowsUser.inc:645
+#: ../lib/modules/ipHost.inc:105 ../lib/modules/windowsUser.inc:645
 #: ../lib/modules/inetOrgPerson.inc:366 ../lib/modules/aliasEntry.inc:71
 #: ../lib/modules/qmailGroup.inc:281 ../lib/modules/qmailGroup.inc:289
 #: ../lib/modules/qmailGroup.inc:297
