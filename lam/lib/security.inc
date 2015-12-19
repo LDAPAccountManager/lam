@@ -38,6 +38,8 @@ include_once('account.inc');
 // check client IP address
 checkClientIP();
 
+setLAMHeaders();
+
 /**
  * Starts a session and checks the environment.
  * The script is stopped if one of the checks fail (timeout redirection may be overriden).
@@ -554,6 +556,16 @@ function getSecurityTokenName() {
  */
 function getSecurityTokenValue() {
 	return $_SESSION[getSecurityTokenName()];
+}
+
+/**
+ * Sets the X-Frame-Options and Content-Security-Policy header to prevent clickjacking.
+ */
+function setLAMHeaders() {
+	if (!headers_sent()) {
+		header('X-Frame-Options: sameorigin');
+		header('Content-Security-Policy: frame-ancestors \'self\'');
+	}
 }
 
 ?>
