@@ -157,8 +157,8 @@ function logoffAndBackToLoginPage() {
 	}
 	// delete key and iv in cookie
 	if (function_exists('mcrypt_create_iv')) {
-		setcookie("Key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/");
-		setcookie("IV", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/");
+		setcookie("Key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/", null, null, true);
+		setcookie("IV", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/", null, null, true);
 	}
 	// link back to login page
 	$paths = array('./', '../', '../../', '../../../', '../../../../');

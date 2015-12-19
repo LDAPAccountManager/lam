@@ -54,6 +54,7 @@ if (strtolower(session_module_name()) == 'files') {
 // start empty session and change ID for security reasons
 session_start();
 session_destroy();
+session_set_cookie_params(0, '/', null, null, true);
 session_start();
 session_regenerate_id(true);
 
@@ -62,7 +63,7 @@ $profiles = getConfigProfiles();
 // save last selected login profile
 if (isset($_GET['useProfile'])) {
 	if (in_array($_GET['useProfile'], $profiles)) {
-		setcookie("lam_default_profile", $_GET['useProfile'], time() + 365*60*60*24);
+		setcookie("lam_default_profile", $_GET['useProfile'], time() + 365*60*60*24, '/', null, null, true);
 	}
 	else {
 		unset($_GET['useProfile']);
@@ -71,7 +72,7 @@ if (isset($_GET['useProfile'])) {
 
 // save last selected language
 if (isset($_POST['language'])) {
-	setcookie('lam_last_language', htmlspecialchars($_POST['language']), time() + 365*60*60*24);
+	setcookie('lam_last_language', htmlspecialchars($_POST['language']), time() + 365*60*60*24, '/', null, null, true);
 }
 
 // init some session variables
@@ -166,8 +167,8 @@ function display_LoginPage($config_object, $cfgMain) {
 			$iv = mcrypt_create_iv(32, MCRYPT_RAND);
 		}
 		// save both in cookie
-		setcookie("Key", base64_encode($key), 0, "/");
-		setcookie("IV", base64_encode($iv), 0, "/");
+		setcookie("Key", base64_encode($key), 0, "/", null, null, true);
+		setcookie("IV", base64_encode($iv), 0, "/", null, null, true);
 	}
 
 	$profiles = getConfigProfiles();
@@ -536,10 +537,10 @@ if(!empty($_POST['checklogin'])) {
 	}
 	else {
 		if (isset($_POST['rememberLogin']) && ($_POST['rememberLogin'] == 'on')) {
-			setcookie('lam_login_name', $_POST['username'], time() + 60*60*24*365);
+			setcookie('lam_login_name', $_POST['username'], time() + 60*60*24*365, '/', null, null, true);
 		}
 		else if (isset($_COOKIE['lam_login_name']) && ($_SESSION['config']->getLoginMethod() == LAMConfig::LOGIN_SEARCH)) {
-			setcookie('lam_login_name', '', time() + 60*60*24*365);
+			setcookie('lam_login_name', '', time() + 60*60*24*365, '/', null, null, true);
 		}
 		if($_POST['passwd'] == "") {
 			logNewMessage(LOG_DEBUG, "Empty password for login");

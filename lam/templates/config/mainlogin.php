@@ -39,6 +39,7 @@ include_once('../../lib/status.inc');
 if (strtolower(session_module_name()) == 'files') {
 	session_save_path(dirname(__FILE__) . '/../../sess');
 }
+session_set_cookie_params(0, '/', null, null, true);
 session_start();
 session_regenerate_id(true);
 
