@@ -1028,15 +1028,21 @@ class accountContainer {
 		}
 		echo '</div>';
 		echo '<div id="lamVerticalTabs" class="ui-tabs ui-widget ui-widget-content ui-corner-bottom ui-helper-clearfix">';
-		// tab menu
-		$this->printModuleTabs();
-		echo "<div class=\"lamEqualHeightTabContent ui-tabs-panel ui-widget-content ui-corner-bottom\">\n";
-		// content area
-		// display html-code from modules
-		$return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage));
-		$y = 5000;
-		parseHtml($this->order[$this->current_page], $return, array(), false, $y, $this->type);
-		echo "</div>\n";
+		echo '<table>';
+			echo '<tr><td>';
+			// tab menu
+			$this->printModuleTabs();
+			echo '</td><td>';
+			echo "<div class=\"lamEqualHeightTabContent ui-tabs-panel ui-widget-content ui-corner-bottom\">\n";
+			// content area
+			// display html-code from modules
+			$return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage));
+			$y = 5000;
+			parseHtml($this->order[$this->current_page], $return, array(), false, $y, $this->type);
+			echo "</div>\n";
+			echo '</td>';
+			echo '</tr>';
+		echo '</table>';
 		echo "</div>\n";
 		echo "</td></tr>\n";
 		// Display rest of html-page
@@ -1417,8 +1423,9 @@ class accountContainer {
 		$x=1;
 		echo '<ul class="lamEqualHeightTabContent ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">';
 		// Loop for each module
-		for ($i=0; $i<count($this->order); $i++ ) {
+		for ($i = 0; $i < count($this->order); $i++) {
 			$buttonStatus = $this->module[$this->order[$i]]->getButtonStatus();
+			$alias = $this->module[$this->order[$i]]->get_alias();
 			// skip hidden buttons
 			if ($buttonStatus == 'hidden') continue;
 			$buttonImage = $this->module[$this->order[$i]]->getIcon();
@@ -1428,7 +1435,7 @@ class accountContainer {
 			}
 			// print button
 			echo '<li class="ui-state-default ui-corner-left' . $activatedClass . '">';
-			$buttonStyle = 'background-color:transparent;;border:0px solid;';
+			$buttonStyle = 'background-color:transparent;;border:0px solid;min-width: 200px;';
 			echo "<button style=\"" . $buttonStyle . "\" name=\"form_main_".$this->order[$i]."\"";
 			echo " tabindex=$x";
 			if ($buttonStatus == 'disabled') echo " disabled";
@@ -1439,7 +1446,7 @@ class accountContainer {
 				}
 				echo "<img height=32 width=32 class=\"align-middle\" style=\"padding: 3px;\" alt=\"\" src=\"$buttonImage\">&nbsp;";
 			}
-			echo $this->module[$this->order[$i]]->get_alias();
+			echo $alias;
 			echo "&nbsp;</button>\n";
 			echo "</li>\n";
 			$x++;
