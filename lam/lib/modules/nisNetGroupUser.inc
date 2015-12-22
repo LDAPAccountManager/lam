@@ -559,7 +559,8 @@ class nisNetGroupUser extends baseModule {
 			$current = ldapGetDN($dn, array('nisnetgrouptriple'));
 			if (empty($current)) {
 				$errors[] = array('ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $dn));
-				continue;
+				$temp['counter']++;
+				return;
 			}
 			$triples = empty($current['nisnetgrouptriple']) ? array() : $current['nisnetgrouptriple'];
 			$triples = array_merge($temp['groups'][$dn], $triples);
