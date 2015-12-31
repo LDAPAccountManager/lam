@@ -40,7 +40,7 @@ class UFPDF extends FPDF
 *                               Public methods                                 *
 *                                                                              *
 *******************************************************************************/
-function UFPDF($orientation='P',$unit='mm',$format='A4')
+function __construct($orientation='P',$unit='mm',$format='A4')
 {
   FPDF::FPDF($orientation, $unit, $format);
 }
@@ -266,7 +266,7 @@ function MultiCell($w,$h,$txt,$border=0,$align='J',$fill=0)
 		if (isset($cw[$cp[$i]])) {
 			$l += $cw[$cp[$i]];
 		}
-		
+
 		if($l>$wmax)
 		{
 			//Automatic line break
@@ -624,23 +624,23 @@ function utf8_to_utf16be(&$txt, $bom = true) {
         while (ord($txt{$i + 1}) >= 0x80 && ord($txt{$i + 1}) < 0xC0) { ++$i; }
         continue;
       }
-      
+
       $q = array($c);
       // Fetch rest of sequence
       while (ord($txt{$i + 1}) >= 0x80 && ord($txt{$i + 1}) < 0xC0) { ++$i; $q[] = ord($txt{$i}); }
-      
+
       // Check length
       if (count($q) != $s) {
-        $out .= "\xFF\xFD";        
+        $out .= "\xFF\xFD";
         continue;
       }
-      
+
       switch ($s) {
         case 2:
           $cp = (($q[0] ^ 0xC0) << 6) | ($q[1] ^ 0x80);
           // Overlong sequence
           if ($cp < 0x80) {
-            $out .= "\xFF\xFD";        
+            $out .= "\xFF\xFD";
           }
           else {
             $out .= chr($cp >> 8);
@@ -652,7 +652,7 @@ function utf8_to_utf16be(&$txt, $bom = true) {
           $cp = (($q[0] ^ 0xE0) << 12) | (($q[1] ^ 0x80) << 6) | ($q[2] ^ 0x80);
           // Overlong sequence
           if ($cp < 0x800) {
-            $out .= "\xFF\xFD";        
+            $out .= "\xFF\xFD";
           }
           // Check for UTF-8 encoded surrogates (caused by a bad UTF-8 encoder)
           else if ($c > 0xD800 && $c < 0xDFFF) {
@@ -672,14 +672,14 @@ function utf8_to_utf16be(&$txt, $bom = true) {
           }
           // Outside of the Unicode range
           else if ($cp >= 0x10FFFF) {
-            $out .= "\xFF\xFD";            
+            $out .= "\xFF\xFD";
           }
           else {
             // Use surrogates
             $cp -= 0x10000;
             $s1 = 0xD800 | ($cp >> 10);
             $s2 = 0xDC00 | ($cp & 0x3FF);
-            
+
             $out .= chr($s1 >> 8);
             $out .= chr($s1 & 0xFF);
             $out .= chr($s2 >> 8);
@@ -708,10 +708,10 @@ function utf8_substr($str,$start)
 {
   $rs = '';
   if( func_num_args() >= 3 ) {
-    $end = func_get_arg( 2 ); 
+    $end = func_get_arg( 2 );
     for ($i=$start; $i < ($start+$end); $i++)
       $rs .= $this->code2utf($str[$i]);
-    
+
   } else {
     for ($i=$start; $i < count($str); $i++)
       $rs .= $this->code2utf($str[$i]);
@@ -754,17 +754,17 @@ function utf8_to_codepoints($txt) {
         while (ord($txt{$i + 1}) >= 0x80 && ord($txt{$i + 1}) < 0xC0) { ++$i; }
         continue;
       }
-      
+
       $q = array($c);
       // Fetch rest of sequence
       while (ord($txt{$i + 1}) >= 0x80 && ord($txt{$i + 1}) < 0xC0) { ++$i; $q[] = ord($txt{$i}); }
-      
+
       // Check length
       if (count($q) != $s) {
         $out[] = 0xFFFD;
         continue;
       }
-      
+
       switch ($s) {
         case 2:
           $cp = (($q[0] ^ 0xC0) << 6) | ($q[1] ^ 0x80);
