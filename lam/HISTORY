@@ -1,3 +1,6 @@
+March 2016 5.3
+  - Requires PHP 5.4.0 or higher
+
 15.12.2015 5.2
   - Windows: support for additional attributes (jpegPhoto, title, carLicense,
     employeeNumber, employeeType, businessCategory, departmentNumber, ou, o, manager)
