@@ -3357,9 +3357,20 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
         You might want to set the default domain name in the <link
         linkend="a_accountProfile">profile editor</link>.</para>
 
-        <para><emphasis role="bold">Attention:</emphasis> Password changes
-        require a secure connection via ldaps://. Check your LAM server
-        profile if password changes are refused by the server.</para>
+        <para><emphasis role="bold">Attention:</emphasis> </para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Password changes require a secure connection via ldaps://.
+            Check your LAM server profile if password changes are refused by
+            the server.</para>
+          </listitem>
+
+          <listitem>
+            <para>Your server must run a 64bit operating system. Otherwise,
+            the module might not work.</para>
+          </listitem>
+        </itemizedlist>
 
         <screenshot>
           <mediaobject>
