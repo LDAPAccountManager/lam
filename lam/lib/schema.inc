@@ -3,7 +3,7 @@
 $Id$
 
   Copyright (C) 2004 David Smith
-  modified to fit for LDAP Account Manager 2005 - 2013 Roland Gruber
+  modified to fit for LDAP Account Manager 2005 - 2016 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,14 +21,14 @@ $Id$
 
 */
 
-/** 
+/**
  * Classes and functions for fetching and parsing schema from an LDAP server.
- * 
+ *
  * @package lib
  *
  * @author The phpLDAPadmin development team
  * @author Roland Gruber
- */ 
+ */
 
 /** To enable/disable session-based schema caching (1: enabled, 0: disabled). */
 @define( 'SCHEMA_SESSION_CACHE_ENABLED', 1 );
@@ -36,10 +36,10 @@ $Id$
 /**
  * Generic parent class for all schema items. A schema item is
  * an ObjectClass, an AttributeBype, a MatchingRule, or a Syntax.
- * All schema items have at least two things in common: An OID 
- * and a description. This class provides an implementation for 
+ * All schema items have at least two things in common: An OID
+ * and a description. This class provides an implementation for
  * these two data.
- * 
+ *
  * @package lib
  */
  class SchemaItem
@@ -57,7 +57,7 @@ $Id$
     }
 
     /** Default constructor. */
-    function SchemaItem()
+    function __construct()
     {
         $this->initVars();
     }
@@ -85,7 +85,7 @@ $Id$
 
 /**
  * Represents an LDAP objectClass
- * 
+ *
  * @package lib
  */
 class ObjectClass extends SchemaItem
@@ -123,7 +123,7 @@ class ObjectClass extends SchemaItem
 	/**
 	 * Creates a new ObjectClass object given a raw LDAP objectClass string.
 	 */
-	function ObjectClass( $raw_ldap_schema_string )
+	function __construct( $raw_ldap_schema_string )
 	{
 		$this->initVars();
 		$class = $raw_ldap_schema_string;
@@ -292,9 +292,9 @@ class ObjectClass extends SchemaItem
 		foreach( $this->sup_classes as $sup_class)
 		{
 			if( $oclasses != null
-				&& $sup_class != "top" 
+				&& $sup_class != "top"
 				&& isset( $oclasses[ strtolower($sup_class) ] ) ) {
-						$sup_class = $oclasses[ strtolower($sup_class) ]; 
+						$sup_class = $oclasses[ strtolower($sup_class) ];
 						$sup_class_must_attrs = $sup_class->getMustAttrs( $oclasses );
 						$all_must_attrs = array_merge( $sup_class_must_attrs, $all_must_attrs );
 			}
@@ -325,13 +325,13 @@ class ObjectClass extends SchemaItem
 		$all_may_attrs = $this->may_attrs;
 		foreach( $this->sup_classes as $sup_class_name )
 		{
-			if( $oclasses != null 
-				&& $sup_class_name != "top" 
+			if( $oclasses != null
+				&& $sup_class_name != "top"
 				&& isset( $oclasses[ strtolower($sup_class_name) ] ) ) {
-					$sup_class = $oclasses[ strtolower($sup_class_name) ]; 
+					$sup_class = $oclasses[ strtolower($sup_class_name) ];
 					$sup_class_may_attrs = $sup_class->getMayAttrs( $oclasses );
 					$all_may_attrs = array_merge( $sup_class_may_attrs, $all_may_attrs );
-			} 
+			}
 		}
 
 		ksort($all_may_attrs);
@@ -340,7 +340,7 @@ class ObjectClass extends SchemaItem
 
     /**
      * Gets an array of attribute names (strings) that entries of this ObjectClass must define.
-     * This differs from getMustAttrs in that it returns an array of strings rather than 
+     * This differs from getMustAttrs in that it returns an array of strings rather than
      * array of AttributeType objects
      *
      * @param array $oclasses An array of ObjectClass objects to use when traversing
@@ -364,7 +364,7 @@ class ObjectClass extends SchemaItem
 
     /**
      * Gets an array of attribute names (strings) that entries of this ObjectClass must define.
-     * This differs from getMayAttrs in that it returns an array of strings rather than 
+     * This differs from getMayAttrs in that it returns an array of strings rather than
      * array of AttributeType objects
      *
      * @param array $oclasses An array of ObjectClass objects to use when traversing
@@ -387,7 +387,7 @@ class ObjectClass extends SchemaItem
 	}
 
     /**
-     * Adds an objectClass to the list of objectClasses that inherit 
+     * Adds an objectClass to the list of objectClasses that inherit
      * from this objectClass.
      * @param String $object_class_name The name of the objectClass to add
      * @return bool Returns true on success or false on failure (objectclass already existed for example)
@@ -434,13 +434,13 @@ class ObjectClass extends SchemaItem
 
     /**
      * Gets the type of this objectClass: STRUCTURAL, ABSTRACT, or AUXILIARY.
-     */ 
+     */
 	function getType()
 	{
 		return $this->type;
 	}
 
-    /** 
+    /**
      * Gets whether this objectClass is flagged as obsolete by the LDAP server.
      */
 	function getIsObsolete()
@@ -449,7 +449,7 @@ class ObjectClass extends SchemaItem
 	}
 
 	/**
-	 * Adds the specified array of attributes to this objectClass' list of 
+	 * Adds the specified array of attributes to this objectClass' list of
 	 * MUST attributes. The resulting array of must attributes will contain
 	 * unique members.
      *
@@ -481,15 +481,15 @@ class ObjectClass extends SchemaItem
 }
 
  /**
-  * A simple class for representing AttributeTypes used only by the ObjectClass class. 
-  * Users should never instantiate this class. It represents an attribute internal to 
-  * an ObjectClass. If PHP supported inner-classes and variable permissions, this would 
+  * A simple class for representing AttributeTypes used only by the ObjectClass class.
+  * Users should never instantiate this class. It represents an attribute internal to
+  * an ObjectClass. If PHP supported inner-classes and variable permissions, this would
   * be interior to class ObjectClass and flagged private. The reason this class is used
   * and not the "real" class AttributeType is because this class supports the notion of
   * a "source" objectClass, meaning that it keeps track of which objectClass originally
   * specified it. This class is therefore used by the class ObjectClass to determine
   * inheritance.
-  * 
+  *
   * @package lib
   */
  class ObjectClassAttribute
@@ -499,13 +499,13 @@ class ObjectClass extends SchemaItem
 	/** This Attribute's root */
 	var $source;
 
-    /** 
+    /**
      * Creates a new ObjectClassAttribute with specified name and source objectClass.
      * @param string $name the name of the new attribute.
-     * @param string $source the name of the ObjectClass which 
+     * @param string $source the name of the ObjectClass which
      *           specifies this attribute.
      */
-	function ObjectClassAttribute ($name, $source)
+	function __construct($name, $source)
 	{
 	 $this->name=$name;
 	 $this->source=$source;
@@ -526,8 +526,8 @@ class ObjectClass extends SchemaItem
 
 
 /**
- * Represents an LDAP AttributeType 
- * 
+ * Represents an LDAP AttributeType
+ *
  * @package lib
  */
 class AttributeType extends SchemaItem
@@ -565,8 +565,8 @@ class AttributeType extends SchemaItem
     /** A list of object class names that require this attribute type.  */
     var $required_by_object_classes = array();
 
-	/** 
-	 * Initialize the class' member variables 
+	/**
+	 * Initialize the class' member variables
 	 */
 	function initVars()
 	{
@@ -595,7 +595,7 @@ class AttributeType extends SchemaItem
 	/**
 	 * Creates a new AttributeType objcet from a raw LDAP AttributeType string.
 	 */
-	function AttributeType( $raw_ldap_attr_string )
+	function __construct( $raw_ldap_attr_string )
 	{
 		$this->initVars();
 		$attr = $raw_ldap_attr_string;
@@ -668,7 +668,7 @@ class AttributeType extends SchemaItem
 					// does this SYNTAX string specify a max length (ie, 1.2.3.4{16})
 					if( preg_match( "/{(\d+)}$/", $this->syntax, $this->max_length ) )
 						$this->max_length = $this->max_length[1];
-					else 
+					else
 						$this->max_length = null;
 					if($i < count($strings) - 1 && $strings[$i+1]=="{") {
 						do {
@@ -708,7 +708,7 @@ class AttributeType extends SchemaItem
 		$this->sup_attribute = preg_replace("/\'$/", "", $this->sup_attribute );
 	}
 
-    /** 
+    /**
      * Gets this attribute's name
      * @return string
      */
@@ -717,8 +717,8 @@ class AttributeType extends SchemaItem
 		return $this->name;
 	}
 
-    /** 
-     * Gets whether this attribute has been flagged as obsolete by the LDAP server 
+    /**
+     * Gets whether this attribute has been flagged as obsolete by the LDAP server
      * @return bool
      */
 	function getIsObsolete()
@@ -726,7 +726,7 @@ class AttributeType extends SchemaItem
 		return $this->is_obsolete;
 	}
 
-    /** 
+    /**
      * Gets this attribute's usage string as defined by the LDAP server
      * @return string
      */
@@ -735,8 +735,8 @@ class AttributeType extends SchemaItem
 		return $this->usage;
 	}
 
-    /** 
-     * Gets this attribute's parent attribute (if any). If this attribute does not 
+    /**
+     * Gets this attribute's parent attribute (if any). If this attribute does not
      * inherit from another attribute, null is returned.
      * @return string
      */
@@ -745,7 +745,7 @@ class AttributeType extends SchemaItem
 		return $this->sup_attribute;
 	}
 
-    /** 
+    /**
      * Gets this attribute's equality string
      * @return string
      */
@@ -754,7 +754,7 @@ class AttributeType extends SchemaItem
 		return $this->equality;
 	}
 
-    /** 
+    /**
      * Gets this attribute's ordering specification.
      * @return string
      */
@@ -763,7 +763,7 @@ class AttributeType extends SchemaItem
 		return $this->ordering;
 	}
 
-    /** 
+    /**
      * Gets this attribute's substring matching specification
      * @return string
      */
@@ -772,7 +772,7 @@ class AttributeType extends SchemaItem
 		return $this->sub_str;
 	}
 
-    /** 
+    /**
      * Gets the names of attributes that are an alias for this attribute (if any).
      * @return array An array of names of attributes which alias this attribute or
      *          an empty array if no attribute aliases this object.
@@ -806,10 +806,10 @@ class AttributeType extends SchemaItem
 	}
 
 	/**
-	 * Gets this attribute's syntax OID. Differs from getSyntaxString() in that this 
-     * function only returns the actual OID with any length specification removed. 
+	 * Gets this attribute's syntax OID. Differs from getSyntaxString() in that this
+     * function only returns the actual OID with any length specification removed.
      * Ie, if the syntax string is "1.2.3.4{16}", this function only retruns
-	 * "1.2.3.4". 
+	 * "1.2.3.4".
      * @return string The syntax OID string.
 	 */
 	function getSyntaxOID()
@@ -838,7 +838,7 @@ class AttributeType extends SchemaItem
 
     /**
      * Sets whether this attribute is single-valued.
-     * @param bool $is_single_value 
+     * @param bool $is_single_value
      */
 	function setIsSingleValue( $is_single_value )
 	{
@@ -875,7 +875,7 @@ class AttributeType extends SchemaItem
 	/**
 	 * Removes an attribute name from this attribute's alias array.
      * @param string $remove_alias_name The name of the attribute to remove.
-     * @return bool true on success or false on failure (ie, if the specified 
+     * @return bool true on success or false on failure (ie, if the specified
      *           attribute name is not found in this attribute's list of aliases)
 	 */
 	function removeAlias( $remove_alias_name )
@@ -936,7 +936,7 @@ class AttributeType extends SchemaItem
 	}
 
     /**
-     * Adds an objectClass name to this attribute's list of "used in" objectClasses, 
+     * Adds an objectClass name to this attribute's list of "used in" objectClasses,
      * that is the list of objectClasses which provide this attribute.
      * @param string $object_class_name The name of the objectClass to add.
      */
@@ -950,9 +950,9 @@ class AttributeType extends SchemaItem
 	}
 
     /**
-     * Gets the list of "used in" objectClasses, that is the list of objectClasses 
+     * Gets the list of "used in" objectClasses, that is the list of objectClasses
      * which provide this attribute.
-     * @return array An array of names of objectclasses (strings) which provide this attribute 
+     * @return array An array of names of objectclasses (strings) which provide this attribute
      */
 	function getUsedInObjectClasses()
 	{
@@ -960,7 +960,7 @@ class AttributeType extends SchemaItem
 	}
 
     /**
-     * Adds an objectClass name to this attribute's list of "required by" objectClasses, 
+     * Adds an objectClass name to this attribute's list of "required by" objectClasses,
      * that is the list of objectClasses which must have this attribute.
      * @param string $object_class_name The name of the objectClass to add.
      */
@@ -974,9 +974,9 @@ class AttributeType extends SchemaItem
 	}
 
     /**
-     * Gets the list of "required by" objectClasses, that is the list of objectClasses 
+     * Gets the list of "required by" objectClasses, that is the list of objectClasses
      * which provide must have attribute.
-     * @return array An array of names of objectclasses (strings) which provide this attribute 
+     * @return array An array of names of objectclasses (strings) which provide this attribute
      */
 	function getRequiredByObjectClasses()
 	{
@@ -986,7 +986,7 @@ class AttributeType extends SchemaItem
 
 /**
  * Represents an LDAP Syntax
- * 
+ *
  * @package lib
  */
 class Syntax extends SchemaItem
@@ -1002,7 +1002,7 @@ class Syntax extends SchemaItem
 	/**
 	 * Creates a new Syntax object from a raw LDAP syntax string.
 	 */
-	function Syntax( $raw_ldap_syntax_string )
+	function __construct( $raw_ldap_syntax_string )
 	{
 		$this->initVars();
 		$class = $raw_ldap_syntax_string;
@@ -1032,7 +1032,7 @@ class Syntax extends SchemaItem
 
 /**
  * Represents an LDAP MatchingRule
- * 
+ *
  * @package lib
  */
 class MatchingRule extends SchemaItem
@@ -1061,7 +1061,7 @@ class MatchingRule extends SchemaItem
 	/**
 	 * Creates a new MatchingRule object from a raw LDAP MatchingRule string.
 	 */
-	function MatchingRule( $raw_ldap_matching_rule_string )
+	function __construct( $raw_ldap_matching_rule_string )
 	{
 		$this->initVars();
 		$strings = preg_split ("/[\s,]+/", $raw_ldap_matching_rule_string, -1,PREG_SPLIT_DELIM_CAPTURE);
@@ -1170,14 +1170,14 @@ class MatchingRule extends SchemaItem
 
 /**
  * Represents an LDAP schema matchingRuleUse entry
- * 
+ *
  * @package lib
- */ 
+ */
 class MatchingRuleUse extends SchemaItem
 {
 	/** The name of the MathingRule this applies to */
 	var $name;
-	/** An array of attributeType names who make use of the mathingRule 
+	/** An array of attributeType names who make use of the mathingRule
 	 * identified by $this->oid and $this->name */
 	var $used_by_attrs;
 
@@ -1190,7 +1190,7 @@ class MatchingRuleUse extends SchemaItem
 		$this->used_by_attrs = array();
 	}
 
-	function MatchingRuleUse( $raw_matching_rule_use_string )
+	function __construct( $raw_matching_rule_use_string )
 	{
         $this->initVars();
 		$strings = preg_split ("/[\s,]+/", $raw_matching_rule_use_string, -1,PREG_SPLIT_DELIM_CAPTURE);
@@ -1277,7 +1277,7 @@ class MatchingRuleUse extends SchemaItem
  * DN whose subSchemaSubEntry you wish to retrieve of specify an empty string
  * to fetch the subScehamSubEntry from the Root DSE.
  *
- * @param string $dn The DN (may be null) which houses the subschemaSubEntry attribute which 
+ * @param string $dn The DN (may be null) which houses the subschemaSubEntry attribute which
  *                  this function can use to determine the schema entry's DN.
  * @param bool $debug Switch to true to see some nice and copious output. :)
  *
@@ -1333,16 +1333,16 @@ function _get_schema_dn($dn, $debug=false )
  * needfully complicated as it now supports many popular LDAP servers that
  * don't necessarily expose their schema "the right way".
  *
- * @param $schema_to_fetch - A string indicating which type of schema to 
- *		fetch. Five valid values: 'objectclasses', 'attributetypes', 
- *		'ldapsyntaxes', 'matchingruleuse', or 'matchingrules'. 
+ * @param $schema_to_fetch - A string indicating which type of schema to
+ *		fetch. Five valid values: 'objectclasses', 'attributetypes',
+ *		'ldapsyntaxes', 'matchingruleuse', or 'matchingrules'.
  *		Case insensitive.
  * @param $dn (optional) This paremeter is the DN of the entry whose schema you
  * 		would like to fetch. Entries have the option of specifying
  * 		their own subschemaSubentry that points to the DN of the system
  * 		schema entry which applies to this attribute. If unspecified,
  *		this will try to retrieve the schema from the RootDSE subschemaSubentry.
- *		Failing that, we use some commonly known schema DNs. Default 
+ *		Failing that, we use some commonly known schema DNs. Default
  *		value is the Root DSE DN (zero-length string)
  * @return an array of strings of this form:
  *    Array (
@@ -1360,15 +1360,15 @@ function _get_raw_schema($schema_to_fetch, $dn='' )
 
 	// error checking
 	$schema_to_fetch = strtolower( $schema_to_fetch );
-	$valid_schema_to_fetch = array( 'objectclasses', 'attributetypes', 'ldapsyntaxes', 
+	$valid_schema_to_fetch = array( 'objectclasses', 'attributetypes', 'ldapsyntaxes',
 					'matchingrules', 'matchingruleuse'  );
 	if( ! in_array( $schema_to_fetch, $valid_schema_to_fetch ) )
         // This error message is not localized as only developers should ever see it
-		echo( "Bad parameter provided to function to _get_raw_schema(). '" 
-				. htmlspecialchars( $schema_to_fetch ) . "' is 
+		echo( "Bad parameter provided to function to _get_raw_schema(). '"
+				. htmlspecialchars( $schema_to_fetch ) . "' is
 				not valid for the schema_to_fetch parameter." );
-	
-	// Try to get the schema DN from the specified entry. 
+
+	// Try to get the schema DN from the specified entry.
 	$schema_dn = _get_schema_dn($dn, $debug );
 
 	// Do we need to try again with the Root DSE?
@@ -1381,24 +1381,24 @@ function _get_raw_schema($schema_to_fetch, $dn='' )
 	if( $schema_dn ) {
 		if( $debug ) { echo "Found the schema DN: "; var_dump( $schema_dn ); echo "\n"; }
 		$schema_search = @ldap_read( $ds, $schema_dn, '(objectClass=*)',
-							array( $schema_to_fetch ), 0, 0, 0, 
+							array( $schema_to_fetch ), 0, 0, 0,
 							LDAP_DEREF_ALWAYS );
 
         // Were we not able to fetch the schema from the $schema_dn?
         $schema_entries = @ldap_get_entries( $ds, $schema_search );
-		if( $schema_search === false || 
+		if( $schema_search === false ||
             0 == @ldap_count_entries( $ds, $schema_search ) ||
             ! isset( $schema_entries[0][$schema_to_fetch] ) ) {
                 if( $debug ) echo "Did not find the schema with (objectClass=*). Attempting with (objetClass=subschema)\n";
 
                 // Try again with a different filter (some servers require (objectClass=subschema) like M-Vault)
                 $schema_search = @ldap_read( $ds, $schema_dn, '(objectClass=subschema)',
-                        array( $schema_to_fetch ), 0, 0, 0, 
+                        array( $schema_to_fetch ), 0, 0, 0,
                         LDAP_DEREF_ALWAYS );
                 $schema_entries = @ldap_get_entries( $ds, $schema_search );
 
                 // Still didn't get it?
-                if( $schema_search === false || 
+                if( $schema_search === false ||
                         0 == @ldap_count_entries( $ds, $schema_search ) ||
                         ! isset( $schema_entries[0][$schema_to_fetch] ) ) {
                     if( $debug ) echo "Did not find the schema at DN: $schema_dn (with objectClass=* nor objectClass=subschema).\n";
@@ -1411,7 +1411,7 @@ function _get_raw_schema($schema_to_fetch, $dn='' )
 		} else {
 			if( $debug ) echo "Found the schema at DN: $schema_dn (with objectClass=*).\n";
 		}
-	} 
+	}
 
 	// Second chance: If the DN or Root DSE didn't give us the subschemaSubentry, ie $schema_search
 	// is still null, use some common subSchemaSubentry DNs as a work-around.
@@ -1472,7 +1472,7 @@ function _get_raw_schema($schema_to_fetch, $dn='' )
          if( ! isset( $schema_entries[0][$schema_to_fetch] ) )
             $schema_search = null;
     }
-    
+
 	// Attempt to pull schema from Root DSE with scope "one" (work-around for Isode M-Vault X.500/LDAP)
 	if( $schema_search == null ) {
 		// try again, with a different schema DN
@@ -1500,7 +1500,7 @@ function _get_raw_schema($schema_to_fetch, $dn='' )
         set_schema_cache_unavailable();
 		return false;
 	}
-	
+
 	$schema = @ldap_get_entries( $ds, $schema_search );
 	if( $schema == false ) {
 		if( $debug ) echo "Returning false since ldap_get_entries() returned false.</pre>\n";
@@ -1528,8 +1528,8 @@ function _get_raw_schema($schema_to_fetch, $dn='' )
 	return $schema;
 }
 
-/** 
- * Gets an associative array of ObjectClass objects for the specified 
+/**
+ * Gets an associative array of ObjectClass objects for the specified
  * server. Each array entry's key is the name of the objectClass
  * in lower-case and the value is an ObjectClass object.
  *
@@ -1544,7 +1544,7 @@ function _get_raw_schema($schema_to_fetch, $dn='' )
 function get_schema_objectclasses($dn=null, $use_cache=true )
 {
 	if( $use_cache && cached_schema_available('objectclasses' ) ) {
-   //     return get_cached_schema('objectclasses' );   
+   //     return get_cached_schema('objectclasses' );
     }
 
 	$raw_oclasses = _get_raw_schema('objectclasses', $dn );
@@ -1605,7 +1605,7 @@ function get_schema_objectclass($oclass_name, $dn=null, $use_cache=true )
  * @see AttributeType
  * @see get_schema_attributes
  */
-function get_schema_attribute($attr_name, $dn=null, $use_cache=true ) 
+function get_schema_attribute($attr_name, $dn=null, $use_cache=true )
 {
 	$attr_name = real_attr_name( $attr_name );
 	$schema_attrs = get_schema_attributes($dn, $use_cache );
@@ -1616,8 +1616,8 @@ function get_schema_attribute($attr_name, $dn=null, $use_cache=true )
 	return $schema_attr;
 }
 
-/** 
- * Gets an associative array of AttributeType objects for the specified 
+/**
+ * Gets an associative array of AttributeType objects for the specified
  * server. Each array entry's key is the name of the attributeType
  * in lower-case and the value is an AttributeType object.
  *
@@ -1629,17 +1629,17 @@ function get_schema_attribute($attr_name, $dn=null, $use_cache=true )
 function get_schema_attributes($dn = null, $use_cache=true )
 {
     if( $use_cache && cached_schema_available('attributetypes' ) ) {
-        return get_cached_schema('attributetypes' );   
+        return get_cached_schema('attributetypes' );
     }
 
 	$raw_attrs = _get_raw_schema('attributeTypes', $dn );
 	if( ! $raw_attrs )
 		return false;
-	
+
 	// build the array of attribueTypes
 	$syntaxes = get_schema_syntaxes($dn );
 	$attrs = array();
-	/** 
+	/**
      * bug 856832: create two arrays - one indexed by name (the standard
 	 * $attrs array above) and one indexed by oid (the new $attrs_oid array
 	 * below). This will help for directory servers, like IBM's, that use OIDs
@@ -1657,18 +1657,18 @@ function get_schema_attributes($dn = null, $use_cache=true )
 		$name = $attr->getName();
 		$key = strtolower( $name );
 		$attrs[ $key ] = $attr;
-		
-		/** 
+
+		/**
 		 * bug 856832: create an entry in the $attrs_oid array too. This
 		 * will be a ref to the $attrs entry for maintenance and performance
-		 * reasons 
+		 * reasons
 		 */
 		$oid = $attr->getOID();
 		$attrs_oid[ $oid ] = &$attrs[ $key ];
 	}
 
 	add_aliases_to_attrs( $attrs );
-	/** 
+	/**
 	 * bug 856832: pass the $attrs_oid array as a second (new) parameter
 	 * to add_sup_to_attrs. This will allow lookups by either name or oid.
 	 */
@@ -1714,7 +1714,7 @@ function get_schema_attributes($dn = null, $use_cache=true )
 }
 
 /**
- * For each attribute that has multiple names, this function adds unique entries to 
+ * For each attribute that has multiple names, this function adds unique entries to
  * the attrs array for those names. Ie, attributeType has name 'gn' and 'givenName'.
  * This function will create a unique entry for 'gn' and 'givenName'.
  */
@@ -1741,7 +1741,7 @@ function add_aliases_to_attrs( &$attrs )
 }
 
 /**
- * Adds inherited values to each attributeType specified by the SUP directive. 
+ * Adds inherited values to each attributeType specified by the SUP directive.
  * Supports infinite levels of inheritance.
  * Bug 856832: require a second paramter that has all attributes indexed by OID
  */
@@ -1751,7 +1751,7 @@ function add_sup_to_attrs( &$attrs, &$attrs_oid )
 	if( $debug ) echo "<pre>";
 
 	if( $debug ) print_r( $attrs );
-	
+
 	// go back and add any inherited descriptions from parent attributes (ie, cn inherits name)
 	foreach( $attrs as $key => $attr ) {
 		if( $debug ) echo "Analyzing inheritance for attribute '" . $attr->getName() . "'\n";
@@ -1779,9 +1779,9 @@ function add_sup_to_attrs( &$attrs, &$attrs_oid )
 					$attr->setSupAttribute( $attrs_oid[$sup_attr_name]->getName() );
 					$sup_attr_name = $attr->getSupAttribute();
 				}
-				
-				if( ! isset( $attrs[ strtolower( $sup_attr_name ) ] ) ){ 
-					echo( "Schema error: attributeType '" . $attr->getName() . "' inherits from 
+
+				if( ! isset( $attrs[ strtolower( $sup_attr_name ) ] ) ){
+					echo( "Schema error: attributeType '" . $attr->getName() . "' inherits from
 								'" . $sup_attr_name . "', but attributeType '" . $sup_attr_name . "' does not
 								exist." );
 						return;
@@ -1855,14 +1855,14 @@ function add_sup_to_attrs( &$attrs, &$attrs_oid )
 	if( $debug ) echo "</pre>\n";
 }
 
-/** 
+/**
  * Returns an array of MatchingRule objects for the specified server.
  * The key of each entry is the OID of the matching rule.
  */
 function get_schema_matching_rules($dn=null, $use_cache=true )
 {
     if( $use_cache && cached_schema_available('matchingrules' ) ) {
-        return get_cached_schema('matchingrules' );   
+        return get_cached_schema('matchingrules' );
     }
 
 	// build the array of MatchingRule objects
@@ -1909,14 +1909,14 @@ function get_schema_matching_rules($dn=null, $use_cache=true )
 	return $rules;
 }
 
-/** 
+/**
  * Returns an array of Syntax objects that this LDAP server uses mapped to
  * their descriptions. The key of each entry is the OID of the Syntax.
  */
 function get_schema_syntaxes($dn=null, $use_cache=true )
 {
     if( $use_cache && cached_schema_available('ldapsyntaxes' ) ) {
-        return get_cached_schema('ldapsyntaxes' );   
+        return get_cached_schema('ldapsyntaxes' );
     }
 
 	$raw_syntaxes = _get_raw_schema('ldapSyntaxes', $dn );
@@ -1945,7 +1945,7 @@ function get_schema_syntaxes($dn=null, $use_cache=true )
 // --------------------------------------------------------------------
 
 /**
- * Returns true if the schema for $schema_type has been cached and 
+ * Returns true if the schema for $schema_type has been cached and
  * is availble. $schema_type may be one of (lowercase) the following:
  *      objectclasses
  *      attributetypes
@@ -1961,7 +1961,7 @@ function cached_schema_available($schema_type )
         return false;
 
     // Static memory cache available?
-    // (note: this memory cache buys us a 20% speed improvement over strictly 
+    // (note: this memory cache buys us a 20% speed improvement over strictly
     //        checking the session, ie 0.05 to 0.04 secs)
     $schema_type = strtolower( $schema_type );
     static $cache_avail;
@@ -1983,10 +1983,10 @@ function cached_schema_available($schema_type )
 /**
  * Returns the cached array of schemaitem objects for the specified
  * $schema_type. For list of valid $schema_type values, see above
- * schema_cache_available(). Note that internally, this function 
+ * schema_cache_available(). Note that internally, this function
  * utilizes a two-layer cache, one in memory using a static variable
  * for multiple calls within the same page load, and one in a session
- * for multiple calls within the same user session (spanning multiple 
+ * for multiple calls within the same user session (spanning multiple
  * page loads).
  *
  * Returns an array of SchemaItem objects on success or false on failure.
@@ -2035,7 +2035,7 @@ function set_cached_schema($schema_type, $schema_items )
     }
     // Make sure we are being passed a valid array of schema_items
     foreach( $schema_items as $schema_item ) {
-        if( ! is_subclass_of( $schema_item, 'SchemaItem' ) && 
+        if( ! is_subclass_of( $schema_item, 'SchemaItem' ) &&
             ! 0 == strcasecmp( 'SchemaItem', get_class( $schema_item ) ) ) {
             die( "While attempting to cache schema, one of the schema items passed is not a true SchemaItem instance!" );
         }
@@ -2046,9 +2046,9 @@ function set_cached_schema($schema_type, $schema_items )
     return true;
 }
 
-/** 
+/**
  * Sets the schema entry for the server_id to be "unavailable" so that we realize
- * that we tried to get the schema but could not, so quit trying next time to 
+ * that we tried to get the schema but could not, so quit trying next time to
  * fetch it from the server.
  */
 function set_schema_cache_unavailable()
