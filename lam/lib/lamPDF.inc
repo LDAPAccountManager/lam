@@ -70,7 +70,7 @@ class lamPDF extends UFPDF {
 			define('FPDF_FONTPATH', dirname(__FILE__) . '/font/');
 		}
 		// Call constructor of superclass
-		$this->FPDF('P','mm','A4');
+		parent::__construct('P','mm','A4');
 
 		$this->page_definitions = $page_definitions;
 

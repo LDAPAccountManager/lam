@@ -42,7 +42,7 @@ class UFPDF extends FPDF
 *******************************************************************************/
 function __construct($orientation='P',$unit='mm',$format='A4')
 {
-  FPDF::FPDF($orientation, $unit, $format);
+  parent::__construct($orientation, $unit, $format);
 }
 
 function GetStringWidth($s)
