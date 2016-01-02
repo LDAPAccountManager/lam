@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2009 - 2015  Roland Gruber
+                2009 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -140,7 +140,7 @@ function ntPassword($password) {
 *
 * @param string $password the password string
 * @param boolean $enabled marks the hash as enabled/disabled (e.g. by prefixing "!")
-* @param string $hashType password hash type (CRYPT, CRYPT-SHA512, SHA, SSHA, MD5, SMD5, PLAIN)
+* @param string $hashType password hash type (CRYPT, CRYPT-SHA512, SHA, SSHA, MD5, SMD5, PLAIN, K5KEY)
 * @return string the password hash
 */
 function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
@@ -160,14 +160,17 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 			$hash = "{MD5}" . base64_encode(convertHex2bin(md5($password)));
 			break;
 		case 'SMD5':
-				$salt = generateSalt(4);
-				$hash = "{SMD5}" . base64_encode(convertHex2bin(md5($password . $salt)) . $salt);
+			$salt = generateSalt(4);
+			$hash = "{SMD5}" . base64_encode(convertHex2bin(md5($password . $salt)) . $salt);
 			break;
 		case 'SHA':
 			$hash = "{SHA}" . base64_encode(convertHex2bin(sha1($password)));
 			break;
 		case 'PLAIN':
 			$hash = $password;
+			break;
+		case 'K5KEY':
+			$hash = '{K5KEY}';
 			break;
 		case 'SSHA':
 		default: // use SSHA if the setting is invalid
@@ -186,7 +189,7 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
  * @return array hash types
  */
 function getSupportedHashTypes() {
-	return array('CRYPT', 'CRYPT-SHA512', 'SHA', 'SSHA', 'MD5', 'SMD5', 'PLAIN', 'SASL');
+	return array('CRYPT', 'CRYPT-SHA512', 'SHA', 'SSHA', 'MD5', 'SMD5', 'PLAIN', 'SASL', 'K5KEY');
 }
 
 /**

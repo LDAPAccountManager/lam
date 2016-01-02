@@ -4,7 +4,7 @@
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-    Copyright (C) 2005 - 2015  Roland Gruber
+    Copyright (C) 2005 - 2016  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -488,6 +488,7 @@ class posixAccount extends baseModule implements passwordService {
 			'pwdHash' => array(
 				"Headline" => _("Password hash type"),
 				"Text" => _("LAM supports CRYPT, CRYPT-SHA512, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")
+						. ' ' . _('K5KEY is only needed if you use Kerberos with smbk5pwd.')
 			),
 			'uidNumber' => array(
 				"Headline" => _("UID number"), 'attr' => 'uidNumber',
@@ -1281,6 +1282,10 @@ class posixAccount extends baseModule implements passwordService {
 					&& ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')
 					&& ($this->getAccountContainer()->isNewAccount || ($this->attributes['uid'][0] != $this->orig['uid'][0]))) {
 				$this->attributes[$this->getPasswordAttrName()][0] = '{SASL}' . $this->attributes['uid'][0];
+			}
+			// set K5KEY password for new users
+			if (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'K5KEY')) {
+				$this->attributes[$this->getPasswordAttrName()][0] = pwd_hash('x', true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 			}
 		}
 		// Return error-messages
@@ -2225,6 +2230,10 @@ class posixAccount extends baseModule implements passwordService {
 				// set SASL passwords
 				if (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')) {
 					$partialAccounts[$i][$pwdAttrName] = '{SASL}' . $partialAccounts[$i]['uid'];
+				}
+				// set K5KEY password
+				elseif (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'K5KEY')) {
+					$partialAccounts[$i][$pwdAttrName] = pwd_hash('x', true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 				}
 				// set normal password
 				else {
