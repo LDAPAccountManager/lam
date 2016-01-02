@@ -1,3 +1,4 @@
+<?php
 /*
 $Id$
 
@@ -19,14 +20,13 @@ $Id$
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
-<?php
 
 include_once (dirname ( __FILE__ ) . '/../../../lib/baseModule.inc');
 include_once (dirname ( __FILE__ ) . '/../../../lib/modules/sudoRole.inc');
 
 /**
  * Checks sudo role functions.
- * 
+ *
  * @author Roland Gruber
  *
  */
@@ -43,7 +43,7 @@ class SudoRoleTest extends PHPUnit_Framework_TestCase {
 			$this->assertNotTrue(sudoRole::isValidDate($testDate), $testDate);
 		}
 	}
-	
+
 	public function testEncodeDate() {
 		$dates = array(
 			'1.2.2014' => '20140201000000Z',
@@ -59,7 +59,7 @@ class SudoRoleTest extends PHPUnit_Framework_TestCase {
 			$this->assertEquals($output, sudoRole::encodeDate($input), $input . ' ' . $output);
 		}
 	}
-	
+
 	public function testDecodeDate() {
 		$dates = array(
 			'01.02.2014 00:00' => '20140201000000Z',
@@ -75,7 +75,7 @@ class SudoRoleTest extends PHPUnit_Framework_TestCase {
 			$this->assertEquals($output, sudoRole::decodeDate($input), $input . ' ' . $output);
 		}
 	}
-	
+
 }
 
 ?>

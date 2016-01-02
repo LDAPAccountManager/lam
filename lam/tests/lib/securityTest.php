@@ -1,3 +1,4 @@
+<?php
 /*
 $Id$
 
@@ -19,7 +20,6 @@ $Id$
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
-<?php
 
 $_SERVER ['REMOTE_ADDR'] = '127.0.0.1';
 
@@ -28,50 +28,50 @@ include_once (dirname ( __FILE__ ) . '/../../lib/security.inc');
 
 /**
  * Checks password checking functions.
- * 
+ *
  * @author Roland Gruber
  *
  */
 class SecurityTest extends PHPUnit_Framework_TestCase {
-	
-	private $cfg = null;	
-	
+
+	private $cfg = null;
+
 	protected function setUp() {
 		testCreateDefaultConfig ();
 		$this->cfg = &$_SESSION ['cfgMain'];
 		$this->resetPasswordRules();
 	}
-	
+
 	public function testMinLength() {
 		$this->cfg->passwordMinLength = 5;
 		$this->checkPwd(array('55555', '666666'), array('1', '22', '333', '4444'));
 	}
-	
+
 	public function testMinUpper() {
 		$this->cfg->passwordMinUpper = 3;
 		$this->checkPwd(array('55A5AA55', '6BB666BB66', 'ABC'), array ('1A', '2C2C', 'AB3', '44BB'));
 	}
-	
+
 	public function testMinLower() {
 		$this->cfg->passwordMinLower = 3;
 		$this->checkPwd(array('55a5aa55', '6bb666bb66', 'abc'), array ('1a', '2c2c', 'ab3', '44bbABC'));
 	}
-	
+
 	public function testMinNumeric() {
 		$this->cfg->passwordMinNumeric = 3;
 		$this->checkPwd(array('333', '4444'), array('1', '22', '33A', '44bb'));
 	}
-	
+
 	public function testMinSymbol() {
 		$this->cfg->passwordMinSymbol = 3;
 		$this->checkPwd(array('---', '++++'), array('1.', '2.2.', '3+3+A', '44bb'));
 	}
-	
+
 	public function testMinClasses() {
 		$this->cfg->passwordMinClasses = 3;
 		$this->checkPwd(array('aB.', 'aB.1', 'aa.B99'), array('1', '2.', '3+-', '44bb'));
 	}
-	
+
 	public function testRulesCount() {
 		$this->cfg->passwordMinUpper = 3;
 		$this->cfg->passwordMinLower = 3;
@@ -85,12 +85,12 @@ class SecurityTest extends PHPUnit_Framework_TestCase {
 		$this->cfg->checkedRulesCount = 3;
 		$this->checkPwd(array('ABC---abc', 'ABC123.-.-', 'ABCabc-'), array('1', '2.', '3+-', '44bb', 'ABC--22'));
 	}
-	
+
 	public function testUser() {
 		$this->cfg->passwordMustNotContainUser = 'true';
 		$this->checkPwd(array('u', 'us', 'use', 'use1r'), array('user', '2user', 'user3'), 'user');
 	}
-	
+
 	public function testUserAttributes() {
 		$this->cfg->passwordMustNotContain3Chars = 'true';
 		$this->checkPwd(array('u', 'us', 'us1e', 'us1er'), array('use', 'user', '2user', 'user3'), 'user');
@@ -100,7 +100,7 @@ class SecurityTest extends PHPUnit_Framework_TestCase {
 			'user',
 			array('first', 'last'));
 	}
-	
+
 	/**
 	 * Resets the password rules to do no checks at all.
 	 */
@@ -115,10 +115,10 @@ class SecurityTest extends PHPUnit_Framework_TestCase {
 		$this->cfg->passwordMustNotContainUser = 'false';
 		$this->cfg->passwordMustNotContain3Chars = 'false';
 	}
-	
+
 	/**
 	 * Checks if the given passwords are correctly accepted/rejected.
-	 * 
+	 *
 	 * @param array $pwdsToAccept passwords that must be accepted
 	 * @param array $pwdsToReject passwords that must be rejected
 	 * @param String $userName user name

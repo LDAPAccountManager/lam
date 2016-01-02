@@ -230,7 +230,7 @@ function deleteConfigProfile($name) {
 		}
 	}
 	// delete config file
-	$confFile = $dir . $_POST['delfilename'] . ".conf";
+	$confFile = $dir . $name . ".conf";
 	if (!@unlink($confFile)) {
 		logNewMessage(LOG_ERR, 'Unable to delete ' . $confFile);
 		return _("Unable to delete profile!");
@@ -386,7 +386,7 @@ class LAMLanguage {
 }
 
 /**
-* This class manages .conf files.
+* This class manages conf files.
 *
 * @package configuration
 */
