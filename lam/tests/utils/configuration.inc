@@ -37,6 +37,7 @@ function testCreateDefaultConfig() {
 	touch($cfgPath);
 	$config = new LAMConfig('phpunit');
 	$_SESSION['config'] = $config;
+	$_SESSION['language'] = 'en_GB.utf8:UTF-8:English (Great Britain)';
 }
 
 ?>
