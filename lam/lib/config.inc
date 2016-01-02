@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2015  Roland Gruber
+  Copyright (C) 2003 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -177,13 +177,14 @@ function createConfigProfile($name, $password, $template) {
 	if (!preg_match("/^[a-z0-9_-]+$/i", $name) || !preg_match("/^[a-z0-9\\._-]+$/i", $template) || in_array($name, getConfigProfiles())) {
 		return _("Profile name is invalid!");
 	}
+	$dir = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/";
 	// check if template exists
-	if (!is_file("../../config/" . $template)) {
+	if (!is_file($dir . $template)) {
 		return "The file config/$template was not found. Please restore it.";
 	}
 	// create new profile file
-	$path = "../../config/" . $name . ".conf";
-	@copy("../../config/$template", $path);
+	$path = $dir . $name . ".conf";
+	@copy($dir . $template, $path);
 	@chmod ($path, 0600);
 	$file = is_file($path);
 	if ($file) {

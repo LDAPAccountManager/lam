@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2015  Roland Gruber
+  Copyright (C) 2003 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -89,6 +89,8 @@ if (isset($_POST['action'])) {
 				$cfg->default = $_POST['renfilename'];
 				$cfg->save();
 			}
+			// reread profile list
+			$files = getConfigProfiles();
 		}
 		else $error = _("Profile name is invalid!");
 	}
@@ -105,6 +107,8 @@ if (isset($_POST['action'])) {
 					$cfg->save();
 				}
 			}
+			// reread profile list
+			$files = getConfigProfiles();
 		}
 		else $error = _("Unable to delete profile!");
 	}
@@ -145,7 +149,7 @@ echo $_SESSION['header'];
 				echo _("Profile management");
 			?>
 		</title>
-	<?php 
+	<?php
 		// include all CSS files
 		$cssDirName = dirname(__FILE__) . '/../../style';
 		$cssDir = dir($cssDirName);
@@ -252,7 +256,7 @@ $addTemplateSelect->setContainsOptgroups(true);
 $addTemplateSelect->setHasDescriptiveElements(true);
 $container->addElement($addTemplateSelect, true);
 $newProfileButton = new htmlButton('btnAddProfile', _('Add'));
-$newProfileButton->setOnClick("jQuery('#action').val('add');showConfirmationDialog('" . _("Add profile") . "', '" . 
+$newProfileButton->setOnClick("jQuery('#action').val('add');showConfirmationDialog('" . _("Add profile") . "', '" .
 	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null); document.getElementById('passwd').focus();");
 $container->addElement($newProfileButton, true);
 $container->addElement($topicSpacer, true);
@@ -264,7 +268,7 @@ $oldProfileInput = new htmlTableExtendedInputField(_('New profile name'), 'renfi
 $oldProfileInput->setFieldSize(15);
 $container->addElement($oldProfileInput, true);
 $renameProfileButton = new htmlButton('btnRenameProfile', _('Rename'));
-$renameProfileButton->setOnClick("jQuery('#action').val('rename');showConfirmationDialog('" . _("Rename profile") . "', '" . 
+$renameProfileButton->setOnClick("jQuery('#action').val('rename');showConfirmationDialog('" . _("Rename profile") . "', '" .
 	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null); document.getElementById('passwd').focus();");
 $container->addElement($renameProfileButton, true);
 $container->addElement($topicSpacer, true);
@@ -273,7 +277,7 @@ $container->addElement($topicSpacer, true);
 $container->addElement(new htmlSubTitle(_("Delete profile")), true);
 $container->addElement(new htmlTableExtendedSelect('delfilename', $files, array(), _('Profile name'), '232'), true);
 $deleteProfileButton = new htmlButton('btnDeleteProfile', _('Delete'));
-$deleteProfileButton->setOnClick("jQuery('#action').val('delete');showConfirmationDialog('" . _("Delete profile") . "', '" . 
+$deleteProfileButton->setOnClick("jQuery('#action').val('delete');showConfirmationDialog('" . _("Delete profile") . "', '" .
 	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null); document.getElementById('passwd').focus();");
 $container->addElement($deleteProfileButton, true);
 $container->addElement($topicSpacer, true);
@@ -291,7 +295,7 @@ $profileSetPwd2->setFieldSize(15);
 $profileSetPwd2->setSameValueFieldID('setpassword');
 $container->addElement($profileSetPwd2, true);
 $setPasswordProfileButton = new htmlButton('btnSetPasswordProfile', _('Set profile password'));
-$setPasswordProfileButton->setOnClick("jQuery('#action').val('setpass');showConfirmationDialog('" . _("Set profile password") . "', '" . 
+$setPasswordProfileButton->setOnClick("jQuery('#action').val('setpass');showConfirmationDialog('" . _("Set profile password") . "', '" .
 	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null); document.getElementById('passwd').focus();");
 $container->addElement($setPasswordProfileButton, true);
 $container->addElement($topicSpacer, true);
@@ -302,7 +306,7 @@ $defaultprofile = $conf->default;
 $container->addElement(new htmlSubTitle(_("Change default profile")), true);
 $container->addElement(new htmlTableExtendedSelect('defaultfilename', $files, array($defaultprofile), _('Profile name'), '234'), true);
 $defaultProfileButton = new htmlButton('btnDefaultProfile', _('Ok'));
-$defaultProfileButton->setOnClick("jQuery('#action').val('setdefault');showConfirmationDialog('" . _("Change default profile") . "', '" . 
+$defaultProfileButton->setOnClick("jQuery('#action').val('setdefault');showConfirmationDialog('" . _("Change default profile") . "', '" .
 	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null); document.getElementById('passwd').focus();");
 $container->addElement($defaultProfileButton, true);
 $container->addElement($topicSpacer, true);
