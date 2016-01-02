@@ -1,5 +1,7 @@
 March 2016 5.3
   - Requires PHP 5.4.0 or higher
+  - Personal/Unix: support K5KEY hash type for smbk5pwd
+
 
 15.12.2015 5.2
   - Windows: support for additional attributes (jpegPhoto, title, carLicense,
