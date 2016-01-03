@@ -34,7 +34,7 @@ class LAMConfigTest extends PHPUnit_Framework_TestCase {
 	 */
 	private $lAMConfig;
 
-	const FILE_NAME = 'phpunit';
+	const FILE_NAME = 'LAMConfigTest';
 
 	/**
 	 * Prepares the environment before running a test.
@@ -60,6 +60,7 @@ class LAMConfigTest extends PHPUnit_Framework_TestCase {
 		deleteConfigProfile(LAMConfigTest::FILE_NAME);
 		$profiles = getConfigProfiles();
 		$this->assertTrue(!in_array(LAMConfigTest::FILE_NAME, $profiles));
+		testDeleteDefaultConfig();
 		parent::tearDown();
 	}
 
@@ -81,7 +82,7 @@ class LAMConfigTest extends PHPUnit_Framework_TestCase {
 	 * Tests LAMConfig->getPath()
 	 */
 	public function testGetPath() {
-		$this->assertEquals(dirname(dirname(dirname(__FILE__))) . '/config/phpunit.conf', $this->lAMConfig->getPath());
+		$this->assertEquals(dirname(dirname(dirname(__FILE__))) . '/config/' . LAMConfigTest::FILE_NAME . '.conf', $this->lAMConfig->getPath());
 	}
 
 	/**
@@ -93,6 +94,28 @@ class LAMConfigTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($url, $this->lAMConfig->get_ServerURL());
 		$this->doSave();
 		$this->assertEquals($url, $this->lAMConfig->get_ServerURL());
+	}
+
+	/**
+	 * Tests LAMConfig->get_ServerDisplayName() and LAMConfig->set_ServerDisplayName().
+	 */
+	public function testServerDisplayName() {
+		$url = 'ldap://localhost:123';
+		$name = 'PROD';
+		$this->lAMConfig->set_ServerURL($url);
+		$this->lAMConfig->setServerDisplayName('');
+		$this->assertEquals('', $this->lAMConfig->getServerDisplayName());
+		$this->assertEquals($url, $this->lAMConfig->getServerDisplayNameGUI());
+		$this->doSave();
+		$this->assertEquals('', $this->lAMConfig->getServerDisplayName());
+		$this->assertEquals($url, $this->lAMConfig->getServerDisplayNameGUI());
+
+		$this->lAMConfig->setServerDisplayName($name);
+		$this->assertEquals($name, $this->lAMConfig->getServerDisplayNameGUI());
+		$this->assertEquals($name, $this->lAMConfig->getServerDisplayName());
+		$this->doSave();
+		$this->assertEquals($name, $this->lAMConfig->getServerDisplayNameGUI());
+		$this->assertEquals($name, $this->lAMConfig->getServerDisplayName());
 	}
 
 	/**

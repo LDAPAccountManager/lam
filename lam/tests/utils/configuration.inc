@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2014  Roland Gruber
+  Copyright (C) 2014 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -38,6 +38,10 @@ function testCreateDefaultConfig() {
 	$config = new LAMConfig('phpunit');
 	$_SESSION['config'] = $config;
 	$_SESSION['language'] = 'en_GB.utf8:UTF-8:English (Great Britain)';
+}
+
+function testDeleteDefaultConfig() {
+	deleteConfigProfile('phpunit');
 }
 
 ?>

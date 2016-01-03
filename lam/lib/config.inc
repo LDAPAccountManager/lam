@@ -177,7 +177,7 @@ function createConfigProfile($name, $password, $template) {
 	if (!preg_match("/^[a-z0-9_-]+$/i", $name) || !preg_match("/^[a-z0-9\\._-]+$/i", $template) || in_array($name, getConfigProfiles())) {
 		return _("Profile name is invalid!");
 	}
-	$dir = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/";
+	$dir = dirname(dirname(__FILE__)) . "/config/";
 	// check if template exists
 	if (!is_file($dir . $template)) {
 		return "The file config/$template was not found. Please restore it.";
@@ -209,7 +209,7 @@ function deleteConfigProfile($name) {
 	if (!preg_match("/^[a-z0-9_-]+$/i", $name)) {
 		return _("Unable to delete profile!");
 	}
-	$dir = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/";
+	$dir = dirname(dirname(__FILE__)) . "/config/";
 	// delete account profiles and PDF structures
 	$subDirs = array($dir . 'pdf/' . $name . '/logos', $dir . 'pdf/' . $name, $dir . 'profiles/' . $name);
 	for ($i = 0; $i < sizeof($subDirs); $i++) {
@@ -412,6 +412,9 @@ class LAMConfig {
 	/** Server address (e.g. ldap://127.0.0.1:389) */
 	private $ServerURL;
 
+	/** Display name of LDAP server */
+	private $serverDisplayName;
+
 	/** enables/disables TLS encryption */
 	private $useTLS;
 
@@ -539,7 +542,7 @@ class LAMConfig {
 
 	/** List of all settings in config file */
 	private $settings = array("ServerURL", "useTLS", "followReferrals", 'pagedResults', "Passwd", "Admins", "treesuffix",
-		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", "cachetimeout",
+		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", "cachetimeout", 'serverDisplayName',
 		"modules", "activeTypes", "types", "tools", "accessLevel", 'loginMethod', 'loginSearchSuffix',
 		'loginSearchFilter', 'searchLimit', 'lamProMailFrom', 'lamProMailReplyTo', 'lamProMailSubject',
 		'lamProMailText', 'lamProMailIsHTML', 'lamProMailAllowAlternateAddress', 'httpAuthentication', 'loginSearchDN',
@@ -722,6 +725,7 @@ class LAMConfig {
 			}
 			// check if we have to add new entries (e.g. if user upgraded LAM and has an old config file)
 			if (!in_array("ServerURL", $saved)) array_push($file_array, "\n\n# server address (e.g. ldap://localhost:389 or ldaps://localhost:636)\n" . "serverURL: " . $this->ServerURL . "\n");
+			if (!in_array("serverDisplayName", $saved)) array_push($file_array, "\n\nserverDisplayName: " . $this->serverDisplayName . "\n");
 			if (!in_array("useTLS", $saved)) array_push($file_array, "\n\n# enable TLS encryption\n" . "useTLS: " . $this->useTLS . "\n");
 			if (!in_array("followReferrals", $saved)) array_push($file_array, "\n\n# follow referrals\n" . "followReferrals: " . $this->followReferrals . "\n");
 			if (!in_array("pagedResults", $saved)) array_push($file_array, "\n\n# paged results\n" . "pagedResults: " . $this->pagedResults . "\n");
@@ -849,6 +853,39 @@ class LAMConfig {
 	*/
 	public function set_ServerURL($value) {
 		if (is_string($value)) $this->ServerURL = $value;
+		else return false;
+		return true;
+	}
+
+	/**
+	* Returns the server display name. Defaults to server URL if empty display name.
+	*
+	* @return string server display name
+	*/
+	public function getServerDisplayNameGUI() {
+		if (empty($this->serverDisplayName)) {
+			return $this->ServerURL;
+		}
+		return $this->serverDisplayName;
+	}
+
+	/**
+	* Returns the server display name.
+	*
+	* @return string server display name
+	*/
+	public function getServerDisplayName() {
+		return $this->serverDisplayName;
+	}
+
+	/**
+	* Sets the server display name
+	*
+	* @param string $value new server display name
+	* @return boolean true if $value has correct format
+	*/
+	public function setServerDisplayName($value) {
+		if (is_string($value)) $this->serverDisplayName = $value;
 		else return false;
 		return true;
 	}

@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006 Michael Duergner
-                2003 - 2015 Roland Gruber
+                2003 - 2016 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -187,6 +187,8 @@ $helpArray = array (
 					"Text" => _("This is a workaround for Active Directory. Enable it if you get messages about size limit exceeded.")),
 				"267" => array ("Headline" => _('Template'),
 					"Text" => _('Please select the template for the new server profile. You can either select an existing server profile or use one of the built-in templates.')),
+				"268" => array ("Headline" => _('Display name'),
+					"Text" => _('This name is shown on the login page as server name. Defaults to server address if empty.')),
 				"270" => array ("Headline" => _('Bind user and password'),
 					"Text" => _('Please enter the DN and password to use for all jobs.')),
 				"271" => array ("Headline" => _('Database type'),

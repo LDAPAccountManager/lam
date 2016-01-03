@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2015  Roland Gruber
+                2005 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -464,7 +464,7 @@ function display_LoginPage($config_object, $cfgMain) {
 						$serverLabel->alignment = htmlElement::ALIGN_RIGHT;
 						$subTable->addElement($serverLabel);
 						$subTable->addElement($gap);
-						$serverName = new htmlOutputText($config_object->get_ServerURL());
+						$serverName = new htmlOutputText($config_object->getServerDisplayNameGUI());
 						$serverName->alignment = htmlElement::ALIGN_LEFT;
 						$subTable->addElement($serverName, true);
 						// server profile
