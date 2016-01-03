@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2015  Roland Gruber
+  Copyright (C) 2013 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -109,7 +109,7 @@ class windowsUser extends baseModule implements passwordService {
 			'streetAddress', 'telephoneNumber', 'url', 'wWWHomePage', 'userAccountControl', 'profilePath', 'scriptPath',
 			'pwdLastSet', 'otherMailbox', 'homeDirectory', 'homeDrive', 'msSFU30Name', 'msSFU30NisDomain', 'pwdLastSet',
 			'lastLogonTimestamp', 'accountExpires', 'jpegPhoto', 'title', 'carLicense', 'employeeNumber', 'employeeType',
-			'businessCategory', 'departmentNumber', 'ou', 'o', 'manager'
+			'businessCategory', 'departmentNumber', 'ou', 'o', 'manager', 'facsimileTelephoneNumber'
 		);
 		// help Entries
 		$return['help'] = array(
@@ -190,6 +190,10 @@ class windowsUser extends baseModule implements passwordService {
 			'telephoneNumber' => array(
 				"Headline" => _('Telephone number'), 'attr' => 'telephoneNumber',
 				"Text" => _('The user\'s telephone number.')
+			),
+			'facsimileTelephoneNumber' => array (
+				"Headline" => _("Fax number"), 'attr' => 'facsimileTelephoneNumber',
+				"Text" => _("The user's fax number.")
 			),
 			'url' => array(
 				"Headline" => _('Other web sites'), 'attr' => 'url',
@@ -548,6 +552,14 @@ class windowsUser extends baseModule implements passwordService {
 				'help' => 'groupsUpload',
 			),
 		);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidefacsimileTelephoneNumber')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_facsimileTelephoneNumber',
+				'description' => _('Fax number'),
+				'help' => 'facsimileTelephoneNumber',
+				'example' => _('123-123-1236')
+			);
+		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidesAMAccountName', true)) {
 			$return['upload_columns'][] = array(
 				'name' => 'windowsUser_sAMAccountName',
@@ -748,6 +760,9 @@ class windowsUser extends baseModule implements passwordService {
 			'homeDirectory' => _('Home directory'),
 			'accountExpires' => _('Account expiration date'),
 		);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidefacsimileTelephoneNumber')) {
+			$return['PDF_fields']['facsimileTelephoneNumber'] = _('Fax number');
+		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidesAMAccountName', true)) {
 			$return['PDF_fields']['sAMAccountName'] = _('User name (pre W2K)');
 		}
@@ -798,6 +813,7 @@ class windowsUser extends baseModule implements passwordService {
 		$return['selfServiceFieldSettings'] = array(
 			'physicalDeliveryOfficeName' => _('Office name'),
 			'telephoneNumber' => _('Telephone number'),
+			'facsimileTelephoneNumber' => _('Fax number'),
 			'wWWHomePage' => _('Web site'),
 			'streetAddress' => _('Street'),
 			'st' => _('State'),
@@ -810,7 +826,7 @@ class windowsUser extends baseModule implements passwordService {
 		);
 		// possible self service read-only fields
 		$return['selfServiceReadOnlyFields'] = array('physicalDeliveryOfficeName', 'telephoneNumber',
-			'wWWHomePage', 'streetAddress', 'st', 'l', 'postOfficeBox', 'postalCode');
+			'facsimileTelephoneNumber', 'wWWHomePage', 'streetAddress', 'st', 'l', 'postOfficeBox', 'postalCode');
 		return $return;
 	}
 
@@ -844,6 +860,8 @@ class windowsUser extends baseModule implements passwordService {
 		$this->messages['sn'][1] = array('ERROR', _('Account %s:') . ' windowsUser_sn', _('Last name contains invalid characters or is empty!'));
 		$this->messages['telephoneNumber'][0] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
 		$this->messages['telephoneNumber'][1] = array('ERROR', _('Account %s:') . ' windowsUser_telephone', _('Please enter a valid telephone number!'));
+		$this->messages['facsimileTelephoneNumber'][0] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
+		$this->messages['facsimileTelephoneNumber'][1] = array('ERROR', _('Account %s:') . ' windowsUser_facsimileTelephoneNumber', _('Please enter a valid fax number!'));
 		$this->messages['otherTelephone'][0] = array('ERROR', _('Other telephone numbers'), _('Please enter a valid telephone number!'));
 		$this->messages['otherTelephone'][1] = array('ERROR', _('Account %s:') . ' windowsUser_otherTelephone', _('Please enter a valid telephone number!'));
 		$this->messages['postalCode'][0] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
@@ -975,6 +993,9 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addMultiValueInputTextField($containerLeft, 'otherMailbox', _('Email alias'));
 		$this->addSimpleInputTextField($containerLeft, 'telephoneNumber', _('Telephone number'));
 		$this->addMultiValueInputTextField($containerLeft, 'otherTelephone', _('Other telephone numbers'));
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidefacsimileTelephoneNumber')) {
+			$this->addSimpleInputTextField($containerLeft, 'facsimileTelephoneNumber', _('Fax number'));
+		}
 		$this->addSimpleInputTextField($containerLeft, 'wWWHomePage', _('Web site'));
 		$this->addMultiValueInputTextField($containerLeft, 'url', _('Other web sites'));
 		// work details area
@@ -1266,6 +1287,13 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		// other telephones
 		$this->processMultiValueInputTextField('otherTelephone', $return, 'telephone');
+		// fax number
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidefacsimileTelephoneNumber')) {
+			$this->attributes['facsimileTelephoneNumber'][0] = $_POST['facsimileTelephoneNumber'];
+			if (!get_preg($_POST['facsimileTelephoneNumber'], 'telephone')) {
+				$return[] = $this->messages['facsimileTelephoneNumber'][0];
+			}
+		}
 		// office name
 		$this->attributes['physicalDeliveryOfficeName'][0] = $_POST['physicalDeliveryOfficeName'];
 		// postal code
@@ -1970,6 +1998,11 @@ class windowsUser extends baseModule implements passwordService {
 				'telephone', $this->messages['telephoneNumber'][1], $errors);
 			// other telephone
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_otherTelephone', 'otherTelephone', 'telephone', $this->messages['otherTelephone'][1], $errors, '/;[ ]*/');
+			// fax number
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidefacsimileTelephoneNumber')) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_facsimileTelephoneNumber', 'facsimileTelephoneNumber',
+						'telephone', $this->messages['facsimileTelephoneNumber'][1], $errors);
+			}
 			// website
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_webSite', 'wWWHomePage');
 			// other websites
@@ -2282,6 +2315,7 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addSimplePDFField($return, 'st', _('State'));
 		$this->addSimplePDFField($return, 'streetAddress', _('Street'));
 		$this->addSimplePDFField($return, 'telephoneNumber', _('Telephone number'));
+		$this->addSimplePDFField($return, 'facsimileTelephoneNumber', _('Fax number'));
 		$this->addSimplePDFField($return, 'url', _('Other web sites'));
 		$this->addSimplePDFField($return, 'wWWHomePage', _('Web site'));
 		$this->addSimplePDFField($return, 'msSFU30Name', _('NIS name'));
@@ -2445,6 +2479,7 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		$this->addSimpleSelfServiceTextField($return, 'physicalDeliveryOfficeName', _('Office name'), $fields, $attributes, $readOnlyFields);
 		$this->addSimpleSelfServiceTextField($return, 'telephoneNumber', _('Telephone number'), $fields, $attributes, $readOnlyFields);
+		$this->addSimpleSelfServiceTextField($return, 'facsimileTelephoneNumber', _('Fax number'), $fields, $attributes, $readOnlyFields);
 		$this->addSimpleSelfServiceTextField($return, 'wWWHomePage', _('Web site'), $fields, $attributes, $readOnlyFields);
 		// TODO remove this workaround when self service allows to specify the list of active modules
 		if (isset($attributes['street'])) {
@@ -2526,6 +2561,7 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		$this->checkSimpleSelfServiceTextField($return, 'physicalDeliveryOfficeName', $attributes, $fields, $readOnlyFields);
 		$this->checkSimpleSelfServiceTextField($return, 'telephoneNumber', $attributes, $fields, $readOnlyFields, 'telephone');
+		$this->checkSimpleSelfServiceTextField($return, 'facsimileTelephoneNumber', $attributes, $fields, $readOnlyFields, 'telephone');
 		$this->checkSimpleSelfServiceTextField($return, 'wWWHomePage', $attributes, $fields, $readOnlyFields);
 		$this->checkSimpleSelfServiceTextField($return, 'streetAddress', $attributes, $fields, $readOnlyFields);
 		$this->checkSimpleSelfServiceTextField($return, 'st', $attributes, $fields, $readOnlyFields);
@@ -2995,6 +3031,7 @@ class windowsUser extends baseModule implements passwordService {
 		$configHiddenGroup->addElement(new htmlHelpLink('hiddenOptions'));
 		$configContainer->addElement($configHiddenGroup, true);
 		$configContainerOptions = new htmlTable();
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidefacsimileTelephoneNumber', false, _('Fax number'), null, false));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidesAMAccountName', true, _('User name (pre W2K)'), null, false));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidemsSFU30Name', true, _('NIS name'), null, false));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidemsSFU30NisDomain', true, _('NIS domain'), null, false));
@@ -3004,8 +3041,8 @@ class windowsUser extends baseModule implements passwordService {
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidetitle', true, _('Job title'), null, false));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidecarLicense', true, _('Car license'), null, false));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideemployeeNumber', true, _('Employee number'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideemployeeType', true, _('Employee type'), null, false), true);
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidebusinessCategory', true, _('Business category'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideemployeeType', true, _('Employee type'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidebusinessCategory', true, _('Business category'), null, false), true);
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidedepartmentNumber', true, _('Department'), null, false));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideou', true, _('Organisational unit'), null, false));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideo', true, _('Organisation'), null, false));
