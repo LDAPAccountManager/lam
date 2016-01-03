@@ -1,5 +1,6 @@
 March 2016 5.3
   - Requires PHP 5.4.0 or higher
+  - Login can show display name instead of server URL
   - Personal/Unix: support K5KEY hash type for smbk5pwd
 
 

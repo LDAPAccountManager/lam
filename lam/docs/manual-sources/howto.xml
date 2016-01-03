@@ -992,6 +992,12 @@ Have fun!
         <title>Version specific upgrade instructions</title>
 
         <section>
+          <title>5.1 -&gt; 5.3</title>
+
+          <para>No special actions needed.</para>
+        </section>
+
+        <section>
           <title>5.0 -&gt; 5.1</title>
 
           <para>Self Service: There were large changes to provide a responsive
@@ -1646,6 +1652,10 @@ Have fun!
           the different access levels.</para>
 
           <para><emphasis role="bold">Advanced options</emphasis></para>
+
+          <para>Sometimes, you may not want to display the server address on
+          the login page. In this case you can setup a display name here (e.g.
+          "Production").</para>
 
           <para>By default LAM will not follow LDAP referrals. This is ok for
           most installations. If you use LDAP referrals please activate the
@@ -3357,7 +3367,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
         You might want to set the default domain name in the <link
         linkend="a_accountProfile">profile editor</link>.</para>
 
-        <para><emphasis role="bold">Attention:</emphasis> </para>
+        <para><emphasis role="bold">Attention:</emphasis></para>
 
         <itemizedlist>
           <listitem>
