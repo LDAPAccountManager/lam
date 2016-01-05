@@ -3153,7 +3153,7 @@ class windowsUser extends baseModule implements passwordService {
 
 }
 
-if (interface_exists('\LAM\JOB\Job')) {
+if (interface_exists('\LAM\JOB\Job', false)) {
 
 	include_once dirname(__FILE__) . '/../passwordExpirationJob.inc';
 
