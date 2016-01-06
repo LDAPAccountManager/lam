@@ -26,6 +26,7 @@ time.
 * lib/modules/mitKerberosStructural.inc
 * lib/modules/namedObject.inc
 * lib/modules/nisObject.inc
+* lib/modules/nsview.inc
 * lib/modules/passwordSelfReset.inc
 * lib/modules/oracleService.inc
 * lib/modules/organizationalRole*.inc
@@ -48,6 +49,7 @@ time.
 * lib/types/automountType.inc
 * lib/types/gon.inc
 * lib/types/nisObjectType.inc
+* lib/types/nsview.inc
 * lib/types/oracleContextType.inc
 * lib/types/ppolicyType.inc
 * lib/types/sudo.inc

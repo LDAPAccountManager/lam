@@ -3,7 +3,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003  Leonhard Walchshaeusl
-  Copyright (C) 2005 - 2015  Roland Gruber
+  Copyright (C) 2005 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -673,6 +673,10 @@ h4.schema_oclass_sub {
 .oracleContextType-border { border-color:#32768b; }
 .oracleContextType-bright { background:#b6eeff !important; }
 .oracleContextType-dark { background-color:#80e0e1 !important; }
+
+.nsviewType-border { border-color:#af8800; }
+.nsviewType-bright { background:#fff3c8 !important; }
+.nsviewType-dark { background-color:#ffe27f !important; }
 
 /** responsive styles */
 

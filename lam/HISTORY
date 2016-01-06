@@ -3,6 +3,10 @@ March 2016 5.3
   - Windows: support management of fax number
   - Login can show display name instead of server URL
   - Personal/Unix: support K5KEY hash type for smbk5pwd
+  - fixed bugs:
+   -> autoload errors in tree view
+  - LAM Pro:
+   -> Support for LDAP views based on nsview object class
 
 
 15.12.2015 5.2

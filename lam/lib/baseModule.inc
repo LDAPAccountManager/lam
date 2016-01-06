@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2015  Roland Gruber
+  Copyright (C) 2003 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1220,6 +1220,15 @@ abstract class baseModule {
 	*/
 	public function display_html_delete() {
 		return 0;
+	}
+
+	/**
+	 * Defines if the LDAP entry has only virtual child entries. This is the case for e.g. LDAP views.
+	 *
+	 * @return boolean has only virtual children
+	 */
+	public function hasOnlyVirtualChildren() {
+		return false;
 	}
 
 	/**

@@ -4,7 +4,7 @@
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-	Copyright (C) 2007 - 2015  Roland Gruber
+	Copyright (C) 2007 - 2016  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -103,9 +103,12 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 		echo "<tr>\n";
 		echo "<td><b>" . _("Account name:") . "</b> " . htmlspecialchars($users[$i]) . "</td>\n";
 		echo "<td>&nbsp;&nbsp;<b>" . _('DN') . ":</b> " . htmlspecialchars($_SESSION['delete_dn'][$i]) . "</td>\n";
-		$childCount = getChildCount($_SESSION['delete_dn'][$i]);
-		if ($childCount > 0) {
-			echo "<td>&nbsp;&nbsp;<b>" . _('Number of child entries') . ":</b> " . $childCount . "</td>\n";
+		$_SESSION['account']->load_account($_SESSION['delete_dn'][$i]);
+		if (!$_SESSION['account']->hasOnlyVirtualChildren()) {
+			$childCount = getChildCount($_SESSION['delete_dn'][$i]);
+			if ($childCount > 0) {
+				echo "<td>&nbsp;&nbsp;<b>" . _('Number of child entries') . ":</b> " . $childCount . "</td>\n";
+			}
 		}
 		echo "</tr>\n";
 	}
@@ -158,7 +161,7 @@ if (isset($_POST['delete'])) {
 	echo "<input name=\"type\" type=\"hidden\" value=\"" . $_POST['type'] . "\">\n";
 	echo "<div class=\"".$_POST['type']."-bright smallPaddingContent\"><br>\n";
 	echo "<br>\n";
-	
+
 	// Delete dns
 	$allOk = true;
 	$allErrors = array();
@@ -255,7 +258,8 @@ if (isset($_POST['delete'])) {
 			}
 		}
 		if (!$stopprocessing) {
-			$messages = deleteDN($_SESSION['delete_dn'][$m]);
+			$recursive = !$_SESSION['account']->hasOnlyVirtualChildren();
+			$messages = deleteDN($_SESSION['delete_dn'][$m], $recursive);
 			$errors = array_merge($errors, $messages);
 			if (sizeof($errors) > 0) {
 				$stopprocessing = true;
@@ -273,7 +277,7 @@ if (isset($_POST['delete'])) {
 					}
 				}
 			}
-		}		
+		}
 		if (!$stopprocessing) {
 			echo sprintf(_('Deleted DN: %s'), $_SESSION['delete_dn'][$m]) . "<br>\n";
 			foreach ($errors as $error) {
@@ -328,27 +332,30 @@ function getChildCount($dn) {
 * Deletes a DN and all child entries.
 *
 * @param string $dn DN to delete
+* @param boolean $recursive recursive delete also child entries
 * @return array error messages
 */
-function deleteDN($dn) {
+function deleteDN($dn, $recursive) {
 	$errors = array();
 	if (($dn == null) || ($dn == '')) {
 		$errors[] = array('ERROR', _('Entry does not exist'));
 		return $errors;
 	}
-	$sr = @ldap_list($_SESSION['ldap']->server(), $dn, 'objectClass=*', array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
-	if ($sr) {
-		$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
-		cleanLDAPResult($entries);
-		for ($i = 0; $i < sizeof($entries); $i++) {
-			// delete recursively
-			$subErrors = deleteDN($entries[$i]['dn']);
-			for ($e = 0; $e < sizeof($subErrors); $e++) $errors[] = $subErrors[$e];
+	if ($recursive) {
+		$sr = @ldap_list($_SESSION['ldap']->server(), $dn, 'objectClass=*', array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
+		if ($sr) {
+			$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
+			cleanLDAPResult($entries);
+			for ($i = 0; $i < sizeof($entries); $i++) {
+				// delete recursively
+				$subErrors = deleteDN($entries[$i]['dn'], $recursive);
+				for ($e = 0; $e < sizeof($subErrors); $e++) $errors[] = $subErrors[$e];
+			}
 		}
-	}
-	else {
-		$errors[] = array ('ERROR', sprintf(_('Was unable to delete DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
-		return $errors;
+		else {
+			$errors[] = array ('ERROR', sprintf(_('Was unable to delete DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+			return $errors;
+		}
 	}
 	// delete parent DN
 	$success = @ldap_delete($_SESSION['ldap']->server(), $dn);
