@@ -6785,6 +6785,54 @@ OK (10 msec)</programlisting>
     </section>
 
     <section>
+      <title>LDAP views based on nsview (LAM Pro)</title>
+
+      <para>LAM Pro supports LDAP views based on the "nsview" object class.
+      These views allow to create an organizational unit that shows a subset
+      of your LDAP content. The subset is determined by an LDAP filter.</para>
+
+      <para><emphasis role="bold">Configuration:</emphasis></para>
+
+      <para>To activate view management in LAM Pro edit your server profile
+      and add the type "LDAP views".</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_nsview1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_nsview2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Now you are ready to create your views. Each view has a name, LDAP
+      filter and an optional description.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_nsview4.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_nsview3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
       <title>General information</title>
 
       <para>This module is available for all account types. It shows some
@@ -9567,6 +9615,24 @@ OK (10 msec)</programlisting>
             <entry>-</entry>
 
             <entry>Does not require any schema.</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_nsview.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>LDAP views</entry>
+
+            <entry>nsview, organizationalunit</entry>
+
+            <entry>built-in</entry>
+
+            <entry>Part of LDAP server installation (e.g. 389 server)</entry>
+
+            <entry>LAM Pro only</entry>
           </row>
         </tbody>
       </tgroup>
