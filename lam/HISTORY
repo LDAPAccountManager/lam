@@ -3,6 +3,7 @@ March 2016 5.3
   - Windows: support management of fax number
   - Login can show display name instead of server URL
   - Personal/Unix: support K5KEY hash type for smbk5pwd
+  - New NIS netgroup module for hosts
   - fixed bugs:
    -> autoload errors in tree view
   - LAM Pro:

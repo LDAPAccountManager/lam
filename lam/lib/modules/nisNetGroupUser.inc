@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2015  Roland Gruber
+  Copyright (C) 2015 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -36,13 +36,13 @@ $Id$
 class nisNetGroupUser extends baseModule {
 
 	/** list of NIS netgroups the user is memberOf (array(array(name => '', dn => '', host => '', domain => ''))) */
-	private $groups = array();
+	protected $groups = array();
 	/** list of NIS netgroups the user was memberOf (array(array(name => '', dn => '', host => '', domain => ''))) */
-	private $groupsOrig = array();
+	protected $groupsOrig = array();
 	/** group cache (array(array(cn => '', dn => '', nisnetgrouptriple => array()))) */
-	private $groupCache = null;
+	protected $groupCache = null;
 	/** original uid */
-	private $uidOrig = null;
+	protected $uidOrig = null;
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
@@ -79,7 +79,7 @@ class nisNetGroupUser extends baseModule {
 		);
 		// upload columns
 		$return['upload_columns'][] = array(
-			'name' => 'nisNetGroupUser_memberships',
+			'name' => 'nisNetGroup_memberships',
 			'description' => _('Memberships'),
 			'help' => 'memberships_upload',
 			'example' => 'group1#host#domain,group2#host#domain'
@@ -117,8 +117,7 @@ class nisNetGroupUser extends baseModule {
 		if (empty($attr['uid'][0])) {
 			return;
 		}
-		$uid = $attr['uid'][0];
-		$this->uidOrig = $uid;
+		$this->uidOrig = $attr['uid'][0];
 		$types = array('netgroup');
 		$typeSettings = $_SESSION['config']->get_typeSettings();
 		$groupList = array();
@@ -142,11 +141,12 @@ class nisNetGroupUser extends baseModule {
 				$host = $matches[1];
 				$user = $matches[2];
 				$domain = $matches[3];
-				if ($user == $uid) {
+				if ($this->isMatchingNetGroup($user, $host, $domain, $this->uidOrig)) {
 					$this->groupsOrig[] = array(
 						'name' => $group['cn'][0],
 						'dn' => $group['dn'],
 						'host' => $host,
+						'user' => $user,
 						'domain' => $domain
 					);
 				}
@@ -154,6 +154,18 @@ class nisNetGroupUser extends baseModule {
 		}
 		usort($this->groupsOrig, array($this, 'sortTriple'));
 		$this->groups = $this->groupsOrig;
+	}
+
+	/**
+	 * Checks if the netgroup matches this entry.
+	 *
+	 * @param String $user netgroup user name
+	 * @param String $host netgroup host name
+	 * @param String $domain netgroup domain name
+	 * @param String $uid user name of this entry
+	 */
+	protected function isMatchingNetGroup($user, $host, $domain, $uid) {
+		return $user == $uid;
 	}
 
 	/**
@@ -219,18 +231,19 @@ class nisNetGroupUser extends baseModule {
 				'name' => $parts[0],
 				'dn' => $parts[1],
 				'host' => $_POST['host_add'],
+				'user' => $this->uidOrig,
 				'domain' => $_POST['domain_add']
 			);
-				if (!empty($_POST['host_add']) && !get_preg($_POST['host_add'], 'DNSname')) {
-					$message = $this->messages['host'][0];
-					$message[2] = $message[2] . '<br><br>' . $_POST['host_add'];
-					$errors[] = $message;
-				}
-				if (!empty($_POST['domain_add']) && !get_preg($_POST['domain_add'], 'DNSname')) {
-					$message = $this->messages['domain'][0];
-					$message[2] = $message[2] . '<br><br>' . $_POST['domain_add'];
-					$errors[] = $message;
-				}
+			if (!empty($_POST['host_add']) && !get_preg($_POST['host_add'], 'DNSname')) {
+				$message = $this->messages['host'][0];
+				$message[2] = $message[2] . '<br><br>' . $_POST['host_add'];
+				$errors[] = $message;
+			}
+			if (!empty($_POST['domain_add']) && !get_preg($_POST['domain_add'], 'DNSname')) {
+				$message = $this->messages['domain'][0];
+				$message[2] = $message[2] . '<br><br>' . $_POST['domain_add'];
+				$errors[] = $message;
+			}
 		}
 		// check existing
 		$counter = 0;
@@ -264,7 +277,7 @@ class nisNetGroupUser extends baseModule {
 	 *
 	 * @return String user ID
 	 */
-	private function getUid() {
+	protected function getUid() {
 		$moduleAttributes = array();
 		if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
 			$moduleAttributes = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
@@ -308,6 +321,7 @@ class nisNetGroupUser extends baseModule {
 			foreach ($toAdd as $k => $group) {
 				if (($group_orig['dn'] == $group['dn'])
 					&& ($group_orig['domain'] == $group['domain'])
+					&& ($group_orig['user'] == $group['user'])
 					&& ($group_orig['host'] == $group['host'])) {
 					if (!empty($this->uidOrig) && ($this->uidOrig != $uid)) {
 						// uid changed, simply update uid in all net groups
@@ -324,11 +338,11 @@ class nisNetGroupUser extends baseModule {
 		// group by DN
 		$changes = array();
 		foreach ($toAdd as $add) {
-			$changes[$add['dn']]['add'][] = '(' . $add['host'] . ',' . $uid . ',' . $add['domain'] . ')';
+			$changes[$add['dn']]['add'][] = $this->createNetGroupValue($add, $uid);
 		}
 		foreach ($toRem as $del) {
 			$delUid = empty($this->uidOrig) ? $uid : $this->uidOrig;
-			$changes[$del['dn']]['del'][] = '(' . $del['host'] . ',' . $delUid . ',' . $del['domain'] . ')';
+			$changes[$del['dn']]['del'][] = $this->createNetGroupValue($del, $delUid);
 		}
 		// update groups
 		foreach ($changes as $dn => $changeSet) {
@@ -358,6 +372,16 @@ class nisNetGroupUser extends baseModule {
 	}
 
 	/**
+	 * Creates a netgroup triple from a group object.
+	 *
+	 * @param String $group group object
+	 * @param String $uid own uid
+	 */
+	protected function createNetGroupValue($group, $uid) {
+		return '(' . $group['host'] . ',' . $uid . ',' . $group['domain'] . ')';
+	}
+
+	/**
 	* Additional LDAP operations on delete.
 	*
 	* @return List of LDAP operations, same as for save_attributes()
@@ -373,7 +397,7 @@ class nisNetGroupUser extends baseModule {
 		// remove from NIS netgroups
 		$changes = array();
 		foreach ($this->groups as $group) {
-			$changes[$group['dn']][] = '(' . $group['host'] . ',' . $uid . ',' . $group['domain'] . ')';
+			$changes[$group['dn']][] = $this->createNetGroupValue($group, $uid);
 		}
 		foreach ($changes as $dn => $changeSet) {
 			$current = ldapGetDN($dn, array('nisnetgrouptriple'));
@@ -434,6 +458,7 @@ class nisNetGroupUser extends baseModule {
 					'name' => $parts[0],
 					'dn' => $parts[1],
 					'host' => $profile['nisNetGroupUser_host' . $i][0],
+					'user' => $this->uidOrig,
 					'domain' => $profile['nisNetGroupUser_domain' . $i][0],
 				);
 			}
@@ -486,8 +511,8 @@ class nisNetGroupUser extends baseModule {
 		// check input
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// group names
-			if (!empty($rawAccounts[$i][$ids['nisNetGroupUser_memberships']])) {
-				$triples = preg_split('/,[ ]*/', $rawAccounts[$i][$ids['nisNetGroupUser_memberships']]);
+			if (!empty($rawAccounts[$i][$ids['nisNetGroup_memberships']])) {
+				$triples = preg_split('/,[ ]*/', $rawAccounts[$i][$ids['nisNetGroup_memberships']]);
 				foreach ($triples as $triple) {
 					$parts = explode('#', $triple);
 					if (!in_array($parts[0], $groupNames)) {
@@ -534,14 +559,12 @@ class nisNetGroupUser extends baseModule {
 					continue;
 				}
 				$uid = $accounts[$i]['uid'];
-				if (!empty($data[$i][$ids['nisNetGroupUser_memberships']])) {
-					$triples = preg_split('/,[ ]*/', $data[$i][$ids['nisNetGroupUser_memberships']]);
+				if (!empty($data[$i][$ids['nisNetGroup_memberships']])) {
+					$triples = preg_split('/,[ ]*/', $data[$i][$ids['nisNetGroup_memberships']]);
 					foreach ($triples as $triple) {
 						$parts = explode('#', $triple);
 						$group = $parts[0];
-						$host = empty($parts[1]) ? '' : $parts[1];
-						$domain = empty($parts[2]) ? '' : $parts[2];
-						$temp['groups'][$groupMap[$group]][] = '(' . $host . ',' . $uid . ',' . $domain . ')';
+						$temp['groups'][$groupMap[$group]][] = $this->buildNetGroupTripleFromUploadValue($parts, $uid);
 					}
 				}
 			}
@@ -595,11 +618,24 @@ class nisNetGroupUser extends baseModule {
 	}
 
 	/**
+	 * Creates a netgroup triple from the input value of file upload.
+	 *
+	 * @param array $value upload value (e.g. array(group1, host, domain))
+	 * @param String $uid own uid
+	 * @return String netgroup triple
+	 */
+	protected function buildNetGroupTripleFromUploadValue($value, $uid) {
+		$host = empty($value[1]) ? '' : $value[1];
+		$domain = empty($value[2]) ? '' : $value[2];
+		return '(' . $host . ',' . $uid . ',' . $domain . ')';
+	}
+
+	/**
 	 * Finds all existing LDAP NIS net groups.
 	 *
 	 * @return array groups array(array(cn => array(), dn => '', nisnetgrouptriple => array()))
 	 */
-	private function findGroups() {
+	protected function findGroups() {
 		if ($this->groupCache != null) {
 			return $this->groupCache;
 		}
@@ -629,17 +665,20 @@ class nisNetGroupUser extends baseModule {
 	}
 
 	/**
-	 * Sorts NIS netgroup triples by group, host and domain.
+	 * Sorts NIS netgroup triples by group, host, user and domain.
 	 *
 	 * @param array $first first array
 	 * @param array $second second array
 	 */
-	private function sortTriple($first, $second) {
+	protected function sortTriple($first, $second) {
 		if ($first['name'] != $second['name']) {
 			return strnatcasecmp($first['name'], $second['name']);
 		}
 		elseif ($first['host'] != $second['host']) {
 			return strnatcasecmp($first['host'], $second['host']);
+		}
+		elseif ($first['user'] != $second['user']) {
+			return strnatcasecmp($first['user'], $second['user']);
 		}
 		return strnatcasecmp($first['domain'], $second['domain']);
 	}
