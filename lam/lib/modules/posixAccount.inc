@@ -1460,8 +1460,13 @@ class posixAccount extends baseModule implements passwordService {
 			}
 			if ($this->manageCn() && (!isset($this->attributes['cn'][0]) || ($this->attributes['cn'][0] == ''))) {
 				// set a default value for common name
-				if (($this->get_scope() == 'host') && isset($_POST['uid']) && (substr($_POST['uid'], -1, 1) == '$')) {
-					$this->attributes['cn'][0] = substr($_POST['uid'], 0, strlen($_POST['uid']) - 1);
+				if (($this->get_scope() == 'host') && isset($_POST['uid'])) {
+					if (substr($_POST['uid'], -1, 1) == '$') {
+						$this->attributes['cn'][0] = substr($_POST['uid'], 0, strlen($_POST['uid']) - 1);
+					}
+					else {
+						$this->attributes['cn'][0] = $_POST['uid'];
+					}
 				}
 				elseif ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
 					$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
@@ -2339,6 +2344,13 @@ class posixAccount extends baseModule implements passwordService {
 	function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts) {
 		if (!checkIfWriteAccessIsAllowed($this->get_scope())) {
 			die();
+		}
+		if ($this->get_scope() != 'user') {
+			return array(
+				'status' => 'finished',
+				'progress' => 100,
+				'errors' => array()
+			);
 		}
 		// on first call generate list of ldap operations
 		if (!isset($temp['counter'])) {
