@@ -4619,6 +4619,39 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           </mediaobject>
         </screenshot>
       </section>
+
+      <section>
+        <title>NIS net groups</title>
+
+        <para>NIS netgroups can be used to e.g. restrict SSH access to your
+        machines.</para>
+
+        <para><emphasis role="bold">Configuration</emphasis></para>
+
+        <para>Please add the module "NIS net groups (nisNetGroupHost)" to the
+        list of active host modules.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_nisNetGroupHost1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis role="bold">Host editing</emphasis></para>
+
+        <para>You will now see a new tab when editing hosts. Here you can
+        assign memberships in NIS net groups and also set user/domain.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_nisNetGroupHost2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
     </section>
 
     <section>
