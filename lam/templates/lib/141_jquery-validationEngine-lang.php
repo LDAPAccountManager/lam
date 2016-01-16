@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2010         Cedric Dugas and Olivier Refalo
-                2011 - 2015  Roland Gruber
+                2011 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -28,6 +28,10 @@ include_once("../../lib/config.inc"); // Include config.inc which provides Confi
 // set session save path
 if (strtolower(session_module_name()) == 'files') {
 	session_save_path(dirname(__FILE__) . '/../../sess');
+}
+
+if (!headers_sent()) {
+	header('Content-Type: application/json; charset=utf-8');
 }
 
 @session_start();

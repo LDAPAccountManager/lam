@@ -5,7 +5,8 @@ March 2016 5.3
   - Personal/Unix: support K5KEY hash type for smbk5pwd
   - New NIS netgroup module for hosts
   - fixed bugs:
-   -> autoload errors in tree view
+   -> Autoload errors in tree view
+   -> Set correct content type on JSON requests (174)
   - LAM Pro:
    -> Support for LDAP views based on nsview object class
    -> Password notification jobs support to print expiration date in email
