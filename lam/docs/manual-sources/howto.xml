@@ -2076,6 +2076,11 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           <para>You can enter LDAP attributes as wildcards in the form
           @@ATTRIBUTE_NAME@@. E.g. to add the user's common name use "@@cn@@".
           For the common name it would be "@@cn@@".</para>
+
+          <para>There are also two special wildcards for the expiration date.
+          @@EXPIRE_DATE_DDMMYYYY@@ will print the date as e.g. "31.12.2016".
+          @@EXPIRE_DATE_YYYYMMDD@@ will print the date as e.g.
+          "2016-12-31".</para>
         </section>
 
         <section>
@@ -2160,6 +2165,11 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           <para>You can enter LDAP attributes as wildcards in the form
           @@ATTRIBUTE_NAME@@. E.g. to add the user's common name use "@@cn@@".
           For the common name it would be "@@cn@@".</para>
+
+          <para>There are also two special wildcards for the expiration date.
+          @@EXPIRE_DATE_DDMMYYYY@@ will print the date as e.g. "31.12.2016".
+          @@EXPIRE_DATE_YYYYMMDD@@ will print the date as e.g.
+          "2016-12-31".</para>
         </section>
 
         <section>
@@ -2235,6 +2245,11 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           <para>You can enter LDAP attributes as wildcards in the form
           @@ATTRIBUTE_NAME@@. E.g. to add the user's common name use "@@cn@@".
           For the common name it would be "@@cn@@".</para>
+
+          <para>There are also two special wildcards for the expiration date.
+          @@EXPIRE_DATE_DDMMYYYY@@ will print the date as e.g. "31.12.2016".
+          @@EXPIRE_DATE_YYYYMMDD@@ will print the date as e.g.
+          "2016-12-31".</para>
         </section>
       </section>
 

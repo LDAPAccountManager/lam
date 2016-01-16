@@ -3300,7 +3300,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 				return;
 			}
 			// send email
-			$success = $this->sendMail($options, $jobID, $user);
+			$success = $this->sendMail($options, $jobID, $user, $expireTime);
 			// update DB if mail was sent successfully
 			if ($success) {
 				$this->setDBLastPwdChangeTime($jobID, $pdo, $user['dn'], $user['pwdlastset'][0]);

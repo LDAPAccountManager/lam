@@ -2,7 +2,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009  Roland Gruber
+  Copyright (C) 2009 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -85,6 +85,8 @@ div.mediaobject img {
 
 h1 { color:#253aa3; }
 h2 { color:#000080; font-size:13pt; }
+h3 { color:#000080; }
+h4 { color:#000080; }
 
 div.nogrid table { 
  border-width:2px;

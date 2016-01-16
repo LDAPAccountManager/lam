@@ -8,6 +8,7 @@ March 2016 5.3
    -> autoload errors in tree view
   - LAM Pro:
    -> Support for LDAP views based on nsview object class
+   -> Password notification jobs support to print expiration date in email
 
 
 15.12.2015 5.2
