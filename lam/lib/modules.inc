@@ -31,6 +31,12 @@ $Id$
 * @author Roland Gruber
 */
 
+/** self service functions */
+include_once("selfService.inc");
+if (isLAMProVersion()) {
+	/** job interface */
+	include_once("jobs.inc");
+}
 /** some helper functions */
 include_once("account.inc");
 /** parent class of account modules */
