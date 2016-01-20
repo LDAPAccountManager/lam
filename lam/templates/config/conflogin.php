@@ -156,7 +156,7 @@ echo $_SESSION['header'];
 						$group = new htmlTable();
 						$profiles = array();
 						$selectedProfile = array();
-						$fieldsEnabled = false;
+						$profilesExisting = false;
 						if (sizeof($files) > 0) {
 							$profiles = $files;
 							if (!empty($_COOKIE["lam_default_profile"]) && in_array($_COOKIE["lam_default_profile"], $files)) {
@@ -165,18 +165,18 @@ echo $_SESSION['header'];
 							else {
 								$selectedProfile[] = $conf->default;
 							}
-							$fieldsEnabled = true;
+							$profilesExisting = true;
 						}
 						$select = new htmlSelect('filename', $profiles, $selectedProfile);
-						$select->setIsEnabled($fieldsEnabled);
+						$select->setIsEnabled($profilesExisting);
 						$group->addElement($select);
 						$passwordField = new htmlInputField('passwd');
 						$passwordField->setIsPassword(true);
-						$passwordField->setIsEnabled($fieldsEnabled);
+						$passwordField->setIsEnabled($profilesExisting);
 						$passwordField->setFieldSize(20);
 						$group->addElement($passwordField);
 						$button = new htmlButton('submit', _("Ok"));
-						$button->setIsEnabled($fieldsEnabled);
+						$button->setIsEnabled($profilesExisting);
 						$group->addElement($button);
 						$group->addElement(new htmlHelpLink('200'));
 						$tabindex = 1;

@@ -25,6 +25,8 @@ include_once (dirname ( __FILE__ ) . '/../utils/configuration.inc');
 
 /**
  * LAMConfig test case.
+ *
+ * @author Roland Gruber
  */
 class LAMConfigTest extends PHPUnit_Framework_TestCase {
 
