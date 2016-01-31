@@ -52,9 +52,9 @@ class PPolicyUserPasswordNotifyJobTest extends PHPUnit_Framework_TestCase {
 		$this->job->method('getConfigPrefix')->willReturn('test');
 		$this->job->method('sendMail')->willReturn(true);
 		$this->job->method('getPolicyOptions')->willReturn(array(
-				PPolicyUserPasswordNotifyJobTest::ONE_YEAR_POLICY => 365 * 3600 * 24,
-				PPolicyUserPasswordNotifyJobTest::DEFAULT_POLICY => 14 * 3600 * 24,
-				PPolicyUserPasswordNotifyJobTest::NOEXPIRE_POLICY => 0,
+				PPolicyUserPasswordNotifyJobTest::ONE_YEAR_POLICY => array('pwdmaxage' => 365 * 3600 * 24),
+				PPolicyUserPasswordNotifyJobTest::DEFAULT_POLICY => array('pwdmaxage' => 14 * 3600 * 24),
+				PPolicyUserPasswordNotifyJobTest::NOEXPIRE_POLICY => array('pwdmaxage' => 0),
 		));
 		$this->options['test_mailNotificationPeriod' . PPolicyUserPasswordNotifyJobTest::JOB_ID][0] = PPolicyUserPasswordNotifyJobTest::WARNING;
 		$this->options['test_mailDefaultPolicy' . PPolicyUserPasswordNotifyJobTest::JOB_ID][0] = PPolicyUserPasswordNotifyJobTest::DEFAULT_POLICY;
@@ -186,6 +186,32 @@ class PPolicyUserPasswordNotifyJobTest extends PHPUnit_Framework_TestCase {
 
 		$pdo = array();
 		$this->job->execute(PPolicyUserPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, true);
+	}
+
+	public function testGetWarningTimeInSeconds() {
+		$confDays = 7;
+		$policy = array('pwdmaxage' => 365 * 3600 * 24, 'pwdexpirewarning' => 10000);
+
+		$seconds = $this->job->getWarningTimeInSeconds($confDays, $policy);
+
+		$this->assertEquals((7*3600*24 + 10000), $seconds);
+
+
+		$confDays = 0;
+		$policy = array('pwdmaxage' => 365 * 3600 * 24, 'pwdexpirewarning' => 10000);
+
+		$seconds = $this->job->getWarningTimeInSeconds($confDays, $policy);
+
+		$this->assertEquals(10000, $seconds);
+
+
+		$confDays = 7;
+		$policy = array('pwdmaxage' => 365 * 3600 * 24);
+
+		$seconds = $this->job->getWarningTimeInSeconds($confDays, $policy);
+
+		$this->assertEquals(7*3600*24, $seconds);
+
 	}
 
 }

@@ -10,6 +10,7 @@ March 2016 5.3
   - LAM Pro:
    -> Support for LDAP views based on nsview object class
    -> Password notification jobs support to print expiration date in email
+   -> PPolicy password notification job takes pwdExpireWarning into account
 
 
 15.12.2015 5.2

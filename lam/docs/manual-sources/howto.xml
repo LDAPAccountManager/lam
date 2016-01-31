@@ -2006,8 +2006,22 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           second warning at a later time).</para>
 
           <para>LAM calculates the expiration date based on the last password
-          change and the assigned password policy (or the default
-          policy).</para>
+          change and the assigned password policy (or the default policy)
+          using attributes pwdMaxAge and pwdExpireWarning.</para>
+
+          <para>Examples:</para>
+
+          <para>Warning time (pwdExpireWarning) = 14 days, notification period
+          = 10: LAM will send out the email 24 days before the password
+          expires</para>
+
+          <para>Warning time (pwdExpireWarning) = 14 days, notification period
+          = 0: LAM will send out the email 14 days before the password
+          expires</para>
+
+          <para>No warning time (pwdExpireWarning), notification period = 10:
+          LAM will send out the email 10 days before the password
+          expires</para>
 
           <screenshot>
             <mediaobject>
