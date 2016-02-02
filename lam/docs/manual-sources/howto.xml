@@ -6393,6 +6393,29 @@ OK (10 msec)</programlisting>
       when the user edits this field. This should only be used if there is a
       limited number of different values for this attribute.</para>
 
+      <para>In case your field is a date value you can show a calendar for
+      easy editing.</para>
+
+      <para>Example calendar formats:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>dd.mm.yy: 31.12.2016</para>
+        </listitem>
+
+        <listitem>
+          <para>yy-mm-dd: 2016-12-31</para>
+        </listitem>
+
+        <listitem>
+          <para>d M, y: 31 Dec, 16</para>
+        </listitem>
+
+        <listitem>
+          <para>d MM, y: 31 December, 2016</para>
+        </listitem>
+      </itemizedlist>
+
       <screenshot>
         <mediaobject>
           <imageobject>
@@ -8749,6 +8772,29 @@ OK (10 msec)</programlisting>
         auto-completion hints when the user edits this field. This should only
         be used if there is a limited number of different values for this
         attribute.</para>
+
+        <para>In case your field is a date value you can show a calendar for
+        easy editing.</para>
+
+        <para>Example calendar formats:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>dd.mm.yy: 31.12.2016</para>
+          </listitem>
+
+          <listitem>
+            <para>yy-mm-dd: 2016-12-31</para>
+          </listitem>
+
+          <listitem>
+            <para>d M, y: 31 Dec, 16</para>
+          </listitem>
+
+          <listitem>
+            <para>d MM, y: 31 December, 2016</para>
+          </listitem>
+        </itemizedlist>
 
         <screenshot>
           <mediaobject>
