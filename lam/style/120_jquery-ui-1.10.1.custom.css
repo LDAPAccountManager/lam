@@ -1171,3 +1171,9 @@ body .ui-tooltip {
 	filter: Alpha(Opacity=30);
 	border-radius: 8px;
 }
+
+div.ui-datepicker {
+	background-color: #ffffff;
+}
+
+
