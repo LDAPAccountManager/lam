@@ -4,6 +4,7 @@ March 2016 5.3
   - Login can show display name instead of server URL
   - Personal/Unix: support K5KEY hash type for smbk5pwd
   - New NIS netgroup module for hosts
+  - Puppet: autocompletion for classes and variables, allow to enforce list of possible classes
   - fixed bugs:
    -> Autoload errors in tree view
    -> Set correct content type on JSON requests (174)
