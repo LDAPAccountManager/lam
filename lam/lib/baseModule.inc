@@ -1401,6 +1401,81 @@ abstract class baseModule {
 	}
 
 	/**
+	 * Adds a select field type that may contain multiple values to the given htmlTable.
+	 * The field name will be the same as the attribute name plus a counting number (e.g. street_0).
+	 * The last field will be followed by a button to add a new value. This is named add_{attribute name} (e.g. add_street).
+	 * There must be a help entry with the attribute name as ID.
+	 * A new line will also be added after this entry so multiple calls will show the fields one below the other.
+	 *
+	 * @param htmlTable $container parent container
+	 * @param String $attrName attribute name
+	 * @param String $label label name
+	 * @param array $options options for the selects
+	 * @param boolean $hasDescriptiveOptions has descriptive options
+	 * @param boolean $required this is a required field (default false)
+	 * @param integer $fieldSize field size
+	 * @param array $htmlIDs reference to array where to add the generated HTML IDs of the input fields
+	 */
+	protected function addMultiValueSelectField(&$container, $attrName, $label, $options, $hasDescriptiveOptions = false,
+				$required = false, $fieldSize = 1, &$htmlIDs = null) {
+			$values = array();
+			if (isset($this->attributes[$attrName][0])) {
+				$values = $this->attributes[$attrName];
+			}
+			if (sizeof($values) == 0) {
+				$values[] = '';
+			}
+			natcasesort($values);
+			$values = array_values($values);
+			if ($label !== null) {
+				$labelTextOut = new htmlOutputText($label);
+				$labelTextOut->alignment = htmlElement::ALIGN_TOP;
+				$container->addElement($labelTextOut);
+			}
+			$subContainer = new htmlTable();
+			$subContainer->alignment = htmlElement::ALIGN_TOP;
+			for ($i = 0; $i < sizeof($values); $i++) {
+				$input = new htmlSelect($attrName . '_' . $i, $options, array($values[$i]), $fieldSize);
+				$subContainer->addElement($input);
+				if (!empty($htmlIDs)) {
+					$htmlIDs[] = $attrName . '_' . $i;
+				}
+				if (!empty($values[$i])) {
+					$subContainer->addElement(new htmlButton('del_' . $attrName . '_' . $i, 'del.png', true));
+				}
+				if ($i == 0) {
+					$subContainer->addElement(new htmlButton('add_' . $attrName, 'add.png', true));
+				}
+				$subContainer->addNewLine();
+			}
+			$container->addElement($subContainer);
+			$help = new htmlHelpLink($attrName);
+			$help->alignment = htmlElement::ALIGN_TOP;
+			$container->addElement($help, true);
+	}
+
+	/**
+	 * Validates a multi-value select field.
+	 * The select fields must be created with function addMultiValueSelectField().
+	 *
+	 * @param String $attrName attribute name
+	 */
+	protected function processMultiValueSelectField($attrName) {
+		$counter = 0;
+		while (isset($_POST[$attrName . '_' . $counter])) {
+			$this->attributes[$attrName][$counter] = trim($_POST[$attrName . '_' . $counter]);
+			if (($this->attributes[$attrName][$counter] == '') || isset($_POST['del_' . $attrName . '_' . $counter])) {
+				unset($this->attributes[$attrName][$counter]);
+			}
+			$counter++;
+		}
+		if (isset($_POST['add_' . $attrName])) {
+			$this->attributes[$attrName][] = '';
+		}
+		$this->attributes[$attrName] = array_values(array_unique($this->attributes[$attrName]));
+	}
+
+	/**
 	 * Adds a simple text input field for the self service.
 	 * The field name will be the same as the class name plus "_" plus attribute name (e.g. posixAccount_cn).
 	 *
