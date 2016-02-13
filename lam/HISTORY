@@ -13,6 +13,7 @@ March 2016 5.3
    -> Password notification jobs support to print expiration date in email
    -> PPolicy password notification job takes pwdExpireWarning into account
    -> Custom fields: support calendar fields
+   -> Zarafa contacts: allow to create contacts without Unix extension
 
 
 15.12.2015 5.2
