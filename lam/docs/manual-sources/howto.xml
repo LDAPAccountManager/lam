@@ -4626,6 +4626,9 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
         setup some common environment names. LAM will use them to provide
         autocompletion hints when editing the environment for a node.</para>
 
+        <para>If you enter any value in "Enforce classes" then LAM will only
+        accept this list of classes.</para>
+
         <screenshot>
           <mediaobject>
             <imageobject>
