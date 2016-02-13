@@ -121,12 +121,16 @@ class puppetClient extends baseModule {
 				"Headline" => _('Predefined environments'),
 				"Text" => _('These environments will be available as autocompletion hints when setting the environment.')
 			),
+			'enforceClasses' => array(
+				"Headline" => _('Enforce classes'),
+				"Text" => _('If set then only these classes are allowed. One class per line.')
+			),
 		);
-		// config options
-		$configContainer = new htmlTable();
-		$configContainer->addElement(new htmlTableExtendedInputTextarea('puppetClient_environments', "production\r\ntesting", 30, 5, _('Predefined environments'), 'predefinedEnvironments'), true);
-		$return['config_options']['all'] = $configContainer;
 		// upload fields
+		$allowedClasses = '';
+		if (!empty($this->moduleSettings['puppetClient_enforceClasses'][0])) {
+			$allowedClasses = implode(', ', $this->moduleSettings['puppetClient_enforceClasses']);
+		}
 		$return['upload_columns'] = array(
 			array(
 				'name' => 'puppetClient_environment',
@@ -144,7 +148,8 @@ class puppetClient extends baseModule {
 				'name' => 'puppetClient_puppetclass',
 				'description' => _('Classes'),
 				'help' => 'puppetclassList',
-				'example' => 'ntp;exim'
+				'example' => 'ntp;exim',
+				'values' => $allowedClasses
 			),
 			array(
 				'name' => 'puppetClient_puppetvar',
@@ -190,6 +195,7 @@ class puppetClient extends baseModule {
 		$this->messages['environment'][1] = array('ERROR', _('Account %s:') . ' puppetClient_environment', _('The environment name may only contain ASCII characters.'));
 		$this->messages['puppetclass'][0] = array('ERROR', _('The class names may only contain ASCII characters.'));
 		$this->messages['puppetclass'][1] = array('ERROR', _('Account %s:') . ' puppetClient_puppetclass', _('The class names may only contain ASCII characters.'));
+		$this->messages['puppetclass'][2] = array('ERROR', _('Account %s:') . ' puppetClient_puppetclass', _('The class names contain invalid values.'));
 		$this->messages['puppetvar'][0] = array('ERROR', _('The variables may only contain ASCII characters.'));
 		$this->messages['puppetvar'][1] = array('ERROR', _('Account %s:') . ' puppetClient_puppetvar', _('The variables may only contain ASCII characters.'));
 		$this->messages['parentnode'][0] = array('ERROR', _('Account %s:') . ' puppetClient_parentnode', _('Parent node not found.'));
@@ -270,7 +276,12 @@ class puppetClient extends baseModule {
 		}
 		$return->addElement(new htmlTableExtendedSelect('parentnode', $possibleParentNodes, array($parentnode), _('Parent node'), 'parentnode'), true);
 		// classes
-		$this->addMultiValueInputTextField($return, 'puppetclass', _('Classes'), false, null, false, $this->classCache);
+		if (empty($this->moduleSettings['puppetClient_enforceClasses'][0])) {
+			$this->addMultiValueInputTextField($return, 'puppetclass', _('Classes'), false, null, false, $this->classCache);
+		}
+		else {
+			$this->addMultiValueSelectField($return, 'puppetclass', _('Classes'), $this->moduleSettings['puppetClient_enforceClasses']);
+		}
 		// variables
 		$this->addMultiValueInputTextField($return, 'puppetvar', _('Variables'), false, null, false, $this->variablesCache);
 
@@ -324,7 +335,12 @@ class puppetClient extends baseModule {
 			$this->attributes['parentnode'][0] = $_POST['parentnode'];
 		}
 		// classes
-		$this->processMultiValueInputTextField('puppetclass', $errors, 'ascii');
+		if (empty($this->moduleSettings['puppetClient_enforceClasses'][0])) {
+			$this->processMultiValueInputTextField('puppetclass', $errors, 'ascii');
+		}
+		else {
+			$this->processMultiValueSelectField('puppetclass');
+		}
 		// variables
 		$this->processMultiValueInputTextField('puppetvar', $errors, 'ascii');
 
@@ -358,6 +374,20 @@ class puppetClient extends baseModule {
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'puppetClient_environment', 'environment', 'ascii', $this->messages['environment'][1], $messages, '/;[ ]*/');
 			// classes
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'puppetClient_puppetclass', 'puppetclass', 'ascii', $this->messages['puppetclass'][1], $messages, '/;[ ]*/');
+			if (!empty($this->moduleSettings['puppetClient_enforceClasses'][0]) && !empty($partialAccounts[$i]['puppetclass'])) {
+				$invalidClassFound = false;
+				foreach ($partialAccounts[$i]['puppetclass'] as $singleClass) {
+					if (!in_array($singleClass, $this->moduleSettings['puppetClient_enforceClasses'])) {
+						$invalidClassFound = true;
+						break;
+					}
+				}
+				if ($invalidClassFound) {
+					$msg = $this->messages['puppetclass'][2];
+					$msg[] = $i;
+					$messages[] = $msg;
+				}
+			}
 			// variables
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'puppetClient_puppetvar', 'puppetvar', 'ascii', $this->messages['puppetvar'][1], $messages, '/;[ ]*/');
 		}
@@ -499,6 +529,30 @@ class puppetClient extends baseModule {
 		}
 		$this->classCache = array_values(array_unique($classes));
 		$this->variablesCache = array_values(array_unique($variables));
+	}
+
+	/**
+	* Returns a list of configuration options.
+	*
+	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
+	* <br>
+	* The field names are used as keywords to load and save settings.
+	* We recommend to use the module name as prefix for them (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
+	*
+	* @param array $scopes account types (user, group, host)
+	* @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
+	* @return mixed htmlElement or array of htmlElement
+	*
+	* @see htmlElement
+	*/
+	public function get_configOptions($scopes, $allScopes) {
+		$return = parent::get_configOptions($scopes, $allScopes);
+		// config options
+		$configContainer = new htmlTable();
+		$configContainer->addElement(new htmlTableExtendedInputTextarea('puppetClient_environments', "production\r\ntesting", 30, 5, _('Predefined environments'), 'predefinedEnvironments'), true);
+		$configContainer->addElement(new htmlTableExtendedInputTextarea('puppetClient_enforceClasses', '', 30, 5, _('Enforce classes'), 'enforceClasses'), true);
+		$return[] = $configContainer;
+		return $return;
 	}
 
 }
