@@ -3,7 +3,7 @@
 $Id$
 
   This code is not yet part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2012 - 2015  Roland Gruber
+  Copyright (C) 2012 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -35,6 +35,11 @@ $Id$
 * @package modules
 */
 class puppetClient extends baseModule {
+
+	/** cache for classes */
+	private $classCache = null;
+	/** cache for variables */
+	private $variablesCache = null;
 
 	/**
 	* Creates a new authorizedServiceObject object.
@@ -224,6 +229,7 @@ class puppetClient extends baseModule {
 			$return->addElement(new htmlAccountPageButton('puppetClient', 'attributes', 'addObjectClass', _('Add Puppet extension')));
 			return $return;
 		}
+		$this->initCache();
 		// environment
 		$autocompleteEnvironment = array();
 		if (isset($this->moduleSettings['puppetClient_environments'])) {
@@ -264,17 +270,9 @@ class puppetClient extends baseModule {
 		}
 		$return->addElement(new htmlTableExtendedSelect('parentnode', $possibleParentNodes, array($parentnode), _('Parent node'), 'parentnode'), true);
 		// classes
-		$puppetclass = '';
-		if (isset($this->attributes['puppetclass'])) {
-			$puppetclass = implode("\r\n", $this->attributes['puppetclass']);
-		}
-		$return->addElement(new htmlTableExtendedInputTextarea('puppetclass', $puppetclass, 60, 5, _('Classes'), 'puppetclass'), true);
+		$this->addMultiValueInputTextField($return, 'puppetclass', _('Classes'), false, null, false, $this->classCache);
 		// variables
-		$puppetvar = '';
-		if (isset($this->attributes['puppetvar'])) {
-			$puppetvar = implode("\r\n", $this->attributes['puppetvar']);
-		}
-		$return->addElement(new htmlTableExtendedInputTextarea('puppetvar', $puppetvar, 60, 5, _('Variables'), 'puppetvar'), true);
+		$this->addMultiValueInputTextField($return, 'puppetvar', _('Variables'), false, null, false, $this->variablesCache);
 
 		$return->addElement(new htmlSpacer(null, '10px'),true);
 		$remButton = new htmlAccountPageButton('puppetClient', 'attributes', 'remObjectClass', _('Remove Puppet extension'));
@@ -326,33 +324,9 @@ class puppetClient extends baseModule {
 			$this->attributes['parentnode'][0] = $_POST['parentnode'];
 		}
 		// classes
-		$puppetclass = explode("\r\n", $_POST['puppetclass']);
-		for ($i = 0; $i < sizeof($puppetclass); $i++) {
-			if (trim($puppetclass[$i]) == '') {
-				unset($puppetclass[$i]);
-				continue;
-			}
-			if (!get_preg($puppetclass[$i], 'ascii')) {
-				$error = $this->messages['puppetclass'][0];
-				$error[] = htmlspecialchars($puppetclass[$i]);
-				$errors[] = $error;
-			}
-		}
-		$this->attributes['puppetclass'] = array_values(array_unique($puppetclass));
+		$this->processMultiValueInputTextField('puppetclass', $errors, 'ascii');
 		// variables
-		$puppetvar = explode("\r\n", $_POST['puppetvar']);
-		for ($i = 0; $i < sizeof($puppetvar); $i++) {
-			if (trim($puppetvar[$i]) == '') {
-				unset($puppetvar[$i]);
-				continue;
-			}
-			if (!get_preg($puppetvar[$i], 'ascii')) {
-				$error = $this->messages['puppetvar'][0];
-				$error[] = htmlspecialchars($puppetvar[$i]);
-				$errors[] = $error;
-			}
-		}
-		$this->attributes['puppetvar'] = array_values(array_unique($puppetvar));
+		$this->processMultiValueInputTextField('puppetvar', $errors, 'ascii');
 
 		return $errors;
 	}
@@ -498,6 +472,33 @@ class puppetClient extends baseModule {
 			}
 		}
 		return $possibleParentNodes;
+	}
+
+	/**
+	 * Loads cached data from LDAP such as classes etc.
+	 */
+	private function initCache() {
+		if ($this->classCache != null) {
+			return;
+		}
+		$attrs = array('puppetclass', 'puppetvar');
+		$classes = array();
+		$variables = array();
+		$result = searchLDAPByFilter('(objectClass=puppetClient)', $attrs, array($this->get_scope()));
+		foreach ($result as $attributes) {
+			if (isset($attributes['puppetclass'])) {
+				foreach ($attributes['puppetclass'] as $val) {
+					$classes[] = $val;
+				}
+			}
+			if (isset($attributes['puppetvar'])) {
+				foreach ($attributes['puppetvar'] as $val) {
+					$variables[] = $val;
+				}
+			}
+		}
+		$this->classCache = array_values(array_unique($classes));
+		$this->variablesCache = array_values(array_unique($variables));
 	}
 
 }
