@@ -369,6 +369,45 @@ $container->addElement(new htmlSpacer(null, '10px'), true);
 
 // LAM Pro settings
 if (isLAMProVersion()) {
+	// password reset page
+	$pwdResetContent = new htmlTable();
+
+	$pwdResetAllowSpecific = true;
+	if ($conf->getPwdResetAllowSpecificPassword() == 'false') {
+		$pwdResetAllowSpecific = false;
+	}
+	$pwdResetContent->addElement(new htmlTableExtendedInputCheckbox('pwdResetAllowSpecificPassword', $pwdResetAllowSpecific , _('Allow setting specific passwords'), '280'));
+
+	$pwdResetContent->addSpace('10px');
+
+	$pwdResetAllowScreenPassword = true;
+	if ($conf->getPwdResetAllowScreenPassword() == 'false') {
+		$pwdResetAllowScreenPassword = false;
+	}
+	$pwdResetContent->addElement(new htmlTableExtendedInputCheckbox('pwdResetAllowScreenPassword', $pwdResetAllowScreenPassword , _('Allow to display password on screen'), '281'), true);
+
+	$pwdResetDefaultPasswordOutputOptions = array(
+		_('Display on screen') => LAMConfig::PWDRESET_DEFAULT_SCREEN,
+		_('Send via mail') => LAMConfig::PWDRESET_DEFAULT_MAIL,
+		_('Both') => LAMConfig::PWDRESET_DEFAULT_BOTH
+	);
+	$pwdResetDefaultPasswordOutputSelect = new htmlTableExtendedSelect('pwdResetDefaultPasswordOutput', $pwdResetDefaultPasswordOutputOptions, array($conf->getPwdResetDefaultPasswordOutput()), _("Default password output"), '282');
+	$pwdResetDefaultPasswordOutputSelect->setHasDescriptiveElements(true);
+	$pwdResetContent->addElement($pwdResetDefaultPasswordOutputSelect);
+
+	$pwdResetContent->addSpace('10px');
+
+	$pwdResetForcePasswordChange = true;
+	if ($conf->getPwdResetForcePasswordChange() == 'false') {
+		$pwdResetForcePasswordChange = false;
+	}
+	$pwdResetContent->addElement(new htmlTableExtendedInputCheckbox('pwdResetForcePasswordChange', $pwdResetForcePasswordChange , _('Force password reset by default'), '283'), true);
+
+	$pwdResetFieldset = new htmlFieldset($pwdResetContent, _("Password reset page settings"), '../../graphics/keyBig.png');
+	$container->addElement($pwdResetFieldset, true);
+	$container->addElement(new htmlSpacer(null, '10px'), true);
+
+	// mail settings
 	$pwdMailContent = new htmlTable();
 
 	$pwdMailFrom = new htmlTableExtendedInputField(_('From address'), 'pwdResetMail_from', $conf->getLamProMailFrom(), '550');
@@ -554,6 +593,25 @@ function checkInput() {
 	$conf->set_searchLimit($_POST['searchLimit']);
 	if (isLAMProVersion()) {
 		$conf->setAccessLevel($_POST['accessLevel']);
+		if (isset($_POST['pwdResetAllowSpecificPassword']) && ($_POST['pwdResetAllowSpecificPassword'] == 'on')) {
+			$conf->setPwdResetAllowSpecificPassword('true');
+		}
+		else {
+			$conf->setPwdResetAllowSpecificPassword('false');
+		}
+		if (isset($_POST['pwdResetAllowScreenPassword']) && ($_POST['pwdResetAllowScreenPassword'] == 'on')) {
+			$conf->setPwdResetAllowScreenPassword('true');
+		}
+		else {
+			$conf->setPwdResetAllowScreenPassword('false');
+		}
+		if (isset($_POST['pwdResetForcePasswordChange']) && ($_POST['pwdResetForcePasswordChange'] == 'on')) {
+			$conf->setPwdResetForcePasswordChange('true');
+		}
+		else {
+			$conf->setPwdResetForcePasswordChange('false');
+		}
+		$conf->setPwdResetDefaultPasswordOutput($_POST['pwdResetDefaultPasswordOutput']);
 		if (!$conf->setLamProMailFrom($_POST['pwdResetMail_from'])) {
 			$errors[] = array("ERROR", _("From address for password mails is invalid."), htmlspecialchars($_POST['pwdResetMail_from']));
 		}

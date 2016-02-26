@@ -203,6 +203,14 @@ $helpArray = array (
 					"Text" => _('Please enter the user name and password to connect to the database.')),
 				"276" => array ("Headline" => _('Database name'),
 					"Text" => _('This is the database name on the server.')),
+				'280' => array ("Headline" => _('Allow setting specific passwords'),
+					"Text" => _('Allows to set a specific password via input field.')),
+				'281' => array ("Headline" => _('Allow to display password on screen'),
+					"Text" => _('Allows to display a randomly generated password on screen.')),
+				'282' => array ("Headline" => _('Default password output'),
+					"Text" => _('Default method to output a random password.')),
+				'283' => array ("Headline" => _('Force password reset by default'),
+					"Text" => _('Enforce password reset on next login by default.')),
 				// 300 - 399
 				// profile editor, file upload
 				"301" => array ("Headline" => _("RDN identifier"),

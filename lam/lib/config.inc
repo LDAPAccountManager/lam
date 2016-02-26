@@ -409,6 +409,13 @@ class LAMConfig {
 	/** line separator */
 	const LINE_SEPARATOR = '+::+';
 
+	/** show password on screen by default */
+	const PWDRESET_DEFAULT_SCREEN = 1;
+	/** send password via email by default */
+	const PWDRESET_DEFAULT_MAIL = 2;
+	/** show password on screen and send via email by default */
+	const PWDRESET_DEFAULT_BOTH = 3;
+
 	/** Server address (e.g. ldap://127.0.0.1:389) */
 	private $ServerURL;
 
@@ -503,21 +510,26 @@ class LAMConfig {
 
 	/** email address for sender of password reset mails */
 	private $lamProMailFrom = '';
-
 	/** reply-to email address for password reset mails */
 	private $lamProMailReplyTo = '';
-
 	/** subject for password reset mails */
 	private $lamProMailSubject = '';
-
 	/** treat password reset mail body as HTML */
 	private $lamProMailIsHTML = 'false';
-
 	/** allow sending mails to an alternative address */
 	private $lamProMailAllowAlternateAddress = 'true';
-
 	/** mail body for password reset mails */
 	private $lamProMailText = '';
+
+	/** password reset page: allow to set a specific password */
+	private $pwdResetAllowSpecificPassword = 'true';
+	/** password reset page: allow to show password on screen */
+	private $pwdResetAllowScreenPassword = 'true';
+	/** password reset page: force password change by default */
+	private $pwdResetForcePasswordChange = 'true';
+	/** password reset page: default selection for password output
+	 * PWDRESET_DEFAULT_SCREEN, PWDRESET_DEFAULT_MAIL, PWDRESET_DEFAULT_BOTH */
+	private $pwdResetDefaultPasswordOutput = LAMconfig::PWDRESET_DEFAULT_MAIL;
 
 	/** LDAP user for jobs */
 	private $jobsBindUser = null;
@@ -547,7 +559,8 @@ class LAMConfig {
 		'loginSearchFilter', 'searchLimit', 'lamProMailFrom', 'lamProMailReplyTo', 'lamProMailSubject',
 		'lamProMailText', 'lamProMailIsHTML', 'lamProMailAllowAlternateAddress', 'httpAuthentication', 'loginSearchDN',
 		'loginSearchPassword', 'timeZone', 'jobsBindUser', 'jobsBindPassword', 'jobsDatabase', 'jobToken', 'jobs',
-		'jobsDBHost', 'jobsDBPort', 'jobsDBUser', 'jobsDBPassword', 'jobsDBName'
+		'jobsDBHost', 'jobsDBPort', 'jobsDBUser', 'jobsDBPassword', 'jobsDBName', 'pwdResetAllowSpecificPassword',
+		'pwdResetAllowScreenPassword', 'pwdResetForcePasswordChange', 'pwdResetDefaultPasswordOutput'
 	);
 
 
@@ -765,6 +778,10 @@ class LAMConfig {
 			if (!in_array("jobsDBPassword", $saved)) array_push($file_array, "\n" . "jobsDBPassword: " . $this->jobsDBPassword . "\n");
 			if (!in_array("jobsDBName", $saved)) array_push($file_array, "\n" . "jobsDBName: " . $this->jobsDBName . "\n");
 			if (!in_array("jobToken", $saved)) array_push($file_array, "\n" . "jobToken: " . $this->getJobToken() . "\n");
+			if (!in_array("pwdResetAllowSpecificPassword", $saved)) array_push($file_array, "\n" . "pwdResetAllowSpecificPassword: " . $this->pwdResetAllowSpecificPassword . "\n");
+			if (!in_array("pwdResetAllowScreenPassword", $saved)) array_push($file_array, "\n" . "pwdResetAllowScreenPassword: " . $this->pwdResetAllowScreenPassword . "\n");
+			if (!in_array("pwdResetForcePasswordChange", $saved)) array_push($file_array, "\n" . "pwdResetForcePasswordChange: " . $this->pwdResetForcePasswordChange . "\n");
+			if (!in_array("pwdResetDefaultPasswordOutput", $saved)) array_push($file_array, "\n" . "pwdResetDefaultPasswordOutput: " . $this->pwdResetDefaultPasswordOutput . "\n");
 			// check if all module settings were added
 			$m_settings = array_keys($this->moduleSettings);
 			for ($i = 0; $i < sizeof($m_settings); $i++) {
@@ -1866,6 +1883,78 @@ class LAMConfig {
 			$this->jobToken = getRandomNumber();
 		}
 		return $this->jobToken;
+	}
+
+	/**
+	 * Returns if setting a specific password is allowed on password reset page.
+	 *
+	 * @return String 'true' or 'false'
+	 */
+	public function getPwdResetAllowSpecificPassword() {
+		return $this->pwdResetAllowSpecificPassword;
+	}
+
+	/**
+	 * Sets if setting a specific password is allowed on password reset page.
+	 *
+	 * @param String $pwdResetAllowSpecificPassword 'true' or 'false'
+	 */
+	public function setPwdResetAllowSpecificPassword($pwdResetAllowSpecificPassword) {
+		$this->pwdResetAllowSpecificPassword = $pwdResetAllowSpecificPassword;
+	}
+
+	/**
+	 * Returns if displaying password on screen is allowed on password reset page.
+	 *
+	 * @return String 'true' or 'false'
+	 */
+	public function getPwdResetAllowScreenPassword() {
+		return $this->pwdResetAllowScreenPassword;
+	}
+
+	/**
+	 * Sets if displaying password on screen is allowed on password reset page.
+	 *
+	 * @param String $pwdResetAllowScreenPassword 'true' or 'false'
+	 */
+	public function setPwdResetAllowScreenPassword($pwdResetAllowScreenPassword) {
+		$this->pwdResetAllowScreenPassword = $pwdResetAllowScreenPassword;
+	}
+
+	/**
+	 * Returns if force password change is set by default on password reset page.
+	 *
+	 * @return String 'true' or 'false'
+	 */
+	public function getPwdResetForcePasswordChange() {
+		return $this->pwdResetForcePasswordChange;
+	}
+
+	/**
+	 * Sets if force password change is set by default on password reset page.
+	 *
+	 * @param String $pwdResetForcePasswordChange 'true' or 'false'
+	 */
+	public function setPwdResetForcePasswordChange($pwdResetForcePasswordChange) {
+		$this->pwdResetForcePasswordChange = $pwdResetForcePasswordChange;
+	}
+
+	/**
+	 * Returns default password output method on password reset page.
+	 *
+	 * @return integer LAMConfig::PWDRESET_DEFAULT_SCREEN/PWDRESET_DEFAULT_MAIL/PWDRESET_DEFAULT_BOTH
+	 */
+	public function getPwdResetDefaultPasswordOutput() {
+		return $this->pwdResetDefaultPasswordOutput;
+	}
+
+	/**
+	 * Sets default password output method on password reset page.
+	 *
+	 * @param integer $pwdResetDefaultPasswordOutput LAMConfig::PWDRESET_DEFAULT_SCREEN/PWDRESET_DEFAULT_MAIL/PWDRESET_DEFAULT_BOTH
+	 */
+	public function setPwdResetDefaultPasswordOutput($pwdResetDefaultPasswordOutput) {
+		$this->pwdResetDefaultPasswordOutput = $pwdResetDefaultPasswordOutput;
 	}
 
 }

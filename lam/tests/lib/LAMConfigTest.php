@@ -613,6 +613,35 @@ class LAMConfigTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Tests settings of password reset page.
+	 */
+	public function testPwdResetPageSettings() {
+		$val = 'true';
+		$this->lAMConfig->setPwdResetAllowScreenPassword($val);
+		$this->assertEquals($val, $this->lAMConfig->getPwdResetAllowScreenPassword());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getPwdResetAllowScreenPassword());
+
+		$val = 'true';
+		$this->lAMConfig->setPwdResetAllowSpecificPassword($val);
+		$this->assertEquals($val, $this->lAMConfig->getPwdResetAllowSpecificPassword());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getPwdResetAllowSpecificPassword());
+
+		$val = 'true';
+		$this->lAMConfig->setPwdResetForcePasswordChange($val);
+		$this->assertEquals($val, $this->lAMConfig->getPwdResetForcePasswordChange());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getPwdResetForcePasswordChange());
+
+		$val = LAMConfig::PWDRESET_DEFAULT_MAIL;
+		$this->lAMConfig->setPwdResetDefaultPasswordOutput($val);
+		$this->assertEquals($val, $this->lAMConfig->getPwdResetDefaultPasswordOutput());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getPwdResetDefaultPasswordOutput());
+	}
+
+	/**
 	 * Tests LAMConfig->getJobToken()
 	 */
 	public function testGetJobToken() {
