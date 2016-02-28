@@ -1,8 +1,10 @@
 ldap-account-manager (5.3.RC1-1) unstable; urgency=low
 
   * new upstream release
+  * Fix "ldap-account-manager depends on php5-imagick which is no longer
+    built" by changing dependencies (Closes: #816041)
 
- -- Roland Gruber <post@rolandgruber.de>  Wed, 30 Dec 2015 20:16:05 +0100
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 28 Feb 2016 13:33:19 +0100
 
 ldap-account-manager (5.2-1) unstable; urgency=low
 
