@@ -1666,13 +1666,8 @@ Have fun!
           problems regarding size limits on Active Directory. LAM will then
           query LDAP to return results in chunks of 999 entries.</para>
 
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/configProfiles5.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+          <literallayout>
+</literallayout>
 
           <para>LAM is translated to many different languages. Here you can
           select the default language for this server profile. The language
@@ -1683,20 +1678,32 @@ Have fun!
           <screenshot>
             <mediaobject>
               <imageobject>
+                <imagedata fileref="images/configProfiles5.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>LAM can manage user home directories and quotas with an
+          external script. You can specify the home directory server and where
+          the script is located. The default rights for new home directories
+          can be set, too.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
                 <imagedata fileref="images/configProfiles6.png" />
               </imageobject>
             </mediaobject>
           </screenshot>
 
-          <para id="profile_mail">LAM can manage user home directories and
-          quotas with an external script. You can specify the home directory
-          server and where the script is located. The default rights for new
-          home directories can be set, too.</para>
+          <para id="profile_mail">LAM Pro users may directly set passwords
+          from list view. You can configure if it should be possible to set
+          specific passwords and showing password on screen is allowed.</para>
 
           <screenshot>
             <mediaobject>
               <imageobject>
-                <imagedata fileref="images/configProfiles9.png" />
+                <imagedata fileref="images/configProfiles10.png" />
               </imageobject>
             </mediaobject>
           </screenshot>
@@ -1711,14 +1718,23 @@ Have fun!
           <screenshot>
             <mediaobject>
               <imageobject>
+                <imagedata fileref="images/configProfiles9.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>LAM supports two methods for login.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
                 <imagedata fileref="images/configProfiles8.png" />
               </imageobject>
             </mediaobject>
           </screenshot>
 
-          <para>LAM supports two methods for login. The first one is to
-          specify a fixed list of LDAP DNs that are allowed to login. Please
-          enter one DN per line.</para>
+          <para>The first one is to specify a fixed list of LDAP DNs that are
+          allowed to login. Please enter one DN per line.</para>
 
           <para>The second one is to let LAM search for the DN in your
           directory. E.g. if a user logs in with the user name "joe" then LAM
@@ -7443,8 +7459,9 @@ OK (10 msec)</programlisting>
               <imagedata fileref="images/passwordReset1.png" />
             </imageobject>
           </mediaobject>
-        </screenshot>There are three different options to set a new
-      password:</para>
+        </screenshot>There are three different options to set a new password.
+      You can further restrict these options in server profile
+      settings.</para>
 
       <itemizedlist>
         <listitem>

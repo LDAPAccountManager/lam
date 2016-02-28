@@ -14,6 +14,7 @@ March 2016 5.3
    -> PPolicy password notification job takes pwdExpireWarning into account
    -> Custom fields: support calendar fields
    -> Zarafa contacts: allow to create contacts without Unix extension
+   -> Added options for password rest page to server profile
 
 
 15.12.2015 5.2
