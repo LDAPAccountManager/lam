@@ -209,8 +209,8 @@ $helpArray = array (
 					"Text" => _('Allows to display a randomly generated password on screen.')),
 				'282' => array ("Headline" => _('Default password output'),
 					"Text" => _('Default method to output a random password.')),
-				'283' => array ("Headline" => _('Force password reset by default'),
-					"Text" => _('Enforce password reset on next login by default.')),
+				'283' => array ("Headline" => _('Force password change by default'),
+					"Text" => _('Enforce password change on next login by default.')),
 				// 300 - 399
 				// profile editor, file upload
 				"301" => array ("Headline" => _("RDN identifier"),

@@ -401,7 +401,7 @@ if (isLAMProVersion()) {
 	if ($conf->getPwdResetForcePasswordChange() == 'false') {
 		$pwdResetForcePasswordChange = false;
 	}
-	$pwdResetContent->addElement(new htmlTableExtendedInputCheckbox('pwdResetForcePasswordChange', $pwdResetForcePasswordChange , _('Force password reset by default'), '283'), true);
+	$pwdResetContent->addElement(new htmlTableExtendedInputCheckbox('pwdResetForcePasswordChange', $pwdResetForcePasswordChange , _('Force password change by default'), '283'), true);
 
 	$pwdResetFieldset = new htmlFieldset($pwdResetContent, _("Password reset page settings"), '../../graphics/keyBig.png');
 	$container->addElement($pwdResetFieldset, true);
