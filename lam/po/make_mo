@@ -1,0 +1,10 @@
+#!/bin/bash
+# $Id$
+#
+# Copyright (C) 2003 - 2006  Roland Gruber
+# This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
+
+# This script generates a messages.mo file from the translated messages.po file.
+
+rm -f messages.mo
+msgfmt -v -c --statistics messages.po -o messages.mo
