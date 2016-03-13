@@ -1,5 +1,0 @@
-# format version number, currently 2; this line is compulsory!
-version=2
-
-# LDAP Account Manager at Sourceforge
-http://prdownloads.sourceforge.net/lam/ldap-account-manager_(.*)\.tar\.gz
