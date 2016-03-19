@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2015  Roland Gruber
+  Copyright (C) 2013 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -649,7 +649,7 @@ class windowsGroup extends baseModule {
 			$filterGroup->addElement(new htmlOutputText(_('Filter') . ' '));
 			$filter = new htmlInputField('windows_filter');
 			$filter->setFieldSize('5em');
-			$filter->setOnKeyUp('filterSelect(\'windows_filter\', \'members\', event);');
+			$filter->filterSelectBox('members');
 			$filterGroup->addElement($filter);
 			$return->addElement($filterGroup, true);
 

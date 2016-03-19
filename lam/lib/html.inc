@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2014  Roland Gruber
+  Copyright (C) 2010 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -765,6 +765,16 @@ class htmlInputField extends htmlElement {
 	 */
 	public function setSameValueFieldID($sameValueFieldID) {
 		$this->sameValueFieldID = $sameValueFieldID;
+	}
+
+	/**
+	 * Turns this field into a live filter for a select box.
+	 * Cannot be used together with setOnKeyUp().
+	 *
+	 * @param String $name select box name
+	 */
+	public function filterSelectBox($name) {
+		$this->setOnKeyUp('filterSelect(\'' . $this->fieldName . '\', \'' . $name . '\', event);');
 	}
 
 }

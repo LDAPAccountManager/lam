@@ -117,7 +117,7 @@ class nisNetGroupHost extends nisNetGroupUser {
 			$filterGroup->addElement(new htmlOutputText(_('Filter') . ' '));
 			$filter = new htmlInputField('group_filter');
 			$filter->setFieldSize('5em');
-			$filter->setOnKeyUp('filterSelect(\'group_filter\', \'group_add\', event);');
+			$filter->filterSelectBox('group_add');
 			$filterGroup->addElement($filter);
 			$return->addElement($filterGroup, true);
 
