@@ -1,0 +1,6 @@
+{
+  "name": "Lam",
+  "tagline": "LDAP Account Manager",
+  "body": "## Easy LDAP management\r\nLDAP Account Manager (LAM) is a webfrontend for managing entries (e.g. users, groups, DHCP settings) stored in an LDAP directory. LAM was designed to make LDAP management as easy as possible for the user. It abstracts from the technical details of LDAP and allows persons without technical background to manage LDAP entries. If needed, power users may still directly edit LDAP entries via the integrated LDAP browser.\r\n\r\n### Account management\r\n* manages Unix, Samba 3/4, Kolab 2/3, Zarafa, DHCP, SSH keys, group of names and much more\r\n* profiles for account creation\r\n* CSV file upload\r\n* automatic creation/deletion of home directories\r\n* setting file system quotas\r\n* PDF output for all accounts\r\n* schema and LDAP browser\r\n* manages multiple servers with different configurations\r\n* multi-language support\r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
