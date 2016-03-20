@@ -1,0 +1,7 @@
+ # just compressed version of core/ckeditor_base.js
+ ldap-account-manager source: source-is-missing templates/lib/extra/ckeditor/ckeditor.js
+ # just a long listing of special characters
+ ldap-account-manager source: source-is-missing templates/lib/extra/ckeditor/plugins/specialchar/plugin.js
+ # needed to be installable on oldstable
+ ldap-account-manager: maintainer-script-calls-systemctl
+ 
