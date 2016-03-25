@@ -1,10 +1,10 @@
 #!/bin/bash
 #
-# Builds LDAP Account Manager packages from SVN.
+# Builds LDAP Account Manager packages.
 
 if [ $# -lt 1 ]
 then
-echo -e "Usage: buildPackage <SVN tag>"
+echo -e "Usage: buildPackage <tag>"
 exit
 fi
 
@@ -12,11 +12,11 @@ set -e
 
 cd /daten/projekte/lam/pakete
 
-if [ "$1" = "trunk" ]
+if [ "$1" = "develop" ]
 then
-	export SVN_TAG="trunk"
+	export REPO_BRANCH="develop"
 else
-	export SVN_TAG="tags/$1"
+	export REPO_BRANCH="tags/$1"
 fi
 
 # minifies the JavaScript files
@@ -37,12 +37,21 @@ function minify {
 	done
 }
 
-echo "Get files from SVN..."
-svn export -q svn+ssh://gruberroland@svn.code.sf.net/p/lam/code/$SVN_TAG/lam lam &
-svn export -q svn+ssh://gruberroland@svn.code.sf.net/p/lam/code/$SVN_TAG/lam-packaging lam-packaging &
-svn export -q file:///daten/projekte/SVNROOT/$SVN_TAG/lamPro lamPro &
+echo "Getting files..."
+git clone git@github.com:LDAPAccountManager/lam.git github
+cd github
+git checkout $REPO_BRANCH
+mv lam ../
+mv lam-packaging ../
+cd ..
+rm -rf github
 
-wait
+git clone file:///daten/dev/git local
+cd local
+git checkout $REPO_BRANCH
+mv lamPro ../
+cd ..
+rm -rf local
 
 cp lam-packaging/getVersion ./
 export VERSION=`./getVersion`
@@ -52,6 +61,7 @@ rm -r lam/po
 rm -r lam/tests
 rm lam/lib/font/*.ttf
 find . -name .svnignore -exec rm {} \;
+find . -name .gitignore -exec rm {} \;
 mv lam ldap-account-manager-$VERSION
 
 # create LAM manual
