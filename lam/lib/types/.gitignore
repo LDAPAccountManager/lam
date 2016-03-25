@@ -1,0 +1,11 @@
+/alias.inc
+/automountType.inc
+/bind.inc
+/gon.inc
+/nisObjectType.inc
+/nsviewType.inc
+/oracleContextType.inc
+/ppolicyType.inc
+/sudo.inc
+/zarafaAddressListType.inc
+/zarafaDynamicGroupType.inc
