@@ -4,7 +4,7 @@ $Id$
 
 This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 Copyright (C) 2003 - 2006  Tilo Lutz
-              2007 - 2015  Roland Gruber
+              2007 - 2016  Roland Gruber
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -515,6 +515,7 @@ class posixGroup extends baseModule implements passwordService {
 			'gidGenerator' => array (
 				"Headline" => _("GID generator"),
 				"Text" => _("LAM will automatically suggest UID/GID numbers. You can either use a fixed range of numbers or an LDAP entry with object class \"sambaUnixIdPool\" or \"msSFU30DomainInfo\".")
+					. ' ' . _('Magic number will set a fixed value that must match your server configuration.')
 			),
 			'sambaIDPoolDN' => array (
 				"Headline" => _("Samba ID pool DN"),
@@ -541,6 +542,10 @@ class posixGroup extends baseModule implements passwordService {
 				"Headline" => _("Force sync with group of names"),
 				"Text" => _("This will force syncing with group of names members of the same group.")
 			),
+			'magicNumber' => array(
+				"Headline" => _("Magic number"),
+				"Text" => _("Please enter the magic number you configured on server side.")
+			),
 		);
 
 		return $return;
@@ -561,19 +566,22 @@ class posixGroup extends baseModule implements passwordService {
 		$genOptions = array(
 			_('Fixed range') => 'range',
 			_('Samba ID pool') => 'sambaPool',
-			_('Windows domain info') => 'windowsDomain'
+			_('Windows domain info') => 'windowsDomain',
+			_('Magic number') => 'magicNumber'
 		);
 		$gidGeneratorSelect = new htmlTableExtendedSelect('posixGroup_gidGenerator', $genOptions, array('range'), _('GID generator'), 'gidGenerator');
 		$gidGeneratorSelect->setHasDescriptiveElements(true);
 		$gidGeneratorSelect->setTableRowsToHide(array(
-			'range' => array('posixGroup_sambaIDPoolDN', 'posixGroup_windowsIDPoolDN'),
-			'sambaPool' => array('posixGroup_minGID', 'posixGroup_maxGID', 'posixGroup_windowsIDPoolDN'),
-			'windowsDomain' => array('posixGroup_minGID', 'posixGroup_maxGID', 'posixGroup_sambaIDPoolDN'),
+			'range' => array('posixGroup_sambaIDPoolDN', 'posixGroup_windowsIDPoolDN', 'posixGroup_magicNumber'),
+			'sambaPool' => array('posixGroup_minGID', 'posixGroup_maxGID', 'posixGroup_windowsIDPoolDN', 'posixGroup_magicNumber'),
+			'windowsDomain' => array('posixGroup_minGID', 'posixGroup_maxGID', 'posixGroup_sambaIDPoolDN', 'posixGroup_magicNumber'),
+			'magicNumber' => array('posixGroup_minGID', 'posixGroup_maxGID', 'posixGroup_windowsIDPoolDN', 'posixGroup_sambaIDPoolDN')
 		));
 		$gidGeneratorSelect->setTableRowsToShow(array(
 			'range' => array('posixGroup_minGID', 'posixGroup_maxGID'),
 			'sambaPool' => array('posixGroup_sambaIDPoolDN'),
 			'windowsDomain' => array('posixGroup_windowsIDPoolDN'),
+			'magicNumber' => array('posixGroup_magicNumber')
 		));
 		$configContainer->addElement($gidGeneratorSelect, true);
 		$minGidInput = new htmlTableExtendedInputField(_('Minimum GID number'), 'posixGroup_minGID', null, 'minMaxGID');
@@ -588,6 +596,9 @@ class posixGroup extends baseModule implements passwordService {
 		$winGeneratorDN = new htmlTableExtendedInputField(_('Windows domain info DN'), 'posixGroup_windowsIDPoolDN', null, 'windowsIDPoolDN');
 		$winGeneratorDN->setRequired(true);
 		$configContainer->addElement($winGeneratorDN, true);
+		$magicNumber = new htmlTableExtendedInputField(_('Magic number'), 'posixGroup_magicNumber', null, 'magicNumber');
+		$magicNumber->setRequired(true);
+		$configContainer->addElement($magicNumber, true);
 		$configContainer->addElement(new htmlTableExtendedInputField(_('Suffix for GID/group name check'), 'posixGroup_gidCheckSuffix', '', 'gidCheckSuffix'), true);
 		$configContainer->addElement(new htmlTableExtendedInputCheckbox('posixGroup_hidememberUid', false, _('Disable membership management'), 'hidememberUid'), true);
 		$x = $this->get_scope();
@@ -1043,6 +1054,14 @@ class posixGroup extends baseModule implements passwordService {
 		// check if UIDs should be taken from domain info entry
 		if (isset($this->moduleSettings['posixGroup_gidGenerator']) && ($this->moduleSettings['posixGroup_gidGenerator'][0] == 'windowsDomain')) {
 			return $this->getNextDomainInfoGIDs($count, $errors);
+		}
+		// use magic number
+		if (isset($this->moduleSettings['posixGroup_gidGenerator']) && ($this->moduleSettings['posixGroup_gidGenerator'][0] == 'magicNumber')) {
+			$return = array();
+			for ($i = 0; $i < $count; $i++) {
+				$return[] = $this->moduleSettings['posixGroup_magicNumber'][0];
+			}
+			return $return;
 		}
 		$ret = array();
 		$minID = intval($this->moduleSettings['posixGroup_minGID'][0]);
