@@ -3042,6 +3042,12 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
                 Samba schema and create an LDAP entry of object class
                 "sambaUnixIdPool".</para>
               </listitem>
+
+              <listitem>
+                <para>Magic number: Use this if your LDAP server assigns the
+                UID numbers automatically (e.g. DNA by 389 server). Enter the
+                server's magic number setting.</para>
+              </listitem>
             </itemizedlist>
           </listitem>
 
@@ -4167,6 +4173,12 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
             note that this requires that you install the Samba schema and
             create an LDAP entry of object class "sambaUnixIdPool".</para>
           </listitem>
+
+          <listitem>
+            <para>Magic number: Use this if your LDAP server assigns the GID
+            numbers automatically (e.g. DNA by 389 server). Enter the server's
+            magic number setting.</para>
+          </listitem>
         </itemizedlist>
 
         <para>Disable membership management: Disables group membership
@@ -4250,6 +4262,12 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
             attributes that store a counter for the last used UID/GID. Please
             note that this requires that you install the Samba schema and
             create an LDAP entry of object class "sambaUnixIdPool".</para>
+          </listitem>
+
+          <listitem>
+            <para>Magic number: Use this if your LDAP server assigns the GID
+            numbers automatically (e.g. DNA by 389 server). Enter the server's
+            magic number setting.</para>
           </listitem>
         </itemizedlist>
 
