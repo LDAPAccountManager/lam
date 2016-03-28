@@ -1,3 +1,7 @@
+June 2016 5.4
+  - Unix: support magic numbers for UIDs/GIDs (e.g. 389 server DNA plugin)
+
+
 21.03.2016 5.3
   - Requires PHP 5.4.0 or higher
   - PHP 7 support
