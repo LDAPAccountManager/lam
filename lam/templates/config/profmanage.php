@@ -80,7 +80,10 @@ if (isset($_POST['action'])) {
 			    // rename pdf and profiles folder
 			    rename("../../config/profiles/" . $_POST['oldfilename'], "../../config/profiles/" . $_POST['renfilename']);
 			    rename("../../config/pdf/" . $_POST['oldfilename'], "../../config/pdf/" . $_POST['renfilename']);
-
+				// rename sqlite database if any
+				if (file_exists("../../config/" . $_POST['oldfilename'] . ".sqlite")) {
+					rename("../../config/" . $_POST['oldfilename'] . ".sqlite", "../../config/" . $_POST['renfilename'] . ".sqlite");
+				}
 				$msg = _("Renamed profile.");
 			}
 			else $error = _("Could not rename file!");
