@@ -102,12 +102,14 @@ if [ "$1" = "configure" ]; then
    if [ "$RET" = "true" ]; then
        for server in $restart; do
            server=${server%,}
-           if [ `which invoke-rc.d` ]; then
+           if [ `which systemctl` ]; then
+               if [ "`systemctl is-active ${server}.service`" = "active" ]; then
+                   systemctl reload ${server}.service
+               fi
+           elif [ `which invoke-rc.d` ]; then
                invoke-rc.d $server reload
            elif [ `which service` ]; then
                service $server reload
-           elif [ `which systemctl` ]; then
-               systemctl reload ${server}.service
            fi
        done
    fi
