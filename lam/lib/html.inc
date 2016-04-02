@@ -3000,6 +3000,55 @@ class htmlJavaScript extends htmlElement {
 }
 
 /**
+ * Creates a Script element to integrate external JavaScript files.
+ *
+ * @package metaHTML
+ */
+class htmlScript extends htmlElement {
+
+	/** src value */
+	private $src = null;
+	/** is async */
+	private $async = false;
+	/** execute after page is parsed */
+	private $defer = false;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param String $src script path
+	 * @param boolean $isAsync script will be executed while the page continues the parsing (default true)
+	 * @param boolean $isDeferred script is executed when the page has finished parsing (default true)
+	 */
+	function __construct($src, $isAsync = true, $isDeferred = true) {
+		$this->src = $src;
+		$this->async = $isAsync;
+		$this->defer = $isDeferred;
+	}
+
+	/**
+	 * Prints the HTML code for this element.
+	 *
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$return = array();
+		$async = $this->async ? ' async' : '';
+		$defer = $this->defer ? ' defer="defer"' : '';
+		echo '<script src="' . $this->src . '"' . $async . $defer . '>';
+		echo '</script>';
+		return $return;
+	}
+
+}
+
+/**
  * Sets all given elements to the same width.
  *
  * @package metaHTML
@@ -3264,6 +3313,44 @@ class htmlAccordion extends htmlElement {
 		return $result;
 	}
 
+}
+
+/**
+ * Creates a Google reCAPTCHA element.
+ *
+ * @package metaHTML
+ */
+class htmlReCAPTCHA extends htmlElement {
+
+	/** site key */
+	private $key = null;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param String $key site key
+	 */
+	function __construct($key) {
+		$this->key = htmlspecialchars($key);
+	}
+
+	/**
+	 * Prints the HTML code for this element.
+	 *
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$script = new htmlScript('https://www.google.com/recaptcha/api.js');
+		$script->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		echo '<div class="g-recaptcha" data-sitekey="' . $this->key . '"></div>';
+		return array();
+	}
 }
 
 /**
