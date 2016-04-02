@@ -30,34 +30,36 @@ if [ -f /usr/share/debconf/confmodule ]; then
 				esac
 		done
 	fi
-	
+
 	set +e
 	db_get "ldap-account-manager/restart-webserver"
 	if [ $? -eq 0 ] && [ "$RET" = "true" ]; then
 		set -e
 		for server in $restart; do
 				server=${server%,}
-				if [ `which invoke-rc.d` ]; then
-						invoke-rc.d $server reload
-				elif [ `which service` ]; then
-						service $server reload
-				elif [ `which systemctl` ]; then
+				if [ `which systemctl` ]; then
+				    if [ "`systemctl is-active ${server}.service`" = "active" ]; then
 						systemctl reload ${server}.service
+				    fi
+				elif [ `which invoke-rc.d` ]; then
+					invoke-rc.d $server reload
+				elif [ `which service` ]; then
+					service $server reload
 				fi
 		done
 	fi
-	
+
 	set -e
 	if [ "$1" = "purge" ]; then
 		rm -r -f /usr/share/ldap-account-manager
 		rm -r -f /var/lib/ldap-account-manager
 		db_purge
 	fi
-	
+
 	#DEBHELPER#
-	
+
 	db_stop
-	
+
 fi
 
 exit 0
