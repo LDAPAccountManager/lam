@@ -8702,6 +8702,30 @@ OK (10 msec)</programlisting>
         <literallayout>
 </literallayout>
 
+        <para><emphasis role="bold">Captcha support</emphasis></para>
+
+        <para>LAM Pro can optionally display a captcha to verify that
+        registrations are not from robots. The supported captcha provider is
+        Google reCAPTCHA. You will need the site and secret key for your
+        domain. They can be retrieved from here: <ulink
+        url="https://www.google.com/recaptcha">https://www.google.com/recaptcha</ulink></para>
+
+        <para>Please note that your web server must be able to access
+        "https://www.google.com/recaptcha/api/siteverify" to verify the
+        captchas. Captchas will be displayed automatically when site+secret
+        key are filled.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/accountRegistration4.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <literallayout>
+</literallayout>
+
         <para><emphasis role="bold">User view:</emphasis></para>
 
         <para>The user can register by clicking on a link on the self service

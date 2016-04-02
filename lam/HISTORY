@@ -1,5 +1,7 @@
 June 2016 5.4
   - Unix: support magic numbers for UIDs/GIDs (e.g. 389 server DNA plugin)
+  - LAM Pro:
+   -> Self registration: support for Google reCAPTCHA
 
 
 21.03.2016 5.3
