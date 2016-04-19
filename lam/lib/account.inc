@@ -203,7 +203,7 @@ function generateSalt($len) {
 	$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890./';
 	$salt = '';
 	for ($i = 0; $i < $len; $i++) {
-		$pos= getRandomNumber() % strlen($chars);
+		$pos = abs(getRandomNumber() % strlen($chars));
 		$salt .= $chars{$pos};
 	}
 	return $salt;
@@ -311,7 +311,7 @@ function generateRandomPassword() {
 	for ($x = 0; $x < 10000; $x++) {
 		$password = '';
 		for ($i = 0; $i < $length; $i++) {
-			$rand = getRandomNumber() % 65;
+			$rand = abs(getRandomNumber() % 65);
 			$password .= $list[$rand];
 		}
 		if (checkPasswordStrength($password, null, null) === true) {
