@@ -85,7 +85,7 @@
           </listitem>
 
           <listitem>
-            <para>Chrome (max 2 years old)</para>
+            <para>Chrome (max. 2 years old)</para>
           </listitem>
 
           <listitem>
@@ -466,17 +466,21 @@ Have fun!
 
             <para><itemizedlist>
                 <listitem>
-                  <para>Firefox 3</para>
+                  <para>Firefox (max. 2 years old)</para>
                 </listitem>
 
                 <listitem>
-                  <para>Internet Explorer 8 <emphasis
+                  <para>Internet Explorer 9 <emphasis
                   role="bold">(compatibility mode turned
                   off)</emphasis></para>
                 </listitem>
 
                 <listitem>
-                  <para>Opera 10</para>
+                  <para>Opera (max. 2 years old)</para>
+                </listitem>
+
+                <listitem>
+                  <para>Chrome (max. 2 years old)</para>
                 </listitem>
               </itemizedlist></para>
           </listitem>
