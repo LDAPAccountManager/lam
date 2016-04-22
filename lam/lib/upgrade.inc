@@ -4,7 +4,7 @@ $Id:
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2012  Christian Kropp
-                2012  Roland Gruber
+                2012 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ function testPermissions() {
 
 /**
  * Recursively checks the permissions in a directory.
- * 
+ *
  * @param String $dir directory
  * @return array list of files/directories with wrong permission
  */
@@ -74,13 +74,13 @@ function testPermissionRecursive($dir) {
 		}
 	}
 	@closedir($dirHandle);
-	return $result;	
+	return $result;
 }
 
 /**
  * Checks if the given directory contains files.
  * This is used to check if config files need to be migrated.
- * 
+ *
  * @param String $dir directory path
  */
 function containsFiles($dir) {
@@ -97,7 +97,7 @@ function containsFiles($dir) {
 		}
 	}
 	@closedir($dirHandle);
-	return $return;	
+	return $return;
 }
 
 
@@ -175,7 +175,7 @@ function recursiveCopy($src, $dst, $profiles, $fileFilter = null, $overwrite = t
 			}
 			elseif ((isset($fileFilter) && (strpos($file, $fileFilter) === 0 || $file == '.htaccess'))
 						|| (!isset($fileFilter))) {
-				if (!is_file($src . '/' . $file)) {
+				if (!is_file($src . '/' . $file) || ($file == '.gitignore')) {
 					continue;
 				}
 				if ($overwrite || !file_exists($dst . '/' . $file)) {
