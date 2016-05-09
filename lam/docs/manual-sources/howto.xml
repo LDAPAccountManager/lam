@@ -3070,6 +3070,26 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
             <para>Hidden options: Some input fields can be hidden to simplify
             the GUI if you do not need them.</para>
           </listitem>
+
+          <listitem>
+            <para>Set primary group as memberUid: By default primary group
+            membership is not set on group objects but only on user
+            (gidNumber). Activate this if you need to have the primary group
+            membership in group object, too.</para>
+          </listitem>
+
+          <listitem>
+            <para>Do not add object class: This is for Windows only. When the
+            checkbox is activated then the posixAccount object class will not
+            be added to a user.</para>
+          </listitem>
+
+          <listitem>
+            <para>User name suggestion: The user name is automatically filled
+            as specified in the configuration (default smiller for Steve
+            Miller). Of course, the suggested value can be changed any time.
+            Common name is also filled with first/last name by default.</para>
+          </listitem>
         </itemizedlist>
 
         <screenshot>
@@ -3080,10 +3100,8 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           </mediaobject>
         </screenshot>
 
-        <para>The user name is automatically filled as specified in the
-        configuration (default smiller for Steve Miller). Of course, the
-        suggested value can be changed any time. Common name is also filled
-        with first/last name by default.</para>
+        <literallayout>
+</literallayout>
 
         <screenshot>
           <mediaobject>

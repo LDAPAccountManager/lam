@@ -82,7 +82,7 @@ class posixAccount extends baseModule implements passwordService {
 		// call parent constructor
 		parent::__construct($scope);
 		// make optional if needed
-		$this->autoAddObjectClasses = !$this->isOptional();
+		$this->autoAddObjectClasses = !$this->isOptional() && !$this->skipObjectClass();
 	}
 
 	/**
@@ -447,6 +447,10 @@ class posixAccount extends baseModule implements passwordService {
 				"Headline" => _("Magic number"),
 				"Text" => _("Please enter the magic number you configured on server side.")
 			),
+			'noObjectClass' => array(
+				"Headline" => _("Do not add object class"),
+				"Text" => _("This will not add the posixAccount object class to the account.")
+			),
 			'user' => array(
 				'uid' => array(
 					"Headline" => _("User name"), 'attr' => 'uid',
@@ -541,7 +545,7 @@ class posixAccount extends baseModule implements passwordService {
 	* @return boolean true, if settings are complete
 	*/
 	function module_complete() {
-		if (!isset($this->attributes['objectClass']) || !in_array('posixAccount', $this->attributes['objectClass'])) {
+		if (!$this->skipObjectClass() && (!isset($this->attributes['objectClass']) || !in_array('posixAccount', $this->attributes['objectClass']))) {
 			// no checks if object class is not set
 			return true;
 		}
@@ -616,7 +620,7 @@ class posixAccount extends baseModule implements passwordService {
 	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
 	*/
 	function save_attributes() {
-		if (!in_array('posixAccount', $this->attributes['objectClass']) && !in_array('posixAccount', $this->orig['objectClass'])) {
+		if (!$this->skipObjectClass() && (!in_array('posixAccount', $this->attributes['objectClass']) && !in_array('posixAccount', $this->orig['objectClass']))) {
 			// skip saving if the extension was not added/modified
 			return array();
 		}
@@ -637,7 +641,7 @@ class posixAccount extends baseModule implements passwordService {
 				$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordStatusChange'][0] = 'unlocked';
 			}
 		}
-		if (in_array('posixAccount', $this->attributes['objectClass'])) {
+		if ($this->skipObjectClass() || in_array('posixAccount', $this->attributes['objectClass'])) {
 			// Remove primary group from additional groups
 			if (!isset($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0])
 				|| ($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0] != 'true')) {
@@ -1002,7 +1006,7 @@ class posixAccount extends baseModule implements passwordService {
 			return $errors;
 		}
 		// skip processing if object class is not set
-		if ($this->isOptional() && (!isset($this->attributes['objectClass']) || !in_array('posixAccount', $this->attributes['objectClass']))) {
+		if ($this->isOptional() && !$this->skipObjectClass() && (!isset($this->attributes['objectClass']) || !in_array('posixAccount', $this->attributes['objectClass']))) {
 			return $errors;
 		}
 		$groups = $this->findGroups(); // list of all groupnames
@@ -1331,7 +1335,7 @@ class posixAccount extends baseModule implements passwordService {
 	 */
 	function display_html_attributes() {
 		$return = new htmlTable();
-		if (!$this->isOptional() || (isset($this->attributes['objectClass']) && in_array('posixAccount', $this->attributes['objectClass']))) {
+		if (!$this->isOptional() || $this->skipObjectClass() || (isset($this->attributes['objectClass']) && in_array('posixAccount', $this->attributes['objectClass']))) {
 			$groupList = $this->findGroups(); // list of all group names
 			$groups = array();
 			for ($i = 0; $i < sizeof($groupList); $i++) {
@@ -1485,7 +1489,7 @@ class posixAccount extends baseModule implements passwordService {
 				$return->addElement($pwdContainer, true);
 			}
 			// remove button
-			if ($this->isOptional()) {
+			if ($this->isOptional() && !$this->skipObjectClass()) {
 				$return->addElement(new htmlSpacer(null, '20px'), true);
 				$remButton = new htmlButton('remObjectClass', _('Remove Unix extension'));
 				$remButton->colspan = 5;
@@ -1813,7 +1817,7 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		// add extension
 		if (isset($profile['posixAccount_addExt'][0]) && ($profile['posixAccount_addExt'][0] == "true")) {
-			if (!in_array('posixAccount', $this->attributes['objectClass'])) {
+			if (!$this->skipObjectClass() && !in_array('posixAccount', $this->attributes['objectClass'])) {
 				$this->attributes['objectClass'][] = 'posixAccount';
 			}
 		}
@@ -1981,6 +1985,10 @@ class posixAccount extends baseModule implements passwordService {
 		$configOptionsContainer->addElement($hiddenOptionsContainer, true);
 		$advancedOptions = new htmlTable();
 		$advancedOptions->addElement(new htmlTableExtendedInputCheckbox('posixAccount_primaryGroupAsSecondary', false, _('Set primary group as memberUid'), 'primaryGroupAsSecondary'), true);
+		$isWindows = array_key_exists('windowsUser', $allScopes);
+		if ($isWindows) {
+			$advancedOptions->addElement(new htmlTableExtendedInputCheckbox('posixAccount_noObjectClass', false, _('Do not add object class'), 'noObjectClass'), true);
+		}
 		$advancedOptions->addElement(new htmlTableExtendedInputField(_('User name suggestion'), 'posixAccount_userNameSuggestion', '@givenname@%sn%', 'userNameSuggestion'));
 		$advancedOptionsAccordion = new htmlAccordion('posixAccountAdvancedOptions', array(_('Advanced options') => $advancedOptions), false);
 		$advancedOptionsAccordion->colspan = 5;
@@ -2106,7 +2114,9 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		// check input
 		foreach ($rawAccounts as $i => $rawAccount) {
-			if (!in_array("posixAccount", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "posixAccount";
+			if (!$this->skipObjectClass() && !in_array("posixAccount", $partialAccounts[$i]['objectClass'])) {
+				$partialAccounts[$i]['objectClass'][] = "posixAccount";
+			}
 			// UID
 			if ($rawAccount[$ids['posixAccount_uid']] == "") {
 				// autoUID
@@ -3049,6 +3059,9 @@ class posixAccount extends baseModule implements passwordService {
 		$this->cachedUIDList = array();
 		$attrs = array('uidNumber');
 		$filter = '(&(objectClass=posixAccount)(uidNumber=*))';
+		if ($this->skipObjectClass()) {
+			$filter = '(uidNumber=*)';
+		}
 		$types = $_SESSION['config']->get_ActiveTypes();
 		// get user UIDs
 		if (in_array('user', $types)) {
@@ -3100,6 +3113,9 @@ class posixAccount extends baseModule implements passwordService {
 		$this->cachedUserNameList = array();
 		$attrs = array('uid');
 		$filter = '(&(objectClass=posixAccount)(uid=*))';
+		if ($this->skipObjectClass()) {
+			$filter = '(uid=*)';
+		}
 		$types = $_SESSION['config']->get_ActiveTypes();
 		// get user names
 		if (in_array('user', $types)) {
@@ -3419,6 +3435,15 @@ class posixAccount extends baseModule implements passwordService {
 				$this->groups[] = $gon['cn'][0];
 			}
 		}
+	}
+
+	/**
+	 * Returns if the object class should not be added.
+	 *
+	 * @return do not add
+	 */
+	private function skipObjectClass() {
+		return $this->isBooleanConfigOptionSet('posixAccount_noObjectClass');
 	}
 
 }
