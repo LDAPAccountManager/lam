@@ -25,7 +25,7 @@ $Id$
  * LDAP Account Manager PDF printing library. It consists of lamPDF class,
  * the createModulePDF() function that may be called by other pages
  * and furthermore some helper functions.
- * 
+ *
  * @author Michael Duergner
  * @author Roland Gruber
  * @package PDF
@@ -45,7 +45,7 @@ $line_width = LAMPDF_LINEWIDTH;
 
 /**
  * This function creates the PDF output of one or more accounts.
- * 
+ *
  * @param array $accounts A numbered array containing all accounts the PDF page should
  * be created for. The entries of the array must be AccountContainer objects.
  * @param string $pdf_structure The filename of the structure definition that should be used
@@ -55,16 +55,16 @@ $line_width = LAMPDF_LINEWIDTH;
  * @return String PDF file name
  */
 function createModulePDF($accounts, $pdf_structure="default", $returnAsString = false) {
-	
+
 	/** PDF generator class */
-	include_once("fpdf.php");
+	include_once("fpdf-lam.inc");
 	/** Unicode support for FPDF */
 	include_once("ufpdf.php");
 	/** LAM PDF generator class */
 	include_once("lamPDF.inc");
 
 	global $key;
-	
+
 	$account_type = $accounts[0]->get_type();
 	// Get PDF structure from xml file
 	$load = loadPDFStructureDefinitions($account_type,$pdf_structure);
@@ -74,7 +74,7 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 	foreach($structure as $entry) {
 		if ($entry['tag'] == "SECTION" && $entry['type'] == "open") {
 			$key = $entry['attributes']['NAME'];
-			// only values with a starting "_" are keys 
+			// only values with a starting "_" are keys
 			if (strpos($key, '_') === 0) {
 				$pdfKeys[] = substr($key, 1);
 			}
@@ -84,25 +84,25 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 		}
 	}
 	$pdfKeys = array_unique($pdfKeys);
-	
+
 	// The decimal separator must be a dot in order to write pdf-files
 	setlocale(LC_NUMERIC, "C");
-	
+
 	$fontName = "BitstreamVeraSans-Roman";
-	
+
 	// Create a new PDF file acording to the account type
 	$pdf = new lamPDF($load['page_definitions'],$fontName);
-	
-	// Loop over each account and add a new page in the PDF file for it 
+
+	// Loop over each account and add a new page in the PDF file for it
 	foreach($accounts as $account) {
-		
+
 		// Start a new page for each account
 		$pdf->AddPage();
-		
+
 		// Get PDF entries for the current account
 		$entries = $account->get_pdfEntries($pdfKeys);
-		
-		// Now create the PDF file acording to the structure with the submitted values 
+
+		// Now create the PDF file acording to the structure with the submitted values
 		foreach($structure as $entry) {
 			// We have a new section to start
 			if($entry['tag'] == "SECTION" && $entry['type'] == "open") {
@@ -139,7 +139,7 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 				if (isset($entries[$name])) {
 					// Get current entry
 					$value_entry = $entries[$name];
-					
+
 					// Print entry only when module sumitted values for it
 					if(is_array($value_entry)) {
 						// Loop over all rows of this entry (most of the time this will be just one)
@@ -157,7 +157,7 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 			}
 		}
 	}
-	
+
 	// Close PDF
 	$pdf->Close();
 	if (!$returnAsString) {
@@ -176,9 +176,9 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 
 /**
  * Creates a section headline.
- * 
+ *
  * @param string $line section name
- * 
+ *
  * @return string XML code for headline
  */
 function getSectionHeadline($line) {
@@ -194,16 +194,16 @@ function getSectionHeadline($line) {
 
 /**
  * Creates the XML code for an PDF entry.
- * 
+ *
  * @param string $line XML code of PDF entry
  * @param boolean $first_td True if this is the first column
  * @param String $fontName font name
- * 
+ *
  * @return array XML codes
  */
 function processLine($line, $first_td = true, $fontName) {
 	global $key, $line_width;
-	
+
 	// PCRE matching <block> tag
 	$block_pattern = '/<block><\/block>/';
 	// PCRE matching a <key> tag
@@ -219,7 +219,7 @@ function processLine($line, $first_td = true, $fontName) {
 	$p_pattern = '/(<block>.*)<p>(.+)<\/p>(.*<\/block>)/';
 	// PCRE matching a <br> tag
 	$br_pattern = '/<br \/>/';
-	
+
 	$return = array();
 	if(preg_match($key_pattern,$line,$matches)) {
 		$key = true;
@@ -271,10 +271,10 @@ function processLine($line, $first_td = true, $fontName) {
 
 /**
  * Formats the XML code.
- * 
+ *
  * @param string $line XML code of PDF entry
  * @param string $style style commands
- * 
+ *
  * @return array XML code
  */
 function processFormatTags($line,$style) {
@@ -286,7 +286,7 @@ function processFormatTags($line,$style) {
 	$u_pattern = '/(.*)<u>(.+)<\/u>(.*)/';
 	// Replacement pattern when one of the above pattern matched
 	$replace = "\$1\$2\$3";
-	
+
 	if(preg_match($i_pattern,$line,$matches)) {
 		$style .= "I";
 		$line = preg_replace($i_pattern,$replace,$line);
@@ -304,25 +304,25 @@ function processFormatTags($line,$style) {
 
 /**
  * Processes width, height and alignment attributes.
- * 
+ *
  * @param string $attrs attributes
  * @param array $return XML code
- * 
+ *
  * @return array XML code
  */
 function processAttributes($attrs,$return = array()) {
 	global $line_width;
-	
+
 	// PCRE matching width attribute
 	$width_pattern = '/(.*)width\=\"(\\d+)(\%?)\"(.*)/';
 	// PCRE matching height attribute
 	$height_pattern = '/(.*)height\=\"(\\d+)\"(.*)/';
 	// PCRE matching align attribute
 	$align_pattern = '/(.*)align\=\"(L|R|C)\"(.*)/';
-	
+
 	// Remove leading and trailing whitespaces
 	$attrs = trim($attrs);
-	
+
 	if(preg_match($width_pattern,$attrs,$matches)) {
 		if($matches[3] == '%') {
 			$return['width'] = ceil($line_width * $matches[2] / 100);

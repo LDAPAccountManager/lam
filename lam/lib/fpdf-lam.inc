@@ -5,6 +5,7 @@
 * Version: 1.7                                                                 *
 * Date:    2011-06-18                                                          *
 * Author:  Olivier PLATHEY                                                     *
+* Patched for LAM: PHP 7 support, ufpdf compatibility                          *
 *******************************************************************************/
 
 define('FPDF_VERSION','1.7');

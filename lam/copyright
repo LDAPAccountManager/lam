@@ -178,7 +178,7 @@ D:
 Programs and licenses with other licenses and/or authors than the
 main license and authors:
 
-lib/fpdf.php                                A  2008  Olivier Plathey
+lib/fpdf-lam.inc                            A  2008  Olivier Plathey
 lib/font/Vera*                              B  2003  Bitstream, Inc.
 templates/lib/*wz_tooltip.js                C        Walter Zorn
 lib/3rdParty/phpseclib                      D        Jim Wigginton
