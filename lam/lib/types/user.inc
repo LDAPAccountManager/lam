@@ -809,6 +809,7 @@ class lamUserList extends lamList {
 			$attrs[] = 'userPassword';
 			$attrs[] = 'userAccountControl';
 			$attrs[] = 'nsAccountLock';
+			$attrs[] = 'accountUnlockTime';
 			$attrs[] = 'objectClass';
 		}
 		return $attrs;
@@ -872,8 +873,9 @@ class lamUserList extends lamList {
 		$ppolicyLocked = self::isPPolicyLocked($attrs);
 		$windowsLocked = self::isWindowsLocked($attrs);
 		$is389dsDeactivated = self::is389dsDeactivated($attrs);
-		$partiallyLocked = $unixLocked || $sambaLocked || $ppolicyLocked || $windowsLocked || $is389dsDeactivated;
-		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable || $is389dsDeactivated)
+		$is389dsLocked = self::is389dsLocked($attrs);
+		$partiallyLocked = $unixLocked || $sambaLocked || $ppolicyLocked || $windowsLocked || $is389dsDeactivated || $is389dsLocked;
+		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable || $is389dsDeactivated || $is389dsLocked)
 							&& (!$unixAvailable || $unixLocked)
 							&& (!$sambaAvailable || $sambaLocked)
 							&& (!$ppolicyAvailable || $ppolicyLocked)
@@ -919,6 +921,10 @@ class lamUserList extends lamList {
 					$windowsIcon = 'lock.png';
 				}
 				$tipContent .= '<tr><td>' . _('Windows') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $windowsIcon . '&quot;></td></tr>';
+			}
+			// 389 locked
+			if ($is389dsLocked) {
+				$tipContent .= '<tr><td>' . _('Locked') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/lock.png&quot;></td></tr>';
 			}
 			// 389 deactivation
 			if ($is389dsDeactivated) {
@@ -1020,6 +1026,16 @@ class lamUserList extends lamList {
 	 */
 	public static function is389dsDeactivated(&$attrs) {
 		return (isset($attrs['nsaccountlock'][0]) && ($attrs['nsaccountlock'][0] == 'true'));
+	}
+
+	/**
+	 * Returns if locked by accountUnlockTime.
+	 *
+	 * @param array $attrs LDAP attributes
+	 * @return boolean account is locked
+	 */
+	public static function is389dsLocked(&$attrs) {
+		return (isset($attrs['accountunlocktime'][0]) && !empty($attrs['accountunlocktime'][0]));
 	}
 
 }
