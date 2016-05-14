@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2015  Roland Gruber
+  Copyright (C) 2005 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -808,6 +808,7 @@ class lamUserList extends lamList {
 			$attrs[] = 'sambaAcctFlags';
 			$attrs[] = 'userPassword';
 			$attrs[] = 'userAccountControl';
+			$attrs[] = 'nsAccountLock';
 			$attrs[] = 'objectClass';
 		}
 		return $attrs;
@@ -866,15 +867,13 @@ class lamUserList extends lamList {
 		$sambaAvailable = self::isSambaAvailable($attrs);
 		$ppolicyAvailable = self::isPPolicyAvailable($attrs);
 		$windowsAvailable = self::isWindowsAvailable($attrs);
-		if (!$unixAvailable && !$sambaAvailable && !$ppolicyAvailable && !$windowsAvailable) {
-			return;
-		}
 		$unixLocked = self::isUnixLocked($attrs);
 		$sambaLocked = self::isSambaLocked($attrs);
 		$ppolicyLocked = self::isPPolicyLocked($attrs);
 		$windowsLocked = self::isWindowsLocked($attrs);
-		$partiallyLocked = $unixLocked || $sambaLocked || $ppolicyLocked || $windowsLocked;
-		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable)
+		$is389dsDeactivated = self::is389dsDeactivated($attrs);
+		$partiallyLocked = $unixLocked || $sambaLocked || $ppolicyLocked || $windowsLocked || $is389dsDeactivated;
+		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable || $is389dsDeactivated)
 							&& (!$unixAvailable || $unixLocked)
 							&& (!$sambaAvailable || $sambaLocked)
 							&& (!$ppolicyAvailable || $ppolicyLocked)
@@ -887,7 +886,7 @@ class lamUserList extends lamList {
 			$icon = 'partiallyLocked.png';
 		}
 		// print icon and detail tooltips
-		if ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable) {
+		if ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable || $is389dsDeactivated) {
 			$tipContent = '<table border=0>';
 			// Unix
 			if ($unixAvailable) {
@@ -920,6 +919,10 @@ class lamUserList extends lamList {
 					$windowsIcon = 'lock.png';
 				}
 				$tipContent .= '<tr><td>' . _('Windows') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $windowsIcon . '&quot;></td></tr>';
+			}
+			// 389 deactivation
+			if ($is389dsDeactivated) {
+				$tipContent .= '<tr><td>' . _('Deactivated') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/lock.png&quot;></td></tr>';
 			}
 			$tipContent .= '</table>';
 			echo '<img helptitle="' . _('Account status') . '" helpdata="' . $tipContent . '" alt="status" height=16 width=16 src="../../graphics/' . $icon . '">';
@@ -1007,6 +1010,16 @@ class lamUserList extends lamList {
 	 */
 	public static function isWindowsLocked(&$attrs) {
 		return windowsUser::isDeactivated($attrs);
+	}
+
+	/**
+	 * Returns if deactivated by nsAccountLock.
+	 *
+	 * @param array $attrs LDAP attributes
+	 * @return boolean account is deactivated
+	 */
+	public static function is389dsDeactivated(&$attrs) {
+		return (isset($attrs['nsaccountlock'][0]) && ($attrs['nsaccountlock'][0] == 'true'));
 	}
 
 }
