@@ -2075,6 +2075,18 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
                 </row>
 
                 <row>
+                  <entry>CC address</entry>
+
+                  <entry>Optional CC mail address.</entry>
+                </row>
+
+                <row>
+                  <entry>BCC address</entry>
+
+                  <entry>Optional BCC mail address.</entry>
+                </row>
+
+                <row>
                   <entry>Subject</entry>
 
                   <entry>The email subject line. Supports wildcards, see
@@ -2171,6 +2183,18 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
                 </row>
 
                 <row>
+                  <entry>CC address</entry>
+
+                  <entry>Optional CC mail address.</entry>
+                </row>
+
+                <row>
+                  <entry>BCC address</entry>
+
+                  <entry>Optional BCC mail address.</entry>
+                </row>
+
+                <row>
                   <entry>Subject</entry>
 
                   <entry>The email subject line. Supports wildcards, see
@@ -2248,6 +2272,18 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
                   <entry>Reply-to address</entry>
 
                   <entry>Optional Reply-to address for email.</entry>
+                </row>
+
+                <row>
+                  <entry>CC address</entry>
+
+                  <entry>Optional CC mail address.</entry>
+                </row>
+
+                <row>
+                  <entry>BCC address</entry>
+
+                  <entry>Optional BCC mail address.</entry>
                 </row>
 
                 <row>

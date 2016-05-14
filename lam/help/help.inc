@@ -325,6 +325,14 @@ $helpArray = array (
 					"Headline" => _('Notification period'),
 					"Text" => _('Please enter the number of days before password expiration to send out the email.')
 				),
+				'805' => array(
+					"Headline" => _('CC address'),
+					"Text" => _('This email address will be set as CC address of all mails.')
+				),
+				'806' => array(
+					"Headline" => _('BCC address'),
+					"Text" => _('This email address will be set as BCC address of all mails.')
+				),
 );
 
 /* This is a sample help entry. Just copy this line an modify the values between the [] brackets.

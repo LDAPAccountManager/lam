@@ -1093,21 +1093,23 @@ function sendPasswordMail($pwd, $user, $recipient = null) {
  * @param String $from FROM address
  * @param boolean $isHTML mail is formatted as HTML or plain text
  * @param String $replyTo reply-to address (optional)
+ * @param String $cc CC address
+ * @param String $bcc BCC address
  * @return String header lines
  */
-function createEMailHeaders($from, $isHTML, $replyTo = null) {
+function createEMailHeaders($from, $isHTML, $replyTo = null, $cc = null, $bcc = null) {
 	$headerLines = "X-Mailer: LDAP Account Manager\r\n";
 	if (!empty($from)) {
-		if (preg_match('/^(.*)<(.*)>$/', $from, $matchesFrom)) {
-			$from = base64EncodeForEMail($matchesFrom[1]) . ' <' . $matchesFrom[2] . '>';
-		}
-		$headerLines .= 'From: ' . $from . "\r\n";
+		$headerLines .= 'From: ' . encodeMailAddress($from) . "\r\n";
 	}
 	if (!empty($replyTo)) {
-		if (preg_match('/^(.*)<(.*)>$/', $replyTo, $matchesReplyTo)) {
-			$replyTo = base64EncodeForEMail($matchesReplyTo[1]) . ' <' . $matchesReplyTo[2] . '>';
-		}
-		$headerLines .= 'Reply-To: ' . $replyTo . "\r\n";
+		$headerLines .= 'Reply-To: ' . encodeMailAddress($replyTo) . "\r\n";
+	}
+	if (!empty($cc)) {
+		$headerLines .= 'Cc: ' . encodeMailAddress($cc) . "\r\n";
+	}
+	if (!empty($bcc)) {
+		$headerLines .= 'Bcc: ' . encodeMailAddress($bcc) . "\r\n";
 	}
 	$headerLines .= "MIME-Version: 1.0\r\n";
 	if ($isHTML) {
@@ -1117,6 +1119,21 @@ function createEMailHeaders($from, $isHTML, $replyTo = null) {
 		$headerLines .= "Content-type: text/plain; charset=UTF-8\r\n";
 	}
 	return $headerLines;
+}
+
+/**
+ * Encodes the email address for the header part of an email.
+ *
+ * @param String $address email address
+ * @return String encoded mail address
+ */
+function encodeMailAddress($address) {
+	$matches = array();
+	// if the email contains a name part then base64 encode it
+	if (preg_match('/^(.*)<(.*)>$/', $address, $matches)) {
+		return base64EncodeForEMail($matches[1]) . ' <' . $matches[2] . '>';
+	}
+	return $address;
 }
 
 /**
