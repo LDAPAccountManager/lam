@@ -3602,28 +3602,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 	}
 
 	/**
-	 * Adds a simple read-only field to the given container.
-	 *
-	 * @param htmlTable $container parent container
-	 * @param String $attrName attribute name
-	 * @param String $label field label
-	 */
-	private function addSimpleReadOnlyField(&$container, $attrName, $label) {
-		$val = '';
-		if (!empty($this->attributes[$attrName][0])) {
-			$values = $this->attributes[$attrName];
-			array_map('htmlspecialchars', $values);
-			$val = implode('<br>', $values);
-		}
-		$labelBox = new htmlOutputText($label);
-		if (!empty($this->attributes[$attrName]) && (sizeof($this->attributes[$attrName]) > 1)) {
-			$labelBox->alignment = htmlElement::ALIGN_TOP;
-		}
-		$container->addElement($labelBox);
-		$container->addElement(new htmlOutputText($val, false), true);
-	}
-
-	/**
 	* Returns a list of configuration options.
 	*
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>

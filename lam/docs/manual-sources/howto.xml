@@ -2698,8 +2698,8 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
       <para><emphasis>Show account status:</emphasis> If you activate this
       option then there will be an additional column displayed that shows if
       the account is locked. You can see more details when moving the mouse
-      cursor over the lock icon. This function supports Unix, Samba and
-      PPolicy.</para>
+      cursor over the lock icon. This function supports Unix, Samba, PPolicy,
+      Windows and 389ds locking+deactivation.</para>
 
       <screenshot>
         <mediaobject>

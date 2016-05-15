@@ -1,6 +1,7 @@
 June 2016 5.4
   - Unix: support magic numbers for UIDs/GIDs (e.g. 389 server DNA plugin)
   - LAM Pro:
+   -> New module for 389ds unlocking and deactivation status
    -> Self registration: support for Google reCAPTCHA
    -> Password notification jobs support CC and BCC
 

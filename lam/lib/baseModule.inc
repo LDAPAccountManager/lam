@@ -1267,10 +1267,9 @@ abstract class baseModule {
 	 * @param integer $length field length
 	 * @param boolean $isTextArea show as text area (default false)
 	 * @param array $autoCompleteValues values for auto-completion
-	 * @param boolean $readOnly this field is read-only
 	 * @return mixed reference to htmlTableExtendedInputField/htmlTableExtendedInputTextarea
 	 */
-	protected function &addSimpleInputTextField(&$container, $attrName, $label, $required = false, $length = null, $isTextArea = false, $autoCompleteValues = null, $readOnly = false) {
+	protected function &addSimpleInputTextField(&$container, $attrName, $label, $required = false, $length = null, $isTextArea = false, $autoCompleteValues = null) {
 		$value = '';
 		if (isset($this->attributes[$attrName][0])) {
 			$value = $this->attributes[$attrName][0];
@@ -1294,6 +1293,28 @@ abstract class baseModule {
 		$input->setRequired($required);
 		$container->addElement($input, true);
 		return $input;
+	}
+
+	/**
+	 * Adds a simple read-only field to the given container.
+	 *
+	 * @param htmlTable $container parent container
+	 * @param String $attrName attribute name
+	 * @param String $label field label
+	 */
+	protected function addSimpleReadOnlyField(&$container, $attrName, $label) {
+		$val = '';
+		if (!empty($this->attributes[$attrName][0])) {
+			$values = $this->attributes[$attrName];
+			array_map('htmlspecialchars', $values);
+			$val = implode('<br>', $values);
+		}
+		$labelBox = new htmlOutputText($label);
+		if (!empty($this->attributes[$attrName]) && (sizeof($this->attributes[$attrName]) > 1)) {
+			$labelBox->alignment = htmlElement::ALIGN_TOP;
+		}
+		$container->addElement($labelBox);
+		$container->addElement(new htmlOutputText($val, false), true);
 	}
 
 	/**
@@ -1595,6 +1616,18 @@ abstract class baseModule {
 	 */
 	public function getManagedAttributes() {
 		if (isset($this->meta['attributes']) && is_array($this->meta['attributes'])) return $this->meta['attributes'];
+		else return array();
+	}
+
+	/**
+	 * Returns a list of operational LDAP attributes which are managed by this module and need to be explicitly set for LDAP search.
+	 *
+	 * @return array list of hidden attributes
+	 *
+	 * @see baseModule::get_metaData()
+	 */
+	public function getManagedHiddenAttributes() {
+		if (isset($this->meta['hiddenAttributes']) && is_array($this->meta['hiddenAttributes'])) return $this->meta['hiddenAttributes'];
 		else return array();
 	}
 
