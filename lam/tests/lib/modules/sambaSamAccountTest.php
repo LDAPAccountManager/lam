@@ -1,0 +1,54 @@
+<?php
+/*
+ $Id$
+
+ This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
+ Copyright (C) 2016  Roland Gruber
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+ */
+
+include_once (dirname ( __FILE__ ) . '/../../../lib/baseModule.inc');
+include_once (dirname ( __FILE__ ) . '/../../../lib/modules.inc');
+include_once (dirname ( __FILE__ ) . '/../../../lib/passwordExpirationJob.inc');
+include_once (dirname ( __FILE__ ) . '/../../../lib/modules/sambaSamAccount.inc');
+
+/**
+ * Checks the shadow expire job.
+ *
+ * @author Roland Gruber
+ *
+ */
+class SambaSamAccountTest extends PHPUnit_Framework_TestCase {
+
+	public function testValidateHistoryEntry() {
+		$this->assertFalse(sambaSamAccount::validateHistoryEntry("password", ""));
+		$this->assertFalse(sambaSamAccount::validateHistoryEntry("password", "123"));
+		$this->assertFalse(sambaSamAccount::validateHistoryEntry("password", "1234567890123456789012345678901234567890"));
+		$this->assertFalse(sambaSamAccount::validateHistoryEntry("password", "12345678901234567890123456789012"));
+		$this->assertTrue(sambaSamAccount::validateHistoryEntry("password", "8E36265C3B44B640CCB365040DE68E5A4BF09D61C23AB4A0CC9D1866E1C69191"));
+	}
+
+	public function testCreateHistoryEntry() {
+		$this->assertEquals(sambaSamAccount::createHistoryEntry(""), null);
+
+		$password = 'password123';
+		$this->assertTrue(sambaSamAccount::validateHistoryEntry($password, sambaSamAccount::createHistoryEntry($password)));
+	}
+
+}
+
+?>

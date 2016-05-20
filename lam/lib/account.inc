@@ -385,7 +385,9 @@ function search_domains($server = null, $suffix = null) {
 	}
 	$ret = array();
 	$attr = array("DN", "sambaDomainName", "sambaSID", "sambaNextRid", "sambaNextGroupRid",
-		"sambaNextUserRid", "sambaAlgorithmicRidBase", 'sambaMinPwdAge', 'sambaMaxPwdAge');
+		"sambaNextUserRid", "sambaAlgorithmicRidBase", 'sambaMinPwdAge', 'sambaMaxPwdAge',
+		'sambaPwdHistoryLength'
+	);
 	if ($server == null) {
 		$server = $_SESSION['ldap']->server();
 	}
@@ -402,6 +404,7 @@ function search_domains($server = null, $suffix = null) {
 		if (isset($units[$i]['sambaalgorithmicridbase'][0])) $ret[$i]->RIDbase = $units[$i]['sambaalgorithmicridbase'][0];
 		if (isset($units[$i]['sambaminpwdage'][0])) $ret[$i]->minPwdAge = $units[$i]['sambaminpwdage'][0];
 		if (isset($units[$i]['sambamaxpwdage'][0])) $ret[$i]->maxPwdAge = $units[$i]['sambamaxpwdage'][0];
+		if (isset($units[$i]['sambapwdhistorylength'][0])) $ret[$i]->pwdHistoryLength = $units[$i]['sambapwdhistorylength'][0];
 	}
 	return $ret;
 }
@@ -439,6 +442,9 @@ class samba3domain {
 
 	/** seconds after the password must be changed */
 	public $maxPwdAge;
+
+	/** password history length */
+	public $pwdHistoryLength;
 }
 
 /**

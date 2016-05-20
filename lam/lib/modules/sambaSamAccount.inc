@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2015  Roland Gruber
+                2005 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -157,7 +157,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			'sambaLogonTime', 'sambaLogoffTime', 'sambaKickoffTime', 'sambaAcctFlags',
 			'sambaPwdLastSet', 'displayName', 'sambaHomePath', 'sambaHomeDrive', 'sambaLogonScript', 'sambaProfilePath',
 			'sambaUserWorkstations', 'sambaPrimaryGroupSID', 'sambaDomainName', 'sambaLogonHours', 'sambaMungedDial',
-			'sambaPwdCanChange', 'sambaPwdMustChange'); // sambaPwdCanChange/sambaPwdMustChange only for extension removal
+			'sambaPasswordHistory', 'sambaPwdCanChange', 'sambaPwdMustChange'); // sambaPwdCanChange/sambaPwdMustChange only for extension removal
 		// PHP extensions
 		$return['extensions'] = array('hash', 'iconv');
 		// profile options
@@ -2396,6 +2396,41 @@ class sambaSamAccount extends baseModule implements passwordService {
 		if ($forcePasswordChange) {
 			$this->attributes['sambaPwdLastSet'][0] = '0';
 		}
+		// password history entry
+		$sambaDomains = $this->getDomains();
+		if (sizeof($sambaDomains) > 0) {
+			if (isset($this->attributes['sambaSID'][0]) && $this->attributes['sambaSID'][0] != '') {
+				$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
+			}
+			$historyLength = 0;
+			for ($i = 0; $i < count($sambaDomains); $i++) {
+				if (!empty($domainSID)) {
+					if (($domainSID == $sambaDomains[$i]->SID) && !empty($sambaDomains[$i]->pwdHistoryLength)) {
+						$historyLength = $sambaDomains[$i]->pwdHistoryLength;
+						break;
+					}
+				}
+				elseif (isset($this->attributes['sambaDomainName'][0]) && ($this->attributes['sambaDomainName'][0]!='')) {
+					if (($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) && !empty($sambaDomains[$i]->pwdHistoryLength)) {
+						$historyLength = $sambaDomains[$i]->pwdHistoryLength;
+						break;
+					}
+				}
+			}
+			if (!empty($historyLength) && is_numeric($historyLength) && ($historyLength > 0)) {
+				if (!empty($this->orig['sambaPasswordHistory'][0])) {
+					$this->attributes['sambaPasswordHistory'] = $this->orig['sambaPasswordHistory'];
+				}
+				else {
+					$this->attributes['sambaPasswordHistory'] = array();
+				}
+				while (sizeof($this->attributes['sambaPasswordHistory']) > ($historyLength - 1)) {
+					array_pop($this->attributes['sambaPasswordHistory']);
+				}
+				$this->attributes['sambaPasswordHistory'][] = sambaSamAccount::createHistoryEntry($password);
+				$this->attributes['sambaPasswordHistory'] = array_values($this->attributes['sambaPasswordHistory']);
+			}
+		}
 		return array();
 	}
 
@@ -2579,6 +2614,41 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$this->deactivated = false;
 		$this->attributes['sambaAcctFlags'][0] = str_replace('D', '', $this->attributes['sambaAcctFlags'][0]);
 		$this->attributes['sambaAcctFlags'][0] = str_replace(']', ' ]', $this->attributes['sambaAcctFlags'][0]);
+	}
+
+	/**
+	 * Creates the value to store in sambaPasswordHistory attribute.
+	 *
+	 * @param String $password password
+	 * @return String value for sambaPasswordHistory
+	 */
+	public static function createHistoryEntry($password) {
+		if (empty($password)) {
+			return null;
+		}
+		$salt = generateSalt(16);
+		$saltHex = bin2hex($salt);
+		$md4hash = ntPassword($password);
+		$md5hash = md5($salt . hex2bin($md4hash));
+		return strtoupper($saltHex . $md5hash);
+	}
+
+	/**
+	 * Checks if the given password matches the history entry.
+	 *
+	 * @param String $password password
+	 * @param String $historyEntry sambaPasswordHistory entry
+	 * @return Boolean entry matches password
+	 */
+	public static function validateHistoryEntry($password, $historyEntry) {
+		if (empty($historyEntry) || (strlen($historyEntry) != 64)) {
+			return false;
+		}
+		$salt = hex2bin(substr($historyEntry, 0, 32));
+		$hash = substr($historyEntry, 32, 32);
+		$md4hash = ntPassword($password);
+		$md5hash = md5($salt . hex2bin($md4hash));
+		return strtolower($md5hash) == strtolower($hash);
 	}
 
 }
