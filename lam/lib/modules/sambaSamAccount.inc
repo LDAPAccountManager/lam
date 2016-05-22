@@ -2388,6 +2388,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		if (!in_array(get_class($this), $modules)) {
 			return array();
 		}
+		$errors = array();
 		if (isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) && ($this->moduleSettings['sambaSamAccount_lmHash'][0] == 'no')) {
 			$this->attributes['sambaLMPassword'][0] = lmPassword($password);
 		}
@@ -2397,27 +2398,16 @@ class sambaSamAccount extends baseModule implements passwordService {
 			$this->attributes['sambaPwdLastSet'][0] = '0';
 		}
 		// password history entry
-		$sambaDomains = $this->getDomains();
-		if (sizeof($sambaDomains) > 0) {
-			if (isset($this->attributes['sambaSID'][0]) && $this->attributes['sambaSID'][0] != '') {
-				$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
+		$sambaDomain = $this->getUserDomain();
+		if ($sambaDomain != null) {
+			// password history check
+			$oldPasswordUsed = $this->oldPasswordUsed($password);
+			if ($oldPasswordUsed) {
+				$errors[] = array('ERROR', _('You are reusing an old password. Please choose a different password.'));
 			}
-			$historyLength = 0;
-			for ($i = 0; $i < count($sambaDomains); $i++) {
-				if (!empty($domainSID)) {
-					if (($domainSID == $sambaDomains[$i]->SID) && !empty($sambaDomains[$i]->pwdHistoryLength)) {
-						$historyLength = $sambaDomains[$i]->pwdHistoryLength;
-						break;
-					}
-				}
-				elseif (isset($this->attributes['sambaDomainName'][0]) && ($this->attributes['sambaDomainName'][0]!='')) {
-					if (($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) && !empty($sambaDomains[$i]->pwdHistoryLength)) {
-						$historyLength = $sambaDomains[$i]->pwdHistoryLength;
-						break;
-					}
-				}
-			}
-			if (!empty($historyLength) && is_numeric($historyLength) && ($historyLength > 0)) {
+			// set new history entry
+			$historyLength = $sambaDomain->pwdHistoryLength;
+			if (!$oldPasswordUsed && !empty($historyLength) && is_numeric($historyLength) && ($historyLength > 0)) {
 				if (!empty($this->orig['sambaPasswordHistory'][0])) {
 					$this->attributes['sambaPasswordHistory'] = $this->orig['sambaPasswordHistory'];
 				}
@@ -2431,7 +2421,54 @@ class sambaSamAccount extends baseModule implements passwordService {
 				$this->attributes['sambaPasswordHistory'] = array_values($this->attributes['sambaPasswordHistory']);
 			}
 		}
-		return array();
+		return $errors;
+	}
+
+	/**
+	 * Returns if an old password is used.
+	 *
+	 * @param String $password new password
+	 */
+	private function oldPasswordUsed($password) {
+		$sambaDomain = $this->getUserDomain();
+		if (empty($this->orig['sambaPasswordHistory'][0]) || ($sambaDomain == null)
+				|| !is_numeric($sambaDomain->pwdHistoryLength) || ($sambaDomain->pwdHistoryLength < 1)) {
+			return false;
+		}
+		foreach ($this->orig['sambaPasswordHistory'] as $historyEntry) {
+			if (sambaSamAccount::validateHistoryEntry($password, $historyEntry)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Returns the domain object of the user's domain.
+	 *
+	 * @return samba3domain domain
+	 */
+	private function getUserDomain() {
+		$sambaDomains = $this->getDomains();
+		if (sizeof($sambaDomains) > 0) {
+			$domainSID = null;
+			if (isset($this->attributes['sambaSID'][0]) && $this->attributes['sambaSID'][0] != '') {
+				$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
+			}
+			for ($i = 0; $i < count($sambaDomains); $i++) {
+				if (!empty($domainSID)) {
+					if (($domainSID == $sambaDomains[$i]->SID) && !empty($sambaDomains[$i]->pwdHistoryLength)) {
+						return $sambaDomains[$i];
+					}
+				}
+				elseif (isset($this->attributes['sambaDomainName'][0]) && ($this->attributes['sambaDomainName'][0]!='')) {
+					if (($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) && !empty($sambaDomains[$i]->pwdHistoryLength)) {
+						return $sambaDomains[$i];
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	/**
