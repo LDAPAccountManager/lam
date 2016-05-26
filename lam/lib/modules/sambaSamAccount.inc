@@ -253,6 +253,12 @@ class sambaSamAccount extends baseModule implements passwordService {
 		);
 		// self service: fields that cannot be relabeled
 		$return['selfServiceNoRelabelFields'] = array('syncNTPassword', 'syncLMPassword', 'syncSambaPwdLastSet');
+		// self service options
+		$selfServiceContainer = new htmlTable();
+		$selfServiceDomainSuffix = new htmlTableExtendedInputField(_('Domain suffix'), 'sambaSamAccount_domainSuffix');
+		$selfServiceContainer->addElement($selfServiceDomainSuffix);
+		$selfServiceContainer->addElement(new htmlHelpLink('domainSuffix', get_class($this)), true);
+		$return['selfServiceSettings'] = $selfServiceContainer;
 		// help Entries
 		$return['help'] = array (
 			"displayName" => array(
@@ -401,8 +407,11 @@ class sambaSamAccount extends baseModule implements passwordService {
 				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields.")),
 			'autoAdd' => array(
 				"Headline" => _("Automatically add this extension"),
-				"Text" => _("This will enable the extension automatically if this profile is loaded."))
-				);
+				"Text" => _("This will enable the extension automatically if this profile is loaded.")),
+			'domainSuffix' => array(
+				"Headline" => _("Domain suffix"),
+				"Text" => _("Please enter the LDAP suffix where your Samba domain entries are stored.")),
+		);
 		// upload dependencies
 		$return['upload_preDepends'] = array('posixAccount', 'inetOrgPerson');
 		// upload options
@@ -2308,6 +2317,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 						$pwdPolicyResult = checkPasswordStrength($_POST['sambaSamAccount_password'], $userName, $additionalAttrs);
 						if ($pwdPolicyResult === true) {
 							$return['mod']['sambaNTPassword'][0] = ntPassword($_POST['sambaSamAccount_password']);
+							$return['info']['sambaUserPasswordClearText'][0] = $_POST['sambaSamAccount_password'];
+							$this->doSelfServicePasswordHistoryAndMinAge($attributes, $return);
 							if (array_key_exists('sambaLMPassword', $attributes)) {
 								$return['mod']['sambaLMPassword'][0] = lmPassword($_POST['sambaSamAccount_password']);
 							}
@@ -2342,6 +2353,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 						$setPassword = true;
 					}
 					if ($setPassword) {
+						$return['info']['sambaUserPasswordClearText'][0] = $_POST['posixAccount_password'];
+						$this->doSelfServicePasswordHistoryAndMinAge($attributes, $return);
 						if (in_array('syncSambaPwdLastSet', $fields)) {
 							$return['mod']['sambaPwdLastSet'][0] = time();
 						}
@@ -2350,6 +2363,42 @@ class sambaSamAccount extends baseModule implements passwordService {
 			}
 		}
 		return $return;
+	}
+
+	/**
+	 * Checks password history and password minimum age and updates history.
+	 *
+	 * @param array $attributes LDAP attributes of current account
+	 * @param array $return return object of checkSelfServiceOptions()
+	 */
+	private function doSelfServicePasswordHistoryAndMinAge($attributes, &$return) {
+		if (!empty($this->selfServiceSettings->moduleSettings['sambaSamAccount_domainSuffix'][0])) {
+			$sambaDomain = $this->getUserDomain($attributes, $_SESSION['ldapHandle'], $this->selfServiceSettings->moduleSettings['sambaSamAccount_domainSuffix'][0]);
+			if (($sambaDomain != null)
+				&& !empty($sambaDomain->pwdHistoryLength)
+				&& is_numeric($sambaDomain->pwdHistoryLength)
+				&& ($sambaDomain->pwdHistoryLength > 0)) {
+				if (sambaSamAccount::oldPasswordUsed($return['info']['sambaUserPasswordClearText'][0], $attributes, $sambaDomain)) {
+					$return['messages'][] = array('ERROR', _('You are reusing an old password. Please choose a different password.'));
+				}
+				else {
+					// update password history
+					$sambaPasswordHistory = empty($attributes['sambaPasswordHistory']) ? null : $attributes['sambaPasswordHistory'];
+					while (sizeof($sambaPasswordHistory) > ($sambaDomain->pwdHistoryLength - 1)) {
+						array_pop($sambaPasswordHistory);
+					}
+					$sambaPasswordHistory[] = sambaSamAccount::createHistoryEntry($return['info']['sambaUserPasswordClearText'][0]);
+					$sambaPasswordHistory = array_values($sambaPasswordHistory);
+					if (empty($attributes['sambaPasswordHistory'])) {
+						$return['add']['sambaPasswordHistory'] = $sambaPasswordHistory;
+					}
+					else {
+						$return['mod']['sambaPasswordHistory'] = $sambaPasswordHistory;
+					}
+				}
+			}
+			// TODO check min age
+		}
 	}
 
 	/**
@@ -2398,10 +2447,10 @@ class sambaSamAccount extends baseModule implements passwordService {
 			$this->attributes['sambaPwdLastSet'][0] = '0';
 		}
 		// password history entry
-		$sambaDomain = $this->getUserDomain();
+		$sambaDomain = $this->getUserDomain($this->attributes);
 		if ($sambaDomain != null) {
 			// password history check
-			$oldPasswordUsed = $this->oldPasswordUsed($password);
+			$oldPasswordUsed = sambaSamAccount::oldPasswordUsed($password, $this->orig, $sambaDomain);
 			if ($oldPasswordUsed) {
 				$errors[] = array('ERROR', _('You are reusing an old password. Please choose a different password.'));
 			}
@@ -2429,13 +2478,12 @@ class sambaSamAccount extends baseModule implements passwordService {
 	 *
 	 * @param String $password new password
 	 */
-	private function oldPasswordUsed($password) {
-		$sambaDomain = $this->getUserDomain();
-		if (empty($this->orig['sambaPasswordHistory'][0]) || ($sambaDomain == null)
+	private static function oldPasswordUsed($password, $attributes, $sambaDomain) {
+		if (empty($attributes['sambaPasswordHistory'][0]) || ($sambaDomain == null)
 				|| !is_numeric($sambaDomain->pwdHistoryLength) || ($sambaDomain->pwdHistoryLength < 1)) {
 			return false;
 		}
-		foreach ($this->orig['sambaPasswordHistory'] as $historyEntry) {
+		foreach ($attributes['sambaPasswordHistory'] as $historyEntry) {
 			if (sambaSamAccount::validateHistoryEntry($password, $historyEntry)) {
 				return true;
 			}
@@ -2446,14 +2494,18 @@ class sambaSamAccount extends baseModule implements passwordService {
 	/**
 	 * Returns the domain object of the user's domain.
 	 *
+	 * @param array $attributes LDAP attributes
+	 * @param handle $server LDAP connection (leave empty for admin interface)
+	 * @param String $suffix LDAP search suffix (leave empty for admin interface)
 	 * @return samba3domain domain
 	 */
-	private function getUserDomain() {
-		$sambaDomains = $this->getDomains();
+	public function getUserDomain($attributes, $server = null, $suffix = null) {
+		$attributes = array_change_key_case($attributes, CASE_LOWER);
+		$sambaDomains = $this->getDomains($server, $suffix);
 		if (sizeof($sambaDomains) > 0) {
 			$domainSID = null;
-			if (isset($this->attributes['sambaSID'][0]) && $this->attributes['sambaSID'][0] != '') {
-				$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
+			if (isset($attributes['sambasid'][0]) && $attributes['sambasid'][0] != '') {
+				$domainSID = substr($attributes['sambasid'][0], 0, strrpos($attributes['sambasid'][0], "-"));
 			}
 			for ($i = 0; $i < count($sambaDomains); $i++) {
 				if (!empty($domainSID)) {
@@ -2461,8 +2513,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 						return $sambaDomains[$i];
 					}
 				}
-				elseif (isset($this->attributes['sambaDomainName'][0]) && ($this->attributes['sambaDomainName'][0]!='')) {
-					if (($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) && !empty($sambaDomains[$i]->pwdHistoryLength)) {
+				elseif (isset($attributes['sambadomainname'][0]) && ($attributes['sambadomainname'][0]!='')) {
+					if (($attributes['sambadomainname'][0] == $sambaDomains[$i]->name) && !empty($sambaDomains[$i]->pwdHistoryLength)) {
 						return $sambaDomains[$i];
 					}
 				}
@@ -2587,13 +2639,15 @@ class sambaSamAccount extends baseModule implements passwordService {
 	/**
 	 * Returns a list of existing Samba 3 domains.
 	 *
+	 * @param handle $server LDAP connection (leave empty for admin interface)
+	 * @param String $suffix LDAP search suffix (leave empty for admin interface)
 	 * @return array list of samba3domain objects
 	 */
-	private function getDomains() {
+	private function getDomains($server = null, $suffix = null) {
 		if ($this->cachedDomainList != null) {
 			return $this->cachedDomainList;
 		}
-		$this->cachedDomainList = search_domains();
+		$this->cachedDomainList = search_domains($server, $suffix);
 		return $this->cachedDomainList;
 	}
 
