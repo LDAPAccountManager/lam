@@ -997,7 +997,7 @@ Have fun!
         <title>Version specific upgrade instructions</title>
 
         <section>
-          <title>5.1 -&gt; 5.3</title>
+          <title>5.1 -&gt; 5.4</title>
 
           <para>No special actions needed.</para>
         </section>
@@ -8407,6 +8407,25 @@ OK (10 msec)</programlisting>
           <mediaobject>
             <imageobject>
               <imagedata fileref="images/conf6.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>Samba 3</title>
+
+        <para>LAM Pro can check the password history and minimum age for Samba
+        3 password changes. In this case please provide the LDAP suffix where
+        your Samba 3 domain(s) are stored.</para>
+
+        <para>If you leave the field empty then no history and age checks will
+        be done.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/selfServiceSambaDomains.png" />
             </imageobject>
           </mediaobject>
         </screenshot>

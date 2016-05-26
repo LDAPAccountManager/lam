@@ -4,6 +4,7 @@ June 2016 5.4
    -> New module for 389ds unlocking and deactivation status
    -> Self registration: support for Google reCAPTCHA
    -> Password notification jobs support CC and BCC
+   -> Self Service: Samba 3 supports password history and minimum age check
 
 
 21.03.2016 5.3

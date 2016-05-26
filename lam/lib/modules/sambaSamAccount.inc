@@ -2374,8 +2374,10 @@ class sambaSamAccount extends baseModule implements passwordService {
 	private function doSelfServicePasswordHistoryAndMinAge($attributes, &$return) {
 		if (!empty($this->selfServiceSettings->moduleSettings['sambaSamAccount_domainSuffix'][0])) {
 			$sambaDomain = $this->getUserDomain($attributes, $_SESSION['ldapHandle'], $this->selfServiceSettings->moduleSettings['sambaSamAccount_domainSuffix'][0]);
-			if (($sambaDomain != null)
-				&& !empty($sambaDomain->pwdHistoryLength)
+			if ($sambaDomain == null) {
+				return;
+			}
+			if (!empty($sambaDomain->pwdHistoryLength)
 				&& is_numeric($sambaDomain->pwdHistoryLength)
 				&& ($sambaDomain->pwdHistoryLength > 0)) {
 				if (sambaSamAccount::oldPasswordUsed($return['info']['sambaUserPasswordClearText'][0], $attributes, $sambaDomain)) {
@@ -2397,7 +2399,16 @@ class sambaSamAccount extends baseModule implements passwordService {
 					}
 				}
 			}
-			// TODO check min age
+			// check min age
+			if (!empty($sambaDomain->minPwdAge) && ($sambaDomain->minPwdAge > 0) && !empty($attributes['sambaPwdLastSet'][0])) {
+				$timeVal = $attributes['sambaPwdLastSet'][0] + $sambaDomain->minPwdAge;
+				$time = new DateTime('@' . $timeVal, new DateTimeZone('UTC'));
+				$time->setTimezone(getTimeZone());
+				$now = new DateTime(null, getTimeZone());
+				if ($time > $now) {
+					$return['messages'][] = array('ERROR', _('You are not yet allowed to change your password.'));
+				}
+			}
 		}
 	}
 
