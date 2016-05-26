@@ -391,7 +391,8 @@ function search_domains($server = null, $suffix = null) {
 	if ($server == null) {
 		$server = $_SESSION['ldap']->server();
 	}
-	$units = searchLDAPByAttribute(null, null, 'sambaDomain', $attr, array('smbDomain'));
+	$filter = '(objectclass=sambaDomain)';
+	$units = searchLDAPPaged($server, $suffix, $filter, $attr, false, 0);
 	// extract attributes
 	for ($i = 0; $i < sizeof($units); $i++) {
 		$ret[$i] = new samba3domain();
