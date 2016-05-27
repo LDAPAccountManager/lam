@@ -2489,12 +2489,13 @@ class sambaSamAccount extends baseModule implements passwordService {
 	 *
 	 * @param String $password new password
 	 */
-	private static function oldPasswordUsed($password, $attributes, $sambaDomain) {
-		if (empty($attributes['sambaPasswordHistory'][0]) || ($sambaDomain == null)
+	public static function oldPasswordUsed($password, $attributes, $sambaDomain) {
+		$attributes = array_change_key_case($attributes, CASE_LOWER);
+		if (empty($attributes['sambapasswordhistory'][0]) || ($sambaDomain == null)
 				|| !is_numeric($sambaDomain->pwdHistoryLength) || ($sambaDomain->pwdHistoryLength < 1)) {
 			return false;
 		}
-		foreach ($attributes['sambaPasswordHistory'] as $historyEntry) {
+		foreach ($attributes['sambapasswordhistory'] as $historyEntry) {
 			if (sambaSamAccount::validateHistoryEntry($password, $historyEntry)) {
 				return true;
 			}

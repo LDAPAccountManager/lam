@@ -1,5 +1,6 @@
 June 2016 5.4
   - Unix: support magic numbers for UIDs/GIDs (e.g. 389 server DNA plugin)
+  - Samba 3: support for Samba password history
   - LAM Pro:
    -> New module for 389ds unlocking and deactivation status
    -> Self registration: support for Google reCAPTCHA
