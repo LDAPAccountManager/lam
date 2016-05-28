@@ -8,19 +8,19 @@
 %define _binary_payload w9.bzdio
 %define _source_payload w9.bzdio
 
-Name:         ldap-account-manager
-License:      GPL
-Group:        Productivity/Networking/Web/Frontends
+Name: 		ldap-account-manager
+License:	GPL
+Group:		Productivity/Networking/Web/Frontends
 Version:      @@VERSION@@
 Release:      0.%lam_distribution.1
 Source0:      ldap-account-manager-%{version}.tar.bz2
 URL:          https://www.ldap-account-manager.org/
 BuildRoot:    %{_tmppath}/%{name}-%{version}-%{release}
-Summary:      Administration of LDAP users, groups and hosts via Web GUI
-Summary(de):  Administration von Benutzern, Gruppen und Hosts für LDAP-Server
-Vendor:       Roland Gruber
-Packager:     Roland Gruber <post@rolandgruber.de>
-BuildArchitectures: noarch
+Summary:	Administration of LDAP users, groups and hosts via Web GUI
+Summary(de):	Administration von Benutzern, Gruppen und Hosts für LDAP-Server
+Vendor:		Roland Gruber
+Packager:	Roland Gruber <post@rolandgruber.de>
+BuildArch:	noarch
 AutoReqProv:  no
 %if %is_suse
 Requires:      php5
@@ -34,6 +34,8 @@ Requires:      perl
 Requires:      perl
 %endif
 
+Source1:      lam.nginx.conf
+Source2:      lam.apache.conf
 
 %description
 LDAP Account Manager (LAM) runs on an existing webserver.
@@ -56,10 +58,38 @@ definiert werden. Account-Informationen können als PDF exportiert
 werden. Außerdem exisitiert ein Script mit dem man Quotas und
 Home-Verzeichnisse verwalten kann.
 
+%package lamdaemon
+
+Summary:      Quota and home directory management for LDAP Account Manager
+Summary(de):  Verwaltung von Quotas und Heimatverzeichnissen für LDAP Account Manager
+Group:        Productivity/Networking/Web/Frontends
+AutoReqProv:  no
+%if %is_suse
+Requires:      perl
+Requires:      sudo
+%endif
+%if %is_fedora
+Requires:      perl
+Requires:      sudo
+%endif
+
+%description lamdaemon
+Lamdaemon is part of LDAP Account Manager. This package
+needs to be installed on the server where the home directories
+reside and/or quotas should be managed.
+
+%description lamdaemon -l de
+Lamdaemon ist Teil von LDAP Account Manager. Dieses Paket
+wird auf dem Server installiert, auf dem Quotas und
+Heimatverzeichnisse verwaltet werden sollen.
+
+%files lamdaemon
+%dir /usr/share/%{lam_dir}
+%dir /usr/share/%{lam_dir}/lib
+/usr/share/%{lam_dir}/lib/lamdaemon.pl
+%doc COPYING HISTORY README VERSION
+
 %prep
-pwd
-cp $RPM_SOURCE_DIR/lam.apache.conf $RPM_BUILD_DIR/
-cp $RPM_SOURCE_DIR/lam.nginx.conf $RPM_BUILD_DIR/
 %setup -n ldap-account-manager-%{version}
 
 %build
@@ -99,7 +129,7 @@ fi
 %if %is_suse
 /usr/sbin/a2enmod version > /dev/null
 /etc/init.d/apache2 reload
-%endif
+        %endif
 %if %is_fedora
 if [ -e /etc/init.d/httpd ]; then
 	/etc/init.d/httpd reload
@@ -111,7 +141,7 @@ fi
 %postun
 %if %is_suse
 /etc/init.d/apache2 reload
-%endif
+        %endif
 %if %is_fedora
 if [ -e /etc/init.d/httpd ]; then
 	/etc/init.d/httpd reload
@@ -163,43 +193,12 @@ fi
 - Added subpackage for lamdaemon
 
 * Wed Jan 11 2006 - Iain Lea iain@bricbrac.de
-- Updated for 1.0 series on Fedora Core 
+- Updated for 1.0 series on Fedora Core
 
 * Mon Dec 12 2005 - Iain Lea iain@bricbrac.de
-- Updated for 0.5.x series on Fedora Core 
+- Updated for 0.5.x series on Fedora Core
 
 * Sun Mar 21 2004 - TiloLutz@gmx.de
 - Initial release 0.1.0 - 0.4.5
 
-
-%package lamdaemon
-
-Summary:      Quota and home directory management for LDAP Account Manager
-Summary(de):  Verwaltung von Quotas und Heimatverzeichnissen für LDAP Account Manager
-Group:        Productivity/Networking/Web/Frontends
-AutoReqProv:  no
-%if %is_suse
-Requires:      perl
-Requires:      sudo
-%endif
-%if %is_fedora
-Requires:      perl
-Requires:      sudo
-%endif
-
-%description lamdaemon
-Lamdaemon is part of LDAP Account Manager. This package
-needs to be installed on the server where the home directories
-reside and/or quotas should be managed.
-
-%description lamdaemon -l de
-Lamdaemon ist Teil von LDAP Account Manager. Dieses Paket
-wird auf dem Server installiert, auf dem Quotas und
-Heimatverzeichnisse verwaltet werden sollen.
-
-%files lamdaemon
-%dir /usr/share/%{lam_dir}
-%dir /usr/share/%{lam_dir}/lib
-/usr/share/%{lam_dir}/lib/lamdaemon.pl
-%doc COPYING HISTORY README VERSION
 
