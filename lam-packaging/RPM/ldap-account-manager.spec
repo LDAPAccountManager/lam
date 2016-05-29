@@ -126,7 +126,7 @@ if [ ! -f /var/lib/%{lam_dir}/config/config.cfg ]; then
 		chown %{lam_uid}:%{lam_gid} /var/lib/%{lam_dir}/config/lam.conf
 	fi
 fi
-for server in "apache2 httpd nginx"; do
+for server in apache2 httpd nginx; do
     if [ `which systemctl` ]; then
        if [ "`systemctl is-active ${server}.service`" = "active" ]; then
            systemctl reload ${server}.service
@@ -137,7 +137,7 @@ for server in "apache2 httpd nginx"; do
 done
 
 %postun
-for server in "apache2 httpd nginx"; do
+for server in apache2 httpd nginx; do
     if [ `which systemctl` ]; then
        if [ "`systemctl is-active ${server}.service`" = "active" ]; then
            systemctl reload ${server}.service
