@@ -126,29 +126,26 @@ if [ ! -f /var/lib/%{lam_dir}/config/config.cfg ]; then
 		chown %{lam_uid}:%{lam_gid} /var/lib/%{lam_dir}/config/lam.conf
 	fi
 fi
-%if %is_suse
-/usr/sbin/a2enmod version > /dev/null
-/etc/init.d/apache2 reload
-        %endif
-%if %is_fedora
-if [ -e /etc/init.d/httpd ]; then
-	/etc/init.d/httpd reload
-else
-	/bin/systemctl reload httpd.service
-fi
-%endif
+for server in "apache2 httpd nginx"; do
+    if [ `which systemctl` ]; then
+       if [ "`systemctl is-active ${server}.service`" = "active" ]; then
+           systemctl reload ${server}.service
+       fi
+    elif [ -e /etc/init.d/${server} ]; then
+       /etc/init.d/$server reload > /dev/null 2>&1 || :
+    fi
+done
 
 %postun
-%if %is_suse
-/etc/init.d/apache2 reload
-        %endif
-%if %is_fedora
-if [ -e /etc/init.d/httpd ]; then
-	/etc/init.d/httpd reload
-else
-	/bin/systemctl reload httpd.service
-fi
-%endif
+for server in "apache2 httpd nginx"; do
+    if [ `which systemctl` ]; then
+       if [ "`systemctl is-active ${server}.service`" = "active" ]; then
+           systemctl reload ${server}.service
+       fi
+    elif [ -e /etc/init.d/${server} ]; then
+       /etc/init.d/$server reload > /dev/null 2>&1 || :
+    fi
+done
 
 %files
 %defattr(-, root, root)
