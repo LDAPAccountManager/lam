@@ -127,7 +127,7 @@ if [ ! -f /var/lib/%{lam_dir}/config/config.cfg ]; then
 	fi
 fi
 for server in apache2 httpd nginx; do
-    if [ `which systemctl` ]; then
+    if [ `which systemctl 2< /dev/null` ]; then
        if [ "`systemctl is-active ${server}.service`" = "active" ]; then
            systemctl reload ${server}.service
        fi
@@ -138,7 +138,7 @@ done
 
 %postun
 for server in apache2 httpd nginx; do
-    if [ `which systemctl` ]; then
+    if [ `which systemctl 2< /dev/null` ]; then
        if [ "`systemctl is-active ${server}.service`" = "active" ]; then
            systemctl reload ${server}.service
        fi
