@@ -4,7 +4,7 @@ ldap-account-manager (5.4.RC1-1) unstable; urgency=medium
     (Closes: #819474)
   * new upstream release
 
- -- Roland Gruber <post@rolandgruber.de>  Sat, 02 Apr 2016 15:38:42 +0200
+ -- Roland Gruber <post@rolandgruber.de>  Tue, 31 May 2016 15:38:42 +0200
 
 ldap-account-manager (5.3-2) unstable; urgency=medium
 
@@ -100,7 +100,7 @@ ldap-account-manager (4.3-1) unstable; urgency=low
 ldap-account-manager (4.2.1-2) unstable; urgency=low
 
   * Apache 2.4 support
-  * Fix "transition towards Apache 2.4" 
+  * Fix "transition towards Apache 2.4"
     support conf-enabled (Closes: #669824)
   * Fix "[ldap-account-manager] Can't install ldap-account-manager"
     support conf-enabled (Closes: #711778)
@@ -285,7 +285,7 @@ ldap-account-manager (2.7.0-1) unstable; urgency=low
   * Fix "[l10n] Updated Czech translation of ldap-account-manager
     debconf messages"
 		updated translation (Closes: #539437)
-  * Fix "[INTL:it] Italian debconf templates translation" 
+  * Fix "[INTL:it] Italian debconf templates translation"
 	  updated translation (Closes: #539501)
   * Fix "[INTL:es] Spanish debconf template translation for  ldap-
     account-manager"
@@ -541,7 +541,7 @@ ldap-account-manager (0.4.9+0.5.alpha1-1) experimental; urgency=low
   * Updated to new upstream release 0.5.alpha1
   * Added configuration options for Apache2
   * Added template for webserver restart
-  * Translatable templates 
+  * Translatable templates
 
  -- Roland Gruber <post@rolandgruber.de>  Tue, 10 May 2005 11:38:00 +0200
 
