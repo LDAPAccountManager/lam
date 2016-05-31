@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: LAM 1.3\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2016-03-07 09:48+0800\n"
+"PO-Revision-Date: 2016-05-31 11:10+0800\n"
 "Last-Translator: Alan Needham <needham@sina.com>\n"
 "Language-Team: Chinese(Simplified) <needham@sina.com>\n"
 "Language: zh_CN\n"
@@ -43,7 +43,7 @@ msgstr "\"Send as\"属性"
 msgid "\"Send as\" privileges"
 msgstr "\"做为..发送\"权限"
 
-#: ../lib/modules/posixAccount.inc:556
+#: ../lib/modules/posixAccount.inc:469
 msgid ""
 "$user and $group will be replaced with user name and primary group name."
 msgstr "$usert和$group会被用户名或主要组名替代 "
@@ -52,7 +52,7 @@ msgstr "$usert和$group会被用户名或主要组名替代 "
 msgid "(host1,user1,example.com);(host2,user2,example.com)"
 msgstr "(主机1,用户1,example.com);(主机2,用户2,example.com)"
 
-#: ../lib/modules/qmailUser.inc:368 ../lib/modules/posixAccount.inc:344
+#: ../lib/modules/qmailUser.inc:368 ../lib/modules/posixAccount.inc:248
 msgid "/home/smiller"
 msgstr "/home/smiller"
 
@@ -135,7 +135,7 @@ msgstr "SOA条目除了NS/MX/A条目外不允许其他条目"
 msgid "A SOA record requires that the host name is set to \"@\"."
 msgstr "SOA记录需要主机名前设置\"@\"."
 
-#: ../lib/modules/selfRegistration.inc:711
+#: ../lib/modules/selfRegistration.inc:737
 #: ../lib/modules/passwordSelfReset.inc:1636
 msgid ""
 "A confirmation mail was sent. Please click on the link in the mail to "
@@ -218,7 +218,7 @@ msgstr "AMA标志"
 msgid "Abandon"
 msgstr "终止"
 
-#: ../templates/lists/changePassword.php:731
+#: ../templates/lists/changePassword.php:748
 msgid "Aborted password change."
 msgstr "中断密码更改"
 
@@ -267,8 +267,8 @@ msgstr "帐号"
 #: ../lib/modules/zarafaContact.inc:208 ../lib/modules/zarafaContact.inc:209
 #: ../lib/modules/zarafaContact.inc:210 ../lib/modules/zarafaContact.inc:213
 #: ../lib/modules/zarafaContact.inc:214 ../lib/modules/windowsHost.inc:132
-#: ../lib/modules/posixGroup.inc:656 ../lib/modules/posixGroup.inc:660
-#: ../lib/modules/posixGroup.inc:661 ../lib/modules/zarafaGroup.inc:199
+#: ../lib/modules/posixGroup.inc:667 ../lib/modules/posixGroup.inc:671
+#: ../lib/modules/posixGroup.inc:672 ../lib/modules/zarafaGroup.inc:199
 #: ../lib/modules/zarafaGroup.inc:201 ../lib/modules/zarafaGroup.inc:202
 #: ../lib/modules/zarafaGroup.inc:203 ../lib/modules/zarafaGroup.inc:204
 #: ../lib/modules/zarafaGroup.inc:206 ../lib/modules/device.inc:141
@@ -318,7 +318,7 @@ msgstr "帐号"
 #: ../lib/modules/zarafaUser.inc:444 ../lib/modules/zarafaUser.inc:445
 #: ../lib/modules/zarafaUser.inc:446 ../lib/modules/zarafaUser.inc:447
 #: ../lib/modules/zarafaUser.inc:448 ../lib/modules/zarafaUser.inc:449
-#: ../lib/modules/ppolicyUser.inc:101 ../lib/modules/bindDLZ.inc:478
+#: ../lib/modules/ppolicyUser.inc:102 ../lib/modules/bindDLZ.inc:478
 #: ../lib/modules/bindDLZ.inc:480 ../lib/modules/bindDLZ.inc:482
 #: ../lib/modules/bindDLZ.inc:484 ../lib/modules/bindDLZ.inc:486
 #: ../lib/modules/bindDLZ.inc:488 ../lib/modules/bindDLZ.inc:490
@@ -450,11 +450,11 @@ msgstr "帐号 %s:"
 msgid "Account context"
 msgstr "帐号语境"
 
-#: ../lib/modules/selfRegistration.inc:385
+#: ../lib/modules/selfRegistration.inc:397
 msgid "Account creation"
 msgstr "帐号建立"
 
-#: ../lib/modules/selfRegistration.inc:231
+#: ../lib/modules/selfRegistration.inc:237
 msgid "Account creation confirmation"
 msgstr "建立帐号确认"
 
@@ -462,7 +462,7 @@ msgstr "建立帐号确认"
 msgid "Account creation via file upload"
 msgstr "通过上传文件建立帐号"
 
-#: ../lib/modules/posixAccount.inc:563
+#: ../lib/modules/posixAccount.inc:476
 msgid "Account deactivated"
 msgstr "帐号已停用"
 
@@ -478,11 +478,11 @@ msgstr "帐号过期"
 #: ../lib/types/user.inc:104 ../lib/modules/mitKerberos.inc:124
 #: ../lib/modules/mitKerberos.inc:218 ../lib/modules/mitKerberos.inc:251
 #: ../lib/modules/mitKerberos.inc:385 ../lib/modules/mitKerberos.inc:635
-#: ../lib/modules/mitKerberos.inc:797 ../lib/modules/sambaSamAccount.inc:346
-#: ../lib/modules/sambaSamAccount.inc:464
-#: ../lib/modules/sambaSamAccount.inc:1167
-#: ../lib/modules/sambaSamAccount.inc:1422
-#: ../lib/modules/sambaSamAccount.inc:1716 ../lib/modules/windowsUser.inc:287
+#: ../lib/modules/mitKerberos.inc:797 ../lib/modules/sambaSamAccount.inc:352
+#: ../lib/modules/sambaSamAccount.inc:473
+#: ../lib/modules/sambaSamAccount.inc:1176
+#: ../lib/modules/sambaSamAccount.inc:1431
+#: ../lib/modules/sambaSamAccount.inc:1725 ../lib/modules/windowsUser.inc:287
 #: ../lib/modules/windowsUser.inc:291 ../lib/modules/windowsUser.inc:505
 #: ../lib/modules/windowsUser.inc:761 ../lib/modules/windowsUser.inc:1069
 #: ../lib/modules/windowsUser.inc:1448 ../lib/modules/windowsUser.inc:2342
@@ -507,18 +507,18 @@ msgstr "帐号过期日期(只读)"
 msgid "Account inactive"
 msgstr "帐号停用(inactive)"
 
-#: ../lib/modules/sambaSamAccount.inc:286
 #: ../lib/modules/sambaSamAccount.inc:292
-#: ../lib/modules/sambaSamAccount.inc:456
-#: ../lib/modules/sambaSamAccount.inc:1123
-#: ../lib/modules/sambaSamAccount.inc:1712 ../lib/modules/windowsUser.inc:211
+#: ../lib/modules/sambaSamAccount.inc:298
+#: ../lib/modules/sambaSamAccount.inc:465
+#: ../lib/modules/sambaSamAccount.inc:1132
+#: ../lib/modules/sambaSamAccount.inc:1721 ../lib/modules/windowsUser.inc:211
 #: ../lib/modules/windowsUser.inc:489 ../lib/modules/windowsUser.inc:751
 #: ../lib/modules/windowsUser.inc:1061 ../lib/modules/windowsUser.inc:2336
 msgid "Account is deactivated"
 msgstr "帐号已经停用"
 
-#: ../lib/modules/sambaSamAccount.inc:289
-#: ../lib/modules/sambaSamAccount.inc:1129 ../lib/modules/windowsUser.inc:214
+#: ../lib/modules/sambaSamAccount.inc:295
+#: ../lib/modules/sambaSamAccount.inc:1138 ../lib/modules/windowsUser.inc:214
 #: ../lib/modules/windowsUser.inc:1042
 msgid "Account is locked"
 msgstr "帐号锁定"
@@ -527,8 +527,8 @@ msgstr "帐号锁定"
 msgid "Account name:"
 msgstr "帐号名"
 
-#: ../lib/types/user.inc:305 ../lib/types/user.inc:727
-#: ../lib/types/user.inc:925 ../lib/modules/qmailUser.inc:211
+#: ../lib/types/user.inc:316 ../lib/types/user.inc:750
+#: ../lib/types/user.inc:961 ../lib/modules/qmailUser.inc:211
 #: ../lib/modules/qmailUser.inc:283 ../lib/modules/qmailUser.inc:402
 #: ../lib/modules/qmailUser.inc:609 ../lib/modules/qmailUser.inc:1121
 msgid "Account status"
@@ -568,9 +568,9 @@ msgstr ""
 msgid "Account was created successfully."
 msgstr "新增帐号成功"
 
-#: ../templates/lists/changePassword.php:761
-#: ../templates/lists/changePassword.php:813
-#: ../templates/lists/changePassword.php:859 ../lib/modules.inc:1348
+#: ../templates/lists/changePassword.php:778
+#: ../templates/lists/changePassword.php:870
+#: ../templates/lists/changePassword.php:916 ../lib/modules.inc:1348
 msgid "Account was modified successfully."
 msgstr "帐号修改成功"
 
@@ -587,29 +587,29 @@ msgstr "活动的动态DNS"
 msgid "Activate TLS"
 msgstr "激活TLS"
 
-#: ../lib/modules/sambaSamAccount.inc:353
+#: ../lib/modules/sambaSamAccount.inc:359
 msgid "Activate this checkbox to allow this user to use the terminal service."
 msgstr "激活这个选项允许用户使用终端服务。"
 
-#: ../lib/modules/sambaSamAccount.inc:374
+#: ../lib/modules/sambaSamAccount.inc:380
 msgid "Activate this checkbox to connect drives from the client machine."
 msgstr "激活这个选项将从客户机上连接驱动器。"
 
-#: ../lib/modules/sambaSamAccount.inc:377
+#: ../lib/modules/sambaSamAccount.inc:383
 msgid "Activate this checkbox to connect printers from the client machine."
 msgstr "激活这个选项将从客户机上连接打印机。"
 
-#: ../lib/modules/sambaSamAccount.inc:362
+#: ../lib/modules/sambaSamAccount.inc:368
 msgid ""
 "Activate this checkbox to inherit the initial program and working directory "
 "from the client machine."
 msgstr "激活这个选项将从客户机上继承初始化程序和工作目录。"
 
-#: ../lib/modules/sambaSamAccount.inc:380
+#: ../lib/modules/sambaSamAccount.inc:386
 msgid "Activate this checkbox to set the client's printer as default printer."
 msgstr "激活这个选项将会设置客户打印机为缺省打印机。"
 
-#: ../lib/modules/posixAccount.inc:511
+#: ../lib/modules/posixAccount.inc:415
 msgid "Activating this checkbox will remove the user's home directory."
 msgstr "激活这个选项将会删除用户的主目录."
 
@@ -640,7 +640,7 @@ msgid "Active account types"
 msgstr "激活帐号类型"
 
 #: ../templates/serverInfo.php:307 ../templates/serverInfo.php:384
-#: ../templates/multiEdit.php:130 ../templates/config/profmanage.php:258
+#: ../templates/multiEdit.php:130 ../templates/config/profmanage.php:261
 #: ../templates/config/conftypes.php:235
 #: ../templates/selfService/profManage.php:211
 #: ../templates/pdfedit/pdfpage.php:600 ../templates/pdfedit/pdfpage.php:610
@@ -721,7 +721,7 @@ msgstr "增加  PyKota  扩展"
 msgid "Add SSH public key extension"
 msgstr "增加SSH公钥扩展"
 
-#: ../lib/modules/sambaSamAccount.inc:1289
+#: ../lib/modules/sambaSamAccount.inc:1298
 #: ../lib/modules/sambaGroupMapping.inc:428
 msgid "Add Samba 3 extension"
 msgstr "增加 Samba 3 扩展"
@@ -730,7 +730,7 @@ msgstr "增加 Samba 3 扩展"
 msgid "Add Shadow account extension"
 msgstr "增加 Shadow 帐号扩展"
 
-#: ../lib/modules/posixGroup.inc:255 ../lib/modules/posixAccount.inc:1588
+#: ../lib/modules/posixGroup.inc:255 ../lib/modules/posixAccount.inc:1501
 msgid "Add Unix extension"
 msgstr "增加Unix扩展"
 
@@ -745,7 +745,7 @@ msgstr "增加Zarafa联系人扩展"
 msgid "Add Zarafa extension"
 msgstr "增加Zarafa扩展"
 
-#: ../lib/modules/inetOrgPerson.inc:875 ../lib/modules/inetOrgPerson.inc:3733
+#: ../lib/modules/inetOrgPerson.inc:875 ../lib/modules/inetOrgPerson.inc:3711
 msgid "Add addressbook (ou=addressbook)"
 msgstr "增加通讯录(ou=addressbook)"
 
@@ -867,8 +867,8 @@ msgstr "增加密码自助复位扩展"
 msgid "Add photo"
 msgstr "新增照片"
 
-#: ../templates/config/profmanage.php:229
-#: ../templates/config/profmanage.php:259
+#: ../templates/config/profmanage.php:232
+#: ../templates/config/profmanage.php:262
 #: ../templates/selfService/profManage.php:204
 #: ../templates/selfService/profManage.php:212 ../help/help.inc:132
 msgid "Add profile"
@@ -890,7 +890,7 @@ msgstr "加入到已有别名中"
 msgid "Add value"
 msgstr "增加值"
 
-#: ../lib/modules/posixGroup.inc:914
+#: ../lib/modules/posixGroup.inc:925
 msgid "Added users"
 msgstr "增加的用户"
 
@@ -918,10 +918,10 @@ msgstr "附加的LDAP过滤表达式"
 msgid "Additional email addresses for this entry."
 msgstr "本条目的附加邮件地址"
 
-#: ../lib/modules/posixAccount.inc:336 ../lib/modules/posixAccount.inc:447
-#: ../lib/modules/posixAccount.inc:502 ../lib/modules/posixAccount.inc:571
-#: ../lib/modules/posixAccount.inc:1523 ../lib/modules/posixAccount.inc:1814
-#: ../lib/modules/posixAccount.inc:1931
+#: ../lib/modules/posixAccount.inc:240 ../lib/modules/posixAccount.inc:351
+#: ../lib/modules/posixAccount.inc:406 ../lib/modules/posixAccount.inc:484
+#: ../lib/modules/posixAccount.inc:1436 ../lib/modules/posixAccount.inc:1727
+#: ../lib/modules/posixAccount.inc:1844
 msgid "Additional groups"
 msgstr "附加组"
 
@@ -991,7 +991,7 @@ msgid "Admin"
 msgstr "管理"
 
 #: ../lib/modules/selfRegistration.inc:61
-#: ../lib/modules/selfRegistration.inc:199
+#: ../lib/modules/selfRegistration.inc:204
 #: ../lib/modules/passwordSelfReset.inc:104
 #: ../lib/modules/passwordSelfReset.inc:543
 msgid "Admin DN"
@@ -1004,7 +1004,7 @@ msgid "Admin email"
 msgstr "管理员邮件"
 
 #: ../lib/modules/selfRegistration.inc:65
-#: ../lib/modules/selfRegistration.inc:204 ../lib/modules/imapAccess.inc:483
+#: ../lib/modules/selfRegistration.inc:209 ../lib/modules/imapAccess.inc:483
 #: ../lib/modules/passwordSelfReset.inc:108
 #: ../lib/modules/passwordSelfReset.inc:547
 msgid "Admin password"
@@ -1024,8 +1024,8 @@ msgid "Administrators group"
 msgstr "管理员组"
 
 #: ../templates/config/confmain.php:293 ../templates/config/conftypes.php:347
-#: ../lib/modules/posixAccount.inc:303 ../lib/modules/windowsUser.inc:3061
-#: ../lib/modules/inetOrgPerson.inc:3780
+#: ../lib/modules/posixAccount.inc:1993 ../lib/modules/windowsUser.inc:3061
+#: ../lib/modules/inetOrgPerson.inc:3758
 msgid "Advanced options"
 msgstr "高级选项"
 
@@ -1172,9 +1172,9 @@ msgid "Allow setting specific passwords"
 msgstr "允许设置自己的密码"
 
 #: ../lib/modules/sambaSamAccount.inc:230
-#: ../lib/modules/sambaSamAccount.inc:352
-#: ../lib/modules/sambaSamAccount.inc:1474
-#: ../lib/modules/sambaSamAccount.inc:1893
+#: ../lib/modules/sambaSamAccount.inc:358
+#: ../lib/modules/sambaSamAccount.inc:1483
+#: ../lib/modules/sambaSamAccount.inc:1902
 msgid "Allow terminal server login"
 msgstr "允许终端服务登录"
 
@@ -1242,8 +1242,8 @@ msgstr "允许的接收者"
 msgid "Allowed senders"
 msgstr "允许的发送者"
 
-#: ../lib/modules/sambaSamAccount.inc:1315
-#: ../lib/modules/sambaSamAccount.inc:1316
+#: ../lib/modules/sambaSamAccount.inc:1324
+#: ../lib/modules/sambaSamAccount.inc:1325
 msgid "Allowed workstations"
 msgstr "允许的工作站"
 
@@ -1445,7 +1445,7 @@ msgid "Attribute types"
 msgstr "属性类型"
 
 #: ../lib/modules/selfRegistration.inc:78
-#: ../lib/modules/selfRegistration.inc:220
+#: ../lib/modules/selfRegistration.inc:225
 msgid "Attributes"
 msgstr "属性"
 
@@ -1495,12 +1495,12 @@ msgstr "自动脚本"
 #: ../lib/modules/puppetClient.inc:113 ../lib/modules/puppetClient.inc:170
 #: ../lib/modules/qmailUser.inc:131 ../lib/modules/qmailUser.inc:263
 #: ../lib/modules/zarafaContact.inc:93 ../lib/modules/zarafaContact.inc:635
-#: ../lib/modules/posixGroup.inc:411 ../lib/modules/posixGroup.inc:537
+#: ../lib/modules/posixGroup.inc:411 ../lib/modules/posixGroup.inc:538
 #: ../lib/modules/eduPerson.inc:150 ../lib/modules/eduPerson.inc:155
 #: ../lib/modules/pykotaGroup.inc:129 ../lib/modules/pykotaGroup.inc:140
 #: ../lib/modules/sambaSamAccount.inc:165
-#: ../lib/modules/sambaSamAccount.inc:403 ../lib/modules/posixAccount.inc:464
-#: ../lib/modules/posixAccount.inc:1861 ../lib/modules/zarafaUser.inc:150
+#: ../lib/modules/sambaSamAccount.inc:409 ../lib/modules/posixAccount.inc:368
+#: ../lib/modules/posixAccount.inc:1774 ../lib/modules/zarafaUser.inc:150
 #: ../lib/modules/zarafaUser.inc:1344 ../lib/modules/pykotaUser.inc:160
 #: ../lib/modules/pykotaUser.inc:173 ../lib/modules/shadowAccount.inc:106
 #: ../lib/modules/shadowAccount.inc:197 ../lib/modules/ldapPublicKey.inc:95
@@ -1560,7 +1560,7 @@ msgstr "有效的帐号类型"
 msgid "Available actions"
 msgstr "可选动作"
 
-#: ../lib/modules/posixAccount.inc:1646 ../lib/modules/posixAccount.inc:1679
+#: ../lib/modules/posixAccount.inc:1559 ../lib/modules/posixAccount.inc:1592
 #: ../lib/modules/windowsUser.inc:1565 ../lib/modules/nisnetgroup.inc:386
 #: ../lib/modules/groupOfNamesUser.inc:133 ../lib/modules/windowsGroup.inc:517
 msgid "Available groups"
@@ -1582,7 +1582,7 @@ msgstr "可选角色"
 msgid "Available users"
 msgstr "可选用户"
 
-#: ../lib/modules/sambaSamAccount.inc:1318
+#: ../lib/modules/sambaSamAccount.inc:1327
 msgid "Available workstations"
 msgstr "可选工作站"
 
@@ -1590,11 +1590,16 @@ msgstr "可选工作站"
 msgid "B-Node (0x01)"
 msgstr "B-节点 (0x01)"
 
+#: ../lib/passwordExpirationJob.inc:74 ../lib/passwordExpirationJob.inc:127
+#: ../help/help.inc:333
+msgid "BCC address"
+msgstr "秘密抄送地址"
+
 #: ../templates/massBuildAccounts.php:281 ../lib/modules/zarafaContact.inc:479
 #: ../lib/modules/posixGroup.inc:357 ../lib/modules/zarafaGroup.inc:489
-#: ../lib/modules/device.inc:303 ../lib/modules/sambaSamAccount.inc:1335
-#: ../lib/modules/sambaSamAccount.inc:1616
-#: ../lib/modules/posixAccount.inc:1719 ../lib/modules/posixAccount.inc:1793
+#: ../lib/modules/device.inc:303 ../lib/modules/sambaSamAccount.inc:1344
+#: ../lib/modules/sambaSamAccount.inc:1625
+#: ../lib/modules/posixAccount.inc:1632 ../lib/modules/posixAccount.inc:1706
 #: ../lib/modules/zarafaUser.inc:968 ../lib/modules/zarafaUser.inc:1017
 #: ../lib/modules/windowsUser.inc:1608 ../lib/modules/windowsUser.inc:1645
 #: ../lib/modules/sambaGroupMapping.inc:511 ../lib/modules/pykotaUser.inc:618
@@ -1683,8 +1688,8 @@ msgstr "返回到策略列表"
 msgid "Back to printer list"
 msgstr "返回到打印机列表"
 
-#: ../templates/config/profmanage.php:178
-#: ../templates/config/profmanage.php:332
+#: ../templates/config/profmanage.php:181
+#: ../templates/config/profmanage.php:335
 #: ../templates/selfService/profManage.php:144
 #: ../templates/selfService/profManage.php:268
 msgid "Back to profile login"
@@ -1915,7 +1920,7 @@ msgstr "反弹管理邮件"
 msgid "Building snapshot of tree to copy"
 msgstr "建立树的快照用来拷贝"
 
-#: ../templates/config/profmanage.php:251
+#: ../templates/config/profmanage.php:254
 msgid "Built-in templates"
 msgstr "内置模板"
 
@@ -1941,7 +1946,7 @@ msgstr "块更新以下DN"
 #: ../lib/modules/inetOrgPerson.inc:786 ../lib/modules/inetOrgPerson.inc:790
 #: ../lib/modules/inetOrgPerson.inc:1561 ../lib/modules/inetOrgPerson.inc:1564
 #: ../lib/modules/inetOrgPerson.inc:1999 ../lib/modules/inetOrgPerson.inc:2712
-#: ../lib/modules/inetOrgPerson.inc:3703 ../lib/modules/inetOrgPerson.inc:3748
+#: ../lib/modules/inetOrgPerson.inc:3681 ../lib/modules/inetOrgPerson.inc:3726
 msgid "Business category"
 msgstr "商业种类"
 
@@ -1985,6 +1990,11 @@ msgstr ""
 msgid "Bytes sent"
 msgstr "字节已发送"
 
+#: ../lib/passwordExpirationJob.inc:73 ../lib/passwordExpirationJob.inc:121
+#: ../help/help.inc:329
+msgid "CC address"
+msgstr "抄送地址"
+
 #: ../lib/modules/bindDLZ.inc:268 ../lib/modules/bindDLZ.inc:274
 #: ../lib/modules/bindDLZ.inc:481 ../lib/modules/bindDLZ.inc:497
 msgid "CNAME record"
@@ -2019,10 +2029,10 @@ msgstr "呼叫组"
 msgid "Caller ID"
 msgstr "拨号 ID号"
 
-#: ../lib/modules/sambaSamAccount.inc:307
-#: ../lib/modules/sambaSamAccount.inc:310
 #: ../lib/modules/sambaSamAccount.inc:313
-#: ../lib/modules/sambaSamAccount.inc:319 ../lib/modules/posixAccount.inc:572
+#: ../lib/modules/sambaSamAccount.inc:316
+#: ../lib/modules/sambaSamAccount.inc:319
+#: ../lib/modules/sambaSamAccount.inc:325 ../lib/modules/posixAccount.inc:485
 #: ../lib/modules/organizationalRoleUser.inc:61
 #: ../lib/modules/windowsUser.inc:224 ../lib/modules/windowsUser.inc:229
 #: ../lib/modules/sambaGroupMapping.inc:159
@@ -2045,11 +2055,11 @@ msgstr "可能呼叫转移"
 #: ../templates/lists/changePassword.php:392
 #: ../templates/lists/changePassword.php:434
 #: ../templates/lists/changePassword.php:465 ../templates/ou_edit.php:125
-#: ../templates/config/profmanage.php:260
-#: ../templates/config/profmanage.php:272
-#: ../templates/config/profmanage.php:281
-#: ../templates/config/profmanage.php:299
-#: ../templates/config/profmanage.php:310
+#: ../templates/config/profmanage.php:263
+#: ../templates/config/profmanage.php:275
+#: ../templates/config/profmanage.php:284
+#: ../templates/config/profmanage.php:302
+#: ../templates/config/profmanage.php:313
 #: ../templates/config/mainmanage.php:470
 #: ../templates/config/confmodules.php:239 ../templates/config/jobs.php:358
 #: ../templates/config/jobs.php:398 ../templates/config/confmain.php:541
@@ -2071,14 +2081,14 @@ msgstr "可能呼叫转移"
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:121
 #: ../templates/3rdParty/pla/htdocs/mass_delete.php:119
 #: ../templates/initsuff.php:195 ../lib/types/automountType.inc:234
-#: ../lib/types/user.inc:303 ../lib/types/bind.inc:175
+#: ../lib/types/user.inc:314 ../lib/types/bind.inc:175
 #: ../lib/modules/kolabGroup.inc:294 ../lib/modules/pykotaPrinter.inc:431
 #: ../lib/modules/mitKerberos.inc:693 ../lib/modules/qmailUser.inc:921
 #: ../lib/modules/zarafaContact.inc:434 ../lib/modules/windowsHost.inc:226
 #: ../lib/modules/zarafaGroup.inc:444 ../lib/modules/device.inc:254
-#: ../lib/modules/sambaSamAccount.inc:1407
-#: ../lib/modules/sambaSamAccount.inc:1456
-#: ../lib/modules/sambaSamAccount.inc:1542 ../lib/modules/zarafaUser.inc:918
+#: ../lib/modules/sambaSamAccount.inc:1416
+#: ../lib/modules/sambaSamAccount.inc:1465
+#: ../lib/modules/sambaSamAccount.inc:1551 ../lib/modules/zarafaUser.inc:918
 #: ../lib/modules/windowsUser.inc:1480 ../lib/modules/windowsUser.inc:1743
 #: ../lib/modules/kolabUser.inc:520 ../lib/modules/sambaGroupMapping.inc:490
 #: ../lib/modules/shadowAccount.inc:490 ../lib/modules/shadowAccount.inc:543
@@ -2101,7 +2111,7 @@ msgstr "取消"
 #: ../templates/selfService/selfServiceLogin.php:203
 #: ../templates/selfService/selfServiceMain.php:179
 #: ../templates/selfService/selfServiceMain.php:200
-#: ../lib/modules/selfRegistration.inc:779
+#: ../lib/modules/selfRegistration.inc:805
 msgid "Cannot connect to specified LDAP server. Please try again."
 msgstr "无法连接指定的LDAP服务器,请再试一次."
 
@@ -2126,6 +2136,12 @@ msgstr "不能写入证书文件. 请检查config/serverCerts.pem的权限."
 msgid "Capacity"
 msgstr "容量"
 
+#: ../lib/modules/selfRegistration.inc:249
+#: ../lib/modules/selfRegistration.inc:470
+#: ../lib/modules/selfRegistration.inc:530
+msgid "Captcha"
+msgstr "Captcha"
+
 #: ../templates/selfService/adminMain.php:518
 msgid "Captions and labels"
 msgstr "标题和标签"
@@ -2137,7 +2153,7 @@ msgstr "标题和标签"
 #: ../lib/modules/inetOrgPerson.inc:607 ../lib/modules/inetOrgPerson.inc:810
 #: ../lib/modules/inetOrgPerson.inc:1534 ../lib/modules/inetOrgPerson.inc:1537
 #: ../lib/modules/inetOrgPerson.inc:2001 ../lib/modules/inetOrgPerson.inc:2690
-#: ../lib/modules/inetOrgPerson.inc:3699 ../lib/modules/inetOrgPerson.inc:3747
+#: ../lib/modules/inetOrgPerson.inc:3677 ../lib/modules/inetOrgPerson.inc:3725
 msgid "Car license"
 msgstr "汽车执照"
 
@@ -2147,8 +2163,8 @@ msgstr "汽车执照"
 #: ../lib/modules/qmailUser.inc:917 ../lib/modules/zarafaContact.inc:256
 #: ../lib/modules/windowsHost.inc:155 ../lib/modules/windowsHost.inc:225
 #: ../lib/modules/zarafaGroup.inc:251 ../lib/modules/device.inc:181
-#: ../lib/modules/sambaSamAccount.inc:1170
-#: ../lib/modules/sambaSamAccount.inc:1452 ../lib/modules/zarafaUser.inc:490
+#: ../lib/modules/sambaSamAccount.inc:1179
+#: ../lib/modules/sambaSamAccount.inc:1461 ../lib/modules/zarafaUser.inc:490
 #: ../lib/modules/zarafaUser.inc:586 ../lib/modules/windowsUser.inc:1034
 #: ../lib/modules/windowsUser.inc:1073 ../lib/modules/windowsUser.inc:1476
 #: ../lib/modules/windowsUser.inc:1739 ../lib/modules/shadowAccount.inc:355
@@ -2199,12 +2215,12 @@ msgstr "更改 Unix 密码"
 msgid "Change Windows password"
 msgstr "更改Windows 密码"
 
-#: ../lib/types/user.inc:303
+#: ../lib/types/user.inc:314
 msgid "Change account status"
 msgstr "改变帐号状态"
 
-#: ../templates/config/profmanage.php:306
-#: ../templates/config/profmanage.php:309 ../help/help.inc:140
+#: ../templates/config/profmanage.php:309
+#: ../templates/config/profmanage.php:312 ../help/help.inc:140
 msgid "Change default profile"
 msgstr "更改缺省的配置文件"
 
@@ -2225,7 +2241,7 @@ msgstr "更改管理员密码"
 #: ../templates/lists/changePassword.php:350
 #: ../templates/lists/changePassword.php:352
 #: ../templates/lists/changePassword.php:389
-#: ../templates/lists/changePassword.php:391 ../lib/types/user.inc:682
+#: ../templates/lists/changePassword.php:391 ../lib/types/user.inc:705
 #: ../help/help.inc:105
 msgid "Change password"
 msgstr "更改密码"
@@ -2243,7 +2259,7 @@ msgstr "更改密码 "
 msgid "Change settings"
 msgstr "修改设置"
 
-#: ../lib/modules/posixAccount.inc:1275
+#: ../lib/modules/posixAccount.inc:1188
 msgid "Changed value because only ASCII characters are allowed."
 msgstr "值已改变,因为只能使用ASCII字符."
 
@@ -2251,7 +2267,7 @@ msgstr "值已改变,因为只能使用ASCII字符."
 msgid "Charlie"
 msgstr "Charlie"
 
-#: ../lib/modules/posixAccount.inc:1555
+#: ../lib/modules/posixAccount.inc:1468
 msgid "Check home directories"
 msgstr "检查主目录"
 
@@ -2324,14 +2340,14 @@ msgstr "点击弹出的对话框来选择一个图形化的日期"
 msgid "Click to popup a dialog to select an entry (DN) graphically"
 msgstr "点击弹出的对话框来选择一个图形化的DN条目"
 
-#: ../lib/types/user.inc:631
+#: ../lib/types/user.inc:654
 msgid "Click to switch between thumbnail and original size."
 msgstr "点击在缩略图与原来的大小间切换"
 
 #: ../lib/modules/sambaSamAccount.inc:242
-#: ../lib/modules/sambaSamAccount.inc:379
-#: ../lib/modules/sambaSamAccount.inc:1510
-#: ../lib/modules/sambaSamAccount.inc:1921
+#: ../lib/modules/sambaSamAccount.inc:385
+#: ../lib/modules/sambaSamAccount.inc:1519
+#: ../lib/modules/sambaSamAccount.inc:1930
 msgid "Client printer is default"
 msgstr "缺省为客户打印机"
 
@@ -2348,7 +2364,7 @@ msgstr "彩色打印机"
 msgid "Columns"
 msgstr "列"
 
-#: ../lib/modules/sambaSamAccount.inc:319
+#: ../lib/modules/sambaSamAccount.inc:325
 msgid ""
 "Comma separated list of Samba workstations the user is allowed to login. "
 "Empty means every workstation."
@@ -2382,7 +2398,7 @@ msgstr "初使化账目的备注"
 msgid "Commit"
 msgstr "提交"
 
-#: ../lib/modules/posixAccount.inc:470
+#: ../lib/modules/posixAccount.inc:374
 msgid "Common examples are \"@givenname@%sn%\" or \"%givenname%.%sn%\"."
 msgstr "普通的例子是 \"@givenname@%sn%\" 或 \"%givenname%.%sn%\"."
 
@@ -2390,10 +2406,10 @@ msgstr "普通的例子是 \"@givenname@%sn%\" 或 \"%givenname%.%sn%\"."
 #: ../lib/types/user.inc:94 ../lib/modules/pykotaGroup.inc:113
 #: ../lib/modules/pykotaGroup.inc:157 ../lib/modules/pykotaGroup.inc:185
 #: ../lib/modules/pykotaGroup.inc:469 ../lib/modules/posixAccount.inc:129
-#: ../lib/modules/posixAccount.inc:186 ../lib/modules/posixAccount.inc:380
-#: ../lib/modules/posixAccount.inc:453 ../lib/modules/posixAccount.inc:575
-#: ../lib/modules/posixAccount.inc:601 ../lib/modules/posixAccount.inc:1499
-#: ../lib/modules/posixAccount.inc:1933 ../lib/modules/posixAccount.inc:2705
+#: ../lib/modules/posixAccount.inc:186 ../lib/modules/posixAccount.inc:284
+#: ../lib/modules/posixAccount.inc:357 ../lib/modules/posixAccount.inc:488
+#: ../lib/modules/posixAccount.inc:514 ../lib/modules/posixAccount.inc:1412
+#: ../lib/modules/posixAccount.inc:1846 ../lib/modules/posixAccount.inc:2764
 #: ../lib/modules/windowsUser.inc:117 ../lib/modules/windowsUser.inc:393
 #: ../lib/modules/windowsUser.inc:662 ../lib/modules/windowsUser.inc:733
 #: ../lib/modules/windowsUser.inc:851 ../lib/modules/windowsUser.inc:978
@@ -2403,7 +2419,7 @@ msgstr "普通的例子是 \"@givenname@%sn%\" 或 \"%givenname%.%sn%\"."
 #: ../lib/modules/inetOrgPerson.inc:95 ../lib/modules/inetOrgPerson.inc:640
 #: ../lib/modules/inetOrgPerson.inc:762 ../lib/modules/inetOrgPerson.inc:1277
 #: ../lib/modules/inetOrgPerson.inc:1280 ../lib/modules/inetOrgPerson.inc:1996
-#: ../lib/modules/inetOrgPerson.inc:2127 ../lib/modules/inetOrgPerson.inc:3757
+#: ../lib/modules/inetOrgPerson.inc:2127 ../lib/modules/inetOrgPerson.inc:3735
 #: ../lib/modules/asteriskExtension.inc:118
 msgid "Common name"
 msgstr "全名"
@@ -2466,7 +2482,7 @@ msgstr "配置类型"
 msgid "Confirm sender"
 msgstr "确认发送者"
 
-#: ../lib/modules/selfRegistration.inc:228
+#: ../lib/modules/selfRegistration.inc:234
 msgid "Confirmation mail settings"
 msgstr "确认邮件的设置"
 
@@ -2489,16 +2505,16 @@ msgid "Conflicting module:"
 msgstr "冲突的模块:"
 
 #: ../lib/modules/sambaSamAccount.inc:240
-#: ../lib/modules/sambaSamAccount.inc:373
-#: ../lib/modules/sambaSamAccount.inc:1506
-#: ../lib/modules/sambaSamAccount.inc:1911
+#: ../lib/modules/sambaSamAccount.inc:379
+#: ../lib/modules/sambaSamAccount.inc:1515
+#: ../lib/modules/sambaSamAccount.inc:1920
 msgid "Connect client drives"
 msgstr "连接客户驱动器"
 
 #: ../lib/modules/sambaSamAccount.inc:241
-#: ../lib/modules/sambaSamAccount.inc:376
-#: ../lib/modules/sambaSamAccount.inc:1508
-#: ../lib/modules/sambaSamAccount.inc:1916
+#: ../lib/modules/sambaSamAccount.inc:382
+#: ../lib/modules/sambaSamAccount.inc:1517
+#: ../lib/modules/sambaSamAccount.inc:1925
 msgid "Connect client printers"
 msgstr "连接客户打印机"
 
@@ -2513,8 +2529,8 @@ msgid "Connection string"
 msgstr "连接字符串"
 
 #: ../lib/modules/sambaSamAccount.inc:237
-#: ../lib/modules/sambaSamAccount.inc:1494
-#: ../lib/modules/sambaSamAccount.inc:1904
+#: ../lib/modules/sambaSamAccount.inc:1503
+#: ../lib/modules/sambaSamAccount.inc:1913
 msgid "Connection time limit"
 msgstr "连接时间限制"
 
@@ -2605,7 +2621,7 @@ msgstr "无法修改对象"
 msgid "Could not perform ldap_modify operation."
 msgstr "无法执行ldap_modify命令"
 
-#: ../templates/config/profmanage.php:86
+#: ../templates/config/profmanage.php:89
 #: ../templates/selfService/profManage.php:74
 msgid "Could not rename file!"
 msgstr "不能更改文件名"
@@ -2625,8 +2641,8 @@ msgstr "无法保存PDF结构,存取拒绝."
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1185
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1189
 #: ../templates/initsuff.php:194 ../lib/modules/nisMailAliasUser.inc:366
-#: ../lib/modules/sambaSamAccount.inc:1595
-#: ../lib/modules/posixAccount.inc:1772
+#: ../lib/modules/sambaSamAccount.inc:1604
+#: ../lib/modules/posixAccount.inc:1685
 msgid "Create"
 msgstr "建立"
 
@@ -2742,8 +2758,8 @@ msgstr "建立另外一个视图"
 msgid "Create for"
 msgstr "建立"
 
-#: ../lib/modules/posixAccount.inc:349 ../lib/modules/posixAccount.inc:1541
-#: ../lib/modules/posixAccount.inc:1837
+#: ../lib/modules/posixAccount.inc:253 ../lib/modules/posixAccount.inc:1454
+#: ../lib/modules/posixAccount.inc:1750
 msgid "Create home directory"
 msgstr "建立主目录"
 
@@ -2774,7 +2790,7 @@ msgstr "建立新组"
 msgid "Create object"
 msgstr "对立对象"
 
-#: ../lib/modules/generalInformation.inc:76
+#: ../lib/modules/generalInformation.inc:78
 msgid "Created by"
 msgstr "创建者:"
 
@@ -2806,7 +2822,7 @@ msgstr "上传一个CSV格式文件批量建立帐号"
 msgid "Creation successful. DN <b>%s</b> has been created."
 msgstr "成功建立.DN<b>%s</b>已经建立."
 
-#: ../lib/modules/generalInformation.inc:80
+#: ../lib/modules/generalInformation.inc:82
 msgid "Creation time"
 msgstr "创建时间"
 
@@ -2890,7 +2906,7 @@ msgstr "DHCP 设置"
 #: ../templates/3rdParty/pla/htdocs/delete_form.php:35
 #: ../templates/3rdParty/pla/htdocs/delete_form.php:112
 #: ../templates/3rdParty/pla/htdocs/mass_delete.php:57 ../lib/modules.inc:416
-#: ../lib/modules.inc:2010
+#: ../lib/modules.inc:2013
 msgid "DN"
 msgstr "DN"
 
@@ -3006,11 +3022,11 @@ msgstr "数据库用户名和密码"
 msgid "Date"
 msgstr "日期"
 
-#: ../lib/modules/sambaSamAccount.inc:299
+#: ../lib/modules/sambaSamAccount.inc:305
 msgid "Date after the user is able to change his password."
 msgstr "多少天后用户才能修改密码。"
 
-#: ../lib/modules/mitKerberos.inc:121 ../lib/modules/sambaSamAccount.inc:301
+#: ../lib/modules/mitKerberos.inc:121 ../lib/modules/sambaSamAccount.inc:307
 #: ../lib/modules/heimdalKerberos.inc:107
 msgid "Date after the user must change his password."
 msgstr "多少天后用户必须修改密码"
@@ -3020,6 +3036,10 @@ msgid ""
 "Days before password is to expire that user is warned of pending password "
 "expiration. If set value must be >0."
 msgstr "在密码过期前提醒用户的天数,若设其值,必大于0."
+
+#: ../lib/types/user.inc:303 ../lib/types/user.inc:958
+msgid "Deactivated"
+msgstr "非激活"
 
 #: ../templates/config/mainmanage.php:408
 msgid "Debug"
@@ -3055,8 +3075,8 @@ msgstr "输出随机密码的缺省方法"
 msgid "Default password output"
 msgstr "默认密码输出"
 
-#: ../lib/modules/ppolicyUser.inc:63 ../lib/modules/ppolicyUser.inc:539
-#: ../lib/modules/ppolicyUser.inc:569
+#: ../lib/modules/ppolicyUser.inc:64 ../lib/modules/ppolicyUser.inc:540
+#: ../lib/modules/ppolicyUser.inc:570
 msgid "Default password policy"
 msgstr "默认密码策略"
 
@@ -3118,7 +3138,7 @@ msgstr ""
 
 #: ../templates/serverInfo.php:321 ../templates/serverInfo.php:390
 #: ../templates/multiEdit.php:130 ../templates/ou_edit.php:124
-#: ../templates/config/profmanage.php:279
+#: ../templates/config/profmanage.php:282
 #: ../templates/selfService/profManage.php:243
 #: ../templates/pdfedit/pdfmain.php:214 ../templates/pdfedit/pdfmain.php:215
 #: ../templates/pdfedit/pdfmain.php:248 ../templates/delete.php:128
@@ -3127,8 +3147,8 @@ msgstr ""
 #: ../templates/3rdParty/pla/htdocs/delete_form.php:33
 #: ../templates/3rdParty/pla/htdocs/delete_form.php:124
 #: ../lib/modules/pykotaPrinter.inc:281 ../lib/modules/nisNetGroupHost.inc:107
-#: ../lib/modules/sambaSamAccount.inc:1588
-#: ../lib/modules/posixAccount.inc:1765 ../lib/modules/zarafaUser.inc:1475
+#: ../lib/modules/sambaSamAccount.inc:1597
+#: ../lib/modules/posixAccount.inc:1678 ../lib/modules/zarafaUser.inc:1475
 #: ../lib/modules/zarafaUser.inc:1526 ../lib/modules/bindDLZ.inc:1062
 #: ../lib/modules/bindDLZ.inc:1383 ../lib/modules/kolabUser.inc:794
 #: ../lib/modules/sambaGroupMapping.inc:405
@@ -3166,7 +3186,7 @@ msgstr "删除全部 CA 证书"
 msgid "Delete group"
 msgstr "删除组"
 
-#: ../lib/modules/posixAccount.inc:1602
+#: ../lib/modules/posixAccount.inc:1515
 msgid "Delete home directory"
 msgstr "删除主目录"
 
@@ -3187,8 +3207,8 @@ msgstr "删除照片"
 msgid "Delete pool"
 msgstr "删除地址池"
 
-#: ../templates/config/profmanage.php:277
 #: ../templates/config/profmanage.php:280
+#: ../templates/config/profmanage.php:283
 #: ../templates/selfService/profManage.php:237
 #: ../templates/selfService/profManage.php:244 ../help/help.inc:136
 msgid "Delete profile"
@@ -3277,7 +3297,7 @@ msgstr "删除选中的共享文件夹"
 msgid "Delete selected sudo roles"
 msgstr "删除选中的sudo角色"
 
-#: ../lib/types/user.inc:542
+#: ../lib/types/user.inc:565
 msgid "Delete selected users"
 msgstr "删除选中的用户"
 
@@ -3290,7 +3310,7 @@ msgstr "删除选中的视图"
 msgid "Delete successful: %s"
 msgstr "删除成功:%s"
 
-#: ../lib/modules/posixAccount.inc:518 ../lib/modules/posixAccount.inc:1608
+#: ../lib/modules/posixAccount.inc:422 ../lib/modules/posixAccount.inc:1521
 msgid "Delete sudo rights"
 msgstr "删除sudo权限"
 
@@ -3330,7 +3350,7 @@ msgstr "已删除的配置文件."
 msgid "Deletes an IP range."
 msgstr "删除一个IP范围"
 
-#: ../lib/modules/posixAccount.inc:519
+#: ../lib/modules/posixAccount.inc:423
 msgid "Deletes the user from all existing sudo rights."
 msgstr "删除所有已有sodo权限的用户"
 
@@ -3392,7 +3412,7 @@ msgstr "阻止打印"
 #: ../lib/modules/inetOrgPerson.inc:822 ../lib/modules/inetOrgPerson.inc:826
 #: ../lib/modules/inetOrgPerson.inc:1569 ../lib/modules/inetOrgPerson.inc:1572
 #: ../lib/modules/inetOrgPerson.inc:2011 ../lib/modules/inetOrgPerson.inc:2751
-#: ../lib/modules/inetOrgPerson.inc:3705 ../lib/modules/inetOrgPerson.inc:3749
+#: ../lib/modules/inetOrgPerson.inc:3683 ../lib/modules/inetOrgPerson.inc:3727
 msgid "Department"
 msgstr "部门"
 
@@ -3438,7 +3458,7 @@ msgstr ""
 #: ../lib/modules/windowsHost.inc:101 ../lib/modules/windowsHost.inc:120
 #: ../lib/modules/windowsHost.inc:143 ../lib/modules/windowsHost.inc:292
 #: ../lib/modules/posixGroup.inc:198 ../lib/modules/posixGroup.inc:426
-#: ../lib/modules/posixGroup.inc:480 ../lib/modules/posixGroup.inc:616
+#: ../lib/modules/posixGroup.inc:480 ../lib/modules/posixGroup.inc:627
 #: ../lib/modules/device.inc:81 ../lib/modules/device.inc:115
 #: ../lib/modules/device.inc:130 ../lib/modules/device.inc:173
 #: ../lib/modules/device.inc:412 ../lib/modules/dhcp_settings.inc:202
@@ -3446,7 +3466,7 @@ msgstr ""
 #: ../lib/modules/dhcp_settings.inc:622 ../lib/modules/dhcp_settings.inc:686
 #: ../lib/modules/pykotaGroup.inc:117 ../lib/modules/pykotaGroup.inc:166
 #: ../lib/modules/pykotaGroup.inc:188 ../lib/modules/pykotaGroup.inc:233
-#: ../lib/modules/pykotaGroup.inc:471 ../lib/modules/posixAccount.inc:597
+#: ../lib/modules/pykotaGroup.inc:471 ../lib/modules/posixAccount.inc:510
 #: ../lib/modules/windowsUser.inc:134 ../lib/modules/windowsUser.inc:411
 #: ../lib/modules/windowsUser.inc:734 ../lib/modules/windowsUser.inc:981
 #: ../lib/modules/windowsUser.inc:2303 ../lib/modules/nisObject.inc:73
@@ -3465,7 +3485,7 @@ msgstr ""
 #: ../lib/modules/inetOrgPerson.inc:553 ../lib/modules/inetOrgPerson.inc:646
 #: ../lib/modules/inetOrgPerson.inc:1287 ../lib/modules/inetOrgPerson.inc:1290
 #: ../lib/modules/inetOrgPerson.inc:1981 ../lib/modules/inetOrgPerson.inc:2843
-#: ../lib/modules/inetOrgPerson.inc:3665 ../lib/modules/inetOrgPerson.inc:3737
+#: ../lib/modules/inetOrgPerson.inc:3643 ../lib/modules/inetOrgPerson.inc:3715
 #: ../lib/modules/sudoRole.inc:70 ../lib/modules/sudoRole.inc:153
 #: ../lib/modules/sudoRole.inc:215 ../lib/modules/sudoRole.inc:305
 #: ../lib/modules/sudoRole.inc:754 ../lib/modules/nsview.inc:66
@@ -3504,8 +3524,8 @@ msgstr "目标DN"
 msgid "Device"
 msgstr "设备"
 
-#: ../lib/modules/sambaSamAccount.inc:394
-#: ../lib/modules/sambaSamAccount.inc:555
+#: ../lib/modules/sambaSamAccount.inc:400
+#: ../lib/modules/sambaSamAccount.inc:564
 msgid "Disable LM hashes"
 msgstr "屏蔽LM哈希方法"
 
@@ -3513,7 +3533,7 @@ msgstr "屏蔽LM哈希方法"
 msgid "Disable client updates"
 msgstr "禁止客户端更新"
 
-#: ../lib/modules/posixGroup.inc:533 ../lib/modules/posixGroup.inc:592
+#: ../lib/modules/posixGroup.inc:534 ../lib/modules/posixGroup.inc:603
 msgid "Disable membership management"
 msgstr "关闭成员管理功能"
 
@@ -3525,7 +3545,7 @@ msgstr "关闭"
 msgid "Disables the client to update DNS entries."
 msgstr "禁止客户端更新DNS条目."
 
-#: ../lib/modules/posixGroup.inc:534
+#: ../lib/modules/posixGroup.inc:535
 msgid "Disables the group membership management."
 msgstr "关闭组成员管理功能"
 
@@ -3600,8 +3620,8 @@ msgid "Disconnect users outside logon hours"
 msgstr "切断连接前用户登录小时数"
 
 #: ../lib/modules/sambaSamAccount.inc:238
-#: ../lib/modules/sambaSamAccount.inc:1498
-#: ../lib/modules/sambaSamAccount.inc:1905
+#: ../lib/modules/sambaSamAccount.inc:1507
+#: ../lib/modules/sambaSamAccount.inc:1914
 msgid "Disconnection time limit"
 msgstr "断开连接时间限制"
 
@@ -3624,11 +3644,11 @@ msgstr "将多个组显示成堆叠式"
 
 #: ../templates/config/confmain.php:284 ../lib/modules/sambaSamAccount.inc:111
 #: ../lib/modules/sambaSamAccount.inc:210
-#: ../lib/modules/sambaSamAccount.inc:259
-#: ../lib/modules/sambaSamAccount.inc:420
-#: ../lib/modules/sambaSamAccount.inc:1114
-#: ../lib/modules/sambaSamAccount.inc:1708
-#: ../lib/modules/sambaSamAccount.inc:1877 ../lib/modules/windowsUser.inc:138
+#: ../lib/modules/sambaSamAccount.inc:265
+#: ../lib/modules/sambaSamAccount.inc:429
+#: ../lib/modules/sambaSamAccount.inc:1123
+#: ../lib/modules/sambaSamAccount.inc:1717
+#: ../lib/modules/sambaSamAccount.inc:1886 ../lib/modules/windowsUser.inc:138
 #: ../lib/modules/windowsUser.inc:399 ../lib/modules/windowsUser.inc:663
 #: ../lib/modules/windowsUser.inc:735 ../lib/modules/windowsUser.inc:855
 #: ../lib/modules/windowsUser.inc:979 ../lib/modules/windowsUser.inc:2304
@@ -3657,6 +3677,10 @@ msgstr "显示的帐号数以\"0\"开始,加2才是您的电子表格的行数."
 #: ../lib/modules/windowsGroup.inc:63
 msgid "Distribution"
 msgstr "分发"
+
+#: ../lib/modules/posixAccount.inc:451 ../lib/modules/posixAccount.inc:1990
+msgid "Do not add object class"
+msgstr "不要增加对象类"
 
 #: ../lib/modules/passwordSelfReset.inc:140
 #: ../lib/modules/passwordSelfReset.inc:572
@@ -3697,13 +3721,13 @@ msgid "Do you want to make these changes?"
 msgstr "确认如下更改?"
 
 #: ../lib/modules/sambaSamAccount.inc:211
-#: ../lib/modules/sambaSamAccount.inc:337
-#: ../lib/modules/sambaSamAccount.inc:413
-#: ../lib/modules/sambaSamAccount.inc:537
-#: ../lib/modules/sambaSamAccount.inc:1258
-#: ../lib/modules/sambaSamAccount.inc:1751
-#: ../lib/modules/sambaSamAccount.inc:1773
-#: ../lib/modules/sambaSamAccount.inc:1883 ../lib/modules/windowsUser.inc:126
+#: ../lib/modules/sambaSamAccount.inc:343
+#: ../lib/modules/sambaSamAccount.inc:422
+#: ../lib/modules/sambaSamAccount.inc:546
+#: ../lib/modules/sambaSamAccount.inc:1267
+#: ../lib/modules/sambaSamAccount.inc:1760
+#: ../lib/modules/sambaSamAccount.inc:1782
+#: ../lib/modules/sambaSamAccount.inc:1892 ../lib/modules/windowsUser.inc:126
 #: ../lib/modules/windowsUser.inc:2386
 #: ../lib/modules/sambaGroupMapping.inc:158
 #: ../lib/modules/sambaGroupMapping.inc:386
@@ -3741,7 +3765,7 @@ msgid "Domain certificate admins"
 msgstr "域认证管理员"
 
 #: ../lib/modules/sambaSamAccount.inc:80
-#: ../lib/modules/sambaSamAccount.inc:783
+#: ../lib/modules/sambaSamAccount.inc:792
 #: ../lib/modules/sambaGroupMapping.inc:63
 msgid "Domain computers"
 msgstr "域内计算机"
@@ -3806,8 +3830,13 @@ msgstr "域策略管理员"
 msgid "Domain schema admins"
 msgstr "域架构管理员"
 
+#: ../lib/modules/sambaSamAccount.inc:258
+#: ../lib/modules/sambaSamAccount.inc:412
+msgid "Domain suffix"
+msgstr "域后缀"
+
 #: ../lib/modules/sambaSamAccount.inc:79
-#: ../lib/modules/sambaSamAccount.inc:2146
+#: ../lib/modules/sambaSamAccount.inc:2155
 #: ../lib/modules/sambaGroupMapping.inc:61
 msgid "Domain users"
 msgstr "域内用户"
@@ -3856,8 +3885,8 @@ msgstr "每一行代表一个LDAP属性. 请参考语法手册."
 
 #: ../templates/pdfedit/pdfmain.php:211
 #: ../templates/profedit/profilemain.php:200
-#: ../lib/modules/sambaSamAccount.inc:1263
-#: ../lib/modules/sambaSamAccount.inc:1268 ../lib/lists.inc:503
+#: ../lib/modules/sambaSamAccount.inc:1272
+#: ../lib/modules/sambaSamAccount.inc:1277 ../lib/lists.inc:503
 msgid "Edit"
 msgstr "编辑"
 
@@ -3869,7 +3898,7 @@ msgstr "再次编辑"
 msgid "Edit general settings"
 msgstr "编辑通用设置"
 
-#: ../lib/modules/posixAccount.inc:1524 ../lib/modules/windowsUser.inc:1150
+#: ../lib/modules/posixAccount.inc:1437 ../lib/modules/windowsUser.inc:1150
 msgid "Edit groups"
 msgstr "编辑组"
 
@@ -3893,7 +3922,7 @@ msgstr "编辑服务器配置文件"
 msgid "Edit subgroups"
 msgstr "编辑分组"
 
-#: ../lib/modules/sambaSamAccount.inc:1219
+#: ../lib/modules/sambaSamAccount.inc:1228
 msgid "Edit workstations"
 msgstr "编辑工作站"
 
@@ -3907,7 +3936,7 @@ msgstr "编辑工作站"
 msgid "Email"
 msgstr "电子邮件"
 
-#: ../lib/modules/selfRegistration.inc:503 ../lib/modules/inetOrgPerson.inc:81
+#: ../lib/modules/selfRegistration.inc:523 ../lib/modules/inetOrgPerson.inc:81
 #, php-format
 msgid "Email \"%s\" already in use."
 msgstr "邮件 \"%s\" 已经被使用"
@@ -3916,9 +3945,9 @@ msgstr "邮件 \"%s\" 已经被使用"
 #: ../lib/modules/kolabGroup.inc:91 ../lib/modules/kolabGroup.inc:155
 #: ../lib/modules/kolabGroup.inc:168 ../lib/modules/kolabGroup.inc:177
 #: ../lib/modules/kolabGroup.inc:179 ../lib/modules/kolabGroup.inc:202
-#: ../lib/modules/kolabGroup.inc:400 ../lib/modules/selfRegistration.inc:409
-#: ../lib/modules/selfRegistration.inc:495
-#: ../lib/modules/selfRegistration.inc:502
+#: ../lib/modules/kolabGroup.inc:400 ../lib/modules/selfRegistration.inc:421
+#: ../lib/modules/selfRegistration.inc:515
+#: ../lib/modules/selfRegistration.inc:522
 #: ../lib/modules/zarafaDynamicGroup.inc:67
 #: ../lib/modules/zarafaDynamicGroup.inc:68
 #: ../lib/modules/zarafaDynamicGroup.inc:124
@@ -3943,7 +3972,7 @@ msgstr "邮件 \"%s\" 已经被使用"
 #: ../lib/modules/inetOrgPerson.inc:742 ../lib/modules/inetOrgPerson.inc:746
 #: ../lib/modules/inetOrgPerson.inc:1502 ../lib/modules/inetOrgPerson.inc:1505
 #: ../lib/modules/inetOrgPerson.inc:1995 ../lib/modules/inetOrgPerson.inc:2525
-#: ../lib/modules/inetOrgPerson.inc:3695 ../lib/modules/inetOrgPerson.inc:3745
+#: ../lib/modules/inetOrgPerson.inc:3673 ../lib/modules/inetOrgPerson.inc:3723
 #: ../lib/modules/kolabSharedFolder.inc:116
 #: ../lib/modules/kolabSharedFolder.inc:181
 #: ../lib/modules/kolabSharedFolder.inc:239
@@ -4052,7 +4081,7 @@ msgstr "邮件格式"
 #: ../lib/modules/inetOrgPerson.inc:348 ../lib/modules/inetOrgPerson.inc:628
 #: ../lib/modules/inetOrgPerson.inc:855 ../lib/modules/inetOrgPerson.inc:1543
 #: ../lib/modules/inetOrgPerson.inc:1546 ../lib/modules/inetOrgPerson.inc:2006
-#: ../lib/modules/inetOrgPerson.inc:3713 ../lib/modules/inetOrgPerson.inc:3751
+#: ../lib/modules/inetOrgPerson.inc:3691 ../lib/modules/inetOrgPerson.inc:3729
 #: ../lib/modules/passwordSelfReset.inc:528
 #: ../lib/modules/passwordSelfReset.inc:896
 #: ../lib/modules/passwordSelfReset.inc:1073
@@ -4067,7 +4096,7 @@ msgstr "雇员号"
 #: ../lib/modules/inetOrgPerson.inc:356 ../lib/modules/inetOrgPerson.inc:610
 #: ../lib/modules/inetOrgPerson.inc:666 ../lib/modules/inetOrgPerson.inc:1552
 #: ../lib/modules/inetOrgPerson.inc:1555 ../lib/modules/inetOrgPerson.inc:2004
-#: ../lib/modules/inetOrgPerson.inc:3701 ../lib/modules/inetOrgPerson.inc:3747
+#: ../lib/modules/inetOrgPerson.inc:3679 ../lib/modules/inetOrgPerson.inc:3725
 msgid "Employee type"
 msgstr "雇员类型"
 
@@ -4086,7 +4115,7 @@ msgid "Enable password self reset link"
 msgstr "打开密码自助复位链接"
 
 #: ../lib/modules/selfRegistration.inc:53
-#: ../lib/modules/selfRegistration.inc:190
+#: ../lib/modules/selfRegistration.inc:194
 msgid "Enable self registration link"
 msgstr "打开自助注册链接"
 
@@ -4270,7 +4299,7 @@ msgstr "运行"
 msgid "Execute lamdaemon"
 msgstr "运行 lamdaemon"
 
-#: ../templates/config/profmanage.php:252
+#: ../templates/config/profmanage.php:255
 msgid "Existing server profiles"
 msgstr "已有服务器配置"
 
@@ -4413,7 +4442,7 @@ msgstr "失败记录间隔"
 #: ../lib/modules/inetOrgPerson.inc:726 ../lib/modules/inetOrgPerson.inc:730
 #: ../lib/modules/inetOrgPerson.inc:1486 ../lib/modules/inetOrgPerson.inc:1489
 #: ../lib/modules/inetOrgPerson.inc:1997 ../lib/modules/inetOrgPerson.inc:2580
-#: ../lib/modules/inetOrgPerson.inc:3691 ../lib/modules/inetOrgPerson.inc:3744
+#: ../lib/modules/inetOrgPerson.inc:3669 ../lib/modules/inetOrgPerson.inc:3722
 msgid "Fax number"
 msgstr "传真号"
 
@@ -4443,7 +4472,7 @@ msgstr "文件扩展名"
 msgid "File is too large. Maximum allowed size is %s kB."
 msgstr "文件太大，最大字节数不能超过 %s kB."
 
-#: ../lib/modules/sambaSamAccount.inc:313
+#: ../lib/modules/sambaSamAccount.inc:319
 msgid ""
 "File name and path relative to netlogon-share which should be executed on "
 "logon. $user and $group are replaced with user and group name."
@@ -4479,7 +4508,7 @@ msgstr "文件上传"
 #: ../lib/modules/zarafaDynamicGroup.inc:239
 #: ../lib/modules/zarafaDynamicGroup.inc:436
 #: ../lib/modules/zarafaContact.inc:97 ../lib/modules/posixGroup.inc:337
-#: ../lib/modules/posixGroup.inc:528 ../lib/modules/nisNetGroupHost.inc:117
+#: ../lib/modules/posixGroup.inc:529 ../lib/modules/nisNetGroupHost.inc:117
 #: ../lib/modules/zarafaAddressList.inc:79
 #: ../lib/modules/zarafaAddressList.inc:134
 #: ../lib/modules/zarafaAddressList.inc:145
@@ -4488,10 +4517,11 @@ msgstr "文件上传"
 #: ../lib/modules/sambaGroupMapping.inc:170
 #: ../lib/modules/sambaGroupMapping.inc:483
 #: ../lib/modules/nisNetGroupUser.inc:197 ../lib/modules/nisnetgroup.inc:104
-#: ../lib/modules/nisnetgroup.inc:477 ../lib/modules/nsview.inc:65
-#: ../lib/modules/nsview.inc:75 ../lib/modules/nsview.inc:93
-#: ../lib/modules/nsview.inc:112 ../lib/modules/nsview.inc:126
-#: ../lib/modules/nsview.inc:164 ../lib/modules/organizationalRole.inc:101
+#: ../lib/modules/nisnetgroup.inc:477 ../lib/modules/groupOfNamesUser.inc:170
+#: ../lib/modules/nsview.inc:65 ../lib/modules/nsview.inc:75
+#: ../lib/modules/nsview.inc:93 ../lib/modules/nsview.inc:112
+#: ../lib/modules/nsview.inc:126 ../lib/modules/nsview.inc:164
+#: ../lib/modules/organizationalRole.inc:101
 #: ../lib/modules/organizationalRole.inc:282
 #: ../lib/modules/organizationalRole.inc:372
 #: ../lib/modules/windowsGroup.inc:649 ../lib/modules/groupOfNames.inc:113
@@ -4511,7 +4541,7 @@ msgid "Finished all operations."
 msgstr "完成所有操作."
 
 #: ../lib/types/user.inc:96 ../lib/modules/selfRegistration.inc:83
-#: ../lib/modules/selfRegistration.inc:218 ../lib/modules/windowsUser.inc:143
+#: ../lib/modules/selfRegistration.inc:223 ../lib/modules/windowsUser.inc:143
 #: ../lib/modules/windowsUser.inc:381 ../lib/modules/windowsUser.inc:736
 #: ../lib/modules/windowsUser.inc:857 ../lib/modules/windowsUser.inc:976
 #: ../lib/modules/windowsUser.inc:2305 ../lib/modules/inetOrgPerson.inc:66
@@ -4519,7 +4549,7 @@ msgstr "完成所有操作."
 #: ../lib/modules/inetOrgPerson.inc:549 ../lib/modules/inetOrgPerson.inc:658
 #: ../lib/modules/inetOrgPerson.inc:1250 ../lib/modules/inetOrgPerson.inc:1253
 #: ../lib/modules/inetOrgPerson.inc:1983 ../lib/modules/inetOrgPerson.inc:2503
-#: ../lib/modules/inetOrgPerson.inc:3738
+#: ../lib/modules/inetOrgPerson.inc:3716
 msgid "First name"
 msgstr "名字"
 
@@ -4540,7 +4570,7 @@ msgstr "固定IP地址"
 msgid "Fixed list"
 msgstr "固定列表"
 
-#: ../lib/modules/posixGroup.inc:562 ../lib/modules/posixAccount.inc:216
+#: ../lib/modules/posixGroup.inc:567 ../lib/modules/posixAccount.inc:1886
 msgid "Fixed range"
 msgstr "固定的范围"
 
@@ -4575,7 +4605,7 @@ msgstr "强制改变密码"
 msgid "Force password change by default"
 msgstr "缺省强制修改密码"
 
-#: ../lib/modules/posixGroup.inc:541 ../lib/modules/posixGroup.inc:596
+#: ../lib/modules/posixGroup.inc:542 ../lib/modules/posixGroup.inc:607
 msgid "Force sync with group of names"
 msgstr "强制同步组名"
 
@@ -4605,13 +4635,13 @@ msgstr "自由打印"
 msgid "FreeRadius"
 msgstr "FreeRadius"
 
-#: ../lib/modules/sambaSamAccount.inc:1351
+#: ../lib/modules/sambaSamAccount.inc:1360
 msgid "Friday"
 msgstr "星期五"
 
 #: ../templates/config/confmain.php:413 ../lib/passwordExpirationJob.inc:71
-#: ../lib/passwordExpirationJob.inc:105 ../lib/modules/selfRegistration.inc:90
-#: ../lib/modules/selfRegistration.inc:229
+#: ../lib/passwordExpirationJob.inc:109 ../lib/modules/selfRegistration.inc:90
+#: ../lib/modules/selfRegistration.inc:235
 #: ../lib/modules/passwordSelfReset.inc:116
 #: ../lib/modules/passwordSelfReset.inc:564
 #: ../lib/modules/passwordSelfReset.inc:584 ../help/help.inc:276
@@ -4680,7 +4710,7 @@ msgstr "功能"
 msgid "GB-12345"
 msgstr "GB-12345"
 
-#: ../lib/modules/posixGroup.inc:516 ../lib/modules/posixGroup.inc:566
+#: ../lib/modules/posixGroup.inc:516 ../lib/modules/posixGroup.inc:572
 msgid "GID generator"
 msgstr "GID生成器"
 
@@ -4691,15 +4721,15 @@ msgstr "GID生成器"
 #: ../lib/modules/qmailUser.inc:1107 ../lib/modules/posixGroup.inc:188
 #: ../lib/modules/posixGroup.inc:416 ../lib/modules/posixGroup.inc:432
 #: ../lib/modules/posixGroup.inc:476 ../lib/modules/posixGroup.inc:496
-#: ../lib/modules/posixGroup.inc:615 ../lib/modules/posixGroup.inc:649
-#: ../lib/modules/posixAccount.inc:125 ../lib/modules/posixAccount.inc:445
-#: ../lib/modules/posixAccount.inc:1935
+#: ../lib/modules/posixGroup.inc:626 ../lib/modules/posixGroup.inc:660
+#: ../lib/modules/posixAccount.inc:125 ../lib/modules/posixAccount.inc:349
+#: ../lib/modules/posixAccount.inc:1848
 #: ../lib/modules/sambaGroupMapping.inc:110
 #: ../lib/modules/sambaGroupMapping.inc:539
 msgid "GID number"
 msgstr "GID编号"
 
-#: ../lib/modules/posixGroup.inc:649
+#: ../lib/modules/posixGroup.inc:660
 msgid ""
 "GID number has changed. Please select checkbox to change GID number of users "
 "and hosts."
@@ -4714,7 +4744,7 @@ msgstr ""
 "GID已经更改,要保持文件属性一,你必须以root身份运行以下命令: 'find / -gid %s -"
 "uid %s -exec chgrp %s {} \\;'"
 
-#: ../lib/modules/posixGroup.inc:656
+#: ../lib/modules/posixGroup.inc:667
 msgid "GID number has to be a numeric value!"
 msgstr "GID号必须使用数字"
 
@@ -4722,10 +4752,10 @@ msgstr "GID号必须使用数字"
 msgid "GID number is already in use."
 msgstr "GID号已经被使用"
 
-#: ../lib/modules/posixAccount.inc:288 ../lib/modules/posixAccount.inc:388
-#: ../lib/modules/posixAccount.inc:430 ../lib/modules/posixAccount.inc:456
-#: ../lib/modules/posixAccount.inc:547 ../lib/modules/posixAccount.inc:589
-#: ../lib/modules/posixAccount.inc:1510 ../lib/modules/posixAccount.inc:1938
+#: ../lib/modules/posixAccount.inc:292 ../lib/modules/posixAccount.inc:334
+#: ../lib/modules/posixAccount.inc:360 ../lib/modules/posixAccount.inc:460
+#: ../lib/modules/posixAccount.inc:502 ../lib/modules/posixAccount.inc:1423
+#: ../lib/modules/posixAccount.inc:1851 ../lib/modules/posixAccount.inc:1974
 msgid "Gecos"
 msgstr "备注(Gecos)"
 
@@ -4780,6 +4810,10 @@ msgstr "回退"
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1864
 msgid "Go to"
 msgstr "到"
+
+#: ../lib/modules/selfRegistration.inc:110
+msgid "Google reCAPTCHA"
+msgstr "Google reCAPTCHA"
 
 #: ../lib/types/ppolicyType.inc:82 ../lib/modules/ppolicy.inc:100
 #: ../lib/modules/ppolicy.inc:149 ../lib/modules/ppolicy.inc:170
@@ -4852,8 +4886,8 @@ msgstr "组成员DN"
 #: ../lib/modules/pykotaPrinter.inc:610 ../lib/modules/posixGroup.inc:219
 #: ../lib/modules/posixGroup.inc:295 ../lib/modules/posixGroup.inc:419
 #: ../lib/modules/posixGroup.inc:446 ../lib/modules/posixGroup.inc:484
-#: ../lib/modules/posixGroup.inc:488 ../lib/modules/posixGroup.inc:613
-#: ../lib/modules/posixGroup.inc:626 ../lib/modules/windowsGroup.inc:388
+#: ../lib/modules/posixGroup.inc:488 ../lib/modules/posixGroup.inc:624
+#: ../lib/modules/posixGroup.inc:637 ../lib/modules/windowsGroup.inc:388
 msgid "Group members"
 msgstr "组成员"
 
@@ -4871,9 +4905,9 @@ msgstr "组成员(包括主组)"
 #: ../lib/modules/zarafaDynamicGroup.inc:220
 #: ../lib/modules/zarafaDynamicGroup.inc:433 ../lib/modules/posixGroup.inc:178
 #: ../lib/modules/posixGroup.inc:423 ../lib/modules/posixGroup.inc:455
-#: ../lib/modules/posixGroup.inc:504 ../lib/modules/posixGroup.inc:614
-#: ../lib/modules/posixGroup.inc:657 ../lib/modules/posixGroup.inc:658
-#: ../lib/modules/posixGroup.inc:659 ../lib/modules/pykotaGroup.inc:197
+#: ../lib/modules/posixGroup.inc:504 ../lib/modules/posixGroup.inc:625
+#: ../lib/modules/posixGroup.inc:668 ../lib/modules/posixGroup.inc:669
+#: ../lib/modules/posixGroup.inc:670 ../lib/modules/pykotaGroup.inc:197
 #: ../lib/modules/pykotaGroup.inc:199 ../lib/modules/pykotaGroup.inc:218
 #: ../lib/modules/nisnetgroup.inc:83 ../lib/modules/nisnetgroup.inc:112
 #: ../lib/modules/nisnetgroup.inc:139 ../lib/modules/nisnetgroup.inc:151
@@ -4900,8 +4934,8 @@ msgid "Group name already in use."
 msgstr "组名已经被使用"
 
 #: ../lib/modules/zarafaDynamicGroup.inc:196
-#: ../lib/modules/zarafaDynamicGroup.inc:197 ../lib/modules/posixGroup.inc:659
-#: ../lib/modules/posixGroup.inc:660 ../lib/modules/pykotaGroup.inc:197
+#: ../lib/modules/zarafaDynamicGroup.inc:197 ../lib/modules/posixGroup.inc:670
+#: ../lib/modules/posixGroup.inc:671 ../lib/modules/pykotaGroup.inc:197
 #: ../lib/modules/pykotaGroup.inc:198 ../lib/modules/pykotaGroup.inc:201
 #: ../lib/modules/pykotaGroup.inc:202 ../lib/modules/nisnetgroup.inc:151
 #: ../lib/modules/windowsGroup.inc:290 ../lib/modules/windowsGroup.inc:291
@@ -4914,7 +4948,7 @@ msgstr "组名包含非法字符,可用字符为: a-z, A-Z, 0-9,及 -或_ !"
 msgid "Group name for NIS."
 msgstr "NIS的组名"
 
-#: ../lib/modules/posixGroup.inc:658
+#: ../lib/modules/posixGroup.inc:669
 msgid "Group name in use. Selected next free group name."
 msgstr "组名已被使用,请选择可用的组名."
 
@@ -4977,27 +5011,27 @@ msgstr "组范围"
 msgid "Group type"
 msgstr "组类型"
 
-#: ../lib/types/group.inc:67 ../lib/modules/posixGroup.inc:560
+#: ../lib/types/group.inc:67 ../lib/modules/posixGroup.inc:565
 #: ../lib/modules/zarafaGroup.inc:746 ../lib/modules/windowsUser.inc:236
 #: ../lib/modules/windowsUser.inc:239 ../lib/modules/windowsUser.inc:551
 #: ../lib/modules/windowsUser.inc:757 ../lib/modules/windowsUser.inc:1149
 #: ../lib/modules/windowsUser.inc:1562 ../lib/modules/windowsUser.inc:2361
 #: ../lib/modules/windowsUser.inc:2393
-#: ../lib/modules/generalInformation.inc:110
+#: ../lib/modules/generalInformation.inc:112
 #: ../lib/modules/windowsGroup.inc:514
 msgid "Groups"
 msgstr "组"
 
-#: ../lib/types/gon.inc:66 ../lib/modules/posixAccount.inc:293
-#: ../lib/modules/posixAccount.inc:396 ../lib/modules/posixAccount.inc:459
-#: ../lib/modules/posixAccount.inc:1676 ../lib/modules/posixAccount.inc:1825
-#: ../lib/modules/posixAccount.inc:1948 ../lib/modules/groupOfNamesUser.inc:54
+#: ../lib/types/gon.inc:66 ../lib/modules/posixAccount.inc:300
+#: ../lib/modules/posixAccount.inc:363 ../lib/modules/posixAccount.inc:1589
+#: ../lib/modules/posixAccount.inc:1738 ../lib/modules/posixAccount.inc:1861
+#: ../lib/modules/posixAccount.inc:1979 ../lib/modules/groupOfNamesUser.inc:54
 #: ../lib/modules/groupOfNamesUser.inc:56
 #: ../lib/modules/groupOfNamesUser.inc:60
 #: ../lib/modules/groupOfNamesUser.inc:64
 #: ../lib/modules/groupOfNamesUser.inc:71
-#: ../lib/modules/groupOfNamesUser.inc:324
-#: ../lib/modules/groupOfNamesUser.inc:363
+#: ../lib/modules/groupOfNamesUser.inc:334
+#: ../lib/modules/groupOfNamesUser.inc:373
 msgid "Groups of names"
 msgstr "组名"
 
@@ -5005,8 +5039,8 @@ msgstr "组名"
 msgid "H-Node (0x08)"
 msgstr "H-节点 (0x08)"
 
-#: ../templates/config/confmain.php:426 ../lib/passwordExpirationJob.inc:74
-#: ../lib/modules/selfRegistration.inc:235
+#: ../templates/config/confmain.php:426 ../lib/passwordExpirationJob.inc:76
+#: ../lib/modules/selfRegistration.inc:241
 #: ../lib/modules/passwordSelfReset.inc:568
 #: ../lib/modules/passwordSelfReset.inc:588 ../help/help.inc:285
 msgid "HTML format"
@@ -5046,12 +5080,12 @@ msgstr "节点的硬性限制"
 msgid "Hard inode limit"
 msgstr "节点硬性限制"
 
-#: ../lib/modules/generalInformation.inc:104
+#: ../lib/modules/generalInformation.inc:106
 msgid "Has subentries"
 msgstr "有子条目"
 
 #: ../lib/modules/selfRegistration.inc:106
-#: ../lib/modules/selfRegistration.inc:224
+#: ../lib/modules/selfRegistration.inc:229
 #: ../lib/modules/passwordSelfReset.inc:156
 #: ../lib/modules/passwordSelfReset.inc:594
 msgid "Header"
@@ -5078,7 +5112,7 @@ msgstr "帮助文本"
 msgid "Here you can browse LDAP object classes and attributes."
 msgstr "这是你可浏览的LDAP对象类和属性."
 
-#: ../lib/modules/sambaSamAccount.inc:392
+#: ../lib/modules/sambaSamAccount.inc:398
 msgid "Here you can change the settings for the terminal server access."
 msgstr "这里可以改变终端服务访问的设置。"
 
@@ -5104,7 +5138,7 @@ msgid "Here you can enter a description for this role."
 msgstr "在这输入这个角色的描述."
 
 #: ../lib/modules/pykotaPrinter.inc:129 ../lib/modules/zarafaContact.inc:98
-#: ../lib/modules/posixGroup.inc:529 ../lib/modules/zarafaUser.inc:155
+#: ../lib/modules/posixGroup.inc:530 ../lib/modules/zarafaUser.inc:155
 #: ../lib/modules/sambaGroupMapping.inc:171 ../lib/modules/nisnetgroup.inc:105
 #: ../lib/modules/organizationalRole.inc:102
 #: ../lib/modules/groupOfNames.inc:114 ../lib/modules/nisMailAlias.inc:94
@@ -5113,7 +5147,7 @@ msgid ""
 "text will be shown."
 msgstr "这里您可以输入过滤条件,只显示符合过滤条件的条目."
 
-#: ../lib/modules/posixAccount.inc:503 ../lib/modules/groupOfNamesUser.inc:65
+#: ../lib/modules/posixAccount.inc:407 ../lib/modules/groupOfNamesUser.inc:65
 msgid ""
 "Here you can enter a list of additional group memberships. The group names "
 "are separated by commas."
@@ -5309,7 +5343,7 @@ msgstr "在此指定用户密码的最小长度."
 msgid "Here you can specify the new password yourself."
 msgstr "这里可以设置自己的新密码。"
 
-#: ../lib/modules/sambaSamAccount.inc:383
+#: ../lib/modules/sambaSamAccount.inc:389
 msgid "Here you can specify the shadowing mode."
 msgstr "这里可以指定遮蔽(shadow)模型。"
 
@@ -5358,12 +5392,12 @@ msgstr ""
 #: ../lib/modules/asteriskAccount.inc:243
 #: ../lib/modules/asteriskAccount.inc:1240 ../lib/modules/qmailUser.inc:102
 #: ../lib/modules/qmailUser.inc:195 ../lib/modules/zarafaGroup.inc:113
-#: ../lib/modules/zarafaGroup.inc:773 ../lib/modules/sambaSamAccount.inc:400
-#: ../lib/modules/sambaSamAccount.inc:561 ../lib/modules/posixAccount.inc:284
-#: ../lib/modules/posixAccount.inc:473 ../lib/modules/zarafaUser.inc:146
+#: ../lib/modules/zarafaGroup.inc:773 ../lib/modules/sambaSamAccount.inc:406
+#: ../lib/modules/sambaSamAccount.inc:570 ../lib/modules/posixAccount.inc:377
+#: ../lib/modules/posixAccount.inc:1970 ../lib/modules/zarafaUser.inc:146
 #: ../lib/modules/zarafaUser.inc:1820 ../lib/modules/windowsUser.inc:255
 #: ../lib/modules/windowsUser.inc:3030 ../lib/modules/inetOrgPerson.inc:830
-#: ../lib/modules/inetOrgPerson.inc:3661 ../lib/modules/freeRadius.inc:128
+#: ../lib/modules/inetOrgPerson.inc:3639 ../lib/modules/freeRadius.inc:128
 #: ../lib/modules/freeRadius.inc:301 ../lib/modules/zarafaServer.inc:88
 #: ../lib/modules/zarafaServer.inc:159 ../lib/modules/qmailGroup.inc:68
 #: ../lib/modules/qmailGroup.inc:119 ../lib/modules/organizationalRole.inc:81
@@ -5420,7 +5454,7 @@ msgid ""
 "above)"
 msgstr "提示:必须选择精确的结构化对象类(上述加粗项)"
 
-#: ../lib/modules/posixAccount.inc:572 ../lib/modules/windowsUser.inc:237
+#: ../lib/modules/posixAccount.inc:485 ../lib/modules/windowsUser.inc:237
 #: ../lib/modules/groupOfNamesUser.inc:61
 msgid "Hold the CTRL-key to (de)select multiple groups."
 msgstr "按住CTRL键可以多选组."
@@ -5430,16 +5464,16 @@ msgid "Hold the CTRL-key to (de)select multiple roles."
 msgstr "按住CTRL键可以多选角色."
 
 #: ../lib/types/user.inc:98 ../lib/modules/sambaSamAccount.inc:231
-#: ../lib/modules/sambaSamAccount.inc:355
-#: ../lib/modules/sambaSamAccount.inc:1476
-#: ../lib/modules/sambaSamAccount.inc:1894 ../lib/modules/posixAccount.inc:100
+#: ../lib/modules/sambaSamAccount.inc:361
+#: ../lib/modules/sambaSamAccount.inc:1485
+#: ../lib/modules/sambaSamAccount.inc:1903 ../lib/modules/posixAccount.inc:100
 #: ../lib/modules/posixAccount.inc:101 ../lib/modules/posixAccount.inc:103
-#: ../lib/modules/posixAccount.inc:342 ../lib/modules/posixAccount.inc:448
-#: ../lib/modules/posixAccount.inc:506 ../lib/modules/posixAccount.inc:510
-#: ../lib/modules/posixAccount.inc:514 ../lib/modules/posixAccount.inc:555
-#: ../lib/modules/posixAccount.inc:1249 ../lib/modules/posixAccount.inc:1529
-#: ../lib/modules/posixAccount.inc:1732 ../lib/modules/posixAccount.inc:1832
-#: ../lib/modules/posixAccount.inc:1936 ../lib/modules/windowsUser.inc:266
+#: ../lib/modules/posixAccount.inc:246 ../lib/modules/posixAccount.inc:352
+#: ../lib/modules/posixAccount.inc:410 ../lib/modules/posixAccount.inc:414
+#: ../lib/modules/posixAccount.inc:418 ../lib/modules/posixAccount.inc:468
+#: ../lib/modules/posixAccount.inc:1162 ../lib/modules/posixAccount.inc:1442
+#: ../lib/modules/posixAccount.inc:1645 ../lib/modules/posixAccount.inc:1745
+#: ../lib/modules/posixAccount.inc:1849 ../lib/modules/windowsUser.inc:266
 #: ../lib/modules/windowsUser.inc:545 ../lib/modules/windowsUser.inc:668
 #: ../lib/modules/windowsUser.inc:760 ../lib/modules/windowsUser.inc:880
 #: ../lib/modules/windowsUser.inc:1105 ../lib/modules/windowsUser.inc:2355
@@ -5456,14 +5490,14 @@ msgstr ""
 
 #: ../lib/modules/sambaSamAccount.inc:215
 #: ../lib/modules/sambaSamAccount.inc:232
-#: ../lib/modules/sambaSamAccount.inc:303
-#: ../lib/modules/sambaSamAccount.inc:487
-#: ../lib/modules/sambaSamAccount.inc:566
-#: ../lib/modules/sambaSamAccount.inc:1181
-#: ../lib/modules/sambaSamAccount.inc:1484
-#: ../lib/modules/sambaSamAccount.inc:1727
-#: ../lib/modules/sambaSamAccount.inc:1879
-#: ../lib/modules/sambaSamAccount.inc:1895 ../lib/modules/windowsUser.inc:263
+#: ../lib/modules/sambaSamAccount.inc:309
+#: ../lib/modules/sambaSamAccount.inc:496
+#: ../lib/modules/sambaSamAccount.inc:575
+#: ../lib/modules/sambaSamAccount.inc:1190
+#: ../lib/modules/sambaSamAccount.inc:1493
+#: ../lib/modules/sambaSamAccount.inc:1736
+#: ../lib/modules/sambaSamAccount.inc:1888
+#: ../lib/modules/sambaSamAccount.inc:1904 ../lib/modules/windowsUser.inc:263
 #: ../lib/modules/windowsUser.inc:539 ../lib/modules/windowsUser.inc:759
 #: ../lib/modules/windowsUser.inc:1103 ../lib/modules/windowsUser.inc:2356
 msgid "Home drive"
@@ -5471,12 +5505,12 @@ msgstr "个人驱动器"
 
 #: ../lib/modules/sambaSamAccount.inc:94 ../lib/modules/sambaSamAccount.inc:95
 #: ../lib/modules/sambaSamAccount.inc:218
-#: ../lib/modules/sambaSamAccount.inc:306
-#: ../lib/modules/sambaSamAccount.inc:495
-#: ../lib/modules/sambaSamAccount.inc:568
-#: ../lib/modules/sambaSamAccount.inc:1189
-#: ../lib/modules/sambaSamAccount.inc:1731
-#: ../lib/modules/sambaSamAccount.inc:1878
+#: ../lib/modules/sambaSamAccount.inc:312
+#: ../lib/modules/sambaSamAccount.inc:504
+#: ../lib/modules/sambaSamAccount.inc:577
+#: ../lib/modules/sambaSamAccount.inc:1198
+#: ../lib/modules/sambaSamAccount.inc:1740
+#: ../lib/modules/sambaSamAccount.inc:1887
 msgid "Home path"
 msgstr "个人目录路径"
 
@@ -5493,7 +5527,7 @@ msgstr "用户的宿主服务器."
 #: ../lib/modules/inetOrgPerson.inc:774 ../lib/modules/inetOrgPerson.inc:778
 #: ../lib/modules/inetOrgPerson.inc:1470 ../lib/modules/inetOrgPerson.inc:1473
 #: ../lib/modules/inetOrgPerson.inc:1992 ../lib/modules/inetOrgPerson.inc:2558
-#: ../lib/modules/inetOrgPerson.inc:3687 ../lib/modules/inetOrgPerson.inc:3743
+#: ../lib/modules/inetOrgPerson.inc:3665 ../lib/modules/inetOrgPerson.inc:3721
 msgid "Home telephone number"
 msgstr "宅电"
 
@@ -5526,8 +5560,8 @@ msgstr "主机总计: %s"
 msgid "Host description"
 msgstr "主机描述"
 
-#: ../lib/modules/account.inc:96 ../lib/modules/posixAccount.inc:590
-#: ../lib/modules/posixAccount.inc:598
+#: ../lib/modules/account.inc:96 ../lib/modules/posixAccount.inc:503
+#: ../lib/modules/posixAccount.inc:511
 msgid "Host description. If left empty host name will be used."
 msgstr "主机描述.如果留空会使用主机名."
 
@@ -5542,9 +5576,9 @@ msgstr "主机列表"
 #: ../lib/modules/windowsHost.inc:119 ../lib/modules/windowsHost.inc:131
 #: ../lib/modules/windowsHost.inc:142 ../lib/modules/windowsHost.inc:291
 #: ../lib/modules/posixAccount.inc:115 ../lib/modules/posixAccount.inc:116
-#: ../lib/modules/posixAccount.inc:118 ../lib/modules/posixAccount.inc:407
-#: ../lib/modules/posixAccount.inc:438 ../lib/modules/posixAccount.inc:585
-#: ../lib/modules/posixAccount.inc:1492 ../lib/modules/posixAccount.inc:1922
+#: ../lib/modules/posixAccount.inc:118 ../lib/modules/posixAccount.inc:311
+#: ../lib/modules/posixAccount.inc:342 ../lib/modules/posixAccount.inc:498
+#: ../lib/modules/posixAccount.inc:1405 ../lib/modules/posixAccount.inc:1835
 #: ../lib/modules/bindDLZ.inc:88 ../lib/modules/bindDLZ.inc:147
 #: ../lib/modules/bindDLZ.inc:151 ../lib/modules/bindDLZ.inc:247
 #: ../lib/modules/bindDLZ.inc:301 ../lib/modules/bindDLZ.inc:417
@@ -5575,11 +5609,11 @@ msgstr "主机名包含非法字符,合法字符包括 a-z, A-Z, 0-9 和 .-_"
 msgid "Host name in use. Selected next free host name."
 msgstr "主机名已被使用, 请选择其它的主机名."
 
-#: ../lib/modules/sambaSamAccount.inc:1069
+#: ../lib/modules/sambaSamAccount.inc:1078
 msgid "Host name must end with $!"
 msgstr "主机名必须使用$结尾!"
 
-#: ../lib/modules/account.inc:92 ../lib/modules/posixAccount.inc:586
+#: ../lib/modules/account.inc:92 ../lib/modules/posixAccount.inc:499
 msgid ""
 "Host name of the host which should be created. Valid characters are: a-z,A-"
 "Z,0-9, .-_$. Host names are always ending with $. If last character is not $ "
@@ -5591,7 +5625,7 @@ msgstr ""
 
 #: ../lib/types/host.inc:53 ../lib/modules/posixAccount.inc:95
 #: ../lib/modules/posixAccount.inc:96 ../lib/modules/posixAccount.inc:98
-#: ../lib/modules/posixAccount.inc:248 ../lib/modules/sudoRole.inc:78
+#: ../lib/modules/posixAccount.inc:1927 ../lib/modules/sudoRole.inc:78
 #: ../lib/modules/sudoRole.inc:103 ../lib/modules/sudoRole.inc:165
 #: ../lib/modules/sudoRole.inc:217 ../lib/modules/sudoRole.inc:229
 #: ../lib/modules/sudoRole.inc:343 ../lib/modules/sudoRole.inc:756
@@ -5604,16 +5638,16 @@ msgstr "主机"
 msgid "I am out of office."
 msgstr "我辞职了."
 
-#: ../lib/modules/zarafaContact.inc:212 ../lib/modules/posixGroup.inc:652
-#: ../lib/modules/posixAccount.inc:106 ../lib/modules/posixAccount.inc:1219
+#: ../lib/modules/zarafaContact.inc:212 ../lib/modules/posixGroup.inc:663
+#: ../lib/modules/posixAccount.inc:106 ../lib/modules/posixAccount.inc:1132
 msgid "ID is already in use"
 msgstr "ID已经被使用"
 
-#: ../lib/modules/posixGroup.inc:650 ../lib/modules/posixGroup.inc:651
-#: ../lib/modules/posixGroup.inc:652 ../lib/modules/posixGroup.inc:776
+#: ../lib/modules/posixGroup.inc:661 ../lib/modules/posixGroup.inc:662
+#: ../lib/modules/posixGroup.inc:663 ../lib/modules/posixGroup.inc:787
 #: ../lib/modules/posixAccount.inc:104 ../lib/modules/posixAccount.inc:105
-#: ../lib/modules/posixAccount.inc:106 ../lib/modules/posixAccount.inc:1210
-#: ../lib/modules/posixAccount.inc:1215 ../lib/modules/posixAccount.inc:1219
+#: ../lib/modules/posixAccount.inc:106 ../lib/modules/posixAccount.inc:1123
+#: ../lib/modules/posixAccount.inc:1128 ../lib/modules/posixAccount.inc:1132
 msgid "ID-Number"
 msgstr "ID号"
 
@@ -5693,8 +5727,8 @@ msgid "Identifier"
 msgstr "标识"
 
 #: ../lib/modules/sambaSamAccount.inc:239
-#: ../lib/modules/sambaSamAccount.inc:1502
-#: ../lib/modules/sambaSamAccount.inc:1906
+#: ../lib/modules/sambaSamAccount.inc:1511
+#: ../lib/modules/sambaSamAccount.inc:1915
 msgid "Idle time limit"
 msgstr "空闲时间限制"
 
@@ -5717,23 +5751,23 @@ msgid ""
 "group per account type."
 msgstr "如果激活此项，如果帐号类型有多个组，LAM将显示成堆叠式。"
 
-#: ../lib/modules/ppolicyUser.inc:60
+#: ../lib/modules/ppolicyUser.inc:61
 msgid ""
 "If activated then the user is forced to change his password at the next "
 "login."
 msgstr "如果您选中此项，用户在下次登录时必须修改密码。"
 
-#: ../lib/modules/sambaSamAccount.inc:269
+#: ../lib/modules/sambaSamAccount.inc:275
 msgid "If checked Unix password will also be used as Samba password."
 msgstr "如果选中将使用UNIX密码作为SAMBA密码."
 
-#: ../lib/modules/posixAccount.inc:564
+#: ../lib/modules/posixAccount.inc:477
 msgid ""
 "If checked account will be deactivated by putting a \"!\" before the "
 "encrypted password."
 msgstr "在密码前加\"!\",此帐号会被停用."
 
-#: ../lib/modules/sambaSamAccount.inc:275
+#: ../lib/modules/sambaSamAccount.inc:281
 msgid "If checked no password will be used."
 msgstr "如果选中,不需要密码."
 
@@ -5741,7 +5775,7 @@ msgstr "如果选中,不需要密码."
 msgid "If checked password does not expire."
 msgstr "如果选中,密码不会过期."
 
-#: ../lib/modules/sambaSamAccount.inc:281
+#: ../lib/modules/sambaSamAccount.inc:287
 msgid "If checked password does not expire. (Setting X-Flag)"
 msgstr "密码不过期.(设置X标志)"
 
@@ -5755,11 +5789,11 @@ msgstr "如果选中，用户被锁定。你仅能解锁但不能锁定。"
 msgid "If checked then the account will be deactivated."
 msgstr "如果选中,用户账号将被停用."
 
-#: ../lib/modules/sambaSamAccount.inc:287
+#: ../lib/modules/sambaSamAccount.inc:293
 msgid "If checked then the account will be deactivated. (Setting D-Flag)"
 msgstr "密码停用(设置D标志)"
 
-#: ../lib/modules/sambaSamAccount.inc:290
+#: ../lib/modules/sambaSamAccount.inc:296
 msgid ""
 "If checked then the account will be locked (setting L-Flag). You usually "
 "want to use this setting to unlock user accounts which were locked because "
@@ -5789,7 +5823,7 @@ msgid "If empty GID number will be generated automaticly."
 msgstr "如果为空,GID号会自动生成."
 
 #: ../lib/modules/qmailUser.inc:232 ../lib/modules/zarafaContact.inc:121
-#: ../lib/modules/posixAccount.inc:495
+#: ../lib/modules/posixAccount.inc:399
 msgid "If empty UID number will be generated automaticly."
 msgstr "如果为空,UID号会自动生成."
 
@@ -5835,19 +5869,19 @@ msgstr "如果设置，则仅允许这些类。 每行一个类。"
 msgid "If set then users need to login to change their password."
 msgstr "如果设置,用户需要密码才能登录."
 
-#: ../lib/modules/sambaSamAccount.inc:272
+#: ../lib/modules/sambaSamAccount.inc:278
 msgid "If set to \"true\" Unix password will also be used as Samba password."
 msgstr "如果设为\"true\",会用UNIX用户密码做为SAMBA密码."
 
-#: ../lib/modules/sambaSamAccount.inc:293
+#: ../lib/modules/sambaSamAccount.inc:299
 msgid "If set to \"true\" account will be deactivated. (Setting D-Flag)"
 msgstr "如果设为\"true\",帐号会被停用(设置D标志)."
 
-#: ../lib/modules/sambaSamAccount.inc:278
+#: ../lib/modules/sambaSamAccount.inc:284
 msgid "If set to \"true\" no password will be used."
 msgstr "如果设为\"true\",则不需要密码."
 
-#: ../lib/modules/sambaSamAccount.inc:284
+#: ../lib/modules/sambaSamAccount.inc:290
 msgid "If set to \"true\" password does not expire. (Setting X-Flag)"
 msgstr "如果设为\"true\",密码不会过期(设为X标志)."
 
@@ -5907,7 +5941,7 @@ msgstr ""
 "如果你设置一个或多个邮件地址,邮件发送错误信息将会被转发到这些邮件地址中,以替"
 "代原来邮件中的发件人地址."
 
-#: ../lib/modules/sambaSamAccount.inc:332
+#: ../lib/modules/sambaSamAccount.inc:338
 msgid ""
 "If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase."
 msgstr "如果留空,LAM会用如下算法:uidNumber*2 + sambaAlgorithmicRidBase."
@@ -5958,7 +5992,7 @@ msgstr "如果您选中此项，用户不能请求可更新的票据."
 msgid "If you set this option then the user cannot request service tickets."
 msgstr "如果您选中此项，用户不能请求服务票据."
 
-#: ../lib/modules/mitKerberos.inc:184 ../lib/modules/sambaSamAccount.inc:296
+#: ../lib/modules/mitKerberos.inc:184 ../lib/modules/sambaSamAccount.inc:302
 #: ../lib/modules/windowsUser.inc:234 ../lib/modules/heimdalKerberos.inc:128
 #: ../help/help.inc:237
 msgid ""
@@ -6070,9 +6104,9 @@ msgid "Information about the LDAP server."
 msgstr "有关LDAP服务器的信息"
 
 #: ../lib/modules/sambaSamAccount.inc:234
-#: ../lib/modules/sambaSamAccount.inc:361
-#: ../lib/modules/sambaSamAccount.inc:1488
-#: ../lib/modules/sambaSamAccount.inc:1901
+#: ../lib/modules/sambaSamAccount.inc:367
+#: ../lib/modules/sambaSamAccount.inc:1497
+#: ../lib/modules/sambaSamAccount.inc:1910
 msgid "Inherit client startup configuration"
 msgstr "继承客户初始配置"
 
@@ -6093,9 +6127,9 @@ msgid "Initial payment"
 msgstr "初始化账单"
 
 #: ../lib/modules/sambaSamAccount.inc:235
-#: ../lib/modules/sambaSamAccount.inc:364
-#: ../lib/modules/sambaSamAccount.inc:1490
-#: ../lib/modules/sambaSamAccount.inc:1902
+#: ../lib/modules/sambaSamAccount.inc:370
+#: ../lib/modules/sambaSamAccount.inc:1499
+#: ../lib/modules/sambaSamAccount.inc:1911
 msgid "Initial program"
 msgstr "初始化程序"
 
@@ -6106,7 +6140,7 @@ msgstr "初始化程序"
 #: ../lib/modules/inetOrgPerson.inc:631 ../lib/modules/inetOrgPerson.inc:859
 #: ../lib/modules/inetOrgPerson.inc:1267 ../lib/modules/inetOrgPerson.inc:1270
 #: ../lib/modules/inetOrgPerson.inc:2009 ../lib/modules/inetOrgPerson.inc:2762
-#: ../lib/modules/inetOrgPerson.inc:3715 ../lib/modules/inetOrgPerson.inc:3751
+#: ../lib/modules/inetOrgPerson.inc:3693 ../lib/modules/inetOrgPerson.inc:3729
 msgid "Initials"
 msgstr "初始化"
 
@@ -6190,7 +6224,7 @@ msgstr "非法的描述"
 msgid "Invalid entry"
 msgstr "无效的条目"
 
-#: ../lib/modules/selfRegistration.inc:121
+#: ../lib/modules/selfRegistration.inc:125
 msgid "Invalid format for the specification of additional attributes."
 msgstr "不符合附加属性规范的格式"
 
@@ -6228,7 +6262,7 @@ msgstr "邀请原则列表"
 msgid "It is not possible to delete all ranges."
 msgstr "不能删除所有范围"
 
-#: ../lib/modules/posixGroup.inc:650 ../lib/modules/posixAccount.inc:105
+#: ../lib/modules/posixGroup.inc:661 ../lib/modules/posixAccount.inc:105
 msgid ""
 "It is possible that this ID-number is reused. This can cause several "
 "problems because files with old permissions might still exist. To avoid this "
@@ -6256,8 +6290,8 @@ msgstr "任务后缀"
 #: ../lib/modules/inetOrgPerson.inc:604 ../lib/modules/inetOrgPerson.inc:650
 #: ../lib/modules/inetOrgPerson.inc:654 ../lib/modules/inetOrgPerson.inc:1526
 #: ../lib/modules/inetOrgPerson.inc:1529 ../lib/modules/inetOrgPerson.inc:1982
-#: ../lib/modules/inetOrgPerson.inc:2773 ../lib/modules/inetOrgPerson.inc:3697
-#: ../lib/modules/inetOrgPerson.inc:3746
+#: ../lib/modules/inetOrgPerson.inc:2773 ../lib/modules/inetOrgPerson.inc:3675
+#: ../lib/modules/inetOrgPerson.inc:3724
 msgid "Job title"
 msgstr "头衔"
 
@@ -6302,7 +6336,7 @@ msgstr "跳转到首页"
 msgid "Jump to last page"
 msgstr "跳转到末页"
 
-#: ../lib/modules/posixAccount.inc:491 ../lib/modules/inetOrgPerson.inc:836
+#: ../lib/modules/posixAccount.inc:395 ../lib/modules/inetOrgPerson.inc:836
 msgid "K5KEY is only needed if you use Kerberos with smbk5pwd."
 msgstr "如果在smbk5pwd中使用Kerberos，则需要K5KEY"
 
@@ -6338,7 +6372,7 @@ msgstr ""
 "会使用账号类型的后缀。如果你使用了多个不同OU的服务器配置而且需要组名或GID唯"
 "一，在此处修改。"
 
-#: ../lib/modules/posixAccount.inc:523
+#: ../lib/modules/posixAccount.inc:427
 msgid ""
 "LAM checks if the entered user name and UID are unique. Here you can enter "
 "the LDAP suffix that is used to search for duplicates. By default the "
@@ -6358,7 +6392,7 @@ msgstr "LAM 配置"
 msgid "LAM has checked your input and is now ready to create the accounts."
 msgstr "您的输入检查完毕,即将建立帐号"
 
-#: ../lib/modules/posixGroup.inc:501 ../lib/modules/posixAccount.inc:490
+#: ../lib/modules/posixGroup.inc:501 ../lib/modules/posixAccount.inc:394
 #: ../lib/modules/inetOrgPerson.inc:835 ../lib/modules/customFields.inc:141
 msgid ""
 "LAM supports CRYPT, CRYPT-SHA512, SHA, SSHA, MD5 and SMD5 to generate the "
@@ -6395,9 +6429,9 @@ msgstr "LAM找不到这个域!"
 msgid "LAM was unable to find a group with this name!"
 msgstr "LAM找不到这个组"
 
-#: ../lib/modules/posixAccount.inc:2441 ../lib/modules/posixAccount.inc:2502
+#: ../lib/modules/posixAccount.inc:2485 ../lib/modules/posixAccount.inc:2546
 #: ../lib/modules/windowsUser.inc:2247 ../lib/modules/nisNetGroupUser.inc:598
-#: ../lib/modules/groupOfNamesUser.inc:457
+#: ../lib/modules/groupOfNamesUser.inc:467
 #, php-format
 msgid "LAM was unable to modify group memberships for group: %s"
 msgstr "LAM无法修改 %s组成员"
@@ -6407,7 +6441,7 @@ msgstr "LAM无法修改 %s组成员"
 msgid "LAM was unable to modify memberships for role: %s"
 msgstr "LAM无法修改 %s角色成员"
 
-#: ../lib/modules/posixGroup.inc:517 ../lib/modules/posixAccount.inc:531
+#: ../lib/modules/posixGroup.inc:517 ../lib/modules/posixAccount.inc:435
 msgid ""
 "LAM will automatically suggest UID/GID numbers. You can either use a fixed "
 "range of numbers or an LDAP entry with object class \"sambaUnixIdPool\" or "
@@ -6420,7 +6454,7 @@ msgstr ""
 msgid "LAM will search for accounts in this part of the LDAP tree."
 msgstr "LAM将在这部分LDAP树搜索帐号."
 
-#: ../lib/modules/posixAccount.inc:469
+#: ../lib/modules/posixAccount.inc:373
 msgid ""
 "LAM will suggest a user name based on e.g. first and last name. Here you can "
 "specify the suggestion. %sn% will be replaced by the last name. @givenname@ "
@@ -6454,7 +6488,7 @@ msgstr "LDAP + 程序"
 msgid "LDAP Account Manager Configuration"
 msgstr "LDAP帐号管理配置"
 
-#: ../lib/modules/ppolicyUser.inc:64
+#: ../lib/modules/ppolicyUser.inc:65
 msgid "LDAP DN of default PPolicy password policy entry."
 msgstr "默认的Ppolicy密码策略条目的LDAP DN"
 
@@ -6482,7 +6516,7 @@ msgstr "这个列表中的用户的LDAP条目"
 msgid "LDAP entries that moderate this list (e.g. approve mails)."
 msgstr "主持这个列表(比如批准邮件)的LDAP条目"
 
-#: ../templates/login.php:647 ../lib/account.inc:1254
+#: ../templates/login.php:647 ../lib/account.inc:1278
 msgid "LDAP error, server says:"
 msgstr "LDAP错误,服务器错误消息:"
 
@@ -6527,7 +6561,7 @@ msgstr "LDAP搜索"
 msgid "LDAP search attribute"
 msgstr "LDAP搜索属性"
 
-#: ../lib/account.inc:821
+#: ../lib/account.inc:828
 msgid "LDAP search failed! Please check your preferences."
 msgstr "LDAP搜索失败，请检查配置。"
 
@@ -6539,7 +6573,7 @@ msgstr "LDAP搜索限制"
 msgid "LDAP server"
 msgstr "LDAP服务器"
 
-#: ../lib/account.inc:812
+#: ../lib/account.inc:819
 msgid "LDAP sizelimit exceeded, not all entries are shown."
 msgstr "超过LDAP限制的大小,无法显示所有条目."
 
@@ -6659,7 +6693,7 @@ msgid "Last login"
 msgstr "上次登录"
 
 #: ../lib/types/user.inc:97 ../lib/modules/selfRegistration.inc:84
-#: ../lib/modules/selfRegistration.inc:219 ../lib/modules/windowsUser.inc:179
+#: ../lib/modules/selfRegistration.inc:224 ../lib/modules/windowsUser.inc:179
 #: ../lib/modules/windowsUser.inc:387 ../lib/modules/windowsUser.inc:745
 #: ../lib/modules/windowsUser.inc:859 ../lib/modules/windowsUser.inc:977
 #: ../lib/modules/windowsUser.inc:2314 ../lib/modules/inetOrgPerson.inc:68
@@ -6667,7 +6701,7 @@ msgstr "上次登录"
 #: ../lib/modules/inetOrgPerson.inc:550 ../lib/modules/inetOrgPerson.inc:662
 #: ../lib/modules/inetOrgPerson.inc:1258 ../lib/modules/inetOrgPerson.inc:1261
 #: ../lib/modules/inetOrgPerson.inc:1984 ../lib/modules/inetOrgPerson.inc:2514
-#: ../lib/modules/inetOrgPerson.inc:3738
+#: ../lib/modules/inetOrgPerson.inc:3716
 msgid "Last name"
 msgstr "姓"
 
@@ -6682,11 +6716,11 @@ msgstr "用户姓.只允许字符,-和空格."
 
 #: ../lib/modules/mitKerberos.inc:140 ../lib/modules/mitKerberos.inc:255
 #: ../lib/modules/mitKerberos.inc:396 ../lib/modules/mitKerberos.inc:801
-#: ../lib/modules/sambaSamAccount.inc:397
-#: ../lib/modules/sambaSamAccount.inc:574
-#: ../lib/modules/sambaSamAccount.inc:1140
-#: ../lib/modules/sambaSamAccount.inc:2261 ../lib/modules/ppolicyUser.inc:91
-#: ../lib/modules/ppolicyUser.inc:140 ../lib/modules/ppolicyUser.inc:398
+#: ../lib/modules/sambaSamAccount.inc:403
+#: ../lib/modules/sambaSamAccount.inc:583
+#: ../lib/modules/sambaSamAccount.inc:1149
+#: ../lib/modules/sambaSamAccount.inc:2270 ../lib/modules/ppolicyUser.inc:92
+#: ../lib/modules/ppolicyUser.inc:141 ../lib/modules/ppolicyUser.inc:399
 #: ../lib/modules/windowsUser.inc:279 ../lib/modules/windowsUser.inc:776
 #: ../lib/modules/windowsUser.inc:1078 ../lib/modules/windowsUser.inc:2370
 #: ../lib/modules/windowsUser.inc:2495 ../lib/modules/windowsUser.inc:3038
@@ -6734,7 +6768,7 @@ msgid "Line ends"
 msgstr "行结尾"
 
 #: ../lib/modules/selfRegistration.inc:57
-#: ../lib/modules/selfRegistration.inc:197
+#: ../lib/modules/selfRegistration.inc:202
 #: ../lib/modules/passwordSelfReset.inc:100
 #: ../lib/modules/passwordSelfReset.inc:541
 msgid "Link text"
@@ -6766,7 +6800,7 @@ msgstr "列表名"
 msgid "List name already in use."
 msgstr "列表名已经被使用"
 
-#: ../lib/modules/sambaSamAccount.inc:316
+#: ../lib/modules/sambaSamAccount.inc:322
 msgid ""
 "List of Samba workstations the user is allowed to login. Empty means every "
 "workstation."
@@ -6865,8 +6899,8 @@ msgstr "本地成员"
 #: ../lib/modules/inetOrgPerson.inc:565 ../lib/modules/inetOrgPerson.inc:794
 #: ../lib/modules/inetOrgPerson.inc:798 ../lib/modules/inetOrgPerson.inc:1332
 #: ../lib/modules/inetOrgPerson.inc:1335 ../lib/modules/inetOrgPerson.inc:2005
-#: ../lib/modules/inetOrgPerson.inc:2668 ../lib/modules/inetOrgPerson.inc:3673
-#: ../lib/modules/inetOrgPerson.inc:3740
+#: ../lib/modules/inetOrgPerson.inc:2668 ../lib/modules/inetOrgPerson.inc:3651
+#: ../lib/modules/inetOrgPerson.inc:3718
 msgid "Location"
 msgstr "地点"
 
@@ -6874,14 +6908,14 @@ msgstr "地点"
 msgid "Location where new alias is stored."
 msgstr "新别名的存放位置."
 
-#: ../lib/types/user.inc:349 ../lib/types/user.inc:354
+#: ../lib/types/user.inc:361 ../lib/types/user.inc:366
 msgid "Lock"
 msgstr "锁"
 
 #: ../templates/lists/changePassword.php:442
 #: ../templates/lists/changePassword.php:462
 #: ../templates/lists/changePassword.php:464
-#: ../lib/modules/ppolicyUser.inc:154
+#: ../lib/modules/ppolicyUser.inc:155
 msgid "Lock account"
 msgstr "锁定帐号"
 
@@ -6889,14 +6923,23 @@ msgstr "锁定帐号"
 msgid "Lock account?"
 msgstr "锁定帐号?"
 
-#: ../lib/modules/posixGroup.inc:205 ../lib/modules/posixAccount.inc:370
-#: ../lib/modules/posixAccount.inc:1569 ../lib/modules/inetOrgPerson.inc:1647
+#: ../lib/modules/posixGroup.inc:205 ../lib/modules/posixAccount.inc:274
+#: ../lib/modules/posixAccount.inc:1482 ../lib/modules/inetOrgPerson.inc:1647
 msgid "Lock password"
 msgstr "锁定密码"
 
-#: ../lib/types/user.inc:769
+#: ../lib/types/user.inc:299 ../lib/types/user.inc:792
+#: ../lib/types/user.inc:954
 msgid "Locked"
 msgstr "已锁定."
+
+#: ../lib/modules/locking389ds.inc:77
+msgid "Locked till"
+msgstr "已锁定直到"
+
+#: ../lib/modules/locking389ds.inc:58
+msgid "Locking status"
+msgstr "锁定状态"
 
 #: ../lib/types/ppolicyType.inc:83 ../lib/modules/ppolicy.inc:104
 #: ../lib/modules/ppolicy.inc:151 ../lib/modules/ppolicy.inc:171
@@ -6911,7 +6954,7 @@ msgstr "帐号锁定期"
 msgid "Lockout duration must be are natural number."
 msgstr "帐号锁定期必须是自然数."
 
-#: ../lib/modules/ppolicyUser.inc:146
+#: ../lib/modules/ppolicyUser.inc:147
 msgid "Lockout time"
 msgstr "锁定的时间"
 
@@ -6974,15 +7017,15 @@ msgid "Login method"
 msgstr "登录方法"
 
 #: ../lib/types/user.inc:99 ../lib/modules/posixAccount.inc:186
-#: ../lib/modules/posixAccount.inc:356 ../lib/modules/posixAccount.inc:449
-#: ../lib/modules/posixAccount.inc:567 ../lib/modules/posixAccount.inc:1562
-#: ../lib/modules/posixAccount.inc:1834 ../lib/modules/posixAccount.inc:1937
-#: ../lib/modules/posixAccount.inc:2718
+#: ../lib/modules/posixAccount.inc:260 ../lib/modules/posixAccount.inc:353
+#: ../lib/modules/posixAccount.inc:480 ../lib/modules/posixAccount.inc:1475
+#: ../lib/modules/posixAccount.inc:1747 ../lib/modules/posixAccount.inc:1850
+#: ../lib/modules/posixAccount.inc:2777
 msgid "Login shell"
 msgstr "登录shell"
 
-#: ../lib/modules/posixAccount.inc:194 ../lib/modules/posixAccount.inc:280
-#: ../lib/modules/posixAccount.inc:526
+#: ../lib/modules/posixAccount.inc:194 ../lib/modules/posixAccount.inc:430
+#: ../lib/modules/posixAccount.inc:1966
 msgid "Login shells"
 msgstr "登录shells"
 
@@ -7005,24 +7048,24 @@ msgid "Logon for password change"
 msgstr "密码修改登录"
 
 #: ../lib/modules/sambaSamAccount.inc:119
-#: ../lib/modules/sambaSamAccount.inc:340
-#: ../lib/modules/sambaSamAccount.inc:343
-#: ../lib/modules/sambaSamAccount.inc:527
-#: ../lib/modules/sambaSamAccount.inc:578
-#: ../lib/modules/sambaSamAccount.inc:1262
-#: ../lib/modules/sambaSamAccount.inc:1763
+#: ../lib/modules/sambaSamAccount.inc:346
+#: ../lib/modules/sambaSamAccount.inc:349
+#: ../lib/modules/sambaSamAccount.inc:536
+#: ../lib/modules/sambaSamAccount.inc:587
+#: ../lib/modules/sambaSamAccount.inc:1271
+#: ../lib/modules/sambaSamAccount.inc:1772
 msgid "Logon hours"
 msgstr "可登录时间"
 
 #: ../lib/modules/sambaSamAccount.inc:100
 #: ../lib/modules/sambaSamAccount.inc:101
 #: ../lib/modules/sambaSamAccount.inc:224
-#: ../lib/modules/sambaSamAccount.inc:312
-#: ../lib/modules/sambaSamAccount.inc:511
-#: ../lib/modules/sambaSamAccount.inc:572
-#: ../lib/modules/sambaSamAccount.inc:1215
-#: ../lib/modules/sambaSamAccount.inc:1739
-#: ../lib/modules/sambaSamAccount.inc:1880 ../lib/modules/windowsUser.inc:228
+#: ../lib/modules/sambaSamAccount.inc:318
+#: ../lib/modules/sambaSamAccount.inc:520
+#: ../lib/modules/sambaSamAccount.inc:581
+#: ../lib/modules/sambaSamAccount.inc:1224
+#: ../lib/modules/sambaSamAccount.inc:1748
+#: ../lib/modules/sambaSamAccount.inc:1889 ../lib/modules/windowsUser.inc:228
 #: ../lib/modules/windowsUser.inc:533 ../lib/modules/windowsUser.inc:666
 #: ../lib/modules/windowsUser.inc:755 ../lib/modules/windowsUser.inc:875
 #: ../lib/modules/windowsUser.inc:1093 ../lib/modules/windowsUser.inc:2354
@@ -7075,6 +7118,19 @@ msgstr "MX记录"
 msgid "MX records"
 msgstr "MX记录"
 
+#: ../lib/modules/posixGroup.inc:546 ../lib/modules/posixGroup.inc:570
+#: ../lib/modules/posixGroup.inc:599 ../lib/modules/posixAccount.inc:447
+#: ../lib/modules/posixAccount.inc:1889 ../lib/modules/posixAccount.inc:1918
+#: ../lib/modules/posixAccount.inc:1955
+msgid "Magic number"
+msgstr "魔法号"
+
+#: ../lib/modules/posixGroup.inc:518 ../lib/modules/posixAccount.inc:436
+msgid ""
+"Magic number will set a fixed value that must match your server "
+"configuration."
+msgstr "魔法号将设置成与服务器配置匹配的固定值"
+
 #: ../lib/types/mailAlias.inc:53 ../lib/modules/nisMailAliasUser.inc:70
 #: ../lib/modules/nisMailAlias.inc:69
 msgid "Mail aliases"
@@ -7088,8 +7144,8 @@ msgstr "邮箱域"
 msgid "Mail routing"
 msgstr "邮件路由"
 
-#: ../lib/modules/selfRegistration.inc:695
-#: ../lib/modules/selfRegistration.inc:715
+#: ../lib/modules/selfRegistration.inc:721
+#: ../lib/modules/selfRegistration.inc:741
 #: ../lib/modules/passwordSelfReset.inc:1592
 #: ../lib/modules/passwordSelfReset.inc:1607
 #: ../lib/modules/passwordSelfReset.inc:1640
@@ -7113,7 +7169,7 @@ msgstr "邮件服务器"
 msgid "Mail servers (\"MX\" records)"
 msgstr "邮件服务 (\"MX\" 记录)"
 
-#: ../lib/account.inc:1079
+#: ../lib/account.inc:1086
 #, php-format
 msgid "Mail successfully sent to %s."
 msgstr "邮件已经成功发送到%s."
@@ -7210,7 +7266,7 @@ msgstr "管理徽标"
 msgid "Manage object class \"mailrecipient\""
 msgstr "管理目标类\"mailrecipient\""
 
-#: ../lib/modules/sambaSamAccount.inc:1202
+#: ../lib/modules/sambaSamAccount.inc:1211
 msgid "Manage profile directory"
 msgstr "管理配置所在的目录"
 
@@ -7243,8 +7299,8 @@ msgstr "管理后缀"
 #: ../lib/modules/windowsUser.inc:3049 ../lib/modules/inetOrgPerson.inc:364
 #: ../lib/modules/inetOrgPerson.inc:619 ../lib/modules/inetOrgPerson.inc:670
 #: ../lib/modules/inetOrgPerson.inc:674 ../lib/modules/inetOrgPerson.inc:1616
-#: ../lib/modules/inetOrgPerson.inc:1985 ../lib/modules/inetOrgPerson.inc:3707
-#: ../lib/modules/inetOrgPerson.inc:3749
+#: ../lib/modules/inetOrgPerson.inc:1985 ../lib/modules/inetOrgPerson.inc:3685
+#: ../lib/modules/inetOrgPerson.inc:3727
 msgid "Manager"
 msgstr "管理员"
 
@@ -7298,7 +7354,7 @@ msgstr "标记为删除"
 msgid "Mass delete"
 msgstr "批量删除"
 
-#: ../templates/config/profmanage.php:317
+#: ../templates/config/profmanage.php:320
 #: ../templates/config/mainlogin.php:159
 #: ../templates/selfService/profManage.php:253
 #: ../templates/pdfedit/pdfmain.php:295 ../templates/pdfedit/pdfmain.php:343
@@ -7331,22 +7387,22 @@ msgstr "匹配规则"
 msgid "Max. file descriptors"
 msgstr "最大的文件描述符"
 
-#: ../lib/modules/posixGroup.inc:582 ../lib/modules/posixGroup.inc:654
-#: ../lib/modules/posixGroup.inc:655
+#: ../lib/modules/posixGroup.inc:590 ../lib/modules/posixGroup.inc:665
+#: ../lib/modules/posixGroup.inc:666
 msgid "Maximum GID number"
 msgstr "最大GID号"
 
-#: ../lib/modules/posixGroup.inc:654
+#: ../lib/modules/posixGroup.inc:665
 msgid "Maximum GID number is invalid or empty!"
 msgstr "最大的GID非法或为空!"
 
-#: ../lib/modules/posixGroup.inc:655
+#: ../lib/modules/posixGroup.inc:666
 msgid "Maximum GID number must be greater than minimum GID number!"
 msgstr "最大GID必须大于最小GID!"
 
 #: ../lib/modules/posixAccount.inc:94 ../lib/modules/posixAccount.inc:96
 #: ../lib/modules/posixAccount.inc:97 ../lib/modules/posixAccount.inc:98
-#: ../lib/modules/posixAccount.inc:242 ../lib/modules/posixAccount.inc:271
+#: ../lib/modules/posixAccount.inc:1915 ../lib/modules/posixAccount.inc:1952
 msgid "Maximum UID number"
 msgstr "最大UID号"
 
@@ -7371,7 +7427,7 @@ msgid "Maximum file size"
 msgstr "最大文件大小"
 
 #: ../lib/modules/windowsUser.inc:3059 ../lib/modules/inetOrgPerson.inc:2449
-#: ../lib/modules/inetOrgPerson.inc:2474 ../lib/modules/inetOrgPerson.inc:3778
+#: ../lib/modules/inetOrgPerson.inc:2474 ../lib/modules/inetOrgPerson.inc:3756
 msgid "Maximum file size (kB)"
 msgstr "最大文件大小(kB)"
 
@@ -7380,7 +7436,7 @@ msgid "Maximum file size must be a number. Please enter 0 for no limit."
 msgstr "文件大小的最大值必须是一个数字. 输入0表示无限制."
 
 #: ../lib/modules/windowsUser.inc:3057 ../lib/modules/inetOrgPerson.inc:2446
-#: ../lib/modules/inetOrgPerson.inc:2471 ../lib/modules/inetOrgPerson.inc:3776
+#: ../lib/modules/inetOrgPerson.inc:2471 ../lib/modules/inetOrgPerson.inc:3754
 msgid "Maximum height (px)"
 msgstr "最大高度(px)"
 
@@ -7425,7 +7481,7 @@ msgid "Maximum password age"
 msgstr "密码最长生命"
 
 #: ../lib/modules/windowsUser.inc:3056 ../lib/modules/inetOrgPerson.inc:2444
-#: ../lib/modules/inetOrgPerson.inc:2468 ../lib/modules/inetOrgPerson.inc:3775
+#: ../lib/modules/inetOrgPerson.inc:2468 ../lib/modules/inetOrgPerson.inc:3753
 msgid "Maximum width (px)"
 msgstr "最大宽度（px）"
 
@@ -7521,16 +7577,16 @@ msgstr "米勒"
 msgid "Minimal password length"
 msgstr "最短密码长度"
 
-#: ../lib/modules/posixGroup.inc:579 ../lib/modules/posixGroup.inc:653
+#: ../lib/modules/posixGroup.inc:587 ../lib/modules/posixGroup.inc:664
 msgid "Minimum GID number"
 msgstr "最小GID号"
 
-#: ../lib/modules/posixGroup.inc:653
+#: ../lib/modules/posixGroup.inc:664
 msgid "Minimum GID number is invalid or empty!"
 msgstr "最小GID错误或为空"
 
 #: ../lib/modules/posixAccount.inc:93 ../lib/modules/posixAccount.inc:95
-#: ../lib/modules/posixAccount.inc:239 ../lib/modules/posixAccount.inc:268
+#: ../lib/modules/posixAccount.inc:1912 ../lib/modules/posixAccount.inc:1949
 msgid "Minimum UID number"
 msgstr "最小UID号"
 
@@ -7601,7 +7657,7 @@ msgstr "取消了增,删,改等修改命令"
 #: ../lib/modules/inetOrgPerson.inc:589 ../lib/modules/inetOrgPerson.inc:718
 #: ../lib/modules/inetOrgPerson.inc:722 ../lib/modules/inetOrgPerson.inc:1478
 #: ../lib/modules/inetOrgPerson.inc:1481 ../lib/modules/inetOrgPerson.inc:1993
-#: ../lib/modules/inetOrgPerson.inc:3689 ../lib/modules/inetOrgPerson.inc:3744
+#: ../lib/modules/inetOrgPerson.inc:3667 ../lib/modules/inetOrgPerson.inc:3722
 msgid "Mobile number"
 msgstr "手机号码"
 
@@ -7645,11 +7701,11 @@ msgstr "修改不成功!"
 msgid "Modification successful!"
 msgstr "修改成功!"
 
-#: ../lib/modules/generalInformation.inc:92
+#: ../lib/modules/generalInformation.inc:94
 msgid "Modification time"
 msgstr "修改时间"
 
-#: ../lib/modules/generalInformation.inc:88
+#: ../lib/modules/generalInformation.inc:90
 msgid "Modified by"
 msgstr "修改者"
 
@@ -7691,7 +7747,7 @@ msgstr "模块设置"
 msgid "Modules"
 msgstr "模块"
 
-#: ../lib/modules/sambaSamAccount.inc:1350
+#: ../lib/modules/sambaSamAccount.inc:1359
 msgid "Monday"
 msgstr "星期一"
 
@@ -7800,7 +7856,7 @@ msgstr "彩铃"
 msgid "MyCity"
 msgstr "城市"
 
-#: ../lib/database.inc:212
+#: ../lib/database.inc:238
 msgid "MySQL"
 msgstr "MYSQL"
 
@@ -8031,7 +8087,7 @@ msgstr "新账单号"
 msgid "New database entry"
 msgstr "新数据库条目"
 
-#: ../templates/config/profmanage.php:136
+#: ../templates/config/profmanage.php:139
 msgid "New default profile set successfully."
 msgstr "新缺省配置设置成功."
 
@@ -8080,13 +8136,13 @@ msgid "New organisational unit"
 msgstr "新组织单元"
 
 #: ../templates/config/confmain.php:521
-#: ../lib/modules/sambaSamAccount.inc:2242
-#: ../lib/modules/posixAccount.inc:2685 ../lib/modules/windowsUser.inc:2466
+#: ../lib/modules/sambaSamAccount.inc:2251
+#: ../lib/modules/posixAccount.inc:2744 ../lib/modules/windowsUser.inc:2466
 #: ../lib/modules/passwordSelfReset.inc:1104
 msgid "New password"
 msgstr "新密码"
 
-#: ../templates/config/profmanage.php:123
+#: ../templates/config/profmanage.php:126
 msgid "New password set successfully."
 msgstr "新密码设置成功."
 
@@ -8103,7 +8159,7 @@ msgstr "新地址池"
 msgid "New printer"
 msgstr "新打印机"
 
-#: ../templates/config/profmanage.php:267
+#: ../templates/config/profmanage.php:270
 #: ../templates/selfService/profManage.php:225
 msgid "New profile name"
 msgstr "新配置文件名"
@@ -8138,7 +8194,7 @@ msgstr "新共享文件夹"
 msgid "New sudo role"
 msgstr "新sudo角色"
 
-#: ../lib/types/user.inc:172 ../lib/types/user.inc:541
+#: ../lib/types/user.inc:172 ../lib/types/user.inc:564
 msgid "New user"
 msgstr "新用户"
 
@@ -8242,12 +8298,12 @@ msgstr "未发现 NIS 对象!"
 msgid "No RDN attribute was selected."
 msgstr "没有选中RDN属性"
 
-#: ../lib/modules/sambaSamAccount.inc:1079
+#: ../lib/modules/sambaSamAccount.inc:1088
 #: ../lib/modules/sambaGroupMapping.inc:341
 msgid "No Samba 3 domains found in LDAP! Please create one first."
 msgstr "在LDAP中没有发现Samba域,请先建立一个."
 
-#: ../lib/modules/posixAccount.inc:622 ../lib/modules/posixAccount.inc:1432
+#: ../lib/modules/posixAccount.inc:535 ../lib/modules/posixAccount.inc:1345
 msgid "No Unix groups found in LDAP! Please create one first."
 msgstr "在LDAP中没有发现Unix组,请先建立一个."
 
@@ -8325,7 +8381,7 @@ msgstr "没有选择文件!"
 msgid "No forwarding"
 msgstr "不能转发"
 
-#: ../lib/modules/posixGroup.inc:651 ../lib/modules/posixAccount.inc:104
+#: ../lib/modules/posixGroup.inc:662 ../lib/modules/posixAccount.inc:104
 msgid "No free ID-Number!"
 msgstr "没有可用的ID号!"
 
@@ -8467,7 +8523,7 @@ msgstr "没有这个schema项:\"%s\""
 msgid "No sudo roles found!"
 msgstr "未发现sudo角色!"
 
-#: ../lib/types/user.inc:540
+#: ../lib/types/user.inc:563
 msgid "No users found!"
 msgstr "未发现用户!"
 
@@ -8519,12 +8575,12 @@ msgstr "导出结果为空"
 msgid "Notice"
 msgstr "注意"
 
-#: ../lib/passwordExpirationJob.inc:76 ../lib/passwordExpirationJob.inc:113
+#: ../lib/passwordExpirationJob.inc:78 ../lib/passwordExpirationJob.inc:131
 #: ../help/help.inc:325
 msgid "Notification period"
 msgstr "提示周期"
 
-#: ../lib/modules/ppolicyUser.inc:519 ../lib/modules/windowsUser.inc:3173
+#: ../lib/modules/ppolicyUser.inc:520 ../lib/modules/windowsUser.inc:3173
 #: ../lib/modules/shadowAccount.inc:798
 msgid "Notify users about password expiration"
 msgstr "提示用户密码过期"
@@ -8618,7 +8674,7 @@ msgstr "OU编辑器"
 #: ../templates/schema/schema.php:65 ../templates/schema/schema.php:66
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1324
 #: ../lib/modules/selfRegistration.inc:74
-#: ../lib/modules/selfRegistration.inc:214 ../lib/modules/customFields.inc:80
+#: ../lib/modules/selfRegistration.inc:219 ../lib/modules/customFields.inc:80
 #: ../lib/modules/customFields.inc:578
 msgid "Object classes"
 msgstr "对象类"
@@ -8646,8 +8702,8 @@ msgstr "关闭"
 #: ../lib/modules/inetOrgPerson.inc:577 ../lib/modules/inetOrgPerson.inc:814
 #: ../lib/modules/inetOrgPerson.inc:818 ../lib/modules/inetOrgPerson.inc:1438
 #: ../lib/modules/inetOrgPerson.inc:1441 ../lib/modules/inetOrgPerson.inc:2003
-#: ../lib/modules/inetOrgPerson.inc:2701 ../lib/modules/inetOrgPerson.inc:3681
-#: ../lib/modules/inetOrgPerson.inc:3742
+#: ../lib/modules/inetOrgPerson.inc:2701 ../lib/modules/inetOrgPerson.inc:3659
+#: ../lib/modules/inetOrgPerson.inc:3720
 msgid "Office name"
 msgstr "办公室名"
 
@@ -8657,12 +8713,12 @@ msgstr "办公室名"
 #: ../templates/lists/changePassword.php:465
 #: ../templates/tests/lamdaemonTest.php:92 ../templates/ou_edit.php:198
 #: ../templates/ou_edit.php:212 ../templates/masscreate.php:215
-#: ../templates/config/profmanage.php:260
-#: ../templates/config/profmanage.php:272
-#: ../templates/config/profmanage.php:281
-#: ../templates/config/profmanage.php:299
-#: ../templates/config/profmanage.php:308
-#: ../templates/config/profmanage.php:310
+#: ../templates/config/profmanage.php:263
+#: ../templates/config/profmanage.php:275
+#: ../templates/config/profmanage.php:284
+#: ../templates/config/profmanage.php:302
+#: ../templates/config/profmanage.php:311
+#: ../templates/config/profmanage.php:313
 #: ../templates/config/mainmanage.php:469
 #: ../templates/config/conflogin.php:178 ../templates/config/mainlogin.php:166
 #: ../templates/selfService/profManage.php:213
@@ -8676,11 +8732,11 @@ msgstr "办公室名"
 #: ../templates/profedit/profilemain.php:204
 #: ../templates/profedit/profilemain.php:210
 #: ../templates/profedit/profilemain.php:216
-#: ../lib/types/automountType.inc:234 ../lib/types/user.inc:303
-#: ../lib/types/bind.inc:175 ../lib/modules/selfRegistration.inc:457
+#: ../lib/types/automountType.inc:234 ../lib/types/user.inc:314
+#: ../lib/types/bind.inc:175 ../lib/modules/selfRegistration.inc:477
 #: ../lib/modules/zarafaContact.inc:476 ../lib/modules/zarafaGroup.inc:486
-#: ../lib/modules/device.inc:300 ../lib/modules/sambaSamAccount.inc:1406
-#: ../lib/modules/sambaSamAccount.inc:1541 ../lib/modules/zarafaUser.inc:965
+#: ../lib/modules/device.inc:300 ../lib/modules/sambaSamAccount.inc:1415
+#: ../lib/modules/sambaSamAccount.inc:1550 ../lib/modules/zarafaUser.inc:965
 #: ../lib/modules/zarafaUser.inc:1016 ../lib/modules/sambaGroupMapping.inc:508
 #: ../lib/modules/nisnetgroup.inc:479 ../lib/modules/nisnetgroup.inc:489
 #: ../lib/modules/asteriskExtension.inc:484 ../lib/modules/aliasEntry.inc:146
@@ -8695,7 +8751,7 @@ msgstr "办公室名"
 msgid "Ok"
 msgstr "确定"
 
-#: ../lib/modules/posixAccount.inc:2681
+#: ../lib/modules/posixAccount.inc:2740
 msgid "Old password"
 msgstr "旧密码"
 
@@ -8711,9 +8767,9 @@ msgid "On"
 msgstr "On"
 
 #: ../lib/modules/sambaSamAccount.inc:244
-#: ../lib/modules/sambaSamAccount.inc:385
-#: ../lib/modules/sambaSamAccount.inc:1527
-#: ../lib/modules/sambaSamAccount.inc:1940
+#: ../lib/modules/sambaSamAccount.inc:391
+#: ../lib/modules/sambaSamAccount.inc:1536
+#: ../lib/modules/sambaSamAccount.inc:1949
 msgid "On broken or timed out connection"
 msgstr "中断或超时连接"
 
@@ -8758,7 +8814,7 @@ msgstr "PC的描述(可选)"
 #: ../lib/types/sudo.inc:83 ../lib/modules/mitKerberos.inc:408
 #: ../lib/modules/zarafaDynamicGroup.inc:267
 #: ../lib/modules/zarafaContact.inc:268 ../lib/modules/zarafaGroup.inc:268
-#: ../lib/modules/posixAccount.inc:277 ../lib/modules/zarafaUser.inc:600
+#: ../lib/modules/posixAccount.inc:1963 ../lib/modules/zarafaUser.inc:600
 #: ../lib/modules/kolabUser.inc:379 ../lib/modules/sudoRole.inc:94
 #: ../lib/modules/sudoRole.inc:123 ../lib/modules/sudoRole.inc:189
 #: ../lib/modules/sudoRole.inc:221 ../lib/modules/sudoRole.inc:233
@@ -8819,7 +8875,7 @@ msgstr "排序"
 #: ../lib/modules/inetOrgPerson.inc:622 ../lib/modules/inetOrgPerson.inc:847
 #: ../lib/modules/inetOrgPerson.inc:851 ../lib/modules/inetOrgPerson.inc:1587
 #: ../lib/modules/inetOrgPerson.inc:1590 ../lib/modules/inetOrgPerson.inc:2008
-#: ../lib/modules/inetOrgPerson.inc:3711 ../lib/modules/inetOrgPerson.inc:3750
+#: ../lib/modules/inetOrgPerson.inc:3689 ../lib/modules/inetOrgPerson.inc:3728
 msgid "Organisation"
 msgstr "组织"
 
@@ -8832,7 +8888,7 @@ msgstr "组织"
 #: ../lib/modules/inetOrgPerson.inc:839 ../lib/modules/inetOrgPerson.inc:843
 #: ../lib/modules/inetOrgPerson.inc:1578 ../lib/modules/inetOrgPerson.inc:1581
 #: ../lib/modules/inetOrgPerson.inc:2007 ../lib/modules/inetOrgPerson.inc:2831
-#: ../lib/modules/inetOrgPerson.inc:3709 ../lib/modules/inetOrgPerson.inc:3750
+#: ../lib/modules/inetOrgPerson.inc:3687 ../lib/modules/inetOrgPerson.inc:3728
 msgid "Organisational unit"
 msgstr "组织单元"
 
@@ -8963,8 +9019,8 @@ msgid "POP3"
 msgstr "POP3"
 
 #: ../templates/lists/changePassword.php:422
-#: ../templates/lists/changePassword.php:453 ../lib/types/user.inc:376
-#: ../lib/types/user.inc:408 ../lib/modules/ppolicyUser.inc:519
+#: ../templates/lists/changePassword.php:453 ../lib/types/user.inc:388
+#: ../lib/types/user.inc:423 ../lib/modules/ppolicyUser.inc:520
 msgid "PPolicy"
 msgstr "P策略"
 
@@ -9011,7 +9067,7 @@ msgstr "分页结果"
 #: ../lib/modules/inetOrgPerson.inc:734 ../lib/modules/inetOrgPerson.inc:738
 #: ../lib/modules/inetOrgPerson.inc:1494 ../lib/modules/inetOrgPerson.inc:1497
 #: ../lib/modules/inetOrgPerson.inc:1994 ../lib/modules/inetOrgPerson.inc:2591
-#: ../lib/modules/inetOrgPerson.inc:3693 ../lib/modules/inetOrgPerson.inc:3745
+#: ../lib/modules/inetOrgPerson.inc:3671 ../lib/modules/inetOrgPerson.inc:3723
 #: ../lib/modules/asteriskVoicemail.inc:111
 #: ../lib/modules/asteriskVoicemail.inc:141
 #: ../lib/modules/asteriskVoicemail.inc:184
@@ -9046,7 +9102,7 @@ msgstr "继承于"
 msgid "Parse error"
 msgstr "解析错误"
 
-#: ../lib/types/user.inc:768
+#: ../lib/types/user.inc:791
 msgid "Partially locked"
 msgstr "部分锁定"
 
@@ -9061,26 +9117,26 @@ msgstr "Passthrough"
 #: ../lib/selfService.inc:406 ../lib/modules/mitKerberos.inc:156
 #: ../lib/modules/mitKerberos.inc:242 ../lib/modules/mitKerberos.inc:257
 #: ../lib/modules/mitKerberos.inc:809 ../lib/modules/mitKerberos.inc:812
-#: ../lib/modules/selfRegistration.inc:416
-#: ../lib/modules/selfRegistration.inc:556
-#: ../lib/modules/selfRegistration.inc:559
-#: ../lib/modules/selfRegistration.inc:562
+#: ../lib/modules/selfRegistration.inc:428
+#: ../lib/modules/selfRegistration.inc:582
+#: ../lib/modules/selfRegistration.inc:585
+#: ../lib/modules/selfRegistration.inc:588
 #: ../lib/modules/asteriskAccount.inc:115
 #: ../lib/modules/asteriskAccount.inc:325 ../lib/modules/posixGroup.inc:202
-#: ../lib/modules/posixGroup.inc:648 ../lib/modules/sambaSamAccount.inc:105
+#: ../lib/modules/posixGroup.inc:659 ../lib/modules/sambaSamAccount.inc:105
 #: ../lib/modules/sambaSamAccount.inc:106
 #: ../lib/modules/sambaSamAccount.inc:251
-#: ../lib/modules/sambaSamAccount.inc:426 ../lib/modules/posixAccount.inc:109
+#: ../lib/modules/sambaSamAccount.inc:435 ../lib/modules/posixAccount.inc:109
 #: ../lib/modules/posixAccount.inc:110 ../lib/modules/posixAccount.inc:186
-#: ../lib/modules/posixAccount.inc:364 ../lib/modules/posixAccount.inc:450
-#: ../lib/modules/posixAccount.inc:559 ../lib/modules/posixAccount.inc:1566
-#: ../lib/modules/posixAccount.inc:1951 ../lib/modules/posixAccount.inc:1954
+#: ../lib/modules/posixAccount.inc:268 ../lib/modules/posixAccount.inc:354
+#: ../lib/modules/posixAccount.inc:472 ../lib/modules/posixAccount.inc:1479
+#: ../lib/modules/posixAccount.inc:1864 ../lib/modules/posixAccount.inc:1867
 #: ../lib/modules/windowsUser.inc:242 ../lib/modules/windowsUser.inc:375
 #: ../lib/modules/windowsUser.inc:758 ../lib/modules/windowsUser.inc:823
 #: ../lib/modules/windowsUser.inc:877 ../lib/modules/windowsUser.inc:878
 #: ../lib/modules/windowsUser.inc:2364 ../lib/modules/windowsUser.inc:2367
 #: ../lib/modules/inetOrgPerson.inc:863 ../lib/modules/inetOrgPerson.inc:1644
-#: ../lib/modules/inetOrgPerson.inc:2144 ../lib/modules/inetOrgPerson.inc:3752
+#: ../lib/modules/inetOrgPerson.inc:2144 ../lib/modules/inetOrgPerson.inc:3730
 #: ../lib/modules/asteriskVoicemail.inc:99
 #: ../lib/modules/asteriskVoicemail.inc:165
 #: ../lib/modules/customFields.inc:2560 ../lib/modules/heimdalKerberos.inc:124
@@ -9092,8 +9148,8 @@ msgstr "Passthrough"
 msgid "Password"
 msgstr "密码"
 
-#: ../lib/modules/sambaSamAccount.inc:295
-#: ../lib/modules/sambaSamAccount.inc:1131 ../lib/modules/windowsUser.inc:233
+#: ../lib/modules/sambaSamAccount.inc:301
+#: ../lib/modules/sambaSamAccount.inc:1140 ../lib/modules/windowsUser.inc:233
 #: ../lib/modules/windowsUser.inc:519 ../lib/modules/windowsUser.inc:756
 #: ../lib/modules/windowsUser.inc:2352
 msgid "Password change at next login"
@@ -9109,8 +9165,8 @@ msgstr "密码修改命令"
 msgid "Password change options"
 msgstr "密码修改选项"
 
-#: ../lib/modules/ppolicyUser.inc:59 ../lib/modules/ppolicyUser.inc:78
-#: ../lib/modules/ppolicyUser.inc:136 ../lib/modules/ppolicyUser.inc:267
+#: ../lib/modules/ppolicyUser.inc:60 ../lib/modules/ppolicyUser.inc:79
+#: ../lib/modules/ppolicyUser.inc:137 ../lib/modules/ppolicyUser.inc:268
 msgid "Password change required"
 msgstr "需要修改密码"
 
@@ -9126,7 +9182,7 @@ msgstr "修改密码时需要旧密码"
 msgid "Password change service"
 msgstr "密码修改服务"
 
-#: ../lib/modules/posixAccount.inc:199 ../lib/modules/posixAccount.inc:579
+#: ../lib/modules/posixAccount.inc:199 ../lib/modules/posixAccount.inc:492
 msgid "Password change with old password"
 msgstr "修改密码时需要旧密码"
 
@@ -9134,19 +9190,19 @@ msgstr "修改密码时需要旧密码"
 msgid "Password check"
 msgstr "密码检查"
 
-#: ../lib/modules/mitKerberos.inc:297 ../lib/modules/selfRegistration.inc:559
-#: ../lib/modules/posixGroup.inc:648 ../lib/modules/sambaSamAccount.inc:106
+#: ../lib/modules/mitKerberos.inc:297 ../lib/modules/selfRegistration.inc:585
+#: ../lib/modules/posixGroup.inc:659 ../lib/modules/sambaSamAccount.inc:106
 #: ../lib/modules/sambaSamAccount.inc:107 ../lib/modules/posixAccount.inc:110
 #: ../lib/modules/posixAccount.inc:111 ../lib/modules/windowsUser.inc:878
 #: ../lib/modules/inetOrgPerson.inc:107
 msgid "Password contains invalid characters. Valid characters are:"
 msgstr "密码名包含非法字符,只能使用:"
 
-#: ../lib/modules/sambaSamAccount.inc:280
-#: ../lib/modules/sambaSamAccount.inc:283
-#: ../lib/modules/sambaSamAccount.inc:448
-#: ../lib/modules/sambaSamAccount.inc:1121
-#: ../lib/modules/sambaSamAccount.inc:1714 ../lib/modules/windowsUser.inc:217
+#: ../lib/modules/sambaSamAccount.inc:286
+#: ../lib/modules/sambaSamAccount.inc:289
+#: ../lib/modules/sambaSamAccount.inc:457
+#: ../lib/modules/sambaSamAccount.inc:1130
+#: ../lib/modules/sambaSamAccount.inc:1723 ../lib/modules/windowsUser.inc:217
 #: ../lib/modules/windowsUser.inc:497 ../lib/modules/windowsUser.inc:752
 #: ../lib/modules/windowsUser.inc:1064 ../lib/modules/windowsUser.inc:2341
 msgid "Password does not expire"
@@ -9171,10 +9227,10 @@ msgstr "密码文本框标签"
 msgid "Password for voicemail mailbox."
 msgstr "语音邮箱的密码."
 
-#: ../lib/modules/posixGroup.inc:500 ../lib/modules/posixGroup.inc:600
-#: ../lib/modules/posixAccount.inc:192 ../lib/modules/posixAccount.inc:279
-#: ../lib/modules/posixAccount.inc:489 ../lib/modules/inetOrgPerson.inc:834
-#: ../lib/modules/inetOrgPerson.inc:3656 ../lib/modules/customFields.inc:140
+#: ../lib/modules/posixGroup.inc:500 ../lib/modules/posixGroup.inc:611
+#: ../lib/modules/posixAccount.inc:192 ../lib/modules/posixAccount.inc:393
+#: ../lib/modules/posixAccount.inc:1965 ../lib/modules/inetOrgPerson.inc:834
+#: ../lib/modules/inetOrgPerson.inc:3634 ../lib/modules/customFields.inc:140
 #: ../lib/modules/customFields.inc:2574
 msgid "Password hash type"
 msgstr "密码哈希类型"
@@ -9230,11 +9286,11 @@ msgstr "密码策略"
 msgid "Password policies (ppolicy)"
 msgstr "密码策略"
 
-#: ../templates/config/mainmanage.php:382 ../lib/types/user.inc:284
-#: ../lib/types/user.inc:914 ../lib/modules/ppolicyUser.inc:45
-#: ../lib/modules/ppolicyUser.inc:55 ../lib/modules/ppolicyUser.inc:71
-#: ../lib/modules/ppolicyUser.inc:87 ../lib/modules/ppolicyUser.inc:127
-#: ../lib/modules/ppolicyUser.inc:262 ../lib/modules/ppolicyUser.inc:296
+#: ../templates/config/mainmanage.php:382 ../lib/types/user.inc:287
+#: ../lib/types/user.inc:942 ../lib/modules/ppolicyUser.inc:45
+#: ../lib/modules/ppolicyUser.inc:56 ../lib/modules/ppolicyUser.inc:72
+#: ../lib/modules/ppolicyUser.inc:88 ../lib/modules/ppolicyUser.inc:128
+#: ../lib/modules/ppolicyUser.inc:263 ../lib/modules/ppolicyUser.inc:297
 #: ../lib/modules/ppolicy.inc:62 ../lib/modules/sambaDomain.inc:266
 #: ../help/help.inc:156
 msgid "Password policy"
@@ -9301,11 +9357,11 @@ msgstr ""
 "用户配置文件的路径(使用UNC-path,比如\\\\server\\share\\user).$user被用户名代"
 "替."
 
-#: ../lib/modules/sambaSamAccount.inc:359
+#: ../lib/modules/sambaSamAccount.inc:365
 msgid "Path of the user profile."
 msgstr "用户配置文件所在路径。"
 
-#: ../lib/modules/sambaSamAccount.inc:310
+#: ../lib/modules/sambaSamAccount.inc:316
 msgid ""
 "Path of the user profile. Can be a local absolute path or a UNC-path (\\"
 "\\server\\share). $user and $group are replaced with user and group name."
@@ -9380,12 +9436,12 @@ msgstr "个人信息"
 msgid "Personal data"
 msgstr "个人数据"
 
-#: ../lib/types/user.inc:102 ../lib/types/user.inc:632
+#: ../lib/types/user.inc:102 ../lib/types/user.inc:655
 #: ../lib/modules/windowsUser.inc:3040 ../lib/modules/windowsUser.inc:3052
 #: ../lib/modules/inetOrgPerson.inc:162 ../lib/modules/inetOrgPerson.inc:2440
 #: ../lib/modules/inetOrgPerson.inc:2734 ../lib/modules/inetOrgPerson.inc:2740
-#: ../lib/modules/inetOrgPerson.inc:3721 ../lib/modules/inetOrgPerson.inc:3752
-#: ../lib/modules/inetOrgPerson.inc:3771
+#: ../lib/modules/inetOrgPerson.inc:3699 ../lib/modules/inetOrgPerson.inc:3730
+#: ../lib/modules/inetOrgPerson.inc:3749
 msgid "Photo"
 msgstr "照片"
 
@@ -9438,7 +9494,7 @@ msgstr "如果从LAM中接收邮件时发生了问题，请修改这个选项。
 msgid "Please check if this email should be sent."
 msgstr "如果这封邮件必须要发送请检查"
 
-#: ../lib/modules/sambaSamAccount.inc:1069
+#: ../lib/modules/sambaSamAccount.inc:1078
 msgid "Please check your settings on the Unix page!"
 msgstr "请在UNIX中检查设置"
 
@@ -9454,7 +9510,7 @@ msgstr ""
 msgid "Please click here to continue: @@resetLink@@"
 msgstr "请点击这儿继续: @@resetLink@@"
 
-#: ../lib/types/user.inc:298
+#: ../lib/types/user.inc:309
 msgid "Please click to lock/unlock this account."
 msgstr "点击以锁定/解锁此账号."
 
@@ -9538,7 +9594,7 @@ msgid ""
 "accounts."
 msgstr "请输入所有用户账号可选的windows 域名为新账号输入一个对象类列表."
 
-#: ../lib/modules/selfRegistration.inc:120
+#: ../lib/modules/selfRegistration.inc:124
 msgid "Please enter a list of object classes for the new accounts."
 msgstr "请为新账号输入一个对象类列表."
 
@@ -9596,7 +9652,7 @@ msgstr "请输入磁盘限额"
 
 #: ../templates/lib/141_jquery-validationEngine-lang.php:54
 #: ../templates/lib/141_jquery-validationEngine-lang.php:58
-#: ../lib/passwordExpirationJob.inc:113 ../lib/modules/mitKerberos.inc:298
+#: ../lib/passwordExpirationJob.inc:131 ../lib/modules/mitKerberos.inc:298
 #: ../lib/modules/zarafaUser.inc:430 ../lib/modules/zarafaUser.inc:431
 #: ../lib/modules/zarafaUser.inc:432 ../lib/modules/zarafaUser.inc:433
 #: ../lib/modules/zarafaUser.inc:434 ../lib/modules/zarafaUser.inc:435
@@ -9653,7 +9709,7 @@ msgstr "请输入角色名."
 msgid "Please enter a security answer."
 msgstr "请输入安全问题."
 
-#: ../lib/modules/selfRegistration.inc:118
+#: ../lib/modules/selfRegistration.inc:122
 msgid "Please enter a subject for the confirmation mails."
 msgstr "请为确认邮件输入一个标题."
 
@@ -9661,7 +9717,7 @@ msgstr "请为确认邮件输入一个标题."
 msgid "Please enter a target folder."
 msgstr "请输入一个目的文件夹"
 
-#: ../lib/modules/selfRegistration.inc:119
+#: ../lib/modules/selfRegistration.inc:123
 msgid ""
 "Please enter a text for the confirmation mails that includes the creation "
 "link."
@@ -9772,10 +9828,11 @@ msgstr "请输入有效的显示名!"
 msgid "Please enter a valid drive letter."
 msgstr "请输入有效的盘符."
 
-#: ../lib/passwordExpirationJob.inc:105 ../lib/passwordExpirationJob.inc:109
+#: ../lib/passwordExpirationJob.inc:109 ../lib/passwordExpirationJob.inc:115
+#: ../lib/passwordExpirationJob.inc:121 ../lib/passwordExpirationJob.inc:127
 #: ../lib/modules/kolabGroup.inc:177 ../lib/modules/kolabGroup.inc:178
-#: ../lib/modules/selfRegistration.inc:122
-#: ../lib/modules/selfRegistration.inc:495
+#: ../lib/modules/selfRegistration.inc:126
+#: ../lib/modules/selfRegistration.inc:515
 #: ../lib/modules/zarafaDynamicGroup.inc:200
 #: ../lib/modules/zarafaDynamicGroup.inc:201 ../lib/modules/qmailUser.inc:448
 #: ../lib/modules/qmailUser.inc:449 ../lib/modules/qmailUser.inc:450
@@ -9835,7 +9892,7 @@ msgid ""
 msgstr "请输入合法的过滤器.只允许字母,数字和\" _*$.@-\" ."
 
 #: ../lib/modules/selfRegistration.inc:83
-#: ../lib/modules/selfRegistration.inc:218
+#: ../lib/modules/selfRegistration.inc:223
 msgid "Please enter a valid first name."
 msgstr "请输入有效的名字!"
 
@@ -9871,7 +9928,7 @@ msgid "Please enter a valid job title!"
 msgstr "请输入有效的头衔!"
 
 #: ../lib/modules/selfRegistration.inc:84
-#: ../lib/modules/selfRegistration.inc:219
+#: ../lib/modules/selfRegistration.inc:224
 msgid "Please enter a valid last name."
 msgstr "请输入有效的姓!"
 
@@ -9991,8 +10048,8 @@ msgstr "请输入有效的电话号码!"
 msgid "Please enter a valid user name or email address."
 msgstr "请输入有效的用户名或邮件地址."
 
-#: ../lib/modules/posixGroup.inc:776 ../lib/modules/posixAccount.inc:1210
-#: ../lib/modules/posixAccount.inc:1215
+#: ../lib/modules/posixGroup.inc:787 ../lib/modules/posixAccount.inc:1123
+#: ../lib/modules/posixAccount.inc:1128
 #, php-format
 msgid "Please enter a value between %s and %s!"
 msgstr "请输入有效值(介于%s和%s之间)!"
@@ -10075,7 +10132,7 @@ msgid ""
 "account."
 msgstr "请输入DN和管理员级密码自助复位的帐号的密码."
 
-#: ../lib/modules/selfRegistration.inc:117
+#: ../lib/modules/selfRegistration.inc:121
 msgid ""
 "Please enter the DN and password of the administrative self registration "
 "account."
@@ -10085,13 +10142,13 @@ msgstr "请输入管理员级密码自助复位的帐号和密码."
 msgid "Please enter the DN and password to use for all jobs."
 msgstr "请输入所有工作使用的DN和密码."
 
-#: ../lib/modules/posixGroup.inc:525 ../lib/modules/posixAccount.inc:539
+#: ../lib/modules/posixGroup.inc:526 ../lib/modules/posixAccount.inc:444
 msgid ""
 "Please enter the DN of the LDAP entry with object class \"msSFU30DomainInfo"
 "\"."
 msgstr "请输入目标类\"sambaUnixIdPool\"的 LDAP 条目的DN"
 
-#: ../lib/modules/posixGroup.inc:521 ../lib/modules/posixAccount.inc:535
+#: ../lib/modules/posixGroup.inc:522 ../lib/modules/posixAccount.inc:440
 msgid ""
 "Please enter the DN of the LDAP entry with object class \"sambaUnixIdPool\"."
 msgstr "请输入目标类为\"sambaUnixIdPool\"的 LDAP 条目的DN"
@@ -10130,6 +10187,11 @@ msgid ""
 "Please enter the LDAP suffix where the PyKota job entries are stored "
 "(configuration option \"jobbase\")."
 msgstr "请输入PyKota保存任务的LDAP后缀. (配置选项 \"jobbase\")."
+
+#: ../lib/modules/sambaSamAccount.inc:413
+msgid ""
+"Please enter the LDAP suffix where your Samba domain entries are stored."
+msgstr "请输入保存Samba域名录的LDAP后缀)."
 
 #: ../lib/modules/asteriskExtension.inc:188
 #: ../lib/modules/asteriskVoicemail.inc:214
@@ -10216,6 +10278,10 @@ msgid ""
 "following format: [action] [script and arguments]"
 msgstr "请输入运行的脚本列表。每一行遵循如下格式：[动作] [脚本和参数]"
 
+#: ../lib/modules/posixGroup.inc:547 ../lib/modules/posixAccount.inc:448
+msgid "Please enter the magic number you configured on server side."
+msgstr "请输入服务器端配置的魔法号"
+
 #: ../lib/modules/nisObject.inc:66
 msgid ""
 "Please enter the mapping entry (e.g. \"-fstype=nfs,rw server:/projects\")."
@@ -10267,7 +10333,7 @@ msgid ""
 "as clear-text in the self service profile."
 msgstr "请输入管理DN的密码.请注意密码将在自助服务配置中以明文存放."
 
-#: ../lib/modules/asteriskAccount.inc:116 ../lib/modules/posixAccount.inc:560
+#: ../lib/modules/asteriskAccount.inc:116 ../lib/modules/posixAccount.inc:473
 #: ../lib/modules/windowsUser.inc:243 ../lib/modules/inetOrgPerson.inc:864
 msgid "Please enter the password which you want to set for this account."
 msgstr "请输入这个帐号的密码."
@@ -10279,7 +10345,7 @@ msgid ""
 "your screen."
 msgstr "请输入本帐号的密码.可以生成一个12个字符长的随机密码,显示在屏幕上."
 
-#: ../lib/modules/posixAccount.inc:507
+#: ../lib/modules/posixAccount.inc:411
 msgid "Please enter the path to the user's home directory."
 msgstr "请输入用户主目录路径."
 
@@ -10334,7 +10400,7 @@ msgstr ""
 "\"%s\">看这里</a>."
 
 #: ../templates/lists/changePassword.php:534
-#: ../lib/modules/selfRegistration.inc:556
+#: ../lib/modules/selfRegistration.inc:582
 #: ../lib/modules/sambaSamAccount.inc:105 ../lib/modules/posixAccount.inc:109
 #: ../lib/modules/windowsUser.inc:877 ../lib/modules/customFields.inc:2661
 msgid "Please enter the same password in both password fields."
@@ -10344,7 +10410,11 @@ msgstr "在两个密码输入框请输入相同的密码."
 msgid "Please enter the security question for the password self reset."
 msgstr "请为密码自复位输入安全提问."
 
-#: ../lib/modules/sambaSamAccount.inc:371
+#: ../lib/modules/selfRegistration.inc:111
+msgid "Please enter the site and secret key you got from Google reCAPTCHA."
+msgstr "请输入从 Google reCAPTCHA 获得的站点和密钥."
+
+#: ../lib/modules/sambaSamAccount.inc:377
 msgid "Please enter the time limit in minutes. 0 means unlimited."
 msgstr "请输入时间限制（分钟）。0代表不限制。"
 
@@ -10451,7 +10521,7 @@ msgstr "在保存前请设置语音邮件的密码."
 msgid "Please set up all required attributes on page: %s"
 msgstr "请在页面%s上输入必须的属性."
 
-#: ../templates/config/profmanage.php:210
+#: ../templates/config/profmanage.php:213
 #: ../templates/selfService/profManage.php:160
 msgid "Please set up your master configuration file (config/config.cfg) first!"
 msgstr "请先主配置文件(config/config.cfg)!"
@@ -10539,7 +10609,7 @@ msgstr "位置"
 msgid "Possible values"
 msgstr "可能的值"
 
-#: ../lib/modules/pykotaPrinter.inc:130 ../lib/modules/posixGroup.inc:530
+#: ../lib/modules/pykotaPrinter.inc:130 ../lib/modules/posixGroup.inc:531
 #: ../lib/modules/sambaGroupMapping.inc:172
 #: ../lib/modules/organizationalRole.inc:103
 #: ../lib/modules/groupOfNames.inc:115
@@ -10556,8 +10626,8 @@ msgstr "可能的通配符是: \"*\" = 任意字符, \"^\" = 行的开头, \"$\"
 #: ../lib/modules/inetOrgPerson.inc:559 ../lib/modules/inetOrgPerson.inc:686
 #: ../lib/modules/inetOrgPerson.inc:690 ../lib/modules/inetOrgPerson.inc:1314
 #: ../lib/modules/inetOrgPerson.inc:1317 ../lib/modules/inetOrgPerson.inc:1987
-#: ../lib/modules/inetOrgPerson.inc:2646 ../lib/modules/inetOrgPerson.inc:3669
-#: ../lib/modules/inetOrgPerson.inc:3739
+#: ../lib/modules/inetOrgPerson.inc:2646 ../lib/modules/inetOrgPerson.inc:3647
+#: ../lib/modules/inetOrgPerson.inc:3717
 msgid "Post office box"
 msgstr "邮政信箱"
 
@@ -10565,8 +10635,8 @@ msgstr "邮政信箱"
 #: ../lib/modules/inetOrgPerson.inc:196 ../lib/modules/inetOrgPerson.inc:396
 #: ../lib/modules/inetOrgPerson.inc:571 ../lib/modules/inetOrgPerson.inc:702
 #: ../lib/modules/inetOrgPerson.inc:1358 ../lib/modules/inetOrgPerson.inc:1989
-#: ../lib/modules/inetOrgPerson.inc:2613 ../lib/modules/inetOrgPerson.inc:3677
-#: ../lib/modules/inetOrgPerson.inc:3741
+#: ../lib/modules/inetOrgPerson.inc:2613 ../lib/modules/inetOrgPerson.inc:3655
+#: ../lib/modules/inetOrgPerson.inc:3719
 msgid "Postal address"
 msgstr "邮政地址"
 
@@ -10583,8 +10653,8 @@ msgstr "邮政地址,城市"
 #: ../lib/modules/inetOrgPerson.inc:562 ../lib/modules/inetOrgPerson.inc:694
 #: ../lib/modules/inetOrgPerson.inc:698 ../lib/modules/inetOrgPerson.inc:1323
 #: ../lib/modules/inetOrgPerson.inc:1326 ../lib/modules/inetOrgPerson.inc:1988
-#: ../lib/modules/inetOrgPerson.inc:2635 ../lib/modules/inetOrgPerson.inc:3671
-#: ../lib/modules/inetOrgPerson.inc:3739
+#: ../lib/modules/inetOrgPerson.inc:2635 ../lib/modules/inetOrgPerson.inc:3649
+#: ../lib/modules/inetOrgPerson.inc:3717
 msgid "Postal code"
 msgstr "邮政编码"
 
@@ -10643,11 +10713,11 @@ msgstr "每页价格"
 msgid "Primary affiliation"
 msgstr "主要联系"
 
-#: ../lib/modules/posixAccount.inc:329 ../lib/modules/posixAccount.inc:421
-#: ../lib/modules/posixAccount.inc:446 ../lib/modules/posixAccount.inc:498
-#: ../lib/modules/posixAccount.inc:551 ../lib/modules/posixAccount.inc:593
-#: ../lib/modules/posixAccount.inc:1516 ../lib/modules/posixAccount.inc:1812
-#: ../lib/modules/posixAccount.inc:1858 ../lib/modules/posixAccount.inc:1930
+#: ../lib/modules/posixAccount.inc:233 ../lib/modules/posixAccount.inc:325
+#: ../lib/modules/posixAccount.inc:350 ../lib/modules/posixAccount.inc:402
+#: ../lib/modules/posixAccount.inc:464 ../lib/modules/posixAccount.inc:506
+#: ../lib/modules/posixAccount.inc:1429 ../lib/modules/posixAccount.inc:1725
+#: ../lib/modules/posixAccount.inc:1771 ../lib/modules/posixAccount.inc:1843
 msgid "Primary group"
 msgstr "主要组"
 
@@ -10748,7 +10818,7 @@ msgstr "配置"
 msgid "Profile DN"
 msgstr "配置DN"
 
-#: ../templates/config/profmanage.php:100
+#: ../templates/config/profmanage.php:103
 #: ../templates/selfService/profManage.php:85
 msgid "Profile deleted."
 msgstr "配置文件被删除."
@@ -10758,8 +10828,8 @@ msgstr "配置文件被删除."
 msgid "Profile editor"
 msgstr "配置文件编辑器"
 
-#: ../templates/config/profmanage.php:149
-#: ../templates/config/profmanage.php:226
+#: ../templates/config/profmanage.php:152
+#: ../templates/config/profmanage.php:229
 #: ../templates/selfService/profManage.php:101
 #: ../templates/selfService/profManage.php:201 ../help/help.inc:132
 #: ../help/help.inc:134 ../help/help.inc:136 ../help/help.inc:138
@@ -10767,11 +10837,11 @@ msgstr "配置文件编辑器"
 msgid "Profile management"
 msgstr "配置文件管理"
 
-#: ../templates/config/profmanage.php:230
-#: ../templates/config/profmanage.php:266
-#: ../templates/config/profmanage.php:278
-#: ../templates/config/profmanage.php:287
-#: ../templates/config/profmanage.php:307
+#: ../templates/config/profmanage.php:233
+#: ../templates/config/profmanage.php:269
+#: ../templates/config/profmanage.php:281
+#: ../templates/config/profmanage.php:290
+#: ../templates/config/profmanage.php:310
 #: ../templates/selfService/profManage.php:205
 #: ../templates/selfService/profManage.php:220
 #: ../templates/selfService/profManage.php:238
@@ -10781,37 +10851,37 @@ msgstr "配置文件管理"
 msgid "Profile name"
 msgstr "配置文件名"
 
-#: ../templates/config/profmanage.php:95
-#: ../templates/config/profmanage.php:127
-#: ../templates/config/profmanage.php:138
+#: ../templates/config/profmanage.php:98
+#: ../templates/config/profmanage.php:130
+#: ../templates/config/profmanage.php:141
 #: ../templates/selfService/profManage.php:61
 #: ../templates/selfService/profManage.php:76 ../lib/config.inc:178
 msgid "Profile name is invalid!"
 msgstr "配置文件名非法!"
 
-#: ../templates/config/profmanage.php:233
-#: ../templates/config/profmanage.php:288
+#: ../templates/config/profmanage.php:236
+#: ../templates/config/profmanage.php:291
 msgid "Profile password"
 msgstr "配置文件密码"
 
 #: ../templates/config/profmanage.php:73
-#: ../templates/config/profmanage.php:125
+#: ../templates/config/profmanage.php:128
 msgid "Profile passwords are different or empty!"
 msgstr "配置文件密码不同或为空!"
 
 #: ../lib/modules/sambaSamAccount.inc:97 ../lib/modules/sambaSamAccount.inc:98
 #: ../lib/modules/sambaSamAccount.inc:221
 #: ../lib/modules/sambaSamAccount.inc:233
-#: ../lib/modules/sambaSamAccount.inc:309
-#: ../lib/modules/sambaSamAccount.inc:358
-#: ../lib/modules/sambaSamAccount.inc:503
-#: ../lib/modules/sambaSamAccount.inc:570
-#: ../lib/modules/sambaSamAccount.inc:1196
-#: ../lib/modules/sambaSamAccount.inc:1486
-#: ../lib/modules/sambaSamAccount.inc:1555
-#: ../lib/modules/sambaSamAccount.inc:1735
-#: ../lib/modules/sambaSamAccount.inc:1881
-#: ../lib/modules/sambaSamAccount.inc:1896 ../lib/modules/windowsUser.inc:223
+#: ../lib/modules/sambaSamAccount.inc:315
+#: ../lib/modules/sambaSamAccount.inc:364
+#: ../lib/modules/sambaSamAccount.inc:512
+#: ../lib/modules/sambaSamAccount.inc:579
+#: ../lib/modules/sambaSamAccount.inc:1205
+#: ../lib/modules/sambaSamAccount.inc:1495
+#: ../lib/modules/sambaSamAccount.inc:1564
+#: ../lib/modules/sambaSamAccount.inc:1744
+#: ../lib/modules/sambaSamAccount.inc:1890
+#: ../lib/modules/sambaSamAccount.inc:1905 ../lib/modules/windowsUser.inc:223
 #: ../lib/modules/windowsUser.inc:527 ../lib/modules/windowsUser.inc:667
 #: ../lib/modules/windowsUser.inc:754 ../lib/modules/windowsUser.inc:873
 #: ../lib/modules/windowsUser.inc:1091 ../lib/modules/windowsUser.inc:2353
@@ -10977,7 +11047,7 @@ msgstr "限制告警点."
 
 #: ../templates/masscreate.php:339 ../templates/profedit/profilepage.php:218
 #: ../lib/modules/selfRegistration.inc:98
-#: ../lib/modules/selfRegistration.inc:210 ../lib/modules.inc:1022
+#: ../lib/modules/selfRegistration.inc:215 ../lib/modules.inc:1022
 #: ../help/help.inc:216
 msgid "RDN identifier"
 msgstr "RDN标志"
@@ -11047,7 +11117,7 @@ msgstr "读"
 msgid "Read-only"
 msgstr "只读"
 
-#: ../lib/modules/inetOrgPerson.inc:3735
+#: ../lib/modules/inetOrgPerson.inc:3713
 msgid "Read-only fields"
 msgstr "只读域"
 
@@ -11092,9 +11162,9 @@ msgid "Recipients"
 msgstr "收件人"
 
 #: ../lib/modules/sambaSamAccount.inc:245
-#: ../lib/modules/sambaSamAccount.inc:388
-#: ../lib/modules/sambaSamAccount.inc:1535
-#: ../lib/modules/sambaSamAccount.inc:1948
+#: ../lib/modules/sambaSamAccount.inc:394
+#: ../lib/modules/sambaSamAccount.inc:1544
+#: ../lib/modules/sambaSamAccount.inc:1957
 msgid "Reconnect if disconnected"
 msgstr "如果中断重新连接"
 
@@ -11114,12 +11184,12 @@ msgstr "递归删除过程"
 msgid "Recursively copy all children of this object as well."
 msgstr "此对象的所有子集递归拷贝完毕"
 
-#: ../templates/config/profmanage.php:237
-#: ../templates/config/profmanage.php:292
+#: ../templates/config/profmanage.php:240
+#: ../templates/config/profmanage.php:295
 #: ../templates/config/mainmanage.php:459 ../templates/config/confmain.php:523
-#: ../lib/modules/selfRegistration.inc:424
-#: ../lib/modules/sambaSamAccount.inc:2245
-#: ../lib/modules/posixAccount.inc:2688 ../lib/modules/windowsUser.inc:2470
+#: ../lib/modules/selfRegistration.inc:436
+#: ../lib/modules/sambaSamAccount.inc:2254
+#: ../lib/modules/posixAccount.inc:2747 ../lib/modules/windowsUser.inc:2470
 msgid "Reenter password"
 msgstr "再次输入密码"
 
@@ -11151,7 +11221,7 @@ msgstr "刷新时间"
 msgid "Refreshing tree"
 msgstr "树刷新中"
 
-#: ../lib/modules/selfRegistration.inc:344
+#: ../lib/modules/selfRegistration.inc:356
 msgid "Register new account"
 msgstr "注册新帐号"
 
@@ -11159,8 +11229,8 @@ msgstr "注册新帐号"
 #: ../lib/modules/inetOrgPerson.inc:199 ../lib/modules/inetOrgPerson.inc:404
 #: ../lib/modules/inetOrgPerson.inc:574 ../lib/modules/inetOrgPerson.inc:706
 #: ../lib/modules/inetOrgPerson.inc:1402 ../lib/modules/inetOrgPerson.inc:1990
-#: ../lib/modules/inetOrgPerson.inc:2624 ../lib/modules/inetOrgPerson.inc:3679
-#: ../lib/modules/inetOrgPerson.inc:3741
+#: ../lib/modules/inetOrgPerson.inc:2624 ../lib/modules/inetOrgPerson.inc:3657
+#: ../lib/modules/inetOrgPerson.inc:3719
 msgid "Registered address"
 msgstr "注册地址"
 
@@ -11209,7 +11279,7 @@ msgstr "记住用户的名字"
 
 #: ../templates/pdfedit/pdfpage.php:481 ../lib/modules/mitKerberos.inc:691
 #: ../lib/modules/qmailUser.inc:919 ../lib/modules/windowsHost.inc:158
-#: ../lib/modules/sambaSamAccount.inc:1454 ../lib/modules/windowsUser.inc:1478
+#: ../lib/modules/sambaSamAccount.inc:1463 ../lib/modules/windowsUser.inc:1478
 #: ../lib/modules/windowsUser.inc:1741 ../lib/modules/kolabUser.inc:838
 #: ../lib/modules/shadowAccount.inc:488 ../lib/modules/shadowAccount.inc:541
 #: ../lib/modules/freeRadius.inc:564 ../lib/modules/sudoRole.inc:318
@@ -11256,7 +11326,7 @@ msgstr "删除PyKota扩展"
 msgid "Remove SSH public key extension"
 msgstr "删除SSH公钥扩展"
 
-#: ../lib/modules/sambaSamAccount.inc:1284
+#: ../lib/modules/sambaSamAccount.inc:1293
 #: ../lib/modules/sambaGroupMapping.inc:423
 msgid "Remove Samba 3 extension"
 msgstr "删除 Samba 3 扩展"
@@ -11265,7 +11335,7 @@ msgstr "删除 Samba 3 扩展"
 msgid "Remove Shadow account extension"
 msgstr "删除 Shadow 帐号扩展"
 
-#: ../lib/modules/posixGroup.inc:248 ../lib/modules/posixAccount.inc:1581
+#: ../lib/modules/posixGroup.inc:248 ../lib/modules/posixAccount.inc:1494
 msgid "Remove Unix extension"
 msgstr "删除 Unix 扩展"
 
@@ -11278,11 +11348,11 @@ msgstr "删除Zarafa扩展"
 msgid "Remove extension"
 msgstr "删除扩展"
 
-#: ../lib/types/user.inc:384
+#: ../lib/types/user.inc:396
 msgid "Remove from all Unix groups"
 msgstr "从所有的Unix组中删除"
 
-#: ../lib/types/user.inc:388
+#: ../lib/types/user.inc:400
 msgid "Remove from all group of (unique) names"
 msgstr "从所有的(唯一)名字组中删除."
 
@@ -11290,7 +11360,7 @@ msgstr "从所有的(唯一)名字组中删除."
 msgid "Remove host extension"
 msgstr "删除主机扩展"
 
-#: ../lib/modules/posixGroup.inc:210 ../lib/modules/posixAccount.inc:1574
+#: ../lib/modules/posixGroup.inc:210 ../lib/modules/posixAccount.inc:1487
 #: ../lib/modules/inetOrgPerson.inc:1652
 msgid "Remove password"
 msgstr "删除密码"
@@ -11326,11 +11396,11 @@ msgstr "从别名条目删除用户。"
 msgid "Remove/replace photo"
 msgstr "删除/更改照片"
 
-#: ../lib/modules/posixGroup.inc:918
+#: ../lib/modules/posixGroup.inc:929
 msgid "Removed users"
 msgstr "已删除的用户"
 
-#: ../templates/config/profmanage.php:270
+#: ../templates/config/profmanage.php:273
 #: ../templates/selfService/profManage.php:228
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1152
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1153
@@ -11347,8 +11417,8 @@ msgstr "重命名"
 msgid "Rename <b>%s</b> to a new object."
 msgstr "将<b>%s</b> 重新命名到新的对象"
 
-#: ../templates/config/profmanage.php:265
-#: ../templates/config/profmanage.php:271
+#: ../templates/config/profmanage.php:268
+#: ../templates/config/profmanage.php:274
 #: ../templates/selfService/profManage.php:219
 #: ../templates/selfService/profManage.php:229 ../help/help.inc:134
 msgid "Rename profile"
@@ -11363,7 +11433,7 @@ msgstr "重命名操作成功!"
 msgid "Rename this entry"
 msgstr "重命名这个条目"
 
-#: ../templates/config/profmanage.php:84
+#: ../templates/config/profmanage.php:87
 #: ../templates/selfService/profManage.php:72
 msgid "Renamed profile."
 msgstr "已更名的配置文件."
@@ -11396,12 +11466,12 @@ msgstr "可重建寿命必须是数字!"
 msgid "Repeat password"
 msgstr "确认密码"
 
-#: ../lib/modules/posixAccount.inc:101 ../lib/modules/posixAccount.inc:1249
+#: ../lib/modules/posixAccount.inc:101 ../lib/modules/posixAccount.inc:1162
 msgid "Replaced $user or $group in homedir."
 msgstr "在homedir中已更改$user和$group. "
 
 #: ../templates/config/confmain.php:416 ../lib/passwordExpirationJob.inc:72
-#: ../lib/passwordExpirationJob.inc:109 ../help/help.inc:287
+#: ../lib/passwordExpirationJob.inc:115 ../help/help.inc:287
 #: ../help/help.inc:312
 msgid "Reply-to address"
 msgstr "回复地址"
@@ -11441,7 +11511,7 @@ msgstr "需要硬件认证"
 msgid "Requires preauthentication"
 msgstr "需要预认证"
 
-#: ../lib/modules/sambaSamAccount.inc:1278
+#: ../lib/modules/sambaSamAccount.inc:1287
 #: ../lib/modules/pykotaBillingCode.inc:93
 #: ../lib/modules/pykotaBillingCode.inc:163
 msgid "Reset"
@@ -11451,8 +11521,8 @@ msgstr "复位"
 msgid "Reset changes"
 msgstr "复位设定"
 
-#: ../lib/modules/sambaSamAccount.inc:265
-#: ../lib/modules/sambaSamAccount.inc:1277
+#: ../lib/modules/sambaSamAccount.inc:271
+#: ../lib/modules/sambaSamAccount.inc:1286
 msgid "Reset password"
 msgstr "复位密码"
 
@@ -11495,6 +11565,10 @@ msgstr "受限拨号ID."
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:137
 msgid "Retrieving DN"
 msgstr "获取DN"
+
+#: ../lib/modules/locking389ds.inc:75
+msgid "Retry count"
+msgstr "重试次数"
 
 #: ../lib/modules/bindDLZ.inc:219 ../lib/modules/bindDLZ.inc:332
 #: ../lib/modules/bindDLZ.inc:425 ../lib/modules/bindDLZ.inc:523
@@ -11555,8 +11629,8 @@ msgstr "房间"
 #: ../lib/modules/inetOrgPerson.inc:486 ../lib/modules/inetOrgPerson.inc:580
 #: ../lib/modules/inetOrgPerson.inc:782 ../lib/modules/inetOrgPerson.inc:1446
 #: ../lib/modules/inetOrgPerson.inc:1449 ../lib/modules/inetOrgPerson.inc:1998
-#: ../lib/modules/inetOrgPerson.inc:2657 ../lib/modules/inetOrgPerson.inc:3683
-#: ../lib/modules/inetOrgPerson.inc:3742
+#: ../lib/modules/inetOrgPerson.inc:2657 ../lib/modules/inetOrgPerson.inc:3661
+#: ../lib/modules/inetOrgPerson.inc:3720
 msgid "Room number"
 msgstr "房间号"
 
@@ -11634,7 +11708,7 @@ msgstr "SIP用户代理标识"
 msgid "SOA record"
 msgstr "SOA记录"
 
-#: ../lib/database.inc:127
+#: ../lib/database.inc:134
 msgid "SQLite"
 msgstr "SQLite"
 
@@ -11688,8 +11762,8 @@ msgstr "SSL端口"
 msgid "Samba"
 msgstr "Samba"
 
-#: ../lib/types/user.inc:276 ../lib/types/user.inc:372
-#: ../lib/types/user.inc:404 ../lib/types/user.inc:906
+#: ../lib/types/user.inc:279 ../lib/types/user.inc:384
+#: ../lib/types/user.inc:419 ../lib/types/user.inc:934
 #: ../lib/modules/sambaSamAccount.inc:146
 #: ../lib/modules/sambaGroupMapping.inc:101
 msgid "Samba 3"
@@ -11703,21 +11777,21 @@ msgstr "Samba 3 域SID非法!"
 msgid "Samba 3 domain entries"
 msgstr "Samba 3 域条目"
 
-#: ../lib/modules/posixGroup.inc:563 ../lib/modules/posixAccount.inc:217
+#: ../lib/modules/posixGroup.inc:568 ../lib/modules/posixAccount.inc:1887
 msgid "Samba ID pool"
 msgstr "Samba ID 池"
 
-#: ../lib/modules/posixGroup.inc:520 ../lib/modules/posixGroup.inc:585
-#: ../lib/modules/posixGroup.inc:663 ../lib/modules/posixAccount.inc:131
-#: ../lib/modules/posixAccount.inc:233 ../lib/modules/posixAccount.inc:262
-#: ../lib/modules/posixAccount.inc:534
+#: ../lib/modules/posixGroup.inc:521 ../lib/modules/posixGroup.inc:593
+#: ../lib/modules/posixGroup.inc:674 ../lib/modules/posixAccount.inc:131
+#: ../lib/modules/posixAccount.inc:439 ../lib/modules/posixAccount.inc:1906
+#: ../lib/modules/posixAccount.inc:1943
 msgid "Samba ID pool DN"
 msgstr "Samba ID 池的DN"
 
-#: ../lib/modules/sambaSamAccount.inc:330
-#: ../lib/modules/sambaSamAccount.inc:334
-#: ../lib/modules/sambaSamAccount.inc:478
-#: ../lib/modules/sambaSamAccount.inc:544
+#: ../lib/modules/sambaSamAccount.inc:336
+#: ../lib/modules/sambaSamAccount.inc:340
+#: ../lib/modules/sambaSamAccount.inc:487
+#: ../lib/modules/sambaSamAccount.inc:553
 msgid "Samba RID"
 msgstr "Samba RID"
 
@@ -11749,23 +11823,23 @@ msgstr "Samba 域"
 msgid "Samba group type"
 msgstr "Samba 组类型"
 
-#: ../lib/modules/sambaSamAccount.inc:262
+#: ../lib/modules/sambaSamAccount.inc:268
 msgid "Samba password"
 msgstr "Samba密码"
 
 #: ../lib/modules/sambaSamAccount.inc:103
 #: ../lib/modules/sambaSamAccount.inc:227
-#: ../lib/modules/sambaSamAccount.inc:315
-#: ../lib/modules/sambaSamAccount.inc:318
-#: ../lib/modules/sambaSamAccount.inc:519
-#: ../lib/modules/sambaSamAccount.inc:576
-#: ../lib/modules/sambaSamAccount.inc:1218
-#: ../lib/modules/sambaSamAccount.inc:1743
-#: ../lib/modules/sambaSamAccount.inc:1882
+#: ../lib/modules/sambaSamAccount.inc:321
+#: ../lib/modules/sambaSamAccount.inc:324
+#: ../lib/modules/sambaSamAccount.inc:528
+#: ../lib/modules/sambaSamAccount.inc:585
+#: ../lib/modules/sambaSamAccount.inc:1227
+#: ../lib/modules/sambaSamAccount.inc:1752
+#: ../lib/modules/sambaSamAccount.inc:1891
 msgid "Samba workstations"
 msgstr "Samba工作站"
 
-#: ../lib/modules/sambaSamAccount.inc:1351
+#: ../lib/modules/sambaSamAccount.inc:1360
 msgid "Saturday"
 msgstr "星期六"
 
@@ -11917,7 +11991,7 @@ msgstr "安全设定"
 msgid "See also"
 msgstr "同时参考"
 
-#: ../lib/account.inc:815
+#: ../lib/account.inc:822
 msgid "See the manual for instructions to solve this problem."
 msgstr "参考手册来解决本问题."
 
@@ -11958,7 +12032,7 @@ msgstr "从列表中选择一个或多个别名条目加入到接收列表中."
 msgid "Select user"
 msgstr "选择用户"
 
-#: ../lib/modules/posixAccount.inc:1644 ../lib/modules/posixAccount.inc:1677
+#: ../lib/modules/posixAccount.inc:1557 ../lib/modules/posixAccount.inc:1590
 #: ../lib/modules/windowsUser.inc:1563 ../lib/modules/nisnetgroup.inc:384
 #: ../lib/modules/groupOfNamesUser.inc:131 ../lib/modules/windowsGroup.inc:515
 msgid "Selected groups"
@@ -12048,7 +12122,7 @@ msgid ""
 "change."
 msgstr "在密码修改前,给用户发一封邮件来确认邮件地址."
 
-#: ../lib/modules/posixAccount.inc:580
+#: ../lib/modules/posixAccount.inc:493
 msgid ""
 "Sends the old password together with the new password when the user sets a "
 "new password."
@@ -12145,9 +12219,9 @@ msgstr "会话超时"
 msgid "Set"
 msgstr "设置"
 
-#: ../lib/modules/sambaSamAccount.inc:1442
-#: ../lib/modules/sambaSamAccount.inc:1445
-#: ../lib/modules/sambaSamAccount.inc:1448 ../lib/modules/windowsUser.inc:1466
+#: ../lib/modules/sambaSamAccount.inc:1451
+#: ../lib/modules/sambaSamAccount.inc:1454
+#: ../lib/modules/sambaSamAccount.inc:1457 ../lib/modules/windowsUser.inc:1466
 #: ../lib/modules/windowsUser.inc:1469 ../lib/modules/windowsUser.inc:1472
 #: ../lib/modules/shadowAccount.inc:476 ../lib/modules/shadowAccount.inc:479
 #: ../lib/modules/shadowAccount.inc:482
@@ -12159,7 +12233,7 @@ msgstr "同时也为Kerberos设置"
 msgid "Set also for Samba 3"
 msgstr "同时也为Samba 3设置"
 
-#: ../lib/modules/mitKerberos.inc:679 ../lib/modules/sambaSamAccount.inc:1439
+#: ../lib/modules/mitKerberos.inc:679 ../lib/modules/sambaSamAccount.inc:1448
 #: ../lib/modules/windowsUser.inc:1463 ../lib/modules/heimdalKerberos.inc:589
 msgid "Set also for Shadow"
 msgstr "同时也为Shadow设置"
@@ -12173,13 +12247,13 @@ msgstr "同时也为Windows设置"
 msgid "Set password"
 msgstr "设置密码"
 
-#: ../lib/modules/posixAccount.inc:301 ../lib/modules/posixAccount.inc:477
+#: ../lib/modules/posixAccount.inc:381 ../lib/modules/posixAccount.inc:1987
 msgid "Set primary group as memberUid"
 msgstr "为主组设置memberUid"
 
-#: ../templates/config/profmanage.php:286
-#: ../templates/config/profmanage.php:297
-#: ../templates/config/profmanage.php:298 ../help/help.inc:138
+#: ../templates/config/profmanage.php:289
+#: ../templates/config/profmanage.php:300
+#: ../templates/config/profmanage.php:301 ../help/help.inc:138
 msgid "Set profile password"
 msgstr "设置文件密码"
 
@@ -12243,9 +12317,9 @@ msgid "Shadow"
 msgstr "Shadow"
 
 #: ../lib/modules/sambaSamAccount.inc:243
-#: ../lib/modules/sambaSamAccount.inc:382
-#: ../lib/modules/sambaSamAccount.inc:1519
-#: ../lib/modules/sambaSamAccount.inc:1932
+#: ../lib/modules/sambaSamAccount.inc:388
+#: ../lib/modules/sambaSamAccount.inc:1528
+#: ../lib/modules/sambaSamAccount.inc:1941
 msgid "Shadowing"
 msgstr "遮蔽化(shadow)"
 
@@ -12280,7 +12354,7 @@ msgstr "显示"
 msgid "Show LDIF file"
 msgstr "显示LDIF文件"
 
-#: ../lib/types/user.inc:696
+#: ../lib/types/user.inc:719
 msgid "Show account status"
 msgstr "显示帐号状态"
 
@@ -12378,8 +12452,8 @@ msgstr ""
 msgid "Sorry this help number ({bold}%s{endbold}) is not available."
 msgstr "对不起,本帮助号({bold}%s{endbold})并不存在."
 
-#: ../lib/modules/sambaSamAccount.inc:327
-#: ../lib/modules/sambaSamAccount.inc:1255
+#: ../lib/modules/sambaSamAccount.inc:333
+#: ../lib/modules/sambaSamAccount.inc:1264
 msgid "Special user"
 msgstr "特殊用户"
 
@@ -12616,8 +12690,8 @@ msgstr "开始时间"
 #: ../lib/modules/inetOrgPerson.inc:568 ../lib/modules/inetOrgPerson.inc:802
 #: ../lib/modules/inetOrgPerson.inc:806 ../lib/modules/inetOrgPerson.inc:1341
 #: ../lib/modules/inetOrgPerson.inc:1344 ../lib/modules/inetOrgPerson.inc:2002
-#: ../lib/modules/inetOrgPerson.inc:2679 ../lib/modules/inetOrgPerson.inc:3675
-#: ../lib/modules/inetOrgPerson.inc:3740
+#: ../lib/modules/inetOrgPerson.inc:2679 ../lib/modules/inetOrgPerson.inc:3653
+#: ../lib/modules/inetOrgPerson.inc:3718
 msgid "State"
 msgstr "地点"
 
@@ -12635,14 +12709,14 @@ msgstr "第 %s步,共 %s步"
 msgid "Steve"
 msgstr "Steve"
 
-#: ../lib/modules/sambaSamAccount.inc:422 ../lib/modules/posixAccount.inc:382
+#: ../lib/modules/sambaSamAccount.inc:431 ../lib/modules/posixAccount.inc:286
 #: ../lib/modules/windowsUser.inc:395 ../lib/modules/windowsUser.inc:401
 #: ../lib/modules/pykotaUser.inc:201 ../lib/modules/inetOrgPerson.inc:2129
 #: ../lib/modules/asteriskVoicemail.inc:174
 msgid "Steve Miller"
 msgstr "Steve Miller"
 
-#: ../lib/modules/posixAccount.inc:390
+#: ../lib/modules/posixAccount.inc:294
 msgid "Steve Miller,Room 2.14,123-123-1234,123-123-1234"
 msgstr "Steve Miller,Room 2.14,123-123-1234,123-123-1234"
 
@@ -12665,7 +12739,7 @@ msgstr "可以将密码存放在服务器配置文件中,但不推荐这么做."
 #: ../lib/modules/inetOrgPerson.inc:678 ../lib/modules/inetOrgPerson.inc:682
 #: ../lib/modules/inetOrgPerson.inc:1305 ../lib/modules/inetOrgPerson.inc:1308
 #: ../lib/modules/inetOrgPerson.inc:1986 ../lib/modules/inetOrgPerson.inc:2602
-#: ../lib/modules/inetOrgPerson.inc:3667 ../lib/modules/inetOrgPerson.inc:3737
+#: ../lib/modules/inetOrgPerson.inc:3645 ../lib/modules/inetOrgPerson.inc:3715
 msgid "Street"
 msgstr "街道"
 
@@ -12685,9 +12759,9 @@ msgstr "Sub (条目的子树)"
 msgid "Subgroups"
 msgstr "分组"
 
-#: ../templates/config/confmain.php:419 ../lib/passwordExpirationJob.inc:73
+#: ../templates/config/confmain.php:419 ../lib/passwordExpirationJob.inc:75
 #: ../lib/modules/selfRegistration.inc:94
-#: ../lib/modules/selfRegistration.inc:231
+#: ../lib/modules/selfRegistration.inc:237
 #: ../lib/modules/passwordSelfReset.inc:120
 #: ../lib/modules/passwordSelfReset.inc:566
 #: ../lib/modules/passwordSelfReset.inc:586 ../help/help.inc:278
@@ -12750,21 +12824,21 @@ msgstr "如果多角色匹配，就使用更高排序的Sudo角色"
 msgid "Suffix"
 msgstr "后缀"
 
-#: ../lib/modules/posixGroup.inc:512 ../lib/modules/posixGroup.inc:591
+#: ../lib/modules/posixGroup.inc:512 ../lib/modules/posixGroup.inc:602
 msgid "Suffix for GID/group name check"
 msgstr "GID/组名的后缀检查"
 
-#: ../lib/modules/posixAccount.inc:245 ../lib/modules/posixAccount.inc:274
-#: ../lib/modules/posixAccount.inc:522
+#: ../lib/modules/posixAccount.inc:426 ../lib/modules/posixAccount.inc:1921
+#: ../lib/modules/posixAccount.inc:1958
 msgid "Suffix for UID/user name check"
 msgstr "UID/用户名的后缀检查"
 
 #: ../lib/modules/selfRegistration.inc:102
-#: ../lib/modules/selfRegistration.inc:212
+#: ../lib/modules/selfRegistration.inc:217
 msgid "Suffix for new users"
 msgstr "新用户的后缀"
 
-#: ../lib/modules/sambaSamAccount.inc:1351
+#: ../lib/modules/sambaSamAccount.inc:1360
 msgid "Sunday"
 msgstr "星期日"
 
@@ -12878,8 +12952,8 @@ msgstr "技术名字"
 #: ../lib/modules/inetOrgPerson.inc:583 ../lib/modules/inetOrgPerson.inc:710
 #: ../lib/modules/inetOrgPerson.inc:714 ../lib/modules/inetOrgPerson.inc:1462
 #: ../lib/modules/inetOrgPerson.inc:1465 ../lib/modules/inetOrgPerson.inc:1991
-#: ../lib/modules/inetOrgPerson.inc:2547 ../lib/modules/inetOrgPerson.inc:3685
-#: ../lib/modules/inetOrgPerson.inc:3743
+#: ../lib/modules/inetOrgPerson.inc:2547 ../lib/modules/inetOrgPerson.inc:3663
+#: ../lib/modules/inetOrgPerson.inc:3721
 msgid "Telephone number"
 msgstr "电话号码"
 
@@ -12892,7 +12966,7 @@ msgstr "临时"
 msgid "Temp, contract till December"
 msgstr "临时, 合同到12月份"
 
-#: ../templates/config/profmanage.php:254
+#: ../templates/config/profmanage.php:257
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:725 ../help/help.inc:188
 msgid "Template"
 msgstr "模板"
@@ -12901,9 +12975,9 @@ msgstr "模板"
 msgid "Templates"
 msgstr "模板"
 
-#: ../lib/modules/sambaSamAccount.inc:391
-#: ../lib/modules/sambaSamAccount.inc:580
-#: ../lib/modules/sambaSamAccount.inc:1267
+#: ../lib/modules/sambaSamAccount.inc:397
+#: ../lib/modules/sambaSamAccount.inc:589
+#: ../lib/modules/sambaSamAccount.inc:1276
 msgid "Terminal server options"
 msgstr "终端服务选项"
 
@@ -12915,9 +12989,9 @@ msgstr "测试设置"
 msgid "Tests"
 msgstr "测试"
 
-#: ../templates/config/confmain.php:434 ../lib/passwordExpirationJob.inc:75
+#: ../templates/config/confmain.php:434 ../lib/passwordExpirationJob.inc:77
 #: ../lib/modules/selfRegistration.inc:69
-#: ../lib/modules/selfRegistration.inc:238 ../lib/modules/bindDLZ.inc:163
+#: ../lib/modules/selfRegistration.inc:244 ../lib/modules/bindDLZ.inc:163
 #: ../lib/modules/bindDLZ.inc:167 ../lib/modules/bindDLZ.inc:377
 #: ../lib/modules/bindDLZ.inc:1245 ../lib/modules/bindDLZ.inc:1576
 #: ../lib/modules/passwordSelfReset.inc:124
@@ -12997,7 +13071,7 @@ msgstr "IP地址已被使用: "
 
 #: ../lib/modules/ipHost.inc:123 ../lib/modules/ipHost.inc:124
 #: ../lib/modules/asteriskAccount.inc:574
-#: ../lib/modules/asteriskAccount.inc:575 ../lib/modules/ppolicyUser.inc:100
+#: ../lib/modules/asteriskAccount.inc:575 ../lib/modules/ppolicyUser.inc:101
 #: ../lib/modules/range.inc:505 ../lib/modules/range.inc:522
 #: ../lib/modules/range.inc:582 ../lib/modules/range.inc:599
 #: ../lib/modules/freeRadius.inc:329 ../lib/modules/freeRadius.inc:330
@@ -13065,7 +13139,7 @@ msgstr ""
 
 #: ../templates/3rdParty/pla/htdocs/create.php:44
 #: ../templates/3rdParty/pla/htdocs/create_confirm.php:38
-#: ../lib/modules/selfRegistration.inc:594
+#: ../lib/modules/selfRegistration.inc:620
 msgid "The RDN field is empty."
 msgstr "RDN域是空的."
 
@@ -13157,6 +13231,10 @@ msgstr "属性值不存在"
 #: ../lib/modules/asteriskAccount.inc:558
 msgid "The caller ID format is invalid."
 msgstr "拨号ID格式不合法."
+
+#: ../lib/modules/selfRegistration.inc:530
+msgid "The captcha was wrong."
+msgstr "验证码错误."
 
 #: ../lib/modules/puppetClient.inc:198
 msgid "The class names contain invalid values."
@@ -13351,7 +13429,7 @@ msgstr "本帐号的所属组,您可以输入一个组名或DN名."
 msgid "The headline for a new section must contain at least one character."
 msgstr "新段的标题最少要有一个字符."
 
-#: ../lib/modules/sambaSamAccount.inc:304 ../lib/modules/windowsUser.inc:264
+#: ../lib/modules/sambaSamAccount.inc:310 ../lib/modules/windowsUser.inc:264
 msgid "The home directory will be connected under this drive letter."
 msgstr "将会从这个驱动器号上连接用户目录。"
 
@@ -13605,7 +13683,7 @@ msgstr "在你的LDAP服务器中对象类%s不被支持。"
 msgid "The office name of the user (e.g. YourCompany, Human Resources)."
 msgstr "用户的办公室名(比如:某某公司,人力资源部)"
 
-#: ../templates/selfService/selfServiceMain.php:396 ../lib/modules.inc:1842
+#: ../templates/selfService/selfServiceMain.php:396 ../lib/modules.inc:1845
 msgid "The operation was stopped because of the above errors."
 msgstr "由于发生了以上错误，操作中止."
 
@@ -13710,7 +13788,7 @@ msgid ""
 "is stored in the LAM server profile."
 msgstr "IMAP管理员用户的密码.IMAP管理员用户登录名保存在LAM服务器的配置中."
 
-#: ../templates/lists/changePassword.php:617 ../lib/modules.inc:1152
+#: ../templates/lists/changePassword.php:643 ../lib/modules.inc:1152
 msgid "The password was set to:"
 msgstr "密码被设置为:"
 
@@ -13750,17 +13828,17 @@ msgstr "打印任务每页价格"
 msgid "The price for each print job."
 msgstr "每次打印价格"
 
-#: ../lib/modules/posixAccount.inc:499
+#: ../lib/modules/posixAccount.inc:403
 msgid ""
 "The primary group for this account. You can insert a GID number or a group "
 "name."
 msgstr "本帐号的主组名,您可以输入一个GID号或组名."
 
-#: ../lib/modules/posixAccount.inc:594
+#: ../lib/modules/posixAccount.inc:507
 msgid "The primary group the host should be member of."
 msgstr "该主机所属的主组名."
 
-#: ../lib/modules/posixAccount.inc:552
+#: ../lib/modules/posixAccount.inc:465
 msgid "The primary group the user should be member of."
 msgstr "该用户所属的主组名."
 
@@ -13810,8 +13888,8 @@ msgstr "在web服务器中运行的与用户语境相关的脚本(比如:apache/
 
 #: ../lib/modules/nisMailAliasUser.inc:105
 #: ../lib/modules/asteriskAccount.inc:244 ../lib/modules/qmailUser.inc:196
-#: ../lib/modules/zarafaGroup.inc:114 ../lib/modules/sambaSamAccount.inc:401
-#: ../lib/modules/posixAccount.inc:474 ../lib/modules/zarafaUser.inc:147
+#: ../lib/modules/zarafaGroup.inc:114 ../lib/modules/sambaSamAccount.inc:407
+#: ../lib/modules/posixAccount.inc:378 ../lib/modules/zarafaUser.inc:147
 #: ../lib/modules/windowsUser.inc:256 ../lib/modules/inetOrgPerson.inc:831
 #: ../lib/modules/freeRadius.inc:129 ../lib/modules/zarafaServer.inc:89
 #: ../lib/modules/qmailGroup.inc:120 ../lib/modules/organizationalRole.inc:82
@@ -14070,7 +14148,7 @@ msgstr "复位连接的通配符 @@resetLink@@."
 msgid "There are <b>%s</b> members in group <b>%s</b>:"
 msgstr "共有<b>%s</b>个用户中在组<b>%s</b>中:"
 
-#: ../lib/modules/posixGroup.inc:662 ../lib/modules/sambaGroupMapping.inc:606
+#: ../lib/modules/posixGroup.inc:673 ../lib/modules/sambaGroupMapping.inc:606
 msgid "There are still users who have this group as their primary group."
 msgstr "仍有用户的主组为本组."
 
@@ -14102,7 +14180,7 @@ msgid ""
 "use plus one."
 msgstr "新建立新组帐号时,最大和最小的GID号.新组号自动在已用最大号加1."
 
-#: ../lib/modules/posixAccount.inc:486
+#: ../lib/modules/posixAccount.inc:390
 msgid ""
 "These are the minimum and maximum numbers to use for machine IDs when "
 "creating new accounts for hosts. The range should be different from that of "
@@ -14111,7 +14189,7 @@ msgstr ""
 "这是为主机新建账号时机器ID号的最小值和最大值.这个范围不同于用户数量.新主机帐"
 "号的ID总是得到当前最高值加1."
 
-#: ../lib/modules/posixAccount.inc:482
+#: ../lib/modules/posixAccount.inc:386
 msgid ""
 "These are the minimum and maximum numbers to use for user IDs when creating "
 "new user accounts. The range should be different from that of machines. New "
@@ -14179,7 +14257,7 @@ msgstr "PC机器名已经存在!"
 msgid "This account is marked for deletion."
 msgstr "本帐号标记为删除."
 
-#: ../lib/modules/sambaSamAccount.inc:328
+#: ../lib/modules/sambaSamAccount.inc:334
 msgid ""
 "This allows you to define this account as a special user like administrator "
 "or guest."
@@ -14284,6 +14362,14 @@ msgstr "描述用户所在地点."
 msgid "This document was automatically created by LDAP Account Manager"
 msgstr "本文件由本系统自动产生."
 
+#: ../help/help.inc:334
+msgid "This email address will be set as BCC address of all mails."
+msgstr "这个邮件地址会被设定为所有邮件的秘密抄送地址."
+
+#: ../help/help.inc:330
+msgid "This email address will be set as CC address of all mails."
+msgstr "这个邮件地址会被设定为所有邮件的抄送地址."
+
 #: ../help/help.inc:313
 msgid "This email address will be set as reply-to address of all mails."
 msgstr "这个邮件地址会被设定为所有邮件的回复地址."
@@ -14335,7 +14421,7 @@ msgid "This entry is the root of a sub-tree containing %s entries."
 msgstr "本条目是一个包含%s 子条目的子树的根."
 
 #: ../templates/lib/141_jquery-validationEngine-lang.php:50
-#: ../lib/modules/selfRegistration.inc:535 ../lib/modules/nsview.inc:110
+#: ../lib/modules/selfRegistration.inc:561 ../lib/modules/nsview.inc:110
 #: ../lib/modules/nsview.inc:111 ../lib/modules/nsview.inc:112
 #: ../lib/modules/nsview.inc:113
 msgid "This field is required."
@@ -14459,11 +14545,11 @@ msgstr ""
 "uid=miller这个条件来搜索帐号."
 
 #: ../lib/modules/zarafaDynamicGroup.inc:199 ../lib/modules/ipHost.inc:125
-#: ../lib/modules/posixGroup.inc:663 ../lib/modules/posixGroup.inc:664
+#: ../lib/modules/posixGroup.inc:674 ../lib/modules/posixGroup.inc:675
 #: ../lib/modules/device.inc:142 ../lib/modules/eduPerson.inc:246
 #: ../lib/modules/eduPerson.inc:248 ../lib/modules/zarafaAddressList.inc:170
 #: ../lib/modules/posixAccount.inc:131 ../lib/modules/posixAccount.inc:132
-#: ../lib/modules/ppolicyUser.inc:569 ../lib/modules/windowsUser.inc:892
+#: ../lib/modules/ppolicyUser.inc:570 ../lib/modules/windowsUser.inc:892
 #: ../lib/modules/inetOrgPerson.inc:100 ../lib/modules/freeRadius.inc:342
 #: ../lib/modules/aliasEntry.inc:86 ../lib/modules/qmailGroup.inc:433
 #: ../lib/modules/qmailGroup.inc:434 ../lib/modules/qmailGroup.inc:435
@@ -14546,7 +14632,7 @@ msgid ""
 "EF:18)."
 msgstr "网卡的MAC地址(比如:00:01:02:DE:EF:18)."
 
-#: ../lib/modules/sambaSamAccount.inc:325
+#: ../lib/modules/sambaSamAccount.inc:331
 msgid "This is the SID of the user's primary Windows group."
 msgstr "用户Windows主组的SID."
 
@@ -14560,15 +14646,15 @@ msgstr "这是设置硬盘配额和建立主目录的外部脚本所在的绝对
 msgid "This is the account's Kerberos password."
 msgstr "帐号在Kerberos中的密码."
 
-#: ../lib/modules/sambaSamAccount.inc:263
+#: ../lib/modules/sambaSamAccount.inc:269
 msgid "This is the account's Windows password."
 msgstr "帐号在Windows中的密码."
 
-#: ../lib/modules/sambaSamAccount.inc:260 ../lib/modules/windowsUser.inc:139
+#: ../lib/modules/sambaSamAccount.inc:266 ../lib/modules/windowsUser.inc:139
 msgid "This is the account's full name on Windows systems."
 msgstr "用户在Windows系统中的全名."
 
-#: ../lib/modules/ppolicyUser.inc:56
+#: ../lib/modules/ppolicyUser.inc:57
 msgid "This is the active password policy for this account."
 msgstr "本帐号正在使用的帐号策略。"
 
@@ -14591,12 +14677,12 @@ msgstr "这是用户上次登录日期."
 msgid "This is the date when the account will expire."
 msgstr "这是帐号过期日期"
 
-#: ../lib/modules/sambaSamAccount.inc:347 ../lib/modules/windowsUser.inc:292
+#: ../lib/modules/sambaSamAccount.inc:353 ../lib/modules/windowsUser.inc:292
 #: ../lib/modules/shadowAccount.inc:194
 msgid "This is the date when the account will expire. Format: DD-MM-YYYY"
 msgstr "帐号过期日期: DD-MM-YYYY"
 
-#: ../lib/modules/mitKerberos.inc:141 ../lib/modules/sambaSamAccount.inc:398
+#: ../lib/modules/mitKerberos.inc:141 ../lib/modules/sambaSamAccount.inc:404
 msgid "This is the date when the user changed his password."
 msgstr "后用户必须修改密码的日期"
 
@@ -14650,7 +14736,7 @@ msgstr ""
 "帐号列表所显示的属性列表.可以是预定义值\"#attribute\",或者独立的值,"
 "\"attribute:description\".用分号隔离多个条目."
 
-#: ../lib/modules/posixAccount.inc:527
+#: ../lib/modules/posixAccount.inc:431
 msgid "This is the list of valid login shells."
 msgstr "这是有效的登录shell的列表"
 
@@ -14677,7 +14763,7 @@ msgstr "安全问题的答案的最小长度."
 msgid "This is the name of this group."
 msgstr "组名."
 
-#: ../lib/modules/posixAccount.inc:602
+#: ../lib/modules/posixAccount.inc:515
 msgid ""
 "This is the natural name of the host. If empty, the host name will be used."
 msgstr "主机帐号的自然名(natural name).留空使用主机名."
@@ -14692,7 +14778,7 @@ msgid ""
 "used."
 msgstr "用户自然名,留空会使用姓名."
 
-#: ../lib/modules/posixAccount.inc:576 ../lib/modules/windowsUser.inc:118
+#: ../lib/modules/posixAccount.inc:489 ../lib/modules/windowsUser.inc:118
 msgid ""
 "This is the natural name of the user. If empty, the first and last name or "
 "user name is used."
@@ -14716,7 +14802,7 @@ msgid ""
 "found the list will be split into several pages."
 msgstr "显示帐号中的行数，如果搜索到更多的行数会分页显示."
 
-#: ../lib/modules/sambaSamAccount.inc:356
+#: ../lib/modules/sambaSamAccount.inc:362
 msgid "This is the path to the user's home directory."
 msgstr "这是用户的主目录路径."
 
@@ -14729,13 +14815,13 @@ msgstr ""
 "Windows帐号的关联ID(有点象Unix中的UID).留空LAM会从UID计算RID.可以是一个数字或"
 "一个特殊组名."
 
-#: ../lib/modules/sambaSamAccount.inc:331
+#: ../lib/modules/sambaSamAccount.inc:337
 msgid ""
 "This is the relative ID number for your Windows account. You can either "
 "enter a number or one of these special accounts: "
 msgstr "Windows帐号的关联ID.可以输入一个数字或以下特殊帐号:"
 
-#: ../lib/modules/sambaSamAccount.inc:335
+#: ../lib/modules/sambaSamAccount.inc:341
 msgid ""
 "This is the relative ID number for your host account. If you leave this "
 "empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase."
@@ -14800,13 +14886,13 @@ msgid ""
 msgstr ""
 "LAM缓存有效时间(分钟),较短的时间会增加LDAP压力,但减少了数据不一致的可能."
 
-#: ../lib/modules/sambaSamAccount.inc:350
+#: ../lib/modules/sambaSamAccount.inc:356
 msgid ""
 "This is the time zone of your Samba server. LAM needs this information to "
 "display the logon hours correctly."
 msgstr "这是Samba服务器的时区.LAM用此信息显示正确的登录时间."
 
-#: ../lib/modules/sambaSamAccount.inc:322
+#: ../lib/modules/sambaSamAccount.inc:328
 msgid "This is the user's primary Windows group."
 msgstr "用户的Windows主要组."
 
@@ -14826,7 +14912,7 @@ msgstr "当使用账号和密码定义type=friend时,此项设置用来允许呼
 msgid "This is used to mark this account as resource."
 msgstr "用来标识此账号是一个资源"
 
-#: ../lib/modules/ppolicyUser.inc:528 ../lib/modules/windowsUser.inc:3182
+#: ../lib/modules/ppolicyUser.inc:529 ../lib/modules/windowsUser.inc:3182
 #: ../lib/modules/shadowAccount.inc:807
 msgid ""
 "This job sends out emails to inform your users that their passwords will "
@@ -14872,11 +14958,11 @@ msgid ""
 msgstr ""
 "这个选项允许你关闭IMAP服务器数字证书检查功能.不建议关闭数字证书检查功能."
 
-#: ../lib/modules/sambaSamAccount.inc:341
+#: ../lib/modules/sambaSamAccount.inc:347
 msgid "This option defines the allowed logon hours for this account."
 msgstr "允许帐号登录的时间."
 
-#: ../lib/modules/sambaSamAccount.inc:344
+#: ../lib/modules/sambaSamAccount.inc:350
 msgid ""
 "This option defines the allowed logon hours for this account. The format is "
 "the same as for the LDAP attribute. The 24*7 hours are represented as 168 "
@@ -14890,11 +14976,11 @@ msgstr ""
 msgid "This pair of extension name and priority already exists."
 msgstr "扩展名和优先级的配对已经存在!"
 
-#: ../lib/modules/sambaSamAccount.inc:365
+#: ../lib/modules/sambaSamAccount.inc:371
 msgid "This program is run after the login."
 msgstr "登录后运行的程序。"
 
-#: ../lib/modules/sambaSamAccount.inc:389
+#: ../lib/modules/sambaSamAccount.inc:395
 msgid "This specifies the reconnect policy."
 msgstr "这里指定断开连接的策略。"
 
@@ -14912,7 +14998,7 @@ msgstr ""
 "其它非基于Windows的LDAP服务器。 如果在Zarafa上使用Samba4 或活动目录，请选择"
 "Active Directory."
 
-#: ../lib/modules/sambaSamAccount.inc:386
+#: ../lib/modules/sambaSamAccount.inc:392
 msgid "This specifies what to do when the client connection is broken."
 msgstr "这里指定客户连接中断的动作。"
 
@@ -14985,7 +15071,7 @@ msgstr "此值只能设为 \"Room\" 或 \"Equipment\"."
 #: ../lib/modules/zarafaUser.inc:443 ../lib/modules/zarafaUser.inc:445
 #: ../lib/modules/zarafaUser.inc:446 ../lib/modules/zarafaUser.inc:447
 #: ../lib/modules/zarafaUser.inc:448 ../lib/modules/zarafaUser.inc:449
-#: ../lib/modules/ppolicyUser.inc:101 ../lib/modules/inetOrgPerson.inc:108
+#: ../lib/modules/ppolicyUser.inc:102 ../lib/modules/inetOrgPerson.inc:108
 #: ../lib/modules/freeRadius.inc:341 ../lib/modules/zarafaServer.inc:179
 msgid "This value can only be \"true\" or \"false\"."
 msgstr "此值只能设为 \"true\" 或 \"false\"."
@@ -14994,7 +15080,7 @@ msgstr "此值只能设为 \"true\" 或 \"false\"."
 msgid "This value can only be \"true\", \"false\" or \"system\"."
 msgstr "此值只能设为\"true\", \"false\" or \"system\"."
 
-#: ../lib/modules/posixGroup.inc:661
+#: ../lib/modules/posixGroup.inc:672
 msgid "This value must be a list of user names separated by semicolons."
 msgstr "此值必须是用分号分开的用户名列表."
 
@@ -15002,7 +15088,7 @@ msgstr "此值必须是用分号分开的用户名列表."
 msgid "This will create a new organisational unit under the selected one."
 msgstr "在所选的节点下建立新的组织单元."
 
-#: ../lib/modules/posixAccount.inc:515
+#: ../lib/modules/posixAccount.inc:419
 msgid "This will create the user's home directory on the specified server."
 msgstr "将在指定的服务器上建立用户的主目录."
 
@@ -15017,9 +15103,9 @@ msgstr "将删除所选的配置文件."
 
 #: ../lib/modules/kolabGroup.inc:118 ../lib/modules/puppetClient.inc:114
 #: ../lib/modules/qmailUser.inc:264 ../lib/modules/zarafaContact.inc:94
-#: ../lib/modules/posixGroup.inc:538 ../lib/modules/eduPerson.inc:151
-#: ../lib/modules/pykotaGroup.inc:130 ../lib/modules/sambaSamAccount.inc:404
-#: ../lib/modules/posixAccount.inc:465 ../lib/modules/zarafaUser.inc:151
+#: ../lib/modules/posixGroup.inc:539 ../lib/modules/eduPerson.inc:151
+#: ../lib/modules/pykotaGroup.inc:130 ../lib/modules/sambaSamAccount.inc:410
+#: ../lib/modules/posixAccount.inc:369 ../lib/modules/zarafaUser.inc:151
 #: ../lib/modules/pykotaUser.inc:161 ../lib/modules/shadowAccount.inc:198
 #: ../lib/modules/ldapPublicKey.inc:96 ../lib/modules/qmailGroup.inc:233
 #: ../lib/modules/authorizedServiceObject.inc:90
@@ -15027,7 +15113,7 @@ msgstr "将删除所选的配置文件."
 msgid "This will enable the extension automatically if this profile is loaded."
 msgstr "在配置文件调入时，将自动打开扩展项。"
 
-#: ../lib/modules/posixGroup.inc:542
+#: ../lib/modules/posixGroup.inc:543
 msgid "This will force syncing with group of names members of the same group."
 msgstr "将强制同步同一组中组成员名字."
 
@@ -15038,7 +15124,11 @@ msgid ""
 msgstr ""
 "在修改账号的时候隐藏自定义脚本标签. 这个标签被隐藏后不能做任何手工修改."
 
-#: ../lib/modules/sambaSamAccount.inc:266
+#: ../lib/modules/posixAccount.inc:452
+msgid "This will not add the posixAccount object class to the account."
+msgstr "这不会为此账号增加posixAccount对象类."
+
+#: ../lib/modules/sambaSamAccount.inc:272
 msgid "This will reset the host's password to a default value."
 msgstr "将主机密码复位到缺省值."
 
@@ -15072,7 +15162,7 @@ msgid ""
 "here."
 msgstr "设置用户账号状态.可以在这里关闭邮箱."
 
-#: ../lib/modules/sambaSamAccount.inc:1350
+#: ../lib/modules/sambaSamAccount.inc:1359
 msgid "Thursday"
 msgstr "星期四"
 
@@ -15094,11 +15184,11 @@ msgstr "票证寿命"
 msgid "Ticket lifetime must be a number."
 msgstr "票证寿命必须是数字!"
 
-#: ../lib/modules/sambaSamAccount.inc:1372
+#: ../lib/modules/sambaSamAccount.inc:1381
 msgid "Time"
 msgstr "时间"
 
-#: ../lib/modules/sambaSamAccount.inc:370
+#: ../lib/modules/sambaSamAccount.inc:376
 msgid "Time limit"
 msgstr "时间限制"
 
@@ -15112,7 +15202,7 @@ msgstr "用户上次修改密码时间."
 
 #: ../templates/config/confmain.php:332
 #: ../templates/selfService/adminMain.php:479
-#: ../lib/modules/sambaSamAccount.inc:349 ../help/help.inc:107
+#: ../lib/modules/sambaSamAccount.inc:355 ../help/help.inc:107
 msgid "Time zone"
 msgstr "时区"
 
@@ -15151,7 +15241,7 @@ msgstr "标题"
 msgid "To"
 msgstr "到"
 
-#: ../lib/modules/posixAccount.inc:568
+#: ../lib/modules/posixAccount.inc:481
 msgid "To disable login use /bin/false."
 msgstr "使用/bin/false来禁止登录"
 
@@ -15189,7 +15279,7 @@ msgstr "总额"
 msgid "Total paid (read-only)"
 msgstr "支付总额(只读)"
 
-#: ../lib/types/user.inc:695
+#: ../lib/types/user.inc:718
 msgid "Translate GID number to group name"
 msgstr "将GID号改为组名"
 
@@ -15205,7 +15295,7 @@ msgstr "树状结构"
 msgid "TreeSuffix is invalid!"
 msgstr "树状结构后缀非法!"
 
-#: ../lib/modules/sambaSamAccount.inc:1350
+#: ../lib/modules/sambaSamAccount.inc:1359
 msgid "Tuesday"
 msgstr "星期二"
 
@@ -15227,8 +15317,8 @@ msgstr "类型"
 msgid "UID"
 msgstr "UID"
 
-#: ../lib/modules/posixAccount.inc:220 ../lib/modules/posixAccount.inc:249
-#: ../lib/modules/posixAccount.inc:530
+#: ../lib/modules/posixAccount.inc:434 ../lib/modules/posixAccount.inc:1891
+#: ../lib/modules/posixAccount.inc:1928
 msgid "UID generator"
 msgstr "UID生成器"
 
@@ -15254,10 +15344,10 @@ msgstr "UID必须是一个数字,必须在配置文件中所定的UID范围内."
 #: ../lib/modules/zarafaContact.inc:196 ../lib/modules/zarafaContact.inc:211
 #: ../lib/modules/zarafaContact.inc:212 ../lib/modules/zarafaContact.inc:230
 #: ../lib/modules/zarafaContact.inc:616 ../lib/modules/posixAccount.inc:108
-#: ../lib/modules/posixAccount.inc:323 ../lib/modules/posixAccount.inc:415
-#: ../lib/modules/posixAccount.inc:444 ../lib/modules/posixAccount.inc:481
-#: ../lib/modules/posixAccount.inc:485 ../lib/modules/posixAccount.inc:494
-#: ../lib/modules/posixAccount.inc:1503 ../lib/modules/posixAccount.inc:1934
+#: ../lib/modules/posixAccount.inc:227 ../lib/modules/posixAccount.inc:319
+#: ../lib/modules/posixAccount.inc:348 ../lib/modules/posixAccount.inc:385
+#: ../lib/modules/posixAccount.inc:389 ../lib/modules/posixAccount.inc:398
+#: ../lib/modules/posixAccount.inc:1416 ../lib/modules/posixAccount.inc:1847
 msgid "UID number"
 msgstr "UID编号"
 
@@ -15278,7 +15368,7 @@ msgstr "UID已经被使用"
 msgid "UID ranges for Unix accounts"
 msgstr "Unix帐号的UID范围"
 
-#: ../lib/modules/sambaSamAccount.inc:307
+#: ../lib/modules/sambaSamAccount.inc:313
 msgid ""
 "UNC-path (\\\\server\\share) of homedirectory. $user and $group are replaced "
 "with user and group name."
@@ -15344,9 +15434,9 @@ msgstr "无法连接远端服务器 !"
 msgid "Unable to create ZIP file for PDF export."
 msgstr "无法为PDF导出工作建立ZIP文件."
 
-#: ../lib/modules/selfRegistration.inc:619
-#: ../lib/modules/selfRegistration.inc:779
-#: ../lib/modules/selfRegistration.inc:783
+#: ../lib/modules/selfRegistration.inc:645
+#: ../lib/modules/selfRegistration.inc:805
+#: ../lib/modules/selfRegistration.inc:809
 msgid "Unable to create account."
 msgstr "无法建立新账号."
 
@@ -15400,7 +15490,7 @@ msgstr "无法删除徽标文件!"
 msgid "Unable to delete mailbox from IMAP server."
 msgstr "无法在IMAP服务器上删除邮箱."
 
-#: ../templates/config/profmanage.php:113
+#: ../templates/config/profmanage.php:116
 #: ../templates/selfService/profManage.php:87
 #: ../templates/profedit/profilemain.php:113 ../lib/config.inc:210
 #: ../lib/config.inc:222 ../lib/config.inc:229 ../lib/config.inc:237
@@ -15412,9 +15502,9 @@ msgstr "无法删除配置文件!"
 msgid "Unable to find a printer with name \"%s\"."
 msgstr "找不到打印机:  \"%s\""
 
-#: ../lib/modules/posixAccount.inc:2165 ../lib/modules/posixAccount.inc:2174
-#: ../lib/modules/posixAccount.inc:2458 ../lib/modules/nisNetGroupUser.inc:519
-#: ../lib/modules/nisnetgroup.inc:543 ../lib/modules/groupOfNamesUser.inc:391
+#: ../lib/modules/posixAccount.inc:2209 ../lib/modules/posixAccount.inc:2218
+#: ../lib/modules/posixAccount.inc:2502 ../lib/modules/nisNetGroupUser.inc:519
+#: ../lib/modules/nisnetgroup.inc:543 ../lib/modules/groupOfNamesUser.inc:401
 msgid "Unable to find group in LDAP."
 msgstr "LDAP中找不到组."
 
@@ -15444,7 +15534,7 @@ msgstr "找不到用户账号."
 msgid "Unable to import server certificate. Please use the upload function."
 msgstr "不能导入服务器证书. 请使用上传功能."
 
-#: ../lib/modules.inc:1560 ../lib/modules.inc:1564
+#: ../lib/modules.inc:1563 ../lib/modules.inc:1567
 msgid "Unable to load LDAP entry:"
 msgstr "无法调入LDAP条目:"
 
@@ -15466,7 +15556,7 @@ msgstr "无法处理文件"
 msgid "Unable to read file."
 msgstr "无法读入文件"
 
-#: ../lib/modules/selfRegistration.inc:772
+#: ../lib/modules/selfRegistration.inc:798
 msgid "Unable to register your new account. Please try again."
 msgstr "无法注册新帐号, 请重试."
 
@@ -15492,7 +15582,7 @@ msgstr "无法获取schema!"
 msgid "Unable to save profile!"
 msgstr "无法存储配置文件!"
 
-#: ../lib/account.inc:1047 ../lib/account.inc:1085
+#: ../lib/account.inc:1054 ../lib/account.inc:1092
 msgid "Unable to send mail!"
 msgstr "无法发送邮件!"
 
@@ -15510,7 +15600,7 @@ msgstr "无法上传徽标文件!"
 msgid "Unable to verify your password reset request. Please try again."
 msgstr "无法确认您的密码复位请求,请重试."
 
-#: ../lib/modules/selfRegistration.inc:809
+#: ../lib/modules/selfRegistration.inc:835
 msgid "Unable to verify your user creation request. Please try again."
 msgstr "无法确认您的用户建立请求,请重试."
 
@@ -15523,9 +15613,9 @@ msgid "Universal"
 msgstr "通用的"
 
 #: ../templates/lists/changePassword.php:414
-#: ../templates/lists/changePassword.php:445 ../lib/types/user.inc:268
-#: ../lib/types/user.inc:368 ../lib/types/user.inc:400
-#: ../lib/types/user.inc:898 ../lib/modules/posixGroup.inc:388
+#: ../templates/lists/changePassword.php:445 ../lib/types/user.inc:271
+#: ../lib/types/user.inc:380 ../lib/types/user.inc:415
+#: ../lib/types/user.inc:926 ../lib/modules/posixGroup.inc:388
 #: ../lib/modules/posixAccount.inc:169
 msgid "Unix"
 msgstr "unix"
@@ -15534,7 +15624,7 @@ msgstr "unix"
 msgid "Unix account"
 msgstr "Unix帐号"
 
-#: ../lib/modules/posixAccount.inc:295 ../lib/modules/posixAccount.inc:1636
+#: ../lib/modules/posixAccount.inc:1549 ../lib/modules/posixAccount.inc:1981
 msgid "Unix groups"
 msgstr "Unix组"
 
@@ -15553,8 +15643,8 @@ msgstr "不明的代表地址:%s"
 msgid "Unkown change type"
 msgstr "未知的改变类型"
 
-#: ../lib/types/user.inc:349 ../lib/types/user.inc:354
-#: ../lib/modules/windowsUser.inc:1049
+#: ../lib/types/user.inc:361 ../lib/types/user.inc:366
+#: ../lib/types/user.inc:431 ../lib/modules/windowsUser.inc:1049
 msgid "Unlock"
 msgstr "解锁"
 
@@ -15562,7 +15652,7 @@ msgstr "解锁"
 #: ../templates/lists/changePassword.php:411
 #: ../templates/lists/changePassword.php:431
 #: ../templates/lists/changePassword.php:433
-#: ../lib/modules/ppolicyUser.inc:150
+#: ../lib/modules/ppolicyUser.inc:151
 msgid "Unlock account"
 msgstr "解锁账号."
 
@@ -15570,12 +15660,12 @@ msgstr "解锁账号."
 msgid "Unlock account?"
 msgstr "解锁账号?"
 
-#: ../lib/modules/posixGroup.inc:208 ../lib/modules/posixAccount.inc:1572
+#: ../lib/modules/posixGroup.inc:208 ../lib/modules/posixAccount.inc:1485
 #: ../lib/modules/inetOrgPerson.inc:1650
 msgid "Unlock password"
 msgstr "解除密码锁定"
 
-#: ../lib/types/user.inc:767
+#: ../lib/types/user.inc:790
 msgid "Unlocked"
 msgstr "解锁"
 
@@ -15670,9 +15760,9 @@ msgstr "用法"
 msgid "Use * for all services."
 msgstr "为所有的服务使用*."
 
-#: ../lib/modules/sambaSamAccount.inc:268
-#: ../lib/modules/sambaSamAccount.inc:271
-#: ../lib/modules/sambaSamAccount.inc:432
+#: ../lib/modules/sambaSamAccount.inc:274
+#: ../lib/modules/sambaSamAccount.inc:277
+#: ../lib/modules/sambaSamAccount.inc:441
 msgid "Use Unix password"
 msgstr "使用unix的密码"
 
@@ -15680,11 +15770,11 @@ msgstr "使用unix的密码"
 msgid "Use for all operations"
 msgstr "用于所有操作"
 
-#: ../lib/modules/sambaSamAccount.inc:274
-#: ../lib/modules/sambaSamAccount.inc:277
-#: ../lib/modules/sambaSamAccount.inc:440
-#: ../lib/modules/sambaSamAccount.inc:1119
-#: ../lib/modules/sambaSamAccount.inc:1710
+#: ../lib/modules/sambaSamAccount.inc:280
+#: ../lib/modules/sambaSamAccount.inc:283
+#: ../lib/modules/sambaSamAccount.inc:449
+#: ../lib/modules/sambaSamAccount.inc:1128
+#: ../lib/modules/sambaSamAccount.inc:1719
 msgid "Use no password"
 msgstr "无需密码"
 
@@ -15807,18 +15897,18 @@ msgstr "用户帐号(例如 Unix, Samba和Kolab)"
 msgid "User agent"
 msgstr "用户代理"
 
-#: ../lib/modules/sambaSamAccount.inc:298
-#: ../lib/modules/sambaSamAccount.inc:1145
+#: ../lib/modules/sambaSamAccount.inc:304
+#: ../lib/modules/sambaSamAccount.inc:1154
 msgid "User can change password"
 msgstr "用户可以修改密码"
 
 #: ../lib/modules/inetOrgPerson.inc:166 ../lib/modules/inetOrgPerson.inc:867
 #: ../lib/modules/inetOrgPerson.inc:1595 ../lib/modules/inetOrgPerson.inc:2800
-#: ../lib/modules/inetOrgPerson.inc:3719
+#: ../lib/modules/inetOrgPerson.inc:3697
 msgid "User certificates"
 msgstr "用户数字证书"
 
-#: ../lib/types/user.inc:539
+#: ../lib/types/user.inc:562
 #, php-format
 msgid "User count: %s"
 msgstr "帐号总计: %s"
@@ -15827,7 +15917,7 @@ msgstr "帐号总计: %s"
 msgid "User description."
 msgstr "用户描述"
 
-#: ../lib/modules/posixAccount.inc:548
+#: ../lib/modules/posixAccount.inc:461
 msgid "User description. If left empty first and last name will be used."
 msgstr "用户描述,如果留空将会使用用户姓名."
 
@@ -15845,8 +15935,8 @@ msgstr "用户修改"
 
 #: ../lib/modules/mitKerberos.inc:224 ../lib/modules/mitKerberos.inc:250
 #: ../lib/modules/mitKerberos.inc:374 ../lib/modules/mitKerberos.inc:640
-#: ../lib/modules/mitKerberos.inc:793 ../lib/modules/sambaSamAccount.inc:300
-#: ../lib/modules/sambaSamAccount.inc:1151 ../lib/modules/windowsUser.inc:1058
+#: ../lib/modules/mitKerberos.inc:793 ../lib/modules/sambaSamAccount.inc:306
+#: ../lib/modules/sambaSamAccount.inc:1160 ../lib/modules/windowsUser.inc:1058
 #: ../lib/modules/heimdalKerberos.inc:106
 #: ../lib/modules/heimdalKerberos.inc:193
 #: ../lib/modules/heimdalKerberos.inc:220
@@ -15861,9 +15951,9 @@ msgstr "用户必须修改密码"
 #: ../lib/selfService.inc:398 ../lib/modules/mitKerberos.inc:116
 #: ../lib/modules/mitKerberos.inc:211 ../lib/modules/mitKerberos.inc:249
 #: ../lib/modules/mitKerberos.inc:343 ../lib/modules/mitKerberos.inc:780
-#: ../lib/modules/selfRegistration.inc:402
-#: ../lib/modules/selfRegistration.inc:481
-#: ../lib/modules/selfRegistration.inc:488 ../lib/modules/account.inc:85
+#: ../lib/modules/selfRegistration.inc:414
+#: ../lib/modules/selfRegistration.inc:501
+#: ../lib/modules/selfRegistration.inc:508 ../lib/modules/account.inc:85
 #: ../lib/modules/account.inc:101 ../lib/modules/account.inc:124
 #: ../lib/modules/account.inc:126 ../lib/modules/account.inc:127
 #: ../lib/modules/account.inc:210 ../lib/modules/account.inc:231
@@ -15875,9 +15965,9 @@ msgstr "用户必须修改密码"
 #: ../lib/modules/nisNetGroupHost.inc:218
 #: ../lib/modules/nisNetGroupHost.inc:262 ../lib/modules/posixAccount.inc:113
 #: ../lib/modules/posixAccount.inc:114 ../lib/modules/posixAccount.inc:117
-#: ../lib/modules/posixAccount.inc:315 ../lib/modules/posixAccount.inc:441
-#: ../lib/modules/posixAccount.inc:543 ../lib/modules/posixAccount.inc:1490
-#: ../lib/modules/posixAccount.inc:1920 ../lib/modules/windowsUser.inc:122
+#: ../lib/modules/posixAccount.inc:219 ../lib/modules/posixAccount.inc:345
+#: ../lib/modules/posixAccount.inc:456 ../lib/modules/posixAccount.inc:1403
+#: ../lib/modules/posixAccount.inc:1833 ../lib/modules/windowsUser.inc:122
 #: ../lib/modules/windowsUser.inc:367 ../lib/modules/windowsUser.inc:732
 #: ../lib/modules/windowsUser.inc:849 ../lib/modules/windowsUser.inc:965
 #: ../lib/modules/windowsUser.inc:2300 ../lib/modules/pykotaUser.inc:112
@@ -15889,8 +15979,8 @@ msgstr "用户必须修改密码"
 #: ../lib/modules/inetOrgPerson.inc:638 ../lib/modules/inetOrgPerson.inc:766
 #: ../lib/modules/inetOrgPerson.inc:1241 ../lib/modules/inetOrgPerson.inc:1244
 #: ../lib/modules/inetOrgPerson.inc:2000 ../lib/modules/inetOrgPerson.inc:2135
-#: ../lib/modules/inetOrgPerson.inc:2855 ../lib/modules/inetOrgPerson.inc:3727
-#: ../lib/modules/inetOrgPerson.inc:3756
+#: ../lib/modules/inetOrgPerson.inc:2855 ../lib/modules/inetOrgPerson.inc:3705
+#: ../lib/modules/inetOrgPerson.inc:3734
 #: ../lib/modules/passwordSelfReset.inc:524
 #: ../lib/modules/passwordSelfReset.inc:884
 #: ../lib/modules/passwordSelfReset.inc:1065
@@ -15909,7 +15999,7 @@ msgstr "用户名"
 msgid "User name (pre W2K)"
 msgstr "用户名(W2K以前)"
 
-#: ../lib/modules/selfRegistration.inc:488 ../lib/modules/posixAccount.inc:121
+#: ../lib/modules/selfRegistration.inc:508 ../lib/modules/posixAccount.inc:121
 #: ../lib/modules/pykotaUser.inc:313 ../lib/modules/pykotaUser.inc:314
 #: ../lib/modules/pykotaUser.inc:317 ../lib/modules/pykotaUser.inc:318
 #: ../lib/modules/inetOrgPerson.inc:99
@@ -15925,7 +16015,7 @@ msgid "User name attribute"
 msgstr "用户名属性"
 
 #: ../lib/modules/mitKerberos.inc:289 ../lib/modules/mitKerberos.inc:290
-#: ../lib/modules/selfRegistration.inc:481 ../lib/modules/account.inc:124
+#: ../lib/modules/selfRegistration.inc:501 ../lib/modules/account.inc:124
 #: ../lib/modules/account.inc:125 ../lib/modules/account.inc:127
 #: ../lib/modules/zarafaContact.inc:207 ../lib/modules/zarafaContact.inc:208
 #: ../lib/modules/uidObject.inc:85 ../lib/modules/zarafaGroup.inc:205
@@ -15963,7 +16053,7 @@ msgid ""
 "Z,0-9, @.-_."
 msgstr "将要建立的用户名,可用字符为: a-z,A-Z,0-9, @.-_."
 
-#: ../lib/modules/posixAccount.inc:544
+#: ../lib/modules/posixAccount.inc:457
 msgid ""
 "User name of the user who should be created. Valid characters are: a-z,A-"
 "Z,0-9, @.-_. If user name is already used user name will be expanded with a "
@@ -15978,7 +16068,7 @@ msgstr ""
 msgid "User name or email address"
 msgstr "用户名或用户邮件地址."
 
-#: ../lib/modules/posixAccount.inc:302 ../lib/modules/posixAccount.inc:468
+#: ../lib/modules/posixAccount.inc:372 ../lib/modules/posixAccount.inc:1992
 msgid "User name suggestion"
 msgstr "用户名建议"
 
@@ -16003,7 +16093,7 @@ msgstr "用户服务器"
 
 #: ../lib/types/user.inc:53 ../lib/modules/posixAccount.inc:93
 #: ../lib/modules/posixAccount.inc:94 ../lib/modules/posixAccount.inc:97
-#: ../lib/modules/posixAccount.inc:214 ../lib/modules/zarafaUser.inc:1818
+#: ../lib/modules/posixAccount.inc:1884 ../lib/modules/zarafaUser.inc:1818
 #: ../lib/modules/sudoRole.inc:74 ../lib/modules/sudoRole.inc:98
 #: ../lib/modules/sudoRole.inc:159 ../lib/modules/sudoRole.inc:216
 #: ../lib/modules/sudoRole.inc:228 ../lib/modules/sudoRole.inc:316
@@ -16038,7 +16128,7 @@ msgstr "使用%s做为lamdeamon的远程服务器."
 msgid "Using %s to connect to remote server."
 msgstr "使用%s连接远程服务器."
 
-#: ../lib/modules/posixAccount.inc:478
+#: ../lib/modules/posixAccount.inc:382
 msgid ""
 "Usually, users are not added to groups as memberUid if they have this group "
 "as primary group. If your application ignores primary groups then you can "
@@ -16162,19 +16252,19 @@ msgid "Warning"
 msgstr "警告"
 
 #: ../templates/delete.php:243 ../lib/modules/nisMailAliasUser.inc:505
-#: ../lib/modules/posixAccount.inc:953
+#: ../lib/modules/posixAccount.inc:866
 #: ../lib/modules/organizationalRoleUser.inc:201
 #: ../lib/modules/organizationalRoleUser.inc:218
-#: ../lib/modules/windowsUser.inc:1791 ../lib/modules/groupOfNamesUser.inc:217
-#: ../lib/modules/groupOfNamesUser.inc:264
-#: ../lib/modules/windowsGroup.inc:1023 ../lib/modules.inc:1939
+#: ../lib/modules/windowsUser.inc:1791 ../lib/modules/groupOfNamesUser.inc:227
+#: ../lib/modules/groupOfNamesUser.inc:274
+#: ../lib/modules/windowsGroup.inc:1023 ../lib/modules.inc:1942
 #, php-format
 msgid "Was unable to add attributes to DN: %s."
 msgstr "无法为DN: %s增加属性."
 
 #: ../lib/modules/nisMailAliasUser.inc:494 ../lib/modules/range.inc:665
 #: ../lib/modules/inetOrgPerson.inc:1010 ../lib/modules/inetOrgPerson.inc:2406
-#: ../lib/modules.inc:1902
+#: ../lib/modules.inc:1905
 #, php-format
 msgid "Was unable to create DN: %s."
 msgstr "无法创建DN: %s."
@@ -16185,37 +16275,37 @@ msgstr "无法创建DN: %s."
 msgid "Was unable to delete DN: %s."
 msgstr "无法删除DN: %s."
 
-#: ../templates/lists/changePassword.php:766
-#: ../templates/lists/changePassword.php:804
-#: ../templates/lists/changePassword.php:850 ../templates/delete.php:234
+#: ../templates/lists/changePassword.php:783
+#: ../templates/lists/changePassword.php:861
+#: ../templates/lists/changePassword.php:907 ../templates/delete.php:234
 #, php-format
 msgid "Was unable to modify attributes from DN: %s."
 msgstr "无法修改DN: %s的属性"
 
-#: ../lib/modules/posixAccount.inc:937 ../lib/modules/windowsUser.inc:1817
+#: ../lib/modules/posixAccount.inc:850 ../lib/modules/windowsUser.inc:1817
 #: ../lib/modules/windowsUser.inc:2270 ../lib/modules/range.inc:709
 #: ../lib/modules/nisNetGroupUser.inc:351
 #: ../lib/modules/nisNetGroupUser.inc:368
 #: ../lib/modules/nisNetGroupUser.inc:405
 #: ../lib/modules/nisNetGroupUser.inc:417
 #: ../lib/modules/nisNetGroupUser.inc:584
-#: ../lib/modules/groupOfNamesUser.inc:249 ../lib/modules.inc:1921
+#: ../lib/modules/groupOfNamesUser.inc:259 ../lib/modules.inc:1924
 #, php-format
 msgid "Was unable to modify attributes of DN: %s."
 msgstr "不能修改DN: %s的属性"
 
 #: ../templates/delete.php:252 ../lib/modules/nisMailAliasUser.inc:482
-#: ../lib/modules/posixAccount.inc:970
+#: ../lib/modules/posixAccount.inc:883
 #: ../lib/modules/organizationalRoleUser.inc:206
 #: ../lib/modules/organizationalRoleUser.inc:229
-#: ../lib/modules/windowsUser.inc:1804 ../lib/modules/groupOfNamesUser.inc:222
-#: ../lib/modules/groupOfNamesUser.inc:278
-#: ../lib/modules/windowsGroup.inc:1036 ../lib/modules.inc:1952
+#: ../lib/modules/windowsUser.inc:1804 ../lib/modules/groupOfNamesUser.inc:232
+#: ../lib/modules/groupOfNamesUser.inc:288
+#: ../lib/modules/windowsGroup.inc:1036 ../lib/modules.inc:1955
 #, php-format
 msgid "Was unable to remove attributes from DN: %s."
 msgstr "无法删除DN: %s的属性."
 
-#: ../lib/modules/asteriskExtension.inc:906 ../lib/modules.inc:1882
+#: ../lib/modules/asteriskExtension.inc:906 ../lib/modules.inc:1885
 #, php-format
 msgid "Was unable to rename DN: %s."
 msgstr "无法重命名DN: %s."
@@ -16228,12 +16318,12 @@ msgstr "无法重命名DN: %s."
 #: ../lib/modules/inetOrgPerson.inc:601 ../lib/modules/inetOrgPerson.inc:754
 #: ../lib/modules/inetOrgPerson.inc:758 ../lib/modules/inetOrgPerson.inc:1510
 #: ../lib/modules/inetOrgPerson.inc:1513 ../lib/modules/inetOrgPerson.inc:2010
-#: ../lib/modules/inetOrgPerson.inc:2536 ../lib/modules/inetOrgPerson.inc:3717
-#: ../lib/modules/inetOrgPerson.inc:3746
+#: ../lib/modules/inetOrgPerson.inc:2536 ../lib/modules/inetOrgPerson.inc:3695
+#: ../lib/modules/inetOrgPerson.inc:3724
 msgid "Web site"
 msgstr "网站"
 
-#: ../lib/modules/sambaSamAccount.inc:1350
+#: ../lib/modules/sambaSamAccount.inc:1359
 msgid "Wednesday"
 msgstr "星期三"
 
@@ -16270,34 +16360,34 @@ msgid ""
 msgstr "当使用ldaps://或TLS协议时确认在证书中使用相同的ip/domain!"
 
 #: ../templates/lists/changePassword.php:426
-#: ../templates/lists/changePassword.php:457 ../lib/types/user.inc:292
-#: ../lib/types/user.inc:380 ../lib/types/user.inc:412
-#: ../lib/types/user.inc:922 ../lib/modules/windowsHost.inc:64
+#: ../templates/lists/changePassword.php:457 ../lib/types/user.inc:295
+#: ../lib/types/user.inc:392 ../lib/types/user.inc:427
+#: ../lib/types/user.inc:950 ../lib/modules/windowsHost.inc:64
 #: ../lib/modules/windowsUser.inc:101 ../lib/modules/windowsUser.inc:3173
 #: ../lib/modules/windowsGroup.inc:101
 msgid "Windows"
 msgstr "Windows"
 
-#: ../lib/modules/posixGroup.inc:564 ../lib/modules/posixAccount.inc:218
+#: ../lib/modules/posixGroup.inc:569 ../lib/modules/posixAccount.inc:1888
 msgid "Windows domain info"
 msgstr "Windows域信息"
 
-#: ../lib/modules/posixGroup.inc:524 ../lib/modules/posixGroup.inc:588
-#: ../lib/modules/posixGroup.inc:664 ../lib/modules/posixAccount.inc:132
-#: ../lib/modules/posixAccount.inc:236 ../lib/modules/posixAccount.inc:265
-#: ../lib/modules/posixAccount.inc:538
+#: ../lib/modules/posixGroup.inc:525 ../lib/modules/posixGroup.inc:596
+#: ../lib/modules/posixGroup.inc:675 ../lib/modules/posixAccount.inc:132
+#: ../lib/modules/posixAccount.inc:443 ../lib/modules/posixAccount.inc:1909
+#: ../lib/modules/posixAccount.inc:1946
 msgid "Windows domain info DN"
 msgstr "Windows域信息DN"
 
-#: ../lib/modules/sambaSamAccount.inc:338 ../lib/modules/windowsUser.inc:127
+#: ../lib/modules/sambaSamAccount.inc:344 ../lib/modules/windowsUser.inc:127
 msgid "Windows domain name of account."
 msgstr "帐号所属的windows域"
 
 #: ../lib/modules/sambaSamAccount.inc:212
-#: ../lib/modules/sambaSamAccount.inc:471
-#: ../lib/modules/sambaSamAccount.inc:1239
-#: ../lib/modules/sambaSamAccount.inc:1758
-#: ../lib/modules/sambaSamAccount.inc:1884
+#: ../lib/modules/sambaSamAccount.inc:480
+#: ../lib/modules/sambaSamAccount.inc:1248
+#: ../lib/modules/sambaSamAccount.inc:1767
+#: ../lib/modules/sambaSamAccount.inc:1893
 #: ../lib/modules/sambaGroupMapping.inc:111
 #: ../lib/modules/sambaGroupMapping.inc:374
 #: ../lib/modules/sambaGroupMapping.inc:540
@@ -16312,7 +16402,7 @@ msgstr "Windows组名"
 msgid "Windows group type."
 msgstr "Windows组类型"
 
-#: ../lib/modules/sambaSamAccount.inc:395
+#: ../lib/modules/sambaSamAccount.inc:401
 msgid ""
 "Windows password hashes are saved by default as NT and LM hashes. LM hashes "
 "are insecure and only needed for old versions of Windows. You should disable "
@@ -16321,11 +16411,11 @@ msgstr ""
 "windows密码的哈希方法缺少设置为NT和LM方法.LM哈希方法是不安全的,只用于旧版本的"
 "Windows系统.除非必要,一般需要屏蔽之."
 
-#: ../lib/modules/sambaSamAccount.inc:321
+#: ../lib/modules/sambaSamAccount.inc:327
 msgid "Windows primary group"
 msgstr "Windows主组"
 
-#: ../lib/modules/sambaSamAccount.inc:324
+#: ../lib/modules/sambaSamAccount.inc:330
 msgid "Windows primary group SID"
 msgstr "Windows主组的SID"
 
@@ -16342,13 +16432,13 @@ msgid "Workgroup"
 msgstr "工作组"
 
 #: ../lib/modules/sambaSamAccount.inc:236
-#: ../lib/modules/sambaSamAccount.inc:367
-#: ../lib/modules/sambaSamAccount.inc:1492
-#: ../lib/modules/sambaSamAccount.inc:1903
+#: ../lib/modules/sambaSamAccount.inc:373
+#: ../lib/modules/sambaSamAccount.inc:1501
+#: ../lib/modules/sambaSamAccount.inc:1912
 msgid "Working directory"
 msgstr "工作目录"
 
-#: ../lib/modules/sambaSamAccount.inc:368
+#: ../lib/modules/sambaSamAccount.inc:374
 msgid "Working directory of initial program."
 msgstr "初始化程序的工作目录。"
 
@@ -16382,12 +16472,19 @@ msgstr "错误的配额类型.配额必须为数字."
 msgid "Yes"
 msgstr "是"
 
-#: ../templates/lists/changePassword.php:545
-#: ../lib/modules/ppolicyUser.inc:347 ../lib/modules/ppolicyUser.inc:427
+#: ../lib/modules/sambaSamAccount.inc:2409
+msgid "You are not yet allowed to change your password."
+msgstr "不允许修改密码."
+
+#: ../templates/lists/changePassword.php:540
+#: ../templates/lists/changePassword.php:550
+#: ../lib/modules/sambaSamAccount.inc:2384
+#: ../lib/modules/sambaSamAccount.inc:2466 ../lib/modules/ppolicyUser.inc:348
+#: ../lib/modules/ppolicyUser.inc:428
 msgid "You are reusing an old password. Please choose a different password."
 msgstr "重复使用了旧密码. 请输入与原来密码不同的新密码. "
 
-#: ../lib/modules/account.inc:126 ../lib/modules/posixGroup.inc:657
+#: ../lib/modules/account.inc:126 ../lib/modules/posixGroup.inc:668
 #: ../lib/modules/posixAccount.inc:113 ../lib/modules/posixAccount.inc:115
 msgid ""
 "You are using capital letters. This can cause problems because Windows is "
@@ -16572,19 +16669,19 @@ msgid ""
 "webserver user."
 msgstr "你的修改只能在web服务器有权写文件的条件下保存."
 
-#: ../lib/modules/selfRegistration.inc:803
+#: ../lib/modules/selfRegistration.inc:829
 msgid ""
 "Your new account was created but post processing failed. Please contact your "
 "local administrator."
 msgstr "您的新帐号已经建立, 但后续处理工作失败. 请联系本地管理员."
 
-#: ../lib/modules/selfRegistration.inc:800
+#: ../lib/modules/selfRegistration.inc:826
 msgid ""
 "Your new account was successfully created. Please return to login to change "
 "your user data."
 msgstr "你的新账号已经成功建立.请返回后登录并修改用户数据."
 
-#: ../lib/account.inc:1252 ../lib/modules/windowsUser.inc:2637
+#: ../lib/account.inc:1276 ../lib/modules/windowsUser.inc:2637
 msgid ""
 "Your password does not meet the password strength qualifications. Please "
 "retry with another one."
@@ -16665,11 +16762,11 @@ msgstr "区域名"
 msgid "Zone name for the DNS server (e.g. company.local)."
 msgstr "DNS服务器的区域名(比如: company.local)."
 
-#: ../lib/modules/sambaSamAccount.inc:497 ../lib/modules/windowsUser.inc:547
+#: ../lib/modules/sambaSamAccount.inc:506 ../lib/modules/windowsUser.inc:547
 msgid "\\\\server\\homes\\smiller"
 msgstr "\\\\server\\homes\\smiller"
 
-#: ../lib/modules/sambaSamAccount.inc:505 ../lib/modules/windowsUser.inc:529
+#: ../lib/modules/sambaSamAccount.inc:514 ../lib/modules/windowsUser.inc:529
 msgid "\\\\server\\profiles\\smiller"
 msgstr "\\\\server\\profiles\\smiller"
 
@@ -16736,7 +16833,7 @@ msgstr "确认"
 msgid "dc=yourcompany,dc=com"
 msgstr "dc=yourcompany,dc=com"
 
-#: ../templates/config/mainmanage.php:429 ../lib/modules/ppolicyUser.inc:126
+#: ../templates/config/mainmanage.php:429 ../lib/modules/ppolicyUser.inc:127
 msgid "default"
 msgstr "缺省"
 
@@ -16748,14 +16845,14 @@ msgstr "删除"
 msgid "delete attribute"
 msgstr "删除属性"
 
-#: ../lib/modules/sambaSamAccount.inc:1513
-#: ../lib/modules/sambaSamAccount.inc:1923 ../lib/modules/zarafaUser.inc:650
+#: ../lib/modules/sambaSamAccount.inc:1522
+#: ../lib/modules/sambaSamAccount.inc:1932 ../lib/modules/zarafaUser.inc:650
 #: ../lib/modules/zarafaUser.inc:1323 ../lib/modules/zarafaUser.inc:1367
 msgid "disabled"
 msgstr "关闭"
 
-#: ../lib/modules/sambaSamAccount.inc:1524
-#: ../lib/modules/sambaSamAccount.inc:1934
+#: ../lib/modules/sambaSamAccount.inc:1533
+#: ../lib/modules/sambaSamAccount.inc:1943
 msgid "disconnect"
 msgstr "中断连接"
 
@@ -16789,17 +16886,17 @@ msgstr "失败"
 msgid "force"
 msgstr "强制"
 
-#: ../lib/modules/sambaSamAccount.inc:1532
-#: ../lib/modules/sambaSamAccount.inc:1942
+#: ../lib/modules/sambaSamAccount.inc:1541
+#: ../lib/modules/sambaSamAccount.inc:1951
 msgid "from any client"
 msgstr "从任何客户端"
 
-#: ../lib/modules/sambaSamAccount.inc:1533
-#: ../lib/modules/sambaSamAccount.inc:1943
+#: ../lib/modules/sambaSamAccount.inc:1542
+#: ../lib/modules/sambaSamAccount.inc:1952
 msgid "from previous client only"
 msgstr "仅从以前的客户端"
 
-#: ../lib/modules/posixAccount.inc:338 ../lib/modules/posixAccount.inc:398
+#: ../lib/modules/posixAccount.inc:242 ../lib/modules/posixAccount.inc:302
 #: ../lib/modules/nisnetgroup.inc:128 ../lib/modules/groupOfNamesUser.inc:73
 msgid "group01,group02"
 msgstr "group01,group02"
@@ -16835,23 +16932,23 @@ msgstr "http://www.company.com"
 msgid "import"
 msgstr "导入"
 
-#: ../lib/modules/sambaSamAccount.inc:1517
-#: ../lib/modules/sambaSamAccount.inc:1927
+#: ../lib/modules/sambaSamAccount.inc:1526
+#: ../lib/modules/sambaSamAccount.inc:1936
 msgid "input off, notify off"
 msgstr "输入关，提醒关"
 
-#: ../lib/modules/sambaSamAccount.inc:1516
-#: ../lib/modules/sambaSamAccount.inc:1926
+#: ../lib/modules/sambaSamAccount.inc:1525
+#: ../lib/modules/sambaSamAccount.inc:1935
 msgid "input off, notify on"
 msgstr "输入关，提醒开"
 
-#: ../lib/modules/sambaSamAccount.inc:1515
-#: ../lib/modules/sambaSamAccount.inc:1925
+#: ../lib/modules/sambaSamAccount.inc:1524
+#: ../lib/modules/sambaSamAccount.inc:1934
 msgid "input on, notify off"
 msgstr "输入开，提醒关"
 
-#: ../lib/modules/sambaSamAccount.inc:1514
-#: ../lib/modules/sambaSamAccount.inc:1924
+#: ../lib/modules/sambaSamAccount.inc:1523
+#: ../lib/modules/sambaSamAccount.inc:1933
 msgid "input on, notify on"
 msgstr "输入开，提醒开"
 
@@ -16877,7 +16974,7 @@ msgstr "列表"
 msgid "login"
 msgstr "登录"
 
-#: ../lib/modules/posixAccount.inc:423
+#: ../lib/modules/posixAccount.inc:327
 msgid "machines"
 msgstr "机器"
 
@@ -16885,12 +16982,12 @@ msgstr "机器"
 msgid "mail.yourdomain.org"
 msgstr "mail.yourdomain.org"
 
-#: ../lib/modules/sambaSamAccount.inc:416
-#: ../lib/modules/sambaSamAccount.inc:540
+#: ../lib/modules/sambaSamAccount.inc:425
+#: ../lib/modules/sambaSamAccount.inc:549
 msgid "mydomain"
 msgstr "我的域"
 
-#: ../lib/modules/sambaSamAccount.inc:473
+#: ../lib/modules/sambaSamAccount.inc:482
 msgid "mygroup"
 msgstr "我的组"
 
@@ -16905,12 +17002,12 @@ msgstr "新"
 #: ../lib/modules/zarafaGroup.inc:637 ../lib/modules/zarafaGroup.inc:640
 #: ../lib/modules/zarafaAddressList.inc:339
 #: ../lib/modules/zarafaAddressList.inc:342
-#: ../lib/modules/sambaSamAccount.inc:554
-#: ../lib/modules/sambaSamAccount.inc:1891
-#: ../lib/modules/sambaSamAccount.inc:1899
-#: ../lib/modules/sambaSamAccount.inc:1909
-#: ../lib/modules/sambaSamAccount.inc:1914
-#: ../lib/modules/sambaSamAccount.inc:1919 ../lib/modules/zarafaUser.inc:632
+#: ../lib/modules/sambaSamAccount.inc:563
+#: ../lib/modules/sambaSamAccount.inc:1900
+#: ../lib/modules/sambaSamAccount.inc:1908
+#: ../lib/modules/sambaSamAccount.inc:1918
+#: ../lib/modules/sambaSamAccount.inc:1923
+#: ../lib/modules/sambaSamAccount.inc:1928 ../lib/modules/zarafaUser.inc:632
 #: ../lib/modules/zarafaUser.inc:1276 ../lib/modules/zarafaUser.inc:1291
 #: ../lib/modules/zarafaUser.inc:1302 ../lib/modules/zarafaUser.inc:1308
 #: ../lib/modules/windowsUser.inc:491 ../lib/modules/windowsUser.inc:492
@@ -16924,7 +17021,7 @@ msgstr "新"
 #: ../lib/modules/windowsUser.inc:2348 ../lib/modules/ppolicy.inc:35
 #: ../lib/modules/ppolicy.inc:482 ../lib/modules/ppolicy.inc:492
 #: ../lib/modules/ppolicy.inc:497 ../lib/modules/ppolicy.inc:504
-#: ../lib/modules/ppolicy.inc:507 ../lib/modules/generalInformation.inc:100
+#: ../lib/modules/ppolicy.inc:507 ../lib/modules/generalInformation.inc:102
 #: ../lib/modules/zarafaServer.inc:361 ../lib/modules/customFields.inc:3067
 #: ../lib/modules/fixed_ip.inc:753
 msgid "no"
@@ -16980,11 +17077,11 @@ msgstr "ou=People,dc=yourcompany,dc=com 表示将会在此子树下读取和保�
 msgid "ou=accounts,dc=yourdomain,dc=org"
 msgstr "ou=accounts,dc=yourdomain,dc=org"
 
-#: ../lib/modules/posixAccount.inc:409
+#: ../lib/modules/posixAccount.inc:313
 msgid "pc01$"
 msgstr "pc01$"
 
-#: ../lib/modules/posixAccount.inc:432
+#: ../lib/modules/posixAccount.inc:336
 msgid "pc01,Room 2.34"
 msgstr "pc01,Room 2.34"
 
@@ -17004,6 +17101,14 @@ msgstr "printer01"
 msgid "printergroup1"
 msgstr "printergroup1"
 
+#: ../lib/modules/selfRegistration.inc:252
+msgid "reCAPTCHA secret key"
+msgstr "reCAPTCHA密钥"
+
+#: ../lib/modules/selfRegistration.inc:250
+msgid "reCAPTCHA site key"
+msgstr "reCAPTCHA站点"
+
 #: ../templates/3rdParty/pla/lib/HTMLTree.php:54
 msgid "read only"
 msgstr "只读"
@@ -17016,13 +17121,13 @@ msgstr "刷新"
 msgid "rename"
 msgstr "重命名"
 
-#: ../templates/3rdParty/pla/lib/PageRender.php:445 ../lib/html.inc:816
-#: ../lib/html.inc:1733 ../lib/html.inc:2310 ../lib/html.inc:3452
+#: ../templates/3rdParty/pla/lib/PageRender.php:445 ../lib/html.inc:826
+#: ../lib/html.inc:1743 ../lib/html.inc:2320 ../lib/html.inc:3549
 msgid "required"
 msgstr "必选项"
 
-#: ../lib/modules/sambaSamAccount.inc:1525
-#: ../lib/modules/sambaSamAccount.inc:1935
+#: ../lib/modules/sambaSamAccount.inc:1534
+#: ../lib/modules/sambaSamAccount.inc:1944
 msgid "reset"
 msgstr "复位"
 
@@ -17039,8 +17144,8 @@ msgid "seconds"
 msgstr "秒"
 
 #: ../lib/modules/mitKerberos.inc:244 ../lib/modules/asteriskAccount.inc:327
-#: ../lib/modules/posixGroup.inc:440 ../lib/modules/sambaSamAccount.inc:428
-#: ../lib/modules/posixAccount.inc:366 ../lib/modules/windowsUser.inc:377
+#: ../lib/modules/posixGroup.inc:440 ../lib/modules/sambaSamAccount.inc:437
+#: ../lib/modules/posixAccount.inc:270 ../lib/modules/windowsUser.inc:377
 #: ../lib/modules/inetOrgPerson.inc:2146
 #: ../lib/modules/asteriskVoicemail.inc:167
 #: ../lib/modules/heimdalKerberos.inc:213
@@ -17052,7 +17157,7 @@ msgid "select the rdn attribute"
 msgstr "选择RDN属性"
 
 #: ../lib/modules/mitKerberos.inc:213 ../lib/modules/uidObject.inc:69
-#: ../lib/modules/posixAccount.inc:317 ../lib/modules/windowsUser.inc:369
+#: ../lib/modules/posixAccount.inc:221 ../lib/modules/windowsUser.inc:369
 #: ../lib/modules/windowsUser.inc:568 ../lib/modules/windowsUser.inc:577
 #: ../lib/modules/pykotaUser.inc:192 ../lib/modules/pykotaUser.inc:210
 #: ../lib/modules/inetOrgPerson.inc:2137
@@ -17121,7 +17226,7 @@ msgstr "user01,user02,user03"
 msgid "user@company.com"
 msgstr "user@company.com"
 
-#: ../lib/modules/posixAccount.inc:331
+#: ../lib/modules/posixAccount.inc:235
 msgid "users"
 msgstr "用户"
 
@@ -17140,12 +17245,12 @@ msgstr "和"
 #: ../lib/modules/zarafaGroup.inc:635 ../lib/modules/zarafaGroup.inc:642
 #: ../lib/modules/zarafaAddressList.inc:337
 #: ../lib/modules/zarafaAddressList.inc:344
-#: ../lib/modules/sambaSamAccount.inc:554
-#: ../lib/modules/sambaSamAccount.inc:1889
-#: ../lib/modules/sambaSamAccount.inc:1897
-#: ../lib/modules/sambaSamAccount.inc:1907
-#: ../lib/modules/sambaSamAccount.inc:1912
-#: ../lib/modules/sambaSamAccount.inc:1917 ../lib/modules/zarafaUser.inc:632
+#: ../lib/modules/sambaSamAccount.inc:563
+#: ../lib/modules/sambaSamAccount.inc:1898
+#: ../lib/modules/sambaSamAccount.inc:1906
+#: ../lib/modules/sambaSamAccount.inc:1916
+#: ../lib/modules/sambaSamAccount.inc:1921
+#: ../lib/modules/sambaSamAccount.inc:1926 ../lib/modules/zarafaUser.inc:632
 #: ../lib/modules/zarafaUser.inc:1278 ../lib/modules/zarafaUser.inc:1294
 #: ../lib/modules/zarafaUser.inc:1304 ../lib/modules/zarafaUser.inc:1310
 #: ../lib/modules/windowsUser.inc:493 ../lib/modules/windowsUser.inc:501
@@ -17157,7 +17262,7 @@ msgstr "和"
 #: ../lib/modules/ppolicy.inc:494 ../lib/modules/ppolicy.inc:499
 #: ../lib/modules/ppolicy.inc:502 ../lib/modules/ppolicy.inc:509
 #: ../lib/modules/inetOrgPerson.inc:536
-#: ../lib/modules/generalInformation.inc:102
+#: ../lib/modules/generalInformation.inc:104
 #: ../lib/modules/zarafaServer.inc:363 ../lib/modules/customFields.inc:3067
 #: ../lib/modules/fixed_ip.inc:751
 msgid "yes"
@@ -17471,9 +17576,6 @@ msgstr "是"
 
 #~ msgid "User(s)"
 #~ msgstr "用户"
-
-#~ msgid "active"
-#~ msgstr "激活"
 
 #~ msgid "inactive"
 #~ msgstr "停用"
