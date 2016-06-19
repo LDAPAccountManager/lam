@@ -227,10 +227,10 @@ class user extends baseType {
 		$is389dsAvailable = ($container->getAccountModule('locking389ds') != null);
 		$is389dsLocked = $is389dsAvailable && $container->getAccountModule('locking389ds')->isLocked();
 		$is389dsDeactivated = $is389dsAvailable && $container->getAccountModule('locking389ds')->isDeactivated();
-		if (!$unixAvailable && !$sambaAvailable && !$ppolicyAvailable && !$windowsAvailable && !$is389dsDeactivated && !$is389dsLocked) {
+		if (!$unixAvailable && !$sambaAvailable && !$ppolicyAvailable && !$windowsAvailable && !$is389dsAvailable) {
 			return '';
 		}
-		$isEditable = checkIfWriteAccessIsAllowed('user') && ($unixAvailable  || $sambaAvailable || $ppolicyAvailable || $windowsAvailable || $is389dsLocked);
+		$isEditable = checkIfWriteAccessIsAllowed('user') && ($unixAvailable  || $sambaAvailable || $ppolicyAvailable || $windowsAvailable || $is389dsAvailable);
 		// get locking status
 		$unixLocked = false;
 		if ($unixAvailable && $container->getAccountModule('posixAccount')->isLocked()) {
@@ -300,8 +300,10 @@ class user extends baseType {
 			$statusTable .= '<tr><td>' . _('Locked') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/lock.png&quot;></td></tr>';
 		}
 		// 389ds deactivated
-		if ($is389dsDeactivated) {
-			$statusTable .= '<tr><td>' . _('Deactivated') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/lock.png&quot;></td></tr>';
+		if ($is389dsAvailable) {
+			$text389dsActivation = $is389dsDeactivated ? _('Deactivated') : _('Active');
+			$icon389dsActivation = $is389dsDeactivated ? 'lock.png' : 'unlocked.png';
+			$statusTable .= '<tr><td>' . $text389dsActivation . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $icon389dsActivation . '&quot;></td></tr>';
 		}
 		$statusTable .= '</table>';
 		$tipContent = $statusTable;

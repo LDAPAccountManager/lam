@@ -2,7 +2,7 @@ June 2016 5.4
   - Unix: support magic numbers for UIDs/GIDs (e.g. 389 server DNA plugin)
   - Samba 3: support for Samba password history (RFE 133)
   - LAM Pro:
-   -> New module for 389ds unlocking and deactivation status
+   -> New module for 389ds unlocking and account (de)activation
    -> Self registration: support for Google reCAPTCHA
    -> Password notification jobs support CC and BCC
    -> Self Service: Samba 3 supports password history and minimum age check

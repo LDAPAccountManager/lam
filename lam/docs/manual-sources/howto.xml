@@ -3713,6 +3713,17 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
         <screenshot>
           <mediaobject>
             <imageobject>
+              <imagedata fileref="images/ppolicyUser2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>You can select the password policy and force a password change
+        on next login. Accounts can also be (un)locked.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
               <imagedata fileref="images/ppolicyUser.png" />
             </imageobject>
           </mediaobject>
@@ -3727,6 +3738,58 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
         unlocking requires that you also activate the option "Lockout users"
         in the assigned <link linkend="a_ppolicy">password policy</link>.
         Otherwise, it will have no effect.</para>
+      </section>
+
+      <section>
+        <title>Locking status for 389ds (LAM Pro)</title>
+
+        <para>This module allows you to display if users are locked by 389ds
+        server. You can also (de)activate users.</para>
+
+        <para>Requirements: 389ds LDAP server</para>
+
+        <para><emphasis role="bold">Configuration</emphasis></para>
+
+        <para>Please add the user module "Locking status
+        (locking389ds)".</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_389dsLocking1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>This will show the number of failed login attempts and till when
+        the user is locked by the system.</para>
+
+        <para>The limit of failed login attempts and lockout duration is
+        configured on your server and not within LAM.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_389dsLocking2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>You can unlock the user by clicking on the lock icon.</para>
+
+        <para>Here you can also (de)activate the account.</para>
+
+        <para>Note: Accounts are only locked by the LDAP server due to failed
+        password attempts. You cannot manually lock an account. Deactivate it
+        in case you want to disable login for a user.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_389dsLocking3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
       </section>
 
       <section>
