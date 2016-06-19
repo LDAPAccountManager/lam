@@ -149,7 +149,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'title', 'telephoneNumber', 'facsimileTelephoneNumber', 'street', 'postOfficeBox', 'postalCode', 'postalAddress',
 			'sn', 'userPassword', 'description', 'homePhone', 'pager', 'roomNumber', 'businessCategory', 'l', 'st',
 			'physicalDeliveryOfficeName', 'carLicense', 'departmentNumber', 'o', 'employeeNumber', 'initials',
-			'registeredAddress', 'labeledURI', 'ou', 'userCertificate;binary');
+			'registeredAddress', 'labeledURI', 'ou', 'userCertificate;binary', 'INFO.userPasswordClearText');
 		if (!$this->isUnixActive()) {
 			$return['attributes'][] = 'cn';
 		}
@@ -632,12 +632,12 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 
 		if (isLoggedIn()) {
-			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
-			if (!in_array('posixAccount', $modules)) {
+			if (!$this->isUnixActive()) {
 				if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideUID')) {
 					$return['PDF_fields']['uid'] = _('User name');
 				}
 				$return['PDF_fields']['cn'] = _('Common name');
+				$return['PDF_fields']['userPassword'] = _('Password');
 			}
 		}
 		// help Entries
@@ -893,8 +893,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 		}
 		if (!isset($this->attributes['sn'][0]) || ($this->attributes['sn'][0] == '')) return false;
-		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
-		if (!in_array('posixAccount', $modules)) {
+		if (!$this->isUnixActive()) {
 			if (($this->getAccountContainer()->rdn == 'uid') && !isset($this->attributes['uid'][0])) {
 				return false;
 			}
@@ -2009,6 +2008,12 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$this->addSimplePDFField($return, 'initials', _('Initials'));
 		$this->addSimplePDFField($return, 'labeledURI', _('Web site'));
 		$this->addSimplePDFField($return, 'departmentNumber', _('Department'));
+		if (isset($this->clearTextPassword)) {
+			$this->addPDFKeyValue($return, 'userPassword', _('Password'), $this->clearTextPassword);
+		}
+		else if (isset($this->attributes['INFO.userPasswordClearText'])) {
+			$this->addPDFKeyValue($return, 'userPassword', _('Password'), $this->attributes['INFO.userPasswordClearText']);
+		}
 		return $return;
 	}
 
@@ -3432,8 +3437,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 	 * @return boolean true if this module manages password attributes
 	 */
 	public function managesPasswordAttributes() {
-		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
-		if (!in_array('posixAccount', $modules)) {
+		if (!$this->isUnixActive()) {
 			return !$this->isAdminReadOnly('userPassword');
 		}
 		return false;
