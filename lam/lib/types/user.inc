@@ -1066,6 +1066,16 @@ class lamUserList extends lamList {
 	}
 
 	/**
+	 * Returns if the 389ds is activated.
+	 *
+	 * @param array $attrs LDAP attributes
+	 * @return boolean 389ds available
+	 */
+	public static function is389dsAvailable(&$attrs) {
+		return in_array('locking389ds', $_SESSION['config']->get_AccountModules('user'));
+	}
+
+	/**
 	 * Returns if deactivated by nsAccountLock.
 	 *
 	 * @param array $attrs LDAP attributes
