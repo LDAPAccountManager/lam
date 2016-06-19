@@ -224,8 +224,9 @@ class user extends baseType {
 		$sambaAvailable = (($container->getAccountModule('sambaSamAccount') != null) && $container->getAccountModule('sambaSamAccount')->isExtensionEnabled());
 		$ppolicyAvailable = ($container->getAccountModule('ppolicyUser') != null);
 		$windowsAvailable = ($container->getAccountModule('windowsUser') != null);
-		$is389dsLocked = ($container->getAccountModule('locking389ds') != null) && $container->getAccountModule('locking389ds')->isLocked();
-		$is389dsDeactivated = ($container->getAccountModule('locking389ds') != null) && $container->getAccountModule('locking389ds')->isDeactivated();
+		$is389dsAvailable = ($container->getAccountModule('locking389ds') != null);
+		$is389dsLocked = $is389dsAvailable && $container->getAccountModule('locking389ds')->isLocked();
+		$is389dsDeactivated = $is389dsAvailable && $container->getAccountModule('locking389ds')->isDeactivated();
 		if (!$unixAvailable && !$sambaAvailable && !$ppolicyAvailable && !$windowsAvailable && !$is389dsDeactivated && !$is389dsLocked) {
 			return '';
 		}
@@ -308,7 +309,7 @@ class user extends baseType {
 			$tipContent .= '<br><img alt=&quot;hint&quot; src=&quot;../../graphics/light.png&quot;> ';
 			$tipContent .= _('Please click to lock/unlock this account.');
 		}
-		$dialogDiv = $this->buildAccountStatusDialogDiv($unixAvailable, $unixLocked, $sambaAvailable, $sambaLocked, $ppolicyAvailable, $ppolicyLocked, $windowsAvailable, $windowsLocked, $is389dsLocked);
+		$dialogDiv = $this->buildAccountStatusDialogDiv($unixAvailable, $unixLocked, $sambaAvailable, $sambaLocked, $ppolicyAvailable, $ppolicyLocked, $windowsAvailable, $windowsLocked, $is389dsAvailable, $is389dsLocked, $is389dsDeactivated);
 		$onClick = '';
 		if ($isEditable) {
 			$onClick = 'onclick="showConfirmationDialog(\'' . _('Change account status') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\', \'lam_accountStatusDialog\', \'inputForm\', \'lam_accountStatusResult\');"';
@@ -327,11 +328,14 @@ class user extends baseType {
 	 * @param boolean $ppolicyLocked PPolicy part is locked
 	 * @param boolean $windowsAvailable Windows part is active
 	 * @param boolean $windowsLocked Windows part is locked
+	 * @param boolean $is389dsAvailable 389ds is available
 	 * @param boolean $is389dsLocked account is locked
+	 * @param boolean $is389dsDeactivated account is deactivated
 	 */
-	private function buildAccountStatusDialogDiv($unixAvailable, $unixLocked, $sambaAvailable, $sambaLocked, $ppolicyAvailable, $ppolicyLocked, $windowsAvailable, $windowsLocked, $is389dsLocked) {
-		$partiallyLocked = $unixLocked || $sambaLocked || $ppolicyLocked || $windowsLocked || $is389dsLocked;
-		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable || $is389dsLocked)
+	private function buildAccountStatusDialogDiv($unixAvailable, $unixLocked, $sambaAvailable, $sambaLocked, $ppolicyAvailable, $ppolicyLocked, $windowsAvailable,
+			$windowsLocked, $is389dsAvailable, $is389dsLocked, $is389dsDeactivated) {
+		$partiallyLocked = $unixLocked || $sambaLocked || $ppolicyLocked || $windowsLocked || $is389dsLocked || $is389dsDeactivated;
+		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable || $is389dsLocked || $is389dsDeactivated)
 							&& (!$unixAvailable || $unixLocked)
 							&& (!$sambaAvailable || $sambaLocked)
 							&& (!$ppolicyAvailable || $ppolicyLocked)
@@ -387,6 +391,10 @@ class user extends baseType {
 				$lockContent->addElement(new htmlImage('../../graphics/security.png'));
 				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLockPPolicy', true, _('PPolicy'), null, false), true);
 			}
+			if ($is389dsAvailable && !$is389dsDeactivated) {
+				$lockContent->addElement(new htmlImage('../../graphics/security.png'));
+				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusDeactivate389ds', true, _('Deactivate'), null, false), true);
+			}
 			if ($windowsAvailable && !$windowsLocked) {
 				$lockContent->addElement(new htmlImage('../../graphics/samba.png'));
 				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLockWindows', true, _('Windows'), null, false), true);
@@ -421,6 +429,10 @@ class user extends baseType {
 			if ($ppolicyAvailable && $ppolicyLocked) {
 				$unlockContent->addElement(new htmlImage('../../graphics/security.png'));
 				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockPPolicy', true, _('PPolicy'), null, false), true);
+			}
+			if ($is389dsAvailable && $is389dsDeactivated) {
+				$unlockContent->addElement(new htmlImage('../../graphics/security.png'));
+				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusActivate389ds', true, _('Activate'), null, false), true);
 			}
 			if ($windowsAvailable && $windowsLocked) {
 				$unlockContent->addElement(new htmlImage('../../graphics/samba.png'));
@@ -473,6 +485,10 @@ class user extends baseType {
 				if (isset($_POST['lam_accountStatusLockPPolicy']) && ($_POST['lam_accountStatusLockPPolicy'] == 'on')) {
 					$container->getAccountModule('ppolicyUser')->lock();
 				}
+				// 389ds
+				if (isset($_POST['lam_accountStatusDeactivate389ds']) && ($_POST['lam_accountStatusDeactivate389ds'] == 'on')) {
+					$container->getAccountModule('locking389ds')->deactivate();
+				}
 				// Windows
 				if (isset($_POST['lam_accountStatusLockWindows']) && ($_POST['lam_accountStatusLockWindows'] == 'on')) {
 					$container->getAccountModule('windowsUser')->setIsDeactivated(true);
@@ -499,6 +515,10 @@ class user extends baseType {
 				// PPolicy
 				if (isset($_POST['lam_accountStatusUnlockPPolicy']) && ($_POST['lam_accountStatusUnlockPPolicy'] == 'on')) {
 					$container->getAccountModule('ppolicyUser')->unlock();
+				}
+				// 389ds
+				if (isset($_POST['lam_accountStatusActivate389ds']) && ($_POST['lam_accountStatusActivate389ds'] == 'on')) {
+					$container->getAccountModule('locking389ds')->activate();
 				}
 				// Windows
 				if (isset($_POST['lam_accountStatusUnlockWindows']) && ($_POST['lam_accountStatusUnlockWindows'] == 'on')) {
