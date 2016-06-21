@@ -1,4 +1,4 @@
-June 2016 5.4
+21.06.2016 5.4
   - Unix: support magic numbers for UIDs/GIDs (e.g. 389 server DNA plugin)
   - Samba 3: support for Samba password history (RFE 133)
   - LAM Pro:
