@@ -8384,7 +8384,7 @@ OK (10 msec)</programlisting>
               </row>
 
               <row>
-                <entry morerows="2"><inlinemediaobject>
+                <entry morerows="3"><inlinemediaobject>
                     <imageobject>
                       <imagedata fileref="images/schema_unix.png" />
                     </imageobject>
@@ -8406,6 +8406,13 @@ OK (10 msec)</programlisting>
 
                 <entry>This is also the source for several password
                 synchronization options.</entry>
+              </row>
+
+              <row>
+                <entry>Sync Unix password with Windows password</entry>
+
+                <entry>This is a hidden field. It will update the Unix
+                password each time the Windows password is changed.</entry>
               </row>
 
               <row>

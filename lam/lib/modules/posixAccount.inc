@@ -183,7 +183,12 @@ class posixAccount extends baseModule implements passwordService {
 			// self service search attributes
 			$return['selfServiceSearchAttributes'] = array('uid');
 			// self service field settings
-			$return['selfServiceFieldSettings'] = array('password' => _('Password'), 'cn' => _('Common name'), 'loginShell' => _('Login shell'));
+			$return['selfServiceFieldSettings'] = array(
+					'password' => _('Password'),
+					'cn' => _('Common name'),
+					'loginShell' => _('Login shell'),
+					'syncWindowsPassword' => _('Sync Unix password with Windows password')
+			);
 			// possible self service read-only fields
 			$return['selfServiceReadOnlyFields'] = array('cn', 'loginShell');
 			// self service configuration settings
@@ -2843,6 +2848,14 @@ class posixAccount extends baseModule implements passwordService {
 		// stop processing if only a password change is done
 		if ($passwordChangeOnly) {
 			return $return;
+		}
+		// sync from Windows password
+		if (in_array('syncWindowsPassword', $fields) && !empty($_POST['windowsUser_unicodePwd'])) {
+			$password = $_POST['windowsUser_unicodePwd'];
+			$return['mod']['unixUserPassword'][0] = pwd_hash($password, true, $this->selfServiceSettings->moduleSettings['posixAccount_pwdHash'][0]);
+			if (isset($attributes['shadowLastChange'][0])) {
+				$return['mod']['shadowLastChange'][0] = intval(time()/3600/24);
+			}
 		}
 		// cn
 		if (in_array('cn', $fields) && !in_array('cn', $readOnlyFields)) {
