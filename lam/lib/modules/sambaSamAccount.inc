@@ -411,6 +411,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 			'domainSuffix' => array(
 				"Headline" => _("Domain suffix"),
 				"Text" => _("Please enter the LDAP suffix where your Samba domain entries are stored.")),
+			'history' => array(
+				"Headline" => _("Password history"),
+				"Text" => _("Enables password history. Depending on your LDAP server you need to select the right server-side ordering (switch if old passwords are not removed from history).")),
 		);
 		// upload dependencies
 		$return['upload_preDepends'] = array('posixAccount', 'inetOrgPerson');
@@ -557,38 +560,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 				)
 			);
 		}
-		// configuration options
-		$configContainer = new htmlTable();
-		$disableLM = new htmlTable();
-		$yesNo = array(_('yes') => 'yes', _('no') => 'no');
-		$yesNoSelect = new htmlTableExtendedSelect('sambaSamAccount_lmHash', $yesNo, array('yes'), _("Disable LM hashes"), 'lmHash');
-		$yesNoSelect->setHasDescriptiveElements(true);
-		$disableLM->addElement($yesNoSelect, true);
-		$configContainer->addElement($disableLM, true);
-		$configContainer->addElement(new htmlSpacer(null, '10px'), true);
-		$configHiddenLabelGroup = new htmlGroup();
-		$configHiddenLabelGroup->addElement(new htmlOutputText(_('Hidden options') . ' '));
-		$configHiddenLabelGroup->addElement(new htmlHelpLink('hiddenOptions'));
-		$configContainer->addElement($configHiddenLabelGroup, true);
-		$hiddenContainer = new htmlTable();
-		$hiddenContainer->colspan = 5;
-		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideHomeDrive', false, _('Home drive'), null, false));
-		$hiddenContainer->addElement(new htmlOutputText(' '));
-		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideHomePath', false, _('Home path'), null, false));
-		$hiddenContainer->addElement(new htmlOutputText(' '));
-		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideProfilePath', false, _('Profile path'), null, false));
-		$hiddenContainer->addElement(new htmlOutputText(' '));
-		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideLogonScript', false, _('Logon script'), null, false));
-		$hiddenContainer->addElement(new htmlOutputText(' '));
-		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideSambaPwdLastSet', false, _('Last password change'), null, false));
-		$hiddenContainer->addNewLine();
-		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideWorkstations', false, _('Samba workstations'), null, false));
-		$hiddenContainer->addElement(new htmlOutputText(' '));
-		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideLogonHours', false, _('Logon hours'), null, false));
-		$hiddenContainer->addElement(new htmlOutputText(' '));
-		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideTerminalServer', false, _('Terminal server options'), null, false));
-		$configContainer->addElement($hiddenContainer);
-		$return['config_options']['user'] = $configContainer;
 		return $return;
 	}
 
@@ -1876,6 +1847,73 @@ class sambaSamAccount extends baseModule implements passwordService {
 	}
 
 	/**
+	* Returns a list of configuration options.
+	*
+	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
+	* <br>
+	* The field names are used as keywords to load and save settings.
+	* We recommend to use the module name as prefix for them (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
+	*
+	* @param array $scopes account types (user, group, host)
+	* @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
+	* @return mixed htmlElement or array of htmlElement
+	*
+	* @see baseModule::get_metaData()
+	* @see htmlElement
+	*/
+	public function get_configOptions($scopes, $allScopes) {
+		$return = parent::get_configOptions($scopes, $allScopes);
+		if (!in_array('user', $scopes)) {
+			return $return;
+		}
+		$configContainer = new htmlTable();
+		// password history
+		$history = new htmlTable();
+		$historyOptions = array(
+				_('yes - ordered ascending') => 'yes_deleteLast',
+				_('yes - ordered descending') => 'yes_deleteFirst',
+				_('no') => 'no'
+		);
+		$historySelect = new htmlTableExtendedSelect('sambaSamAccount_history', $historyOptions, array('yes_deleteLast'), _("Password history"), 'history');
+		$historySelect->setHasDescriptiveElements(true);
+		$history->addElement($historySelect, true);
+		$configContainer->addElement($history, true);
+		// disable LM passwords
+		$disableLM = new htmlTable();
+		$yesNo = array(_('yes') => 'yes', _('no') => 'no');
+		$lmYesNoSelect = new htmlTableExtendedSelect('sambaSamAccount_lmHash', $yesNo, array('yes'), _("Disable LM hashes"), 'lmHash');
+		$lmYesNoSelect->setHasDescriptiveElements(true);
+		$disableLM->addElement($lmYesNoSelect, true);
+		$configContainer->addElement($disableLM, true);
+		// hidden options
+		$configContainer->addElement(new htmlSpacer(null, '10px'), true);
+		$configHiddenLabelGroup = new htmlGroup();
+		$configHiddenLabelGroup->addElement(new htmlOutputText(_('Hidden options') . ' '));
+		$configHiddenLabelGroup->addElement(new htmlHelpLink('hiddenOptions'));
+		$configContainer->addElement($configHiddenLabelGroup, true);
+		$hiddenContainer = new htmlTable();
+		$hiddenContainer->colspan = 5;
+		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideHomeDrive', false, _('Home drive'), null, false));
+		$hiddenContainer->addElement(new htmlOutputText(' '));
+		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideHomePath', false, _('Home path'), null, false));
+		$hiddenContainer->addElement(new htmlOutputText(' '));
+		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideProfilePath', false, _('Profile path'), null, false));
+		$hiddenContainer->addElement(new htmlOutputText(' '));
+		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideLogonScript', false, _('Logon script'), null, false));
+		$hiddenContainer->addElement(new htmlOutputText(' '));
+		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideSambaPwdLastSet', false, _('Last password change'), null, false));
+		$hiddenContainer->addNewLine();
+		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideWorkstations', false, _('Samba workstations'), null, false));
+		$hiddenContainer->addElement(new htmlOutputText(' '));
+		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideLogonHours', false, _('Logon hours'), null, false));
+		$hiddenContainer->addElement(new htmlOutputText(' '));
+		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideTerminalServer', false, _('Terminal server options'), null, false));
+		$configContainer->addElement($hiddenContainer);
+		$return[] = $configContainer;
+		return $return;
+	}
+
+	/**
 	 * Returns a list of possible PDF entries for this account.
 	 *
 	 * @param array $pdfKeys list of PDF keys that are included in document
@@ -2467,7 +2505,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			}
 			// set new history entry
 			$historyLength = $sambaDomain->pwdHistoryLength;
-			if (!$oldPasswordUsed && !empty($historyLength) && is_numeric($historyLength) && ($historyLength > 0)) {
+			if (sambaSamAccount::isPasswordHistoryEnabled($this->moduleSettings) && !$oldPasswordUsed && !empty($historyLength) && is_numeric($historyLength) && ($historyLength > 0)) {
 				if (!empty($this->orig['sambaPasswordHistory'][0])) {
 					$this->attributes['sambaPasswordHistory'] = $this->orig['sambaPasswordHistory'];
 				}
@@ -2475,9 +2513,19 @@ class sambaSamAccount extends baseModule implements passwordService {
 					$this->attributes['sambaPasswordHistory'] = array();
 				}
 				while (sizeof($this->attributes['sambaPasswordHistory']) > ($historyLength - 1)) {
-					array_pop($this->attributes['sambaPasswordHistory']);
+					if (empty($this->moduleSettings['sambaSamAccount_history'][0]) || ($this->moduleSettings['sambaSamAccount_history'][0] == 'yes_deleteLast')) {
+						array_pop($this->attributes['sambaPasswordHistory']);
+					}
+					else {
+						array_shift($this->attributes['sambaPasswordHistory']);
+					}
 				}
-				$this->attributes['sambaPasswordHistory'][] = sambaSamAccount::createHistoryEntry($password);
+				if (empty($this->moduleSettings['sambaSamAccount_history'][0]) || ($this->moduleSettings['sambaSamAccount_history'][0] == 'yes_deleteLast')) {
+					array_unshift($this->attributes['sambaPasswordHistory'], sambaSamAccount::createHistoryEntry($password));
+				}
+				else {
+					$this->attributes['sambaPasswordHistory'][] = sambaSamAccount::createHistoryEntry($password);
+				}
 				$this->attributes['sambaPasswordHistory'] = array_values($this->attributes['sambaPasswordHistory']);
 			}
 		}
@@ -2752,6 +2800,15 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$md4hash = ntPassword($password);
 		$md5hash = md5($salt . hex2bin($md4hash));
 		return strtolower($md5hash) == strtolower($hash);
+	}
+
+	/**
+	 * Returns if password history is enabled.
+	 *
+	 * @param array $settings server profile or self service settings
+	 */
+	public static function isPasswordHistoryEnabled($settings) {
+		return empty($settings['sambaSamAccount_history']) || ($settings['sambaSamAccount_history'][0] != 'no');
 	}
 
 }
