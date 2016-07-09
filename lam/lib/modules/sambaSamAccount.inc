@@ -253,12 +253,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 		);
 		// self service: fields that cannot be relabeled
 		$return['selfServiceNoRelabelFields'] = array('syncNTPassword', 'syncLMPassword', 'syncSambaPwdLastSet');
-		// self service options
-		$selfServiceContainer = new htmlTable();
-		$selfServiceDomainSuffix = new htmlTableExtendedInputField(_('Domain suffix'), 'sambaSamAccount_domainSuffix');
-		$selfServiceContainer->addElement($selfServiceDomainSuffix);
-		$selfServiceContainer->addElement(new htmlHelpLink('domainSuffix', get_class($this)), true);
-		$return['selfServiceSettings'] = $selfServiceContainer;
 		// help Entries
 		$return['help'] = array (
 			"displayName" => array(
@@ -413,7 +407,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 				"Text" => _("Please enter the LDAP suffix where your Samba domain entries are stored.")),
 			'history' => array(
 				"Headline" => _("Password history"),
-				"Text" => _("Enables password history. Depending on your LDAP server you need to select the right server-side ordering (switch if old passwords are not removed from history).")),
+				"Text" => _("Enables password history. Depending on your LDAP server you need to select the right server-side ordering (switch ordering here if old passwords are not removed from history).")),
 		);
 		// upload dependencies
 		$return['upload_preDepends'] = array('posixAccount', 'inetOrgPerson');
@@ -2266,6 +2260,40 @@ class sambaSamAccount extends baseModule implements passwordService {
 	}
 
 	/**
+	 * Returns a list of self service configuration settings.
+	 *
+	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
+	 * <br>
+	 * The name attributes are used as keywords to load
+	 * and save settings. We recommend to use the module name as prefix for them
+	 * (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
+	 *
+	 * @param selfServiceProfile $profile currently edited profile
+	 * @return htmlElement meta HTML object
+	 *
+	 * @see baseModule::get_metaData()
+	 * @see htmlElement
+	 */
+	public function getSelfServiceSettings($profile) {
+		$selfServiceContainer = new htmlTable();
+		// domain suffix
+		$selfServiceDomainSuffix = new htmlTableExtendedInputField(_('Domain suffix'), 'sambaSamAccount_domainSuffix');
+		$selfServiceContainer->addElement($selfServiceDomainSuffix);
+		$selfServiceContainer->addElement(new htmlHelpLink('domainSuffix', get_class($this)), true);
+		// password history
+		$historyOptions = array(
+				_('yes - ordered ascending') => 'yes_deleteLast',
+				_('yes - ordered descending') => 'yes_deleteFirst',
+				_('no') => 'no'
+		);
+		$historySelect = new htmlTableExtendedSelect('sambaSamAccount_history', $historyOptions, array('yes_deleteLast'), _("Password history"));
+		$historySelect->setHasDescriptiveElements(true);
+		$selfServiceContainer->addElement($historySelect);
+		$selfServiceContainer->addElement(new htmlHelpLink('history', get_class($this)), true);
+		return $selfServiceContainer;
+	}
+
+	/**
 	 * Returns the meta HTML code for each input field.
 	 * format: array(<field1> => array(<META HTML>), ...)
 	 * It is not possible to display help links.
@@ -2423,17 +2451,29 @@ class sambaSamAccount extends baseModule implements passwordService {
 				}
 				else {
 					// update password history
-					$sambaPasswordHistory = empty($attributes['sambaPasswordHistory']) ? null : $attributes['sambaPasswordHistory'];
-					while (sizeof($sambaPasswordHistory) > ($sambaDomain->pwdHistoryLength - 1)) {
-						array_pop($sambaPasswordHistory);
-					}
-					$sambaPasswordHistory[] = sambaSamAccount::createHistoryEntry($return['info']['sambaUserPasswordClearText'][0]);
-					$sambaPasswordHistory = array_values($sambaPasswordHistory);
-					if (empty($attributes['sambaPasswordHistory'])) {
-						$return['add']['sambaPasswordHistory'] = $sambaPasswordHistory;
-					}
-					else {
-						$return['mod']['sambaPasswordHistory'] = $sambaPasswordHistory;
+					if (sambaSamAccount::isPasswordHistoryEnabled($this->selfServiceSettings->moduleSettings)) {
+						$sambaPasswordHistory = empty($attributes['sambaPasswordHistory']) ? null : $attributes['sambaPasswordHistory'];
+						while (sizeof($sambaPasswordHistory) > ($sambaDomain->pwdHistoryLength - 1)) {
+							if (empty($this->selfServiceSettings->moduleSettings['sambaSamAccount_history'][0]) || ($this->selfServiceSettings->moduleSettings['sambaSamAccount_history'][0] == 'yes_deleteLast')) {
+								array_pop($sambaPasswordHistory);
+							}
+							else {
+								array_shift($sambaPasswordHistory);
+							}
+						}
+						if (empty($this->selfServiceSettings->moduleSettings['sambaSamAccount_history'][0]) || ($this->selfServiceSettings->moduleSettings['sambaSamAccount_history'][0] == 'yes_deleteLast')) {
+							array_unshift($sambaPasswordHistory, sambaSamAccount::createHistoryEntry($return['info']['sambaUserPasswordClearText'][0]));
+						}
+						else {
+							$sambaPasswordHistory[] = sambaSamAccount::createHistoryEntry($return['info']['sambaUserPasswordClearText'][0]);
+						}
+						$sambaPasswordHistory = array_values($sambaPasswordHistory);
+						if (empty($attributes['sambaPasswordHistory'])) {
+							$return['add']['sambaPasswordHistory'] = $sambaPasswordHistory;
+						}
+						else {
+							$return['mod']['sambaPasswordHistory'] = $sambaPasswordHistory;
+						}
 					}
 				}
 			}

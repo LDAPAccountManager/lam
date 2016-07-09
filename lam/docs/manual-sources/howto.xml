@@ -3405,6 +3405,40 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
         <para>LAM supports full Samba 3 user management including logon hours
         and terminal server options.</para>
 
+        <para>The module is enabled by adding "Samba 3 (sambaSamAccount)" to
+        your user modules.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_samba3Config2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>In the configuration options you can enable password history
+        checking. Depending on your LDAP server you might need ascending or
+        descending order. Just switch the setting if the password history is
+        not correctly updated.</para>
+
+        <para>In case you have no very old Windows clients (e.g. Windows 98)
+        it is recommended to disable LM hashes. They are considered to be
+        insecure.</para>
+
+        <para>You can also hide some input fields if you do not need
+        them.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_samba3Config1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>After configuring the module you will see the Samba 3 tab when
+        you edit a user.</para>
+
         <screenshot>
           <mediaobject>
             <imageobject>
@@ -3413,6 +3447,8 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           </mediaobject>
         </screenshot>
 
+        <para>Logon hours can be changed.</para>
+
         <screenshot>
           <mediaobject>
             <imageobject>
@@ -3420,6 +3456,8 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
             </imageobject>
           </mediaobject>
         </screenshot>
+
+        <para>You can also setup terminal server settings.</para>
 
         <screenshot>
           <mediaobject>
@@ -8491,6 +8529,10 @@ OK (10 msec)</programlisting>
 
         <para>If you leave the field empty then no history and age checks will
         be done.</para>
+
+        <para>Password history: depending on your LDAP server you might need
+        ascending or descending order. Just switch the setting if the password
+        history is not correctly updated.</para>
 
         <screenshot>
           <mediaobject>
