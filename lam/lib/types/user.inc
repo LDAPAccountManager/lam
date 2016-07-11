@@ -650,7 +650,7 @@ class lamUserList extends lamList {
 			}
 		}
 		// show user photos
-		elseif ($attribute == "jpegphoto") {
+		elseif (($attribute == "jpegphoto") && (sizeof($entry[$attribute][0]) > 0)) {
 			if (sizeof($entry[$attribute][0]) < 100) {
 				// looks like we have read broken binary data, reread photo
 				$result = @ldap_read($_SESSION['ldap']->server(), escapeDN($entry['dn']), $attribute . "=*", array($attribute), 0, 0, 0, LDAP_DEREF_NEVER);
