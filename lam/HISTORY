@@ -1,3 +1,9 @@
+September 2016
+  - Windows: allow to show effective members of a group
+  - LAM Pro:
+   -> Group of names/members + roles: allow to show effective members of a group
+
+
 21.06.2016 5.4
   - Unix: support magic numbers for UIDs/GIDs (e.g. 389 server DNA plugin)
   - Samba 3: support for Samba password history (RFE 133)

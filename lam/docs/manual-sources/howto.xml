@@ -4574,6 +4574,10 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           </listitem>
         </itemizedlist>
 
+        <para>With "Show effective members" you can show a list of all members
+        of this group including members of subgroups and their
+        subgroups.</para>
+
         <screenshot>
           <mediaobject>
             <imageobject>
@@ -5005,6 +5009,10 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
       <para>You can add any accounts as members. This includes other groups
       which leads to nested groups.</para>
 
+      <para>To show members of nested groups click on "Show effective
+      members". Please note that for large groups this will run lots of
+      queries against your LDAP server.</para>
+
       <screenshot>
         <mediaobject>
           <imageobject>
@@ -5069,6 +5077,10 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
       <para>You can add any accounts as members. This includes other roles
       which leads to nested roles (needs to be supported by LDAP client
       applications).</para>
+
+      <para>To show members of nested roles click on "Show effective members".
+      Please note that for large roles this will run lots of queries against
+      your LDAP server.</para>
 
       <screenshot>
         <mediaobject>

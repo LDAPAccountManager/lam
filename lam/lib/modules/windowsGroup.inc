@@ -386,7 +386,13 @@ class windowsGroup extends baseModule {
 		// group members
 		$container->addElement(new htmlSpacer(null, '10px'), true);
 		$container->addElement(new htmlOutputText(_("Group members")));
-		$container->addElement(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Edit members')));
+		$memberButtons = new htmlGroup();
+		$memberButtons->addElement(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Edit')));
+		if (!empty($this->attributes['member'])) {
+			$memberButtons->addElement(new htmlSpacer('10px', null));
+			$memberButtons->addElement(new htmlAccountPageButton(get_class($this), 'effectiveMembers', 'open', _('Show effective members')));
+		}
+		$container->addElement($memberButtons);
 		$container->addElement(new htmlHelpLink('member'), true);
 		$memberList = array();
 		if (isset($this->attributes['member'])) {
@@ -408,7 +414,7 @@ class windowsGroup extends baseModule {
 		// member of
 		$container->addVerticalSpace('10px');
 		$container->addElement(new htmlOutputText(_("Member of")));
-		$container->addElement(new htmlAccountPageButton(get_class($this), 'memberof', 'open', _('Edit member of')));
+		$container->addElement(new htmlAccountPageButton(get_class($this), 'memberof', 'open', _('Edit')));
 		$container->addElement(new htmlHelpLink('memberOf'), true);
 		$memberList = array();
 		if (isset($this->attributes['memberOf'])) {
@@ -766,6 +772,39 @@ class windowsGroup extends baseModule {
 	}
 
 	/**
+	 * This function will create the meta HTML code to show a page to list effective members.
+	 *
+	 * @return htmlElement HTML meta data
+	 */
+	function display_html_effectiveMembers() {
+		$return = new htmlTable();
+		$effectiveMembers = $this->getEffectiveMembers();
+		$entryTable = new htmlTable();
+		// sort by DN, align right
+		usort($effectiveMembers, 'compareDN');
+		$entryTable->alignment = htmlElement::ALIGN_RIGHT;
+		foreach ($effectiveMembers as $member) {
+			$entry = new htmlOutputText(getAbstractDN($member));
+			$entry->alignment = htmlElement::ALIGN_RIGHT;
+			$entryTable->addElement($entry, true);
+		}
+		$return->addElement($entryTable, true);
+		$return->addVerticalSpace('10px');
+		$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'membersEffectiveBack', _('Back')));
+		return $return;
+	}
+
+	/**
+	 * Processes user input of the effective members page.
+	 *
+	 * @return array list of info/error messages
+	 */
+	function process_effectiveMembers() {
+		// no processing, page is read-only
+		return array();
+	}
+
+	/**
 	* In this function the LDAP account is built up.
 	*
 	* @param array $rawAccounts list of hash arrays (name => value) from user input
@@ -1041,6 +1080,29 @@ class windowsGroup extends baseModule {
 			}
 		}
 		return $messages;
+	}
+
+	/**
+	 * Recursively gets the members of this group and its subgroups.
+	 *
+	 * @return list of DNs
+	 */
+	private function getEffectiveMembers() {
+		$membersToCheck = $this->attributes['member'];
+		$effectiveMembers = $membersToCheck;
+		while (!empty($membersToCheck)) {
+			$member = array_pop($membersToCheck);
+			$attrs = ldapGetDN($member, array('member'));
+			if (!empty($attrs['member'])) {
+				foreach ($attrs['member'] as $newMember) {
+					if (!in_array($newMember, $effectiveMembers)) {
+						$effectiveMembers[] = $newMember;
+						$membersToCheck[] = $newMember;
+					}
+				}
+			}
+		}
+		return $effectiveMembers;
 	}
 
 }
