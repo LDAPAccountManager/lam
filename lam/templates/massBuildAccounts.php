@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2015  Roland Gruber
+  Copyright (C) 2004 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -63,13 +63,8 @@ if (!empty($_POST)) {
 // show LDIF if requested
 if (isset($_GET['showldif'])) {
 	//download file
-	if(isset($HTTP_SERVER_VARS['HTTP_USER_AGENT']) and strpos($HTTP_SERVER_VARS['HTTP_USER_AGENT'],'MSIE')) {
-		Header('Content-Type: application/force-download');
-	}
-	else {
-		Header('Content-Type: text/plain');
-	}
-	Header('Content-disposition: attachment; filename=lam.ldif');
+	header('Content-Type: text/plain');
+	header('Content-disposition: attachment; filename=lam.ldif');
 	$accounts = unserialize($_SESSION['ldap']->decrypt($_SESSION['mass_accounts']));
 	for ($i = 0; $i < sizeof($accounts); $i++) {
 		echo "DN: " . $accounts[$i]['dn'] . "\n";
@@ -127,9 +122,9 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	while (($line = fgetcsv($handle, 2000)) !== false ) { // account rows
 		$data[] = $line;
 	}
-	
+
 	$errors = array();
-	
+
 	// check if all required columns are present
 	$checkcolumns = array();
 	$columns = call_user_func_array('array_merge', $columns);
@@ -139,7 +134,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 			else $errors[] = array(_("A required column is missing in your CSV file."), $columns[$i]['name']);
 		}
 	}
-	
+
 	// check if all required attributes are given
 	$invalidColumns = array();
 	$id_names = array_keys($ids);
@@ -160,7 +155,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	for ($i = 0; $i < sizeof($invalidColumns); $i++) {
 		$errors[] = array(_("One or more values of the required column \"$invalidColumns[$i]\" are missing."), "");
 	}
-	
+
 	// check if values in unique columns are correct
 	for ($i = 0; $i < sizeof($columns); $i++) {
 		if (isset($columns[$i]['unique']) && ($columns[$i]['unique'] == true) && isset($ids[$columns[$i]['name']])) {
@@ -182,7 +177,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 			}
 		}
 	}
-	
+
 	// if input data is invalid just display error messages (max 50)
 	if (sizeof($errors) > 0) {
 		for ($i = 0; $i < sizeof($errors); $i++) {
@@ -191,7 +186,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 		$container->addElement(new htmlSpacer(null, '10px'), true);
 		massPrintBackButton($scope, $selectedModules, $container);
 	}
-	
+
 	// let modules build accounts
 	else {
 		$accounts = buildUploadAccounts($scope, $data, $ids, $selectedModules);

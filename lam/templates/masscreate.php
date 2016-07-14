@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2015  Roland Gruber
+  Copyright (C) 2004 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -67,13 +67,8 @@ if (!empty($_POST)) {
 // show CSV if requested
 if (isset($_GET['getCSV'])) {
 	//download file
-	if(isset($HTTP_SERVER_VARS['HTTP_USER_AGENT']) and strpos($HTTP_SERVER_VARS['HTTP_USER_AGENT'],'MSIE')) {
-		Header('Content-Type: application/force-download');
-	}
-	else {
-		Header('Content-Type: application/msexcel');
-	}
-	Header('Content-disposition: attachment; filename=lam.csv');
+	header('Content-Type: application/msexcel');
+	header('Content-disposition: attachment; filename=lam.csv');
 	echo $_SESSION['mass_csv'];
 	exit;
 }
@@ -241,7 +236,7 @@ function showMainPage($scope, $selectedModules) {
 	// get input fields from modules
 	$columns = getUploadColumns($scope, $selectedModules);
 	$modules = array_keys($columns);
-	
+
 	echo "<form enctype=\"multipart/form-data\" action=\"massBuildAccounts.php\" method=\"post\">\n";
 	$container = new htmlTable();
 	// title
@@ -438,11 +433,11 @@ function showMainPage($scope, $selectedModules) {
 		}
 	}
 	$container->addElement($columnContainer, true);
-	
+
 	addSecurityTokenToMetaHTML($container);
 	$tabindex = 1;
 	parseHtml(null, $container, array(), false, $tabindex, $scope);
-	
+
 	echo "</form>\n";
 
 	// build sample CSV
@@ -476,7 +471,7 @@ function showMainPage($scope, $selectedModules) {
 		}
 	$sampleCSV = implode(",", $sampleCSV_head) . "\n" . implode(",", $sampleCSV_row) . "\n";
 	$_SESSION['mass_csv'] = $sampleCSV;
-	
+
 	echo '</div>';
 	include 'main_footer.php';
 	die;
