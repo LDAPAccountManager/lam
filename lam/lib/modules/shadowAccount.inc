@@ -935,7 +935,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		}
 
 		/**
-		 * Checks if a user needs to change his password.
+		 * Checks if a user is expired.
 		 *
 		 * @param integer $jobID job ID
 		 * @param array $options job settings
@@ -952,9 +952,6 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			$delay = 0;
 			if (!empty($options[$this->getConfigPrefix() . '_delay' . $jobID][0])) {
 				$delay = $options[$this->getConfigPrefix() . '_delay' . $jobID][0];
-			}
-			if (!empty($user['shadowwarning'][0]) && ($user['shadowwarning'][0] > 0)) {
-				$numDaysToWarn += $user['shadowwarning'][0];
 			}
 			$actionTime = clone $expireTime;
 			if ($delay != 0) {

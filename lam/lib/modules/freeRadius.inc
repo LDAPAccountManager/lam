@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2015  Roland Gruber
+  Copyright (C) 2011 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -788,6 +788,94 @@ class freeRadius extends baseModule {
 		}
 		usort($this->profileCache, 'compareDN');
 		return $this->profileCache;
+	}
+
+	/**
+	 * Returns a list of jobs that can be run.
+	 *
+	 * @param LAMConfig $config configuration
+	 * @return array list of jobs
+	 */
+	public function getSupportedJobs(&$config) {
+		return array(
+			new FreeRadiusAccountExpirationCleanupJob()
+		);
+	}
+
+}
+
+if (interface_exists('\LAM\JOB\Job', false)) {
+
+	include_once dirname(__FILE__) . '/../passwordExpirationJob.inc';
+
+	/**
+	 * Job to delete or move users on account expiration.
+	 *
+	 * @package jobs
+	 */
+	class FreeRadiusAccountExpirationCleanupJob extends \LAM\JOB\AccountExpirationCleanupJob {
+
+		/**
+		 * Returns the alias name of the job.
+		 *
+		 * @return String name
+		 */
+		public function getAlias() {
+			return _('FreeRadius') .  ': ' . _('Cleanup expired user accounts');
+		}
+
+		/**
+		 * Returns the description of the job.
+		 *
+		 * @return String description
+		 */
+		public function getDescription() {
+			return _('This job deletes or moves user accounts when they expire.');
+		}
+
+		/**
+		 * Searches for users in LDAP.
+		 *
+		 * @param String $jobID unique job identifier
+		 * @param array $options config options (name => value)
+		 * @return array list of user attributes
+		 */
+		protected function findUsers($jobID, $options) {
+			// read users
+			$attrs = array('radiusExpiration');
+			$userResults = searchLDAPByFilter('(radiusExpiration=*)', $attrs, array('user'));
+			return $userResults;
+		}
+
+		/**
+		 * Checks if a user is expired.
+		 *
+		 * @param integer $jobID job ID
+		 * @param array $options job settings
+		 * @param PDO $pdo PDO
+		 * @param DateTime $now current time
+		 * @param array $policyOptions list of policy options by getPolicyOptions()
+		 * @param array $user user attributes
+		 * @param boolean $isDryRun just do a dry run, nothing is modified
+		 */
+		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
+			$expireTime = DateTime::createFromFormat('d M Y H:i', $user['radiusexpiration'][0], new DateTimeZone('UTC'));
+			logNewMessage(LOG_DEBUG, "Expiration on " . $expireTime->format('Y-m-d'));
+			$delay = 0;
+			if (!empty($options[$this->getConfigPrefix() . '_delay' . $jobID][0])) {
+				$delay = $options[$this->getConfigPrefix() . '_delay' . $jobID][0];
+			}
+			$actionTime = clone $expireTime;
+			if ($delay != 0) {
+				$actionTime->add(new DateInterval('P' . $delay . 'D'));
+			}
+			$actionTime->setTimeZone(getTimeZone());
+			logNewMessage(LOG_DEBUG, "Action time on " . $actionTime->format('Y-m-d'));
+			if ($actionTime <= $now) {
+				$this->performAction($jobID, $options, $user, $isDryRun);
+			}
+		}
+
 	}
 
 }
