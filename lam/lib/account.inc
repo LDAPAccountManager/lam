@@ -803,6 +803,49 @@ function ldapGetDN($dn, $attributes = array('dn'), $handle = null) {
 }
 
 /**
+* Deletes a DN and all child entries.
+*
+* @param string $dn DN to delete
+* @param boolean $recursive recursive delete also child entries
+* @return array error messages
+*/
+function deleteDN($dn, $recursive) {
+	$errors = array();
+	if (($dn == null) || ($dn == '')) {
+		$errors[] = array('ERROR', _('Entry does not exist'));
+		return $errors;
+	}
+	if ($recursive) {
+		$sr = @ldap_list($_SESSION['ldap']->server(), $dn, 'objectClass=*', array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
+		if ($sr) {
+			$entries = ldap_get_entries($_SESSION['ldap']->server(), $sr);
+			cleanLDAPResult($entries);
+			for ($i = 0; $i < sizeof($entries); $i++) {
+				// delete recursively
+				$subErrors = deleteDN($entries[$i]['dn'], $recursive);
+				for ($e = 0; $e < sizeof($subErrors); $e++) $errors[] = $subErrors[$e];
+			}
+		}
+		else {
+			$errors[] = array ('ERROR', sprintf(_('Was unable to delete DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+			return $errors;
+		}
+	}
+	// delete parent DN
+	$success = @ldap_delete($_SESSION['ldap']->server(), $dn);
+	$ldapUser = $_SESSION['ldap']->decrypt_login();
+	$ldapUser = $ldapUser[0];
+	if (!$success) {
+		logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to delete DN: ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+		$errors[] = array ('ERROR', sprintf(_('Was unable to delete DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+	}
+	else {
+		logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Deleted DN: ' . $dn);
+	}
+	return $errors;
+}
+
+/**
  * Returns the parameters for a StatusMessage of the last LDAP search.
  *
  * @return array parameters for StatusMessage or null if all was ok

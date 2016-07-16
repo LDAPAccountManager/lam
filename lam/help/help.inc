@@ -333,6 +333,18 @@ $helpArray = array (
 					"Headline" => _('BCC address'),
 					"Text" => _('This email address will be set as BCC address of all mails.')
 				),
+				'807' => array(
+					"Headline" => _('Delay'),
+					"Text" => _('Delay this action by a number of days after account expiry.')
+				),
+				'808' => array(
+					"Headline" => _('Action'),
+					"Text" => _('You can delete or move expired accounts.')
+				),
+				'809' => array(
+					"Headline" => _('Target DN'),
+					"Text" => _('The expired accounts will be moved to this DN.')
+				),
 );
 
 /* This is a sample help entry. Just copy this line an modify the values between the [] brackets.
