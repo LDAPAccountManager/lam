@@ -124,6 +124,28 @@ input {
 	margin: 5px;
 }
 
+.padding05 {
+	padding: 0.5em;
+}
+
+.padding1 {
+	padding: 1em;
+}
+
+.hoverHighlight {
+	border: 1px solid transparent;
+}
+
+.hoverHighlight:hover {
+	border: 1px solid grey;
+	border-radius: 5px;
+	box-shadow: 0 0 10px #a0a0a4;
+}
+
+.black {
+	color: black;
+}
+
 .align-middle {
 	vertical-align: middle;
 }
