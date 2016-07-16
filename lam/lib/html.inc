@@ -2671,7 +2671,7 @@ class htmlSubTitle extends htmlElement {
 		echo "<div $idValue class=\"subTitle\">\n";
 		echo "<h4 class=\"subTitleText\">\n";
 		if ($this->image != null) {
-			echo '<img src="' . $this->image . '" alt="' . $this->label . '">&nbsp;';
+			echo '<img height=16 width=16 src="' . $this->image . '" alt="' . $this->label . '">&nbsp;';
 		}
 		echo $this->label;
 		echo "</h4>\n";
@@ -2733,7 +2733,7 @@ class htmlLink extends htmlElement {
 	/** link text */
 	private $text = null;
 	/** link target */
-	private $target = null;
+	protected $target = null;
 	/** optional image */
 	private $image = null;
 	/** title */
@@ -2774,7 +2774,7 @@ class htmlLink extends htmlElement {
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$image = '';
 		if ($this->image != null) {
-			$image = '<img class="align-middle" src="' . $this->image . '" alt="' . $this->text . '">&nbsp;';
+			$image = '<img class="align-middle" src="' . $this->image . '" alt="' . $this->getAlt() . '">&nbsp;';
 		}
 		$title = '';
 		if ($this->title != null) {
@@ -2797,7 +2797,7 @@ class htmlLink extends htmlElement {
 		if (sizeof($this->cssClasses) > 0) {
 			$classAttr = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
-		echo '<a href="' . $this->target . '"' . $idAttr . $classAttr . $title . $targetWindow . $onClick . '>' . $image . $this->text . '</a>';
+		echo '<a href="' . $this->target . '"' . $idAttr . $classAttr . $title . $targetWindow . $onClick . '>' . $image . $this->getContent() . '</a>';
 		if ($this->showAsButton) {
 			echo '<script type="text/javascript">';
 			echo ' jQuery(document).ready(function() {';
@@ -2806,6 +2806,24 @@ class htmlLink extends htmlElement {
 			echo '</script>';
 		}
 		return array();
+	}
+
+	/**
+	 * Returns the value for the alt attribute.
+	 *
+	 * @return string alt value
+	 */
+	protected function getAlt() {
+		return $this->text;
+	}
+
+	/**
+	 * Returns the value for the link content.
+	 *
+	 * @return string content
+	 */
+	protected function getContent() {
+		return $this->text;
 	}
 
 	/**
@@ -2833,6 +2851,67 @@ class htmlLink extends htmlElement {
 	 */
 	public function setOnClick($event) {
 		$this->onClick = htmlspecialchars($event);
+	}
+
+}
+
+/**
+ * Generates a link arround a htmlElement.
+ *
+ * @package metaHTML
+ */
+class htmlContentLink extends htmlLink {
+
+	private $content = null;
+	private $contentText = '';
+
+	/**
+	 * Constructor
+	 *
+	 * @param htmlElement $content content to link
+	 * @param String $target link target
+	 * @param boolean $highlightOnHover higlight content on hover
+	 */
+	function __construct($content, $target) {
+		$this->content = $content;
+		$this->target = htmlspecialchars($target);
+	}
+
+	/**
+	 * Prints the HTML code for this element.
+	 *
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		ob_start();
+		parseHtml($module, $this->content, $values, $restricted, $tabindex, $scope);
+		$this->contentText = ob_get_contents();
+		ob_end_clean();
+		parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+	}
+
+	/**
+	 * Returns the value for the alt attribute.
+	 *
+	 * @return string alt value
+	 */
+	protected function getAlt() {
+		return '';
+	}
+
+	/**
+	 * Returns the value for the link content.
+	 *
+	 * @return string content
+	 */
+	protected function getContent() {
+		return $this->contentText;
 	}
 
 }
