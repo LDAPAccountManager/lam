@@ -2231,6 +2231,56 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
         </section>
 
         <section>
+          <title>Shadow: Delete or move expired accounts</title>
+
+          <para>You can automatically delete or move expired accounts. The job
+          checks Shadow account expiration dates (not password expiration
+          dates).</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/jobs_shadow2.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <table>
+            <title>Options</title>
+
+            <tgroup cols="2">
+              <tbody>
+                <row>
+                  <entry><emphasis role="bold">Option</emphasis></entry>
+
+                  <entry><emphasis role="bold">Description</emphasis></entry>
+                </row>
+
+                <row>
+                  <entry>Delay</entry>
+
+                  <entry>Number of days to wait after the account is
+                  expired.</entry>
+                </row>
+
+                <row>
+                  <entry>Action</entry>
+
+                  <entry>Delete or move accounts</entry>
+                </row>
+
+                <row>
+                  <entry>Target DN</entry>
+
+                  <entry>Move only: specifies the DN where accounts are
+                  moved</entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </table>
+        </section>
+
+        <section>
           <title>Windows: Notify users about password expiration</title>
 
           <para>This will send your users an email reminder before their
