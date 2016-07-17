@@ -3147,7 +3147,8 @@ class windowsUser extends baseModule implements passwordService {
 	 */
 	public function getSupportedJobs(&$config) {
 		return array(
-			new WindowsPasswordNotifyJob()
+			new WindowsPasswordNotifyJob(),
+			new WindowsAccountExpirationCleanupJob()
 		);
 	}
 
@@ -3304,6 +3305,79 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			// update DB if mail was sent successfully
 			if ($success) {
 				$this->setDBLastPwdChangeTime($jobID, $pdo, $user['dn'], $user['pwdlastset'][0]);
+			}
+		}
+
+	}
+
+	/**
+	 * Job to delete or move users on account expiration.
+	 *
+	 * @package jobs
+	 */
+	class WindowsAccountExpirationCleanupJob extends \LAM\JOB\AccountExpirationCleanupJob {
+
+		/**
+		 * Returns the alias name of the job.
+		 *
+		 * @return String name
+		 */
+		public function getAlias() {
+			return _('Windows') .  ': ' . _('Cleanup expired user accounts');
+		}
+
+		/**
+		 * Returns the description of the job.
+		 *
+		 * @return String description
+		 */
+		public function getDescription() {
+			return _('This job deletes or moves user accounts when they expire.');
+		}
+
+		/**
+		 * Searches for users in LDAP.
+		 *
+		 * @param String $jobID unique job identifier
+		 * @param array $options config options (name => value)
+		 * @return array list of user attributes
+		 */
+		protected function findUsers($jobID, $options) {
+			// read users
+			$attrs = array('accountExpires');
+			$userResults = searchLDAPByFilter('(accountExpires=*)', $attrs, array('user'));
+			return $userResults;
+		}
+
+		/**
+		 * Checks if a user is expired.
+		 *
+		 * @param integer $jobID job ID
+		 * @param array $options job settings
+		 * @param PDO $pdo PDO
+		 * @param DateTime $now current time
+		 * @param array $policyOptions list of policy options by getPolicyOptions()
+		 * @param array $user user attributes
+		 * @param boolean $isDryRun just do a dry run, nothing is modified
+		 */
+		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
+			$seconds = substr($user['accountexpires'][0], 0, -7);
+			$expireTime = new DateTime('1601-01-01', new DateTimeZone('UTC'));
+			$expireTime->add(new DateInterval('PT' . $seconds . 'S'));
+			$expireTime->setTimezone(getTimeZone());
+			logNewMessage(LOG_DEBUG, "Expiration on " . $expireTime->format('Y-m-d'));
+			$delay = 0;
+			if (!empty($options[$this->getConfigPrefix() . '_delay' . $jobID][0])) {
+				$delay = $options[$this->getConfigPrefix() . '_delay' . $jobID][0];
+			}
+			$actionTime = clone $expireTime;
+			if ($delay != 0) {
+				$actionTime->add(new DateInterval('P' . $delay . 'D'));
+			}
+			$actionTime->setTimeZone(getTimeZone());
+			logNewMessage(LOG_DEBUG, "Action time on " . $actionTime->format('Y-m-d'));
+			if ($actionTime <= $now) {
+				$this->performAction($jobID, $options, $user, $isDryRun);
 			}
 		}
 
