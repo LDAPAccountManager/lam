@@ -2000,11 +2000,13 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           <title>Adding jobs</title>
 
           <para>To add a new job just click on the "Add job" button and select
-          the job type you need. Depending on the job type jobs may be added
-          multiple times with different configurations.</para>
+          the job type you need. The list of available jobs depends on your
+          active account modules. E.g. the PPolicy job will only be available
+          if you activated PPolicy user module.</para>
 
-          <para>For descriptions about the available job types see next
-          chapters.</para>
+          <para>Depending on the job type jobs may be added multiple times
+          with different configurations. For descriptions about the available
+          job types see next chapters.</para>
 
           <screenshot>
             <mediaobject>
@@ -2381,6 +2383,55 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
             <mediaobject>
               <imageobject>
                 <imagedata fileref="images/jobs_freeRadiusCleanup.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <table>
+            <title>Options</title>
+
+            <tgroup cols="2">
+              <tbody>
+                <row>
+                  <entry><emphasis role="bold">Option</emphasis></entry>
+
+                  <entry><emphasis role="bold">Description</emphasis></entry>
+                </row>
+
+                <row>
+                  <entry>Delay</entry>
+
+                  <entry>Number of days to wait after the account is
+                  expired.</entry>
+                </row>
+
+                <row>
+                  <entry>Action</entry>
+
+                  <entry>Delete or move accounts</entry>
+                </row>
+
+                <row>
+                  <entry>Target DN</entry>
+
+                  <entry>Move only: specifies the DN where accounts are
+                  moved</entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </table>
+        </section>
+
+        <section>
+          <title>Qmail: Delete or move expired accounts</title>
+
+          <para>You can automatically delete or move expired accounts. The job
+          reads the qmail deletion date of user accounts.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/jobs_qmailCleanup1.png" />
               </imageobject>
             </mediaobject>
           </screenshot>

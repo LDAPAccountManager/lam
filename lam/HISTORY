@@ -2,7 +2,7 @@ September 2016
   - Windows: allow to show effective members of a group
   - LAM Pro:
    -> Group of names/members + roles: allow to show effective members of a group
-   -> Cron jobs: Move or delete expired accounts (Shadow, FreeRadius)
+   -> Cron jobs: Move or delete expired accounts (Shadow, qmail, FreeRadius)
 
 
 21.06.2016 5.4
