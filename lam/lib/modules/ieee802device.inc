@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2015  Roland Gruber
+  Copyright (C) 2004 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -116,6 +116,19 @@ class ieee802device extends baseModule {
 	function process_attributes() {
 		$errors = array();
 		$this->processMultiValueInputTextField('macAddress', $errors, 'macAddress');
+		// check if MAC is already assigned
+		if (!empty($this->attributes['macAddress'])) {
+			foreach ($this->attributes['macAddress'] as $macAddress) {
+				if (!empty($this->orig['macAddress']) && in_array($macAddress, $this->orig['macAddress'])) {
+					// check only new MAC addresses
+					continue;
+				}
+				$result = searchLDAPByAttribute('macAddress', $macAddress, 'ieee802Device', array('dn'), array('host'));
+				if (!empty($result)) {
+					$errors[] = array('WARN', _('This MAC address is already in use.'), getAbstractDN($result[0]['dn']));
+				}
+			}
+		}
 		return $errors;
 	}
 
