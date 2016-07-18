@@ -519,11 +519,11 @@ class freeRadius extends baseModule {
 		$attr = 'radiusExpiration';
 		$text = _('Expiration date');
 		$help = "radiusExpiration";
-		$date = getdate(time() + 3600*24*365);
-		$year = $date['year'];
-		$month = str_pad($date['mon'], 2, '0', STR_PAD_LEFT);
+		$date = new DateTime('@' . (time() + 3600*24*365), new DateTimeZone('UTC'));
+		$year = $date->format('Y');
+		$month = $date->format('m');
 		$month = freeRadius::$monthList[$month];
-		$day = $date['mday'];
+		$day = $date->format('d');
 		$hour = '00';
 		$minute = '00';
 		if (isset($this->attributes[$attr][0]) && ($this->attributes[$attr][0] != '')) {

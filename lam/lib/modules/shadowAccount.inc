@@ -346,8 +346,8 @@ class shadowAccount extends baseModule implements passwordService {
 			$expirationDate = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 			if (isset($this->attributes['shadowExpire'][0])) {
 				$shAccExpirationDate = $this->attributes['shadowExpire'][0];
-				$date = getdate($shAccExpirationDate*3600*24);
-				$expirationDate = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
+				$date = new DateTime('@' . $shAccExpirationDate*3600*24, new DateTimeZone('UTC'));
+				$expirationDate = $date->format('d.m.Y');
 			}
 			$return->addElement(new htmlOutputText(_('Account expiration date')));
 			$expireTable = new htmlTable();
@@ -359,8 +359,8 @@ class shadowAccount extends baseModule implements passwordService {
 				$pwdChangeDate = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 				if (isset($this->attributes['shadowLastChange'][0])) {
 					$shPwdChangeDate = $this->attributes['shadowLastChange'][0];
-					$date = getdate($shPwdChangeDate*3600*24);
-					$pwdChangeDate = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
+					$date = new DateTime('@' . $shPwdChangeDate*3600*24, new DateTimeZone('UTC'));
+					$pwdChangeDate = $date->format('d.m.Y');
 				}
 				$return->addElement(new htmlOutputText(_('Last password change')));
 				$pwdChangeTable = new htmlTable();
@@ -451,19 +451,19 @@ class shadowAccount extends baseModule implements passwordService {
 	*/
 	function display_html_expire() {
 		$return = new htmlTable();
-		$shAccExpirationDate = 0;
+		$shAccExpirationDate = time()/(3600*24) + 365;
 		if (isset($this->attributes['shadowExpire'][0])) {
 			$shAccExpirationDate = $this->attributes['shadowExpire'][0];
 		}
-		$date = getdate($shAccExpirationDate*3600*24);
+		$date = new DateTime('@' . $shAccExpirationDate*3600*24, new DateTimeZone('UTC'));
 		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
 		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
 		for ( $i=2003; $i<=2050; $i++ ) $year[] = $i;
 		$return->addElement(new htmlOutputText(_('Account expiration date')));
 		$expTable = new htmlTable();
-		$expTable->addElement(new htmlSelect('shadowExpire_day', $mday, array($date['mday'])));
-		$expTable->addElement(new htmlSelect('shadowExpire_mon', $mon, array($date['mon'])));
-		$expTable->addElement(new htmlSelect('shadowExpire_yea', $year, array($date['year'])));
+		$expTable->addElement(new htmlSelect('shadowExpire_day', $mday, array($date->format('j'))));
+		$expTable->addElement(new htmlSelect('shadowExpire_mon', $mon, array($date->format('n'))));
+		$expTable->addElement(new htmlSelect('shadowExpire_yea', $year, array($date->format('Y'))));
 		$return->addElement($expTable);
 		$return->addElement(new htmlHelpLink('shadowExpire'), true);
 		if ($this->getAccountContainer()->getAccountModule('sambaSamAccount') != null) {
@@ -519,19 +519,19 @@ class shadowAccount extends baseModule implements passwordService {
 	*/
 	function display_html_pwdChange() {
 		$return = new htmlTable();
-		$shLastChange = 0;
+		$shLastChange = time()/(3600*24);
 		if (isset($this->attributes['shadowLastChange'][0])) {
 			$shLastChange = $this->attributes['shadowLastChange'][0];
 		}
-		$date = getdate($shLastChange*3600*24);
+		$date = new DateTime('@' . $shLastChange*3600*24, new DateTimeZone('UTC'));
 		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
 		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
 		for ( $i=2003; $i<=2050; $i++ ) $year[] = $i;
 		$return->addElement(new htmlOutputText(_('Last password change')));
 		$table = new htmlTable();
-		$table->addElement(new htmlSelect('shadowLastChange_day', $mday, array($date['mday'])));
-		$table->addElement(new htmlSelect('shadowLastChange_mon', $mon, array($date['mon'])));
-		$table->addElement(new htmlSelect('shadowLastChange_yea', $year, array($date['year'])));
+		$table->addElement(new htmlSelect('shadowLastChange_day', $mday, array($date->format('j'))));
+		$table->addElement(new htmlSelect('shadowLastChange_mon', $mon, array($date->format('n'))));
+		$table->addElement(new htmlSelect('shadowLastChange_yea', $year, array($date->format('Y'))));
 		$return->addElement($table);
 		$return->addElement(new htmlHelpLink('shadowLastChange'), true);
 		$return->addElement(new htmlSpacer(null, '10px'), true);
@@ -753,8 +753,8 @@ class shadowAccount extends baseModule implements passwordService {
 		if (in_array('shadowLastChange', $fields)) {
 			$shadowLastChange = '';
 			if (isset($attributes['shadowLastChange'][0])) {
-				$date = getdate($attributes['shadowLastChange'][0] * 3600 * 24);
-				$shadowLastChange = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
+				$date = new DateTime('@' . $attributes['shadowLastChange'][0] * 3600 * 24, new DateTimeZone('UTC'));
+				$shadowLastChange = $date->format('d.m.Y');
 			}
 			$row = new htmlResponsiveRow();
 			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('shadowLastChange', _('Last password change'))));

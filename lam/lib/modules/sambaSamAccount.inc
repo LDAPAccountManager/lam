@@ -1134,8 +1134,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 						$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;∞&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 					}
 					else {
-						$date = getdate($this->attributes['sambaKickoffTime'][0]);
-						$dateValue = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
+						$date = new DateTime('@' . $this->attributes['sambaKickoffTime'][0], new DateTimeZone('UTC'));
+						$dateValue = $date->format('d.m.Y');
 					}
 				}
 				$return->addElement(new htmlOutputText(_('Account expiration date')));
@@ -1390,24 +1390,21 @@ class sambaSamAccount extends baseModule implements passwordService {
 	*/
 	function display_html_time() {
 		$return = new htmlTable();
-		// determine attribute
-		if (isset($_POST['form_subpage_sambaSamAccount_time_sambaKickoffTime'])) {
-			$attr = 'sambaKickoffTime';
-			$text = _('Account expiration date');
-			$help = "expireDate";
-		}
-		$time = 0;
+		$attr = 'sambaKickoffTime';
+		$text = _('Account expiration date');
+		$help = "expireDate";
+		$time = time() + 3600*24*365;
 		if (isset($this->attributes[$attr][0])) {
 			$time = $this->attributes[$attr][0];
 		}
-		$date = getdate($time);
+		$date = new DateTime('@' . $time, new DateTimeZone('UTC'));
 		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
 		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
 		for ( $i=2003; $i<=2050; $i++ ) $year[] = $i;
 		$return->addElement(new htmlOutputText($text));
-		$return->addElement(new htmlSelect('expire_day', $mday, array($date['mday'])));
-		$return->addElement(new htmlSelect('expire_mon', $mon, array($date['mon'])));
-		$return->addElement(new htmlSelect('expire_yea', $year, array($date['year'])));
+		$return->addElement(new htmlSelect('expire_day', $mday, array($date->format('j'))));
+		$return->addElement(new htmlSelect('expire_mon', $mon, array($date->format('n'))));
+		$return->addElement(new htmlSelect('expire_yea', $year, array($date->format('Y'))));
 		$return->addElement(new htmlHelpLink($help), true);
 		if ($this->getAccountContainer()->getAccountModule('shadowAccount') != null) {
 			$return->addElement(new htmlTableExtendedInputCheckbox('syncShadow', false, _('Set also for Shadow')), true);
