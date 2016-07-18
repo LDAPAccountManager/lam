@@ -702,8 +702,8 @@ class lamUserList extends lamList {
 					echo "∞";
 				}
 				else {
-					$date = getdate($entry[$attribute][0]);
-					echo $date['mday'] . "." . $date['mon'] . "." . $date['year'];
+					$date = new DateTime('@' . $entry[$attribute][0], new DateTimeZone('UTC'));
+					echo $date->format('d.m.Y');
 				}
 			}
 		}
