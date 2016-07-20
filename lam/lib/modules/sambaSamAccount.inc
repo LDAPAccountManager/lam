@@ -1792,9 +1792,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 		}
 		// expiration date
 		if (isset($profile['sambaSamAccount_expire_day'][0]) && ($profile['sambaSamAccount_expire_day'][0] != "")) {
-			$date = mktime(0, 0, 0, intval($profile['sambaSamAccount_expire_mon'][0]),
-				intval($profile['sambaSamAccount_expire_day'][0]), intval($profile['sambaSamAccount_expire_yea'][0]));
-			$this->attributes['sambaKickoffTime'][0] = $date;
+			$date = DateTime::createFromFormat('j.n.Y', $profile['sambaSamAccount_expire_day'][0] . '.' . $profile['sambaSamAccount_expire_mon'][0] . '.' . $profile['sambaSamAccount_expire_yea'][0], getTimeZone());
+			$this->attributes['sambaKickoffTime'][0] = $date->format('U');
 		}
 		// domain -> change SID
 		if (isset($this->attributes['sambaSID'][0])) {
@@ -2108,8 +2107,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 				if ($rawAccounts[$i][$ids['sambaSamAccount_expireDate']] != "") {
 					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_expireDate']], 'date')) {
 						$parts = explode("-", $rawAccounts[$i][$ids['sambaSamAccount_expireDate']]);
-						$time = mktime(0, 0, 0, intval($parts[1]), intval($parts[0]), intval($parts[2]));
-						$partialAccounts[$i]['sambaKickoffTime'] = $time;
+						$date = DateTime::createFromFormat('j.n.Y', $parts[0] . '.' . $parts[1] . '.' . $parts[2], getTimeZone());
+						$partialAccounts[$i]['sambaKickoffTime'] = $date->format('U');
 					}
 					else {
 						$errMsg = $this->messages['expireDate'][0];
@@ -2761,8 +2760,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 			unset($this->attributes['sambaKickoffTime']);
 			return;
 		}
-		$this->attributes['sambaKickoffTime'][0] = gmmktime(0, 0, 0, intval($month), intval($day),
-			intval($year));
+		$date = DateTime::createFromFormat('j.n.Y', $day . '.' . $month . '.' . $year, getTimeZone());
+		$this->attributes['sambaKickoffTime'][0] = $date->format('U');
 	}
 
 	/**

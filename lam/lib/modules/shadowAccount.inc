@@ -614,7 +614,8 @@ class shadowAccount extends baseModule implements passwordService {
 			if ($rawAccounts[$i][$ids['shadowAccount_expireDate']] != '') {
 				if (get_preg($rawAccounts[$i][$ids['shadowAccount_expireDate']], 'date')) {
 					$parts = explode('-', $rawAccounts[$i][$ids['shadowAccount_expireDate']]);
-					$partialAccounts[$i]['shadowExpire'][] = intval(mktime(0, 0, 0, intval($parts[1]), intval($parts[0]), intval($parts[2]))/3600/24);
+					$date = DateTime::createFromFormat('j.n.Y', $parts[0] . '.' . $parts[1] . '.' . $parts[2], new DateTimeZone('UTC'));
+					$partialAccounts[$i]['shadowExpire'][] = intval($date->format('U')/3600/24);
 				}
 				else {
 					$errMsg = $this->messages['shadow_expireDate'][0];
@@ -713,8 +714,8 @@ class shadowAccount extends baseModule implements passwordService {
 			unset($this->attributes['shadowExpire']);
 			return;
 		}
-		$this->attributes['shadowExpire'][0] = intval(gmmktime(0, 0, 0, intval($month), intval($day),
-			intval($year))/3600/24);
+		$date = DateTime::createFromFormat('j.n.Y', $day . '.' . $month . '.' . $year, new DateTimeZone('UTC'));
+		$this->attributes['shadowExpire'][0] = intval($date->format('U')/3600/24);
 	}
 
 	/**
@@ -730,8 +731,8 @@ class shadowAccount extends baseModule implements passwordService {
 			unset($this->attributes['shadowLastChange']);
 			return;
 		}
-		$this->attributes['shadowLastChange'][0] = intval(gmmktime(0, 0, 0, intval($month), intval($day),
-			intval($year))/3600/24);
+		$date = DateTime::createFromFormat('j.n.Y', $day . '.' . $month . '.' . $year, new DateTimeZone('UTC'));
+		$this->attributes['shadowLastChange'][0] = intval($date->format('U')/3600/24);
 	}
 
 	/**
