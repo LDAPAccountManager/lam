@@ -320,6 +320,7 @@ $helpArray = array (
 					"Headline" => _('Text'),
 					"Text" => _('The mail text of all mails.') .
 							_('You can use wildcards for LDAP attributes in the form @@attribute@@ (e.g. @@uid@@ for the user name).')
+							. ' ' . _('The expiration date can be added with @@EXPIRE_DATE_DDMMYYYY@@ or @@EXPIRE_DATE_YYYYMMDD@@.')
 				),
 				'804' => array(
 					"Headline" => _('Notification period'),

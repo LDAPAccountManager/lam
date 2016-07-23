@@ -2132,6 +2132,99 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
         </section>
 
         <section>
+          <title>389ds: Notify users about password expiration</title>
+
+          <para>This will send your users an email reminder before their
+          password expires.</para>
+
+          <para>You need to activate the Account Locking module for users to
+          be able to add this job. The job can be added multiple times (e.g.
+          to send a second warning at a later time).</para>
+
+          <para>LAM calculates the expiration date based on the attribute
+          passwordExpirationTime.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/jobs_389dsPasswordMail1.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para><table>
+              <title>Options</title>
+
+              <tgroup cols="2">
+                <tbody>
+                  <row>
+                    <entry><emphasis role="bold">Option</emphasis></entry>
+
+                    <entry><emphasis
+                    role="bold">Description</emphasis></entry>
+                  </row>
+
+                  <row>
+                    <entry>From address</entry>
+
+                    <entry>The email address to set as FROM.</entry>
+                  </row>
+
+                  <row>
+                    <entry>Reply-to address</entry>
+
+                    <entry>Optional Reply-to address for email.</entry>
+                  </row>
+
+                  <row>
+                    <entry>CC address</entry>
+
+                    <entry>Optional CC mail address.</entry>
+                  </row>
+
+                  <row>
+                    <entry>BCC address</entry>
+
+                    <entry>Optional BCC mail address.</entry>
+                  </row>
+
+                  <row>
+                    <entry>Subject</entry>
+
+                    <entry>The email subject line. Supports wildcards, see
+                    below.</entry>
+                  </row>
+
+                  <row>
+                    <entry>Text</entry>
+
+                    <entry>The email body text. Supports wildcards, see
+                    below.</entry>
+                  </row>
+
+                  <row>
+                    <entry>Notification period</entry>
+
+                    <entry>Number of days to notify before password
+                    expires.</entry>
+                  </row>
+                </tbody>
+              </tgroup>
+            </table></para>
+
+          <para>Wildcards:</para>
+
+          <para>You can enter LDAP attributes as wildcards in the form
+          @@ATTRIBUTE_NAME@@. E.g. to add the user's common name use "@@cn@@".
+          For the common name it would be "@@cn@@".</para>
+
+          <para>There are also two special wildcards for the expiration date.
+          @@EXPIRE_DATE_DDMMYYYY@@ will print the date as e.g. "31.12.2016".
+          @@EXPIRE_DATE_YYYYMMDD@@ will print the date as e.g.
+          "2016-12-31".</para>
+        </section>
+
+        <section>
           <title>Shadow: Notify users about password expiration</title>
 
           <para>This will send your users an email reminder before their

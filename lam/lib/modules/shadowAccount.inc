@@ -801,15 +801,6 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		}
 
 		/**
-		 * Returns the description of the job.
-		 *
-		 * @return String description
-		 */
-		public function getDescription() {
-			return _('This job sends out emails to inform your users that their passwords will expire soon.');
-		}
-
-		/**
 		 * Searches for users in LDAP.
 		 *
 		 * @param String $jobID unique job identifier

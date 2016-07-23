@@ -3175,15 +3175,6 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		}
 
 		/**
-		 * Returns the description of the job.
-		 *
-		 * @return String description
-		 */
-		public function getDescription() {
-			return _('This job sends out emails to inform your users that their passwords will expire soon.');
-		}
-
-		/**
 		 * Returns a list of password policy options. The options are later passed to function checkSingleUser().
 		 * This reads the password policy to calculate expiration times later. Maxpwdage is the maximum amount of
 		 * time, in 100-nanosecond intervals, a password is valid.
