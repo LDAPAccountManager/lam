@@ -723,7 +723,10 @@ class lamUserList extends lamList {
 	 * @return lamListTool[] tools
 	 */
 	protected function getAdditionalTools() {
-		if (isLAMProVersion() && checkIfPasswordChangeIsAllowed() && checkIfWriteAccessIsAllowed('user')) {
+		if (!isLAMProVersion()) {
+			return array();
+		}
+		if (checkIfWriteAccessIsAllowed('user') || (checkIfPasswordChangeIsAllowed() && !checkIfWriteAccessIsAllowed())) {
 			$passwordTool = new lamListTool(_('Change password'), 'key.png', 'changePassword.php');
 			return array($passwordTool);
 		}
