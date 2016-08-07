@@ -2581,7 +2581,7 @@ class windowsUser extends baseModule implements passwordService {
 	 */
 	private function setSelfServicePassword(&$return, $attributes) {
 		$newPasswordVal = self::pwdAttributeValue($_POST['windowsUser_unicodePwd']);
-		$oldPassword = Ldap::decrypt($_SESSION['selfService_clientPassword'], 'SelfService');
+		$oldPassword = lamDecrypt($_SESSION['selfService_clientPassword'], 'SelfService');
 		$oldPasswordVal = self::pwdAttributeValue($oldPassword);
 		$dn = $attributes['dn'];
 		$ldif = "dn: " . $dn . "\n";

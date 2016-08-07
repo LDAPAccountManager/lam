@@ -76,7 +76,7 @@ if (!checkIfNewEntriesAreAllowed($scope) || !checkIfWriteAccessIsAllowed($scope)
 echo '<div class="' . $scope . '-bright smallPaddingContent">';
 
 // create accounts
-$accounts = unserialize($_SESSION['ldap']->decrypt($_SESSION['mass_accounts']));
+$accounts = unserialize(lamDecrypt($_SESSION['mass_accounts']));
 if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_postActions']['finished']) || !isset($_SESSION['mass_pdf']['finished'])) {
 	$startTime = time();
 	$maxTime = get_cfg_var('max_execution_time') - 5;
@@ -151,7 +151,7 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 	flush();  // send HTML to browser
 	// do post upload actions after all accounts are created
 	if (($_SESSION['mass_counter'] >= sizeof($accounts)) && !isset($_SESSION['mass_postActions']['finished'])) {
-		$data = unserialize($_SESSION['ldap']->decrypt($_SESSION['mass_data']));
+		$data = unserialize(lamDecrypt($_SESSION['mass_data']));
 		$return  = doUploadPostActions($scope, $data, $_SESSION['mass_ids'], $_SESSION['mass_failed'], $_SESSION['mass_selectedModules'], $accounts);
 		if ($return['status'] == 'finished') {
 			$_SESSION['mass_postActions']['finished'] = true;

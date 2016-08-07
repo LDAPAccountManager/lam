@@ -580,7 +580,7 @@ class imapAccess extends baseModule {
 		//perform admin password
 		$imap_admin_password = null; //default value is null, it can be changed during the work
 		if (isset($_SESSION['imapAdmPass'])) {
-			$imap_admin_password = $_SESSION['ldap']->decrypt($_SESSION['imapAdmPass']);
+			$imap_admin_password = lamDecrypt($_SESSION['imapAdmPass']);
 		}
 		elseif (isset($this->moduleSettings['ImapAccess_ImapAdminPasswordSelect'][0]) && ($this->moduleSettings['ImapAccess_ImapAdminPasswordSelect'][0] == "lam_user_pass")) {
 			$credentials = $_SESSION['ldap']->decrypt_login();
@@ -606,7 +606,7 @@ class imapAccess extends baseModule {
 			$imap_admin_password = $_POST['ImapAdminPassword'];
 			$mbox = @imap_open("{" . $imap_server_address . "}", $imap_admin_user, $imap_admin_password, OP_HALFOPEN, 1);
 			if ($mbox) {
-				$_SESSION['imapAdmPass'] = $_SESSION['ldap']->encrypt($_POST['ImapAdminPassword']);
+				$_SESSION['imapAdmPass'] = lamEncrypt($_POST['ImapAdminPassword']);
 				@imap_close($mbox);
 			}
 			else {

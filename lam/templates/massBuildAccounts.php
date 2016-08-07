@@ -65,7 +65,7 @@ if (isset($_GET['showldif'])) {
 	//download file
 	header('Content-Type: text/plain');
 	header('Content-disposition: attachment; filename=lam.ldif');
-	$accounts = unserialize($_SESSION['ldap']->decrypt($_SESSION['mass_accounts']));
+	$accounts = unserialize(lamDecrypt($_SESSION['mass_accounts']));
 	for ($i = 0; $i < sizeof($accounts); $i++) {
 		echo "DN: " . $accounts[$i]['dn'] . "\n";
 		unset($accounts[$i]['dn']);
@@ -214,12 +214,12 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 			}
 			else {
 				// store accounts in session
-				$_SESSION['mass_accounts'] = $_SESSION['ldap']->encrypt(serialize($accounts));
+				$_SESSION['mass_accounts'] = lamEncrypt(serialize($accounts));
 				$_SESSION['mass_counter'] = 0;
 				$_SESSION['mass_errors'] = array();
 				$_SESSION['mass_failed'] = array();
 				$_SESSION['mass_postActions'] = array();
-				$_SESSION['mass_data'] = $_SESSION['ldap']->encrypt(serialize($data));
+				$_SESSION['mass_data'] = lamEncrypt(serialize($data));
 				$_SESSION['mass_ids'] = $ids;
 				$_SESSION['mass_scope'] = $scope;
 				$_SESSION['mass_selectedModules'] = $selectedModules;

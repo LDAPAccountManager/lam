@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2015  Roland Gruber
+  Copyright (C) 2003 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -188,62 +188,6 @@ class Ldap{
 	}
 
 	/**
-	* Encrypts a string
-	*
-	* @param string $data string to encrypt
-	* @param string $prefix prefix for cookie names
-	* @return object encrypted string
-	*/
-	public static function encrypt($data, $prefix='') {
-		// use MCrypt if available
-		if (function_exists('mcrypt_create_iv')) {
-			// MCrypt may have been enabled in a running session
-			if (!isset($_COOKIE[$prefix . "IV"]) || ($_COOKIE[$prefix . "IV"] == '')) return $data;
-			if ($_COOKIE[$prefix . "IV"] == "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx") {
-				return $data;
-			}
-			// read key and iv from cookie
-			$iv = base64_decode($_COOKIE[$prefix . "IV"]);
-			$key = base64_decode($_COOKIE[$prefix . "Key"]);
-			// encrypt string
-			return mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, base64_encode($data), MCRYPT_MODE_ECB, $iv);
-		}
-		// otherwise do not encrypt
-		else {
-			return $data;
-		}
-	}
-
-	/**
-	* Decrypts a string
-	*
-	* @param object $data string to decrypt
-	* @param string $prefix prefix for cookie names
-	* @return string decrypted string
-	*/
-	public static function decrypt($data, $prefix='') {
-		// use MCrypt if available
-		if (function_exists('mcrypt_create_iv')) {
-			// MCrypt may have been enabled in a running session
-			if (!isset($_COOKIE[$prefix . "IV"]) || ($_COOKIE[$prefix . "IV"] == '')) return $data;
-			if ($_COOKIE[$prefix . "IV"] == "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx") {
-				return $data;
-			}
-			// read key and iv from cookie
-			$iv = base64_decode($_COOKIE[$prefix . "IV"]);
-			$key = base64_decode($_COOKIE[$prefix . "Key"]);
-			// decrypt string
-			$ret = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $data, MCRYPT_MODE_ECB, $iv);
-			$ret = base64_decode(str_replace(chr(00), "", $ret));
-			return $ret;
-		}
-		// otherwise do not decrypt
-		else {
-			return $data;
-		}
-	}
-
-	/**
 	* Encrypts username and password
 	*
 	* @param string $username LDAP user name
@@ -251,8 +195,8 @@ class Ldap{
 	*/
 	function encrypt_login($username, $password) {
 		// encrypt username and password
-		$this->username = base64_encode($this->encrypt($username));
-		$this->password = base64_encode($this->encrypt($password));
+		$this->username = base64_encode(lamEncrypt($username));
+		$this->password = base64_encode(lamEncrypt($password));
 	}
 
 	/**
@@ -262,8 +206,8 @@ class Ldap{
 	*/
 	function decrypt_login() {
 		// decrypt username and password
-		$username = $this->decrypt(base64_decode($this->username));
-		$password = $this->decrypt(base64_decode($this->password));
+		$username = lamDecrypt(base64_decode($this->username));
+		$password = lamDecrypt(base64_decode($this->password));
 		$ret = array($username, $password);
 		return $ret;
 	}

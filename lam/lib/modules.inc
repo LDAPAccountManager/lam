@@ -2150,9 +2150,9 @@ class accountContainer {
 	*/
 	function __sleep() {
 		// encrypt data
-		$this->attributes = $_SESSION['ldap']->encrypt(serialize($this->attributes));
-		$this->attributes_orig = $_SESSION['ldap']->encrypt(serialize($this->attributes_orig));
-		$this->module = $_SESSION['ldap']->encrypt(serialize($this->module));
+		$this->attributes = lamEncrypt(serialize($this->attributes));
+		$this->attributes_orig = lamEncrypt(serialize($this->attributes_orig));
+		$this->module = lamEncrypt(serialize($this->module));
 		// save all attributes
 		return array_keys(get_object_vars($this));
 	}
@@ -2162,9 +2162,9 @@ class accountContainer {
 	*/
 	function __wakeup() {
 		// decrypt data
-		$this->attributes = unserialize($_SESSION['ldap']->decrypt($this->attributes));
-		$this->attributes_orig = unserialize($_SESSION['ldap']->decrypt($this->attributes_orig));
-		$this->module = unserialize($_SESSION['ldap']->decrypt($this->module));
+		$this->attributes = unserialize(lamDecrypt($this->attributes));
+		$this->attributes_orig = unserialize(lamDecrypt($this->attributes_orig));
+		$this->module = unserialize(lamDecrypt($this->module));
 	}
 
 }
