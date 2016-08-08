@@ -340,6 +340,13 @@ $container->addElement(new htmlSpacer(null, '10px'), true);
 $lamdaemonSettingsContent = new htmlTable();
 $lamdaemonSettingsContent->addElement(new htmlTableExtendedInputField(_("Server list"), 'scriptservers', $conf->get_scriptServers(), '218'), true);
 $lamdaemonSettingsContent->addElement(new htmlTableExtendedInputField(_("Path to external script"), 'scriptpath', $conf->get_scriptPath(), '210'), true);
+
+$lamdaemonSettingsContent->addElement(new htmlTableExtendedInputField(_('User name'), 'scriptuser', $conf->getScriptUserName(), '284'), true);
+$lamdaemonSettingsContent->addElement(new htmlTableExtendedInputField(_('SSH key file'), 'scriptkey', $conf->getScriptSSHKey(), '285'), true);
+$sshKeyPassword = new htmlTableExtendedInputField(_('SSH key password'), 'scriptkeypassword', $conf->getScriptSSHKeyPassword(), '286');
+$sshKeyPassword->setIsPassword(true);
+$lamdaemonSettingsContent->addElement($sshKeyPassword, true);
+
 $lamdaemonSettingsContent->addElement(new htmlSpacer(null, '5px'), true);
 $lamdaemonSettingsContent->addElement(new htmlOutputText(_("Rights for the home directory")));
 $chmod = $conf->get_scriptRights();
@@ -688,6 +695,9 @@ function checkInput() {
 	if (!$conf->set_scriptrights($chmod)) {
 		$errors[] = array("ERROR", _("Script rights are invalid!"));
 	}
+	$conf->setScriptUserName($_POST['scriptuser']);
+	$conf->setScriptSSHKey($_POST['scriptkey']);
+	$conf->setScriptSSHKeyPassword($_POST['scriptkeypassword']);
 	// tool settings
 	$tools = getTools();
 	$toolSettings = array();

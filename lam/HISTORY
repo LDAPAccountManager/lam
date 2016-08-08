@@ -1,5 +1,6 @@
 September 2016
   - Windows: allow to show effective members of a group
+  - Lamdaemon: support SSH key authentication
   - LAM Pro:
    -> Group of names/members + roles: allow to show effective members of a group
    -> Cron jobs:

@@ -279,6 +279,39 @@ class LAMConfigTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Tests LAMConfig->getScriptSSHKey() and LAMConfig->SetScriptSSHKey()
+	 */
+	public function testScriptSSHKey() {
+		$val = '/tmp/test';
+		$this->lAMConfig->SetScriptSSHKey($val);
+		$this->assertEquals($val, $this->lAMConfig->getScriptSSHKey());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getScriptSSHKey());
+	}
+
+	/**
+	 * Tests LAMConfig->getScriptSSHKeyPassword() and LAMConfig->setScriptSSHKeyPassword()
+	 */
+	public function testScriptSSHKeyPassword() {
+		$val = '12345';
+		$this->lAMConfig->setScriptSSHKeyPassword($val);
+		$this->assertEquals($val, $this->lAMConfig->getScriptSSHKeyPassword());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getScriptSSHKeyPassword());
+	}
+
+	/**
+	 * Tests LAMConfig->getScriptUserName() and LAMConfig->setScriptUserName()
+	 */
+	public function testScriptUserName() {
+		$val = 'admin';
+		$this->lAMConfig->setScriptUserName($val);
+		$this->assertEquals($val, $this->lAMConfig->getScriptUserName());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getScriptUserName());
+	}
+
+	/**
 	 * Tests LAMConfig->set_cacheTimeout(), LAMConfig->get_cacheTimeout() and LAMConfig->get_cacheTimeoutSec()
 	 */
 	public function testcacheTimeout() {

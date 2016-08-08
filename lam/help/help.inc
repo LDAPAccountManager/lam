@@ -211,6 +211,12 @@ $helpArray = array (
 					"Text" => _('Default method to output a random password.')),
 				'283' => array ("Headline" => _('Force password change by default'),
 					"Text" => _('Enforce password change on next login by default.')),
+				'284' => array ("Headline" => _('User name'),
+					"Text" => _('User name for SSH connection to lamdaemon server. If empty the user name of the person who is logged into LAM will be used.')),
+				'285' => array ("Headline" => _('SSH key file'),
+					"Text" => _('Path to SSH key file to connect to lamdaemon server. If empty then password authentication with the person\'s password who is logged into LAM will be used.')),
+				'286' => array ("Headline" => _('SSH key password'),
+					"Text" => _('Password to unlock SSH key file.')),
 				// 300 - 399
 				// profile editor, file upload
 				"301" => array ("Headline" => _("RDN identifier"),

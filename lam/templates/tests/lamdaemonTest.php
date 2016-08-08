@@ -3,18 +3,18 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2015  Roland Gruber
+  Copyright (C) 2006 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
-  
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -83,12 +83,12 @@ else if ((sizeof($servers) > 0) && isset($servers[0]) && ($servers[0] != '')) {
 	$serverSelect = new htmlSelect('server', $serverOptions);
 	$serverSelect->setHasDescriptiveElements(true);
 	$container->addElement($serverSelect, true);
-	
+
 	$container->addElement(new htmlOutputText(_("Check quotas")));
 	$container->addElement(new htmlInputCheckbox('checkQuotas', false), true);
-	
+
 	$container->addElement(new htmlSpacer(null, '10px'), true);
-	
+
 	$okButton = new htmlButton('runTest', _("Ok"));
 	$okButton->colspan = 2;
 	$container->addElement($okButton);
@@ -174,7 +174,7 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota, $contai
 	$LAMDAEMON_PROTOCOL_VERSION = '5';
 	$okImage = "../../graphics/pass.png";
 	$failImage = "../../graphics/fail.png";
-	
+
 	flush();
 	$stopTest = false;
 	$spacer = new htmlSpacer('10px', null);
@@ -210,29 +210,34 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota, $contai
 	flush();
 
 	// check Unix account of LAM admin
+	$credentials = $_SESSION['ldap']->decrypt_login();
 	if (!$stopTest) {
-		$container->addElement(new htmlOutputText(_("Unix account")));
-		$container->addElement($spacer);
-		$credentials = $_SESSION['ldap']->decrypt_login();
-		$unixOk = false;
-		$sr = @ldap_read($_SESSION['ldap']->server(), $credentials[0], "objectClass=posixAccount", array('uid'), 0, 0, 0, LDAP_DEREF_NEVER);
-		if ($sr) {
-			$entry = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
-			$userName = $entry[0]['uid'][0];
-			if ($userName) {
-				$unixOk = true;
+		if (empty($_SESSION['config']->getScriptUserName())) {
+			$container->addElement(new htmlOutputText(_("Unix account")));
+			$container->addElement($spacer);
+			$unixOk = false;
+			$sr = @ldap_read($_SESSION['ldap']->server(), $credentials[0], "objectClass=posixAccount", array('uid'), 0, 0, 0, LDAP_DEREF_NEVER);
+			if ($sr) {
+				$entry = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
+				$userName = $entry[0]['uid'][0];
+				if ($userName) {
+					$unixOk = true;
+				}
+			}
+			if ($unixOk) {
+				$container->addElement(new htmlImage($okImage));
+				$container->addElement($spacer);
+				$container->addElement(new htmlOutputText(sprintf(_("Using %s to connect to remote server."), $userName)), true);
+			}
+			else {
+				$container->addElement(new htmlImage($failImage));
+				$container->addElement($spacer);
+				$container->addElement(new htmlOutputText(sprintf(_("Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"), $credentials[0])), true);
+				$stopTest = true;
 			}
 		}
-		if ($unixOk) {
-			$container->addElement(new htmlImage($okImage));
-			$container->addElement($spacer);
-			$container->addElement(new htmlOutputText(sprintf(_("Using %s to connect to remote server."), $userName)), true);
-		}
 		else {
-			$container->addElement(new htmlImage($failImage));
-			$container->addElement($spacer);
-			$container->addElement(new htmlOutputText(sprintf(_("Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"), $credentials[0])), true);
-			$stopTest = true;
+			$userName = $_SESSION['config']->getScriptUserName();
 		}
 	}
 
@@ -244,45 +249,37 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota, $contai
 		$container->addElement($spacer);
 		flush();
 		$sshOk = false;
-		$handle = lamTestConnectSSH($serverName);
-		if ($handle) {
-			if ($handle->login($userName, $credentials[1])) {
-				$sshOk = true;
-			}
-		}
-		if ($sshOk) {
+		try {
+			$handle = lamConnectSSH($serverName);
 			$container->addElement(new htmlImage($okImage));
 			$container->addElement($spacer);
-			$container->addElement(new htmlOutputText(_("SSH connection could be established.")), true);
+			$container->addElement(new htmlOutputText(_("SSH connection established.")), true);
 		}
-		else {
+		catch (Exception $e) {
 			$container->addElement(new htmlImage($failImage));
 			$container->addElement($spacer);
-			$container->addElement(new htmlOutputText(_("Unable to connect to remote server!")), true);
+			$container->addElement(new htmlOutputText($e->getMessage()), true);
 			$stopTest = true;
 		}
 	}
 
 	flush();
-	
+
 	if (!$stopTest) {
 		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "basic", $stopTest, $handle, _("Execute lamdaemon"), $container);
 	}
-	
+
 	if (!$stopTest) {
 		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "version" . $SPLIT_DELIMITER . $LAMDAEMON_PROTOCOL_VERSION, $stopTest, $handle, _("Lamdaemon version"), $container);
 	}
-	
+
 	if (!$stopTest) {
-		$handle = lamTestConnectSSH($serverName);
-		@$handle->login($userName, $credentials[1]);
+		$handle = lamConnectSSH($serverName);
 		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "nss" . $SPLIT_DELIMITER . "$userName", $stopTest, $handle, _("Lamdaemon: check NSS LDAP"), $container);
 		if (!$stopTest && $testQuota) {
-			$handle = lamTestConnectSSH($serverName);
-			@$handle->login($userName, $credentials[1]);
+			$handle = lamConnectSSH($serverName);
 			$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "quota", $stopTest, $handle, _("Lamdaemon: Quota module installed"), $container);
-			$handle = lamTestConnectSSH($serverName);
-			@$handle->login($userName, $credentials[1]);
+			$handle = lamConnectSSH($serverName);
 			$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "quota" . $SPLIT_DELIMITER . "get" . $SPLIT_DELIMITER . "user", $stopTest, $handle, _("Lamdaemon: read quotas"), $container);
 		}
 	}
@@ -291,25 +288,6 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota, $contai
 	$endMessage = new htmlOutputText(_("Lamdaemon test finished."));
 	$endMessage->colspan = 5;
 	$container->addElement($endMessage);
-}
-
-/**
- * Connects to the given SSH server.
- *
- * @param String $server server name (e.g. localhost or localhost,1234)
- * @return object handle
- */
-function lamTestConnectSSH($server) {
-	// add phpseclib to include path
-	set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/../../lib/3rdParty/phpseclib');
-	include_once('Net/SSH2.php');
-	$serverNameParts = explode(",", $server);
-	if (sizeof($serverNameParts) > 1) {
-		return @new Net_SSH2($serverNameParts[0], $serverNameParts[1]);
-	}
-	else {
-		return @new Net_SSH2($server);
-	}
 }
 
 ?>

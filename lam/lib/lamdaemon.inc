@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2011  Roland Gruber
+  Copyright (C) 2004 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -46,40 +46,83 @@ function lamdaemon($command, $server) {
 	// add phpseclib to include path
 	set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/3rdParty/phpseclib');
 	include_once('Net/SSH2.php');
-	// get username and password of the current lam-admin
-	$credentials = $_SESSION['ldap']->decrypt_login();
+	try {
+		$handle = lamConnectSSH($server);
+	}
+	catch (Exception $e) {
+		return array("ERROR," . $e->getMessage() . "," . $server);
+	}
+	$output = $handle->exec("sudo " . $_SESSION['config']->get_scriptPath() . ' ' . escapeshellarg($command));
+	return array($output);
+}
+
+/**
+ * Connects to the given SSH server.
+ *
+ * @param String $server server name (e.g. localhost or localhost,1234)
+ * @return object handle
+ */
+function lamConnectSSH($server) {
+	// add phpseclib to include path
+	set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/3rdParty/phpseclib');
+	include_once('Net/SSH2.php');
+	include_once('Crypt/RSA.php');
 	$serverNameParts = explode(",", $server);
+	$handle = false;
 	if (sizeof($serverNameParts) > 1) {
-		$handle = new Net_SSH2($serverNameParts[0], $serverNameParts[1]);
+		$handle = @new Net_SSH2($serverNameParts[0], $serverNameParts[1]);
 	}
 	else {
-		$handle = new Net_SSH2($server);
+		$handle = @new Net_SSH2($server);
 	}
-	if ($handle) {
+	if (!$handle) {
+		throw new Exception(_("Unable to connect to remote server!"));
+	}
+	lamLoginSSH($handle);
+	return $handle;
+}
+
+/**
+ * Performs a login to the provided SSH handle.
+ *
+ * @param handle $handle SSH handle
+ * @throws Exception login failed
+ */
+function lamLoginSSH($handle) {
+	$username = $_SESSION['config']->getScriptUserName();
+	$credentials = $_SESSION['ldap']->decrypt_login();
+	if (empty($username)) {
+		// get user name from current LAM user
 		$sr = @ldap_read($_SESSION['ldap']->server(), $credentials[0], "objectClass=posixAccount", array('uid'), 0, 0, 0, LDAP_DEREF_NEVER);
-		if (!$sr) {
-			$return = array("ERROR," . _("Your LAM admin user must be a valid Unix account to work with lamdaemon!") . ",");
-			return $return;
+		if ($sr) {
+			$entry = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
+			$username = $entry[0]['uid'][0];
 		}
-		$entry = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
-		if (!isset($entry[0]['uid'][0])) {
-			$return = array("ERROR," . _("Your LAM admin user must be a valid Unix account to work with lamdaemon!") . ",");
-			return $return;
-		}
-		$userName = $entry[0]['uid'][0];
-		if ($handle->login($userName, $credentials[1])) {
-			$output = $handle->exec("sudo " . $_SESSION['config']->get_scriptPath() . ' ' . escapeshellarg($command));
-			$return = array($output);
-			return $return;
-		}
-		else {
-			$return = array("ERROR," . _('Unable to connect to remote server!') . "," . $server);
-			return $return;
+		if (empty($username)) {
+			throw new Exception(sprintf(_("Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"), $credentials[0]));
 		}
 	}
-	else {
-		$return = array("ERROR," . _('Unable to connect to remote server!') . "," . $server);
-		return $return;
+	$password = $credentials[1];
+	if (!empty($_SESSION['config']->getScriptSSHKey())) {
+		// use key authentication
+		$keyPath = $_SESSION['config']->getScriptSSHKey();
+		if (!file_exists($keyPath) || !is_readable($keyPath)) {
+			throw new Exception(sprintf(_("Unable to read %s."), htmlspecialchars($keyPath)));
+		}
+		$key = file_get_contents($keyPath);
+		$rsa = new Crypt_RSA();
+		$keyPassword = $_SESSION['config']->getScriptSSHKeyPassword();
+		if (!empty($keyPassword)) {
+			$rsa->setPassword($keyPassword);
+		}
+		if (!$rsa->loadKey($key)) {
+			throw new Exception(sprintf(_("Unable to load key %s."), htmlspecialchars($keyPath)));
+		}
+		$password = $rsa;
+	}
+	$login = @$handle->login($username, $password);
+	if (!$login) {
+		throw new Exception(_("Unable to login to remote server!"));
 	}
 }
 

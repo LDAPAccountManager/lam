@@ -475,6 +475,21 @@ class LAMConfig {
 	*/
 	private $scriptServer;
 
+	/**
+	 * user name for lamdaemon
+	 */
+	private $scriptUserName;
+
+	/**
+	 * File name of SSH key for lamdaemon.
+	 */
+	private $scriptSSHKey;
+
+	/**
+	 * Password for lamdaemon SSH key.
+	 */
+	private $scriptSSHKeyPassword;
+
 	/** LDAP cache timeout */
 	private $cachetimeout;
 
@@ -560,7 +575,8 @@ class LAMConfig {
 		'lamProMailText', 'lamProMailIsHTML', 'lamProMailAllowAlternateAddress', 'httpAuthentication', 'loginSearchDN',
 		'loginSearchPassword', 'timeZone', 'jobsBindUser', 'jobsBindPassword', 'jobsDatabase', 'jobToken', 'jobs',
 		'jobsDBHost', 'jobsDBPort', 'jobsDBUser', 'jobsDBPassword', 'jobsDBName', 'pwdResetAllowSpecificPassword',
-		'pwdResetAllowScreenPassword', 'pwdResetForcePasswordChange', 'pwdResetDefaultPasswordOutput'
+		'pwdResetAllowScreenPassword', 'pwdResetForcePasswordChange', 'pwdResetDefaultPasswordOutput',
+		'scriptUserName', 'scriptSSHKey', 'scriptSSHKeyPassword'
 	);
 
 
@@ -753,6 +769,9 @@ class LAMConfig {
 			if (!in_array("scriptPath", $saved)) array_push($file_array, "\n\n# Path to external Script\n" . "scriptPath: " . $this->scriptPath . "\n");
 			if (!in_array("scriptServer", $saved)) array_push($file_array, "\n\n# Servers of external script\n" . "scriptServer: " . $this->scriptServer . "\n");
 			if (!in_array("scriptRights", $saved)) array_push($file_array, "\n\n# Access rights for home directories\n" . "scriptRights: " . $this->scriptRights . "\n");
+			if (!in_array("scriptUserName", $saved)) array_push($file_array, "\n" . "scriptUserName: " . $this->scriptUserName . "\n");
+			if (!in_array("scriptSSHKey", $saved)) array_push($file_array, "\n" . "scriptSSHKey: " . $this->scriptSSHKey . "\n");
+			if (!in_array("scriptSSHKeyPassword", $saved)) array_push($file_array, "\n" . "scriptSSHKeyPassword: " . $this->scriptSSHKeyPassword . "\n");
 			if (!in_array("cachetimeout", $saved)) array_push($file_array, "\n\n# Number of minutes LAM caches LDAP searches.\n" . "cacheTimeout: " . $this->cachetimeout . "\n");
 			if (!in_array("searchLimit", $saved)) array_push($file_array, "\n\n# LDAP search limit.\n" . "searchLimit: " . $this->searchLimit . "\n");
 			if (!in_array("activeTypes", $saved)) array_push($file_array, "\n\n# List of active account types.\n" . "activeTypes: " . $this->activeTypes . "\n");
@@ -1269,6 +1288,60 @@ class LAMConfig {
 		else {
 		    return false;
 		}
+	}
+
+	/**
+	* Returns the path to lamdamon SSH key.
+	*
+	* @return string key path
+	*/
+	public function getScriptSSHKey() {
+		return $this->scriptSSHKey;
+	}
+
+	/**
+	* Sets the path to lamdamon SSH key.
+	*
+	* @param string $value key path
+	*/
+	public function setScriptSSHKey($value) {
+		$this->scriptSSHKey = $value;
+	}
+
+	/**
+	* Returns the password for the lamdamon SSH key.
+	*
+	* @return string password
+	*/
+	public function getScriptSSHKeyPassword() {
+		return $this->scriptSSHKeyPassword;
+	}
+
+	/**
+	* Sets the password for the lamdamon SSH key.
+	*
+	* @param string $value password
+	*/
+	public function setScriptSSHKeyPassword($value) {
+		$this->scriptSSHKeyPassword = $value;
+	}
+
+	/**
+	* Returns the lamdaemon user name.
+	*
+	* @return string user name
+	*/
+	public function getScriptUserName() {
+		return $this->scriptUserName;
+	}
+
+	/**
+	* Sets the lamdaemon user name.
+	*
+	* @param string $value user name
+	*/
+	public function setScriptUserName($value) {
+		$this->scriptUserName = $value;
 	}
 
 	/**
