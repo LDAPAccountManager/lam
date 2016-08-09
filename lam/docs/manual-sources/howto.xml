@@ -1692,6 +1692,28 @@ Have fun!
           the script is located. The default rights for new home directories
           can be set, too.</para>
 
+          <para>You can provide a fixed user name. If you leave the field
+          empty then LAM will use your current account (the account you used
+          to login to LAM).</para>
+
+          <para>There are two possibilities to connect to your home
+          directory/quota server:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>SSH key (recommended): Please generate a SSH key pair and
+              provide the location to the <emphasis
+              role="bold">private</emphasis> key file. If the key is protected
+              by a password you can also specify it here.</para>
+            </listitem>
+
+            <listitem>
+              <para>Password: If you do not set a SSH key then LAM will try to
+              connect with your current account (the password you used to
+              login to LAM).</para>
+            </listitem>
+          </itemizedlist>
+
           <screenshot>
             <mediaobject>
               <imageobject>
