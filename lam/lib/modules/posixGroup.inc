@@ -601,7 +601,6 @@ class posixGroup extends baseModule implements passwordService {
 		$configContainer->addElement($magicNumber, true);
 		$configContainer->addElement(new htmlTableExtendedInputField(_('Suffix for GID/group name check'), 'posixGroup_gidCheckSuffix', '', 'gidCheckSuffix'), true);
 		$configContainer->addElement(new htmlTableExtendedInputCheckbox('posixGroup_hidememberUid', false, _('Disable membership management'), 'hidememberUid'), true);
-		$x = $this->get_scope();
 		if ((!empty($allScopes['groupOfNames']) && in_array('group', $allScopes['groupOfNames']))
 			|| (!empty($allScopes['groupOfUniqueNames']) && in_array('group', $allScopes['groupOfUniqueNames']))) {
 			$configContainer->addElement(new htmlTableExtendedInputCheckbox('posixGroup_autoSyncGon', false, _('Force sync with group of names'), 'autoSyncGon'), true);
