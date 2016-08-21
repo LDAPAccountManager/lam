@@ -2113,13 +2113,18 @@ class LAMCfgMain {
 	/** error reporting */
 	public $errorReporting = self::ERROR_REPORTING_DEFAULT;
 
+	/** license data */
+	private $license = '';
+
 	/** list of data fields to save in config file */
 	private $settings = array("password", "default", "sessionTimeout",
 		"logLevel", "logDestination", "allowedHosts", "passwordMinLength",
 		"passwordMinUpper", "passwordMinLower", "passwordMinNumeric",
 		"passwordMinClasses", "passwordMinSymbol", 'checkedRulesCount',
 		'passwordMustNotContainUser', 'passwordMustNotContain3Chars',
-		"mailEOL", 'errorReporting', 'encryptSession', 'allowedHostsSelfService');
+		"mailEOL", 'errorReporting', 'encryptSession', 'allowedHostsSelfService',
+		'license'
+	);
 
 	/**
 	* Loads preferences from config file
@@ -2213,6 +2218,7 @@ class LAMCfgMain {
 		if (!in_array("passwordMustNotContainUser", $saved)) array_push($file_array, "\n\n# Password: must not contain user name\n" . "passwordMustNotContainUser: " . $this->passwordMustNotContainUser);
 		if (!in_array("mailEOL", $saved)) array_push($file_array, "\n\n# Email format (default/unix)\n" . "mailEOL: " . $this->mailEOL);
 		if (!in_array("errorReporting", $saved)) array_push($file_array, "\n\n# PHP error reporting (default/system)\n" . "errorReporting: " . $this->errorReporting);
+		if (!in_array("license", $saved)) array_push($file_array, "\n\n# License\n" . "license: " . $this->license);
 		$file = @fopen($this->conffile, "w");
 		if ($file) {
 			for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
@@ -2490,6 +2496,24 @@ class LAMCfgMain {
 			$list[$pos] .= $line . "\n";
 		}
 		return $list;
+	}
+
+	/**
+	 * Returns the license key as multiple lines.
+	 *
+	 * @return String license
+	 */
+	public function getLicenseLines() {
+		return explode(LAMConfig::LINE_SEPARATOR, $this->license);
+	}
+
+	/**
+	 * Sets the license key as multiple lines.
+	 *
+	 * @param String $license license
+	 */
+	public function setLicenseLines($licenseLines) {
+		$this->license = implode(LAMConfig::LINE_SEPARATOR, $licenseLines);
 	}
 
 }

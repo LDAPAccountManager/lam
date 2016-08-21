@@ -217,6 +217,8 @@ $helpArray = array (
 					"Text" => _('Path to SSH key file to connect to lamdaemon server. If empty then password authentication with the person\'s password who is logged into LAM will be used.')),
 				'286' => array ("Headline" => _('SSH key password'),
 					"Text" => _('Password to unlock SSH key file.')),
+				'287' => array ("Headline" => _('License'),
+					"Text" => _('Please enter your license key.')),
 				// 300 - 399
 				// profile editor, file upload
 				"301" => array ("Headline" => _("RDN identifier"),

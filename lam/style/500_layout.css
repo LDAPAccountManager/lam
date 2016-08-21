@@ -519,6 +519,11 @@ div.confModList {
 	overflow-y: auto;
 }
 
+div.licenseInfo {
+	display: inline-block;
+	padding: 20px;
+	min-width: 200px;
+}
 
 /* schema browser */
 

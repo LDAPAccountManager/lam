@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2015  Roland Gruber
+  Copyright (C) 2003 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -34,6 +34,9 @@ $Id$
 include_once('../../lib/config.inc');
 /** Used to print status messages */
 include_once('../../lib/status.inc');
+if (isLAMProVersion()) {
+	include_once("../../lib/env.inc");
+}
 
 // start session
 if (strtolower(session_module_name()) == 'files') {
@@ -62,7 +65,6 @@ if (isset($_POST['passwd'])) {
 		$message = _("The password is invalid! Please try again.");
 	}
 }
-
 
 echo $_SESSION['header'];
 
@@ -132,6 +134,9 @@ echo $_SESSION['header'];
 			if (!$cfgMain->isWritable()) {
 				StatusMessage('WARN', 'The config file is not writable.', 'Your changes cannot be saved until you make the file writable for the webserver user.');
 			}
+			if (!empty($_GET['invalidLicense'])) {
+				StatusMessage('WARN', _('Invalid license'), _('Please setup your license data.'));
+			}
 		?>
 		<br>
 		<!-- form to change main options -->
@@ -181,8 +186,14 @@ echo $_SESSION['header'];
 		</table>
 		</form>
 
-		<p><br><br></p>
+		<?php
+			if (isLAMProVersion()) {
+				$printer = new \LAM\ENV\LAMLicenseInfoPrinter();
+				$printer->printLicenseInfo();
+			}
+		?>
 
+		<p><br><br></p>
 
 	</body>
 </html>

@@ -41,7 +41,12 @@ include_once("../lib/security.inc");
 /** self service functions */
 include_once("../lib/selfService.inc");
 /** access to configuration options */
-include_once("../lib/config.inc"); // Include config.inc which provides Config class
+include_once("../lib/config.inc");
+if (isLAMProVersion()) {
+	include_once("../lib/env.inc");
+	$validator = new \LAM\ENV\LAMLicenseValidator();
+	$validator->validateAndRedirect();
+}
 
 /** Upgrade functions */
 include_once("../lib/upgrade.inc");

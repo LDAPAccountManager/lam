@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2014  Roland Gruber
+  Copyright (C) 2003 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -34,6 +34,8 @@ $Id$
 include_once('../../lib/config.inc');
 /** Used to print status messages */
 include_once('../../lib/status.inc');
+/** LAM Pro */
+include_once('../../lib/selfService.inc');
 
 // start session
 if (strtolower(session_module_name()) == 'files') {
@@ -80,6 +82,12 @@ if (isset($_POST['submitFormData'])) {
 			unset($_SESSION["mainconf_password"]);
 		}
 		else $errors[] = _("Master passwords are different or empty!");
+	}
+	// set license
+	if (isLAMProVersion()) {
+		$licenseLines = explode("\n", $_POST['license']);
+		$licenseLines = array_map('trim', $licenseLines);
+		$cfg->setLicenseLines($licenseLines);
 	}
 	// set session timeout
 	$cfg->sessionTimeout = $_POST['sessionTimeout'];
@@ -289,6 +297,16 @@ for ($i = 0; $i < sizeof($messages); $i++) {
 // check if config file is writable
 if (!$cfg->isWritable()) {
 	$container->addElement(new htmlStatusMessage('WARN', 'The config file is not writable.', 'Your changes cannot be saved until you make the file writable for the webserver user.'), true);
+}
+
+// license
+if (isLAMProVersion()) {
+	$container->addElement(new htmlSubTitle(_('License')), true);
+	$licenseTable = new htmlTable();
+	$licenseTable->addElement(new htmlTableExtendedInputTextarea('license', implode("\n", $cfg->getLicenseLines()), 50, 10, _('License'), '287'));
+	$container->addElement($licenseTable, true);
+
+	$container->addElement(new htmlSpacer(null, '10px'), true);
 }
 
 // security settings
