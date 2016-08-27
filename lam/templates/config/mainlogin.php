@@ -123,9 +123,6 @@ echo $_SESSION['header'];
 				<td align="left" height="30">
 					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">LDAP Account Manager</a>
 				</td>
-				<td align="right" height=20>
-					<a href="../login.php"><IMG alt="configuration" src="../../graphics/undo.png">&nbsp;<?php echo _("Back to login") ?></a>
-				</td>
 			</tr>
 		</table>
 		<br>
@@ -181,17 +178,10 @@ echo $_SESSION['header'];
 		</table>
 		</td></tr>
 		<tr><td align="left">
-		<br><a href="../login.php"> <?php echo _("Back to login"); ?> </a>
+		<br><a href="../login.php"><IMG alt="configuration" src="../../graphics/undo.png">&nbsp;<?php echo _("Back to login"); ?> </a>
 		</td></tr>
 		</table>
 		</form>
-
-		<?php
-			if (isLAMProVersion()) {
-				$printer = new \LAM\ENV\LAMLicenseInfoPrinter();
-				$printer->printLicenseInfo();
-			}
-		?>
 
 		<p><br><br></p>
 

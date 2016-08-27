@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2013  Roland Gruber
+  Copyright (C) 2003 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ echo $_SESSION['header'];
 				echo _("Configuration overview");
 			?>
 		</title>
-	<?php 
+	<?php
 		// include all CSS files
 		$cssDirName = dirname(__FILE__) . '/../../style';
 		$cssDir = dir($cssDirName);
@@ -75,18 +75,18 @@ echo $_SESSION['header'];
 				<td align="left" height="30">
 					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">LDAP Account Manager</a>
 				</td>
-				<td align="right" height=20>
-					<a href="../login.php"><IMG alt="configuration" src="../../graphics/undo.png">&nbsp;<?php echo _("Back to login") ?></a>
-				</td>
 			</tr>
 		</table>
 		<br><br>
-		<fieldset class="ui-corner-all">
-			<legend><b> <?php echo _("LAM configuration"); ?> </b></legend>
+		<fieldset class="ui-corner-all roundedShadowBox fullwidth">
 		<TABLE border="0">
 		<?php
-			if (is_dir("../selfService")) echo "<tr><td rowspan=4 width=20>&nbsp;</td><td></td><td></td></tr>\n";
-			else echo "<tr><td rowspan=3 width=20>&nbsp;</td><td></td><td></td></tr>\n";
+			if (isLAMProVersion()) {
+				echo "<tr><td rowspan=4 width=20>&nbsp;</td><td></td><td></td></tr>\n";
+			}
+			else {
+				echo "<tr><td rowspan=3 width=20>&nbsp;</td><td></td><td></td></tr>\n";
+			}
 		?>
 		<TR>
 			<TD width="60" height="70">
@@ -113,7 +113,7 @@ echo $_SESSION['header'];
 			</TD>
 		</TR>
 		<?php
-		if (is_dir("../selfService")) {
+		if (isLAMProVersion()) {
 			echo "<TR>\n";
 				echo "<TD height=\"70\">\n";
 				echo "<a href=\"../selfService/adminLogin.php\" target=\"_self\">\n";
@@ -130,7 +130,18 @@ echo $_SESSION['header'];
 		?>
 		</TABLE>
 		</fieldset>
-		<p>&nbsp;<a href="../login.php"><?php echo _("Back to login") ?></a></p>
+		<p><br></p>
+
+		<?php
+		if (isLAMProVersion()) {
+			include_once("../../lib/env.inc");
+			$printer = new \LAM\ENV\LAMLicenseInfoPrinter();
+			$printer->printLicenseInfo();
+			echo "<br><br>";
+		}
+		?>
+
+		<p>&nbsp;<a href="../login.php"><IMG alt="back" src="../../graphics/undo.png">&nbsp;<?php echo _("Back to login") ?></a></p>
 		<p><br><br></p>
 
 	</body>

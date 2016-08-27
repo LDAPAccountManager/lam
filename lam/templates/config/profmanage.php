@@ -177,9 +177,6 @@ echo $_SESSION['header'];
 				<td align="left" height="30">
 					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">LDAP Account Manager</a>
 				</td>
-				<td align="right" height=20>
-					<a href="conflogin.php"><IMG alt="configuration" src="../../graphics/undo.png">&nbsp;<?php echo _("Back to profile login") ?></a>
-				</td>
 			</tr>
 		</table>
 		<br>
@@ -327,12 +324,12 @@ $dialogDiv->setCSSClasses(array('hidden'));
 $container->addElement($dialogDiv, true);
 
 $mainDiv = new htmlDiv('mainDiv', $container);
-$mainDiv->setCSSClasses(array('filled', 'ui-corner-all'));
+$mainDiv->setCSSClasses(array('roundedShadowBox', 'fullwidth', 'ui-corner-all'));
 
 $mainContainer = new htmlGroup();
 $mainContainer->addElement($mainDiv);
-$mainContainer->addElement(new htmlOutputText('<br>', false));
-$mainContainer->addElement(new htmlLink(_("Back to profile login"), 'conflogin.php'));
+$mainContainer->addElement(new htmlOutputText('<p><br></p>', false));
+$mainContainer->addElement(new htmlLink(_("Back to profile login"), 'conflogin.php', '../../graphics/undo.png'));
 
 parseHtml('', $mainContainer, array(), false, $tabindex, 'user');
 

@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2015  Roland Gruber
+  Copyright (C) 2003 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -114,9 +114,6 @@ echo $_SESSION['header'];
 				<td align="left" height="30">
 					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">LDAP Account Manager</a>
 				</td>
-			<td align="right" height=20>
-				<a href="../login.php"><IMG alt="configuration" src="../../graphics/undo.png">&nbsp;<?php echo _("Back to login") ?></a>
-			</td>
 			</tr>
 		</table>
 		<br><br>
@@ -199,7 +196,7 @@ echo $_SESSION['header'];
 		</table>
 		</td></tr>
 		<tr><td>
-		<br><a href="../login.php"> <?php echo _("Back to login"); ?> </a>
+		<br><a href="../login.php"><IMG alt="configuration" src="../../graphics/undo.png">&nbsp;<?php echo _("Back to login"); ?> </a>
 		</td></tr>
 		</table>
 		</form>

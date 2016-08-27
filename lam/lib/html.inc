@@ -2557,10 +2557,13 @@ class htmlFieldset extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		$class = 'ui-corner-all';
+		$classes = $this->cssClasses;
+		$classes[] = 'ui-corner-all';
 		if ($scope != null) {
-			$class .= ' ' . $scope . '-border ' . $scope . '-bright';
+			$classes[] = $scope . '-border';
+			$classes[] = $scope . '-bright';
 		}
+		$class = implode(' ', $classes);
 		echo "<fieldset class=\"$class\">\n";
 		// generate legend
 		if (($this->label != null) || ($this->labelImage != null)) {

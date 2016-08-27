@@ -85,8 +85,7 @@ a.classicBold {
 }
 
 fieldset {
-  background-color:#fff3c8;
-  border:1px solid #af8800;
+  border:1px solid black;
   padding:10px;
 }
 
@@ -517,12 +516,6 @@ img.photo {
 div.confModList {
 	max-height: 300px;
 	overflow-y: auto;
-}
-
-div.licenseInfo {
-	display: inline-block;
-	padding: 20px;
-	min-width: 200px;
 }
 
 /* schema browser */
