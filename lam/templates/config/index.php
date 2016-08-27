@@ -45,11 +45,14 @@ echo $_SESSION['header'];
 
 ?>
 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>
 			<?php
 				echo _("Configuration overview");
 			?>
 		</title>
+		<link rel="stylesheet" type="text/css" href="../../style/responsive/105_normalize.css">
+		<link rel="stylesheet" type="text/css" href="../../style/responsive/110_foundation.css">
 	<?php
 		// include all CSS files
 		$cssDirName = dirname(__FILE__) . '/../../style';
@@ -69,10 +72,10 @@ echo $_SESSION['header'];
 	?>
 		<link rel="shortcut icon" type="image/x-icon" href="../../graphics/favicon.ico">
 	</head>
-	<body>
-		<table border=0 width="100%" class="lamHeader ui-corner-all">
+	<body class="admin">
+		<table class="lamTop ui-corner-all">
 			<tr>
-				<td align="left" height="30">
+				<td align="left">
 					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">LDAP Account Manager</a>
 				</td>
 			</tr>

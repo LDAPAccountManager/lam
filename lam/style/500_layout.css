@@ -44,6 +44,10 @@ body.selfservice {
   background: #fffde2;
 }
 
+body.admin {
+  padding: 10px;
+}
+
 .defaultBackground {
   background: #F5F5F5 !important;
 }
@@ -157,7 +161,19 @@ table.lamHeader {
   background-image: url(lam-images/headerLine.png);
   padding: 0px;
   height: 35px;
-  margin: 0px;
+}
+
+table.lamTop {
+  background-image: url(lam-images/headerLine.png);
+  padding: 0px;
+  height: 35px;
+  width: 100%;
+  border-width: 0px;
+}
+
+table.lamTop td {
+  padding: 1px;
+  vertical-align: "bottom";
 }
 
 /* table preferences */
