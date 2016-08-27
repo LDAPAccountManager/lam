@@ -221,7 +221,7 @@ if (!isset($cfg->default)) {
 $topicSpacer = new htmlSpacer(null, '20px');
 
 $tabindex = 1;
-$container = new htmlTable();
+$container = new htmlTable('100%');
 
 $container->addElement(new htmlTitle(_("Profile management")), true);
 
@@ -323,11 +323,10 @@ $dialogDiv = new htmlDiv('passwordDialogDiv', $dialogDivContent);
 $dialogDiv->setCSSClasses(array('hidden'));
 $container->addElement($dialogDiv, true);
 
-$mainDiv = new htmlDiv('mainDiv', $container);
-$mainDiv->setCSSClasses(array('roundedShadowBox', 'fullwidth', 'ui-corner-all'));
+$container->setCSSClasses(array('roundedShadowBox', 'ui-corner-all'));
 
 $mainContainer = new htmlGroup();
-$mainContainer->addElement($mainDiv);
+$mainContainer->addElement($container);
 $mainContainer->addElement(new htmlOutputText('<p><br></p>', false));
 $mainContainer->addElement(new htmlLink(_("Back to profile login"), 'conflogin.php', '../../graphics/undo.png'));
 

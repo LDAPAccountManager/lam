@@ -78,8 +78,7 @@ echo $_SESSION['header'];
 			</tr>
 		</table>
 		<br><br>
-		<fieldset class="ui-corner-all roundedShadowBox fullwidth">
-		<TABLE border="0">
+		<TABLE border="0" width="100%" class="ui-corner-all roundedShadowBox">
 		<?php
 			if (isLAMProVersion()) {
 				echo "<tr><td rowspan=4 width=20>&nbsp;</td><td></td><td></td></tr>\n";
@@ -129,7 +128,6 @@ echo $_SESSION['header'];
 		}
 		?>
 		</TABLE>
-		</fieldset>
 		<p><br></p>
 
 		<?php

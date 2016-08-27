@@ -344,6 +344,9 @@ td.loginLogo {
 	display: inline-block;
 	background-color: white;
 	padding: 20px;
+}
+
+.limitWidth {
 	max-width: 580px;
 }
 
