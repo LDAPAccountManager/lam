@@ -45,7 +45,7 @@ include_once("../lib/config.inc");
 if (isLAMProVersion()) {
 	include_once("../lib/env.inc");
 	$validator = new \LAM\ENV\LAMLicenseValidator();
-	$validator->validateAndRedirect();
+	$validator->validateAndRedirect('config/mainlogin.php?invalidLicense=1');
 }
 
 /** Upgrade functions */
