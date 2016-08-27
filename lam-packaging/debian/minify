@@ -2,8 +2,7 @@
 
 set -e
 
-dir="templates/lib"
-files=`ls $dir/*.js`
+files=`ls templates/lib/*.js style/*.css`
 for file in $files; do
 	# skip dropmenu file, incompatible with YUI compressor
 	if [[ $file =~ .*dropmenu.* ]]; then

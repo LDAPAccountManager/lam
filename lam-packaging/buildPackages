@@ -37,6 +37,20 @@ function minify {
 	done
 }
 
+# minifies the CSS files
+function minifyCSS {
+	local dir="$1"
+	echo "Minify CSS files in $dir"
+	local files=`ls $dir/*.css`
+	for file in $files; do
+		yui-compressor --nomunge --preserve-semi --disable-optimizations --charset UTF-8 -o ${file}-MIN $file
+		rm $file
+		mv ${file}-MIN $file
+		# add final new line to supress Debian warnings
+		echo "" >> $file
+	done
+}
+
 echo "Getting files..."
 git clone git@github.com:LDAPAccountManager/lam.git github
 cd github
@@ -97,6 +111,7 @@ mv ldap-account-manager-$VERSION.tar.bz2 Debian/ldap-account-manager_$VERSION.or
 cp -ar ldap-account-manager-$VERSION Debian/
 # build other packages with minified JS files
 minify ldap-account-manager-$VERSION/templates/lib
+minifyCSS ldap-account-manager-$VERSION/style
 tar cfj ldap-account-manager-$VERSION.tar.bz2 --owner=root --group=root --mtime=now ldap-account-manager-$VERSION
 rm -r ldap-account-manager-$VERSION
 
@@ -116,6 +131,7 @@ mv ldap-account-manager-$VERSION.tar.bz2 Debian/ldap-account-manager_$VERSION.or
 cp -ar ldap-account-manager-$VERSION Debian/
 # build other packages with minified JS files
 minify ldap-account-manager-$VERSION/templates/lib
+minifyCSS ldap-account-manager-$VERSION/style
 tar cfj ldap-account-manager-$VERSION.tar.bz2 --owner=root --group=root --mtime=now ldap-account-manager-$VERSION
 rm -r ldap-account-manager-$VERSION
 cd ..
