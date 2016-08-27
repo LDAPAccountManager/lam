@@ -46,12 +46,11 @@ mv lam-packaging ../
 cd ..
 rm -rf github
 
-git clone file:///daten/dev/git local
-cd local
+git clone git@gitlab.com:LDAPAccountManager/lamPro.git lamPro
+cd lamPro
 git checkout $REPO_BRANCH
-mv lamPro ../
+rm -rf .git
 cd ..
-rm -rf local
 
 cp lam-packaging/getVersion ./
 export VERSION=`./getVersion`
