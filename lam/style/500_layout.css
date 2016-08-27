@@ -135,6 +135,11 @@ input {
 	padding: 1em;
 }
 
+.spacing5 {
+	border-spacing: 5px;
+	border-collapse: separate;
+}
+
 .hoverHighlight {
 	border: 1px solid transparent;
 }
