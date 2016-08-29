@@ -301,9 +301,9 @@ if (!$cfg->isWritable()) {
 
 // license
 if (isLAMProVersion()) {
-	$container->addElement(new htmlSubTitle(_('License')), true);
+	$container->addElement(new htmlSubTitle(_('Licence')), true);
 	$licenseTable = new htmlTable();
-	$licenseTable->addElement(new htmlTableExtendedInputTextarea('license', implode("\n", $cfg->getLicenseLines()), 50, 10, _('License'), '287'));
+	$licenseTable->addElement(new htmlTableExtendedInputTextarea('license', implode("\n", $cfg->getLicenseLines()), 50, 10, _('Licence'), '287'));
 	$container->addElement($licenseTable, true);
 
 	$container->addElement(new htmlSpacer(null, '10px'), true);

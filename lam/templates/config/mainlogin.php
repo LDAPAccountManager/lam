@@ -132,7 +132,7 @@ echo $_SESSION['header'];
 				StatusMessage('WARN', 'The config file is not writable.', 'Your changes cannot be saved until you make the file writable for the webserver user.');
 			}
 			if (!empty($_GET['invalidLicense'])) {
-				StatusMessage('WARN', _('Invalid license'), _('Please setup your license data.'));
+				StatusMessage('WARN', _('Invalid licence'), _('Please setup your licence data.'));
 			}
 		?>
 		<br>
