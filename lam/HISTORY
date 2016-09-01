@@ -7,7 +7,7 @@ September 2016
      * Move or delete expired accounts (Shadow, Windows, qmail, FreeRadius)
      * 389ds: added job to notify before password expires
    -> 389ds: manage password expiration time with module "Account locking"
-  - fixed bugs:
+  - Fixed bugs:
    -> PHP 7 issues on edit page
 
 
