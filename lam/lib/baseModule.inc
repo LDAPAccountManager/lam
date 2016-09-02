@@ -1558,10 +1558,10 @@ abstract class baseModule {
 					$container['messages'][] = $this->messages[$name][0];
 				}
 				else {
-					if (isset($attributes[$name])) {
+					if (isset($attributes[$name]) && ($attributes[$name][0] != $_POST[$fieldName])) {
 						$container['mod'][$name] = array($_POST[$fieldName]);
 					}
-					else {
+					elseif (!isset($attributes[$name])) {
 						$container['add'][$name] = array($_POST[$fieldName]);
 					}
 				}
