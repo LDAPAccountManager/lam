@@ -2580,6 +2580,52 @@ class windowsUser extends baseModule implements passwordService {
 	 * @param array $attributes LDAP attributes
 	 */
 	private function setSelfServicePassword(&$return, $attributes) {
+		if (!function_exists('ldap_modify_batch')) {
+			return $this->setSelfServicePasswordCMD($return, $attributes);
+		}
+		$newPasswordVal = self::pwdAttributeValue($_POST['windowsUser_unicodePwd']);
+		$oldPassword = lamDecrypt($_SESSION['selfService_clientPassword'], 'SelfService');
+		$oldPasswordVal = self::pwdAttributeValue($oldPassword);
+		$dn = $attributes['dn'];
+		$operation = array(
+			array(
+				'attrib' => 'unicodePwd',
+				'modtype' => LDAP_MODIFY_BATCH_REMOVE,
+				'values' => array($oldPasswordVal)
+			),
+			array(
+				'attrib' => 'unicodePwd',
+				'modtype' => LDAP_MODIFY_BATCH_ADD,
+				'values' => array($newPasswordVal)
+			)
+		);
+		$success = @ldap_modify_batch($_SESSION['ldapHandle'], $dn, $operation);
+		$returnCode = ldap_errno($_SESSION['ldapHandle']);
+		if ($returnCode != 0) {
+			$outputMessages = htmlspecialchars(getExtendedLDAPErrorMessage($_SESSION['ldapHandle']));
+			// Active Directory message translations
+			if ((strpos($outputMessages, 'DSID-03190F80') !== false) && (strpos($outputMessages, 'unicodePwd') !== false)) {
+				$outputMessages = _('Your password does not meet the password strength qualifications. Please retry with another one.') . '<br><br>' . $outputMessages;
+			}
+			logNewMessage(LOG_ERR, 'Changing user password failed: ' . $outputMessages);
+			$return['messages'][] = array('ERROR', _('Unable to change password.'), $outputMessages);
+			return;
+		}
+		else {
+			// update session password for next page load
+			$_SESSION['selfService_clientPasswordNew'] = $_POST['windowsUser_unicodePwd'];
+		}
+	}
+
+	/**
+	 * Sets the user password in self service.
+	 * Since the change requires the old password we need to run ldapmodify for this task.
+	 *
+	 * Enter description here ...
+	 * @param array $return return value for checkSelfServiceOptions() (used to add message if any)
+	 * @param array $attributes LDAP attributes
+	 */
+	private function setSelfServicePasswordCMD(&$return, $attributes) {
 		$newPasswordVal = self::pwdAttributeValue($_POST['windowsUser_unicodePwd']);
 		$oldPassword = lamDecrypt($_SESSION['selfService_clientPassword'], 'SelfService');
 		$oldPasswordVal = self::pwdAttributeValue($oldPassword);
