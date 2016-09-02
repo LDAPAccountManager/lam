@@ -103,9 +103,9 @@ function lamLoginSSH($handle) {
 		}
 	}
 	$password = $credentials[1];
-	if (!empty($_SESSION['config']->getScriptSSHKey())) {
+	$keyPath = $_SESSION['config']->getScriptSSHKey();
+	if (!empty($keyPath)) {
 		// use key authentication
-		$keyPath = $_SESSION['config']->getScriptSSHKey();
 		if (!file_exists($keyPath) || !is_readable($keyPath)) {
 			throw new Exception(sprintf(_("Unable to read %s."), htmlspecialchars($keyPath)));
 		}
