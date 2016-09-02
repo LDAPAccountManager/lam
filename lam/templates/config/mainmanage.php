@@ -261,9 +261,6 @@ echo $_SESSION['header'];
 				<td align="left" height="30">
 					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">LDAP Account Manager</a>
 				</td>
-				<td align="right" height=20>
-					<a href="../login.php"><IMG alt="configuration" src="../../graphics/undo.png">&nbsp;<?php echo _("Back to login") ?></a>
-				</td>
 			</tr>
 		</table>
 		<br>
@@ -284,7 +281,9 @@ foreach ($jsFiles as $jsEntry) {
 	echo "<script type=\"text/javascript\" src=\"../lib/" . $jsEntry . "\"></script>\n";
 }
 
-$container = new htmlTable();
+$container = new htmlTable('100%');
+$container->setCSSClasses(array('ui-corner-all', 'roundedShadowBox'));
+$container->addElement(new htmlTitle(_('General settings')), true);
 
 // print messages
 for ($i = 0; $i < sizeof($errors); $i++) {
@@ -492,8 +491,7 @@ if ($cfg->isWritable()) {
 $container->addElement(new htmlHiddenInput('submitFormData', '1'), true);
 
 $tabindex = 1;
-$globalFieldset = new htmlFieldset($container, _('General settings'));
-parseHtml(null, $globalFieldset, array(), false, $tabindex, 'user');
+parseHtml(null, $container, array(), false, $tabindex, 'user');
 
 /**
  * Formats an LDAP time string (e.g. from createTimestamp).
