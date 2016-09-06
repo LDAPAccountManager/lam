@@ -8,8 +8,8 @@ time.
 * templates/selfService/*
 * templates/config/jobs.php
 * lib/cron.inc
-* lib/env.inc
 * lib/database.inc
+* lib/env.inc
 * lib/jobs.inc
 * lib/passwordExpirationJob.inc
 * lib/modules/aliasEntry.inc
