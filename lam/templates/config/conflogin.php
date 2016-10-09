@@ -56,6 +56,7 @@ for ($i = 0; $i < sizeof($sessionKeys); $i++) {
 
 echo $_SESSION['header'];
 
+$files = getConfigProfiles();
 ?>
 
 		<title>
@@ -127,11 +128,18 @@ echo $_SESSION['header'];
 				<td style="border-style:none" rowspan="3" width="20"></td>
 			</tr>
 			<tr>
-				<td style="border-style:none" align="center"><b> <?php echo _("Please enter your password to change the server preferences:"); ?> </b></td>
+				<td style="border-style:none" align="center">
+					<b>
+					<?php
+						if (sizeof($files) > 0) {
+							echo _("Please enter your password to change the server preferences:");
+						}
+					?>
+					</b>
+				</td>
 			</tr>
 			<tr><td style="border-style:none" >&nbsp;</td></tr>
 <?php
-	$files = getConfigProfiles();
 	if (sizeof($files) < 1) $message = _("No server profiles found. Please create one.");
 	// print message if login was incorrect or no config profiles are present
 	if (isset($message)) {  // $message is set by confmain.php (requires conflogin.php then)
@@ -163,22 +171,22 @@ echo $_SESSION['header'];
 								$selectedProfile[] = $conf->default;
 							}
 							$profilesExisting = true;
+							$select = new htmlSelect('filename', $profiles, $selectedProfile);
+							$select->setIsEnabled($profilesExisting);
+							$group->addElement($select);
+							$passwordField = new htmlInputField('passwd');
+							$passwordField->setIsPassword(true);
+							$passwordField->setIsEnabled($profilesExisting);
+							$passwordField->setFieldSize(20);
+							$group->addElement($passwordField);
+							$button = new htmlButton('submit', _("Ok"));
+							$button->setIsEnabled($profilesExisting);
+							$group->addElement($button);
+							$group->addElement(new htmlHelpLink('200'));
+							$tabindex = 1;
+							parseHtml(null, $group, array(), false, $tabindex, 'user');
 						}
-						$select = new htmlSelect('filename', $profiles, $selectedProfile);
-						$select->setIsEnabled($profilesExisting);
-						$group->addElement($select);
-						$passwordField = new htmlInputField('passwd');
-						$passwordField->setIsPassword(true);
-						$passwordField->setIsEnabled($profilesExisting);
-						$passwordField->setFieldSize(20);
-						$group->addElement($passwordField);
-						$button = new htmlButton('submit', _("Ok"));
-						$button->setIsEnabled($profilesExisting);
-						$group->addElement($button);
-						$group->addElement(new htmlHelpLink('200'));
-						$tabindex = 1;
-						parseHtml(null, $group, array(), false, $tabindex, 'user');
-					?>
+						?>
 				</td>
 				<td style="border-style:none" rowspan="4" width="20"></td>
 			</tr>
