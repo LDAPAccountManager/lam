@@ -95,7 +95,7 @@ do-chown:
 	for i in $${LIST4} ; do \
 		$(CHOWN) -R $(HTTPD_USER):$(HTTPD_GROUP) $(DESTDIR)$(sysconfdir)/$${i} ; \
 	done
-	$(CHOWN) $(HTTPD_USER):$(HTTPD_GROUP) $(DESTDIR)$(sysconfdir)/config
+	$(CHOWN) $(HTTPD_USER):$(HTTPD_GROUP) $(DESTDIR)$(sysconfdir)
 
 
 echo-chown:
@@ -109,7 +109,7 @@ echo-chown:
 		echo "$(CHOWN) -R $(HTTPD_USER):$(HTTPD_GROUP) $(DESTDIR)$(sysconfdir)/$${i}" \
 			>> $(RAR) ; \
 	done ; \
-	echo $(CHOWN) $(HTTPD_USER):$(HTTPD_GROUP) $(DESTDIR)$(sysconfdir)/config
+	echo $(CHOWN) $(HTTPD_USER):$(HTTPD_GROUP) $(DESTDIR)$(sysconfdir)
 	echo "Switch user to root and run $(RAR)"
 
 
