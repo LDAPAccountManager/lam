@@ -114,7 +114,7 @@ function upgradeConfigToServerProfileFolders($profiles) {
 
 	// copy default configs
 	if (!file_exists('../config/templates')) {
-		@mkdir('../config/templates');
+		@mkdir('../config/templates', 0700);
 		recursiveCopy('../config/pdf/', '../config/templates/pdf/', $profiles, 'default.');
 		recursiveCopy('../config/profiles/', '../config/templates/profiles/', $profiles, 'default.');
 	}
@@ -163,7 +163,7 @@ function copyConfigTemplates($profiles) {
 function recursiveCopy($src, $dst, $profiles, $fileFilter = null, $overwrite = true) {
 	$dir = @opendir($src);
 	if (!file_exists($dst)) {
-		$tmpState = @mkdir($dst);
+		$tmpState = @mkdir($dst, 0700, true);
 		if ($tmpState === false) {
 			StatusMessage('ERROR', 'Upgrade failed.', 'The directory \'' . $dst . '\' could not be created.');
 		}

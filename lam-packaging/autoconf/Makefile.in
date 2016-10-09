@@ -68,7 +68,7 @@ install-lam:
 		(cd $(srcdir) ; $(COPY) $${i}/.htaccess \
 			$(DESTDIR)$(localstatedir)/$${i}) ; \
 	done ; \
-	LIST4="`(cd $(srcdir)/$(LIST3) ; ls -d * | $(GREP) -v sample)`" ; \
+	LIST4="`(cd $(srcdir)/$(LIST3) ; ls -d *)`" ; \
 	(cd $(srcdir)/$(LIST3) ; $(TAR) cf - .) | \
 		(cd $(DESTDIR)$(sysconfdir) ; $(TAR) xf -) ; \
 	$(LN_S) $(sysconfdir) ${LIST3} ; \
@@ -91,10 +91,11 @@ do-chown:
 	@for i in $(LIST2) ; do \
 		$(CHOWN) $(HTTPD_USER):$(HTTPD_GROUP) $(DESTDIR)$(localstatedir)/$${i} ; \
 	done ; \
-	LIST4="`(cd $(srcdir)/$(LIST3) ; ls -d * | $(GREP) -v sample)`" ; \
+	LIST4="`(cd $(srcdir)/$(LIST3) ; ls -d *)`" ; \
 	for i in $${LIST4} ; do \
 		$(CHOWN) -R $(HTTPD_USER):$(HTTPD_GROUP) $(DESTDIR)$(sysconfdir)/$${i} ; \
 	done
+	$(CHOWN) $(HTTPD_USER):$(HTTPD_GROUP) $(DESTDIR)$(sysconfdir)/config
 
 
 echo-chown:
@@ -103,11 +104,12 @@ echo-chown:
 		echo "$(CHOWN) $(HTTPD_USER):$(HTTPD_GROUP) $(DESTDIR)$(localstatedir)/$${i}" \
 			>> $(RAR) ; \
 	done ; \
-	LIST4="`(cd $(srcdir)/$(LIST3) ; ls -d * | $(GREP) -v sample)`" ; \
+	LIST4="`(cd $(srcdir)/$(LIST3) ; ls -d *)`" ; \
 	for i in $${LIST4} ; do \
 		echo "$(CHOWN) -R $(HTTPD_USER):$(HTTPD_GROUP) $(DESTDIR)$(sysconfdir)/$${i}" \
 			>> $(RAR) ; \
 	done ; \
+	echo $(CHOWN) $(HTTPD_USER):$(HTTPD_GROUP) $(DESTDIR)$(sysconfdir)/config
 	echo "Switch user to root and run $(RAR)"
 
 
