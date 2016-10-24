@@ -131,8 +131,11 @@ echo $_SESSION['header'];
 			if (!$cfgMain->isWritable()) {
 				StatusMessage('WARN', 'The config file is not writable.', 'Your changes cannot be saved until you make the file writable for the webserver user.');
 			}
-			if (!empty($_GET['invalidLicense'])) {
+			if (!empty($_GET['invalidLicense']) && ($_GET['invalidLicense'] == '1')) {
 				StatusMessage('WARN', _('Invalid licence'), _('Please setup your licence data.'));
+			}
+			if (!empty($_GET['invalidLicense']) && ($_GET['invalidLicense'] == '2')) {
+				StatusMessage('WARN', _('Expired licence'), _('Please setup your licence data.'));
 			}
 		?>
 		<br>
