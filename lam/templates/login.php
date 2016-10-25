@@ -44,8 +44,8 @@ include_once("../lib/selfService.inc");
 include_once("../lib/config.inc");
 if (isLAMProVersion()) {
 	include_once("../lib/env.inc");
-	$validator = new \LAM\ENV\LAMLicenseValidator();
-	$validator->validateAndRedirect('config/mainlogin.php?invalidLicense=1', 'config/mainlogin.php?invalidLicense=2');
+	$licenseValidator = new \LAM\ENV\LAMLicenseValidator();
+	$licenseValidator->validateAndRedirect('config/mainlogin.php?invalidLicense=1', 'config/mainlogin.php?invalidLicense=2');
 }
 
 /** Upgrade functions */
@@ -158,6 +158,7 @@ $_SESSION['header'] .= "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<me
 function display_LoginPage($config_object, $cfgMain) {
 	logNewMessage(LOG_DEBUG, "Display login page");
 	global $error_message;
+	global $licenseValidator;
 	// generate 256 bit key and initialization vector for user/passwd-encryption
 	// check if we can use /dev/urandom otherwise use rand()
 	if(function_exists('mcrypt_create_iv') && ($cfgMain->encryptSession == 'true')) {
@@ -230,6 +231,10 @@ function display_LoginPage($config_object, $cfgMain) {
 	}
 	// copy any missing default profiles
 	copyConfigTemplates($profiles);
+
+	if (isLAMProVersion() && $licenseValidator->isEvaluationLicense()) {
+		StatusMessage('INFO', _('Evaluation Licence'));
+	}
 
 	// set focus on password field
 	if (!empty($config_object)) {
