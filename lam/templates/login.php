@@ -509,6 +509,11 @@ function display_LoginPage($config_object, $cfgMain) {
 						if (!isLAMProVersion()) {
 							echo "<a href=\"http://www.ldap-account-manager.org/lamcms/lamPro\">" . _("Want more features? Get LAM Pro!") . "</a>";
 						}
+						elseif ($licenseValidator->isExpiringSoon()) {
+							echo '<b>';
+							echo sprintf(_('Your license expires on %s.'), $licenseValidator->getLicense()->getExpirationDate()->format('Y-m-d'));
+							echo '</b>';
+						}
 					?>
 				</td>
 				<TD align="right">
