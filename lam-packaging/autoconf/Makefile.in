@@ -24,7 +24,7 @@ datarootdir=@datarootdir@
 sysconfdir=@sysconfdir@
 localstatedir=@localstatedir@
 mandir=@mandir@
-htmldir=@prefix@/html
+docdir=@prefix@/docs
 web_root=@WEB_ROOT@
 
 srcdir=@srcdir@
@@ -40,7 +40,7 @@ DOCS = COPYING HISTORY README copyright docs/schema/dhcp.schema
 HTML_DOCS = devel manual
 
 LIST1 = graphics help index.html lib locale style templates VERSION
-LIST2 = sess tmp
+LIST2 = sess tmp tmp/internal
 LIST3 = config
 
 RAR = run-as-root.sh
@@ -79,12 +79,13 @@ install-lam:
 	$(PERL) -pi -e "s~/usr/bin/perl~$(PERL)~" \
 		$(DESTDIR)$(web_root)/lib/lamdaemon.pl ; \
 	cd $${HERE} ; \
-	echo "LAM files installed" ; \
 	if [ `$(ID) -u` = 0 ] ; then \
 		$(MAKE) DESTDIR=$(DESTDIR) do-chown ; \
 	else \
 		$(MAKE) DESTDIR=$(DESTDIR) echo-chown ; \
-	fi
+	fi ; \
+	echo "" ; \
+	echo "LAM installed in $(DESTDIR)$(prefix)"
 
 
 do-chown:
@@ -114,11 +115,12 @@ echo-chown:
 
 
 install-htdocs:
-	@[ -d $(DESTDIR)$(htmldir) ]  ||  \
-		$(MKDIR) -p $(DESTDIR)$(htmldir)  ||  exit 1 ; \
+	@[ -d $(DESTDIR)$(docdir) ]  ||  \
+		$(MKDIR) -p $(DESTDIR)$(docdir)  ||  exit 1 ; \
 	(cd $(srcdir)/docs ; $(TAR) cf - $(HTML_DOCS)) | \
-		(cd $(DESTDIR)$(htmldir) ; $(TAR) xf -) ; \
-	echo "HTML docs installed in $(htmldir)"
+		(cd $(DESTDIR)$(docdir) ; $(TAR) xf -) ; \
+	echo "Documentation installed in $(docdir)" ; \
+	echo ""
 
 
 clean:
