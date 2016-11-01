@@ -191,6 +191,11 @@ table.collapse {
 	border-collapse:collapse;
 }
 
+.tablepadding05 td,th {
+	padding: 0.5em;
+}
+
+
 .rightToLeftText {
 	text-align: right;
 }
