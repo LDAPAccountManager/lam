@@ -279,7 +279,7 @@ table.collapse {
 }
 
 .dryRunButton {
-	background-image: url(../graphics/dryRun.png) !important;
+	background-image: url(../graphics/info_small.png) !important;
 	background-position: 0px 0px !important;
 }
 
@@ -295,6 +295,12 @@ table.collapse {
 
 .testButton {
 	background-image: url(../graphics/tests.png) !important;
+	background-position: 0px 0px !important;
+}
+
+.infoButton {
+	background-image: url(../graphics/info_small.png) !important;
+	background-size: 16px 16px;
 	background-position: 0px 0px !important;
 }
 
