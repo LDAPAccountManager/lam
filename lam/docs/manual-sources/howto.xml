@@ -640,26 +640,32 @@ Have fun!
             <title>Manual copy</title>
 
             <para>Copy the files into the html-file scope of the web server.
-            For example /apache/htdocs.</para>
+            For example /apache/htdocs or /var/www/html.</para>
 
-            <para>Then set the appropriate file permissions:</para>
+            <para>Then set the appropriate file permissions inside the LAM
+            directory:</para>
 
             <itemizedlist>
               <listitem>
-                <para>lam/sess: write permission for apache/nginx user</para>
+                <para>sess: write permission for apache/nginx user</para>
               </listitem>
 
               <listitem>
-                <para>lam/tmp: write permission for apache/nginx user</para>
+                <para>tmp: write permission for apache/nginx user</para>
               </listitem>
 
               <listitem>
-                <para>lam/config (with subdirectories): write permission for
+                <para>tmp/internal: write permission for apache/nginx
+                user</para>
+              </listitem>
+
+              <listitem>
+                <para>config (with subdirectories): write permission for
                 apache/nginx user</para>
               </listitem>
 
               <listitem>
-                <para>lam/lib: lamdaemon.pl must be set executable</para>
+                <para>lib/lamdaemon.pl: set executable</para>
               </listitem>
             </itemizedlist>
           </section>
@@ -705,9 +711,8 @@ Have fun!
         <section>
           <title>Configuration files</title>
 
-          <para>Copy config/config.cfg.sample to config/config.cfg and
-          config/lam.conf.sample to config/lam.conf. Open the index.html in
-          your web browser:</para>
+          <para>Copy config/config.cfg.sample to config/config.cfg. Open the
+          index.html in your web browser:</para>
 
           <itemizedlist>
             <listitem>
@@ -722,10 +727,8 @@ Have fun!
             </listitem>
 
             <listitem>
-              <para>Select "Edit server profiles" to setup your server
-              profiles. There should be the lam profile which you just copied
-              from the sample file. The default password is "lam". Now change
-              the settings to fit for your environment.</para>
+              <para>Select "Edit server profiles" to setup a server
+              profile.</para>
             </listitem>
           </itemizedlist>
         </section>
