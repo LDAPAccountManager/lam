@@ -2313,6 +2313,16 @@ class LAMCfgMain {
 	}
 
 	/**
+	 * Tries to copy the config file from sample config.
+	 *
+	 * @return boolean copied
+	 */
+	public function installSampleConfig() {
+		$samplePath = dirname(dirname(__FILE__)) . '/config/config.cfg.sample';
+		return file_exists($samplePath) && copy($samplePath, $this->conffile);
+	}
+
+	/**
 	 * Returns the path to the SSL CA certificate file that overrides the system certificates.
 	 *
 	 * @return String path to certificate file or null if certificate is not overridden

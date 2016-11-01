@@ -103,7 +103,7 @@ $memLimit = ini_get('memory_limit');
 if (isset($memLimit) && ($memLimit != '') && (substr(strtoupper($memLimit), strlen($memLimit) - 1) == 'M')) {
 	if (intval(substr($memLimit, 0, strlen($memLimit) - 1)) < 128) {
 		$criticalErrors[] = array("ERROR", "Please increase the \"memory_limit\" parameter in your php.ini to at least \"128M\".",
-			"Your current memory limit is $memLimit.");	
+			"Your current memory limit is $memLimit.");
 	}
 }
 // check PCRE regex system
@@ -116,7 +116,7 @@ if (!extension_loaded('zip')) {
 }
 // check for main config
 $mainConfig = new LAMCfgMain();
-if (!$mainConfig->isConfigFileExisting()) {
+if (!$mainConfig->isConfigFileExisting() && !$mainConfig->installSampleConfig()) {
 	$criticalErrors[] = array("ERROR", "The main config file (config.cfg) does not exist.", "Please see the manual for installation instructions.");
 }
 // stop login if critical errors occured
