@@ -2070,7 +2070,6 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
               </imageobject>
             </mediaobject>
           </screenshot>
-        </section>
 
         <section>
           <title>PPolicy: Notify users about password expiration</title>
@@ -2665,6 +2664,22 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
               </tbody>
             </tgroup>
           </table>
+        </section>
+        </section>
+
+        <section>
+          <title>Job history</title>
+
+          <para>This will show the list of all executed job runs and their
+          result.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/jobs4.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
         </section>
       </section>
 
