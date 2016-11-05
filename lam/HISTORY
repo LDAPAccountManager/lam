@@ -1,3 +1,8 @@
+December 2016 5.6
+  - LAM Pro:
+   -> 389ds: new wildcards for custom scripts: $INFO.389lockingStatusChange$ and $INFO.389deactivationStatusChange$
+
+
 10.09.2016 5.5
   - Windows: allow to show effective members of a group
   - Lamdaemon: support SSH key authentication
