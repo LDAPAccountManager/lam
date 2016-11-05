@@ -2071,142 +2071,245 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
             </mediaobject>
           </screenshot>
 
-        <section>
-          <title>PPolicy: Notify users about password expiration</title>
+          <section>
+            <title>PPolicy: Notify users about password expiration</title>
 
-          <para>This will send your users an email reminder before their
-          password expires.</para>
+            <para>This will send your users an email reminder before their
+            password expires.</para>
 
-          <para>You need to activate the PPolicy module for users to be able
-          to add this job. The job can be added multiple times (e.g. to send a
-          second warning at a later time).</para>
+            <para>You need to activate the PPolicy module for users to be able
+            to add this job. The job can be added multiple times (e.g. to send
+            a second warning at a later time).</para>
 
-          <para>LAM calculates the expiration date based on the last password
-          change and the assigned password policy (or the default policy)
-          using attributes pwdMaxAge and pwdExpireWarning.</para>
+            <para>LAM calculates the expiration date based on the last
+            password change and the assigned password policy (or the default
+            policy) using attributes pwdMaxAge and pwdExpireWarning.</para>
 
-          <para>Examples:</para>
+            <para>Examples:</para>
 
-          <para>Warning time (pwdExpireWarning) = 14 days, notification period
-          = 10: LAM will send out the email 24 days before the password
-          expires</para>
+            <para>Warning time (pwdExpireWarning) = 14 days, notification
+            period = 10: LAM will send out the email 24 days before the
+            password expires</para>
 
-          <para>Warning time (pwdExpireWarning) = 14 days, notification period
-          = 0: LAM will send out the email 14 days before the password
-          expires</para>
+            <para>Warning time (pwdExpireWarning) = 14 days, notification
+            period = 0: LAM will send out the email 14 days before the
+            password expires</para>
 
-          <para>No warning time (pwdExpireWarning), notification period = 10:
-          LAM will send out the email 10 days before the password
-          expires</para>
+            <para>No warning time (pwdExpireWarning), notification period =
+            10: LAM will send out the email 10 days before the password
+            expires</para>
 
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/jobs_ppolicy1.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <mediaobject>
+                <imageobject>
+                  <imagedata fileref="images/jobs_ppolicy1.png" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
 
-          <table>
-            <title>Options</title>
+            <table>
+              <title>Options</title>
 
-            <tgroup cols="2">
-              <tbody>
-                <row>
-                  <entry><emphasis role="bold">Option</emphasis></entry>
+              <tgroup cols="2">
+                <tbody>
+                  <row>
+                    <entry><emphasis role="bold">Option</emphasis></entry>
 
-                  <entry><emphasis role="bold">Description</emphasis></entry>
-                </row>
+                    <entry><emphasis
+                    role="bold">Description</emphasis></entry>
+                  </row>
 
-                <row>
-                  <entry>From address</entry>
+                  <row>
+                    <entry>From address</entry>
 
-                  <entry>The email address to set as FROM.</entry>
-                </row>
+                    <entry>The email address to set as FROM.</entry>
+                  </row>
 
-                <row>
-                  <entry>Reply-to address</entry>
+                  <row>
+                    <entry>Reply-to address</entry>
 
-                  <entry>Optional Reply-to address for email.</entry>
-                </row>
+                    <entry>Optional Reply-to address for email.</entry>
+                  </row>
 
-                <row>
-                  <entry>CC address</entry>
+                  <row>
+                    <entry>CC address</entry>
 
-                  <entry>Optional CC mail address.</entry>
-                </row>
+                    <entry>Optional CC mail address.</entry>
+                  </row>
 
-                <row>
-                  <entry>BCC address</entry>
+                  <row>
+                    <entry>BCC address</entry>
 
-                  <entry>Optional BCC mail address.</entry>
-                </row>
+                    <entry>Optional BCC mail address.</entry>
+                  </row>
 
-                <row>
-                  <entry>Subject</entry>
+                  <row>
+                    <entry>Subject</entry>
 
-                  <entry>The email subject line. Supports wildcards, see
-                  below.</entry>
-                </row>
+                    <entry>The email subject line. Supports wildcards, see
+                    below.</entry>
+                  </row>
 
-                <row>
-                  <entry>Text</entry>
+                  <row>
+                    <entry>Text</entry>
 
-                  <entry>The email body text. Supports wildcards, see
-                  below.</entry>
-                </row>
+                    <entry>The email body text. Supports wildcards, see
+                    below.</entry>
+                  </row>
 
-                <row>
-                  <entry>Notification period</entry>
+                  <row>
+                    <entry>Notification period</entry>
 
-                  <entry>Number of days to notify before password
-                  expires.</entry>
-                </row>
+                    <entry>Number of days to notify before password
+                    expires.</entry>
+                  </row>
 
-                <row>
-                  <entry>Default password policy</entry>
+                  <row>
+                    <entry>Default password policy</entry>
 
-                  <entry>Default PPolicy password policy entry (object class
-                  "pwdPolicy").</entry>
-                </row>
-              </tbody>
-            </tgroup>
-          </table>
+                    <entry>Default PPolicy password policy entry (object class
+                    "pwdPolicy").</entry>
+                  </row>
+                </tbody>
+              </tgroup>
+            </table>
 
-          <para>Wildcards:</para>
+            <para>Wildcards:</para>
 
-          <para>You can enter LDAP attributes as wildcards in the form
-          @@ATTRIBUTE_NAME@@. E.g. to add the user's common name use "@@cn@@".
-          For the common name it would be "@@cn@@".</para>
+            <para>You can enter LDAP attributes as wildcards in the form
+            @@ATTRIBUTE_NAME@@. E.g. to add the user's common name use
+            "@@cn@@". For the common name it would be "@@cn@@".</para>
 
-          <para>There are also two special wildcards for the expiration date.
-          @@EXPIRE_DATE_DDMMYYYY@@ will print the date as e.g. "31.12.2016".
-          @@EXPIRE_DATE_YYYYMMDD@@ will print the date as e.g.
-          "2016-12-31".</para>
-        </section>
+            <para>There are also two special wildcards for the expiration
+            date. @@EXPIRE_DATE_DDMMYYYY@@ will print the date as e.g.
+            "31.12.2016". @@EXPIRE_DATE_YYYYMMDD@@ will print the date as e.g.
+            "2016-12-31".</para>
+          </section>
 
-        <section>
-          <title>389ds: Notify users about password expiration</title>
+          <section>
+            <title>389ds: Notify users about password expiration</title>
 
-          <para>This will send your users an email reminder before their
-          password expires.</para>
+            <para>This will send your users an email reminder before their
+            password expires.</para>
 
-          <para>You need to activate the Account Locking module for users to
-          be able to add this job. The job can be added multiple times (e.g.
-          to send a second warning at a later time).</para>
+            <para>You need to activate the Account Locking module for users to
+            be able to add this job. The job can be added multiple times (e.g.
+            to send a second warning at a later time).</para>
 
-          <para>LAM calculates the expiration date based on the attribute
-          passwordExpirationTime.</para>
+            <para>LAM calculates the expiration date based on the attribute
+            passwordExpirationTime.</para>
 
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/jobs_389dsPasswordMail1.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <mediaobject>
+                <imageobject>
+                  <imagedata fileref="images/jobs_389dsPasswordMail1.png" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
 
-          <para><table>
+            <para><table>
+                <title>Options</title>
+
+                <tgroup cols="2">
+                  <tbody>
+                    <row>
+                      <entry><emphasis role="bold">Option</emphasis></entry>
+
+                      <entry><emphasis
+                      role="bold">Description</emphasis></entry>
+                    </row>
+
+                    <row>
+                      <entry>From address</entry>
+
+                      <entry>The email address to set as FROM.</entry>
+                    </row>
+
+                    <row>
+                      <entry>Reply-to address</entry>
+
+                      <entry>Optional Reply-to address for email.</entry>
+                    </row>
+
+                    <row>
+                      <entry>CC address</entry>
+
+                      <entry>Optional CC mail address.</entry>
+                    </row>
+
+                    <row>
+                      <entry>BCC address</entry>
+
+                      <entry>Optional BCC mail address.</entry>
+                    </row>
+
+                    <row>
+                      <entry>Subject</entry>
+
+                      <entry>The email subject line. Supports wildcards, see
+                      below.</entry>
+                    </row>
+
+                    <row>
+                      <entry>Text</entry>
+
+                      <entry>The email body text. Supports wildcards, see
+                      below.</entry>
+                    </row>
+
+                    <row>
+                      <entry>Notification period</entry>
+
+                      <entry>Number of days to notify before password
+                      expires.</entry>
+                    </row>
+                  </tbody>
+                </tgroup>
+              </table></para>
+
+            <para>Wildcards:</para>
+
+            <para>You can enter LDAP attributes as wildcards in the form
+            @@ATTRIBUTE_NAME@@. E.g. to add the user's common name use
+            "@@cn@@". For the common name it would be "@@cn@@".</para>
+
+            <para>There are also two special wildcards for the expiration
+            date. @@EXPIRE_DATE_DDMMYYYY@@ will print the date as e.g.
+            "31.12.2016". @@EXPIRE_DATE_YYYYMMDD@@ will print the date as e.g.
+            "2016-12-31".</para>
+          </section>
+
+          <section>
+            <title>Shadow: Notify users about password expiration</title>
+
+            <para>This will send your users an email reminder before their
+            password expires.</para>
+
+            <para>You need to activate the Shadow module for users to be able
+            to add this job. The job can be added multiple times (e.g. to send
+            a second warning at a later time).</para>
+
+            <para>LAM calculates the expiration date based on the last
+            password change, the password warning time (attribute
+            "shadowWarning") and the specified notification period.</para>
+
+            <para>Examples:</para>
+
+            <para>Warning time = 14, notification period = 10: LAM will send
+            out the email 24 days before the password expires</para>
+
+            <para>Warning time = 14, notification period = 0: LAM will send
+            out the email 14 days before the password expires</para>
+
+            <screenshot>
+              <mediaobject>
+                <imageobject>
+                  <imagedata fileref="images/jobs_shadow1.png" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+
+            <table>
               <title>Options</title>
 
               <tgroup cols="2">
@@ -2264,407 +2367,313 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
                   </row>
                 </tbody>
               </tgroup>
-            </table></para>
+            </table>
+
+            <para>Wildcards:</para>
+
+            <para>You can enter LDAP attributes as wildcards in the form
+            @@ATTRIBUTE_NAME@@. E.g. to add the user's common name use
+            "@@cn@@". For the common name it would be "@@cn@@".</para>
 
-          <para>Wildcards:</para>
+            <para>There are also two special wildcards for the expiration
+            date. @@EXPIRE_DATE_DDMMYYYY@@ will print the date as e.g.
+            "31.12.2016". @@EXPIRE_DATE_YYYYMMDD@@ will print the date as e.g.
+            "2016-12-31".</para>
+          </section>
 
-          <para>You can enter LDAP attributes as wildcards in the form
-          @@ATTRIBUTE_NAME@@. E.g. to add the user's common name use "@@cn@@".
-          For the common name it would be "@@cn@@".</para>
+          <section>
+            <title>Shadow: Delete or move expired accounts</title>
 
-          <para>There are also two special wildcards for the expiration date.
-          @@EXPIRE_DATE_DDMMYYYY@@ will print the date as e.g. "31.12.2016".
-          @@EXPIRE_DATE_YYYYMMDD@@ will print the date as e.g.
-          "2016-12-31".</para>
-        </section>
+            <para>You can automatically delete or move expired accounts. The
+            job checks Shadow account expiration dates (not password
+            expiration dates).</para>
 
-        <section>
-          <title>Shadow: Notify users about password expiration</title>
+            <screenshot>
+              <mediaobject>
+                <imageobject>
+                  <imagedata fileref="images/jobs_shadow2.png" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
 
-          <para>This will send your users an email reminder before their
-          password expires.</para>
+            <table>
+              <title>Options</title>
 
-          <para>You need to activate the Shadow module for users to be able to
-          add this job. The job can be added multiple times (e.g. to send a
-          second warning at a later time).</para>
+              <tgroup cols="2">
+                <tbody>
+                  <row>
+                    <entry><emphasis role="bold">Option</emphasis></entry>
 
-          <para>LAM calculates the expiration date based on the last password
-          change, the password warning time (attribute "shadowWarning") and
-          the specified notification period.</para>
+                    <entry><emphasis
+                    role="bold">Description</emphasis></entry>
+                  </row>
 
-          <para>Examples:</para>
+                  <row>
+                    <entry>Delay</entry>
 
-          <para>Warning time = 14, notification period = 10: LAM will send out
-          the email 24 days before the password expires</para>
+                    <entry>Number of days to wait after the account is
+                    expired.</entry>
+                  </row>
 
-          <para>Warning time = 14, notification period = 0: LAM will send out
-          the email 14 days before the password expires</para>
+                  <row>
+                    <entry>Action</entry>
 
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/jobs_shadow1.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+                    <entry>Delete or move accounts</entry>
+                  </row>
 
-          <table>
-            <title>Options</title>
+                  <row>
+                    <entry>Target DN</entry>
 
-            <tgroup cols="2">
-              <tbody>
-                <row>
-                  <entry><emphasis role="bold">Option</emphasis></entry>
+                    <entry>Move only: specifies the DN where accounts are
+                    moved</entry>
+                  </row>
+                </tbody>
+              </tgroup>
+            </table>
+          </section>
 
-                  <entry><emphasis role="bold">Description</emphasis></entry>
-                </row>
+          <section>
+            <title>Windows: Notify users about password expiration</title>
 
-                <row>
-                  <entry>From address</entry>
+            <para>This will send your users an email reminder before their
+            password expires.</para>
 
-                  <entry>The email address to set as FROM.</entry>
-                </row>
+            <para>You need to activate the Windows module for users to be able
+            to add this job. The job can be added multiple times (e.g. to send
+            a second warning at a later time).</para>
 
-                <row>
-                  <entry>Reply-to address</entry>
+            <para>LAM calculates the expiration date based on the last
+            password change and the domain policy.</para>
 
-                  <entry>Optional Reply-to address for email.</entry>
-                </row>
+            <screenshot>
+              <mediaobject>
+                <imageobject>
+                  <imagedata fileref="images/jobs_windows1.png" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
 
-                <row>
-                  <entry>CC address</entry>
+            <table>
+              <title>Options</title>
 
-                  <entry>Optional CC mail address.</entry>
-                </row>
+              <tgroup cols="2">
+                <tbody>
+                  <row>
+                    <entry><emphasis role="bold">Option</emphasis></entry>
 
-                <row>
-                  <entry>BCC address</entry>
+                    <entry><emphasis
+                    role="bold">Description</emphasis></entry>
+                  </row>
 
-                  <entry>Optional BCC mail address.</entry>
-                </row>
+                  <row>
+                    <entry>From address</entry>
 
-                <row>
-                  <entry>Subject</entry>
+                    <entry>The email address to set as FROM.</entry>
+                  </row>
 
-                  <entry>The email subject line. Supports wildcards, see
-                  below.</entry>
-                </row>
+                  <row>
+                    <entry>Reply-to address</entry>
 
-                <row>
-                  <entry>Text</entry>
+                    <entry>Optional Reply-to address for email.</entry>
+                  </row>
 
-                  <entry>The email body text. Supports wildcards, see
-                  below.</entry>
-                </row>
+                  <row>
+                    <entry>CC address</entry>
 
-                <row>
-                  <entry>Notification period</entry>
+                    <entry>Optional CC mail address.</entry>
+                  </row>
 
-                  <entry>Number of days to notify before password
-                  expires.</entry>
-                </row>
-              </tbody>
-            </tgroup>
-          </table>
-
-          <para>Wildcards:</para>
+                  <row>
+                    <entry>BCC address</entry>
 
-          <para>You can enter LDAP attributes as wildcards in the form
-          @@ATTRIBUTE_NAME@@. E.g. to add the user's common name use "@@cn@@".
-          For the common name it would be "@@cn@@".</para>
+                    <entry>Optional BCC mail address.</entry>
+                  </row>
 
-          <para>There are also two special wildcards for the expiration date.
-          @@EXPIRE_DATE_DDMMYYYY@@ will print the date as e.g. "31.12.2016".
-          @@EXPIRE_DATE_YYYYMMDD@@ will print the date as e.g.
-          "2016-12-31".</para>
-        </section>
+                  <row>
+                    <entry>Subject</entry>
 
-        <section>
-          <title>Shadow: Delete or move expired accounts</title>
+                    <entry>The email subject line. Supports wildcards, see
+                    below.</entry>
+                  </row>
 
-          <para>You can automatically delete or move expired accounts. The job
-          checks Shadow account expiration dates (not password expiration
-          dates).</para>
+                  <row>
+                    <entry>Text</entry>
 
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/jobs_shadow2.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+                    <entry>The email body text. Supports wildcards, see
+                    below.</entry>
+                  </row>
 
-          <table>
-            <title>Options</title>
+                  <row>
+                    <entry>Notification period</entry>
 
-            <tgroup cols="2">
-              <tbody>
-                <row>
-                  <entry><emphasis role="bold">Option</emphasis></entry>
+                    <entry>Number of days to notify before password
+                    expires.</entry>
+                  </row>
+                </tbody>
+              </tgroup>
+            </table>
 
-                  <entry><emphasis role="bold">Description</emphasis></entry>
-                </row>
+            <para>Wildcards:</para>
 
-                <row>
-                  <entry>Delay</entry>
+            <para>You can enter LDAP attributes as wildcards in the form
+            @@ATTRIBUTE_NAME@@. E.g. to add the user's common name use
+            "@@cn@@". For the common name it would be "@@cn@@".</para>
 
-                  <entry>Number of days to wait after the account is
-                  expired.</entry>
-                </row>
+            <para>There are also two special wildcards for the expiration
+            date. @@EXPIRE_DATE_DDMMYYYY@@ will print the date as e.g.
+            "31.12.2016". @@EXPIRE_DATE_YYYYMMDD@@ will print the date as e.g.
+            "2016-12-31".</para>
+          </section>
 
-                <row>
-                  <entry>Action</entry>
+          <section>
+            <title>Windows: Delete or move expired accounts</title>
 
-                  <entry>Delete or move accounts</entry>
-                </row>
+            <para>You can automatically delete or move expired
+            accounts.</para>
 
-                <row>
-                  <entry>Target DN</entry>
+            <screenshot>
+              <mediaobject>
+                <imageobject>
+                  <imagedata fileref="images/jobs_windowsCleanup.png" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
 
-                  <entry>Move only: specifies the DN where accounts are
-                  moved</entry>
-                </row>
-              </tbody>
-            </tgroup>
-          </table>
-        </section>
+            <table>
+              <title>Options</title>
 
-        <section>
-          <title>Windows: Notify users about password expiration</title>
+              <tgroup cols="2">
+                <tbody>
+                  <row>
+                    <entry><emphasis role="bold">Option</emphasis></entry>
 
-          <para>This will send your users an email reminder before their
-          password expires.</para>
+                    <entry><emphasis
+                    role="bold">Description</emphasis></entry>
+                  </row>
 
-          <para>You need to activate the Windows module for users to be able
-          to add this job. The job can be added multiple times (e.g. to send a
-          second warning at a later time).</para>
+                  <row>
+                    <entry>Delay</entry>
 
-          <para>LAM calculates the expiration date based on the last password
-          change and the domain policy.</para>
+                    <entry>Number of days to wait after the account is
+                    expired.</entry>
+                  </row>
 
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/jobs_windows1.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+                  <row>
+                    <entry>Action</entry>
 
-          <table>
-            <title>Options</title>
+                    <entry>Delete or move accounts</entry>
+                  </row>
 
-            <tgroup cols="2">
-              <tbody>
-                <row>
-                  <entry><emphasis role="bold">Option</emphasis></entry>
+                  <row>
+                    <entry>Target DN</entry>
 
-                  <entry><emphasis role="bold">Description</emphasis></entry>
-                </row>
+                    <entry>Move only: specifies the DN where accounts are
+                    moved</entry>
+                  </row>
+                </tbody>
+              </tgroup>
+            </table>
+          </section>
 
-                <row>
-                  <entry>From address</entry>
+          <section>
+            <title>FreeRadius: Delete or move expired accounts</title>
 
-                  <entry>The email address to set as FROM.</entry>
-                </row>
+            <para>You can automatically delete or move expired
+            accounts.</para>
 
-                <row>
-                  <entry>Reply-to address</entry>
+            <screenshot>
+              <mediaobject>
+                <imageobject>
+                  <imagedata fileref="images/jobs_freeRadiusCleanup.png" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
 
-                  <entry>Optional Reply-to address for email.</entry>
-                </row>
+            <table>
+              <title>Options</title>
 
-                <row>
-                  <entry>CC address</entry>
+              <tgroup cols="2">
+                <tbody>
+                  <row>
+                    <entry><emphasis role="bold">Option</emphasis></entry>
 
-                  <entry>Optional CC mail address.</entry>
-                </row>
+                    <entry><emphasis
+                    role="bold">Description</emphasis></entry>
+                  </row>
 
-                <row>
-                  <entry>BCC address</entry>
+                  <row>
+                    <entry>Delay</entry>
 
-                  <entry>Optional BCC mail address.</entry>
-                </row>
+                    <entry>Number of days to wait after the account is
+                    expired.</entry>
+                  </row>
 
-                <row>
-                  <entry>Subject</entry>
+                  <row>
+                    <entry>Action</entry>
 
-                  <entry>The email subject line. Supports wildcards, see
-                  below.</entry>
-                </row>
+                    <entry>Delete or move accounts</entry>
+                  </row>
 
-                <row>
-                  <entry>Text</entry>
+                  <row>
+                    <entry>Target DN</entry>
 
-                  <entry>The email body text. Supports wildcards, see
-                  below.</entry>
-                </row>
+                    <entry>Move only: specifies the DN where accounts are
+                    moved</entry>
+                  </row>
+                </tbody>
+              </tgroup>
+            </table>
+          </section>
 
-                <row>
-                  <entry>Notification period</entry>
+          <section>
+            <title>Qmail: Delete or move expired accounts</title>
 
-                  <entry>Number of days to notify before password
-                  expires.</entry>
-                </row>
-              </tbody>
-            </tgroup>
-          </table>
+            <para>You can automatically delete or move expired accounts. The
+            job reads the qmail deletion date of user accounts.</para>
 
-          <para>Wildcards:</para>
+            <screenshot>
+              <mediaobject>
+                <imageobject>
+                  <imagedata fileref="images/jobs_qmailCleanup1.png" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
 
-          <para>You can enter LDAP attributes as wildcards in the form
-          @@ATTRIBUTE_NAME@@. E.g. to add the user's common name use "@@cn@@".
-          For the common name it would be "@@cn@@".</para>
+            <table>
+              <title>Options</title>
 
-          <para>There are also two special wildcards for the expiration date.
-          @@EXPIRE_DATE_DDMMYYYY@@ will print the date as e.g. "31.12.2016".
-          @@EXPIRE_DATE_YYYYMMDD@@ will print the date as e.g.
-          "2016-12-31".</para>
-        </section>
+              <tgroup cols="2">
+                <tbody>
+                  <row>
+                    <entry><emphasis role="bold">Option</emphasis></entry>
 
-        <section>
-          <title>Windows: Delete or move expired accounts</title>
+                    <entry><emphasis
+                    role="bold">Description</emphasis></entry>
+                  </row>
 
-          <para>You can automatically delete or move expired accounts.</para>
+                  <row>
+                    <entry>Delay</entry>
 
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/jobs_windowsCleanup.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+                    <entry>Number of days to wait after the account is
+                    expired.</entry>
+                  </row>
 
-          <table>
-            <title>Options</title>
+                  <row>
+                    <entry>Action</entry>
 
-            <tgroup cols="2">
-              <tbody>
-                <row>
-                  <entry><emphasis role="bold">Option</emphasis></entry>
+                    <entry>Delete or move accounts</entry>
+                  </row>
 
-                  <entry><emphasis role="bold">Description</emphasis></entry>
-                </row>
+                  <row>
+                    <entry>Target DN</entry>
 
-                <row>
-                  <entry>Delay</entry>
-
-                  <entry>Number of days to wait after the account is
-                  expired.</entry>
-                </row>
-
-                <row>
-                  <entry>Action</entry>
-
-                  <entry>Delete or move accounts</entry>
-                </row>
-
-                <row>
-                  <entry>Target DN</entry>
-
-                  <entry>Move only: specifies the DN where accounts are
-                  moved</entry>
-                </row>
-              </tbody>
-            </tgroup>
-          </table>
-        </section>
-
-        <section>
-          <title>FreeRadius: Delete or move expired accounts</title>
-
-          <para>You can automatically delete or move expired accounts.</para>
-
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/jobs_freeRadiusCleanup.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
-
-          <table>
-            <title>Options</title>
-
-            <tgroup cols="2">
-              <tbody>
-                <row>
-                  <entry><emphasis role="bold">Option</emphasis></entry>
-
-                  <entry><emphasis role="bold">Description</emphasis></entry>
-                </row>
-
-                <row>
-                  <entry>Delay</entry>
-
-                  <entry>Number of days to wait after the account is
-                  expired.</entry>
-                </row>
-
-                <row>
-                  <entry>Action</entry>
-
-                  <entry>Delete or move accounts</entry>
-                </row>
-
-                <row>
-                  <entry>Target DN</entry>
-
-                  <entry>Move only: specifies the DN where accounts are
-                  moved</entry>
-                </row>
-              </tbody>
-            </tgroup>
-          </table>
-        </section>
-
-        <section>
-          <title>Qmail: Delete or move expired accounts</title>
-
-          <para>You can automatically delete or move expired accounts. The job
-          reads the qmail deletion date of user accounts.</para>
-
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/jobs_qmailCleanup1.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
-
-          <table>
-            <title>Options</title>
-
-            <tgroup cols="2">
-              <tbody>
-                <row>
-                  <entry><emphasis role="bold">Option</emphasis></entry>
-
-                  <entry><emphasis role="bold">Description</emphasis></entry>
-                </row>
-
-                <row>
-                  <entry>Delay</entry>
-
-                  <entry>Number of days to wait after the account is
-                  expired.</entry>
-                </row>
-
-                <row>
-                  <entry>Action</entry>
-
-                  <entry>Delete or move accounts</entry>
-                </row>
-
-                <row>
-                  <entry>Target DN</entry>
-
-                  <entry>Move only: specifies the DN where accounts are
-                  moved</entry>
-                </row>
-              </tbody>
-            </tgroup>
-          </table>
-        </section>
+                    <entry>Move only: specifies the DN where accounts are
+                    moved</entry>
+                  </row>
+                </tbody>
+              </tgroup>
+            </table>
+          </section>
         </section>
 
         <section>
@@ -7349,6 +7358,20 @@ OK (10 msec)</programlisting>
           <para><emphasis
           role="bold">$INFO.passwordSelfResetAnswerClearText$</emphasis>:
           cleartext answer to security question</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis
+          role="bold">$INFO.389lockingStatusChange$:</emphasis> for 389ds
+          account locking, provides information if account was unlocked.
+          Possible values: unchanged, unlocked</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis
+          role="bold">$INFO.389deactivationStatusChange$:</emphasis> for 389ds
+          account locking, provides information if account was deactivated.
+          Possible values: unchanged, activated, deactivated</para>
         </listitem>
 
         <listitem>
