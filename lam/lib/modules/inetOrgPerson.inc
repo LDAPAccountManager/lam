@@ -977,6 +977,19 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if ($this->clearTextPassword != null) {
 			$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordClearText'][0] = $this->clearTextPassword;
 		}
+		// password status change
+		if (!$this->isUnixActive()) {
+			if ((pwd_is_enabled($this->orig['userPassword'][0]) && pwd_is_enabled($this->attributes['userPassword'][0]))
+				|| (!pwd_is_enabled($this->orig['userPassword'][0]) && !pwd_is_enabled($this->attributes['userPassword'][0]))) {
+				$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordStatusChange'][0] = 'unchanged';
+			}
+			elseif (pwd_is_enabled($this->orig['userPassword'][0])) {
+				$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordStatusChange'][0] = 'locked';
+			}
+			else {
+				$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordStatusChange'][0] = 'unlocked';
+			}
+		}
 		return $return;
 	}
 

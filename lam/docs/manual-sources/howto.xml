@@ -7350,8 +7350,8 @@ OK (10 msec)</programlisting>
         <listitem>
           <para><emphasis
           role="bold">$INFO.userPasswordStatusChange$:</emphasis> provides
-          additional information if the Unix password locking status was
-          changed, possible values: locked, unlocked, unchanged</para>
+          additional information if the Personal/Unix password locking status
+          was changed, possible values: locked, unlocked, unchanged</para>
         </listitem>
 
         <listitem>
