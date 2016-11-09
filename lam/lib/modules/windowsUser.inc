@@ -109,7 +109,8 @@ class windowsUser extends baseModule implements passwordService {
 			'streetAddress', 'telephoneNumber', 'url', 'wWWHomePage', 'userAccountControl', 'profilePath', 'scriptPath',
 			'pwdLastSet', 'otherMailbox', 'homeDirectory', 'homeDrive', 'msSFU30Name', 'msSFU30NisDomain', 'pwdLastSet',
 			'lastLogonTimestamp', 'accountExpires', 'jpegPhoto', 'title', 'carLicense', 'employeeNumber', 'employeeType',
-			'businessCategory', 'departmentNumber', 'ou', 'o', 'manager', 'facsimileTelephoneNumber'
+			'businessCategory', 'departmentNumber', 'ou', 'o', 'manager', 'facsimileTelephoneNumber', 'company',
+			'pager', 'otherPager', 'mobile', 'otherMobile'
 		);
 		// help Entries
 		$return['help'] = array(
@@ -351,6 +352,34 @@ class windowsUser extends baseModule implements passwordService {
 				"Headline" => _("Manager"), 'attr' => 'manager',
 				"Text" => _("This is the LDAP DN of the user's manager. Use this property to represent hierarchies in your company.")
 			),
+			'company' => array (
+				"Headline" => _('Company'), 'attr' => 'company',
+				"Text" => _('Please enter the company name.')
+			),
+			'pager' => array (
+				"Headline" => _('Pager'), 'attr' => 'pager',
+				"Text" => _('The user\'s pager number.')
+			),
+			'otherPager' => array (
+				"Headline" => _('Other pagers'), 'attr' => 'otherPager',
+				"Text" => _('Any secondary pager numbers.')
+			),
+			'otherPagerUpload' => array (
+				"Headline" => _('Other pagers'), 'attr' => 'otherPager',
+				"Text" => _('Any secondary pager numbers.') . ' ' . _('Multiple values are separated by semicolon.')
+			),
+			'mobile' => array (
+				"Headline" => _('Mobile'), 'attr' => 'mobile',
+				"Text" => _('The user\'s mobile number.')
+			),
+			'otherMobile' => array (
+				"Headline" => _('Other mobiles'), 'attr' => 'otherMobile',
+				"Text" => _('Any secondary mobile numbers.')
+			),
+			'otherMobileUpload' => array (
+				"Headline" => _('Other mobiles'), 'attr' => 'otherMobile',
+				"Text" => _('Any secondary mobile numbers.') . ' ' . _('Multiple values are separated by semicolon.')
+			),
 			'crop' => array(
 				"Headline" => _('Image cropping'),
 				"Text" => _('Uploaded images will be cropped to these maximum values.')
@@ -560,6 +589,47 @@ class windowsUser extends baseModule implements passwordService {
 				'example' => _('123-123-1236')
 			);
 		}
+
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepager', true)) {
+			$return['upload_columns'][] = array(
+					'name' => 'windowsUser_pager',
+					'description' => _('Pager'),
+					'help' => 'pager',
+					'example' => _('123-123-1236')
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherPager', true)) {
+			$return['upload_columns'][] = array(
+					'name' => 'windowsUser_otherPager',
+					'description' => _('Other pagers'),
+					'help' => 'otherPagerUpload',
+					'example' => _('123-123-1236')
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemobile', true)) {
+			$return['upload_columns'][] = array(
+					'name' => 'windowsUser_mobile',
+					'description' => _('Mobile'),
+					'help' => 'mobile',
+					'example' => _('123-123-1235')
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherMobile', true)) {
+			$return['upload_columns'][] = array(
+					'name' => 'windowsUser_otherMobile',
+					'description' => _('Other mobiles'),
+					'help' => 'otherMobileUpload',
+					'example' => _('123-123-1235')
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidecompany', true)) {
+			$return['upload_columns'][] = array(
+					'name' => 'windowsUser_company',
+					'description' => _('Company'),
+					'help' => 'company',
+			);
+		}
+
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidesAMAccountName', true)) {
 			$return['upload_columns'][] = array(
 				'name' => 'windowsUser_sAMAccountName',
@@ -670,6 +740,9 @@ class windowsUser extends baseModule implements passwordService {
 			$profileContainer->addElement(new htmlTableExtendedInputField(_('NIS domain'), 'windowsUser_msSFU30NisDomain', null, 'msSFU30NisDomain'), true);
 		}
 		$profileContainer->addElement(new htmlTableExtendedInputField(_('Account expiration'), 'windowsUser_accountExpires', null, 'accountExpiresProfile'), true);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidecompany', true)) {
+			$profileContainer->addElement(new htmlTableExtendedInputField(_('Company'), 'windowsUser_company', null, 'company'), true);
+		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
 			$profileContainer->addElement(new htmlTableExtendedInputField(_('Department'), 'windowsUser_departmentNumber', null, 'departmentNumberList'), true);
 		}
@@ -697,6 +770,7 @@ class windowsUser extends baseModule implements passwordService {
 			'windowsUser_scriptPath' => 'scriptPath',
 			'windowsUser_profilePath' => 'profilePath',
 			'windowsUser_homeDirectory' => 'homeDirectory',
+			'windowsUser_company' => 'company',
 		);
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
 			$return['profile_mappings']['windowsUser_msSFU30NisDomain'] = 'msSFU30NisDomain';
@@ -805,6 +879,21 @@ class windowsUser extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemanager', true)) {
 			$return['PDF_fields']['manager'] = _('Manager');
 		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidecompany', true)) {
+			$return['PDF_fields']['company'] = _('Company');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepager', true)) {
+			$return['PDF_fields']['pager'] = _('Pager');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherPager', true)) {
+			$return['PDF_fields']['otherPager'] = _('Other pagers');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemobile', true)) {
+			$return['PDF_fields']['mobile'] = _('Mobile');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherMobile', true)) {
+			$return['PDF_fields']['otherMobile'] = _('Other mobiles');
+		}
 		// self service search attributes
 		$return['selfServiceSearchAttributes'] = array('sAMAccountName', 'userPrincipalName',
 				'employeeNumber'
@@ -864,6 +953,14 @@ class windowsUser extends baseModule implements passwordService {
 		$this->messages['facsimileTelephoneNumber'][1] = array('ERROR', _('Account %s:') . ' windowsUser_facsimileTelephoneNumber', _('Please enter a valid fax number!'));
 		$this->messages['otherTelephone'][0] = array('ERROR', _('Other telephone numbers'), _('Please enter a valid telephone number!'));
 		$this->messages['otherTelephone'][1] = array('ERROR', _('Account %s:') . ' windowsUser_otherTelephone', _('Please enter a valid telephone number!'));
+		$this->messages['pager'][0] = array('ERROR', _('Pager'), _('Please enter a valid telephone number!'));
+		$this->messages['pager'][1] = array('ERROR', _('Account %s:') . ' windowsUser_pager', _('Please enter a valid telephone number!'));
+		$this->messages['otherPager'][0] = array('ERROR', _('Other pagers'), _('Please enter a valid telephone number!'));
+		$this->messages['otherPager'][1] = array('ERROR', _('Account %s:') . ' windowsUser_otherPager', _('Please enter a valid telephone number!'));
+		$this->messages['mobile'][0] = array('ERROR', _('Mobile'), _('Please enter a valid telephone number!'));
+		$this->messages['mobile'][1] = array('ERROR', _('Account %s:') . ' windowsUser_mobile', _('Please enter a valid telephone number!'));
+		$this->messages['otherMobile'][0] = array('ERROR', _('Other mobiles'), _('Please enter a valid telephone number!'));
+		$this->messages['otherMobile'][1] = array('ERROR', _('Account %s:') . ' windowsUser_otherMobile', _('Please enter a valid telephone number!'));
 		$this->messages['postalCode'][0] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
 		$this->messages['postalCode'][1] = array('ERROR', _('Account %s:') . ' windowsUser_postalCode', _('Please enter a valid postal code!'));
 		$this->messages['mail'][0] = array('ERROR', _('Email address'), _('Please enter a valid email address!'));
@@ -993,6 +1090,18 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addMultiValueInputTextField($containerLeft, 'otherMailbox', _('Email alias'));
 		$this->addSimpleInputTextField($containerLeft, 'telephoneNumber', _('Telephone number'));
 		$this->addMultiValueInputTextField($containerLeft, 'otherTelephone', _('Other telephone numbers'));
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemobile', true)) {
+			$this->addSimpleInputTextField($containerLeft, 'mobile', _('Mobile'));
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherMobile', true)) {
+			$this->addMultiValueInputTextField($containerLeft, 'otherMobile', _('Other mobiles'));
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepager', true)) {
+			$this->addSimpleInputTextField($containerLeft, 'pager', _('Pager'));
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherPager', true)) {
+			$this->addMultiValueInputTextField($containerLeft, 'otherPager', _('Other pagers'));
+		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidefacsimileTelephoneNumber')) {
 			$this->addSimpleInputTextField($containerLeft, 'facsimileTelephoneNumber', _('Fax number'));
 		}
@@ -1015,6 +1124,9 @@ class windowsUser extends baseModule implements passwordService {
 			}
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)) {
 				$this->addMultiValueInputTextField($containerLeft, 'businessCategory', _('Business category'), false, null, false, array_slice($this->businessCategoryCache, 0, 300));
+			}
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidecompany', true)) {
+				$this->addSimpleInputTextField($containerLeft, 'company', _('Company'));
 			}
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
 				$this->addMultiValueInputTextField($containerLeft, 'departmentNumber', _('Department'), false, null, false, array_slice($this->departmentCache, 0, 300));
@@ -1182,6 +1294,7 @@ class windowsUser extends baseModule implements passwordService {
 				&& $this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)
 				&& $this->isBooleanConfigOptionSet('windowsUser_hideou', true)
 				&& $this->isBooleanConfigOptionSet('windowsUser_hideo', true)
+				&& $this->isBooleanConfigOptionSet('windowsUser_hidecompany', true)
 				&& $this->isBooleanConfigOptionSet('windowsUser_hidemanager', true);
 		return !$allHidden;
 	}
@@ -1433,6 +1546,32 @@ class windowsUser extends baseModule implements passwordService {
 		// organisation
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideo', true)) {
 			$this->processMultiValueInputTextField('o', $return);
+		}
+		// Company
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidecompany', true)) {
+			$this->attributes['company'][0] = $_POST['company'];
+		}
+		// Mobile
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemobile', true)) {
+			$this->attributes['mobile'][0] = $_POST['mobile'];
+			if (!get_preg($_POST['mobile'], 'telephone')) {
+				$return[] = $this->messages['mobile'][0];
+			}
+		}
+		// Other mobiles
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherMobile', true)) {
+			$this->processMultiValueInputTextField('otherMobile', $return, 'telephone');
+		}
+		// Pager
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepager', true)) {
+			$this->attributes['pager'][0] = $_POST['pager'];
+			if (!get_preg($_POST['pager'], 'telephone')) {
+				$return[] = $this->messages['pager'][0];
+			}
+		}
+		// Other pagers
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherPager', true)) {
+			$this->processMultiValueInputTextField('otherPager', $return, 'telephone');
 		}
 		return $return;
 	}
@@ -2170,6 +2309,30 @@ class windowsUser extends baseModule implements passwordService {
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidemanager', true)) {
 				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_manager', 'manager', 'dn', $this->messages['manager'][0], $errors);
 			}
+			// company
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidecompany', true)) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_company', 'company');
+			}
+			// mobile
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidemobile', true)) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_mobile', 'mobile',
+						'telephone', $this->messages['mobile'][1], $errors);
+			}
+			// other mobile
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherMobile', true)) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_otherMobile', 'otherMobile',
+						'telephone', $this->messages['otherMobile'][1], $errors, '/;[ ]*/');
+			}
+			// pager
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidepager', true)) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_pager', 'pager',
+						'telephone', $this->messages['pager'][1], $errors);
+			}
+			// other pager
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherPager', true)) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_otherPager', 'otherPager',
+						'telephone', $this->messages['otherPager'][1], $errors, '/;[ ]*/');
+			}
 		}
 		return $errors;
 	}
@@ -2316,6 +2479,11 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addSimplePDFField($return, 'streetAddress', _('Street'));
 		$this->addSimplePDFField($return, 'telephoneNumber', _('Telephone number'));
 		$this->addSimplePDFField($return, 'facsimileTelephoneNumber', _('Fax number'));
+		$this->addSimplePDFField($return, 'company', _('Company'));
+		$this->addSimplePDFField($return, 'pager', _('Pager'));
+		$this->addSimplePDFField($return, 'otherPager', _('Other pagers'));
+		$this->addSimplePDFField($return, 'mobile', _('Mobile'));
+		$this->addSimplePDFField($return, 'otherMobile', _('Other mobiles'));
 		$this->addSimplePDFField($return, 'url', _('Other web sites'));
 		$this->addSimplePDFField($return, 'wWWHomePage', _('Web site'));
 		$this->addSimplePDFField($return, 'msSFU30Name', _('NIS name'));
@@ -2481,7 +2649,6 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addSimpleSelfServiceTextField($return, 'telephoneNumber', _('Telephone number'), $fields, $attributes, $readOnlyFields);
 		$this->addSimpleSelfServiceTextField($return, 'facsimileTelephoneNumber', _('Fax number'), $fields, $attributes, $readOnlyFields);
 		$this->addSimpleSelfServiceTextField($return, 'wWWHomePage', _('Web site'), $fields, $attributes, $readOnlyFields);
-		// TODO remove this workaround when self service allows to specify the list of active modules
 		if (isset($attributes['street'])) {
 			$attributes['streetAddress'] = $attributes['street'];
 		}
@@ -2555,7 +2722,6 @@ class windowsUser extends baseModule implements passwordService {
 		if ($passwordChangeOnly) {
 			return $return; // skip processing if only a password change is done
 		}
-		// TODO remove this workaround when self service allows to specify the list of active modules
 		if (isset($attributes['street'])) {
 			$attributes['streetAddress'] = $attributes['street'];
 		}
@@ -3078,18 +3244,23 @@ class windowsUser extends baseModule implements passwordService {
 		$configContainer->addElement($configHiddenGroup, true);
 		$configContainerOptions = new htmlTable();
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidefacsimileTelephoneNumber', false, _('Fax number'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidesAMAccountName', true, _('User name (pre W2K)'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidemobile', true, _('Mobile'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideotherMobile', true, _('Other mobiles'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidepager', true, _('Pager'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideotherPager', true, _('Other pagers'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidesAMAccountName', true, _('User name (pre W2K)'), null, false), true);
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidemsSFU30Name', true, _('NIS name'), null, false));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidemsSFU30NisDomain', true, _('NIS domain'), null, false));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidepwdLastSet', false, _('Last password change'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidelastLogonTimestamp', false, _('Last login'), null, false), true);
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidelastLogonTimestamp', false, _('Last login'), null, false));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidejpegPhoto', true, _('Photo'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidetitle', true, _('Job title'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidetitle', true, _('Job title'), null, false), true);
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidecarLicense', true, _('Car license'), null, false));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideemployeeNumber', true, _('Employee number'), null, false));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideemployeeType', true, _('Employee type'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidebusinessCategory', true, _('Business category'), null, false), true);
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidedepartmentNumber', true, _('Department'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidebusinessCategory', true, _('Business category'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidecompany', true, _('Company'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidedepartmentNumber', true, _('Department'), null, false), true);
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideou', true, _('Organisational unit'), null, false));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideo', true, _('Organisation'), null, false));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidemanager', true, _('Manager'), null, false));
