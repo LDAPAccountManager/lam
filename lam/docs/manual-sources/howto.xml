@@ -1001,6 +1001,13 @@ Have fun!
         <title>Version specific upgrade instructions</title>
 
         <section>
+          <title>5.5 -&gt; 5.6</title>
+
+          <para>Mail routing: No longer added by default. Use profile editor
+          to activate by default for new users/groups.</para>
+        </section>
+
+        <section>
           <title>5.4 -&gt; 5.5</title>
 
           <para>LAM Pro requires a license key. You can find it in your <ulink
@@ -4447,11 +4454,28 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
       <section>
         <title>Mail routing</title>
 
-        <para>LAM supports to manage mail routing for user accounts. You can
-        specify a routing address, the mail server and a number of local
-        addresses to route. This feature can be activated by adding the "Mail
-        routing" module to the user account type in your server
-        profile.</para>
+        <para>LAM supports to manage mail routing for user accounts.</para>
+
+        <para>Module activation:</para>
+
+        <para>This feature can be activated by adding the "Mail routing"
+        module to the user account type in your server profile.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mailRoutingConfig.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Usage:</para>
+
+        <para>You can specify a routing address, the mail server and a number
+        of local addresses to route.</para>
+
+        <para>In case you want to add this extension by default for new users
+        there is an option in profile editor.</para>
 
         <screenshot>
           <mediaobject>
@@ -4981,6 +5005,41 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           <mediaobject>
             <imageobject>
               <imagedata fileref="images/mod_kolab4.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>Mail routing</title>
+
+        <para>LAM supports to manage mail routing for group accounts.</para>
+
+        <para>Module activation:</para>
+
+        <para>This feature can be activated by adding the "Mail routing"
+        module to the group account type in your server profile.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mailRoutingConfigGroup.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Usage:</para>
+
+        <para>You can specify a routing address, the mail server and a number
+        of local addresses to route.</para>
+
+        <para>In case you want to add this extension by default for new groups
+        there is an option in profile editor.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mailRoutingGroup.png" />
             </imageobject>
           </mediaobject>
         </screenshot>

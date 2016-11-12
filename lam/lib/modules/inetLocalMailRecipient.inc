@@ -35,12 +35,23 @@ $Id$
 class inetLocalMailRecipient extends baseModule {
 
 	/**
+	* Creates a new mitKerberos object.
+	*
+	* @param string $scope account type (user, group, host)
+	*/
+	function __construct($scope) {
+		// call parent constructor
+		parent::__construct($scope);
+		$this->autoAddObjectClasses = false;
+	}
+
+	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
 	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
-		return in_array($this->get_scope(), array('user'));
+		return in_array($this->get_scope(), array('user', 'group'));
 	}
 
 	/**
@@ -82,6 +93,7 @@ class inetLocalMailRecipient extends baseModule {
 			));
 		// profile options
 		$profileContainer = new htmlTable();
+		$profileContainer->addElement(new htmlTableExtendedInputCheckbox('inetLocalMailRecipient_addExt', false, _('Automatically add this extension'), 'autoAdd'), true);
 		$profileContainer->addElement(new htmlTableExtendedInputField(_('Mail server'), 'inetLocalMailRecipient_host', null, 'mailHost'));
 		$return['profile_options'] = $profileContainer;
 		// profile checks
@@ -136,39 +148,65 @@ class inetLocalMailRecipient extends baseModule {
 	}
 
 	/**
+	* Loads the values of an account profile into internal variables.
+	*
+	* @param array $profile hash array with profile values (identifier => value)
+	*/
+	function load_profile($profile) {
+		// profile mappings in meta data
+		parent::load_profile($profile);
+		// add extension
+		if (isset($profile['inetLocalMailRecipient_addExt'][0]) && ($profile['inetLocalMailRecipient_addExt'][0] == "true")) {
+			if (!in_array('inetLocalMailRecipient', $this->attributes['objectClass'])) {
+				$this->attributes['objectClass'][] = 'inetLocalMailRecipient';
+			}
+		}
+	}
+
+	/**
 	 * Returns the HTML meta data for the main account page.
 	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
 		$return = new htmlTable();
-		// mail routing address
-		$this->addSimpleInputTextField($return, 'mailRoutingAddress', _('Routing address'));
-		// mail server
-		$this->addSimpleInputTextField($return, 'mailHost', _('Mail server'));
-		// list current local addresses
-		$localAdresses = array();
-		if (isset($this->attributes['mailLocalAddress'])) $localAdresses = $this->attributes['mailLocalAddress'];
-		for ($i = 0; $i < sizeof($localAdresses); $i++) {
-			if ($i == 0) {
-				$return->addElement(new htmlOutputText(_('Local address')));
+		if (in_array('inetLocalMailRecipient', $this->attributes['objectClass'])) {
+			// mail routing address
+			$this->addSimpleInputTextField($return, 'mailRoutingAddress', _('Routing address'));
+			// mail server
+			$this->addSimpleInputTextField($return, 'mailHost', _('Mail server'));
+			// list current local addresses
+			$localAdresses = array();
+			if (isset($this->attributes['mailLocalAddress'])) $localAdresses = $this->attributes['mailLocalAddress'];
+			for ($i = 0; $i < sizeof($localAdresses); $i++) {
+				if ($i == 0) {
+					$return->addElement(new htmlOutputText(_('Local address')));
+				}
+				else {
+					$return->addElement(new htmlOutputText(''));
+				}
+				$return->addElement(new htmlInputField('localAdr' . $i, $localAdresses[$i]));
+				$return->addElement(new htmlButton('delAdr' . $i, 'del.png', true));
+				if ($i == 0) {
+					$return->addElement(new htmlHelpLink('localAdr'));
+				}
+				$return->addNewLine();
 			}
-			else {
-				$return->addElement(new htmlOutputText(''));
-			}
-			$return->addElement(new htmlInputField('localAdr' . $i, $localAdresses[$i]));
-			$return->addElement(new htmlButton('delAdr' . $i, 'del.png', true));
-			if ($i == 0) {
-				$return->addElement(new htmlHelpLink('localAdr'));
-			}
-			$return->addNewLine();
+			// input box for new local addresses
+			$return->addElement(new htmlOutputText(_('New local address')));
+			$return->addElement(new htmlInputField('localAdr', ''));
+			$return->addElement(new htmlButton('addAdr', 'add.png', true));
+			$return->addElement(new htmlHelpLink('localAdr'));
+			$return->addElement(new htmlHiddenInput('adr_number', sizeof($localAdresses)));
+
+			$return->addElement(new htmlSpacer(null, '10px'), true);
+			$deleteButton = new htmlButton('remObjectClass', _('Remove mail routing extension'));
+			$deleteButton->colspan = 3;
+			$return->addElement($deleteButton);
 		}
-		// input box for new local addresses
-		$return->addElement(new htmlOutputText(_('New local address')));
-		$return->addElement(new htmlInputField('localAdr', ''));
-		$return->addElement(new htmlButton('addAdr', 'add.png', true));
-		$return->addElement(new htmlHelpLink('localAdr'));
-		$return->addElement(new htmlHiddenInput('adr_number', sizeof($localAdresses)));
+		else {
+			$return->addElement(new htmlButton('addObjectClass', _('Add mail routing extension')));
+		}
 		return $return;
 	}
 
@@ -179,6 +217,22 @@ class inetLocalMailRecipient extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
+		if (isset($_POST['addObjectClass'])) {
+			$this->attributes['objectClass'][] = 'inetLocalMailRecipient';
+			return array();
+		}
+		elseif (isset($_POST['remObjectClass'])) {
+			$this->attributes['objectClass'] = array_delete(array('inetLocalMailRecipient'), $this->attributes['objectClass']);
+			for ($i = 0; $i < sizeof($this->meta['attributes']); $i++) {
+				if (isset($this->attributes[$this->meta['attributes'][$i]])) {
+					unset($this->attributes[$this->meta['attributes'][$i]]);
+				}
+			}
+			return array();
+		}
+		if (!in_array('inetLocalMailRecipient', $this->attributes['objectClass'])) {
+			return array();
+		}
 		$errors = array();
 		$this->attributes['mailRoutingAddress'] = array();
 		$this->attributes['mailLocalAddress'] = array();
@@ -241,6 +295,26 @@ class inetLocalMailRecipient extends baseModule {
 		}
 		$this->attributes['mailLocalAddress'] = array_unique($this->attributes['mailLocalAddress']);
 		return $errors;
+	}
+
+	/**
+	* Returns a list of modifications which have to be made to the LDAP account.
+	*
+	* @return array list of modifications
+	* <br>This function returns an array with 3 entries:
+	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	* <br>"add" are attributes which have to be added to LDAP entry
+	* <br>"remove" are attributes which have to be removed from LDAP entry
+	* <br>"modify" are attributes which have to been modified in LDAP entry
+	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
+	*/
+	function save_attributes() {
+		if (!in_array('inetLocalMailRecipient', $this->attributes['objectClass']) && !in_array('inetLocalMailRecipient', $this->orig['objectClass'])) {
+			// skip saving if the extension was not added/modified
+			return array();
+		}
+		return parent::save_attributes();
 	}
 
 	/**
