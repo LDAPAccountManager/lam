@@ -281,7 +281,7 @@ class inetLocalMailRecipient extends baseModule {
 			// check if address has correct format
 			if (get_preg($_POST['localAdr'], 'mailLocalAddress')) {
 				// check if new address is not already in database
-				$data = searchLDAPByAttribute('mailLocalAddress', $_POST['localAdr'], 'inetLocalMailRecipient', array('dn'), array('user'));
+				$data = searchLDAPByAttribute('mailLocalAddress', $_POST['localAdr'], 'inetLocalMailRecipient', array('dn'), array($this->get_scope()));
 				if (sizeof($data) > 0) {
 					$errors[] = array('WARN', _('This mail address is already in use:') . " " . $_POST['localAdr'], $data[0]['dn']);
 				}
