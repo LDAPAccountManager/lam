@@ -178,7 +178,7 @@ echo "<div style=\"display: none;\">\n";
 	echo "<input name=\"moduleSettings\" type=\"submit\" value=\" \">";
 	echo "<input name=\"jobs\" type=\"submit\" value=\" \">";
 echo "</div>\n";
-	
+
 // tabs
 echo '<div class="ui-tabs ui-widget ui-widget-content ui-corner-all">';
 
@@ -275,6 +275,7 @@ if (sizeof($activeTypes) > 0) {
 		}
 		$attrsInput = new htmlTableExtendedInputField(_("List attributes"), 'attr_' . $activeTypes[$i], $attributes, '206');
 		$attrsInput->setFieldSize(40);
+		$attrsInput->setFieldMaxLength(1000);
 		$activeContainer->addElement($attrsInput);
 		$activeContainer->addNewLine();
 		// type options
@@ -347,7 +348,7 @@ if (sizeof($activeTypes) > 0) {
 		$advancedOptions = new htmlAccordion('advancedOptions_' . $activeTypes[$i], array(_('Advanced options') => $advancedOptionsContent), false);
 		$advancedOptions->colspan = 15;
 		$activeContainer->addElement($advancedOptions, true);
-		
+
 		$activeContainer->addElement(new htmlSpacer(null, '40px'), true);
 	}
 	$container->addElement($activeContainer, true);
