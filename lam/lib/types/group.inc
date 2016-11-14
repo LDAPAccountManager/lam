@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2014  Roland Gruber
+  Copyright (C) 2005 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ $Id$
 * @package types
 */
 class group extends baseType {
-	
+
 	/**
 	 * Constructs a new group type object.
 	 */
@@ -51,7 +51,7 @@ class group extends baseType {
 			}
 		}
 	}
-	
+
 	/**
 	* Returns the alias name of this account type.
 	*
@@ -66,7 +66,7 @@ class group extends baseType {
 		}
 		return _("Groups");
 	}
-	
+
 	/**
 	* Returns the description of this account type.
 	*
@@ -75,7 +75,7 @@ class group extends baseType {
 	function getDescription() {
 		return _("Group accounts (e.g. Unix and Samba)");
 	}
-		
+
 	/**
 	* Returns the class name for the list object.
 	*
@@ -84,7 +84,7 @@ class group extends baseType {
 	function getListClassName() {
 		return "lamGroupList";
 	}
-	
+
 	/**
 	* Returns the default attribute list for this account type.
 	*
@@ -103,12 +103,13 @@ class group extends baseType {
 	function getListAttributeDescriptions() {
 		$return = array (
 			"cn" => _("Group name"),
+			"description" => _("Group description"),
+			"displayName" => _("Display name"),
 			"gidnumber" => _("GID number"),
-			"memberuid" => _("Group members"),
 			"member" => _("Group member DNs"),
-			"uniqueMember" => _("Group member DNs"),
+			"memberuid" => _("Group members"),
 			"roleOccupant" => _("Role member DNs"),
-			"description" => _("Group description")
+			"uniqueMember" => _("Group member DNs"),
 		);
 		if (!empty($_SESSION['config'])) {
 			$modules = $_SESSION['config']->get_AccountModules('group');
@@ -211,7 +212,7 @@ class group extends baseType {
  *
  * @package lists
  * @author Roland Gruber
- * 
+ *
  */
 class lamGroupList extends lamList {
 
@@ -227,7 +228,7 @@ class lamGroupList extends lamList {
 	private $include_primary = false;
 	/** LDAP suffix of membership types */
 	private $suffixList = array();
-	
+
 	/**
 	 * Constructor
 	 *
@@ -267,7 +268,7 @@ class lamGroupList extends lamList {
 			}
 		}
 	}
-	
+
 	/**
 	 * Sets some internal parameters.
 	 */

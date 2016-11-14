@@ -88,21 +88,33 @@ class user extends baseType {
 	*/
 	function getListAttributeDescriptions() {
 		return array (
-			"uid" => _("User name"),
-			"uidnumber" => _("UID number"),
-			"gidnumber" => _("GID number"),
 			"cn" => _("Common name"),
-			"host" => _("Allowed hosts"),
+			'company' => _('Company'),
+			'departmentNumber' => _('Department'),
+			'displayName' => _('Display name'),
+			'employeeNumber' => _('Employee number'),
+			"gecos" => _("Description"),
+			"gidnumber" => _("GID number"),
 			"givenname" => _("First name"),
-			"sn" => _("Last name"),
 			"homedirectory" => _("Home directory"),
+			"host" => _("Allowed hosts"),
+			"jpegphoto" => _('Photo'),
 			"loginshell" => _("Login shell"),
 			"mail" => _("Email"),
-			"gecos" => _("Description"),
-			"jpegphoto" => _('Photo'),
+			'manager' => _('Manager'),
+			'o' => _('Organisation'),
+			'ou' => _(' Organisational unit'),
+			'proxyAddresses' => _(' Proxy-Addresses'),
+			'sambakickofftime' => _('Account expiration date'),
 			'shadowexpire' => _('Password expiration'),
-			'sambakickofftime' => _('Account expiration date')
-			);
+			"sn" => _("Last name"),
+			'streetAddress' => _('Street'),
+			'telephoneNumber' => _('Telephone number'),
+			'title' => _('Job title'),
+			"uid" => _("User name"),
+			"uidnumber" => _("UID number"),
+			'userPrincipalName' => _('User name'),
+		);
 	}
 
 	/**
