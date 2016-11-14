@@ -7276,12 +7276,21 @@ OK (10 msec)</programlisting>
       <para>To activate this feature please add the "Custom scripts" module to
       all needed account types on the configuration pages.</para>
 
-      <para>You can specify multiple scripts for each action type (e.g.
-      modify) and account type (e.g. user). The scripts need to be located on
-      the filesystem of your webserver and will be executed in its user
-      environment. E.g. if you webserver runs as user www-data with the group
-      www-data then the custom scripts will be run under this user with his
-      rights. The output of the scripts will be shown in LAM.</para>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/customScripts3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>In "Module settings" you can specify multiple scripts for each
+      action type (e.g. modify) and account type (e.g. user). The scripts need
+      to be located on the filesystem of your webserver and will be executed
+      in its user environment. E.g. if you webserver runs as user www-data
+      with the group www-data then the custom scripts will be run under this
+      user with his rights. The output of the scripts will be shown in
+      LAM.</para>
 
       <para>You can specify the scripts on the LAM configuration pages.</para>
 
@@ -7322,7 +7331,7 @@ OK (10 msec)</programlisting>
             <row>
               <entry>preCreate</entry>
 
-              <entry>executed before creating a new account (cancels operation
+              <entry>Executed before creating a new account (cancels operation
               if a script returns an exit code &gt; 0, not available for file
               upload)</entry>
             </row>
@@ -7330,7 +7339,7 @@ OK (10 msec)</programlisting>
             <row>
               <entry>postCreate</entry>
 
-              <entry>executed after creating a new account (does <emphasis
+              <entry>Executed after creating a new account (does <emphasis
               role="bold">not</emphasis> run if preCreate or LDAP operations
               fail)</entry>
             </row>
@@ -7338,14 +7347,14 @@ OK (10 msec)</programlisting>
             <row>
               <entry>preModify</entry>
 
-              <entry>executed before an account is modified (cancels operation
+              <entry>Executed before an account is modified (cancels operation
               if a script returns an exit code &gt; 0)</entry>
             </row>
 
             <row>
               <entry>postModify</entry>
 
-              <entry>executed after an account was modified (does <emphasis
+              <entry>Executed after an account was modified (does <emphasis
               role="bold">not</emphasis> run if preModify or LDAP operations
               fail)</entry>
             </row>
@@ -7353,14 +7362,14 @@ OK (10 msec)</programlisting>
             <row>
               <entry>preDelete</entry>
 
-              <entry>executed before an account is modified (cancels operation
+              <entry>Executed before an account is modified (cancels operation
               if a script returns an exit code &gt; 0)</entry>
             </row>
 
             <row>
               <entry>postDelete</entry>
 
-              <entry>executed after an account was modified (does <emphasis
+              <entry>Executed after an account was modified (does <emphasis
               role="bold">not</emphasis> run if preDelete or LDAP operations
               fail)</entry>
             </row>
@@ -7368,7 +7377,9 @@ OK (10 msec)</programlisting>
             <row>
               <entry>manual</entry>
 
-              <entry>can be run manually on account page</entry>
+              <entry>Can be run manually on account page. If you add
+              LAMLABEL="text" before the command then LAM will use the text as
+              label for the button in account edit screen.</entry>
             </row>
           </tbody>
         </tgroup>
