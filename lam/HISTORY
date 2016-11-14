@@ -3,6 +3,7 @@ December 2016 5.6
   - Mail routing: enable for groups and allow to add/remove the extension
   - LAM Pro:
    -> 389ds: new wildcards for custom scripts: $INFO.389lockingStatusChange$ and $INFO.389deactivationStatusChange$
+   -> Custom scripts: custom button label supported for manual scripts
 
 
 10.09.2016 5.5
