@@ -1005,6 +1005,9 @@ Have fun!
 
           <para>Mail routing: No longer added by default. Use profile editor
           to activate by default for new users/groups.</para>
+
+          <para>Personal: no more replacement of $user/$group on user
+          upload</para>
         </section>
 
         <section>
@@ -3307,6 +3310,12 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
               </row>
 
               <row>
+                <entry>labeledURI</entry>
+
+                <entry>Web site</entry>
+              </row>
+
+              <row>
                 <entry>mail/rfc822Mailbox</entry>
 
                 <entry>Email address</entry>
@@ -3328,6 +3337,12 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
                 <entry>organizationName/o</entry>
 
                 <entry>Organisation</entry>
+              </row>
+
+              <row>
+                <entry>ou</entry>
+
+                <entry>Organizational unit</entry>
               </row>
 
               <row>
@@ -3422,6 +3437,85 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
             </tbody>
           </tgroup>
         </table>
+
+        <para><emphasis role="bold">Wildcards</emphasis></para>
+
+        <para>This module provides the following wildcards (others may be
+        provided by other modules):</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>$firstname: First name</para>
+          </listitem>
+
+          <listitem>
+            <para>$lastname: Last name</para>
+          </listitem>
+
+          <listitem>
+            <para>$user: User name</para>
+          </listitem>
+
+          <listitem>
+            <para>$commonname: Common name</para>
+          </listitem>
+
+          <listitem>
+            <para>$email: Email address</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>You can use them in the following input fields on user edit
+        screen:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Common name</para>
+          </listitem>
+
+          <listitem>
+            <para>Description</para>
+          </listitem>
+
+          <listitem>
+            <para>Mail</para>
+          </listitem>
+
+          <listitem>
+            <para>Postal address</para>
+          </listitem>
+
+          <listitem>
+            <para>Registered address</para>
+          </listitem>
+
+          <listitem>
+            <para>Web site</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Use this when some of your data always follows the same schema.
+        E.g. using "$firstname $lastname" in common name field can be used
+        like this to get "First Last". You can set the wildcards in profile
+        editor so they are automatically applied for new users.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_personal5.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para></para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_personal6.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
       </section>
 
       <section>

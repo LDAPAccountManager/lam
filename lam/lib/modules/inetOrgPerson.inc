@@ -171,6 +171,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'ou', 'description', 'uid');
 		// profile elements
 		$profileElements = array();
+		if (!$this->isUnixActive()) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Common name'), 'inetOrgPerson_cn', null, 'cn');
+		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
 			$profileElements[] = new htmlTableExtendedInputField(_('Initials'), 'inetOrgPerson_initials', null, 'initials');
 		}
@@ -243,6 +246,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$return['profile_options'] = $profileContainer;
 		}
 		// profile checks and mappings
+		if (!$this->isUnixActive()) {
+			$return['profile_mappings']['inetOrgPerson_cn'] = 'cn';
+		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
 			$return['profile_mappings']['inetOrgPerson_initials'] = 'initials';
 		}
@@ -740,12 +746,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 			),
 			'mail' => array (
 				"Headline" => _("Email address"), 'attr' => 'mail',
-				"Text" => _("The user's email address.") . ' ' . _('You can use "$user", "$firstname" and "$lastname" as wildcards for user name, first and last name.')
+				"Text" => _("The user's email address.")
 			),
 			'mailList' => array (
 				"Headline" => _("Email address"), 'attr' => 'mail',
 				"Text" => _("The user's email address.") . ' ' . _('Multiple values are separated by semicolon.')
-							 . ' ' . _('You can use "$user", "$firstname" and "$lastname" as wildcards for user name, first and last name.')
 			),
 			"mailPassword" => array (
 				"Headline" => _("Send password via mail"),
@@ -934,22 +939,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!$this->getAccountContainer()->isNewAccount && !in_array('inetOrgPerson', $this->getAccountContainer()->attributes_orig['objectClass'])) {
 			return array();
 		}
-		// replace $user in email
-		if (!empty($this->attributes['mail'][0])) {
-			$user = null;
-			if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
-				$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
-				$user = $attrs['uid'][0];
-			}
-			elseif (!empty($this->attributes['uid'][0])) {
-				$user = $this->attributes['uid'][0];
-			}
-			if (!empty($user)) {
-				foreach ($this->attributes['mail'] as &$mail) {
-					$mail = str_replace('$user', $user, $mail);
-				}
-			}
-		}
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		// postalAddress, registeredAddress, facsimileTelephoneNumber and jpegPhoto need special removing
 		if (isset($return[$this->getAccountContainer()->dn_orig]['remove']['postalAddress'])) {
@@ -1037,7 +1026,12 @@ class inetOrgPerson extends baseModule implements passwordService {
 	*/
 	function process_attributes() {
 		$errors = array();
-		$replacements = array('$lastname' => 'sn', '$firstname' => 'givenName');
+		$keysToReplace = array('mail', 'description', 'postalAddress', 'cn',
+			'registeredAddress', 'labeledURI');
+		if ($this->isUnixActive()) {
+			$keysToReplace[] = 'uid';
+		}
+		$this->getAccountContainer()->replaceWildcardsInPOST($keysToReplace);
 		// add parent object classes
 		if ($this->getAccountContainer()->isNewAccount) {
 			if (!in_array('organizationalPerson', $this->attributes['objectClass'])) {
@@ -1069,11 +1063,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$this->processMultiValueInputTextField('mail', $errors, 'email');
 			if (!empty($this->attributes['mail'])) {
 				foreach ($this->attributes['mail'] as &$mail) {
-					foreach ($replacements as $wildcard => $key) {
-						if (!empty($this->attributes[$key][0])) {
-							$mail = str_replace($wildcard, $this->attributes[$key][0], $mail);
-						}
-					}
 					if (empty($this->orig['mail']) || !in_array($mail, $this->orig['mail'])) {
 						if ($this->emailExists($mail)) {
 							$msg = $this->messages['mail'][1];
@@ -2178,7 +2167,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 	*/
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
 		$errors = array();
-		$replacements = array();
 		// get list of existing users
 		$existingUsers = searchLDAPByAttribute('uid', '*', 'inetOrgPerson', array('uid'), array('user'));
 		for ($e = 0; $e < sizeof($existingUsers); $e++) {
@@ -2189,7 +2177,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 			// last name
 			if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_lastName']], 'realname')) {
 				$partialAccounts[$i]['sn'] = trim($rawAccounts[$i][$ids['inetOrgPerson_lastName']]);
-				$replacements['$lastname'] = $partialAccounts[$i]['sn'];
 			}
 			else {
 				$errMsg = $this->messages['lastname'][1];
@@ -2200,7 +2187,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if ($rawAccounts[$i][$ids['inetOrgPerson_firstName']] != "") {
 				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_firstName']], 'realname')) {
 					$partialAccounts[$i]['givenName'] = trim($rawAccounts[$i][$ids['inetOrgPerson_firstName']]);
-					$replacements['$firstname'] = $partialAccounts[$i]['givenName'];
 				}
 				else {
 					$errMsg = $this->messages['givenName'][1];
@@ -2218,7 +2204,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 					}
 					elseif (get_preg($rawAccounts[$i][$ids['inetOrgPerson_userName']], 'username')) {
 						$partialAccounts[$i]['uid'] = $rawAccounts[$i][$ids['inetOrgPerson_userName']];
-						$replacements['$user'] = $partialAccounts[$i]['uid'];
 					}
 					else {
 						$errMsg = $this->messages['uid'][1];
@@ -2300,9 +2285,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_pager', 'pager', 'telephone', $this->messages['pager'][1], $errors, '/;[ ]*/');
 			// eMail
 			if (isset($ids['inetOrgPerson_email']) && ($rawAccounts[$i][$ids['inetOrgPerson_email']] != "")) {
-				foreach ($replacements as $wildcard => $value) {
-					$rawAccounts[$i][$ids['inetOrgPerson_email']] = str_replace($wildcard, $value, $rawAccounts[$i][$ids['inetOrgPerson_email']]);
-				}
 				$mailList = preg_split('/;[ ]*/', trim($rawAccounts[$i][$ids['inetOrgPerson_email']]));
 				$partialAccounts[$i]['mail'] = $mailList;
 				for ($x = 0; $x < sizeof($mailList); $x++) {
@@ -3808,6 +3790,54 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		return in_array('posixAccount', $modules);
+	}
+
+	/**
+	 * Returns a list of wildcards that can be replaced in input fileds.
+	 * E.g. "$firstname$" is replaced with "givenName" attribute value.
+	 *
+	 * @return array replacements as wildcard => value
+	 */
+	public function getWildCardReplacements() {
+		$replacements = array();
+		// first name
+		if (!empty($_POST['givenName'])) {
+			$replacements['firstname'] = $_POST['givenName'];
+		}
+		elseif (!empty($this->attributes['givenName'][0])) {
+			$replacements['firstname'] = $this->attributes['givenName'][0];
+		}
+		// last name
+		if (!empty($_POST['sn'])) {
+			$replacements['lastname'] = $_POST['sn'];
+		}
+		elseif (!empty($this->attributes['sn'][0])) {
+			$replacements['lastname'] = $this->attributes['sn'][0];
+		}
+		// user name
+		if (!$this->isUnixActive()) {
+			if (!empty($_POST['uid'])) {
+				$replacements['user'] = $_POST['uid'];
+			}
+			elseif (!empty($this->attributes['uid'][0])) {
+				$replacements['user'] = $this->attributes['uid'][0];
+			}
+		}
+		// cn
+		if (!empty($_POST['cn_0'])) {
+			$replacements['commonname'] = $_POST['cn_0'];
+		}
+		elseif (!empty($this->attributes['cn'][0])) {
+			$replacements['commonname'] = $this->attributes['cn'][0];
+		}
+		// mail
+		if (!empty($_POST['mail_0'])) {
+			$replacements['email'] = $_POST['mail_0'];
+		}
+		elseif (!empty($this->attributes['mail'][0])) {
+			$replacements['email'] = $this->attributes['mail'][0];
+		}
+		return $replacements;
 	}
 
 }

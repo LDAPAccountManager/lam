@@ -2144,6 +2144,62 @@ class accountContainer {
 	}
 
 	/**
+	 * Replaces POST data with wildcard values from modules.
+	 *
+	 * @param array $keyPrefixes POST keys as full name or prefix (e.g. "key" matches "key1")
+	 */
+	public function replaceWildcardsInPOST($keyPrefixes) {
+		$replacements = array();
+		foreach ($this->module as $module) {
+			$replacements = array_merge($replacements, $module->getWildCardReplacements());
+		}
+		while (true) {
+			if (!$this->replaceWildcards($replacements, $keyPrefixes, $_POST)) {
+				break;
+			}
+		}
+	}
+
+	/**
+	 * Replaces wildcards in an array.
+	 *
+	 * @param array $replacements replacements (key => value)
+	 * @param array $keyPrefixes prefixes of $data array keys that should be replaced
+	 * @param array $data data array
+	 * @return boolean replacement done
+	 */
+	private function replaceWildcards($replacements, $keyPrefixes, &$data) {
+		$found = false;
+		foreach ($data as $key => $value) {
+			foreach ($keyPrefixes as $keyPrefix) {
+				if (strpos($key, $keyPrefix) === 0) {
+					$found = $this->doReplace($replacements, $data[$key]) || $found;
+				}
+			}
+		}
+		return $found;
+	}
+
+	/**
+	 * Replaces wildcards in a value.
+	 *
+	 * @param array $replacements replacements (key => value)
+	 * @param String $value value to perform replacements
+	 * @return boolean replacement done
+	 */
+	private function doReplace($replacements, &$value) {
+		$found = false;
+		foreach ($replacements as $replKey => $replValue) {
+			$searchString = '$' . $replKey;
+			if (strpos($value, $searchString) !== false) {
+				$found = true;
+				$value = str_replace($searchString, $replValue, $value);
+			}
+		}
+		return $found;
+	}
+
+	/**
 	* Encrypts sensitive data before storing in session.
 	*
 	* @return array list of attributes which are serialized

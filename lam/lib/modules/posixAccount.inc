@@ -471,7 +471,7 @@ class posixAccount extends baseModule implements passwordService {
 				),
 				'homeDirectory' => array(
 					"Headline" => _("Home directory"), 'attr' => $this->getHomedirAttrName(),
-					"Text" => _('$user and $group will be replaced with user name and primary group name.')
+					"Text" => _("Please enter the path to the user's home directory.")
 				),
 				'userPassword' => array(
 					"Headline" => _("Password"),
@@ -990,6 +990,8 @@ class posixAccount extends baseModule implements passwordService {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
+		$keysToReplace = array('cn', 'gecos', 'homeDirectory');
+		$this->getAccountContainer()->replaceWildcardsInPOST($keysToReplace);
 		$errors = array();
 		if (isset($_POST['addObjectClass'])) {
 			if (!isset($this->attributes['objectClass'])) {
@@ -1160,11 +1162,6 @@ class posixAccount extends baseModule implements passwordService {
 			if ($this->get_scope()=='host') $errors[] = $this->messages['uid'][6];
 		}
 		if ($this->get_scope()=='user') {
-			$this->attributes[$homedirAttrName][0] = str_replace('$group', $this->getGroupName($this->attributes['gidNumber'][0]), $this->attributes[$homedirAttrName][0]);
-			if ($this->attributes['uid'][0] != '') {
-				$this->attributes[$homedirAttrName][0] = str_replace('$user', $this->attributes['uid'][0], $this->attributes[$homedirAttrName][0]);
-			}
-			if ($this->attributes[$homedirAttrName][0] != $_POST['homeDirectory']) $errors[] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
 			// Check if Username contains only valid characters
 			if (!get_preg($this->attributes['uid'][0], 'username'))
 			$errors[] = $this->messages['uid'][2];
@@ -3457,6 +3454,31 @@ class posixAccount extends baseModule implements passwordService {
 	 */
 	private function skipObjectClass() {
 		return $this->isBooleanConfigOptionSet('posixAccount_noObjectClass');
+	}
+
+	/**
+	 * Returns a list of wildcards that can be replaced in input fileds.
+	 * E.g. "$firstname$" is replaced with "givenName" attribute value.
+	 *
+	 * @return array replacements as wildcard => value
+	 */
+	public function getWildCardReplacements() {
+		$replacements = array();
+		// user name
+		if (!empty($_POST['uid'])) {
+			$replacements['user'] = $_POST['uid'];
+		}
+		elseif (!empty($this->attributes['uid'][0])) {
+			$replacements['user'] = $this->attributes['uid'][0];
+		}
+		// group name
+		if (!empty($_POST['gidNumber'])) {
+			$replacements['group'] = $this->getGroupName($_POST['gidNumber']);
+		}
+		elseif (!empty($this->attributes['gidNumber'][0])) {
+			$replacements['group'] = $this->getGroupName($this->attributes['gidNumber'][0]);
+		}
+		return $replacements;
 	}
 
 }
