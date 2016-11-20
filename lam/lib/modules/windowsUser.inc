@@ -117,7 +117,6 @@ class windowsUser extends baseModule implements passwordService {
 			'cn' => array(
 				"Headline" => _('Common name'), 'attr' => 'cn',
 				"Text" => _('This is the natural name of the user. If empty, the first and last name or user name is used.')
-							 . ' ' . _('You can use "$user", "$firstname" and "$lastname" as wildcards for user name, first and last name.')
 			),
 			'userPrincipalName' => array(
 				"Headline" => _('User name'), 'attr' => 'userPrincipalName',
@@ -138,7 +137,6 @@ class windowsUser extends baseModule implements passwordService {
 			'displayName' => array(
 				"Headline" => _('Display name'), 'attr' => 'displayName',
 				"Text" => _('This is the account\'s full name on Windows systems.')
-							 . ' ' . _('You can use "$user", "$firstname" and "$lastname" as wildcards for user name, first and last name.')
 			),
 			'givenName' => array(
 				"Headline" => _('First name'), 'attr' => 'givenName',
@@ -154,7 +152,7 @@ class windowsUser extends baseModule implements passwordService {
 			),
 			'mail' => array(
 				"Headline" => _('Email address'), 'attr' => 'mail',
-				"Text" => _('The user\'s email address.') . ' ' . _('You can use "$user", "$firstname" and "$lastname" as wildcards for user name, first and last name.')
+				"Text" => _('The user\'s email address.')
 			),
 			'otherTelephone' => array(
 				"Headline" => _('Other telephone numbers'), 'attr' => 'otherTelephone',
@@ -222,13 +220,11 @@ class windowsUser extends baseModule implements passwordService {
 				"Text" => _("The user must log on using a smart card.")),
 			"profilePath" => array(
 				"Headline" => _("Profile path"), 'attr' => 'profilePath',
-				"Text" => _('Path of the user profile (UNC-path, e.g. \\\\server\\share\\user). $user is replaced with user name.'). ' '. _("Can be left empty.")
-							 . ' ' . _('You can use "$user", "$firstname" and "$lastname" as wildcards for user name, first and last name.')
+				"Text" => _('Path of the user profile (UNC-path, e.g. \\\\server\\share\\user).'). ' '. _("Can be left empty.")
 			),
 			"scriptPath" => array(
 				"Headline" => _("Logon script"), 'attr' => 'scriptPath',
-				"Text" => _('File name and path relative to netlogon-share which should be executed on logon. $user is replaced with user name.'). ' '. _("Can be left empty.")
-							  . ' ' . _('You can use "$user", "$firstname" and "$lastname" as wildcards for user name, first and last name.')
+				"Text" => _('File name and path relative to netlogon-share which should be executed on logon.'). ' '. _("Can be left empty.")
 			),
 			"pwdMustChange" => array (
 				"Headline" => _("Password change at next login"),
@@ -245,12 +241,11 @@ class windowsUser extends baseModule implements passwordService {
 			),
 			'otherMailbox' => array(
 				"Headline" => _("Email alias"), 'attr' => 'otherMailbox',
-				"Text" => _("Email alias for this account.") . ' ' . _('You can use "$user", "$firstname" and "$lastname" as wildcards for user name, first and last name.')
+				"Text" => _("Email alias for this account.")
 			),
 			'otherMailboxList' => array(
 				"Headline" => _("Email alias"), 'attr' => 'otherMailbox',
 				"Text" => _("Email alias for this account.") . ' ' . _("Multiple values are separated by semicolon.")
-							 . ' ' . _('You can use "$user", "$firstname" and "$lastname" as wildcards for user name, first and last name.')
 			),
 			'hiddenOptions' => array(
 				"Headline" => _("Hidden options"),
@@ -266,7 +261,6 @@ class windowsUser extends baseModule implements passwordService {
 			"homeDirectory" => array(
 				"Headline" => _("Home directory"), 'attr' => 'homeDirectory',
 				"Text" => _('UNC-path (\\\\server\\share\) of home directory. If no home drive is set then this directory must start with a drive letter (e.g. "c:\dir\user").')
-							. ' ' . _('You can use "$user", "$firstname" and "$lastname" as wildcards for user name, first and last name.')
 			),
 			'msSFU30Name' => array(
 				"Headline" => _('NIS name'), 'attr' => 'msSFU30Name',
@@ -1328,7 +1322,9 @@ class windowsUser extends baseModule implements passwordService {
 	*/
 	public function process_attributes() {
 		$return = array();
-		$replacements = array('$user' => 'userPrincipalName', '$lastname' => 'sn', '$firstname' => 'givenName');
+		$keysToReplace = array('cn', 'displayName', 'mail', 'otherMailbox',
+				'profilePath', 'scriptPath', 'homeDirectory');
+		$this->getAccountContainer()->replaceWildcardsInPOST($keysToReplace);
 		// user name
 		$userPrincipalName = $_POST['userPrincipalName'];
 		if (!get_preg($userPrincipalName, 'username')) {
@@ -1340,11 +1336,6 @@ class windowsUser extends baseModule implements passwordService {
 		$this->attributes['userPrincipalName'][0] = $userPrincipalName;
 		// cn
 		$this->attributes['cn'][0] = $_POST['cn'];
-		foreach ($replacements as $wildcard => $postKey) {
-			if (!empty($_POST[$postKey])) {
-				$this->attributes['cn'][0] = str_replace($wildcard, $_POST[$postKey], $this->attributes['cn'][0]);
-			}
-		}
 		if (empty($this->attributes['cn'][0])) {
 			$cn = '';
 			if (!empty($_POST['givenName'])) {
@@ -1378,11 +1369,6 @@ class windowsUser extends baseModule implements passwordService {
 		$this->attributes['description'][0] = $_POST['description'];
 		// display name
 		$this->attributes['displayName'][0] = $_POST['displayName'];
-		foreach ($replacements as $wildcard => $postKey) {
-			if (!empty($_POST[$postKey])) {
-				$this->attributes['displayName'][0] = str_replace($wildcard, $_POST[$postKey], $this->attributes['displayName'][0]);
-			}
-		}
 		if (!empty($this->attributes['displayName'][0]) && !get_preg($this->attributes['displayName'][0], 'realname')) {
 			$return[] = $this->messages['displayName'][0];
 		}
@@ -1400,25 +1386,11 @@ class windowsUser extends baseModule implements passwordService {
 		$this->attributes['l'][0] = $_POST['l'];
 		// email
 		$this->attributes['mail'][0] = $_POST['mail'];
-		foreach ($replacements as $wildcard => $postKey) {
-			if (!empty($_POST[$postKey])) {
-				$this->attributes['mail'][0] = str_replace($wildcard, $_POST[$postKey], $this->attributes['mail'][0]);
-			}
-		}
 		if (!empty($this->attributes['mail'][0]) && !get_preg($this->attributes['mail'][0], 'email')) {
 			$return[] = $this->messages['mail'][0];
 		}
 		// email aliases
 		$this->processMultiValueInputTextField('otherMailbox', $return, 'email');
-		if (!empty($this->attributes['otherMailbox'])) {
-			foreach ($this->attributes['otherMailbox'] as &$otherMailbox) {
-				foreach ($replacements as $wildcard => $postKey) {
-					if (!empty($_POST[$postKey])) {
-						$otherMailbox = str_replace($wildcard, $_POST[$postKey], $otherMailbox);
-					}
-				}
-			}
-		}
 		// other telephones
 		$this->processMultiValueInputTextField('otherTelephone', $return, 'telephone');
 		// fax number
@@ -1485,21 +1457,11 @@ class windowsUser extends baseModule implements passwordService {
 		windowsUser::setIsSmartCardRequired($this->attributes, $requireCard);
 		// profile path
 		$this->attributes['profilePath'][0] = $_POST['profilePath'];
-		foreach ($replacements as $wildcard => $postKey) {
-			if (!empty($_POST[$postKey])) {
-				$this->attributes['profilePath'][0] = str_replace($wildcard, $_POST[$postKey], $this->attributes['profilePath'][0]);
-			}
-		}
 		if (!($this->attributes['profilePath'][0] == '') && !get_preg($this->attributes['profilePath'][0], 'UNC')) {
 			$return[] = $this->messages['profilePath'][0];
 		}
 		// logon script
 		$this->attributes['scriptPath'][0] = $_POST['scriptPath'];
-		foreach ($replacements as $wildcard => $postKey) {
-			if (!empty($_POST[$postKey])) {
-				$this->attributes['scriptPath'][0] = str_replace($wildcard, $_POST[$postKey], $this->attributes['scriptPath'][0]);
-			}
-		}
 		if (($this->attributes['scriptPath'][0] != '') && (!get_preg($this->attributes['scriptPath'][0], 'logonscript'))) {
 			$return[] = $this->messages['scriptPath'][0];
 		}
@@ -1512,11 +1474,6 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		// home directory
 		$this->attributes['homeDirectory'][0] = $_POST['homeDirectory'];
-		foreach ($replacements as $wildcard => $postKey) {
-			if (!empty($_POST[$postKey])) {
-				$this->attributes['homeDirectory'][0] = str_replace($wildcard, $_POST[$postKey], $this->attributes['homeDirectory'][0]);
-			}
-		}
 		if (!empty($this->attributes['homeDrive'][0]) && !get_preg($this->attributes['homeDirectory'][0], 'UNC')) {
 			$return[] = $this->messages['homeDirectory'][0];
 		}
@@ -1995,7 +1952,6 @@ class windowsUser extends baseModule implements passwordService {
 	*/
 	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
 		$errors = array();
-		$replacements = array();
 		// get list of existing groups
 		$groupList = $this->findGroups();
 		$groupMap = array();
@@ -2009,8 +1965,6 @@ class windowsUser extends baseModule implements passwordService {
 			// userPrincipalName
 			if (get_preg($rawAccounts[$i][$ids['windowsUser_userPrincipalName']], 'username')) {
 				$partialAccounts[$i]['userPrincipalName'] = $rawAccounts[$i][$ids['windowsUser_userPrincipalName']];
-				$parts = explode('@', $partialAccounts[$i]['userPrincipalName']);
-				$replacements['$user'] = $parts[0];
 			}
 			else {
 				$errMsg = $this->messages['userPrincipalName'][1];
@@ -2021,7 +1975,6 @@ class windowsUser extends baseModule implements passwordService {
 			if ($rawAccounts[$i][$ids['windowsUser_firstName']] != "") {
 				if (get_preg($rawAccounts[$i][$ids['windowsUser_firstName']], 'realname')) {
 					$partialAccounts[$i]['givenName'] = $rawAccounts[$i][$ids['windowsUser_firstName']];
-					$replacements['$firstname'] = $partialAccounts[$i]['givenName'];
 				}
 				else {
 					$errMsg = $this->messages['givenName'][1];
@@ -2033,7 +1986,6 @@ class windowsUser extends baseModule implements passwordService {
 			if ($rawAccounts[$i][$ids['windowsUser_lastName']] != "") {
 				if (get_preg($rawAccounts[$i][$ids['windowsUser_lastName']], 'realname')) {
 					$partialAccounts[$i]['sn'] = $rawAccounts[$i][$ids['windowsUser_lastName']];
-					$replacements['$lastname'] = $partialAccounts[$i]['sn'];
 				}
 				else {
 					$errMsg = $this->messages['sn'][1];
@@ -2043,9 +1995,6 @@ class windowsUser extends baseModule implements passwordService {
 			}
 			// cn
 			if ($rawAccounts[$i][$ids['windowsUser_cn']] != "") {
-				foreach ($replacements as $wildcard => $value) {
-					$rawAccounts[$i][$ids['windowsUser_cn']] = str_replace($wildcard, $value, $rawAccounts[$i][$ids['windowsUser_cn']]);
-				}
 				if (get_preg($rawAccounts[$i][$ids['windowsUser_cn']], 'cn')) {
 					$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['windowsUser_cn']];
 				}
@@ -2087,7 +2036,8 @@ class windowsUser extends baseModule implements passwordService {
 			}
 			else {
 				// set sAMAccountName to user name if not managed (W2012 requires it)
-				$partialAccounts[$i]['sAMAccountName'] = $replacements['$user'];
+				$parts = explode('@', $partialAccounts[$i]['userPrincipalName']);
+				$partialAccounts[$i]['sAMAccountName'] = $parts[0];
 			}
 			// password
 			if (($rawAccounts[$i][$ids['windowsUser_password']] != "") && (get_preg($rawAccounts[$i][$ids['windowsUser_password']], 'password'))) {
@@ -2102,9 +2052,6 @@ class windowsUser extends baseModule implements passwordService {
 			}
 			// display name
 			if ($rawAccounts[$i][$ids['windowsUser_displayName']] != "") {
-				foreach ($replacements as $wildcard => $value) {
-					$rawAccounts[$i][$ids['windowsUser_displayName']] = str_replace($wildcard, $value, $rawAccounts[$i][$ids['windowsUser_displayName']]);
-				}
 				$partialAccounts[$i]['displayName'] = $rawAccounts[$i][$ids['windowsUser_displayName']];
 			}
 			elseif (!empty($partialAccounts[$i]['cn'])) {
@@ -2129,9 +2076,6 @@ class windowsUser extends baseModule implements passwordService {
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_officeName', 'physicalDeliveryOfficeName');
 			// mail
 			if ($rawAccounts[$i][$ids['windowsUser_mail']] != "") {
-				foreach ($replacements as $wildcard => $value) {
-					$rawAccounts[$i][$ids['windowsUser_mail']] = str_replace($wildcard, $value, $rawAccounts[$i][$ids['windowsUser_mail']]);
-				}
 				if (get_preg($rawAccounts[$i][$ids['windowsUser_mail']], 'email')) {
 					$partialAccounts[$i]['mail'] = $rawAccounts[$i][$ids['windowsUser_mail']];
 				}
@@ -2143,9 +2087,6 @@ class windowsUser extends baseModule implements passwordService {
 			}
 			// mail aliases
 			if (isset($ids['windowsUser_otherMailbox']) && ($rawAccounts[$i][$ids['windowsUser_otherMailbox']] != "")) {
-				foreach ($replacements as $wildcard => $value) {
-					$rawAccounts[$i][$ids['windowsUser_otherMailbox']] = str_replace($wildcard, $value, $rawAccounts[$i][$ids['windowsUser_otherMailbox']]);
-				}
 				$valueList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['windowsUser_otherMailbox']]);
 				$partialAccounts[$i]['otherMailbox'] = $valueList;
 				for ($x = 0; $x < sizeof($valueList); $x++) {
@@ -2223,9 +2164,6 @@ class windowsUser extends baseModule implements passwordService {
 			}
 			// profile path
 			if ($rawAccounts[$i][$ids['windowsUser_profilePath']] != "") {
-				foreach ($replacements as $wildcard => $value) {
-					$rawAccounts[$i][$ids['windowsUser_profilePath']] = str_replace($wildcard, $value, $rawAccounts[$i][$ids['windowsUser_profilePath']]);
-				}
 				if (get_preg($rawAccounts[$i][$ids['windowsUser_profilePath']], 'UNC')) {
 					$partialAccounts[$i]['profilePath'] = $rawAccounts[$i][$ids['windowsUser_profilePath']];
 				}
@@ -2237,9 +2175,6 @@ class windowsUser extends baseModule implements passwordService {
 			}
 			// logon script
 			if ($rawAccounts[$i][$ids['windowsUser_scriptPath']] != "") {
-				foreach ($replacements as $wildcard => $value) {
-					$rawAccounts[$i][$ids['windowsUser_scriptPath']] = str_replace($wildcard, $value, $rawAccounts[$i][$ids['windowsUser_scriptPath']]);
-				}
 				if (get_preg($rawAccounts[$i][$ids['windowsUser_scriptPath']], 'logonscript')) {
 					$partialAccounts[$i]['scriptPath'] = $rawAccounts[$i][$ids['windowsUser_scriptPath']];
 				}
@@ -2262,9 +2197,6 @@ class windowsUser extends baseModule implements passwordService {
 			}
 			// home directory
 			if ($rawAccounts[$i][$ids['windowsUser_homeDirectory']] != "") {
-				foreach ($replacements as $wildcard => $value) {
-					$rawAccounts[$i][$ids['windowsUser_homeDirectory']] = str_replace($wildcard, $value, $rawAccounts[$i][$ids['windowsUser_homeDirectory']]);
-				}
 				if (empty($partialAccounts[$i]['homeDrive']) || get_preg($rawAccounts[$i][$ids['windowsUser_homeDirectory']], 'UNC')) {
 					$partialAccounts[$i]['homeDirectory'] = $rawAccounts[$i][$ids['windowsUser_homeDirectory']];
 				}
@@ -3399,6 +3331,52 @@ class windowsUser extends baseModule implements passwordService {
 			new WindowsPasswordNotifyJob(),
 			new WindowsAccountExpirationCleanupJob()
 		);
+	}
+
+	/**
+	 * Returns a list of wildcards that can be replaced in input fileds.
+	 * E.g. "$firstname$" is replaced with "givenName" attribute value.
+	 *
+	 * @return array replacements as wildcard => value
+	 */
+	public function getWildCardReplacements() {
+		$replacements = array();
+		// first name
+		if (!empty($_POST['givenName'])) {
+			$replacements['firstname'] = $_POST['givenName'];
+		}
+		elseif (!empty($this->attributes['givenName'][0])) {
+			$replacements['firstname'] = $this->attributes['givenName'][0];
+		}
+		// last name
+		if (!empty($_POST['sn'])) {
+			$replacements['lastname'] = $_POST['sn'];
+		}
+		elseif (!empty($this->attributes['sn'][0])) {
+			$replacements['lastname'] = $this->attributes['sn'][0];
+		}
+		// user name
+		if (!empty($_POST['userPrincipalName'])) {
+			$replacements['user'] = $_POST['userPrincipalName'];
+		}
+		elseif (!empty($this->attributes['userPrincipalName'][0])) {
+			$replacements['user'] = $this->attributes['userPrincipalName'][0];
+		}
+		// cn
+		if (!empty($_POST['cn_0'])) {
+			$replacements['commonname'] = $_POST['cn_0'];
+		}
+		elseif (!empty($this->attributes['cn'][0])) {
+			$replacements['commonname'] = $this->attributes['cn'][0];
+		}
+		// mail
+		if (!empty($_POST['mail_0'])) {
+			$replacements['email'] = $_POST['mail_0'];
+		}
+		elseif (!empty($this->attributes['mail'][0])) {
+			$replacements['email'] = $this->attributes['mail'][0];
+		}
+		return $replacements;
 	}
 
 }

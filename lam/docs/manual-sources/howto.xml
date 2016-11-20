@@ -1006,8 +1006,8 @@ Have fun!
           <para>Mail routing: No longer added by default. Use profile editor
           to activate by default for new users/groups.</para>
 
-          <para>Personal: no more replacement of $user/$group on user
-          upload</para>
+          <para>Personal/Unix/Windows: no more replacement of e.g.
+          $user/$group on user upload</para>
         </section>
 
         <section>
@@ -3648,6 +3648,61 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
             </imageobject>
           </mediaobject>
         </screenshot>
+
+        <para><emphasis role="bold">Wildcards</emphasis></para>
+
+        <para>This module provides the following wildcards (others may be
+        provided by other modules):</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>$user: User name</para>
+          </listitem>
+
+          <listitem>
+            <para>$group: Groupe name (not numeric number)</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>You can use them in the following input fields on user edit
+        screen:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Common name</para>
+          </listitem>
+
+          <listitem>
+            <para>Gecos</para>
+          </listitem>
+
+          <listitem>
+            <para>Home directory</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Use this when some of your data always follows the same schema.
+        E.g. using "/home/$user" in home directory field can be used like this
+        to get "/home/myuser". You can set the wildcards in profile editor so
+        they are automatically applied for new users.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_unixUserWildcard1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para></para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_unixUserWildcard2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
       </section>
 
       <section>
@@ -4012,6 +4067,89 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           <mediaobject>
             <imageobject>
               <imagedata fileref="images/mod_windowsUser3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis role="bold">Wildcards</emphasis></para>
+
+        <para>This module provides the following wildcards (others may be
+        provided by other modules):</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>$firstname: First name</para>
+          </listitem>
+
+          <listitem>
+            <para>$lastname: Last name</para>
+          </listitem>
+
+          <listitem>
+            <para>$user: User name</para>
+          </listitem>
+
+          <listitem>
+            <para>$commonname: Common name</para>
+          </listitem>
+
+          <listitem>
+            <para>$email: Email address</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>You can use them in the following input fields on user edit
+        screen:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Common name</para>
+          </listitem>
+
+          <listitem>
+            <para>Display name</para>
+          </listitem>
+
+          <listitem>
+            <para>Email</para>
+          </listitem>
+
+          <listitem>
+            <para>Email alias</para>
+          </listitem>
+
+          <listitem>
+            <para>Home directory</para>
+          </listitem>
+
+          <listitem>
+            <para>Profile path</para>
+          </listitem>
+
+          <listitem>
+            <para>Script path</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Use this when some of your data always follows the same schema.
+        E.g. using "$firstname $lastname" in common name field can be used
+        like this to get "First Last". You can set the wildcards in profile
+        editor so they are automatically applied for new users.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_windowsUser6.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para></para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/mod_windowsUser7.png" />
             </imageobject>
           </mediaobject>
         </screenshot>
