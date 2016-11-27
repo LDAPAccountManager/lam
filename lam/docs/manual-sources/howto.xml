@@ -3853,7 +3853,8 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
         <para>Now select the tab "Module settings" and specify the list of
         possible security questions. Only these questions will be selectable
         when you later edit accounts unless you explicitly allow to enter
-        custom questions.</para>
+        custom questions. LAM Pro supports to set up to three security
+        questions per user.</para>
 
         <para>If you do not want to set backup email addresses then you can
         hide this option.</para>
@@ -9363,7 +9364,7 @@ OK (10 msec)</programlisting>
 
         <para>There are special fields that you may put on the self service
         page for your users. These fields allow them to change the reset
-        question and its answer. It is also possible to set a backup email
+        questions and its answers. It is also possible to set a backup email
         address to reset passwords with an external email address.</para>
 
         <screenshot>
@@ -9411,7 +9412,7 @@ OK (10 msec)</programlisting>
         </screenshot>
 
         <para>LAM Pro will use this information to find the correct LDAP entry
-        of this user. It then displays the user's security question and input
+        of this user. It then displays the user's security questions and input
         fields for his new password. If the answer is correct then the new
         password will be set. Additionally, pwdAccountLockedTime will be
         removed and shadowLastChange updated to the current time if
