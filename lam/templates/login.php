@@ -511,7 +511,7 @@ function display_LoginPage($config_object, $cfgMain) {
 						}
 						elseif ($licenseValidator->isExpiringSoon()) {
 							echo '<b>';
-							echo sprintf(_('Your license expires on %s.'), $licenseValidator->getLicense()->getExpirationDate()->format('Y-m-d'));
+							echo sprintf(_('Your licence expires on %s.'), $licenseValidator->getLicense()->getExpirationDate()->format('Y-m-d'));
 							echo '</b>';
 						}
 					?>
