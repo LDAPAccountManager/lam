@@ -143,21 +143,6 @@ B:
 
 C:
 
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public
-   License (LGPL) as published by the Free Software Foundation; either
-   version 2.1 of the License, or (at your option) any later version.
-
-   This library is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-   For more details on the GNU Lesser General Public License,
-   see http://www.gnu.org/copyleft/lesser.html
-
-
-D:
-
    Permission is hereby granted, free of charge, to any person obtaining
    a copy of this software and associated documentation files (the
    "Software"), to deal in the Software without restriction, including
@@ -183,10 +168,10 @@ main license and authors:
 
 lib/fpdf-lam.inc                            A  2008  Olivier Plathey
 lib/font/Vera*                              B  2003  Bitstream, Inc.
-templates/lib/*wz_tooltip.js                C        Walter Zorn
-lib/3rdParty/phpseclib                      D        Jim Wigginton
-templates/lib/*jquery*.js                   D  2010  John Resig, Paul Bakaus, Fred Heusschen
-templates/lib/*jquery-validationEngine-*.js D  2010  Cedric Dugas and Olivier Refalo
-templates/lib/*jquery-fineuploader-*.js     D  2010  Andrew Valums
+lib/3rdParty/phpseclib                      C        Jim Wigginton
+templates/lib/*jquery*.js                   C  2010  John Resig, Paul Bakaus, Fred Heusschen
+templates/lib/*jquery-dropmenu-*.js         C  2010  Fred Heusschen
+templates/lib/*jquery-validationEngine-*.js C  2010  Cedric Dugas and Olivier Refalo
+templates/lib/*jquery-fineuploader-*.js     C  2010  Andrew Valums
 
 

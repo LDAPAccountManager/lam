@@ -11580,11 +11580,15 @@ semodule -i httpdlocal.pp</programlisting>
 
       <orderedlist>
         <listitem>
-          <para>Initial version (LAM Pro 3.6)</para>
+          <para>Initial version (LAM Pro 3.6 - 4.4)</para>
         </listitem>
 
         <listitem>
-          <para>Added passwordSelfResetBackupMail (LAM Pro 4.5)</para>
+          <para>Added passwordSelfResetBackupMail (LAM Pro 4.5 - 5.5)</para>
+        </listitem>
+
+        <listitem>
+          <para>Multiple security questions (LAM Pro 5.6)</para>
         </listitem>
       </orderedlist>
 
@@ -11635,15 +11639,29 @@ semodule -i httpdlocal.pp</programlisting>
       <para><emphasis role="bold">Samba 4</emphasis></para>
 
       <para>Install the these update files by following the install
-      instructions in the file:</para>
+      instructions in the file. In case you you upgrade with a version
+      difference of 2 or more you will need to apply all intermediate update
+      scripts.</para>
 
       <itemizedlist>
         <listitem>
-          <para>samba4_version_1_to_2_attributes.ldif</para>
+          <para>samba4_version_1_to_2_attributes.ldif (upgrade from version 1
+          only)</para>
         </listitem>
 
         <listitem>
-          <para>samba4_version_1_to_2_objectClass.ldif</para>
+          <para>samba4_version_1_to_2_objectClass.ldif (upgrade from version 1
+          only)</para>
+        </listitem>
+
+        <listitem>
+          <para>samba4_version_2_to_3_attributes.ldif (upgrade from version
+          2)</para>
+        </listitem>
+
+        <listitem>
+          <para>samba4_version_2_to_3_objectClass.ldif (upgrade from version
+          2)</para>
         </listitem>
       </itemizedlist>
 
@@ -11655,8 +11673,20 @@ semodule -i httpdlocal.pp</programlisting>
 
       <para><emphasis role="bold">Windows</emphasis></para>
 
-      <para>Install the file "windows_version_1_to_2.ldif" by following the
-      install instructions in the file.</para>
+      <para>Install the file(s) by following the install instructions in the
+      file. In case you you upgrade with a version difference of 2 or more you
+      will need to apply all intermediate update scripts.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>windows_version_1_to_2.ldif (upgrade from version 1
+          only)</para>
+        </listitem>
+
+        <listitem>
+          <para>windows_version_2_to_3.ldif (upgrade from version 2)</para>
+        </listitem>
+      </itemizedlist>
     </section>
   </appendix>
 
@@ -11996,14 +12026,15 @@ a.lamLogo {
         accelerator</emphasis></para>
 
         <para>There are tools like <ulink
-        url="http://www.php.net/manual/en/book.apc.php">APC</ulink> (free) or
-        <ulink url="http://www.zend.com/en/products/server/">Zend
+        url="http://www.php.net/manual/en/book.apc.php">APC</ulink>/<ulink
+        url="http://php.net/manual/en/book.opcache.php">OpCache</ulink> (free)
+        or <ulink url="http://www.zend.com/en/products/server/">Zend
         Server</ulink> (commercial) that provide caching of PHP pages to
         improve performance. They will reduce the time for parsing the PHP
         pages and IO load.</para>
 
-        <para>This is a simply way to enhance performance since APC is part of
-        most Linux distributions.</para>
+        <para>This is a simply way to enhance performance since APC/OpCache is
+        part of most Linux distributions.</para>
 
         <para>If you use APC then make sure that it uses enough memory (e.g.
         "apc.shm_size=128M"). You can check the memory usage with the file
@@ -12019,6 +12050,17 @@ a.lamLogo {
 
         <literallayout>
 </literallayout>
+
+        <para>OpCache statistics can be shown with <ulink
+        url="https://github.com/rlerdorf/opcache-status">opcache-status</ulink>.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/opcache.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
 
         <para><emphasis role="bold">Disable session
         encryption</emphasis></para>
