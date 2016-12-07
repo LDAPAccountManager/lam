@@ -29,13 +29,13 @@ $Id$
 */
 
 /** security functions */
-include_once("../lib/security.inc");
+include_once("../../lib/security.inc");
 /** access to configuration */
-include_once('../lib/config.inc');
+include_once('../../lib/config.inc');
 /** status messages */
-include_once('../lib/status.inc');
+include_once('../../lib/status.inc');
 /** account modules */
-include_once('../lib/modules.inc');
+include_once('../../lib/modules.inc');
 
 
 // Start session
@@ -49,7 +49,7 @@ if (!checkIfWriteAccessIsAllowed()) die();
 
 // Redirect to startpage if user is not loged in
 if (!isLoggedIn()) {
-	metaRefresh("login.php");
+	metaRefresh("../login.php");
 	exit;
 }
 
@@ -88,7 +88,7 @@ if (isset($_GET['showldif'])) {
 	exit;
 }
 
-include 'main_header.php';
+include '../main_header.php';
 $scope = htmlspecialchars($_POST['scope']);
 
 // check if account type is ok
@@ -215,7 +215,6 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 			else {
 				// store accounts in session
 				$_SESSION['mass_accounts'] = lamEncrypt(serialize($accounts));
-				$_SESSION['mass_counter'] = 0;
 				$_SESSION['mass_errors'] = array();
 				$_SESSION['mass_failed'] = array();
 				$_SESSION['mass_postActions'] = array();
@@ -229,7 +228,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 				if (isset($_POST['createPDF']) && ($_POST['createPDF'] == 'on')) {
 					$_SESSION['mass_pdf']['structure'] = $_POST['pdfStructure'];
 					$_SESSION['mass_pdf']['counter'] = 0;
-					$_SESSION['mass_pdf']['file'] = '../tmp/lam_pdf' . getRandomNumber() . '.zip';
+					$_SESSION['mass_pdf']['file'] = '../../tmp/lam_pdf' . getRandomNumber() . '.zip';
 				}
 				else {
 					$_SESSION['mass_pdf']['structure'] = null;
@@ -238,8 +237,8 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 				$container->addElement(new htmlTitle(_("LAM has checked your input and is now ready to create the accounts.")), true);
 				$container->addElement(new htmlSpacer(null, '10px'), true);
 				$buttonContainer = new htmlTable();
-				$buttonContainer->addElement(new htmlLink(_("Upload accounts to LDAP"), 'massDoUpload.php', '../graphics/up.gif', true));
-				$buttonContainer->addElement(new htmlLink(_("Show LDIF file"), 'massBuildAccounts.php?showldif=true', '../graphics/edit.png', true));
+				$buttonContainer->addElement(new htmlLink(_("Upload accounts to LDAP"), 'massDoUpload.php', '../../graphics/up.gif', true));
+				$buttonContainer->addElement(new htmlLink(_("Show LDIF file"), 'massBuildAccounts.php?showldif=true', '../../graphics/edit.png', true));
 				$buttonContainer->addElement(new htmlSpacer('10px', null));
 				massPrintBackButton($scope, $selectedModules, $buttonContainer);
 				$container->addElement($buttonContainer, true);
@@ -263,7 +262,7 @@ parseHtml(null, $container, array(), false, $tabindex, $scope);
 
 echo '</div>';
 echo '</form>';
-include 'main_footer.php';
+include '../main_footer.php';
 
 /**
  * Prints a back button to the page where the user enters a file to upload.
