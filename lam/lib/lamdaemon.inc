@@ -99,7 +99,7 @@ function lamLoginSSH($handle) {
 			$username = $entry[0]['uid'][0];
 		}
 		if (empty($username)) {
-			throw new Exception(sprintf(_("Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"), $credentials[0]));
+			throw new Exception(sprintf(_("Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"), getAbstractDN($credentials[0])));
 		}
 	}
 	$password = $credentials[1];
