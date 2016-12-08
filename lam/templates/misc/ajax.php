@@ -88,6 +88,14 @@ class lamAjax {
 		elseif ($function == 'passwordStrengthCheck') {
 			lamAjax::checkPasswordStrength($jsonInput);
 		}
+		elseif ($function == 'upload') {
+			include_once('../../lib/upload.inc');
+			$uploader = new LAM\UPLOAD\Uploader($_GET['scope']);
+			ob_start();
+			$jsonOut = $uploader->doUpload();
+			ob_end_clean();
+			echo $jsonOut;
+		}
 	}
 
 	/**

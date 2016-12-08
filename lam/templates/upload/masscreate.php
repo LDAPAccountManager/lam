@@ -29,16 +29,17 @@ $Id$
 */
 
 /** security functions */
-include_once("../lib/security.inc");
+include_once("../../lib/security.inc");
 /** access to configuration */
-include_once('../lib/config.inc');
+include_once('../../lib/config.inc');
 /** status messages */
-include_once('../lib/status.inc');
+include_once('../../lib/status.inc');
 /** account modules */
-include_once('../lib/modules.inc');
+include_once('../../lib/modules.inc');
 /** Used to get PDF information. */
-include_once('../lib/pdfstruct.inc');
-
+include_once('../../lib/pdfstruct.inc');
+/** upload functions */
+include_once('../../lib/upload.inc');
 
 // Start session
 startSecureSession();
@@ -53,7 +54,7 @@ checkIfToolIsActive('toolFileUpload');
 
 // Redirect to startpage if user is not loged in
 if (!isLoggedIn()) {
-	metaRefresh("login.php");
+	metaRefresh("../login.php");
 	exit;
 }
 
@@ -73,7 +74,9 @@ if (isset($_GET['getCSV'])) {
 	exit;
 }
 
-include 'main_header.php';
+LAM\UPLOAD\Uploader::cleanSession();
+
+include '../main_header.php';
 
 // get possible types and remove those which do not support file upload
 $types = $_SESSION['config']->get_ActiveTypes();
@@ -173,7 +176,7 @@ for ($i = 0; $i < sizeof($types); $i++) {
 		$module = moduleCache::getModule($modules[$m], $types[$i]);
 		$iconImage = $module->getIcon();
 		if (!is_null($iconImage) && !(strpos($iconImage, 'http') === 0) && !(strpos($iconImage, '/') === 0)) {
-			$iconImage = '../graphics/' . $iconImage;
+			$iconImage = '../../graphics/' . $iconImage;
 		}
 		$innerTable->addElement(new htmlImage($iconImage));
 		$enabled = true;
@@ -223,7 +226,7 @@ function changeVisibleModules(element) {
 echo "</form>\n";
 
 echo '</div>';
-include 'main_footer.php';
+include '../main_footer.php';
 
 /**
 * Displays the acount type specific main page of the upload.
@@ -253,7 +256,7 @@ function showMainPage($scope, $selectedModules) {
 	$inputContainer->addElement(new htmlOutputText(_("CSV file")));
 	$inputContainer->addElement(new htmlInputFileUpload('inputfile'));
 	$inputContainer->addElement(new htmlSpacer('10px', null));
-	$inputContainer->addElement(new htmlLink(_("Download sample CSV file"), 'masscreate.php?getCSV=1', '../graphics/save.png', true));
+	$inputContainer->addElement(new htmlLink(_("Download sample CSV file"), 'masscreate.php?getCSV=1', '../../graphics/save.png', true));
 	$inputContainer->addElement(new htmlHiddenInput('scope', $scope));
 	$inputContainer->addElement(new htmlHiddenInput('selectedModules', implode(',', $selectedModules)), true);
 	// PDF
@@ -285,7 +288,7 @@ function showMainPage($scope, $selectedModules) {
 	$columnContainer = new htmlTable();
 	$columnContainer->setCSSClasses(array($scope . 'list', 'collapse'));
 	// DN options
-	$dnTitle = new htmlSubTitle(_("DN settings"), '../graphics/logo32.png');
+	$dnTitle = new htmlSubTitle(_("DN settings"), '../../graphics/logo32.png');
 	$dnTitle->colspan = 20;
 	$columnContainer->addElement($dnTitle, true);
 	$columnContainer->addElement($columnSpacer);
@@ -357,7 +360,7 @@ function showMainPage($scope, $selectedModules) {
 		$module = moduleCache::getModule($modules[$m], $scope);
 		$icon = $module->getIcon();
 		if (($icon != null) && !(strpos($icon, 'http') === 0) && !(strpos($icon, '/') === 0)) {
-			$icon = '../graphics/' . $icon;
+			$icon = '../../graphics/' . $icon;
 		}
 		$moduleTitle = new htmlSubTitle(getModuleAlias($modules[$m], $scope), $icon);
 		$moduleTitle->colspan = 20;
@@ -473,7 +476,7 @@ function showMainPage($scope, $selectedModules) {
 	$_SESSION['mass_csv'] = $sampleCSV;
 
 	echo '</div>';
-	include 'main_footer.php';
+	include '../main_footer.php';
 	die;
 }
 

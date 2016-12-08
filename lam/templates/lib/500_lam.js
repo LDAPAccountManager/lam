@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2014  Roland Gruber
+  Copyright (C) 2003 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ $Id$
 
 /**
  * Called when user clicks on a table row. This toggles the checkbox in the row.
- * 
+ *
  * @param box checkbox name
  */
 function list_click(box) {
@@ -38,7 +38,7 @@ function list_click(box) {
 
 /**
  * The user changed the value in the OU selection box. This will reload the list view with the new suffix.
- * 
+ *
  * @param type account type
  * @param element dropdown box
  */
@@ -48,7 +48,7 @@ function listOUchanged(type, element) {
 
 /**
  * The user pressed a key in the page number box. On enter this will reload the list view with the new page.
- * 
+ *
  * @param url target URL
  * @param e event
  */
@@ -83,7 +83,7 @@ function listResizeITabContentDiv() {
 
 /**
  * Shows the dialog to change the list settings.
- * 
+ *
  * @param title dialog title
  * @param okText text for Ok button
  * @param cancelText text for Cancel button
@@ -104,7 +104,7 @@ function listShowSettingsDialog(title, okText, cancelText) {
 /**
  * Submits the form by clicking on the given button if enter was pressed.
  * Example: SubmitForm('apply_filter', event);
- * 
+ *
  * @param id button ID
  * @param e event
  * @returns Boolean result
@@ -147,7 +147,7 @@ function addResizeHandler(item, min, max) {
 			}
 			jQuery(item).toggleClass('imgExpanded');
 		}
-	);	
+	);
 }
 
 /**
@@ -168,7 +168,7 @@ function list_switchAccountSelection() {
 
 /**
  * The user changed the value in the profile selection box. This will reload the login page with the new profile.
- * 
+ *
  * @param element dropdown box
  */
 function loginProfileChanged(element) {
@@ -177,7 +177,7 @@ function loginProfileChanged(element) {
 
 /**
  * Shows the dialog to delete a profile.
- * 
+ *
  * @param title dialog title
  * @param okText text for Ok button
  * @param cancelText text for Cancel button
@@ -206,7 +206,7 @@ function profileShowDeleteDialog(title, okText, cancelText, scope, selectFieldNa
 
 /**
  * Shows a simple dialog.
- * 
+ *
  * @param title dialog title
  * @param okText text for Ok button (optional, submits form)
  * @param cancelText text for Cancel button
@@ -230,7 +230,7 @@ function showSimpleDialog(title, okText, cancelText, formID, dialogDivID) {
 
 /**
  * Shows the dialog to change the password.
- * 
+ *
  * @param title dialog title
  * @param okText text for Ok button
  * @param cancelText text for Cancel button
@@ -259,7 +259,7 @@ function passwordShowChangeDialog(title, okText, cancelText, randomText, ajaxURL
 
 /**
  * Manages the password change when a button is pressed.
- * 
+ *
  * @param random "true" if random password should be generated
  * @param ajaxURL URL used for AJAX request
  */
@@ -292,7 +292,7 @@ function passwordHandleInput(random, ajaxURL) {
 
 /**
  * Manages the server reply to a password change request.
- * 
+ *
  * @param data JSON reply
  */
 function passwordHandleReply(data) {
@@ -306,12 +306,12 @@ function passwordHandleReply(data) {
 	}
 	else {
 		jQuery('#passwordDialogMessageArea').html(data.messages);
-	}	
+	}
 }
 
 /**
  * Shows a general confirmation dialog and submits a form if the user accepted.
- * 
+ *
  * @param title dialog title
  * @param okText text for Ok button
  * @param cancelText text for Cancel button
@@ -345,7 +345,7 @@ function showConfirmationDialog(title, okText, cancelText, dialogDiv, formName, 
 
 /**
  * Appends the input fields of a dialog back to the form and submits it.
- * 
+ *
  * @param dialogDiv ID of dialog div
  * @param formName name of form
  */
@@ -361,7 +361,7 @@ function appendDialogInputsToFormAndSubmit(dialogDiv, formName) {
 /**
  * Shows a simple confirmation dialog.
  * If the user presses Cancel then the current action is stopped (event.preventDefault()).
- * 
+ *
  * @param text dialog text
  * @param e event
  */
@@ -380,7 +380,7 @@ function confirmOrStopProcessing(text, e) {
 
 /**
  * Alines the elements with the given IDs to the same width.
- * 
+ *
  * @param elementIDs IDs
  */
 function equalWidth(elementIDs) {
@@ -401,7 +401,7 @@ function equalWidth(elementIDs) {
 
 /**
  * Alines the elements with the given IDs to the same height.
- * 
+ *
  * @param elementIDs IDs
  */
 function equalHeight(elementIDs) {
@@ -418,7 +418,7 @@ function equalHeight(elementIDs) {
 
 /**
  * Shows the dialog to change the list settings.
- * 
+ *
  * @param title dialog title
  * @param okText text for Ok button
  * @param cancelText text for Cancel button
@@ -430,7 +430,7 @@ function showDistributionDialog(title, okText, cancelText, scope, type, selectFi
 	// show dialog
 	var buttonList = {};
 	var dialogId = '';
-	
+
 	if (type == 'export') {
 		// show structure name to export
 		jQuery('#exportName').text(jQuery('[name=' + selectFieldName + ']').val());
@@ -451,7 +451,7 @@ function showDistributionDialog(title, okText, cancelText, scope, type, selectFi
 		buttonList[okText] = function() { document.forms["importDialogForm_" + scope].submit(); };
 	}
 	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
-	
+
 	jQuery('#' + dialogId).dialog({
 		modal: true,
 		title: title,
@@ -468,7 +468,7 @@ function showDistributionDialog(title, okText, cancelText, scope, type, selectFi
 
 /**
  * Stores the current scroll position in the form.
- * 
+ *
  * @param formName ID of form
  */
 function saveScrollPosition(formName) {
@@ -484,11 +484,11 @@ function saveScrollPosition(formName) {
 	    name: 'scrollPositionLeft',
 	    value: left
 	}).appendTo(jQuery('#' + formName));
-} 
+}
 
 /**
  * Shows the dialog to create a DNS zone.
- * 
+ *
  * @param title dialog title
  * @param okText text for Ok button
  * @param cancelText text for Cancel button
@@ -528,14 +528,14 @@ jQuery(document).ready(
 /**
  * Checks if the given field has the same value as the reference field.
  * Field is marked red if different and green if equal.
- * 
+ *
  * @param fieldID ID of field to check
  * @param fieldIDReference ID of reference field
  */
 function checkFieldsHaveSameValues(fieldID, fieldIDReference) {
 	var field = jQuery('#' + fieldID);
 	var fieldRef = jQuery('#' + fieldIDReference);
-	var check = 
+	var check =
 		function() {
 			var value = field.val();
 			var valueRef = fieldRef.val();
@@ -546,7 +546,7 @@ function checkFieldsHaveSameValues(fieldID, fieldIDReference) {
 			else {
 				if (value == valueRef) {
 					field.removeClass('markFail');
-					field.addClass('markOk');		
+					field.addClass('markOk');
 				}
 				else {
 					field.addClass('markFail');
@@ -561,12 +561,12 @@ function checkFieldsHaveSameValues(fieldID, fieldIDReference) {
 /**
  * Checks if the value of the given password field matches LAM's password policy.
  * Field is marked red if fail and green if ok.
- * 
+ *
  * @param fieldID ID of field to check
  */
 function checkPasswordStrength(fieldID, ajaxURL) {
 	var field = jQuery('#' + fieldID);
-	var check = 
+	var check =
 		function() {
 			var value = field.val();
 			var pwdJSON = {
@@ -580,7 +580,7 @@ function checkPasswordStrength(fieldID, ajaxURL) {
 
 /**
  * Manages the server reply to a password strength check request.
- * 
+ *
  * @param data JSON reply
  * @param fieldID input field ID
  */
@@ -593,19 +593,19 @@ function checkPasswordStrengthHandleReply(data, fieldID) {
 	}
 	else if (field.val() == '') {
 		field.removeClass('markFail');
-		field.removeClass('markOk');		
+		field.removeClass('markOk');
 	}
 	else {
 		field.addClass('markFail');
 		field.removeClass('markOk');
 		field.prop('title', data.result);
-	}	
+	}
 }
 
 /**
  * Updates the positions of a htmlSortable list in a hidden input field.
  * The positions must be separated by comma (e.g. "0,1,2,3").
- * 
+ *
  * @param id HTML ID of hidden input field
  * @param oldPos old position
  * @param newPos new position
@@ -631,7 +631,7 @@ function updateModulePositions(id, oldPos, newPos) {
 
 /**
  * Filters a select box by the value of the filter input field.
- * 
+ *
  * @param filterInput ID of input field for filter
  * @param select ID of select box to filter
  * @param event key event
@@ -657,4 +657,118 @@ function filterSelect(filterInput, select, event) {
 			);
 		}
 	});
+}
+
+window.lam = window.lam || {};
+window.lam.upload = window.lam.upload || {};
+
+/**
+ * Continues a CSV file upload.
+ *
+ * @param url URL where to get status JSON
+ */
+window.lam.upload.continueUpload = function(url) {
+	jQuery.ajax({
+		url: url,
+		method: 'POST',
+		data: 'jsonInput='
+	})
+	.done(function(jsonData){
+		if (!jsonData.accountsFinished) {
+			window.lam.upload.printBasicStatus(jsonData);
+		}
+		else if (!jsonData.postActionsFinished) {
+			window.lam.upload.printPostActionStatus(jsonData);
+		}
+		else if (!jsonData.pdfFinished) {
+			window.lam.upload.printPDFStatus(jsonData);
+		}
+		// next call if not finished
+		if (!jsonData.allDone) {
+			window.lam.upload.continueUpload(url);
+		}
+		else {
+			window.lam.upload.uploadDone(jsonData);
+		}
+	});
+};
+
+/**
+ * Prints the upload status when accounts are still being created.
+ *
+ * @param jsonData status JSON
+ */
+window.lam.upload.printBasicStatus = function(jsonData) {
+	var htmlOut = '<div class="title">';
+	htmlOut += '<h2 class="titleText">' + jsonData.title + '</h2>';
+	htmlOut += '</div>';
+	htmlOut += '<div id="progressbarGeneral"></div>';
+	jQuery('#uploadContent').html(htmlOut);
+	jQuery('#progressbarGeneral').progressbar({
+		value: jsonData.accountsProgress
+	});
+};
+
+/**
+ * Prints the upload status when post actions run.
+ *
+ * @param jsonData status JSON
+ */
+window.lam.upload.printPostActionStatus = function(jsonData) {
+	var htmlOut = '<div class="title">';
+	htmlOut += '<h2 class="titleText">' + jsonData.title + '</h2>';
+	htmlOut += '</div>';
+	htmlOut += '<div id="progressbarGeneral"></div>';
+	if (jsonData.postActionsTitle) {
+		htmlOut += '<h2>' + jsonData.postActionsTitle + '</h2>';
+		htmlOut += '<div id="progressbarPostActions"></div>';
+	}
+	jQuery('#uploadContent').html(htmlOut);
+	jQuery('#progressbarGeneral').progressbar({
+		value: 100
+	});
+	if (jsonData.postActionsTitle) {
+		jQuery('#progressbarPostActions').progressbar({
+			value: jsonData.postActionsProgress
+		});
+	}
+};
+
+/**
+ * Prints the upload status when PDFs are generated.
+ *
+ * @param jsonData status JSON
+ */
+window.lam.upload.printPDFStatus = function(jsonData) {
+	var htmlOut = '<div class="title">';
+	htmlOut += '<h2 class="titleText">' + jsonData.title + '</h2>';
+	htmlOut += '</div>';
+	htmlOut += '<div id="progressbarGeneral"></div>';
+	htmlOut += '<h2>' + jsonData.titlePDF + '</h2>';
+	htmlOut += '<div id="progressbarPDF"></div>';
+	jQuery('#uploadContent').html(htmlOut);
+	jQuery('#progressbarGeneral').progressbar({
+		value: 100
+	});
+	jQuery('#progressbarPDF').progressbar({
+		value: jsonData.pdfProgress
+	});
+};
+
+/**
+ * Upload finished, check for errors.
+ *
+ * @param jsonData status JSON
+ */
+window.lam.upload.uploadDone = function(jsonData) {
+	if (jsonData.errorHtml) {
+		var htmlOut = '<div class="subTitle">';
+		htmlOut += '<h4  class="subTitleText">' + jsonData.titleErrors + '</h4>';
+		htmlOut += '</div>';
+		htmlOut += jsonData.errorHtml;
+		jQuery('#uploadContent').html(htmlOut);
+	}
+	else {
+		top.location.href = '../lists/list.php?type=' + jsonData.scope + '&uploadAllOk';
+	}
 }

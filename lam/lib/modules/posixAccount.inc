@@ -2175,7 +2175,7 @@ class posixAccount extends baseModule implements passwordService {
 			}
 			// GECOS
 			if (!$this->isBooleanConfigOptionSet('posixAccount_hidegecos')) {
-				if ($rawAccount[$ids['posixAccount_gecos']] != "") {
+				if (!empty($rawAccount[$ids['posixAccount_gecos']])) {
 					if (get_preg($rawAccount[$ids['posixAccount_gecos']], 'gecos')) {
 						$partialAccounts[$i]['gecos'] = $this->checkASCII($rawAccount[$ids['posixAccount_gecos']]);
 					}
@@ -2189,14 +2189,14 @@ class posixAccount extends baseModule implements passwordService {
 					$gecos = "";
 					if (($rawAccount[$ids['inetOrgPerson_firstName']] != "") && ($rawAccount[$ids['inetOrgPerson_lastName']] != "")) {
 						$gecos = $rawAccount[$ids['inetOrgPerson_firstName']] . " " . $rawAccount[$ids['inetOrgPerson_lastName']];
-						if ($rawAccount[$ids['inetOrgPerson_telephone']] != "") {
+						if (!empty($rawAccount[$ids['inetOrgPerson_telephone']])) {
 							$gecos = $gecos . ",," . $rawAccount[$ids['inetOrgPerson_telephone']];  // double "," because room is unknown
-							if ($rawAccount[$ids['inetOrgPerson_fax']] != "") {
+							if (!empty($rawAccount[$ids['inetOrgPerson_fax']])) {
 								$gecos = $gecos . "," . $rawAccount[$ids['inetOrgPerson_fax']];
 							}
 						}
 					}
-					if ($gecos != "") {
+					if (!empty($gecos)) {
 						$partialAccounts[$i]['gecos'] = $this->checkASCII($gecos);
 					}
 				}
@@ -2452,7 +2452,7 @@ class posixAccount extends baseModule implements passwordService {
 						$temp['dn_gon'][$gonMap[$gons[$g]]][$memberAttr][] = $accounts[$i]['dn'];
 					}
 				}
-				if ($dataRow[$col_home] != "") {
+				if (!empty($dataRow[$col_home])) {
 					$temp['createHomes'][] = $i;
 				}
 			}

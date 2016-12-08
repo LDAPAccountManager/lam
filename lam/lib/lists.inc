@@ -584,7 +584,7 @@ class lamList {
 			}
 			// file upload
 			elseif (isset($_POST['fileUpload']) && checkIfNewEntriesAreAllowed($this->type)){
-				metaRefresh("../masscreate.php?type=" . $this->type);
+				metaRefresh("../upload/masscreate.php?type=" . $this->type);
 				exit;
 			}
 		}
@@ -1091,7 +1091,7 @@ class lamList {
 		elseif (isset($_GET['uploadAllOk'])) {
 			StatusMessage('INFO', _("Upload has finished"));
 			if (isset($_SESSION['mass_pdf']['file'])) {
-				StatusMessage('INFO', sprintf(_('You can download your PDF files {link=%s}{color=#d2131a}here{endcolor}{endlink}.'), '../' . $_SESSION['mass_pdf']['file']));
+				StatusMessage('INFO', sprintf(_('You can download your PDF files {link=%s}{color=#d2131a}here{endcolor}{endlink}.'), $_SESSION['mass_pdf']['file']));
 			}
 		}
 		elseif (isset($_GET['accountEditInvalidID'])) {
