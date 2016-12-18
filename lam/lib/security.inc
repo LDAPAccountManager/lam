@@ -525,7 +525,8 @@ function validateSecurityToken($post = true) {
 		return;
 	}
 	if (empty($vars[getSecurityTokenName()]) || ($vars[getSecurityTokenName()] != $_SESSION[getSecurityTokenName()])) {
-		logNewMessage(LOG_ERR, 'Security token does not match POST data.');
+		$method = $post ? 'POST' : 'GET';
+		logNewMessage(LOG_ERR, 'Security token does not match ' . $method . ' data.');
 		die();
 	}
 }
