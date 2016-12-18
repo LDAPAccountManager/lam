@@ -464,6 +464,7 @@ function display_LoginPage($config_object, $cfgMain) {
 					<form action="login.php" method="post">
 					<?php
 						$table = new htmlTable('500px');
+						$table->setCSSClasses(array('login-dialog-bottom'));
 						$line = new htmlHorizontalLine();
 						$line->colspan = 2;
 						$table->addElement($line, true);
