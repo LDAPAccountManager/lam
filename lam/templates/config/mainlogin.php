@@ -70,11 +70,14 @@ echo $_SESSION['header'];
 
 ?>
 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>
 			<?php
 				echo _("Login");
 			?>
 		</title>
+		<link rel="stylesheet" type="text/css" href="../../style/responsive/105_normalize.css">
+		<link rel="stylesheet" type="text/css" href="../../style/responsive/110_foundation.css">
 	<?php
 		// include all CSS files
 		$cssDirName = dirname(__FILE__) . '/../../style';
@@ -94,7 +97,7 @@ echo $_SESSION['header'];
 	?>
 		<link rel="shortcut icon" type="image/x-icon" href="../../graphics/favicon.ico">
 	</head>
-	<body>
+	<body class="admin">
 		<?php
 			// set focus on password field
 			echo "<script type=\"text/javascript\" language=\"javascript\">\n";
@@ -118,6 +121,8 @@ echo $_SESSION['header'];
 				echo "<script type=\"text/javascript\" src=\"../lib/" . $jsEntry . "\"></script>\n";
 			}
 		?>
+		<script type="text/javascript" src="../lib/extra/responsive/200_modernizr.js"></script>
+		<script type="text/javascript" src="../lib/extra/responsive/250_foundation.js"></script>
 		<table border=0 width="100%" class="lamHeader ui-corner-all">
 			<tr>
 				<td align="left" height="30">
@@ -147,35 +152,44 @@ echo $_SESSION['header'];
 		<tr><td>
 		<?php
 		$spacer = new htmlSpacer('20px', '20px');
-		$table = new htmlTable();
-		$caption = new htmlOutputText(_("Please enter the master password to change the general preferences:"));
-		$table->addElement($caption, true);
-		$table->addElement($spacer, true);
+		$group = new htmlGroup();
+		$row = new htmlResponsiveRow();
+		$row->add(new htmlOutputText(_("Please enter the master password to change the general preferences:")), 12);
+		$group->addElement($row);
 		// print message if login was incorrect or no config profiles are present
-		if (isset($message)) {  // $message is set by confmain.php (requires conflogin.php then)
-			$messageField = new htmlStatusMessage('ERROR', $message);
-			$table->addElement($messageField, true);
-			$table->addElement($spacer, true);
+		if (isset($message)) {
+		    $messageField = new htmlStatusMessage('ERROR', $message);
+		    $row = new htmlResponsiveRow();
+		    $row->add($messageField, 12);
+		    $group->addElement($spacer);
+		    $group->addElement($row);
 		}
-		// password field
-		$gap = new htmlSpacer('1px', null);
+		$group->addElement($spacer);
+		// password input
+		$label = new htmlOutputText(_('Master password'));
 		$passwordGroup = new htmlGroup();
-		$passwordGroup->alignment = htmlElement::ALIGN_CENTER;
-		$passwordGroup->addElement(new htmlOutputText(_('Master password')));
-		$passwordGroup->addElement($gap);
 		$passwordField = new htmlInputField('passwd');
 		$passwordField->setFieldSize(15);
 		$passwordField->setIsPassword(true);
 		$passwordGroup->addElement($passwordField);
-		$passwordGroup->addElement($gap);
-		$passwordGroup->addElement(new htmlButton('submit', _("Ok")));
-		$passwordGroup->addElement($gap);
 		$passwordGroup->addElement(new htmlHelpLink('236'));
-		$table->addElement($passwordGroup, true);
-
-
+		$passwordDiv = new htmlDiv(null, $passwordGroup);
+		$passwordDiv->setCSSClasses(array('nowrap'));
+		$row = new htmlResponsiveRow($label, $passwordDiv);
+		$group->addElement($row);
+		// button
+		$group->addElement($spacer);
+		$okButton = new htmlButton('submit', _("Ok"));
+		$row = new htmlResponsiveRow();
+		$row->add($okButton, 12);
+		$row->setCSSClasses(array(''));
+		$group->addElement($row);
+		
+		$div = new htmlDiv(null, $group);
+		$div->setCSSClasses(array('centeredTable'));
+		
 		$tabindex = 1;
-		parseHtml(null, $table, array(), false, $tabindex, 'user');
+		parseHtml(null, $div, array(), false, $tabindex, 'user');
 		?>
 		</td></tr>
 		</table>
