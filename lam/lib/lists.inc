@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2015  Roland Gruber
+  Copyright (C) 2003 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -865,7 +865,7 @@ class lamList {
 		$ret = array();
 		$attr_string = $_SESSION["config"]->get_listAttributes($this->type);
 		$temp_array = explode(";", $attr_string);
-		$hash_table = getListAttributeDescriptions($this->type);
+		$hash_table = LAM\TYPES\getListAttributeDescriptions($this->type);
 		$hash_table = array_change_key_case($hash_table, CASE_LOWER);
 		// generate column attributes and descriptions
 		for ($i = 0; $i < sizeof($temp_array); $i++) {

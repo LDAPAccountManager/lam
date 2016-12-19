@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2015  Roland Gruber
+  Copyright (C) 2006 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -154,7 +154,7 @@ function checkSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOn
 * @return array profile names (array(<account type> => array(<profile1>, <profile2>, ...)))
 */
 function getSelfServiceProfiles() {
-	$types = getTypes();
+	$types = LAM\TYPES\getTypes();
 	$dir = dir(substr(__FILE__, 0, strlen(__FILE__) - 20) . "/config/selfService");
 	$ret = array();
 	while ($entry = $dir->read()){

@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2015  Roland Gruber
+  Copyright (C) 2003 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -121,11 +121,11 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 			$dnLabel->colspan = 5;
 			$container->addElement($dnLabel, true);
 			$container->addElement(new htmlSpacer(null, '10px'), true);
-			$container->addElement(new htmlButton('sure', _("Delete")));			
+			$container->addElement(new htmlButton('sure', _("Delete")));
 			$container->addElement(new htmlButton('abort', _("Cancel")));
-			$container->addElement(new htmlHiddenInput('deleteOU', 'submit'));		
+			$container->addElement(new htmlHiddenInput('deleteOU', 'submit'));
 			$container->addElement(new htmlHiddenInput('deletename', $_POST['deleteableOU']));
-			addSecurityTokenToMetaHTML($container);		
+			addSecurityTokenToMetaHTML($container);
 			parseHtml(null, $container, array(), false, $tabindex, 'user');
 			echo "</form>";
 			echo '</div>';
@@ -142,7 +142,7 @@ display_main($message, $error);
 
 /**
  * Displays the main page of the OU editor
- * 
+ *
  * @param String $message info message
  * @param String $error error message
  */
@@ -165,14 +165,14 @@ function display_main($message, $error) {
 		$msg->colspan = 5;
 		$container->addElement($msg, true);
 	}
-	
+
 	$types = array();
 	$typeList = $_SESSION['config']->get_ActiveTypes();
 	for ($i = 0; $i < sizeof($typeList); $i++) {
 		if (isAccountTypeHidden($typeList[$i]) || !checkIfWriteAccessIsAllowed($typeList[$i])) {
 			continue;
 		}
-		$types[$typeList[$i]] = getTypeAlias($typeList[$i]);
+		$types[$typeList[$i]] = LAM\TYPES\getTypeAlias($typeList[$i]);
 	}
 	natcasesort($types);
 	$options = array();
@@ -184,7 +184,7 @@ function display_main($message, $error) {
 		}
 		$options[$title] = $elements;
 	}
-	
+
 	if (!empty($options)) {
 		// new OU
 		$container->addElement(new htmlOutputText(_("New organisational unit")));
@@ -197,9 +197,9 @@ function display_main($message, $error) {
 		$container->addElement(new htmlInputField('newOU'));
 		$container->addElement(new htmlButton('createOU', _("Ok")));
 		$container->addElement(new htmlHelpLink('601'), true);
-		
+
 		$container->addElement(new htmlSpacer(null, '10px'), true);
-	
+
 		// delete OU
 		$container->addElement(new htmlOutputText(_("Delete organisational unit")));
 		$deleteableOUSelect = new htmlSelect('deleteableOU', $options, array());
@@ -212,7 +212,7 @@ function display_main($message, $error) {
 		$container->addElement(new htmlButton('deleteOU', _("Ok")));
 		$container->addElement(new htmlHelpLink('602'), true);
 	}
-	
+
 	addSecurityTokenToMetaHTML($container);
 	parseHtml(null, $container, array(), false, $tabindex, 'user');
 	echo ("</form>\n");

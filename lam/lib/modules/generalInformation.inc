@@ -40,7 +40,7 @@ class generalInformation extends baseModule {
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
-		return in_array($this->get_scope(), getTypes());
+		return in_array($this->get_scope(), LAM\TYPES\getTypes());
 	}
 
 	/**

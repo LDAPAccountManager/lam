@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2011 - 2013  Roland Gruber
+                2011 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ $Id$
 
 /**
  * Functions to manage the PDF structures.
- * 
+ *
  * @author Michael Duergner
  * @package PDF
  */
@@ -98,7 +98,7 @@ function loadPDFStructureDefinitions($scope='user',$pdf_structure='default') {
 
 /**
  * Saves PDF structure definitions to XML file in format: <name>.<scope>.xml
- * 
+ *
  * @param string $scope account type
  * @param string $definition Name of definition
  * @return string "no perms" if access denied or "ok".
@@ -132,7 +132,7 @@ function savePDFStructureDefinitions($scope,$definition) {
 				}
 			}
 			if($entry['type'] == 'open') {
-				$file .= $ident . '<' . strtolower($entry['tag']) . $attributes . ">\n"; 
+				$file .= $ident . '<' . strtolower($entry['tag']) . $attributes . ">\n";
 			}
 			elseif($entry['type'] == 'close') {
 				$file .= $ident . '</' . strtolower($entry['tag']) . ">\n";
@@ -184,7 +184,7 @@ function getAvailableLogos() {
 	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/logos/';
 	$dirHandle = opendir($dirPath);
 	while($file = readdir($dirHandle)) {
-		if(!is_dir($file) && $file != '.' && $file != '..' && preg_match('/\\.(jpg|png)$/',$file)) {
+		if(!is_dir($file) && $file != '.' && $file != '..' && preg_match('/\\.(jpg|png)$/i',$file)) {
 			$infos = getimagesize($dirPath . $file);
 			if($infos[0] <= 2000 && $infos[1] <= 300) {
 				array_push($return, array('filename' => $file, 'infos' => $infos));
@@ -239,13 +239,13 @@ function copyPdfProfiles($pdfProfiles, $scope, $dests = array()) {
 
 /**
  * Uploads a PDF logo file for the current server profile.
- * 
+ *
  * @param String $file full path of temporary file
  * @param String $name file name
  * @return StatusMessage status message to display
  */
 function uploadPDFLogo($file, $name) {
-	if (!preg_match('/[a-zA-Z0-9_-]+\\.(png)|(jpg)/', $name)) {
+	if (!preg_match('/[a-zA-Z0-9_-]+\\.(png)|(jpg)/i', $name)) {
 		return new htmlStatusMessage('ERROR', _('Unable to upload logo file.'), _('The file name must end with ".png" or ".jpg".'));
 	}
 	$infos = getimagesize($file);
@@ -264,7 +264,7 @@ function uploadPDFLogo($file, $name) {
 
 /**
  * Deletes a PDF logo file.
- * 
+ *
  * @param String $name file name
  * @return StatusMessage status message to display
  */
@@ -289,7 +289,7 @@ function deletePDFLogo($name) {
 			$data = loadPDFStructureDefinitions($type, $structure);
 			if ($data['page_definitions']['filename'] == $name) {
 				return new htmlStatusMessage('ERROR', _('Unable to delete logo file.'),
-					sprintf(_('Logo is still in use by PDF structure "%s" in account type "%s".'), $structure, getTypeAlias($type)));
+					sprintf(_('Logo is still in use by PDF structure "%s" in account type "%s".'), $structure, LAM\TYPES\getTypeAlias($type)));
 			}
 		}
 	}

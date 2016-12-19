@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2014  Roland Gruber
+  Copyright (C) 2004 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -160,7 +160,7 @@ echo "<div style=\"display: none;\">\n";
 	echo "<input name=\"moduleSettings\" type=\"submit\" value=\" \">";
 	echo "<input name=\"jobs\" type=\"submit\" value=\" \">";
 echo "</div>\n";
-	
+
 // tabs
 echo '<div class="ui-tabs ui-widget ui-widget-content ui-corner-all">';
 
@@ -200,7 +200,7 @@ jQuery(document).ready(function() {
 	var maxWidth = 0;
 	jQuery("select").each(function(){
 		if (jQuery(this).width() > maxWidth)
-		maxWidth = jQuery(this).width();   
+		maxWidth = jQuery(this).width();
 	});
 	jQuery("select").width(maxWidth);
 });
@@ -212,7 +212,7 @@ jQuery(document).ready(function() {
 
 $account_list = array();
 for ($i = 0; $i < sizeof($types); $i++) {
-	$account_list[] = array($types[$i], getTypeAlias($types[$i]));
+	$account_list[] = array($types[$i], LAM\TYPES\getTypeAlias($types[$i]));
 }
 
 $container = new htmlTable();
@@ -300,7 +300,7 @@ function config_showAccountModules($scope, $title, &$container) {
 			}
 		}
 	}
-	
+
 	// add account module selection
 	$container->addElement(new htmlSubTitle($title, '../../graphics/' . $scope . '.png'), true);
 	$container->addElement(new htmlOutputText(_("Selected modules")));
@@ -412,7 +412,7 @@ function checkInput() {
 		$depends = check_module_depends($selected, getModulesDependencies($scope));
 		if ($depends != false) {
 			for ($i = 0; $i < sizeof($depends); $i++) {
-				$errors[] = array('ERROR', getTypeAlias($scope), _("Unsolved dependency:") . ' ' .
+				$errors[] = array('ERROR', LAM\TYPES\getTypeAlias($scope), _("Unsolved dependency:") . ' ' .
 					$depends[$i][0] . " (" . $depends[$i][1] . ")");
 			}
 		}
@@ -420,7 +420,7 @@ function checkInput() {
 		$conflicts = check_module_conflicts($selected, getModulesDependencies($scope));
 		if ($conflicts != false) {
 			for ($i = 0; $i < sizeof($conflicts); $i++) {
-				$errors[] = array('ERROR', getTypeAlias($scope), _("Conflicting module:") . ' ' .
+				$errors[] = array('ERROR', LAM\TYPES\getTypeAlias($scope), _("Conflicting module:") . ' ' .
 					$conflicts[$i][0] . " (" . $conflicts[$i][1] . ")");
 			}
 		}
@@ -432,8 +432,8 @@ function checkInput() {
 			}
 		}
 		if ($baseCount != 1) {
-			$errors[] = array('ERROR', getTypeAlias($scope), _("No or more than one base module selected!"));
-		}	
+			$errors[] = array('ERROR', LAM\TYPES\getTypeAlias($scope), _("No or more than one base module selected!"));
+		}
 	}
 	$conf->set_typeSettings($typeSettings);
 

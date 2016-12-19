@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2015  Roland Gruber
+                2005 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -80,7 +80,7 @@ for ($i = 0; $i < sizeof($scopes); $i++) {
 	if (isAccountTypeHidden($scopes[$i]) || !checkIfWriteAccessIsAllowed($scopes[$i])) {
 		continue;
 	}
-	$sortedScopes[$scopes[$i]] = getTypeAlias($scopes[$i]);
+	$sortedScopes[$scopes[$i]] = LAM\TYPES\getTypeAlias($scopes[$i]);
 }
 natcasesort($sortedScopes);
 
@@ -90,12 +90,12 @@ $container->addElement(new htmlTitle(_('PDF editor')), true);
 if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
 	// delete structure
 	if (deletePDFStructureDefinition($_POST['profileDeleteType'], $_POST['profileDeleteName'])) {
-		$message = new htmlStatusMessage('INFO', _('Deleted PDF structure.'), getTypeAlias($_POST['profileDeleteType']) . ': ' . htmlspecialchars($_POST['profileDeleteName']));
+		$message = new htmlStatusMessage('INFO', _('Deleted PDF structure.'), LAM\TYPES\getTypeAlias($_POST['profileDeleteType']) . ': ' . htmlspecialchars($_POST['profileDeleteName']));
 		$message->colspan = 10;
 		$container->addElement($message, true);
 	}
 	else {
-		$message = new htmlStatusMessage('ERROR', _('Unable to delete PDF structure!'), getTypeAlias($_POST['profileDeleteType']) . ': ' . htmlspecialchars($_POST['profileDeleteName']));
+		$message = new htmlStatusMessage('ERROR', _('Unable to delete PDF structure!'), LAM\TYPES\getTypeAlias($_POST['profileDeleteType']) . ': ' . htmlspecialchars($_POST['profileDeleteName']));
 		$message->colspan = 10;
 		$container->addElement($message, true);
 	}
@@ -300,7 +300,7 @@ include '../main_header.php';
 			$container->addElement(new htmlHiddenInput('importexport', '1'));
 			$container->addElement(new htmlHiddenInput('scope', $scope), true);
 			addSecurityTokenToMetaHTML($container);
-			
+
 			parseHtml(null, $container, array(), false, $tabindex, 'user');
 
 			echo '</form>';
@@ -312,21 +312,21 @@ include '../main_header.php';
 		echo "<form id=\"exportDialogForm\" method=\"post\" action=\"pdfmain.php\">\n";
 
 		$container = new htmlTable();
-		
+
 		$container->addElement(new htmlOutputText(_('PDF structure')), true);
 		$expStructGroup = new htmlTable();
 		$expStructGroup->addElement(new htmlSpacer('10px', null));
 		$expStructGroup->addElement(new htmlDiv('exportName', ''));
 		$container->addElement($expStructGroup, true);
 		$container->addElement(new htmlSpacer(null, '10px'), true);
-		
+
 		$container->addElement(new htmlOutputText(_("Target server profile")), true);
 		foreach ($configProfiles as $key => $value) {
 			$tmpProfiles[$value] = $value;
 		}
 		natcasesort($tmpProfiles);
 		$tmpProfiles['*' . _('Global templates')] = 'templates*';
-		
+
 		$findProfile = array_search($_SESSION['config']->getName(), $tmpProfiles);
 		if ($findProfile !== false) {
 			unset($tmpProfiles[$findProfile]);
@@ -339,7 +339,7 @@ include '../main_header.php';
 		$container->addElement($select);
 		$container->addElement(new htmlHelpLink('409'), true);
 		$container->addElement(new htmlSpacer(null, '10px'), true);
-		
+
 		$container->addElement(new htmlOutputText(_("Master password")), true);
 		$exportPasswd = new htmlInputField('passwd');
 		$exportPasswd->setIsPassword(true);
@@ -347,7 +347,7 @@ include '../main_header.php';
 		$container->addElement(new htmlHelpLink('236'));
 		$container->addElement(new htmlHiddenInput('importexport', '1'), true);
 		addSecurityTokenToMetaHTML($container);
-		
+
 		parseHtml(null, $container, array(), false, $tabindex, 'user');
 
 		echo '</form>';

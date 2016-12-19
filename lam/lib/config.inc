@@ -657,7 +657,7 @@ class LAMConfig {
 			fclose($file);
 		}
 		// check types
-		$allTypes = getTypes();
+		$allTypes = LAM\TYPES\getTypes();
 		$activeTypes = $this->get_ActiveTypes();
 		for ($i = 0; $i < sizeof($activeTypes); $i++) {
 			if (!in_array($activeTypes[$i], $allTypes)) {

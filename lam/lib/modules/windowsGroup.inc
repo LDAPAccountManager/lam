@@ -720,7 +720,7 @@ class windowsGroup extends baseModule {
 		$options = array();
 		$optionsSelected = array();
 		for ($i = 0; $i < sizeof($types); $i++) {
-			$options[getTypeAlias($types[$i])] = $types[$i];
+			$options[LAM\TYPES\getTypeAlias($types[$i])] = $types[$i];
 			if ($types[$i] == 'user') {
 				$optionsSelected[] = $types[$i];
 			}

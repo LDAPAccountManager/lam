@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2007 - 2015  Roland Gruber
+                2007 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ class sambaGroupMapping extends baseModule {
 	private $cachedDomainList = null;
 	/** cache for existing Samba entries (array(dn => cn)) */
 	private $sidCache = null;
-	
+
 	/**
 	* Creates a new module for Samba 3 groups.
 	*
@@ -79,7 +79,7 @@ class sambaGroupMapping extends baseModule {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -90,7 +90,7 @@ class sambaGroupMapping extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -192,7 +192,7 @@ class sambaGroupMapping extends baseModule {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Gets the cn from the Unix group module.
 	 *
@@ -210,7 +210,7 @@ class sambaGroupMapping extends baseModule {
 		}
 		return null;
 	}
-	
+
 	/**
 	* Returns an array containing all input columns for the file upload.
 	*
@@ -232,7 +232,7 @@ class sambaGroupMapping extends baseModule {
 	*
 	* @param array $selectedModules list of selected account modules
 	* @return array column list
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	public function get_uploadColumns($selectedModules) {
@@ -327,7 +327,7 @@ class sambaGroupMapping extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -372,7 +372,7 @@ class sambaGroupMapping extends baseModule {
 				$options[] = $names[$i];
 			}
 			$return->addElement(new htmlTableExtendedSelect('sambaSID', $options, $selected, _('Windows group'), 'sambaSID'), true);
-			// group type	
+			// group type
 			$names = array_keys($this->sambaGroupTypes);
 			$selected = array( _('Domain group') );
 			for ($i=0; $i<count($names); $i++) {
@@ -417,9 +417,9 @@ class sambaGroupMapping extends baseModule {
 			$memberHelp = new htmlHelpLink('sambaSIDList');
 			$memberHelp->alignment = htmlElement::ALIGN_TOP;
 			$return->addElement($memberHelp, true);
-			
+
 			$return->addElement(new htmlSpacer(null, '10px'), true);
-			
+
 			$remButton = new htmlButton('remObjectClass', _('Remove Samba 3 extension'));
 			$remButton->colspan = 3;
 			$return->addElement($remButton);
@@ -432,7 +432,7 @@ class sambaGroupMapping extends baseModule {
 
 	/**
 	* This function will create the meta HTML code to show a page to add members.
-	* 
+	*
 	* @return htmlElement HTML meta data
 	*/
 	function display_html_members() {
@@ -495,7 +495,7 @@ class sambaGroupMapping extends baseModule {
 		$options = array();
 		$optionsSelected = array();
 		for ($i = 0; $i < sizeof($types); $i++) {
-			$options[getTypeAlias($types[$i])] = $types[$i];
+			$options[LAM\TYPES\getTypeAlias($types[$i])] = $types[$i];
 			if ($types[$i] == 'group') {
 				$optionsSelected[] = $types[$i];
 			}
@@ -511,7 +511,7 @@ class sambaGroupMapping extends baseModule {
 		$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'membersBack', _('Back')));
 		return $return;
 	}
-	
+
 	/**
 	* Processes user input of the members page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
@@ -622,7 +622,7 @@ class sambaGroupMapping extends baseModule {
 
 	/**
 	* This function is used to check if all settings for this module have been made.
-	* 
+	*
 	* @see baseModule::module_complete
 	*
 	* @return boolean true, if settings are complete
@@ -739,7 +739,7 @@ class sambaGroupMapping extends baseModule {
 		}
 		return $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 	}
-	
+
 	/**
 	 * Returns a list of existing Samba 3 domains.
 	 *
@@ -780,7 +780,7 @@ class sambaGroupMapping extends baseModule {
 			$this->sidCache[$result['sambasid'][0]] = $label;
 		}
 	}
-	
+
 }
 
 ?>

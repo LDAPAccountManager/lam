@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2015  Roland Gruber
+  Copyright (C) 2013 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -88,7 +88,7 @@ function displayStartPage() {
 	$types = $_SESSION['config']->get_ActiveTypes();
 	$suffixes = array();
 	foreach ($types as $type) {
-		$suffixes[getTypeAlias($type)] = $_SESSION['config']->get_Suffix($type);
+		$suffixes[LAM\TYPES\getTypeAlias($type)] = $_SESSION['config']->get_Suffix($type);
 		$hideRules[$_SESSION['config']->get_Suffix($type)] = array('otherSuffix');
 	}
 	$treeSuffix = $_SESSION['config']->get_Suffix('tree');
@@ -172,14 +172,14 @@ function displayStartPage() {
 	$buttonGroup->addElement($applyButton);
 	$container->addElement($buttonGroup, true);
 	$container->addVerticalSpace('10px');
-	
+
 	// run actions
 	if ((sizeof($errors) == 0) && (isset($_POST['dryRun']) || isset($_POST['applyChanges']))) {
 		runActions($container);
 	}
-	
+
 	addSecurityTokenToMetaHTML($container);
-	
+
 	parseHtml(null, $container, array(), false, $tabindex, 'user');
 	echo ("</form>\n");
 	echo '</div>';
@@ -188,7 +188,7 @@ function displayStartPage() {
 
 /**
  * Runs the dry run and change actions.
- * 
+ *
  * @param htmlTable $container container
  */
 function runActions(&$container) {
@@ -243,7 +243,7 @@ function runActions(&$container) {
 	// JS block for AJAX status update
 	$ajaxBlock = '
 		jQuery.get(\'multiEdit.php?ajaxStatus\', null, function(data) {handleReply(data);}, \'json\');
-		
+
 		function handleReply(data) {
 			jQuery(\'#progressBar\').progressbar({value: data.progress, max: 120});
 			jQuery(\'#progressArea\').html(data.content);
@@ -292,7 +292,7 @@ function runAjaxActions() {
 
 /**
  * Reads the LDAP entries from the directory.
- * 
+ *
  * @return array status
  */
 function readLDAPData() {
@@ -338,7 +338,7 @@ function readLDAPData() {
 
 /**
  * Generates the required actions based on the read LDAP data.
- * 
+ *
  * @return array status
  */
 function generateActions() {
@@ -388,7 +388,7 @@ function generateActions() {
 
 /**
  * Prints the dryRun output.
- * 
+ *
  * @return array status
  */
 function dryRun() {
@@ -423,7 +423,7 @@ function dryRun() {
 			case DEL:
 				$ldif .= 'delete: ' . $attr . "\n";
 				if (empty($val)) {
-					$log .= '-' . $attr . "\r\n";	
+					$log .= '-' . $attr . "\r\n";
 				}
 				else {
 					$log .= '-' . $attr . '=' . $val . "\r\n";
@@ -468,7 +468,7 @@ function dryRun() {
 
 /**
  * Runs the actual modifications.
- * 
+ *
  * @return array status
  */
 function doModify() {
@@ -533,7 +533,7 @@ function doModify() {
 
 /**
  * Returns the HTML code for a htmlStatusMessage
- * 
+ *
  * @param htmlStatusMessage $msg message
  * @return String HTML code
  */

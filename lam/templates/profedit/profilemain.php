@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2015  Roland Gruber
+  Copyright (C) 2003 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -58,9 +58,9 @@ for ($i = 0; $i < sizeof($types); $i++) {
 	if (isAccountTypeHidden($types[$i]) || !checkIfWriteAccessIsAllowed($types[$i])) {
 		continue;
 	}
-	$profileClassesTemp[getTypeAlias($types[$i])] = array(
+	$profileClassesTemp[LAM\TYPES\getTypeAlias($types[$i])] = array(
 		'scope' => $types[$i],
-		'title' => getTypeAlias($types[$i]),
+		'title' => LAM\TYPES\getTypeAlias($types[$i]),
 		'profiles' => "");
 }
 $profileClassesKeys = array_keys($profileClassesTemp);
@@ -105,12 +105,12 @@ if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
 	}
 	// delete profile
 	if (delAccountProfile($_POST['profileDeleteName'], $_POST['profileDeleteType'])) {
-		$message = new htmlStatusMessage('INFO', _('Deleted profile.'), getTypeAlias($_POST['profileDeleteType']) . ': ' . htmlspecialchars($_POST['profileDeleteName']));
+		$message = new htmlStatusMessage('INFO', _('Deleted profile.'), LAM\TYPES\getTypeAlias($_POST['profileDeleteType']) . ': ' . htmlspecialchars($_POST['profileDeleteName']));
 		$message->colspan = 10;
 		$container->addElement($message, true);
 	}
 	else {
-		$message = new htmlStatusMessage('ERROR', _('Unable to delete profile!'), getTypeAlias($_POST['profileDeleteType']) . ': ' . htmlspecialchars($_POST['profileDeleteName']));
+		$message = new htmlStatusMessage('ERROR', _('Unable to delete profile!'), LAM\TYPES\getTypeAlias($_POST['profileDeleteType']) . ': ' . htmlspecialchars($_POST['profileDeleteName']));
 		$message->colspan = 10;
 		$container->addElement($message, true);
 	}
@@ -124,7 +124,7 @@ if (isset($_POST['importexport']) && ($_POST['importexport'] === '1')) {
 		// check master password
 		if (!$cfg->checkPassword($_POST['passwd_' . $_POST['scope']])) {
 			$impExpMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
-		} 
+		}
 		elseif (copyAccountProfiles($_POST['importProfiles_' . $_POST['scope']], $_POST['scope'])) {
 			$impExpMessage = new htmlStatusMessage('INFO', _('Import successful'));
 		}
@@ -132,7 +132,7 @@ if (isset($_POST['importexport']) && ($_POST['importexport'] === '1')) {
 		// check master password
 		if (!$cfg->checkPassword($_POST['passwd'])) {
 			$impExpMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
-		} 
+		}
 		elseif (copyAccountProfiles($_POST['exportProfiles'], $_POST['scope'], $_POST['destServerProfiles'])) {
 			$impExpMessage = new htmlStatusMessage('INFO', _('Export successful'));
 		}
@@ -247,7 +247,7 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 
 	$container = new htmlTable();
 	$container->addElement(new htmlOutputText(_('Profiles')), true);
-	
+
 	$select = new htmlSelect('importProfiles_' . $scope, $tmpArr, array(), count($tmpArr, 1) < 15 ? count($tmpArr, 1) : 15);
 	$select->setMultiSelect(true);
 	$select->setHasDescriptiveElements(true);
@@ -267,7 +267,7 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	$container->addElement(new htmlHiddenInput('importexport', '1'));
 	$container->addElement(new htmlHiddenInput('scope', $scope), true);
 	addSecurityTokenToMetaHTML($container);
-	
+
 	parseHtml(null, $container, array(), false, $tabindex, 'user');
 
 	echo '</form>';
@@ -286,7 +286,7 @@ $expStructGroup->addElement(new htmlSpacer('10px', null));
 $expStructGroup->addElement(new htmlDiv('exportName', ''));
 $container->addElement($expStructGroup, true);
 $container->addElement(new htmlSpacer(null, '10px'), true);
-		
+
 $container->addElement(new htmlOutputText(_("Target server profile")), true);
 foreach ($configProfiles as $key => $value) {
 	$tmpProfiles[$value] = $value;

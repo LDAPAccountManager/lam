@@ -33,11 +33,11 @@ $Id$
  */
 
 // generate help entry for translated list attributes
-$types = getTypes();
+$types = LAM\TYPES\getTypes();
 $entry206Example = "";
 for ($i = 0; $i < sizeof($types); $i++) {
-	$entry206Example .= "<b>" . getTypeAlias($types[$i]) . ":</b><br>\n";
-	$descriptions = getListAttributeDescriptions($types[$i]);
+	$entry206Example .= "<b>" . LAM\TYPES\getTypeAlias($types[$i]) . ":</b><br>\n";
+	$descriptions = LAM\TYPES\getListAttributeDescriptions($types[$i]);
 	$attributes = array_keys($descriptions);
 	for ($a = 0; $a < sizeof($attributes); $a++) {
 		$entry206Example .= "#" . $attributes[$a] . ": " . $descriptions[$attributes[$a]];

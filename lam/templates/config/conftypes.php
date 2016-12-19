@@ -105,12 +105,12 @@ if (isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 }
 
 $typeSettings = $conf->get_typeSettings();
-$allTypes = getTypes();
+$allTypes = LAM\TYPES\getTypes();
 $activeTypes = $conf->get_ActiveTypes();
 $availableTypes = array();
 for ($i = 0; $i < sizeof($allTypes); $i++) {
 	if (!in_array($allTypes[$i], $activeTypes)) {
-		$availableTypes[$allTypes[$i]] = getTypeAlias($allTypes[$i]);
+		$availableTypes[$allTypes[$i]] = LAM\TYPES\getTypeAlias($allTypes[$i]);
 	}
 }
 natcasesort($availableTypes);
@@ -230,7 +230,7 @@ if (sizeof($availableTypes) > 0) {
 		$availableContainer->addElement(new htmlImage('../../graphics/' . $key . '.png'));
 		$availableContainer->addElement(new htmlOutputText($value));
 		$availableContainer->addElement(new htmlSpacer('10px', null));
-		$availableContainer->addElement(new htmlOutputText(getTypeDescription($key)));
+		$availableContainer->addElement(new htmlOutputText(LAM\TYPES\getTypeDescription($key)));
 		$button = new htmlButton('add_' . $key, 'add.png', true);
 		$button->setTitle(_("Add"));
 		$availableContainer->addElement($button, true);
@@ -249,11 +249,11 @@ if (sizeof($activeTypes) > 0) {
 		$titleGroup = new htmlGroup();
 		$titleGroup->colspan = 6;
 		$titleGroup->addElement(new htmlImage('../../graphics/' . $activeTypes[$i] . '.png'));
-		$titleText = new htmlOutputText(getTypeAlias($activeTypes[$i]));
+		$titleText = new htmlOutputText(LAM\TYPES\getTypeAlias($activeTypes[$i]));
 		$titleText->setIsBold(true);
 		$titleGroup->addElement($titleText);
 		$titleGroup->addElement(new htmlSpacer('10px', null));
-		$titleGroup->addElement(new htmlOutputText(getTypeDescription($activeTypes[$i])));
+		$titleGroup->addElement(new htmlOutputText(LAM\TYPES\getTypeDescription($activeTypes[$i])));
 		$activeContainer->addElement($titleGroup);
 		// delete button
 		$delButton = new htmlButton('rem_'. $activeTypes[$i], 'del.png', true);
@@ -271,7 +271,7 @@ if (sizeof($activeTypes) > 0) {
 			$attributes = $typeSettings['attr_' . $activeTypes[$i]];
 		}
 		else {
-			$attributes = getDefaultListAttributes($activeTypes[$i]);
+			$attributes = LAM\TYPES\getDefaultListAttributes($activeTypes[$i]);
 		}
 		$attrsInput = new htmlTableExtendedInputField(_("List attributes"), 'attr_' . $activeTypes[$i], $attributes, '206');
 		$attrsInput->setFieldSize(40);
@@ -414,7 +414,7 @@ function checkInput() {
 			$typeSettings[$key] = trim($_POST[$key]);
 			$type = substr($postKeys[$i], 7);
 			if (strlen($_POST[$key]) < 1) {
-				$errors[] = array("ERROR", _("LDAP Suffix is invalid!"), getTypeAlias($type));
+				$errors[] = array("ERROR", _("LDAP Suffix is invalid!"), LAM\TYPES\getTypeAlias($type));
 			}
 		}
 		// set attributes
@@ -422,7 +422,7 @@ function checkInput() {
 			$typeSettings[$key] = $_POST[$key];
 			$type = substr($postKeys[$i], 5);
 			if (!is_string($_POST[$key]) || !preg_match("/^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$/", $_POST[$key])) {
-				$errors[] = array("ERROR", _("List attributes are invalid!"), getTypeAlias($type));
+				$errors[] = array("ERROR", _("List attributes are invalid!"), LAM\TYPES\getTypeAlias($type));
 			}
 		}
 		// set filter

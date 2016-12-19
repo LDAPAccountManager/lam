@@ -3,18 +3,18 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2007 - 2013  Roland Gruber
+  Copyright (C) 2007 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
-  
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,13 +58,13 @@ get_schema_objectclasses();
 $classes = get_cached_schema('objectclasses');
 
 if (!is_array($classes)) {
-	$container->addElement(new htmlStatusMessage('ERROR', _('Unable to retrieve schema!'), _('You do not have the required access rights or the LDAP schema is not published by your server.')));	
+	$container->addElement(new htmlStatusMessage('ERROR', _('Unable to retrieve schema!'), _('You do not have the required access rights or the LDAP schema is not published by your server.')));
 }
 else {
 	// loop for active account types
 	for ($t = 0; $t < sizeof($types); $t++) {
 		$modules = $_SESSION['config']->get_AccountModules($types[$t]);
-		$container->addElement(new htmlSubTitle(getTypeAlias($types[$t])), true);
+		$container->addElement(new htmlSubTitle(LAM\TYPES\getTypeAlias($types[$t])), true);
 		for ($m = 0; $m < sizeof($modules); $m++) {
 			$error = checkSchemaForModule($modules[$m], $types[$t]);
 			$message = _("No problems found.");

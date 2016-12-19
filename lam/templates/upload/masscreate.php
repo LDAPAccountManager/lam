@@ -142,7 +142,7 @@ $table = new htmlTable();
 // account type
 $typeList = array();
 for ($i = 0; $i < sizeof($types); $i++) {
-	$typeList[getTypeAlias($types[$i])] = $types[$i];
+	$typeList[LAM\TYPES\getTypeAlias($types[$i])] = $types[$i];
 }
 $selectedType = array();
 if (isset($_REQUEST['type'])) {

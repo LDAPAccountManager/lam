@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2013  Roland Gruber
+  Copyright (C) 2009 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -94,7 +94,7 @@ if (isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 	}
 }
 
-$allTypes = getTypes();
+$allTypes = LAM\TYPES\getTypes();
 
 echo $_SESSION['header'];
 
@@ -159,7 +159,7 @@ echo "<div style=\"display: none;\">\n";
 	echo "<input name=\"moduleSettings\" type=\"submit\" value=\" \">";
 	echo "<input name=\"jobs\" type=\"submit\" value=\" \">";
 echo "</div>\n";
-	
+
 // tabs
 echo '<div class="ui-tabs ui-widget ui-widget-content ui-corner-all">';
 
@@ -282,7 +282,7 @@ function checkInput() {
 	}
 	$conf = &$_SESSION['conf_config'];
 	$types = $conf->get_ActiveTypes();
-	
+
 	// check module options
 	// create option array to check and save
 	$options = extractConfigOptionsFromPOST($_SESSION['conf_types']);
