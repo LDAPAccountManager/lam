@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2014  Roland Gruber
+  Copyright (C) 2004 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -276,8 +276,24 @@ if (sizeof($activeTypes) > 0) {
 		$attrsInput = new htmlTableExtendedInputField(_("List attributes"), 'attr_' . $activeTypes[$i], $attributes, '206');
 		$attrsInput->setFieldSize(40);
 		$attrsInput->setFieldMaxLength(1000);
-		$activeContainer->addElement($attrsInput);
-		$activeContainer->addNewLine();
+		$activeContainer->addElement($attrsInput, true);
+		// custom label
+		$customLabel = '';
+		if (isset($typeSettings['customLabel_' . $activeTypes[$i]])) {
+			$customLabel = $typeSettings['customLabel_' . $activeTypes[$i]];
+		}
+		$customLabelInput = new htmlTableExtendedInputField(_('Custom label'), 'customLabel_' . $activeTypes[$i], $customLabel, '264');
+		$customLabelInput->setFieldSize(40);
+		$activeContainer->addElement($customLabelInput);
+		$activeContainer->addElement(new htmlSpacer('20px', null));
+		// LDAP filter
+		$filter = '';
+		if (isset($typeSettings['filter_' . $activeTypes[$i]])) {
+			$filter = $typeSettings['filter_' . $activeTypes[$i]];
+		}
+		$filterInput = new htmlTableExtendedInputField(_("Additional LDAP filter"), 'filter_' . $activeTypes[$i], $filter, '260');
+		$filterInput->setFieldSize(40);
+		$activeContainer->addElement($filterInput, true);
 		// type options
 		$typeObj = new $activeTypes[$i];
 		$typeConfigOptions = $typeObj->get_configOptions();
@@ -293,60 +309,41 @@ if (sizeof($activeTypes) > 0) {
 			$_SESSION['conftypes_optionTypes'] = array_merge($_SESSION['conftypes_optionTypes'], $typeConfigOptionTypes);
 		}
 		// advanced options
-		$advancedOptionsContent = new htmlTable();
-		// LDAP filter
-		$filter = '';
-		if (isset($typeSettings['filter_' . $activeTypes[$i]])) {
-			$filter = $typeSettings['filter_' . $activeTypes[$i]];
-		}
-		$filterInput = new htmlTableExtendedInputField(_("Additional LDAP filter"), 'filter_' . $activeTypes[$i], $filter, '260');
-		$filterInput->setFieldSize(40);
-		$advancedOptionsContent->addElement($filterInput);
-		$advancedOptionsContent->addElement(new htmlSpacer('20px', null));
-		// hidden type
-		$hidden = false;
-		if (isset($typeSettings['hidden_' . $activeTypes[$i]])) {
-			$hidden = $typeSettings['hidden_' . $activeTypes[$i]];
-		}
-		$advancedOptionsContent->addElement(new htmlTableExtendedInputCheckbox('hidden_' . $activeTypes[$i], $hidden, _('Hidden'), '261'));
+		$advancedOptions = new htmlTable();
+		$advancedOptions->colspan = 30;
+		// read-only
 		if (isLAMProVersion() && ($conf->getAccessLevel() == LAMConfig::ACCESS_ALL)) {
-			$advancedOptionsContent->addElement(new htmlSpacer('20px', null));
 			$isReadOnly = false;
 			if (isset($typeSettings['readOnly_' . $activeTypes[$i]])) {
 				$isReadOnly = $typeSettings['readOnly_' . $activeTypes[$i]];
 			}
 			$readOnly = new htmlTableExtendedInputCheckbox('readOnly_' . $activeTypes[$i], $isReadOnly, _('Read-only'), '265');
 			$readOnly->setElementsToDisable(array('hideNewButton_' . $activeTypes[$i], 'hideDeleteButton_' . $activeTypes[$i]));
-			$advancedOptionsContent->addElement($readOnly);
+			$advancedOptions->addElement($readOnly);
+			$advancedOptions->addElement(new htmlSpacer('20px', null));
 		}
-		$advancedOptionsContent->addNewLine();
-		// custom label
-		$customLabel = '';
-		if (isset($typeSettings['customLabel_' . $activeTypes[$i]])) {
-			$customLabel = $typeSettings['customLabel_' . $activeTypes[$i]];
+		// hidden type
+		$hidden = false;
+		if (isset($typeSettings['hidden_' . $activeTypes[$i]])) {
+			$hidden = $typeSettings['hidden_' . $activeTypes[$i]];
 		}
-		$customLabelInput = new htmlTableExtendedInputField(_('Custom label'), 'customLabel_' . $activeTypes[$i], $customLabel, '264');
-		$customLabelInput->setFieldSize(40);
-		$advancedOptionsContent->addElement($customLabelInput);
-		$advancedOptionsContent->addElement(new htmlSpacer('20px', null));
+		$advancedOptions->addElement(new htmlTableExtendedInputCheckbox('hidden_' . $activeTypes[$i], $hidden, _('Hidden'), '261'));
 		if (isLAMProVersion() && ($conf->getAccessLevel() == LAMConfig::ACCESS_ALL)) {
+			$advancedOptions->addElement(new htmlSpacer('20px', null));
 			// hide button to create new accounts
 			$hideNewButton = false;
 			if (isset($typeSettings['hideNewButton_' . $activeTypes[$i]])) {
 				$hideNewButton = $typeSettings['hideNewButton_' . $activeTypes[$i]];
 			}
-			$advancedOptionsContent->addElement(new htmlTableExtendedInputCheckbox('hideNewButton_' . $activeTypes[$i], $hideNewButton, _('No new entries'), '262'));
-			$advancedOptionsContent->addElement(new htmlSpacer('20px', null));
+			$advancedOptions->addElement(new htmlTableExtendedInputCheckbox('hideNewButton_' . $activeTypes[$i], $hideNewButton, _('No new entries'), '262'));
+			$advancedOptions->addElement(new htmlSpacer('20px', null));
 			// hide button to delete accounts
 			$hideDeleteButton = false;
 			if (isset($typeSettings['hideDeleteButton_' . $activeTypes[$i]])) {
 				$hideDeleteButton = $typeSettings['hideDeleteButton_' . $activeTypes[$i]];
 			}
-			$advancedOptionsContent->addElement(new htmlTableExtendedInputCheckbox('hideDeleteButton_' . $activeTypes[$i], $hideDeleteButton, _('Disallow delete'), '263'), true);
+			$advancedOptions->addElement(new htmlTableExtendedInputCheckbox('hideDeleteButton_' . $activeTypes[$i], $hideDeleteButton, _('Disallow delete'), '263'), true);
 		}
-		// build advanced options box
-		$advancedOptions = new htmlAccordion('advancedOptions_' . $activeTypes[$i], array(_('Advanced options') => $advancedOptionsContent), false);
-		$advancedOptions->colspan = 15;
 		$activeContainer->addElement($advancedOptions, true);
 
 		$activeContainer->addElement(new htmlSpacer(null, '40px'), true);
