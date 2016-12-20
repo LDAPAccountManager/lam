@@ -212,7 +212,8 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota, $contai
 	// check Unix account of LAM admin
 	$credentials = $_SESSION['ldap']->decrypt_login();
 	if (!$stopTest) {
-		if (empty($_SESSION['config']->getScriptUserName())) {
+		$scriptUserName = $_SESSION['config']->getScriptUserName();
+		if (empty($scriptUserName)) {
 			$container->addElement(new htmlOutputText(_("Unix account")));
 			$container->addElement($spacer);
 			$unixOk = false;
