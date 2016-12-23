@@ -132,4 +132,235 @@ function getListAttributeDescriptions($type) {
 	return $obj->getListAttributeDescriptions();
 }
 
+/**
+ * Represents a configured account type variant.
+ *
+ * @package types
+ * @author Roland Gruber
+ */
+class ConfiguredType {
+
+	private $scope;
+
+	private $id;
+
+	private $suffix;
+
+	private $attributes;
+
+	private $alias;
+
+	private $ldapFilter;
+
+	private $hidden;
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $scope account type
+	 * @param string $id unique ID for this configuration
+	 * @param string $suffix LDAP base suffix
+	 * @param array $attributes list of ListAttribute
+	 * @param string $alias alias name for display
+	 * @param string $ldapFilter additional LDAP filter
+	 * @param boolean $hidden hidden in GUI
+	 */
+	public function __construct($scope, $id, $suffix, $attributes, $alias,
+			$ldapFilter, $hidden) {
+		$this->scope = $scope;
+		$this->id = $id;
+		$this->suffix = $suffix;
+		$this->attributes = $attributes;
+		$this->alias = $alias;
+		$this->ldapFilter = $ldapFilter;
+		$this->hidden = $hidden;
+	}
+
+	/**
+	 * Returns the account type (e.g. 'user').
+	 *
+	 * @return string $scope account type
+	 */
+	public function getScope() {
+		return $this->scope;
+	}
+
+	/**
+	 * Returns a unique id for this configuration.
+	 *
+	 * @return string $id unique id
+	 */
+	public function getId() {
+		return $this->id;
+	}
+
+	/**
+	 * Returns the LDAP suffix.
+	 *
+	 * @return string $suffix LDAP suffix
+	 */
+	public function getSuffix() {
+		return $this->suffix;
+	}
+
+	/**
+	 * Returns a list of configured attributes.
+	 *
+	 * @return array $attributes list of ListAttribute
+	 */
+	public function getAttributes() {
+		return $this->attributes;
+	}
+
+	/**
+	 * Returns the alias name.
+	 *
+	 * @return string $alias alias name
+	 */
+	public function getAlias() {
+		return $this->alias;
+	}
+
+	/**
+	 * Returns the additional LDAP filter.
+	 *
+	 * @return string $ldapFilter LDAP filter
+	 */
+	public function getLdapFilter() {
+		return $this->ldapFilter;
+	}
+
+	/**
+	 * Returns if this configuration is hidden.
+	 *
+	 * @return boolean $hidden hidden
+	 */
+	public function isHidden() {
+		return $this->hidden;
+	}
+
+}
+
+/**
+ * An attribute definition for the account list.
+ *
+ * @package types
+ * @author Roland Gruber
+ */
+class ListAttribute {
+
+	private $attributeSpec;
+
+	private $scope;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param string $attributeSpec spec of attribute (e.g. '#uid' or 'uid:User')
+	 * @param string $scope account type (e.g. 'user')
+	 */
+	public function __construct($attributeSpec, $scope) {
+		$this->attributeSpec = $attributeSpec;
+		$this->scope = $scope;
+	}
+	/**
+	 * Returns the name of the LDAP attribute.
+	 *
+	 * @return string $attributeName name
+	 */
+	public function getAttributeName() {
+		if ($this->isPredefined()) {
+			return substr($this->attributeSpec, 1);
+		}
+		$parts = explode(':', $this->attributeSpec);
+		return $parts[0];
+	}
+
+	/**
+	 * Returns the display value.
+	 *
+	 * @return string $alias display value
+	 */
+	public function getAlias() {
+		if ($this->isPredefined()) {
+			$name = substr($this->attributeSpec, 1);
+			$hash_table = getListAttributeDescriptions($this->scope);
+			$hash_table = array_change_key_case($hash_table, CASE_LOWER);
+			if (isset($hash_table[$name])) {
+				return $hash_table[$name];
+			}
+			return $name;
+		}
+		$parts = explode(':', $this->attributeSpec);
+		return $parts[1];
+	}
+
+	/**
+	 * Returns if this is a predefined attribute name.
+	 *
+	 * @return boolean is predefined
+	 */
+	private function isPredefined() {
+		return strpos($this->attributeSpec, '#') === 0;
+	}
+
+}
+
+/**
+ * Provides utility functions to get e.g. configured types.
+ *
+ * @package types
+ * @author Roland Gruber
+ */
+class TypeManager {
+
+	/**
+	 * Returns a list of configured account types.
+	 *
+	 * @return \LAM\TYPES\ConfiguredType[] list of ConfiguredType
+	 */
+	public function getConfiguredTypes() {
+		$configuredTypes = array();
+		$activeTypes = $_SESSION['config']->get_ActiveTypes();
+		foreach ($activeTypes as $typeId) {
+			$configuredTypes[] = $this->buildConfiguredType($typeId);
+		}
+		return $configuredTypes;
+	}
+
+	/**
+	 * Builds a configured account type.
+	 *
+	 * @param string $typeId type id
+	 */
+	private function buildConfiguredType($typeId) {
+		$parts = explode('_', $typeId);
+		$scope = $parts[0];
+		$suffix = $_SESSION['config']->get_Suffix($typeId);
+		$attributes = $this->getAttributes($typeId, $scope);
+		$alias = getTypeAlias($typeId);
+		$ldapFilter = $_SESSION['config']->get_Suffix($typeId);
+		$hidden = isAccountTypeHidden($typeId);
+		return new ConfiguredType($scope, $typeId, $suffix, $attributes, $alias, $ldapFilter, $hidden);
+	}
+
+	/**
+	 * Builds the list of account list attributes.
+	 *
+	 * @param string $typeId type id
+	 * @param string $scope account type
+	 * @return \LAM\TYPES\ListAttribute[] list attributes
+	 */
+	private function getAttributes($typeId, $scope) {
+		$attributeString = $_SESSION['config']->get_listAttributes($typeId);
+		$attributeSpecs = explode(';', $attributeString);
+		$attributes = array();
+		foreach ($attributeSpecs as $attributeSpec) {
+			$attributes[] = new ListAttribute($attributeSpec, $scope);
+		}
+		return $attributes;
+	}
+
+}
+
 ?>

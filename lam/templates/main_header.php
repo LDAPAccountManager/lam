@@ -28,9 +28,6 @@ $Id$
 * @author Roland Gruber
 */
 
-// number of list views (users, groups, ...)
-$types = $_SESSION['config']->get_ActiveTypes();
-
 $headerPrefix = "";
 if (is_file("../login.php")) $headerPrefix = "../";
 elseif (is_file("../../login.php")) $headerPrefix = "../../";
@@ -200,16 +197,18 @@ jQuery(document).ready(function() {
 <div class="ui-tabs ui-widget ui-widget-content ui-corner-all">
 <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
 	<?php
-		$linkList = array();
-		for ($i = 0; $i < sizeof($types); $i++) {
-			if (isAccountTypeHidden($types[$i])) {
+	$typeManager = new LAM\TYPES\TypeManager();
+	$types = $typeManager->getConfiguredTypes();
+	$linkList = array();
+		foreach ($types as $type) {
+			if ($type->isHidden()) {
 				continue;
 			}
-			$link = '<a href="' . $headerPrefix . 'lists/list.php?type=' . $types[$i] .
+			$link = '<a href="' . $headerPrefix . 'lists/list.php?type=' . $type->getId() .
 				'" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">' .
-				'<img height="16" width="16" alt="' . $types[$i] . '" src="' . $headerPrefix . '../graphics/' . $types[$i] . '.png">&nbsp;' .
-				LAM\TYPES\getTypeAlias($types[$i]) . '</a>';
-			echo '<li id="tab_' . $types[$i] . '" class="ui-state-default ui-corner-top">';
+				'<img height="16" width="16" alt="' . $type->getId() . '" src="' . $headerPrefix . '../graphics/' . $type->getScope() . '.png">&nbsp;' .
+				$type->getAlias() . '</a>';
+			echo '<li id="tab_' . $type->getId() . '" class="ui-state-default ui-corner-top">';
 			echo $link;
 			echo "</li>\n";
 		}
