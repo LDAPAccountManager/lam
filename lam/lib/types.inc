@@ -150,9 +150,11 @@ class ConfiguredType {
 
 	private $alias;
 
-	private $ldapFilter;
+	private $additionalLdapFilter;
 
 	private $hidden;
+
+	private $baseType;
 
 	/**
 	 * Constructor
@@ -172,7 +174,7 @@ class ConfiguredType {
 		$this->suffix = $suffix;
 		$this->attributes = $attributes;
 		$this->alias = $alias;
-		$this->ldapFilter = $ldapFilter;
+		$this->additionalLdapFilter = $ldapFilter;
 		$this->hidden = $hidden;
 	}
 
@@ -206,7 +208,7 @@ class ConfiguredType {
 	/**
 	 * Returns a list of configured attributes.
 	 *
-	 * @return array $attributes list of ListAttribute
+	 * @return ListAttribute[] $attributes list of ListAttribute
 	 */
 	public function getAttributes() {
 		return $this->attributes;
@@ -226,8 +228,8 @@ class ConfiguredType {
 	 *
 	 * @return string $ldapFilter LDAP filter
 	 */
-	public function getLdapFilter() {
-		return $this->ldapFilter;
+	public function getAdditionalLdapFilter() {
+		return $this->additionalLdapFilter;
 	}
 
 	/**
@@ -237,6 +239,20 @@ class ConfiguredType {
 	 */
 	public function isHidden() {
 		return $this->hidden;
+	}
+
+	/**
+	 * Returns the base type of this configured type.
+	 *
+	 * @return baseType base type
+	 */
+	public function getBaseType() {
+		if ($this->baseType != null) {
+			return $this->baseType;
+		}
+		$scope = $this->scope;
+		$this->baseType = new $scope();
+		return $this->baseType;
 	}
 
 }
@@ -313,6 +329,15 @@ class ListAttribute {
  * @author Roland Gruber
  */
 class TypeManager {
+
+	public function getConfiguredType($typeId) {
+		$configuredTypes = array();
+		$activeTypes = $_SESSION['config']->get_ActiveTypes();
+		if (in_array($typeId, $activeTypes)) {
+			return $this->buildConfiguredType($typeId);
+		}
+		return null;
+	}
 
 	/**
 	 * Returns a list of configured account types.

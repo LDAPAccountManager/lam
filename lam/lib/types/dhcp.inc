@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2009 - 2014  Roland Gruber
+                2009 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ $Id$
 **/
 
 class dhcp extends baseType {
-	
+
 	/**
 	 * Constructs a new DHCP type object.
 	 */
@@ -46,7 +46,7 @@ class dhcp extends baseType {
 		$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another DHCP entry');
 		$this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to DHCP list');
 	}
-	
+
 	/**
 	* Returns the alias name of this account type.
 	*
@@ -220,7 +220,7 @@ class lamDHCPList extends lamList {
 			// Search after the fixed ip entry
 			if (is_array($entry['dhcpstatements'])) {
 				foreach($entry['dhcpstatements'] AS $id => $value) {
-				
+
 					if (!is_array($value) && array_shift( explode(" ", $value) ) == "fixed-address") {
 					    $ip = explode(" ", $value);
 						echo $ip['1'];
@@ -260,15 +260,15 @@ class lamDHCPList extends lamList {
 			parent::listPrintTableCellContent($entry, $attribute);
 		}
 	}
-	
+
 	/**
 	 * Add DCP main settings button.
-	 * 
+	 *
 	 * @param htmlGroup $left left part
 	 * @param htmlGroup $right right part
 	 */
 	protected function addExtraInputElementsToTopArea(&$left, &$right) {
-		if (checkIfWriteAccessIsAllowed($this->type)) {
+		if (checkIfWriteAccessIsAllowed($this->type->getId())) {
 			$left->addElement(new htmlSpacer('20px', null));
 			$dhcpButton = new htmlButton('dhcpDefaults', $this->labels['dhcpDefaults']);
 			$dhcpButton->setIconClass('settingsButton');
@@ -278,7 +278,7 @@ class lamDHCPList extends lamList {
 
 	/**
 	* Manages all POST actions (e.g. button pressed) for the account lists.
-	* 
+	*
 	* @return String HTML fragment to insert into beginning of account list
 	*/
 	function listDoPost() {

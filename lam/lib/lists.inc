@@ -1,4 +1,6 @@
 <?php
+use LAM\TYPES\ConfiguredType;
+
 /*
 $Id$
 
@@ -103,7 +105,7 @@ class lamList {
 	/**
 	 * Constructor
 	 *
-	 * @param string $type account type
+	 * @param LAM\TYPES\ConfiguredType $type account type
 	 * @return lamList list object
 	 */
 	public function __construct($type) {
@@ -122,8 +124,8 @@ class lamList {
 	 */
 	private function listReadOptionsFromCookie() {
 		if (sizeof($this->configOptions) > 0) {
-			if (isset($_COOKIE["ListOptions_" . $this->type])) {
-				$cookieValue = $_COOKIE["ListOptions_" . $this->type];
+			if (isset($_COOKIE["ListOptions_" . $this->type->getId()])) {
+				$cookieValue = $_COOKIE["ListOptions_" . $this->type->getId()];
 				$valueParts = explode(";", $cookieValue);
 				$values = array();
 				for ($i = 0; $i < sizeof($valueParts); $i++) {
@@ -172,7 +174,7 @@ class lamList {
 		// show form
 		echo "<div class=\"ui-tabs-panel ui-widget-content ui-corner-bottom\">";
 		echo "<div id=\"listTabContentArea\">\n";
-		echo ("<form action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n");
+		echo ("<form action=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true\" method=\"post\">\n");
 		// draw account list if accounts were found
 		if (sizeof($this->entries) > 0) {
 			// buttons
@@ -289,12 +291,12 @@ class lamList {
 		if ($count > $this->maxPageEntries) {
 			echo("<td class=\"activepage\" align=\"right\">");
 			if ($this->page != 1) {
-				echo("<a title=\"" . _('Jump to first page') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=1" .
+				echo("<a title=\"" . _('Jump to first page') . "\" href=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true&amp;page=1" .
 					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" .
 					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-first.png\"></a>\n");
 			}
 			if ($this->page > 11) {
-				echo("<a title=\"" . _('Jump 10 pages backward') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page - 10) .
+				echo("<a title=\"" . _('Jump 10 pages backward') . "\" href=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true&amp;page=" . ($this->page - 10) .
 					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" .
 					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-previous.png\"></a>\n");
 			}
@@ -307,24 +309,24 @@ class lamList {
 					continue;
 				}
 				if ($i == $this->page - 1) {
-					$url = "list.php?type=" . $this->type . "&amp;norefresh=true" .
+					$url = "list.php?type=" . $this->type->getId() . "&amp;norefresh=true" .
 					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter;
 					echo '<input type="number" class="listPageInput" id="listNavPage" name="listNavPage"'
 						. ' value="' . ($i + 1) . '" min="1" max="' . $pageCount . '"'
 						. ' onkeypress="listPageNumberKeyPress(\'' . $url . '\', event);">';
 				}
 				else {
-					echo "&nbsp;<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($i + 1) .
+					echo "&nbsp;<a href=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true&amp;page=" . ($i + 1) .
 					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" . ($i + 1) . "</a>\n";
 				}
 			}
 			if ($this->page < ($pageCount - 10)) {
-				echo("<a title=\"" . _('Jump 10 pages forward') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page + 10) .
+				echo("<a title=\"" . _('Jump 10 pages forward') . "\" href=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true&amp;page=" . ($this->page + 10) .
 					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" .
 					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-next.png\"></a>\n");
 			}
 			if ($this->page < $pageCount) {
-				echo("<a title=\"" . _('Jump to last page') . "\" href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . $pageCount .
+				echo("<a title=\"" . _('Jump to last page') . "\" href=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true&amp;page=" . $pageCount .
 					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" .
 					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-last.png\"></a>\n");
 			}
@@ -352,8 +354,8 @@ class lamList {
 	protected function listPrintTableHeader() {
 		$filter = $this->getFilterAsTextForURL();
 		// print table header
-		echo "<table id=\"accountTable\" frame=\"box\" rules=\"none\" class=\"" . $this->type . "-border collapse accountlist ui-corner-all\" width=\"100%\"><thead>\n";
-		echo "<tr class=\"" . $this->type . "-dark\">\n";
+		echo "<table id=\"accountTable\" frame=\"box\" rules=\"none\" class=\"" . $this->type->getScope() . "-border collapse accountlist ui-corner-all\" width=\"100%\"><thead>\n";
+		echo "<tr class=\"" . $this->type->getScope() . "-dark\">\n";
 		echo "<th width=22 height=34><a href=\"#\" onClick=\"list_switchAccountSelection();\"><img height=16 width=16 src=\"../../graphics/selectDown.png\" alt=\"select all\"></a></th>\n";
 		echo "<td>&nbsp;<a href=\"#\" onClick=\"list_switchAccountSelection();\">" .
 			"<font color=\"black\"><small>" . _("Select all") . "</small></font></a></td>\n";
@@ -364,17 +366,17 @@ class lamList {
 				if ($this->sortDirection < 0) {
 					$sortImage = "sort_desc.png";
 				}
-				echo "<th align=\"left\"><a href=\"list.php?type=" . $this->type . "&amp;".
+				echo "<th align=\"left\"><a href=\"list.php?type=" . $this->type->getId() . "&amp;".
 					"sort=" . strtolower($this->attrArray[$k]) . $filter . "&amp;norefresh=y" . "\">" . $this->descArray[$k] .
 					"&nbsp;<img height=16 width=16 style=\"vertical-align: middle;\" src=\"../../graphics/$sortImage\" alt=\"sort direction\"></a></th>\n";
 			}
-			else echo "<th align=\"left\"><a href=\"list.php?type=" . $this->type . "&amp;".
+			else echo "<th align=\"left\"><a href=\"list.php?type=" . $this->type->getId() . "&amp;".
 				"sort=" . strtolower($this->attrArray[$k]) . $filter . "&amp;norefresh=y" . "\">" . $this->descArray[$k] . "</a></th>\n";
 		}
 		echo "</tr>\n";
 
 		// print filter row
-		echo "<tr align=\"center\" class=\"" . $this->type . "-bright\">\n";
+		echo "<tr align=\"center\" class=\"" . $this->type->getScope() . "-bright\">\n";
 		echo "<td width=22 height=34>";
 			printHelpLink(getHelp('', '250'), '250');
 		echo "</td>\n";
@@ -389,7 +391,7 @@ class lamList {
 			$clearFilterButton->setTitle(_('Clear filter'));
 			$filterGroup->addElement($clearFilterButton);
 		}
-		parseHtml(null, $filterGroup, array(), false, $this->tabindex, $this->type);
+		parseHtml(null, $filterGroup, array(), false, $this->tabindex, $this->type->getScope());
 		echo "</td>\n";
 		// print input boxes for filters
 		for ($k = 0; $k < sizeof($this->descArray); $k++) {
@@ -416,10 +418,10 @@ class lamList {
 			}
 		}
 		$filterInput = new htmlInputField('filter' . strtolower($attrName), $value);
-		$filterInput->setCSSClasses(array($this->type . '-dark'));
+		$filterInput->setCSSClasses(array($this->type->getScope() . '-dark'));
 		$filterInput->setFieldSize('15');
 		$filterInput->setOnKeyPress("SubmitForm('apply_filter', event);");
-		parseHtml(null, $filterInput, array(), false, $this->tabindex, $this->type);
+		parseHtml(null, $filterInput, array(), false, $this->tabindex, $this->type->getScope());
 	}
 
 	/**
@@ -459,14 +461,14 @@ class lamList {
 			$index = $sortMapping[$i];
 			$rowID = base64_encode($info[$index]['dn']);
 			if ((($i - $table_begin) % 2) == 1) {
-				$classes = ' ' . $this->type . '-bright';
+				$classes = ' ' . $this->type->getScope() . '-bright';
 			}
 			else {
-				$classes = ' ' . $this->type . '-dark';
+				$classes = ' ' . $this->type->getScope() . '-dark';
 			}
 			echo("<tr class=\"$classes\"" .
 				" onClick=\"list_click('" . $rowID . "')\"\n" .
-				" onDblClick=\"top.location.href='../account/edit.php?type=" . $this->type . "&amp;DN=" . rawurlencode($info[$index]['dn']) . "'\">\n");
+				" onDblClick=\"top.location.href='../account/edit.php?type=" . $this->type->getId() . "&amp;DN=" . rawurlencode($info[$index]['dn']) . "'\">\n");
 			echo " <td align=\"center\"><input class=\"accountBoxUnchecked\" onClick=\"list_click('" . $rowID . "')\"" .
 				" type=\"checkbox\" name=\"" . $rowID . "\"></td>\n";
 			$this->listPrintToolLinks($info[$index], $rowID);
@@ -480,7 +482,7 @@ class lamList {
 		}
 		// display select all link
 		$colspan = sizeof($this->attrArray) + 1;
-		echo "<tr class=\"" . $this->type . "-bright\">\n";
+		echo "<tr class=\"" . $this->type->getScope() . "-bright\">\n";
 		echo "<td align=\"center\"><a href=\"#\" onClick=\"list_switchAccountSelection();\"><img height=16 width=16 src=\"../../graphics/select.png\" alt=\"select all\"></a></td>\n";
 		echo "<td colspan=$colspan>&nbsp;<a href=\"#\" onClick=\"list_switchAccountSelection();\">" .
 			"<font color=\"black\"><small>" . _("Select all") . "</small></font></a></td>\n";
@@ -499,13 +501,13 @@ class lamList {
 		$toolCount = 0;
 		$group = new htmlGroup();
 		// edit link
-		$editLink = new htmlLink('', "../account/edit.php?type=" . $this->type . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/edit.png');
+		$editLink = new htmlLink('', "../account/edit.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/edit.png');
 		$editLink->setTitle(_("Edit"));
 		$group->addElement($editLink);
 		$toolCount++;
 		// delete link
-		if (checkIfWriteAccessIsAllowed($this->type) && checkIfDeleteEntriesIsAllowed($this->type)) {
-			$deleteLink = new htmlLink('', "deletelink.php?type=" . $this->type . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/delete.png');
+		if (checkIfWriteAccessIsAllowed($this->type->getId()) && checkIfDeleteEntriesIsAllowed($this->type->getId())) {
+			$deleteLink = new htmlLink('', "deletelink.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/delete.png');
 			$deleteLink->setTitle(_("Delete"));
 			$group->addElement($deleteLink);
 			$toolCount++;
@@ -518,14 +520,14 @@ class lamList {
 		// additional tools
 		$tools = $this->getAdditionalTools();
 		for ($i = 0; $i < sizeof($tools); $i++) {
-			$toolLink = new htmlLink('', $tools[$i]->getLinkTarget() . "?type=" . $this->type . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/' . $tools[$i]->getImage());
+			$toolLink = new htmlLink('', $tools[$i]->getLinkTarget() . "?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/' . $tools[$i]->getImage());
 			$toolLink->setTitle($tools[$i]->getName());
 			$group->addElement($toolLink);
 			$toolCount++;
 		}
 		$width = ($toolCount * 20) + 20;
 		echo "<td align='center' style=\"white-space: nowrap; width: ${width}px;\">";
-		parseHtml(null, $group, array(), false, $this->tabindex, $this->type);
+		parseHtml(null, $group, array(), false, $this->tabindex, $this->type->getScope());
 		echo "</td>\n";
 	}
 
@@ -560,16 +562,16 @@ class lamList {
 		}
 		// check if button was pressed and if we have to add/delete an account or call file upload
 		if (isset($_POST['new']) || isset($_POST['del']) || isset($_POST['fileUpload'])){
-			if (!checkIfWriteAccessIsAllowed($this->type)) {
+			if (!checkIfWriteAccessIsAllowed($this->type->getId())) {
 				die();
 			}
 			// add new account
-			if (isset($_POST['new']) && checkIfNewEntriesAreAllowed($this->type)){
-				metaRefresh("../account/edit.php?type=" . $this->type . "&amp;suffix=" . $this->suffix);
+			if (isset($_POST['new']) && checkIfNewEntriesAreAllowed($this->type->getId())){
+				metaRefresh("../account/edit.php?type=" . $this->type->getId() . "&amp;suffix=" . $this->suffix);
 				exit;
 			}
 			// delete account(s)
-			elseif (isset($_POST['del']) && checkIfDeleteEntriesIsAllowed($this->type)){
+			elseif (isset($_POST['del']) && checkIfDeleteEntriesIsAllowed($this->type->getId())){
 				// search for checkboxes
 				$accounts = array_keys($_POST, "on");
 				// build DN list
@@ -578,13 +580,13 @@ class lamList {
 					$_SESSION['delete_dn'][] = base64_decode($accounts[$i]);
 				}
 				if (sizeof($accounts) > 0) {
-					metaRefresh("../delete.php?type=" . $this->type);
+					metaRefresh("../delete.php?type=" . $this->type->getId());
 					exit;
 				}
 			}
 			// file upload
-			elseif (isset($_POST['fileUpload']) && checkIfNewEntriesAreAllowed($this->type)){
-				metaRefresh("../upload/masscreate.php?type=" . $this->type);
+			elseif (isset($_POST['fileUpload']) && checkIfNewEntriesAreAllowed($this->type->getId())){
+				metaRefresh("../upload/masscreate.php?type=" . $this->type->getId());
 				exit;
 			}
 		}
@@ -662,7 +664,7 @@ class lamList {
 					$cookieValue .= $this->configOptions[$i]->getID() . "=" . $this->configOptions[$i]->getValue() . ';';
 				}
 				// save options as cookie for one year
-				setcookie("ListOptions_" . $this->type, $cookieValue, time()+60*60*24*365, "/", null, null, true);
+				setcookie("ListOptions_" . $this->type->getId(), $cookieValue, time()+60*60*24*365, "/", null, null, true);
 				// notify subclasses
 				$this->listConfigurationChanged();
 			}
@@ -688,17 +690,17 @@ class lamList {
 			$selAccounts[] = $id;
 		}
 		// get possible PDF structures
-		$pdf_structures = getPDFStructureDefinitions($this->type);
+		$pdf_structures = getPDFStructureDefinitions($this->type->getId());
 
 		$this->listPrintHeader();
 
-		echo "<div class=\"ui-tabs-nav " . $this->type . "-bright\">";
+		echo "<div class=\"ui-tabs-nav " . $this->type->getScope() . "-bright\">";
 		echo "<div class=\"smallPaddingContent\">\n";
 		$refresh = '&amp;norefresh=true';
 		if (isset($_GET['refresh']) && ($_GET['refresh'] == 'true')) {
 			$refresh = '&amp;refresh=true';
 		}
-		echo "<form action=\"list.php?type=" . $this->type . $refresh . "\" method=\"post\">\n";
+		echo "<form action=\"list.php?type=" . $this->type->getId() . $refresh . "\" method=\"post\">\n";
 
 		$container = new htmlTable();
 		$container->addElement(new htmlSubTitle(_('Create PDF file')), true);
@@ -735,7 +737,7 @@ class lamList {
 		$container->addElement(new htmlHiddenInput('clickedAccount', $id));
 		addSecurityTokenToMetaHTML($container);
 
-		parseHtml(null, $container, array(), false, $this->tabindex, $this->type);
+		parseHtml(null, $container, array(), false, $this->tabindex, $this->type->getScope());
 
 		$this->listPrintFooter();
 	}
@@ -753,7 +755,7 @@ class lamList {
 				$suffixList[getAbstractDN($this->possibleSuffixes[$i])] = $this->possibleSuffixes[$i];
 			}
 			$suffixSelect = new htmlSelect('suffix', $suffixList, array($this->suffix));
-			$suffixSelect->setOnchangeEvent("listOUchanged('" . $this->type . "', this)");
+			$suffixSelect->setOnchangeEvent("listOUchanged('" . $this->type->getId() . "', this)");
 			$suffixSelect->setRightToLeftTextDirection(true);
 			$suffixSelect->setSortElements(false);
 			$suffixSelect->setHasDescriptiveElements(true);
@@ -774,23 +776,22 @@ class lamList {
 		$left = new htmlGroup();
 		// button part
 		$left->alignment = htmlElement::ALIGN_LEFT;
-		if (checkIfWriteAccessIsAllowed($this->type)) {
+		if (checkIfWriteAccessIsAllowed($this->type->getId())) {
 			// add button
-			if (checkIfNewEntriesAreAllowed($this->type)) {
+			if (checkIfNewEntriesAreAllowed($this->type->getId())) {
 				$newButton = new htmlButton('new', $this->labels['newEntry']);
 				$newButton->setIconClass('createButton');
 				$left->addElement($newButton);
 			}
 			// delete button
-			if (!$createOnly && checkIfDeleteEntriesIsAllowed($this->type)) {
+			if (!$createOnly && checkIfDeleteEntriesIsAllowed($this->type->getId())) {
 				$left->addElement(new htmlSpacer('1px', null));
 				$delButton = new htmlButton('del', $this->labels['deleteEntry']);
 				$delButton->setIconClass('deleteButton');
 				$left->addElement($delButton);
 			}
-			$type = new $this->type();
 			$toolSettings = $_SESSION['config']->getToolSettings();
-			if ($type->supportsFileUpload() && checkIfNewEntriesAreAllowed($this->type)
+			if ($this->type->getBaseType()->supportsFileUpload() && checkIfNewEntriesAreAllowed($this->type->getId())
 					&& !(isset($toolSettings['tool_hide_toolFileUpload']) && ($toolSettings['tool_hide_toolFileUpload'] == 'true'))) {
 				$left->addElement(new htmlSpacer('20px', null));
 				$uploadButton = new htmlButton('fileUpload', _('File upload'));
@@ -815,7 +816,7 @@ class lamList {
 		$this->addExtraInputElementsToTopArea($left, $right);
 		$table->addElement($left);
 		$table->addElement($right);
-		parseHtml(null, $table, array(), false, $this->tabindex, $this->type);
+		parseHtml(null, $table, array(), false, $this->tabindex, $this->type->getScope());
 	}
 
 	/**
@@ -844,8 +845,8 @@ class lamList {
 			</form></div></div>
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery('#tab_<?php echo $this->type; ?>').addClass('ui-tabs-active');
-					jQuery('#tab_<?php echo $this->type; ?>').addClass('ui-state-active');
+					jQuery('#tab_<?php echo $this->type->getId(); ?>').addClass('ui-tabs-active');
+					jQuery('#tab_<?php echo $this->type->getId(); ?>').addClass('ui-state-active');
 					window.onload = listResizeITabContentDiv;
 					window.onresize = listResizeITabContentDiv;
 					jQuery('#filterButton').button();
@@ -862,33 +863,10 @@ class lamList {
 	* @return array attribute list
 	*/
 	protected function listGetAttributeDescriptionList() {
+		$attrs = $this->type->getAttributes();
 		$ret = array();
-		$attr_string = $_SESSION["config"]->get_listAttributes($this->type);
-		$temp_array = explode(";", $attr_string);
-		$hash_table = LAM\TYPES\getListAttributeDescriptions($this->type);
-		$hash_table = array_change_key_case($hash_table, CASE_LOWER);
-		// generate column attributes and descriptions
-		for ($i = 0; $i < sizeof($temp_array); $i++) {
-			// if value is predifined, look up description in hash_table
-			if (substr($temp_array[$i],0,1) == "#") {
-				$attr = strtolower(substr($temp_array[$i],1));
-				if (isset($hash_table[$attr])) {
-					$ret[$attr] = $hash_table[$attr];
-				}
-				else {
-					$ret[$attr] = $attr;
-				}
-			}
-			// if not predefined, the attribute is seperated by a ":" from description
-			else {
-				$attr = explode(":", $temp_array[$i]);
-				if (isset($attr[1])) {
-					$ret[$attr[0]] = $attr[1];
-				}
-				else {
-					$ret[$attr[0]] = $attr[0];
-				}
-			}
+		foreach ($attrs as $attr) {
+			$ret[$attr->getAttributeName()] = $attr->getAlias();
 		}
 		return $ret;
 	}
@@ -932,9 +910,18 @@ class lamList {
 			$this->sortDirection = $_GET['sortdirection'];
 		}
 		// check search suffix
-		if (isset($_POST['suffix'])) $this->suffix = $_POST['suffix'];  // new suffix selected via combobox
-		elseif (isset($_GET['suffix'])) $this->suffix = $_GET['suffix'];  // new suffix selected via combobox
-		elseif (!$this->suffix) $this->suffix = $_SESSION["config"]->get_Suffix($this->type);  // default suffix
+		if (isset($_POST['suffix'])) {
+			// new suffix selected via combobox
+			$this->suffix = $_POST['suffix'];
+		}
+		elseif (isset($_GET['suffix'])) {
+			// new suffix selected via combobox
+			$this->suffix = $_GET['suffix'];
+		}
+		elseif (!$this->suffix) {
+			// default suffix
+			$this->suffix = $this->type->getSuffix();
+		}
 		// check if LDAP data should be refreshed
 		$this->refresh = true;
 		if (isset($_GET['norefresh'])) $this->refresh = false;
@@ -949,10 +936,10 @@ class lamList {
 	protected function listRefreshData() {
 		// check suffix
 		if (!$this->suffix) {
-			$this->suffix = $_SESSION["config"]->get_Suffix($this->type);  // default suffix
+			$this->suffix = $this->type->getSuffix();  // default suffix
 		}
 		// configure search filter
-		$module_filter = get_ldap_filter($this->type);  // basic filter is provided by modules
+		$module_filter = get_ldap_filter($this->type->getId());  // basic filter is provided by modules
 		$filter = "(&" . $module_filter . $this->buildLDAPAttributeFilter()  . ")";
 		$attrs = $this->attrArray;
 		// remove virtual attributes from list
@@ -975,8 +962,7 @@ class lamList {
 			call_user_func_array('StatusMessage', $lastError);
 		}
 		// generate list of possible suffixes
-		$typeObj = new $this->type();
-		$this->possibleSuffixes = $typeObj->getSuffixList();
+		$this->possibleSuffixes = $this->type->getBaseType()->getSuffixList();
 	}
 
 	/**
@@ -1039,7 +1025,7 @@ class lamList {
 	 */
 	protected function listPrintConfigurationPage() {
 		echo "<div id=\"settingsDialog\" class=\"hidden\">\n";
-		echo "<form id=\"settingsDialogForm\" action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n";
+		echo "<form id=\"settingsDialogForm\" action=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true\" method=\"post\">\n";
 		echo '<table width="100%"><tr><td>';
 
 		$configContainer = new htmlTable();
@@ -1049,7 +1035,7 @@ class lamList {
 		$configContainer->addElement(new htmlHiddenInput('saveConfigOptions', 'ok'));
 		addSecurityTokenToMetaHTML($configContainer);
 
-		parseHtml('', $configContainer, array(), false, $this->tabindex, $this->type);
+		parseHtml('', $configContainer, array(), false, $this->tabindex, $this->type->getScope());
 
 		echo "</td></tr></table>\n";
 		echo '</form>';

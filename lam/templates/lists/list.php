@@ -41,22 +41,23 @@ startSecureSession();
 
 setlanguage();
 
-$type = $_GET['type'];
+$typeManager = new LAM\TYPES\TypeManager();
+$type = $typeManager->getConfiguredType($_GET['type']);
 
 // check if list is hidden
-if (isAccountTypeHidden($type)) {
-	logNewMessage(LOG_ERR, 'User tried to access hidden account list: ' . $type);
+if ($type->isHidden()) {
+	logNewMessage(LOG_ERR, 'User tried to access hidden account list: ' . $type->getId());
 	die();
 }
 
 // create list object if needed
-$listClass = LAM\TYPES\getListClassName($type);
-if (!isset($_SESSION['list_' . $type])) {
+$listClass = LAM\TYPES\getListClassName($type->getScope());
+if (!isset($_SESSION['list_' . $type->getId()])) {
 	$list = new $listClass($type);
-	$_SESSION['list_' . $type] = $list;
+	$_SESSION['list_' . $type->getId()] = $list;
 }
 
 // show page
-$_SESSION['list_' . $type]->showPage();
+$_SESSION['list_' . $type->getId()]->showPage();
 
 ?>

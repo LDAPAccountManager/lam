@@ -5,7 +5,7 @@
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2009 - 2012  Pozdnyak Pavel
-                2010 - 2013  Roland Gruber
+                2010 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -160,14 +160,14 @@ class lamAsteriskExtList extends lamList {
 
     /**
      * Groups the extensions.
-     * 
+     *
      * (non-PHPdoc)
      * @see lamList::listRefreshData()
      */
     protected function listRefreshData() {
         parent::listRefreshData();
         // configure search filter
-        $module_filter = get_ldap_filter($this->type);  // basic filter is provided by modules
+        $module_filter = get_ldap_filter($this->type->getId());  // basic filter is provided by modules
         $filter = "(&" . $module_filter . $this->buildLDAPAttributeFilter() . ")";
         $attrs = $this->attrArray;
         $attrs[] = "astpriority";
@@ -176,17 +176,16 @@ class lamAsteriskExtList extends lamList {
         if ($lastError != null) {
             call_user_func_array('StatusMessage', $lastError);
         }
-        
-        $entries = $this->normalizeLdapOutput($entries);        
-        $this->entries = $entries;        
+
+        $entries = $this->normalizeLdapOutput($entries);
+        $this->entries = $entries;
         // generate list of possible suffixes
-        $typeObj = new $this->type();
-        $this->possibleSuffixes = $typeObj->getSuffixList();
+        $this->possibleSuffixes = $this->type->getBaseType()->getSuffixList();
     }
 
     /**
      * Groups the extensions.
-     * 
+     *
      * @param array $entries extension entries
      */
     private function normalizeLdapOutput($entries){
@@ -198,7 +197,7 @@ class lamAsteriskExtList extends lamList {
         }
         return array_values($entries);
     }
-    
+
 }
 
 ?>

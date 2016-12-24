@@ -829,10 +829,10 @@ class lamUserList extends lamList {
 			_('Locked') => self::FILTER_LOCKED
 		);
 		$filterInput = new htmlSelect('filter' . strtolower($attrName), $filterOptions, array($value));
-		$filterInput->setCSSClasses(array($this->type . '-dark'));
+		$filterInput->setCSSClasses(array($this->type->getScope() . '-dark'));
 		$filterInput->setHasDescriptiveElements(true);
 		$filterInput->setOnchangeEvent('document.getElementsByName(\'apply_filter\')[0].click();');
-		parseHtml(null, $filterInput, array(), false, $this->tabindex, $this->type);
+		parseHtml(null, $filterInput, array(), false, $this->tabindex, $this->type->getScope());
 	}
 
 	/**

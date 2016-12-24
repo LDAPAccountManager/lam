@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2014  Roland Gruber
+  Copyright (C) 2003 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -40,11 +40,14 @@ setlanguage();
 $conf = $_SESSION['config'];
 $new_suffs = array();
 // get list of active types
-$types = $_SESSION['config']->get_ActiveTypes();
-for ($i = 0; $i < sizeof($types); $i++) {
-	$info = @ldap_read($_SESSION['ldap']->server(), escapeDN($conf->get_Suffix($types[$i])), "(objectClass=*)", array('objectClass'), 0, 0, 0, LDAP_DEREF_NEVER);
+$typeManager = new LAM\TYPES\TypeManager();
+$types = $typeManager->getConfiguredTypes();
+foreach ($types as $type) {
+	$info = @ldap_read($_SESSION['ldap']->server(), escapeDN($type->getSuffix()), "(objectClass=*)", array('objectClass'), 0, 0, 0, LDAP_DEREF_NEVER);
 	$res = @ldap_get_entries($_SESSION['ldap']->server(), $info);
-	if (!$res && !in_array($conf->get_Suffix($types[$i]), $new_suffs)) $new_suffs[] = $conf->get_Suffix($types[$i]);
+	if (!$res && !in_array($type->getSuffix(), $new_suffs)) {
+		$new_suffs[] = $type->getSuffix();
+	}
 }
 
 // display page to add suffixes, if needed
@@ -53,11 +56,11 @@ if ((sizeof($new_suffs) > 0) && checkIfWriteAccessIsAllowed()) {
 }
 else {
 	if (sizeof($types) > 0) {
-		for ($i = 0; $i < sizeof($types); $i++) {
-			if (isAccountTypeHidden($types[$i])) {
+		foreach ($types as $type) {
+			if ($type->isHidden()) {
 				continue;
 			}
-			metaRefresh("lists/list.php?type=" . $types[$i]);
+			metaRefresh("lists/list.php?type=" . $type->getId());
 			break;
 		}
 	}
