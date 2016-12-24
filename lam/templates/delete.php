@@ -88,7 +88,8 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	}
 
 	//load account
-	$_SESSION['account'] = new accountContainer($_GET['type'], 'account');
+	$typeManager = new LAM\TYPES\TypeManager();
+	$_SESSION['account'] = new accountContainer($typeManager->getConfiguredType($_GET['type']), 'account');
 	// Show HTML Page
 	include 'main_header.php';
 	echo "<div class=\"".$_GET['type']."-bright smallPaddingContent\">";

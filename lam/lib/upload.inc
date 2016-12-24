@@ -283,7 +283,8 @@ class Uploader {
 				}
 			}
 			// load account
-			$_SESSION['mass_pdfAccount'] = new accountContainer($this->scope, 'mass_pdfAccount');
+			$typeManager = new \LAM\TYPES\TypeManager();
+			$_SESSION['mass_pdfAccount'] = new accountContainer($typeManager->getConfiguredType($this->scope), 'mass_pdfAccount');
 			$pdfErrors = $_SESSION['mass_pdfAccount']->load_account($dn, $infoAttributes);
 			if (sizeof($pdfErrors) > 0) {
 				$_SESSION['mass_errors'] = array_merge($_SESSION['mass_errors'], $pdfErrors);

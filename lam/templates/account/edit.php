@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2015  Roland Gruber
+                2005 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -57,14 +57,13 @@ if (!isLoggedIn()) {
 // Set correct language, codepages, ....
 setlanguage();
 
-
+$typeManager = new LAM\TYPES\TypeManager();
 //load account
 if (isset($_GET['DN'])) {
+	$type = $typeManager->getConfiguredType($_GET['type']);
 	$DN = str_replace("\\'", '', $_GET['DN']);
-	$type = str_replace("\\'", '', $_GET['type']);
-	if ($_GET['type'] == $type) $type = str_replace("'", '',$_GET['type']);
-	if (isAccountTypeHidden($type)) {
-		logNewMessage(LOG_ERR, 'User tried to access hidden account type: ' . $type);
+	if ($type->isHidden()) {
+		logNewMessage(LOG_ERR, 'User tried to access hidden account type: ' . $type->getId());
 		die();
 	}
 	if ($_GET['DN'] == $DN) {
@@ -75,10 +74,10 @@ if (isset($_GET['DN'])) {
 			$DN = substr($DN, 0, -1);
 		}
 	}
-	$suffix = strtolower($_SESSION['config']->get_Suffix($type));
+	$suffix = strtolower($type->getSuffix());
 	$DNlower = strtolower($DN);
 	if (strpos($DNlower, $suffix) !== (strlen($DNlower) - strlen($suffix))) {
-		logNewMessage(LOG_ERR, 'User tried to access entry of type ' . $type . ' outside suffix ' . $suffix);
+		logNewMessage(LOG_ERR, 'User tried to access entry of type ' . $type->getId() . ' outside suffix ' . $suffix);
 		die();
 	}
 	$_SESSION['account'] = new accountContainer($type, 'account', getRandomNumber());
@@ -94,14 +93,13 @@ if (isset($_GET['DN'])) {
 }
 // new account
 else if (count($_POST)==0) {
-	$type = str_replace("\\'", '', $_GET['type']);
-	if ($_GET['type'] == $type) $type = str_replace("'", '',$_GET['type']);
-	if (isAccountTypeHidden($type)) {
-		logNewMessage(LOG_ERR, 'User tried to access hidden account type: ' . $type);
+	$type = $typeManager->getConfiguredType($_GET['type']);
+	if ($type->isHidden()) {
+		logNewMessage(LOG_ERR, 'User tried to access hidden account type: ' . $type->getId());
 		die();
 	}
-	elseif (!checkIfNewEntriesAreAllowed($type)) {
-		logNewMessage(LOG_ERR, 'User tried to create entry of forbidden account type: ' . $type);
+	elseif (!checkIfNewEntriesAreAllowed($type->getId())) {
+		logNewMessage(LOG_ERR, 'User tried to create entry of forbidden account type: ' . $type->getId());
 		die();
 	}
 	$_SESSION['account'] = new accountContainer($type, 'account', getRandomNumber());
