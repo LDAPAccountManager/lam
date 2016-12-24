@@ -1,4 +1,6 @@
 <?php
+use LAM\TYPES\ConfiguredType;
+
 /*
 $Id$
 
@@ -688,17 +690,12 @@ class accountContainer {
 	/**
 	* Constructor
 	*
-	* @param string $type account type
+	* @param ConfiguredType $type account type
 	* @param string $base key in $_SESSION where this object is saved
 	* @param integer $randomID random ID to avoid parallel editing (default: null)
 	*/
 	function __construct($type, $base, $randomID = null) {
-		/* Set the type of account. Valid
-		* types are: user, group, host
-		*/
-		// Check input variable
-
-		if (!is_string($type)) trigger_error('Argument of accountContainer must be string.', E_USER_ERROR);
+		if (!($type instanceof ConfiguredType)) trigger_error('Argument of accountContainer must be ConfiguredType.', E_USER_ERROR);
 		if (!is_string($base)) trigger_error('Argument of accountContainer must be string.', E_USER_ERROR);
 		$this->type = $type;
 		$this->base = $base;
@@ -800,7 +797,7 @@ class accountContainer {
 	/**
 	* Returns the accout type of this object (e.g. user, group, host).
 	*
-	* @return string account type
+	* @return ConfiguredType account type
 	*/
 	function get_type() {
 		return $this->type;
@@ -812,7 +809,7 @@ class accountContainer {
 	*/
 	function continue_main() {
 		if (!empty($_POST['account_randomID']) && ($this->randomID != $_POST['account_randomID'])) {
-			metaRefresh("../lists/list.php?type=" . $this->type . '&amp;accountEditInvalidID=true');
+			metaRefresh("../lists/list.php?type=" . $this->type->getId() . '&amp;accountEditInvalidID=true');
 			exit();
 		}
 		$oldPage = $this->current_page;
@@ -821,7 +818,7 @@ class accountContainer {
 		$result = array();
 		$stopProcessing = false; // when set to true, no module options are displayed
 		$errorsOccured = false;
-		$typeObject = new $this->type();
+		$typeObject = $this->type->getBaseType();
 		$profileLoaded = $this->loadProfileIfRequested();
 		if ($this->subpage=='') $this->subpage='attributes';
 		if (isset($_POST['accountContainerReset'])) {
@@ -843,30 +840,30 @@ class accountContainer {
 			if (isset($_POST['accountContainerCreateAgain'])) {
 				// open fresh account page
 				unset($_SESSION[$this->base]);
-				metaRefresh("edit.php?type=" . $this->type . "&amp;suffix=" . $this->dnSuffix);
+				metaRefresh("edit.php?type=" . $this->type->getId() . "&amp;suffix=" . $this->dnSuffix);
 				exit();
 			}
 			// reedit account
 			if (isset($_POST['accountContainerBackToEdit'])) {
 				// open fresh account page
 				unset($_SESSION[$this->base]);
-				metaRefresh("edit.php?type=" . $this->type . "&amp;DN=" . urlencode($this->finalDN));
+				metaRefresh("edit.php?type=" . $this->type->getId() . "&amp;DN=" . urlencode($this->finalDN));
 				exit();
 			}
 			// back to account list
 			if (isset($_POST['accountContainerBackToList'])) {
 				// Return to account list
 				unset($_SESSION[$this->base]);
-				metaRefresh("../lists/list.php?type=" . $this->type . '&amp;accountEditBack=true');
+				metaRefresh("../lists/list.php?type=" . $this->type->getId() . '&amp;accountEditBack=true');
 				exit;
 			}
 			// create PDF file
 			if (isset($_POST['accountContainerCreatePDF'])) {
-				metaRefresh('../lists/list.php?printPDF=1&amp;type=' . $this->type . "&amp;refresh=true&amp;PDFSessionID=" . $this->base);
+				metaRefresh('../lists/list.php?printPDF=1&amp;type=' . $this->type->getId() . "&amp;refresh=true&amp;PDFSessionID=" . $this->base);
 				exit;
 			}
 			// module actions
-			if ((sizeof($_POST) > 0) && checkIfWriteAccessIsAllowed($this->type)) {
+			if ((sizeof($_POST) > 0) && checkIfWriteAccessIsAllowed($this->type->getId())) {
 				$result = call_user_func(array(&$this->module[$this->order[$this->current_page]], 'process_'.$this->subpage));
 				if (is_array($result)) {  // messages were returned, check for errors
 					for ($i = 0; $i < sizeof($result); $i++) {
@@ -987,13 +984,13 @@ class accountContainer {
 			}
 		}
 		echo '<div id="passwordMessageArea"></div>';
-		echo "<table class=\"".$this->type."-bright\" border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
-		if (checkIfWriteAccessIsAllowed($this->type)) {
-			echo "<tr class=\"".$this->type."-bright\"><td style=\"padding: 15px 15px 0px 15px;\">\n";
+		echo "<table class=\"".$this->type->getScope()."-bright\" border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
+		if (checkIfWriteAccessIsAllowed($this->type->getId())) {
+			echo "<tr class=\"" . $this->type->getScope() . "-bright\"><td style=\"padding: 15px 15px 0px 15px;\">\n";
 			$this->printCommonControls($tabindex);
 			echo "</td></tr>\n";
 		}
-		echo "<tr class=\"".$this->type."-bright\" valign=\"top\"><td style=\"padding: 15px;\">";
+		echo "<tr class=\"" . $this->type->getScope() . "-bright\" valign=\"top\"><td style=\"padding: 15px;\">";
 		// print title bar
 		echo '<div class="titleBar ui-corner-top">';
 		echo '<table width="100%"><tr>';
@@ -1021,10 +1018,10 @@ class accountContainer {
 			// RDN selection
 			$group->addElement(new htmlOutputText(_('RDN identifier')));
 			$group->addElement(new htmlSpacer('2px', null));
-			$rdnlist = getRDNAttributes($this->type);
+			$rdnlist = getRDNAttributes($this->type->getId());
 			$group->addElement(new htmlSelect('accountContainerRDN', $rdnlist, array($this->rdn)));
 			$group->addElement(new htmlHelpLink('301'));
-			parseHtml(null, $group, array(), true, $tabindex, $this->type);
+			parseHtml(null, $group, array(), true, $tabindex, $this->type->getScope());
 		echo '</td>';
 		echo '</tr></table>';
 		if ($this->titleBarSubtitle != null) {
@@ -1044,7 +1041,7 @@ class accountContainer {
 			// display html-code from modules
 			$return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage));
 			$y = 5000;
-			parseHtml($this->order[$this->current_page], $return, array(), false, $y, $this->type);
+			parseHtml($this->order[$this->current_page], $return, array(), false, $y, $this->type->getScope());
 			echo "</div>\n";
 			echo '</td>';
 			echo '</tr>';
@@ -1114,9 +1111,9 @@ class accountContainer {
 					if (!(strpos($buttonImage, 'http') === 0) && !(strpos($buttonImage, '/') === 0)) {
 						$buttonImage = '../../graphics/' . $buttonImage;
 					}
-					$moduleContainer->addElement(new htmlImage($buttonImage, null, null, getModuleAlias($name, $this->type)));
+					$moduleContainer->addElement(new htmlImage($buttonImage, null, null, getModuleAlias($name, $this->type->getScope())));
 				}
-				$moduleContainer->addElement(new htmlTableExtendedInputCheckbox('password_cb_' . $name, true, getModuleAlias($name, $this->type), null, false));
+				$moduleContainer->addElement(new htmlTableExtendedInputCheckbox('password_cb_' . $name, true, getModuleAlias($name, $this->type->getScope()), null, false));
 				$moduleContainer->addElement(new htmlSpacer('10px', null));
 			}
 		}
@@ -1125,7 +1122,7 @@ class accountContainer {
 		// generate HTML
 		$tabindex = 2000;
 		if ($printContainer) {
-			parseHtml(null, $container, array(), false, $tabindex, $this->type);
+			parseHtml(null, $container, array(), false, $tabindex, $this->type->getScope());
 		}
 		echo "</div>\n";
 	}
@@ -1260,7 +1257,7 @@ class accountContainer {
 		$rightGroup = new htmlGroup();
 		$rightGroup->alignment = htmlElement::ALIGN_RIGHT;
 		// profile selection
-		$profilelist = getAccountProfiles($this->type);
+		$profilelist = getAccountProfiles($this->type->getId());
 		if (sizeof($profilelist) > 0) {
 			$rightGroup->addElement(new htmlSelect('accountContainerSelectLoadProfile', $profilelist, array($this->lastLoadedProfile)));
 			$profileButton = new htmlButton('accountContainerLoadProfile', _('Load profile'));
@@ -1275,7 +1272,7 @@ class accountContainer {
 		}
 		$table->addElement($rightGroup);
 
-		parseHtml(null, $table, array(), false, $tabindex, $this->type);
+		parseHtml(null, $table, array(), false, $tabindex, $this->type->getScope());
 		?>
 		<script type="text/javascript">
 			jQuery(document).ready(function() {
@@ -1347,7 +1344,7 @@ class accountContainer {
 		else {
 			$text = _("Account was modified successfully.");
 		}
-		echo "<div class=\"".$this->type."-bright smallPaddingContent\">";
+		echo "<div class=\"" . $this->type->getScope() . "-bright smallPaddingContent\">";
 
 		$container = new htmlTable();
 		// show messages
@@ -1368,9 +1365,9 @@ class accountContainer {
 		$container->addElement($message, true);
 		$container->addElement(new htmlSpacer(null, '20px'), true);
 
-		$type = new $this->type();
+		$type = $this->type->getBaseType();
 		$buttonGroup = new htmlGroup();
-		if (checkIfNewEntriesAreAllowed($this->type)) {
+		if (checkIfNewEntriesAreAllowed($this->type->getId())) {
 			$createButton = new htmlButton('accountContainerCreateAgain', $type->LABEL_CREATE_ANOTHER_ACCOUNT);
 			$createButton->setIconClass('createButton');
 			$buttonGroup->addElement($createButton);
@@ -1390,7 +1387,7 @@ class accountContainer {
 		$container->addElement($buttonGroup, true);
 
 		$tabindex = 1;
-		parseHtml(null, $container, array(), false, $tabindex, $this->type);
+		parseHtml(null, $container, array(), false, $tabindex, $this->type->getScope());
 
 		echo "</div>\n";
 		$this->printPageFooter();
@@ -1403,13 +1400,13 @@ class accountContainer {
 	 */
 	private function loadProfileIfRequested() {
 		if (isset($_POST['accountContainerLoadProfile']) && isset($_POST['accountContainerSelectLoadProfile'])) {
-			$profile = loadAccountProfile($_POST['accountContainerSelectLoadProfile'], $this->type);
+			$profile = loadAccountProfile($_POST['accountContainerSelectLoadProfile'], $this->type->getId());
 			$this->lastLoadedProfile = $_POST['accountContainerSelectLoadProfile'];
 			// pass profile to each module
 			$modules = array_keys($this->module);
 			foreach ($modules as $module) $this->module[$module]->load_profile($profile);
 			if (isset($profile['ldap_rdn'][0])) {
-				if (in_array($profile['ldap_rdn'][0], getRDNAttributes($this->type))) {
+				if (in_array($profile['ldap_rdn'][0], getRDNAttributes($this->type->getId()))) {
 					$this->rdn = $profile['ldap_rdn'][0];
 				}
 			}
@@ -1437,7 +1434,7 @@ class accountContainer {
 			$buttonImage = $this->module[$this->order[$i]]->getIcon();
 			$activatedClass = '';
 			if ($this->order[$this->current_page] == $this->order[$i]) {
-				$activatedClass = ' ui-tabs-selected ui-state-active ' . $this->type . '-bright';
+				$activatedClass = ' ui-tabs-selected ui-state-active ' . $this->type->getScope() . '-bright';
 			}
 			// print button
 			echo '<li class="ui-state-default ui-corner-left' . $activatedClass . '">';
@@ -1551,11 +1548,11 @@ class accountContainer {
 	function load_account($dn, $infoAttributes = array()) {
 		logNewMessage(LOG_DEBUG, "Edit account " . $dn);
 		$this->module = array();
-		$modules = $_SESSION['config']->get_AccountModules($this->type);
+		$modules = $_SESSION['config']->get_AccountModules($this->type->getId());
 		$search = substr($dn, 0, strpos($dn, ','));
 		$searchAttrs = array('*', '+');
 		foreach ($modules as $module) {
-			$modTmp = new $module($this->type);
+			$modTmp = new $module($this->type->getScope());
 			$searchAttrs = array_merge($searchAttrs, $modTmp->getManagedHiddenAttributes());
 		}
 		$result = @ldap_read($_SESSION['ldap']->server(), escapeDN($dn), escapeDN($search), $searchAttrs, 0, 0, 0, LDAP_DEREF_NEVER);
@@ -1592,7 +1589,7 @@ class accountContainer {
 
 		foreach ($modules as $module) {
 			if (!isset($this->module[$module])) {
-				$this->module[$module] = new $module($this->type);
+				$this->module[$module] = new $module($this->type->getScope());
 				$this->module[$module]->init($this->base);
 			}
 			$this->module[$module]->load_attributes($attr);
@@ -1601,7 +1598,7 @@ class accountContainer {
 		// sort module buttons
 		$this->sortModules();
 		// get titles
-		$typeObject = new $this->type();
+		$typeObject = $this->type->getBaseType();
 		$this->titleBarTitle = $typeObject->getTitleBarTitle($this);
 		$this->titleBarSubtitle = $typeObject->getTitleBarSubtitle($this);
 		return array();
@@ -1622,7 +1619,7 @@ class accountContainer {
 		$aliases = array();
 		$ldapAttributesTemp = array();
 		foreach ($modules as $module) {
-			$moduleObj = moduleCache::getModule($module, $this->type);
+			$moduleObj = moduleCache::getModule($module, $this->type->getScope());
 			$objectClasses = array_merge($objectClasses, $moduleObj->getManagedObjectClasses());
 			$aliases = array_merge($aliases, $moduleObj->getLDAPAliases());
 			$ldapAttributesTemp = array_merge($ldapAttributesTemp, $moduleObj->getManagedAttributes());
@@ -1688,22 +1685,22 @@ class accountContainer {
 	* This function will prepare the object for a new account.
 	*/
 	function new_account() {
-		logNewMessage(LOG_DEBUG, "New account with type " . $this->type);
+		logNewMessage(LOG_DEBUG, "New account with type " . $this->type->getId());
 		$this->isNewAccount = true;
 		$this->lastLoadedProfile = 'default';
-		$modules = $_SESSION['config']->get_AccountModules($this->type);
+		$modules = $_SESSION['config']->get_AccountModules($this->type->getId());
 		foreach ($modules as $module) {
-			$this->module[$module] = new $module($this->type);
+			$this->module[$module] = new $module($this->type->getScope());
 			$this->module[$module]->init($this->base);
 		}
 		// sort module buttons
 		$this->sortModules();
-		$profile = loadAccountProfile('default', $this->type);
+		$profile = loadAccountProfile('default', $this->type->getId());
 		// pass profile to each module
 		$modules = array_keys($this->module);
 		foreach ($modules as $module) $this->module[$module]->load_profile($profile);
 		if (isset($profile['ldap_rdn'][0])) {
-			if (in_array($profile['ldap_rdn'][0], getRDNAttributes($this->type))) {
+			if (in_array($profile['ldap_rdn'][0], getRDNAttributes($this->type->getId()))) {
 				$this->rdn = $profile['ldap_rdn'][0];
 			}
 		}
@@ -1711,7 +1708,7 @@ class accountContainer {
 			$this->dnSuffix = $profile['ldap_suffix'][0];
 		}
 		// get titles
-		$typeObject = new $this->type();
+		$typeObject = $this->type->getBaseType();
 		$this->titleBarTitle = $typeObject->getTitleBarTitle($this);
 		$this->titleBarSubtitle = $typeObject->getTitleBarSubtitle($this);
 		return 0;
@@ -1723,7 +1720,7 @@ class accountContainer {
 	* @return array list of status messages
 	*/
 	function save_account() {
-		if (!checkIfWriteAccessIsAllowed($this->type)) {
+		if (!checkIfWriteAccessIsAllowed($this->type->getId())) {
 			die();
 		}
 		$this->finalDN = $this->dn_orig;
@@ -2027,7 +2024,7 @@ class accountContainer {
 		for ($i = 0; $i < sizeof($modules); $i++) {
 			// insert waiting modules
 			for ($w = 0; $w < sizeof($depModules); $w++) {
-				$dependencies = $this->module[$depModules[$w]]->get_dependencies($this->type);
+				$dependencies = $this->module[$depModules[$w]]->get_dependencies($this->type->getScope());
 				$dependencies = $dependencies['depends'];
 				$everything_found = true;
 				for ($d = 0; $d < sizeof($dependencies); $d++) {
@@ -2045,7 +2042,7 @@ class accountContainer {
 				}
 			}
 			// check next module
-			$dependencies = $this->module[$modules[$i]]->get_dependencies($this->type);
+			$dependencies = $this->module[$modules[$i]]->get_dependencies($this->type->getScope());
 			if (is_array($dependencies['depends'])) {
 				$everything_found = true;
 				$dependencies = $dependencies['depends'];
@@ -2138,7 +2135,7 @@ class accountContainer {
 		if ($this->cachedOUs != null) {
 			return $this->cachedOUs;
 		}
-		$typeObj = new $this->type();
+		$typeObj = $this->type->getBaseType();
 		$this->cachedOUs = $typeObj->getSuffixList();
 		return $this->cachedOUs;
 	}

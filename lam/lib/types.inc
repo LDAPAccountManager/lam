@@ -330,6 +330,12 @@ class ListAttribute {
  */
 class TypeManager {
 
+	/**
+	 * Returns the configured type with the given id or null.
+	 *
+	 * @param string $typeId type id
+	 * @return \LAM\TYPES\ConfiguredType|NULL type
+	 */
 	public function getConfiguredType($typeId) {
 		$configuredTypes = array();
 		$activeTypes = $_SESSION['config']->get_ActiveTypes();
