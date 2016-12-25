@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2015  Roland Gruber
+  Copyright (C) 2003 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -62,10 +62,16 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 }
 
 // copy type and profile name from POST to GET
-if (isset($_POST['profname'])) $_GET['edit'] = $_POST['profname'];
-if (isset($_POST['accounttype'])) $_GET['type'] = $_POST['accounttype'];
+if (isset($_POST['profname'])) {
+	$_GET['edit'] = $_POST['profname'];
+}
+if (isset($_POST['accounttype'])) {
+	$_GET['type'] = $_POST['accounttype'];
+}
 
-if (isAccountTypeHidden($_GET['type']) || !checkIfWriteAccessIsAllowed($_GET['type'])) {
+$typeManager = new LAM\TYPES\TypeManager();
+$type = $typeManager->getConfiguredType($_GET['type']);
+if ($type->isHidden() || !checkIfWriteAccessIsAllowed($_GET['type'])) {
 	logNewMessage(LOG_ERR, 'User tried to access hidden account type profile: ' . $_GET['type']);
 	die();
 }
@@ -108,14 +114,14 @@ if (isset($_POST['save'])) {
 			$options[$element] = explode("\r\n", $_POST[$element]);
 		}
 	}
-	
+
 	// remove double slashes if magic quotes are on
 	if (get_magic_quotes_gpc() == 1) {
 		foreach ($opt_keys as $element) {
 			if (isset($options[$element][0]) && is_string($options[$element][0])) $options[$element][0] = stripslashes($options[$element][0]);
 		}
 	}
-	
+
 	// check options
 	$errors = checkProfileOptions($_POST['accounttype'], $options);
 	if (sizeof($errors) == 0) {  // input data is valid, save profile
@@ -140,15 +146,12 @@ if (sizeof($errors) > 0) {
 		call_user_func_array('StatusMessage', $errors[$i]);
 	}
 }
-	
+
 // empty list of attribute types
 $_SESSION['profile_types'] = array();
 
-// check if account type is valid
-$type = $_GET['type'];
-
 // get module options
-$options = getProfileOptions($type);
+$options = getProfileOptions($type->getId());
 
 // load old profile or POST values if needed
 $old_options = array();
@@ -169,11 +172,11 @@ if (isset($_POST['save'])) {
 	}
 }
 elseif (isset($_GET['edit'])) {
-	$old_options = loadAccountProfile($_GET['edit'], $type);
+	$old_options = loadAccountProfile($_GET['edit'], $type->getId());
 }
 
 // display formular
-echo "<form action=\"profilepage.php?type=$type\" method=\"post\">\n";
+echo "<form action=\"profilepage.php?type=" . $type->getId() . "\" method=\"post\">\n";
 echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';
 
 $profName = '';
@@ -192,10 +195,10 @@ $dnContent->addElement(new htmlTableExtendedInputField(_("Profile name") . '*', 
 $dnContent->addElement(new htmlSpacer(null, '10px'), true);
 // suffix box
 // get root suffix
-$rootsuffix = $_SESSION['config']->get_Suffix($type);
+$rootsuffix = $type->getSuffix();
 // get subsuffixes
 $suffixes = array('-' => '-');
-$typeObj = new $type();
+$typeObj = $type->getBaseType();
 $possibleSuffixes = $typeObj->getSuffixList();
 foreach ($possibleSuffixes as $suffix) {
 	$suffixes[getAbstractDN($suffix)] = $suffix;
@@ -210,7 +213,7 @@ $suffixSelect->setSortElements(false);
 $suffixSelect->setRightToLeftTextDirection(true);
 $dnContent->addElement($suffixSelect, true);
 // RDNs
-$rdns = getRDNAttributes($type);
+$rdns = getRDNAttributes($type->getId());
 $selectedRDN = array();
 if (isset($old_options['ldap_rdn'][0])) {
 	$selectedRDN[] = $old_options['ldap_rdn'][0];
@@ -220,22 +223,22 @@ $dnContent->addElement(new htmlTableExtendedSelect('ldap_rdn', $rdns, $selectedR
 $container->addElement(new htmlFieldset($dnContent, _("General settings"), '../../graphics/logo32.png'), true);
 $container->addElement(new htmlSpacer(null, '15px'), true);
 
-$_SESSION['profile_types'] = parseHtml(null, $container, $old_options, false, $tabindex, $type);
+$_SESSION['profile_types'] = parseHtml(null, $container, $old_options, false, $tabindex, $type->getScope());
 
 // display module options
 $modules = array_keys($options);
 for ($m = 0; $m < sizeof($modules); $m++) {
 	// ignore modules without options
 	if (sizeof($options[$modules[$m]]) < 1) continue;
-	$module = new $modules[$m]($type);
+	$module = new $modules[$m]($type->getId());
 	$icon = $module->getIcon();
 	if (($icon != null) && !(strpos($icon, 'http') === 0) && !(strpos($icon, '/') === 0)) {
 		$icon = '../../graphics/' . $icon;
 	}
 	$container = new htmlTable();
-	$container->addElement(new htmlFieldset($options[$modules[$m]], getModuleAlias($modules[$m], $type), $icon), true);
+	$container->addElement(new htmlFieldset($options[$modules[$m]], getModuleAlias($modules[$m], $type->getScope()), $icon), true);
 	$container->addElement(new htmlSpacer(null, '15px'), true);
-	$_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml($modules[$m], $container, $old_options, false, $tabindex, $type));
+	$_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml($modules[$m], $container, $old_options, false, $tabindex, $type->getScope()));
 }
 
 // profile name and submit/abort buttons
@@ -246,9 +249,9 @@ $buttonTable->addElement($saveButton);
 $cancelButton = new htmlButton('abort', _('Cancel'));
 $cancelButton->setIconClass('cancelButton');
 $buttonTable->addElement($cancelButton);
-$buttonTable->addElement(new htmlHiddenInput('accounttype', $type));
+$buttonTable->addElement(new htmlHiddenInput('accounttype', $type->getId()));
 
-$_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml(null, $buttonTable, $old_options, false, $tabindex, $type));
+$_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml(null, $buttonTable, $old_options, false, $tabindex, $type->getScope()));
 
 ?>
 <script type="text/javascript">
