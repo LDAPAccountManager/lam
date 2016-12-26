@@ -1,4 +1,13 @@
 <?php
+namespace LAM\TOOLS\PROFILE_EDITOR;
+use \htmlTable;
+use \htmlTitle;
+use \htmlTableExtendedInputField;
+use \htmlSpacer;
+use \htmlTableExtendedSelect;
+use \htmlFieldset;
+use \htmlButton;
+use \htmlHiddenInput;
 /*
 $Id$
 
@@ -69,7 +78,7 @@ if (isset($_POST['accounttype'])) {
 	$_GET['type'] = $_POST['accounttype'];
 }
 
-$typeManager = new LAM\TYPES\TypeManager();
+$typeManager = new \LAM\TYPES\TypeManager();
 $type = $typeManager->getConfiguredType($_GET['type']);
 if ($type->isHidden() || !checkIfWriteAccessIsAllowed($_GET['type'])) {
 	logNewMessage(LOG_ERR, 'User tried to access hidden account type profile: ' . $_GET['type']);

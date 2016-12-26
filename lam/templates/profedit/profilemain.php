@@ -1,4 +1,20 @@
 <?php
+namespace LAM\TOOLS\PROFILE_EDITOR;
+use \htmlTable;
+use \htmlTitle;
+use \htmlStatusMessage;
+use \LAMCfgMain;
+use \htmlSubTitle;
+use \htmlSpacer;
+use \htmlSelect;
+use \htmlButton;
+use \htmlImage;
+use \htmlLink;
+use \htmlOutputText;
+use \htmlHelpLink;
+use \htmlHiddenInput;
+use \htmlInputField;
+use \htmlDiv;
 /*
 $Id$
 
@@ -51,7 +67,7 @@ if (!empty($_POST)) {
 	validateSecurityToken();
 }
 
-$typeManager = new LAM\TYPES\TypeManager();
+$typeManager = new \LAM\TYPES\TypeManager();
 $types = $typeManager->getConfiguredTypes();
 $profileClasses = array();
 $profileClassesTemp = array();

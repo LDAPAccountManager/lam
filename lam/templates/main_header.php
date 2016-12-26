@@ -1,4 +1,5 @@
 <?php
+namespace LAM\HEADER;
 /*
 $Id$
 
@@ -204,7 +205,7 @@ jQuery(document).ready(function() {
 <?php
 
 function printTypeTabs($headerPrefix) {
-	$typeManager = new LAM\TYPES\TypeManager();
+	$typeManager = new \LAM\TYPES\TypeManager();
 	$types = $typeManager->getConfiguredTypes();
 	$linkList = array();
 	foreach ($types as $type) {
