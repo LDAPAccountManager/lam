@@ -1,10 +1,25 @@
 <?php
+namespace LAM\TOOLS\PDF_EDITOR;
+use \htmlTable;
+use \htmlTitle;
+use \htmlTableExtendedInputField;
+use \htmlSpacer;
+use \htmlTableExtendedSelect;
+use \htmlButton;
+use \htmlOutputText;
+use \htmlGroup;
+use \htmlSelect;
+use \htmlInputField;
+use \htmlSubTitle;
+use \htmlFieldset;
+use \htmlInputTextarea;
+use \htmlHiddenInput;
 /*
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2007 - 2015  Roland Gruber
+                2007 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -66,15 +81,17 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 }
 
 // Write $_POST variables to $_GET when form was submitted via post
-if(isset($_POST['type'])) {
+if (isset($_POST['type'])) {
 	$_GET = $_POST;
-	if($_POST['pdfname'] == '') {
+	if ($_POST['pdfname'] == '') {
 		unset($_GET['pdfname']);
 	}
 }
 
-if (isAccountTypeHidden($_GET['type']) || !checkIfWriteAccessIsAllowed($_GET['type'])) {
-	logNewMessage(LOG_ERR, 'User tried to access hidden PDF structure: ' . $_GET['type']);
+$typeManager = new \LAM\TYPES\TypeManager();
+$type = $typeManager->getConfiguredType($_GET['type']);
+if ($type->isHidden() || !checkIfWriteAccessIsAllowed($type->getId())) {
+	logNewMessage(LOG_ERR, 'User tried to access hidden PDF structure: ' . $type->getId());
 	die();
 }
 
@@ -112,11 +129,11 @@ if(isset($_GET['submit'])) {
 		$saveErrors[] = array('ERROR', _('PDF structure name not valid'), _('The name for that PDF-structure you submitted is not valid. A valid name must consist of the following characters: \'a-z\',\'A-Z\',\'0-9\',\'_\',\'-\'.'));
 	}
 	else {
-		$return = savePDFStructureDefinitions($_GET['type'],$_GET['pdfname']);
+		$return = savePDFStructureDefinitions($type->getId(), $_GET['pdfname']);
 		if($return == 'ok') {
 			metaRefresh('pdfmain.php?savedSuccessfully=' . $_GET['pdfname']);
 			exit;
-		} 
+		}
 		elseif($return == 'no perms'){
 			$saveErrors[] = array('ERROR', _("Could not save PDF structure, access denied."), $_GET['pdfname']);
 		}
@@ -141,7 +158,7 @@ elseif(isset($_GET['add_sectionText'])) {
 		StatusMessage('ERROR',_('No section text specified'),_('The headline for a new section must contain at least one character.'));
 	}
 	else {
-		$attributes = array();		
+		$attributes = array();
 		$attributes['NAME'] = $_GET['new_section_text'];
 		$entry = array(array('tag' => 'SECTION','type' => 'open','level' => '2','attributes' => $attributes),array('tag' => 'SECTION','type' => 'close','level' => '2'));
 		// Insert new field in structure
@@ -339,14 +356,14 @@ foreach ($_GET as $key => $value) {
 if(!isset($_SESSION['currentPDFStructure'])) {
 	// Load structure file to be edit
 	if(isset($_GET['edit'])) {
-		$load = loadPDFStructureDefinitions($_GET['type'],$_GET['edit']);
+		$load = loadPDFStructureDefinitions($type->getId(), $_GET['edit']);
 		$_SESSION['currentPDFStructure'] = $load['structure'];
 		$_SESSION['currentPageDefinitions'] = $load['page_definitions'];
 		$_GET['pdfname'] = $_GET['edit'];
 	}
 	// Load default structure file when creating a new one
 	else {
-		$load = loadPDFStructureDefinitions($_GET['type']);
+		$load = loadPDFStructureDefinitions($type->getId());
 		$_SESSION['currentPDFStructure'] = $load['structure'];
 		$_SESSION['currentPageDefinitions'] = $load['page_definitions'];
 	}
@@ -354,7 +371,7 @@ if(!isset($_SESSION['currentPDFStructure'])) {
 
 // Load available fields from modules when not set in session
 if(!isset($_SESSION['availablePDFFields'])) {
-	$_SESSION['availablePDFFields'] = getAvailablePDFFields($_GET['type']);
+	$_SESSION['availablePDFFields'] = getAvailablePDFFields($type->getId());
 }
 
 // Create the values for the dropdown boxes for section headline defined by
@@ -365,7 +382,7 @@ $section_items = '';
 $sortedModules = array();
 foreach($_SESSION['availablePDFFields'] as $module => $fields) {
 	if ($module != 'main') {
-		$title = getModuleAlias($module, $_GET['type']);
+		$title = getModuleAlias($module, $type->getScope());
 	}
 	else {
 		$title = _('Main');
@@ -432,7 +449,7 @@ if (isset($_SESSION['currentPageDefinitions']['headline'])) {
 $logoFiles = getAvailableLogos();
 $logos = array(_('No logo') => 'none');
 foreach($logoFiles as $logoFile) {
-	$logos[$logoFile['filename'] . ' (' . $logoFile['infos'][0] . ' x ' . $logoFile['infos'][1] . ")"] = $logoFile['filename'];  
+	$logos[$logoFile['filename'] . ' (' . $logoFile['infos'][0] . ' x ' . $logoFile['infos'][1] . ")"] = $logoFile['filename'];
 }
 $selectedLogo = array('printLogo.jpg');
 if (isset($_SESSION['currentPageDefinitions']['filename'])) {
@@ -472,7 +489,7 @@ $structureContent = new htmlTable();
 for ($key = 0; $key < sizeof($_SESSION['currentPDFStructure']); $key++) {
 	$entry = $_SESSION['currentPDFStructure'][$key];
 	// create the up/down/remove links
-	$linkBase = 'pdfpage.php?type=' . $_GET['type'] . '&pdfname=' . $structureName . '&headline=' . $headline . '&logoFile=' . $selectedLogo[0] . '&foldingmarks=' . $foldingMarks;
+	$linkBase = 'pdfpage.php?type=' . $type->getId() . '&pdfname=' . $structureName . '&headline=' . $headline . '&logoFile=' . $selectedLogo[0] . '&foldingmarks=' . $foldingMarks;
 	$linkUp = new htmlButton('up_' . $key, 'up.gif', true);
 	$linkUp->setTitle(_("Up"));
 	$linkDown = new htmlButton('down_' . $key, 'down.gif', true);
@@ -484,7 +501,7 @@ for ($key = 0; $key < sizeof($_SESSION['currentPDFStructure']); $key++) {
 	if($entry['tag'] == "SECTION" && $entry['type'] == "open") {
 		$name = $entry['attributes']['NAME'];
 		if(preg_match("/^_[a-zA-Z0-9_]+_[a-zA-Z0-9_]+/",$name)) {
-			$section_headline = translateFieldIDToName(substr($name,1), $_GET['type']);
+			$section_headline = translateFieldIDToName(substr($name,1), $type->getScope());
 		}
 		else {
 			$section_headline = $name;
@@ -496,7 +513,7 @@ for ($key = 0; $key < sizeof($_SESSION['currentPDFStructure']); $key++) {
 		if(preg_match("/^_[a-zA-Z0-9_]+_[a-zA-Z0-9_]+/",$name)) {
 			$headlineElements = array();
 			foreach($section_items_array as $item) {
-				$headlineElements[translateFieldIDToName($item, $_GET['type'])] = '_' . $item;
+				$headlineElements[translateFieldIDToName($item, $type->getScope())] = '_' . $item;
 			}
 			$sectionHeadlineSelect = new htmlSelect('section_' . $key, $headlineElements, array($name));
 			$sectionHeadlineSelect->setHasDescriptiveElements(true);
@@ -566,7 +583,7 @@ for ($key = 0; $key < sizeof($_SESSION['currentPDFStructure']); $key++) {
 		// Get name of current entry
 		$name = $entry['attributes']['NAME'];
 		$structureContent->addElement(new htmlSpacer('10px', null));
-		$fieldOutput = new htmlOutputText(translateFieldIDToName($name, $_GET['type']));
+		$fieldOutput = new htmlOutputText(translateFieldIDToName($name, $type->getScope()));
 		$structureContent->addElement($fieldOutput);
 		if ($_SESSION['currentPDFStructure'][$key - 1]['tag'] != 'SECTION') {
 			$structureContent->addElement($linkUp);
@@ -644,13 +661,13 @@ $cancelButton->setIconClass('cancelButton');
 $buttonContainer->addElement($saveButton);
 $buttonContainer->addElement($cancelButton);
 $buttonContainer->addElement(new htmlHiddenInput('modules', $modules));
-$buttonContainer->addElement(new htmlHiddenInput('type', $_GET['type']));
+$buttonContainer->addElement(new htmlHiddenInput('type', $type->getId()));
 
 $container->addElement($buttonContainer, true);
 addSecurityTokenToMetaHTML($container);
 
 $tabindex = 1;
-parseHtml(null, $container, array(), false, $tabindex, $_GET['type']);
+parseHtml(null, $container, array(), false, $tabindex, $type->getScope());
 
 if ((sizeof($saveErrors) == 0) && isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
 	// scroll to last position
