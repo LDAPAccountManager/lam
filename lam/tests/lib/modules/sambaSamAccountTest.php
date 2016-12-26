@@ -23,7 +23,6 @@
 
 include_once 'lam/lib/baseModule.inc';
 include_once 'lam/lib/modules.inc';
-include_once 'lam/lib/passwordExpirationJob.inc';
 include_once 'lam/lib/modules/sambaSamAccount.inc';
 
 /**
