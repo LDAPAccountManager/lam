@@ -21,10 +21,10 @@
 
  */
 
-include_once '../../../lib/baseModule.inc';
-include_once '../../../lib/modules.inc';
-include_once '../../../lib/passwordExpirationJob.inc';
-include_once '../../../lib/modules/ppolicyUser.inc';
+include_once 'lam/lib/baseModule.inc';
+include_once 'lam/lib/modules.inc';
+include_once 'lam/lib/passwordExpirationJob.inc';
+include_once 'lam/lib/modules/ppolicyUser.inc';
 
 /**
  * Checks the ppolicy expire job.

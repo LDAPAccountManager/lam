@@ -21,7 +21,7 @@
 
  */
 
-include_once (dirname ( __FILE__ ) . '/../utils/configuration.inc');
+include_once 'lam/tests/utils/configuration.inc';
 
 /**
  * LAMConfig test case.

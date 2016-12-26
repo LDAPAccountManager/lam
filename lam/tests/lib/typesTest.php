@@ -21,7 +21,7 @@ $Id$
 
 */
 
-require_once '../../lib/types.inc';
+require_once 'lam/lib/types.inc';
 
 /**
  * Checks ListAttribute.

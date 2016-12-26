@@ -21,8 +21,8 @@ $Id$
 
 */
 
-include_once (dirname ( __FILE__ ) . '/../../../lib/baseModule.inc');
-include_once (dirname ( __FILE__ ) . '/../../../lib/modules/sudoRole.inc');
+include_once 'lam/lib/baseModule.inc';
+include_once 'lam/lib/modules/sudoRole.inc';
 
 /**
  * Checks sudo role functions.

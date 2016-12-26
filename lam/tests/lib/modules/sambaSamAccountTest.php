@@ -21,10 +21,10 @@
 
  */
 
-include_once (dirname ( __FILE__ ) . '/../../../lib/baseModule.inc');
-include_once (dirname ( __FILE__ ) . '/../../../lib/modules.inc');
-include_once (dirname ( __FILE__ ) . '/../../../lib/passwordExpirationJob.inc');
-include_once (dirname ( __FILE__ ) . '/../../../lib/modules/sambaSamAccount.inc');
+include_once 'lam/lib/baseModule.inc';
+include_once 'lam/lib/modules.inc';
+include_once 'lam/lib/passwordExpirationJob.inc';
+include_once 'lam/lib/modules/sambaSamAccount.inc';
 
 /**
  * Checks the shadow expire job.
