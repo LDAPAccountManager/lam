@@ -115,7 +115,9 @@ class toolOUEditor implements \LAMTool {
 	 * @return boolean visible
 	 */
 	function isVisible() {
-		return (sizeof($_SESSION['config']->get_ActiveTypes()) > 0);
+		$typeManager = new \LAM\TYPES\TypeManager();
+		$types = $typeManager->getConfiguredTypes();
+		return (sizeof($types) > 0);
 	}
 
 	/**
