@@ -5,4 +5,10 @@
 			<directory>lam/tests</directory>
 		</testsuite>
 	</testsuites>
+	<php>
+		<includePath>.</includePath>
+	</php>
+	<logging>
+		<log type="coverage-html" target="../code-coverage/html"/>
+	</logging>
 </phpunit>

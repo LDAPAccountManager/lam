@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2014  Roland Gruber
+  Copyright (C) 2014 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,59 +21,63 @@ $Id$
 
 */
 
-include_once (dirname ( __FILE__ ) . '/../../../lib/baseModule.inc');
-include_once (dirname ( __FILE__ ) . '/../../../lib/modules/sudoRole.inc');
+if (is_readable('lam/lib/modules/sudoRole.inc')) {
 
-/**
- * Checks sudo role functions.
- *
- * @author Roland Gruber
- *
- */
-class SudoRoleTest extends PHPUnit_Framework_TestCase {
+	include_once 'lam/lib/baseModule.inc';
+	include_once 'lam/lib/modules/sudoRole.inc';
 
-	public function testIsValidDate() {
-		$valid = array('22.10.2014', '05.01.2013', '1.3.2014', '10.5.2014', '4.12.2015',
-					'05.01.2013 22:15', '1.3.2014 5:1', '10.5.2014 13:3', '4.12.2015 5:22');
-		foreach ($valid as $testDate) {
-			$this->assertTrue(sudoRole::isValidDate($testDate));
-		}
-		$invalid = array('10.25.2014', 'abc', '2014-10-12', '10.022014', '10:12', '22.10.2014 12');
-		foreach ($invalid as $testDate) {
-			$this->assertNotTrue(sudoRole::isValidDate($testDate), $testDate);
-		}
-	}
+	/**
+	 * Checks sudo role functions.
+	 *
+	 * @author Roland Gruber
+	 *
+	 */
+	class SudoRoleTest extends PHPUnit_Framework_TestCase {
 
-	public function testEncodeDate() {
-		$dates = array(
-			'1.2.2014' => '20140201000000Z',
-			'10.2.2014' => '20140210000000Z',
-			'1.11.2014' => '20141101000000Z',
-			'20.12.2014' => '20141220000000Z',
-			'1.2.2014 1:2' => '20140201010200Z',
-			'10.2.2014 1:10' => '20140210011000Z',
-			'1.11.2014 10:2' => '20141101100200Z',
-			'20.12.2014 10:12' => '20141220101200Z',
-		);
-		foreach ($dates as $input => $output) {
-			$this->assertEquals($output, sudoRole::encodeDate($input), $input . ' ' . $output);
+		public function testIsValidDate() {
+			$valid = array('22.10.2014', '05.01.2013', '1.3.2014', '10.5.2014', '4.12.2015',
+						'05.01.2013 22:15', '1.3.2014 5:1', '10.5.2014 13:3', '4.12.2015 5:22');
+			foreach ($valid as $testDate) {
+				$this->assertTrue(sudoRole::isValidDate($testDate));
+			}
+			$invalid = array('10.25.2014', 'abc', '2014-10-12', '10.022014', '10:12', '22.10.2014 12');
+			foreach ($invalid as $testDate) {
+				$this->assertNotTrue(sudoRole::isValidDate($testDate), $testDate);
+			}
 		}
-	}
 
-	public function testDecodeDate() {
-		$dates = array(
-			'01.02.2014 00:00' => '20140201000000Z',
-			'10.02.2014 00:00' => '20140210000000Z',
-			'01.11.2014 00:00' => '20141101000000Z',
-			'20.12.2014 00:00' => '20141220000000Z',
-			'01.02.2014 01:02' => '20140201010200Z',
-			'10.02.2014 01:10' => '20140210011000Z',
-			'01.11.2014 10:02' => '20141101100200Z',
-			'20.12.2014 10:12' => '20141220101200Z',
-		);
-		foreach ($dates as $output => $input) {
-			$this->assertEquals($output, sudoRole::decodeDate($input), $input . ' ' . $output);
+		public function testEncodeDate() {
+			$dates = array(
+				'1.2.2014' => '20140201000000Z',
+				'10.2.2014' => '20140210000000Z',
+				'1.11.2014' => '20141101000000Z',
+				'20.12.2014' => '20141220000000Z',
+				'1.2.2014 1:2' => '20140201010200Z',
+				'10.2.2014 1:10' => '20140210011000Z',
+				'1.11.2014 10:2' => '20141101100200Z',
+				'20.12.2014 10:12' => '20141220101200Z',
+			);
+			foreach ($dates as $input => $output) {
+				$this->assertEquals($output, sudoRole::encodeDate($input), $input . ' ' . $output);
+			}
 		}
+
+		public function testDecodeDate() {
+			$dates = array(
+				'01.02.2014 00:00' => '20140201000000Z',
+				'10.02.2014 00:00' => '20140210000000Z',
+				'01.11.2014 00:00' => '20141101000000Z',
+				'20.12.2014 00:00' => '20141220000000Z',
+				'01.02.2014 01:02' => '20140201010200Z',
+				'10.02.2014 01:10' => '20140210011000Z',
+				'01.11.2014 10:02' => '20141101100200Z',
+				'20.12.2014 10:12' => '20141220101200Z',
+			);
+			foreach ($dates as $output => $input) {
+				$this->assertEquals($output, sudoRole::decodeDate($input), $input . ' ' . $output);
+			}
+		}
+
 	}
 
 }

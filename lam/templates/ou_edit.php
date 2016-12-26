@@ -1,4 +1,15 @@
 <?php
+namespace LAM\TOOLS\OU_EDIT;
+use \htmlTable;
+use \htmlSpacer;
+use \htmlOutputText;
+use \htmlButton;
+use \htmlHiddenInput;
+use \htmlSubTitle;
+use \htmlStatusMessage;
+use \htmlSelect;
+use \htmlHelpLink;
+use \htmlInputField;
 /*
 $Id$
 
@@ -50,8 +61,6 @@ setlanguage();
 if (!empty($_POST)) {
 	validateSecurityToken();
 }
-
-$types = $_SESSION['config']->get_ActiveTypes();
 
 // check if deletion was canceled
 if (isset($_POST['abort'])) {
@@ -166,13 +175,14 @@ function display_main($message, $error) {
 		$container->addElement($msg, true);
 	}
 
+	$typeManager = new \LAM\TYPES\TypeManager();
+	$typeList = $typeManager->getConfiguredTypes();
 	$types = array();
-	$typeList = $_SESSION['config']->get_ActiveTypes();
-	for ($i = 0; $i < sizeof($typeList); $i++) {
-		if (isAccountTypeHidden($typeList[$i]) || !checkIfWriteAccessIsAllowed($typeList[$i])) {
+	foreach ($typeList as $type) {
+		if ($type->isHidden() || !checkIfWriteAccessIsAllowed($type->getId())) {
 			continue;
 		}
-		$types[$typeList[$i]] = LAM\TYPES\getTypeAlias($typeList[$i]);
+		$types[$type->getId()] = $type->getAlias();
 	}
 	natcasesort($types);
 	$options = array();

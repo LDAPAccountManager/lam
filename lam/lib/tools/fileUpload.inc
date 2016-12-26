@@ -1,9 +1,10 @@
 <?php
+namespace LAM\TOOLS\UPLOAD;
 /*
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2011  Roland Gruber
+  Copyright (C) 2009 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -33,7 +34,7 @@ $Id$
  *
  * @package tools
  */
-class toolFileUpload implements LAMTool {
+class toolFileUpload implements \LAMTool {
 
 	/**
 	 * Returns the name of the tool.
@@ -114,7 +115,9 @@ class toolFileUpload implements LAMTool {
 	 * @return boolean visible
 	 */
 	function isVisible() {
-		return (sizeof($_SESSION['config']->get_ActiveTypes()) > 0);
+		$typeManager = new \LAM\TYPES\TypeManager();
+		$types = $typeManager->getConfiguredTypes();
+		return (sizeof($types) > 0);
 	}
 
 	/**
