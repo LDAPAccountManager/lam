@@ -21,10 +21,10 @@
 
  */
 
-include_once (dirname ( __FILE__ ) . '/../../../lib/baseModule.inc');
-include_once (dirname ( __FILE__ ) . '/../../../lib/modules.inc');
-include_once (dirname ( __FILE__ ) . '/../../../lib/passwordExpirationJob.inc');
-include_once (dirname ( __FILE__ ) . '/../../../lib/modules/ppolicyUser.inc');
+include_once '../../../lib/baseModule.inc';
+include_once '../../../lib/modules.inc';
+include_once '../../../lib/passwordExpirationJob.inc';
+include_once '../../../lib/modules/ppolicyUser.inc';
 
 /**
  * Checks the ppolicy expire job.
