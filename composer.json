@@ -1,8 +1,6 @@
 {
-  "require" : {
-    "squizlabs/php_codesniffer" : "2.7.1"
-  },
   "require-dev" : {
-    "phpunit/phpunit" : "5.5.*"
+    "phpunit/phpunit" : "5.5.*",
+    "squizlabs/php_codesniffer" : "2.7.1"
   }
 }
