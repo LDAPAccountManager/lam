@@ -73,16 +73,21 @@ function getTypes() {
 * Returns the alias name of an account type.
 *
 * @param string $type type name
+* @param \LAMConfig $config config (optional, uses $_SESSION['config'] by default)
 * @return string type alias
 */
-function getTypeAlias($type) {
-	if (!empty($_SESSION['config'])) {
-		$typeSettings = $_SESSION['config']->get_typeSettings();
+function getTypeAlias($type, $config = null) {
+	if (($config == null) && !empty($_SESSION['config'])) {
+		$config = $_SESSION['config'];
+	}
+	if ($config != null) {
+		$typeSettings = $config->get_typeSettings();
 		if (!empty($typeSettings['customLabel_' . $type])) {
 			return $typeSettings['customLabel_' . $type];
 		}
 	}
-	$obj = new $type();
+	$scope = getScopeFromTypeId($type);
+	$obj = new $scope();
 	return $obj->getAlias();
 }
 
@@ -130,6 +135,17 @@ function getDefaultListAttributes($type) {
 function getListAttributeDescriptions($type) {
 	$obj = new $type();
 	return $obj->getListAttributeDescriptions();
+}
+
+/**
+ * Returns the account type for a given type id.
+ *
+ * @param string $typeId type id (e.g. user_1)
+ * @return string scope (e.g. user)
+ */
+function getScopeFromTypeId($typeId) {
+	$parts = explode('_', $typeId);
+	return $parts[0];
 }
 
 /**
@@ -244,7 +260,7 @@ class ConfiguredType {
 	/**
 	 * Returns the base type of this configured type.
 	 *
-	 * @return baseType base type
+	 * @return \baseType base type
 	 */
 	public function getBaseType() {
 		if ($this->baseType != null) {
@@ -330,6 +346,20 @@ class ListAttribute {
  */
 class TypeManager {
 
+	private $config;
+
+	/**
+	 * Constructor
+	 *
+	 * @param \LAMConfig $config configuration (uses $_SESSION['config'] by default)
+	 */
+	public function __construct(&$config = null) {
+		if ($config == null) {
+			$config = &$_SESSION['config'];
+		}
+		$this->config = &$config;
+	}
+
 	/**
 	 * Returns the configured type with the given id or null.
 	 *
@@ -338,7 +368,7 @@ class TypeManager {
 	 */
 	public function getConfiguredType($typeId) {
 		$configuredTypes = array();
-		$activeTypes = $_SESSION['config']->get_ActiveTypes();
+		$activeTypes = $this->config->get_ActiveTypes();
 		if (in_array($typeId, $activeTypes)) {
 			return $this->buildConfiguredType($typeId);
 		}
@@ -352,7 +382,7 @@ class TypeManager {
 	 */
 	public function getConfiguredTypes() {
 		$configuredTypes = array();
-		$activeTypes = $_SESSION['config']->get_ActiveTypes();
+		$activeTypes = $this->config->get_ActiveTypes();
 		foreach ($activeTypes as $typeId) {
 			$configuredTypes[] = $this->buildConfiguredType($typeId);
 		}
@@ -365,12 +395,11 @@ class TypeManager {
 	 * @param string $typeId type id
 	 */
 	private function buildConfiguredType($typeId) {
-		$parts = explode('_', $typeId);
-		$scope = $parts[0];
-		$suffix = $_SESSION['config']->get_Suffix($typeId);
+		$scope = getScopeFromTypeId($typeId);
+		$suffix = $this->config->get_Suffix($typeId);
 		$attributes = $this->getAttributes($typeId, $scope);
-		$alias = getTypeAlias($typeId);
-		$ldapFilter = $_SESSION['config']->get_Suffix($typeId);
+		$alias = getTypeAlias($typeId, $this->config);
+		$ldapFilter = $this->config->get_Suffix($typeId);
 		$hidden = isAccountTypeHidden($typeId);
 		return new ConfiguredType($scope, $typeId, $suffix, $attributes, $alias, $ldapFilter, $hidden);
 	}
@@ -383,13 +412,30 @@ class TypeManager {
 	 * @return \LAM\TYPES\ListAttribute[] list attributes
 	 */
 	private function getAttributes($typeId, $scope) {
-		$attributeString = $_SESSION['config']->get_listAttributes($typeId);
+		$attributeString = $this->config->get_listAttributes($typeId);
 		$attributeSpecs = explode(';', $attributeString);
 		$attributes = array();
 		foreach ($attributeSpecs as $attributeSpec) {
 			$attributes[] = new ListAttribute($attributeSpec, $scope);
 		}
 		return $attributes;
+	}
+
+	/**
+	 * Generates a new unique type id for the given scope.
+	 *
+	 * @param string $scope account type (e.g. user)
+	 */
+	public function generateNewTypeId($scope) {
+		$activeTypes = $this->config->get_ActiveTypes();
+		if (!in_array($scope, $activeTypes)) {
+			return $scope;
+		}
+		$counter = 1;
+		while (in_array($scope . '_' . $counter, $activeTypes)) {
+			$counter++;
+		}
+		return $scope . '_' . $counter;
 	}
 
 }
