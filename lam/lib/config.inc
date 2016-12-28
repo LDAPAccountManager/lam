@@ -660,17 +660,17 @@ class LAMConfig {
 		$allTypes = LAM\TYPES\getTypes();
 		$activeTypes = $this->get_ActiveTypes();
 		for ($i = 0; $i < sizeof($activeTypes); $i++) {
-			if (!in_array($activeTypes[$i], $allTypes)) {
+			if (!in_array(\LAM\TYPES\getScopeFromTypeId($activeTypes[$i]), $allTypes)) {
 				unset($activeTypes[$i]);
 			}
 		}
 		$activeTypes = array_values($activeTypes);
 		$this->set_ActiveTypes($activeTypes);
 		// check modules
-		$scopes = $this->get_ActiveTypes();
-		for ($s = 0; $s < sizeof($scopes); $s++) {
-			$scope = $scopes[$s];
-			$moduleVar = "modules_" . $scope;
+		$types = $this->get_ActiveTypes();
+		foreach ($types as $type) {
+			$scope = \LAM\TYPES\getScopeFromTypeId($type);
+			$moduleVar = "modules_" . $type;
 			if (isset($this->typeSettings[$moduleVar])){
 				$modules = explode(",", $this->typeSettings[$moduleVar]);
 				$available = getAvailableModules($scope);

@@ -34,7 +34,7 @@ $Id$
 * @package types
 */
 class baseType {
-	
+
 	/** label to create another account */
 	public $LABEL_CREATE_ANOTHER_ACCOUNT;
 	/** label to return to account list */
@@ -47,7 +47,7 @@ class baseType {
 		$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another account');
 		$this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to account list');
 	}
-	
+
 	/**
 	* Returns the alias name of this account type.
 	* This function must be overwritten by the child classes.
@@ -57,7 +57,7 @@ class baseType {
 	public function getAlias() {
 		return "baseType";
 	}
-	
+
 	/**
 	* Returns the description of this account type.
 	* This function must be overwritten by the child classes.
@@ -67,7 +67,7 @@ class baseType {
 	public function getDescription() {
 		return "base type";
 	}
-	
+
 	/**
 	* Returns the class name for the list object.
 	*
@@ -76,7 +76,7 @@ class baseType {
 	public function getListClassName() {
 		return "lamList";
 	}
-	
+
 	/**
 	* Returns the default attribute list for this account type.
 	* This function must be overwritten by the child classes.
@@ -96,7 +96,7 @@ class baseType {
 	public function getListAttributeDescriptions() {
 		return array();
 	}
-	
+
 	/**
 	 * Returns if entries of this type may be created via file upload.
 	 *
@@ -105,7 +105,7 @@ class baseType {
 	public function supportsFileUpload() {
 		return true;
 	}
-	
+
 	/**
 	 * Returns the the title text for the title bar on the new/edit page.
 	 *
@@ -128,10 +128,10 @@ class baseType {
 	public function getTitleBarSubtitle($container) {
 		return null;
 	}
-	
+
 	/**
 	 * Returns a list of LDAP suffixes for this type.
-	 * 
+	 *
 	 * @return array sorted list of possible suffixes for this type.
 	 */
 	public function getSuffixList() {
@@ -175,25 +175,25 @@ class baseType {
 		usort($ret, 'compareDN');
 		return $ret;
 	}
-	
+
 	/**
 	 * This function is called after the edit page is processed and before the page content is generated.
 	 * This can be used to run custom handlers after each page processing.
-	 * 
+	 *
 	 * @param accountContainer $container account container
 	 */
 	public function runEditPagePostAction(&$container) {
-		
+
 	}
-	
+
 	/**
 	* Returns a list of configuration options.
-	* 
+	*
 	* The field names are used as keywords to load and save settings.
 	* We recommend to use the type name as prefix for them (e.g. user_someSetting) to avoid naming conflicts.
 	*
 	* @return mixed htmlElement or array of htmlElement
-	* 
+	*
 	* @see htmlElement
 	*/
 	public function get_configOptions() {
@@ -212,7 +212,11 @@ class baseType {
 	public function check_configOptions(&$options) {
 		return array();
 	}
-	
+
+	public function supportsMultipleConfigs() {
+		return false;
+	}
+
 }
 
 ?>
