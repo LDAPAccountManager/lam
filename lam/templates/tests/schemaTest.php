@@ -62,11 +62,13 @@ if (!is_array($classes)) {
 }
 else {
 	// loop for active account types
-	for ($t = 0; $t < sizeof($types); $t++) {
-		$modules = $_SESSION['config']->get_AccountModules($types[$t]);
-		$container->addElement(new htmlSubTitle(LAM\TYPES\getTypeAlias($types[$t])), true);
+	$typeManager = new \LAM\TYPES\TypeManager();
+	$types = $typeManager->getConfiguredTypes();
+	foreach ($types as $type) {
+		$modules = $_SESSION['config']->get_AccountModules($type->getId());
+		$container->addElement(new htmlSubTitle($type->getAlias()), true);
 		for ($m = 0; $m < sizeof($modules); $m++) {
-			$error = checkSchemaForModule($modules[$m], $types[$t]);
+			$error = checkSchemaForModule($modules[$m], $type->getScope());
 			$message = _("No problems found.");
 			$icon = '../../graphics/pass.png';
 			if ($error != null) {
@@ -74,7 +76,7 @@ else {
 				$message = $error;
 			}
 			// module name
-			$container->addElement(new htmlOutputText(getModuleAlias($modules[$m], $types[$t])));
+			$container->addElement(new htmlOutputText(getModuleAlias($modules[$m], $type->getScope())));
 			$container->addElement(new htmlSpacer('10px', null));
 			// icon
 			$container->addElement(new htmlImage($icon));
