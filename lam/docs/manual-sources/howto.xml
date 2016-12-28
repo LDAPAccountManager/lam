@@ -11861,6 +11861,43 @@ a.lamLogo {
     <title>Troubleshooting</title>
 
     <section>
+      <title>Reset configuration password</title>
+
+      <para>The password for the server profiles can be reset using the master
+      configuration password. Open LAM configuration -&gt; Edit server
+      profiles -&gt;Manage server profiles for this.</para>
+
+      <para>In case you lost your master configuration password you need to
+      manually edit the main configuration file (config.cfg) on the file
+      system.</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Locate config.cfg: On DEB/RPM installations it is in
+          /usr/share/ldap-account-manager/config and for tar.bz2 in config
+          folder.</para>
+        </listitem>
+
+        <listitem>
+          <para>Locate the "password" entry in the file</para>
+        </listitem>
+
+        <listitem>
+          <para>Replace the password hash after "password: " with your new
+          clear-text password (e.g. "secret")</para>
+        </listitem>
+      </orderedlist>
+
+      <para>After the change the line should look like this:</para>
+
+      <literallayout>password: secret</literallayout>
+
+      <para>You can now login using your new password. Set the password once
+      again via GUI in main configuration settings. This will then put again a
+      hash value in the config.cfg file.</para>
+    </section>
+
+    <section>
       <title>Functional issues</title>
 
       <para><emphasis role="bold">Size limit</emphasis></para>
