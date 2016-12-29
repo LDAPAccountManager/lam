@@ -206,7 +206,7 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 		$existingContainer->addElement(new htmlSpacer(null, '10px'), true);
 	}
 
-	$existingContainer->addElement(new htmlImage('../../graphics/' . $profileClasses[$i]['typeId'] . '.png'));
+	$existingContainer->addElement(new htmlImage('../../graphics/' . \LAM\TYPES\getScopeFromTypeId($profileClasses[$i]['typeId']) . '.png'));
 	$existingContainer->addElement(new htmlSpacer('3px', null));
 	$existingContainer->addElement(new htmlOutputText($profileClasses[$i]['title']));
 	$existingContainer->addElement(new htmlSpacer('3px', null));
