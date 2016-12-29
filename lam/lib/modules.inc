@@ -90,18 +90,24 @@ function is_base_module($name, $scope) {
 /**
 * Returns the LDAP filter used by the account lists
 *
-* @param string $scope the account type ("user", "group", "host")
+* @param string $typeId the account type ("user", "group", "host")
 * @return string LDAP filter
 */
-function get_ldap_filter($scope) {
-	$mods = $_SESSION['config']->get_AccountModules($scope);
-	$filters = array();
+function get_ldap_filter($typeId) {
+	$typeManager = new \LAM\TYPES\TypeManager();
+	$type = $typeManager->getConfiguredType($typeId);
+	$mods = $_SESSION['config']->get_AccountModules($typeId);
+	$filters = array('or' => array(), 'and' => array());
 	$orFilter = '';
 	for ($i = 0; $i < sizeof($mods); $i++) {
-		$module = moduleCache::getModule($mods[$i], $scope);
+		$module = moduleCache::getModule($mods[$i], $type->getScope());
 		$modinfo = $module->get_ldap_filter();
-		if (isset($modinfo['or'])) $filters['or'][] = $modinfo['or'];
-		if (isset($modinfo['and'])) $filters['and'][] = $modinfo['and'];
+		if (isset($modinfo['or'])) {
+			$filters['or'][] = $modinfo['or'];
+		}
+		if (isset($modinfo['and'])) {
+			$filters['and'][] = $modinfo['and'];
+		}
 	}
 	// build OR filter
 	if (sizeof($filters['or']) == 1) {
@@ -111,15 +117,17 @@ function get_ldap_filter($scope) {
 		$orFilter = "(|" . implode("", $filters['or']) . ")";
 	}
 	// add built OR filter to AND filters
-	if ($orFilter != '') $filters['and'][] = $orFilter;
+	if (!empty($orFilter)) {
+		$filters['and'][] = $orFilter;
+	}
 	// add type filter
 	$typeSettings = $_SESSION['config']->get_typeSettings();
-	if (isset($typeSettings['filter_' . $scope]) && ($typeSettings['filter_' . $scope] != '')) {
-		if (strpos($typeSettings['filter_' . $scope], '(') === 0) {
-			$filters['and'][] = $typeSettings['filter_' . $scope];
+	if (isset($typeSettings['filter_' . $typeId]) && ($typeSettings['filter_' . $typeId] != '')) {
+		if (strpos($typeSettings['filter_' . $typeId], '(') === 0) {
+			$filters['and'][] = $typeSettings['filter_' . $typeId];
 		}
 		else {
-			$filters['and'][] = '(' . $typeSettings['filter_' . $scope] . ')';
+			$filters['and'][] = '(' . $typeSettings['filter_' . $typeId] . ')';
 		}
 	}
 	// collapse AND filters
@@ -140,12 +148,12 @@ function get_ldap_filter($scope) {
 *
 * The list is already sorted by the priority given by the nodules.
 *
-* @param string $scope account type (user, group, host)
+* @param string $typeId account type (user, group, host)
 * @param array $selectedModules return only RDN attributes of these modules
 * @return array list of LDAP attributes
 */
-function getRDNAttributes($scope, $selectedModules=null) {
-	$mods = $_SESSION['config']->get_AccountModules($scope);
+function getRDNAttributes($typeId, $selectedModules=null) {
+	$mods = $_SESSION['config']->get_AccountModules($typeId);
 	if ($selectedModules != null) {
 		$mods = $selectedModules;
 	}
@@ -155,7 +163,7 @@ function getRDNAttributes($scope, $selectedModules=null) {
 	$attrs_high = array();
 	for ($i = 0; $i < sizeof($mods); $i++) {
 		// get list of attributes
-		$module = moduleCache::getModule($mods[$i], $scope);
+		$module = moduleCache::getModule($mods[$i], \LAM\TYPES\getScopeFromTypeId($typeId));
 		$attrs = $module->get_RDNAttributes();
 		$keys = array_keys($attrs);
 		// sort attributes
@@ -595,14 +603,17 @@ function doUploadPostActions($scope, &$data, $ids, $failed, $selectedModules, &$
 */
 function getRequiredExtensions() {
 	$extList = array();
-	$scopes = $_SESSION['config']->get_ActiveTypes();
-	for ($i = 0; $i < sizeof($scopes); $i++) {
-		$mods = $_SESSION['config']->get_AccountModules($scopes[$i]);
+	$typeManager = new \LAM\TYPES\TypeManager();
+	$types = $typeManager->getConfiguredTypes();
+	foreach ($types as $type) {
+		$mods = $_SESSION['config']->get_AccountModules($type->getId());
 		for ($m = 0; $m < sizeof($mods); $m++) {
-			$module = moduleCache::getModule($mods[$m], $scopes[$i]);
+			$module = moduleCache::getModule($mods[$m], $type->getScope());
 			$ext = $module->getRequiredExtensions();
 			for ($e = 0; $e < sizeof($ext); $e++) {
-				if (!in_array($ext[$e], $extList)) $extList[] = $ext[$e];
+				if (!in_array($ext[$e], $extList)) {
+					$extList[] = $ext[$e];
+				}
 			}
 		}
 	}
@@ -1727,7 +1738,7 @@ class accountContainer {
 		$errors = array();
 		$ldapUser = $_SESSION['ldap']->decrypt_login();
 		$ldapUser = $ldapUser[0];
-		$module = array_keys ($this->module);
+		$module = array_keys($this->module);
 		$attributes = array();
 		// load attributes
 		foreach ($module as $singlemodule) {
@@ -1737,7 +1748,7 @@ class accountContainer {
 			// merge changes
 			$DNs = array_keys($temp);
 			if (is_array($temp)) $attributes = array_merge_recursive($temp, $attributes);
-			for ($i=0; $i<count($DNs); $i++) {
+			for ($i = 0; $i < count($DNs); $i++) {
 				$ops = array_keys($temp[$DNs[$i]]);
 				for ($j=0; $j<count($ops); $j++) {
 					$attrs = array_keys($temp[$DNs[$i]][$ops[$j]]);
