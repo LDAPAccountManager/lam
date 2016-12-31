@@ -812,7 +812,7 @@ class accountContainer {
 	*/
 	function get_type() {
 		return $this->type;
-		}
+	}
 
 	/**
 	* This function is called when the user clicks on any button on the account pages.
@@ -2146,8 +2146,7 @@ class accountContainer {
 		if ($this->cachedOUs != null) {
 			return $this->cachedOUs;
 		}
-		$typeObj = $this->type->getBaseType();
-		$this->cachedOUs = $typeObj->getSuffixList();
+		$this->cachedOUs = $this->type->getSuffixList();
 		return $this->cachedOUs;
 	}
 

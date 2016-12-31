@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2014  Roland Gruber
+  Copyright (C) 2005 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -130,50 +130,12 @@ class baseType {
 	}
 
 	/**
-	 * Returns a list of LDAP suffixes for this type.
+	 * Returns the LDAP filter to find the possible suffixes for this account type.
 	 *
-	 * @return array sorted list of possible suffixes for this type.
+	 * @return string LDAP filter
 	 */
-	public function getSuffixList() {
-		if (isset($_SESSION["config"])) {
-			$suffix = $_SESSION["config"]->get_Suffix(get_class($this));
-			$connection = $_SESSION["ldap"]->server();
-		}
-		else {
-			$suffix = $_SESSION['selfServiceProfile']->LDAPSuffix;
-			$connection = $_SESSION['ldapHandle'];
-		}
-		$ret = array();
-		$filter = "(|(objectClass=organizationalunit)(objectClass=country)(objectClass=organization)(objectClass=krbRealmContainer)(objectClass=container))";
-		$sr = @ldap_search($connection, escapeDN($suffix),$filter , array('dn', 'objectClass'), 0, 0, 0, LDAP_DEREF_NEVER);
-		if ($sr) {
-			$units = ldap_get_entries($connection, $sr);
-			cleanLDAPResult($units);
-			// extract Dns
-			$count = sizeof($units);
-			for ($i = 0; $i < $count; $i++) {
-				if (in_array('container', $units[$i]['objectclass'])) {
-					// Active Directory fix, hide system containers
-					if (preg_match('/.*cn=system,dc=.+/i', $units[$i]['dn']) || preg_match('/.*CN=program data,dc=.+/i', $units[$i]['dn'])) {
-						continue;
-					}
-				}
-				$ret[] = $units[$i]['dn'];
-			}
-		}
-		// add root suffix if needed
-		$found = false;
-		for ($i = 0; $i < sizeof($ret); $i++) { // search suffix case-intensitive
-			if (strtolower($suffix) == strtolower($ret[$i])) {
-				$found = true;
-				break;
-			}
-		}
-		if (!$found) {
-			$ret[] = $suffix;
-		}
-		usort($ret, 'compareDN');
-		return $ret;
+	public function getSuffixFilter() {
+		return "(|(objectClass=organizationalunit)(objectClass=country)(objectClass=organization)(objectClass=krbRealmContainer)(objectClass=container))";
 	}
 
 	/**

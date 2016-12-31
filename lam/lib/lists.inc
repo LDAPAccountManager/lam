@@ -962,7 +962,7 @@ class lamList {
 			call_user_func_array('StatusMessage', $lastError);
 		}
 		// generate list of possible suffixes
-		$this->possibleSuffixes = $this->type->getBaseType()->getSuffixList();
+		$this->possibleSuffixes = $this->type->getSuffixList();
 	}
 
 	/**

@@ -30,6 +30,8 @@
 
 
 
+
+
   
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-15"><title>Upgrade notes</title>
   
@@ -48,8 +50,17 @@ This is a list of API changes for all LAM releases.
 <br>
 
 <h2>5.5 -&gt; 5.6</h2>
-Functions in lib/types.inc got namespace LAM/TYPES (e.g. getTypeAlias()).<br>
-New API to access configured account types: LAM\TYPES\TypeManager.<br>
+<ul>
+  <li>
+Functions in lib/types.inc got namespace LAM/TYPES (e.g. getTypeAlias()).</li>
+  <li>
+New API to access configured account types: LAM\TYPES\TypeManager.</li>
+  <li>class baseType: new function getSuffixFilter()</li>
+  <li>moved getSuffixList() from baseType to ConfiguredType<br>
+  </li>
+
+</ul>
+
 
 <h2>5.4 -&gt; 5.5</h2>Functions Ldap::encrypt/decrypt in ldap.inc moved to lamEncrypt/lamDecrypt in security.inc.<br>
 <br>

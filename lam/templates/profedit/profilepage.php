@@ -207,8 +207,7 @@ $dnContent->addElement(new htmlSpacer(null, '10px'), true);
 $rootsuffix = $type->getSuffix();
 // get subsuffixes
 $suffixes = array('-' => '-');
-$typeObj = $type->getBaseType();
-$possibleSuffixes = $typeObj->getSuffixList();
+$possibleSuffixes = $type->getSuffixList();
 foreach ($possibleSuffixes as $suffix) {
 	$suffixes[getAbstractDN($suffix)] = $suffix;
 }
