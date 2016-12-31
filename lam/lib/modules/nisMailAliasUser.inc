@@ -361,7 +361,7 @@ class nisMailAliasUser extends baseModule {
 		$mailAliasTypes = $typeManager->getConfiguredTypesForScope('mailAlias');
 		$ous = array();
 		foreach ($mailAliasTypes as $type) {
-			$ous = array_merge($ous, $type->getBaseType()->getSuffixList());
+			$ous = array_merge($ous, $type->getSuffixList());
 		}
 		$ous = array_unique($ous);
 		usort($ous, 'compareDN');

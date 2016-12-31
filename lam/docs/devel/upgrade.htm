@@ -31,6 +31,7 @@
 
 
 
+
   
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-15"><title>Upgrade notes</title>
   
@@ -54,8 +55,10 @@ This is a list of API changes for all LAM releases.
 Functions in lib/types.inc got namespace LAM/TYPES (e.g. getTypeAlias()).</li>
   <li>
 New API to access configured account types: LAM\TYPES\TypeManager.</li>
-  <li>class baseType: new function getSuffixFilter()<br>
+  <li>class baseType: new function getSuffixFilter()</li>
+  <li>moved getSuffixList() from baseType to ConfiguredType<br>
   </li>
+
 </ul>
 
 

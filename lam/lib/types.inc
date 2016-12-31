@@ -271,6 +271,46 @@ class ConfiguredType {
 		return $this->baseType;
 	}
 
+	/**
+	 * Returns a list of LDAP suffixes for this type.
+	 *
+	 * @return array sorted list of possible suffixes for this type.
+	 */
+	public function getSuffixList() {
+		$connection = $_SESSION["ldap"]->server();
+		$ret = array();
+		$filter = $this->getBaseType()->getSuffixFilter();
+		$sr = @ldap_search($connection, escapeDN($this->suffix), $filter, array('dn', 'objectClass'), 0, 0, 0, LDAP_DEREF_NEVER);
+		if ($sr) {
+			$units = ldap_get_entries($connection, $sr);
+			cleanLDAPResult($units);
+			// extract Dns
+			$count = sizeof($units);
+			for ($i = 0; $i < $count; $i++) {
+				if (in_array('container', $units[$i]['objectclass'])) {
+					// Active Directory fix, hide system containers
+					if (preg_match('/.*cn=system,dc=.+/i', $units[$i]['dn']) || preg_match('/.*CN=program data,dc=.+/i', $units[$i]['dn'])) {
+						continue;
+					}
+				}
+				$ret[] = $units[$i]['dn'];
+			}
+		}
+		// add root suffix if needed
+		$found = false;
+		for ($i = 0; $i < sizeof($ret); $i++) { // search suffix case-intensitive
+			if (strtolower($this->suffix) == strtolower($ret[$i])) {
+				$found = true;
+				break;
+			}
+		}
+		if (!$found) {
+			$ret[] = $this->suffix;
+		}
+		usort($ret, 'compareDN');
+		return $ret;
+	}
+
 }
 
 /**
