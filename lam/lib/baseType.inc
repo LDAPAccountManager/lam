@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2014  Roland Gruber
+  Copyright (C) 2005 - 2016  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -144,14 +144,8 @@ class baseType {
 	 * @return array sorted list of possible suffixes for this type.
 	 */
 	public function getSuffixList() {
-		if (isset($_SESSION["config"])) {
-			$suffix = $_SESSION["config"]->get_Suffix(get_class($this));
-			$connection = $_SESSION["ldap"]->server();
-		}
-		else {
-			$suffix = $_SESSION['selfServiceProfile']->LDAPSuffix;
-			$connection = $_SESSION['ldapHandle'];
-		}
+		$suffix = $_SESSION["config"]->get_Suffix(get_class($this));
+		$connection = $_SESSION["ldap"]->server();
 		$ret = array();
 		$filter = $this->getSuffixFilter();
 		$sr = @ldap_search($connection, escapeDN($suffix),$filter , array('dn', 'objectClass'), 0, 0, 0, LDAP_DEREF_NEVER);

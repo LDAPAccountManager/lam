@@ -2809,7 +2809,13 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			else {
 				$userObj = new user();
-				$ouList = $userObj->getSuffixList();
+				$filter = $userObj->getSuffixFilter();
+				$suffix = $_SESSION['selfServiceProfile']->LDAPSuffix;
+				$foundOus = searchLDAPPaged($_SESSION['ldapHandle'], $suffix, $filter, array('dn'), false, 0);
+				$ouList = array();
+				foreach ($foundOus as $foundOu) {
+					$ouList[] = $foundOu['dn'];
+				}
 				if (!empty($attributes['ou'][0]) && !in_array($attributes['ou'][0], $ouList)) {
 					$ouList[] = $attributes['ou'][0];
 					usort($ouList, 'compareDN');
