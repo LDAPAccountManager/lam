@@ -812,7 +812,7 @@ class accountContainer {
 	*/
 	function get_type() {
 		return $this->type;
-		}
+	}
 
 	/**
 	* This function is called when the user clicks on any button on the account pages.
