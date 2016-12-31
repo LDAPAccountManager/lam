@@ -36,7 +36,7 @@ class nisMailAliasUser extends baseModule {
 
 	/** alias cache */
 	private $cachedAliasList = null;
-	
+
 	/** recipient entries to delete (list of arrays: dn => attributes) */
 	private $recipientsToDelete = array();
 	/** complete alias entries to delete */
@@ -45,10 +45,10 @@ class nisMailAliasUser extends baseModule {
 	private $aliasesToAdd = array();
 	/** alias entries to extend with new recipients (list of arrays: dn => recipients) */
 	private $recipientsToAdd = array();
-	
+
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -59,7 +59,7 @@ class nisMailAliasUser extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -122,7 +122,7 @@ class nisMailAliasUser extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -247,10 +247,10 @@ class nisMailAliasUser extends baseModule {
 		}
 		return $errors;
 	}
-	
+
 	/**
 	 * Removes a recipient from the given DN.
-	 * 
+	 *
 	 * @param String $recipient recipient as user name or email
 	 * @param String $dn alias DN
 	 */
@@ -300,7 +300,7 @@ class nisMailAliasUser extends baseModule {
 
 	/**
 	 * Removes an alias with the given DN.
-	 * 
+	 *
 	 * @param String $dn alias DN
 	 */
 	private function deleteAlias($dn) {
@@ -324,10 +324,10 @@ class nisMailAliasUser extends baseModule {
 			unset($this->recipientsToDelete[$dn]);
 		}
 	}
-	
+
 	/**
 	 * Returns the HTML meta data for the add page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_add() {
@@ -357,9 +357,18 @@ class nisMailAliasUser extends baseModule {
 		$return->addElement(new htmlHiddenInput('recipient', $recipient), true);
 		// new mail alias
 		$return->addElement(new htmlSubTitle(_('Create new alias')), true);
-		$typeObj = new mailAlias();
-        $ous = $typeObj->getSuffixList();
-        $return->addElement(new htmlTableExtendedSelect('new_ou', $ous, array(), _('Suffix'), 'suffix'), true);
+		$typeManager = new \LAM\TYPES\TypeManager();
+		$mailAliasTypes = $typeManager->getConfiguredTypesForScope('mailAlias');
+		$ous = array();
+		foreach ($mailAliasTypes as $type) {
+			$ous = array_merge($ous, $type->getBaseType()->getSuffixList());
+		}
+		$ous = array_unique($ous);
+		usort($ous, 'compareDN');
+		$suffixSelect = new htmlTableExtendedSelect('new_ou', $ous, array(), _('Suffix'), 'suffix');
+		$suffixSelect->setRightToLeftTextDirection(true);
+		$suffixSelect->setSortElements(false);
+        $return->addElement($suffixSelect, true);
         $newAliasCn = empty($_POST['new_cn']) ? '' : $_POST['new_cn'];
         $return->addElement(new htmlTableExtendedInputField(_('Alias name'), 'new_cn', $newAliasCn, 'newAlias'), true);
 		$return->addVerticalSpace('5px');
@@ -367,9 +376,9 @@ class nisMailAliasUser extends baseModule {
 		$addButton->setIconClass('createButton');
 		$addButton->colspan = 5;
 		$return->addElement($addButton, true);
-		
+
 		$return->addVerticalSpace('20px');
-		
+
 		// add to existing alias
 		$return->addElement(new htmlSubTitle(_('Add to existing alias')), true);
 		$aliasesToAdd = array();
@@ -388,7 +397,7 @@ class nisMailAliasUser extends baseModule {
 		$addButton->setIconClass('createButton');
 		$addButton->colspan = 5;
 		$return->addElement($addButton, true);
-		
+
         $return->addElement(new htmlEqualWidth(array('new_ou', 'new_cn', 'ex_cn')));
 		return $return;
 	}
@@ -446,13 +455,13 @@ class nisMailAliasUser extends baseModule {
 				}
 			}
 		}
-		
+
 		return $errors;
 	}
-	
+
 	/**
 	 * Allows the module to run commands after the LDAP entry is changed or created.
-	 * 
+	 *
 	 * Calling this method requires the existence of an enclosing {@link accountContainer}.
 	 *
 	 * @param boolean $newAccount new account
@@ -545,7 +554,7 @@ class nisMailAliasUser extends baseModule {
 
 	/**
 	* Returns a list of configuration options.
-	* 
+	*
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* The field names are used as keywords to load and save settings.
@@ -554,7 +563,7 @@ class nisMailAliasUser extends baseModule {
 	* @param array $scopes account types (user, group, host)
 	* @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
 	* @return mixed htmlElement or array of htmlElement
-	* 
+	*
 	* @see baseModule::get_metaData()
 	* @see htmlElement
 	*/
@@ -584,10 +593,10 @@ class nisMailAliasUser extends baseModule {
 		$this->cachedAliasList = searchLDAPByAttribute('cn', '*', 'nisMailAlias', array('dn', 'cn', 'rfc822MailMember'), array('mailAlias'));
 		return $this->cachedAliasList;
 	}
-	
+
 	/**
 	 * Returns the user name of this account.
-	 * 
+	 *
 	 * @return String user name
 	 */
 	private function getUserName() {
@@ -605,10 +614,10 @@ class nisMailAliasUser extends baseModule {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns the email addresses of this account.
-	 * 
+	 *
 	 * @return String mail addresses
 	 */
 	private function getMailAddresses() {
@@ -620,10 +629,10 @@ class nisMailAliasUser extends baseModule {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns if the mail alias type is active. Otherwise, aliases cannot be managed.
-	 * 
+	 *
 	 * @return boolean is active
 	 */
 	private function isMailAliasTypeActive() {
