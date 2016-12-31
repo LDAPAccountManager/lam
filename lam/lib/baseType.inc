@@ -130,6 +130,15 @@ class baseType {
 	}
 
 	/**
+	 * Returns the LDAP filter to find the possible suffixes for this account type.
+	 *
+	 * @return string LDAP filter
+	 */
+	public function getSuffixFilter() {
+		return "(|(objectClass=organizationalunit)(objectClass=country)(objectClass=organization)(objectClass=krbRealmContainer)(objectClass=container))";
+	}
+
+	/**
 	 * Returns a list of LDAP suffixes for this type.
 	 *
 	 * @return array sorted list of possible suffixes for this type.
@@ -144,7 +153,7 @@ class baseType {
 			$connection = $_SESSION['ldapHandle'];
 		}
 		$ret = array();
-		$filter = "(|(objectClass=organizationalunit)(objectClass=country)(objectClass=organization)(objectClass=krbRealmContainer)(objectClass=container))";
+		$filter = $this->getSuffixFilter();
 		$sr = @ldap_search($connection, escapeDN($suffix),$filter , array('dn', 'objectClass'), 0, 0, 0, LDAP_DEREF_NEVER);
 		if ($sr) {
 			$units = ldap_get_entries($connection, $sr);
