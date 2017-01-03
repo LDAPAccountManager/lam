@@ -1461,4 +1461,31 @@ function validateReCAPTCHA($secretKey) {
 	return $responseJSON->{'success'} === true;
 }
 
+class LAMException extends Exception {
+
+	private $title;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param string $title title
+	 * @param string $message message (optional)
+	 * @param Exception $cause (optional)
+	 */
+	public function __construct($title, $message = null, $cause = null) {
+		parent::__construct($message, null, $cause);
+		$this->title = $title;
+	}
+
+	/**
+	 * Returns the message title.
+	 *
+	 * @return string title
+	 */
+	public function getTitle() {
+		return $this->title;
+	}
+
+}
+
 ?>

@@ -172,9 +172,12 @@ class ConfiguredType {
 
 	private $baseType;
 
+	private $typeManager;
+
 	/**
 	 * Constructor
 	 *
+	 * @param TypeManager $typeManager type manager
 	 * @param string $scope account type
 	 * @param string $id unique ID for this configuration
 	 * @param string $suffix LDAP base suffix
@@ -183,8 +186,9 @@ class ConfiguredType {
 	 * @param string $ldapFilter additional LDAP filter
 	 * @param boolean $hidden hidden in GUI
 	 */
-	public function __construct($scope, $id, $suffix, $attributes, $alias,
+	public function __construct(&$typeManager, $scope, $id, $suffix, $attributes, $alias,
 			$ldapFilter, $hidden) {
+		$this->typeManager = &$typeManager;
 		$this->scope = $scope;
 		$this->id = $id;
 		$this->suffix = $suffix;
@@ -195,9 +199,18 @@ class ConfiguredType {
 	}
 
 	/**
+	 * Returns the owning type manager.
+	 *
+	 * @return TypeManager type manager
+	 */
+	public function getTypeManager() {
+		return $this->typeManager;
+	}
+
+	/**
 	 * Returns the account type (e.g. 'user').
 	 *
-	 * @return string $scope account type
+	 * @return string account type
 	 */
 	public function getScope() {
 		return $this->scope;
@@ -206,7 +219,7 @@ class ConfiguredType {
 	/**
 	 * Returns a unique id for this configuration.
 	 *
-	 * @return string $id unique id
+	 * @return string unique id
 	 */
 	public function getId() {
 		return $this->id;
@@ -215,7 +228,7 @@ class ConfiguredType {
 	/**
 	 * Returns the LDAP suffix.
 	 *
-	 * @return string $suffix LDAP suffix
+	 * @return string LDAP suffix
 	 */
 	public function getSuffix() {
 		return $this->suffix;
@@ -224,7 +237,7 @@ class ConfiguredType {
 	/**
 	 * Returns a list of configured attributes.
 	 *
-	 * @return ListAttribute[] $attributes list of ListAttribute
+	 * @return ListAttribute[] list of ListAttribute
 	 */
 	public function getAttributes() {
 		return $this->attributes;
@@ -233,7 +246,7 @@ class ConfiguredType {
 	/**
 	 * Returns the alias name.
 	 *
-	 * @return string $alias alias name
+	 * @return string alias name
 	 */
 	public function getAlias() {
 		return $this->alias;
@@ -242,7 +255,7 @@ class ConfiguredType {
 	/**
 	 * Returns the additional LDAP filter.
 	 *
-	 * @return string $ldapFilter LDAP filter
+	 * @return string LDAP filter
 	 */
 	public function getAdditionalLdapFilter() {
 		return $this->additionalLdapFilter;
@@ -251,7 +264,7 @@ class ConfiguredType {
 	/**
 	 * Returns if this configuration is hidden.
 	 *
-	 * @return boolean $hidden hidden
+	 * @return boolean hidden
 	 */
 	public function isHidden() {
 		return $this->hidden;
@@ -458,7 +471,7 @@ class TypeManager {
 		$alias = getTypeAlias($typeId, $this->config);
 		$ldapFilter = $this->config->get_Suffix($typeId);
 		$hidden = isAccountTypeHidden($typeId);
-		return new ConfiguredType($scope, $typeId, $suffix, $attributes, $alias, $ldapFilter, $hidden);
+		return new ConfiguredType($this, $scope, $typeId, $suffix, $attributes, $alias, $ldapFilter, $hidden);
 	}
 
 	/**
@@ -493,6 +506,15 @@ class TypeManager {
 			$counter++;
 		}
 		return $scope . '_' . $counter;
+	}
+
+	/**
+	 * Returns the associated config object.
+	 *
+	 * @return \LAMConfig config
+	 */
+	public function getConfig() {
+		return $this->config;
 	}
 
 }

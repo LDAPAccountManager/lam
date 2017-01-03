@@ -422,33 +422,21 @@ function equalHeight(elementIDs) {
  * @param title dialog title
  * @param okText text for Ok button
  * @param cancelText text for Cancel button
- * @param scope account type
+ * @param typeId account type
  * @param selectFieldName name of select box with profile name
- * @param serverProfile profile name
  */
-function showDistributionDialog(title, okText, cancelText, scope, type, selectFieldName, serverProfile) {
+function showDistributionDialog(title, okText, cancelText, typeId, type, selectFieldName) {
 	// show dialog
 	var buttonList = {};
 	var dialogId = '';
 
 	if (type == 'export') {
-		// show structure name to export
-		jQuery('#exportName').text(jQuery('[name=' + selectFieldName + ']').val());
-		dialogId = 'exportDialog';
-		buttonList[okText] = function() { document.forms["exportDialogForm"].submit(); };
-		jQuery('<input>').attr({
-		    type: 'hidden',
-		    name: 'exportProfiles[]',
-		    value: serverProfile + '##' + jQuery('[name=' + selectFieldName + ']').val()
-		}).appendTo('form');
-		jQuery('<input>').attr({
-		    type: 'hidden',
-		    name: 'scope',
-		    value: scope
-		}).appendTo('form');
+		jQuery('#name_' + typeId).val(jQuery('#' + selectFieldName).val());
+		dialogId = 'exportDialog_' + typeId;
+		buttonList[okText] = function() { document.forms["exportDialogForm_" + typeId].submit(); };
 	} else if (type == 'import') {
-		dialogId = 'importDialog_' + scope;
-		buttonList[okText] = function() { document.forms["importDialogForm_" + scope].submit(); };
+		dialogId = 'importDialog_' + typeId;
+		buttonList[okText] = function() { document.forms["importDialogForm_" + typeId].submit(); };
 	}
 	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
 
@@ -460,9 +448,9 @@ function showDistributionDialog(title, okText, cancelText, scope, type, selectFi
 		width: 'auto'
 	});
 	if (type == 'export') {
-		equalWidth(new Array('#passwd', '#destServerProfiles'));
+		equalWidth(new Array('#passwd_' + typeId, '#destServerProfiles_' + typeId));
 	} else if (type == 'import') {
-		equalWidth(new Array('#passwd_' + scope, '#importProfiles_' + scope));
+		equalWidth(new Array('#passwd_' + typeId, '#importProfiles'));
 	}
 }
 
