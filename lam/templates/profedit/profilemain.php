@@ -77,6 +77,7 @@ foreach ($types as $type) {
 	}
 	$profileClassesTemp[$type->getAlias()] = array(
 		'typeId' => $type->getId(),
+		'scope' => $type->getScope(),
 		'title' => $type->getAlias(),
 		'profiles' => "");
 }
@@ -134,30 +135,54 @@ if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
 	}
 }
 
-// check if profiles should be imported or exported
-if (isset($_POST['importexport']) && ($_POST['importexport'] === '1')) {
+$configProfiles = getConfigProfiles();
+$serverProfiles = array();
+foreach ($configProfiles as $profileName) {
+	$serverProfiles[$profileName] = new \LAMConfig($profileName);
+}
+
+// import profiles
+if (!empty($_POST['import'])) {
 	$cfg = new LAMCfgMain();
-	$impExpMessage = null;
-	if (isset($_POST['importProfiles_' . $_POST['typeId']])) {
-		// check master password
-		if (!$cfg->checkPassword($_POST['passwd_' . $_POST['typeId']])) {
-			$impExpMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
-		}
-		elseif (copyAccountProfiles($_POST['importProfiles_' . $_POST['typeId']], $_POST['typeId'])) {
-			$impExpMessage = new htmlStatusMessage('INFO', _('Import successful'));
-		}
-	} else if (isset($_POST['exportProfiles'])) {
-		// check master password
-		if (!$cfg->checkPassword($_POST['passwd'])) {
-			$impExpMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
-		}
-		elseif (copyAccountProfiles($_POST['exportProfiles'], $_POST['typeId'], $_POST['destServerProfiles'])) {
-			$impExpMessage = new htmlStatusMessage('INFO', _('Export successful'));
-		}
+	// check master password
+	$impMessage = null;
+	if (!$cfg->checkPassword($_POST['passwd_i_' . $_POST['typeId']])) {
+		$impMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
 	}
-	if ($impExpMessage != null) {
-		$impExpMessage->colspan = 10;
-		$container->addElement($impExpMessage, true);
+	elseif (!empty($_POST['importProfiles'])) {
+		$options = array();
+		foreach ($_POST['importProfiles'] as $importProfiles) {
+			$parts = explode('##', $importProfiles);
+			$options[] = array('conf' => $parts[0], 'typeId' => $parts[1], 'name' => $parts[2]);
+		}
+		$impMessage = importProfiles($_POST['typeId'], $options, $serverProfiles, $typeManager);
+	}
+	if ($impMessage != null) {
+		$impMessage->colspan = 10;
+		$container->addElement($impMessage, true);
+	}
+}
+// export profiles
+if (!empty($_POST['export'])) {
+	$cfg = new LAMCfgMain();
+	// check master password
+	$impMessage = null;
+	if (!$cfg->checkPassword($_POST['passwd_e_' . $_POST['typeId']])) {
+		$impMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
+	}
+	elseif (!empty($_POST['exportProfiles'])) {
+		$options = array();
+		foreach ($_POST['exportProfiles'] as $importProfiles) {
+			$parts = explode('##', $importProfiles);
+			$options[] = array('conf' => $parts[0], 'typeId' => $parts[1]);
+		}
+		$typeId = $_POST['typeId'];
+		$name = $_POST['name_' . $typeId];
+		$impMessage = exportProfiles($typeId, $name, $options, $serverProfiles, $typeManager);
+	}
+	if ($impMessage != null) {
+		$impMessage->colspan = 10;
+		$container->addElement($impMessage, true);
 	}
 }
 
@@ -199,8 +224,6 @@ $container->addElement(new htmlSubTitle(_('Manage existing profiles')), true);
 $existingContainer = new htmlTable();
 $existingContainer->colspan = 5;
 
-$configProfiles = getConfigProfiles();
-
 for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	if ($i > 0) {
 		$existingContainer->addElement(new htmlSpacer(null, '10px'), true);
@@ -231,7 +254,7 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	$exportLink = new htmlLink(null, '#', '../../graphics/export.png');
 	$exportLink->setTitle(_('Export profile'));
 	$exportLink->setOnClick("showDistributionDialog('" . _("Export profile") . "', '" .
-							_('Ok') . "', '" . _('Cancel') . "', '" . $profileClasses[$i]['typeId'] . "', 'export', '" . 'profile_' . $profileClasses[$i]['typeId'] . "', '" . $_SESSION['config']->getName() . "');");
+							_('Ok') . "', '" . _('Cancel') . "', '" . $profileClasses[$i]['typeId'] . "', 'export', '" . 'profile_' . $profileClasses[$i]['typeId'] . "');");
 	$existingContainer->addElement($exportLink);
 	$existingContainer->addNewLine();
 }
@@ -247,13 +270,18 @@ echo "</div>\n";
 
 for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	$typeId = $profileClasses[$i]['typeId'];
-	$tmpArr = array();
+	$scope = $profileClasses[$i]['scope'];
+	$importOptions = array();
 	foreach ($configProfiles as $profile) {
-		if ($profile != $_SESSION['config']->getName()) {
-			$accountProfiles = getAccountProfiles($typeId, $profile);
-			if (!empty($accountProfiles)) {
-				for ($p = 0; $p < sizeof($accountProfiles); $p++) {
-					$tmpArr[$profile][$accountProfiles[$p]] = $profile . '##' . $accountProfiles[$p];
+		$typeManagerImport = new \LAM\TYPES\TypeManager($serverProfiles[$profile]);
+		$typesImport = $typeManagerImport->getConfiguredTypesForScope($scope);
+		foreach ($typesImport as $typeImport) {
+			if (($profile != $_SESSION['config']->getName()) || ($typeImport->getId() != $typeId)) {
+				$accountProfiles = getAccountProfiles($typeImport->getId(), $profile);
+				if (!empty($accountProfiles)) {
+					for ($p = 0; $p < sizeof($accountProfiles); $p++) {
+						$importOptions[$profile][$typeImport->getAlias() . ': ' . $accountProfiles[$p]] = $profile . '##' . $typeImport->getId() . '##' . $accountProfiles[$p];
+					}
 				}
 			}
 		}
@@ -266,7 +294,7 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	$container = new htmlTable();
 	$container->addElement(new htmlOutputText(_('Profiles')), true);
 
-	$select = new htmlSelect('importProfiles_' . $typeId, $tmpArr, array(), count($tmpArr, 1) < 15 ? count($tmpArr, 1) : 15);
+	$select = new htmlSelect('importProfiles', $importOptions, array(), count($importOptions, 1) < 15 ? count($importOptions, 1) : 15);
 	$select->setMultiSelect(true);
 	$select->setHasDescriptiveElements(true);
 	$select->setContainsOptgroups(true);
@@ -278,11 +306,11 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	$container->addElement(new htmlSpacer(null, '10px'), true);
 
 	$container->addElement(new htmlOutputText(_("Master password")), true);
-	$exportPasswd = new htmlInputField('passwd_' . $typeId);
+	$exportPasswd = new htmlInputField('passwd_i_' . $typeId);
 	$exportPasswd->setIsPassword(true);
 	$container->addElement($exportPasswd);
 	$container->addElement(new htmlHelpLink('236'));
-	$container->addElement(new htmlHiddenInput('importexport', '1'));
+	$container->addElement(new htmlHiddenInput('import', '1'));
 	$container->addElement(new htmlHiddenInput('typeId', $typeId), true);
 	addSecurityTokenToMetaHTML($container);
 
@@ -290,54 +318,52 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 
 	echo '</form>';
 	echo "</div>\n";
+
+	//export dialog
+	echo "<div id=\"exportDialog_$typeId\" class=\"hidden\">\n";
+	echo "<form id=\"exportDialogForm_$typeId\" method=\"post\" action=\"profilemain.php\">\n";
+
+	$container = new htmlTable();
+
+	$container->addElement(new htmlOutputText(_("Target server profile")), true);
+	$exportOptions = array();
+	foreach ($configProfiles as $profile) {
+		$typeManagerExport = new \LAM\TYPES\TypeManager($serverProfiles[$profile]);
+		$typesExport = $typeManagerExport->getConfiguredTypesForScope($scope);
+		foreach ($typesExport as $typeExport) {
+			if (($profile != $_SESSION['config']->getName()) || ($typeExport->getId() != $typeId)) {
+				$exportOptions[$typeManagerExport->getConfig()->getName()][$typeExport->getAlias()] = $profile . '##' . $typeExport->getId();
+			}
+		}
+	}
+	$exportOptions['*' . _('Global templates')][_('Global templates')] = 'templates*##';
+
+	$select = new htmlSelect('exportProfiles', $exportOptions, array(), count($exportOptions) < 10 ? count($exportOptions) : 10);
+	$select->setHasDescriptiveElements(true);
+	$select->setContainsOptgroups(true);
+	$select->setMultiSelect(true);
+
+	$container->addElement($select);
+	$container->addElement(new htmlHelpLink('363'), true);
+
+	$container->addElement(new htmlSpacer(null, '10px'), true);
+
+	$container->addElement(new htmlOutputText(_("Master password")), true);
+	$exportPasswd = new htmlInputField('passwd_e_' . $typeId);
+	$exportPasswd->setIsPassword(true);
+	$container->addElement($exportPasswd);
+	$container->addElement(new htmlHelpLink('236'));
+	$container->addElement(new htmlHiddenInput('export', '1'), true);
+	$container->addElement(new htmlHiddenInput('typeId', $typeId), true);
+	$container->addElement(new htmlHiddenInput('name_' . $typeId, '_'), true);
+	addSecurityTokenToMetaHTML($container);
+
+	parseHtml(null, $container, array(), false, $tabindex, 'user');
+
+	echo '</form>';
+	echo "</div>\n";
+
 }
-
-//export dialog
-echo "<div id=\"exportDialog\" class=\"hidden\">\n";
-echo "<form id=\"exportDialogForm\" method=\"post\" action=\"profilemain.php\">\n";
-
-$container = new htmlTable();
-
-$container->addElement(new htmlOutputText(_('Profile name')), true);
-$expStructGroup = new htmlTable();
-$expStructGroup->addElement(new htmlSpacer('10px', null));
-$expStructGroup->addElement(new htmlDiv('exportName', ''));
-$container->addElement($expStructGroup, true);
-$container->addElement(new htmlSpacer(null, '10px'), true);
-
-$container->addElement(new htmlOutputText(_("Target server profile")), true);
-foreach ($configProfiles as $key => $value) {
-	$tmpProfiles[$value] = $value;
-}
-natcasesort($tmpProfiles);
-$tmpProfiles['*' . _('Global templates')] = 'templates*';
-
-$findProfile = array_search($_SESSION['config']->getName(), $tmpProfiles);
-if ($findProfile !== false) {
-	unset($tmpProfiles[$findProfile]);
-}
-$select = new htmlSelect('destServerProfiles', $tmpProfiles, array(), count($tmpProfiles) < 10 ? count($tmpProfiles) : 10);
-$select->setHasDescriptiveElements(true);
-$select->setSortElements(false);
-$select->setMultiSelect(true);
-
-$container->addElement($select);
-$container->addElement(new htmlHelpLink('363'), true);
-
-$container->addElement(new htmlSpacer(null, '10px'), true);
-
-$container->addElement(new htmlOutputText(_("Master password")), true);
-$exportPasswd = new htmlInputField('passwd');
-$exportPasswd->setIsPassword(true);
-$container->addElement($exportPasswd);
-$container->addElement(new htmlHelpLink('236'));
-$container->addElement(new htmlHiddenInput('importexport', '1'), true);
-addSecurityTokenToMetaHTML($container);
-
-parseHtml(null, $container, array(), false, $tabindex, 'user');
-
-echo '</form>';
-echo "</div>\n";
 
 // form for delete action
 echo '<div id="deleteProfileDialog" class="hidden"><form id="deleteProfileForm" action="profilemain.php" method="post">';
@@ -351,5 +377,76 @@ echo '<div id="deleteProfileDialog" class="hidden"><form id="deleteProfileForm" 
 echo '</form></div>';
 
 include '../main_footer.php';
+
+/**
+ * Imports the selected account profiles.
+ *
+ * @param string $typeId type id
+ * @param array $options options
+ * @param \LAMConfig[] $serverProfiles server profiles (name => profile object)
+ * @param \LAM\TYPES\TypeManager $typeManager type manager
+ * @return \htmlStatusMessage message or null
+ */
+function importProfiles($typeId, $options, &$serverProfiles, &$typeManager) {
+	foreach ($options as $option) {
+		$sourceConfName = $option['conf'];
+		$sourceTypeId = $option['typeId'];
+		$sourceName = $option['name'];
+		$sourceTypeManager = new \LAM\TYPES\TypeManager($serverProfiles[$sourceConfName]);
+		$sourceType = $sourceTypeManager->getConfiguredType($sourceTypeId);
+		$targetType = $typeManager->getConfiguredType($typeId);
+		if (($sourceType != null) && ($targetType != null)) {
+			try {
+				\copyAccountProfile($sourceType, $sourceName, $targetType);
+			}
+			catch (\LAMException $e) {
+				return new \htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
+			}
+		}
+	}
+	return new \htmlStatusMessage('INFO', _('Import successful'));
+}
+
+/**
+ * Exports the selected account profile.
+ *
+ * @param string $typeId source type id
+ * @param string $name profile name
+ * @param array $options options
+ * @param \LAMConfig[] $serverProfiles server profiles (name => profile object)
+ * @param \LAM\TYPES\TypeManager $typeManager type manager
+ * @return \htmlStatusMessage message or null
+ */
+function exportProfiles($typeId, $name, $options, &$serverProfiles, &$typeManager) {
+	$sourceType = $typeManager->getConfiguredType($typeId);
+	if ($sourceType == null) {
+		return null;
+	}
+	foreach ($options as $option) {
+		$targetConfName = $option['conf'];
+		if ($targetConfName == 'templates*') {
+			try {
+				\copyAccountProfileToTemplates($sourceType, $name);
+			}
+			catch (\LAMException $e) {
+				return new \htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
+			}
+		}
+		else {
+			$targetTypeId = $option['typeId'];
+			$targetTypeManager = new \LAM\TYPES\TypeManager($serverProfiles[$targetConfName]);
+			$targetType = $targetTypeManager->getConfiguredType($targetTypeId);
+			if ($targetType != null) {
+				try {
+					\copyAccountProfile($sourceType, $name, $targetType);
+				}
+				catch (\LAMException $e) {
+					return new \htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
+				}
+			}
+		}
+	}
+	return new \htmlStatusMessage('INFO', _('Export successful'));
+}
 
 ?>
