@@ -75,7 +75,6 @@ setlanguage();
 // Unset pdf structure definitions in session if set
 if(isset($_SESSION['currentPDFStructure'])) {
 	unset($_SESSION['currentPDFStructure']);
-	unset($_SESSION['availablePDFFields']);
 	unset($_SESSION['currentPageDefinitions']);
 }
 
@@ -107,7 +106,7 @@ $container->addElement(new htmlTitle(_('PDF editor')), true);
 
 if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
 	// delete structure
-	if (deletePDFStructureDefinition($_POST['profileDeleteType'], $_POST['profileDeleteName'])) {
+	if (\LAM\PDF\deletePDFStructureDefinition($_POST['profileDeleteType'], $_POST['profileDeleteName'])) {
 		$message = new htmlStatusMessage('INFO', _('Deleted PDF structure.'), \LAM\TYPES\getTypeAlias($_POST['profileDeleteType']) . ': ' . htmlspecialchars($_POST['profileDeleteName']));
 		$message->colspan = 10;
 		$container->addElement($message, true);
@@ -127,7 +126,7 @@ if (isset($_POST['importexport']) && ($_POST['importexport'] === '1')) {
 		if (!$cfg->checkPassword($_POST['passwd_' . $_POST['typeId']])) {
 			$impExpMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
 		}
-		elseif (copyPdfProfiles($_POST['importProfiles_' . $_POST['typeId']], $_POST['typeId'])) {
+		elseif (\LAM\PDF\copyPdfProfiles($_POST['importProfiles_' . $_POST['typeId']], $_POST['typeId'])) {
 			$impExpMessage = new htmlStatusMessage('INFO', _('Import successful'));
 		}
 	} else if (isset($_POST['exportProfiles'])) {
@@ -135,7 +134,7 @@ if (isset($_POST['importexport']) && ($_POST['importexport'] === '1')) {
 		if (!$cfg->checkPassword($_POST['passwd'])) {
 			$impExpMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
 		}
-		elseif (copyPdfProfiles($_POST['exportProfiles'], $_POST['typeId'], $_POST['destServerProfiles'])) {
+		elseif (\LAM\PDF\copyPdfProfiles($_POST['exportProfiles'], $_POST['typeId'], $_POST['destServerProfiles'])) {
 			$impExpMessage = new htmlStatusMessage('INFO', _('Export successful'));
 		}
 	}
@@ -149,13 +148,13 @@ if (isset($_POST['importexport']) && ($_POST['importexport'] === '1')) {
 if (isset($_POST['uploadLogo']) && !empty($_FILES['logoUpload']) && !empty($_FILES['logoUpload']['size'])) {
 	$file = $_FILES['logoUpload']['tmp_name'];
 	$filename = $_FILES['logoUpload']['name'];
-	$container->addElement(uploadPDFLogo($file, $filename), true);
+	$container->addElement(\LAM\PDF\uploadPDFLogo($file, $filename), true);
 }
 
 // delete logo file
 if (isset($_POST['delLogo'])) {
 	$toDel = $_POST['logo'];
-	$container->addElement(deletePDFLogo($toDel), true);
+	$container->addElement(\LAM\PDF\deletePDFLogo($toDel), true);
 }
 
 // get list of account types
@@ -172,7 +171,7 @@ foreach ($sortedTypes as $typeId => $title) {
 }
 // get list of templates for each account type
 for ($i = 0; $i < sizeof($templateClasses); $i++) {
-	$templateClasses[$i]['templates'] = getPDFStructureDefinitions($templateClasses[$i]['typeId']);
+	$templateClasses[$i]['templates'] = \LAM\PDF\getPDFStructureDefinitions($templateClasses[$i]['typeId']);
 }
 
 // check if a template should be edited
@@ -255,7 +254,7 @@ include '../main_header.php';
 		$logoContainer = new htmlTable();
 		$logoContainer->addElement(new htmlSpacer(null, '30px'), true);
 		$logoContainer->addElement(new htmlSubTitle(_('Manage logos')), true);
-		$logos = getAvailableLogos();
+		$logos = \LAM\PDF\getAvailableLogos();
 		$logoOptions = array();
 		foreach ($logos as $logo) {
 			$file = $logo['filename'];
@@ -287,7 +286,7 @@ include '../main_header.php';
 			$tmpArr = array();
 			foreach ($configProfiles as $profile) {
 				if ($profile != $_SESSION['config']->getName()) {
-					$accountProfiles = getPDFStructureDefinitions($typeId, $profile);
+					$accountProfiles = \LAM\PDF\getPDFStructureDefinitions($typeId, $profile);
 					for ($p = 0; $p < sizeof($accountProfiles); $p++) {
 						$tmpArr[$profile][$accountProfiles[$p]] = $profile . '##' . $accountProfiles[$p];
 					}

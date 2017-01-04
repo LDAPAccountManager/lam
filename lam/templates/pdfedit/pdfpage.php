@@ -129,7 +129,7 @@ if(isset($_GET['submit'])) {
 		$saveErrors[] = array('ERROR', _('PDF structure name not valid'), _('The name for that PDF-structure you submitted is not valid. A valid name must consist of the following characters: \'a-z\',\'A-Z\',\'0-9\',\'_\',\'-\'.'));
 	}
 	else {
-		$return = savePDFStructureDefinitions($type->getId(), $_GET['pdfname']);
+		$return = \LAM\PDF\savePDFStructureDefinitions($type->getId(), $_GET['pdfname']);
 		if($return == 'ok') {
 			metaRefresh('pdfmain.php?savedSuccessfully=' . $_GET['pdfname']);
 			exit;
@@ -356,23 +356,20 @@ foreach ($_GET as $key => $value) {
 if(!isset($_SESSION['currentPDFStructure'])) {
 	// Load structure file to be edit
 	if(isset($_GET['edit'])) {
-		$load = loadPDFStructureDefinitions($type->getId(), $_GET['edit']);
+		$load = \LAM\PDF\loadPDFStructureDefinitions($type->getId(), $_GET['edit']);
 		$_SESSION['currentPDFStructure'] = $load['structure'];
 		$_SESSION['currentPageDefinitions'] = $load['page_definitions'];
 		$_GET['pdfname'] = $_GET['edit'];
 	}
 	// Load default structure file when creating a new one
 	else {
-		$load = loadPDFStructureDefinitions($type->getId());
+		$load = \LAM\PDF\loadPDFStructureDefinitions($type->getId());
 		$_SESSION['currentPDFStructure'] = $load['structure'];
 		$_SESSION['currentPageDefinitions'] = $load['page_definitions'];
 	}
 }
 
-// Load available fields from modules when not set in session
-if(!isset($_SESSION['availablePDFFields'])) {
-	$_SESSION['availablePDFFields'] = getAvailablePDFFields($type->getId());
-}
+$availablePDFFields = getAvailablePDFFields($type->getId());
 
 // Create the values for the dropdown boxes for section headline defined by
 // value entries and fetch all available modules
@@ -380,7 +377,7 @@ $modules = array();
 $section_items_array = array();
 $section_items = '';
 $sortedModules = array();
-foreach($_SESSION['availablePDFFields'] as $module => $fields) {
+foreach($availablePDFFields as $module => $fields) {
 	if ($module != 'main') {
 		$title = getModuleAlias($module, $type->getScope());
 	}
@@ -391,7 +388,7 @@ foreach($_SESSION['availablePDFFields'] as $module => $fields) {
 }
 natcasesort($sortedModules);
 foreach($sortedModules as $module => $title) {
-	$values = $_SESSION['availablePDFFields'][$module];
+	$values = $availablePDFFields[$module];
 	if (!is_array($values) || (sizeof($values) < 1)) {
 		continue;
 	}
@@ -419,7 +416,7 @@ if (sizeof($saveErrors) > 0) {
 
 $newFieldFieldElements = array();
 foreach($sortedModules as $module => $title) {
-	$fields = $_SESSION['availablePDFFields'][$module];
+	$fields = $availablePDFFields[$module];
 	if (isset($fields) && is_array($fields) && (sizeof($fields) > 0)) {
 		$moduleFields = array();
 		foreach ($fields as $field => $fieldLabel) {
@@ -446,7 +443,7 @@ if (isset($_SESSION['currentPageDefinitions']['headline'])) {
 	$headline = $_SESSION['currentPageDefinitions']['headline'];
 }
 // logo
-$logoFiles = getAvailableLogos();
+$logoFiles = \LAM\PDF\getAvailableLogos();
 $logos = array(_('No logo') => 'none');
 foreach($logoFiles as $logoFile) {
 	$logos[$logoFile['filename'] . ' (' . $logoFile['infos'][0] . ' x ' . $logoFile['infos'][1] . ")"] = $logoFile['filename'];
@@ -459,7 +456,7 @@ if (isset($_SESSION['currentPageDefinitions']['filename'])) {
 ?>
 	<form id="inputForm" action="pdfpage.php" method="post" onSubmit="saveScrollPosition('inputForm')">
 <?php
-$sectionElements = array(_('Beginning') => 0);
+$sectionElements = array();
 $nonTextSectionElements = array();
 
 $container = new htmlTable();
@@ -498,10 +495,10 @@ for ($key = 0; $key < sizeof($_SESSION['currentPDFStructure']); $key++) {
 	$linkRemove->setTitle(_("Remove"));
 	$emptyBox = new htmlOutputText('');
 	// We have a new section to start
-	if($entry['tag'] == "SECTION" && $entry['type'] == "open") {
+	if(($entry['tag'] == "SECTION") && ($entry['type'] == 'open')) {
 		$name = $entry['attributes']['NAME'];
 		if(preg_match("/^_[a-zA-Z0-9_]+_[a-zA-Z0-9_]+/",$name)) {
-			$section_headline = translateFieldIDToName(substr($name,1), $type->getScope());
+			$section_headline = translateFieldIDToName(substr($name,1), $type->getScope(), $availablePDFFields);
 		}
 		else {
 			$section_headline = $name;
@@ -513,7 +510,7 @@ for ($key = 0; $key < sizeof($_SESSION['currentPDFStructure']); $key++) {
 		if(preg_match("/^_[a-zA-Z0-9_]+_[a-zA-Z0-9_]+/",$name)) {
 			$headlineElements = array();
 			foreach($section_items_array as $item) {
-				$headlineElements[translateFieldIDToName($item, $type->getScope())] = '_' . $item;
+				$headlineElements[translateFieldIDToName($item, $type->getScope(), $availablePDFFields)] = '_' . $item;
 			}
 			$sectionHeadlineSelect = new htmlSelect('section_' . $key, $headlineElements, array($name));
 			$sectionHeadlineSelect->setHasDescriptiveElements(true);
@@ -583,7 +580,7 @@ for ($key = 0; $key < sizeof($_SESSION['currentPDFStructure']); $key++) {
 		// Get name of current entry
 		$name = $entry['attributes']['NAME'];
 		$structureContent->addElement(new htmlSpacer('10px', null));
-		$fieldOutput = new htmlOutputText(translateFieldIDToName($name, $type->getScope()));
+		$fieldOutput = new htmlOutputText(translateFieldIDToName($name, $type->getScope(), $availablePDFFields));
 		$structureContent->addElement($fieldOutput);
 		if ($_SESSION['currentPDFStructure'][$key - 1]['tag'] != 'SECTION') {
 			$structureContent->addElement($linkUp);
@@ -600,6 +597,7 @@ for ($key = 0; $key < sizeof($_SESSION['currentPDFStructure']); $key++) {
 		$structureContent->addElement($linkRemove, true);
 	}
 }
+$sectionElements[_('End')] = sizeof($_SESSION['currentPDFStructure']);
 $structureContent->colspan = 3;
 $mainContent->addElement($structureContent);
 $container->addElement(new htmlFieldset($mainContent), true);
@@ -638,19 +636,21 @@ $newTextFieldContent->addElement(new htmlButton('add_text', _('Add')));
 $container->addElement(new htmlFieldset($newTextFieldContent, _("Text field")), true);
 
 // new field
-$container->addElement(new htmlSubTitle(_('New field')), true);
-$newFieldContainer = new htmlTable();
-$newFieldFieldSelect = new htmlSelect('new_field', $newFieldFieldElements);
-$newFieldFieldSelect->setHasDescriptiveElements(true);
-$newFieldFieldSelect->setContainsOptgroups(true);
-$newFieldContainer->addElement($newFieldFieldSelect);
-$newFieldContainer->addElement(new htmlSpacer('10px', null));
-$newFieldSectionSelect = new htmlTableExtendedSelect('add_field_position', $nonTextSectionElements, array(), _('Position'));
-$newFieldSectionSelect->setHasDescriptiveElements(true);
-$newFieldContainer->addElement($newFieldSectionSelect);
-$newFieldContainer->addElement(new htmlButton('add_new_field', _('Add')));
-$container->addElement(new htmlFieldset($newFieldContainer), true);
-$container->addElement(new htmlSpacer(null, '20px'), true);
+if (!empty($nonTextSectionElements)) {
+	$container->addElement(new htmlSubTitle(_('New field')), true);
+	$newFieldContainer = new htmlTable();
+	$newFieldFieldSelect = new htmlSelect('new_field', $newFieldFieldElements);
+	$newFieldFieldSelect->setHasDescriptiveElements(true);
+	$newFieldFieldSelect->setContainsOptgroups(true);
+	$newFieldContainer->addElement($newFieldFieldSelect);
+	$newFieldContainer->addElement(new htmlSpacer('10px', null));
+	$newFieldSectionSelect = new htmlTableExtendedSelect('add_field_position', $nonTextSectionElements, array(), _('Position'));
+	$newFieldSectionSelect->setHasDescriptiveElements(true);
+	$newFieldContainer->addElement($newFieldSectionSelect);
+	$newFieldContainer->addElement(new htmlButton('add_new_field', _('Add')));
+	$container->addElement(new htmlFieldset($newFieldContainer), true);
+	$container->addElement(new htmlSpacer(null, '20px'), true);
+}
 
 // buttons
 $buttonContainer = new htmlTable();
@@ -688,9 +688,10 @@ include '../main_footer.php';
  *
  * @param String $id field ID
  * @param String $scope account type
+ * @param array $availablePDFFields available PDF fields
  */
-function translateFieldIDToName($id, $scope) {
-	foreach ($_SESSION['availablePDFFields'] as $module => $fields) {
+function translateFieldIDToName($id, $scope, $availablePDFFields) {
+	foreach ($availablePDFFields as $module => $fields) {
 		if (!(strpos($id, $module . '_') === 0)) {
 			continue;
 		}

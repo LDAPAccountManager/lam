@@ -1,5 +1,6 @@
 <?php
 use LAM\TYPES\ConfiguredType;
+use function LAM\TYPES\getScopeFromTypeId;
 
 /*
 $Id$
@@ -401,14 +402,14 @@ function getHelp($module,$helpID,$scope='') {
 /**
 * Returns a list of available PDF entries.
 *
-* @param string $scope account type (user, group, host)
+* @param string $typeId account type (user, group, host)
 * @return array PDF entries (field ID => field label)
 */
-function getAvailablePDFFields($scope) {
-	$mods = $_SESSION['config']->get_AccountModules($scope);
+function getAvailablePDFFields($typeId) {
+	$mods = $_SESSION['config']->get_AccountModules($typeId);
 	$return = array();
 	for ($i = 0; $i < sizeof($mods); $i++) {
-		$module = moduleCache::getModule($mods[$i], $scope);
+		$module = moduleCache::getModule($mods[$i], getScopeFromTypeId($typeId));
 		$fields = $module->get_pdfFields();
 		$return[$mods[$i]] = array();
 		if (is_array($fields)) {

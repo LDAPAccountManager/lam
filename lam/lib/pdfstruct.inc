@@ -1,4 +1,7 @@
 <?php
+namespace LAM\PDF;
+
+use \htmlStatusMessage;
 /*
 $Id$
 
@@ -75,14 +78,14 @@ function getPDFStructureDefinitions($scope = "user", $profile = null) {
  *
  * @return array PDF structure
  */
-function loadPDFStructureDefinitions($scope='user',$pdf_structure='default') {
+function loadPDFStructureDefinitions($scope='user', $pdf_structure='default') {
 	$parser = new xmlParser();
 	$file = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/' . $pdf_structure . '.' . $scope . '.xml';
 	$xml = $parser->parse($file);
 	$border = array();
 	$structure = array();
 	$complete_page_definitions = array('filename' => 'printLogo.jpg', 'headline' => 'LDAP Account Manager');
-	if($xml[0][$xml[1]['PDF'][0]]['attributes']['TYPE'] == $scope) {
+	if (!empty($xml)) {
 		$border['start'] = $xml[1]['PDF'][0];
 		$page_definitions = $xml[0][$xml[1]['PDF'][0]]['attributes'];
 		foreach($page_definitions as $key => $value) {
@@ -90,8 +93,8 @@ function loadPDFStructureDefinitions($scope='user',$pdf_structure='default') {
 			unset($page_definitions[$key]);
 		}
 		$border['end'] = $xml[1]['PDF'][1];
+		$structure = array_slice($xml[0],$border['start'] + 1,$border['end'] - ($border['start'] + 1));
 	}
-	$structure = array_slice($xml[0],$border['start'] + 1,$border['end'] - ($border['start'] + 1));
 	return array('structure' => $structure, 'page_definitions' => $complete_page_definitions);
 }
 
@@ -103,7 +106,7 @@ function loadPDFStructureDefinitions($scope='user',$pdf_structure='default') {
  * @param string $definition Name of definition
  * @return string "no perms" if access denied or "ok".
  */
-function savePDFStructureDefinitions($scope,$definition) {
+function savePDFStructureDefinitions($scope, $definition) {
 	if (!preg_match('/[a-zA-Z0-9\-\_]+/',$definition)) return 'no perms';
 	if (!preg_match('/[a-zA-Z]+/',$scope)) return 'no perms';
 	$struct_file = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/' . $definition . '.' . $scope . '.xml';
@@ -115,11 +118,9 @@ function savePDFStructureDefinitions($scope,$definition) {
 		if (!$handle) return 'no perms';
 		$pdf_attributes = '';
 		foreach($_SESSION['currentPageDefinitions'] as $key => $value) {
-			if($key != 'type') {
-				$pdf_attributes .= ' ' . $key . '="' . $value . '"';
-			}
+			$pdf_attributes .= ' ' . $key . '="' . $value . '"';
 		}
-		$file = '<pdf type="' . $scope . "\"" . $pdf_attributes . ">\n";
+		$file = '<pdf' . $pdf_attributes . ">\n";
 		foreach($_SESSION['currentPDFStructure'] as $entry) {
 			$ident = '';
 			for($i=0;$i<$entry['level'] -1;$i++) {
@@ -289,7 +290,7 @@ function deletePDFLogo($name) {
 			$data = loadPDFStructureDefinitions($type, $structure);
 			if ($data['page_definitions']['filename'] == $name) {
 				return new htmlStatusMessage('ERROR', _('Unable to delete logo file.'),
-					sprintf(_('Logo is still in use by PDF structure "%s" in account type "%s".'), $structure, LAM\TYPES\getTypeAlias($type)));
+					sprintf(_('Logo is still in use by PDF structure "%s" in account type "%s".'), $structure, \LAM\TYPES\getTypeAlias($type)));
 			}
 		}
 	}
