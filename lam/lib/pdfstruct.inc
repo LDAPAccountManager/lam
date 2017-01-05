@@ -2,6 +2,7 @@
 namespace LAM\PDF;
 
 use \htmlStatusMessage;
+use \LAMException;
 /*
 $Id$
 
@@ -49,7 +50,7 @@ include_once("ldap.inc");
  * scope. Each entry is a string being the filename that may be passed to the
  * createModulePDF() function as second argument.
  */
-function getPDFStructureDefinitions($scope = "user", $profile = null) {
+function getPDFStructures($scope = "user", $profile = null) {
 	$return = array();
 
 	if (!isset($profile)) {
@@ -70,17 +71,19 @@ function getPDFStructureDefinitions($scope = "user", $profile = null) {
 }
 
 /**
- * This function is used to get pdf structure from xml file.
- * Used in createModulePDF.
+ * This function is used to get the PDF structure from XML file.
  *
- * @param string $scope The account scope for wich the PDF structure should be returned.
- * @param string $pdf_structure Structure name of selected scope wich should be returned.
+ * @param string $typeId the account type
+ * @param string $name structure name
  *
  * @return array PDF structure
  */
-function loadPDFStructureDefinitions($scope='user', $pdf_structure='default') {
+function loadPDFStructure($typeId, $name='default') {
+	if (!isValidPDFStructureName($name) || !preg_match('/[a-zA-Z]+/', $typeId)) {
+		return null;
+	}
 	$parser = new xmlParser();
-	$file = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/' . $pdf_structure . '.' . $scope . '.xml';
+	$file = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/' . $name . '.' . $typeId . '.xml';
 	$xml = $parser->parse($file);
 	$border = array();
 	$structure = array();
@@ -100,16 +103,17 @@ function loadPDFStructureDefinitions($scope='user', $pdf_structure='default') {
 
 
 /**
- * Saves PDF structure definitions to XML file in format: <name>.<scope>.xml
+ * Saves PDF structure to XML file in format: <name>.<typeId>.xml
  *
- * @param string $scope account type
- * @param string $definition Name of definition
+ * @param string $typeId account type
+ * @param string $name name of structure
  * @return string "no perms" if access denied or "ok".
  */
-function savePDFStructureDefinitions($scope, $definition) {
-	if (!preg_match('/[a-zA-Z0-9\-\_]+/',$definition)) return 'no perms';
-	if (!preg_match('/[a-zA-Z]+/',$scope)) return 'no perms';
-	$struct_file = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/' . $definition . '.' . $scope . '.xml';
+function savePDFStructure($typeId, $name) {
+	if (!isValidPDFStructureName($name) || !preg_match('/[a-zA-Z]+/', $typeId)) {
+		return 'no perms';
+	}
+	$struct_file = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/' . $name . '.' . $typeId . '.xml';
 	if(!is_writable(dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName())) {
 		return 'no perms';
 	}
@@ -157,15 +161,16 @@ function savePDFStructureDefinitions($scope, $definition) {
 /**
  * Deletes XML file with PDF structure definitions.
  *
- * @param string $scope account type
- * @param string $definition Name of definition to delete
+ * @param string $typeId account type
+ * @param string $name Name of definition to delete
  *
  * @return boolean True if file was deleted or false if a problem occured.
  */
-function deletePDFStructureDefinition($scope, $definition) {
-	if (!preg_match('/[a-zA-Z0-9\-\_]+/',$definition)) return false;
-	if (!preg_match('/[a-zA-Z]+/',$scope)) return false;
-	$file = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/' . $definition . '.' . $scope . '.xml';
+function deletePDFStructure($typeId, $name) {
+	if (!isValidPDFStructureName($name) || !preg_match('/[a-zA-Z]+/',$typeId)) {
+		return false;
+	}
+	$file = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/' . $name . '.' . $typeId . '.xml';
 	if(is_file($file) && is_writable($file)) {
 		return unlink($file);
 	}
@@ -196,46 +201,50 @@ function getAvailableLogos() {
 	return $return;
 }
 
+/**
+ * Copies a PDF structure from the given source to target.
+ *
+ * @param \LAM\TYPES\ConfiguredType $sourceType source type
+ * @param string $sourceStructureName structure name
+ * @param \LAM\TYPES\ConfiguredType $targetType target type
+ * @throws Exception
+ */
+function copyStructure($sourceType, $sourceStructureName, $targetType) {
+	if (!isValidPDFStructureName($sourceStructureName)) {
+		throw new LAMException(_('Failed to copy'));
+	}
+	$sourceConfig = $sourceType->getTypeManager()->getConfig()->getName();
+	$sourceTypeId = $sourceType->getId();
+	$targetConfig = $targetType->getTypeManager()->getConfig()->getName();
+	$targetTypeId = $targetType->getId();
+	$basePath = dirname(__FILE__) . '/../config/pdf/';
+	$src = $basePath . $sourceConfig . '/' . $sourceStructureName . '.' . $sourceTypeId;
+	$dst = $basePath . $targetConfig . '/' . $sourceStructureName . '.' . $targetTypeId;
+	if (!@copy($src, $dst)) {
+		throw new LAMException(_('Failed to copy'), $sourceConfig . ': ' . $sourceStructureName);
+	}
+}
 
 /**
- * Copies PDF profiles to other server profiles.
+ * Copies a PDF structure from the given source to global templates.
  *
- * @param array $pdfProfiles PDF profile names
- * @param String $scope account scope
- * @param array $dests destinations
- *
- * @return boolean operation succeeded
+ * @param \LAM\TYPES\ConfiguredType $sourceType source type
+ * @param string $sourceName structure name
+ * @throws Exception
  */
-function copyPdfProfiles($pdfProfiles, $scope, $dests = array()) {
-	$state = true;
-	$profilePath = substr(__FILE__, 0, strlen(__FILE__) - 17) . 'config/pdf/';
-	foreach ($pdfProfiles as $profile) {
-		//part 1: server profile
-		//part 2: account profile
-		$tmpArr = explode('##', $profile);
-		$src = $profilePath . $tmpArr[0] . '/' . $tmpArr[1] . '.' . $scope . '.xml';
-		if (!empty($dests)) {
-			foreach ($dests as $dest) {
-				if ($dest == 'templates*') {
-					$dst = substr(__FILE__, 0, strlen(__FILE__) - 17) . 'config/templates/pdf/' . $tmpArr[1] . '.' . $scope . '.xml';
-				} else {
-					$dst = $profilePath . $dest . '/' . $tmpArr[1] . '.' . $scope . '.xml';
-				}
-				if (!@copy($src, $dst)) {
-					StatusMessage('ERROR', _('Failed to export!'), $tmpArr[1] . '.' . $scope . '.xml');
-					$state = false;
-				}
-			}
-		} else {
-			$dst = $profilePath . $_SESSION['config']->getName() . '/' . $tmpArr[1] . '.' . $scope . '.xml';
-			if (!@copy($src, $dst)) {
-				StatusMessage('ERROR', _('Failed to import!'), $tmpArr[1] . '.' . $scope . '.xml');
-				$state = false;
-			}
-		}
+function copyStructureToTemplates($sourceType, $sourceName) {
+	if (!isValidPDFStructureName($sourceName)) {
+		throw new LAMException(_('Failed to copy'));
 	}
-
-	return $state;
+	$sourceConfig = $sourceType->getTypeManager()->getConfig()->getName();
+	$sourceTypeId = $sourceType->getId();
+	$basePath = dirname(__FILE__) . '/../config/pdf/';
+	$templatePath = dirname(__FILE__) . '/../config/templates/pdf/';
+	$src = $basePath . $sourceConfig . '/' . $sourceName . '.' . $sourceTypeId;
+	$dst = $templatePath . $sourceName . '.' . $sourceType->getScope();
+	if (!@copy($src, $dst)) {
+		throw new LAMException(_('Failed to copy'), $sourceConfig . ': ' . $sourceName);
+	}
 }
 
 /**
@@ -285,9 +294,9 @@ function deletePDFLogo($name) {
 	// check if still in use
 	$activeTypes = $_SESSION['config']->get_ActiveTypes();
 	foreach ($activeTypes as $type) {
-		$structures = getPDFStructureDefinitions($type);
+		$structures = getPDFStructures($type);
 		foreach ($structures as $structure) {
-			$data = loadPDFStructureDefinitions($type, $structure);
+			$data = loadPDFStructure($type, $structure);
 			if ($data['page_definitions']['filename'] == $name) {
 				return new htmlStatusMessage('ERROR', _('Unable to delete logo file.'),
 					sprintf(_('Logo is still in use by PDF structure "%s" in account type "%s".'), $structure, \LAM\TYPES\getTypeAlias($type)));
@@ -303,6 +312,16 @@ function deletePDFLogo($name) {
 	else {
 		return new htmlStatusMessage('ERROR', _('Unable to delete logo file.'), $name);
 	}
+}
+
+/**
+ * Returns if the give structure name is valid.
+ *
+ * @param string $name structure name
+ * @return boolean is valid
+ */
+function isValidPDFStructureName($name) {
+	return preg_match('/[a-zA-Z0-9\-\_]+/',$name) === 1;
 }
 
 ?>

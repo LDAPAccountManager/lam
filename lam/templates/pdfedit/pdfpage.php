@@ -129,7 +129,7 @@ if(isset($_GET['submit'])) {
 		$saveErrors[] = array('ERROR', _('PDF structure name not valid'), _('The name for that PDF-structure you submitted is not valid. A valid name must consist of the following characters: \'a-z\',\'A-Z\',\'0-9\',\'_\',\'-\'.'));
 	}
 	else {
-		$return = \LAM\PDF\savePDFStructureDefinitions($type->getId(), $_GET['pdfname']);
+		$return = \LAM\PDF\savePDFStructure($type->getId(), $_GET['pdfname']);
 		if($return == 'ok') {
 			metaRefresh('pdfmain.php?savedSuccessfully=' . $_GET['pdfname']);
 			exit;
@@ -356,14 +356,14 @@ foreach ($_GET as $key => $value) {
 if(!isset($_SESSION['currentPDFStructure'])) {
 	// Load structure file to be edit
 	if(isset($_GET['edit'])) {
-		$load = \LAM\PDF\loadPDFStructureDefinitions($type->getId(), $_GET['edit']);
+		$load = \LAM\PDF\loadPDFStructure($type->getId(), $_GET['edit']);
 		$_SESSION['currentPDFStructure'] = $load['structure'];
 		$_SESSION['currentPageDefinitions'] = $load['page_definitions'];
 		$_GET['pdfname'] = $_GET['edit'];
 	}
 	// Load default structure file when creating a new one
 	else {
-		$load = \LAM\PDF\loadPDFStructureDefinitions($type->getId());
+		$load = \LAM\PDF\loadPDFStructure($type->getId());
 		$_SESSION['currentPDFStructure'] = $load['structure'];
 		$_SESSION['currentPageDefinitions'] = $load['page_definitions'];
 	}

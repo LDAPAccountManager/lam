@@ -145,9 +145,9 @@ foreach ($configProfiles as $profileName) {
 if (!empty($_POST['import'])) {
 	$cfg = new LAMCfgMain();
 	// check master password
-	$impMessage = null;
+	$errMessage = null;
 	if (!$cfg->checkPassword($_POST['passwd_i_' . $_POST['typeId']])) {
-		$impMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
+		$errMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
 	}
 	elseif (!empty($_POST['importProfiles'])) {
 		$options = array();
@@ -155,20 +155,20 @@ if (!empty($_POST['import'])) {
 			$parts = explode('##', $importProfiles);
 			$options[] = array('conf' => $parts[0], 'typeId' => $parts[1], 'name' => $parts[2]);
 		}
-		$impMessage = importProfiles($_POST['typeId'], $options, $serverProfiles, $typeManager);
+		$errMessage = importProfiles($_POST['typeId'], $options, $serverProfiles, $typeManager);
 	}
-	if ($impMessage != null) {
-		$impMessage->colspan = 10;
-		$container->addElement($impMessage, true);
+	if ($errMessage != null) {
+		$errMessage->colspan = 10;
+		$container->addElement($errMessage, true);
 	}
 }
 // export profiles
 if (!empty($_POST['export'])) {
 	$cfg = new LAMCfgMain();
 	// check master password
-	$impMessage = null;
+	$errMessage = null;
 	if (!$cfg->checkPassword($_POST['passwd_e_' . $_POST['typeId']])) {
-		$impMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
+		$errMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
 	}
 	elseif (!empty($_POST['exportProfiles'])) {
 		$options = array();
@@ -178,11 +178,11 @@ if (!empty($_POST['export'])) {
 		}
 		$typeId = $_POST['typeId'];
 		$name = $_POST['name_' . $typeId];
-		$impMessage = exportProfiles($typeId, $name, $options, $serverProfiles, $typeManager);
+		$errMessage = exportProfiles($typeId, $name, $options, $serverProfiles, $typeManager);
 	}
-	if ($impMessage != null) {
-		$impMessage->colspan = 10;
-		$container->addElement($impMessage, true);
+	if ($errMessage != null) {
+		$errMessage->colspan = 10;
+		$container->addElement($errMessage, true);
 	}
 }
 

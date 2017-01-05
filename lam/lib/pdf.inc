@@ -67,7 +67,7 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 
 	$account_type = $accounts[0]->get_type();
 	// Get PDF structure from xml file
-	$load = \LAM\PDF\loadPDFStructureDefinitions($account_type->getId(), $pdf_structure);
+	$load = \LAM\PDF\loadPDFStructure($account_type->getId(), $pdf_structure);
 	$structure = $load['structure'];
 	// get list of PDF keys
 	$pdfKeys = array();

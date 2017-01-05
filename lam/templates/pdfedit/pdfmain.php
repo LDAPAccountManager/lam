@@ -106,7 +106,7 @@ $container->addElement(new htmlTitle(_('PDF editor')), true);
 
 if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
 	// delete structure
-	if (\LAM\PDF\deletePDFStructureDefinition($_POST['profileDeleteType'], $_POST['profileDeleteName'])) {
+	if (\LAM\PDF\deletePDFStructure($_POST['profileDeleteType'], $_POST['profileDeleteName'])) {
 		$message = new htmlStatusMessage('INFO', _('Deleted PDF structure.'), \LAM\TYPES\getTypeAlias($_POST['profileDeleteType']) . ': ' . htmlspecialchars($_POST['profileDeleteName']));
 		$message->colspan = 10;
 		$container->addElement($message, true);
@@ -171,7 +171,7 @@ foreach ($sortedTypes as $typeId => $title) {
 }
 // get list of templates for each account type
 for ($i = 0; $i < sizeof($templateClasses); $i++) {
-	$templateClasses[$i]['templates'] = \LAM\PDF\getPDFStructureDefinitions($templateClasses[$i]['typeId']);
+	$templateClasses[$i]['templates'] = \LAM\PDF\getPDFStructures($templateClasses[$i]['typeId']);
 }
 
 // check if a template should be edited
@@ -286,7 +286,7 @@ include '../main_header.php';
 			$tmpArr = array();
 			foreach ($configProfiles as $profile) {
 				if ($profile != $_SESSION['config']->getName()) {
-					$accountProfiles = \LAM\PDF\getPDFStructureDefinitions($typeId, $profile);
+					$accountProfiles = \LAM\PDF\getPDFStructures($typeId, $profile);
 					for ($p = 0; $p < sizeof($accountProfiles); $p++) {
 						$tmpArr[$profile][$accountProfiles[$p]] = $profile . '##' . $accountProfiles[$p];
 					}
