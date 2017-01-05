@@ -14,7 +14,6 @@ use \htmlOutputText;
 use \htmlHelpLink;
 use \htmlHiddenInput;
 use \htmlInputField;
-use \htmlDiv;
 /*
 $Id$
 

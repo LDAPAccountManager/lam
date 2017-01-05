@@ -118,31 +118,36 @@ if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
 	}
 }
 
-if (isset($_POST['importexport']) && ($_POST['importexport'] === '1')) {
+$configProfiles = getConfigProfiles();
+$serverProfiles = array();
+foreach ($configProfiles as $profileName) {
+	$serverProfiles[$profileName] = new \LAMConfig($profileName);
+}
+
+// import profiles
+if (!empty($_POST['import'])) {
 	$cfg = new LAMCfgMain();
-	$impExpMessage = null;
-	if (isset($_POST['importProfiles_' . $_POST['typeId']])) {
-		// check master password
-		if (!$cfg->checkPassword($_POST['passwd_' . $_POST['typeId']])) {
-			$impExpMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
-		}
-		elseif (\LAM\PDF\copyPdfProfiles($_POST['importProfiles_' . $_POST['typeId']], $_POST['typeId'])) {
-			$impExpMessage = new htmlStatusMessage('INFO', _('Import successful'));
-		}
-	} else if (isset($_POST['exportProfiles'])) {
-		// check master password
-		if (!$cfg->checkPassword($_POST['passwd'])) {
-			$impExpMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
-		}
-		elseif (\LAM\PDF\copyPdfProfiles($_POST['exportProfiles'], $_POST['typeId'], $_POST['destServerProfiles'])) {
-			$impExpMessage = new htmlStatusMessage('INFO', _('Export successful'));
-		}
+	$typeId = $_POST['typeId'];
+	// check master password
+	$errMessage = null;
+	if (!$cfg->checkPassword($_POST['passwd_i_' . $_POST['typeId']])) {
+		$errMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
 	}
-	if ($impExpMessage != null) {
-		$impExpMessage->colspan = 10;
-		$container->addElement($impExpMessage, true);
+	elseif (!empty($_POST['importProfiles_' . $typeId])) {
+		$options = array();
+		foreach ($_POST['importProfiles_' . $typeId] as $importProfiles) {
+			$parts = explode('##', $importProfiles);
+			$options[] = array('conf' => $parts[0], 'typeId' => $parts[1], 'name' => $parts[2]);
+		}
+		$errMessage = importStructures($_POST['typeId'], $options, $serverProfiles, $typeManager);
+	}
+	if ($errMessage != null) {
+		$errMessage->colspan = 10;
+		$container->addElement($errMessage, true);
 	}
 }
+
+
 
 // upload logo file
 if (isset($_POST['uploadLogo']) && !empty($_FILES['logoUpload']) && !empty($_FILES['logoUpload']['size'])) {
@@ -209,8 +214,6 @@ include '../main_header.php';
 		}
 
 		// existing templates
-		$configProfiles = getConfigProfiles();
-
 		$container->addElement(new htmlSubTitle(_("Manage existing PDF structures")), true);
 		$existingContainer = new htmlTable();
 		for ($i = 0; $i < sizeof($templateClasses); $i++) {
@@ -283,12 +286,19 @@ include '../main_header.php';
 
 		for ($i = 0; $i < sizeof($templateClasses); $i++) {
 			$typeId = $templateClasses[$i]['typeId'];
-			$tmpArr = array();
+			$scope = $templateClasses[$i]['scope'];
+			$importOptions = array();
 			foreach ($configProfiles as $profile) {
-				if ($profile != $_SESSION['config']->getName()) {
-					$accountProfiles = \LAM\PDF\getPDFStructures($typeId, $profile);
-					for ($p = 0; $p < sizeof($accountProfiles); $p++) {
-						$tmpArr[$profile][$accountProfiles[$p]] = $profile . '##' . $accountProfiles[$p];
+				$typeManagerImport = new \LAM\TYPES\TypeManager($serverProfiles[$profile]);
+				$typesImport = $typeManagerImport->getConfiguredTypesForScope($scope);
+				foreach ($typesImport as $typeImport) {
+					if (($profile != $_SESSION['config']->getName()) || ($typeImport->getId() != $typeId)) {
+						$accountProfiles = \LAM\PDF\getPDFStructures($typeImport->getId(), $profile);
+						if (!empty($accountProfiles)) {
+							foreach ($accountProfiles as $accountProfile) {
+								$importOptions[$profile][$typeImport->getAlias() . ': ' . $accountProfile] = $profile . '##' . $typeImport->getId() . '##' . $accountProfile;
+							}
+						}
 					}
 				}
 			}
@@ -300,7 +310,7 @@ include '../main_header.php';
 			$container = new htmlTable();
 			$container->addElement(new htmlOutputText(_('PDF structures')), true);
 
-			$select = new htmlSelect('importProfiles_' . $typeId, $tmpArr, array(), count($tmpArr, 1) < 15 ? count($tmpArr, 1) : 15);
+			$select = new htmlSelect('importProfiles_' . $typeId, $importOptions, array(), count($importOptions, 1) < 15 ? count($importOptions, 1) : 15);
 			$select->setMultiSelect(true);
 			$select->setHasDescriptiveElements(true);
 			$select->setContainsOptgroups(true);
@@ -312,11 +322,11 @@ include '../main_header.php';
 			$container->addElement(new htmlSpacer(null, '10px'), true);
 
 			$container->addElement(new htmlOutputText(_("Master password")), true);
-			$exportPasswd = new htmlInputField('passwd_' . $typeId);
+			$exportPasswd = new htmlInputField('passwd_i_' . $typeId);
 			$exportPasswd->setIsPassword(true);
 			$container->addElement($exportPasswd);
 			$container->addElement(new htmlHelpLink('236'));
-			$container->addElement(new htmlHiddenInput('importexport', '1'));
+			$container->addElement(new htmlHiddenInput('import', '1'));
 			$container->addElement(new htmlHiddenInput('typeId', $typeId), true);
 			addSecurityTokenToMetaHTML($container);
 
@@ -384,4 +394,77 @@ echo '<div id="deleteProfileDialog" class="hidden"><form id="deleteProfileForm" 
 echo '</form></div>';
 
 include '../main_footer.php';
+
+
+/**
+ * Imports the selected PDF structures.
+ *
+ * @param string $typeId type id
+ * @param array $options options
+ * @param \LAMConfig[] $serverProfiles server profiles (name => profile object)
+ * @param \LAM\TYPES\TypeManager $typeManager type manager
+ * @return \htmlStatusMessage message or null
+ */
+function importStructures($typeId, $options, &$serverProfiles, &$typeManager) {
+	foreach ($options as $option) {
+		$sourceConfName = $option['conf'];
+		$sourceTypeId = $option['typeId'];
+		$sourceName = $option['name'];
+		$sourceTypeManager = new \LAM\TYPES\TypeManager($serverProfiles[$sourceConfName]);
+		$sourceType = $sourceTypeManager->getConfiguredType($sourceTypeId);
+		$targetType = $typeManager->getConfiguredType($typeId);
+		if (($sourceType != null) && ($targetType != null)) {
+			try {
+				\LAM\PDF\copyStructure($sourceType, $sourceName, $targetType);
+			}
+			catch (\LAMException $e) {
+				return new \htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
+			}
+		}
+	}
+	return new \htmlStatusMessage('INFO', _('Import successful'));
+}
+
+/**
+ * Exports the selected account profile.
+ *
+ * @param string $typeId source type id
+ * @param string $name profile name
+ * @param array $options options
+ * @param \LAMConfig[] $serverProfiles server profiles (name => profile object)
+ * @param \LAM\TYPES\TypeManager $typeManager type manager
+ * @return \htmlStatusMessage message or null
+ */
+function exportStructures($typeId, $name, $options, &$serverProfiles, &$typeManager) {
+	$sourceType = $typeManager->getConfiguredType($typeId);
+	if ($sourceType == null) {
+		return null;
+	}
+	foreach ($options as $option) {
+		$targetConfName = $option['conf'];
+		if ($targetConfName == 'templates*') {
+			try {
+				\copyAccountProfileToTemplates($sourceType, $name);
+			}
+			catch (\LAMException $e) {
+				return new \htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
+			}
+		}
+		else {
+			$targetTypeId = $option['typeId'];
+			$targetTypeManager = new \LAM\TYPES\TypeManager($serverProfiles[$targetConfName]);
+			$targetType = $targetTypeManager->getConfiguredType($targetTypeId);
+			if ($targetType != null) {
+				try {
+					\copyAccountProfile($sourceType, $name, $targetType);
+				}
+				catch (\LAMException $e) {
+					return new \htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
+				}
+			}
+		}
+	}
+	return new \htmlStatusMessage('INFO', _('Export successful'));
+}
+
 ?>

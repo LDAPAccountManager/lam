@@ -218,8 +218,8 @@ function copyStructure($sourceType, $sourceStructureName, $targetType) {
 	$targetConfig = $targetType->getTypeManager()->getConfig()->getName();
 	$targetTypeId = $targetType->getId();
 	$basePath = dirname(__FILE__) . '/../config/pdf/';
-	$src = $basePath . $sourceConfig . '/' . $sourceStructureName . '.' . $sourceTypeId;
-	$dst = $basePath . $targetConfig . '/' . $sourceStructureName . '.' . $targetTypeId;
+	$src = $basePath . $sourceConfig . '/' . $sourceStructureName . '.' . $sourceTypeId . '.xml';
+	$dst = $basePath . $targetConfig . '/' . $sourceStructureName . '.' . $targetTypeId . '.xml';
 	if (!@copy($src, $dst)) {
 		throw new LAMException(_('Failed to copy'), $sourceConfig . ': ' . $sourceStructureName);
 	}
@@ -240,8 +240,8 @@ function copyStructureToTemplates($sourceType, $sourceName) {
 	$sourceTypeId = $sourceType->getId();
 	$basePath = dirname(__FILE__) . '/../config/pdf/';
 	$templatePath = dirname(__FILE__) . '/../config/templates/pdf/';
-	$src = $basePath . $sourceConfig . '/' . $sourceName . '.' . $sourceTypeId;
-	$dst = $templatePath . $sourceName . '.' . $sourceType->getScope();
+	$src = $basePath . $sourceConfig . '/' . $sourceName . '.' . $sourceTypeId . '.xml';
+	$dst = $templatePath . $sourceName . '.' . $sourceType->getScope() . '.xml';
 	if (!@copy($src, $dst)) {
 		throw new LAMException(_('Failed to copy'), $sourceConfig . ': ' . $sourceName);
 	}
