@@ -40,7 +40,7 @@ $Id$
 */
 
 /**
-* This is the main window of the pdf structure editor.
+* This is the main window of the PDF structure editor.
 *
 * @author Michael Duergner
 * @author Roland Gruber
@@ -72,7 +72,7 @@ if (!empty($_POST)) {
 
 setlanguage();
 
-// Unset pdf structure definitions in session if set
+// Unset PDF structure definitions in session if set
 if(isset($_SESSION['currentPDFStructure'])) {
 	unset($_SESSION['currentPDFStructure']);
 	unset($_SESSION['currentPageDefinitions']);
@@ -124,7 +124,7 @@ foreach ($configProfiles as $profileName) {
 	$serverProfiles[$profileName] = new \LAMConfig($profileName);
 }
 
-// import profiles
+// import structures
 if (!empty($_POST['import'])) {
 	$cfg = new LAMCfgMain();
 	$typeId = $_POST['typeId'];
@@ -147,7 +147,30 @@ if (!empty($_POST['import'])) {
 	}
 }
 
-
+// export structures
+if (!empty($_POST['export'])) {
+	$cfg = new LAMCfgMain();
+	$typeId = $_POST['typeId'];
+	// check master password
+	$errMessage = null;
+	if (!$cfg->checkPassword($_POST['passwd_e_' . $_POST['typeId']])) {
+		$errMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
+	}
+	elseif (!empty($_POST['exportProfiles_' . $typeId])) {
+		$options = array();
+		foreach ($_POST['exportProfiles_' . $typeId] as $importProfiles) {
+			$parts = explode('##', $importProfiles);
+			$options[] = array('conf' => $parts[0], 'typeId' => $parts[1]);
+		}
+		$typeId = $_POST['typeId'];
+		$name = $_POST['name_' . $typeId];
+		$errMessage = exportStructures($typeId, $name, $options, $serverProfiles, $typeManager);
+	}
+	if ($errMessage != null) {
+		$errMessage->colspan = 10;
+		$container->addElement($errMessage, true);
+	}
+}
 
 // upload logo file
 if (isset($_POST['uploadLogo']) && !empty($_FILES['logoUpload']) && !empty($_FILES['logoUpload']['size'])) {
@@ -334,53 +357,51 @@ include '../main_header.php';
 
 			echo '</form>';
 			echo "</div>\n";
+
+			//export dialog
+			echo "<div id=\"exportDialog_$typeId\" class=\"hidden\">\n";
+			echo "<form id=\"exportDialogForm_$typeId\" method=\"post\" action=\"pdfmain.php\">\n";
+
+			$container = new htmlTable();
+
+			$container->addElement(new htmlOutputText(_("Target server profile")), true);
+			$exportOptions = array();
+			foreach ($configProfiles as $profile) {
+				$typeManagerExport = new \LAM\TYPES\TypeManager($serverProfiles[$profile]);
+				$typesExport = $typeManagerExport->getConfiguredTypesForScope($scope);
+				foreach ($typesExport as $typeExport) {
+					if (($profile != $_SESSION['config']->getName()) || ($typeExport->getId() != $typeId)) {
+						$exportOptions[$typeManagerExport->getConfig()->getName()][$typeExport->getAlias()] = $profile . '##' . $typeExport->getId();
+					}
+				}
+			}
+			$exportOptions['*' . _('Global templates')][_('Global templates')] = 'templates*##';
+
+			$select = new htmlSelect('exportProfiles_' . $typeId, $exportOptions, array(), count($exportOptions) < 10 ? count($exportOptions, 1) : 10);
+			$select->setHasDescriptiveElements(true);
+			$select->setContainsOptgroups(true);
+			$select->setMultiSelect(true);
+
+			$container->addElement($select);
+			$container->addElement(new htmlHelpLink('363'), true);
+
+			$container->addElement(new htmlSpacer(null, '10px'), true);
+
+			$container->addElement(new htmlOutputText(_("Master password")), true);
+			$exportPasswd = new htmlInputField('passwd_e_' . $typeId);
+			$exportPasswd->setIsPassword(true);
+			$container->addElement($exportPasswd);
+			$container->addElement(new htmlHelpLink('236'));
+			$container->addElement(new htmlHiddenInput('export', '1'), true);
+			$container->addElement(new htmlHiddenInput('typeId', $typeId), true);
+			$container->addElement(new htmlHiddenInput('name_' . $typeId, '_'), true);
+			addSecurityTokenToMetaHTML($container);
+
+			parseHtml(null, $container, array(), false, $tabindex, 'user');
+
+			echo '</form>';
+			echo "</div>\n";
 		}
-
-		//export dialog
-		echo "<div id=\"exportDialog\" class=\"hidden\">\n";
-		echo "<form id=\"exportDialogForm\" method=\"post\" action=\"pdfmain.php\">\n";
-
-		$container = new htmlTable();
-
-		$container->addElement(new htmlOutputText(_('PDF structure')), true);
-		$expStructGroup = new htmlTable();
-		$expStructGroup->addElement(new htmlSpacer('10px', null));
-		$expStructGroup->addElement(new htmlDiv('exportName', ''));
-		$container->addElement($expStructGroup, true);
-		$container->addElement(new htmlSpacer(null, '10px'), true);
-
-		$container->addElement(new htmlOutputText(_("Target server profile")), true);
-		foreach ($configProfiles as $key => $value) {
-			$tmpProfiles[$value] = $value;
-		}
-		natcasesort($tmpProfiles);
-		$tmpProfiles['*' . _('Global templates')] = 'templates*';
-
-		$findProfile = array_search($_SESSION['config']->getName(), $tmpProfiles);
-		if ($findProfile !== false) {
-			unset($tmpProfiles[$findProfile]);
-		}
-		$select = new htmlSelect('destServerProfiles', $tmpProfiles, array(), count($tmpProfiles) < 10 ? count($tmpProfiles) : 10);
-		$select->setHasDescriptiveElements(true);
-		$select->setSortElements(false);
-		$select->setMultiSelect(true);
-
-		$container->addElement($select);
-		$container->addElement(new htmlHelpLink('409'), true);
-		$container->addElement(new htmlSpacer(null, '10px'), true);
-
-		$container->addElement(new htmlOutputText(_("Master password")), true);
-		$exportPasswd = new htmlInputField('passwd');
-		$exportPasswd->setIsPassword(true);
-		$container->addElement($exportPasswd);
-		$container->addElement(new htmlHelpLink('236'));
-		$container->addElement(new htmlHiddenInput('importexport', '1'), true);
-		addSecurityTokenToMetaHTML($container);
-
-		parseHtml(null, $container, array(), false, $tabindex, 'user');
-
-		echo '</form>';
-		echo "</div>\n";
 
 // form for delete action
 echo '<div id="deleteProfileDialog" class="hidden"><form id="deleteProfileForm" action="pdfmain.php" method="post">';
@@ -444,7 +465,7 @@ function exportStructures($typeId, $name, $options, &$serverProfiles, &$typeMana
 		$targetConfName = $option['conf'];
 		if ($targetConfName == 'templates*') {
 			try {
-				\copyAccountProfileToTemplates($sourceType, $name);
+				\LAM\PDF\copyStructureToTemplates($sourceType, $name);
 			}
 			catch (\LAMException $e) {
 				return new \htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
@@ -456,7 +477,7 @@ function exportStructures($typeId, $name, $options, &$serverProfiles, &$typeMana
 			$targetType = $targetTypeManager->getConfiguredType($targetTypeId);
 			if ($targetType != null) {
 				try {
-					\copyAccountProfile($sourceType, $name, $targetType);
+					\LAM\PDF\copyStructure($sourceType, $name, $targetType);
 				}
 				catch (\LAMException $e) {
 					return new \htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
