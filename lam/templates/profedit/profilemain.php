@@ -337,7 +337,7 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	}
 	$exportOptions['*' . _('Global templates')][_('Global templates')] = 'templates*##';
 
-	$select = new htmlSelect('exportProfiles', $exportOptions, array(), count($exportOptions) < 10 ? count($exportOptions) : 10);
+	$select = new htmlSelect('exportProfiles', $exportOptions, array(), count($exportOptions) < 10 ? count($exportOptions, 1) : 10);
 	$select->setHasDescriptiveElements(true);
 	$select->setContainsOptgroups(true);
 	$select->setMultiSelect(true);
