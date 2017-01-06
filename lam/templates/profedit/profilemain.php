@@ -122,7 +122,7 @@ if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
 		die();
 	}
 	// delete profile
-	if (delAccountProfile($_POST['profileDeleteName'], $_POST['profileDeleteType'])) {
+	if (\LAM\PROFILES\delAccountProfile($_POST['profileDeleteName'], $_POST['profileDeleteType'])) {
 		$message = new htmlStatusMessage('INFO', _('Deleted profile.'), $type->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
 		$message->colspan = 10;
 		$container->addElement($message, true);
@@ -187,7 +187,7 @@ if (!empty($_POST['export'])) {
 
 // get list of profiles for each account type
 for ($i = 0; $i < sizeof($profileClasses); $i++) {
-	$profileList = getAccountProfiles($profileClasses[$i]['typeId']);
+	$profileList = \LAM\PROFILES\getAccountProfiles($profileClasses[$i]['typeId']);
 	natcasesort($profileList);
 	$profileClasses[$i]['profiles'] = $profileList;
 }
@@ -276,7 +276,7 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 		$typesImport = $typeManagerImport->getConfiguredTypesForScope($scope);
 		foreach ($typesImport as $typeImport) {
 			if (($profile != $_SESSION['config']->getName()) || ($typeImport->getId() != $typeId)) {
-				$accountProfiles = getAccountProfiles($typeImport->getId(), $profile);
+				$accountProfiles = \LAM\PROFILES\getAccountProfiles($typeImport->getId(), $profile);
 				if (!empty($accountProfiles)) {
 					for ($p = 0; $p < sizeof($accountProfiles); $p++) {
 						$importOptions[$profile][$typeImport->getAlias() . ': ' . $accountProfiles[$p]] = $profile . '##' . $typeImport->getId() . '##' . $accountProfiles[$p];
@@ -396,7 +396,7 @@ function importProfiles($typeId, $options, &$serverProfiles, &$typeManager) {
 		$targetType = $typeManager->getConfiguredType($typeId);
 		if (($sourceType != null) && ($targetType != null)) {
 			try {
-				\copyAccountProfile($sourceType, $sourceName, $targetType);
+				\LAM\PROFILES\copyAccountProfile($sourceType, $sourceName, $targetType);
 			}
 			catch (\LAMException $e) {
 				return new \htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
@@ -425,7 +425,7 @@ function exportProfiles($typeId, $name, $options, &$serverProfiles, &$typeManage
 		$targetConfName = $option['conf'];
 		if ($targetConfName == 'templates*') {
 			try {
-				\copyAccountProfileToTemplates($sourceType, $name);
+				\LAM\PROFILES\copyAccountProfileToTemplates($sourceType, $name);
 			}
 			catch (\LAMException $e) {
 				return new \htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
@@ -437,7 +437,7 @@ function exportProfiles($typeId, $name, $options, &$serverProfiles, &$typeManage
 			$targetType = $targetTypeManager->getConfiguredType($targetTypeId);
 			if ($targetType != null) {
 				try {
-					\copyAccountProfile($sourceType, $name, $targetType);
+					\LAM\PROFILES\copyAccountProfile($sourceType, $name, $targetType);
 				}
 				catch (\LAMException $e) {
 					return new \htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());

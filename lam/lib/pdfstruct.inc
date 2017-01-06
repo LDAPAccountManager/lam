@@ -324,4 +324,39 @@ function isValidPDFStructureName($name) {
 	return preg_match('/[a-zA-Z0-9\-\_]+/',$name) === 1;
 }
 
+/**
+ * Installs template structures to the current server profile.
+ */
+function installPDFTemplates() {
+	$templatePath = dirname(__FILE__) . '/../config/templates/pdf';
+	$templateDir = @dir($templatePath);
+	$allTemplates = array();
+	if ($templateDir) {
+		$entry = $templateDir->read();
+		while ($entry){
+			$parts = explode('.', $entry);
+			if ((strlen($entry) > 3) && (sizeof($parts) == 3)) {
+				$name = $parts[0];
+				$scope = $parts[1];
+				$allTemplates[$scope][] = $name;
+			}
+			$entry = $templateDir->read();
+		}
+	}
+	$basePath = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/';
+	$typeManager = new \LAM\TYPES\TypeManager();
+	foreach ($typeManager->getConfiguredTypes() as $type) {
+		if (empty($allTemplates[$type->getScope()])) {
+			continue;
+		}
+		foreach ($allTemplates[$type->getScope()] as $templateName) {
+			$path = $basePath . $templateName . '.' . $type->getId() . '.xml';
+			if (!is_file($path)) {
+				$template = $templatePath . '/' . $templateName . '.' . $scope . '.xml';
+				@copy($template, $path);
+			}
+		}
+	}
+}
+
 ?>

@@ -1269,7 +1269,7 @@ class accountContainer {
 		$rightGroup = new htmlGroup();
 		$rightGroup->alignment = htmlElement::ALIGN_RIGHT;
 		// profile selection
-		$profilelist = getAccountProfiles($this->type->getId());
+		$profilelist = \LAM\PROFILES\getAccountProfiles($this->type->getId());
 		if (sizeof($profilelist) > 0) {
 			$rightGroup->addElement(new htmlSelect('accountContainerSelectLoadProfile', $profilelist, array($this->lastLoadedProfile)));
 			$profileButton = new htmlButton('accountContainerLoadProfile', _('Load profile'));
@@ -1412,7 +1412,7 @@ class accountContainer {
 	 */
 	private function loadProfileIfRequested() {
 		if (isset($_POST['accountContainerLoadProfile']) && isset($_POST['accountContainerSelectLoadProfile'])) {
-			$profile = loadAccountProfile($_POST['accountContainerSelectLoadProfile'], $this->type->getId());
+			$profile = \LAM\PROFILES\loadAccountProfile($_POST['accountContainerSelectLoadProfile'], $this->type->getId());
 			$this->lastLoadedProfile = $_POST['accountContainerSelectLoadProfile'];
 			// pass profile to each module
 			$modules = array_keys($this->module);
@@ -1707,7 +1707,7 @@ class accountContainer {
 		}
 		// sort module buttons
 		$this->sortModules();
-		$profile = loadAccountProfile('default', $this->type->getId());
+		$profile = \LAM\PROFILES\loadAccountProfile('default', $this->type->getId());
 		// pass profile to each module
 		$modules = array_keys($this->module);
 		foreach ($modules as $module) $this->module[$module]->load_profile($profile);

@@ -135,7 +135,7 @@ if (isset($_POST['save'])) {
 	$errors = checkProfileOptions($_POST['accounttype'], $options);
 	if (sizeof($errors) == 0) {  // input data is valid, save profile
 		// save profile
-		if (saveAccountProfile($options, $_POST['profname'], $_POST['accounttype'])) {
+		if (\LAM\PROFILES\saveAccountProfile($options, $_POST['profname'], $_POST['accounttype'])) {
 			metaRefresh('profilemain.php?savedSuccessfully=' . $_POST['profname']);
 			exit();
 		}
@@ -181,7 +181,7 @@ if (isset($_POST['save'])) {
 	}
 }
 elseif (isset($_GET['edit'])) {
-	$old_options = loadAccountProfile($_GET['edit'], $type->getId());
+	$old_options = \LAM\PROFILES\loadAccountProfile($_GET['edit'], $type->getId());
 }
 
 // display formular
