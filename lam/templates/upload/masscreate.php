@@ -267,7 +267,7 @@ function showMainPage($scope, $selectedModules) {
 	$pdfCheckbox = new htmlTableExtendedInputCheckbox('createPDF', $createPDF, _('Create PDF files'));
 	$pdfCheckbox->setTableRowsToShow(array('pdfStructure'));
 	$inputContainer->addElement($pdfCheckbox, true);
-	$pdfStructures = getPDFStructureDefinitions($scope);
+	$pdfStructures = \LAM\PDF\getPDFStructures($scope);
 	$pdfSelected = array();
 	if (isset($_POST['pdfStructure'])) {
 		$pdfSelected = array($_POST['pdfStructure']);

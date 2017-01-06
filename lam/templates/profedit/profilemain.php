@@ -14,7 +14,6 @@ use \htmlOutputText;
 use \htmlHelpLink;
 use \htmlHiddenInput;
 use \htmlInputField;
-use \htmlDiv;
 /*
 $Id$
 
@@ -123,7 +122,7 @@ if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
 		die();
 	}
 	// delete profile
-	if (delAccountProfile($_POST['profileDeleteName'], $_POST['profileDeleteType'])) {
+	if (\LAM\PROFILES\delAccountProfile($_POST['profileDeleteName'], $_POST['profileDeleteType'])) {
 		$message = new htmlStatusMessage('INFO', _('Deleted profile.'), $type->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
 		$message->colspan = 10;
 		$container->addElement($message, true);
@@ -145,9 +144,9 @@ foreach ($configProfiles as $profileName) {
 if (!empty($_POST['import'])) {
 	$cfg = new LAMCfgMain();
 	// check master password
-	$impMessage = null;
+	$errMessage = null;
 	if (!$cfg->checkPassword($_POST['passwd_i_' . $_POST['typeId']])) {
-		$impMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
+		$errMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
 	}
 	elseif (!empty($_POST['importProfiles'])) {
 		$options = array();
@@ -155,20 +154,20 @@ if (!empty($_POST['import'])) {
 			$parts = explode('##', $importProfiles);
 			$options[] = array('conf' => $parts[0], 'typeId' => $parts[1], 'name' => $parts[2]);
 		}
-		$impMessage = importProfiles($_POST['typeId'], $options, $serverProfiles, $typeManager);
+		$errMessage = importProfiles($_POST['typeId'], $options, $serverProfiles, $typeManager);
 	}
-	if ($impMessage != null) {
-		$impMessage->colspan = 10;
-		$container->addElement($impMessage, true);
+	if ($errMessage != null) {
+		$errMessage->colspan = 10;
+		$container->addElement($errMessage, true);
 	}
 }
 // export profiles
 if (!empty($_POST['export'])) {
 	$cfg = new LAMCfgMain();
 	// check master password
-	$impMessage = null;
+	$errMessage = null;
 	if (!$cfg->checkPassword($_POST['passwd_e_' . $_POST['typeId']])) {
-		$impMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
+		$errMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
 	}
 	elseif (!empty($_POST['exportProfiles'])) {
 		$options = array();
@@ -178,17 +177,17 @@ if (!empty($_POST['export'])) {
 		}
 		$typeId = $_POST['typeId'];
 		$name = $_POST['name_' . $typeId];
-		$impMessage = exportProfiles($typeId, $name, $options, $serverProfiles, $typeManager);
+		$errMessage = exportProfiles($typeId, $name, $options, $serverProfiles, $typeManager);
 	}
-	if ($impMessage != null) {
-		$impMessage->colspan = 10;
-		$container->addElement($impMessage, true);
+	if ($errMessage != null) {
+		$errMessage->colspan = 10;
+		$container->addElement($errMessage, true);
 	}
 }
 
 // get list of profiles for each account type
 for ($i = 0; $i < sizeof($profileClasses); $i++) {
-	$profileList = getAccountProfiles($profileClasses[$i]['typeId']);
+	$profileList = \LAM\PROFILES\getAccountProfiles($profileClasses[$i]['typeId']);
 	natcasesort($profileList);
 	$profileClasses[$i]['profiles'] = $profileList;
 }
@@ -277,7 +276,7 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 		$typesImport = $typeManagerImport->getConfiguredTypesForScope($scope);
 		foreach ($typesImport as $typeImport) {
 			if (($profile != $_SESSION['config']->getName()) || ($typeImport->getId() != $typeId)) {
-				$accountProfiles = getAccountProfiles($typeImport->getId(), $profile);
+				$accountProfiles = \LAM\PROFILES\getAccountProfiles($typeImport->getId(), $profile);
 				if (!empty($accountProfiles)) {
 					for ($p = 0; $p < sizeof($accountProfiles); $p++) {
 						$importOptions[$profile][$typeImport->getAlias() . ': ' . $accountProfiles[$p]] = $profile . '##' . $typeImport->getId() . '##' . $accountProfiles[$p];
@@ -338,7 +337,7 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 	}
 	$exportOptions['*' . _('Global templates')][_('Global templates')] = 'templates*##';
 
-	$select = new htmlSelect('exportProfiles', $exportOptions, array(), count($exportOptions) < 10 ? count($exportOptions) : 10);
+	$select = new htmlSelect('exportProfiles', $exportOptions, array(), count($exportOptions) < 10 ? count($exportOptions, 1) : 10);
 	$select->setHasDescriptiveElements(true);
 	$select->setContainsOptgroups(true);
 	$select->setMultiSelect(true);
@@ -397,7 +396,7 @@ function importProfiles($typeId, $options, &$serverProfiles, &$typeManager) {
 		$targetType = $typeManager->getConfiguredType($typeId);
 		if (($sourceType != null) && ($targetType != null)) {
 			try {
-				\copyAccountProfile($sourceType, $sourceName, $targetType);
+				\LAM\PROFILES\copyAccountProfile($sourceType, $sourceName, $targetType);
 			}
 			catch (\LAMException $e) {
 				return new \htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
@@ -426,7 +425,7 @@ function exportProfiles($typeId, $name, $options, &$serverProfiles, &$typeManage
 		$targetConfName = $option['conf'];
 		if ($targetConfName == 'templates*') {
 			try {
-				\copyAccountProfileToTemplates($sourceType, $name);
+				\LAM\PROFILES\copyAccountProfileToTemplates($sourceType, $name);
 			}
 			catch (\LAMException $e) {
 				return new \htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
@@ -438,7 +437,7 @@ function exportProfiles($typeId, $name, $options, &$serverProfiles, &$typeManage
 			$targetType = $targetTypeManager->getConfiguredType($targetTypeId);
 			if ($targetType != null) {
 				try {
-					\copyAccountProfile($sourceType, $name, $targetType);
+					\LAM\PROFILES\copyAccountProfile($sourceType, $name, $targetType);
 				}
 				catch (\LAMException $e) {
 					return new \htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());

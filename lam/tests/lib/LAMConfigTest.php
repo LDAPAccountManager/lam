@@ -252,6 +252,12 @@ class LAMConfigTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($val, $this->lAMConfig->get_scriptPath());
 		$this->doSave();
 		$this->assertEquals($val, $this->lAMConfig->get_scriptPath());
+		// empty script
+		$val = '';
+		$this->lAMConfig->set_scriptPath($val);
+		$this->assertEquals($val, $this->lAMConfig->get_scriptPath());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->get_scriptPath());
 	}
 
 	/**

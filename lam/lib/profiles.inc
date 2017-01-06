@@ -1,4 +1,6 @@
 <?php
+namespace LAM\PROFILES;
+use \LAMException;
 /*
 $Id$
 
@@ -227,6 +229,41 @@ function copyAccountProfileToTemplates($sourceType, $sourceProfileName) {
 	$dst = $templatePath . $sourceProfileName . '.' . $sourceType->getScope();
 	if (!@copy($src, $dst)) {
 		throw new LAMException(_('Failed to copy'), $sourceConfig . ': ' . $sourceProfileName);
+	}
+}
+
+/**
+ * Installs template profiles to the current server profile.
+ */
+function installProfileTemplates() {
+	$templatePath = dirname(__FILE__) . '/../config/templates/profiles';
+	$templateDir = @dir($templatePath);
+	$allTemplates = array();
+	if ($templateDir) {
+		$entry = $templateDir->read();
+		while ($entry){
+			$parts = explode('.', $entry);
+			if ((strlen($entry) > 3) && (sizeof($parts) == 2)) {
+				$name = $parts[0];
+				$scope = $parts[1];
+				$allTemplates[$scope][] = $name;
+			}
+			$entry = $templateDir->read();
+		}
+	}
+	$basePath = dirname(__FILE__) . '/../config/profiles/' . $_SESSION['config']->getName() . '/';
+	$typeManager = new \LAM\TYPES\TypeManager();
+	foreach ($typeManager->getConfiguredTypes() as $type) {
+		if (empty($allTemplates[$type->getScope()])) {
+			continue;
+		}
+		foreach ($allTemplates[$type->getScope()] as $templateName) {
+			$path = $basePath . $templateName . '.' . $type->getId();
+			if (!is_file($path)) {
+				$template = $templatePath . '/' . $templateName . '.' . $scope;
+				@copy($template, $path);
+			}
+		}
 	}
 }
 

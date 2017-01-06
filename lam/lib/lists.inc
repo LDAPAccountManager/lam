@@ -690,7 +690,7 @@ class lamList {
 			$selAccounts[] = $id;
 		}
 		// get possible PDF structures
-		$pdf_structures = getPDFStructureDefinitions($this->type->getId());
+		$pdf_structures = \LAM\PDF\getPDFStructures($this->type->getId());
 
 		$this->listPrintHeader();
 

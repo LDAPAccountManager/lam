@@ -1,4 +1,5 @@
 <?php
+namespace LAM\INIT;
 /*
 $Id$
 
@@ -29,18 +30,23 @@ $Id$
 */
 
 /** config object */
-include_once('../lib/config.inc');
+include_once '../lib/config.inc';
+/** profiles */
+include_once '../lib/profiles.inc';
 
 // start session
 startSecureSession();
 
 setlanguage();
 
+\LAM\PROFILES\installProfileTemplates();
+\LAM\PDF\installPDFTemplates();
+
 // check if all suffixes in conf-file exist
 $conf = $_SESSION['config'];
 $new_suffs = array();
 // get list of active types
-$typeManager = new LAM\TYPES\TypeManager();
+$typeManager = new \LAM\TYPES\TypeManager();
 $types = $typeManager->getConfiguredTypes();
 foreach ($types as $type) {
 	$info = @ldap_read($_SESSION['ldap']->server(), escapeDN($type->getSuffix()), "(objectClass=*)", array('objectClass'), 0, 0, 0, LDAP_DEREF_NEVER);
@@ -68,4 +74,5 @@ else {
 		metaRefresh("tree/treeViewContainer.php");
 	}
 }
+
 ?>
