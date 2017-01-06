@@ -160,15 +160,15 @@ class ConfiguredType {
 
 	private $id;
 
-	private $suffix;
+	private $suffix = null;
 
-	private $attributes;
+	private $attributes = null;
 
-	private $alias;
+	private $alias = null;
 
-	private $additionalLdapFilter;
+	private $additionalLdapFilter = null;
 
-	private $hidden;
+	private $hidden = null;
 
 	private $baseType;
 
@@ -180,22 +180,11 @@ class ConfiguredType {
 	 * @param TypeManager $typeManager type manager
 	 * @param string $scope account type
 	 * @param string $id unique ID for this configuration
-	 * @param string $suffix LDAP base suffix
-	 * @param array $attributes list of ListAttribute
-	 * @param string $alias alias name for display
-	 * @param string $ldapFilter additional LDAP filter
-	 * @param boolean $hidden hidden in GUI
 	 */
-	public function __construct(&$typeManager, $scope, $id, $suffix, $attributes, $alias,
-			$ldapFilter, $hidden) {
+	public function __construct(&$typeManager, $scope, $id) {
 		$this->typeManager = &$typeManager;
 		$this->scope = $scope;
 		$this->id = $id;
-		$this->suffix = $suffix;
-		$this->attributes = $attributes;
-		$this->alias = $alias;
-		$this->additionalLdapFilter = $ldapFilter;
-		$this->hidden = $hidden;
 	}
 
 	/**
@@ -231,6 +220,10 @@ class ConfiguredType {
 	 * @return string LDAP suffix
 	 */
 	public function getSuffix() {
+		if ($this->suffix !== null) {
+			return $this->suffix;
+		}
+		$this->suffix = $this->typeManager->getConfig()->get_Suffix($this->id);
 		return $this->suffix;
 	}
 
@@ -240,6 +233,16 @@ class ConfiguredType {
 	 * @return ListAttribute[] list of ListAttribute
 	 */
 	public function getAttributes() {
+		if ($this->attributes !== null) {
+			return $this->attributes;
+		}
+		$attributeString = $this->typeManager->getConfig()->get_listAttributes($this->id);
+		$attributeSpecs = explode(';', $attributeString);
+		$attributes = array();
+		foreach ($attributeSpecs as $attributeSpec) {
+			$attributes[] = new ListAttribute($attributeSpec, $this->scope);
+		}
+		$this->attributes = $attributes;
 		return $this->attributes;
 	}
 
@@ -249,6 +252,10 @@ class ConfiguredType {
 	 * @return string alias name
 	 */
 	public function getAlias() {
+		if ($this->alias !== null) {
+			return $this->alias;
+		}
+		$this->alias = getTypeAlias($this->id, $this->typeManager->getConfig());
 		return $this->alias;
 	}
 
@@ -258,6 +265,10 @@ class ConfiguredType {
 	 * @return string LDAP filter
 	 */
 	public function getAdditionalLdapFilter() {
+		if ($this->additionalLdapFilter !== null) {
+			return $this->additionalLdapFilter;
+		}
+		$this->additionalLdapFilter = $this->typeManager->getConfig()->get_Suffix($typeId);
 		return $this->additionalLdapFilter;
 	}
 
@@ -267,6 +278,10 @@ class ConfiguredType {
 	 * @return boolean hidden
 	 */
 	public function isHidden() {
+		if ($this->hidden !== null) {
+			return $this->hidden;
+		}
+		$this->hidden = isAccountTypeHidden($this->id);
 		return $this->hidden;
 	}
 
@@ -293,7 +308,7 @@ class ConfiguredType {
 		$connection = $_SESSION["ldap"]->server();
 		$ret = array();
 		$filter = $this->getBaseType()->getSuffixFilter();
-		$sr = @ldap_search($connection, escapeDN($this->suffix), $filter, array('dn', 'objectClass'), 0, 0, 0, LDAP_DEREF_NEVER);
+		$sr = @ldap_search($connection, escapeDN($this->getSuffix()), $filter, array('dn', 'objectClass'), 0, 0, 0, LDAP_DEREF_NEVER);
 		if ($sr) {
 			$units = ldap_get_entries($connection, $sr);
 			cleanLDAPResult($units);
@@ -312,13 +327,13 @@ class ConfiguredType {
 		// add root suffix if needed
 		$found = false;
 		for ($i = 0; $i < sizeof($ret); $i++) { // search suffix case-intensitive
-			if (strtolower($this->suffix) == strtolower($ret[$i])) {
+			if (strtolower($this->getSuffix()) == strtolower($ret[$i])) {
 				$found = true;
 				break;
 			}
 		}
 		if (!$found) {
-			$ret[] = $this->suffix;
+			$ret[] = $this->getSuffix();
 		}
 		usort($ret, 'compareDN');
 		return $ret;
@@ -466,29 +481,7 @@ class TypeManager {
 	 */
 	private function buildConfiguredType($typeId) {
 		$scope = getScopeFromTypeId($typeId);
-		$suffix = $this->config->get_Suffix($typeId);
-		$attributes = $this->getAttributes($typeId, $scope);
-		$alias = getTypeAlias($typeId, $this->config);
-		$ldapFilter = $this->config->get_Suffix($typeId);
-		$hidden = isAccountTypeHidden($typeId);
-		return new ConfiguredType($this, $scope, $typeId, $suffix, $attributes, $alias, $ldapFilter, $hidden);
-	}
-
-	/**
-	 * Builds the list of account list attributes.
-	 *
-	 * @param string $typeId type id
-	 * @param string $scope account type
-	 * @return \LAM\TYPES\ListAttribute[] list attributes
-	 */
-	private function getAttributes($typeId, $scope) {
-		$attributeString = $this->config->get_listAttributes($typeId);
-		$attributeSpecs = explode(';', $attributeString);
-		$attributes = array();
-		foreach ($attributeSpecs as $attributeSpec) {
-			$attributes[] = new ListAttribute($attributeSpec, $scope);
-		}
-		return $attributes;
+		return new ConfiguredType($this, $scope, $typeId);
 	}
 
 	/**
