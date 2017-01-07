@@ -8,7 +8,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2011 - 2016  Roland Gruber
+                2011 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -40,19 +40,20 @@ include_once("ldap.inc");
 
 /**
  * This function will return all available PDF structure definitions for the submitted
- * account scope.
+ * account type.
  *
- * @param string $scope The account scope the PDF structure definitions should be
- * returned.
+ * @param string $typeId the account type
  * @param string $profile server profile name
  *
- * @return array $scope All available PDF structure definitions for the submitted account
+ * @return array All available PDF structure definitions for the submitted account
  * scope. Each entry is a string being the filename that may be passed to the
  * createModulePDF() function as second argument.
  */
-function getPDFStructures($scope = "user", $profile = null) {
+function getPDFStructures($typeId, $profile = null) {
 	$return = array();
-
+	if (!preg_match('/[a-zA-Z]+/', $typeId)) {
+		return null;
+	}
 	if (!isset($profile)) {
 		$profile = $_SESSION['config']->getName();
 	}
@@ -61,7 +62,7 @@ function getPDFStructures($scope = "user", $profile = null) {
 		$dirHandle = opendir($path);
 		while($file = readdir($dirHandle)) {
 			$struct_file = explode('.',$file);
-			if(!is_dir($path.$file) && ($file != '.') && ($file != '..') && (sizeof($struct_file) == 3) && ($struct_file[1] == $scope) && ($struct_file[2] == 'xml')) {
+			if(!is_dir($path.$file) && ($file != '.') && ($file != '..') && (sizeof($struct_file) == 3) && ($struct_file[1] == $typeId) && ($struct_file[2] == 'xml')) {
 				array_push($return, $struct_file[0]);
 			}
 		}
@@ -292,14 +293,15 @@ function deletePDFLogo($name) {
 		return new htmlStatusMessage('ERROR', _('File does not exist.'), htmlspecialchars($name));
 	}
 	// check if still in use
-	$activeTypes = $_SESSION['config']->get_ActiveTypes();
+	$typeManager = new \LAM\TYPES\TypeManager();
+	$activeTypes = $typeManager->getConfiguredTypes();
 	foreach ($activeTypes as $type) {
-		$structures = getPDFStructures($type);
+		$structures = getPDFStructures($type->getId());
 		foreach ($structures as $structure) {
-			$data = loadPDFStructure($type, $structure);
+			$data = loadPDFStructure($type->getId(), $structure);
 			if ($data['page_definitions']['filename'] == $name) {
 				return new htmlStatusMessage('ERROR', _('Unable to delete logo file.'),
-					sprintf(_('Logo is still in use by PDF structure "%s" in account type "%s".'), $structure, \LAM\TYPES\getTypeAlias($type)));
+					sprintf(_('Logo is still in use by PDF structure "%s" in account type "%s".'), $structure, $type->getAlias()));
 			}
 		}
 	}
