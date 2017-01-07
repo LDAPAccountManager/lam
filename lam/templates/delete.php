@@ -1,10 +1,11 @@
 <?php
+namespace LAM\DELETE;
 /*
 	$Id$
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-	Copyright (C) 2007 - 2016  Roland Gruber
+	Copyright (C) 2007 - 2017  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -66,18 +67,22 @@ if (!empty($_POST)) {
 	validateSecurityToken();
 }
 
-if (isset($_POST['type']) && !preg_match('/^[a-z0-9_]+$/i', $_POST['type'])) {
+$typeManager = new \LAM\TYPES\TypeManager();
+
+if (isset($_POST['type']) && ($typeManager->getConfiguredType($_POST['type']) == null)) {
 	logNewMessage(LOG_ERR, 'Invalid type: ' . $_POST['type']);
 	die();
 }
 
 if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
-	if (!preg_match('/^[a-z0-9_]+$/i', $_GET['type'])) {
-		logNewMessage(LOG_ERR, 'Invalid type: ' . $_GET['type']);
+	$typeId = $_GET['type'];
+	$type = $typeManager->getConfiguredType($typeId);
+	if ($type == null) {
+		logNewMessage(LOG_ERR, 'Invalid type: ' . $type->getId());
 		die();
 	}
-	if (!checkIfDeleteEntriesIsAllowed($_GET['type']) || !checkIfWriteAccessIsAllowed($_GET['type'])) {
-		logNewMessage(LOG_ERR, 'User tried to delete entries of forbidden type '. $_GET['type']);
+	if (!checkIfDeleteEntriesIsAllowed($type->getId()) || !checkIfWriteAccessIsAllowed($type->getId())) {
+		logNewMessage(LOG_ERR, 'User tried to delete entries of forbidden type '. $type->getId());
 		die();
 	}
 	// Create account list
@@ -88,15 +93,14 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	}
 
 	//load account
-	$typeManager = new LAM\TYPES\TypeManager();
-	$_SESSION['account'] = new accountContainer($typeManager->getConfiguredType($_GET['type']), 'account');
+	$_SESSION['account'] = new \accountContainer($type, 'account');
 	// Show HTML Page
 	include 'main_header.php';
-	echo "<div class=\"".$_GET['type']."-bright smallPaddingContent\">";
+	echo "<div class=\"" . $type->getScope() . "-bright smallPaddingContent\">";
 	echo "<br>\n";
 	echo "<form action=\"delete.php\" method=\"post\">\n";
 	echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';
-	echo "<input name=\"type\" type=\"hidden\" value=\"" . $_GET['type'] . "\">\n";
+	echo "<input name=\"type\" type=\"hidden\" value=\"" . $type->getId() . "\">\n";
 	echo "<b>" . _("Do you really want to remove the following accounts?") . "</b>";
 	echo "<br><br>\n";
 	echo "<table border=0>\n";
@@ -117,12 +121,12 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	echo "<br>\n";
 	// Print delete rows from modules
 	echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-	$modules = $_SESSION['config']->get_AccountModules($_GET['type']);
+	$modules = $_SESSION['config']->get_AccountModules($type->getId());
 	$values = array();
 	$tabindex = 100;
 	foreach ($modules as $module) {
-		$module = moduleCache::getModule($module, $_GET['type']);
-		parseHtml(get_class($module), $module->display_html_delete(), $values, true, $tabindex, $_GET['type']);
+		$module = \moduleCache::getModule($module, $type->getScope());
+		parseHtml(get_class($module), $module->display_html_delete(), $values, true, $tabindex, $type->getScope());
 	}
 	echo "</table>\n";
 	echo "<br>\n";
@@ -131,7 +135,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	echo "</form>\n";
 	echo "</div>\n";
 	?>
-	<script type="text/javascript" language="javascript">
+	<script type="text/javascript">
 	jQuery(document).ready(function() {
 		jQuery('#submitButton').button();
 		jQuery('#cancelButton').button();
@@ -151,16 +155,18 @@ elseif (isset($_POST['cancelAllOk'])) {
 }
 
 if (isset($_POST['delete'])) {
-	if (!checkIfDeleteEntriesIsAllowed($_POST['type']) || !checkIfWriteAccessIsAllowed($_POST['type'])) {
-		logNewMessage(LOG_ERR, 'User tried to delete entries of forbidden type '. $_POST['type']);
+	$typeId = $_POST['type'];
+	$type = $typeManager->getConfiguredType($typeId);
+	if (!checkIfDeleteEntriesIsAllowed($type->getId()) || !checkIfWriteAccessIsAllowed($type->getId())) {
+		logNewMessage(LOG_ERR, 'User tried to delete entries of forbidden type '. $type->getId());
 		die();
 	}
 	// Show HTML Page
 	include 'main_header.php';
 	echo "<form action=\"delete.php\" method=\"post\">\n";
 	echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';
-	echo "<input name=\"type\" type=\"hidden\" value=\"" . $_POST['type'] . "\">\n";
-	echo "<div class=\"".$_POST['type']."-bright smallPaddingContent\"><br>\n";
+	echo "<input name=\"type\" type=\"hidden\" value=\"" . $type->getId() . "\">\n";
+	echo "<div class=\"" . $type->getScope() . "-bright smallPaddingContent\"><br>\n";
 	echo "<br>\n";
 
 	// Delete dns
@@ -302,7 +308,7 @@ if (isset($_POST['delete'])) {
 	echo "</div>\n";
 	echo "</form>\n";
 	?>
-	<script type="text/javascript" language="javascript">
+	<script type="text/javascript">
 	jQuery(document).ready(function() {
 		jQuery('#backButton').button();
 		<?php
