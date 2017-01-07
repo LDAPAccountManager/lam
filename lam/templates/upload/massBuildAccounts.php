@@ -1,9 +1,17 @@
 <?php
+namespace LAM\UPLOAD;
+use \htmlTable;
+use \htmlSpacer;
+use \htmlStatusMessage;
+use \htmlLink;
+use \htmlTitle;
+use \htmlButton;
+use \htmlHiddenInput;
 /*
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2016  Roland Gruber
+  Copyright (C) 2004 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -89,20 +97,22 @@ if (isset($_GET['showldif'])) {
 }
 
 include '../main_header.php';
-$scope = htmlspecialchars($_POST['scope']);
+$typeId = htmlspecialchars($_POST['typeId']);
+$typeManager = new \LAM\TYPES\TypeManager();
+$type = $typeManager->getConfiguredType($typeId);
 
 // check if account type is ok
-if (isAccountTypeHidden($scope)) {
-	logNewMessage(LOG_ERR, 'User tried to access hidden upload: ' . $scope);
+if ($type->isHidden()) {
+	logNewMessage(LOG_ERR, 'User tried to access hidden upload: ' . $type->getId());
 	die();
 }
-if (!checkIfNewEntriesAreAllowed($scope) || !checkIfWriteAccessIsAllowed($scope)) {
-	logNewMessage(LOG_ERR, 'User tried to access forbidden upload: ' . $scope);
+if (!checkIfNewEntriesAreAllowed($type->getId()) || !checkIfWriteAccessIsAllowed($type->getId())) {
+	logNewMessage(LOG_ERR, 'User tried to access forbidden upload: ' . $type->getId());
 	die();
 }
 
 echo '<form enctype="multipart/form-data" action="masscreate.php" method="post">';
-echo '<div class="' . $scope . '-bright smallPaddingContent">';
+echo '<div class="' . $type->getScope() . '-bright smallPaddingContent">';
 $container = new htmlTable();
 
 $selectedModules = explode(',', $_POST['selectedModules']);
@@ -111,7 +121,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	$data = array();  // input values without first row
 	$ids = array();  // <column name> => <column number for $data>
 	// get input fields from modules
-	$columns = getUploadColumns($scope, $selectedModules);
+	$columns = getUploadColumns($type->getScope(), $selectedModules);
 	// read input file
 	$handle = fopen ($_FILES['inputfile']['tmp_name'], "r");
 	if (($head = fgetcsv($handle, 2000)) !== false ) { // head row
@@ -184,15 +194,15 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 			$container->addElement(new htmlStatusMessage("ERROR", $errors[$i][0], $errors[$i][1]), true);
 		}
 		$container->addElement(new htmlSpacer(null, '10px'), true);
-		massPrintBackButton($scope, $selectedModules, $container);
+		massPrintBackButton($type->getId(), $selectedModules, $container);
 	}
 
 	// let modules build accounts
 	else {
-		$accounts = buildUploadAccounts($scope, $data, $ids, $selectedModules);
+		$accounts = buildUploadAccounts($type->getId(), $data, $ids, $selectedModules);
 		if ($accounts != false) {
-			$rdnList = getRDNAttributes($scope, $selectedModules);
-			$suffix = $_SESSION['config']->get_Suffix($scope);
+			$rdnList = getRDNAttributes($type->getId(), $selectedModules);
+			$suffix = $type->getSuffix();
 			// set DN
 			foreach ($accounts as $i => $account) {
 				// check against list of possible RDN attributes
@@ -220,7 +230,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 				$_SESSION['mass_postActions'] = array();
 				$_SESSION['mass_data'] = lamEncrypt(serialize($data));
 				$_SESSION['mass_ids'] = $ids;
-				$_SESSION['mass_scope'] = $scope;
+				$_SESSION['mass_typeId'] = $type->getId();
 				$_SESSION['mass_selectedModules'] = $selectedModules;
 				if (isset($_SESSION['mass_pdf'])) {
 					unset($_SESSION['mass_pdf']);
@@ -240,25 +250,25 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 				$buttonContainer->addElement(new htmlLink(_("Upload accounts to LDAP"), 'massDoUpload.php', '../../graphics/up.gif', true));
 				$buttonContainer->addElement(new htmlLink(_("Show LDIF file"), 'massBuildAccounts.php?showldif=true', '../../graphics/edit.png', true));
 				$buttonContainer->addElement(new htmlSpacer('10px', null));
-				massPrintBackButton($scope, $selectedModules, $buttonContainer);
+				massPrintBackButton($type->getId(), $selectedModules, $buttonContainer);
 				$container->addElement($buttonContainer, true);
 			}
 		}
 		else {
 			$container->addElement(new htmlSpacer(null, '10px'), true);
-			massPrintBackButton($scope, $selectedModules, $container);
+			massPrintBackButton($type->getId(), $selectedModules, $container);
 		}
 	}
 }
 else {
 	$container->addElement(new htmlStatusMessage('ERROR', _('Please provide a file to upload.')), true);
 	$container->addElement(new htmlSpacer(null, '10px'), true);
-	massPrintBackButton($scope, $selectedModules, $container);
+	massPrintBackButton($type->getId(), $selectedModules, $container);
 }
 
 addSecurityTokenToMetaHTML($container);
 $tabindex = 1;
-parseHtml(null, $container, array(), false, $tabindex, $scope);
+parseHtml(null, $container, array(), false, $tabindex, $type->getScope());
 
 echo '</div>';
 echo '</form>';
@@ -267,15 +277,15 @@ include '../main_footer.php';
 /**
  * Prints a back button to the page where the user enters a file to upload.
  *
- * @param String $scope account type (e.g. user)
+ * @param String $typeId account type (e.g. user)
  * @param array $selectedModules selected modules for upload
  * @param htmlTable $container table container
  */
-function massPrintBackButton($scope, $selectedModules, &$container) {
+function massPrintBackButton($typeId, $selectedModules, &$container) {
 	$backButton = new htmlButton('submit', _('Back'));
 	$backButton->setIconClass('backButton');
 	$container->addElement($backButton);
-	$container->addElement(new htmlHiddenInput('type', $scope));
+	$container->addElement(new htmlHiddenInput('type', $typeId));
 	$createPDF = 0;
 	if (isset($_POST['createPDF']) && ($_POST['createPDF'] == 'on')) {
 		$createPDF = 1;
@@ -283,7 +293,7 @@ function massPrintBackButton($scope, $selectedModules, &$container) {
 	$container->addElement(new htmlHiddenInput('createPDF', $createPDF));
 	$container->addElement(new htmlHiddenInput('pdfStructure', $_POST['pdfStructure']));
 	for ($i = 0; $i < sizeof($selectedModules); $i++) {
-		$container->addElement(new htmlHiddenInput($scope . '_' . $selectedModules[$i], 'on'));
+		$container->addElement(new htmlHiddenInput($typeId . '___' . $selectedModules[$i], 'on'));
 	}
 }
 
