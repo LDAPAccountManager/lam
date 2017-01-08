@@ -6,7 +6,7 @@ use accountContainer;
  $Id$
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2016  Roland Gruber
+ Copyright (C) 2016 - 2017  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ class Uploader {
 
 	private $accounts = null;
 	private $data = null;
-	private $scope = null;
+	private $type = null;
 	private $endTime;
 
 	const TIME_LIMIT = 10;
@@ -61,11 +61,13 @@ class Uploader {
 
 	/**
 	 * Constructor
+	 *
+	 * @param \LAM\TYPES\ConfiguredType $type account type
 	 */
-	public function __construct($scope) {
+	public function __construct($type) {
 		$this->accounts = unserialize(lamDecrypt($_SESSION['mass_accounts']));
 		$this->data = unserialize(lamDecrypt($_SESSION['mass_data']));
-		$this->scope = $scope;
+		$this->type = $type;
 		$startTime = time();
 		$maxTime = get_cfg_var('max_execution_time') - 5;
 		if ($maxTime > Uploader::TIME_LIMIT) $maxTime = Uploader::TIME_LIMIT;
@@ -131,7 +133,7 @@ class Uploader {
 			$preAttributes[$key] = &$attrs[$key];
 		}
 		$preAttributes['dn'] = &$dn;
-		$preMessages = doUploadPreActions($this->scope, $_SESSION['mass_selectedModules'], $preAttributes);
+		$preMessages = doUploadPreActions($this->type->getScope(), $_SESSION['mass_selectedModules'], $preAttributes);
 		$preActionOk = true;
 		for ($i = 0; $i < sizeof($preMessages); $i++) {
 			if (($preMessages[$i][0] == 'ERROR') || ($preMessages[$i][0] == 'WARN')) {
@@ -202,7 +204,7 @@ class Uploader {
 			'pdfFinished' => $pdfFinished,
 			'allDone' => $allDone,
 			'errorHtml' => $errorHtml,
-			'scope' => $this->scope
+			'typeId' => $this->type->getId()
 		);
 		return json_encode($status);
 	}
@@ -211,10 +213,10 @@ class Uploader {
 	 * Checks for security violations and stops processing if needed.
 	 */
 	private function securityCheck() {
-		if (!isLoggedIn() || empty($this->scope)
-				|| isAccountTypeHidden($this->scope)
-				|| !checkIfNewEntriesAreAllowed($this->scope)
-				|| !checkIfWriteAccessIsAllowed($this->scope)) {
+		if (!isLoggedIn() || empty($this->type)
+				|| $this->type->isHidden()
+				|| !checkIfNewEntriesAreAllowed($this->type->getId())
+				|| !checkIfWriteAccessIsAllowed($this->type->getId())) {
 			die;
 		}
 	}
@@ -229,7 +231,7 @@ class Uploader {
 		while (!isset($_SESSION['mass_postActions']['finished']) && ($this->endTime > time())) {
 			$return = $this->runModulePostActions();
 		}
-		$title = _("Additional tasks for module:") . ' ' . getModuleAlias($return['module'], $this->scope);
+		$title = _("Additional tasks for module:") . ' ' . getModuleAlias($return['module'], $this->type->getScope());
 		$progress = round($return['progress'], 2);
 		$finished = isset($_SESSION['mass_postActions']['finished']);
 		return $this->buildUploadStatus(100, true, $title, $progress, $finished);
@@ -241,7 +243,7 @@ class Uploader {
 	 * @return array status array
 	 */
 	private function runModulePostActions() {
-		$return = doUploadPostActions($this->scope, $this->data, $_SESSION['mass_ids'], $_SESSION['mass_failed'], $_SESSION['mass_selectedModules'], $this->accounts);
+		$return = doUploadPostActions($this->type->getScope(), $this->data, $_SESSION['mass_ids'], $_SESSION['mass_failed'], $_SESSION['mass_selectedModules'], $this->accounts);
 		if ($return['status'] == 'finished') {
 			$_SESSION['mass_postActions']['finished'] = true;
 		}
@@ -283,7 +285,8 @@ class Uploader {
 				}
 			}
 			// load account
-			$_SESSION['mass_pdfAccount'] = new accountContainer($this->scope, 'mass_pdfAccount');
+			$typeManager = new \LAM\TYPES\TypeManager();
+			$_SESSION['mass_pdfAccount'] = new accountContainer($this->type, 'mass_pdfAccount');
 			$pdfErrors = $_SESSION['mass_pdfAccount']->load_account($dn, $infoAttributes);
 			if (sizeof($pdfErrors) > 0) {
 				$_SESSION['mass_errors'] = array_merge($_SESSION['mass_errors'], $pdfErrors);

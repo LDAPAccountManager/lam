@@ -1,4 +1,5 @@
 <?php
+namespace LAM\HEADER;
 /*
 $Id$
 
@@ -197,21 +198,27 @@ jQuery(document).ready(function() {
 <div class="ui-tabs ui-widget ui-widget-content ui-corner-all">
 <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
 	<?php
-	$typeManager = new LAM\TYPES\TypeManager();
-	$types = $typeManager->getConfiguredTypes();
-	$linkList = array();
-		foreach ($types as $type) {
-			if ($type->isHidden()) {
-				continue;
-			}
-			$link = '<a href="' . $headerPrefix . 'lists/list.php?type=' . $type->getId() .
-				'" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">' .
-				'<img height="16" width="16" alt="' . $type->getId() . '" src="' . $headerPrefix . '../graphics/' . $type->getScope() . '.png">&nbsp;' .
-				$type->getAlias() . '</a>';
-			echo '<li id="tab_' . $type->getId() . '" class="ui-state-default ui-corner-top">';
-			echo $link;
-			echo "</li>\n";
-		}
+		printTypeTabs($headerPrefix);
 	?>
 </ul>
+
+<?php
+
+function printTypeTabs($headerPrefix) {
+	$typeManager = new \LAM\TYPES\TypeManager();
+	$types = $typeManager->getConfiguredTypes();
+	$linkList = array();
+	foreach ($types as $type) {
+		if ($type->isHidden()) {
+			continue;
+		}
+		$link = '<a href="' . $headerPrefix . 'lists/list.php?type=' . $type->getId() .
+		'" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">' .
+		'<img height="16" width="16" alt="' . $type->getId() . '" src="' . $headerPrefix . '../graphics/' . $type->getScope() . '.png">&nbsp;' .
+		$type->getAlias() . '</a>';
+		echo '<li id="tab_' . $type->getId() . '" class="ui-state-default ui-corner-top">';
+		echo $link;
+		echo "</li>\n";
+	}
+}
 

@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2016  Roland Gruber
+                2005 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -37,8 +37,6 @@ $Id$
 */
 class inetOrgPerson extends baseModule implements passwordService {
 
-	/** caches the list of possible managers */
-	private $cachedManagers = null;
 	/** clear text password */
 	private $clearTextPassword = null;
 	/** cache for departments */
@@ -2809,7 +2807,13 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			else {
 				$userObj = new user();
-				$ouList = $userObj->getSuffixList();
+				$filter = $userObj->getSuffixFilter();
+				$suffix = $_SESSION['selfServiceProfile']->LDAPSuffix;
+				$foundOus = searchLDAPPaged($_SESSION['ldapHandle'], $suffix, $filter, array('dn'), false, 0);
+				$ouList = array();
+				foreach ($foundOus as $foundOu) {
+					$ouList[] = $foundOu['dn'];
+				}
 				if (!empty($attributes['ou'][0]) && !in_array($attributes['ou'][0], $ouList)) {
 					$ouList[] = $attributes['ou'][0];
 					usort($ouList, 'compareDN');
@@ -3487,28 +3491,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$this->attributes['userPassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 		}
 		return array();
-	}
-
-	/**
-	 * Returns a list of possible managers.
-	 *
-	 * @return array list of format array(abstract DN => DN)
-	 */
-	private function getManagers() {
-		if ($this->cachedManagers != null) {
-			return $this->cachedManagers;
-		}
-		$dnUsers = searchLDAPByAttribute(null, null, 'inetOrgPerson', array('dn'), array('user'));
-		for ($i = 0; $i < sizeof($dnUsers); $i++) {
-			$dnUsers[$i] = $dnUsers[$i]['dn'];
-		}
-		usort($dnUsers, 'compareDN');
-		array_unshift($dnUsers, '-');
-		$this->cachedManagers = array();
-		for ($i = 0; $i < sizeof($dnUsers); $i++) {
-			$this->cachedManagers[getAbstractDN($dnUsers[$i])] = $dnUsers[$i];
-		}
-		return $this->cachedManagers;
 	}
 
 	/**

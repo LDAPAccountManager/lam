@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2009 - 2016  Roland Gruber
+                2009 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -672,13 +672,14 @@ function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes
 	elseif (sizeof($filterParts) > 1) {
 		$filter = '(& ' . implode(' ', $filterParts) . ')';
 	}
-	$activeTypes = $_SESSION['config']->get_ActiveTypes();
-	for ($s = 0; $s < sizeof($scopes); $s++) {
-		if (!in_array($scopes[$s], $activeTypes)) {
+	$typeManager = new \LAM\TYPES\TypeManager();
+	$activeTypes = $typeManager->getConfiguredTypes();
+	foreach ($activeTypes as $type) {
+		if (!in_array($type->getScope(), $scopes)) {
 			continue;  // skip non-active account types
 		}
 		// search LDAP
-		$entries = searchLDAPPaged($_SESSION['ldap']->server(), escapeDN($_SESSION['config']->get_Suffix($scopes[$s])),
+		$entries = searchLDAPPaged($_SESSION['ldap']->server(), escapeDN($type->getSuffix()),
 					$filter, $attributes, 0, $_SESSION['config']->get_searchLimit());
 		if (ldap_errno($_SESSION['ldap']->server()) == 4) {
 			logNewMessage(LOG_WARNING, 'LDAP size limit exeeded. Please increase the limit on your server.');
@@ -703,9 +704,14 @@ function searchLDAPByFilter($filter, $attributes, $scopes, $attrsOnly = false) {
 	if ($attrsOnly) {
 		$readAttributesOnly = 1;
 	}
-	for ($s = 0; $s < sizeof($scopes); $s++) {
+	$typeManager = new \LAM\TYPES\TypeManager();
+	$types = $typeManager->getConfiguredTypes();
+	foreach ($types as $type) {
+		if (!in_array($type->getScope(), $scopes)) {
+			continue;
+		}
 		// search LDAP
-		$entries = searchLDAPPaged($_SESSION['ldap']->server(), escapeDN($_SESSION['config']->get_Suffix($scopes[$s])),
+		$entries = searchLDAPPaged($_SESSION['ldap']->server(), escapeDN($type->getSuffix()),
 					$filter, $attributes, $readAttributesOnly, $_SESSION['config']->get_searchLimit());
 		if (ldap_errno($_SESSION['ldap']->server()) == 4) {
 			logNewMessage(LOG_WARNING, 'LDAP size limit exeeded. Please increase the limit on your server.');
@@ -1459,6 +1465,33 @@ function validateReCAPTCHA($secretKey) {
 	}
 	$responseJSON = json_decode($result);
 	return $responseJSON->{'success'} === true;
+}
+
+class LAMException extends Exception {
+
+	private $title;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param string $title title
+	 * @param string $message message (optional)
+	 * @param Exception $cause (optional)
+	 */
+	public function __construct($title, $message = null, $cause = null) {
+		parent::__construct($message, null, $cause);
+		$this->title = $title;
+	}
+
+	/**
+	 * Returns the message title.
+	 *
+	 * @return string title
+	 */
+	public function getTitle() {
+		return $this->title;
+	}
+
 }
 
 ?>

@@ -21,7 +21,7 @@
 
  */
 
-include_once (dirname ( __FILE__ ) . '/../utils/configuration.inc');
+include_once 'lam/tests/utils/configuration.inc';
 
 /**
  * LAMConfig test case.
@@ -248,6 +248,12 @@ class LAMConfigTest extends PHPUnit_Framework_TestCase {
 	public function testscriptPath() {
 		$this->assertFalse($this->lAMConfig->set_scriptPath('script'));
 		$val = '/some/script';
+		$this->lAMConfig->set_scriptPath($val);
+		$this->assertEquals($val, $this->lAMConfig->get_scriptPath());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->get_scriptPath());
+		// empty script
+		$val = '';
 		$this->lAMConfig->set_scriptPath($val);
 		$this->assertEquals($val, $this->lAMConfig->get_scriptPath());
 		$this->doSave();

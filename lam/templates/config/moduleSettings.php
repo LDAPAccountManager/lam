@@ -1,4 +1,9 @@
 <?php
+namespace LAM\CONFIG;
+use \moduleCache;
+use \htmlSpacer;
+use \htmlTable;
+use \htmlButton;
 /*
 $Id$
 
@@ -94,7 +99,7 @@ if (isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 	}
 }
 
-$allTypes = LAM\TYPES\getTypes();
+$allTypes = \LAM\TYPES\getTypes();
 
 echo $_SESSION['header'];
 
@@ -203,13 +208,16 @@ jQuery(document).ready(function() {
 
 
 // module settings
-$types = $conf->get_ActiveTypes();
+$typeManager = new \LAM\TYPES\TypeManager($conf);
+$types = $typeManager->getConfiguredTypes();
 
 // get list of scopes of modules
 $scopes = array();
-for ($m = 0; $m < sizeof($types); $m++) {
-	$mods = $conf->get_AccountModules($types[$m]);
-	for ($i = 0; $i < sizeof($mods); $i++) $scopes[$mods[$i]][] = $types[$m];
+foreach ($types as $type) {
+	$mods = $conf->get_AccountModules($type->getId());
+	for ($i = 0; $i < sizeof($mods); $i++) {
+		$scopes[$mods[$i]][] = $type->getScope();
+	}
 }
 
 // get module options
@@ -281,7 +289,8 @@ function checkInput() {
 		return array();
 	}
 	$conf = &$_SESSION['conf_config'];
-	$types = $conf->get_ActiveTypes();
+	$typeManager = new \LAM\TYPES\TypeManager($conf);
+	$types = $typeManager->getConfiguredTypes();
 
 	// check module options
 	// create option array to check and save
@@ -289,9 +298,11 @@ function checkInput() {
 
 	// get list of scopes of modules
 	$scopes = array();
-	for ($m = 0; $m < sizeof($types); $m++) {
-		$mods = $conf->get_AccountModules($types[$m]);
-		for ($i = 0; $i < sizeof($mods); $i++) $scopes[$mods[$i]][] = $types[$m];
+	foreach ($types as $type) {
+		$mods = $conf->get_AccountModules($type->getId());
+		for ($i = 0; $i < sizeof($mods); $i++) {
+			$scopes[$mods[$i]][] = $type->getScope();
+		}
 	}
 	// check options
 	$errors = checkConfigOptions($scopes, $options);

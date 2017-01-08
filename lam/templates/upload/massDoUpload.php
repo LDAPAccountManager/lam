@@ -1,9 +1,10 @@
 <?php
+namespace LAM\UPLOAD;
 /*
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2013  Roland Gruber
+  Copyright (C) 2004 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -61,24 +62,26 @@ if (!isLoggedIn()) {
 setlanguage();
 
 include '../main_header.php';
-$scope = htmlspecialchars($_SESSION['mass_scope']);
+$typeId = htmlspecialchars($_SESSION['mass_typeId']);
+$typeManager = new \LAM\TYPES\TypeManager();
+$type = $typeManager->getConfiguredType($typeId);
 
 // check if account type is ok
-if (isAccountTypeHidden($scope)) {
-	logNewMessage(LOG_ERR, 'User tried to access hidden upload: ' . $scope);
+if ($type->isHidden()) {
+	logNewMessage(LOG_ERR, 'User tried to access hidden upload: ' . $type->getId());
 	die();
 }
-if (!checkIfNewEntriesAreAllowed($scope) || !checkIfWriteAccessIsAllowed($scope)) {
-	logNewMessage(LOG_ERR, 'User tried to access forbidden upload: ' . $scope);
+if (!checkIfNewEntriesAreAllowed($type->getId()) || !checkIfWriteAccessIsAllowed($type->getId())) {
+	logNewMessage(LOG_ERR, 'User tried to access forbidden upload: ' . $type->getId());
 	die();
 }
 
-echo '<div id="uploadContent" class="' . $scope . '-bright smallPaddingContent">';
+echo '<div id="uploadContent" class="' . $type->getScope() . '-bright smallPaddingContent">';
 $tokenPrefix = '?' . getSecurityTokenName() . '=' . getSecurityTokenValue();
 ?>
 	<script type="text/javascript">
 		jQuery(document).ready(function(){
-			window.lam.upload.continueUpload('../misc/ajax.php' + '<?php echo $tokenPrefix; ?>' + '&function=upload&scope=' + '<?php echo $scope ?>');
+			window.lam.upload.continueUpload('../misc/ajax.php' + '<?php echo $tokenPrefix; ?>' + '&function=upload&typeId=' + '<?php echo $type->getId() ?>');
 		});
 	</script>
 

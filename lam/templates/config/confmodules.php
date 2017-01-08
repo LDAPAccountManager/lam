@@ -1,4 +1,16 @@
 <?php
+namespace LAM\CONFIG;
+use \htmlTable;
+use \htmlOutputText;
+use \htmlHelpLink;
+use \htmlHiddenInput;
+use \htmlButton;
+use \htmlSpacer;
+use \htmlElement;
+use \htmlImage;
+use \htmlSortableList;
+use \htmlSubTitle;
+use \htmlDiv;
 /*
 $Id$
 
@@ -94,8 +106,6 @@ if (isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 		}
 	}
 }
-
-$types = $conf->get_ActiveTypes();
 
 echo $_SESSION['header'];
 
@@ -209,15 +219,12 @@ jQuery(document).ready(function() {
 <div class="ui-tabs-panel ui-widget-content ui-corner-bottom user-bright">
 <?php
 
-
-$account_list = array();
-for ($i = 0; $i < sizeof($types); $i++) {
-	$account_list[] = array($types[$i], LAM\TYPES\getTypeAlias($types[$i]));
-}
+$typeManager = new \LAM\TYPES\TypeManager($conf);
+$types = $typeManager->getConfiguredTypes();
 
 $container = new htmlTable();
-for ($i = 0; $i < sizeof($account_list); $i++) {
-	config_showAccountModules($account_list[$i][0], $account_list[$i][1], $container);
+foreach ($types as $type) {
+	config_showAccountModules($type, $container);
 }
 
 $legendContainer = new htmlTable();
@@ -260,20 +267,19 @@ echo "</html>\n";
 /**
 * Displays the module selection boxes and checks if dependencies are fulfilled.
 *
-* @param string $scope account type
-* @param string $title title for module selection (e.g. "User modules")
+* @param \LAM\TYPES\ConfiguredType $type account type
 * @param htmlTable $container meta HTML container
 */
-function config_showAccountModules($scope, $title, &$container) {
+function config_showAccountModules($type, &$container) {
 	$conf = &$_SESSION['conf_config'];
 	$typeSettings = $conf->get_typeSettings();
 	// account modules
-	$available = getAvailableModules($scope, true);
-	$selected = !empty($typeSettings['modules_' . $scope]) ? $typeSettings['modules_' . $scope] : '';
+	$available = getAvailableModules($type->getScope(), true);
+	$selected = !empty($typeSettings['modules_' . $type->getId()]) ? $typeSettings['modules_' . $type->getId()] : '';
 	$selected = explode(',', $selected);
 	$sortedAvailable = array();
 	for ($i = 0; $i < sizeof($available); $i++) {
-		$sortedAvailable[$available[$i]] = getModuleAlias($available[$i], $scope);
+		$sortedAvailable[$available[$i]] = getModuleAlias($available[$i], $type->getScope());
 	}
 	natcasesort($sortedAvailable);
 
@@ -281,18 +287,18 @@ function config_showAccountModules($scope, $title, &$container) {
 	$selOptions = array();
 	for ($i = 0; $i < sizeof($selected); $i++) {
 		if (in_array($selected[$i], $available)) {  // selected modules must be available
-			if (is_base_module($selected[$i], $scope)) {  // mark base modules
-				$selOptions[getModuleAlias($selected[$i], $scope) . " (" . $selected[$i] .  ")(*)"] = $selected[$i];
+			if (is_base_module($selected[$i], $type->getScope())) {  // mark base modules
+				$selOptions[getModuleAlias($selected[$i], $type->getScope()) . " (" . $selected[$i] .  ")(*)"] = $selected[$i];
 			}
 			else {
-				$selOptions[getModuleAlias($selected[$i], $scope) . " (" . $selected[$i] .  ")"] = $selected[$i];
+				$selOptions[getModuleAlias($selected[$i], $type->getScope()) . " (" . $selected[$i] .  ")"] = $selected[$i];
 			}
 		}
 	}
 	$availOptions = array();
 	foreach ($sortedAvailable as $key => $value) {
 		if (! in_array($key, $selected)) {  // display non-selected modules
-			if (is_base_module($key, $scope)) {  // mark base modules
+			if (is_base_module($key, $type->getScope())) {  // mark base modules
 				$availOptions[$value . " (" . $key .  ")(*)"] = $key;
 			}
 			else {
@@ -302,7 +308,7 @@ function config_showAccountModules($scope, $title, &$container) {
 	}
 
 	// add account module selection
-	$container->addElement(new htmlSubTitle($title, '../../graphics/' . $scope . '.png'), true);
+	$container->addElement(new htmlSubTitle($type->getAlias(), '../../graphics/' . $type->getScope() . '.png'), true);
 	$container->addElement(new htmlOutputText(_("Selected modules")));
 	$container->addElement(new htmlOutputText(''));
 	$container->addElement(new htmlOutputText(_("Available modules")), true);
@@ -313,17 +319,17 @@ function config_showAccountModules($scope, $title, &$container) {
 		$listElements = array();
 		foreach ($selOptions as $key => $value) {
 			$el = new htmlTable('100%');
-			$mod = new $value($scope);
+			$mod = new $value($type->getScope());
 			$el->addElement(new htmlImage('../../graphics/' . $mod->getIcon(), '16px', '16px'));
 			$el->addElement(new htmlOutputText($key));
-			$delButton = new htmlButton('del_' . $scope . '_' . $value, 'del.png', true);
+			$delButton = new htmlButton('del_' . $type->getId() . '_' . $value, 'del.png', true);
 			$delButton->alignment = htmlElement::ALIGN_RIGHT;
 			$el->addElement($delButton);
 			$listElements[] = $el;
 		}
-		$selSortable = new htmlSortableList($listElements, $scope . '_selected', '350px');
+		$selSortable = new htmlSortableList($listElements, $type->getId() . '_selected', '350px');
 		$selSortable->alignment = htmlElement::ALIGN_TOP;
-		$selSortable->setOnUpdate('updateModulePositions(\'positions_' . $scope . '\', ui.item.data(\'posOrig\'), ui.item.index());');
+		$selSortable->setOnUpdate('updateModulePositions(\'positions_' . $type->getId() . '\', ui.item.data(\'posOrig\'), ui.item.index());');
 		$container->addElement($selSortable);
 	}
 	else {
@@ -335,10 +341,10 @@ function config_showAccountModules($scope, $title, &$container) {
 	if (sizeof($availOptions) > 0) {
 		$availTable = new htmlTable();
 		foreach ($availOptions as $text => $key) {
-			$mod = new $key($scope);
+			$mod = new $key($type->getScope());
 			$availTable->addElement(new htmlImage('../../graphics/' . $mod->getIcon(), '16px', '16px'));
 			$availTable->addElement(new htmlOutputText($text));
-			$addButton = new htmlButton('add_' . $scope . '_' . $key, 'add.png', true);
+			$addButton = new htmlButton('add_' . $type->getId() . '_' . $key, 'add.png', true);
 			$addButton->alignment = htmlElement::ALIGN_RIGHT;
 			$availTable->addElement($addButton, true);
 		}
@@ -351,7 +357,7 @@ function config_showAccountModules($scope, $title, &$container) {
 	for ($i = 0; $i < sizeof($selOptions); $i++) {
 		$positions[] = $i;
 	}
-	$container->addElement(new htmlHiddenInput('positions_' . $scope, implode(',', $positions)), true);
+	$container->addElement(new htmlHiddenInput('positions_' . $type->getId(), implode(',', $positions)), true);
 	// spacer to next account type
 	$container->addElement(new htmlSpacer(null, '30px'), true);
 }
@@ -368,11 +374,13 @@ function checkInput() {
 	$errors = array();
 	$conf = &$_SESSION['conf_config'];
 	$typeSettings = $conf->get_typeSettings();
-	$accountTypes = $conf->get_ActiveTypes();
-	for ($t = 0; $t < sizeof($accountTypes); $t++) {
-		$scope = $accountTypes[$t];
+	$typeManager = new \LAM\TYPES\TypeManager($conf);
+	$accountTypes = $typeManager->getConfiguredTypes();
+	foreach ($accountTypes as $type) {
+		$scope = $type->getScope();
+		$typeId = $type->getId();
 		$available = getAvailableModules($scope, true);
-		$selected_temp = (isset($typeSettings['modules_' . $scope])) ? $typeSettings['modules_' . $scope] : '';
+		$selected_temp = (isset($typeSettings['modules_' . $typeId])) ? $typeSettings['modules_' . $typeId] : '';
 		$selected_temp = explode(',', $selected_temp);
 		$selected = array();
 		// only use available modules as selected
@@ -382,7 +390,7 @@ function checkInput() {
 			}
 		}
 		// reorder based on sortable list
-		$sorting = $_POST['positions_' . $scope];
+		$sorting = $_POST['positions_' . $typeId];
 		if (!empty($sorting)) {
 			$sorting = explode(',', $sorting);
 			$sortTmp = array();
@@ -394,17 +402,17 @@ function checkInput() {
 		// remove modules from selection
 		$new_selected = array();
 		for ($i = 0; $i < sizeof($selected); $i++) {
-			if (!isset($_POST['del_' . $scope . '_' . $selected[$i]])) {
+			if (!isset($_POST['del_' . $typeId . '_' . $selected[$i]])) {
 				$new_selected[] = $selected[$i];
 			}
 		}
 		$selected = $new_selected;
-		$typeSettings['modules_' . $scope] = implode(',', $selected);
+		$typeSettings['modules_' . $typeId] = implode(',', $selected);
 		// add modules to selection
 		foreach ($available as $modName) {
-			if (isset($_POST['add_' . $scope . '_' . $modName])) {
+			if (isset($_POST['add_' . $typeId . '_' . $modName])) {
 				$selected[] = $modName;
-				$typeSettings['modules_' . $scope] = implode(',', $selected);
+				$typeSettings['modules_' . $typeId] = implode(',', $selected);
 				break;
 			}
 		}
@@ -412,7 +420,7 @@ function checkInput() {
 		$depends = check_module_depends($selected, getModulesDependencies($scope));
 		if ($depends != false) {
 			for ($i = 0; $i < sizeof($depends); $i++) {
-				$errors[] = array('ERROR', LAM\TYPES\getTypeAlias($scope), _("Unsolved dependency:") . ' ' .
+				$errors[] = array('ERROR', $type->getAlias(), _("Unsolved dependency:") . ' ' .
 					$depends[$i][0] . " (" . $depends[$i][1] . ")");
 			}
 		}
@@ -420,7 +428,7 @@ function checkInput() {
 		$conflicts = check_module_conflicts($selected, getModulesDependencies($scope));
 		if ($conflicts != false) {
 			for ($i = 0; $i < sizeof($conflicts); $i++) {
-				$errors[] = array('ERROR', LAM\TYPES\getTypeAlias($scope), _("Conflicting module:") . ' ' .
+				$errors[] = array('ERROR', $type->getAlias(), _("Conflicting module:") . ' ' .
 					$conflicts[$i][0] . " (" . $conflicts[$i][1] . ")");
 			}
 		}
@@ -432,7 +440,7 @@ function checkInput() {
 			}
 		}
 		if ($baseCount != 1) {
-			$errors[] = array('ERROR', LAM\TYPES\getTypeAlias($scope), _("No or more than one base module selected!"));
+			$errors[] = array('ERROR', $type->getAlias(), _("No or more than one base module selected!"));
 		}
 	}
 	$conf->set_typeSettings($typeSettings);

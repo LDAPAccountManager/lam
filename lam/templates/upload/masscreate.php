@@ -1,9 +1,28 @@
 <?php
+namespace LAM\UPLOAD;
+use \htmlTable;
+use \htmlTableExtendedSelect;
+use \htmlSpacer;
+use \htmlOutputText;
+use \htmlGroup;
+use \htmlElement;
+use \htmlImage;
+use \htmlTableExtendedInputCheckbox;
+use \htmlDiv;
+use \htmlHiddenInput;
+use \htmlButton;
+use \htmlTitle;
+use \htmlInputFileUpload;
+use \htmlLink;
+use \htmlSubTitle;
+use \htmlHelpLink;
+use \htmlTableRow;
+use \moduleCache;
 /*
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2016  Roland Gruber
+  Copyright (C) 2004 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -74,17 +93,18 @@ if (isset($_GET['getCSV'])) {
 	exit;
 }
 
-LAM\UPLOAD\Uploader::cleanSession();
+Uploader::cleanSession();
 
 include '../main_header.php';
 
 // get possible types and remove those which do not support file upload
-$types = $_SESSION['config']->get_ActiveTypes();
+$typeManager = new \LAM\TYPES\TypeManager();
+$types = $typeManager->getConfiguredTypes();
 $count = sizeof($types);
 for ($i = 0; $i < $count; $i++) {
-	$myType = new $types[$i]();
-	if (!$myType->supportsFileUpload() || isAccountTypeHidden($types[$i])
-			|| !checkIfNewEntriesAreAllowed($types[$i]) || !checkIfWriteAccessIsAllowed($types[$i])) {
+	$myType = $types[$i];
+	if (!$myType->getBaseType()->supportsFileUpload() || $myType->isHidden()
+			|| !checkIfNewEntriesAreAllowed($myType->getId()) || !checkIfWriteAccessIsAllowed($myType->getId())) {
 		unset($types[$i]);
 	}
 }
@@ -93,26 +113,27 @@ $types = array_values($types);
 // check if account specific page should be shown
 if (isset($_POST['type'])) {
 	// get selected type
-	$scope = htmlspecialchars($_POST['type']);
+	$typeId = htmlspecialchars($_POST['type']);
+	$type = $typeManager->getConfiguredType($typeId);
 	// get selected modules
 	$selectedModules = array();
 	$checkedBoxes = array_keys($_POST, 'on');
 	for ($i = 0; $i < sizeof($checkedBoxes); $i++) {
-		if (strpos($checkedBoxes[$i], $scope . '_') === 0) {
-			$selectedModules[] = substr($checkedBoxes[$i], strlen($scope) + 1);
+		if (strpos($checkedBoxes[$i], $typeId . '___') === 0) {
+			$selectedModules[] = substr($checkedBoxes[$i], strlen($typeId) + strlen('___'));
 		}
 	}
-	$deps = getModulesDependencies($scope);
+	$deps = getModulesDependencies($type->getScope());
 	$depErrors = check_module_depends($selectedModules, $deps);
 	if (is_array($depErrors) && (sizeof($depErrors) > 0)) {
 		for ($i = 0; $i < sizeof($depErrors); $i++) {
 			StatusMessage('ERROR', _("Unsolved dependency:") . ' ' .
-							getModuleAlias($depErrors[$i][0], $scope) . " (" .
-							getModuleAlias($depErrors[$i][1], $scope) . ")");
+							getModuleAlias($depErrors[$i][0], $type->getScope()) . " (" .
+							getModuleAlias($depErrors[$i][1], $type->getScope()) . ")");
 		}
 	}
 	else {
-		showMainPage($scope, $selectedModules);
+		showMainPage($type, $selectedModules);
 		exit;
 	}
 }
@@ -120,7 +141,7 @@ if (isset($_POST['type'])) {
 // show start page
 $divClass = 'user';
 if (isset($_REQUEST['type'])) {
-	$divClass = $_REQUEST['type'];
+	$divClass = \LAM\TYPES\getScopeFromTypeId($_REQUEST['type']);
 }
 echo '<div class="' . $divClass . '-bright smallPaddingContent">';
 echo "<div class=\"title\">\n";
@@ -141,15 +162,15 @@ $table = new htmlTable();
 
 // account type
 $typeList = array();
-for ($i = 0; $i < sizeof($types); $i++) {
-	$typeList[LAM\TYPES\getTypeAlias($types[$i])] = $types[$i];
+foreach ($types as $type) {
+	$typeList[$type->getAlias()] = $type->getId();
 }
 $selectedType = array();
 if (isset($_REQUEST['type'])) {
 	$selectedType[] = $_REQUEST['type'];
 }
 elseif (!empty($types)) {
-	$selectedType[] = $types[0];
+	$selectedType[] = $types[0]->getId();
 }
 $typeSelect = new htmlTableExtendedSelect('type', $typeList, $selectedType, _("Account type"));
 $typeSelect->setHasDescriptiveElements(true);
@@ -162,32 +183,32 @@ $moduleLabel = new htmlOutputText(_('Selected modules'));
 $moduleLabel->alignment = htmlElement::ALIGN_TOP;
 $table->addElement($moduleLabel);
 $moduleGroup = new htmlGroup();
-for ($i = 0; $i < sizeof($types); $i++) {
+foreach ($types as $type) {
 	$divClasses = array('typeOptions');
-	if ((!isset($_REQUEST['type']) && ($i != 0)) || (isset($_REQUEST['type']) && ($_REQUEST['type'] != $types[$i]))) {
+	if ((!isset($_REQUEST['type']) && ($i != 0)) || (isset($_REQUEST['type']) && ($_REQUEST['type'] != $type->getId()))) {
 		$divClasses[] = 'hidden';
 	}
 	$innerTable = new htmlTable();
-	$modules = $_SESSION['config']->get_AccountModules($types[$i]);
+	$modules = $_SESSION['config']->get_AccountModules($type->getId());
 	for ($m = 0; $m < sizeof($modules); $m++) {
 		if (($m != 0) && ($m%3 == 0)) {
 			echo $innerTable->addNewLine();
 		}
-		$module = moduleCache::getModule($modules[$m], $types[$i]);
+		$module = moduleCache::getModule($modules[$m], $type->getScope());
 		$iconImage = $module->getIcon();
 		if (!is_null($iconImage) && !(strpos($iconImage, 'http') === 0) && !(strpos($iconImage, '/') === 0)) {
 			$iconImage = '../../graphics/' . $iconImage;
 		}
 		$innerTable->addElement(new htmlImage($iconImage));
 		$enabled = true;
-		if (is_base_module($modules[$m], $types[$i])) {
+		if (is_base_module($modules[$m], $type->getScope())) {
 			$enabled = false;
 		}
 		$checked = true;
-		if (isset($_POST['submit']) && !isset($_POST[$types[$i] . '_' . $modules[$m]])) {
+		if (isset($_POST['submit']) && !isset($_POST[$type->getId() . '___' . $modules[$m]])) {
 			$checked = false;
 		}
-		$checkbox = new htmlTableExtendedInputCheckbox($types[$i] . '_' . $modules[$m], $checked, getModuleAlias($modules[$m], $types[$i]), null, false);
+		$checkbox = new htmlTableExtendedInputCheckbox($type->getId() . '___' . $modules[$m], $checked, getModuleAlias($modules[$m], $type->getScope()), null, false);
 		$checkbox->setIsEnabled($enabled);
 		if ($enabled) {
 			$innerTable->addElement($checkbox);
@@ -196,12 +217,12 @@ for ($i = 0; $i < sizeof($types); $i++) {
 			$boxGroup = new htmlGroup();
 			$boxGroup->addElement($checkbox);
 			// add hidden field to fake disabled checkbox value
-			$boxGroup->addElement(new htmlHiddenInput($types[$i] . '_' . $modules[$m], 'on'));
+			$boxGroup->addElement(new htmlHiddenInput($type->getId() . '___' . $modules[$m], 'on'));
 			$innerTable->addElement($boxGroup);
 		}
 		$innerTable->addElement(new htmlSpacer('10px', null));
 	}
-	$typeDiv = new htmlDiv($types[$i], $innerTable);
+	$typeDiv = new htmlDiv($type->getId(), $innerTable);
 	$typeDiv->setCSSClasses($divClasses);
 	$moduleGroup->addElement($typeDiv);
 }
@@ -231,10 +252,11 @@ include '../main_footer.php';
 /**
 * Displays the acount type specific main page of the upload.
 *
-* @param string $scope account type
+* @param \LAM\TYPES\ConfiguredType $type account type
 * @param array $selectedModules list of selected account modules
 */
-function showMainPage($scope, $selectedModules) {
+function showMainPage($type, $selectedModules) {
+	$scope = $type->getScope();
 	echo '<div class="' . $scope . '-bright smallPaddingContent">';
 	// get input fields from modules
 	$columns = getUploadColumns($scope, $selectedModules);
@@ -257,7 +279,7 @@ function showMainPage($scope, $selectedModules) {
 	$inputContainer->addElement(new htmlInputFileUpload('inputfile'));
 	$inputContainer->addElement(new htmlSpacer('10px', null));
 	$inputContainer->addElement(new htmlLink(_("Download sample CSV file"), 'masscreate.php?getCSV=1', '../../graphics/save.png', true));
-	$inputContainer->addElement(new htmlHiddenInput('scope', $scope));
+	$inputContainer->addElement(new htmlHiddenInput('typeId', $type->getId()));
 	$inputContainer->addElement(new htmlHiddenInput('selectedModules', implode(',', $selectedModules)), true);
 	// PDF
 	$createPDF = false;
@@ -267,7 +289,7 @@ function showMainPage($scope, $selectedModules) {
 	$pdfCheckbox = new htmlTableExtendedInputCheckbox('createPDF', $createPDF, _('Create PDF files'));
 	$pdfCheckbox->setTableRowsToShow(array('pdfStructure'));
 	$inputContainer->addElement($pdfCheckbox, true);
-	$pdfStructures = getPDFStructureDefinitions($scope);
+	$pdfStructures = \LAM\PDF\getPDFStructures($type->getId());
 	$pdfSelected = array();
 	if (isset($_POST['pdfStructure'])) {
 		$pdfSelected = array($_POST['pdfStructure']);
@@ -321,9 +343,9 @@ function showMainPage($scope, $selectedModules) {
 	$dnSuffixRowCells[] = $columnSpacer;
 	$dnSuffixRowCells[] = new htmlOutputText('dn_suffix');
 	$dnSuffixRowCells[] = $columnSpacer;
-	$dnSuffixRowCells[] = new htmlOutputText($_SESSION['config']->get_Suffix($scope));
+	$dnSuffixRowCells[] = new htmlOutputText($type->getSuffix());
 	$dnSuffixRowCells[] = $columnSpacer;
-	$dnSuffixRowCells[] = new htmlOutputText($_SESSION['config']->get_Suffix($scope));
+	$dnSuffixRowCells[] = new htmlOutputText($type->getSuffix());
 	$dnSuffixRowCells[] = $columnSpacer;
 	$dnSuffixRowCells[] = new htmlOutputText('');
 	$dnSuffixRowCells[] = new htmlSpacer(null, '25px');
@@ -340,7 +362,7 @@ function showMainPage($scope, $selectedModules) {
 	$dnRDNRowCells[] = $columnSpacer;
 	$dnRDNRowCells[] = new htmlOutputText('dn_rdn');
 	$dnRDNRowCells[] = $columnSpacer;
-	$rdnAttributes = getRDNAttributes($scope, $selectedModules);
+	$rdnAttributes = getRDNAttributes($type->getId(), $selectedModules);
 	$dnRDNRowCells[] = new htmlOutputText($rdnAttributes[0]);
 	$dnRDNRowCells[] = $columnSpacer;
 	$dnRDNRowCells[] = new htmlOutputText('');
@@ -456,9 +478,9 @@ function showMainPage($scope, $selectedModules) {
 				$sampleCSV_head[] = "\"" . $columns[$modules[$m]][$i]['name'] . "\"";
 			}
 		}
-		$RDNs = getRDNAttributes($scope, $selectedModules);
+		$RDNs = getRDNAttributes($type->getId(), $selectedModules);
 		// DN attributes
-		$sampleCSV_row[] = "\"" . $_SESSION['config']->get_Suffix($scope) . "\"";
+		$sampleCSV_row[] = "\"" . $type->getSuffix() . "\"";
 		$sampleCSV_row[] = "\"" . $RDNs[0] . "\"";
 		// module attributes
 		for ($m = 0; $m < sizeof($modules); $m++) {

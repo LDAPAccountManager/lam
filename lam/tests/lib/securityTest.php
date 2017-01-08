@@ -23,8 +23,8 @@ $Id$
 
 $_SERVER ['REMOTE_ADDR'] = '127.0.0.1';
 
-include_once (dirname ( __FILE__ ) . '/../utils/configuration.inc');
-include_once (dirname ( __FILE__ ) . '/../../lib/security.inc');
+include_once 'lam/tests/utils/configuration.inc';
+include_once 'lam/lib/security.inc';
 
 /**
  * Checks password checking functions.

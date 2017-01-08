@@ -112,13 +112,6 @@ function upgradeConfigToServerProfileFolders($profiles) {
 		return;
 	}
 
-	// copy default configs
-	if (!file_exists('../config/templates')) {
-		@mkdir('../config/templates', 0700);
-		recursiveCopy('../config/pdf/', '../config/templates/pdf/', $profiles, 'default.');
-		recursiveCopy('../config/profiles/', '../config/templates/profiles/', $profiles, 'default.');
-	}
-
 	foreach ($profiles as $profile) {
 		// upgrade PDF configs
 		$dir = '../config/pdf/' . $profile;

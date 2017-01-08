@@ -614,66 +614,82 @@ class LAMConfig {
 				$line = trim($line);  // remove spaces at the beginning and end
 				if (($line == "")||($line[0] == "#")) continue; // ignore comments and empty lines
 				// search keywords
-				for ($i = 0; $i < sizeof($this->settings); $i++) {
-					$keyword = $this->settings[$i];
-					$keylen = strlen($keyword);
-					if (strtolower(substr($line, 0, $keylen + 2)) == strtolower($keyword . ": ")) {
-						// module settings
-						if (strtolower(substr($line, 0, $keylen + 2)) == "modules: ") {
-							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
-							$pos = strpos($option, ":");
-							$this->moduleSettings[substr($option, 0, $pos)] = explode(LAMConfig::LINE_SEPARATOR, substr($option, $pos + 2));
-						}
-						// type settings
-						elseif (strtolower(substr($line, 0, $keylen + 2)) == "types: ") {
-							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
-							$pos = strpos($option, ":");
-							$this->typeSettings[substr($option, 0, $pos)] = substr($option, $pos + 2);
-						}
-						// tool settings
-						elseif (strtolower(substr($line, 0, $keylen + 2)) == "tools: ") {
-							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
-							$pos = strpos($option, ":");
-							$this->toolSettings[substr($option, 0, $pos)] = substr($option, $pos + 2);
-						}
-						// job settings
-						elseif (strtolower(substr($line, 0, $keylen + 2)) == "jobs: ") {
-							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
-							$pos = strpos($option, ":");
-							$this->jobSettings[substr($option, 0, $pos)] = explode(LAMConfig::LINE_SEPARATOR, substr($option, $pos + 2));
-						}
-						// general settings
-						else {
-							$this->$keyword = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
-						}
-						break;
+				$parts = explode(': ', $line);
+				$keyword = $parts[0];
+				if (!in_array($keyword, $this->settings)) {
+					continue;
+				}
+				$startIndex = strlen($keyword) + 2;
+				if (sizeof($parts) == 1) {
+					// empty global settings
+					$this->$keyword = '';
+				}
+				elseif (sizeof($parts) == 2) {
+					// global setting with value
+					$this->$keyword = substr($line, $startIndex);
+				}
+				else {
+					$subKeyword = $parts[1];
+					$startIndex = $startIndex + strlen($subKeyword) + 2;
+					// module settings
+					if ($keyword == 'modules') {
+						$option = substr($line, $startIndex);
+						$this->moduleSettings[$subKeyword] = explode(LAMConfig::LINE_SEPARATOR, $option);
 					}
-					elseif (strtolower($line) == strtolower($keyword . ":")) {
-						// set empty options
-						$this->$keyword = '';
+					// type settings
+					if ($keyword == 'types') {
+						$option = substr($line, $startIndex);
+						$this->typeSettings[$subKeyword] = $option;
+					}
+					// tool settings
+					if ($keyword == 'tools') {
+						$option = substr($line, $startIndex);
+						$this->toolSettings[$subKeyword] = $option;
+					}
+					// job settings
+					if ($keyword == 'jobs') {
+						$option = substr($line, $startIndex);
+						$this->jobSettings[$subKeyword] = explode(LAMConfig::LINE_SEPARATOR, $option);
 					}
 				}
 			}
 			fclose($file);
 		}
-		// check types
+		$this->removeInvalidTypes();
+		$this->removeInvalidModules();
+		return true;
+	}
+
+	/**
+	 * Removes any non-existing types from the configuration.
+	 */
+	private function removeInvalidTypes() {
 		$allTypes = LAM\TYPES\getTypes();
 		$activeTypes = $this->get_ActiveTypes();
 		for ($i = 0; $i < sizeof($activeTypes); $i++) {
-			if (!in_array($activeTypes[$i], $allTypes)) {
+			if (!in_array(\LAM\TYPES\getScopeFromTypeId($activeTypes[$i]), $allTypes)) {
 				unset($activeTypes[$i]);
 			}
 		}
 		$activeTypes = array_values($activeTypes);
 		$this->set_ActiveTypes($activeTypes);
-		// check modules
-		$scopes = $this->get_ActiveTypes();
-		for ($s = 0; $s < sizeof($scopes); $s++) {
-			$scope = $scopes[$s];
-			$moduleVar = "modules_" . $scope;
+	}
+
+	/**
+	 * Removes any non-existing modules from the configuration.
+	 */
+	private function removeInvalidModules() {
+		$types = $this->get_ActiveTypes();
+		$availableByScope = array();
+		foreach ($types as $type) {
+			$scope = \LAM\TYPES\getScopeFromTypeId($type);
+			$moduleVar = "modules_" . $type;
 			if (isset($this->typeSettings[$moduleVar])){
 				$modules = explode(",", $this->typeSettings[$moduleVar]);
-				$available = getAvailableModules($scope);
+				if (empty($availableByScope[$scope])) {
+					$availableByScope[$scope] = getAvailableModules($scope);
+				}
+				$available = $availableByScope[$scope];
 				// only return available modules
 				$ret = array();
 				for ($i = 0; $i < sizeof($modules); $i++) {
@@ -682,7 +698,6 @@ class LAMConfig {
 				$this->typeSettings[$moduleVar] = implode(",", $ret);
 			}
 		}
-		return true;
 	}
 
 	/** Saves preferences to config file */

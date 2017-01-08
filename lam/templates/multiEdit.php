@@ -1,4 +1,22 @@
 <?php
+namespace LAM\TOOLS\MULTI_EDIT;
+use \htmlTable;
+use \htmlTitle;
+use \htmlSelect;
+use \htmlOutputText;
+use \htmlHelpLink;
+use \htmlInputField;
+use \htmlSubTitle;
+use \htmlTableExtendedInputField;
+use \htmlButton;
+use \htmlStatusMessage;
+use \htmlSpacer;
+use \htmlHiddenInput;
+use \htmlGroup;
+use \htmlDiv;
+use \htmlJavaScript;
+use \htmlLink;
+use \htmlInputTextarea;
 /*
 $Id$
 
@@ -85,11 +103,15 @@ function displayStartPage() {
 	$hideRules = array();
 	$container->addElement(new htmlOutputText(_('LDAP suffix')));
 	$suffixGroup = new htmlTable();
-	$types = $_SESSION['config']->get_ActiveTypes();
+	$typeManager = new \LAM\TYPES\TypeManager();
+	$types = $typeManager->getConfiguredTypes();
 	$suffixes = array();
 	foreach ($types as $type) {
-		$suffixes[LAM\TYPES\getTypeAlias($type)] = $_SESSION['config']->get_Suffix($type);
-		$hideRules[$_SESSION['config']->get_Suffix($type)] = array('otherSuffix');
+		if ($type->isHidden()) {
+			continue;
+		}
+		$suffixes[$type->getAlias()] = $type->getSuffix();
+		$hideRules[$type->getSuffix()] = array('otherSuffix');
 	}
 	$treeSuffix = $_SESSION['config']->get_Suffix('tree');
 	if (!empty($treeSuffix)) {
