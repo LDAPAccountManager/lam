@@ -14,7 +14,7 @@ use \htmlInputField;
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2016  Roland Gruber
+  Copyright (C) 2003 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -186,9 +186,10 @@ function display_main($message, $error) {
 	}
 	natcasesort($types);
 	$options = array();
-	foreach ($types as $name => $title) {
+	foreach ($types as $typeId => $title) {
+		$type = $typeManager->getConfiguredType($typeId);
 		$elements = array();
-		$units = searchLDAPByAttribute(null, null, 'organizationalunit', array('dn'), array($name));
+		$units = searchLDAP($type->getSuffix(), '(objectclass=organizationalunit)', array('dn'));
 		for ($u = 0; $u < sizeof($units); $u++) {
 			$elements[getAbstractDN($units[$u]['dn'])] = $units[$u]['dn'];
 		}
