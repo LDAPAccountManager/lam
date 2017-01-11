@@ -383,7 +383,7 @@ class ListAttribute {
 	 */
 	public function getAlias() {
 		if ($this->isPredefined()) {
-			$name = substr($this->attributeSpec, 1);
+			$name = strtolower(substr($this->attributeSpec, 1));
 			$hash_table = getListAttributeDescriptions($this->scope);
 			$hash_table = array_change_key_case($hash_table, CASE_LOWER);
 			if (isset($hash_table[$name])) {
