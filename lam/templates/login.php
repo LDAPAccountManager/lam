@@ -229,8 +229,6 @@ function display_LoginPage($config_object, $cfgMain) {
 			StatusMessage('INFO', 'Config file migration finished.');
 		}
 	}
-	// copy any missing default profiles
-	copyConfigTemplates($profiles);
 
 	if (isLAMProVersion() && $licenseValidator->isEvaluationLicense()) {
 		StatusMessage('INFO', _('Evaluation Licence'));

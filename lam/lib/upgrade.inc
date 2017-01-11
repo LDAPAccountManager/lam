@@ -132,19 +132,6 @@ function upgradeConfigToServerProfileFolders($profiles) {
 }
 
 /**
- * Saves an hash array (attribute => value) to an account profile
- *
- * @param array $profiles server profiles
- */
-function copyConfigTemplates($profiles) {
-	foreach ($profiles as $profile) {
-		// copy templates but do not override existing files
-		recursiveCopy('../config/templates/pdf/', '../config/pdf/' . $profile, $profiles, null, false);
-		recursiveCopy('../config/templates/profiles/', '../config/profiles/' . $profile, $profiles, null, false);
-	}
-}
-
-/**
  * Copy a file or recursively copy a directory
  *
  * @param string $src - source path to file or directory
