@@ -199,7 +199,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 
 	// let modules build accounts
 	else {
-		$accounts = buildUploadAccounts($type->getId(), $data, $ids, $selectedModules);
+		$accounts = buildUploadAccounts($type->getScope(), $data, $ids, $selectedModules);
 		if ($accounts != false) {
 			$rdnList = getRDNAttributes($type->getId(), $selectedModules);
 			$suffix = $type->getSuffix();
