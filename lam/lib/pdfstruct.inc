@@ -354,7 +354,8 @@ function installPDFTemplates() {
 		foreach ($allTemplates[$type->getScope()] as $templateName) {
 			$path = $basePath . $templateName . '.' . $type->getId() . '.xml';
 			if (!is_file($path)) {
-				$template = $templatePath . '/' . $templateName . '.' . $scope . '.xml';
+				$template = $templatePath . '/' . $templateName . '.' . $type->getScope() . '.xml';
+				logNewMessage(LOG_DEBUG, 'Copy template ' . $template . ' to ' . $path);
 				@copy($template, $path);
 			}
 		}

@@ -260,7 +260,8 @@ function installProfileTemplates() {
 		foreach ($allTemplates[$type->getScope()] as $templateName) {
 			$path = $basePath . $templateName . '.' . $type->getId();
 			if (!is_file($path)) {
-				$template = $templatePath . '/' . $templateName . '.' . $scope;
+				$template = $templatePath . '/' . $templateName . '.' . $type->getScope();
+				logNewMessage(LOG_DEBUG, 'Copy template ' . $template . ' to ' . $path);
 				@copy($template, $path);
 			}
 		}
