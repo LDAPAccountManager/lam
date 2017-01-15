@@ -1231,7 +1231,7 @@ class posixGroup extends baseModule implements passwordService {
 	 *
 	 * @return array list in format array(uid => array('gid' => 123, 'cn' => 'Some user'))
 	 */
-	private function getUsers() {
+	protected function getUsers() {
 		if ($this->cachedUserToGIDList != null) {
 			return $this->cachedUserToGIDList;
 		}
