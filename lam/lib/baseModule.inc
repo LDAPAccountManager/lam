@@ -973,7 +973,7 @@ abstract class baseModule {
 					array_push($errMsg, array($position));
 					$errors[] = $errMsg;
 				}
-				$partialAccounts[$position][$attrName] = $rawAccounts[$position][$ids[$colName]];
+				$partialAccounts[$position][$attrName] = trim($rawAccounts[$position][$ids[$colName]]);
 			}
 			// multi-value
 			else {
