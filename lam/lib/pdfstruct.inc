@@ -345,19 +345,39 @@ function installPDFTemplates() {
 			$entry = $templateDir->read();
 		}
 	}
-	$basePath = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/';
+	$basePath = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName();
+	if (!file_exists($basePath)) {
+		mkdir($basePath);
+	}
 	$typeManager = new \LAM\TYPES\TypeManager();
 	foreach ($typeManager->getConfiguredTypes() as $type) {
 		if (empty($allTemplates[$type->getScope()])) {
 			continue;
 		}
 		foreach ($allTemplates[$type->getScope()] as $templateName) {
-			$path = $basePath . $templateName . '.' . $type->getId() . '.xml';
+			$path = $basePath . '/' . $templateName . '.' . $type->getId() . '.xml';
 			if (!is_file($path)) {
 				$template = $templatePath . '/' . $templateName . '.' . $type->getScope() . '.xml';
 				logNewMessage(LOG_DEBUG, 'Copy template ' . $template . ' to ' . $path);
 				@copy($template, $path);
 			}
+		}
+	}
+	if (!file_exists($basePath . '/logos')) {
+		mkdir($basePath . '/logos');
+	}
+	$templatePath = dirname(__FILE__) . '/../config/templates/pdf/logos';
+	$templateDir = @dir($templatePath);
+	if ($templateDir) {
+		$entry = $templateDir->read();
+		while ($entry){
+			$path = $basePath . '/logos/' . $entry;
+			if ((strpos($entry, '.') !== 1) && !is_file($path)) {
+				$template = $templatePath . '/' . $entry;
+				logNewMessage(LOG_DEBUG, 'Copy template ' . $template . ' to ' . $path);
+				@copy($template, $path);
+			}
+			$entry = $templateDir->read();
 		}
 	}
 }

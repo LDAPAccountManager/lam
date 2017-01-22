@@ -5,7 +5,7 @@ use \LAMException;
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2016  Roland Gruber
+  Copyright (C) 2003 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -251,14 +251,17 @@ function installProfileTemplates() {
 			$entry = $templateDir->read();
 		}
 	}
-	$basePath = dirname(__FILE__) . '/../config/profiles/' . $_SESSION['config']->getName() . '/';
+	$basePath = dirname(__FILE__) . '/../config/profiles/' . $_SESSION['config']->getName();
+	if (!file_exists($basePath)) {
+		mkdir($basePath);
+	}
 	$typeManager = new \LAM\TYPES\TypeManager();
 	foreach ($typeManager->getConfiguredTypes() as $type) {
 		if (empty($allTemplates[$type->getScope()])) {
 			continue;
 		}
 		foreach ($allTemplates[$type->getScope()] as $templateName) {
-			$path = $basePath . $templateName . '.' . $type->getId();
+			$path = $basePath . '/' . $templateName . '.' . $type->getId();
 			if (!is_file($path)) {
 				$template = $templatePath . '/' . $templateName . '.' . $type->getScope();
 				logNewMessage(LOG_DEBUG, 'Copy template ' . $template . ' to ' . $path);
