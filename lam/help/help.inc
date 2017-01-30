@@ -285,6 +285,8 @@ $helpArray = array (
 					"Text" => _('URL of external 2-factor authentication service.')),
 				"516" => array ("Headline" => _('Disable certificate check'),
 					"Text" => _('This will disable the check of the SSL certificates for the 2-factor authentication service. Not recommended for production usage.')),
+				"517" => array ("Headline" => _('Label'),
+					"Text" => _('Use this to overwrite the default label for the 2-factor input field. Default is "PIN+Token".')),
 				"520" => array ("Headline" => _("Generate random password"),
 					"Text" => _("This will set a random password and display it on the screen or send it to the user via mail. Please edit your LAM server profile to setup the mail settings.")),
 				"550" => array ("Headline" => _("From address"),
