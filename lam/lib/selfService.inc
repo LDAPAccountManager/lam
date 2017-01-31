@@ -385,6 +385,8 @@ class selfServiceProfile {
 	public $twoFactorAuthenticationURL = 'https://localhost';
 	public $twoFactorAuthenticationInsecure = false;
 	public $twoFactorAuthenticationLabel = null;
+	public $twoFactorAuthenticationOptional = false;
+	public $twoFactorAuthenticationCaption = '';
 
 	/**
 	 * Constructor
@@ -427,6 +429,8 @@ class selfServiceProfile {
 		$this->twoFactorAuthenticationURL = 'https://localhost';
 		$this->twoFactorAuthenticationInsecure = false;
 		$this->twoFactorAuthenticationLabel = null;
+		$this->twoFactorAuthenticationOptional = false;
+		$this->twoFactorAuthenticationCaption = '';
 	}
 
 }
