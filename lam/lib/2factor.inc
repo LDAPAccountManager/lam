@@ -44,11 +44,12 @@ interface TwoFactorProvider {
 	 *
 	 * @param string $user user name
 	 * @param string $password password
+	 * @param string $serial serial number of token
 	 * @param string $twoFactorInput input for 2nd factor
 	 * @return boolean true if verified and false if verification failed
 	 * @throws \Exception error during check
 	 */
-	public function verify2ndFactor($user, $password, $twoFactorInput);
+	public function verify2ndFactor($user, $password, $serial, $twoFactorInput);
 
 }
 
@@ -82,10 +83,10 @@ class PrivacyIDEAProvider implements TwoFactorProvider {
 	 * {@inheritDoc}
 	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::verify2ndFactor()
 	 */
-	public function verify2ndFactor($user, $password, $twoFactorInput) {
+	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
 		logNewMessage(LOG_DEBUG, 'PrivacyIDEAProvider: Checking 2nd factor for ' . $user);
 		$token = $this->authenticate($user, $password);
-		return false;
+		return $this->verify($token, $serial, $twoFactorInput);
 	}
 
 	/**
@@ -180,6 +181,41 @@ class PrivacyIDEAProvider implements TwoFactorProvider {
 			$serials[] = $tokenEntry->serial;
 		}
 		return $serials;
+	}
+
+	/**
+	 * Verifies if the given 2nd factor input is valid.
+	 *
+	 * @param string $token login token
+	 * @param string $serial serial number
+	 * @param string $twoFactorInput 2factor pin + password
+	 */
+	private function verify($token, $serial, $twoFactorInput) {
+		$curl = $this->getCurl();
+		$url = $this->profile->twoFactorAuthenticationURL . "/validate/check";
+		curl_setopt($curl, CURLOPT_URL, $url);
+		$options = array(
+			'pass' => $twoFactorInput,
+			'serial' => $serial,
+		);
+		curl_setopt($curl, CURLOPT_POSTFIELDS, $options);
+		$header = array('Authorization: ' . $token, 'Accept: application/json');
+		curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+		$json = curl_exec($curl);
+		curl_close($curl);
+		$output = json_decode($json);
+		if (empty($output) || !isset($output->result) || !isset($output->result->status) || !isset($output->result->value)) {
+			throw new \Exception("Unable to get json from $url.");
+		}
+		$status = $output->result->status;
+		$value = $output->result->value;
+		if (($status == 'true') && ($value == 'true')) {
+			return true;
+		}
+		$errCode = isset($output->result->error) && isset($output->result->error->code) ? $output->result->error->code : '';
+		$errMessage = isset($output->result->error) && isset($output->result->error->message) ? $output->result->error->message : '';
+		logNewMessage(LOG_DEBUG, "Unable to verify token: " . print_r($output, true));
+		return false;
 	}
 
 }
