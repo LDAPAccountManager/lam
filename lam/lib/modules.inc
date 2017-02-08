@@ -1,6 +1,5 @@
 <?php
 use LAM\TYPES\ConfiguredType;
-use function LAM\TYPES\getScopeFromTypeId;
 
 /*
 $Id$
@@ -409,7 +408,7 @@ function getAvailablePDFFields($typeId) {
 	$mods = $_SESSION['config']->get_AccountModules($typeId);
 	$return = array();
 	for ($i = 0; $i < sizeof($mods); $i++) {
-		$module = moduleCache::getModule($mods[$i], getScopeFromTypeId($typeId));
+		$module = moduleCache::getModule($mods[$i], \LAM\TYPES\getScopeFromTypeId($typeId));
 		$fields = $module->get_pdfFields();
 		$return[$mods[$i]] = array();
 		if (is_array($fields)) {
