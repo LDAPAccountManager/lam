@@ -553,6 +553,17 @@ class LAMConfigTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Tests LAMConfig->getLamProMailText() and LAMConfig->setLamProMailText() with a value that contains ": "
+	 */
+	public function testLamProMailTextColoon() {
+		$val = 'some: @@uid@@\r\ntext';
+		$this->lAMConfig->setLamProMailText($val);
+		$this->assertEquals($val, $this->lAMConfig->getLamProMailText());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getLamProMailText());
+	}
+
+	/**
 	 * Tests LAMConfig->getJobsBindUser() and LAMConfig->setJobsBindUser()
 	 */
 	public function testJobsBindUser() {

@@ -624,7 +624,7 @@ class LAMConfig {
 					// empty global settings
 					$this->$keyword = '';
 				}
-				elseif (sizeof($parts) == 2) {
+				elseif ((sizeof($parts) > 1) && !in_array($keyword, array('modules', 'types', 'tools', 'jobs'))) {
 					// global setting with value
 					$this->$keyword = substr($line, $startIndex);
 				}
