@@ -535,10 +535,11 @@ function validateSecurityToken($post = true) {
  * Adds a hidden input field to the given meta HTML table.
  * Should be used to add token at the end of table.
  *
- * @param htmlTable $container table
+ * @param htmlTable|htmlGroup $container table
  */
 function addSecurityTokenToMetaHTML(&$container) {
-	$container->addElement(new htmlHiddenInput(getSecurityTokenName(), $_SESSION[getSecurityTokenName()]), true);
+	$token = new htmlHiddenInput(getSecurityTokenName(), $_SESSION[getSecurityTokenName()]);
+	$container->addElement($token, true);
 }
 
 /**

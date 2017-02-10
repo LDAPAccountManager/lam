@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2016  Roland Gruber
+  Copyright (C) 2006 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -302,6 +302,11 @@ function isSelfService() {
  */
 class selfServiceProfile {
 
+	/** 2factor authentication disabled */
+	const TWO_FACTOR_NONE = 'none';
+	/** 2factor authentication via privacyIDEA */
+	const TWO_FACTOR_PRIVACYIDEA = 'privacyidea';
+
 	/** server address */
 	public $serverURL;
 
@@ -376,6 +381,13 @@ class selfServiceProfile {
 
 	public $timeZone = 'Europe/London';
 
+	public $twoFactorAuthentication = selfServiceProfile::TWO_FACTOR_NONE;
+	public $twoFactorAuthenticationURL = 'https://localhost';
+	public $twoFactorAuthenticationInsecure = false;
+	public $twoFactorAuthenticationLabel = null;
+	public $twoFactorAuthenticationOptional = false;
+	public $twoFactorAuthenticationCaption = '';
+
 	/**
 	 * Constructor
 	 *
@@ -413,6 +425,12 @@ class selfServiceProfile {
 		$this->enforceLanguage = true;
 		$this->followReferrals = 0;
 		$this->timeZone = 'Europe/London';
+		$this->twoFactorAuthentication = selfServiceProfile::TWO_FACTOR_NONE;
+		$this->twoFactorAuthenticationURL = 'https://localhost';
+		$this->twoFactorAuthenticationInsecure = false;
+		$this->twoFactorAuthenticationLabel = null;
+		$this->twoFactorAuthenticationOptional = false;
+		$this->twoFactorAuthenticationCaption = '';
 	}
 
 }

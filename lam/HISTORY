@@ -1,3 +1,7 @@
+March 2017
+  - 2-factor authentication for admin login and self service with privacyIDEA
+
+
 18.12.2016 5.6
   - New mechanism to replace wildcards in user edit screen. Personal/Unix support more wildcards like "$firstname".
   - Windows: added support for pager, otherPager, mobile, otherMobile, company and proxyAddresses (disabled by default in server profile)

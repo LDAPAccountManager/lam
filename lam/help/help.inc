@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006 Michael Duergner
-                2003 - 2016 Roland Gruber
+                2003 - 2017 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -279,6 +279,18 @@ $helpArray = array (
 					"Text" => _('Use this to enter an additional LDAP filter (e.g. "(objectClass=passwordSelfReset)") to reduce the number of accounts who may use self service.')),
 				"513" => array ("Headline" => _('Use for all operations'),
 					"Text" => _('By default all modifications are done as the user that authenticated in self service. If active then LAM will use the connection user for all LDAP modifications and searches.')),
+				"514" => array ("Headline" => _('2-factor authentication'),
+					"Text" => _('You can enable 2-factor authentication here (e.g. via mobile device).')),
+				"515" => array ("Headline" => _('2-factor base URL'),
+					"Text" => _('URL of external 2-factor authentication service.')),
+				"516" => array ("Headline" => _('Disable certificate check'),
+					"Text" => _('This will disable the check of the SSL certificates for the 2-factor authentication service. Not recommended for production usage.')),
+				"517" => array ("Headline" => _('Label'),
+					"Text" => _('Use this to overwrite the default label for the 2-factor input field. Default is "PIN+Token".')),
+				"518" => array ("Headline" => _('Caption'),
+					"Text" => _('This text is displayed on top of the 2-factor page. You can also input HTML code here.')),
+				"519" => array ("Headline" => _('Optional'),
+					"Text" => _('If checked then also users who did not setup a second factor are able to login.')),
 				"520" => array ("Headline" => _("Generate random password"),
 					"Text" => _("This will set a random password and display it on the screen or send it to the user via mail. Please edit your LAM server profile to setup the mail settings.")),
 				"550" => array ("Headline" => _("From address"),
