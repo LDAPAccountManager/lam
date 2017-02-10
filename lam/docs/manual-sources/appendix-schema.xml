@@ -1,0 +1,700 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+  <appendix id="a_schema">
+    <title>LDAP schema files</title>
+
+    <para>Here is a list of needed LDAP schema files for the different LAM
+    modules. For OpenLDAP we also provide a source where you can get the
+    files.</para>
+
+    <table frame="none" lang="" role="" tabstyle="nogrid">
+      <title>LDAP schema files</title>
+
+      <tgroup cols="6">
+        <thead>
+          <row>
+            <entry></entry>
+
+            <entry>Account type</entry>
+
+            <entry>Object class(es)</entry>
+
+            <entry>Schema name</entry>
+
+            <entry>Source</entry>
+
+            <entry>Notes</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_unix.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Unix accounts</entry>
+
+            <entry>posixAccount, shadowAccount, hostObject, posixGroup</entry>
+
+            <entry>nis.schema, rfc2307bis.schema, ldapns.schema
+            (hostObject)</entry>
+
+            <entry>Part of OpenLDAP installation, part of libpam-ldap
+            (ldapns.schema)</entry>
+
+            <entry>The rfc2307bis.schema is only supported by LAM Pro. Use the
+            nis.schema if you do not want to upgrade to LAM Pro.</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_inetOrgPerson.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Address book entries</entry>
+
+            <entry>inetOrgPerson</entry>
+
+            <entry>inetorgperson.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_samba.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Samba 3 accounts</entry>
+
+            <entry>sambaSamAccount, sambaGroupMapping, sambaDomain</entry>
+
+            <entry>samba.schema</entry>
+
+            <entry>Part of Samba tarball (examples/LDAP/samba.schema)</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_samba.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Windows AD (Samba 4)</entry>
+
+            <entry>user, group, computer</entry>
+
+            <entry></entry>
+
+            <entry>Samba 4 built-in</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_kolab.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Kolab 2/3 users</entry>
+
+            <entry>kolabUser</entry>
+
+            <entry>kolab2/3.schema, rfc2739.schema</entry>
+
+            <entry>Part of Kolab 2/3 installation</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_asterisk.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Asterisk (extension)</entry>
+
+            <entry>AsteriskSIPUser, AsteriskExtension</entry>
+
+            <entry>asterisk.schema</entry>
+
+            <entry>Part of Asterisk installation</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_pykota.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>PyKota users, groups, printers and billing codes</entry>
+
+            <entry>pykotaObject, pykotaAccount, pykotaAccountBalance,
+            pykotaGroup, pykotaPrinter, pykotaBilling</entry>
+
+            <entry>pykota.schema</entry>
+
+            <entry>Part of PyKota installation</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_mailAlias.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Mail routing</entry>
+
+            <entry>inetLocalMailRecipient</entry>
+
+            <entry>misc.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_hostObject.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Hosts</entry>
+
+            <entry>hostObject, device</entry>
+
+            <entry>ldapns.schema</entry>
+
+            <entry>Part of libpam-ldap installation</entry>
+
+            <entry>The device object class is only available in LAM
+            Pro.</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_authorizedServices.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Authorized services</entry>
+
+            <entry>authorizedServiceObject</entry>
+
+            <entry>ldapns.schema</entry>
+
+            <entry>Part of libpam-ldap installation</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_mailAlias.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Mail aliases</entry>
+
+            <entry>nisMailAlias</entry>
+
+            <entry>misc.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_mailAlias.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Qmail user</entry>
+
+            <entry>qmailUser</entry>
+
+            <entry>qmail.schema</entry>
+
+            <entry>Part of <ulink
+            url="http://www.nrg4u.com/">qmail_ldap</ulink></entry>
+
+            <entry>LAM Pro only</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_mac.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>MAC addresses</entry>
+
+            <entry>ieee802device</entry>
+
+            <entry>nis.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_ipHost.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>IP addresses</entry>
+
+            <entry>ipHost</entry>
+
+            <entry>nis.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry>LAM Pro only</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_puppet.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Puppet</entry>
+
+            <entry>puppetClient</entry>
+
+            <entry>puppet.schema</entry>
+
+            <entry><ulink
+            url="https://github.com/puppetlabs/puppet/blob/master/ext/ldap/puppet.schema">Puppet
+            on GitHub</ulink></entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_eduPerson.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>EDU person</entry>
+
+            <entry>eduPerson</entry>
+
+            <entry>eduperson.schema</entry>
+
+            <entry><ulink
+            url="http://middleware.internet2.edu/eduperson/">http://middleware.internet2.edu</ulink></entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_user.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Simple Accounts</entry>
+
+            <entry>account</entry>
+
+            <entry>cosine.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_ssh.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>SSH public keys</entry>
+
+            <entry>ldapPublicKey</entry>
+
+            <entry>openssh-lpk.schema</entry>
+
+            <entry>Included in patch from <ulink
+            url="http://code.google.com/p/openssh-lpk/">http://code.google.com/p/openssh-lpk/</ulink></entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_quota.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Filesystem quotas</entry>
+
+            <entry>systemQuotas</entry>
+
+            <entry>quota.schema</entry>
+
+            <entry><ulink
+            url="http://sourceforge.net/projects/linuxquota/">Linux
+            DiskQuota</ulink></entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_group.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Group of (unique) names</entry>
+
+            <entry>groupOfNames, groupOfUniqueNames, groupOfMembers</entry>
+
+            <entry>core.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry>LAM Pro only</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_group.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Groups</entry>
+
+            <entry>organizationalRole</entry>
+
+            <entry>core.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry>LAM Pro only</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_dhcp.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>DHCP</entry>
+
+            <entry>dhcpOptions, dhcpSubnet, dhcpServer</entry>
+
+            <entry>dhcp.schema</entry>
+
+            <entry>docs/schema/dhcp.schema</entry>
+
+            <entry>The LDAP suffix should be set to your dhcpServer
+            entry.</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_bind.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Bind DLZ DNS</entry>
+
+            <entry>dlzZone, dlzHost, dlzSOARecord, dlzNSRecord, dlzARecord,
+            dlzMXRecord, dlzCNameRecord, dlzPTRRecord</entry>
+
+            <entry>dlz.schema</entry>
+
+            <entry>part of <ulink url="http://bind-dlz.sourceforge.net/">Bind
+            DLZ patch</ulink></entry>
+
+            <entry>LAM Pro only</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_alias.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Aliases</entry>
+
+            <entry>alias, uidObject</entry>
+
+            <entry>core.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry>LAM Pro only</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_netgroup.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>NIS netgroups</entry>
+
+            <entry>nisNetgroup</entry>
+
+            <entry>nis.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_nisObject.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>NIS objects</entry>
+
+            <entry>nisObject</entry>
+
+            <entry>nis.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry>LAM Pro only</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_nisObject.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Automount objects</entry>
+
+            <entry>automount</entry>
+
+            <entry>autofs.schema, rfc2307bis.schema</entry>
+
+            <entry>Autofs LDAP</entry>
+
+            <entry>LAM Pro only</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_oracle.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Oracle databases</entry>
+
+            <entry>orclNetService</entry>
+
+            <entry>oidbase.schema, oidnet.schema, oidrdbms.schema,
+            alias.schema</entry>
+
+            <entry>Preinstalled on Oracle directory server, OpenLDAP schemas
+            can be downloaded e.g. <ulink
+            url="http://www.idevelopment.info/data/Oracle/DBA_tips/LDAP/LDAP_8.shtml">here</ulink></entry>
+
+            <entry>LAM Pro only</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_ppolicy.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Password policies</entry>
+
+            <entry>pwdPolicy, device</entry>
+
+            <entry>ppolicy.schema, core.schema</entry>
+
+            <entry>Part of OpenLDAP installation</entry>
+
+            <entry>LAM Pro only</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_freeRadius.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>FreeRadius users</entry>
+
+            <entry>radiusprofile</entry>
+
+            <entry>openldap.schema</entry>
+
+            <entry>Part of FreeRadius installation</entry>
+
+            <entry></entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_heimdal.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Heimdal Kerberos</entry>
+
+            <entry>krb5KDCEntry</entry>
+
+            <entry>hdb.schema</entry>
+
+            <entry>Part of Heimdal Kerberos installation</entry>
+
+            <entry>LAM Pro only</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_mitKerberos.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>MIT Kerberos</entry>
+
+            <entry>krbPrincipal, krbPrincipalAux, krbTicketPolicyAux</entry>
+
+            <entry>kerberos.schema</entry>
+
+            <entry>Part of MIT Kerberos installation</entry>
+
+            <entry>LAM Pro only</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_sudo.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Sudo roles</entry>
+
+            <entry>sudoRole</entry>
+
+            <entry>sudo.schema</entry>
+
+            <entry>Part of sudo-ldap installation</entry>
+
+            <entry>LAM Pro only</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_zarafa.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>Zarafa</entry>
+
+            <entry>zarafa-user, zarafa-group, zarafa-server</entry>
+
+            <entry>zarafa.schema</entry>
+
+            <entry>Part of Zarafa installation</entry>
+
+            <entry>LAM Pro only</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_mailAlias.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>IMAP mailboxes</entry>
+
+            <entry>-</entry>
+
+            <entry>-</entry>
+
+            <entry>-</entry>
+
+            <entry>Does not require any schema.</entry>
+          </row>
+
+          <row>
+            <entry><inlinemediaobject>
+                <imageobject>
+                  <imagedata fileref="images/schema_nsview.png" />
+                </imageobject>
+              </inlinemediaobject></entry>
+
+            <entry>LDAP views</entry>
+
+            <entry>nsview, organizationalunit</entry>
+
+            <entry>built-in</entry>
+
+            <entry>Part of LDAP server installation (e.g. 389 server)</entry>
+
+            <entry>LAM Pro only</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+  </appendix> 

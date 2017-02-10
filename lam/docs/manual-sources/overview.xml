@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+  <preface>
+    <title>Overview</title>
+
+    <para>LDAP Account Manager (LAM) manages user, group and host accounts in
+    an LDAP directory. LAM runs on any webserver with PHP5 support and
+    connects to your LDAP server unencrypted or via SSL/TLS.</para>
+
+    <para>LAM supports Samba 3/4, Unix, Zarafa, Kolab 2/3, address book
+    entries, NIS mail aliases, MAC addresses and much more. There is a tree
+    viewer included to allow access to the raw LDAP attributes. You can use
+    templates for account creation and use multiple configuration
+    profiles.</para>
+
+    <para><ulink
+    url="https://www.ldap-account-manager.org/">https://www.ldap-account-manager.org/</ulink></para>
+
+    <para>Copyright (C) 2003 - 2016 Roland Gruber
+    &lt;post@rolandgruber.de&gt;</para>
+
+    <para><emphasis role="bold">Key features:</emphasis></para>
+
+    <itemizedlist>
+      <listitem>
+        <para>managing user/group/host/domain entries</para>
+      </listitem>
+
+      <listitem>
+        <para>account profiles</para>
+      </listitem>
+
+      <listitem>
+        <para>account creation via file upload</para>
+      </listitem>
+
+      <listitem>
+        <para>multiple configuration profiles</para>
+      </listitem>
+
+      <listitem>
+        <para>LDAP browser</para>
+      </listitem>
+
+      <listitem>
+        <para>schema browser</para>
+      </listitem>
+
+      <listitem>
+        <para>OU editor</para>
+      </listitem>
+
+      <listitem>
+        <para>PDF export for all accounts</para>
+      </listitem>
+
+      <listitem>
+        <para>manage user/group Quota and create home directories</para>
+      </listitem>
+    </itemizedlist>
+
+    <para><emphasis role="bold">Requirements:</emphasis></para>
+
+    <itemizedlist>
+      <listitem>
+        <para>PHP5 (&gt;= 5.4.0)</para>
+      </listitem>
+
+      <listitem>
+        <para>Any standard LDAP server (e.g. OpenLDAP, Active Directory, Samba
+        4, OpenDJ, 389 Directory Server, Apache DS, ...)</para>
+      </listitem>
+
+      <listitem>
+        <para>A recent web browser that supports CSS2 and JavaScript, at
+        minimum:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Firefox (max. 2 years old)</para>
+          </listitem>
+
+          <listitem>
+            <para>Chrome (max. 2 years old)</para>
+          </listitem>
+
+          <listitem>
+            <para>Internet Explorer 9<emphasis role="bold"> (compatibility
+            mode turned off)</emphasis></para>
+          </listitem>
+
+          <listitem>
+            <para>Opera (max. 2 years old)</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+    </itemizedlist>
+
+    <para>The default password to edit the configuration options is
+    "lam".</para>
+
+    <para><emphasis role="bold">License:</emphasis></para>
+
+    <para>LAM is published under the GNU General Public License. The complete
+    list of licenses can be found in the copyright file.</para>
+
+    <para><emphasis role="bold">Default password:</emphasis></para>
+
+    <para>The default password for the LAM configuration is "lam".</para>
+
+    <literallayout>
+Have fun!
+     The LAM development team</literallayout>
+  </preface> 

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+  <appendix id="a_lamdaemon">
+    <title>Setup for home directory and quota management</title>
+
+    <para>Lamdaemon.pl is used to modify quota and home directories on a
+    remote or local host via SSH (even if homedirs are located on
+    localhost).</para>
+
+    <para>If you want wo use it you have to set up the following things to get
+    it to work:</para>
+
+    <section>
+      <title>Installation</title>
+
+      <para>First of all, you need to install lamdaemon.pl on your remote
+      server where LAM should manage homedirs and/or quota. This is usually a
+      different server than the one where LAM is installed. But there is no
+      problem if it is the same.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/lamdaemonServers.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para></para>
+
+      <para><emphasis role="bold">Debian based (e.g. also
+      Ubuntu)</emphasis></para>
+
+      <para>Please install the lamdaemon DEB package on your quota/homedir
+      server.</para>
+
+      <para><emphasis role="bold">RPM based (Fedora, CentOS, Suse,
+      ...)</emphasis></para>
+
+      <para>Please install the lamdaemon RPM package on your quota/homedir
+      server.</para>
+
+      <para><emphasis role="bold">Other</emphasis></para>
+
+      <para>Please copy lib/lamdaemon.pl from the LAM tar.bz2 package to your
+      quota/homedir server. The location may be anywhere (e.g. use
+      /opt/lamdaemon). Please make the lamdaemon.pl script executable.</para>
+    </section>
+
+    <section id="a_lamdaemonConf">
+      <title>LDAP Account Manager configuration</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>Set the remote or local host in the configuration (e.g.
+          127.0.0.1)</para>
+        </listitem>
+
+        <listitem>
+          <para>Path to lamdaemon.pl, e.g.
+          /srv/www/htdocs/lam/lib/lamdaemon.pl If you installed a Debian or
+          RPM package then the script will be located at
+          /usr/share/ldap-account-manager/lib/lamdaemon.pl.</para>
+        </listitem>
+
+        <listitem>
+          <para>Your LAM admin user must be a valid Unix account. It needs to
+          have the object class "posixAccount" and an attribute "uid". This
+          account must be accepted by the SSH daemon of your home directory
+          server. Do not create a second local account but change your system
+          to accept LDAP users. You can use LAM to add the Unix account part
+          to your admin user or create a new account. Please do not forget to
+          setup LDAP write access (<ulink
+          url="http://www.openldap.org/doc/admin24/access-control.html">ACLs</ulink>)
+          if you create a new account.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para></para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/lamdaemon.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Note that the builtin admin/manager entries do not work for
+      lamdaemon. You need to login with a Unix account.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/lamdaemon1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis role="bold">OpenLDAP ACL location:</emphasis></para>
+
+      <para>The access rights for OpenLDAP are configured in
+      /etc/ldap/slapd.conf or
+      /etc/ldap/slapd.d/cn=config/olcDatabase={1}bdb.ldif.</para>
+    </section>
+
+    <section>
+      <title>Setup sudo</title>
+
+      <para>The perl script has to run as root. Therefore we need a wrapper,
+      sudo. Edit /etc/sudoers on host where homedirs or quotas should be used
+      and add the following line:</para>
+
+      <para>$admin All= NOPASSWD: $path_to_lamdaemon *</para>
+
+      <para><emphasis condition="">$admin</emphasis> is the admin user from
+      LAM (must be a valid Unix account) and
+      <emphasis>$path_to_lamdaemon</emphasis> is the path to
+      lamdaemon.pl.</para>
+
+      <para><emphasis role="bold">Example:</emphasis></para>
+
+      <para>myAdmin ALL= NOPASSWD: /srv/www/htdocs/lam/lib/lamdaemon.pl
+      *</para>
+
+      <para>You might need to run the sudo command once manually to init sudo.
+      The command "sudo -l" will show all possible sudo commands of the
+      current user.</para>
+
+      <para><emphasis role="bold">Attention:</emphasis> Please do not use the
+      options "Defaults requiretty" and "Defaults env_reset" in /etc/sudoers.
+      Otherwise you might get errors like "you must have a tty to run sudo" or
+      "no tty present and no askpass program specified".</para>
+    </section>
+
+    <section>
+      <title>Setup Perl</title>
+
+      <para>We need an extra Perl module - Quota. To install it, run:</para>
+
+      <simplelist>
+        <member>perl -MCPAN -e shell</member>
+
+        <member>install Quota</member>
+      </simplelist>
+
+      <para>If your Perl executable is not located in /usr/bin/perl you will
+      have to edit the path in the first line of lamdaemon.pl. If you have
+      problems compiling the Perl modules try installing a newer release of
+      your GCC compiler and the "make" application.</para>
+
+      <para>Several Linux distributions already include a quota package for
+      Perl.</para>
+    </section>
+
+    <section>
+      <title>Set up SSH</title>
+
+      <para>Your SSH daemon must offer the password authentication method. To
+      activate it just use this configuration option in
+      /etc/ssh/sshd_config:</para>
+
+      <para>PasswordAuthentication yes</para>
+    </section>
+
+    <section>
+      <title>Troubleshooting</title>
+
+      <para>If you have problems managing quotas and home directories then
+      these points might help:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>There is a test page for lamdaemon: Login to LAM and open
+          Tools -&gt; Tests -&gt; Lamdaemon test</para>
+        </listitem>
+
+        <listitem>
+          <para>Check /var/log/auth.log or its equivalent on your system. This
+          file contains messages about all logins. If the ssh login failed
+          then you will find a description about the reason here.</para>
+        </listitem>
+
+        <listitem>
+          <para>Set sshd in debug mode. In /etc/ssh/sshd_conf add these
+          lines:</para>
+
+          <simplelist>
+            <member>SyslogFacility AUTH</member>
+
+            <member>LogLevel DEBUG3</member>
+          </simplelist>
+
+          <para>Now check /var/log/syslog for messages from sshd.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Error message <emphasis role="bold">"Your LAM admin user (...)
+      must be a valid Unix account to work with lamdaemon!"</emphasis>: This
+      happens if you use the default LDAP admin/manager user to login to LAM.
+      Please see <link linkend="a_lamdaemonConf">here</link> and setup a Unix
+      account.</para>
+    </section>
+  </appendix> 

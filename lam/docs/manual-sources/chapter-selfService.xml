@@ -1,0 +1,1596 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"> 
+  <chapter id="a_selfService">
+    <title>Self service (LAM Pro)</title>
+
+    <section>
+      <title>Preparations</title>
+
+      <section id="openldapAcls">
+        <title>OpenLDAP ACLs</title>
+
+        <para>By default only a few administrative users have write access to
+        the LDAP database. Before your users may change their settings you
+        must allow them to change their LDAP data.</para>
+
+        <para>Hint: The ACLs below are not required if you decide to run all
+        operations as the LDAP bind user (option "Use for all
+        operations").</para>
+
+        <para>This can be done by adding ACLs to your slapd.conf or
+        slapd.d/cn=config/olcDatabase={1}bdb.ldif which look similar to
+        these:</para>
+
+        <para><emphasis role="bold">access to</emphasis></para>
+
+        <para><emphasis role="bold"> attrs=userPassword</emphasis></para>
+
+        <para><emphasis role="bold"> by self write</emphasis></para>
+
+        <para><emphasis role="bold"> by anonymous auth</emphasis></para>
+
+        <para><emphasis role="bold"> by * none</emphasis></para>
+
+        <literallayout>
+</literallayout>
+
+        <para><emphasis role="bold">access to</emphasis></para>
+
+        <para><emphasis role="bold">
+        attrs=mail,sn,givenName,telephoneNumber,mobile,facsimileTelephoneNumber,street,postalAddress,postOfficeBox,postalCode,roomNumber,shadowLastChange,passwordSelfResetAnswer,passwordSelfResetQuestion,passwordSelfResetBackupMail</emphasis></para>
+
+        <para><emphasis role="bold"> by self write</emphasis></para>
+
+        <para><emphasis role="bold"> by * read</emphasis></para>
+
+        <para>If you do not want them to change all attributes then reduce the
+        list to fit your needs. Some modules may require additional LDAP
+        attributes. You can use the tree view to get the technical attribute
+        names e.g. by selecting an user account.</para>
+
+        <para>Usually, the slapd.conf file is located in /etc/ldap or
+        /etc/openldap.</para>
+      </section>
+
+      <section>
+        <title>Other LDAP servers</title>
+
+        <para>There exist many LDAP implementations. If you do not use
+        OpenLDAP you need to write your own ACLs. Please check the manual of
+        your LDAP server for instructions.</para>
+      </section>
+    </section>
+
+    <section>
+      <title>Creating a self service profile</title>
+
+      <para>A self service profile defines what input fields your users see
+      and some other general settings like the login caption.</para>
+
+      <para>When you go to the LAM configuration page you will see the self
+      service link at the bottom. This will lead you to the self service
+      configuration pages</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/conf1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Now we need to create a new self service profile. Click on the
+      link to manage the self service profiles.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/conf2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Specify a name for the new profile and enter your master
+      configuration password (default is "lam") to save the profile.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/conf3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Now go back to the profile login and enter your master
+      configuration password to edit your new profile.</para>
+    </section>
+
+    <section>
+      <title>Edit your new profile</title>
+
+      <section id="selfServiceBasicSettings">
+        <title>General settings</title>
+
+        <para>On top of the page you see the link to the user login page. Copy
+        this link address and give it to your users.</para>
+
+        <para>Below the link you can specify several options.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/conf4.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <table border="0">
+          <title>General options</title>
+
+          <tgroup cols="2">
+            <tbody>
+              <row>
+                <entry>Server address</entry>
+
+                <entry>The address of your LDAP server. For LDAP+SSL use
+                "ldaps://myserver"</entry>
+              </row>
+
+              <row>
+                <entry>Activate TLS</entry>
+
+                <entry>Activates TLS encryption. Please note that this cannot
+                be combined with LDAP+SSL ("ldaps://").</entry>
+              </row>
+
+              <row>
+                <entry>LDAP suffix</entry>
+
+                <entry>The part of the LDAP tree where LAM should search for
+                users</entry>
+              </row>
+
+              <row>
+                <entry>LDAP search attribute</entry>
+
+                <entry>Here you can specify if your users can login with user
+                name + password, email + password or other attributes.</entry>
+              </row>
+
+              <row>
+                <entry>Follow referrals</entry>
+
+                <entry>By default LAM will not follow LDAP referrals. This is
+                ok for most installations. If you use LDAP referrals please
+                activate the referral option in advanced settings.</entry>
+              </row>
+
+              <row>
+                <entry>LDAP user + password</entry>
+
+                <entry>The DN and password which is used to search for users
+                in the LDAP database. It is sufficient if this DN has only
+                read rights. If you leave these fields empty LAM will try to
+                connect anonymously.</entry>
+              </row>
+
+              <row>
+                <entry>Use for all operations</entry>
+
+                <entry>By default LAM will use the credentials of the user
+                that logged in to self service for read/modify operations. If
+                you select this box then the connection user specified before
+                will be used instead. Please note that this can be a security
+                risk because the user requires write access to all users. You
+                need to make sure that your LAM server is well
+                protected.</entry>
+              </row>
+
+              <row>
+                <entry>Additional LDAP filter</entry>
+
+                <entry>Use this to enter an additional LDAP filter (e.g.
+                "(objectClass=passwordSelfReset)") to reduce the number of
+                accounts who may use self service.</entry>
+              </row>
+
+              <row>
+                <entry>HTTP authentication</entry>
+
+                <entry>You can enable HTTP authentication for your users. This
+                way the web server is responsible to authenticate your users.
+                LAM will use the given user name + password for the LDAP
+                login. To setup HTTP authentication in Apache please see this
+                <ulink
+                url="http://httpd.apache.org/docs/2.2/howto/auth.html">link</ulink>.</entry>
+              </row>
+
+              <row>
+                <entry>Login attribute label</entry>
+
+                <entry>This is the description for the LDAP search attribute.
+                Set it to something which your users are familiar
+                with.</entry>
+              </row>
+
+              <row>
+                <entry>Password field label</entry>
+
+                <entry>This text is placed as label for the password field on
+                the login page. LAM will use "Password" if you do not enter
+                any text.</entry>
+              </row>
+
+              <row>
+                <entry>Login caption</entry>
+
+                <entry>This text is displayed at the login page. You can input
+                HTML, too.</entry>
+              </row>
+
+              <row>
+                <entry>Main page caption</entry>
+
+                <entry>This text is displayed at self service main page where
+                your users change their data. You can input HTML, too.</entry>
+              </row>
+
+              <row>
+                <entry>Page header</entry>
+
+                <entry>This HTML code will be placed on top of all self
+                service pages. E.g. you can use this to place your custom
+                logo. Any HTML code is permitted.</entry>
+              </row>
+
+              <row>
+                <entry>Additional CSS links</entry>
+
+                <entry>Here you can specify additional CSS links to change the
+                layout of the self service pages. This is useful to adapt them
+                to your corporate design. Please enter one link per
+                line.</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+
+        <para></para>
+
+        <section>
+          <title>2-factor authentication</title>
+
+          <para>LAM supports 2-factor authentication for your users. This
+          means the user will not only authenticate by user+password but also
+          with e.g. a token generated by a mobile device. This adds more
+          security because the token is generated on a physically separated
+          device (typically mobile phone).</para>
+
+          <para>The token is validated by a second application. LAM currently
+          supports:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para><ulink
+              url="https://www.privacyidea.org/">privacyIdea</ulink></para>
+            </listitem>
+          </itemizedlist>
+
+          <para>By default LAM will enforce to use a token and reject users
+          that did not setup one. You can set this check to optional. But if a
+          user has setup a token then this will always be required.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/conf7.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>After logging in with user + password LAM will ask for the 2nd
+          factor. If the user has setup multiple factors then he can choose
+          one of them.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/conf8.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </section>
+      </section>
+
+      <section>
+        <title>Page layout</title>
+
+        <para>Here you can specify what input fields your users can see. It is
+        also possible to group several input fields.</para>
+
+        <para>Please use the arrow signs to change the order of the
+        fields/groups.</para>
+
+        <para>You may also set some fields as read-only for your users. This
+        can be done by clicking on the lock symbol. Read-only fields can be
+        used to show your users additional data on the self service page that
+        must not be changed by themselves (e.g. first/last name).</para>
+
+        <para>Sometimes, you may want to set a custom label for an input
+        field. Click on the edit icon to set your own label text (Personal:
+        Department is relabeled as "Business unit" here).</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/conf5.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis role="bold">Possible input fields</emphasis></para>
+
+        <para>This is a list of input fields you may add to the self service
+        page.</para>
+
+        <table>
+          <title>Self service fields</title>
+
+          <tgroup cols="3">
+            <tbody>
+              <row>
+                <entry align="center"><emphasis role="bold">Account
+                type</emphasis></entry>
+
+                <entry align="center"><emphasis
+                role="bold">Option</emphasis></entry>
+
+                <entry align="center"><emphasis
+                role="bold">Description</emphasis></entry>
+              </row>
+
+              <row>
+                <entry morerows=""><inlinemediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/schema_asterisk.png" />
+                    </imageobject>
+                  </inlinemediaobject> Asterisk (voicemail)</entry>
+
+                <entry>Sync Asterisk password with Unix password</entry>
+
+                <entry>This is a hidden field. It will update the Asterisk
+                password each time the Unix password is changed.</entry>
+              </row>
+
+              <row>
+                <entry><inlinemediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/schema_heimdal.png" />
+                    </imageobject>
+                  </inlinemediaobject> Kerberos</entry>
+
+                <entry>Sync Kerberos password with Unix password</entry>
+
+                <entry>This is a hidden field. It will update the Kerberos
+                password each time the Unix password is changed.</entry>
+              </row>
+
+              <row>
+                <entry morerows="1"><inlinemediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/schema_kolab.png" />
+                    </imageobject>
+                  </inlinemediaobject> Kolab</entry>
+
+                <entry>Delegates</entry>
+
+                <entry>Allows to manage delegate permissions</entry>
+              </row>
+
+              <row>
+                <entry>Invitation policy</entry>
+
+                <entry>Invitation policy management</entry>
+              </row>
+
+              <row>
+                <entry><inlinemediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/schema_ssh.png" />
+                    </imageobject>
+                  </inlinemediaobject> Password policy</entry>
+
+                <entry>Last password change</entry>
+
+                <entry>read-only</entry>
+              </row>
+
+              <row>
+                <entry morerows="2"><inlinemediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/schema_ssh.png" />
+                    </imageobject>
+                  </inlinemediaobject> Password self reset</entry>
+
+                <entry>Question</entry>
+
+                <entry>Security question selection</entry>
+              </row>
+
+              <row>
+                <entry>Answer</entry>
+
+                <entry>Security answer</entry>
+              </row>
+
+              <row>
+                <entry>Backup email</entry>
+
+                <entry>(External) backup email address that has no relation to
+                user password.</entry>
+              </row>
+
+              <row>
+                <entry morerows="26"><inlinemediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/schema_user.png" />
+                    </imageobject>
+                  </inlinemediaobject> Personal</entry>
+
+                <entry>Business category</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Car license</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Department</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Description</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Email address</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Fax number</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>First name</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Home telephone number</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Initials</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Job title</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Last name</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Location</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Mobile number</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Office name</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Organisational unit</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Photo</entry>
+
+                <entry>Shows the user photo if set. The user may also remove
+                the photo or upload a new one.</entry>
+              </row>
+
+              <row>
+                <entry>Postal address</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Postal code</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Post office box</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Registered address</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Room number</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>State</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Street</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Telephone number</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>User certificates</entry>
+
+                <entry>Upload of user certificates in PEM or DER
+                format</entry>
+              </row>
+
+              <row>
+                <entry>User name</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Web site</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry morerows="4"><inlinemediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/schema_samba.png" />
+                    </imageobject>
+                  </inlinemediaobject> Samba 3</entry>
+
+                <entry>Password</entry>
+
+                <entry>Input field to set a new NT/LM password. The attribute
+                "sambaPwdLastSet" is updated if it existed before.</entry>
+              </row>
+
+              <row>
+                <entry>Sync Samba LM password with Unix password</entry>
+
+                <entry>This is a hidden field. It will update the Samba LM
+                password each time the Unix password is changed.</entry>
+              </row>
+
+              <row>
+                <entry>Sync Samba NT password with Unix password</entry>
+
+                <entry>This is a hidden field. It will update the Samba NT
+                password each time the Unix password is changed.</entry>
+              </row>
+
+              <row>
+                <entry>Update attribute "sambaPwdLastSet" on password
+                change</entry>
+
+                <entry>Updates the password timestamp when password is
+                synchronized with Unix.</entry>
+              </row>
+
+              <row>
+                <entry>Last password change (read-only)</entry>
+
+                <entry>Displays the date and time of the user's last password
+                change.</entry>
+              </row>
+
+              <row>
+                <entry><inlinemediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/schema_ssh.png" />
+                    </imageobject>
+                  </inlinemediaobject> Shadow</entry>
+
+                <entry>Last password change (read-only)</entry>
+
+                <entry>Displays the date and time of the user's last password
+                change (Unix).</entry>
+              </row>
+
+              <row>
+                <entry morerows="8"><inlinemediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/schema_samba.png" />
+                    </imageobject>
+                  </inlinemediaobject> Windows</entry>
+
+                <entry>Password</entry>
+
+                <entry>Change the user's password</entry>
+              </row>
+
+              <row>
+                <entry>Location</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Office name</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Postal code</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Post office box</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>State</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Street</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Telephone number</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Web site</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry morerows="3"><inlinemediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/schema_unix.png" />
+                    </imageobject>
+                  </inlinemediaobject> Unix</entry>
+
+                <entry>Common name</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Login shell</entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Password</entry>
+
+                <entry>This is also the source for several password
+                synchronization options.</entry>
+              </row>
+
+              <row>
+                <entry>Sync Unix password with Windows password</entry>
+
+                <entry>This is a hidden field. It will update the Unix
+                password each time the Windows password is changed.</entry>
+              </row>
+
+              <row>
+                <entry morerows="1"><inlinemediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/schema_zarafa.png" />
+                    </imageobject>
+                  </inlinemediaobject> Zarafa</entry>
+
+                <entry>"Send as" privileges</entry>
+
+                <entry>Define user who may send mails as this user</entry>
+              </row>
+
+              <row>
+                <entry>Email aliases</entry>
+
+                <entry>Email aliases</entry>
+              </row>
+
+              <row>
+                <entry morerows="3"><inlinemediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/schema_pykota.png" />
+                    </imageobject>
+                  </inlinemediaobject> PyKota</entry>
+
+                <entry>Balance (read-only)</entry>
+
+                <entry>Current balance for printing</entry>
+              </row>
+
+              <row>
+                <entry>Total paid (read-only)</entry>
+
+                <entry>Total money paid</entry>
+              </row>
+
+              <row>
+                <entry>Payment history</entry>
+
+                <entry>History of user payments</entry>
+              </row>
+
+              <row>
+                <entry>Job history</entry>
+
+                <entry>History of printed jobs</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+      </section>
+
+      <section>
+        <title>Module settings</title>
+
+        <para>This allows to configure some module specific options (e.g.
+        custom scripts or password hash type).</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/conf6.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>Samba 3</title>
+
+        <para>LAM Pro can check the password history and minimum age for Samba
+        3 password changes. In this case please provide the LDAP suffix where
+        your Samba 3 domain(s) are stored.</para>
+
+        <para>If you leave the field empty then no history and age checks will
+        be done.</para>
+
+        <para>Password history: depending on your LDAP server you might need
+        ascending or descending order. Just switch the setting if the password
+        history is not correctly updated.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/selfServiceSambaDomains.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section id="PasswordSelfReset">
+        <title>Password self reset</title>
+
+        <para><emphasis role="bold">Schema installation</emphasis></para>
+
+        <para>Please install the LDAP schema as described <link
+        linkend="a_passwordSelfResetSchema">here</link>.</para>
+
+        <para><emphasis role="bold">Settings</emphasis></para>
+
+        <para>You can allow your users to reset their passwords themselves.
+        This will reduce your administrative costs for cases where users
+        forget their passwords.</para>
+
+        <para>To enable this feature please activate the checkbox "Enable
+        password self reset link".</para>
+
+        <para><emphasis role="bold">Hint:</emphasis> Plese note that LAM Pro
+        uses security questions by default. Activate confirmation mails and
+        then deactivate security questions if you want to use only email
+        validation.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/passwordSelfReset1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>You can now configure the minimum answer length for password
+        reset answers. This is checked when you allow you users to specify
+        their answers via the self service. Additionally, you can specify the
+        text of the password reset link (default: "Forgot password?"). The
+        link is displayed below the password field on the self service login
+        page.</para>
+
+        <para>Next, please enter the DN and password of an LDAP entry that is
+        allowed to reset the passwords. This entry needs write access to the
+        attributes shadowLastChange, pwdAccountLockedTime and userPassword. It
+        also needs read access to uid, mail, passwordSelfResetQuestion and
+        passwordSelfResetAnswer. Please note that LAM Pro saves the password
+        on your server file system. Therefore, it is required to protect your
+        server against unauthorised access.</para>
+
+        <para>Please also specify the list of password reset questions that
+        the user can choose.</para>
+
+        <para>Please note that self service and LAM admin interface are
+        separated functionalities. You need to specify the list of possible
+        security questions in both self service profile(s) and server
+        profile(s).</para>
+
+        <literallayout> </literallayout>
+
+        <para>You can inform your users via mail about their password change.
+        The mail can include the new password by using the special wildcard
+        "@@newPassword@@". Additionally, you may want to insert other
+        wildcards that are replaced by the corresponding LDAP attributes. E.g.
+        "@@uid@@" will be replaced by the user name. Please see <link
+        linkend="mailEOL">email format option</link> in case of broken mails.
+        See <link linkend="mailSetup">here</link> for setting up your SMTP
+        server.</para>
+
+        <literallayout> </literallayout>
+
+        <para>LAM Pro can send your users an email with a confirmation link to
+        validate their email address. Of course, this should only be used if
+        the email account is independent from the user password (e.g. at
+        external provider) or you use the backup email address feature. The
+        mail body must include the confirmation link by using the special
+        wildcard "@@resetLink@@". Additionally, you may want to insert other
+        wildcards that are replaced by the corresponding LDAP attributes. E.g.
+        "@@uid@@" will be replaced by the user name.</para>
+
+        <para>There is also an option to skip the security question at all if
+        email verification is enabled. In this case the password can be reset
+        directly after clicking on the confirmation link. Please handle with
+        care since anybody with access to the user's mail account can reset
+        the password.</para>
+
+        <para><emphasis role="bold">Troubleshooting:</emphasis></para>
+
+        <para>1. You get messages like "Unable to find user account."</para>
+
+        <para>This can have multiple reasons:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>security questions enabled but no security question and/or
+            answer set for this user</para>
+          </listitem>
+
+          <listitem>
+            <para>user name + email combination does not exist</para>
+          </listitem>
+
+          <listitem>
+            <para>no connection to LDAP server</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Turn on logging in LAM's main configuration settings. The exact
+        reason is logged on notice level.</para>
+
+        <para>2. You do not see security question and answer fields when
+        logged into self service.</para>
+
+        <para>Probably, the user does not have the object class
+        "passwordSelfReset" set. You can do this in admin interface. If you
+        have multiple users to change then use the <link
+        linkend="toolMultiEdit">Multi Edit Tool</link> to add the object
+        class.</para>
+
+        <para><emphasis role="bold">New fields for self service
+        page</emphasis></para>
+
+        <para>There are special fields that you may put on the self service
+        page for your users. These fields allow them to change the reset
+        questions and its answers. It is also possible to set a backup email
+        address to reset passwords with an external email address.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/passwordSelfReset2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>This is an example how can be presented to your users on the
+        self service page:</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/passwordSelfReset3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis role="bold">Password reset link</emphasis></para>
+
+        <para>After activating the password self reset feature there will be a
+        new link on the self service login page. The text can be configured as
+        described above (default: "Forgot password?").</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/passwordSelfReset4.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>When a user clicks on the link then he will be asked for
+        identification with his user name and email address.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/passwordSelfReset5.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>LAM Pro will use this information to find the correct LDAP entry
+        of this user. It then displays the user's security questions and input
+        fields for his new password. If the answer is correct then the new
+        password will be set. Additionally, pwdAccountLockedTime will be
+        removed and shadowLastChange updated to the current time if
+        existing.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/passwordSelfReset6.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>User self registration</title>
+
+        <para>With LAM Pro your users can create their own accounts if you
+        like. LAM Pro will display an additional link on the self service
+        login page that allows you users to create a new account including
+        email validation (see <link linkend="mailSetup">here</link> for
+        setting up your SMTP server).</para>
+
+        <para>You enable this feature in your self service profile. Just
+        activate the checkbox "Enable self registration link".</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/accountRegistration1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis role="bold">Options:</emphasis></para>
+
+        <para><emphasis>Link text:</emphasis> This is the label for the link
+        to the self registration. If empty "Register new account" will be
+        used.</para>
+
+        <para><emphasis>Admin DN and password:</emphasis> Please enter the
+        LDAP DN and its password that should be used to create new users. This
+        DN also needs to be able to do LDAP searches by uid in the self
+        service part of your LDAP tree.</para>
+
+        <para><emphasis>Object classes:</emphasis> This is a list of object
+        classes that are used to build the new user accounts. Please enter one
+        object class in each line. If you use LAM Pro password self reset
+        feature then do not forget to add "passwordSelfReset" here.</para>
+
+        <para><emphasis>Attributes:</emphasis> This is a list of additional
+        attributes that the user can enter. Please note that user name,
+        password and email address are mandatory anyway and need not be
+        specified.</para>
+
+        <para>Each line represents one LDAP attribute. The settings are
+        separated by "::". The first setting specifies the field type. The
+        second setting is the LDAP attribute name. Depending on the field type
+        you can enter additional options:</para>
+
+        <table>
+          <title></title>
+
+          <tgroup cols="6">
+            <tbody>
+              <row>
+                <entry><emphasis role="bold">Description</emphasis></entry>
+
+                <entry><emphasis role="bold">Type</emphasis></entry>
+
+                <entry><emphasis role="bold">Attribute name</emphasis></entry>
+
+                <entry><emphasis role="bold">First option</emphasis></entry>
+
+                <entry><emphasis role="bold">Second option</emphasis></entry>
+
+                <entry><emphasis role="bold">Third option</emphasis></entry>
+              </row>
+
+              <row>
+                <entry>An optional input field that is displayed on the
+                registration page.</entry>
+
+                <entry>optional</entry>
+
+                <entry>e.g. "givenName"</entry>
+
+                <entry>Label that is displayed on page</entry>
+
+                <entry>optional regular expression for validation (e.g.
+                "/^[0-9a-zA-Z]+$/")</entry>
+
+                <entry>validation message if value does not match validation
+                expression</entry>
+              </row>
+
+              <row>
+                <entry>A required input field that is displayed on the
+                registration page. Self registration cannot be done if such a
+                field is left empty by the user.</entry>
+
+                <entry>required</entry>
+
+                <entry>e.g. "sn"</entry>
+
+                <entry>Label that is displayed on page</entry>
+
+                <entry>optional regular expression for validation (e.g.
+                "/^[0-9a-zA-Z]+$/")</entry>
+
+                <entry>validation message if value does not match validation
+                expression</entry>
+              </row>
+
+              <row>
+                <entry>Constant attribute value, not visible for the user. Can
+                be used to set some initial values or data that must not be
+                edited by the user.</entry>
+
+                <entry>constant</entry>
+
+                <entry>e.g. "homeDirectory"</entry>
+
+                <entry>attribute value, supports wirldcards to insert other
+                attribute values (e.g. "@@uid@@")</entry>
+
+                <entry></entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Auto-numbering for attributes such as uidNumber. Will
+                do a search for attribute values in the given range and use
+                highest value + 1.</entry>
+
+                <entry>autorange</entry>
+
+                <entry>e.g. uidNumber</entry>
+
+                <entry>LDAP search base, e.g.
+                ou=people,dc=company,dc=com</entry>
+
+                <entry>Minimum value, e.g. 1000</entry>
+
+                <entry>Maximum value, e.g. 2000</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+
+        <para>For a syntax description of validation expressions see <ulink
+        url="http://perldoc.perl.org/perlre.html">here</ulink>. Validation is
+        optional, you can leave these options blank.</para>
+
+        <para><emphasis role="bold">Example:</emphasis></para>
+
+        <para>optional::givenName::First name::/^[[:alnum:] ]+$/u::Please
+        enter a valid first name.</para>
+
+        <para>required::sn::Last name::/^[[:alnum:] ]+$/u::Please enter a
+        valid last name.</para>
+
+        <para>constant::homeDirectory::/home/@@uid@@</para>
+
+        <para>autorange::uidNumber::ou=people,dc=company,dc=com::10000::20000</para>
+
+        <para>If you use the object class "inetOrgPerson" and do not provide
+        the "cn" attribute then LAM will set it to the user name value.</para>
+
+        <literallayout>
+</literallayout>
+
+        <para>Please note that only simple input boxes are supported for
+        account registration. The user may log in to self service when his
+        account was created to manage all his attributes.</para>
+
+        <literallayout>
+</literallayout>
+
+        <para><emphasis role="bold">Captcha support</emphasis></para>
+
+        <para>LAM Pro can optionally display a captcha to verify that
+        registrations are not from robots. The supported captcha provider is
+        Google reCAPTCHA. You will need the site and secret key for your
+        domain. They can be retrieved from here: <ulink
+        url="https://www.google.com/recaptcha">https://www.google.com/recaptcha</ulink></para>
+
+        <para>Please note that your web server must be able to access
+        "https://www.google.com/recaptcha/api/siteverify" to verify the
+        captchas. Captchas will be displayed automatically when site+secret
+        key are filled.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/accountRegistration4.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <literallayout>
+</literallayout>
+
+        <para><emphasis role="bold">User view:</emphasis></para>
+
+        <para>The user can register by clicking on a link on the self service
+        login page:</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/accountRegistration2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Here he can insert the data that you specified in the self
+        service profile:</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/accountRegistration3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>LAM will then send him an email with a validation link that is
+        valid for 24 hours. When he clicks on this link then the account will
+        be created in the self service user suffix. The DN will look like
+        this: <emphasis>uid=&lt;user name&gt;,...</emphasis></para>
+
+        <para>Please see <link linkend="mailEOL">email format option</link> in
+        case of broken mails.</para>
+      </section>
+
+      <section>
+        <title>Custom fields (LAM Pro)</title>
+
+        <para>This module allows you to manage LDAP attributes that are not
+        covered by the other LAM modules (e.g. if you use custom LDAP
+        schemas). You can fully define how your input fields look like:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Label</para>
+          </listitem>
+
+          <listitem>
+            <para>LDAP attribute name</para>
+          </listitem>
+
+          <listitem>
+            <para>Unique name for field</para>
+          </listitem>
+
+          <listitem>
+            <para>Help text</para>
+          </listitem>
+
+          <listitem>
+            <para>Read-only display</para>
+          </listitem>
+
+          <listitem>
+            <para>Field type: text, password, text area, checkbox, radio
+            buttons, select list, file upload</para>
+          </listitem>
+
+          <listitem>
+            <para>Validation via regular expression</para>
+          </listitem>
+
+          <listitem>
+            <para>Error message if validation fails</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>To create custom fields for the Self Service please edit your
+        Self Service profile and switch to tab "Module settings". Here you can
+        add a new field. Simply fill the fields and press on "Add".</para>
+
+        <para>Please note that the field name cannot be changed later. It is
+        the unique ID for this field.</para>
+
+        <para>After you created your fields please press on "Sync fields with
+        page layout". Now you can switch to tab "Page layout" and add your new
+        fields like any other standard field.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/customFields1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Examples for fields and their representation in Self
+        Service:</para>
+
+        <para><emphasis role="bold">Text field:</emphasis></para>
+
+        <para>Text fields allow to specify a <link
+        linkend="customFields_validation_expressions">validation
+        expression</link> and error message.</para>
+
+        <para>You can also enable auto-completion. In this case LAM will
+        search all accounts for the given attribute and provide
+        auto-completion hints when the user edits this field. This should only
+        be used if there is a limited number of different values for this
+        attribute.</para>
+
+        <para>In case your field is a date value you can show a calendar for
+        easy editing.</para>
+
+        <para>Example calendar formats:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>dd.mm.yy: 31.12.2016</para>
+          </listitem>
+
+          <listitem>
+            <para>yy-mm-dd: 2016-12-31</para>
+          </listitem>
+
+          <listitem>
+            <para>d M, y: 31 Dec, 16</para>
+          </listitem>
+
+          <listitem>
+            <para>d MM, y: 31 December, 2016</para>
+          </listitem>
+        </itemizedlist>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/customFields2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Presentation in Self Service:</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/customFields3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis role="bold">Password field:</emphasis></para>
+
+        <para>You can also manage custom password fields. LAM Pro will display
+        two fields where the user must enter the same password. You can hash
+        the password if needed.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/customFields4.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Presentation in Self Service:</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/customFields5.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis role="bold">Text area:</emphasis></para>
+
+        <para>This adds a multi-line field. The options are similar to text
+        fields. Additionally, you can set the size with the number of columns
+        and rows.</para>
+
+        <para>Please note that the <link
+        linkend="customFields_validation_expressions">validation
+        expression</link> should be set to multi-line. This is done by adding
+        "m" at the end.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/customFields6.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Presentation in Self Service:</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/customFields7.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis role="bold">Checkbox:</emphasis></para>
+
+        <para>Sometimes you may want to allow only yes/no values for your LDAP
+        attributes. This can be represented by a checkbox. You can specify the
+        values for checked and unchecked. The default value is set if the LDAP
+        attribute has no value.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/customFields8.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Presentation in Self Service:</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/customFields9.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis role="bold">Radio buttons:</emphasis></para>
+
+        <para>This displays a list of radio buttons where the user can select
+        one value.</para>
+
+        <para>You can specify a mapping of LDAP attribute values and their
+        display (label) on the Self Service page. To add more mapping fields
+        please press "Add more mapping fields".</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/customFields10.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Presentation in Self Service:</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/customFields11.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis role="bold">Select list:</emphasis></para>
+
+        <para>Select lists allow the user to select a value in a large list of
+        options. The definition of the possible values and their display is
+        similar to radio buttons.</para>
+
+        <para>You can also allow multiple values.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/customFields12.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Presentation in Self Service:</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/customFields13.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/customFields18.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para id="customFields_validation_expressions"><emphasis
+        role="bold">Validation expressions:</emphasis></para>
+
+        <para>The validation expressions follow the standard of <ulink
+        url="http://perldoc.perl.org/perlre.html">Perl regular
+        expressions</ulink>. They start and end with a "/". The beginning of a
+        line is specified by "^" and the end by "$".</para>
+
+        <para>Examples:</para>
+
+        <para>/^[a-z0-9]+$/ allows small letters and numbers. The value must
+        not be empty ("+").</para>
+
+        <para>/^[a-z0-9]+$/i allows small and capital letters ("i" at the end
+        means ignore case) and numbers. The value must not be empty
+        ("+").</para>
+
+        <para>Special characters that must be escaped with "\": "\", ".", "(",
+        ")"</para>
+
+        <para>E.g. /^[a-z0-9\.]$/i</para>
+
+        <literallayout>
+</literallayout>
+
+        <para><emphasis role="bold">File upload:</emphasis></para>
+
+        <para>This is used for binary data. You can restrict uploaded data to
+        a given file extension and set the maximum file size.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/customFields23.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Presentation:</para>
+
+        <para>The uploaded data may also be downloaded via LAM.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/customFields24.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+    </section>
+
+    <section>
+      <title>Adapt the self service to your corporate design</title>
+
+      <para>LAM Pro allows you to integrate customs CSS style definitions and
+      design the header of all self service pages. This way you can integrate
+      you own logo and use your company's colors.</para>
+
+      <section>
+        <title>Custom header</title>
+
+        <para>The default LAM Pro header includes a logo and a horizontal
+        line. You can enter any HTML code here. It will be included in the
+        self services pages after the body tag.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configPageHeader.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>CSS files</title>
+
+        <para>Usually, companies have regulations about their corporate design
+        and use common CSS files. This assures a common appearance of all
+        intranet pages (e.g. colors and fonts). To include additional CSS
+        files just use the following setting for this task. The additional CSS
+        links will be added after LAM Pro's default CSS link. This way you can
+        overwrite LAM Pro's style.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configCSS.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+    </section>
+  </chapter>

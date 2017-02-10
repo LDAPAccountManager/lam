@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+  <appendix id="mailSetup">
+    <title>Setup of email (SMTP) server</title>
+
+    <para>LAM always uses a local SMTP email server on the machine where LAM
+    is installed. Therefore, there is no need to configure any SMTP settings
+    inside LAM itself.</para>
+
+    <para>The local email server should be configured to forward all emails to
+    your company mail server (so-called smarthost). You can use any SMTP
+    software that ships with a Sendmail wrapper (e.g. Exim, Postfix, QMail or
+    Sendmail itself).</para>
+
+    <literallayout>
+
+</literallayout>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/lam_mail.png" />
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </appendix>
+ 

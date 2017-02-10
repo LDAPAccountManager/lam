@@ -1,0 +1,904 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+  <chapter id="a_installation">
+    <title>Installation</title>
+
+    <section id="a_install">
+      <title>New installation</title>
+
+      <section>
+        <title>Requirements</title>
+
+        <para>LAM has the following requirements to run:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Apache/Nginx webserver (SSL recommended) with PHP module
+            (PHP 5 (&gt;= 5.2.4) with ldap, gettext, xml, openssl and optional
+            mcrypt)</para>
+          </listitem>
+
+          <listitem>
+            <para>Some LAM plugins may require additional PHP extensions (you
+            will get a note on the login page if something is missing)</para>
+          </listitem>
+
+          <listitem>
+            <para>Perl (optional, needed only for <link
+            linkend="a_lamdaemon">lamdaemon</link>)</para>
+          </listitem>
+
+          <listitem>
+            <para>Any standard LDAP server (e.g. OpenLDAP, Active Directory,
+            Samba 4, OpenDJ, 389 Directory Server, Apache DS, ...)</para>
+          </listitem>
+
+          <listitem>
+            <para>A recent web browser that supports CSS2 and JavaScript, at
+            minimum:</para>
+
+            <para><itemizedlist>
+                <listitem>
+                  <para>Firefox (max. 2 years old)</para>
+                </listitem>
+
+                <listitem>
+                  <para>Internet Explorer 9 <emphasis
+                  role="bold">(compatibility mode turned
+                  off)</emphasis></para>
+                </listitem>
+
+                <listitem>
+                  <para>Opera (max. 2 years old)</para>
+                </listitem>
+
+                <listitem>
+                  <para>Chrome (max. 2 years old)</para>
+                </listitem>
+              </itemizedlist></para>
+          </listitem>
+        </itemizedlist>
+
+        <para>MCrypt will be used to store your LDAP password encrypted in the
+        session file.</para>
+
+        <para>Please note that LAM does not ship with a selinux policy. Please
+        disable selinux or <link linkend="selinux">create your own
+        policy</link>.</para>
+
+        <para>See <link linkend="a_schema">LDAP schema fles</link> for
+        information about used LDAP schema files.</para>
+      </section>
+
+      <section>
+        <title>Prepackaged releases</title>
+
+        <para>LAM is available as prepackaged version for various
+        platforms.</para>
+
+        <section>
+          <title>Debian</title>
+
+          <informaltable frame="none" tabstyle="noborder">
+            <tgroup cols="2">
+              <tbody>
+                <row>
+                  <entry><inlinemediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/debian.png" />
+                      </imageobject>
+                    </inlinemediaobject></entry>
+
+                  <entry>LAM is part of the official Debian repository. New
+                  releases are uploaded to unstable and will be available
+                  automatically in testing and the stable releases. You can
+                  run<literal> </literal><para><emphasis role="bold">apt-get
+                  install ldap-account-manager</emphasis></para>to install LAM
+                  on your server. Additionally, you may download the latest
+                  LAM Debian packages from the <ulink type=""
+                  url="http://www.ldap-account-manager.org/">LAM
+                  homepage</ulink> or the <ulink
+                  url="http://packages.debian.org/search?keywords=ldap-account-manager">Debian
+                  package homepage</ulink>.<para><emphasis
+                  role="bold">Installation of the latest packages on
+                  Debian</emphasis></para><orderedlist>
+                      <listitem>
+                        <para>Install the LAM package</para>
+
+                        <para>dpkg -i ldap-account-manager_*.deb</para>
+
+                        <para>If you get any messages about missing
+                        dependencies run now: apt-get -f install</para>
+                      </listitem>
+
+                      <listitem>
+                        <para>Install the lamdaemon package (optional)</para>
+
+                        <para>dpkg -i
+                        ldap-account-manager-lamdaemon_*.deb</para>
+                      </listitem>
+                    </orderedlist></entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </informaltable>
+        </section>
+
+        <section>
+          <title>Suse/Fedora/CentOS</title>
+
+          <informaltable frame="none">
+            <tgroup cols="2">
+              <tbody>
+                <row>
+                  <entry><inlinemediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/suse.png" />
+                      </imageobject>
+                    </inlinemediaobject><para></para><inlinemediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/fedora.png" />
+                      </imageobject>
+                    </inlinemediaobject></entry>
+
+                  <entry>There are RPM packages available on the <ulink
+                  type="" url="http://www.ldap-account-manager.org/">LAM
+                  homepage</ulink>. The packages can be installed with these
+                  commands:<para><emphasis role="bold">rpm -e
+                  ldap-account-manager
+                  ldap-account-manager-lamdaemon</emphasis> (if an older
+                  version is installed)</para><para><emphasis role="bold">rpm
+                  -i &lt;path to LAM
+                  package&gt;</emphasis></para><literallayout>
+</literallayout><para><emphasis role="bold">Note:</emphasis> The RPM packages
+                  for Fedora/CentOS do not contain a dependency to PHP due to
+                  the various package names for it. Please make sure that you
+                  install Apache/Nginx with PHP.</para></entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </informaltable>
+        </section>
+
+        <section>
+          <title>Other RPM based distributions</title>
+
+          <para>The RPM packages for Suse/Fedora are very generic and should
+          be installable on other RPM-based distributions, too. The Fedora
+          packages use apache:apache as file owner and the Suse ones use
+          wwwrun:www.</para>
+        </section>
+
+        <section>
+          <title>FreeBSD</title>
+
+          <informaltable frame="none">
+            <tgroup cols="2">
+              <tbody>
+                <row>
+                  <entry><inlinemediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/freebsd.png" />
+                      </imageobject>
+                    </inlinemediaobject></entry>
+
+                  <entry>LAM is part of the official FreeBSD ports tree. For
+                  more details see these pages:<para>FreeBSD-SVN: <ulink
+                  url="http://svnweb.freebsd.org/ports/head/sysutils/ldap-account-manager/"
+                  userlevel="">http://svnweb.freebsd.org/ports/head/sysutils/ldap-account-manager/</ulink></para><para>FreshPorts:
+                  <ulink
+                  url="http://www.freshports.org/sysutils/ldap-account-manager">http://www.freshports.org/sysutils/ldap-account-manager</ulink></para></entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </informaltable>
+        </section>
+      </section>
+
+      <section>
+        <title>Installing the tar.bz2</title>
+
+        <section>
+          <title>Extract the archive</title>
+
+          <para>Please extract the archive with the following command:</para>
+
+          <para>tar xjf ldap-account-manager-&lt;version&gt;.tar.bz2</para>
+        </section>
+
+        <section>
+          <title>Install the files</title>
+
+          <section>
+            <title>Manual copy</title>
+
+            <para>Copy the files into the html-file scope of the web server.
+            For example /apache/htdocs or /var/www/html.</para>
+
+            <para>Then set the appropriate file permissions inside the LAM
+            directory:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>sess: write permission for apache/nginx user</para>
+              </listitem>
+
+              <listitem>
+                <para>tmp: write permission for apache/nginx user</para>
+              </listitem>
+
+              <listitem>
+                <para>tmp/internal: write permission for apache/nginx
+                user</para>
+              </listitem>
+
+              <listitem>
+                <para>config (with subdirectories): write permission for
+                apache/nginx user</para>
+              </listitem>
+
+              <listitem>
+                <para>lib/lamdaemon.pl: set executable</para>
+              </listitem>
+            </itemizedlist>
+          </section>
+
+          <section>
+            <title>With configure script</title>
+
+            <para>Instead of manually copying files you can also use the
+            included configure script to install LAM. Just run these commands
+            in the extracted directory:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>./configure</para>
+              </listitem>
+
+              <listitem>
+                <para>make install</para>
+              </listitem>
+            </itemizedlist>
+
+            <para>Options for "./configure":</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>--with-httpd-user=USER USER is the name of your
+                Apache/Nginx user account (default httpd)</para>
+              </listitem>
+
+              <listitem>
+                <para>--with-httpd-group=GROUP GROUP is the name of your
+                Apache/Nginx group (default httpd)</para>
+              </listitem>
+
+              <listitem>
+                <para>--with-web-root=DIRECTORY DIRECTORY is the name where
+                LAM should be installed (default /usr/local/lam)</para>
+              </listitem>
+            </itemizedlist>
+          </section>
+        </section>
+
+        <section>
+          <title>Configuration files</title>
+
+          <para>Copy config/config.cfg.sample to config/config.cfg. Open the
+          index.html in your web browser:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Follow the link "LAM configuration" from the start page to
+              <link linkend="a_configuration">configure LAM</link>.</para>
+            </listitem>
+
+            <listitem>
+              <para>Select "Edit general settings" to setup global settings
+              and to change the <link linkend="a_configPasswords">master
+              configuration password</link> (default is "lam").</para>
+            </listitem>
+
+            <listitem>
+              <para>Select "Edit server profiles" to setup a server
+              profile.</para>
+            </listitem>
+          </itemizedlist>
+        </section>
+
+        <section>
+          <title>Webserver configuration</title>
+
+          <para>Please see the <link linkend="apache">Apache</link> or <link
+          linkend="nginx">Nginx</link> chapter.</para>
+        </section>
+      </section>
+
+      <section>
+        <title>System configuration</title>
+
+        <section>
+          <title>PHP</title>
+
+          <para>LAM runs with PHP5 (&gt;= 5.2.4). Needed changes in your
+          php.ini:</para>
+
+          <para>memory_limit = 64M</para>
+
+          <para>For large installations (&gt;10000 LDAP entries) you may need
+          to increase the memory limit to 256M.</para>
+
+          <para>If you run PHP with activated <ulink
+          url="http://www.hardened-php.net/suhosin/index.html">Suhosin</ulink>
+          extension please check your logs for alerts. E.g. LAM requires that
+          "suhosin.post.max_name_length" and
+          "suhosin.request.max_varname_length" are increased (e.g. to
+          256).</para>
+        </section>
+
+        <section>
+          <title>Locales for non-English translation</title>
+
+          <para>If you want to use a translated version of LAM be sure to
+          install the needed locales. The following table shows the needed
+          locales for the different languages.</para>
+
+          <table>
+            <title>Locales</title>
+
+            <tgroup cols="2">
+              <tbody>
+                <row>
+                  <entry><emphasis role="bold">Language</emphasis></entry>
+
+                  <entry><emphasis role="bold">Locale</emphasis></entry>
+                </row>
+
+                <row>
+                  <entry>Catalan</entry>
+
+                  <entry>ca_ES.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Chinese (Simplified)</entry>
+
+                  <entry>zh_CN.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Chinese (Traditional)</entry>
+
+                  <entry>zh_TW.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Czech</entry>
+
+                  <entry>cs_CZ.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Dutch</entry>
+
+                  <entry>nl_NL.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>English - Great Britain</entry>
+
+                  <entry>no extra locale needed</entry>
+                </row>
+
+                <row>
+                  <entry>English - USA</entry>
+
+                  <entry>en_US.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>French</entry>
+
+                  <entry>fr_FR.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>German</entry>
+
+                  <entry>de_DE.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Hungarian</entry>
+
+                  <entry>hu_HU.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Italian</entry>
+
+                  <entry>it_IT.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Japanese</entry>
+
+                  <entry>ja_JP.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Polish</entry>
+
+                  <entry>pl_PL.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Portuguese</entry>
+
+                  <entry>pt_BR.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Russian</entry>
+
+                  <entry>ru_RU.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Slovak</entry>
+
+                  <entry>sk_SK.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Spanish</entry>
+
+                  <entry>es_ES.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Turkish</entry>
+
+                  <entry>tr_TR.utf8</entry>
+                </row>
+
+                <row>
+                  <entry>Ukrainian</entry>
+
+                  <entry>uk_UA.utf8</entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </table>
+
+          <para>You can get a list of all installed locales on your system by
+          executing:</para>
+
+          <para>locale -a</para>
+
+          <para>Debian users can add locales with "dpkg-reconfigure
+          locales".</para>
+        </section>
+      </section>
+    </section>
+
+    <section>
+      <title>Upgrading LAM or migrate from LAM to LAM Pro</title>
+
+      <para>Upgrading from LAM to LAM Pro is like installing a new LAM
+      version. Simply install the LAM Pro packages/tar.bz2 instead of the LAM
+      ones.</para>
+
+      <section>
+        <title>Upgrade LAM</title>
+
+        <para><emphasis role="bold">Backup configuration
+        files</emphasis></para>
+
+        <para>Configuration files need only to be backed up for .tar.bz2
+        installations. DEB/RPM installations do not require this step.</para>
+
+        <para>LAM stores all configuration files in the "config" folder.
+        Please backup the following files and copy them after the new version
+        is installed.</para>
+
+        <simplelist>
+          <member>config/*.conf</member>
+
+          <member>config/config.cfg</member>
+
+          <member>config/pdf/*.xml</member>
+
+          <member>config/profiles/*</member>
+        </simplelist>
+
+        <para>LAM Pro only:</para>
+
+        <simplelist>
+          <member>config/selfService/*.*</member>
+        </simplelist>
+
+        <para><emphasis role="bold">Uninstall current LAM (Pro)
+        version</emphasis></para>
+
+        <para>If you used the RPM installation packages then remove the
+        ldap-account-manager and ldap-account-manager-lamdaemon packages by
+        calling "rpm -e ldap-account-manager
+        ldap-account-manager-lamdaemon".</para>
+
+        <para>Debian needs no removal of old packages.</para>
+
+        <para>For tar.bz2 please remove the folder where you installed LAM via
+        configure or by copying the files.</para>
+
+        <para><emphasis role="bold">Install new LAM (Pro)
+        version</emphasis></para>
+
+        <para>Please <link linkend="a_install">install</link> the new LAM
+        (Pro) release. Skip the part about setting up LAM configuration
+        files.</para>
+
+        <para><emphasis role="bold">Restore configuration
+        files</emphasis></para>
+
+        <para>RPM:</para>
+
+        <para>Please check if there are any files ending with ".rpmsave" in
+        /var/lib/ldap-account-manager/config. In this case you need to
+        manually remove the .rpmsave extension by overwriting the package
+        file. E.g. rename default.user.rpmsave to default.user.</para>
+
+        <para>DEB:</para>
+
+        <para>Nothing needs to be restored.</para>
+
+        <para>tar.bz2:</para>
+
+        <para>Please restore your configuration files from the backup. Copy
+        all files from the backup folder to the config folder in your LAM Pro
+        installation. Do not simply replace the folder because the new LAM
+        (Pro) release might include additional files in this folder. Overwrite
+        any existing files with your backup files.</para>
+
+        <para><emphasis role="bold">Final steps</emphasis></para>
+
+        <para>Now open your webbrowser and point it to the LAM login page. All
+        your settings should be migrated.</para>
+
+        <para>Please check also the <link linkend="a_versUpgrade">version
+        specific instructions</link>. They might include additional
+        actions.</para>
+      </section>
+
+      <section id="a_versUpgrade">
+        <title>Version specific upgrade instructions</title>
+
+        <section>
+          <title>5.5 -&gt; 5.6</title>
+
+          <para>Mail routing: No longer added by default. Use profile editor
+          to activate by default for new users/groups.</para>
+
+          <para>Personal/Unix/Windows: no more replacement of e.g.
+          $user/$group on user upload</para>
+        </section>
+
+        <section>
+          <title>5.4 -&gt; 5.5</title>
+
+          <para>LAM Pro requires a license key. You can find it in your <ulink
+          url="https://www.ldap-account-manager.org/lamcms/user/me">customer
+          profile</ulink>.</para>
+        </section>
+
+        <section>
+          <title>5.1 -&gt; 5.4</title>
+
+          <para>No special actions needed.</para>
+        </section>
+
+        <section>
+          <title>5.0 -&gt; 5.1</title>
+
+          <para>Self Service: There were large changes to provide a responsive
+          design that works for desktop and mobile. If you use custom CSS to
+          style Self Service then this must be updated.</para>
+        </section>
+
+        <section>
+          <title>4.9 -&gt; 5.0</title>
+
+          <para>Samba 3: If you used logon hours then you need to set the
+          correct time zone on tab "Generel settings" in server
+          profile.</para>
+        </section>
+
+        <section>
+          <title>4.5 -&gt; 4.9</title>
+
+          <para>No special actions needed.</para>
+        </section>
+
+        <section>
+          <title>4.4 -&gt; 4.5</title>
+
+          <para>LAM will no longer follow referrals by default. This is ok for
+          most installations. If you use LDAP referrals please activate
+          referral following for your server profile (tab General settings
+          -&gt; Server settings -&gt; Advanced options).</para>
+
+          <para>The self service pages now have an own option for allowed IPs.
+          If your LAM installation uses IP restrictions please update the LAM
+          main configuration.</para>
+
+          <para>Password self reset (LAM Pro) allows to set a backup email
+          address. You need to <link
+          linkend="passwordSelfResetSchema_update">update</link> the LDAP
+          schema if you want to use this feature.</para>
+        </section>
+
+        <section>
+          <title>4.3 -&gt; 4.4</title>
+
+          <para>Apache configuration: LAM supports Apache 2.2 and 2.4. This
+          requires that your Apache server has enabled the "version" module.
+          For Debian and Fedora this is the default setup. The Suse RPM will
+          try to enable the version module during installation.</para>
+
+          <para>Kolab: User accounts get the object class "mailrecipient" by
+          default. You can change this behaviour in the module settings
+          section of your LAM server profile.</para>
+
+          <para>Windows: sAMAccountName is no longer set by default. Enable it
+          in server profile if needed. The possible domains for the user name
+          can also be set in server profile.</para>
+        </section>
+
+        <section>
+          <title>4.2.1 -&gt; 4.3</title>
+
+          <para>LAM is no more shipped as tar.gz package but as tar.bz2 which
+          allows smaller file sizes.</para>
+        </section>
+
+        <section>
+          <title>4.1 -&gt; 4.2/4.2.1</title>
+
+          <para>Zarafa users: The default attribute for mail aliases is now
+          "dn". If you use "uid" and did not change the server profile for a
+          long time please check your LAM server profile for this setting and
+          save it.</para>
+        </section>
+
+        <section>
+          <title>4.0 -&gt; 4.1</title>
+
+          <para><emphasis role="bold">Unix:</emphasis> The list of valid login
+          shells is no longer configured in "config/shells" but in the
+          server/self service profiles (Unix settings). LAM will use the
+          following shells by default: /bin/bash, /bin/csh, /bin/dash,
+          /bin/false, /bin/ksh, /bin/sh.</para>
+
+          <para>Please update your server/self service profile if you would
+          like to change the list of valid login shells.</para>
+        </section>
+
+        <section>
+          <title>3.9 -&gt; 4.0</title>
+
+          <para>The account profiles and PDF structures are now separated by
+          server profile. This means that if you edit e.g. an account profile
+          in server profile A then this change will not affect the account
+          profiles in server profile B.</para>
+
+          <para>LAM will automatically migrate your existing files as soon as
+          the login page is loaded.</para>
+
+          <para>Special install instructions:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Debian: none, config files will be migrated when opening
+              LAM's login page</para>
+            </listitem>
+
+            <listitem>
+              <para>Suse/Fedora RPM:</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para>Run "rpm -e ldap-account-manager
+                  ldap-account-manager-lamdaemon"</para>
+                </listitem>
+
+                <listitem>
+                  <para>You may get warnings like "warning:
+                  /var/lib/ldap-account-manager/config/profiles/default.user
+                  saved as
+                  /var/lib/ldap-account-manager/config/profiles/default.user.rpmsave"</para>
+                </listitem>
+
+                <listitem>
+                  <para>Please rename all files "*.rpmsave" and remove the
+                  file extension ".rpmsave". E.g. "default.user.rpmsave" needs
+                  to be renamed to "default.user".</para>
+                </listitem>
+
+                <listitem>
+                  <para>Install the LAM packages with "rpm -i". E.g. "rpm -i
+                  ldap-account-manager-4.0-0.suse.1.noarch.rpm".</para>
+                </listitem>
+
+                <listitem>
+                  <para>Open LAM's login page in your browser to complete the
+                  migration</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+
+            <listitem>
+              <para>tar.gz: standard upgrade steps, config files will be
+              migrated when opening LAM's login page</para>
+            </listitem>
+          </itemizedlist>
+        </section>
+
+        <section>
+          <title>3.7 -&gt; 3.9</title>
+
+          <para>No changes.</para>
+        </section>
+
+        <section>
+          <title>3.6 -&gt; 3.7</title>
+
+          <para>Asterisk extensions: The extension entries are now grouped by
+          extension name and account context. LAM will automatically assign
+          priorities and set same owners for all entries.</para>
+        </section>
+
+        <section>
+          <title>3.5.0 -&gt; 3.6</title>
+
+          <para><emphasis role="bold">Debian users:</emphasis> LAM 3.6
+          requires to install FPDF 1.7. You can download the package <ulink
+          url="http://packages.debian.org/search?keywords=php-fpdf&amp;searchon=names&amp;suite=all&amp;section=all">here</ulink>.
+          If you use Debian Stable (Squeeze) please use the package from
+          Testing (Wheezy).</para>
+        </section>
+
+        <section>
+          <title>3.4.0 -&gt; 3.5.0</title>
+
+          <para><emphasis role="bold">LAM Pro:</emphasis> The global
+          config/passwordMailTemplate.txt is no longer supported. You can
+          setup the mail settings now for each LAM server profile which
+          provides more flexibility.</para>
+
+          <para><emphasis role="bold">Suse/Fedora RPM
+          installations:</emphasis> LAM is now installed to
+          /usr/share/ldap-account-manager and
+          /var/lib/ldap-account-manager.</para>
+
+          <para>Please note that configuration files are not migrated
+          automatically. Please move the files from /srv/www/htdocs/lam/config
+          (Suse) or /var/www/html/lam/config (Fedora) to
+          /var/lib/ldap-account-manager/config.</para>
+        </section>
+
+        <section>
+          <title>3.3.0 -&gt; 3.4.0</title>
+
+          <para>No changes.</para>
+        </section>
+
+        <section>
+          <title>3.2.0 -&gt; 3.3.0</title>
+
+          <para>If you use custom images for the PDF export then these images
+          need to be 5 times bigger than before (e.g. 250x250px instead of
+          50x50px). This allows to use images with higher resolution.</para>
+        </section>
+
+        <section>
+          <title>3.1.0 -&gt; 3.2.0</title>
+
+          <para>No changes.</para>
+        </section>
+
+        <section>
+          <title>3.0.0 -&gt; 3.1.0</title>
+
+          <para>LAM supported to set a list of valid workstations on the
+          "Personal" page. This required to change the LDAP schema. Since
+          3.1.0 this is replaced by the new "Hosts" module for users.</para>
+
+          <para>Lamdaemon: The sudo entry needs to be changed to
+          ".../lamdaemon.pl *".</para>
+        </section>
+
+        <section>
+          <title>2.3.0 -&gt; 3.0.0</title>
+
+          <para>No changes.</para>
+        </section>
+
+        <section>
+          <title>2.2.0 -&gt; 2.3.0</title>
+
+          <para><emphasis role="bold">LAM Pro:</emphasis> There is now a
+          separate account type for group of (unique) names. Please edit your
+          server profiles to activate the new account type.</para>
+        </section>
+
+        <section>
+          <title>1.1.0 -&gt; 2.2.0</title>
+
+          <para>No changes.</para>
+        </section>
+      </section>
+    </section>
+
+    <section id="a_uninstall">
+      <title>Uninstallation of LAM (Pro)</title>
+
+      <para>If you used the prepackaged installation packages then remove the
+      ldap-account-manager and ldap-account-manager-lamdaemon packages.</para>
+
+      <para>Otherwise, remove the folder where you installed LAM via configure
+      or by copying the files.</para>
+    </section>
+
+    <section>
+      <title>Migration to a new server</title>
+
+      <para>To move LAM (Pro) from one server to another please follow these
+      steps:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Install LAM (Pro) on your new server</para>
+        </listitem>
+
+        <listitem>
+          <para>Copy the following files from the old server to the new one
+          (base directory for RPM/DEB is
+          /usr/share/ldap-account-manager/):</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>config/*.conf</para>
+            </listitem>
+
+            <listitem>
+              <para>config/config.cfg</para>
+            </listitem>
+
+            <listitem>
+              <para>config/pdf/*</para>
+            </listitem>
+
+            <listitem>
+              <para>config/profiles/*</para>
+            </listitem>
+
+            <listitem>
+              <para>config/selfService/*.* (needed for LAM Pro only)</para>
+            </listitem>
+          </itemizedlist>
+
+          <para>The files must be writable for the webserver user.</para>
+        </listitem>
+
+        <listitem>
+          <para>Open LAM (Pro) login page on new server and verify
+          installation.</para>
+        </listitem>
+
+        <listitem>
+          <para>Uninstall LAM (Pro) on old server.</para>
+        </listitem>
+      </orderedlist>
+    </section>
+  </chapter>
