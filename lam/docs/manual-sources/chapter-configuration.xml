@@ -1,705 +1,760 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
 "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
-   <chapter id="a_configuration">
-    <title>Configuration</title>
+<chapter id="a_configuration">
+  <title>Configuration</title>
 
-    <para>After you <link linkend="a_installation">installed</link> LAM you
-    can configure it to fit your needs. The complete configuration can be done
-    inside the application. There is no need to edit configuration
-    files.</para>
+  <para>After you <link linkend="a_installation">installed</link> LAM you can
+  configure it to fit your needs. The complete configuration can be done
+  inside the application. There is no need to edit configuration files.</para>
 
-    <para>Please point you browser to the location where you installed LAM.
-    E.g. for Debian/RPM this is http://yourServer/lam. If you installed LAM
-    via the tar.bz2 then this may vary. You should see the following
-    page:</para>
+  <para>Please point you browser to the location where you installed LAM. E.g.
+  for Debian/RPM this is http://yourServer/lam. If you installed LAM via the
+  tar.bz2 then this may vary. You should see the following page:</para>
 
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/login.png" />
-        </imageobject>
-      </mediaobject>
-    </screenshot>
+  <screenshot>
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/login.png" />
+      </imageobject>
+    </mediaobject>
+  </screenshot>
 
-    <para>If you see an error message then you might need to install an
-    additional PHP extension. Please follow the instructions and reload the
-    page afterwards.</para>
+  <para>If you see an error message then you might need to install an
+  additional PHP extension. Please follow the instructions and reload the page
+  afterwards.</para>
 
-    <para>Now you are ready to configure LAM. Click on the "LAM configuration"
-    link to proceed.</para>
+  <para>Now you are ready to configure LAM. Click on the "LAM configuration"
+  link to proceed.</para>
 
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/configOverview.png" />
-        </imageobject>
-      </mediaobject>
-    </screenshot>
+  <screenshot>
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/configOverview.png" />
+      </imageobject>
+    </mediaobject>
+  </screenshot>
 
-    <para>Here you can change LAM's general settings, setup server profiles
-    for your LDAP server(s) and configure the <link
-    linkend="a_selfService">self service</link> (LAM Pro). You should start
-    with the general settings and then setup a server profile.</para>
+  <para>Here you can change LAM's general settings, setup server profiles for
+  your LDAP server(s) and configure the <link linkend="a_selfService">self
+  service</link> (LAM Pro). You should start with the general settings and
+  then setup a server profile.</para>
 
-    <section id="generalSettings">
-      <title>General settings</title>
+  <section id="generalSettings">
+    <title>General settings</title>
 
-      <para>After selecting "Edit general settings" you will need to enter the
-      <link linkend="a_configPasswords">master configuration password</link>.
-      The default password for new installations is "lam". Now you can edit
-      the general settings.</para>
+    <para>After selecting "Edit general settings" you will need to enter the
+    <link linkend="a_configPasswords">master configuration password</link>.
+    The default password for new installations is "lam". Now you can edit the
+    general settings.</para>
 
-      <section>
-        <title>License (LAM Pro only)</title>
+    <section>
+      <title>License (LAM Pro only)</title>
 
-        <para>This is only required when you run LAM Pro. Please enter the
-        license key from your <ulink
-        url="https://www.ldap-account-manager.org/lamcms/user/me">customer
-        profile</ulink>. In case you have purchased multiple licenses please
-        only enter one license key block per installation.</para>
+      <para>This is only required when you run LAM Pro. Please enter the
+      license key from your <ulink
+      url="https://www.ldap-account-manager.org/lamcms/user/me">customer
+      profile</ulink>. In case you have purchased multiple licenses please
+      only enter one license key block per installation.</para>
 
-        <para>When you entered the license key then the license details can be
-        seen on LAM configuration overview page.</para>
+      <para>When you entered the license key then the license details can be
+      seen on LAM configuration overview page.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/configGeneral7.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>Security settings</title>
+
+      <para>Here you can set a time period after which inactive sessions are
+      automatically invalidated. The selected value represents minutes of
+      inactivity.</para>
+
+      <para>You may also set a list of IP addresses which are allowed to
+      access LAM. The IPs can be specified as full IP (e.g. 123.123.123.123)
+      or with the "*" wildcard (e.g. 123.123.123.*). Users which try to access
+      LAM via an untrusted IP only get blank pages. There is a separate field
+      for LAM Pro self service.</para>
+
+      <para id="sessionEncryption">Session encryption will encrypt sensitive
+      data like passwords in your session files. This is only available when
+      PHP <ulink url="http://php.net/mcrypt">MCrypt</ulink> is active. This
+      adds extra security but also costs performance. If you manage a large
+      directory you might want to disable this and take other actions to
+      secure your LAM server.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/configGeneral1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para id="conf_sslCert"><emphasis role="bold">SSL certificate
+      setup:</emphasis></para>
+
+      <para>By default, LAM uses the CA certificates that are preinstalled on
+      your system. This will work if you connect via SSL/TLS to an LDAP server
+      that uses a certificate signed by a well-known CA. In case you use your
+      own CA (e.g. company internal CA) you can import the CA certificates
+      here.</para>
+
+      <para>Please note that this can affect other web applications on the
+      same server if they require different certificates. There seem to be
+      problems on Debian systems and you may also need to restart Apache. In
+      case of any problems please delete the uploaded certificates and use the
+      <link linkend="ssl_certSystem">system setup</link>.</para>
+
+      <para>You can either upload a DER/PEM formatted certificate file or
+      import the certificates directly from an LDAP server that is available
+      with LDAP+SSL (ldaps://). LAM will automatically override system
+      certificates if at least one certificate is uploaded/imported.</para>
+
+      <para>The whole certificate list can be downloaded in PEM format. You
+      can also delete single certificates from the list.</para>
+
+      <para>Please note that you might need to restart your webserver if you
+      do any changes to this configuration.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/configGeneral4.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>Password policy</title>
+
+      <para>This allows you to specify a central password policy for LAM. The
+      policy is valid for all password fields inside LAM admin (excluding tree
+      view) and LAM self service. Configuration passwords do not need to
+      follow this policy.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/configGeneral2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>You can set the minimum password length and also the complexity of
+      the passwords.</para>
+    </section>
+
+    <section id="conf_logging">
+      <title>Logging</title>
+
+      <para>LAM can log events (e.g. user logins). You can use system logging
+      (syslog for Unix, event viewer for Windows) or log to a separate file.
+      Please note that LAM may log sensitive data (e.g. passwords) at log
+      level "Debug". Production systems should be set to "Warning" or
+      "Error".</para>
+
+      <para>The PHP error reporting is only for developers. By default LAM
+      does not show PHP notice messages in the web pages. You can select to
+      use the php.ini setting here or printing all errors and notices.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/configGeneral3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>Additional options</title>
+
+      <para id="mailEOL"><emphasis role="bold">Email format</emphasis></para>
+
+      <para>Some email servers are not standards compatible. If you receive
+      mails that look broken you can change the line endings for sent mails
+      here. Default is to use "\r\n".</para>
+
+      <para>At the moment, this option is only available in LAM Pro as there
+      is no mail sending in the free version. See <link
+      linkend="mailSetup">here</link> for setting up your SMTP server.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/configGeneral6.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>Change master password</title>
+
+      <para>If you would like to change the master configuration password then
+      enter a new password here.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/configGeneral5.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+  </section>
+
+  <section id="serverProfiles">
+    <title>Server profiles</title>
+
+    <para>The server profiles store information about your LDAP server (e.g.
+    host name) and what kind of accounts (e.g. users and groups) you would
+    like to manage. There is no limit on the number of server profiles. See
+    the <link linkend="confTypicalScenarios">typical scenarios</link> about
+    how to structure your server profiles.</para>
+
+    <section>
+      <title>Manage server profiles</title>
+
+      <para>Select "Manage server profiles" to open the profile management
+      page.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/configProfiles1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Here you can create, rename and delete server profiles. The <link
+      linkend="a_configPasswords">passwords</link> of your server profiles can
+      also be reset.</para>
+
+      <para>You may also specify the default server profile. This is the
+      server profile which is preselected at the login page. It also specifies
+      the language of the login and configuration pages.</para>
+
+      <para><emphasis role="bold">Templates for new server
+      profiles</emphasis></para>
+
+      <para>You can create a new server profile based on one of the built-in
+      templates or any existing profile. Of course, the account types and
+      selected modules can be changed after you created your profile.</para>
+
+      <para>Built-in templates:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>addressbook: simple profile for user management with
+          inetOrgPerson object class</para>
+        </listitem>
+
+        <listitem>
+          <para>samba3: Samba 3 users, groups, hosts and domains</para>
+        </listitem>
+
+        <listitem>
+          <para>unix: Unix users and groups (posixAccount/Group)</para>
+        </listitem>
+
+        <listitem>
+          <para>windows_samba4: Active Directory user, group and host
+          management</para>
+        </listitem>
+      </itemizedlist>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/configProfiles2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>All operations on the profile management page require that you
+      authenticate yourself with the <link
+      linkend="a_configPasswords">configuration master password</link>.</para>
+    </section>
+
+    <section>
+      <title>Editing a server profile</title>
+
+      <para>Please select you server profile and enter its password to edit a
+      server profile.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/configProfiles3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Each server profile contains the following information:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><emphasis role="bold">General settings:</emphasis> general
+          settings about your LDAP server (e.g. host name and security
+          settings)</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">Account types:</emphasis> list of
+          account types (e.g. users and groups) that you would like to manage
+          and type specific settings (e.g. LDAP suffix)</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">Modules:</emphasis> list of modules
+          which define what account aspects (e.g. Unix, Samba, Kolab) you
+          would like to manage</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">Module settings:</emphasis> settings
+          which are specific for the selected account modules on the page
+          before</para>
+        </listitem>
+      </itemizedlist>
+
+      <section id="general_settings">
+        <title>General settings</title>
+
+        <para>Here you can specify the LDAP server and some security
+        settings.</para>
 
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/configGeneral7.png" />
+              <imagedata fileref="images/configProfiles4.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>The server address of your LDAP server can be a DNS name or an
+        IP address. Use ldap:// for unencrypted LDAP connections or TLS
+        encrypted connections. LDAP+SSL (LDAPS) encrypted connections are
+        specified with ldaps://. The port value is optional. TLS cannot be
+        combined with ldaps://.</para>
+
+        <para>Hint: If you use a master/slave setup with referrals then point
+        LAM to your master server. Due to bugs in the underlying LDAP
+        libraries pointing to a slave might cause issues on write
+        operations.</para>
+
+        <para>LAM includes an LDAP browser which allows direct modification of
+        LDAP entries. If you would like to use it then enter the LDAP suffix
+        at "Tree suffix".</para>
+
+        <para>The search limit is used to reduce the number of search results
+        which are returned by your LDAP server.</para>
+
+        <para>The access level specifies if LAM should allow to modify LDAP
+        entries. This feature is only available in LAM Pro. LAM non-Pro
+        releases use write access. See <link
+        linkend="a_accessLevelPasswordReset">this page</link> for details on
+        the different access levels.</para>
+
+        <para><emphasis role="bold">Advanced options</emphasis></para>
+
+        <para>Sometimes, you may not want to display the server address on the
+        login page. In this case you can setup a display name here (e.g.
+        "Production").</para>
+
+        <para>By default LAM will not follow LDAP referrals. This is ok for
+        most installations. If you use LDAP referrals please activate the
+        referral option in advanced settings.</para>
+
+        <para>Paged results should be activated only if you encounter any
+        problems regarding size limits on Active Directory. LAM will then
+        query LDAP to return results in chunks of 999 entries.</para>
+
+        <literallayout>
+</literallayout>
+
+        <para>LAM is translated to many different languages. Here you can
+        select the default language for this server profile. The language
+        setting may be overriden at the LAM login page.</para>
+
+        <para>Please also set your time zone here.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configProfiles5.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>LAM can manage user home directories and quotas with an external
+        script. You can specify the home directory server and where the script
+        is located. The default rights for new home directories can be set,
+        too.</para>
+
+        <para>You can provide a fixed user name. If you leave the field empty
+        then LAM will use your current account (the account you used to login
+        to LAM).</para>
+
+        <para>There are two possibilities to connect to your home
+        directory/quota server:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>SSH key (recommended): Please generate a SSH key pair and
+            provide the location to the <emphasis
+            role="bold">private</emphasis> key file. If the key is protected
+            by a password you can also specify it here.</para>
+          </listitem>
+
+          <listitem>
+            <para>Password: If you do not set a SSH key then LAM will try to
+            connect with your current account (the password you used to login
+            to LAM).</para>
+          </listitem>
+        </itemizedlist>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configProfiles6.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para id="profile_mail">LAM Pro users may directly set passwords from
+        list view. You can configure if it should be possible to set specific
+        passwords and showing password on screen is allowed.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configProfiles10.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>LAM Pro users can send out changed passwords to their users.
+        Here you can specify the options for these mails.</para>
+
+        <para>If you select "Allow alternate address" then password mails can
+        be sent to any address (e.g. a secondary address if the user account
+        is also bound to the mailbox).</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configProfiles9.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>LAM supports two methods for login:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Fixed list</para>
+          </listitem>
+
+          <listitem>
+            <para>LDAP search</para>
+          </listitem>
+        </itemizedlist>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configProfiles8.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>The first one is to specify a fixed list of LDAP DNs that are
+        allowed to login. Please enter one DN per line.</para>
+
+        <para>The second one is to let LAM search for the DN in your
+        directory. E.g. if a user logs in with the user name "joe" then LAM
+        will do an LDAP search for this user name. When it finds a matching DN
+        then it will use this to authenticate the user. The wildcard "%USER%"
+        will be replaced by "joe" in this example. This way you can provide
+        login by user name, email address or other LDAP attributes.</para>
+
+        <para>Additionally, you can enable HTTP authentication when using
+        "LDAP search". This way the web server is responsible to authenticate
+        your users. LAM will use the given user name + password for the LDAP
+        login. You can also configure this to setup advanced login
+        restrictions (e.g. require group memberships for login). To setup HTTP
+        authentication in Apache please see this <ulink
+        url="http://httpd.apache.org/docs/2.2/howto/auth.html">link</ulink>
+        and an example for LDAP authentication <link lang=""
+        linkend="apache_http_auth">here</link>.</para>
+
+        <para><emphasis role="bold">Hint:</emphasis> LDAP search with group
+        membership check can be done with either <link
+        linkend="apache_http_auth">HTTP authentication</link> or LDAP overlays
+        like <ulink
+        url="http://www.openldap.org/doc/admin24/overlays.html">"memberOf"</ulink>
+        or <ulink
+        url="http://www.openldap.org/doc/admin24/overlays.html">"Dynamic
+        lists"</ulink>. Dynamic lists allow to insert virtual attributes to
+        your user entries. These can then be used for the LDAP filter (e.g.
+        "(&amp;(uid=%USER%)(memberof=cn=admins,ou=groups,dc=company,dc=com))").</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configProfiles7.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis role="bold">2-factor authentication</emphasis></para>
+
+        <para>LAM supports 2-factor authentication for your users. This means
+        the user will not only authenticate by user+password but also with
+        e.g. a token generated by a mobile device. This adds more security
+        because the token is generated on a physically separated device
+        (typically mobile phone).</para>
+
+        <para>The token is validated by a second application. LAM currently
+        supports:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para><ulink
+            url="https://www.privacyidea.org/">privacyIdea</ulink></para>
+          </listitem>
+        </itemizedlist>
+
+        <para>By default LAM will enforce to use a token and reject users that
+        did not setup one. You can set this check to optional. But if a user
+        has setup a token then this will always be required.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configProfiles11.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>After logging in with user + password LAM will ask for the 2nd
+        factor. If the user has setup multiple factors then he can choose one
+        of them.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configProfiles12.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis role="bold">Password</emphasis></para>
+
+        <para>You may also change the password of this server profile. Please
+        just enter the new password in both password fields.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configProfiles13.png" />
             </imageobject>
           </mediaobject>
         </screenshot>
       </section>
 
       <section>
-        <title>Security settings</title>
+        <title>Account types</title>
 
-        <para>Here you can set a time period after which inactive sessions are
-        automatically invalidated. The selected value represents minutes of
-        inactivity.</para>
-
-        <para>You may also set a list of IP addresses which are allowed to
-        access LAM. The IPs can be specified as full IP (e.g. 123.123.123.123)
-        or with the "*" wildcard (e.g. 123.123.123.*). Users which try to
-        access LAM via an untrusted IP only get blank pages. There is a
-        separate field for LAM Pro self service.</para>
-
-        <para id="sessionEncryption">Session encryption will encrypt sensitive
-        data like passwords in your session files. This is only available when
-        PHP <ulink url="http://php.net/mcrypt">MCrypt</ulink> is active. This
-        adds extra security but also costs performance. If you manage a large
-        directory you might want to disable this and take other actions to
-        secure your LAM server.</para>
+        <para>LAM supports to manage various types of LDAP entries (e.g.
+        users, groups, DHCP entries, ...). On this page you can select which
+        types of entries you want to manage with LAM.</para>
 
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/configGeneral1.png" />
+              <imagedata fileref="images/configTypes1.png" />
             </imageobject>
           </mediaobject>
         </screenshot>
 
-        <para id="conf_sslCert"><emphasis role="bold">SSL certificate
-        setup:</emphasis></para>
+        <para>The section at the top shows a list of possible types. You can
+        activate them by simply clicking on the plus sign next to it.</para>
 
-        <para>By default, LAM uses the CA certificates that are preinstalled
-        on your system. This will work if you connect via SSL/TLS to an LDAP
-        server that uses a certificate signed by a well-known CA. In case you
-        use your own CA (e.g. company internal CA) you can import the CA
-        certificates here.</para>
+        <para>Each account type has the following options:</para>
 
-        <para>Please note that this can affect other web applications on the
-        same server if they require different certificates. There seem to be
-        problems on Debian systems and you may also need to restart Apache. In
-        case of any problems please delete the uploaded certificates and use
-        the <link linkend="ssl_certSystem">system setup</link>.</para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis role="bold">LDAP suffix:</emphasis> the LDAP
+            suffix where entries of this type should be managed</para>
+          </listitem>
 
-        <para>You can either upload a DER/PEM formatted certificate file or
-        import the certificates directly from an LDAP server that is available
-        with LDAP+SSL (ldaps://). LAM will automatically override system
-        certificates if at least one certificate is uploaded/imported.</para>
+          <listitem>
+            <para><emphasis role="bold">List attributes:</emphasis> a list of
+            attributes which are shown in the account lists</para>
+          </listitem>
 
-        <para>The whole certificate list can be downloaded in PEM format. You
-        can also delete single certificates from the list.</para>
+          <listitem>
+            <para><emphasis role="bold">Additional LDAP filter:</emphasis> LAM
+            will automatically detect the right LDAP entries for each account
+            type. This can be used to further limit the number of visible
+            entries (e.g. if you want to manage only some specific groups).
+            You can use "@@LOGIN_DN@@" as wildcard (e.g.
+            "(owner=@@LOGIN_DN@@)"). It will be replaced by the DN of the user
+            who is logged in.</para>
+          </listitem>
 
-        <para>Please note that you might need to restart your webserver if you
-        do any changes to this configuration.</para>
+          <listitem>
+            <para><emphasis role="bold">Hidden:</emphasis> This is used to
+            hide account types that should not be displayed but are required
+            by other account types. E.g. you can hide the Samba domains
+            account type and still assign domains when you edit your
+            users.</para>
+          </listitem>
+
+          <listitem>
+            <para><emphasis role="bold">Read-only (LAM Pro only):</emphasis>
+            This allows to set a single account type to read-only mode. Please
+            note that this is a restriction on functional level (e.g. group
+            memberships can be changed on user page even if groups are
+            read-only) and is no replacement for setting up proper ACLs on
+            your LDAP server.</para>
+          </listitem>
+
+          <listitem>
+            <para><emphasis role="bold">Custom label:</emphasis> Here you can
+            set a custom label for the account types. Use this if the standard
+            label does not fit for you (e.g. enter "Servers" for
+            hosts).</para>
+          </listitem>
+
+          <listitem>
+            <para><emphasis role="bold">No new entries (LAM Pro
+            only):</emphasis> Use this if you want to prevent that new
+            accounts of this type are created by your users. The GUI will hide
+            buttons to create new entries and also disable file upload for
+            this type.</para>
+          </listitem>
+
+          <listitem>
+            <para><emphasis role="bold">Disallow delete (LAM Pro
+            only):</emphasis> Use this if you want to prevent that accounts of
+            this type are deleted by your users.</para>
+          </listitem>
+        </itemizedlist>
 
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/configGeneral4.png" />
+              <imagedata fileref="images/configTypes2.png" />
             </imageobject>
           </mediaobject>
         </screenshot>
+
+        <para>On the next page you can specify in detail what extensions
+        should be enabled for each account type.</para>
       </section>
 
       <section>
-        <title>Password policy</title>
+        <title>Modules</title>
 
-        <para>This allows you to specify a central password policy for LAM.
-        The policy is valid for all password fields inside LAM admin
-        (excluding tree view) and LAM self service. Configuration passwords do
-        not need to follow this policy.</para>
-
-        <screenshot>
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/configGeneral2.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-
-        <para>You can set the minimum password length and also the complexity
-        of the passwords.</para>
-      </section>
-
-      <section id="conf_logging">
-        <title>Logging</title>
-
-        <para>LAM can log events (e.g. user logins). You can use system
-        logging (syslog for Unix, event viewer for Windows) or log to a
-        separate file. Please note that LAM may log sensitive data (e.g.
-        passwords) at log level "Debug". Production systems should be set to
-        "Warning" or "Error".</para>
-
-        <para>The PHP error reporting is only for developers. By default LAM
-        does not show PHP notice messages in the web pages. You can select to
-        use the php.ini setting here or printing all errors and
-        notices.</para>
+        <para>The modules specify the active extensions for each account type.
+        E.g. here you can setup if your user entries should be address book
+        entries only or also support Unix or Samba.</para>
 
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/configGeneral3.png" />
+              <imagedata fileref="images/configModules1.png" />
             </imageobject>
           </mediaobject>
         </screenshot>
+
+        <para>Each account type needs a so called "base module". This is the
+        basement for all LDAP entries of this type. Usually, it provides the
+        structural object class for the LDAP entries. There must be exactly
+        one active base module for each account type.</para>
+
+        <para>Furthermore, there may be any number of additional active
+        account modules. E.g. you may select "Personal" as base module and
+        Unix + Samba as additional modules.</para>
       </section>
 
       <section>
-        <title>Additional options</title>
+        <title>Module settings</title>
 
-        <para id="mailEOL"><emphasis role="bold">Email
-        format</emphasis></para>
-
-        <para>Some email servers are not standards compatible. If you receive
-        mails that look broken you can change the line endings for sent mails
-        here. Default is to use "\r\n".</para>
-
-        <para>At the moment, this option is only available in LAM Pro as there
-        is no mail sending in the free version. See <link
-        linkend="mailSetup">here</link> for setting up your SMTP
-        server.</para>
+        <para>Depending on the activated account modules there may be
+        additional configuration options available. They can be found on the
+        "Module settings" tab. E.g. the Personal account module allows to hide
+        several input fields and the Unix module requires to specify ranges
+        for UID numbers.</para>
 
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/configGeneral6.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-      </section>
-
-      <section>
-        <title>Change master password</title>
-
-        <para>If you would like to change the master configuration password
-        then enter a new password here.</para>
-
-        <screenshot>
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/configGeneral5.png" />
+              <imagedata fileref="images/configSettings1.png" />
             </imageobject>
           </mediaobject>
         </screenshot>
       </section>
     </section>
 
-    <section id="serverProfiles">
-      <title>Server profiles</title>
+    <section>
+      <title>Cron jobs (LAM Pro)</title>
 
-      <para>The server profiles store information about your LDAP server (e.g.
-      host name) and what kind of accounts (e.g. users and groups) you would
-      like to manage. There is no limit on the number of server profiles. See
-      the <link linkend="confTypicalScenarios">typical scenarios</link> about
-      how to structure your server profiles.</para>
+      <para>LAM Pro can execute common tasks via cron job. This can be used to
+      e.g. notify your users before their passwords expire.</para>
 
       <section>
-        <title>Manage server profiles</title>
+        <title>LDAP and database configuration</title>
 
-        <para>Select "Manage server profiles" to open the profile management
-        page.</para>
+        <para>Please add the LDAP bind user and password for all jobs. This
+        LDAP account will be used to perform all LDAP read and write
+        operations.</para>
+
+        <para>Next, select the database type where LAM should store job
+        related data. Supported databases are SQLite and MySQL.</para>
+
+        <para><emphasis role="bold">SQLite</emphasis></para>
+
+        <para>This is a simple file based database. It needs no special
+        database server. The database file will be located next to the server
+        profile in config directory.</para>
+
+        <para>You will need to install the SQLite PDO module for PHP
+        (pdo_sqlite.so). For Debian this is located in package
+        php5-sqlite.</para>
 
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/configProfiles1.png" />
+              <imagedata fileref="images/jobs1.png" />
             </imageobject>
           </mediaobject>
         </screenshot>
 
-        <para>Here you can create, rename and delete server profiles. The
-        <link linkend="a_configPasswords">passwords</link> of your server
-        profiles can also be reset.</para>
+        <para><emphasis role="bold">MySQL</emphasis></para>
 
-        <para>You may also specify the default server profile. This is the
-        server profile which is preselected at the login page. It also
-        specifies the language of the login and configuration pages.</para>
+        <para>This will store all job data in an external MySQL
+        database.</para>
 
-        <para><emphasis role="bold">Templates for new server
-        profiles</emphasis></para>
+        <para>You will need to install the MySQL PDO module for PHP
+        (pdo_mysql.so). For Debian this is located in package
+        php5-mysql.</para>
 
-        <para>You can create a new server profile based on one of the built-in
-        templates or any existing profile. Of course, the account types and
-        selected modules can be changed after you created your profile.</para>
+        <para>Steps to create a MySQL database and user:</para>
 
-        <para>Built-in templates:</para>
-
-        <itemizedlist>
-          <listitem>
-            <para>addressbook: simple profile for user management with
-            inetOrgPerson object class</para>
-          </listitem>
-
-          <listitem>
-            <para>samba3: Samba 3 users, groups, hosts and domains</para>
-          </listitem>
-
-          <listitem>
-            <para>unix: Unix users and groups (posixAccount/Group)</para>
-          </listitem>
-
-          <listitem>
-            <para>windows_samba4: Active Directory user, group and host
-            management</para>
-          </listitem>
-        </itemizedlist>
-
-        <screenshot>
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/configProfiles2.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-
-        <para>All operations on the profile management page require that you
-        authenticate yourself with the <link
-        linkend="a_configPasswords">configuration master
-        password</link>.</para>
-      </section>
-
-      <section>
-        <title>Editing a server profile</title>
-
-        <para>Please select you server profile and enter its password to edit
-        a server profile.</para>
-
-        <screenshot>
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/configProfiles3.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-
-        <para>Each server profile contains the following information:</para>
-
-        <itemizedlist>
-          <listitem>
-            <para><emphasis role="bold">General settings:</emphasis> general
-            settings about your LDAP server (e.g. host name and security
-            settings)</para>
-          </listitem>
-
-          <listitem>
-            <para><emphasis role="bold">Account types:</emphasis> list of
-            account types (e.g. users and groups) that you would like to
-            manage and type specific settings (e.g. LDAP suffix)</para>
-          </listitem>
-
-          <listitem>
-            <para><emphasis role="bold">Modules:</emphasis> list of modules
-            which define what account aspects (e.g. Unix, Samba, Kolab) you
-            would like to manage</para>
-          </listitem>
-
-          <listitem>
-            <para><emphasis role="bold">Module settings:</emphasis> settings
-            which are specific for the selected account modules on the page
-            before</para>
-          </listitem>
-        </itemizedlist>
-
-        <section id="general_settings">
-          <title>General settings</title>
-
-          <para>Here you can specify the LDAP server and some security
-          settings.</para>
-
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/configProfiles4.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
-
-          <para>The server address of your LDAP server can be a DNS name or an
-          IP address. Use ldap:// for unencrypted LDAP connections or TLS
-          encrypted connections. LDAP+SSL (LDAPS) encrypted connections are
-          specified with ldaps://. The port value is optional. TLS cannot be
-          combined with ldaps://.</para>
-
-          <para>Hint: If you use a master/slave setup with referrals then
-          point LAM to your master server. Due to bugs in the underlying LDAP
-          libraries pointing to a slave might cause issues on write
-          operations.</para>
-
-          <para>LAM includes an LDAP browser which allows direct modification
-          of LDAP entries. If you would like to use it then enter the LDAP
-          suffix at "Tree suffix".</para>
-
-          <para>The search limit is used to reduce the number of search
-          results which are returned by your LDAP server.</para>
-
-          <para>The access level specifies if LAM should allow to modify LDAP
-          entries. This feature is only available in LAM Pro. LAM non-Pro
-          releases use write access. See <link
-          linkend="a_accessLevelPasswordReset">this page</link> for details on
-          the different access levels.</para>
-
-          <para><emphasis role="bold">Advanced options</emphasis></para>
-
-          <para>Sometimes, you may not want to display the server address on
-          the login page. In this case you can setup a display name here (e.g.
-          "Production").</para>
-
-          <para>By default LAM will not follow LDAP referrals. This is ok for
-          most installations. If you use LDAP referrals please activate the
-          referral option in advanced settings.</para>
-
-          <para>Paged results should be activated only if you encounter any
-          problems regarding size limits on Active Directory. LAM will then
-          query LDAP to return results in chunks of 999 entries.</para>
-
-          <literallayout>
-</literallayout>
-
-          <para>LAM is translated to many different languages. Here you can
-          select the default language for this server profile. The language
-          setting may be overriden at the LAM login page.</para>
-
-          <para>Please also set your time zone here.</para>
-
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/configProfiles5.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
-
-          <para>LAM can manage user home directories and quotas with an
-          external script. You can specify the home directory server and where
-          the script is located. The default rights for new home directories
-          can be set, too.</para>
-
-          <para>You can provide a fixed user name. If you leave the field
-          empty then LAM will use your current account (the account you used
-          to login to LAM).</para>
-
-          <para>There are two possibilities to connect to your home
-          directory/quota server:</para>
-
-          <itemizedlist>
-            <listitem>
-              <para>SSH key (recommended): Please generate a SSH key pair and
-              provide the location to the <emphasis
-              role="bold">private</emphasis> key file. If the key is protected
-              by a password you can also specify it here.</para>
-            </listitem>
-
-            <listitem>
-              <para>Password: If you do not set a SSH key then LAM will try to
-              connect with your current account (the password you used to
-              login to LAM).</para>
-            </listitem>
-          </itemizedlist>
-
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/configProfiles6.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
-
-          <para id="profile_mail">LAM Pro users may directly set passwords
-          from list view. You can configure if it should be possible to set
-          specific passwords and showing password on screen is allowed.</para>
-
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/configProfiles10.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
-
-          <para>LAM Pro users can send out changed passwords to their users.
-          Here you can specify the options for these mails.</para>
-
-          <para>If you select "Allow alternate address" then password mails
-          can be sent to any address (e.g. a secondary address if the user
-          account is also bound to the mailbox).</para>
-
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/configProfiles9.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
-
-          <para>LAM supports two methods for login.</para>
-
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/configProfiles8.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
-
-          <para>The first one is to specify a fixed list of LDAP DNs that are
-          allowed to login. Please enter one DN per line.</para>
-
-          <para>The second one is to let LAM search for the DN in your
-          directory. E.g. if a user logs in with the user name "joe" then LAM
-          will do an LDAP search for this user name. When it finds a matching
-          DN then it will use this to authenticate the user. The wildcard
-          "%USER%" will be replaced by "joe" in this example. This way you can
-          provide login by user name, email address or other LDAP
-          attributes.</para>
-
-          <para>Additionally, you can enable HTTP authentication when using
-          "LDAP search". This way the web server is responsible to
-          authenticate your users. LAM will use the given user name + password
-          for the LDAP login. You can also configure this to setup advanced
-          login restrictions (e.g. require group memberships for login). To
-          setup HTTP authentication in Apache please see this <ulink
-          url="http://httpd.apache.org/docs/2.2/howto/auth.html">link</ulink>
-          and an example for LDAP authentication <link lang=""
-          linkend="apache_http_auth">here</link>.</para>
-
-          <para><emphasis role="bold">Hint:</emphasis> LDAP search with group
-          membership check can be done with either <link
-          linkend="apache_http_auth">HTTP authentication</link> or LDAP
-          overlays like <ulink
-          url="http://www.openldap.org/doc/admin24/overlays.html">"memberOf"</ulink>
-          or <ulink
-          url="http://www.openldap.org/doc/admin24/overlays.html">"Dynamic
-          lists"</ulink>. Dynamic lists allow to insert virtual attributes to
-          your user entries. These can then be used for the LDAP filter (e.g.
-          "(&amp;(uid=%USER%)(memberof=cn=admins,ou=groups,dc=company,dc=com))").</para>
-
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/configProfiles7.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
-
-          <para>You may also change the password of this server profile.
-          Please just enter the new password in both password fields.</para>
-        </section>
-
-        <section>
-          <title>Account types</title>
-
-          <para>LAM supports to manage various types of LDAP entries (e.g.
-          users, groups, DHCP entries, ...). On this page you can select which
-          types of entries you want to manage with LAM.</para>
-
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/configTypes1.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
-
-          <para>The section at the top shows a list of possible types. You can
-          activate them by simply clicking on the plus sign next to it.</para>
-
-          <para>Each account type has the following options:</para>
-
-          <itemizedlist>
-            <listitem>
-              <para><emphasis role="bold">LDAP suffix:</emphasis> the LDAP
-              suffix where entries of this type should be managed</para>
-            </listitem>
-
-            <listitem>
-              <para><emphasis role="bold">List attributes:</emphasis> a list
-              of attributes which are shown in the account lists</para>
-            </listitem>
-
-            <listitem>
-              <para><emphasis role="bold">Additional LDAP filter:</emphasis>
-              LAM will automatically detect the right LDAP entries for each
-              account type. This can be used to further limit the number of
-              visible entries (e.g. if you want to manage only some specific
-              groups). You can use "@@LOGIN_DN@@" as wildcard (e.g.
-              "(owner=@@LOGIN_DN@@)"). It will be replaced by the DN of the
-              user who is logged in.</para>
-            </listitem>
-
-            <listitem>
-              <para><emphasis role="bold">Hidden:</emphasis> This is used to
-              hide account types that should not be displayed but are required
-              by other account types. E.g. you can hide the Samba domains
-              account type and still assign domains when you edit your
-              users.</para>
-            </listitem>
-
-            <listitem>
-              <para><emphasis role="bold">Read-only (LAM Pro only):</emphasis>
-              This allows to set a single account type to read-only mode.
-              Please note that this is a restriction on functional level (e.g.
-              group memberships can be changed on user page even if groups are
-              read-only) and is no replacement for setting up proper ACLs on
-              your LDAP server.</para>
-            </listitem>
-
-            <listitem>
-              <para><emphasis role="bold">Custom label:</emphasis> Here you
-              can set a custom label for the account types. Use this if the
-              standard label does not fit for you (e.g. enter "Servers" for
-              hosts).</para>
-            </listitem>
-
-            <listitem>
-              <para><emphasis role="bold">No new entries (LAM Pro
-              only):</emphasis> Use this if you want to prevent that new
-              accounts of this type are created by your users. The GUI will
-              hide buttons to create new entries and also disable file upload
-              for this type.</para>
-            </listitem>
-
-            <listitem>
-              <para><emphasis role="bold">Disallow delete (LAM Pro
-              only):</emphasis> Use this if you want to prevent that accounts
-              of this type are deleted by your users.</para>
-            </listitem>
-          </itemizedlist>
-
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/configTypes2.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
-
-          <para>On the next page you can specify in detail what extensions
-          should be enabled for each account type.</para>
-        </section>
-
-        <section>
-          <title>Modules</title>
-
-          <para>The modules specify the active extensions for each account
-          type. E.g. here you can setup if your user entries should be address
-          book entries only or also support Unix or Samba.</para>
-
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/configModules1.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
-
-          <para>Each account type needs a so called "base module". This is the
-          basement for all LDAP entries of this type. Usually, it provides the
-          structural object class for the LDAP entries. There must be exactly
-          one active base module for each account type.</para>
-
-          <para>Furthermore, there may be any number of additional active
-          account modules. E.g. you may select "Personal" as base module and
-          Unix + Samba as additional modules.</para>
-        </section>
-
-        <section>
-          <title>Module settings</title>
-
-          <para>Depending on the activated account modules there may be
-          additional configuration options available. They can be found on the
-          "Module settings" tab. E.g. the Personal account module allows to
-          hide several input fields and the Unix module requires to specify
-          ranges for UID numbers.</para>
-
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/configSettings1.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
-        </section>
-      </section>
-
-      <section>
-        <title>Cron jobs (LAM Pro)</title>
-
-        <para>LAM Pro can execute common tasks via cron job. This can be used
-        to e.g. notify your users before their passwords expire.</para>
-
-        <section>
-          <title>LDAP and database configuration</title>
-
-          <para>Please add the LDAP bind user and password for all jobs. This
-          LDAP account will be used to perform all LDAP read and write
-          operations.</para>
-
-          <para>Next, select the database type where LAM should store job
-          related data. Supported databases are SQLite and MySQL.</para>
-
-          <para><emphasis role="bold">SQLite</emphasis></para>
-
-          <para>This is a simple file based database. It needs no special
-          database server. The database file will be located next to the
-          server profile in config directory.</para>
-
-          <para>You will need to install the SQLite PDO module for PHP
-          (pdo_sqlite.so). For Debian this is located in package
-          php5-sqlite.</para>
-
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/jobs1.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
-
-          <para><emphasis role="bold">MySQL</emphasis></para>
-
-          <para>This will store all job data in an external MySQL
-          database.</para>
-
-          <para>You will need to install the MySQL PDO module for PHP
-          (pdo_mysql.so). For Debian this is located in package
-          php5-mysql.</para>
-
-          <para>Steps to create a MySQL database and user:</para>
-
-          <literallayout># login
+        <literallayout># login
 mysql -u root -p
 # create a database
 mysql&gt; create database lam_cron;
@@ -711,769 +766,758 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'%';
 mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
 </literallayout>
 
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/jobs3.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/jobs3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
 
-          <para><literallayout>
+        <para><literallayout>
 </literallayout><emphasis role="bold">Test your settings</emphasis></para>
 
-          <para>After the LDAP and database settings are done you can test
-          your settings.</para>
+        <para>After the LDAP and database settings are done you can test your
+        settings.</para>
 
-          <para><emphasis role="bold">Cron entry</emphasis></para>
+        <para><emphasis role="bold">Cron entry</emphasis></para>
 
-          <para>LAM also prints the crontab line that you need to run the
-          configured jobs on a daily basis. The command must be run as the
-          same user as your webserver is running. You are free to change the
-          starting time of the script or run it more often.</para>
-        </section>
+        <para>LAM also prints the crontab line that you need to run the
+        configured jobs on a daily basis. The command must be run as the same
+        user as your webserver is running. You are free to change the starting
+        time of the script or run it more often.</para>
+      </section>
+
+      <section>
+        <title>Adding jobs</title>
+
+        <para>To add a new job just click on the "Add job" button and select
+        the job type you need. The list of available jobs depends on your
+        active account modules. E.g. the PPolicy job will only be available if
+        you activated PPolicy user module.</para>
+
+        <para>Depending on the job type jobs may be added multiple times with
+        different configurations. For descriptions about the available job
+        types see next chapters.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/jobs2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
 
         <section>
-          <title>Adding jobs</title>
+          <title>PPolicy: Notify users about password expiration</title>
 
-          <para>To add a new job just click on the "Add job" button and select
-          the job type you need. The list of available jobs depends on your
-          active account modules. E.g. the PPolicy job will only be available
-          if you activated PPolicy user module.</para>
+          <para>This will send your users an email reminder before their
+          password expires.</para>
 
-          <para>Depending on the job type jobs may be added multiple times
-          with different configurations. For descriptions about the available
-          job types see next chapters.</para>
+          <para>You need to activate the PPolicy module for users to be able
+          to add this job. The job can be added multiple times (e.g. to send a
+          second warning at a later time).</para>
+
+          <para>LAM calculates the expiration date based on the last password
+          change and the assigned password policy (or the default policy)
+          using attributes pwdMaxAge and pwdExpireWarning.</para>
+
+          <para>Examples:</para>
+
+          <para>Warning time (pwdExpireWarning) = 14 days, notification period
+          = 10: LAM will send out the email 24 days before the password
+          expires</para>
+
+          <para>Warning time (pwdExpireWarning) = 14 days, notification period
+          = 0: LAM will send out the email 14 days before the password
+          expires</para>
+
+          <para>No warning time (pwdExpireWarning), notification period = 10:
+          LAM will send out the email 10 days before the password
+          expires</para>
 
           <screenshot>
             <mediaobject>
               <imageobject>
-                <imagedata fileref="images/jobs2.png" />
+                <imagedata fileref="images/jobs_ppolicy1.png" />
               </imageobject>
             </mediaobject>
           </screenshot>
 
-          <section>
-            <title>PPolicy: Notify users about password expiration</title>
+          <table>
+            <title>Options</title>
 
-            <para>This will send your users an email reminder before their
-            password expires.</para>
+            <tgroup cols="2">
+              <tbody>
+                <row>
+                  <entry><emphasis role="bold">Option</emphasis></entry>
 
-            <para>You need to activate the PPolicy module for users to be able
-            to add this job. The job can be added multiple times (e.g. to send
-            a second warning at a later time).</para>
+                  <entry><emphasis role="bold">Description</emphasis></entry>
+                </row>
 
-            <para>LAM calculates the expiration date based on the last
-            password change and the assigned password policy (or the default
-            policy) using attributes pwdMaxAge and pwdExpireWarning.</para>
+                <row>
+                  <entry>From address</entry>
 
-            <para>Examples:</para>
+                  <entry>The email address to set as FROM.</entry>
+                </row>
 
-            <para>Warning time (pwdExpireWarning) = 14 days, notification
-            period = 10: LAM will send out the email 24 days before the
-            password expires</para>
+                <row>
+                  <entry>Reply-to address</entry>
 
-            <para>Warning time (pwdExpireWarning) = 14 days, notification
-            period = 0: LAM will send out the email 14 days before the
-            password expires</para>
+                  <entry>Optional Reply-to address for email.</entry>
+                </row>
 
-            <para>No warning time (pwdExpireWarning), notification period =
-            10: LAM will send out the email 10 days before the password
-            expires</para>
+                <row>
+                  <entry>CC address</entry>
 
-            <screenshot>
-              <mediaobject>
-                <imageobject>
-                  <imagedata fileref="images/jobs_ppolicy1.png" />
-                </imageobject>
-              </mediaobject>
-            </screenshot>
+                  <entry>Optional CC mail address.</entry>
+                </row>
 
-            <table>
-              <title>Options</title>
+                <row>
+                  <entry>BCC address</entry>
 
-              <tgroup cols="2">
-                <tbody>
-                  <row>
-                    <entry><emphasis role="bold">Option</emphasis></entry>
+                  <entry>Optional BCC mail address.</entry>
+                </row>
 
-                    <entry><emphasis
-                    role="bold">Description</emphasis></entry>
-                  </row>
+                <row>
+                  <entry>Subject</entry>
 
-                  <row>
-                    <entry>From address</entry>
+                  <entry>The email subject line. Supports wildcards, see
+                  below.</entry>
+                </row>
 
-                    <entry>The email address to set as FROM.</entry>
-                  </row>
+                <row>
+                  <entry>Text</entry>
 
-                  <row>
-                    <entry>Reply-to address</entry>
+                  <entry>The email body text. Supports wildcards, see
+                  below.</entry>
+                </row>
 
-                    <entry>Optional Reply-to address for email.</entry>
-                  </row>
+                <row>
+                  <entry>Notification period</entry>
 
-                  <row>
-                    <entry>CC address</entry>
+                  <entry>Number of days to notify before password
+                  expires.</entry>
+                </row>
 
-                    <entry>Optional CC mail address.</entry>
-                  </row>
+                <row>
+                  <entry>Default password policy</entry>
 
-                  <row>
-                    <entry>BCC address</entry>
+                  <entry>Default PPolicy password policy entry (object class
+                  "pwdPolicy").</entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </table>
 
-                    <entry>Optional BCC mail address.</entry>
-                  </row>
+          <para>Wildcards:</para>
 
-                  <row>
-                    <entry>Subject</entry>
+          <para>You can enter LDAP attributes as wildcards in the form
+          @@ATTRIBUTE_NAME@@. E.g. to add the user's common name use "@@cn@@".
+          For the common name it would be "@@cn@@".</para>
 
-                    <entry>The email subject line. Supports wildcards, see
-                    below.</entry>
-                  </row>
-
-                  <row>
-                    <entry>Text</entry>
-
-                    <entry>The email body text. Supports wildcards, see
-                    below.</entry>
-                  </row>
-
-                  <row>
-                    <entry>Notification period</entry>
-
-                    <entry>Number of days to notify before password
-                    expires.</entry>
-                  </row>
-
-                  <row>
-                    <entry>Default password policy</entry>
-
-                    <entry>Default PPolicy password policy entry (object class
-                    "pwdPolicy").</entry>
-                  </row>
-                </tbody>
-              </tgroup>
-            </table>
-
-            <para>Wildcards:</para>
-
-            <para>You can enter LDAP attributes as wildcards in the form
-            @@ATTRIBUTE_NAME@@. E.g. to add the user's common name use
-            "@@cn@@". For the common name it would be "@@cn@@".</para>
-
-            <para>There are also two special wildcards for the expiration
-            date. @@EXPIRE_DATE_DDMMYYYY@@ will print the date as e.g.
-            "31.12.2016". @@EXPIRE_DATE_YYYYMMDD@@ will print the date as e.g.
-            "2016-12-31".</para>
-          </section>
-
-          <section>
-            <title>389ds: Notify users about password expiration</title>
-
-            <para>This will send your users an email reminder before their
-            password expires.</para>
-
-            <para>You need to activate the Account Locking module for users to
-            be able to add this job. The job can be added multiple times (e.g.
-            to send a second warning at a later time).</para>
-
-            <para>LAM calculates the expiration date based on the attribute
-            passwordExpirationTime.</para>
-
-            <screenshot>
-              <mediaobject>
-                <imageobject>
-                  <imagedata fileref="images/jobs_389dsPasswordMail1.png" />
-                </imageobject>
-              </mediaobject>
-            </screenshot>
-
-            <para><table>
-                <title>Options</title>
-
-                <tgroup cols="2">
-                  <tbody>
-                    <row>
-                      <entry><emphasis role="bold">Option</emphasis></entry>
-
-                      <entry><emphasis
-                      role="bold">Description</emphasis></entry>
-                    </row>
-
-                    <row>
-                      <entry>From address</entry>
-
-                      <entry>The email address to set as FROM.</entry>
-                    </row>
-
-                    <row>
-                      <entry>Reply-to address</entry>
-
-                      <entry>Optional Reply-to address for email.</entry>
-                    </row>
-
-                    <row>
-                      <entry>CC address</entry>
-
-                      <entry>Optional CC mail address.</entry>
-                    </row>
-
-                    <row>
-                      <entry>BCC address</entry>
-
-                      <entry>Optional BCC mail address.</entry>
-                    </row>
-
-                    <row>
-                      <entry>Subject</entry>
-
-                      <entry>The email subject line. Supports wildcards, see
-                      below.</entry>
-                    </row>
-
-                    <row>
-                      <entry>Text</entry>
-
-                      <entry>The email body text. Supports wildcards, see
-                      below.</entry>
-                    </row>
-
-                    <row>
-                      <entry>Notification period</entry>
-
-                      <entry>Number of days to notify before password
-                      expires.</entry>
-                    </row>
-                  </tbody>
-                </tgroup>
-              </table></para>
-
-            <para>Wildcards:</para>
-
-            <para>You can enter LDAP attributes as wildcards in the form
-            @@ATTRIBUTE_NAME@@. E.g. to add the user's common name use
-            "@@cn@@". For the common name it would be "@@cn@@".</para>
-
-            <para>There are also two special wildcards for the expiration
-            date. @@EXPIRE_DATE_DDMMYYYY@@ will print the date as e.g.
-            "31.12.2016". @@EXPIRE_DATE_YYYYMMDD@@ will print the date as e.g.
-            "2016-12-31".</para>
-          </section>
-
-          <section>
-            <title>Shadow: Notify users about password expiration</title>
-
-            <para>This will send your users an email reminder before their
-            password expires.</para>
-
-            <para>You need to activate the Shadow module for users to be able
-            to add this job. The job can be added multiple times (e.g. to send
-            a second warning at a later time).</para>
-
-            <para>LAM calculates the expiration date based on the last
-            password change, the password warning time (attribute
-            "shadowWarning") and the specified notification period.</para>
-
-            <para>Examples:</para>
-
-            <para>Warning time = 14, notification period = 10: LAM will send
-            out the email 24 days before the password expires</para>
-
-            <para>Warning time = 14, notification period = 0: LAM will send
-            out the email 14 days before the password expires</para>
-
-            <screenshot>
-              <mediaobject>
-                <imageobject>
-                  <imagedata fileref="images/jobs_shadow1.png" />
-                </imageobject>
-              </mediaobject>
-            </screenshot>
-
-            <table>
-              <title>Options</title>
-
-              <tgroup cols="2">
-                <tbody>
-                  <row>
-                    <entry><emphasis role="bold">Option</emphasis></entry>
-
-                    <entry><emphasis
-                    role="bold">Description</emphasis></entry>
-                  </row>
-
-                  <row>
-                    <entry>From address</entry>
-
-                    <entry>The email address to set as FROM.</entry>
-                  </row>
-
-                  <row>
-                    <entry>Reply-to address</entry>
-
-                    <entry>Optional Reply-to address for email.</entry>
-                  </row>
-
-                  <row>
-                    <entry>CC address</entry>
-
-                    <entry>Optional CC mail address.</entry>
-                  </row>
-
-                  <row>
-                    <entry>BCC address</entry>
-
-                    <entry>Optional BCC mail address.</entry>
-                  </row>
-
-                  <row>
-                    <entry>Subject</entry>
-
-                    <entry>The email subject line. Supports wildcards, see
-                    below.</entry>
-                  </row>
-
-                  <row>
-                    <entry>Text</entry>
-
-                    <entry>The email body text. Supports wildcards, see
-                    below.</entry>
-                  </row>
-
-                  <row>
-                    <entry>Notification period</entry>
-
-                    <entry>Number of days to notify before password
-                    expires.</entry>
-                  </row>
-                </tbody>
-              </tgroup>
-            </table>
-
-            <para>Wildcards:</para>
-
-            <para>You can enter LDAP attributes as wildcards in the form
-            @@ATTRIBUTE_NAME@@. E.g. to add the user's common name use
-            "@@cn@@". For the common name it would be "@@cn@@".</para>
-
-            <para>There are also two special wildcards for the expiration
-            date. @@EXPIRE_DATE_DDMMYYYY@@ will print the date as e.g.
-            "31.12.2016". @@EXPIRE_DATE_YYYYMMDD@@ will print the date as e.g.
-            "2016-12-31".</para>
-          </section>
-
-          <section>
-            <title>Shadow: Delete or move expired accounts</title>
-
-            <para>You can automatically delete or move expired accounts. The
-            job checks Shadow account expiration dates (not password
-            expiration dates).</para>
-
-            <screenshot>
-              <mediaobject>
-                <imageobject>
-                  <imagedata fileref="images/jobs_shadow2.png" />
-                </imageobject>
-              </mediaobject>
-            </screenshot>
-
-            <table>
-              <title>Options</title>
-
-              <tgroup cols="2">
-                <tbody>
-                  <row>
-                    <entry><emphasis role="bold">Option</emphasis></entry>
-
-                    <entry><emphasis
-                    role="bold">Description</emphasis></entry>
-                  </row>
-
-                  <row>
-                    <entry>Delay</entry>
-
-                    <entry>Number of days to wait after the account is
-                    expired.</entry>
-                  </row>
-
-                  <row>
-                    <entry>Action</entry>
-
-                    <entry>Delete or move accounts</entry>
-                  </row>
-
-                  <row>
-                    <entry>Target DN</entry>
-
-                    <entry>Move only: specifies the DN where accounts are
-                    moved</entry>
-                  </row>
-                </tbody>
-              </tgroup>
-            </table>
-          </section>
-
-          <section>
-            <title>Windows: Notify users about password expiration</title>
-
-            <para>This will send your users an email reminder before their
-            password expires.</para>
-
-            <para>You need to activate the Windows module for users to be able
-            to add this job. The job can be added multiple times (e.g. to send
-            a second warning at a later time).</para>
-
-            <para>LAM calculates the expiration date based on the last
-            password change and the domain policy.</para>
-
-            <screenshot>
-              <mediaobject>
-                <imageobject>
-                  <imagedata fileref="images/jobs_windows1.png" />
-                </imageobject>
-              </mediaobject>
-            </screenshot>
-
-            <table>
-              <title>Options</title>
-
-              <tgroup cols="2">
-                <tbody>
-                  <row>
-                    <entry><emphasis role="bold">Option</emphasis></entry>
-
-                    <entry><emphasis
-                    role="bold">Description</emphasis></entry>
-                  </row>
-
-                  <row>
-                    <entry>From address</entry>
-
-                    <entry>The email address to set as FROM.</entry>
-                  </row>
-
-                  <row>
-                    <entry>Reply-to address</entry>
-
-                    <entry>Optional Reply-to address for email.</entry>
-                  </row>
-
-                  <row>
-                    <entry>CC address</entry>
-
-                    <entry>Optional CC mail address.</entry>
-                  </row>
-
-                  <row>
-                    <entry>BCC address</entry>
-
-                    <entry>Optional BCC mail address.</entry>
-                  </row>
-
-                  <row>
-                    <entry>Subject</entry>
-
-                    <entry>The email subject line. Supports wildcards, see
-                    below.</entry>
-                  </row>
-
-                  <row>
-                    <entry>Text</entry>
-
-                    <entry>The email body text. Supports wildcards, see
-                    below.</entry>
-                  </row>
-
-                  <row>
-                    <entry>Notification period</entry>
-
-                    <entry>Number of days to notify before password
-                    expires.</entry>
-                  </row>
-                </tbody>
-              </tgroup>
-            </table>
-
-            <para>Wildcards:</para>
-
-            <para>You can enter LDAP attributes as wildcards in the form
-            @@ATTRIBUTE_NAME@@. E.g. to add the user's common name use
-            "@@cn@@". For the common name it would be "@@cn@@".</para>
-
-            <para>There are also two special wildcards for the expiration
-            date. @@EXPIRE_DATE_DDMMYYYY@@ will print the date as e.g.
-            "31.12.2016". @@EXPIRE_DATE_YYYYMMDD@@ will print the date as e.g.
-            "2016-12-31".</para>
-          </section>
-
-          <section>
-            <title>Windows: Delete or move expired accounts</title>
-
-            <para>You can automatically delete or move expired
-            accounts.</para>
-
-            <screenshot>
-              <mediaobject>
-                <imageobject>
-                  <imagedata fileref="images/jobs_windowsCleanup.png" />
-                </imageobject>
-              </mediaobject>
-            </screenshot>
-
-            <table>
-              <title>Options</title>
-
-              <tgroup cols="2">
-                <tbody>
-                  <row>
-                    <entry><emphasis role="bold">Option</emphasis></entry>
-
-                    <entry><emphasis
-                    role="bold">Description</emphasis></entry>
-                  </row>
-
-                  <row>
-                    <entry>Delay</entry>
-
-                    <entry>Number of days to wait after the account is
-                    expired.</entry>
-                  </row>
-
-                  <row>
-                    <entry>Action</entry>
-
-                    <entry>Delete or move accounts</entry>
-                  </row>
-
-                  <row>
-                    <entry>Target DN</entry>
-
-                    <entry>Move only: specifies the DN where accounts are
-                    moved</entry>
-                  </row>
-                </tbody>
-              </tgroup>
-            </table>
-          </section>
-
-          <section>
-            <title>FreeRadius: Delete or move expired accounts</title>
-
-            <para>You can automatically delete or move expired
-            accounts.</para>
-
-            <screenshot>
-              <mediaobject>
-                <imageobject>
-                  <imagedata fileref="images/jobs_freeRadiusCleanup.png" />
-                </imageobject>
-              </mediaobject>
-            </screenshot>
-
-            <table>
-              <title>Options</title>
-
-              <tgroup cols="2">
-                <tbody>
-                  <row>
-                    <entry><emphasis role="bold">Option</emphasis></entry>
-
-                    <entry><emphasis
-                    role="bold">Description</emphasis></entry>
-                  </row>
-
-                  <row>
-                    <entry>Delay</entry>
-
-                    <entry>Number of days to wait after the account is
-                    expired.</entry>
-                  </row>
-
-                  <row>
-                    <entry>Action</entry>
-
-                    <entry>Delete or move accounts</entry>
-                  </row>
-
-                  <row>
-                    <entry>Target DN</entry>
-
-                    <entry>Move only: specifies the DN where accounts are
-                    moved</entry>
-                  </row>
-                </tbody>
-              </tgroup>
-            </table>
-          </section>
-
-          <section>
-            <title>Qmail: Delete or move expired accounts</title>
-
-            <para>You can automatically delete or move expired accounts. The
-            job reads the qmail deletion date of user accounts.</para>
-
-            <screenshot>
-              <mediaobject>
-                <imageobject>
-                  <imagedata fileref="images/jobs_qmailCleanup1.png" />
-                </imageobject>
-              </mediaobject>
-            </screenshot>
-
-            <table>
-              <title>Options</title>
-
-              <tgroup cols="2">
-                <tbody>
-                  <row>
-                    <entry><emphasis role="bold">Option</emphasis></entry>
-
-                    <entry><emphasis
-                    role="bold">Description</emphasis></entry>
-                  </row>
-
-                  <row>
-                    <entry>Delay</entry>
-
-                    <entry>Number of days to wait after the account is
-                    expired.</entry>
-                  </row>
-
-                  <row>
-                    <entry>Action</entry>
-
-                    <entry>Delete or move accounts</entry>
-                  </row>
-
-                  <row>
-                    <entry>Target DN</entry>
-
-                    <entry>Move only: specifies the DN where accounts are
-                    moved</entry>
-                  </row>
-                </tbody>
-              </tgroup>
-            </table>
-          </section>
+          <para>There are also two special wildcards for the expiration date.
+          @@EXPIRE_DATE_DDMMYYYY@@ will print the date as e.g. "31.12.2016".
+          @@EXPIRE_DATE_YYYYMMDD@@ will print the date as e.g.
+          "2016-12-31".</para>
         </section>
 
         <section>
-          <title>Job history</title>
+          <title>389ds: Notify users about password expiration</title>
 
-          <para>This will show the list of all executed job runs and their
-          result.</para>
+          <para>This will send your users an email reminder before their
+          password expires.</para>
+
+          <para>You need to activate the Account Locking module for users to
+          be able to add this job. The job can be added multiple times (e.g.
+          to send a second warning at a later time).</para>
+
+          <para>LAM calculates the expiration date based on the attribute
+          passwordExpirationTime.</para>
 
           <screenshot>
             <mediaobject>
               <imageobject>
-                <imagedata fileref="images/jobs4.png" />
+                <imagedata fileref="images/jobs_389dsPasswordMail1.png" />
               </imageobject>
             </mediaobject>
           </screenshot>
+
+          <para><table>
+              <title>Options</title>
+
+              <tgroup cols="2">
+                <tbody>
+                  <row>
+                    <entry><emphasis role="bold">Option</emphasis></entry>
+
+                    <entry><emphasis
+                    role="bold">Description</emphasis></entry>
+                  </row>
+
+                  <row>
+                    <entry>From address</entry>
+
+                    <entry>The email address to set as FROM.</entry>
+                  </row>
+
+                  <row>
+                    <entry>Reply-to address</entry>
+
+                    <entry>Optional Reply-to address for email.</entry>
+                  </row>
+
+                  <row>
+                    <entry>CC address</entry>
+
+                    <entry>Optional CC mail address.</entry>
+                  </row>
+
+                  <row>
+                    <entry>BCC address</entry>
+
+                    <entry>Optional BCC mail address.</entry>
+                  </row>
+
+                  <row>
+                    <entry>Subject</entry>
+
+                    <entry>The email subject line. Supports wildcards, see
+                    below.</entry>
+                  </row>
+
+                  <row>
+                    <entry>Text</entry>
+
+                    <entry>The email body text. Supports wildcards, see
+                    below.</entry>
+                  </row>
+
+                  <row>
+                    <entry>Notification period</entry>
+
+                    <entry>Number of days to notify before password
+                    expires.</entry>
+                  </row>
+                </tbody>
+              </tgroup>
+            </table></para>
+
+          <para>Wildcards:</para>
+
+          <para>You can enter LDAP attributes as wildcards in the form
+          @@ATTRIBUTE_NAME@@. E.g. to add the user's common name use "@@cn@@".
+          For the common name it would be "@@cn@@".</para>
+
+          <para>There are also two special wildcards for the expiration date.
+          @@EXPIRE_DATE_DDMMYYYY@@ will print the date as e.g. "31.12.2016".
+          @@EXPIRE_DATE_YYYYMMDD@@ will print the date as e.g.
+          "2016-12-31".</para>
+        </section>
+
+        <section>
+          <title>Shadow: Notify users about password expiration</title>
+
+          <para>This will send your users an email reminder before their
+          password expires.</para>
+
+          <para>You need to activate the Shadow module for users to be able to
+          add this job. The job can be added multiple times (e.g. to send a
+          second warning at a later time).</para>
+
+          <para>LAM calculates the expiration date based on the last password
+          change, the password warning time (attribute "shadowWarning") and
+          the specified notification period.</para>
+
+          <para>Examples:</para>
+
+          <para>Warning time = 14, notification period = 10: LAM will send out
+          the email 24 days before the password expires</para>
+
+          <para>Warning time = 14, notification period = 0: LAM will send out
+          the email 14 days before the password expires</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/jobs_shadow1.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <table>
+            <title>Options</title>
+
+            <tgroup cols="2">
+              <tbody>
+                <row>
+                  <entry><emphasis role="bold">Option</emphasis></entry>
+
+                  <entry><emphasis role="bold">Description</emphasis></entry>
+                </row>
+
+                <row>
+                  <entry>From address</entry>
+
+                  <entry>The email address to set as FROM.</entry>
+                </row>
+
+                <row>
+                  <entry>Reply-to address</entry>
+
+                  <entry>Optional Reply-to address for email.</entry>
+                </row>
+
+                <row>
+                  <entry>CC address</entry>
+
+                  <entry>Optional CC mail address.</entry>
+                </row>
+
+                <row>
+                  <entry>BCC address</entry>
+
+                  <entry>Optional BCC mail address.</entry>
+                </row>
+
+                <row>
+                  <entry>Subject</entry>
+
+                  <entry>The email subject line. Supports wildcards, see
+                  below.</entry>
+                </row>
+
+                <row>
+                  <entry>Text</entry>
+
+                  <entry>The email body text. Supports wildcards, see
+                  below.</entry>
+                </row>
+
+                <row>
+                  <entry>Notification period</entry>
+
+                  <entry>Number of days to notify before password
+                  expires.</entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </table>
+
+          <para>Wildcards:</para>
+
+          <para>You can enter LDAP attributes as wildcards in the form
+          @@ATTRIBUTE_NAME@@. E.g. to add the user's common name use "@@cn@@".
+          For the common name it would be "@@cn@@".</para>
+
+          <para>There are also two special wildcards for the expiration date.
+          @@EXPIRE_DATE_DDMMYYYY@@ will print the date as e.g. "31.12.2016".
+          @@EXPIRE_DATE_YYYYMMDD@@ will print the date as e.g.
+          "2016-12-31".</para>
+        </section>
+
+        <section>
+          <title>Shadow: Delete or move expired accounts</title>
+
+          <para>You can automatically delete or move expired accounts. The job
+          checks Shadow account expiration dates (not password expiration
+          dates).</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/jobs_shadow2.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <table>
+            <title>Options</title>
+
+            <tgroup cols="2">
+              <tbody>
+                <row>
+                  <entry><emphasis role="bold">Option</emphasis></entry>
+
+                  <entry><emphasis role="bold">Description</emphasis></entry>
+                </row>
+
+                <row>
+                  <entry>Delay</entry>
+
+                  <entry>Number of days to wait after the account is
+                  expired.</entry>
+                </row>
+
+                <row>
+                  <entry>Action</entry>
+
+                  <entry>Delete or move accounts</entry>
+                </row>
+
+                <row>
+                  <entry>Target DN</entry>
+
+                  <entry>Move only: specifies the DN where accounts are
+                  moved</entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </table>
+        </section>
+
+        <section>
+          <title>Windows: Notify users about password expiration</title>
+
+          <para>This will send your users an email reminder before their
+          password expires.</para>
+
+          <para>You need to activate the Windows module for users to be able
+          to add this job. The job can be added multiple times (e.g. to send a
+          second warning at a later time).</para>
+
+          <para>LAM calculates the expiration date based on the last password
+          change and the domain policy.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/jobs_windows1.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <table>
+            <title>Options</title>
+
+            <tgroup cols="2">
+              <tbody>
+                <row>
+                  <entry><emphasis role="bold">Option</emphasis></entry>
+
+                  <entry><emphasis role="bold">Description</emphasis></entry>
+                </row>
+
+                <row>
+                  <entry>From address</entry>
+
+                  <entry>The email address to set as FROM.</entry>
+                </row>
+
+                <row>
+                  <entry>Reply-to address</entry>
+
+                  <entry>Optional Reply-to address for email.</entry>
+                </row>
+
+                <row>
+                  <entry>CC address</entry>
+
+                  <entry>Optional CC mail address.</entry>
+                </row>
+
+                <row>
+                  <entry>BCC address</entry>
+
+                  <entry>Optional BCC mail address.</entry>
+                </row>
+
+                <row>
+                  <entry>Subject</entry>
+
+                  <entry>The email subject line. Supports wildcards, see
+                  below.</entry>
+                </row>
+
+                <row>
+                  <entry>Text</entry>
+
+                  <entry>The email body text. Supports wildcards, see
+                  below.</entry>
+                </row>
+
+                <row>
+                  <entry>Notification period</entry>
+
+                  <entry>Number of days to notify before password
+                  expires.</entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </table>
+
+          <para>Wildcards:</para>
+
+          <para>You can enter LDAP attributes as wildcards in the form
+          @@ATTRIBUTE_NAME@@. E.g. to add the user's common name use "@@cn@@".
+          For the common name it would be "@@cn@@".</para>
+
+          <para>There are also two special wildcards for the expiration date.
+          @@EXPIRE_DATE_DDMMYYYY@@ will print the date as e.g. "31.12.2016".
+          @@EXPIRE_DATE_YYYYMMDD@@ will print the date as e.g.
+          "2016-12-31".</para>
+        </section>
+
+        <section>
+          <title>Windows: Delete or move expired accounts</title>
+
+          <para>You can automatically delete or move expired accounts.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/jobs_windowsCleanup.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <table>
+            <title>Options</title>
+
+            <tgroup cols="2">
+              <tbody>
+                <row>
+                  <entry><emphasis role="bold">Option</emphasis></entry>
+
+                  <entry><emphasis role="bold">Description</emphasis></entry>
+                </row>
+
+                <row>
+                  <entry>Delay</entry>
+
+                  <entry>Number of days to wait after the account is
+                  expired.</entry>
+                </row>
+
+                <row>
+                  <entry>Action</entry>
+
+                  <entry>Delete or move accounts</entry>
+                </row>
+
+                <row>
+                  <entry>Target DN</entry>
+
+                  <entry>Move only: specifies the DN where accounts are
+                  moved</entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </table>
+        </section>
+
+        <section>
+          <title>FreeRadius: Delete or move expired accounts</title>
+
+          <para>You can automatically delete or move expired accounts.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/jobs_freeRadiusCleanup.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <table>
+            <title>Options</title>
+
+            <tgroup cols="2">
+              <tbody>
+                <row>
+                  <entry><emphasis role="bold">Option</emphasis></entry>
+
+                  <entry><emphasis role="bold">Description</emphasis></entry>
+                </row>
+
+                <row>
+                  <entry>Delay</entry>
+
+                  <entry>Number of days to wait after the account is
+                  expired.</entry>
+                </row>
+
+                <row>
+                  <entry>Action</entry>
+
+                  <entry>Delete or move accounts</entry>
+                </row>
+
+                <row>
+                  <entry>Target DN</entry>
+
+                  <entry>Move only: specifies the DN where accounts are
+                  moved</entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </table>
+        </section>
+
+        <section>
+          <title>Qmail: Delete or move expired accounts</title>
+
+          <para>You can automatically delete or move expired accounts. The job
+          reads the qmail deletion date of user accounts.</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/jobs_qmailCleanup1.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <table>
+            <title>Options</title>
+
+            <tgroup cols="2">
+              <tbody>
+                <row>
+                  <entry><emphasis role="bold">Option</emphasis></entry>
+
+                  <entry><emphasis role="bold">Description</emphasis></entry>
+                </row>
+
+                <row>
+                  <entry>Delay</entry>
+
+                  <entry>Number of days to wait after the account is
+                  expired.</entry>
+                </row>
+
+                <row>
+                  <entry>Action</entry>
+
+                  <entry>Delete or move accounts</entry>
+                </row>
+
+                <row>
+                  <entry>Target DN</entry>
+
+                  <entry>Move only: specifies the DN where accounts are
+                  moved</entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </table>
         </section>
       </section>
 
-      <section id="confTypicalScenarios">
-        <title>Typical scenarios</title>
+      <section>
+        <title>Job history</title>
 
-        <para>This is a list of typical scenarios how your LDAP environment
-        may look like and how to structure the server profiles for it.</para>
+        <para>This will show the list of all executed job runs and their
+        result.</para>
 
-        <section>
-          <title>Simple: One LDAP directory managed by a small group of
-          admins</title>
-
-          <para>This is the easiest and most common scenario. You want to
-          manage a single LDAP server and there is only one or a few admins.
-          In this case just create one server profile and you are done. The
-          admins may be either specified as a fixed list or by using an LDAP
-          search at login time.</para>
-
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/LDAPStructuresSimple.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
-        </section>
-
-        <section>
-          <title>Advanced: One LDAP server which is managed by different admin
-          groups</title>
-
-          <para>Large organisations may have one big LDAP directory for all
-          user/group accounts. But the users are managed by different groups
-          of admins (e.g. departments, locations, subsidiaries, ...). The
-          users are typically divided into organisational units in the LDAP
-          tree. Admins may only manage the users in their part of the
-          tree.</para>
-
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/LDAPStructuresAdvanced.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
-
-          <para>In this situation it is recommended to create one server
-          profile for each admin group (e.g. department). Setup the LDAP
-          suffixes in the server profiles to point to the needed
-          organisational units. E.g. use
-          ou=people,ou=department1,dc=company,dc=com or
-          ou=department1,ou=people,dc=company,dc=com as LDAP suffix for users.
-          Do the same for groups, hosts, ... This way each admin group will
-          only see its own users. You may want to use LDAP search for the LAM
-          login in this scenario. This will prevent that you need to update a
-          server profile if the number of admins changes.</para>
-
-          <para><emphasis role="bold">Attention:</emphasis> LAM's feature to
-          automatically find free UIDs/GIDs for new users/groups will not work
-          in this case. LAM uses the user/group suffix to search for already
-          assigned UIDs/GIDs. As an alternative you can specify different
-          UID/GID ranges for each department. Then the UIDs/GIDs will stay
-          unique for the whole directory.</para>
-        </section>
-
-        <section>
-          <title>Multiple LDAP servers</title>
-
-          <para>You can manage as many LDAP servers with LAM as you wish. This
-          scenario is similar to the advanced scenario above. Just create one
-          server profile for each LDAP server.</para>
-
-          <screenshot>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="images/LDAPStructuresMultiServer.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
-        </section>
-
-        <section>
-          <title>Single LDAP directory with lots of users (&gt;10 000)</title>
-
-          <para>LAM was tested to work with 10 000 users. If you have a lot
-          more users then you have basically two options.</para>
-
-          <itemizedlist>
-            <listitem>
-              <para>Divide your LDAP tree in organisational units: This is
-              usually the best performing option. Put your accounts in several
-              organisational units and setup LAM as in the advanced scenario
-              above.</para>
-            </listitem>
-
-            <listitem>
-              <para>Increase memory limit: Increase the memory_limit parameter
-              in your php.ini. This will allow LAM to read more entries. But
-              this will slow down the response times of LAM.</para>
-            </listitem>
-          </itemizedlist>
-        </section>
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/jobs4.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
       </section>
     </section>
-  </chapter>
+
+    <section id="confTypicalScenarios">
+      <title>Typical scenarios</title>
+
+      <para>This is a list of typical scenarios how your LDAP environment may
+      look like and how to structure the server profiles for it.</para>
+
+      <section>
+        <title>Simple: One LDAP directory managed by a small group of
+        admins</title>
+
+        <para>This is the easiest and most common scenario. You want to manage
+        a single LDAP server and there is only one or a few admins. In this
+        case just create one server profile and you are done. The admins may
+        be either specified as a fixed list or by using an LDAP search at
+        login time.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/LDAPStructuresSimple.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>Advanced: One LDAP server which is managed by different admin
+        groups</title>
+
+        <para>Large organisations may have one big LDAP directory for all
+        user/group accounts. But the users are managed by different groups of
+        admins (e.g. departments, locations, subsidiaries, ...). The users are
+        typically divided into organisational units in the LDAP tree. Admins
+        may only manage the users in their part of the tree.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/LDAPStructuresAdvanced.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>In this situation it is recommended to create one server profile
+        for each admin group (e.g. department). Setup the LDAP suffixes in the
+        server profiles to point to the needed organisational units. E.g. use
+        ou=people,ou=department1,dc=company,dc=com or
+        ou=department1,ou=people,dc=company,dc=com as LDAP suffix for users.
+        Do the same for groups, hosts, ... This way each admin group will only
+        see its own users. You may want to use LDAP search for the LAM login
+        in this scenario. This will prevent that you need to update a server
+        profile if the number of admins changes.</para>
+
+        <para><emphasis role="bold">Attention:</emphasis> LAM's feature to
+        automatically find free UIDs/GIDs for new users/groups will not work
+        in this case. LAM uses the user/group suffix to search for already
+        assigned UIDs/GIDs. As an alternative you can specify different
+        UID/GID ranges for each department. Then the UIDs/GIDs will stay
+        unique for the whole directory.</para>
+      </section>
+
+      <section>
+        <title>Multiple LDAP servers</title>
+
+        <para>You can manage as many LDAP servers with LAM as you wish. This
+        scenario is similar to the advanced scenario above. Just create one
+        server profile for each LDAP server.</para>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/LDAPStructuresMultiServer.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </section>
+
+      <section>
+        <title>Single LDAP directory with lots of users (&gt;10 000)</title>
+
+        <para>LAM was tested to work with 10 000 users. If you have a lot more
+        users then you have basically two options.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Divide your LDAP tree in organisational units: This is
+            usually the best performing option. Put your accounts in several
+            organisational units and setup LAM as in the advanced scenario
+            above.</para>
+          </listitem>
+
+          <listitem>
+            <para>Increase memory limit: Increase the memory_limit parameter
+            in your php.ini. This will allow LAM to read more entries. But
+            this will slow down the response times of LAM.</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+    </section>
+  </section>
+</chapter>

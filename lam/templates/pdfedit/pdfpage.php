@@ -19,7 +19,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2007 - 2016  Roland Gruber
+                2007 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -62,6 +62,7 @@ include_once('../../lib/xml_parser.inc');
 
 // start session
 startSecureSession();
+enforceUserIsLoggedIn();
 
 // die if no write access
 if (!checkIfWriteAccessIsAllowed()) die();

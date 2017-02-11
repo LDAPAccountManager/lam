@@ -1,9 +1,10 @@
 <?php
+use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 /*
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2016  Roland Gruber
+  Copyright (C) 2003 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -31,11 +32,13 @@ $Id$
 */
 
 /** Used to print messages. */
-include_once("status.inc");
+include_once "status.inc";
 /** Used to get module information. */
-include_once("modules.inc");
+include_once "modules.inc";
 /** Used to get type information. */
-include_once("types.inc");
+include_once "types.inc";
+/** 2-factor */
+include_once '2factor.inc';
 
 /**
  * Sets the environment variables for custom SSL CA certificates.
@@ -567,6 +570,13 @@ class LAMConfig {
 	/** job configuration */
 	private $jobSettings = array();
 
+	private $twoFactorAuthentication = TwoFactorProviderService::TWO_FACTOR_NONE;
+	private $twoFactorAuthenticationURL = 'https://localhost';
+	private $twoFactorAuthenticationInsecure = false;
+	private $twoFactorAuthenticationLabel = null;
+	private $twoFactorAuthenticationOptional = false;
+	private $twoFactorAuthenticationCaption = '';
+
 	/** List of all settings in config file */
 	private $settings = array("ServerURL", "useTLS", "followReferrals", 'pagedResults', "Passwd", "Admins", "treesuffix",
 		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", "cachetimeout", 'serverDisplayName',
@@ -576,7 +586,9 @@ class LAMConfig {
 		'loginSearchPassword', 'timeZone', 'jobsBindUser', 'jobsBindPassword', 'jobsDatabase', 'jobToken', 'jobs',
 		'jobsDBHost', 'jobsDBPort', 'jobsDBUser', 'jobsDBPassword', 'jobsDBName', 'pwdResetAllowSpecificPassword',
 		'pwdResetAllowScreenPassword', 'pwdResetForcePasswordChange', 'pwdResetDefaultPasswordOutput',
-		'scriptUserName', 'scriptSSHKey', 'scriptSSHKeyPassword'
+		'scriptUserName', 'scriptSSHKey', 'scriptSSHKeyPassword', 'twoFactorAuthentication', 'twoFactorAuthenticationURL',
+		'twoFactorAuthenticationInsecure', 'twoFactorAuthenticationLabel', 'twoFactorAuthenticationOptional',
+		'twoFactorAuthenticationCaption'
 	);
 
 
@@ -816,6 +828,12 @@ class LAMConfig {
 			if (!in_array("pwdResetAllowScreenPassword", $saved)) array_push($file_array, "\n" . "pwdResetAllowScreenPassword: " . $this->pwdResetAllowScreenPassword . "\n");
 			if (!in_array("pwdResetForcePasswordChange", $saved)) array_push($file_array, "\n" . "pwdResetForcePasswordChange: " . $this->pwdResetForcePasswordChange . "\n");
 			if (!in_array("pwdResetDefaultPasswordOutput", $saved)) array_push($file_array, "\n" . "pwdResetDefaultPasswordOutput: " . $this->pwdResetDefaultPasswordOutput . "\n");
+			if (!in_array("twoFactorAuthentication", $saved)) array_push($file_array, "\n" . "twoFactorAuthentication: " . $this->twoFactorAuthentication . "\n");
+			if (!in_array("twoFactorAuthenticationURL", $saved)) array_push($file_array, "\n" . "twoFactorAuthenticationURL: " . $this->twoFactorAuthenticationURL . "\n");
+			if (!in_array("twoFactorAuthenticationInsecure", $saved)) array_push($file_array, "\n" . "twoFactorAuthenticationInsecure: " . $this->twoFactorAuthenticationInsecure . "\n");
+			if (!in_array("twoFactorAuthenticationLabel", $saved)) array_push($file_array, "\n" . "twoFactorAuthenticationLabel: " . $this->twoFactorAuthenticationLabel . "\n");
+			if (!in_array("twoFactorAuthenticationOptional", $saved)) array_push($file_array, "\n" . "twoFactorAuthenticationOptional: " . $this->twoFactorAuthenticationOptional . "\n");
+			if (!in_array("twoFactorAuthenticationCaption", $saved)) array_push($file_array, "\n" . "twoFactorAuthenticationCaption: " . $this->twoFactorAuthenticationCaption . "\n");
 			// check if all module settings were added
 			$m_settings = array_keys($this->moduleSettings);
 			for ($i = 0; $i < sizeof($m_settings); $i++) {
@@ -2043,6 +2061,116 @@ class LAMConfig {
 	 */
 	public function setPwdResetDefaultPasswordOutput($pwdResetDefaultPasswordOutput) {
 		$this->pwdResetDefaultPasswordOutput = $pwdResetDefaultPasswordOutput;
+	}
+	/**
+	 * Returns the authentication type.
+	 *
+	 * @return string $twoFactorAuthentication authentication type
+	 */
+	public function getTwoFactorAuthentication() {
+		if (empty($this->twoFactorAuthentication)) {
+			return TwoFactorProviderService::TWO_FACTOR_NONE;
+		}
+		return $this->twoFactorAuthentication;
+	}
+
+	/**
+	 * Sets the authentication type.
+	 *
+	 * @param string $twoFactorAuthentication authentication type
+	 */
+	public function setTwoFactorAuthentication($twoFactorAuthentication) {
+		$this->twoFactorAuthentication = $twoFactorAuthentication;
+	}
+
+	/**
+	 * Returns the authentication URL.
+	 *
+	 * @return string $twoFactorAuthenticationURL authentication URL
+	 */
+	public function getTwoFactorAuthenticationURL() {
+		return $this->twoFactorAuthenticationURL;
+	}
+
+	/**
+	 * Sets the authentication URL.
+	 *
+	 * @param string $twoFactorAuthenticationURL authentication URL
+	 */
+	public function setTwoFactorAuthenticationURL($twoFactorAuthenticationURL) {
+		$this->twoFactorAuthenticationURL = $twoFactorAuthenticationURL;
+	}
+
+	/**
+	 * Returns if SSL certificate verification is turned off.
+	 *
+	 * @return bool $twoFactorAuthenticationInsecure SSL certificate verification is turned off
+	 */
+	public function getTwoFactorAuthenticationInsecure() {
+		return $this->twoFactorAuthenticationInsecure;
+	}
+
+	/**
+	 * Sets if SSL certificate verification is turned off.
+	 *
+	 * @param boolean $twoFactorAuthenticationInsecure SSL certificate verification is turned off
+	 */
+	public function setTwoFactorAuthenticationInsecure($twoFactorAuthenticationInsecure) {
+		$this->twoFactorAuthenticationInsecure = $twoFactorAuthenticationInsecure;
+	}
+
+	/**
+	 * Returns the authentication label.
+	 *
+	 * @return string $twoFactorAuthenticationLabel authentication label
+	 */
+	public function getTwoFactorAuthenticationLabel() {
+		return $this->twoFactorAuthenticationLabel;
+	}
+
+	/**
+	 * Sets the authentication label.
+	 *
+	 * @param string $twoFactorAuthenticationLabel authentication label
+	 */
+	public function setTwoFactorAuthenticationLabel($twoFactorAuthenticationLabel) {
+		$this->twoFactorAuthenticationLabel = $twoFactorAuthenticationLabel;
+	}
+
+	/**
+	 * Returns if 2nd factor is optional.
+	 *
+	 * @return bool $twoFactorAuthenticationOptional 2nd factor is optional
+	 */
+	public function getTwoFactorAuthenticationOptional() {
+		return $this->twoFactorAuthenticationOptional;
+	}
+
+	/**
+	 * Sets if 2nd factor is optional.
+	 *
+	 * @param boolean $twoFactorAuthenticationOptional 2nd factor is optional
+	 */
+	public function setTwoFactorAuthenticationOptional($twoFactorAuthenticationOptional) {
+		$this->twoFactorAuthenticationOptional = $twoFactorAuthenticationOptional;
+	}
+
+	/**
+	 * Returns the caption HTML.
+	 *
+	 * @return string $twoFactorAuthenticationCaption caption HTML
+	 */
+	public function getTwoFactorAuthenticationCaption() {
+		return $this->twoFactorAuthenticationCaption;
+	}
+
+	/**
+	 * Sets the caption HTML.
+	 *
+	 * @param string $twoFactorAuthenticationCaption caption HTML
+	 */
+	public function setTwoFactorAuthenticationCaption($twoFactorAuthenticationCaption) {
+		$this->twoFactorAuthenticationCaption = $twoFactorAuthenticationCaption;
 	}
 
 }

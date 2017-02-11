@@ -63,6 +63,7 @@ class lamAjax {
 		validateSecurityToken(false);
 
 		if (isset($_GET['module']) && isset($_GET['scope']) && in_array($_GET['module'], getAvailableModules($_GET['scope']))) {
+			enforceUserIsLoggedIn();
 			if (isset($_GET['useContainer']) && ($_GET['useContainer'] == '1')) {
 				if (!isset($_SESSION['account'])) die();
 				$module = $_SESSION['account']->getAccountModule($_GET['module']);
@@ -82,11 +83,12 @@ class lamAjax {
 		}
 
 		$jsonInput = $_POST['jsonInput'];
+		if ($function == 'passwordStrengthCheck') {
+			lamAjax::checkPasswordStrength($jsonInput);
+		}
+		enforceUserIsLoggedIn();
 		if ($function == 'passwordChange') {
 			lamAjax::managePasswordChange($jsonInput);
-		}
-		elseif ($function == 'passwordStrengthCheck') {
-			lamAjax::checkPasswordStrength($jsonInput);
 		}
 		elseif ($function == 'upload') {
 			include_once('../../lib/upload.inc');

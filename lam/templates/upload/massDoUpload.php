@@ -45,6 +45,7 @@ include_once('../../lib/pdf.inc');
 
 // Start session
 startSecureSession();
+enforceUserIsLoggedIn();
 
 // check if this tool may be run
 checkIfToolIsActive('toolFileUpload');

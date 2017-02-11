@@ -3,7 +3,7 @@
 $Id$
 
   Copyright (C) 2004 David Smith
-  modified to fit for LDAP Account Manager 2005 - 2012 Roland Gruber
+  modified to fit for LDAP Account Manager 2005 - 2017 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -29,8 +29,8 @@ $Id$
  * @author David Smith
  * @author Roland Gruber
  */
- 
- 
+
+
 /** security functions */
 include_once("../../lib/security.inc");
 /** access to LDAP server */
@@ -42,6 +42,7 @@ require_once("../../lib/schema.inc");
 
 // start session
 startSecureSession();
+enforceUserIsLoggedIn();
 
 checkIfToolIsActive('toolSchemaBrowser');
 
@@ -51,7 +52,7 @@ include '../main_header.php';
 
 
 $view = isset( $_GET['view'] ) ? $_GET['view'] : 'objectClasses';
-$viewvalue = isset( $_GET['viewvalue'] ) ? $_GET['viewvalue'] : null; 
+$viewvalue = isset( $_GET['viewvalue'] ) ? $_GET['viewvalue'] : null;
 if( trim( $viewvalue ) == "" )
     $viewvalue = null;
 if( ! is_null( $viewvalue ) )
@@ -89,7 +90,7 @@ if( $view == 'syntaxes' ) {
 	echo "<tr><th>" . _('Syntax OID') . "</th><th>" . _('Description') . "</th></tr>\n";
 	flush();
 	$counter=1;
-	$schema_syntaxes = get_schema_syntaxes(null); 
+	$schema_syntaxes = get_schema_syntaxes(null);
 	if( ! $schema_syntaxes ) StatusMessage("ERROR", _("Unable to retrieve schema!"), "");
 	foreach( $schema_syntaxes as $syntax ) {
 		$counter++;
@@ -107,7 +108,7 @@ if( $view == 'syntaxes' ) {
 	flush();
 	$schema_attrs = get_schema_attributes(null);
 	$schema_object_classes = get_schema_objectclasses(null);
-	if( ! $schema_attrs || ! $schema_object_classes ) 
+	if( ! $schema_attrs || ! $schema_object_classes )
 		StatusMessage("ERROR", _("Unable to retrieve schema!"), "");
 
 	?>
@@ -116,7 +117,7 @@ if( $view == 'syntaxes' ) {
         <select name="viewvalue" onChange="submit()">
 	<option value=""> - all -</option>
 
-	<?php foreach( $schema_attrs as $attr ) { 		
+	<?php foreach( $schema_attrs as $attr ) {
                     echo( '<option value="'
                          .$attr->getName()
                          .'" '
@@ -130,7 +131,7 @@ if( $view == 'syntaxes' ) {
 	<br />
 	<table class="schema_attr" width="100%">
 
-	<?php 
+	<?php
     foreach( $schema_attrs  as $attr ) {
 	  if ( is_null( $viewvalue ) || 0 == strcasecmp( $viewvalue, $attr->getName() ) ) {
         if( ! is_null( $viewvalue ) )
@@ -218,13 +219,13 @@ if( $view == 'syntaxes' ) {
 		  echo number_format( $attr->getMaxLength() ) ." ";
 		  if (  $attr->getMaxLength()>1) {echo _('characters');}
 		  else { echo _('character')  ;}
-	                        } 
+	                        }
 		echo "</td>\n";
 		echo "</tr>\n\n";
 
 		echo "<tr class=\"" . (++$counter%2==0?'even':'odd') . "\">\n";
 		echo "<td>"._('Aliases')."</td>\n";
-		echo "<td>"; 
+		echo "<td>";
 		if( count( $attr->getAliases() ) == 0 )
 			echo '('._('none').')';
 		else
@@ -251,7 +252,7 @@ if( $view == 'syntaxes' ) {
 	echo "</table>\n";
 
 } elseif( $view == 'matching_rules' ) {
-        $schema_matching_rules = get_schema_matching_rules(null); 
+        $schema_matching_rules = get_schema_matching_rules(null);
 	echo '<small>' . _('Jump to a matching rule').'</small><br />';
 	echo '<form  action="schema.php" method="get">';
         echo '<input type="hidden" name="view" value="matching_rules" />';
@@ -260,7 +261,7 @@ if( $view == 'syntaxes' ) {
 		foreach( $schema_matching_rules as $rule ) {
 		  echo '<option value="'.$rule->getName().'"'.($rule->getName()==$viewvalue? ' selected ': '').'>'.$rule->getName().'</option>';
 		}
-        
+
         echo '</select>';
        	echo '<input type="submit" value="'._('Go').'" />';
 	echo '</form>';
@@ -268,7 +269,7 @@ if( $view == 'syntaxes' ) {
 	echo "<tr><th>" . _('Matching rule OID') . "</th><th>" . _('Name') . "</th><th>"._('Used by attributes')."</th></tr>\n";
 	flush();
 	$counter=1;
-	$schema_matching_rules = get_schema_matching_rules(null); 
+	$schema_matching_rules = get_schema_matching_rules(null);
 	if( ! $schema_matching_rules ) StatusMessage("ERROR", _("Unable to retrieve schema!"), "");
 	foreach( $schema_matching_rules as $rule ) {
 		$counter++;
@@ -300,7 +301,7 @@ if( $view == 'syntaxes' ) {
 	}
 	echo "</table>\n";
 
-} elseif( $view == 'objectClasses' ) { 
+} elseif( $view == 'objectClasses' ) {
 	flush();
 	$schema_oclasses = get_schema_objectclasses(null);
 	if( ! $schema_oclasses ) StatusMessage("ERROR", _("Unable to retrieve schema!"), "");
@@ -310,7 +311,7 @@ if( $view == 'syntaxes' ) {
 	<select name="viewvalue"
 	onChange="submit()">
         <option value=""> - all - </option>
-	<?php foreach( $schema_oclasses as $name => $oclass ) { 
+	<?php foreach( $schema_oclasses as $name => $oclass ) {
 		echo '<option value="'
 		     .$oclass->getName()
                      .'"'
@@ -323,8 +324,8 @@ if( $view == 'syntaxes' ) {
 
         <?php flush(); ?>
 
-    <?php foreach( $schema_oclasses as $name => $oclass ) { 
-        foreach( $oclass->getSupClasses() as $parent_name ) { 
+    <?php foreach( $schema_oclasses as $name => $oclass ) {
+        foreach( $oclass->getSupClasses() as $parent_name ) {
             $parent_name = $parent_name;
             if( isset( $schema_oclasses[ $parent_name ] ) ) {
                 $schema_oclasses[ $parent_name ]->addChildObjectClass( $oclass->getName() );
@@ -337,9 +338,9 @@ if( $view == 'syntaxes' ) {
 	<?php foreach( $schema_oclasses as $name => $oclass ) {
 	  if ( $viewvalue==null || 0 == strcasecmp( $viewvalue, $oclass->getName() ) ){
         if( ! is_null( $viewvalue ) )
-            $viewed = true; 
+            $viewed = true;
         ?>
-        
+
 		<h4 class="schema_oclass"><?php echo $oclass->getName(); ?></h4>
 		<h4 class="schema_oclass_sub"><?php echo _('OID'); ?>: <b><?php echo $oclass->getOID(); ?></b></h4>
 		<?php if( $oclass->getDescription() ) { ?>
@@ -350,12 +351,12 @@ if( $view == 'syntaxes' ) {
 			<h4 class="schema_oclass_sub"><?php echo _('This object class is obsolete.'); ?></h4>
 		<?php } ?>
 
-		<h4 class="schema_oclass_sub"><?php echo _('Inherits from'); ?>: <b><?php 
+		<h4 class="schema_oclass_sub"><?php echo _('Inherits from'); ?>: <b><?php
 		if( count( $oclass->getSupClasses() ) == 0 )
 			echo "(" . _('none') . ")";
 		else
 			foreach( $oclass->getSupClasses() as $i => $object_class ) {
-				echo '<a title="' . _('Jump to an object class') . ' " 
+				echo '<a title="' . _('Jump to an object class') . ' "
 					href="?view='.$view.'&amp;viewvalue='.htmlspecialchars( $object_class ) ;
 				echo '">' . htmlspecialchars( $object_class ) . '</a>';
 				if( $i < count( $oclass->getSupClasses() ) - 1 )
@@ -363,14 +364,14 @@ if( $view == 'syntaxes' ) {
 		}
 		?></b></h4>
 
-		<h4 class="schema_oclass_sub"><?php echo _('Parent to'); ?>: <b><?php 
+		<h4 class="schema_oclass_sub"><?php echo _('Parent to'); ?>: <b><?php
         if( 0 == strcasecmp( $oclass->getName(), 'top' ) )
             echo "(<a href=\"schema.php?view=objectClasses\">all</a>)";
 		elseif( count( $oclass->getChildObjectClasses() ) == 0 )
 			echo "(" . _('none') . ")";
 		else
 			foreach( $oclass->getChildObjectClasses() as $i => $object_class ) {
-				echo '<a title="' . _('Jump to an object class') . ' " 
+				echo '<a title="' . _('Jump to an object class') . ' "
 					href="?view='.$view.'&amp;viewvalue='.htmlspecialchars( $object_class ) ;
 				echo '">' . htmlspecialchars( $object_class ) . '</a>';
 				if( $i < count( $oclass->getChildObjectClasses() ) - 1 )
@@ -400,12 +401,12 @@ if( $view == 'syntaxes' ) {
 					echo "</li>\n";
 				}
 				echo "</ul>";
-			} else				
+			} else
 				echo "<center>(" . _('none') . ")</center>\n";
 			?>
 		</td>
 		<td width="50%">
-		<?php 
+		<?php
 		if( count( $oclass->getMayAttrs($schema_oclasses) ) > 0 ) {
 			echo '<ul class="schema">';
 			foreach( $oclass->getMayAttrs($schema_oclasses) as $attr ) {
@@ -422,7 +423,7 @@ if( $view == 'syntaxes' ) {
 			}
 			echo "</ul>";
 		}
-		else				
+		else
 			echo "<center>(" . _('none') . ")</center>\n";
 	?>
 

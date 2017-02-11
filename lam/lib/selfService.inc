@@ -1,4 +1,5 @@
-<?PHP
+<?php
+use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 /*
 $Id$
 
@@ -31,9 +32,11 @@ $Id$
 */
 
 /** modules */
-include_once("modules.inc");
+include_once "modules.inc";
 /** account types */
-include_once("types.inc");
+include_once "types.inc";
+/** 2-factor */
+include_once '2factor.inc';
 
 /**
  * Returns if this is a LAM Pro installation.
@@ -302,11 +305,6 @@ function isSelfService() {
  */
 class selfServiceProfile {
 
-	/** 2factor authentication disabled */
-	const TWO_FACTOR_NONE = 'none';
-	/** 2factor authentication via privacyIDEA */
-	const TWO_FACTOR_PRIVACYIDEA = 'privacyidea';
-
 	/** server address */
 	public $serverURL;
 
@@ -381,7 +379,7 @@ class selfServiceProfile {
 
 	public $timeZone = 'Europe/London';
 
-	public $twoFactorAuthentication = selfServiceProfile::TWO_FACTOR_NONE;
+	public $twoFactorAuthentication = TwoFactorProviderService::TWO_FACTOR_NONE;
 	public $twoFactorAuthenticationURL = 'https://localhost';
 	public $twoFactorAuthenticationInsecure = false;
 	public $twoFactorAuthenticationLabel = null;
@@ -425,7 +423,7 @@ class selfServiceProfile {
 		$this->enforceLanguage = true;
 		$this->followReferrals = 0;
 		$this->timeZone = 'Europe/London';
-		$this->twoFactorAuthentication = selfServiceProfile::TWO_FACTOR_NONE;
+		$this->twoFactorAuthentication = TwoFactorProviderService::TWO_FACTOR_NONE;
 		$this->twoFactorAuthenticationURL = 'https://localhost';
 		$this->twoFactorAuthenticationInsecure = false;
 		$this->twoFactorAuthenticationLabel = null;

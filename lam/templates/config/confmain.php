@@ -1,9 +1,10 @@
 <?php
+use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 /*
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2016  Roland Gruber
+  Copyright (C) 2003 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -37,6 +38,8 @@ include_once("../../lib/config.inc");
 include_once("../../lib/modules.inc");
 /** access to tools */
 include_once("../../lib/tools.inc");
+/** 2-factor */
+include_once '../../lib/2facto.inc';
 
 // start session
 if (strtolower(session_module_name()) == 'files') {
@@ -523,8 +526,40 @@ $searchPasswordInput->setIsPassword(true);
 $securitySettingsContent->addElement($searchPasswordInput, true);
 // HTTP authentication
 $securitySettingsContent->addElement(new htmlTableExtendedInputCheckbox('httpAuthentication', ($conf->getHttpAuthentication() == 'true'), _('HTTP authentication'), '223', true), true);
-$securitySettingsContent->addElement(new htmlSpacer(null, '10px'), true);
+$securitySettingsContent->addElement(new htmlSpacer(null, '30px'), true);
+
+// 2factor authentication
+if (extension_loaded('curl')) {
+	$securitySettingsContent->addElement(new htmlSubTitle(_("2-factor authentication")), true);
+	$twoFactorOptions = array(
+			_('None') => TwoFactorProviderService::TWO_FACTOR_NONE,
+			_('privacyIDEA') => TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA,
+	);
+	$twoFactorSelect = new htmlTableExtendedSelect('twoFactor', $twoFactorOptions, array($conf->getTwoFactorAuthentication()), _('Provider'), '514');
+	$twoFactorSelect->setHasDescriptiveElements(true);
+	$twoFactorSelect->setTableRowsToHide(array(
+			TwoFactorProviderService::TWO_FACTOR_NONE => array('twoFactorURL', 'twoFactorInsecure', 'twoFactorLabel', 'twoFactorOptional', 'twoFactorCaption')
+	));
+	$twoFactorSelect->setTableRowsToShow(array(
+			TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA => array('twoFactorURL', 'twoFactorInsecure', 'twoFactorLabel', 'twoFactorOptional', 'twoFactorCaption')
+	));
+	$securitySettingsContent->addElement($twoFactorSelect, true);
+	$twoFactorUrl = new htmlTableExtendedInputField(_("Base URL"), 'twoFactorURL', $conf->getTwoFactorAuthenticationURL(), '515');
+	$twoFactorUrl->setRequired(true);
+	$securitySettingsContent->addElement($twoFactorUrl, true);
+	$twoFactorLabel = new htmlTableExtendedInputField(_("Label"), 'twoFactorLabel', $conf->getTwoFactorAuthenticationLabel(), '517');
+	$securitySettingsContent->addElement($twoFactorLabel, true);
+	$securitySettingsContent->addElement(new htmlTableExtendedInputCheckbox('twoFactorOptional', $conf->getTwoFactorAuthenticationOptional(), _('Optional'), '519'), true);
+	$securitySettingsContent->addElement(new htmlTableExtendedInputCheckbox('twoFactorInsecure', $conf->getTwoFactorAuthenticationInsecure(), _('Disable certificate check'), '516'), true);
+	$securitySettingsContent->addElement(new htmlSpacer(null, '5px'), true);
+	$twoFactorCaption = new htmlTableExtendedInputTextarea('twoFactorCaption', $conf->getTwoFactorAuthenticationCaption(), '80', '4', _("Caption"), '518');
+	$twoFactorCaption->setIsRichEdit(true);
+	$twoFactorCaption->alignment = htmlElement::ALIGN_TOP;
+	$securitySettingsContent->addElement($twoFactorCaption, true);
+}
+
 // new password
+$securitySettingsContent->addElement(new htmlSubTitle(_("Profile password")), true);
 $password1 = new htmlTableExtendedInputField(_("New password"), 'passwd1', null, '212');
 $password1->setIsPassword(true);
 $password2 = new htmlTableExtendedInputField(_("Reenter password"), 'passwd2');
@@ -551,10 +586,12 @@ $buttonContainer->addElement($cancelButton, true);
 $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
 parseHtml(null, $buttonContainer, array(), false, $tabindex, 'user');
 
-echo "</form>\n";
-echo "</body>\n";
-echo "</html>\n";
-
+?>
+</form>
+<script type="text/javascript" src="../lib/extra/ckeditor/ckeditor.js"></script>
+</body>
+</html>
+<?php
 
 /**
  * Checks user input and saves the entered settings.
@@ -711,6 +748,15 @@ function checkInput() {
 		}
 	}
 	$conf->setToolSettings($toolSettings);
+	// 2-factor
+	if (extension_loaded('curl')) {
+		$conf->setTwoFactorAuthentication($_POST['twoFactor']);
+		$conf->setTwoFactorAuthenticationURL($_POST['twoFactorURL']);
+		$conf->setTwoFactorAuthenticationInsecure(isset($_POST['twoFactorInsecure']) && ($_POST['twoFactorInsecure'] == 'on'));
+		$conf->setTwoFactorAuthenticationLabel($_POST['twoFactorLabel']);
+		$conf->setTwoFactorAuthenticationOptional(isset($_POST['twoFactorOptional']) && ($_POST['twoFactorOptional'] == 'on'));
+		$conf->setTwoFactorAuthenticationCaption(str_replace(array("\r", "\n"), array('', ''), $_POST['twoFactorCaption']));
+	}
 	// check if password was changed
 	if (isset($_POST['passwd1']) && ($_POST['passwd1'] != '')) {
 		if ($_POST['passwd1'] != $_POST['passwd2']) {

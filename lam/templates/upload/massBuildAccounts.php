@@ -48,6 +48,7 @@ include_once('../../lib/modules.inc');
 
 // Start session
 startSecureSession();
+enforceUserIsLoggedIn();
 
 // check if this tool may be run
 checkIfToolIsActive('toolFileUpload');

@@ -21,6 +21,7 @@ function app_session_start() {
 	include_once '../../../../lib/config.inc';
 	include_once '../../../../lib/ldap.inc';
 	startSecureSession();
+	enforceUserIsLoggedIn();
 	$config_file = CONFDIR.'config.php';
 	$config = check_config($config_file);
 	# If we came via index.php, then set our $config.
