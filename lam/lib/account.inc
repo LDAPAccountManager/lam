@@ -1467,6 +1467,22 @@ function validateReCAPTCHA($secretKey) {
 	return $responseJSON->{'success'} === true;
 }
 
+/**
+ * Checks if the user is logged in. Stops script execution if not.
+ *
+ * @param boolean $check2ndFactor check if the 2nd factor was provided if required
+ */
+function enforceUserIsLoggedIn($check2ndFactor = true) {
+	if (!isset($_SESSION['loggedIn']) || ($_SESSION['loggedIn'] !== true)) {
+		logNewMessage(LOG_WARNING, 'Detected unauthorized access to page that requires login: ' . $_SERVER["SCRIPT_FILENAME"]);
+		die();
+	}
+	if ($check2ndFactor && isset($_SESSION['2factorRequired'])) {
+		die();
+		logNewMessage(LOG_WARNING, 'Detected unauthorized access to page that requires login (2nd factor not provided): ' . $_SERVER["SCRIPT_FILENAME"]);
+	}
+}
+
 class LAMException extends Exception {
 
 	private $title;

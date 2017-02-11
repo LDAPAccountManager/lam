@@ -49,6 +49,7 @@ include_once('../lib/modules.inc');
 
 // Start session
 startSecureSession();
+enforceUserIsLoggedIn();
 
 if (!checkIfWriteAccessIsAllowed()) {
 	die();

@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2007 - 2013  Roland Gruber
+  Copyright (C) 2007 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ include_once("../../lib/status.inc");
 
 // start session
 startSecureSession();
+enforceUserIsLoggedIn();
 
 setlanguage();
 

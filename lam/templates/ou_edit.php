@@ -50,6 +50,7 @@ include_once("../lib/status.inc");
 
 // start session
 startSecureSession();
+enforceUserIsLoggedIn();
 
 // die if no write access
 if (!checkIfWriteAccessIsAllowed()) die();

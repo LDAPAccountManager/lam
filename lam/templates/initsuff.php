@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2015  Roland Gruber
+  Copyright (C) 2003 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ include_once("../lib/status.inc");
 
 // start session
 startSecureSession();
+enforceUserIsLoggedIn();
 
 if (!checkIfWriteAccessIsAllowed()) {
 	die();
@@ -196,10 +197,10 @@ include 'main_header.php';
 	$buttonContainer->addElement(new htmlHiddenInput('new_suff', implode(";", $new_suff)));
 	$container->addElement($buttonContainer);
 	addSecurityTokenToMetaHTML($container);
-	
+
 	$tabindex = 1;
 	parseHtml(null, $container, array(), false, $tabindex, 'user');
-	
+
 	echo "</form><br>\n";
 	echo "</div>\n";
 include 'main_footer.php';
