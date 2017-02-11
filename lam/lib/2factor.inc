@@ -1,6 +1,7 @@
 <?php
 namespace LAM\LIB\TWO_FACTOR;
 use \selfServiceProfile;
+use \LAMConfig;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -58,15 +59,15 @@ interface TwoFactorProvider {
  */
 class PrivacyIDEAProvider implements TwoFactorProvider {
 
-	private $profile;
+	private $config;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param selfServiceProfile $profile profile
+	 * @param TwoFactorConfiguration $config configuration
 	 */
-	public function __construct(&$profile) {
-		$this->profile = $profile;
+	public function __construct(&$config) {
+		$this->config = $config;
 	}
 
 	/**
@@ -99,7 +100,7 @@ class PrivacyIDEAProvider implements TwoFactorProvider {
 	 */
 	private function authenticate($user, $password) {
 		$curl = $this->getCurl();
-		$url = $this->profile->twoFactorAuthenticationURL . "/auth";
+		$url = $this->config->twoFactorAuthenticationURL . "/auth";
 		curl_setopt($curl, CURLOPT_URL, $url);
 		$header = array('Accept: application/json');
 		curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
@@ -137,7 +138,7 @@ class PrivacyIDEAProvider implements TwoFactorProvider {
 	 */
 	private function getCurl() {
 		$curl = curl_init();
-		if ($this->profile->twoFactorAuthenticationInsecure) {
+		if ($this->config->twoFactorAuthenticationInsecure) {
 			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 			curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
 		}
@@ -154,7 +155,7 @@ class PrivacyIDEAProvider implements TwoFactorProvider {
 	 */
 	private function getSerialsForUser($user, $token) {
 		$curl = $this->getCurl();
-		$url = $this->profile->twoFactorAuthenticationURL . "/token/?user=" . $user;
+		$url = $this->config->twoFactorAuthenticationURL . "/token/?user=" . $user;
 		curl_setopt($curl, CURLOPT_URL, $url);
 		$header = array('Authorization: ' . $token, 'Accept: application/json');
 		curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
@@ -192,7 +193,7 @@ class PrivacyIDEAProvider implements TwoFactorProvider {
 	 */
 	private function verify($token, $serial, $twoFactorInput) {
 		$curl = $this->getCurl();
-		$url = $this->profile->twoFactorAuthenticationURL . "/validate/check";
+		$url = $this->config->twoFactorAuthenticationURL . "/validate/check";
 		curl_setopt($curl, CURLOPT_URL, $url);
 		$options = array(
 			'pass' => $twoFactorInput,
@@ -230,15 +231,20 @@ class TwoFactorProviderService {
 	/** 2factor authentication via privacyIDEA */
 	const TWO_FACTOR_PRIVACYIDEA = 'privacyidea';
 
-	private $profile;
+	private $config;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param selfServiceProfile $profile profile
+	 * @param selfServiceProfile|LAMConfig $configObj profile
 	 */
-	public function __construct(&$profile) {
-		$this->profile = $profile;
+	public function __construct(&$configObj) {
+		if ($configObj instanceof selfServiceProfile) {
+			$this->config = $this->getConfigSelfService($configObj);
+		}
+		else {
+			$this->config = $this->getConfigAdmin($configObj);
+		}
 	}
 
 	/**
@@ -249,10 +255,41 @@ class TwoFactorProviderService {
 	 * @throws \Exception unable to get provider
 	 */
 	public function getProvider() {
-		if ($this->profile->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA) {
-			return new PrivacyIDEAProvider($this->profile);
+		if ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA) {
+			return new PrivacyIDEAProvider($this->config);
 		}
-		throw new \Exception('Invalid provider: ' . $this->profile->twoFactorAuthentication);
+		throw new \Exception('Invalid provider: ' . $this->config->twoFactorAuthentication);
 	}
 
+	/**
+	 * Returns the configuration from self service.
+	 *
+	 * @param selfServiceProfile $profile profile
+	 * @return TwoFactorConfiguration configuration
+	 */
+	private function getConfigSelfService(&$profile) {
+		$config = new TwoFactorConfiguration();
+		$config->twoFactorAuthentication = $profile->twoFactorAuthentication;
+		$config->twoFactorAuthenticationCaption = $profile->twoFactorAuthenticationCaption;
+		$config->twoFactorAuthenticationInsecure = $profile->twoFactorAuthenticationInsecure;
+		$config->twoFactorAuthenticationLabel = $profile->twoFactorAuthenticationLabel;
+		$config->twoFactorAuthenticationOptional = $profile->twoFactorAuthenticationOptional;
+		$config->twoFactorAuthenticationURL = $profile->twoFactorAuthenticationURL;
+		return $config;
+	}
+
+}
+
+/**
+ * Configuration settings for 2-factor authentication.
+ *
+ * @author Roland Gruber
+ */
+class TwoFactorConfiguration {
+	public $twoFactorAuthentication = null;
+	public $twoFactorAuthenticationURL = null;
+	public $twoFactorAuthenticationInsecure = false;
+	public $twoFactorAuthenticationLabel = null;
+	public $twoFactorAuthenticationOptional = false;
+	public $twoFactorAuthenticationCaption = '';
 }

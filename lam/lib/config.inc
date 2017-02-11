@@ -2068,6 +2068,9 @@ class LAMConfig {
 	 * @return string $twoFactorAuthentication authentication type
 	 */
 	public function getTwoFactorAuthentication() {
+		if (empty($this->twoFactorAuthentication)) {
+			return TwoFactorProviderService::TWO_FACTOR_NONE;
+		}
 		return $this->twoFactorAuthentication;
 	}
 

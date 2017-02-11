@@ -1,4 +1,6 @@
 <?php
+use LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
+
 /*
 $Id$
 
@@ -636,8 +638,20 @@ if(!empty($_POST['checklogin'])) {
 		addSecurityTokenToSession();
 		// logging
 		logNewMessage(LOG_NOTICE, 'User ' . $username . ' (' . $clientSource . ') successfully logged in.');
-		// Load main frame
-		metaRefresh("./main.php");
+		// Load main frame or 2 factor page
+		if ($_SESSION['config']->getTwoFactorAuthentication() == TwoFactorProviderService::TWO_FACTOR_NONE) {
+			metaRefresh("./main.php");
+		}
+		else {
+			$_SESSION['2factorRequired'] = true;
+			if (($_SESSION['config']->getLoginMethod() == LAMConfig::LOGIN_SEARCH) && ($_SESSION['config']->getHttpAuthentication() == 'true')) {
+				$_SESSION['user2factor'] = $_SERVER['PHP_AUTH_USER'];
+			}
+			else {
+				$_SESSION['user2factor'] = $_POST['username'];
+			}
+			metaRefresh("./login2Factor.php");
+		}
 		die();
 	}
 	else {
