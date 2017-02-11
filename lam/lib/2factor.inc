@@ -278,6 +278,23 @@ class TwoFactorProviderService {
 		return $config;
 	}
 
+	/**
+	 * Returns the configuration for admin interface.
+	 *
+	 * @param LAMConfig $conf configuration
+	 * @return TwoFactorConfiguration configuration
+	 */
+	private function getConfigAdmin($conf) {
+		$config = new TwoFactorConfiguration();
+		$config->twoFactorAuthentication = $conf->getTwoFactorAuthentication();
+		$config->twoFactorAuthenticationCaption = $conf->getTwoFactorAuthenticationCaption();
+		$config->twoFactorAuthenticationInsecure = $conf->getTwoFactorAuthenticationInsecure();
+		$config->twoFactorAuthenticationLabel = $conf->getTwoFactorAuthenticationLabel();
+		$config->twoFactorAuthenticationOptional = $conf->getTwoFactorAuthenticationOptional();
+		$config->twoFactorAuthenticationURL = $conf->getTwoFactorAuthenticationURL();
+		return $config;
+	}
+
 }
 
 /**
