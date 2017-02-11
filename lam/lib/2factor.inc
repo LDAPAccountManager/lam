@@ -270,10 +270,7 @@ class TwoFactorProviderService {
 	private function getConfigSelfService(&$profile) {
 		$config = new TwoFactorConfiguration();
 		$config->twoFactorAuthentication = $profile->twoFactorAuthentication;
-		$config->twoFactorAuthenticationCaption = $profile->twoFactorAuthenticationCaption;
 		$config->twoFactorAuthenticationInsecure = $profile->twoFactorAuthenticationInsecure;
-		$config->twoFactorAuthenticationLabel = $profile->twoFactorAuthenticationLabel;
-		$config->twoFactorAuthenticationOptional = $profile->twoFactorAuthenticationOptional;
 		$config->twoFactorAuthenticationURL = $profile->twoFactorAuthenticationURL;
 		return $config;
 	}
@@ -287,10 +284,7 @@ class TwoFactorProviderService {
 	private function getConfigAdmin($conf) {
 		$config = new TwoFactorConfiguration();
 		$config->twoFactorAuthentication = $conf->getTwoFactorAuthentication();
-		$config->twoFactorAuthenticationCaption = $conf->getTwoFactorAuthenticationCaption();
 		$config->twoFactorAuthenticationInsecure = $conf->getTwoFactorAuthenticationInsecure();
-		$config->twoFactorAuthenticationLabel = $conf->getTwoFactorAuthenticationLabel();
-		$config->twoFactorAuthenticationOptional = $conf->getTwoFactorAuthenticationOptional();
 		$config->twoFactorAuthenticationURL = $conf->getTwoFactorAuthenticationURL();
 		return $config;
 	}
@@ -306,7 +300,4 @@ class TwoFactorConfiguration {
 	public $twoFactorAuthentication = null;
 	public $twoFactorAuthenticationURL = null;
 	public $twoFactorAuthenticationInsecure = false;
-	public $twoFactorAuthenticationLabel = null;
-	public $twoFactorAuthenticationOptional = false;
-	public $twoFactorAuthenticationCaption = '';
 }
