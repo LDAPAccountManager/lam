@@ -225,6 +225,11 @@ class PrivacyIDEAProvider implements TwoFactorProvider {
  */
 class TwoFactorProviderService {
 
+	/** 2factor authentication disabled */
+	const TWO_FACTOR_NONE = 'none';
+	/** 2factor authentication via privacyIDEA */
+	const TWO_FACTOR_PRIVACYIDEA = 'privacyidea';
+
 	private $profile;
 
 	/**
@@ -244,7 +249,7 @@ class TwoFactorProviderService {
 	 * @throws \Exception unable to get provider
 	 */
 	public function getProvider() {
-		if ($this->profile->twoFactorAuthentication == selfServiceProfile::TWO_FACTOR_PRIVACYIDEA) {
+		if ($this->profile->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA) {
 			return new PrivacyIDEAProvider($this->profile);
 		}
 		throw new \Exception('Invalid provider: ' . $this->profile->twoFactorAuthentication);
