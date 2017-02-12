@@ -11,9 +11,10 @@ Architecture: all
 Depends: php5 (>= 5.4.26) | php (>= 21), php5-ldap | php-ldap, php5-gd | php-gd,
  php5-json | php-json, php5-imagick | php-imagick, php5-curl | php-curl,
  php5 | php-zip, php5 | php-xml,
+ libapache2-mod-php5 | libapache2-mod-php | php5-fpm | php-fpm,
  apache2 | httpd, debconf (>= 0.2.26) | debconf-2.0, ${misc:Depends}
-Recommends: php-apc
-Suggests: ldap-server, php5-mcrypt, ldap-account-manager-lamdaemon, perl
+Recommends: php-apc | php-opcache
+Suggests: ldap-server, php5-mcrypt | php-mcrypt, ldap-account-manager-lamdaemon, perl
 Description: webfrontend for managing accounts in an LDAP directory
  LDAP Account Manager (LAM) runs on an existing webserver.
  It manages user, group and host accounts. Currently LAM
