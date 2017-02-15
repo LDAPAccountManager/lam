@@ -2018,7 +2018,8 @@ class accountContainer {
 		if (isset($this->finalDN)) {
 			$dn = $this->finalDN;
 		}
-		$return = array_merge($return,array('main_dn' => array('<block><key>' . _('DN') . '</key><value>' . $dn . '</value></block>')));
+		$return = array_merge($return,array('main_dn' => array(new PDFLabelValue(_('DN'), $dn))));
+		//$return = array_merge($return,array('main_dn' => array('<block><key>' . _('DN') . '</key><value>' . $dn . '</value></block>')));
 		return $return;
 	}
 

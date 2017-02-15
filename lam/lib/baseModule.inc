@@ -33,6 +33,9 @@ $Id$
 * @see baseModule
 */
 
+/** PDF functions */
+include_once('pdf.inc');
+
 /**
 * Parent class of all account modules.
 * It implements the complete module interface and uses meta-data
@@ -838,7 +841,8 @@ abstract class baseModule {
 			// TODO workaround for UFPDF, remove when migrated to other PDF library
 			$value = trim($value);
 		}
-		$result[get_class($this) . '_' . $name] = array('<block><key>' . $label . '</key><value>' . $value . '</value></block>');
+		$result[get_class($this) . '_' . $name][] = new PDFLabelValue($label, $value);
+//		$result[get_class($this) . '_' . $name] = array('<block><key>' . $label . '</key><value>' . $value . '</value></block>');
 	}
 
 	/**
@@ -855,7 +859,8 @@ abstract class baseModule {
 			natcasesort($value);
 			$value = implode($delimiter, $value);
 		}
-		$result[get_class($this) . '_' . $name] = array('<block><key>' . $label . '</key><value>' . $value . '</value></block>');
+		$result[get_class($this) . '_' . $name][] = new PDFLabelValue($label, $value);
+//		$result[get_class($this) . '_' . $name] = array('<block><key>' . $label . '</key><value>' . $value . '</value></block>');
 	}
 
 	/**
@@ -869,7 +874,8 @@ abstract class baseModule {
 		if (empty($table->rows)) {
 			return;
 		}
-		if (!empty($table->label)) {
+		$result[get_class($this) . '_' . $name][] = $table;
+/*		if (!empty($table->label)) {
 			$result[get_class($this) . '_' . $name][] = '<block><tr><td><b>' . $table->label . ':</b></td></tr></block>';
 		}
 		foreach ($table->rows as $row) {
@@ -881,7 +887,7 @@ abstract class baseModule {
 			}
 			$xml .= '</tr></block>';
 			$result[get_class($this) . '_' . $name][] = $xml;
-		}
+		}*/
 	}
 
 	/**
@@ -1962,81 +1968,5 @@ abstract class baseModule {
 	}
 
 }
-
-/**
- * Represents a table for PDF export.
- *
- * @package PDF
- * @author Roland Gruber
- */
-class PDFTable {
-
-	/** optional label of table */
-	public $label = null;
-	/** list of PDFTableRow elements */
-	public $rows = array();
-
-	/**
-	 * Constructor
-	 *
-	 * @param String $label label
-	 */
-	public function __construct($label = null) {
-		$this->label = $label;
-	}
-
-}
-
-/**
- * Represents a table row for PDF export.
- *
- * @package PDF
- * @author Roland Gruber
- */
-class PDFTableRow {
-
-	/** list of PDFTableCell */
-	public $cells = array();
-
-}
-
-/**
- * Represents a table cell for PDF export.
- *
- * @package PDF
- * @author Roland Gruber
- */
-class PDFTableCell {
-
-	const ALIGN_LEFT = 'L';
-	const ALIGN_RIGHT = 'R';
-	const ALIGN_CENTER = 'C';
-
-	/** content text of cell */
-	public $content = '';
-	/** text alignment */
-	public $align = self::ALIGN_LEFT;
-	/** cell width (e.g. "20%") */
-	public $width = null;
-	/** bold text */
-	public $bold = false;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param String $content cell content
-	 * @param String $width width (e.g. "20%")
-	 * @param String $align cell alignment (default: left)
-	 * @param boolean $bold print in bold
-	 */
-	public function __construct($content, $width = null, $align = null, $bold = false) {
-		$this->content = empty($content) ? ' ' : $content;
-		$this->align = ($align == null) ? self::ALIGN_LEFT : $align;
-		$this->width = $width;
-		$this->bold = $bold;
-	}
-
-}
-
 
 ?>

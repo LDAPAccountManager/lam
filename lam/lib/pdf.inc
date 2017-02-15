@@ -33,6 +33,7 @@ $Id$
 
 /** PDF line width */
 define('LAMPDF_LINEWIDTH',190);
+define('LAMPDF_FONT_SIZE', 7);
 
 /** XML functions */
 include_once('xml_parser.inc');
@@ -138,18 +139,21 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 				// skip non-existent entries
 				if (isset($entries[$name])) {
 					// Get current entry
-					$value_entry = $entries[$name];
+					$valueEntries = $entries[$name];
 
 					// Print entry only when module sumitted values for it
-					if(is_array($value_entry)) {
+					if(is_array($valueEntries)) {
 						// Loop over all rows of this entry (most of the time this will be just one)
-						foreach($value_entry as $line) {
+						foreach($valueEntries as $valueEntry) {
+							if ($valueEntry instanceof PDFLabelValue) {
+								printLabelValue($pdf, $valueEntry, $fontName);
+							}
 							// Substitue XML syntax with valid FPDF methods
-							$methods = processLine($line,true,$fontName);
+							/**$methods = processLine($line,true,$fontName);
 							// Call every method
 							foreach($methods as $method) {
 								call_user_func_array(array(&$pdf,$method[0]),$method[1]);
-							}
+							}*/
 						}
 					}
 				}
@@ -177,19 +181,26 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 /**
  * Creates a section headline.
  *
- * @param string $line section name
+ * @param PDFEntry $entry content entry
  *
- * @return string XML code for headline
+ * @return string headline
  */
-function getSectionHeadline($line) {
-	$headline_pattern = '/<block>.*<value>(.*)<\/value><\/block>/';
-	if(preg_match($headline_pattern,$line,$matches)) {
-		$valueStyle = processFormatTags($matches[1],'');
-		return $valueStyle[1];
-	}
-	else {
-		return '';
-	}
+function getSectionHeadline($entry) {
+	return $entry->getLabel();
+}
+
+/**
+ * Prints a PDFLabelValue entry.
+ *
+ * @param lamPDF $pdf PDF
+ * @param PDFLabelValue $valueEntry entry
+ * @param string $fontName font name
+ */
+function printLabelValue(&$pdf, $valueEntry, $fontName) {
+	$pdf->SetFont($fontName, 'B', LAMPDF_FONT_SIZE);
+	$pdf->Cell(50, 5, $valueEntry->getLabel() . ':',0,0,'R',0);
+	$pdf->SetFont($fontName, '', LAMPDF_FONT_SIZE);
+	$pdf->MultiCell(0, 5, $valueEntry->getValue(), 0, 'L', 0);
 }
 
 /**
@@ -343,4 +354,143 @@ function processAttributes($attrs,$return = array()) {
 	else {
 		return $return;
 	}
+}
+
+interface PDFEntry {
+
+	/**
+	 * Returns the label of the entry.
+	 *
+	 * @return string label
+	 */
+	public function getLabel();
+
+}
+
+/**
+ * Represents a table for PDF export.
+ *
+ * @package PDF
+ * @author Roland Gruber
+ */
+class PDFTable implements PDFEntry {
+
+	/** optional label of table */
+	private $label = '';
+	/** list of PDFTableRow elements */
+	public $rows = array();
+
+	/**
+	 * Constructor
+	 *
+	 * @param String $label label
+	 */
+	public function __construct($label = null) {
+		$this->label = $label;
+	}
+
+	/**
+	 * Returns the label.
+	 *
+	 * @return string $label label
+	 */
+	public function getLabel() {
+		return $this->label;
+	}
+
+}
+
+/**
+ * Represents a table row for PDF export.
+ *
+ * @package PDF
+ * @author Roland Gruber
+ */
+class PDFTableRow {
+
+	/** list of PDFTableCell */
+	public $cells = array();
+
+}
+
+/**
+ * Represents a table cell for PDF export.
+ *
+ * @package PDF
+ * @author Roland Gruber
+ */
+class PDFTableCell {
+
+	const ALIGN_LEFT = 'L';
+	const ALIGN_RIGHT = 'R';
+	const ALIGN_CENTER = 'C';
+
+	/** content text of cell */
+	public $content = '';
+	/** text alignment */
+	public $align = self::ALIGN_LEFT;
+	/** cell width (e.g. "20%") */
+	public $width = null;
+	/** bold text */
+	public $bold = false;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param String $content cell content
+	 * @param String $width width (e.g. "20%")
+	 * @param String $align cell alignment (default: left)
+	 * @param boolean $bold print in bold
+	 */
+	public function __construct($content, $width = null, $align = null, $bold = false) {
+		$this->content = empty($content) ? ' ' : $content;
+		$this->align = ($align == null) ? self::ALIGN_LEFT : $align;
+		$this->width = $width;
+		$this->bold = $bold;
+	}
+
+}
+
+/**
+ * Simple PDF object to print label value entries.
+ *
+ * @package PDF
+ * @author Roland Gruber
+ */
+class PDFLabelValue implements PDFEntry {
+
+	private $label = '';
+
+	private $value = '';
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $label label
+	 * @param string $value value
+	 */
+	public function __construct($label, $value) {
+		$this->label = $label;
+		$this->value = $value;
+	}
+
+	/**
+	 * Returns the label.
+	 *
+	 * @return string $label label
+	 */
+	public function getLabel() {
+		return $this->label;
+	}
+
+	/**
+	 * Returns the value.
+	 *
+	 * @return string $value value
+	 */
+	public function getValue() {
+		return $this->value;
+	}
+
+
 }
