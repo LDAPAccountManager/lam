@@ -73,14 +73,4 @@ $servers->setValue('server','custom_sys_attrs', array('creatorsName', 'createTim
 			'modifyTimestamp', 'hasSubordinates', 'pwdChangedTime'));
 $config->custom->confirm['copy'] = false;
 
-// debugging
-if (($lamCfgMain->logDestination != 'NONE') && ($lamCfgMain->logLevel == LOG_DEBUG)) {
-	if ($lamCfgMain->logDestination == 'SYSLOG') {
-		$config->custom->debug['syslog'] = true;
-	}
-	else {
-		$config->custom->debug['file'] = $lamCfgMain->logDestination;
-	}
-	$config->custom->debug['level'] = 1023;
-}
 ?>
