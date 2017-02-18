@@ -1,10 +1,11 @@
 <?php
+namespace LAM\PDF;
 /*
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2004  Michael Duergner
-                2003 - 2015  Roland Gruber
+                2003 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -92,7 +93,7 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 	$fontName = "BitstreamVeraSans-Roman";
 
 	// Create a new PDF file acording to the account type
-	$pdf = new lamPDF($load['page_definitions'],$fontName);
+	$pdf = new \lamPDF($load['page_definitions'],$fontName);
 
 	// Loop over each account and add a new page in the PDF file for it
 	foreach($accounts as $account) {
@@ -148,6 +149,9 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 							if ($valueEntry instanceof PDFLabelValue) {
 								printLabelValue($pdf, $valueEntry, $fontName);
 							}
+							else if ($valueEntry instanceof PDFTable) {
+								printTable($pdf, $valueEntry, $fontName);
+							}
 							// Substitue XML syntax with valid FPDF methods
 							/**$methods = processLine($line,true,$fontName);
 							// Call every method
@@ -201,6 +205,16 @@ function printLabelValue(&$pdf, $valueEntry, $fontName) {
 	$pdf->Cell(50, 5, $valueEntry->getLabel() . ':',0,0,'R',0);
 	$pdf->SetFont($fontName, '', LAMPDF_FONT_SIZE);
 	$pdf->MultiCell(0, 5, $valueEntry->getValue(), 0, 'L', 0);
+}
+
+/**
+ * Prints a PDFTable entry.
+ *
+ * @param lamPDF $pdf PDF
+ * @param PDFTable $valueEntry entry
+ * @param string $fontName font name
+ */
+function printTable(&$pdf, $valueEntry, $fontName) {
 }
 
 /**

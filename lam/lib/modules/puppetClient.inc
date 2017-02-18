@@ -1,9 +1,12 @@
 <?php
+use \LAM\PDF\PDFTable;
+use \LAM\PDF\PDFTableCell;
+use \LAM\PDF\PDFTableRow;
 /*
 $Id$
 
   This code is not yet part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2012 - 2016  Roland Gruber
+  Copyright (C) 2012 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
