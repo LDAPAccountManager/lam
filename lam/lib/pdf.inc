@@ -186,7 +186,7 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
  * @return string headline
  */
 function getSectionHeadline($entry) {
-	return $entry->getLabel();
+	return $entry->getHeadline();
 }
 
 /**
@@ -356,14 +356,20 @@ function processAttributes($attrs,$return = array()) {
 	}
 }
 
+/**
+ * Common interface for all PDF entries.
+ *
+ * @package PDF
+ * @author Roland Gruber
+ */
 interface PDFEntry {
 
 	/**
-	 * Returns the label of the entry.
+	 * Returns the head line of the entry.
 	 *
 	 * @return string label
 	 */
-	public function getLabel();
+	public function getHeadline();
 
 }
 
@@ -395,6 +401,14 @@ class PDFTable implements PDFEntry {
 	 * @return string $label label
 	 */
 	public function getLabel() {
+		return $this->label;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see PDFEntry::getHeadline()
+	 */
+	public function getHeadline() {
 		return $this->label;
 	}
 
@@ -492,5 +506,12 @@ class PDFLabelValue implements PDFEntry {
 		return $this->value;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see PDFEntry::getHeadline()
+	 */
+	public function getHeadline() {
+		return $this->value;
+	}
 
 }
