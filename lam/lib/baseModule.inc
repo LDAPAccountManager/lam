@@ -836,15 +836,9 @@ abstract class baseModule {
 		if (isset($this->attributes[$attrName]) && (sizeof($this->attributes[$attrName]) > 0)) {
 			natcasesort($this->attributes[$attrName]);
 			$value = implode($delimiter, $this->attributes[$attrName]);
-			// TODO workarounds for PDF parser, remove when migrated to other PDF library
-			$value = str_replace("\r\n", " ", $value);
-			$value = str_replace("\n", " ", $value);
-			$value = str_replace("\r", " ", $value);
-			// TODO workaround for UFPDF, remove when migrated to other PDF library
 			$value = trim($value);
 		}
 		$result[get_class($this) . '_' . $name][] = new PDFLabelValue($label, $value);
-//		$result[get_class($this) . '_' . $name] = array('<block><key>' . $label . '</key><value>' . $value . '</value></block>');
 	}
 
 	/**
@@ -862,7 +856,6 @@ abstract class baseModule {
 			$value = implode($delimiter, $value);
 		}
 		$result[get_class($this) . '_' . $name][] = new PDFLabelValue($label, $value);
-//		$result[get_class($this) . '_' . $name] = array('<block><key>' . $label . '</key><value>' . $value . '</value></block>');
 	}
 
 	/**
@@ -877,19 +870,6 @@ abstract class baseModule {
 			return;
 		}
 		$result[get_class($this) . '_' . $name][] = $table;
-/*		if (!empty($table->label)) {
-			$result[get_class($this) . '_' . $name][] = '<block><tr><td><b>' . $table->label . ':</b></td></tr></block>';
-		}
-		foreach ($table->rows as $row) {
-			$xml = '<block><tr>';
-			foreach ($row->cells as $cell) {
-				$width = empty($cell->width) ? '' : ' width="' . $cell->width . '"';
-				$content = ($cell->bold) ? '<b>' . $cell->content . '</b>' : $cell->content;
-				$xml .= '<td align="' . $cell->align . '"' . $width . '>' . $content . '</td>';
-			}
-			$xml .= '</tr></block>';
-			$result[get_class($this) . '_' . $name][] = $xml;
-		}*/
 	}
 
 	/**

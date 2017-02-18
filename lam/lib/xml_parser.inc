@@ -60,7 +60,8 @@ class xmlParser {
 		if(file_exists($filename)) {
 			$xmlStructure = array();
 			$xmlIndex = array();
-			xml_parse_into_struct($this->xmlParser, implode("\n", file($filename)), $xmlStructure, $xmlIndex);
+			$xmlContent =
+			xml_parse_into_struct($this->xmlParser, implode("", file($filename)), $xmlStructure, $xmlIndex);
 			return array($xmlStructure, $xmlIndex);
 		}
 		return array();

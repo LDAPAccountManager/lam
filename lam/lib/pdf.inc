@@ -32,18 +32,22 @@ $Id$
  * @package PDF
  */
 
-/** PDF line width */
-define('LAMPDF_LINEWIDTH',190);
+/** line width */
+define('LAMPDF_LINEWIDTH', 190);
+/** line height */
+define('LAMPDF_LINEHEIGHT', 5);
+/** width of a label */
+define('LAMPDF_LABELWIDTH', 50);
+/** font size */
 define('LAMPDF_FONT_SIZE', 7);
+/** font size for bigger text */
+define('LAMPDF_FONT_SIZE_BIG', 10);
 
 /** XML functions */
 include_once('xml_parser.inc');
 
 /** access to PDF configuration files */
 include_once('pdfstruct.inc');
-
-$key = false;
-$line_width = LAMPDF_LINEWIDTH;
 
 /**
  * This function creates the PDF output of one or more accounts.
@@ -64,8 +68,6 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 	include_once("ufpdf.php");
 	/** LAM PDF generator class */
 	include_once("lamPDF.inc");
-
-	global $key;
 
 	$account_type = $accounts[0]->get_type();
 	// Get PDF structure from xml file
@@ -115,23 +117,24 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 				else {
 					$section_headline = $name;
 				}
-				$pdf->setFont($fontName,"B",10);
+				$pdf->setFont($fontName, "B", LAMPDF_FONT_SIZE_BIG);
 				$pdf->Write(0,$section_headline . ":");
-				$pdf->Ln(6);
+				$pdf->Ln(LAMPDF_LINEHEIGHT);
 			}
 			// We have a section to end
 			elseif($entry['tag'] == "SECTION" && $entry['type'] == "close") {
-				$pdf->Ln(9);
+				$pdf->Ln(LAMPDF_LINEHEIGHT * 2);
 			}
 			// We have to include a static text.
 			elseif($entry['tag'] == "TEXT") {
-				// Load PDF text from structure array
-				$info_string = $entry['value'];
-				// Set font for text
-				$pdf->setFont($fontName,"",10);
-				$pdf->MultiCell(0,5,$info_string,0,"L",0);
-				// Print linebreak afterwards
-				$pdf->Ln(6);
+				$pdf->setFont($fontName, "", LAMPDF_FONT_SIZE);
+				$info_string = str_replace("\r", "", $entry['value']);
+				$info_string = explode("\n", $info_string);
+				foreach ($info_string as $text) {
+					$pdf->MultiCell(0, LAMPDF_LINEHEIGHT, trim($text), 0, "L", 0);
+					$pdf->Ln(0);
+				}
+				$pdf->Ln(LAMPDF_LINEHEIGHT * 2);
 			}
 			// We have to include an entry from the account
 			elseif($entry['tag'] == "ENTRY") {
@@ -152,16 +155,9 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 							else if ($valueEntry instanceof PDFTable) {
 								printTable($pdf, $valueEntry, $fontName);
 							}
-							// Substitue XML syntax with valid FPDF methods
-							/**$methods = processLine($line,true,$fontName);
-							// Call every method
-							foreach($methods as $method) {
-								call_user_func_array(array(&$pdf,$method[0]),$method[1]);
-							}*/
 						}
 					}
 				}
-				$key = false;
 			}
 		}
 	}
@@ -202,172 +198,42 @@ function getSectionHeadline($entry) {
  */
 function printLabelValue(&$pdf, $valueEntry, $fontName) {
 	$pdf->SetFont($fontName, 'B', LAMPDF_FONT_SIZE);
-	$pdf->Cell(50, 5, $valueEntry->getLabel() . ':',0,0,'R',0);
+	$pdf->Cell(LAMPDF_LABELWIDTH, LAMPDF_LINEHEIGHT, $valueEntry->getLabel() . ':', 0, 0, 'R', 0);
 	$pdf->SetFont($fontName, '', LAMPDF_FONT_SIZE);
-	$pdf->MultiCell(0, 5, $valueEntry->getValue(), 0, 'L', 0);
+	$pdf->MultiCell(0, LAMPDF_LINEHEIGHT, $valueEntry->getValue(), 0, 'L', 0);
+	$pdf->Ln(0);
 }
 
 /**
  * Prints a PDFTable entry.
  *
  * @param lamPDF $pdf PDF
- * @param PDFTable $valueEntry entry
+ * @param PDFTable $table entry
  * @param string $fontName font name
  */
-function printTable(&$pdf, $valueEntry, $fontName) {
-}
-
-/**
- * Creates the XML code for an PDF entry.
- *
- * @param string $line XML code of PDF entry
- * @param boolean $first_td True if this is the first column
- * @param String $fontName font name
- *
- * @return array XML codes
- */
-function processLine($line, $first_td = true, $fontName) {
-	global $key, $line_width;
-
-	// PCRE matching <block> tag
-	$block_pattern = '/<block><\/block>/';
-	// PCRE matching a <key> tag
-	$key_pattern = '/(<block>)<key>(.+)<\/key>(.*<\/block>)/';
-	// PCRE matching a <value> tag
-	// !!FIXME!! value must contain at least one character
-	$value_pattern = '/(<block>.*)<value>(.*)<\/value>(<\/block>)/';
-	// PCRE matching a <td> tag
-	$td_pattern = '/(<block>.*?)<td(.*?)>(.+?)<\/td>(.*<\/block>)/';
-	// PCRE matching <tr> tag
-	$tr_pattern = '/<tr><\/tr>/';
-	// PCRE matching a <p> tag
-	$p_pattern = '/(<block>.*)<p>(.+)<\/p>(.*<\/block>)/';
-	// PCRE matching a <br> tag
-	$br_pattern = '/<br \/>/';
-
-	$return = array();
-	if(preg_match($key_pattern,$line,$matches)) {
-		$key = true;
-		$line_width = $line_width - 50;
-		$format = processFormatTags($matches[2],'B');
-		$return[] = array('setFont',array($fontName,$format[0],7));
-		$return[] = array('Cell',array(50,5,$format[1] . ':',0,0,'R',0));
-		$return[] = array('setFont',array($fontName,'',7));
-		return array_merge($return,processLine($matches[1] . $matches[3],false,$fontName));
+function printTable(&$pdf, $table, $fontName) {
+	if (!empty($table->getHeadline())) {
+		$pdf->SetFont($fontName, 'B', LAMPDF_FONT_SIZE);
+		$pdf->Cell(LAMPDF_LABELWIDTH, LAMPDF_LINEHEIGHT, $table->getHeadline() . ':', 0 , 0, 'L', 0);
+		$pdf->Ln(LAMPDF_LINEHEIGHT);
 	}
-	elseif(preg_match($value_pattern,$line,$matches)) {
-		$format = processFormatTags($matches[2],'');
-		$return[] = array('setFont',array($fontName,$format[0],7));
-		$return[] = array('MultiCell',array(0,5,$format[1],0,'L',0));
-		$return[] = array('setFont',array($fontName,'',7));
-		return array_merge($return,processLine($matches[1] . $matches[3],true,$fontName));
-	}
-	elseif(preg_match($p_pattern,$line,$matches)) {
-		$format = processFormatTags($matches[2],'');
-		$return[] = array('setFont',array($fontName,$format[0],7));
-		$return[] = array('Write',array(5,$format[1]));
-		$return[] = array('setFont',array($fontName,'',7));
-		return array_merge($return,processLine($matches[1] . $matches[3],true,$fontName));
-	}
-	elseif(preg_match($td_pattern,$line,$matches)) {
-		if($first_td && $key) {
-			$first_td = !$first_td;
-			$return[] = array('Cell',array(50,5,'',0,0,'L',0));
+	foreach ($table->rows as $row) {
+		foreach ($row->cells as $cell) {
+			$width = $cell->width;
+			if (!empty($width) && (strpos($width, '%') !== false)) {
+				$width = ceil(LAMPDF_LINEWIDTH * substr($width, 0, -1) / 100);
+			}
+			if ($cell->bold) {
+				$pdf->SetFont($fontName, 'B', LAMPDF_FONT_SIZE);
+			}
+			$pdf->Cell($width, LAMPDF_LINEHEIGHT, $cell->content, 0, 0, $cell->align, 0);
+			if ($cell->bold) {
+				$pdf->SetFont($fontName, '', LAMPDF_FONT_SIZE);
+			}
 		}
-		$format = processFormatTags($matches[3],'');
-		$attrs = processAttributes($matches[2],array('width' => $line_width,'height' => 5,'align' => 'L'));
-		$return[] = array('setFont',array($fontName,$format[0],7));
-		$return[] = array('Cell',array($attrs['width'],$attrs['height'],$format[1],0,0,$attrs['align'],0));
-		$return[] = array('setFont',array($fontName,'',7));
-		return array_merge($return,processLine($matches[1] . $matches[4],$first_td,$fontName));
+		$pdf->Ln(LAMPDF_LINEHEIGHT);
 	}
-	elseif(preg_match($br_pattern,$line,$matches)) {
-		return array(array('Ln',array(5)));
-	}
-	elseif(preg_match($block_pattern,$line,$matches)) {
-		$line_width = LAMPDF_LINEWIDTH;
-		return array();
-	}
-	elseif(preg_match($tr_pattern,$line,$matches)) {
-		$line_width = LAMPDF_LINEWIDTH;
-		return array(array('Ln',array(5)));
-	}
-}
-
-/**
- * Formats the XML code.
- *
- * @param string $line XML code of PDF entry
- * @param string $style style commands
- *
- * @return array XML code
- */
-function processFormatTags($line,$style) {
-	// PCRE matching a <i> tag
-	$i_pattern = '/(.*)<i>(.+)<\/i>(.*)/';
-	// PCRE matching a <b> tag
-	$b_pattern = '/(.*)<b>(.+)<\/b>(.*)/';
-	// PCRE matching a <u> tag
-	$u_pattern = '/(.*)<u>(.+)<\/u>(.*)/';
-	// Replacement pattern when one of the above pattern matched
-	$replace = "\$1\$2\$3";
-
-	if(preg_match($i_pattern,$line,$matches)) {
-		$style .= "I";
-		$line = preg_replace($i_pattern,$replace,$line);
-	}
-	if(preg_match($b_pattern,$line,$matches)) {
-		$style .= "B";
-		$line = preg_replace($b_pattern,$replace,$line);
-	}
-	if(preg_match($u_pattern,$line,$matches)) {
-		$style .= "U";
-		$line = preg_replace($u_pattern,$replace,$line);
-	}
-	return array($style,$line);
-}
-
-/**
- * Processes width, height and alignment attributes.
- *
- * @param string $attrs attributes
- * @param array $return XML code
- *
- * @return array XML code
- */
-function processAttributes($attrs,$return = array()) {
-	global $line_width;
-
-	// PCRE matching width attribute
-	$width_pattern = '/(.*)width\=\"(\\d+)(\%?)\"(.*)/';
-	// PCRE matching height attribute
-	$height_pattern = '/(.*)height\=\"(\\d+)\"(.*)/';
-	// PCRE matching align attribute
-	$align_pattern = '/(.*)align\=\"(L|R|C)\"(.*)/';
-
-	// Remove leading and trailing whitespaces
-	$attrs = trim($attrs);
-
-	if(preg_match($width_pattern,$attrs,$matches)) {
-		if($matches[3] == '%') {
-			$return['width'] = ceil($line_width * $matches[2] / 100);
-		}
-		else {
-			$return['width'] = ceil($matches[2]);
-		}
-		return processAttributes($matches[1] . $matches[4],$return);
-	}
-	elseif(preg_match($height_pattern,$attrs,$matches)) {
-		$return['height'] = $matches[2];
-		return processAttributes($matches[1] . $matches[3],$return);
-	}
-	elseif(preg_match($align_pattern,$attrs,$matches)) {
-		$return['align'] = $matches[2];
-		return processAttributes($matches[1] . $matches[3],$return);
-	}
-	else {
-		return $return;
-	}
+	$pdf->Ln(LAMPDF_LINEHEIGHT);
 }
 
 /**
@@ -407,15 +273,6 @@ class PDFTable implements PDFEntry {
 	 */
 	public function __construct($label = null) {
 		$this->label = $label;
-	}
-
-	/**
-	 * Returns the label.
-	 *
-	 * @return string $label label
-	 */
-	public function getLabel() {
-		return $this->label;
 	}
 
 	/**
