@@ -55,7 +55,7 @@ class lamPDF extends UFPDF {
 	* format: <font name> => array(<file for default font style>, <file for bold>, <italic>, <bold italic>)
 	*/
 	private $fontList = array(
-		'BitstreamVeraSans-Roman' => array('vera.php', 'verab.php', 'verabi.php', 'verai.php')
+		'Dejavu' => array('DejaVuSerif.php', 'DejaVuSerif-Bold.php', 'DejaVuSerif-Bold.php', 'DejaVuSerif.php')
 	);
 
 	/**

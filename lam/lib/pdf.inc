@@ -92,7 +92,7 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 	// The decimal separator must be a dot in order to write pdf-files
 	setlocale(LC_NUMERIC, "C");
 
-	$fontName = "BitstreamVeraSans-Roman";
+	$fontName = "Dejavu";
 
 	// Create a new PDF file acording to the account type
 	$pdf = new \lamPDF($load['page_definitions'],$fontName);
