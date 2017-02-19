@@ -36,7 +36,7 @@ class sambaDomain extends baseModule {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -47,7 +47,7 @@ class sambaDomain extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -227,7 +227,7 @@ class sambaDomain extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -590,10 +590,8 @@ class sambaDomain extends baseModule {
 	}
 
 	/**
-	 * Returns a list of possible PDF entries for this account.
-	 *
-	 * @param array $pdfKeys list of PDF keys that are included in document
-	 * @return list of PDF entries (array(<PDF key> => <PDF lines>))
+	 * {@inheritDoc}
+	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys) {
 		$return = array();
@@ -610,7 +608,7 @@ class sambaDomain extends baseModule {
 		$this->addSimplePDFField($return, 'maxPwdAge', _('Maximum password age'), 'sambaMaxPwdAge');
 		$this->addSimplePDFField($return, 'lockoutDuration', _('Lockout duration'), 'sambaLockoutDuration');
 		$this->addSimplePDFField($return, 'lockoutObservationWindow', _('Reset time after lockout'), 'sambaLockoutObservationWindow');
-		
+
 		if (isset($this->attributes['sambaLogonToChgPwd'])) {
 			$logonToChgPwd = _('Off');
 			if ($this->attributes['sambaPwdHistoryLength'][0] == 2) $logonToChgPwd = _('On');

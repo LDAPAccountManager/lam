@@ -32,6 +32,7 @@
 
 
 
+
   
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-15"><title>Upgrade notes</title>
   
@@ -49,7 +50,14 @@ This is a list of API changes for all LAM releases.
 
 <br>
 
+<h2>5.6 -&gt; 5.7</h2>
+<ul>
+  <li>module interface: get_pdfEntries() must return an array key =&gt;
+PDFEntry (no action required if you did not build the XML yourself)<span style="color: rgb(34, 31, 30); font-family: Sans,sans-serif; font-size: 13px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: normal; orphans: 2; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; background-color: rgb(214, 210, 208); display: inline ! important; float: none;"></span></li>
+</ul>
+<br>
 <h2>5.5 -&gt; 5.6</h2>
+
 <ul>
   <li>
 Functions in lib/types.inc got namespace LAM/TYPES (e.g. getTypeAlias()).</li>

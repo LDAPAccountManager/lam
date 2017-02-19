@@ -143,11 +143,11 @@ if(isset($_GET['submit'])) {
 // add a new text field
 elseif(isset($_GET['add_text'])) {
 	// Check if text for static text field is specified
-	if(!isset($_GET['text_text']) || ($_GET['text_text'] == '')) {
+	if(empty($_GET['text_text'])) {
 		StatusMessage('ERROR',_('No static text specified'),_('The static text must contain at least one character.'));
 	}
 	else {
-		$entry = array(array('tag' => 'TEXT','type' => 'complete','level' => '2','value' => $_GET['text_text']));
+		$entry = array(array('tag' => 'TEXT','type' => 'complete','level' => '2','value' => str_replace("\r", "\n", $_GET['text_text'])));
 		// Insert new field in structure
 		array_splice($_SESSION['currentPDFStructure'],$_GET['add_text_position'],0,$entry);
 	}

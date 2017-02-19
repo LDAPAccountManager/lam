@@ -39,10 +39,10 @@ $Id$
  * @return boolean true or false
  **/
 if (!function_exists('check_ip')) {
-	
+
 	/**
 	 * Checks if the given IP is valid.
-	 * 
+	 *
 	 * @param String $ip IP address
 	 * @param boolean $subnet IP must be a subnet
 	 */
@@ -89,7 +89,7 @@ class dhcp_settings extends baseModule {
 	private $allowDenyOptions;
 	/** LDAP attributes */
 	public $attributes;
-	
+
 	/**
 	* Creates a new dhcp_settings object.
 	*
@@ -114,7 +114,7 @@ class dhcp_settings extends baseModule {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -315,7 +315,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		);
 		return $return;
 	}
-	
+
 	/**
 	* This function fills the message array.
 	*/
@@ -343,7 +343,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$this->messages['domainname'][2] = array('ERROR', _('The domain name includes invalid characters. Valid characters are A-Z, a-z, 0-9, ".", "_","-".'));
 		$this->messages['domainname'][5] = array('ERROR', _('Account %s:') . ' dhcp_settings_domainName', _('The domain name includes invalid characters. Valid characters are A-Z, a-z, 0-9, ".", "_","-".'));
 	}
-	
+
 	/**
 	* Returns a list of modifications which have to be made to the LDAP account.
 	*
@@ -366,7 +366,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$return = parent::save_attributes();
 		return $return;
 	}
-	
+
 	/**
 	* Processes user input of the primary module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
@@ -406,7 +406,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			}
 			$this->setUnknownClients($_POST['unknownClients']);
 		}
-		
+
 		// Check domainname:
 		if (!empty($_POST['domainname'])) $_POST['domainname'] = trim($_POST['domainname']);
 		if (!empty($_POST['domainname'])) {
@@ -441,7 +441,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			}
 		}
 		$this->setDHCPOption('domain-name-servers', $_POST['dns']);
-		
+
 		// Lease Time
 		if (!empty($_POST['lease_time'])) {
 			$_POST['lease_time'] = trim($_POST['lease_time']);
@@ -450,7 +450,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		if (!is_numeric($_POST['lease_time']) && !empty($_POST['lease_time'])) {
 			$errors[] = $this->messages['lease_time'][0];
 		}
-		
+
 		// Max lease Time
 		if (!empty($_POST['max_lease_time'])) {
 			$_POST['max_lease_time'] = trim($_POST['max_lease_time']);
@@ -459,7 +459,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		if (!is_numeric($_POST['max_lease_time']) && !empty($_POST['max_lease_time'])) {
 			$errors[] = $this->messages['max_lease_time'][0];
 		}
-		
+
 		// Default Gateway
 		if (!empty($_POST['routers'])) {
 			$_POST['routers'] = trim($_POST['routers']);
@@ -468,7 +468,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			}
 		}
 		$this->setDHCPOption('routers', $_POST['routers']);
-		
+
 		// Netbios
 		if (!empty($_POST['netbios'])) $_POST['netbios'] = trim($_POST['netbios']);
 		$netbiosServers = explode(', ', $_POST['netbios']);
@@ -483,9 +483,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			$errors[] = $this->messages['netbios'][0];
 		}
 		$this->setDHCPOption('netbios-name-servers', $_POST['netbios']);
-		
+
 		$this->setDHCPOption('netbios-node-type', $_POST['netbios_node_type']);
-		
+
 		if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
 			// Check subnet
 			$_POST['subnet'] = trim($_POST['subnet']);
@@ -500,10 +500,10 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			}
 		}
 		$this->attributes['dhcpComments'][0] = $_POST['description'];
-		
+
 		return $errors;
 	}
-	
+
 	/**
 	 * Checks if the subnet mask is valid.
 	 *
@@ -523,7 +523,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		}
 		return preg_match('/^1*0*$/', $bits);
 	}
-	
+
 	/**
 	 * Calculates the net mask from the subnet.
 	 *
@@ -539,10 +539,10 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		}
 		return $num;
 	}
-	
+
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
@@ -593,7 +593,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$nodeSelect = new htmlTableExtendedSelect('netbios_node_type', $nodeOptions, array($nodeType), _('Netbios node type'), 'netbios_type');
 		$nodeSelect->setHasDescriptiveElements(true);
 		$return->addElement($nodeSelect, true);
-		
+
 		if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
 			// unknown clients
 			$unknownClients = $this->getUnknownClients();
@@ -622,7 +622,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$return->addElement(new htmlTableExtendedInputField(_('Description'), 'description', $description, 'description'), true);
 		return $return;
 	}
-	
+
 	/**
 	* Loads the values of an account profile into internal variables.
 	*
@@ -632,16 +632,16 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		$this->attributes['cn'][0] = $profile['cn'][0];
-		
+
 		$this->setDefaultLeaseTime($profile['lease_time'][0]);
 		$this->setMaxLeaseTime($profile['max_lease_time'][0]);
-		
+
 		$this->setDHCPOption('domain-name', $profile['domainname'][0]);
 		$this->setDHCPOption('domain-name-servers', $profile['dns'][0]);
 		$this->setDHCPOption('routers', $profile['routers'][0]);
 		$this->setDHCPOption('netbios-name-servers', $profile['netbios'][0]);
 		$this->setDHCPOption('netbios-node-type', $profile['netbios_node_type'][0]);
-		
+
 		if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
 			$this->setDHCPOption('subnet-mask', $profile['subnet'][0]);
 
@@ -655,12 +655,10 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			$this->attributes['dhcpNetMask'][0] = $num;
 		}
 	}
-	
+
 	/**
-	 * Returns a list of possible PDF entries for this account.
-	 *
-	 * @param array $pdfKeys list of PDF keys that are included in document
-	 * @return list of PDF entries (array(<PDF key> => <PDF lines>))
+	 * {@inheritDoc}
+	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys) {
 		$nodeType = $this->getDHCPOption('netbios-node-type');
@@ -688,10 +686,10 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$this->addSimplePDFField($return, 'netMask', _('Net mask'), 'dhcpNetMask');
 		return $return;
 	}
-	
+
 	/**
 	 * Returns a DHCP option.
-	 * 
+	 *
 	 * @param String $name option name
 	 * @return String value
 	 */
@@ -709,10 +707,10 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Sets a DHCP option.
-	 * 
+	 *
 	 * @param String $name option name
 	 * @param String $value option value
 	 */
@@ -733,7 +731,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 
 	/**
 	 * Returns the default lease time.
-	 * 
+	 *
 	 * @return String time
 	 */
 	private function getDefaultLeaseTime() {
@@ -748,10 +746,10 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Sets the default lease time.
-	 * 
+	 *
 	 * @param String $time time
 	 */
 	private function setDefaultLeaseTime($time) {
@@ -771,7 +769,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 
 	/**
 	 * Returns the unknown clients option.
-	 * 
+	 *
 	 * @return String unknown clients value
 	 */
 	private function getUnknownClients() {
@@ -787,10 +785,10 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Sets the unknown clients option.
-	 * 
+	 *
 	 * @param String $option allow/deny
 	 */
 	private function setUnknownClients($option) {
@@ -811,7 +809,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 
 	/**
 	 * Returns the maximum lease time.
-	 * 
+	 *
 	 * @return String time
 	 */
 	private function getMaxLeaseTime() {
@@ -826,10 +824,10 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Sets the maximum lease time.
-	 * 
+	 *
 	 * @param String $time time
 	 */
 	private function setMaxLeaseTime($time) {
@@ -846,7 +844,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			$this->attributes['dhcpStatements'][] = 'max-lease-time ' . $time;
 		}
 	}
-	
+
 	/**
 	* In this function the LDAP account is built up.
 	*

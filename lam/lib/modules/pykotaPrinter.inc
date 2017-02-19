@@ -33,14 +33,14 @@ $Id$
 * @package modules
 */
 class pykotaPrinter extends baseModule {
-	
+
 	/** cache for existing printers (array(dn => array(cn => ..., description => ...))) */
 	private $printerCache = null;
 	/** printer group cache */
 	private $groupCache = null;
 	/** list of pass through options: label => value */
 	private $passThroughOptions;
-	
+
 	/**
 	* Creates a new pykotaPrinter object.
 	*
@@ -57,7 +57,7 @@ class pykotaPrinter extends baseModule {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -68,7 +68,7 @@ class pykotaPrinter extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -222,7 +222,7 @@ class pykotaPrinter extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -376,10 +376,10 @@ class pykotaPrinter extends baseModule {
 		}
 		return $errors;
 	}
-	
+
 	/**
 	* This function will create the meta HTML code to show a page to add members.
-	* 
+	*
 	* @return htmlElement HTML meta data
 	*/
 	function display_html_members() {
@@ -432,7 +432,7 @@ class pykotaPrinter extends baseModule {
 		$return->addElement($buttonTable);
 		return $return;
 	}
-	
+
 	/**
 	* Processes user input of the members page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
@@ -574,12 +574,10 @@ class pykotaPrinter extends baseModule {
 		}
 		return $messages;
 	}
-	
+
 	/**
-	 * Returns a list of possible PDF entries for this account.
-	 *
-	 * @param array $pdfKeys list of PDF keys that are included in document
-	 * @return list of PDF entries (array(<PDF key> => <PDF lines>))
+	 * {@inheritDoc}
+	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys) {
 		$return = array();
@@ -625,10 +623,10 @@ class pykotaPrinter extends baseModule {
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Returns if the given cn already exists.
-	 * 
+	 *
 	 * @param String $cn cn attribute value
 	 * @return boolean cn exists
 	 */
@@ -662,10 +660,10 @@ class pykotaPrinter extends baseModule {
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns the printer group memberships.
-	 * 
+	 *
 	 * @return array DNs of parent groups
 	 */
 	private function getPrinterGroups() {
@@ -679,7 +677,7 @@ class pykotaPrinter extends baseModule {
 		}
 		return $this->groupCache;
 	}
-	
+
 }
 
 

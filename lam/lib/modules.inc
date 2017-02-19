@@ -2006,7 +2006,7 @@ class accountContainer {
 	 * Returns a list of possible PDF entries for this account.
 	 *
 	 * @param array $pdfKeys list of PDF keys that are included in document
-	 * @return list of PDF entries (array(<PDF key> => <PDF lines>))
+	 * @return PDFEntry[] list of key => PDFEntry
 	 */
 	function get_pdfEntries($pdfKeys) {
 		$return = array();
@@ -2018,7 +2018,7 @@ class accountContainer {
 		if (isset($this->finalDN)) {
 			$dn = $this->finalDN;
 		}
-		$return = array_merge($return,array('main_dn' => array('<block><key>' . _('DN') . '</key><value>' . $dn . '</value></block>')));
+		$return = array_merge($return,array('main_dn' => array(new \LAM\PDF\PDFLabelValue(_('DN'), $dn))));
 		return $return;
 	}
 

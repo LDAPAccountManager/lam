@@ -294,7 +294,7 @@ class Uploader {
 				break;
 			}
 			// create and save PDF
-			$pdfContent = createModulePDF(array($_SESSION['mass_pdfAccount']), $pdfStructure, true);
+			$pdfContent = \LAM\PDF\createModulePDF(array($_SESSION['mass_pdfAccount']), $pdfStructure, true);
 			$fileName = $dn . '.pdf';
 			$pdfZip->addFromString($fileName, $pdfContent);
 			$_SESSION['mass_pdf']['counter'] ++;

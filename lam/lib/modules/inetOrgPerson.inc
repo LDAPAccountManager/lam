@@ -1970,10 +1970,8 @@ class inetOrgPerson extends baseModule implements passwordService {
 	}
 
 	/**
-	 * Returns a list of possible PDF entries for this account.
-	 *
-	 * @param array $pdfKeys list of PDF keys that are included in document
-	 * @return list of PDF entries (array(<PDF key> => <PDF lines>))
+	 * {@inheritDoc}
+	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys) {
 		$return = array();

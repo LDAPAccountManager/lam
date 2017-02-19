@@ -5,7 +5,7 @@ use LAM\TYPES\ConfiguredType;
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2016  Roland Gruber
+  Copyright (C) 2003 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -609,7 +609,7 @@ class lamList {
 			if ($option == 'DN') {
 				$_SESSION["accountPDF"] = new accountContainer($this->type, "accountPDF");
 				$_SESSION["accountPDF"]->load_account(base64_decode($_POST['clickedAccount']));
-				$filename = createModulePDF(array($_SESSION["accountPDF"]),$pdfStruct);
+				$filename = \LAM\PDF\createModulePDF(array($_SESSION["accountPDF"]),$pdfStruct);
 				unset($_SESSION["accountPDF"]);
 			}
 			// create for all selected accounts
@@ -624,7 +624,7 @@ class lamList {
 					$list[$i] = $_SESSION["accountPDF-$i"];
 				}
 				if (sizeof($list) > 0) {
-					$filename = createModulePDF($list,$pdfStruct);
+					$filename = \LAM\PDF\createModulePDF($list,$pdfStruct);
 					for ($i = 0; $i < sizeof($accounts); $i++) {
 						unset($_SESSION["accountPDF-$i"]);
 					}
@@ -640,7 +640,7 @@ class lamList {
 					$list[$i] = $_SESSION["accountPDF-$i"];
 				}
 				if (sizeof($list) > 0) {
-					$filename = createModulePDF($list,$pdfStruct);
+					$filename = \LAM\PDF\createModulePDF($list,$pdfStruct);
 					for ($i = 0; $i < $entriesCount; $i++) {
 						// clean session
 						unset($_SESSION["accountPDF-$i"]);
@@ -648,7 +648,7 @@ class lamList {
 				}
 			}
 			elseif ($option == 'SESSION') {
-				$filename = createModulePDF(array($_SESSION[$_POST['PDFSessionID']]),$pdfStruct);
+				$filename = \LAM\PDF\createModulePDF(array($_SESSION[$_POST['PDFSessionID']]),$pdfStruct);
 				unset($_SESSION[$_POST['PDFSessionID']]);
 			}
 			if ($filename != '') {

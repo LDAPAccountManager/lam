@@ -33,10 +33,10 @@ $Id$
 * @package modules
 */
 class windowsHost extends baseModule {
-	
+
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -47,7 +47,7 @@ class windowsHost extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	public function get_metaData() {
@@ -134,7 +134,7 @@ class windowsHost extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
@@ -188,10 +188,10 @@ class windowsHost extends baseModule {
 		}
 		return $return;
 	}
-	
+
 	/**
 	* This function will create the meta HTML code to show a page to change the member attribute.
-	* 
+	*
 	* @return htmlElement HTML meta data
 	*/
 	function display_html_managedBy() {
@@ -227,7 +227,7 @@ class windowsHost extends baseModule {
 		$return->addElement($buttonTable);
 		return $return;
 	}
-	
+
 	/**
 	* Processes user input of the members page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
@@ -279,12 +279,10 @@ class windowsHost extends baseModule {
 		}
 		return $errors;
 	}
-	
+
 	/**
-	 * Returns a list of possible PDF entries for this account.
-	 *
-	 * @param array $pdfKeys list of PDF keys that are included in document
-	 * @return list of PDF entries (array(<PDF key> => <PDF lines>))
+	 * {@inheritDoc}
+	 * @see baseModule::get_pdfEntries()
 	 */
 	public function get_pdfEntries($pdfKeys) {
 		$return = array();

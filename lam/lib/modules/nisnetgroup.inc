@@ -1,9 +1,12 @@
 <?php
+use \LAM\PDF\PDFTable;
+use \LAM\PDF\PDFTableCell;
+use \LAM\PDF\PDFTableRow;
 /*
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2015  Roland Gruber
+  Copyright (C) 2009 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -569,10 +572,8 @@ class nisnetgroup extends baseModule {
 	}
 
 	/**
-	 * Returns a list of possible PDF entries for this account.
-	 *
-	 * @param array $pdfKeys list of PDF keys that are included in document
-	 * @return list of PDF entries (array(<PDF key> => <PDF lines>))
+	 * {@inheritDoc}
+	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys) {
 		$return = array();

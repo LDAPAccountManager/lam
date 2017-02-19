@@ -54,7 +54,7 @@ class asteriskAccount extends baseModule implements passwordService {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -67,7 +67,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * @return array array with meta data
 	 */
 	function get_metaData() {
-		$return = array();	
+		$return = array();
 		$return["is_base"] = false;
 		// alias name
 		$return["alias"] = _("Asterisk");
@@ -134,7 +134,7 @@ class asteriskAccount extends baseModule implements passwordService {
 			'AstAccountCallGroup' => array(
 				"Headline" => _("Call groups"), 'attr' => 'AstAccountCallGroup',
 				"Text" => _("The user's call groups.")
-			),                    
+			),
 			'AstAccountDTMFMode' => array(
 				"Headline" => _("DTMF mode"), 'attr' => 'AstAccountDTMFMode',
 				"Text" => _("DTMF mode for SIP client configuration.")
@@ -244,7 +244,7 @@ class asteriskAccount extends baseModule implements passwordService {
 				"Text" => _("The selected options will not be managed inside LAM. You can use this to reduce the number of displayed input fields.")
 			),
 		);
-		// self service options	
+		// self service options
 		$selfServiceContainer = new htmlTable();
 		$selfServiceContainer->addElement(new htmlTableExtendedInputField(_('Asterisk realm'), 'asteriskAccount_AsteriskRealm', null));
 		$selfServiceContainer->addElement(new htmlHelpLink('AsteriskRealm', get_class($this)));
@@ -415,7 +415,7 @@ class asteriskAccount extends baseModule implements passwordService {
 				'help' => 'AstAccountDeny',
 			);
 		}
-		
+
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountPermit')) {
 			$return['upload_columns'][] = array(
 				'name' => 'asteriskAccount_AstAccountPermit',
@@ -487,7 +487,7 @@ class asteriskAccount extends baseModule implements passwordService {
 				'help' => 'AstAccountMusicOnHold',
 			);
 		}
-		
+
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountExpirationTimestamp')) {
 			$return['upload_columns'][] = array(
 				'name' => 'asteriskAccount_AstAccountExpirationTimestamp',
@@ -523,7 +523,7 @@ class asteriskAccount extends baseModule implements passwordService {
 				'help' => 'AstAccountIPAddress',
 			);
 		}
-		
+
 		if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountDefaultUser')) {
 			$return['upload_columns'][] = array(
 				'name' => 'asteriskAccount_AstAccountDefaultUser',
@@ -579,7 +579,7 @@ class asteriskAccount extends baseModule implements passwordService {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -975,10 +975,8 @@ class asteriskAccount extends baseModule implements passwordService {
 	}
 
 	/**
-	 * Returns a list of possible PDF entries for this account.
-	 *
-	 * @param array $pdfKeys list of PDF keys that are included in document
-	 * @return list of PDF entries (array(<PDF key> => <PDF lines>))
+	 * {@inheritDoc}
+	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys) {
 		$return = array();
@@ -1056,7 +1054,7 @@ class asteriskAccount extends baseModule implements passwordService {
 				$pwdString = asteriskAccount::buildPasswordString($attributes, $this->moduleSettings, $rawAccounts[$i][$ids['asteriskAccount_AstAccountRealmedPassword']]);
 				$partialAccounts[$i]['AstAccountRealmedPassword'] = $pwdString;
 			}
-			
+
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountUserAgent', 'AstAccountUserAgent');
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountAMAFlags', 'AstAccountAMAFlags');
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountCallGroup', 'AstAccountCallGroup');
@@ -1075,10 +1073,10 @@ class asteriskAccount extends baseModule implements passwordService {
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountDeny', 'AstAccountDeny');
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountPermit', 'AstAccountPermit');
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountPickupGroup', 'AstAccountPickupGroup');
-			
+
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountPort', 'AstAccountPort',
 				'digit', $this->messages['AstAccountPort'][1], $messages);
-			
+
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountQualify', 'AstAccountQualify');
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountRestrictCID', 'AstAccountRestrictCID');
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountRTPTimeout', 'AstAccountRTPTimeout');
@@ -1090,13 +1088,13 @@ class asteriskAccount extends baseModule implements passwordService {
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountRegistrationContext', 'AstAccountRegistrationContext');
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountRegistrationExten', 'AstAccountRegistrationExten');
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountCanCallForward', 'AstAccountCanCallForward');
-			
+
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountIPAddress', 'AstAccountIPAddress',
 				'ip', $this->messages['AstAccountIPAddress'][1], $messages);
-			
+
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountDefaultUser', 'AstAccountDefaultUser',
 				'username', $this->messages['AstAccountDefaultUser'][1], $messages);
-			
+
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountRegistrationServer', 'AstAccountRegistrationServer');
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskAccount_AstAccountLastQualifyMilliseconds', 'AstAccountLastQualifyMilliseconds');
 		}
@@ -1120,13 +1118,13 @@ class asteriskAccount extends baseModule implements passwordService {
 
 	/**
 	 * Specifies if this module supports to force that a user must change his password on next login.
-	 * 
+	 *
 	 * @return boolean force password change supported
 	 */
 	public function supportsForcePasswordChange() {
 		return false;
 	}
-	
+
 	/**
 	 * This function is called whenever the password should be changed. Account modules
 	 * must change their password attributes only if the modules list contains their module name.
@@ -1145,7 +1143,7 @@ class asteriskAccount extends baseModule implements passwordService {
 		$this->attributes['AstAccountRealmedPassword'][0] = asteriskAccount::buildPasswordString($this->attributes, $this->moduleSettings, $password);
 		return array();
 	}
-	
+
 	/**
 	 * Builds the password string for the password attribute.
 	 *
@@ -1162,7 +1160,7 @@ class asteriskAccount extends baseModule implements passwordService {
 		}
 		return asteriskAccount::hashPassword($attributes['AstAccountCallerID'][0] . ":" . $astRealm . ":" . $password);
 	}
-	
+
 	/**
 	 * Hashes a password value to Asterisk format.
 	 *
@@ -1181,7 +1179,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * <br>del: array of attributes to remove
 	 * <br>mod: array of attributes to modify
 	 * <br>info: array of values with informational value (e.g. to be used later by pre/postModify actions)
-	 * 
+	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.
 	 *
 	 * @param string $fields input fields
@@ -1216,7 +1214,7 @@ class asteriskAccount extends baseModule implements passwordService {
 
 	/**
 	* Returns a list of configuration options.
-	* 
+	*
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* The field names are used as keywords to load and save settings.
@@ -1225,7 +1223,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	* @param array $scopes account types (user, group, host)
 	* @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
 	* @return mixed htmlElement or array of htmlElement
-	* 
+	*
 	* @see htmlElement
 	*/
 	public function get_configOptions($scopes, $allScopes) {
@@ -1303,7 +1301,7 @@ class asteriskAccount extends baseModule implements passwordService {
 		$return[] = $configContainer;
 		return $return;
 	}
-	
+
 }
 
 ?>

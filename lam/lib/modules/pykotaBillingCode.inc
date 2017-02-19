@@ -33,13 +33,13 @@ $Id$
 * @package modules
 */
 class pykotaBillingCode extends baseModule {
-	
+
 	/** cache for existing codes (array(dn1 => pykotaBillingCode1, dn2 => pykotaBillingCode2)) */
 	private $codeCache = null;
-	
+
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -50,7 +50,7 @@ class pykotaBillingCode extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -132,7 +132,7 @@ class pykotaBillingCode extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -206,7 +206,7 @@ class pykotaBillingCode extends baseModule {
 		}
 		return $errors;
 	}
-	
+
 	/**
 	* In this function the LDAP account is built up.
 	*
@@ -251,12 +251,10 @@ class pykotaBillingCode extends baseModule {
 		}
 		return $messages;
 	}
-	
+
 	/**
-	 * Returns a list of possible PDF entries for this account.
-	 *
-	 * @param array $pdfKeys list of PDF keys that are included in document
-	 * @return list of PDF entries (array(<PDF key> => <PDF lines>))
+	 * {@inheritDoc}
+	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys) {
 		$return = array();
@@ -267,10 +265,10 @@ class pykotaBillingCode extends baseModule {
 		$this->addSimplePDFField($return, 'pykotaPageCounter', _('Page count'));
 		return $return;
 	}
-	
+
 	/**
 	 * Returns if the given billing code already exists.
-	 * 
+	 *
 	 * @param String $code pykotaBillingCode attribute value
 	 * @return boolean pykotaBillingCode exists
 	 */
@@ -301,7 +299,7 @@ class pykotaBillingCode extends baseModule {
 			}
 		}
 	}
-	
+
 }
 
 
