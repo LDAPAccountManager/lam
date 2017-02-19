@@ -33,18 +33,18 @@ $Id$
 * @package modules
 */
 class pykotaGroup extends baseModule {
-	
+
 	/** cache for cn attribute */
 	private $cnCache = null;
 	/** cache for pykotaGroupName attribute */
 	private $pykotaGroupNameCache = null;
 	/** list of limit options label => value */
 	private $limitOptions;
-	
+
 	/**
 	 * Returns if this module also manages the structural object class pykotaObject.
 	 * This is overridden by a submodule that must provide the structural object class.
-	 * 
+	 *
 	 * @return boolean structural usage
 	 */
 	public function isStructural() {
@@ -71,7 +71,7 @@ class pykotaGroup extends baseModule {
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -82,7 +82,7 @@ class pykotaGroup extends baseModule {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -207,7 +207,7 @@ class pykotaGroup extends baseModule {
 
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
@@ -352,7 +352,7 @@ class pykotaGroup extends baseModule {
 
 	/**
 	* This function is used to check if all settings for this module have been made.
-	* 
+	*
 	* Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* This function tells LAM if it can create/modify the LDAP account. If your module needs any
@@ -386,7 +386,7 @@ class pykotaGroup extends baseModule {
 			}
 		}
 	}
-	
+
 	/**
 	* In this function the LDAP account is built up.
 	*
@@ -457,12 +457,10 @@ class pykotaGroup extends baseModule {
 		}
 		return $messages;
 	}
-	
+
 	/**
-	 * Returns a list of possible PDF entries for this account.
-	 *
-	 * @param array $pdfKeys list of PDF keys that are included in document
-	 * @return list of PDF entries (array(<PDF key> => <PDF lines>))
+	 * {@inheritDoc}
+	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys) {
 		$return = array();
@@ -477,10 +475,10 @@ class pykotaGroup extends baseModule {
 		$this->addPDFKeyValue($return, 'pykotaLimitBy', _('Limit type'), $limitByValue);
 		return $return;
 	}
-	
+
 	/**
 	 * Returns if the cn attribute should be managed.
-	 * 
+	 *
 	 * @return boolean manage cn attribute
 	 */
 	private function manageCn() {
@@ -500,7 +498,7 @@ class pykotaGroup extends baseModule {
 
 	/**
 	 * Returns if the description attribute should be managed.
-	 * 
+	 *
 	 * @return boolean manage description attribute
 	 */
 	private function manageDescription() {
@@ -517,10 +515,10 @@ class pykotaGroup extends baseModule {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Returns if the given cn already exists.
-	 * 
+	 *
 	 * @param String $cn cn attribute value
 	 * @return boolean cn exists
 	 */
@@ -533,7 +531,7 @@ class pykotaGroup extends baseModule {
 
 	/**
 	 * Returns if the given pykotaGroupName already exists.
-	 * 
+	 *
 	 * @param String $pykotaGroupName pykotaGroupName attribute value
 	 * @return boolean pykotaGroupName exists
 	 */
@@ -543,7 +541,7 @@ class pykotaGroup extends baseModule {
 		}
 		return in_array($pykotaGroupName, $this->pykotaGroupNameCache);
 	}
-	
+
 	/**
 	 * Loads the list of group names into the cache.
 	 */
@@ -560,10 +558,10 @@ class pykotaGroup extends baseModule {
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns the current group name (cn) of this account.
-	 * 
+	 *
 	 * @return String group name
 	 */
 	private function getCurrentGroupName() {

@@ -220,11 +220,9 @@ class account extends baseModule {
 	}
 
 	/**
-	* Returns the PDF entries for this module.
-	*
-	* @param array $pdfKeys list of PDF keys that are included in document
-	* @return array list of possible PDF entries
-	*/
+	 * {@inheritDoc}
+	 * @see baseModule::get_pdfEntries()
+	 */
 	function get_pdfEntries($pdfKeys) {
 		$return = array();
 		$this->addSimplePDFField($return, 'description', _('Description'));

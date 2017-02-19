@@ -38,14 +38,14 @@ $Id$
 */
 
 class ddns extends baseModule {
-	
+
 	/** standard DDNS settings */
 	public $ddns = array();
-	
+
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
-	* 
+	*
 	* @return boolean true if module fits
 	*/
 	public function can_manage() {
@@ -141,7 +141,7 @@ class ddns extends baseModule {
 		}
 		return $return;
 	}
-	
+
 	/**
 	* This function fills the message array.
 	*/
@@ -153,7 +153,7 @@ class ddns extends baseModule {
 		$this->messages['zone'][0] = array('ERROR', 'Please enter a zone name.');
 		$this->messages['zone_reverse'][0] = array('ERROR', 'Please enter the reverse zone.');
 	}
-	
+
 	/**
 	* This functions returns true if all needed settings are done.
 	*
@@ -175,16 +175,16 @@ class ddns extends baseModule {
 			// Account settings
 			$ip = $this->getDNSServer();
 			if (!empty($ip) && !check_ip($ip)) return false;
-			
+
 			$zones = $this->getZoneNames();
 			if (sizeof($zones) < 2) {
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	* Returns a list of modifications which have to be made to the LDAP account.
 	*
@@ -200,7 +200,7 @@ class ddns extends baseModule {
 	public function save_attributes() {
 		// done by dhcp_server object
 	}
-	
+
 	/**
 	 * This function check if ddns is enable.
 	 */
@@ -210,7 +210,7 @@ class ddns extends baseModule {
 		}
 		$ldap = $_SESSION['ldap']->server();
 		$dn = $_SESSION['config']->get_suffix('dhcp');
-		
+
 		$search = @ldap_read($ldap,$dn,"dhcpStatements=ddns-update-style interim", array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
 		if ($search) {
 			$info = @ldap_get_entries($ldap,$search);
@@ -226,7 +226,7 @@ class ddns extends baseModule {
 		}
 		return false;
 	}
-	
+
 	/**
 	* Processes user input of the primary module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
@@ -235,7 +235,7 @@ class ddns extends baseModule {
 	*/
 	public function process_attributes() {
 		$errors = array();
-		
+
 		// Main Settings and Account have to different processes.
 		if ($this->getAccountContainer()->dn_orig==$_SESSION['config']->get_suffix('dhcp')) {
 			// main settings:
@@ -246,7 +246,7 @@ class ddns extends baseModule {
 			if (!$this->check_if_ddns_is_enable()) {
 				return array();
 			}
-			
+
 			$errors = $this->process_attributes_account();
 		}
 
@@ -261,41 +261,41 @@ class ddns extends baseModule {
 			return array();
 		}
 		$errors = array();
-		
+
 		// Is DDNS active?
 		$active = $_POST['active'];
-		
+
 		// Insert fixed IPs into DNS?
 		$insert_fixed = $_POST['insert_fixed'];
-		
-		// Client can contribute which is registered into DNS 
+
+		// Client can contribute which is registered into DNS
 		$client_insert = $_POST['client_insert'];
-		
+
 		// The path to the key:
 		$key_path = trim($_POST['key_path']);
-		
+
 		$this->setDynDNSActivated(($active == 'on'));
 
 		$this->setFixIPs(($insert_fixed == 'on'));
 
 		$this->setIgnoreClientUpdates(($client_insert == 'on'));
-		
+
 		$this->setUpdateKey($key_path);
 		if (!empty($key_path)) {
 			if (str_replace("\"","",$_POST['key_path']) != $key_path) {
 				$errors[] = $this->messages['key_path'][1];
 			}
 		}
-		
+
 		return $errors;
 	}
-	
+
 	/**
 	 * Process for account
 	 */
 	public function process_attributes_account() {
 		$errors = array();
-		
+
 		$ip = trim($_POST['ip']);
 		$zone = trim($_POST['zone']);
 		$zone_reverse = trim($_POST['zone_reverse']);
@@ -306,7 +306,7 @@ class ddns extends baseModule {
 				$errors[] = $this->messages['ip'][0];
 			}
 		}
-		
+
 		for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
 			if (substr($this->attributes['dhcpStatements'][$i], 0, 5) == 'zone ') {
 				unset($this->attributes['dhcpStatements'][$i]);
@@ -314,7 +314,7 @@ class ddns extends baseModule {
 				$i--;
 			}
 		}
-		
+
 		// Zone inserted?
 		if (!empty($zone)) {
 			if (!empty($ip)) {
@@ -329,7 +329,7 @@ class ddns extends baseModule {
 				$errors[] = $this->messages['zone'][0];
 			}
 		}
-		
+
 		// Zone reverse inserted?
 		if (!empty($zone_reverse)) {
 			if (!empty($ip)) {
@@ -346,10 +346,10 @@ class ddns extends baseModule {
 		}
 		return $errors;
 	}
-	
+
 	/**
 	 * Returns the HTML meta data for the main account page.
-	 * 
+	 *
 	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
@@ -372,7 +372,7 @@ class ddns extends baseModule {
 			$return->addElement($keyInput);
 		}
 		else {
-			// Account edit 
+			// Account edit
 			if (!$this->check_if_ddns_is_enable()) {
 				$return->addElement(new htmlOutputText(_("DDNS ist not activated. You can activate it in the DHCP settings (DDNS).")));
 			}
@@ -380,7 +380,7 @@ class ddns extends baseModule {
 				// DNS server
 				$serverInput = new htmlTableExtendedInputField(_('IP address of the DNS server'), 'ip', $this->getDNSServer(), 'dns');
 				$return->addElement($serverInput, true);
-					
+
 				$zones = $this->getZoneNames();
 				$zone = '';
 				$revzone = '';
@@ -398,15 +398,13 @@ class ddns extends baseModule {
 				$return->addElement($revZoneInput);
 			}
 		}
-		
+
 		return $return;
 	}
-	
+
 	/**
-	 * Returns a list of possible PDF entries for this account.
-	 *
-	 * @param array $pdfKeys list of PDF keys that are included in document
-	 * @return list of PDF entries (array(<PDF key> => <PDF lines>))
+	 * {@inheritDoc}
+	 * @see baseModule::get_pdfEntries()
 	 */
 	public function get_pdfEntries($pdfKeys) {
 		// attributes are taken from DHCP server object
@@ -427,7 +425,7 @@ class ddns extends baseModule {
 		$this->addPDFKeyValue($result, 'reverseZone', _('Reverse zone name'), $revzone);
 		return $result;
 	}
-	
+
 	/**
 	 * Returns the IP of the DNS server.
 	 *
@@ -450,7 +448,7 @@ class ddns extends baseModule {
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Returns the zone names.
 	 *
@@ -478,10 +476,10 @@ class ddns extends baseModule {
 		$return[1] = $revZone;
 		return $return;
 	}
-	
+
 	/**
 	 * Returns if DDNS is activated.
-	 * 
+	 *
 	 * @return boolean activated
 	 */
 	private function isDynDNSActivated() {
@@ -496,10 +494,10 @@ class ddns extends baseModule {
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Sets if DDNS is activated.
-	 * 
+	 *
 	 * @param boolean $activated activated
 	 */
 	private function setDynDNSActivated($activated) {
@@ -518,10 +516,10 @@ class ddns extends baseModule {
 			$this->attributes['dhcpStatements'][] = 'ddns-update-style none';
 		}
 	}
-	
+
 	/**
 	 * Returns if fixed IPs are added to DDNS.
-	 * 
+	 *
 	 * @return boolean add fixed IPs
 	 */
 	private function addFixIPs() {
@@ -536,10 +534,10 @@ class ddns extends baseModule {
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Sets if client updates are ignored.
-	 * 
+	 *
 	 * @param boolean $add add fixed IPs
 	 */
 	private function setFixIPs($add) {
@@ -555,10 +553,10 @@ class ddns extends baseModule {
 			$this->attributes['dhcpStatements'][] = 'update-static-leases true';
 		}
 	}
-	
+
 	/**
 	 * Returns if client updates are ignored.
-	 * 
+	 *
 	 * @return boolean ignore client updates
 	 */
 	private function isIgnoreClientUpdates() {
@@ -573,10 +571,10 @@ class ddns extends baseModule {
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Sets if client updates are ignored.
-	 * 
+	 *
 	 * @param boolean $ignore ignore client updates
 	 */
 	private function setIgnoreClientUpdates($ignore) {
@@ -595,10 +593,10 @@ class ddns extends baseModule {
 			$this->attributes['dhcpStatements'][] = 'ignore client-updates';
 		}
 	}
-	
+
 	/**
 	 * Returns the key for DNS updates.
-	 * 
+	 *
 	 * @return String key
 	 */
 	private function getUpdateKey() {
@@ -613,10 +611,10 @@ class ddns extends baseModule {
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Sets the key for DNS updates.
-	 * 
+	 *
 	 * @param String $key key
 	 */
 	private function setUpdateKey($key) {
@@ -636,7 +634,7 @@ class ddns extends baseModule {
 
 	/**
 	* This function loads the LDAP attributes when an account should be loaded.
-	* 
+	*
 	* Calling this method requires the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* By default this method loads the object classes and accounts which are specified in {@link getManagedObjectClasses()}
@@ -647,7 +645,7 @@ class ddns extends baseModule {
 	public function load_attributes($attributes) {
 		// load nothing, attributes are saved in "dhcp_settings" module
 	}
-	
+
 		/**
 	* In this function the LDAP account is built up.
 	*
@@ -676,7 +674,7 @@ class ddns extends baseModule {
 		}
 		return $messages;
 	}
-	
+
 }
 
 ?>

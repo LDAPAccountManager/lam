@@ -813,7 +813,7 @@ abstract class baseModule {
 	* Returns the PDF entries for this module.
 	*
 	* @param array $pdfKeys list of PDF keys that are included in document
-	* @return array list of possible PDF entries
+	* @return PDFEntry[] list of key => PDFEntry
 	*/
 	public function get_pdfEntries($pdfKeys) {
 		return array();
