@@ -15,7 +15,7 @@ build-indep: build-stamp
 
 build-stamp:
 
-install: 
+install:
 	dh_testdir
 	dh_testroot
 	dh_prep
@@ -66,6 +66,8 @@ binary-indep: build install
 	dh_install
 	dh_compress
 	dh_fixperms
+	dh_link /usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf /usr/share/ldap-account-manager/lib/font/DejaVuSerif.ttf
+	dh_link /usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf /usr/share/ldap-account-manager/lib/font/DejaVuSerif-Bold.ttf
 	dh_link /usr/share/doc/ldap-account-manager/docs /usr/share/ldap-account-manager/docs
 	install -D --mode=644 debian/lam.apache.conf debian/ldap-account-manager/etc/ldap-account-manager/apache.conf
 	install -D --mode=644 debian/lam.nginx.conf debian/ldap-account-manager/etc/ldap-account-manager/nginx.conf
