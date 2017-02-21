@@ -1496,7 +1496,7 @@ class accountContainer {
 			if (isset($orig[$name]) && is_array($orig[$name])) {
 				foreach ($orig[$name] as $j => $value) {
 					if (is_array($attributes[$name])) {
-						if (!in_array($value, $attributes[$name])) {
+						if (!in_array($value, $attributes[$name], true)) {
 							if ($value != '') $torem[$name][] = $value;
 						}
 					}
@@ -1507,7 +1507,7 @@ class accountContainer {
 			if (isset($attributes[$name]) && is_array($attributes[$name])) {
 				foreach ($attributes[$name] as $j => $value) {
 					if (isset($orig[$name]) && is_array($orig[$name])) {
-						if (!in_array($value, $orig[$name]))
+						if (!in_array($value, $orig[$name], true))
 							if ($value != '') {
 								$toadd[$name][] = $value;
 							}
@@ -1518,7 +1518,7 @@ class accountContainer {
 			// find unchanged attributes
 			if (isset($orig[$name]) && is_array($orig[$name]) && is_array($attributes[$name])) {
 				foreach ($attributes[$name] as $j => $value) {
-					if (($value != '') && in_array($value, $orig[$name])) {
+					if (($value != '') && in_array($value, $orig[$name], true)) {
 						$notchanged[$name][] = $value;
 					}
 				}
