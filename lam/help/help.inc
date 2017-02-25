@@ -281,7 +281,7 @@ $helpArray = array (
 					"Text" => _('By default all modifications are done as the user that authenticated in self service. If active then LAM will use the connection user for all LDAP modifications and searches.')),
 				"514" => array ("Headline" => _('2-factor authentication'),
 					"Text" => _('You can enable 2-factor authentication here (e.g. via mobile device).')),
-				"515" => array ("Headline" => _('2-factor base URL'),
+				"515" => array ("Headline" => _('Base URL'),
 					"Text" => _('URL of external 2-factor authentication service.')),
 				"516" => array ("Headline" => _('Disable certificate check'),
 					"Text" => _('This will disable the check of the SSL certificates for the 2-factor authentication service. Not recommended for production usage.')),
