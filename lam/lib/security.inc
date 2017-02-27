@@ -79,7 +79,12 @@ function startSecureSession($redirectToLogin = true, $initSecureData = false) {
 	if (! isset($_SESSION["sec_session_id"]) || ($_SESSION["sec_session_id"] != session_id())) {
 		// session id is invalid
 		logNewMessage(LOG_WARNING, "Invalid session ID, access denied (" . getClientIPForLogging() . ")");
-		die();
+		if ($redirectToLogin) {
+			logoffAndBackToLoginPage();
+		}
+		else {
+			die();
+		}
 	}
 	// check if client IP has not changed
 	if (!isset($_SESSION["sec_client_ip"]) || ($_SESSION["sec_client_ip"] != $_SERVER['REMOTE_ADDR'])) {

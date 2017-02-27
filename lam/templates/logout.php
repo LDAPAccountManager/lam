@@ -44,14 +44,15 @@ include_once("../lib/ldap.inc");
 
 // start session
 startSecureSession();
-enforceUserIsLoggedIn();
 
 // log message
-$ldapUser = $_SESSION['ldap']->decrypt_login();
-logNewMessage(LOG_NOTICE, 'User ' . $ldapUser[0] . ' logged off.');
+if (isset($_SESSION['loggedIn']) || ($_SESSION['loggedIn'] === true)) {
+	$ldapUser = $_SESSION['ldap']->decrypt_login();
+	logNewMessage(LOG_NOTICE, 'User ' . $ldapUser[0] . ' logged off.');
 
-// close LDAP connection
-@$_SESSION["ldap"]->destroy();
+	// close LDAP connection
+	@$_SESSION["ldap"]->destroy();
+}
 
 setlanguage();
 
