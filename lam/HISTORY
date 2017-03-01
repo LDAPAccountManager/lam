@@ -1,7 +1,9 @@
-March 2017
+15.03.2017 5.7
   - 2-factor authentication for admin login and self service with privacyIDEA
   - PDF files use DejaVu serif font for better readability and more supported characters (e.g. Cyrillic)
   - Updated Debian dependencies
+  - Fixed bugs:
+   -> Comparison issue prevents saving of values (185)
 
 
 18.12.2016 5.6
@@ -45,7 +47,7 @@ March 2017
   - Personal/Unix: support K5KEY hash type for smbk5pwd
   - New NIS netgroup module for hosts
   - Puppet: autocompletion for classes and variables, allow to enforce list of possible classes
-  - fixed bugs:
+  - Fixed bugs:
    -> Autoload errors in tree view
    -> Set correct content type on JSON requests (174)
   - LAM Pro:
