@@ -109,7 +109,7 @@ class windowsUser extends baseModule implements passwordService {
 			'streetAddress', 'telephoneNumber', 'url', 'wWWHomePage', 'userAccountControl', 'profilePath', 'scriptPath',
 			'pwdLastSet', 'otherMailbox', 'homeDirectory', 'homeDrive', 'msSFU30Name', 'msSFU30NisDomain', 'pwdLastSet',
 			'lastLogonTimestamp', 'accountExpires', 'jpegPhoto', 'title', 'carLicense', 'employeeNumber', 'employeeType',
-			'businessCategory', 'departmentNumber', 'ou', 'o', 'manager', 'facsimileTelephoneNumber', 'company',
+			'businessCategory', 'department', 'ou', 'o', 'manager', 'facsimileTelephoneNumber', 'company',
 			'pager', 'otherPager', 'mobile', 'otherMobile', 'proxyAddresses'
 		);
 		// help Entries
@@ -318,13 +318,9 @@ class windowsUser extends baseModule implements passwordService {
 				"Headline" => _("Business category"), 'attr' => 'businessCategory',
 				"Text" => _("Business category (e.g. Administration, IT-Services, Manangement, ...)") . '. ' . _("Multiple values are separated by semicolon.")
 			),
-			'departmentNumber' => array(
-				"Headline" => _("Department"), 'attr' => 'departmentNumber',
+			'department' => array(
+				"Headline" => _("Department"), 'attr' => 'department',
 				"Text" => _("Here you can enter the user's department.")
-			),
-			'departmentNumberList' => array(
-				"Headline" => _("Department"), 'attr' => 'departmentNumber',
-				"Text" => _("Here you can enter the user's department.") . ' ' . _("Multiple values are separated by semicolon.")
 			),
 			'ou' => array(
 				"Headline" => _("Organisational unit"), 'attr' => 'ou',
@@ -704,11 +700,11 @@ class windowsUser extends baseModule implements passwordService {
 				'example' => _('Administration'),
 			);
 		}
-		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment', true)) {
 			$return['upload_columns'][] = array(
-				'name' => 'windowsUser_departmentNumber',
+				'name' => 'windowsUser_department',
 				'description' => _('Department'),
-				'help' => 'departmentNumberList',
+				'help' => 'department',
 				'example' => _('Administration'),
 			);
 		}
@@ -752,8 +748,8 @@ class windowsUser extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidecompany', true)) {
 			$profileContainer->addElement(new htmlTableExtendedInputField(_('Company'), 'windowsUser_company', null, 'company'), true);
 		}
-		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
-			$profileContainer->addElement(new htmlTableExtendedInputField(_('Department'), 'windowsUser_departmentNumber', null, 'departmentNumberList'), true);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment', true)) {
+			$profileContainer->addElement(new htmlTableExtendedInputField(_('Department'), 'windowsUser_department', null, 'department'), true);
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
 			$profileContainer->addElement(new htmlTableExtendedInputField(_('Organisational unit'), 'windowsUser_ou', null, 'ouList'), true);
@@ -879,8 +875,8 @@ class windowsUser extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)) {
 			$return['PDF_fields']['businessCategory'] = _('Business category');
 		}
-		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
-			$return['PDF_fields']['departmentNumber'] = _('Department');
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment', true)) {
+			$return['PDF_fields']['department'] = _('Department');
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
 			$return['PDF_fields']['ou'] = _('Organisational unit');
@@ -924,6 +920,7 @@ class windowsUser extends baseModule implements passwordService {
 			'unicodePwd' => _('Password'),
 			'pwdLastSet' => _('Last password change (read-only)'),
 			'accountExpires' => _('Account expiration date (read-only)'),
+			'department' => _('Department'),
 		);
 		// possible self service read-only fields
 		$return['selfServiceReadOnlyFields'] = array('physicalDeliveryOfficeName', 'telephoneNumber',
@@ -1143,8 +1140,8 @@ class windowsUser extends baseModule implements passwordService {
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidecompany', true)) {
 				$this->addSimpleInputTextField($containerLeft, 'company', _('Company'));
 			}
-			if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
-				$this->addMultiValueInputTextField($containerLeft, 'departmentNumber', _('Department'), false, null, false, array_slice($this->departmentCache, 0, 300));
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment', true)) {
+				$this->addSimpleInputTextField($containerLeft, 'department', _('Department'), false, null, false, array_slice($this->departmentCache, 0, 300));
 			}
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
 				$this->addMultiValueInputTextField($containerLeft, 'ou', _('Organisational unit'), false, null, false, array_slice($this->ouCache, 0, 300));
@@ -1306,7 +1303,7 @@ class windowsUser extends baseModule implements passwordService {
 				&& $this->isBooleanConfigOptionSet('windowsUser_hideemployeeNumber', true)
 				&& $this->isBooleanConfigOptionSet('windowsUser_hideemployeeType', true)
 				&& $this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)
-				&& $this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)
+				&& $this->isBooleanConfigOptionSet('windowsUser_hidedepartment', true)
 				&& $this->isBooleanConfigOptionSet('windowsUser_hideou', true)
 				&& $this->isBooleanConfigOptionSet('windowsUser_hideo', true)
 				&& $this->isBooleanConfigOptionSet('windowsUser_hidecompany', true)
@@ -1514,8 +1511,8 @@ class windowsUser extends baseModule implements passwordService {
 			$this->processMultiValueInputTextField('businessCategory', $return, 'businessCategory');
 		}
 		// department
-		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
-			$this->processMultiValueInputTextField('departmentNumber', $return);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment', true)) {
+			$this->attributes['department'][0] = $_POST['department'];
 		}
 		// organizational unit
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
@@ -2251,8 +2248,8 @@ class windowsUser extends baseModule implements passwordService {
 				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_businessCategory', 'businessCategory', 'businessCategory', $this->messages['businessCategory'][1], $errors, '/;[ ]*/');
 			}
 			// departments
-			if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
-				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_departmentNumber', 'departmentNumber', null, null, $errors, '/;[ ]*/');
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment', true)) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_department', 'department', null, null, $errors, '/;[ ]*/');
 			}
 			// organisational unit
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
@@ -2454,7 +2451,7 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addSimplePDFField($return, 'employeeNumber', _('Employee number'));
 		$this->addSimplePDFField($return, 'employeeType', _('Employee type'));
 		$this->addSimplePDFField($return, 'businessCategory', _('Business category'));
-		$this->addSimplePDFField($return, 'departmentNumber', _('Department'));
+		$this->addSimplePDFField($return, 'department', _('Department'));
 		$this->addSimplePDFField($return, 'ou', _('Organisational unit'));
 		$this->addSimplePDFField($return, 'o', _('Organisation'));
 		$this->addSimplePDFField($return, 'manager', _('Manager'));
@@ -2558,11 +2555,11 @@ class windowsUser extends baseModule implements passwordService {
 			$this->setExpirationDate($dateTarget->format('Y'), $dateTarget->format('m'), $dateTarget->format('d'));
 		}
 		// departments
-		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber')) {
-			if (isset($profile['windowsUser_departmentNumber'][0]) && $profile['windowsUser_departmentNumber'][0] != '') {
-				$departments = explode(';', $profile['windowsUser_departmentNumber'][0]);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment')) {
+			if (isset($profile['windowsUser_department'][0]) && $profile['windowsUser_department'][0] != '') {
+				$departments = explode(';', $profile['windowsUser_department'][0]);
 				// remove extra spaces and set attributes
-				$this->attributes['departmentNumber'] = array_map('trim', $departments);
+				$this->attributes['department'] = array_map('trim', $departments);
 			}
 		}
 		// organizational unit
@@ -2618,6 +2615,7 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addSimpleSelfServiceTextField($return, 'l', _('Location'), $fields, $attributes, $readOnlyFields);
 		$this->addSimpleSelfServiceTextField($return, 'postOfficeBox', _('Post office box'), $fields, $attributes, $readOnlyFields);
 		$this->addSimpleSelfServiceTextField($return, 'postalCode', _('Postal code'), $fields, $attributes, $readOnlyFields);
+		$this->addSimpleSelfServiceTextField($return, 'department', _('Department'), $fields, $attributes, $readOnlyFields);
 		// last password change
 		$row = new htmlResponsiveRow();
 		$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('pwdLastSet', _('Last password change'))));
@@ -2695,6 +2693,7 @@ class windowsUser extends baseModule implements passwordService {
 		$this->checkSimpleSelfServiceTextField($return, 'l', $attributes, $fields, $readOnlyFields);
 		$this->checkSimpleSelfServiceTextField($return, 'postOfficeBox', $attributes, $fields, $readOnlyFields);
 		$this->checkSimpleSelfServiceTextField($return, 'postalCode', $attributes, $fields, $readOnlyFields, 'postalCode');
+		$this->checkSimpleSelfServiceTextField($return, 'department', $attributes, $fields, $readOnlyFields);
 		return $return;
 	}
 
@@ -3222,7 +3221,7 @@ class windowsUser extends baseModule implements passwordService {
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideemployeeType', true, _('Employee type'), null, false));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidebusinessCategory', true, _('Business category'), null, false));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidecompany', true, _('Company'), null, false), true);
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidedepartmentNumber', true, _('Department'), null, false));
+		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidedepartment', true, _('Department'), null, false));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideou', true, _('Organisational unit'), null, false));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideo', true, _('Organisation'), null, false));
 		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidemanager', true, _('Manager'), null, false));
@@ -3251,8 +3250,8 @@ class windowsUser extends baseModule implements passwordService {
 			return;
 		}
 		$attrs = array();
-		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
-			$attrs[] = 'departmentNumber';
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment', true)) {
+			$attrs[] = 'department';
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
 			$attrs[] = 'ou';
@@ -3278,8 +3277,8 @@ class windowsUser extends baseModule implements passwordService {
 		if (sizeof($attrs) > 0) {
 			$result = searchLDAPByFilter('(objectClass=user)', $attrs, array($this->get_scope()));
 			foreach ($result as $attributes) {
-				if (isset($attributes['departmentnumber'])) {
-					foreach ($attributes['departmentnumber'] as $val) {
+				if (isset($attributes['department'])) {
+					foreach ($attributes['department'] as $val) {
 						$departments[] = $val;
 					}
 				}
