@@ -1,6 +1,7 @@
 15.03.2017 5.7
   - 2-factor authentication for admin login and self service with privacyIDEA
   - PDF files use DejaVu serif font for better readability and more supported characters (e.g. Cyrillic)
+  - Windows users: the department option now uses attribute "department" instead of "departmentNumber"
   - Updated Debian dependencies
   - Fixed bugs:
    -> Comparison issue prevents saving of values (185)
