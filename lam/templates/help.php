@@ -1,10 +1,11 @@
 <?php
+namespace LAM\HELP;
 /*
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2008 - 2015  Roland Gruber
+                2008 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -26,7 +27,7 @@ $Id$
 
 /**
  * LDAP Account Manager help page.
- * 
+ *
  * @author Michael Duergner
  * @author Roland Gruber
  * @package Help
@@ -77,8 +78,8 @@ function echoHTMLFoot() {
 
 /**
  * Print help site for a specific help number.
- * 
- * @param array The help entry that is to be displayed. 
+ *
+ * @param array The help entry that is to be displayed.
  */
 function displayHelp($helpEntry) {
 	echoHTMLHead();
