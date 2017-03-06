@@ -1,9 +1,32 @@
 <?php
+namespace LAM\CONFIG;
+use \LAMCfgMain;
+use \htmlTable;
+use \htmlTitle;
+use \htmlStatusMessage;
+use \htmlSubTitle;
+use \htmlTableExtendedInputTextarea;
+use \htmlSpacer;
+use \htmlTableExtendedSelect;
+use \htmlOutputText;
+use \htmlTableExtendedInputCheckbox;
+use \htmlLink;
+use \htmlGroup;
+use \htmlButton;
+use \htmlHelpLink;
+use \htmlInputField;
+use \htmlInputFileUpload;
+use \htmlEqualWidth;
+use \htmlTableExtendedRadio;
+use \htmlHiddenInput;
+use \htmlTableExtendedInputField;
+use \DateTime;
+use \DateTimeZone;
 /*
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2016  Roland Gruber
+  Copyright (C) 2003 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by

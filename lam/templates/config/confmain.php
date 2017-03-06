@@ -1,5 +1,23 @@
 <?php
+namespace LAM\CONFIG;
 use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
+use \LAMConfig;
+use \htmlTable;
+use \htmlTableExtendedInputField;
+use \htmlAccordion;
+use \htmlTableExtendedSelect;
+use \htmlFieldset;
+use \htmlSpacer;
+use \htmlTableExtendedInputCheckbox;
+use \DateTimeZone;
+use \htmlStatusMessage;
+use \htmlOutputText;
+use \htmlInputCheckbox;
+use \htmlHelpLink;
+use \htmlTableExtendedInputTextarea;
+use \htmlElement;
+use \htmlSubTitle;
+use \htmlButton;
 /*
 $Id$
 
