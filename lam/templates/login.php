@@ -1,12 +1,27 @@
 <?php
+namespace LAM\LOGIN;
 use LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
-
+use \LAMConfig;
+use \LAMCfgMain;
+use \htmlTable;
+use \htmlSpacer;
+use \htmlOutputText;
+use \htmlSelect;
+use \htmlElement;
+use \htmlInputField;
+use \htmlGroup;
+use \htmlHiddenInput;
+use \htmlInputCheckbox;
+use \htmlButton;
+use \htmlStatusMessage;
+use \htmlHorizontalLine;
+use \Ldap;
 /*
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2016  Roland Gruber
+                2005 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -44,6 +59,7 @@ include_once("../lib/security.inc");
 include_once("../lib/selfService.inc");
 /** access to configuration options */
 include_once("../lib/config.inc");
+$licenseValidator = null;
 if (isLAMProVersion()) {
 	include_once("../lib/env.inc");
 	$licenseValidator = new \LAM\ENV\LAMLicenseValidator();
@@ -156,11 +172,11 @@ $_SESSION['header'] .= "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<me
 *
 * @param LAMConfig $config_object current active configuration
 * @param LAMCfgMain $cfgMain main configuration
+* @param \LAM\ENV\LAMLicenseValidator $licenseValidator license validator
+* @param string $error_message error message to display
 */
-function display_LoginPage($config_object, $cfgMain) {
+function display_LoginPage($config_object, $cfgMain, $licenseValidator, $error_message) {
 	logNewMessage(LOG_DEBUG, "Display login page");
-	global $error_message;
-	global $licenseValidator;
 	// generate 256 bit key and initialization vector for user/passwd-encryption
 	// check if we can use /dev/urandom otherwise use rand()
 	if(function_exists('mcrypt_create_iv') && ($cfgMain->encryptSession == 'true')) {
@@ -455,7 +471,7 @@ function display_LoginPage($config_object, $cfgMain) {
 							$loginButton->alignment = htmlElement::ALIGN_LEFT;
 							$table->addElement($loginButton, true);
 							// error message
-							if($error_message != "") {
+							if(!empty($error_message)) {
 								$message = new htmlStatusMessage('ERROR', $error_message);
 								$message->colspan = 3;
 								$table->addElement($message, true);
@@ -569,7 +585,7 @@ if(!empty($_POST['checklogin'])) {
 		if($_POST['passwd'] == "") {
 			logNewMessage(LOG_DEBUG, "Empty password for login");
 			$error_message = _("Empty password submitted. Please try again.");
-			display_LoginPage($_SESSION['config'], $_SESSION["cfgMain"]); // Empty password submitted. Return to login page.
+			display_LoginPage($_SESSION['config'], $_SESSION["cfgMain"], $licenseValidator, $error_message); // Empty password submitted. Return to login page.
 			exit();
 		}
 		if (get_magic_quotes_gpc() == 1) {
@@ -630,7 +646,7 @@ if(!empty($_POST['checklogin'])) {
 			$error_message = $searchError;
 			logNewMessage(LOG_ERR, 'User ' . $username . ' (' . $clientSource . ') failed to log in. ' . $searchError . '');
 			$searchLDAP->close();
-			display_LoginPage($_SESSION['config'], $_SESSION["cfgMain"]);
+			display_LoginPage($_SESSION['config'], $_SESSION["cfgMain"], $licenseValidator, $error_message);
 			exit();
 		}
 		$searchLDAP->close();
@@ -683,11 +699,11 @@ if(!empty($_POST['checklogin'])) {
 			$error_message = _("LDAP error, server says:") .  "\n<br>($result) " . ldap_err2str($result);
 			logNewMessage(LOG_ERR, 'User ' . $username . ' (' . $clientSource . ') failed to log in (LDAP error: ' . ldap_err2str($result) . ').');
 		}
-		display_LoginPage($_SESSION['config'], $_SESSION["cfgMain"]);
+		display_LoginPage($_SESSION['config'], $_SESSION["cfgMain"], $licenseValidator, $error_message);
 		exit();
 	}
 }
 
 //displays the login window
-display_LoginPage($_SESSION["config"], $_SESSION["cfgMain"]);
+display_LoginPage($_SESSION["config"], $_SESSION["cfgMain"], $licenseValidator, $error_message);
 ?>
