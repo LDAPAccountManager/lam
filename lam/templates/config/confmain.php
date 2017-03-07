@@ -551,7 +551,7 @@ if (extension_loaded('curl')) {
 	$securitySettingsContent->addElement(new htmlSubTitle(_("2-factor authentication")), true);
 	$twoFactorOptions = array(
 			_('None') => TwoFactorProviderService::TWO_FACTOR_NONE,
-			_('privacyIDEA') => TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA,
+			'privacyIDEA' => TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA,
 	);
 	$twoFactorSelect = new htmlTableExtendedSelect('twoFactor', $twoFactorOptions, array($conf->getTwoFactorAuthentication()), _('Provider'), '514');
 	$twoFactorSelect->setHasDescriptiveElements(true);
