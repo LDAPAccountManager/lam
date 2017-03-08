@@ -695,7 +695,8 @@ class LAMConfigTest extends PHPUnit_Framework_TestCase {
 	 * Tests LAMConfig->getJobToken()
 	 */
 	public function testGetJobToken() {
-		$this->assertFalse(empty($this->lAMConfig->getJobToken()));
+		$token = $this->lAMConfig->getJobToken();
+		$this->assertFalse(empty($token));
 	}
 
 	/**

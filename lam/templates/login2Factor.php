@@ -66,7 +66,8 @@ catch (\Exception $e) {
 	die();
 }
 
-$twoFactorLabel = empty($config->getTwoFactorAuthenticationLabel()) ? _('PIN+Token') : $config->getTwoFactorAuthenticationLabel();
+$twoFactorLabelConfig = $config->getTwoFactorAuthenticationLabel();
+$twoFactorLabel = empty($twoFactorLabelConfig) ? _('PIN+Token') : $twoFactorLabelConfig;
 
 if (sizeof($serials) == 0) {
 	if ($config->getTwoFactorAuthenticationOptional()) {

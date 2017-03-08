@@ -212,9 +212,10 @@ function printLabelValue(&$pdf, $valueEntry, $fontName) {
  * @param string $fontName font name
  */
 function printTable(&$pdf, $table, $fontName) {
-	if (!empty($table->getHeadline())) {
+	$headline = $table->getHeadline();
+	if (!empty($headline)) {
 		$pdf->SetFont($fontName, 'B', LAMPDF_FONT_SIZE);
-		$pdf->Cell(LAMPDF_LABELWIDTH, LAMPDF_LINEHEIGHT, $table->getHeadline() . ':', 0 , 0, 'L', 0);
+		$pdf->Cell(LAMPDF_LABELWIDTH, LAMPDF_LINEHEIGHT, $headline . ':', 0 , 0, 'L', 0);
 		$pdf->Ln(LAMPDF_LINEHEIGHT);
 	}
 	foreach ($table->rows as $row) {
