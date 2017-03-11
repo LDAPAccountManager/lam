@@ -15,7 +15,7 @@
       <itemizedlist>
         <listitem>
           <para>Apache/Nginx webserver (SSL recommended) with PHP module (PHP
-          5 (&gt;= 5.2.4) with ldap, gettext, xml, openssl and optional
+          (&gt;= 5.4.0) with ldap, gettext, xml, openssl and optional
           mcrypt)</para>
         </listitem>
 
