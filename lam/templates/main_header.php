@@ -44,6 +44,7 @@ if (isLAMProVersion()) {
 // HTML header and title
 echo $_SESSION['header'];
 echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"" . $headerPrefix . "../graphics/favicon.ico\">\n";
+echo "<link rel=\"icon\" href=\"" . $headerPrefix . "../graphics/logo136.png\">\n";
 echo "<title>LDAP Account Manager" . $pro . " (" . str_replace(array('ldap://', 'ldaps://'), array('', ''), $_SESSION['config']->get_ServerURL()) . ")</title>\n";
 
 // include all CSS files

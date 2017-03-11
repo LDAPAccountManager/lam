@@ -71,6 +71,7 @@ echo $_SESSION['header'];
 		}
 	?>
 		<link rel="shortcut icon" type="image/x-icon" href="../../graphics/favicon.ico">
+		<link rel="icon" href="../../graphics/logo136.png">
 	</head>
 	<body class="admin">
 		<table class="lamTop ui-corner-all">

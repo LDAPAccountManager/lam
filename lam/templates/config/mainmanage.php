@@ -277,6 +277,7 @@ echo $_SESSION['header'];
 		}
 	?>
 		<link rel="shortcut icon" type="image/x-icon" href="../../graphics/favicon.ico">
+		<link rel="icon" href="../../graphics/logo136.png">
 	</head>
 	<body>
 		<table border=0 width="100%" class="lamHeader ui-corner-all">

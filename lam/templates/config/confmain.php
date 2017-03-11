@@ -169,6 +169,7 @@ foreach ($cssFiles as $cssEntry) {
 }
 
 echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../../graphics/favicon.ico\">\n";
+echo "<link rel=\"icon\" href=\"../../graphics/logo136.png\">\n";
 echo ("</head>\n");
 echo ("<body>\n");
 // include all JavaScript files
