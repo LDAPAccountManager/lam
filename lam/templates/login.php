@@ -220,6 +220,7 @@ function display_LoginPage($config_object, $cfgMain, $licenseValidator, $error_m
 		}
 	?>
 		<link rel="shortcut icon" type="image/x-icon" href="../graphics/favicon.ico">
+		<link rel="icon" href="../graphics/logo136.png">
 	</head>
 	<body onload="focusLogin()">
 	<?php

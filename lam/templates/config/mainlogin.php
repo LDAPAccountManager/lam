@@ -96,6 +96,7 @@ echo $_SESSION['header'];
 		}
 	?>
 		<link rel="shortcut icon" type="image/x-icon" href="../../graphics/favicon.ico">
+		<link rel="icon" href="../../graphics/logo136.png">
 	</head>
 	<body class="admin">
 		<?php
@@ -184,10 +185,10 @@ echo $_SESSION['header'];
 		$row->add($okButton, 12);
 		$row->setCSSClasses(array(''));
 		$group->addElement($row);
-		
+
 		$div = new htmlDiv(null, $group);
 		$div->setCSSClasses(array('centeredTable'));
-		
+
 		$tabindex = 1;
 		parseHtml(null, $div, array(), false, $tabindex, 'user');
 		?>
