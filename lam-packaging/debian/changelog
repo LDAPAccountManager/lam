@@ -1,10 +1,10 @@
-ldap-account-manager (5.7.RC1-1) unstable; urgency=medium
+ldap-account-manager (5.7-1) unstable; urgency=medium
 
   * new upstream release
   * LP: #1632193 fixed PHP 7 issue
   * LP: #1628937 reload only done when apache is active
 
- -- Roland Gruber <post@rolandgruber.de>  Wed, 01 Mar 2017 17:35:48 +0100
+ -- Roland Gruber <post@rolandgruber.de>  Tue, 14 Mar 2017 17:47:23 +0100
 
 ldap-account-manager (5.6-1) unstable; urgency=medium
 
