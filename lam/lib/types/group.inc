@@ -1,9 +1,10 @@
 <?php
+use \LAM\TYPES\TypeManager;
 /*
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2016  Roland Gruber
+  Copyright (C) 2005 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -251,20 +252,18 @@ class lamGroupList extends lamList {
 				'deleteEntry' => _("Delete selected roles"));
 		}
 		// build suffix list for account types
-		$types = array('user', 'gon', 'group');
-		$activeTypes = $_SESSION['config']->get_ActiveTypes();
+		$typeManager = new TypeManager();
+		$scopes = array('user', 'gon', 'group');
+		$types = $typeManager->getConfiguredTypesForScopes($scopes);
 		foreach ($types as $type) {
-			if (!in_array($type, $activeTypes)) {
-				continue;
-			}
-			$suffix = $_SESSION['config']->get_Suffix($type);
+			$suffix = $type->getSuffix();
 			// stop if suffixes are not unique
 			if (isset($this->suffixList[$suffix])) {
 				$this->suffixList = array();
 				break;
 			}
 			if (!empty($suffix)) {
-				$this->suffixList[$suffix] = $type;
+				$this->suffixList[$suffix] = $type->getId();
 			}
 		}
 	}

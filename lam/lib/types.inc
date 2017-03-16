@@ -486,6 +486,23 @@ class TypeManager {
 	}
 
 	/**
+	 * Returns a list of configured types for these scopes.
+	 *
+	 * @param array $scopes scopes (e.g. user)
+	 * @return \LAM\TYPES\ConfiguredType[] list of ConfiguredType
+	 */
+	public function getConfiguredTypesForScopes($scopes) {
+		$allTypes = $this->getConfiguredTypes();
+		$scopedTypes = array();
+		foreach ($allTypes as $type) {
+			if (in_array($type->getScope(), $scopes)) {
+				$scopedTypes[] = $type;
+			}
+		}
+		return $scopedTypes;
+	}
+
+	/**
 	 * Builds a configured account type.
 	 *
 	 * @param string $typeId type id
