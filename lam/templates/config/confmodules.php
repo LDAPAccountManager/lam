@@ -15,7 +15,7 @@ use \htmlDiv;
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2016  Roland Gruber
+  Copyright (C) 2004 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -272,12 +272,9 @@ echo "</html>\n";
 * @param htmlTable $container meta HTML container
 */
 function config_showAccountModules($type, &$container) {
-	$conf = &$_SESSION['conf_config'];
-	$typeSettings = $conf->get_typeSettings();
 	// account modules
 	$available = getAvailableModules($type->getScope(), true);
-	$selected = !empty($typeSettings['modules_' . $type->getId()]) ? $typeSettings['modules_' . $type->getId()] : '';
-	$selected = explode(',', $selected);
+	$selected = $type->getModules();
 	$sortedAvailable = array();
 	for ($i = 0; $i < sizeof($available); $i++) {
 		$sortedAvailable[$available[$i]] = getModuleAlias($available[$i], $type->getScope());

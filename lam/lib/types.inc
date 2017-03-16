@@ -4,7 +4,7 @@ namespace LAM\TYPES;
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2016  Roland Gruber
+  Copyright (C) 2005 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -339,6 +339,17 @@ class ConfiguredType {
 		return $ret;
 	}
 
+	/**
+	 * Returns the names of the active modules for this type.
+	 *
+	 * @return string[] module names
+	 */
+	public function getModules() {
+		$typeSettings = $this->typeManager->getConfig()->get_typeSettings();
+		$modules = !empty($typeSettings['modules_' . $this->getId()]) ? $typeSettings['modules_' . $this->getId()] : '';
+		return explode(',', $modules);
+	}
+
 }
 
 /**
@@ -468,6 +479,23 @@ class TypeManager {
 		$scopedTypes = array();
 		foreach ($allTypes as $type) {
 			if ($type->getScope() == $scope) {
+				$scopedTypes[] = $type;
+			}
+		}
+		return $scopedTypes;
+	}
+
+	/**
+	 * Returns a list of configured types for these scopes.
+	 *
+	 * @param array $scopes scopes (e.g. user)
+	 * @return \LAM\TYPES\ConfiguredType[] list of ConfiguredType
+	 */
+	public function getConfiguredTypesForScopes($scopes) {
+		$allTypes = $this->getConfiguredTypes();
+		$scopedTypes = array();
+		foreach ($allTypes as $type) {
+			if (in_array($type->getScope(), $scopes)) {
 				$scopedTypes[] = $type;
 			}
 		}
