@@ -4,7 +4,7 @@ namespace LAM\HEADER;
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2016  Roland Gruber
+  Copyright (C) 2003 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -208,7 +208,6 @@ jQuery(document).ready(function() {
 function printTypeTabs($headerPrefix) {
 	$typeManager = new \LAM\TYPES\TypeManager();
 	$types = $typeManager->getConfiguredTypes();
-	$linkList = array();
 	foreach ($types as $type) {
 		if ($type->isHidden()) {
 			continue;
