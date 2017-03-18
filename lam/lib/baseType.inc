@@ -175,8 +175,13 @@ class baseType {
 		return array();
 	}
 
+	/**
+	 * Returns if this account type supports multiple configurations.
+	 *
+	 * @return boolean multiple configs supported
+	 */
 	public function supportsMultipleConfigs() {
-		return false;
+		return true;
 	}
 
 }
