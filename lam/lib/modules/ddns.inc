@@ -1,10 +1,11 @@
 <?php
+use \LAM\TYPES\TypeManager;
 /*
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2008 - 2015  Roland Gruber
+                2008 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -205,26 +206,17 @@ class ddns extends baseModule {
 	 * This function check if ddns is enable.
 	 */
 	private function check_if_ddns_is_enable() {
-		if (!in_array('dhcp', $_SESSION['config']->get_ActiveTypes())) {
+		if ($this->getAccountContainer() == null) {
 			return false;
 		}
-		$ldap = $_SESSION['ldap']->server();
-		$dn = $_SESSION['config']->get_suffix('dhcp');
-
-		$search = @ldap_read($ldap,$dn,"dhcpStatements=ddns-update-style interim", array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
-		if ($search) {
-			$info = @ldap_get_entries($ldap,$search);
-			if ($info) {
-				cleanLDAPResult($info);
-				if (sizeof($info) > 0) {
-					return true;
-				}
-			}
-			else {
-				return false;
-			}
+		$type = $this->getAccountContainer()->get_type();
+		if ($type == null) {
+			return false;
 		}
-		return false;
+		$suffix = $type->getSuffix();
+
+		$results = searchLDAP($suffix, "dhcpStatements=ddns-update-style interim", array('dn'));
+		return (!empty($results));
 	}
 
 	/**
