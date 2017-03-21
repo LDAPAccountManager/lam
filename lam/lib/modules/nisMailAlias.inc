@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2015  Roland Gruber
+  Copyright (C) 2004 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -484,15 +484,7 @@ class nisMailAlias extends baseModule {
 		if ($this->cachedMailList != null) {
 			return $this->cachedMailList;
 		}
-		$objectClass = 'inetOrgPerson';
-		$activeTypes = $_SESSION['config']->get_ActiveTypes();
-		if (in_array('user', $activeTypes)) {
-			$userModules = $_SESSION['config']->get_AccountModules('user');
-			if (in_array('windowsUser', $userModules)) {
-				$objectClass = 'user';
-			}
-		}
-		$this->cachedMailList = searchLDAPByAttribute('mail', '*', $objectClass, array('mail'), array('user'));
+		$this->cachedMailList = searchLDAPByAttribute('mail', '*', null, array('mail'), array('user'));
 		for ($i = 0; $i < sizeof($this->cachedMailList); $i++) {
 			$this->cachedMailList[$i] = $this->cachedMailList[$i]['mail'][0];
 		}

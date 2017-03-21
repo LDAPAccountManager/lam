@@ -1,9 +1,10 @@
 <?php
+use \LAM\TYPES\TypeManager;
 /*
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2014 - 2015  Roland Gruber
+  Copyright (C) 2014 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -634,8 +635,9 @@ class nisMailAliasUser extends baseModule {
 	 * @return boolean is active
 	 */
 	private function isMailAliasTypeActive() {
-		$activeTypes = $_SESSION['config']->get_ActiveTypes();
-		return in_array('mailAlias', $activeTypes);
+		$typeManager = new TypeManager();
+		$activeTypes = $typeManager->getConfiguredTypesForScope('mailAlias');
+		return !empty($activeTypes);
 	}
 
 }

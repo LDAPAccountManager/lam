@@ -1,4 +1,5 @@
 <?php
+use \LAM\TYPES\TypeManager;
 /*
 $Id$
 
@@ -966,11 +967,12 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		// password status change
 		if (!$this->isUnixActive()) {
-			if ((pwd_is_enabled($this->orig['userPassword'][0]) && pwd_is_enabled($this->attributes['userPassword'][0]))
-				|| (!pwd_is_enabled($this->orig['userPassword'][0]) && !pwd_is_enabled($this->attributes['userPassword'][0]))) {
+			$pwdOrig = empty($this->orig['userPassword'][0]) ? '' : $this->orig['userPassword'][0];
+			$pwdNew = empty($this->attributes['userPassword'][0]) ? '' : $this->attributes['userPassword'][0];
+			if ((pwd_is_enabled($pwdOrig) && pwd_is_enabled($pwdNew)) || (!pwd_is_enabled($pwdOrig) && !pwd_is_enabled($pwdNew))) {
 				$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordStatusChange'][0] = 'unchanged';
 			}
-			elseif (pwd_is_enabled($this->orig['userPassword'][0])) {
+			elseif (pwd_is_enabled($pwdOrig)) {
 				$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordStatusChange'][0] = 'locked';
 			}
 			else {
@@ -3600,14 +3602,17 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$configContainer = new htmlTable();
 		if (isset($_SESSION['conf_config'])) {
 			// add password hash type if posixAccount is inactive
-			$confActiveUnixModules = $_SESSION['conf_config']->get_AccountModules('user');
-			if (in_array('host', $_SESSION['conf_config']->get_ActiveTypes())) {
-				$confActiveUnixModules = array_merge($confActiveUnixModules, $_SESSION['conf_config']->get_AccountModules('host'));
+			$unixModuleFound = false;
+			$typeManager = new TypeManager($_SESSION['conf_config']);
+			$types = $typeManager->getConfiguredTypesForScopes(array('user', 'group'));
+			foreach ($types as $type) {
+				$modules = $type->getModules();
+				if (in_array('posixAccount', $modules) || in_array('posixGroup', $modules)) {
+					$unixModuleFound = true;
+					break;
+				}
 			}
-			if (in_array('group', $_SESSION['conf_config']->get_ActiveTypes())) {
-				$confActiveUnixModules = array_merge($confActiveUnixModules, $_SESSION['conf_config']->get_AccountModules('group'));
-			}
-			if (!in_array('posixAccount', $confActiveUnixModules) && !in_array('posixGroup', $confActiveUnixModules)) {
+			if (!$unixModuleFound) {
 				$optionsSelected = array('SSHA');
 				$hashOption = new htmlTable();
 				$hashOption->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', getSupportedHashTypes(), $optionsSelected, _("Password hash type"), 'pwdHash'));
