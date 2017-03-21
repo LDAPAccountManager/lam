@@ -268,7 +268,8 @@ class ConfiguredType {
 		if ($this->additionalLdapFilter !== null) {
 			return $this->additionalLdapFilter;
 		}
-		$this->additionalLdapFilter = $this->typeManager->getConfig()->get_Suffix($typeId);
+		$typeSettings = $this->typeManager->getConfig()->get_typeSettings();
+		$this->additionalLdapFilter = isset($typeSettings['filter_' . $this->id]) ? $typeSettings['filter_' . $this->id] : '';
 		return $this->additionalLdapFilter;
 	}
 

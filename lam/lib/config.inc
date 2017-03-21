@@ -1105,15 +1105,15 @@ class LAMConfig {
 	/**
 	* Returns the LDAP suffix for the given account type
 	*
-	* @param string $scope account type
+	* @param string $typeId account type
 	* @return string the LDAP suffix
 	*/
-	public function get_Suffix($scope) {
-		if ($scope == "tree") {
+	public function get_Suffix($typeId) {
+		if ($typeId == "tree") {
 			return $this->treesuffix;
 		}
 		else {
-			return $this->typeSettings['suffix_' . $scope];
+			return $this->typeSettings['suffix_' . $typeId];
 		}
 	}
 

@@ -705,11 +705,8 @@ function searchLDAPByFilter($filter, $attributes, $scopes, $attrsOnly = false) {
 		$readAttributesOnly = 1;
 	}
 	$typeManager = new \LAM\TYPES\TypeManager();
-	$types = $typeManager->getConfiguredTypes();
+	$types = $typeManager->getConfiguredTypesForScopes($scopes);
 	foreach ($types as $type) {
-		if (!in_array($type->getScope(), $scopes)) {
-			continue;
-		}
 		// search LDAP
 		$entries = searchLDAPPaged($_SESSION['ldap']->server(), escapeDN($type->getSuffix()),
 					$filter, $attributes, $readAttributesOnly, $_SESSION['config']->get_searchLimit());
