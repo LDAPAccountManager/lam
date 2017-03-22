@@ -2,6 +2,7 @@
 use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
+use \LAM\TYPES\TypeManager;
 /*
 $Id$
 
@@ -652,8 +653,10 @@ class windowsGroup extends baseModule {
 	*/
 	function display_html_user() {
 		$return = new htmlTable();
+		$typeManager = new TypeManager();
 		// show list of possible new members
 		if (isset($_POST['form_subpage_' . get_class($this) . '_user_select']) && isset($_POST['type'])) {
+			$type = $typeManager->getConfiguredType($_POST['type']);
 			$filterGroup = new htmlGroup();
 			$filterGroup->addElement(new htmlOutputText(_('Filter') . ' '));
 			$filter = new htmlInputField('windows_filter');
@@ -663,8 +666,8 @@ class windowsGroup extends baseModule {
 			$return->addElement($filterGroup, true);
 
 			$options = array();
-			$filter = get_ldap_filter($_POST['type']);
-			$entries = searchLDAPByFilter($filter, array('dn'), array($_POST['type']));
+			$filter = get_ldap_filter($type->getId());
+			$entries = searchLDAP($type->getSuffix(), $filter, array('dn'));
 			for ($i = 0; $i < sizeof($entries); $i++) {
 				$entries[$i] = $entries[$i]['dn'];
 			}
@@ -719,13 +722,13 @@ class windowsGroup extends baseModule {
 			$return->addElement($removeButton, true);
 			$return->addElement(new htmlOutputText('&nbsp;', false), true);
 		}
-		$types = $_SESSION['config']->get_ActiveTypes();
+		$types = $typeManager->getConfiguredTypes();
 		$options = array();
 		$optionsSelected = array();
-		for ($i = 0; $i < sizeof($types); $i++) {
-			$options[LAM\TYPES\getTypeAlias($types[$i])] = $types[$i];
-			if ($types[$i] == 'user') {
-				$optionsSelected[] = $types[$i];
+		foreach ($types as $type) {
+			$options[$type->getAlias()] = $type->getId();
+			if ($type->getScope() == 'user') {
+				$optionsSelected[] = $type->getId();
 			}
 		}
 		$typeTable = new htmlTable();

@@ -1,10 +1,11 @@
 <?php
+use \LAM\TYPES\TypeManager;
 /*
 	$Id$
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-    Copyright (C) 2005 - 2016  Roland Gruber
+    Copyright (C) 2005 - 2017  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -828,16 +829,9 @@ class posixAccount extends baseModule implements passwordService {
 			// update groups if DN changed
 			if (isset($this->getAccountContainer()->dn_orig) && ($this->getAccountContainer()->dn_orig != $this->getAccountContainer()->finalDN)) {
 				// update owner/member/uniqueMember attributes
-				$types = $_SESSION['config']->get_ActiveTypes();
-				if (in_array('gon', $types)) {
-					$gonTypes[] = 'gon';
-				}
-				if (in_array('group', $types)) {
-					$gonTypes[] = 'group';
-				}
-				$searchAttrs = array('member', 'uniqueMember', 'owner');
+				$searchAttrs = array('member', 'uniquemember', 'owner');
 				foreach ($searchAttrs as $searchAttr) {
-					$ownerGroups = searchLDAPByAttribute($searchAttr, $this->getAccountContainer()->dn_orig, null, array('dn', $searchAttr), $gonTypes);
+					$ownerGroups = searchLDAPByAttribute($searchAttr, $this->getAccountContainer()->dn_orig, null, array('dn', $searchAttr), array('gon', 'group'));
 					for ($i = 0; $i < sizeof($ownerGroups); $i++) {
 						$found = false;
 						$newOwners = $ownerGroups[$i][$searchAttr];
@@ -910,12 +904,7 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		// remove from group of names
 		$dn = $this->getAccountContainer()->dn_orig;
-		$gonTypes = array('group');
-		$types = $_SESSION['config']->get_ActiveTypes();
-		if (in_array('gon', $types)) {
-			$gonTypes[] = 'gon';
-		}
-		$gons = searchLDAPByFilter('(|(member=' . $dn . ')(uniqueMember=' . $dn . '))', array('member', 'uniqueMember'), $gonTypes);
+		$gons = searchLDAPByFilter('(|(member=' . $dn . ')(uniqueMember=' . $dn . '))', array('member', 'uniqueMember'), array('group', 'gon'));
 		for ($i = 0; $i < sizeof($gons); $i++) {
 			if (isset($gons[$i]['member'])) {
 				$return[$gons[$i]['dn']]['remove']['member'][] = $dn;
@@ -1516,7 +1505,9 @@ class posixAccount extends baseModule implements passwordService {
 			$return = new htmlTable();
 			$return->addElement(new htmlTableExtendedInputCheckbox('deletehomedir', true, _('Delete home directory'), 'deletehomedir'), true);
 		}
-		if (($this->get_scope() == 'user') && in_array('sudo', $_SESSION['config']->get_ActiveTypes())) {
+		$typeManager = new TypeManager();
+		$sudoTypes = $typeManager->getConfiguredTypesForScope('sudo');
+		if (($this->get_scope() == 'user') && !empty($sudoTypes)) {
 			if ($return == null) {
 				$return = new htmlTable();
 			}
@@ -3025,29 +3016,18 @@ class posixAccount extends baseModule implements passwordService {
 			return $this->gonCache;
 		}
 		$return = array();
-		$types = array();
-		if (in_array('group', $_SESSION['config']->get_ActiveTypes())) {
-			$types[] = 'group';
-		}
-		if (in_array('gon', $_SESSION['config']->get_ActiveTypes())) {
-			$types[] = 'gon';
-		}
-		$typeSettings = $_SESSION['config']->get_typeSettings();
-		if (sizeof($types) > 0) {
-			foreach ($types as $type) {
-				$filter = '(|(objectClass=groupOfNames)(objectClass=groupOfMembers)(objectClass=groupOfUniqueNames))';
-				if (!empty($typeSettings['filter_' . $type])) {
-					$typeFilter = $typeSettings['filter_' . $type];
-					if (strpos($typeFilter, '(') !== 0) {
-						$typeFilter = '(' . $typeFilter . ')';
-					}
-					$filter = '(&' . $filter . $typeFilter . ')';
-				}
-				$results = searchLDAPByFilter($filter, array('cn', 'dn', 'objectClass'), array($type));
-				for ($i = 0; $i < sizeof($results); $i++) {
-					if (isset($results[$i]['cn'][0]) && isset($results[$i]['dn'])) {
-						$return[$results[$i]['dn']] = $results[$i];
-					}
+		$typeManager = new TypeManager();
+		$types = $typeManager->getConfiguredTypesForScopes(array('gon', 'group'));
+		foreach ($types as $type) {
+			$filter = '(|(objectClass=groupOfNames)(objectClass=groupOfMembers)(objectClass=groupOfUniqueNames))';
+			$typeFilter = get_ldap_filter($type->getId());
+			$results = searchLDAP($type->getSuffix(), $typeFilter, array('cn', 'dn', 'objectClass'));
+			for ($i = 0; $i < sizeof($results); $i++) {
+				if ((in_array('groupOfNames', $results[$i]['objectclass'])
+						|| in_array('groupOfMembers', $results[$i]['objectclass'])
+						|| in_array('groupOfUniqueNames', $results[$i]['objectclass']))
+						&& isset($results[$i]['cn'][0])) {
+					$return[$results[$i]['dn']] = $results[$i];
 				}
 			}
 		}
