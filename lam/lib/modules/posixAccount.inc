@@ -1125,9 +1125,9 @@ class posixAccount extends baseModule implements passwordService {
 					}
 				}
 				// id-number is in use and account is a new account
-				if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]=='') $errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'));
+				if ((in_array($this->attributes['uidNumber'][0], $uids)) && !isset($this->orig['uidNumber'][0])) $errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'));
 				// id-number is in use, account is existing account and id-number is not used by itself
-				if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]!='' && ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0]) ) {
+				if ((in_array($this->attributes['uidNumber'][0], $uids)) && isset($this->orig['uidNumber'][0]) && ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0]) ) {
 					$errors[] = $this->messages['uidNumber'][3];
 					$this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
 				}
@@ -3050,31 +3050,38 @@ class posixAccount extends baseModule implements passwordService {
 		if ($this->skipObjectClass()) {
 			$filter = '(uidNumber=*)';
 		}
-		$types = $_SESSION['config']->get_ActiveTypes();
-		// get user UIDs
-		if (in_array('user', $types)) {
-			$suffixUsers = $_SESSION['config']->get_Suffix('user');
-			if (isset($this->moduleSettings['posixAccount_uidCheckSuffixUser'][0]) && ($this->moduleSettings['posixAccount_uidCheckSuffixUser'][0] != '')) {
-				$suffixUsers = $this->moduleSettings['posixAccount_uidCheckSuffixUser'][0];
+		$typeManager = new TypeManager();
+		$typesUser = $typeManager->getConfiguredTypesForScope('user');
+		$typesHost = $typeManager->getConfiguredTypesForScope('host');
+		$suffixes = array();
+		if (!empty($typesUser)) {
+			if (!empty($this->moduleSettings['posixAccount_uidCheckSuffixUser'][0])) {
+				$suffixes[] = $this->moduleSettings['posixAccount_uidCheckSuffixUser'][0];
 			}
-			$result = searchLDAP($suffixUsers, $filter, $attrs);
-			for ($i = 0; $i < sizeof($result); $i++) {
-				$this->cachedUIDList[] = $result[$i]['uidnumber'][0];
-			}
-		}
-		// get host UIDs
-		if (in_array('host', $types)) {
-			$suffixHosts = $_SESSION['config']->get_Suffix('host');
-			if (isset($this->moduleSettings['posixAccount_uidCheckSuffixHost'][0]) && ($this->moduleSettings['posixAccount_uidCheckSuffixHost'][0] != '')) {
-				$suffixHosts = $this->moduleSettings['posixAccount_uidCheckSuffixHost'][0];
-			}
-			if ($suffixUsers != $suffixHosts) {
-				$result = searchLDAP($suffixHosts, $filter, $attrs);
-				for ($i = 0; $i < sizeof($result); $i++) {
-					$this->cachedUIDList[] = $result[$i]['uidnumber'][0];
+			else {
+				foreach ($typesUser as $type) {
+					$suffixes[] = $type->getSuffix();
 				}
 			}
 		}
+		if (!empty($typesHost)) {
+			if (!empty($this->moduleSettings['posixAccount_uidCheckSuffixHost'][0])) {
+				$suffixes[] = $this->moduleSettings['posixAccount_uidCheckSuffixHost'][0];
+			}
+			else {
+				foreach ($typesHost as $type) {
+					$suffixes[] = $type->getSuffix();
+				}
+			}
+		}
+		$suffixes = array_unique($suffixes);
+		foreach ($suffixes as $suffix) {
+			$result = searchLDAP($suffix, $filter, $attrs);
+			foreach ($result as $resultEntry) {
+				$this->cachedUIDList[] = $resultEntry['uidnumber'][0];
+			}
+		}
+		$this->cachedUIDList = array_values(array_unique($this->cachedUIDList));
 		sort($this->cachedUIDList, SORT_NUMERIC);
 		return $this->cachedUIDList;
 	}
@@ -3104,31 +3111,38 @@ class posixAccount extends baseModule implements passwordService {
 		if ($this->skipObjectClass()) {
 			$filter = '(uid=*)';
 		}
-		$types = $_SESSION['config']->get_ActiveTypes();
-		// get user names
-		if (in_array('user', $types)) {
-			$suffixUsers = $_SESSION['config']->get_Suffix('user');
-			if (isset($this->moduleSettings['posixAccount_uidCheckSuffixUser'][0]) && ($this->moduleSettings['posixAccount_uidCheckSuffixUser'][0] != '')) {
-				$suffixUsers = $this->moduleSettings['posixAccount_uidCheckSuffixUser'][0];
+		$typeManager = new TypeManager();
+		$typesUser = $typeManager->getConfiguredTypesForScope('user');
+		$typesHost = $typeManager->getConfiguredTypesForScope('host');
+		$suffixes = array();
+		if (!empty($typesUser)) {
+			if (!empty($this->moduleSettings['posixAccount_uidCheckSuffixUser'][0])) {
+				$suffixes[] = $this->moduleSettings['posixAccount_uidCheckSuffixUser'][0];
 			}
-			$result = searchLDAP($suffixUsers, $filter, $attrs);
-			for ($i = 0; $i < sizeof($result); $i++) {
-				$this->cachedUserNameList[] = $result[$i]['uid'][0];
-			}
-		}
-		// get host UIDs
-		if (in_array('host', $types)) {
-			$suffixHosts = $_SESSION['config']->get_Suffix('host');
-			if (isset($this->moduleSettings['posixAccount_uidCheckSuffixHost'][0]) && ($this->moduleSettings['posixAccount_uidCheckSuffixHost'][0] != '')) {
-				$suffixHosts = $this->moduleSettings['posixAccount_uidCheckSuffixHost'][0];
-			}
-			if ($suffixUsers != $suffixHosts) {
-				$result = searchLDAP($suffixHosts, $filter, $attrs);
-				for ($i = 0; $i < sizeof($result); $i++) {
-					$this->cachedUserNameList[] = $result[$i]['uid'][0];
+			else {
+				foreach ($typesUser as $type) {
+					$suffixes[] = $type->getSuffix();
 				}
 			}
 		}
+		if (!empty($typesHost)) {
+			if (!empty($this->moduleSettings['posixAccount_uidCheckSuffixHost'][0])) {
+				$suffixes[] = $this->moduleSettings['posixAccount_uidCheckSuffixHost'][0];
+			}
+			else {
+				foreach ($typesHost as $type) {
+					$suffixes[] = $type->getSuffix();
+				}
+			}
+		}
+		$suffixes = array_unique($suffixes);
+		foreach ($suffixes as $suffix) {
+			$result = searchLDAP($suffix, $filter, $attrs);
+			foreach ($result as $resultEntry) {
+				$this->cachedUserNameList[] = $resultEntry['uid'][0];
+			}
+		}
+		$this->cachedUserNameList = array_values(array_unique($this->cachedUserNameList));
 		return $this->cachedUserNameList;
 	}
 
@@ -3141,15 +3155,13 @@ class posixAccount extends baseModule implements passwordService {
 		if (!isset($_SESSION['config'])) {
 			return false;
 		}
-		if (in_array('group', $_SESSION['config']->get_ActiveTypes())) {
-			$groupModules = $_SESSION['config']->get_AccountModules('group');
-			if (in_array('groupOfNames', $groupModules) || in_array('groupOfMembers', $groupModules) || in_array('groupOfUniqueNames', $groupModules)) {
-				return true;
-			}
-		}
-		if (in_array('gon', $_SESSION['config']->get_ActiveTypes())) {
-			$gonModules = $_SESSION['config']->get_AccountModules('gon');
-			if (in_array('groupOfNames', $gonModules) || in_array('groupOfMembers', $gonModules) || in_array('groupOfUniqueNames', $gonModules)) {
+		$typeManager = new TypeManager();
+		$types = $typeManager->getConfiguredTypesForScopes(array('group', 'gon'));
+		foreach ($types as $type) {
+			$modules = $type->getModules();
+			if (in_array('groupOfNames', $modules)
+					|| in_array('groupOfMembers', $modules)
+					|| in_array('groupOfUniqueNames', $modules)) {
 				return true;
 			}
 		}
