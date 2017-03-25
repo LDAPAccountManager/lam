@@ -1,10 +1,11 @@
 <?php
+use \LAM\TYPES\TypeManager;
 /*
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2007 - 2016  Roland Gruber
+                2007 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -437,8 +438,10 @@ class sambaGroupMapping extends baseModule {
 	*/
 	function display_html_members() {
 		$return = new htmlTable();
+		$typeManager = new TypeManager();
 		// show list of possible new members
 		if ((isset($_POST['form_subpage_' . get_class($this) . '_members_select']) || isset($_POST['setFilter'])) && isset($_POST['type'])) {
+			$type = $typeManager->getConfiguredType($_POST['type']);
 			$this->loadSIDCache();
 			$userFilter = '';
 			$userFilterRegex = '';
@@ -447,8 +450,8 @@ class sambaGroupMapping extends baseModule {
 				$userFilterRegex = '/' . str_replace(array('*', '(', ')'), array('.*', '\(', '\)'), $_POST['newFilter']) . '/ui';
 			}
 			$options = array();
-			$filter = get_ldap_filter($_POST['type']);
-			$entries = searchLDAPByFilter($filter, array('dn', 'cn', 'uid', 'sambaSID'), array($_POST['type']));
+			$filter = get_ldap_filter($type->getId());
+			$entries = searchLDAP($type->getSuffix(), $filter, array('dn', 'cn', 'uid', 'sambaSID'));
 			$entryCount = sizeof($entries);
 			for ($i = 0; $i < $entryCount; $i++) {
 				// require SID
@@ -482,7 +485,7 @@ class sambaGroupMapping extends baseModule {
 			$filterGroup->addElement(new htmlInputField('newFilter', $userFilter));
 			$filterGroup->addElement(new htmlButton('setFilter', _('Filter')));
 			$filterGroup->addElement(new htmlHelpLink('filter'));
-			$filterGroup->addElement(new htmlHiddenInput('type', $_POST['type']));
+			$filterGroup->addElement(new htmlHiddenInput('type', $type->getId()));
 			$return->addElement($filterGroup, true);
 			$return->addElement(new htmlSpacer(null, '10px'), true);
 			$buttonTable = new htmlTable();
@@ -491,13 +494,13 @@ class sambaGroupMapping extends baseModule {
 			$return->addElement($buttonTable);
 			return $return;
 		}
-		$types = array('user', 'group', 'host');
+		$types = $typeManager->getConfiguredTypesForScopes(array('user', 'group', 'host'));
 		$options = array();
 		$optionsSelected = array();
-		for ($i = 0; $i < sizeof($types); $i++) {
-			$options[LAM\TYPES\getTypeAlias($types[$i])] = $types[$i];
-			if ($types[$i] == 'group') {
-				$optionsSelected[] = $types[$i];
+		foreach ($types as $type) {
+			$options[$type->getAlias()] = $type->getId();
+			if (empty($optionsSelected) && ($type->getScope() == 'group')) {
+				$optionsSelected[] = $type->getId();
 			}
 		}
 		$typeTable = new htmlTable();
