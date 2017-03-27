@@ -1,8 +1,14 @@
+ldap-account-manager (5.8.RC1-1) unstable; urgency=medium
+
+ -- Roland Gruber <post@rolandgruber.de>  Mon, 27 Mar 2017 18:57:21 +0200
+
 ldap-account-manager (5.7-1) unstable; urgency=medium
 
   * new upstream release
   * LP: #1632193 fixed PHP 7 issue
   * LP: #1628937 reload only done when apache is active
+  * Fix "php-xml and php-zip should be dependencies to run ldap-account-
+    manager" by updating dependencies (Closes: #858232)
 
  -- Roland Gruber <post@rolandgruber.de>  Tue, 14 Mar 2017 17:47:23 +0100
 
