@@ -239,7 +239,7 @@ $modules = array_keys($options);
 for ($m = 0; $m < sizeof($modules); $m++) {
 	// ignore modules without options
 	if (sizeof($options[$modules[$m]]) < 1) continue;
-	$module = new $modules[$m]($type->getId());
+	$module = new $modules[$m]($type->getScope());
 	$icon = $module->getIcon();
 	if (($icon != null) && !(strpos($icon, 'http') === 0) && !(strpos($icon, '/') === 0)) {
 		$icon = '../../graphics/' . $icon;

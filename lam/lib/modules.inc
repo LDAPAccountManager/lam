@@ -1,11 +1,11 @@
 <?php
 use LAM\TYPES\ConfiguredType;
-
+use \LAM\TYPES\TypeManager;
 /*
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2016  Roland Gruber
+  Copyright (C) 2003 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -306,14 +306,16 @@ function getAvailableModules($scope, $mustSupportAdminInterface = false) {
 /**
 * Returns the elements for the profile page.
 *
-* @param string $scope account type (user, group, host)
+* @param string $typeId account type (user, group, host)
 * @return array profile elements
 */
-function getProfileOptions($scope) {
-	$mods = $_SESSION['config']->get_AccountModules($scope);
+function getProfileOptions($typeId) {
+	$typeManager = new TypeManager();
+	$type = $typeManager->getConfiguredType($typeId);
+	$mods = $type->getModules();
 	$return = array();
 	for ($i = 0; $i < sizeof($mods); $i++) {
-		$module = moduleCache::getModule($mods[$i], $scope);
+		$module = moduleCache::getModule($mods[$i], $type->getScope());
 		$return[$mods[$i]] = $module->get_profileOptions();
 	}
 	return $return;
