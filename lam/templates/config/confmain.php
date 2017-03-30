@@ -57,7 +57,7 @@ include_once("../../lib/modules.inc");
 /** access to tools */
 include_once("../../lib/tools.inc");
 /** 2-factor */
-include_once '../../lib/2facto.inc';
+include_once '../../lib/2factor.inc';
 
 // start session
 if (strtolower(session_module_name()) == 'files') {
