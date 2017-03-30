@@ -2080,13 +2080,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 	}
 
 	/**
-	* Checks input values of account profiles.
-	*
-	* @param array $options a hash array (name => value) containing the options
-	* @return array list of error messages (array(type, title, text)) to generate StatusMessages, if any
+	* {@inheritDoc}
 	*/
-	function check_profileOptions($options) {
-		$messages = parent::check_profileOptions($options);
+	function check_profileOptions($options, $typeId) {
+		$messages = parent::check_profileOptions($options, $typeId);
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
 			$telephoneNumberList = preg_split('/;[ ]*/', $options['inetOrgPerson_telephoneNumber'][0]);
 			for ($i = 0; $i < sizeof($telephoneNumberList); $i++) {

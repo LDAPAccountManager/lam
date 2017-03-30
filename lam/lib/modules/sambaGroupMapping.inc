@@ -561,11 +561,9 @@ class sambaGroupMapping extends baseModule {
 
 
 	/**
-	* Returns a list of elements for the account profiles.
-	*
-	* @return htmlElement profile elements
+	* {@inheritDoc}
 	*/
-	function get_profileOptions() {
+	function get_profileOptions($typeId) {
 		$return = new htmlTable();
 		// get list of domains
 		$sambaDomains = $this->getDomains();

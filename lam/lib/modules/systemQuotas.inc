@@ -317,13 +317,10 @@ class systemQuotas extends baseModule {
 	}
 
 	/**
-	* Checks input values of account profiles.
-	*
-	* @param array $options a hash array (name => value) containing the options
-	* @return array list of error messages (array(type, title, text)) to generate StatusMessages, if any
+	* {@inheritDoc}
 	*/
-	function check_profileOptions($options) {
-		$messages = parent::check_profileOptions($options);
+	function check_profileOptions($options, $typeId) {
+		$messages = parent::check_profileOptions($options, $typeId);
 		$quotas = explode(';', $options['systemQuotas_quota'][0]);
 		for ($q = 0; $q < sizeof($quotas); $q++) {
 			if ($quotas[$q] == '') {

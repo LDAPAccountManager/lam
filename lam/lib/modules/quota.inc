@@ -467,11 +467,9 @@ class quota extends baseModule {
 	}
 
 	/**
-	* Returns a list of elements for the account profiles.
-	*
-	* @return htmlElement profile elements
+	* {@inheritDoc}
 	*/
-	function get_profileOptions() {
+	function get_profileOptions($typeId) {
 		$return = new htmlTable();
 		$optionsAvailable = false;
 		// get list of lamdaemon servers
@@ -547,12 +545,9 @@ class quota extends baseModule {
 	}
 
 	/**
-	* Checks input values of account profiles.
-	*
-	* @param array $options a hash array (name => value) containing the options
-	* @return array list of error messages (array(type, title, text)) to generate StatusMessages, if any
+	* {@inheritDoc}
 	*/
-	function check_profileOptions($options) {
+	function check_profileOptions($options, $typeId) {
 		$return = array();
 		// get list of lamdaemon servers
 		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());

@@ -502,12 +502,13 @@ abstract class baseModule {
 	* and save profiles. We recommend to use the module name as prefix for them
 	* (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
 	*
+	* @param string $typeId type id (user, group, host, ...)
 	* @return htmlElement meta HTML object
 	*
 	* @see baseModule::get_metaData()
 	* @see htmlElement
 	*/
-	public function get_profileOptions() {
+	public function get_profileOptions($typeId) {
 		if (isset($this->meta['profile_options'])) return $this->meta['profile_options'];
 		else return array();
 	}
@@ -524,11 +525,12 @@ abstract class baseModule {
 	* the function returns an empty array.
 	*
 	* @param array $options a hash array (name => value) containing the user input
+	* @param string $typeId type id (user, group, host)
 	* @return array list of error messages (array(type, title, text)) to generate StatusMessages, if any
 	*
 	* @see baseModule::get_metaData()
 	*/
-	public function check_profileOptions($options) {
+	public function check_profileOptions($options, $typeId) {
 		$messages = array();
 		if (isset($this->meta['profile_checks'])) {
 			$identifiers = array_keys($this->meta['profile_checks']);

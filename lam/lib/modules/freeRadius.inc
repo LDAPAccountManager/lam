@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2016  Roland Gruber
+  Copyright (C) 2011 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -710,13 +710,10 @@ class freeRadius extends baseModule {
 	}
 
 	/**
-	* Checks input values of account profiles.
-	*
-	* @param array $options a hash array (name => value) containing the options
-	* @return array list of error messages (array(type, title, text)) to generate StatusMessages, if any
+	* {@inheritDoc}
 	*/
-	function check_profileOptions($options) {
-		$messages = parent::check_profileOptions($options);
+	function check_profileOptions($options, $typeId) {
+		$messages = parent::check_profileOptions($options, $typeId);
 		// group names
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusGroupName')) {
 			if (isset($options['freeRadius_radiusGroupName'][0]) && ($options['freeRadius_radiusGroupName'][0] != '')) {

@@ -1701,11 +1701,9 @@ class posixAccount extends baseModule implements passwordService {
 	}
 
 	/**
-	* Returns a list of elements for the account profiles.
-	*
-	* @return profile elements
+	* {@inheritDoc}
 	*/
-	function get_profileOptions() {
+	function get_profileOptions($typeId) {
 		$return = new htmlTable();
 		$groupList = $this->findGroups();
 		$groups = array();

@@ -316,7 +316,7 @@ function getProfileOptions($typeId) {
 	$return = array();
 	for ($i = 0; $i < sizeof($mods); $i++) {
 		$module = moduleCache::getModule($mods[$i], $type->getScope());
-		$return[$mods[$i]] = $module->get_profileOptions();
+		$return[$mods[$i]] = $module->get_profileOptions($typeId);
 	}
 	return $return;
 }
@@ -324,16 +324,18 @@ function getProfileOptions($typeId) {
 /**
 * Checks if the profile options are valid
 *
-* @param string $scope account type (user, group, host)
+* @param string $typeId account type (user, group, host)
 * @param array $options hash array containing all options (name => array(...))
 * @return array list of error messages
 */
-function checkProfileOptions($scope, $options) {
-	$mods = $_SESSION['config']->get_AccountModules($scope);
+function checkProfileOptions($typeId, $options) {
+	$typeManager = new TypeManager();
+	$type = $typeManager->getConfiguredType($typeId);
+	$mods = $type->getModules();
 	$return = array();
 	for ($i = 0; $i < sizeof($mods); $i++) {
-		$module = moduleCache::getModule($mods[$i], $scope);
-		$temp = $module->check_profileOptions($options);
+		$module = moduleCache::getModule($mods[$i], $type->getScope());
+		$temp = $module->check_profileOptions($options, $type->getId());
 		$return = array_merge($return, $temp);
 	}
 	return $return;

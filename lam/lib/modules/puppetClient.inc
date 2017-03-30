@@ -430,22 +430,10 @@ class puppetClient extends baseModule {
 	}
 
 	/**
-	* This function defines what attributes will be used in the account profiles and their appearance in the profile editor.
-	*
-	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
-	* <br>
-	* The return value is an object implementing htmlElement.<br>
-	* The field name are used as keywords to load
-	* and save profiles. We recommend to use the module name as prefix for them
-	* (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
-	*
-	* @return htmlElement meta HTML object
-	*
-	* @see baseModule::get_metaData()
-	* @see htmlElement
+	* {@inheritDoc}
 	*/
-	public function get_profileOptions() {
-		$return = parent::get_profileOptions();
+	public function get_profileOptions($typeId) {
+		$return = parent::get_profileOptions($typeId);
 		$possibleParentNodes = $this->getPossibleParentNodes();
 		array_unshift($possibleParentNodes, '-');
 		$possibleParentNodes = array_values($possibleParentNodes);

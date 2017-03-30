@@ -424,11 +424,9 @@ class nisNetGroupUser extends baseModule {
 	}
 
 	/**
-	* Returns a list of elements for the account profiles.
-	*
-	* @return profile elements
+	* {@inheritDoc}
 	*/
-	function get_profileOptions() {
+	function get_profileOptions($typeId) {
 		$groups = $this->findGroups();
 		$groupOptions = array('' => '');
 		foreach ($groups as $group) {
