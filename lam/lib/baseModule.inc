@@ -803,11 +803,12 @@ abstract class baseModule {
 	 * <br>
 	 * 'myAttribute' => '<block><key>AttrName</key><tr><td align=\"L\">123</td></tr></block><block><tr><td align=\"L\">456</td></tr></block><block><tr><td align=\"L\">789</td></tr></block>'
 	 *
+	 * @param string $typeId type id (user, group, host)
 	 * @return array PDF entries
 	 *
 	 * @see baseModule::get_metaData()
 	 */
-	public function get_pdfFields() {
+	public function get_pdfFields($typeId) {
 		return ((isset($this->meta['PDF_fields'])) ? $this->meta['PDF_fields'] : array());
 	}
 
@@ -815,9 +816,10 @@ abstract class baseModule {
 	* Returns the PDF entries for this module.
 	*
 	* @param array $pdfKeys list of PDF keys that are included in document
+	* @param string $typeId type id (user, group, host)
 	* @return PDFEntry[] list of key => PDFEntry
 	*/
-	public function get_pdfEntries($pdfKeys) {
+	public function get_pdfEntries($pdfKeys, $typeId) {
 		return array();
 	}
 

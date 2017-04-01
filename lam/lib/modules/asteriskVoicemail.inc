@@ -365,7 +365,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys) {
+	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
 		$this->addSimplePDFField($return, 'AstVoicemailMailbox', _('Mailbox'));
 		$this->addSimplePDFField($return, 'AstContext', _('Account context'));

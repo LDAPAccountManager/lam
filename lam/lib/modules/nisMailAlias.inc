@@ -468,7 +468,7 @@ class nisMailAlias extends baseModule {
 	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys) {
+	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
 		$this->addSimplePDFField($return, 'alias', _('Alias name'), 'cn');
 		$this->addSimplePDFField($return, 'recipients', _('Recipient list'), 'rfc822MailMember');

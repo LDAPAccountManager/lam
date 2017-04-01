@@ -609,7 +609,7 @@ class quota extends baseModule {
 	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys) {
+	function get_pdfEntries($pdfKeys, $typeId) {
 		$this->initQuotas();
 		if (!isset($this->quota) || !is_array($this->quota)) return array();
 		if (sizeof($this->quota) > 0) {

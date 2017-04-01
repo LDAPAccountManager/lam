@@ -551,7 +551,7 @@ class eduPerson extends baseModule {
 	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys) {
+	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
 		$this->addSimplePDFField($return, 'primaryAffiliation', _('Primary affiliation'), 'eduPersonPrimaryAffiliation');
 		$this->addSimplePDFField($return, 'scopedAffiliation', _('Scoped affiliations'), 'eduPersonScopedAffiliation');

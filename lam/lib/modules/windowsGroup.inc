@@ -910,7 +910,7 @@ class windowsGroup extends baseModule {
 	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
-	public function get_pdfEntries($pdfKeys) {
+	public function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
 		$this->addSimplePDFField($return, 'cn', _('Group name'));
 		$this->addSimplePDFField($return, 'description', _('Description'));

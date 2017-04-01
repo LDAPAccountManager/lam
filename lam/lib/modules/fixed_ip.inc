@@ -734,7 +734,7 @@ class fixed_ip extends baseModule {
 	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys) {
+	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
 		if (is_array($this->fixed_ip) && (sizeof($this->fixed_ip) > 0)) {
 			$pdfTable = new PDFTable();

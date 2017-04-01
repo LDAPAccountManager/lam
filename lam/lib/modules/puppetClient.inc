@@ -401,7 +401,7 @@ class puppetClient extends baseModule {
 	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys) {
+	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
 		if (!in_array('puppetClient', $this->attributes['objectClass'])) {
 			return $return;

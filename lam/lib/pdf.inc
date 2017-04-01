@@ -104,7 +104,7 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 		$pdf->AddPage();
 
 		// Get PDF entries for the current account
-		$entries = $account->get_pdfEntries($pdfKeys);
+		$entries = $account->get_pdfEntries($pdfKeys, $account_type->getId());
 
 		// Now create the PDF file acording to the structure with the submitted values
 		foreach($structure as $entry) {

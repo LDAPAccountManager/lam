@@ -579,7 +579,7 @@ class pykotaPrinter extends baseModule {
 	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys) {
+	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
 		$this->loadPrinterNameCache();
 		$this->addSimplePDFField($return, 'cn', _('Printer name'));

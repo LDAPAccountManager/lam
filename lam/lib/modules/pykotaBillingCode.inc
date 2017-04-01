@@ -256,7 +256,7 @@ class pykotaBillingCode extends baseModule {
 	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys) {
+	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
 		$this->loadCodeCache();
 		$this->addSimplePDFField($return, 'pykotaBillingCode', _('Billing code'));

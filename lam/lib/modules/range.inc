@@ -767,7 +767,7 @@ class range extends baseModule {
 	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys) {
+	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
 		if (is_array($this->ranges) && (sizeof($this->ranges) > 0)) {
 			$pdfTable = new PDFTable(_('Ranges'));

@@ -688,7 +688,7 @@ class freeRadius extends baseModule {
 	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys) {
+	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
 		$this->addSimplePDFField($return, 'radiusFramedIPAddress', _('IP address'));
 		$this->addSimplePDFField($return, 'radiusFramedIPNetmask', _('Net mask'));

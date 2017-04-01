@@ -1818,7 +1818,7 @@ class posixAccount extends baseModule implements passwordService {
 	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys) {
+	function get_pdfEntries($pdfKeys, $typeId) {
 		$uidLabel = _('User name');
 		if ($this->get_scope() == 'host') {
 			$uidLabel = _('Host name');

@@ -525,7 +525,7 @@ class nisMailAliasUser extends baseModule {
 	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys) {
+	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
 		$aliases = $this->getMailAliasList();
 		$foundAliases = array();

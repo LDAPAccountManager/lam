@@ -800,7 +800,7 @@ class asteriskExtension extends baseModule {
 	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
-    function get_pdfEntries($pdfKeys) {
+    function get_pdfEntries($pdfKeys, $typeId) {
     	$a = $this->attributes;
     	$o = $this->orig;
         $return = array();

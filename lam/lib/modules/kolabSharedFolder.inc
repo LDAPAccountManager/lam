@@ -513,7 +513,7 @@ class kolabSharedFolder extends baseModule { // TODO folder type
 	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys) {
+	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
 		$this->addSimplePDFField($return, 'cn', _('Name'));
 		$this->addSimplePDFField($return, 'mail', _('Email address'));

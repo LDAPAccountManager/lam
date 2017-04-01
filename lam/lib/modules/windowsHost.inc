@@ -284,7 +284,7 @@ class windowsHost extends baseModule {
 	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
-	public function get_pdfEntries($pdfKeys) {
+	public function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
 		$this->addSimplePDFField($return, 'cn', _('Host name'));
 		$this->addSimplePDFField($return, 'description', _('Description'));

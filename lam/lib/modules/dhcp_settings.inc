@@ -660,7 +660,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys) {
+	function get_pdfEntries($pdfKeys, $typeId) {
 		$nodeType = $this->getDHCPOption('netbios-node-type');
 		$nodeTypeValue = '';
 		if (isset($this->all_netbios_node_types[$nodeType])) {

@@ -593,7 +593,7 @@ class sambaDomain extends baseModule {
 	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys) {
+	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
 		$this->addSimplePDFField($return, 'domainName', _('Domain name'), 'sambaDomainName');
 		$this->addSimplePDFField($return, 'domainSID', _('Domain SID'), 'sambaSID');

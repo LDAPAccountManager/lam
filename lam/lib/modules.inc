@@ -413,7 +413,7 @@ function getAvailablePDFFields($typeId) {
 	$return = array();
 	for ($i = 0; $i < sizeof($mods); $i++) {
 		$module = moduleCache::getModule($mods[$i], \LAM\TYPES\getScopeFromTypeId($typeId));
-		$fields = $module->get_pdfFields();
+		$fields = $module->get_pdfFields($typeId);
 		$return[$mods[$i]] = array();
 		if (is_array($fields)) {
 			foreach ($fields as $fieldID => $fieldLabel) {
@@ -2010,12 +2010,13 @@ class accountContainer {
 	 * Returns a list of possible PDF entries for this account.
 	 *
 	 * @param array $pdfKeys list of PDF keys that are included in document
+	 * @param string $typeId type id (user, group, host)
 	 * @return PDFEntry[] list of key => PDFEntry
 	 */
-	function get_pdfEntries($pdfKeys) {
+	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
 		while(($current = current($this->module)) != null) {
-			$return = array_merge($return,$current->get_pdfEntries($pdfKeys));
+			$return = array_merge($return,$current->get_pdfEntries($pdfKeys, $typeId));
 			next($this->module);
 		}
 		$dn = $this->dn_orig;

@@ -224,7 +224,7 @@ class authorizedServiceObject extends baseModule {
 	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys) {
+	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
 		if (in_array('authorizedServiceObject', $this->attributes['objectClass'])) {
 			$this->addSimplePDFField($return, 'authorizedService', _('Authorized Services'));

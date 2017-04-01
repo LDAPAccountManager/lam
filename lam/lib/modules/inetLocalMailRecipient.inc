@@ -347,7 +347,7 @@ class inetLocalMailRecipient extends baseModule {
 	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys) {
+	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
 		$this->addSimplePDFField($return, 'routingAdr', _('Routing address'), 'mailRoutingAddress');
 		$this->addSimplePDFField($return, 'localAdr', _('Local address list'), 'mailLocalAddress');

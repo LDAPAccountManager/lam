@@ -1905,7 +1905,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
-	function get_pdfEntries($pdfKeys) {
+	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
 		$this->addSimplePDFField($return, 'displayName', _('Display name'));
 		$this->addSimplePDFField($return, 'sambaHomePath', _('Home path'));

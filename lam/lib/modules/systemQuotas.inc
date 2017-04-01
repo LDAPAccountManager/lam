@@ -376,7 +376,7 @@ class systemQuotas extends baseModule {
 	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
-	public function get_pdfEntries($pdfKeys) {
+	public function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
 		if (isset($this->attributes['quota'][0])) {
 			$pdfTable = new PDFTable();
