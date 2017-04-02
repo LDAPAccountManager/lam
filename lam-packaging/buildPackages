@@ -20,7 +20,6 @@ else
 fi
 
 # minifies the JavaScript files
-set -x
 function minify {
 	local dir="$1"
 	echo "Minify JS files in $dir"
