@@ -59,12 +59,12 @@
 			//	top-level LI's and top level A's and SPANs
 			$topl
 				.css({
-					float		: 'right'
+					'float'		: 'right'
 				})
 				.find('> a, > span')
 				.addClass('toplevel')
 				.css({
-					float		: 'right'
+					'float'		: 'right'
 				});
 
 			//	all sub-ULs

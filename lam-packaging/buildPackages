@@ -20,12 +20,13 @@ else
 fi
 
 # minifies the JavaScript files
+set -x
 function minify {
 	local dir="$1"
 	echo "Minify JS files in $dir"
 	local files=`ls $dir/*.js`
 	for file in $files; do
-		closure-compiler --charset UTF-8 --js file --js_output_file ${file}-MIN
+		closure-compiler --charset UTF-8 --js $file --js_output_file ${file}-MIN
 		rm $file
 		mv ${file}-MIN $file
 		# add final new line to supress Debian warnings
@@ -39,7 +40,7 @@ function minifyCSS {
 	echo "Minify CSS files in $dir"
 	local files=`ls $dir/*.css`
 	for file in $files; do
-		cleancss -o ${file}-MIN $file file
+		cleancss -o ${file}-MIN $file
 		rm $file
 		mv ${file}-MIN $file
 		# add final new line to supress Debian warnings
