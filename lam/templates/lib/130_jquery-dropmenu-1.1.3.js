@@ -1,12 +1,12 @@
-/*	
+/*
  *	jQuery dropmenu 1.1.3
  *	www.frebsite.nl
  *	Copyright (c) 2010 Fred Heusschen
  *	Licensed under the MIT license.
  *	http://www.opensource.org/licenses/mit-license.php
  */
- 
- 
+
+
 (function($) {
 	$.fn.dropmenu = function(options) {
 
@@ -35,15 +35,21 @@
 					position	: 'relative',
 					margin		: 0,
 					padding		: 0
+				})
+				.css({
+					listStylePosition	: 'inside'
+				})
+				.css({
+					listStylePosition	: 'outside'
 				});
-			
-			
+
+
 			var css = {
 				display		: 'block',
 				outline		: 'none'
 			};
 			if (opts.nbsp) css['whiteSpace'] = 'nowrap';
-			
+
 			//	all A's and SPANs
 			$menu
 				.find('li > a, li > span')
@@ -59,7 +65,7 @@
 				.addClass('toplevel')
 				.css({
 					float		: 'right'
-				});		
+				});
 
 			//	all sub-ULs
 			$menu
@@ -70,7 +76,7 @@
 					margin		: 0,
 					padding		: 0
 				});
-			
+
 			//	first sub-UL and second, third, etc. sub-ULs
 			$topl
 				.find('> ul')
@@ -85,16 +91,16 @@
 				.css({
 					top			: 0
 				}).data('subsub', true);
-			
+
 			$topl
-				
+
 			$menu.find('a').click(function() {
 				$('ul', $menu).hide();
 				$('a, span', $menu).removeClass('hover');
 			});
 
 			$menu.find('li').hover(
-				
+
 				//	showing submenu
 				function() {
 					var listit = this,
@@ -110,21 +116,21 @@
 						var distance  = $(listit).outerWidth(),
 							itemWidth = $(listit).offset().left + distance - menuX,
 							position  = "right";
-						
-						subcss[position] = distance;						
+
+						subcss[position] = distance;
 					}
 					$(subnav).css(subcss);
 					$.data(subnav, 'stayOpen', true);
-					
+
 					switch (opts.effect) {
 						case 'slide':
 							$(subnav).slideDown(opts.speed);
 							break;
-						
+
 						case 'fade':
 							$(subnav).fadeIn(opts.speed);
 							break;
-							
+
 						default:
 							$(subnav).show();
 							break;
@@ -150,22 +156,22 @@
 							case 'slide':
 								$(subnav).slideUp(opts.speed);
 								break;
-							
+
 							case 'fade':
 								$(subnav).fadeOut(opts.speed);
 								break;
-								
+
 							default:
 								$(subnav).hide();
 								break;
 						}
-						
+
 					}, opts.timeout);
 				}
 			);
 		});
 	};
-	
+
 	$.fn.dropmenu.getSubnav = function(ele) {
 		if (ele.nodeName.toLowerCase() == 'li') {
 			var subnav = $('> ul', ele);
@@ -174,7 +180,7 @@
 			return ele;
 		}
 	}
-	
+
 	$.fn.dropmenu.zIndex 	= 1000;
 	$.fn.dropmenu.defaults 	= {
 		effect			: 'none',		//	'slide', 'fade', or 'none'
