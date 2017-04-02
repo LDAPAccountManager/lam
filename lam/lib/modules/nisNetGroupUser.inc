@@ -2,6 +2,7 @@
 use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
+use \LAM\TYPES\TypeManager;
 /*
 $Id$
 
@@ -121,18 +122,21 @@ class nisNetGroupUser extends baseModule {
 			return;
 		}
 		$this->uidOrig = $attr['uid'][0];
-		$types = array('netgroup');
-		$typeSettings = $_SESSION['config']->get_typeSettings();
+		$typeManager = new TypeManager();
+		$types = $typeManager->getConfiguredTypesForScope('netgroup');
 		$groupList = array();
-		$filter = '(&(objectClass=nisNetgroup)(nisnetgrouptriple=*))';
-		if (!empty($typeSettings['filter_' . $types[0]])) {
-			$typeFilter = $typeSettings['filter_' . $types[0]];
-			if (strpos($typeFilter, '(') !== 0) {
-				$typeFilter = '(' . $typeFilter . ')';
+		foreach ($types as $type) {
+			$filter = '(&(objectClass=nisNetgroup)(nisnetgrouptriple=*))';
+			$typeFilter = $type->getAdditionalLdapFilter();
+			if (!empty($typeFilter)) {
+				if (strpos($typeFilter, '(') !== 0) {
+					$typeFilter = '(' . $typeFilter . ')';
+				}
+				$filter = '(&' . $filter . $typeFilter . ')';
 			}
-			$filter = '(&' . $filter . $typeFilter . ')';
+			$groupsFound = searchLDAP($type->getSuffix(), $filter, array('dn', 'cn', 'nisnetgrouptriple'));
+			$groupList = array_merge($groupList, $groupsFound);
 		}
-		$groupList = searchLDAPByFilter($filter, array('dn', 'cn', 'nisnetgrouptriple'), $types);
 		$this->groupsOrig = array();
 		$tripleRegex = '/^\\(([^,]*),([^,]*),([^,]*)\\)$/';
 		foreach ($groupList as $group) {
@@ -639,23 +643,21 @@ class nisNetGroupUser extends baseModule {
 			return $this->groupCache;
 		}
 		$return = array();
-		$types = array('netgroup');
-		$typeSettings = $_SESSION['config']->get_typeSettings();
-		if (sizeof($types) > 0) {
-			foreach ($types as $type) {
-				$filter = '(objectClass=nisNetgroup)';
-				if (!empty($typeSettings['filter_' . $type])) {
-					$typeFilter = $typeSettings['filter_' . $type];
-					if (strpos($typeFilter, '(') !== 0) {
-						$typeFilter = '(' . $typeFilter . ')';
-					}
-					$filter = '(&' . $filter . $typeFilter . ')';
+		$typeManager = new TypeManager();
+		$types = $typeManager->getConfiguredTypesForScope('netgroup');
+		foreach ($types as $type) {
+			$filter = '(objectClass=nisNetgroup)';
+			$typeFilter = $type->getAdditionalLdapFilter();
+			if (!empty($typeFilter)) {
+				if (strpos($typeFilter, '(') !== 0) {
+					$typeFilter = '(' . $typeFilter . ')';
 				}
-				$results = searchLDAPByFilter($filter, array('cn', 'dn', 'nisnetgrouptriple'), array($type));
-				for ($i = 0; $i < sizeof($results); $i++) {
-					if (isset($results[$i]['cn'][0]) && isset($results[$i]['dn'])) {
-						$return[] = $results[$i];
-					}
+				$filter = '(&' . $filter . $typeFilter . ')';
+			}
+			$results = searchLDAP($type->getSuffix(), $filter, array('cn', 'dn', 'nisnetgrouptriple'));
+			for ($i = 0; $i < sizeof($results); $i++) {
+				if (isset($results[$i]['cn'][0]) && isset($results[$i]['dn'])) {
+					$return[] = $results[$i];
 				}
 			}
 		}
