@@ -159,7 +159,7 @@ if (isset($_POST['submitFormData'])) {
 		$cfg->allowedHostsSelfService = $allowedHostsSelfService;
 	}
 	// set session encryption
-	if (function_exists('mcrypt_create_iv')) {
+	if (function_exists('openssl_random_pseudo_bytes')) {
 		$encryptSession = 'false';
 		if (isset($_POST['encryptSession']) && ($_POST['encryptSession'] == 'on')) {
 			$encryptSession = 'true';
@@ -343,7 +343,7 @@ if (isLAMProVersion()) {
 }
 $encryptSession = ($cfg->encryptSession === 'true');
 $encryptSessionBox = new htmlTableExtendedInputCheckbox('encryptSession', $encryptSession, _('Encrypt session'), '245');
-$encryptSessionBox->setIsEnabled(function_exists('mcrypt_create_iv'));
+$encryptSessionBox->setIsEnabled(function_exists('openssl_random_pseudo_bytes'));
 $securityTable->addElement($encryptSessionBox, true);
 // SSL certificate
 $securityTable->addElement(new htmlOutputText(_('SSL certificates')));

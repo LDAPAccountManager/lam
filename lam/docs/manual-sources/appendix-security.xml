@@ -145,7 +145,7 @@ require {
 #============= httpd_t ==============
 
 #!!!! WARNING 'httpd_t' is not allowed to write or create to var_lib_t.  Change the label to httpd_var_lib_t.
-#!!!! $ semanage fcontext -a -t httpd_var_lib_t /var/lib/ldap-account-manager/config/lam.conf   
+#!!!! $ semanage fcontext -a -t httpd_var_lib_t /var/lib/ldap-account-manager/config/lam.conf
 #!!!! $ restorecon -R -v /var/lib/ldap-account-manager/config/lam.conf
 allow httpd_t var_lib_t:file { setattr write };
 </programlisting>
@@ -180,11 +180,11 @@ semodule -i httpdlocal.pp</programlisting>
     <section>
       <title>Protection of your LDAP password and directory contents</title>
 
-      <para>You have to install the MCrypt extension for PHP to enable
+      <para>You have to install the OpenSSL extension for PHP to enable
       encryption.</para>
 
       <para>Your LDAP password is stored encrypted in the session file. The
-      key and IV to decrypt it are stored in two cookies. We use MCrypt/AES to
+      key and IV to decrypt it are stored in two cookies. We use OpenSSL/AES to
       encrypt the password. All data that was read from LDAP and needs to be
       stored in the session file is also encrypted.</para>
     </section>
@@ -235,11 +235,11 @@ semodule -i httpdlocal.pp</programlisting>
 
         <itemizedlist>
           <listitem>
-            <para>LAM admin password in clear text or MCrypt encrypted</para>
+            <para>LAM admin password in clear text or OpenSSL encrypted</para>
           </listitem>
 
           <listitem>
-            <para>cached LDAP entries in clear text or MCrypt encrypted</para>
+            <para>cached LDAP entries in clear text or OpenSSL encrypted</para>
           </listitem>
 
           <listitem>
@@ -440,4 +440,4 @@ semodule -i httpdlocal.pp</programlisting>
 </programlisting>
       </section>
     </section>
-  </appendix> 
+  </appendix>

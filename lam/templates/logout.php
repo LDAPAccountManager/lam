@@ -30,7 +30,7 @@ $Id$
 
 
 // delete key and iv in cookie
-if (function_exists('mcrypt_create_iv')) {
+if (function_exists('openssl_random_pseudo_bytes')) {
 	setcookie("Key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/", null, null, true);
 	setcookie("IV", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/", null, null, true);
 }

@@ -178,18 +178,9 @@ $_SESSION['header'] .= "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<me
 function display_LoginPage($config_object, $cfgMain, $licenseValidator, $error_message) {
 	logNewMessage(LOG_DEBUG, "Display login page");
 	// generate 256 bit key and initialization vector for user/passwd-encryption
-	// check if we can use /dev/urandom otherwise use rand()
-	if(function_exists('mcrypt_create_iv') && ($cfgMain->encryptSession == 'true')) {
-		$key = @mcrypt_create_iv(32, MCRYPT_DEV_URANDOM);
-		if (! $key) {
-			srand((double)microtime()*1234567);
-			$key = mcrypt_create_iv(32, MCRYPT_RAND);
-		}
-		$iv = @mcrypt_create_iv(32, MCRYPT_DEV_URANDOM);
-		if (! $iv) {
-			srand((double)microtime()*1234567);
-			$iv = mcrypt_create_iv(32, MCRYPT_RAND);
-		}
+	if(function_exists('openssl_random_pseudo_bytes') && ($cfgMain->encryptSession == 'true')) {
+		$key = openssl_random_pseudo_bytes(32);
+		$iv = openssl_random_pseudo_bytes(16);
 		// save both in cookie
 		setcookie("Key", base64_encode($key), 0, "/", null, null, true);
 		setcookie("IV", base64_encode($iv), 0, "/", null, null, true);

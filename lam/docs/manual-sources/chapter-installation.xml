@@ -16,7 +16,7 @@
         <listitem>
           <para>Apache/Nginx webserver (SSL recommended) with PHP module (PHP
           (&gt;= 5.4.0) with ldap, gettext, xml, openssl and optional
-          mcrypt)</para>
+          OpenSSL)</para>
         </listitem>
 
         <listitem>
@@ -59,7 +59,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>MCrypt will be used to store your LDAP password encrypted in the
+      <para>OpenSSL will be used to store your LDAP password encrypted in the
       session file.</para>
 
       <para>Please note that LAM does not ship with a selinux policy. Please

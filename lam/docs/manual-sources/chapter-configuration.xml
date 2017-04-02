@@ -84,7 +84,7 @@
 
       <para id="sessionEncryption">Session encryption will encrypt sensitive
       data like passwords in your session files. This is only available when
-      PHP <ulink url="http://php.net/mcrypt">MCrypt</ulink> is active. This
+      PHP <ulink url="http://php.net/manual/en/book.openssl.php">OpenSSL</ulink> is active. This
       adds extra security but also costs performance. If you manage a large
       directory you might want to disable this and take other actions to
       secure your LAM server.</para>
@@ -758,7 +758,7 @@
 mysql -u root -p
 # create a database
 mysql&gt; create database lam_cron;
-# 
+#
 mysql&gt; CREATE USER 'lam_cron'@'%' IDENTIFIED BY 'password';
 mysql&gt; CREATE USER 'lam_cron'@'localhost' IDENTIFIED BY 'password';
 # grant access for new user

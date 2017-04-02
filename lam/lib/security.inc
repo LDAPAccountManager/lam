@@ -163,7 +163,7 @@ function logoffAndBackToLoginPage() {
 		logNewMessage(LOG_WARNING, 'Self service session of DN ' . lamDecrypt($_SESSION['selfService_clientDN'], 'SelfService') . ' expired.');
 	}
 	// delete key and iv in cookie
-	if (function_exists('mcrypt_create_iv')) {
+	if (function_exists('openssl_random_pseudo_bytes')) {
 		setcookie("Key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/", null, null, true);
 		setcookie("IV", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/", null, null, true);
 	}
@@ -583,9 +583,9 @@ function setLAMHeaders() {
 * @return object encrypted string
 */
 function lamEncrypt($data, $prefix='') {
-	// use MCrypt if available
-	if (function_exists('mcrypt_create_iv')) {
-		// MCrypt may have been enabled in a running session
+	// use OpenSSL if available
+	if (function_exists('openssl_random_pseudo_bytes')) {
+		// OpenSSL may have been enabled in a running session
 		if (!isset($_COOKIE[$prefix . "IV"]) || ($_COOKIE[$prefix . "IV"] == '')) return $data;
 		if ($_COOKIE[$prefix . "IV"] == "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx") {
 			return $data;
@@ -594,7 +594,7 @@ function lamEncrypt($data, $prefix='') {
 		$iv = base64_decode($_COOKIE[$prefix . "IV"]);
 		$key = base64_decode($_COOKIE[$prefix . "Key"]);
 		// encrypt string
-		return mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, base64_encode($data), MCRYPT_MODE_ECB, $iv);
+		return openssl_encrypt(base64_encode($data), lamEncryptionAlgo(), $key, 0, $iv);
 	}
 	// otherwise do not encrypt
 	else {
@@ -610,9 +610,9 @@ function lamEncrypt($data, $prefix='') {
 * @return string decrypted string
 */
 function lamDecrypt($data, $prefix='') {
-	// use MCrypt if available
-	if (function_exists('mcrypt_create_iv')) {
-		// MCrypt may have been enabled in a running session
+	// use OpenSSL if available
+	if (function_exists('openssl_random_pseudo_bytes')) {
+		// OpenSSL may have been enabled in a running session
 		if (!isset($_COOKIE[$prefix . "IV"]) || ($_COOKIE[$prefix . "IV"] == '')) return $data;
 		if ($_COOKIE[$prefix . "IV"] == "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx") {
 			return $data;
@@ -621,7 +621,7 @@ function lamDecrypt($data, $prefix='') {
 		$iv = base64_decode($_COOKIE[$prefix . "IV"]);
 		$key = base64_decode($_COOKIE[$prefix . "Key"]);
 		// decrypt string
-		$ret = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $data, MCRYPT_MODE_ECB, $iv);
+		$ret = openssl_decrypt($data, lamEncryptionAlgo(), $key, 0, $iv);
 		$ret = base64_decode(str_replace(chr(00), "", $ret));
 		return $ret;
 	}
@@ -629,6 +629,22 @@ function lamDecrypt($data, $prefix='') {
 	else {
 		return $data;
 	}
+}
+
+/**
+ * Returns the encryption algorithm to use.
+ *
+ * @return string algorithm name
+ */
+function lamEncryptionAlgo() {
+	$possibleAlgos = openssl_get_cipher_methods();
+	if (in_array('AES-256-CTR', $possibleAlgos)) {
+		return 'AES-256-CTR';
+	}
+	elseif (in_array('AES-256-CBC', $possibleAlgos)) {
+		return 'AES-256-CBC';
+	}
+	return 'AES256';
 }
 
 ?>
