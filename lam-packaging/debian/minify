@@ -2,17 +2,21 @@
 
 set -e
 
-files=`ls templates/lib/*.js style/*.css`
+files=`ls templates/lib/*.js`
 for file in $files; do
-	# skip dropmenu file, incompatible with YUI compressor
-	if [[ $file =~ .*dropmenu.* ]]; then
-		continue
-	fi
-	yui-compressor --nomunge --preserve-semi --disable-optimizations --charset UTF-8 -o ${file}-MIN $file
+	closure-compiler --charset UTF-8 --js file --js_output_file ${file}-MIN
 	rm $file
 	mv ${file}-MIN $file
 	# add final new line to supress Debian warnings
 	echo "" >> $file
 done
 
+files=`ls style/*.css`
+for file in $files; do
+	cleancss -o ${file}-MIN $file file
+	rm $file
+	mv ${file}-MIN $file
+	# add final new line to supress Debian warnings
+	echo "" >> $file
+done
 

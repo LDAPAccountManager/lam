@@ -25,11 +25,7 @@ function minify {
 	echo "Minify JS files in $dir"
 	local files=`ls $dir/*.js`
 	for file in $files; do
-		# skip dropmenu file, incompatible with YUI compressor
-		if [[ $file =~ .*dropmenu.* ]]; then
-			continue
-		fi
-		yui-compressor --nomunge --preserve-semi --disable-optimizations --charset UTF-8 -o ${file}-MIN $file
+		closure-compiler --charset UTF-8 --js file --js_output_file ${file}-MIN
 		rm $file
 		mv ${file}-MIN $file
 		# add final new line to supress Debian warnings
@@ -43,7 +39,7 @@ function minifyCSS {
 	echo "Minify CSS files in $dir"
 	local files=`ls $dir/*.css`
 	for file in $files; do
-		yui-compressor --nomunge --preserve-semi --disable-optimizations --charset UTF-8 -o ${file}-MIN $file
+		cleancss -o ${file}-MIN $file file
 		rm $file
 		mv ${file}-MIN $file
 		# add final new line to supress Debian warnings
@@ -105,7 +101,7 @@ perl -pi -e "s/\\@\\@VERSION\\@\\@/$VERSION/g" configure.ac
 autoconf
 rm -r autom4te.cache
 cd ..
-# Debian gets orig.tar.bz2 with original JS files 
+# Debian gets orig.tar.bz2 with original JS files
 tar cfj ldap-account-manager-$VERSION.tar.bz2 --owner=root --group=root --mtime=now ldap-account-manager-$VERSION
 mv ldap-account-manager-$VERSION.tar.bz2 Debian/ldap-account-manager_$VERSION.orig.tar.bz2
 cp -ar ldap-account-manager-$VERSION Debian/
@@ -125,7 +121,7 @@ perl -pi -e "s/\\@\\@VERSION\\@\\@/$VERSION/g" configure.ac
 autoconf
 rm -r autom4te.cache
 cd ..
-# Debian gets orig.tar.bz2 with original JS files 
+# Debian gets orig.tar.bz2 with original JS files
 tar cfj ldap-account-manager-$VERSION.tar.bz2 --owner=root --group=root --mtime=now ldap-account-manager-$VERSION
 mv ldap-account-manager-$VERSION.tar.bz2 Debian/ldap-account-manager_$VERSION.orig.tar.bz2
 cp -ar ldap-account-manager-$VERSION Debian/
