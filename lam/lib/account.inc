@@ -1470,7 +1470,7 @@ function validateReCAPTCHA($secretKey) {
  * @param boolean $check2ndFactor check if the 2nd factor was provided if required
  */
 function enforceUserIsLoggedIn($check2ndFactor = true) {
-	if (!isset($_SESSION['loggedIn']) || ($_SESSION['loggedIn'] !== true)) {
+	if ((!isset($_SESSION['loggedIn']) || ($_SESSION['loggedIn'] !== true)) && empty($_SESSION['selfService_clientPassword'])) {
 		logNewMessage(LOG_WARNING, 'Detected unauthorized access to page that requires login: ' . $_SERVER["SCRIPT_FILENAME"]);
 		die();
 	}
