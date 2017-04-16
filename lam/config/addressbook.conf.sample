@@ -13,7 +13,7 @@ ServerURL: ldap://localhost:389
 Admins: cn=Manager,dc=my-domain,dc=com
 
 # password to change these preferences via webfrontend (default: lam)
-Passwd: {SSHA}T2yboe0j+a41sZZm4UZl6kEzbcI= q9uv7w==
+Passwd: lam
 
 # suffix of tree view
 # e.g. dc=yourdomain,dc=org
@@ -23,10 +23,10 @@ treesuffix: dc=yourdomain,dc=org
 defaultLanguage: en_GB.utf8
 
 # Path to external Script
-scriptPath: 
+scriptPath:
 
 # Server of external Script
-scriptServer: 
+scriptServer:
 
 # Access rights for home directories
 scriptRights: 750
@@ -97,11 +97,11 @@ loginSearchFilter: uid=%USER%
 
 
 # Bind DN for login search.
-loginSearchDN: 
+loginSearchDN:
 
 
 # Bind password for login search.
-loginSearchPassword: 
+loginSearchPassword:
 
 
 # HTTP authentication for LAM login.
@@ -109,11 +109,11 @@ httpAuthentication: false
 
 
 # Password mail from
-lamProMailFrom: 
+lamProMailFrom:
 
 
 # Password mail reply-to
-lamProMailReplyTo: 
+lamProMailReplyTo:
 
 
 # Password mail is HTML
@@ -185,17 +185,17 @@ modules: inetOrgPerson_readOnly_telephoneNumber: false
 modules: inetOrgPerson_readOnly_departmentNumber: false
 modules: inetOrgPerson_readOnly_manager: false
 modules: inetOrgPerson_readOnly_givenName: false
-modules: inetOrgPerson_jpegPhoto_maxWidth: 
-modules: inetOrgPerson_jpegPhoto_maxHeight: 
-modules: inetOrgPerson_jpegPhoto_maxSize: 
-types: filter_user: 
-types: customLabel_user: 
-types: filter_group: 
-types: customLabel_group: 
-types: hidden_user: 
-types: hideNewButton_user: 
-types: hideDeleteButton_user: 
-types: readOnly_user: 
+modules: inetOrgPerson_jpegPhoto_maxWidth:
+modules: inetOrgPerson_jpegPhoto_maxHeight:
+modules: inetOrgPerson_jpegPhoto_maxSize:
+types: filter_user:
+types: customLabel_user:
+types: filter_group:
+types: customLabel_group:
+types: hidden_user:
+types: hideNewButton_user:
+types: hideDeleteButton_user:
+types: readOnly_user:
 tools: tool_hide_toolServerInformation: false
 tools: tool_hide_toolFileUpload: false
 tools: tool_hide_toolMultiEdit: false

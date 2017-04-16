@@ -13,7 +13,7 @@ ServerURL: ldap://localhost:389
 Admins: cn=Manager,dc=my-domain,dc=com
 
 # password to change these preferences via webfrontend (default: lam)
-Passwd: {SSHA}ahGvrvP2tLZCEChawYlRD0v5dFk= sSirVg==
+Passwd: lam
 
 # suffix of tree view
 # e.g. dc=yourdomain,dc=org
@@ -23,10 +23,10 @@ treesuffix: dc=yourdomain,dc=org
 defaultLanguage: en_GB.utf8
 
 # Path to external Script
-scriptPath: 
+scriptPath:
 
 # Server of external Script
-scriptServer: 
+scriptServer:
 
 # Access rights for home directories
 scriptRights: 750
@@ -97,11 +97,11 @@ loginSearchFilter: uid=%USER%
 
 
 # Bind DN for login search.
-loginSearchDN: 
+loginSearchDN:
 
 
 # Bind password for login search.
-loginSearchPassword: 
+loginSearchPassword:
 
 
 # HTTP authentication for LAM login.
@@ -109,11 +109,11 @@ httpAuthentication: false
 
 
 # Password mail from
-lamProMailFrom: 
+lamProMailFrom:
 
 
 # Password mail reply-to
-lamProMailReplyTo: 
+lamProMailReplyTo:
 
 
 # Password mail is HTML
@@ -123,8 +123,8 @@ lamProMailIsHTML: false
 # Allow alternate address
 lamProMailAllowAlternateAddress: true
 modules: posixGroup_gidGenerator: range
-modules: posixGroup_sambaIDPoolDN: 
-modules: posixGroup_gidCheckSuffix: 
+modules: posixGroup_sambaIDPoolDN:
+modules: posixGroup_gidCheckSuffix:
 modules: posixGroup_hidememberUid: false
 modules: sambaSamAccount_timeZone: 0
 modules: sambaSamAccount_lmHash: yes
@@ -137,11 +137,11 @@ modules: sambaSamAccount_hideWorkstations: false
 modules: sambaSamAccount_hideLogonHours: false
 modules: sambaSamAccount_hideTerminalServer: false
 modules: posixAccount_uidGeneratorUsers: range
-modules: posixAccount_sambaIDPoolDNUsers: 
-modules: posixAccount_uidCheckSuffixUser: 
+modules: posixAccount_sambaIDPoolDNUsers:
+modules: posixAccount_uidCheckSuffixUser:
 modules: posixAccount_uidGeneratorHosts: range
-modules: posixAccount_sambaIDPoolDNHosts: 
-modules: posixAccount_uidCheckSuffixHost: 
+modules: posixAccount_sambaIDPoolDNHosts:
+modules: posixAccount_uidCheckSuffixHost:
 modules: posixAccount_shells: /bin/bash+::+/bin/csh+::+/bin/dash+::+/bin/false+::+/bin/ksh+::+/bin/sh
 modules: posixAccount_hidegecos: false
 modules: posixAccount_primaryGroupAsSecondary: false
@@ -208,37 +208,37 @@ modules: inetOrgPerson_readOnly_telephoneNumber: false
 modules: inetOrgPerson_readOnly_departmentNumber: false
 modules: inetOrgPerson_readOnly_manager: false
 modules: inetOrgPerson_readOnly_givenName: false
-modules: inetOrgPerson_jpegPhoto_maxWidth: 
-modules: inetOrgPerson_jpegPhoto_maxHeight: 
-modules: inetOrgPerson_jpegPhoto_maxSize: 
-types: filter_user: 
-types: customLabel_user: 
-types: filter_group: 
-types: customLabel_group: 
-types: hidden_user: 
-types: hideNewButton_user: 
-types: hideDeleteButton_user: 
-types: readOnly_user: 
-types: hidden_group: 
-types: hideNewButton_group: 
-types: hideDeleteButton_group: 
-types: readOnly_group: 
-types: hidden_host: 
-types: hideNewButton_host: 
-types: hideDeleteButton_host: 
-types: readOnly_host: 
+modules: inetOrgPerson_jpegPhoto_maxWidth:
+modules: inetOrgPerson_jpegPhoto_maxHeight:
+modules: inetOrgPerson_jpegPhoto_maxSize:
+types: filter_user:
+types: customLabel_user:
+types: filter_group:
+types: customLabel_group:
+types: hidden_user:
+types: hideNewButton_user:
+types: hideDeleteButton_user:
+types: readOnly_user:
+types: hidden_group:
+types: hideNewButton_group:
+types: hideDeleteButton_group:
+types: readOnly_group:
+types: hidden_host:
+types: hideNewButton_host:
+types: hideDeleteButton_host:
+types: readOnly_host:
 types: suffix_host: ou=machines,dc=my-domain,dc=com
 types: attr_host: #cn;#description;#uidNumber;#gidNumber
-types: filter_host: 
-types: customLabel_host: 
-types: hidden_smbDomain: 
-types: hideNewButton_smbDomain: 
-types: hideDeleteButton_smbDomain: 
-types: readOnly_smbDomain: 
+types: filter_host:
+types: customLabel_host:
+types: hidden_smbDomain:
+types: hideNewButton_smbDomain:
+types: hideDeleteButton_smbDomain:
+types: readOnly_smbDomain:
 types: suffix_smbDomain: dc=my-domain,dc=com
 types: attr_smbDomain: #sambaDomainName;#sambaSID
-types: filter_smbDomain: 
-types: customLabel_smbDomain: 
+types: filter_smbDomain:
+types: customLabel_smbDomain:
 types: modules_host: account,posixAccount,sambaSamAccount
 types: modules_smbDomain: sambaDomain
 tools: tool_hide_toolServerInformation: false

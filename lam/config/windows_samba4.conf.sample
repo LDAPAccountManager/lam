@@ -13,7 +13,7 @@ ServerURL: ldap://pdc.my-domain.com
 Admins: cn=Administrator,cn=users,dc=my-domain,dc=com
 
 # password to change these preferences via webfrontend (default: lam)
-Passwd: {SSHA}D05GxzVwo3vmuNLSNmkPiJ8x5u8= JgqZFQ==
+Passwd: lam
 
 # suffix of tree view
 # e.g. dc=yourdomain,dc=org
@@ -23,10 +23,10 @@ treesuffix: dc=my-domain,dc=com
 defaultLanguage: en_GB.utf8
 
 # Path to external Script
-scriptPath: 
+scriptPath:
 
 # Server of external Script
-scriptServer: 
+scriptServer:
 
 # Access rights for home directories
 scriptRights: 750
@@ -97,11 +97,11 @@ loginSearchFilter: uid=%USER%
 
 
 # Bind DN for login search.
-loginSearchDN: 
+loginSearchDN:
 
 
 # Bind password for login search.
-loginSearchPassword: 
+loginSearchPassword:
 
 
 # HTTP authentication for LAM login.
@@ -109,22 +109,22 @@ httpAuthentication: false
 
 
 # Password mail from
-lamProMailFrom: 
+lamProMailFrom:
 
 
 # Password mail reply-to
-lamProMailReplyTo: 
+lamProMailReplyTo:
 
 
 # Password mail is HTML
 lamProMailIsHTML: false
-types: filter_user: 
-types: filter_group: 
-types: filter_host: 
-types: filter_smbDomain: 
-types: hidden_group: 
-types: hidden_host: 
-types: hidden_smbDomain: 
+types: filter_user:
+types: filter_group:
+types: filter_host:
+types: filter_smbDomain:
+types: hidden_group:
+types: hidden_host:
+types: hidden_smbDomain:
 tools: tool_hide_toolServerInformation: false
 tools: tool_hide_toolFileUpload: false
 tools: tool_hide_toolPDFEditor: false
@@ -133,7 +133,7 @@ tools: tool_hide_toolProfileEditor: false
 tools: tool_hide_toolTests: false
 tools: tool_hide_toolSchemaBrowser: false
 modules: windowsGroup_hidemail: false
-types: hidden_user: 
+types: hidden_user:
 modules: customScripts_scripts: user postModify echo $INFO.userPasswordClearText$
 modules: customScripts_containsHTML: false
 modules: customScripts_hideCommand: false
@@ -154,35 +154,35 @@ modules: zarafaUser_hideAliases: false
 modules: zarafaUser_sendAsAttribute: dn
 modules: zarafaGroup_hideSendAsPrivilege: false
 modules: zarafaServer_hideProxyURL: false
-types: hidden_zarafaAddressListType: 
+types: hidden_zarafaAddressListType:
 types: suffix_zarafaAddressListType: OU=zarafa,DC=samba4,DC=test
-types: filter_zarafaAddressListType: 
+types: filter_zarafaAddressListType:
 types: attr_zarafaAddressListType: #cn;#zarafaBase;#zarafaFilter
 types: modules_zarafaAddressListType: zarafaAddressList
-types: hidden_zarafaDynamicGroupType: 
+types: hidden_zarafaDynamicGroupType:
 types: suffix_zarafaDynamicGroupType: OU=zarafa,DC=samba4,DC=test
-types: filter_zarafaDynamicGroupType: 
+types: filter_zarafaDynamicGroupType:
 types: attr_zarafaDynamicGroupType: #cn;#mail;#zarafaaliases;#zarafaBase;#zarafaFilter
 types: modules_zarafaDynamicGroupType: zarafaDynamicGroup
 modules: windowsGroup_hideotherMailbox: false
-types: hideNewButton_user: 
-types: hideDeleteButton_user: 
-types: hideNewButton_group: 
-types: hideDeleteButton_group: 
-types: hideNewButton_host: 
-types: hideDeleteButton_host: 
-types: hideNewButton_zarafaDynamicGroupType: 
-types: hideDeleteButton_zarafaDynamicGroupType: 
-types: hideNewButton_zarafaAddressListType: 
-types: hideDeleteButton_zarafaAddressListType: 
+types: hideNewButton_user:
+types: hideDeleteButton_user:
+types: hideNewButton_group:
+types: hideDeleteButton_group:
+types: hideNewButton_host:
+types: hideDeleteButton_host:
+types: hideNewButton_zarafaDynamicGroupType:
+types: hideDeleteButton_zarafaDynamicGroupType:
+types: hideNewButton_zarafaAddressListType:
+types: hideDeleteButton_zarafaAddressListType:
 modules: windowsGroup_hidemanagedBy: true
 modules: passwordSelfReset_questions: Bla1?+::+Bla2?
 modules: posixGroup_gidGenerator: range
-modules: posixGroup_sambaIDPoolDN: 
-modules: posixGroup_gidCheckSuffix: 
+modules: posixGroup_sambaIDPoolDN:
+modules: posixGroup_gidCheckSuffix:
 modules: posixAccount_uidGeneratorUsers: range
-modules: posixAccount_sambaIDPoolDNUsers: 
-modules: posixAccount_uidCheckSuffixUser: 
+modules: posixAccount_sambaIDPoolDNUsers:
+modules: posixAccount_uidCheckSuffixUser:
 modules: posixAccount_shells: /bin/bash+::+/bin/csh+::+/bin/dash+::+/bin/false+::+/bin/ksh+::+/bin/sh
 modules: posixAccount_hidegecos: false
 modules: posixAccount_primaryGroupAsSecondary: false
@@ -206,12 +206,12 @@ modules: windowsGroup_hidemsSFU30Name: true
 modules: windowsGroup_hidemsSFU30NisDomain: true
 modules: windowsUser_hidemsSFU30Name: true
 modules: windowsUser_hidemsSFU30NisDomain: true
-types: customLabel_user: 
-types: customLabel_group: 
-types: customLabel_host: 
-types: customLabel_zarafaDynamicGroupType: 
-types: customLabel_zarafaAddressListType: 
-types: readOnly_user: 
-types: readOnly_group: 
-types: readOnly_host: 
-types: readOnly_zarafaAddressListType: 
+types: customLabel_user:
+types: customLabel_group:
+types: customLabel_host:
+types: customLabel_zarafaDynamicGroupType:
+types: customLabel_zarafaAddressListType:
+types: readOnly_user:
+types: readOnly_group:
+types: readOnly_host:
+types: readOnly_zarafaAddressListType:

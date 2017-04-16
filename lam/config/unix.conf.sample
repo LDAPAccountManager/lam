@@ -13,7 +13,7 @@ serverURL: ldap://localhost:389
 admins: cn=Manager,dc=my-domain,dc=com
 
 # password to change these preferences via webfrontend (default: lam)
-passwd: {SSHA}RjBruJcTxZEdcBjPQdRBkDaSQeY= iueleA==
+passwd: lam
 
 # suffix of tree view
 # e.g. dc=yourdomain,dc=org
@@ -23,10 +23,10 @@ treesuffix: dc=yourdomain,dc=org
 defaultLanguage: en_GB.utf8:UTF-8:English (Great Britain)
 
 # Path to external Script
-scriptPath: 
+scriptPath:
 
 # Server of external Script
-scriptServer: 
+scriptServer:
 
 # Access rights for home directories
 scriptRights: 750
