@@ -59,7 +59,7 @@ if [ "$1" = "configure" ]; then
                if [ -h /etc/$server/conf.d/ldap-account-manager ]; then
                    rm -f /etc/$server/conf.d/ldap-account-manager
                fi
-               if [ -d /etc/$server/conf-available ] ]; then
+               if [ -d /etc/$server/conf-available ]; then
                    if [ ! -e /etc/$server/conf-available/ldap-account-manager.conf ]; then
                        if [ -h /etc/$server/conf-available/ldap-account-manager.conf ]; then
                            rm /etc/$server/conf-available/ldap-account-manager.conf
