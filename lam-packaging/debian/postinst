@@ -2,6 +2,10 @@
 
 set -e
 
+if [ "$1" != "configure" ]; then
+    exit 0
+fi
+
 . /usr/share/debconf/confmodule
 db_version 2.0 || [ $? -lt 30 ]
 
@@ -66,8 +70,7 @@ if [ "$1" = "configure" ]; then
                        fi
                        ln -s /etc/ldap-account-manager/apache.conf /etc/$server/conf-available/ldap-account-manager.conf
                    fi
-                   a2query -q -c ldap-account-manager
-                   if [ $? -ne 0 ]; then
+                   if [ ! `a2query -q -c ldap-account-manager` ]; then
                        a2enconf -q ldap-account-manager
                    fi
                    restart="$restart $server"
