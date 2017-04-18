@@ -1,6 +1,7 @@
 June 2017
   - Support multiple configurations for same account type
   - PHP 7.1 compatibility
+  - Samba 3: added account expiration date to PDF fields
 
 
 15.03.2017 5.7

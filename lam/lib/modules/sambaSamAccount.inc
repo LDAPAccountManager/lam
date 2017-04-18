@@ -208,6 +208,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'displayName' => _('Display name'),
+			'sambaKickoffTime' => _('Account expiration date'),
 			'sambaDomainName' => _('Domain'),
 			'sambaPrimaryGroupSID' => _('Windows group')
 		);
@@ -1128,19 +1129,11 @@ class sambaSamAccount extends baseModule implements passwordService {
 				$return->addElement($tempTable);
 				$return->addElement(new htmlHelpLink('pwdMustChange'), true);
 				// account expiration time
-				$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-				if (isset($this->attributes['sambaKickoffTime'][0])) {
-					if ($this->attributes['sambaKickoffTime'][0] > 2147483648) {
-						$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;∞&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-					}
-					else {
-						$date = new DateTime('@' . $this->attributes['sambaKickoffTime'][0], new DateTimeZone('UTC'));
-						$dateValue = $date->format('d.m.Y');
-					}
-				}
+				$dateValue = $this->formatAccountExpirationDate();
 				$return->addElement(new htmlOutputText(_('Account expiration date')));
 				$tempTable = new htmlTable();
 				$tempTable->addElement(new htmlOutputText($dateValue, false));
+				$tempTable->addSpace('5px');
 				$tempTable->addElement(new htmlAccountPageButton(get_class($this), 'time', 'sambaKickoffTime', _('Change')));
 				$return->addElement($tempTable);
 				$return->addElement(new htmlHelpLink('expireDate'), true);
@@ -1263,6 +1256,25 @@ class sambaSamAccount extends baseModule implements passwordService {
 			$return->addElement(new htmlButton('addObjectClass', _('Add Samba 3 extension')));
 		}
 		return $return;
+	}
+
+	/**
+	 * Returns the account expiration date in printable form.
+	 *
+	 * @return string expiration date
+	 */
+	private function formatAccountExpirationDate() {
+		$dateValue =  "-";
+		if (isset($this->attributes['sambaKickoffTime'][0])) {
+			if ($this->attributes['sambaKickoffTime'][0] > 2147483648) {
+				$dateValue = "∞";
+			}
+			else {
+				$date = new DateTime('@' . $this->attributes['sambaKickoffTime'][0], new DateTimeZone('UTC'));
+				$dateValue = $date->format('d.m.Y');
+			}
+		}
+		return $dateValue;
 	}
 
 	/**
@@ -1915,6 +1927,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$this->addSimplePDFField($return, 'sambaUserWorkstations', _('Samba workstations'));
 		$this->addSimplePDFField($return, 'sambaDomainName', _('Domain'));
 		$this->addSimplePDFField($return, 'sambaPrimaryGroupSID', _('Windows group'));
+		$this->addPDFKeyValue($return, 'sambaKickoffTime', _('Account expiration date'), $this->formatAccountExpirationDate());
 		// terminal server options
 		if (isset($this->attributes['sambaMungedDial'][0])) {
 			$mDial = new sambaMungedDial();
@@ -2639,7 +2652,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		if (is_array($selectedDomain) && (sizeof($selectedDomain) > 0)) {
 			$selectedDomain = $selectedDomain[0];
 		}
-		$return = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+		$return = '-';
 		// check if password expires at all
 		if ($this->noexpire) {
 			return $return;
@@ -2673,7 +2686,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		if (is_array($selectedDomain) && (sizeof($selectedDomain) > 0)) {
 			$selectedDomain = $selectedDomain[0];
 		}
-		$return = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+		$return = '-';
 		// check if there is a time set for the last password change
 		if (!isset($this->attributes['sambaPwdLastSet'][0])) {
 			return $return;
