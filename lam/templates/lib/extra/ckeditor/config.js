@@ -4,7 +4,7 @@
  */
 
 CKEDITOR.editorConfig = function( config ) {
-	
+
 	// %REMOVE_START%
 	// The configuration options below are needed when running CKEditor from source files.
 	config.plugins = 'basicstyles,blockquote,dialogui,dialog,clipboard,panel,floatpanel,menu,contextmenu,button,toolbar,enterkey,entities,floatingspace,listblock,richcombo,format,horizontalrule,htmlwriter,wysiwygarea,image,indent,indentlist,fakeobjects,link,list,magicline,maximize,removeformat,sourcearea,specialchar,stylescombo,tab,table,tabletools,undo,font,justify,showborders,iframe,panelbutton,colorbutton';
@@ -36,8 +36,5 @@ CKEDITOR.editorConfig = function( config ) {
 	// Se the most common block elements.
 	config.format_tags = 'p;h1;h2;h3;pre';
 
-	// Make dialogs simpler.
-	config.removeDialogTabs = 'image:advanced;link:advanced';
-	
 	config.height = 100;
 };
