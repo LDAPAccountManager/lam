@@ -409,25 +409,29 @@ function getHelp($module,$helpID,$scope='') {
 * @return array PDF entries (field ID => field label)
 */
 function getAvailablePDFFields($typeId) {
-	$mods = $_SESSION['config']->get_AccountModules($typeId);
+	$typeManager = new TypeManager();
+	$_SESSION['pdfContainer'] = new accountContainer($typeManager->getConfiguredType($typeId), 'pdfContainer');
+	$_SESSION['pdfContainer']->initModules();
+	$mods = $_SESSION['pdfContainer']->getAccountModules();
 	$return = array();
-	for ($i = 0; $i < sizeof($mods); $i++) {
-		$module = moduleCache::getModule($mods[$i], \LAM\TYPES\getScopeFromTypeId($typeId));
+	foreach ($mods as $module) {
 		$fields = $module->get_pdfFields($typeId);
-		$return[$mods[$i]] = array();
+		$moduleName = get_class($module);
+		$return[$moduleName] = array();
 		if (is_array($fields)) {
 			foreach ($fields as $fieldID => $fieldLabel) {
 				if (is_integer($fieldID)) {
 					// support old PDF field list which did not contain a label
-					$return[$mods[$i]][$fieldLabel] = $fieldLabel;
+					$return[$moduleName][$fieldLabel] = $fieldLabel;
 				}
 				else {
-					$return[$mods[$i]][$fieldID] = $fieldLabel;
+					$return[$moduleName][$fieldID] = $fieldLabel;
 				}
 			}
 		}
 	}
 	$return['main'] = array('dn' => _('DN'));
+	unset($_SESSION['pdfContainer']);
 	return $return;
 }
 
@@ -803,7 +807,7 @@ class accountContainer {
 	/**
 	 * Returns the included account modules.
 	 *
-	 * @return array modules
+	 * @return baseModule[] modules
 	 */
 	function getAccountModules() {
 		return $this->module;
@@ -1699,15 +1703,11 @@ class accountContainer {
 	/**
 	* This function will prepare the object for a new account.
 	*/
-	function new_account() {
+	public function new_account() {
 		logNewMessage(LOG_DEBUG, "New account with type " . $this->type->getId());
 		$this->isNewAccount = true;
 		$this->lastLoadedProfile = 'default';
-		$modules = $_SESSION['config']->get_AccountModules($this->type->getId());
-		foreach ($modules as $module) {
-			$this->module[$module] = new $module($this->type->getScope());
-			$this->module[$module]->init($this->base);
-		}
+		$this->initModules();
 		// sort module buttons
 		$this->sortModules();
 		$profile = \LAM\PROFILES\loadAccountProfile('default', $this->type->getId());
@@ -1727,6 +1727,17 @@ class accountContainer {
 		$this->titleBarTitle = $typeObject->getTitleBarTitle($this);
 		$this->titleBarSubtitle = $typeObject->getTitleBarSubtitle($this);
 		return 0;
+	}
+
+	/**
+	 * Creates the account modules and initializes them.
+	 */
+	public function initModules() {
+		$modules = $_SESSION['config']->get_AccountModules($this->type->getId());
+		foreach ($modules as $module) {
+			$this->module[$module] = new $module($this->type->getScope());
+			$this->module[$module]->init($this->base);
+		}
 	}
 
 	/**
