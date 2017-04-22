@@ -36,6 +36,7 @@
 
 
 
+
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-15"><title>Upgrade notes</title>
 
 
@@ -55,8 +56,18 @@ This is a list of API changes for all LAM releases.
 <h2>5.7 -&gt; 5.8</h2>
 <ul>
   <li>All account types allow multiple configurations by default.</li>
-  <li>check_profileOptions()/get_profileOptions()/get_pdfEntries()/get_pdfFields() has new parameter $typeId<br>
+  <li>the following&nbsp; methods in baseModule have a new parameter $typeId:</li>
+  <ul>
+    <li>check_profileOptions()</li>
+    <li>get_profileOptions()</li>
+    <li>get_pdfEntries()</li>
+    <li>get_pdfFields()</li>
+    <li>getManagedObjectClasses()</li>
+    <li>getManagedAttributes()</li>
+    <li>getLDAPAliases() <br>
   </li>
+  </ul>
+
 
 </ul>
 <br>

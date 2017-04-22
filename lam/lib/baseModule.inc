@@ -124,7 +124,7 @@ abstract class baseModule {
 		$this->attributes['objectClass'] = array();
 		$this->orig['objectClass'] = array();
 		if ($this->autoAddObjectClasses === true) {
-			$objectClasses = $this->getManagedObjectClasses();
+			$objectClasses = $this->getManagedObjectClasses($this->getAccountContainer()->get_type()->getId());
 			for ($i = 0; $i < sizeof($objectClasses); $i++) {
 				if (!in_array($objectClasses[$i], $this->attributes['objectClass'])) {
 					$this->attributes['objectClass'][] = $objectClasses[$i];
@@ -156,9 +156,10 @@ abstract class baseModule {
 			$this->attributes['objectClass'] = array();
 			$this->orig['objectClass'] = array();
 		}
+		$typeId = $this->getAccountContainer()->get_type()->getId();
 		// add object classes if needed
 		if ($this->autoAddObjectClasses === true) {
-			$objectClasses = $this->getManagedObjectClasses();
+			$objectClasses = $this->getManagedObjectClasses($typeId);
 			for ($i = 0; $i < sizeof($objectClasses); $i++) {
 				if (!in_array($objectClasses[$i], $this->attributes['objectClass'])) {
 					$this->attributes['objectClass'][] = $objectClasses[$i];
@@ -166,7 +167,7 @@ abstract class baseModule {
 			}
 		}
 		// load attributes
-		$attributeNames = $this->getManagedAttributes();
+		$attributeNames = $this->getManagedAttributes($typeId);
 		for ($i = 0; $i < sizeof($attributeNames); $i++) {
 			if (isset($attributes[$attributeNames[$i]])) {
 				$this->attributes[$attributeNames[$i]] = $attributes[$attributeNames[$i]];
@@ -1532,11 +1533,12 @@ abstract class baseModule {
 	 * <br>
 	 * <b>Example:</b> return array('posixAccount')
 	 *
+	 * @param string $typeId type id (user, group, host)
 	 * @return array list of object classes
 	 *
 	 * @see baseModule::get_metaData()
 	 */
-	public function getManagedObjectClasses() {
+	public function getManagedObjectClasses($typeId) {
 		if (isset($this->meta['objectClasses']) && is_array($this->meta['objectClasses'])) return $this->meta['objectClasses'];
 		else return array();
 	}
@@ -1548,11 +1550,12 @@ abstract class baseModule {
 	 * <br>
 	 * All alias attributes will be renamed to the given attribute names.
 	 *
+	 * @param string $typeId type id (user, group, host)
 	 * @return array list of aliases like array("alias name" => "attribute name")
 	 *
 	 * @see baseModule::get_metaData()
 	 */
-	public function getLDAPAliases() {
+	public function getLDAPAliases($typeId) {
 		if (isset($this->meta['LDAPaliases']) && is_array($this->meta['LDAPaliases'])) return $this->meta['LDAPaliases'];
 		else return array();
 	}
@@ -1561,11 +1564,12 @@ abstract class baseModule {
 	 * Returns a list of LDAP attributes which are managed by this module.
 	 * All attribute names will be renamed to match the given spelling.
 	 *
+	 * @param string $typeId type id (user, group, host)
 	 * @return array list of attributes
 	 *
 	 * @see baseModule::get_metaData()
 	 */
-	public function getManagedAttributes() {
+	public function getManagedAttributes($typeId) {
 		if (isset($this->meta['attributes']) && is_array($this->meta['attributes'])) return $this->meta['attributes'];
 		else return array();
 	}

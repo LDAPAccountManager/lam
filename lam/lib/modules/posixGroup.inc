@@ -728,7 +728,7 @@ class posixGroup extends baseModule implements passwordService {
 		}
 		if (isset($_POST['remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(array('posixGroup'), $this->attributes['objectClass']);
-			$attrs = $this->getManagedAttributes();
+			$attrs = $this->getManagedAttributes($this->getAccountContainer()->get_type()->getId());
 			foreach ($attrs as $name) {
 				if (isset($this->attributes[$name])) {
 					unset($this->attributes[$name]);

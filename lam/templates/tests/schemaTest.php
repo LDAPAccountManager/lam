@@ -69,7 +69,7 @@ else {
 		$modules = $_SESSION['config']->get_AccountModules($type->getId());
 		$container->addElement(new htmlSubTitle($type->getAlias()), true);
 		for ($m = 0; $m < sizeof($modules); $m++) {
-			$error = checkSchemaForModule($modules[$m], $type->getScope());
+			$error = checkSchemaForModule($modules[$m], $type->getScope(), $type->getId());
 			$message = _("No problems found.");
 			$icon = '../../graphics/pass.png';
 			if ($error != null) {
@@ -98,14 +98,15 @@ include '../main_footer.php';
  * Checks if the object classes and attributes for this module are available.
  *
  * @param String $name module name
- * @param String $type type (user, group, ...)
+ * @param String $scope type (user, group, ...)
+ * @param String $typeId type id
  * @return String error message or null
  */
-function checkSchemaForModule($name, $type) {
-	$module = new $name($type);
-	$classes = $module->getManagedObjectClasses();
-	$attrs = $module->getManagedAttributes();
-	$aliases = array_flip($module->getLDAPAliases());
+function checkSchemaForModule($name, $scope, $typeId) {
+	$module = new $name($scope);
+	$classes = $module->getManagedObjectClasses($typeId);
+	$attrs = $module->getManagedAttributes($typeId);
+	$aliases = array_flip($module->getLDAPAliases($typeId));
 	if (sizeof($classes) == 0) {
 		return null;
 	}

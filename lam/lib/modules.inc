@@ -1234,7 +1234,7 @@ class accountContainer {
 	 */
 	private function anyModuleManagesMail() {
 		foreach ($this->module as $mod) {
-			if (in_array('mail', $mod->getManagedAttributes())) {
+			if (in_array('mail', $mod->getManagedAttributes($this->get_type()->getId()))) {
 				return true;
 			}
 		}
@@ -1639,9 +1639,9 @@ class accountContainer {
 		$ldapAttributesTemp = array();
 		foreach ($modules as $module) {
 			$moduleObj = moduleCache::getModule($module, $this->type->getScope());
-			$objectClasses = array_merge($objectClasses, $moduleObj->getManagedObjectClasses());
-			$aliases = array_merge($aliases, $moduleObj->getLDAPAliases());
-			$ldapAttributesTemp = array_merge($ldapAttributesTemp, $moduleObj->getManagedAttributes());
+			$objectClasses = array_merge($objectClasses, $moduleObj->getManagedObjectClasses($this->type->getId()));
+			$aliases = array_merge($aliases, $moduleObj->getLDAPAliases($this->type->getId()));
+			$ldapAttributesTemp = array_merge($ldapAttributesTemp, $moduleObj->getManagedAttributes($this->type->getId()));
 		}
 		// build lower case attribute names
 		$ldapAttributes = array();
