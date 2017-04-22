@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008        Thomas Manninger
-                2008 - 2015  Roland Gruber
+                2008 - 2017 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -358,7 +358,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	*/
 	public function save_attributes() {
 		// remove dhcpSubnet object class if only the DHCP settings were changed
-		if ($this->getAccountContainer()->dn_orig == $_SESSION['config']->get_suffix('dhcp')) {
+		if ($this->isRootNode()) {
 			if (!in_array_ignore_case("dhcpSubnet", $this->orig['objectClass']) && in_array_ignore_case("dhcpSubnet", $this->attributes['objectClass'])) {
 				$this->attributes['objectClass'] = array_delete(array("dhcpSubnet"), $this->attributes['objectClass']);
 			}
@@ -375,7 +375,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	*/
 	public function process_attributes() {
 		// check if DHCP main settings and valid DHCP entry
-		if ($_SESSION['config']->get_suffix('dhcp') == $this->getAccountContainer()->dn_orig) {
+		if ($this->isRootNode()) {
 			if (!in_array_ignore_case('dhcpService', $this->attributes['objectClass']) && !in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
 				return array();
 			}
@@ -383,7 +383,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$errors = array();
 
 		// Check if cn is not empty
-		if ($_SESSION['config']->get_suffix('dhcp') != $this->getAccountContainer()->dn_orig) {
+		if (!$this->isRootNode()) {
 			if (!empty($_POST['cn'])) $_POST['cn'] = trim($_POST['cn']);
 			$this->attributes['cn'][0] = $_POST['cn'];
 			if (empty($_POST['cn'])) {
@@ -486,7 +486,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 
 		$this->setDHCPOption('netbios-node-type', $_POST['netbios_node_type']);
 
-		if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
+		if (!$this->isRootNode()) {
 			// Check subnet
 			$_POST['subnet'] = trim($_POST['subnet']);
 			if (!$this->checkSubnetMask($_POST['subnet'])) {
@@ -548,14 +548,14 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	public function display_html_attributes() {
 		$return = new htmlTable();
 		// check if DHCP main settings and valid DHCP entry
-		if ($_SESSION['config']->get_suffix('dhcp') == $this->getAccountContainer()->dn_orig) {
+		if ($this->isRootNode()) {
 			if (!in_array_ignore_case('dhcpService', $this->attributes['objectClass']) && !in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
 				$return->addElement(new htmlStatusMessage('ERROR', _('Please set your LDAP suffix to an LDAP entry with object class "dhcpService" or "dhcpServer".')));
 				return $return;
 			}
 		}
 		// Subnet name
-		if ($_SESSION['config']->get_suffix('dhcp') != $this->getAccountContainer()->dn_orig) {
+		if (!$this->isRootNode()) {
 			$cn = '';
 			if (isset($this->attributes['cn'][0])) {
 				$cn = $this->attributes['cn'][0];
@@ -594,7 +594,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$nodeSelect->setHasDescriptiveElements(true);
 		$return->addElement($nodeSelect, true);
 
-		if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
+		if (!$this->isRootNode()) {
 			// unknown clients
 			$unknownClients = $this->getUnknownClients();
 			if (empty($unknownClients)) {
@@ -642,7 +642,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$this->setDHCPOption('netbios-name-servers', $profile['netbios'][0]);
 		$this->setDHCPOption('netbios-node-type', $profile['netbios_node_type'][0]);
 
-		if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
+		if (!$this->isRootNode()) {
 			$this->setDHCPOption('subnet-mask', $profile['subnet'][0]);
 
 	        // calc the netmask:
@@ -1007,6 +1007,15 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		return $messages;
 	}
 
+	/**
+	 * Returns if the current DN is the root entry.
+	 *
+	 * @return bool is root
+	 */
+	private function isRootNode() {
+		$rootSuffix = $this->getAccountContainer()->get_type()->getSuffix();
+		return $this->getAccountContainer()->dn_orig == $rootSuffix;
+	}
 
 }
 
