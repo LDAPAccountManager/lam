@@ -136,11 +136,11 @@ class fixed_ip extends baseModule {
 	* @return string status ("enabled", "disabled", "hidden")
 	*/
 	public function getButtonStatus() {
-	    if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
-	    	return "enabled";
-		}
+	    if ($this->isRootNode()) {
+			return "hidden";
+	    }
 		else {
-		    return "hidden";
+	    	return "enabled";
 		}
 	}
 
@@ -227,7 +227,7 @@ class fixed_ip extends baseModule {
 	 * @param array $attr list of attributes
 	 */
 	function load_attributes($attr) {
-	    if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
+	    if (!$this->isRootNode()) {
 	    	$attributes = array('cn', 'dhcphwaddress', 'dhcpstatements', 'dhcpcomments');
 	    	$entries = searchLDAP($this->getAccountContainer()->dn_orig, '(objectClass=dhcpHost)', $attributes);
 			for ($i = 0; $i < sizeof($entries); $i++) {
@@ -287,7 +287,7 @@ class fixed_ip extends baseModule {
 	*/
 	public function process_attributes() {
 		$errors = array();
-		if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
+		if (!$this->isRootNode()) {
 			$this->processed = true;
 
 			$this->reset_overlapd_ip();
@@ -644,8 +644,8 @@ class fixed_ip extends baseModule {
 	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	public function postModifyActions($newAccount, $attributes) {
-		if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
-			$ldapSuffix = ',cn=' . $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0] . ',' . $_SESSION['config']->get_suffix('dhcp');
+		if (!$this->isRootNode()) {
+			$ldapSuffix = ',cn=' . $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0] . ',' . $this->getAccountContainer()->get_type()->getSuffix();
 		    $add = array();
 		    $mod = array(); // DN => array(attr => values)
 		    $delete = array();
@@ -857,6 +857,16 @@ class fixed_ip extends baseModule {
 		foreach ($result as $attributes) {
 			$this->hostCache[] = $attributes;
 		}
+	}
+
+	/**
+	 * Returns if the current DN is the root entry.
+	 *
+	 * @return bool is root
+	 */
+	private function isRootNode() {
+		$rootSuffix = $this->getAccountContainer()->get_type()->getSuffix();
+		return $this->getAccountContainer()->dn_orig == $rootSuffix;
 	}
 
 }
