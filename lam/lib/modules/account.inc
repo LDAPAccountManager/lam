@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2015  Roland Gruber
+                2005 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -55,9 +55,6 @@ class account extends baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
-		if (isLoggedIn()) {
-			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
-		}
 		$return = array();
 		// icon
 		$return['icon'] = 'uid.png';
@@ -81,9 +78,6 @@ class account extends baseModule {
 		$return['PDF_fields'] = array(
 			'description' => _('Description')
 		);
-		if (isLoggedIn() && !in_array('posixAccount', $modules)) {
-			$return['PDF_fields']['uid'] = _('User name');
-		}
 		// help Entries
 		$return['help'] = array (
 			'host' => array(
@@ -118,6 +112,18 @@ class account extends baseModule {
 	}
 
 	/**
+	 * Returns if the Unix module is active for the current account type.
+	 *
+	 * @return bool Unix active
+	 */
+	private function isUnixActive() {
+		if ($this->getAccountContainer() != null) {
+			return $this->getAccountContainer()->getAccountModule('posixAccount') != null;
+		}
+		return false;
+	}
+
+	/**
 	* This function fills the message array.
 	*/
 	function load_Messages() {
@@ -133,8 +139,9 @@ class account extends baseModule {
 	* @return boolean true if LDAP operation can be done
 	*/
 	function module_complete() {
-		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
-		if (!in_array('posixAccount', $modules) && $this->attributes['uid'][0] == '') return false;
+		if (!$this->isUnixActive() && empty($this->attributes['uid'][0])) {
+			return false;
+		}
 		return true;
 	}
 
@@ -188,8 +195,7 @@ class account extends baseModule {
 		// Load attributes
 		$this->attributes['description'][0] = $_POST['description'];
 		// user name if no posixAccount
-		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
-		if (!in_array('posixAccount', $modules)) {
+		if (!$this->isUnixActive()) {
 			$this->attributes['uid'][0] = $_POST['uid'];
 			if (!get_preg($this->attributes['uid'][0], '!upper')) $errors[] = $this->messages['uid'][2];
 			if (!get_preg($this->attributes['uid'][0], 'username')) $errors[] = $this->messages['uid'][3];
@@ -205,8 +211,7 @@ class account extends baseModule {
 	function display_html_attributes() {
 		$container = new htmlTable();
 		// user name if no posixAccount
-		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
-		if (!in_array('posixAccount', $modules)) {
+		if (!$this->isUnixActive()) {
 			$title = _('User name');
 			if ($this->get_scope()=='host') {
 				$title = _('Host name');
@@ -217,6 +222,18 @@ class account extends baseModule {
 		// description
 		$this->addSimpleInputTextField($container, 'description', _('Description'));
 		return $container;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see baseModule::get_pdfFields()
+	 */
+	public function get_pdfFields($typeId) {
+		$fields = parent::get_pdfFields($typeId);
+		if (!$this->isUnixActive()) {
+			$fields['uid'] = _('User name');
+		}
+		return $fields;
 	}
 
 	/**
