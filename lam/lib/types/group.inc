@@ -399,8 +399,6 @@ class lamGroupList extends lamList {
 		if (sizeof($this->entries) <= 0) return;
 
 		$scope = "user";
-		// get search suffix
-		$module_suffix = $_SESSION["config"]->get_Suffix($scope);
 		// configure search filter
 		$module_filter = get_ldap_filter($scope);  // basic filter is provided by modules
 		$attrs = array( "uid" );
