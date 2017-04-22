@@ -1,5 +1,4 @@
 <?php
-use \LAM\TYPES\TypeManager;
 /*
 $Id$
 
@@ -163,7 +162,7 @@ class ddns extends baseModule {
 	public function module_complete() {
 		$this->attributes = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes;
 		$this->orig = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->orig;
-		if ($this->getAccountContainer()->dn_orig==$_SESSION['config']->get_suffix('dhcp')) {
+		if ($this->isRootNode()) {
 			// check if DHCP main settings and valid DHCP entry
 			if (!in_array_ignore_case('dhcpService', $this->attributes['objectClass']) && !in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
 				return false;
@@ -184,6 +183,16 @@ class ddns extends baseModule {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Returns if the current DN is the root entry.
+	 *
+	 * @return bool is root
+	 */
+	private function isRootNode() {
+		$rootSuffix = $this->getAccountContainer()->get_type()->getSuffix();
+		return $this->getAccountContainer()->dn_orig == $rootSuffix;
 	}
 
 	/**
@@ -229,7 +238,7 @@ class ddns extends baseModule {
 		$errors = array();
 
 		// Main Settings and Account have to different processes.
-		if ($this->getAccountContainer()->dn_orig==$_SESSION['config']->get_suffix('dhcp')) {
+		if ($this->isRootNode()) {
 			// main settings:
 			$errors = $this->process_attributes_mainSettings();
 		}
@@ -349,13 +358,11 @@ class ddns extends baseModule {
 		$this->orig = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->orig;
 		$return = new htmlTable();
 		// check if DHCP main settings and valid DHCP entry
-		if ($_SESSION['config']->get_suffix('dhcp') == $this->getAccountContainer()->dn_orig) {
+		if ($this->isRootNode()) {
 			if (!in_array_ignore_case('dhcpService', $this->attributes['objectClass']) && !in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
 				$return->addElement(new htmlStatusMessage('ERROR', _('Please set your LDAP suffix to an LDAP entry with object class "dhcpService" or "dhcpServer".')));
 				return $return;
 			}
-		}
-		if ($this->getAccountContainer()->dn_orig == $_SESSION['config']->get_suffix('dhcp')) {
 			// DHCP main settings
 			$return->addElement(new htmlTableExtendedInputCheckbox('active', $this->isDynDNSActivated(), _('Activate DynDNS'), 'active'), true);
 			$return->addElement(new htmlTableExtendedInputCheckbox('insert_fixed', $this->addFixIPs(), _('Add fix IP addresses to DNS'), 'fixed_ips'), true);
