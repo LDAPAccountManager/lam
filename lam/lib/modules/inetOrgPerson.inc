@@ -149,9 +149,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'sn', 'userPassword', 'description', 'homePhone', 'pager', 'roomNumber', 'businessCategory', 'l', 'st',
 			'physicalDeliveryOfficeName', 'carLicense', 'departmentNumber', 'o', 'employeeNumber', 'initials',
 			'registeredAddress', 'labeledURI', 'ou', 'userCertificate;binary', 'INFO.userPasswordClearText');
-		if (!$this->isUnixActive()) {
-			$return['attributes'][] = 'cn';
-		}
 		// self service search attributes
 		$return['selfServiceSearchAttributes'] = array('uid', 'mail', 'cn', 'surname', 'givenName', 'employeeNumber');
 		// self service field settings
@@ -168,86 +165,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'postalAddress', 'registeredAddress', 'postalCode', 'postOfficeBox', 'jpegPhoto', 'homePhone', 'roomNumber', 'carLicense',
 			'location', 'state', 'officeName', 'businessCategory', 'departmentNumber', 'initials', 'title', 'labeledURI', 'userCertificate',
 			'ou', 'description', 'uid');
-		// profile elements
-		$profileElements = array();
-		if (!$this->isUnixActive()) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Common name'), 'inetOrgPerson_cn', null, 'cn');
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Initials'), 'inetOrgPerson_initials', null, 'initials');
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Description'), 'inetOrgPerson_description', null, 'description');
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Street'), 'inetOrgPerson_street', null, 'streetList');
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostOfficeBox')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Post office box'), 'inetOrgPerson_postOfficeBox', null, 'postOfficeBoxList');
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalCode')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Postal code'), 'inetOrgPerson_postalCode', null, 'postalCodeList');
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Location'), 'inetOrgPerson_l', null, 'lList');
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideState')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('State'), 'inetOrgPerson_st', null, 'stList');
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Postal address'), 'inetOrgPerson_postalAddress', null, 'postalAddress');
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRegisteredAddress')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Registered address'), 'inetOrgPerson_registeredAddress', null, 'registeredAddress');
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Office name'), 'inetOrgPerson_physicalDeliveryOfficeName', null, 'physicalDeliveryOfficeName');
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRoomNumber')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Room number'), 'inetOrgPerson_roomNumber', null, 'roomNumber');
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Telephone number'), 'inetOrgPerson_telephoneNumber', null, 'telephoneNumberList');
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Fax number'), 'inetOrgPerson_facsimileTelephoneNumber', null, 'facsimileTelephoneNumberList');
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Email address'), 'inetOrgPerson_mail', null, 'mailList');
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLabeledURI')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Web site'), 'inetOrgPerson_labeledURI', null, 'labeledURIList');
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Department'), 'inetOrgPerson_departmentNumber', null, 'departmentNumberList');
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOu')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Organisational unit'), 'inetOrgPerson_ou', null, 'ouList');
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideO')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Organisation'), 'inetOrgPerson_o', null, 'oList');
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Job title'), 'inetOrgPerson_title', null, 'title');
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Employee type'), 'inetOrgPerson_employeeType', null, 'employeeType');
-		}
-		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
-		    $profileElements[] = new htmlTableExtendedInputField(_('Business category'), 'inetOrgPerson_businessCategory', null, 'businessCategory');
-		}
-		if (sizeof($profileElements) > 0) {
-			$profileContainer = new htmlTable();
-			for ($i = 0; $i < sizeof($profileElements); $i++) {
-				$profileContainer->addElement($profileElements[$i]);
-				$profileContainer->addNewLine();
-			}
-			$return['profile_options'] = $profileContainer;
-		}
 		// profile checks and mappings
-		if (!$this->isUnixActive()) {
-			$return['profile_mappings']['inetOrgPerson_cn'] = 'cn';
-		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
 			$return['profile_mappings']['inetOrgPerson_initials'] = 'initials';
 		}
@@ -635,16 +553,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
 			$return['PDF_fields']['initials'] = _('Initials');
 		}
-
-		if (isLoggedIn()) {
-			if (!$this->isUnixActive()) {
-				if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideUID')) {
-					$return['PDF_fields']['uid'] = _('User name');
-				}
-				$return['PDF_fields']['cn'] = _('Common name');
-				$return['PDF_fields']['userPassword'] = _('Password');
-			}
-		}
 		// help Entries
 		$return['help'] = array (
 			'description' => array (
@@ -881,6 +789,18 @@ class inetOrgPerson extends baseModule implements passwordService {
 			),
 		);
 		return $return;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see baseModule::getManagedAttributes()
+	 */
+	public function getManagedAttributes($typeId) {
+		$attrs = parent::getManagedAttributes($typeId);
+		if (!$this->isUnixActive()) {
+			$attrs[] = 'cn';
+		}
+		return $attrs;
 	}
 
 	/**
@@ -1973,6 +1893,24 @@ class inetOrgPerson extends baseModule implements passwordService {
 
 	/**
 	 * {@inheritDoc}
+	 * @see baseModule::get_pdfFields()
+	 */
+	public function get_pdfFields($typeId) {
+		$fields = parent::get_pdfFields($typeId);
+		$typeManager = new TypeManager();
+		$modules = $typeManager->getConfiguredType($typeId)->getModules();
+		if (!$this->isUnixActive($modules)) {
+			if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideUID')) {
+				$fields['uid'] = _('User name');
+			}
+			$fields['cn'] = _('Common name');
+			$fields['userPassword'] = _('Password');
+		}
+		return $fields;
+	}
+
+	/**
+	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
@@ -2018,6 +1956,91 @@ class inetOrgPerson extends baseModule implements passwordService {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 * @see baseModule::get_profileOptions()
+	 */
+	public function get_profileOptions($typeId) {
+		$typeManager = new TypeManager();
+		$modules = $typeManager->getConfiguredType($typeId)->getModules();
+		$profileElements = array();
+		if (!$this->isUnixActive($modules)) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Common name'), 'inetOrgPerson_cn', null, 'cn');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Initials'), 'inetOrgPerson_initials', null, 'initials');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Description'), 'inetOrgPerson_description', null, 'description');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Street'), 'inetOrgPerson_street', null, 'streetList');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostOfficeBox')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Post office box'), 'inetOrgPerson_postOfficeBox', null, 'postOfficeBoxList');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalCode')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Postal code'), 'inetOrgPerson_postalCode', null, 'postalCodeList');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Location'), 'inetOrgPerson_l', null, 'lList');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideState')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('State'), 'inetOrgPerson_st', null, 'stList');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Postal address'), 'inetOrgPerson_postalAddress', null, 'postalAddress');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRegisteredAddress')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Registered address'), 'inetOrgPerson_registeredAddress', null, 'registeredAddress');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Office name'), 'inetOrgPerson_physicalDeliveryOfficeName', null, 'physicalDeliveryOfficeName');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRoomNumber')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Room number'), 'inetOrgPerson_roomNumber', null, 'roomNumber');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Telephone number'), 'inetOrgPerson_telephoneNumber', null, 'telephoneNumberList');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Fax number'), 'inetOrgPerson_facsimileTelephoneNumber', null, 'facsimileTelephoneNumberList');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Email address'), 'inetOrgPerson_mail', null, 'mailList');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLabeledURI')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Web site'), 'inetOrgPerson_labeledURI', null, 'labeledURIList');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Department'), 'inetOrgPerson_departmentNumber', null, 'departmentNumberList');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOu')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Organisational unit'), 'inetOrgPerson_ou', null, 'ouList');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideO')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Organisation'), 'inetOrgPerson_o', null, 'oList');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Job title'), 'inetOrgPerson_title', null, 'title');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
+			$profileElements[] = new htmlTableExtendedInputField(_('Employee type'), 'inetOrgPerson_employeeType', null, 'employeeType');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
+		    $profileElements[] = new htmlTableExtendedInputField(_('Business category'), 'inetOrgPerson_businessCategory', null, 'businessCategory');
+		}
+		if (sizeof($profileElements) > 0) {
+			$profileContainer = new htmlTable();
+			for ($i = 0; $i < sizeof($profileElements); $i++) {
+				$profileContainer->addElement($profileElements[$i]);
+				$profileContainer->addNewLine();
+			}
+			return $profileContainer;
+		}
+		return null;
+	}
+
+	/**
 	* Loads the values of an account profile into internal variables.
 	*
 	* @param array $profile hash array with profile values (identifier => value)
@@ -2025,6 +2048,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 	function load_profile($profile) {
 		// profile mappings in meta data
 		parent::load_profile($profile);
+		if (!$this->isUnixActive() && !empty($profile['inetOrgPerson_cn'][0])) {
+			$this->attributes['cn'][0] = $profile['inetOrgPerson_cn'][0];
+		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
 			// departments
 			if (isset($profile['inetOrgPerson_departmentNumber'][0]) && $profile['inetOrgPerson_departmentNumber'][0] != '') {
@@ -2123,7 +2149,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 	function get_uploadColumns($selectedModules) {
 		$return = parent::get_uploadColumns($selectedModules);
 		// cn and uid for upload (only if posixAccount is not selected)
-		if (!in_array('posixAccount', $selectedModules)) {
+		if (!$this->isUnixActive($selectedModules)) {
 			$return[] = array(
 				'name' => 'inetOrgPerson_cn',
 				'description' => _('Common name'),
@@ -2189,7 +2215,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 					$errors[] = $errMsg;
 				}
 			}
-			if (!in_array('posixAccount', $selectedModules)) {
+			if (!$this->isUnixActive($selectedModules)) {
 				// uid
 				if (isset($ids['inetOrgPerson_userName']) && !empty($rawAccounts[$i][$ids['inetOrgPerson_userName']])) {
 					if (in_array($rawAccounts[$i][$ids['inetOrgPerson_userName']], $existingUsers)) {
@@ -2302,7 +2328,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (isset($ids['inetOrgPerson_labeledURI']) && ($rawAccounts[$i][$ids['inetOrgPerson_labeledURI']] != "")) {
 				$partialAccounts[$i]['labeledURI'] = preg_split('/;[ ]*/', trim($rawAccounts[$i][$ids['inetOrgPerson_labeledURI']]));
 			}
-			if (!in_array('posixAccount', $selectedModules)) {
+			if (!$this->isUnixActive($selectedModules)) {
 				// cn
 				if ($rawAccounts[$i][$ids['inetOrgPerson_cn']] != "") {
 					if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_cn']], 'cn')) {
@@ -3764,13 +3790,17 @@ class inetOrgPerson extends baseModule implements passwordService {
 	/**
 	 * Returns if the Unix module is also active.
 	 *
+	 * @param string[] $modules active account mdules
 	 * @return boolean Unix is active
 	 */
-	private function isUnixActive() {
-		if (!isset($_SESSION['config'])) {
+	private function isUnixActive($modules = null) {
+		if (!empty($modules)) {
+			return in_array('posixAccount', $modules);
+		}
+		if ($this->getAccountContainer() == null) {
 			return false;
 		}
-		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
+		$modules = $this->getAccountContainer()->get_type()->getModules();
 		return in_array('posixAccount', $modules);
 	}
 
