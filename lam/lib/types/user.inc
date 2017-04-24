@@ -630,7 +630,6 @@ class lamUserList extends lamList {
 	 */
 	protected function refreshPrimaryGroupTranslation() {
 		$this->trans_primary_hash = array();
-		$grp_suffix = $_SESSION['config']->get_Suffix('group');
 		$filter = "objectClass=posixGroup";
 		$attrs = array("cn", "gidNumber");
 		$entries = searchLDAPByAttribute(null, null, 'posixGroup', $attrs, array('group'));
