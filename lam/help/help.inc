@@ -1,5 +1,6 @@
 <?php
 namespace LAM\HELP;
+use \LAM\TYPES\TypeManager;
 /*
 $Id$
 
@@ -34,19 +35,22 @@ $Id$
  */
 
 // generate help entry for translated list attributes
-$types = \LAM\TYPES\getTypes();
 $entry206Example = "";
-for ($i = 0; $i < sizeof($types); $i++) {
-	$entry206Example .= "<b>" . \LAM\TYPES\getTypeAlias($types[$i]) . ":</b><br>\n";
-	$descriptions = \LAM\TYPES\getListAttributeDescriptions($types[$i]);
-	$attributes = array_keys($descriptions);
-	for ($a = 0; $a < sizeof($attributes); $a++) {
-		$entry206Example .= "#" . $attributes[$a] . ": " . $descriptions[$attributes[$a]];
-		if ($a < (sizeof($attributes) - 1)) {
-			$entry206Example .= ", ";
+if (isset($_SESSION['conf_config'])) {
+	$typeManager = new TypeManager($_SESSION['conf_config']);
+	$types = $typeManager->getConfiguredTypes();
+	foreach ($types as $type) {
+		$entry206Example .= "<b>" . $type->getAlias() . ":</b><br>\n";
+		$descriptions = $type->getBaseType()->getListAttributeDescriptions();
+		$attributes = array_keys($descriptions);
+		for ($a = 0; $a < sizeof($attributes); $a++) {
+			$entry206Example .= "#" . $attributes[$a] . ": " . $descriptions[$attributes[$a]];
+			if ($a < (sizeof($attributes) - 1)) {
+				$entry206Example .= ", ";
+			}
 		}
+		$entry206Example .= "<br><br>";
 	}
-	$entry206Example .= "<br><br>";
 }
 
 $helpArray = array (

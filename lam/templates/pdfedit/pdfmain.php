@@ -105,14 +105,15 @@ $container = new htmlTable();
 $container->addElement(new htmlTitle(_('PDF editor')), true);
 
 if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
+	$typeToDelete = $typeManager->getConfiguredType($_POST['profileDeleteType']);
 	// delete structure
 	if (\LAM\PDF\deletePDFStructure($_POST['profileDeleteType'], $_POST['profileDeleteName'])) {
-		$message = new htmlStatusMessage('INFO', _('Deleted PDF structure.'), \LAM\TYPES\getTypeAlias($_POST['profileDeleteType']) . ': ' . htmlspecialchars($_POST['profileDeleteName']));
+		$message = new htmlStatusMessage('INFO', _('Deleted PDF structure.'), $typeToDelete->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
 		$message->colspan = 10;
 		$container->addElement($message, true);
 	}
 	else {
-		$message = new htmlStatusMessage('ERROR', _('Unable to delete PDF structure!'), \LAM\TYPES\getTypeAlias($_POST['profileDeleteType']) . ': ' . htmlspecialchars($_POST['profileDeleteName']));
+		$message = new htmlStatusMessage('ERROR', _('Unable to delete PDF structure!'), $typeToDelete->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
 		$message->colspan = 10;
 		$container->addElement($message, true);
 	}

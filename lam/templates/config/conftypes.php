@@ -427,17 +427,17 @@ function checkInput() {
 		// set suffixes
 		elseif (substr($key, 0, 7) == "suffix_") {
 			$typeSettings[$key] = trim($_POST[$key]);
-			$type = substr($postKeys[$i], 7);
+			$type = $typeManager->getConfiguredType(substr($postKeys[$i], 7));
 			if (strlen($_POST[$key]) < 1) {
-				$errors[] = array("ERROR", _("LDAP Suffix is invalid!"), \LAM\TYPES\getTypeAlias($type));
+				$errors[] = array("ERROR", _("LDAP Suffix is invalid!"), $type->getAlias());
 			}
 		}
 		// set attributes
 		elseif (substr($key, 0, 5) == "attr_") {
 			$typeSettings[$key] = $_POST[$key];
-			$type = substr($postKeys[$i], 5);
+			$type = $typeManager->getConfiguredType(substr($postKeys[$i], 5));
 			if (!is_string($_POST[$key]) || !preg_match("/^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$/", $_POST[$key])) {
-				$errors[] = array("ERROR", _("List attributes are invalid!"), \LAM\TYPES\getTypeAlias($type));
+				$errors[] = array("ERROR", _("List attributes are invalid!"), $type->getAlias());
 			}
 		}
 		// set filter

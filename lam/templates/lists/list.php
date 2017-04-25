@@ -52,7 +52,7 @@ if ($type->isHidden()) {
 }
 
 // create list object if needed
-$listClass = LAM\TYPES\getListClassName($type->getScope());
+$listClass = $type->getBaseType()->getListClassName();
 if (!isset($_SESSION['list_' . $type->getId()])) {
 	$list = new $listClass($type);
 	$_SESSION['list_' . $type->getId()] = $list;

@@ -37,6 +37,7 @@
 
 
 
+
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-15"><title>Upgrade notes</title>
 
 
@@ -65,8 +66,14 @@ This is a list of API changes for all LAM releases.
     <li>getManagedObjectClasses()</li>
     <li>getManagedAttributes()</li>
     <li>getLDAPAliases() <br>
-  </li>
+</li>
   </ul>
+  <li>Removed global functions:</li>
+  <ul>
+    <li>getListClassName() -&gt; use ConfiguredType-&gt;getBaseType()-&gt;getListClassName() </li>
+    <li>getTypeAlias() -&gt; ConfiguredType-&gt;getBaseType()-&gt;getAlias()</li>
+  </ul>
+
 
 
 </ul>

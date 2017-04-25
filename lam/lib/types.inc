@@ -70,47 +70,14 @@ function getTypes() {
 }
 
 /**
-* Returns the alias name of an account type.
-*
-* @param string $type type name
-* @param \LAMConfig $config config (optional, uses $_SESSION['config'] by default)
-* @return string type alias
-*/
-function getTypeAlias($type, $config = null) {
-	if (($config == null) && !empty($_SESSION['config'])) {
-		$config = $_SESSION['config'];
-	}
-	if ($config != null) {
-		$typeSettings = $config->get_typeSettings();
-		if (!empty($typeSettings['customLabel_' . $type])) {
-			return $typeSettings['customLabel_' . $type];
-		}
-	}
-	$scope = getScopeFromTypeId($type);
-	$obj = new $scope();
-	return $obj->getAlias();
-}
-
-/**
 * Returns the description of an account type.
 *
 * @param string $type type name
 * @return string type description
 */
 function getTypeDescription($type) {
-	$obj = new $type();
+	$obj = new $type(null);
 	return $obj->getDescription();
-}
-
-/**
-* Returns the class name for the list object.
-*
-* @param string $type account type
-* @return string class name
-*/
-function getListClassName($type) {
-	$obj = new $type();
-	return $obj->getListClassName();
 }
 
 /**
@@ -255,8 +222,11 @@ class ConfiguredType {
 		if ($this->alias !== null) {
 			return $this->alias;
 		}
-		$this->alias = getTypeAlias($this->id, $this->typeManager->getConfig());
-		return $this->alias;
+		$typeSettings = $this->typeManager->getConfig()->get_typeSettings();
+		if (!empty($typeSettings['customLabel_' . $this->id])) {
+			return $typeSettings['customLabel_' . $this->id];
+		}
+		return $this->getBaseType()->getAlias();
 	}
 
 	/**
