@@ -291,7 +291,7 @@ if (sizeof($activeTypes) > 0) {
 			$attributes = $typeSettings['attr_' . $activeType->getId()];
 		}
 		else {
-			$attributes = \LAM\TYPES\getDefaultListAttributes($activeType->getScope());
+			$attributes = $activeType->getBaseType()->getDefaultListAttributes();
 		}
 		$attrsInput = new htmlTableExtendedInputField(_("List attributes"), 'attr_' . $activeType->getId(), $attributes, '206');
 		$attrsInput->setFieldSize(40);

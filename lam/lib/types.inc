@@ -81,30 +81,6 @@ function getTypeDescription($type) {
 }
 
 /**
-* Returns the default attribute list for an account type.
-* It is used as default value for the configuration editor.
-*
-* @param string $type account type
-* @return string attribute list
-*/
-function getDefaultListAttributes($type) {
-	$obj = new $type();
-	return $obj->getDefaultListAttributes();
-}
-
-/**
-* Returns a list of attributes which have a translated description.
-* This is used for the head row in the list view.
-*
-* @param string $type account type
-* @return array list of descriptions
-*/
-function getListAttributeDescriptions($type) {
-	$obj = new $type();
-	return $obj->getListAttributeDescriptions();
-}
-
-/**
  * Returns the account type for a given type id.
  *
  * @param string $typeId type id (e.g. user_1)
@@ -207,7 +183,7 @@ class ConfiguredType {
 		$attributeSpecs = explode(';', $attributeString);
 		$attributes = array();
 		foreach ($attributeSpecs as $attributeSpec) {
-			$attributes[] = new ListAttribute($attributeSpec, $this->scope);
+			$attributes[] = new ListAttribute($attributeSpec, $this);
 		}
 		$this->attributes = $attributes;
 		return $this->attributes;
@@ -333,17 +309,17 @@ class ListAttribute {
 
 	private $attributeSpec;
 
-	private $scope;
+	private $type;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param string $attributeSpec spec of attribute (e.g. '#uid' or 'uid:User')
-	 * @param string $scope account type (e.g. 'user')
+	 * @param ConfiguredType $type account type (e.g. 'user')
 	 */
-	public function __construct($attributeSpec, $scope) {
+	public function __construct($attributeSpec, $type) {
 		$this->attributeSpec = $attributeSpec;
-		$this->scope = $scope;
+		$this->type = $type;
 	}
 	/**
 	 * Returns the name of the LDAP attribute.
@@ -366,7 +342,7 @@ class ListAttribute {
 	public function getAlias() {
 		if ($this->isPredefined()) {
 			$name = strtolower(substr($this->attributeSpec, 1));
-			$hash_table = getListAttributeDescriptions($this->scope);
+			$hash_table = $this->type->getBaseType()->getListAttributeDescriptions();
 			$hash_table = array_change_key_case($hash_table, CASE_LOWER);
 			if (isset($hash_table[$name])) {
 				return $hash_table[$name];
