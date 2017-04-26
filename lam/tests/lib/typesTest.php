@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2016  Roland Gruber
+  Copyright (C) 2016 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -31,14 +31,22 @@ require_once 'lam/lib/types.inc';
  */
 class ListAttributeTest extends PHPUnit_Framework_TestCase {
 
+	private $type;
+
+	public function setUp() {
+		$this->type = $this->getMockBuilder('ConfiguredType')->setMethods(array('getBaseType'))->getMock();
+		$scope = new user($this->type);
+		$this->type->method('getBaseType')->willReturn($scope);
+	}
+
 	public function testPreTranslated() {
-		$attr = new \LAM\TYPES\ListAttribute('#uid', 'user');
+		$attr = new \LAM\TYPES\ListAttribute('#uid', $this->type);
 		$this->assertEquals('User name', $attr->getAlias());
 		$this->assertEquals('uid', $attr->getAttributeName());
 	}
 
 	public function testCustomAlias() {
-		$attr = new \LAM\TYPES\ListAttribute('uid:My translation', 'user');
+		$attr = new \LAM\TYPES\ListAttribute('uid:My translation', $this->type);
 		$this->assertEquals('My translation', $attr->getAlias());
 		$this->assertEquals('uid', $attr->getAttributeName());
 	}
