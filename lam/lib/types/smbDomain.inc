@@ -34,16 +34,18 @@ $Id$
 * @package types
 */
 class smbDomain extends baseType {
-	
+
 	/**
 	 * Constructs a new domain type object.
+	 *
+	 * @param ConfiguredType $type configuration
 	 */
-	public function __construct() {
-		parent::__construct();
+	public function __construct($type) {
+		parent::__construct($type);
 		$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another domain');
 		$this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to domain list');
 	}
-	
+
 	/**
 	* Returns the alias name of this account type.
 	*
@@ -52,7 +54,7 @@ class smbDomain extends baseType {
 	function getAlias() {
 		return _("Samba domains");
 	}
-	
+
 	/**
 	* Returns the description of this account type.
 	*
@@ -61,7 +63,7 @@ class smbDomain extends baseType {
 	function getDescription() {
 		return _("Samba 3 domain entries");
 	}
-		
+
 	/**
 	* Returns the class name for the list object.
 	*
@@ -70,7 +72,7 @@ class smbDomain extends baseType {
 	function getListClassName() {
 		return "lamSmbDomainList";
 	}
-	
+
 	/**
 	* Returns the default attribute list for this account type.
 	*
@@ -151,7 +153,7 @@ class smbDomain extends baseType {
  *
  * @package lists
  * @author Roland Gruber
- * 
+ *
  */
 class lamSmbDomainList extends lamList {
 

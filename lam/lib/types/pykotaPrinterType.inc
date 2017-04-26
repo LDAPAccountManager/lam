@@ -34,16 +34,18 @@ $Id$
 * @package types
 */
 class pykotaPrinterType extends baseType {
-	
+
 	/**
 	 * Constructs a new printer type object.
+	 *
+	 * @param ConfiguredType $type configuration
 	 */
-	public function __construct() {
-		parent::__construct();
+	public function __construct($type) {
+		parent::__construct($type);
 		$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another printer');
 		$this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to printer list');
 	}
-	
+
 	/**
 	* Returns the alias name of this account type.
 	*
@@ -52,7 +54,7 @@ class pykotaPrinterType extends baseType {
 	function getAlias() {
 		return _("Printers");
 	}
-	
+
 	/**
 	* Returns the description of this account type.
 	*
@@ -61,7 +63,7 @@ class pykotaPrinterType extends baseType {
 	function getDescription() {
 		return _("PyKota printers");
 	}
-		
+
 	/**
 	* Returns the class name for the list object.
 	*
@@ -70,7 +72,7 @@ class pykotaPrinterType extends baseType {
 	function getListClassName() {
 		return "lamPykotaPrinterTypeList";
 	}
-	
+
 	/**
 	* Returns the default attribute list for this account type.
 	*
@@ -119,7 +121,7 @@ class pykotaPrinterType extends baseType {
 		// fall back to default
 		return parent::getTitleBarTitle($container);
 	}
-	
+
 	/**
 	 * Returns the the subtitle text for the title bar on the new/edit page.
 	 *
@@ -148,7 +150,7 @@ class pykotaPrinterType extends baseType {
  *
  * @package lists
  * @author Roland Gruber
- * 
+ *
  */
 class lamPykotaPrinterTypeList extends lamList {
 
@@ -166,7 +168,7 @@ class lamPykotaPrinterTypeList extends lamList {
 			'newEntry' => _("New printer"),
 			'deleteEntry' => _("Delete selected printers"));
 	}
-	
+
 }
 
 

@@ -37,9 +37,11 @@ class user extends baseType {
 
 	/**
 	 * Constructs a new user type object.
+	 *
+	 * @param ConfiguredType $type configuration
 	 */
-	public function __construct() {
-		parent::__construct();
+	public function __construct($type) {
+		parent::__construct($type);
 		$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another user');
 		$this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to user list');
 	}

@@ -40,9 +40,11 @@ class dhcp extends baseType {
 
 	/**
 	 * Constructs a new DHCP type object.
+	 *
+	 * @param ConfiguredType $type configuration
 	 */
-	public function __construct() {
-		parent::__construct();
+	public function __construct($type) {
+		parent::__construct($type);
 		$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another DHCP entry');
 		$this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to DHCP list');
 	}

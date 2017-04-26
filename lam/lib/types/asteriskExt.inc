@@ -40,9 +40,11 @@ class asteriskExt extends baseType {
 
     /**
      * Constructs a new domain type object.
+     *
+     * @param ConfiguredType $type configuration
      */
-    public function __construct() {
-        parent::__construct();
+    public function __construct($type) {
+        parent::__construct($type);
         $this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another extension');
         $this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to extensions list');
     }

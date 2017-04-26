@@ -1,4 +1,6 @@
 <?php
+use LAM\TYPES\ConfiguredType;
+
 /*
 $Id$
 
@@ -40,10 +42,16 @@ class baseType {
 	/** label to return to account list */
 	public $LABEL_BACK_TO_ACCOUNT_LIST;
 
+	/** type configuration */
+	private $type;
+
 	/**
 	 * Creates a new type object.
+	 *
+	 * @param ConfiguredType $type configuration
 	 */
-	public function __construct() {
+	public function __construct($type) {
+		$this->type = $type;
 		$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another account');
 		$this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to account list');
 	}
@@ -182,6 +190,15 @@ class baseType {
 	 */
 	public function supportsMultipleConfigs() {
 		return true;
+	}
+
+	/**
+	 * Returns the type configuration.
+	 *
+	 * @return ConfiguredType type configuration
+	 */
+	protected function getType() {
+		return $this->type;
 	}
 
 }

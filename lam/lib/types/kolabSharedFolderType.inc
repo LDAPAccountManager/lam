@@ -34,16 +34,18 @@ $Id$
 * @package types
 */
 class kolabSharedFolderType extends baseType {
-	
+
 	/**
 	 * Constructs a new shared folder object.
+	 *
+	 * @param ConfiguredType $type configuration
 	 */
-	public function __construct() {
-		parent::__construct();
+	public function __construct($type) {
+		parent::__construct($type);
 		$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another shared folder');
 		$this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to shared folder list');
 	}
-	
+
 	/**
 	* Returns the alias name of this account type.
 	*
@@ -52,7 +54,7 @@ class kolabSharedFolderType extends baseType {
 	function getAlias() {
 		return _("Kolab shared folders");
 	}
-	
+
 	/**
 	* Returns the description of this account type.
 	*
@@ -61,7 +63,7 @@ class kolabSharedFolderType extends baseType {
 	function getDescription() {
 		return _("Kolab shared folders (e.g. mail folders)");
 	}
-		
+
 	/**
 	* Returns the class name for the list object.
 	*
@@ -70,7 +72,7 @@ class kolabSharedFolderType extends baseType {
 	function getListClassName() {
 		return "kolabSharedFolderTypeList";
 	}
-	
+
 	/**
 	* Returns the default attribute list for this account type.
 	*
@@ -116,7 +118,7 @@ class kolabSharedFolderType extends baseType {
 		// fall back to default
 		return parent::getTitleBarTitle($container);
 	}
-	
+
 }
 
 
@@ -125,7 +127,7 @@ class kolabSharedFolderType extends baseType {
  *
  * @package lists
  * @author Roland Gruber
- * 
+ *
  */
 class kolabSharedFolderTypeList extends lamList {
 
@@ -143,7 +145,7 @@ class kolabSharedFolderTypeList extends lamList {
 			'newEntry' => _("New shared folder"),
 			'deleteEntry' => _("Delete selected shared folders"));
 	}
-	
+
 }
 
 

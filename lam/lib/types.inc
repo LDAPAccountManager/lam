@@ -242,7 +242,7 @@ class ConfiguredType {
 			return $this->baseType;
 		}
 		$scope = $this->scope;
-		$this->baseType = new $scope();
+		$this->baseType = new $scope($this);
 		return $this->baseType;
 	}
 

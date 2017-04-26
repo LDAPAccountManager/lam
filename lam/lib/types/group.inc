@@ -39,9 +39,11 @@ class group extends baseType {
 
 	/**
 	 * Constructs a new group type object.
+	 *
+	 * @param ConfiguredType $type configuration
 	 */
-	public function __construct() {
-		parent::__construct();
+	public function __construct($type) {
+		parent::__construct($type);
 		$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another group');
 		$this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to group list');
 		if (isset($_SESSION['config'])) {

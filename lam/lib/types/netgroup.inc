@@ -34,16 +34,18 @@ $Id$
 * @package types
 */
 class netgroup extends baseType {
-	
+
 	/**
 	 * Constructs a new group type object.
+	 *
+	 * @param ConfiguredType $type configuration
 	 */
-	public function __construct() {
-		parent::__construct();
+	public function __construct($type) {
+		parent::__construct($type);
 		$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another group');
 		$this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to group list');
 	}
-	
+
 	/**
 	* Returns the alias name of this account type.
 	*
@@ -52,7 +54,7 @@ class netgroup extends baseType {
 	function getAlias() {
 		return _("NIS netgroups");
 	}
-	
+
 	/**
 	* Returns the description of this account type.
 	*
@@ -61,7 +63,7 @@ class netgroup extends baseType {
 	function getDescription() {
 		return _("NIS netgroup entries");
 	}
-		
+
 	/**
 	* Returns the class name for the list object.
 	*
@@ -70,7 +72,7 @@ class netgroup extends baseType {
 	function getListClassName() {
 		return "lamNetgroupList";
 	}
-	
+
 	/**
 	* Returns the default attribute list for this account type.
 	*
@@ -153,7 +155,7 @@ class netgroup extends baseType {
  *
  * @package lists
  * @author Roland Gruber
- * 
+ *
  */
 class lamNetgroupList extends lamList {
 

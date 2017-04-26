@@ -34,16 +34,18 @@ $Id$
 * @package types
 */
 class mailAlias extends baseType {
-	
+
 	/**
 	 * Constructs a new alias type object.
+	 *
+	 * @param ConfiguredType $type configuration
 	 */
-	public function __construct() {
-		parent::__construct();
+	public function __construct($type) {
+		parent::__construct($type);
 		$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another alias');
 		$this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to alias list');
 	}
-	
+
 	/**
 	* Returns the alias name of this account type.
 	*
@@ -52,7 +54,7 @@ class mailAlias extends baseType {
 	function getAlias() {
 		return _("Mail aliases");
 	}
-	
+
 	/**
 	* Returns the description of this account type.
 	*
@@ -61,7 +63,7 @@ class mailAlias extends baseType {
 	function getDescription() {
 		return _("Mailing aliases (e.g. NIS mail aliases)");
 	}
-		
+
 	/**
 	* Returns the class name for the list object.
 	*
@@ -70,7 +72,7 @@ class mailAlias extends baseType {
 	function getListClassName() {
 		return "lamMailAliasList";
 	}
-	
+
 	/**
 	* Returns the default attribute list for this account type.
 	*
@@ -125,7 +127,7 @@ class mailAlias extends baseType {
  *
  * @package lists
  * @author Roland Gruber
- * 
+ *
  */
 class lamMailAliasList extends lamList {
 

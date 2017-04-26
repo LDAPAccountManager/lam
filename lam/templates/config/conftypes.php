@@ -127,7 +127,7 @@ foreach ($activeTypes as $activeType) {
 $activeScopes = array_unique($activeScopes);
 $availableScopes = array();
 foreach ($allScopes as $scope) {
-	$scopeObj = new $scope();
+	$scopeObj = new $scope(null);
 	if (!in_array($scope, $activeScopes) || $scopeObj->supportsMultipleConfigs()) {
 		$availableScopes[$scope] = $scopeObj->getAlias();
 	}
