@@ -46,8 +46,8 @@ class group extends baseType {
 		parent::__construct($type);
 		$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another group');
 		$this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to group list');
-		if (isset($_SESSION['config'])) {
-			$modules = $_SESSION['config']->get_AccountModules('group');
+		if ($this->getType() != null) {
+			$modules = $this->getType()->getModules();
 			if (in_array('organizationalRole', $modules)) {
 				$this->LABEL_CREATE_ANOTHER_ACCOUNT = _('Create another role');
 				$this->LABEL_BACK_TO_ACCOUNT_LIST = _('Back to role list');
@@ -61,8 +61,8 @@ class group extends baseType {
 	* @return string alias name
 	*/
 	function getAlias() {
-		if (isLoggedIn() && isset($_SESSION['config'])) {
-		$modules = $_SESSION['config']->get_AccountModules('group');
+		if ($this->getType() != null) {
+		$modules = $this->getType()->getModules();
 			if (in_array('organizationalRole', $modules)) {
 				return _('Roles');
 			}
@@ -114,8 +114,8 @@ class group extends baseType {
 			"roleOccupant" => _("Role member DNs"),
 			"uniqueMember" => _("Group member DNs"),
 		);
-		if (!empty($_SESSION['config'])) {
-			$modules = $_SESSION['config']->get_AccountModules('group');
+		if ($this->getType() != null) {
+			$modules = $this->getType()->getModules();
 			if (in_array('organizationalRole', $modules)) {
 				$return['cn'] = _('Role name');
 			}
@@ -245,7 +245,7 @@ class lamGroupList extends lamList {
 			'error_noneFound' => _("No groups found!"),
 			'newEntry' => _("New group"),
 			'deleteEntry' => _("Delete selected groups"));
-		$modules = $_SESSION['config']->get_AccountModules('group');
+		$modules = $this->type->getModules();
 		if (in_array('organizationalRole', $modules)) {
 			$this->labels = array(
 				'nav' => _("Role count: %s"),

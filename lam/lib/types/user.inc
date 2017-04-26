@@ -884,7 +884,7 @@ class lamUserList extends lamList {
 		for ($i = 0; $i < $entryCount; $i++) {
 			$unixAvailable = self::isUnixAvailable($this->entries[$i]);
 			$sambaAvailable = self::isSambaAvailable($this->entries[$i]);
-			$ppolicyAvailable = self::isPPolicyAvailable($this->entries[$i]);
+			$ppolicyAvailable = $this->isPPolicyAvailable($this->entries[$i]);
 			$windowsAvailable = self::isWindowsAvailable($this->entries[$i]);
 			$unixLocked = self::isUnixLocked($this->entries[$i]);
 			$sambaLocked = self::isSambaLocked($this->entries[$i]);
@@ -931,7 +931,7 @@ class lamUserList extends lamList {
 		// check status
 		$unixAvailable = self::isUnixAvailable($attrs);
 		$sambaAvailable = self::isSambaAvailable($attrs);
-		$ppolicyAvailable = self::isPPolicyAvailable($attrs);
+		$ppolicyAvailable = $this->isPPolicyAvailable($attrs);
 		$windowsAvailable = self::isWindowsAvailable($attrs);
 		$unixLocked = self::isUnixLocked($attrs);
 		$sambaLocked = self::isSambaLocked($attrs);
@@ -1049,8 +1049,8 @@ class lamUserList extends lamList {
 	 * @param array $attrs LDAP attributes
 	 * @return boolean PPolicy part exists
 	 */
-	public static function isPPolicyAvailable(&$attrs) {
-		return in_array('ppolicyUser', $_SESSION['config']->get_AccountModules('user'));
+	public function isPPolicyAvailable(&$attrs) {
+		return in_array('ppolicyUser', $this->type->getModules());
 	}
 
 	/**
@@ -1089,8 +1089,8 @@ class lamUserList extends lamList {
 	 * @param array $attrs LDAP attributes
 	 * @return boolean 389ds available
 	 */
-	public static function is389dsAvailable(&$attrs) {
-		return in_array('locking389ds', $_SESSION['config']->get_AccountModules('user'));
+	public function is389dsAvailable(&$attrs) {
+		return in_array('locking389ds', $this->type->getModules());
 	}
 
 	/**
