@@ -2132,20 +2132,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 	}
 
 	/**
-	* Returns an array containing all input columns for the file upload.
-	*
-	* Syntax:
-	* <br> array(
-	* <br>  string: name,  // fixed non-translated name which is used as column name (should be of format: <module name>_<column name>)
-	* <br>  string: description,  // short descriptive name
-	* <br>  string: help,  // help ID
-	* <br>  string: example,  // example value
-	* <br>  boolean: required  // true, if user must set a value for this column
-	* <br> )
-	*
-	* @param array $selectedModules list of selected account modules
-	* @return array column list
-	*/
+	 * {@inheritDoc}
+	 * @see baseModule::getManagedAttributes()
+	 */
 	function get_uploadColumns($selectedModules) {
 		$return = parent::get_uploadColumns($selectedModules);
 		// cn and uid for upload (only if posixAccount is not selected)

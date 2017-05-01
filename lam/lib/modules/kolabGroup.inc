@@ -1,9 +1,10 @@
 <?php
+use LAM\TYPES\TypeManager;
 /*
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2015  Roland Gruber
+  Copyright (C) 2013 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -78,9 +79,6 @@ class kolabGroup extends baseModule {
 		$return['objectClasses'] = array('kolabGroupOfUniqueNames');
 		// managed attributes
 		$return['attributes'] = array('kolabAllowSMTPRecipient', 'kolabAllowSMTPSender', 'kolabDeleteflag');
-		if ($this->manageMail()) {
-			$return['attributes'][] = 'mail';
-		}
 		// help Entries
 		$return['help'] = array(
 			'mail' => array(
@@ -149,24 +147,11 @@ class kolabGroup extends baseModule {
 				'example' => '.com; -.net',
 			),
 		);
-		if ($this->manageMail()) {
-			$return['upload_columns'][] = array(
-				'name' => 'kolabGroup_mail',
-				'description' => _('Email address'),
-				'help' => 'mailList',
-				'example' => 'list@company.com',
-				'required' => true,
-				'unique' => true,
-			);
-		}
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'kolabAllowSMTPRecipient' => _('Allowed recipients'),
 			'kolabAllowSMTPSender' => _('Allowed senders'),
 		);
-		if ($this->manageMail()) {
-			$return['PDF_fields']['mail'] = _('Email address');
-		}
 		return $return;
 	}
 
@@ -198,7 +183,7 @@ class kolabGroup extends baseModule {
 				return $container;
 			}
 			// mail
-			if ($this->manageMail()) {
+			if ($this->manageMail($this->getAccountContainer()->get_type()->getModules())) {
 				$this->addSimpleInputTextField($container, 'mail', _('Email address'), true);
 			}
 			// allowed recipients
@@ -249,7 +234,7 @@ class kolabGroup extends baseModule {
 			return $errors;
 		}
 		// mail
-		if ($this->manageMail()) {
+		if ($this->manageMail($this->getAccountContainer()->get_type()->getModules())) {
 			if (!empty($_POST['mail'])) {
 				$this->attributes['mail'][0] = $_POST['mail'];
 				// check format
@@ -343,6 +328,25 @@ class kolabGroup extends baseModule {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 * @see baseModule::getManagedAttributes()
+	 */
+	function get_uploadColumns($selectedModules) {
+		$return = parent::get_uploadColumns($selectedModules);
+		if ($this->manageMail($selectedModules)) {
+			$return[] = array(
+				'name' => 'kolabGroup_mail',
+				'description' => _('Email address'),
+				'help' => 'mailList',
+				'example' => 'list@company.com',
+				'required' => true,
+				'unique' => true,
+			);
+		}
+		return $return;
+	}
+
+	/**
 	* In this function the LDAP account is built up.
 	*
 	* @param array $rawAccounts list of hash arrays (name => value) from user input
@@ -363,7 +367,7 @@ class kolabGroup extends baseModule {
 				$partialAccounts[$i]['objectClass'][] = 'kolabGroupOfUniqueNames';
 			}
 			// mail
-			if ($this->manageMail() && !empty($rawAccounts[$i][$ids['kolabGroup_mail']])) {
+			if ($this->manageMail($selectedModules) && !empty($rawAccounts[$i][$ids['kolabGroup_mail']])) {
 				if (get_preg($rawAccounts[$i][$ids['kolabGroup_mail']], 'email')) {
 					$this->loadMailCache();
 					if (!in_array_ignore_case(trim($rawAccounts[$i][$ids['kolabGroup_mail']]), $this->mailCache)) {
@@ -391,6 +395,20 @@ class kolabGroup extends baseModule {
 
 	/**
 	 * {@inheritDoc}
+	 * @see baseModule::get_pdfFields()
+	 */
+	public function get_pdfFields($typeId) {
+		$fields = parent::get_pdfFields($typeId);
+		$typeManager = new TypeManager();
+		$modules = $typeManager->getConfiguredType($typeId)->getModules();
+		if ($this->manageMail($modules)) {
+			$fields['mail'] = _('Email address');
+		}
+		return $fields;
+	}
+
+	/**
+	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
@@ -404,19 +422,16 @@ class kolabGroup extends baseModule {
 	/**
 	 * Returns if the mail attribute should be managed.
 	 *
+	 * @param string[] $modules account modules
 	 * @return boolean manage mail attribute
 	 */
-	private function manageMail() {
-		if (isset($_SESSION['config'])) {
-			$conf = $_SESSION['config'];
-			if (in_array('qmailGroup', $conf->get_AccountModules($this->get_scope()))) {
-				return false;
-			}
-			else {
-				return true;
-			}
+	private function manageMail($modules) {
+		if (in_array('qmailGroup', $modules)) {
+			return false;
 		}
-		return false;
+		else {
+			return true;
+		}
 	}
 
 	/**
@@ -449,6 +464,19 @@ class kolabGroup extends baseModule {
 				$this->mailHostCache[] = $result['mailhost'][0];
 			}
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see baseModule::getManagedAttributes()
+	 */
+	public function getManagedAttributes($typeId) {
+		$attrs = parent::getManagedAttributes($typeId);
+		$typeManager = new TypeManager();
+		if ($this->manageMail($typeManager->getConfiguredType($typeId)->getModules())) {
+			$attrs[] = 'mail';
+		}
+		return $attrs;
 	}
 
 }
