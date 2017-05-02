@@ -286,7 +286,7 @@ class lamDHCPList extends lamList {
 	function listDoPost() {
 		$fragment = parent::listDoPost();
         if (isset($_POST['dhcpDefaults'])) {
-        	metaRefresh("../account/edit.php?type=dhcp&DN='" . $this->type->getSuffix() . "'");
+        	metaRefresh("../account/edit.php?type=" . $this->type->getId() . "&DN='" . $this->type->getSuffix() . "'");
         	die();
         }
         else {

@@ -232,7 +232,7 @@ class range extends baseModule {
 	* @return string status ("enabled", "disabled", "hidden")
 	*/
 	public function getButtonStatus() {
-	    if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
+	    if (!$this->isRootNode()) {
 	    	return "enabled";
 		}
 		else {
@@ -248,7 +248,7 @@ class range extends baseModule {
 	function load_attributes($attr) {
 		parent::load_attributes($attr);
 		// Load DHCP Options:
-        if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
+        if (!$this->isRootNode()) {
 			$this->orig = $attr;
 			$this->attributes = $attr;
 			// Load DHCP Options:
@@ -316,7 +316,7 @@ class range extends baseModule {
 	*/
 	public function process_attributes() {
 		$errors = array();
-		if ($this->getAccountContainer()->dn_orig == $_SESSION['config']->get_suffix('dhcp')) {
+		if ($this->isRootNode()) {
 			return $errors;
 		}
 		$subnet = $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0];
@@ -756,7 +756,7 @@ class range extends baseModule {
 	public function save_attributes() {
 		$return = array();
 		// Get easy attributes
-		if ($this->getAccountContainer()->dn_orig!=$_SESSION['config']->get_suffix('dhcp')) {
+		if (!$this->isRootNode()) {
 			$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		}
 		// Return attributes
@@ -822,6 +822,16 @@ class range extends baseModule {
 			}
 		}
 		$this->poolsNew = $this->poolsOrig;
+	}
+
+	/**
+	 * Returns if the current DN is the root entry.
+	 *
+	 * @return bool is root
+	 */
+	private function isRootNode() {
+		$rootSuffix = $this->getAccountContainer()->get_type()->getSuffix();
+		return $this->getAccountContainer()->dn_orig == $rootSuffix;
 	}
 
 }
