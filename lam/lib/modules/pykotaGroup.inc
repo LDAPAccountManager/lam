@@ -1,9 +1,10 @@
 <?php
+use \LAM\TYPES\TypeManager;
 /*
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2015  Roland Gruber
+  Copyright (C) 2013 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -101,12 +102,6 @@ class pykotaGroup extends baseModule {
 		$return['objectClasses'] = array('pykotaGroup');
 		// managed attributes
 		$return['attributes'] = array('pykotaLimitBy', 'pykotaGroupName');
-		if ($this->manageCn()) {
-			$return['attributes'][] = 'cn';
-		}
-		if ($this->manageDescription()) {
-			$return['attributes'][] = 'description';
-		}
 		// help Entries
 		$return['help'] = array(
 			'cn' => array(
@@ -151,23 +146,6 @@ class pykotaGroup extends baseModule {
 				'unique' => true,
 			)
 		);
-		if ($this->manageCn()) {
-			$return['upload_columns'][] = array(
-				'name' => 'pykotaGroup_cn',
-				'description' => _('Common name'),
-				'help' => 'cn',
-				'example' => _('adminstrators'),
-				'required' => true,
-			);
-		}
-		if ($this->manageDescription()) {
-			$return['upload_columns'][] = array(
-				'name' => 'pykotaGroup_description',
-				'description' => _('Description'),
-				'help' => 'description',
-				'example' => _('Administrators group'),
-			);
-		}
 		$return['upload_columns'][] = array(
 			'name' => 'pykotaGroup_pykotaLimitBy',
 			'description' => _('Limit type'),
@@ -181,12 +159,6 @@ class pykotaGroup extends baseModule {
 			'pykotaGroupName' => _('PyKota group name'),
 			'pykotaLimitBy' => _('Limit type'),
 		);
-		if ($this->manageCn()) {
-			$return['PDF_fields']['cn'] = _('Common name');
-		}
-		if ($this->manageDescription()) {
-			$return['PDF_fields']['description'] = _('Description');
-		}
 		return $return;
 	}
 
@@ -212,9 +184,10 @@ class pykotaGroup extends baseModule {
 	 */
 	function display_html_attributes() {
 		$container = new htmlTable();
+		$modules = $this->getAccountContainer()->get_type()->getModules();
 		if ($this->isStructural() || (isset($this->attributes['objectClass']) && in_array('pykotaGroup', $this->attributes['objectClass']))) {
 			// cn
-			if ($this->manageCn()) {
+			if ($this->isUnixOrGonInactive($modules)) {
 				$this->addSimpleInputTextField($container, 'cn', _('Group name'), true);
 			}
 			// pykotaGroupName
@@ -229,7 +202,7 @@ class pykotaGroup extends baseModule {
 			$limitSelect->setSortElements(false);
 			$container->addElement($limitSelect, true);
 			// description
-			if ($this->manageDescription()) {
+			if ($this->isUnixOrGonInactive($modules)) {
 				$this->addMultiValueInputTextField($container, 'description', _('Description'), false, null, true);
 			}
 			// remove button
@@ -267,13 +240,14 @@ class pykotaGroup extends baseModule {
 			}
 			return $errors;
 		}
+		$modules = $this->getAccountContainer()->get_type()->getModules();
 		if (isset($_POST['remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(array('pykotaGroup'), $this->attributes['objectClass']);
 			$attrs = array('pykotaLimitBy', 'pykotaGroupName');
-			if ($this->manageDescription()) {
+			if ($this->isUnixOrGonInactive($modules)) {
 				$attrs[] = 'description';
 			}
-			if ($this->manageCn()) {
+			if ($this->isUnixOrGonInactive($modules)) {
 				$attrs[] = 'cn';
 			}
 			foreach ($attrs as $name) {
@@ -288,7 +262,7 @@ class pykotaGroup extends baseModule {
 			return $errors;
 		}
 		// cn
-		if ($this->manageCn()) {
+		if ($this->isUnixOrGonInactive($modules)) {
 			if (isset($_POST['cn']) && ($_POST['cn'] != '')) {
 				if (!get_preg($_POST['cn'], 'groupname')) {
 					$errors[] = $this->messages['cn'][0];
@@ -324,7 +298,7 @@ class pykotaGroup extends baseModule {
 		// limit by
 		$this->attributes['pykotaLimitBy'][0] = $_POST['pykotaLimitBy'];
 		// description
-		if ($this->manageDescription()) {
+		if ($this->isUnixOrGonInactive($modules)) {
 			$this->processMultiValueInputTextField('description', $errors);
 		}
 		return $errors;
@@ -348,6 +322,20 @@ class pykotaGroup extends baseModule {
 			return array();
 		}
 		return parent::save_attributes();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see baseModule::getManagedAttributes()
+	 */
+	public function getManagedAttributes($typeId) {
+		$attrs = parent::getManagedAttributes($typeId);
+		$typeManager = new TypeManager();
+		if ($this->isUnixOrGonInactive($typeManager->getConfiguredType($typeId)->getModules())) {
+			$attrs[] = 'cn';
+			$attrs[] = 'description';
+		}
+		return $attrs;
 	}
 
 	/**
@@ -388,6 +376,30 @@ class pykotaGroup extends baseModule {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 * @see baseModule::getManagedAttributes()
+	 */
+	function get_uploadColumns($selectedModules) {
+		$return = parent::get_uploadColumns($selectedModules);
+		if ($this->isUnixOrGonInactive($selectedModules)) {
+			$return[] = array(
+				'name' => 'pykotaGroup_cn',
+				'description' => _('Common name'),
+				'help' => 'cn',
+				'example' => _('adminstrators'),
+				'required' => true,
+			);
+			$return[] = array(
+				'name' => 'pykotaGroup_description',
+				'description' => _('Description'),
+				'help' => 'description',
+				'example' => _('Administrators group'),
+			);
+		}
+		return $return;
+	}
+
+	/**
 	* In this function the LDAP account is built up.
 	*
 	* @param array $rawAccounts list of hash arrays (name => value) from user input
@@ -407,7 +419,7 @@ class pykotaGroup extends baseModule {
 				$partialAccounts[$i]['objectClass'][] = 'pykotaObject';
 			}
 			// cn
-			if ($this->manageCn() && !empty($rawAccounts[$i][$ids['pykotaGroup_cn']])) {
+			if ($this->isUnixOrGonInactive($selectedModules) && !empty($rawAccounts[$i][$ids['pykotaGroup_cn']])) {
 				if (!get_preg($rawAccounts[$i][$ids['pykotaGroup_cn']], 'groupname')) {
 					$errMsg = $this->messages['cn'][1];
 					array_push($errMsg, array($i));
@@ -460,6 +472,21 @@ class pykotaGroup extends baseModule {
 
 	/**
 	 * {@inheritDoc}
+	 * @see baseModule::get_pdfFields()
+	 */
+	public function get_pdfFields($typeId) {
+		$fields = parent::get_pdfFields($typeId);
+		$typeManager = new TypeManager();
+		$modules = $typeManager->getConfiguredType($typeId)->getModules();
+		if ($this->isUnixOrGonInactive($modules)) {
+			$fields['cn'] = _('Common name');
+			$fields['description'] = _('Description');
+		}
+		return $fields;
+	}
+
+	/**
+	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
@@ -477,43 +504,20 @@ class pykotaGroup extends baseModule {
 	}
 
 	/**
-	 * Returns if the cn attribute should be managed.
+	 * Checks if the active modules contain Unix or group of names.
 	 *
-	 * @return boolean manage cn attribute
+	 * @param string[] $modules modules
+	 * @return bool not active
 	 */
-	private function manageCn() {
-		if (isset($_SESSION['config'])) {
-			$conf = $_SESSION['config'];
-			if (in_array('posixGroup', $conf->get_AccountModules($this->get_scope()))
-				|| in_array('groupOfNames', $conf->get_AccountModules($this->get_scope()))
-				|| in_array('groupOfUniqueNames', $conf->get_AccountModules($this->get_scope()))) {
-				return false;
-			}
-			else {
-				return true;
-			}
+	private function isUnixOrGonInactive($modules) {
+		if (in_array('posixGroup', $modules)
+			|| in_array('groupOfNames', $modules)
+			|| in_array('groupOfUniqueNames', $modules)) {
+			return false;
 		}
-		return false;
-	}
-
-	/**
-	 * Returns if the description attribute should be managed.
-	 *
-	 * @return boolean manage description attribute
-	 */
-	private function manageDescription() {
-		if (isset($_SESSION['config'])) {
-			$conf = $_SESSION['config'];
-			if (in_array('posixGroup', $conf->get_AccountModules($this->get_scope()))
-				|| in_array('groupOfNames', $conf->get_AccountModules($this->get_scope()))
-				|| in_array('groupOfUniqueNames', $conf->get_AccountModules($this->get_scope()))) {
-				return false;
-			}
-			else {
-				return true;
-			}
+		else {
+			return true;
 		}
-		return false;
 	}
 
 	/**
