@@ -2,6 +2,7 @@
 use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
+use \LAM\TYPES\TypeManager;
 /*
 $Id$
 
@@ -205,32 +206,6 @@ class pykotaUser extends baseModule {
 				'required' => true,
 			);
 		}
-		if ($this->manageUid()) {
-			$return['upload_columns'][] = array(
-				'name' => 'pykotaUser_uid',
-				'description' => _('User name'),
-				'help' => 'uid',
-				'example' => _('smiller'),
-				'required' => true,
-				'unique' => true,
-			);
-		}
-		if ($this->manageMail()) {
-			$return['upload_columns'][] = array(
-				'name' => 'pykotaUser_mail',
-				'description' => _('Email address'),
-				'help' => 'mail',
-				'example' => _('user@company.com'),
-			);
-		}
-		if ($this->manageDescription()) {
-			$return['upload_columns'][] = array(
-				'name' => 'pykotaUser_description',
-				'description' => _('Description'),
-				'help' => 'description',
-				'example' => _('Temp, contract till December'),
-			);
-		}
 		$return['upload_columns'][] = array(
 			'name' => 'pykotaUser_pykotaLimitBy',
 			'description' => _('Limit type'),
@@ -267,17 +242,8 @@ class pykotaUser extends baseModule {
 			'pykotaLifeTimePaid' => _('Total paid'),
 			'pykotaPayments' => _('Payment history'),
 		);
-		if ($this->manageUid()) {
-			$return['PDF_fields']['uid'] = _('User name');
-		}
 		if ($this->isStructural()) {
 			$return['PDF_fields']['cn'] = _('Common name');
-		}
-		if ($this->manageMail()) {
-			$return['PDF_fields']['mail'] = _('Email address');
-		}
-		if ($this->manageDescription()) {
-			$return['PDF_fields']['description'] = _('Description');
 		}
 		// self service
 		$return['selfServiceFieldSettings'] = array(
@@ -337,9 +303,10 @@ class pykotaUser extends baseModule {
 	 */
 	function display_html_attributes() {
 		$container = new htmlTable();
+		$modules = $this->getAccountContainer()->get_type()->getModules();
 		if ($this->isStructural() || (isset($this->attributes['objectClass']) && in_array('pykotaAccount', $this->attributes['objectClass']))) {
 			// uid
-			if ($this->manageUid()) {
+			if ($this->manageUid($modules)) {
 				$this->addSimpleInputTextField($container, 'uid', _('User name'), true);
 			}
 			else {
@@ -408,11 +375,11 @@ class pykotaUser extends baseModule {
 				$this->addSimpleInputTextField($container, 'cn', _('Common name'), true);
 			}
 			// mail
-			if ($this->manageMail()) {
+			if ($this->manageMail($modules)) {
 				$this->addSimpleInputTextField($container, 'mail', _('Email address'));
 			}
 			// description
-			if ($this->manageDescription()) {
+			if ($this->manageDescription($modules)) {
 				$this->addMultiValueInputTextField($container, 'description', _('Description'), false, null, true);
 			}
 			// remove button
@@ -453,16 +420,17 @@ class pykotaUser extends baseModule {
 			}
 			return $errors;
 		}
+		$modules = $this->getAccountContainer()->get_type()->getModules();
 		if (isset($_POST['remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(array('pykotaAccount', 'pykotaAccountBalance'), $this->attributes['objectClass']);
 			$attrs = array('pykotaLimitBy', 'pykotaUserName');
-			if ($this->manageDescription()) {
+			if ($this->manageDescription($modules)) {
 				$attrs[] = 'description';
 			}
-			if ($this->manageMail()) {
+			if ($this->manageMail($modules)) {
 				$attrs[] = 'mail';
 			}
-			if ($this->manageUid()) {
+			if ($this->manageUid($modules)) {
 				$attrs[] = 'uid';
 			}
 			foreach ($attrs as $name) {
@@ -477,7 +445,7 @@ class pykotaUser extends baseModule {
 			return $errors;
 		}
 		// uid
-		if ($this->manageUid()) {
+		if ($this->manageUid($modules)) {
 			if (isset($_POST['uid']) && ($_POST['uid'] != '')) {
 				if (!get_preg($_POST['uid'], 'username')) {
 					$errors[] = $this->messages['uid'][0];
@@ -520,14 +488,14 @@ class pykotaUser extends baseModule {
 			}
 		}
 		// mail
-		if ($this->manageMail()) {
+		if ($this->manageMail($modules)) {
 			$this->attributes['mail'][0] = $_POST['mail'];
 			if (!empty($_POST['mail']) && !get_preg($_POST['mail'], 'email')) {
 				$errors[] = $this->messages['mail'][0];
 			}
 		}
 		// description
-		if ($this->manageDescription()) {
+		if ($this->manageDescription($modules)) {
 			$this->processMultiValueInputTextField('description', $errors);
 		}
 		// overcharge factor
@@ -762,6 +730,41 @@ class pykotaUser extends baseModule {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 * @see baseModule::getManagedAttributes()
+	 */
+	function get_uploadColumns($selectedModules) {
+		$return = parent::get_uploadColumns($selectedModules);
+		if ($this->manageUid($selectedModules)) {
+			$return[] = array(
+				'name' => 'pykotaUser_uid',
+				'description' => _('User name'),
+				'help' => 'uid',
+				'example' => _('smiller'),
+				'required' => true,
+				'unique' => true,
+			);
+		}
+		if ($this->manageMail($selectedModules)) {
+			$return[] = array(
+				'name' => 'pykotaUser_mail',
+				'description' => _('Email address'),
+				'help' => 'mail',
+				'example' => _('user@company.com'),
+			);
+		}
+		if ($this->manageDescription($selectedModules)) {
+			$return[] = array(
+				'name' => 'pykotaUser_description',
+				'description' => _('Description'),
+				'help' => 'description',
+				'example' => _('Temp, contract till December'),
+			);
+		}
+		return $return;
+	}
+
+	/**
 	* In this function the LDAP account is built up.
 	*
 	* @param array $rawAccounts list of hash arrays (name => value) from user input
@@ -788,7 +791,7 @@ class pykotaUser extends baseModule {
 				$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['pykotaUser_cn']];
 			}
 			// uid
-			if ($this->manageUid() && !empty($rawAccounts[$i][$ids['pykotaUser_uid']])) {
+			if ($this->manageUid($selectedModules) && !empty($rawAccounts[$i][$ids['pykotaUser_uid']])) {
 				if (!get_preg($rawAccounts[$i][$ids['pykotaUser_uid']], 'username')) {
 					$errMsg = $this->messages['uid'][1];
 					array_push($errMsg, array($i));
@@ -804,7 +807,7 @@ class pykotaUser extends baseModule {
 				}
 			}
 			// mail
-			if ($this->manageUid() && !empty($rawAccounts[$i][$ids['pykotaUser_mail']])) {
+			if ($this->manageUid($selectedModules) && !empty($rawAccounts[$i][$ids['pykotaUser_mail']])) {
 				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'pykotaUser_mail', 'mail',
 					'email', $this->messages['mail'][1], $messages);
 			}
@@ -881,6 +884,26 @@ class pykotaUser extends baseModule {
 			}
 		}
 		return $messages;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see baseModule::get_pdfFields()
+	 */
+	public function get_pdfFields($typeId) {
+		$fields = parent::get_pdfFields($typeId);
+		$typeManager = new TypeManager();
+		$modules = $typeManager->getConfiguredType($typeId)->getModules();
+		if ($this->manageUid($modules)) {
+			$fields['uid'] = _('User name');
+		}
+		if ($this->manageMail($modules)) {
+			$fields['mail'] = _('Email address');
+		}
+		if ($this->manageDescription($modules)) {
+			$fields['description'] = _('Description');
+		}
+		return $fields;
 	}
 
 	/**
@@ -1044,56 +1067,47 @@ class pykotaUser extends baseModule {
 	/**
 	 * Returns if the uid attribute should be managed.
 	 *
+	 * @param string[] $modules account modules
 	 * @return boolean manage uid attribute
 	 */
-	private function manageUid() {
-		if (isset($_SESSION['config'])) {
-			$conf = $_SESSION['config'];
-			if (in_array('inetOrgPerson', $conf->get_AccountModules($this->get_scope()))
-				|| in_array('posixAccount', $conf->get_AccountModules($this->get_scope()))) {
-				return false;
-			}
-			else {
-				return true;
-			}
+	private function manageUid($modules) {
+		if (in_array('inetOrgPerson', $modules)
+			|| in_array('posixAccount', $modules)) {
+			return false;
 		}
-		return false;
+		else {
+			return true;
+		}
 	}
 
 	/**
 	 * Returns if the mail attribute should be managed.
 	 *
+	 * @param string[] $modules account modules
 	 * @return boolean manage mail attribute
 	 */
-	private function manageMail() {
-		if (isset($_SESSION['config'])) {
-			$conf = $_SESSION['config'];
-			if (in_array('inetOrgPerson', $conf->get_AccountModules($this->get_scope()))) {
-				return false;
-			}
-			else {
-				return true;
-			}
+	private function manageMail($modules) {
+		if (in_array('inetOrgPerson', $modules)) {
+			return false;
 		}
-		return false;
+		else {
+			return true;
+		}
 	}
 
 	/**
 	 * Returns if the description attribute should be managed.
 	 *
+	 * @param string[] $modules account modules
 	 * @return boolean manage description attribute
 	 */
-	private function manageDescription() {
-		if (isset($_SESSION['config'])) {
-			$conf = $_SESSION['config'];
-			if (in_array('inetOrgPerson', $conf->get_AccountModules($this->get_scope()))) {
-				return false;
-			}
-			else {
-				return true;
-			}
+	private function manageDescription($modules) {
+		if (in_array('inetOrgPerson', $modules)) {
+			return false;
 		}
-		return false;
+		else {
+			return true;
+		}
 	}
 
 	/**

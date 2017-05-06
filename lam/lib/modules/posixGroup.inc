@@ -1,10 +1,11 @@
 <?php
+use \LAM\TYPES\TypeManager;
 /*
 $Id$
 
 This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 Copyright (C) 2003 - 2006  Tilo Lutz
-              2007 - 2016  Roland Gruber
+              2007 - 2017  Roland Gruber
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -41,10 +42,6 @@ class posixGroup extends baseModule implements passwordService {
 
 	/** change GIDs of users and hosts? */
 	private $changegids;
-	/** specifies if the cn attribute should be managed by this module */
-	protected $manageCnAttribute = true;
-	/** specifies if the description attribute should be managed by this module */
-	protected $manageDescriptionAttribute = true;
 	/** password attribute */
 	protected $passwordAttrName = 'userPassword';
 	/** cache for existing GID numbers */
@@ -53,6 +50,35 @@ class posixGroup extends baseModule implements passwordService {
 	private $cachedUserToGIDList = null;
 	/** cache for existing groups */
 	private $cachedGroupNameList = null;
+
+	/**
+	 * {@inheritDoc}
+	 * @see baseModule::getManagedAttributes()
+	 */
+	function get_uploadColumns($selectedModules) {
+		$return = parent::get_uploadColumns($selectedModules);
+		if ($this->manageCnAndDescription($selectedModules)) {
+			array_unshift($return,
+				array(
+					'name' => 'posixGroup_cn',
+					'description' => _('Group name'),
+					'help' => 'cn',
+					'example' => _('adminstrators'),
+					'required' => true,
+					'unique' => true
+				)
+			);
+			array_unshift($return,
+				array(
+				'name' => 'posixGroup_description',
+				'description' => _('Group description'),
+				'help' => 'description',
+				'example' => _('Administrators group')
+				)
+			);
+		}
+		return $return;
+	}
 
 	/**
 	* In this function the LDAP account is built up.
@@ -68,7 +94,7 @@ class posixGroup extends baseModule implements passwordService {
 		$needAutoGID = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			if (!in_array("posixGroup", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "posixGroup";
-			if ($this->manageCnAttribute) {
+			if ($this->manageCnAndDescription($selectedModules)) {
 				// group name
 				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'posixGroup_cn', 'cn', 'groupname', $this->messages['cn'][3], $error_messages);
 			}
@@ -85,7 +111,7 @@ class posixGroup extends baseModule implements passwordService {
 				array_push($errMsg, array($i));
 				$error_messages[] = $errMsg;
 			}
-			if ($this->manageDescriptionAttribute) {
+			if ($this->manageCnAndDescription($selectedModules)) {
 				// description (UTF-8, no regex check needed)
 				if ($rawAccounts[$i][$ids['posixGroup_description']] == "") {
 					$partialAccounts[$i]['description'] = $partialAccounts[$i]['cn'];
@@ -164,13 +190,14 @@ class posixGroup extends baseModule implements passwordService {
 	 */
 	function display_html_attributes() {
 		$return = new htmlTable();
+		$modules = $this->getAccountContainer()->get_type()->getModules();
 		if ($this->autoAddObjectClasses || (isset($this->attributes['objectClass']) && in_array('posixGroup', $this->attributes['objectClass']))) {
 			// auto sync group members
 			if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
 				$this->syncGon();
 			}
 			// group name
-			if ($this->manageCnAttribute) {
+			if ($this->manageCnAndDescription($modules)) {
 				$cn = '';
 				if (isset($this->attributes['cn'][0])) {
 					$cn = $this->attributes['cn'][0];
@@ -194,7 +221,7 @@ class posixGroup extends baseModule implements passwordService {
 			if (isset($this->attributes['description'][0])) {
 				$description = $this->attributes['description'][0];
 			}
-			if ($this->manageDescriptionAttribute) {
+			if ($this->manageCnAndDescription($modules)) {
 				$return->addElement(new htmlTableExtendedInputField(_('Description'), 'description', $description, 'description'), true);
 			}
 			// password buttons
@@ -399,12 +426,6 @@ class posixGroup extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('posixGroup_hidememberUid')) {
 			$return['attributes'][] = 'memberUid';
 		}
-		if ($this->manageCnAttribute) {
-			$return['attributes'][] = 'cn';
-		}
-		if ($this->manageDescriptionAttribute) {
-			$return['attributes'][] = 'description';
-		}
 		// profile options
 		if (!$this->autoAddObjectClasses) {
 			$profileContainer = new htmlTable();
@@ -418,12 +439,6 @@ class posixGroup extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('posixGroup_hidememberUid')) {
 			$return['PDF_fields']['memberUid'] = _('Group members');
 			$return['PDF_fields']['memberUidPrimary'] = _('Group members (incl. primary members)');
-		}
-		if ($this->manageCnAttribute) {
-			$return['PDF_fields']['cn'] = _('Group name');
-		}
-		if ($this->manageDescriptionAttribute) {
-			$return['PDF_fields']['description'] = _('Description');
 		}
 		// upload fields
 		$return['upload_columns'] = array(
@@ -446,28 +461,6 @@ class posixGroup extends baseModule implements passwordService {
 				'description' => _('Group members'),
 				'help' => 'upload_members',
 				'example' => _('user01,user02,user03')
-			);
-		}
-		if ($this->manageCnAttribute) {
-			array_unshift($return['upload_columns'],
-				array(
-					'name' => 'posixGroup_cn',
-					'description' => _('Group name'),
-					'help' => 'cn',
-					'example' => _('adminstrators'),
-					'required' => true,
-					'unique' => true
-				)
-			);
-		}
-		if ($this->manageDescriptionAttribute) {
-			array_unshift($return['upload_columns'],
-				array(
-				'name' => 'posixGroup_description',
-				'description' => _('Group description'),
-				'help' => 'description',
-				'example' => _('Administrators group')
-				)
 			);
 		}
 		// help Entries
@@ -614,6 +607,21 @@ class posixGroup extends baseModule implements passwordService {
 
 	/**
 	 * {@inheritDoc}
+	 * @see baseModule::get_pdfFields()
+	 */
+	public function get_pdfFields($typeId) {
+		$fields = parent::get_pdfFields($typeId);
+		$typeManager = new TypeManager();
+		$modules = $typeManager->getConfiguredType($typeId)->getModules();
+		if ($this->manageCnAndDescription($modules)) {
+			$fields['cn'] = _('Group name');
+			$fields['description'] = _('Description');
+		}
+		return $fields;
+	}
+
+	/**
+	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
@@ -674,6 +682,21 @@ class posixGroup extends baseModule implements passwordService {
 
 
 	/**
+	 * {@inheritDoc}
+	 * @see baseModule::getManagedAttributes()
+	 */
+	public function getManagedAttributes($typeId) {
+		$attrs = parent::getManagedAttributes($typeId);
+		$typeManager = new TypeManager();
+		$modules = $typeManager->getConfiguredType($typeId)->getModules();
+		if ($this->manageCnAndDescription($modules)) {
+			$attrs[] = 'cn';
+			$attrs[] = 'description';
+		}
+		return $attrs;
+	}
+
+	/**
 	* This functions is used to check if all settings for this module have been made.
 	*
 	* @return boolean true, if settings are complete
@@ -686,8 +709,13 @@ class posixGroup extends baseModule implements passwordService {
 				return true;
 			}
 		}
-		if ($this->manageCnAttribute && ($this->attributes['cn'][0] == '')) return false;
-		if ($this->attributes['gidNumber'][0] == '') return false;
+		$modules = $this->getAccountContainer()->get_type()->getModules();
+		if ($this->manageCnAndDescription($modules) && ($this->attributes['cn'][0] == '')) {
+			return false;
+		}
+		if ($this->attributes['gidNumber'][0] == '') {
+			return false;
+		}
 		return true;
 	}
 
@@ -736,11 +764,12 @@ class posixGroup extends baseModule implements passwordService {
 			}
 			return $errors;
 		}
+		$modules = $this->getAccountContainer()->get_type()->getModules();
 		// skip processing if object class is not set
 		if (!$this->autoAddObjectClasses && (!isset($this->attributes['objectClass']) || !in_array('posixGroup', $this->attributes['objectClass']))) {
 			return $errors;
 		}
-		if ($this->manageDescriptionAttribute) {
+		if ($this->manageCnAndDescription($modules)) {
 			$this->attributes['description'][0] = $_POST['description'];
 		}
 		if (isset($_POST['lockPassword'])) {
@@ -802,7 +831,7 @@ class posixGroup extends baseModule implements passwordService {
 				}
 			}
 		}
-		if ($this->manageCnAttribute) {
+		if ($this->manageCnAndDescription($modules)) {
 			$this->attributes['cn'][0] = $_POST['cn'];
 			if (preg_match('/^[A-Z]+$/', $_POST['cn'])) {
 				$errors[] = $this->messages['cn'][0];
@@ -1308,6 +1337,16 @@ class posixGroup extends baseModule implements passwordService {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Returns if cn and description attributes should be managed.
+	 *
+	 * @param string[] $modules modules
+	 * @return boolean manage cn+description
+	 */
+	protected function manageCnAndDescription($modules) {
+		return true;
 	}
 
 }

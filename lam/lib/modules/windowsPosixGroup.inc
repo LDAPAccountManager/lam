@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013  Roland Gruber
+  Copyright (C) 2013 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -36,16 +36,13 @@ include_once("posixGroup.inc");
 * @package modules
 */
 class windowsPosixGroup extends posixGroup {
-	
+
 	/**
 	* Creates a new windowsPosixGroup object.
 	*
 	* @param string $scope account type (user, group, host)
 	*/
 	public function __construct($scope) {
-		// do not manage cn and description (managed by windowsGroup)
-		$this->manageCnAttribute = false;
-		$this->manageDescriptionAttribute = false;
 		// different password attribute name
 		$this->passwordAttrName = 'unixUserPassword';
 		// make optional
@@ -53,12 +50,12 @@ class windowsPosixGroup extends posixGroup {
 		// call parent constructor
 		parent::__construct($scope);
 	}
-	
+
 	/**
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {
@@ -88,6 +85,14 @@ class windowsPosixGroup extends posixGroup {
 	*/
 	function module_complete() {
 		return true;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected function manageCnAndDescription($modules) {
+		// do not manage cn and description (managed by windowsGroup)
+		return false;
 	}
 
 }
