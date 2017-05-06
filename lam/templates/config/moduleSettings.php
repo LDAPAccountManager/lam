@@ -8,7 +8,7 @@ use \htmlButton;
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2016  Roland Gruber
+  Copyright (C) 2009 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -205,6 +205,9 @@ jQuery(document).ready(function() {
 </script>
 
 <div class="ui-tabs-panel ui-widget-content ui-corner-bottom user-bright">
+<input type="text" name="hiddenPreventAutocomplete" autocomplete="false" class="hidden" value="111">
+<input type="password" name="hiddenPreventAutocompletePwd1" autocomplete="false" class="hidden" value="222">
+<input type="password" name="hiddenPreventAutocompletePwd2" autocomplete="false" class="hidden" value="333">
 <?php
 
 
