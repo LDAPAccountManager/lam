@@ -1,4 +1,5 @@
 <?php
+use \LAM\TYPES\TypeManager;
 /*
 $Id$
 
@@ -3404,26 +3405,30 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 * @return array options ('maxpwdage' => max age in ns)
 		 */
 		protected function getPolicyOptions() {
-			$userSuffix = $_SESSION['config']->get_Suffix('user');
-			if (empty($userSuffix)) {
-				logNewMessage(LOG_ERR, 'No user suffix set in server profile.');
-				return array();
+			$typeManager = new TypeManager();
+			$maxPwdAge = array();
+			foreach ($typeManager->getConfiguredTypesForScope('user') as $type) {
+				$userSuffix = $type->getSuffix();
+				if (empty($userSuffix)) {
+					logNewMessage(LOG_ERR, 'No user suffix set in server profile for ' . $type->getAlias() . '.');
+					continue;
+				}
+				// extract base DN from user suffix
+				$domainRoot = strtolower(substr($userSuffix, stripos($userSuffix, 'dc=')));
+				if (empty($domainRoot)) {
+					logNewMessage(LOG_ERR, "No domain root found in $userSuffix.");
+					continue;
+				}
+				logNewMessage(LOG_DEBUG, "Using $domainRoot as domain root");
+				$policyDN = 'cn=builtin,' . $domainRoot;
+				$policyAttrs = ldapGetDN($policyDN, array('maxPwdAge'));
+				if (empty($policyAttrs['maxpwdage'][0])) {
+					logNewMessage(LOG_ERR, 'No maxPwdAge found for this domain in ' . $type->getAlias() . '.');
+					continue;
+				}
+				$maxPwdAge[$domainRoot] = $policyAttrs['maxpwdage'][0];
+				logNewMessage(LOG_DEBUG, "Using maxPwdAge = " . $maxPwdAge[$domainRoot] . ".");
 			}
-			// extract base DN from user suffix
-			$domainRoot = substr($userSuffix, stripos($userSuffix, 'dc='));
-			if (empty($domainRoot)) {
-				logNewMessage(LOG_ERR, "No domain root found in $userSuffix.");
-				return array();
-			}
-			logNewMessage(LOG_DEBUG, "Using $domainRoot as domain root");
-			$policyDN = 'cn=builtin,' . $domainRoot;
-			$policyAttrs = ldapGetDN($policyDN, array('maxPwdAge'));
-			if (empty($policyAttrs['maxpwdage'][0])) {
-				logNewMessage(LOG_ERR, 'No maxPwdAge found for this domain.');
-				return array();
-			}
-			$maxPwdAge = $policyAttrs['maxpwdage'][0];
-			logNewMessage(LOG_DEBUG, "Using maxPwdAge = $maxPwdAge.");
 			return array('maxpwdage' => $maxPwdAge);
 		}
 
@@ -3455,30 +3460,32 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 * @param boolean $isDryRun just do a dry run, nothing is modified
 		 */
 		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
+			$dn = $user['dn'];
+			$domainRoot = strtolower(substr($dn, stripos($dn, 'dc=')));
 			// skip if password does not expire at all
 			if (windowsUser::isNeverExpiring($user)) {
-				logNewMessage(LOG_DEBUG, $user['dn'] . ' does not expire.');
+				logNewMessage(LOG_DEBUG, $dn . ' does not expire.');
 				return;
 			}
 			// skip if no information about last password change
 			if (empty($user['pwdlastset'][0]) || ($user['pwdlastset'][0] < 1)) {
-				logNewMessage(LOG_DEBUG, $user['dn'] . ' has no valid "pwdLastSet".');
+				logNewMessage(LOG_DEBUG, $dn . ' has no valid "pwdLastSet".');
 				return;
 			}
 			// skip if account itself is expired
 			if (!empty($user['accountexpires'][0])) {
 				$accountExpiration = windowsUser::getFileTime($user['accountexpires'][0]);
 				if ($accountExpiration <= $now) {
-					logNewMessage(LOG_DEBUG, $user['dn'] . ' already expired');
+					logNewMessage(LOG_DEBUG, $dn . ' already expired');
 					return;
 				}
 			}
 			// skip if account is deactivated
 			if (windowsUser::isDeactivated($user)) {
-				logNewMessage(LOG_DEBUG, $user['dn'] . ' is deactivated.');
+				logNewMessage(LOG_DEBUG, $dn . ' is deactivated.');
 				return;
 			}
-			$maxPwdAge = $policyOptions['maxpwdage'];
+			$maxPwdAge = $policyOptions['maxpwdage'][$domainRoot];
 			// calculate time when password expires
 			$lastPwdTime = windowsUser::getFileTime($user['pwdlastset'][0]);
 			logNewMessage(LOG_DEBUG, "Last password change on " . $lastPwdTime->format('Y-m-d'));
@@ -3489,7 +3496,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			logNewMessage(LOG_DEBUG, "Password expires on " . $expireTime->format('Y-m-d'));
 			// skip already expired accounts
 			if ($expireTime <= $now) {
-				logNewMessage(LOG_DEBUG, $user['dn'] . ' already expired');
+				logNewMessage(LOG_DEBUG, $dn . ' already expired');
 				return;
 			}
 			// calculate time of notification
@@ -3499,25 +3506,25 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			logNewMessage(LOG_DEBUG, "Password notification on " . $notifyTime->format('Y-m-d H:i'));
 			// skip if notification is in the future
 			if ($notifyTime > $now) {
-				logNewMessage(LOG_DEBUG, $user['dn'] . ' does not need notification yet.');
+				logNewMessage(LOG_DEBUG, $dn . ' does not need notification yet.');
 				return;
 			}
-			$dbLastChange = $this->getDBLastPwdChangeTime($jobID, $pdo, $user['dn']);
+			$dbLastChange = $this->getDBLastPwdChangeTime($jobID, $pdo, $dn);
 			// skip entries where mail was already sent
 			if ($dbLastChange == $user['pwdlastset'][0]) {
-				logNewMessage(LOG_DEBUG, $user['dn'] . ' was already notified.');
+				logNewMessage(LOG_DEBUG, $dn . ' was already notified.');
 				return;
 			}
 			if ($isDryRun) {
 				// no action for dry run
-				logNewMessage(LOG_NOTICE, 'Not sending email to ' . $user['dn'] . ' because of dry run.');
+				logNewMessage(LOG_NOTICE, 'Not sending email to ' . $dn . ' because of dry run.');
 				return;
 			}
 			// send email
 			$success = $this->sendMail($options, $jobID, $user, $expireTime);
 			// update DB if mail was sent successfully
 			if ($success) {
-				$this->setDBLastPwdChangeTime($jobID, $pdo, $user['dn'], $user['pwdlastset'][0]);
+				$this->setDBLastPwdChangeTime($jobID, $pdo, $dn, $user['pwdlastset'][0]);
 			}
 		}
 
