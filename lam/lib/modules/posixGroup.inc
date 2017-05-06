@@ -1241,7 +1241,7 @@ class posixGroup extends baseModule implements passwordService {
 		$this->cachedGIDList = array();
 		$attrs = array('gidNumber');
 		$filter = '(&(objectClass=posixGroup)(gidNumber=*))';
-		$suffix = $_SESSION['config']->get_Suffix('group');
+		$suffix = $this->getAccountContainer()->get_type()->getSuffix();
 		if (isset($this->moduleSettings['posixGroup_gidCheckSuffix'][0]) && ($this->moduleSettings['posixGroup_gidCheckSuffix'][0] != '')) {
 			$suffix = $this->moduleSettings['posixGroup_gidCheckSuffix'][0];
 		}
@@ -1262,26 +1262,28 @@ class posixGroup extends baseModule implements passwordService {
 		if ($this->cachedUserToGIDList != null) {
 			return $this->cachedUserToGIDList;
 		}
-		$typeSettings = $_SESSION['config']->get_typeSettings();
-		$filter = '(&(objectClass=posixAccount)(gidNumber=*))';
-		if ($this->isWindows()) {
-			$filter = '(&(objectClass=user)(gidNumber=*))';
-		}
-		if (!empty($typeSettings['filter_user'])) {
-			$typeFilter = $typeSettings['filter_user'];
-			if (strpos($typeFilter, '(') !== 0) {
-				$typeFilter = '(' . $typeFilter . ')';
-			}
-			$filter = '(&' . $filter . $typeFilter . ')';
-		}
-		$result = searchLDAPByFilter($filter, array('uid', 'gidNumber', 'cn'), array('user'));
 		$this->cachedUserToGIDList = array();
-		$resultCount = sizeof($result);
-		for ($i = 0; $i < $resultCount; $i++) {
-			$this->cachedUserToGIDList[$result[$i]['uid'][0]] = array(
-				'gid' => $result[$i]['gidnumber'][0],
-				'cn' => $result[$i]['cn'][0],
-				'dn' => $result[$i]['dn']);
+		$typeManager = new TypeManager();
+		foreach ($typeManager->getConfiguredTypesForScope('user') as $type) {
+			$filter = '(&(objectClass=posixAccount)(gidNumber=*))';
+			if ($this->isWindows()) {
+				$filter = '(&(objectClass=user)(gidNumber=*))';
+			}
+			$typeFilter = $type->getAdditionalLdapFilter();
+			if (!empty($typeFilter)) {
+				if (strpos($typeFilter, '(') !== 0) {
+					$typeFilter = '(' . $typeFilter . ')';
+				}
+				$filter = '(&' . $filter . $typeFilter . ')';
+			}
+			$result = searchLDAPByFilter($filter, array('uid', 'gidNumber', 'cn'), array('user'));
+			$resultCount = sizeof($result);
+			for ($i = 0; $i < $resultCount; $i++) {
+				$this->cachedUserToGIDList[$result[$i]['uid'][0]] = array(
+					'gid' => $result[$i]['gidnumber'][0],
+					'cn' => $result[$i]['cn'][0],
+					'dn' => $result[$i]['dn']);
+			}
 		}
 		logNewMessage(LOG_DEBUG, 'Found ' . $resultCount . ' Unix users.');
 		logNewMessage(LOG_DEBUG, print_r($result, true));
@@ -1310,7 +1312,7 @@ class posixGroup extends baseModule implements passwordService {
 		$this->cachedGroupNameList = array();
 		$attrs = array('cn');
 		$filter = '(&(objectClass=posixGroup)(cn=*))';
-		$suffix = $_SESSION['config']->get_Suffix('group');
+		$suffix = $this->getAccountContainer()->get_type()->getSuffix();
 		if (isset($this->moduleSettings['posixGroup_gidCheckSuffix'][0]) && ($this->moduleSettings['posixGroup_gidCheckSuffix'][0] != '')) {
 			$suffix = $this->moduleSettings['posixGroup_gidCheckSuffix'][0];
 		}
@@ -1327,16 +1329,12 @@ class posixGroup extends baseModule implements passwordService {
 	 * @return boolean is Windows
 	 */
 	private function isWindows() {
-		if (isset($_SESSION['config'])) {
-			$conf = $_SESSION['config'];
-			if (in_array('windowsGroup', $conf->get_AccountModules($this->get_scope()))) {
-				return true;
-			}
-			else {
-				return false;
-			}
+		if (in_array('windowsGroup', $this->getAccountContainer()->get_type()->getModules())) {
+			return true;
 		}
-		return false;
+		else {
+			return false;
+		}
 	}
 
 	/**
