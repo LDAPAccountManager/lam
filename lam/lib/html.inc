@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2016  Roland Gruber
+  Copyright (C) 2010 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -2896,7 +2896,7 @@ class htmlContentLink extends htmlLink {
 		parseHtml($module, $this->content, $values, $restricted, $tabindex, $scope);
 		$this->contentText = ob_get_contents();
 		ob_end_clean();
-		parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		return parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 	}
 
 	/**
