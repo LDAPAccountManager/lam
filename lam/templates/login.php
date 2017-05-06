@@ -124,6 +124,8 @@ else {
 	$_SESSION["config"] = null;
 }
 
+$error_message = null;
+
 if (!isset($default_Config->default) || !in_array($default_Config->default, $profiles)) {
 	$error_message = _('No default profile set. Please set it in the server profile configuration.');
 }
