@@ -1,5 +1,6 @@
 <?php
 use \LAM\TYPES\TypeManager;
+use LAM\TYPES\ConfiguredType;
 /*
 $Id$
 
@@ -69,6 +70,9 @@ class windowsUser extends baseModule implements passwordService {
 	/** business category cache */
 	private $businessCategoryCache = null;
 
+	/** cache for lockout duration */
+	private static $lockoutDurationCache = array();
+
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
@@ -111,7 +115,7 @@ class windowsUser extends baseModule implements passwordService {
 			'pwdLastSet', 'otherMailbox', 'homeDirectory', 'homeDrive', 'msSFU30Name', 'msSFU30NisDomain', 'pwdLastSet',
 			'lastLogonTimestamp', 'accountExpires', 'jpegPhoto', 'title', 'carLicense', 'employeeNumber', 'employeeType',
 			'businessCategory', 'department', 'ou', 'o', 'manager', 'facsimileTelephoneNumber', 'company',
-			'pager', 'otherPager', 'mobile', 'otherMobile', 'proxyAddresses'
+			'pager', 'otherPager', 'mobile', 'otherMobile', 'proxyAddresses', 'lockoutTime'
 		);
 		// help Entries
 		$return['help'] = array(
@@ -2897,6 +2901,65 @@ class windowsUser extends baseModule implements passwordService {
 			return false;
 		}
 		return intval($myAttrs['useraccountcontrol'][0]) & windowsUser::AC_ACCOUNT_DISABLED;
+	}
+
+	/**
+	 * Returns if the account is currently deactivated.
+	 *
+	 * @param array $attrs LDAP attributes
+	 * @param ConfiguredType type
+	 * @return DateTime locked till or null
+	 */
+	public static function getPasswordLocked($attrs, $type) {
+		$myAttrs = array_change_key_case($attrs, CASE_LOWER);
+		if (empty($myAttrs['lockouttime'][0])) {
+			return false;
+		}
+		$lockoutDuration = self::getDomainLockoutDuration($attrs['dn']);
+		if (empty($lockoutDuration) || ($lockoutDuration > -1)) {
+			return false;
+		}
+		$lockoutDurationSeconds = substr($lockoutDuration, 0, -7);
+		$lockoutTime = self::getFileTime($myAttrs['lockouttime'][0]);
+		$unlockTime = clone $lockoutTime;
+		$unlockTime->add(new DateInterval('PT' . abs($lockoutDurationSeconds) . 'S'));
+		$now = new DateTime();
+		if ($unlockTime > $now) {
+			$unlockTime->setTimezone(getTimeZone());
+			return $unlockTime;
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the domain lockout duration for this DN.
+	 *
+	 * @param string $dn user DN
+	 */
+	private static function getDomainLockoutDuration($dn) {
+		$lowerDn = strtolower($dn);
+		$domainRoot = substr($lowerDn, strpos($lowerDn, 'dc='));
+		if (isset(windowsUser::$lockoutDurationCache[$domainRoot])) {
+			return windowsUser::$lockoutDurationCache[$domainRoot];
+		}
+		$policyDN = 'cn=builtin,' . $domainRoot;
+		$policyAttrs = ldapGetDN($policyDN, array('lockoutduration'));
+		if (!empty($policyAttrs['lockoutduration'][0])) {
+			windowsUser::$lockoutDurationCache[$domainRoot] = $policyAttrs['lockoutduration'][0];
+		}
+		else {
+			windowsUser::$lockoutDurationCache[$domainRoot] = null;
+		}
+		return windowsUser::$lockoutDurationCache[$domainRoot];
+	}
+
+	/**
+	 * Unlocks the user password. This resets 'lockoutTime' to 0.
+	 */
+	public function unlockPassword() {
+		if (!empty($this->attributes['lockoutTime'][0])) {
+			$this->attributes['lockoutTime'][0] = '0';
+		}
 	}
 
 	/**
