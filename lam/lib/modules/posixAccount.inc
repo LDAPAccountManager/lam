@@ -2981,27 +2981,28 @@ class posixAccount extends baseModule implements passwordService {
 		if ($this->groupCache != null) {
 			return $this->groupCache;
 		}
-		$typeSettings = $_SESSION['config']->get_typeSettings();
-		$filter = '(objectClass=posixGroup)';
-		if ($this->isWindows()) {
-			$filter = '(&(objectClass=group)(gidNumber=*))';
-		}
-		if (!empty($typeSettings['filter_group'])) {
-			$typeFilter = $typeSettings['filter_group'];
-			if (strpos($typeFilter, '(') !== 0) {
-				$typeFilter = '(' . $typeFilter . ')';
+		$this->groupCache = array();
+		$typeManager = new TypeManager();
+		foreach ($typeManager->getConfiguredTypesForScope('group') as $type) {
+			$filter = '(objectClass=posixGroup)';
+			if ($this->isWindows()) {
+				$filter = '(&(objectClass=group)(gidNumber=*))';
 			}
-			$filter = '(&' . $filter . $typeFilter . ')';
-		}
-		$results = searchLDAPByFilter($filter, array('cn', 'gidnumber'), array('group'));
-		$return = array();
-		for ($i = 0; $i < sizeof($results); $i++) {
-			if (isset($results[$i]['cn'][0]) && isset($results[$i]['gidnumber'][0])) {
-				$return[] = array($results[$i]['gidnumber'][0], $results[$i]['cn'][0]);
+			$typeFilter = $type->getAdditionalLdapFilter();
+			if (!empty($typeFilter)) {
+				if (strpos($typeFilter, '(') !== 0) {
+					$typeFilter = '(' . $typeFilter . ')';
+				}
+				$filter = '(&' . $filter . $typeFilter . ')';
+			}
+			$results = searchLDAP($type->getSuffix(), $filter, array('cn', 'gidnumber'));
+			for ($i = 0; $i < sizeof($results); $i++) {
+				if (isset($results[$i]['cn'][0]) && isset($results[$i]['gidnumber'][0])) {
+					$this->groupCache[] = array($results[$i]['gidnumber'][0], $results[$i]['cn'][0]);
+				}
 			}
 		}
-		$this->groupCache = $return;
-		return $return;
+		return $this->groupCache;
 	}
 
 	/**
