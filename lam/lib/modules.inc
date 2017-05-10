@@ -587,7 +587,7 @@ function doUploadPostActions($scope, &$data, $ids, $failed, $selectedModules, &$
 	}
 	// let first module do one post action
 	$module = moduleCache::getModule($activeModule, $scope);
-	$return = $module->doUploadPostActions($data, $ids, $failed, $_SESSION['mass_postActions'][$activeModule], $accounts);
+	$return = $module->doUploadPostActions($data, $ids, $failed, $_SESSION['mass_postActions'][$activeModule], $accounts, $selectedModules);
 	// remove active module from list if already finished
 	if ($return['status'] == 'finished') {
 		unset($_SESSION['mass_postActions']['remainingModules'][0]);

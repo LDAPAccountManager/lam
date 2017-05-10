@@ -39,6 +39,7 @@
 
 
 
+
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-15"><title>Upgrade notes</title>
 
 
@@ -69,7 +70,10 @@ This is a list of API changes for all LAM releases.
     <li>getLDAPAliases() <br>
 </li>
   </ul>
+  <li>baseType-&gt;doUploadPostActions(): new parameter $selectedModules<br>
+</li>
   <li>Removed global functions:</li>
+
   <ul>
     <li>getListClassName() -&gt; use ConfiguredType-&gt;getBaseType()-&gt;getListClassName() </li>
     <li>getTypeAlias() -&gt; use ConfiguredType-&gt;getBaseType()-&gt;getAlias()</li>

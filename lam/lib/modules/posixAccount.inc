@@ -75,18 +75,6 @@ class posixAccount extends baseModule implements passwordService {
 	);
 
 	/**
-	* Creates a new windowsPosixGroup object.
-	*
-	* @param string $scope account type (user, group, host)
-	*/
-	public function __construct($scope) {
-		// call parent constructor
-		parent::__construct($scope);
-		// make optional if needed
-		$this->autoAddObjectClasses = !$this->isOptional() && !$this->skipObjectClass();
-	}
-
-	/**
 	 *  This function fills the error message array with messages.
 	**/
 	function load_Messages() {
@@ -175,11 +163,8 @@ class posixAccount extends baseModule implements passwordService {
 		// LDAP aliases
 		$return['LDAPaliases'] = array('commonName' => 'cn', 'userid' => 'uid');
 		// managed attributes
-		$return['attributes'] = array('uid', 'uidNumber', 'gidNumber', $this->getHomedirAttrName(),
-			$this->getPasswordAttrName(), 'loginShell', 'gecos', 'INFO.userPasswordClearText');
-		if ($this->manageCn()) {
-			$return['attributes'][] = 'cn';
-		}
+		$return['attributes'] = array('uid', 'uidNumber', 'gidNumber',
+			'loginShell', 'gecos', 'INFO.userPasswordClearText');
 		if ($this->get_scope() == "user") {
 			// self service search attributes
 			$return['selfServiceSearchAttributes'] = array('uid');
@@ -212,7 +197,6 @@ class posixAccount extends baseModule implements passwordService {
 		'error_message' => $this->messages['homeDirectory'][0]);
 		// profile mappings
 		$return['profile_mappings'] = array(
-			'posixAccount_homeDirectory' => $this->getHomedirAttrName(),
 			'posixAccount_loginShell' => 'loginShell'
 		);
 		// upload
@@ -284,14 +268,6 @@ class posixAccount extends baseModule implements passwordService {
 				'default' => 'false'
 			),
 			);
-			if ($this->manageCn()) {
-				array_unshift($return['upload_columns'], array(
-					'name' => 'posixAccount_cn',
-					'description' => _('Common name'),
-					'help' => 'cn',
-					'example' => _('Steve Miller')
-				));
-			}
 			if (!$this->isBooleanConfigOptionSet('posixAccount_hidegecos')) {
 				$return['upload_columns'][] = array(
 					'name' => 'posixAccount_gecos',
@@ -359,9 +335,6 @@ class posixAccount extends baseModule implements passwordService {
 			'loginShell' => _('Login shell'),
 			'userPassword' => _('Password')
 		));
-		if ($this->manageCn()) {
-			$return['PDF_fields']['cn'] = _('Common name');
-		}
 		if (!$this->isBooleanConfigOptionSet('posixAccount_hidegecos')) {
 			$return['PDF_fields']['gecos'] = _('Gecos');
 		}
@@ -413,8 +386,12 @@ class posixAccount extends baseModule implements passwordService {
 				"Text" => _("Here you can enter a list of additional group memberships. The group names are separated by commas.")
 			),
 			'homeDirectory_upload' => array(
-				"Headline" => _("Home directory"), 'attr' => $this->getHomedirAttrName(),
+				"Headline" => _("Home directory"),
 				"Text" => _("Please enter the path to the user's home directory.")
+			),
+			'homeDirectory' => array(
+					"Headline" => _("Home directory"),
+					"Text" => _("Please enter the path to the user's home directory.")
 			),
 			'deletehomedir' => array(
 				"Headline" => _("Home directory"),
@@ -469,10 +446,6 @@ class posixAccount extends baseModule implements passwordService {
 				'gidNumber' => array(
 					"Headline" => _("Primary group"), 'attr' => 'gidNumber',
 					"Text" => _("The primary group the user should be member of.")
-				),
-				'homeDirectory' => array(
-					"Headline" => _("Home directory"), 'attr' => $this->getHomedirAttrName(),
-					"Text" => _("Please enter the path to the user's home directory.")
 				),
 				'userPassword' => array(
 					"Headline" => _("Password"),
@@ -532,17 +505,37 @@ class posixAccount extends baseModule implements passwordService {
 	* @param string $base the name of the accountContainer object ($_SESSION[$base])
 	*/
 	function init($base) {
+		// make optional if needed
+		$modules = $_SESSION[$base]->get_type()->getModules();
+		$this->autoAddObjectClasses = !$this->isOptional($modules) && !$this->skipObjectClass();
 		// call parent init
 		parent::init($base);
 		$this->groups = array();
 		$this->groups_orig = array();
-		$groups = $this->findGroups(); // list of all groupnames
+		// list of all group names
+		$groups = $this->findGroups($modules);
 		if (count($groups)==0) {
 			StatusMessage("ERROR", _('No Unix groups found in LDAP! Please create one first.'), '');
 			return;
 		}
 		$this->gonList = array();
 		$this->gonList_orig = array();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see baseModule::getManagedAttributes()
+	 */
+	public function getManagedAttributes($typeId) {
+		$attrs = parent::getManagedAttributes($typeId);
+		$typeManager = new TypeManager();
+		$modules = $typeManager->getConfiguredType($typeId)->getModules();
+		if ($this->manageCn($modules)) {
+			$attrs[] = 'cn';
+		}
+		$attrs[] = $this->getHomedirAttrName($modules);
+		$attrs[] = $this->getPasswordAttrName($modules);
+		return $attrs;
 	}
 
 	/**
@@ -558,7 +551,6 @@ class posixAccount extends baseModule implements passwordService {
 		if (!isset($this->attributes['uid'][0]) || ($this->attributes['uid'][0] == '')) return false;
 		if (!isset($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] == '')) return false;
 		if (!isset($this->attributes['gidNumber'][0]) || ($this->attributes['gidNumber'][0] == '')) return false;
-		if (!isset($this->attributes[$this->getHomedirAttrName()][0]) || ($this->attributes[$this->getHomedirAttrName()][0] == '')) return false;
 		if (!isset($this->attributes['loginShell'][0]) || ($this->attributes['loginShell'][0] == '')) return false;
 		return true;
 	}
@@ -630,11 +622,12 @@ class posixAccount extends baseModule implements passwordService {
 			// skip saving if the extension was not added/modified
 			return array();
 		}
+		$modules = $this->getAccountContainer()->get_type()->getModules();
 		// get default changes
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		// add information about clear text password and password status change
 		$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordClearText'][0] = $this->clearTextPassword;
-		$pwdAttrName = $this->getPasswordAttrName();
+		$pwdAttrName = $this->getPasswordAttrName($modules);
 		if (isset($this->orig[$pwdAttrName][0]) && isset($this->attributes[$pwdAttrName][0])) {
 			if ((pwd_is_enabled($this->orig[$pwdAttrName][0]) && pwd_is_enabled($this->attributes[$pwdAttrName][0]))
 				|| (!pwd_is_enabled($this->orig[$pwdAttrName][0]) && !pwd_is_enabled($this->attributes[$pwdAttrName][0]))) {
@@ -717,6 +710,8 @@ class posixAccount extends baseModule implements passwordService {
 	 */
 	public function postModifyActions($newAccount, $attributes) {
 		$messages = array();
+		$modules = $this->getAccountContainer()->get_type()->getModules();
+		$homeDirAttr = $this->getHomedirAttrName($modules);
 		// create home directories if needed
 		if (sizeof($this->lamdaemonServers) > 0) {
 			$server = null;
@@ -739,7 +734,7 @@ class posixAccount extends baseModule implements passwordService {
 							$this->attributes['uid'][0],
 							"home",
 							"add",
-							$this->attributes[$this->getHomedirAttrName()][0],
+							$this->attributes[$homeDirAttr][0],
 							"0".$_SESSION['config']->get_scriptRights(),
 							$this->attributes['uidNumber'][0],
 							$this->attributes['gidNumber'][0])
@@ -758,8 +753,8 @@ class posixAccount extends baseModule implements passwordService {
 			}
 		}
 		// move home directory if needed
-		if (!empty($this->orig[$this->getHomedirAttrName()][0]) && !empty($this->attributes[$this->getHomedirAttrName()][0])
-			&& ($this->orig[$this->getHomedirAttrName()][0] != $this->attributes[$this->getHomedirAttrName()][0])) {
+		if (!empty($this->orig[$homeDirAttr][0]) && !empty($this->attributes[$homeDirAttr][0])
+			&& ($this->orig[$homeDirAttr][0] != $this->attributes[$homeDirAttr][0])) {
 			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
 			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
 				if (empty($lamdaemonServers[$i])) {
@@ -774,9 +769,9 @@ class posixAccount extends baseModule implements passwordService {
 							$this->attributes['uid'][0],
 							"home",
 							"move",
-							$this->orig[$this->getHomedirAttrName()][0],
+							$this->orig[$homeDirAttr][0],
 							$this->attributes['uidNumber'][0],
-							$this->attributes[$this->getHomedirAttrName()][0])
+							$this->attributes[$homeDirAttr][0])
 						),
 					$server);
 				// lamdaemon results
@@ -789,7 +784,7 @@ class posixAccount extends baseModule implements passwordService {
 			}
 		}
 		// set new group on homedirectory
-		if (!empty($this->orig[$this->getHomedirAttrName()][0]) && !empty($this->attributes[$this->getHomedirAttrName()][0])
+		if (!empty($this->orig[$homeDirAttr][0]) && !empty($this->attributes[$homeDirAttr][0])
 			&& ($this->orig['gidNumber'][0] != $this->attributes['gidNumber'][0])) {
 			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
 			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
@@ -805,7 +800,7 @@ class posixAccount extends baseModule implements passwordService {
 							$this->attributes['uid'][0],
 							"home",
 							"chgrp",
-							$this->orig[$this->getHomedirAttrName()][0],
+							$this->orig[$homeDirAttr][0],
 							$this->attributes['uidNumber'][0],
 							$this->attributes['gidNumber'][0])
 						),
@@ -925,6 +920,8 @@ class posixAccount extends baseModule implements passwordService {
 		$return = array();
 		// delete home directory
 		if (isset($_POST['deletehomedir']) && ($_POST['deletehomedir'] == 'on')) {
+			$modules = $this->getAccountContainer()->get_type()->getModules();
+			$homeDirAttr = $this->getHomedirAttrName($modules);
 			// get list of lamdaemon servers
 			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
 			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
@@ -940,7 +937,7 @@ class posixAccount extends baseModule implements passwordService {
 							$this->attributes['uid'][0],
 							"home",
 							"rem",
-							$this->attributes[$this->getHomedirAttrName()][0],
+							$this->attributes[$homeDirAttr][0],
 							$this->attributes['uidNumber'][0]
 						)
 					),
@@ -981,6 +978,7 @@ class posixAccount extends baseModule implements passwordService {
 	function process_attributes() {
 		$keysToReplace = array('cn', 'gecos', 'homeDirectory');
 		$this->getAccountContainer()->replaceWildcardsInPOST($keysToReplace);
+		$modules = $this->getAccountContainer()->get_type()->getModules();
 		$errors = array();
 		if (isset($_POST['addObjectClass'])) {
 			if (!isset($this->attributes['objectClass'])) {
@@ -1002,10 +1000,10 @@ class posixAccount extends baseModule implements passwordService {
 			return $errors;
 		}
 		// skip processing if object class is not set
-		if ($this->isOptional() && !$this->skipObjectClass() && (!isset($this->attributes['objectClass']) || !in_array('posixAccount', $this->attributes['objectClass']))) {
+		if ($this->isOptional($modules) && !$this->skipObjectClass() && (!isset($this->attributes['objectClass']) || !in_array('posixAccount', $this->attributes['objectClass']))) {
 			return $errors;
 		}
-		$groups = $this->findGroups(); // list of all groupnames
+		$groups = $this->findGroups($modules); // list of all group names
 		if (count($groups)==0) {
 			// abort if no groups were found
 			return array();
@@ -1038,7 +1036,7 @@ class posixAccount extends baseModule implements passwordService {
 			$errorMessage[] = array($this->orig['uidNumber'][0], $_POST['uidNumber']);
 			$errors[] = $errorMessage;
 		}
-		$homedirAttrName = $this->getHomedirAttrName();
+		$homedirAttrName = $this->getHomedirAttrName($modules);
 		if (isset($_POST['homeDirectory']) && isset($this->orig[$homedirAttrName][0]) && ($this->orig[$homedirAttrName][0] != '') && ($_POST['homeDirectory'] != $this->attributes[$homedirAttrName][0])) {
 			$errorMessage = $this->messages['homeDirectory'][3];
 			$errorMessage[] = array($this->orig[$homedirAttrName][0], $_POST['homeDirectory']);
@@ -1062,15 +1060,15 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		// Load attributes
 		if (isset($_POST['lockPassword'])) {
-			$this->lock();
+			$this->lock($modules);
 		}
 		if (isset($_POST['unlockPassword'])) {
-			$this->unlock();
+			$this->unlock($modules);
 		}
 		if (isset($_POST['removePassword'])) {
-			unset($this->attributes[$this->getPasswordAttrName()]);
+			unset($this->attributes[$this->getPasswordAttrName($modules)]);
 		}
-		if ($this->manageCn()) {
+		if ($this->manageCn($modules)) {
 			$this->processMultiValueInputTextField('cn', $errors, 'cn');
 		}
 		$this->attributes['uidNumber'][0] = trim($_POST['uidNumber']);
@@ -1185,11 +1183,11 @@ class posixAccount extends baseModule implements passwordService {
 			if (!empty($this->attributes['uid'][0]) && !empty($this->moduleSettings['posixAccount_pwdHash'][0])
 					&& ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')
 					&& ($this->getAccountContainer()->isNewAccount || ($this->attributes['uid'][0] != $this->orig['uid'][0]))) {
-				$this->attributes[$this->getPasswordAttrName()][0] = '{SASL}' . $this->attributes['uid'][0];
+				$this->attributes[$this->getPasswordAttrName($modules)][0] = '{SASL}' . $this->attributes['uid'][0];
 			}
 			// set K5KEY password for new users
 			if (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'K5KEY')) {
-				$this->attributes[$this->getPasswordAttrName()][0] = pwd_hash('x', true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+				$this->attributes[$this->getPasswordAttrName($modules)][0] = pwd_hash('x', true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 			}
 		}
 		// Return error-messages
@@ -1261,6 +1259,8 @@ class posixAccount extends baseModule implements passwordService {
 		$return = array();
 		// get list of lamdaemon servers
 		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+		$modules = $this->getAccountContainer()->get_type()->getModules();
+		$homeDirAttr = $this->getHomedirAttrName($modules);
 		for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
 			$temp = explode(":", $lamdaemonServers[$i]);
 			$server = $temp[0];
@@ -1272,7 +1272,7 @@ class posixAccount extends baseModule implements passwordService {
 							$this->attributes['uid'][0],
 							"home",
 							"add",
-							$this->attributes[$this->getHomedirAttrName()][0],
+							$this->attributes[$homeDirAttr][0],
 							"0".$_SESSION['config']->get_scriptRights(),
 							$this->attributes['uidNumber'][0],
 							$this->attributes['gidNumber'][0])
@@ -1298,7 +1298,7 @@ class posixAccount extends baseModule implements passwordService {
 							$this->attributes['uid'][0],
 							"home",
 							"rem",
-							$this->attributes[$this->getHomedirAttrName()][0],
+							$this->attributes[$homeDirAttr][0],
 							$this->attributes['uidNumber'][0]
 						)
 					),
@@ -1326,8 +1326,10 @@ class posixAccount extends baseModule implements passwordService {
 	 */
 	function display_html_attributes() {
 		$return = new htmlTable();
-		if (!$this->isOptional() || $this->skipObjectClass() || (isset($this->attributes['objectClass']) && in_array('posixAccount', $this->attributes['objectClass']))) {
-			$groupList = $this->findGroups(); // list of all group names
+		$modules = $this->getAccountContainer()->get_type()->getModules();
+		if (!$this->isOptional($modules) || $this->skipObjectClass() || (isset($this->attributes['objectClass']) && in_array('posixAccount', $this->attributes['objectClass']))) {
+			$homeDirAttr = $this->getHomedirAttrName($modules);
+			$groupList = $this->findGroups($modules); // list of all group names
 			$groups = array();
 			for ($i = 0; $i < sizeof($groupList); $i++) {
 				$groups[$groupList[$i][1]] = $groupList[$i][0];
@@ -1362,7 +1364,7 @@ class posixAccount extends baseModule implements passwordService {
 					}
 				}
 			}
-			if ($this->manageCn() && (!isset($this->attributes['cn'][0]) || ($this->attributes['cn'][0] == ''))) {
+			if ($this->manageCn($modules) && (!isset($this->attributes['cn'][0]) || ($this->attributes['cn'][0] == ''))) {
 				// set a default value for common name
 				if (($this->get_scope() == 'host') && isset($_POST['uid'])) {
 					if (substr($_POST['uid'], -1, 1) == '$') {
@@ -1399,7 +1401,7 @@ class posixAccount extends baseModule implements passwordService {
 			$uidInput->setRequired(true);
 			$uidInput->setFieldMaxLength(100);
 			$return->addElement($uidInput, true);
-			if ($this->manageCn()) {
+			if ($this->manageCn($modules)) {
 				$this->addMultiValueInputTextField($return, 'cn', _("Common name"));
 			}
 			$uidNumber = '';
@@ -1429,7 +1431,7 @@ class posixAccount extends baseModule implements passwordService {
 					$return->addElement(new htmlHelpLink('addgroup'), true);
 				}
 				// home directory
-				$homeDir = isset($this->attributes[$this->getHomedirAttrName()][0]) ? $this->attributes[$this->getHomedirAttrName()][0] : '';
+				$homeDir = isset($this->attributes[$homeDirAttr][0]) ? $this->attributes[$homeDirAttr][0] : '';
 				$homedirInput = new htmlTableExtendedInputField(_('Home directory'), 'homeDirectory', $homeDir, 'homeDirectory');
 				$homedirInput->setRequired(true);
 				$return->addElement($homedirInput, true);
@@ -1466,10 +1468,10 @@ class posixAccount extends baseModule implements passwordService {
 				$return->addElement(new htmlTableExtendedSelect('loginShell', $shelllist, $selectedShell, _('Login shell'), 'loginShell'), true);
 			}
 			// password buttons
-			if (checkIfWriteAccessIsAllowed($this->get_scope()) && isset($this->attributes[$this->getPasswordAttrName()][0])) {
+			if (checkIfWriteAccessIsAllowed($this->get_scope()) && isset($this->attributes[$this->getPasswordAttrName($modules)][0])) {
 				$return->addElement(new htmlOutputText(_('Password')));
 				$pwdContainer = new htmlTable();
-				if (pwd_is_enabled($this->attributes[$this->getPasswordAttrName()][0])) {
+				if (pwd_is_enabled($this->attributes[$this->getPasswordAttrName($modules)][0])) {
 					$pwdContainer->addElement(new htmlButton('lockPassword', _('Lock password')));
 				}
 				else {
@@ -1480,7 +1482,7 @@ class posixAccount extends baseModule implements passwordService {
 				$return->addElement($pwdContainer, true);
 			}
 			// remove button
-			if ($this->isOptional() && !$this->skipObjectClass()) {
+			if ($this->isOptional($modules) && !$this->skipObjectClass()) {
 				$return->addElement(new htmlSpacer(null, '20px'), true);
 				$remButton = new htmlButton('remObjectClass', _('Remove Unix extension'));
 				$remButton->colspan = 5;
@@ -1523,9 +1525,10 @@ class posixAccount extends baseModule implements passwordService {
 	*/
 	function display_html_group() {
 		$return = new htmlTable();
+		$modules = $this->getAccountContainer()->get_type()->getModules();
 		if (!$this->isBooleanConfigOptionSet('posixAccount_hideposixGroups')) {
 			// load list with all groups
-			$groups = $this->findGroups();
+			$groups = $this->findGroups($modules);
 			for ($i = 0; $i < sizeof($groups); $i++) {
 				$groups[$i] = $groups[$i][1];
 			}
@@ -1634,10 +1637,12 @@ class posixAccount extends baseModule implements passwordService {
 	* @return htmlElement meta HTML code
 	*/
 	function display_html_homedir() {
+		$modules = $this->getAccountContainer()->get_type()->getModules();
+		$homeDirAttr = $this->getHomedirAttrName($modules);
 		$return = new htmlTable();
 		$return->addElement(new htmlOutputText(_('Home directory')));
 		$return->addElement(new htmlSpacer('5px', null));
-		$return->addElement(new htmlOutputText($this->attributes[$this->getHomedirAttrName()][0]), true);
+		$return->addElement(new htmlOutputText($this->attributes[$homeDirAttr][0]), true);
 		$return->addElement(new htmlSpacer(null, '10px'), true);
 		$homeServerContainer = new htmlTable();
 		$homeServerContainer->colspan = 5;
@@ -1657,7 +1662,7 @@ class posixAccount extends baseModule implements passwordService {
 						$this->attributes['uid'][0],
 						"home",
 						"check",
-						$this->attributes[$this->getHomedirAttrName()][0])
+						$this->attributes[$homeDirAttr][0])
 					),
 				$server);
 			// lamdaemon results
@@ -1705,7 +1710,9 @@ class posixAccount extends baseModule implements passwordService {
 	*/
 	function get_profileOptions($typeId) {
 		$return = new htmlTable();
-		$groupList = $this->findGroups();
+		$typeManager = new TypeManager();
+		$modules = $typeManager->getConfiguredType($typeId)->getModules();
+		$groupList = $this->findGroups($modules);
 		$groups = array();
 		for ($i = 0; $i < sizeof($groupList); $i++) {
 			$groups[] = $groupList[$i][1];
@@ -1761,7 +1768,7 @@ class posixAccount extends baseModule implements passwordService {
 			// primary Unix group
 			$return->addElement(new htmlTableExtendedSelect('posixAccount_primaryGroup', $groups, array(), _('Primary group'), 'gidNumber'));
 		}
-		if ($this->isOptional()) {
+		if ($this->isOptional($modules)) {
 			$return->addElement(new htmlTableExtendedInputCheckbox('posixAccount_addExt', false, _('Automatically add this extension'), 'autoAdd'), true);
 		}
 		return $return;
@@ -1775,6 +1782,12 @@ class posixAccount extends baseModule implements passwordService {
 	function load_profile($profile) {
 		// profile mappings in meta data
 		parent::load_profile($profile);
+		$modules = $this->getAccountContainer()->get_type()->getModules();
+		// home directory
+		$homeDirAttr = $this->getHomedirAttrName($modules);
+		if (!empty($profile['posixAccount_homeDirectory'][0])) {
+			$this->attributes[$homeDirAttr][0] = $profile['posixAccount_homeDirectory'][0];
+		}
 		// special profile options
 		// GID
 		if (isset($profile['posixAccount_primaryGroup'][0])) {
@@ -1816,6 +1829,20 @@ class posixAccount extends baseModule implements passwordService {
 
 	/**
 	 * {@inheritDoc}
+	 * @see baseModule::get_pdfFields()
+	 */
+	public function get_pdfFields($typeId) {
+		$fields = parent::get_pdfFields($typeId);
+		$typeManager = new TypeManager();
+		$modules = $typeManager->getConfiguredType($typeId)->getModules();
+		if ($this->manageCn($modules)) {
+			$fields['cn'] = _('Common name');
+		}
+		return $fields;
+	}
+
+	/**
+	 * {@inheritDoc}
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
@@ -1828,6 +1855,8 @@ class posixAccount extends baseModule implements passwordService {
 			$additionalGroups = $this->groups;
 			natcasesort($additionalGroups);
 		}
+		$modules = $this->getAccountContainer()->get_type()->getModules();
+		$homeDirAttr = $this->getHomedirAttrName($modules);
 		$return = array();
 		$this->addPDFKeyValue($return, 'primaryGroup', _('Primary group'), $this->getGroupName($this->attributes['gidNumber'][0]));
 		$this->addPDFKeyValue($return, 'additionalGroups', _('Additional groups'), implode(", ", $additionalGroups));
@@ -1835,7 +1864,7 @@ class posixAccount extends baseModule implements passwordService {
 		$this->addSimplePDFField($return, 'cn', _('Common name'));
 		$this->addSimplePDFField($return, 'uidNumber', _('UID number'));
 		$this->addSimplePDFField($return, 'gidNumber', _('GID number'));
-		$this->addSimplePDFField($return, 'homeDirectory', _('Home directory'), $this->getHomedirAttrName());
+		$this->addSimplePDFField($return, 'homeDirectory', _('Home directory'), $homeDirAttr);
 		$this->addSimplePDFField($return, 'loginShell', _('Login shell'));
 		$this->addSimplePDFField($return, 'gecos', _('Gecos'));
 		if (self::areGroupOfNamesActive()) {
@@ -2071,6 +2100,23 @@ class posixAccount extends baseModule implements passwordService {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 * @see baseModule::getManagedAttributes()
+	 */
+	function get_uploadColumns($selectedModules) {
+		$return = parent::get_uploadColumns($selectedModules);
+		if (($this->get_scope() == 'user') && $this->manageCn($selectedModules)) {
+			array_unshift($return['upload_columns'], array(
+				'name' => 'posixAccount_cn',
+				'description' => _('Common name'),
+				'help' => 'cn',
+				'example' => _('Steve Miller')
+			));
+		}
+		return $return;
+	}
+
+	/**
 	* In this function the LDAP account is built up.
 	*
 	* @param array $rawAccounts list of hash arrays (name => value) from user input
@@ -2081,13 +2127,13 @@ class posixAccount extends baseModule implements passwordService {
 	*/
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
 		$errors = array();
-		$pwdAttrName = $this->getPasswordAttrName();
-		$homedirAttrName = $this->getHomedirAttrName();
+		$pwdAttrName = $this->getPasswordAttrName($selectedModules);
+		$homedirAttrName = $this->getHomedirAttrName($selectedModules);
 		$needAutoUID = array();
 		// get list of existing users
 		$existingUsers = $this->getUserNames();
 		// get list of existing groups
-		$groupList = $this->findGroups();
+		$groupList = $this->findGroups($selectedModules);
 		$groupMap = array();
 		for ($i = 0; $i < sizeof($groupList); $i++) {
 			$groupMap[$groupList[$i][1]] = $groupList[$i][0];
@@ -2287,7 +2333,7 @@ class posixAccount extends baseModule implements passwordService {
 					}
 				}
 				// cn
-				if ($this->manageCn()) {
+				if ($this->manageCn($selectedModules)) {
 					if ($rawAccount[$ids['posixAccount_cn']] != "") {
 						if (get_preg($rawAccount[$ids['posixAccount_cn']], 'cn')) {
 							$partialAccounts[$i]['cn'] = $rawAccount[$ids['posixAccount_cn']];
@@ -2360,24 +2406,14 @@ class posixAccount extends baseModule implements passwordService {
 	}
 
 	/**
-	* This function executes one post upload action.
-	*
-	* @param array $data array containing one account in each element
-	* @param array $ids array(<column_name> => <column number>)
-	* @param array $failed list of accounts which were not created successfully
-	* @param array $temp variable to store temporary data between two post actions
-	* @param array $accounts list of LDAP entries
-	* @return array current status
-	* <br> array (
-	* <br>  'status' => 'finished' | 'inProgress'
-	* <br>  'progress' => 0..100
-	* <br>  'errors' => array (<array of parameters for StatusMessage>)
-	* <br> )
-	*/
-	function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts) {
+	 * {@inheritDoc}
+	 * @see baseModule::doUploadPostActions()
+	 */
+	function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts, $selectedModules) {
 		if (!checkIfWriteAccessIsAllowed($this->get_scope())) {
 			die();
 		}
+		$homeDirAttr = $this->getHomedirAttrName($selectedModules);
 		if ($this->get_scope() != 'user') {
 			return array(
 				'status' => 'finished',
@@ -2394,7 +2430,7 @@ class posixAccount extends baseModule implements passwordService {
 			$col = $ids['posixAccount_additionalGroups'];
 			$col_home = $ids['posixAccount_createHomeDir'];
 			// get list of existing groups
-			$groupList = $this->findGroups();
+			$groupList = $this->findGroups($selectedModules);
 			$groupMap = array();
 			for ($i = 0; $i < sizeof($groupList); $i++) {
 				$groupMap[$groupList[$i][0]] = $groupList[$i][1];
@@ -2502,7 +2538,7 @@ class posixAccount extends baseModule implements passwordService {
 						$data[$pos][$ids['posixAccount_userName']],
 						"home",
 						"add",
-						$accounts[$pos][$this->getHomedirAttrName()],
+						$accounts[$pos][$homeDirAttr],
 						"0".$_SESSION['config']->get_scriptRights(),
 						$accounts[$pos]['uidNumber'],
 						$accounts[$pos]['gidNumber'],
@@ -2900,6 +2936,7 @@ class posixAccount extends baseModule implements passwordService {
 		if (!in_array(get_class($this), $modules)) {
 			return array();
 		}
+		$accountModules = $this->getAccountContainer()->get_type()->getModules();
 		// check password strength
 		$user = empty($this->attributes['uid'][0]) ? null : $this->attributes['uid'][0];
 		$additionalAttrs = array();
@@ -2921,11 +2958,11 @@ class posixAccount extends baseModule implements passwordService {
 		// set SASL password
 		if (!empty($this->attributes['uid'][0]) && !empty($this->moduleSettings['posixAccount_pwdHash'][0])
 				&& ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')) {
-			$this->attributes[$this->getPasswordAttrName()][0] = '{SASL}' . $this->attributes['uid'][0];
+			$this->attributes[$this->getPasswordAttrName($accountModules)][0] = '{SASL}' . $this->attributes['uid'][0];
 		}
 		// set normal password
 		else {
-			$this->attributes[$this->getPasswordAttrName()][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+			$this->attributes[$this->getPasswordAttrName($accountModules)][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 		}
 		return array();
 	}
@@ -2977,7 +3014,7 @@ class posixAccount extends baseModule implements passwordService {
 	 *
 	 * @return array groups array(array(gidnumber, cn), array(gidnumber, cn), ...)
 	 */
-	private function findGroups() {
+	private function findGroups(&$modules) {
 		if ($this->groupCache != null) {
 			return $this->groupCache;
 		}
@@ -2985,7 +3022,7 @@ class posixAccount extends baseModule implements passwordService {
 		$typeManager = new TypeManager();
 		foreach ($typeManager->getConfiguredTypesForScope('group') as $type) {
 			$filter = '(objectClass=posixGroup)';
-			if ($this->isWindows()) {
+			if ($this->isWindows($modules)) {
 				$filter = '(&(objectClass=group)(gidNumber=*))';
 			}
 			$typeFilter = $type->getAdditionalLdapFilter();
@@ -3212,9 +3249,13 @@ class posixAccount extends baseModule implements passwordService {
 	/**
 	 * Returns if this account can be locked.
 	 * This is the case if a hashed password is set ("{" at the beginning).
+	 *
+	 * @param string[] $modules account modules
+	 * @return boolean lockable
 	 */
-	public function isLockable() {
-		if (isset($this->attributes[$this->getPasswordAttrName()][0]) && pwd_is_lockable($this->attributes[$this->getPasswordAttrName()][0])) {
+	public function isLockable(&$modules) {
+		if (isset($this->attributes[$this->getPasswordAttrName($modules)][0])
+				&& pwd_is_lockable($this->attributes[$this->getPasswordAttrName($modules)][0])) {
 			return true;
 		}
 		return false;
@@ -3223,17 +3264,21 @@ class posixAccount extends baseModule implements passwordService {
 	/**
 	 * Returns if the Unix part of the current account is locked.
 	 *
+	 * @param string[] $modules account modules
 	 * @return boolean password is locked
 	 */
-	public function isLocked() {
-		return isset($this->attributes[$this->getPasswordAttrName()][0]) && !pwd_is_enabled($this->attributes[$this->getPasswordAttrName()][0]);
+	public function isLocked(&$modules) {
+		return isset($this->attributes[$this->getPasswordAttrName($modules)][0])
+			&& !pwd_is_enabled($this->attributes[$this->getPasswordAttrName($modules)][0]);
 	}
 
 	/**
 	 * Locks the user password of this account.
+	 *
+	 * @param string[] $modules account modules
 	 */
-	public function lock() {
-		$pwdAttrName = $this->getPasswordAttrName();
+	public function lock(&$modules) {
+		$pwdAttrName = $this->getPasswordAttrName($modules);
 		if (isset($this->attributes[$pwdAttrName][0])) {
 			$this->attributes[$pwdAttrName][0] = pwd_disable($this->attributes[$pwdAttrName][0]);
 		}
@@ -3241,9 +3286,11 @@ class posixAccount extends baseModule implements passwordService {
 
 	/**
 	 * Unlocks the user password of this account.
+	 *
+	 * @param string[] $modules account modules
 	 */
-	public function unlock() {
-		$pwdAttrName = $this->getPasswordAttrName();
+	public function unlock(&$modules) {
+		$pwdAttrName = $this->getPasswordAttrName($modules);
 		if (isset($this->attributes[$pwdAttrName][0])) {
 			$this->attributes[$pwdAttrName][0] = pwd_enable($this->attributes[$pwdAttrName][0]);
 		}
@@ -3352,71 +3399,59 @@ class posixAccount extends baseModule implements passwordService {
 	 * Returns if the cn attribute should be managed.
 	 * If Windows modules are active then cn will not be managed.
 	 *
+	 * @param string[] $modules account modules
 	 * @return boolean manage cn attribute
 	 */
-	private function manageCn() {
-		if (isset($_SESSION['config'])) {
-			$conf = $_SESSION['config'];
-			if (in_array('windowsUser', $conf->get_AccountModules($this->get_scope()))) {
-				return false;
-			}
-			else {
-				return true;
-			}
-		}
-		return false;
+	private function manageCn(&$modules) {
+		return !$this->isWindows($modules);
 	}
 
 	/**
 	 * Returns if the Unix part can be added and removed.
 	 *
+	 * @param string[] $modules account modules
 	 * @return boolean is optional
 	 */
-	private function isOptional() {
-		return !$this->manageCn();
+	private function isOptional(&$modules) {
+		return !$this->manageCn($modules);
 	}
 
 	/**
 	 * Returns if the Windows module is active.
 	 *
+	 * @param string[] $modules account modules
 	 * @return boolean is Windows
 	 */
-	private function isWindows() {
-		return !$this->manageCn();
+	private function isWindows(&$modules) {
+		return in_array('windowsUser', $modules);
 	}
 
 	/**
 	 * Returns the password attribute.
 	 * Usually, this is userPassword. If Windows modules are active this is unixUserPassword.
 	 *
+	 * @param string[] $modules account modules
 	 * @return boolean attribute name
 	 */
-	private function getPasswordAttrName() {
-		$name = 'userPassword';
-		if (isset($_SESSION['config'])) {
-			$conf = $_SESSION['config'];
-			if (in_array('windowsUser', $conf->get_AccountModules($this->get_scope()))) {
-				return 'unixUserPassword';
-			}
+	private function getPasswordAttrName(&$modules) {
+		if ($this->isWindows($modules)) {
+			return 'unixUserPassword';
 		}
-		return $name;
+		return 'userPassword';
 	}
 
 	/**
 	 * Returns the home directory attribute.
 	 * Usually, this is homeDirectory. If Windows modules are active this is unixHomeDirectory.
 	 *
+	 * @param string[] $modules account modules
 	 * @return boolean attribute name
 	 */
-	private function getHomedirAttrName() {
-		$name = 'homeDirectory';
-		if (isset($_SESSION['config'])) {
-			$conf = $_SESSION['config'];
-			if (in_array('windowsUser', $conf->get_AccountModules($this->get_scope()))) {
-				return 'unixHomeDirectory';
-			}
+	private function getHomedirAttrName(&$modules) {
+		if ($this->isWindows($modules)) {
+			return 'unixHomeDirectory';
 		}
-		return $name;
+		return 'homeDirectory';
 	}
 
 	/**

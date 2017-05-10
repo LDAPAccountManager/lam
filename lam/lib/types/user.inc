@@ -233,8 +233,9 @@ class user extends baseType {
 	 * @return String HTML code for icon
 	 */
 	private function buildAccountStatusIcon($container) {
+		$modules = $this->getType()->getModules();
 		// check if there are account parts that can be locked
-		$unixAvailable = ($container->getAccountModule('posixAccount') != null) && $container->getAccountModule('posixAccount')->isLockable();
+		$unixAvailable = ($container->getAccountModule('posixAccount') != null) && $container->getAccountModule('posixAccount')->isLockable($modules);
 		$sambaAvailable = (($container->getAccountModule('sambaSamAccount') != null) && $container->getAccountModule('sambaSamAccount')->isExtensionEnabled());
 		$ppolicyAvailable = ($container->getAccountModule('ppolicyUser') != null);
 		$windowsAvailable = ($container->getAccountModule('windowsUser') != null);
@@ -247,7 +248,7 @@ class user extends baseType {
 		$isEditable = checkIfWriteAccessIsAllowed('user') && ($unixAvailable  || $sambaAvailable || $ppolicyAvailable || $windowsAvailable || $is389dsAvailable);
 		// get locking status
 		$unixLocked = false;
-		if ($unixAvailable && $container->getAccountModule('posixAccount')->isLocked()) {
+		if ($unixAvailable && $container->getAccountModule('posixAccount')->isLocked($modules)) {
 			$unixLocked = true;
 		}
 		$sambaLocked = false;
@@ -506,13 +507,14 @@ class user extends baseType {
 	 * @param accountContainer $container account container
 	 */
 	public function runEditPagePostAction(&$container) {
+		$modules = $this->getType()->getModules();
 		// check if account status should be changed
 		if (isset($_POST['lam_accountStatusResult']) && ($_POST['lam_accountStatusResult'] == 'ok')) {
 			// lock account
 			if ($_POST['lam_accountStatusAction'] == 'lock') {
 				// Unix
 				if (isset($_POST['lam_accountStatusLockUnix']) && ($_POST['lam_accountStatusLockUnix'] == 'on')) {
-					$container->getAccountModule('posixAccount')->lock();
+					$container->getAccountModule('posixAccount')->lock($modules);
 				}
 				// Samba
 				if (isset($_POST['lam_accountStatusLockSamba']) && ($_POST['lam_accountStatusLockSamba'] == 'on')) {
@@ -543,7 +545,7 @@ class user extends baseType {
 			elseif ($_POST['lam_accountStatusAction'] == 'unlock') {
 				// Unix
 				if (isset($_POST['lam_accountStatusUnlockUnix']) && ($_POST['lam_accountStatusUnlockUnix'] == 'on')) {
-					$container->getAccountModule('posixAccount')->unlock();
+					$container->getAccountModule('posixAccount')->unlock($modules);
 				}
 				// Samba
 				if (isset($_POST['lam_accountStatusUnlockSamba']) && ($_POST['lam_accountStatusUnlockSamba'] == 'on')) {

@@ -1057,6 +1057,7 @@ abstract class baseModule {
 	* @param array $failed list of account numbers which could not be successfully uploaded to LDAP
 	* @param array $temp variable to store temporary data between two post actions
 	* @param array $accounts list of LDAP entries
+	* @param string[] $selectedModules selected account modules
 	* @return array current status
 	* <br> array (
 	* <br>  'status' => 'finished' | 'inProgress' // defines if all operations are complete
@@ -1064,7 +1065,7 @@ abstract class baseModule {
 	* <br>  'errors' => array // list of arrays which are used to generate StatusMessages
 	* <br> )
 	*/
-	public function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts) {
+	public function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts, $selectedModules) {
 		return array(
 			'status' => 'finished',
 			'progress' => 100,

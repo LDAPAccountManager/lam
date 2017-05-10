@@ -205,9 +205,9 @@ jQuery(document).ready(function() {
 </script>
 
 <div class="ui-tabs-panel ui-widget-content ui-corner-bottom user-bright">
-<input type="text" name="hiddenPreventAutocomplete" autocomplete="false" class="hidden" value="111">
-<input type="password" name="hiddenPreventAutocompletePwd1" autocomplete="false" class="hidden" value="222">
-<input type="password" name="hiddenPreventAutocompletePwd2" autocomplete="false" class="hidden" value="333">
+<input type="text" name="hiddenPreventAutocomplete" autocomplete="false" class="hidden" value="">
+<input type="password" name="hiddenPreventAutocompletePwd1" autocomplete="false" class="hidden" value="">
+<input type="password" name="hiddenPreventAutocompletePwd2" autocomplete="false" class="hidden" value="">
 <?php
 
 

@@ -528,21 +528,10 @@ class nisNetGroupUser extends baseModule {
 	}
 
 	/**
-	* This function executes one post upload action.
-	*
-	* @param array $data array containing one account in each element
-	* @param array $ids array(<column_name> => <column number>)
-	* @param array $failed list of accounts which were not created successfully
-	* @param array $temp variable to store temporary data between two post actions
-	* @param array $accounts list of LDAP entries
-	* @return array current status
-	* <br> array (
-	* <br>  'status' => 'finished' | 'inProgress'
-	* <br>  'progress' => 0..100
-	* <br>  'errors' => array (<array of parameters for StatusMessage>)
-	* <br> )
-	*/
-	function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts) {
+	 * {@inheritDoc}
+	 * @see baseModule::doUploadPostActions()
+	 */
+	function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts, $selectedModules) {
 		if (!checkIfWriteAccessIsAllowed($this->get_scope())) {
 			die();
 		}
