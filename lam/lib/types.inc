@@ -393,7 +393,9 @@ class TypeManager {
 	 * @return \LAM\TYPES\ConfiguredType|NULL type
 	 */
 	public function getConfiguredType($typeId) {
-		$configuredTypes = array();
+		if ($this->config == null) {
+			return null;
+		}
 		$activeTypes = $this->config->get_ActiveTypes();
 		if (in_array($typeId, $activeTypes)) {
 			return $this->buildConfiguredType($typeId);
@@ -483,6 +485,15 @@ class TypeManager {
 	 */
 	public function getConfig() {
 		return $this->config;
+	}
+
+	/**
+	 * Returns if configuration is loaded.
+	 *
+	 * @return boolean configured
+	 */
+	public function hasConfig() {
+		return !empty($this->config);
 	}
 
 }

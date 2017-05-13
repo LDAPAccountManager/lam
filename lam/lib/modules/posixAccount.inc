@@ -529,6 +529,9 @@ class posixAccount extends baseModule implements passwordService {
 	public function getManagedAttributes($typeId) {
 		$attrs = parent::getManagedAttributes($typeId);
 		$typeManager = new TypeManager();
+		if (!$typeManager->hasConfig()) {
+			return $attrs;
+		}
 		$modules = $typeManager->getConfiguredType($typeId)->getModules();
 		if ($this->manageCn($modules)) {
 			$attrs[] = 'cn';
