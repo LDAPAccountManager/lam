@@ -159,12 +159,13 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'homePhone' => _('Home telephone number'), 'pager' => _('Pager'), 'roomNumber' => _('Room number'), 'carLicense' => _('Car license'),
 			'location' => _('Location'), 'state' => _('State'), 'officeName' => _('Office name'), 'businessCategory' => _('Business category'),
 			'departmentNumber' => _('Department'), 'initials' => _('Initials'), 'title' => _('Job title'), 'labeledURI' => _('Web site'),
-			'userCertificate' => _('User certificates'), 'ou' => _('Organisational unit'), 'description' => _('Description'), 'uid' => _('User name'));
+			'userCertificate' => _('User certificates'), 'o' => _('Organisation'), 'ou' => _('Organisational unit'), 'description' => _('Description'),
+			'uid' => _('User name'));
 		// possible self service read-only fields
 		$return['selfServiceReadOnlyFields'] = array('firstName', 'lastName', 'mail', 'telephoneNumber', 'mobile', 'faxNumber', 'pager', 'street',
 			'postalAddress', 'registeredAddress', 'postalCode', 'postOfficeBox', 'jpegPhoto', 'homePhone', 'roomNumber', 'carLicense',
 			'location', 'state', 'officeName', 'businessCategory', 'departmentNumber', 'initials', 'title', 'labeledURI', 'userCertificate',
-			'ou', 'description', 'uid');
+			'o', 'ou', 'description', 'uid');
 		// profile checks and mappings
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
 			$return['profile_mappings']['inetOrgPerson_initials'] = 'initials';
@@ -2799,6 +2800,42 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$certLabel = new htmlOutputText($this->getSelfServiceLabel('userCertificate', _('User certificates')));
 			$return['userCertificate'] = new htmlResponsiveRow($certLabel, $certTable);
 		}
+		// o
+		if (in_array('o', $fields)) {
+			$o = '';
+			if (isset($attributes['o'][0])) $o = $attributes['o'][0];
+			if (in_array('o', $readOnlyFields)) {
+				$oField = new htmlOutputText(getAbstractDN($o));
+			}
+			else {
+				$filter = '(|(objectClass=organizationalunit)(objectClass=country)(objectClass=organization)(objectClass=krbRealmContainer)(objectClass=container))';
+				$suffix = $_SESSION['selfServiceProfile']->LDAPSuffix;
+				$foundOs = searchLDAPPaged($_SESSION['ldapHandle'], $suffix, $filter, array('dn'), false, 0);
+				$oList = array();
+				foreach ($foundOs as $foundO) {
+					$oList[] = $foundO['dn'];
+				}
+				if (!empty($attributes['o'][0]) && !in_array($attributes['o'][0], $oList)) {
+					$oList[] = $attributes['o'][0];
+					usort($oList, 'compareDN');
+				}
+				$oSelectionList = array('' => '');
+				foreach ($oList as $singleOU) {
+					$oSelectionList[getAbstractDN($singleOU)] = $singleOU;
+				}
+				$oSelectionListSelected = array();
+				if (!empty($attributes['o'][0])) {
+					$oSelectionListSelected[] = $attributes['o'][0];
+				}
+				$oField = new htmlSelect('inetOrgPerson_o', $oSelectionList, $oSelectionListSelected);
+				$oField->setHasDescriptiveElements(true);
+				$oField->setRightToLeftTextDirection(true);
+				$oField->setSortElements(false);
+			}
+			$return['o'] = new htmlResponsiveRow(
+				new htmlOutputText($this->getSelfServiceLabel('o', _('Organisation'))), $oField
+			);
+		}
 		// ou
 		if (in_array('ou', $fields)) {
 			$ou = '';
@@ -2807,8 +2844,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$ouField = new htmlOutputText(getAbstractDN($ou));
 			}
 			else {
-				$userObj = new user();
-				$filter = $userObj->getSuffixFilter();
+				$filter = '(|(objectClass=organizationalunit)(objectClass=country)(objectClass=organization)(objectClass=krbRealmContainer)(objectClass=container))';
 				$suffix = $_SESSION['selfServiceProfile']->LDAPSuffix;
 				$foundOus = searchLDAPPaged($_SESSION['ldapHandle'], $suffix, $filter, array('dn'), false, 0);
 				$ouList = array();
@@ -3271,6 +3307,14 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$attributesNew['ou'][0] = $_POST['inetOrgPerson_ou'];
 			}
 			elseif (isset($attributes['ou'])) unset($attributesNew['ou']);
+		}
+		// o
+		if (in_array('o', $fields) && !in_array('o', $readOnlyFields)) {
+			$attributeNames[] = 'o';
+			if (!empty($_POST['inetOrgPerson_o'])) {
+				$attributesNew['o'][0] = $_POST['inetOrgPerson_o'];
+			}
+			elseif (isset($attributes['o'])) unset($attributesNew['o']);
 		}
 		// uid
 		if (in_array('uid', $fields) && !in_array('uid', $readOnlyFields)) {
