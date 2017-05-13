@@ -2849,11 +2849,11 @@ class posixAccount extends baseModule implements passwordService {
 						$pwdPolicyResult = checkPasswordStrength($_POST['posixAccount_password'], $userName, $additionalAttrs);
 						if ($pwdPolicyResult === true) {
 							if (empty($this->selfServiceSettings->moduleSettings['posixAccount_useOldPwd']) || ($this->selfServiceSettings->moduleSettings['posixAccount_useOldPwd'][0] != 'true')) {
-								$return['mod'][$this->getPasswordAttrName()][0] = pwd_hash($_POST['posixAccount_password'], true, $this->selfServiceSettings->moduleSettings['posixAccount_pwdHash'][0]);
+								$return['mod']['userPassword'][0] = pwd_hash($_POST['posixAccount_password'], true, $this->selfServiceSettings->moduleSettings['posixAccount_pwdHash'][0]);
 							}
 							else {
-								$return['add'][$this->getPasswordAttrName()][0] = pwd_hash($_POST['posixAccount_password'], true, $this->selfServiceSettings->moduleSettings['posixAccount_pwdHash'][0]);
-								$return['del'][$this->getPasswordAttrName()][0] = $_POST['posixAccount_passwordOld'];
+								$return['add']['userPassword'][0] = pwd_hash($_POST['posixAccount_password'], true, $this->selfServiceSettings->moduleSettings['posixAccount_pwdHash'][0]);
+								$return['del']['userPassword'][0] = $_POST['posixAccount_passwordOld'];
 							}
 							$return['info']['userPasswordClearText'][0] = $_POST['posixAccount_password'];
 							if (isset($attributes['shadowLastChange'][0])) {
