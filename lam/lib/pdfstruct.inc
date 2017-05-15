@@ -347,7 +347,7 @@ function installPDFTemplates() {
 	}
 	$basePath = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName();
 	if (!file_exists($basePath)) {
-		mkdir($basePath);
+		mkdir($basePath, 0700, true);
 	}
 	$typeManager = new \LAM\TYPES\TypeManager();
 	foreach ($typeManager->getConfiguredTypes() as $type) {
