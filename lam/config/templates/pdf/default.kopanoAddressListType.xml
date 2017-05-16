@@ -1,0 +1,8 @@
+<pdf type="kopanoAddressListType" filename="printLogo.jpg" headline="LDAP Account Manager">
+	<section name="_kopanoAddressList_cn">
+		<entry name="kopanoAddressList_kopanoBase" />
+		<entry name="kopanoAddressList_kopanoFilter" />
+		<entry name="kopanoAddressList_kopanoAccount" />
+		<entry name="kopanoAddressList_kopanoHidden" />
+	</section>
+</pdf>

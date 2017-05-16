@@ -701,9 +701,17 @@ h4.schema_oclass_sub {
 .user-bright { background: #fffde2 !important; }
 .user-dark { background-color:#fff2a3 !important; }
 
+.kopanoAddressListType-border { border-color:#7167bf; }
+.kopanoAddressListType-bright { background:#d6e3ff !important; }
+.kopanoAddressListType-dark { background-color:#a8c3ff !important; }
+
 .zarafaAddressListType-border { border-color:#7167bf; }
 .zarafaAddressListType-bright { background:#d6e3ff !important; }
 .zarafaAddressListType-dark { background-color:#a8c3ff !important; }
+
+.kopanoDynamicGroupType-border { border-color:#7167bf; }
+.kopanoDynamicGroupType-bright { background:#d6e3ff !important; }
+.kopanoDynamicGroupType-dark { background-color:#a8c3ff !important; }
 
 .zarafaDynamicGroupType-border { border-color:#7167bf; }
 .zarafaDynamicGroupType-bright { background:#d6e3ff !important; }

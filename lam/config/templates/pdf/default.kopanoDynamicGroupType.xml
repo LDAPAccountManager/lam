@@ -1,0 +1,10 @@
+<pdf type="kopanoDynamicGroupType" filename="printLogo.jpg" headline="LDAP Account Manager">
+	<section name="_kopanoDynamicGroup_cn">
+		<entry name="kopanoDynamicGroup_mail" />
+		<entry name="kopanoDynamicGroup_kopanoAliases" />
+		<entry name="kopanoDynamicGroup_kopanoBase" />
+		<entry name="kopanoDynamicGroup_kopanoFilter" />
+		<entry name="kopanoDynamicGroup_kopanoAccount" />
+		<entry name="kopanoDynamicGroup_kopanoHidden" />
+	</section>
+</pdf>
