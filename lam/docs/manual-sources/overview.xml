@@ -8,7 +8,7 @@
   LDAP directory. LAM runs on any webserver with PHP5 support and connects to
   your LDAP server unencrypted or via SSL/TLS.</para>
 
-  <para>LAM supports Samba 3/4, Unix, Zarafa, Kolab 2/3, address book entries,
+  <para>LAM supports Samba 3/4, Unix, Kopano, Kolab 3, address book entries,
   NIS mail aliases, MAC addresses and much more. There is a tree viewer
   included to allow access to the raw LDAP attributes. You can use templates
   for account creation and use multiple configuration profiles.</para>
@@ -16,7 +16,7 @@
   <para><ulink
   url="https://www.ldap-account-manager.org/">https://www.ldap-account-manager.org/</ulink></para>
 
-  <para>Copyright (C) 2003 - 2016 Roland Gruber
+  <para>Copyright (C) 2003 - 2017 Roland Gruber
   &lt;post@rolandgruber.de&gt;</para>
 
   <para><emphasis role="bold">Key features:</emphasis></para>
