@@ -888,6 +888,9 @@ class htmlHelpLink extends htmlElement {
 		}
 		// print link
 		$helpEntry = getHelp($module, $this->helpID, $scope);
+		if (empty($helpEntry)) {
+			return array();
+		}
 		printHelpLink($helpEntry, $this->helpID, $module, $scope, $this->cssClasses);
 		return array();
 	}
