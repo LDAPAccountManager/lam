@@ -465,20 +465,20 @@ function getUploadColumns(&$type, $selectedModules) {
 *
 * If there are problems status messages will be printed automatically.
 *
-* @param string $scope account type
+* @param ConfiguredType $type account type
 * @param array $data array containing one account in each element
 * @param array $ids array(<column_name> => <column number>)
 * @param array $selectedModules selected account modules
 * @return mixed array including accounts or false if there were errors
 */
-function buildUploadAccounts($scope, $data, $ids, $selectedModules) {
+function buildUploadAccounts($type, $data, $ids, $selectedModules) {
 	// build module order
 	$unOrdered = $selectedModules;
 	$ordered = array();
 	$predepends = array();
 	// get dependencies
 	for ($i = 0; $i < sizeof($unOrdered); $i++) {
-		$mod = moduleCache::getModule($unOrdered[$i], $scope);
+		$mod = moduleCache::getModule($unOrdered[$i], $type->getScope());
 		$predepends[$unOrdered[$i]] = $mod->get_uploadPreDepends();
 	}
 	// first all modules without predepends can be ordered
@@ -523,8 +523,8 @@ function buildUploadAccounts($scope, $data, $ids, $selectedModules) {
 		$partialAccounts[$i]['objectClass'] = array();
 	}
 	for ($i = 0; $i < sizeof($ordered); $i++) {
-		$module = new $ordered[$i]($scope);
-		$errors = $module->build_uploadAccounts($data, $ids, $partialAccounts, $selectedModules);
+		$module = new $ordered[$i]($type->getScope());
+		$errors = $module->build_uploadAccounts($data, $ids, $partialAccounts, $selectedModules, $type);
 		if (sizeof($errors) > 0) {
 			array_unshift($errors, array("INFO", _("Displayed account numbers start at \"0\". Add 2 to get the row in your spreadsheet."), ""));
 			$errors[] = array("ERROR", _("Upload was stopped after errors in %s module!"), "", array($module->get_alias()));

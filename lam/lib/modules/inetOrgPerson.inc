@@ -2168,15 +2168,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 	}
 
 	/**
-	* In this function the LDAP account is built up.
-	*
-	* @param array $rawAccounts list of hash arrays (name => value) from user input
-	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
-	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
-	* @param array $selectedModules list of selected account modules
-	* @return array list of error messages if any
-	*/
-	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
+	 * {@inheritDoc}
+	 * @see baseModule::build_uploadAccounts()
+	 */
+	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$errors = array();
 		// get list of existing users
 		$existingUsers = searchLDAPByAttribute('uid', '*', 'inetOrgPerson', array('uid'), array('user'));

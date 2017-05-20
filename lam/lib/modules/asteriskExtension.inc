@@ -841,15 +841,10 @@ class asteriskExtension extends baseModule {
     }
 
     /**
-     * In this function the LDAP account is built up.
-     *
-     * @param array $rawAccounts list of hash arrays (name => value) from user input
-     * @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
-     * @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
-     * @param array $selectedModules list of selected account modules
-     * @return array list of error messages if any
+     * {@inheritDoc}
+     * @see baseModule::build_uploadAccounts()
      */
-    function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
+    function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
         $messages = array();
         //hash to strore extension_name => priority. For new extensoin priority will be 1
         $extensionNamePriorityMap = array();

@@ -894,9 +894,10 @@ abstract class baseModule {
 	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
 	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
 	* @param array $selectedModules list of selected account modules
+	* @param ConfiguredType $type account type
 	* @return array list of error messages if any
 	*/
-	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
+	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		// must be implemented in sub modules
 		return array();
 	}
