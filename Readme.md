@@ -10,8 +10,8 @@ You can get the newest version at https://www.ldap-account-manager.org/.
 
 There are two modules. Usually, you only need the files inside "lam".
 
-* lam: LAM main source code
-* lam-packaging: build scripts
+* [lam](lam): LAM main source code
+* [lam-packaging](lam-packaging): build scripts
 
 # License
 
