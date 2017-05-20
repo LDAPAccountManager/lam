@@ -447,14 +447,14 @@ function getAvailablePDFFields($typeId) {
 * <br>  boolean: required  // true, if user must set a value for this column
 * <br> )
 *
-* @param string $scope account type
+* @param ConfiguredType $type account type
 * @param array $selectedModules selected account modules
 * @return array column list
 */
-function getUploadColumns($scope, $selectedModules) {
+function getUploadColumns(&$type, $selectedModules) {
 	$return = array();
 	for ($i = 0; $i < sizeof($selectedModules); $i++) {
-		$module = moduleCache::getModule($selectedModules[$i], $scope);
+		$module = moduleCache::getModule($selectedModules[$i], $type->getScope());
 		$return[$selectedModules[$i]] = $module->get_uploadColumns($selectedModules);
 	}
 	return $return;

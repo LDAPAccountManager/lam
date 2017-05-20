@@ -122,7 +122,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	$data = array();  // input values without first row
 	$ids = array();  // <column name> => <column number for $data>
 	// get input fields from modules
-	$columns = getUploadColumns($type->getScope(), $selectedModules);
+	$columns = getUploadColumns($type, $selectedModules);
 	// read input file
 	$handle = fopen ($_FILES['inputfile']['tmp_name'], "r");
 	if (($head = fgetcsv($handle, 2000)) !== false ) { // head row

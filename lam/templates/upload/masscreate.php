@@ -260,7 +260,7 @@ function showMainPage($type, $selectedModules) {
 	$scope = $type->getScope();
 	echo '<div class="' . $scope . '-bright smallPaddingContent">';
 	// get input fields from modules
-	$columns = getUploadColumns($scope, $selectedModules);
+	$columns = getUploadColumns($type, $selectedModules);
 	$modules = array_keys($columns);
 
 	echo "<form enctype=\"multipart/form-data\" action=\"massBuildAccounts.php\" method=\"post\">\n";
