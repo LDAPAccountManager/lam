@@ -96,7 +96,8 @@ class host extends baseType {
 			"description" => _("Host description"),
 			"uidnumber" => _("UID number"),
 			"gidnumber" => _("GID number"),
-			'location' => _('Location')
+			'location' => _('Location'),
+			'serialNumber' => _('Serial number')
 			);
 	}
 

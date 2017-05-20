@@ -3009,7 +3009,7 @@
 
       <para><emphasis role="bold">Configuration</emphasis></para>
 
-      <para>To enable Kopano support in LAM Pro please activate the Kopano
+      <para>To enable Kopano support for users please activate the Kopano
       module for the user account type in you server profile:</para>
 
       <screenshot>
@@ -3030,8 +3030,8 @@
         </mediaobject>
       </screenshot>
 
-      <para>Then select the Kopano user module. You can combine it with
-      Personal module, Unix or Windows.</para>
+      <para>Then select the Kopano user module (tab Modules). You can combine
+      it with Personal module, Unix or Windows.</para>
 
       <screenshot>
         <mediaobject>
@@ -3041,7 +3041,8 @@
         </mediaobject>
       </screenshot>
 
-      <para>Next configure the module to your needs.</para>
+      <para>Next configure the module to your needs (tab Module
+      settings).</para>
 
       <literallayout>
 </literallayout>
@@ -3153,6 +3154,250 @@
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/mod_kopanoContact3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>Groups</title>
+
+      <para><emphasis role="bold">Configuration</emphasis></para>
+
+      <para>To enable Kopano support for groups please activate the Kopano
+      module for the group account type in you server profile:</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kopanoGroup1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Adjust the suffix and list attributes to your needs.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kopanoGroup2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Then select the Kopano group module (tab Modules). You can combine
+      it with groups of names module, Unix or Windows.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kopanoGroup3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Next configure the module to your needs (tab Module
+      settings).</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kopanoGroup4.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis role="bold">Usage</emphasis></para>
+
+      <para>LAM Pro will now display the Kopano tab on your groups. The Kopano
+      extension can be added and removed at any time for every group.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kopanoGroup5.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>Address lists</title>
+
+      <para><emphasis role="bold">Configuration</emphasis></para>
+
+      <para>To enable Kopano support for address lists please activate the
+      Kopano address list account type in you server profile (tab account
+      types):</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kopanoAddresslist1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Adjust the suffix and list attributes to your needs.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kopanoAddresslist2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Then select the Kopano address list module (tab Modules).</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kopanoAddresslist3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis role="bold">Usage</emphasis></para>
+
+      <para>LAM Pro will now display the Kopano address list tab.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kopanoAddresslist4.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para></para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kopanoAddresslist5.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>Dynamic groups</title>
+
+      <para><emphasis role="bold">Configuration</emphasis></para>
+
+      <para>To enable Kopano support for dynamic groups please activate the
+      Kopano dynamic group account type in you server profile (tab account
+      types):</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kopanoDynamicgroup1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Adjust the suffix and list attributes to your needs.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kopanoDynamicgroup2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Then select the Kopano dynamic group module (tab Modules).</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kopanoDynamicgroup3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis role="bold">Usage</emphasis></para>
+
+      <para>LAM Pro will now display the Kopano address list tab.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kopanoDynamicgroup4.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para></para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kopanoDynamicgroup5.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>Servers</title>
+
+      <para><emphasis role="bold">Configuration</emphasis></para>
+
+      <para>To enable Kopano support for servers please activate the Kopano
+      server module for the hosts account type in you server profile (tab
+      account types):</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kopanoServer1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Adjust the suffix and list attributes to your needs.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kopanoServer2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Then select the Kopano server module (tab Modules).</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kopanoServer3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Next configure the module to your needs (tab Module
+      settings).</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kopanoServer4.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis role="bold">Usage</emphasis></para>
+
+      <para>LAM Pro will now display the Kopano tab on your hosts. The Kopano
+      extension can be added and removed at any time for every server.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_kopanoServer5.png" />
           </imageobject>
         </mediaobject>
       </screenshot>
