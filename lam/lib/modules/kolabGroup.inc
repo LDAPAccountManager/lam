@@ -331,8 +331,8 @@ class kolabGroup extends baseModule {
 	 * {@inheritDoc}
 	 * @see baseModule::getManagedAttributes()
 	 */
-	function get_uploadColumns($selectedModules) {
-		$return = parent::get_uploadColumns($selectedModules);
+	function get_uploadColumns($selectedModules, &$type) {
+		$return = parent::get_uploadColumns($selectedModules, $type);
 		if ($this->manageMail($selectedModules)) {
 			$return[] = array(
 				'name' => 'kolabGroup_mail',

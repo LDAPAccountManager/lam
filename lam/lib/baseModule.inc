@@ -1,6 +1,7 @@
 <?php
 use \LAM\PDF\PDFLabelValue;
 use \LAM\PDF\PDFTable;
+use LAM\TYPES\ConfiguredType;
 /*
 $Id$
 
@@ -856,11 +857,12 @@ abstract class baseModule {
 	* <br> )
 	*
 	* @param array $selectedModules list of selected account modules
+	* @param ConfiguredType $type account type
 	* @return array column list
 	*
 	* @see baseModule::get_metaData()
 	*/
-	public function get_uploadColumns($selectedModules) {
+	public function get_uploadColumns($selectedModules, &$type) {
 		if (isset($this->meta['upload_columns'])) return $this->meta['upload_columns'];
 		else return array();
 	}

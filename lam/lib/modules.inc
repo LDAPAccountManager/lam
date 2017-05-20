@@ -455,7 +455,7 @@ function getUploadColumns(&$type, $selectedModules) {
 	$return = array();
 	for ($i = 0; $i < sizeof($selectedModules); $i++) {
 		$module = moduleCache::getModule($selectedModules[$i], $type->getScope());
-		$return[$selectedModules[$i]] = $module->get_uploadColumns($selectedModules);
+		$return[$selectedModules[$i]] = $module->get_uploadColumns($selectedModules, $type);
 	}
 	return $return;
 }

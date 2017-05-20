@@ -213,31 +213,11 @@ class sambaGroupMapping extends baseModule {
 	}
 
 	/**
-	* Returns an array containing all input columns for the file upload.
-	*
-	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
-	* <br>
-	* This funtion returns an array which contains subarrays which represent an upload column.
-	* <b>Syntax of column arrays:</b>
-	* <br>
-	* <br> array(
-	* <br>  string: name,  // fixed non-translated name which is used as column name (should be of format: <module name>_<column name>)
-	* <br>  string: description,  // short descriptive name
-	* <br>  string: help,  // help ID
-	* <br>  string: example,  // example value
-	* <br>  string: values, // possible input values (optional)
-	* <br>  string: default, // default value (optional)
-	* <br>  boolean: required  // true, if user must set a value for this column
-	* <br>  boolean: unique // true if all values of this column must be different values (optional, default: "false")
-	* <br> )
-	*
-	* @param array $selectedModules list of selected account modules
-	* @return array column list
-	*
-	* @see baseModule::get_metaData()
-	*/
-	public function get_uploadColumns($selectedModules) {
-		$return = parent::get_uploadColumns($selectedModules);
+	 * {@inheritDoc}
+	 * @see baseModule::get_uploadColumns()
+	 */
+	public function get_uploadColumns($selectedModules, &$type) {
+		$return = parent::get_uploadColumns($selectedModules, $type);
 		$domains = $this->getDomains();
 		$domainNames = array();
 		for ($i = 0; $i < sizeof($domains); $i++) $domainNames[] = $domains[$i]->name;

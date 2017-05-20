@@ -2136,8 +2136,8 @@ class inetOrgPerson extends baseModule implements passwordService {
 	 * {@inheritDoc}
 	 * @see baseModule::getManagedAttributes()
 	 */
-	function get_uploadColumns($selectedModules) {
-		$return = parent::get_uploadColumns($selectedModules);
+	function get_uploadColumns($selectedModules, &$type) {
+		$return = parent::get_uploadColumns($selectedModules, $type);
 		// cn and uid for upload (only if posixAccount is not selected)
 		if (!$this->isUnixActive($selectedModules)) {
 			$return[] = array(

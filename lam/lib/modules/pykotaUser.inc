@@ -733,8 +733,8 @@ class pykotaUser extends baseModule {
 	 * {@inheritDoc}
 	 * @see baseModule::getManagedAttributes()
 	 */
-	function get_uploadColumns($selectedModules) {
-		$return = parent::get_uploadColumns($selectedModules);
+	function get_uploadColumns($selectedModules, &$type) {
+		$return = parent::get_uploadColumns($selectedModules, $type);
 		if ($this->manageUid($selectedModules)) {
 			$return[] = array(
 				'name' => 'pykotaUser_uid',

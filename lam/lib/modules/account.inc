@@ -248,22 +248,11 @@ class account extends baseModule {
 	}
 
 	/**
-	* Returns an array containing all input columns for the file upload.
-	*
-	* Syntax:
-	* <br> array(
-	* <br>  string: name,  // fixed non-translated name which is used as column name (should be of format: <module name>_<column name>)
-	* <br>  string: description,  // short descriptive name
-	* <br>  string: help,  // help ID
-	* <br>  string: example,  // example value
-	* <br>  boolean: required  // true, if user must set a value for this column
-	* <br> )
-	*
-	* @param array $selectedModules list of selected account modules
-	* @return array column list
-	*/
-	function get_uploadColumns($selectedModules) {
-		$return = parent::get_uploadColumns($selectedModules);
+	 * {@inheritDoc}
+	 * @see baseModule::get_uploadColumns()
+	 */
+	function get_uploadColumns($selectedModules, &$type) {
+		$return = parent::get_uploadColumns($selectedModules, $type);
 		if (!in_array('posixAccount', $selectedModules)) {
 			$return[] = array(
                 'name' => 'account_uid',
