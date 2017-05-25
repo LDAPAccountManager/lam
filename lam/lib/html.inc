@@ -1273,13 +1273,13 @@ class htmlSelect extends htmlElement {
 		foreach ($elements as $key => $value) {
 			$selected = '';
 			if ($this->hasDescriptiveElements) {
-				if (in_array($value, $this->selectedElements)) {
+				if (in_array($value, $this->selectedElements) || (empty($this->selectedElements) && empty($value))) {
 					$selected = ' selected';
 				}
 				echo "<option value=\"" . htmlspecialchars($value) . "\"$selected>" . htmlspecialchars($key) . "</option>\n";
 			}
 			else {
-				if (in_array($value, $this->selectedElements)) {
+				if (in_array($value, $this->selectedElements) || (empty($this->selectedElements) && empty($value))) {
 					$selected = ' selected';
 				}
 				echo "<option$selected>" . htmlspecialchars($value) . "</option>\n";
