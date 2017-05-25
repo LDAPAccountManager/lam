@@ -727,12 +727,32 @@ function searchLDAPByFilter($filter, $attributes, $scopes, $attrsOnly = false) {
  * @return array list of found entries
  */
 function searchLDAP($suffix, $filter, $attributes) {
-	$return = searchLDAPPaged($_SESSION['ldap']->server(), escapeDN($suffix), $filter, $attributes,
-				0, $_SESSION['config']->get_searchLimit());
-	if (ldap_errno($_SESSION['ldap']->server()) == 4) {
+	$limit = 0;
+	if (!empty($_SESSION['config'])) {
+		$limit = $_SESSION['config']->get_searchLimit();
+	}
+	$return = searchLDAPPaged(getLDAPServerHandle(), escapeDN($suffix), $filter, $attributes,
+				0, $limit);
+	if (ldap_errno(getLDAPServerHandle()) == 4) {
 		logNewMessage(LOG_WARNING, 'LDAP size limit exeeded. Please increase the limit on your server.');
 	}
 	return $return;
+}
+
+/**
+ * Returns the LDAP server handle.
+ *
+ * @return handle LDAP handle
+ */
+function getLDAPServerHandle() {
+	if (!empty($_SESSION['ldap'])) {
+		// admin pages
+		return $_SESSION['ldap']->server();
+	}
+	else {
+		// self service
+		return $_SESSION['ldapHandle'];
+	}
 }
 
 /**

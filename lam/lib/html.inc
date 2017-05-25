@@ -798,11 +798,13 @@ class htmlTableExtendedInputField extends htmlInputField {
 	 * @param String $fieldName unique field name
 	 * @param String $fieldValue value of input field (optional)
 	 * @param String $helpID help ID (optional)
+	 * @param boolean $required input required
 	 */
-	function __construct($label, $fieldName, $fieldValue = null, $helpID = null) {
+	function __construct($label, $fieldName, $fieldValue = null, $helpID = null, $required = false) {
 		parent::__construct($fieldName, $fieldValue);
 		$this->label = htmlspecialchars($label);
 		$this->helpID = $helpID;
+		$this->required = $required;
 	}
 
 	/**
