@@ -5,6 +5,7 @@ June 2017
   - Windows: Support unlocking of users with too many failed login attempts
   - LAM Pro:
    -> Custom fields: can be used for file upload
+   -> Custom fields: new selection list type that gets options from LDAP search
    -> Kopano support
 
 

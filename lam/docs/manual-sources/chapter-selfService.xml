@@ -1262,7 +1262,7 @@
     </section>
 
     <section>
-      <title>Custom fields (LAM Pro)</title>
+      <title>Custom fields</title>
 
       <para>This module allows you to manage LDAP attributes that are not
       covered by the other LAM modules (e.g. if you use custom LDAP schemas).
@@ -1512,6 +1512,39 @@
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/customFields18.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>LDAP search select list</para>
+
+      <para>This is similar to "Select list" but the option are read from
+      LDAP. You can use this to define e.g. a DN selection list. Multiple
+      values are supported.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/customFields26.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>LDAP suffix: The LDAP DN that is used as starting point to search
+      for LDAP entries.</para>
+
+      <para>LDAP filter: Only LDAP entries that match this filter will be
+      used. If all entries should be used then use "(objectclass=*)".</para>
+
+      <para>Attribute name: The values of this attribute will be used to build
+      the selection list.</para>
+
+      <para>Presentation:</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/customFields27.png" />
           </imageobject>
         </mediaobject>
       </screenshot>
