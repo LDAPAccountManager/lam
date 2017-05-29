@@ -81,12 +81,12 @@ class courierMailAlias extends baseModule {
 			'maildrop' => array(
 				"Headline" => _("Recipient address"),
 				"attr" => 'maildrop',
-				"Text" => _("This is the email address of the recipient user. There can be more than one.")
+				"Text" => _("This is the recipient address of the mail alias. There can be more than one.")
 			),
 			'mailsource' => array(
 				"Headline" => _("Mail source"),
 				"attr" => 'mailsource',
-				"Text" => _("The source of email allowed for this alias: local, estmp.")
+				"Text" => _("The mail source can be 'local' or 'estmp'.")
 			),
 			'description' => array(
 				"Headline" => _("Description"),
