@@ -1302,7 +1302,7 @@ abstract class baseModule {
 			natcasesort($values);
 			$values = array_values($values);
 			if ($label !== null) {
-				$labelTextOut = new htmlOutputText($label);
+				$labelTextOut = new htmlOutputText($label, true, $required);
 				$labelTextOut->alignment = htmlElement::ALIGN_TOP;
 				$container->addElement($labelTextOut);
 			}
