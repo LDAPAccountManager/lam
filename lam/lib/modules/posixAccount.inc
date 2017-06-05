@@ -3479,10 +3479,7 @@ class posixAccount extends baseModule implements passwordService {
 	}
 
 	/**
-	 * Returns a list of wildcards that can be replaced in input fileds.
-	 * E.g. "$firstname$" is replaced with "givenName" attribute value.
-	 *
-	 * @return array replacements as wildcard => value
+	 * {@inheritdoc}
 	 */
 	public function getWildCardReplacements() {
 		$replacements = array();

@@ -1912,7 +1912,7 @@ abstract class baseModule {
 
 	/**
 	 * Returns a list of wildcards that can be replaced in input fileds.
-	 * E.g. "$firstname$" is replaced with "givenName" attribute value.
+	 * E.g. "$firstname" is replaced with "givenName" attribute value.
 	 *
 	 * @return array replacements as wildcard => value
 	 */
