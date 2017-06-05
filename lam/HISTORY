@@ -1,7 +1,7 @@
-June 2017
+June 2017 6.0
   - Support multiple configurations for same account type
   - PHP 7.1 compatibility
-  - Courier mail aliases
+  - Courier users and mail aliases
   - Samba 3: added account expiration date to PDF fields
   - Windows: Support unlocking of users with too many failed login attempts
   - LAM Pro:

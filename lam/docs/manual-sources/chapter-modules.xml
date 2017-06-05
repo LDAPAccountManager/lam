@@ -1785,7 +1785,7 @@
     </section>
 
     <section id="mailAliasesUser">
-      <title>Mail aliases</title>
+      <title>NIS mail aliases</title>
 
       <para>This module allows to add/remove the user in mail alias
       entries.</para>
@@ -1837,6 +1837,43 @@
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/nisMailAliasUser3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>Courier mail</title>
+
+      <para>This module allows to add/remove the Courier extension for
+      users.</para>
+
+      <para><emphasis role="bold">Configuration:</emphasis></para>
+
+      <para>Please activate the module Courier for users to enable this
+      extension. The Unix module is optional.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_courierUser2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis role="bold">Usage:</emphasis></para>
+
+      <para>Your user tab will now show the Courier extension. This can be
+      added/removed any time.</para>
+
+      <para>Here you can configure the home directory in case the Unix module
+      is not activated. Additionally, mailbox folder, quota, server and
+      feature flags can be configured.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_courierUser1.png" />
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -4278,18 +4315,14 @@ objectclass: top
     </screenshot>
   </section>
 
-  <section id="mailAliases">
+  <section>
     <title>Mail aliases</title>
 
     <para>You can manage mail aliases (e.g. for NIS) inside LAM. This can be
     used to replace local /etc/aliases files with LDAP.</para>
 
-    <para>Note: Use the <link linkend="mailAliasesUser">mail alias user
-    module</link> to manage mail aliases on user pages.</para>
-
-    <para>All accounts of this type are based on the "nisMailAlias" object
-    class and may have "cn" and "rfc822MailMember" attributes. To activate
-    this type please add "Mail aliases" in your LAM server profile:</para>
+    <para>To activate this type please add "Mail aliases" in your LAM server
+    profile:</para>
 
     <screenshot>
       <mediaobject>
@@ -4299,30 +4332,65 @@ objectclass: top
       </mediaobject>
     </screenshot>
 
-    <para>You need to select the Mail aliases module on the next tab.</para>
+    <section id="mailAliases">
+      <title>NIS mail aliases</title>
 
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/nisMailAlias3.png" />
-        </imageobject>
-      </mediaobject>
-    </screenshot>
+      <para>Note: Use the <link linkend="mailAliasesUser">mail alias user
+      module</link> to manage mail aliases on user pages.</para>
 
-    <para>The mail aliases will then appear as separate tab inside LAM. You
-    may then manage the aliases with their names and recipient
-    addresses.</para>
+      <para>All accounts of this type are based on the "nisMailAlias" object
+      class and may have "cn" and "rfc822MailMember" attributes.</para>
 
-    <para>There are mail/user icons that allow to select a mail address/user
-    name from the existing users.</para>
+      <para>You need to select the Mail aliases module on the next tab.</para>
 
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/nisMailAlias2.png" />
-        </imageobject>
-      </mediaobject>
-    </screenshot>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/nisMailAlias3.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>The mail aliases will then appear as separate tab inside LAM. You
+      may then manage the aliases with their names and recipient
+      addresses.</para>
+
+      <para>There are mail/user icons that allow to select a mail address/user
+      name from the existing users.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/nisMailAlias2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>Courier mail aliases</title>
+
+      <para>Mail aliases for Courier SMTP can be used when activating NIS mail
+      aliases and Courier modules:</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_courierAlias1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>You will then get the Courier tab for your mail aliases.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_courierAlias2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
   </section>
 
   <section>
