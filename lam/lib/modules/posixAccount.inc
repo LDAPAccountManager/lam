@@ -2109,7 +2109,7 @@ class posixAccount extends baseModule implements passwordService {
 	function get_uploadColumns($selectedModules, &$type) {
 		$return = parent::get_uploadColumns($selectedModules, $type);
 		if (($this->get_scope() == 'user') && $this->manageCn($selectedModules)) {
-			array_unshift($return['upload_columns'], array(
+			array_unshift($return, array(
 				'name' => 'posixAccount_cn',
 				'description' => _('Common name'),
 				'help' => 'cn',
