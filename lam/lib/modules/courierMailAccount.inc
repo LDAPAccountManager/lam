@@ -202,12 +202,11 @@ class courierMailAccount extends baseModule {
 	 * This function fills the error message array with messages
 	 */
 	public function load_Messages() {
-		$this->messages['mailbox'][] = array('ERROR', _('The mailbox folder is not valid.')); // third array value is set dynamically
-		$this->messages['mailhost'][] = array('ERROR', _('The Mailhost is not valid')); // third array value is set dynamically
-		$this->messages['quota'][] = array('ERROR', _('The quota must be entered as a floating point number.')); // third array value is set dynamically
-		$this->messages['quota'][] = array('ERROR', _('The quota must be entered as one of four formats: 1000, 1000S, 1000k, 1000kB.')); // third array value is set dynamically
-		$this->messages['virtMailRoot'][] = array('ERROR', _('The virtual mail root must be a file path')); // third array value is set dynamically
-		$this->messages['homeDirectory'][] = array('ERROR', _('The home directory must be a file path')); // third array value is set dynamically
+		$this->messages['mailhost'][0] = array('ERROR', _('The mail host is not valid.')); // third array value is set dynamically
+		$this->messages['quota'][0] = array('ERROR', _('The quota must be entered as a floating point number.')); // third array value is set dynamically
+		$this->messages['quota'][1] = array('ERROR', _('The quota must be entered as one of four formats: 1000, 1000S, 1000k, 1000kB.')); // third array value is set dynamically
+		$this->messages['homeDirectory'][0] = array('ERROR', _('Homedirectory contains invalid characters.')); // third array value is set dynamically
+		$this->messages['homeDirectory'][1] = array('ERROR', _('Account %s:') . ' courierMailAccount_homeDirectory', _('Homedirectory contains invalid characters.'));
 	}
 
 	/**
@@ -234,20 +233,10 @@ class courierMailAccount extends baseModule {
 				// home directory
 				$this->addSimpleInputTextField($return, 'homeDirectory', _('Home directory'), true);
 			}
-
 			// show current mailBox
 			$this->addSimpleInputTextField($return, 'mailbox', _('Mailbox folder'));
 			// mail host input
 			$this->addSimpleInputTextField($return, 'mailhost', _('Mailbox host'));
-			// check boxes for account access control
-			$disableimap = isset($this->attributes['disableimap'][0]) && ($this->attributes['disableimap'][0] != 0);
-			$return->addElement(new htmlTableExtendedInputCheckbox('disableimap', $disableimap, _('Disable IMAP use'), 'disableimap'), true);
-			$disablepop3 = isset($this->attributes['disablepop3'][0]) && ($this->attributes['disablepop3'][0] != 0);
-			$return->addElement(new htmlTableExtendedInputCheckbox('disablepop3', $disablepop3, _('Disable POP3 use'), 'disablepop3'), true);
-			$disablewebmail = isset($this->attributes['disablewebmail'][0]) && ($this->attributes['disablewebmail'][0] != 0);
-			$return->addElement(new htmlTableExtendedInputCheckbox('disablewebmail', $disablewebmail, _('Disable Webmail use'), 'disablewebmail'), true);
-			$disableshared = isset($this->attributes['disableshared'][0]) && ($this->attributes['disableshared'][0] != 0);
-			$return->addElement(new htmlTableExtendedInputCheckbox('disableshared', $disableshared, _('Disable Shared Folder use'), 'disableshared'), true);
 			// quota with selection for unit of measure
 			$unitIndex = 2;
 			$value = 0;
@@ -268,9 +257,21 @@ class courierMailAccount extends baseModule {
 			$selected = array(
 				$units[$unitIndex]
 			);
-			$tempTable->addElement(new htmlSelect('quotaUnit', $units, $selected));
+			$unitSelect = new htmlSelect('quotaUnit', $units, $selected);
+			$unitSelect->setSortElements(false);
+			$tempTable->addElement($unitSelect);
 			$return->addElement($tempTable);
 			$return->addElement(new htmlHelpLink('quota'), true);
+			// check boxes for account access control
+			$disableimap = isset($this->attributes['disableimap'][0]) && ($this->attributes['disableimap'][0] != 0);
+			$return->addElement(new htmlTableExtendedInputCheckbox('disableimap', $disableimap, _('Disable IMAP use'), 'disableimap'), true);
+			$disablepop3 = isset($this->attributes['disablepop3'][0]) && ($this->attributes['disablepop3'][0] != 0);
+			$return->addElement(new htmlTableExtendedInputCheckbox('disablepop3', $disablepop3, _('Disable POP3 use'), 'disablepop3'), true);
+			$disablewebmail = isset($this->attributes['disablewebmail'][0]) && ($this->attributes['disablewebmail'][0] != 0);
+			$return->addElement(new htmlTableExtendedInputCheckbox('disablewebmail', $disablewebmail, _('Disable Webmail use'), 'disablewebmail'), true);
+			$disableshared = isset($this->attributes['disableshared'][0]) && ($this->attributes['disableshared'][0] != 0);
+			$return->addElement(new htmlTableExtendedInputCheckbox('disableshared', $disableshared, _('Disable Shared Folder use'), 'disableshared'), true);
+			// remove extension
 			$return->addElement(new htmlSpacer(null, '20px'), true);
 			$remButton = new htmlButton('remObjectClass', _('Remove Courier mail extension'));
 			$remButton->colspan = 3;
@@ -304,115 +305,83 @@ class courierMailAccount extends baseModule {
 			}
 			return array();
 		}
-
 		// skip processing if extension is not active
-
 		if (!$this->isExtensionEnabled()) {
 			return array();
 		}
-
+		$this->getAccountContainer()->replaceWildcardsInPOST(array('homeDirectory', 'mailbox'));
 		$errors = array();
-
 		// check new mailbox
-		$this->attributes['mailbox'] = array();
-		if (isset($_POST['mailbox']) && ($_POST['mailbox'] != "")) {
-			$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
-			$mailbox = str_replace('$email', $attrs['mail'][0], $_POST['mailbox']);
-
-			// check for valid path
-			if (!get_preg($mailbox, 'filePath')) {
-				$message = $this->messages['mailbox'][0];
-				$message[] = $mailbox;
-				$errors[] = $message;
-			}
-			$this->attributes['mailbox'][] = $mailbox;
-		}
-
-		$this->attributes['quota'] = array();
+		$this->attributes['mailbox'][0] = $_POST['mailbox'];
+		// quota
 		$units = array(
 			'B', 'kB', 'MB',
 			'GB', 'TB', 'PB', 'EB'
 		);
-
 		// check new quota
-
 		if (isset($_POST['quotaValue'])) {
 			if (is_numeric($_POST['quotaValue']) && in_array($_POST['quotaUnit'], $units)) {
 				if ($_POST['quotaValue'] > 0) {
 					$power = array_search($_POST['quotaUnit'], $units);
-					$this->attributes['quota'][] = $_POST['quotaValue'] * pow(1000, $power) . "S";
+					$this->attributes['quota'][0] = $_POST['quotaValue'] * pow(1000, $power) . "S";
 				}
-				else {
+				elseif (isset($this->attributes['quota'])) {
 					unset($this->attributes['quota']);
 				}
 			}
 			else {
-				$message = $this->messages['courier'][1];
+				$message = $this->messages['quota'][0];
 				$message[] = $_POST['quotaValue'];
 				$errors[] = $message;
 			}
 		}
-		else {
+		elseif (isset($this->attributes['quota'])) {
 			unset($this->attributes['quota']);
 		}
-
-		$this->attributes['mailhost'] = array();
-		if (isset($_POST['mailhost']) && ($_POST['mailhost'] != "")) {
-			// Must be a valid host name
-			if (!get_preg($this->attributes['mailhost'][0] = $_POST['mailhost'], 'hostname')) {
+		// mail host
+		if (!empty($_POST['mailhost'])) {
+			// must be a valid host name
+			$this->attributes['mailhost'][0] = $_POST['mailhost'];
+			if (!get_preg($this->attributes['mailhost'][0], 'hostname')) {
 				$message = $this->messages['mailhost'][0];
 				$message[] = $_POST['mailhost'];
 				$errors[] = $message;
 			}
-			$this->attributes['mailhost'][] = $_POST['mailhost'];
 		}
-		else {
+		elseif (isset($this->attributes['mailhost'])) {
 			unset($this->attributes['mailhost']);
 		}
-
+		// disable IMAP
 		$this->attributes['disableimap'][0] = 0;
 		if (isset($_POST['disableimap'])) {
 			$this->attributes['disableimap'][0] = 1;
 		}
-
+		// disable POP3
 		$this->attributes['disablepop3'][0] = 0;
 		if (isset($_POST['disablepop3'])) {
 			$this->attributes['disablepop3'][0] = 1;
 		}
-
+		// disable Webmail
 		$this->attributes['disablewebmail'][0] = 0;
 		if (isset($_POST['disablewebmail'])) {
 			$this->attributes['disablewebmail'][0] = 1;
 		}
-
+		// disable shared folder
 		$this->attributes['disableshared'][0] = 0;
 		if (isset($_POST['disableshared'])) {
 			$this->attributes['disableshared'][0] = 1;
 		}
-
-		$this->attributes['disableshared'][0] = 0;
-		if (isset($_POST['disableshared'])) {
-			$this->attributes['disableshared'][0] = 1;
-		}
-
+		// home directory
 		if ($this->isUnixDisabled($this->getAccountContainer()->get_type()->getModules())) {
-
 			// check new home directory
-			$this->attributes['homeDirectory'] = array();
-			if (isset($_POST['homeDirectory']) && ($_POST['homeDirectory'] != "")) {
-				$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
-				$mailbox = str_replace('$email', $attrs['mail'][0], $_POST['homeDirectory']);
-				// check for valid path
-				if (!get_preg($mailbox, 'filePath')) {
-					$message = $this->messages['homeDirectory'][0];
-					$message[] = $mailbox;
-					$errors[] = $message;
-				}
-				$this->attributes['homeDirectory'][] = $mailbox;
+			$this->attributes['homeDirectory'][0] = $_POST['homeDirectory'];
+			// check for valid path
+			if (!get_preg($this->attributes['homeDirectory'][0], 'filePath')) {
+				$message = $this->messages['homeDirectory'][0];
+				$message[] = $this->attributes['homeDirectory'][0];
+				$errors[] = $message;
 			}
-
 		}
-
 		return $errors;
 	}
 
@@ -454,12 +423,32 @@ class courierMailAccount extends baseModule {
 		$return = array();
 		$this->addSimplePDFField($return, 'mailbox', _('User mailbox'));
 		$this->addSimplePDFField($return, 'mailhost', _('User mail host'));
-		$this->addSimplePDFField($return, 'quota', _('User mail quota'));
-		$this->addSimplePDFField($return, 'disableimap', _('IMAP access disabled'));
-		$this->addSimplePDFField($return, 'disablepop3', _('POP3 access disabled'));
-		$this->addSimplePDFField($return, 'disablewebmail', _('Webmail access disabled'));
-		$this->addSimplePDFField($return, 'disableshared', _('Shared folder access disabled'));
 		$this->addSimplePDFField($return, 'homeDirectory', _('Home directory'));
+		$disableOptions = array(
+			'disableimap' => _('IMAP access disabled'),
+			'disablepop3' => _('POP3 access disabled'),
+			'disablewebmail' => _('Webmail access disabled'),
+			'disableshared' => _('Shared folder access disabled')
+		);
+		foreach ($disableOptions as $attrName => $label) {
+			$value = _('No');
+			if (isset($this->attributes[$attrName][0]) && ($this->attributes[$attrName][0] == '1')) {
+				$value = _('Yes');
+			}
+			$this->addPDFKeyValue($return, $attrName, $label, $value);
+		}
+		// quota
+		$unitIndex = 2;
+		$value = 0;
+		if (isset($this->attributes['quota'][0]) && (strlen($this->attributes['quota'][0]) > 0)) {
+			$unitIndex = floor(log(substr($this->attributes['quota'][0], 0, -1), 1000));
+			$value = round((float) (substr($this->attributes['quota'][0], 0, -1)) / pow(1000, $unitIndex), 2);
+		}
+		$units = array(
+			'B', 'kB', 'MB', 'GB',
+			'TB', 'PB', 'EB'
+		);
+		$this->addPDFKeyValue($return, 'quota', _('User mail quota'), $value . $units[$unitIndex]);
 		return $return;
 	}
 
