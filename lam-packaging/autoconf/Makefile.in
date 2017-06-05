@@ -64,6 +64,7 @@ install-lam:
 		[ -d $(DESTDIR)$(localstatedir)/$${i} ]  ||  \
 		    $(MKDIR) -p $(DESTDIR)$(localstatedir)/$${i}  ||  exit 1 ; \
 		$(CHMOD) 750 $(DESTDIR)$(localstatedir)/$${i} ; \
+		[ -d $${i} ]  ||  \
 		$(LN_S) $(localstatedir)/$${i} $${i} ; \
 		(cd $(srcdir) ; $(COPY) $${i}/.htaccess \
 			$(DESTDIR)$(localstatedir)/$${i}) ; \
