@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2017-05-29 19:18+0200\n"
+"PO-Revision-Date: 2017-06-06 19:43+0200\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: German <post@rolandgruber.de>\n"
 "Language: de\n"
@@ -69,6 +69,7 @@ msgid "(host1,user1,example.com);(host2,user2,example.com)"
 msgstr "(host1,benutzer1,firma.de);(host2,benutzer2,firma.de)"
 
 #: ../lib/modules/qmailUser.inc:357 ../lib/modules/posixAccount.inc:238
+#: ../lib/modules/courierMailAccount.inc:473
 msgid "/home/smiller"
 msgstr "/home/hmueller"
 
@@ -369,7 +370,11 @@ msgstr "Account"
 #: ../lib/modules/ppolicyUser.inc:102 ../lib/modules/kopanoContact.inc:178
 #: ../lib/modules/kopanoContact.inc:180 ../lib/modules/kopanoContact.inc:181
 #: ../lib/modules/kopanoContact.inc:182 ../lib/modules/kopanoContact.inc:185
-#: ../lib/modules/kopanoContact.inc:186 ../lib/modules/bindDLZ.inc:481
+#: ../lib/modules/kopanoContact.inc:186
+#: ../lib/modules/courierMailAccount.inc:210
+#: ../lib/modules/courierMailAccount.inc:212
+#: ../lib/modules/courierMailAccount.inc:214
+#: ../lib/modules/courierMailAccount.inc:215 ../lib/modules/bindDLZ.inc:481
 #: ../lib/modules/bindDLZ.inc:483 ../lib/modules/bindDLZ.inc:485
 #: ../lib/modules/bindDLZ.inc:487 ../lib/modules/bindDLZ.inc:489
 #: ../lib/modules/bindDLZ.inc:491 ../lib/modules/bindDLZ.inc:493
@@ -805,6 +810,10 @@ msgstr "Asterisk Anrufbeantworter-Erweiterung hinzufügen"
 #: ../lib/modules/authorizedServiceObject.inc:175
 msgid "Add Authorized Service extension"
 msgstr "Erlaubte Dienste-Erweiterung hinzufügen"
+
+#: ../lib/modules/courierMailAccount.inc:287
+msgid "Add Courier mail extension"
+msgstr "Courier-Erweiterung hinzufügen"
 
 #: ../lib/modules/eduPerson.inc:360
 msgid "Add EDU person extension"
@@ -1676,7 +1685,9 @@ msgstr "Automatische Skripte"
 #: ../lib/modules/sambaSamAccount.inc:404 ../lib/modules/posixAccount.inc:347
 #: ../lib/modules/posixAccount.inc:1775 ../lib/modules/zarafaUser.inc:155
 #: ../lib/modules/zarafaUser.inc:1349 ../lib/modules/kopanoContact.inc:91
-#: ../lib/modules/kopanoContact.inc:652 ../lib/modules/pykotaUser.inc:164
+#: ../lib/modules/kopanoContact.inc:652
+#: ../lib/modules/courierMailAccount.inc:132
+#: ../lib/modules/courierMailAccount.inc:143 ../lib/modules/pykotaUser.inc:164
 #: ../lib/modules/pykotaUser.inc:177 ../lib/modules/shadowAccount.inc:106
 #: ../lib/modules/shadowAccount.inc:197 ../lib/modules/ldapPublicKey.inc:98
 #: ../lib/modules/ldapPublicKey.inc:104 ../lib/modules/kopanoUser.inc:155
@@ -2566,7 +2577,7 @@ msgstr ""
 msgid "Classes"
 msgstr "Klassen"
 
-#: ../lib/modules/qmailUser.inc:1257 ../lib/modules/windowsUser.inc:3593
+#: ../lib/modules/qmailUser.inc:1257 ../lib/modules/windowsUser.inc:3590
 #: ../lib/modules/shadowAccount.inc:896 ../lib/modules/freeRadius.inc:814
 msgid "Cleanup expired user accounts"
 msgstr "Abgelaufene Benutzerkonten löschen"
@@ -2899,6 +2910,7 @@ msgid "Could not save PDF structure, access denied."
 msgstr "Konnte PDF-Struktur nicht speichern, Zugriff verweigert."
 
 #: ../lib/modules/courierMailAlias.inc:56
+#: ../lib/modules/courierMailAccount.inc:72
 msgid "Courier"
 msgstr "Courier"
 
@@ -3829,10 +3841,26 @@ msgstr "Ziel-DN"
 msgid "Device"
 msgstr "Gerät"
 
+#: ../lib/modules/courierMailAccount.inc:92
+#: ../lib/modules/courierMailAccount.inc:150
+#: ../lib/modules/courierMailAccount.inc:175
+#: ../lib/modules/courierMailAccount.inc:273
+#: ../lib/modules/courierMailAccount.inc:434
+msgid "Disable IMAP access"
+msgstr "IMAP deaktivieren"
+
 #: ../lib/modules/sambaSamAccount.inc:395
 #: ../lib/modules/sambaSamAccount.inc:1884
 msgid "Disable LM hashes"
 msgstr "LM-Hashe deaktivieren"
+
+#: ../lib/modules/courierMailAccount.inc:97
+#: ../lib/modules/courierMailAccount.inc:151
+#: ../lib/modules/courierMailAccount.inc:182
+#: ../lib/modules/courierMailAccount.inc:275
+#: ../lib/modules/courierMailAccount.inc:435
+msgid "Disable POP3 access"
+msgstr "POP3 deaktivieren"
 
 #: ../templates/config/confmain.php:575
 #: ../templates/selfService/adminMain.php:529 ../help/help.inc:291
@@ -3846,6 +3874,22 @@ msgstr "Client-Änderungen deaktivieren"
 #: ../lib/modules/posixGroup.inc:522 ../lib/modules/posixGroup.inc:591
 msgid "Disable membership management"
 msgstr "Verwaltung von Mitgliedschaften deaktivieren"
+
+#: ../lib/modules/courierMailAccount.inc:107
+#: ../lib/modules/courierMailAccount.inc:153
+#: ../lib/modules/courierMailAccount.inc:196
+#: ../lib/modules/courierMailAccount.inc:279
+#: ../lib/modules/courierMailAccount.inc:437
+msgid "Disable shared folder access"
+msgstr "Gemeinsame Ordner deaktivieren"
+
+#: ../lib/modules/courierMailAccount.inc:102
+#: ../lib/modules/courierMailAccount.inc:152
+#: ../lib/modules/courierMailAccount.inc:189
+#: ../lib/modules/courierMailAccount.inc:277
+#: ../lib/modules/courierMailAccount.inc:436
+msgid "Disable webmail access"
+msgstr "Webmail deaktivieren"
 
 #: ../lib/modules/qmailUser.inc:44
 msgid "Disabled"
@@ -5993,6 +6037,11 @@ msgstr "Halten Sie Strg gedrückt um mehrere Rollen zu markieren."
 #: ../lib/modules/posixAccount.inc:397 ../lib/modules/posixAccount.inc:401
 #: ../lib/modules/posixAccount.inc:1438 ../lib/modules/posixAccount.inc:1646
 #: ../lib/modules/posixAccount.inc:1746 ../lib/modules/posixAccount.inc:1870
+#: ../lib/modules/courierMailAccount.inc:136
+#: ../lib/modules/courierMailAccount.inc:240
+#: ../lib/modules/courierMailAccount.inc:420
+#: ../lib/modules/courierMailAccount.inc:432
+#: ../lib/modules/courierMailAccount.inc:471
 #: ../lib/modules/windowsUser.inc:267 ../lib/modules/windowsUser.inc:577
 #: ../lib/modules/windowsUser.inc:748 ../lib/modules/windowsUser.inc:844
 #: ../lib/modules/windowsUser.inc:991 ../lib/modules/windowsUser.inc:1234
@@ -6053,6 +6102,8 @@ msgid "Home telephone number"
 msgstr "Telefon privat"
 
 #: ../lib/modules/posixAccount.inc:89 ../lib/modules/posixAccount.inc:91
+#: ../lib/modules/courierMailAccount.inc:213
+#: ../lib/modules/courierMailAccount.inc:214
 #: ../lib/modules/windowsUser.inc:991 ../lib/modules/windowsUser.inc:992
 msgid "Homedirectory contains invalid characters."
 msgstr "Heimatverzeichnis enthält ungültige Zeichen."
@@ -7923,6 +7974,10 @@ msgstr "Mail wurde erfolgreich an %s gesendet."
 #: ../lib/modules/asteriskAccount.inc:657
 #: ../lib/modules/asteriskAccount.inc:995
 #: ../lib/modules/asteriskAccount.inc:1253
+#: ../lib/modules/courierMailAccount.inc:112
+#: ../lib/modules/courierMailAccount.inc:147
+#: ../lib/modules/courierMailAccount.inc:159
+#: ../lib/modules/courierMailAccount.inc:430
 #: ../lib/modules/asteriskVoicemail.inc:95
 #: ../lib/modules/asteriskVoicemail.inc:138
 #: ../lib/modules/asteriskVoicemail.inc:158
@@ -7940,10 +7995,17 @@ msgstr "Das Postfach existiert bereits auf dem IMAP-Server."
 msgid "Mailbox does not exist on IMAP server."
 msgstr "Das Postfach existiert noch nicht auf dem IMAP-Server."
 
-#: ../lib/modules/kolabUser.inc:151 ../lib/modules/kolabUser.inc:195
-#: ../lib/modules/kolabUser.inc:234 ../lib/modules/kolabUser.inc:300
-#: ../lib/modules/kolabUser.inc:303 ../lib/modules/kolabUser.inc:702
-#: ../lib/modules/kolabSharedFolder.inc:154
+#: ../lib/modules/courierMailAccount.inc:243
+msgid "Mailbox folder"
+msgstr "Postfach-Ordner"
+
+#: ../lib/modules/courierMailAccount.inc:117
+#: ../lib/modules/courierMailAccount.inc:148
+#: ../lib/modules/courierMailAccount.inc:164
+#: ../lib/modules/courierMailAccount.inc:431 ../lib/modules/kolabUser.inc:151
+#: ../lib/modules/kolabUser.inc:195 ../lib/modules/kolabUser.inc:234
+#: ../lib/modules/kolabUser.inc:300 ../lib/modules/kolabUser.inc:303
+#: ../lib/modules/kolabUser.inc:702 ../lib/modules/kolabSharedFolder.inc:154
 #: ../lib/modules/kolabSharedFolder.inc:188
 #: ../lib/modules/kolabSharedFolder.inc:238
 #: ../lib/modules/kolabSharedFolder.inc:284
@@ -7962,10 +8024,19 @@ msgstr "Mailservername ist leer!"
 msgid "Mailbox home server name is invalid!"
 msgstr "Mailservername ist ungültig!"
 
-#: ../lib/modules/kolabUser.inc:102 ../lib/modules/kolabUser.inc:177
-#: ../lib/modules/kolabUser.inc:202 ../lib/modules/kolabUser.inc:235
-#: ../lib/modules/kolabUser.inc:260 ../lib/modules/kolabUser.inc:313
-#: ../lib/modules/kolabUser.inc:735
+#: ../lib/modules/courierMailAccount.inc:245
+msgid "Mailbox host"
+msgstr "Mailserver"
+
+#: ../lib/modules/courierMailAccount.inc:122
+#: ../lib/modules/courierMailAccount.inc:127
+#: ../lib/modules/courierMailAccount.inc:149
+#: ../lib/modules/courierMailAccount.inc:169
+#: ../lib/modules/courierMailAccount.inc:253
+#: ../lib/modules/courierMailAccount.inc:457 ../lib/modules/kolabUser.inc:102
+#: ../lib/modules/kolabUser.inc:177 ../lib/modules/kolabUser.inc:202
+#: ../lib/modules/kolabUser.inc:235 ../lib/modules/kolabUser.inc:260
+#: ../lib/modules/kolabUser.inc:313 ../lib/modules/kolabUser.inc:735
 msgid "Mailbox quota"
 msgstr "Postfach-Quota"
 
@@ -8768,6 +8839,12 @@ msgstr "Der Name für den neuen Aliaseintrag."
 msgid "Name of the address list which should be created."
 msgstr "Name der der erstellenden Adressliste."
 
+#: ../lib/modules/courierMailAccount.inc:119
+msgid "Name of the host that stores the user's email. Must be a FQDN."
+msgstr ""
+"Bitte geben Sie den Namen des Servers, der die EMails speichert, an. Dies "
+"muss ein vollständiger Domänenname sein."
+
 #: ../lib/modules/bindDLZ.inc:158 ../lib/modules/bindDLZ.inc:162
 #: ../lib/modules/bindDLZ.inc:367 ../lib/modules/bindDLZ.inc:509
 #: ../lib/modules/bindDLZ.inc:1172
@@ -9046,7 +9123,8 @@ msgstr "Spitznamen"
 #: ../templates/schema/schema.php:201 ../templates/schema/schema.php:206
 #: ../templates/pdfedit/pdfpage.php:479 ../lib/modules/pykotaPrinter.inc:52
 #: ../lib/modules/pykotaPrinter.inc:168 ../lib/modules/pykotaPrinter.inc:169
-#: ../lib/modules/pykotaPrinter.inc:170 ../lib/modules/freeRadius.inc:161
+#: ../lib/modules/pykotaPrinter.inc:170
+#: ../lib/modules/courierMailAccount.inc:440 ../lib/modules/freeRadius.inc:161
 #: ../lib/modules/freeRadius.inc:414 ../lib/modules/freeRadius.inc:700
 #: ../lib/modules/qmailGroup.inc:322 ../lib/modules/qmailGroup.inc:323
 #: ../lib/modules/qmailGroup.inc:324 ../lib/modules/qmailGroup.inc:364
@@ -9371,7 +9449,7 @@ msgid "Notification period"
 msgstr "Benachrichtigungszeitraum"
 
 #: ../lib/modules/locking389ds.inc:351 ../lib/modules/ppolicyUser.inc:511
-#: ../lib/modules/windowsUser.inc:3444 ../lib/modules/shadowAccount.inc:793
+#: ../lib/modules/windowsUser.inc:3441 ../lib/modules/shadowAccount.inc:793
 msgid "Notify users about password expiration"
 msgstr "Informiere Benutzer über Passwortablauf"
 
@@ -10257,6 +10335,12 @@ msgstr "Pfad zur Mailbox im Mailsystem für Sendergenehmigungen und Moderation."
 msgid "Path to the maildir/mbox on the mail system."
 msgstr "Pfad zur Mailbox im Mailsystem."
 
+#: ../lib/modules/courierMailAccount.inc:114
+msgid "Path to the user's mailbox. Usually relative to the user's home folder."
+msgstr ""
+"Dies ist der Pfad zum Postfach des Benutzers. Normalerweise relativ zum "
+"Heimatverzeichnis des Benutzers."
+
 #: ../lib/modules/pykotaUser.inc:156 ../lib/modules/pykotaUser.inc:295
 #: ../lib/modules/pykotaUser.inc:339
 msgid "Payment"
@@ -10541,15 +10625,16 @@ msgstr "Bitte geben Sie eine Zahl für die Größenbeschränkung ein."
 #: ../lib/modules/zarafaUser.inc:436 ../lib/modules/zarafaUser.inc:437
 #: ../lib/modules/zarafaUser.inc:438 ../lib/modules/zarafaUser.inc:439
 #: ../lib/modules/zarafaUser.inc:440 ../lib/modules/zarafaUser.inc:442
-#: ../lib/modules/zarafaUser.inc:443 ../lib/modules/bindDLZ.inc:479
-#: ../lib/modules/windowsUser.inc:995 ../lib/modules/kolabUser.inc:260
-#: ../lib/modules/kolabUser.inc:261 ../lib/modules/inetOrgPerson.inc:2463
-#: ../lib/modules/inetOrgPerson.inc:2466 ../lib/modules/inetOrgPerson.inc:2469
-#: ../lib/modules/sudoRole.inc:285 ../lib/modules/sudoRole.inc:286
-#: ../lib/modules/kopanoUser.inc:435 ../lib/modules/kopanoUser.inc:436
-#: ../lib/modules/kopanoUser.inc:437 ../lib/modules/kopanoUser.inc:438
-#: ../lib/modules/kopanoUser.inc:439 ../lib/modules/kopanoUser.inc:440
-#: ../lib/modules/kopanoUser.inc:442 ../lib/modules/kopanoUser.inc:443
+#: ../lib/modules/zarafaUser.inc:443 ../lib/modules/courierMailAccount.inc:212
+#: ../lib/modules/bindDLZ.inc:479 ../lib/modules/windowsUser.inc:995
+#: ../lib/modules/kolabUser.inc:260 ../lib/modules/kolabUser.inc:261
+#: ../lib/modules/inetOrgPerson.inc:2463 ../lib/modules/inetOrgPerson.inc:2466
+#: ../lib/modules/inetOrgPerson.inc:2469 ../lib/modules/sudoRole.inc:285
+#: ../lib/modules/sudoRole.inc:286 ../lib/modules/kopanoUser.inc:435
+#: ../lib/modules/kopanoUser.inc:436 ../lib/modules/kopanoUser.inc:437
+#: ../lib/modules/kopanoUser.inc:438 ../lib/modules/kopanoUser.inc:439
+#: ../lib/modules/kopanoUser.inc:440 ../lib/modules/kopanoUser.inc:442
+#: ../lib/modules/kopanoUser.inc:443
 msgid "Please enter a number."
 msgstr "Bitte geben Sie einen Zahl ein."
 
@@ -11146,6 +11231,11 @@ msgstr "Bitte geben Sie den Accounttyp an."
 #: ../lib/modules/asteriskAccount.inc:120
 msgid "Please enter the account's type (e.g. \"friend\")."
 msgstr "Bitte geben Sie den Accounttyp (z.B. \"friend\") an."
+
+#: ../lib/modules/courierMailAccount.inc:129
+msgid "Please enter the amount in MB, e.g. 1000 means 1000MB of quota."
+msgstr ""
+"Bitte geben Sie die Größe in MB an (z.B. 1000 bedeutet 1000MB Speicher)."
 
 #: ../lib/modules/asteriskExtension.inc:189
 msgid "Please enter the application data."
@@ -12365,6 +12455,10 @@ msgstr "Asterisk Anrufbeantworter-Erweiterung entfernen"
 msgid "Remove Authorized Service extension"
 msgstr "Erlaubte Dienste-Erweiterung entfernen"
 
+#: ../lib/modules/courierMailAccount.inc:282
+msgid "Remove Courier mail extension"
+msgstr "Courier-Erweiterung entfernen"
+
 #: ../lib/modules/eduPerson.inc:355
 msgid "Remove EDU person extension"
 msgstr "EDU-Person-Erweiterung entfernen"
@@ -13433,6 +13527,29 @@ msgstr ""
 msgid "Sets this account type to read-only."
 msgstr "Diesen Accounttyp schreibschützen."
 
+#: ../lib/modules/courierMailAccount.inc:94
+msgid "Setting this will disallow the user from logging in using IMAP."
+msgstr ""
+"Bei Aktivierung dieser Option darf sich der Benutzer nicht mehr per IMAP "
+"anmelden."
+
+#: ../lib/modules/courierMailAccount.inc:99
+msgid "Setting this will disallow the user from logging in using POP3."
+msgstr ""
+"Bei Aktivierung dieser Option darf sich der Benutzer nicht mehr per POP3 "
+"anmelden."
+
+#: ../lib/modules/courierMailAccount.inc:104
+msgid "Setting this will disallow the user from logging in using webmail."
+msgstr ""
+"Bei Aktivierung dieser Option darf sich der Benutzer nicht mehr per Webmail "
+"anmelden."
+
+#: ../lib/modules/courierMailAccount.inc:109
+msgid "Setting this will make shared folders invisible to this user."
+msgstr ""
+"Bei Aktivierung dieser Option sieht der Benutzer keine gemeinsamen Ordner mehr."
+
 #: ../lib/modules/shadowAccount.inc:91 ../lib/modules/shadowAccount.inc:793
 #: ../lib/modules/shadowAccount.inc:896
 msgid "Shadow"
@@ -14431,6 +14548,11 @@ msgstr "Der Aliasname \"%s\" ist ungültig."
 msgid "The alias name for this entry."
 msgstr "Der Aliasname für diesen Eintrag."
 
+#: ../lib/modules/courierMailAccount.inc:124
+#: ../lib/modules/courierMailAccount.inc:129
+msgid "The amount of storage available to the user."
+msgstr "Das legt den verfügbaren Speicherplatz für den Benutzer fest."
+
 #: ../lib/modules/passwordSelfReset.inc:277
 #, php-format
 msgid "The answer needs to be at least %s characters long."
@@ -14794,6 +14916,11 @@ msgid ""
 msgstr ""
 "Dies ist der Benutzername Ihres IMAP-Administrators der Postfächer erstellen/"
 "löschen darf."
+
+#: ../lib/modules/courierMailAccount.inc:209
+#: ../lib/modules/courierMailAccount.inc:210
+msgid "The mail host is not valid."
+msgstr "Der Wert für das Mailserver ist ungültig."
 
 #: ../lib/modules/bindDLZ.inc:143 ../lib/modules/bindDLZ.inc:147
 msgid "The mail server for this entry."
@@ -15169,6 +15296,10 @@ msgstr ""
 "Die Priorität ist eine Sequenznummer um die Ausführung der Kommandos zu "
 "sortieren. Kommandos mit niedriger Priorität werden zuerst ausgeführt."
 
+#: ../lib/modules/courierMailAccount.inc:211
+msgid "The quota must be entered as a floating point number."
+msgstr "Der Speicherplatz muss als Dezimalzahl eingegeben werden."
+
 #: ../lib/modules/range.inc:514 ../lib/modules/range.inc:594
 msgid "The range conflicts with another range."
 msgstr "Der Adressbereich steht im Konflikt mit einem anderen Adressbereich."
@@ -15304,6 +15435,14 @@ msgid "The sudo commands may be run as these users (e.g. root)."
 msgstr ""
 "Die Sudo-Kommandos können unter diesen Benutzern ausgeführt werden (z.B. "
 "root)."
+
+#: ../lib/modules/courierMailAccount.inc:138
+msgid ""
+"The system home directory of the user. In a virtual user setup this is "
+"typically '/' for all users."
+msgstr ""
+"Geben Sie hier das Heimatverzeichnis des Benutzers an. In einer virtuellen "
+"Konfiguration ist dies typischerweise '/' für alle Benutzer."
 
 #: ../lib/modules/bindDLZ.inc:223
 msgid ""
@@ -16376,7 +16515,7 @@ msgstr ""
 msgid "This is used to mark this account as resource."
 msgstr "Damit wird der Account als Ressource markiert."
 
-#: ../lib/modules/qmailUser.inc:1266 ../lib/modules/windowsUser.inc:3602
+#: ../lib/modules/qmailUser.inc:1266 ../lib/modules/windowsUser.inc:3599
 #: ../lib/modules/shadowAccount.inc:905 ../lib/modules/freeRadius.inc:823
 msgid "This job deletes or moves user accounts when they expire."
 msgstr "Dieser Job löscht oder verschiebt Benutzerkonten wenn diese ablaufen."
@@ -16594,6 +16733,7 @@ msgstr "Dieser Wert darf nur \"Room\" oder \"Equipment\" sein."
 #: ../lib/modules/zarafaUser.inc:453 ../lib/modules/zarafaUser.inc:454
 #: ../lib/modules/ppolicyUser.inc:102 ../lib/modules/kopanoContact.inc:181
 #: ../lib/modules/kopanoContact.inc:182
+#: ../lib/modules/courierMailAccount.inc:215
 #: ../lib/modules/kopanoDynamicGroup.inc:189
 #: ../lib/modules/kopanoDynamicGroup.inc:190
 #: ../lib/modules/inetOrgPerson.inc:107 ../lib/modules/freeRadius.inc:341
@@ -16647,7 +16787,8 @@ msgstr ""
 #: ../lib/modules/posixGroup.inc:527 ../lib/modules/eduPerson.inc:151
 #: ../lib/modules/pykotaGroup.inc:125 ../lib/modules/sambaSamAccount.inc:405
 #: ../lib/modules/posixAccount.inc:348 ../lib/modules/zarafaUser.inc:156
-#: ../lib/modules/kopanoContact.inc:92 ../lib/modules/pykotaUser.inc:165
+#: ../lib/modules/kopanoContact.inc:92
+#: ../lib/modules/courierMailAccount.inc:133 ../lib/modules/pykotaUser.inc:165
 #: ../lib/modules/shadowAccount.inc:198 ../lib/modules/ldapPublicKey.inc:99
 #: ../lib/modules/kopanoUser.inc:156 ../lib/modules/qmailGroup.inc:234
 #: ../lib/modules/authorizedServiceObject.inc:90
@@ -18056,8 +18197,8 @@ msgstr ""
 #: ../templates/lists/changePassword.php:488 ../lib/types/user.inc:323
 #: ../lib/types/user.inc:434 ../lib/types/user.inc:473
 #: ../lib/types/user.inc:1021 ../lib/modules/windowsHost.inc:64
-#: ../lib/modules/windowsUser.inc:106 ../lib/modules/windowsUser.inc:3444
-#: ../lib/modules/windowsUser.inc:3593 ../lib/modules/windowsGroup.inc:105
+#: ../lib/modules/windowsUser.inc:106 ../lib/modules/windowsUser.inc:3441
+#: ../lib/modules/windowsUser.inc:3590 ../lib/modules/windowsGroup.inc:105
 msgid "Windows"
 msgstr "Windows"
 
@@ -18157,7 +18298,8 @@ msgstr "Das Quota-Format ist falsch. Es muss numerisch sein."
 #: ../templates/schema/schema.php:154 ../templates/schema/schema.php:196
 #: ../templates/schema/schema.php:201 ../templates/schema/schema.php:206
 #: ../templates/pdfedit/pdfpage.php:479 ../lib/modules/pykotaPrinter.inc:51
-#: ../lib/modules/pykotaPrinter.inc:170 ../lib/modules/freeRadius.inc:161
+#: ../lib/modules/pykotaPrinter.inc:170
+#: ../lib/modules/courierMailAccount.inc:442 ../lib/modules/freeRadius.inc:161
 #: ../lib/modules/freeRadius.inc:414 ../lib/modules/freeRadius.inc:698
 #: ../lib/modules/qmailGroup.inc:323 ../lib/modules/qmailGroup.inc:365
 #: ../lib/modules/qmailGroup.inc:982 ../lib/modules/qmailGroup.inc:983
@@ -19059,6 +19201,56 @@ msgstr "ja - aufsteigend sortiert"
 #: ../lib/modules/sambaSamAccount.inc:2286
 msgid "yes - ordered descending"
 msgstr "ja - absteigend sortiert"
+
+#, fuzzy
+#~ msgid "Automatically add this extension when creating new users."
+#~ msgstr "Diese Erweiterung automatisch hinzufügen"
+
+#, fuzzy
+#~ msgid "Disable IMAP use"
+#~ msgstr "LM-Hashe deaktivieren"
+
+#~ msgid "Disable Shared Folder use"
+#~ msgstr "Gemeinsame Ordner deaktivieren"
+
+#~ msgid "IMAP access disabled"
+#~ msgstr "IMAP-Zugang deaktiviert"
+
+#~ msgid "POP3 access disabled"
+#~ msgstr "POP3-Zugang deaktiviert"
+
+#~ msgid "Shared folder access disabled"
+#~ msgstr "Kein Zugriff auf geteilte Ordner"
+
+#~ msgid "Webmail access disabled"
+#~ msgstr "Webmail-Zugang deaktiviert"
+
+#~ msgid "Disable POP3 use"
+#~ msgstr "POP3 deaktivieren"
+
+#, fuzzy
+#~ msgid "Disable Webmail use"
+#~ msgstr "ID wird bereits verwendet"
+
+#, fuzzy
+#~ msgid "Please enter a numeric value."
+#~ msgstr "Bitte geben Sie einen Zahl ein."
+
+#, fuzzy
+#~ msgid "Mail quota"
+#~ msgstr "Postfach-Quota"
+
+#, fuzzy
+#~ msgid "User home directory"
+#~ msgstr "Heimatverzeichnis anlegen"
+
+#, fuzzy
+#~ msgid "User mail quota"
+#~ msgstr "Postfach-Quota"
+
+#, fuzzy
+#~ msgid "User mailbox"
+#~ msgstr "Postfach erstellen"
 
 #~ msgid "The source of email allowed for this alias: local, estmp."
 #~ msgstr "Die "

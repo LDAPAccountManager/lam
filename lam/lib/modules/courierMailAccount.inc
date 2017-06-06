@@ -101,7 +101,7 @@ class courierMailAccount extends baseModule {
 			'disablewebmail' => array(
 				"Headline" => _("Disable webmail access"),
 				"attr" => 'disablewebmail',
-				"Text" => _("Setting this will disallow the user from logging in using SQwebmail.")
+				"Text" => _("Setting this will disallow the user from logging in using webmail.")
 			),
 			'disableshared' => array(
 				"Headline" => _("Disable shared folder access"),
@@ -109,33 +109,33 @@ class courierMailAccount extends baseModule {
 				"Text" => _("Setting this will make shared folders invisible to this user.")
 			),
 			'mailbox' => array(
-				"Headline" => _("User mailbox"),
+				"Headline" => _("Mailbox"),
 				"attr" => 'mailbox',
-				"Text" => _("Path to the user's mailbox. Usually relative to the user's home folder. In a mixed setup with users that are both local unix users and virtual Courier mail users it can be beneficial to configure this to be the Courier mail home directory.")
+				"Text" => _("Path to the user's mailbox. Usually relative to the user's home folder.")
 			),
 			'mailhost' => array(
-				"Headline" => _("User mail host"),
+				"Headline" => _("Mailbox home server"),
 				"attr" => 'mailhost',
 				"Text" => _("Name of the host that stores the user's email. Must be a FQDN.")
 			),
 			'quota' => array(
-				"Headline" => _("User mail quota"),
+				"Headline" => _("Mailbox quota"),
 				"attr" => 'quota',
-				"Text" => _("The amont of storage available to the user.")
+				"Text" => _("The amount of storage available to the user.")
 			),
 			'quotaUpload' => array(
-				"Headline" => _("User mail quota"),
+				"Headline" => _("Mailbox quota"),
 				"attr" => 'quota',
-				"Text" => _("The amont of storage available to the user.") . ' ' . _('Please enter the amount in MB, e.g. 1000 means 1000MB of quota.')
+				"Text" => _("The amount of storage available to the user.") . ' ' . _('Please enter the amount in MB, e.g. 1000 means 1000MB of quota.')
 			),
 			'autoAdd' => array(
 				"Headline" => _("Automatically add this extension"),
-				"Text" => _("Automatically add this extension when creating new users.")
+				"Text" => _("This will enable the extension automatically if this profile is loaded.")
 			),
 			'homeDirectory' => array(
-				"Headline" => _("User home directory"),
+				"Headline" => _("Home directory"),
 				"attr" => 'homeDirectory',
-				"Text" => _("The system home directory of the user. In a virtual user setup this is typically the root for all users.")
+				"Text" => _("The system home directory of the user. In a virtual user setup this is typically '/' for all users.")
 			),
 		);
 		// profile options
@@ -144,9 +144,9 @@ class courierMailAccount extends baseModule {
 		$return['profile_options'] = $profileContainer;
 		// PDF fields
 		$return['PDF_fields'] = array(
-			'mailbox' => _('User mailbox'),
-			'mailhost' => _('User mail host'),
-			'quota' => _('User mail quota'),
+			'mailbox' => _('Mailbox'),
+			'mailhost' => _('Mailbox home server'),
+			'quota' => _('Mailbox quota'),
 			'disableimap' => _('Disable IMAP access'),
 			'disablepop3' => _('Disable POP3 access'),
 			'disablewebmail' => _('Disable webmail access'),
@@ -156,17 +156,17 @@ class courierMailAccount extends baseModule {
 		$return['upload_columns'] = array(
 			array(
 				'name' => 'courierMailAccount_mailbox',
-				'description' => _('User mailbox'),
+				'description' => _('Mailbox'),
 				'help' => 'mailbox',
 			),
 			array(
 				'name' => 'courierMailAccount_mailhost',
-				'description' => _('User mail host'),
+				'description' => _('Mailbox home server'),
 				'help' => 'mailhost',
 			),
 			array(
 				'name' => 'courierMailAccount_quota',
-				'description' => _('User mail quota'),
+				'description' => _('Mailbox quota'),
 				'help' => 'quotaUpload',
 				'example' => '1000'
 			),
@@ -209,7 +209,7 @@ class courierMailAccount extends baseModule {
 		$this->messages['mailhost'][0] = array('ERROR', _('The mail host is not valid.')); // third array value is set dynamically
 		$this->messages['mailhost'][1] = array('ERROR', _('Account %s:') . ' courierMailAccount_mailhost', _('The mail host is not valid.'));
 		$this->messages['quota'][0] = array('ERROR', _('The quota must be entered as a floating point number.')); // third array value is set dynamically
-		$this->messages['quota'][1] = array('ERROR', _('Account %s:') . ' courierMailAccount_quota', _('Please enter a numeric value.'));
+		$this->messages['quota'][1] = array('ERROR', _('Account %s:') . ' courierMailAccount_quota', _('Please enter a number.'));
 		$this->messages['homeDirectory'][0] = array('ERROR', _('Homedirectory contains invalid characters.')); // third array value is set dynamically
 		$this->messages['homeDirectory'][1] = array('ERROR', _('Account %s:') . ' courierMailAccount_homeDirectory', _('Homedirectory contains invalid characters.'));
 		$this->messages['boolean'][0] = array('ERROR', _('Account %s:') . ' courierMailAccount_%s', _('This value can only be "true" or "false".'));
@@ -250,7 +250,7 @@ class courierMailAccount extends baseModule {
 				$unitIndex = floor(log(substr($this->attributes['quota'][0], 0, -1), 1000));
 				$value = round((float) (substr($this->attributes['quota'][0], 0, -1)) / pow(1000, $unitIndex), 2);
 			}
-			$return->addElement(new htmlOutputText(_('Mail quota')));
+			$return->addElement(new htmlOutputText(_('Mailbox quota')));
 			$tempTable = new htmlTable();
 			$boxInput = new htmlInputField('quotaValue', $value);
 			$boxInput->setFieldSize(5);
@@ -270,13 +270,13 @@ class courierMailAccount extends baseModule {
 			$return->addElement(new htmlHelpLink('quota'), true);
 			// check boxes for account access control
 			$disableimap = isset($this->attributes['disableimap'][0]) && ($this->attributes['disableimap'][0] != 0);
-			$return->addElement(new htmlTableExtendedInputCheckbox('disableimap', $disableimap, _('Disable IMAP use'), 'disableimap'), true);
+			$return->addElement(new htmlTableExtendedInputCheckbox('disableimap', $disableimap, _('Disable IMAP access'), 'disableimap'), true);
 			$disablepop3 = isset($this->attributes['disablepop3'][0]) && ($this->attributes['disablepop3'][0] != 0);
-			$return->addElement(new htmlTableExtendedInputCheckbox('disablepop3', $disablepop3, _('Disable POP3 use'), 'disablepop3'), true);
+			$return->addElement(new htmlTableExtendedInputCheckbox('disablepop3', $disablepop3, _('Disable POP3 access'), 'disablepop3'), true);
 			$disablewebmail = isset($this->attributes['disablewebmail'][0]) && ($this->attributes['disablewebmail'][0] != 0);
-			$return->addElement(new htmlTableExtendedInputCheckbox('disablewebmail', $disablewebmail, _('Disable Webmail use'), 'disablewebmail'), true);
+			$return->addElement(new htmlTableExtendedInputCheckbox('disablewebmail', $disablewebmail, _('Disable webmail access'), 'disablewebmail'), true);
 			$disableshared = isset($this->attributes['disableshared'][0]) && ($this->attributes['disableshared'][0] != 0);
-			$return->addElement(new htmlTableExtendedInputCheckbox('disableshared', $disableshared, _('Disable Shared Folder use'), 'disableshared'), true);
+			$return->addElement(new htmlTableExtendedInputCheckbox('disableshared', $disableshared, _('Disable shared folder access'), 'disableshared'), true);
 			// remove extension
 			$return->addElement(new htmlSpacer(null, '20px'), true);
 			$remButton = new htmlButton('remObjectClass', _('Remove Courier mail extension'));
@@ -427,14 +427,14 @@ class courierMailAccount extends baseModule {
 	 */
 	public function get_pdfEntries() {
 		$return = array();
-		$this->addSimplePDFField($return, 'mailbox', _('User mailbox'));
-		$this->addSimplePDFField($return, 'mailhost', _('User mail host'));
+		$this->addSimplePDFField($return, 'mailbox', _('Mailbox'));
+		$this->addSimplePDFField($return, 'mailhost', _('Mailbox home server'));
 		$this->addSimplePDFField($return, 'homeDirectory', _('Home directory'));
 		$disableOptions = array(
-			'disableimap' => _('IMAP access disabled'),
-			'disablepop3' => _('POP3 access disabled'),
-			'disablewebmail' => _('Webmail access disabled'),
-			'disableshared' => _('Shared folder access disabled')
+			'disableimap' => _('Disable IMAP access'),
+			'disablepop3' => _('Disable POP3 access'),
+			'disablewebmail' => _('Disable webmail access'),
+			'disableshared' => _('Disable shared folder access')
 		);
 		foreach ($disableOptions as $attrName => $label) {
 			$value = _('No');
@@ -454,7 +454,7 @@ class courierMailAccount extends baseModule {
 			'B', 'kB', 'MB', 'GB',
 			'TB', 'PB', 'EB'
 		);
-		$this->addPDFKeyValue($return, 'quota', _('User mail quota'), $value . $units[$unitIndex]);
+		$this->addPDFKeyValue($return, 'quota', _('Mailbox quota'), $value . $units[$unitIndex]);
 		return $return;
 	}
 
