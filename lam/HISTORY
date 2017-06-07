@@ -2,8 +2,8 @@ June 2017 6.0
   - Support multiple configurations for same account type
   - PHP 7.1 compatibility
   - Courier users and mail aliases
-  - Samba 3: added account expiration date to PDF fields
   - Windows: Support unlocking of users with too many failed login attempts
+  - Samba 3: added account expiration date to PDF fields
   - LAM Pro:
    -> Custom fields: can be used for file upload
    -> Custom fields: new selection list type that gets options from LDAP search
