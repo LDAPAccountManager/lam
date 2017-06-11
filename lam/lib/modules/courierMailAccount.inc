@@ -425,7 +425,7 @@ class courierMailAccount extends baseModule {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_pdfEntries() {
+	public function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
 		$this->addSimplePDFField($return, 'mailbox', _('Mailbox'));
 		$this->addSimplePDFField($return, 'mailhost', _('Mailbox home server'));
@@ -480,7 +480,7 @@ class courierMailAccount extends baseModule {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
+	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
