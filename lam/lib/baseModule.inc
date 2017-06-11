@@ -462,11 +462,12 @@ abstract class baseModule {
 	* <br>
 	* <b>Example:</b> return array('uid' => 'normal', 'cn' => 'low')
 	*
+	* @param string $typeId account type
 	* @return array list of attributes
 	*
 	* @see baseModule::get_metaData()
 	*/
-	public function get_RDNAttributes() {
+	public function get_RDNAttributes($typeId) {
 		if (isset($this->meta['RDN'])) return $this->meta['RDN'];
 		else return array();
 	}

@@ -164,7 +164,7 @@ function getRDNAttributes($typeId, $selectedModules=null) {
 	for ($i = 0; $i < sizeof($mods); $i++) {
 		// get list of attributes
 		$module = moduleCache::getModule($mods[$i], \LAM\TYPES\getScopeFromTypeId($typeId));
-		$attrs = $module->get_RDNAttributes();
+		$attrs = $module->get_RDNAttributes($typeId);
 		$keys = array_keys($attrs);
 		// sort attributes
 		for ($k = 0; $k < sizeof($keys); $k++) {
