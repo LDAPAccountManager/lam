@@ -222,7 +222,11 @@ class courierMailAccount extends baseModule {
 	public function getManagedAttributes($typeId) {
 		$attrs = parent::getManagedAttributes($typeId);
 		$typeManager = new TypeManager();
-		$modules = $typeManager->getConfiguredType($typeId)->getModules();
+		$type = $typeManager->getConfiguredType($typeId);
+		if ($type == null) {
+			return $attrs;
+		}
+		$modules = $type->getModules();
 		if ($this->isUnixDisabled($modules)) {
 			$attrs[] = 'homeDirectory';
 		}
