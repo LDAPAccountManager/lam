@@ -167,7 +167,7 @@ class courierMailAlias extends baseModule {
 	/**
 	 * {@inheritdoc}
 	 */
-	function process_attributes($post = null) {
+	function process_attributes() {
 		$errors = array();
 		$this->attributes['mail'][0] = $_POST['mail'];
 		if (empty($this->attributes['mail'][0]) || !get_preg($this->attributes['mail'][0], 'email')) {
@@ -190,7 +190,7 @@ class courierMailAlias extends baseModule {
 	/**
 	 * {@inheritdoc}
 	 */
-	function get_pdfEntries() {
+	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
 		$this->addSimplePDFField($return, 'mail', _('Email address'));
 		$this->addSimplePDFField($return, 'maildrop', _('Recipient address'));
@@ -202,7 +202,7 @@ class courierMailAlias extends baseModule {
 	/**
 	 * {@inheritdoc}
 	 */
-	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules) {
+	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$messages = array();
 		$possibleSources = array('esmtp', 'local');
 		for( $i = 0; $i < sizeof($rawAccounts); $i++) {
