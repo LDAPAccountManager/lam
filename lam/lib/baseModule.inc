@@ -1300,7 +1300,6 @@ abstract class baseModule {
 			if (sizeof($values) == 0) {
 				$values[] = '';
 			}
-			natcasesort($values);
 			$values = array_values($values);
 			if ($label !== null) {
 				$labelTextOut = new htmlOutputText($label, true, $required);
