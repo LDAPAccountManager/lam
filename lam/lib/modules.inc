@@ -1292,21 +1292,6 @@ class accountContainer {
 		$table->addElement($rightGroup);
 
 		parseHtml(null, $table, array(), false, $tabindex, $this->type->getScope());
-		?>
-		<script type="text/javascript">
-			jQuery(document).ready(function() {
-				var maxHeight = 0;
-				jQuery('.lamEqualHeightTabContent').each(function() {
-					if (jQuery(this).height() > maxHeight) {
-						maxHeight = jQuery(this).height();
-					};
-				});
-				jQuery('.lamEqualHeightTabContent').each(function() {
-					jQuery(this).css({'height': maxHeight});
-				});
-			});
-		</script>
-		<?php
 	}
 
 	/**

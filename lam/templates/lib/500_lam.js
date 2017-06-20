@@ -760,3 +760,15 @@ window.lam.upload.uploadDone = function(jsonData) {
 		top.location.href = '../lists/list.php?type=' + jsonData.typeId + '&uploadAllOk';
 	}
 }
+
+jQuery(document).ready(function() {
+	var maxHeight = 0;
+	jQuery('.lamEqualHeightTabContent').each(function() {
+		if (jQuery(this).height() > maxHeight) {
+			maxHeight = jQuery(this).height();
+		};
+	});
+	jQuery('.lamEqualHeightTabContent').each(function() {
+		jQuery(this).css({'height': maxHeight});
+	});
+});
