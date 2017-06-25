@@ -14,6 +14,9 @@ use \htmlSubTitle;
 use \htmlFieldset;
 use \htmlInputTextarea;
 use \htmlHiddenInput;
+use LAM\PDF\PDFStructureReader;
+use LAM\PDF\PDFTextSection;
+use LAM\PDF\PDFEntrySection;
 /*
 $Id$
 
@@ -356,17 +359,14 @@ foreach ($_GET as $key => $value) {
 // Load PDF structure from file if it is not defined in session
 if(!isset($_SESSION['currentPDFStructure'])) {
 	// Load structure file to be edit
+	$reader = new PDFStructureReader();
 	if(isset($_GET['edit'])) {
-		$load = \LAM\PDF\loadPDFStructure($type->getId(), $_GET['edit']);
-		$_SESSION['currentPDFStructure'] = $load['structure'];
-		$_SESSION['currentPageDefinitions'] = $load['page_definitions'];
+		$_SESSION['currentPDFStructure'] = $reader->read($type->getId(), $_GET['edit']);
 		$_GET['pdfname'] = $_GET['edit'];
 	}
 	// Load default structure file when creating a new one
 	else {
-		$load = \LAM\PDF\loadPDFStructure($type->getId());
-		$_SESSION['currentPDFStructure'] = $load['structure'];
-		$_SESSION['currentPageDefinitions'] = $load['page_definitions'];
+		$_SESSION['currentPDFStructure'] = $reader->read($type->getId(), 'default');
 	}
 }
 
@@ -450,8 +450,8 @@ foreach($logoFiles as $logoFile) {
 	$logos[$logoFile['filename'] . ' (' . $logoFile['infos'][0] . ' x ' . $logoFile['infos'][1] . ")"] = $logoFile['filename'];
 }
 $selectedLogo = array('printLogo.jpg');
-if (isset($_SESSION['currentPageDefinitions']['filename'])) {
-	$selectedLogo = array($_SESSION['currentPageDefinitions']['filename']);
+if (isset($_SESSION['currentPDFStructure'])) {
+	$selectedLogo = array($_SESSION['currentPDFStructure']->getLogo());
 }
 
 ?>
@@ -473,8 +473,8 @@ $logoSelect = new htmlTableExtendedSelect('logoFile', $logos, $selectedLogo, _('
 $logoSelect->setHasDescriptiveElements(true);
 $mainContent->addElement($logoSelect, true);
 $foldingMarks = 'no';
-if (isset($_SESSION['currentPageDefinitions']['foldingmarks'])) {
-	$foldingMarks = $_SESSION['currentPageDefinitions']['foldingmarks'];
+if (isset($_SESSION['currentPDFStructure'])) {
+	$foldingMarks = $_SESSION['currentPDFStructure']->getFoldingMarks();
 }
 $possibleFoldingMarks = array(_('No') => 'no', _('Yes') => 'standard');
 $foldingMarksSelect = new htmlTableExtendedSelect('foldingmarks', $possibleFoldingMarks, array($foldingMarks), _('Folding marks'));
@@ -482,10 +482,12 @@ $foldingMarksSelect->setHasDescriptiveElements(true);
 $mainContent->addElement($foldingMarksSelect, true);
 $mainContent->addElement(new htmlSpacer(null, '30px'), true);
 // PDF structure
+$structure = $_SESSION['currentPDFStructure'];
 // print every entry in the current structure
 $structureContent = new htmlTable();
-for ($key = 0; $key < sizeof($_SESSION['currentPDFStructure']); $key++) {
-	$entry = $_SESSION['currentPDFStructure'][$key];
+$sections = $structure->getSections();
+for ($key = 0; $key < sizeof($sections); $key++) {
+	$section = $sections[$key];
 	// create the up/down/remove links
 	$linkBase = 'pdfpage.php?type=' . $type->getId() . '&pdfname=' . $structureName . '&headline=' . $headline . '&logoFile=' . $selectedLogo[0] . '&foldingmarks=' . $foldingMarks;
 	$linkUp = new htmlButton('up_' . $key, 'up.gif', true);
@@ -496,24 +498,23 @@ for ($key = 0; $key < sizeof($_SESSION['currentPDFStructure']); $key++) {
 	$linkRemove->setTitle(_("Remove"));
 	$emptyBox = new htmlOutputText('');
 	// We have a new section to start
-	if(($entry['tag'] == "SECTION") && ($entry['type'] == 'open')) {
-		$name = $entry['attributes']['NAME'];
-		if(preg_match("/^_[a-zA-Z0-9_]+_[a-zA-Z0-9_]+/",$name)) {
-			$section_headline = translateFieldIDToName(substr($name,1), $type->getScope(), $availablePDFFields);
+	if($section instanceof PDFEntrySection) {
+		if($section->isAttributeTitle()) {
+			$section_headline = translateFieldIDToName($section->getPdfKey(), $type->getScope(), $availablePDFFields);
 		}
 		else {
-			$section_headline = $name;
+			$section_headline = $section->getTitle();
 		}
 		$nonTextSectionElements[$section_headline] = $key;
 		$sectionElements[$section_headline] = $key;
 		$structureContent->addElement(new htmlSpacer(null, '15px'), true);
 		// Section headline is a value entry
-		if(preg_match("/^_[a-zA-Z0-9_]+_[a-zA-Z0-9_]+/",$name)) {
+		if($section->isAttributeTitle()) {
 			$headlineElements = array();
 			foreach($section_items_array as $item) {
 				$headlineElements[translateFieldIDToName($item, $type->getScope(), $availablePDFFields)] = '_' . $item;
 			}
-			$sectionHeadlineSelect = new htmlSelect('section_' . $key, $headlineElements, array($name));
+			$sectionHeadlineSelect = new htmlSelect('section_' . $key, $headlineElements, array('_' . $section->getPdfKey()));
 			$sectionHeadlineSelect->setHasDescriptiveElements(true);
 			$sectionHeadlineGroup = new htmlGroup();
 			$sectionHeadlineGroup->addElement($sectionHeadlineSelect);
@@ -534,14 +535,7 @@ for ($key = 0; $key < sizeof($_SESSION['currentPDFStructure']); $key++) {
 		else {
 			$structureContent->addElement($emptyBox);
 		}
-		$hasAdditionalSections = false;
-		for ($a = $key + 1; $a < sizeof($_SESSION['currentPDFStructure']); $a++) {
-			if ((($_SESSION['currentPDFStructure'][$a]['tag'] == "SECTION") && ($_SESSION['currentPDFStructure'][$a]['type'] == "open"))
-				|| ($_SESSION['currentPDFStructure'][$a]['tag'] == "TEXT")) {
-				$hasAdditionalSections = true;
-				break;
-			}
-		}
+		$hasAdditionalSections = $key < (sizeof($sections) - 1);
 		if ($hasAdditionalSections) {
 			$structureContent->addElement($linkDown);
 		}
@@ -549,9 +543,30 @@ for ($key = 0; $key < sizeof($_SESSION['currentPDFStructure']); $key++) {
 			$structureContent->addElement($emptyBox);
 		}
 		$structureContent->addElement($linkRemove, true);
+		// add section entries
+		$sectionEntries = $section->getEntries();
+		for ($e = 0; $e < sizeof($sectionEntries); $e++) {
+			$sectionEntry = $sectionEntries[$e];
+			$structureContent->addElement(new htmlSpacer('10px', null));
+			$fieldOutput = new htmlOutputText(translateFieldIDToName($sectionEntry->getKey(), $type->getScope(), $availablePDFFields));
+			$structureContent->addElement($fieldOutput);
+			if ($e != 0) {
+				$structureContent->addElement($linkUp);
+			}
+			else {
+				$structureContent->addElement($emptyBox);
+			}
+			if ($e < (sizeof($sectionEntries) - 1)) {
+				$structureContent->addElement($linkDown);
+			}
+			else {
+				$structureContent->addElement($emptyBox);
+			}
+			$structureContent->addElement($linkRemove, true);
+		}
 	}
 	// We have to include a static text.
-	elseif($entry['tag'] == "TEXT") {
+	elseif($section instanceof PDFTextSection) {
 		// Add current satic text for dropdown box needed for the position when inserting a new
 		// section or static text entry
 		$sectionElements[_('Static text')] = $key + 1;
@@ -573,33 +588,12 @@ for ($key = 0; $key < sizeof($_SESSION['currentPDFStructure']); $key++) {
 		}
 		$structureContent->addElement($linkRemove, true);
 		$structureContent->addElement(new htmlSpacer('10px', null));
-		$staticTextOutput = new htmlOutputText($entry['value']);
+		$staticTextOutput = new htmlOutputText($section->getText());
 		$staticTextOutput->setPreformatted();
 		$structureContent->addElement($staticTextOutput, true);
 	}
-	// We have to include an entry from the account
-	elseif($entry['tag'] == "ENTRY") {
-		// Get name of current entry
-		$name = $entry['attributes']['NAME'];
-		$structureContent->addElement(new htmlSpacer('10px', null));
-		$fieldOutput = new htmlOutputText(translateFieldIDToName($name, $type->getScope(), $availablePDFFields));
-		$structureContent->addElement($fieldOutput);
-		if ($_SESSION['currentPDFStructure'][$key - 1]['tag'] != 'SECTION') {
-			$structureContent->addElement($linkUp);
-		}
-		else {
-			$structureContent->addElement($emptyBox);
-		}
-		if ($_SESSION['currentPDFStructure'][$key + 1]['tag'] != 'SECTION') {
-			$structureContent->addElement($linkDown);
-		}
-		else {
-			$structureContent->addElement($emptyBox);
-		}
-		$structureContent->addElement($linkRemove, true);
-	}
 }
-$sectionElements[_('End')] = sizeof($_SESSION['currentPDFStructure']);
+$sectionElements[_('End')] = sizeof($structure->getSections());
 $structureContent->colspan = 3;
 $mainContent->addElement($structureContent);
 $container->addElement(new htmlFieldset($mainContent), true);
