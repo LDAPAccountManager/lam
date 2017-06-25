@@ -1,7 +1,9 @@
 <pdf filename="printLogo.jpg" headline="User information" type="user" foldingmarks="yes">
 	<section name="Personal user information">
 		<entry name="inetOrgPerson_givenName" />
-		<entry name="inetOrgPerson_sn" />
+		<entry name="inetOrgPerson_sn">
+		</entry>
+		<entry name="inetOrgPerson_street" />
 	</section>
 	<text>test text</text>
 	<section name="_posixAccount_uid">

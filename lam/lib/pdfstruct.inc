@@ -72,128 +72,6 @@ function getPDFStructures($typeId, $profile = null) {
 }
 
 /**
- * This function is used to get the PDF structure from XML file.
- *
- * @param string $typeId the account type
- * @param string $name structure name
- *
- * @return array PDF structure
- */
-function loadPDFStructureOld($typeId, $name='default') {
-	if (!isValidPDFStructureName($name) || !preg_match('/[a-zA-Z]+/', $typeId)) {
-		return null;
-	}
-	$parser = new xmlParser();
-	$file = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/' . $name . '.' . $typeId . '.xml';
-	$xml = $parser->parse($file);
-	$border = array();
-	$structure = array();
-	$complete_page_definitions = array('filename' => 'printLogo.jpg', 'headline' => 'LDAP Account Manager');
-	if (!empty($xml)) {
-		$border['start'] = $xml[1]['PDF'][0];
-		$page_definitions = $xml[0][$xml[1]['PDF'][0]]['attributes'];
-		foreach($page_definitions as $key => $value) {
-			$complete_page_definitions[strtolower($key)] = $value;
-			unset($page_definitions[$key]);
-		}
-		$border['end'] = $xml[1]['PDF'][1];
-		$structure = array_slice($xml[0],$border['start'] + 1,$border['end'] - ($border['start'] + 1));
-	}
-	return array('structure' => $structure, 'page_definitions' => $complete_page_definitions);
-}
-
-/**
- * This function is used to get the PDF structure from XML file.
- *
- * @param string $typeId the account type
- * @param string $name structure name
- *
- * @return array PDF structure
- */
-function loadPDFStructure($typeId, $name='default') {
-	if (!isValidPDFStructureName($name) || !preg_match('/[a-zA-Z]+/', $typeId)) {
-		return null;
-	}
-	$parser = new xmlParser();
-	$file = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/' . $name . '.' . $typeId . '.xml';
-	$xml = $parser->parse($file);
-	$border = array();
-	$structure = array();
-	$complete_page_definitions = array('filename' => 'printLogo.jpg', 'headline' => 'LDAP Account Manager');
-	if (!empty($xml)) {
-		$border['start'] = $xml[1]['PDF'][0];
-		$page_definitions = $xml[0][$xml[1]['PDF'][0]]['attributes'];
-		foreach($page_definitions as $key => $value) {
-			$complete_page_definitions[strtolower($key)] = $value;
-			unset($page_definitions[$key]);
-		}
-		$border['end'] = $xml[1]['PDF'][1];
-		$structure = array_slice($xml[0],$border['start'] + 1,$border['end'] - ($border['start'] + 1));
-	}
-	return array('structure' => $structure, 'page_definitions' => $complete_page_definitions);
-}
-
-/**
- * Reads a PDF structure file.
- *
- * @param string $file file name
- * @return PDFStructure structure
- */
-function _readPDFFile($file) {
-	$xml = new \XMLReader();
-	$xml->open($file);
-	$structure = new PDFStructure();
-	// open <pdf>
-	$xml->read();
-	if (!$xml->name == 'pdf') {
-		throw new \LAMException(_('Unable to read PDF structure.'));
-	}
-	$structure->setLogo($xml->getAttribute('filename'));
-	$structure->setTitle($xml->getAttribute('headline'));
-	$foldingMarks = $xml->getAttribute('foldingmarks');
-	if ($foldingMarks === 'yes') {
-		$structure->setFoldingMarks(true);
-	}
-	$sections = array();
-	while ($xml->read()) {
-		if ($xml->name === '#text') {
-			continue;
-		}
-		elseif (($xml->name === 'pdf') && ($xml->nodeType == \XMLReader::END_ELEMENT)) {
-			continue;
-		}
-		elseif ($xml->name === 'text') {
-			$xml->read();
-			$sections[] = new PDFTextSection($xml->value);
-			$xml->read();
-			if (!$xml->name === 'text') {
-				throw new \LAMException(_('Unable to read PDF structure.'));
-			}
-		}
-		elseif ($xml->name === 'section') {
-			$section = new PDFEntrySection();
-			while ($xml->read()) {
-				if (($xml->name === 'section') && ($xml->nodeType == \XMLReader::END_ELEMENT)) {
-					break;
-				}
-				if (!$xml->name === 'entry') {
-					throw new \LAMException(_('Unable to read PDF structure.'));
-				}
-			}
-			$sections[] = $section;
-		}
-		else {
-			echo '#' . $xml->name . '#';
-			throw new \LAMException(_('Unable to read PDF structure.'));
-		}
-	}
-	$xml->close();
-	print_r($sections);
-	$structure->setSections($sections);
-	return $structure;
-}
-
-/**
  * Saves PDF structure to XML file in format: <name>.<typeId>.xml
  *
  * @param string $typeId account type
@@ -473,6 +351,123 @@ function installPDFTemplates() {
 }
 
 /**
+ * Reads a PDF structure.
+ *
+ * @author Roland Gruber
+ */
+class PDFStructureReader {
+
+	/**
+	 * Reads a PDF structure.
+	 *
+	 * @param string $typeId type id
+	 * @param string $name structure name
+	 * @return PDFStructure structure
+	 */
+	public function read($typeId, $name) {
+		if (!isValidPDFStructureName($name) || !preg_match('/[a-zA-Z]+/', $typeId)) {
+			return null;
+		}
+		$file = $this->getFileName($typeId, $name);
+		return $this->readPDFFile($file);
+	}
+
+	/**
+	 * Returns the file name for the given structure.
+	 *
+	 * @param string $typeId type id
+	 * @param string $name structure name
+	 * @return string file name
+	 */
+	protected function getFileName($typeId, $name) {
+		return dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/' . $name . '.' . $typeId . '.xml';
+	}
+
+	/**
+	 * Reads a PDF structure file.
+	 *
+	 * @param string $file file name
+	 * @return PDFStructure structure
+	 */
+	private function readPDFFile($file) {
+		$xml = new \XMLReader();
+		$xml->open($file);
+		$structure = new PDFStructure();
+		// open <pdf>
+		$xml->read();
+		if (!$xml->name == 'pdf') {
+			logNewMessage(LOG_ERR, 'Unknown tag name: ' . $xml->name);
+			throw new \LAMException(_('Unable to read PDF structure.'));
+		}
+		$structure->setLogo($xml->getAttribute('filename'));
+		$structure->setTitle($xml->getAttribute('headline'));
+		$foldingMarks = $xml->getAttribute('foldingmarks');
+		if ($foldingMarks === 'yes') {
+			$structure->setFoldingMarks(true);
+		}
+		$sections = array();
+		while ($xml->read()) {
+			if ($xml->nodeType === \XMLReader::SIGNIFICANT_WHITESPACE) {
+				continue;
+			}
+			elseif (($xml->name === 'pdf') && ($xml->nodeType == \XMLReader::END_ELEMENT)) {
+				continue;
+			}
+			elseif ($xml->name === 'text') {
+				$xml->read();
+				$sections[] = new PDFTextSection($xml->value);
+				$xml->read();
+				if (!$xml->name === 'text') {
+					logNewMessage(LOG_ERR, 'Unexpected tag name: ' . $xml->name);
+					throw new \LAMException(_('Unable to read PDF structure.'));
+				}
+			}
+			elseif ($xml->name === 'section') {
+				$sections[] = $this->readSection($xml);
+			}
+			else {
+				logNewMessage(LOG_ERR, 'Unexpected tag name: ' . $xml->name);
+				throw new \LAMException(_('Unable to read PDF structure.'));
+			}
+		}
+		$xml->close();
+		$structure->setSections($sections);
+		return $structure;
+	}
+
+	/**
+	 * Reads a single section from XML.
+	 *
+	 * @param \XMLReader $xml reader
+	 */
+	private function readSection(&$xml) {
+		$section = new PDFEntrySection($xml->getAttribute('name'));
+		$entries = array();
+		while ($xml->read()) {
+			if (($xml->name === 'section') && ($xml->nodeType == \XMLReader::END_ELEMENT)) {
+				break;
+			}
+			elseif ($xml->nodeType === \XMLReader::END_ELEMENT) {
+				continue;
+			}
+			elseif ($xml->nodeType === \XMLReader::SIGNIFICANT_WHITESPACE) {
+				continue;
+			}
+			elseif ($xml->name === 'entry') {
+				$entries[] = new PDFSectionEntry($xml->getAttribute('name'));
+			}
+			elseif (!$xml->name === 'entry') {
+				logNewMessage(LOG_ERR, 'Unexpected tag name: ' . $xml->name);
+				throw new \LAMException(_('Unable to read PDF structure.'));
+			}
+		}
+		$section->setEntries($entries);
+		return $section;
+	}
+
+}
+
+/**
  * PDF structure
  *
  * @author Roland Gruber
@@ -596,6 +591,92 @@ class PDFTextSection {
  * @author Roland Gruber
  */
 class PDFEntrySection {
+
+	private $title;
+	private $entries;
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $title title
+	 */
+	public function __construct($title) {
+		$this->title = $title;
+	}
+
+	/**
+	 * Returns if the title is an attribute value.
+	 *
+	 * @return boolean is attribute
+	 */
+	public function isAttributeTitle() {
+		return boolval(preg_match('/^_([a-zA-Z0-9_-])+$/', $this->title));
+	}
+
+	/**
+	 * Returns the PDF key name.
+	 *
+	 * @return string PDF key name
+	 */
+	public function getPdfKey() {
+		return substr($this->title, 1);
+	}
+
+	/**
+	 * Returns the text title.
+	 *
+	 * @return string title
+	 */
+	public function getTitle() {
+		return $this->title;
+	}
+
+	/**
+	 * Returns the entries.
+	 *
+	 * @return PDFSectionEntry[] entries
+	 */
+	public function getEntries() {
+		return $this->entries;
+	}
+
+	/**
+	 * Sets the entries.
+	 *
+	 * @param PDFSectionEntry[] $entries entries
+	 */
+	public function setEntries($entries) {
+		$this->entries = $entries;
+	}
+
+}
+
+/**
+ * Single PDF entry.
+ *
+ * @author Roland Gruber
+ */
+class PDFSectionEntry {
+
+	private $key;
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $key key
+	 */
+	public function __construct($key) {
+		$this->key = $key;
+	}
+
+	/**
+	 * Returns the PDF key.
+	 *
+	 * @return string $key key
+	 */
+	public function getKey() {
+		return $this->key;
+	}
 
 }
 
