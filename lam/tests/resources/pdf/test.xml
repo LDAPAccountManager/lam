@@ -1,4 +1,4 @@
-<pdf filename="printLogo.jpg" headline="User information" type="user" foldingmarks="yes">
+<pdf filename="printLogo.jpg" headline="User information" foldingmarks="standard">
 	<section name="Personal user information">
 		<entry name="inetOrgPerson_givenName" />
 		<entry name="inetOrgPerson_sn">

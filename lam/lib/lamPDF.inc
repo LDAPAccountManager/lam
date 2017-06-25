@@ -1,4 +1,6 @@
 <?PHP
+use \LAM\PDF\PDFStructure;
+
 /*
 $Id$
 
@@ -41,9 +43,9 @@ $Id$
 class lamPDF extends UFPDF {
 
 	/**
-	 * format settings for page layout
+	 * PDF structure
 	 */
-	private $page_definitions;
+	private $structure;
 
 	/**
 	* current active font name
@@ -61,10 +63,10 @@ class lamPDF extends UFPDF {
 	/**
 	 * Creates a new lamPDF object.
 	 *
-	 * @param array $page_definitions page settings
+	 * @param PDFStructure structure
 	 * @param String $fontName font name
 	 */
-	function __construct($page_definitions = array(),$fontName) {
+	function __construct($structure, $fontName) {
 		$this->fontName = $fontName;
 		if (!defined('FPDF_FONTPATH')) {
 			define('FPDF_FONTPATH', dirname(__FILE__) . '/font/');
@@ -72,7 +74,7 @@ class lamPDF extends UFPDF {
 		// Call constructor of superclass
 		parent::__construct('P','mm','A4');
 
-		$this->page_definitions = $page_definitions;
+		$this->structure = $structure;
 
 		// Open PDF file and write some basic information
 		$this->Open();
@@ -81,7 +83,7 @@ class lamPDF extends UFPDF {
 		$this->AddFont($this->fontName, 'I', $this->fontList[$this->fontName][2]);
 		$this->AddFont($this->fontName, 'BI', $this->fontList[$this->fontName][3]);
 		$this->setFont($this->fontName,"",12);
-		$this->setTitle($this->page_definitions['headline']);
+		$this->setTitle($structure->getTitle());
 		$this->setCreator("LDAP Account Manager");
 		$this->setMargins('10.0','10.0','10.0');
 		$this->setAutoPageBreak(true,'20.0');
@@ -91,21 +93,21 @@ class lamPDF extends UFPDF {
 	 * Creates the PDF page header.
 	 */
 	function header() {
-		if($this->page_definitions['filename'] != 'none') {
-			$imageFile = substr(__FILE__,0,strlen(__FILE__)- 14) . "config/pdf/" . $_SESSION['config']->getName() . "/logos/" . $this->page_definitions['filename'];
+		if($this->structure->getLogo() != 'none') {
+			$imageFile = substr(__FILE__,0,strlen(__FILE__)- 14) . "config/pdf/" . $_SESSION['config']->getName() . "/logos/" . $this->structure->getLogo();
 			$imgProperties = getimagesize($imageFile);
 			$this->Image($imageFile,10,15,($imgProperties[0] / $this->k) / 5, ($imgProperties[1] / $this->k) / 5,0,"JPG");
 		}
 		$this->SetY(23);
 		$this->SetFont($this->fontName,"B",18);
-		$this->Cell(170,5,$this->page_definitions['headline'],0,1,"R",0);
+		$this->Cell(170,5,$this->structure->getTitle(), 0, 1, "R", 0);
 		$this->Ln(3);
 		$this->SetLineWidth(0.4);
 		$this->Line(10,38,200,38);
 		$this->Line(10,40,200,40);
 		$this->SetY(50);
 		//set folding marks
-		if (isset($this->page_definitions['foldingmarks']) && ($this->page_definitions['foldingmarks'] == 'standard')) {
+		if ($this->structure->getFoldingMarks() == PDFStructure::FOLDING_STANDARD) {
 			$this->SetLineWidth(0.2);
 			$foldingMarks = array(97, 202);
 			foreach ($foldingMarks as $mark) {

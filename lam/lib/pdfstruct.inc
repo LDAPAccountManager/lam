@@ -401,10 +401,7 @@ class PDFStructureReader {
 		}
 		$structure->setLogo($xml->getAttribute('filename'));
 		$structure->setTitle($xml->getAttribute('headline'));
-		$foldingMarks = $xml->getAttribute('foldingmarks');
-		if ($foldingMarks === 'yes') {
-			$structure->setFoldingMarks(true);
-		}
+		$structure->setFoldingMarks($xml->getAttribute('foldingmarks'));
 		$sections = array();
 		while ($xml->read()) {
 			if ($xml->nodeType === \XMLReader::SIGNIFICANT_WHITESPACE) {
@@ -474,11 +471,16 @@ class PDFStructureReader {
  */
 class PDFStructure {
 
+	/** no folding marks */
+	const FOLDING_NONE = 'no';
+	/** standard folding marks */
+	const FOLDING_STANDARD = 'standard';
+
 	private $logo = null;
 
 	private $title = null;
 
-	private $foldingMarks = false;
+	private $foldingMarks = 'no';
 
 	private $sections = array();
 
@@ -521,7 +523,7 @@ class PDFStructure {
 	/**
 	 * Returns if to print folding marks.
 	 *
-	 * @return boolean print folding marks
+	 * @return string print folding marks
 	 */
 	public function getFoldingMarks() {
 		return $this->foldingMarks;
@@ -530,7 +532,7 @@ class PDFStructure {
 	/**
 	 * Sets if to print folding marks.
 	 *
-	 * @param boolean $foldingMarks print folding marks
+	 * @param string $foldingMarks print folding marks
 	 */
 	public function setFoldingMarks($foldingMarks) {
 		$this->foldingMarks = $foldingMarks;

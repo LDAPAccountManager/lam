@@ -2,6 +2,7 @@
 use LAM\PDF\PDFTextSection;
 use LAM\PDF\PDFEntrySection;
 use LAM\PDF\PDFStructureReader;
+use LAM\PDF\PDFStructure;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -45,7 +46,7 @@ class ReadStructureTest extends PHPUnit_Framework_TestCase {
 		$structure = $reader->read('type', 'name');
 		$this->assertEquals('printLogo.jpg', $structure->getLogo());
 		$this->assertEquals('User information', $structure->getTitle());
-		$this->assertEquals(true, $structure->getFoldingMarks());
+		$this->assertEquals(PDFStructure::FOLDING_STANDARD, $structure->getFoldingMarks());
 		$sections = $structure->getSections();
 		$this->assertEquals(3, sizeof($sections));
 		// check first section
