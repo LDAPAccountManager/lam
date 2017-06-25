@@ -79,6 +79,37 @@ function getPDFStructures($typeId, $profile = null) {
  *
  * @return array PDF structure
  */
+function loadPDFStructureOld($typeId, $name='default') {
+	if (!isValidPDFStructureName($name) || !preg_match('/[a-zA-Z]+/', $typeId)) {
+		return null;
+	}
+	$parser = new xmlParser();
+	$file = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/' . $name . '.' . $typeId . '.xml';
+	$xml = $parser->parse($file);
+	$border = array();
+	$structure = array();
+	$complete_page_definitions = array('filename' => 'printLogo.jpg', 'headline' => 'LDAP Account Manager');
+	if (!empty($xml)) {
+		$border['start'] = $xml[1]['PDF'][0];
+		$page_definitions = $xml[0][$xml[1]['PDF'][0]]['attributes'];
+		foreach($page_definitions as $key => $value) {
+			$complete_page_definitions[strtolower($key)] = $value;
+			unset($page_definitions[$key]);
+		}
+		$border['end'] = $xml[1]['PDF'][1];
+		$structure = array_slice($xml[0],$border['start'] + 1,$border['end'] - ($border['start'] + 1));
+	}
+	return array('structure' => $structure, 'page_definitions' => $complete_page_definitions);
+}
+
+/**
+ * This function is used to get the PDF structure from XML file.
+ *
+ * @param string $typeId the account type
+ * @param string $name structure name
+ *
+ * @return array PDF structure
+ */
 function loadPDFStructure($typeId, $name='default') {
 	if (!isValidPDFStructureName($name) || !preg_match('/[a-zA-Z]+/', $typeId)) {
 		return null;
@@ -102,6 +133,65 @@ function loadPDFStructure($typeId, $name='default') {
 	return array('structure' => $structure, 'page_definitions' => $complete_page_definitions);
 }
 
+/**
+ * Reads a PDF structure file.
+ *
+ * @param string $file file name
+ * @return PDFStructure structure
+ */
+function _readPDFFile($file) {
+	$xml = new \XMLReader();
+	$xml->open($file);
+	$structure = new PDFStructure();
+	// open <pdf>
+	$xml->read();
+	if (!$xml->name == 'pdf') {
+		throw new \LAMException(_('Unable to read PDF structure.'));
+	}
+	$structure->setLogo($xml->getAttribute('filename'));
+	$structure->setTitle($xml->getAttribute('headline'));
+	$foldingMarks = $xml->getAttribute('foldingmarks');
+	if ($foldingMarks === 'yes') {
+		$structure->setFoldingMarks(true);
+	}
+	$sections = array();
+	while ($xml->read()) {
+		if ($xml->name === '#text') {
+			continue;
+		}
+		elseif (($xml->name === 'pdf') && ($xml->nodeType == \XMLReader::END_ELEMENT)) {
+			continue;
+		}
+		elseif ($xml->name === 'text') {
+			$xml->read();
+			$sections[] = new PDFTextSection($xml->value);
+			$xml->read();
+			if (!$xml->name === 'text') {
+				throw new \LAMException(_('Unable to read PDF structure.'));
+			}
+		}
+		elseif ($xml->name === 'section') {
+			$section = new PDFEntrySection();
+			while ($xml->read()) {
+				if (($xml->name === 'section') && ($xml->nodeType == \XMLReader::END_ELEMENT)) {
+					break;
+				}
+				if (!$xml->name === 'entry') {
+					throw new \LAMException(_('Unable to read PDF structure.'));
+				}
+			}
+			$sections[] = $section;
+		}
+		else {
+			echo '#' . $xml->name . '#';
+			throw new \LAMException(_('Unable to read PDF structure.'));
+		}
+	}
+	$xml->close();
+	print_r($sections);
+	$structure->setSections($sections);
+	return $structure;
+}
 
 /**
  * Saves PDF structure to XML file in format: <name>.<typeId>.xml
@@ -380,6 +470,133 @@ function installPDFTemplates() {
 			$entry = $templateDir->read();
 		}
 	}
+}
+
+/**
+ * PDF structure
+ *
+ * @author Roland Gruber
+ */
+class PDFStructure {
+
+	private $logo = null;
+
+	private $title = null;
+
+	private $foldingMarks = false;
+
+	private $sections = array();
+
+	/**
+	 * Returns the logo file path.
+	 *
+	 * @return string logo
+	 */
+	public function getLogo() {
+		return $this->logo;
+	}
+
+	/**
+	 * Sets the logo file path.
+	 *
+	 * @param string $logo logo
+	 */
+	public function setLogo($logo) {
+		$this->logo = $logo;
+	}
+
+	/**
+	 * Returns the title.
+	 *
+	 * @return string title
+	 */
+	public function getTitle() {
+		return $this->title;
+	}
+
+	/**
+	 * Sets the title.
+	 *
+	 * @param string $title title
+	 */
+	public function setTitle($title) {
+		$this->title = $title;
+	}
+
+	/**
+	 * Returns if to print folding marks.
+	 *
+	 * @return boolean print folding marks
+	 */
+	public function getFoldingMarks() {
+		return $this->foldingMarks;
+	}
+
+	/**
+	 * Sets if to print folding marks.
+	 *
+	 * @param boolean $foldingMarks print folding marks
+	 */
+	public function setFoldingMarks($foldingMarks) {
+		$this->foldingMarks = $foldingMarks;
+	}
+
+	/**
+	 * Returns the sections.
+	 *
+	 * @return PDFTextSection[]|PDFEntrySection[] $sections
+	 */
+	public function getSections() {
+		return $this->sections;
+	}
+
+	/**
+	 * Sets the sections.
+	 *
+	 * @param PDFTextSection[]|PDFEntrySection[] $sections sections
+	 */
+	public function setSections($sections) {
+		$this->sections = $sections;
+	}
+
+}
+
+/**
+ * Section for static text.
+ *
+ * @author Roland Gruber
+ */
+class PDFTextSection {
+
+	private $text = '';
+
+	/**
+	 * Constructor.
+	 *
+	 * @param string $text text
+	 */
+	public function __construct($text) {
+		$this->text = $text;
+	}
+
+	/**
+	 * Returns the text.
+	 *
+	 * @return string text
+	 */
+	public function getText() {
+		return $this->text;
+	}
+
+}
+
+/**
+ * PDF section that contains LDAP data entries.
+ *
+ * @author Roland Gruber
+ */
+class PDFEntrySection {
+
 }
 
 ?>

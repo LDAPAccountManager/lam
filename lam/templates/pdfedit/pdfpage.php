@@ -574,6 +574,7 @@ for ($key = 0; $key < sizeof($_SESSION['currentPDFStructure']); $key++) {
 		$structureContent->addElement($linkRemove, true);
 		$structureContent->addElement(new htmlSpacer('10px', null));
 		$staticTextOutput = new htmlOutputText($entry['value']);
+		$staticTextOutput->setPreformatted();
 		$structureContent->addElement($staticTextOutput, true);
 	}
 	// We have to include an entry from the account
