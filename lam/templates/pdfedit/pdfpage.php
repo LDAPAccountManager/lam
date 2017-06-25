@@ -60,8 +60,6 @@ include_once('../../lib/ldap.inc');
 include_once('../../lib/config.inc');
 /** module functions */
 include_once('../../lib/modules.inc');
-/** XML functions */
-include_once('../../lib/xml_parser.inc');
 
 // start session
 startSecureSession();

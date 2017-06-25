@@ -41,9 +41,6 @@ define('LAMPDF_FONT_SIZE', 7);
 /** font size for bigger text */
 define('LAMPDF_FONT_SIZE_BIG', 10);
 
-/** XML functions */
-include_once('xml_parser.inc');
-
 /** access to PDF configuration files */
 include_once('pdfstruct.inc');
 
