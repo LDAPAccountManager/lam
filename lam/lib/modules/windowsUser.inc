@@ -2907,7 +2907,7 @@ class windowsUser extends baseModule implements passwordService {
 		$lockoutTime = self::getFileTime($myAttrs['lockouttime'][0]);
 		$unlockTime = clone $lockoutTime;
 		$unlockTime->add(new DateInterval('PT' . abs($lockoutDurationSeconds) . 'S'));
-		$now = new DateTime();
+		$now = new DateTime(null, getTimeZone());
 		if ($unlockTime > $now) {
 			$unlockTime->setTimezone(getTimeZone());
 			return $unlockTime;
