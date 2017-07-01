@@ -18,6 +18,7 @@ use LAM\PDF\PDFStructureReader;
 use LAM\PDF\PDFTextSection;
 use LAM\PDF\PDFEntrySection;
 use LAM\PDF\PDFStructure;
+use LAM\PDF\PDFSectionEntry;
 /*
 $Id$
 
@@ -122,25 +123,6 @@ if(isset($_GET['submit'])) {
 			$saveErrors[] = array('ERROR', _("Could not save PDF structure, access denied."), $_GET['pdfname']);
 		}
 	}
-}
-// Add a new value field
-elseif(isset($_GET['add_new_field'])) {
-	$field = array('tag' => 'ENTRY','type' => 'complete','level' => '3','attributes' => array('NAME' => $_GET['new_field']));
-	$pos = 0;
-	// Find begin section to insert into
-	while($pos < $_GET['add_field_position']) {
-		next($_SESSION['currentPDFStructure']);
-		$pos++;
-	}
-	$current = next($_SESSION['currentPDFStructure']);
-	$pos++;
-	// End of section to insert into
-	while($current && $current['tag'] != 'SECTION' && $current['type'] != 'close') {
-		$current = next($_SESSION['currentPDFStructure']);
-		$pos++;
-	}
-	// Insert new entry before closing section tag
-	array_splice($_SESSION['currentPDFStructure'],$pos,0,array($field));
 }
 
 foreach ($_GET as $key => $value) {
@@ -320,6 +302,7 @@ if (!empty($_POST['form_submit'])) {
 	updateBasicSettings($_SESSION['currentPDFStructure']);
 	updateSectionTitles($_SESSION['currentPDFStructure']);
 	addSection($_SESSION['currentPDFStructure']);
+	addSectionEntry($_SESSION['currentPDFStructure']);
 }
 
 $availablePDFFields = getAvailablePDFFields($type->getId());
@@ -737,6 +720,23 @@ function addSection(&$structure) {
 	elseif(isset($_POST['add_section'])) {
 		$section = new PDFEntrySection('_' . $_POST['new_section_item']);
 		array_splice($sections, $_POST['add_text_position'], 0, array($section));
+		$structure->setSections($sections);
+	}
+}
+
+/**
+ * Adds a new entry to a section if requested.
+ *
+ * @param PDFStructure $structure
+ */
+function addSectionEntry(&$structure) {
+	if(isset($_POST['add_new_field'])) {
+		$field = new PDFSectionEntry($_POST['new_field']);
+		$sections = $structure->getSections();
+		$pos = $_POST['add_field_position'];
+		$entries = $sections[$pos]->getEntries();
+		$entries[] = $field;
+		$sections[$pos]->setEntries($entries);
 		$structure->setSections($sections);
 	}
 }
