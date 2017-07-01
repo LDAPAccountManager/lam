@@ -478,7 +478,7 @@ class PDFStructure {
 
 	private $logo = null;
 
-	private $title = null;
+	private $title = 'LDAP Account Manager';
 
 	private $foldingMarks = 'no';
 
@@ -631,6 +631,15 @@ class PDFEntrySection {
 	 */
 	public function getTitle() {
 		return $this->title;
+	}
+
+	/**
+	 * Sets the title text.
+	 *
+	 * @param string $title title
+	 */
+	public function setTitle($title) {
+		$this->title = $title;
 	}
 
 	/**

@@ -17,6 +17,7 @@ use \htmlHiddenInput;
 use LAM\PDF\PDFStructureReader;
 use LAM\PDF\PDFTextSection;
 use LAM\PDF\PDFEntrySection;
+use LAM\PDF\PDFStructure;
 /*
 $Id$
 
@@ -104,25 +105,6 @@ if(isset($_GET['abort'])) {
 	exit;
 }
 
-// set new logo and headline
-if ((isset($_GET['headline'])) && ($_GET['logoFile'] != $_SESSION['currentPageDefinitions']['filename'])) {
-	$_SESSION['currentPageDefinitions']['filename'] = $_GET['logoFile'];
-}
-if ((isset($_GET['headline'])) && ($_GET['headline'] != $_SESSION['currentPageDefinitions']['headline'])) {
-	$_SESSION['currentPageDefinitions']['headline'] = str_replace('<','',str_replace('>','',$_GET['headline']));
-}
-if ((isset($_GET['foldingmarks'])) && (!isset($_SESSION['currentPageDefinitions']['foldingmarks']) || ($_GET['foldingmarks'] != $_SESSION['currentPageDefinitions']['foldingmarks']))) {
-	$_SESSION['currentPageDefinitions']['foldingmarks'] = $_GET['foldingmarks'];
-}
-
-// Change section headline
-foreach ($_GET as $key => $value) {
-	if (strpos($key, 'section_') === 0) {
-		$pos = substr($key, strlen('section_'));
-		$_SESSION['currentPDFStructure'][$pos]['attributes']['NAME'] = $value;
-	}
-}
-
 // Check if pdfname is valid, then save current structure to file and go to
 // main pdf structure page
 $saveErrors = array();
@@ -140,40 +122,6 @@ if(isset($_GET['submit'])) {
 			$saveErrors[] = array('ERROR', _("Could not save PDF structure, access denied."), $_GET['pdfname']);
 		}
 	}
-}
-// add a new text field
-elseif(isset($_GET['add_text'])) {
-	// Check if text for static text field is specified
-	if(empty($_GET['text_text'])) {
-		StatusMessage('ERROR',_('No static text specified'),_('The static text must contain at least one character.'));
-	}
-	else {
-		$entry = array(array('tag' => 'TEXT','type' => 'complete','level' => '2','value' => str_replace("\r", "\n", $_GET['text_text'])));
-		// Insert new field in structure
-		array_splice($_SESSION['currentPDFStructure'],$_GET['add_text_position'],0,$entry);
-	}
-}
-// add a new section with text headline
-elseif(isset($_GET['add_sectionText'])) {
-	// Check if name for new section is specified when needed
-	if(!isset($_GET['new_section_text']) || ($_GET['new_section_text'] == '')) {
-		StatusMessage('ERROR',_('No section text specified'),_('The headline for a new section must contain at least one character.'));
-	}
-	else {
-		$attributes = array();
-		$attributes['NAME'] = $_GET['new_section_text'];
-		$entry = array(array('tag' => 'SECTION','type' => 'open','level' => '2','attributes' => $attributes),array('tag' => 'SECTION','type' => 'close','level' => '2'));
-		// Insert new field in structure
-		array_splice($_SESSION['currentPDFStructure'],$_GET['add_sectionText_position'],0,$entry);
-	}
-}
-// Add a new section with item as headline
-elseif(isset($_GET['add_section'])) {
-		$attributes = array();
-		$attributes['NAME'] = '_' . $_GET['new_section_item'];
-		$entry = array(array('tag' => 'SECTION','type' => 'open','level' => '2','attributes' => $attributes),array('tag' => 'SECTION','type' => 'close','level' => '2'));
-		// Insert new field in structure
-		array_splice($_SESSION['currentPDFStructure'],$_GET['add_section_position'],0,$entry);
 }
 // Add a new value field
 elseif(isset($_GET['add_new_field'])) {
@@ -368,6 +316,12 @@ if(!isset($_SESSION['currentPDFStructure'])) {
 	}
 }
 
+if (!empty($_POST['form_submit'])) {
+	updateBasicSettings($_SESSION['currentPDFStructure']);
+	updateSectionTitles($_SESSION['currentPDFStructure']);
+	addSection($_SESSION['currentPDFStructure']);
+}
+
 $availablePDFFields = getAvailablePDFFields($type->getId());
 
 // Create the values for the dropdown boxes for section headline defined by
@@ -437,10 +391,7 @@ else if (isset($_POST['pdfname'])) {
 	$structureName = $_POST['pdfname'];
 }
 // headline
-$headline = 'LDAP Account Manager';
-if (isset($_SESSION['currentPageDefinitions']['headline'])) {
-	$headline = $_SESSION['currentPageDefinitions']['headline'];
-}
+$headline = $_SESSION['currentPDFStructure']->getTitle();
 // logo
 $logoFiles = \LAM\PDF\getAvailableLogos();
 $logos = array(_('No logo') => 'none');
@@ -487,12 +438,11 @@ $sections = $structure->getSections();
 for ($key = 0; $key < sizeof($sections); $key++) {
 	$section = $sections[$key];
 	// create the up/down/remove links
-	$linkBase = 'pdfpage.php?type=' . $type->getId() . '&pdfname=' . $structureName . '&headline=' . $headline . '&logoFile=' . $selectedLogo[0] . '&foldingmarks=' . $foldingMarks;
-	$linkUp = new htmlButton('up_' . $key, 'up.gif', true);
+	$linkUp = new htmlButton('up_section_' . $key, 'up.gif', true);
 	$linkUp->setTitle(_("Up"));
-	$linkDown = new htmlButton('down_' . $key, 'down.gif', true);
+	$linkDown = new htmlButton('down_section_' . $key, 'down.gif', true);
 	$linkDown->setTitle(_("Down"));
-	$linkRemove = new htmlButton('remove_' . $key, 'delete.gif', true);
+	$linkRemove = new htmlButton('remove_section_' . $key, 'delete.gif', true);
 	$linkRemove->setTitle(_("Remove"));
 	$emptyBox = new htmlOutputText('');
 	// We have a new section to start
@@ -549,25 +499,38 @@ for ($key = 0; $key < sizeof($sections); $key++) {
 			$fieldOutput = new htmlOutputText(translateFieldIDToName($sectionEntry->getKey(), $type->getScope(), $availablePDFFields));
 			$structureContent->addElement($fieldOutput);
 			if ($e != 0) {
-				$structureContent->addElement($linkUp);
+				$entryLinkUp = new htmlButton('up_entry_' . $key . '_' . $e, 'up.gif', true);
+				$entryLinkUp->setTitle(_("Up"));
+				$structureContent->addElement($entryLinkUp);
 			}
 			else {
 				$structureContent->addElement($emptyBox);
 			}
 			if ($e < (sizeof($sectionEntries) - 1)) {
+				$linkDown = new htmlButton('down_entry_' . $key . '_' . $e, 'down.gif', true);
+				$linkDown->setTitle(_("Down"));
 				$structureContent->addElement($linkDown);
 			}
 			else {
 				$structureContent->addElement($emptyBox);
 			}
-			$structureContent->addElement($linkRemove, true);
+			$entryLinkRemove = new htmlButton('remove_entry_' . $key . '_' . $e, 'delete.gif', true);
+			$entryLinkRemove->setTitle(_("Remove"));
+			$structureContent->addElement($entryLinkRemove, true);
 		}
 	}
 	// We have to include a static text.
 	elseif($section instanceof PDFTextSection) {
 		// Add current satic text for dropdown box needed for the position when inserting a new
 		// section or static text entry
-		$sectionElements[_('Static text')] = $key + 1;
+		$textSnippet = $section->getText();
+		$textSnippet = str_replace(array("\n", "\r"), array(" ", " "), $textSnippet);
+		$textSnippet = trim($textSnippet);
+		if (strlen($textSnippet) > 15) {
+			$textSnippet = substr($textSnippet, 0, 15) . '...';
+		}
+		$textSnippet = htmlspecialchars($textSnippet);
+		$sectionElements[_('Static text') . ': ' . $textSnippet] = $key;
 		$structureContent->addElement(new htmlSpacer(null, '15px'), true);
 		$sectionHeadlineOutput = new htmlOutputText(_('Static text'));
 		$sectionHeadlineOutput->colspan = 2;
@@ -578,7 +541,7 @@ for ($key = 0; $key < sizeof($sections); $key++) {
 		else {
 			$structureContent->addElement($emptyBox);
 		}
-		if ($key != sizeof($_SESSION['currentPDFStructure']) - 1) {
+		if ($key != sizeof($sections) - 1) {
 			$structureContent->addElement($linkDown);
 		}
 		else {
@@ -656,6 +619,7 @@ $buttonContainer->addElement($saveButton);
 $buttonContainer->addElement($cancelButton);
 $buttonContainer->addElement(new htmlHiddenInput('modules', $modules));
 $buttonContainer->addElement(new htmlHiddenInput('type', $type->getId()));
+$buttonContainer->addElement(new htmlHiddenInput('form_submit', 'true'));
 
 $container->addElement($buttonContainer, true);
 addSecurityTokenToMetaHTML($container);
@@ -701,6 +665,80 @@ function translateFieldIDToName($id, $scope, $availablePDFFields) {
 		}
 	}
 	return $id;
+}
+
+/**
+ * Updates basic settings such as logo and head line.
+ *
+ * @param PDFStructure $structure
+ */
+function updateBasicSettings(&$structure) {
+	// set headline
+	if (isset($_POST['headline'])) {
+		$structure->setTitle(str_replace('<', '', str_replace('>', '', $_POST['headline'])));
+	}
+	// set logo
+	if (isset($_POST['logoFile'])) {
+		$structure->setLogo($_POST['logoFile']);
+	}
+	// set folding marks
+	if (isset($_POST['foldingmarks'])) {
+		$structure->setFoldingMarks($_POST['foldingmarks']);
+	}
+}
+
+/**
+ * Updates section titles.
+ *
+ * @param PDFStructure $structure
+ */
+function updateSectionTitles(&$structure) {
+	$sections = $structure->getSections();
+	foreach ($_POST as $key => $value) {
+		if (strpos($key, 'section_') === 0) {
+			$pos = substr($key, strlen('section_'));
+			$sections[$pos]->setTitle($value);
+		}
+	}
+}
+
+/**
+ * Adds a new section if requested.
+ *
+ * @param PDFStructure $structure
+ */
+function addSection(&$structure) {
+	$sections = $structure->getSections();
+	// add a new text field
+	if(isset($_POST['add_text'])) {
+		// Check if text for static text field is specified
+		if(empty($_POST['text_text'])) {
+			StatusMessage('ERROR',_('No static text specified'),_('The static text must contain at least one character.'));
+		}
+		else {
+			$section = new PDFTextSection(str_replace("\r", "", $_POST['text_text']));
+			array_splice($sections, $_POST['add_text_position'], 0, array($section));
+			$structure->setSections($sections);
+		}
+	}
+	// add a new section with text headline
+	elseif(isset($_POST['add_sectionText'])) {
+		// Check if name for new section is specified when needed
+		if(empty($_POST['new_section_text'])) {
+			StatusMessage('ERROR',_('No section text specified'),_('The headline for a new section must contain at least one character.'));
+		}
+		else {
+			$section = new PDFEntrySection($_POST['new_section_text']);
+			array_splice($sections, $_POST['add_text_position'], 0, array($section));
+			$structure->setSections($sections);
+		}
+	}
+	// Add a new section with item as headline
+	elseif(isset($_POST['add_section'])) {
+		$section = new PDFEntrySection('_' . $_POST['new_section_item']);
+		array_splice($sections, $_POST['add_text_position'], 0, array($section));
+		$structure->setSections($sections);
+	}
 }
 
 ?>

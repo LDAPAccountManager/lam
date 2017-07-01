@@ -75,7 +75,6 @@ setlanguage();
 // Unset PDF structure definitions in session if set
 if(isset($_SESSION['currentPDFStructure'])) {
 	unset($_SESSION['currentPDFStructure']);
-	unset($_SESSION['currentPageDefinitions']);
 }
 
 // check if user is logged in, if not go to login
