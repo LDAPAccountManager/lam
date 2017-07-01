@@ -126,32 +126,8 @@ if(isset($_GET['submit'])) {
 }
 
 foreach ($_GET as $key => $value) {
-	// remove entry or section
-	if (strpos($key, 'remove_') === 0) {
-		$pos = substr($key, strlen('remove_'));
-		$remove = $_SESSION['currentPDFStructure'][$pos];
-		// We have a section to remove
-		if($remove['tag'] == "SECTION") {
-			$end = $pos + 1;
-			// Find end of section to remove
-			while (isset($_SESSION['currentPDFStructure'][$end]) && ($_SESSION['currentPDFStructure'][$end]['tag'] != 'SECTION')
-				&& ($_SESSION['currentPDFStructure'][$end]['type'] != 'close')) {
-				$end++;
-			}
-			// Remove complete section with all value entries in it from structure
-			array_splice($_SESSION['currentPDFStructure'], $pos, $end - $pos + 1);
-		}
-		// We have a value entry to remove
-		elseif($remove['tag'] == "ENTRY") {
-			array_splice($_SESSION['currentPDFStructure'], $pos, 1);
-		}
-		// We hava a static text to remove
-		elseif($remove['tag'] == "TEXT") {
-			array_splice($_SESSION['currentPDFStructure'], $pos, 1);
-		}
-	}
 	// Move a section, static text field or value entry downwards
-	elseif (strpos($key, 'down_') === 0) {
+	if (strpos($key, 'down_') === 0) {
 		$index = substr($key, strlen('down_'));
 		$tmp = $_SESSION['currentPDFStructure'][$index];
 		$next = $_SESSION['currentPDFStructure'][$index + 1];
@@ -303,6 +279,7 @@ if (!empty($_POST['form_submit'])) {
 	updateSectionTitles($_SESSION['currentPDFStructure']);
 	addSection($_SESSION['currentPDFStructure']);
 	addSectionEntry($_SESSION['currentPDFStructure']);
+	removeItem($_SESSION['currentPDFStructure']);
 }
 
 $availablePDFFields = getAvailablePDFFields($type->getId());
@@ -738,6 +715,36 @@ function addSectionEntry(&$structure) {
 		$entries[] = $field;
 		$sections[$pos]->setEntries($entries);
 		$structure->setSections($sections);
+	}
+}
+
+/**
+ * Removes a section or entry if requested.
+ *
+ * @param PDFStructure $structure
+ */
+function removeItem(&$structure) {
+	$sections = $structure->getSections();
+	foreach ($_POST as $key => $value) {
+		// remove section
+		if (strpos($key, 'remove_section_') === 0) {
+			$pos = substr($key, strlen('remove_section_'));
+			unset($sections[$pos]);
+			$sections = array_values($sections);
+			$structure->setSections($sections);
+		}
+		// remove section entry
+		if (strpos($key, 'remove_entry_') === 0) {
+			$parts = substr($key, strlen('remove_entry_'));
+			$parts = explode('_', $parts);
+			$sectionPos = $parts[0];
+			$entryPos = $parts[1];
+			$entries = $sections[$sectionPos]->getEntries();
+			unset($entries[$entryPos]);
+			$entries = array_values($entries);
+			$sections[$sectionPos]->setEntries($entries);
+			$structure->setSections($sections);
+		}
 	}
 }
 
