@@ -1,0 +1,14 @@
+<pdf filename="printLogo.jpg" headline="User information" foldingmarks="standard">
+	<section name="Personal user information">
+		<entry name="inetOrgPerson_givenName" />
+		<entry name="inetOrgPerson_sn">
+		</entry>
+		<entry name="inetOrgPerson_street" />
+	</section>
+	<text>test text</text>
+	<section name="_posixAccount_uid">
+		<entry name="posixAccount_homeDirectory" />
+		<entry name="posixAccount_loginShell" />
+	</section>
+	<section name="No entries"/>
+</pdf>

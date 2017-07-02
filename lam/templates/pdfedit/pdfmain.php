@@ -75,7 +75,6 @@ setlanguage();
 // Unset PDF structure definitions in session if set
 if(isset($_SESSION['currentPDFStructure'])) {
 	unset($_SESSION['currentPDFStructure']);
-	unset($_SESSION['currentPageDefinitions']);
 }
 
 // check if user is logged in, if not go to login
@@ -219,6 +218,12 @@ include '../main_header.php';
 	<?php
 		if (isset($_GET['savedSuccessfully'])) {
 			$message = new htmlStatusMessage("INFO", _("PDF structure was successfully saved."), htmlspecialchars($_GET['savedSuccessfully']));
+			$message->colspan = 10;
+			$container->addElement($message, true);
+		}
+
+		if (isset($_GET['loadFailed'])) {
+			$message = new htmlStatusMessage("ERROR", _("Unable to read PDF structure."), htmlspecialchars($_GET['name']));
 			$message->colspan = 10;
 			$container->addElement($message, true);
 		}

@@ -1,8 +1,6 @@
 <?php
 namespace LAM\PDF;
 /*
-$Id$
-
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2004  Michael Duergner
                 2003 - 2017  Roland Gruber
@@ -43,9 +41,6 @@ define('LAMPDF_FONT_SIZE', 7);
 /** font size for bigger text */
 define('LAMPDF_FONT_SIZE_BIG', 10);
 
-/** XML functions */
-include_once('xml_parser.inc');
-
 /** access to PDF configuration files */
 include_once('pdfstruct.inc');
 
@@ -71,20 +66,19 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 
 	$account_type = $accounts[0]->get_type();
 	// Get PDF structure from xml file
-	$load = \LAM\PDF\loadPDFStructure($account_type->getId(), $pdf_structure);
-	$structure = $load['structure'];
+	$reader = new PDFStructureReader();
+	$structure = $reader->read($account_type->getId(), $pdf_structure);
 	// get list of PDF keys
 	$pdfKeys = array();
-	foreach($structure as $entry) {
-		if ($entry['tag'] == "SECTION" && $entry['type'] == "open") {
-			$key = $entry['attributes']['NAME'];
-			// only values with a starting "_" are keys
-			if (strpos($key, '_') === 0) {
-				$pdfKeys[] = substr($key, 1);
-			}
+	foreach($structure->getSections() as $section) {
+		if (!$section instanceof PDFEntrySection) {
+			continue;
 		}
-		if  ($entry['tag'] == "ENTRY") {
-			$pdfKeys[] = $entry['attributes']['NAME'];
+		if ($section->isAttributeTitle()) {
+			$pdfKeys[] = $section->getPdfKey();
+		}
+		foreach ($section->getEntries() as $entry) {
+			$pdfKeys[] = $entry->getKey();
 		}
 	}
 	$pdfKeys = array_unique($pdfKeys);
@@ -95,7 +89,7 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 	$fontName = "Dejavu";
 
 	// Create a new PDF file acording to the account type
-	$pdf = new \lamPDF($load['page_definitions'],$fontName);
+	$pdf = new \lamPDF($structure, $fontName);
 
 	// Loop over each account and add a new page in the PDF file for it
 	foreach($accounts as $account) {
@@ -107,28 +101,10 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 		$entries = $account->get_pdfEntries($pdfKeys, $account_type->getId());
 
 		// Now create the PDF file acording to the structure with the submitted values
-		foreach($structure as $entry) {
-			// We have a new section to start
-			if($entry['tag'] == "SECTION" && $entry['type'] == "open") {
-				$name = $entry['attributes']['NAME'];
-				if(preg_match("/^_[a-zA-Z_]+/",$name)) {
-					$section_headline = getSectionHeadline($entries[substr($name,1)][0]);
-				}
-				else {
-					$section_headline = $name;
-				}
-				$pdf->setFont($fontName, "B", LAMPDF_FONT_SIZE_BIG);
-				$pdf->Write(0,$section_headline . ":");
-				$pdf->Ln(LAMPDF_LINEHEIGHT);
-			}
-			// We have a section to end
-			elseif($entry['tag'] == "SECTION" && $entry['type'] == "close") {
-				$pdf->Ln(LAMPDF_LINEHEIGHT * 2);
-			}
-			// We have to include a static text.
-			elseif($entry['tag'] == "TEXT") {
+		foreach ($structure->getSections() as $section) {
+			if ($section instanceof PDFTextSection) {
 				$pdf->setFont($fontName, "", LAMPDF_FONT_SIZE);
-				$info_string = str_replace("\r", "", $entry['value']);
+				$info_string = str_replace("\r", "", $section->getText());
 				$info_string = explode("\n", $info_string);
 				foreach ($info_string as $text) {
 					$pdf->MultiCell(0, LAMPDF_LINEHEIGHT, trim($text), 0, "L", 0);
@@ -136,32 +112,42 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 				}
 				$pdf->Ln(LAMPDF_LINEHEIGHT * 2);
 			}
-			// We have to include an entry from the account
-			elseif($entry['tag'] == "ENTRY") {
-				// Get name of current entry
-				$name = $entry['attributes']['NAME'];
-				// skip non-existent entries
-				if (isset($entries[$name])) {
-					// Get current entry
-					$valueEntries = $entries[$name];
-
-					// Print entry only when module sumitted values for it
-					if(is_array($valueEntries)) {
-						// Loop over all rows of this entry (most of the time this will be just one)
-						foreach($valueEntries as $valueEntry) {
-							if ($valueEntry instanceof PDFLabelValue) {
-								printLabelValue($pdf, $valueEntry, $fontName);
-							}
-							else if ($valueEntry instanceof PDFTable) {
-								printTable($pdf, $valueEntry, $fontName);
+			elseif ($section instanceof PDFEntrySection) {
+				// section headline
+				if($section->isAttributeTitle()) {
+					$section_headline = getSectionHeadline($entries[$section->getPdfKey()][0]);
+				}
+				else {
+					$section_headline = $section->getTitle();
+				}
+				$pdf->setFont($fontName, "B", LAMPDF_FONT_SIZE_BIG);
+				$pdf->Write(0,$section_headline . ":");
+				$pdf->Ln(LAMPDF_LINEHEIGHT);
+				// entries
+				foreach ($section->getEntries() as $entry) {
+					// skip non-existent entries
+					if (isset($entries[$entry->getKey()])) {
+						// Get current entry
+						$valueEntries = $entries[$entry->getKey()];
+						// Print entry only when module sumitted values for it
+						if(is_array($valueEntries)) {
+							// Loop over all rows of this entry (most of the time this will be just one)
+							foreach($valueEntries as $valueEntry) {
+								if ($valueEntry instanceof PDFLabelValue) {
+									printLabelValue($pdf, $valueEntry, $fontName);
+								}
+								else if ($valueEntry instanceof PDFTable) {
+									printTable($pdf, $valueEntry, $fontName);
+								}
 							}
 						}
 					}
 				}
+				// section end
+				$pdf->Ln(LAMPDF_LINEHEIGHT * 2);
 			}
 		}
 	}
-
 	// Close PDF
 	$pdf->Close();
 	if (!$returnAsString) {

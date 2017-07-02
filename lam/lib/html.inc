@@ -1704,6 +1704,8 @@ class htmlOutputText extends htmlElement {
 	private $markAsRequired = false;
 	/** no wrap */
 	private $noWrap = false;
+	/** preformatted */
+	private $isPreformatted = false;
 
 	/**
 	 * Constructor.
@@ -1736,6 +1738,9 @@ class htmlOutputText extends htmlElement {
 		if ($this->isBold) {
 			echo "<b>";
 		}
+		if ($this->isPreformatted) {
+			echo "<pre>";
+		}
 		if ($this->escapeHTML) {
 			echo htmlspecialchars($this->string);
 		}
@@ -1746,6 +1751,9 @@ class htmlOutputText extends htmlElement {
 			$graphicsPath = "../../graphics";
 			if (is_dir("../graphics")) $graphicsPath = "../graphics";
 			echo '<img src="' . $graphicsPath . '/required.png" alt="required" width=16 height=16 title="' . _('required') . '">';
+		}
+		if ($this->isPreformatted) {
+			echo "</pre>";
 		}
 		if ($this->isBold) {
 			echo "</b>";
@@ -1781,6 +1789,15 @@ class htmlOutputText extends htmlElement {
 	 */
 	public function setNoWrap($noWrap) {
 		$this->noWrap = $noWrap;
+	}
+
+	/**
+	 * Sets if the text is preformatted.
+	 *
+	 * @param boolean $preformatted is preformatted (default true)
+	 */
+	public function setPreformatted($preformatted = true) {
+		$this->isPreformatted = $preformatted;
 	}
 
 }
