@@ -3,6 +3,7 @@ use LAM\PDF\PDFTextSection;
 use LAM\PDF\PDFEntrySection;
 use LAM\PDF\PDFStructureReader;
 use LAM\PDF\PDFStructure;
+use LAM\PDF\PDFStructureWriter;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -48,7 +49,7 @@ class ReadStructureTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('User information', $structure->getTitle());
 		$this->assertEquals(PDFStructure::FOLDING_STANDARD, $structure->getFoldingMarks());
 		$sections = $structure->getSections();
-		$this->assertEquals(3, sizeof($sections));
+		$this->assertEquals(4, sizeof($sections));
 		// check first section
 		$this->assertInstanceOf(PDFEntrySection::class, $sections[0]);
 		$this->assertFalse($sections[0]->isAttributeTitle());
@@ -69,6 +70,12 @@ class ReadStructureTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(2, sizeof($entries));
 		$this->assertEquals('posixAccount_homeDirectory', $entries[0]->getKey());
 		$this->assertEquals('posixAccount_loginShell', $entries[1]->getKey());
+		// check fourth section
+		$this->assertInstanceOf(PDFEntrySection::class, $sections[3]);
+		$this->assertFalse($sections[3]->isAttributeTitle());
+		$this->assertEquals('No entries', $sections[3]->getTitle());
+		$entries = $sections[3]->getEntries();
+		$this->assertEquals(0, sizeof($entries));
 	}
 
 	/**
@@ -78,6 +85,28 @@ class ReadStructureTest extends PHPUnit_Framework_TestCase {
 	 */
 	private function getTestFileName($file) {
 		return dirname(dirname(__FILE__)) . '/resources/pdf/' . $file;
+	}
+
+	/**
+	 * Tests if the output is the same as the original PDF.
+	 */
+	public function testWrite() {
+		$file = $this->getTestFileName('writer.xml');
+		// read input XML
+		$fileHandle = fopen($file, "r");
+		$originalXML = fread($fileHandle, 1000000);
+		fclose($fileHandle);
+		// read structure
+		$reader = $this->getMockBuilder('\LAM\PDF\PDFStructureReader')
+		->setMethods(array('getFileName'))
+		->getMock();
+		$reader->method('getFileName')->willReturn($file);
+		$structure = $reader->read('type', 'name');
+		// create writer and get output XML
+		$writer = new PDFStructureWriter();
+		$xml = $writer->getXML($structure);
+		// compare
+		$this->assertEquals($originalXML, $xml);
 	}
 
 }

@@ -19,6 +19,7 @@ use LAM\PDF\PDFTextSection;
 use LAM\PDF\PDFEntrySection;
 use LAM\PDF\PDFStructure;
 use LAM\PDF\PDFSectionEntry;
+use LAM\PDF\PDFStructureWriter;
 /*
 $Id$
 
@@ -87,9 +88,6 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 // Write $_POST variables to $_GET when form was submitted via post
 if (isset($_POST['type'])) {
 	$_GET = $_POST;
-	if ($_POST['pdfname'] == '') {
-		unset($_GET['pdfname']);
-	}
 }
 
 $typeManager = new \LAM\TYPES\TypeManager();
@@ -106,171 +104,22 @@ if(isset($_GET['abort'])) {
 	exit;
 }
 
-// Check if pdfname is valid, then save current structure to file and go to
-// main pdf structure page
-$saveErrors = array();
-if(isset($_GET['submit'])) {
-	if(!isset($_GET['pdfname']) || !preg_match('/[a-zA-Z0-9\-\_]+/',$_GET['pdfname'])) {
-		$saveErrors[] = array('ERROR', _('PDF structure name not valid'), _('The name for that PDF-structure you submitted is not valid. A valid name must consist of the following characters: \'a-z\',\'A-Z\',\'0-9\',\'_\',\'-\'.'));
-	}
-	else {
-		$return = \LAM\PDF\savePDFStructure($type->getId(), $_GET['pdfname']);
-		if($return == 'ok') {
-			metaRefresh('pdfmain.php?savedSuccessfully=' . $_GET['pdfname']);
-			exit;
-		}
-		elseif($return == 'no perms'){
-			$saveErrors[] = array('ERROR', _("Could not save PDF structure, access denied."), $_GET['pdfname']);
-		}
-	}
-}
-
-foreach ($_GET as $key => $value) {
-	// Move a section, static text field or value entry downwards
-	if (strpos($key, 'down_') === 0) {
-		$index = substr($key, strlen('down_'));
-		$tmp = $_SESSION['currentPDFStructure'][$index];
-		$next = $_SESSION['currentPDFStructure'][$index + 1];
-		// We have a section or static text to move
-		if($tmp['tag'] == 'SECTION' || $tmp['tag'] == 'TEXT') {
-			$pos = 0;
-			$current = current($_SESSION['currentPDFStructure']);
-			// Find section or static text entry to move
-			while($pos < $index) {
-				$current = next($_SESSION['currentPDFStructure']);
-				$pos++;
-			}
-			$borders = array();
-			// We have a section to move
-			if($current['tag'] == 'SECTION'){
-				$borders[$current['type']][] = $pos;
-				$current = next($_SESSION['currentPDFStructure']);
-				$pos++;
-				// Find end of section to move
-				while($current && $current['tag'] != 'SECTION' && $current['type'] != 'close') {
-					$current = next($_SESSION['currentPDFStructure']);
-					$pos++;
-				}
-				$borders['close'][] = $pos;
-			}
-			// We have a static text entry to move
-			elseif($current['tag'] == 'TEXT') {
-				$borders['open'][] = $pos;
-				$borders['close'][] = $pos;
-			}
-			$current = next($_SESSION['currentPDFStructure']);
-			$pos++;
-			// Find next section or static text entry in structure
-			if($current) {
-				// Next is a section
-				if($current['tag'] == 'SECTION') {
-					$borders[$current['type']][] = $pos;
-					$current = next($_SESSION['currentPDFStructure']);
-					$pos++;
-					// Find end of this section
-					while($current && $current['tag'] != 'SECTION' && $current['type'] != 'close') {
-						if($current['tag'] == 'SECTION') {
-							$borders[$current['type']][] = $pos;
-						}
-						$current = next($_SESSION['currentPDFStructure']);
-						$pos++;
-					}
-				}
-				// Next is static text entry
-				elseif($current['tag'] == 'TEXT') {
-					$borders['open'][] = $pos;
-				}
-				$borders['close'][] = $pos;
-			}
-			// Move only downwars if not bottenmost element of this structure
-			if(count($borders['open']) > 1) {
-				// Calculate entries to move and move them
-				$cut_start = $borders['open'][count($borders['open']) - 1];
-				$cut_count = $borders['close'][count($borders['close']) - 1] - $borders['open'][count($borders['open']) - 1] + 1;
-				$insert_pos = $borders['open'][count($borders['open']) - 2];
-				$tomove = array_splice($_SESSION['currentPDFStructure'],$cut_start,$cut_count);
-				array_splice($_SESSION['currentPDFStructure'],$insert_pos,0,$tomove);
-			}
-		}
-		// We have a value entry to move; move it only if it is not the bottmmost
-		// element of this section.
-		elseif($tmp['tag'] == 'ENTRY' && $next['tag'] == 'ENTRY') {
-			$_SESSION['currentPDFStructure'][$index] = $_SESSION['currentPDFStructure'][$index + 1];
-			$_SESSION['currentPDFStructure'][$index + 1] = $tmp;
-		}
-	}
-	// Move a section, static text or value entry upwards
-	elseif (strpos($key, 'up_') === 0) {
-		$index = substr($key, strlen('up_'));
-		$tmp = $_SESSION['currentPDFStructure'][$index];
-		$prev = $_SESSION['currentPDFStructure'][$index - 1];
-		// We have a section or static text to move
-		if($tmp['tag'] == 'SECTION' || $tmp['tag'] == 'TEXT') {
-			$pos = 0;
-			$borders = array();
-			$current = current($_SESSION['currentPDFStructure']);
-			// Add borders of sections and static text entry to array
-			if($current['tag'] == 'SECTION') {
-				$borders[$current['type']][] = $pos;
-			}
-			elseif($current['tag'] == 'TEXT') {
-				$borders['open'][] = $pos;
-				$borders['close'][] = $pos;
-			}
-			// Find all sections and statci text fields before the section or static
-			// text entry to move upwards
-			while($pos < $index) {
-				$current = next($_SESSION['currentPDFStructure']);
-				$pos++;
-				if($current['tag'] == 'SECTION') {
-					$borders[$current['type']][] = $pos;
-				}
-				elseif($current['tag'] == 'TEXT') {
-					$borders['open'][] = $pos;
-					$borders['close'][] = $pos;
-				}
-			}
-			// Move only when not topmost element
-			if(count($borders['close']) > 0) {
-				// We have a section to move up
-				if($current['tag'] == 'SECTION') {
-					$current = next($_SESSION['currentPDFStructure']);
-					$pos++;
-					// Find end of section to move
-					while($current && $current['tag'] != 'SECTION' && $current['type'] != 'close') {
-						$current = next($_SESSION['currentPDFStructure']);
-						$pos++;
-					}
-					$borders['close'][] = $pos;
-				}
-				// Calculate the entries to move and move them
-				$cut_start = $borders['open'][count($borders['open']) - 1];
-				$cut_count = $borders['close'][count($borders['close']) - 1] - $borders['open'][count($borders['open']) - 1] + 1;
-				$insert_pos = $borders['open'][count($borders['open']) - 2];
-				$tomove = array_splice($_SESSION['currentPDFStructure'],$cut_start,$cut_count);
-				array_splice($_SESSION['currentPDFStructure'],$insert_pos,0,$tomove);
-			}
-		}
-		// We have a value entry to move; move it only if its not the topmost
-		// entry in this section
-		elseif($tmp['tag'] == 'ENTRY' && $prev['tag'] == 'ENTRY') {
-			$_SESSION['currentPDFStructure'][$index] = $prev;
-			$_SESSION['currentPDFStructure'][$index - 1] = $tmp;
-		}
-	}
-}
-
 // Load PDF structure from file if it is not defined in session
 if(!isset($_SESSION['currentPDFStructure'])) {
 	// Load structure file to be edit
 	$reader = new PDFStructureReader();
-	if(isset($_GET['edit'])) {
-		$_SESSION['currentPDFStructure'] = $reader->read($type->getId(), $_GET['edit']);
-		$_GET['pdfname'] = $_GET['edit'];
+	try {
+		if(isset($_GET['edit'])) {
+			$_SESSION['currentPDFStructure'] = $reader->read($type->getId(), $_GET['edit']);
+		}
+		// Load default structure file when creating a new one
+		else {
+			$_SESSION['currentPDFStructure'] = $reader->read($type->getId(), 'default');
+		}
 	}
-	// Load default structure file when creating a new one
-	else {
-		$_SESSION['currentPDFStructure'] = $reader->read($type->getId(), 'default');
+	catch (\LAMException $e) {
+		metaRefresh('pdfmain.php?loadFailed=1&name=' . $_GET['edit']);
+		exit;
 	}
 }
 
@@ -280,6 +129,24 @@ if (!empty($_POST['form_submit'])) {
 	addSection($_SESSION['currentPDFStructure']);
 	addSectionEntry($_SESSION['currentPDFStructure']);
 	removeItem($_SESSION['currentPDFStructure']);
+	moveUp($_SESSION['currentPDFStructure']);
+	moveDown($_SESSION['currentPDFStructure']);
+}
+
+// Check if pdfname is valid, then save current structure to file and go to
+// main pdf structure page
+$saveErrors = array();
+if(isset($_GET['submit'])) {
+	$writer = new PDFStructureWriter();
+	try {
+		$writer->write($type->getId(), $_POST['pdfname'], $_SESSION['currentPDFStructure']);
+		unset($_SESSION['currentPDFStructure']);
+		metaRefresh('pdfmain.php?savedSuccessfully=' . $_POST['pdfname']);
+		exit;
+	}
+	catch (\LAMException $e) {
+		$saveErrors[] = array('ERROR', $e->getTitle(), $e->getMessage());
+	}
 }
 
 $availablePDFFields = getAvailablePDFFields($type->getId());
@@ -343,9 +210,6 @@ foreach($sortedModules as $module => $title) {
 $structureName = '';
 if (isset($_GET['edit'])) {
 	$structureName = $_GET['edit'];
-}
-elseif (isset($_GET['pdfname'])) {
-	$structureName = $_GET['pdfname'];
 }
 else if (isset($_POST['pdfname'])) {
 	$structureName = $_POST['pdfname'];
@@ -742,6 +606,71 @@ function removeItem(&$structure) {
 			$entries = $sections[$sectionPos]->getEntries();
 			unset($entries[$entryPos]);
 			$entries = array_values($entries);
+			$sections[$sectionPos]->setEntries($entries);
+			$structure->setSections($sections);
+		}
+	}
+}
+
+/**
+ * Moves up a section or entry if requested.
+ *
+ * @param PDFStructure $structure
+ */
+function moveUp(&$structure) {
+	$sections = $structure->getSections();
+	foreach ($_POST as $key => $value) {
+		// move section
+		if (strpos($key, 'up_section_') === 0) {
+			$pos = substr($key, strlen('up_section_'));
+			$sectionTmp = $sections[$pos - 1];
+			$sections[$pos - 1] = $sections[$pos];
+			$sections[$pos] = $sectionTmp;
+			$structure->setSections($sections);
+		}
+		// move section entry
+		if (strpos($key, 'up_entry_') === 0) {
+			$parts = substr($key, strlen('up_entry_'));
+			$parts = explode('_', $parts);
+			$sectionPos = $parts[0];
+			$entryPos = $parts[1];
+			$entries = $sections[$sectionPos]->getEntries();
+			$entryTmp = $entries[$entryPos - 1];
+			$entries[$entryPos - 1] = $entries[$entryPos];
+			$entries[$entryPos] = $entryTmp;
+			$sections[$sectionPos]->setEntries($entries);
+			$structure->setSections($sections);
+		}
+	}
+}
+
+/**
+ * Moves down a section or entry if requested.
+ *
+ * @param PDFStructure $structure
+ */
+function moveDown(&$structure) {
+	$sections = $structure->getSections();
+	foreach ($_POST as $key => $value) {
+		// move section
+		if (strpos($key, 'down_section_') === 0) {
+			$pos = substr($key, strlen('down_section_'));
+			$sectionTmp = $sections[$pos + 1];
+			$sections[$pos + 1] = $sections[$pos];
+			$sections[$pos] = $sectionTmp;
+			$structure->setSections($sections);
+		}
+		// move section entry
+		if (strpos($key, 'down_entry_') === 0) {
+			$parts = substr($key, strlen('down_entry_'));
+			$parts = explode('_', $parts);
+			$sectionPos = $parts[0];
+			$entryPos = $parts[1];
+			$entries = $sections[$sectionPos]->getEntries();
+			$entries = $sections[$sectionPos]->getEntries();
+			$entryTmp = $entries[$entryPos + 1];
+			$entries[$entryPos + 1] = $entries[$entryPos];
+			$entries[$entryPos] = $entryTmp;
 			$sections[$sectionPos]->setEntries($entries);
 			$structure->setSections($sections);
 		}

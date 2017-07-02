@@ -222,6 +222,12 @@ include '../main_header.php';
 			$container->addElement($message, true);
 		}
 
+		if (isset($_GET['loadFailed'])) {
+			$message = new htmlStatusMessage("ERROR", _("Unable to read PDF structure."), htmlspecialchars($_GET['name']));
+			$message->colspan = 10;
+			$container->addElement($message, true);
+		}
+
 		// new template
 		if (!empty($availableTypes)) {
 			$container->addElement(new htmlSubTitle(_('Create a new PDF structure')), true);

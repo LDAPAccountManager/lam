@@ -10,4 +10,5 @@
 		<entry name="posixAccount_homeDirectory" />
 		<entry name="posixAccount_loginShell" />
 	</section>
+	<section name="No entries"/>
 </pdf>

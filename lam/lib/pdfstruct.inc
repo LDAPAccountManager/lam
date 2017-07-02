@@ -72,62 +72,6 @@ function getPDFStructures($typeId, $profile = null) {
 }
 
 /**
- * Saves PDF structure to XML file in format: <name>.<typeId>.xml
- *
- * @param string $typeId account type
- * @param string $name name of structure
- * @return string "no perms" if access denied or "ok".
- */
-function savePDFStructure($typeId, $name) {
-	if (!isValidPDFStructureName($name) || !preg_match('/[a-zA-Z]+/', $typeId)) {
-		return 'no perms';
-	}
-	$struct_file = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/' . $name . '.' . $typeId . '.xml';
-	if(!is_writable(dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName())) {
-		return 'no perms';
-	}
-	else {
-		$handle = @fopen($struct_file,'w');
-		if (!$handle) return 'no perms';
-		$pdf_attributes = '';
-		foreach($_SESSION['currentPageDefinitions'] as $key => $value) {
-			$pdf_attributes .= ' ' . $key . '="' . $value . '"';
-		}
-		$file = '<pdf' . $pdf_attributes . ">\n";
-		foreach($_SESSION['currentPDFStructure'] as $entry) {
-			$ident = '';
-			for($i=0;$i<$entry['level'] -1;$i++) {
-				$ident .= "\t";
-			}
-			$attributes = '';
-			if(isset($entry['attributes']) && is_array($entry['attributes'])) {
-				foreach($entry['attributes'] as $key => $value) {
-					$attributes .= ' ' . strtolower($key) . '="' . $value . '"';
-				}
-			}
-			if($entry['type'] == 'open') {
-				$file .= $ident . '<' . strtolower($entry['tag']) . $attributes . ">\n";
-			}
-			elseif($entry['type'] == 'close') {
-				$file .= $ident . '</' . strtolower($entry['tag']) . ">\n";
-			}
-			elseif($entry['type'] == 'complete') {
-				if(isset($entry['value'])) {
-					$file .= $ident . '<' . strtolower($entry['tag']) . $attributes . '>' . $entry['value'] . '</' . strtolower($entry['tag']) . ">\n";
-				}
-				else {
-					$file .= $ident . '<' . strtolower($entry['tag']) . $attributes . " />\n";
-				}
-			}
-		}
-		$file .= "</pdf>";
-		fwrite($handle,$file);
-		fclose($handle);
-		return 'ok';
-	}
-}
-
-/**
  * Deletes XML file with PDF structure definitions.
  *
  * @param string $typeId account type
@@ -291,7 +235,7 @@ function deletePDFLogo($name) {
  * @return boolean is valid
  */
 function isValidPDFStructureName($name) {
-	return preg_match('/[a-zA-Z0-9\-\_]+/',$name) === 1;
+	return preg_match('/^[a-z0-9\-\_]+$/i',$name) === 1;
 }
 
 /**
@@ -394,7 +338,7 @@ class PDFStructureReader {
 		$xml->open($file);
 		$structure = new PDFStructure();
 		// open <pdf>
-		$xml->read();
+		@$xml->read();
 		if (!$xml->name == 'pdf') {
 			logNewMessage(LOG_ERR, 'Unknown tag name: ' . $xml->name);
 			throw new \LAMException(_('Unable to read PDF structure.'));
@@ -460,6 +404,102 @@ class PDFStructureReader {
 		}
 		$section->setEntries($entries);
 		return $section;
+	}
+
+}
+
+/**
+ * Writes PDF structures to files.
+ *
+ * @author Roland Gruber
+ */
+class PDFStructureWriter {
+
+	/**
+	 * Writes the PDF structure to disk.
+	 *
+	 * @param string $typeId type ID
+	 * @param string $name structure name
+	 * @param PDFStructure $structure structure
+	 */
+	public function write($typeId, $name, $structure) {
+		$fileName = $this->getFileName($typeId, $name);
+		$xml = $this->getXML($structure);
+		$this->writeXML($xml, $fileName);
+	}
+
+	/**
+	 * Writes the PDF structure to disk.
+	 *
+	 * @param string $typeId type ID
+	 * @param string $name structure name
+	 * @return string file name
+	 */
+	protected function getFileName($typeId, $name) {
+		if (!isValidPDFStructureName($name) || !preg_match('/[a-zA-Z]+/', $typeId)) {
+			throw new \LAMException(_('PDF structure name not valid'),
+					_('The name for that PDF-structure you submitted is not valid. A valid name must consist of the following characters: \'a-z\',\'A-Z\',\'0-9\',\'_\',\'-\'.'));
+		}
+		if(!is_writable(dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName())) {
+			throw new \LAMException(_('Could not save PDF structure, access denied.'));
+		}
+		return dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/' . $name . '.' . $typeId . '.xml';
+	}
+
+	/**
+	 * Returns the generated XML.
+	 *
+	 * @param PDFStructure $structure structure
+	 * @return string XML
+	 */
+	public function getXML($structure) {
+		$writer = new \XMLWriter();
+		$writer->openMemory();
+		$writer->setIndent(true);
+		$writer->setIndentString("\t");
+		$writer->startElement('pdf');
+		$writer->writeAttribute('filename', $structure->getLogo());
+		$writer->writeAttribute('headline', $structure->getTitle());
+		$writer->writeAttribute('foldingmarks', $structure->getFoldingMarks());
+		foreach ($structure->getSections() as $section) {
+			if ($section instanceof PDFTextSection) {
+				$writer->startElement('text');
+				$writer->text($section->getText());
+				$writer->endElement();
+			}
+			else {
+				$writer->startElement('section');
+				if ($section->isAttributeTitle()) {
+					$writer->writeAttribute('name', '_' . $section->getPdfKey());
+				}
+				else {
+					$writer->writeAttribute('name', $section->getTitle());
+				}
+				foreach ($section->getEntries() as $entry) {
+					$writer->startElement('entry');
+					$writer->writeAttribute('name', $entry->getKey());
+					$writer->endElement();
+				}
+				$writer->endElement();
+			}
+		}
+		$writer->endElement();
+		return $writer->outputMemory();
+	}
+
+	/**
+	 * Writes the XML to the given file.
+	 *
+	 * @param string $xml XML
+	 * @param string $file file name
+	 */
+	protected function writeXML($xml, $file) {
+		$handle = @fopen($file,'w');
+		if (!$handle) {
+			throw new \LAMException(_('Could not save PDF structure, access denied.'));
+		}
+		fwrite($handle, $xml);
+		fclose($handle);
 	}
 
 }
