@@ -643,24 +643,24 @@ class LAMConfig {
 				else {
 					$subKeyword = $parts[1];
 					$startIndex = $startIndex + strlen($subKeyword) + 2;
+					$option = substr($line, $startIndex);
+					if (empty($option)) {
+						continue;
+					}
 					// module settings
 					if ($keyword == 'modules') {
-						$option = substr($line, $startIndex);
 						$this->moduleSettings[$subKeyword] = explode(LAMConfig::LINE_SEPARATOR, $option);
 					}
 					// type settings
 					if ($keyword == 'types') {
-						$option = substr($line, $startIndex);
 						$this->typeSettings[$subKeyword] = $option;
 					}
 					// tool settings
 					if ($keyword == 'tools') {
-						$option = substr($line, $startIndex);
 						$this->toolSettings[$subKeyword] = $option;
 					}
 					// job settings
 					if ($keyword == 'jobs') {
-						$option = substr($line, $startIndex);
 						$this->jobSettings[$subKeyword] = explode(LAMConfig::LINE_SEPARATOR, $option);
 					}
 				}

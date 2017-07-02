@@ -700,6 +700,20 @@ class LAMConfigTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Checks that number of settings stays constant over multiple saves.
+	 */
+	public function testMultiSave() {
+		$sizeModSettings = sizeof($this->lAMConfig->get_moduleSettings());
+		$sizeTypeSettings = sizeof($this->lAMConfig->get_typeSettings());
+		$this->doSave();
+		$this->assertEquals($sizeModSettings, sizeof($this->lAMConfig->get_moduleSettings()));
+		$this->assertEquals($sizeTypeSettings, sizeof($this->lAMConfig->get_typeSettings()));
+		$this->doSave();
+		$this->assertEquals($sizeModSettings, sizeof($this->lAMConfig->get_moduleSettings()));
+		$this->assertEquals($sizeTypeSettings, sizeof($this->lAMConfig->get_typeSettings()));
+	}
+
+	/**
 	 * Saves the config
 	 */
 	public function doSave() {
