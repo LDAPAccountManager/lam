@@ -726,7 +726,8 @@ class LAMConfig {
 			// generate new configuration file
 			$saved = array();	// includes all settings which have been saved
 			$mod_saved = array();	// includes all module settings which have been saved
-			for ($i = 0; $i < sizeof($file_array); $i++) {
+			$count = sizeof($file_array);
+			for ($i = 0; $i < $count; $i++) {
 				$line = trim($file_array[$i]);
 				if (($line == "")||($line[0] == "#")) continue; // ignore comments and empty lines
 				// search for keywords
@@ -739,7 +740,10 @@ class LAMConfig {
 							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
 							$pos = strpos($option, ":");
 							$name = substr($option, 0, $pos);
-							if (!isset($this->moduleSettings[$name])) continue;
+							if (!isset($this->moduleSettings[$name])) {
+								unset($file_array[$i]);
+								continue;
+							}
 							$file_array[$i] = "modules: " . $name . ": " . implode(LAMConfig::LINE_SEPARATOR, $this->moduleSettings[$name]) . "\n";
 							$mod_saved[] = $name;	// mark keyword as saved
 						}
@@ -748,7 +752,10 @@ class LAMConfig {
 							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
 							$pos = strpos($option, ":");
 							$name = substr($option, 0, $pos);
-							if (!isset($this->typeSettings[$name])) continue;
+							if (!isset($this->typeSettings[$name])) {
+								unset($file_array[$i]);
+								continue;
+							}
 							$file_array[$i] = "types: " . $name . ": " . $this->typeSettings[$name] . "\n";
 							$mod_saved[] = $name;	// mark keyword as saved
 						}
@@ -757,7 +764,10 @@ class LAMConfig {
 							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
 							$pos = strpos($option, ":");
 							$name = substr($option, 0, $pos);
-							if (!isset($this->toolSettings[$name])) continue;
+							if (!isset($this->toolSettings[$name])) {
+								unset($file_array[$i]);
+								continue;
+							}
 							$file_array[$i] = "tools: " . $name . ": " . $this->toolSettings[$name] . "\n";
 							$mod_saved[] = $name;	// mark keyword as saved
 						}
@@ -766,7 +776,10 @@ class LAMConfig {
 							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
 							$pos = strpos($option, ":");
 							$name = substr($option, 0, $pos);
-							if (!isset($this->jobSettings[$name])) continue;
+							if (!isset($this->jobSettings[$name])) {
+								unset($file_array[$i]);
+								continue;
+							}
 							$file_array[$i] = "jobs: " . $name . ": " . implode(LAMConfig::LINE_SEPARATOR, $this->jobSettings[$name]) . "\n";
 							$mod_saved[] = $name;	// mark keyword as saved
 						}
@@ -865,7 +878,9 @@ class LAMConfig {
 			$file = @fopen($conffile, "w");
 			$saveResult = LAMConfig::SAVE_OK;
 			if ($file) {
-				for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
+				foreach ($file_array as $line) {
+					fputs($file, $line);
+				}
 				fclose($file);
 				@chmod($conffile, 0600);
 			}
