@@ -44,8 +44,6 @@ class windowsUser extends baseModule implements passwordService {
 	const AC_SMARTCARD_REQUIRED = 0x00040000;
 	/** account is disabled */
 	const AC_ACCOUNT_DISABLED = 0x00000002;
-	/** currently locked out, read only flag */
-	const AC_LOCKED_OUT = 0x00000010;
 
 	/** current group of names list */
 	private $groupList = array();
@@ -214,9 +212,6 @@ class windowsUser extends baseModule implements passwordService {
 			"deactivated" => array(
 				"Headline" => _("Account is deactivated"),
 				"Text" => _("If checked then the account will be deactivated.")),
-			"locked" => array(
-				"Headline" => _("Account is locked"),
-				"Text" => _("If checked then the account is locked. You may only unlock accounts but not lock them.")),
 			"noExpire" => array(
 				"Headline" => _("Password does not expire"),
 				"Text" => _("If checked password does not expire.")),
@@ -1167,18 +1162,6 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		// account area
 		$containerLeft->addElement(new htmlSubTitle(_('Account')), true);
-		// locked out
-		$containerLeft->addElement(new htmlOutputText(_("Account is locked")));
-		$lockedOut = windowsUser::isLockedOut($this->attributes);
-		$lockedOutCheckbox = new htmlInputCheckbox('lockedOut', $lockedOut);
-		$lockedOutCheckbox->setIsEnabled(false);
-		$lockedOutGroup = new htmlGroup();
-		$lockedOutGroup->addElement($lockedOutCheckbox);
-		if ($lockedOut) {
-			$lockedOutGroup->addElement(new htmlButton('unlock', _('Unlock')));
-		}
-		$containerLeft->addElement($lockedOutGroup);
-		$containerLeft->addElement(new htmlHelpLink('locked'), true);
 		// password change required
 		$pwdMustChange = false;
 		if (isset($this->attributes['pwdLastSet'][0]) && ($this->attributes['pwdLastSet'][0] === '0')) {
@@ -2965,35 +2948,6 @@ class windowsUser extends baseModule implements passwordService {
 					if (intval($attrs[$key][0]) & windowsUser::AC_ACCOUNT_DISABLED) {
 						$attrs[$key][0] = intval($attrs[$key][0]) - windowsUser::AC_ACCOUNT_DISABLED;
 					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Returns if the account is currently locked out.
-	 *
-	 * @param array $attrs LDAP attributes
-	 * @return boolean is locked out
-	 */
-	private static function isLockedOut($attrs) {
-		$myAttrs = array_change_key_case($attrs, CASE_LOWER);
-		if (!isset($attrs['useraccountcontrol'][0])) {
-			return false;
-		}
-		return intval($attrs['useraccountcontrol'][0]) & windowsUser::AC_LOCKED_OUT;
-	}
-
-	/**
-	 * Unlocks the account.
-	 *
-	 * @param array $attrs LDAP attributes to modify
-	 */
-	public static function unlock(&$attrs) {
-		foreach ($attrs as $key => $value) {
-			if (strtolower($key) == 'useraccountcontrol') {
-				if (intval($attrs[$key][0]) & windowsUser::AC_LOCKED_OUT) {
-					$attrs[$key][0] = intval($attrs[$key][0]) - windowsUser::AC_LOCKED_OUT;
 				}
 			}
 		}
