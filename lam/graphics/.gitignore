@@ -16,9 +16,5 @@
 /sudo.png
 /sudoBig.png
 /view.png
-/zarafa.png
-/zarafaAddressListType.png
-/zarafaDynamicGroupType.png
-/kopano.png
-/kopanoAddressListType.png
-/kopanoDynamicGroupType.png
+/zarafa*.png
+/kopano*.png
