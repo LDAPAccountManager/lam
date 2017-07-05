@@ -214,7 +214,7 @@ function printTypeTabs($headerPrefix) {
 		}
 		$link = '<a href="' . $headerPrefix . 'lists/list.php?type=' . $type->getId() .
 		'" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">' .
-		'<img height="16" width="16" alt="' . $type->getId() . '" src="' . $headerPrefix . '../graphics/' . $type->getScope() . '.png">&nbsp;' .
+		'<img height="16" width="16" alt="' . $type->getId() . '" src="' . $headerPrefix . '../graphics/' . $type->getIcon() . '">&nbsp;' .
 		$type->getAlias() . '</a>';
 		echo '<li id="tab_' . $type->getId() . '" class="ui-state-default ui-corner-top">';
 		echo $link;

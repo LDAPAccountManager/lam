@@ -194,6 +194,7 @@ foreach ($sortedTypes as $typeId => $title) {
 		'typeId' => $type->getId(),
 		'scope' => $type->getScope(),
 		'title' => $title,
+		'icon' => $type->getIcon(),
 		'templates' => "");
 	$availableTypes[$title] = $type->getId();
 }
@@ -250,7 +251,7 @@ include '../main_header.php';
 				$existingContainer->addElement(new htmlSpacer(null, '10px'), true);
 			}
 
-			$existingContainer->addElement(new htmlImage('../../graphics/' . $templateClasses[$i]['scope'] . '.png'));
+			$existingContainer->addElement(new htmlImage('../../graphics/' . $templateClasses[$i]['icon']));
 			$existingContainer->addElement(new htmlSpacer('3px', null));
 			$existingContainer->addElement(new htmlOutputText($templateClasses[$i]['title']));
 			$existingContainer->addElement(new htmlSpacer('3px', null));

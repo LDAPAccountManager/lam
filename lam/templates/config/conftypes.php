@@ -15,7 +15,7 @@ use \htmlTableExtendedInputCheckbox;
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2016  Roland Gruber
+  Copyright (C) 2004 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -129,10 +129,10 @@ $availableScopes = array();
 foreach ($allScopes as $scope) {
 	$scopeObj = new $scope(null);
 	if (!in_array($scope, $activeScopes) || $scopeObj->supportsMultipleConfigs()) {
-		$availableScopes[$scope] = $scopeObj->getAlias();
+		$availableScopes[] = $scopeObj;
 	}
 }
-natcasesort($availableScopes);
+usort($availableScopes, '\LAM\CONFIG\compareTypesByAlias');
 
 echo $_SESSION['header'];
 
@@ -246,12 +246,12 @@ $container = new htmlTable();
 if (sizeof($availableScopes) > 0) {
 	$container->addElement(new htmlSubTitle(_("Available account types")), true);
 	$availableContainer = new htmlTable();
-	foreach ($availableScopes as $key => $value) {
-		$availableContainer->addElement(new htmlImage('../../graphics/' . $key . '.png'));
-		$availableContainer->addElement(new htmlOutputText($value));
+	foreach ($availableScopes as $availableScope) {
+		$availableContainer->addElement(new htmlImage('../../graphics/' . $availableScope->getIcon()));
+		$availableContainer->addElement(new htmlOutputText($availableScope->getAlias()));
 		$availableContainer->addElement(new htmlSpacer('10px', null));
-		$availableContainer->addElement(new htmlOutputText(\LAM\TYPES\getTypeDescription($key)));
-		$button = new htmlButton('add_' . $key, 'add.png', true);
+		$availableContainer->addElement(new htmlOutputText($availableScope->getDescription()));
+		$button = new htmlButton('add_' . $availableScope->getScope(), 'add.png', true);
 		$button->setTitle(_("Add"));
 		$availableContainer->addElement($button, true);
 	}
@@ -268,7 +268,7 @@ if (sizeof($activeTypes) > 0) {
 		// title
 		$titleGroup = new htmlGroup();
 		$titleGroup->colspan = 6;
-		$titleGroup->addElement(new htmlImage('../../graphics/' . $activeType->getScope() . '.png'));
+		$titleGroup->addElement(new htmlImage('../../graphics/' . $activeType->getIcon()));
 		$titleText = new htmlOutputText($activeType->getAlias());
 		$titleText->setIsBold(true);
 		$titleGroup->addElement($titleText);
@@ -490,8 +490,14 @@ function checkInput() {
 	return $errors;
 }
 
+/**
+ * Compares types by alias for sorting.
+ *
+ * @param \baseType $a first type
+ * @param \baseType $b second type
+ */
+function compareTypesByAlias($a, $b) {
+	return strnatcasecmp($a->getAlias(), $b->getAlias());
+}
+
 ?>
-
-
-
-

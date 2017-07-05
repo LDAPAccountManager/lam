@@ -297,6 +297,17 @@ class ConfiguredType {
 		return explode(',', $modules);
 	}
 
+	/**
+	 * Returns the file name of the type icon.
+	 * It is 16x16px and located in graphics folder.
+	 *
+	 * @return string file name
+	 */
+	public function getIcon() {
+		$baseType = $this->getBaseType();
+		return $baseType->getIcon();
+	}
+
 }
 
 /**

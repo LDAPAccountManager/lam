@@ -306,7 +306,7 @@ function config_showAccountModules($type, &$container) {
 	}
 
 	// add account module selection
-	$container->addElement(new htmlSubTitle($type->getAlias(), '../../graphics/' . $type->getScope() . '.png'), true);
+	$container->addElement(new htmlSubTitle($type->getAlias(), '../../graphics/' . $type->getIcon()), true);
 	$container->addElement(new htmlOutputText(_("Selected modules")));
 	$container->addElement(new htmlOutputText(''));
 	$container->addElement(new htmlOutputText(_("Available modules")), true);

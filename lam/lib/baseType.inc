@@ -5,7 +5,7 @@ use LAM\TYPES\ConfiguredType;
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2016  Roland Gruber
+  Copyright (C) 2005 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -199,6 +199,26 @@ class baseType {
 	 */
 	protected function getType() {
 		return $this->type;
+	}
+
+	/**
+	 * Returns the file name of the type icon.
+	 * It needs to be 16x16px and located in graphics folder.
+	 * By default this is "{type name}.png"
+	 *
+	 * @return string file name
+	 */
+	public function getIcon() {
+		return get_class($this) . '.png';
+	}
+
+	/**
+	 * Returns the scope name.
+	 *
+	 * @return string scope
+	 */
+	public function getScope() {
+		return get_class($this);
 	}
 
 }

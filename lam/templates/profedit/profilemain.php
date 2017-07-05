@@ -79,6 +79,7 @@ foreach ($types as $type) {
 		'typeId' => $type->getId(),
 		'scope' => $type->getScope(),
 		'title' => $type->getAlias(),
+		'icon' => $type->getIcon(),
 		'profiles' => "");
 }
 $profileClassesKeys = array_keys($profileClassesTemp);
@@ -229,7 +230,7 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 		$existingContainer->addElement(new htmlSpacer(null, '10px'), true);
 	}
 
-	$existingContainer->addElement(new htmlImage('../../graphics/' . \LAM\TYPES\getScopeFromTypeId($profileClasses[$i]['typeId']) . '.png'));
+	$existingContainer->addElement(new htmlImage('../../graphics/' . $profileClasses[$i]['icon']));
 	$existingContainer->addElement(new htmlSpacer('3px', null));
 	$existingContainer->addElement(new htmlOutputText($profileClasses[$i]['title']));
 	$existingContainer->addElement(new htmlSpacer('3px', null));
