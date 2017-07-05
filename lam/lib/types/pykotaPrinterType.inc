@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013  Roland Gruber
+  Copyright (C) 2013 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -140,6 +140,14 @@ class pykotaPrinterType extends baseType {
 		}
 		// fall back to default
 		return parent::getTitleBarSubtitle($container);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see baseType::getIcon()
+	 */
+	public function getIcon() {
+		return 'printer.png';
 	}
 
 }
