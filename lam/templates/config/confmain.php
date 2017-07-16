@@ -496,11 +496,12 @@ for ($r = 0; $r < (sizeof($tools) / 4); $r++) {
 		}
 		$tool = $tools[($r * 4) + $c];
 		$toolClass = get_class($tool);
+		$toolName = substr($toolClass, strrpos($toolClass, '\\') + 1);
 		$selected = false;
-		if (isset($toolSettings['tool_hide_' . $toolClass]) && ($toolSettings['tool_hide_' . $toolClass] === 'true')) {
+		if (isset($toolSettings['tool_hide_' . $toolName]) && ($toolSettings['tool_hide_' . $toolName] === 'true')) {
 			$selected = true;
 		}
-		$toolSettingsContent->addElement(new htmlTableExtendedInputCheckbox('tool_hide_' . $toolClass, $selected, $tool->getName(), null, false));
+		$toolSettingsContent->addElement(new htmlTableExtendedInputCheckbox('tool_hide_' . $toolName, $selected, $tool->getName(), null, false));
 		$toolSettingsContent->addElement(new htmlSpacer('10px', null));
 	}
 	$toolSettingsContent->addNewLine();
@@ -761,7 +762,9 @@ function checkInput() {
 	$tools = getTools();
 	$toolSettings = array();
 	for ($i = 0; $i < sizeof($tools); $i++) {
-		$toolConfigID = 'tool_hide_' . $tools[$i];
+	    $toolClass = $tools[$i];
+	    $toolName = substr($toolClass, strrpos($toolClass, '\\') + 1);
+		$toolConfigID = 'tool_hide_' . $toolName;
 		if ((isset($_POST[$toolConfigID])) && ($_POST[$toolConfigID] == 'on')) {
 			$toolSettings[$toolConfigID] = 'true';
 		}
