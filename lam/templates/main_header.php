@@ -86,7 +86,8 @@ $toolSettings = $_SESSION['config']->getToolSettings();
 // sort tools
 $toSort = array();
 for ($i = 0; $i < sizeof($availableTools); $i++) {
-	$myTool = new $availableTools[$i]();
+	$toolClass = $availableTools[$i];
+    $myTool = new $toolClass();
 	if ($myTool->getRequiresWriteAccess() && !checkIfWriteAccessIsAllowed()) {
 		continue;
 	}
@@ -98,7 +99,8 @@ for ($i = 0; $i < sizeof($availableTools); $i++) {
 		continue;
 	}
 	// check if hidden by config
-	if (isset($toolSettings['tool_hide_' . get_class($myTool)]) && ($toolSettings['tool_hide_' . get_class($myTool)] == 'true')) {
+	$toolName = substr($toolClass, strrpos($toolClass, '\\') + 1);
+	if (isset($toolSettings['tool_hide_' . $toolName]) && ($toolSettings['tool_hide_' . $toolName] == 'true')) {
 		continue;
 	}
 	$toSort[$availableTools[$i]] = $myTool->getPosition();

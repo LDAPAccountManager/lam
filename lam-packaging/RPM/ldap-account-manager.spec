@@ -108,9 +108,9 @@ ln -s /var/lib/%{lam_dir}/tmp $RPM_BUILD_ROOT/usr/share/%{lam_dir}/tmp
 mv $RPM_BUILD_ROOT/usr/share/%{lam_dir}/sess $RPM_BUILD_ROOT/var/lib/%{lam_dir}
 ln -s /var/lib/%{lam_dir}/sess $RPM_BUILD_ROOT/usr/share/%{lam_dir}/sess
 mkdir -p $RPM_BUILD_ROOT%{httpd_confdir}
-cp $RPM_BUILD_DIR/lam.apache.conf $RPM_BUILD_ROOT%{httpd_confdir}/
+cp $RPM_SOURCE_DIR/lam.apache.conf $RPM_BUILD_ROOT%{httpd_confdir}/
 mkdir -p $RPM_BUILD_ROOT/etc/%{lam_dir}
-cp $RPM_BUILD_DIR/lam.nginx.conf $RPM_BUILD_ROOT/etc/%{lam_dir}/
+cp $RPM_SOURCE_DIR/lam.nginx.conf $RPM_BUILD_ROOT/etc/%{lam_dir}/
 
 %clean
 [ "$RPM_BUILD_ROOT" != "/" ] && [ -d $RPM_BUILD_ROOT ] && rm -rf $RPM_BUILD_ROOT

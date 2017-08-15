@@ -77,7 +77,9 @@ for ($i = 0; $i < sizeof($tools); $i++) {
 		continue;
 	}
 	// check if hidden by config
-	if (isset($toolSettings['tool_hide_' . get_class($tools[$i])]) && ($toolSettings['tool_hide_' . get_class($tools[$i])] == 'true')) {
+	$className = get_class($tools[$i]);
+	$toolName = substr($className, strrpos($className, '\\') + 1);
+	if (isset($toolSettings['tool_hide_' . $toolName]) && ($toolSettings['tool_hide_' . $toolName] == 'true')) {
 		continue;
 	}
 	// add tool

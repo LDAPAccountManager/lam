@@ -1408,12 +1408,14 @@ abstract class baseModule {
 			if ($label !== null) {
 				$labelTextOut = new htmlOutputText($label);
 				$labelTextOut->alignment = htmlElement::ALIGN_TOP;
+				$labelTextOut->setMarkAsRequired($required);
 				$container->addElement($labelTextOut);
 			}
 			$subContainer = new htmlTable();
 			$subContainer->alignment = htmlElement::ALIGN_TOP;
 			for ($i = 0; $i < sizeof($values); $i++) {
 				$input = new htmlSelect($attrName . '_' . $i, $options, array($values[$i]), $fieldSize);
+				$input->setHasDescriptiveElements($hasDescriptiveOptions);
 				$subContainer->addElement($input);
 				if (!empty($htmlIDs)) {
 					$htmlIDs[] = $attrName . '_' . $i;
