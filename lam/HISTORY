@@ -1,3 +1,7 @@
+September 2017 6.1
+  - Fixed bugs:
+   -> Password modify page reports error on password change when posixAccount is present for users
+
 20.07.2017 6.0.1
   - Fixed bugs:
    -> Configuration file fills up with empty values
