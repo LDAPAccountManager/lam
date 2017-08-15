@@ -713,7 +713,11 @@ class posixAccount extends baseModule implements passwordService {
 	 */
 	public function postModifyActions($newAccount, $attributes) {
 		$messages = array();
-		$modules = $this->getAccountContainer()->get_type()->getModules();
+		$accountContainer = $this->getAccountContainer();
+		if ($accountContainer == null) {
+			return $messages;
+		}
+		$modules = $accountContainer->get_type()->getModules();
 		$homeDirAttr = $this->getHomedirAttrName($modules);
 		// create home directories if needed
 		if (sizeof($this->lamdaemonServers) > 0) {
@@ -825,17 +829,17 @@ class posixAccount extends baseModule implements passwordService {
 			$ldapUser = $_SESSION['ldap']->decrypt_login();
 			$ldapUser = $ldapUser[0];
 			// update groups if DN changed
-			if (isset($this->getAccountContainer()->dn_orig) && ($this->getAccountContainer()->dn_orig != $this->getAccountContainer()->finalDN)) {
+			if (isset($accountContainer->dn_orig) && ($accountContainer->dn_orig != $accountContainer->finalDN)) {
 				// update owner/member/uniqueMember attributes
 				$searchAttrs = array('member', 'uniquemember', 'owner');
 				foreach ($searchAttrs as $searchAttr) {
-					$ownerGroups = searchLDAPByAttribute($searchAttr, $this->getAccountContainer()->dn_orig, null, array('dn', $searchAttr), array('gon', 'group'));
+					$ownerGroups = searchLDAPByAttribute($searchAttr, $accountContainer->dn_orig, null, array('dn', $searchAttr), array('gon', 'group'));
 					for ($i = 0; $i < sizeof($ownerGroups); $i++) {
 						$found = false;
 						$newOwners = $ownerGroups[$i][$searchAttr];
 						for ($o = 0; $o < sizeof($newOwners); $o++) {
-							if ($newOwners[$o] == $this->getAccountContainer()->dn_orig) {
-								$newOwners[$o] = $this->getAccountContainer()->finalDN;
+							if ($newOwners[$o] == $accountContainer->dn_orig) {
+								$newOwners[$o] = $accountContainer->finalDN;
 								$found = true;
 								break;
 							}
@@ -857,13 +861,13 @@ class posixAccount extends baseModule implements passwordService {
 					if (in_array('groupOfUniqueNames', $gons[$toAdd[$i]]['objectclass'])) {
 						$attrName = 'uniqueMember';
 					}
-					$success = @ldap_mod_add($_SESSION['ldap']->server(), $toAdd[$i], array($attrName => array($this->getAccountContainer()->finalDN)));
+					$success = @ldap_mod_add($_SESSION['ldap']->server(), $toAdd[$i], array($attrName => array($accountContainer->finalDN)));
 					if (!$success) {
-						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to add user ' . $this->getAccountContainer()->finalDN . ' to group: ' . $toAdd[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to add user ' . $accountContainer->finalDN . ' to group: ' . $toAdd[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 						$messages[] = array('ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $toAdd[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 					}
 					else {
-						logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Added user ' . $this->getAccountContainer()->finalDN . ' to group: ' . $toAdd[$i]);
+						logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Added user ' . $accountContainer->finalDN . ' to group: ' . $toAdd[$i]);
 					}
 				}
 			}
@@ -874,13 +878,13 @@ class posixAccount extends baseModule implements passwordService {
 					if (in_array('groupOfUniqueNames', $gons[$toRem[$i]]['objectclass'])) {
 						$attrName = 'uniqueMember';
 					}
-					$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], array($attrName => array($this->getAccountContainer()->dn_orig)));
+					$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], array($attrName => array($accountContainer->dn_orig)));
 					if (!$success) {
-						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to delete user ' . $this->getAccountContainer()->finalDN . ' from group: ' . $toRem[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to delete user ' . $accountContainer->finalDN . ' from group: ' . $toRem[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 						$messages[] = array('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $toRem[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 					}
 					else {
-						logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Removed user ' . $this->getAccountContainer()->finalDN . ' from group: ' . $toRem[$i]);
+						logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Removed user ' . $accountContainer->finalDN . ' from group: ' . $toRem[$i]);
 					}
 				}
 			}
