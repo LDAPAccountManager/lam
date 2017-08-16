@@ -70,6 +70,7 @@ Requires:      sudo
 %endif
 %if %is_fedora
 Requires:      perl
+Requires:      perl-Sys-Syslog
 Requires:      sudo
 %endif
 
