@@ -76,8 +76,11 @@ if (! function_exists('openssl_x509_parse')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no openssl support!", "Please install openssl for PHP.");
 }
 // check if PHP has XML support
-if (! function_exists('utf8_decode')) {
+if (! function_exists('utf8_decode') || !extension_loaded('xml')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no XML support!", "Please install the XML extension for PHP.");
+}
+if (!extension_loaded('libxml')) {
+	$criticalErrors[] = array("ERROR", "Your PHP has no Lib XML support!", "Please install the Lib XML extension for PHP.");
 }
 // check if PHP has GD support
 if (! function_exists('getimagesize')) {
