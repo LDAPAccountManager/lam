@@ -692,7 +692,11 @@ function printHelpLink($entry, $number, $module = '', $scope = '', $classes = ar
 	// replace special characters
 	$message = htmlspecialchars($message);
 	$title = htmlspecialchars($title);
-	echo "<a class=\"margin2 " . implode(" ", $classes) . "\" href=\"" . $helpPath . "help.php?module=$module&amp;HelpNumber=". $number . "&amp;scope=" . $scope . "\" ";
+	$selfServiceOption = '';
+	if (isSelfService()) {
+		$selfServiceOption = '&amp;selfService=1';
+	}
+	echo "<a class=\"margin2 " . implode(" ", $classes) . "\" href=\"" . $helpPath . "help.php?module=$module&amp;HelpNumber=". $number . "&amp;scope=" . $scope . $selfServiceOption . "\" ";
 		echo "target=\"help\">";
 		echo "<img helptitle=\"" . $title . "\" helpdata=\"" . $message . "\" class=\"align-middle\" width=16 height=16 src=\"../${helpPath}graphics/help.png\" alt=\"" . _('Help') . "\">";
 	echo "</a>";

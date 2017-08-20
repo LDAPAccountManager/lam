@@ -39,6 +39,12 @@ include_once("../lib/ldap.inc");
 /** configuration */
 include_once("../lib/config.inc");
 
+/** self service functions */
+include_once("../lib/selfService.inc");
+if (!empty($_GET['selfService']) && ($_GET['selfService'] === '1')) {
+	session_name('SELFSERVICE');
+}
+
 if (strtolower(session_module_name()) == 'files') {
 	session_save_path("../sess");
 }
