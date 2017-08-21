@@ -5,22 +5,22 @@
 ###################################################################################################
 
 # server address (e.g. ldap://localhost:389 or ldaps://localhost:636)
-serverURL: ldap://localhost:389
+ServerURL: ldap://localhost:389
 
 # list of users who are allowed to use LDAP Account Manager
 # names have to be seperated by semicolons
 # e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org
-admins: cn=Manager,dc=my-domain,dc=com
+Admins: cn=Manager,dc=my-domain,dc=com
 
 # password to change these preferences via webfrontend (default: lam)
-passwd: lam
+Passwd: lam
 
 # suffix of tree view
 # e.g. dc=yourdomain,dc=org
 treesuffix: dc=yourdomain,dc=org
 
 # default language (a line from config/language)
-defaultLanguage: en_GB.utf8:UTF-8:English (Great Britain)
+defaultLanguage: en_GB.utf8
 
 # Path to external Script
 scriptPath:
