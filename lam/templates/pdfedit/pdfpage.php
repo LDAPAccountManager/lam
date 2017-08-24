@@ -553,14 +553,14 @@ function addSection(&$structure) {
 		}
 		else {
 			$section = new PDFEntrySection($_POST['new_section_text']);
-			array_splice($sections, $_POST['add_text_position'], 0, array($section));
+			array_splice($sections, $_POST['add_sectionText_position'], 0, array($section));
 			$structure->setSections($sections);
 		}
 	}
 	// Add a new section with item as headline
 	elseif(isset($_POST['add_section'])) {
 		$section = new PDFEntrySection('_' . $_POST['new_section_item']);
-		array_splice($sections, $_POST['add_text_position'], 0, array($section));
+		array_splice($sections, $_POST['add_section_position'], 0, array($section));
 		$structure->setSections($sections);
 	}
 }

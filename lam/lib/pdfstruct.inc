@@ -652,7 +652,7 @@ class PDFEntrySection {
 	 * @return boolean is attribute
 	 */
 	public function isAttributeTitle() {
-		return boolval(preg_match('/^_([a-zA-Z0-9_-])+$/', $this->title));
+		return (bool) preg_match('/^_([a-zA-Z0-9_-])+$/', $this->title);
 	}
 
 	/**
