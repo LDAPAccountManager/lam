@@ -1,4 +1,5 @@
 September 2017 6.1
+  - Automatically trim input fields to avoid trailing/leading spaces
   - LAM Pro:
    -> Custom fields: support wildcards in text fields such as $firstname
    -> Custom fields: specify minimum/maximum count for multi-value entries

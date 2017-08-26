@@ -454,6 +454,8 @@ class htmlInputField extends htmlElement {
 	protected $title = null;
 	/** field ID that needs to have same value (e.g. password field) */
 	protected $sameValueFieldID = null;
+	/** marks the input field as auto trimmed (remove spaces at start/end) */
+	protected $autoTrim = true;
 
 	/**
 	 * Constructor
@@ -486,6 +488,9 @@ class htmlInputField extends htmlElement {
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$this->cssClasses[] = 'ui-corner-all';
+		if ($this->isAutoTrim()) {
+			$this->cssClasses[] = 'lam-autotrim';
+		}
 		if (isset($values[$this->fieldName])) {
 			if (isObfuscatedText($values[$this->fieldName][0])) {
 				$this->fieldValue = deobfuscateText($values[$this->fieldName][0]);
@@ -775,6 +780,19 @@ class htmlInputField extends htmlElement {
 	 */
 	public function filterSelectBox($name) {
 		$this->setOnKeyUp('filterSelect(\'' . $this->fieldName . '\', \'' . $name . '\', event);');
+	}
+
+	/**
+	 * Returns if the field content should be auto-trimmed (remove spaces at start/end).
+	 *
+	 * @return boolean auto-trim input
+	 */
+	protected function isAutoTrim() {
+		return $this->autoTrim && !$this->isPassword;
+	}
+
+	public function disableAutoTrim() {
+		$this->autoTrim = false;
 	}
 
 }

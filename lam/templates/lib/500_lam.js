@@ -759,9 +759,14 @@ window.lam.upload.uploadDone = function(jsonData) {
 	else {
 		top.location.href = '../lists/list.php?type=' + jsonData.typeId + '&uploadAllOk';
 	}
-}
+};
 
-jQuery(document).ready(function() {
+window.lam.gui = window.lam.gui || {};
+
+/**
+ * Resizes input fields etc. when they are marked as equally high.
+ */
+window.lam.gui.equalHeight = function() {
 	var maxHeight = 0;
 	jQuery('.lamEqualHeightTabContent').each(function() {
 		if (jQuery(this).height() > maxHeight) {
@@ -771,4 +776,22 @@ jQuery(document).ready(function() {
 	jQuery('.lamEqualHeightTabContent').each(function() {
 		jQuery(this).css({'height': maxHeight});
 	});
+};
+
+window.lam.form = window.lam.form || {};
+
+/**
+ * Trims all marked input elements on form submission.
+ */
+window.lam.form.autoTrim = function() {
+	jQuery('form').submit(function(e) {
+		jQuery('.lam-autotrim').each(function() {
+			this.value = String.trim(this.value);
+		});
+	});
+};
+
+jQuery(document).ready(function() {
+	window.lam.gui.equalHeight();
+	window.lam.form.autoTrim();
 });
