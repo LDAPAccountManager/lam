@@ -1,140 +1,136 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
 "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
-  <appendix id="a_security">
-    <title>Security</title>
+<appendix id="a_security">
+  <title>Security</title>
 
-    <section id="a_configPasswords">
-      <title>LAM configuration passwords</title>
+  <section id="a_configPasswords">
+    <title>LAM configuration passwords</title>
 
-      <para>LAM supports a two level authorization system for its
-      configuration. Therefore, there are two types of configuration
-      passwords:</para>
+    <para>LAM supports a two level authorization system for its configuration.
+    Therefore, there are two types of configuration passwords:</para>
 
-      <itemizedlist>
-        <listitem>
-          <para><emphasis role="bold">master configuration
-          password:</emphasis> needed to change general settings,
-          create/delete server profiles and self service profiles</para>
-        </listitem>
+    <itemizedlist>
+      <listitem>
+        <para><emphasis role="bold">master configuration password:</emphasis>
+        needed to change general settings, create/delete server profiles and
+        self service profiles</para>
+      </listitem>
 
-        <listitem>
-          <para><emphasis role="bold">server profile password:</emphasis> used
-          to change the settings of a server profile (e.g. LDAP server and
-          account types to manage)</para>
-        </listitem>
-      </itemizedlist>
+      <listitem>
+        <para><emphasis role="bold">server profile password:</emphasis> used
+        to change the settings of a server profile (e.g. LDAP server and
+        account types to manage)</para>
+      </listitem>
+    </itemizedlist>
 
-      <para>The master configuration password can be used to reset a server
-      profile password. Each server profile has its own profile
-      password.</para>
+    <para>The master configuration password can be used to reset a server
+    profile password. Each server profile has its own profile password.</para>
 
-      <para>Both password types are stored as hash values in the configuration
-      files for enhanced security.</para>
-    </section>
+    <para>Both password types are stored as hash values in the configuration
+    files for enhanced security.</para>
+  </section>
+
+  <section>
+    <title>Use of SSL</title>
+
+    <para>The data which is transfered between you and LAM is very sensitive.
+    Please always use SSL encrypted connections between LAM and your browser
+    to protect yourself against network sniffers.</para>
+  </section>
+
+  <section>
+    <title>LDAP with SSL and TLS</title>
+
+    <para>SSL will be used if you use ldaps://servername in your configuration
+    profile. TLS can be activated with the "Activate TLS" option.</para>
+
+    <para>If your LDAP server uses a SSL certificate of a well-know
+    certificate authority (CA) then you probably need no changes. If you use a
+    custom CA in your company then there are two ways to setup the CA
+    certificates.</para>
 
     <section>
-      <title>Use of SSL</title>
+      <title>Setup SSL certificates in LAM general settings</title>
 
-      <para>The data which is transfered between you and LAM is very
-      sensitive. Please always use SSL encrypted connections between LAM and
-      your browser to protect yourself against network sniffers.</para>
+      <para>This is much easier than system level setup and will only affect
+      LAM. There might be some cases where other web applications on the same
+      web server are influenced.</para>
+
+      <para>See <link linkend="conf_sslCert">here</link> for details.</para>
     </section>
 
-    <section>
-      <title>LDAP with SSL and TLS</title>
+    <section id="ssl_certSystem">
+      <title>Setup SSL certificates on system level</title>
 
-      <para>SSL will be used if you use ldaps://servername in your
-      configuration profile. TLS can be activated with the "Activate TLS"
-      option.</para>
+      <para>This will make the CA certificates available also to other
+      applications on your system (e.g. other web applications).</para>
 
-      <para>If your LDAP server uses a SSL certificate of a well-know
-      certificate authority (CA) then you probably need no changes. If you use
-      a custom CA in your company then there are two ways to setup the CA
-      certificates.</para>
+      <para>You will need to setup ldap.conf to trust your server certificate.
+      Some installations use /etc/ldap.conf and some use /etc/ldap/ldap.conf.
+      It is a good idea to symlink /etc/ldap.conf to /etc/ldap/ldap.conf.
+      Specify the server CA certificate with the following option:</para>
 
-      <section>
-        <title>Setup SSL certificates in LAM general settings</title>
+      <programlisting>TLS_CACERT /etc/ldap/ca/myCA/cacert.pem</programlisting>
 
-        <para>This is much easier than system level setup and will only affect
-        LAM. There might be some cases where other web applications on the
-        same web server are influenced.</para>
+      <para>This needs to be the public part of the signing certificate
+      authority. See "man ldap.conf" for additional options.</para>
 
-        <para>See <link linkend="conf_sslCert">here</link> for details.</para>
-      </section>
-
-      <section id="ssl_certSystem">
-        <title>Setup SSL certificates on system level</title>
-
-        <para>This will make the CA certificates available also to other
-        applications on your system (e.g. other web applications).</para>
-
-        <para>You will need to setup ldap.conf to trust your server
-        certificate. Some installations use /etc/ldap.conf and some use
-        /etc/ldap/ldap.conf. It is a good idea to symlink /etc/ldap.conf to
-        /etc/ldap/ldap.conf. Specify the server CA certificate with the
-        following option:</para>
-
-        <programlisting>TLS_CACERT /etc/ldap/ca/myCA/cacert.pem</programlisting>
-
-        <para>This needs to be the public part of the signing certificate
-        authority. See "man ldap.conf" for additional options.</para>
-
-        <literallayout>
+      <literallayout>
 </literallayout>
 
-        <para>You may also need to specify the CA certificate in your Apache
-        configuration by using the option "LDAPTrustedGlobalCert":</para>
+      <para>You may also need to specify the CA certificate in your Apache
+      configuration by using the option "LDAPTrustedGlobalCert":</para>
 
-        <programlisting>LDAPTrustedGlobalCert CA_BASE64 /etc/ldap/ca/myCA/cacert.pem</programlisting>
-      </section>
+      <programlisting>LDAPTrustedGlobalCert CA_BASE64 /etc/ldap/ca/myCA/cacert.pem</programlisting>
     </section>
+  </section>
 
-    <section id="selinux">
-      <title>Selinux</title>
+  <section id="selinux">
+    <title>Selinux</title>
 
-      <para>In case your server has selinux installed you might need to extend
-      the selinux ruleset. E.g. your webserver might not be allowed to write
-      in /var/lib.</para>
+    <para>In case your server has selinux installed you might need to extend
+    the selinux ruleset. E.g. your webserver might not be allowed to write in
+    /var/lib.</para>
 
-      <para><emphasis role="bold">Read selinux status</emphasis></para>
+    <para><emphasis role="bold">Read selinux status</emphasis></para>
 
-      <para>The following command will tell you if selinux is running in
-      Enforcing or Permissive mode.</para>
+    <para>The following command will tell you if selinux is running in
+    Enforcing or Permissive mode.</para>
 
-      <para>Enforcing: access that does not match rules is denied</para>
+    <para>Enforcing: access that does not match rules is denied</para>
 
-      <para>Permissive: access that does not match rules is granted but logged
-      to audit.log</para>
+    <para>Permissive: access that does not match rules is granted but logged
+    to audit.log</para>
 
-      <programlisting>getenforce</programlisting>
+    <programlisting>getenforce</programlisting>
 
-      <para><emphasis role="bold">Set selinux to Permissive
-      mode</emphasis></para>
+    <para><emphasis role="bold">Set selinux to Permissive
+    mode</emphasis></para>
 
-      <para>This will just log any access violations. You will need this to
-      get a list of missing rights.</para>
+    <para>This will just log any access violations. You will need this to get
+    a list of missing rights.</para>
 
-      <programlisting>setenforce Permissive</programlisting>
+    <programlisting>setenforce Permissive</programlisting>
 
-      <para>Now do any actions inside LAM that you need for your daily work
-      (e.g. edit server profiles, manage LDAP entries, ...).</para>
+    <para>Now do any actions inside LAM that you need for your daily work
+    (e.g. edit server profiles, manage LDAP entries, ...).</para>
 
-      <para><emphasis role="bold">Extend selinux rules</emphasis></para>
+    <para><emphasis role="bold">Extend selinux rules</emphasis></para>
 
-      <para>Selinux now has logged any violations to audit.log. You can use
-      this now to extend your ruleset and enable enforcing later.</para>
+    <para>Selinux now has logged any violations to audit.log. You can use this
+    now to extend your ruleset and enable enforcing later.</para>
 
-      <para>The following example is for httpd. You can also adapt it to e.g.
-      nginx.</para>
+    <para>The following example is for httpd. You can also adapt it to e.g.
+    nginx.</para>
 
-      <programlisting># build additional selinux rules from audit.log
+    <programlisting># build additional selinux rules from audit.log
 grep httpd /var/log/audit/audit.log | audit2allow -m httpdlocal -o httpdlocal.te
 </programlisting>
 
-      <para>The httpdlocal.te might look like this:</para>
+    <para>The httpdlocal.te might look like this:</para>
 
-      <programlisting>module httpdlocal 1.0;
+    <programlisting>module httpdlocal 1.0;
 
 require {
         type httpd_t;
@@ -150,142 +146,142 @@ require {
 allow httpd_t var_lib_t:file { setattr write };
 </programlisting>
 
-      <para>Now we can compile and install this rule:</para>
+    <para>Now we can compile and install this rule:</para>
 
-      <programlisting># build module
+    <programlisting># build module
 checkmodule -M -m -o httpdlocal.mod httpdlocal.te
 # package module
 semodule_package -o httpdlocal.pp -m httpdlocal.mod
 # install module
 semodule -i httpdlocal.pp</programlisting>
 
-      <para>Now you can switch back to Enforcing mode:</para>
+    <para>Now you can switch back to Enforcing mode:</para>
 
-      <programlisting>setenforce Enforcing</programlisting>
+    <programlisting>setenforce Enforcing</programlisting>
 
-      <para>LAM should now work as expected with active selinux.</para>
-    </section>
+    <para>LAM should now work as expected with active selinux.</para>
+  </section>
+
+  <section>
+    <title>Chrooted servers</title>
+
+    <para>If your server is chrooted and you have no access to /dev/random or
+    /dev/urandom this can be a security risk. LAM stores your LDAP password
+    encrypted in the session. LAM uses rand() to generate the key if
+    /dev/random and /dev/urandom are not accessible. Therefore the key can be
+    easily guessed. An attaker needs read access to the session file (e.g. by
+    another Apache instance) to exploit this.</para>
+  </section>
+
+  <section>
+    <title>Protection of your LDAP password and directory contents</title>
+
+    <para>You have to install the OpenSSL extension for PHP to enable
+    encryption.</para>
+
+    <para>Your LDAP password is stored encrypted in the session file. The key
+    and IV to decrypt it are stored in two cookies. We use OpenSSL/AES to
+    encrypt the password. All data that was read from LDAP and needs to be
+    stored in the session file is also encrypted.</para>
+  </section>
+
+  <section id="apache">
+    <title>Apache configuration</title>
 
     <section>
-      <title>Chrooted servers</title>
+      <title>Sensitive directories</title>
 
-      <para>If your server is chrooted and you have no access to /dev/random
-      or /dev/urandom this can be a security risk. LAM stores your LDAP
-      password encrypted in the session. LAM uses rand() to generate the key
-      if /dev/random and /dev/urandom are not accessible. Therefore the key
-      can be easily guessed. An attaker needs read access to the session file
-      (e.g. by another Apache instance) to exploit this.</para>
+      <para>LAM includes several .htaccess files to protect your configuration
+      files and temporary data. Apache is often configured to not use
+      .htaccess files by default. Therefore, please check your Apache
+      configuration and change the override setting to:</para>
+
+      <para>AllowOverride All</para>
+
+      <para>If you are experienced in configuring Apache then you can also
+      copy the security settings from the .htaccess files to your main Apache
+      configuration.</para>
+
+      <para>If possible, you should not rely on .htaccess files but also move
+      the config and sess directory to a place outside of your WWW root. You
+      can put a symbolic link in the LAM directory so that LAM finds the
+      configuration/session files.</para>
+
+      <para>Security sensitive directories:</para>
+
+      <para><emphasis role="bold">config: </emphasis>Contains your LAM
+      configuration and account profiles</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>LAM configuration passwords (SSHA hashed)</para>
+        </listitem>
+
+        <listitem>
+          <para>default values for new accounts</para>
+        </listitem>
+
+        <listitem>
+          <para>directory must be accessibly by Apache but needs not to be
+          accessible by the browser</para>
+        </listitem>
+      </itemizedlist>
+
+      <para><emphasis role="bold">sess:</emphasis> PHP session files</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>LAM admin password in clear text or OpenSSL encrypted</para>
+        </listitem>
+
+        <listitem>
+          <para>cached LDAP entries in clear text or OpenSSL encrypted</para>
+        </listitem>
+
+        <listitem>
+          <para>directory must be accessibly by Apache but needs not to be
+          accessible by the browser</para>
+        </listitem>
+      </itemizedlist>
+
+      <para><emphasis role="bold">tmp:</emphasis> temporary files</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>PDF documents which may also include passwords</para>
+        </listitem>
+
+        <listitem>
+          <para>images of your users</para>
+        </listitem>
+
+        <listitem>
+          <para>directory contents must be accessible by browser but directory
+          itself needs not to be browseable</para>
+        </listitem>
+      </itemizedlist>
     </section>
 
-    <section>
-      <title>Protection of your LDAP password and directory contents</title>
+    <section id="apache_http_auth">
+      <title>Use LDAP HTTP authentication for LAM</title>
 
-      <para>You have to install the OpenSSL extension for PHP to enable
-      encryption.</para>
+      <para>With HTTP authentication Apache will be responsible to ask for the
+      user name and password. Both will then be forwarded to LAM which will
+      use it to access LDAP. This approach gives you more flexibility to
+      restrict the number of users that may access LAM (e.g. by requiring
+      group memberships).</para>
 
-      <para>Your LDAP password is stored encrypted in the session file. The
-      key and IV to decrypt it are stored in two cookies. We use OpenSSL/AES to
-      encrypt the password. All data that was read from LDAP and needs to be
-      stored in the session file is also encrypted.</para>
-    </section>
+      <para>First of all you need to load additional Apache modules. These are
+      "<ulink
+      url="http://httpd.apache.org/docs/2.2/mod/mod_ldap.html">mod_ldap</ulink>"
+      and "<ulink type=""
+      url="http://httpd.apache.org/docs/2.2/mod/mod_authnz_ldap.html">mod_authnz_ldap</ulink>".</para>
 
-    <section id="apache">
-      <title>Apache configuration</title>
+      <para>Next you can add a file called "lam_auth_ldap" to
+      /etc/apache/conf.d. This simple example restricts access to all URLs
+      beginning with "lam" to LDAP authentication.</para>
 
-      <section>
-        <title>Sensitive directories</title>
-
-        <para>LAM includes several .htaccess files to protect your
-        configuration files and temporary data. Apache is often configured to
-        not use .htaccess files by default. Therefore, please check your
-        Apache configuration and change the override setting to:</para>
-
-        <para>AllowOverride All</para>
-
-        <para>If you are experienced in configuring Apache then you can also
-        copy the security settings from the .htaccess files to your main
-        Apache configuration.</para>
-
-        <para>If possible, you should not rely on .htaccess files but also
-        move the config and sess directory to a place outside of your WWW
-        root. You can put a symbolic link in the LAM directory so that LAM
-        finds the configuration/session files.</para>
-
-        <para>Security sensitive directories:</para>
-
-        <para><emphasis role="bold">config: </emphasis>Contains your LAM
-        configuration and account profiles</para>
-
-        <itemizedlist>
-          <listitem>
-            <para>LAM configuration passwords (SSHA hashed)</para>
-          </listitem>
-
-          <listitem>
-            <para>default values for new accounts</para>
-          </listitem>
-
-          <listitem>
-            <para>directory must be accessibly by Apache but needs not to be
-            accessible by the browser</para>
-          </listitem>
-        </itemizedlist>
-
-        <para><emphasis role="bold">sess:</emphasis> PHP session files</para>
-
-        <itemizedlist>
-          <listitem>
-            <para>LAM admin password in clear text or OpenSSL encrypted</para>
-          </listitem>
-
-          <listitem>
-            <para>cached LDAP entries in clear text or OpenSSL encrypted</para>
-          </listitem>
-
-          <listitem>
-            <para>directory must be accessibly by Apache but needs not to be
-            accessible by the browser</para>
-          </listitem>
-        </itemizedlist>
-
-        <para><emphasis role="bold">tmp:</emphasis> temporary files</para>
-
-        <itemizedlist>
-          <listitem>
-            <para>PDF documents which may also include passwords</para>
-          </listitem>
-
-          <listitem>
-            <para>images of your users</para>
-          </listitem>
-
-          <listitem>
-            <para>directory contents must be accessible by browser but
-            directory itself needs not to be browseable</para>
-          </listitem>
-        </itemizedlist>
-      </section>
-
-      <section id="apache_http_auth">
-        <title>Use LDAP HTTP authentication for LAM</title>
-
-        <para>With HTTP authentication Apache will be responsible to ask for
-        the user name and password. Both will then be forwarded to LAM which
-        will use it to access LDAP. This approach gives you more flexibility
-        to restrict the number of users that may access LAM (e.g. by requiring
-        group memberships).</para>
-
-        <para>First of all you need to load additional Apache modules. These
-        are "<ulink
-        url="http://httpd.apache.org/docs/2.2/mod/mod_ldap.html">mod_ldap</ulink>"
-        and "<ulink type=""
-        url="http://httpd.apache.org/docs/2.2/mod/mod_authnz_ldap.html">mod_authnz_ldap</ulink>".</para>
-
-        <para>Next you can add a file called "lam_auth_ldap" to
-        /etc/apache/conf.d. This simple example restricts access to all URLs
-        beginning with "lam" to LDAP authentication.</para>
-
-        <programlisting>&lt;location /lam&gt;
+      <programlisting>&lt;location /lam&gt;
   AuthType Basic
   AuthBasicProvider ldap
   AuthName "LAM"
@@ -293,10 +289,10 @@ semodule -i httpdlocal.pp</programlisting>
   Require valid-user
 &lt;/location&gt;</programlisting>
 
-        <para>You can also require that your users belong to a certain Unix
-        group in LDAP:</para>
+      <para>You can also require that your users belong to a certain Unix
+      group in LDAP:</para>
 
-        <programlisting>&lt;location /lam&gt;
+      <programlisting>&lt;location /lam&gt;
   AuthType Basic
   AuthBasicProvider ldap
   AuthName "LAM"
@@ -308,30 +304,30 @@ semodule -i httpdlocal.pp</programlisting>
   Require ldap-group cn=lam-admins,ou=group,dc=company,dc=com
 &lt;/location&gt;</programlisting>
 
-        <para>Please see the <ulink
-        url="http://httpd.apache.org/docs/2.2/mod/mod_authnz_ldap.html">Apache
-        documentation</ulink> for more details.</para>
-      </section>
+      <para>Please see the <ulink
+      url="http://httpd.apache.org/docs/2.2/mod/mod_authnz_ldap.html">Apache
+      documentation</ulink> for more details.</para>
+    </section>
 
-      <section>
-        <title>Self Service behind proxy in DMZ (LAM Pro)</title>
+    <section>
+      <title>Self Service behind proxy in DMZ (LAM Pro)</title>
 
-        <para>In some cases you might want to make the self service accessible
-        via the internet. Here is an Apache config to forward only the
-        required URLs via a proxy server (lamproxy.company.com) in your DMZ to
-        the internal LAM server (lam.company.com).</para>
+      <para>In some cases you might want to make the self service accessible
+      via the internet. Here is an Apache config to forward only the required
+      URLs via a proxy server (lamproxy.company.com) in your DMZ to the
+      internal LAM server (lam.company.com).</para>
 
-        <para><inlinemediaobject>
-            <imageobject>
-              <imagedata fileref="images/selfServiceProxy.png" />
-            </imageobject>
-          </inlinemediaobject></para>
+      <para><inlinemediaobject>
+          <imageobject>
+            <imagedata fileref="images/selfServiceProxy.png" />
+          </imageobject>
+        </inlinemediaobject></para>
 
-        <para>This configuration allows your users to open
-        https://lamproxy.company.com which will then proxy the self service on
-        the internal server.</para>
+      <para>This configuration allows your users to open
+      https://lamproxy.company.com which will then proxy the self service on
+      the internal server.</para>
 
-        <programlisting>&lt;VirtualHost lamproxy.company.com:443&gt;
+      <programlisting>&lt;VirtualHost lamproxy.company.com:443&gt;
         ServerName lamproxy.company.com
         ErrorLog /var/log/apache2/lam-proxy-error.log
         CustomLog /var/log/apache2/lam-proxy-access.log combined
@@ -366,60 +362,69 @@ semodule -i httpdlocal.pp</programlisting>
         ProxyPassReverse /style https://lam.company.com/lam/style
         ProxyPassReverse /graphics https://lam.company.com/lam/graphics
 &lt;/VirtualHost&gt;</programlisting>
-      </section>
+    </section>
+  </section>
+
+  <section id="nginx">
+    <title>Nginx configuration</title>
+
+    <para>There is no fully automatic setup of Nginx but LAM provides a
+    ready-to-use configuration file.</para>
+
+    <section>
+      <title>RPM based installations</title>
+
+      <para>The RPM package has dependencies on Apache. Therefore, Nginx is
+      not officially supported with this installation mode. Use tar.bz2 if you
+      are unsure.</para>
+
+      <para>However, the package also includes an Nginx configuration file.
+      Please include it in your server directive like this:</para>
+
+      <programlisting>server {
+        ...
+
+        include /etc/ldap-account-manager/lam.nginx.conf;
+
+        ...
+}</programlisting>
+
+      <para>The included config file uses PHP 5. In case you run with PHP 7
+      please update the parameter "fastcgi_pass" to
+      "/var/run/php7-fpm.sock".</para>
     </section>
 
-    <section id="nginx">
-      <title>Nginx configuration</title>
+    <section>
+      <title>DEB based installations</title>
 
-      <para>There is no fully automatic setup of Nginx but LAM provides a
-      ready-to-use configuration file.</para>
+      <para>The LAM installation package ships with an Nginx configuration
+      file. Please include it in your server directive like this:</para>
 
-      <section>
-        <title>RPM based installations</title>
-
-        <para>The RPM package has dependencies on Apache. Therefore, Nginx is
-        not officially supported with this installation mode. Use tar.bz2 if
-        you are unsure.</para>
-
-        <para>However, the package also includes an Nginx configuration file.
-        Please include it in your server directive like this:</para>
-
-        <programlisting>server {
+      <programlisting>server {
         ...
 
         include /etc/ldap-account-manager/lam.nginx.conf;
 
         ...
 }</programlisting>
-      </section>
 
-      <section>
-        <title>DEB based installations</title>
+      <para>The included config file uses PHP 5. In case you run with PHP 7
+      please update the parameter "fastcgi_pass" to
+      "/var/run/php7-fpm.sock".</para>
+    </section>
 
-        <para>The LAM installation package ships with an Nginx configuration
-        file. Please include it in your server directive like this:</para>
+    <section>
+      <title>tar.bz2 based installations</title>
 
-        <programlisting>server {
-        ...
+      <para>Please add the following configuration snippet to your server
+      directive.</para>
 
-        include /etc/ldap-account-manager/lam.nginx.conf;
+      <para>You will need to change the alias location
+      ("/usr/share/ldap-account-manager") and fastcgi_pass (e.g.
+      "/var/run/php5-fpm.sock" or "/var/run/php7-fpm.sock") to match your
+      installation.</para>
 
-        ...
-}</programlisting>
-      </section>
-
-      <section>
-        <title>tar.bz2 based installations</title>
-
-        <para>Please add the following configuration snippet to your server
-        directive.</para>
-
-        <para>You will need to change the alias location
-        ("/usr/share/ldap-account-manager") and fastcgi_pass
-        ("/var/run/php5-fpm.sock") to match your installation.</para>
-
-        <programlisting>location /lam {
+      <programlisting>location /lam {
   index index.html;
   alias /usr/share/ldap-account-manager;
   autoindex off;
@@ -439,6 +444,6 @@ semodule -i httpdlocal.pp</programlisting>
 
 }
 </programlisting>
-      </section>
     </section>
-  </appendix>
+  </section>
+</appendix>
