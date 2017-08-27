@@ -5127,6 +5127,71 @@ OK (10 msec)</programlisting>
       </mediaobject>
     </screenshot>
 
+    <para><emphasis role="bold">Constant value</emphasis></para>
+
+    <para>This will set the attribute to a constant value. You can also
+    specify wild cards to inject other attribute's values:</para>
+
+    <para>Wildcards</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>%attribute%: attribute value</para>
+      </listitem>
+
+      <listitem>
+        <para>@attribute@: first character of attribute</para>
+      </listitem>
+
+      <listitem>
+        <para>?attribute?: first character of attribute in lower case</para>
+      </listitem>
+
+      <listitem>
+        <para>!attribute!: first character of attribute in upper case</para>
+      </listitem>
+
+      <listitem>
+        <para>??attribute??: attribute in lower case</para>
+      </listitem>
+
+      <listitem>
+        <para>!!attribute!!: attribute in upper case</para>
+      </listitem>
+
+      <listitem>
+        <para>(attribute): space if attribute is set</para>
+      </listitem>
+
+      <listitem>
+        <para>§attribute|;§; attribute values separted by ";" (you can set
+        other separators if you want)</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Examples for attributes gn="Steve", sn="Miller" and
+    memberUid=("user1", "user2") (specified value -&gt; resulting LDAP
+    value):</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>"my constant" -&gt; "my constant"</para>
+      </listitem>
+
+      <listitem>
+        <para>"%gn%" -&gt; "Steve"</para>
+      </listitem>
+
+      <listitem>
+        <para>"%gn%(gn)%sn%" -&gt; "Steve Miller" (would be "Miller" if gn is
+        empty)</para>
+      </listitem>
+
+      <listitem>
+        <para>"§memberUid|, §" -&gt; "user1, user2"</para>
+      </listitem>
+    </itemizedlist>
+
     <para id="customFields_validation_expressions_admin"><emphasis
     role="bold">Validation expressions:</emphasis></para>
 
