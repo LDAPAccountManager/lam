@@ -234,6 +234,7 @@ if (is_readable('lam/lib/modules/customFields.inc')) {
 			);
 
 			$this->assertEquals('myuser SOME STREET S abc- cde', customFieldsConstantEntry::replaceWildcards($attributes, '%uid% !!street!! !street! §memberuid|- §'));
+			$this->assertEquals(' MMYUSER', customFieldsConstantEntry::replaceWildcards($attributes, '((uid))!uid!!!uid!!'));
 		}
 
 	}
