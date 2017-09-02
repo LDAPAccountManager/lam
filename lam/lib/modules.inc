@@ -541,17 +541,17 @@ function buildUploadAccounts($type, $data, $ids, $selectedModules) {
 /**
  * Runs any actions that need to be done before an LDAP entry is created.
  *
- * @param String $scope account type
+ * @param ConfiguredType $type account type
  * @param array $selectedModules list of selected account modules
  * @param array $attributes LDAP attributes of this entry (attributes are provided as reference, handle modifications of $attributes with care)
  * @return array array which contains status messages. Each entry is an array containing the status message parameters.
  */
-function doUploadPreActions($scope, $selectedModules, $attributes) {
+function doUploadPreActions($type, $selectedModules, $attributes) {
 	$messages = array();
 	for ($i = 0; $i < sizeof($selectedModules); $i++) {
 		$activeModule = $selectedModules[$i];
-		$module = moduleCache::getModule($activeModule, $scope);
-		$messages = array_merge($messages, $module->doUploadPreActions($attributes));
+		$module = moduleCache::getModule($activeModule, $type->getScope());
+		$messages = array_merge($messages, $module->doUploadPreActions($attributes, $type));
 	}
 	return $messages;
 }
@@ -559,7 +559,7 @@ function doUploadPreActions($scope, $selectedModules, $attributes) {
 /**
 * This function executes one post upload action.
 *
-* @param string $scope account type
+* @param ConfiguredType $type account type
 * @param array $data array containing one account in each element
 * @param array $ids array(<column_name> => <column number>)
 * @param array $failed list of accounts which were not created successfully
@@ -573,7 +573,7 @@ function doUploadPreActions($scope, $selectedModules, $attributes) {
 * <br>  'errors' => array (<array of parameters for StatusMessage>)
 * <br> )
 */
-function doUploadPostActions($scope, &$data, $ids, $failed, $selectedModules, &$accounts) {
+function doUploadPostActions($type, &$data, $ids, $failed, $selectedModules, &$accounts) {
 	// check if function is called the first time
 	if (! isset($_SESSION['mass_postActions']['remainingModules'])) {
 		// make list of remaining modules
@@ -586,8 +586,8 @@ function doUploadPostActions($scope, &$data, $ids, $failed, $selectedModules, &$
 		$_SESSION['mass_postActions'][$activeModule] = array();
 	}
 	// let first module do one post action
-	$module = moduleCache::getModule($activeModule, $scope);
-	$return = $module->doUploadPostActions($data, $ids, $failed, $_SESSION['mass_postActions'][$activeModule], $accounts, $selectedModules);
+	$module = moduleCache::getModule($activeModule, $type->getScope());
+	$return = $module->doUploadPostActions($data, $ids, $failed, $_SESSION['mass_postActions'][$activeModule], $accounts, $selectedModules, $type);
 	// remove active module from list if already finished
 	if ($return['status'] == 'finished') {
 		unset($_SESSION['mass_postActions']['remainingModules'][0]);

@@ -43,6 +43,7 @@
 
 
 
+
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-15"><title>Upgrade notes</title>
 
 
@@ -59,7 +60,16 @@ This is a list of API changes for all LAM releases.
 
 <br>
 
+<h2>6.0 -&gt; 6.1</h2>
+<ul>
+  <li>module API</li>
+  <ul>
+    <li>doUploadPreActions has new parameter $type</li>
+    <li>doUploadPostActions has new parameter $type</li>
+  </ul>
+</ul>
 <h2>5.7 -&gt; 6.0</h2>
+
 <ul>
   <li>All account types allow multiple configurations by default.</li>
   <li>the following&nbsp; methods in baseModule have a new parameter $typeId:</li>

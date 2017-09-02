@@ -1040,9 +1040,10 @@ abstract class baseModule {
 	 * Runs any actions that need to be done before an LDAP entry is created.
 	 *
 	 * @param array $attributes LDAP attributes of this entry (attributes are provided as reference, handle modifications of $attributes with care)
+	 * @param ConfiguredType $type account type
 	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
-	public function doUploadPreActions($attributes) {
+	public function doUploadPreActions($attributes, $type) {
 		return array();
 	}
 
@@ -1068,8 +1069,9 @@ abstract class baseModule {
 	* <br>  'progress' => 0..100 // the progress of the operations in percent
 	* <br>  'errors' => array // list of arrays which are used to generate StatusMessages
 	* <br> )
+	* @param ConfiguredType $type account type
 	*/
-	public function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts, $selectedModules) {
+	public function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts, $selectedModules, $type) {
 		return array(
 			'status' => 'finished',
 			'progress' => 100,

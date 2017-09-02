@@ -133,7 +133,7 @@ class Uploader {
 			$preAttributes[$key] = &$attrs[$key];
 		}
 		$preAttributes['dn'] = &$dn;
-		$preMessages = doUploadPreActions($this->type->getScope(), $_SESSION['mass_selectedModules'], $preAttributes);
+		$preMessages = doUploadPreActions($this->type, $_SESSION['mass_selectedModules'], $preAttributes);
 		$preActionOk = true;
 		for ($i = 0; $i < sizeof($preMessages); $i++) {
 			if (($preMessages[$i][0] == 'ERROR') || ($preMessages[$i][0] == 'WARN')) {
@@ -243,7 +243,7 @@ class Uploader {
 	 * @return array status array
 	 */
 	private function runModulePostActions() {
-		$return = doUploadPostActions($this->type->getScope(), $this->data, $_SESSION['mass_ids'], $_SESSION['mass_failed'], $_SESSION['mass_selectedModules'], $this->accounts);
+		$return = doUploadPostActions($this->type, $this->data, $_SESSION['mass_ids'], $_SESSION['mass_failed'], $_SESSION['mass_selectedModules'], $this->accounts);
 		if ($return['status'] == 'finished') {
 			$_SESSION['mass_postActions']['finished'] = true;
 		}

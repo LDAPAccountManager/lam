@@ -699,7 +699,7 @@ class quota extends baseModule {
 	 * {@inheritDoc}
 	 * @see baseModule::doUploadPostActions()
 	 */
-	function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts, $selectedModules) {
+	function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts, $selectedModules, $type) {
 		$errors = array();
 		// first call, get list of user names and quota values
 		if (!isset($temp['counter'])) {

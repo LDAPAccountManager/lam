@@ -526,7 +526,7 @@ class nisNetGroupUser extends baseModule {
 	 * {@inheritDoc}
 	 * @see baseModule::doUploadPostActions()
 	 */
-	function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts, $selectedModules) {
+	function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts, $selectedModules, $type) {
 		if (!checkIfWriteAccessIsAllowed($this->get_scope())) {
 			die();
 		}
