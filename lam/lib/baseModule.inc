@@ -1307,6 +1307,7 @@ abstract class baseModule {
 			if ($label !== null) {
 				$labelTextOut = new htmlOutputText($label, true, $required);
 				$labelTextOut->alignment = htmlElement::ALIGN_TOP;
+				$labelTextOut->setMarkAsRequired($required);
 				$container->addElement($labelTextOut);
 			}
 			$subContainer = new htmlTable();
