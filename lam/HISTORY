@@ -3,6 +3,7 @@ September 2017 6.1
   - LAM Pro:
    -> Custom fields: support wildcards in text fields such as $firstname
    -> Custom fields: specify minimum/maximum count for multi-value entries
+   -> Custom fields: new type for constant values
   - Fixed bugs:
    -> Password modify page reports error on password change when posixAccount is present for users
    -> Nginx configuration files did not include "fastcgi_param SCRIPT_FILENAME $request_filename;" (193)

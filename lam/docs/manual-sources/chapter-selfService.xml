@@ -1549,27 +1549,110 @@
         </mediaobject>
       </screenshot>
 
-      <para id="customFields_validation_expressions"><emphasis
-      role="bold">Validation expressions:</emphasis></para>
+      <literallayout>
+</literallayout>
 
-      <para>The validation expressions follow the standard of <ulink
-      url="http://perldoc.perl.org/perlre.html">Perl regular
-      expressions</ulink>. They start and end with a "/". The beginning of a
-      line is specified by "^" and the end by "$".</para>
+      <para><emphasis role="bold">Constant value</emphasis></para>
 
-      <para>Examples:</para>
+      <para>This will set the attribute to a constant value. You can also
+      specify wildcards to inject other attribute's values.</para>
 
-      <para>/^[a-z0-9]+$/ allows small letters and numbers. The value must not
-      be empty ("+").</para>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/customFields28.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
 
-      <para>/^[a-z0-9]+$/i allows small and capital letters ("i" at the end
-      means ignore case) and numbers. The value must not be empty
-      ("+").</para>
+      <para>Wildcards:</para>
 
-      <para>Special characters that must be escaped with "\": "\", ".", "(",
-      ")"</para>
+      <itemizedlist>
+        <listitem>
+          <para>%attribute%: attribute value</para>
+        </listitem>
 
-      <para>E.g. /^[a-z0-9\.]$/i</para>
+        <listitem>
+          <para>@attribute@: first character of attribute</para>
+        </listitem>
+
+        <listitem>
+          <para>?attribute?: first character of attribute in lower case</para>
+        </listitem>
+
+        <listitem>
+          <para>!attribute!: first character of attribute in upper case</para>
+        </listitem>
+
+        <listitem>
+          <para>??attribute??: attribute in lower case</para>
+        </listitem>
+
+        <listitem>
+          <para>!!attribute!!: attribute in upper case</para>
+        </listitem>
+
+        <listitem>
+          <para>((attribute)): space if attribute is set</para>
+        </listitem>
+
+        <listitem>
+          <para>§attribute|;§; attribute values separted by ";" (you can set
+          other separators if you want)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Examples for attributes gn="Steve", sn="Miller" and
+      memberUid=("user1", "user2") (specified value -&gt; resulting LDAP
+      value):</para>
+
+      <table border="1">
+        <caption></caption>
+
+        <tr>
+          <th>Constant value</th>
+
+          <th>Resulting LDAP value</th>
+        </tr>
+
+        <tr>
+          <td>my constant</td>
+
+          <td>my constant</td>
+        </tr>
+
+        <tr>
+          <td>%gn%</td>
+
+          <td>Steve</td>
+        </tr>
+
+        <tr>
+          <td>%gn%((gn))%sn%</td>
+
+          <td>Steve Miller (would be "Miller" if gn is empty)</td>
+        </tr>
+
+        <tr>
+          <td>§memberUid|, §</td>
+
+          <td>user1, user2</td>
+        </tr>
+      </table>
+
+      <para></para>
+
+      <para>Presentation:</para>
+
+      <para>The LDAP value will be shown as text.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/customFields29.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
 
       <literallayout>
 </literallayout>
@@ -1598,6 +1681,31 @@
           </imageobject>
         </mediaobject>
       </screenshot>
+
+      <literallayout>
+</literallayout>
+
+      <para id="customFields_validation_expressions"><emphasis
+      role="bold">Validation expressions:</emphasis></para>
+
+      <para>The validation expressions follow the standard of <ulink
+      url="http://perldoc.perl.org/perlre.html">Perl regular
+      expressions</ulink>. They start and end with a "/". The beginning of a
+      line is specified by "^" and the end by "$".</para>
+
+      <para>Examples:</para>
+
+      <para>/^[a-z0-9]+$/ allows small letters and numbers. The value must not
+      be empty ("+").</para>
+
+      <para>/^[a-z0-9]+$/i allows small and capital letters ("i" at the end
+      means ignore case) and numbers. The value must not be empty
+      ("+").</para>
+
+      <para>Special characters that must be escaped with "\": "\", ".", "(",
+      ")"</para>
+
+      <para>E.g. /^[a-z0-9\.]$/i</para>
     </section>
   </section>
 
