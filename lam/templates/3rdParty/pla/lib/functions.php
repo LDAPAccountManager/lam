@@ -197,7 +197,7 @@ function auto_lang($lang) {
 function check_config($config_file) {
 	# Read in config_default.php
 	require_once LIBDIR.'config_default.php';
-	
+
 	# Make sure their PHP version is current enough
 	if (strcmp(phpversion(),REQUIRED_PHP_VERSION) < 0)
 		system_message(array(
@@ -1396,10 +1396,10 @@ function get_next_number($base,$attr,$increment=false,$filter=false,$startmin=nu
 			for ($i=0;$i<count($autonum);$i++) {
 				$num = $autonum[$i] < $minNumber ? $minNumber : $autonum[$i];
 
-				/* If we're at the end of the list, or we've found a gap between this number and the 
-				   following, use the next available number in the gap. */ 
-				if ($i+1 == count($autonum) || $autonum[$i+1] > $num+1) 
-					return $autonum[$i] >= $num ? $num+1 : $num; 
+				/* If we're at the end of the list, or we've found a gap between this number and the
+				   following, use the next available number in the gap. */
+				if ($i+1 == count($autonum) || $autonum[$i+1] > $num+1)
+					return $autonum[$i] >= $num ? $num+1 : $num;
 			}
 
 			# If we didnt find a suitable gap and are all above the minNumber, we'll just return the $minNumber
@@ -2025,6 +2025,7 @@ function password_types() {
 
 	return array(
 		''=>'clear',
+		'crypt-sha512' => 'crypt-sha512',
 		'crypt'=>'crypt',
 		'md5'=>'md5',
 		'sha'=>'sha',
@@ -2074,6 +2075,12 @@ function pla_password_hash($password_clear,$enc_type) {
 			mt_srand((double)microtime()*1000000);
 			$salt = mhash_keygen_s2k(MHASH_MD5,$password_clear,substr(pack('h*',md5(mt_rand())),0,8),4);
 			$new_value = sprintf('{SMD5}%s',base64_encode(mhash(MHASH_MD5,$password_clear.$salt).$salt));
+			break;
+
+		case 'crypt-sha512':
+			mt_srand((double)microtime()*1000000);
+			$salt = bin2hex(mhash_keygen_s2k(MHASH_SHA1,$password_clear,substr(pack('h*',md5(mt_rand())),0,8),16));
+			$new_value = "{CRYPT}" . crypt($password_clear, '$6$' . $salt);
 			break;
 
 		case 'clear':
@@ -2202,6 +2209,17 @@ function password_check($cryptedpassword,$plainpassword,$attribute='userpassword
 				list($dummy,$type,$salt,$hash) = explode('$',$cryptedpassword);
 
 				if (crypt($plainpassword,'$1$'.$salt) == $cryptedpassword)
+					return true;
+				else
+					return false;
+			}
+
+			# Check if it's SHA512
+			elseif (strstr($cryptedpassword,'$6$')) {
+
+				list($dummy,$type,$salt,$hash) = explode('$',$cryptedpassword);
+
+				if (crypt($plainpassword,'$6$'.$salt) == $cryptedpassword)
 					return true;
 				else
 					return false;
@@ -2404,7 +2422,7 @@ function dn_unescape($dn) {
 
 /**
  * Converts a hex encoded string like \12 to the corresponding character.
- * 
+ *
  * @param array $hex preg_replace_callback: matching hex string array
  * @return String character
  */
@@ -2583,7 +2601,7 @@ function draw_formatted_dn($server,$entry) {
 
 	$formats = $_SESSION[APPCONFIG]->getValue('appearance','tree_display_format');
 
-	foreach ($formats as $format) { 
+	foreach ($formats as $format) {
 		$has_none = false;
 		preg_match_all('/%[a-zA-Z_0-9]+/',$format,$tokens);
 		$tokens = $tokens[0];
