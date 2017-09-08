@@ -403,14 +403,14 @@ semodule -i httpdlocal.pp</programlisting>
       <programlisting>server {
         ...
 
-        include /etc/ldap-account-manager/lam.nginx.conf;
+        include /etc/ldap-account-manager/nginx.conf;
 
         ...
 }</programlisting>
 
-      <para>The included config file uses PHP 5. In case you run with PHP 7
-      please update the parameter "fastcgi_pass" to
-      "/var/run/php7-fpm.sock".</para>
+      <para>The included config file uses PHP 7.0. In case you run with PHP
+      7.1 or PHP 5 please update the parameter "fastcgi_pass" to
+      "/var/run/php/php7.1-fpm.sock".</para>
     </section>
 
     <section>

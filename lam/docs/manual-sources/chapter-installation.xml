@@ -575,6 +575,13 @@
       intermediate release.</para>
 
       <section>
+        <title>6.0 -&gt; 6.1</title>
+
+        <para>DEB+RPM configuration for nginx uses PHP 7 by default. Please
+        see /etc/ldap-account-manager/nginx.conf if you use PHP 5.</para>
+      </section>
+
+      <section>
         <title>5.7 -&gt; 6.0</title>
 
         <para>No actions needed.</para>
