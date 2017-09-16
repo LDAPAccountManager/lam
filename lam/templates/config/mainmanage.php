@@ -90,13 +90,6 @@ $errors = array();
 $messages = array();
 // check if submit button was pressed
 if (isset($_POST['submitFormData'])) {
-	// remove double slashes if magic quotes are on
-	if (get_magic_quotes_gpc() == 1) {
-		$postKeys = array_keys($_POST);
-		for ($i = 0; $i < sizeof($postKeys); $i++) {
-			if (is_string($_POST[$postKeys[$i]])) $_POST[$postKeys[$i]] = stripslashes($_POST[$postKeys[$i]]);
-		}
-	}
 	// set master password
 	if (isset($_POST['masterpassword']) && ($_POST['masterpassword'] != "")) {
 		if ($_POST['masterpassword'] && $_POST['masterpassword2'] && ($_POST['masterpassword'] == $_POST['masterpassword2'])) {

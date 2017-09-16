@@ -125,13 +125,6 @@ if (isset($_POST['save'])) {
 		}
 	}
 
-	// remove double slashes if magic quotes are on
-	if (get_magic_quotes_gpc() == 1) {
-		foreach ($opt_keys as $element) {
-			if (isset($options[$element][0]) && is_string($options[$element][0])) $options[$element][0] = stripslashes($options[$element][0]);
-		}
-	}
-
 	// check options
 	$errors = checkProfileOptions($_POST['accounttype'], $options);
 	if (sizeof($errors) == 0) {  // input data is valid, save profile
@@ -169,12 +162,7 @@ if (isset($_POST['save'])) {
 	$postKeys = array_keys($_POST);
 	for ($i = 0; $i < sizeof($postKeys); $i++) {
 		if (!is_array($_POST[$postKeys[$i]])) {
-			if (get_magic_quotes_gpc() == 1) {
-				$old_options[$postKeys[$i]] = array(stripslashes($_POST[$postKeys[$i]]));
-			}
-			else {
-				$old_options[$postKeys[$i]] = array($_POST[$postKeys[$i]]);
-			}
+			$old_options[$postKeys[$i]] = array($_POST[$postKeys[$i]]);
 		}
 		else {
 			$old_options[$postKeys[$i]] = $_POST[$postKeys[$i]];

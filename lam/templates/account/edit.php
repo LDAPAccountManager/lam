@@ -107,14 +107,6 @@ else if (count($_POST)==0) {
 	$_SESSION['account']->new_account();
 }
 
-// remove double slashes if magic quotes are on
-if (get_magic_quotes_gpc() == 1) {
-	$postKeys = array_keys($_POST);
-	for ($i = 0; $i < sizeof($postKeys); $i++) {
-		if (is_string($_POST[$postKeys[$i]])) $_POST[$postKeys[$i]] = stripslashes($_POST[$postKeys[$i]]);
-	}
-}
-
 // show account page
 $_SESSION['account']->continue_main();
 

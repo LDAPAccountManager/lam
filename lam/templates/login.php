@@ -582,9 +582,6 @@ if(!empty($_POST['checklogin'])) {
 			display_LoginPage($_SESSION['config'], $_SESSION["cfgMain"], $licenseValidator, $error_message); // Empty password submitted. Return to login page.
 			exit();
 		}
-		if (get_magic_quotes_gpc() == 1) {
-			$_POST['passwd'] = stripslashes($_POST['passwd']);
-		}
 		$username = $_POST['username'];
 		$password = $_POST['passwd'];
 	}
