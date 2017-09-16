@@ -1,4 +1,5 @@
 <?php
+namespace LAM\AJAX;
 /*
 $Id$
 
@@ -47,18 +48,19 @@ if (startSecureSession(false, true) === false) {
 
 setlanguage();
 
-lamAjax::handleRequest();
+$ajax = new Ajax();
+$ajax->handleRequest();
 
 /**
  * Manages all AJAX requests.
  */
-class lamAjax {
+class Ajax {
 
 	/**
 	 * Manages an AJAX request.
 	 */
-	public static function handleRequest() {
-		lamAjax::setHeader();
+	public function handleRequest() {
+		$this->setHeader();
 		// check token
 		validateSecurityToken(false);
 
@@ -84,11 +86,11 @@ class lamAjax {
 
 		$jsonInput = $_POST['jsonInput'];
 		if ($function == 'passwordStrengthCheck') {
-			lamAjax::checkPasswordStrength($jsonInput);
+			$this->checkPasswordStrength($jsonInput);
 		}
 		enforceUserIsLoggedIn();
 		if ($function == 'passwordChange') {
-			lamAjax::managePasswordChange($jsonInput);
+			$this->managePasswordChange($jsonInput);
 		}
 		elseif ($function == 'upload') {
 			include_once('../../lib/upload.inc');
@@ -115,7 +117,7 @@ class lamAjax {
 	 *
 	 * @param array $input input parameters
 	 */
-	public static function managePasswordChange($input) {
+	private static function managePasswordChange($input) {
 		$return = $_SESSION['account']->setNewPassword($input);
 		echo json_encode($return);
 	}
@@ -125,7 +127,7 @@ class lamAjax {
 	 *
 	 * @param array $input input parameters
 	 */
-	public static function checkPasswordStrength($input) {
+	private function checkPasswordStrength($input) {
 		$password = $input['password'];
 		$result = checkPasswordStrength($password, null, null);
 		echo json_encode(array("result" => $result));
