@@ -1,4 +1,18 @@
 <?php
+namespace LAM\TOOLS\TESTS;
+use \LAM\REMOTE\Remote;
+use \htmlTable;
+use \htmlTitle;
+use \htmlOutputText;
+use \htmlSelect;
+use \htmlInputCheckbox;
+use \htmlSpacer;
+use \htmlButton;
+use \htmlStatusMessage;
+use \htmlImage;
+use \htmlSubTitle;
+use \Exception;
+
 /*
 $Id$
 
@@ -22,7 +36,7 @@ $Id$
 */
 
 /**
-* Tests the lamdaemon script.
+* Tests the remote script.
 *
 * @author Roland Gruber
 * @author Thomas Manninger
@@ -67,7 +81,7 @@ for ($i = 0; $i < sizeof($servers); $i++) {
 }
 
 if (isset($_POST['runTest'])) {
-	lamRunLamdaemonTestSuite($_POST['server'], $serverTitles[$_POST['server']] , isset($_POST['checkQuotas']), $container);
+	lamRunTestSuite($_POST['server'], $serverTitles[$_POST['server']] , isset($_POST['checkQuotas']), $container);
 }
 else if ((sizeof($servers) > 0) && isset($servers[0]) && ($servers[0] != '')) {
 	$container->addElement(new htmlOutputText(_("Server")));
@@ -111,22 +125,22 @@ include '../main_footer.php';
  *
  * @param string $command test command
  * @param boolean $stopTest specifies if test should be run
- * @param connection $handle SSH connection
+ * @param Remote $remote SSH connection
  * @param string $testText describing text
  * @param htmlTable $container container for HTML output
  * @return boolean true, if errors occured
  */
-function lamTestLamdaemon($command, $stopTest, $handle, $testText, $container) {
+function lamTestLamdaemon($command, $stopTest, $remote, $testText, $container) {
 	$okImage = "../../graphics/pass.png";
 	$failImage = "../../graphics/fail.png";
 	$spacer = new htmlSpacer('10px', null);
-	// run lamdaemon and get user quotas
+	// run remote command
 	if (!$stopTest) {
 		$container->addElement(new htmlOutputText($testText));
 		$container->addElement($spacer);
 		flush();
 		$lamdaemonOk = false;
-		$output = $handle->exec("sudo " . $_SESSION['config']->get_scriptPath() . ' ' . escapeshellarg($command));
+		$output = $remote->execute($command);
 		if ((stripos(strtolower($output), "error") === false) && ((strpos($output, 'INFO,') === 0) || (strpos($output, 'QUOTA_ENTRY') === 0))) {
 			$lamdaemonOk = true;
 		}
@@ -170,7 +184,7 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText, $container) {
  * @param boolean $testQuota true, if Quotas should be checked
  * @param htmlTable $container container for HTML output
  */
-function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota, $container) {
+function lamRunTestSuite($serverName, $serverTitle, $testQuota, $container) {
 	$SPLIT_DELIMITER = "###x##y##x###";
 	$LAMDAEMON_PROTOCOL_VERSION = '5';
 	$okImage = "../../graphics/pass.png";
@@ -246,13 +260,14 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota, $contai
 	flush();
 
 	// check SSH login
+	$remote = new Remote();
 	if (!$stopTest) {
 		$container->addElement(new htmlOutputText(_("SSH connection")));
 		$container->addElement($spacer);
 		flush();
 		$sshOk = false;
 		try {
-			$handle = lamConnectSSH($serverName);
+			$remote->connect($serverName);
 			$container->addElement(new htmlImage($okImage));
 			$container->addElement($spacer);
 			$container->addElement(new htmlOutputText(_("SSH connection established.")), true);
@@ -268,21 +283,18 @@ function lamRunLamdaemonTestSuite($serverName, $serverTitle, $testQuota, $contai
 	flush();
 
 	if (!$stopTest) {
-		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "basic", $stopTest, $handle, _("Execute lamdaemon"), $container);
+		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "basic", $stopTest, $remote, _("Execute lamdaemon"), $container);
 	}
 
 	if (!$stopTest) {
-		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "version" . $SPLIT_DELIMITER . $LAMDAEMON_PROTOCOL_VERSION, $stopTest, $handle, _("Lamdaemon version"), $container);
+		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "version" . $SPLIT_DELIMITER . $LAMDAEMON_PROTOCOL_VERSION, $stopTest, $remote, _("Lamdaemon version"), $container);
 	}
 
 	if (!$stopTest) {
-		$handle = lamConnectSSH($serverName);
-		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "nss" . $SPLIT_DELIMITER . "$userName", $stopTest, $handle, _("Lamdaemon: check NSS LDAP"), $container);
+		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "nss" . $SPLIT_DELIMITER . "$userName", $stopTest, $remote, _("Lamdaemon: check NSS LDAP"), $container);
 		if (!$stopTest && $testQuota) {
-			$handle = lamConnectSSH($serverName);
-			$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "quota", $stopTest, $handle, _("Lamdaemon: Quota module installed"), $container);
-			$handle = lamConnectSSH($serverName);
-			$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "quota" . $SPLIT_DELIMITER . "get" . $SPLIT_DELIMITER . "user", $stopTest, $handle, _("Lamdaemon: read quotas"), $container);
+			$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "quota", $stopTest, $remote, _("Lamdaemon: Quota module installed"), $container);
+			$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "quota" . $SPLIT_DELIMITER . "get" . $SPLIT_DELIMITER . "user", $stopTest, $remote, _("Lamdaemon: read quotas"), $container);
 		}
 	}
 

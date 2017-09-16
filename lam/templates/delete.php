@@ -42,8 +42,8 @@ include_once('../lib/config.inc');
 include_once('../lib/status.inc');
 /** LDAP connection */
 include_once('../lib/ldap.inc');
-/** lamdaemon interface */
-include_once('../lib/lamdaemon.inc');
+/** remote interface */
+include_once('../lib/remote.inc');
 /** module interface */
 include_once('../lib/modules.inc');
 

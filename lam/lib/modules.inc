@@ -45,8 +45,8 @@ include_once("account.inc");
 include_once("baseModule.inc");
 /** access to LDAP server */
 include_once("ldap.inc");
-/** lamdaemon functions */
-include_once("lamdaemon.inc");
+/** remote functions */
+include_once("remote.inc");
 /** security functions */
 include_once("security.inc");
 /** meta HTML classes */
