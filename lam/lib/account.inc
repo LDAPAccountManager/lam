@@ -460,10 +460,6 @@ function get_preg($argument, $regexp) {
 	$language = $_SESSION['language'];
 	$language2 = explode ('.', $language);
 	setlocale(LC_ALL, $language2[0]);
-	// workaround for buggy PHP with Turkish
-	if (($language == 'tr_TR.utf8') && (version_compare(phpversion(), '5.5') < 0)) {
-		setlocale(LC_CTYPE, 'en_GB');
-	}
 	// First we check "positive" cases
 	$pregexpr = '';
 	switch ($regexp) {
@@ -592,10 +588,6 @@ function get_preg($argument, $regexp) {
 		if (preg_match($pregexpr, $argument)) {
 			/* Bug in php preg_match doesn't work correct with utf8 */
 			setlocale(LC_ALL, $language);
-			// workaround for buggy PHP with Turkish
-			if (($language == 'tr_TR.utf8') && (version_compare(phpversion(), '5.5') < 0)) {
-				setlocale(LC_CTYPE, 'en_GB');
-			}
 			return true;
 		}
 	// Now we check "negative" cases, characters which are not allowed
@@ -615,18 +607,10 @@ function get_preg($argument, $regexp) {
 		if (!preg_match($pregexpr, $argument)) {
 			/* Bug in php preg_match doesn't work correct with utf8 */
 			setlocale(LC_ALL, $language);
-			// workaround for buggy PHP with Turkish
-			if (($language == 'tr_TR.utf8') && (version_compare(phpversion(), '5.5') < 0)) {
-				setlocale(LC_CTYPE, 'en_GB');
-			}
 			return true;
 		}
 	/* Bug in php preg_match doesn't work correct with utf8 */
 	setlocale(LC_ALL, $language);
-	// workaround for buggy PHP with Turkish
-	if (($language == 'tr_TR.utf8') && (version_compare(phpversion(), '5.5') < 0)) {
-		setlocale(LC_CTYPE, 'en_GB');
-	}
 	return false;
 }
 

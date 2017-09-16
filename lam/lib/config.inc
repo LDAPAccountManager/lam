@@ -73,10 +73,6 @@ function setlanguage() {
 	}
 	putenv("LANG=" . $code);  // e.g. LANG=de_DE
 	setlocale(LC_ALL, $code);  // set LC_ALL
-	// workaround for buggy PHP with Turkish
-	if (($code == 'tr_TR.utf8') && (version_compare(phpversion(), '5.5') < 0)) {
-		setlocale(LC_CTYPE, 'en_GB');
-	}
 	$locdir = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/locale";  // set path to translations
 	bindtextdomain("messages", $locdir);
 	bind_textdomain_codeset("messages", $encoding);

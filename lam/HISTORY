@@ -1,3 +1,7 @@
+December 2017
+  - PHP 5.6 and Internet Explorer 11 or later required
+
+
 September 2017 6.1
   - Automatically trim input fields to avoid trailing/leading spaces
   - LAM Pro:
