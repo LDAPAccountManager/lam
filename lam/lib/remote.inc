@@ -55,7 +55,6 @@ class Remote {
 	*
 	* @param string $command command to execute
 	* @return string output of remote script
-	*
 	*/
 	public function execute($command) {
 		if ($this->server == null) {
@@ -68,7 +67,6 @@ class Remote {
 	 * Connects to the given SSH server.
 	 *
 	 * @param String $server server name (e.g. localhost or localhost,1234)
-	 * @return object handle
 	 */
 	public function connect($server) {
 		$serverNameParts = explode(",", $server);
@@ -90,6 +88,9 @@ class Remote {
 	 * Closes the connection.
 	 */
 	public function disconnect() {
+		if ($this->server == null) {
+			return;
+		}
 		$this->server->disconnect();
 	}
 

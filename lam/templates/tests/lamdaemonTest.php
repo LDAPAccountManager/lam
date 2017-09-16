@@ -297,6 +297,7 @@ function lamRunTestSuite($serverName, $serverTitle, $testQuota, $container) {
 			$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "quota" . $SPLIT_DELIMITER . "get" . $SPLIT_DELIMITER . "user", $stopTest, $remote, _("Lamdaemon: read quotas"), $container);
 		}
 	}
+	$remote->disconnect();
 
 	$container->addElement(new htmlSpacer(null, '10px'), true);
 	$endMessage = new htmlOutputText(_("Lamdaemon test finished."));
