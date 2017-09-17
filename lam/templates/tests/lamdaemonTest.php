@@ -130,7 +130,7 @@ include '../main_footer.php';
  * @param htmlTable $container container for HTML output
  * @return boolean true, if errors occured
  */
-function lamTestLamdaemon($command, $stopTest, $remote, $testText, $container) {
+function testRemoteCommand($command, $stopTest, $remote, $testText, $container) {
 	$okImage = "../../graphics/pass.png";
 	$failImage = "../../graphics/fail.png";
 	$spacer = new htmlSpacer('10px', null);
@@ -283,18 +283,18 @@ function lamRunTestSuite($serverName, $serverTitle, $testQuota, $container) {
 	flush();
 
 	if (!$stopTest) {
-		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "basic", $stopTest, $remote, _("Execute lamdaemon"), $container);
+		$stopTest = testRemoteCommand("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "basic", $stopTest, $remote, _("Execute lamdaemon"), $container);
 	}
 
 	if (!$stopTest) {
-		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "version" . $SPLIT_DELIMITER . $LAMDAEMON_PROTOCOL_VERSION, $stopTest, $remote, _("Lamdaemon version"), $container);
+		$stopTest = testRemoteCommand("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "version" . $SPLIT_DELIMITER . $LAMDAEMON_PROTOCOL_VERSION, $stopTest, $remote, _("Lamdaemon version"), $container);
 	}
 
 	if (!$stopTest) {
-		$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "nss" . $SPLIT_DELIMITER . "$userName", $stopTest, $remote, _("Lamdaemon: check NSS LDAP"), $container);
+		$stopTest = testRemoteCommand("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "nss" . $SPLIT_DELIMITER . "$userName", $stopTest, $remote, _("Lamdaemon: check NSS LDAP"), $container);
 		if (!$stopTest && $testQuota) {
-			$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "quota", $stopTest, $remote, _("Lamdaemon: Quota module installed"), $container);
-			$stopTest = lamTestLamdaemon("+" . $SPLIT_DELIMITER . "quota" . $SPLIT_DELIMITER . "get" . $SPLIT_DELIMITER . "user", $stopTest, $remote, _("Lamdaemon: read quotas"), $container);
+			$stopTest = testRemoteCommand("+" . $SPLIT_DELIMITER . "test" . $SPLIT_DELIMITER . "quota", $stopTest, $remote, _("Lamdaemon: Quota module installed"), $container);
+			$stopTest = testRemoteCommand("+" . $SPLIT_DELIMITER . "quota" . $SPLIT_DELIMITER . "get" . $SPLIT_DELIMITER . "user", $stopTest, $remote, _("Lamdaemon: read quotas"), $container);
 		}
 	}
 	$remote->disconnect();

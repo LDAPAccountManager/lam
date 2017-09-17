@@ -95,7 +95,7 @@ class Ajax {
 		elseif ($function == 'upload') {
 			include_once('../../lib/upload.inc');
 			$typeManager = new \LAM\TYPES\TypeManager();
-			$uploader = new LAM\UPLOAD\Uploader($typeManager->getConfiguredType($_GET['typeId']));
+			$uploader = new \LAM\UPLOAD\Uploader($typeManager->getConfiguredType($_GET['typeId']));
 			ob_start();
 			$jsonOut = $uploader->doUpload();
 			ob_end_clean();
