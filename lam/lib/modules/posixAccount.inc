@@ -732,7 +732,9 @@ class posixAccount extends baseModule implements passwordService {
 				elseif (!in_array($temp[0], $this->lamdaemonServers)) {
 					continue;
 				}
-				$result = lamdaemon(
+				$remote = new \LAM\REMOTE\Remote();
+				$remote->connect($server);
+				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
 						array(
@@ -743,11 +745,11 @@ class posixAccount extends baseModule implements passwordService {
 							"0".$_SESSION['config']->get_scriptRights(),
 							$this->attributes['uidNumber'][0],
 							$this->attributes['gidNumber'][0])
-						),
-					$server);
+						));
+				$remote->disconnect();
 				// lamdaemon results
-				if (is_array($result)) {
-					$singleresult = explode(",", $result[0]);
+				if (!empty($result)) {
+					$singleresult = explode(",", $result);
 					if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'INFO') || ($singleresult[0] == 'WARN')) {
 						$messages[] = $singleresult;
 					}
@@ -767,7 +769,9 @@ class posixAccount extends baseModule implements passwordService {
 				}
 				$temp = explode(":", $lamdaemonServers[$i]);
 				$server = $temp[0];
-				$result = lamdaemon(
+				$remote = new \LAM\REMOTE\Remote();
+				$remote->connect($server);
+				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
 						array(
@@ -777,11 +781,11 @@ class posixAccount extends baseModule implements passwordService {
 							$this->orig[$homeDirAttr][0],
 							$this->attributes['uidNumber'][0],
 							$this->attributes[$homeDirAttr][0])
-						),
-					$server);
+						));
+				$remote->disconnect();
 				// lamdaemon results
-				if (is_array($result)) {
-					$singleresult = explode(",", $result[0]);
+				if (!empty($result)) {
+					$singleresult = explode(",", $result);
 					if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'INFO') || ($singleresult[0] == 'WARN')) {
 						$messages[] = $singleresult;
 					}
@@ -798,7 +802,9 @@ class posixAccount extends baseModule implements passwordService {
 				}
 				$temp = explode(":", $lamdaemonServers[$i]);
 				$server = $temp[0];
-				$result = lamdaemon(
+				$remote = new \LAM\REMOTE\Remote();
+				$remote->connect($server);
+				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
 						array(
@@ -808,11 +814,11 @@ class posixAccount extends baseModule implements passwordService {
 							$this->orig[$homeDirAttr][0],
 							$this->attributes['uidNumber'][0],
 							$this->attributes['gidNumber'][0])
-						),
-					$server);
+						));
+				$remote->disconnect();
 				// lamdaemon results
-				if (is_array($result)) {
-					$singleresult = explode(",", $result[0]);
+				if (!empty($result)) {
+					$singleresult = explode(",", $result);
 					if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'INFO') || ($singleresult[0] == 'WARN')) {
 						$messages[] = $singleresult;
 					}
@@ -935,7 +941,9 @@ class posixAccount extends baseModule implements passwordService {
 			}
 			// try to delete directory on all servers
 			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
-				$result = lamdaemon(
+				$remote = new \LAM\REMOTE\Remote();
+				$remote->connect($lamdaemonServers[$i]);
+				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
 						array(
@@ -945,16 +953,14 @@ class posixAccount extends baseModule implements passwordService {
 							$this->attributes[$homeDirAttr][0],
 							$this->attributes['uidNumber'][0]
 						)
-					),
-					$lamdaemonServers[$i]);
+					));
+				$remote->disconnect();
 				// lamdaemon results
-				if (is_array($result)) {
-					foreach ($result as $singleresult) {
-						$singleresult = explode(",", $singleresult);
-						if (is_array($singleresult)) {
-							if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
-								$return[] = $singleresult;
-							}
+				if (!empty($result)) {
+					$singleresult = explode(",", $result);
+					if (is_array($singleresult)) {
+						if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
+							$return[] = $singleresult;
 						}
 					}
 				}
@@ -1270,7 +1276,9 @@ class posixAccount extends baseModule implements passwordService {
 			$temp = explode(":", $lamdaemonServers[$i]);
 			$server = $temp[0];
 			if (isset($_POST['form_subpage_' . get_class($this) . '_homedir_create_' . $i])) {
-				$result = lamdaemon(
+				$remote = new \LAM\REMOTE\Remote();
+				$remote->connect($server);
+				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
 						array(
@@ -1281,22 +1289,22 @@ class posixAccount extends baseModule implements passwordService {
 							"0".$_SESSION['config']->get_scriptRights(),
 							$this->attributes['uidNumber'][0],
 							$this->attributes['gidNumber'][0])
-					),
-					$server);
+					));
+				$remote->disconnect();
 				// lamdaemon results
-				if (is_array($result)) {
-					foreach ($result as $singleresult) {
-						$singleresult = explode(",", $singleresult);
-						if (is_array($singleresult)) {
-							if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
-								$return[] = $singleresult;
-							}
+				if (!empty($result)) {
+					$singleresult = explode(",", $result);
+					if (is_array($singleresult)) {
+						if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
+							$return[] = $singleresult;
 						}
 					}
 				}
 			}
 			elseif (isset($_POST['form_subpage_' . get_class($this) . '_homedir_delete_' . $i])) {
-				$result = lamdaemon(
+				$remote = new \LAM\REMOTE\Remote();
+				$remote->connect($server);
+				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
 						array(
@@ -1306,16 +1314,14 @@ class posixAccount extends baseModule implements passwordService {
 							$this->attributes[$homeDirAttr][0],
 							$this->attributes['uidNumber'][0]
 						)
-					),
-					$server);
+					));
+				$remote->disconnect();
 				// lamdaemon results
-				if (is_array($result)) {
-					foreach ($result as $singleresult) {
-						$singleresult = explode(",", $singleresult);
-						if (is_array($singleresult)) {
-							if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
-								$return[] = $singleresult;
-							}
+				if (!empty($result)) {
+					$singleresult = explode(",", $result);
+					if (is_array($singleresult)) {
+						if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
+							$return[] = $singleresult;
 						}
 					}
 				}
@@ -1660,7 +1666,9 @@ class posixAccount extends baseModule implements passwordService {
 			if (isset($temp[1])) {
 				$label = $temp[1];
 			}
-			$result = lamdaemon(
+			$remote = new \LAM\REMOTE\Remote();
+			$remote->connect($server);
+			$result = $remote->execute(
 				implode(
 					self::$SPLIT_DELIMITER,
 					array(
@@ -1668,11 +1676,11 @@ class posixAccount extends baseModule implements passwordService {
 						"home",
 						"check",
 						$this->attributes[$homeDirAttr][0])
-					),
-				$server);
+					));
+			$remote->disconnect();
 			// lamdaemon results
-			if (is_array($result)) {
-				$returnValue = trim($result[0]);
+			if (!empty($result)) {
+				$returnValue = trim($result);
 				if ($returnValue == 'ok') {
 					$homeServerContainer->addElement(new htmlOutputText($label));
 					$homeServerContainer->addElement(new htmlSpacer('5px', null));
@@ -2531,7 +2539,9 @@ class posixAccount extends baseModule implements passwordService {
 		// create home directories
 		elseif ($temp['counter'] < (sizeof($temp['groups']) + sizeof($temp['createHomes']))) {
 			$pos = $temp['createHomes'][$temp['counter'] - sizeof($temp['groups'])];
-			$result = lamdaemon(
+			$remote = new \LAM\REMOTE\Remote();
+			$remote->connect($data[$pos][$ids['posixAccount_createHomeDir']]);
+			$result = $remote->execute(
 				implode(
 					self::$SPLIT_DELIMITER,
 					array(
@@ -2543,11 +2553,11 @@ class posixAccount extends baseModule implements passwordService {
 						$accounts[$pos]['uidNumber'],
 						$accounts[$pos]['gidNumber'],
 					)
-				),
-				$data[$pos][$ids['posixAccount_createHomeDir']]);
+				));
+			$remote->disconnect();
 			$errors = array();
-			if (($result != false) && (sizeof($result) == 1)) {
-				$parts = explode(",", $result[0]);
+			if (!empty($result)) {
+				$parts = explode(",", $result);
 				if (in_array($parts[0], array('ERROR', 'WARN'))) {
 					$errors[] = $parts;
 				}
