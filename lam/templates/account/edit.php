@@ -85,8 +85,8 @@ if (isset($_GET['DN'])) {
 	$result = $_SESSION['account']->load_account($DN);
 	if (sizeof($result) > 0) {
 		include '../main_header.php';
-		for ($i=0; $i<sizeof($result); $i++) {
-			call_user_func_array("StatusMessage", $result[$i]);
+		foreach ($result as $message) {
+			call_user_func_array("StatusMessage", $message);
 		}
 		include '../main_footer.php';
 		die();

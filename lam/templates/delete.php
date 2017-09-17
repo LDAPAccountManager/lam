@@ -105,7 +105,8 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	echo "<b>" . _("Do you really want to remove the following accounts?") . "</b>";
 	echo "<br><br>\n";
 	echo "<table border=0>\n";
-	for ($i=0; $i<count($users); $i++) {
+	$userCount = sizeof($users);
+	for ($i = 0; $i < $userCount; $i++) {
 		echo "<tr>\n";
 		echo "<td><b>" . _("Account name:") . "</b> " . htmlspecialchars($users[$i]) . "</td>\n";
 		echo "<td>&nbsp;&nbsp;<b>" . _('DN') . ":</b> " . htmlspecialchars($_SESSION['delete_dn'][$i]) . "</td>\n";
@@ -173,11 +174,11 @@ if (isset($_POST['delete'])) {
 	// Delete dns
 	$allOk = true;
 	$allErrors = array();
-	for ($m=0; $m<count($_SESSION['delete_dn']); $m++) {
+	foreach ($_SESSION['delete_dn'] as $deleteDN) {
 		// Set to true if an real error has happened
 		$stopprocessing = false;
 		// First load DN.
-		$_SESSION['account']->load_account($_SESSION['delete_dn'][$m]);
+		$_SESSION['account']->load_account($deleteDN);
 		// get commands and changes of each attribute
 		$moduleNames = array_keys($_SESSION['account']->getAccountModules());
 		$modules = $_SESSION['account']->getAccountModules();
@@ -267,7 +268,7 @@ if (isset($_POST['delete'])) {
 		}
 		if (!$stopprocessing) {
 			$recursive = !$_SESSION['account']->hasOnlyVirtualChildren();
-			$messages = deleteDN($_SESSION['delete_dn'][$m], $recursive);
+			$messages = deleteDN($deleteDN, $recursive);
 			$errors = array_merge($errors, $messages);
 			if (sizeof($errors) > 0) {
 				$stopprocessing = true;
@@ -287,7 +288,7 @@ if (isset($_POST['delete'])) {
 			}
 		}
 		if (!$stopprocessing) {
-			echo sprintf(_('Deleted DN: %s'), $_SESSION['delete_dn'][$m]) . "<br>\n";
+			echo sprintf(_('Deleted DN: %s'), $deleteDN) . "<br>\n";
 			foreach ($errors as $error) {
 				call_user_func_array('StatusMessage', $error);
 			}
@@ -295,7 +296,7 @@ if (isset($_POST['delete'])) {
 			flush();
 		}
 		else {
-			echo sprintf(_('Error while deleting DN: %s'), $_SESSION['delete_dn'][$m]) . "<br>\n";
+			echo sprintf(_('Error while deleting DN: %s'), $deleteDN) . "<br>\n";
 			foreach ($errors as $error) {
 				call_user_func_array('StatusMessage', $error);
 			}
