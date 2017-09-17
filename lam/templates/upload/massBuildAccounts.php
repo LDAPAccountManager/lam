@@ -282,7 +282,7 @@ include '../main_footer.php';
  * @param array $selectedModules selected modules for upload
  * @param htmlTable $container table container
  */
-function massPrintBackButton($typeId, $selectedModules, &$container) {
+function massPrintBackButton($typeId, $selectedModules, htmlTable &$container) {
 	$backButton = new htmlButton('submit', _('Back'));
 	$backButton->setIconClass('backButton');
 	$container->addElement($backButton);

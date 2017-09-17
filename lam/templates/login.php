@@ -177,7 +177,7 @@ $_SESSION['header'] .= "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<me
 * @param \LAM\ENV\LAMLicenseValidator $licenseValidator license validator
 * @param string $error_message error message to display
 */
-function display_LoginPage($config_object, $cfgMain, $licenseValidator, $error_message) {
+function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licenseValidator, $error_message) {
 	logNewMessage(LOG_DEBUG, "Display login page");
 	// generate 256 bit key and initialization vector for user/passwd-encryption
 	if(function_exists('openssl_random_pseudo_bytes') && ($cfgMain->encryptSession == 'true')) {

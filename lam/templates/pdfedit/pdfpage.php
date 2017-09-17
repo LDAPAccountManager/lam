@@ -496,7 +496,7 @@ function translateFieldIDToName($id, $scope, $availablePDFFields) {
  *
  * @param PDFStructure $structure
  */
-function updateBasicSettings(&$structure) {
+function updateBasicSettings(PDFStructure &$structure) {
 	// set headline
 	if (isset($_POST['headline'])) {
 		$structure->setTitle(str_replace('<', '', str_replace('>', '', $_POST['headline'])));
@@ -516,7 +516,7 @@ function updateBasicSettings(&$structure) {
  *
  * @param PDFStructure $structure
  */
-function updateSectionTitles(&$structure) {
+function updateSectionTitles(PDFStructure &$structure) {
 	$sections = $structure->getSections();
 	foreach ($_POST as $key => $value) {
 		if (strpos($key, 'section_') === 0) {
@@ -531,7 +531,7 @@ function updateSectionTitles(&$structure) {
  *
  * @param PDFStructure $structure
  */
-function addSection(&$structure) {
+function addSection(PDFStructure &$structure) {
 	$sections = $structure->getSections();
 	// add a new text field
 	if(isset($_POST['add_text'])) {
@@ -570,7 +570,7 @@ function addSection(&$structure) {
  *
  * @param PDFStructure $structure
  */
-function addSectionEntry(&$structure) {
+function addSectionEntry(PDFStructure &$structure) {
 	if(isset($_POST['add_new_field'])) {
 		$field = new PDFSectionEntry($_POST['new_field']);
 		$sections = $structure->getSections();
@@ -587,7 +587,7 @@ function addSectionEntry(&$structure) {
  *
  * @param PDFStructure $structure
  */
-function removeItem(&$structure) {
+function removeItem(PDFStructure &$structure) {
 	$sections = $structure->getSections();
 	foreach ($_POST as $key => $value) {
 		// remove section
@@ -617,7 +617,7 @@ function removeItem(&$structure) {
  *
  * @param PDFStructure $structure
  */
-function moveUp(&$structure) {
+function moveUp(PDFStructure &$structure) {
 	$sections = $structure->getSections();
 	foreach ($_POST as $key => $value) {
 		// move section
@@ -649,7 +649,7 @@ function moveUp(&$structure) {
  *
  * @param PDFStructure $structure
  */
-function moveDown(&$structure) {
+function moveDown(PDFStructure &$structure) {
 	$sections = $structure->getSections();
 	foreach ($_POST as $key => $value) {
 		// move section

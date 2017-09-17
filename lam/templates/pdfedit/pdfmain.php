@@ -15,6 +15,7 @@ use \htmlInputFileUpload;
 use \htmlHelpLink;
 use \htmlInputField;
 use \htmlHiddenInput;
+use \LAM\TYPES\TypeManager;
 /*
 $Id$
 
@@ -89,7 +90,7 @@ if(isset($_POST['createNewTemplate'])) {
 	exit();
 }
 
-$typeManager = new \LAM\TYPES\TypeManager();
+$typeManager = new TypeManager();
 $types = $typeManager->getConfiguredTypes();
 $sortedTypes = array();
 foreach ($types as $type) {
@@ -319,7 +320,7 @@ include '../main_header.php';
 			$scope = $templateClasses[$i]['scope'];
 			$importOptions = array();
 			foreach ($configProfiles as $profile) {
-				$typeManagerImport = new \LAM\TYPES\TypeManager($serverProfiles[$profile]);
+				$typeManagerImport = new TypeManager($serverProfiles[$profile]);
 				$typesImport = $typeManagerImport->getConfiguredTypesForScope($scope);
 				foreach ($typesImport as $typeImport) {
 					if (($profile != $_SESSION['config']->getName()) || ($typeImport->getId() != $typeId)) {
@@ -374,7 +375,7 @@ include '../main_header.php';
 			$container->addElement(new htmlOutputText(_("Target server profile")), true);
 			$exportOptions = array();
 			foreach ($configProfiles as $profile) {
-				$typeManagerExport = new \LAM\TYPES\TypeManager($serverProfiles[$profile]);
+				$typeManagerExport = new TypeManager($serverProfiles[$profile]);
 				$typesExport = $typeManagerExport->getConfiguredTypesForScope($scope);
 				foreach ($typesExport as $typeExport) {
 					if (($profile != $_SESSION['config']->getName()) || ($typeExport->getId() != $typeId)) {
@@ -430,15 +431,15 @@ include '../main_footer.php';
  * @param string $typeId type id
  * @param array $options options
  * @param \LAMConfig[] $serverProfiles server profiles (name => profile object)
- * @param \LAM\TYPES\TypeManager $typeManager type manager
+ * @param TypeManager $typeManager type manager
  * @return \htmlStatusMessage message or null
  */
-function importStructures($typeId, $options, &$serverProfiles, &$typeManager) {
+function importStructures($typeId, $options, &$serverProfiles, TypeManager &$typeManager) {
 	foreach ($options as $option) {
 		$sourceConfName = $option['conf'];
 		$sourceTypeId = $option['typeId'];
 		$sourceName = $option['name'];
-		$sourceTypeManager = new \LAM\TYPES\TypeManager($serverProfiles[$sourceConfName]);
+		$sourceTypeManager = new TypeManager($serverProfiles[$sourceConfName]);
 		$sourceType = $sourceTypeManager->getConfiguredType($sourceTypeId);
 		$targetType = $typeManager->getConfiguredType($typeId);
 		if (($sourceType != null) && ($targetType != null)) {
@@ -460,10 +461,10 @@ function importStructures($typeId, $options, &$serverProfiles, &$typeManager) {
  * @param string $name profile name
  * @param array $options options
  * @param \LAMConfig[] $serverProfiles server profiles (name => profile object)
- * @param \LAM\TYPES\TypeManager $typeManager type manager
+ * @param TypeManager $typeManager type manager
  * @return \htmlStatusMessage message or null
  */
-function exportStructures($typeId, $name, $options, &$serverProfiles, &$typeManager) {
+function exportStructures($typeId, $name, $options, &$serverProfiles, TypeManager &$typeManager) {
 	$sourceType = $typeManager->getConfiguredType($typeId);
 	if ($sourceType == null) {
 		return null;
@@ -480,7 +481,7 @@ function exportStructures($typeId, $name, $options, &$serverProfiles, &$typeMana
 		}
 		else {
 			$targetTypeId = $option['typeId'];
-			$targetTypeManager = new \LAM\TYPES\TypeManager($serverProfiles[$targetConfName]);
+			$targetTypeManager = new TypeManager($serverProfiles[$targetConfName]);
 			$targetType = $targetTypeManager->getConfiguredType($targetTypeId);
 			if ($targetType != null) {
 				try {

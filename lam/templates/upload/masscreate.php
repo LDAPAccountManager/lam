@@ -256,7 +256,7 @@ include '../main_footer.php';
 * @param \LAM\TYPES\ConfiguredType $type account type
 * @param array $selectedModules list of selected account modules
 */
-function showMainPage($type, $selectedModules) {
+function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 	$scope = $type->getScope();
 	echo '<div class="' . $scope . '-bright smallPaddingContent">';
 	// get input fields from modules
