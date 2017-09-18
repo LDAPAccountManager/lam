@@ -532,10 +532,12 @@ function buildUploadAccounts($type, $data, $ids, $selectedModules) {
 		}
 	}
 	if (sizeof($errors) > 0) {
-		for ($i = 0; (($i < sizeof($errors)) || ($i > 49)); $i++) call_user_func_array("StatusMessage", $errors[$i]);
+		for ($i = 0; (($i < sizeof($errors)) || ($i > 49)); $i++) {
+			call_user_func_array("StatusMessage", $errors[$i]);
+		}
 		return false;
 	}
-	else return $partialAccounts;
+	return $partialAccounts;
 }
 
 /**

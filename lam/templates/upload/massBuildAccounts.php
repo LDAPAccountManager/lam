@@ -140,7 +140,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	$checkcolumns = array();
 	$columns = call_user_func_array('array_merge', $columns);
 	for ($i = 0; $i < sizeof($columns); $i++) {
-		if (isset($columns[$i]['required']) && ($columns[$i]['required'] == true)) {
+		if (isset($columns[$i]['required']) && ($columns[$i]['required'] === true)) {
 			if (isset($ids[$columns[$i]['name']])) $checkcolumns[] = $ids[$columns[$i]['name']];
 			else $errors[] = array(_("A required column is missing in your CSV file."), $columns[$i]['name']);
 		}
@@ -201,7 +201,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	// let modules build accounts
 	else {
 		$accounts = buildUploadAccounts($type, $data, $ids, $selectedModules);
-		if ($accounts != false) {
+		if ($accounts !== false) {
 			$rdnList = getRDNAttributes($type->getId(), $selectedModules);
 			$suffix = $type->getSuffix();
 			// set DN
