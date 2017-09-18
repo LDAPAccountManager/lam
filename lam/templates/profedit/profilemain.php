@@ -159,7 +159,7 @@ if (!empty($_POST['import'])) {
 		}
 		$errMessage = importProfiles($_POST['typeId'], $options, $serverProfiles, $typeManager);
 	}
-	if ($errMessage != null) {
+	if ($errMessage !== null) {
 		$errMessage->colspan = 10;
 		$container->addElement($errMessage, true);
 	}
@@ -182,7 +182,7 @@ if (!empty($_POST['export'])) {
 		$name = $_POST['name_' . $typeId];
 		$errMessage = exportProfiles($typeId, $name, $options, $serverProfiles, $typeManager);
 	}
-	if ($errMessage != null) {
+	if ($errMessage !== null) {
 		$errMessage->colspan = 10;
 		$container->addElement($errMessage, true);
 	}
@@ -397,7 +397,7 @@ function importProfiles($typeId, $options, &$serverProfiles, TypeManager &$typeM
 		$sourceTypeManager = new TypeManager($serverProfiles[$sourceConfName]);
 		$sourceType = $sourceTypeManager->getConfiguredType($sourceTypeId);
 		$targetType = $typeManager->getConfiguredType($typeId);
-		if (($sourceType != null) && ($targetType != null)) {
+		if (($sourceType !== null) && ($targetType !== null)) {
 			try {
 				\LAM\PROFILES\copyAccountProfile($sourceType, $sourceName, $targetType);
 			}
@@ -421,7 +421,7 @@ function importProfiles($typeId, $options, &$serverProfiles, TypeManager &$typeM
  */
 function exportProfiles($typeId, $name, $options, &$serverProfiles, TypeManager &$typeManager) {
 	$sourceType = $typeManager->getConfiguredType($typeId);
-	if ($sourceType == null) {
+	if ($sourceType === null) {
 		return null;
 	}
 	foreach ($options as $option) {
@@ -438,7 +438,7 @@ function exportProfiles($typeId, $name, $options, &$serverProfiles, TypeManager 
 			$targetTypeId = $option['typeId'];
 			$targetTypeManager = new TypeManager($serverProfiles[$targetConfName]);
 			$targetType = $targetTypeManager->getConfiguredType($targetTypeId);
-			if ($targetType != null) {
+			if ($targetType !== null) {
 				try {
 					\LAM\PROFILES\copyAccountProfile($sourceType, $name, $targetType);
 				}

@@ -591,7 +591,7 @@ if(!empty($_POST['checklogin'])) {
 		$searchFilter = str_replace('%USER%', $username ,$searchFilter);
 		$searchDN = '';
 		$searchPassword = '';
-		if (($_SESSION['config']->getLoginSearchDN() != null) && ($_SESSION['config']->getLoginSearchDN() != '')) {
+		if (!empty($_SESSION['config']->getLoginSearchDN())) {
 			$searchDN = $_SESSION['config']->getLoginSearchDN();
 			$searchPassword = $_SESSION['config']->getLoginSearchPassword();
 		}
