@@ -85,8 +85,8 @@ if (isset($_GET['DN'])) {
 	$result = $_SESSION['account']->load_account($DN);
 	if (sizeof($result) > 0) {
 		include '../main_header.php';
-		for ($i=0; $i<sizeof($result); $i++) {
-			call_user_func_array("StatusMessage", $result[$i]);
+		foreach ($result as $message) {
+			call_user_func_array("StatusMessage", $message);
 		}
 		include '../main_footer.php';
 		die();
@@ -105,14 +105,6 @@ else if (count($_POST)==0) {
 	}
 	$_SESSION['account'] = new accountContainer($type, 'account', getRandomNumber());
 	$_SESSION['account']->new_account();
-}
-
-// remove double slashes if magic quotes are on
-if (get_magic_quotes_gpc() == 1) {
-	$postKeys = array_keys($_POST);
-	for ($i = 0; $i < sizeof($postKeys); $i++) {
-		if (is_string($_POST[$postKeys[$i]])) $_POST[$postKeys[$i]] = stripslashes($_POST[$postKeys[$i]]);
-	}
 }
 
 // show account page

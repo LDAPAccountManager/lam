@@ -1,4 +1,5 @@
 <?php
+
 /*
 $Id$
 
@@ -64,7 +65,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 	private $cachedGroupSIDList = null;
 	/** cache for domain list */
 	private $cachedDomainList = null;
-	/** delimiter for lamdaemon commands */
+	/** delimiter for remote commands */
 	private static $SPLIT_DELIMITER = "###x##y##x###";
 
 
@@ -1541,16 +1542,18 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$return->addElement(new htmlSpacer(null, '10px'), true);
 		$homeServerContainer = new htmlTable();
 		$homeServerContainer->colspan = 5;
-		// get list of lamdaemon servers
-		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
-		for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
-			$temp = explode(":", $lamdaemonServers[$i]);
+		// get list of remote servers
+		$remoteServers = explode(";", $_SESSION['config']->get_scriptServers());
+		for ($i = 0; $i < sizeof($remoteServers); $i++) {
+			$temp = explode(":", $remoteServers[$i]);
 			$server = $temp[0];
 			$label = $temp[0];
 			if (isset($temp[1])) {
 				$label = $temp[1];
 			}
-			$result = lamdaemon(
+			$remote = new \LAM\REMOTE\Remote();
+			$remote->connect($server);
+			$result = $remote->execute(
 				implode(
 					self::$SPLIT_DELIMITER,
 					array(
@@ -1558,11 +1561,11 @@ class sambaSamAccount extends baseModule implements passwordService {
 						"home",
 						"check",
 						$this->attributes['sambaProfilePath'][0])
-					),
-				$server);
-			// lamdaemon results
-			if (is_array($result)) {
-				$returnValue = trim($result[0]);
+					));
+			$remote->disconnect();
+			// remote command results
+			if (!empty($result)) {
+				$returnValue = trim($result);
 				if ($returnValue == 'ok') {
 					$homeServerContainer->addElement(new htmlOutputText($label));
 					$homeServerContainer->addElement(new htmlSpacer('5px', null));
@@ -1614,13 +1617,15 @@ class sambaSamAccount extends baseModule implements passwordService {
 		if (empty($uidNumber) || empty($gidNumber)) {
 			return;
 		}
-		// get list of lamdaemon servers
-		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
-		for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
-			$temp = explode(":", $lamdaemonServers[$i]);
+		// get list of remote servers
+		$remoteServers = explode(";", $_SESSION['config']->get_scriptServers());
+		for ($i = 0; $i < sizeof($remoteServers); $i++) {
+			$temp = explode(":", $remoteServers[$i]);
 			$server = $temp[0];
 			if (isset($_POST['form_subpage_' . get_class($this) . '_homedir_create_' . $i])) {
-				$result = lamdaemon(
+				$remote = new \LAM\REMOTE\Remote();
+				$remote->connect($server);
+				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
 						array(
@@ -1631,22 +1636,22 @@ class sambaSamAccount extends baseModule implements passwordService {
 							"0".$_SESSION['config']->get_scriptRights(),
 							$uidNumber,
 							$gidNumber)
-					),
-					$server);
-				// lamdaemon results
-				if (is_array($result)) {
-					foreach ($result as $singleresult) {
-						$singleresult = explode(",", $singleresult);
-						if (is_array($singleresult)) {
-							if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
-								$return[] = $singleresult;
-							}
+				));
+				$remote->disconnect();
+				// remote command results
+				if (!empty($result)) {
+					$singleresult = explode(",", $result);
+					if (is_array($singleresult)) {
+						if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
+							$return[] = $singleresult;
 						}
 					}
 				}
 			}
 			elseif (isset($_POST['form_subpage_' . get_class($this) . '_homedir_delete_' . $i])) {
-				$result = lamdaemon(
+				$remote = new \LAM\REMOTE\Remote();
+				$remote->connect($server);
+				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
 						array(
@@ -1656,16 +1661,14 @@ class sambaSamAccount extends baseModule implements passwordService {
 							$this->attributes['sambaProfilePath'][0],
 							$uidNumber
 						)
-					),
-					$server);
-				// lamdaemon results
-				if (is_array($result)) {
-					foreach ($result as $singleresult) {
-						$singleresult = explode(",", $singleresult);
-						if (is_array($singleresult)) {
-							if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
-								$return[] = $singleresult;
-							}
+				));
+				$remote->disconnect();
+				// remote command results
+				if (!empty($result)) {
+					$singleresult = explode(",", $result);
+					if (is_array($singleresult)) {
+						if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
+							$return[] = $singleresult;
 						}
 					}
 				}

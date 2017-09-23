@@ -45,8 +45,8 @@ include_once("account.inc");
 include_once("baseModule.inc");
 /** access to LDAP server */
 include_once("ldap.inc");
-/** lamdaemon functions */
-include_once("lamdaemon.inc");
+/** remote functions */
+include_once("remote.inc");
 /** security functions */
 include_once("security.inc");
 /** meta HTML classes */
@@ -532,10 +532,12 @@ function buildUploadAccounts($type, $data, $ids, $selectedModules) {
 		}
 	}
 	if (sizeof($errors) > 0) {
-		for ($i = 0; (($i < sizeof($errors)) || ($i > 49)); $i++) call_user_func_array("StatusMessage", $errors[$i]);
+		for ($i = 0; (($i < sizeof($errors)) || ($i > 49)); $i++) {
+			call_user_func_array("StatusMessage", $errors[$i]);
+		}
 		return false;
 	}
-	else return $partialAccounts;
+	return $partialAccounts;
 }
 
 /**

@@ -54,19 +54,19 @@ if (!empty($_POST)) {
 // check if user already pressed button
 if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 	if (isset($_POST['add_suff'])) {
-		$fail = array();
-		$errors = array();
-		$new_suff = $_POST['new_suff'];
-		$new_suff = str_replace("\\", "", $new_suff);
-		$new_suff = str_replace("'", "", $new_suff);
-		$new_suff = explode(";", $new_suff);
+		$failedDNs = array();
+		$error = array();
+		$newSuffixes = $_POST['new_suff'];
+		$newSuffixes = str_replace("\\", "", $newSuffixes);
+		$newSuffixes = str_replace("'", "", $newSuffixes);
+		$newSuffixes = explode(";", $newSuffixes);
 		// add entries
-		for ($i = 0; $i < sizeof($new_suff); $i++) {
+		foreach ($newSuffixes as $newSuffix) {
 			// check if entry is already present
-			$info = @ldap_read($_SESSION['ldap']->server(), escapeDN($new_suff[$i]), "objectclass=*", array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
+			$info = @ldap_read($_SESSION['ldap']->server(), escapeDN($newSuffix), "objectclass=*", array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
 			$res = @ldap_get_entries($_SESSION['ldap']->server(), $info);
 			if ($res) continue;
-			$suff = $new_suff[$i];
+			$suff = $newSuffix;
 			// generate DN and attributes
 			$tmp = explode(",", $suff);
 			$name = explode("=", $tmp[0]);
@@ -78,7 +78,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 				$attr['objectClass'] = 'organization';
 				$dn = $suff;
 				if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) {
-					$fail[] = $suff;
+					$failedDNs[] = $suff;
 					$error[] = ldap_error($_SESSION['ldap']->server());
 					continue;
 				}
@@ -117,7 +117,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 									$attr['ou'] = $headarray[1];
 									$dn = $subsuffs[$k];
 									if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) {
-										$fail[] = $suff;
+										$failedDNs[] = $suff;
 										$error[] = ldap_error($_SESSION['ldap']->server());
 										break;
 									}
@@ -132,7 +132,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 									}
 									$dn = $subsuffs[$k];
 									if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) {
-										$fail[] = $suff;
+										$failedDNs[] = $suff;
 										$error[] = ldap_error($_SESSION['ldap']->server());
 										break;
 									}
@@ -141,7 +141,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 						}
 					}
 					else {
-						$fail[] = $suff;
+						$failedDNs[] = $suff;
 						$error[] = ldap_error($_SESSION['ldap']->server());
 					}
 				}
@@ -151,10 +151,10 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 	include 'main_header.php';
 	// print error/success messages
 	if (isset($_POST['add_suff'])) {
-		if (sizeof($fail) > 0) {
+		if (sizeof($failedDNs) > 0) {
 			// print error messages
-			for ($i = 0; $i < sizeof($fail); $i++) {
-				StatusMessage("ERROR", _("Failed to create entry!") . "<br>" . htmlspecialchars($error[$i]), htmlspecialchars($fail[$i]));
+			for ($i = 0; $i < sizeof($failedDNs); $i++) {
+				StatusMessage("ERROR", _("Failed to create entry!") . "<br>" . htmlspecialchars($error[$i]), htmlspecialchars($failedDNs[$i]));
 			}
 			include 'main_footer.php';
 		}
@@ -173,10 +173,10 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 }
 
 // first show of page
-$new_suff = $_GET['suffs'];
-$new_suff = str_replace("\\", "", $new_suff);
-$new_suff = str_replace("'", "", $new_suff);
-$new_suff = explode(";", $new_suff);
+$newSuffixes = $_GET['suffs'];
+$newSuffixes = str_replace("\\", "", $newSuffixes);
+$newSuffixes = str_replace("'", "", $newSuffixes);
+$newSuffixes = explode(";", $newSuffixes);
 
 include 'main_header.php';
 	echo '<div class="user-bright smallPaddingContent">';
@@ -186,15 +186,15 @@ include 'main_header.php';
 	$container->addElement(new htmlOutputText(_("You can setup the LDAP suffixes for all account types in your LAM server profile on tab \"Account types\".")), true);
 	$container->addElement(new htmlSpacer(null, '10px'), true);
 	// print missing suffixes
-	for ($i = 0; $i < sizeof($new_suff); $i++) {
-		$container->addElement(new htmlOutputText($new_suff[$i]), true);
+	foreach ($newSuffixes as $newSuffix) {
+		$container->addElement(new htmlOutputText($newSuffix), true);
 	}
 	$container->addElement(new htmlSpacer(null, '10px'), true);
 
 	$buttonContainer = new htmlTable();
 	$buttonContainer->addElement(new htmlButton('add_suff', _("Create")));
 	$buttonContainer->addElement(new htmlButton('cancel', _("Cancel")));
-	$buttonContainer->addElement(new htmlHiddenInput('new_suff', implode(";", $new_suff)));
+	$buttonContainer->addElement(new htmlHiddenInput('new_suff', implode(";", $newSuffixes)));
 	$container->addElement($buttonContainer);
 	addSecurityTokenToMetaHTML($container);
 

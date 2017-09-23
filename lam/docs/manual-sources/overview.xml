@@ -63,7 +63,7 @@
 
   <itemizedlist>
     <listitem>
-      <para>PHP (&gt;= 5.4.0)</para>
+      <para>PHP (&gt;= 5.6.0)</para>
     </listitem>
 
     <listitem>
@@ -85,7 +85,7 @@
         </listitem>
 
         <listitem>
-          <para>Internet Explorer 9<emphasis role="bold"> (compatibility mode
+          <para>Internet Explorer 11<emphasis role="bold"> (compatibility mode
           turned off)</emphasis></para>
         </listitem>
 

@@ -248,7 +248,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				'help' => 'subnet',
 				'example' => '192.168.10.0',
 				'required' => true,
-				'unique' => 'true'
+				'unique' => true
 			),
 			array(
 				'name' => 'dhcp_settings_domainName',

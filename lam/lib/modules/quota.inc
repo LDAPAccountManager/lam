@@ -186,11 +186,14 @@ class quota extends baseModule {
 			$temp = explode(":", $lamdaemonServers[$s]);
 			$server = $temp[0];
 			// get quotas
-			$quotas = lamdaemon(implode(quota::$SPLIT_DELIMITER, array($userName, "quota", "get", $this->get_scope())), $server);
+			$remote = new \LAM\REMOTE\Remote();
+			$remote->connect($server);
+			$quotas = $remote->execute(implode(quota::$SPLIT_DELIMITER, array($userName, "quota", "get", $this->get_scope())));
+			$remote->disconnect();
 			if (sizeof($quotas) == 0) {
 				continue;
 			}
-			$allQuotas = explode(":", $quotas[0]);
+			$allQuotas = explode(":", $quotas);
 			array_pop($allQuotas); // remove empty element at the end
 			for ($i = 0; $i < sizeof($allQuotas); $i++) {
 				if (strpos($allQuotas[$i], quota::$QUOTA_PREFIX) !== 0) continue;
@@ -280,7 +283,10 @@ class quota extends baseModule {
 				$quotastring = $quotastring . $this->quota[$server][$i][0] . ',' . $this->quota[$server][$i][2] . ',' . $this->quota[$server][$i][3]
 					. ',' . $this->quota[$server][$i][6] . ',' . $this->quota[$server][$i][7] . ':';
 			}
-			lamdaemon(implode(quota::$SPLIT_DELIMITER, array($id, "quota", "set", $this->get_scope(), "$quotastring\n")), $server);
+			$remote = new \LAM\REMOTE\Remote();
+			$remote->connect($server);
+			$remote->execute(implode(quota::$SPLIT_DELIMITER, array($id, "quota", "set", $this->get_scope(), "$quotastring\n")));
+			$remote->disconnect();
 		}
 		return $messages;
 	}
@@ -319,7 +325,10 @@ class quota extends baseModule {
 				$quotastring = $quotastring . $this->quota[$server][$i][0] . ',0,0,0,0:';
 				$i++;
 				}
-			lamdaemon(implode(quota::$SPLIT_DELIMITER, array($id, "quota", "set", $this->get_scope(), "$quotastring\n")), $server);
+			$remote = new \LAM\REMOTE\Remote();
+			$remote->connect($server);
+			$remote->execute(implode(quota::$SPLIT_DELIMITER, array($id, "quota", "set", $this->get_scope(), "$quotastring\n")));
+			$remote->disconnect();
 		}
 		return array();
 	}
@@ -483,11 +492,14 @@ class quota extends baseModule {
 				$description = $temp[1] . ' (' . $temp[0] . ')';
 			}
 			// Get quotas
-			$quotas = lamdaemon(implode(quota::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope())), $server);
-			if (sizeof($quotas) == 0) {
+			$remote = new \LAM\REMOTE\Remote();
+			$remote->connect($server);
+			$quotas = $remote->execute(implode(quota::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope())));
+			$remote->disconnect();
+			if (empty($quotas)) {
 				continue;
 			}
-			$dirs = explode(":", $quotas[0]);
+			$dirs = explode(":", $quotas);
 			array_pop($dirs); // remove empty element at the end
 			for ($i = 0; $i < sizeof($dirs); $i++) {
 				if (strpos($dirs[$i], quota::$QUOTA_PREFIX) !== 0) {
@@ -556,8 +568,11 @@ class quota extends baseModule {
 			$server = $temp[0];
 			$id = $this->replaceSpecialChars($server);
 			// Get quotas
-			$quotas = lamdaemon(implode(quota::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope())), $server);
-			$dirs = explode(":", $quotas[0]);
+			$remote = new \LAM\REMOTE\Remote();
+			$remote->connect($server);
+			$quotas = $remote->execute(implode(quota::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope())));
+			$remote->disconnect();
+			$dirs = explode(":", $quotas);
 			array_pop($dirs); // remove empty element at the end
 			for ($i = 0; $i < sizeof($dirs); $i++) {
 				if (strpos($dirs[$i], quota::$QUOTA_PREFIX) !== 0) {
@@ -669,8 +684,11 @@ class quota extends baseModule {
 				$temp = explode(":", $lamdaemonServers[$s]);
 				$server = $temp[0];
 				// Get quotas
-				$quotas = lamdaemon(implode(quota::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope())), $server);
-				$dirs = explode(":", $quotas[0]);
+				$remote = new \LAM\REMOTE\Remote();
+				$remote->connect($server);
+				$quotas = $remote->execute(implode(quota::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope())));
+				$remote->disconnect();
+				$dirs = explode(":", $quotas);
 				array_pop($dirs); // remove empty element at the end
 				for ($i = 0; $i < sizeof($dirs); $i++) {
 					if (strpos($dirs[$i], quota::$QUOTA_PREFIX) !== 0) {
@@ -786,13 +804,14 @@ class quota extends baseModule {
 				$dir = $mpParts[1];
 				$quotaString = implode(quota::$SPLIT_DELIMITER, array($name, "quota", "set", $this->get_scope(), $dir . ',' .
 					implode(',', $temp['accounts'][$name][$mountPoints[$m]]) . "\n"));
-				$result = lamdaemon($quotaString, $server);
-				if (is_array($result)) {
-					for ($i = 0; $i < sizeof($result); $i++) {
-						$parts = explode(",", $result);
-						if ($parts[0] == 'ERROR') {
-							$errors[] = array('ERROR', $parts[1], $parts[2]);
-						}
+				$remote = new \LAM\REMOTE\Remote();
+				$remote->connect($server);
+				$result = $remote->execute($quotaString);
+				$remote->disconnect();
+				if (!empty($result)) {
+					$parts = explode(",", $result);
+					if ($parts[0] == 'ERROR') {
+						$errors[] = array('ERROR', $parts[1], $parts[2]);
 					}
 				}
 			}
