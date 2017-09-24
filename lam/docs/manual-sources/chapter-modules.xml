@@ -1748,6 +1748,11 @@
       passwords will be visible for a short term in the process list during
       password change.</para>
 
+      <para>Please note that kadmin/kadmin.local often returns a successful
+      command even if errors occured (e.g. password policy violations). You
+      need to test this before and if affected then write a wrapper script
+      arround kadmin that returns non-zero return codes for errors.</para>
+
       <para>Example commands:</para>
 
       <itemizedlist>
