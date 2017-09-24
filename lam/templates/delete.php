@@ -42,8 +42,8 @@ include_once('../lib/config.inc');
 include_once('../lib/status.inc');
 /** LDAP connection */
 include_once('../lib/ldap.inc');
-/** lamdaemon interface */
-include_once('../lib/lamdaemon.inc');
+/** remote interface */
+include_once('../lib/remote.inc');
 /** module interface */
 include_once('../lib/modules.inc');
 
@@ -105,7 +105,8 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	echo "<b>" . _("Do you really want to remove the following accounts?") . "</b>";
 	echo "<br><br>\n";
 	echo "<table border=0>\n";
-	for ($i=0; $i<count($users); $i++) {
+	$userCount = sizeof($users);
+	for ($i = 0; $i < $userCount; $i++) {
 		echo "<tr>\n";
 		echo "<td><b>" . _("Account name:") . "</b> " . htmlspecialchars($users[$i]) . "</td>\n";
 		echo "<td>&nbsp;&nbsp;<b>" . _('DN') . ":</b> " . htmlspecialchars($_SESSION['delete_dn'][$i]) . "</td>\n";
@@ -173,11 +174,11 @@ if (isset($_POST['delete'])) {
 	// Delete dns
 	$allOk = true;
 	$allErrors = array();
-	for ($m=0; $m<count($_SESSION['delete_dn']); $m++) {
+	foreach ($_SESSION['delete_dn'] as $deleteDN) {
 		// Set to true if an real error has happened
 		$stopprocessing = false;
 		// First load DN.
-		$_SESSION['account']->load_account($_SESSION['delete_dn'][$m]);
+		$_SESSION['account']->load_account($deleteDN);
 		// get commands and changes of each attribute
 		$moduleNames = array_keys($_SESSION['account']->getAccountModules());
 		$modules = $_SESSION['account']->getAccountModules();
@@ -188,13 +189,13 @@ if (isset($_POST['delete'])) {
 			foreach ($moduleNames as $singlemodule) {
 				$success = true;
 				$messages = $modules[$singlemodule]->preDeleteActions();
-				for ($i = 0; $i < sizeof($messages); $i++) {
-					$errors[] = $messages[$i];
-					if ($messages[$i][0] == 'ERROR') {
+				foreach ($messages as $message) {
+					$errors[] = $message;
+					if ($message[0] == 'ERROR') {
 						$success = false;
 						$allOk = false;
 					}
-					elseif ($messages[$i][0] == 'WARN') {
+					elseif ($message[0] == 'WARN') {
 						$allOk = false;
 					}
 				}
@@ -213,20 +214,21 @@ if (isset($_POST['delete'])) {
 					// merge changes
 					$DNs = array_keys($temp);
 					$attributes = array_merge_recursive($temp, $attributes);
-					for ($i=0; $i<count($DNs); $i++) {
-						$ops = array_keys($temp[$DNs[$i]]);
-						for ($j=0; $j<count($ops); $j++) {
-							$attrs = array_keys($temp[$DNs[$i]][$ops[$j]]);
-							for ($k=0; $k<count($attrs); $k++)
-							$attributes[$DNs[$i]][$ops[$j]][$attrs[$k]] = array_unique($attributes[$DNs[$i]][$ops[$j]][$attrs[$k]]);
+					foreach ($DNs as $dn) {
+						$ops = array_keys($temp[$dn]);
+						foreach ($ops as $op) {
+							$attrs = array_keys($temp[$dn][$op]);
+							foreach ($attrs as $attribute) {
+								$attributes[$dn][$op][$attribute] = array_unique($attributes[$dn][$op][$attribute]);
+							}
 						}
 					}
 				}
 			}
 			$DNs = array_keys($attributes);
-			for ($i=0; $i<count($DNs); $i++) {
-				if (isset($attributes[$DNs[$i]]['errors'])) {
-					foreach ($attributes[$DNs[$i]]['errors'] as $singleerror) {
+			foreach ($DNs as $dn) {
+				if (isset($attributes[$dn]['errors'])) {
+					foreach ($attributes[$dn]['errors'] as $singleerror) {
 						$errors[] = $singleerror;
 						if ($singleerror[0] == 'ERROR') {
 							$stopprocessing = true;
@@ -236,28 +238,28 @@ if (isset($_POST['delete'])) {
 				}
 				if (!$stopprocessing) {
 					// modify attributes
-					if (isset($attributes[$DNs[$i]]['modify']) && !$stopprocessing) {
-						$success = @ldap_mod_replace($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
+					if (isset($attributes[$dn]['modify']) && !$stopprocessing) {
+						$success = @ldap_mod_replace($_SESSION['ldap']->server(), $dn, $attributes[$dn]['modify']);
 						if (!$success) {
-							$errors[] = array ('ERROR', sprintf(_('Was unable to modify attributes from DN: %s.'), $DNs[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+							$errors[] = array ('ERROR', sprintf(_('Was unable to modify attributes from DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 							$stopprocessing = true;
 							$allOk = false;
 						}
 					}
 					// add attributes
-					if (isset($attributes[$DNs[$i]]['add']) && !$stopprocessing) {
-						$success = @ldap_mod_add($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['add']);
+					if (isset($attributes[$dn]['add']) && !$stopprocessing) {
+						$success = @ldap_mod_add($_SESSION['ldap']->server(), $dn, $attributes[$dn]['add']);
 						if (!$success) {
-							$errors[] = array ('ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $DNs[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+							$errors[] = array ('ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 							$stopprocessing = true;
 							$allOk = false;
 						}
 					}
 					// remove attributes
-					if (isset($attributes[$DNs[$i]]['remove']) && !$stopprocessing) {
-						$success = @ldap_mod_del($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['remove']);
+					if (isset($attributes[$dn]['remove']) && !$stopprocessing) {
+						$success = @ldap_mod_del($_SESSION['ldap']->server(), $dn, $attributes[$dn]['remove']);
 						if (!$success) {
-							$errors[] = array ('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $DNs[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+							$errors[] = array ('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 							$stopprocessing = true;
 							$allOk = false;
 						}
@@ -267,7 +269,7 @@ if (isset($_POST['delete'])) {
 		}
 		if (!$stopprocessing) {
 			$recursive = !$_SESSION['account']->hasOnlyVirtualChildren();
-			$messages = deleteDN($_SESSION['delete_dn'][$m], $recursive);
+			$messages = deleteDN($deleteDN, $recursive);
 			$errors = array_merge($errors, $messages);
 			if (sizeof($errors) > 0) {
 				$stopprocessing = true;
@@ -278,16 +280,16 @@ if (isset($_POST['delete'])) {
 		if (!$stopprocessing) {
 			foreach ($moduleNames as $singlemodule) {
 				$messages = $modules[$singlemodule]->postDeleteActions();
-				for ($i = 0; $i < sizeof($messages); $i++) {
-					$errors[] = $messages[$i];
-					if (($messages[$i][0] == 'ERROR') || ($messages[$i][0] == 'WARN')) {
+				foreach ($messages as $message) {
+					$errors[] = $message;
+					if (($message[0] == 'ERROR') || ($message[0] == 'WARN')) {
 						$allOk = false;
 					}
 				}
 			}
 		}
 		if (!$stopprocessing) {
-			echo sprintf(_('Deleted DN: %s'), $_SESSION['delete_dn'][$m]) . "<br>\n";
+			echo sprintf(_('Deleted DN: %s'), $deleteDN) . "<br>\n";
 			foreach ($errors as $error) {
 				call_user_func_array('StatusMessage', $error);
 			}
@@ -295,7 +297,7 @@ if (isset($_POST['delete'])) {
 			flush();
 		}
 		else {
-			echo sprintf(_('Error while deleting DN: %s'), $_SESSION['delete_dn'][$m]) . "<br>\n";
+			echo sprintf(_('Error while deleting DN: %s'), $deleteDN) . "<br>\n";
 			foreach ($errors as $error) {
 				call_user_func_array('StatusMessage', $error);
 			}

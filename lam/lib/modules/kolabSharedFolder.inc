@@ -32,7 +32,7 @@ $Id$
 *
 * @package modules
 */
-class kolabSharedFolder extends baseModule { // TODO folder type
+class kolabSharedFolder extends baseModule {
 
 	/** cache for mailHost values */
 	private $mailHostCache = null;
@@ -49,7 +49,6 @@ class kolabSharedFolder extends baseModule { // TODO folder type
 		// call parent constructor
 		parent::__construct($scope);
 		$this->folderTypes = array(
-			// TODO reactivate types when stable 3.1 is released
 			/*_('Shared address book') => 'addressbook',
 			_('Shared calendar') => 'calendar',
 			_('Shared journal') => 'journal',

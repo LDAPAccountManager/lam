@@ -161,7 +161,7 @@ class eduPerson extends baseModule {
 				'description' => _('Principal name'),
 				'help' => 'eduPersonPrincipalName',
 				'example' => _('user@company.com'),
-				'unique' => 'true'
+				'unique' => true
 			),
 			array(
 				'name' => 'eduPerson_primaryAffiliation',

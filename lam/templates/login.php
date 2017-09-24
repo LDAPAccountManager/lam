@@ -177,7 +177,7 @@ $_SESSION['header'] .= "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<me
 * @param \LAM\ENV\LAMLicenseValidator $licenseValidator license validator
 * @param string $error_message error message to display
 */
-function display_LoginPage($config_object, $cfgMain, $licenseValidator, $error_message) {
+function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licenseValidator, $error_message) {
 	logNewMessage(LOG_DEBUG, "Display login page");
 	// generate 256 bit key and initialization vector for user/passwd-encryption
 	if(function_exists('openssl_random_pseudo_bytes') && ($cfgMain->encryptSession == 'true')) {
@@ -582,9 +582,6 @@ if(!empty($_POST['checklogin'])) {
 			display_LoginPage($_SESSION['config'], $_SESSION["cfgMain"], $licenseValidator, $error_message); // Empty password submitted. Return to login page.
 			exit();
 		}
-		if (get_magic_quotes_gpc() == 1) {
-			$_POST['passwd'] = stripslashes($_POST['passwd']);
-		}
 		$username = $_POST['username'];
 		$password = $_POST['passwd'];
 	}
@@ -594,7 +591,7 @@ if(!empty($_POST['checklogin'])) {
 		$searchFilter = str_replace('%USER%', $username ,$searchFilter);
 		$searchDN = '';
 		$searchPassword = '';
-		if (($_SESSION['config']->getLoginSearchDN() != null) && ($_SESSION['config']->getLoginSearchDN() != '')) {
+		if (!empty($_SESSION['config']->getLoginSearchDN())) {
 			$searchDN = $_SESSION['config']->getLoginSearchDN();
 			$searchPassword = $_SESSION['config']->getLoginSearchPassword();
 		}

@@ -256,7 +256,7 @@ include '../main_footer.php';
 * @param \LAM\TYPES\ConfiguredType $type account type
 * @param array $selectedModules list of selected account modules
 */
-function showMainPage($type, $selectedModules) {
+function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 	$scope = $type->getScope();
 	echo '<div class="' . $scope . '-bright smallPaddingContent">';
 	// get input fields from modules
@@ -382,7 +382,7 @@ function showMainPage($type, $selectedModules) {
 		$columnContainer->addElement(new htmlSpacer(null, '10px'), true);
 		$module = moduleCache::getModule($modules[$m], $scope);
 		$icon = $module->getIcon();
-		if (($icon != null) && !(strpos($icon, 'http') === 0) && !(strpos($icon, '/') === 0)) {
+		if (!empty($icon) && !(strpos($icon, 'http') === 0) && !(strpos($icon, '/') === 0)) {
 			$icon = '../../graphics/' . $icon;
 		}
 		$moduleTitle = new htmlSubTitle(getModuleAlias($modules[$m], $scope), $icon);
@@ -413,7 +413,7 @@ function showMainPage($type, $selectedModules) {
 		$odd = true;
 		for ($i = 0; $i < sizeof($columns[$modules[$m]]); $i++) {
 			$required = false;
-			if (isset($columns[$modules[$m]][$i]['required']) && ($columns[$modules[$m]][$i]['required'] == true)) {
+			if (isset($columns[$modules[$m]][$i]['required']) && ($columns[$modules[$m]][$i]['required'] === true)) {
 				$required = true;
 			}
 			$rowCells = array();

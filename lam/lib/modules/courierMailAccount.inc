@@ -475,7 +475,7 @@ class courierMailAccount extends baseModule {
 				'description' => _('Home directory'),
 				'help' => 'homeDirectory',
 				'example' => _('/home/smiller'),
-				'required' => 'true'
+				'required' => true
 			);
 		}
 		return $return;

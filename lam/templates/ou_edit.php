@@ -81,7 +81,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 			// check if ou already exists
 			$new_dn = "ou=" . $_POST['newOU'] . "," . $_POST['parentOU'];
 			$found = ldapGetDN($new_dn);
-			if ($found == null) {
+			if ($found === null) {
 				// add new ou
 				$ou = array();
 				$ou['objectClass'] = "organizationalunit";
