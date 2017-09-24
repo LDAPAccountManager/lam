@@ -1494,10 +1494,14 @@ class accountContainer {
 				foreach ($orig[$name] as $j => $value) {
 					if (is_array($attributes[$name])) {
 						if (!in_array($value, $attributes[$name], true)) {
-							if ($value != '') $torem[$name][] = $value;
+							if (($value !== null) && ($value !== '')) {
+								$torem[$name][] = $value;
+							}
 						}
 					}
-					else if ($value != '') $torem[$name][] = $value;
+					elseif (($value !== null) && ($value !== '')) {
+						$torem[$name][] = $value;
+					}
 				}
 			}
 			// find new attributes
@@ -1505,17 +1509,19 @@ class accountContainer {
 				foreach ($attributes[$name] as $j => $value) {
 					if (isset($orig[$name]) && is_array($orig[$name])) {
 						if (!in_array($value, $orig[$name], true))
-							if ($value != '') {
+							if (($value !== null) && ($value !== '')) {
 								$toadd[$name][] = $value;
 							}
 					}
-					else if ($value != '') $toadd[$name][] = $value;
+					elseif (($value !== null) && ($value !== '')) {
+						$toadd[$name][] = $value;
+					}
 				}
 			}
 			// find unchanged attributes
 			if (isset($orig[$name]) && is_array($orig[$name]) && is_array($attributes[$name])) {
 				foreach ($attributes[$name] as $j => $value) {
-					if (($value != '') && in_array($value, $orig[$name], true)) {
+					if (($value !== null) && ($value !== '') && in_array($value, $orig[$name], true)) {
 						$notchanged[$name][] = $value;
 					}
 				}
@@ -1524,26 +1530,33 @@ class accountContainer {
 		// create modify with add and remove
 		$attributes2 = array_keys($toadd);
 		for ($i=0; $i<count($attributes2); $i++) {
-			if (isset($torem[$attributes2[$i]]))
-				if ((count($toadd[$attributes2[$i]]) > 0) && (count($torem[$attributes2[$i]]) > 0)) {
-					// found attribute which should be modified
-					$tomodify[$attributes2[$i]] = $toadd[$attributes2[$i]];
-					// merge unchanged values
-					if (isset($notchanged[$attributes2[$i]])) {
-						$tomodify[$attributes2[$i]] = array_merge($tomodify[$attributes2[$i]], $notchanged[$attributes2[$i]]);
-						unset($notchanged[$attributes2[$i]]);
-					}
-					// remove old add and remove commands
-					unset($toadd[$attributes2[$i]]);
-					unset($torem[$attributes2[$i]]);
+			if (isset($torem[$attributes2[$i]]) && (count($toadd[$attributes2[$i]]) > 0) && (count($torem[$attributes2[$i]]) > 0)) {
+				// found attribute which should be modified
+				$tomodify[$attributes2[$i]] = $toadd[$attributes2[$i]];
+				// merge unchanged values
+				if (isset($notchanged[$attributes2[$i]])) {
+					$tomodify[$attributes2[$i]] = array_merge($tomodify[$attributes2[$i]], $notchanged[$attributes2[$i]]);
+					unset($notchanged[$attributes2[$i]]);
 				}
+				// remove old add and remove commands
+				unset($toadd[$attributes2[$i]]);
+				unset($torem[$attributes2[$i]]);
 			}
-		if (count($toadd)!=0) $return[$this->dn_orig]['add'] = $toadd;
-		if (count($torem)!=0) $return[$this->dn_orig]['remove'] = $torem;
-		if (count($tomodify)!=0) $return[$this->dn_orig]['modify'] = $tomodify;
-		if (count($notchanged)!=0) $return[$this->dn_orig]['notchanged'] = $notchanged;
-		return $return;
 		}
+		if (count($toadd) > 0) {
+			$return[$this->dn_orig]['add'] = $toadd;
+		}
+		if (count($torem) > 0) {
+			$return[$this->dn_orig]['remove'] = $torem;
+		}
+		if (count($tomodify) > 0) {
+			$return[$this->dn_orig]['modify'] = $tomodify;
+		}
+		if (count($notchanged) > 0) {
+			$return[$this->dn_orig]['notchanged'] = $notchanged;
+		}
+		return $return;
+	}
 
 	/**
 	* Loads an LDAP account with the given DN.
