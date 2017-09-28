@@ -41,11 +41,7 @@ if [ -f /usr/share/debconf/confmodule ]; then
 		set -e
 		for server in $restart; do
 				server=${server%,}
-				if [ `which systemctl` ]; then
-				    if [ "`systemctl is-active ${server}.service`" = "active" ]; then
-						systemctl reload ${server}.service
-				    fi
-				elif [ `which invoke-rc.d` ]; then
+				if [ `which invoke-rc.d` ]; then
 					invoke-rc.d $server reload
 				elif [ `which service` ]; then
 					service $server reload
