@@ -124,9 +124,9 @@ foreach ($toSort as $key => $value) {
 		</td>
 		<td align="left" height="30" class="nowrap">
 			<?php
-				echo '&nbsp;&nbsp;<small>';
 				$userData = $_SESSION['ldap']->decrypt_login();
-				printf('(' . _('Logged in as: %s') . ')', getAbstractDN($userData[0]));
+				echo '&nbsp;&nbsp;<small title="' . $userData[0] . '">';
+				printf('(' . _('Logged in as: %s') . ')', extractRDNValue($userData[0]));
 				$userData = null;
 				echo '</small>';
 			?>
