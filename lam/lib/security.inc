@@ -514,8 +514,13 @@ function getClientIPForLogging() {
 
 /**
  * Adds a security token to the session to prevent CSRF attacks.
+ *
+ * @param boolean $overwrite overwrite existing token
  */
-function addSecurityTokenToSession() {
+function addSecurityTokenToSession($overwrite = true) {
+	if (!empty($_SESSION[getSecurityTokenName()]) && !$overwrite) {
+		return;
+	}
 	$_SESSION[getSecurityTokenName()] = getRandomNumber();
 }
 
