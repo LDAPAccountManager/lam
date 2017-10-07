@@ -1269,7 +1269,7 @@ function getRandomNumber() {
  * @return mixed false on error and certificate if extracted successfully
  */
 function getLDAPSSLCertificate($server, $port) {
-	$stream = @stream_context_create(array("ssl" => array("capture_peer_cert_chain" => true)));
+	$stream = @stream_context_create(array("ssl" => array("capture_peer_cert_chain" => true, "verify_peer" => false, "allow_self_signed" => true)));
 	if (!$stream) {
 		return false;
 	}
