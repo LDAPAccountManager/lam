@@ -95,22 +95,13 @@ class Ldap{
 		}
 		// save password und username encrypted
 		$this->encrypt_login($user, $passwd);
-		$this->server = @ldap_connect($this->conf->get_ServerURL());
-		if ($this->server) {
-			// use LDAPv3
-			ldap_set_option($this->server, LDAP_OPT_PROTOCOL_VERSION, 3);
+		$startTLS = $this->conf->getUseTLS();
+		$startTLS = ($startTLS === 'yes');
+		$this->server = connectToLDAP($this->conf->get_ServerURL(), $startTLS);
+		if ($this->server != null) {
 			// referral following
 			$followReferrals = ($this->conf->getFollowReferrals() === 'true') ? 1 : 0;
 			ldap_set_option($this->server,LDAP_OPT_REFERRALS, $followReferrals);
-			// start TLS if specified
-			$useTLS = $this->conf->getUseTLS();
-			if (isset($useTLS) && ($useTLS == "yes")) {
-				@ldap_start_tls($this->server);
-				if (ldap_errno($this->server) != 0) {
-					logNewMessage(LOG_ERR, 'Unable to start TLS encryption. Please check if your server certificate is valid and if the LDAP server supports TLS at all.');
-					return ldap_errno($this->server);
-				}
-			}
 			$bind = @ldap_bind($this->server, $user, $passwd);
 			if ($bind) {
 				$return = ldap_errno($this->server);

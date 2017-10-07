@@ -630,6 +630,30 @@ function escapeDN($dn) {
 }
 
 /**
+ * Connects to an LDAP server using the given URL.
+ *
+ * @param string $serverURL URL
+ */
+function connectToLDAP($serverURL, $startTLS) {
+	$server = ldap_connect($serverURL);
+	if (!$server) {
+		return null;
+	}
+	// use LDAPv3
+	ldap_set_option($server, LDAP_OPT_PROTOCOL_VERSION, 3);
+	// start TLS if possible
+	if ($startTLS) {
+		ldap_start_tls($server);
+		if (ldap_errno($server) != 0) {
+			ldap_close($server);
+			logNewMessage(LOG_ERR, 'Unable to start TLS encryption. Please check if your server certificate is valid and if the LDAP server supports TLS at all.');
+			return null;
+		}
+	}
+	return $server;
+}
+
+/**
  * This will search the given LDAP suffix for all entries which have the given attribute.
  *
  * @param String $name attribute name (may be null)
