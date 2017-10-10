@@ -32,17 +32,6 @@ $Id$
 include_once("config.inc");
 
 /**
-* Converts a HEX string to a binary value
-*
-* @param string $value HEX string
-* @return binary result binary
-*/
-function convertHex2bin($value) {
-	return pack("H*", $value);
-}
-
-
-/**
 * Ldap manages connection to LDAP and includes several helper functions.
 *
 * @package LDAP

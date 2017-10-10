@@ -1110,7 +1110,7 @@ class LAMConfig {
 	 * @return String hash value
 	 */
 	private function hashPassword($password, $salt) {
-		return "{SSHA}" . base64_encode(convertHex2bin(sha1($password . $salt))) . " " . base64_encode($salt);
+		return "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt))) . " " . base64_encode($salt);
 	}
 
 	/**
@@ -2445,7 +2445,7 @@ class LAMCfgMain {
 	 * @return String hash value
 	 */
 	private function hashPassword($password, $salt) {
-		return "{SSHA}" . base64_encode(convertHex2bin(sha1($password . $salt))) . " " . base64_encode($salt);
+		return "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt))) . " " . base64_encode($salt);
 	}
 
 	/**
