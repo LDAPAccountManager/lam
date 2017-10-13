@@ -1,7 +1,7 @@
 Source: ldap-account-manager
 Maintainer: Roland Gruber <post@rolandgruber.de>
 Section: web
-Priority: extra
+Priority: optional
 Standards-Version: 4.1.0
 Build-Depends: debhelper (>= 9), po-debconf, cleancss, closure-compiler
 Homepage: https://www.ldap-account-manager.org/
