@@ -4,7 +4,7 @@
 
 if [ $# -lt 1 ]
 then
-echo -e "Usage: buildPackage <tag>"
+echo -e "Usage: buildPackage <tag>, buildPackage develop, buildPackage -b branch"
 exit
 fi
 
@@ -15,6 +15,9 @@ cd /daten/projekte/lam/pakete
 if [ "$1" = "develop" ]
 then
 	export REPO_BRANCH="develop"
+elif [ "$1" = "-b" ]
+then
+	export REPO_BRANCH="$2"
 else
 	export REPO_BRANCH="tags/$1"
 fi
