@@ -771,6 +771,22 @@ class shadowAccount extends baseModule implements passwordService {
 		);
 	}
 
+	/**
+	 * Returns if the given account is expired.
+	 *
+	 * @param array $attrs LDAP attributes
+	 * @return bool expired
+	 */
+	public static function isAccountExpired($attrs) {
+		$attrs = array_change_key_case($attrs, CASE_LOWER);
+		if (empty($attrs['shadowexpire'][0])) {
+			return false;
+		}
+		$time = new DateTime('@' . $attrs['shadowexpire'][0] * 24 * 3600, new DateTimeZone('UTC'));
+		$now = new DateTime(null, getTimeZone());
+		return ($time > $now);
+	}
+
 }
 
 if (interface_exists('\LAM\JOB\Job', false)) {
