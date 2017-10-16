@@ -353,7 +353,7 @@ class user extends baseType {
 		if ($shadowModule != null) {
 			$shadowAttrs = $shadowModule->getAttributes();
 			if (shadowAccount::isAccountExpired($shadowAttrs)) {
-				$expiredLabels[] = _('Shadow');
+				$expiredLabels[] = _('Shadow') . ': ' . _('Account expiration');
 			}
 		}
 		if (!empty($expiredLabels)) {
@@ -1014,7 +1014,7 @@ class lamUserList extends lamList {
 			$tipContent = '<table border=0>';
 			// Shadow expired
 			if ($shadowExpired) {
-				$tipContent .= '<tr><td>' . _('Shadow') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/expired.png&quot;></td></tr>';
+				$tipContent .= '<tr><td>' . _('Shadow') . ': ' . _('Account expiration') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/expired.png&quot;></td></tr>';
 			}
 			// Unix
 			if ($unixAvailable) {
