@@ -21,12 +21,49 @@
 
  */
 
-if (is_readable('lam/lib/passwordExpirationJob.inc')) {
-
 	include_once 'lam/lib/baseModule.inc';
 	include_once 'lam/lib/modules.inc';
-	include_once 'lam/lib/passwordExpirationJob.inc';
+	if (is_readable('lam/lib/passwordExpirationJob.inc')) {
+		include_once 'lam/lib/passwordExpirationJob.inc';
+	}
 	include_once 'lam/lib/modules/shadowAccount.inc';
+
+	/**
+	 * Checks the shadowAccount class.
+	 *
+	 * @author Roland Gruber
+	 */
+	class ShadowAccountTest extends PHPUnit_Framework_TestCase {
+
+		public function test_isAccountExpired_noAttr() {
+			$attrs = array('objectClass' => array('shadowAccount'));
+
+			$this->assertFalse(shadowAccount::isAccountExpired($attrs));
+		}
+
+		public function test_isAccountExpired_notExpired() {
+			$expire = intval(time() / (24*3600)) + 10000;
+			$attrs = array(
+				'objectClass' => array('shadowAccount'),
+				'sHadoweXpirE' => array(0 => $expire)
+			);
+
+			$this->assertFalse(shadowAccount::isAccountExpired($attrs));
+		}
+
+		public function test_isAccountExpired_expired() {
+			$expire = intval(time() / (24*3600)) - 10000;
+			$attrs = array(
+				'objectClass' => array('shadowAccount'),
+				'sHadoweXpirE' => array(0 => $expire)
+			);
+
+			$this->assertTrue(shadowAccount::isAccountExpired($attrs));
+		}
+
+	}
+
+if (is_readable('lam/lib/passwordExpirationJob.inc')) {
 
 	/**
 	 * Checks the shadow expire job.

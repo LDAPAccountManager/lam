@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-  Copyright (C) 2007 - 2016  Roland Gruber
+  Copyright (C) 2007 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -784,7 +784,7 @@ class shadowAccount extends baseModule implements passwordService {
 		}
 		$time = new DateTime('@' . $attrs['shadowexpire'][0] * 24 * 3600, new DateTimeZone('UTC'));
 		$now = new DateTime(null, getTimeZone());
-		return ($time > $now);
+		return ($time < $now);
 	}
 
 }

@@ -346,7 +346,25 @@ class user extends baseType {
 		if ($isEditable) {
 			$onClick = 'onclick="showConfirmationDialog(\'' . _('Change account status') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\', \'lam_accountStatusDialog\', \'inputForm\', \'lam_accountStatusResult\');"';
 		}
-		return $dialogDiv . '<a href="#"><img id="lam_accountStatus" alt="status" ' . $onClick . ' helptitle="' . _('Account status') . '" helpdata="' . $tipContent . '" height=16 width=16 src="../../graphics/' . $icon . '"></a>&nbsp;&nbsp;&nbsp;';
+		$dialogDiv .= '<a href="#"><img id="lam_accountStatus" alt="status" ' . $onClick . ' helptitle="' . _('Account status') . '" helpdata="' . $tipContent . '" height=16 width=16 src="../../graphics/' . $icon . '"></a>&nbsp;&nbsp;&nbsp;';
+		// expiration status
+		$expiredLabels = array();
+		$shadowModule = $container->getAccountModule('shadowAccount');
+		if ($shadowModule != null) {
+			$shadowAttrs = $shadowModule->getAttributes();
+			if (shadowAccount::isAccountExpired($shadowAttrs)) {
+				$expiredLabels[] = _('Shadow');
+			}
+		}
+		if (!empty($expiredLabels)) {
+			$expiredTip = '<table border=0>';
+			foreach ($expiredLabels as $label) {
+				$expiredTip .= '<tr><td>' . $label . '</td><td><img src=&quot;../../graphics/expired.png&quot;/></td></tr>';
+			}
+			$expiredTip .= '</table>';
+			$dialogDiv .= '<img alt="expired" helptitle="' . _('Expired') . '" helpdata="' . $expiredTip . '" height=16 width=16 src="../../graphics/expired.png">&nbsp;&nbsp;&nbsp;';
+		}
+		return $dialogDiv;
 	}
 
 	/**
@@ -899,6 +917,7 @@ class lamUserList extends lamList {
 			$attrs[] = 'lockoutTime';
 			$attrs[] = 'nsAccountLock';
 			$attrs[] = 'accountUnlockTime';
+			$attrs[] = 'shadowExpire';
 			$attrs[] = 'objectClass';
 		}
 		return $attrs;
@@ -978,16 +997,25 @@ class lamUserList extends lamList {
 							&& (!$sambaAvailable || $sambaLocked)
 							&& (!$ppolicyAvailable || $ppolicyLocked)
 							&& (!$windowsAvailable || $windowsLocked);
+		$shadowExpired = shadowAccount::isAccountExpired($attrs);
+		$expired = $shadowExpired;
 		$icon = 'unlocked.png';
-		if ($fullyLocked) {
+		if ($expired) {
+			$icon = 'expired.png';
+		}
+		elseif ($fullyLocked) {
 			$icon = 'lock.png';
 		}
 		elseif ($partiallyLocked) {
 			$icon = 'partiallyLocked.png';
 		}
 		// print icon and detail tooltips
-		if ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable || $is389dsDeactivated) {
+		if ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable || $is389dsDeactivated || $expired) {
 			$tipContent = '<table border=0>';
+			// Shadow expired
+			if ($shadowExpired) {
+				$tipContent .= '<tr><td>' . _('Shadow') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/expired.png&quot;></td></tr>';
+			}
 			// Unix
 			if ($unixAvailable) {
 				$unixIcon = 'unlocked.png';
@@ -1047,6 +1075,16 @@ class lamUserList extends lamList {
 	 */
 	public static function isUnixAvailable(&$attrs) {
 		return (isset($attrs['objectclass']) && in_array_ignore_case('posixAccount', $attrs['objectclass']) && isset($attrs['userpassword'][0]));
+	}
+
+	/**
+	 * Returns if the Shadow part exists.
+	 *
+	 * @param array $attrs LDAP attributes
+	 * @return boolean Shadow part exists
+	 */
+	public static function isShadowAvailable(&$attrs) {
+		return (isset($attrs['objectclass']) && in_array_ignore_case('shadowAccount', $attrs['objectclass']));
 	}
 
 	/**
