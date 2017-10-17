@@ -624,6 +624,8 @@ class lamUserList extends lamList {
 	/** virtual attribute name for account status column */
 	const ATTR_ACCOUNT_STATUS = 'lam_virtual_account_status';
 
+	/** filter value for expired accounts */
+	const FILTER_EXPIRED = 1;
 	/** filter value for locked accounts */
 	const FILTER_LOCKED = 2;
 	/** filter value for partially locked accounts */
@@ -872,7 +874,8 @@ class lamUserList extends lamList {
 			'' => '',
 			_('Unlocked') => self::FILTER_UNLOCKED,
 			_('Partially locked') => self::FILTER_SEMILOCKED,
-			_('Locked') => self::FILTER_LOCKED
+			_('Locked') => self::FILTER_LOCKED,
+			_('Expired') => self::FILTER_EXPIRED,
 		);
 		$filterInput = new htmlSelect('filter' . strtolower($attrName), $filterOptions, array($value));
 		$filterInput->setCSSClasses(array($this->type->getScope() . '-dark'));
@@ -950,8 +953,13 @@ class lamUserList extends lamList {
 							|| ($sambaAvailable && !$sambaLocked)
 							|| ($ppolicyAvailable && !$ppolicyLocked)
 							|| ($windowsAvailable && !$windowsLocked);
+			$shadowExpired = shadowAccount::isAccountExpired($this->entries[$i]);
+			$expired = $shadowExpired;
 			$status = self::FILTER_UNLOCKED;
-			if ($hasLocked && $hasUnlocked) {
+			if ($expired) {
+				$status = self::FILTER_EXPIRED;
+			}
+			elseif ($hasLocked && $hasUnlocked) {
 				$status = self::FILTER_SEMILOCKED;
 			}
 			elseif (!$hasUnlocked && $hasLocked) {
