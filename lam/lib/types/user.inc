@@ -355,6 +355,9 @@ class user extends baseType {
 			if (shadowAccount::isAccountExpired($shadowAttrs)) {
 				$expiredLabels[] = _('Shadow') . ': ' . _('Account expiration');
 			}
+			elseif (shadowAccount::isPasswordExpired($shadowAttrs)) {
+				$expiredLabels[] = _('Shadow') . ': ' . _('Password expiration');
+			}
 		}
 		if (!empty($expiredLabels)) {
 			$expiredTip = '<table border=0>';
@@ -921,6 +924,9 @@ class lamUserList extends lamList {
 			$attrs[] = 'nsAccountLock';
 			$attrs[] = 'accountUnlockTime';
 			$attrs[] = 'shadowExpire';
+			$attrs[] = 'shadowLastChange';
+			$attrs[] = 'shadowMax';
+			$attrs[] = 'shadowInactive';
 			$attrs[] = 'objectClass';
 		}
 		return $attrs;
@@ -954,7 +960,8 @@ class lamUserList extends lamList {
 							|| ($ppolicyAvailable && !$ppolicyLocked)
 							|| ($windowsAvailable && !$windowsLocked);
 			$shadowExpired = shadowAccount::isAccountExpired($this->entries[$i]);
-			$expired = $shadowExpired;
+			$shadowPasswordExpired = shadowAccount::isPasswordExpired($this->entries[$i]);
+			$expired = $shadowExpired || $shadowPasswordExpired;
 			$status = self::FILTER_UNLOCKED;
 			if ($expired) {
 				$status = self::FILTER_EXPIRED;
@@ -1006,7 +1013,8 @@ class lamUserList extends lamList {
 							&& (!$ppolicyAvailable || $ppolicyLocked)
 							&& (!$windowsAvailable || $windowsLocked);
 		$shadowExpired = shadowAccount::isAccountExpired($attrs);
-		$expired = $shadowExpired;
+		$shadowPasswordExpired = shadowAccount::isPasswordExpired($attrs);
+		$expired = $shadowExpired || $shadowPasswordExpired;
 		$icon = 'unlocked.png';
 		if ($expired) {
 			$icon = 'expired.png';
@@ -1023,6 +1031,9 @@ class lamUserList extends lamList {
 			// Shadow expired
 			if ($shadowExpired) {
 				$tipContent .= '<tr><td>' . _('Shadow') . ': ' . _('Account expiration') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/expired.png&quot;></td></tr>';
+			}
+			elseif ($shadowPasswordExpired) {
+				$tipContent .= '<tr><td>' . _('Shadow') . ': ' . _('Password expiration') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/expired.png&quot;></td></tr>';
 			}
 			// Unix
 			if ($unixAvailable) {

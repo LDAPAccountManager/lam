@@ -787,6 +787,29 @@ class shadowAccount extends baseModule implements passwordService {
 		return ($time < $now);
 	}
 
+	/**
+	 * Returns if the given password is expired.
+	 *
+	 * @param array $attrs LDAP attributes
+	 * @return bool expired
+	 */
+	public static function isPasswordExpired($attrs) {
+		$attrs = array_change_key_case($attrs, CASE_LOWER);
+		if (empty($attrs['shadowlastchange'][0]) || empty($attrs['shadowmax'][0])) {
+			return false;
+		}
+		if (($attrs['shadowlastchange'][0] < 1) || ($attrs['shadowmax'][0] < 1)) {
+			return;
+		}
+		$time = new DateTime('@' . $attrs['shadowlastchange'][0] * 24 * 3600, new DateTimeZone('UTC'));
+		$time = $time->add(new DateInterval('P' . $attrs['shadowmax'][0] . 'D'));
+		if (!empty($attrs['shadowinactive'][0]) && ($attrs['shadowinactive'][0] > 0)) {
+			$time = $time->add(new DateInterval('P' . $attrs['shadowinactive'][0] . 'D'));
+		}
+		$now = new DateTime(null, getTimeZone());
+		return ($time < $now);
+	}
+
 }
 
 if (interface_exists('\LAM\JOB\Job', false)) {

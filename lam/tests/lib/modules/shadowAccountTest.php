@@ -61,6 +61,58 @@
 			$this->assertTrue(shadowAccount::isAccountExpired($attrs));
 		}
 
+		public function test_isPasswordExpired_noAttr() {
+			$attrs = array('objectClass' => array('shadowAccount'));
+
+			$this->assertFalse(shadowAccount::isPasswordExpired($attrs));
+		}
+
+		public function test_isPasswordExpired_notExpired() {
+			$change = intval(time() / (24*3600)) - 10;
+			$attrs = array(
+				'objectClass' => array('shadowAccount'),
+				'shadoWlastCHange' => array(0 => $change),
+				'shadowmax' => array(0 => '14'),
+			);
+
+			$this->assertFalse(shadowAccount::isPasswordExpired($attrs));
+		}
+
+		public function test_isPasswordExpired_expired() {
+			$change = intval(time() / (24*3600)) - 10;
+			$attrs = array(
+				'objectClass' => array('shadowAccount'),
+				'shadoWlastCHange' => array(0 => $change),
+				'shadowmax' => array(0 => '7'),
+			);
+
+			$this->assertTrue(shadowAccount::isPasswordExpired($attrs));
+		}
+
+		public function test_isPasswordExpired_notExpiredInactiveSet() {
+			$change = intval(time() / (24*3600)) - 10;
+			$attrs = array(
+				'objectClass' => array('shadowAccount'),
+				'shadoWlastCHange' => array(0 => $change),
+				'shadowmax' => array(0 => '7'),
+				'shaDowinactIVe' => array(0 => '14'),
+			);
+
+			$this->assertFalse(shadowAccount::isPasswordExpired($attrs));
+		}
+
+		public function test_isPasswordExpired_expiredInactiveSet() {
+			$change = intval(time() / (24*3600)) - 10;
+			$attrs = array(
+				'objectClass' => array('shadowAccount'),
+				'shadoWlastCHange' => array(0 => $change),
+				'shadowmax' => array(0 => '7'),
+				'shaDowinactIVe' => array(0 => '2'),
+			);
+
+			$this->assertTrue(shadowAccount::isPasswordExpired($attrs));
+		}
+
 	}
 
 if (is_readable('lam/lib/passwordExpirationJob.inc')) {
