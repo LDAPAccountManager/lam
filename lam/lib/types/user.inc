@@ -359,6 +359,13 @@ class user extends baseType {
 				$expiredLabels[] = _('Shadow') . ': ' . _('Password expiration');
 			}
 		}
+		$windowsModule = $container->getAccountModule('windowsUser');
+		if ($windowsModule != null) {
+			$windowsAttrs = $windowsModule->getAttributes();
+			if (windowsUser::isAccountExpired($windowsAttrs)) {
+				$expiredLabels[] = _('Windows') . ': ' . _('Account expiration');
+			}
+		}
 		if (!empty($expiredLabels)) {
 			$expiredTip = '<table border=0>';
 			foreach ($expiredLabels as $label) {
@@ -927,6 +934,7 @@ class lamUserList extends lamList {
 			$attrs[] = 'shadowLastChange';
 			$attrs[] = 'shadowMax';
 			$attrs[] = 'shadowInactive';
+			$attrs[] = 'accountExpires';
 			$attrs[] = 'objectClass';
 		}
 		return $attrs;
@@ -961,7 +969,8 @@ class lamUserList extends lamList {
 							|| ($windowsAvailable && !$windowsLocked);
 			$shadowExpired = shadowAccount::isAccountExpired($this->entries[$i]);
 			$shadowPasswordExpired = shadowAccount::isPasswordExpired($this->entries[$i]);
-			$expired = $shadowExpired || $shadowPasswordExpired;
+			$windowsExpired = windowsUser::isAccountExpired($this->entries[$i]);
+			$expired = $shadowExpired || $shadowPasswordExpired || $windowsExpired;
 			$status = self::FILTER_UNLOCKED;
 			if ($expired) {
 				$status = self::FILTER_EXPIRED;
@@ -1014,7 +1023,8 @@ class lamUserList extends lamList {
 							&& (!$windowsAvailable || $windowsLocked);
 		$shadowExpired = shadowAccount::isAccountExpired($attrs);
 		$shadowPasswordExpired = shadowAccount::isPasswordExpired($attrs);
-		$expired = $shadowExpired || $shadowPasswordExpired;
+		$windowsExpired = windowsUser::isAccountExpired($attrs);
+		$expired = $shadowExpired || $shadowPasswordExpired || $windowsExpired;
 		$icon = 'unlocked.png';
 		if ($expired) {
 			$icon = 'expired.png';
@@ -1066,6 +1076,9 @@ class lamUserList extends lamList {
 					$windowsIcon = 'lock.png';
 				}
 				$tipContent .= '<tr><td>' . _('Windows') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $windowsIcon . '&quot;></td></tr>';
+				if ($windowsExpired) {
+					$tipContent .= '<tr><td>' . _('Windows') . ': ' . _('Account expiration') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/expired.png&quot;></td></tr>';
+				}
 			}
 			if ($windowsAvailable && $windowsPasswordLocked) {
 				$tipContent .= '<tr><td>' . _('Locked till') . '&nbsp;&nbsp;</td><td>' . $windowsPasswordLockedTime->format('Y-m-d H:i:s') . '</td></tr>';

@@ -3373,6 +3373,28 @@ class windowsUser extends baseModule implements passwordService {
 		return $replacements;
 	}
 
+	/**
+	 * Returns if the given account is expired.
+	 *
+	 * @param array $attrs LDAP attributes
+	 * @return bool expired
+	 */
+	public static function isAccountExpired($attrs) {
+		$attrs = array_change_key_case($attrs, CASE_LOWER);
+		if (empty($attrs['accountexpires'][0])) {
+			return false;
+		}
+		$value = $attrs['accountexpires'][0];
+		if ($value < 1) {
+			return false;
+		}
+		$seconds = substr($value, 0, -7);
+		$time = new DateTime('1601-01-01', new DateTimeZone('UTC'));
+		$time->add(new DateInterval('PT' . $seconds . 'S'));
+		$now = new DateTime(null, getTimeZone());
+		return ($time < $now);
+	}
+
 }
 
 if (interface_exists('\LAM\JOB\Job', false)) {
