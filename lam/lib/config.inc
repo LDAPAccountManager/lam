@@ -1090,7 +1090,6 @@ class LAMConfig {
 	*/
 	public function set_Passwd($value) {
 		if (is_string($value)) {
-			mt_srand((microtime() * 1000000));
 			$rand = getRandomNumber();
 			$salt0 = substr(pack("h*", md5($rand)), 0, 8);
 			$salt = substr(pack("H*", sha1($salt0 . $value)), 0, 4);
@@ -2410,7 +2409,6 @@ class LAMCfgMain {
 	 * @param String $password new password
 	 */
 	public function setPassword($password) {
-		mt_srand((microtime() * 1000000));
 		$rand = getRandomNumber();
 		$salt0 = substr(pack("h*", md5($rand)), 0, 8);
 		$salt = substr(pack("H*", sha1($salt0 . $password)), 0, 4);

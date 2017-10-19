@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-  Copyright (C) 2007 - 2016  Roland Gruber
+  Copyright (C) 2007 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -769,6 +769,45 @@ class shadowAccount extends baseModule implements passwordService {
 			new ShadowAccountPasswordNotifyJob(),
 			new ShadowAccountExpirationCleanupJob()
 		);
+	}
+
+	/**
+	 * Returns if the given account is expired.
+	 *
+	 * @param array $attrs LDAP attributes
+	 * @return bool expired
+	 */
+	public static function isAccountExpired($attrs) {
+		$attrs = array_change_key_case($attrs, CASE_LOWER);
+		if (empty($attrs['shadowexpire'][0])) {
+			return false;
+		}
+		$time = new DateTime('@' . $attrs['shadowexpire'][0] * 24 * 3600, new DateTimeZone('UTC'));
+		$now = new DateTime(null, getTimeZone());
+		return ($time < $now);
+	}
+
+	/**
+	 * Returns if the given password is expired.
+	 *
+	 * @param array $attrs LDAP attributes
+	 * @return bool expired
+	 */
+	public static function isPasswordExpired($attrs) {
+		$attrs = array_change_key_case($attrs, CASE_LOWER);
+		if (empty($attrs['shadowlastchange'][0]) || empty($attrs['shadowmax'][0])) {
+			return false;
+		}
+		if (($attrs['shadowlastchange'][0] < 1) || ($attrs['shadowmax'][0] < 1)) {
+			return;
+		}
+		$time = new DateTime('@' . $attrs['shadowlastchange'][0] * 24 * 3600, new DateTimeZone('UTC'));
+		$time = $time->add(new DateInterval('P' . $attrs['shadowmax'][0] . 'D'));
+		if (!empty($attrs['shadowinactive'][0]) && ($attrs['shadowinactive'][0] > 0)) {
+			$time = $time->add(new DateInterval('P' . $attrs['shadowinactive'][0] . 'D'));
+		}
+		$now = new DateTime(null, getTimeZone());
+		return ($time < $now);
 	}
 
 }

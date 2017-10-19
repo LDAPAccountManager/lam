@@ -3,7 +3,7 @@
  $Id$
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2016  Roland Gruber
+ Copyright (C) 2016 - 2017  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -21,12 +21,101 @@
 
  */
 
-if (is_readable('lam/lib/passwordExpirationJob.inc')) {
-
 	include_once 'lam/lib/baseModule.inc';
 	include_once 'lam/lib/modules.inc';
-	include_once 'lam/lib/passwordExpirationJob.inc';
+	if (is_readable('lam/lib/passwordExpirationJob.inc')) {
+		include_once 'lam/lib/passwordExpirationJob.inc';
+	}
 	include_once 'lam/lib/modules/shadowAccount.inc';
+
+	/**
+	 * Checks the shadowAccount class.
+	 *
+	 * @author Roland Gruber
+	 */
+	class ShadowAccountTest extends PHPUnit_Framework_TestCase {
+
+		public function test_isAccountExpired_noAttr() {
+			$attrs = array('objectClass' => array('shadowAccount'));
+
+			$this->assertFalse(shadowAccount::isAccountExpired($attrs));
+		}
+
+		public function test_isAccountExpired_notExpired() {
+			$expire = intval(time() / (24*3600)) + 10000;
+			$attrs = array(
+				'objectClass' => array('shadowAccount'),
+				'sHadoweXpirE' => array(0 => $expire)
+			);
+
+			$this->assertFalse(shadowAccount::isAccountExpired($attrs));
+		}
+
+		public function test_isAccountExpired_expired() {
+			$expire = intval(time() / (24*3600)) - 10000;
+			$attrs = array(
+				'objectClass' => array('shadowAccount'),
+				'sHadoweXpirE' => array(0 => $expire)
+			);
+
+			$this->assertTrue(shadowAccount::isAccountExpired($attrs));
+		}
+
+		public function test_isPasswordExpired_noAttr() {
+			$attrs = array('objectClass' => array('shadowAccount'));
+
+			$this->assertFalse(shadowAccount::isPasswordExpired($attrs));
+		}
+
+		public function test_isPasswordExpired_notExpired() {
+			$change = intval(time() / (24*3600)) - 10;
+			$attrs = array(
+				'objectClass' => array('shadowAccount'),
+				'shadoWlastCHange' => array(0 => $change),
+				'shadowmax' => array(0 => '14'),
+			);
+
+			$this->assertFalse(shadowAccount::isPasswordExpired($attrs));
+		}
+
+		public function test_isPasswordExpired_expired() {
+			$change = intval(time() / (24*3600)) - 10;
+			$attrs = array(
+				'objectClass' => array('shadowAccount'),
+				'shadoWlastCHange' => array(0 => $change),
+				'shadowmax' => array(0 => '7'),
+			);
+
+			$this->assertTrue(shadowAccount::isPasswordExpired($attrs));
+		}
+
+		public function test_isPasswordExpired_notExpiredInactiveSet() {
+			$change = intval(time() / (24*3600)) - 10;
+			$attrs = array(
+				'objectClass' => array('shadowAccount'),
+				'shadoWlastCHange' => array(0 => $change),
+				'shadowmax' => array(0 => '7'),
+				'shaDowinactIVe' => array(0 => '14'),
+			);
+
+			$this->assertFalse(shadowAccount::isPasswordExpired($attrs));
+		}
+
+		public function test_isPasswordExpired_expiredInactiveSet() {
+			$change = intval(time() / (24*3600)) - 10;
+			$attrs = array(
+				'objectClass' => array('shadowAccount'),
+				'shadoWlastCHange' => array(0 => $change),
+				'shadowmax' => array(0 => '7'),
+				'shaDowinactIVe' => array(0 => '2'),
+			);
+
+			$this->assertTrue(shadowAccount::isPasswordExpired($attrs));
+		}
+
+	}
+
+if (is_readable('lam/lib/passwordExpirationJob.inc')) {
 
 	/**
 	 * Checks the shadow expire job.

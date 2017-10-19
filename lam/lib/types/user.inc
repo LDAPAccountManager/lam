@@ -346,7 +346,35 @@ class user extends baseType {
 		if ($isEditable) {
 			$onClick = 'onclick="showConfirmationDialog(\'' . _('Change account status') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\', \'lam_accountStatusDialog\', \'inputForm\', \'lam_accountStatusResult\');"';
 		}
-		return $dialogDiv . '<a href="#"><img id="lam_accountStatus" alt="status" ' . $onClick . ' helptitle="' . _('Account status') . '" helpdata="' . $tipContent . '" height=16 width=16 src="../../graphics/' . $icon . '"></a>&nbsp;&nbsp;&nbsp;';
+		$dialogDiv .= '<a href="#"><img id="lam_accountStatus" alt="status" ' . $onClick . ' helptitle="' . _('Account status') . '" helpdata="' . $tipContent . '" height=16 width=16 src="../../graphics/' . $icon . '"></a>&nbsp;&nbsp;&nbsp;';
+		// expiration status
+		$expiredLabels = array();
+		$shadowModule = $container->getAccountModule('shadowAccount');
+		if ($shadowModule != null) {
+			$shadowAttrs = $shadowModule->getAttributes();
+			if (shadowAccount::isAccountExpired($shadowAttrs)) {
+				$expiredLabels[] = _('Shadow') . ': ' . _('Account expiration');
+			}
+			elseif (shadowAccount::isPasswordExpired($shadowAttrs)) {
+				$expiredLabels[] = _('Shadow') . ': ' . _('Password expiration');
+			}
+		}
+		$windowsModule = $container->getAccountModule('windowsUser');
+		if ($windowsModule != null) {
+			$windowsAttrs = $windowsModule->getAttributes();
+			if (windowsUser::isAccountExpired($windowsAttrs)) {
+				$expiredLabels[] = _('Windows') . ': ' . _('Account expiration');
+			}
+		}
+		if (!empty($expiredLabels)) {
+			$expiredTip = '<table border=0>';
+			foreach ($expiredLabels as $label) {
+				$expiredTip .= '<tr><td>' . $label . '</td><td><img src=&quot;../../graphics/expired.png&quot;/></td></tr>';
+			}
+			$expiredTip .= '</table>';
+			$dialogDiv .= '<img alt="expired" helptitle="' . _('Expired') . '" helpdata="' . $expiredTip . '" height=16 width=16 src="../../graphics/expired.png">&nbsp;&nbsp;&nbsp;';
+		}
+		return $dialogDiv;
 	}
 
 	/**
@@ -606,6 +634,8 @@ class lamUserList extends lamList {
 	/** virtual attribute name for account status column */
 	const ATTR_ACCOUNT_STATUS = 'lam_virtual_account_status';
 
+	/** filter value for expired accounts */
+	const FILTER_EXPIRED = 1;
 	/** filter value for locked accounts */
 	const FILTER_LOCKED = 2;
 	/** filter value for partially locked accounts */
@@ -854,7 +884,8 @@ class lamUserList extends lamList {
 			'' => '',
 			_('Unlocked') => self::FILTER_UNLOCKED,
 			_('Partially locked') => self::FILTER_SEMILOCKED,
-			_('Locked') => self::FILTER_LOCKED
+			_('Locked') => self::FILTER_LOCKED,
+			_('Expired') => self::FILTER_EXPIRED,
 		);
 		$filterInput = new htmlSelect('filter' . strtolower($attrName), $filterOptions, array($value));
 		$filterInput->setCSSClasses(array($this->type->getScope() . '-dark'));
@@ -899,6 +930,11 @@ class lamUserList extends lamList {
 			$attrs[] = 'lockoutTime';
 			$attrs[] = 'nsAccountLock';
 			$attrs[] = 'accountUnlockTime';
+			$attrs[] = 'shadowExpire';
+			$attrs[] = 'shadowLastChange';
+			$attrs[] = 'shadowMax';
+			$attrs[] = 'shadowInactive';
+			$attrs[] = 'accountExpires';
 			$attrs[] = 'objectClass';
 		}
 		return $attrs;
@@ -931,8 +967,15 @@ class lamUserList extends lamList {
 							|| ($sambaAvailable && !$sambaLocked)
 							|| ($ppolicyAvailable && !$ppolicyLocked)
 							|| ($windowsAvailable && !$windowsLocked);
+			$shadowExpired = shadowAccount::isAccountExpired($this->entries[$i]);
+			$shadowPasswordExpired = shadowAccount::isPasswordExpired($this->entries[$i]);
+			$windowsExpired = windowsUser::isAccountExpired($this->entries[$i]);
+			$expired = $shadowExpired || $shadowPasswordExpired || $windowsExpired;
 			$status = self::FILTER_UNLOCKED;
-			if ($hasLocked && $hasUnlocked) {
+			if ($expired) {
+				$status = self::FILTER_EXPIRED;
+			}
+			elseif ($hasLocked && $hasUnlocked) {
 				$status = self::FILTER_SEMILOCKED;
 			}
 			elseif (!$hasUnlocked && $hasLocked) {
@@ -978,16 +1021,30 @@ class lamUserList extends lamList {
 							&& (!$sambaAvailable || $sambaLocked)
 							&& (!$ppolicyAvailable || $ppolicyLocked)
 							&& (!$windowsAvailable || $windowsLocked);
+		$shadowExpired = shadowAccount::isAccountExpired($attrs);
+		$shadowPasswordExpired = shadowAccount::isPasswordExpired($attrs);
+		$windowsExpired = windowsUser::isAccountExpired($attrs);
+		$expired = $shadowExpired || $shadowPasswordExpired || $windowsExpired;
 		$icon = 'unlocked.png';
-		if ($fullyLocked) {
+		if ($expired) {
+			$icon = 'expired.png';
+		}
+		elseif ($fullyLocked) {
 			$icon = 'lock.png';
 		}
 		elseif ($partiallyLocked) {
 			$icon = 'partiallyLocked.png';
 		}
 		// print icon and detail tooltips
-		if ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable || $is389dsDeactivated) {
+		if ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable || $is389dsDeactivated || $expired) {
 			$tipContent = '<table border=0>';
+			// Shadow expired
+			if ($shadowExpired) {
+				$tipContent .= '<tr><td>' . _('Shadow') . ': ' . _('Account expiration') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/expired.png&quot;></td></tr>';
+			}
+			elseif ($shadowPasswordExpired) {
+				$tipContent .= '<tr><td>' . _('Shadow') . ': ' . _('Password expiration') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/expired.png&quot;></td></tr>';
+			}
 			// Unix
 			if ($unixAvailable) {
 				$unixIcon = 'unlocked.png';
@@ -1019,6 +1076,9 @@ class lamUserList extends lamList {
 					$windowsIcon = 'lock.png';
 				}
 				$tipContent .= '<tr><td>' . _('Windows') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $windowsIcon . '&quot;></td></tr>';
+				if ($windowsExpired) {
+					$tipContent .= '<tr><td>' . _('Windows') . ': ' . _('Account expiration') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/expired.png&quot;></td></tr>';
+				}
 			}
 			if ($windowsAvailable && $windowsPasswordLocked) {
 				$tipContent .= '<tr><td>' . _('Locked till') . '&nbsp;&nbsp;</td><td>' . $windowsPasswordLockedTime->format('Y-m-d H:i:s') . '</td></tr>';
@@ -1047,6 +1107,16 @@ class lamUserList extends lamList {
 	 */
 	public static function isUnixAvailable(&$attrs) {
 		return (isset($attrs['objectclass']) && in_array_ignore_case('posixAccount', $attrs['objectclass']) && isset($attrs['userpassword'][0]));
+	}
+
+	/**
+	 * Returns if the Shadow part exists.
+	 *
+	 * @param array $attrs LDAP attributes
+	 * @return boolean Shadow part exists
+	 */
+	public static function isShadowAvailable(&$attrs) {
+		return (isset($attrs['objectclass']) && in_array_ignore_case('shadowAccount', $attrs['objectclass']));
 	}
 
 	/**
