@@ -791,7 +791,43 @@ window.lam.form.autoTrim = function() {
 	});
 };
 
+window.lam.dialog = window.lam.dialog || {};
+
+window.lam.dialog.showMessage = function(title, okText, divId) {
+    var buttonList = {};
+    buttonList[okText] = function() { jQuery(this).dialog("close"); };
+    jQuery('#' + divId).dialog({
+		modal: true,
+		title: title,
+		dialogClass: 'defaultBackground',
+		buttons: buttonList,
+		width: 'auto'
+	});
+};
+
+window.lam.account = window.lam.account || {};
+
+/**
+ * Adds a listener on the link to set default profile.
+ */
+window.lam.account.addDefaultProfileListener = function() {
+	var defaultProfileLink = jQuery('#lam-make-default-profile');
+	if (defaultProfileLink) {
+		defaultProfileLink.click(function() {
+			var link = $(this);
+			var typeId = link.data('typeid');
+			var name = link.data('name');
+			var okText = link.data('ok');
+			var date = new Date();
+	        date.setTime(date.getTime() + (365*24*60*60*1000));
+	        document.cookie = 'defaultProfile_' + typeId + '=' + name + '; expires=' + date.toUTCString();
+	        window.lam.dialog.showMessage(null, okText, 'lam-make-default-profile-dlg');
+		});
+	}
+};
+
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();
 	window.lam.form.autoTrim();
+	window.lam.account.addDefaultProfileListener();
 });

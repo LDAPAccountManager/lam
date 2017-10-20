@@ -763,6 +763,10 @@ div.dialog-page {
 	float: left;
 }
 
+div.lam-dialog-msg {
+	margin: 10px;
+}
+
 /* mobile */
 @media only screen and (max-width: 40.0625em) {
 

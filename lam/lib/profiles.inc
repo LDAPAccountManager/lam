@@ -64,6 +64,20 @@ function getAccountProfiles($typeId, $profile = null) {
 	return $ret;
 }
 
+/**
+ * Returns if the given profile exists.
+ *
+ * @param string name profile name
+ * @param string $typeId type id
+ * @return bool exists
+ */
+function profileExists($name, $typeId) {
+	if (!isValidProfileName($name) || !preg_match("/^[a-z0-9_]+$/i", $typeId) || ($typeId == null)) {
+		return false;
+	}
+	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/"  . $_SESSION['config']->getName() . '/' . $name . "." . $typeId;
+	return is_file($file);
+}
 
 /**
 * Loads an profile of the given account type

@@ -971,6 +971,11 @@ class accountContainer {
 				}
 			}
 		}
+		if ($profileLoaded) {
+			$profileName = $_POST['accountContainerSelectLoadProfile'];
+			$result[] = array('INFO', _('Profile "%s" loaded.'), '<div class="hidden lam-dialog-msg" id="lam-make-default-profile-dlg">' . _('Setting saved') . '</div>' .
+				'<a href="#" id="lam-make-default-profile" data-name="%s" data-typeid="%s" data-ok="%s">' . _('Click here to make this your default profile.') . '</a>', array($profileName, $profileName, $this->get_type()->getId(), _('Ok')));
+		}
 		// update titles
 		$this->titleBarTitle = $typeObject->getTitleBarTitle($this);
 		$this->titleBarSubtitle = $typeObject->getTitleBarSubtitle($this);
@@ -1714,7 +1719,16 @@ class accountContainer {
 		$this->initModules();
 		// sort module buttons
 		$this->sortModules();
-		$profile = \LAM\PROFILES\loadAccountProfile('default', $this->type->getId());
+		$profileName = 'default';
+		$profileCookieKey = 'defaultProfile_' . $this->get_type()->getId();
+		if (!empty($_COOKIE[$profileCookieKey])) {
+			$cookieProfileName = $_COOKIE[$profileCookieKey];
+			if (\LAM\PROFILES\profileExists($profileName, $this->get_type()->getId())) {
+				$profileName = $cookieProfileName;
+				$this->lastLoadedProfile = $cookieProfileName;
+			}
+		}
+		$profile = \LAM\PROFILES\loadAccountProfile($profileName, $this->type->getId());
 		// pass profile to each module
 		$modules = array_keys($this->module);
 		foreach ($modules as $module) $this->module[$module]->load_profile($profile);
