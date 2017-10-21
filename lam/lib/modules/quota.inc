@@ -280,8 +280,11 @@ class quota extends baseModule {
 			$i=0;
 			$quotastring = "";
 			for ($i = 0; $i < sizeof($this->quota[$server]); $i++) {
-				$quotastring = $quotastring . $this->quota[$server][$i][0] . ',' . $this->quota[$server][$i][2] . ',' . $this->quota[$server][$i][3]
-					. ',' . $this->quota[$server][$i][6] . ',' . $this->quota[$server][$i][7] . ':';
+				$quotastring .= $this->quota[$server][$i][0];
+				$quotastring .= ',' . $this->getQuotaNumber($this->quota[$server][$i][2]);
+				$quotastring .= ',' . $this->getQuotaNumber($this->quota[$server][$i][3]);
+				$quotastring .= ',' . $this->getQuotaNumber($this->quota[$server][$i][6]);
+				$quotastring .= ',' . $this->getQuotaNumber($this->quota[$server][$i][7]) . ':';
 			}
 			$remote = new \LAM\REMOTE\Remote();
 			$remote->connect($server);
@@ -289,6 +292,43 @@ class quota extends baseModule {
 			$remote->disconnect();
 		}
 		return $messages;
+	}
+
+	/**
+	 * Returns the quota value as plain number.
+	 *
+	 * @param string $quotaInput quota value (might contain e.g. "K" for KB)
+	 * @return int quota number
+	 */
+	private function getQuotaNumber($quotaInput) {
+		if (empty($quotaInput) || (strlen($quotaInput) < 2)) {
+			return $quotaInput;
+		}
+		if (substr($quotaInput, -1, 1) === 'K') {
+			return 1024 * substr($quotaInput, 0, -1);
+		}
+		if (substr($quotaInput, -1, 1) === 'M') {
+			return 1024 * 1024 * substr($quotaInput, 0, -1);
+		}
+		if (substr($quotaInput, -1, 1) === 'G') {
+			return 1024 * 1024 * 1024 * substr($quotaInput, 0, -1);
+		}
+		if (substr($quotaInput, -1, 1) === 'T') {
+			return 1024 * 1024 * 1024 * 1024 * substr($quotaInput, 0, -1);
+		}
+		if (substr($quotaInput, -1, 1) === 'k') {
+			return 1000 * substr($quotaInput, 0, -1);
+		}
+		if (substr($quotaInput, -1, 1) === 'm') {
+			return 1000 * 1000 * substr($quotaInput, 0, -1);
+		}
+		if (substr($quotaInput, -1, 1) === 'g') {
+			return 1000 * 1000 * 1000 * substr($quotaInput, 0, -1);
+		}
+		if (substr($quotaInput, -1, 1) === 't') {
+			return 1000 * 1000 * 1000 * 1000 * substr($quotaInput, 0, -1);
+		}
+		return $quotaInput;
 	}
 
 	/**
@@ -363,13 +403,13 @@ class quota extends baseModule {
 				$this->quota[$server][$i][6] = $_POST[$i . '_6_' . $id];
 				$this->quota[$server][$i][7] = $_POST[$i . '_7_' . $id];
 				// Check if values are OK and set automatic values. if not error-variable will be set
-				if (!get_preg($this->quota[$server][$i][2], 'digit'))
+				if (!get_preg($this->quota[$server][$i][2], 'quotaNumber'))
 					$errors[] = $this->messages['softblock'][0];
-				if (!get_preg($this->quota[$server][$i][3], 'digit'))
+				if (!get_preg($this->quota[$server][$i][3], 'quotaNumber'))
 					$errors[] = $this->messages['hardblock'][0];
-				if (!get_preg($this->quota[$server][$i][6], 'digit'))
+				if (!get_preg($this->quota[$server][$i][6], 'quotaNumber'))
 					$errors[] = $this->messages['softinode'][0];
-				if (!get_preg($this->quota[$server][$i][7], 'digit'))
+				if (!get_preg($this->quota[$server][$i][7], 'quotaNumber'))
 					$errors[] = $this->messages['hardinode'][0];
 				if (intval($this->quota[$server][$i][2]) > intval($this->quota[$server][$i][3]))
 					$errors[] = $this->messages['block_cmp'][0];
@@ -437,24 +477,20 @@ class quota extends baseModule {
 				$sbLimitInput = new htmlInputField($i . '_2_' . $id, $this->quota[$server][$i][2]);
 				$sbLimitInput->setFieldSize(12);
 				$sbLimitInput->setFieldMaxLength(20);
-				$sbLimitInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 				$return->addElement($sbLimitInput);
 				$hbLimit = new htmlInputField($i . '_3_' . $id, $this->quota[$server][$i][3]);
 				$hbLimit->setFieldSize(12);
 				$hbLimit->setFieldMaxLength(20);
-				$hbLimit->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 				$return->addElement($hbLimit);
 				$return->addElement(new htmlOutputText($this->quota[$server][$i][4]));
 				$return->addElement(new htmlOutputText($this->quota[$server][$i][5]));
 				$siLimit = new htmlInputField($i . '_6_' . $id, $this->quota[$server][$i][6]);
 				$siLimit->setFieldMaxLength(20);
 				$siLimit->setFieldSize(12);
-				$siLimit->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 				$return->addElement($siLimit);
 				$hiLimit = new htmlInputField($i . '_7_' . $id, $this->quota[$server][$i][7]);
 				$hiLimit->setFieldMaxLength(20);
 				$hiLimit->setFieldSize(12);
-				$hiLimit->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 				$return->addElement($hiLimit);
 				$return->addElement(new htmlOutputText($this->quota[$server][$i][8]));
 				$return->addNewLine();
@@ -749,25 +785,25 @@ class quota extends baseModule {
 							$errors[] = $errMsg;
 							continue;
 						}
-						if (!get_preg($parts[0], 'digit')) {
+						if (!get_preg($parts[0], 'quotaNumber')) {
 							$errMsg = $this->messages['softblock'][1];
 							array_push($errMsg, array($i, 'quota_' . $temp['quotas'][$m]));
 							$errors[] = $errMsg;
 							continue;
 						}
-						if (!get_preg($parts[1], 'digit')) {
+						if (!get_preg($parts[1], 'quotaNumber')) {
 							$errMsg = $this->messages['hardblock'][1];
 							array_push($errMsg, array($i, 'quota_' . $temp['quotas'][$m]));
 							$errors[] = $errMsg;
 							continue;
 						}
-						if (!get_preg($parts[2], 'digit')) {
+						if (!get_preg($parts[2], 'quotaNumber')) {
 							$errMsg = $this->messages['softinode'][1];
 							array_push($errMsg, array($i, 'quota_' . $temp['quotas'][$m]));
 							$errors[] = $errMsg;
 							continue;
 						}
-						if (!get_preg($parts[3], 'digit')) {
+						if (!get_preg($parts[3], 'quotaNumber')) {
 							$errMsg = $this->messages['hardinode'][1];
 							array_push($errMsg, array($i, 'quota_' . $temp['quotas'][$m]));
 							$errors[] = $errMsg;
@@ -785,6 +821,10 @@ class quota extends baseModule {
 							$errors[] = $errMsg;
 							continue;
 						}
+						$parts[0] = $this->getQuotaNumber($parts[0]);
+						$parts[1] = $this->getQuotaNumber($parts[1]);
+						$parts[2] = $this->getQuotaNumber($parts[2]);
+						$parts[3] = $this->getQuotaNumber($parts[3]);
 						// save quota settings
 						$temp['accounts'][$name][$temp['quotas'][$m]] = $parts;
 					}

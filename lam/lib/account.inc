@@ -583,6 +583,9 @@ function get_preg($argument, $regexp) {
 		case 'objectClass':
 					$pregexpr = '/^[[:alnum:]_-]+$/';
 					break;
+		case 'quotaNumber':
+					$pregexpr = '/^[[:digit:]]+[KMGTkmgt]?$/';
+					break;
 	}
 	if ($pregexpr!='')
 		if (preg_match($pregexpr, $argument)) {

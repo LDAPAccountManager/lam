@@ -140,19 +140,15 @@ class systemQuotas extends baseModule {
 				$container->addElement(new htmlInputField('path_' . $i, $parts[0], 20));
 				$container->addElement($spacer);
 				$softBlockInput = new htmlInputField('softBlock_' . $i, $parts[1], 10);
-				$softBlockInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 				$container->addElement($softBlockInput);
 				$container->addElement($spacer);
 				$hardBlockInput = new htmlInputField('hardBlock_' . $i, $parts[2], 10);
-				$hardBlockInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 				$container->addElement($hardBlockInput);
 				$container->addElement($spacer);
 				$softInodeInput = new htmlInputField('softInode_' . $i, $parts[3], 10);
-				$softInodeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 				$container->addElement($softInodeInput);
 				$container->addElement($spacer);
 				$hardInodeInput = new htmlInputField('hardInode_' . $i, $parts[4], 10);
-				$hardInodeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 				$container->addElement($hardInodeInput);
 				$container->addElement(new htmlButton('del_' . $i, 'del.png', true), true);
 			}
@@ -161,19 +157,15 @@ class systemQuotas extends baseModule {
 		$container->addElement(new htmlInputField('path', null, 20));
 		$container->addElement($spacer);
 		$newSoftBlockInput = new htmlInputField('softBlock', 0, 10);
-		$newSoftBlockInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 		$container->addElement($newSoftBlockInput);
 		$container->addElement($spacer);
 		$newHardBlockInput = new htmlInputField('hardBlock', 0, 10);
-		$newHardBlockInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 		$container->addElement($newHardBlockInput);
 		$container->addElement($spacer);
 		$newSoftInodeInput = new htmlInputField('softInode', 0, 10);
-		$newSoftInodeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 		$container->addElement($newSoftInodeInput);
 		$container->addElement($spacer);
 		$newHardInodeInput = new htmlInputField('hardInode', 0, 10);
-		$newHardInodeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 		$container->addElement($newHardInodeInput);
 		$container->addElement(new htmlButton('add', 'add.png', true));
 		return $container;
@@ -253,7 +245,7 @@ class systemQuotas extends baseModule {
 				$return[] = $error;
 			}
 		}
-		if (!get_preg($softBlock, 'digit')) {
+		if (!get_preg($softBlock, 'quotaNumber')) {
 			if ($uploadIndex == null) {
 				$return[] = $this->messages['softblock'][0];
 			}
@@ -263,7 +255,7 @@ class systemQuotas extends baseModule {
 				$return[] = $error;
 			}
 		}
-		if (!get_preg($hardBlock, 'digit')) {
+		if (!get_preg($hardBlock, 'quotaNumber')) {
 			if ($uploadIndex == null) {
 				$return[] = $this->messages['hardblock'][0];
 			}
@@ -273,7 +265,7 @@ class systemQuotas extends baseModule {
 				$return[] = $error;
 			}
 		}
-		if (!get_preg($softInode, 'digit')) {
+		if (!get_preg($softInode, 'quotaNumber')) {
 			if ($uploadIndex == null) {
 				$return[] = $this->messages['softinode'][0];
 			}
@@ -283,7 +275,7 @@ class systemQuotas extends baseModule {
 				$return[] = $error;
 			}
 		}
-		if (!get_preg($hardInode, 'digit')) {
+		if (!get_preg($hardInode, 'quotaNumber')) {
 			if ($uploadIndex == null) {
 				$return[] = $this->messages['hardinode'][0];
 			}
