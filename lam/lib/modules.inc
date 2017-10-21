@@ -1723,7 +1723,7 @@ class accountContainer {
 		$profileCookieKey = 'defaultProfile_' . $this->get_type()->getId();
 		if (!empty($_COOKIE[$profileCookieKey])) {
 			$cookieProfileName = $_COOKIE[$profileCookieKey];
-			if (\LAM\PROFILES\profileExists($profileName, $this->get_type()->getId())) {
+			if (\LAM\PROFILES\profileExists($cookieProfileName, $this->get_type()->getId())) {
 				$profileName = $cookieProfileName;
 				$this->lastLoadedProfile = $cookieProfileName;
 			}
