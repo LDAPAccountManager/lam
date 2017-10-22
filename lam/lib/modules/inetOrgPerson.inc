@@ -1924,7 +1924,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$this->addSimplePDFField($return, 'street', _('Street'));
 		$this->addSimplePDFField($return, 'postOfficeBox', _('Post office box'));
 		$this->addSimplePDFField($return, 'postalCode', _('Postal code'));
-		$this->addSimplePDFField($return, 'postalAddress', _('Postal address'));
+		if (!empty($this->attributes['postalAddress'])) {
+			$this->addPDFKeyValue($return, 'postalAddress', _('Postal address'), str_replace('$', "\n", implode("\n\n", $this->attributes['postalAddress'])));
+		}
 		$this->addSimplePDFField($return, 'registeredAddress', _('Registered address'));
 		$this->addSimplePDFField($return, 'telephoneNumber', _('Telephone number'));
 		$this->addSimplePDFField($return, 'homePhone', _('Home telephone number'));
