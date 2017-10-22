@@ -56,14 +56,6 @@ include_once('pdfstruct.inc');
  * @return String PDF file name
  */
 function createModulePDF($accounts, $pdf_structure="default", $returnAsString = false) {
-
-	/** PDF generator class */
-	include_once("fpdf-lam.inc");
-	/** Unicode support for FPDF */
-	include_once("ufpdf.php");
-	/** LAM PDF generator class */
-	include_once("lamPDF.inc");
-
 	$account_type = $accounts[0]->get_type();
 	// Get PDF structure from xml file
 	$reader = new PDFStructureReader();
@@ -82,6 +74,27 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 		}
 	}
 	$pdfKeys = array_unique($pdfKeys);
+	return createPdfFpdf($structure, $accounts, $pdfKeys, $account_type, $returnAsString);
+}
+
+/**
+ * This function creates the PDF output of one or more accounts using FPDF.
+ *
+ * @param array $accounts A numbered array containing all accounts the PDF page should
+ * be created for. The entries of the array must be AccountContainer objects.
+ * @param string $pdf_structure The filename of the structure definition that should be used
+ * to create the PDF page. If not submitted the 'default.user' structure definition
+ * for the appropriate account type.
+ * @param $returnAsString returns the PDF output as String value instead of writing it to a file
+ * @return String PDF file name
+ */
+function createPdfFpdf($structure, $accounts, $pdfKeys, $account_type, $returnAsString) {
+	/** PDF generator class */
+	include_once("fpdf-lam.inc");
+	/** Unicode support for FPDF */
+	include_once("ufpdf.php");
+	/** LAM PDF generator class */
+	include_once("lamPDF.inc");
 
 	// The decimal separator must be a dot in order to write pdf-files
 	setlocale(LC_NUMERIC, "C");
