@@ -826,8 +826,42 @@ window.lam.account.addDefaultProfileListener = function() {
 	}
 };
 
+window.lam.tools = window.lam.tools || {};
+
+/**
+ * Adds a listener on select lists to store the last value as default in local storage.
+ * Select lists need to be marked with class "lam-save-selection".
+ */
+window.lam.tools.addSavedSelectListener = function() {
+	if (!window.localStorage) {
+		return;
+	}
+	var selects = jQuery('.lam-save-selection');
+	if (selects) {
+		selects.each(function() {
+			var select = jQuery(this);
+			var name = select.attr('name');
+			var storageKey = 'lam_selectionStore_' + name;
+			// load value from local storage
+			var storageValue = window.localStorage.getItem(storageKey);
+			if (storageValue) {
+				var option = select.find('option[text="' + storageValue + '"]');
+				if (option) {
+					select.val(storageValue);
+				}
+			}
+			// add change listener
+			select.on('change', function() {
+				var selectedValue = this.value;
+				window.localStorage.setItem(storageKey, selectedValue);
+			});
+		});
+	}
+};
+
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();
 	window.lam.form.autoTrim();
 	window.lam.account.addDefaultProfileListener();
+	window.lam.tools.addSavedSelectListener();
 });
