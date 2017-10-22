@@ -75,11 +75,10 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 	}
 	$pdfKeys = array_unique($pdfKeys);
 	return createPdfTcpdf($structure, $accounts, $pdfKeys, $account_type, $returnAsString);
-	//return createPdfFpdf($structure, $accounts, $pdfKeys, $account_type, $returnAsString);
 }
 
 /**
- * This function creates the PDF output of one or more accounts using FPDF.
+ * This function creates the PDF output of one or more accounts using TCPDF.
  *
  * @param PDFstructure $structure PDF structure
  * @param array $accounts A numbered array containing all accounts the PDF page should
@@ -95,56 +94,6 @@ function createPdfTcpdf($structure, $accounts, $pdfKeys, $account_type, $returnA
 	include_once("lamtcpdf.inc");
 	$fontName = 'DejaVuSerif';
 	$pdf = new LAMTCPDF($structure, $fontName);
-
-	$pdf->AddPage();
-	$pdf->SetFont($fontName, "B", 12);
-	$pdf->Write(0, 'testB', '', 0);
-	$pdf->SetFont($fontName, "", 12);
-	$pdf->Write(0, 'test', '', 0);
-	$out = $pdf->Output('out.pdf', 'S');
-	if (!$returnAsString) {
-		// use timestamp and random number from ldap.inc as filename so it should be unique.
-		$filename = '../../tmp/' . getRandomNumber() . time() .'.pdf';
-		// Save PDF
-		$handle = fopen($filename, 'w');
-		chmod($filename, 0640);
-		fwrite($handle, $out);
-		fclose($handle);
-		// return PDF file name
-		return $filename;
-	}
-	else {
-		return $out;
-	}
-}
-
-/**
- * This function creates the PDF output of one or more accounts using FPDF.
- *
- * @param PDFstructure $structure PDF structure
- * @param array $accounts A numbered array containing all accounts the PDF page should
- * be created for. The entries of the array must be AccountContainer objects.
- * @param string $pdf_structure The filename of the structure definition that should be used
- * to create the PDF page. If not submitted the 'default.user' structure definition
- * for the appropriate account type.
- * @param $returnAsString returns the PDF output as String value instead of writing it to a file
- * @return String PDF file name
- */
-function createPdfFpdf($structure, $accounts, $pdfKeys, $account_type, $returnAsString) {
-	/** PDF generator class */
-	include_once("fpdf-lam.inc");
-	/** Unicode support for FPDF */
-	include_once("ufpdf.php");
-	/** LAM PDF generator class */
-	include_once("lamPDF.inc");
-
-	// The decimal separator must be a dot in order to write pdf-files
-	setlocale(LC_NUMERIC, "C");
-
-	$fontName = "Dejavu";
-
-	// Create a new PDF file acording to the account type
-	$pdf = new \lamPDF($structure, $fontName);
 
 	// Loop over each account and add a new page in the PDF file for it
 	foreach($accounts as $account) {
@@ -176,7 +125,7 @@ function createPdfFpdf($structure, $accounts, $pdfKeys, $account_type, $returnAs
 					$section_headline = $section->getTitle();
 				}
 				$pdf->setFont($fontName, "B", LAMPDF_FONT_SIZE_BIG);
-				$pdf->Write(0,$section_headline . ":");
+				$pdf->Write(0, $section_headline, '', false, 'L', true);
 				$pdf->Ln(LAMPDF_LINEHEIGHT);
 				// entries
 				foreach ($section->getEntries() as $entry) {
@@ -203,19 +152,21 @@ function createPdfFpdf($structure, $accounts, $pdfKeys, $account_type, $returnAs
 			}
 		}
 	}
-	// Close PDF
-	$pdf->Close();
+
+	$out = $pdf->Output('out.pdf', 'S');
 	if (!$returnAsString) {
 		// use timestamp and random number from ldap.inc as filename so it should be unique.
 		$filename = '../../tmp/' . getRandomNumber() . time() .'.pdf';
 		// Save PDF
-		$pdf->Output($filename);
+		$handle = fopen($filename, 'w');
 		chmod($filename, 0640);
+		fwrite($handle, $out);
+		fclose($handle);
 		// return PDF file name
 		return $filename;
 	}
 	else {
-		return $pdf->Output('', 'S');
+		return $out;
 	}
 }
 
@@ -233,22 +184,22 @@ function getSectionHeadline($entry) {
 /**
  * Prints a PDFLabelValue entry.
  *
- * @param lamPDF $pdf PDF
+ * @param LAMTCPDF $pdf PDF
  * @param PDFLabelValue $valueEntry entry
  * @param string $fontName font name
  */
 function printLabelValue(&$pdf, $valueEntry, $fontName) {
 	$pdf->SetFont($fontName, 'B', LAMPDF_FONT_SIZE);
-	$pdf->Cell(LAMPDF_LABELWIDTH, LAMPDF_LINEHEIGHT, $valueEntry->getLabel() . ':', 0, 0, 'R', 0);
+	$pdf->MultiCell(LAMPDF_LABELWIDTH, LAMPDF_LINEHEIGHT, $valueEntry->getLabel() . ':', 0, 'R', false, 0, '', '', true, 0, false, true, 0, 'T');
 	$pdf->SetFont($fontName, '', LAMPDF_FONT_SIZE);
-	$pdf->MultiCell(0, LAMPDF_LINEHEIGHT, $valueEntry->getValue(), 0, 'L', 0);
+	$pdf->MultiCell(0, LAMPDF_LINEHEIGHT, $valueEntry->getValue(), 0, 'L', false, 1, '', '', true, 0, false, true, 0, 'M');
 	$pdf->Ln(0);
 }
 
 /**
  * Prints a PDFTable entry.
  *
- * @param lamPDF $pdf PDF
+ * @param LAMTCPDF $pdf PDF
  * @param PDFTable $table entry
  * @param string $fontName font name
  */
@@ -268,7 +219,7 @@ function printTable(&$pdf, $table, $fontName) {
 			if ($cell->bold) {
 				$pdf->SetFont($fontName, 'B', LAMPDF_FONT_SIZE);
 			}
-			$pdf->Cell($width, LAMPDF_LINEHEIGHT, $cell->content, 0, 0, $cell->align, 0);
+			$pdf->Cell($width, LAMPDF_LINEHEIGHT, $cell->content, 0, 0, $cell->align, 0, '', 1);
 			if ($cell->bold) {
 				$pdf->SetFont($fontName, '', LAMPDF_FONT_SIZE);
 			}

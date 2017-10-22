@@ -93,7 +93,7 @@ class LAMTCPDF extends \TCPDF {
 	 */
 	public function Footer() {
 		$this->SetY(-15);
-		$this->SetFont($this->fontName, '', 7);
+		$this->SetFont($this->fontName, '', LAMPDF_FONT_SIZE);
 		$footerText = _("This document was automatically created by LDAP Account Manager") . ' (' . getFormattedTime('Y-m-d H:i:s T') . ')';
 		$this->Cell(0, 10, $footerText, 0, false, 'C', 0, '', 0, false, 'T', 'M');
 	}

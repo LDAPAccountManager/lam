@@ -83,16 +83,6 @@ Some parts of this package have other, compatible licences. These are:
 
 A:
 
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software to use, copy, modify, distribute, sublicense, and/or sell
-  copies of the software, and to permit persons to whom the software is furnished
-  to do so.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
-
-
-B:
-
   DejaVu Fonts — License
 
   Fonts are © Bitstream (see below). DejaVu changes are in public domain. Explanation
@@ -183,7 +173,7 @@ B:
   Software without prior written authorization from Tavmjong Bah. For further
   information, contact: tavmjong @ free . fr.
 
-C:
+B:
 
    Permission is hereby granted, free of charge, to any person obtaining
    a copy of this software and associated documentation files (the
@@ -208,15 +198,14 @@ C:
 Programs and licenses with other licenses and/or authors than the
 main license and authors:
 
-lib/fpdf-lam.inc                            A  2008  Olivier Plathey
-lib/font/DejaVu*.ttf                        B        Public Domain, Bitstream, Inc., Tavmjong Bah
-lib/font/DejaVu*.z                          B        Public Domain, Bitstream, Inc., Tavmjong Bah
-lib/3rdParty/tcpdf/fonts/DejaVu*.ttf        B        Public Domain, Bitstream, Inc., Tavmjong Bah
-lib/3rdParty/tcpdf/fonts/DejaVu*.z          B        Public Domain, Bitstream, Inc., Tavmjong Bah
-lib/3rdParty/phpseclib                      C        Jim Wigginton
-templates/lib/*jquery*.js                   C  2010  John Resig, Paul Bakaus, Fred Heusschen
-templates/lib/*jquery-dropmenu-*.js         C  2010  Fred Heusschen
-templates/lib/*jquery-validationEngine-*.js C  2010  Cedric Dugas and Olivier Refalo
-templates/lib/*jquery-fineuploader-*.js     C  2010  Andrew Valums
+lib/font/DejaVu*.ttf                        A        Public Domain, Bitstream, Inc., Tavmjong Bah
+lib/font/DejaVu*.z                          A        Public Domain, Bitstream, Inc., Tavmjong Bah
+lib/3rdParty/tcpdf/fonts/DejaVu*.ttf        A        Public Domain, Bitstream, Inc., Tavmjong Bah
+lib/3rdParty/tcpdf/fonts/DejaVu*.z          A        Public Domain, Bitstream, Inc., Tavmjong Bah
+lib/3rdParty/phpseclib                      B        Jim Wigginton
+templates/lib/*jquery*.js                   B  2010  John Resig, Paul Bakaus, Fred Heusschen
+templates/lib/*jquery-dropmenu-*.js         B  2010  Fred Heusschen
+templates/lib/*jquery-validationEngine-*.js B  2010  Cedric Dugas and Olivier Refalo
+templates/lib/*jquery-fineuploader-*.js     B  2010  Andrew Valums
 
 
