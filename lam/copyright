@@ -198,8 +198,6 @@ B:
 Programs and licenses with other licenses and/or authors than the
 main license and authors:
 
-lib/font/DejaVu*.ttf                        A        Public Domain, Bitstream, Inc., Tavmjong Bah
-lib/font/DejaVu*.z                          A        Public Domain, Bitstream, Inc., Tavmjong Bah
 lib/3rdParty/tcpdf/fonts/DejaVu*.ttf        A        Public Domain, Bitstream, Inc., Tavmjong Bah
 lib/3rdParty/tcpdf/fonts/DejaVu*.z          A        Public Domain, Bitstream, Inc., Tavmjong Bah
 lib/3rdParty/phpseclib                      B        Jim Wigginton

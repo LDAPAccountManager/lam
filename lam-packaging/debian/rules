@@ -40,8 +40,6 @@ install:
 	install -D --mode=644 lib/.htaccess debian/ldap-account-manager/usr/share/ldap-account-manager/lib/.htaccess
 	install -D --mode=644 lib/*.inc debian/ldap-account-manager/usr/share/ldap-account-manager/lib
 	install -D --mode=755 lib/*.sh debian/ldap-account-manager/usr/share/ldap-account-manager/lib
-	install -D --mode=644 lib/ufpdf.php debian/ldap-account-manager/usr/share/ldap-account-manager/lib/ufpdf.php
-	cp -r lib/font debian/ldap-account-manager/usr/share/ldap-account-manager/lib/
 	cp -r lib/modules debian/ldap-account-manager/usr/share/ldap-account-manager/lib/
 	cp -r lib/types debian/ldap-account-manager/usr/share/ldap-account-manager/lib/
 	cp -r lib/tools debian/ldap-account-manager/usr/share/ldap-account-manager/lib/
@@ -66,8 +64,8 @@ binary-indep: build install
 	dh_install
 	dh_compress
 	dh_fixperms
-	dh_link /usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf /usr/share/ldap-account-manager/lib/font/DejaVuSerif.ttf
-	dh_link /usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf /usr/share/ldap-account-manager/lib/font/DejaVuSerif-Bold.ttf
+	dh_link /usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf /usr/share/ldap-account-manager/lib/3rdParty/tcpdf/fonts/DejaVuSerif.ttf
+	dh_link /usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf /usr/share/ldap-account-manager/lib/3rdParty/tcpdf/fonts/DejaVuSerif-Bold.ttf
 	dh_link /usr/share/doc/ldap-account-manager/docs /usr/share/ldap-account-manager/docs
 	install -D --mode=644 debian/lam.apache.conf debian/ldap-account-manager/etc/ldap-account-manager/apache.conf
 	install -D --mode=644 debian/lam.nginx.conf debian/ldap-account-manager/etc/ldap-account-manager/nginx.conf
