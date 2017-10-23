@@ -731,4 +731,19 @@ class PDFSectionEntry {
 
 }
 
+/**
+ * Returns a list of possible fonts.
+ *
+ * @return array list of fonts (description => font name)
+ */
+function getPdfFonts() {
+	return array(
+		'DejaVu' => 'DejaVuSerif',
+		_('Chinese Traditional') => 'cid0ct',
+		_('Chinese Simplified') => 'cid0cs',
+		_('Japan') => 'cid0jp',
+		_('Korean') => 'cid0kr',
+	);
+}
+
 ?>

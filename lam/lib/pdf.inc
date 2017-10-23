@@ -52,10 +52,11 @@ include_once('pdfstruct.inc');
  * @param string $pdf_structure The filename of the structure definition that should be used
  * to create the PDF page. If not submitted the 'default.user' structure definition
  * for the appropriate account type.
+ * @param string $font font to use (e.g. DejaVu)
  * @param $returnAsString returns the PDF output as String value instead of writing it to a file
  * @return String PDF file name
  */
-function createModulePDF($accounts, $pdf_structure="default", $returnAsString = false) {
+function createModulePDF($accounts, $pdf_structure="default", $font, $returnAsString = false) {
 	$account_type = $accounts[0]->get_type();
 	// Get PDF structure from xml file
 	$reader = new PDFStructureReader();
@@ -74,7 +75,7 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
 		}
 	}
 	$pdfKeys = array_unique($pdfKeys);
-	return createPdfTcpdf($structure, $accounts, $pdfKeys, $account_type, $returnAsString);
+	return createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $returnAsString);
 }
 
 /**
@@ -86,14 +87,14 @@ function createModulePDF($accounts, $pdf_structure="default", $returnAsString = 
  * @param string $pdf_structure The filename of the structure definition that should be used
  * to create the PDF page. If not submitted the 'default.user' structure definition
  * for the appropriate account type.
+ * @param string $font font to use
  * @param $returnAsString returns the PDF output as String value instead of writing it to a file
  * @return String PDF file name
  */
-function createPdfTcpdf($structure, $accounts, $pdfKeys, $account_type, $returnAsString) {
+function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $returnAsString) {
 	/** PDF generator class */
 	include_once("lamtcpdf.inc");
-	$fontName = 'DejaVuSerif';
-	$pdf = new LAMTCPDF($structure, $fontName);
+	$pdf = new LAMTCPDF($structure, $font);
 
 	// Loop over each account and add a new page in the PDF file for it
 	foreach($accounts as $account) {
@@ -107,7 +108,7 @@ function createPdfTcpdf($structure, $accounts, $pdfKeys, $account_type, $returnA
 		// Now create the PDF file acording to the structure with the submitted values
 		foreach ($structure->getSections() as $section) {
 			if ($section instanceof PDFTextSection) {
-				$pdf->setFont($fontName, "", LAMPDF_FONT_SIZE);
+				$pdf->setFont($font, "", LAMPDF_FONT_SIZE);
 				$info_string = str_replace("\r", "", $section->getText());
 				$info_string = explode("\n", $info_string);
 				foreach ($info_string as $text) {
@@ -124,7 +125,7 @@ function createPdfTcpdf($structure, $accounts, $pdfKeys, $account_type, $returnA
 				else {
 					$section_headline = $section->getTitle();
 				}
-				$pdf->setFont($fontName, "B", LAMPDF_FONT_SIZE_BIG);
+				$pdf->setFont($font, "B", LAMPDF_FONT_SIZE_BIG);
 				$pdf->Write(0, $section_headline, '', false, 'L', true);
 				$pdf->Ln(LAMPDF_LINEHEIGHT);
 				// entries
@@ -138,10 +139,10 @@ function createPdfTcpdf($structure, $accounts, $pdfKeys, $account_type, $returnA
 							// Loop over all rows of this entry (most of the time this will be just one)
 							foreach($valueEntries as $valueEntry) {
 								if ($valueEntry instanceof PDFLabelValue) {
-									printLabelValue($pdf, $valueEntry, $fontName);
+									printLabelValue($pdf, $valueEntry, $font);
 								}
 								else if ($valueEntry instanceof PDFTable) {
-									printTable($pdf, $valueEntry, $fontName);
+									printTable($pdf, $valueEntry, $font);
 								}
 							}
 						}

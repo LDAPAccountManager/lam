@@ -238,6 +238,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 				}
 				if (isset($_POST['createPDF']) && ($_POST['createPDF'] == 'on')) {
 					$_SESSION['mass_pdf']['structure'] = $_POST['pdfStructure'];
+					$_SESSION['mass_pdf']['font'] = $_POST['pdf_font'];
 					$_SESSION['mass_pdf']['counter'] = 0;
 					$_SESSION['mass_pdf']['file'] = '../../tmp/lam_pdf' . getRandomNumber() . '.zip';
 				}

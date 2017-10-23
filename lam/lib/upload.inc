@@ -263,6 +263,7 @@ class Uploader {
 	private function createPDF() {
 		$file = $_SESSION['mass_pdf']['file'];
 		$pdfStructure = $_SESSION['mass_pdf']['structure'];
+		$font = $_SESSION['mass_pdf']['font'];
 		$pdfZip = new ZipArchive();
 		if ($_SESSION['mass_pdf']['counter'] == 0) {
 			$pdfZipResult = @$pdfZip->open($_SESSION['mass_pdf']['file'], ZipArchive::CREATE);
@@ -294,7 +295,7 @@ class Uploader {
 				break;
 			}
 			// create and save PDF
-			$pdfContent = \LAM\PDF\createModulePDF(array($_SESSION['mass_pdfAccount']), $pdfStructure, true);
+			$pdfContent = \LAM\PDF\createModulePDF(array($_SESSION['mass_pdfAccount']), $pdfStructure, $font, true);
 			$fileName = $dn . '.pdf';
 			$pdfZip->addFromString($fileName, $pdfContent);
 			$_SESSION['mass_pdf']['counter'] ++;
