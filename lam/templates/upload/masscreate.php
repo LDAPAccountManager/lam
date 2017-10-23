@@ -288,7 +288,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 		$createPDF = true;
 	}
 	$pdfCheckbox = new htmlTableExtendedInputCheckbox('createPDF', $createPDF, _('Create PDF files'));
-	$pdfCheckbox->setTableRowsToShow(array('pdfStructure'));
+	$pdfCheckbox->setTableRowsToShow(array('pdfStructure', 'pdf_font'));
 	$inputContainer->addElement($pdfCheckbox, true);
 	$pdfStructures = \LAM\PDF\getPDFStructures($type->getId());
 	$pdfSelected = array();
@@ -299,6 +299,12 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 		$pdfSelected = array('default');
 	}
 	$inputContainer->addElement(new htmlTableExtendedSelect('pdfStructure', $pdfStructures, $pdfSelected, _('PDF structure')), true);
+	$fonts = \LAM\PDF\getPdfFonts();
+	$fontSelection = new htmlTableExtendedSelect('pdf_font', $fonts, array(), _('Font'), '411');
+	$fontSelection->setCSSClasses(array('lam-save-selection'));
+	$fontSelection->setHasDescriptiveElements(true);
+	$fontSelection->setSortElements(false);
+	$inputContainer->addElement($fontSelection, true);
 	$inputContainer->addElement(new htmlSpacer(null, '5px'), true);
 	$uploadButton = new htmlButton('submitfile', _('Upload file and create accounts'));
 	$uploadButton->setIconClass('upButton');

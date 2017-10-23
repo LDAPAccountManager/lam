@@ -603,13 +603,14 @@ class lamList {
 		// PDF creation Ok
 		if (isset($_POST['createPDFok'])) {
 			$pdfStruct = $_POST['pdf_structure'];
+			$pdfFont = $_POST['pdf_font'];
 			$option = $_POST['createFor'];
 			$filename = '';
 			// create for clicked account
 			if ($option == 'DN') {
 				$_SESSION["accountPDF"] = new accountContainer($this->type, "accountPDF");
 				$_SESSION["accountPDF"]->load_account(base64_decode($_POST['clickedAccount']));
-				$filename = \LAM\PDF\createModulePDF(array($_SESSION["accountPDF"]),$pdfStruct);
+				$filename = \LAM\PDF\createModulePDF(array($_SESSION["accountPDF"]), $pdfStruct, $pdfFont);
 				unset($_SESSION["accountPDF"]);
 			}
 			// create for all selected accounts
@@ -624,7 +625,7 @@ class lamList {
 					$list[$i] = $_SESSION["accountPDF-$i"];
 				}
 				if (sizeof($list) > 0) {
-					$filename = \LAM\PDF\createModulePDF($list,$pdfStruct);
+					$filename = \LAM\PDF\createModulePDF($list, $pdfStruct, $pdfFont);
 					for ($i = 0; $i < sizeof($accounts); $i++) {
 						unset($_SESSION["accountPDF-$i"]);
 					}
@@ -706,6 +707,13 @@ class lamList {
 		$container->addElement(new htmlSubTitle(_('Create PDF file')), true);
 
 		$container->addElement(new htmlTableExtendedSelect('pdf_structure', $pdf_structures, array('default'), _('PDF structure'), '405'), true);
+		$fonts = \LAM\PDF\getPdfFonts();
+		$fontSelection = new htmlTableExtendedSelect('pdf_font', $fonts, array(), _('Font'), '411');
+		$fontSelection->setCSSClasses(array('lam-save-selection'));
+		$fontSelection->setHasDescriptiveElements(true);
+		$fontSelection->setSortElements(false);
+		$container->addElement($fontSelection, true);
+		$container->addElement(new htmlEqualWidth(array('pdf_font', 'pdf_structure')));
 
 		$container->addElement(new htmlSpacer(null, '5px'), true);
 		$container->addElement(new htmlOutputText(_('Create for')));

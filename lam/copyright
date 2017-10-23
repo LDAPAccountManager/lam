@@ -62,20 +62,19 @@ time.
 
 All other files are licensed under the conditions below.
 
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
 The complete license can be found in the file COPYING.
 
@@ -83,16 +82,6 @@ The complete license can be found in the file COPYING.
 Some parts of this package have other, compatible licences. These are:
 
 A:
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software to use, copy, modify, distribute, sublicense, and/or sell
-  copies of the software, and to permit persons to whom the software is furnished
-  to do so.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
-
-
-B:
 
   DejaVu Fonts — License
 
@@ -184,7 +173,7 @@ B:
   Software without prior written authorization from Tavmjong Bah. For further
   information, contact: tavmjong @ free . fr.
 
-C:
+B:
 
    Permission is hereby granted, free of charge, to any person obtaining
    a copy of this software and associated documentation files (the
@@ -209,12 +198,12 @@ C:
 Programs and licenses with other licenses and/or authors than the
 main license and authors:
 
-lib/fpdf-lam.inc                            A  2008  Olivier Plathey
-lib/font/DejaVu*.ttf                        B        Public Domain, Bitstream, Inc., Tavmjong Bah
-lib/3rdParty/phpseclib                      C        Jim Wigginton
-templates/lib/*jquery*.js                   C  2010  John Resig, Paul Bakaus, Fred Heusschen
-templates/lib/*jquery-dropmenu-*.js         C  2010  Fred Heusschen
-templates/lib/*jquery-validationEngine-*.js C  2010  Cedric Dugas and Olivier Refalo
-templates/lib/*jquery-fineuploader-*.js     C  2010  Andrew Valums
+lib/3rdParty/tcpdf/fonts/DejaVu*.ttf        A        Public Domain, Bitstream, Inc., Tavmjong Bah
+lib/3rdParty/tcpdf/fonts/DejaVu*.z          A        Public Domain, Bitstream, Inc., Tavmjong Bah
+lib/3rdParty/phpseclib                      B        Jim Wigginton
+templates/lib/*jquery*.js                   B  2010  John Resig, Paul Bakaus, Fred Heusschen
+templates/lib/*jquery-dropmenu-*.js         B  2010  Fred Heusschen
+templates/lib/*jquery-validationEngine-*.js B  2010  Cedric Dugas and Olivier Refalo
+templates/lib/*jquery-fineuploader-*.js     B  2010  Andrew Valums
 
 

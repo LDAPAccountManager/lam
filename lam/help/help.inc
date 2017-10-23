@@ -256,6 +256,8 @@ $helpArray = array (
 					"Text" => _("Here you can export PDF structures to other server profiles (overwrite existing). You may also export a structure to the global templates. In this case it will always be copied to all server profiles that do not yet have a structure with this name.")),
 				"410" => array ("Headline" => _("Alternate recipient"),
 					"Text" => _("Here you can enter an alternative mail address for the password. To use the user's primary email address please leave the field blank.")),
+				"411" => array ("Headline" => _("Font"),
+					"Text" => _("Please select the font for the PDF file. Dejavu will work on all systems but does not support e.g. Chinese and Japan. The other fonts require that an appropriate font is installed on the system where the PDF is opened.")),
 				// 500 - 599
 				// LAM Pro
 				"501" => array ("Headline" => _("LDAP suffix"),
