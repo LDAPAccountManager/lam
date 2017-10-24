@@ -294,9 +294,9 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 		if (!empty($config_object)) {
 			// check extensions
 			$extList = getRequiredExtensions();
-			for ($i = 0; $i < sizeof($extList); $i++) {
-				if (!extension_loaded($extList[$i])) {
-					StatusMessage("ERROR", "A required PHP extension is missing!", $extList[$i]);
+			foreach ($extList as $extension) {
+				if (!extension_loaded($extension)) {
+					StatusMessage("ERROR", "A required PHP extension is missing!", $extension);
 					echo "<br>";
 				}
 			}
@@ -369,14 +369,14 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 							if ($config_object->getLoginMethod() == LAMConfig::LOGIN_LIST) {
 								$admins = $config_object->get_Admins();
 								$adminList = array();
-								for($i = 0; $i < count($admins); $i++) {
-									$text = explode(",", $admins[$i]);
+								foreach ($admins as $admin) {
+									$text = explode(",", $admin);
 									$text = explode("=", $text[0]);
 									if (isset($text[1])) {
-										$adminList[$text[1]] = $admins[$i];
+										$adminList[$text[1]] = $admin;
 									}
 									else {
-										$adminList[$text[0]] = $admins[$i];
+										$adminList[$text[0]] = $admin;
 									}
 								}
 								$selectedAdmin = array();

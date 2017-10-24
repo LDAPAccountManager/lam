@@ -92,19 +92,21 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 				if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) {
 					// check if we have to add parent entries
 					if (ldap_errno($_SESSION['ldap']->server()) == 32) {
-						$temp = explode(",", $suff);
+						$dnParts = explode(",", $suff);
 						$subsuffs = array();
 						// make list of subsuffixes
-						for ($k = 0; $k < sizeof($temp); $k++) {
-							$part = explode("=", $temp[$k]);
-							if ($part[0] == "ou") $subsuffs[] = implode(",", array_slice($temp, $k));
+						$dnPartsCount = sizeof($dnParts);
+						for ($k = 0; $k < $dnPartsCount; $k++) {
+							$part = explode("=", $dnParts[$k]);
+							if ($part[0] == "ou") $subsuffs[] = implode(",", array_slice($dnParts, $k));
 							else {
-								$subsuffs[] = implode(",", array_slice($temp, $k));
+								$subsuffs[] = implode(",", array_slice($dnParts, $k));
 								break;
 							}
 						}
 						// create missing entries
-						for ($k = sizeof($subsuffs) - 1; $k >= 0; $k--) {
+						$subsuffCount = sizeof($subsuffs);
+						for ($k = $subsuffCount - 1; $k >= 0; $k--) {
 							// check if subsuffix is present
 							$info = ldap_read($_SESSION['ldap']->server(), escapeDN($subsuffs[$k]), "objectclass=*", array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
 							$res = ldap_get_entries($_SESSION['ldap']->server(), $info);

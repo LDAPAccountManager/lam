@@ -144,16 +144,6 @@ if (isset($_POST['submit'])) {
 		foreach ($cssFiles as $cssEntry) {
 			echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/" . $cssEntry . "\">\n";
 		}
-		if (isset($profile->additionalCSS) && ($profile->additionalCSS != '')) {
-			$CSSlinks = explode("\n", $profile->additionalCSS);
-			for ($i = 0; $i < sizeof($CSSlinks); $i++) {
-				$CSSlinks[$i] = trim($CSSlinks[$i]);
-				if ($CSSlinks[$i] == '') {
-					continue;
-				}
-				echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"" . $CSSlinks[$i] . "\">\n";
-			}
-		}
 	?>
 </head>
 <body class="admin">
