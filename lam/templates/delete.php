@@ -70,7 +70,7 @@ if (!empty($_POST)) {
 
 $typeManager = new \LAM\TYPES\TypeManager();
 
-if (isset($_POST['type']) && ($typeManager->getConfiguredType($_POST['type']) == null)) {
+if (isset($_POST['type']) && ($typeManager->getConfiguredType($_POST['type']) === null)) {
 	logNewMessage(LOG_ERR, 'Invalid type: ' . $_POST['type']);
 	die();
 }
@@ -78,7 +78,7 @@ if (isset($_POST['type']) && ($typeManager->getConfiguredType($_POST['type']) ==
 if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	$typeId = $_GET['type'];
 	$type = $typeManager->getConfiguredType($typeId);
-	if ($type == null) {
+	if ($type === null) {
 		logNewMessage(LOG_ERR, 'Invalid type: ' . $type->getId());
 		die();
 	}

@@ -142,7 +142,7 @@ if( $view == 'syntaxes' ) {
 
 		echo "<tr class=\"" . (++$counter%2==0?'even':'odd') . "\">\n";
 		echo "<td>"._('Description')."</td>\n";
-		echo "<td>" . ( $attr->getDescription() == null ? '('._('No description').')' : $attr->getDescription() ). "</td>\n";
+		echo "<td>" . ( $attr->getDescription() === null ? '('._('No description').')' : $attr->getDescription() ). "</td>\n";
 		echo "</tr>\n\n";
 		echo "<tr class=\"" . (++$counter%2==0?'even':'odd') . "\">\n";
 		echo "<td><acronym title=\"Object Identier\">"._('OID')."</acronym></td>\n";
@@ -157,7 +157,7 @@ if( $view == 'syntaxes' ) {
 		echo "<tr class=\"" . (++$counter%2==0?'even':'odd') . "\">\n";
 		echo "<td>"._('Inherits from')."</td>\n";
 		echo "<td>";
-		if( $attr->getSupAttribute()==null )
+		if( $attr->getSupAttribute() === null )
 			echo '('._('none').')';
 		else
 			echo "<a href=\"?view=$view&amp;viewvalue=" . strtolower( $attr->getSupAttribute() ) . "\">" . $attr->getSupAttribute()  . "</a></td>\n";
@@ -165,23 +165,23 @@ if( $view == 'syntaxes' ) {
 
 		echo "<tr class=\"" . (++$counter%2==0?'even':'odd') . "\">\n";
 		echo "<td>"._('Equality')."</td>\n";
-		echo "<td>" .  ( $attr->getEquality() == null ? '('._('not specified').')' : "<a href=\"?view=matching_rules&amp;viewvalue=".$attr->getEquality()."\">".$attr->getEquality()."</a>" ) . "</td>\n";
+		echo "<td>" .  ( $attr->getEquality() === null ? '('._('not specified').')' : "<a href=\"?view=matching_rules&amp;viewvalue=".$attr->getEquality()."\">".$attr->getEquality()."</a>" ) . "</td>\n";
 		echo "</tr>\n\n";
 
 		echo "<tr class=\"" . (++$counter%2==0?'even':'odd') . "\">\n";
 		echo "<td>"._('Ordering')."</td>\n";
-		echo "<td>" .  ( $attr->getOrdering()==null? '('._('not specified').')' : $attr->getOrdering() ) . "</td>\n";
+		echo "<td>" .  ( $attr->getOrdering() === null? '('._('not specified').')' : $attr->getOrdering() ) . "</td>\n";
 		echo "</tr>\n\n";
 
 		echo "<tr class=\"" . (++$counter%2==0?'even':'odd') . "\">\n";
 		echo "<td>"._('Substring Rule')."</td>\n";
-		echo "<td>" .  ( $attr->getSubstr()==null? '('._('not specified').')' : $attr->getSubstr() ) . "</td>\n";
+		echo "<td>" .  ( $attr->getSubstr() === null? '('._('not specified').')' : $attr->getSubstr() ) . "</td>\n";
 		echo "</tr>\n\n";
 
 		echo "<tr class=\"" . (++$counter%2==0?'even':'odd') . "\">\n";
 		echo "<td>"._('Syntax')."</td>\n";
 		echo "<td>";
-		if( null != $attr->getType() ) {
+		if( null !== $attr->getType() ) {
 			echo "<a href=\"?view=syntaxes&amp;highlight_oid=";
 			echo $attr->getSyntaxOID() . "#" .  $attr->getSyntaxOID();
 			echo "\">" . $attr->getType() . " (" . $attr->getSyntaxOID() . ")</a>";
@@ -275,10 +275,10 @@ if( $view == 'syntaxes' ) {
 		$counter++;
 		$oid = htmlspecialchars( $rule->getOID() );
 		$desc = htmlspecialchars( $rule->getName() );
-		if ( $viewvalue==null || $viewvalue==($rule->getName() )) {
+		if ( $viewvalue === null || $viewvalue==($rule->getName() )) {
         if( ! is_null( $viewvalue ) )
             $viewed = true;
-		if( null != $rule->getDescription() )
+		if( null !== $rule->getDescription() )
 			$desc .= ' (' . $rule->getDescription() . ')';
 		if( true === $rule->getIsObsolete() )
 			$desc .= ' <span style="color:red">' . _('Obsolete') . '</span>';
@@ -336,7 +336,7 @@ if( $view == 'syntaxes' ) {
 
 	<br />
 	<?php foreach( $schema_oclasses as $name => $oclass ) {
-	  if ( $viewvalue==null || 0 == strcasecmp( $viewvalue, $oclass->getName() ) ){
+	  if ( $viewvalue === null || 0 == strcasecmp( $viewvalue, $oclass->getName() ) ){
         if( ! is_null( $viewvalue ) )
             $viewed = true;
         ?>
@@ -347,7 +347,7 @@ if( $view == 'syntaxes' ) {
 			<h4 class="schema_oclass_sub"><?php echo _('Description'); ?>: <b><?php echo $oclass->getDescription(); ?></b></h4>
 		<?php } ?>
 		<h4 class="schema_oclass_sub"><?php echo _('Type'); ?>: <b><?php echo $oclass->getType(); ?></b></h4>
-		<?php if( $oclass->getIsObsolete() == true ) { ?>
+		<?php if( $oclass->getIsObsolete() === true ) { ?>
 			<h4 class="schema_oclass_sub"><?php echo _('This object class is obsolete.'); ?></h4>
 		<?php } ?>
 

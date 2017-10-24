@@ -169,7 +169,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 
 	// check if values in unique columns are correct
 	for ($i = 0; $i < sizeof($columns); $i++) {
-		if (isset($columns[$i]['unique']) && ($columns[$i]['unique'] == true) && isset($ids[$columns[$i]['name']])) {
+		if (isset($columns[$i]['unique']) && ($columns[$i]['unique'] === true) && isset($ids[$columns[$i]['name']])) {
 			$colNumber = $ids[$columns[$i]['name']];
 			$values_given = array();
 			foreach ($data as $dataRow) {
