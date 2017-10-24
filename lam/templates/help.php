@@ -48,7 +48,7 @@ if (!empty($_GET['selfService']) && ($_GET['selfService'] === '1')) {
 if (strtolower(session_module_name()) == 'files') {
 	session_save_path("../sess");
 }
-@session_start();
+session_start();
 
 /** status messages */
 include_once("../lib/status.inc");

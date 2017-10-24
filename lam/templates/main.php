@@ -50,8 +50,8 @@ $new_suffs = array();
 $typeManager = new \LAM\TYPES\TypeManager();
 $types = $typeManager->getConfiguredTypes();
 foreach ($types as $type) {
-	$info = @ldap_read($_SESSION['ldap']->server(), escapeDN($type->getSuffix()), "(objectClass=*)", array('objectClass'), 0, 0, 0, LDAP_DEREF_NEVER);
-	$res = @ldap_get_entries($_SESSION['ldap']->server(), $info);
+	$info = ldap_read($_SESSION['ldap']->server(), escapeDN($type->getSuffix()), "(objectClass=*)", array('objectClass'), 0, 0, 0, LDAP_DEREF_NEVER);
+	$res = ldap_get_entries($_SESSION['ldap']->server(), $info);
 	if (!$res && !in_array($type->getSuffix(), $new_suffs)) {
 		$new_suffs[] = $type->getSuffix();
 	}

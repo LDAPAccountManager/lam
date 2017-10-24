@@ -604,9 +604,9 @@ if(!empty($_POST['checklogin'])) {
 			$searchError = _('Cannot connect to specified LDAP server. Please try again.') . ' ' . getDefaultLDAPErrorString($searchLDAP->server());
 		}
 		else {
-			$searchResult = @ldap_search($searchLDAP->server(), $_SESSION['config']->getLoginSearchSuffix(), $searchFilter, array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
+			$searchResult = ldap_search($searchLDAP->server(), $_SESSION['config']->getLoginSearchSuffix(), $searchFilter, array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
 			if ($searchResult) {
-				$searchInfo = @ldap_get_entries($searchLDAP->server(), $searchResult);
+				$searchInfo = ldap_get_entries($searchLDAP->server(), $searchResult);
 				if ($searchInfo) {
 					cleanLDAPResult($searchInfo);
 					if (sizeof($searchInfo) == 0) {

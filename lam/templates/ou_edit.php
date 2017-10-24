@@ -103,7 +103,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 	}
 	// delete ou, user was sure
 	elseif (isset($_POST['deleteOU']) && isset($_POST['sure'])) {
-		$ret = @ldap_delete($_SESSION['ldap']->server(), $_POST['deletename']);
+		$ret = ldap_delete($_SESSION['ldap']->server(), $_POST['deletename']);
 		if ($ret) {
 			$message = _("OU deleted successfully.");
 		}
@@ -114,8 +114,8 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 	// ask if user is sure to delete
 	elseif (isset($_POST['deleteOU'])) {
 		// check for sub entries
-		$sr = @ldap_list($_SESSION['ldap']->server(), $_POST['deleteableOU'], "ObjectClass=*", array(""));
-		$info = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
+		$sr = ldap_list($_SESSION['ldap']->server(), $_POST['deleteableOU'], "ObjectClass=*", array(""));
+		$info = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 		if ($sr && $info['count'] == 0) {
 			// print header
 			include 'main_header.php';

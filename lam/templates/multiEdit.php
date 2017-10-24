@@ -516,7 +516,7 @@ function doModify() {
 		$success = false;
 		switch ($opType) {
 			case ADD:
-				$success = @ldap_mod_add($_SESSION['ldap']->server(), $dn, array($attr => array($val)));
+				$success = ldap_mod_add($_SESSION['ldap']->server(), $dn, array($attr => array($val)));
 				break;
 			case DEL:
 				if (empty($val)) {

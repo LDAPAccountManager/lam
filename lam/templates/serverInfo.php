@@ -50,9 +50,9 @@ $vendorname = '';
 $vendorversion = '';
 $dynamicSubtrees = '';
 
-$result = @ldap_read($_SESSION['ldap']->server(), '', 'objectclass=*', array('+', '*', 'subschemasubentry'), 0, 0, 0, LDAP_DEREF_NEVER);
+$result = ldap_read($_SESSION['ldap']->server(), '', 'objectclass=*', array('+', '*', 'subschemasubentry'), 0, 0, 0, LDAP_DEREF_NEVER);
 if ($result) {
-	$info = @ldap_get_entries($_SESSION['ldap']->server(), $result);
+	$info = ldap_get_entries($_SESSION['ldap']->server(), $result);
 	if ($info) {
 		$info = $info[0];
 		foreach ($info as $key => $value) {

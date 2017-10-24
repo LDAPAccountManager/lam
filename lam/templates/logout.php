@@ -51,7 +51,9 @@ if (isset($_SESSION['loggedIn']) || ($_SESSION['loggedIn'] === true)) {
 	logNewMessage(LOG_NOTICE, 'User ' . $ldapUser[0] . ' logged off.');
 
 	// close LDAP connection
-	@$_SESSION["ldap"]->destroy();
+	if (!empty($_SESSION["ldap"])) {
+		$_SESSION["ldap"]->destroy();
+	}
 }
 
 setlanguage();
