@@ -214,7 +214,7 @@ function displayStartPage() {
  *
  * @param htmlTable $container container
  */
-function runActions(&$container) {
+function runActions(htmlTable &$container) {
 	// LDAP suffix
 	if ($_POST['suffix'] == '-') {
 		$suffix = trim($_POST['otherSuffix']);
@@ -490,11 +490,35 @@ function dryRun() {
 }
 
 /**
+ * Error handler
+ *
+ * @param int $errno error number
+ * @param string $errstr error message
+ * @param string $errfile error file
+ * @param int $errline error line
+ */
+function multiEditLdapErrorHandler($errno, $errstr, $errfile, $errline) {
+	switch ($errno) {
+		case E_USER_ERROR:
+			logNewMessage(LOG_ERR, 'Error occured: ' . $errstr);
+			$_REQUEST['multiEdit_error'] = true;
+		;
+		break;
+			case E_USER_WARNING:
+			logNewMessage(LOG_WARNING, 'Error occured: ' . $errstr);
+			$_REQUEST['multiEdit_error'] = true;
+		;
+		break;
+	}
+}
+
+/**
  * Runs the actual modifications.
  *
  * @return array status
  */
 function doModify() {
+	set_error_handler('\LAM\TOOLS\MULTI_EDIT\multiEditLdapErrorHandler');
 	// initial action index
 	if (!isset($_SESSION['multiEdit_status']['index'])) {
 		$_SESSION['multiEdit_status']['index'] = 0;
@@ -530,7 +554,7 @@ function doModify() {
 				$success = ldap_modify($_SESSION['ldap']->server(), $dn, array($attr => array($val)));
 				break;
 		}
-		if (!$success) {
+		if (!$success || isset($_REQUEST['multiEdit_error'])) {
 			$msg = new htmlStatusMessage('ERROR', getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 			$_SESSION['multiEdit_status']['modContent'] .= getMessageHTML($msg);
 		}
