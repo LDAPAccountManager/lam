@@ -850,7 +850,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
 			$expireTime = DateTime::createFromFormat('d M Y H:i', $user['radiusexpiration'][0], new DateTimeZone('UTC'));
-			logNewMessage(LOG_DEBUG, "Expiration on " . $expireTime->format('Y-m-d'));
+			$this->jobResultLog->logDebug("Expiration on " . $expireTime->format('Y-m-d'));
 			$delay = 0;
 			if (!empty($options[$this->getConfigPrefix() . '_delay' . $jobID][0])) {
 				$delay = $options[$this->getConfigPrefix() . '_delay' . $jobID][0];
@@ -860,7 +860,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 				$actionTime->add(new DateInterval('P' . $delay . 'D'));
 			}
 			$actionTime->setTimeZone(getTimeZone());
-			logNewMessage(LOG_DEBUG, "Action time on " . $actionTime->format('Y-m-d'));
+			$this->jobResultLog->logDebug("Action time on " . $actionTime->format('Y-m-d'));
 			if ($actionTime <= $now) {
 				$this->performAction($jobID, $options, $user, $isDryRun);
 			}

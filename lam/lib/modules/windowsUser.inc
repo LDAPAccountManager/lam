@@ -3484,60 +3484,60 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			$domainRoot = strtolower(substr($dn, stripos($dn, 'dc=')));
 			// skip if password does not expire at all
 			if (windowsUser::isNeverExpiring($user)) {
-				logNewMessage(LOG_DEBUG, $dn . ' does not expire.');
+				$this->jobResultLog->logDebug($dn . ' does not expire.');
 				return;
 			}
 			// skip if no information about last password change
 			if (empty($user['pwdlastset'][0]) || ($user['pwdlastset'][0] < 1)) {
-				logNewMessage(LOG_DEBUG, $dn . ' has no valid "pwdLastSet".');
+				$this->jobResultLog->logDebug($dn . ' has no valid "pwdLastSet".');
 				return;
 			}
 			// skip if account itself is expired
 			if (!empty($user['accountexpires'][0])) {
 				$accountExpiration = windowsUser::getFileTime($user['accountexpires'][0]);
 				if ($accountExpiration <= $now) {
-					logNewMessage(LOG_DEBUG, $dn . ' already expired');
+					$this->jobResultLog->logDebug($dn . ' already expired');
 					return;
 				}
 			}
 			// skip if account is deactivated
 			if (windowsUser::isDeactivated($user)) {
-				logNewMessage(LOG_DEBUG, $dn . ' is deactivated.');
+				$this->jobResultLog->logDebug($dn . ' is deactivated.');
 				return;
 			}
 			$maxPwdAge = $policyOptions['maxpwdage'][$domainRoot];
 			// calculate time when password expires
 			$lastPwdTime = windowsUser::getFileTime($user['pwdlastset'][0]);
-			logNewMessage(LOG_DEBUG, "Last password change on " . $lastPwdTime->format('Y-m-d'));
+			$this->jobResultLog->logDebug("Last password change on " . $lastPwdTime->format('Y-m-d'));
 			$numDaysToWarn = $options[$this->getConfigPrefix() . '_mailNotificationPeriod' . $jobID][0];
-			logNewMessage(LOG_DEBUG, "Number of days before warning " . $numDaysToWarn);
+			$this->jobResultLog->logDebug("Number of days before warning " . $numDaysToWarn);
 			// expiration date = pwdLastSet - maxpwdage
 			$expireTime = windowsUser::getFileTime($user['pwdlastset'][0] - $maxPwdAge);
-			logNewMessage(LOG_DEBUG, "Password expires on " . $expireTime->format('Y-m-d'));
+			$this->jobResultLog->logDebug("Password expires on " . $expireTime->format('Y-m-d'));
 			// skip already expired accounts
 			if ($expireTime <= $now) {
-				logNewMessage(LOG_DEBUG, $dn . ' already expired');
+				$this->jobResultLog->logDebug($dn . ' already expired');
 				return;
 			}
 			// calculate time of notification
 			$notifyTime = clone $expireTime;
 			$notifyTime->sub(new DateInterval('P' . $numDaysToWarn . 'D'));
 			$notifyTime->setTimeZone(getTimeZone());
-			logNewMessage(LOG_DEBUG, "Password notification on " . $notifyTime->format('Y-m-d H:i'));
+			$this->jobResultLog->logDebug("Password notification on " . $notifyTime->format('Y-m-d H:i'));
 			// skip if notification is in the future
 			if ($notifyTime > $now) {
-				logNewMessage(LOG_DEBUG, $dn . ' does not need notification yet.');
+				$this->jobResultLog->logDebug($dn . ' does not need notification yet.');
 				return;
 			}
 			$dbLastChange = $this->getDBLastPwdChangeTime($jobID, $pdo, $dn);
 			// skip entries where mail was already sent
 			if ($dbLastChange == $user['pwdlastset'][0]) {
-				logNewMessage(LOG_DEBUG, $dn . ' was already notified.');
+				$this->jobResultLog->logDebug($dn . ' was already notified.');
 				return;
 			}
 			if ($isDryRun) {
 				// no action for dry run
-				logNewMessage(LOG_NOTICE, 'Not sending email to ' . $dn . ' because of dry run.');
+				$this->jobResultLog->logInfo('Not sending email to ' . $dn . ' because of dry run.');
 				return;
 			}
 			// send email
@@ -3605,7 +3605,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			$expireTime = new DateTime('1601-01-01', new DateTimeZone('UTC'));
 			$expireTime->add(new DateInterval('PT' . $seconds . 'S'));
 			$expireTime->setTimezone(getTimeZone());
-			logNewMessage(LOG_DEBUG, "Expiration on " . $expireTime->format('Y-m-d'));
+			$this->jobResultLog->logDebug("Expiration on " . $expireTime->format('Y-m-d'));
 			$delay = 0;
 			if (!empty($options[$this->getConfigPrefix() . '_delay' . $jobID][0])) {
 				$delay = $options[$this->getConfigPrefix() . '_delay' . $jobID][0];
@@ -3615,7 +3615,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 				$actionTime->add(new DateInterval('P' . $delay . 'D'));
 			}
 			$actionTime->setTimeZone(getTimeZone());
-			logNewMessage(LOG_DEBUG, "Action time on " . $actionTime->format('Y-m-d'));
+			$this->jobResultLog->logDebug("Action time on " . $actionTime->format('Y-m-d'));
 			if ($actionTime <= $now) {
 				$this->performAction($jobID, $options, $user, $isDryRun);
 			}
