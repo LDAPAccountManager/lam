@@ -862,11 +862,11 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
 			// skip if user is locked
 			if (!empty($user['userpassword'][0]) && !pwd_is_enabled($user['userpassword'][0])) {
-				logNewMessage(LOG_DEBUG, $user['dn'] . ' is locked.');
+				$this->jobResultLog->logDebug($user['dn'] . ' is locked.');
 				return;
 			}
 			if ($user['shadowmax'][0] < 1) {
-				logNewMessage(LOG_DEBUG, $user['dn'] . ' does not expire.');
+				$this->jobResultLog->logDebug($user['dn'] . ' does not expire.');
 				return;
 			}
 
@@ -874,39 +874,39 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			// calculate time when password expires
 			$lastPwdTimeUnix = $user['shadowlastchange'][0] * 3600 * 24;
 			$lastPwdTime = new DateTime('@' . $lastPwdTimeUnix, new DateTimeZone('UTC'));
-			logNewMessage(LOG_DEBUG, "Last password change on " . $lastPwdTime->format('Y-m-d'));
+			$this->jobResultLog->logDebug("Last password change on " . $lastPwdTime->format('Y-m-d'));
 			$numDaysToWarn = $options[$this->getConfigPrefix() . '_mailNotificationPeriod' . $jobID][0];
 			if (!empty($user['shadowwarning'][0]) && ($user['shadowwarning'][0] > 0)) {
 				$numDaysToWarn += $user['shadowwarning'][0];
 			}
-			logNewMessage(LOG_DEBUG, "Number of days before warning " . $numDaysToWarn);
+			$this->jobResultLog->logDebug("Number of days before warning " . $numDaysToWarn);
 			$numDaysToExpire = $user['shadowmax'][0];
 			$expireTime = $lastPwdTime->add(new DateInterval('P' . $numDaysToExpire . 'D'));
-			logNewMessage(LOG_DEBUG, "Password expires on " . $expireTime->format('Y-m-d'));
+			$this->jobResultLog->logDebug("Password expires on " . $expireTime->format('Y-m-d'));
 			// skip already expired accounts
 			if ($expireTime <= $now) {
-				logNewMessage(LOG_DEBUG, $user['dn'] . ' already expired');
+				$this->jobResultLog->logDebug($user['dn'] . ' already expired');
 				return;
 			}
 			// calculate time of notification
 			$notifyTime = clone $expireTime;
 			$notifyTime->sub(new DateInterval('P' . $numDaysToWarn . 'D'));
 			$notifyTime->setTimeZone(getTimeZone());
-			logNewMessage(LOG_DEBUG, "Password notification on " . $notifyTime->format('Y-m-d H:i'));
+			$this->jobResultLog->logDebug("Password notification on " . $notifyTime->format('Y-m-d H:i'));
 			// skip if notification is in the future
 			if ($notifyTime > $now) {
-				logNewMessage(LOG_DEBUG, $user['dn'] . ' does not need notification yet.');
+				$this->jobResultLog->logDebug($user['dn'] . ' does not need notification yet.');
 				return;
 			}
 			$dbLastChange = $this->getDBLastPwdChangeTime($jobID, $pdo, $user['dn']);
 			// skip entries where mail was already sent
 			if ($dbLastChange == $user['shadowlastchange'][0]) {
-				logNewMessage(LOG_DEBUG, $user['dn'] . ' was already notified.');
+				$this->jobResultLog->logDebug($user['dn'] . ' was already notified.');
 				return;
 			}
 			if ($isDryRun) {
 				// no action for dry run
-				logNewMessage(LOG_NOTICE, 'Not sending email to ' . $user['dn'] . ' because of dry run.');
+				$this->jobResultLog->logInfo('Not sending email to ' . $user['dn'] . ' because of dry run.');
 				return;
 			}
 			// send email
@@ -972,7 +972,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
 			$expireTimeUnix = $user['shadowexpire'][0] * 3600 * 24;
 			$expireTime = new DateTime('@' . $expireTimeUnix, new DateTimeZone('UTC'));
-			logNewMessage(LOG_DEBUG, "Expiration on " . $expireTime->format('Y-m-d'));
+			$this->jobResultLog->logDebug("Expiration on " . $expireTime->format('Y-m-d'));
 			$delay = 0;
 			if (!empty($options[$this->getConfigPrefix() . '_delay' . $jobID][0])) {
 				$delay = $options[$this->getConfigPrefix() . '_delay' . $jobID][0];
@@ -982,7 +982,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 				$actionTime->add(new DateInterval('P' . $delay . 'D'));
 			}
 			$actionTime->setTimeZone(getTimeZone());
-			logNewMessage(LOG_DEBUG, "Action time on " . $actionTime->format('Y-m-d'));
+			$this->jobResultLog->logDebug("Action time on " . $actionTime->format('Y-m-d'));
 			if ($actionTime <= $now) {
 				$this->performAction($jobID, $options, $user, $isDryRun);
 			}
