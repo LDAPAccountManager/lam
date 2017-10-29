@@ -3,6 +3,8 @@ December 2017
   - PHP 5.6 and Internet Explorer 11 or later required
   - Account status also shows expired accounts
   - Quota: support k/m/g/t/K/M/G/T to specify values in e.g. kB
+  - LAM Pro:
+   -> Cron jobs include better logging and support dry-run
 
 
 19.09.2017 6.1

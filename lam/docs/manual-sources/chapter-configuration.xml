@@ -15,7 +15,7 @@
   <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/login.png" />
+        <imagedata fileref="images/login.png"/>
       </imageobject>
     </mediaobject>
   </screenshot>
@@ -30,7 +30,7 @@
   <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/configOverview.png" />
+        <imagedata fileref="images/configOverview.png"/>
       </imageobject>
     </mediaobject>
   </screenshot>
@@ -63,7 +63,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/configGeneral7.png" />
+            <imagedata fileref="images/configGeneral7.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -84,15 +84,16 @@
 
       <para id="sessionEncryption">Session encryption will encrypt sensitive
       data like passwords in your session files. This is only available when
-      PHP <ulink url="http://php.net/manual/en/book.openssl.php">OpenSSL</ulink> is active. This
-      adds extra security but also costs performance. If you manage a large
-      directory you might want to disable this and take other actions to
-      secure your LAM server.</para>
+      PHP <ulink
+      url="http://php.net/manual/en/book.openssl.php">OpenSSL</ulink> is
+      active. This adds extra security but also costs performance. If you
+      manage a large directory you might want to disable this and take other
+      actions to secure your LAM server.</para>
 
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/configGeneral1.png" />
+            <imagedata fileref="images/configGeneral1.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -126,7 +127,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/configGeneral4.png" />
+            <imagedata fileref="images/configGeneral4.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -143,7 +144,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/configGeneral2.png" />
+            <imagedata fileref="images/configGeneral2.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -168,7 +169,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/configGeneral3.png" />
+            <imagedata fileref="images/configGeneral3.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -190,7 +191,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/configGeneral6.png" />
+            <imagedata fileref="images/configGeneral6.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -205,7 +206,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/configGeneral5.png" />
+            <imagedata fileref="images/configGeneral5.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -230,7 +231,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/configProfiles1.png" />
+            <imagedata fileref="images/configProfiles1.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -275,7 +276,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/configProfiles2.png" />
+            <imagedata fileref="images/configProfiles2.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -294,7 +295,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/configProfiles3.png" />
+            <imagedata fileref="images/configProfiles3.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -336,7 +337,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/configProfiles4.png" />
+              <imagedata fileref="images/configProfiles4.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -391,7 +392,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/configProfiles5.png" />
+              <imagedata fileref="images/configProfiles5.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -426,7 +427,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/configProfiles6.png" />
+              <imagedata fileref="images/configProfiles6.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -438,7 +439,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/configProfiles10.png" />
+              <imagedata fileref="images/configProfiles10.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -453,7 +454,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/configProfiles9.png" />
+              <imagedata fileref="images/configProfiles9.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -473,7 +474,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/configProfiles8.png" />
+              <imagedata fileref="images/configProfiles8.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -512,7 +513,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/configProfiles7.png" />
+              <imagedata fileref="images/configProfiles7.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -542,7 +543,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/configProfiles11.png" />
+              <imagedata fileref="images/configProfiles11.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -554,7 +555,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/configProfiles12.png" />
+              <imagedata fileref="images/configProfiles12.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -567,7 +568,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/configProfiles13.png" />
+              <imagedata fileref="images/configProfiles13.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -583,7 +584,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/configTypes1.png" />
+              <imagedata fileref="images/configTypes1.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -656,7 +657,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/configTypes2.png" />
+              <imagedata fileref="images/configTypes2.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -675,7 +676,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/configModules1.png" />
+              <imagedata fileref="images/configModules1.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -702,7 +703,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/configSettings1.png" />
+              <imagedata fileref="images/configSettings1.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -738,7 +739,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/jobs1.png" />
+              <imagedata fileref="images/jobs1.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -769,7 +770,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/jobs3.png" />
+              <imagedata fileref="images/jobs3.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -786,6 +787,14 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
         configured jobs on a daily basis. The command must be run as the same
         user as your webserver is running. You are free to change the starting
         time of the script or run it more often.</para>
+
+        <para>Dry-run: You can perform a dry-run of the job. This will not
+        perform any actions but only print what would be done. For this please
+        put "--dryRun" at the end of the command. E.g.:</para>
+
+        <literallayout>  /usr/share/ldap-account-manager/lib/cron.sh lam 123456789 --dryRun</literallayout>
+
+        <para/>
       </section>
 
       <section>
@@ -803,7 +812,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/jobs2.png" />
+              <imagedata fileref="images/jobs2.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -839,7 +848,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           <screenshot>
             <mediaobject>
               <imageobject>
-                <imagedata fileref="images/jobs_ppolicy1.png" />
+                <imagedata fileref="images/jobs_ppolicy1.png"/>
               </imageobject>
             </mediaobject>
           </screenshot>
@@ -938,7 +947,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           <screenshot>
             <mediaobject>
               <imageobject>
-                <imagedata fileref="images/jobs_389dsPasswordMail1.png" />
+                <imagedata fileref="images/jobs_389dsPasswordMail1.png"/>
               </imageobject>
             </mediaobject>
           </screenshot>
@@ -1040,7 +1049,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           <screenshot>
             <mediaobject>
               <imageobject>
-                <imagedata fileref="images/jobs_shadow1.png" />
+                <imagedata fileref="images/jobs_shadow1.png"/>
               </imageobject>
             </mediaobject>
           </screenshot>
@@ -1126,7 +1135,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           <screenshot>
             <mediaobject>
               <imageobject>
-                <imagedata fileref="images/jobs_shadow2.png" />
+                <imagedata fileref="images/jobs_shadow2.png"/>
               </imageobject>
             </mediaobject>
           </screenshot>
@@ -1182,7 +1191,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           <screenshot>
             <mediaobject>
               <imageobject>
-                <imagedata fileref="images/jobs_windows1.png" />
+                <imagedata fileref="images/jobs_windows1.png"/>
               </imageobject>
             </mediaobject>
           </screenshot>
@@ -1266,7 +1275,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           <screenshot>
             <mediaobject>
               <imageobject>
-                <imagedata fileref="images/jobs_windowsCleanup.png" />
+                <imagedata fileref="images/jobs_windowsCleanup.png"/>
               </imageobject>
             </mediaobject>
           </screenshot>
@@ -1314,7 +1323,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           <screenshot>
             <mediaobject>
               <imageobject>
-                <imagedata fileref="images/jobs_freeRadiusCleanup.png" />
+                <imagedata fileref="images/jobs_freeRadiusCleanup.png"/>
               </imageobject>
             </mediaobject>
           </screenshot>
@@ -1363,7 +1372,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           <screenshot>
             <mediaobject>
               <imageobject>
-                <imagedata fileref="images/jobs_qmailCleanup1.png" />
+                <imagedata fileref="images/jobs_qmailCleanup1.png"/>
               </imageobject>
             </mediaobject>
           </screenshot>
@@ -1413,7 +1422,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/jobs4.png" />
+              <imagedata fileref="images/jobs4.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -1439,7 +1448,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/LDAPStructuresSimple.png" />
+              <imagedata fileref="images/LDAPStructuresSimple.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -1458,7 +1467,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/LDAPStructuresAdvanced.png" />
+              <imagedata fileref="images/LDAPStructuresAdvanced.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -1491,7 +1500,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/LDAPStructuresMultiServer.png" />
+              <imagedata fileref="images/LDAPStructuresMultiServer.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
