@@ -3,19 +3,19 @@ namespace LAM\LOGIN;
 use LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 use \LAMConfig;
 use \LAMCfgMain;
-use \htmlTable;
 use \htmlSpacer;
 use \htmlOutputText;
 use \htmlSelect;
 use \htmlElement;
 use \htmlInputField;
 use \htmlGroup;
-use \htmlHiddenInput;
 use \htmlInputCheckbox;
 use \htmlButton;
 use \htmlStatusMessage;
 use \htmlHorizontalLine;
 use \Ldap;
+use \htmlResponsiveRow;
+use \htmlDiv;
 /*
 $Id$
 
@@ -194,7 +194,10 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 
 	echo $_SESSION["header"];
 	?>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>LDAP Account Manager</title>
+		<link rel="stylesheet" type="text/css" href="../style/responsive/105_normalize.css">
+		<link rel="stylesheet" type="text/css" href="../style/responsive/110_foundation.css">
 	<?php
 		// include all CSS files
 		$cssDirName = dirname(__FILE__) . '/../style';
@@ -215,7 +218,7 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 		<link rel="shortcut icon" type="image/x-icon" href="../graphics/favicon.ico">
 		<link rel="icon" href="../graphics/logo136.png">
 	</head>
-	<body onload="focusLogin()">
+	<body class="admin" onload="focusLogin()">
 	<?php
 	// include all JavaScript files
 	$jsDirName = dirname(__FILE__) . '/lib';
@@ -229,6 +232,8 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 	foreach ($jsFiles as $jsEntry) {
 		echo "<script type=\"text/javascript\" src=\"lib/" . $jsEntry . "\"></script>\n";
 	}
+	echo "<script type=\"text/javascript\" src=\"lib/extra/responsive/200_modernizr.js\"></script>\n";
+	echo "<script type=\"text/javascript\" src=\"lib/extra/responsive/250_foundation.js\"></script>\n";
 
 	// upgrade if pdf/profiles contain single files
 	if (containsFiles('../config/profiles') || containsFiles('../config/pdf')) {
@@ -280,15 +285,23 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 		<table border=0 width="100%" class="lamHeader ui-corner-all">
 			<tr>
 				<td align="left" height="30">
-					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">LDAP Account Manager</a>
+					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">
+					LDAP Account Manager
+					<?php
+						if (isLAMProVersion()) {
+							echo 'Pro ';
+						}
+						echo ' - ' . LAMVersion();
+					?>
+					</a>
 				</td>
 			<td align="right" height=20>
-				<a href="./config/index.php"><IMG alt="configuration" src="../graphics/tools.png">&nbsp;<?php echo _("LAM configuration") ?></a>
+				<a href="./config/index.php"><IMG alt="configuration" src="../graphics/tools.png">&nbsp;<span class="hide-for-small"><?php echo _("LAM configuration") ?></span></a>
 			</td>
 			</tr>
 		</table>
 
-		<br><br>
+		<br>
 
 		<?php
 		if (!empty($config_object)) {
@@ -348,24 +361,19 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 		?>
 		<br><br>
 		<div class="centeredTable">
-		<div class="roundedShadowBox" style="position:relative; z-index:5;">
-		<table align="center" border="0" rules="none" bgcolor="white" class="ui-corner-all">
+		<div class="roundedShadowBox limitWidth" style="position:relative; z-index:5;">
+		<table border="0" rules="none" bgcolor="white" class="ui-corner-all">
 			<tr>
-				<td class="loginLogo" style="border-style:none" rowspan="2">
+				<td class="loginLogo hide-for-small" style="border-style:none" rowspan="3">
 				</td>
 				<td style="border-style:none">
 					<form action="login.php" method="post">
 						<?php
-							$table = new htmlTable('500px');
-							$spacer = new htmlSpacer(null, '30px');
-							$spacer->colspan = 3;
-							$table->addElement($spacer, true);
+							$tabindex = 1;
+							$row = new htmlResponsiveRow();
+							$row->add(new htmlSpacer(null, '30px'), 0, 12, 12);
 							// user name
-							$userLabel = new htmlOutputText(_("User name"));
-							$userLabel->alignment = htmlElement::ALIGN_RIGHT;
-							$table->addElement($userLabel);
-							$gap = new htmlSpacer('5px', '30px');
-							$table->addElement($gap);
+							$row->addLabel(new htmlOutputText(_("User name")));
 							if ($config_object->getLoginMethod() == LAMConfig::LOGIN_LIST) {
 								$admins = $config_object->get_Admins();
 								$adminList = array();
@@ -385,49 +393,40 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 								}
 								$userSelect = new htmlSelect('username', $adminList, $selectedAdmin);
 								$userSelect->setHasDescriptiveElements(true);
+								$userSelect->setTransformSingleSelect(false);
 								$userSelect->alignment = htmlElement::ALIGN_LEFT;
-								$table->addElement($userSelect);
+								$row->addField($userSelect);
 							}
 							else {
 								if ($config_object->getHttpAuthentication() == 'true') {
-									$httpAuth = new htmlOutputText($_SERVER['PHP_AUTH_USER']);
-									$httpAuth->alignment = htmlElement::ALIGN_LEFT;
-									$table->addElement($httpAuth);
+									$httpAuth = new htmlDiv(null, new htmlOutputText($_SERVER['PHP_AUTH_USER'] . '&nbsp;', false));
+									$httpAuth->setCSSClasses(array('text-left', 'margin3'));
+									$row->addField($httpAuth);
 								}
 								else {
 									$user = '';
 									if (isset($_COOKIE["lam_login_name"])) {
 										$user = $_COOKIE["lam_login_name"];
 									}
-									$userInput = new htmlInputField('username', $user);
-									$userInput->alignment = htmlElement::ALIGN_LEFT;
-									$table->addElement($userInput);
+									$userInput = new htmlDiv(null, new htmlInputField('username', $user));
+									$row->addField($userInput);
 								}
 							}
-							$table->addNewLine();
 							// password
-							$passwordLabel = new htmlOutputText(_("Password"));
-							$passwordLabel->alignment = htmlElement::ALIGN_RIGHT;
-							$table->addElement($passwordLabel);
-							$table->addElement($gap);
+							$row->addLabel(new \htmlOutputText(_("Password")));
 							if (($config_object->getLoginMethod() == LAMConfig::LOGIN_SEARCH) && ($config_object->getHttpAuthentication() == 'true')) {
-								$passwordInputFake = new htmlOutputText('**********');
-								$passwordInputFake->alignment = htmlElement::ALIGN_LEFT;
-								$table->addElement($passwordInputFake);
+								$passwordInputFake = new htmlDiv(null, new htmlOutputText('**********'));
+								$passwordInputFake->setCSSClasses(array('text-left', 'margin3'));
+								$row->addField($passwordInputFake);
 							}
 							else {
 								$passwordInput = new htmlInputField('passwd');
-								$passwordInput->alignment = htmlElement::ALIGN_LEFT;
 								$passwordInput->setIsPassword(true);
 								$passwordInput->setFieldSize('20px');
-								$table->addElement($passwordInput);
+								$row->addField($passwordInput);
 							}
-							$table->addNewLine();
 							// language
-							$languageLabel = new htmlOutputText(_("Language"));
-							$languageLabel->alignment = htmlElement::ALIGN_RIGHT;
-							$table->addElement($languageLabel);
-							$table->addElement($gap);
+							$row->addLabel(new htmlOutputText(_("Language")));
 							$possibleLanguages = getLanguages();
 							$languageList = array();
 							$defaultLanguage = array();
@@ -439,16 +438,11 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 							}
 							$languageSelect = new htmlSelect('language', $languageList, $defaultLanguage);
 							$languageSelect->setHasDescriptiveElements(true);
-							$languageSelect->alignment = htmlElement::ALIGN_LEFT;
-							$table->addElement($languageSelect, true);
+							$row->addField($languageSelect, true);
 							// remember login user
 							if (($config_object->getLoginMethod() == LAMConfig::LOGIN_SEARCH) && !($config_object->getHttpAuthentication() == 'true')) {
-								$rememberLabel = new htmlOutputText('');
-								$rememberLabel->alignment = htmlElement::ALIGN_RIGHT;
-								$table->addElement($rememberLabel);
-								$table->addElement($gap);
+								$row->add(new htmlOutputText('&nbsp;', false), 0, 6, 6);
 								$rememberGroup = new htmlGroup();
-								$rememberGroup->alignment = htmlElement::ALIGN_LEFT;
 								$doRemember = false;
 								if (isset($_COOKIE["lam_login_name"])) {
 									$doRemember = true;
@@ -456,61 +450,53 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 								$rememberGroup->addElement(new htmlInputCheckbox('rememberLogin', $doRemember));
 								$rememberGroup->addElement(new htmlSpacer('1px', null));
 								$rememberGroup->addElement(new htmlOutputText(_('Remember user name')));
-								$table->addElement($rememberGroup, true);
+								$rememberDiv = new htmlDiv(null, $rememberGroup);
+								$rememberDiv->setCSSClasses(array('text-left', 'margin3'));
+								$row->add($rememberDiv, 12, 6, 6);
 							}
 							// login button
-							$table->addElement(new htmlSpacer(null, '35px'));
-							$table->addElement(new htmlHiddenInput('checklogin', 'checklogin'));
-							$loginButton = new htmlButton('submit', _("Login"));
-							$loginButton->alignment = htmlElement::ALIGN_LEFT;
-							$table->addElement($loginButton, true);
+							$row->add(new htmlSpacer(null, '20px'), 12);
+							$row->add(new htmlButton('checklogin', _("Login")), 12);
 							// error message
 							if(!empty($error_message)) {
+								$row->add(new \htmlSpacer(null, '5px'), 12);
 								$message = new htmlStatusMessage('ERROR', $error_message);
 								$message->colspan = 3;
-								$table->addElement($message, true);
+								$row->add($message, 12);
 							}
 
-							$tabindex = 1;
-							parseHtml(null, $table, array(), false, $tabindex, 'user');
+							parseHtml(null, $row, array(), false, $tabindex, 'user');
 						?>
 					</form>
 				</td>
+				<td class="loginRightBox hide-for-small" style="border-style:none">
+				</td>
 			</tr>
 			<tr>
-				<td align="left" style="border-style:none">
+				<td colspan="2" style="border-style:none;">
+					<hr class="margin20">
+				</td>
+			</tr>
+			<tr>
+				<td style="border-style:none;">
 					<form action="login.php" method="post">
 					<?php
-						$table = new htmlTable('500px');
-						$table->setCSSClasses(array('login-dialog-bottom'));
-						$line = new htmlHorizontalLine();
-						$line->colspan = 2;
-						$table->addElement($line, true);
-						$subTable = new htmlTable();
-						$subTable->alignment = htmlElement::ALIGN_LEFT;
-						// LDAP server
-						$serverLabel = new htmlOutputText(_("LDAP server"));
-						$serverLabel->alignment = htmlElement::ALIGN_RIGHT;
-						$subTable->addElement($serverLabel);
-						$subTable->addElement($gap);
-						$serverName = new htmlOutputText($config_object->getServerDisplayNameGUI());
-						$serverName->alignment = htmlElement::ALIGN_LEFT;
-						$subTable->addElement($serverName, true);
-						// server profile
-						$profileLabel = new htmlOutputText(_("Server profile"));
-						$profileLabel->alignment = htmlElement::ALIGN_RIGHT;
-						$subTable->addElement($profileLabel);
-						$subTable->addElement($gap);
+						$row = new htmlResponsiveRow();
+						$row->addLabel(new htmlOutputText(_("LDAP server")));
+						$serverUrl = new htmlOutputText($config_object->getServerDisplayNameGUI());
+						$serverUrlDiv = new htmlDiv(null, $serverUrl);
+						$serverUrlDiv->setCSSClasses(array('text-left', 'margin3'));
+						$row->addField($serverUrlDiv);
+						$row->addLabel(new htmlOutputText(_("Server profile")));
 						$profileSelect = new htmlSelect('profile', $profiles, array($_SESSION['config']->getName()));
-						$profileSelect->alignment = htmlElement::ALIGN_LEFT;
 						$profileSelect->setOnchangeEvent('loginProfileChanged(this)');
-						$subTable->addElement($profileSelect, true);
-						$subTable->addElement(new htmlSpacer(null, '10px'));
-						$table->addElement($subTable);
+						$row->addField($profileSelect);
 
-						parseHtml(null, $table, array(), true, $tabindex, 'user');
+						parseHtml(null, $row, array(), true, $tabindex, 'user');
 					?>
 					</form>
+				</td>
+				<td class="loginRightBox hide-for-small" style="border-style:none">
 				</td>
 			</tr>
 		</table>
@@ -520,43 +506,20 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 		}
 		?>
 		<br><br>
-			<TABLE style="position:absolute; bottom:10px;" border="0" width="99%">
-				<tr><td colspan=2><HR></td></tr>
-				<TR>
-				<td align="left">
-					<?PHP
-						if (!isLAMProVersion()) {
-							echo "<a href=\"http://www.ldap-account-manager.org/lamcms/lamPro\">" . _("Want more features? Get LAM Pro!") . "</a>";
-						}
-						elseif ($licenseValidator->isExpiringSoon()) {
-							echo '<b>';
-							echo sprintf(_('Your licence expires on %s.'), $licenseValidator->getLicense()->getExpirationDate()->format('Y-m-d'));
-							echo '</b>';
-						}
-					?>
-				</td>
-				<TD align="right">
-					<SMALL>
-					<?php
-						if (isLAMProVersion()) {
-							echo "LDAP Account Manager Pro - " . LAMVersion() . "&nbsp;&nbsp;&nbsp;";
-							logNewMessage(LOG_DEBUG, "LAM Pro " . LAMVersion());
-						}
-						else {
-							echo "LDAP Account Manager - " . LAMVersion() . "&nbsp;&nbsp;&nbsp;";
-							logNewMessage(LOG_DEBUG, "LAM " . LAMVersion());
-						}
-					?>
-					</SMALL>
-				</TD></TR>
-			</TABLE>
+		<?PHP
+			if (isLAMProVersion() && $licenseValidator->isExpiringSoon()) {
+				$licenseMessage = sprintf(_('Your licence expires on %s.'), $licenseValidator->getLicense()->getExpirationDate()->format('Y-m-d'));
+				StatusMessage('WARN', $licenseMessage);
+			}
+		?>
+		<br><br>
 	</body>
 </html>
 <?php
 }
 
 // checking if the submitted username/password is correct.
-if(!empty($_POST['checklogin'])) {
+if(isset($_POST['checklogin'])) {
 	include_once("../lib/ldap.inc"); // Include ldap.php which provides Ldap class
 
 	$_SESSION['ldap'] = new Ldap($_SESSION['config']); // Create new Ldap object

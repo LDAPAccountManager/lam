@@ -123,8 +123,20 @@ input {
 	margin: 2px;
 }
 
+.margin3 {
+	margin: 3px;
+}
+
 .margin5 {
 	margin: 5px;
+}
+
+.margin10 {
+	margin: 10px;
+}
+
+.margin20 {
+	margin: 20px;
 }
 
 .padding05 {
@@ -365,8 +377,13 @@ td.loginLogo {
 	background-repeat:no-repeat;
 	background-position: center;
 	margin: 5px;
-	height: 320px;
-	width: 65px;
+	height: 303px;
+	width: 63px;
+}
+
+td.loginRightBox {
+	margin: 5px;
+	width: 63px;
 }
 
 .roundedShadowBox {

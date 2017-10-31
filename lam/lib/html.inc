@@ -3480,6 +3480,7 @@ class htmlReCAPTCHA extends htmlElement {
  */
 class htmlResponsiveRow extends htmlElement {
 
+	/** @var htmlResponsiveCell[] cells */
 	private $cells = array();
 
 	/**
