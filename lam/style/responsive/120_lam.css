@@ -25,12 +25,20 @@
 	margin-top: 5px;
 }
 
+.row textarea {
+	width: 100%;
+}
+
 .row input {
 	width: 100%;
 }
 
-.row textarea {
-	width: 100%;
+.row input[type="submit"] {
+	width: auto;
+}
+
+.row input[type="file"] {
+	width: auto;
 }
 
 .row input[type="checkbox"] {

@@ -3529,7 +3529,7 @@ class htmlResponsiveRow extends htmlElement {
 	 * @param htmlElement $content label
 	 */
 	public function addLabel($content) {
-		$this->add($content, 12, 6, 6, 'responsiveLabel');
+		$this->add($content, 12, 6, 6, 'responsiveLabel nowrap');
 	}
 
 	/**
@@ -3770,6 +3770,8 @@ class htmlResponsiveSelect extends htmlSelect {
 	private $label;
 	/** help ID */
 	private $helpID;
+	/** render HTML of parent class */
+	private $renderParentHtml = false;
 
 	/**
 	 * Constructor.
@@ -3801,11 +3803,6 @@ class htmlResponsiveSelect extends htmlSelect {
 		// label text
 		$labelGroup = new htmlGroup();
 		$labelGroup->addElement(new htmlOutputText($this->label));
-		if ($this->required) {
-			$graphicsPath = "../../graphics";
-			if (is_dir("../graphics")) $graphicsPath = "../graphics";
-			$labelGroup->addElement(new htmlImage($graphicsPath . '/required.png', 16, 16, _('required'), _('required')));
-		}
 		if (!empty($this->helpID)) {
 			$helpLinkLabel = new htmlHelpLink($this->helpID);
 			$helpLinkLabel->setCSSClasses(array('hide-on-tablet', 'margin-left5'));
@@ -3818,6 +3815,68 @@ class htmlResponsiveSelect extends htmlSelect {
 		if (!empty($this->helpID)) {
 			$helpLink = new htmlHelpLink($this->helpID);
 			$helpLink->setCSSClasses(array('hide-on-mobile'));
+			$fieldGroup->addElement($helpLink);
+		}
+		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');
+		return $row->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+	}
+
+}
+
+/**
+ * Responsive checkbox with descriptive label and help link.
+ *
+ * @package metaHTML
+ */
+class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
+
+	/** descriptive label */
+	private $label;
+	/** help ID */
+	private $helpID;
+	/** render HTML of parent class */
+	private $renderParentHtml = false;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param String $name unique name
+	 * @param boolean $checked checked
+	 * @param String $label descriptive label
+	 * @param String $helpID help ID
+	 */
+	function __construct($name, $checked, $label, $helpID = null) {
+		parent::__construct($name, $checked);
+		$this->label = htmlspecialchars($label);
+		$this->helpID = $helpID;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see htmlInputField::generateHTML()
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		if ($this->renderParentHtml) {
+			return parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		}
+		// HTML of parent class is rendered on second call (done by htmlResponsiveRow)
+		$this->renderParentHtml = true;
+		$row = new htmlResponsiveRow();
+		// label text
+		$labelGroup = new htmlGroup();
+		$labelGroup->addElement(new htmlOutputText($this->label));
+		if (!empty($this->helpID)) {
+			$helpLinkLabel = new htmlHelpLink($this->helpID);
+			$helpLinkLabel->setCSSClasses(array('hide-on-tablet', 'margin-left5'));
+			$labelGroup->addElement($helpLinkLabel);
+		}
+		$row->add($labelGroup, 12, 6, 6, 'responsiveLabel');
+		// input field
+		$fieldGroup = new htmlGroup();
+		$fieldGroup->addElement($this);
+		if (!empty($this->helpID)) {
+			$helpLink = new htmlHelpLink($this->helpID);
+			$helpLink->setCSSClasses(array('hide-on-mobile', 'margin-left5'));
 			$fieldGroup->addElement($helpLink);
 		}
 		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');

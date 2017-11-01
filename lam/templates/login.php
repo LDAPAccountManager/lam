@@ -297,7 +297,7 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 					</a>
 				</td>
 			<td align="right" height=20>
-				<a href="./config/index.php"><IMG alt="configuration" src="../graphics/tools.png">&nbsp;<span class="hide-for-small"><?php echo _("LAM configuration") ?></span></a>
+				<a class="margin-right5" href="./config/index.php"><IMG alt="configuration" src="../graphics/tools.png">&nbsp;<span class="hide-for-small"><?php echo _("LAM configuration") ?></span></a>
 			</td>
 			</tr>
 		</table>
