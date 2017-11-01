@@ -198,6 +198,7 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 		<title>LDAP Account Manager</title>
 		<link rel="stylesheet" type="text/css" href="../style/responsive/105_normalize.css">
 		<link rel="stylesheet" type="text/css" href="../style/responsive/110_foundation.css">
+		<link rel="stylesheet" type="text/css" href="../style/responsive/120_lam.css">
 	<?php
 		// include all CSS files
 		$cssDirName = dirname(__FILE__) . '/../style';

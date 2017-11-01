@@ -128,6 +128,7 @@ if (isset($_POST['submit'])) {
 	<title><?php echo _("Login"); ?></title>
 	<link rel="stylesheet" type="text/css" href="../style/responsive/105_normalize.css">
 	<link rel="stylesheet" type="text/css" href="../style/responsive/110_foundation.css">
+	<link rel="stylesheet" type="text/css" href="../style/responsive/120_lam.css">
 	<?php
 		// include all CSS files
 		$cssDirName = dirname(__FILE__) . '/../style';

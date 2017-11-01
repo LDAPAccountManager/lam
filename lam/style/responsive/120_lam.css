@@ -19,8 +19,83 @@
 
 */
 
-/* CSS layout for LAM */
+/** responsive styles */
 
-textarea {
+.row {
+	margin-top: 5px;
+}
+
+.row input {
 	width: 100%;
+}
+
+.row textarea {
+	width: 100%;
+}
+
+.row input[type="checkbox"] {
+	width: auto;
+}
+
+.row input[type="radio"] {
+	width: auto;
+}
+
+div.dialog-page {
+	float: left;
+}
+
+div.lam-dialog-msg {
+	margin: 10px;
+}
+
+/* mobile */
+@media only screen and (max-width: 40.0625em) {
+
+	.responsiveLabel {
+		text-align: left;
+	}
+
+	.hide-on-mobile {
+		display: none !important;
+	}
+
+}
+
+/* tablet */
+@media only screen and (min-width: 40.0625em) and (max-width: 64.0625em) {
+
+	.responsiveLabel {
+		text-align: right;
+	}
+
+	.responsiveField {
+		text-align: left;
+	}
+
+	.hide-on-tablet {
+		display: none !important;
+	}
+
+}
+
+/* desktop */
+@media only screen and (min-width: 64.0625em) {
+
+	.responsiveLabel {
+		text-align: right;
+	}
+
+	.responsiveField {
+		text-align: left;
+	}
+
+	.hide-on-tablet {
+		display: none !important;
+	}
+
+	.hide-on-desktop {
+		display: none !important;
+	}
+
 }
