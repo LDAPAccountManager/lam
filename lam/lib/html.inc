@@ -3628,8 +3628,8 @@ class htmlResponsiveInputField extends htmlInputField {
 	private $label;
 	/** help ID */
 	private $helpID;
-	/** generate HTML of parent class */
-	private $generateParent = false;
+	/** render HTML of parent class */
+	private $renderParentHtml = false;
 
 	/**
 	 * Constructor
@@ -3658,10 +3658,11 @@ class htmlResponsiveInputField extends htmlInputField {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		if ($this->generateParent) {
+		if ($this->renderParentHtml) {
 			return parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		}
-		$this->generateParent = true;
+		// HTML of parent class is rendered on second call (done by htmlResponsiveRow)
+		$this->renderParentHtml = true;
 		$row = new htmlResponsiveRow();
 		// label text
 		$labelGroup = new htmlGroup();
