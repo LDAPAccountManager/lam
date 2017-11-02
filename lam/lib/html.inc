@@ -1,6 +1,5 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2010 - 2017  Roland Gruber
@@ -3882,6 +3881,65 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');
 		return $row->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 	}
+
+}
+
+/**
+ * Responsive table.
+ *
+ * @author roland Gruber
+ */
+class htmlResponsiveTable extends htmlElement {
+
+	/** @var string[] row titles */
+	private $titles;
+
+	/** htmlElement[][] data rows */
+	private $data;
+
+	/**
+	 * Creates the table.
+	 *
+	 * @param string[] $titles row titles
+	 * @param htmlElement[][] $data data rows
+	 */
+	public function __construct($titles, $data) {
+		$this->titles = $titles;
+		$this->data = $data;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see htmlElement::generateHTML()
+	 */
+	public function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$return = array();
+		echo '<table class="responsive-table">';
+		echo '<thead>';
+		echo '<tr>';
+		foreach ($this->titles as $title) {
+			echo '<th>' . htmlspecialchars($title) . '</th>';
+		}
+		echo '</tr>';
+		echo '</thead>';
+		echo '<tbody>';
+		$titleCount = sizeof($this->titles);
+		foreach ($this->data as $row) {
+			echo '<tr>';
+			for ($i = 0; $i < $titleCount; $i++) {
+				echo '<td data-label="' . $this->titles[$i] . '">';
+				$ids = parseHtml($module, $row[$i], $values, $restricted, $tabindex, $scope);
+				$return = array_merge($return, $ids);
+				echo '</td>';
+			}
+			echo '</tr>';
+		}
+		echo '</tbody>';
+		echo '</table>';
+		return $return;
+	}
+
+
 
 }
 

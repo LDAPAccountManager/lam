@@ -57,6 +57,21 @@ div.lam-dialog-msg {
 	margin: 10px;
 }
 
+table.responsive-table {
+	margin-top: 1rem;
+	table-layout: fixed;
+	width: 100%;
+}
+
+table.responsive-table th {
+	text-align: left;
+	padding: 0;
+}
+
+table.responsive-table td {
+	overflow: hidden;
+}
+
 /* mobile */
 @media only screen and (max-width: 40.0625em) {
 
@@ -66,6 +81,42 @@ div.lam-dialog-msg {
 
 	.hide-on-mobile {
 		display: none !important;
+	}
+
+	table.responsive-table thead {
+		border: none;
+		height: 1px;
+		margin: -1px;
+		overflow: hidden;
+		padding: 0;
+		position: absolute;
+		width: 1px;
+	}
+
+	table.responsive-table tr {
+		border-bottom: 3px solid #f1f1f1;
+		display: block;
+		margin-bottom: .6rem;
+	}
+
+	table.responsive-table td {
+		border-bottom: 1px solid #f1f1f1;
+		display: block;
+		text-align: right;
+	}
+
+	table.responsive-table td:before {
+		content: attr(data-label);
+		float: left;
+		font-weight: bold;
+	}
+
+	table.responsive-table td:last-child {
+		border-bottom: 0;
+	}
+
+	table.responsive-table tr:last-child {
+		border-bottom: 0;
 	}
 
 }
