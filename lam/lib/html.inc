@@ -363,7 +363,7 @@ class htmlTableRow extends htmlElement {
 	 * @param array $cells list of htmlElements
 	 * @see htmlElement
 	 */
-	function __construct($cells) {
+	public function __construct($cells) {
 		$this->cells = $cells;
 	}
 
@@ -378,7 +378,7 @@ class htmlTableRow extends htmlElement {
 	 * @param string $scope Account type
 	 * @return array List of input field names and their type (name => type)
 	 */
-	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$types = array();
 		$classAttr = '';
 		if (sizeof($this->cssClasses) > 0) {
@@ -1449,18 +1449,19 @@ class htmlSelect extends htmlElement {
 		if (!empty($this->tableRowsToShow)) {
 			$values = array_merge($values, array_keys($this->tableRowsToShow));
 		}
+		$selector = $this->getShowHideSelector();
 		// build Java script to show/hide depending fields
 		foreach ($values as $val) {
 			// build onChange listener
 			$onChange .= 'if (jQuery(\'#' . $this->name . '\').val() == \'' . $val . '\') {';
 			if (isset($this->tableRowsToShow[$val])) {
 				for ($i = 0; $i < sizeof($this->tableRowsToShow[$val]); $i++) {
-					$onChange .= 'jQuery(\'#' . $this->tableRowsToShow[$val][$i] . '\').closest(\'tr\').removeClass(\'hidden\');';
+					$onChange .= 'jQuery(\'#' . $this->tableRowsToShow[$val][$i] . '\').closest(\'' . $selector . '\').removeClass(\'hidden\');';
 				}
 			}
 			if (isset($this->tableRowsToHide[$val])) {
 				for ($i = 0; $i < sizeof($this->tableRowsToHide[$val]); $i++) {
-					$onChange .= 'jQuery(\'#' . $this->tableRowsToHide[$val][$i] . '\').closest(\'tr\').addClass(\'hidden\');';
+					$onChange .= 'jQuery(\'#' . $this->tableRowsToHide[$val][$i] . '\').closest(\'' . $selector . '\').addClass(\'hidden\');';
 				}
 			}
 			$onChange .= '};';
@@ -1470,17 +1471,26 @@ class htmlSelect extends htmlElement {
 		if (isset($this->tableRowsToShow[$this->selectedElements[0]])) {
 			for ($i = 0; $i < sizeof($this->tableRowsToShow[$this->selectedElements[0]]); $i++) {
 				$classType = 'removeClass';
-				$script .= 'jQuery(\'#' . $this->tableRowsToShow[$this->selectedElements[0]][$i] . '\').closest(\'tr\').' . $classType . '(\'hidden\');' . "\n";
+				$script .= 'jQuery(\'#' . $this->tableRowsToShow[$this->selectedElements[0]][$i] . '\').closest(\'' . $selector . '\').' . $classType . '(\'hidden\');' . "\n";
 			}
 		}
 		if (isset($this->tableRowsToHide[$this->selectedElements[0]])) {
 			for ($i = 0; $i < sizeof($this->tableRowsToHide[$this->selectedElements[0]]); $i++) {
 				$classType = 'addClass';
-				$script .= 'jQuery(\'#' . $this->tableRowsToHide[$this->selectedElements[0]][$i] . '\').closest(\'tr\').' . $classType . '(\'hidden\');' . "\n";
+				$script .= 'jQuery(\'#' . $this->tableRowsToHide[$this->selectedElements[0]][$i] . '\').closest(\'' . $selector . '\').' . $classType . '(\'hidden\');' . "\n";
 			}
 		}
 		$script .= '});</script>';
 		echo $script;
+	}
+
+	/**
+	 * Returns the selector to use to find the show/hide elements.
+	 *
+	 * @return string selector
+	 */
+	protected function getShowHideSelector() {
+		return 'tr';
 	}
 
 }
@@ -3044,10 +3054,12 @@ class htmlDiv extends htmlElement {
 	 * @param String $id unique ID
 	 * @param htmlElement $content inner content
 	 * @param array $classes CSS classes
+	 * @param string[] $cssClasses CSS classes
 	 */
-	function __construct($id, $content) {
+	function __construct($id, $content, $cssClasses = null) {
 		$this->id = htmlspecialchars($id);
 		$this->content = $content;
+		$this->cssClasses = $cssClasses;
 	}
 
 	/**
@@ -3562,6 +3574,15 @@ class htmlResponsiveRow extends htmlElement {
 		return $return;
 	}
 
+	/**
+	 * Adds a vertical spacer with 12 columns.
+	 *
+	 * @param string $space space in px or rem
+	 */
+	public function addVerticalSpacer($space) {
+		$this->add(new htmlSpacer(null,	$space), 12);
+	}
+
 }
 
 /**
@@ -3664,14 +3685,21 @@ class htmlResponsiveInputField extends htmlInputField {
 			if (is_dir("../graphics")) $graphicsPath = "../graphics";
 			$labelGroup->addElement(new htmlImage($graphicsPath . '/required.png', 16, 16, _('required'), _('required')));
 		}
+		if (!empty($this->helpID)) {
+			$helpLinkLabel = new htmlHelpLink($this->helpID);
+			$helpLinkLabel->setCSSClasses(array('hide-on-tablet', 'margin-left5'));
+			$labelGroup->addElement($helpLinkLabel);
+		}
 		$row->add($labelGroup, 12, 6, 6, 'responsiveLabel');
 		// input field
 		$fieldGroup = new htmlGroup();
 		$fieldGroup->addElement($this);
 		if (!empty($this->helpID)) {
-			$fieldGroup->addElement(new htmlHelpLink($this->helpID));
+			$helpLinkField = new htmlHelpLink($this->helpID);
+			$helpLinkField->setCSSClasses(array('hide-on-mobile'));
+			$fieldGroup->addElement($helpLinkField);
 		}
-		$row->add($fieldGroup, 12, 6, 6, 'responsiveField');
+		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');
 		return $row->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 	}
 
@@ -3815,6 +3843,78 @@ class htmlResponsiveSelect extends htmlSelect {
 			$helpLink = new htmlHelpLink($this->helpID);
 			$helpLink->setCSSClasses(array('hide-on-mobile'));
 			$fieldGroup->addElement($helpLink);
+		}
+		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');
+		return $row->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see htmlSelect::getShowHideSelector()
+	 */
+	protected function getShowHideSelector() {
+		return '.row';
+	}
+
+}
+
+/**
+ * Responsive select with label and help link.
+ *
+ * @package metaHTML
+ */
+class htmlResponsiveRadio extends htmlRadio {
+
+	/** descriptive label */
+	private $label;
+	/** help ID */
+	private $helpID;
+	/** render HTML of parent class */
+	private $renderParentHtml = false;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param String $name element name
+	 * @param array $elements list of elememts
+	 * @param array $selectedElements list of selected elements
+	 * @param String $label descriptive label
+	 * @param String $helpID help ID (optional, default none)
+	 * @param int $size size (optional, default = 1)
+	 */
+	function __construct($label, $name, $elements, $selectedElement = null, $helpID = null) {
+		parent::__construct($name, $elements, $selectedElement);
+		$this->label = htmlspecialchars($label);
+		$this->helpID = $helpID;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see htmlInputField::generateHTML()
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		if ($this->renderParentHtml) {
+			return parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		}
+		// HTML of parent class is rendered on second call (done by htmlResponsiveRow)
+		$this->renderParentHtml = true;
+		$row = new htmlResponsiveRow();
+		// label text
+		$labelGroup = new htmlGroup();
+		$labelGroup->addElement(new htmlOutputText($this->label));
+		if (!empty($this->helpID)) {
+			$helpLinkLabel = new htmlHelpLink($this->helpID);
+			$helpLinkLabel->setCSSClasses(array('hide-on-tablet', 'margin-left5'));
+			$labelGroup->addElement($helpLinkLabel);
+		}
+		$row->add($labelGroup, 12, 6, 6, 'responsiveLabel');
+		// input field
+		$fieldGroup = new htmlGroup();
+		$fieldGroup->addElement(new htmlDiv(null, $this, array('float-left')));
+		if (!empty($this->helpID)) {
+			$helpLink = new htmlHelpLink($this->helpID);
+			$helpLink->setCSSClasses(array('hide-on-mobile'));
+			$fieldGroup->addElement(new htmlDiv(null, $helpLink));
 		}
 		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');
 		return $row->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);

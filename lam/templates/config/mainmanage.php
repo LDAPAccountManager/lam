@@ -5,25 +5,23 @@ use \htmlTable;
 use \htmlTitle;
 use \htmlStatusMessage;
 use \htmlSubTitle;
-use \htmlTableExtendedInputTextarea;
 use \htmlSpacer;
-use \htmlTableExtendedSelect;
 use \htmlOutputText;
-use \htmlTableExtendedInputCheckbox;
 use \htmlLink;
 use \htmlGroup;
 use \htmlButton;
 use \htmlHelpLink;
 use \htmlInputField;
 use \htmlInputFileUpload;
-use \htmlEqualWidth;
-use \htmlTableExtendedRadio;
-use \htmlHiddenInput;
-use \htmlTableExtendedInputField;
 use \DateTime;
 use \DateTimeZone;
+use \htmlResponsiveRow;
+use \htmlResponsiveInputTextarea;
+use \htmlResponsiveSelect;
+use \htmlResponsiveInputCheckbox;
+use \htmlResponsiveInputField;
+use \htmlDiv;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2017  Roland Gruber
@@ -89,7 +87,7 @@ if (isset($_POST['cancel'])) {
 $errors = array();
 $messages = array();
 // check if submit button was pressed
-if (isset($_POST['submitFormData'])) {
+if (isset($_POST['submit'])) {
 	// set master password
 	if (isset($_POST['masterpassword']) && ($_POST['masterpassword'] != "")) {
 		if ($_POST['masterpassword'] && $_POST['masterpassword2'] && ($_POST['masterpassword'] == $_POST['masterpassword2'])) {
@@ -203,7 +201,7 @@ if (isset($_POST['submitFormData'])) {
 	}
 	if (isset($_POST['sslCaCertImport'])) {
 		$matches = array();
-		if (preg_match('/^([a-zA-Z0-9_\\.-]+)(:([0-9]+))?$/', $_POST['serverurl'], $matches)) {
+		if (preg_match('/^ldaps:\\/\\/([a-zA-Z0-9_\\.-]+)(:([0-9]+))?$/', $_POST['serverurl'], $matches)) {
 			$port = '636';
 			if (isset($matches[3]) && !empty($matches[3])) {
 				$port = $matches[3];
@@ -247,11 +245,15 @@ echo $_SESSION['header'];
 
 ?>
 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>
 			<?php
 				echo _("Edit general settings");
 			?>
 		</title>
+		<link rel="stylesheet" type="text/css" href="../../style/responsive/105_normalize.css">
+		<link rel="stylesheet" type="text/css" href="../../style/responsive/110_foundation.css">
+		<link rel="stylesheet" type="text/css" href="../../style/responsive/120_lam.css">
 	<?php
 		// include all CSS files
 		$cssDirName = dirname(__FILE__) . '/../../style';
@@ -272,7 +274,7 @@ echo $_SESSION['header'];
 		<link rel="shortcut icon" type="image/x-icon" href="../../graphics/favicon.ico">
 		<link rel="icon" href="../../graphics/logo136.png">
 	</head>
-	<body>
+	<body class="admin">
 		<table border=0 width="100%" class="lamHeader ui-corner-all">
 			<tr>
 				<td align="left" height="30">
@@ -298,48 +300,47 @@ foreach ($jsFiles as $jsEntry) {
 	echo "<script type=\"text/javascript\" src=\"../lib/" . $jsEntry . "\"></script>\n";
 }
 
-$container = new htmlTable('100%');
-$container->setCSSClasses(array('ui-corner-all', 'roundedShadowBox'));
-$container->addElement(new htmlTitle(_('General settings')), true);
+$tabindex = 1;
+
+$row = new htmlResponsiveRow();
+$row->add(new htmlTitle(_('General settings')), 12);
 
 // print messages
 for ($i = 0; $i < sizeof($errors); $i++) {
-	$container->addElement(new htmlStatusMessage("ERROR", $errors[$i]), true);
+	$row->add(new htmlStatusMessage("ERROR", $errors[$i]), 12);
 }
 for ($i = 0; $i < sizeof($messages); $i++) {
-	$container->addElement(new htmlStatusMessage("INFO", $messages[$i]), true);
+	$row->add(new htmlStatusMessage("INFO", $messages[$i]), 12);
 }
 
 // check if config file is writable
 if (!$cfg->isWritable()) {
-	$container->addElement(new htmlStatusMessage('WARN', 'The config file is not writable.', 'Your changes cannot be saved until you make the file writable for the webserver user.'), true);
+	$row->add(new htmlStatusMessage('WARN', 'The config file is not writable.', 'Your changes cannot be saved until you make the file writable for the webserver user.'), 12);
 }
 
 // license
 if (isLAMProVersion()) {
-	$container->addElement(new htmlSubTitle(_('Licence')), true);
-	$licenseTable = new htmlTable();
-	$licenseTable->addElement(new htmlTableExtendedInputTextarea('license', implode("\n", $cfg->getLicenseLines()), 50, 10, _('Licence'), '287'));
-	$container->addElement($licenseTable, true);
+	$row->add(new htmlSubTitle(_('Licence')), 12);
+	$row->add(new htmlResponsiveInputTextarea('license', implode("\n", $cfg->getLicenseLines()), null, 10, _('Licence'), '287'), 12);
 
-	$container->addElement(new htmlSpacer(null, '10px'), true);
+	$row->add(new htmlSpacer(null, '1rem'), true);
 }
 
 // security settings
-$container->addElement(new htmlSubTitle(_("Security settings")), true);
-$securityTable = new htmlTable();
+$row->add(new htmlSubTitle(_("Security settings")), 12);
 $options = array(5, 10, 20, 30, 60, 90, 120, 240);
-$securityTable->addElement(new htmlTableExtendedSelect('sessionTimeout', $options, array($cfg->sessionTimeout), _("Session timeout"), '238'), true);
-$securityTable->addElement(new htmlTableExtendedInputTextarea('allowedHosts', implode("\n", explode(",", $cfg->allowedHosts)), '30', '7', _("Allowed hosts"), '241'), true);
+$row->add(new htmlResponsiveSelect('sessionTimeout', $options, array($cfg->sessionTimeout), _("Session timeout"), '238'), 12);
+$row->add(new htmlResponsiveInputTextarea('allowedHosts', implode("\n", explode(",", $cfg->allowedHosts)), null, '7', _("Allowed hosts"), '241'), 12);
 if (isLAMProVersion()) {
-	$securityTable->addElement(new htmlTableExtendedInputTextarea('allowedHostsSelfService', implode("\n", explode(",", $cfg->allowedHostsSelfService)), '30', '7', _("Allowed hosts (self service)"), '241'), true);
+	$row->add(new htmlResponsiveInputTextarea('allowedHostsSelfService', implode("\n", explode(",", $cfg->allowedHostsSelfService)), null, '7', _("Allowed hosts (self service)"), '241'), 12);
 }
 $encryptSession = ($cfg->encryptSession === 'true');
-$encryptSessionBox = new htmlTableExtendedInputCheckbox('encryptSession', $encryptSession, _('Encrypt session'), '245');
+$encryptSessionBox = new htmlResponsiveInputCheckbox('encryptSession', $encryptSession, _('Encrypt session'), '245');
 $encryptSessionBox->setIsEnabled(function_exists('openssl_random_pseudo_bytes'));
-$securityTable->addElement($encryptSessionBox, true);
+$row->add($encryptSessionBox, 12);
 // SSL certificate
-$securityTable->addElement(new htmlOutputText(_('SSL certificates')));
+$row->addVerticalSpacer('1rem');
+$row->addLabel(new htmlOutputText(_('SSL certificates')));
 $sslMethod = _('use system certificates');
 $sslFileName = $cfg->getSSLCaCertTempFileName();
 if ($sslFileName != null) {
@@ -358,91 +359,70 @@ if ($sslFileName != null) {
 	$sslDeleteBtn->setTitle(_('Delete all CA certificates'));
 	$sslDelSaveGroup->addElement($sslDeleteBtn);
 }
-$securityTable->addElement($sslDelSaveGroup);
-$securityTable->addElement(new htmlHelpLink('204'));
-$securityTable->addElement(new htmlSpacer('250px', null), true);
-$securityTable->addElement(new htmlOutputText(''));
-$sslButtonTable = new htmlTable();
-$sslButtonTable->colspan = 3;
-$sslButtonTable->addElement(new htmlInputFileUpload('sslCaCert'));
+$sslDelSaveGroup->addElement(new htmlHelpLink('204'));
+$row->addField($sslDelSaveGroup);
+$row->addLabel(new htmlInputFileUpload('sslCaCert'));
 $sslUploadBtn = new htmlButton('sslCaCertUpload', _('Upload'));
 $sslUploadBtn->setIconClass('upButton');
 $sslUploadBtn->setTitle(_('Upload CA certificate in DER/PEM format.'));
-$sslButtonTable->addElement($sslUploadBtn, true);
+$row->addField($sslUploadBtn);
 if (function_exists('stream_socket_client') && function_exists('stream_context_get_params')) {
-	$sslImportGroup = new htmlGroup();
-	$sslImportGroup->addElement(new htmlOutputText('ldaps://'));
-	$sslImportServerUrl = !empty($_POST['serverurl']) ? $_POST['serverurl'] :  '';
-	$sslImportGroup->addElement(new htmlInputField('serverurl'));
-	$sslButtonTable->addElement($sslImportGroup);
+	$sslImportServerUrl = !empty($_POST['serverurl']) ? $_POST['serverurl'] :  'ldaps://';
+	$serverUrlUpload = new htmlInputField('serverurl', $sslImportServerUrl);
+	$row->addLabel($serverUrlUpload);
 	$sslImportBtn = new htmlButton('sslCaCertImport', _('Import from server'));
 	$sslImportBtn->setIconClass('downButton');
 	$sslImportBtn->setTitle(_('Imports the certificate directly from your LDAP server.'));
-	$sslImportBtn->setCSSClasses(array('nowrap'));
-	$sslButtonTable->addElement($sslImportBtn);
-	$sslButtonTable->addElement(new htmlEqualWidth(array('btn_sslCaCertUpload', 'btn_sslCaCertImport')));
+	$row->addField($sslImportBtn);
 }
-$securityTable->addElement($sslButtonTable, true);
+
 $sslCerts = $cfg->getSSLCaCertificates();
 if (sizeof($sslCerts) > 0) {
-	$certTable = new htmlTable();
-	$certTable->colspan = 3;
-	$certSpace = new htmlSpacer('5px', null);
-	$certTable->addElement(new htmlOutputText(''));
-	$certTable->addElement(new htmlOutputText(_('Serial number')));
-	$certTable->addElement($certSpace);
-	$certTable->addElement(new htmlOutputText(_('Valid to')));
-	$certTable->addElement($certSpace);
-	$certTable->addElement(new htmlOutputText(_('Common name')), true);
+	$certsTitles = array(_('Common name'), _('Valid to'), _('Serial number'), _('Delete'));
+	$certsData = array();
 	for ($i = 0; $i < sizeof($sslCerts); $i++) {
 		$serial = isset($sslCerts[$i]['serialNumber']) ? $sslCerts[$i]['serialNumber'] : '';
 		$validTo = isset($sslCerts[$i]['validTo_time_t']) ? $sslCerts[$i]['validTo_time_t'] : '';
 		$cn = isset($sslCerts[$i]['subject']['CN']) ? $sslCerts[$i]['subject']['CN'] : '';
-		$certTable->addElement(new htmlButton('deleteCert_' . $i, 'delete.png', true));
-		$certTable->addElement(new htmlOutputText($serial));
-		$certTable->addElement($certSpace);
-		$certTable->addElement(new htmlOutputText(formatSSLTimestamp($validTo)));
-		$certTable->addElement($certSpace);
-		$certTable->addElement(new htmlOutputText($cn), true);
+		$delBtn = new htmlButton('deleteCert_' . $i, 'delete.png', true);
+		$certsData[] = array(
+			new htmlOutputText($cn),
+			new htmlOutputText($validTo),
+			new htmlOutputText($serial),
+			$delBtn
+		);
 	}
-	$securityTable->addElement(new htmlOutputText(''));
-	$securityTable->addElement($certTable, true);
+	$certsTable = new \htmlResponsiveTable($certsTitles, $certsData);
+	$row->add($certsTable, 12);
 }
-$container->addElement($securityTable, true);
-
-$container->addElement(new htmlSpacer(null, '10px'), true);
 
 // password policy
-$container->addElement(new htmlSubTitle(_("Password policy")), true);
-$policyTable = new htmlTable();
+$row->add(new htmlSubTitle(_("Password policy")), 12);
 $options20 = array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20);
 $options4 = array(0, 1, 2, 3, 4);
-$policyTable->addElement(new htmlTableExtendedSelect('passwordMinLength', $options20, array($cfg->passwordMinLength), _('Minimum password length'), '242'), true);
-$policyTable->addVerticalSpace('5px');
-$policyTable->addElement(new htmlTableExtendedSelect('passwordMinLower', $options20, array($cfg->passwordMinLower), _('Minimum lowercase characters'), '242'), true);
-$policyTable->addElement(new htmlTableExtendedSelect('passwordMinUpper', $options20, array($cfg->passwordMinUpper), _('Minimum uppercase characters'), '242'), true);
-$policyTable->addElement(new htmlTableExtendedSelect('passwordMinNumeric', $options20, array($cfg->passwordMinNumeric), _('Minimum numeric characters'), '242'), true);
-$policyTable->addElement(new htmlTableExtendedSelect('passwordMinSymbol', $options20, array($cfg->passwordMinSymbol), _('Minimum symbolic characters'), '242'), true);
-$policyTable->addElement(new htmlTableExtendedSelect('passwordMinClasses', $options4, array($cfg->passwordMinClasses), _('Minimum character classes'), '242'), true);
-$policyTable->addVerticalSpace('5px');
+$row->add(new htmlResponsiveSelect('passwordMinLength', $options20, array($cfg->passwordMinLength), _('Minimum password length'), '242'), 12);
+$row->addVerticalSpacer('1rem');
+$row->add(new htmlResponsiveSelect('passwordMinLower', $options20, array($cfg->passwordMinLower), _('Minimum lowercase characters'), '242'), 12);
+$row->add(new htmlResponsiveSelect('passwordMinUpper', $options20, array($cfg->passwordMinUpper), _('Minimum uppercase characters'), '242'), 12);
+$row->add(new htmlResponsiveSelect('passwordMinNumeric', $options20, array($cfg->passwordMinNumeric), _('Minimum numeric characters'), '242'), 12);
+$row->add(new htmlResponsiveSelect('passwordMinSymbol', $options20, array($cfg->passwordMinSymbol), _('Minimum symbolic characters'), '242'), 12);
+$row->add(new htmlResponsiveSelect('passwordMinClasses', $options4, array($cfg->passwordMinClasses), _('Minimum character classes'), '242'), 12);
+$row->addVerticalSpacer('1rem');
 $rulesCountOptions = array(_('all') => '-1', '3' => '3', '4' => '4');
-$rulesCountSelect = new htmlTableExtendedSelect('passwordRulesCount', $rulesCountOptions, array($cfg->checkedRulesCount), _('Number of rules that must match'), '246');
+$rulesCountSelect = new htmlResponsiveSelect('passwordRulesCount', $rulesCountOptions, array($cfg->checkedRulesCount), _('Number of rules that must match'), '246');
 $rulesCountSelect->setHasDescriptiveElements(true);
-$policyTable->addElement($rulesCountSelect, true);
+$row->add($rulesCountSelect, 12);
 $passwordMustNotContainUser = ($cfg->passwordMustNotContainUser === 'true') ? true : false;
-$policyTable->addElement(new htmlTableExtendedInputCheckbox('passwordMustNotContainUser',$passwordMustNotContainUser , _('Password must not contain user name'), '247'), true);
+$row->add(new htmlResponsiveInputCheckbox('passwordMustNotContainUser',$passwordMustNotContainUser , _('Password must not contain user name'), '247'), 12);
 $passwordMustNotContain3Chars = ($cfg->passwordMustNotContain3Chars === 'true') ? true : false;
-$policyTable->addElement(new htmlTableExtendedInputCheckbox('passwordMustNotContain3Chars', $passwordMustNotContain3Chars, _('Password must not contain part of user/first/last name'), '248'), true);
-$container->addElement($policyTable, true);
-$container->addElement(new htmlSpacer(null, '10px'), true);
+$row->add(new htmlResponsiveInputCheckbox('passwordMustNotContain3Chars', $passwordMustNotContain3Chars, _('Password must not contain part of user/first/last name'), '248'), 12);
 
 // logging
-$container->addElement(new htmlSubTitle(_("Logging")), true);
-$loggingTable = new htmlTable();
+$row->add(new htmlSubTitle(_("Logging")), 12);
 $levelOptions = array(_("Debug") => LOG_DEBUG, _("Notice") => LOG_NOTICE, _("Warning") => LOG_WARNING, _("Error") => LOG_ERR);
-$levelSelect = new htmlTableExtendedSelect('logLevel', $levelOptions, array($cfg->logLevel), _("Log level"), '239');
+$levelSelect = new htmlResponsiveSelect('logLevel', $levelOptions, array($cfg->logLevel), _("Log level"), '239');
 $levelSelect->setHasDescriptiveElements(true);
-$loggingTable->addElement($levelSelect, true);
+$row->add($levelSelect, 12);
 $destinationOptions = array(_("No logging") => "none", _("System logging") => "syslog", _("File") => 'file');
 $destinationSelected = 'file';
 $destinationPath = $cfg->logDestination;
@@ -454,61 +434,63 @@ elseif ($cfg->logDestination == 'SYSLOG') {
 	$destinationSelected = 'syslog';
 	$destinationPath = '';
 }
-$loggingTable->addElement(new htmlTableExtendedRadio(_("Log destination"), 'logDestination', $destinationOptions, $destinationSelected, '240'), true);
-$loggingTable->addElement(new htmlOutputText(''));
-$loggingTable->addElement(new htmlInputField('logFile', $destinationPath), true);
-$loggingTable->addElement(new htmlSpacer(null, '10px'), true);
+$logDestinationSelect = new htmlResponsiveSelect('logDestination', $destinationOptions, array($destinationSelected), _("Log destination"), '240');
+$logDestinationSelect->setTableRowsToHide(array(
+	'none' => array('logFile'),
+	'syslog' => array('logFile'),
+));
+$logDestinationSelect->setTableRowsToShow(array(
+	'file' => array('logFile'),
+));
+$logDestinationSelect->setHasDescriptiveElements(true);
+$row->add($logDestinationSelect, 12);
+$row->add(new htmlResponsiveInputField(_('File'), 'logFile', $destinationPath), 12);
 $errorLogOptions = array(
 	_('PHP system setting') => LAMCfgMain::ERROR_REPORTING_SYSTEM,
 	_('default') => LAMCfgMain::ERROR_REPORTING_DEFAULT,
 	_('all') => LAMCfgMain::ERROR_REPORTING_ALL
 );
-$errorLogSelect = new htmlTableExtendedSelect('errorReporting', $errorLogOptions, array($cfg->errorReporting), _('PHP error reporting'), '244');
+$errorLogSelect = new htmlResponsiveSelect('errorReporting', $errorLogOptions, array($cfg->errorReporting), _('PHP error reporting'), '244');
 $errorLogSelect->setHasDescriptiveElements(true);
-$loggingTable->addElement($errorLogSelect, true);
-$container->addElement($loggingTable, true);
-$container->addElement(new htmlSpacer(null, '10px'), true);
+$row->add($errorLogSelect, 12);
 
 // additional options
 if (isLAMProVersion()) {
-	$container->addElement(new htmlSubTitle(_('Additional options')), true);
-	$additionalTable = new htmlTable();
+	$row->add(new htmlSubTitle(_('Additional options')), 12);
 	$mailEOLOptions = array(
 		_('Default (\r\n)') => 'default',
 		_('Non-standard (\n)') => 'unix'
 	);
-	$mailEOLSelect = new htmlTableExtendedSelect('mailEOL', $mailEOLOptions, array($cfg->mailEOL), _('Email format'), '243');
+	$mailEOLSelect = new htmlResponsiveSelect('mailEOL', $mailEOLOptions, array($cfg->mailEOL), _('Email format'), '243');
 	$mailEOLSelect->setHasDescriptiveElements(true);
-	$additionalTable->addElement($mailEOLSelect, true);
-	$container->addElement($additionalTable, true);
-	$container->addElement(new htmlSpacer(null, '10px'), true);
+	$row->add($mailEOLSelect, 12);
 }
+$row->addVerticalSpacer('3rem');
 
 // change master password
-$container->addElement(new htmlSubTitle(_("Change master password")), true);
-$passwordTable = new htmlTable();
-$pwd1 = new htmlTableExtendedInputField(_("New master password"), 'masterpassword', '', '235');
+$row->add(new htmlSubTitle(_("Change master password")), 12);
+$pwd1 = new htmlResponsiveInputField(_("New master password"), 'masterpassword', '', '235');
 $pwd1->setIsPassword(true);
-$passwordTable->addElement($pwd1, true);
-$pwd2 = new htmlTableExtendedInputField(_("Reenter password"), 'masterpassword2', '');
+$row->add($pwd1, 12);
+$pwd2 = new htmlResponsiveInputField(_("Reenter password"), 'masterpassword2', '');
 $pwd2->setIsPassword(true);
 $pwd2->setSameValueFieldID('masterpassword');
-$passwordTable->addElement($pwd2, true);
-$container->addElement($passwordTable, true);
-$container->addElement(new htmlSpacer(null, '20px'), true);
+$row->add($pwd2, 12);
+$row->addVerticalSpacer('3rem');
 
 // buttons
 if ($cfg->isWritable()) {
 	$buttonTable = new htmlTable();
 	$buttonTable->addElement(new htmlButton('submit', _("Ok")));
+	$buttonTable->addElement(new htmlSpacer('1rem', null));
 	$buttonTable->addElement(new htmlButton('cancel', _("Cancel")));
-	$container->addElement($buttonTable, true);
+	$row->add($buttonTable, 12);
 }
 
-$container->addElement(new htmlHiddenInput('submitFormData', '1'), true);
+$box = new htmlDiv(null, $row);
+$box->setCSSClasses(array('ui-corner-all', 'roundedShadowBox'));
+parseHtml(null, $box, array(), false, $tabindex, 'user');
 
-$tabindex = 1;
-parseHtml(null, $container, array(), false, $tabindex, 'user');
 
 /**
  * Formats an LDAP time string (e.g. from createTimestamp).

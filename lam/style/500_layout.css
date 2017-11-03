@@ -159,6 +159,10 @@ input {
 	border-collapse: separate;
 }
 
+.float-left {
+	float: left;
+}
+
 .hoverHighlight {
 	border: 1px solid transparent;
 }
