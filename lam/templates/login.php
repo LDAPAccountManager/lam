@@ -233,8 +233,6 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 	foreach ($jsFiles as $jsEntry) {
 		echo "<script type=\"text/javascript\" src=\"lib/" . $jsEntry . "\"></script>\n";
 	}
-	echo "<script type=\"text/javascript\" src=\"lib/extra/responsive/200_modernizr.js\"></script>\n";
-	echo "<script type=\"text/javascript\" src=\"lib/extra/responsive/250_foundation.js\"></script>\n";
 
 	// upgrade if pdf/profiles contain single files
 	if (containsFiles('../config/profiles') || containsFiles('../config/pdf')) {

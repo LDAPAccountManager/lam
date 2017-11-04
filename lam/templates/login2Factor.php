@@ -164,8 +164,6 @@ foreach ($jsFiles as $jsEntry) {
 }
 ?>
 
-	<script type="text/javascript" src="lib/extra/responsive/200_modernizr.js"></script>
-	<script type="text/javascript" src="lib/extra/responsive/250_foundation.js"></script>
 	<table border=0 width="100%" class="lamHeader ui-corner-all">
 		<tr>
 			<td align="left" height="30">
