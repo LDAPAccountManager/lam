@@ -117,51 +117,15 @@ if (isset($_POST['submit'])) {
 	}
 }
 
+echo $_SESSION['header'];
+printHeaderContents(_("Login"), '..');
 ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html class="no-js">
-<head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="pragma" content="no-cache">
-		<meta http-equiv="cache-control" content="no-cache">
-	<title><?php echo _("Login"); ?></title>
-	<link rel="stylesheet" type="text/css" href="../style/responsive/105_normalize.css">
-	<link rel="stylesheet" type="text/css" href="../style/responsive/110_foundation.css">
-	<link rel="stylesheet" type="text/css" href="../style/responsive/120_lam.css">
-	<?php
-		// include all CSS files
-		$cssDirName = dirname(__FILE__) . '/../style';
-		$cssDir = dir($cssDirName);
-		$cssFiles = array();
-		$cssEntry = $cssDir->read();
-		while ($cssEntry !== false) {
-			if (substr($cssEntry, strlen($cssEntry) - 4, 4) == '.css') {
-				$cssFiles[] = $cssEntry;
-			}
-			$cssEntry = $cssDir->read();
-		}
-		sort($cssFiles);
-		foreach ($cssFiles as $cssEntry) {
-			echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/" . $cssEntry . "\">\n";
-		}
-	?>
 </head>
 <body class="admin">
 <?php
 
 // include all JavaScript files
-$jsDirName = dirname(__FILE__) . '/lib';
-$jsDir = dir($jsDirName);
-$jsFiles = array();
-while ($jsEntry = $jsDir->read()) {
-	if (substr($jsEntry, strlen($jsEntry) - 3, 3) != '.js') continue;
-	$jsFiles[] = $jsEntry;
-}
-sort($jsFiles);
-foreach ($jsFiles as $jsEntry) {
-	echo "<script type=\"text/javascript\" src=\"lib/" . $jsEntry . "\"></script>\n";
-}
+printJsIncludes('..');
 ?>
 
 	<table border=0 width="100%" class="lamHeader ui-corner-all">

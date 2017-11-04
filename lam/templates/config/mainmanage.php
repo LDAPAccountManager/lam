@@ -242,37 +242,8 @@ if (isset($_POST['submit'])) {
 }
 
 echo $_SESSION['header'];
-
+printHeaderContents(_("Edit general settings"), '../..');
 ?>
-
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>
-			<?php
-				echo _("Edit general settings");
-			?>
-		</title>
-		<link rel="stylesheet" type="text/css" href="../../style/responsive/105_normalize.css">
-		<link rel="stylesheet" type="text/css" href="../../style/responsive/110_foundation.css">
-		<link rel="stylesheet" type="text/css" href="../../style/responsive/120_lam.css">
-	<?php
-		// include all CSS files
-		$cssDirName = dirname(__FILE__) . '/../../style';
-		$cssDir = dir($cssDirName);
-		$cssFiles = array();
-		$cssEntry = $cssDir->read();
-		while ($cssEntry !== false) {
-			if (substr($cssEntry, strlen($cssEntry) - 4, 4) == '.css') {
-				$cssFiles[] = $cssEntry;
-			}
-			$cssEntry = $cssDir->read();
-		}
-		sort($cssFiles);
-		foreach ($cssFiles as $cssEntry) {
-			echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/" . $cssEntry . "\">\n";
-		}
-	?>
-		<link rel="shortcut icon" type="image/x-icon" href="../../graphics/favicon.ico">
-		<link rel="icon" href="../../graphics/logo136.png">
 	</head>
 	<body class="admin">
 		<table border=0 width="100%" class="lamHeader ui-corner-all">
@@ -288,17 +259,7 @@ echo $_SESSION['header'];
 
 <?php
 // include all JavaScript files
-$jsDirName = dirname(__FILE__) . '/../lib';
-$jsDir = dir($jsDirName);
-$jsFiles = array();
-while ($jsEntry = $jsDir->read()) {
-	if (substr($jsEntry, strlen($jsEntry) - 3, 3) != '.js') continue;
-	$jsFiles[] = $jsEntry;
-}
-sort($jsFiles);
-foreach ($jsFiles as $jsEntry) {
-	echo "<script type=\"text/javascript\" src=\"../lib/" . $jsEntry . "\"></script>\n";
-}
+printJsIncludes('../..');
 
 $tabindex = 1;
 

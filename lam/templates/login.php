@@ -193,46 +193,13 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 	setlanguage(); // setting correct language
 
 	echo $_SESSION["header"];
+	printHeaderContents('LDAP Account Manager', '..');
 	?>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>LDAP Account Manager</title>
-		<link rel="stylesheet" type="text/css" href="../style/responsive/105_normalize.css">
-		<link rel="stylesheet" type="text/css" href="../style/responsive/110_foundation.css">
-		<link rel="stylesheet" type="text/css" href="../style/responsive/120_lam.css">
-	<?php
-		// include all CSS files
-		$cssDirName = dirname(__FILE__) . '/../style';
-		$cssDir = dir($cssDirName);
-		$cssFiles = array();
-		$cssEntry = $cssDir->read();
-		while ($cssEntry !== false) {
-			if (substr($cssEntry, strlen($cssEntry) - 4, 4) == '.css') {
-				$cssFiles[] = $cssEntry;
-			}
-			$cssEntry = $cssDir->read();
-		}
-		sort($cssFiles);
-		foreach ($cssFiles as $cssEntry) {
-			echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/" . $cssEntry . "\">\n";
-		}
-	?>
-		<link rel="shortcut icon" type="image/x-icon" href="../graphics/favicon.ico">
-		<link rel="icon" href="../graphics/logo136.png">
 	</head>
 	<body class="admin" onload="focusLogin()">
 	<?php
 	// include all JavaScript files
-	$jsDirName = dirname(__FILE__) . '/lib';
-	$jsDir = dir($jsDirName);
-	$jsFiles = array();
-	while ($jsEntry = $jsDir->read()) {
-		if (substr($jsEntry, strlen($jsEntry) - 3, 3) != '.js') continue;
-		$jsFiles[] = $jsEntry;
-	}
-	sort($jsFiles);
-	foreach ($jsFiles as $jsEntry) {
-		echo "<script type=\"text/javascript\" src=\"lib/" . $jsEntry . "\"></script>\n";
-	}
+	printJsIncludes('..');
 
 	// upgrade if pdf/profiles contain single files
 	if (containsFiles('../config/profiles') || containsFiles('../config/pdf')) {
@@ -264,22 +231,10 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 			echo "myElement.focus();\n";
 		}
 		echo "}\n";
-		?>
-			jQuery(document).ready(function() {
-				jQuery('#loginButton').button();
-			});
-		<?php
 		echo "//-->\n";
 		echo "</script>\n";
 	}
 	?>
-
-		<script type="text/javascript">
-			jQuery(document).ready(function() {
-				var equalWidthElements = new Array('#username', '#passwd', '#language');
-				equalWidth(equalWidthElements);
-			});
-		</script>
 
 		<table border=0 width="100%" class="lamHeader ui-corner-all">
 			<tr>
@@ -393,8 +348,7 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 								$userSelect = new htmlSelect('username', $adminList, $selectedAdmin);
 								$userSelect->setHasDescriptiveElements(true);
 								$userSelect->setTransformSingleSelect(false);
-								$userSelect->alignment = htmlElement::ALIGN_LEFT;
-								$row->addField($userSelect);
+								$row->addField(new htmlDiv(null, $userSelect));
 							}
 							else {
 								if ($config_object->getHttpAuthentication() == 'true') {
@@ -421,7 +375,6 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 							else {
 								$passwordInput = new htmlInputField('passwd');
 								$passwordInput->setIsPassword(true);
-								$passwordInput->setFieldSize('20px');
 								$row->addField($passwordInput);
 							}
 							// language

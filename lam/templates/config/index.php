@@ -42,37 +42,8 @@ if (strtolower(session_module_name()) == 'files') {
 setlanguage();
 
 echo $_SESSION['header'];
-
+printHeaderContents(_("Configuration overview"), '../..');
 ?>
-
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>
-			<?php
-				echo _("Configuration overview");
-			?>
-		</title>
-		<link rel="stylesheet" type="text/css" href="../../style/responsive/105_normalize.css">
-		<link rel="stylesheet" type="text/css" href="../../style/responsive/110_foundation.css">
-		<link rel="stylesheet" type="text/css" href="../../style/responsive/120_lam.css">
-	<?php
-		// include all CSS files
-		$cssDirName = dirname(__FILE__) . '/../../style';
-		$cssDir = dir($cssDirName);
-		$cssFiles = array();
-		$cssEntry = $cssDir->read();
-		while ($cssEntry !== false) {
-			if (substr($cssEntry, strlen($cssEntry) - 4, 4) == '.css') {
-				$cssFiles[] = $cssEntry;
-			}
-			$cssEntry = $cssDir->read();
-		}
-		sort($cssFiles);
-		foreach ($cssFiles as $cssEntry) {
-			echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/" . $cssEntry . "\">\n";
-		}
-	?>
-		<link rel="shortcut icon" type="image/x-icon" href="../../graphics/favicon.ico">
-		<link rel="icon" href="../../graphics/logo136.png">
 	</head>
 	<body class="admin">
 		<table class="lamTop ui-corner-all">
