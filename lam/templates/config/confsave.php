@@ -1,6 +1,7 @@
 <?php
 namespace LAM\CONFIG;
 use \LAMConfig;
+use \htmlStatusMessage;
 /*
 $Id$
 
@@ -52,7 +53,7 @@ if (isset($_POST['passwd'])) $passwd = $_POST['passwd'];
 // check if password was entered
 // if not: load login page
 if (!isset($passwd) && !isset($_SESSION['conf_isAuthenticated'])) {
-	$_SESSION['conf_message'] = _("No password was entered!");
+	$_SESSION['conf_message'] = new htmlStatusMessage('ERROR', _("No password was entered!"));
 	/** go back to login if password is empty */
 	require('conflogin.php');
 	exit;
@@ -70,7 +71,7 @@ if ((!isset($_SESSION['conf_isAuthenticated']) || !($_SESSION['conf_isAuthentica
 	for ($i = 0; $i < sizeof($sessionKeys); $i++) {
 		if (substr($sessionKeys[$i], 0, 5) == "conf_") unset($_SESSION[$sessionKeys[$i]]);
 	}
-	$_SESSION['conf_message'] = _("The password is invalid! Please try again.");
+	$_SESSION['conf_message'] = new htmlStatusMessage('ERROR', _("The password is invalid! Please try again."));
 	/** go back to login if password is invalid */
 	require('conflogin.php');
 	exit;

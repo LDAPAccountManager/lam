@@ -1,4 +1,15 @@
 <?php
+namespace LAM\CONFIG;
+use \htmlStatusMessage;
+use \htmlResponsiveRow;
+use \LAMCfgMain;
+use \htmlButton;
+use \htmlOutputText;
+use \htmlLink;
+use \htmlDiv;
+use \htmlResponsiveSelect;
+use \htmlResponsiveInputField;
+use \htmlHorizontalLine;
 /*
 $Id$
 
@@ -46,7 +57,9 @@ session_regenerate_id(true);
 setlanguage();
 
 // get error message from confmain.php
-if (isset($_SESSION['conf_message'])) $message = $_SESSION['conf_message'];
+if (isset($_SESSION['conf_message'])) {
+	$message = $_SESSION['conf_message'];
+}
 
 // remove settings from session
 $sessionKeys = array_keys($_SESSION);
@@ -57,47 +70,17 @@ for ($i = 0; $i < sizeof($sessionKeys); $i++) {
 echo $_SESSION['header'];
 
 $files = getConfigProfiles();
-?>
+printHeaderContents(_("Login"), '../..');
 
-		<title>
-			<?php
-				echo _("Login");
-			?>
-		</title>
-	<?php
-		// include all CSS files
-		$cssDirName = dirname(__FILE__) . '/../../style';
-		$cssDir = dir($cssDirName);
-		$cssFiles = array();
-		$cssEntry = $cssDir->read();
-		while ($cssEntry !== false) {
-			if (substr($cssEntry, strlen($cssEntry) - 4, 4) == '.css') {
-				$cssFiles[] = $cssEntry;
-			}
-			$cssEntry = $cssDir->read();
-		}
-		sort($cssFiles);
-		foreach ($cssFiles as $cssEntry) {
-			echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/" . $cssEntry . "\">\n";
-		}
-	?>
-		<link rel="shortcut icon" type="image/x-icon" href="../../graphics/favicon.ico">
-		<link rel="icon" href="../../graphics/logo136.png">
+if (sizeof($files) < 1) {
+	$message = new htmlStatusMessage('INFO', _("No server profiles found. Please create one."));
+}
+$tabindex = 1;
+?>
 	</head>
-	<body>
+	<body class="admin">
 		<?php
-			// include all JavaScript files
-			$jsDirName = dirname(__FILE__) . '/../lib';
-			$jsDir = dir($jsDirName);
-			$jsFiles = array();
-			while ($jsEntry = $jsDir->read()) {
-				if (substr($jsEntry, strlen($jsEntry) - 3, 3) != '.js') continue;
-				$jsFiles[] = $jsEntry;
-			}
-			sort($jsFiles);
-			foreach ($jsFiles as $jsEntry) {
-				echo "<script type=\"text/javascript\" src=\"../lib/" . $jsEntry . "\"></script>\n";
-			}
+			printJsIncludes('../..');
 			// set focus on password field
 			?>
 			<script type="text/javascript" language="javascript">
@@ -121,93 +104,57 @@ $files = getConfigProfiles();
 		<br><br>
 		<!-- form to change existing profiles -->
 		<form action="confmain.php" method="post" autocomplete="off">
-		<table align="center"><tr><td>
-		<table align="center" border="0" rules="none" bgcolor="white" class="ui-corner-all roundedShadowBox">
-			<tr>
-				<td style="border-style:none" rowspan="3" width="20"></td>
-				<td style="border-style:none" height="20"></td>
-				<td style="border-style:none" rowspan="3" width="20"></td>
-			</tr>
-			<tr>
-				<td style="border-style:none" align="center">
-					<b>
-					<?php
-						if (sizeof($files) > 0) {
-							echo _("Please enter your password to change the server preferences:");
-						}
-					?>
-					</b>
-				</td>
-			</tr>
-			<tr><td style="border-style:none" >&nbsp;</td></tr>
-<?php
-	if (sizeof($files) < 1) $message = _("No server profiles found. Please create one.");
-	// print message if login was incorrect or no config profiles are present
-	if (isset($message)) {  // $message is set by confmain.php (requires conflogin.php then)
-		echo "<tr>\n";
-			echo "<td style=\"border-style:none\" rowspan=\"2\"></td>\n";
-			echo "<td style=\"border-style:none\" align=\"center\"><b><font color=red>" . $message . "</font></b></td>\n";
-			echo "<td style=\"border-style:none\" rowspan=\"2\"></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-			echo "<td style=\"border-style:none\" >&nbsp;</td>\n";
-		echo "</tr>\n";
-	}
-?>
-			<tr>
-				<td style="border-style:none" rowspan="4" width="20"></td>
-				<td style="border-style:none" align="center">
-					<?php
-						$conf = new LAMCfgMain();
-						$group = new htmlTable();
-						$profiles = array();
-						$selectedProfile = array();
-						$profilesExisting = false;
-						if (sizeof($files) > 0) {
-							$profiles = $files;
-							if (!empty($_COOKIE["lam_default_profile"]) && in_array($_COOKIE["lam_default_profile"], $files)) {
-								$selectedProfile[] = $_COOKIE["lam_default_profile"];
-							}
-							else {
-								$selectedProfile[] = $conf->default;
-							}
-							$profilesExisting = true;
-							$select = new htmlSelect('filename', $profiles, $selectedProfile);
-							$select->setIsEnabled($profilesExisting);
-							$group->addElement($select);
-							$passwordField = new htmlInputField('passwd');
-							$passwordField->setIsPassword(true);
-							$passwordField->setIsEnabled($profilesExisting);
-							$passwordField->setFieldSize(20);
-							$group->addElement($passwordField);
-							$button = new htmlButton('submit', _("Ok"));
-							$button->setIsEnabled($profilesExisting);
-							$group->addElement($button);
-							$group->addElement(new htmlHelpLink('200'));
-							$tabindex = 1;
-							parseHtml(null, $group, array(), false, $tabindex, 'user');
-						}
-						?>
-				</td>
-				<td style="border-style:none" rowspan="4" width="20"></td>
-			</tr>
-			<tr>
-				<td  style="border-style:none">&nbsp;</td>
-			</tr>
-			<tr>
-				<td style="border-style:none" align="center">
-					<b><a href="profmanage.php"><?php echo _("Manage server profiles") ?></a></b>
-				</td>
-			</tr>
-			<tr>
-				<td style="border-style:none" height="20"></td>
-			</tr>
-		</table>
-		</td></tr>
-		<tr><td>
-		<br><a href="../login.php"><IMG alt="configuration" src="../../graphics/undo.png">&nbsp;<?php echo _("Back to login"); ?> </a>
-		</td></tr>
-		</table>
+
+		<?php
+
+		$row = new htmlResponsiveRow();
+
+		// message
+		if ($message !== null) {
+			$row->add($message, 12);
+			$row->addVerticalSpacer('2rem');
+		}
+
+		$box = new htmlResponsiveRow();
+		if (sizeof($files) > 0) {
+			$box->add(new htmlOutputText(_("Please enter your password to change the server preferences:")), 12);
+			$box->addVerticalSpacer('1.5rem');
+			$conf = new LAMCfgMain();
+			$selectedProfile = array();
+			$profilesExisting = false;
+			$profiles = $files;
+			if (!empty($_COOKIE["lam_default_profile"]) && in_array($_COOKIE["lam_default_profile"], $files)) {
+				$selectedProfile[] = $_COOKIE["lam_default_profile"];
+			}
+			else {
+				$selectedProfile[] = $conf->default;
+			}
+			$box->add(new htmlResponsiveSelect('filename', $profiles, $selectedProfile, _('Profile name')), 12);
+			$passwordInput = new htmlResponsiveInputField(_('Password'), 'passwd', '', '200');
+			$passwordInput->setIsPassword(true);
+			$box->add($passwordInput, 12);
+			$box->addVerticalSpacer('1rem');
+			$button = new htmlButton('submit', _("Ok"));
+			$box->addLabel($button);
+			$box->add(new htmlOutputText(''), 0, 6);
+			$box->addVerticalSpacer('1.5rem');
+			$box->add(new htmlHorizontalLine(), 12);
+			$box->addVerticalSpacer('1.5rem');
+		}
+		$box->add(new htmlLink(_("Manage server profiles"), 'profmanage.php'), 12, 12, 12, 'text-center');
+
+		$boxDiv = new htmlDiv(null, $box);
+		$boxDiv->setCSSClasses(array('ui-corner-all', 'roundedShadowBox', 'limitWidth'));
+		$row->add($boxDiv, 12);
+
+		// back link
+		$row->addVerticalSpacer('2rem');
+		$backLink = new htmlLink(_("Back to login"), '../login.php', '../../graphics/undo.png');
+		$row->add($backLink, 12, 12, 12, 'text-left');
+
+		parseHtml(null, $row, array(), false, $tabindex, 'user');
+
+		?>
 		</form>
 
 		<p><br><br></p>

@@ -231,6 +231,10 @@ table.collapse {
 	text-align: right;
 }
 
+.text-center {
+	text-align: center;
+}
+
 .bold {
 	font-weight: bold;
 }
@@ -403,7 +407,7 @@ td.loginRightBox {
 	box-shadow: 2px 2px 5px #a0a0a4;
 	display: inline-block;
 	background-color: white;
-	padding: 20px;
+	padding: 30px;
 }
 
 .limitWidth {

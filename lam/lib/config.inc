@@ -338,7 +338,7 @@ function isAccountTypeHidden($type) {
 /**
  * Returns a list of all supported languages.
  *
- * @return array languages
+ * @return LAMLanguage[] languages
  */
 function getLanguages() {
 	$languages = array();

@@ -1511,6 +1511,73 @@ function enforceUserIsLoggedIn($check2ndFactor = true) {
 	}
 }
 
+/**
+ * Prints the content of the header part.
+ *
+ * @param string $title page title
+ * @param string $prefix prefix to LAM main folder (e.g. "..")
+ */
+function printHeaderContents($title, $prefix) {
+	echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
+	echo '<title>';
+	echo $title;
+	echo '</title>';
+	// include all CSS files
+	$cssDirName = dirname(__FILE__) . '/../style';
+	$cssDir = dir($cssDirName);
+	$cssFiles = array();
+	$cssEntry = $cssDir->read();
+	while ($cssEntry !== false) {
+		if (substr($cssEntry, strlen($cssEntry) - 4, 4) == '.css') {
+			$cssFiles[] = $cssEntry;
+		}
+		$cssEntry = $cssDir->read();
+	}
+	sort($cssFiles);
+	foreach ($cssFiles as $cssEntry) {
+		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"$prefix/style/$cssEntry\">";
+	}
+	// include responsive CSS
+	$cssDirName = dirname(__FILE__) . '/../style/responsive';
+	$cssDir = dir($cssDirName);
+	$cssFiles = array();
+	$cssEntry = $cssDir->read();
+	while ($cssEntry !== false) {
+		if (substr($cssEntry, strlen($cssEntry) - 4, 4) == '.css') {
+			$cssFiles[] = $cssEntry;
+		}
+		$cssEntry = $cssDir->read();
+	}
+	sort($cssFiles);
+	foreach ($cssFiles as $cssEntry) {
+		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"$prefix/style/responsive/$cssEntry\">";
+	}
+	echo '<link rel="shortcut icon" type="image/x-icon" href="' . $prefix . '/graphics/favicon.ico">';
+	echo '<link rel="icon" href="' . $prefix . '/graphics/logo136.png">';
+}
+
+/**
+ * Prints script tags for all LAM JS files.
+ *
+ * @param string $prefix prefix to LAM main folder (e.g. "..")
+ */
+function printJsIncludes($prefix) {
+	$jsDirName = dirname(__FILE__) . '/../templates/lib';
+	$jsDir = dir($jsDirName);
+	$jsFiles = array();
+	$jsEntry = $jsDir->read();
+	while ($jsEntry !== false) {
+		if (substr($jsEntry, strlen($jsEntry) - 3, 3) == '.js') {
+			$jsFiles[] = $jsEntry;
+		}
+		$jsEntry = $jsDir->read();
+	}
+	sort($jsFiles);
+	foreach ($jsFiles as $jsEntry) {
+		echo "<script type=\"text/javascript\" src=\"$prefix/templates/lib/" . $jsEntry . "\"></script>\n";
+	}
+}
+
 class LAMException extends Exception {
 
 	private $title;
