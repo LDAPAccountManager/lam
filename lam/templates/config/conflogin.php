@@ -144,7 +144,7 @@ $tabindex = 1;
 		$box->add(new htmlLink(_("Manage server profiles"), 'profmanage.php'), 12, 12, 12, 'text-center');
 
 		$boxDiv = new htmlDiv(null, $box);
-		$boxDiv->setCSSClasses(array('ui-corner-all', 'roundedShadowBox', 'limitWidth'));
+		$boxDiv->setCSSClasses(array('ui-corner-all', 'roundedShadowBox', 'limitWidth', 'text-center'));
 		$row->add($boxDiv, 12);
 
 		// back link
@@ -152,7 +152,7 @@ $tabindex = 1;
 		$backLink = new htmlLink(_("Back to login"), '../login.php', '../../graphics/undo.png');
 		$row->add($backLink, 12, 12, 12, 'text-left');
 
-		parseHtml(null, $row, array(), false, $tabindex, 'user');
+		parseHtml(null, new htmlDiv(null, $row, array('centeredTable')), array(), false, $tabindex, 'user');
 
 		?>
 		</form>

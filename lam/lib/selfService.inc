@@ -160,6 +160,10 @@ function getSelfServiceProfiles() {
 	$types = LAM\TYPES\getTypes();
 	$dir = dir(substr(__FILE__, 0, strlen(__FILE__) - 20) . "/config/selfService");
 	$ret = array();
+	if ($dir === false) {
+		logNewMessage(LOG_ERR, 'Unable to read self service profiles');
+		return $ret;
+	}
 	while ($entry = $dir->read()){
 		$ext = substr($entry, strrpos($entry, '.') + 1);
 		$name = substr($entry, 0, strrpos($entry, '.'));
