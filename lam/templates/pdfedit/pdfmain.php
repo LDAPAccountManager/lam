@@ -243,10 +243,6 @@ include '../main_header.php';
 		$container->addElement(new htmlSubTitle(_("Manage existing PDF structures")), true);
 		$existingContainer = new htmlTable();
 		foreach ($templateClasses as $templateClass) {
-			if ($i > 0) {
-				$existingContainer->addElement(new htmlSpacer(null, '10px'), true);
-			}
-
 			$existingContainer->addElement(new htmlImage('../../graphics/' . $templateClass['icon']));
 			$existingContainer->addElement(new htmlSpacer('3px', null));
 			$existingContainer->addElement(new htmlOutputText($templateClass['title']));

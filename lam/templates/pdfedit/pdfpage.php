@@ -188,8 +188,8 @@ include '../main_header.php';
 
 // print error messages if any
 if (sizeof($saveErrors) > 0) {
-	for ($i = 0; $i < sizeof($saveErrors); $i++) {
-		call_user_func_array('StatusMessage', $saveErrors[$i]);
+	foreach ($saveErrors as $saveError) {
+		call_user_func_array('StatusMessage', $saveError);
 	}
 	echo "<br>\n";
 }
@@ -259,8 +259,7 @@ $structure = $_SESSION['currentPDFStructure'];
 // print every entry in the current structure
 $structureContent = new htmlTable();
 $sections = $structure->getSections();
-for ($key = 0; $key < sizeof($sections); $key++) {
-	$section = $sections[$key];
+foreach ($sections as $key => $section) {
 	// create the up/down/remove links
 	$linkUp = new htmlButton('up_section_' . $key, 'up.gif', true);
 	$linkUp->setTitle(_("Up"));
@@ -317,8 +316,7 @@ for ($key = 0; $key < sizeof($sections); $key++) {
 		$structureContent->addElement($linkRemove, true);
 		// add section entries
 		$sectionEntries = $section->getEntries();
-		for ($e = 0; $e < sizeof($sectionEntries); $e++) {
-			$sectionEntry = $sectionEntries[$e];
+		foreach ($sectionEntries as $e => $sectionEntry) {
 			$structureContent->addElement(new htmlSpacer('10px', null));
 			$fieldOutput = new htmlOutputText(translateFieldIDToName($sectionEntry->getKey(), $type->getScope(), $availablePDFFields));
 			$structureContent->addElement($fieldOutput);

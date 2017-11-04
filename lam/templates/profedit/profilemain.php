@@ -86,8 +86,8 @@ foreach ($types as $type) {
 $profileClassesKeys = array_keys($profileClassesTemp);
 natcasesort($profileClassesKeys);
 $profileClassesKeys = array_values($profileClassesKeys);
-for ($i = 0; $i < sizeof($profileClassesKeys); $i++) {
-	$profileClasses[] = $profileClassesTemp[$profileClassesKeys[$i]];
+foreach ($profileClassesKeys as $profileClassesKey) {
+	$profileClasses[] = $profileClassesTemp[$profileClassesKey];
 }
 
 // check if user is logged in, if not go to login
@@ -102,10 +102,10 @@ elseif (isset($_POST['createProfileButton'])) {
 	exit;
 }
 // check if a profile should be edited
-for ($i = 0; $i < sizeof($profileClasses); $i++) {
-	if (isset($_POST['editProfile_' . $profileClasses[$i]['typeId']]) || isset($_POST['editProfile_' . $profileClasses[$i]['typeId'] . '_x'])) {
-		metaRefresh("profilepage.php?type=" . htmlspecialchars($profileClasses[$i]['typeId']) .
-					"&amp;edit=" . htmlspecialchars($_POST['profile_' . $profileClasses[$i]['typeId']]));
+foreach ($profileClasses as $profileClass) {
+	if (isset($_POST['editProfile_' . $profileClass['typeId']]) || isset($_POST['editProfile_' . $profileClass['typeId'] . '_x'])) {
+		metaRefresh("profilepage.php?type=" . htmlspecialchars($profileClass['typeId']) .
+					"&amp;edit=" . htmlspecialchars($_POST['profile_' . $profileClass['typeId']]));
 		exit;
 	}
 }
@@ -189,10 +189,10 @@ if (!empty($_POST['export'])) {
 }
 
 // get list of profiles for each account type
-for ($i = 0; $i < sizeof($profileClasses); $i++) {
-	$profileList = \LAM\PROFILES\getAccountProfiles($profileClasses[$i]['typeId']);
+foreach ($profileClasses as &$profileClass) {
+	$profileList = \LAM\PROFILES\getAccountProfiles($profileClass['typeId']);
 	natcasesort($profileList);
-	$profileClasses[$i]['profiles'] = $profileList;
+	$profileClass['profiles'] = $profileList;
 }
 
 if (isset($_GET['savedSuccessfully'])) {
@@ -205,8 +205,8 @@ if (isset($_GET['savedSuccessfully'])) {
 if (!empty($profileClasses)) {
 	$container->addElement(new htmlSubTitle(_('Create a new profile')), true);
 	$sortedTypes = array();
-	for ($i = 0; $i < sizeof($profileClasses); $i++) {
-		$sortedTypes[$profileClasses[$i]['title']] = $profileClasses[$i]['typeId'];
+	foreach ($profileClasses as $profileClass) {
+		$sortedTypes[$profileClass['title']] = $profileClass['typeId'];
 	}
 	natcasesort($sortedTypes);
 	$newContainer = new htmlTable();
@@ -226,37 +226,33 @@ $container->addElement(new htmlSubTitle(_('Manage existing profiles')), true);
 $existingContainer = new htmlTable();
 $existingContainer->colspan = 5;
 
-for ($i = 0; $i < sizeof($profileClasses); $i++) {
-	if ($i > 0) {
-		$existingContainer->addElement(new htmlSpacer(null, '10px'), true);
-	}
-
-	$existingContainer->addElement(new htmlImage('../../graphics/' . $profileClasses[$i]['icon']));
+foreach ($profileClasses as $profileClass) {
+	$existingContainer->addElement(new htmlImage('../../graphics/' . $profileClass['icon']));
 	$existingContainer->addElement(new htmlSpacer('3px', null));
-	$existingContainer->addElement(new htmlOutputText($profileClasses[$i]['title']));
+	$existingContainer->addElement(new htmlOutputText($profileClass['title']));
 	$existingContainer->addElement(new htmlSpacer('3px', null));
-	$select = new htmlSelect('profile_' . $profileClasses[$i]['typeId'], $profileClasses[$i]['profiles']);
+	$select = new htmlSelect('profile_' . $profileClass['typeId'], $profileClass['profiles']);
 	$select->setWidth('15em');
 	$existingContainer->addElement($select);
 	$existingContainer->addElement(new htmlSpacer('3px', null));
-	$editButton = new htmlButton('editProfile_' . $profileClasses[$i]['typeId'], 'edit.png', true);
+	$editButton = new htmlButton('editProfile_' . $profileClass['typeId'], 'edit.png', true);
 	$editButton->setTitle(_('Edit'));
 	$existingContainer->addElement($editButton);
 	$deleteLink = new htmlLink(null, '#', '../../graphics/delete.png');
 	$deleteLink->setTitle(_('Delete'));
-	$deleteLink->setOnClick("profileShowDeleteDialog('" . _('Delete') . "', '" . _('Ok') . "', '" . _('Cancel') . "', '" . $profileClasses[$i]['typeId'] . "', '" . 'profile_' . $profileClasses[$i]['typeId'] . "');");
+	$deleteLink->setOnClick("profileShowDeleteDialog('" . _('Delete') . "', '" . _('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', '" . 'profile_' . $profileClass['typeId'] . "');");
 	$existingContainer->addElement($deleteLink);
 	if (count($configProfiles) > 1) {
 		$importLink = new htmlLink(null, '#', '../../graphics/import.png');
 		$importLink->setTitle(_('Import profiles'));
 		$importLink->setOnClick("showDistributionDialog('" . _("Import profiles") . "', '" .
-								_('Ok') . "', '" . _('Cancel') . "', '" . $profileClasses[$i]['typeId'] . "', 'import');");
+								_('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', 'import');");
 		$existingContainer->addElement($importLink);
 	}
 	$exportLink = new htmlLink(null, '#', '../../graphics/export.png');
 	$exportLink->setTitle(_('Export profile'));
 	$exportLink->setOnClick("showDistributionDialog('" . _("Export profile") . "', '" .
-							_('Ok') . "', '" . _('Cancel') . "', '" . $profileClasses[$i]['typeId'] . "', 'export', '" . 'profile_' . $profileClasses[$i]['typeId'] . "');");
+							_('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', 'export', '" . 'profile_' . $profileClass['typeId'] . "');");
 	$existingContainer->addElement($exportLink);
 	$existingContainer->addNewLine();
 }
@@ -270,9 +266,9 @@ parseHtml(null, $container, array(), false, $tabindex, 'user');
 echo "</form>\n";
 echo "</div>\n";
 
-for ($i = 0; $i < sizeof($profileClasses); $i++) {
-	$typeId = $profileClasses[$i]['typeId'];
-	$scope = $profileClasses[$i]['scope'];
+foreach ($profileClasses as $profileClass) {
+	$typeId = $profileClass['typeId'];
+	$scope = $profileClass['scope'];
 	$importOptions = array();
 	foreach ($configProfiles as $profile) {
 		$typeManagerImport = new TypeManager($serverProfiles[$profile]);
@@ -281,8 +277,8 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 			if (($profile != $_SESSION['config']->getName()) || ($typeImport->getId() != $typeId)) {
 				$accountProfiles = \LAM\PROFILES\getAccountProfiles($typeImport->getId(), $profile);
 				if (!empty($accountProfiles)) {
-					for ($p = 0; $p < sizeof($accountProfiles); $p++) {
-						$importOptions[$profile][$typeImport->getAlias() . ': ' . $accountProfiles[$p]] = $profile . '##' . $typeImport->getId() . '##' . $accountProfiles[$p];
+					foreach ($accountProfiles as $accountProfile) {
+						$importOptions[$profile][$typeImport->getAlias() . ': ' . $accountProfile] = $profile . '##' . $typeImport->getId() . '##' . $accountProfile;
 					}
 				}
 			}

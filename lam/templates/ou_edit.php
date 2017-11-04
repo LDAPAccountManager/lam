@@ -191,8 +191,8 @@ function display_main($message, $error) {
 		$type = $typeManager->getConfiguredType($typeId);
 		$elements = array();
 		$units = searchLDAP($type->getSuffix(), '(objectclass=organizationalunit)', array('dn'));
-		for ($u = 0; $u < sizeof($units); $u++) {
-			$elements[getAbstractDN($units[$u]['dn'])] = $units[$u]['dn'];
+		foreach ($units as $unit) {
+			$elements[getAbstractDN($unit['dn'])] = $unit['dn'];
 		}
 		$options[$title] = $elements;
 	}

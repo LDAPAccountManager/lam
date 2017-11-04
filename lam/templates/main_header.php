@@ -85,8 +85,7 @@ $availableTools = getTools();
 $toolSettings = $_SESSION['config']->getToolSettings();
 // sort tools
 $toSort = array();
-for ($i = 0; $i < sizeof($availableTools); $i++) {
-	$toolClass = $availableTools[$i];
+foreach ($availableTools as $toolClass) {
     $myTool = new $toolClass();
 	if ($myTool->getRequiresWriteAccess() && !checkIfWriteAccessIsAllowed()) {
 		continue;
@@ -103,7 +102,7 @@ for ($i = 0; $i < sizeof($availableTools); $i++) {
 	if (isset($toolSettings['tool_hide_' . $toolName]) && ($toolSettings['tool_hide_' . $toolName] == 'true')) {
 		continue;
 	}
-	$toSort[$availableTools[$i]] = $myTool->getPosition();
+	$toSort[$toolClass] = $myTool->getPosition();
 }
 asort($toSort);
 $tools = array();
@@ -148,19 +147,19 @@ foreach ($toSort as $key => $value) {
 			<a href="<?php echo $headerPrefix; ?>tools.php"><img class="align-middle" height="16" width="16" alt="tools" src="<?php echo $headerPrefix; ?>../graphics/tools.png">&nbsp;<?php echo _("Tools") ?></a>
 				<ul>
 				<?php
-					for ($i = 0; $i < sizeof($tools); $i++) {
-						$subTools = $tools[$i]->getSubTools();
-						echo '<li title="' . $tools[$i]->getDescription() . '">';
-						$link = $headerPrefix . $tools[$i]->getLink();
+					foreach ($tools as $tool) {
+						$subTools = $tool->getSubTools();
+						echo '<li title="' . $tool->getDescription() . '">';
+						$link = $headerPrefix . $tool->getLink();
 						echo '<a href="' . $link . "\">\n";
-						echo '<img height="16" width="16" alt="" src="' . $headerPrefix . '../graphics/' . $tools[$i]->getImageLink() . '"> ' . $tools[$i]->getName();
+						echo '<img height="16" width="16" alt="" src="' . $headerPrefix . '../graphics/' . $tool->getImageLink() . '"> ' . $tool->getName();
 						echo "</a>\n";
 						if (sizeof($subTools) > 0) {
 							echo "<ul>\n";
-							for ($s = 0; $s < sizeof($subTools); $s++) {
-								echo "<li title=\"" . $subTools[$s]->description . "\">\n";
-								echo "<a href=\"" . $headerPrefix . $subTools[$s]->link . "\">\n";
-								echo '<img width=16 height=16 alt="" src="' . $headerPrefix . '../graphics/' . $subTools[$s]->image . '"> ' . $subTools[$s]->name;
+							foreach ($subTools as $subTool) {
+								echo "<li title=\"" . $subTool->description . "\">\n";
+								echo "<a href=\"" . $headerPrefix . $subTool->link . "\">\n";
+								echo '<img width=16 height=16 alt="" src="' . $headerPrefix . '../graphics/' . $subTool->image . '"> ' . $subTool->name;
 								echo "</a>\n";
 								echo "</li>\n";
 							}

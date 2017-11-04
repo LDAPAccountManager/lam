@@ -55,7 +55,6 @@ if (!empty($_POST)) {
 if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 	if (isset($_POST['add_suff'])) {
 		$failedDNs = array();
-		$error = array();
 		$newSuffixes = $_POST['new_suff'];
 		$newSuffixes = str_replace("\\", "", $newSuffixes);
 		$newSuffixes = str_replace("'", "", $newSuffixes);
@@ -63,9 +62,14 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 		// add entries
 		foreach ($newSuffixes as $newSuffix) {
 			// check if entry is already present
-			$info = ldap_read($_SESSION['ldap']->server(), escapeDN($newSuffix), "objectclass=*", array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
-			$res = ldap_get_entries($_SESSION['ldap']->server(), $info);
-			if ($res) continue;
+			$info = @ldap_read($_SESSION['ldap']->server(), escapeDN($newSuffix), "objectclass=*", array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
+			$res = false;
+			if ($info !== false) {
+				$res = ldap_get_entries($_SESSION['ldap']->server(), $info);
+			}
+			if ($res) {
+				continue;
+			}
 			$suff = $newSuffix;
 			// generate DN and attributes
 			$tmp = explode(",", $suff);
@@ -78,8 +82,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 				$attr['objectClass'] = 'organization';
 				$dn = $suff;
 				if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) {
-					$failedDNs[] = $suff;
-					$error[] = ldap_error($_SESSION['ldap']->server());
+					$failedDNs[$suff] = ldap_error($_SESSION['ldap']->server());
 					continue;
 				}
 			}
@@ -108,8 +111,11 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 						$subsuffCount = sizeof($subsuffs);
 						for ($k = $subsuffCount - 1; $k >= 0; $k--) {
 							// check if subsuffix is present
-							$info = ldap_read($_SESSION['ldap']->server(), escapeDN($subsuffs[$k]), "objectclass=*", array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
-							$res = ldap_get_entries($_SESSION['ldap']->server(), $info);
+							$info = @ldap_read($_SESSION['ldap']->server(), escapeDN($subsuffs[$k]), "objectclass=*", array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
+							$res = false;
+							if ($info !== false) {
+								$res = ldap_get_entries($_SESSION['ldap']->server(), $info);
+							}
 							if (!$res) {
 								$suffarray = explode(",", $subsuffs[$k]);
 								$headarray = explode("=", $suffarray[0]);
@@ -119,8 +125,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 									$attr['ou'] = $headarray[1];
 									$dn = $subsuffs[$k];
 									if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) {
-										$failedDNs[] = $suff;
-										$error[] = ldap_error($_SESSION['ldap']->server());
+										$failedDNs[$suff] = ldap_error($_SESSION['ldap']->server());
 										break;
 									}
 								}
@@ -134,8 +139,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 									}
 									$dn = $subsuffs[$k];
 									if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) {
-										$failedDNs[] = $suff;
-										$error[] = ldap_error($_SESSION['ldap']->server());
+										$failedDNs[$suff] = ldap_error($_SESSION['ldap']->server());
 										break;
 									}
 								}
@@ -143,8 +147,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 						}
 					}
 					else {
-						$failedDNs[] = $suff;
-						$error[] = ldap_error($_SESSION['ldap']->server());
+						$failedDNs[$suff] = ldap_error($_SESSION['ldap']->server());
 					}
 				}
 			}
@@ -155,8 +158,8 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 	if (isset($_POST['add_suff'])) {
 		if (sizeof($failedDNs) > 0) {
 			// print error messages
-			for ($i = 0; $i < sizeof($failedDNs); $i++) {
-				StatusMessage("ERROR", _("Failed to create entry!") . "<br>" . htmlspecialchars($error[$i]), htmlspecialchars($failedDNs[$i]));
+			foreach ($failedDNs as $suffix => $error) {
+				StatusMessage("ERROR", _("Failed to create entry!") . "<br>" . htmlspecialchars($error), htmlspecialchars($suffix));
 			}
 			include 'main_footer.php';
 		}
