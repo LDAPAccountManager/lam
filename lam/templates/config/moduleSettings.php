@@ -183,7 +183,7 @@ echo '<li id="editmodules" class="ui-state-default ui-corner-top" onmouseover="j
 	echo _('Modules') . '</a>';
 echo '</li>';
 echo '<li id="moduleSettings" class="ui-state-default ui-corner-top">';
-	echo '<a href="#" onclick="document.getElementsByName(\'moduleSettings\')[0].click();"><img src="../../graphics/modules.png" alt=""> ';
+	echo '<a href="#" onclick="document.getElementsByName(\'moduleSettings\')[0].click();"><img src="../../graphics/moduleSettings.png" alt=""> ';
 	echo _('Module settings') . '</a>';
 echo '</li>';
 if (isLAMProVersion()) {
