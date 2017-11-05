@@ -2463,7 +2463,7 @@ class htmlImage extends htmlElement {
 		if ($this->onClick != null) {
 			$onClick = ' onclick="' . $this->onClick . '"';
 		}
-		echo '<img' . $path . $width . $height . $alt . $title . $classes . $onClick . ">\n";
+		echo '<img' . $path . $width . $height . $alt . $title . $classes . $onClick . ">";
 		return array();
 	}
 
@@ -3093,6 +3093,54 @@ class htmlDiv extends htmlElement {
 }
 
 /**
+ * Creates a simple SPAN element.
+ *
+ * @package metaHTML
+ */
+class htmlSpan extends htmlElement {
+
+	/** htmlElement that generates inner content */
+	private $content = null;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param htmlElement $content inner content
+	 * @param array $classes CSS classes
+	 * @param string[] $cssClasses CSS classes
+	 */
+	function __construct($content, $cssClasses = null) {
+		$this->content = $content;
+		$this->cssClasses = $cssClasses;
+	}
+
+	/**
+	 * Prints the HTML code for this element.
+	 *
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$return = array();
+		$classesValue = '';
+		if (($this->cssClasses != null) && (sizeof($this->cssClasses) > 0)) {
+			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
+		}
+		echo '<span' . $classesValue . '>';
+		if ($this->content != null) {
+			$return = $this->content->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		}
+		echo '</span>';
+		return $return;
+	}
+}
+
+/**
  * Creates a JavaScript element.
  *
  * @package metaHTML
@@ -3529,8 +3577,8 @@ class htmlResponsiveRow extends htmlElement {
 	 * @param String $classes CSS classes separated by space
 	 */
 	public function add($content, $numMobile, $numTablet = null, $numDesktop = null, $classes = '') {
-		$tabletCols = ($numTablet == null) ? $numMobile : $numTablet;
-		$desktopCols = ($numDesktop == null) ? $tabletCols : $numDesktop;
+		$tabletCols = ($numTablet === null) ? $numMobile : $numTablet;
+		$desktopCols = ($numDesktop === null) ? $tabletCols : $numDesktop;
 		$this->addCell(new htmlResponsiveCell($content, $numMobile, $tabletCols, $tabletCols, $classes));
 	}
 
