@@ -416,6 +416,12 @@ td.loginRightBox {
 	max-width: 580px;
 }
 
+.size16 {
+	height: 16px;
+	width: 16px;
+	max-width: 16px;
+}
+
 div.centeredTable {
 	display: table;
 	width: 100%;

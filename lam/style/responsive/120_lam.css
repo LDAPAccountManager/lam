@@ -119,6 +119,10 @@ table.responsive-table td {
 		border-bottom: 0;
 	}
 
+	.margin-right5-mobile-only {
+		margin-right: 5px;
+	}
+
 }
 
 /* tablet */

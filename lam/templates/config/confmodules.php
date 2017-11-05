@@ -11,9 +11,9 @@ use \htmlImage;
 use \htmlSortableList;
 use \htmlSubTitle;
 use \htmlDiv;
+use \htmlResponsiveRow;
+use \htmlGroup;
 /*
-$Id$
-
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2004 - 2017  Roland Gruber
 
@@ -108,40 +108,10 @@ if (isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 }
 
 echo $_SESSION['header'];
-
-echo "<title>" . _("LDAP Account Manager Configuration") . "</title>\n";
-
-// include all CSS files
-$cssDirName = dirname(__FILE__) . '/../../style';
-$cssDir = dir($cssDirName);
-$cssFiles = array();
-$cssEntry = $cssDir->read();
-while ($cssEntry !== false) {
-	if (substr($cssEntry, strlen($cssEntry) - 4, 4) == '.css') {
-		$cssFiles[] = $cssEntry;
-	}
-	$cssEntry = $cssDir->read();
-}
-sort($cssFiles);
-foreach ($cssFiles as $cssEntry) {
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/" . $cssEntry . "\">\n";
-}
-
-echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../../graphics/favicon.ico\">\n";
-echo "<link rel=\"icon\" href=\"../../graphics/logo136.png\">\n";
-echo "</head><body>\n";
+printHeaderContents(_("LDAP Account Manager Configuration"), '../..');
+echo "</head><body class=\"admin\">\n";
 // include all JavaScript files
-$jsDirName = dirname(__FILE__) . '/../lib';
-$jsDir = dir($jsDirName);
-$jsFiles = array();
-while ($jsEntry = $jsDir->read()) {
-	if (substr($jsEntry, strlen($jsEntry) - 3, 3) != '.js') continue;
-	$jsFiles[] = $jsEntry;
-}
-sort($jsFiles);
-foreach ($jsFiles as $jsEntry) {
-	echo "<script type=\"text/javascript\" src=\"../lib/" . $jsEntry . "\"></script>\n";
-}
+printJsIncludes('../..');
 
 ?>
 		<table border=0 width="100%" class="lamHeader ui-corner-all">
@@ -150,7 +120,7 @@ foreach ($jsFiles as $jsEntry) {
 					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">LDAP Account Manager</a>
 				</td>
 				<td align="right">
-					<?php echo _('Server profile') . ': ' . $conf->getName(); ?>
+					<?php echo '<span class="hide-on-mobile">' . _('Server profile') . ': </span>' . $conf->getName(); ?>
 					&nbsp;&nbsp;
 				</td>
 			</tr>
@@ -178,24 +148,24 @@ echo '<div class="ui-tabs ui-widget ui-widget-content ui-corner-all">';
 echo '<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">';
 echo '<li id="generalSettingsButton" class="ui-state-default ui-corner-top" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
 	echo '<a href="#" onclick="document.getElementsByName(\'generalSettingsButton\')[0].click();"><img src="../../graphics/tools.png" alt=""> ';
-	echo _('General settings') . '</a>';
+	echo '<span class="hide-on-mobile">' . _('General settings') . '</span></a>';
 echo '</li>';
 echo '<li id="edittypes" class="ui-state-default ui-corner-top" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
 	echo '<a href="#" onclick="document.getElementsByName(\'edittypes\')[0].click();"><img src="../../graphics/gear.png" alt=""> ';
-	echo _('Account types') . '</a>';
+	echo '<span class="hide-on-mobile">' . _('Account types') . '</span></a>';
 echo '</li>';
 echo '<li id="editmodules" class="ui-state-default ui-corner-top">';
 	echo '<a href="#" onclick="document.getElementsByName(\'editmodules\')[0].click();"><img src="../../graphics/modules.png" alt=""> ';
-	echo _('Modules') . '</a>';
+	echo '<span class="hide-on-mobile">' . _('Modules') . '</span></a>';
 echo '</li>';
 echo '<li id="moduleSettings" class="ui-state-default ui-corner-top" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
 	echo '<a href="#" onclick="document.getElementsByName(\'moduleSettings\')[0].click();"><img src="../../graphics/moduleSettings.png" alt=""> ';
-	echo _('Module settings') . '</a>';
+	echo '<span class="hide-on-mobile">' . _('Module settings') . '</span></a>';
 echo '</li>';
 if (isLAMProVersion()) {
 	echo '<li id="jobs" class="ui-state-default ui-corner-top" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
 		echo '<a href="#" onclick="document.getElementsByName(\'jobs\')[0].click();"><img src="../../graphics/clock.png" alt=""> ';
-		echo _('Jobs') . '</a>';
+		echo '<span class="hide-on-mobile">' . _('Jobs') . '</span></a>';
 	echo '</li>';
 }
 echo '</ul>';
@@ -223,16 +193,17 @@ jQuery(document).ready(function() {
 $typeManager = new \LAM\TYPES\TypeManager($conf);
 $types = $typeManager->getConfiguredTypes();
 
-$container = new htmlTable();
+$container = new htmlResponsiveRow();
 foreach ($types as $type) {
 	config_showAccountModules($type, $container);
 }
 
-$legendContainer = new htmlTable();
+$legendContainer = new htmlGroup();
 $legendContainer->addElement(new htmlOutputText("(*) " . _("Base module")));
+$legendContainer->addElement(new \htmlSpacer('2rem', null));
 $legendContainer->addElement(new htmlHelpLink('237'));
-$container->addElement($legendContainer);
-$container->addElement(new htmlHiddenInput('postAvailable', 'yes'));
+$container->add($legendContainer, 12);
+$container->add(new htmlHiddenInput('postAvailable', 'yes'), 12);
 
 $tabindex = 1;
 parseHtml(null, $container, array(), false, $tabindex, 'user');
@@ -269,7 +240,7 @@ echo "</html>\n";
 * Displays the module selection boxes and checks if dependencies are fulfilled.
 *
 * @param \LAM\TYPES\ConfiguredType $type account type
-* @param htmlTable $container meta HTML container
+* @param htmlResponsiveRow $container meta HTML container
 */
 function config_showAccountModules($type, &$container) {
 	// account modules
@@ -306,41 +277,44 @@ function config_showAccountModules($type, &$container) {
 	}
 
 	// add account module selection
-	$container->addElement(new htmlSubTitle($type->getAlias(), '../../graphics/' . $type->getIcon()), true);
-	$container->addElement(new htmlOutputText(_("Selected modules")));
-	$container->addElement(new htmlOutputText(''));
-	$container->addElement(new htmlOutputText(_("Available modules")), true);
-	$container->addVerticalSpace('10px');
-	$container->addNewLine();
+	$container->add(new htmlSubTitle($type->getAlias(), '../../graphics/' . $type->getIcon()), 12);
+	$container->add(new htmlOutputText(_("Selected modules")), 12, 6);
+	$container->add(new htmlOutputText(_("Available modules")), 0, 6);
+	$container->addVerticalSpacer('1rem');
 	// selected modules
 	if (sizeof($selOptions) > 0) {
 		$listElements = array();
 		foreach ($selOptions as $key => $value) {
 			$el = new htmlTable('100%');
 			$mod = new $value($type->getScope());
-			$el->addElement(new htmlImage('../../graphics/' . $mod->getIcon(), '16px', '16px'));
+			$availModImage = new htmlImage('../../graphics/' . $mod->getIcon());
+			$availModImage->setCSSClasses(array('size16', 'margin-right5-mobile-only'));
+			$el->addElement($availModImage);
 			$el->addElement(new htmlOutputText($key));
 			$delButton = new htmlButton('del_' . $type->getId() . '_' . $value, 'del.png', true);
 			$delButton->alignment = htmlElement::ALIGN_RIGHT;
 			$el->addElement($delButton);
 			$listElements[] = $el;
 		}
-		$selSortable = new htmlSortableList($listElements, $type->getId() . '_selected', '350px');
+		$selSortable = new htmlSortableList($listElements, $type->getId() . '_selected', null);
 		$selSortable->alignment = htmlElement::ALIGN_TOP;
 		$selSortable->setOnUpdate('updateModulePositions(\'positions_' . $type->getId() . '\', ui.item.data(\'posOrig\'), ui.item.index());');
-		$container->addElement($selSortable);
+		$container->add($selSortable, 12, 6);
 	}
 	else {
-		$container->addElement(new htmlOutputText(''));
+		$container->add(new htmlOutputText(''), 12, 6);
 	}
-	// space
-	$container->addSpace('20px');
 	// available modules
 	if (sizeof($availOptions) > 0) {
+		$container->add(new htmlSpacer(null, '2rem'), 12, 0, 0, 'hide-on-tablet');
+		$container->add(new htmlOutputText(_("Available modules")), 12, 0, 0, 'hide-on-tablet');
+		$container->add(new htmlSpacer(null, '1rem'), 12, 0, 0, 'hide-on-tablet');
 		$availTable = new htmlTable();
 		foreach ($availOptions as $text => $key) {
 			$mod = new $key($type->getScope());
-			$availTable->addElement(new htmlImage('../../graphics/' . $mod->getIcon(), '16px', '16px'));
+			$availModImage = new htmlImage('../../graphics/' . $mod->getIcon());
+			$availModImage->setCSSClasses(array('size16', 'margin10'));
+			$availTable->addElement($availModImage);
 			$availTable->addElement(new htmlOutputText($text));
 			$addButton = new htmlButton('add_' . $type->getId() . '_' . $key, 'add.png', true);
 			$addButton->alignment = htmlElement::ALIGN_RIGHT;
@@ -349,15 +323,15 @@ function config_showAccountModules($type, &$container) {
 		$availDiv = new htmlDiv(null, $availTable);
 		$availDiv->alignment = htmlElement::ALIGN_TOP;
 		$availDiv->setCSSClasses(array('confModList'));
-		$container->addElement($availDiv, true);
+		$container->add($availDiv, 12, 6);
 	}
 	$positions = array();
 	for ($i = 0; $i < sizeof($selOptions); $i++) {
 		$positions[] = $i;
 	}
-	$container->addElement(new htmlHiddenInput('positions_' . $type->getId(), implode(',', $positions)), true);
+	$container->add(new htmlHiddenInput('positions_' . $type->getId(), implode(',', $positions)), 12);
 	// spacer to next account type
-	$container->addElement(new htmlSpacer(null, '30px'), true);
+	$container->addVerticalSpacer('2rem');
 }
 
 /**

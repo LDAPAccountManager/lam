@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2016  Roland Gruber
+  Copyright (C) 2003 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -69,10 +69,10 @@ printHeaderContents(_("Configuration overview"), '../..');
 				<IMG height="32" width="32" alt="general settings" src="../../graphics/bigTools.png">
 			</a>
 			</TD>
-			<TD><BIG>
+			<TD>
 			<a href="mainlogin.php">
 				<?php echo _("Edit general settings") ?>
-			</a></BIG>
+			</a>
 			</TD>
 		</TR>
 		<TR>
@@ -81,10 +81,10 @@ printHeaderContents(_("Configuration overview"), '../..');
 				<IMG height="32" width="32" alt="server settings" src="../../graphics/profiles.png">
 			</a>
 			</TD>
-			<TD><BIG>
+			<TD>
 			<a href="conflogin.php" target="_self">
 				<?php echo _("Edit server profiles"); ?>
-			</a></BIG>
+			</a>
 			</TD>
 		</TR>
 		<?php
@@ -95,10 +95,10 @@ printHeaderContents(_("Configuration overview"), '../..');
 					echo "<IMG height=\"32\" width=\"32\" alt=\"self service\" src=\"../../graphics/bigPeople.png\">\n";
 				echo "</a>\n";
 				echo "</TD>\n";
-				echo "<TD><BIG>\n";
+				echo "<TD>\n";
 				echo "<a href=\"../selfService/adminLogin.php\" target=\"_self\">\n";
 					echo _("Edit self service");
-				echo "</a></BIG>\n";
+				echo "</a>\n";
 				echo "</TD>\n";
 			echo "</TR>\n";
 		}
