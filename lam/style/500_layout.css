@@ -347,6 +347,7 @@ table.collapse {
 /** titles */
 .titleText {
 	color: black;
+	text-align: left;
 }
 
 /** subtitles */
@@ -358,6 +359,7 @@ table.collapse {
 .subTitleText {
 	margin: 0px 0px 0px 10px;
 	color: black;
+	text-align: left;
 }
 
 .hidden {

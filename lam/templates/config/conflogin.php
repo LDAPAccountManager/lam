@@ -56,6 +56,7 @@ session_regenerate_id(true);
 
 setlanguage();
 
+$message = null;
 // get error message from confmain.php
 if (isset($_SESSION['conf_message'])) {
 	$message = $_SESSION['conf_message'];

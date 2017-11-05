@@ -1,9 +1,23 @@
 <?php
+namespace LAM\CONFIG;
+use \LAMCfgMain;
+use \LAMConfig;
+use \htmlStatusMessage;
+use \htmlResponsiveRow;
+use \htmlTitle;
+use \htmlSubTitle;
+use \htmlResponsiveInputField;
+use \htmlResponsiveSelect;
+use \htmlButton;
+use \htmlOutputText;
+use \htmlHiddenInput;
+use \htmlDiv;
+use \htmlLink;
 /*
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2016  Roland Gruber
+  Copyright (C) 2003 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -144,35 +158,10 @@ if (isset($_POST['action'])) {
 
 
 echo $_SESSION['header'];
-
+printHeaderContents(_("Profile management"), '../..');
 ?>
-
-		<title>
-			<?php
-				echo _("Profile management");
-			?>
-		</title>
-	<?php
-		// include all CSS files
-		$cssDirName = dirname(__FILE__) . '/../../style';
-		$cssDir = dir($cssDirName);
-		$cssFiles = array();
-		$cssEntry = $cssDir->read();
-		while ($cssEntry !== false) {
-			if (substr($cssEntry, strlen($cssEntry) - 4, 4) == '.css') {
-				$cssFiles[] = $cssEntry;
-			}
-			$cssEntry = $cssDir->read();
-		}
-		sort($cssFiles);
-		foreach ($cssFiles as $cssEntry) {
-			echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/" . $cssEntry . "\">\n";
-		}
-	?>
-		<link rel="shortcut icon" type="image/x-icon" href="../../graphics/favicon.ico">
-		<link rel="icon" href="../../graphics/logo136.png">
 	</head>
-	<body>
+	<body class="admin">
 		<table border=0 width="100%" class="lamHeader ui-corner-all">
 			<tr>
 				<td align="left" height="30">
@@ -180,66 +169,44 @@ echo $_SESSION['header'];
 				</td>
 			</tr>
 		</table>
-		<br>
 
 <?php
 // include all JavaScript files
-$jsDirName = dirname(__FILE__) . '/../lib';
-$jsDir = dir($jsDirName);
-$jsFiles = array();
-while ($jsEntry = $jsDir->read()) {
-	if (substr($jsEntry, strlen($jsEntry) - 3, 3) != '.js') continue;
-	$jsFiles[] = $jsEntry;
-}
-sort($jsFiles);
-foreach ($jsFiles as $jsEntry) {
-	echo "<script type=\"text/javascript\" src=\"../lib/" . $jsEntry . "\"></script>\n";
-}
-
-// print messages
-if (isset($error) || isset($msg)) {
-	if (isset($error)) {
-		StatusMessage("ERROR", $error);
-	}
-	if (isset($msg)) {
-		StatusMessage("INFO", $msg);
-	}
-}
-
-// check if config.cfg is valid
-if (!isset($cfg->default)) {
-	StatusMessage("ERROR", _("Please set up your master configuration file (config/config.cfg) first!"), "");
-	echo "</body>\n</html>\n";
-	die();
-}
+printJsIncludes('../..');
 
 ?>
-
 		<br>
 		<!-- form for adding/renaming/deleting profiles -->
 		<form id="profileForm" name="profileForm" action="profmanage.php" method="post">
 <?php
-$topicSpacer = new htmlSpacer(null, '20px');
-
 $tabindex = 1;
-$container = new htmlTable('100%');
 
-$container->addElement(new htmlTitle(_("Profile management")), true);
+$row = new htmlResponsiveRow();
+
+// print messages
+if (isset($error)) {
+	$row->add(new htmlStatusMessage('ERROR', $error), 12);
+	$row->addVerticalSpacer('1rem');
+}
+if (isset($msg)) {
+	$row->add(new htmlStatusMessage('INFO', $msg), 12);
+	$row->addVerticalSpacer('1rem');
+}
+
+$box = new htmlResponsiveRow();
+$box->add(new htmlTitle(_("Profile management")), 12);
 
 // new profile
-$container->addElement(new htmlSubTitle(_("Add profile")), true);
-$newProfileInput = new htmlTableExtendedInputField(_("Profile name"), 'addprofile', null, '230');
-$newProfileInput->setFieldSize(15);
-$container->addElement($newProfileInput, true);
-$profileNewPwd1 = new htmlTableExtendedInputField(_("Profile password"), 'addpassword');
+$box->add(new htmlSubTitle(_("Add profile")), 12);
+$newProfileInput = new htmlResponsiveInputField(_("Profile name"), 'addprofile', null, '230');
+$box->add($newProfileInput, 12);
+$profileNewPwd1 = new htmlResponsiveInputField(_("Profile password"), 'addpassword');
 $profileNewPwd1->setIsPassword(true);
-$profileNewPwd1->setFieldSize(15);
-$container->addElement($profileNewPwd1, true);
-$profileNewPwd2 = new htmlTableExtendedInputField(_("Reenter password"), 'addpassword2');
+$box->add($profileNewPwd1, 12);
+$profileNewPwd2 = new htmlResponsiveInputField(_("Reenter password"), 'addpassword2');
 $profileNewPwd2->setIsPassword(true);
-$profileNewPwd2->setFieldSize(15);
 $profileNewPwd2->setSameValueFieldID('addpassword');
-$container->addElement($profileNewPwd2, true);
+$box->add($profileNewPwd2, 12);
 $existing = array();
 foreach ($files as $file) {
 	$existing[$file] = $file . '.conf';
@@ -252,86 +219,89 @@ $templates = array(
 	_('Built-in templates') => $builtIn,
 	_('Existing server profiles') => $existing,
 );
-$addTemplateSelect = new htmlTableExtendedSelect('addTemplate', $templates, array('unix.conf.sample'), _('Template'), '267');
+$addTemplateSelect = new htmlResponsiveSelect('addTemplate', $templates, array('unix.conf.sample'), _('Template'), '267');
 $addTemplateSelect->setContainsOptgroups(true);
 $addTemplateSelect->setHasDescriptiveElements(true);
-$container->addElement($addTemplateSelect, true);
+$box->add($addTemplateSelect, 12);
+$box->addVerticalSpacer('0.5rem');
 $newProfileButton = new htmlButton('btnAddProfile', _('Add'));
 $newProfileButton->setOnClick("jQuery('#action').val('add');showConfirmationDialog('" . _("Add profile") . "', '" .
 	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null); document.getElementById('passwd').focus();");
-$container->addElement($newProfileButton, true);
-$container->addElement($topicSpacer, true);
+$box->addLabel($newProfileButton);
+$box->add(new htmlOutputText(''), 0, 6);
 
 // rename profile
-$container->addElement(new htmlSubTitle(_("Rename profile")), true);
-$container->addElement(new htmlTableExtendedSelect('oldfilename', $files, array(), _('Profile name'), '231'), true);
-$oldProfileInput = new htmlTableExtendedInputField(_('New profile name'), 'renfilename');
-$oldProfileInput->setFieldSize(15);
-$container->addElement($oldProfileInput, true);
+$box->add(new htmlSubTitle(_("Rename profile")), 12);
+$box->add(new htmlResponsiveSelect('oldfilename', $files, array(), _('Profile name'), '231'), 12);
+$oldProfileInput = new htmlResponsiveInputField(_('New profile name'), 'renfilename');
+$box->add($oldProfileInput, 12);
+$box->addVerticalSpacer('0.5rem');
 $renameProfileButton = new htmlButton('btnRenameProfile', _('Rename'));
 $renameProfileButton->setOnClick("jQuery('#action').val('rename');showConfirmationDialog('" . _("Rename profile") . "', '" .
 	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null); document.getElementById('passwd').focus();");
-$container->addElement($renameProfileButton, true);
-$container->addElement($topicSpacer, true);
+$box->addLabel($renameProfileButton);
+$box->add(new htmlOutputText(''), 0, 6);
 
 // delete profile
-$container->addElement(new htmlSubTitle(_("Delete profile")), true);
-$container->addElement(new htmlTableExtendedSelect('delfilename', $files, array(), _('Profile name'), '232'), true);
+$box->add(new htmlSubTitle(_("Delete profile")), 12);
+$box->add(new htmlResponsiveSelect('delfilename', $files, array(), _('Profile name'), '232'), 12);
+$box->addVerticalSpacer('0.5rem');
 $deleteProfileButton = new htmlButton('btnDeleteProfile', _('Delete'));
 $deleteProfileButton->setOnClick("jQuery('#action').val('delete');showConfirmationDialog('" . _("Delete profile") . "', '" .
 	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null); document.getElementById('passwd').focus();");
-$container->addElement($deleteProfileButton, true);
-$container->addElement($topicSpacer, true);
+$box->addLabel($deleteProfileButton);
+$box->add(new htmlOutputText(''), 0, 6);
 
 // set password
-$container->addElement(new htmlSubTitle(_("Set profile password")), true);
-$container->addElement(new htmlTableExtendedSelect('setprofile', $files, array(), _('Profile name'), '233'), true);
-$profileSetPwd1 = new htmlTableExtendedInputField(_("Profile password"), 'setpassword');
+$box->add(new htmlSubTitle(_("Set profile password")), 12);
+$box->add(new htmlResponsiveSelect('setprofile', $files, array(), _('Profile name'), '233'), 12);
+$profileSetPwd1 = new htmlResponsiveInputField(_("Profile password"), 'setpassword');
 $profileSetPwd1->setIsPassword(true);
-$profileSetPwd1->setFieldSize(15);
-$container->addElement($profileSetPwd1, true);
-$profileSetPwd2 = new htmlTableExtendedInputField(_("Reenter password"), 'setpassword2');
+$box->add($profileSetPwd1, 12);
+$profileSetPwd2 = new htmlResponsiveInputField(_("Reenter password"), 'setpassword2');
 $profileSetPwd2->setIsPassword(true);
-$profileSetPwd2->setFieldSize(15);
 $profileSetPwd2->setSameValueFieldID('setpassword');
-$container->addElement($profileSetPwd2, true);
+$box->add($profileSetPwd2, 12);
+$box->addVerticalSpacer('0.5rem');
 $setPasswordProfileButton = new htmlButton('btnSetPasswordProfile', _('Set profile password'));
 $setPasswordProfileButton->setOnClick("jQuery('#action').val('setpass');showConfirmationDialog('" . _("Set profile password") . "', '" .
-	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null); document.getElementById('passwd').focus();");
-$container->addElement($setPasswordProfileButton, true);
-$container->addElement($topicSpacer, true);
+		_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null); document.getElementById('passwd').focus();");
+$box->addLabel($setPasswordProfileButton, 12);
+$box->add(new htmlOutputText(''), 0, 6);
+
 
 // set default profile
 $conf = new LAMCfgMain();
 $defaultprofile = $conf->default;
-$container->addElement(new htmlSubTitle(_("Change default profile")), true);
-$container->addElement(new htmlTableExtendedSelect('defaultfilename', $files, array($defaultprofile), _('Profile name'), '234'), true);
+$box->add(new htmlSubTitle(_("Change default profile")), 12);
+$box->add(new htmlResponsiveSelect('defaultfilename', $files, array($defaultprofile), _('Profile name'), '234'), 12);
+$box->addVerticalSpacer('0.5rem');
 $defaultProfileButton = new htmlButton('btnDefaultProfile', _('Ok'));
 $defaultProfileButton->setOnClick("jQuery('#action').val('setdefault');showConfirmationDialog('" . _("Change default profile") . "', '" .
 	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null); document.getElementById('passwd').focus();");
-$container->addElement($defaultProfileButton, true);
-$container->addElement($topicSpacer, true);
+$box->addLabel($defaultProfileButton);
+$box->add(new htmlOutputText(''), 0, 6);
 
-$container->addElement(new htmlHiddenInput('action', 'none'), true);
+$boxDiv = new htmlDiv(null, $box);
+$boxDiv->setCSSClasses(array('ui-corner-all', 'roundedShadowBox', 'limitWidth'));
+$row->add($boxDiv, 12);
 
-$dialogDivContent = new htmlTable();
-$dialogDivContent->addElement(new htmlOutputText(_("Master password")));
-$masterPassword = new htmlInputField('passwd');
+$row->add(new htmlHiddenInput('action', 'none'), 12);
+
+// dialog
+$dialogDivContent = new htmlResponsiveRow();
+$masterPassword = new htmlResponsiveInputField(_("Master password"), 'passwd', '', '236');
 $masterPassword->setIsPassword(true);
-$dialogDivContent->addElement($masterPassword);
-$dialogDivContent->addElement(new htmlHelpLink('236'));
+$dialogDivContent->add($masterPassword, 12);
 $dialogDiv = new htmlDiv('passwordDialogDiv', $dialogDivContent);
 $dialogDiv->setCSSClasses(array('hidden'));
-$container->addElement($dialogDiv, true);
+$row->add($dialogDiv, 12);
 
-$container->setCSSClasses(array('roundedShadowBox', 'ui-corner-all'));
+$row->addVerticalSpacer('2rem');
+$backLink = new htmlLink(_("Back to profile login"), 'conflogin.php', '../../graphics/undo.png');
+$row->add($backLink, 12, 12, 12, 'text-left');
 
-$mainContainer = new htmlGroup();
-$mainContainer->addElement($container);
-$mainContainer->addElement(new htmlOutputText('<p><br></p>', false));
-$mainContainer->addElement(new htmlLink(_("Back to profile login"), 'conflogin.php', '../../graphics/undo.png'));
-
-parseHtml('', $mainContainer, array(), false, $tabindex, 'user');
+parseHtml('', new htmlDiv(null, $row, array('centeredTable')), array(), false, $tabindex, 'user');
 
 ?>
 		</form>
