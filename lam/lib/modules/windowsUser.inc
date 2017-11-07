@@ -1540,6 +1540,12 @@ class windowsUser extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideproxyAddresses', true)) {
 			$this->processMultiValueInputTextField('proxyAddresses', $return);
 		}
+		// photo
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidejpegPhoto', true)) {
+			if (isset($_POST['delPhoto'])) {
+				unset($this->attributes['jpegPhoto']);
+			}
+		}
 		return $return;
 	}
 
