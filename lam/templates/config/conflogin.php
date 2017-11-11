@@ -11,10 +11,8 @@ use \htmlResponsiveSelect;
 use \htmlResponsiveInputField;
 use \htmlHorizontalLine;
 /*
-$Id$
-
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2016  Roland Gruber
+  Copyright (C) 2003 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -142,7 +140,8 @@ $tabindex = 1;
 			$box->add(new htmlHorizontalLine(), 12);
 			$box->addVerticalSpacer('1.5rem');
 		}
-		$box->add(new htmlLink(_("Manage server profiles"), 'profmanage.php'), 12, 12, 12, 'text-center');
+		$manageLink = new htmlLink(_("Manage server profiles"), 'profmanage.php', '../../graphics/tools.png');
+		$box->add($manageLink, 12, 12, 12, 'text-center');
 
 		$boxDiv = new htmlDiv(null, $box);
 		$boxDiv->setCSSClasses(array('ui-corner-all', 'roundedShadowBox', 'limitWidth', 'text-center'));
