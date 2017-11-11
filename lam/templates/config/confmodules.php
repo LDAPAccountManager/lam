@@ -46,6 +46,8 @@ use \htmlGroup;
 include_once('../../lib/config.inc');
 /** Access to module lists */
 include_once('../../lib/modules.inc');
+/** common functions */
+include_once '../../lib/configPages.inc';
 
 // start session
 if (strtolower(session_module_name()) == 'files') {
@@ -112,83 +114,14 @@ printHeaderContents(_("LDAP Account Manager Configuration"), '../..');
 echo "</head><body class=\"admin\">\n";
 // include all JavaScript files
 printJsIncludes('../..');
-
-?>
-		<table border=0 width="100%" class="lamHeader ui-corner-all">
-			<tr>
-				<td align="left" height="30">
-					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">LDAP Account Manager</a>
-				</td>
-				<td align="right">
-					<?php echo '<span class="hide-on-mobile">' . _('Server profile') . ': </span>' . $conf->getName(); ?>
-					&nbsp;&nbsp;
-				</td>
-			</tr>
-		</table>
-		<br>
-<?php
+printConfigurationPageHeaderBar($conf);
 
 // print error messages
 for ($i = 0; $i < sizeof($errorsToDisplay); $i++) call_user_func_array('StatusMessage', $errorsToDisplay[$i]);
 
 echo ("<form id=\"inputForm\" action=\"confmodules.php\" method=\"post\" onSubmit=\"saveScrollPosition('inputForm')\">\n");
 
-// hidden submit buttons which are clicked by tabs
-echo "<div style=\"display: none;\">\n";
-	echo "<input name=\"generalSettingsButton\" type=\"submit\" value=\" \">";
-	echo "<input name=\"edittypes\" type=\"submit\" value=\" \">";
-	echo "<input name=\"editmodules\" type=\"submit\" value=\" \">";
-	echo "<input name=\"moduleSettings\" type=\"submit\" value=\" \">";
-	echo "<input name=\"jobs\" type=\"submit\" value=\" \">";
-echo "</div>\n";
-
-// tabs
-echo '<div class="ui-tabs ui-widget ui-widget-content ui-corner-all">';
-
-echo '<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">';
-echo '<li id="generalSettingsButton" class="ui-state-default ui-corner-top" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
-	echo '<a href="#" onclick="document.getElementsByName(\'generalSettingsButton\')[0].click();"><img src="../../graphics/tools.png" alt=""> ';
-	echo '<span class="hide-on-mobile">' . _('General settings') . '</span></a>';
-echo '</li>';
-echo '<li id="edittypes" class="ui-state-default ui-corner-top" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
-	echo '<a href="#" onclick="document.getElementsByName(\'edittypes\')[0].click();"><img src="../../graphics/gear.png" alt=""> ';
-	echo '<span class="hide-on-mobile">' . _('Account types') . '</span></a>';
-echo '</li>';
-echo '<li id="editmodules" class="ui-state-default ui-corner-top">';
-	echo '<a href="#" onclick="document.getElementsByName(\'editmodules\')[0].click();"><img src="../../graphics/modules.png" alt=""> ';
-	echo '<span class="hide-on-mobile">' . _('Modules') . '</span></a>';
-echo '</li>';
-echo '<li id="moduleSettings" class="ui-state-default ui-corner-top" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
-	echo '<a href="#" onclick="document.getElementsByName(\'moduleSettings\')[0].click();"><img src="../../graphics/moduleSettings.png" alt=""> ';
-	echo '<span class="hide-on-mobile">' . _('Module settings') . '</span></a>';
-echo '</li>';
-if (isLAMProVersion()) {
-	echo '<li id="jobs" class="ui-state-default ui-corner-top" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
-		echo '<a href="#" onclick="document.getElementsByName(\'jobs\')[0].click();"><img src="../../graphics/clock.png" alt=""> ';
-		echo '<span class="hide-on-mobile">' . _('Jobs') . '</span></a>';
-	echo '</li>';
-}
-echo '</ul>';
-
-?>
-
-<script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery('#editmodules').addClass('ui-tabs-active');
-	jQuery('#editmodules').addClass('ui-state-active');
-	jQuery('#editmodules').addClass('user-bright');
-	// set common width for select boxes
-	var maxWidth = 0;
-	jQuery("select").each(function(){
-		if (jQuery(this).width() > maxWidth)
-		maxWidth = jQuery(this).width();
-	});
-	jQuery("select").width(maxWidth);
-});
-</script>
-
-<div class="ui-tabs-panel ui-widget-content ui-corner-bottom user-bright">
-<?php
+printConfigurationPageTabs(ConfigurationPageTab::MODULES);
 
 $typeManager = new \LAM\TYPES\TypeManager($conf);
 $types = $typeManager->getConfiguredTypes();

@@ -1759,6 +1759,7 @@ class htmlOutputText extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$cssClasses = empty($this->cssClasses) ? '' : 'class="' . implode(' ', $this->cssClasses) . '"';
 		if ($this->noWrap) {
 			echo "<div class=\"nowrap\">";
 		}
@@ -1766,7 +1767,7 @@ class htmlOutputText extends htmlElement {
 			echo "<b>";
 		}
 		if ($this->isPreformatted) {
-			echo "<pre>";
+			echo "<pre $cssClasses>";
 		}
 		if ($this->escapeHTML) {
 			echo htmlspecialchars($this->string);

@@ -859,9 +859,17 @@ window.lam.tools.addSavedSelectListener = function() {
 	}
 };
 
+/**
+ * Activates tabs.
+ */
+window.lam.tools.activateTab = function() {
+	jQuery('.lam-active-tab').addClass('ui-tabs-active ui-state-active user-bright');
+};
+
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();
 	window.lam.form.autoTrim();
 	window.lam.account.addDefaultProfileListener();
 	window.lam.tools.addSavedSelectListener();
+	window.lam.tools.activateTab();
 });

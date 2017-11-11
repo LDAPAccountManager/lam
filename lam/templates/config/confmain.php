@@ -57,6 +57,8 @@ include_once("../../lib/modules.inc");
 include_once("../../lib/tools.inc");
 /** 2-factor */
 include_once '../../lib/2factor.inc';
+/** common functions */
+include_once '../../lib/configPages.inc';
 
 // start session
 if (strtolower(session_module_name()) == 'files') {
@@ -183,20 +185,7 @@ sort($jsFiles);
 foreach ($jsFiles as $jsEntry) {
 	echo "<script type=\"text/javascript\" src=\"../lib/" . $jsEntry . "\"></script>\n";
 }
-?>
-		<table border=0 width="100%" class="lamHeader ui-corner-all">
-			<tr>
-				<td align="left" height="30">
-					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">LDAP Account Manager</a>
-				</td>
-				<td align="right">
-					<?php echo _('Server profile') . ': ' . $conf->getName(); ?>
-					&nbsp;&nbsp;
-				</td>
-			</tr>
-		</table>
-		<br>
-<?php
+printConfigurationPageHeaderBar($conf);
 
 if (!$conf->isWritable()) {
 	StatusMessage('WARN', _('The config file is not writable.'), _('Your changes cannot be saved until you make the file writable for the webserver user.'));
@@ -214,54 +203,9 @@ if (sizeof($errorsToDisplay) > 0) {
 // display formular
 echo ("<form enctype=\"multipart/form-data\" action=\"confmain.php\" method=\"post\" autocomplete=\"off\">\n");
 
-// hidden submit buttons which are clicked by tabs
-echo "<div style=\"display: none;\">\n";
-	echo "<input name=\"generalSettingsButton\" type=\"submit\" value=\" \">";
-	echo "<input name=\"edittypes\" type=\"submit\" value=\" \">";
-	echo "<input name=\"editmodules\" type=\"submit\" value=\" \">";
-	echo "<input name=\"moduleSettings\" type=\"submit\" value=\" \">";
-	echo "<input name=\"jobs\" type=\"submit\" value=\" \">";
-echo "</div>\n";
-
-// tabs
-echo '<div class="ui-tabs ui-widget ui-widget-content ui-corner-all">';
-
-echo '<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">';
-echo '<li id="generalSettingsButton" class="ui-state-default ui-corner-top">';
-	echo '<a href="#" onclick="document.getElementsByName(\'generalSettingsButton\')[0].click();"><img src="../../graphics/tools.png" alt=""> ';
-	echo _('General settings') . '</a>';
-echo '</li>';
-echo '<li id="edittypes" class="ui-state-default ui-corner-top" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
-	echo '<a href="#" onclick="document.getElementsByName(\'edittypes\')[0].click();"><img src="../../graphics/gear.png" alt=""> ';
-	echo _('Account types') . '</a>';
-echo '</li>';
-echo '<li id="editmodules" class="ui-state-default ui-corner-top" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
-	echo '<a href="#" onclick="document.getElementsByName(\'editmodules\')[0].click();"><img src="../../graphics/modules.png" alt=""> ';
-	echo _('Modules') . '</a>';
-echo '</li>';
-echo '<li id="moduleSettings" class="ui-state-default ui-corner-top" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
-	echo '<a href="#" onclick="document.getElementsByName(\'moduleSettings\')[0].click();"><img src="../../graphics/moduleSettings.png" alt=""> ';
-	echo _('Module settings') . '</a>';
-echo '</li>';
-if (isLAMProVersion()) {
-	echo '<li id="jobs" class="ui-state-default ui-corner-top" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
-		echo '<a href="#" onclick="document.getElementsByName(\'jobs\')[0].click();"><img src="../../graphics/clock.png" alt=""> ';
-		echo _('Jobs') . '</a>';
-	echo '</li>';
-}
-echo '</ul>';
+printConfigurationPageTabs(ConfigurationPageTab::GENERAL);
 
 ?>
-
-<script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery('#generalSettingsButton').addClass('ui-tabs-active');
-	jQuery('#generalSettingsButton').addClass('ui-state-active');
-	jQuery('#generalSettingsButton').addClass('user-bright');
-});
-</script>
-
-<div class="ui-tabs-panel ui-widget-content ui-corner-bottom user-bright">
 <input type="text" name="hiddenPreventAutocomplete" autocomplete="false" class="hidden" value="">
 <input type="password" name="hiddenPreventAutocompletePwd1" autocomplete="false" class="hidden" value="">
 <input type="password" name="hiddenPreventAutocompletePwd2" autocomplete="false" class="hidden" value="">

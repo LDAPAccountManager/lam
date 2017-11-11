@@ -146,6 +146,10 @@ input {
 	margin-right: 5px;
 }
 
+.noMarginTop {
+	margin-top: 0px;
+}
+
 .padding05 {
 	padding: 0.5em;
 }

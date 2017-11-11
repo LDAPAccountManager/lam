@@ -12,8 +12,6 @@ use \htmlTableExtendedInputField;
 use \LAMConfig;
 use \htmlTableExtendedInputCheckbox;
 /*
-$Id$
-
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2004 - 2017  Roland Gruber
 
@@ -43,9 +41,11 @@ $Id$
 
 
 /** Access to config functions */
-include_once('../../lib/config.inc');
+include_once '../../lib/config.inc';
 /** Access to account types */
-include_once('../../lib/types.inc');
+include_once '../../lib/types.inc';
+/** common functions */
+include_once '../../lib/configPages.inc';
 
 // start session
 if (strtolower(session_module_name()) == 'files') {
@@ -135,110 +135,18 @@ foreach ($allScopes as $scope) {
 usort($availableScopes, '\LAM\CONFIG\compareTypesByAlias');
 
 echo $_SESSION['header'];
-
-echo "<title>" . _("LDAP Account Manager Configuration") . "</title>\n";
-
-// include all CSS files
-$cssDirName = dirname(__FILE__) . '/../../style';
-$cssDir = dir($cssDirName);
-$cssFiles = array();
-$cssEntry = $cssDir->read();
-while ($cssEntry !== false) {
-	if (substr($cssEntry, strlen($cssEntry) - 4, 4) == '.css') {
-		$cssFiles[] = $cssEntry;
-	}
-	$cssEntry = $cssDir->read();
-}
-sort($cssFiles);
-foreach ($cssFiles as $cssEntry) {
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/" . $cssEntry . "\">\n";
-}
-
-echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../../graphics/favicon.ico\">\n";
-echo "<link rel=\"icon\" href=\"../../graphics/logo136.png\">\n";
-echo "</head><body>\n";
+printHeaderContents(_("LDAP Account Manager Configuration"), '../..');
+echo "</head><body class=\"admin\">\n";
 // include all JavaScript files
-$jsDirName = dirname(__FILE__) . '/../lib';
-$jsDir = dir($jsDirName);
-$jsFiles = array();
-while ($jsEntry = $jsDir->read()) {
-	if (substr($jsEntry, strlen($jsEntry) - 3, 3) != '.js') continue;
-	$jsFiles[] = $jsEntry;
-}
-sort($jsFiles);
-foreach ($jsFiles as $jsEntry) {
-	echo "<script type=\"text/javascript\" src=\"../lib/" . $jsEntry . "\"></script>\n";
-}
-
-?>
-		<table border=0 width="100%" class="lamHeader ui-corner-all">
-			<tr>
-				<td align="left" height="30">
-					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">LDAP Account Manager</a>
-				</td>
-				<td align="right">
-					<?php echo _('Server profile') . ': ' . $conf->getName(); ?>
-					&nbsp;&nbsp;
-				</td>
-			</tr>
-		</table>
-		<br>
-<?php
+printJsIncludes('../..');
+printConfigurationPageHeaderBar($conf);
 
 // print error messages
 for ($i = 0; $i < sizeof($errorsToDisplay); $i++) call_user_func_array('StatusMessage', $errorsToDisplay[$i]);
 
 echo ("<form action=\"conftypes.php\" method=\"post\">\n");
 
-// hidden submit buttons which are clicked by tabs
-echo "<div style=\"display: none;\">\n";
-	echo "<input name=\"generalSettingsButton\" type=\"submit\" value=\" \">";
-	echo "<input name=\"edittypes\" type=\"submit\" value=\" \">";
-	echo "<input name=\"editmodules\" type=\"submit\" value=\" \">";
-	echo "<input name=\"moduleSettings\" type=\"submit\" value=\" \">";
-	echo "<input name=\"jobs\" type=\"submit\" value=\" \">";
-echo "</div>\n";
-
-// tabs
-echo '<div class="ui-tabs ui-widget ui-widget-content ui-corner-all">';
-
-echo '<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">';
-echo '<li id="generalSettingsButton" class="ui-state-default ui-corner-top" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
-	echo '<a href="#" onclick="document.getElementsByName(\'generalSettingsButton\')[0].click();"><img src="../../graphics/tools.png" alt=""> ';
-	echo _('General settings') . '</a>';
-echo '</li>';
-echo '<li id="edittypes" class="ui-state-default ui-corner-top">';
-	echo '<a href="#" onclick="document.getElementsByName(\'edittypes\')[0].click();"><img src="../../graphics/gear.png" alt=""> ';
-	echo _('Account types') . '</a>';
-echo '</li>';
-echo '<li id="editmodules" class="ui-state-default ui-corner-top" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
-	echo '<a href="#" onclick="document.getElementsByName(\'editmodules\')[0].click();"><img src="../../graphics/modules.png" alt=""> ';
-	echo _('Modules') . '</a>';
-echo '</li>';
-echo '<li id="moduleSettings" class="ui-state-default ui-corner-top" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
-	echo '<a href="#" onclick="document.getElementsByName(\'moduleSettings\')[0].click();"><img src="../../graphics/moduleSettings.png" alt=""> ';
-	echo _('Module settings') . '</a>';
-echo '</li>';
-if (isLAMProVersion()) {
-	echo '<li id="jobs" class="ui-state-default ui-corner-top" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
-		echo '<a href="#" onclick="document.getElementsByName(\'jobs\')[0].click();"><img src="../../graphics/clock.png" alt=""> ';
-		echo _('Jobs') . '</a>';
-	echo '</li>';
-}
-echo '</ul>';
-
-?>
-
-<script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery('#edittypes').addClass('ui-tabs-active');
-	jQuery('#edittypes').addClass('ui-state-active');
-	jQuery('#edittypes').addClass('user-bright');
-});
-</script>
-
-<div class="ui-tabs-panel ui-widget-content ui-corner-bottom user-bright">
-<?php
+printConfigurationPageTabs(ConfigurationPageTab::TYPES);
 
 $container = new htmlTable();
 
