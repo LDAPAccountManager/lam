@@ -189,6 +189,10 @@ input {
 	vertical-align: top;
 }
 
+.align-unset-img img {
+	vertical-align: unset;
+}
+
 table.lamHeader {
   background-image: url(lam-images/headerLine.png);
   padding: 0px;
@@ -420,12 +424,6 @@ td.loginRightBox {
 	max-width: 580px;
 }
 
-.size16 {
-	height: 16px;
-	width: 16px;
-	max-width: 16px;
-}
-
 div.centeredTable {
 	display: table;
 	width: 100%;
@@ -569,12 +567,18 @@ p.statusText {
 }
 
 input.smallImageButton {
-  background-position: 2px center;
+  background-position: center center;
   background-repeat: no-repeat;
   height:24px;
   border: 0px;
   background-color: transparent;
   cursor:pointer;
+}
+
+.size16 {
+	height: 16px !important;
+	width: 16px !important;
+	max-width: 16px;
 }
 
 /* help tooltip */

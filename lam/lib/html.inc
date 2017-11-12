@@ -4013,21 +4013,16 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 		// label text
 		$labelGroup = new htmlGroup();
 		$labelGroup->addElement(new htmlOutputText($this->label));
-		if (!empty($this->helpID)) {
-			$helpLinkLabel = new htmlHelpLink($this->helpID);
-			$helpLinkLabel->setCSSClasses(array('hide-on-tablet', 'margin-left5'));
-			$labelGroup->addElement($helpLinkLabel);
-		}
-		$row->add($labelGroup, 12, 6, 6, 'responsiveLabel');
+		$row->add($labelGroup, 6, 6, 6, 'responsiveLabel');
 		// input field
 		$fieldGroup = new htmlGroup();
 		$fieldGroup->addElement($this);
 		if (!empty($this->helpID)) {
 			$helpLink = new htmlHelpLink($this->helpID);
-			$helpLink->setCSSClasses(array('hide-on-mobile', 'margin-left5'));
+			$helpLink->setCSSClasses(array('margin-left5 align-unset-img'));
 			$fieldGroup->addElement($helpLink);
 		}
-		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');
+		$row->add($fieldGroup, 6, 6, 6, 'responsiveField nowrap');
 		return $row->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 	}
 

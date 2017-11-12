@@ -6,11 +6,12 @@ use \htmlImage;
 use \htmlOutputText;
 use \htmlSpacer;
 use \htmlButton;
-use \htmlElement;
 use \htmlGroup;
-use \htmlTableExtendedInputField;
+use \htmlResponsiveInputCheckbox;
 use \LAMConfig;
 use \htmlTableExtendedInputCheckbox;
+use \htmlResponsiveRow;
+use \htmlResponsiveInputField;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2004 - 2017  Roland Gruber
@@ -148,52 +149,58 @@ echo ("<form action=\"conftypes.php\" method=\"post\">\n");
 
 printConfigurationPageTabs(ConfigurationPageTab::TYPES);
 
-$container = new htmlTable();
+$tabindex = 1;
+$row = new htmlResponsiveRow();
 
 // show available types
 if (sizeof($availableScopes) > 0) {
-	$container->addElement(new htmlSubTitle(_("Available account types")), true);
-	$availableContainer = new htmlTable();
+	$row->add(new htmlSubTitle(_("Available account types")), 12);
 	foreach ($availableScopes as $availableScope) {
-		$availableContainer->addElement(new htmlImage('../../graphics/' . $availableScope->getIcon()));
-		$availableContainer->addElement(new htmlOutputText($availableScope->getAlias()));
-		$availableContainer->addElement(new htmlSpacer('10px', null));
-		$availableContainer->addElement(new htmlOutputText($availableScope->getDescription()));
+		$availableLabelGroup = new htmlGroup();
+		$availableLabelGroup->addElement(new htmlImage('../../graphics/' . $availableScope->getIcon()));
+		$availableLabelGroup->addElement(new htmlSpacer('0.5rem', null));
+		$availableLabelGroup->addElement(new htmlOutputText($availableScope->getAlias()));
+		$row->addField($availableLabelGroup);
+		$availableDescriptionRow = new htmlResponsiveRow();
+		$availableDescriptionRow->add(new htmlOutputText($availableScope->getDescription()), 10, 10, 10, 'responsiveField');
 		$button = new htmlButton('add_' . $availableScope->getScope(), 'add.png', true);
 		$button->setTitle(_("Add"));
-		$availableContainer->addElement($button, true);
+		$button->setCSSClasses(array('size16'));
+		$availableDescriptionRow->add($button, 2, 2, 2, 'responsiveField');
+		$row->addField($availableDescriptionRow);
+		$row->addVerticalSpacer('1rem');
 	}
-	$availableContainer->addElement(new htmlSpacer(null, '20px'), true);
-	$container->addElement($availableContainer, true);
+	$row->addVerticalSpacer('2rem');
 }
+parseHtml(null, $row, array(), false, $tabindex, 'user');
+
+$container = new htmlResponsiveRow();
 
 $_SESSION['conftypes_optionTypes'] = array();
 // show active types
 if (sizeof($activeTypes) > 0) {
-	$container->addElement(new htmlSubTitle(_("Active account types")), true);
-	$activeContainer = new htmlTable();
+	$container->add(new htmlSubTitle(_("Active account types")), 12);
 	foreach ($activeTypes as $activeType) {
 		// title
 		$titleGroup = new htmlGroup();
-		$titleGroup->colspan = 6;
 		$titleGroup->addElement(new htmlImage('../../graphics/' . $activeType->getIcon()));
+		$titleGroup->addElement(new htmlSpacer('0.5rem', null));
 		$titleText = new htmlOutputText($activeType->getAlias());
 		$titleText->setIsBold(true);
 		$titleGroup->addElement($titleText);
-		$titleGroup->addElement(new htmlSpacer('10px', null));
-		$titleGroup->addElement(new htmlOutputText($activeType->getBaseType()->getDescription()));
-		$activeContainer->addElement($titleGroup);
+		$container->addField($titleGroup);
+		$descriptionRow = new htmlResponsiveRow();
+		$descriptionRow->add(new htmlOutputText($activeType->getBaseType()->getDescription()), 10, 10, 10, 'responsiveField');
 		// delete button
 		$delButton = new htmlButton('rem_'. $activeType->getId(), 'del.png', true);
-		$delButton->alignment = htmlElement::ALIGN_RIGHT;
 		$delButton->setTitle(_("Remove this account type"));
-		$activeContainer->addElement($delButton, true); //del.png
-		$activeContainer->addElement(new htmlSpacer(null, '5px'), true);
+		$delButton->setCSSClasses(array('size16'));
+		$descriptionRow->add($delButton, 2, 2, 2, 'responsiveLabel');
+		$container->addField($descriptionRow);
+		$container->addVerticalSpacer('0.5rem');
 		// LDAP suffix
-		$suffixInput = new htmlTableExtendedInputField(_("LDAP suffix"), 'suffix_' . $activeType->getId(), $typeSettings['suffix_' . $activeType->getId()], '202');
-		$suffixInput->setFieldSize(40);
-		$activeContainer->addElement($suffixInput);
-		$activeContainer->addElement(new htmlSpacer('20px', null));
+		$suffixInput = new htmlResponsiveInputField(_("LDAP suffix"), 'suffix_' . $activeType->getId(), $typeSettings['suffix_' . $activeType->getId()], '202');
+		$container->add($suffixInput, 12);
 		// list attributes
 		if (isset($typeSettings['attr_' . $activeType->getId()])) {
 			$attributes = $typeSettings['attr_' . $activeType->getId()];
@@ -201,32 +208,28 @@ if (sizeof($activeTypes) > 0) {
 		else {
 			$attributes = $activeType->getBaseType()->getDefaultListAttributes();
 		}
-		$attrsInput = new htmlTableExtendedInputField(_("List attributes"), 'attr_' . $activeType->getId(), $attributes, '206');
-		$attrsInput->setFieldSize(40);
+		$attrsInput = new htmlResponsiveInputField(_("List attributes"), 'attr_' . $activeType->getId(), $attributes, '206');
 		$attrsInput->setFieldMaxLength(1000);
-		$activeContainer->addElement($attrsInput, true);
+		$container->add($attrsInput, 12);
 		// custom label
 		$customLabel = '';
 		if (isset($typeSettings['customLabel_' . $activeType->getId()])) {
 			$customLabel = $typeSettings['customLabel_' . $activeType->getId()];
 		}
-		$customLabelInput = new htmlTableExtendedInputField(_('Custom label'), 'customLabel_' . $activeType->getId(), $customLabel, '264');
-		$customLabelInput->setFieldSize(40);
-		$activeContainer->addElement($customLabelInput);
-		$activeContainer->addElement(new htmlSpacer('20px', null));
+		$customLabelInput = new htmlResponsiveInputField(_('Custom label'), 'customLabel_' . $activeType->getId(), $customLabel, '264');
+		$container->add($customLabelInput, 12);
 		// LDAP filter
 		$filter = '';
 		if (isset($typeSettings['filter_' . $activeType->getId()])) {
 			$filter = $typeSettings['filter_' . $activeType->getId()];
 		}
-		$filterInput = new htmlTableExtendedInputField(_("Additional LDAP filter"), 'filter_' . $activeType->getId(), $filter, '260');
-		$filterInput->setFieldSize(40);
-		$activeContainer->addElement($filterInput, true);
+		$filterInput = new htmlResponsiveInputField(_("Additional LDAP filter"), 'filter_' . $activeType->getId(), $filter, '260');
+		$container->add($filterInput, 12);
 		// type options
 		$typeConfigOptions = $activeType->getBaseType()->get_configOptions();
 		if (!empty($typeConfigOptions)) {
 			foreach ($typeConfigOptions as $typeConfigOption) {
-				$activeContainer->addElement($typeConfigOption, true);
+				$container->add($typeConfigOption, 12);
 			}
 			// save option types to session
 			ob_start();
@@ -236,49 +239,43 @@ if (sizeof($activeTypes) > 0) {
 			$_SESSION['conftypes_optionTypes'] = array_merge($_SESSION['conftypes_optionTypes'], $typeConfigOptionTypes);
 		}
 		// advanced options
-		$advancedOptions = new htmlTable();
-		$advancedOptions->colspan = 30;
+		$advancedOptions = new htmlResponsiveRow();
 		// read-only
 		if (isLAMProVersion() && ($conf->getAccessLevel() == LAMConfig::ACCESS_ALL)) {
 			$isReadOnly = false;
 			if (isset($typeSettings['readOnly_' . $activeType->getId()])) {
 				$isReadOnly = $typeSettings['readOnly_' . $activeType->getId()];
 			}
-			$readOnly = new htmlTableExtendedInputCheckbox('readOnly_' . $activeType->getId(), $isReadOnly, _('Read-only'), '265');
+			$readOnly = new htmlResponsiveInputCheckbox('readOnly_' . $activeType->getId(), $isReadOnly, _('Read-only'), '265');
 			$readOnly->setElementsToDisable(array('hideNewButton_' . $activeType->getId(), 'hideDeleteButton_' . $activeType->getId()));
-			$advancedOptions->addElement($readOnly);
-			$advancedOptions->addElement(new htmlSpacer('20px', null));
+			$advancedOptions->add($readOnly, 12);
 		}
 		// hidden type
 		$hidden = false;
 		if (isset($typeSettings['hidden_' . $activeType->getId()])) {
 			$hidden = $typeSettings['hidden_' . $activeType->getId()];
 		}
-		$advancedOptions->addElement(new htmlTableExtendedInputCheckbox('hidden_' . $activeType->getId(), $hidden, _('Hidden'), '261'));
+		$advancedOptions->add(new htmlResponsiveInputCheckbox('hidden_' . $activeType->getId(), $hidden, _('Hidden'), '261'), 12);
 		if (isLAMProVersion() && ($conf->getAccessLevel() == LAMConfig::ACCESS_ALL)) {
-			$advancedOptions->addElement(new htmlSpacer('20px', null));
 			// hide button to create new accounts
 			$hideNewButton = false;
 			if (isset($typeSettings['hideNewButton_' . $activeType->getId()])) {
 				$hideNewButton = $typeSettings['hideNewButton_' . $activeType->getId()];
 			}
-			$advancedOptions->addElement(new htmlTableExtendedInputCheckbox('hideNewButton_' . $activeType->getId(), $hideNewButton, _('No new entries'), '262'));
-			$advancedOptions->addElement(new htmlSpacer('20px', null));
+			$advancedOptions->add(new htmlResponsiveInputCheckbox('hideNewButton_' . $activeType->getId(), $hideNewButton, _('No new entries'), '262'), 12);
 			// hide button to delete accounts
 			$hideDeleteButton = false;
 			if (isset($typeSettings['hideDeleteButton_' . $activeType->getId()])) {
 				$hideDeleteButton = $typeSettings['hideDeleteButton_' . $activeType->getId()];
 			}
-			$advancedOptions->addElement(new htmlTableExtendedInputCheckbox('hideDeleteButton_' . $activeType->getId(), $hideDeleteButton, _('Disallow delete'), '263'), true);
+			$advancedOptions->add(new htmlResponsiveInputCheckbox('hideDeleteButton_' . $activeType->getId(), $hideDeleteButton, _('Disallow delete'), '263'), 12);
 		}
-		$activeContainer->addElement($advancedOptions, true);
+		$container->add($advancedOptions, 12);
 
-		$activeContainer->addElement(new htmlSpacer(null, '40px'), true);
+		$container->addVerticalSpacer('2rem');
 	}
-	$container->addElement($activeContainer, true);
 }
 
-$tabindex = 1;
 $dynamicTypeOptions = array();
 foreach ($_SESSION['conftypes_optionTypes'] as $key => $value) {
 	if (isset($typeSettings[$key])) {
@@ -287,9 +284,9 @@ foreach ($_SESSION['conftypes_optionTypes'] as $key => $value) {
 }
 parseHtml(null, $container, $dynamicTypeOptions, false, $tabindex, 'user');
 
-echo "<input type=\"hidden\" name=\"postAvailable\" value=\"yes\">\n";
-
 echo "</div></div>";
+
+echo "<input type=\"hidden\" name=\"postAvailable\" value=\"yes\">\n";
 
 $buttonContainer = new htmlTable();
 $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
