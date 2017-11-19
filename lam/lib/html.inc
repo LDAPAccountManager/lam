@@ -455,6 +455,10 @@ class htmlInputField extends htmlElement {
 	protected $sameValueFieldID = null;
 	/** marks the input field as auto trimmed (remove spaces at start/end) */
 	protected $autoTrim = true;
+	/** minimum value */
+	protected $minValue = null;
+	/** maximum value */
+	protected $maxValue = null;
 
 	/**
 	 * Constructor
@@ -505,6 +509,14 @@ class htmlInputField extends htmlElement {
 		if ($this->validationRule != null) {
 			$validators[] = 'custom[' . $this->validationRule . ']';
 		}
+		$min = '';
+		if ($this->minValue !== null) {
+			$min = ' min="' . $this->minValue . '"';
+		}
+		$max = '';
+		if ($this->maxValue !== null) {
+			$max = ' max="' . $this->maxValue . '"';
+		}
 		// print input field
 		$class = '';
 		if (sizeof($validators) > 0) {
@@ -533,6 +545,9 @@ class htmlInputField extends htmlElement {
 		if ($this->isPassword) {
 			$inputType = 'password';
 		}
+		elseif (($this->minValue !== null) || ($this->maxValue !== null)) {
+			$inputType = 'number';
+		}
 		$disabled = '';
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
@@ -549,7 +564,8 @@ class htmlInputField extends htmlElement {
 		if (!empty($this->title)) {
 			$title = ' title="' . $this->title . '"';
 		}
-		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength . $size . $fieldTabIndex . $onKeyPress . $onKeyUp . $title . $disabled . '>';
+		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength
+			. $min . $max . $size . $fieldTabIndex . $onKeyPress . $onKeyUp . $title . $disabled . '>';
 		// autocompletion
 		if ($this->autocomplete) {
 			echo "<script type=\"text/javascript\">\n";
@@ -701,6 +717,17 @@ class htmlInputField extends htmlElement {
 	 */
 	public function setValidationRule($rule) {
 		$this->validationRule = $rule;
+	}
+
+	/**
+	 * Sets the field as number field with minimum and maximum values.
+	 *
+	 * @param integer $minimum minimum
+	 * @param integer $maximum maximum
+	 */
+	public function setMinimumAndMaximumNumber($minimum, $maximum = null) {
+		$this->minValue = $minimum;
+		$this->maxValue = $maximum;
 	}
 
 	/**
