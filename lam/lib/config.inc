@@ -44,13 +44,18 @@ include_once '2factor.inc';
  * Sets the environment variables for custom SSL CA certificates.
  */
 function setSSLCaCert() {
-	// set SSL certificate if set
+	$config = null;
 	if (isset($_SESSION['cfgMain'])) {
-		$sslCaPath = $_SESSION['cfgMain']->getSSLCaCertPath();
-		if ($sslCaPath != null) {
-			putenv('LDAPTLS_CACERT=' . $sslCaPath);
-			putenv('TLS_CACERT=' . $sslCaPath);
-		}
+		$config = $_SESSION['cfgMain'];
+	}
+	else {
+		$config = new LAMCfgMain();
+	}
+	// set SSL certificate if set
+	$sslCaPath = $config->getSSLCaCertPath();
+	if ($sslCaPath != null) {
+		putenv('LDAPTLS_CACERT=' . $sslCaPath);
+		putenv('TLS_CACERT=' . $sslCaPath);
 	}
 }
 
