@@ -377,7 +377,8 @@ if (isLAMProVersion()) {
 // tool settings
 $row->add(new htmlSubTitle(_("Tool settings"), '../../graphics/tools.png'), 12);
 $toolSettings = $conf->getToolSettings();
-$row->addLabel(new htmlOutputText(_('Hidden tools')));
+$row->add(new htmlOutputText(_('Hidden tools')), 12);
+$row->addVerticalSpacer('0.5rem');
 $tools = getTools();
 for ($i = 0; $i < sizeof($tools); $i++) {
 	$tool = new $tools[$i]();
@@ -390,25 +391,18 @@ for ($i = 0; $i < sizeof($tools); $i++) {
 		$tools = array_values($tools);
 	}
 }
-$toolSettingsContent = new htmlTable();
-for ($r = 0; $r < (sizeof($tools) / 2); $r++) {
-	for ($c = 0; $c < 2; $c++) {
-		if (!isset($tools[($r * 2) + $c])) {
-			break;
-		}
-		$tool = $tools[($r * 2) + $c];
-		$toolClass = get_class($tool);
-		$toolName = substr($toolClass, strrpos($toolClass, '\\') + 1);
-		$selected = false;
-		if (isset($toolSettings['tool_hide_' . $toolName]) && ($toolSettings['tool_hide_' . $toolName] === 'true')) {
-			$selected = true;
-		}
-		$toolSettingsContent->addElement(new htmlResponsiveInputCheckbox('tool_hide_' . $toolName, $selected, $tool->getName(), null, false));
-		$toolSettingsContent->addElement(new htmlSpacer('10px', null));
+$toolSettingsContent = new htmlResponsiveRow();
+for ($r = 0; $r < (sizeof($tools)); $r++) {
+	$tool = $tools[$r];
+	$toolClass = get_class($tool);
+	$toolName = substr($toolClass, strrpos($toolClass, '\\') + 1);
+	$selected = false;
+	if (isset($toolSettings['tool_hide_' . $toolName]) && ($toolSettings['tool_hide_' . $toolName] === 'true')) {
+		$selected = true;
 	}
-	$toolSettingsContent->addNewLine();
+	$toolSettingsContent->add(new htmlResponsiveInputCheckbox('tool_hide_' . $toolName, $selected, $tool->getName(), null, false), 12);
 }
-$row->addField($toolSettingsContent);
+$row->add($toolSettingsContent, 12);
 
 $row->addVerticalSpacer('2rem');
 
