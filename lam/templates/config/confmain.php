@@ -3,21 +3,22 @@ namespace LAM\CONFIG;
 use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 use \LAMConfig;
 use \htmlTable;
-use \htmlTableExtendedInputField;
 use \htmlAccordion;
-use \htmlTableExtendedSelect;
-use \htmlFieldset;
 use \htmlSpacer;
-use \htmlTableExtendedInputCheckbox;
 use \DateTimeZone;
 use \htmlStatusMessage;
 use \htmlOutputText;
 use \htmlInputCheckbox;
 use \htmlHelpLink;
-use \htmlTableExtendedInputTextarea;
 use \htmlElement;
 use \htmlSubTitle;
 use \htmlButton;
+use \htmlResponsiveRow;
+use \htmlResponsiveInputField;
+use \htmlResponsiveSelect;
+use \htmlResponsiveInputCheckbox;
+use \htmlResponsiveInputTextarea;
+use \htmlGroup;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -150,41 +151,10 @@ if (isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 $tabindex = 1;
 
 echo $_SESSION['header'];
-
-echo ("<title>" . _("LDAP Account Manager Configuration") . "</title>\n");
-
-// include all CSS files
-$cssDirName = dirname(__FILE__) . '/../../style';
-$cssDir = dir($cssDirName);
-$cssFiles = array();
-$cssEntry = $cssDir->read();
-while ($cssEntry !== false) {
-	if (substr($cssEntry, strlen($cssEntry) - 4, 4) == '.css') {
-		$cssFiles[] = $cssEntry;
-	}
-	$cssEntry = $cssDir->read();
-}
-sort($cssFiles);
-foreach ($cssFiles as $cssEntry) {
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/" . $cssEntry . "\">\n";
-}
-
-echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../../graphics/favicon.ico\">\n";
-echo "<link rel=\"icon\" href=\"../../graphics/logo136.png\">\n";
-echo ("</head>\n");
-echo ("<body>\n");
+printHeaderContents(_("LDAP Account Manager Configuration"), '../..');
+echo ("<body class=\"admin\">\n");
 // include all JavaScript files
-$jsDirName = dirname(__FILE__) . '/../lib';
-$jsDir = dir($jsDirName);
-$jsFiles = array();
-while ($jsEntry = $jsDir->read()) {
-	if (substr($jsEntry, strlen($jsEntry) - 3, 3) != '.js') continue;
-	$jsFiles[] = $jsEntry;
-}
-sort($jsFiles);
-foreach ($jsFiles as $jsEntry) {
-	echo "<script type=\"text/javascript\" src=\"../lib/" . $jsEntry . "\"></script>\n";
-}
+printJsIncludes('../..');
 printConfigurationPageHeaderBar($conf);
 
 if (!$conf->isWritable()) {
@@ -211,28 +181,29 @@ printConfigurationPageTabs(ConfigurationPageTab::GENERAL);
 <input type="password" name="hiddenPreventAutocompletePwd2" autocomplete="false" class="hidden" value="">
 <?php
 
-$container = new htmlTable();
+$row = new htmlResponsiveRow();
 
-$serverSettingsContent = new htmlTable();
+$serverSettings = new htmlSubTitle(_("Server settings"), '../../graphics/schemaBrowser.png');
+$row->add($serverSettings, 12);
 // server URL
-$urlInput = new htmlTableExtendedInputField(_("Server address"), 'serverurl', $conf->get_ServerURL(), '201');
+$urlInput = new htmlResponsiveInputField(_("Server address"), 'serverurl', $conf->get_ServerURL(), '201');
 $urlInput->setRequired(true);
-$serverSettingsContent->addElement($urlInput, true);
+$row->add($urlInput, 12);
 // use TLS
 $tlsOptions = array(_("yes") => 'yes', _("no") => 'no');
-$tlsSelect = new htmlTableExtendedSelect('useTLS', $tlsOptions, array($conf->getUseTLS()), _("Activate TLS"), '201');
+$tlsSelect = new htmlResponsiveSelect('useTLS', $tlsOptions, array($conf->getUseTLS()), _("Activate TLS"), '201');
 $tlsSelect->setHasDescriptiveElements(true);
-$serverSettingsContent->addElement($tlsSelect, true);
+$row->add($tlsSelect, 12);
 // tree suffix
-$serverSettingsContent->addElement(new htmlTableExtendedInputField(_("Tree suffix"), 'sufftree', $conf->get_Suffix('tree'), '203'), true);
+$row->add(new htmlResponsiveInputField(_("Tree suffix"), 'sufftree', $conf->get_Suffix('tree'), '203'), 12);
 // LDAP search limit
 $searchLimitOptions = array(
 '-' => 0,		100 => 100,		500 => 500,
 1000 => 1000,	5000 => 5000,	10000 => 10000,
 50000 => 50000,	100000 => 100000);
-$limitSelect = new htmlTableExtendedSelect('searchLimit', $searchLimitOptions, array($conf->get_searchLimit()), _("LDAP search limit"), '222');
+$limitSelect = new htmlResponsiveSelect('searchLimit', $searchLimitOptions, array($conf->get_searchLimit()), _("LDAP search limit"), '222');
 $limitSelect->setHasDescriptiveElements(true);
-$serverSettingsContent->addElement($limitSelect, true);
+$row->add($limitSelect, 12);
 
 // access level is only visible in Pro version
 if (isLAMProVersion()) {
@@ -241,33 +212,31 @@ if (isLAMProVersion()) {
 		_('Change passwords') => LAMConfig::ACCESS_PASSWORD_CHANGE,
 		_('Read-only') => LAMConfig::ACCESS_READ_ONLY
 	);
-	$accessSelect = new htmlTableExtendedSelect('accessLevel', $accessOptions, array($conf->getAccessLevel()), _("Access level"), '215');
+	$accessSelect = new htmlResponsiveSelect('accessLevel', $accessOptions, array($conf->getAccessLevel()), _("Access level"), '215');
 	$accessSelect->setHasDescriptiveElements(true);
-	$serverSettingsContent->addElement($accessSelect, true);
+	$row->add($accessSelect, 12);
 }
 
 // advanced options
-$advancedOptionsContent = new htmlTable();
+$advancedOptionsContent = new htmlResponsiveRow();
 // display name
-$advancedOptionsContent->addElement(new htmlTableExtendedInputField(_('Display name'), 'serverDisplayName', $conf->getServerDisplayName(), '268'), true);
+$advancedOptionsContent->add(new htmlResponsiveInputField(_('Display name'), 'serverDisplayName', $conf->getServerDisplayName(), '268'), 12);
 // referrals
 $followReferrals = ($conf->getFollowReferrals() === 'true');
-$advancedOptionsContent->addElement(new htmlTableExtendedInputCheckbox('followReferrals', $followReferrals , _('Follow referrals'), '205'), true);
+$advancedOptionsContent->add(new htmlResponsiveInputCheckbox('followReferrals', $followReferrals , _('Follow referrals'), '205'), 12);
 // paged results
 $pagedResults = ($conf->getPagedResults() === 'true');
-$advancedOptionsContent->addElement(new htmlTableExtendedInputCheckbox('pagedResults', $pagedResults , _('Paged results'), '266'), true);
+$advancedOptionsContent->add(new htmlResponsiveInputCheckbox('pagedResults', $pagedResults , _('Paged results'), '266'), 12);
 
 // build advanced options box
 $advancedOptions = new htmlAccordion('advancedOptions_server', array(_('Advanced options') => $advancedOptionsContent), false);
 $advancedOptions->colspan = 15;
-$serverSettingsContent->addElement($advancedOptions, true);
+$row->add($advancedOptions, 12);
 
-$serverSettings = new htmlFieldset($serverSettingsContent, _("Server settings"), '../../graphics/profiles.png');
-$container->addElement($serverSettings, true);
-$container->addElement(new htmlSpacer(null, '10px'), true);
+$row->addVerticalSpacer('2rem');
 
 // language
-$languageSettingsContent = new htmlTable();
+$row->add(new htmlSubTitle(_("Language settings"), '../../graphics/languageSmall.png'), 12);
 // read available languages
 $possibleLanguages = getLanguages();
 $defaultLanguage = array('en_GB.utf8');
@@ -278,12 +247,12 @@ if(!empty($possibleLanguages)) {
 			$defaultLanguage = array($lang->code);
 		}
 	}
-	$languageSelect = new htmlTableExtendedSelect('lang', $languages, $defaultLanguage, _("Default language"), '209');
+	$languageSelect = new htmlResponsiveSelect('lang', $languages, $defaultLanguage, _("Default language"), '209');
 	$languageSelect->setHasDescriptiveElements(true);
-	$languageSettingsContent->addElement($languageSelect, true);
+	$row->add($languageSelect, 12);
 }
 else {
-	$languageSettingsContent->addElement(new htmlStatusMessage('ERROR', "Unable to load available languages. Setting English as default language."));
+	$row->add(new htmlStatusMessage('ERROR', "Unable to load available languages. Setting English as default language."), 12);
 }
 $timezones = array();
 $timezones = array_merge($timezones, DateTimeZone::listIdentifiers(DateTimeZone::AFRICA));
@@ -297,28 +266,30 @@ $timezones = array_merge($timezones, DateTimeZone::listIdentifiers(DateTimeZone:
 $timezones = array_merge($timezones, DateTimeZone::listIdentifiers(DateTimeZone::INDIAN));
 $timezones = array_merge($timezones, DateTimeZone::listIdentifiers(DateTimeZone::PACIFIC));
 $timezones = array_merge($timezones, DateTimeZone::listIdentifiers(DateTimeZone::UTC));
-$languageSettingsContent->addElement(new htmlTableExtendedSelect('timeZone', $timezones, array($conf->getTimeZone()), _('Time zone'), '213'), true);
-$languageSettings = new htmlFieldset($languageSettingsContent, _("Language settings"), '../../graphics/language.png');
-$container->addElement($languageSettings, true);
+$row->add(new htmlResponsiveSelect('timeZone', $timezones, array($conf->getTimeZone()), _('Time zone'), '213'), 12);
 
-
-$container->addElement(new htmlSpacer(null, '10px'), true);
+$row->addVerticalSpacer('2rem');
 
 // lamdaemon settings
-$lamdaemonSettingsContent = new htmlTable();
-$lamdaemonSettingsContent->addElement(new htmlTableExtendedInputField(_("Server list"), 'scriptservers', $conf->get_scriptServers(), '218'), true);
-$lamdaemonSettingsContent->addElement(new htmlTableExtendedInputField(_("Path to external script"), 'scriptpath', $conf->get_scriptPath(), '210'), true);
+$row->add(new htmlSubTitle(_("Lamdaemon settings"), '../../graphics/lamdaemonSmall.png'), 12);
+$row->add(new htmlResponsiveInputField(_("Server list"), 'scriptservers', $conf->get_scriptServers(), '218'), 12);
+$row->add(new htmlResponsiveInputField(_("Path to external script"), 'scriptpath', $conf->get_scriptPath(), '210'), 12);
 
-$lamdaemonSettingsContent->addElement(new htmlTableExtendedInputField(_('User name'), 'scriptuser', $conf->getScriptUserName(), '284'), true);
-$lamdaemonSettingsContent->addElement(new htmlTableExtendedInputField(_('SSH key file'), 'scriptkey', $conf->getScriptSSHKey(), '285'), true);
-$sshKeyPassword = new htmlTableExtendedInputField(_('SSH key password'), 'scriptkeypassword', $conf->getScriptSSHKeyPassword(), '286');
+$row->add(new htmlResponsiveInputField(_('User name'), 'scriptuser', $conf->getScriptUserName(), '284'), 12);
+$row->add(new htmlResponsiveInputField(_('SSH key file'), 'scriptkey', $conf->getScriptSSHKey(), '285'), 12);
+$sshKeyPassword = new htmlResponsiveInputField(_('SSH key password'), 'scriptkeypassword', $conf->getScriptSSHKeyPassword(), '286');
 $sshKeyPassword->setIsPassword(true);
-$lamdaemonSettingsContent->addElement($sshKeyPassword, true);
+$row->add($sshKeyPassword, 12);
 
-$lamdaemonSettingsContent->addElement(new htmlSpacer(null, '5px'), true);
-$lamdaemonSettingsContent->addElement(new htmlOutputText(_("Rights for the home directory")));
+$row->addVerticalSpacer('0.5rem');
+$lamdaemonRightsLabel = new htmlGroup();
+$lamdaemonRightsLabel->addElement(new htmlOutputText(_("Rights for the home directory")));
+$lamdaemonRightsLabel->addElement(new htmlSpacer('0.2rem', null));
+$lamdaemonRightsLabel->addElement(new htmlHelpLink('219'));
+$row->addLabel($lamdaemonRightsLabel, 12, 6);
 $chmod = $conf->get_scriptRights();
 $rightsTable = new htmlTable();
+$rightsTable->setCSSClasses(array('padding5'));
 $rightsTable->addElement(new htmlOutputText(''));
 $rightsTable->addElement(new htmlOutputText(_("Read")));
 $rightsTable->addElement(new htmlOutputText(_("Write")));
@@ -335,91 +306,78 @@ $rightsTable->addElement(new htmlOutputText(_("Other")));
 $rightsTable->addElement(new htmlInputCheckbox('chmod_otr', checkChmod("read","other", $chmod)));
 $rightsTable->addElement(new htmlInputCheckbox('chmod_otw', checkChmod("write","other", $chmod)));
 $rightsTable->addElement(new htmlInputCheckbox('chmod_ote', checkChmod("execute","other", $chmod)), true);
-$lamdaemonSettingsContent->addElement($rightsTable);
-$lamdaemonSettingsContent->addElement(new htmlHelpLink('219'));
-$lamdaemonSettings = new htmlFieldset($lamdaemonSettingsContent, _("Lamdaemon settings"), '../../graphics/lamdaemon.png');
-$container->addElement($lamdaemonSettings, true);
-$container->addElement(new htmlSpacer(null, '10px'), true);
+$row->addField($rightsTable, 12, 6);
 
+$row->addVerticalSpacer('2rem');
 
 // LAM Pro settings
 if (isLAMProVersion()) {
 	// password reset page
-	$pwdResetContent = new htmlTable();
+	$row->add(new htmlSubTitle(_("Password reset page settings"), '../../graphics/key.png'), 12);
 
 	$pwdResetAllowSpecific = true;
 	if ($conf->getPwdResetAllowSpecificPassword() == 'false') {
 		$pwdResetAllowSpecific = false;
 	}
-	$pwdResetContent->addElement(new htmlTableExtendedInputCheckbox('pwdResetAllowSpecificPassword', $pwdResetAllowSpecific , _('Allow setting specific passwords'), '280'));
-
-	$pwdResetContent->addSpace('10px');
+	$row->add(new htmlResponsiveInputCheckbox('pwdResetAllowSpecificPassword', $pwdResetAllowSpecific , _('Allow setting specific passwords'), '280'), 12);
 
 	$pwdResetAllowScreenPassword = true;
 	if ($conf->getPwdResetAllowScreenPassword() == 'false') {
 		$pwdResetAllowScreenPassword = false;
 	}
-	$pwdResetContent->addElement(new htmlTableExtendedInputCheckbox('pwdResetAllowScreenPassword', $pwdResetAllowScreenPassword , _('Allow to display password on screen'), '281'), true);
+	$row->add(new htmlResponsiveInputCheckbox('pwdResetAllowScreenPassword', $pwdResetAllowScreenPassword , _('Allow to display password on screen'), '281'), 12);
+
+	$pwdResetForcePasswordChange = true;
+	if ($conf->getPwdResetForcePasswordChange() == 'false') {
+		$pwdResetForcePasswordChange = false;
+	}
+	$row->add(new htmlResponsiveInputCheckbox('pwdResetForcePasswordChange', $pwdResetForcePasswordChange , _('Force password change by default'), '283'), 12);
 
 	$pwdResetDefaultPasswordOutputOptions = array(
 		_('Display on screen') => LAMConfig::PWDRESET_DEFAULT_SCREEN,
 		_('Send via mail') => LAMConfig::PWDRESET_DEFAULT_MAIL,
 		_('Both') => LAMConfig::PWDRESET_DEFAULT_BOTH
 	);
-	$pwdResetDefaultPasswordOutputSelect = new htmlTableExtendedSelect('pwdResetDefaultPasswordOutput', $pwdResetDefaultPasswordOutputOptions, array($conf->getPwdResetDefaultPasswordOutput()), _("Default password output"), '282');
+	$pwdResetDefaultPasswordOutputSelect = new htmlResponsiveSelect('pwdResetDefaultPasswordOutput', $pwdResetDefaultPasswordOutputOptions, array($conf->getPwdResetDefaultPasswordOutput()), _("Default password output"), '282');
 	$pwdResetDefaultPasswordOutputSelect->setHasDescriptiveElements(true);
-	$pwdResetContent->addElement($pwdResetDefaultPasswordOutputSelect);
+	$row->add($pwdResetDefaultPasswordOutputSelect, 12);
 
-	$pwdResetContent->addSpace('10px');
-
-	$pwdResetForcePasswordChange = true;
-	if ($conf->getPwdResetForcePasswordChange() == 'false') {
-		$pwdResetForcePasswordChange = false;
-	}
-	$pwdResetContent->addElement(new htmlTableExtendedInputCheckbox('pwdResetForcePasswordChange', $pwdResetForcePasswordChange , _('Force password change by default'), '283'), true);
-
-	$pwdResetFieldset = new htmlFieldset($pwdResetContent, _("Password reset page settings"), '../../graphics/keyBig.png');
-	$container->addElement($pwdResetFieldset, true);
-	$container->addElement(new htmlSpacer(null, '10px'), true);
+	$row->addVerticalSpacer('2rem');
 
 	// mail settings
-	$pwdMailContent = new htmlTable();
+	$row->add(new htmlSubTitle(_("Password mail settings"), '../../graphics/mail.png'), 12);
 
-	$pwdMailFrom = new htmlTableExtendedInputField(_('From address'), 'pwdResetMail_from', $conf->getLamProMailFrom(), '550');
-	$pwdMailContent->addElement($pwdMailFrom, true);
+	$pwdMailFrom = new htmlResponsiveInputField(_('From address'), 'pwdResetMail_from', $conf->getLamProMailFrom(), '550');
+	$row->add($pwdMailFrom, 12);
 
-	$pwdMailReplyTo = new htmlTableExtendedInputField(_('Reply-to address'), 'pwdResetMail_replyTo', $conf->getLamProMailReplyTo(), '554');
-	$pwdMailContent->addElement($pwdMailReplyTo, true);
+	$pwdMailReplyTo = new htmlResponsiveInputField(_('Reply-to address'), 'pwdResetMail_replyTo', $conf->getLamProMailReplyTo(), '554');
+	$row->add($pwdMailReplyTo, 12);
 
-	$pwdMailSubject = new htmlTableExtendedInputField(_('Subject'), 'pwdResetMail_subject', $conf->getLamProMailSubject(), '551');
-	$pwdMailContent->addElement($pwdMailSubject, true);
+	$pwdMailSubject = new htmlResponsiveInputField(_('Subject'), 'pwdResetMail_subject', $conf->getLamProMailSubject(), '551');
+	$row->add($pwdMailSubject, 12);
 
 	$pwdMailIsHTML = false;
 	if ($conf->getLamProMailIsHTML() == 'true') {
 		$pwdMailIsHTML = true;
 	}
-	$pwdMailContent->addElement(new htmlTableExtendedInputCheckbox('pwdResetMail_isHTML',$pwdMailIsHTML , _('HTML format'), '553'), true);
+	$row->add(new htmlResponsiveInputCheckbox('pwdResetMail_isHTML',$pwdMailIsHTML , _('HTML format'), '553'), 12);
 
 	$pwdMailAllowAlternate = true;
 	if ($conf->getLamProMailAllowAlternateAddress() == 'false') {
 		$pwdMailAllowAlternate = false;
 	}
-	$pwdMailContent->addElement(new htmlTableExtendedInputCheckbox('pwdResetMail_allowAlternate',$pwdMailAllowAlternate , _('Allow alternate address'), '555'), true);
+	$row->add(new htmlResponsiveInputCheckbox('pwdResetMail_allowAlternate',$pwdMailAllowAlternate , _('Allow alternate address'), '555'), 12);
 
-	$pwdMailBody = new htmlTableExtendedInputTextarea('pwdResetMail_body', $conf->getLamProMailText(), 50, 4, _('Text'), '552');
-	$pwdMailContent->addElement($pwdMailBody, true);
+	$pwdMailBody = new htmlResponsiveInputTextarea('pwdResetMail_body', $conf->getLamProMailText(), 50, 4, _('Text'), '552');
+	$row->add($pwdMailBody, 12);
 
-	$pwdMailFieldset = new htmlFieldset($pwdMailContent, _("Password mail settings"), '../../graphics/mailBig.png');
-	$container->addElement($pwdMailFieldset, true);
-	$container->addElement(new htmlSpacer(null, '10px'), true);
+	$row->addVerticalSpacer('2rem');
 }
 
 // tool settings
+$row->add(new htmlSubTitle(_("Tool settings"), '../../graphics/tools.png'), 12);
 $toolSettings = $conf->getToolSettings();
-$toolSettingsContent = new htmlTable();
-$toolsLabel = new htmlOutputText(_('Hidden tools'));
-$toolsLabel->colspan = 5;
-$toolSettingsContent->addElement($toolsLabel, true);
+$row->addLabel(new htmlOutputText(_('Hidden tools')));
 $tools = getTools();
 for ($i = 0; $i < sizeof($tools); $i++) {
 	$tool = new $tools[$i]();
@@ -432,35 +390,36 @@ for ($i = 0; $i < sizeof($tools); $i++) {
 		$tools = array_values($tools);
 	}
 }
-for ($r = 0; $r < (sizeof($tools) / 4); $r++) {
-	for ($c = 0; $c < 4; $c++) {
-		if (!isset($tools[($r * 4) + $c])) {
+$toolSettingsContent = new htmlTable();
+for ($r = 0; $r < (sizeof($tools) / 2); $r++) {
+	for ($c = 0; $c < 2; $c++) {
+		if (!isset($tools[($r * 2) + $c])) {
 			break;
 		}
-		$tool = $tools[($r * 4) + $c];
+		$tool = $tools[($r * 2) + $c];
 		$toolClass = get_class($tool);
 		$toolName = substr($toolClass, strrpos($toolClass, '\\') + 1);
 		$selected = false;
 		if (isset($toolSettings['tool_hide_' . $toolName]) && ($toolSettings['tool_hide_' . $toolName] === 'true')) {
 			$selected = true;
 		}
-		$toolSettingsContent->addElement(new htmlTableExtendedInputCheckbox('tool_hide_' . $toolName, $selected, $tool->getName(), null, false));
+		$toolSettingsContent->addElement(new htmlResponsiveInputCheckbox('tool_hide_' . $toolName, $selected, $tool->getName(), null, false));
 		$toolSettingsContent->addElement(new htmlSpacer('10px', null));
 	}
 	$toolSettingsContent->addNewLine();
 }
-$toolSettingsFieldset = new htmlFieldset($toolSettingsContent, _("Tool settings"), '../../graphics/bigTools.png');
-$container->addElement($toolSettingsFieldset, true);
-$container->addElement(new htmlSpacer(null, '10px'), true);
+$row->addField($toolSettingsContent);
+
+$row->addVerticalSpacer('2rem');
 
 // security setings
-$securitySettingsContent = new htmlTable();
+$row->add(new htmlSubTitle(_("Security settings"), '../../graphics/lock.png'), 12);
 // login method
 $loginOptions = array(
 	_('Fixed list') => LAMConfig::LOGIN_LIST,
 	_('LDAP search') => LAMConfig::LOGIN_SEARCH
 );
-$loginSelect = new htmlTableExtendedSelect('loginMethod', $loginOptions, array($conf->getLoginMethod()), _("Login method"), '220');
+$loginSelect = new htmlResponsiveSelect('loginMethod', $loginOptions, array($conf->getLoginMethod()), _("Login method"), '220');
 $loginSelect->setHasDescriptiveElements(true);
 $loginSelect->setTableRowsToHide(array(
 	LAMConfig::LOGIN_LIST => array('loginSearchSuffix', 'loginSearchFilter', 'loginSearchDN', 'loginSearchPassword', 'httpAuthentication'),
@@ -470,38 +429,38 @@ $loginSelect->setTableRowsToShow(array(
 	LAMConfig::LOGIN_LIST => array('admins'),
 	LAMConfig::LOGIN_SEARCH => array('loginSearchSuffix', 'loginSearchFilter', 'loginSearchDN', 'loginSearchPassword', 'httpAuthentication')
 ));
-$securitySettingsContent->addElement($loginSelect, true);
+$row->add($loginSelect, 12);
 // admin list
 $adminText = implode("\n", explode(";", $conf->get_Adminstring()));
-$adminTextInput = new htmlTableExtendedInputTextarea('admins', $adminText, '50', '3', _("List of valid users"), '207');
+$adminTextInput = new htmlResponsiveInputTextarea('admins', $adminText, '50', '3', _("List of valid users"), '207');
 $adminTextInput->setRequired(true);
-$securitySettingsContent->addElement($adminTextInput, true);
+$row->add($adminTextInput, 12);
 // search suffix
-$searchSuffixInput = new htmlTableExtendedInputField(_("LDAP suffix"), 'loginSearchSuffix', $conf->getLoginSearchSuffix(), '221');
+$searchSuffixInput = new htmlResponsiveInputField(_("LDAP suffix"), 'loginSearchSuffix', $conf->getLoginSearchSuffix(), '221');
 $searchSuffixInput->setRequired(true);
-$securitySettingsContent->addElement($searchSuffixInput, true);
+$row->add($searchSuffixInput, 12);
 // login search filter
-$searchFilterInput = new htmlTableExtendedInputField(_("LDAP filter"), 'loginSearchFilter', $conf->getLoginSearchFilter(), '221');
+$searchFilterInput = new htmlResponsiveInputField(_("LDAP filter"), 'loginSearchFilter', $conf->getLoginSearchFilter(), '221');
 $searchFilterInput->setRequired(true);
-$securitySettingsContent->addElement($searchFilterInput, true);
+$row->add($searchFilterInput, 12);
 // login search bind user
-$securitySettingsContent->addElement(new htmlTableExtendedInputField(_("Bind user"), 'loginSearchDN', $conf->getLoginSearchDN(), '224'), true);
+$row->add(new htmlResponsiveInputField(_("Bind user"), 'loginSearchDN', $conf->getLoginSearchDN(), '224'), 12);
 // login search bind password
-$searchPasswordInput = new htmlTableExtendedInputField(_("Bind password"), 'loginSearchPassword', $conf->getLoginSearchPassword(), '224');
+$searchPasswordInput = new htmlResponsiveInputField(_("Bind password"), 'loginSearchPassword', $conf->getLoginSearchPassword(), '224');
 $searchPasswordInput->setIsPassword(true);
-$securitySettingsContent->addElement($searchPasswordInput, true);
+$row->add($searchPasswordInput, 12);
 // HTTP authentication
-$securitySettingsContent->addElement(new htmlTableExtendedInputCheckbox('httpAuthentication', ($conf->getHttpAuthentication() == 'true'), _('HTTP authentication'), '223', true), true);
-$securitySettingsContent->addElement(new htmlSpacer(null, '30px'), true);
+$row->add(new htmlResponsiveInputCheckbox('httpAuthentication', ($conf->getHttpAuthentication() == 'true'), _('HTTP authentication'), '223', true), 12);
+$row->addVerticalSpacer('1rem');
 
 // 2factor authentication
 if (extension_loaded('curl')) {
-	$securitySettingsContent->addElement(new htmlSubTitle(_("2-factor authentication")), true);
+	$row->add(new htmlSubTitle(_("2-factor authentication"), '../../graphics/lock.png'), 12);
 	$twoFactorOptions = array(
 			_('None') => TwoFactorProviderService::TWO_FACTOR_NONE,
 			'privacyIDEA' => TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA,
 	);
-	$twoFactorSelect = new htmlTableExtendedSelect('twoFactor', $twoFactorOptions, array($conf->getTwoFactorAuthentication()), _('Provider'), '514');
+	$twoFactorSelect = new htmlResponsiveSelect('twoFactor', $twoFactorOptions, array($conf->getTwoFactorAuthentication()), _('Provider'), '514');
 	$twoFactorSelect->setHasDescriptiveElements(true);
 	$twoFactorSelect->setTableRowsToHide(array(
 			TwoFactorProviderService::TWO_FACTOR_NONE => array('twoFactorURL', 'twoFactorInsecure', 'twoFactorLabel', 'twoFactorOptional', 'twoFactorCaption')
@@ -509,35 +468,33 @@ if (extension_loaded('curl')) {
 	$twoFactorSelect->setTableRowsToShow(array(
 			TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA => array('twoFactorURL', 'twoFactorInsecure', 'twoFactorLabel', 'twoFactorOptional', 'twoFactorCaption')
 	));
-	$securitySettingsContent->addElement($twoFactorSelect, true);
-	$twoFactorUrl = new htmlTableExtendedInputField(_("Base URL"), 'twoFactorURL', $conf->getTwoFactorAuthenticationURL(), '515');
+	$row->add($twoFactorSelect, 12);
+	$twoFactorUrl = new htmlResponsiveInputField(_("Base URL"), 'twoFactorURL', $conf->getTwoFactorAuthenticationURL(), '515');
 	$twoFactorUrl->setRequired(true);
-	$securitySettingsContent->addElement($twoFactorUrl, true);
-	$twoFactorLabel = new htmlTableExtendedInputField(_("Label"), 'twoFactorLabel', $conf->getTwoFactorAuthenticationLabel(), '517');
-	$securitySettingsContent->addElement($twoFactorLabel, true);
-	$securitySettingsContent->addElement(new htmlTableExtendedInputCheckbox('twoFactorOptional', $conf->getTwoFactorAuthenticationOptional(), _('Optional'), '519'), true);
-	$securitySettingsContent->addElement(new htmlTableExtendedInputCheckbox('twoFactorInsecure', $conf->getTwoFactorAuthenticationInsecure(), _('Disable certificate check'), '516'), true);
-	$securitySettingsContent->addElement(new htmlSpacer(null, '5px'), true);
-	$twoFactorCaption = new htmlTableExtendedInputTextarea('twoFactorCaption', $conf->getTwoFactorAuthenticationCaption(), '80', '4', _("Caption"), '518');
+	$row->add($twoFactorUrl, 12);
+	$twoFactorLabel = new htmlResponsiveInputField(_("Label"), 'twoFactorLabel', $conf->getTwoFactorAuthenticationLabel(), '517');
+	$row->add($twoFactorLabel, 12);
+	$row->add(new htmlResponsiveInputCheckbox('twoFactorOptional', $conf->getTwoFactorAuthenticationOptional(), _('Optional'), '519'), 12);
+	$row->add(new htmlResponsiveInputCheckbox('twoFactorInsecure', $conf->getTwoFactorAuthenticationInsecure(), _('Disable certificate check'), '516'), 12);
+	$twoFactorCaption = new htmlResponsiveInputTextarea('twoFactorCaption', $conf->getTwoFactorAuthenticationCaption(), '80', '4', _("Caption"));
 	$twoFactorCaption->setIsRichEdit(true);
 	$twoFactorCaption->alignment = htmlElement::ALIGN_TOP;
-	$securitySettingsContent->addElement($twoFactorCaption, true);
+	$row->add($twoFactorCaption, 12);
 }
 
 // new password
-$securitySettingsContent->addElement(new htmlSubTitle(_("Profile password")), true);
-$password1 = new htmlTableExtendedInputField(_("New password"), 'passwd1', null, '212');
+$row->add(new htmlSubTitle(_("Profile password")), 12);
+$password1 = new htmlResponsiveInputField(_("New password"), 'passwd1', null, '212');
 $password1->setIsPassword(true);
-$password2 = new htmlTableExtendedInputField(_("Reenter password"), 'passwd2');
+$password2 = new htmlResponsiveInputField(_("Reenter password"), 'passwd2');
 $password2->setIsPassword(true);
 $password2->setSameValueFieldID('passwd1');
-$securitySettingsContent->addElement($password1, true);
-$securitySettingsContent->addElement($password2, true);
-$securitySettings = new htmlFieldset($securitySettingsContent, _("Security settings"), '../../graphics/security.png');
-$container->addElement($securitySettings, true);
-$container->addElement(new htmlSpacer(null, '10px'), true);
+$row->add($password1, 12);
+$row->add($password2, 12);
 
-parseHtml(null, $container, array(), false, $tabindex, 'user');
+$row->addVerticalSpacer('2rem');
+
+parseHtml(null, $row, array(), false, $tabindex, 'user');
 
 echo "</div></div>";
 

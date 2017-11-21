@@ -57,6 +57,10 @@ div.lam-dialog-msg {
 	margin: 10px;
 }
 
+table.padding5 td {
+	padding: 0.5rem;
+}
+
 table.responsive-table {
 	margin-top: 1rem;
 	table-layout: fixed;
