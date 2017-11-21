@@ -257,7 +257,7 @@ $helpArray = array (
 				"410" => array ("Headline" => _("Alternate recipient"),
 					"Text" => _("Here you can enter an alternative mail address for the password. To use the user's primary email address please leave the field blank.")),
 				"411" => array ("Headline" => _("Font"),
-					"Text" => _("Please select the font for the PDF file. Dejavu will work on all systems but does not support e.g. Chinese and Japan. The other fonts require that an appropriate font is installed on the system where the PDF is opened.")),
+					"Text" => _("Please select the font for the PDF file. Dejavu will work on all systems but does not support e.g. Chinese and Japanese. The other fonts require that an appropriate font is installed on the system where the PDF is opened.")),
 				// 500 - 599
 				// LAM Pro
 				"501" => array ("Headline" => _("LDAP suffix"),

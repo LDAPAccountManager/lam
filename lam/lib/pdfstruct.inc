@@ -741,7 +741,7 @@ function getPdfFonts() {
 		'DejaVu' => 'DejaVuSerif',
 		_('Chinese Traditional') => 'cid0ct',
 		_('Chinese Simplified') => 'cid0cs',
-		_('Japan') => 'cid0jp',
+		_('Japanese') => 'cid0jp',
 		_('Korean') => 'cid0kr',
 	);
 }
