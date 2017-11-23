@@ -6,13 +6,11 @@ use \LAMCfgMain;
 use \htmlSpacer;
 use \htmlOutputText;
 use \htmlSelect;
-use \htmlElement;
 use \htmlInputField;
 use \htmlGroup;
 use \htmlInputCheckbox;
 use \htmlButton;
 use \htmlStatusMessage;
-use \htmlHorizontalLine;
 use \Ldap;
 use \htmlResponsiveRow;
 use \htmlDiv;
@@ -238,7 +236,7 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 
 		<table border=0 width="100%" class="lamHeader ui-corner-all">
 			<tr>
-				<td align="left" height="30">
+				<td align="left" height="30" width="34%">
 					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">
 					LDAP Account Manager
 					<?php
@@ -249,9 +247,14 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 					?>
 					</a>
 				</td>
-			<td align="right" height=20>
-				<a class="margin-right5" href="./config/index.php"><IMG alt="configuration" src="../graphics/tools.png">&nbsp;<span class="hide-for-small"><?php echo _("LAM configuration") ?></span></a>
-			</td>
+				<td align="center" height=30 width="34%">
+					<span class="hide-for-small">
+						<a href="http://www.ldap-account-manager.org/lamcms/lamPro"> <?php if (!isLAMProVersion()) { echo (_("Want more features? Get LAM Pro!"));} ?> </a>
+					</span>
+				</td>
+				<td align="right" height=30 width="34%">
+					<a class="margin-right5" href="./config/index.php"><IMG alt="configuration" src="../graphics/tools.png">&nbsp;<span class="hide-for-small"><?php echo _("LAM configuration") ?></span></a>
+				</td>
 			</tr>
 		</table>
 
