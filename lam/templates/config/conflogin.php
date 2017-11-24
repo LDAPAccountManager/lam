@@ -80,19 +80,7 @@ $tabindex = 1;
 	<body class="admin">
 		<?php
 			printJsIncludes('../..');
-			// set focus on password field
 			?>
-			<script type="text/javascript" language="javascript">
-			<!--
-			window.onload = function() {
-				loginField = document.getElementsByName('passwd')[0];
-				loginField.focus();
-			}
-			jQuery(document).ready(function() {
-				jQuery('#submitButton').button();
-			});
-			//-->
-			</script>
 		<table border=0 width="100%" class="lamHeader ui-corner-all">
 			<tr>
 				<td align="left" height="30">
@@ -131,6 +119,7 @@ $tabindex = 1;
 			$box->add(new htmlResponsiveSelect('filename', $profiles, $selectedProfile, _('Profile name')), 12);
 			$passwordInput = new htmlResponsiveInputField(_('Password'), 'passwd', '', '200');
 			$passwordInput->setIsPassword(true);
+			$passwordInput->setCSSClasses(array('lam-initial-focus'));
 			$box->add($passwordInput, 12);
 			$box->addVerticalSpacer('1rem');
 			$button = new htmlButton('submit', _("Ok"));

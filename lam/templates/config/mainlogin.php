@@ -72,15 +72,6 @@ printHeaderContents(_("Login"), '../..');
 	</head>
 	<body class="admin">
 		<?php
-			// set focus on password field
-			echo "<script type=\"text/javascript\" language=\"javascript\">\n";
-			echo "<!--\n";
-			echo "window.onload = function() {\n";
-				echo "loginField = document.getElementsByName('passwd')[0];\n";
-				echo "loginField.focus();\n";
-			echo "}\n";
-			echo "//-->\n";
-			echo "</script>\n";
 			// include all JavaScript files
 			$jsDirName = dirname(__FILE__) . '/../lib';
 			$jsDir = dir($jsDirName);
@@ -142,6 +133,7 @@ printHeaderContents(_("Login"), '../..');
 		$passwordField = new htmlInputField('passwd');
 		$passwordField->setFieldSize(15);
 		$passwordField->setIsPassword(true);
+		$passwordField->setCSSClasses(array('lam-initial-focus'));
 		$passwordGroup->addElement($passwordField);
 		$passwordGroup->addElement(new htmlHelpLink('236'));
 		$passwordDiv = new htmlDiv(null, $passwordGroup);

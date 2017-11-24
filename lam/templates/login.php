@@ -194,7 +194,7 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 	printHeaderContents('LDAP Account Manager', '..');
 	?>
 	</head>
-	<body class="admin" onload="focusLogin()">
+	<body class="admin">
 	<?php
 	// include all JavaScript files
 	printJsIncludes('..');
@@ -213,24 +213,6 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 
 	if (isLAMProVersion() && $licenseValidator->isEvaluationLicense()) {
 		StatusMessage('INFO', _('Evaluation Licence'));
-	}
-
-	// set focus on password field
-	if (!empty($config_object)) {
-		echo "<script type=\"text/javascript\" language=\"javascript\">\n";
-		echo "<!--\n";
-		echo "function focusLogin() {\n";
-		if (($config_object->getLoginMethod() == LAMConfig::LOGIN_LIST) || isset($_COOKIE['lam_login_name'])) {
-			echo "myElement = document.getElementsByName('passwd')[0];\n";
-			echo "myElement.focus();\n";
-		}
-		else {
-			echo "myElement = document.getElementsByName('username')[0];\n";
-			echo "myElement.focus();\n";
-		}
-		echo "}\n";
-		echo "//-->\n";
-		echo "</script>\n";
 	}
 	?>
 
@@ -351,6 +333,9 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 								$userSelect = new htmlSelect('username', $adminList, $selectedAdmin);
 								$userSelect->setHasDescriptiveElements(true);
 								$userSelect->setTransformSingleSelect(false);
+								if (empty($_COOKIE['lam_login_name'])) {
+									$userSelect->setCSSClasses(array('lam-initial-focus'));
+								}
 								$row->addField(new htmlDiv(null, $userSelect));
 							}
 							else {
@@ -364,7 +349,11 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 									if (isset($_COOKIE["lam_login_name"])) {
 										$user = $_COOKIE["lam_login_name"];
 									}
-									$userInput = new htmlDiv(null, new htmlInputField('username', $user));
+									$userNameInput = new htmlInputField('username', $user);
+									if (empty($_COOKIE['lam_login_name'])) {
+										$userNameInput->setCSSClasses(array('lam-initial-focus'));
+									}
+									$userInput = new htmlDiv(null, $userNameInput);
 									$row->addField($userInput);
 								}
 							}
@@ -378,6 +367,9 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 							else {
 								$passwordInput = new htmlInputField('passwd');
 								$passwordInput->setIsPassword(true);
+								if (($config_object->getLoginMethod() == LAMConfig::LOGIN_SEARCH) && !empty($_COOKIE['lam_login_name'])) {
+									$passwordInput->setCSSClasses(array('lam-initial-focus'));
+								}
 								$row->addField($passwordInput);
 							}
 							// language

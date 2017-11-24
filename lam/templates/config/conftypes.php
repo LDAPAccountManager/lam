@@ -9,7 +9,6 @@ use \htmlButton;
 use \htmlGroup;
 use \htmlResponsiveInputCheckbox;
 use \LAMConfig;
-use \htmlTableExtendedInputCheckbox;
 use \htmlResponsiveRow;
 use \htmlResponsiveInputField;
 /*
