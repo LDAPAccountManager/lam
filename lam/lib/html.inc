@@ -2716,6 +2716,8 @@ class htmlSubTitle extends htmlElement {
 	private $image = null;
 	/** optional ID for this element (e.g. to use for JavaScript) */
 	private $id = null;
+	/** show large icon */
+	private $largeIcon = false;
 
 	/**
 	 * Constructor.
@@ -2723,13 +2725,15 @@ class htmlSubTitle extends htmlElement {
 	 * @param String $label label
 	 * @param String $image optional image
 	 * @param String $id optional ID for this element (e.g. to use for JavaScript)
+	 * @param bool $largeIcon show large (32x32px) icon instead of small one (16x16px)
 	 */
-	function __construct($label, $image = null, $id = null) {
+	function __construct($label, $image = null, $id = null, $largeIcon = false) {
 		$this->label = htmlspecialchars($label);
 		$this->image = htmlspecialchars($image);
 		$this->id = htmlspecialchars($id);
 		// the title should not end at a table cell
 		$this->colspan = 100;
+		$this->largeIcon = $largeIcon;
 	}
 
 	/**
@@ -2751,7 +2755,8 @@ class htmlSubTitle extends htmlElement {
 		echo "<div $idValue class=\"subTitle\">\n";
 		echo "<h4 class=\"subTitleText\">\n";
 		if ($this->image != null) {
-			echo '<img height=16 width=16 src="' . $this->image . '" alt="' . $this->label . '">&nbsp;';
+			$size = $this->largeIcon ? 32 : 16;
+			echo '<img height=' . $size . ' width=' . $size . ' src="' . $this->image . '" alt="' . $this->label . '">&nbsp;';
 		}
 		echo $this->label;
 		echo "</h4>\n";
