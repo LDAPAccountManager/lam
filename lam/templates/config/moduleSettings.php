@@ -159,7 +159,14 @@ for ($i = 0; $i < sizeof($modules); $i++) {
 	}
 	$row = new htmlResponsiveRow();
 	$row->add(new htmlSubTitle(getModuleAlias($modules[$i], "none"), $iconImage, null, true), 12);
-	$row->add($options[$modules[$i]], 12);
+	if (is_array($options[$modules[$i]])) {
+		foreach ($options[$modules[$i]] as $option) {
+			$row->add($option, 12);
+		}
+	}
+	else {
+		$row->add($options[$modules[$i]], 12);
+	}
 	$configTypes = parseHtml($modules[$i], $row, $old_options, false, $tabindex, 'none');
 	$_SESSION['conf_types'] = array_merge($configTypes, $_SESSION['conf_types']);
 	echo "<br>";
