@@ -1100,10 +1100,10 @@ class windowsGroup extends baseModule {
 		$configContainerHead->addElement(new htmlOutputText(_('Hidden options')));
 		$configContainerHead->addElement(new htmlHelpLink('hiddenOptions'));
 		$configContainer->add($configContainerHead, 12);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsGroup_hidemail', false, _('Email address'), null, false), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsGroup_hidemanagedBy', false, _('Managed by'), null, false), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsGroup_hidemsSFU30Name', true, _('NIS name'), null, false), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsGroup_hidemsSFU30NisDomain', true, _('NIS domain'), null, false), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsGroup_hidemail', false, _('Email address'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsGroup_hidemanagedBy', false, _('Managed by'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsGroup_hidemsSFU30Name', true, _('NIS name'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsGroup_hidemsSFU30NisDomain', true, _('NIS domain'), null, true), 12, 4);
 		for ($i = 0; $i < 2; $i++) {
 			$configContainer->add(new htmlOutputText(''), 0, 4);
 		}

@@ -3184,67 +3184,52 @@ class windowsUser extends baseModule implements passwordService {
 	}
 
 	/**
-	* Returns a list of configuration options.
-	*
-	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
-	* <br>
-	* The field names are used as keywords to load and save settings.
-	* We recommend to use the module name as prefix for them (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
-	*
-	* @param array $scopes account types (user, group, host)
-	* @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
-	* @return mixed htmlElement or array of htmlElement
-	*
-	* @see htmlElement
-	*/
+	 * {@inheritDoc}
+	 * @see baseModule::get_configOptions()
+	 */
 	public function get_configOptions($scopes, $allScopes) {
 		// configuration options
-		$configContainer = new htmlTable();
-		$configContainerHead = new htmlTable();
-		$configContainerHead->addElement(new htmlTableExtendedInputTextarea('windowsUser_domains', '', 30, 3, _('Domains'), 'domains'));
-		$configContainer->addElement($configContainerHead, true);
-		$configContainer->addVerticalSpace('10px');
+		$configContainer = new htmlResponsiveRow();
+		$configContainer->add(new htmlResponsiveInputTextarea('windowsUser_domains', '', 30, 3, _('Domains'), 'domains'), 12);
 		$configHiddenGroup = new htmlGroup();
 		$configHiddenGroup->addElement(new htmlOutputText(_('Hidden options')));
 		$configHiddenGroup->addElement(new htmlHelpLink('hiddenOptions'));
-		$configContainer->addElement($configHiddenGroup, true);
-		$configContainerOptions = new htmlTable();
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideproxyAddresses', true, _('Proxy-Addresses'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidefacsimileTelephoneNumber', false, _('Fax number'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidemobile', true, _('Mobile'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideotherMobile', true, _('Other mobiles'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidepager', true, _('Pager'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideotherPager', true, _('Other pagers'), null, false), true);
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidesAMAccountName', true, _('User name (pre W2K)'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidemsSFU30Name', true, _('NIS name'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidemsSFU30NisDomain', true, _('NIS domain'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidepwdLastSet', false, _('Last password change'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidelastLogonTimestamp', false, _('Last login'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidejpegPhoto', true, _('Photo'), null, false), true);
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidetitle', true, _('Job title'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidecarLicense', true, _('Car license'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideemployeeNumber', true, _('Employee number'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideemployeeType', true, _('Employee type'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidebusinessCategory', true, _('Business category'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidecompany', true, _('Company'), null, false), true);
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidedepartment', true, _('Department'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideou', true, _('Organisational unit'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hideo', true, _('Organisation'), null, false));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('windowsUser_hidemanager', true, _('Manager'), null, false));
-		$configContainer->addElement($configContainerOptions, true);
-		$advancedOptions = new htmlTable();
-		$advancedOptions->addElement(new htmlSubTitle(_('Photo')), true);
-		$photoTable = new htmlTable();
-		$photoTable->colspan = 2;
-		if (extension_loaded('imagick')) {
-			$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum width (px)'), 'windowsUser_jpegPhoto_maxWidth', null, 'crop'), true);
-			$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum height (px)'), 'windowsUser_jpegPhoto_maxHeight', null, 'crop'), true);
+		$configContainer->add($configHiddenGroup, 12);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hideproxyAddresses', true, _('Proxy-Addresses'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidefacsimileTelephoneNumber', false, _('Fax number'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidemobile', true, _('Mobile'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hideotherMobile', true, _('Other mobiles'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidepager', true, _('Pager'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hideotherPager', true, _('Other pagers'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidesAMAccountName', true, _('User name (pre W2K)'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidemsSFU30Name', true, _('NIS name'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidemsSFU30NisDomain', true, _('NIS domain'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidepwdLastSet', false, _('Last password change'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidelastLogonTimestamp', false, _('Last login'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidejpegPhoto', true, _('Photo'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidetitle', true, _('Job title'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidecarLicense', true, _('Car license'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hideemployeeNumber', true, _('Employee number'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hideemployeeType', true, _('Employee type'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidebusinessCategory', true, _('Business category'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidecompany', true, _('Company'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidedepartment', true, _('Department'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hideou', true, _('Organisational unit'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hideo', true, _('Organisation'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidemanager', true, _('Manager'), null, true), 12, 4);
+		for ($i = 0; $i < 2; $i++) {
+			$configContainer->add(new htmlOutputText(''), 0, 4);
 		}
-		$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum file size (kB)'), 'windowsUser_jpegPhoto_maxSize'), true);
-		$advancedOptions->addElement($photoTable, true);
+		$advancedOptions = new htmlResponsiveRow();
+		$advancedOptions->add(new htmlSubTitle(_('Photo')), 12);
+		if (extension_loaded('imagick')) {
+			$advancedOptions->add(new htmlResponsiveInputField(_('Maximum width (px)'), 'windowsUser_jpegPhoto_maxWidth', null, 'crop'), 12);
+			$advancedOptions->add(new htmlResponsiveInputField(_('Maximum height (px)'), 'windowsUser_jpegPhoto_maxHeight', null, 'crop'), 12);
+		}
+		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum file size (kB)'), 'windowsUser_jpegPhoto_maxSize'), 12);
 		$advancedOptionsAccordion = new htmlAccordion('inetOrgPersonAdvancedOptions', array(_('Advanced options') => $advancedOptions), false);
 		$advancedOptionsAccordion->colspan = 5;
-		$configContainer->addElement($advancedOptionsAccordion);
+		$configContainer->add($advancedOptionsAccordion, 12);
 		return $configContainer;
 	}
 
