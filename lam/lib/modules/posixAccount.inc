@@ -1909,16 +1909,16 @@ class posixAccount extends baseModule implements passwordService {
 	 */
 	function get_configOptions($scopes, $allScopes) {
 		$return = array();
+		$generatorOptions = array(
+				_('Fixed range') => 'range',
+				_('Samba ID pool') => 'sambaPool',
+				_('Windows domain info') => 'windowsDomain',
+				_('Magic number') => 'magicNumber'
+		);
 		if (in_array('user', $scopes)) {
 			// user options
 			$configUserContainer = new htmlTable();
 			$configUserContainer->addElement(new htmlSubTitle(_("Users")), true);
-			$generatorOptions = array(
-					_('Fixed range') => 'range',
-					_('Samba ID pool') => 'sambaPool',
-					_('Windows domain info') => 'windowsDomain',
-					_('Magic number') => 'magicNumber'
-			);
 			$uidGeneratorSelect = new htmlTableExtendedSelect('posixAccount_uidGeneratorUsers', $generatorOptions, array('range'), _('UID generator'), 'uidGenerator');
 			$uidGeneratorSelect->setHasDescriptiveElements(true);
 			$uidGeneratorSelect->setTableRowsToHide(array(
