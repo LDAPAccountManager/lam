@@ -259,10 +259,6 @@ class pykotaUser extends baseModule {
 			$selfServiceContainer->addElement(new htmlHelpLink('jobSuffix', get_class($this)), true);
 			$return['selfServiceSettings'] = $selfServiceContainer;
 		}
-		// config options
-		$configContainer = new htmlTable();
-		$configContainer->addElement(new htmlTableExtendedInputField(_('Job suffix'), 'pykotaUser_jobSuffix', '', 'jobSuffix'), true);
-		$return['config_options']['all'] = $configContainer;
 		// configuration checks
 		$return['config_checks']['all']['pykotaUser_jobSuffix'] = array (
 			'type' => 'ext_preg',
@@ -1208,6 +1204,16 @@ class pykotaUser extends baseModule {
 			$jobs = array_slice($jobs, 0, 100);
 		}
 		return array_values($jobs);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see baseModule::get_configOptions()
+	 */
+	public function get_configOptions($scopes, $allScopes) {
+		$configContainer = new htmlResponsiveRow();
+		$configContainer->add(new htmlResponsiveInputField(_('Job suffix'), 'pykotaUser_jobSuffix', '', 'jobSuffix'), 12);
+		return $configContainer;
 	}
 
 }
