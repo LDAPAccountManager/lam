@@ -4016,6 +4016,8 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 	private $helpID;
 	/** render HTML of parent class */
 	private $renderParentHtml = false;
+	/** long label */
+	private $longLabel = false;
 
 	/**
 	 * Constructor.
@@ -4024,11 +4026,13 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 	 * @param boolean $checked checked
 	 * @param String $label descriptive label
 	 * @param String $helpID help ID
+	 * @param bool $longLabel more space for label (default: false)
 	 */
-	function __construct($name, $checked, $label, $helpID = null) {
+	function __construct($name, $checked, $label, $helpID = null, $longLabel = false) {
 		parent::__construct($name, $checked);
 		$this->label = htmlspecialchars($label);
 		$this->helpID = $helpID;
+		$this->longLabel = $longLabel;
 	}
 
 	/**
@@ -4042,10 +4046,16 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 		// HTML of parent class is rendered on second call (done by htmlResponsiveRow)
 		$this->renderParentHtml = true;
 		$row = new htmlResponsiveRow();
+		$tabletColumnsLabel = 6;
+		$tabletColumnsBox = 6;
+		if ($this->longLabel) {
+			$tabletColumnsLabel = 10;
+			$tabletColumnsBox = 2;
+		}
 		// label text
 		$labelGroup = new htmlGroup();
 		$labelGroup->addElement(new htmlOutputText($this->label));
-		$row->add($labelGroup, 6, 6, 6, 'responsiveLabel');
+		$row->add($labelGroup, 10, $tabletColumnsLabel, $tabletColumnsLabel, 'responsiveLabel');
 		// input field
 		$fieldGroup = new htmlGroup();
 		$fieldGroup->addElement($this);
@@ -4054,7 +4064,7 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 			$helpLink->setCSSClasses(array('margin-left5 align-unset-img'));
 			$fieldGroup->addElement($helpLink);
 		}
-		$row->add($fieldGroup, 6, 6, 6, 'responsiveField nowrap');
+		$row->add($fieldGroup, 2, $tabletColumnsBox, $tabletColumnsBox, 'responsiveField nowrap');
 		return $row->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 	}
 
