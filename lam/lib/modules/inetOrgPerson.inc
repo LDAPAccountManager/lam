@@ -3625,19 +3625,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 	}
 
 	/**
-	* Returns a list of configuration options.
-	*
-	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
-	* <br>
-	* The field names are used as keywords to load and save settings.
-	* We recommend to use the module name as prefix for them (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
-	*
-	* @param array $scopes account types (user, group, host)
-	* @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
-	* @return mixed htmlElement or array of htmlElement
-	*
-	* @see htmlElement
-	*/
+	 * {@inheritDoc}
+	 * @see baseModule::get_configOptions()
+	 */
 	public function get_configOptions($scopes, $allScopes) {
 		$return = parent::get_configOptions($scopes, $allScopes);
 		// configuration settings

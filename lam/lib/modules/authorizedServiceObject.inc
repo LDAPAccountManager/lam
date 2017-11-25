@@ -4,7 +4,7 @@ $Id$
 
   This code is not yet part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2011         J de Jong
-  				2012 - 2015  Roland Gruber
+  				2012 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -94,10 +94,6 @@ class authorizedServiceObject extends baseModule {
 				"Text" => _("These services will show up as hint if you enter a new service.")
 			)
 		);
-		// config options
-		$configContainer = new htmlTable();
-		$configContainer->addElement(new htmlTableExtendedInputTextarea('authorizedServiceObject_services', "sshd\r\nimap", 30, 5, _('Predefined services'), 'predefinedServices'));
-		$return['config_options']['all'] = $configContainer;
 		// upload fields
 		$return['upload_columns'] = array(
 			array(
@@ -250,6 +246,16 @@ class authorizedServiceObject extends baseModule {
 				}
 			}
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see baseModule::get_configOptions()
+	 */
+	public function get_configOptions($scopes, $allScopes) {
+		$configContainer = new htmlResponsiveRow();
+		$configContainer->add(new htmlResponsiveInputTextarea('authorizedServiceObject_services', "sshd\r\nimap", 30, 5, _('Predefined services'), 'predefinedServices'), 12);
+		return $configContainer;
 	}
 
 }
