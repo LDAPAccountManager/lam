@@ -4030,7 +4030,7 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 	 */
 	function __construct($name, $checked, $label, $helpID = null, $longLabel = false) {
 		parent::__construct($name, $checked);
-		$this->label = htmlspecialchars($label);
+		$this->label = $label;
 		$this->helpID = $helpID;
 		$this->longLabel = $longLabel;
 	}
