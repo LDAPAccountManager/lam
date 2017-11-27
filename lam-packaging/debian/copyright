@@ -76,7 +76,8 @@ All other files are licensed under the conditions below.
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-The complete license can be found in the file COPYING.
+The complete license can be found in the file COPYING or in
+/usr/share/common-licenses/GPL-3.
 
 
 Some parts of this package have other, compatible licences. These are:
