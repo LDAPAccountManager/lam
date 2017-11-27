@@ -71,7 +71,7 @@ export VERSION=`./getVersion`
 # remove files which are not in the final release
 rm -r lam/po
 rm -r lam/tests
-rm lam/lib/font/*.ttf
+rm lam/lib/3rdParty/tcpdf/fonts/*.ttf
 find . -name .svnignore -exec rm {} \;
 find . -name .gitignore -exec rm {} \;
 mv lam ldap-account-manager-$VERSION
