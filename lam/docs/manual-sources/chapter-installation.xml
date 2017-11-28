@@ -44,8 +44,8 @@
               </listitem>
 
               <listitem>
-                <para>Internet Explorer 11 <emphasis role="bold">(compatibility
-                mode turned off)</emphasis></para>
+                <para>Internet Explorer 11 <emphasis
+                role="bold">(compatibility mode turned off)</emphasis></para>
               </listitem>
 
               <listitem>
@@ -85,7 +85,7 @@
               <row>
                 <entry><inlinemediaobject>
                     <imageobject>
-                      <imagedata fileref="images/debian.png" />
+                      <imagedata fileref="images/debian.png"/>
                     </imageobject>
                   </inlinemediaobject></entry>
 
@@ -133,11 +133,11 @@
               <row>
                 <entry><inlinemediaobject>
                     <imageobject>
-                      <imagedata fileref="images/suse.png" />
+                      <imagedata fileref="images/suse.png"/>
                     </imageobject>
-                  </inlinemediaobject><para></para><inlinemediaobject>
+                  </inlinemediaobject><para/><inlinemediaobject>
                     <imageobject>
-                      <imagedata fileref="images/fedora.png" />
+                      <imagedata fileref="images/fedora.png"/>
                     </imageobject>
                   </inlinemediaobject></entry>
 
@@ -177,7 +177,7 @@
               <row>
                 <entry><inlinemediaobject>
                     <imageobject>
-                      <imagedata fileref="images/freebsd.png" />
+                      <imagedata fileref="images/freebsd.png"/>
                     </imageobject>
                   </inlinemediaobject></entry>
 
@@ -573,6 +573,12 @@
       <para>You need to follow all steps from your current version to the new
       version. Unless explicitly noticed there is no need to install an
       intermediate release.</para>
+
+      <section>
+        <title>6.1 -&gt; 6.2</title>
+
+        <para>No actions required.</para>
+      </section>
 
       <section>
         <title>6.0 -&gt; 6.1</title>
