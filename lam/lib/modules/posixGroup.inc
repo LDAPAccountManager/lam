@@ -541,23 +541,20 @@ class posixGroup extends baseModule implements passwordService {
 
 
 	/**
-	* Returns a list of elements for the configuration.
-	*
-	* @param array $scopes account types (user, group, host)
-	* @param array $allScopes list of all modules and active scopes
-	* @return array configuration elements
-	*/
-	function get_configOptions($scopes, $allScopes) {
+	 * {@inheritDoc}
+	 * @see baseModule::get_configOptions()
+	 */
+	public function get_configOptions($scopes, $allScopes) {
 		// configuration options
-		$configContainer = new htmlTable();
-		$configContainer->addElement(new htmlSubTitle(_("Groups")), true);
+		$configContainer = new htmlResponsiveRow();
+		$configContainer->add(new htmlSubTitle(_("Groups")), 12);
 		$genOptions = array(
 			_('Fixed range') => 'range',
 			_('Samba ID pool') => 'sambaPool',
 			_('Windows domain info') => 'windowsDomain',
 			_('Magic number') => 'magicNumber'
 		);
-		$gidGeneratorSelect = new htmlTableExtendedSelect('posixGroup_gidGenerator', $genOptions, array('range'), _('GID generator'), 'gidGenerator');
+		$gidGeneratorSelect = new htmlResponsiveSelect('posixGroup_gidGenerator', $genOptions, array('range'), _('GID generator'), 'gidGenerator');
 		$gidGeneratorSelect->setHasDescriptiveElements(true);
 		$gidGeneratorSelect->setTableRowsToHide(array(
 			'range' => array('posixGroup_sambaIDPoolDN', 'posixGroup_windowsIDPoolDN', 'posixGroup_magicNumber'),
@@ -571,31 +568,31 @@ class posixGroup extends baseModule implements passwordService {
 			'windowsDomain' => array('posixGroup_windowsIDPoolDN'),
 			'magicNumber' => array('posixGroup_magicNumber')
 		));
-		$configContainer->addElement($gidGeneratorSelect, true);
-		$minGidInput = new htmlTableExtendedInputField(_('Minimum GID number'), 'posixGroup_minGID', null, 'minMaxGID');
+		$configContainer->add($gidGeneratorSelect, 12);
+		$minGidInput = new htmlResponsiveInputField(_('Minimum GID number'), 'posixGroup_minGID', null, 'minMaxGID');
 		$minGidInput->setRequired(true);
-		$configContainer->addElement($minGidInput, true);
-		$maxGidInput = new htmlTableExtendedInputField(_('Maximum GID number'), 'posixGroup_maxGID', null, 'minMaxGID');
+		$configContainer->add($minGidInput, 12);
+		$maxGidInput = new htmlResponsiveInputField(_('Maximum GID number'), 'posixGroup_maxGID', null, 'minMaxGID');
 		$maxGidInput->setRequired(true);
-		$configContainer->addElement($maxGidInput, true);
-		$gidGeneratorDN = new htmlTableExtendedInputField(_('Samba ID pool DN'), 'posixGroup_sambaIDPoolDN', null, 'sambaIDPoolDN');
+		$configContainer->add($maxGidInput, 12);
+		$gidGeneratorDN = new htmlResponsiveInputField(_('Samba ID pool DN'), 'posixGroup_sambaIDPoolDN', null, 'sambaIDPoolDN');
 		$gidGeneratorDN->setRequired(true);
-		$configContainer->addElement($gidGeneratorDN, true);
-		$winGeneratorDN = new htmlTableExtendedInputField(_('Windows domain info DN'), 'posixGroup_windowsIDPoolDN', null, 'windowsIDPoolDN');
+		$configContainer->add($gidGeneratorDN, 12);
+		$winGeneratorDN = new htmlResponsiveInputField(_('Windows domain info DN'), 'posixGroup_windowsIDPoolDN', null, 'windowsIDPoolDN');
 		$winGeneratorDN->setRequired(true);
-		$configContainer->addElement($winGeneratorDN, true);
-		$magicNumber = new htmlTableExtendedInputField(_('Magic number'), 'posixGroup_magicNumber', null, 'magicNumber');
+		$configContainer->add($winGeneratorDN, 12);
+		$magicNumber = new htmlResponsiveInputField(_('Magic number'), 'posixGroup_magicNumber', null, 'magicNumber');
 		$magicNumber->setRequired(true);
-		$configContainer->addElement($magicNumber, true);
-		$configContainer->addElement(new htmlTableExtendedInputField(_('Suffix for GID/group name check'), 'posixGroup_gidCheckSuffix', '', 'gidCheckSuffix'), true);
-		$configContainer->addElement(new htmlTableExtendedInputCheckbox('posixGroup_hidememberUid', false, _('Disable membership management'), 'hidememberUid'), true);
+		$configContainer->add($magicNumber, 12);
+		$configContainer->add(new htmlResponsiveInputField(_('Suffix for GID/group name check'), 'posixGroup_gidCheckSuffix', '', 'gidCheckSuffix'), 12);
+		$configContainer->add(new htmlResponsiveInputCheckbox('posixGroup_hidememberUid', false, _('Disable membership management'), 'hidememberUid'), 12);
 		if ((!empty($allScopes['groupOfNames']) && in_array('group', $allScopes['groupOfNames']))
 			|| (!empty($allScopes['groupOfUniqueNames']) && in_array('group', $allScopes['groupOfUniqueNames']))) {
-			$configContainer->addElement(new htmlTableExtendedInputCheckbox('posixGroup_autoSyncGon', false, _('Force sync with group of names'), 'autoSyncGon'), true);
+			$configContainer->add(new htmlResponsiveInputCheckbox('posixGroup_autoSyncGon', false, _('Force sync with group of names'), 'autoSyncGon'), 12);
 		}
 		// display password hash option only if posixAccount module is not used
 		if (!isset($allScopes['posixAccount'])) {
-			$configContainer->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', getSupportedHashTypes(), array('SSHA'), _("Password hash type"), 'pwdHash'));
+			$configContainer->add(new htmlResponsiveSelect('posixAccount_pwdHash', getSupportedHashTypes(), array('SSHA'), _("Password hash type"), 'pwdHash'), 12);
 		}
 		return $configContainer;
 	}
