@@ -3905,7 +3905,7 @@ class htmlResponsiveSelect extends htmlSelect {
 	 */
 	function __construct($name, $elements, $selectedElements, $label, $helpID = null, $size = 1) {
 		parent::__construct($name, $elements, $selectedElements, $size);
-		$this->label = htmlspecialchars($label);
+		$this->label = $label;
 		if (is_string($helpID)) {
 			$this->helpID = $helpID;
 		}
@@ -4081,7 +4081,7 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 		// label text
 		$labelGroup = new htmlGroup();
 		$labelGroup->addElement(new htmlOutputText($this->label));
-		$row->add($labelGroup, 10, $tabletColumnsLabel, $tabletColumnsLabel, 'responsiveLabel');
+		$row->add($labelGroup, 10, $tabletColumnsLabel, $tabletColumnsLabel, 'responsiveLabel nowrap');
 		// input field
 		$fieldGroup = new htmlGroup();
 		$fieldGroup->addElement($this);
