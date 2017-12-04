@@ -1909,17 +1909,17 @@ class posixAccount extends baseModule implements passwordService {
 	 */
 	function get_configOptions($scopes, $allScopes) {
 		$return = array();
+		$generatorOptions = array(
+				_('Fixed range') => 'range',
+				_('Samba ID pool') => 'sambaPool',
+				_('Windows domain info') => 'windowsDomain',
+				_('Magic number') => 'magicNumber'
+		);
 		if (in_array('user', $scopes)) {
 			// user options
-			$configUserContainer = new htmlTable();
-			$configUserContainer->addElement(new htmlSubTitle(_("Users")), true);
-			$generatorOptions = array(
-					_('Fixed range') => 'range',
-					_('Samba ID pool') => 'sambaPool',
-					_('Windows domain info') => 'windowsDomain',
-					_('Magic number') => 'magicNumber'
-			);
-			$uidGeneratorSelect = new htmlTableExtendedSelect('posixAccount_uidGeneratorUsers', $generatorOptions, array('range'), _('UID generator'), 'uidGenerator');
+			$configUserContainer = new htmlResponsiveRow();
+			$configUserContainer->add(new htmlSubTitle(_("Users")), 12);
+			$uidGeneratorSelect = new htmlResponsiveSelect('posixAccount_uidGeneratorUsers', $generatorOptions, array('range'), _('UID generator'), 'uidGenerator');
 			$uidGeneratorSelect->setHasDescriptiveElements(true);
 			$uidGeneratorSelect->setTableRowsToHide(array(
 					'range' => array('posixAccount_sambaIDPoolDNUsers', 'posixAccount_windowsIDPoolDNUsers', 'posixAccount_magicNumberUser'),
@@ -1933,30 +1933,30 @@ class posixAccount extends baseModule implements passwordService {
 					'windowsDomain' => array('posixAccount_windowsIDPoolDNUsers'),
 					'magicNumber' => array('posixAccount_magicNumberUser')
 			));
-			$configUserContainer->addElement($uidGeneratorSelect, true);
-			$uidUsersGeneratorDN = new htmlTableExtendedInputField(_('Samba ID pool DN'), 'posixAccount_sambaIDPoolDNUsers', null, 'sambaIDPoolDN');
+			$configUserContainer->add($uidGeneratorSelect, 12);
+			$uidUsersGeneratorDN = new htmlResponsiveInputField(_('Samba ID pool DN'), 'posixAccount_sambaIDPoolDNUsers', null, 'sambaIDPoolDN');
 			$uidUsersGeneratorDN->setRequired(true);
-			$configUserContainer->addElement($uidUsersGeneratorDN, true);
-			$uidUsersGeneratorWinDN = new htmlTableExtendedInputField(_('Windows domain info DN'), 'posixAccount_windowsIDPoolDNUsers', null, 'windowsIDPoolDN');
+			$configUserContainer->add($uidUsersGeneratorDN, 12);
+			$uidUsersGeneratorWinDN = new htmlResponsiveInputField(_('Windows domain info DN'), 'posixAccount_windowsIDPoolDNUsers', null, 'windowsIDPoolDN');
 			$uidUsersGeneratorWinDN->setRequired(true);
-			$configUserContainer->addElement($uidUsersGeneratorWinDN, true);
-			$minUid = new htmlTableExtendedInputField(_('Minimum UID number'), 'posixAccount_minUID', null, 'minMaxUser');
+			$configUserContainer->add($uidUsersGeneratorWinDN, 12);
+			$minUid = new htmlResponsiveInputField(_('Minimum UID number'), 'posixAccount_minUID', null, 'minMaxUser');
 			$minUid->setRequired(true);
-			$configUserContainer->addElement($minUid, true);
-			$maxUid = new htmlTableExtendedInputField(_('Maximum UID number'), 'posixAccount_maxUID', null, 'minMaxUser');
+			$configUserContainer->add($minUid, 12);
+			$maxUid = new htmlResponsiveInputField(_('Maximum UID number'), 'posixAccount_maxUID', null, 'minMaxUser');
 			$maxUid->setRequired(true);
-			$configUserContainer->addElement($maxUid, true);
-			$magicNumberUser = new htmlTableExtendedInputField(_('Magic number'), 'posixAccount_magicNumberUser', null, 'magicNumber');
+			$configUserContainer->add($maxUid, 12);
+			$magicNumberUser = new htmlResponsiveInputField(_('Magic number'), 'posixAccount_magicNumberUser', null, 'magicNumber');
 			$magicNumberUser->setRequired(true);
-			$configUserContainer->addElement($magicNumberUser, true);
-			$configUserContainer->addElement(new htmlTableExtendedInputField(_('Suffix for UID/user name check'), 'posixAccount_uidCheckSuffixUser', '', 'uidCheckSuffix'), true);
+			$configUserContainer->add($magicNumberUser, 12);
+			$configUserContainer->add(new htmlResponsiveInputField(_('Suffix for UID/user name check'), 'posixAccount_uidCheckSuffixUser', '', 'uidCheckSuffix'), 12);
 			$return[] = $configUserContainer;
 		}
 		// host options
 		if (in_array('host', $scopes)) {
-			$configHostContainer = new htmlTable();
-			$configHostContainer->addElement(new htmlSubTitle(_("Hosts")), true);
-			$uidHostGeneratorSelect = new htmlTableExtendedSelect('posixAccount_uidGeneratorHosts', $generatorOptions, array('range'), _('UID generator'), 'uidGenerator');
+			$configHostContainer = new htmlResponsiveRow();
+			$configHostContainer->add(new htmlSubTitle(_("Hosts")), 12);
+			$uidHostGeneratorSelect = new htmlResponsiveSelect('posixAccount_uidGeneratorHosts', $generatorOptions, array('range'), _('UID generator'), 'uidGenerator');
 			$uidHostGeneratorSelect->setHasDescriptiveElements(true);
 			$uidHostGeneratorSelect->setTableRowsToHide(array(
 					'range' => array('posixAccount_sambaIDPoolDNHosts', 'posixAccount_windowsIDPoolDNHosts', 'posixAccount_magicNumberHost'),
@@ -1970,60 +1970,56 @@ class posixAccount extends baseModule implements passwordService {
 					'windowsDomain' => array('posixAccount_windowsIDPoolDNHosts'),
 					'magicNumber' => array('posixAccount_magicNumberHost')
 			));
-			$configHostContainer->addElement($uidHostGeneratorSelect, true);
-			$uidHostsGeneratorDN = new htmlTableExtendedInputField(_('Samba ID pool DN'), 'posixAccount_sambaIDPoolDNHosts', null, 'sambaIDPoolDN');
+			$configHostContainer->add($uidHostGeneratorSelect, 12);
+			$uidHostsGeneratorDN = new htmlResponsiveInputField(_('Samba ID pool DN'), 'posixAccount_sambaIDPoolDNHosts', null, 'sambaIDPoolDN');
 			$uidHostsGeneratorDN->setRequired(true);
-			$configHostContainer->addElement($uidHostsGeneratorDN, true);
-			$uidHostsGeneratorWinDN = new htmlTableExtendedInputField(_('Windows domain info DN'), 'posixAccount_windowsIDPoolDNHosts', null, 'windowsIDPoolDN');
+			$configHostContainer->add($uidHostsGeneratorDN, 12);
+			$uidHostsGeneratorWinDN = new htmlResponsiveInputField(_('Windows domain info DN'), 'posixAccount_windowsIDPoolDNHosts', null, 'windowsIDPoolDN');
 			$uidHostsGeneratorWinDN->setRequired(true);
-			$configHostContainer->addElement($uidHostsGeneratorWinDN, true);
-			$minUid = new htmlTableExtendedInputField(_('Minimum UID number'), 'posixAccount_minMachine', null, 'minMaxHost');
+			$configHostContainer->add($uidHostsGeneratorWinDN, 12);
+			$minUid = new htmlResponsiveInputField(_('Minimum UID number'), 'posixAccount_minMachine', null, 'minMaxHost');
 			$minUid->setRequired(true);
-			$configHostContainer->addElement($minUid, true);
-			$maxUid = new htmlTableExtendedInputField(_('Maximum UID number'), 'posixAccount_maxMachine', null, 'minMaxHost');
+			$configHostContainer->add($minUid, 12);
+			$maxUid = new htmlResponsiveInputField(_('Maximum UID number'), 'posixAccount_maxMachine', null, 'minMaxHost');
 			$maxUid->setRequired(true);
-			$configHostContainer->addElement($maxUid, true);
-			$magicNumberHost = new htmlTableExtendedInputField(_('Magic number'), 'posixAccount_magicNumberHost', null, 'magicNumber');
+			$configHostContainer->add($maxUid, 12);
+			$magicNumberHost = new htmlResponsiveInputField(_('Magic number'), 'posixAccount_magicNumberHost', null, 'magicNumber');
 			$magicNumberHost->setRequired(true);
-			$configHostContainer->addElement($magicNumberHost, true);
-			$configHostContainer->addElement(new htmlTableExtendedInputField(_('Suffix for UID/user name check'), 'posixAccount_uidCheckSuffixHost', '', 'uidCheckSuffix'), true);
+			$configHostContainer->add($magicNumberHost, 12);
+			$configHostContainer->add(new htmlResponsiveInputField(_('Suffix for UID/user name check'), 'posixAccount_uidCheckSuffixHost', '', 'uidCheckSuffix'), 12);
 			$return[] = $configHostContainer;
 		}
 		// common options
-		$configOptionsContainer = new htmlTable();
-		$configOptionsContainer->addElement(new htmlSubTitle(_('Options')), true);
-		$configOptionsContainer->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', getSupportedHashTypes(),
-				array('SSHA'), _("Password hash type"), 'pwdHash'), true);
-		$configOptionsContainer->addElement(new htmlTableExtendedInputTextarea('posixAccount_shells', implode("\r\n", $this->getShells()), 30, 4, _('Login shells'), 'loginShells'), true);
-		$hiddenOptionsContainer = new htmlGroup();
-		$hiddenOptionsContainer->colspan = 5;
-		$hiddenOptionsContainerHead = new htmlTable();
+		$configOptionsContainer = new htmlResponsiveRow();
+		$configOptionsContainer->add(new htmlSubTitle(_('Options')), 12);
+		$configOptionsContainer->add(new htmlResponsiveSelect('posixAccount_pwdHash', getSupportedHashTypes(),
+				array('SSHA'), _("Password hash type"), 'pwdHash'), 12);
+		$configOptionsContainer->add(new htmlResponsiveInputTextarea('posixAccount_shells', implode("\r\n", $this->getShells()), 30, 4, _('Login shells'), 'loginShells'), 12);
+		$hiddenOptionsContainerHead = new htmlGroup();
 		$hiddenOptionsContainerHead->addElement(new htmlOutputText(_('Hidden options')));
 		$hiddenOptionsContainerHead->addElement(new htmlHelpLink('hiddenOptions'));
-		$hiddenOptionsContainer->addElement($hiddenOptionsContainerHead);
-		$configContainerOptions = new htmlTable();
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('posixAccount_hidegecos', false, _('Gecos'), null, false));
+		$configOptionsContainer->addLabel($hiddenOptionsContainerHead, 12);
+		$configOptionsContainer->addField(new htmlOutputText(''));
+		$configOptionsContainer->addVerticalSpacer('0.5rem');
+		$configOptionsContainer->add(new htmlResponsiveInputCheckbox('posixAccount_hidegecos', false, _('Gecos'), null, false), 12);
 		if (isset($_SESSION['conf_config'])) {
 			$confActiveGONModules = array_merge($_SESSION['conf_config']->get_AccountModules('group'), $_SESSION['conf_config']->get_AccountModules('gon'));
 			if (in_array('groupOfNames', $confActiveGONModules) || in_array('groupOfMembers', $confActiveGONModules) || in_array('groupOfUniqueNames', $confActiveGONModules)) {
-				$configContainerOptions->addElement(new htmlOutputText(' '));
-				$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('posixAccount_hidegon', false, _('Groups of names'), null, false));
-				$configContainerOptions->addElement(new htmlOutputText(' '));
-				$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('posixAccount_hideposixGroups', false, _('Unix groups'), null, false));
+				$configOptionsContainer->add(new htmlResponsiveInputCheckbox('posixAccount_hidegon', false, _('Groups of names'), null, false), 12);
+				$configOptionsContainer->add(new htmlResponsiveInputCheckbox('posixAccount_hideposixGroups', false, _('Unix groups'), null, false), 12);
 			}
 		}
-		$hiddenOptionsContainer->addElement($configContainerOptions);
-		$configOptionsContainer->addElement($hiddenOptionsContainer, true);
-		$advancedOptions = new htmlTable();
-		$advancedOptions->addElement(new htmlTableExtendedInputCheckbox('posixAccount_primaryGroupAsSecondary', false, _('Set primary group as memberUid'), 'primaryGroupAsSecondary'), true);
+		$configOptionsContainer->addVerticalSpacer('1rem');
+		$advancedOptions = new htmlResponsiveRow();
+		$advancedOptions->add(new htmlResponsiveInputCheckbox('posixAccount_primaryGroupAsSecondary', false, _('Set primary group as memberUid'), 'primaryGroupAsSecondary'), 12);
 		$isWindows = array_key_exists('windowsUser', $allScopes);
 		if ($isWindows) {
-			$advancedOptions->addElement(new htmlTableExtendedInputCheckbox('posixAccount_noObjectClass', false, _('Do not add object class'), 'noObjectClass'), true);
+			$advancedOptions->add(new htmlResponsiveInputCheckbox('posixAccount_noObjectClass', false, _('Do not add object class'), 'noObjectClass'), 12);
 		}
-		$advancedOptions->addElement(new htmlTableExtendedInputField(_('User name suggestion'), 'posixAccount_userNameSuggestion', '@givenname@%sn%', 'userNameSuggestion'));
+		$advancedOptions->add(new htmlResponsiveInputField(_('User name suggestion'), 'posixAccount_userNameSuggestion', '@givenname@%sn%', 'userNameSuggestion'), 12);
 		$advancedOptionsAccordion = new htmlAccordion('posixAccountAdvancedOptions', array(_('Advanced options') => $advancedOptions), false);
 		$advancedOptionsAccordion->colspan = 5;
-		$configOptionsContainer->addElement($advancedOptionsAccordion);
+		$configOptionsContainer->add($advancedOptionsAccordion, 12);
 		$return[] = $configOptionsContainer;
 
 		return $return;

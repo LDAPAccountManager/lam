@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2010 - 2011  Pavel Pozdniak
-                2010 - 2015  Roland Gruber
+                2010 - 2017  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -460,43 +460,39 @@ class imapAccess extends baseModule {
 	 */
 	public function get_configOptions($scopes, $allScopes) {
 		// configuration settings
-		$configContainer = new htmlTable();
-		$configServer = new htmlTableExtendedInputField(_('Server address'), 'ImapAccess_ImapServerAddress', '', 'ImapServerAddress');
+		$configContainer = new htmlResponsiveRow();
+		$configServer = new htmlResponsiveInputField(_('Server address'), 'ImapAccess_ImapServerAddress', '', 'ImapServerAddress');
 		$configServer->setRequired(true);
-		$configContainer->addElement($configServer, true);
-		$configContainer->addElement(new htmlTableExtendedSelect('ImapAccess_ImapServerEncriptionProtocol', array('TLS', 'SSL'), array('TLS'), _("Encryption protocol"), 'ImapServerEncryptionProtocol'), true);
-		$configCertValidate = new htmlTableExtendedSelect('ImapAccess_ImapValidateServerCert', array(_('Yes') => 'validate-cert', _('No') => 'novalidate-cert'), array('validate-cert'), _("Validate server certificate"), 'ImapValidateServerCert');
+		$configContainer->add($configServer, 12);
+		$configContainer->add(new htmlResponsiveSelect('ImapAccess_ImapServerEncriptionProtocol', array('TLS', 'SSL'), array('TLS'), _("Encryption protocol"), 'ImapServerEncryptionProtocol'), 12);
+		$configCertValidate = new htmlResponsiveSelect('ImapAccess_ImapValidateServerCert', array(_('Yes') => 'validate-cert', _('No') => 'novalidate-cert'), array('validate-cert'), _("Validate server certificate"), 'ImapValidateServerCert');
 		$configCertValidate->setHasDescriptiveElements(true);
-		$configContainer->addElement($configCertValidate, true);
-		$configUser = new htmlTableExtendedInputField(_('IMAP admin user'), 'ImapAccess_ImapAdmin', '', 'ImapAdmin');
+		$configContainer->add($configCertValidate, 12);
+		$configUser = new htmlResponsiveInputField(_('IMAP admin user'), 'ImapAccess_ImapAdmin', '', 'ImapAdmin');
 		$configUser->setRequired(true);
-		$configContainer->addElement($configUser, true);
+		$configContainer->add($configUser, 12);
 		$pwdSelectOptions = array(
 			_('LAM user password') => 'lam_user_pass',
 			_('Ask') => 'ask_pass',
 			_('Server profile') => 'config');
-		$configPasswordType = new htmlTableExtendedSelect('ImapAccess_ImapAdminPasswordSelect', $pwdSelectOptions, array('ask_pass'), _("IMAP password input"), 'ImapAdminPasswordSelect');
+		$configPasswordType = new htmlResponsiveSelect('ImapAccess_ImapAdminPasswordSelect', $pwdSelectOptions, array('ask_pass'), _("IMAP password input"), 'ImapAdminPasswordSelect');
 		$configPasswordType->setHasDescriptiveElements(true);
 		$configPasswordType->setTableRowsToShow(array('config' => array('ImapAccess_ImapAdminPassword')));
 		$configPasswordType->setTableRowsToHide(array('lam_user_pass' => array('ImapAccess_ImapAdminPassword'), 'ask_pass' => array('ImapAccess_ImapAdminPassword')));
-		$configContainer->addElement($configPasswordType, true);
-		$adminPwdInput = new htmlTableExtendedInputField(_('Admin password'), 'ImapAccess_ImapAdminPassword', null, 'ImapAdminPasswordSelect');
+		$configContainer->add($configPasswordType, 12);
+		$adminPwdInput = new htmlResponsiveInputField(_('Admin password'), 'ImapAccess_ImapAdminPassword', null, 'ImapAdminPasswordSelect');
 		$adminPwdInput->setIsPassword(true);
 		$adminPwdInput->setObfuscate(true);
-		$configContainer->addElement($adminPwdInput, true);
-		$mailDomainsInput = new htmlTableExtendedInputField(_('Mail domains'), 'ImapAccess_ImapDomain', '', 'ImapMailDomain');
+		$configContainer->add($adminPwdInput, 12);
+		$mailDomainsInput = new htmlResponsiveInputField(_('Mail domains'), 'ImapAccess_ImapDomain', '', 'ImapMailDomain');
 		$mailDomainsInput->setRequired(true);
-		$configContainer->addElement($mailDomainsInput, true);
-		$configContainer->addElement(new htmlTableExtendedInputField(_('Prefix for mailboxes'), 'ImapAccess_ImapUserPrefix', '', 'ImapUserPrefix'), true);
-		$configContainer->addElement(new htmlTableExtendedInputTextarea('ImapAccess_initialFolders', '', 10, 3, _('Initial folders'), 'initialFolders'), true);
-		$configUserName = new htmlTableExtendedSelect('ImapAccess_UserNameAttribute', array('mail', 'uid', 'userPrincipalName'), array('mail'), _("User name attribute"), 'ImapUserNameAttr');
-		$configContainer->addElement($configUserName, true);
-		$configPathSeparator = new htmlTableExtendedSelect('ImapAccess_pathSeparator', array('.', '/'), array('.'), _("Path separator"), 'pathSeparator');
-		$configContainer->addElement($configPathSeparator, true);
-		$configContainer->addElement(new htmlEqualWidth(array('ImapAccess_ImapServerAddress', 'ImapAccess_initialFolders', 'ImapAccess_UserNameAttribute',
-					'ImapAccess_ImapServerEncriptionProtocol', 'ImapAccess_ImapValidateServerCert', 'ImapAccess_ImapAdminPasswordSelect',
-					'ImapAccess_pathSeparator'
-		)));
+		$configContainer->add($mailDomainsInput, 12);
+		$configContainer->add(new htmlResponsiveInputField(_('Prefix for mailboxes'), 'ImapAccess_ImapUserPrefix', '', 'ImapUserPrefix'), 12);
+		$configContainer->add(new htmlResponsiveInputTextarea('ImapAccess_initialFolders', '', 10, 3, _('Initial folders'), 'initialFolders'), 12);
+		$configUserName = new htmlResponsiveSelect('ImapAccess_UserNameAttribute', array('mail', 'uid', 'userPrincipalName'), array('mail'), _("User name attribute"), 'ImapUserNameAttr');
+		$configContainer->add($configUserName, 12);
+		$configPathSeparator = new htmlResponsiveSelect('ImapAccess_pathSeparator', array('.', '/'), array('.'), _("Path separator"), 'pathSeparator');
+		$configContainer->add($configPathSeparator, 12);
 		return $configContainer;
 	}
 

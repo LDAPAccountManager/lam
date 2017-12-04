@@ -567,16 +567,15 @@ class nisMailAliasUser extends baseModule {
 	* @see htmlElement
 	*/
 	public function get_configOptions($scopes, $allScopes) {
-		$configContainer = new htmlTable();
-		$configContainerHead = new htmlTable();
-		$configContainerHead->addElement(new htmlOutputText(_('Hidden options')));
-		$configContainerHead->addElement(new htmlHelpLink('hiddenOptions'));
-		$configContainerOptions = new htmlTable();
-		$configContainer->addElement($configContainerHead, true);
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('nisMailAliasUser_hideUserAliases', false, _('Aliases for user name'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('nisMailAliasUser_hideMailAliases', false, _('Aliases for email'), null, false));
-		$configContainer->addElement($configContainerOptions, true);
+		$configContainer = new htmlResponsiveRow();
+		$hiddenGroup = new htmlGroup();
+		$hiddenGroup->addElement(new htmlOutputText(_('Hidden options')));
+		$hiddenGroup->addElement(new htmlHelpLink('hiddenOptions'));
+		$configContainer->addLabel($hiddenGroup);
+		$configContainer->addField(new htmlOutputText(''));
+		$configContainer->addVerticalSpacer('0.5rem');
+		$configContainer->add(new htmlResponsiveInputCheckbox('nisMailAliasUser_hideUserAliases', false, _('Aliases for user name')), 12);
+		$configContainer->add(new htmlResponsiveInputCheckbox('nisMailAliasUser_hideMailAliases', false, _('Aliases for email')), 12);
 		return $configContainer;
 	}
 

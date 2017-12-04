@@ -110,10 +110,6 @@ class kolabUser extends baseModule {
 			'type' => 'ext_preg',
 			'regex' => 'digit',
 			'error_message' => $this->messages['mailQuota'][0]);
-		// config options
-		$configContainer = new htmlTable();
-		$configContainer->addElement(new htmlTableExtendedInputCheckbox('kolabUser_mailrecipient', true, _('Manage object class "mailrecipient"'), 'mailrecipient'), true);
-		$return['config_options']['all'] = $configContainer;
 		// self service field settings
 		$return['selfServiceFieldSettings'] = array(
 			'kolabDelegate' => _('Delegates'),
@@ -991,6 +987,16 @@ class kolabUser extends baseModule {
 		}
 		return true;
 
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see baseModule::get_configOptions()
+	 */
+	public function get_configOptions($scopes, $allScopes) {
+		$configContainer = new htmlResponsiveRow();
+		$configContainer->add(new htmlResponsiveInputCheckbox('kolabUser_mailrecipient', true, _('Manage object class "mailrecipient"'), 'mailrecipient'), 12);
+		return $configContainer;
 	}
 
 }

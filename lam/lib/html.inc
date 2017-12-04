@@ -2716,6 +2716,8 @@ class htmlSubTitle extends htmlElement {
 	private $image = null;
 	/** optional ID for this element (e.g. to use for JavaScript) */
 	private $id = null;
+	/** show large icon */
+	private $largeIcon = false;
 
 	/**
 	 * Constructor.
@@ -2723,13 +2725,15 @@ class htmlSubTitle extends htmlElement {
 	 * @param String $label label
 	 * @param String $image optional image
 	 * @param String $id optional ID for this element (e.g. to use for JavaScript)
+	 * @param bool $largeIcon show large (32x32px) icon instead of small one (16x16px)
 	 */
-	function __construct($label, $image = null, $id = null) {
+	function __construct($label, $image = null, $id = null, $largeIcon = false) {
 		$this->label = htmlspecialchars($label);
 		$this->image = htmlspecialchars($image);
 		$this->id = htmlspecialchars($id);
 		// the title should not end at a table cell
 		$this->colspan = 100;
+		$this->largeIcon = $largeIcon;
 	}
 
 	/**
@@ -2751,7 +2755,8 @@ class htmlSubTitle extends htmlElement {
 		echo "<div $idValue class=\"subTitle\">\n";
 		echo "<h4 class=\"subTitleText\">\n";
 		if ($this->image != null) {
-			echo '<img height=16 width=16 src="' . $this->image . '" alt="' . $this->label . '">&nbsp;';
+			$size = $this->largeIcon ? 32 : 16;
+			echo '<img height=' . $size . ' width=' . $size . ' src="' . $this->image . '" alt="' . $this->label . '">&nbsp;';
 		}
 		echo $this->label;
 		echo "</h4>\n";
@@ -3724,6 +3729,8 @@ class htmlResponsiveInputField extends htmlInputField {
 	private $label;
 	/** help ID */
 	private $helpID;
+	/** help module name */
+	private $helpModule = null;
 	/** render HTML of parent class */
 	private $renderParentHtml = false;
 
@@ -3733,13 +3740,21 @@ class htmlResponsiveInputField extends htmlInputField {
 	 * @param String $label descriptive label
 	 * @param String $fieldName unique field name
 	 * @param String $fieldValue value of input field (optional)
-	 * @param String $helpID help ID (optional)
+	 * @param String|array $helpID help ID or array of help ID + module name (optional)
+	 * @param bool $required field is required
 	 */
-	function __construct($label, $fieldName, $fieldValue = null, $helpID = null) {
+	function __construct($label, $fieldName, $fieldValue = null, $helpID = null, $required = false) {
 		parent::__construct($fieldName, $fieldValue);
 		$this->label = $label;
-		$this->helpID = $helpID;
+		if (is_string($helpID)) {
+			$this->helpID = $helpID;
+		}
+		elseif (is_array($helpID)) {
+			$this->helpID = $helpID[0];
+			$this->helpModule = $helpID[1];
+		}
 		$this->fieldSize = null;
+		$this->required = $required;
 	}
 
 	/**
@@ -3762,7 +3777,7 @@ class htmlResponsiveInputField extends htmlInputField {
 			$labelGroup->addElement(new htmlImage($graphicsPath . '/required.png', 16, 16, _('required'), _('required')));
 		}
 		if (!empty($this->helpID)) {
-			$helpLinkLabel = new htmlHelpLink($this->helpID);
+			$helpLinkLabel = new htmlHelpLink($this->helpID, $this->helpModule);
 			$helpLinkLabel->setCSSClasses(array('hide-on-tablet', 'margin-left5'));
 			$labelGroup->addElement($helpLinkLabel);
 		}
@@ -3771,7 +3786,7 @@ class htmlResponsiveInputField extends htmlInputField {
 		$fieldGroup = new htmlGroup();
 		$fieldGroup->addElement($this);
 		if (!empty($this->helpID)) {
-			$helpLinkField = new htmlHelpLink($this->helpID);
+			$helpLinkField = new htmlHelpLink($this->helpID, $this->helpModule);
 			$helpLinkField->setCSSClasses(array('hide-on-mobile'));
 			$fieldGroup->addElement($helpLinkField);
 		}
@@ -3873,6 +3888,8 @@ class htmlResponsiveSelect extends htmlSelect {
 	private $label;
 	/** help ID */
 	private $helpID;
+	/** help module name */
+	private $helpModule = null;
 	/** render HTML of parent class */
 	private $renderParentHtml = false;
 
@@ -3883,13 +3900,19 @@ class htmlResponsiveSelect extends htmlSelect {
 	 * @param array $elements list of elememts
 	 * @param array $selectedElements list of selected elements
 	 * @param String $label descriptive label
-	 * @param String $helpID help ID (optional, default none)
+	 * @param String|array $helpID help ID or array of help ID + module name (optional)
 	 * @param int $size size (optional, default = 1)
 	 */
 	function __construct($name, $elements, $selectedElements, $label, $helpID = null, $size = 1) {
 		parent::__construct($name, $elements, $selectedElements, $size);
-		$this->label = htmlspecialchars($label);
-		$this->helpID = $helpID;
+		$this->label = $label;
+		if (is_string($helpID)) {
+			$this->helpID = $helpID;
+		}
+		elseif (is_array($helpID)) {
+			$this->helpID = $helpID[0];
+			$this->helpModule = $helpID[1];
+		}
 	}
 
 	/**
@@ -3907,7 +3930,7 @@ class htmlResponsiveSelect extends htmlSelect {
 		$labelGroup = new htmlGroup();
 		$labelGroup->addElement(new htmlOutputText($this->label));
 		if (!empty($this->helpID)) {
-			$helpLinkLabel = new htmlHelpLink($this->helpID);
+			$helpLinkLabel = new htmlHelpLink($this->helpID, $this->helpModule);
 			$helpLinkLabel->setCSSClasses(array('hide-on-tablet', 'margin-left5'));
 			$labelGroup->addElement($helpLinkLabel);
 		}
@@ -3916,7 +3939,7 @@ class htmlResponsiveSelect extends htmlSelect {
 		$fieldGroup = new htmlGroup();
 		$fieldGroup->addElement($this);
 		if (!empty($this->helpID)) {
-			$helpLink = new htmlHelpLink($this->helpID);
+			$helpLink = new htmlHelpLink($this->helpID, $this->helpModule);
 			$helpLink->setCSSClasses(array('hide-on-mobile'));
 			$fieldGroup->addElement($helpLink);
 		}
@@ -4009,8 +4032,12 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 	private $label;
 	/** help ID */
 	private $helpID;
+	/** help module name */
+	private $helpModule = null;
 	/** render HTML of parent class */
 	private $renderParentHtml = false;
+	/** long label */
+	private $longLabel = false;
 
 	/**
 	 * Constructor.
@@ -4018,12 +4045,20 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 	 * @param String $name unique name
 	 * @param boolean $checked checked
 	 * @param String $label descriptive label
-	 * @param String $helpID help ID
+	 * @param String|array $helpID help ID or array of help ID + module name (optional)
+	 * @param bool $longLabel more space for label (default: false)
 	 */
-	function __construct($name, $checked, $label, $helpID = null) {
+	function __construct($name, $checked, $label, $helpID = null, $longLabel = false) {
 		parent::__construct($name, $checked);
-		$this->label = htmlspecialchars($label);
-		$this->helpID = $helpID;
+		$this->label = $label;
+		if (is_string($helpID)) {
+			$this->helpID = $helpID;
+		}
+		elseif (is_array($helpID)) {
+			$this->helpID = $helpID[0];
+			$this->helpModule = $helpID[1];
+		}
+		$this->longLabel = $longLabel;
 	}
 
 	/**
@@ -4037,19 +4072,25 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 		// HTML of parent class is rendered on second call (done by htmlResponsiveRow)
 		$this->renderParentHtml = true;
 		$row = new htmlResponsiveRow();
+		$tabletColumnsLabel = 6;
+		$tabletColumnsBox = 6;
+		if ($this->longLabel) {
+			$tabletColumnsLabel = 10;
+			$tabletColumnsBox = 2;
+		}
 		// label text
 		$labelGroup = new htmlGroup();
 		$labelGroup->addElement(new htmlOutputText($this->label));
-		$row->add($labelGroup, 6, 6, 6, 'responsiveLabel');
+		$row->add($labelGroup, 10, $tabletColumnsLabel, $tabletColumnsLabel, 'responsiveLabel nowrap');
 		// input field
 		$fieldGroup = new htmlGroup();
 		$fieldGroup->addElement($this);
 		if (!empty($this->helpID)) {
-			$helpLink = new htmlHelpLink($this->helpID);
+			$helpLink = new htmlHelpLink($this->helpID, $this->helpModule);
 			$helpLink->setCSSClasses(array('margin-left5 align-unset-img'));
 			$fieldGroup->addElement($helpLink);
 		}
-		$row->add($fieldGroup, 6, 6, 6, 'responsiveField nowrap');
+		$row->add($fieldGroup, 2, $tabletColumnsBox, $tabletColumnsBox, 'responsiveField nowrap');
 		return $row->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 	}
 

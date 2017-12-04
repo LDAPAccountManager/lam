@@ -1869,49 +1869,37 @@ class sambaSamAccount extends baseModule implements passwordService {
 		if (!in_array('user', $scopes)) {
 			return $return;
 		}
-		$configContainer = new htmlTable();
+		$configContainer = new htmlResponsiveRow();
 		// password history
-		$history = new htmlTable();
 		$historyOptions = array(
 				_('yes - ordered ascending') => 'yes_deleteLast',
 				_('yes - ordered descending') => 'yes_deleteFirst',
 				_('no') => 'no'
 		);
-		$historySelect = new htmlTableExtendedSelect('sambaSamAccount_history', $historyOptions, array('yes_deleteLast'), _("Password history"), 'history');
+		$historySelect = new htmlResponsiveSelect('sambaSamAccount_history', $historyOptions, array('yes_deleteLast'), _("Password history"), 'history');
 		$historySelect->setHasDescriptiveElements(true);
-		$history->addElement($historySelect, true);
-		$configContainer->addElement($history, true);
+		$configContainer->add($historySelect, 12);
 		// disable LM passwords
-		$disableLM = new htmlTable();
 		$yesNo = array(_('yes') => 'yes', _('no') => 'no');
-		$lmYesNoSelect = new htmlTableExtendedSelect('sambaSamAccount_lmHash', $yesNo, array('yes'), _("Disable LM hashes"), 'lmHash');
+		$lmYesNoSelect = new htmlResponsiveSelect('sambaSamAccount_lmHash', $yesNo, array('yes'), _("Disable LM hashes"), 'lmHash');
 		$lmYesNoSelect->setHasDescriptiveElements(true);
-		$disableLM->addElement($lmYesNoSelect, true);
-		$configContainer->addElement($disableLM, true);
+		$configContainer->add($lmYesNoSelect, 12);
 		// hidden options
-		$configContainer->addElement(new htmlSpacer(null, '10px'), true);
+		$configContainer->addVerticalSpacer('1rem');
 		$configHiddenLabelGroup = new htmlGroup();
 		$configHiddenLabelGroup->addElement(new htmlOutputText(_('Hidden options') . ' '));
 		$configHiddenLabelGroup->addElement(new htmlHelpLink('hiddenOptions'));
-		$configContainer->addElement($configHiddenLabelGroup, true);
-		$hiddenContainer = new htmlTable();
-		$hiddenContainer->colspan = 5;
-		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideHomeDrive', false, _('Home drive'), null, false));
-		$hiddenContainer->addElement(new htmlOutputText(' '));
-		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideHomePath', false, _('Home path'), null, false));
-		$hiddenContainer->addElement(new htmlOutputText(' '));
-		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideProfilePath', false, _('Profile path'), null, false));
-		$hiddenContainer->addElement(new htmlOutputText(' '));
-		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideLogonScript', false, _('Logon script'), null, false));
-		$hiddenContainer->addElement(new htmlOutputText(' '));
-		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideSambaPwdLastSet', false, _('Last password change'), null, false));
-		$hiddenContainer->addNewLine();
-		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideWorkstations', false, _('Samba workstations'), null, false));
-		$hiddenContainer->addElement(new htmlOutputText(' '));
-		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideLogonHours', false, _('Logon hours'), null, false));
-		$hiddenContainer->addElement(new htmlOutputText(' '));
-		$hiddenContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_hideTerminalServer', false, _('Terminal server options'), null, false));
-		$configContainer->addElement($hiddenContainer);
+		$configContainer->add($configHiddenLabelGroup, 12);
+		$configContainer->addVerticalSpacer('0.5rem');
+		$configContainer->add(new htmlResponsiveInputCheckbox('sambaSamAccount_hideHomeDrive', false, _('Home drive'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('sambaSamAccount_hideHomePath', false, _('Home path'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('sambaSamAccount_hideProfilePath', false, _('Profile path'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('sambaSamAccount_hideLogonScript', false, _('Logon script'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('sambaSamAccount_hideSambaPwdLastSet', false, _('Last password change'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('sambaSamAccount_hideWorkstations', false, _('Samba workstations'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('sambaSamAccount_hideLogonHours', false, _('Logon hours'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('sambaSamAccount_hideTerminalServer', false, _('Terminal server options'), null, true), 12, 4);
+		$configContainer->add(new htmlOutputText(''), 12, 4);
 		$return[] = $configContainer;
 		return $return;
 	}

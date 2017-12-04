@@ -293,32 +293,22 @@ class freeRadius extends baseModule {
 	* @see htmlElement
 	*/
 	public function get_configOptions($scopes, $allScopes) {
-		$configContainer = new htmlTable();
-		$configContainer->addElement(new htmlTableExtendedInputField(_('Profile DN'), 'freeRadius_profileDN', '', 'profileDN'), true);
-		$configContainer->addVerticalSpace('10px');
-		$configContainerHead = new htmlTable();
-		$configContainerHead->colspan = 5;
-		$configContainerHead->addElement(new htmlOutputText(_('Hidden options')));
-		$configContainerHead->addElement(new htmlHelpLink('hiddenOptions'));
-		$configContainerOptions = new htmlTable();
-		$configContainerOptions->colspan = 5;
-		$configContainer->addElement($configContainerHead, true);
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusFramedIPAddress', false, _('IP address'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusFramedIPNetmask', false, _('Net mask'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusRealm', false, _('Realm'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusGroupName', false, _('Group names'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusExpiration', false, _('Expiration date'), null, false));
-		$configContainerOptions->addNewLine();
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusIdleTimeout', false, _('Idle timeout'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideRadiusProfileDn', false, _('Profile'), null, false));
-		$configContainerOptions->addElement(new htmlOutputText(' '));
-		$configContainerOptions->addElement(new htmlTableExtendedInputCheckbox('freeRadius_hideDialupAccess', false, _('Enabled'), null, false));
-		$configContainer->addElement($configContainerOptions, true);
+		$configContainer = new htmlResponsiveRow();
+		$configContainer->add(new htmlResponsiveInputField(_('Profile DN'), 'freeRadius_profileDN', '', 'profileDN'), 12);
+		$configContainer->addVerticalSpacer('1rem');
+		$hiddenGroup = new htmlGroup();
+		$hiddenGroup->addElement(new htmlOutputText(_('Hidden options')));
+		$hiddenGroup->addElement(new htmlHelpLink('hiddenOptions'));
+		$configContainer->add($hiddenGroup, 12);
+		$configContainer->addVerticalSpacer('0.5rem');
+		$configContainer->add(new htmlResponsiveInputCheckbox('freeRadius_hideRadiusFramedIPAddress', false, _('IP address'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('freeRadius_hideRadiusFramedIPNetmask', false, _('Net mask'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('freeRadius_hideRadiusRealm', false, _('Realm'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('freeRadius_hideRadiusGroupName', false, _('Group names'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('freeRadius_hideRadiusExpiration', false, _('Expiration date'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('freeRadius_hideRadiusIdleTimeout', false, _('Idle timeout'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('freeRadius_hideRadiusProfileDn', false, _('Profile'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('freeRadius_hideDialupAccess', false, _('Enabled'), null, true), 12, 4);
 		return $configContainer;
 	}
 

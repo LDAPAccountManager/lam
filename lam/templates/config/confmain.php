@@ -183,7 +183,7 @@ printConfigurationPageTabs(ConfigurationPageTab::GENERAL);
 
 $row = new htmlResponsiveRow();
 
-$serverSettings = new htmlSubTitle(_("Server settings"), '../../graphics/schemaBrowser.png');
+$serverSettings = new htmlSubTitle(_("Server settings"), '../../graphics/profiles.png', null, true);
 $row->add($serverSettings, 12);
 // server URL
 $urlInput = new htmlResponsiveInputField(_("Server address"), 'serverurl', $conf->get_ServerURL(), '201');
@@ -236,7 +236,7 @@ $row->add($advancedOptions, 12);
 $row->addVerticalSpacer('2rem');
 
 // language
-$row->add(new htmlSubTitle(_("Language settings"), '../../graphics/languageSmall.png'), 12);
+$row->add(new htmlSubTitle(_("Language settings"), '../../graphics/language.png', null, true), 12);
 // read available languages
 $possibleLanguages = getLanguages();
 $defaultLanguage = array('en_GB.utf8');
@@ -271,7 +271,7 @@ $row->add(new htmlResponsiveSelect('timeZone', $timezones, array($conf->getTimeZ
 $row->addVerticalSpacer('2rem');
 
 // lamdaemon settings
-$row->add(new htmlSubTitle(_("Lamdaemon settings"), '../../graphics/lamdaemonSmall.png'), 12);
+$row->add(new htmlSubTitle(_("Lamdaemon settings"), '../../graphics/lamdaemon.png', null, true), 12);
 $row->add(new htmlResponsiveInputField(_("Server list"), 'scriptservers', $conf->get_scriptServers(), '218'), 12);
 $row->add(new htmlResponsiveInputField(_("Path to external script"), 'scriptpath', $conf->get_scriptPath(), '210'), 12);
 
@@ -313,7 +313,7 @@ $row->addVerticalSpacer('2rem');
 // LAM Pro settings
 if (isLAMProVersion()) {
 	// password reset page
-	$row->add(new htmlSubTitle(_("Password reset page settings"), '../../graphics/key.png'), 12);
+	$row->add(new htmlSubTitle(_("Password reset page settings"), '../../graphics/keyBig.png', null, true), 12);
 
 	$pwdResetAllowSpecific = true;
 	if ($conf->getPwdResetAllowSpecificPassword() == 'false') {
@@ -345,7 +345,7 @@ if (isLAMProVersion()) {
 	$row->addVerticalSpacer('2rem');
 
 	// mail settings
-	$row->add(new htmlSubTitle(_("Password mail settings"), '../../graphics/mail.png'), 12);
+	$row->add(new htmlSubTitle(_("Password mail settings"), '../../graphics/mailBig.png', null, true), 12);
 
 	$pwdMailFrom = new htmlResponsiveInputField(_('From address'), 'pwdResetMail_from', $conf->getLamProMailFrom(), '550');
 	$row->add($pwdMailFrom, 12);
@@ -375,7 +375,7 @@ if (isLAMProVersion()) {
 }
 
 // tool settings
-$row->add(new htmlSubTitle(_("Tool settings"), '../../graphics/tools.png'), 12);
+$row->add(new htmlSubTitle(_("Tool settings"), '../../graphics/bigTools.png',null, true), 12);
 $toolSettings = $conf->getToolSettings();
 $row->add(new htmlOutputText(_('Hidden tools')), 12);
 $row->addVerticalSpacer('0.5rem');
@@ -392,7 +392,8 @@ for ($i = 0; $i < sizeof($tools); $i++) {
 	}
 }
 $toolSettingsContent = new htmlResponsiveRow();
-for ($r = 0; $r < (sizeof($tools)); $r++) {
+$toolsSize = sizeof($tools);
+for ($r = 0; $r < $toolsSize; $r++) {
 	$tool = $tools[$r];
 	$toolClass = get_class($tool);
 	$toolName = substr($toolClass, strrpos($toolClass, '\\') + 1);
@@ -400,14 +401,17 @@ for ($r = 0; $r < (sizeof($tools)); $r++) {
 	if (isset($toolSettings['tool_hide_' . $toolName]) && ($toolSettings['tool_hide_' . $toolName] === 'true')) {
 		$selected = true;
 	}
-	$toolSettingsContent->add(new htmlResponsiveInputCheckbox('tool_hide_' . $toolName, $selected, $tool->getName(), null, false), 12);
+	$toolSettingsContent->add(new htmlResponsiveInputCheckbox('tool_hide_' . $toolName, $selected, $tool->getName(), null, false), 12, 4);
+}
+for ($i = $toolsSize % 3; $i < 3; $i++) {
+	$toolSettingsContent->add(new htmlOutputText(''), 0, 4);
 }
 $row->add($toolSettingsContent, 12);
 
 $row->addVerticalSpacer('2rem');
 
 // security setings
-$row->add(new htmlSubTitle(_("Security settings"), '../../graphics/lock.png'), 12);
+$row->add(new htmlSubTitle(_("Security settings"), '../../graphics/security.png', null, true), 12);
 // login method
 $loginOptions = array(
 	_('Fixed list') => LAMConfig::LOGIN_LIST,
@@ -477,7 +481,7 @@ if (extension_loaded('curl')) {
 }
 
 // new password
-$row->add(new htmlSubTitle(_("Profile password")), 12);
+$row->add(new htmlSubTitle(_("Profile password"), '../../graphics/keyBig.png', null, true), 12);
 $password1 = new htmlResponsiveInputField(_("New password"), 'passwd1', null, '212');
 $password1->setIsPassword(true);
 $password2 = new htmlResponsiveInputField(_("Reenter password"), 'passwd2');

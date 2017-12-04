@@ -4,6 +4,8 @@ use \moduleCache;
 use \htmlSpacer;
 use \htmlTable;
 use \htmlButton;
+use \htmlResponsiveRow;
+use \htmlSubTitle;
 /*
 $Id$
 
@@ -104,40 +106,9 @@ if (isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 $allTypes = \LAM\TYPES\getTypes();
 
 echo $_SESSION['header'];
-
-echo "<title>" . _("LDAP Account Manager Configuration") . "</title>\n";
-
-// include all CSS files
-$cssDirName = dirname(__FILE__) . '/../../style';
-$cssDir = dir($cssDirName);
-$cssFiles = array();
-$cssEntry = $cssDir->read();
-while ($cssEntry !== false) {
-	if (substr($cssEntry, strlen($cssEntry) - 4, 4) == '.css') {
-		$cssFiles[] = $cssEntry;
-	}
-	$cssEntry = $cssDir->read();
-}
-sort($cssFiles);
-foreach ($cssFiles as $cssEntry) {
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/" . $cssEntry . "\">\n";
-}
-
-echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../../graphics/favicon.ico\">\n";
-echo "<link rel=\"icon\" href=\"../../graphics/logo136.png\">\n";
-echo "</head><body>\n";
-// include all JavaScript files
-$jsDirName = dirname(__FILE__) . '/../lib';
-$jsDir = dir($jsDirName);
-$jsFiles = array();
-while ($jsEntry = $jsDir->read()) {
-	if (substr($jsEntry, strlen($jsEntry) - 3, 3) != '.js') continue;
-	$jsFiles[] = $jsEntry;
-}
-sort($jsFiles);
-foreach ($jsFiles as $jsEntry) {
-	echo "<script type=\"text/javascript\" src=\"../lib/" . $jsEntry . "\"></script>\n";
-}
+printHeaderContents(_("LDAP Account Manager Configuration"), '../..');
+echo "</head><body class=\"admin\">\n";
+printJsIncludes('../..');
 printConfigurationPageHeaderBar($conf);
 
 // print error messages
@@ -179,20 +150,25 @@ $modules = array_keys($options);
 $_SESSION['conf_types'] = array();
 for ($i = 0; $i < sizeof($modules); $i++) {
 	if (sizeof($options[$modules[$i]]) < 1) continue;
-	echo "<fieldset class=\"ui-corner-all user-border user-bright\">\n";
-	$icon = '';
 	$module = moduleCache::getModule($modules[$i], 'none');
 	$iconImage = $module->getIcon();
 	if ($iconImage != null) {
 		if (!(strpos($iconImage, 'http') === 0) && !(strpos($iconImage, '/') === 0)) {
 			$iconImage = '../../graphics/' . $iconImage;
 		}
-		$icon = '<img align="middle" src="' . $iconImage . '" alt="' . $iconImage . '"> ';
 	}
-	echo "<legend>$icon" . getModuleAlias($modules[$i], "none") . "</legend>\n";
-	$configTypes = parseHtml($modules[$i], $options[$modules[$i]], $old_options, false, $tabindex, 'none');
+	$row = new htmlResponsiveRow();
+	$row->add(new htmlSubTitle(getModuleAlias($modules[$i], "none"), $iconImage, null, true), 12);
+	if (is_array($options[$modules[$i]])) {
+		foreach ($options[$modules[$i]] as $option) {
+			$row->add($option, 12);
+		}
+	}
+	else {
+		$row->add($options[$modules[$i]], 12);
+	}
+	$configTypes = parseHtml($modules[$i], $row, $old_options, false, $tabindex, 'none');
 	$_SESSION['conf_types'] = array_merge($configTypes, $_SESSION['conf_types']);
-	echo "</fieldset>\n";
 	echo "<br>";
 }
 
