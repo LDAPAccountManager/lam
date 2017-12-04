@@ -211,8 +211,12 @@ function config_showAccountModules($type, &$container) {
 
 	// add account module selection
 	$container->add(new htmlSubTitle($type->getAlias(), '../../graphics/' . $type->getIcon()), 12);
-	$container->add(new htmlOutputText(_("Selected modules")), 12, 6);
-	$container->add(new htmlOutputText(_("Available modules")), 0, 6);
+	if (sizeof($selOptions) > 0) {
+		$container->add(new htmlOutputText(_("Selected modules")), 12, 6);
+	}
+	if (sizeof($availOptions) > 0) {
+		$container->add(new htmlOutputText(_("Available modules")), 0, 6);
+	}
 	$container->addVerticalSpacer('1rem');
 	// selected modules
 	if (sizeof($selOptions) > 0) {
