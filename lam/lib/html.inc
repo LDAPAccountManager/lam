@@ -4081,7 +4081,7 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 		// label text
 		$labelGroup = new htmlGroup();
 		$labelGroup->addElement(new htmlOutputText($this->label));
-		$row->add($labelGroup, 10, $tabletColumnsLabel, $tabletColumnsLabel, 'responsiveLabel nowrap');
+		$row->add($labelGroup, 10, $tabletColumnsLabel, $tabletColumnsLabel, 'responsiveLabel');
 		// input field
 		$fieldGroup = new htmlGroup();
 		$fieldGroup->addElement($this);
