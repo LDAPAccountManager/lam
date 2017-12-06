@@ -3647,7 +3647,8 @@ class htmlResponsiveRow extends htmlElement {
 	 */
 	public function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$return = array();
-		echo '<div class="row">';
+		$cssClasses = implode(' ', $this->cssClasses);
+		echo '<div class="row ' . $cssClasses . '">';
 		foreach ($this->cells as $cell) {
 			$return = array_merge($return, $cell->generateHTML($module, $input, $values, $restricted, $tabindex, $scope));
 		}
@@ -4109,6 +4110,9 @@ class htmlResponsiveTable extends htmlElement {
 	/** htmlElement[][] data rows */
 	private $data;
 
+	/** widthes of the columns */
+	private $widths = array();
+
 	/**
 	 * Creates the table.
 	 *
@@ -4129,8 +4133,14 @@ class htmlResponsiveTable extends htmlElement {
 		echo '<table class="responsive-table">';
 		echo '<thead>';
 		echo '<tr>';
+		$counter = 0;
 		foreach ($this->titles as $title) {
-			echo '<th>' . htmlspecialchars($title) . '</th>';
+			$width = '';
+			if (isset($this->widths[$counter])) {
+				$width = 'width="' . $this->widths[$counter] . '"';
+			}
+			echo '<th ' . $width . '>' . htmlspecialchars($title) . '</th>';
+			$counter++;
 		}
 		echo '</tr>';
 		echo '</thead>';
@@ -4151,7 +4161,9 @@ class htmlResponsiveTable extends htmlElement {
 		return $return;
 	}
 
-
+	public function setWidths($widths) {
+		$this->widths = $widths;
+	}
 
 }
 
