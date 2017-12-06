@@ -118,6 +118,10 @@ input {
 	margin: 3px;
 }
 
+textarea {
+	margin: 3px;
+}
+
 .margin2 {
 	margin: 2px;
 }
