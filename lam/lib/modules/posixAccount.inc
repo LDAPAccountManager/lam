@@ -942,19 +942,24 @@ class posixAccount extends baseModule implements passwordService {
 			// try to delete directory on all servers
 			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
 				$remote = new \LAM\REMOTE\Remote();
-				$remote->connect($lamdaemonServers[$i]);
-				$result = $remote->execute(
-					implode(
-						self::$SPLIT_DELIMITER,
-						array(
-							$this->attributes['uid'][0],
-							"home",
-							"rem",
-							$this->attributes[$homeDirAttr][0],
-							$this->attributes['uidNumber'][0]
-						)
-					));
-				$remote->disconnect();
+				try {
+					$remote->connect($lamdaemonServers[$i]);
+					$result = $remote->execute(
+						implode(
+							self::$SPLIT_DELIMITER,
+							array(
+								$this->attributes['uid'][0],
+								"home",
+								"rem",
+								$this->attributes[$homeDirAttr][0],
+								$this->attributes['uidNumber'][0]
+							)
+						));
+					$remote->disconnect();
+				}
+				catch (LAMException $e) {
+					$return[] = array('ERROR', $e->getTitle(), $e->getMessage());
+				}
 				// lamdaemon results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);

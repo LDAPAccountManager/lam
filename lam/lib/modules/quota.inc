@@ -336,8 +336,15 @@ class quota extends baseModule {
 	 * @return array Array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
 	function preDeleteActions() {
-		$this->initQuotas();
-		if (!isset($this->quota) || !is_array($this->quota)) return array();
+		try {
+			$this->initQuotas();
+		}
+		catch (LAMException $e) {
+			return array(array('ERROR', $e->getTitle(), $e->getMessage()));
+		}
+		if (!isset($this->quota) || !is_array($this->quota)) {
+			return array();
+		}
 		// determine if this is a user or group account
 		if ($this->get_scope()=='user') {
 			$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
@@ -427,8 +434,16 @@ class quota extends baseModule {
 	 */
 	function display_html_attributes() {
 		$return = new htmlTable();
-		$this->initQuotas();
-		if (!is_array($this->quota)) return $return;
+		try {
+			$this->initQuotas();
+		}
+		catch (LAMException $e) {
+			$return->addElement(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()));
+			return $return;
+		}
+		if (!is_array($this->quota)) {
+			return $return;
+		}
 		// get list of lamdaemon servers
 		$serverDescriptions = array();
 		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
@@ -671,8 +686,16 @@ class quota extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
-		$this->initQuotas();
-		if (!isset($this->quota) || !is_array($this->quota)) return array();
+		try {
+			$this->initQuotas();
+		}
+		catch (LAMException $e) {
+			logNewMessage(LOG_ERR, $e->getTitle(), $e->getMessage());
+			return array();
+		}
+		if (!isset($this->quota) || !is_array($this->quota)) {
+			return array();
+		}
 		if (sizeof($this->quota) > 0) {
 			$pdfTable = new PDFTable();
 			// get list of lamdaemon servers
@@ -720,8 +743,16 @@ class quota extends baseModule {
 	 * @see baseModule::get_uploadColumns()
 	 */
 	function get_uploadColumns($selectedModules, &$type) {
-		$this->initQuotas();
-		if (!isset($this->quota) || !is_array($this->quota)) return array();
+		try {
+			$this->initQuotas();
+		}
+		catch (LAMException $e) {
+			logNewMessage(LOG_ERR, $e->getTitle(), $e->getMessage());
+			return array();
+		}
+		if (!isset($this->quota) || !is_array($this->quota)) {
+			return array();
+		}
 		$return = array();
 		if (sizeof($this->quota) > 0) {
 			// get list of lamdaemon servers
