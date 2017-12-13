@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -e
-env
 outFile=templates/lib/100_lam.${SOURCE_DATE_EPOCH}.min.js
 files=`ls templates/lib/*.js`
 jsFiles=""
@@ -18,5 +17,5 @@ outFile=style/100_lam.${SOURCE_DATE_EPOCH}.min.css
 cat $files | cleancss -o ${outFile}
 rm $files
 # add final new line to supress Debian warnings
-echo "" >> $file
+echo "" >> $outFile
 
