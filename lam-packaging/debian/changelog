@@ -1,9 +1,9 @@
-ldap-account-manager (6.2.RC1-1) unstable; urgency=medium
+ldap-account-manager (6.2-1) unstable; urgency=medium
 
   * new upstream release
   * LP: #1673595 PHP 7 support
 
- -- Roland Gruber <post@rolandgruber.de>  Mon, 27 Nov 2017 18:02:02 +0200
+ -- Roland Gruber <post@rolandgruber.de>  Wed, 13 Dec 2017 08:02:05 +0200
 
 ldap-account-manager (6.1-1) unstable; urgency=medium
 
