@@ -1,6 +1,6 @@
 <?php
 namespace LAM\REMOTE;
-use \Exception;
+use \LAMException;
 use \phpseclib\Net\SSH2;
 use \phpseclib\Crypt\RSA;
 /*
@@ -78,7 +78,7 @@ class Remote {
 			$handle = @new SSH2($server);
 		}
 		if (!$handle) {
-			throw new Exception(_("Unable to connect to remote server!"));
+			throw new LAMException(_("Unable to connect to remote server!"));
 		}
 		$this->loginSSH($handle);
 		$this->server = $handle;
@@ -111,7 +111,7 @@ class Remote {
 				$username = $entry[0]['uid'][0];
 			}
 			if (empty($username)) {
-				throw new Exception(sprintf(_("Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"), getAbstractDN($credentials[0])));
+				throw new LAMException(sprintf(_("Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"), getAbstractDN($credentials[0])));
 			}
 		}
 		$password = $credentials[1];
@@ -119,7 +119,7 @@ class Remote {
 		if (!empty($keyPath)) {
 			// use key authentication
 			if (!file_exists($keyPath) || !is_readable($keyPath)) {
-				throw new Exception(sprintf(_("Unable to read %s."), htmlspecialchars($keyPath)));
+				throw new LAMException(sprintf(_("Unable to read %s."), htmlspecialchars($keyPath)));
 			}
 			$key = file_get_contents($keyPath);
 			$rsa = new RSA();
@@ -128,13 +128,13 @@ class Remote {
 				$rsa->setPassword($keyPassword);
 			}
 			if (!$rsa->loadKey($key)) {
-				throw new Exception(sprintf(_("Unable to load key %s."), htmlspecialchars($keyPath)));
+				throw new LAMException(sprintf(_("Unable to load key %s."), htmlspecialchars($keyPath)));
 			}
 			$password = $rsa;
 		}
 		$login = @$handle->login($username, $password);
 		if (!$login) {
-			throw new Exception(_("Unable to login to remote server!"));
+			throw new LAMException(_("Unable to login to remote server!"));
 		}
 	}
 

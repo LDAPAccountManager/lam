@@ -165,7 +165,6 @@ class quota extends baseModule {
 
 	/**
 	 * Initializes the quota values.
-	 *
 	 */
 	function initQuotas() {
 		if (isset($this->quota)) return;
@@ -519,72 +518,78 @@ class quota extends baseModule {
 		$optionsAvailable = false;
 		// get list of lamdaemon servers
 		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
-		for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
-			$temp = explode(":", $lamdaemonServers[$s]);
-			$server = $temp[0];
-			$id = $this->replaceSpecialChars($server);
-			$description = $temp[0];
-			if (isset($temp[1])) {
-				$description = $temp[1] . ' (' . $temp[0] . ')';
-			}
-			// Get quotas
-			$remote = new \LAM\REMOTE\Remote();
-			$remote->connect($server);
-			$quotas = $remote->execute(implode(quota::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope())));
-			$remote->disconnect();
-			if (empty($quotas)) {
-				continue;
-			}
-			$dirs = explode(":", $quotas);
-			array_pop($dirs); // remove empty element at the end
-			for ($i = 0; $i < sizeof($dirs); $i++) {
-				if (strpos($dirs[$i], quota::$QUOTA_PREFIX) !== 0) {
-					unset($dirs[$i]);
-					$dirs = array_values($dirs);
-					$i--;
+		try {
+			for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
+				$temp = explode(":", $lamdaemonServers[$s]);
+				$server = $temp[0];
+				$id = $this->replaceSpecialChars($server);
+				$description = $temp[0];
+				if (isset($temp[1])) {
+					$description = $temp[1] . ' (' . $temp[0] . ')';
+				}
+				// Get quotas
+				$remote = new \LAM\REMOTE\Remote();
+				$remote->connect($server);
+				$quotas = $remote->execute(implode(quota::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope())));
+				$remote->disconnect();
+				if (empty($quotas)) {
 					continue;
 				}
-				$dirs[$i] = substr($dirs[$i], strlen(quota::$QUOTA_PREFIX));
-				$dirs[$i] = explode(",", $dirs[$i]);
-				$dirs[$i] = $dirs[$i][0];
-			}
-			$dirs = array_values($dirs);
-			if (sizeof($dirs) < 1) continue; // stop if no quota directories were found
-			$optionsAvailable = true;
-			$return->addElement(new htmlSubTitle($description), true);
-			$return->addElement(new htmlOutputText('&nbsp;' . _('Mountpoint') . '&nbsp;', false));
-			$return->addElement(new htmlOutputText('&nbsp;' . _('Soft block limit') . '&nbsp;', false));
-			$return->addElement(new htmlOutputText('&nbsp;' . _('Hard block limit') . '&nbsp;', false));
-			$return->addElement(new htmlOutputText('&nbsp;' . _('Soft inode limit') . '&nbsp;', false));
-			$return->addElement(new htmlOutputText('&nbsp;' . _('Hard inode limit') . '&nbsp;', false));
-			$return->addNewLine();
-			$return->addElement(new htmlHelpLink('Mountpoint'));
-			$return->addElement(new htmlHelpLink('SoftBlockLimit'));
-			$return->addElement(new htmlHelpLink('HardBlockLimit'));
-			$return->addElement(new htmlHelpLink('SoftInodeLimit'));
-			$return->addElement(new htmlHelpLink('HardInodeLimit'));
-			$return->addNewLine();
-
-			for ($i = 0; $i < sizeof($dirs); $i++) {
-				$return->addElement(new htmlOutputText($dirs[$i]));
-				$sbLimit = new htmlInputField("quota_softblock_" . $id . "_" . $dirs[$i]);
-				$sbLimit->setFieldSize(12);
-				$sbLimit->setFieldMaxLength(20);
-				$return->addElement($sbLimit);
-				$hbLimit = new htmlInputField("quota_hardblock_" . $id . "_" . $dirs[$i]);
-				$hbLimit->setFieldSize(12);
-				$hbLimit->setFieldMaxLength(20);
-				$return->addElement($hbLimit);
-				$siLimit = new htmlInputField("quota_softinode_" . $id . "_" . $dirs[$i]);
-				$siLimit->setFieldSize(12);
-				$siLimit->setFieldMaxLength(20);
-				$return->addElement($siLimit);
-				$hiLimit = new htmlInputField("quota_hardinode_" . $id . "_" . $dirs[$i]);
-				$hiLimit->setFieldSize(12);
-				$hiLimit->setFieldMaxLength(20);
-				$return->addElement($hiLimit);
+				$dirs = explode(":", $quotas);
+				array_pop($dirs); // remove empty element at the end
+				for ($i = 0; $i < sizeof($dirs); $i++) {
+					if (strpos($dirs[$i], quota::$QUOTA_PREFIX) !== 0) {
+						unset($dirs[$i]);
+						$dirs = array_values($dirs);
+						$i--;
+						continue;
+					}
+					$dirs[$i] = substr($dirs[$i], strlen(quota::$QUOTA_PREFIX));
+					$dirs[$i] = explode(",", $dirs[$i]);
+					$dirs[$i] = $dirs[$i][0];
+				}
+				$dirs = array_values($dirs);
+				if (sizeof($dirs) < 1) continue; // stop if no quota directories were found
+				$optionsAvailable = true;
+				$return->addElement(new htmlSubTitle($description), true);
+				$return->addElement(new htmlOutputText('&nbsp;' . _('Mountpoint') . '&nbsp;', false));
+				$return->addElement(new htmlOutputText('&nbsp;' . _('Soft block limit') . '&nbsp;', false));
+				$return->addElement(new htmlOutputText('&nbsp;' . _('Hard block limit') . '&nbsp;', false));
+				$return->addElement(new htmlOutputText('&nbsp;' . _('Soft inode limit') . '&nbsp;', false));
+				$return->addElement(new htmlOutputText('&nbsp;' . _('Hard inode limit') . '&nbsp;', false));
 				$return->addNewLine();
+				$return->addElement(new htmlHelpLink('Mountpoint'));
+				$return->addElement(new htmlHelpLink('SoftBlockLimit'));
+				$return->addElement(new htmlHelpLink('HardBlockLimit'));
+				$return->addElement(new htmlHelpLink('SoftInodeLimit'));
+				$return->addElement(new htmlHelpLink('HardInodeLimit'));
+				$return->addNewLine();
+
+				for ($i = 0; $i < sizeof($dirs); $i++) {
+					$return->addElement(new htmlOutputText($dirs[$i]));
+					$sbLimit = new htmlInputField("quota_softblock_" . $id . "_" . $dirs[$i]);
+					$sbLimit->setFieldSize(12);
+					$sbLimit->setFieldMaxLength(20);
+					$return->addElement($sbLimit);
+					$hbLimit = new htmlInputField("quota_hardblock_" . $id . "_" . $dirs[$i]);
+					$hbLimit->setFieldSize(12);
+					$hbLimit->setFieldMaxLength(20);
+					$return->addElement($hbLimit);
+					$siLimit = new htmlInputField("quota_softinode_" . $id . "_" . $dirs[$i]);
+					$siLimit->setFieldSize(12);
+					$siLimit->setFieldMaxLength(20);
+					$return->addElement($siLimit);
+					$hiLimit = new htmlInputField("quota_hardinode_" . $id . "_" . $dirs[$i]);
+					$hiLimit->setFieldSize(12);
+					$hiLimit->setFieldMaxLength(20);
+					$return->addElement($hiLimit);
+					$return->addNewLine();
+				}
 			}
+		}
+		catch (LAMException $e) {
+			$return->addElement(new htmlStatusMessage('WARN', $e->getTitle()));
+			return $return;
 		}
 		if (!$optionsAvailable) {
 			return null;
@@ -640,7 +645,12 @@ class quota extends baseModule {
 	* @param array $profile hash array with profile values (identifier => value)
 	*/
 	function load_profile($profile) {
-		$this->initQuotas();
+		try {
+			$this->initQuotas();
+		}
+		catch (LAMException $e) {
+			logNewMessage(LOG_ERR, $e->getTitle(), $e->getMessage());
+		}
 		if (!isset($this->quota) || !is_array($this->quota)) return;
 		$servers = array_keys($this->quota);
 		for ($s = 0; $s < sizeof($servers); $s++) {
