@@ -166,14 +166,14 @@ $typeList = array();
 foreach ($types as $type) {
 	$typeList[$type->getAlias()] = $type->getId();
 }
-$selectedType = array();
+$selectedType = null;
 if (isset($_REQUEST['type'])) {
-	$selectedType[] = $_REQUEST['type'];
+	$selectedType = $_REQUEST['type'];
 }
 elseif (!empty($types)) {
-	$selectedType[] = $types[0]->getId();
+	$selectedType = $types[0]->getId();
 }
-$typeSelect = new htmlTableExtendedSelect('type', $typeList, $selectedType, _("Account type"));
+$typeSelect = new htmlTableExtendedSelect('type', $typeList, array($selectedType), _("Account type"));
 $typeSelect->setHasDescriptiveElements(true);
 $typeSelect->setOnchangeEvent('changeVisibleModules(this);');
 $table->addElement($typeSelect, true);
@@ -186,7 +186,7 @@ $table->addElement($moduleLabel);
 $moduleGroup = new htmlGroup();
 foreach ($types as $type) {
 	$divClasses = array('typeOptions');
-	if ((!isset($_REQUEST['type']) && ($i != 0)) || (isset($_REQUEST['type']) && ($_REQUEST['type'] != $type->getId()))) {
+	if ($selectedType != $type->getId()) {
 		$divClasses[] = 'hidden';
 	}
 	$innerTable = new htmlTable();
