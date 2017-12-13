@@ -2,20 +2,23 @@
 
 set -e
 outFile=templates/lib/100_lam.${SOURCE_DATE_EPOCH}.min.js
-files=`ls templates/lib/*.js`
-jsFiles=""
-for file in $files; do
-	jsFiles="$jsFiles --js $file"
-done
-closure-compiler --charset UTF-8 $jsFiles --js_output_file $outFile
-rm $files
-# add final new line to supress Debian warnings
-echo "" >> $outFile
+if [ ! -e $outFile ]; then
+	files=`ls templates/lib/*.js`
+	jsFiles=""
+	for file in $files; do
+		jsFiles="$jsFiles --js $file"
+	done
+	closure-compiler --charset UTF-8 $jsFiles --js_output_file $outFile
+	rm $files
+	# add final new line to supress Debian warnings
+	echo "" >> $outFile
+fi
 
 files=`ls style/*.css`
 outFile=style/100_lam.${SOURCE_DATE_EPOCH}.min.css
-cat $files | cleancss -o ${outFile}
-rm $files
-# add final new line to supress Debian warnings
-echo "" >> $outFile
-
+if [ ! -e $outFile ]; then
+	cat $files | cleancss -o ${outFile}
+	rm $files
+	# add final new line to supress Debian warnings
+	echo "" >> $outFile
+fi
