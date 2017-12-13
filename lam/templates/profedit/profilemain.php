@@ -76,12 +76,14 @@ foreach ($types as $type) {
 	if ($type->isHidden() || !checkIfWriteAccessIsAllowed($type->getId())) {
 		continue;
 	}
+	$profileList = \LAM\PROFILES\getAccountProfiles($type->getId());
+	natcasesort($profileList);
 	$profileClassesTemp[$type->getAlias()] = array(
 		'typeId' => $type->getId(),
 		'scope' => $type->getScope(),
 		'title' => $type->getAlias(),
 		'icon' => $type->getIcon(),
-		'profiles' => "");
+		'profiles' => $profileList);
 }
 $profileClassesKeys = array_keys($profileClassesTemp);
 natcasesort($profileClassesKeys);
@@ -186,13 +188,6 @@ if (!empty($_POST['export'])) {
 		$errMessage->colspan = 10;
 		$container->addElement($errMessage, true);
 	}
-}
-
-// get list of profiles for each account type
-foreach ($profileClasses as &$profileClass) {
-	$profileList = \LAM\PROFILES\getAccountProfiles($profileClass['typeId']);
-	natcasesort($profileList);
-	$profileClass['profiles'] = $profileList;
 }
 
 if (isset($_GET['savedSuccessfully'])) {
