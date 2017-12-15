@@ -2273,7 +2273,7 @@ class htmlInputTextarea extends htmlElement {
 	/** enabled or disabled */
 	private $isEnabled = true;
 	/** specifies if LAM should display this field whith a WYSIWYG editor */
-	private $richEdit = false;
+	protected $richEdit = false;
 
 	/**
 	 * Constructor.
@@ -3851,14 +3851,18 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 		}
 		if (!empty($this->helpID)) {
 			$helpLinkLabel = new htmlHelpLink($this->helpID);
-			$helpLinkLabel->setCSSClasses(array('hide-on-tablet', 'margin-left5'));
+			$helpCssClasses = array('margin-left5');
+			if (!$this->richEdit) {
+				$helpCssClasses[] = 'hide-on-tablet';
+			}
+			$helpLinkLabel->setCSSClasses($helpCssClasses);
 			$labelGroup->addElement($helpLinkLabel);
 		}
 		$row->add($labelGroup, 12, 6, 6, 'responsiveLabel');
 		// input field
 		$fieldGroup = new htmlGroup();
 		$fieldGroup->addElement($this);
-		if (!empty($this->helpID)) {
+		if (!empty($this->helpID) && !$this->richEdit) {
 			$helpLink = new htmlHelpLink($this->helpID);
 			$helpLink->setCSSClasses(array('align-top', 'hide-on-mobile'));
 			$fieldGroup->addElement($helpLink);
