@@ -220,7 +220,7 @@ function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licen
 			<tr>
 				<td align="left" height="30" width="34%">
 					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">
-					LDAP Account Manager
+					LAM
 					<?php
 						if (isLAMProVersion()) {
 							echo 'Pro ';
