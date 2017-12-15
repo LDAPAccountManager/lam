@@ -1567,7 +1567,7 @@ function printJsIncludes($prefix) {
 	$jsFiles = array();
 	$jsEntry = $jsDir->read();
 	while ($jsEntry !== false) {
-		if (substr($jsEntry, strlen($jsEntry) - 3, 3) == '.js') {
+		if ((substr($jsEntry, strlen($jsEntry) - 3, 3) == '.js') || (substr($jsEntry, strlen($jsEntry) - 4, 4) == '.php')) {
 			$jsFiles[] = $jsEntry;
 		}
 		$jsEntry = $jsDir->read();
@@ -1578,6 +1578,11 @@ function printJsIncludes($prefix) {
 	}
 }
 
+/**
+ * LAM exception with title and message.
+ *
+ * @author Roland Gruber
+ */
 class LAMException extends Exception {
 
 	private $title;
