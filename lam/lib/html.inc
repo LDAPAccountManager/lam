@@ -3628,7 +3628,7 @@ class htmlResponsiveRow extends htmlElement {
 	 * Adds the content as a typical field with 12/6/6 columns and CSS class "responsiveField".
 	 *
 	 * @param htmlElement $content field
-	 * @param $cssClasses CSS class names separated by space
+	 * @param string $cssClasses CSS class names separated by space
 	 */
 	public function addField($content, $cssClasses = '') {
 		$this->add($content, 12, 6, 6, 'responsiveField ' . $cssClasses);
