@@ -3808,6 +3808,8 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 	private $label;
 	/** help ID */
 	private $helpID;
+	/** help module */
+	private $helpModule = null;
 	/** required field */
 	private $required = false;
 	/** render HTML of parent class */
@@ -3821,12 +3823,18 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 	 * @param int $colCount number of characters per line
 	 * @param int $rowCount number of rows
 	 * @param String $label descriptive label
-	 * @param String $helpID help ID
+	 * @param String|array $helpID help ID
 	 */
 	function __construct($name, $value, $colCount, $rowCount, $label, $helpID = null) {
 		parent::__construct($name, $value, $colCount, $rowCount);
 		$this->label = htmlspecialchars($label);
-		$this->helpID = $helpID;
+		if (is_string($helpID)) {
+			$this->helpID = $helpID;
+		}
+		elseif (is_array($helpID)) {
+			$this->helpID = $helpID[0];
+			$this->helpModule = $helpID[1];
+		}
 		$this->alignment = htmlElement::ALIGN_TOP;
 	}
 
@@ -3850,7 +3858,7 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 			$labelGroup->addElement(new htmlImage($graphicsPath . '/required.png', 16, 16, _('required'), _('required')));
 		}
 		if (!empty($this->helpID)) {
-			$helpLinkLabel = new htmlHelpLink($this->helpID);
+			$helpLinkLabel = new htmlHelpLink($this->helpID, $this->helpModule);
 			$helpCssClasses = array('margin-left5');
 			if (!$this->richEdit) {
 				$helpCssClasses[] = 'hide-on-tablet';
@@ -3863,7 +3871,7 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 		$fieldGroup = new htmlGroup();
 		$fieldGroup->addElement($this);
 		if (!empty($this->helpID) && !$this->richEdit) {
-			$helpLink = new htmlHelpLink($this->helpID);
+			$helpLink = new htmlHelpLink($this->helpID, $this->helpModule);
 			$helpLink->setCSSClasses(array('align-top', 'hide-on-mobile'));
 			$fieldGroup->addElement($helpLink);
 		}
