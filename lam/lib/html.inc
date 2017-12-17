@@ -1926,22 +1926,23 @@ class htmlInputCheckbox extends htmlElement {
 		// build Java script to show/hide depending fields
 		$onChange = '';
 		$script = '';
+		$selector = $this->getShowHideSelector();
 		if ((sizeof($this->tableRowsToShow) > 0) || (sizeof($this->tableRowsToHide) > 0)) {
 			// build onChange listener
 			$onChange .= 'if (jQuery(\'#' . $this->name . ':checked\').val() !== undefined) {';
 			for ($i = 0; $i < sizeof($this->tableRowsToShow); $i++) {
-				$onChange .= 'jQuery(\'#' . $this->tableRowsToShow[$i] . '\').closest(\'tr\').removeClass(\'hidden\');';
+				$onChange .= 'jQuery(\'#' . $this->tableRowsToShow[$i] . '\').closest(\'' . $selector . '\').removeClass(\'hidden\');';
 			}
 			for ($i = 0; $i < sizeof($this->tableRowsToHide); $i++) {
-				$onChange .= 'jQuery(\'#' . $this->tableRowsToHide[$i] . '\').closest(\'tr\').addClass(\'hidden\');';
+				$onChange .= 'jQuery(\'#' . $this->tableRowsToHide[$i] . '\').closest(\'' . $selector . '\').addClass(\'hidden\');';
 			}
 			$onChange .= '}';
 			$onChange .= 'else {';
 			for ($i = 0; $i < sizeof($this->tableRowsToShow); $i++) {
-				$onChange .= 'jQuery(\'#' . $this->tableRowsToShow[$i] . '\').closest(\'tr\').addClass(\'hidden\');';
+				$onChange .= 'jQuery(\'#' . $this->tableRowsToShow[$i] . '\').closest(\'' . $selector . '\').addClass(\'hidden\');';
 			}
 			for ($i = 0; $i < sizeof($this->tableRowsToHide); $i++) {
-				$onChange .= 'jQuery(\'#' . $this->tableRowsToHide[$i] . '\').closest(\'tr\').removeClass(\'hidden\');';
+				$onChange .= 'jQuery(\'#' . $this->tableRowsToHide[$i] . '\').closest(\'' . $selector . '\').removeClass(\'hidden\');';
 			}
 			$onChange .= '};';
 			// build script to set initial state
@@ -1951,14 +1952,14 @@ class htmlInputCheckbox extends htmlElement {
 				if ($this->checked) {
 					$classType = 'removeClass';
 				}
-				$script .= 'jQuery(\'#' . $this->tableRowsToShow[$i] . '\').closest(\'tr\').' . $classType . '(\'hidden\');';
+				$script .= 'jQuery(\'#' . $this->tableRowsToShow[$i] . '\').closest(\'' . $selector . '\').' . $classType . '(\'hidden\');';
 			}
 			for ($i = 0; $i < sizeof($this->tableRowsToHide); $i++) {
 				$classType = 'removeClass';
 				if ($this->checked) {
 					$classType = 'addClass';
 				}
-				$script .= 'jQuery(\'#' . $this->tableRowsToHide[$i] . '\').closest(\'tr\').' . $classType . '(\'hidden\');';
+				$script .= 'jQuery(\'#' . $this->tableRowsToHide[$i] . '\').closest(\'' . $selector . '\').' . $classType . '(\'hidden\');';
 			}
 			$script .= '});</script>';
 		}
@@ -2076,6 +2077,13 @@ class htmlInputCheckbox extends htmlElement {
 	 */
 	public function setElementsToEnable($elements) {
 		$this->elementsToEnable = $elements;
+	}
+
+	/**
+	 * Returns the CSS selector to use to find show/hide elements.
+	 */
+	protected function getShowHideSelector() {
+		return '.tr';
 	}
 
 }
@@ -3574,6 +3582,8 @@ class htmlResponsiveRow extends htmlElement {
 
 	/** @var htmlResponsiveCell[] cells */
 	private $cells = array();
+	/** HTML ID */
+	private $id = null;
 
 	/**
 	 * Creates a new responsive row.
@@ -3589,6 +3599,15 @@ class htmlResponsiveRow extends htmlElement {
 		if ($field != null) {
 			$this->addField($field);
 		}
+	}
+
+	/**
+	 * Sets the HTML id.
+	 *
+	 * @param string $id ID
+	 */
+	public function setId($id) {
+		$this->id = $id;
 	}
 
 	/**
@@ -3648,7 +3667,11 @@ class htmlResponsiveRow extends htmlElement {
 	public function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$return = array();
 		$cssClasses = implode(' ', $this->cssClasses);
-		echo '<div class="row ' . $cssClasses . '">';
+		$idParam = '';
+		if ($this->id !== null) {
+			$idParam = ' id="' . $this->id . '"';
+		}
+		echo '<div class="row ' . $cssClasses . '"' . $idParam . '>';
 		foreach ($this->cells as $cell) {
 			$return = array_merge($return, $cell->generateHTML($module, $input, $values, $restricted, $tabindex, $scope));
 		}
@@ -4105,6 +4128,14 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 		}
 		$row->add($fieldGroup, 2, $tabletColumnsBox, $tabletColumnsBox, 'responsiveField nowrap');
 		return $row->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see htmlInputCheckbox::getShowHideSelector()
+	 */
+	protected function getShowHideSelector() {
+		return '.row';
 	}
 
 }
