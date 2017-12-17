@@ -2433,18 +2433,13 @@ class inetOrgPerson extends baseModule implements passwordService {
 	 * @return htmlElement meta HTML object
 	 */
 	public function getSelfServiceSettings($profile) {
-		$container = new htmlTable();
-		$container->addElement(new htmlSubTitle(_('Photo')), true);
-		$photoTable = new htmlTable();
-		$photoTable->colspan = 2;
+		$container = new htmlResponsiveRow();
+		$container->add(new htmlSubTitle(_('Photo')), 12);
 		if (extension_loaded('imagick')) {
-			$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum width (px)'), 'inetOrgPerson_jpegPhoto_maxWidth'));
-			$photoTable->addElement(new htmlHelpLink('crop', get_class($this)), true);
-			$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum height (px)'), 'inetOrgPerson_jpegPhoto_maxHeight'));
-			$photoTable->addElement(new htmlHelpLink('crop', get_class($this)), true);
+			$container->add(new htmlResponsiveInputField(_('Maximum width (px)'), 'inetOrgPerson_jpegPhoto_maxWidth', null, array('crop', get_class($this))), 12);
+			$container->add(new htmlResponsiveInputField(_('Maximum height (px)'), 'inetOrgPerson_jpegPhoto_maxHeight', null, array('crop', get_class($this))), 12);
 		}
-		$photoTable->addElement(new htmlTableExtendedInputField(_('Maximum file size (kB)'), 'inetOrgPerson_jpegPhoto_maxSize'), true);
-		$container->addElement($photoTable, true);
+		$container->add(new htmlResponsiveInputField(_('Maximum file size (kB)'), 'inetOrgPerson_jpegPhoto_maxSize'), 12);
 		return $container;
 	}
 
