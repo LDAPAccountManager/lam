@@ -178,16 +178,11 @@ class posixAccount extends baseModule implements passwordService {
 			// possible self service read-only fields
 			$return['selfServiceReadOnlyFields'] = array('cn', 'loginShell');
 			// self service configuration settings
-			$selfServiceContainer = new htmlTable();
-			$selfServiceContainer->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', getSupportedHashTypes(),
-				array('SSHA'), _("Password hash type")));
-			$selfServiceContainer->addElement(new htmlHelpLink('pwdHash', get_class($this)), true);
-			$selfServiceContainer->addElement(new htmlTableExtendedInputTextarea('posixAccount_shells', implode("\r\n", $this->getShells()), 30, 4, _('Login shells')));
-			$loginShellsHelp = new htmlHelpLink('loginShells', get_class($this));
-			$loginShellsHelp->alignment = htmlElement::ALIGN_TOP;
-			$selfServiceContainer->addElement($loginShellsHelp, true);
-			$selfServiceContainer->addElement(new htmlTableExtendedInputCheckbox('posixAccount_useOldPwd', false, _('Password change with old password')));
-			$selfServiceContainer->addElement(new htmlHelpLink('useOldPwd', get_class($this)), true);
+			$selfServiceContainer = new htmlResponsiveRow();
+			$selfServiceContainer->add(new htmlResponsiveSelect('posixAccount_pwdHash', getSupportedHashTypes(),
+				array('SSHA'), _("Password hash type"), array('pwdHash', get_class($this))), 12);
+			$selfServiceContainer->add(new htmlResponsiveInputTextarea('posixAccount_shells', implode("\r\n", $this->getShells()), 30, 4, _('Login shells'), array('loginShells', get_class($this))), 12);
+			$selfServiceContainer->add(new htmlResponsiveInputCheckbox('posixAccount_useOldPwd', false, _('Password change with old password'), array('useOldPwd', get_class($this))), 12);
 			$return['selfServiceSettings'] = $selfServiceContainer;
 		}
 		// profile checks
