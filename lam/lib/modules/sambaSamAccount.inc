@@ -2251,36 +2251,23 @@ class sambaSamAccount extends baseModule implements passwordService {
 	}
 
 	/**
-	 * Returns a list of self service configuration settings.
-	 *
-	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
-	 * <br>
-	 * The name attributes are used as keywords to load
-	 * and save settings. We recommend to use the module name as prefix for them
-	 * (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
-	 *
-	 * @param selfServiceProfile $profile currently edited profile
-	 * @return htmlElement meta HTML object
-	 *
-	 * @see baseModule::get_metaData()
-	 * @see htmlElement
+	 * {@inheritDoc}
+	 * @see baseModule::getSelfServiceSettings()
 	 */
 	public function getSelfServiceSettings($profile) {
-		$selfServiceContainer = new htmlTable();
+		$selfServiceContainer = new htmlResponsiveRow();
 		// domain suffix
-		$selfServiceDomainSuffix = new htmlTableExtendedInputField(_('Domain suffix'), 'sambaSamAccount_domainSuffix');
-		$selfServiceContainer->addElement($selfServiceDomainSuffix);
-		$selfServiceContainer->addElement(new htmlHelpLink('domainSuffix', get_class($this)), true);
+		$selfServiceDomainSuffix = new htmlResponsiveInputField(_('Domain suffix'), 'sambaSamAccount_domainSuffix', null, array('domainSuffix', get_class($this)));
+		$selfServiceContainer->add($selfServiceDomainSuffix, 12);
 		// password history
 		$historyOptions = array(
 				_('yes - ordered ascending') => 'yes_deleteLast',
 				_('yes - ordered descending') => 'yes_deleteFirst',
 				_('no') => 'no'
 		);
-		$historySelect = new htmlTableExtendedSelect('sambaSamAccount_history', $historyOptions, array('yes_deleteLast'), _("Password history"));
+		$historySelect = new htmlResponsiveSelect('sambaSamAccount_history', $historyOptions, array('yes_deleteLast'), _("Password history"), array('history', get_class($this)));
 		$historySelect->setHasDescriptiveElements(true);
-		$selfServiceContainer->addElement($historySelect);
-		$selfServiceContainer->addElement(new htmlHelpLink('history', get_class($this)), true);
+		$selfServiceContainer->add($historySelect, 12);
 		return $selfServiceContainer;
 	}
 
