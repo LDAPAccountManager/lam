@@ -638,7 +638,7 @@ abstract class baseModule {
 	* We recommend to use the module name as prefix for them (e.g. posixAccount_homeDirectory) to avoid naming conflicts.
 	*
 	* @param array $scopes account types (user, group, host)
-	* @param array $allScopes list of all active account modules and their scopes (module => array(scopes))
+	* @param array $allScopes list of all active account modules and their account type id (module => array(type id))
 	* @return mixed htmlElement or array of htmlElement
 	*
 	* @see baseModule::get_metaData()

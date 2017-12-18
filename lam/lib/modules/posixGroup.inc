@@ -1,5 +1,6 @@
 <?php
 use \LAM\TYPES\TypeManager;
+use function LAM\TYPES\getScopeFromTypeId;
 /*
 $Id$
 
@@ -586,8 +587,18 @@ class posixGroup extends baseModule implements passwordService {
 		$configContainer->add($magicNumber, 12);
 		$configContainer->add(new htmlResponsiveInputField(_('Suffix for GID/group name check'), 'posixGroup_gidCheckSuffix', '', 'gidCheckSuffix'), 12);
 		$configContainer->add(new htmlResponsiveInputCheckbox('posixGroup_hidememberUid', false, _('Disable membership management'), 'hidememberUid'), 12);
-		if ((!empty($allScopes['groupOfNames']) && in_array('group', $allScopes['groupOfNames']))
-			|| (!empty($allScopes['groupOfUniqueNames']) && in_array('group', $allScopes['groupOfUniqueNames']))) {
+		$gonModules = array('groupOfNames', 'groupOfUniqueNames');
+		$gonFound = false;
+		foreach ($gonModules as $gonModule) {
+			if (!empty($allScopes[$gonModule])) {
+				foreach ($allScopes[$gonModule] as $gonTypeId) {
+					if (getScopeFromTypeId($gonTypeId) === 'group') {
+						$gonFound = true;
+					}
+				}
+			}
+		}
+		if ($gonFound) {
 			$configContainer->add(new htmlResponsiveInputCheckbox('posixGroup_autoSyncGon', false, _('Force sync with group of names'), 'autoSyncGon'), 12);
 		}
 		// display password hash option only if posixAccount module is not used
