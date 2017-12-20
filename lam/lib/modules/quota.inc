@@ -103,6 +103,8 @@ class quota extends baseModule {
 			'quotas' => _('Quota')
 		);
 		// help entries
+		$numbersHelp = _('Symbols K, M, G, and T can be appended to numeric value to express kibibytes, mebibytes, gibibytes, and tebibytes for blocks.')
+		. _(' Symbols k, m, g, and t can be appended to numeric value to express multiples of 10^3, 10^6, 10^9, and 10^12 inodes.');
 		$return['help'] = array(
 			"Mountpoint" => array(
 				"Headline" => _("Mountpoint"),
@@ -114,13 +116,13 @@ class quota extends baseModule {
 			),
 			"SoftBlockLimit" => array(
 				"Headline" => _("Soft block limit"),
-				"Text" => _("Soft block limit."), "SeeAlso" => array(
+				"Text" => _("Soft block limit.") . '<br>' . $numbersHelp, "SeeAlso" => array(
 					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4',
 					'text' => 'Quota How-To')
 			),
 			"HardBlockLimit" => array(
 				"Headline" => _("Hard block limit"),
-				"Text" => _("Hard block limit"), "SeeAlso" => array(
+				"Text" => _("Hard block limit") . '<br>' . $numbersHelp, "SeeAlso" => array(
 					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5',
 					'text' => 'Quota How-To')
 			),
@@ -136,13 +138,13 @@ class quota extends baseModule {
 			),
 			"SoftInodeLimit" => array(
 				"Headline" => _("Soft inode limit"),
-				"Text" => _("Soft inode (files) limit."), "SeeAlso" => array(
+				"Text" => _("Soft inode (files) limit.") . '<br>' . $numbersHelp, "SeeAlso" => array(
 					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4',
 					'text' => 'Quota How-To')
 			),
 			"HardInodeLimit" => array(
 				"Headline" => _("Hard inode limit"),
-				"Text" => _("Hard inode (files) limit"), "SeeAlso" => array(
+				"Text" => _("Hard inode (files) limit") . '<br>' . $numbersHelp, "SeeAlso" => array(
 					'link' => 'http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5',
 					'text' => 'Quota How-To')
 			),
@@ -304,13 +306,13 @@ class quota extends baseModule {
 			return $quotaInput;
 		}
 		if (substr($quotaInput, -1, 1) === 'K') {
-			return 1024 * substr($quotaInput, 0, -1);
+			return substr($quotaInput, 0, -1);
 		}
 		if (substr($quotaInput, -1, 1) === 'M') {
-			return 1024 * 1024 * substr($quotaInput, 0, -1);
+			return 1024 * substr($quotaInput, 0, -1);
 		}
 		if (substr($quotaInput, -1, 1) === 'G') {
-			return 1024 * 1024 * 1024 * substr($quotaInput, 0, -1);
+			return 1024 * 1024 * substr($quotaInput, 0, -1);
 		}
 		if (substr($quotaInput, -1, 1) === 'T') {
 			return 1024 * 1024 * 1024 * 1024 * substr($quotaInput, 0, -1);
