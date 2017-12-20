@@ -497,21 +497,11 @@ class imapAccess extends baseModule {
 	}
 
 	/**
-	* Checks input values of module settings.
-	*
-	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
-	* <br>
-	* If the input data is invalid the return value is an array that contains subarrays to build StatusMessages ('message type', 'message head', 'message text').
-	* <br>If no errors occured the function returns an empty array.
-	*
-	* @param array $scopes list of account types which are used
-	* @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
-	* @return array list of error messages
-	*
-	* @see baseModule::get_metaData()
-	*/
-	public function check_configOptions($scopes, &$options) {
-		$errors = parent::check_configOptions($scopes, $options);
+	 * {@inheritDoc}
+	 * @see baseModule::check_configOptions()
+	 */
+	public function check_configOptions($typeIds, &$options) {
+		$errors = parent::check_configOptions($typeIds, $options);
 		if ($options['ImapAccess_ImapAdminPasswordSelect'][0] == 'config') {
 			if (empty($options['ImapAccess_ImapAdminPassword'][0])) {
 				$errors[] = $this->messages['config'][2];

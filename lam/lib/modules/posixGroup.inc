@@ -1016,20 +1016,10 @@ class posixGroup extends baseModule implements passwordService {
 	}
 
 	/**
-	* Checks input values of module settings.
-	*
-	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
-	* <br>
-	* If the input data is invalid the return value is an array that contains subarrays to build StatusMessages ('message type', 'message head', 'message text').
-	* <br>If no errors occured the function returns an empty array.
-	*
-	* @param array $scopes list of account types which are used
-	* @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
-	* @return array list of error messages
-	*
-	* @see baseModule::get_metaData()
-	*/
-	public function check_configOptions($scopes, &$options) {
+	 * {@inheritDoc}
+	 * @see baseModule::check_configOptions()
+	 */
+	public function check_configOptions($typeIds, &$options) {
 		if ($options['posixGroup_gidGenerator'][0] == 'range') {
 			$this->meta['config_checks']['group']['posixGroup_minGID'] = array (
 				'type' => 'ext_preg',
@@ -1065,7 +1055,7 @@ class posixGroup extends baseModule implements passwordService {
 				'required_message' => $this->messages['windowsIDPoolDN'][0],
 				'error_message' => $this->messages['windowsIDPoolDN'][0]);
 		}
-		return parent::check_configOptions($scopes, $options);
+		return parent::check_configOptions($typeIds, $options);
 	}
 
 	/**

@@ -2,6 +2,7 @@
 use \LAM\PDF\PDFLabelValue;
 use \LAM\PDF\PDFTable;
 use LAM\TYPES\ConfiguredType;
+use function LAM\TYPES\getScopeFromTypeId;
 /*
 $Id$
 
@@ -681,15 +682,20 @@ abstract class baseModule {
 	* If the input data is invalid the return value is an array that contains subarrays to build StatusMessages ('message type', 'message head', 'message text').
 	* <br>If no errors occured the function returns an empty array.
 	*
-	* @param array $scopes list of account types which are used
+	* @param array $typeIds list of account type ids which are used
 	* @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
 	* @return array list of error messages
 	*
 	* @see baseModule::get_metaData()
 	*/
-	public function check_configOptions($scopes, &$options) {
+	public function check_configOptions($typeIds, &$options) {
 		$messages = array();
-		$scopes[] = 'all'; // add checks that are independent of scope
+		// add checks that are independent of scope
+		$scopes = array('all');
+		foreach ($typeIds as $typeId) {
+			$scopes[] = getScopeFromTypeId($typeId);
+		}
+		$scopes = array_unique($scopes);
 		for ($s = 0; $s < sizeof($scopes); $s++) {
 			if (isset($this->meta['config_checks'][$scopes[$s]]) && is_array($this->meta['config_checks'][$scopes[$s]])) {
 				$identifiers = array_keys($this->meta['config_checks'][$scopes[$s]]);

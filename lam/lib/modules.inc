@@ -360,7 +360,7 @@ function getConfigOptions($scopes) {
 /**
 * Checks if the configuration options are valid
 *
-* @param array $scopes hash array (module name => array(account types))
+* @param array $scopes hash array (module name => array(account type ids))
 * @param array $options hash array containing all options (name => array(...))
 * @return array list of error messages
 */

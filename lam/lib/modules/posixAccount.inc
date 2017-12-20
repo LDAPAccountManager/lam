@@ -1,5 +1,6 @@
 <?php
 use \LAM\TYPES\TypeManager;
+use function LAM\TYPES\getScopeFromTypeId;
 /*
 	$Id$
 
@@ -2026,15 +2027,15 @@ class posixAccount extends baseModule implements passwordService {
 	}
 
 	/**
-	* Checks input values of module settings.
-	*
-	* @param array $scopes list of account types which are used
-	* @param array $options hash array containing the settings (array('option' => array('value')))
-	* @return array list of error messages
-	*/
-	function check_configOptions($scopes, &$options) {
+	 * {@inheritDoc}
+	 * @see baseModule::check_configOptions()
+	 */
+	function check_configOptions($typeIds, &$options) {
 		$return = array();
-		// user settings
+		$scopes = array();
+		foreach ($typeIds as $typeId) {
+			$scopes[] = getScopeFromTypeId($typeId);
+		}		// user settings
 		if (in_array('user', $scopes)) {
 			if ($options['posixAccount_uidGeneratorUsers'][0] == 'range') {
 				// min/maxUID are required, check if they are numeric
