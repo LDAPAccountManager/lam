@@ -1581,7 +1581,7 @@ class accountContainer {
 		$searchAttrs = array('*', '+');
 		foreach ($modules as $module) {
 			$modTmp = new $module($this->type->getScope());
-			$searchAttrs = array_merge($searchAttrs, $modTmp->getManagedHiddenAttributes());
+			$searchAttrs = array_merge($searchAttrs, $modTmp->getManagedHiddenAttributes($this->type->getId()));
 		}
 		$result = @ldap_read($_SESSION['ldap']->server(), escapeDN($dn), escapeDN($search), $searchAttrs, 0, 0, 0, LDAP_DEREF_NEVER);
 		if (!$result) {
