@@ -169,7 +169,8 @@ abstract class baseModule {
 			}
 		}
 		// load attributes
-		$attributeNames = $this->getManagedAttributes($typeId);
+		$attributeNames = array_merge($this->getManagedAttributes($typeId), $this->getManagedHiddenAttributes($typeId));
+		$attributeNames = array_unique($attributeNames);
 		for ($i = 0; $i < sizeof($attributeNames); $i++) {
 			if (isset($attributes[$attributeNames[$i]])) {
 				$this->attributes[$attributeNames[$i]] = $attributes[$attributeNames[$i]];
@@ -1593,11 +1594,12 @@ abstract class baseModule {
 	/**
 	 * Returns a list of operational LDAP attributes which are managed by this module and need to be explicitly set for LDAP search.
 	 *
+	 * @param string $typeId account type id
 	 * @return array list of hidden attributes
 	 *
 	 * @see baseModule::get_metaData()
 	 */
-	public function getManagedHiddenAttributes() {
+	public function getManagedHiddenAttributes($typeId) {
 		if (isset($this->meta['hiddenAttributes']) && is_array($this->meta['hiddenAttributes'])) return $this->meta['hiddenAttributes'];
 		else return array();
 	}
