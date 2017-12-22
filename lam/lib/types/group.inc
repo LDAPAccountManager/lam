@@ -113,6 +113,7 @@ class group extends baseType {
 			"memberuid" => _("Group members"),
 			"roleOccupant" => _("Role member DNs"),
 			"uniqueMember" => _("Group member DNs"),
+			"memberUrl" => _("Entries"),
 		);
 		if ($this->getType() != null) {
 			$modules = $this->getType()->getModules();

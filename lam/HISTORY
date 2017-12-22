@@ -1,3 +1,8 @@
+March 2018 6.3
+  - LAM Pro:
+   -> Support dynamic lists
+
+
 13.12.2017 6.2
   - License changed from GPL v2 to GPL v3
   - PHP 5.6 and Internet Explorer 11 or later required

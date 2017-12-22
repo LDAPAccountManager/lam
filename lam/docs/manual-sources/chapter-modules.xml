@@ -2520,6 +2520,82 @@
     </section>
 
     <section>
+      <title>Dynamic lists (LAM Pro)</title>
+
+      <para><ulink
+      url="http://www.openldap.org/doc/admin24/overlays.html#Dynamic%20Lists">Dynamic
+      lists</ulink> allow you to create LDAP entries that populate the value
+      of an attribute via LDAP query. This is e.g. used to create groups that
+      contain all users in a certain DN.</para>
+
+      <para>Please note that this functionality requires configuration on your
+      LDAP server. E.g. on OpenLDAP you need to activate the "dynlist" overlay
+      and need to specify attribute mappings.</para>
+
+      <para><emphasis role="bold">Configuration</emphasis></para>
+
+      <para>Add a new group account type and set a unique label for it.</para>
+
+      <para><inlinemediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_dynamicList1.png"/>
+          </imageobject>
+        </inlinemediaobject></para>
+
+      <para>Do not forget to set proper "List attributes" to be shown on the
+      overview page of all dynamic lists.</para>
+
+      <para><inlinemediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_dynamicList2.png"/>
+          </imageobject>
+        </inlinemediaobject></para>
+
+      <para>On tab "Modules" please add the dynamic lists module.</para>
+
+      <para><inlinemediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_dynamicList4.png"/>
+          </imageobject>
+        </inlinemediaobject></para>
+
+      <para>On tab "Module settings" you can now configure your dynamic lists.
+      Here you setup the used object class, RDN attribute, query attribute and
+      list attribute (the one that is populated via query).</para>
+
+      <para>In case you have different types of dynamic lists you can simply
+      redo the steps above to create more group types.</para>
+
+      <para><inlinemediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_dynamicList3.png"/>
+          </imageobject>
+        </inlinemediaobject></para>
+
+      <para/>
+
+      <para><emphasis role="bold">Usage</emphasis></para>
+
+      <para>When you login to LAM you will see your new dynamic lists
+      tab.</para>
+
+      <para><inlinemediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_dynamicList5.png"/>
+          </imageobject>
+        </inlinemediaobject></para>
+
+      <para>For each list you can manage the name and query string. LAM also
+      displays which entries are auto-populated to the list.</para>
+
+      <para><inlinemediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_dynamicList6.png"/>
+          </imageobject>
+        </inlinemediaobject></para>
+    </section>
+
+    <section>
       <title>PyKota</title>
 
       <para>There are two LAM group modules depending if your group entries
