@@ -101,7 +101,7 @@ function get_ldap_filter($typeId) {
 	$orFilter = '';
 	for ($i = 0; $i < sizeof($mods); $i++) {
 		$module = moduleCache::getModule($mods[$i], $type->getScope());
-		$modinfo = $module->get_ldap_filter();
+		$modinfo = $module->get_ldap_filter($typeId);
 		if (isset($modinfo['or'])) {
 			$filters['or'][] = $modinfo['or'];
 		}
