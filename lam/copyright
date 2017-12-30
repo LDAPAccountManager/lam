@@ -49,8 +49,9 @@ time.
 * lib/modules/zarafaServer.inc
 * lib/modules/zarafaUser.inc
 * lib/types/alias.inc
-* lib/types/bind.inc
 * lib/types/automountType.inc
+* lib/types/bind.inc
+* lib/types/customType.inc
 * lib/types/gon.inc
 * lib/types/nisObjectType.inc
 * lib/types/nsview.inc
