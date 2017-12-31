@@ -15,6 +15,7 @@ time.
 * lib/modules/aliasEntry.inc
 * lib/modules/automount.inc
 * lib/modules/bindDLZ.inc
+* lib/modules/customBaseType.inc
 * lib/modules/customFields.inc
 * lib/modules/customScripts.inc
 * lib/modules/device.inc

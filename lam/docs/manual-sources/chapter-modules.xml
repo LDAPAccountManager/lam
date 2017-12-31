@@ -4809,7 +4809,72 @@ OK (10 msec)</programlisting>
     </screenshot>
   </section>
 
-  <section>
+  <section id="mod_customTypes">
+    <title>Custom types (LAM Pro)</title>
+
+    <para>This account type allows you to manage any type of LDAP entries.
+    This is e.g. needed if you define your own structural object classes or
+    LAM does not yet provide a module for a structural object class.</para>
+
+    <para>Always use this together with <link
+    linkend="mod_customFields">Custom fields</link> to specify the LDAP
+    attributes.</para>
+
+    <para><emphasis role="bold">Configuration</emphasis></para>
+
+    <para>Add a custom account type in your server profile (you can also add
+    multiple if needed).</para>
+
+    <para><inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/mod_customBaseType1.png"/>
+        </imageobject>
+      </inlinemediaobject></para>
+
+    <para>Then specify the root DN where the entries should be stored. Also
+    provide the attributes to show in list view and a unique label for your
+    entries.</para>
+
+    <para><inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/mod_customBaseType2.png"/>
+        </imageobject>
+      </inlinemediaobject></para>
+
+    <para>On tab modules add the custom type module. You will also need the
+    <link linkend="mod_customFields">Custom fields</link> module to manage the
+    attributes.</para>
+
+    <para><inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/mod_customBaseType3.png"/>
+        </imageobject>
+      </inlinemediaobject></para>
+
+    <para>Finally, switch to tab Module settings. Here you need to specify the
+    structural object class. Also configure the <link
+    linkend="mod_customFields">Custom fields</link> module to manage all your
+    attributes.</para>
+
+    <para><inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/mod_customBaseType4.png"/>
+        </imageobject>
+      </inlinemediaobject></para>
+
+    <para><emphasis role="bold">Manage your entries</emphasis></para>
+
+    <para>You can now login to LAM and will see one tab for each configured
+    custom type.</para>
+
+    <para><inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/mod_customBaseType5.png"/>
+        </imageobject>
+      </inlinemediaobject></para>
+  </section>
+
+  <section id="mod_customFields">
     <title>Custom fields (LAM Pro)</title>
 
     <para>This module allows you to manage LDAP attributes that are not
@@ -4857,7 +4922,8 @@ OK (10 msec)</programlisting>
 
     <itemizedlist>
       <listitem>
-        <para>structural object classes</para>
+        <para>structural object classes (supported by <link
+        linkend="mod_customTypes">Custom types</link>)</para>
       </listitem>
 
       <listitem>
