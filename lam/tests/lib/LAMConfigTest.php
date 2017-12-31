@@ -3,7 +3,7 @@
  $Id$
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2016  Roland Gruber
+ Copyright (C) 2016 - 2017  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -152,6 +152,19 @@ class LAMConfigTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($val, $this->lAMConfig->getPagedResults());
 		$this->doSave();
 		$this->assertEquals($val, $this->lAMConfig->getPagedResults());
+	}
+
+	/**
+	 * Tests LAMConfig->getReferentialIntegrityOverlay() and LAMConfig->setReferentialIntegrityOverlay()
+	 */
+	public function testReferentialIntegrityOverlay() {
+		$val = 'true';
+		$this->lAMConfig->setReferentialIntegrityOverlay($val);
+		$this->assertEquals($val, $this->lAMConfig->getReferentialIntegrityOverlay());
+		$this->assertTrue($this->lAMConfig->isReferentialIntegrityOverlayActive());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getReferentialIntegrityOverlay());
+		$this->assertTrue($this->lAMConfig->isReferentialIntegrityOverlayActive());
 	}
 
 	/**
