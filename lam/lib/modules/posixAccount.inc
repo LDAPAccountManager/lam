@@ -904,6 +904,11 @@ class posixAccount extends baseModule implements passwordService {
 		for ($i = 0; $i < sizeof($groups); $i++) {
 			$return[$groups[$i]['dn']]['remove']['memberUid'][] = $this->attributes['uid'][0];
 		}
+		// stop here if referential integrity overlay is active
+		$config = $this->getAccountContainer()->get_type()->getTypeManager()->getConfig();
+		if ($config->isReferentialIntegrityOverlayActive()) {
+			return $return;
+		}
 		// remove from group of names
 		$dn = $this->getAccountContainer()->dn_orig;
 		$gons = searchLDAPByFilter('(|(member=' . $dn . ')(uniqueMember=' . $dn . '))', array('member', 'uniqueMember'), array('group', 'gon'));
