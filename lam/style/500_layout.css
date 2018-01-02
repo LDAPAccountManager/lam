@@ -154,6 +154,10 @@ textarea {
 	margin-top: 0px;
 }
 
+.padding0 {
+	padding: 0em !important;
+}
+
 .padding05 {
 	padding: 0.5em;
 }

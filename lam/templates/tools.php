@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2017  Roland Gruber
+  Copyright (C) 2003 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ enforceUserIsLoggedIn();
 
 setlanguage();
 
-include 'main_header.php';
+include '../lib/adminHeader.inc';
 
 // get tool list
 $availableTools = getTools();
@@ -60,8 +60,8 @@ foreach ($toSort as $key => $value) {
 echo "<div class=\"user-bright smallPaddingContent\">\n";
 
 // print tools table
-$container = new htmlTable();
-$container->addElement(new htmlTitle(_('Tools')), true);
+$container = new htmlResponsiveRow();
+$container->add(new htmlTitle(_('Tools')), 12);
 $toolSettings = $_SESSION['config']->getToolSettings();
 
 for ($i = 0; $i < sizeof($tools); $i++) {
@@ -83,10 +83,9 @@ for ($i = 0; $i < sizeof($tools); $i++) {
 		continue;
 	}
 	// add tool
-	$container->addElement(new htmlLink($tools[$i]->getName(), $tools[$i]->getLink(), '../graphics/' . $tools[$i]->getImageLink()));
-	$container->addElement(new htmlSpacer('10px', null));
-	$container->addElement(new htmlOutputText($tools[$i]->getDescription()), true);
-	$container->addElement(new htmlSpacer(null, '20px'), true);
+	$container->add(new htmlLink($tools[$i]->getName(), $tools[$i]->getLink(), '../graphics/' . $tools[$i]->getImageLink()), 12, 4);
+	$container->add(new htmlOutputText($tools[$i]->getDescription()), 12, 8);
+	$container->addVerticalSpacer('2rem');
 }
 
 $tabindex = 1;
@@ -94,6 +93,6 @@ parseHtml(null, $container, array(), true, $tabindex, 'user');
 
 echo "</div>";
 
-include 'main_footer.php';
+include '../lib/adminFooter.php';
 
 ?>
