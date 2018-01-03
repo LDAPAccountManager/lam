@@ -1,4 +1,9 @@
 <?php
+namespace LAM\TOOLS\TESTS;
+use \htmlResponsiveRow;
+use \htmlTitle;
+use \htmlOutputText;
+use \htmlLink;
 /*
 $Id$
 

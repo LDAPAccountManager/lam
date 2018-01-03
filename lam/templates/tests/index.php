@@ -1,4 +1,9 @@
 <?php
+namespace LAM\TOOLS\TESTS;
+use \htmlResponsiveRow;
+use \htmlOutputText;
+use \htmlLink;
+use \htmlTitle;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -56,8 +61,6 @@ $container->addVerticalSpacer('2rem');
 
 $container->add(new htmlLink(_("Schema test"), 'schemaTest.php', '../../graphics/schemaTest.png'), 12, 4);
 $container->add(new htmlOutputText(_("Check if the LDAP schema fits the requirements of the selected account modules.")), 12, 8);
-
-$container->addVerticalSpacer('2rem');
 
 $tabindex = 1;
 parseHtml(null, $container, array(), true, $tabindex, 'user');

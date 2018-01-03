@@ -2,7 +2,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003  Leonhard Walchshaeusl
-  Copyright (C) 2005 - 2017  Roland Gruber
+  Copyright (C) 2005 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -358,6 +358,7 @@ table.collapse {
 
 .smallPaddingContent {
 	padding: 0.5em;
+	padding-bottom: 1rem;
 }
 
 /** titles */
