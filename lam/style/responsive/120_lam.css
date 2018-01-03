@@ -49,6 +49,10 @@
 	width: auto;
 }
 
+img.max16 {
+	max-width: 16px;
+}
+
 div.dialog-page {
 	float: left;
 }
