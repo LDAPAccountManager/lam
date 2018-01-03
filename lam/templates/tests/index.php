@@ -1,9 +1,8 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2017  Roland Gruber
+  Copyright (C) 2006 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -44,26 +43,26 @@ checkIfToolIsActive('toolTests');
 
 setlanguage();
 
-include '../main_header.php';
+include '../../lib/adminHeader.inc';
 echo "<div class=\"user-bright smallPaddingContent\">\n";
 
-$container = new htmlTable();
-$container->addElement(new htmlSubTitle(_("LAM tests")), true);
+$container = new htmlResponsiveRow();
+$container->add(new htmlTitle(_("LAM tests")), 12);
 
-$container->addElement(new htmlLink(_("Lamdaemon test"), 'lamdaemonTest.php', '../../graphics/lamdaemonSmall.png'));
-$container->addElement(new htmlSpacer('20px', null));
-$container->addElement(new htmlOutputText(_("Check if quotas and homedirectories can be managed.")), true);
+$container->add(new htmlLink(_("Lamdaemon test"), 'lamdaemonTest.php', '../../graphics/lamdaemonSmall.png'), 12, 4);
+$container->add(new htmlOutputText(_("Check if quotas and homedirectories can be managed.")), 12, 8);
 
-$container->addElement(new htmlSpacer(null, '20px'), true);
+$container->addVerticalSpacer('2rem');
 
-$container->addElement(new htmlLink(_("Schema test"), 'schemaTest.php', '../../graphics/schemaTest.png'));
-$container->addElement(new htmlSpacer('20px', null));
-$container->addElement(new htmlOutputText(_("Check if the LDAP schema fits the requirements of the selected account modules.")), true);
+$container->add(new htmlLink(_("Schema test"), 'schemaTest.php', '../../graphics/schemaTest.png'), 12, 4);
+$container->add(new htmlOutputText(_("Check if the LDAP schema fits the requirements of the selected account modules.")), 12, 8);
+
+$container->addVerticalSpacer('2rem');
 
 $tabindex = 1;
 parseHtml(null, $container, array(), true, $tabindex, 'user');
 
 echo "</div>\n";
-include '../main_footer.php';
+include '../../lib/adminFooter.inc';
 
 ?>

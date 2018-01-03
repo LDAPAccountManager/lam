@@ -93,6 +93,6 @@ parseHtml(null, $container, array(), true, $tabindex, 'user');
 
 echo "</div>";
 
-include '../lib/adminFooter.php';
+include '../lib/adminFooter.inc';
 
 ?>
