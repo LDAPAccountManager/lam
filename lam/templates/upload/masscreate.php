@@ -22,7 +22,7 @@ use \moduleCache;
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2017  Roland Gruber
+  Copyright (C) 2004 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -119,18 +119,18 @@ if (isset($_POST['type'])) {
 	// get selected modules
 	$selectedModules = array();
 	$checkedBoxes = array_keys($_POST, 'on');
-	for ($i = 0; $i < sizeof($checkedBoxes); $i++) {
-		if (strpos($checkedBoxes[$i], $typeId . '___') === 0) {
-			$selectedModules[] = substr($checkedBoxes[$i], strlen($typeId) + strlen('___'));
+	foreach ($checkedBoxes as $checkedBox) {
+		if (strpos($checkedBox, $typeId . '___') === 0) {
+			$selectedModules[] = substr($checkedBox, strlen($typeId) + strlen('___'));
 		}
 	}
 	$deps = getModulesDependencies($type->getScope());
 	$depErrors = check_module_depends($selectedModules, $deps);
 	if (is_array($depErrors) && (sizeof($depErrors) > 0)) {
-		for ($i = 0; $i < sizeof($depErrors); $i++) {
+		foreach ($depErrors as $depError) {
 			StatusMessage('ERROR', _("Unsolved dependency:") . ' ' .
-							getModuleAlias($depErrors[$i][0], $type->getScope()) . " (" .
-							getModuleAlias($depErrors[$i][1], $type->getScope()) . ")");
+							getModuleAlias($depError[0], $type->getScope()) . " (" .
+							getModuleAlias($depError[1], $type->getScope()) . ")");
 		}
 	}
 	else {
@@ -191,25 +191,25 @@ foreach ($types as $type) {
 	}
 	$innerTable = new htmlTable();
 	$modules = $_SESSION['config']->get_AccountModules($type->getId());
-	for ($m = 0; $m < sizeof($modules); $m++) {
+	foreach ($modules as $m => $moduleName) {
 		if (($m != 0) && ($m%3 == 0)) {
 			echo $innerTable->addNewLine();
 		}
-		$module = moduleCache::getModule($modules[$m], $type->getScope());
+		$module = moduleCache::getModule($moduleName, $type->getScope());
 		$iconImage = $module->getIcon();
 		if (!is_null($iconImage) && !(strpos($iconImage, 'http') === 0) && !(strpos($iconImage, '/') === 0)) {
 			$iconImage = '../../graphics/' . $iconImage;
 		}
 		$innerTable->addElement(new htmlImage($iconImage));
 		$enabled = true;
-		if (is_base_module($modules[$m], $type->getScope())) {
+		if (is_base_module($moduleName, $type->getScope())) {
 			$enabled = false;
 		}
 		$checked = true;
-		if (isset($_POST['submit']) && !isset($_POST[$type->getId() . '___' . $modules[$m]])) {
+		if (isset($_POST['submit']) && !isset($_POST[$type->getId() . '___' . $moduleName])) {
 			$checked = false;
 		}
-		$checkbox = new htmlTableExtendedInputCheckbox($type->getId() . '___' . $modules[$m], $checked, getModuleAlias($modules[$m], $type->getScope()), null, false);
+		$checkbox = new htmlTableExtendedInputCheckbox($type->getId() . '___' . $moduleName, $checked, getModuleAlias($moduleName, $type->getScope()), null, false);
 		$checkbox->setIsEnabled($enabled);
 		if ($enabled) {
 			$innerTable->addElement($checkbox);
@@ -218,7 +218,7 @@ foreach ($types as $type) {
 			$boxGroup = new htmlGroup();
 			$boxGroup->addElement($checkbox);
 			// add hidden field to fake disabled checkbox value
-			$boxGroup->addElement(new htmlHiddenInput($type->getId() . '___' . $modules[$m], 'on'));
+			$boxGroup->addElement(new htmlHiddenInput($type->getId() . '___' . $moduleName, 'on'));
 			$innerTable->addElement($boxGroup);
 		}
 		$innerTable->addElement(new htmlSpacer('10px', null));
@@ -380,18 +380,18 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 	$dnRDNRow->setCSSClasses(array($scope . '-bright'));
 	$columnContainer->addElement($dnRDNRow);
 	// module options
-	for ($m = 0; $m < sizeof($modules); $m++) {
+	foreach ($modules as $moduleName) {
 		// skip modules without upload columns
-		if (sizeof($columns[$modules[$m]]) < 1) {
+		if (sizeof($columns[$moduleName]) < 1) {
 			continue;
 		}
 		$columnContainer->addElement(new htmlSpacer(null, '10px'), true);
-		$module = moduleCache::getModule($modules[$m], $scope);
+		$module = moduleCache::getModule($moduleName, $scope);
 		$icon = $module->getIcon();
 		if (!empty($icon) && !(strpos($icon, 'http') === 0) && !(strpos($icon, '/') === 0)) {
 			$icon = '../../graphics/' . $icon;
 		}
-		$moduleTitle = new htmlSubTitle(getModuleAlias($modules[$m], $scope), $icon);
+		$moduleTitle = new htmlSubTitle(getModuleAlias($moduleName, $scope), $icon);
 		$moduleTitle->colspan = 20;
 		$columnContainer->addElement($moduleTitle, true);
 		$columnContainer->addElement(new htmlOutputText(''));
@@ -417,37 +417,37 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 		$possibleOut->alignment = htmlElement::ALIGN_LEFT;
 		$columnContainer->addElement($possibleOut, false, true);
 		$odd = true;
-		for ($i = 0; $i < sizeof($columns[$modules[$m]]); $i++) {
+		foreach ($columns[$moduleName] as $column) {
 			$required = false;
-			if (isset($columns[$modules[$m]][$i]['required']) && ($columns[$modules[$m]][$i]['required'] === true)) {
+			if (isset($column['required']) && ($column['required'] === true)) {
 				$required = true;
 			}
 			$rowCells = array();
 			$rowCells[] = $columnSpacer;
-			$rowCells[] = new htmlHelpLink($columns[$modules[$m]][$i]['help'], $modules[$m], $scope);
+			$rowCells[] = new htmlHelpLink($column['help'], $moduleName, $scope);
 			$rowCells[] = $columnSpacer;
-			$descriptionText = new htmlOutputText($columns[$modules[$m]][$i]['description']);
+			$descriptionText = new htmlOutputText($column['description']);
 			$descriptionText->setMarkAsRequired($required);
 			$descriptionText->setNoWrap(true);
 			$rowCells[] = $descriptionText;
 			$rowCells[] = $columnSpacer;
-			$rowCells[] = new htmlOutputText($columns[$modules[$m]][$i]['name']);
+			$rowCells[] = new htmlOutputText($column['name']);
 			$rowCells[] = $columnSpacer;
 			$example = '';
-			if (isset($columns[$modules[$m]][$i]['example'])) {
-				$example = $columns[$modules[$m]][$i]['example'];
+			if (isset($column['example'])) {
+				$example = $column['example'];
 			}
 			$rowCells[] = new htmlOutputText($example);
 			$rowCells[] = $columnSpacer;
-			if (isset($columns[$modules[$m]][$i]['default'])) {
-				$rowCells[] = new htmlOutputText($columns[$modules[$m]][$i]['default']);
+			if (isset($column['default'])) {
+				$rowCells[] = new htmlOutputText($column['default']);
 			}
 			else {
 				$rowCells[] = new htmlOutputText('');
 			}
 			$rowCells[] = $columnSpacer;
-			if (isset($columns[$modules[$m]][$i]['values'])) {
-				$rowCells[] = new htmlOutputText($columns[$modules[$m]][$i]['values']);
+			if (isset($column['values'])) {
+				$rowCells[] = new htmlOutputText($column['values']);
 			}
 			else {
 				$rowCells[] = new htmlOutputText('');
@@ -479,10 +479,12 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 		$sampleCSV_head[] = "\"dn_suffix\"";
 		$sampleCSV_head[] = "\"dn_rdn\"";
 		// module attributes
-		for ($m = 0; $m < sizeof($modules); $m++) {
-			if (sizeof($columns[$modules[$m]]) < 1) continue;
-			for ($i = 0; $i < sizeof($columns[$modules[$m]]); $i++) {
-				$sampleCSV_head[] = "\"" . $columns[$modules[$m]][$i]['name'] . "\"";
+		foreach ($modules as $moduleName) {
+			if (sizeof($columns[$moduleName]) < 1) {
+				continue;
+			}
+			for ($i = 0; $i < sizeof($columns[$moduleName]); $i++) {
+				$sampleCSV_head[] = "\"" . $columns[$moduleName][$i]['name'] . "\"";
 			}
 		}
 		$RDNs = getRDNAttributes($type->getId(), $selectedModules);
@@ -490,11 +492,13 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 		$sampleCSV_row[] = "\"" . $type->getSuffix() . "\"";
 		$sampleCSV_row[] = "\"" . $RDNs[0] . "\"";
 		// module attributes
-		for ($m = 0; $m < sizeof($modules); $m++) {
-			if (sizeof($columns[$modules[$m]]) < 1) continue;
-			for ($i = 0; $i < sizeof($columns[$modules[$m]]); $i++) {
-				if (isset($columns[$modules[$m]][$i]['example'])) {
-					$sampleCSV_row[] = '"' . $columns[$modules[$m]][$i]['example'] . '"';
+		foreach ($modules as $moduleName) {
+			if (sizeof($columns[$moduleName]) < 1) {
+				continue;
+			}
+			foreach ($columns[$moduleName] as $column) {
+				if (isset($column['example'])) {
+					$sampleCSV_row[] = '"' . $column['example'] . '"';
 				}
 				else {
 					$sampleCSV_row[] = '""';
