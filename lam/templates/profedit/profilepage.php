@@ -12,7 +12,7 @@ use \htmlHiddenInput;
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2017  Roland Gruber
+  Copyright (C) 2003 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -145,8 +145,8 @@ include '../main_header.php';
 // print error messages if any
 if (sizeof($errors) > 0) {
 	echo "<br>\n";
-	for ($i = 0; $i < sizeof($errors); $i++) {
-		call_user_func_array('StatusMessage', $errors[$i]);
+	foreach ($errors as $error) {
+		call_user_func_array('StatusMessage', $error);
 	}
 }
 
@@ -159,13 +159,12 @@ $options = getProfileOptions($type->getId());
 // load old profile or POST values if needed
 $old_options = array();
 if (isset($_POST['save'])) {
-	$postKeys = array_keys($_POST);
-	for ($i = 0; $i < sizeof($postKeys); $i++) {
-		if (!is_array($_POST[$postKeys[$i]])) {
-			$old_options[$postKeys[$i]] = array($_POST[$postKeys[$i]]);
+	foreach ($_POST as $key => $value) {
+		if (!is_array($value)) {
+			$old_options[$key] = array($value);
 		}
 		else {
-			$old_options[$postKeys[$i]] = $_POST[$postKeys[$i]];
+			$old_options[$key] = $value;
 		}
 	}
 }
@@ -223,19 +222,20 @@ $container->addElement(new htmlSpacer(null, '15px'), true);
 $_SESSION['profile_types'] = parseHtml(null, $container, $old_options, false, $tabindex, $type->getScope());
 
 // display module options
-$modules = array_keys($options);
-for ($m = 0; $m < sizeof($modules); $m++) {
+foreach ($options as $moduleName => $moduleOptions) {
 	// ignore modules without options
-	if (sizeof($options[$modules[$m]]) < 1) continue;
-	$module = new $modules[$m]($type->getScope());
+	if (sizeof($moduleOptions) < 1) {
+		continue;
+	}
+	$module = new $moduleName($type->getScope());
 	$icon = $module->getIcon();
 	if (!empty($icon) && !(strpos($icon, 'http') === 0) && !(strpos($icon, '/') === 0)) {
 		$icon = '../../graphics/' . $icon;
 	}
 	$container = new htmlTable();
-	$container->addElement(new htmlFieldset($options[$modules[$m]], getModuleAlias($modules[$m], $type->getScope()), $icon), true);
+	$container->addElement(new htmlFieldset($moduleOptions, getModuleAlias($moduleName, $type->getScope()), $icon), true);
 	$container->addElement(new htmlSpacer(null, '15px'), true);
-	$_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml($modules[$m], $container, $old_options, false, $tabindex, $type->getScope()));
+	$_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml($moduleName, $container, $old_options, false, $tabindex, $type->getScope()));
 }
 
 // profile name and submit/abort buttons
