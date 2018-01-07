@@ -11,7 +11,7 @@ use \htmlHiddenInput;
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2017  Roland Gruber
+  Copyright (C) 2004 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -75,21 +75,21 @@ if (isset($_GET['showldif'])) {
 	header('Content-Type: text/plain');
 	header('Content-disposition: attachment; filename=lam.ldif');
 	$accounts = unserialize(lamDecrypt($_SESSION['mass_accounts']));
-	for ($i = 0; $i < sizeof($accounts); $i++) {
-		echo "DN: " . $accounts[$i]['dn'] . "\n";
-		unset($accounts[$i]['dn']);
-		$keys = array_keys($accounts[$i]);
+	foreach ($accounts as $account) {
+		echo "DN: " . $account['dn'] . "\n";
+		unset($account['dn']);
+		$keys = array_keys($account);
 		for ($k = 0; $k < sizeof($keys); $k++) {
 			if (strpos($keys[$k], 'INFO.') === 0) {
 				continue;
 			}
-			if (is_array($accounts[$i][$keys[$k]])) {
-				for ($x = 0; $x < sizeof($accounts[$i][$keys[$k]]); $x++) {
-					echo $keys[$k] . ": " . $accounts[$i][$keys[$k]][$x] . "\n";
+			if (is_array($account[$keys[$k]])) {
+				for ($x = 0; $x < sizeof($account[$keys[$k]]); $x++) {
+					echo $keys[$k] . ": " . $account[$keys[$k]][$x] . "\n";
 				}
 			}
 			else {
-				echo $keys[$k] . ": " . $accounts[$i][$keys[$k]] . "\n";
+				echo $keys[$k] . ": " . $account[$keys[$k]] . "\n";
 			}
 		}
 		echo "\n";

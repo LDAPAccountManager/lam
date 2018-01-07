@@ -87,10 +87,10 @@ if ($result) {
 }
 
 // get additional information if monitoring is enabled
-$monitorResult = searchLDAP('cn=monitor', 'objectClass=*', array('*', '+'));
+$monitorResults = searchLDAP('cn=monitor', 'objectClass=*', array('*', '+'));
 $monitorEntries = array();
-for ($i = 0; $i < sizeof($monitorResult); $i++) {
-	$monitorEntries[$monitorResult[$i]['dn']] = array_change_key_case($monitorResult[$i], CASE_LOWER);
+foreach ($monitorResults as $monitorResult) {
+	$monitorEntries[$monitorResult['dn']] = array_change_key_case($monitorResult, CASE_LOWER);
 }
 $monitorEntries = array_change_key_case($monitorEntries, CASE_LOWER);
 

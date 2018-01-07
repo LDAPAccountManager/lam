@@ -52,9 +52,9 @@ include '../lib/adminHeader.inc';
 $availableTools = getTools();
 // sort tools
 $toSort = array();
-for ($i = 0; $i < sizeof($availableTools); $i++) {
-	$myTool = new $availableTools[$i]();
-	$toSort[$availableTools[$i]] = $myTool->getPosition();
+foreach ($availableTools as $availableTool) {
+	$myTool = new $availableTool();
+	$toSort[$availableTool] = $myTool->getPosition();
 }
 asort($toSort);
 $tools = array();
@@ -69,27 +69,27 @@ $container = new htmlResponsiveRow();
 $container->add(new htmlTitle(_('Tools')), 12);
 $toolSettings = $_SESSION['config']->getToolSettings();
 
-for ($i = 0; $i < sizeof($tools); $i++) {
+foreach ($tools as $tool) {
 	// check access level
-	if ($tools[$i]->getRequiresWriteAccess() && !checkIfWriteAccessIsAllowed()) {
+	if ($tool->getRequiresWriteAccess() && !checkIfWriteAccessIsAllowed()) {
 		continue;
 	}
-	if ($tools[$i]->getRequiresPasswordChangeRights() && !checkIfPasswordChangeIsAllowed()) {
+	if ($tool->getRequiresPasswordChangeRights() && !checkIfPasswordChangeIsAllowed()) {
 		continue;
 	}
 	// check visibility
-	if (!$tools[$i]->isVisible()) {
+	if (!$tool->isVisible()) {
 		continue;
 	}
 	// check if hidden by config
-	$className = get_class($tools[$i]);
+	$className = get_class($tool);
 	$toolName = substr($className, strrpos($className, '\\') + 1);
 	if (isset($toolSettings['tool_hide_' . $toolName]) && ($toolSettings['tool_hide_' . $toolName] == 'true')) {
 		continue;
 	}
 	// add tool
-	$container->add(new htmlLink($tools[$i]->getName(), $tools[$i]->getLink(), '../graphics/' . $tools[$i]->getImageLink()), 12, 4);
-	$container->add(new htmlOutputText($tools[$i]->getDescription()), 12, 8);
+	$container->add(new htmlLink($tool->getName(), $tool->getLink(), '../graphics/' . $tool->getImageLink()), 12, 4);
+	$container->add(new htmlOutputText($tool->getDescription()), 12, 8);
 	$container->addVerticalSpacer('2rem');
 }
 

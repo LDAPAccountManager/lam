@@ -1,12 +1,12 @@
 <?php
 use \LAM\TYPES\TypeManager;
 use function LAM\TYPES\getScopeFromTypeId;
+use LAM\TYPES\ConfiguredType;
 /*
-$Id$
 
 This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 Copyright (C) 2003 - 2006  Tilo Lutz
-              2007 - 2017  Roland Gruber
+              2007 - 2018  Roland Gruber
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -140,7 +140,7 @@ class posixGroup extends baseModule implements passwordService {
 		// fill in autoGIDs
 		if (sizeof($needAutoGID) > 0) {
 			$errorsTemp = array();
-			$gids = $this->getNextGIDs(sizeof($needAutoGID), $errorsTemp);
+			$gids = $this->getNextGIDs(sizeof($needAutoGID), $errorsTemp, $type);
 			if (is_array($gids)) {
 				for ($i = 0; $i < sizeof($needAutoGID); $i++) {
 					$partialAccounts[$i]['gidNumber'] = $gids[$i];
@@ -716,7 +716,7 @@ class posixGroup extends baseModule implements passwordService {
 		if ($this->manageCnAndDescription($modules) && ($this->attributes['cn'][0] == '')) {
 			return false;
 		}
-		if ($this->attributes['gidNumber'][0] == '') {
+		if ((!isset($this->attributes['gidNumber'][0])) || $this->attributes['gidNumber'][0] === '') {
 			return false;
 		}
 		return true;
@@ -795,7 +795,7 @@ class posixGroup extends baseModule implements passwordService {
 			if ($this->attributes['gidNumber'][0]=='') {
 				// No id-number given, find free GID
 				if (!isset($this->orig['gidNumber'][0])) {
-					$newGID = $this->getNextGIDs(1, $errors);
+					$newGID = $this->getNextGIDs(1, $errors, $this->getAccountContainer()->get_type());
 					if (is_array($newGID)) {
 						$this->attributes['gidNumber'][0] = $newGID[0];
 					}
@@ -807,7 +807,7 @@ class posixGroup extends baseModule implements passwordService {
 				// old account -> return id-number which has been used
 			}
 			else {
-				$gids = $this->getGIDs();
+				$gids = $this->getGIDs($this->getAccountContainer()->get_type());
 				// Check manual ID
 				if ($this->getAccountContainer()->isNewAccount || !isset($this->orig['gidNumber'][0]) || ($this->orig['gidNumber'][0] != $this->attributes['gidNumber'][0])) {
 					// check range
@@ -1063,9 +1063,10 @@ class posixGroup extends baseModule implements passwordService {
 	*
 	* @param integer $count Number of needed free GIDs.
 	* @param array $errors list of error messages where errors can be added
+	* @param ConfiguredType $type account type
 	* @return mixed Null if no GIDs are free else an array of free GIDs.
 	*/
-	function getNextGIDs($count, &$errors) {
+	function getNextGIDs($count, &$errors, $type) {
 		// check if UIDs should be taken from Samba pool entry
 		if (isset($this->moduleSettings['posixGroup_gidGenerator']) && ($this->moduleSettings['posixGroup_gidGenerator'][0] == 'sambaPool')) {
 			return $this->getNextSambaPoolGIDs($count, $errors);
@@ -1085,7 +1086,7 @@ class posixGroup extends baseModule implements passwordService {
 		$ret = array();
 		$minID = intval($this->moduleSettings['posixGroup_minGID'][0]);
 		$maxID = intval($this->moduleSettings['posixGroup_maxGID'][0]);
-		$gidList = $this->getGIDs();
+		$gidList = $this->getGIDs($type);
 		$gids = array();
 		foreach ($gidList as $gid) {
 			if (($gid <= $maxID) && ($gid >= $minID)) $gids[] = $gid;  // ignore GIDs > maxID and GIDs < minID
@@ -1225,16 +1226,17 @@ class posixGroup extends baseModule implements passwordService {
 	/**
 	 * Returns a list of existing GID numbers.
 	 *
+	 * @param ConfiguredType $type account type
 	 * @return array list of GID numbers
 	 */
-	private function getGIDs() {
+	private function getGIDs($type) {
 		if ($this->cachedGIDList != null) {
 			return $this->cachedGIDList;
 		}
 		$this->cachedGIDList = array();
 		$attrs = array('gidNumber');
 		$filter = '(&(objectClass=posixGroup)(gidNumber=*))';
-		$suffix = $this->getAccountContainer()->get_type()->getSuffix();
+		$suffix = $type->getSuffix();
 		if (isset($this->moduleSettings['posixGroup_gidCheckSuffix'][0]) && ($this->moduleSettings['posixGroup_gidCheckSuffix'][0] != '')) {
 			$suffix = $this->moduleSettings['posixGroup_gidCheckSuffix'][0];
 		}
