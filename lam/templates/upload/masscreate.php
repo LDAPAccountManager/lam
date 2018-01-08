@@ -483,8 +483,8 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 			if (sizeof($columns[$moduleName]) < 1) {
 				continue;
 			}
-			for ($i = 0; $i < sizeof($columns[$moduleName]); $i++) {
-				$sampleCSV_head[] = "\"" . $columns[$moduleName][$i]['name'] . "\"";
+			foreach ($columns[$moduleName] as $column) {
+				$sampleCSV_head[] = "\"" . $column['name'] . "\"";
 			}
 		}
 		$RDNs = getRDNAttributes($type->getId(), $selectedModules);
