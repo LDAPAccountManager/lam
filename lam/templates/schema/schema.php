@@ -100,7 +100,7 @@ include '../../lib/adminFooter.inc';
  *
  * @param htmlResponsiveRow $row row
  */
-function displaySyntaxList(&$row) {
+function displaySyntaxList(htmlResponsiveRow &$row) {
 	$schema_syntaxes = get_schema_syntaxes(null);
 	if (!$schema_syntaxes) {
 		$row->add(new htmlStatusMessage("ERROR", _("Unable to retrieve schema!")), 12);
@@ -127,7 +127,7 @@ function displaySyntaxList(&$row) {
  *
  * @param htmlResponsiveRow $row row
  */
-function displayRuleList(&$row) {
+function displayRuleList(htmlResponsiveRow &$row) {
     $rules = get_schema_matching_rules(null);
 	if (!$rules) {
 		$row->add(new htmlStatusMessage("ERROR", _("Unable to retrieve schema!")), 12);
@@ -177,7 +177,7 @@ function displayRuleList(&$row) {
  *
  * @param htmlResponsiveRow $row row
  */
-function displayObjectClassList(&$row) {
+function displayObjectClassList(htmlResponsiveRow &$row) {
 	$objectClasses = get_schema_objectclasses(null);
 	if (!$objectClasses) {
 		$row->add(new htmlStatusMessage("ERROR", _("Unable to retrieve schema!")), 12);
@@ -273,7 +273,7 @@ function displayObjectClassList(&$row) {
  *
  * @param htmlResponsiveRow $row row
  */
-function displayAttributeList($row) {
+function displayAttributeList(htmlResponsiveRow $row) {
 	$attributes = get_schema_attributes(null);
 	if (!$attributes) {
 		$row->add(new htmlStatusMessage("ERROR", _("Unable to retrieve schema!")), 12);
