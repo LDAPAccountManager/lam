@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2017  Roland Gruber
+  Copyright (C) 2010 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -61,6 +61,8 @@ abstract class htmlElement {
 	protected $cssClasses = array();
 	/** table cell CSS classes */
 	protected $tableCellCssClasses = array();
+	/** data attributes */
+	private $dataAttributes = array();
 
 	/**
 	 * Prints the HTML code for this element.
@@ -153,6 +155,29 @@ abstract class htmlElement {
 	 */
 	public function getTableCellCSSClasses() {
 		return $this->tableCellCssClasses;
+	}
+
+	/**
+	 * Adds a data attribute.
+	 *
+	 * @param string $key attribute name (without "data-")
+	 * @param string $value attribute value
+	 */
+	public function addDataAttribute($key, $value) {
+		$this->dataAttributes[$key] = $value;
+	}
+
+	/**
+	 * Returns the data attributes as rendered string.
+	 *
+	 * @return string data attributes
+	 */
+	protected function getDataAttributesAsString() {
+		$result = '';
+		foreach ($this->dataAttributes as $key => $value) {
+			$result .= ' data-' . htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"';
+		}
+		return $result;
 	}
 
 }
@@ -1254,7 +1279,9 @@ class htmlSelect extends htmlElement {
 			echo '<div class="hidden">';
 		}
 		// print select box
-		echo '<select' . $class . $style . $name . $size . $multi . $disabled . $onchange . ' tabindex="' . $tabindex . "\">\n";
+		echo '<select' . $this->getDataAttributesAsString() . $class . $style
+				. $name . $size . $multi . $disabled . $onchange
+				. ' tabindex="' . $tabindex . "\">\n";
 		$tabindex++;
 		if ($this->containsOptgroups) {
 			foreach ($this->elements as $label => $elements) {
@@ -3638,9 +3665,10 @@ class htmlResponsiveRow extends htmlElement {
 	 * Adds the content as a typical label with 12/6/6 columns and CSS class "responsiveLabel".
 	 *
 	 * @param htmlElement $content label
+	 * @param string $cssClasses additional CSS classes
 	 */
-	public function addLabel($content) {
-		$this->add($content, 12, 6, 6, 'responsiveLabel nowrap');
+	public function addLabel($content, $cssClasses = '') {
+		$this->add($content, 12, 6, 6, 'responsiveLabel nowrap ' . $cssClasses);
 	}
 
 	/**
@@ -4156,15 +4184,22 @@ class htmlResponsiveTable extends htmlElement {
 	/** widthes of the columns */
 	private $widths = array();
 
+	/** highlighted rows */
+	private $highlighted = array();
+
 	/**
 	 * Creates the table.
 	 *
 	 * @param string[] $titles row titles
 	 * @param htmlElement[][] $data data rows
+	 * @param int[] $highlighted list of row numbers that should be highlighted (starting at 0)
 	 */
-	public function __construct($titles, $data) {
+	public function __construct($titles, $data, $highlighted = null) {
 		$this->titles = $titles;
 		$this->data = $data;
+		if (!empty($highlighted) && is_array($highlighted)) {
+			$this->highlighted = $highlighted;
+		}
 	}
 
 	/**
@@ -4189,8 +4224,13 @@ class htmlResponsiveTable extends htmlElement {
 		echo '</thead>';
 		echo '<tbody>';
 		$titleCount = sizeof($this->titles);
+		$counter = 0;
 		foreach ($this->data as $row) {
-			echo '<tr>';
+			$cssClass = '';
+			if (in_array($counter, $this->highlighted)) {
+				$cssClass = ' class="bold"';
+			}
+			echo '<tr ' . $cssClass . '>';
 			for ($i = 0; $i < $titleCount; $i++) {
 				echo '<td data-label="' . $this->titles[$i] . '">';
 				$ids = parseHtml($module, $row[$i], $values, $restricted, $tabindex, $scope);
@@ -4198,6 +4238,7 @@ class htmlResponsiveTable extends htmlElement {
 				echo '</td>';
 			}
 			echo '</tr>';
+			$counter++;
 		}
 		echo '</tbody>';
 		echo '</table>';
