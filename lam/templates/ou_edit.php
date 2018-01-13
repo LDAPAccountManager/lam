@@ -1,20 +1,20 @@
 <?php
 namespace LAM\TOOLS\OU_EDIT;
-use \htmlTable;
 use \htmlSpacer;
 use \htmlOutputText;
 use \htmlButton;
 use \htmlHiddenInput;
+use \htmlTitle;
 use \htmlSubTitle;
 use \htmlStatusMessage;
-use \htmlSelect;
-use \htmlHelpLink;
-use \htmlInputField;
+use \htmlResponsiveRow;
+use \htmlResponsiveSelect;
+use \htmlResponsiveInputField;
+use \htmlGroup;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2017  Roland Gruber
+  Copyright (C) 2003 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -122,19 +122,22 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 			echo '<div class="user-bright smallPaddingContent">';
 			echo "<form action=\"ou_edit.php\" method=\"post\">\n";
 			$tabindex = 1;
-			$container = new htmlTable();
+			$container = new htmlResponsiveRow();
 			$label = new htmlOutputText(_("Do you really want to delete this OU?"));
 			$label->colspan = 5;
-			$container->addElement($label, true);
-			$container->addElement(new htmlSpacer(null, '10px'), true);
+			$container->add($label, 12);
+			$container->addVerticalSpacer('1rem');
 			$dnLabel = new htmlOutputText(getAbstractDN($_POST['deleteableOU']));
 			$dnLabel->colspan = 5;
-			$container->addElement($dnLabel, true);
-			$container->addElement(new htmlSpacer(null, '10px'), true);
-			$container->addElement(new htmlButton('sure', _("Delete")));
-			$container->addElement(new htmlButton('abort', _("Cancel")));
-			$container->addElement(new htmlHiddenInput('deleteOU', 'submit'));
-			$container->addElement(new htmlHiddenInput('deletename', $_POST['deleteableOU']));
+			$container->add($dnLabel, 12);
+			$container->addVerticalSpacer('1rem');
+			$buttonGroup = new htmlGroup();
+			$buttonGroup->addElement(new htmlButton('sure', _("Delete")));
+			$buttonGroup->addElement(new htmlSpacer('0.5rem', null));
+			$buttonGroup->addElement(new htmlButton('abort', _("Cancel")));
+			$container->add($buttonGroup, 12);
+			$container->add(new htmlHiddenInput('deleteOU', 'submit'), 12);
+			$container->add(new htmlHiddenInput('deletename', $_POST['deleteableOU']), 12);
 			addSecurityTokenToMetaHTML($container);
 			parseHtml(null, $container, array(), false, $tabindex, 'user');
 			echo "</form>";
@@ -158,22 +161,22 @@ display_main($message, $error);
  */
 function display_main($message, $error) {
 	// display main page
-	include 'main_header.php';
+	include '../lib/adminHeader.inc';
 	echo '<div class="user-bright smallPaddingContent">';
 	echo "<form action=\"ou_edit.php\" method=\"post\">\n";
 
 	$tabindex = 1;
-	$container = new htmlTable();
-	$container->addElement(new htmlSubTitle(_("OU editor")), true);
+	$container = new htmlResponsiveRow();
+	$container->add(new htmlTitle(_("OU editor")), 12);
 	if (isset($error)) {
 		$msg = new htmlStatusMessage("ERROR", "", $error);
 		$msg->colspan = 5;
-		$container->addElement($msg, true);
+		$container->add($msg, 12);
 	}
 	elseif (isset($message)) {
 		$msg = new htmlStatusMessage("INFO", "", $message);
 		$msg->colspan = 5;
-		$container->addElement($msg, true);
+		$container->add($msg, 12);
 	}
 
 	$typeManager = new \LAM\TYPES\TypeManager();
@@ -199,35 +202,33 @@ function display_main($message, $error) {
 
 	if (!empty($options)) {
 		// new OU
-		$container->addElement(new htmlOutputText(_("New organisational unit")));
-		$parentOUSelect = new htmlSelect('parentOU', $options, array());
+		$container->add(new htmlSubTitle(_("New organisational unit")), 12);
+		$parentOUSelect = new htmlResponsiveSelect('parentOU', $options, array(), _('Parent DN'), '601');
 		$parentOUSelect->setContainsOptgroups(true);
 		$parentOUSelect->setHasDescriptiveElements(true);
 		$parentOUSelect->setRightToLeftTextDirection(true);
 		$parentOUSelect->setSortElements(false);
-		$container->addElement($parentOUSelect);
-		$container->addElement(new htmlInputField('newOU'));
-		$container->addElement(new htmlButton('createOU', _("Ok")));
-		$container->addElement(new htmlHelpLink('601'), true);
-
-		$container->addElement(new htmlSpacer(null, '10px'), true);
+		$container->add($parentOUSelect, 12);
+		$container->add(new htmlResponsiveInputField(_('Name'), 'newOU'), 12);
+		$container->addLabel(new htmlOutputText('&nbsp;', false));
+		$container->addField(new htmlButton('createOU', _("Ok")));
+		$container->addVerticalSpacer('2rem');
 
 		// delete OU
-		$container->addElement(new htmlOutputText(_("Delete organisational unit")));
-		$deleteableOUSelect = new htmlSelect('deleteableOU', $options, array());
+		$container->add(new htmlSubTitle(_("Delete organisational unit")), 12);
+		$deleteableOUSelect = new htmlResponsiveSelect('deleteableOU', $options, array(), _('Organisational unit'), '602');
 		$deleteableOUSelect->setContainsOptgroups(true);
 		$deleteableOUSelect->setHasDescriptiveElements(true);
 		$deleteableOUSelect->setRightToLeftTextDirection(true);
 		$deleteableOUSelect->setSortElements(false);
-		$container->addElement($deleteableOUSelect);
-		$container->addElement(new htmlOutputText(''));
-		$container->addElement(new htmlButton('deleteOU', _("Ok")));
-		$container->addElement(new htmlHelpLink('602'), true);
+		$container->add($deleteableOUSelect, 12);
+		$container->addLabel(new htmlOutputText('&nbsp;', false));
+		$container->addField(new htmlButton('deleteOU', _("Ok")));
 	}
 
 	addSecurityTokenToMetaHTML($container);
 	parseHtml(null, $container, array(), false, $tabindex, 'user');
 	echo ("</form>\n");
 	echo '</div>';
-	include 'main_footer.php';
+	include '../lib/adminFooter.inc';
 }

@@ -4,10 +4,9 @@ use \LAM\PDF\PDFTable;
 use LAM\TYPES\ConfiguredType;
 use function LAM\TYPES\getScopeFromTypeId;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2017  Roland Gruber
+  Copyright (C) 2003 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -171,6 +170,7 @@ abstract class baseModule {
 		// load attributes
 		$attributeNames = array_merge($this->getManagedAttributes($typeId), $this->getManagedHiddenAttributes($typeId));
 		$attributeNames = array_unique($attributeNames);
+		$attributeNames = array_values($attributeNames);
 		for ($i = 0; $i < sizeof($attributeNames); $i++) {
 			if (isset($attributes[$attributeNames[$i]])) {
 				$this->attributes[$attributeNames[$i]] = $attributes[$attributeNames[$i]];
