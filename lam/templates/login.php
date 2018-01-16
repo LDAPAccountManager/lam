@@ -170,12 +170,12 @@ $_SESSION['header'] .= "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<me
 /**
 * Displays the login window.
 *
-* @param LAMConfig $config_object current active configuration
-* @param LAMCfgMain $cfgMain main configuration
 * @param \LAM\ENV\LAMLicenseValidator $licenseValidator license validator
 * @param string $error_message error message to display
 */
-function display_LoginPage(LAMConfig $config_object, LAMCfgMain $cfgMain, $licenseValidator, $error_message) {
+function display_LoginPage($licenseValidator, $error_message) {
+	$config_object = $_SESSION['config'];
+	$cfgMain = $_SESSION["cfgMain"];
 	logNewMessage(LOG_DEBUG, "Display login page");
 	// generate 256 bit key and initialization vector for user/passwd-encryption
 	if(function_exists('openssl_random_pseudo_bytes') && ($cfgMain->encryptSession == 'true')) {
@@ -489,7 +489,7 @@ if(isset($_POST['checklogin'])) {
 		if($_POST['passwd'] == "") {
 			logNewMessage(LOG_DEBUG, "Empty password for login");
 			$error_message = _("Empty password submitted. Please try again.");
-			display_LoginPage($_SESSION['config'], $_SESSION["cfgMain"], $licenseValidator, $error_message); // Empty password submitted. Return to login page.
+			display_LoginPage($licenseValidator, $error_message); // Empty password submitted. Return to login page.
 			exit();
 		}
 		$username = $_POST['username'];
@@ -547,7 +547,7 @@ if(isset($_POST['checklogin'])) {
 			$error_message = $searchError;
 			logNewMessage(LOG_ERR, 'User ' . $username . ' (' . $clientSource . ') failed to log in. ' . $searchError . '');
 			$searchLDAP->close();
-			display_LoginPage($_SESSION['config'], $_SESSION["cfgMain"], $licenseValidator, $error_message);
+			display_LoginPage($licenseValidator, $error_message);
 			exit();
 		}
 		$searchLDAP->close();
@@ -600,11 +600,11 @@ if(isset($_POST['checklogin'])) {
 			$error_message = _("LDAP error, server says:") .  "\n<br>($result) " . ldap_err2str($result);
 			logNewMessage(LOG_ERR, 'User ' . $username . ' (' . $clientSource . ') failed to log in (LDAP error: ' . ldap_err2str($result) . ').');
 		}
-		display_LoginPage($_SESSION['config'], $_SESSION["cfgMain"], $licenseValidator, $error_message);
+		display_LoginPage($licenseValidator, $error_message);
 		exit();
 	}
 }
 
 //displays the login window
-display_LoginPage($_SESSION["config"], $_SESSION["cfgMain"], $licenseValidator, $error_message);
+display_LoginPage($licenseValidator, $error_message);
 ?>
