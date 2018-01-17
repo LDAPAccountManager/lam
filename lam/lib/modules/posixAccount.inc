@@ -3245,7 +3245,7 @@ class posixAccount extends baseModule implements passwordService {
 				$wc = substr($wildcards[0][$i], 1, strlen($wildcards[0][$i]) - 2);
 				$value = '';
 				if (isset($attributes[$wc][0]) && !empty($attributes[$wc][0])) {
-					$value = $attributes[$wc][0][0];
+					$value = $this->cleanSuggestionPart($attributes[$wc][0][0]);
 				}
 				$format = str_replace('@' . $wc . '@', $value, $format);
 			}
@@ -3257,14 +3257,24 @@ class posixAccount extends baseModule implements passwordService {
 				$wc = substr($wildcards[0][$i], 1, strlen($wildcards[0][$i]) - 2);
 				$value = '';
 				if (isset($attributes[$wc][0])) {
-					$value = $attributes[$wc][0];
+					$value = $this->cleanSuggestionPart($attributes[$wc][0]);
 				}
 				$format = str_replace('%' . $wc . '%', $value, $format);
 			}
 		}
-		$format = str_replace(array_keys($this->umlautReplacements), array_values($this->umlautReplacements), strtolower($format));
-		$format = str_replace(array(' ', '_', '-'), array('', '', ''), $format);
 		return $format;
+	}
+
+	/**
+	 * Cleans a string that is injected in user name suggestion.
+	 *
+	 * @param string $part injected part
+	 * @return string cleaned by removing umlauts, spaces, dashes and underscores
+	 */
+	private function cleanSuggestionPart($part) {
+		$result = str_replace(array_keys($this->umlautReplacements), array_values($this->umlautReplacements), strtolower($part));
+		$result = str_replace(array(' ', '_', '-'), array('', '', ''), $result);
+		return $result;
 	}
 
 	/**
