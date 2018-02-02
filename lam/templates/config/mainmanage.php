@@ -21,10 +21,11 @@ use \htmlResponsiveSelect;
 use \htmlResponsiveInputCheckbox;
 use \htmlResponsiveInputField;
 use \htmlDiv;
+use \htmlHiddenInput;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2017  Roland Gruber
+  Copyright (C) 2003 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -87,7 +88,7 @@ if (isset($_POST['cancel'])) {
 $errors = array();
 $messages = array();
 // check if submit button was pressed
-if (isset($_POST['submit'])) {
+if (isset($_POST['submitFormData'])) {
 	// set master password
 	if (isset($_POST['masterpassword']) && ($_POST['masterpassword'] != "")) {
 		if ($_POST['masterpassword'] && $_POST['masterpassword2'] && ($_POST['masterpassword'] == $_POST['masterpassword2'])) {
@@ -446,6 +447,7 @@ if ($cfg->isWritable()) {
 	$buttonTable->addElement(new htmlSpacer('1rem', null));
 	$buttonTable->addElement(new htmlButton('cancel', _("Cancel")));
 	$row->add($buttonTable, 12);
+	$row->add(new htmlHiddenInput('submitFormData', '1'), 12);
 }
 
 $box = new htmlDiv(null, $row);
