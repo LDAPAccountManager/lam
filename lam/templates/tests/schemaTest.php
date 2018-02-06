@@ -1,9 +1,15 @@
 <?php
+namespace LAM\TOOLS\TESTS;
+use \htmlResponsiveRow;
+use \htmlTitle;
+use \htmlStatusMessage;
+use \htmlSubTitle;
+use \htmlOutputText;
+use \htmlImage;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2007 - 2017  Roland Gruber
+  Copyright (C) 2007 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -48,18 +54,18 @@ checkIfToolIsActive('toolTests');
 
 setlanguage();
 
-include '../main_header.php';
+include '../../lib/adminHeader.inc';
 echo "<div class=\"user-bright smallPaddingContent\">\n";
 
-$container = new htmlTable();
+$container = new htmlResponsiveRow();
 
-$container->addElement(new htmlTitle(_("Schema test")), true);
+$container->add(new htmlTitle(_("Schema test")), 12);
 
 get_schema_objectclasses();
 $classes = get_cached_schema('objectclasses');
 
 if (!is_array($classes)) {
-	$container->addElement(new htmlStatusMessage('ERROR', _('Unable to retrieve schema!'), _('You do not have the required access rights or the LDAP schema is not published by your server.')));
+	$container->add(new htmlStatusMessage('ERROR', _('Unable to retrieve schema!'), _('You do not have the required access rights or the LDAP schema is not published by your server.')), 12);
 }
 else {
 	// loop for active account types
@@ -67,7 +73,7 @@ else {
 	$types = $typeManager->getConfiguredTypes();
 	foreach ($types as $type) {
 		$modules = $_SESSION['config']->get_AccountModules($type->getId());
-		$container->addElement(new htmlSubTitle($type->getAlias()), true);
+		$container->add(new htmlSubTitle($type->getAlias()), 12);
 		for ($m = 0; $m < sizeof($modules); $m++) {
 			$error = checkSchemaForModule($modules[$m], $type->getScope(), $type->getId());
 			$message = _("No problems found.");
@@ -77,13 +83,12 @@ else {
 				$message = $error;
 			}
 			// module name
-			$container->addElement(new htmlOutputText(getModuleAlias($modules[$m], $type->getScope())));
-			$container->addElement(new htmlSpacer('10px', null));
+			$container->add(new htmlOutputText(getModuleAlias($modules[$m], $type->getScope())), 10, 3);
 			// icon
-			$container->addElement(new htmlImage($icon));
-			$container->addElement(new htmlSpacer('10px', null));
+			$container->add(new htmlImage($icon), 2);
 			// text
-			$container->addElement(new htmlOutputText($message), true);
+			$container->add(new htmlOutputText($message), 12, 7);
+			$container->addVerticalSpacer('0.5rem');
 		}
 	}
 }
@@ -92,7 +97,7 @@ $tabindex = 1;
 parseHtml(null, $container, array(), true, $tabindex, 'user');
 
 echo "</div>\n";
-include '../main_footer.php';
+include '../../lib/adminFooter.inc';
 
 /**
  * Checks if the object classes and attributes for this module are available.

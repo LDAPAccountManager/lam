@@ -11,7 +11,7 @@ use \htmlHiddenInput;
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2017  Roland Gruber
+  Copyright (C) 2004 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -75,21 +75,21 @@ if (isset($_GET['showldif'])) {
 	header('Content-Type: text/plain');
 	header('Content-disposition: attachment; filename=lam.ldif');
 	$accounts = unserialize(lamDecrypt($_SESSION['mass_accounts']));
-	for ($i = 0; $i < sizeof($accounts); $i++) {
-		echo "DN: " . $accounts[$i]['dn'] . "\n";
-		unset($accounts[$i]['dn']);
-		$keys = array_keys($accounts[$i]);
-		for ($k = 0; $k < sizeof($keys); $k++) {
-			if (strpos($keys[$k], 'INFO.') === 0) {
+	foreach ($accounts as $account) {
+		echo "DN: " . $account['dn'] . "\n";
+		unset($account['dn']);
+		$keys = array_keys($account);
+		foreach ($keys as $key) {
+			if (strpos($key, 'INFO.') === 0) {
 				continue;
 			}
-			if (is_array($accounts[$i][$keys[$k]])) {
-				for ($x = 0; $x < sizeof($accounts[$i][$keys[$k]]); $x++) {
-					echo $keys[$k] . ": " . $accounts[$i][$keys[$k]][$x] . "\n";
+			if (is_array($account[$key])) {
+				foreach ($account[$key] as $value) {
+					echo $key . ": " . $value . "\n";
 				}
 			}
 			else {
-				echo $keys[$k] . ": " . $accounts[$i][$keys[$k]] . "\n";
+				echo $key . ": " . $account[$key] . "\n";
 			}
 		}
 		echo "\n";
@@ -126,8 +126,8 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	// read input file
 	$handle = fopen ($_FILES['inputfile']['tmp_name'], "r");
 	if (($head = fgetcsv($handle, 2000)) !== false ) { // head row
-		for ($i = 0; $i < sizeof($head); $i++) {
-			$ids[$head[$i]] = $i;
+		foreach ($head as $i => $headItem) {
+			$ids[$headItem] = $i;
 		}
 	}
 	while (($line = fgetcsv($handle, 2000)) !== false ) { // account rows
@@ -139,10 +139,10 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	// check if all required columns are present
 	$checkcolumns = array();
 	$columns = call_user_func_array('array_merge', $columns);
-	for ($i = 0; $i < sizeof($columns); $i++) {
-		if (isset($columns[$i]['required']) && ($columns[$i]['required'] === true)) {
-			if (isset($ids[$columns[$i]['name']])) $checkcolumns[] = $ids[$columns[$i]['name']];
-			else $errors[] = array(_("A required column is missing in your CSV file."), $columns[$i]['name']);
+	foreach ($columns as $column) {
+		if (isset($column['required']) && ($column['required'] === true)) {
+			if (isset($ids[$column['name']])) $checkcolumns[] = $ids[$column['name']];
+			else $errors[] = array(_("A required column is missing in your CSV file."), $column['name']);
 		}
 	}
 
@@ -163,14 +163,14 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 			break;
 		}
 	}
-	for ($i = 0; $i < sizeof($invalidColumns); $i++) {
-		$errors[] = array(_("One or more values of the required column \"$invalidColumns[$i]\" are missing."), "");
+	foreach ($invalidColumns as $invalidColumn) {
+		$errors[] = array(_("One or more values of the required column \"$invalidColumn\" are missing."), "");
 	}
 
 	// check if values in unique columns are correct
-	for ($i = 0; $i < sizeof($columns); $i++) {
-		if (isset($columns[$i]['unique']) && ($columns[$i]['unique'] === true) && isset($ids[$columns[$i]['name']])) {
-			$colNumber = $ids[$columns[$i]['name']];
+	foreach ($columns as $column) {
+		if (isset($column['unique']) && ($column['unique'] === true) && isset($ids[$column['name']])) {
+			$colNumber = $ids[$column['name']];
 			$values_given = array();
 			foreach ($data as $dataRow) {
 				$values_given[] = $dataRow[$colNumber];
@@ -184,15 +184,15 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 					}
 				}
 				$duplicates = array_values(array_unique($duplicates));
-				$errors[] = array(_("This column is defined to include unique entries but duplicates were found:") . ' ' . $columns[$i]['name'], implode(', ', $duplicates));
+				$errors[] = array(_("This column is defined to include unique entries but duplicates were found:") . ' ' . $column['name'], implode(', ', $duplicates));
 			}
 		}
 	}
 
 	// if input data is invalid just display error messages (max 50)
 	if (sizeof($errors) > 0) {
-		for ($i = 0; $i < sizeof($errors); $i++) {
-			$container->addElement(new htmlStatusMessage("ERROR", $errors[$i][0], $errors[$i][1]), true);
+		foreach ($errors as $error) {
+			$container->addElement(new htmlStatusMessage("ERROR", $error[0], $error[1]), true);
 		}
 		$container->addElement(new htmlSpacer(null, '10px'), true);
 		massPrintBackButton($type->getId(), $selectedModules, $container);
@@ -219,8 +219,8 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 			}
 			// print errors if DN could not be built
 			if (sizeof($errors) > 0) {
-				for ($i = 0; $i < sizeof($errors); $i++) {
-					$container->addElement(new htmlStatusMessage("ERROR", $errors[$i][0], $errors[$i][1], $errors[$i][2]), true);
+				foreach ($errors as $error) {
+					$container->addElement(new htmlStatusMessage("ERROR", $error[0], $error[1], $error[2]), true);
 				}
 			}
 			else {
@@ -294,8 +294,8 @@ function massPrintBackButton($typeId, $selectedModules, htmlTable &$container) {
 	}
 	$container->addElement(new htmlHiddenInput('createPDF', $createPDF));
 	$container->addElement(new htmlHiddenInput('pdfStructure', $_POST['pdfStructure']));
-	for ($i = 0; $i < sizeof($selectedModules); $i++) {
-		$container->addElement(new htmlHiddenInput($typeId . '___' . $selectedModules[$i], 'on'));
+	foreach ($selectedModules as $selectedModule) {
+		$container->addElement(new htmlHiddenInput($typeId . '___' . $selectedModule, 'on'));
 	}
 }
 

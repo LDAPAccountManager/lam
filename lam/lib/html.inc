@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2017  Roland Gruber
+  Copyright (C) 2010 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -61,6 +61,8 @@ abstract class htmlElement {
 	protected $cssClasses = array();
 	/** table cell CSS classes */
 	protected $tableCellCssClasses = array();
+	/** data attributes */
+	private $dataAttributes = array();
 
 	/**
 	 * Prints the HTML code for this element.
@@ -153,6 +155,29 @@ abstract class htmlElement {
 	 */
 	public function getTableCellCSSClasses() {
 		return $this->tableCellCssClasses;
+	}
+
+	/**
+	 * Adds a data attribute.
+	 *
+	 * @param string $key attribute name (without "data-")
+	 * @param string $value attribute value
+	 */
+	public function addDataAttribute($key, $value) {
+		$this->dataAttributes[$key] = $value;
+	}
+
+	/**
+	 * Returns the data attributes as rendered string.
+	 *
+	 * @return string data attributes
+	 */
+	protected function getDataAttributesAsString() {
+		$result = '';
+		foreach ($this->dataAttributes as $key => $value) {
+			$result .= ' data-' . htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"';
+		}
+		return $result;
 	}
 
 }
@@ -1254,7 +1279,9 @@ class htmlSelect extends htmlElement {
 			echo '<div class="hidden">';
 		}
 		// print select box
-		echo '<select' . $class . $style . $name . $size . $multi . $disabled . $onchange . ' tabindex="' . $tabindex . "\">\n";
+		echo '<select' . $this->getDataAttributesAsString() . $class . $style
+				. $name . $size . $multi . $disabled . $onchange
+				. ' tabindex="' . $tabindex . "\">\n";
 		$tabindex++;
 		if ($this->containsOptgroups) {
 			foreach ($this->elements as $label => $elements) {
@@ -1926,22 +1953,23 @@ class htmlInputCheckbox extends htmlElement {
 		// build Java script to show/hide depending fields
 		$onChange = '';
 		$script = '';
+		$selector = $this->getShowHideSelector();
 		if ((sizeof($this->tableRowsToShow) > 0) || (sizeof($this->tableRowsToHide) > 0)) {
 			// build onChange listener
 			$onChange .= 'if (jQuery(\'#' . $this->name . ':checked\').val() !== undefined) {';
 			for ($i = 0; $i < sizeof($this->tableRowsToShow); $i++) {
-				$onChange .= 'jQuery(\'#' . $this->tableRowsToShow[$i] . '\').closest(\'tr\').removeClass(\'hidden\');';
+				$onChange .= 'jQuery(\'#' . $this->tableRowsToShow[$i] . '\').closest(\'' . $selector . '\').removeClass(\'hidden\');';
 			}
 			for ($i = 0; $i < sizeof($this->tableRowsToHide); $i++) {
-				$onChange .= 'jQuery(\'#' . $this->tableRowsToHide[$i] . '\').closest(\'tr\').addClass(\'hidden\');';
+				$onChange .= 'jQuery(\'#' . $this->tableRowsToHide[$i] . '\').closest(\'' . $selector . '\').addClass(\'hidden\');';
 			}
 			$onChange .= '}';
 			$onChange .= 'else {';
 			for ($i = 0; $i < sizeof($this->tableRowsToShow); $i++) {
-				$onChange .= 'jQuery(\'#' . $this->tableRowsToShow[$i] . '\').closest(\'tr\').addClass(\'hidden\');';
+				$onChange .= 'jQuery(\'#' . $this->tableRowsToShow[$i] . '\').closest(\'' . $selector . '\').addClass(\'hidden\');';
 			}
 			for ($i = 0; $i < sizeof($this->tableRowsToHide); $i++) {
-				$onChange .= 'jQuery(\'#' . $this->tableRowsToHide[$i] . '\').closest(\'tr\').removeClass(\'hidden\');';
+				$onChange .= 'jQuery(\'#' . $this->tableRowsToHide[$i] . '\').closest(\'' . $selector . '\').removeClass(\'hidden\');';
 			}
 			$onChange .= '};';
 			// build script to set initial state
@@ -1951,14 +1979,14 @@ class htmlInputCheckbox extends htmlElement {
 				if ($this->checked) {
 					$classType = 'removeClass';
 				}
-				$script .= 'jQuery(\'#' . $this->tableRowsToShow[$i] . '\').closest(\'tr\').' . $classType . '(\'hidden\');';
+				$script .= 'jQuery(\'#' . $this->tableRowsToShow[$i] . '\').closest(\'' . $selector . '\').' . $classType . '(\'hidden\');';
 			}
 			for ($i = 0; $i < sizeof($this->tableRowsToHide); $i++) {
 				$classType = 'removeClass';
 				if ($this->checked) {
 					$classType = 'addClass';
 				}
-				$script .= 'jQuery(\'#' . $this->tableRowsToHide[$i] . '\').closest(\'tr\').' . $classType . '(\'hidden\');';
+				$script .= 'jQuery(\'#' . $this->tableRowsToHide[$i] . '\').closest(\'' . $selector . '\').' . $classType . '(\'hidden\');';
 			}
 			$script .= '});</script>';
 		}
@@ -2076,6 +2104,13 @@ class htmlInputCheckbox extends htmlElement {
 	 */
 	public function setElementsToEnable($elements) {
 		$this->elementsToEnable = $elements;
+	}
+
+	/**
+	 * Returns the CSS selector to use to find show/hide elements.
+	 */
+	protected function getShowHideSelector() {
+		return '.tr';
 	}
 
 }
@@ -2273,7 +2308,7 @@ class htmlInputTextarea extends htmlElement {
 	/** enabled or disabled */
 	private $isEnabled = true;
 	/** specifies if LAM should display this field whith a WYSIWYG editor */
-	private $richEdit = false;
+	protected $richEdit = false;
 
 	/**
 	 * Constructor.
@@ -3574,6 +3609,8 @@ class htmlResponsiveRow extends htmlElement {
 
 	/** @var htmlResponsiveCell[] cells */
 	private $cells = array();
+	/** HTML ID */
+	private $id = null;
 
 	/**
 	 * Creates a new responsive row.
@@ -3589,6 +3626,15 @@ class htmlResponsiveRow extends htmlElement {
 		if ($field != null) {
 			$this->addField($field);
 		}
+	}
+
+	/**
+	 * Sets the HTML id.
+	 *
+	 * @param string $id ID
+	 */
+	public function setId($id) {
+		$this->id = $id;
 	}
 
 	/**
@@ -3619,16 +3665,17 @@ class htmlResponsiveRow extends htmlElement {
 	 * Adds the content as a typical label with 12/6/6 columns and CSS class "responsiveLabel".
 	 *
 	 * @param htmlElement $content label
+	 * @param string $cssClasses additional CSS classes
 	 */
-	public function addLabel($content) {
-		$this->add($content, 12, 6, 6, 'responsiveLabel nowrap');
+	public function addLabel($content, $cssClasses = '') {
+		$this->add($content, 12, 6, 6, 'responsiveLabel nowrap ' . $cssClasses);
 	}
 
 	/**
 	 * Adds the content as a typical field with 12/6/6 columns and CSS class "responsiveField".
 	 *
 	 * @param htmlElement $content field
-	 * @param $cssClasses CSS class names separated by space
+	 * @param string $cssClasses CSS class names separated by space
 	 */
 	public function addField($content, $cssClasses = '') {
 		$this->add($content, 12, 6, 6, 'responsiveField ' . $cssClasses);
@@ -3648,7 +3695,11 @@ class htmlResponsiveRow extends htmlElement {
 	public function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$return = array();
 		$cssClasses = implode(' ', $this->cssClasses);
-		echo '<div class="row ' . $cssClasses . '">';
+		$idParam = '';
+		if ($this->id !== null) {
+			$idParam = ' id="' . $this->id . '"';
+		}
+		echo '<div class="row ' . $cssClasses . '"' . $idParam . '>';
 		foreach ($this->cells as $cell) {
 			$return = array_merge($return, $cell->generateHTML($module, $input, $values, $restricted, $tabindex, $scope));
 		}
@@ -3808,6 +3859,8 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 	private $label;
 	/** help ID */
 	private $helpID;
+	/** help module */
+	private $helpModule = null;
 	/** required field */
 	private $required = false;
 	/** render HTML of parent class */
@@ -3821,12 +3874,18 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 	 * @param int $colCount number of characters per line
 	 * @param int $rowCount number of rows
 	 * @param String $label descriptive label
-	 * @param String $helpID help ID
+	 * @param String|array $helpID help ID
 	 */
 	function __construct($name, $value, $colCount, $rowCount, $label, $helpID = null) {
 		parent::__construct($name, $value, $colCount, $rowCount);
 		$this->label = htmlspecialchars($label);
-		$this->helpID = $helpID;
+		if (is_string($helpID)) {
+			$this->helpID = $helpID;
+		}
+		elseif (is_array($helpID)) {
+			$this->helpID = $helpID[0];
+			$this->helpModule = $helpID[1];
+		}
 		$this->alignment = htmlElement::ALIGN_TOP;
 	}
 
@@ -3850,16 +3909,20 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 			$labelGroup->addElement(new htmlImage($graphicsPath . '/required.png', 16, 16, _('required'), _('required')));
 		}
 		if (!empty($this->helpID)) {
-			$helpLinkLabel = new htmlHelpLink($this->helpID);
-			$helpLinkLabel->setCSSClasses(array('hide-on-tablet', 'margin-left5'));
+			$helpLinkLabel = new htmlHelpLink($this->helpID, $this->helpModule);
+			$helpCssClasses = array('margin-left5');
+			if (!$this->richEdit) {
+				$helpCssClasses[] = 'hide-on-tablet';
+			}
+			$helpLinkLabel->setCSSClasses($helpCssClasses);
 			$labelGroup->addElement($helpLinkLabel);
 		}
 		$row->add($labelGroup, 12, 6, 6, 'responsiveLabel');
 		// input field
 		$fieldGroup = new htmlGroup();
 		$fieldGroup->addElement($this);
-		if (!empty($this->helpID)) {
-			$helpLink = new htmlHelpLink($this->helpID);
+		if (!empty($this->helpID) && !$this->richEdit) {
+			$helpLink = new htmlHelpLink($this->helpID, $this->helpModule);
 			$helpLink->setCSSClasses(array('align-top', 'hide-on-mobile'));
 			$fieldGroup->addElement($helpLink);
 		}
@@ -4095,6 +4158,14 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 		return $row->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see htmlInputCheckbox::getShowHideSelector()
+	 */
+	protected function getShowHideSelector() {
+		return '.row';
+	}
+
 }
 
 /**
@@ -4113,15 +4184,22 @@ class htmlResponsiveTable extends htmlElement {
 	/** widthes of the columns */
 	private $widths = array();
 
+	/** highlighted rows */
+	private $highlighted = array();
+
 	/**
 	 * Creates the table.
 	 *
 	 * @param string[] $titles row titles
 	 * @param htmlElement[][] $data data rows
+	 * @param int[] $highlighted list of row numbers that should be highlighted (starting at 0)
 	 */
-	public function __construct($titles, $data) {
+	public function __construct($titles, $data, $highlighted = null) {
 		$this->titles = $titles;
 		$this->data = $data;
+		if (!empty($highlighted) && is_array($highlighted)) {
+			$this->highlighted = $highlighted;
+		}
 	}
 
 	/**
@@ -4146,8 +4224,13 @@ class htmlResponsiveTable extends htmlElement {
 		echo '</thead>';
 		echo '<tbody>';
 		$titleCount = sizeof($this->titles);
+		$counter = 0;
 		foreach ($this->data as $row) {
-			echo '<tr>';
+			$cssClass = '';
+			if (in_array($counter, $this->highlighted)) {
+				$cssClass = ' class="bold"';
+			}
+			echo '<tr ' . $cssClass . '>';
 			for ($i = 0; $i < $titleCount; $i++) {
 				echo '<td data-label="' . $this->titles[$i] . '">';
 				$ids = parseHtml($module, $row[$i], $values, $restricted, $tabindex, $scope);
@@ -4155,6 +4238,7 @@ class htmlResponsiveTable extends htmlElement {
 				echo '</td>';
 			}
 			echo '</tr>';
+			$counter++;
 		}
 		echo '</tbody>';
 		echo '</table>';

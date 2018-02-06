@@ -435,6 +435,9 @@ class LAMConfig {
 	/** use paged results */
 	private $pagedResults = 'false';
 
+	/** overlay for referential integrity is activated */
+	private $referentialIntegrityOverlay = 'false';
+
 	/** Array of string: users with admin rights */
 	private $Admins;
 
@@ -589,7 +592,7 @@ class LAMConfig {
 		'pwdResetAllowScreenPassword', 'pwdResetForcePasswordChange', 'pwdResetDefaultPasswordOutput',
 		'scriptUserName', 'scriptSSHKey', 'scriptSSHKeyPassword', 'twoFactorAuthentication', 'twoFactorAuthenticationURL',
 		'twoFactorAuthenticationInsecure', 'twoFactorAuthenticationLabel', 'twoFactorAuthenticationOptional',
-		'twoFactorAuthenticationCaption'
+		'twoFactorAuthenticationCaption', 'referentialIntegrityOverlay'
 	);
 
 
@@ -799,6 +802,7 @@ class LAMConfig {
 			if (!in_array("useTLS", $saved)) array_push($file_array, "\n\n# enable TLS encryption\n" . "useTLS: " . $this->useTLS . "\n");
 			if (!in_array("followReferrals", $saved)) array_push($file_array, "\n\n# follow referrals\n" . "followReferrals: " . $this->followReferrals . "\n");
 			if (!in_array("pagedResults", $saved)) array_push($file_array, "\n\n# paged results\n" . "pagedResults: " . $this->pagedResults . "\n");
+			if (!in_array("referentialIntegrityOverlay", $saved)) array_push($file_array, "\n" . "referentialIntegrityOverlay: " . $this->referentialIntegrityOverlay . "\n");
 			if (!in_array("Passwd", $saved)) array_push($file_array, "\n\n# password to change these preferences via webfrontend\n" . "Passwd: " . $this->Passwd . "\n");
 			if (!in_array("Admins", $saved)) array_push($file_array, "\n\n# list of users who are allowed to use LDAP Account Manager\n" .
 								"# names have to be seperated by semicolons\n" .
@@ -1032,6 +1036,33 @@ class LAMConfig {
 	 */
 	public function setPagedResults($pagedResults) {
 		$this->pagedResults = $pagedResults;
+	}
+
+	/**
+	 * Returns if referential integrity overlay is in place.
+	 *
+	 * @return String true or false
+	 */
+	public function getReferentialIntegrityOverlay() {
+		return $this->referentialIntegrityOverlay;
+	}
+
+	/**
+	 * Sets if referential integrity overlay is in place.
+	 *
+	 * @param String $referentialIntegrityOverlay true or false
+	 */
+	public function setReferentialIntegrityOverlay($referentialIntegrityOverlay) {
+		$this->referentialIntegrityOverlay = $referentialIntegrityOverlay;
+	}
+
+	/**
+	 * Returns if referential integrity overlay is in place.
+	 *
+	 * @return bool overlay in place
+	 */
+	public function isReferentialIntegrityOverlayActive() {
+		return $this->referentialIntegrityOverlay === 'true';
 	}
 
 	/**

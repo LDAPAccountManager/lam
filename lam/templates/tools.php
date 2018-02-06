@@ -1,9 +1,14 @@
 <?php
+namespace LAM\TOOLS\TESTS;
+use \htmlResponsiveRow;
+use \htmlTitle;
+use \htmlOutputText;
+use \htmlLink;
 /*
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2017  Roland Gruber
+  Copyright (C) 2003 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -41,15 +46,15 @@ enforceUserIsLoggedIn();
 
 setlanguage();
 
-include 'main_header.php';
+include '../lib/adminHeader.inc';
 
 // get tool list
 $availableTools = getTools();
 // sort tools
 $toSort = array();
-for ($i = 0; $i < sizeof($availableTools); $i++) {
-	$myTool = new $availableTools[$i]();
-	$toSort[$availableTools[$i]] = $myTool->getPosition();
+foreach ($availableTools as $availableTool) {
+	$myTool = new $availableTool();
+	$toSort[$availableTool] = $myTool->getPosition();
 }
 asort($toSort);
 $tools = array();
@@ -60,33 +65,32 @@ foreach ($toSort as $key => $value) {
 echo "<div class=\"user-bright smallPaddingContent\">\n";
 
 // print tools table
-$container = new htmlTable();
-$container->addElement(new htmlTitle(_('Tools')), true);
+$container = new htmlResponsiveRow();
+$container->add(new htmlTitle(_('Tools')), 12);
 $toolSettings = $_SESSION['config']->getToolSettings();
 
-for ($i = 0; $i < sizeof($tools); $i++) {
+foreach ($tools as $tool) {
 	// check access level
-	if ($tools[$i]->getRequiresWriteAccess() && !checkIfWriteAccessIsAllowed()) {
+	if ($tool->getRequiresWriteAccess() && !checkIfWriteAccessIsAllowed()) {
 		continue;
 	}
-	if ($tools[$i]->getRequiresPasswordChangeRights() && !checkIfPasswordChangeIsAllowed()) {
+	if ($tool->getRequiresPasswordChangeRights() && !checkIfPasswordChangeIsAllowed()) {
 		continue;
 	}
 	// check visibility
-	if (!$tools[$i]->isVisible()) {
+	if (!$tool->isVisible()) {
 		continue;
 	}
 	// check if hidden by config
-	$className = get_class($tools[$i]);
+	$className = get_class($tool);
 	$toolName = substr($className, strrpos($className, '\\') + 1);
 	if (isset($toolSettings['tool_hide_' . $toolName]) && ($toolSettings['tool_hide_' . $toolName] == 'true')) {
 		continue;
 	}
 	// add tool
-	$container->addElement(new htmlLink($tools[$i]->getName(), $tools[$i]->getLink(), '../graphics/' . $tools[$i]->getImageLink()));
-	$container->addElement(new htmlSpacer('10px', null));
-	$container->addElement(new htmlOutputText($tools[$i]->getDescription()), true);
-	$container->addElement(new htmlSpacer(null, '20px'), true);
+	$container->add(new htmlLink($tool->getName(), $tool->getLink(), '../graphics/' . $tool->getImageLink()), 12, 4);
+	$container->add(new htmlOutputText($tool->getDescription()), 12, 8);
+	$container->addVerticalSpacer('2rem');
 }
 
 $tabindex = 1;
@@ -94,6 +98,6 @@ parseHtml(null, $container, array(), true, $tabindex, 'user');
 
 echo "</div>";
 
-include 'main_footer.php';
+include '../lib/adminFooter.inc';
 
 ?>

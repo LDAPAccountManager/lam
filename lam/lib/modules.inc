@@ -101,7 +101,7 @@ function get_ldap_filter($typeId) {
 	$orFilter = '';
 	for ($i = 0; $i < sizeof($mods); $i++) {
 		$module = moduleCache::getModule($mods[$i], $type->getScope());
-		$modinfo = $module->get_ldap_filter();
+		$modinfo = $module->get_ldap_filter($typeId);
 		if (isset($modinfo['or'])) {
 			$filters['or'][] = $modinfo['or'];
 		}
@@ -360,7 +360,7 @@ function getConfigOptions($scopes) {
 /**
 * Checks if the configuration options are valid
 *
-* @param array $scopes hash array (module name => array(account types))
+* @param array $scopes hash array (module name => array(account type ids))
 * @param array $options hash array containing all options (name => array(...))
 * @return array list of error messages
 */
@@ -1581,7 +1581,7 @@ class accountContainer {
 		$searchAttrs = array('*', '+');
 		foreach ($modules as $module) {
 			$modTmp = new $module($this->type->getScope());
-			$searchAttrs = array_merge($searchAttrs, $modTmp->getManagedHiddenAttributes());
+			$searchAttrs = array_merge($searchAttrs, $modTmp->getManagedHiddenAttributes($this->type->getId()));
 		}
 		$result = @ldap_read($_SESSION['ldap']->server(), escapeDN($dn), escapeDN($search), $searchAttrs, 0, 0, 0, LDAP_DEREF_NEVER);
 		if (!$result) {

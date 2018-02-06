@@ -4,7 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2009 - 2017  Roland Gruber
+                2009 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1094,7 +1094,14 @@ function extractRDNAttribute($dn) {
  */
 function extractRDNValue($dn) {
 	if (empty($dn)) return null;
-	$parts = explode("=", substr($dn, 0, strpos($dn, ',')));
+	if (strpos($dn, '=') === false) {
+		return $dn;
+	}
+	$dnWork = $dn;
+	if (strpos($dnWork, ',') !== false) {
+		$dnWork = substr($dn, 0, strpos($dnWork, ','));
+	}
+	$parts = explode("=", $dnWork);
 	return $parts[1];
 }
 
@@ -1567,7 +1574,7 @@ function printJsIncludes($prefix) {
 	$jsFiles = array();
 	$jsEntry = $jsDir->read();
 	while ($jsEntry !== false) {
-		if (substr($jsEntry, strlen($jsEntry) - 3, 3) == '.js') {
+		if ((substr($jsEntry, strlen($jsEntry) - 3, 3) == '.js') || (substr($jsEntry, strlen($jsEntry) - 4, 4) == '.php')) {
 			$jsFiles[] = $jsEntry;
 		}
 		$jsEntry = $jsDir->read();
@@ -1578,6 +1585,11 @@ function printJsIncludes($prefix) {
 	}
 }
 
+/**
+ * LAM exception with title and message.
+ *
+ * @author Roland Gruber
+ */
 class LAMException extends Exception {
 
 	private $title;

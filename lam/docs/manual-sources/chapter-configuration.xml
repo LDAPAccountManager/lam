@@ -368,24 +368,49 @@
 
         <para><emphasis role="bold">Advanced options</emphasis></para>
 
-        <para>Sometimes, you may not want to display the server address on the
-        login page. In this case you can setup a display name here (e.g.
-        "Production").</para>
+        <para>Display name: Sometimes, you may not want to display the server
+        address on the login page. In this case you can setup a display name
+        here (e.g. "Production").</para>
 
-        <para>By default LAM will not follow LDAP referrals. This is ok for
-        most installations. If you use LDAP referrals please activate the
-        referral option in advanced settings.</para>
+        <para>Follow referrals: By default LAM will not follow LDAP referrals.
+        This is ok for most installations. If you use LDAP referrals please
+        activate the referral option in advanced settings.</para>
 
-        <para>Paged results should be activated only if you encounter any
-        problems regarding size limits on Active Directory. LAM will then
-        query LDAP to return results in chunks of 999 entries.</para>
+        <para>Paged results: Paged results should be activated only if you
+        encounter any problems regarding size limits on Active Directory. LAM
+        will then query LDAP to return results in chunks of 999
+        entries.</para>
+
+        <para>Referential integrity overlay: Activate this checkbox if you
+        have any server side extension for referential integrity in place. In
+        this case the server will cleanup references to LDAP entries that are
+        deleted.</para>
+
+        <para>The following actions are skipped in this case:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Users: group of (unique) names: memberships are not deleted
+            when user is deleted</para>
+          </listitem>
+
+          <listitem>
+            <para>Users: organizational roles: role assignments are not
+            deleted when user is deleted</para>
+          </listitem>
+
+          <listitem>
+            <para>Groups: groupOf(Unique)Names: memberships are not deleted
+            when group is deleted</para>
+          </listitem>
+        </itemizedlist>
 
         <literallayout>
 </literallayout>
 
         <para>LAM is translated to many different languages. Here you can
         select the default language for this server profile. The language
-        setting may be overriden at the LAM login page.</para>
+        setting may be overridden at the LAM login page.</para>
 
         <para>Please also set your time zone here.</para>
 

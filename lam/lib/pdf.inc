@@ -209,6 +209,7 @@ function printTable(&$pdf, $table, $fontName) {
 	if (!empty($headline)) {
 		$pdf->SetFont($fontName, 'B', LAMPDF_FONT_SIZE);
 		$pdf->Cell(LAMPDF_LABELWIDTH, LAMPDF_LINEHEIGHT, $headline . ':', 0 , 0, 'L', 0);
+		$pdf->SetFont($fontName, '', LAMPDF_FONT_SIZE);
 		$pdf->Ln(LAMPDF_LINEHEIGHT);
 	}
 	foreach ($table->rows as $row) {

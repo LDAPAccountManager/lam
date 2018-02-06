@@ -254,9 +254,8 @@ class pykotaUser extends baseModule {
 		);
 		// self service settings
 		if (get_class($this) == 'pykotaUser') {
-			$selfServiceContainer = new htmlTable();
-			$selfServiceContainer->addElement(new htmlTableExtendedInputField(_('Job suffix'), 'pykotaUser_jobSuffix', null));
-			$selfServiceContainer->addElement(new htmlHelpLink('jobSuffix', get_class($this)), true);
+			$selfServiceContainer = new htmlResponsiveRow();
+			$selfServiceContainer->add(new htmlResponsiveInputField(_('Job suffix'), 'pykotaUser_jobSuffix', null, array('jobSuffix', get_class($this))), 12);
 			$return['selfServiceSettings'] = $selfServiceContainer;
 		}
 		// configuration checks

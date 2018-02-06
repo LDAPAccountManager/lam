@@ -1,5 +1,6 @@
 <?php
 use \LAM\TYPES\TypeManager;
+use function LAM\TYPES\getScopeFromTypeId;
 /*
 	$Id$
 
@@ -178,16 +179,11 @@ class posixAccount extends baseModule implements passwordService {
 			// possible self service read-only fields
 			$return['selfServiceReadOnlyFields'] = array('cn', 'loginShell');
 			// self service configuration settings
-			$selfServiceContainer = new htmlTable();
-			$selfServiceContainer->addElement(new htmlTableExtendedSelect('posixAccount_pwdHash', getSupportedHashTypes(),
-				array('SSHA'), _("Password hash type")));
-			$selfServiceContainer->addElement(new htmlHelpLink('pwdHash', get_class($this)), true);
-			$selfServiceContainer->addElement(new htmlTableExtendedInputTextarea('posixAccount_shells', implode("\r\n", $this->getShells()), 30, 4, _('Login shells')));
-			$loginShellsHelp = new htmlHelpLink('loginShells', get_class($this));
-			$loginShellsHelp->alignment = htmlElement::ALIGN_TOP;
-			$selfServiceContainer->addElement($loginShellsHelp, true);
-			$selfServiceContainer->addElement(new htmlTableExtendedInputCheckbox('posixAccount_useOldPwd', false, _('Password change with old password')));
-			$selfServiceContainer->addElement(new htmlHelpLink('useOldPwd', get_class($this)), true);
+			$selfServiceContainer = new htmlResponsiveRow();
+			$selfServiceContainer->add(new htmlResponsiveSelect('posixAccount_pwdHash', getSupportedHashTypes(),
+				array('SSHA'), _("Password hash type"), array('pwdHash', get_class($this))), 12);
+			$selfServiceContainer->add(new htmlResponsiveInputTextarea('posixAccount_shells', implode("\r\n", $this->getShells()), 30, 4, _('Login shells'), array('loginShells', get_class($this))), 12);
+			$selfServiceContainer->add(new htmlResponsiveInputCheckbox('posixAccount_useOldPwd', false, _('Password change with old password'), array('useOldPwd', get_class($this))), 12);
 			$return['selfServiceSettings'] = $selfServiceContainer;
 		}
 		// profile checks
@@ -907,6 +903,11 @@ class posixAccount extends baseModule implements passwordService {
 		$groups = searchLDAPByAttribute('memberUid', $this->attributes['uid'][0], 'posixGroup', array('dn'), array('group'));
 		for ($i = 0; $i < sizeof($groups); $i++) {
 			$return[$groups[$i]['dn']]['remove']['memberUid'][] = $this->attributes['uid'][0];
+		}
+		// stop here if referential integrity overlay is active
+		$config = $this->getAccountContainer()->get_type()->getTypeManager()->getConfig();
+		if ($config->isReferentialIntegrityOverlayActive()) {
+			return $return;
 		}
 		// remove from group of names
 		$dn = $this->getAccountContainer()->dn_orig;
@@ -2031,15 +2032,15 @@ class posixAccount extends baseModule implements passwordService {
 	}
 
 	/**
-	* Checks input values of module settings.
-	*
-	* @param array $scopes list of account types which are used
-	* @param array $options hash array containing the settings (array('option' => array('value')))
-	* @return array list of error messages
-	*/
-	function check_configOptions($scopes, &$options) {
+	 * {@inheritDoc}
+	 * @see baseModule::check_configOptions()
+	 */
+	function check_configOptions($typeIds, &$options) {
 		$return = array();
-		// user settings
+		$scopes = array();
+		foreach ($typeIds as $typeId) {
+			$scopes[] = getScopeFromTypeId($typeId);
+		}		// user settings
 		if (in_array('user', $scopes)) {
 			if ($options['posixAccount_uidGeneratorUsers'][0] == 'range') {
 				// min/maxUID are required, check if they are numeric
@@ -3244,7 +3245,7 @@ class posixAccount extends baseModule implements passwordService {
 				$wc = substr($wildcards[0][$i], 1, strlen($wildcards[0][$i]) - 2);
 				$value = '';
 				if (isset($attributes[$wc][0]) && !empty($attributes[$wc][0])) {
-					$value = $attributes[$wc][0][0];
+					$value = $this->cleanSuggestionPart($attributes[$wc][0][0]);
 				}
 				$format = str_replace('@' . $wc . '@', $value, $format);
 			}
@@ -3256,14 +3257,24 @@ class posixAccount extends baseModule implements passwordService {
 				$wc = substr($wildcards[0][$i], 1, strlen($wildcards[0][$i]) - 2);
 				$value = '';
 				if (isset($attributes[$wc][0])) {
-					$value = $attributes[$wc][0];
+					$value = $this->cleanSuggestionPart($attributes[$wc][0]);
 				}
 				$format = str_replace('%' . $wc . '%', $value, $format);
 			}
 		}
-		$format = str_replace(array_keys($this->umlautReplacements), array_values($this->umlautReplacements), strtolower($format));
-		$format = str_replace(array(' ', '_', '-'), array('', '', ''), $format);
 		return $format;
+	}
+
+	/**
+	 * Cleans a string that is injected in user name suggestion.
+	 *
+	 * @param string $part injected part
+	 * @return string cleaned by removing umlauts, spaces, dashes and underscores
+	 */
+	private function cleanSuggestionPart($part) {
+		$result = str_replace(array_keys($this->umlautReplacements), array_values($this->umlautReplacements), strtolower($part));
+		$result = str_replace(array(' ', '_', '-'), array('', '', ''), $result);
+		return $result;
 	}
 
 	/**

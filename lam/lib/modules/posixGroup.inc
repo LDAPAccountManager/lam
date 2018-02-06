@@ -1,11 +1,12 @@
 <?php
 use \LAM\TYPES\TypeManager;
+use function LAM\TYPES\getScopeFromTypeId;
+use LAM\TYPES\ConfiguredType;
 /*
-$Id$
 
 This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 Copyright (C) 2003 - 2006  Tilo Lutz
-              2007 - 2017  Roland Gruber
+              2007 - 2018  Roland Gruber
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -139,7 +140,7 @@ class posixGroup extends baseModule implements passwordService {
 		// fill in autoGIDs
 		if (sizeof($needAutoGID) > 0) {
 			$errorsTemp = array();
-			$gids = $this->getNextGIDs(sizeof($needAutoGID), $errorsTemp);
+			$gids = $this->getNextGIDs(sizeof($needAutoGID), $errorsTemp, $type);
 			if (is_array($gids)) {
 				for ($i = 0; $i < sizeof($needAutoGID); $i++) {
 					$partialAccounts[$i]['gidNumber'] = $gids[$i];
@@ -586,8 +587,18 @@ class posixGroup extends baseModule implements passwordService {
 		$configContainer->add($magicNumber, 12);
 		$configContainer->add(new htmlResponsiveInputField(_('Suffix for GID/group name check'), 'posixGroup_gidCheckSuffix', '', 'gidCheckSuffix'), 12);
 		$configContainer->add(new htmlResponsiveInputCheckbox('posixGroup_hidememberUid', false, _('Disable membership management'), 'hidememberUid'), 12);
-		if ((!empty($allScopes['groupOfNames']) && in_array('group', $allScopes['groupOfNames']))
-			|| (!empty($allScopes['groupOfUniqueNames']) && in_array('group', $allScopes['groupOfUniqueNames']))) {
+		$gonModules = array('groupOfNames', 'groupOfUniqueNames');
+		$gonFound = false;
+		foreach ($gonModules as $gonModule) {
+			if (!empty($allScopes[$gonModule])) {
+				foreach ($allScopes[$gonModule] as $gonTypeId) {
+					if (getScopeFromTypeId($gonTypeId) === 'group') {
+						$gonFound = true;
+					}
+				}
+			}
+		}
+		if ($gonFound) {
 			$configContainer->add(new htmlResponsiveInputCheckbox('posixGroup_autoSyncGon', false, _('Force sync with group of names'), 'autoSyncGon'), 12);
 		}
 		// display password hash option only if posixAccount module is not used
@@ -705,7 +716,7 @@ class posixGroup extends baseModule implements passwordService {
 		if ($this->manageCnAndDescription($modules) && ($this->attributes['cn'][0] == '')) {
 			return false;
 		}
-		if ($this->attributes['gidNumber'][0] == '') {
+		if ((!isset($this->attributes['gidNumber'][0])) || $this->attributes['gidNumber'][0] === '') {
 			return false;
 		}
 		return true;
@@ -784,7 +795,7 @@ class posixGroup extends baseModule implements passwordService {
 			if ($this->attributes['gidNumber'][0]=='') {
 				// No id-number given, find free GID
 				if (!isset($this->orig['gidNumber'][0])) {
-					$newGID = $this->getNextGIDs(1, $errors);
+					$newGID = $this->getNextGIDs(1, $errors, $this->getAccountContainer()->get_type());
 					if (is_array($newGID)) {
 						$this->attributes['gidNumber'][0] = $newGID[0];
 					}
@@ -796,7 +807,7 @@ class posixGroup extends baseModule implements passwordService {
 				// old account -> return id-number which has been used
 			}
 			else {
-				$gids = $this->getGIDs();
+				$gids = $this->getGIDs($this->getAccountContainer()->get_type());
 				// Check manual ID
 				if ($this->getAccountContainer()->isNewAccount || !isset($this->orig['gidNumber'][0]) || ($this->orig['gidNumber'][0] != $this->attributes['gidNumber'][0])) {
 					// check range
@@ -1005,20 +1016,10 @@ class posixGroup extends baseModule implements passwordService {
 	}
 
 	/**
-	* Checks input values of module settings.
-	*
-	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
-	* <br>
-	* If the input data is invalid the return value is an array that contains subarrays to build StatusMessages ('message type', 'message head', 'message text').
-	* <br>If no errors occured the function returns an empty array.
-	*
-	* @param array $scopes list of account types which are used
-	* @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
-	* @return array list of error messages
-	*
-	* @see baseModule::get_metaData()
-	*/
-	public function check_configOptions($scopes, &$options) {
+	 * {@inheritDoc}
+	 * @see baseModule::check_configOptions()
+	 */
+	public function check_configOptions($typeIds, &$options) {
 		if ($options['posixGroup_gidGenerator'][0] == 'range') {
 			$this->meta['config_checks']['group']['posixGroup_minGID'] = array (
 				'type' => 'ext_preg',
@@ -1054,7 +1055,7 @@ class posixGroup extends baseModule implements passwordService {
 				'required_message' => $this->messages['windowsIDPoolDN'][0],
 				'error_message' => $this->messages['windowsIDPoolDN'][0]);
 		}
-		return parent::check_configOptions($scopes, $options);
+		return parent::check_configOptions($typeIds, $options);
 	}
 
 	/**
@@ -1062,9 +1063,10 @@ class posixGroup extends baseModule implements passwordService {
 	*
 	* @param integer $count Number of needed free GIDs.
 	* @param array $errors list of error messages where errors can be added
+	* @param ConfiguredType $type account type
 	* @return mixed Null if no GIDs are free else an array of free GIDs.
 	*/
-	function getNextGIDs($count, &$errors) {
+	function getNextGIDs($count, &$errors, $type) {
 		// check if UIDs should be taken from Samba pool entry
 		if (isset($this->moduleSettings['posixGroup_gidGenerator']) && ($this->moduleSettings['posixGroup_gidGenerator'][0] == 'sambaPool')) {
 			return $this->getNextSambaPoolGIDs($count, $errors);
@@ -1084,7 +1086,7 @@ class posixGroup extends baseModule implements passwordService {
 		$ret = array();
 		$minID = intval($this->moduleSettings['posixGroup_minGID'][0]);
 		$maxID = intval($this->moduleSettings['posixGroup_maxGID'][0]);
-		$gidList = $this->getGIDs();
+		$gidList = $this->getGIDs($type);
 		$gids = array();
 		foreach ($gidList as $gid) {
 			if (($gid <= $maxID) && ($gid >= $minID)) $gids[] = $gid;  // ignore GIDs > maxID and GIDs < minID
@@ -1224,16 +1226,17 @@ class posixGroup extends baseModule implements passwordService {
 	/**
 	 * Returns a list of existing GID numbers.
 	 *
+	 * @param ConfiguredType $type account type
 	 * @return array list of GID numbers
 	 */
-	private function getGIDs() {
+	private function getGIDs($type) {
 		if ($this->cachedGIDList != null) {
 			return $this->cachedGIDList;
 		}
 		$this->cachedGIDList = array();
 		$attrs = array('gidNumber');
 		$filter = '(&(objectClass=posixGroup)(gidNumber=*))';
-		$suffix = $this->getAccountContainer()->get_type()->getSuffix();
+		$suffix = $type->getSuffix();
 		if (isset($this->moduleSettings['posixGroup_gidCheckSuffix'][0]) && ($this->moduleSettings['posixGroup_gidCheckSuffix'][0] != '')) {
 			$suffix = $this->moduleSettings['posixGroup_gidCheckSuffix'][0];
 		}

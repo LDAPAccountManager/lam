@@ -227,6 +227,9 @@ $advancedOptionsContent->add(new htmlResponsiveInputCheckbox('followReferrals', 
 // paged results
 $pagedResults = ($conf->getPagedResults() === 'true');
 $advancedOptionsContent->add(new htmlResponsiveInputCheckbox('pagedResults', $pagedResults , _('Paged results'), '266'), 12);
+// referential integrity overlay
+$referentialIntegrity = ($conf->isReferentialIntegrityOverlayActive());
+$advancedOptionsContent->add(new htmlResponsiveInputCheckbox('referentialIntegrityOverlay', $referentialIntegrity , _('Referential integrity overlay'), '269'), 12);
 
 // build advanced options box
 $advancedOptions = new htmlAccordion('advancedOptions_server', array(_('Advanced options') => $advancedOptionsContent), false);
@@ -544,6 +547,12 @@ function checkInput() {
 	}
 	else {
 		$conf->setPagedResults('false');
+	}
+	if (isset($_POST['referentialIntegrityOverlay']) && ($_POST['referentialIntegrityOverlay'] == 'on')) {
+		$conf->setReferentialIntegrityOverlay('true');
+	}
+	else {
+		$conf->setReferentialIntegrityOverlay('false');
 	}
 /*	if (!$conf->set_cacheTimeout($_POST['cachetimeout'])) {
 		$errors[] = array("ERROR", _("Cache timeout is invalid!"));

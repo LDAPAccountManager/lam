@@ -194,6 +194,8 @@ $helpArray = array (
 					"Text" => _('Please select the template for the new server profile. You can either select an existing server profile or use one of the built-in templates.')),
 				"268" => array ("Headline" => _('Display name'),
 					"Text" => _('This name is shown on the login page as server name. Defaults to server address if empty.')),
+				"269" => array ("Headline" => _('Referential integrity overlay'),
+					"Text" => _('Activate this checkbox if you have any server side extension for referential integrity in place. LAM will then skip cleanup tasks like deletion of group memberships on account deletion.')),
 				"270" => array ("Headline" => _('Bind user and password'),
 					"Text" => _('Please enter the DN and password to use for all jobs.')),
 				"271" => array ("Headline" => _('Database type'),

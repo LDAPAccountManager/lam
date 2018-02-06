@@ -1,7 +1,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017  Roland Gruber
+  Copyright (C) 2017 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -49,6 +49,10 @@
 	width: auto;
 }
 
+img.max16 {
+	max-width: 16px;
+}
+
 div.dialog-page {
 	float: left;
 }
@@ -79,6 +83,8 @@ table.responsive-table th {
 table.responsive-table td {
 	overflow: hidden;
 	vertical-align: top;
+	padding-bottom: 0.5rem;
+	padding-top: 0.5rem;
 }
 
 /* mobile */
@@ -130,6 +136,10 @@ table.responsive-table td {
 
 	.margin-right5-mobile-only {
 		margin-right: 5px;
+	}
+
+	.bold-mobile-only {
+		font-weight: bold;
 	}
 
 }

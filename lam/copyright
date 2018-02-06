@@ -15,9 +15,11 @@ time.
 * lib/modules/aliasEntry.inc
 * lib/modules/automount.inc
 * lib/modules/bindDLZ.inc
+* lib/modules/customBaseType.inc
 * lib/modules/customFields.inc
 * lib/modules/customScripts.inc
 * lib/modules/device.inc
+* lib/modules/dynamicList.inc
 * lib/modules/groupOfNames.inc
 * lib/modules/groupOfNamesUser.inc
 * lib/modules/groupOfUniqueNames.inc
@@ -48,8 +50,9 @@ time.
 * lib/modules/zarafaServer.inc
 * lib/modules/zarafaUser.inc
 * lib/types/alias.inc
-* lib/types/bind.inc
 * lib/types/automountType.inc
+* lib/types/bind.inc
+* lib/types/customType.inc
 * lib/types/gon.inc
 * lib/types/nisObjectType.inc
 * lib/types/nsview.inc

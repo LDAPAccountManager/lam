@@ -134,7 +134,7 @@ $scopes = array();
 foreach ($types as $type) {
 	$mods = $conf->get_AccountModules($type->getId());
 	for ($i = 0; $i < sizeof($mods); $i++) {
-		$scopes[$mods[$i]][] = $type->getScope();
+		$scopes[$mods[$i]][] = $type->getId();
 	}
 }
 
@@ -224,7 +224,7 @@ function checkInput() {
 	foreach ($types as $type) {
 		$mods = $conf->get_AccountModules($type->getId());
 		for ($i = 0; $i < sizeof($mods); $i++) {
-			$scopes[$mods[$i]][] = $type->getScope();
+			$scopes[$mods[$i]][] = $type->getId();
 		}
 	}
 	// check options

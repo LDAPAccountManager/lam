@@ -873,6 +873,20 @@ window.lam.tools.setInitialFocus = function() {
 	jQuery('.lam-initial-focus').focus();
 };
 
+window.lam.tools.schema = window.lam.tools.schema || {};
+
+/**
+ * Adds the onChange listener to schema selections.
+ */
+window.lam.tools.schema.select = function() {
+	var select = jQuery('#lam-schema-select');
+	var display = select.data('display');
+	select.change(function() {
+		var value = this.value;
+		document.location = 'schema.php?display=' + display + '&sel=' + value;
+	});
+};
+
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();
 	window.lam.form.autoTrim();
@@ -880,4 +894,5 @@ jQuery(document).ready(function() {
 	window.lam.tools.addSavedSelectListener();
 	window.lam.tools.activateTab();
 	window.lam.tools.setInitialFocus();
+	window.lam.tools.schema.select();
 });

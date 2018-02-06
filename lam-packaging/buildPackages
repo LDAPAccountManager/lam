@@ -26,28 +26,28 @@ fi
 function minify {
 	local dir="$1"
 	echo "Minify JS files in $dir"
+	local outFile=$dir/100_lam.${VERSION}.min.js
 	local files=`ls $dir/*.js`
+	local jsFiles=""
 	for file in $files; do
-		closure-compiler --charset UTF-8 --js $file --js_output_file ${file}-MIN
-		rm $file
-		mv ${file}-MIN $file
-		# add final new line to supress Debian warnings
-		echo "" >> $file
+		jsFiles="$jsFiles --js $file"
 	done
+	closure-compiler --charset UTF-8 $jsFiles --js_output_file $outFile
+	rm $files
+	# add final new line to supress Debian warnings
+	echo "" >> $outFile
 }
 
 # minifies the CSS files
 function minifyCSS {
 	local dir="$1"
 	echo "Minify CSS files in $dir"
+	local outFile=$dir/100_lam.${VERSION}.min.css
 	local files=`ls $dir/*.css`
-	for file in $files; do
-		cleancss -o ${file}-MIN $file
-		rm $file
-		mv ${file}-MIN $file
-		# add final new line to supress Debian warnings
-		echo "" >> $file
-	done
+	cat $files | cleancss -o $outFile
+	rm $files
+	# add final new line to supress Debian warnings
+	echo "" >> $outFile
 }
 
 echo "Getting files..."

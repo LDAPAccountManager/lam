@@ -1,9 +1,10 @@
 <?php
+namespace LAM\SCHEMA;
 /*
 $Id$
 
   Copyright (C) 2004 David Smith
-  modified to fit for LDAP Account Manager 2005 - 2016 Roland Gruber
+  modified to fit for LDAP Account Manager 2005 - 2018 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -2028,17 +2029,9 @@ function set_cached_schema($schema_type, $schema_items )
     if( ! SCHEMA_SESSION_CACHE_ENABLED )
         return false;
 
-    //echo "Setting cached schema for \"$schema_type\"...<br />\n";
     // Sanity check. The schema must be in the form of an array
     if( ! is_array( $schema_items ) ) {
         die( "While attempting to cache schema, passed a non-array for \$schema_items!" );
-    }
-    // Make sure we are being passed a valid array of schema_items
-    foreach( $schema_items as $schema_item ) {
-        if( ! is_subclass_of( $schema_item, 'SchemaItem' ) &&
-            ! 0 == strcasecmp( 'SchemaItem', get_class( $schema_item ) ) ) {
-            die( "While attempting to cache schema, one of the schema items passed is not a true SchemaItem instance!" );
-        }
     }
 
     $schema_type = strtolower( $schema_type );
