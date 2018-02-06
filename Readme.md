@@ -25,4 +25,4 @@ There are two modules. Usually, you only need the files inside "lam".
 LAM is published under the GNU General Public License.
 The complete list of licenses can be found in the copyright file.
 
-Copyright (C) 2003 - 2017 Roland Gruber <post@rolandgruber.de>
+Copyright (C) 2003 - 2018 Roland Gruber <post@rolandgruber.de>
