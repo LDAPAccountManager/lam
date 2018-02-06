@@ -1,10 +1,15 @@
 March 2018 6.3
   - Server profile: added option if referential integrity overlay is active to sip cleanup actions
-  - Bugs:
-   -> Login page not working when no server profile exists (44)
   - LAM Pro:
    -> Support custom structural object classes with new custom type
    -> Support dynamic lists
+
+
+04.02.2018 6.2.1
+  - Fixed bugs:
+   -> Login page not working when no server profile exists (44)
+   -> LAM Pro: Password Self Reset has issues when both security question and confirmation mail are activated.
+   -> LAM main configuration: certificate buttons do not work
 
 
 13.12.2017 6.2
