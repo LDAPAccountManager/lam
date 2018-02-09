@@ -3,7 +3,7 @@ namespace LAM\PDF;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2004  Michael Duergner
-                2003 - 2017  Roland Gruber
+                2003 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -88,7 +88,7 @@ function createModulePDF($accounts, $pdf_structure="default", $font, $returnAsSt
  * to create the PDF page. If not submitted the 'default.user' structure definition
  * for the appropriate account type.
  * @param string $font font to use
- * @param $returnAsString returns the PDF output as String value instead of writing it to a file
+ * @param boolean $returnAsString returns the PDF output as String value instead of writing it to a file
  * @return String PDF file name
  */
 function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $returnAsString) {

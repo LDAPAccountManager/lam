@@ -1587,14 +1587,11 @@ class posixAccount extends baseModule implements passwordService {
 				$unixContainer->addElement($addSelect, true);
 			}
 
-			$return->addElement($unixContainer);
+			$return->addElement($unixContainer, true);
+			$return->addVerticalSpace('3rem');
 		}
 
 		if (self::areGroupOfNamesActive() && !$this->isBooleanConfigOptionSet('posixAccount_hidegon')) {
-			if (!$this->isBooleanConfigOptionSet('posixAccount_hideposixGroups')) {
-				$return->addElement(new htmlSpacer('100px', null));
-			}
-
 			$gons = $this->findGroupOfNames();
 
 			$gonContainer = new htmlTable();
@@ -1608,20 +1605,24 @@ class posixAccount extends baseModule implements passwordService {
 			$selectedGons = array();
 			for ($i = 0; $i < sizeof($this->gonList); $i++) {
 				if (isset($gons[$this->gonList[$i]])) {
-					$selectedGons[$gons[$this->gonList[$i]]['cn'][0]] = $this->gonList[$i];
+					$selectedGons[getAbstractDN($this->gonList[$i])] = $this->gonList[$i];
 				}
 			}
+			uksort($selectedGons, 'compareDN');
 			$availableGons = array();
 			foreach ($gons as $dn => $attr) {
 				if (!in_array($dn, $this->gonList)) {
-					$availableGons[$attr['cn'][0]] = $dn;
+					$availableGons[getAbstractDN($dn)] = $dn;
 				}
 			}
+			uksort($availableGons, 'compareDN');
 
 			$remGonSelect = new htmlSelect('removegons', $selectedGons, null, 15);
 			$remGonSelect->setMultiSelect(true);
 			$remGonSelect->setTransformSingleSelect(false);
 			$remGonSelect->setHasDescriptiveElements(true);
+			$remGonSelect->setSortElements(false);
+			$remGonSelect->setRightToLeftTextDirection(true);
 			$gonContainer->addElement($remGonSelect);
 			$buttonGonContainer = new htmlTable();
 			$buttonGonContainer->addElement(new htmlButton('addgons_button', 'back.gif', true), true);
@@ -1632,19 +1633,16 @@ class posixAccount extends baseModule implements passwordService {
 			$addGonSelect->setMultiSelect(true);
 			$addGonSelect->setHasDescriptiveElements(true);
 			$addGonSelect->setTransformSingleSelect(false);
+			$addGonSelect->setSortElements(false);
+			$addGonSelect->setRightToLeftTextDirection(true);
 			$gonContainer->addElement($addGonSelect);
 			$gonContainer->addNewLine();
-			$return->addElement($gonContainer);
+			$return->addElement($gonContainer, true);
+			$return->addVerticalSpace('3rem');
 		}
 
-		$return->addNewLine();
-
-		$backGroup = new htmlGroup();
-		$backGroup->colspan = 10;
-		$backGroup->addElement(new htmlSpacer(null, '10px'), true);
 		$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
-		$backGroup->addElement($backButton);
-		$return->addElement($backGroup);
+		$return->addElement($backButton);
 		return $return;
 	}
 
@@ -1887,15 +1885,16 @@ class posixAccount extends baseModule implements passwordService {
 		$this->addSimplePDFField($return, 'loginShell', _('Login shell'));
 		$this->addSimplePDFField($return, 'gecos', _('Gecos'));
 		if (self::areGroupOfNamesActive()) {
-			$allGons = $this->findGroupOfNames();
 			$gons = array();
 			for ($i = 0; $i < sizeof($this->gonList); $i++) {
-				if (isset($allGons[$this->gonList[$i]])) {
-					$gons[] = $allGons[$this->gonList[$i]]['cn'][0];
-				}
+				$gons[] = $this->gonList[$i];
 			}
-			natcasesort($gons);
-			$this->addPDFKeyValue($return, 'gon', _('Groups of names'), implode(", ", $gons));
+			usort($gons, 'compareDN');
+			$gonCount = sizeof($gons);
+			for ($i = 0; $i < $gonCount; $i++) {
+				$gons[$i] = getAbstractDN($gons[$i]);
+			}
+			$this->addPDFKeyValue($return, 'gon', _('Groups of names'), $gons, "\n");
 		}
 		if (isset($this->clearTextPassword)) {
 			$this->addPDFKeyValue($return, 'userPassword', _('Password'), $this->clearTextPassword);
