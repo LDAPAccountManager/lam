@@ -1,5 +1,5 @@
 March 2018 6.3
-  - Server profile: added option if referential integrity overlay is active to sip cleanup actions
+  - Server profile: added option if referential integrity overlay is active to skip cleanup actions
   - LAM Pro:
    -> Support custom structural object classes with new custom type
    -> Support dynamic lists
