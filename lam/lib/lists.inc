@@ -2,10 +2,9 @@
 use LAM\TYPES\ConfiguredType;
 
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2017  Roland Gruber
+  Copyright (C) 2003 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -641,7 +640,7 @@ class lamList {
 					$list[$i] = $_SESSION["accountPDF-$i"];
 				}
 				if (sizeof($list) > 0) {
-					$filename = \LAM\PDF\createModulePDF($list,$pdfStruct);
+					$filename = \LAM\PDF\createModulePDF($list, $pdfStruct, $pdfFont);
 					for ($i = 0; $i < $entriesCount; $i++) {
 						// clean session
 						unset($_SESSION["accountPDF-$i"]);
@@ -649,7 +648,7 @@ class lamList {
 				}
 			}
 			elseif ($option == 'SESSION') {
-				$filename = \LAM\PDF\createModulePDF(array($_SESSION[$_POST['PDFSessionID']]),$pdfStruct);
+				$filename = \LAM\PDF\createModulePDF(array($_SESSION[$_POST['PDFSessionID']]), $pdfStruct, $pdfFont);
 				unset($_SESSION[$_POST['PDFSessionID']]);
 			}
 			if ($filename != '') {
