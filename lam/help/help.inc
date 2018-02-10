@@ -2,11 +2,10 @@
 namespace LAM\HELP;
 use \LAM\TYPES\TypeManager;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006 Michael Duergner
-                2003 - 2017 Roland Gruber
+                2003 - 2018 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -302,6 +301,10 @@ $helpArray = array (
 					"Text" => _('If checked then also users who did not setup a second factor are able to login.')),
 				"520" => array ("Headline" => _("Generate random password"),
 					"Text" => _("This will set a random password and display it on the screen or send it to the user via mail. Please edit your LAM server profile to setup the mail settings.")),
+				"521" => array ("Headline" => _('Google reCAPTCHA'),
+					"Text" => _('Please enter the site and secret key you got from Google reCAPTCHA.')),
+				"522" => array ("Headline" => _('Secure login'),
+					"Text" => _('Protect the self service login with a captcha.')),
 				"550" => array ("Headline" => _("From address"),
 					"Text" => _("This email address will be set as sender address of all password mails. If empty the system default (php.ini) will be used.")),
 				"551" => array ("Headline" => _("Subject"),

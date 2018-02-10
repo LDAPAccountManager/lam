@@ -1,10 +1,9 @@
 <?php
 use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2017  Roland Gruber
+  Copyright (C) 2006 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -390,6 +389,15 @@ class selfServiceProfile {
 	public $twoFactorAuthenticationOptional = false;
 	public $twoFactorAuthenticationCaption = '';
 
+	/** provider for captcha (-/google) */
+	public $captchaProvider = '-';
+	/** Google reCAPTCHA site key */
+	public $reCaptchaSiteKey = '';
+	/** Google reCAPTCHA secret key */
+	public $reCaptchaSecretKey = '';
+	/** enable captcha on self service login */
+	public $captchaOnLogin = false;
+
 	/**
 	 * Constructor
 	 *
@@ -433,6 +441,10 @@ class selfServiceProfile {
 		$this->twoFactorAuthenticationLabel = null;
 		$this->twoFactorAuthenticationOptional = false;
 		$this->twoFactorAuthenticationCaption = '';
+		$this->captchaProvider = '-';
+		$this->reCaptchaSiteKey = '';
+		$this->reCaptchaSecretKey = '';
+		$this->captchaOnLogin = false;
 	}
 
 }
