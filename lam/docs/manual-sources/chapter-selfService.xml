@@ -75,7 +75,7 @@
     <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/conf1.png" />
+          <imagedata fileref="images/conf1.png"/>
         </imageobject>
       </mediaobject>
     </screenshot>
@@ -86,7 +86,7 @@
     <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/conf2.png" />
+          <imagedata fileref="images/conf2.png"/>
         </imageobject>
       </mediaobject>
     </screenshot>
@@ -97,7 +97,7 @@
     <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/conf3.png" />
+          <imagedata fileref="images/conf3.png"/>
         </imageobject>
       </mediaobject>
     </screenshot>
@@ -120,7 +120,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/conf4.png" />
+            <imagedata fileref="images/conf4.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -253,7 +253,7 @@
         </tgroup>
       </table>
 
-      <para></para>
+      <para/>
 
       <section>
         <title>2-factor authentication</title>
@@ -281,7 +281,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/conf7.png" />
+              <imagedata fileref="images/conf7.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -293,10 +293,33 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/conf8.png" />
+              <imagedata fileref="images/conf8.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
+      </section>
+
+      <section>
+        <title>Captcha</title>
+
+        <para>LAM Pro can optionally display a captcha to verify that logins
+        are not from robots. The supported captcha provider is Google
+        reCAPTCHA. You will need the site and secret key for your domain. They
+        can be retrieved from here: <ulink
+        url="https://www.google.com/recaptcha">https://www.google.com/recaptcha</ulink></para>
+
+        <para>Please note that your web server must be able to access
+        "https://www.google.com/recaptcha/api/siteverify" to verify the
+        captchas. Captchas will be displayed when you tick the chekbox to
+        secure login with a captcha.</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/selfServiceCaptcha.png"/>
+          </imageobject>
+        </mediaobject>
+
+        <para/>
       </section>
     </section>
 
@@ -321,7 +344,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/conf5.png" />
+            <imagedata fileref="images/conf5.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -350,7 +373,7 @@
             <row>
               <entry morerows=""><inlinemediaobject>
                   <imageobject>
-                    <imagedata fileref="images/schema_asterisk.png" />
+                    <imagedata fileref="images/schema_asterisk.png"/>
                   </imageobject>
                 </inlinemediaobject> Asterisk (voicemail)</entry>
 
@@ -363,7 +386,7 @@
             <row>
               <entry><inlinemediaobject>
                   <imageobject>
-                    <imagedata fileref="images/schema_heimdal.png" />
+                    <imagedata fileref="images/schema_heimdal.png"/>
                   </imageobject>
                 </inlinemediaobject> Kerberos</entry>
 
@@ -376,7 +399,7 @@
             <row>
               <entry morerows="1"><inlinemediaobject>
                   <imageobject>
-                    <imagedata fileref="images/schema_kolab.png" />
+                    <imagedata fileref="images/schema_kolab.png"/>
                   </imageobject>
                 </inlinemediaobject> Kolab</entry>
 
@@ -394,7 +417,7 @@
             <row>
               <entry><inlinemediaobject>
                   <imageobject>
-                    <imagedata fileref="images/schema_ssh.png" />
+                    <imagedata fileref="images/schema_ssh.png"/>
                   </imageobject>
                 </inlinemediaobject> Password policy</entry>
 
@@ -406,7 +429,7 @@
             <row>
               <entry morerows="2"><inlinemediaobject>
                   <imageobject>
-                    <imagedata fileref="images/schema_ssh.png" />
+                    <imagedata fileref="images/schema_ssh.png"/>
                   </imageobject>
                 </inlinemediaobject> Password self reset</entry>
 
@@ -431,103 +454,103 @@
             <row>
               <entry morerows="27"><inlinemediaobject>
                   <imageobject>
-                    <imagedata fileref="images/schema_user.png" />
+                    <imagedata fileref="images/schema_user.png"/>
                   </imageobject>
                 </inlinemediaobject> Personal</entry>
 
               <entry>Business category</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Car license</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Department</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Description</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Email address</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Fax number</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>First name</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Home telephone number</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Initials</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Job title</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Last name</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Location</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Mobile number</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Office name</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Organisation</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Organisational unit</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
@@ -540,49 +563,49 @@
             <row>
               <entry>Postal address</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Postal code</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Post office box</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Registered address</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Room number</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>State</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Street</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Telephone number</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
@@ -594,19 +617,19 @@
             <row>
               <entry>User name</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Web site</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry morerows="4"><inlinemediaobject>
                   <imageobject>
-                    <imagedata fileref="images/schema_samba.png" />
+                    <imagedata fileref="images/schema_samba.png"/>
                   </imageobject>
                 </inlinemediaobject> Samba 3</entry>
 
@@ -648,7 +671,7 @@
             <row>
               <entry><inlinemediaobject>
                   <imageobject>
-                    <imagedata fileref="images/schema_ssh.png" />
+                    <imagedata fileref="images/schema_ssh.png"/>
                   </imageobject>
                 </inlinemediaobject> Shadow</entry>
 
@@ -661,7 +684,7 @@
             <row>
               <entry morerows="8"><inlinemediaobject>
                   <imageobject>
-                    <imagedata fileref="images/schema_samba.png" />
+                    <imagedata fileref="images/schema_samba.png"/>
                   </imageobject>
                 </inlinemediaobject> Windows</entry>
 
@@ -673,67 +696,67 @@
             <row>
               <entry>Location</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Office name</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Postal code</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Post office box</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>State</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Street</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Telephone number</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Web site</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry morerows="3"><inlinemediaobject>
                   <imageobject>
-                    <imagedata fileref="images/schema_unix.png" />
+                    <imagedata fileref="images/schema_unix.png"/>
                   </imageobject>
                 </inlinemediaobject> Unix</entry>
 
               <entry>Common name</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
               <entry>Login shell</entry>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
@@ -753,7 +776,7 @@
             <row>
               <entry morerows="1"><inlinemediaobject>
                   <imageobject>
-                    <imagedata fileref="images/schema_kopano.png" />
+                    <imagedata fileref="images/schema_kopano.png"/>
                   </imageobject>
                 </inlinemediaobject>Kopano</entry>
 
@@ -771,7 +794,7 @@
             <row>
               <entry morerows="1"><inlinemediaobject>
                   <imageobject>
-                    <imagedata fileref="images/schema_zarafa.png" />
+                    <imagedata fileref="images/schema_zarafa.png"/>
                   </imageobject>
                 </inlinemediaobject> Zarafa</entry>
 
@@ -789,7 +812,7 @@
             <row>
               <entry morerows="3"><inlinemediaobject>
                   <imageobject>
-                    <imagedata fileref="images/schema_pykota.png" />
+                    <imagedata fileref="images/schema_pykota.png"/>
                   </imageobject>
                 </inlinemediaobject> PyKota</entry>
 
@@ -829,7 +852,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/conf6.png" />
+            <imagedata fileref="images/conf6.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -852,7 +875,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/selfServiceSambaDomains.png" />
+            <imagedata fileref="images/selfServiceSambaDomains.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -883,7 +906,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/passwordSelfReset1.png" />
+            <imagedata fileref="images/passwordSelfReset1.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -939,6 +962,26 @@
       care since anybody with access to the user's mail account can reset the
       password.</para>
 
+      <para><emphasis role="bold">Captcha support</emphasis></para>
+
+      <para>LAM Pro can optionally display a captcha to verify that password
+      resets are not from robots. The supported captcha provider is Google
+      reCAPTCHA. You will need the site and secret key for your domain. This
+      is setup on tab "General settings". They can be retrieved from here:
+      <ulink
+      url="https://www.google.com/recaptcha">https://www.google.com/recaptcha</ulink></para>
+
+      <para>Please note that your web server must be able to access
+      "https://www.google.com/recaptcha/api/siteverify" to verify the
+      captchas. Captchas will be displayed when you tick the chekbox to use a
+      captcha.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/passwordSelfReset10.png"/>
+        </imageobject>
+      </mediaobject>
+
       <para><emphasis role="bold">Troubleshooting:</emphasis></para>
 
       <para>1. You get messages like "Unable to find user account."</para>
@@ -983,7 +1026,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/passwordSelfReset2.png" />
+            <imagedata fileref="images/passwordSelfReset2.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -994,7 +1037,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/passwordSelfReset3.png" />
+            <imagedata fileref="images/passwordSelfReset3.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1008,7 +1051,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/passwordSelfReset4.png" />
+            <imagedata fileref="images/passwordSelfReset4.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1019,7 +1062,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/passwordSelfReset5.png" />
+            <imagedata fileref="images/passwordSelfReset5.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1033,7 +1076,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/passwordSelfReset6.png" />
+            <imagedata fileref="images/passwordSelfReset6.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1054,7 +1097,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/accountRegistration1.png" />
+            <imagedata fileref="images/accountRegistration1.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1085,7 +1128,7 @@
       you can enter additional options:</para>
 
       <table>
-        <title></title>
+        <title/>
 
         <tgroup cols="6">
           <tbody>
@@ -1150,9 +1193,9 @@
               <entry>attribute value, supports wirldcards to insert other
               attribute values (e.g. "@@uid@@")</entry>
 
-              <entry></entry>
+              <entry/>
 
-              <entry></entry>
+              <entry/>
             </row>
 
             <row>
@@ -1209,18 +1252,19 @@
       <para>LAM Pro can optionally display a captcha to verify that
       registrations are not from robots. The supported captcha provider is
       Google reCAPTCHA. You will need the site and secret key for your domain.
-      They can be retrieved from here: <ulink
+      This is setup on tab "General settings". They can be retrieved from
+      here: <ulink
       url="https://www.google.com/recaptcha">https://www.google.com/recaptcha</ulink></para>
 
       <para>Please note that your web server must be able to access
       "https://www.google.com/recaptcha/api/siteverify" to verify the
-      captchas. Captchas will be displayed automatically when site+secret key
-      are filled.</para>
+      captchas. Captchas will be displayed when you tick the chekbox to use a
+      captcha.</para>
 
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/accountRegistration4.png" />
+            <imagedata fileref="images/accountRegistration4.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1236,7 +1280,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/accountRegistration2.png" />
+            <imagedata fileref="images/accountRegistration2.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1247,7 +1291,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/accountRegistration3.png" />
+            <imagedata fileref="images/accountRegistration3.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1317,7 +1361,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/customFields1.png" />
+            <imagedata fileref="images/customFields1.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1362,7 +1406,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/customFields2.png" />
+            <imagedata fileref="images/customFields2.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1372,7 +1416,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/customFields3.png" />
+            <imagedata fileref="images/customFields3.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1386,7 +1430,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/customFields4.png" />
+            <imagedata fileref="images/customFields4.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1396,7 +1440,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/customFields5.png" />
+            <imagedata fileref="images/customFields5.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1415,7 +1459,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/customFields6.png" />
+            <imagedata fileref="images/customFields6.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1425,7 +1469,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/customFields7.png" />
+            <imagedata fileref="images/customFields7.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1440,7 +1484,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/customFields8.png" />
+            <imagedata fileref="images/customFields8.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1450,7 +1494,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/customFields9.png" />
+            <imagedata fileref="images/customFields9.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1467,7 +1511,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/customFields10.png" />
+            <imagedata fileref="images/customFields10.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1477,7 +1521,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/customFields11.png" />
+            <imagedata fileref="images/customFields11.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1493,7 +1537,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/customFields12.png" />
+            <imagedata fileref="images/customFields12.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1503,7 +1547,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/customFields13.png" />
+            <imagedata fileref="images/customFields13.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1511,7 +1555,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/customFields18.png" />
+            <imagedata fileref="images/customFields18.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1525,7 +1569,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/customFields26.png" />
+            <imagedata fileref="images/customFields26.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1544,7 +1588,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/customFields27.png" />
+            <imagedata fileref="images/customFields27.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1560,7 +1604,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/customFields28.png" />
+            <imagedata fileref="images/customFields28.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1607,7 +1651,7 @@
       value):</para>
 
       <table border="1">
-        <caption></caption>
+        <caption/>
 
         <tr>
           <th>Constant value</th>
@@ -1640,7 +1684,7 @@
         </tr>
       </table>
 
-      <para></para>
+      <para/>
 
       <para>Presentation:</para>
 
@@ -1649,7 +1693,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/customFields29.png" />
+            <imagedata fileref="images/customFields29.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1665,7 +1709,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/customFields23.png" />
+            <imagedata fileref="images/customFields23.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1677,7 +1721,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/customFields24.png" />
+            <imagedata fileref="images/customFields24.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1726,7 +1770,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/configPageHeader.png" />
+            <imagedata fileref="images/configPageHeader.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1745,7 +1789,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/configCSS.png" />
+            <imagedata fileref="images/configCSS.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>

@@ -3,6 +3,7 @@ March 2018 6.3
   - LAM Pro:
    -> Support custom structural object classes with new custom type
    -> Support dynamic lists
+   -> Self service login and password self reset can be secured with captcha
 
 
 04.02.2018 6.2.1

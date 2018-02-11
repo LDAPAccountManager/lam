@@ -575,6 +575,16 @@
       intermediate release.</para>
 
       <section>
+        <title>6.2 -&gt; 6.3</title>
+
+        <para>Self Service: If you use a captcha for user self registration
+        this needs to be reconfigured. On tab General settings please activate
+        Google reCAPTCHA (the checkbox to secure login is optional). On tab
+        Module settings please tick the captcha checkbox at self registration
+        settings.</para>
+      </section>
+
+      <section>
         <title>6.1 -&gt; 6.2</title>
 
         <para>No actions required.</para>
