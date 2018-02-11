@@ -1,6 +1,5 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
@@ -1499,6 +1498,7 @@ function validateReCAPTCHA($secretKey) {
 		return false;
 	}
 	$responseJSON = json_decode($result);
+	logNewMessage(LOG_DEBUG, "ReCAPTCHA result: " . $result);
 	return $responseJSON->{'success'} === true;
 }
 
