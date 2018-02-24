@@ -20,6 +20,7 @@ function app_session_start() {
 	if (session_id() != null) return;
 	include_once '../../../../lib/config.inc';
 	include_once '../../../../lib/ldap.inc';
+	include_once '../../../../lib/schema.inc';
 	startSecureSession();
 	enforceUserIsLoggedIn();
 	$config_file = CONFDIR.'config.php';
