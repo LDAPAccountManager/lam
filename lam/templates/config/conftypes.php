@@ -13,7 +13,7 @@ use \htmlResponsiveRow;
 use \htmlResponsiveInputField;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2017  Roland Gruber
+  Copyright (C) 2004 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -391,6 +391,14 @@ function checkInput() {
 	// save input
 	$conf->set_typeSettings($typeSettings);
 	$conf->set_ActiveTypes($accountTypes);
+	// check for duplicate type aliases
+	$aliasNames = array();
+	foreach ($typeManager->getConfiguredTypes() as $type) {
+		if (in_array($type->getAlias(), $aliasNames)) {
+			$errors[] = array('ERROR', _('Please set a unique label for the account types.'), htmlspecialchars($type->getAlias()));
+		}
+		$aliasNames[] = $type->getAlias();
+	}
 	return $errors;
 }
 
