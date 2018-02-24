@@ -6,7 +6,7 @@ use function LAM\TYPES\getScopeFromTypeId;
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-    Copyright (C) 2005 - 2017  Roland Gruber
+    Copyright (C) 2005 - 2018  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -1241,7 +1241,7 @@ class posixAccount extends baseModule implements passwordService {
 	*/
 	function process_group() {
 		// Unix groups
-		if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
+		if ($this->isBooleanConfigOptionSet('posixGroup_' . $this->getAccountContainer()->get_type()->getId() . '_autoSyncGon')) {
 			$this->syncGonToGroups();
 		}
 		elseif (!$this->isBooleanConfigOptionSet('posixAccount_hideposixGroups')) {
@@ -1560,7 +1560,7 @@ class posixAccount extends baseModule implements passwordService {
 			$unixContainer = new htmlTable();
 			$unixContainer->alignment = htmlElement::ALIGN_TOP;
 			$unixContainer->addElement(new htmlSubTitle(_("Unix groups")), true);
-			if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
+			if ($this->isBooleanConfigOptionSet('posixGroup_' . $this->getAccountContainer()->get_type()->getId() . '_autoSyncGon')) {
 				$this->syncGonToGroups();
 				foreach ($this->groups as $group) {
 					$unixContainer->addElement(new htmlOutputText($group), true);

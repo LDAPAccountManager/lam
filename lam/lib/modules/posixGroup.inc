@@ -546,6 +546,7 @@ class posixGroup extends baseModule implements passwordService {
 	 * @see baseModule::get_configOptions()
 	 */
 	public function get_configOptions($scopes, $allScopes) {
+		$typeManager = new TypeManager($_SESSION['conf_config']);
 		// configuration options
 		$configContainer = new htmlResponsiveRow();
 		$configContainer->add(new htmlSubTitle(_("Groups")), 12);
@@ -555,57 +556,119 @@ class posixGroup extends baseModule implements passwordService {
 			_('Windows domain info') => 'windowsDomain',
 			_('Magic number') => 'magicNumber'
 		);
-		$gidGeneratorSelect = new htmlResponsiveSelect('posixGroup_gidGenerator', $genOptions, array('range'), _('GID generator'), 'gidGenerator');
-		$gidGeneratorSelect->setHasDescriptiveElements(true);
-		$gidGeneratorSelect->setTableRowsToHide(array(
-			'range' => array('posixGroup_sambaIDPoolDN', 'posixGroup_windowsIDPoolDN', 'posixGroup_magicNumber'),
-			'sambaPool' => array('posixGroup_minGID', 'posixGroup_maxGID', 'posixGroup_windowsIDPoolDN', 'posixGroup_magicNumber'),
-			'windowsDomain' => array('posixGroup_minGID', 'posixGroup_maxGID', 'posixGroup_sambaIDPoolDN', 'posixGroup_magicNumber'),
-			'magicNumber' => array('posixGroup_minGID', 'posixGroup_maxGID', 'posixGroup_windowsIDPoolDN', 'posixGroup_sambaIDPoolDN')
-		));
-		$gidGeneratorSelect->setTableRowsToShow(array(
-			'range' => array('posixGroup_minGID', 'posixGroup_maxGID'),
-			'sambaPool' => array('posixGroup_sambaIDPoolDN'),
-			'windowsDomain' => array('posixGroup_windowsIDPoolDN'),
-			'magicNumber' => array('posixGroup_magicNumber')
-		));
-		$configContainer->add($gidGeneratorSelect, 12);
-		$minGidInput = new htmlResponsiveInputField(_('Minimum GID number'), 'posixGroup_minGID', null, 'minMaxGID');
-		$minGidInput->setRequired(true);
-		$configContainer->add($minGidInput, 12);
-		$maxGidInput = new htmlResponsiveInputField(_('Maximum GID number'), 'posixGroup_maxGID', null, 'minMaxGID');
-		$maxGidInput->setRequired(true);
-		$configContainer->add($maxGidInput, 12);
-		$gidGeneratorDN = new htmlResponsiveInputField(_('Samba ID pool DN'), 'posixGroup_sambaIDPoolDN', null, 'sambaIDPoolDN');
-		$gidGeneratorDN->setRequired(true);
-		$configContainer->add($gidGeneratorDN, 12);
-		$winGeneratorDN = new htmlResponsiveInputField(_('Windows domain info DN'), 'posixGroup_windowsIDPoolDN', null, 'windowsIDPoolDN');
-		$winGeneratorDN->setRequired(true);
-		$configContainer->add($winGeneratorDN, 12);
-		$magicNumber = new htmlResponsiveInputField(_('Magic number'), 'posixGroup_magicNumber', null, 'magicNumber');
-		$magicNumber->setRequired(true);
-		$configContainer->add($magicNumber, 12);
-		$configContainer->add(new htmlResponsiveInputField(_('Suffix for GID/group name check'), 'posixGroup_gidCheckSuffix', '', 'gidCheckSuffix'), 12);
-		$configContainer->add(new htmlResponsiveInputCheckbox('posixGroup_hidememberUid', false, _('Disable membership management'), 'hidememberUid'), 12);
-		$gonModules = array('groupOfNames', 'groupOfUniqueNames');
-		$gonFound = false;
-		foreach ($gonModules as $gonModule) {
-			if (!empty($allScopes[$gonModule])) {
-				foreach ($allScopes[$gonModule] as $gonTypeId) {
-					if (getScopeFromTypeId($gonTypeId) === 'group') {
-						$gonFound = true;
+		foreach ($allScopes[get_class($this)] as $typeId) {
+			if (sizeof($allScopes[get_class($this)]) > 1) {
+				$title = new htmlDiv(null, new htmlOutputText($typeManager->getConfiguredType($typeId)->getAlias()));
+				$title->setCSSClasses(array('bold', 'responsiveLabel'));
+				$configContainer->add($title, 12, 6);
+				$configContainer->add(new htmlOutputText('&nbsp;', false), 0, 6);
+			}
+			$gidGeneratorSelect = new htmlResponsiveSelect('posixGroup_' . $typeId . '_gidGenerator', $genOptions, array('range'), _('GID generator'), 'gidGenerator');
+			$gidGeneratorSelect->setHasDescriptiveElements(true);
+			$gidGeneratorSelect->setTableRowsToHide(array(
+				'range' => array('posixGroup_' . $typeId . '_sambaIDPoolDN', 'posixGroup_' . $typeId . '_windowsIDPoolDN', 'posixGroup_' . $typeId . '_magicNumber'),
+				'sambaPool' => array('posixGroup_' . $typeId . '_minGID', 'posixGroup_' . $typeId . '_maxGID', 'posixGroup_' . $typeId . '_windowsIDPoolDN', 'posixGroup_' . $typeId . '_magicNumber'),
+				'windowsDomain' => array('posixGroup_' . $typeId . '_minGID', 'posixGroup_' . $typeId . '_maxGID', 'posixGroup_' . $typeId . '_sambaIDPoolDN', 'posixGroup_' . $typeId . '_magicNumber'),
+				'magicNumber' => array('posixGroup_' . $typeId . '_minGID', 'posixGroup_' . $typeId . '_maxGID', 'posixGroup_' . $typeId . '_windowsIDPoolDN', 'posixGroup_' . $typeId . '_sambaIDPoolDN')
+			));
+			$gidGeneratorSelect->setTableRowsToShow(array(
+				'range' => array('posixGroup_' . $typeId . '_minGID', 'posixGroup_' . $typeId . '_maxGID'),
+				'sambaPool' => array('posixGroup_' . $typeId . '_sambaIDPoolDN'),
+				'windowsDomain' => array('posixGroup_' . $typeId . '_windowsIDPoolDN'),
+				'magicNumber' => array('posixGroup_' . $typeId . '_magicNumber')
+			));
+			$configContainer->add($gidGeneratorSelect, 12);
+			$minGidInput = new htmlResponsiveInputField(_('Minimum GID number'), 'posixGroup_' . $typeId . '_minGID', null, 'minMaxGID');
+			$minGidInput->setRequired(true);
+			$configContainer->add($minGidInput, 12);
+			$maxGidInput = new htmlResponsiveInputField(_('Maximum GID number'), 'posixGroup_' . $typeId . '_maxGID', null, 'minMaxGID');
+			$maxGidInput->setRequired(true);
+			$configContainer->add($maxGidInput, 12);
+			$gidGeneratorDN = new htmlResponsiveInputField(_('Samba ID pool DN'), 'posixGroup_' . $typeId . '_sambaIDPoolDN', null, 'sambaIDPoolDN');
+			$gidGeneratorDN->setRequired(true);
+			$configContainer->add($gidGeneratorDN, 12);
+			$winGeneratorDN = new htmlResponsiveInputField(_('Windows domain info DN'), 'posixGroup_' . $typeId . '_windowsIDPoolDN', null, 'windowsIDPoolDN');
+			$winGeneratorDN->setRequired(true);
+			$configContainer->add($winGeneratorDN, 12);
+			$magicNumber = new htmlResponsiveInputField(_('Magic number'), 'posixGroup_' . $typeId . '_magicNumber', null, 'magicNumber');
+			$magicNumber->setRequired(true);
+			$configContainer->add($magicNumber, 12);
+			$configContainer->add(new htmlResponsiveInputField(_('Suffix for GID/group name check'), 'posixGroup_' . $typeId . '_gidCheckSuffix', '', 'gidCheckSuffix'), 12);
+			$configContainer->add(new htmlResponsiveInputCheckbox('posixGroup_' . $typeId . '_hidememberUid', false, _('Disable membership management'), 'hidememberUid'), 12);
+			$gonModules = array('groupOfNames', 'groupOfUniqueNames');
+			$gonFound = false;
+			foreach ($gonModules as $gonModule) {
+				if (!empty($allScopes[$gonModule])) {
+					foreach ($allScopes[$gonModule] as $gonTypeId) {
+						if (getScopeFromTypeId($gonTypeId) === 'group') {
+							$gonFound = true;
+						}
 					}
 				}
 			}
-		}
-		if ($gonFound) {
-			$configContainer->add(new htmlResponsiveInputCheckbox('posixGroup_autoSyncGon', false, _('Force sync with group of names'), 'autoSyncGon'), 12);
+			if ($gonFound) {
+				$configContainer->add(new htmlResponsiveInputCheckbox('posixGroup_' . $typeId . '_autoSyncGon', false, _('Force sync with group of names'), 'autoSyncGon'), 12);
+			}
+			$configContainer->addVerticalSpacer('2rem');
 		}
 		// display password hash option only if posixAccount module is not used
 		if (!isset($allScopes['posixAccount'])) {
 			$configContainer->add(new htmlResponsiveSelect('posixAccount_pwdHash', getSupportedHashTypes(), array('SSHA'), _("Password hash type"), 'pwdHash'), 12);
 		}
 		return $configContainer;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see baseModule::check_configOptions()
+	 */
+	public function check_configOptions($typeIds, &$options) {
+		foreach ($typeIds as $typeId) {
+			if ($options['posixGroup_' . $typeId . '_gidGenerator'][0] == 'range') {
+				$this->meta['config_checks']['group']['posixGroup_' . $typeId . '_minGID'] = array (
+					'type' => 'ext_preg',
+					'regex' => 'digit',
+					'required' => true,
+					'required_message' => $this->messages['gidNumber'][5],
+					'error_message' => $this->messages['gidNumber'][5]);
+				$this->meta['config_checks']['group']['posixGroup_' . $typeId . '_maxGID'] = array (
+					'type' => 'ext_preg',
+					'regex' => 'digit',
+					'required' => true,
+					'required_message' => $this->messages['gidNumber'][6],
+					'error_message' => $this->messages['gidNumber'][6]);
+				$this->meta['config_checks']['group']['cmpGID'] = array (
+					'type' => 'int_greater',
+					'cmp_name1' => 'posixGroup_' . $typeId . '_maxGID',
+					'cmp_name2' => 'posixGroup_' . $typeId . '_minGID',
+					'error_message' => $this->messages['gidNumber'][7]);
+			}
+			elseif ($options['posixGroup_' . $typeId . '_gidGenerator'][0] == 'sambaPool') {
+				$this->meta['config_checks']['group']['posixGroup_' . $typeId . '_sambaIDPoolDN'] = array (
+					'type' => 'ext_preg',
+					'regex' => 'dn',
+					'required' => true,
+					'required_message' => $this->messages['sambaIDPoolDN'][0],
+					'error_message' => $this->messages['sambaIDPoolDN'][0]);
+			}
+			elseif ($options['posixGroup_' . $typeId . '_gidGenerator'][0] == 'windowsDomain') {
+				$this->meta['config_checks']['group']['posixGroup_' . $typeId . '_windowsIDPoolDN'] = array (
+					'type' => 'ext_preg',
+					'regex' => 'dn',
+					'required' => true,
+					'required_message' => $this->messages['windowsIDPoolDN'][0],
+					'error_message' => $this->messages['windowsIDPoolDN'][0]);
+			}
+			elseif ($options['posixGroup_' . $typeId . '_gidGenerator'][0] == 'magicNumber') {
+				$this->meta['config_checks']['group']['posixGroup_' . $typeId . '_magicNumber'] = array (
+					'type' => 'ext_preg',
+					'regex' => 'digit',
+					'required' => true,
+					'required_message' => $this->messages['magicNumber'][0],
+					'error_message' => $this->messages['magicNumber'][0]);
+			}
+		}
+		return parent::check_configOptions($typeIds, $options);
 	}
 
 	/**
@@ -681,6 +744,7 @@ class posixGroup extends baseModule implements passwordService {
 		$this->messages['primaryGroup'][0] = array('ERROR', _('There are still users who have this group as their primary group.'));
 		$this->messages['sambaIDPoolDN'][0] = array('ERROR', _('Samba ID pool DN'), _('This is not a valid DN!'));
 		$this->messages['windowsIDPoolDN'][0] = array('ERROR', _('Windows domain info DN'), _('This is not a valid DN!'));
+		$this->messages['magicNumber'][0] = array('ERROR', _('Magic number'), _('Please enter a valid number.'));
 	}
 
 
@@ -768,6 +832,7 @@ class posixGroup extends baseModule implements passwordService {
 			return $errors;
 		}
 		$modules = $this->getAccountContainer()->get_type()->getModules();
+		$typeId = $this->getAccountContainer()->get_type()->getId();
 		// skip processing if object class is not set
 		if (!$this->autoAddObjectClasses && (!isset($this->attributes['objectClass']) || !in_array('posixGroup', $this->attributes['objectClass']))) {
 			return $errors;
@@ -789,10 +854,10 @@ class posixGroup extends baseModule implements passwordService {
 		if (!isset($this->attributes['gidNumber'][0]) || ($this->attributes['gidNumber'][0] != $_POST['gidNumber'])) {
 			// Check if GID is valid. If none value was entered, the next useable value will be inserted
 			// load min and max GID number
-			$minID = intval($this->moduleSettings['posixGroup_minGID'][0]);
-			$maxID = intval($this->moduleSettings['posixGroup_maxGID'][0]);
+			$minID = intval($this->moduleSettings['posixGroup_' . $typeId . '_minGID'][0]);
+			$maxID = intval($this->moduleSettings['posixGroup_' . $typeId . '_maxGID'][0]);
 			$this->attributes['gidNumber'][0] = $_POST['gidNumber'];
-			if ($this->attributes['gidNumber'][0]=='') {
+			if ($this->attributes['gidNumber'][0] == '') {
 				// No id-number given, find free GID
 				if (!isset($this->orig['gidNumber'][0])) {
 					$newGID = $this->getNextGIDs(1, $errors, $this->getAccountContainer()->get_type());
@@ -811,7 +876,7 @@ class posixGroup extends baseModule implements passwordService {
 				// Check manual ID
 				if ($this->getAccountContainer()->isNewAccount || !isset($this->orig['gidNumber'][0]) || ($this->orig['gidNumber'][0] != $this->attributes['gidNumber'][0])) {
 					// check range
-					if ($this->moduleSettings['posixGroup_gidGenerator'][0] == 'range') {
+					if ($this->moduleSettings['posixGroup_' . $typeId . '_gidGenerator'][0] == 'range') {
 						if (($this->attributes['gidNumber'][0] < $minID) || ($this->attributes['gidNumber'][0] > $maxID) || !is_numeric($this->attributes['gidNumber'][0])) {
 							$errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
 							if (isset($this->orig['gidNumber'][0])) $this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
@@ -1016,49 +1081,6 @@ class posixGroup extends baseModule implements passwordService {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * @see baseModule::check_configOptions()
-	 */
-	public function check_configOptions($typeIds, &$options) {
-		if ($options['posixGroup_gidGenerator'][0] == 'range') {
-			$this->meta['config_checks']['group']['posixGroup_minGID'] = array (
-				'type' => 'ext_preg',
-				'regex' => 'digit',
-				'required' => true,
-				'required_message' => $this->messages['gidNumber'][5],
-				'error_message' => $this->messages['gidNumber'][5]);
-			$this->meta['config_checks']['group']['posixGroup_maxGID'] = array (
-				'type' => 'ext_preg',
-				'regex' => 'digit',
-				'required' => true,
-				'required_message' => $this->messages['gidNumber'][6],
-				'error_message' => $this->messages['gidNumber'][6]);
-			$this->meta['config_checks']['group']['cmpGID'] = array (
-				'type' => 'int_greater',
-				'cmp_name1' => 'posixGroup_maxGID',
-				'cmp_name2' => 'posixGroup_minGID',
-				'error_message' => $this->messages['gidNumber'][7]);
-		}
-		elseif ($options['posixGroup_gidGenerator'][0] == 'sambaPool') {
-			$this->meta['config_checks']['group']['posixGroup_sambaIDPoolDN'] = array (
-				'type' => 'ext_preg',
-				'regex' => 'dn',
-				'required' => true,
-				'required_message' => $this->messages['sambaIDPoolDN'][0],
-				'error_message' => $this->messages['sambaIDPoolDN'][0]);
-		}
-		elseif ($options['posixGroup_gidGenerator'][0] == 'windowsDomain') {
-			$this->meta['config_checks']['group']['posixGroup_windowsIDPoolDN'] = array (
-				'type' => 'ext_preg',
-				'regex' => 'dn',
-				'required' => true,
-				'required_message' => $this->messages['windowsIDPoolDN'][0],
-				'error_message' => $this->messages['windowsIDPoolDN'][0]);
-		}
-		return parent::check_configOptions($typeIds, $options);
-	}
-
-	/**
 	* Returns one or more free GID numbers.
 	*
 	* @param integer $count Number of needed free GIDs.
@@ -1067,25 +1089,26 @@ class posixGroup extends baseModule implements passwordService {
 	* @return mixed Null if no GIDs are free else an array of free GIDs.
 	*/
 	function getNextGIDs($count, &$errors, $type) {
+		$typeId = $type->getId();
 		// check if UIDs should be taken from Samba pool entry
-		if (isset($this->moduleSettings['posixGroup_gidGenerator']) && ($this->moduleSettings['posixGroup_gidGenerator'][0] == 'sambaPool')) {
-			return $this->getNextSambaPoolGIDs($count, $errors);
+		if (isset($this->moduleSettings['posixGroup_' . $typeId . '_gidGenerator']) && ($this->moduleSettings['posixGroup_' . $typeId . '_gidGenerator'][0] == 'sambaPool')) {
+			return $this->getNextSambaPoolGIDs($count, $errors, $typeId);
 		}
 		// check if UIDs should be taken from domain info entry
-		if (isset($this->moduleSettings['posixGroup_gidGenerator']) && ($this->moduleSettings['posixGroup_gidGenerator'][0] == 'windowsDomain')) {
-			return $this->getNextDomainInfoGIDs($count, $errors);
+		if (isset($this->moduleSettings['posixGroup_' . $typeId . '_gidGenerator']) && ($this->moduleSettings['posixGroup_' . $typeId . '_gidGenerator'][0] == 'windowsDomain')) {
+			return $this->getNextDomainInfoGIDs($count, $errors, $typeId);
 		}
 		// use magic number
-		if (isset($this->moduleSettings['posixGroup_gidGenerator']) && ($this->moduleSettings['posixGroup_gidGenerator'][0] == 'magicNumber')) {
+		if (isset($this->moduleSettings['posixGroup_' . $typeId . '_gidGenerator']) && ($this->moduleSettings['posixGroup_' . $typeId . '_gidGenerator'][0] == 'magicNumber')) {
 			$return = array();
 			for ($i = 0; $i < $count; $i++) {
-				$return[] = $this->moduleSettings['posixGroup_magicNumber'][0];
+				$return[] = $this->moduleSettings['posixGroup_' . $typeId . '_magicNumber'][0];
 			}
 			return $return;
 		}
 		$ret = array();
-		$minID = intval($this->moduleSettings['posixGroup_minGID'][0]);
-		$maxID = intval($this->moduleSettings['posixGroup_maxGID'][0]);
+		$minID = intval($this->moduleSettings['posixGroup_' . $typeId . '_minGID'][0]);
+		$maxID = intval($this->moduleSettings['posixGroup_' . $typeId . '_maxGID'][0]);
 		$gidList = $this->getGIDs($type);
 		$gids = array();
 		foreach ($gidList as $gid) {
@@ -1134,10 +1157,11 @@ class posixGroup extends baseModule implements passwordService {
 	 *
 	 * @param integer $count number of needed free GIDs.
 	 * @param array $errors list of error messages where errors can be added
+	 * @param string $typeId account type id
 	 * @return mixed null if no GIDs are free else an array of free GIDs
 	 */
-	private function getNextSambaPoolGIDs($count, &$errors) {
-		$dn = $this->moduleSettings['posixGroup_sambaIDPoolDN'][0];
+	private function getNextSambaPoolGIDs($count, &$errors, $typeId) {
+		$dn = $this->moduleSettings['posixGroup_' . $typeId . '_sambaIDPoolDN'][0];
 		$attrs = ldapGetDN($dn, array('gidNumber'));
 		if (isset($attrs['gidnumber'][0]) && ($attrs['gidnumber'][0] != '')) {
 			$newValue = $attrs['gidnumber'][0] + $count;
@@ -1162,10 +1186,11 @@ class posixGroup extends baseModule implements passwordService {
 	 *
 	 * @param integer $count number of needed free GIDs.
 	 * @param array $errors list of error messages where errors can be added
+	 * @param string $typeId account type id
 	 * @return mixed null if no GIDs are free else an array of free GIDs
 	 */
-	private function getNextDomainInfoGIDs($count, &$errors) {
-		$dn = $this->moduleSettings['posixGroup_windowsIDPoolDN'][0];
+	private function getNextDomainInfoGIDs($count, &$errors, $typeId) {
+		$dn = $this->moduleSettings['posixGroup_' . $typeId . '_windowsIDPoolDN'][0];
 		$attrs = ldapGetDN($dn, array('msSFU30MaxGidNumber'));
 		if (isset($attrs['mssfu30maxgidnumber'][0]) && ($attrs['mssfu30maxgidnumber'][0] != '')) {
 			$newValue = $attrs['mssfu30maxgidnumber'][0] + $count;
@@ -1237,8 +1262,9 @@ class posixGroup extends baseModule implements passwordService {
 		$attrs = array('gidNumber');
 		$filter = '(&(objectClass=posixGroup)(gidNumber=*))';
 		$suffix = $type->getSuffix();
-		if (isset($this->moduleSettings['posixGroup_gidCheckSuffix'][0]) && ($this->moduleSettings['posixGroup_gidCheckSuffix'][0] != '')) {
-			$suffix = $this->moduleSettings['posixGroup_gidCheckSuffix'][0];
+		$typeId = $type->getId();
+		if (!empty($this->moduleSettings['posixGroup_' . $typeId . '_gidCheckSuffix'][0])) {
+			$suffix = $this->moduleSettings['posixGroup_' . $typeId . '_gidCheckSuffix'][0];
 		}
 		$result = searchLDAP($suffix, $filter, $attrs);
 		for ($i = 0; $i < sizeof($result); $i++) {
@@ -1308,8 +1334,9 @@ class posixGroup extends baseModule implements passwordService {
 		$attrs = array('cn');
 		$filter = '(&(objectClass=posixGroup)(cn=*))';
 		$suffix = $this->getAccountContainer()->get_type()->getSuffix();
-		if (isset($this->moduleSettings['posixGroup_gidCheckSuffix'][0]) && ($this->moduleSettings['posixGroup_gidCheckSuffix'][0] != '')) {
-			$suffix = $this->moduleSettings['posixGroup_gidCheckSuffix'][0];
+		$typeId = $this->getAccountContainer()->get_type()->getId();
+		if (!empty($this->moduleSettings['posixGroup_' . $typeId . '_gidCheckSuffix'][0])) {
+			$suffix = $this->moduleSettings['posixGroup_' . $typeId . '_gidCheckSuffix'][0];
 		}
 		$result = searchLDAP($suffix, $filter, $attrs);
 		for ($i = 0; $i < sizeof($result); $i++) {
