@@ -58,6 +58,7 @@ class posixGroup extends baseModule implements passwordService {
 	 */
 	function get_uploadColumns($selectedModules, &$type) {
 		$return = parent::get_uploadColumns($selectedModules, $type);
+		$typeId = $type->getId();
 		if ($this->manageCnAndDescription($selectedModules)) {
 			array_unshift($return,
 				array(
@@ -78,6 +79,14 @@ class posixGroup extends baseModule implements passwordService {
 				)
 			);
 		}
+		if (!$this->isBooleanConfigOptionSet('posixGroup_' . $typeId . '_hidememberUid')) {
+			$return[] = array(
+				'name' => 'posixGroup_members',
+				'description' => _('Group members'),
+				'help' => 'upload_members',
+				'example' => _('user01,user02,user03')
+			);
+		}
 		return $return;
 	}
 
@@ -88,6 +97,7 @@ class posixGroup extends baseModule implements passwordService {
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$error_messages = array();
 		$needAutoGID = array();
+		$typeId = $type->getId();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			if (!in_array("posixGroup", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "posixGroup";
 			if ($this->manageCnAndDescription($selectedModules)) {
@@ -117,7 +127,7 @@ class posixGroup extends baseModule implements passwordService {
 				}
 			}
 			// group members
-			if (!$this->isBooleanConfigOptionSet('posixGroup_hidememberUid') && ($rawAccounts[$i][$ids['posixGroup_members']] != "")) {
+			if (!$this->isBooleanConfigOptionSet('posixGroup_' . $typeId . '_hidememberUid') && ($rawAccounts[$i][$ids['posixGroup_members']] != "")) {
 				if (get_preg($rawAccounts[$i][$ids['posixGroup_members']], 'usernameList')) {
 					$partialAccounts[$i]['memberUid'] = explode(",", $rawAccounts[$i][$ids['posixGroup_members']]);
 				}
@@ -187,9 +197,10 @@ class posixGroup extends baseModule implements passwordService {
 	function display_html_attributes() {
 		$return = new htmlTable();
 		$modules = $this->getAccountContainer()->get_type()->getModules();
+		$typeId = $this->getAccountContainer()->get_type()->getId();
 		if ($this->autoAddObjectClasses || (isset($this->attributes['objectClass']) && in_array('posixGroup', $this->attributes['objectClass']))) {
 			// auto sync group members
-			if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
+			if ($this->isBooleanConfigOptionSet('posixGroup_' . $typeId . '_autoSyncGon')) {
 				$this->syncGon();
 			}
 			// group name
@@ -238,9 +249,9 @@ class posixGroup extends baseModule implements passwordService {
 				$return->addElement(new htmlTableExtendedInputCheckbox('changegids', $this->changegids, _('Change GID number of users and hosts'), 'changegids'), true);
 			}
 			// group members
-			if (!$this->isBooleanConfigOptionSet('posixGroup_hidememberUid')) {
+			if (!$this->isBooleanConfigOptionSet('posixGroup_' . $typeId . '_hidememberUid')) {
 				$return->addElement(new htmlOutputText(_("Group members")));
-				if (!$this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
+				if (!$this->isBooleanConfigOptionSet('posixGroup_' . $typeId . '_autoSyncGon')) {
 					$return->addElement(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Edit members')));
 				}
 				else {
@@ -418,10 +429,7 @@ class posixGroup extends baseModule implements passwordService {
 		// LDAP aliases
 		$return['LDAPaliases'] = array('commonName' => 'cn');
 		// managed attributes
-		$return['attributes'] = array('gidNumber', $this->passwordAttrName);
-		if (!$this->isBooleanConfigOptionSet('posixGroup_hidememberUid')) {
-			$return['attributes'][] = 'memberUid';
-		}
+		$return['attributes'] = array('gidNumber', $this->passwordAttrName, 'memberUid');
 		// profile options
 		if (!$this->autoAddObjectClasses) {
 			$profileContainer = new htmlTable();
@@ -432,10 +440,6 @@ class posixGroup extends baseModule implements passwordService {
 		$return['PDF_fields'] = array(
 			'gidNumber' => _('GID number'),
 		);
-		if (!$this->isBooleanConfigOptionSet('posixGroup_hidememberUid')) {
-			$return['PDF_fields']['memberUid'] = _('Group members');
-			$return['PDF_fields']['memberUidPrimary'] = _('Group members (incl. primary members)');
-		}
 		// upload fields
 		$return['upload_columns'] = array(
 		array(
@@ -451,14 +455,6 @@ class posixGroup extends baseModule implements passwordService {
 			'example' => _('secret')
 		)
 		);
-		if (!$this->isBooleanConfigOptionSet('posixGroup_hidememberUid')) {
-			$return['upload_columns'][] = array(
-				'name' => 'posixGroup_members',
-				'description' => _('Group members'),
-				'help' => 'upload_members',
-				'example' => _('user01,user02,user03')
-			);
-		}
 		// help Entries
 		$return['help'] = array(
 			'gidNumber'	=> array(
@@ -682,6 +678,10 @@ class posixGroup extends baseModule implements passwordService {
 		if ($this->manageCnAndDescription($modules)) {
 			$fields['cn'] = _('Group name');
 			$fields['description'] = _('Description');
+		}
+		if (!$this->isBooleanConfigOptionSet('posixGroup_' . $typeId . '_hidememberUid')) {
+			$fields['memberUid'] = _('Group members');
+			$fields['memberUidPrimary'] = _('Group members (incl. primary members)');
 		}
 		return $fields;
 	}
@@ -1047,7 +1047,8 @@ class posixGroup extends baseModule implements passwordService {
 			return array();
 		}
 		// auto sync group members
-		if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
+		$typeId = $this->getAccountContainer()->get_type()->getId();
+		if ($this->isBooleanConfigOptionSet('posixGroup_' . $typeId . '_autoSyncGon')) {
 			$this->syncGon();
 		}
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
