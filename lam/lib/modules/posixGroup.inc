@@ -596,7 +596,7 @@ class posixGroup extends baseModule implements passwordService {
 			foreach ($gonModules as $gonModule) {
 				if (!empty($allScopes[$gonModule])) {
 					foreach ($allScopes[$gonModule] as $gonTypeId) {
-						if (getScopeFromTypeId($gonTypeId) === 'group') {
+						if ($gonTypeId === $typeId) {
 							$gonFound = true;
 						}
 					}
