@@ -2,7 +2,6 @@
 use \LAM\TYPES\TypeManager;
 use function LAM\TYPES\getScopeFromTypeId;
 /*
-	$Id$
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
@@ -2015,16 +2014,12 @@ class posixAccount extends baseModule implements passwordService {
 			}
 		}
 		$configOptionsContainer->addVerticalSpacer('1rem');
-		$advancedOptions = new htmlResponsiveRow();
-		$advancedOptions->add(new htmlResponsiveInputCheckbox('posixAccount_primaryGroupAsSecondary', false, _('Set primary group as memberUid'), 'primaryGroupAsSecondary'), 12);
+		$configOptionsContainer->add(new htmlResponsiveInputCheckbox('posixAccount_primaryGroupAsSecondary', false, _('Set primary group as memberUid'), 'primaryGroupAsSecondary'), 12);
 		$isWindows = array_key_exists('windowsUser', $allScopes);
 		if ($isWindows) {
-			$advancedOptions->add(new htmlResponsiveInputCheckbox('posixAccount_noObjectClass', false, _('Do not add object class'), 'noObjectClass'), 12);
+			$configOptionsContainer->add(new htmlResponsiveInputCheckbox('posixAccount_noObjectClass', false, _('Do not add object class'), 'noObjectClass'), 12);
 		}
-		$advancedOptions->add(new htmlResponsiveInputField(_('User name suggestion'), 'posixAccount_userNameSuggestion', '@givenname@%sn%', 'userNameSuggestion'), 12);
-		$advancedOptionsAccordion = new htmlAccordion('posixAccountAdvancedOptions', array(_('Advanced options') => $advancedOptions), false);
-		$advancedOptionsAccordion->colspan = 5;
-		$configOptionsContainer->add($advancedOptionsAccordion, 12);
+		$configOptionsContainer->add(new htmlResponsiveInputField(_('User name suggestion'), 'posixAccount_userNameSuggestion', '@givenname@%sn%', 'userNameSuggestion'), 12);
 		$return[] = $configOptionsContainer;
 
 		return $return;
