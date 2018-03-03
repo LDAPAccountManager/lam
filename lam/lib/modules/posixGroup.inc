@@ -200,7 +200,7 @@ class posixGroup extends baseModule implements passwordService {
 		$typeId = $this->getAccountContainer()->get_type()->getId();
 		if ($this->autoAddObjectClasses || (isset($this->attributes['objectClass']) && in_array('posixGroup', $this->attributes['objectClass']))) {
 			// auto sync group members
-			if ($this->isBooleanConfigOptionSet('posixGroup_' . $typeId . '_autoSyncGon')) {
+			if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
 				$this->syncGon();
 			}
 			// group name
@@ -251,7 +251,7 @@ class posixGroup extends baseModule implements passwordService {
 			// group members
 			if (!$this->isBooleanConfigOptionSet('posixGroup_' . $typeId . '_hidememberUid')) {
 				$return->addElement(new htmlOutputText(_("Group members")));
-				if (!$this->isBooleanConfigOptionSet('posixGroup_' . $typeId . '_autoSyncGon')) {
+				if (!$this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
 					$return->addElement(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Edit members')));
 				}
 				else {
@@ -591,21 +591,24 @@ class posixGroup extends baseModule implements passwordService {
 			$configContainer->add($magicNumber, 12);
 			$configContainer->add(new htmlResponsiveInputField(_('Suffix for GID/group name check'), 'posixGroup_' . $typeId . '_gidCheckSuffix', '', 'gidCheckSuffix'), 12);
 			$configContainer->add(new htmlResponsiveInputCheckbox('posixGroup_' . $typeId . '_hidememberUid', false, _('Disable membership management'), 'hidememberUid'), 12);
-			$gonModules = array('groupOfNames', 'groupOfUniqueNames');
-			$gonFound = false;
-			foreach ($gonModules as $gonModule) {
-				if (!empty($allScopes[$gonModule])) {
-					foreach ($allScopes[$gonModule] as $gonTypeId) {
-						if ($gonTypeId === $typeId) {
-							$gonFound = true;
-						}
+			$configContainer->addVerticalSpacer('2rem');
+		}
+		$gonModules = array('groupOfNames', 'groupOfUniqueNames');
+		$gonFound = false;
+		foreach ($gonModules as $gonModule) {
+			if (!empty($allScopes[$gonModule])) {
+				foreach ($allScopes[$gonModule] as $gonTypeId) {
+					if (getScopeFromTypeId($gonTypeId) === 'group') {
+						$gonFound = true;
 					}
 				}
 			}
-			if ($gonFound) {
-				$configContainer->add(new htmlResponsiveInputCheckbox('posixGroup_' . $typeId . '_autoSyncGon', false, _('Force sync with group of names'), 'autoSyncGon'), 12);
-			}
-			$configContainer->addVerticalSpacer('2rem');
+		}
+		if ($gonFound || !isset($allScopes['posixAccount'])) {
+			$configContainer->add(new htmlSubTitle(_("Options")), 12);
+		}
+		if ($gonFound) {
+			$configContainer->add(new htmlResponsiveInputCheckbox('posixGroup_autoSyncGon', false, _('Force sync with group of names'), 'autoSyncGon'), 12);
 		}
 		// display password hash option only if posixAccount module is not used
 		if (!isset($allScopes['posixAccount'])) {
@@ -1048,7 +1051,7 @@ class posixGroup extends baseModule implements passwordService {
 		}
 		// auto sync group members
 		$typeId = $this->getAccountContainer()->get_type()->getId();
-		if ($this->isBooleanConfigOptionSet('posixGroup_' . $typeId . '_autoSyncGon')) {
+		if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
 			$this->syncGon();
 		}
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
