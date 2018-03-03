@@ -261,14 +261,6 @@ class posixAccount extends baseModule implements passwordService {
 				'default' => 'false'
 			),
 			);
-			if (!$this->isBooleanConfigOptionSet('posixAccount_hidegecos')) {
-				$return['upload_columns'][] = array(
-					'name' => 'posixAccount_gecos',
-					'description' => _('Gecos'),
-					'help' => 'gecos',
-					'example' => _('Steve Miller,Room 2.14,123-123-1234,123-123-1234')
-				);
-			}
 			if (self::areGroupOfNamesActive()) {
 				$return['upload_columns'][] = array(
 					'name' => 'posixAccount_gon',
@@ -303,14 +295,6 @@ class posixAccount extends baseModule implements passwordService {
 				'required' => true
 			),
 			);
-			if (!$this->isBooleanConfigOptionSet('posixAccount_hidegecos')) {
-				$return['upload_columns'][] = array(
-					'name' => 'posixAccount_gecos',
-					'description' => _('Gecos'),
-					'help' => 'gecos',
-					'example' => _('pc01,Room 2.34')
-				);
-			}
 		}
 		// available PDF fields
 		if ($this->get_scope() == 'host') {
@@ -328,9 +312,6 @@ class posixAccount extends baseModule implements passwordService {
 			'loginShell' => _('Login shell'),
 			'userPassword' => _('Password')
 		));
-		if (!$this->isBooleanConfigOptionSet('posixAccount_hidegecos')) {
-			$return['PDF_fields']['gecos'] = _('Gecos');
-		}
 		if (self::areGroupOfNamesActive()) {
 			$return['PDF_fields']['gon'] = _('Groups of names');
 		}
@@ -500,6 +481,7 @@ class posixAccount extends baseModule implements passwordService {
 	function init($base) {
 		// make optional if needed
 		$modules = $_SESSION[$base]->get_type()->getModules();
+		$typeId = $_SESSION[$base]->get_type()->getId();
 		$this->autoAddObjectClasses = !$this->isOptional($modules) && !$this->skipObjectClass();
 		// call parent init
 		parent::init($base);
@@ -540,6 +522,7 @@ class posixAccount extends baseModule implements passwordService {
 	* @return boolean true, if settings are complete
 	*/
 	function module_complete() {
+		$typeId = $this->getAccountContainer()->get_type()->getId();
 		if (!$this->skipObjectClass() && (!isset($this->attributes['objectClass']) || !in_array('posixAccount', $this->attributes['objectClass']))) {
 			// no checks if object class is not set
 			return true;
@@ -614,6 +597,7 @@ class posixAccount extends baseModule implements passwordService {
 	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
 	*/
 	function save_attributes() {
+		$typeId = $this->getAccountContainer()->get_type()->getId();
 		if (!$this->skipObjectClass() && (!in_array('posixAccount', $this->attributes['objectClass']) && !in_array('posixAccount', $this->orig['objectClass']))) {
 			// skip saving if the extension was not added/modified
 			return array();
@@ -995,6 +979,7 @@ class posixAccount extends baseModule implements passwordService {
 		$keysToReplace = array('cn', 'gecos', 'homeDirectory');
 		$this->getAccountContainer()->replaceWildcardsInPOST($keysToReplace);
 		$modules = $this->getAccountContainer()->get_type()->getModules();
+		$typeId = $this->getAccountContainer()->get_type()->getId();
 		$errors = array();
 		if (isset($_POST['addObjectClass'])) {
 			if (!isset($this->attributes['objectClass'])) {
@@ -1027,7 +1012,7 @@ class posixAccount extends baseModule implements passwordService {
 		if (isset($_POST['loginShell'])) {
 			$this->attributes['loginShell'][0] = $_POST['loginShell'];
 		}
-		if (!$this->isBooleanConfigOptionSet('posixAccount_hidegecos')) {
+		if (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegecos')) {
 			if (isset($_POST['gecos'])) $this->attributes['gecos'][0] = $_POST['gecos'];
 		}
 		if (isset($this->orig['uid'][0]) && ($this->orig['uid'][0] != '') && (trim($_POST['uid']) != $this->attributes['uid'][0])) {
@@ -1101,19 +1086,19 @@ class posixAccount extends baseModule implements passwordService {
 		// Check if UID is valid. If none value was entered, the next useable value will be inserted
 		// load min and may uidNumber
 		if ($this->get_scope()=='user') {
-			$minID = intval($this->moduleSettings['posixAccount_minUID'][0]);
-			$maxID = intval($this->moduleSettings['posixAccount_maxUID'][0]);
+			$minID = intval($this->moduleSettings['posixAccount_' . $typeId . '_minUID'][0]);
+			$maxID = intval($this->moduleSettings['posixAccount_' . $typeId . '_maxUID'][0]);
 		}
 		if ($this->get_scope()=='host') {
-			$minID = intval($this->moduleSettings['posixAccount_minMachine'][0]);
-			$maxID = intval($this->moduleSettings['posixAccount_maxMachine'][0]);
+			$minID = intval($this->moduleSettings['posixAccount_' . $typeId . '_minMachine'][0]);
+			$maxID = intval($this->moduleSettings['posixAccount_' . $typeId . '_maxMachine'][0]);
 		}
-		$uids = $this->getUIDs();
+		$uids = $this->getUIDs($typeId);
 		if ($this->attributes['uidNumber'][0]=='') {
 			// No id-number given
 			if (!isset($this->orig['uidNumber'][0]) || ($this->orig['uidNumber'][0] == '')) {
 				// new account -> we have to find a free id-number
-				$newUID = $this->getNextUIDs(1, $errors);
+				$newUID = $this->getNextUIDs(1, $errors, $typeId);
 				if (is_array($newUID)) {
 					$this->attributes['uidNumber'][0] = $newUID[0];
 				}
@@ -1128,12 +1113,12 @@ class posixAccount extends baseModule implements passwordService {
 			// check manual ID
 			if ($this->getAccountContainer()->isNewAccount || !isset($this->orig['uidNumber'][0]) || ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0])) {
 				// check range
-				if (($this->get_scope() == 'user') && (!isset($this->moduleSettings['posixAccount_uidGeneratorUsers']) || ($this->moduleSettings['posixAccount_uidGeneratorUsers'][0] == 'range'))) {
+				if (($this->get_scope() == 'user') && (!isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers']) || ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers'][0] == 'range'))) {
 					if (!is_numeric($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] < $minID) || ($this->attributes['uidNumber'][0] > $maxID)) {
 						$errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
 					}
 				}
-				if (($this->get_scope() == 'host') && (!isset($this->moduleSettings['posixAccount_uidGeneratorHosts']) || ($this->moduleSettings['posixAccount_uidGeneratorHosts'][0] == 'range'))) {
+				if (($this->get_scope() == 'host') && (!isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorHosts']) || ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorHosts'][0] == 'range'))) {
 					if (!is_numeric($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] < $minID) || ($this->attributes['uidNumber'][0] > $maxID)) {
 						$errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
 					}
@@ -1150,12 +1135,12 @@ class posixAccount extends baseModule implements passwordService {
 		// Create automatic useraccount with number if original user already exists
 		// Reset name to original name if new name is in use
 		// Set username back to original name if new username is in use
-		if ($this->userNameExists($this->attributes['uid'][0]) && isset($this->orig['uid'][0]) && ($this->orig['uid'][0]!='')) {
+		if ($this->userNameExists($this->attributes['uid'][0], $typeId) && isset($this->orig['uid'][0]) && ($this->orig['uid'][0]!='')) {
 			$this->attributes['uid'][0] = $this->orig['uid'][0];
 		}
 		else {
 			// Change uid to a new uid until a free uid is found
-			while ($this->userNameExists($this->attributes['uid'][0])) {
+			while ($this->userNameExists($this->attributes['uid'][0], $typeId)) {
 				$this->attributes['uid'][0] = $this->getNextUserName($this->attributes['uid'][0]);
 			}
 		}
@@ -1181,7 +1166,7 @@ class posixAccount extends baseModule implements passwordService {
 			}
 		}
 		$attributeList = array($homedirAttrName);
-		if (!$this->isBooleanConfigOptionSet('posixAccount_hidegecos')) {
+		if (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegecos')) {
 			$attributeList[] = 'gecos';
 		}
 		for ($i = 0; $i < sizeof($attributeList); $i++) {
@@ -1239,11 +1224,12 @@ class posixAccount extends baseModule implements passwordService {
 	* @return array list of info/error messages
 	*/
 	function process_group() {
+		$typeId = $this->getAccountContainer()->get_type()->getId();
 		// Unix groups
-		if ($this->isBooleanConfigOptionSet('posixGroup_' . $this->getAccountContainer()->get_type()->getId() . '_autoSyncGon')) {
+		if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
 			$this->syncGonToGroups();
 		}
-		elseif (!$this->isBooleanConfigOptionSet('posixAccount_hideposixGroups')) {
+		elseif (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hideposixGroups')) {
 			if (isset($_POST['addgroups']) && isset($_POST['addgroups_button'])) { // Add groups to list
 				// add new group
 				$this->groups = @array_merge($this->groups, $_POST['addgroups']);
@@ -1253,7 +1239,7 @@ class posixAccount extends baseModule implements passwordService {
 			}
 		}
 		// group of names
-		if (self::areGroupOfNamesActive() && !$this->isBooleanConfigOptionSet('posixAccount_hidegon')) {
+		if (self::areGroupOfNamesActive() && !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegon')) {
 			if (isset($_POST['addgons']) && isset($_POST['addgons_button'])) { // Add groups to list
 				// add new group
 				$this->gonList = @array_merge($this->gonList, $_POST['addgons']);
@@ -1343,6 +1329,7 @@ class posixAccount extends baseModule implements passwordService {
 	function display_html_attributes() {
 		$return = new htmlTable();
 		$modules = $this->getAccountContainer()->get_type()->getModules();
+		$typeId = $this->getAccountContainer()->get_type()->getId();
 		if (!$this->isOptional($modules) || $this->skipObjectClass() || (isset($this->attributes['objectClass']) && in_array('posixAccount', $this->attributes['objectClass']))) {
 			$homeDirAttr = $this->getHomedirAttrName($modules);
 			$groupList = $this->findGroups($modules); // list of all group names
@@ -1361,9 +1348,9 @@ class posixAccount extends baseModule implements passwordService {
 				if ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
 					// fill default value for user ID with first/last name
 					$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
-					$this->attributes['uid'][0] = $this->getUserNameSuggestion($attrs);
-					if (!empty($this->attributes['uid'][0]) && $this->userNameExists($this->attributes['uid'][0])) {
-						while ($this->userNameExists($this->attributes['uid'][0])) {
+					$this->attributes['uid'][0] = $this->getUserNameSuggestion($attrs, $typeId);
+					if (!empty($this->attributes['uid'][0]) && $this->userNameExists($this->attributes['uid'][0], $typeId)) {
+						while ($this->userNameExists($this->attributes['uid'][0], $typeId)) {
 							$this->attributes['uid'][0] = $this->getNextUserName($this->attributes['uid'][0]);
 						}
 						$msg = new htmlStatusMessage($this->messages['uid'][5][0], $this->messages['uid'][5][1], $this->messages['uid'][5][2]);
@@ -1426,7 +1413,7 @@ class posixAccount extends baseModule implements passwordService {
 			$uidNumberInput->setFieldMaxLength(20);
 			$uidNumberInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
 			$return->addElement($uidNumberInput, true);
-			if (!$this->isBooleanConfigOptionSet('posixAccount_hidegecos')) {
+			if (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegecos')) {
 				$gecos = '';
 				if (isset($this->attributes['gecos'][0])) $gecos = $this->attributes['gecos'][0];
 				$return->addElement(new htmlTableExtendedInputField(_('Gecos'), 'gecos', $gecos, 'gecos'), true);
@@ -1441,7 +1428,7 @@ class posixAccount extends baseModule implements passwordService {
 
 			if ($this->get_scope()=='user') {
 				// additional groups
-				if (!$this->isBooleanConfigOptionSet('posixAccount_hidegon') || !$this->isBooleanConfigOptionSet('posixAccount_hideposixGroups')) {
+				if (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegon') || !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hideposixGroups')) {
 					$return->addElement(new htmlOutputText(_('Additional groups')));
 					$return->addElement(new htmlAccountPageButton(get_class($this), 'group', 'open', _('Edit groups')));
 					$return->addElement(new htmlHelpLink('addgroup'), true);
@@ -1542,7 +1529,8 @@ class posixAccount extends baseModule implements passwordService {
 	function display_html_group() {
 		$return = new htmlTable();
 		$modules = $this->getAccountContainer()->get_type()->getModules();
-		if (!$this->isBooleanConfigOptionSet('posixAccount_hideposixGroups')) {
+		$typeId = $this->getAccountContainer()->get_type()->getId();
+		if (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hideposixGroups')) {
 			// load list with all groups
 			$groups = $this->findGroups($modules);
 			for ($i = 0; $i < sizeof($groups); $i++) {
@@ -1559,7 +1547,7 @@ class posixAccount extends baseModule implements passwordService {
 			$unixContainer = new htmlTable();
 			$unixContainer->alignment = htmlElement::ALIGN_TOP;
 			$unixContainer->addElement(new htmlSubTitle(_("Unix groups")), true);
-			if ($this->isBooleanConfigOptionSet('posixGroup_' . $this->getAccountContainer()->get_type()->getId() . '_autoSyncGon')) {
+			if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
 				$this->syncGonToGroups();
 				foreach ($this->groups as $group) {
 					$unixContainer->addElement(new htmlOutputText($group), true);
@@ -1590,7 +1578,7 @@ class posixAccount extends baseModule implements passwordService {
 			$return->addVerticalSpace('3rem');
 		}
 
-		if (self::areGroupOfNamesActive() && !$this->isBooleanConfigOptionSet('posixAccount_hidegon')) {
+		if (self::areGroupOfNamesActive() && !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegon')) {
 			$gons = $this->findGroupOfNames();
 
 			$gonContainer = new htmlTable();
@@ -1799,6 +1787,7 @@ class posixAccount extends baseModule implements passwordService {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		$modules = $this->getAccountContainer()->get_type()->getModules();
+		$typeId = $this->getAccountContainer()->get_type()->getId();
 		// home directory
 		$homeDirAttr = $this->getHomedirAttrName($modules);
 		if (!empty($profile['posixAccount_homeDirectory'][0])) {
@@ -1854,6 +1843,9 @@ class posixAccount extends baseModule implements passwordService {
 		if ($this->manageCn($modules)) {
 			$fields['cn'] = _('Common name');
 		}
+		if (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegecos')) {
+			$return['PDF_fields']['gecos'] = _('Gecos');
+		}
 		return $fields;
 	}
 
@@ -1905,13 +1897,12 @@ class posixAccount extends baseModule implements passwordService {
 	}
 
 	/**
-	 * Returns a list of elements for the configuration.
-	 *
-	 * @param array $scopes account types (user, group, host)
-	 * @param array $allScopes list of all modules and active scopes
-	 * @return array configuration elements
+	 * {@inheritDoc}
+	 * @see baseModule::get_configOptions()
 	 */
-	function get_configOptions($scopes, $allScopes) {
+	public function get_configOptions($scopes, $allScopes) {
+		$typeManager = new TypeManager($_SESSION['conf_config']);
+		$isWindows = array_key_exists('windowsUser', $allScopes);
 		$return = array();
 		$generatorOptions = array(
 				_('Fixed range') => 'range',
@@ -1923,74 +1914,127 @@ class posixAccount extends baseModule implements passwordService {
 			// user options
 			$configUserContainer = new htmlResponsiveRow();
 			$configUserContainer->add(new htmlSubTitle(_("Users")), 12);
-			$uidGeneratorSelect = new htmlResponsiveSelect('posixAccount_uidGeneratorUsers', $generatorOptions, array('range'), _('UID generator'), 'uidGenerator');
-			$uidGeneratorSelect->setHasDescriptiveElements(true);
-			$uidGeneratorSelect->setTableRowsToHide(array(
-					'range' => array('posixAccount_sambaIDPoolDNUsers', 'posixAccount_windowsIDPoolDNUsers', 'posixAccount_magicNumberUser'),
-					'sambaPool' => array('posixAccount_minUID', 'posixAccount_maxUID', 'posixAccount_windowsIDPoolDNUsers', 'posixAccount_magicNumberUser'),
-					'windowsDomain' => array('posixAccount_minUID', 'posixAccount_maxUID', 'posixAccount_sambaIDPoolDNUsers', 'posixAccount_magicNumberUser'),
-					'magicNumber' => array('posixAccount_minUID', 'posixAccount_maxUID', 'posixAccount_windowsIDPoolDNUsers', 'posixAccount_sambaIDPoolDNUsers')
-			));
-			$uidGeneratorSelect->setTableRowsToShow(array(
-					'range' => array('posixAccount_minUID', 'posixAccount_maxUID'),
-					'sambaPool' => array('posixAccount_sambaIDPoolDNUsers'),
-					'windowsDomain' => array('posixAccount_windowsIDPoolDNUsers'),
-					'magicNumber' => array('posixAccount_magicNumberUser')
-			));
-			$configUserContainer->add($uidGeneratorSelect, 12);
-			$uidUsersGeneratorDN = new htmlResponsiveInputField(_('Samba ID pool DN'), 'posixAccount_sambaIDPoolDNUsers', null, 'sambaIDPoolDN');
-			$uidUsersGeneratorDN->setRequired(true);
-			$configUserContainer->add($uidUsersGeneratorDN, 12);
-			$uidUsersGeneratorWinDN = new htmlResponsiveInputField(_('Windows domain info DN'), 'posixAccount_windowsIDPoolDNUsers', null, 'windowsIDPoolDN');
-			$uidUsersGeneratorWinDN->setRequired(true);
-			$configUserContainer->add($uidUsersGeneratorWinDN, 12);
-			$minUid = new htmlResponsiveInputField(_('Minimum UID number'), 'posixAccount_minUID', null, 'minMaxUser');
-			$minUid->setRequired(true);
-			$configUserContainer->add($minUid, 12);
-			$maxUid = new htmlResponsiveInputField(_('Maximum UID number'), 'posixAccount_maxUID', null, 'minMaxUser');
-			$maxUid->setRequired(true);
-			$configUserContainer->add($maxUid, 12);
-			$magicNumberUser = new htmlResponsiveInputField(_('Magic number'), 'posixAccount_magicNumberUser', null, 'magicNumber');
-			$magicNumberUser->setRequired(true);
-			$configUserContainer->add($magicNumberUser, 12);
-			$configUserContainer->add(new htmlResponsiveInputField(_('Suffix for UID/user name check'), 'posixAccount_uidCheckSuffixUser', '', 'uidCheckSuffix'), 12);
+			foreach ($allScopes[get_class($this)] as $typeId) {
+				if (!(getScopeFromTypeId($typeId) === 'user')) {
+					continue;
+				}
+				if (sizeof($allScopes[get_class($this)]) > 1) {
+					$title = new htmlDiv(null, new htmlOutputText($typeManager->getConfiguredType($typeId)->getAlias()));
+					$title->setCSSClasses(array('bold', 'responsiveLabel'));
+					$configUserContainer->add($title, 12, 6);
+					$configUserContainer->add(new htmlOutputText('&nbsp;', false), 0, 6);
+				}
+				$uidGeneratorSelect = new htmlResponsiveSelect('posixAccount_' . $typeId . '_uidGeneratorUsers', $generatorOptions, array('range'), _('UID generator'), 'uidGenerator');
+				$uidGeneratorSelect->setHasDescriptiveElements(true);
+				$uidGeneratorSelect->setTableRowsToHide(array(
+						'range' => array('posixAccount_' . $typeId . '_sambaIDPoolDNUsers', 'posixAccount_' . $typeId . '_windowsIDPoolDNUsers',
+									'posixAccount_' . $typeId . '_magicNumberUser'),
+						'sambaPool' => array('posixAccount_' . $typeId . '_minUID', 'posixAccount_' . $typeId . '_maxUID',
+									'posixAccount_' . $typeId . '_windowsIDPoolDNUsers', 'posixAccount_' . $typeId . '_magicNumberUser'),
+						'windowsDomain' => array('posixAccount_' . $typeId . '_minUID', 'posixAccount_' . $typeId . '_maxUID',
+									'posixAccount_' . $typeId . '_sambaIDPoolDNUsers', 'posixAccount_' . $typeId . '_magicNumberUser'),
+						'magicNumber' => array('posixAccount_' . $typeId . '_minUID', 'posixAccount_' . $typeId . '_maxUID',
+									'posixAccount_' . $typeId . '_windowsIDPoolDNUsers', 'posixAccount_' . $typeId . '_sambaIDPoolDNUsers')
+				));
+				$uidGeneratorSelect->setTableRowsToShow(array(
+						'range' => array('posixAccount_' . $typeId . '_minUID', 'posixAccount_' . $typeId . '_maxUID'),
+						'sambaPool' => array('posixAccount_' . $typeId . '_sambaIDPoolDNUsers'),
+						'windowsDomain' => array('posixAccount_' . $typeId . '_windowsIDPoolDNUsers'),
+						'magicNumber' => array('posixAccount_' . $typeId . '_magicNumberUser')
+				));
+				$configUserContainer->add($uidGeneratorSelect, 12);
+				$uidUsersGeneratorDN = new htmlResponsiveInputField(_('Samba ID pool DN'), 'posixAccount_' . $typeId . '_sambaIDPoolDNUsers', null, 'sambaIDPoolDN');
+				$uidUsersGeneratorDN->setRequired(true);
+				$configUserContainer->add($uidUsersGeneratorDN, 12);
+				$uidUsersGeneratorWinDN = new htmlResponsiveInputField(_('Windows domain info DN'), 'posixAccount_' . $typeId . '_windowsIDPoolDNUsers', null, 'windowsIDPoolDN');
+				$uidUsersGeneratorWinDN->setRequired(true);
+				$configUserContainer->add($uidUsersGeneratorWinDN, 12);
+				$minUid = new htmlResponsiveInputField(_('Minimum UID number'), 'posixAccount_' . $typeId . '_minUID', null, 'minMaxUser');
+				$minUid->setRequired(true);
+				$configUserContainer->add($minUid, 12);
+				$maxUid = new htmlResponsiveInputField(_('Maximum UID number'), 'posixAccount_' . $typeId . '_maxUID', null, 'minMaxUser');
+				$maxUid->setRequired(true);
+				$configUserContainer->add($maxUid, 12);
+				$magicNumberUser = new htmlResponsiveInputField(_('Magic number'), 'posixAccount_' . $typeId . '_magicNumberUser', null, 'magicNumber');
+				$magicNumberUser->setRequired(true);
+				$configUserContainer->add($magicNumberUser, 12);
+				$configUserContainer->add(new htmlResponsiveInputField(_('Suffix for UID/user name check'), 'posixAccount_' . $typeId . '_uidCheckSuffixUser', '', 'uidCheckSuffix'), 12);
+				$hiddenOptionsContainerHead = new htmlGroup();
+				$hiddenOptionsContainerHead->addElement(new htmlOutputText(_('Hidden options')));
+				$hiddenOptionsContainerHead->addElement(new htmlHelpLink('hiddenOptions'));
+				$configUserContainer->addLabel($hiddenOptionsContainerHead, 12);
+				$configUserContainer->addField(new htmlOutputText(''));
+				$configUserContainer->addVerticalSpacer('0.5rem');
+				$configUserContainer->add(new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_hidegecos', false, _('Gecos'), null, false), 12);
+				$confActiveGONModules = array_merge($_SESSION['conf_config']->get_AccountModules('group'), $_SESSION['conf_config']->get_AccountModules('gon'));
+				if (in_array('groupOfNames', $confActiveGONModules) || in_array('groupOfMembers', $confActiveGONModules) || in_array('groupOfUniqueNames', $confActiveGONModules)) {
+					$configUserContainer->add(new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_hidegon', false, _('Groups of names'), null, false), 12);
+					$configUserContainer->add(new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_hideposixGroups', false, _('Unix groups'), null, false), 12);
+				}
+				$configUserContainer->addVerticalSpacer('1rem');
+				$configUserContainer->add(new htmlResponsiveInputField(_('User name suggestion'), 'posixAccount_' . $typeId . '_userNameSuggestion', '@givenname@%sn%', 'userNameSuggestion'), 12);
+				$configUserContainer->addVerticalSpacer('2rem');
+			}
 			$return[] = $configUserContainer;
 		}
 		// host options
 		if (in_array('host', $scopes)) {
 			$configHostContainer = new htmlResponsiveRow();
 			$configHostContainer->add(new htmlSubTitle(_("Hosts")), 12);
-			$uidHostGeneratorSelect = new htmlResponsiveSelect('posixAccount_uidGeneratorHosts', $generatorOptions, array('range'), _('UID generator'), 'uidGenerator');
-			$uidHostGeneratorSelect->setHasDescriptiveElements(true);
-			$uidHostGeneratorSelect->setTableRowsToHide(array(
-					'range' => array('posixAccount_sambaIDPoolDNHosts', 'posixAccount_windowsIDPoolDNHosts', 'posixAccount_magicNumberHost'),
-					'sambaPool' => array('posixAccount_minMachine', 'posixAccount_maxMachine', 'posixAccount_windowsIDPoolDNHosts', 'posixAccount_magicNumberHost'),
-					'windowsDomain' => array('posixAccount_minMachine', 'posixAccount_maxMachine', 'posixAccount_sambaIDPoolDNHosts', 'posixAccount_magicNumberHost'),
-					'magicNumber' => array('posixAccount_minMachine', 'posixAccount_maxMachine', 'posixAccount_windowsIDPoolDNHosts', 'posixAccount_sambaIDPoolDNHosts')
-			));
-			$uidHostGeneratorSelect->setTableRowsToShow(array(
-					'range' => array('posixAccount_minMachine', 'posixAccount_maxMachine'),
-					'sambaPool' => array('posixAccount_sambaIDPoolDNHosts'),
-					'windowsDomain' => array('posixAccount_windowsIDPoolDNHosts'),
-					'magicNumber' => array('posixAccount_magicNumberHost')
-			));
-			$configHostContainer->add($uidHostGeneratorSelect, 12);
-			$uidHostsGeneratorDN = new htmlResponsiveInputField(_('Samba ID pool DN'), 'posixAccount_sambaIDPoolDNHosts', null, 'sambaIDPoolDN');
-			$uidHostsGeneratorDN->setRequired(true);
-			$configHostContainer->add($uidHostsGeneratorDN, 12);
-			$uidHostsGeneratorWinDN = new htmlResponsiveInputField(_('Windows domain info DN'), 'posixAccount_windowsIDPoolDNHosts', null, 'windowsIDPoolDN');
-			$uidHostsGeneratorWinDN->setRequired(true);
-			$configHostContainer->add($uidHostsGeneratorWinDN, 12);
-			$minUid = new htmlResponsiveInputField(_('Minimum UID number'), 'posixAccount_minMachine', null, 'minMaxHost');
-			$minUid->setRequired(true);
-			$configHostContainer->add($minUid, 12);
-			$maxUid = new htmlResponsiveInputField(_('Maximum UID number'), 'posixAccount_maxMachine', null, 'minMaxHost');
-			$maxUid->setRequired(true);
-			$configHostContainer->add($maxUid, 12);
-			$magicNumberHost = new htmlResponsiveInputField(_('Magic number'), 'posixAccount_magicNumberHost', null, 'magicNumber');
-			$magicNumberHost->setRequired(true);
-			$configHostContainer->add($magicNumberHost, 12);
-			$configHostContainer->add(new htmlResponsiveInputField(_('Suffix for UID/user name check'), 'posixAccount_uidCheckSuffixHost', '', 'uidCheckSuffix'), 12);
+			foreach ($allScopes[get_class($this)] as $typeId) {
+				if (!(getScopeFromTypeId($typeId) === 'host')) {
+					continue;
+				}
+				if (sizeof($allScopes[get_class($this)]) > 1) {
+					$title = new htmlDiv(null, new htmlOutputText($typeManager->getConfiguredType($typeId)->getAlias()));
+					$title->setCSSClasses(array('bold', 'responsiveLabel'));
+					$configHostContainer->add($title, 12, 6);
+					$configHostContainer->add(new htmlOutputText('&nbsp;', false), 0, 6);
+				}
+				$uidHostGeneratorSelect = new htmlResponsiveSelect('posixAccount_' . $typeId . '_uidGeneratorHosts', $generatorOptions, array('range'), _('UID generator'), 'uidGenerator');
+				$uidHostGeneratorSelect->setHasDescriptiveElements(true);
+				$uidHostGeneratorSelect->setTableRowsToHide(array(
+						'range' => array('posixAccount_' . $typeId . '_sambaIDPoolDNHosts', 'posixAccount_' . $typeId . '_windowsIDPoolDNHosts',
+										'posixAccount_' . $typeId . '_magicNumberHost'),
+						'sambaPool' => array('posixAccount_' . $typeId . '_minMachine', 'posixAccount_' . $typeId . '_maxMachine',
+										'posixAccount_' . $typeId . '_windowsIDPoolDNHosts', 'posixAccount_' . $typeId . '_magicNumberHost'),
+						'windowsDomain' => array('posixAccount_' . $typeId . '_minMachine', 'posixAccount_' . $typeId . '_maxMachine',
+										'posixAccount_' . $typeId . '_sambaIDPoolDNHosts', 'posixAccount_' . $typeId . '_magicNumberHost'),
+						'magicNumber' => array('posixAccount_' . $typeId . '_minMachine', 'posixAccount_' . $typeId . '_maxMachine',
+										'posixAccount_' . $typeId . '_windowsIDPoolDNHosts', 'posixAccount_' . $typeId . '_sambaIDPoolDNHosts')
+				));
+				$uidHostGeneratorSelect->setTableRowsToShow(array(
+						'range' => array('posixAccount_' . $typeId . '_minMachine', 'posixAccount_' . $typeId . '_maxMachine'),
+						'sambaPool' => array('posixAccount_' . $typeId . '_sambaIDPoolDNHosts'),
+						'windowsDomain' => array('posixAccount_' . $typeId . '_windowsIDPoolDNHosts'),
+						'magicNumber' => array('posixAccount_' . $typeId . '_magicNumberHost')
+				));
+				$configHostContainer->add($uidHostGeneratorSelect, 12);
+				$uidHostsGeneratorDN = new htmlResponsiveInputField(_('Samba ID pool DN'), 'posixAccount_' . $typeId . '_sambaIDPoolDNHosts', null, 'sambaIDPoolDN');
+				$uidHostsGeneratorDN->setRequired(true);
+				$configHostContainer->add($uidHostsGeneratorDN, 12);
+				$uidHostsGeneratorWinDN = new htmlResponsiveInputField(_('Windows domain info DN'), 'posixAccount_' . $typeId . '_windowsIDPoolDNHosts', null, 'windowsIDPoolDN');
+				$uidHostsGeneratorWinDN->setRequired(true);
+				$configHostContainer->add($uidHostsGeneratorWinDN, 12);
+				$minUid = new htmlResponsiveInputField(_('Minimum UID number'), 'posixAccount_' . $typeId . '_minMachine', null, 'minMaxHost');
+				$minUid->setRequired(true);
+				$configHostContainer->add($minUid, 12);
+				$maxUid = new htmlResponsiveInputField(_('Maximum UID number'), 'posixAccount_' . $typeId . '_maxMachine', null, 'minMaxHost');
+				$maxUid->setRequired(true);
+				$configHostContainer->add($maxUid, 12);
+				$magicNumberHost = new htmlResponsiveInputField(_('Magic number'), 'posixAccount_' . $typeId . '_magicNumberHost', null, 'magicNumber');
+				$magicNumberHost->setRequired(true);
+				$configHostContainer->add($magicNumberHost, 12);
+				$configHostContainer->add(new htmlResponsiveInputField(_('Suffix for UID/user name check'), 'posixAccount_' . $typeId . '_uidCheckSuffixHost', '', 'uidCheckSuffix'), 12);
+				$hiddenOptionsContainerHead = new htmlGroup();
+				$hiddenOptionsContainerHead->addElement(new htmlOutputText(_('Hidden options')));
+				$hiddenOptionsContainerHead->addElement(new htmlHelpLink('hiddenOptions'));
+				$configHostContainer->addLabel($hiddenOptionsContainerHead, 12);
+				$configHostContainer->addField(new htmlOutputText(''));
+				$configHostContainer->addVerticalSpacer('0.5rem');
+				$configHostContainer->add(new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_hidegecos', false, _('Gecos'), null, false), 12);
+				$configHostContainer->addVerticalSpacer('2rem');
+			}
 			$return[] = $configHostContainer;
 		}
 		// common options
@@ -1999,27 +2043,10 @@ class posixAccount extends baseModule implements passwordService {
 		$configOptionsContainer->add(new htmlResponsiveSelect('posixAccount_pwdHash', getSupportedHashTypes(),
 				array('SSHA'), _("Password hash type"), 'pwdHash'), 12);
 		$configOptionsContainer->add(new htmlResponsiveInputTextarea('posixAccount_shells', implode("\r\n", $this->getShells()), 30, 4, _('Login shells'), 'loginShells'), 12);
-		$hiddenOptionsContainerHead = new htmlGroup();
-		$hiddenOptionsContainerHead->addElement(new htmlOutputText(_('Hidden options')));
-		$hiddenOptionsContainerHead->addElement(new htmlHelpLink('hiddenOptions'));
-		$configOptionsContainer->addLabel($hiddenOptionsContainerHead, 12);
-		$configOptionsContainer->addField(new htmlOutputText(''));
-		$configOptionsContainer->addVerticalSpacer('0.5rem');
-		$configOptionsContainer->add(new htmlResponsiveInputCheckbox('posixAccount_hidegecos', false, _('Gecos'), null, false), 12);
-		if (isset($_SESSION['conf_config'])) {
-			$confActiveGONModules = array_merge($_SESSION['conf_config']->get_AccountModules('group'), $_SESSION['conf_config']->get_AccountModules('gon'));
-			if (in_array('groupOfNames', $confActiveGONModules) || in_array('groupOfMembers', $confActiveGONModules) || in_array('groupOfUniqueNames', $confActiveGONModules)) {
-				$configOptionsContainer->add(new htmlResponsiveInputCheckbox('posixAccount_hidegon', false, _('Groups of names'), null, false), 12);
-				$configOptionsContainer->add(new htmlResponsiveInputCheckbox('posixAccount_hideposixGroups', false, _('Unix groups'), null, false), 12);
-			}
-		}
-		$configOptionsContainer->addVerticalSpacer('1rem');
 		$configOptionsContainer->add(new htmlResponsiveInputCheckbox('posixAccount_primaryGroupAsSecondary', false, _('Set primary group as memberUid'), 'primaryGroupAsSecondary'), 12);
-		$isWindows = array_key_exists('windowsUser', $allScopes);
 		if ($isWindows) {
 			$configOptionsContainer->add(new htmlResponsiveInputCheckbox('posixAccount_noObjectClass', false, _('Do not add object class'), 'noObjectClass'), 12);
 		}
-		$configOptionsContainer->add(new htmlResponsiveInputField(_('User name suggestion'), 'posixAccount_userNameSuggestion', '@givenname@%sn%', 'userNameSuggestion'), 12);
 		$return[] = $configOptionsContainer;
 
 		return $return;
@@ -2029,79 +2056,83 @@ class posixAccount extends baseModule implements passwordService {
 	 * {@inheritDoc}
 	 * @see baseModule::check_configOptions()
 	 */
-	function check_configOptions($typeIds, &$options) {
+	public function check_configOptions($typeIds, &$options) {
 		$return = array();
 		$scopes = array();
+		$ranges = array();
 		foreach ($typeIds as $typeId) {
 			$scopes[] = getScopeFromTypeId($typeId);
-		}		// user settings
-		if (in_array('user', $scopes)) {
-			if ($options['posixAccount_uidGeneratorUsers'][0] == 'range') {
-				// min/maxUID are required, check if they are numeric
-				if (!isset($options['posixAccount_minUID'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_minUID'][0])) {
-					$return[] = $this->messages['minUID'][0];
+			// user settings
+			if (getScopeFromTypeId($typeId) === 'user') {
+				if ($options['posixAccount_' . $typeId . '_uidGeneratorUsers'][0] == 'range') {
+					// min/maxUID are required, check if they are numeric
+					if (!isset($options['posixAccount_' . $typeId . '_minUID'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_' . $typeId . '_minUID'][0])) {
+						$return[] = $this->messages['minUID'][0];
+					}
+					if (!isset($options['posixAccount_' . $typeId . '_maxUID'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_' . $typeId . '_maxUID'][0])) {
+						$return[] = $this->messages['maxUID'][0];
+					}
+					// minUID < maxUID
+					if (isset($options['posixAccount_' . $typeId . '_minUID'][0]) && isset($options['posixAccount_' . $typeId . '_maxUID'][0])) {
+						if ($options['posixAccount_' . $typeId . '_minUID'][0] > $options['posixAccount_' . $typeId . '_maxUID'][0]) {
+							$return[] = $this->messages['cmp_UID'][0];
+						}
+					}
+					$ranges[] = array($options['posixAccount_' . $typeId . '_minUID'][0], $options['posixAccount_' . $typeId . '_maxUID'][0]);
 				}
-				if (!isset($options['posixAccount_maxUID'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_maxUID'][0])) {
-					$return[] = $this->messages['maxUID'][0];
+				elseif ($options['posixAccount_' . $typeId . '_uidGeneratorUsers'][0] == 'sambaPool') {
+					if (!isset($options['posixAccount_' . $typeId . '_sambaIDPoolDNUsers'][0]) || !get_preg($options['posixAccount_' . $typeId . '_sambaIDPoolDNUsers'][0], 'dn')) {
+						$return[] = $this->messages['sambaIDPoolDN'][0];
+					}
 				}
-				// minUID < maxUID
-				if (isset($options['posixAccount_minUID'][0]) && isset($options['posixAccount_maxUID'][0])) {
-					if ($options['posixAccount_minUID'][0] > $options['posixAccount_maxUID'][0]) {
-						$return[] = $this->messages['cmp_UID'][0];
+				elseif ($options['posixAccount_' . $typeId . '_uidGeneratorUsers'][0] == 'windowsDomain') {
+					if (!isset($options['posixAccount_' . $typeId . '_windowsIDPoolDNUsers'][0]) || !get_preg($options['posixAccount_' . $typeId . '_windowsIDPoolDNUsers'][0], 'dn')) {
+						$return[] = $this->messages['windowsIDPoolDN'][0];
 					}
 				}
 			}
-			elseif ($options['posixAccount_uidGeneratorUsers'][0] == 'sambaPool') {
-				if (!isset($options['posixAccount_sambaIDPoolDNUsers'][0]) || !get_preg($options['posixAccount_sambaIDPoolDNUsers'][0], 'dn')) {
-					$return[] = $this->messages['sambaIDPoolDN'][0];
+			// host settings
+			if (getScopeFromTypeId($typeId) === 'host') {
+				if ($options['posixAccount_' . $typeId . '_uidGeneratorHosts'][0] == 'range') {
+					// min/maxUID are required, check if they are numeric
+					if (!isset($options['posixAccount_' . $typeId . '_minMachine'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_' . $typeId . '_minMachine'][0])) {
+						$return[] = $this->messages['minMachine'][0];
+					}
+					if (!isset($options['posixAccount_' . $typeId . '_maxMachine'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_' . $typeId . '_maxMachine'][0])) {
+						$return[] = $this->messages['maxMachine'][0];
+					}
+					// minUID < maxUID
+					if (isset($options['posixAccount_' . $typeId . '_minMachine'][0]) && isset($options['posixAccount_' . $typeId . '_maxMachine'][0])) {
+						if ($options['posixAccount_' . $typeId . '_minMachine'][0] > $options['posixAccount_' . $typeId . '_maxMachine'][0]) {
+							$return[] = $this->messages['cmp_Machine'][0];
+						}
+					}
+					$ranges[] = array($options['posixAccount_' . $typeId . '_minMachine'][0], $options['posixAccount_' . $typeId . '_maxMachine'][0]);
 				}
-			}
-			elseif ($options['posixAccount_uidGeneratorUsers'][0] == 'windowsDomain') {
-				if (!isset($options['posixAccount_windowsIDPoolDNUsers'][0]) || !get_preg($options['posixAccount_windowsIDPoolDNUsers'][0], 'dn')) {
-					$return[] = $this->messages['windowsIDPoolDN'][0];
-				}
-			}
-		}
-		// host settings
-		if (in_array('host', $scopes)) {
-			if ($options['posixAccount_uidGeneratorHosts'][0] == 'range') {
-				// min/maxUID are required, check if they are numeric
-				if (!isset($options['posixAccount_minMachine'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_minMachine'][0])) {
-					$return[] = $this->messages['minMachine'][0];
-				}
-				if (!isset($options['posixAccount_maxMachine'][0]) || !preg_match('/^[0-9]+$/', $options['posixAccount_maxMachine'][0])) {
-					$return[] = $this->messages['maxMachine'][0];
-				}
-				// minUID < maxUID
-				if (isset($options['posixAccount_minMachine'][0]) && isset($options['posixAccount_maxMachine'][0])) {
-					if ($options['posixAccount_minMachine'][0] > $options['posixAccount_maxMachine'][0]) {
-						$return[] = $this->messages['cmp_Machine'][0];
+				elseif ($options['posixAccount_' . $typeId . '_uidGeneratorHosts'][0] == 'sambaPool') {
+					if (!isset($options['posixAccount_' . $typeId . '_sambaIDPoolDNHosts'][0]) || !get_preg($options['posixAccount_' . $typeId . '_sambaIDPoolDNHosts'][0], 'dn')) {
+						$return[] = $this->messages['sambaIDPoolDN'][0];
 					}
 				}
-			}
-			elseif ($options['posixAccount_uidGeneratorHosts'][0] == 'sambaPool') {
-				if (!isset($options['posixAccount_sambaIDPoolDNHosts'][0]) || !get_preg($options['posixAccount_sambaIDPoolDNHosts'][0], 'dn')) {
-					$return[] = $this->messages['sambaIDPoolDN'][0];
-				}
-			}
-			elseif ($options['posixAccount_uidGeneratorHosts'][0] == 'windowsDomain') {
-				if (!isset($options['posixAccount_windowsIDPoolDNHosts'][0]) || !get_preg($options['posixAccount_windowsIDPoolDNHosts'][0], 'dn')) {
-					$return[] = $this->messages['windowsIDPoolDN'][0];
+				elseif ($options['posixAccount_' . $typeId . '_uidGeneratorHosts'][0] == 'windowsDomain') {
+					if (!isset($options['posixAccount_' . $typeId . '_windowsIDPoolDNHosts'][0]) || !get_preg($options['posixAccount_' . $typeId . '_windowsIDPoolDNHosts'][0], 'dn')) {
+						$return[] = $this->messages['windowsIDPoolDN'][0];
+					}
 				}
 			}
 		}
 		// check if user and host ranges overlap
-		if (in_array('user', $scopes) && ($options['posixAccount_uidGeneratorUsers'][0] == 'range')
-			&& in_array('host', $scopes) && ($options['posixAccount_uidGeneratorHosts'][0] == 'range')) {
-			if (isset($options['posixAccount_minUID'][0]) && isset($options['posixAccount_maxUID'][0]) &&
-			isset($options['posixAccount_minMachine'][0]) && isset($options['posixAccount_maxMachine'][0])) {
-				if (($options['posixAccount_minMachine'][0] > $options['posixAccount_minUID'][0]) &&
-				($options['posixAccount_minMachine'][0] < $options['posixAccount_maxUID'][0])) {
+		foreach ($ranges as $range) {
+			foreach ($ranges as $rangeToCompare) {
+				// check if minimum is inside other range
+				if (($rangeToCompare[0] > $range[0]) && ($rangeToCompare[0] < $range[1])) {
 					$return[] = $this->messages['cmp_both'][0];
+					break 2;
 				}
-				if (($options['posixAccount_minUID'][0] > $options['posixAccount_minMachine'][0]) &&
-				($options['posixAccount_minUID'][0] < $options['posixAccount_maxMachine'][0])) {
+				// check if maximum is inside other range
+				if (($rangeToCompare[1] > $range[0]) && ($rangeToCompare[1] < $range[1])) {
 					$return[] = $this->messages['cmp_both'][0];
+					break 2;
 				}
 			}
 		}
@@ -2113,6 +2144,7 @@ class posixAccount extends baseModule implements passwordService {
 	 * @see baseModule::getManagedAttributes()
 	 */
 	function get_uploadColumns($selectedModules, &$type) {
+		$typeId = $type->getId();
 		$return = parent::get_uploadColumns($selectedModules, $type);
 		if (($this->get_scope() == 'user') && $this->manageCn($selectedModules)) {
 			array_unshift($return, array(
@@ -2121,6 +2153,22 @@ class posixAccount extends baseModule implements passwordService {
 				'help' => 'cn',
 				'example' => _('Steve Miller')
 			));
+		}
+		if (($this->get_scope() == 'user') && !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegecos')) {
+			$return['upload_columns'][] = array(
+				'name' => 'posixAccount_gecos',
+				'description' => _('Gecos'),
+				'help' => 'gecos',
+				'example' => _('Steve Miller,Room 2.14,123-123-1234,123-123-1234')
+			);
+		}
+		if (($this->get_scope() == 'host') && !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegecos')) {
+			$return['upload_columns'][] = array(
+				'name' => 'posixAccount_gecos',
+				'description' => _('Gecos'),
+				'help' => 'gecos',
+				'example' => _('pc01,Room 2.34')
+			);
 		}
 		return $return;
 	}
@@ -2131,11 +2179,12 @@ class posixAccount extends baseModule implements passwordService {
 	 */
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
 		$errors = array();
+		$typeId = $type->getId();
 		$pwdAttrName = $this->getPasswordAttrName($selectedModules);
 		$homedirAttrName = $this->getHomedirAttrName($selectedModules);
 		$needAutoUID = array();
 		// get list of existing users
-		$existingUsers = $this->getUserNames();
+		$existingUsers = $this->getUserNames($typeId);
 		// get list of existing groups
 		$groupList = $this->findGroups($selectedModules);
 		$groupMap = array();
@@ -2162,9 +2211,9 @@ class posixAccount extends baseModule implements passwordService {
 				$needAutoUID[] = $i;
 			}
 			elseif (get_preg($rawAccount[$ids['posixAccount_uid']], 'digit')) {
-				if (($this->get_scope() == 'user') && ($this->moduleSettings['posixAccount_uidGeneratorUsers'][0] == 'range')) {
-					if (($rawAccount[$ids['posixAccount_uid']] > $this->moduleSettings['posixAccount_minUID'][0]) &&
-						($rawAccount[$ids['posixAccount_uid']] < $this->moduleSettings['posixAccount_maxUID'][0])) {
+				if (($this->get_scope() == 'user') && ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers'][0] == 'range')) {
+					if (($rawAccount[$ids['posixAccount_uid']] > $this->moduleSettings['posixAccount_' . $typeId . '_minUID'][0]) &&
+						($rawAccount[$ids['posixAccount_uid']] < $this->moduleSettings['posixAccount_' . $typeId . '_maxUID'][0])) {
 						$partialAccounts[$i]['uidNumber'] = trim($rawAccount[$ids['posixAccount_uid']]);
 					}
 					else {
@@ -2173,9 +2222,9 @@ class posixAccount extends baseModule implements passwordService {
 						$errors[] = $errMsg;
 					}
 				}
-				elseif (($this->get_scope() == 'host') && ($this->moduleSettings['posixAccount_uidGeneratorHosts'][0] == 'range')) {
-					if (($rawAccount[$ids['posixAccount_uid']] > $this->moduleSettings['posixAccount_minMachine'][0]) &&
-						($rawAccount[$ids['posixAccount_uid']] < $this->moduleSettings['posixAccount_maxMachine'][0])) {
+				elseif (($this->get_scope() == 'host') && ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorHosts'][0] == 'range')) {
+					if (($rawAccount[$ids['posixAccount_uid']] > $this->moduleSettings['posixAccount_' . $typeId . '_minMachine'][0]) &&
+						($rawAccount[$ids['posixAccount_uid']] < $this->moduleSettings['posixAccount_' . $typeId . '_maxMachine'][0])) {
 						$partialAccounts[$i]['uidNumber'] = trim($rawAccount[$ids['posixAccount_uid']]);
 					}
 					else {
@@ -2211,7 +2260,7 @@ class posixAccount extends baseModule implements passwordService {
 				$errors[] = $errMsg;
 			}
 			// GECOS
-			if (!$this->isBooleanConfigOptionSet('posixAccount_hidegecos')) {
+			if (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegecos')) {
 				if (!empty($rawAccount[$ids['posixAccount_gecos']])) {
 					if (get_preg($rawAccount[$ids['posixAccount_gecos']], 'gecos')) {
 						$partialAccounts[$i]['gecos'] = $this->checkASCII($rawAccount[$ids['posixAccount_gecos']]);
@@ -2396,7 +2445,7 @@ class posixAccount extends baseModule implements passwordService {
 		// fill in autoUIDs
 		if (sizeof($needAutoUID) > 0) {
 			$errorsTemp = array();
-			$uids = $this->getNextUIDs(sizeof($needAutoUID), $errorsTemp);
+			$uids = $this->getNextUIDs(sizeof($needAutoUID), $errorsTemp, $typeId);
 			if (is_array($uids)) {
 				foreach ($needAutoUID as $i => $index) {
 					$partialAccounts[$index]['uidNumber'] = $uids[$i];
@@ -2602,48 +2651,49 @@ class posixAccount extends baseModule implements passwordService {
 	*
 	* @param integer $count Number of needed free UIDs.
 	* @param array $errors list of error messages where errors can be added
+	* @param string $typeId type id (e.g. user)
 	* @return mixed Null if no UIDs are free else an array of free UIDs.
 	*/
-	function getNextUIDs($count, &$errors) {
+	function getNextUIDs($count, &$errors, $typeId) {
 		// check if UIDs should be taken from Samba pool entry
-		if (($this->get_scope() == 'user') && isset($this->moduleSettings['posixAccount_uidGeneratorUsers']) && ($this->moduleSettings['posixAccount_uidGeneratorUsers'][0] == 'sambaPool')) {
-			return $this->getNextSambaPoolUIDs($count, $errors);
+		if (($this->get_scope() == 'user') && isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers']) && ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers'][0] == 'sambaPool')) {
+			return $this->getNextSambaPoolUIDs($count, $errors, $typeId);
 		}
-		if (($this->get_scope() == 'host') && isset($this->moduleSettings['posixAccount_uidGeneratorHosts']) && ($this->moduleSettings['posixAccount_uidGeneratorHosts'][0] == 'sambaPool')) {
-			return $this->getNextSambaPoolUIDs($count, $errors);
+		if (($this->get_scope() == 'host') && isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorHosts']) && ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorHosts'][0] == 'sambaPool')) {
+			return $this->getNextSambaPoolUIDs($count, $errors, $typeId);
 		}
 		// check if UIDs should be taken from domain info pool entry
-		if (($this->get_scope() == 'user') && isset($this->moduleSettings['posixAccount_uidGeneratorUsers']) && ($this->moduleSettings['posixAccount_uidGeneratorUsers'][0] == 'windowsDomain')) {
-			return $this->getNextDomainInfoUIDs($count, $errors);
+		if (($this->get_scope() == 'user') && isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers']) && ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers'][0] == 'windowsDomain')) {
+			return $this->getNextDomainInfoUIDs($count, $errors, $typeId);
 		}
-		if (($this->get_scope() == 'host') && isset($this->moduleSettings['posixAccount_uidGeneratorHosts']) && ($this->moduleSettings['posixAccount_uidGeneratorHosts'][0] == 'windowsDomain')) {
-			return $this->getNextDomainInfoUIDs($count, $errors);
+		if (($this->get_scope() == 'host') && isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorHosts']) && ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorHosts'][0] == 'windowsDomain')) {
+			return $this->getNextDomainInfoUIDs($count, $errors, $typeId);
 		}
 		// check if a magic number should be used
-		if (($this->get_scope() == 'user') && isset($this->moduleSettings['posixAccount_uidGeneratorUsers']) && ($this->moduleSettings['posixAccount_uidGeneratorUsers'][0] == 'magicNumber')) {
+		if (($this->get_scope() == 'user') && isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers']) && ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorUsers'][0] == 'magicNumber')) {
 			$return = array();
 			for ($i = 0; $i < $count; $i++) {
-				$return[] = $this->moduleSettings['posixAccount_magicNumberUser'][0];
+				$return[] = $this->moduleSettings['posixAccount_' . $typeId . '_magicNumberUser'][0];
 			}
 			return $return;
 		}
-		if (($this->get_scope() == 'host') && isset($this->moduleSettings['posixAccount_uidGeneratorHosts']) && ($this->moduleSettings['posixAccount_uidGeneratorHosts'][0] == 'magicNumber')) {
+		if (($this->get_scope() == 'host') && isset($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorHosts']) && ($this->moduleSettings['posixAccount_' . $typeId . '_uidGeneratorHosts'][0] == 'magicNumber')) {
 			$return = array();
 			for ($i = 0; $i < $count; $i++) {
-				$return[] = $this->moduleSettings['posixAccount_magicNumberHost'][0];
+				$return[] = $this->moduleSettings['posixAccount_' . $typeId . '_magicNumberHost'][0];
 			}
 			return $return;
 		}
 		$ret = array();
 		if ($this->get_scope() == "user") {
-			$minID = intval($this->moduleSettings['posixAccount_minUID'][0]);
-			$maxID = intval($this->moduleSettings['posixAccount_maxUID'][0]);
+			$minID = intval($this->moduleSettings['posixAccount_' . $typeId . '_minUID'][0]);
+			$maxID = intval($this->moduleSettings['posixAccount_' . $typeId . '_maxUID'][0]);
 		}
 		else {
-			$minID = intval($this->moduleSettings['posixAccount_minMachine'][0]);
-			$maxID = intval($this->moduleSettings['posixAccount_maxMachine'][0]);
+			$minID = intval($this->moduleSettings['posixAccount_' . $typeId . '_minMachine'][0]);
+			$maxID = intval($this->moduleSettings['posixAccount_' . $typeId . '_maxMachine'][0]);
 		}
-		$uidList = $this->getUIDs();
+		$uidList = $this->getUIDs($typeId);
 		$uids = array();
 		foreach ($uidList as $uid) {
 			if (($uid <= $maxID) && ($uid >= $minID)) $uids[] = $uid;  // ignore UIDs > maxID and UIDs < minID
@@ -2691,14 +2741,15 @@ class posixAccount extends baseModule implements passwordService {
 	 *
 	 * @param integer $count number of needed free UIDs.
 	 * @param array $errors list of error messages where errors can be added
+	 * @param string $typeId type id (e.g. user)
 	 * @return mixed null if no UIDs are free else an array of free UIDs
 	 */
-	private function getNextSambaPoolUIDs($count, &$errors) {
+	private function getNextSambaPoolUIDs($count, &$errors, $typeId) {
 		if ($this->get_scope() == 'user') {
-			$dn = $this->moduleSettings['posixAccount_sambaIDPoolDNUsers'][0];
+			$dn = $this->moduleSettings['posixAccount_' . $typeId . '_sambaIDPoolDNUsers'][0];
 		}
 		else {
-			$dn = $this->moduleSettings['posixAccount_sambaIDPoolDNHosts'][0];
+			$dn = $this->moduleSettings['posixAccount_' . $typeId . '_sambaIDPoolDNHosts'][0];
 		}
 		$attrs = ldapGetDN($dn, array('uidNumber'));
 		if (isset($attrs['uidnumber'][0]) && ($attrs['uidnumber'][0] != '')) {
@@ -2724,14 +2775,15 @@ class posixAccount extends baseModule implements passwordService {
 	 *
 	 * @param integer $count number of needed free UIDs.
 	 * @param array $errors list of error messages where errors can be added
+	 * @param string $typeId type id (e.g. user)
 	 * @return mixed null if no UIDs are free else an array of free UIDs
 	 */
-	private function getNextDomainInfoUIDs($count, &$errors) {
+	private function getNextDomainInfoUIDs($count, &$errors, $typeId) {
 		if ($this->get_scope() == 'user') {
-			$dn = $this->moduleSettings['posixAccount_windowsIDPoolDNUsers'][0];
+			$dn = $this->moduleSettings['posixAccount_' . $typeId . '_windowsIDPoolDNUsers'][0];
 		}
 		else {
-			$dn = $this->moduleSettings['posixAccount_windowsIDPoolDNHosts'][0];
+			$dn = $this->moduleSettings['posixAccount_' . $typeId . '_windowsIDPoolDNHosts'][0];
 		}
 		$attrs = ldapGetDN($dn, array('msSFU30MaxUidNumber'));
 		if (!empty($attrs['mssfu30maxuidnumber'][0])) {
@@ -3089,9 +3141,10 @@ class posixAccount extends baseModule implements passwordService {
 	/**
 	 * Returns a list of existing UID numbers.
 	 *
+	 * @param string $typeId type id (e.g. user)
 	 * @return array list of UID numbers
 	 */
-	private function getUIDs() {
+	private function getUIDs($typeId) {
 		if ($this->cachedUIDList != null) {
 			return $this->cachedUIDList;
 		}
@@ -3106,8 +3159,8 @@ class posixAccount extends baseModule implements passwordService {
 		$typesHost = $typeManager->getConfiguredTypesForScope('host');
 		$suffixes = array();
 		if (!empty($typesUser)) {
-			if (!empty($this->moduleSettings['posixAccount_uidCheckSuffixUser'][0])) {
-				$suffixes[] = $this->moduleSettings['posixAccount_uidCheckSuffixUser'][0];
+			if (!empty($this->moduleSettings['posixAccount_' . $typeId . '_uidCheckSuffixUser'][0])) {
+				$suffixes[] = $this->moduleSettings['posixAccount_' . $typeId . '_uidCheckSuffixUser'][0];
 			}
 			else {
 				foreach ($typesUser as $type) {
@@ -3116,8 +3169,8 @@ class posixAccount extends baseModule implements passwordService {
 			}
 		}
 		if (!empty($typesHost)) {
-			if (!empty($this->moduleSettings['posixAccount_uidCheckSuffixHost'][0])) {
-				$suffixes[] = $this->moduleSettings['posixAccount_uidCheckSuffixHost'][0];
+			if (!empty($this->moduleSettings['posixAccount_' . $typeId . '_uidCheckSuffixHost'][0])) {
+				$suffixes[] = $this->moduleSettings['posixAccount_' . $typeId . '_uidCheckSuffixHost'][0];
 			}
 			else {
 				foreach ($typesHost as $type) {
@@ -3141,18 +3194,20 @@ class posixAccount extends baseModule implements passwordService {
 	 * Checks if the given user name already exists in LDAP.
 	 *
 	 * @param String $userName user name
+	 * @param string $typeId type id (e.g. user)
 	 * @return boolean true if already exists
 	 */
-	private function userNameExists($userName) {
-		return in_array($userName, $this->getUserNames());
+	private function userNameExists($userName, $typeId) {
+		return in_array($userName, $this->getUserNames($typeId));
 	}
 
 	/**
 	 * Returns a list of all user names in LDAP.
 	 *
+	 * @param string $typeId type id (e.g. user)
 	 * @return array user names
 	 */
-	private function getUserNames() {
+	private function getUserNames($typeId) {
 		if ($this->cachedUserNameList != null) {
 			return $this->cachedUserNameList;
 		}
@@ -3167,8 +3222,8 @@ class posixAccount extends baseModule implements passwordService {
 		$typesHost = $typeManager->getConfiguredTypesForScope('host');
 		$suffixes = array();
 		if (!empty($typesUser)) {
-			if (!empty($this->moduleSettings['posixAccount_uidCheckSuffixUser'][0])) {
-				$suffixes[] = $this->moduleSettings['posixAccount_uidCheckSuffixUser'][0];
+			if (!empty($this->moduleSettings['posixAccount_' . $typeId . '_uidCheckSuffixUser'][0])) {
+				$suffixes[] = $this->moduleSettings['posixAccount_' . $typeId . '_uidCheckSuffixUser'][0];
 			}
 			else {
 				foreach ($typesUser as $type) {
@@ -3177,8 +3232,8 @@ class posixAccount extends baseModule implements passwordService {
 			}
 		}
 		if (!empty($typesHost)) {
-			if (!empty($this->moduleSettings['posixAccount_uidCheckSuffixHost'][0])) {
-				$suffixes[] = $this->moduleSettings['posixAccount_uidCheckSuffixHost'][0];
+			if (!empty($this->moduleSettings['posixAccount_' . $typeId . '_uidCheckSuffixHost'][0])) {
+				$suffixes[] = $this->moduleSettings['posixAccount_' . $typeId . '_uidCheckSuffixHost'][0];
 			}
 			else {
 				foreach ($typesHost as $type) {
@@ -3224,13 +3279,14 @@ class posixAccount extends baseModule implements passwordService {
 	 * By deafult this wil be the first character of the first name plus the last name.
 	 *
 	 * @param array $attrs LDAP attributes
+	 * @param string $typeId type id (e.g. user)
 	 * @return String user name
 	 */
-	protected function getUserNameSuggestion($attrs) {
+	protected function getUserNameSuggestion($attrs, $typeId) {
 		$attributes = array_change_key_case($attrs, CASE_LOWER);
 		$format = '@givenname@%sn%';
-		if (isset($this->moduleSettings['posixAccount_userNameSuggestion'][0])) {
-			$format = strtolower($this->moduleSettings['posixAccount_userNameSuggestion'][0]);
+		if (isset($this->moduleSettings['posixAccount_' . $typeId . '_userNameSuggestion'][0])) {
+			$format = strtolower($this->moduleSettings['posixAccount_' . $typeId . '_userNameSuggestion'][0]);
 		}
 		// search for @key@ wildcards in format string and replace with first character of attribute
 		$wildcards = array();
