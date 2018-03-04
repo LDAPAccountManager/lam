@@ -577,6 +577,10 @@
       <section>
         <title>6.2 -&gt; 6.3</title>
 
+        <para>Unix: Options in server profile for Unix users and groups need
+        to be reconfigured. Several settings (e.g. id generation) are now
+        specific to subaccount type.</para>
+
         <para>Self Service: If you use a captcha for user self registration
         this needs to be reconfigured. On tab General settings please activate
         Google reCAPTCHA (the checkbox to secure login is optional). On tab
