@@ -6,6 +6,8 @@ use \htmlStatusMessage;
 use \htmlSubTitle;
 use \htmlOutputText;
 use \htmlImage;
+use function \LAM\SCHEMA\get_schema_objectclasses;
+use function \LAM\SCHEMA\get_cached_schema;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
