@@ -1124,7 +1124,7 @@ class posixAccount extends baseModule implements passwordService {
 					}
 				}
 				// id-number is in use and account is a new account
-				if ((in_array($this->attributes['uidNumber'][0], $uids)) && !isset($this->orig['uidNumber'][0])) $errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'));
+				if ((in_array($this->attributes['uidNumber'][0], $uids)) && !isset($this->orig['uidNumber'][0])) $errors[] = $this->messages['uidNumber'][3];
 				// id-number is in use, account is existing account and id-number is not used by itself
 				if ((in_array($this->attributes['uidNumber'][0], $uids)) && isset($this->orig['uidNumber'][0]) && ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0]) ) {
 					$errors[] = $this->messages['uidNumber'][3];
@@ -2155,7 +2155,7 @@ class posixAccount extends baseModule implements passwordService {
 			));
 		}
 		if (($this->get_scope() == 'user') && !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegecos')) {
-			$return['upload_columns'][] = array(
+			$return[] = array(
 				'name' => 'posixAccount_gecos',
 				'description' => _('Gecos'),
 				'help' => 'gecos',
@@ -2163,7 +2163,7 @@ class posixAccount extends baseModule implements passwordService {
 			);
 		}
 		if (($this->get_scope() == 'host') && !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegecos')) {
-			$return['upload_columns'][] = array(
+			$return[] = array(
 				'name' => 'posixAccount_gecos',
 				'description' => _('Gecos'),
 				'help' => 'gecos',
@@ -2584,28 +2584,33 @@ class posixAccount extends baseModule implements passwordService {
 		// create home directories
 		elseif ($temp['counter'] < (sizeof($temp['groups']) + sizeof($temp['createHomes']))) {
 			$pos = $temp['createHomes'][$temp['counter'] - sizeof($temp['groups'])];
-			$remote = new \LAM\REMOTE\Remote();
-			$remote->connect($data[$pos][$ids['posixAccount_createHomeDir']]);
-			$result = $remote->execute(
-				implode(
-					self::$SPLIT_DELIMITER,
-					array(
-						$data[$pos][$ids['posixAccount_userName']],
-						"home",
-						"add",
-						$accounts[$pos][$homeDirAttr],
-						"0".$_SESSION['config']->get_scriptRights(),
-						$accounts[$pos]['uidNumber'],
-						$accounts[$pos]['gidNumber'],
-					)
-				));
-			$remote->disconnect();
-			$errors = array();
-			if (!empty($result)) {
-				$parts = explode(",", $result);
-				if (in_array($parts[0], array('ERROR', 'WARN'))) {
-					$errors[] = $parts;
+			try {
+				$remote = new \LAM\REMOTE\Remote();
+				$remote->connect($data[$pos][$ids['posixAccount_createHomeDir']]);
+				$result = $remote->execute(
+					implode(
+						self::$SPLIT_DELIMITER,
+						array(
+							$data[$pos][$ids['posixAccount_userName']],
+							"home",
+							"add",
+							$accounts[$pos][$homeDirAttr],
+							"0".$_SESSION['config']->get_scriptRights(),
+							$accounts[$pos]['uidNumber'],
+							$accounts[$pos]['gidNumber'],
+						)
+					));
+				$remote->disconnect();
+				$errors = array();
+				if (!empty($result)) {
+					$parts = explode(",", $result);
+					if (in_array($parts[0], array('ERROR', 'WARN'))) {
+						$errors[] = $parts;
+					}
 				}
+			}
+			catch (LAMException $e) {
+				$errors[] = array('ERROR', $e->getTitle(), $e->getMessage());
 			}
 			$temp['counter']++;
 			return array (
