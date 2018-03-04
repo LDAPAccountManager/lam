@@ -103,8 +103,8 @@ class quota extends baseModule {
 			'quotas' => _('Quota')
 		);
 		// help entries
-		$numbersHelp = _('Symbols K, M, G, and T can be appended to numeric value to express kibibytes, mebibytes, gibibytes, and tebibytes for blocks.')
-		. _(' Symbols k, m, g, and t can be appended to numeric value to express multiples of 10^3, 10^6, 10^9, and 10^12 inodes.');
+		$numbersHelp = _('Symbols K, M, G and T can be appended to numeric value to express kibibytes, mebibytes, gibibytes and tebibytes for blocks.')
+		. _(' Symbols k, m, g and t can be appended to numeric value to express multiples of 10^3, 10^6, 10^9 and 10^12 inodes.');
 		$return['help'] = array(
 			"Mountpoint" => array(
 				"Headline" => _("Mountpoint"),
