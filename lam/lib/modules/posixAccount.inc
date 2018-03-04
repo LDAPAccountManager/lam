@@ -1844,7 +1844,7 @@ class posixAccount extends baseModule implements passwordService {
 			$fields['cn'] = _('Common name');
 		}
 		if (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegecos')) {
-			$return['PDF_fields']['gecos'] = _('Gecos');
+			$fields['gecos'] = _('Gecos');
 		}
 		return $fields;
 	}
