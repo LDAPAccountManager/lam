@@ -1,9 +1,8 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2016  Roland Gruber
+  Copyright (C) 2006 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -41,6 +40,18 @@ checkClientIP();
 setLAMHeaders();
 
 /**
+ * Starts a session and sets the cookie options.
+ */
+function lam_start_session() {
+	$secureFlag = false;
+	if (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on') {
+		$secureFlag = true;
+	}
+	session_set_cookie_params(0, '/', null, $secureFlag, true);
+	session_start();
+}
+
+/**
  * Starts a session and checks the environment.
  * The script is stopped if one of the checks fail (timeout redirection may be overriden).
  *
@@ -59,7 +70,7 @@ function startSecureSession($redirectToLogin = true, $initSecureData = false) {
 			@ini_set("session.gc_probability", 1);
 		}
 	}
-	@session_start();
+	lam_start_session();
 	// init secure data if needed
 	if ($initSecureData && !isset($_SESSION["sec_session_id"])) {
 		$_SESSION["sec_session_id"] = session_id();

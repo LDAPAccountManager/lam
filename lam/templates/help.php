@@ -1,11 +1,10 @@
 <?php
 namespace LAM\HELP;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2008 - 2017  Roland Gruber
+                2008 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -48,7 +47,7 @@ if (!empty($_GET['selfService']) && ($_GET['selfService'] === '1')) {
 if (strtolower(session_module_name()) == 'files') {
 	session_save_path("../sess");
 }
-session_start();
+lam_start_session();
 
 /** status messages */
 include_once("../lib/status.inc");

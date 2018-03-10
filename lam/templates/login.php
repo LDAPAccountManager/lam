@@ -72,10 +72,9 @@ if (strtolower(session_module_name()) == 'files') {
 }
 
 // start empty session and change ID for security reasons
-session_start();
+lam_start_session();
 session_destroy();
-session_set_cookie_params(0, '/', null, null, true);
-session_start();
+lam_start_session();
 session_regenerate_id(true);
 
 $profiles = getConfigProfiles();

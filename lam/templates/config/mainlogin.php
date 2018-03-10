@@ -1,9 +1,8 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2017  Roland Gruber
+  Copyright (C) 2003 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -42,8 +41,7 @@ if (isLAMProVersion()) {
 if (strtolower(session_module_name()) == 'files') {
 	session_save_path(dirname(__FILE__) . '/../../sess');
 }
-session_set_cookie_params(0, '/', null, null, true);
-session_start();
+lam_start_session();
 session_regenerate_id(true);
 
 setlanguage();
