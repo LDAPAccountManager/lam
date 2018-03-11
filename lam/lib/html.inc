@@ -2110,7 +2110,7 @@ class htmlInputCheckbox extends htmlElement {
 	 * Returns the CSS selector to use to find show/hide elements.
 	 */
 	protected function getShowHideSelector() {
-		return '.tr';
+		return 'tr';
 	}
 
 }
