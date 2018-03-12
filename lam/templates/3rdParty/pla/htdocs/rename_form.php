@@ -21,17 +21,17 @@ $request['page']->setDN($request['dn']);
 $request['page']->accept();
 
 # Render the form
-$request['page']->drawTitle(sprintf('%s <b>%s</b>',_('Rename'),get_rdn($request['dn'])));
+$request['page']->drawTitle(sprintf('%s <b>%s</b>',_('Rename'),htmlspecialchars(get_rdn($request['dn']))));
 $request['page']->drawSubTitle();
 
 echo '<center>';
-printf(_('Rename <b>%s</b> to a new object.') . '<br /><br />',get_rdn($request['dn']));
+printf(_('Rename <b>%s</b> to a new object.') . '<br /><br />',htmlspecialchars(get_rdn($request['dn'])));
 
 echo '<form action="cmd.php?cmd=rename" method="post" />';
 printf('<input type="hidden" name="server_id" value="%s" />',$app['server']->getIndex());
 printf('<input type="hidden" name="dn" value="%s" />',rawurlencode($request['dn']));
-printf('<input type="hidden" name="template" value="%s" />',$request['template']);
-printf('<input type="text" name="new_rdn" size="30" value="%s" />',get_rdn($request['dn']));
+printf('<input type="hidden" name="template" value="%s" />',htmlspecialchars($request['template']));
+printf('<input type="text" name="new_rdn" size="30" value="%s" />',htmlspecialchars(get_rdn($request['dn'])));
 printf('<input type="submit" value="%s" />',_('Rename'));
 echo '</form>';
 

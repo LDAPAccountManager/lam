@@ -24,15 +24,15 @@ $request['template'] = $request['page']->getTemplate();
 if (! $request['dn'] || ! $app['server']->dnExists($request['dn']))
 	system_message(array(
 		'title'=>_('Entry does not exist'),
-		'body'=>sprintf(_('The entry (%s) does not exist.'),$request['dn']),
+		'body'=>sprintf(_('The entry (%s) does not exist.'),htmlspecialchars($request['dn'])),
 		'type'=>'error'),'index.php');
 
 # We search all children, not only the visible children in the tree
 $request['children'] = $app['server']->getContainerContents($request['dn'],null,0,'(objectClass=*)',LDAP_DEREF_NEVER);
 
-printf('<h3 class="title">%s %s</h3>',_('Delete'),htmlspecialchars(get_rdn($request['dn'])));
+printf('<h3 class="title">%s %s</h3>',_('Delete'),htmlspecialchars(htmlspecialchars(get_rdn($request['dn']))));
 printf('<h3 class="subtitle">%s: <b>%s</b></h3>',
-	_('DN'),$request['dn']);
+	_('DN'),htmlspecialchars($request['dn']));
 echo "\n";
 
 echo '<center>';
@@ -109,7 +109,7 @@ if (count($request['children'])) {
 
 	printf('<tr><td style="width: 10%%;">%s:</td><td colspan="3" style="width: 75%%;"><b>%s</b></td></tr>',_('Server'),$app['server']->getName());
 	printf('<tr><td style="width: 10%%;"><acronym title="%s">%s</acronym></td><td colspan="3" style="width: 75%%;"><b>%s</b></td></tr>',
-		_('DN'),_('DN'),$request['dn']);
+		_('DN'),_('DN'),htmlspecialchars($request['dn']));
 	echo '<tr><td colspan="4">&nbsp;</td></tr>';
 	echo "\n";
 

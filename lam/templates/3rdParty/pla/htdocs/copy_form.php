@@ -24,12 +24,12 @@ $request['page']->setDN($request['dn']);
 $request['page']->accept();
 
 # Render the form
-$request['page']->drawTitle(sprintf('%s <b>%s</b>',_('Copy'),get_rdn($request['dn'])));
+$request['page']->drawTitle(sprintf('%s <b>%s</b>',_('Copy'),htmlspecialchars(get_rdn($request['dn']))));
 $request['page']->drawSubTitle();
 
 printf('<script type="text/javascript" src="%sdnChooserPopup.js"></script>',JSDIR);
 echo '<div style="text-align: center;">';
-printf(_('Copy <b>%s</b> to a new object.') . '<br /><br />',get_rdn($request['dn']));
+printf(_('Copy <b>%s</b> to a new object.') . '<br /><br />',htmlspecialchars(get_rdn($request['dn'])));
 echo '</div>';
 
 echo '<form action="cmd.php" method="post" id="copy_form">';

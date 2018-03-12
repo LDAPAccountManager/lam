@@ -18,7 +18,7 @@ $request['dn'] = get_request('dn','GET');
 $request['attr'] = strtolower(get_request('attr','GET',false,'jpegphoto'));
 $request['index'] = get_request('index','GET',false,0);
 $request['type'] = get_request('type','GET',false,'image/jpeg');
-$request['filename'] = get_request('filename','GET',false,sprintf('%s.jpg',get_rdn($request['dn'],true)));
+$request['filename'] = get_request('filename','GET',false,sprintf('%s.jpg',htmlspecialchars(get_rdn($request['dn'],true))));
 $request['location'] = get_request('location','GET',false,'ldap');
 
 switch ($request['location']) {

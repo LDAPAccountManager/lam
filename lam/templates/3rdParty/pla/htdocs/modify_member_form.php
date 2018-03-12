@@ -54,7 +54,7 @@ foreach ($app['server']->getBaseDN() as $base) {
 
 usort($possible_values,'pla_compare_dns');
 
-$request['page']->drawTitle(sprintf('%s <b>%s</b>',_('Modify group'),get_rdn($request['dn'])));
+$request['page']->drawTitle(sprintf('%s <b>%s</b>',_('Modify group'),htmlspecialchars(get_rdn($request['dn']))));
 $request['page']->drawSubTitle();
 
 printf(_('There are <b>%s</b> members in group <b>%s</b>:'),

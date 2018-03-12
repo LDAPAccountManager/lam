@@ -100,7 +100,7 @@ if (get_request('meth','REQUEST') != 'ajax') {
 					echo '<input type="hidden" name="cmd" value="update" />';
 
 				printf('<input type="hidden" name="server_id" value="%s" />',$app['server']->getIndex());
-				printf('<input type="hidden" name="dn" value="%s" />',$request['dn']);
+				printf('<input type="hidden" name="dn" value="%s" />',htmlspecialchars($request['dn']));
 				echo '<input type="hidden" name="binary" value="true" />';
 
 				echo '<select name="single_item_attr">';

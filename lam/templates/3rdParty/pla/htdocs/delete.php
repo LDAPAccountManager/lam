@@ -29,12 +29,12 @@ if ($result) {
 
 	system_message(array(
 		'title'=>_('Delete DN'),
-		'body'=>sprintf('<b>' . _('Successfully deleted DN %s') . '</b>',$request['dn']),
+		'body'=>sprintf('<b>' . _('Successfully deleted DN %s') . '</b>',htmlspecialchars($request['dn'])),
 		'type'=>'info'),
 		sprintf('index.php?server_id=%s%s',$app['server']->getIndex(),$redirect_url));
 } else
 	system_message(array(
-		'title'=>_('Could not delete the entry.').sprintf(' (%s)',pretty_print_dn($request['dn'])),
+		'title'=>_('Could not delete the entry.').sprintf(' (%s)',htmlspecialchars(pretty_print_dn($request['dn']))),
 		'body'=>ldap_error_msg($app['server']->getErrorMessage(null),$app['server']->getErrorNum(null)),
 		'type'=>'error'));
 ?>

@@ -25,12 +25,12 @@ $request['page']->setDN($request['dn']);
 $request['page']->accept();
 
 # Render the form
-$request['page']->drawTitle(sprintf(_('Compare another DN with <b>%s</b>'),get_rdn($request['dn'])));
+$request['page']->drawTitle(sprintf(_('Compare another DN with <b>%s</b>'),htmlspecialchars(get_rdn($request['dn']))));
 $request['page']->drawSubTitle();
 
 printf('<script type="text/javascript" src="%sdnChooserPopup.js"></script>',JSDIR);
 echo '<div style="text-align: center;">';
-printf('%s <b>%s</b> %s<br />',_('Compare'),get_rdn($request['dn']),_('with '));
+printf('%s <b>%s</b> %s<br />',_('Compare'),htmlspecialchars(get_rdn($request['dn'])),_('with '));
 echo '</div>';
 
 echo '<form action="cmd.php" method="post" id="compare_form">';

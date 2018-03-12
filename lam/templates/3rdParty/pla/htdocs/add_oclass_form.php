@@ -57,7 +57,7 @@ foreach ($ldap['attrs']['need'] as $index => $values)
 	$ldap['attrs']['need'][$index]->show();
 
 if (count($ldap['attrs']['need']) > 0) {
-	$request['page']->drawTitle(sprintf(_('Add new object class to <b>%s</b>'),get_rdn($request['dn'])));
+	$request['page']->drawTitle(sprintf(_('Add new object class to <b>%s</b>'),htmlspecialchars(get_rdn($request['dn']))));
 	$request['page']->drawSubTitle();
 
 	echo '<div style="text-align: center">';
