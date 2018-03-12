@@ -7,7 +7,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2007 - 2017  Roland Gruber
+                2007 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -90,7 +90,7 @@ class quota extends baseModule {
 		$return["alias"] = _('Quota');
 		if ($this->get_scope() == 'group') {
 			// module dependencies
-			$return['dependencies'] = array('depends' => array(array('posixGroup', 'rfc2307bisPosixGroup')), 'conflicts' => array());
+			$return['dependencies'] = array('depends' => array(array('posixGroup', 'rfc2307bisPosixGroup', 'windowsPosixGroup')), 'conflicts' => array());
 		}
 		if ($this->get_scope() == 'user') {
 			// module dependencies
@@ -215,7 +215,7 @@ class quota extends baseModule {
 	 * @return String cn attribute
 	 */
 	private function getCn() {
-		$modules = array('posixGroup', 'groupOfNames', 'groupOfUniqueNames');
+		$modules = array('posixGroup', 'windowsPosixGroup', 'rfc2307bisPosixGroup', 'groupOfNames', 'groupOfUniqueNames', 'windowsGroup');
 		for ($i = 0; $i < sizeof($modules); $i++) {
 			if ($this->getAccountContainer()->getAccountModule($modules[$i]) != null) {
 				$attrs = $this->getAccountContainer()->getAccountModule($modules[$i])->getAttributes();
