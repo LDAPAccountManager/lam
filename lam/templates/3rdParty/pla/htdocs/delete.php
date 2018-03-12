@@ -16,7 +16,7 @@ $request = array();
 $request['dn'] = get_request('dn','REQUEST',true);
 
 if (! $app['server']->dnExists($request['dn']))
-	error(sprintf('%s (%s)',_('No such entry.'),'<b>'.pretty_print_dn($request['dn']).'</b>'),'error','index.php');
+	error(sprintf('%s (%s)',_('No such entry.'),'<b>'.pretty_print_dn(htmlspecialchars($request['dn'])).'</b>'),'error','index.php');
 
 # Delete the entry.
 $result = $app['server']->delete($request['dn']);

@@ -28,11 +28,11 @@ if ($ldap['DST']->isReadOnly())
 	error(('Destination server is currently READ-ONLY.'),'error','index.php');
 
 if ($ldap['DST']->dnExists($request['dnDST']))
-	error(sprintf(_('The destination entry (%s) already exists.'),pretty_print_dn($request['dnDST'])),'error','index.php');
+	error(sprintf(_('The destination entry (%s) already exists.'),pretty_print_dn(htmlspecialchars($request['dnDST']))),'error','index.php');
 
 if (! $ldap['DST']->dnExists($ldap['DST']->getContainer($request['dnDST'])))
 	error(sprintf(_('The container you specified (%s) does not exist. Please try again.'),
-		pretty_print_dn($ldap['DST']->getContainer($request['dnDST']))),'error','index.php');
+		pretty_print_dn(htmlspecialchars($ldap['DST']->getContainer($request['dnDST'])))),'error','index.php');
 
 if (pla_compare_dns($request['dnSRC'],$request['dnDST']) == 0 && $ldap['SRC']->getIndex() == $ldap['DST']->getIndex())
 	error(_('The source and destination DN are the same.'),'error','index.php');

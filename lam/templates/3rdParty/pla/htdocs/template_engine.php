@@ -12,7 +12,7 @@ The template engine has the following responsibilities:
 * If we are passed a DN, then we are editing an existing entry
 * If we are not passed a DN, then we are passed a container (and creating a new entry in that container)
 
-In both cases, we are optionally passed a template ID. 
+In both cases, we are optionally passed a template ID.
 * If we have a template ID, then we'll render the creation/editing using that template
 * If we are not passed a template ID, then we'll either:
 	* Present a list of available templates,
@@ -42,7 +42,7 @@ $request['page'] = new TemplateRender($app['server']->getIndex(),get_request('te
 # If we have a DN, then this is to edit the entry.
 if ($request['dn']) {
 	$app['server']->dnExists($request['dn'])
-		or error(sprintf('%s (%s)',_('No such entry'),pretty_print_dn($request['dn'])),'error','index.php');
+		or error(sprintf('%s (%s)',_('No such entry'),pretty_print_dn(htmlspecialchars($request['dn']))),'error','index.php');
 
 	$request['page']->setDN($request['dn']);
 	$request['page']->accept();

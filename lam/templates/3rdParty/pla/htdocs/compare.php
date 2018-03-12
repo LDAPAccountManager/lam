@@ -21,10 +21,10 @@ $ldap['SRC'] = $_SESSION[APPCONFIG]->getServer(get_request('server_id_src'));
 $ldap['DST'] = $_SESSION[APPCONFIG]->getServer(get_request('server_id_dst'));
 
 if (! $ldap['SRC']->dnExists($request['dnSRC']))
-	error(sprintf('%s (%s)',_('No such entry.'),pretty_print_dn($request['dnSRC'])),'error','index.php');
+	error(sprintf('%s (%s)',_('No such entry.'),pretty_print_dn(htmlspecialchars($request['dnSRC']))),'error','index.php');
 
 if (! $ldap['DST']->dnExists($request['dnDST']))
-	error(sprintf('%s (%s)',_('No such entry.'),pretty_print_dn($request['dnDST'])),'error','index.php');
+	error(sprintf('%s (%s)',_('No such entry.'),pretty_print_dn(htmlspecialchars($request['dnDST']))),'error','index.php');
 
 $request['pageSRC'] = new PageRender($ldap['SRC']->getIndex(),get_request('template','REQUEST',false,'none'));
 $request['pageSRC']->setDN($request['dnSRC']);

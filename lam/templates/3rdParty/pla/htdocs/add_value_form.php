@@ -19,7 +19,7 @@ $request['attr'] = get_request('attr','GET',true);
 
 # Check if the entry exists.
 if (! $request['dn'] || ! $app['server']->dnExists($request['dn']))
-	error(sprintf(_('The entry (%s) does not exist.'),$request['dn']),'error','index.php');
+	error(sprintf(_('The entry (%s) does not exist.'),htmlspecialchars($request['dn'])),'error','index.php');
 
 $request['page'] = new TemplateRender($app['server']->getIndex(),get_request('template','REQUEST',false,null));
 $request['page']->setDN($request['dn']);
@@ -105,7 +105,7 @@ if (! strcasecmp($request['attr'],'objectclass') || get_request('meth','REQUEST'
 		foreach ($socs as $name => $oclass) {
 			# Exclude any structural ones, that are not in the heirachy, as they'll only generate an LDAP_OBJECT_CLASS_VIOLATION
 			if (($oclass->getType() == 'structural') && ! $oclass->isRelated($request['attribute']->getValues()))
-				continue; 
+				continue;
 
 			printf('<option value="%s">%s</option>',$oclass->getName(false),$oclass->getName(false));
 		}

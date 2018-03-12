@@ -21,13 +21,13 @@ $request['type'] = get_request('type','GET',false,'octet-stream');
 $request['filename'] = get_request('filename','GET',false,sprintf('%s:%s.bin',get_rdn($request['dn'],true),$request['attr']));
 
 if (! $app['server']->dnExists($request['dn']))
-	error(sprintf(_('The entry (%s) does not exist.'),$request['dn']),'error','index.php');
+	error(sprintf(_('The entry (%s) does not exist.'),htmlspecialchars($request['dn'])),'error','index.php');
 
 $search = $app['server']->getDNAttrValues($request['dn'],null,LDAP_DEREF_NEVER,array($request['attr']));
 
 # Dump the binary data to the browser
 $obStatus = ob_get_status();
-if (isset($obStatus['type']) && $obStatus['type'] && $obStatus['status']) 
+if (isset($obStatus['type']) && $obStatus['type'] && $obStatus['status'])
 	ob_end_clean();
 
 if (! isset($search[$request['attr']][$request['index']])) {
