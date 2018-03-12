@@ -142,7 +142,7 @@ if (isset($_POST['type'])) {
 // show start page
 $divClass = 'user';
 if (isset($_REQUEST['type'])) {
-	$divClass = \LAM\TYPES\getScopeFromTypeId($_REQUEST['type']);
+	$divClass = htmlspecialchars(\LAM\TYPES\getScopeFromTypeId($_REQUEST['type']));
 }
 echo '<div class="' . $divClass . '-bright smallPaddingContent">';
 echo "<div class=\"title\">\n";
