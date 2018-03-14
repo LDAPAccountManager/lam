@@ -1,9 +1,7 @@
 /**
 
-$Id$
-
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2017  Roland Gruber
+  Copyright (C) 2003 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -236,11 +234,13 @@ function showSimpleDialog(title, okText, cancelText, formID, dialogDivID) {
  * @param cancelText text for Cancel button
  * @param randomText text for random password
  * @param ajaxURL URL used for AJAX request
+ * @param tokenName name of CSRF token
+ * @param tokenValue value of CSRF token
  */
-function passwordShowChangeDialog(title, okText, cancelText, randomText, ajaxURL) {
+function passwordShowChangeDialog(title, okText, cancelText, randomText, ajaxURL, tokenName, tokenValue) {
 	var buttonList = {};
-	buttonList[okText] = function() { passwordHandleInput("false", ajaxURL); };
-	buttonList[randomText] = function() { passwordHandleInput("true", ajaxURL); };
+	buttonList[okText] = function() { passwordHandleInput("false", ajaxURL, tokenName, tokenValue); };
+	buttonList[randomText] = function() { passwordHandleInput("true", ajaxURL, tokenName, tokenValue); };
 	buttonList[cancelText] = function() {
 		jQuery('#passwordDialogMessageArea').html("");
 		jQuery(this).dialog("close");
@@ -262,8 +262,10 @@ function passwordShowChangeDialog(title, okText, cancelText, randomText, ajaxURL
  *
  * @param random "true" if random password should be generated
  * @param ajaxURL URL used for AJAX request
+ * @param tokenName name of CSRF token
+ * @param tokenValue value of CSRF token
  */
-function passwordHandleInput(random, ajaxURL) {
+function passwordHandleInput(random, ajaxURL, tokenName, tokenValue) {
 	// get input values
 	var modules = new Array();
 	jQuery('#passwordDialog').find(':checked').each(function() {
@@ -286,8 +288,10 @@ function passwordHandleInput(random, ajaxURL) {
 		"sendMail": sendMail,
 		"sendMailAlternateAddress": sendMailAlternateAddress
 	};
+	var data = {jsonInput: pwdJSON};
+	data[tokenName] = tokenValue;
 	// make AJAX call
-	jQuery.post(ajaxURL, {jsonInput: pwdJSON}, function(data) {passwordHandleReply(data);}, 'json');
+	jQuery.post(ajaxURL, data, function(data) {passwordHandleReply(data);}, 'json');
 }
 
 /**
@@ -551,8 +555,10 @@ function checkFieldsHaveSameValues(fieldID, fieldIDReference) {
  * Field is marked red if fail and green if ok.
  *
  * @param fieldID ID of field to check
+ * @param tokenName name of CSRF token
+ * @param tokenValue value of CSRF token
  */
-function checkPasswordStrength(fieldID, ajaxURL) {
+function checkPasswordStrength(fieldID, ajaxURL, tokenName, tokenValue) {
 	var field = jQuery('#' + fieldID);
 	var check =
 		function() {
@@ -560,8 +566,10 @@ function checkPasswordStrength(fieldID, ajaxURL) {
 			var pwdJSON = {
 					"password": value
 			};
+			var data = {jsonInput: pwdJSON};
+			data[tokenName] = tokenValue;
 			// make AJAX call
-			jQuery.post(ajaxURL + "&function=passwordStrengthCheck", {jsonInput: pwdJSON}, function(data) {checkPasswordStrengthHandleReply(data, fieldID);}, 'json');
+			jQuery.post(ajaxURL + "&function=passwordStrengthCheck", data, function(data) {checkPasswordStrengthHandleReply(data, fieldID);}, 'json');
 		};
 	jQuery(field).keyup(check);
 }
@@ -654,12 +662,18 @@ window.lam.upload = window.lam.upload || {};
  * Continues a CSV file upload.
  *
  * @param url URL where to get status JSON
+ * @param tokenName name of CSRF token
+ * @param tokenValue value of CSRF token
  */
-window.lam.upload.continueUpload = function(url) {
+window.lam.upload.continueUpload = function(url, tokenName, tokenValue) {
+	var data = {
+		jsonInput: ''
+	};
+	data[tokenName] = tokenValue;
 	jQuery.ajax({
 		url: url,
 		method: 'POST',
-		data: 'jsonInput='
+		data: data
 	})
 	.done(function(jsonData){
 		if (!jsonData.accountsFinished) {
@@ -673,7 +687,7 @@ window.lam.upload.continueUpload = function(url) {
 		}
 		// next call if not finished
 		if (!jsonData.allDone) {
-			window.lam.upload.continueUpload(url);
+			window.lam.upload.continueUpload(url, tokenName, tokenValue);
 		}
 		else {
 			window.lam.upload.uploadDone(jsonData);

@@ -2,10 +2,9 @@
 use LAM\TYPES\ConfiguredType;
 use \LAM\TYPES\TypeManager;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2017  Roland Gruber
+  Copyright (C) 2003 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1278,8 +1277,8 @@ class accountContainer {
 			$passwordButton = new htmlButton('accountContainerPassword', _('Set password'));
 			$passwordButton->setIconClass('passwordButton');
 			$passwordButton->setOnClick('passwordShowChangeDialog(\'' . _('Set password') . '\', \'' . _('Ok') . '\', \''
-				 . _('Cancel') . '\', \'' . _('Set random password') . '\', \'../misc/ajax.php?function=passwordChange&'
-				 . getSecurityTokenName() . '=' . getSecurityTokenValue() . '\');');
+				 . _('Cancel') . '\', \'' . _('Set random password') . '\', \'../misc/ajax.php?function=passwordChange\',\''
+				 . getSecurityTokenName() . '\',\'' . getSecurityTokenValue() . '\');');
 			$leftButtonGroup->addElement($passwordButton);
 		}
 		$table->addElement($leftButtonGroup);

@@ -3,10 +3,9 @@ use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2017  Roland Gruber
+  Copyright (C) 2005 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -392,9 +391,10 @@ class ldapPublicKey extends baseModule {
 				for (c = 0; c < count; c++) {
 					actionJSON["sshPublicKey_" + c] = jQuery(\'#sshPublicKey_\' + c).val();
 				}
-				jQuery.post(\'../misc/ajax.php?selfservice=1&module=ldapPublicKey&scope=user'
-					. '&' . getSecurityTokenName() . '=' . getSecurityTokenValue()
-					. '\', {jsonInput: actionJSON}, function(data) {ldapPublicKeyDeleteKeyHandleReply(data);}, \'json\');
+				var data = {jsonInput: actionJSON};
+				data["' . getSecurityTokenName() . '"] = "' . getSecurityTokenValue() . '";
+				jQuery.post(\'../misc/ajax.php?selfservice=1&module=ldapPublicKey&scope=user\',
+						data, function(data) {ldapPublicKeyDeleteKeyHandleReply(data);}, \'json\');
 			}
 
 			function ldapPublicKeyDeleteKeyHandleReply(data) {
@@ -413,9 +413,11 @@ class ldapPublicKey extends baseModule {
 				for (c = 0; c < count; c++) {
 					actionJSON["sshPublicKey_" + c] = jQuery(\'#sshPublicKey_\' + c).val();
 				}
+				var data = {jsonInput: actionJSON};
+				data["' . getSecurityTokenName() . '"] = "' . getSecurityTokenValue() . '";
 				jQuery.post(\'../misc/ajax.php?selfservice=1&module=ldapPublicKey&scope=user'
 					. '&' . getSecurityTokenName() . '=' . getSecurityTokenValue()
-					. '\', {jsonInput: actionJSON}, function(data) {ldapPublicKeyAddKeyHandleReply(data);}, \'json\');
+					. '\', data, function(data) {ldapPublicKeyAddKeyHandleReply(data);}, \'json\');
 			}
 
 			function ldapPublicKeyAddKeyHandleReply(data) {
@@ -435,12 +437,12 @@ class ldapPublicKey extends baseModule {
 				for (c = 0; c < count; c++) {
 					parameters["sshPublicKey_" + c] = jQuery(\'#sshPublicKey_\' + c).val();
 				}
+				parameters["' . getSecurityTokenName() . '"] = "' . getSecurityTokenValue() . '";
 				var uploader = new qq.FineUploader({
 					element: document.getElementById(elementID),
 					listElement: uploadStatus,
 					request: {
-						endpoint: \'../misc/ajax.php?selfservice=1&module=ldapPublicKey&scope=user'
-						. '&' . getSecurityTokenName() . '=' . getSecurityTokenValue() . '\',
+						endpoint: \'../misc/ajax.php?selfservice=1&module=ldapPublicKey&scope=user\',
 						forceMultipart: true,
 						paramsInBody: true,
 						params: parameters

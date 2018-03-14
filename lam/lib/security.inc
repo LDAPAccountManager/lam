@@ -548,17 +548,13 @@ function addSecurityTokenToSession($overwrite = true) {
 
 /**
  * Checks if the security token from SESSION matches POST data.
- *
- * @param $post use POST, set to false for GET (default: true)
  */
-function validateSecurityToken($post = true) {
-	$vars = $post ? $_POST : $_GET;
-	if (empty($vars)) {
+function validateSecurityToken() {
+	if (empty($_POST)) {
 		return;
 	}
-	if (empty($vars[getSecurityTokenName()]) || ($vars[getSecurityTokenName()] != $_SESSION[getSecurityTokenName()])) {
-		$method = $post ? 'POST' : 'GET';
-		logNewMessage(LOG_ERR, 'Security token does not match ' . $method . ' data.');
+	if (empty($_POST[getSecurityTokenName()]) || ($_POST[getSecurityTokenName()] != $_SESSION[getSecurityTokenName()])) {
+		logNewMessage(LOG_ERR, 'Security token does not match POST data.');
 		die();
 	}
 }

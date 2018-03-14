@@ -1,10 +1,9 @@
 <?php
 namespace LAM\UPLOAD;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2017  Roland Gruber
+  Copyright (C) 2004 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -82,7 +81,7 @@ $tokenPrefix = '?' . getSecurityTokenName() . '=' . getSecurityTokenValue();
 ?>
 	<script type="text/javascript">
 		jQuery(document).ready(function(){
-			window.lam.upload.continueUpload('../misc/ajax.php' + '<?php echo $tokenPrefix; ?>' + '&function=upload&typeId=' + '<?php echo $type->getId() ?>');
+			window.lam.upload.continueUpload('../misc/ajax.php?function=upload&typeId=' + '<?php echo $type->getId() ?>', '<?php echo getSecurityTokenName(); ?>', '<?php echo getSecurityTokenValue(); ?>');
 		});
 	</script>
 

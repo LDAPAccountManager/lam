@@ -1,11 +1,10 @@
 <?php
 use \LAM\TYPES\TypeManager;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2017  Roland Gruber
+                2005 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -2954,9 +2953,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 					"action": "delete",
 					"id": id
 				};
-				jQuery.post(\'../misc/ajax.php?selfservice=1&module=inetOrgPerson&scope=user'
-				 . '&' . getSecurityTokenName() . '=' . getSecurityTokenValue()
-				 . '\', {jsonInput: actionJSON}, function(data) {inetOrgPersonDeleteCertificateHandleReply(data);}, \'json\');
+				var data = {jsonInput: actionJSON};
+				data["' . getSecurityTokenName() . '"] = "' . getSecurityTokenValue() . '";
+				jQuery.post(\'../misc/ajax.php?selfservice=1&module=inetOrgPerson&scope=user\',
+						data, function(data) {inetOrgPersonDeleteCertificateHandleReply(data);}, \'json\');
 			}
 
 			function inetOrgPersonDeleteCertificateHandleReply(data) {
@@ -2970,6 +2970,8 @@ class inetOrgPerson extends baseModule implements passwordService {
 
 			function inetOrgPersonUploadCert(elementID) {
 				var uploadStatus = document.getElementById(\'inetOrgPerson_upload_status_cert\');
+				var params = { action: \'ajaxCertUpload\' };
+				params["' . getSecurityTokenName() . '"] = "' . getSecurityTokenValue() . '";
 				var uploader = new qq.FineUploader({
 					element: document.getElementById(elementID),
 					listElement: uploadStatus,
@@ -2977,9 +2979,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 						endpoint: \'../misc/ajax.php?selfservice=1&module=inetOrgPerson&scope=user'
 						 . '&' . getSecurityTokenName() . '=' . getSecurityTokenValue() . '\',
 						forceMultipart: true,
-						params: {
-							action: \'ajaxCertUpload\'
-						}
+						params: params
 					},
 					multiple: false,
 					callbacks: {

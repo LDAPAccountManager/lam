@@ -61,7 +61,7 @@ class Ajax {
 	public function handleRequest() {
 		$this->setHeader();
 		// check token
-		validateSecurityToken(false);
+		validateSecurityToken();
 
 		if (isset($_GET['module']) && isset($_GET['scope']) && in_array($_GET['module'], getAvailableModules($_GET['scope']))) {
 			enforceUserIsLoggedIn();
