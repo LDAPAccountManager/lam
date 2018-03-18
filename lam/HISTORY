@@ -1,6 +1,9 @@
-March 2018 6.3
+19.03.2018 6.3
   - Server profile: added option if referential integrity overlay is active to skip cleanup actions
   - Unix: several options are now specific to subaccount types (reconfiguration required!)
+  - Fixed bugs:
+   -> Security fixes (XSS vulnerabilities and CSRF token in URL)
+   -> Quota for Windows groups did not work
   - LAM Pro:
    -> Support custom structural object classes with new custom type
    -> Support dynamic lists
