@@ -2,7 +2,7 @@
   - Server profile: added option if referential integrity overlay is active to skip cleanup actions
   - Unix: several options are now specific to subaccount types (reconfiguration required!)
   - Fixed bugs:
-   -> Security fixes (XSS vulnerabilities and CSRF token in URL)
+   -> Security fixes (XSS vulnerabilities CVE-2018-8763 and CSRF token in URL CVE-2018-8764)
    -> Quota for Windows groups did not work
   - LAM Pro:
    -> Support custom structural object classes with new custom type
