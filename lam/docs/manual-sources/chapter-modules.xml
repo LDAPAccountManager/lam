@@ -1955,8 +1955,14 @@
 
       <para>You can manage your public keys for SSH in LAM if you installed
       the <ulink url="http://code.google.com/p/openssh-lpk/">LPK patch for
-      SSH</ulink>. Activate the "SSH public key" module for users in the
-      server profile and you can add keys to your user entries.</para>
+      SSH</ulink> or setup AuthorizedKeysCommand (see below).</para>
+
+      <para>Activate the "SSH public key" module for users in the server
+      profile and you can add keys to your user entries.</para>
+
+      <screenshot>
+        <graphic fileref="images/ldapPublicKey2.png"/>
+      </screenshot>
 
       <screenshot>
         <mediaobject>
@@ -1965,6 +1971,30 @@
           </imageobject>
         </mediaobject>
       </screenshot>
+
+      <para><emphasis role="bold">Example for
+      AuthorizedKeysCommand</emphasis></para>
+
+      <para>This will dynamically get the public key from LDAP. In this case
+      there is no need to patch SSH sources.</para>
+
+      <para>Create the authentication script in e.g.
+      /usr/bin/ldapAuthSSH.sh</para>
+
+      <literallayout>
+#!/bin/bash
+uid=$1 
+server=ldap.domain.com
+baseDN=ou=people,dc=example,dc=com
+port=389
+ldapsearch -x -h $server -p $port -b $baseDN -s sub "(&amp;(objectclass=posixAccount)(uid=$uid))" | sed -n '/^ /{H;d};/sshPublicKey:/x;$g;s/\n *//g;s/sshPublicKey: //gp'
+
+</literallayout>
+
+      <para>Now setup your sshd_config</para>
+
+      <literallayout>AuthorizedKeysCommand /usr/bin/ldapAuthSSH.sh
+AuthorizedKeysCommandUser root</literallayout>
     </section>
 
     <section>
