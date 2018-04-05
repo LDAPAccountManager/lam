@@ -1576,13 +1576,13 @@ class accountContainer {
 		logNewMessage(LOG_DEBUG, "Edit account " . $dn);
 		$this->module = array();
 		$modules = $_SESSION['config']->get_AccountModules($this->type->getId());
-		$search = substr($dn, 0, strpos($dn, ','));
+		$filter = 'objectClass=*';
 		$searchAttrs = array('*', '+');
 		foreach ($modules as $module) {
 			$modTmp = new $module($this->type->getScope());
 			$searchAttrs = array_merge($searchAttrs, $modTmp->getManagedHiddenAttributes($this->type->getId()));
 		}
-		$result = @ldap_read($_SESSION['ldap']->server(), escapeDN($dn), escapeDN($search), $searchAttrs, 0, 0, 0, LDAP_DEREF_NEVER);
+		$result = @ldap_read($_SESSION['ldap']->server(), escapeDN($dn), $filter, $searchAttrs, 0, 0, 0, LDAP_DEREF_NEVER);
 		if (!$result) {
 			return array(array("ERROR", _("Unable to load LDAP entry:") . " " . htmlspecialchars($dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())));
 		}
