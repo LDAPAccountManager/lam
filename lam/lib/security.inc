@@ -491,6 +491,49 @@ function checkPasswordStrength($password, $userName, $otherUserAttrs) {
 			}
 		}
 	}
+	// check external password service
+	if (!checkPwdWithExternalPasswordService($cfg, $password)) {
+		return _('Your selected password is known to be insecure.');
+	}
+	return true;
+}
+
+/**
+ * Checks the password against the external password service.
+ *
+ * @param LAMCfgMain $cfg main configuration
+ * @param string $password password
+ * @return boolean password accepted as secure
+ */
+function checkPwdWithExternalPasswordService($cfg, $password) {
+	if (!function_exists('curl_init') || empty($cfg->externalPwdCheckUrl)) {
+		return true;
+	}
+	$sha1 = sha1($password);
+	$sha1Prefix = substr($sha1, 0, 5);
+	$sha1Suffix = substr($sha1, 5);
+	$curl = curl_init();
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+	$url = $cfg->externalPwdCheckUrl;
+	$url = str_replace('{SHA1PREFIX}', $sha1Prefix, $url);
+	curl_setopt($curl, CURLOPT_URL, $url);
+	$results = curl_exec($curl);
+	$code = curl_errno($curl);
+	if ($code) {
+		logNewMessage(LOG_ERR, 'Error calling the external password service at ' . $url
+			. '. ' . curl_error($curl));
+		return true;
+	}
+	curl_close($curl);
+	if (empty($results)) {
+		return true;
+	}
+	$results = explode("\n", $results);
+	foreach ($results as $result) {
+		if (stripos($result, $sha1Suffix . ':') !== false) {
+			return false;
+		}
+	}
 	return true;
 }
 

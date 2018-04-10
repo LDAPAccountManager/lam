@@ -179,6 +179,12 @@ if (isset($_POST['submitFormData'])) {
 	$cfg->checkedRulesCount = $_POST['passwordRulesCount'];
 	$cfg->passwordMustNotContain3Chars = isset($_POST['passwordMustNotContain3Chars']) && ($_POST['passwordMustNotContain3Chars'] == 'on') ? 'true' : 'false';
 	$cfg->passwordMustNotContainUser = isset($_POST['passwordMustNotContainUser']) && ($_POST['passwordMustNotContainUser'] == 'on') ? 'true' : 'false';
+	if (function_exists('curl_init')) {
+		$cfg->externalPwdCheckUrl = $_POST['externalPwdCheckUrl'];
+		if (!empty($cfg->externalPwdCheckUrl) && (strpos($cfg->externalPwdCheckUrl, '{SHA1PREFIX}') === false)) {
+			$errors[] = _('The URL for the external password check is invalid.');
+		}
+	}
 	if (isset($_POST['sslCaCertUpload'])) {
 		if (!isset($_FILES['sslCaCert']) || ($_FILES['sslCaCert']['size'] == 0)) {
 			$errors[] = _('No file selected.');
@@ -378,6 +384,10 @@ $passwordMustNotContainUser = ($cfg->passwordMustNotContainUser === 'true') ? tr
 $row->add(new htmlResponsiveInputCheckbox('passwordMustNotContainUser',$passwordMustNotContainUser , _('Password must not contain user name'), '247'), 12);
 $passwordMustNotContain3Chars = ($cfg->passwordMustNotContain3Chars === 'true') ? true : false;
 $row->add(new htmlResponsiveInputCheckbox('passwordMustNotContain3Chars', $passwordMustNotContain3Chars, _('Password must not contain part of user/first/last name'), '248'), 12);
+if (function_exists('curl_init')) {
+	$row->addVerticalSpacer('1rem');
+	$row->add(new htmlResponsiveInputField(_('External password check'), 'externalPwdCheckUrl', $cfg->externalPwdCheckUrl, '249'), 12);
+}
 
 // logging
 $row->add(new htmlSubTitle(_("Logging")), 12);

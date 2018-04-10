@@ -1,10 +1,9 @@
 <?php
 use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2017  Roland Gruber
+  Copyright (C) 2003 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -2287,6 +2286,9 @@ class LAMCfgMain {
 	/** password may contain more than 2 characters of user/first/last name */
 	public $passwordMustNotContain3Chars = 'false';
 
+	/** external URL for password checking (e.g. https://domain.com/url/{SHA1}) */
+	public $externalPwdCheckUrl = null;
+
 	/** path to config file */
 	private $conffile;
 
@@ -2311,6 +2313,7 @@ class LAMCfgMain {
 		"passwordMinUpper", "passwordMinLower", "passwordMinNumeric",
 		"passwordMinClasses", "passwordMinSymbol", 'checkedRulesCount',
 		'passwordMustNotContainUser', 'passwordMustNotContain3Chars',
+		'externalPwdCheckUrl',
 		"mailEOL", 'errorReporting', 'encryptSession', 'allowedHostsSelfService',
 		'license'
 	);
@@ -2405,6 +2408,7 @@ class LAMCfgMain {
 		if (!in_array("checkedRulesCount", $saved)) array_push($file_array, "\n\n# Password: checked rules\n" . "checkedRulesCount: " . $this->checkedRulesCount);
 		if (!in_array("passwordMustNotContain3Chars", $saved)) array_push($file_array, "\n\n# Password: must not contain part of user name\n" . "passwordMustNotContain3Chars: " . $this->passwordMustNotContain3Chars);
 		if (!in_array("passwordMustNotContainUser", $saved)) array_push($file_array, "\n\n# Password: must not contain user name\n" . "passwordMustNotContainUser: " . $this->passwordMustNotContainUser);
+		if (!in_array("externalPwdCheckUrl", $saved)) array_push($file_array, "\n\n" . "externalPwdCheckUrl: " . $this->externalPwdCheckUrl);
 		if (!in_array("mailEOL", $saved)) array_push($file_array, "\n\n# Email format (default/unix)\n" . "mailEOL: " . $this->mailEOL);
 		if (!in_array("errorReporting", $saved)) array_push($file_array, "\n\n# PHP error reporting (default/system)\n" . "errorReporting: " . $this->errorReporting);
 		if (!in_array("license", $saved)) array_push($file_array, "\n\n# License\n" . "license: " . $this->license);
