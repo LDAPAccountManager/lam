@@ -103,12 +103,12 @@ class posixAccount extends baseModule implements passwordService {
 		$this->messages['uid'][2] = array('ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['uid'][3] = array('WARN', _('Host name'), _('You are using capital letters. This can cause problems because Windows is not case-sensitive.'));
 		$this->messages['uid'][4] = array('ERROR', _('Host name'), _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['uid'][5] = array('WARN', _('User name'), _('User name in use. Selected next free user name.'));
-		$this->messages['uid'][6] = array('WARN', _('Host name'), _('Host name in use. Selected next free host name.'));
+		$this->messages['uid'][5] = array('WARN', _('User name'), _('User name in use (%s). Selected next free user name.'));
+		$this->messages['uid'][6] = array('WARN', _('Host name'), _('Host name in use (%s). Selected next free host name.'));
 		$this->messages['uid'][7] = array('ERROR', _('Account %s:') . ' posixAccount_userName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['uid'][8] = array('ERROR', _('Account %s:') . ' posixAccount_hostName', _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['uid'][9] = array('ERROR', _('Account %s:') . ' posixAccount_userName', _('User name already exists!') . ' ' . _('You might want to use %s instead of %s.'));
-		$this->messages['uid'][10] = array('ERROR', _('Account %s:') . ' posixAccount_hostName', _('Host name already exists!') . ' ' . _('You might want to use %s instead of %s.'));
+		$this->messages['uid'][9] = array('ERROR', _('Account %s:') . ' posixAccount_userName', _('User name already exists!') . ' ' . _('You might want to use %s instead of %s.') . ' %s');
+		$this->messages['uid'][10] = array('ERROR', _('Account %s:') . ' posixAccount_hostName', _('Host name already exists!') . ' ' . _('You might want to use %s instead of %s.') . ' %s');
 		$this->messages['gidNumber'][0] = array('ERROR', _('Account %s:') . ' posixAccount_group', _('LAM was unable to find a group with this name!'));
 		$this->messages['gidNumber'][1] = array('ERROR', _('Account %s:') . ' posixAccount_group', _('This GID number is invalid! Please provide either a number or a group name.'));
 		$this->messages['gidNumber'][2] = array('INFO', _('GID number'), _('GID number has changed. To keep file ownership you have to run the following command as root: \'find / -gid %s -uid %s -exec chgrp %s {} \;\''));
@@ -1146,8 +1146,17 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		// Show warning if LAM has changed username
 		if ($this->attributes['uid'][0] != trim($_POST['uid'])) {
-			if ($this->get_scope()=='user') $errors[] = $this->messages['uid'][5];
-			if ($this->get_scope()=='host') $errors[] = $this->messages['uid'][6];
+			$userNames = $this->getUserNames($typeId);
+			if ($this->get_scope() == 'user') {
+				$error = $this->messages['uid'][5];
+				$error[] = array(htmlspecialchars($userNames[trim($_POST['uid'])]));
+				$errors[] = $error;
+			}
+			if ($this->get_scope() == 'host') {
+				$error = $this->messages['uid'][6];
+				$error[] = array(htmlspecialchars($userNames[trim($_POST['uid'])]));
+				$errors[] = $error;
+			}
 		}
 		if ($this->get_scope()=='user') {
 			// Check if Username contains only valid characters
@@ -1349,11 +1358,15 @@ class posixAccount extends baseModule implements passwordService {
 					// fill default value for user ID with first/last name
 					$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
 					$this->attributes['uid'][0] = $this->getUserNameSuggestion($attrs, $typeId);
+					$firstSuggestion = $this->attributes['uid'][0];
 					if (!empty($this->attributes['uid'][0]) && $this->userNameExists($this->attributes['uid'][0], $typeId)) {
 						while ($this->userNameExists($this->attributes['uid'][0], $typeId)) {
 							$this->attributes['uid'][0] = $this->getNextUserName($this->attributes['uid'][0]);
 						}
-						$msg = new htmlStatusMessage($this->messages['uid'][5][0], $this->messages['uid'][5][1], $this->messages['uid'][5][2]);
+						$users = $this->getUserNames($typeId);
+						$msg = new htmlStatusMessage($this->messages['uid'][5][0],
+								$this->messages['uid'][5][1], $this->messages['uid'][5][2],
+								array(htmlspecialchars($users[$firstSuggestion])));
 						$msg->colspan = 10;
 						$return->addElement($msg, true);
 					}
@@ -2308,13 +2321,14 @@ class posixAccount extends baseModule implements passwordService {
 					}
 				}
 				// user name
-				if (in_array($rawAccount[$ids['posixAccount_userName']], $existingUsers)) {
+				if (array_key_exists($rawAccount[$ids['posixAccount_userName']], $existingUsers)) {
 					$userName = $rawAccount[$ids['posixAccount_userName']];
-					while (in_array($userName, $existingUsers)) {
+					while (array_key_exists($userName, $existingUsers)) {
 						$userName = $this->getNextUserName($userName);
 					}
 					$errMsg = $this->messages['uid'][9];
-					array_push($errMsg, array($i, $userName, $rawAccount[$ids['posixAccount_userName']]));
+					array_push($errMsg, array($i, $userName, $rawAccount[$ids['posixAccount_userName']],
+						htmlspecialchars($existingUsers[$rawAccount[$ids['posixAccount_userName']]])));
 					$errors[] = $errMsg;
 				}
 				elseif (get_preg($rawAccount[$ids['posixAccount_userName']], 'username')) {
@@ -2413,13 +2427,14 @@ class posixAccount extends baseModule implements passwordService {
 			// host specific attributes
 			elseif ($this->get_scope() == 'host') {
 				// host name
-				if (in_array($rawAccount[$ids['posixAccount_hostName']], $existingUsers)) {
+				if (array_key_exists($rawAccount[$ids['posixAccount_hostName']], $existingUsers)) {
 					$userName = $rawAccount[$ids['posixAccount_hostName']];
-					while (in_array($userName, $existingUsers)) {
+					while (array_key_exists($userName, $existingUsers)) {
 						$userName = $this->getNextUserName($userName);
 					}
 					$errMsg = $this->messages['uid'][10];
-					array_push($errMsg, array($i, $userName, $rawAccount[$ids['posixAccount_hostName']]));
+					array_push($errMsg, array($i, $userName, $rawAccount[$ids['posixAccount_hostName']],
+						htmlspecialchars($existingUsers[$rawAccount[$ids['posixAccount_userName']]])));
 					$errors[] = $errMsg;
 				}
 				elseif (get_preg($rawAccount[$ids['posixAccount_hostName']], 'hostname')) {
@@ -3203,7 +3218,7 @@ class posixAccount extends baseModule implements passwordService {
 	 * @return boolean true if already exists
 	 */
 	private function userNameExists($userName, $typeId) {
-		return in_array($userName, $this->getUserNames($typeId));
+		return array_key_exists($userName, $this->getUserNames($typeId));
 	}
 
 	/**
@@ -3250,10 +3265,9 @@ class posixAccount extends baseModule implements passwordService {
 		foreach ($suffixes as $suffix) {
 			$result = searchLDAP($suffix, $filter, $attrs);
 			foreach ($result as $resultEntry) {
-				$this->cachedUserNameList[] = $resultEntry['uid'][0];
+				$this->cachedUserNameList[$resultEntry['uid'][0]] = $resultEntry['dn'];
 			}
 		}
-		$this->cachedUserNameList = array_values(array_unique($this->cachedUserNameList));
 		return $this->cachedUserNameList;
 	}
 
