@@ -172,7 +172,7 @@ $helpArray = array (
 				"248" => array ("Headline" => _('Password must not contain part of user/first/last name'),
 					"Text" => _('Specifies if the password must not contain 3 or more characters of the user/first/last name.')),
 				"249" => array ("Headline" => _('External password check'),
-					"Text" => _('Please specify the URL (e.g. "https://api.pwnedpasswords.com/range/{SHA1PREFIX}") of your external password check and the severity if the check fails.')),
+					"Text" => _('Please specify the URL (e.g. "https://api.pwnedpasswords.com/range/{SHA1PREFIX}") of your external password check.')),
 				"250" => array ("Headline" => _("Filter"),
 					"Text" => _("Here you can input simple filter expressions (e.g. 'value' or 'v*'). The filter is case-sensitive.")),
 				"260" => array ("Headline" => _("Additional LDAP filter"),

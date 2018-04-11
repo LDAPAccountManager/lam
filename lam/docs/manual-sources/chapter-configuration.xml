@@ -151,6 +151,43 @@
 
       <para>You can set the minimum password length and also the complexity of
       the passwords.</para>
+
+      <para><emphasis role="bold">External password check</emphasis></para>
+
+      <para>Please note that this option is only displayed if you have
+      installed the PHP Curl extension for your web server.</para>
+
+      <para>This will validate passwords using an external service. LAM
+      supports the protocol used by <ulink
+      url="https://haveibeenpwned.com/API/v2#SearchingPwnedPasswordsByRange">Have
+      I been Pwned</ulink>. You can use the service directly or setup any
+      custom service with the same API. If the service reports an error LAM
+      will log an error message and the password will be accepted.</para>
+
+      <para>Example URL:
+      https://api.pwnedpasswords.com/range/{SHA1PREFIX}</para>
+
+      <para>LAM will build a SHA1 hash of the password and send parts of it to
+      the service.</para>
+
+      <para>The configured URL must contain the wildcard "{SHA1PREFIX}" which
+      will be replaced with the 5 character hash prefix. The service must then
+      return a list of text lines in the format "&lt;hash
+      suffix&gt;:&lt;number&gt;".</para>
+
+      <para>"&lt;hash suffix&gt;" needs to be the suffix of a known insecure
+      password. The "&lt;number&gt;" can be any numeric value and will be
+      ignored by LAM.</para>
+
+      <para>Example:</para>
+
+      <para>Password hash: 21BD10018A45C4D1DEF81644B54AB7F969B88D65</para>
+
+      <para>Hash prefix sent to service: 21BD1</para>
+
+      <para>Returned line: 0018A45C4D1DEF81644B54AB7F969B88D65:1</para>
+
+      <para>This will reject the password.</para>
     </section>
 
     <section id="conf_logging">

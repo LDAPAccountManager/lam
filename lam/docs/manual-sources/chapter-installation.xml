@@ -575,6 +575,12 @@
       intermediate release.</para>
 
       <section>
+        <title>6.3 -&gt; 6.4</title>
+
+        <para>No actions needed.</para>
+      </section>
+
+      <section>
         <title>6.2 -&gt; 6.3</title>
 
         <para>Unix: Options in server profile for Unix users and groups need

@@ -1,3 +1,7 @@
+June 2018
+  - Passwords can be checked against external service (e.g. https://api.pwnedpasswords.com/range)
+
+
 19.03.2018 6.3
   - Server profile: added option if referential integrity overlay is active to skip cleanup actions
   - Unix: several options are now specific to subaccount types (reconfiguration required!)
