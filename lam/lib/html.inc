@@ -3659,7 +3659,7 @@ class htmlResponsiveRow extends htmlElement {
 	public function add($content, $numMobile, $numTablet = null, $numDesktop = null, $classes = '') {
 		$tabletCols = ($numTablet === null) ? $numMobile : $numTablet;
 		$desktopCols = ($numDesktop === null) ? $tabletCols : $numDesktop;
-		$this->addCell(new htmlResponsiveCell($content, $numMobile, $tabletCols, $tabletCols, $classes));
+		$this->addCell(new htmlResponsiveCell($content, $numMobile, $tabletCols, $desktopCols, $classes));
 	}
 
 	/**

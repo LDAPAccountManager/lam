@@ -7,6 +7,7 @@ use \htmlOutputText;
 use \htmlSpacer;
 use \htmlButton;
 use \htmlGroup;
+use \htmlDiv;
 use \htmlResponsiveInputCheckbox;
 use \LAMConfig;
 use \htmlResponsiveRow;
@@ -179,6 +180,7 @@ $_SESSION['conftypes_optionTypes'] = array();
 // show active types
 if (sizeof($activeTypes) > 0) {
 	$container->add(new htmlSubTitle(_("Active account types")), 12);
+	$index = 0;
 	foreach ($activeTypes as $activeType) {
 		// title
 		$titleGroup = new htmlGroup();
@@ -189,12 +191,28 @@ if (sizeof($activeTypes) > 0) {
 		$titleGroup->addElement($titleText);
 		$container->addField($titleGroup);
 		$descriptionRow = new htmlResponsiveRow();
-		$descriptionRow->add(new htmlOutputText($activeType->getBaseType()->getDescription()), 10, 10, 10, 'responsiveField');
+		$descriptionRow->add(new htmlOutputText($activeType->getBaseType()->getDescription()), 12, 12, 9, 'responsiveField');
+		$buttons = new htmlGroup();
+		// move buttons
+		if ($index > 0) {
+			$upButton = new htmlButton('moveup_'. $activeType->getId(), 'up.gif', true);
+			$upButton->setTitle(_("Up"));
+			$upButton->setCSSClasses(array('size16'));
+			$buttons->addElement($upButton);
+		}
+		if ($index < (sizeof($activeTypes) - 1)) {
+			$upButton = new htmlButton('movedown_'. $activeType->getId(), 'down.gif', true);
+			$upButton->setTitle(_("Down"));
+			$upButton->setCSSClasses(array('size16'));
+			$buttons->addElement($upButton);
+		}
 		// delete button
 		$delButton = new htmlButton('rem_'. $activeType->getId(), 'del.png', true);
 		$delButton->setTitle(_("Remove this account type"));
 		$delButton->setCSSClasses(array('size16'));
-		$descriptionRow->add($delButton, 2, 2, 2, 'responsiveLabel');
+		$buttons->addElement($delButton);
+		$buttonsDiv = new htmlDiv(null, $buttons, array('text-right'));
+		$descriptionRow->add($buttonsDiv, 12, 12, 3, 'responsiveLabel');
 		$container->addField($descriptionRow);
 		$container->addVerticalSpacer('0.5rem');
 		// LDAP suffix
@@ -272,6 +290,7 @@ if (sizeof($activeTypes) > 0) {
 		$container->add($advancedOptions, 12);
 
 		$container->addVerticalSpacer('2rem');
+		$index++;
 	}
 }
 
@@ -327,6 +346,22 @@ function checkInput() {
 			unset($accountTypes[$type]);
 			$accountTypes = array_flip($accountTypes);
 			$accountTypes = array_values($accountTypes);
+		}
+	    // check if up button was pressed
+		elseif (substr($key, 0, 7) == "moveup_") {
+			$type = substr($key, 7);
+			$pos = array_search($type, $accountTypes);
+			$temp = $accountTypes[$pos - 1];
+			$accountTypes[$pos - 1] = $accountTypes[$pos];
+			$accountTypes[$pos] = $temp;
+		}
+		// check if down button was pressed
+		elseif (substr($key, 0, 9) == "movedown_") {
+			$type = substr($key, 9);
+			$pos = array_search($type, $accountTypes);
+			$temp = $accountTypes[$pos + 1];
+			$accountTypes[$pos + 1] = $accountTypes[$pos];
+			$accountTypes[$pos] = $temp;
 		}
 		// set suffixes
 		elseif (substr($key, 0, 7) == "suffix_") {
