@@ -1933,7 +1933,7 @@
         </mediaobject>
       </screenshot>
 
-      <para>Usage:</para>
+      <para><emphasis role="bold">Usage</emphasis></para>
 
       <para>You can specify a routing address, the mail server and a number of
       local addresses to route.</para>
@@ -1948,6 +1948,24 @@
           </imageobject>
         </mediaobject>
       </screenshot>
+
+      <para><emphasis role="bold">Wildcards</emphasis></para>
+
+      <para>The module supports wildcards in the following input
+      fields:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Routing address</para>
+        </listitem>
+
+        <listitem>
+          <para>Local address</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>See the other modules that you activated what wildcards they
+      provide (e.g. $user).</para>
     </section>
 
     <section>

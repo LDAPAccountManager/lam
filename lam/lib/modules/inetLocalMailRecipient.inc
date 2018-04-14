@@ -1,9 +1,8 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2015  Roland Gruber
+  Copyright (C) 2004 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -94,7 +93,9 @@ class inetLocalMailRecipient extends baseModule {
 		// profile options
 		$profileContainer = new htmlTable();
 		$profileContainer->addElement(new htmlTableExtendedInputCheckbox('inetLocalMailRecipient_addExt', false, _('Automatically add this extension'), 'autoAdd'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Mail server'), 'inetLocalMailRecipient_host', null, 'mailHost'));
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Routing address'), 'inetLocalMailRecipient_mailRoutingAddress', null, 'mailRoutingAddress'), true);
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Local address'), 'inetLocalMailRecipient_mailLocalAddress', null, 'localAdr'), true);
+		$profileContainer->addElement(new htmlTableExtendedInputField(_('Mail server'), 'inetLocalMailRecipient_host', null, 'mailHost'), true);
 		$return['profile_options'] = $profileContainer;
 		// profile checks
 		$return['profile_checks']['inetLocalMailRecipient_host'] = array(
@@ -103,7 +104,9 @@ class inetLocalMailRecipient extends baseModule {
 			'error_message' => $this->messages['mailHost'][0]);
 		// profile mappings
 		$return['profile_mappings'] = array(
-			'inetLocalMailRecipient_host' => 'mailHost'
+			'inetLocalMailRecipient_host' => 'mailHost',
+			'inetLocalMailRecipient_mailRoutingAddress' => 'mailRoutingAddress',
+			'inetLocalMailRecipient_mailLocalAddress' => 'mailLocalAddress',
 		);
 		// upload fields
 		$return['upload_columns'] = array(
@@ -234,6 +237,7 @@ class inetLocalMailRecipient extends baseModule {
 			return array();
 		}
 		$errors = array();
+		$this->getAccountContainer()->replaceWildcardsInPOST(array('localAdr', 'mailRoutingAddress'));
 		$this->attributes['mailRoutingAddress'] = array();
 		$this->attributes['mailLocalAddress'] = array();
 		$this->attributes['mailHost'] = array();
