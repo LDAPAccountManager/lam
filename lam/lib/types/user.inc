@@ -1,9 +1,8 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2017  Roland Gruber
+  Copyright (C) 2005 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -242,6 +241,7 @@ class user extends baseType {
 		$is389dsAvailable = ($container->getAccountModule('locking389ds') != null);
 		$is389dsLocked = $is389dsAvailable && $container->getAccountModule('locking389ds')->isLocked();
 		$is389dsDeactivated = $is389dsAvailable && $container->getAccountModule('locking389ds')->isDeactivated();
+		$is389dsPwdExpired = $is389dsAvailable && locking389ds::isPasswordExpired($container->getAccountModule('locking389ds')->getAttributes());
 		if (!$unixAvailable && !$sambaAvailable && !$ppolicyAvailable && !$windowsAvailable && !$is389dsAvailable) {
 			return '';
 		}
@@ -275,7 +275,7 @@ class user extends baseType {
 		}
 		$partiallyLocked = $unixLocked || $sambaLocked
 						|| $ppolicyLocked || $windowsLocked || $windowsPasswordLocked
-						|| $is389dsDeactivated || $is389dsLocked;
+						|| $is389dsDeactivated || $is389dsLocked || $is389dsPwdExpired;
 		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable || $is389dsDeactivated || $is389dsLocked)
 							&& (!$unixAvailable || $unixLocked)
 							&& (!$sambaAvailable || $sambaLocked)
@@ -335,13 +335,19 @@ class user extends baseType {
 			$icon389dsActivation = $is389dsDeactivated ? 'lock.png' : 'unlocked.png';
 			$statusTable .= '<tr><td>' . $text389dsActivation . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $icon389dsActivation . '&quot;></td></tr>';
 		}
+		// 389ds password expired
+		if ($is389dsPwdExpired) {
+			$statusTable .= '<tr><td>' . _('Password expired') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/lock.png&quot;></td></tr>';
+		}
 		$statusTable .= '</table>';
 		$tipContent = $statusTable;
 		if ($isEditable) {
 			$tipContent .= '<br><img alt=&quot;hint&quot; src=&quot;../../graphics/light.png&quot;> ';
 			$tipContent .= _('Please click to lock/unlock this account.');
 		}
-		$dialogDiv = $this->buildAccountStatusDialogDiv($unixAvailable, $unixLocked, $sambaAvailable, $sambaLocked, $ppolicyAvailable, $ppolicyLocked, $windowsAvailable, $windowsLocked, $windowsPasswordLockedTime, $is389dsAvailable, $is389dsLocked, $is389dsDeactivated);
+		$dialogDiv = $this->buildAccountStatusDialogDiv($unixAvailable, $unixLocked, $sambaAvailable, $sambaLocked,
+				$ppolicyAvailable, $ppolicyLocked, $windowsAvailable, $windowsLocked, $windowsPasswordLockedTime,
+				$is389dsAvailable, $is389dsLocked, $is389dsDeactivated, $is389dsPwdExpired);
 		$onClick = '';
 		if ($isEditable) {
 			$onClick = 'onclick="showConfirmationDialog(\'' . _('Change account status') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\', \'lam_accountStatusDialog\', \'inputForm\', \'lam_accountStatusResult\');"';
@@ -392,11 +398,12 @@ class user extends baseType {
 	 * @param boolean $is389dsAvailable 389ds is available
 	 * @param boolean $is389dsLocked account is locked
 	 * @param boolean $is389dsDeactivated account is deactivated
+	 * @param boolean $is389dsPwdExpired password expired
 	 */
 	private function buildAccountStatusDialogDiv($unixAvailable, $unixLocked, $sambaAvailable, $sambaLocked, $ppolicyAvailable, $ppolicyLocked, $windowsAvailable,
-			$windowsLocked, $windowsPasswordLockedTime, $is389dsAvailable, $is389dsLocked, $is389dsDeactivated) {
+			$windowsLocked, $windowsPasswordLockedTime, $is389dsAvailable, $is389dsLocked, $is389dsDeactivated, $is389dsPwdExpired) {
 		$windowsPasswordLocked = ($windowsPasswordLockedTime != null);
-		$partiallyLocked = $unixLocked || $sambaLocked || $ppolicyLocked || $windowsLocked || $windowsPasswordLocked || $is389dsLocked || $is389dsDeactivated;
+		$partiallyLocked = $unixLocked || $sambaLocked || $ppolicyLocked || $windowsLocked || $windowsPasswordLocked || $is389dsLocked || $is389dsDeactivated || $is389dsPwdExpired;
 		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable || $is389dsLocked || $is389dsDeactivated)
 							&& (!$unixAvailable || $unixLocked)
 							&& (!$sambaAvailable || $sambaLocked)
@@ -496,6 +503,10 @@ class user extends baseType {
 				$unlockContent->addElement(new htmlImage('../../graphics/security.png'));
 				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusActivate389ds', true, _('Activate'), null, false), true);
 			}
+			if ($is389dsAvailable && $is389dsPwdExpired) {
+				$unlockContent->addElement(new htmlImage('../../graphics/security.png'));
+				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusPwdUnexpire389ds', true, _('Clear password expiration'), null, false), true);
+			}
 			if ($windowsAvailable && $windowsLocked) {
 				$unlockContent->addElement(new htmlImage('../../graphics/samba.png'));
 				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockWindows', true, _('Windows'), null, false), true);
@@ -586,6 +597,9 @@ class user extends baseType {
 				// 389ds
 				if (isset($_POST['lam_accountStatusActivate389ds']) && ($_POST['lam_accountStatusActivate389ds'] == 'on')) {
 					$container->getAccountModule('locking389ds')->activate();
+				}
+				if (isset($_POST['lam_accountStatusPwdUnexpire389ds']) && ($_POST['lam_accountStatusPwdUnexpire389ds'] == 'on')) {
+					$container->getAccountModule('locking389ds')->clearPasswordExpiration();
 				}
 				// Windows
 				if (isset($_POST['lam_accountStatusUnlockWindows']) && ($_POST['lam_accountStatusUnlockWindows'] == 'on')) {
@@ -935,6 +949,7 @@ class lamUserList extends lamList {
 			$attrs[] = 'shadowMax';
 			$attrs[] = 'shadowInactive';
 			$attrs[] = 'accountExpires';
+			$attrs[] = 'passwordExpirationTime';
 			$attrs[] = 'objectClass';
 		}
 		return $attrs;
@@ -957,11 +972,12 @@ class lamUserList extends lamList {
 			$windowsPasswordLocked = ($this->getWindowsPasswordLockedTime($this->entries[$i]) != null);
 			$is389dsLocked = self::is389dsLocked($this->entries[$i]);
 			$is389dsDeactivated = self::is389dsDeactivated($this->entries[$i]);
+			$is389dsPwdExpired = self::is389dsPwdExpired($this->entries[$i]);
 			$hasLocked = ($unixAvailable && $unixLocked)
 							|| ($sambaAvailable && $sambaLocked)
 							|| ($ppolicyAvailable && $ppolicyLocked)
 							|| ($windowsAvailable && ($windowsLocked || $windowsPasswordLocked))
-							|| $is389dsDeactivated
+							|| $is389dsDeactivated || $is389dsPwdExpired
 							|| $is389dsLocked;
 			$hasUnlocked = ($unixAvailable && !$unixLocked)
 							|| ($sambaAvailable && !$sambaLocked)
@@ -1013,10 +1029,12 @@ class lamUserList extends lamList {
 		$windowsPasswordLocked = ($windowsPasswordLockedTime != null);
 		$is389dsDeactivated = self::is389dsDeactivated($attrs);
 		$is389dsLocked = self::is389dsLocked($attrs);
+		$is389dsPwdExpired = self::is389dsPwdExpired($attrs);
 		$partiallyLocked = $unixLocked || $sambaLocked
 					|| $ppolicyLocked || $windowsLocked || $windowsPasswordLocked
-					|| $is389dsDeactivated || $is389dsLocked;
-		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable || $is389dsDeactivated || $is389dsLocked)
+					|| $is389dsDeactivated || $is389dsLocked || $is389dsPwdExpired;
+		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable ||
+				$is389dsDeactivated || $is389dsLocked)
 							&& (!$unixAvailable || $unixLocked)
 							&& (!$sambaAvailable || $sambaLocked)
 							&& (!$ppolicyAvailable || $ppolicyLocked)
@@ -1036,7 +1054,8 @@ class lamUserList extends lamList {
 			$icon = 'partiallyLocked.png';
 		}
 		// print icon and detail tooltips
-		if ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable || $is389dsDeactivated || $expired) {
+		if ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable ||
+				$is389dsDeactivated || $is389dsLocked || $is389dsPwdExpired || $expired) {
 			$tipContent = '<table border=0>';
 			// Shadow expired
 			if ($shadowExpired) {
@@ -1090,6 +1109,10 @@ class lamUserList extends lamList {
 			// 389 deactivation
 			if ($is389dsDeactivated) {
 				$tipContent .= '<tr><td>' . _('Deactivated') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/lock.png&quot;></td></tr>';
+			}
+			// 389 password expired
+			if ($is389dsPwdExpired) {
+				$tipContent .= '<tr><td>' . _('Password expired') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/lock.png&quot;></td></tr>';
 			}
 			$tipContent .= '</table>';
 			echo '<img helptitle="' . _('Account status') . '" helpdata="' . $tipContent . '" alt="status" height=16 width=16 src="../../graphics/' . $icon . '">';
@@ -1217,6 +1240,16 @@ class lamUserList extends lamList {
 	 */
 	public static function is389dsDeactivated(&$attrs) {
 		return (isset($attrs['nsaccountlock'][0]) && ($attrs['nsaccountlock'][0] == 'true'));
+	}
+
+	/**
+	 * Returns if password expired.
+	 *
+	 * @param array $attrs LDAP attributes
+	 * @return boolean password is expired
+	 */
+	public static function is389dsPwdExpired(&$attrs) {
+		return (class_exists('locking389ds') && locking389ds::isPasswordExpired($attrs));
 	}
 
 	/**
