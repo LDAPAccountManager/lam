@@ -1101,15 +1101,22 @@ class accountContainer {
 		$pwdInput2->setSameValueFieldID('newPassword1');
 		$container->addElement($pwdInput2, true);
 		// print force password change option
-		$forceChangeSupported = false;
+		$forceChangeSupported = array();
 		foreach ($this->module as $name => $module) {
 			if (($module instanceof passwordService) && $module->supportsForcePasswordChange()) {
-				$forceChangeSupported = true;
+				$forceChangeSupported[] = $module;
 				break;
 			}
 		}
-		if ($forceChangeSupported) {
-			$container->addElement(new htmlTableExtendedInputCheckbox('lamForcePasswordChange', false, _('Force password change')));
+		if (!empty($forceChangeSupported)) {
+			$container->addElement(new htmlOutputText(_('Force password change')));
+			$forcePwdGroup = new htmlGroup();
+			$forcePwdGroup->addElement(new htmlInputCheckbox('lamForcePasswordChange', false));
+			$forcePwdGroup->addElement(new htmlSpacer('1rem', null));
+			foreach ($forceChangeSupported as $module) {
+				$forcePwdGroup->addElement(new htmlImage('../../graphics/' . $module->getIcon(), '16px', '16px', $module->get_alias(), $module->get_alias()));
+			}
+			$container->addElement($forcePwdGroup);
 			$container->addElement(new htmlHelpLink('406'), true);
 		}
 		if (isLAMProVersion() && (isset($this->attributes_orig['mail'][0]) || $this->anyModuleManagesMail())) {
