@@ -371,6 +371,18 @@
             </row>
 
             <row>
+              <entry><inlinemediaobject>
+                  <imageobject>
+                    <imagedata fileref="images/schema_ppolicy.png"/>
+                  </imageobject>
+                </inlinemediaobject> Account locking</entry>
+
+              <entry>Password expiration</entry>
+
+              <entry>Read only value of password expiration date</entry>
+            </row>
+
+            <row>
               <entry morerows=""><inlinemediaobject>
                   <imageobject>
                     <imagedata fileref="images/schema_asterisk.png"/>

@@ -1,6 +1,7 @@
 June 2018
   - Passwords can be checked against external service (e.g. https://api.pwnedpasswords.com/range)
-
+  - LAM Pro:
+   -> Better support for 389ds password expiration
 
 19.03.2018 6.3
   - Server profile: added option if referential integrity overlay is active to skip cleanup actions
