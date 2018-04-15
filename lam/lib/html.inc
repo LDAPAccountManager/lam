@@ -1951,6 +1951,10 @@ class htmlInputCheckbox extends htmlElement {
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
 		}
+		$classes = ' ';
+		if (!empty($this->cssClasses)) {
+			$classes = ' class="' . implode(' ', $this->cssClasses) . '"';
+		}
 		// build Java script to show/hide depending fields
 		$onChange = '';
 		$script = '';
@@ -2031,7 +2035,7 @@ class htmlInputCheckbox extends htmlElement {
 		if (!empty($onChange)) {
 			$onChange = ' onChange="' . $onChange . '"';
 		}
-		echo '<input type="checkbox" id="' . $this->name . '" name="' . $this->name . '"' . $tabindexValue . $onChange . $checked . $disabled . '>';
+		echo '<input type="checkbox" id="' . $this->name . '" name="' . $this->name . '"' . $classes . $tabindexValue . $onChange . $checked . $disabled . '>';
 		echo $script;
 		if ($this->transient) {
 			return array();
