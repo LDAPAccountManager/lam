@@ -1105,7 +1105,6 @@ class accountContainer {
 		foreach ($this->module as $name => $module) {
 			if (($module instanceof passwordService) && $module->supportsForcePasswordChange()) {
 				$forceChangeSupported[] = $module;
-				break;
 			}
 		}
 		if (!empty($forceChangeSupported)) {
@@ -1115,6 +1114,7 @@ class accountContainer {
 			$forcePwdGroup->addElement(new htmlSpacer('1rem', null));
 			foreach ($forceChangeSupported as $module) {
 				$forcePwdGroup->addElement(new htmlImage('../../graphics/' . $module->getIcon(), '16px', '16px', $module->get_alias(), $module->get_alias()));
+				$forcePwdGroup->addElement(new htmlSpacer('0.1rem', null));
 			}
 			$container->addElement($forcePwdGroup);
 			$container->addElement(new htmlHelpLink('406'), true);
