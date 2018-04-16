@@ -2758,6 +2758,8 @@ class htmlSubTitle extends htmlElement {
 	private $id = null;
 	/** show large icon */
 	private $largeIcon = false;
+	/** help ID */
+	private $helpId = null;
 
 	/**
 	 * Constructor.
@@ -2767,7 +2769,7 @@ class htmlSubTitle extends htmlElement {
 	 * @param String $id optional ID for this element (e.g. to use for JavaScript)
 	 * @param bool $largeIcon show large (32x32px) icon instead of small one (16x16px)
 	 */
-	function __construct($label, $image = null, $id = null, $largeIcon = false) {
+	public function __construct($label, $image = null, $id = null, $largeIcon = false) {
 		$this->label = htmlspecialchars($label);
 		$this->image = htmlspecialchars($image);
 		$this->id = htmlspecialchars($id);
@@ -2787,7 +2789,7 @@ class htmlSubTitle extends htmlElement {
 	 * @param string $scope Account type
 	 * @return array List of input field names and their type (name => type)
 	 */
-	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$idValue = '';
 		if ($this->id != null) {
 			$idValue = ' id="' . $this->id . '"';
@@ -2799,9 +2801,24 @@ class htmlSubTitle extends htmlElement {
 			echo '<img height=' . $size . ' width=' . $size . ' src="' . $this->image . '" alt="' . $this->label . '">&nbsp;';
 		}
 		echo $this->label;
+		if ($this->helpId !== null) {
+			$spacer = new htmlSpacer('0.5rem', null);
+			$spacer->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+			$helpLink = new htmlHelpLink($this->helpId);
+			$helpLink->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		}
 		echo "</h4>\n";
 		echo "</div>\n";
 		return array();
+	}
+
+	/**
+	 * Sets an additional help id.
+	 *
+	 * @param string|array $helpId
+	 */
+	public function setHelpId($helpId) {
+		$this->helpId = $helpId;
 	}
 
 }
