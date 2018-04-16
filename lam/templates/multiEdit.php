@@ -17,11 +17,14 @@ use \htmlDiv;
 use \htmlJavaScript;
 use \htmlLink;
 use \htmlInputTextarea;
+use \htmlResponsiveRow;
+use \htmlResponsiveSelect;
+use \htmlResponsiveInputField;
+use \htmlResponsiveTable;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2017  Roland Gruber
+  Copyright (C) 2013 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -92,18 +95,16 @@ else {
  */
 function displayStartPage() {
 	// display main page
-	include 'main_header.php';
+	include '../lib/adminHeader.inc';
 	echo '<div class="user-bright smallPaddingContent">';
 	echo "<form action=\"multiEdit.php\" method=\"post\">\n";
 	$errors = array();
 	$tabindex = 1;
-	$container = new htmlTable();
-	$container->addElement(new htmlTitle(_("Multi edit")), true);
+	$container = new htmlResponsiveRow();
+	$container->add(new htmlTitle(_("Multi edit")), 12);
 	// LDAP suffix
 	$showRules = array('-' => array('otherSuffix'));
 	$hideRules = array();
-	$container->addElement(new htmlOutputText(_('LDAP suffix')));
-	$suffixGroup = new htmlTable();
 	$typeManager = new \LAM\TYPES\TypeManager();
 	$types = $typeManager->getConfiguredTypes();
 	$suffixes = array();
@@ -125,27 +126,23 @@ function displayStartPage() {
 	$suffixes[_('Other')] = '-';
 	$suffixValues = array_values($suffixes);
 	$valSuffix = empty($_POST['suffix']) ? $suffixValues[0] : $_POST['suffix'];
-	$suffixSelect = new htmlSelect('suffix', $suffixes, array($valSuffix));
+	$suffixSelect = new htmlResponsiveSelect('suffix', $suffixes, array($valSuffix), _('LDAP suffix'), '700');
 	$suffixSelect->setHasDescriptiveElements(true);
 	$suffixSelect->setSortElements(false);
 	$suffixSelect->setTableRowsToShow($showRules);
 	$suffixSelect->setTableRowsToHide($hideRules);
-	$suffixGroup->addElement($suffixSelect);
-	$otherSuffixTable = new htmlTable();
+	$container->add($suffixSelect, 12);
 	$valOtherSuffix = empty($_POST['otherSuffix']) ? '' : $_POST['otherSuffix'];
-	$otherSuffixTable->addElement(new htmlInputField('otherSuffix'));
-	$suffixGroup->addElement($otherSuffixTable);
-	$container->addElement($suffixGroup);
-	$container->addElement(new htmlHelpLink('700'), true);
+	$container->add(new htmlResponsiveInputField(_('Other'), 'otherSuffix', $valOtherSuffix), 12);
 	// LDAP filter
 	$valFilter = empty($_POST['filter']) ? '(objectClass=inetOrgPerson)' : $_POST['filter'];
-	$container->addElement(new htmlTableExtendedInputField(_('LDAP filter'), 'filter', $valFilter, '701'), true);
+	$container->add(new htmlResponsiveInputField(_('LDAP filter'), 'filter', $valFilter, '701'), 12);
 	// operation fields
-	$container->addElement(new htmlSubTitle(_('Operations')), true);
-	$container->addElement(new htmlOutputText(_('Type')));
-	$container->addElement(new htmlOutputText(_('Attribute name')));
-	$container->addElement(new htmlOutputText(_('Value')));
-	$container->addElement(new htmlHelpLink('702'), true);
+	$operationsTitle = new htmlSubTitle(_('Operations'));
+	$operationsTitle->setHelpId('702');
+	$container->add($operationsTitle, 12);
+	$operationsTitles = array(_('Type'), _('Attribute name'), _('Value'));
+	$data = array();
 	$opCount = empty($_POST['opcount']) ? '3' : $_POST['opcount'];
 	if (isset($_POST['addFields'])) {
 		$opCount += 3;
@@ -156,12 +153,12 @@ function displayStartPage() {
 		$selOp = empty($_POST['op_' . $i]) ? ADD : $_POST['op_' . $i];
 		$opSelect = new htmlSelect('op_' . $i, $operations, array($selOp));
 		$opSelect->setHasDescriptiveElements(true);
-		$container->addElement($opSelect);
+		$data[$i][] = $opSelect;
 		// attribute name
 		$attrVal = empty($_POST['attr_' . $i]) ? '' : $_POST['attr_' . $i];
-		$container->addElement(new htmlInputField('attr_' . $i, $attrVal));
+		$data[$i][] = new htmlInputField('attr_' . $i, $attrVal);
 		$valVal = empty($_POST['val_' . $i]) ? '' : $_POST['val_' . $i];
-		$container->addElement(new htmlInputField('val_' . $i, $valVal), true);
+		$data[$i][] = new htmlInputField('val_' . $i, $valVal);
 		// check input
 		if (($selOp == ADD) && !empty($attrVal) && empty($valVal)) {
 			$errors[] = new htmlStatusMessage('ERROR', _('Please enter a value to add.'), htmlspecialchars($attrVal));
@@ -170,20 +167,22 @@ function displayStartPage() {
 			$errors[] = new htmlStatusMessage('ERROR', _('Please enter a value to modify.'), htmlspecialchars($attrVal));
 		}
 	}
+	$operationsTable = new htmlResponsiveTable($operationsTitles, $data);
+	$container->add($operationsTable, 12);
 	// add more fields
-	$container->addVerticalSpace('5px');
-	$container->addElement(new htmlButton('addFields', _('Add more fields')));
-	$container->addElement(new htmlHiddenInput('opcount', $opCount), true);
+	$container->addVerticalSpacer('1rem');
+	$container->add(new htmlButton('addFields', _('Add more fields')), 12);
+	$container->add(new htmlHiddenInput('opcount', $opCount), 12);
 	// error messages
 	if (sizeof($errors) > 0) {
-		$container->addVerticalSpace('20px');
+		$container->addVerticalSpacer('5rem');
 		foreach ($errors as $error) {
 			$error->colspan = 5;
-			$container->addElement($error, true);
+			$container->add($error, 12);
 		}
 	}
 	// action buttons
-	$container->addVerticalSpace('20px');
+	$container->addVerticalSpacer('2rem');
 	$buttonGroup = new htmlGroup();
 	$buttonGroup->colspan = 3;
 	$dryRunButton = new htmlButton('dryRun', _('Dry run'));
@@ -193,8 +192,8 @@ function displayStartPage() {
 	$applyButton = new htmlButton('applyChanges', _('Apply changes'));
 	$applyButton->setIconClass('saveButton');
 	$buttonGroup->addElement($applyButton);
-	$container->addElement($buttonGroup, true);
-	$container->addVerticalSpace('10px');
+	$container->add($buttonGroup, 12);
+	$container->addVerticalSpacer('1rem');
 
 	// run actions
 	if ((sizeof($errors) == 0) && (isset($_POST['dryRun']) || isset($_POST['applyChanges']))) {
@@ -206,15 +205,15 @@ function displayStartPage() {
 	parseHtml(null, $container, array(), false, $tabindex, 'user');
 	echo ("</form>\n");
 	echo '</div>';
-	include 'main_footer.php';
+	include '../lib/adminFooter.inc';
 }
 
 /**
  * Runs the dry run and change actions.
  *
- * @param htmlTable $container container
+ * @param htmlResponsiveRow $container container
  */
-function runActions(htmlTable &$container) {
+function runActions(htmlResponsiveRow &$container) {
 	// LDAP suffix
 	if ($_POST['suffix'] == '-') {
 		$suffix = trim($_POST['otherSuffix']);
@@ -225,7 +224,7 @@ function runActions(htmlTable &$container) {
 	if (empty($suffix)) {
 		$error = new htmlStatusMessage('ERROR', _('LDAP Suffix is invalid!'));
 		$error->colspan = 5;
-		$container->addElement($error);
+		$container->add($error, 12);
 		return;
 	}
 	// LDAP filter
@@ -240,7 +239,7 @@ function runActions(htmlTable &$container) {
 	if (sizeof($operations) == 0) {
 		$error = new htmlStatusMessage('ERROR', _('Please specify at least one operation.'));
 		$error->colspan = 5;
-		$container->addElement($error);
+		$container->add($error, 12);
 		return;
 	}
 	$_SESSION['multiEdit_suffix'] = $suffix;
@@ -254,15 +253,15 @@ function runActions(htmlTable &$container) {
 		jQuery(\'select\').attr(\'disabled\', true);
 		jQuery(\'button\').attr(\'disabled\', true);
 	';
-	$container->addElement(new htmlJavaScript($jsContent), true);
+	$container->add(new htmlJavaScript($jsContent), 12);
 	// progress area
-	$container->addElement(new htmlSubTitle(_('Progress')), true);
+	$container->add(new htmlSubTitle(_('Progress')), 12);
 	$progressBarDiv = new htmlDiv('progressBar', '');
 	$progressBarDiv->colspan = 5;
-	$container->addElement($progressBarDiv, true);
+	$container->add($progressBarDiv, 12);
 	$progressDiv = new htmlDiv('progressArea', '');
 	$progressDiv->colspan = 5;
-	$container->addElement($progressDiv, true);
+	$container->add($progressDiv, 12);
 	// JS block for AJAX status update
 	$ajaxBlock = '
 		jQuery.get(\'multiEdit.php?ajaxStatus\', null, function(data) {handleReply(data);}, \'json\');
@@ -281,7 +280,7 @@ function runActions(htmlTable &$container) {
 			}
 		}
 	';
-	$container->addElement(new htmlJavaScript($ajaxBlock), true);
+	$container->add(new htmlJavaScript($ajaxBlock), 12);
 }
 
 /**
@@ -392,7 +391,7 @@ function generateActions() {
 					if (empty($val) && !empty($entry[$attr])) {
 						$actions[] = array(DEL, $dn, $attr, null);
 					}
-					elseif (!empty($val) && in_array($val, $entry[$attr])) {
+					elseif (!empty($val) && isset($entry[$attr]) && in_array($val, $entry[$attr])) {
 						$actions[] = array(DEL, $dn, $attr, $val);
 					}
 					break;
