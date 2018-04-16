@@ -85,6 +85,8 @@ table.responsive-table td {
 	vertical-align: top;
 	padding-bottom: 0.5rem;
 	padding-top: 0.5rem;
+	padding-right: 0.1rem;
+	padding-left: 0.1rem;
 }
 
 /* mobile */
