@@ -2189,6 +2189,71 @@ class htmlTableExtendedInputCheckbox extends htmlInputCheckbox {
 }
 
 /**
+ * Checkbox with descriptive label and help link.
+ *
+ * @package metaHTML
+ */
+class htmlLabeledInputCheckbox extends htmlInputCheckbox {
+
+	/** descriptive label */
+	private $label;
+	/** help ID */
+	private $helpID;
+	/** specifies if label is printed before the checkbox */
+	private $labelFirst;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param String $name unique name
+	 * @param boolean $checked checked
+	 * @param String $label descriptive label
+	 * @param String $helpID help ID
+	 * @param boolean $labelFirst specifies if the label is at the beginning or at the end (optional, default beginning)
+	 */
+	function __construct($name, $checked, $label, $helpID = null, $labelFirst = true) {
+		parent::__construct($name, $checked);
+		$this->label = htmlspecialchars($label);
+		$this->helpID = $helpID;
+		$this->labelFirst = $labelFirst;
+	}
+
+	/**
+	 * Prints the HTML code for this element.
+	 *
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$onClick = 'onClick="jQuery(\'#' . $this->name . '\').prop(\'checked\',!jQuery(\'#' . $this->name . '\').prop(\'checked\')); jQuery(\'#' . $this->name . '\').change();"';
+		if ($this->labelFirst) {
+			echo '<span class="nowrap" ' . $onClick . '>';
+			echo $this->label;
+			echo '</span>';
+			$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		}
+		else {
+			$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+			echo '<span class="nowrap" ' . $onClick . '>';
+			echo $this->label;
+			echo '</span>';
+		}
+		// print help link
+		if ($this->helpID != null) {
+			$helpLink = new htmlHelpLink($this->helpID);
+			$helpLink->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		}
+		return $return;
+	}
+
+}
+
+/**
  * Prints the HTML code for a file upload field.
  *
  * @package metaHTML
@@ -3871,6 +3936,74 @@ class htmlResponsiveInputField extends htmlInputField {
 }
 
 /**
+ * File upload with descriptive label and help link.
+ *
+ * @package metaHTML
+ */
+class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
+
+	/** descriptive label */
+	private $label;
+	/** help ID */
+	private $helpID;
+	/** render HTML of parent class */
+	private $renderParentHtml = false;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param String $name unique name
+	 * @param String $label descriptive label
+	 * @param String $helpID help ID
+	 */
+	function __construct($name, $label, $helpID = null) {
+		parent::__construct($name);
+		$this->label = htmlspecialchars($label);
+		$this->helpID = $helpID;
+	}
+
+	/**
+	 * Prints the HTML code for this element.
+	 *
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		if ($this->renderParentHtml) {
+			return parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		}
+		// HTML of parent class is rendered on second call (done by htmlResponsiveRow)
+		$this->renderParentHtml = true;
+		$row = new htmlResponsiveRow();
+		// label text
+		$labelGroup = new htmlGroup();
+		$labelGroup->addElement(new htmlOutputText($this->label));
+		if (!empty($this->helpID)) {
+			$helpLinkLabel = new htmlHelpLink($this->helpID, $this->helpModule);
+			$helpLinkLabel->setCSSClasses(array('hide-on-tablet', 'margin-left5'));
+			$labelGroup->addElement($helpLinkLabel);
+		}
+		$row->add($labelGroup, 12, 6, 6, 'responsiveLabel');
+		// input field
+		$fieldGroup = new htmlGroup();
+		$fieldGroup->addElement($this);
+		if (!empty($this->helpID)) {
+			$helpLinkField = new htmlHelpLink($this->helpID, $this->helpModule);
+			$helpLinkField->setCSSClasses(array('hide-on-mobile'));
+			$fieldGroup->addElement($helpLinkField);
+		}
+		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');
+		return $row->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+	}
+
+}
+
+/**
  * Responsive text area with label and help link.
  *
  * @package metaHTML
@@ -4230,7 +4363,9 @@ class htmlResponsiveTable extends htmlElement {
 	 */
 	public function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$return = array();
-		echo '<table class="responsive-table">';
+		$classes = $this->cssClasses;
+		$classes[] = 'responsive-table';
+		echo '<table class="' . implode(' ', $classes) . '">';
 		echo '<thead>';
 		echo '<tr>';
 		$counter = 0;
