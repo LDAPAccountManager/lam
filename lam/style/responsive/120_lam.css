@@ -87,6 +87,7 @@ table.responsive-table td {
 	padding-top: 0.5rem;
 	padding-right: 0.1rem;
 	padding-left: 0.1rem;
+	word-break: break-all;
 }
 
 /* mobile */
@@ -161,6 +162,10 @@ table.responsive-table td {
 		display: none !important;
 	}
 
+	table.alternating-color tbody tr:nth-child(odd) {
+		background-color:rgba(0, 0, 0, 0.05);
+	}
+
 }
 
 /* desktop */
@@ -180,6 +185,10 @@ table.responsive-table td {
 
 	.hide-on-desktop {
 		display: none !important;
+	}
+
+	table.alternating-color tbody tr:nth-child(odd) {
+		background-color:rgba(0, 0, 0, 0.05);
 	}
 
 }

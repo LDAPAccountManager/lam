@@ -1,25 +1,24 @@
 <?php
 namespace LAM\UPLOAD;
-use \htmlTable;
-use \htmlTableExtendedSelect;
-use \htmlSpacer;
+use \htmlResponsiveTable;
 use \htmlOutputText;
 use \htmlGroup;
-use \htmlElement;
 use \htmlImage;
-use \htmlTableExtendedInputCheckbox;
+use \htmlResponsiveInputCheckbox;
 use \htmlDiv;
 use \htmlHiddenInput;
 use \htmlButton;
 use \htmlTitle;
-use \htmlInputFileUpload;
+use \htmlResponsiveInputFileUpload;
 use \htmlLink;
 use \htmlSubTitle;
 use \htmlHelpLink;
-use \htmlTableRow;
+use \htmlResponsiveRow;
+use \htmlResponsiveSelect;
+use \htmlLabeledInputCheckbox;
+use \htmlSpacer;
 use \moduleCache;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2004 - 2018  Roland Gruber
@@ -96,7 +95,7 @@ if (isset($_GET['getCSV'])) {
 
 Uploader::cleanSession();
 
-include '../main_header.php';
+include '../../lib/adminHeader.inc';
 
 // get possible types and remove those which do not support file upload
 $typeManager = new \LAM\TYPES\TypeManager();
@@ -145,21 +144,14 @@ if (isset($_REQUEST['type'])) {
 	$divClass = htmlspecialchars(\LAM\TYPES\getScopeFromTypeId($_REQUEST['type']));
 }
 echo '<div class="' . $divClass . '-bright smallPaddingContent">';
-echo "<div class=\"title\">\n";
-echo "<h2 class=\"titleText\">" . _("Account creation via file upload") . "</h2>\n";
-echo "</div>";
-echo "<p>&nbsp;</p>\n";
-
-echo "<p>\n";
-	echo _("Here you can create multiple accounts by providing a CSV file.");
-echo "</p>\n";
-
-echo "<p>&nbsp;</p>\n";
-
 echo "<form enctype=\"multipart/form-data\" action=\"masscreate.php\" method=\"post\">\n";
 
 $tabindex = 1;
-$table = new htmlTable();
+
+$row = new htmlResponsiveRow();
+$row->add(new htmlTitle(_("Account creation via file upload")), 12);
+$row->add(new htmlOutputText(_("Here you can create multiple accounts by providing a CSV file.")), 12);
+$row->addVerticalSpacer('4rem');
 
 // account type
 $typeList = array();
@@ -173,34 +165,32 @@ if (isset($_REQUEST['type'])) {
 elseif (!empty($types)) {
 	$selectedType = $types[0]->getId();
 }
-$typeSelect = new htmlTableExtendedSelect('type', $typeList, array($selectedType), _("Account type"));
+$typeSelect = new htmlResponsiveSelect('type', $typeList, array($selectedType), _("Account type"));
 $typeSelect->setHasDescriptiveElements(true);
 $typeSelect->setOnchangeEvent('changeVisibleModules(this);');
-$table->addElement($typeSelect, true);
-$table->addElement(new htmlSpacer(null, '10px'), true);
+$row->add($typeSelect, 12);
+$row->addVerticalSpacer('1rem');
+
+$row->add(new htmlSubTitle(_('Selected modules')), 12);
 
 // module selection
-$moduleLabel = new htmlOutputText(_('Selected modules'));
-$moduleLabel->alignment = htmlElement::ALIGN_TOP;
-$table->addElement($moduleLabel);
-$moduleGroup = new htmlGroup();
 foreach ($types as $type) {
 	$divClasses = array('typeOptions');
 	if ($selectedType != $type->getId()) {
 		$divClasses[] = 'hidden';
 	}
-	$innerTable = new htmlTable();
+	$innerRow = new htmlResponsiveRow();
 	$modules = $_SESSION['config']->get_AccountModules($type->getId());
 	foreach ($modules as $m => $moduleName) {
-		if (($m != 0) && ($m%3 == 0)) {
-			echo $innerTable->addNewLine();
-		}
+		$moduleGroup = new htmlGroup();
 		$module = moduleCache::getModule($moduleName, $type->getScope());
 		$iconImage = $module->getIcon();
 		if (!is_null($iconImage) && !(strpos($iconImage, 'http') === 0) && !(strpos($iconImage, '/') === 0)) {
 			$iconImage = '../../graphics/' . $iconImage;
 		}
-		$innerTable->addElement(new htmlImage($iconImage));
+		$image = new htmlImage($iconImage, '32px', '32px');
+		$image->setCSSClasses(array('margin3'));
+		$moduleGroup->addElement($image);
 		$enabled = true;
 		if (is_base_module($moduleName, $type->getScope())) {
 			$enabled = false;
@@ -209,34 +199,44 @@ foreach ($types as $type) {
 		if (isset($_POST['submit']) && !isset($_POST[$type->getId() . '___' . $moduleName])) {
 			$checked = false;
 		}
-		$checkbox = new htmlTableExtendedInputCheckbox($type->getId() . '___' . $moduleName, $checked, getModuleAlias($moduleName, $type->getScope()), null, false);
+		$checkbox = new htmlLabeledInputCheckbox($type->getId() . '___' . $moduleName, $checked, getModuleAlias($moduleName, $type->getScope()), null, false);
 		$checkbox->setIsEnabled($enabled);
 		if ($enabled) {
-			$innerTable->addElement($checkbox);
+			$moduleGroup->addElement($checkbox);
 		}
 		else {
 			$boxGroup = new htmlGroup();
 			$boxGroup->addElement($checkbox);
 			// add hidden field to fake disabled checkbox value
 			$boxGroup->addElement(new htmlHiddenInput($type->getId() . '___' . $moduleName, 'on'));
-			$innerTable->addElement($boxGroup);
+			$moduleGroup->addElement($boxGroup);
 		}
-		$innerTable->addElement(new htmlSpacer('10px', null));
+		$innerRow->add($moduleGroup, 12, 6, 4);
 	}
-	$typeDiv = new htmlDiv($type->getId(), $innerTable);
+	$moduleCount = sizeof($modules);
+	if ($moduleCount%3 == 2) {
+		$innerRow->add(new htmlOutputText('&nbsp;', false), 0, 0, 4);
+	}
+	if ($moduleCount%3 == 1) {
+		$innerRow->add(new htmlOutputText('&nbsp;', false), 0, 0, 4);
+	}
+	if ($moduleCount%2 == 1) {
+		$innerRow->add(new htmlOutputText('&nbsp;', false), 0, 6, 0);
+	}
+	$typeDiv = new htmlDiv($type->getId(), $innerRow);
 	$typeDiv->setCSSClasses($divClasses);
-	$moduleGroup->addElement($typeDiv);
+	$row->add($typeDiv, 12);
 }
-$table->addElement($moduleGroup, true);
 
 // ok button
-$table->addElement(new htmlSpacer(null, '20px'), true);
+$row->addVerticalSpacer('3rem');
 if (!empty($types)) {
-	$table->addElement(new htmlButton('submit', _('Ok')), true);
+	$row->add(new htmlButton('submit', _('Ok')), 12);
 }
 
-addSecurityTokenToMetaHTML($table);
-parseHtml(null, $table, array(), false, $tabindex, 'user');
+addSecurityTokenToMetaHTML($row);
+parseHtml(null, $row, array(), false, $tabindex, 'user');
+
 ?>
 <script type="text/javascript">
 function changeVisibleModules(element) {
@@ -248,7 +248,7 @@ function changeVisibleModules(element) {
 echo "</form>\n";
 
 echo '</div>';
-include '../main_footer.php';
+include '../../lib/adminFooter.inc';
 
 /**
 * Displays the acount type specific main page of the upload.
@@ -264,32 +264,36 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 	$modules = array_keys($columns);
 
 	echo "<form enctype=\"multipart/form-data\" action=\"massBuildAccounts.php\" method=\"post\">\n";
-	$container = new htmlTable();
+	$tabindex = 1;
+	$row = new htmlResponsiveRow();
+	$row->setCSSClasses(array('maxrow'));
+
 	// title
-	$container->addElement(new htmlTitle(_("File upload")), true);
-	$container->addElement(new htmlSpacer(null, '10px'), true);
+	$row->add(new htmlTitle(_("File upload")), 12);
+
 	// instructions
-	$container->addElement(new htmlOutputText(_("Please provide a CSV formated file with your account data. The cells in the first row must be filled with the column identifiers. The following rows represent one account for each row.")), true);
-	$container->addElement(new htmlOutputText(_("Check your input carefully. LAM will only do some basic checks on the upload data.")), true);
-	$container->addElement(new htmlSpacer(null, '10px'), true);
-	$container->addElement(new htmlOutputText(_("Hint: Format all cells as text in your spreadsheet program and turn off auto correction.")), true);
-	$container->addElement(new htmlSpacer(null, '10px'), true);
+	$row->add(new htmlOutputText(_("Please provide a CSV formated file with your account data. The cells in the first row must be filled with the column identifiers. The following rows represent one account for each row.")), 12);
+	$row->add(new htmlOutputText(_("Check your input carefully. LAM will only do some basic checks on the upload data.")), 12);
+	$row->addVerticalSpacer('1rem');
+	$row->add(new htmlOutputText(_("Hint: Format all cells as text in your spreadsheet program and turn off auto correction.")), 12);
+	$row->addVerticalSpacer('1rem');
+
 	// upload elements
-	$inputContainer = new htmlTable();
-	$inputContainer->addElement(new htmlOutputText(_("CSV file")));
-	$inputContainer->addElement(new htmlInputFileUpload('inputfile'));
-	$inputContainer->addElement(new htmlSpacer('10px', null));
-	$inputContainer->addElement(new htmlLink(_("Download sample CSV file"), 'masscreate.php?getCSV=1', '../../graphics/save.png', true));
-	$inputContainer->addElement(new htmlHiddenInput('typeId', $type->getId()));
-	$inputContainer->addElement(new htmlHiddenInput('selectedModules', implode(',', $selectedModules)), true);
+	$row->addLabel(new htmlOutputText(_("Download sample CSV file")));
+	$row->addField(new htmlLink('', 'masscreate.php?getCSV=1', '../../graphics/save.png', true));
+	$row->addVerticalSpacer('3rem');
+	$row->add(new htmlResponsiveInputFileUpload('inputfile', _("CSV file")), 12);
+	$row->add(new htmlHiddenInput('typeId', $type->getId()), 12);
+	$row->add(new htmlHiddenInput('selectedModules', implode(',', $selectedModules)), 12);
+
 	// PDF
 	$createPDF = false;
 	if (isset($_POST['createPDF']) && ($_POST['createPDF'] === '1')) {
 		$createPDF = true;
 	}
-	$pdfCheckbox = new htmlTableExtendedInputCheckbox('createPDF', $createPDF, _('Create PDF files'));
+	$pdfCheckbox = new htmlResponsiveInputCheckbox('createPDF', $createPDF, _('Create PDF files'));
 	$pdfCheckbox->setTableRowsToShow(array('pdfStructure', 'pdf_font'));
-	$inputContainer->addElement($pdfCheckbox, true);
+	$row->add($pdfCheckbox, 12);
 	$pdfStructures = \LAM\PDF\getPDFStructures($type->getId());
 	$pdfSelected = array();
 	if (isset($_POST['pdfStructure'])) {
@@ -298,94 +302,76 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 	else if (in_array('default', $pdfStructures)) {
 		$pdfSelected = array('default');
 	}
-	$inputContainer->addElement(new htmlTableExtendedSelect('pdfStructure', $pdfStructures, $pdfSelected, _('PDF structure')), true);
+	$row->add(new htmlResponsiveSelect('pdfStructure', $pdfStructures, $pdfSelected, _('PDF structure')), 12);
 	$fonts = \LAM\PDF\getPdfFonts();
-	$fontSelection = new htmlTableExtendedSelect('pdf_font', $fonts, array(), _('Font'), '411');
+	$fontSelection = new htmlResponsiveSelect('pdf_font', $fonts, array(), _('Font'), '411');
 	$fontSelection->setCSSClasses(array('lam-save-selection'));
 	$fontSelection->setHasDescriptiveElements(true);
 	$fontSelection->setSortElements(false);
-	$inputContainer->addElement($fontSelection, true);
-	$inputContainer->addElement(new htmlSpacer(null, '5px'), true);
+	$row->add($fontSelection, 12);
+	$row->addVerticalSpacer('1rem');
+
 	$uploadButton = new htmlButton('submitfile', _('Upload file and create accounts'));
 	$uploadButton->setIconClass('upButton');
-	$inputContainer->addElement($uploadButton);
-	$container->addElement($inputContainer, true);
-	$container->addElement(new htmlSpacer(null, '10px'), true);
-	// column list
-	$columnSpacer = new htmlSpacer('10px', null);
-	$container->addElement(new htmlTitle(_("Columns")), true);
-	$columnContainer = new htmlTable();
-	$columnContainer->setCSSClasses(array($scope . 'list', 'collapse'));
+	$row->addLabel($uploadButton);
+	$row->addField(new htmlOutputText('&nbsp;', false));
+	$row->addVerticalSpacer('2rem');
+
+	$row->add(new htmlTitle(_("Columns")), 12);
+
 	// DN options
 	$dnTitle = new htmlSubTitle(_("DN settings"), '../../graphics/logo32.png');
-	$dnTitle->colspan = 20;
-	$columnContainer->addElement($dnTitle, true);
-	$columnContainer->addElement($columnSpacer);
-	$columnContainer->addElement(new htmlOutputText(''));
-	$columnContainer->addElement($columnSpacer);
-	$header0 = new htmlOutputText(_('Name'));
-	$header0->alignment = htmlElement::ALIGN_LEFT;
-	$columnContainer->addElement($header0, false, true);
-	$columnContainer->addElement($columnSpacer);
-	$header1 = new htmlOutputText(_("Identifier"));
-	$header1->alignment = htmlElement::ALIGN_LEFT;
-	$columnContainer->addElement($header1, false, true);
-	$columnContainer->addElement($columnSpacer);
-	$header2 = new htmlOutputText(_("Example value"));
-	$header2->alignment = htmlElement::ALIGN_LEFT;
-	$columnContainer->addElement($header2, false, true);
-	$columnContainer->addElement($columnSpacer);
-	$header3 = new htmlOutputText(_("Default value"));
-	$header3->alignment = htmlElement::ALIGN_LEFT;
-	$columnContainer->addElement($header3, false, true);
-	$columnContainer->addElement($columnSpacer);
-	$header4 = new htmlOutputText(_("Possible values"));
-	$header4->alignment = htmlElement::ALIGN_LEFT;
-	$columnContainer->addElement($header4, false, true);
+	$row->add($dnTitle, 12);
+	$titles = array(_('Name'), _("Identifier"), _("Example value"), _("Default value"), _("Possible values"));
+	$data = array();
 	$dnSuffixRowCells = array();
-	$dnSuffixRowCells[] = $columnSpacer;
-	$dnSuffixRowCells[] = new htmlHelpLink('361');
-	$dnSuffixRowCells[] = $columnSpacer;
-	$dnSuffixRowCells[] = new htmlOutputText(_("DN suffix"));
-	$dnSuffixRowCells[] = $columnSpacer;
+	$nameGroup = new htmlGroup();
+	$help = new htmlHelpLink('361');
+	$help->setCSSClasses(array('hide-on-mobile'));
+	$nameGroup->addElement($help);
+	$nameGroup->addElement(new htmlSpacer('0.25rem', '16px'));
+	$nameGroup->addElement(new htmlOutputText(_("DN suffix")));
+	$help = new htmlHelpLink('361');
+	$help->setCSSClasses(array('hide-on-tablet'));
+	$nameGroup->addElement($help);
+	$dnSuffixRowCells[] = $nameGroup;
 	$dnSuffixRowCells[] = new htmlOutputText('dn_suffix');
-	$dnSuffixRowCells[] = $columnSpacer;
 	$dnSuffixRowCells[] = new htmlOutputText($type->getSuffix());
-	$dnSuffixRowCells[] = $columnSpacer;
 	$dnSuffixRowCells[] = new htmlOutputText($type->getSuffix());
-	$dnSuffixRowCells[] = $columnSpacer;
 	$dnSuffixRowCells[] = new htmlOutputText('');
-	$dnSuffixRowCells[] = new htmlSpacer(null, '25px');
-	$dnSuffixRow = new htmlTableRow($dnSuffixRowCells);
-	$dnSuffixRow->setCSSClasses(array($scope . '-dark'));
-	$columnContainer->addElement($dnSuffixRow);
+	$data[] = $dnSuffixRowCells;
 	$dnRDNRowCells = array();
-	$dnRDNRowCells[] = $columnSpacer;
-	$dnRDNRowCells[] = new htmlHelpLink('301');
-	$dnRDNRowCells[] = $columnSpacer;
 	$rdnText = new htmlOutputText(_("RDN identifier"));
 	$rdnText->setMarkAsRequired(true);
-	$dnRDNRowCells[] = $rdnText;
-	$dnRDNRowCells[] = $columnSpacer;
+	$nameGroup = new htmlGroup();
+	$help = new htmlHelpLink('301');
+	$help->setCSSClasses(array('hide-on-mobile'));
+	$nameGroup->addElement($help);
+	$nameGroup->addElement(new htmlSpacer('0.25rem', '16px'));
+	$nameGroup->addElement($rdnText);
+	$help = new htmlHelpLink('301');
+	$help->setCSSClasses(array('hide-on-tablet'));
+	$nameGroup->addElement($help);
+	$dnRDNRowCells[] = $nameGroup;
 	$dnRDNRowCells[] = new htmlOutputText('dn_rdn');
-	$dnRDNRowCells[] = $columnSpacer;
 	$rdnAttributes = getRDNAttributes($type->getId(), $selectedModules);
 	$dnRDNRowCells[] = new htmlOutputText($rdnAttributes[0]);
-	$dnRDNRowCells[] = $columnSpacer;
 	$dnRDNRowCells[] = new htmlOutputText('');
-	$dnRDNRowCells[] = $columnSpacer;
 	$dnRDNRowCells[] = new htmlOutputText(implode(", ", $rdnAttributes));
-	$dnRDNRowCells[] = new htmlSpacer(null, '25px');
-	$dnRDNRow = new htmlTableRow($dnRDNRowCells);
-	$dnRDNRow->setCSSClasses(array($scope . '-bright'));
-	$columnContainer->addElement($dnRDNRow);
+	$dnRDNRowCells[] = new htmlHelpLink('301');
+	$data[] = $dnRDNRowCells;
+	$table = new htmlResponsiveTable($titles, $data);
+	$table->setCSSClasses(array('alternating-color'));
+	$row->add($table, 12);
+
+	$data = array();
 	// module options
 	foreach ($modules as $moduleName) {
 		// skip modules without upload columns
 		if (sizeof($columns[$moduleName]) < 1) {
 			continue;
 		}
-		$columnContainer->addElement(new htmlSpacer(null, '10px'), true);
+		$row->addVerticalSpacer('2rem');
 		$module = moduleCache::getModule($moduleName, $scope);
 		$icon = $module->getIcon();
 		if (!empty($icon) && !(strpos($icon, 'http') === 0) && !(strpos($icon, '/') === 0)) {
@@ -393,82 +379,52 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 		}
 		$moduleTitle = new htmlSubTitle(getModuleAlias($moduleName, $scope), $icon);
 		$moduleTitle->colspan = 20;
-		$columnContainer->addElement($moduleTitle, true);
-		$columnContainer->addElement(new htmlOutputText(''));
-		$columnContainer->addElement(new htmlOutputText(''));
-		$columnContainer->addElement(new htmlOutputText(''));
-		$nameOut = new htmlOutputText(_('Name'));
-		$nameOut->alignment = htmlElement::ALIGN_LEFT;
-		$columnContainer->addElement($nameOut, false, true);
-		$columnContainer->addElement(new htmlOutputText(''));
-		$idOut = new htmlOutputText(_('Identifier'));
-		$idOut->alignment = htmlElement::ALIGN_LEFT;
-		$columnContainer->addElement($idOut, false, true);
-		$columnContainer->addElement(new htmlOutputText(''));
-		$exampleOut = new htmlOutputText(_('Example value'));
-		$exampleOut->alignment = htmlElement::ALIGN_LEFT;
-		$columnContainer->addElement($exampleOut, false, true);
-		$columnContainer->addElement(new htmlOutputText(''));
-		$defaultOut = new htmlOutputText(_('Default value'));
-		$defaultOut->alignment = htmlElement::ALIGN_LEFT;
-		$columnContainer->addElement($defaultOut, false, true);
-		$columnContainer->addElement(new htmlOutputText(''));
-		$possibleOut = new htmlOutputText(_('Possible values'));
-		$possibleOut->alignment = htmlElement::ALIGN_LEFT;
-		$columnContainer->addElement($possibleOut, false, true);
-		$odd = true;
+		$row->add($moduleTitle, 12);
 		foreach ($columns[$moduleName] as $column) {
 			$required = false;
 			if (isset($column['required']) && ($column['required'] === true)) {
 				$required = true;
 			}
 			$rowCells = array();
-			$rowCells[] = $columnSpacer;
-			$rowCells[] = new htmlHelpLink($column['help'], $moduleName, $scope);
-			$rowCells[] = $columnSpacer;
 			$descriptionText = new htmlOutputText($column['description']);
 			$descriptionText->setMarkAsRequired($required);
-			$descriptionText->setNoWrap(true);
-			$rowCells[] = $descriptionText;
-			$rowCells[] = $columnSpacer;
+			$nameGroup = new htmlGroup();
+			$help = new htmlHelpLink($column['help'], $moduleName, $scope);
+			$help->setCSSClasses(array('hide-on-mobile'));
+			$nameGroup->addElement($help);
+			$nameGroup->addElement(new htmlSpacer('0.25rem', '16px'));
+			$nameGroup->addElement($descriptionText);
+			$help = new htmlHelpLink($column['help'], $moduleName, $scope);
+			$help->setCSSClasses(array('hide-on-tablet'));
+			$nameGroup->addElement($help);
+			$rowCells[] = $nameGroup;
 			$rowCells[] = new htmlOutputText($column['name']);
-			$rowCells[] = $columnSpacer;
 			$example = '';
 			if (isset($column['example'])) {
 				$example = $column['example'];
 			}
 			$rowCells[] = new htmlOutputText($example);
-			$rowCells[] = $columnSpacer;
 			if (isset($column['default'])) {
 				$rowCells[] = new htmlOutputText($column['default']);
 			}
 			else {
 				$rowCells[] = new htmlOutputText('');
 			}
-			$rowCells[] = $columnSpacer;
 			if (isset($column['values'])) {
 				$rowCells[] = new htmlOutputText($column['values']);
 			}
 			else {
 				$rowCells[] = new htmlOutputText('');
 			}
-			$rowCells[] = new htmlSpacer(null, '25px');
-			$row = new htmlTableRow($rowCells);
-			if ($odd) {
-				$row->setCSSClasses(array($scope . '-dark'));
-			}
-			else {
-				$row->setCSSClasses(array($scope . '-bright'));
-			}
-			$odd = !$odd;
-			$columnContainer->addElement($row);
+			$data[] = $rowCells;
 		}
+		$table = new htmlResponsiveTable($titles, $data);
+		$table->setCSSClasses(array('alternating-color'));
+		$row->add($table, 12);
 	}
-	$container->addElement($columnContainer, true);
 
-	addSecurityTokenToMetaHTML($container);
-	$tabindex = 1;
-	parseHtml(null, $container, array(), false, $tabindex, $scope);
+	addSecurityTokenToMetaHTML($row);
+	parseHtml(null, $row, array(), false, $tabindex, $scope);
 
 	echo "</form>\n";
 
