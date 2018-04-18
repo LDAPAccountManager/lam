@@ -61,7 +61,7 @@ if (!isLoggedIn()) {
 // Set correct language, codepages, ....
 setlanguage();
 
-include '../main_header.php';
+include '../../lib/adminHeader.inc';
 $typeId = htmlspecialchars($_SESSION['mass_typeId']);
 $typeManager = new \LAM\TYPES\TypeManager();
 $type = $typeManager->getConfiguredType($typeId);
@@ -87,5 +87,5 @@ $tokenPrefix = '?' . getSecurityTokenName() . '=' . getSecurityTokenValue();
 
 <?php
 echo '</div>';
-include '../main_footer.php';
+include '../../lib/adminFooter.inc';
 ?>
