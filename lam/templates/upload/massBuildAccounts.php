@@ -1,14 +1,12 @@
 <?php
 namespace LAM\UPLOAD;
-use \htmlTable;
-use \htmlSpacer;
 use \htmlStatusMessage;
 use \htmlLink;
-use \htmlTitle;
+use \htmlOutputText;
 use \htmlButton;
 use \htmlHiddenInput;
+use \htmlResponsiveRow;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2004 - 2018  Roland Gruber
@@ -97,7 +95,7 @@ if (isset($_GET['showldif'])) {
 	exit;
 }
 
-include '../main_header.php';
+include '../../lib/adminHeader.inc';
 $typeId = htmlspecialchars($_POST['typeId']);
 $typeManager = new \LAM\TYPES\TypeManager();
 $type = $typeManager->getConfiguredType($typeId);
@@ -114,7 +112,7 @@ if (!checkIfNewEntriesAreAllowed($type->getId()) || !checkIfWriteAccessIsAllowed
 
 echo '<form enctype="multipart/form-data" action="masscreate.php" method="post">';
 echo '<div class="' . $type->getScope() . '-bright smallPaddingContent">';
-$container = new htmlTable();
+$container = new htmlResponsiveRow();
 
 $selectedModules = explode(',', $_POST['selectedModules']);
 if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
@@ -192,15 +190,15 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	// if input data is invalid just display error messages (max 50)
 	if (sizeof($errors) > 0) {
 		foreach ($errors as $error) {
-			$container->addElement(new htmlStatusMessage("ERROR", $error[0], $error[1]), true);
+			$container->add(new htmlStatusMessage("ERROR", $error[0], $error[1]), 12);
 		}
-		$container->addElement(new htmlSpacer(null, '10px'), true);
+		$container->addVerticalSpacer('2rem');
 		massPrintBackButton($type->getId(), $selectedModules, $container);
 	}
 
 	// let modules build accounts
 	else {
-		$accounts = buildUploadAccounts($type, $data, $ids, $selectedModules);
+		$accounts = buildUploadAccounts($type, $data, $ids, $selectedModules, $container);
 		if ($accounts !== false) {
 			$rdnList = getRDNAttributes($type->getId(), $selectedModules);
 			$suffix = $type->getSuffix();
@@ -220,7 +218,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 			// print errors if DN could not be built
 			if (sizeof($errors) > 0) {
 				foreach ($errors as $error) {
-					$container->addElement(new htmlStatusMessage("ERROR", $error[0], $error[1], $error[2]), true);
+					$container->add(new htmlStatusMessage("ERROR", $error[0], $error[1], $error[2]), 12);
 				}
 			}
 			else {
@@ -246,25 +244,28 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 					$_SESSION['mass_pdf']['structure'] = null;
 				}
 				// show links for upload and LDIF export
-				$container->addElement(new htmlTitle(_("LAM has checked your input and is now ready to create the accounts.")), true);
-				$container->addElement(new htmlSpacer(null, '10px'), true);
-				$buttonContainer = new htmlTable();
-				$buttonContainer->addElement(new htmlLink(_("Upload accounts to LDAP"), 'massDoUpload.php', '../../graphics/up.gif', true));
-				$buttonContainer->addElement(new htmlLink(_("Show LDIF file"), 'massBuildAccounts.php?showldif=true', '../../graphics/edit.png', true));
-				$buttonContainer->addElement(new htmlSpacer('10px', null));
-				massPrintBackButton($type->getId(), $selectedModules, $buttonContainer);
-				$container->addElement($buttonContainer, true);
+				$container->addVerticalSpacer('2rem');
+				$container->add(new htmlOutputText(_("LAM has checked your input and is now ready to create the accounts.")), 12);
+				$container->addVerticalSpacer('4rem');
+				$link = new htmlLink(_("Upload accounts to LDAP"), 'massDoUpload.php', '../../graphics/up.gif', true);
+				$link->setCSSClasses(array('margin3'));
+				$container->addLabel($link);
+				$link = new htmlLink(_("Show LDIF file"), 'massBuildAccounts.php?showldif=true', '../../graphics/edit.png', true);
+				$link->setCSSClasses(array('margin3'));
+				$container->addField($link);
+				$container->addVerticalSpacer('2rem');
+				massPrintBackButton($type->getId(), $selectedModules, $container);
 			}
 		}
 		else {
-			$container->addElement(new htmlSpacer(null, '10px'), true);
+			$container->addVerticalSpacer('2rem');
 			massPrintBackButton($type->getId(), $selectedModules, $container);
 		}
 	}
 }
 else {
-	$container->addElement(new htmlStatusMessage('ERROR', _('Please provide a file to upload.')), true);
-	$container->addElement(new htmlSpacer(null, '10px'), true);
+	$container->add(new htmlStatusMessage('ERROR', _('Please provide a file to upload.')), 12);
+	$container->addVerticalSpacer('2rem');
 	massPrintBackButton($type->getId(), $selectedModules, $container);
 }
 
@@ -274,28 +275,28 @@ parseHtml(null, $container, array(), false, $tabindex, $type->getScope());
 
 echo '</div>';
 echo '</form>';
-include '../main_footer.php';
+include '../../lib/adminFooter.inc';
 
 /**
  * Prints a back button to the page where the user enters a file to upload.
  *
  * @param String $typeId account type (e.g. user)
  * @param array $selectedModules selected modules for upload
- * @param htmlTable $container table container
+ * @param htmlResponsiveRow $container table container
  */
-function massPrintBackButton($typeId, $selectedModules, htmlTable &$container) {
+function massPrintBackButton($typeId, $selectedModules, htmlResponsiveRow &$container) {
 	$backButton = new htmlButton('submit', _('Back'));
 	$backButton->setIconClass('backButton');
-	$container->addElement($backButton);
-	$container->addElement(new htmlHiddenInput('type', $typeId));
+	$container->add($backButton, 12);
+	$container->add(new htmlHiddenInput('type', $typeId), 12);
 	$createPDF = 0;
 	if (isset($_POST['createPDF']) && ($_POST['createPDF'] == 'on')) {
 		$createPDF = 1;
 	}
-	$container->addElement(new htmlHiddenInput('createPDF', $createPDF));
-	$container->addElement(new htmlHiddenInput('pdfStructure', $_POST['pdfStructure']));
+	$container->add(new htmlHiddenInput('createPDF', $createPDF), 12);
+	$container->add(new htmlHiddenInput('pdfStructure', $_POST['pdfStructure']), 12);
 	foreach ($selectedModules as $selectedModule) {
-		$container->addElement(new htmlHiddenInput($typeId . '___' . $selectedModule, 'on'));
+		$container->add(new htmlHiddenInput($typeId . '___' . $selectedModule, 'on'), 12);
 	}
 }
 
