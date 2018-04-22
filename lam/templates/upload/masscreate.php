@@ -364,13 +364,13 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 	$table->setCSSClasses(array('alternating-color'));
 	$row->add($table, 12);
 
-	$data = array();
 	// module options
 	foreach ($modules as $moduleName) {
 		// skip modules without upload columns
 		if (sizeof($columns[$moduleName]) < 1) {
 			continue;
 		}
+		$data = array();
 		$row->addVerticalSpacer('2rem');
 		$module = moduleCache::getModule($moduleName, $scope);
 		$icon = $module->getIcon();
