@@ -1,10 +1,9 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2010 - 2011  Pavel Pozdniak
-                2010 - 2017  Roland Gruber
+                2010 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -119,6 +118,9 @@ class imapAccess extends baseModule {
 			'initialFolders' => array(
 				"Headline" => _("Initial folders"),
 				"Text" => _("Use this to provide a list of folders (e.g. Trash) to add for new accounts.")),
+			'createMailbox' => array(
+				"Headline" => _("Create mailbox"),
+				"Text" => _('Set to "true" to create the mailbox.')),
 		);
 		// configuration checks
 		$return['config_checks']['all']['ImapAccess_ImapServerAddress'] = array (
@@ -160,20 +162,28 @@ class imapAccess extends baseModule {
 		$this->messages['managemailbox'][6] = array('WARN', _('Your LAM login password was not accepted by the IMAP server.'));
 		$this->messages['managemailbox'][7] = array('ERROR', _('Cannot update quota.'));
 		$this->messages['managemailbox'][8] = array('ERROR', _('Wrong quota format. Quota must be numeric.'));
+		$this->messages['managemailbox'][9] = array('ERROR', _('Account %s:') . ' imapAccess_quota', _('Wrong quota format. Quota must be numeric.'));
+		$this->messages['createMailbox'][0] = array('ERROR', _('Account %s:') . ' imapAccess_createMailbox', _('This value can only be "true" or "false".'));
 	}
 
 	/**
 	 * Extracts user name and email address from inetOrgPerson/posixAccount/windowsUser modules.
 	 *
+	 * @param array $attrs LDAP attributes (retrieved from other account modules if empty)
 	 * @return htmlStatusMessage message if any
 	 */
-	private function extractUserAndEmail() {
+	private function extractUserAndEmail($attrs = null) {
 		$this->email = '';
-		if ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
-			$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
-		}
-		else {
-			$attrs = $this->getAccountContainer()->getAccountModule('windowsUser')->getAttributes();
+		if ($attrs === null) {
+			if ($this->getAccountContainer()->getAccountModule('inetOrgPerson') != null) {
+				$attrs = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
+			}
+			else {
+				$attrs = $this->getAccountContainer()->getAccountModule('windowsUser')->getAttributes();
+			}
+			if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
+				$attrs = array_merge($attrs, $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes());
+			}
 		}
 		$this->email = !empty($attrs['mail'][0]) ? $attrs['mail'][0] : '';
 		$this->user = '';
@@ -190,13 +200,7 @@ class imapAccess extends baseModule {
 		}
 		// extract user name from Unix user name (might be in inetOrgPerson/windowUser or posixAccount module)
 		else {
-			if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
-				$attrsUnix = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
-				$this->user = !empty($attrsUnix['uid'][0]) ? $attrsUnix['uid'][0] : '';
-			}
-			else {
-				$this->user = !empty($attrs['uid'][0]) ? $attrs['uid'][0] : '';
-			}
+			$this->user = !empty($attrs['uid'][0]) ? $attrs['uid'][0] : '';
 		}
 
 		if (empty($this->email)) {
@@ -355,11 +359,11 @@ class imapAccess extends baseModule {
 		}
 
 		$imap_admin_password = $this->getAdminPassword();
-		$mbox = 0;//default state is false
+		$imapConnection = 0;//default state is false
 		if ($imap_admin_password) {
-			$mbox = @imap_open("{" . $imap_server_address . "}", $imap_admin_user, $imap_admin_password, OP_HALFOPEN, 1);
+			$imapConnection = @imap_open("{" . $imap_server_address . "}", $imap_admin_user, $imap_admin_password, OP_HALFOPEN, 1);
 		}
-		if ($mbox) {
+		if ($imapConnection) {
 			$this->extractUserAndEmail();
 			$email_domain = substr(strstr($this->email, '@'), 1);
 
@@ -368,71 +372,115 @@ class imapAccess extends baseModule {
 					$errors[] = $this->messages['managemailbox'][4];
 				}
 				else {
-					if (!imap_setacl($mbox, $prefix . $this->getSep() . $this->user, $imap_admin_user, "c")) {
+					if (!imap_setacl($imapConnection, $prefix . $this->getSep() . $this->user, $imap_admin_user, "c")) {
 						$errors[] = $this->messages['managemailbox'][0];
 					}
 
 					$delete_mailbox_arg = "{" . $imap_server_address . "}" . $prefix . $this->getSep() . $this->user;
-					if (!@imap_deletemailbox($mbox, $delete_mailbox_arg)) {
+					if (!@imap_deletemailbox($imapConnection, $delete_mailbox_arg)) {
 						$errors[] = $this->messages['managemailbox'][1];
 					}
 				}
 			}
 
 			if (isset($_POST['createMailbox'])) {
-				if ($this->isWrongDomain($email_domain)) {
-					$errors[] = $this->messages['managemailbox'][4];
-				}
-				else {
-					$create_mailbox_arg = "{" . $imap_server_address . "}" . $prefix . $this->getSep() . $this->user;
-					if (imap_createmailbox($mbox, imap_utf7_encode($create_mailbox_arg))) {
-						$list = imap_list($mbox, "{" . $imap_server_address . "}", $prefix . $this->getSep() . $this->user);
-						if (!is_array($list) || (sizeof($list) != 1)) {
-							$errors[] = $this->messages['managemailbox'][3];
-						}
-						// create initial folders
-						foreach ($this->getInitialFolders() as $folder) {
-							$created = imap_createmailbox($mbox, imap_utf7_encode($create_mailbox_arg . $this->getSep() . $folder));
-							if (!$created) {
-								$error = $this->messages['managemailbox'][2];
-								$error[] = htmlspecialchars($folder);
-								$errors[] = $error;
-							}
-						}
-					}
-					else {
-						$errors[] = $this->messages['managemailbox'][2];
-					}
-				}
+				$createMessages = $this->createMailbox($imapConnection, $this->user, $email_domain);
+				$errors = array_merge($errors, $createMessages);
 			}
 			if (isset($_POST['updateQuota'])) {
-				if ($this->isWrongDomain($email_domain)) {
-					$errors[] = $this->messages['managemailbox'][4];
+				$quota = $_POST['ImapUserQuotaLimit'];
+				$quotaMessages = $this->setQuota($imapConnection, $this->user, $email_domain, $quota);
+				$errors = array_merge($errors, $quotaMessages);
+			}
+			imap_close($imapConnection);
+		}
+		// Return error-messages
+		return $errors;
+	}
+
+	/**
+	 * Creates the mailbox for a user.
+	 *
+	 * @param handle $imapConnection IMAP connection
+	 * @param string $userName user name
+	 * @param string $email_domain email domain
+	 * @return array error messages
+	 */
+	private function createMailbox($imapConnection, $userName, $email_domain) {
+		$errors = array();
+		$imap_server_address = $this->getServerAddress();
+		$prefix = $this->getMailboxPrefix();
+		if ($this->isWrongDomain($email_domain)) {
+			$errors[] = $this->messages['managemailbox'][4];
+		}
+		else {
+			$create_mailbox_arg = "{" . $imap_server_address . "}" . $prefix . $this->getSep() . $userName;
+			logNewMessage(LOG_DEBUG, 'Creating mailbox: ' . $create_mailbox_arg);
+			if (imap_createmailbox($imapConnection, imap_utf7_encode($create_mailbox_arg))) {
+				logNewMessage(LOG_DEBUG, 'Mailbox created');
+				$list = imap_list($imapConnection, "{" . $imap_server_address . "}", $prefix . $this->getSep() . $userName);
+				if (!is_array($list) || (sizeof($list) != 1)) {
+					$errors[] = $this->messages['managemailbox'][3];
 				}
-				else {
-					if (!isset($_POST['ImapUserQuotaLimit']) || ($_POST['ImapUserQuotaLimit'] == '')) {
-/* deactivated because -1 is not accepted, no possibility to remove quota
- * 						if (!imap_set_quota($mbox, $prefix . $this->getSep() . $email_username, -1)) {
-							$message = $this->messages['managemailbox'][7];
-							$message[] = imap_last_error();
-							$errors[] = $message;
-						}*/
-					}
-					elseif (isset($_POST['ImapUserQuotaLimit']) && ($_POST['ImapUserQuotaLimit'] != '') && get_preg($_POST['ImapUserQuotaLimit'], 'digit')){
-						if (!imap_set_quota($mbox, $prefix . $this->getSep() . $this->user, $_POST['ImapUserQuotaLimit'])) {
-							$message = $this->messages['managemailbox'][7];
-							$message[] = imap_last_error();
-							$errors[] = $message;
-						}
+				// create initial folders
+				foreach ($this->getInitialFolders() as $folder) {
+					$folderCommand = $create_mailbox_arg . $this->getSep() . $folder;
+					logNewMessage(LOG_DEBUG, 'Creating folder: ' . $folderCommand);
+					$created = imap_createmailbox($imapConnection, imap_utf7_encode($folderCommand));
+					if (!$created) {
+						$error = $this->messages['managemailbox'][2];
+						$error[] = htmlspecialchars($folder);
+						$errors[] = $error;
 					}
 					else {
-						$errors[] = $this->messages['managemailbox'][8];
+						logNewMessage(LOG_DEBUG, 'Folder created');
 					}
 				}
 			}
-			imap_close($mbox);
+			else {
+				$errors[] = $this->messages['managemailbox'][2];
+			}
 		}
-		// Return error-messages
+		return $errors;
+	}
+
+	/**
+	 * Sets the mailbox quota for a user.
+	 *
+	 * @param handle $imapConnection IMAP connection
+	 * @param string $userName user name
+	 * @param string $email_domain email domain
+	 * @param string $quota mailbox quota
+	 * @return array error messages
+	 */
+	private function setQuota($imapConnection, $userName, $email_domain, $quota) {
+		$prefix = $this->getMailboxPrefix();
+		$errors = array();
+		if ($this->isWrongDomain($email_domain)) {
+			$errors[] = $this->messages['managemailbox'][4];
+		}
+		else {
+			if ($quota == '') {
+/* deactivated because -1 is not accepted, no possibility to remove quota
+ *				if (!imap_set_quota($mbox, $prefix . $this->getSep() . $email_username, -1)) {
+					$message = $this->messages['managemailbox'][7];
+					$message[] = imap_last_error();
+					$errors[] = $message;
+				}*/
+			}
+			elseif (get_preg($quota, 'digit')){
+				$root = $prefix . $this->getSep() . $userName;
+				logNewMessage(LOG_DEBUG, 'Setting quota ' . $quota . ' for ' . $root);
+				if (!imap_set_quota($imapConnection, $root, $quota)) {
+					$message = $this->messages['managemailbox'][7];
+					$message[] = imap_last_error();
+					$errors[] = $message;
+				}
+			}
+			else {
+				$errors[] = $this->messages['managemailbox'][8];
+			}
+		}
 		return $errors;
 	}
 
@@ -701,6 +749,156 @@ class imapAccess extends baseModule {
 			}
 		}
 		return $list;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see baseModule::get_uploadColumns()
+	 */
+	public function get_uploadColumns($selectedModules, &$type) {
+		$pwd = $this->getAdminPassword();
+		if (empty($pwd)) {
+			return array();
+		}
+		return array(
+			array(
+				'name' => 'imapAccess_createMailbox',
+				'description' => _('Create mailbox'),
+				'example' => 'false',
+				'default' => 'false',
+				'values' => 'true, false',
+				'help' => 'createMailbox'
+			),
+			array(
+				'name' => 'imapAccess_quota',
+				'description' => _('Quota limit (kB)'),
+				'example' => '1000000',
+				'help' => 'ImapUserQuotaLimit'
+			),
+		);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see baseModule::build_uploadAccounts()
+	 */
+	public function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
+		$errors = array();
+		if (!isset($ids['imapAccess_createMailbox'])) {
+			return $errors;
+		}
+		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+			if (isset($rawAccounts[$i][$ids['imapAccess_createMailbox']])
+					&& !in_array($rawAccounts[$i][$ids['imapAccess_createMailbox']], array('true', 'false'))) {
+				$errMsg = $this->messages['createMailbox'][0];
+				array_push($errMsg, array($i));
+				$errors[] = $errMsg;
+			}
+			if (isset($rawAccounts[$i][$ids['imapAccess_createMailbox']])
+					&& ($rawAccounts[$i][$ids['imapAccess_createMailbox']] === 'true')
+					&& !empty($ids['imapAccess_quota'])
+					&& isset($rawAccounts[$i][$ids['imapAccess_quota']])
+					&& !get_preg($rawAccounts[$i][$ids['imapAccess_quota']], 'digit')) {
+				$errMsg = $this->messages['managemailbox'][9];
+				array_push($errMsg, array($i));
+				$errors[] = $errMsg;
+			}
+		}
+		return $errors;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see baseModule::doUploadPostActions()
+	 */
+	function doUploadPostActions(&$data, $ids, $failed, &$temp, &$accounts, $selectedModules, $type) {
+		if (!checkIfWriteAccessIsAllowed($this->get_scope())) {
+			die();
+		}
+		// on first call generate list of IMAP operations
+		if (!isset($temp['counter'])) {
+			$temp['users'] = array();
+			$temp['counter'] = 0;
+			$errors = array();
+			if (isset($ids['imapAccess_createMailbox'])) {
+				foreach ($data as $i => $dataRow) {
+					if (in_array($i, $failed)) {
+						continue; // ignore failed accounts
+					}
+					if ($dataRow[$ids['imapAccess_createMailbox']] === 'true') {
+						$limit = '';
+						if (isset($ids['imapAccess_quota'])
+								&& isset($dataRow[$ids['imapAccess_quota']])
+								&& ($dataRow[$ids['imapAccess_quota']] !== '')) {
+							$limit = $dataRow[$ids['imapAccess_quota']];
+						}
+						$attributes = $accounts[$i];
+						foreach ($attributes as $name => $value) {
+							if (!is_array($value)) {
+								$attributes[$name] = array($value);
+							}
+						}
+						$extractErrors = $this->extractUserAndEmail($attributes);
+						if (!empty($extractErrors)) {
+							$errors = array_merge($errors, $extractErrors);
+						}
+						$temp['users'][] = array(
+							'uid' => $this->user,
+							'limit' => $limit,
+							'email' => substr(strstr($this->email, '@'), 1)
+						);
+					}
+				}
+			}
+			return array(
+				'status' => 'inProgress',
+				'progress' => 0,
+				'errors' => $errors
+			);
+		}
+		// add mailbox
+		elseif ($temp['counter'] < sizeof($temp['users'])) {
+			$errors = array();
+			$data = $temp['users'][$temp['counter']];
+			$uid = $data['uid'];
+			$limit = $data['limit'];
+			$email_domain = $data['email'];
+			ob_start();
+			$imap_server_address = $this->getServerAddress();
+			$imap_admin_user = $this->getAdminUser();
+			$imap_admin_password = $this->getAdminPassword();
+			$imapConnection = 0;//default state is false
+			if ($imap_admin_password) {
+				$imapConnection = @imap_open("{" . $imap_server_address . "}", $imap_admin_user, $imap_admin_password, OP_HALFOPEN, 1);
+				$createErrors = $this->createMailbox($imapConnection, $uid, $email_domain);
+				$errors = array_merge($errors, $createErrors);
+				if (empty($createErrors)) {
+					$quotaErrors = $this->setQuota($imapConnection, $uid, $email_domain, $limit);
+					$errors = array_merge($errors, $quotaErrors);
+				}
+			}
+			if ($imapConnection) {
+				imap_close($imapConnection);
+			}
+			else {
+				$errors[] = $this->messages['managemailbox'][5];
+			}
+			ob_end_clean();
+			$temp['counter']++;
+			return array (
+				'status' => 'inProgress',
+				'progress' => ($temp['counter'] * 100) / sizeof($temp['users']),
+				'errors' => $errors
+			);
+		}
+		// all modifications are done
+		else {
+			return array (
+				'status' => 'finished',
+				'progress' => 100,
+				'errors' => array()
+			);
+		}
 	}
 
 }

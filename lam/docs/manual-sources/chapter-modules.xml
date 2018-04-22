@@ -2132,6 +2132,10 @@ AuthorizedKeysCommandUser root</literallayout>
       <para>When you edit an user account then you will now see the tab
       "Mailbox". Here you can create/delete the mailbox for this user.</para>
 
+      <para>Please note that mailbox creation via file upload is not possible
+      if you configured in LAM server profile to ask for the admin
+      password.</para>
+
       <screenshot>
         <mediaobject>
           <imageobject>
