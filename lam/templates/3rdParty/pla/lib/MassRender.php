@@ -14,8 +14,6 @@
  */
 class MassRender extends TemplateRender {
 	protected function drawMassFormReadWriteValueAttribute($attribute,$i,$j) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$val = $attribute->getValue($i);
 
 		if ($attribute->getHelper())

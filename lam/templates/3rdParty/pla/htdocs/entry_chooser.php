@@ -43,9 +43,6 @@ if (isset($app['server']) && ! is_null($request['container'])) {
 	sort($request['children']);
 
 	foreach ($app['server']->getBaseDN() as $base) {
-		if (DEBUG_ENABLED)
-			debug_log('Comparing BaseDN [%s] with container [%s]',64,0,__FILE__,__LINE__,__METHOD__,$base,$request['container']);
-
 		if (! pla_compare_dns($request['container'],$base)) {
 			$parent_container = false;
 			$href['up'] = sprintf('entry_chooser.php?form=%s&element=%s&rdn=%s',$request['form'],$request['element'],rawurlencode($request['rdn']));

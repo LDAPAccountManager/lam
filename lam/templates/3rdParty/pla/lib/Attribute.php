@@ -79,9 +79,6 @@ class Attribute {
 	protected $postvalue = array();
 
 	public function __construct($name,$values,$server_id,$source=null) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$server = $_SESSION[APPCONFIG]->getServer($server_id);
 
 		$sattr = $server->getSchemaAttribute($name);
@@ -129,9 +126,6 @@ class Attribute {
 	 * @return string Attribute name
 	 */
 	public function getName($lower=true,$real=false) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs,$this->name);
-
 		if ($real)
 			return $lower ? strtolower($this->name) : $this->name;
 		else
@@ -139,30 +133,18 @@ class Attribute {
 	}
 
 	public function getValues() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->values);
-
 		return $this->values;
 	}
 
 	public function getOldValues() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->oldvalues);
-
 		return $this->oldvalues;
 	}
 
 	public function getValueCount() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs,$this->values);
-
 		return count($this->values);
 	}
 
 	public function getSource() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->source);
-
 		return $this->source;
 	}
 
@@ -170,9 +152,6 @@ class Attribute {
 	 * Autovalue is called after the attribute is initialised, and thus the values from the ldap server will be set.
 	 */
 	public function autoValue($new_val) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if ($this->values)
 			return;
 
@@ -180,9 +159,6 @@ class Attribute {
 	}
 
 	public function initValue($new_val) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if ($this->values || $this->oldvalues) {
 			debug_dump(array('new_val'=>$new_val,'this'=>$this));
 			debug_dump_backtrace('new and/or old values are set',1);
@@ -192,23 +168,14 @@ class Attribute {
 	}
 
 	public function clearValue() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->values = array();
 	}
 
 	public function setOldValue($val) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->oldvalues = $val;
 	}
 
 	public function setValue($new_val) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if ($this->values) {
 			if ($this->values == $new_val)
 				return;
@@ -228,9 +195,6 @@ class Attribute {
 	}
 
 	public function addValue($new_val,$i=-1) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if ($i < 0)
 			$i = $this->getValueCount();
 
@@ -242,9 +206,6 @@ class Attribute {
 	}
 
 	public function delValue($i=-1) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if ($i < 0)
 			$this->setValue(array());
 
@@ -259,9 +220,6 @@ class Attribute {
 	}
 
 	public function getValue($i) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if (isset($this->values[$i]))
 			return $this->values[$i];
 		else
@@ -269,9 +227,6 @@ class Attribute {
 	}
 
 	public function getOldValue($i) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if (isset($this->oldvalues[$i]))
 			return $this->oldvalues[$i];
 		else
@@ -279,37 +234,22 @@ class Attribute {
 	}
 
 	public function getMinValueCount() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->min_value_count);
-
 		return $this->min_value_count;
 	}
 
 	public function setMinValueCount($min) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->min_value_count = $min;
 	}
 
 	public function getMaxValueCount() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->max_value_count);
-
 		return $this->max_value_count;
 	}
 
 	public function setMaxValueCount($max) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->max_value_count = $max;
 	}
 
 	public function haveMoreValues() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if ($this->getMaxValueCount() < 0 || ($this->getValueCount() < $this->getMaxValueCount()))
 			return true;
 		else
@@ -317,30 +257,18 @@ class Attribute {
 	}
 
 	public function justModified() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->modified = true;
 	}
 
 	public function hasBeenModified() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->modified);
-
 		return $this->modified;
 	}
 
 	public function isForceDelete() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->forcedelete);
-
 		return $this->forcedelete;
 	}
 
 	public function setForceDelete() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->forcedelete = true;
 		$this->oldvalues = $this->values;
 		$this->values = array();
@@ -348,23 +276,14 @@ class Attribute {
 	}
 
 	public function isInternal() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->internal);
-
 		return $this->internal;
 	}
 
 	public function setInternal() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->internal = true;
 	}
 
 	public function isRequired() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if ($this->getMinValueCount() > 0)
 			return true;
 		elseif ($this->ldaptype == 'must')
@@ -376,9 +295,6 @@ class Attribute {
 	}
 
 	public function isMay() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if (($this->ldaptype == 'may') && ! $this->isRequired())
 			return true;
 		else
@@ -386,37 +302,22 @@ class Attribute {
 	}
 
 	public function setType($type) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->type = strtolower($type);
 	}
 
 	public function getType() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->type);
-
 		return $this->type;
 	}
 
 	public function setLDAPtype($type) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->ldaptype = strtolower($type);
 	}
 
 	public function getLDAPtype() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->ldaptype);
-
 		return $this->ldaptype;
 	}
 
 	public function setProperties($properties) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		foreach ($properties as $index => $value) {
 			if ($index == 'maxvalnb') {
 				$this->setMaxValueCount($value);
@@ -449,31 +350,19 @@ class Attribute {
 	}
 
 	public function setRequired() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if ($this->getMinValueCount() <= 0)
 			$this->setMinValueCount(1);
 	}
 
 	public function setOptional() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->setMinValueCount(0);
 	}
 
 	public function isReadOnly() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->readonly);
-
 		return $this->readonly;
 	}
 
 	public function setReadOnly() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->readonly = true;
 	}
 
@@ -482,37 +371,22 @@ class Attribute {
 	}
 
 	public function isVisible() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return $this->visible && (! $this->forcehide);
 	}
 
 	public function hide() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->visible = false;
 	}
 
 	public function show() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->visible = true;
 	}
 
 	public function haveFriendlyName() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return $_SESSION[APPCONFIG]->haveFriendlyName($this);
 	}
 
 	public function getFriendlyName() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->display);
-
 		if ($this->display)
 			return $this->display;
 		else
@@ -520,127 +394,73 @@ class Attribute {
 	}
 
 	public function setDescription($description) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->description = $description;
 	}
 
 	public function getDescription() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->description);
-
 		return $this->description;
 	}
 
 	public function setIcon($icon) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->icon = $icon;
 	}
 
 	public function getIcon() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->icon);
-
 		return $this->icon ? sprintf('%s/%s',IMGDIR,$this->icon) : '';
 	}
 
 	public function getHint() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->hint);
-
 		return $this->hint;
 	}
 
 	public function setHint($hint) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->hint = $hint;
 	}
 
 	public function getMaxLength() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->maxlength);
-
 		return $this->maxlength;
 	}
 
 	public function setMaxLength($maxlength) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->maxlength = $maxlength;
 	}
 
 	public function getSize() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->size);
-
 		return $this->size;
 	}
 
 	public function setSize($size) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->size = $size;
 	}
 
 	public function getSpacer() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->spacer);
-
 		return $this->spacer;
 	}
 
 	public function getPage() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->page);
-
 		return $this->page;
 	}
 	public function setPage($page) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->page = $page;
 	}
 
 	public function getOnChange() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->onchange);
-
 		return $this->onchange;
 	}
 
 	public function getHelper() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->helper);
-
 		return $this->helper;
 	}
 
 	public function getHelperValue() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->helpervalue);
-
 		return $this->helpervalue;
 	}
 
 	public function getVerify() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->verify);
-
 		return $this->verify;
 	}
 
 	public function setRDN($rdn) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->rdn = $rdn;
 	}
 
@@ -650,9 +470,6 @@ class Attribute {
 	 * @return boolean
 	 */
 	public function isRDN() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs,$this->rdn);
-
 		return $this->rdn;
 	}
 
@@ -662,9 +479,6 @@ class Attribute {
 	 * @param sattr Schema Attribute
 	 */
 	private function setLDAPdetails($sattr) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# By default, set this as a MAY attribute, later processing should make it a MUST attribute if it is.
 		if (! $this->ldaptype)
 			$this->ldaptype = 'may';
@@ -682,37 +496,22 @@ class Attribute {
 	 * This list will be lowercase.
 	 */
 	public function getAliases() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->aliases);
-
 		return $this->aliases;
 	}
 
 	public function getAutoValue() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->autovalue);
-
 		return $this->autovalue;
 	}
 
 	public function getPostValue() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->postvalue);
-
 		return $this->postvalue;
 	}
 
 	public function setPostValue($postvalue) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->postvalue = $postvalue;
 	}
 
 	public function setXML($values) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# Mostly all the time, this should be an array
 		if (is_array($values))
 			foreach ($values as $index => $value)
@@ -848,9 +647,6 @@ class Attribute {
 	 * Display the values removed in an attribute.
 	 */
 	public function getRemovedValues() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return array_diff($this->getOldValues(),$this->getValues());
 	}
 
@@ -858,9 +654,6 @@ class Attribute {
 	 * Display the values removed in an attribute.
 	 */
 	public function getAddedValues() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return array_diff($this->getValues(),$this->getOldValues());
 	}
 
@@ -874,9 +667,6 @@ class Attribute {
 	 * @return string
 	 */
 	private function real_attr_name() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->name);
-
 		return preg_replace('/;.*$/U','',$this->name);
 	}
 
@@ -884,9 +674,6 @@ class Attribute {
 	 * Does this attribute need supporting JS
 	 */
 	public function needJS($type=null) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if (is_null($type)) {
 			foreach (array('focus','blur','validate') as $type)
 				if ($this->needJS($type))

@@ -65,9 +65,6 @@ class Template extends xmlTemplate {
 	}
 
 	public function __clone() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# We need to clone our attributes, when passing back a template with getTemplate
 		foreach ($this->attributes as $key => $value)
 			$this->attributes[$key] = clone $value;
@@ -79,22 +76,13 @@ class Template extends xmlTemplate {
 	 * @param xmldata Parsed xmldata from xml2array object
 	 */
 	protected function storeTemplate($xmldata) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$server = $this->getServer();
 		$objectclasses = array();
 
 		foreach ($xmldata['template'] as $xml_key => $xml_value) {
-			if (DEBUG_ENABLED)
-				debug_log('Foreach loop Key [%s] Value [%s]',4,0,__FILE__,__LINE__,__METHOD__,$xml_key,is_array($xml_value));
-
 			switch ($xml_key) {
 				# Build our object Classes from the DN and Template.
 				case ('objectclasses'):
-					if (DEBUG_ENABLED)
-						debug_log('Case [%s]',4,0,__FILE__,__LINE__,__METHOD__,$xml_key);
-
 					if (isset($xmldata['template'][$xml_key]['objectclass']))
 						if (is_array($xmldata['template'][$xml_key]['objectclass'])) {
 							foreach ($xmldata['template'][$xml_key]['objectclass'] as $index => $details) {
@@ -126,16 +114,9 @@ class Template extends xmlTemplate {
 
 				# Build our attribute list from the DN and Template.
 				case ('attributes'):
-					if (DEBUG_ENABLED)
-						debug_log('Case [%s]',4,0,__FILE__,__LINE__,__METHOD__,$xml_key);
-
 					if (is_array($xmldata['template'][$xml_key])) {
 						foreach ($xmldata['template'][$xml_key] as $tattrs)
 							foreach ($tattrs as $index => $details) {
-								if (DEBUG_ENABLED)
-									debug_log('Foreach tattrs Key [%s] Value [%s]',4,0,__FILE__,__LINE__,__METHOD__,
-										$index,$details);
-
 								# If there is no schema definition for the attribute, it will be ignored.
 								if ($sattr = $server->getSchemaAttribute($index))
 									if (is_null($this->getAttribute($sattr->getName())))
@@ -148,9 +129,6 @@ class Template extends xmlTemplate {
 					break;
 
 				default:
-					if (DEBUG_ENABLED)
-						debug_log('Case [%s]',4,0,__FILE__,__LINE__,__METHOD__,$xml_key);
-
 					# Some key definitions need to be an array, some must not be:
 					$allowed_arrays = array('rdn');
 					$storelower = array('rdn');
@@ -227,9 +205,6 @@ class Template extends xmlTemplate {
 	 * @return boolean
 	 */
 	protected function hasDefaultTemplate() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if ($_SESSION[APPCONFIG]->getValue('appearance','disable_default_template'))
 			return false;
 		else
@@ -243,9 +218,6 @@ class Template extends xmlTemplate {
 	 * @return array - Array of templates of that type
 	 */
 	protected function readTemplates($type) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$template_xml = new Templates($this->server_id);
 		return $template_xml->getTemplates($type);
 	}
@@ -259,9 +231,6 @@ class Template extends xmlTemplate {
 	 * (OLD values are IGNORED, we will have got them when we build this object from the LDAP server DN.)
 	 */
 	public function accept($makeVisible=false) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$server = $this->getServer();
 
 		# If a DN is set, then query the LDAP server for the details.
@@ -571,9 +540,6 @@ class Template extends xmlTemplate {
 	 * @param dn The DN of the entry
 	 */
 	public function setDN($dn) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if (isset($this->container))
 			system_message(array(
 				'title'=>__METHOD__,
@@ -592,9 +558,6 @@ class Template extends xmlTemplate {
 	 * @return RDN attributes not processed
 	 */
 	public function setRDNAttributes($rdn) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# Setup to work out our RDN.
 		$rdnarray = rdn_explode($rdn);
 
@@ -619,9 +582,6 @@ class Template extends xmlTemplate {
 	 * @return dn
 	 */
 	public function getDN() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs,$this->dn);
-
 		if ($this->dn)
 			return $this->dn;
 
@@ -649,9 +609,6 @@ class Template extends xmlTemplate {
 	 * @todo Trigger a query to the LDAP server and generate an error if the container doesnt exist
 	 */
 	public function setContainer($container) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if (isset($this->dn))
 			system_message(array(
 				'title'=>__METHOD__,
@@ -667,9 +624,6 @@ class Template extends xmlTemplate {
 	 * @return dn DN of the container
 	 */
 	public function getContainer() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->container);
-
 		return $this->container;
 	}
 
@@ -685,9 +639,6 @@ class Template extends xmlTemplate {
 	 * Copy a DN
 	 */
 	public function copy($template,$rdn,$asnew=false) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$rdnarray = rdn_explode($rdn);
 
 		$counter = 1;
@@ -755,9 +706,6 @@ class Template extends xmlTemplate {
 	 * @return array Array of attributes.
 	 */
 	function getAttrbyLdapType($type) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$result = array();
 
 		foreach ($this->attributes as $index => $attribute) {
@@ -772,9 +720,6 @@ class Template extends xmlTemplate {
 	 * Return true if this is a MUST,MAY attribute
 	 */
 	function isAttrType($attr,$type) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if (in_array(strtolower($attr),$this->getAttrbyLdapType($type)))
 			return true;
 		else
@@ -787,9 +732,6 @@ class Template extends xmlTemplate {
 	 * @return array Array of RDN objects
 	 */
 	private function getRDNObjects() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$return = array();
 
 		foreach ($this->attributes as $attribute)
@@ -806,9 +748,6 @@ class Template extends xmlTemplate {
 	 * @return array RDNs in order.
 	 */
 	public function getRDNAttrs() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$return = array();
 
 		foreach ($this->getRDNObjects() as $attribute) {
@@ -835,9 +774,6 @@ class Template extends xmlTemplate {
 	 * @return rdn RDN for this template
 	 */
 	public function getRDN() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# If the DN is set, then the RDN will be calculated from it.
 		if ($this->dn)
 			return get_rdn($this->dn);
@@ -863,9 +799,6 @@ class Template extends xmlTemplate {
 	 * Return the attribute name part of the RDN
 	 */
 	public function getRDNAttributeName() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$attr = array();
 
 		if ($this->getDN()) {
@@ -888,9 +821,6 @@ class Template extends xmlTemplate {
 	 * Determine the type of template this is
 	 */
 	public function getContext() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if ($this->getContainer() && get_request('cmd','REQUEST') == 'copy')
 			return 'copyasnew';
 		elseif ($this->getContainer() || get_request('create_base'))
@@ -907,9 +837,6 @@ class Template extends xmlTemplate {
 	 * @return boolean
 	 */
 	public function isVisible() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->visible);
-
 		return $this->visible;
 	}
 
@@ -922,9 +849,6 @@ class Template extends xmlTemplate {
 	}
 
 	public function getRegExp() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->regexp);
-
 		return $this->regexp;
 	}
 
@@ -932,9 +856,6 @@ class Template extends xmlTemplate {
 	 * Test if this template has been marked as a read-only template
 	 */
 	public function isReadOnly() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if ((($this->getContext() == 'edit') && $this->readonly) || $this->getServer()->isReadOnly())
 			return true;
 		else
@@ -948,9 +869,6 @@ class Template extends xmlTemplate {
 	 * @return array Array of attributes
 	 */
 	public function getAttributes($optional=false) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if ($optional)
 			return $this->attributes;
 
@@ -969,9 +887,6 @@ class Template extends xmlTemplate {
 	 * Return a list of attributes that should be shown
 	 */
 	public function getAttributesShown() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$result = array();
 
 		foreach ($this->attributes as $attribute)
@@ -985,9 +900,6 @@ class Template extends xmlTemplate {
 	 * Return a list of the internal attributes
 	 */
 	public function getAttributesInternal() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$result = array();
 
 		foreach ($this->attributes as $attribute)
@@ -1003,9 +915,6 @@ class Template extends xmlTemplate {
 	 * @return array Array of Objects
 	 */
 	public function getObjectClasses() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$attribute = $this->getAttribute('objectclass');
 		if ($attribute)
 			return $attribute->getValues();
@@ -1017,9 +926,6 @@ class Template extends xmlTemplate {
 	 * Get template icon
 	 */
 	public function getIcon() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->icon);
-
 		return isset($this->icon) ? sprintf('%s/%s',IMGDIR,$this->icon) : '';
 	}
 
@@ -1029,9 +935,6 @@ class Template extends xmlTemplate {
 	 * @return string Description
 	 */
 	public function getDescription() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->description);
-
 		return $this->description;
 	}
 
@@ -1041,9 +944,6 @@ class Template extends xmlTemplate {
 	 * @param string Message indicating the reason the template has been invalidated
 	 */
 	public function setInvalid($msg,$admin=false) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->invalid = true;
 		$this->invalid_reason = $msg;
 		$this->invalid_admin = $admin;
@@ -1055,9 +955,6 @@ class Template extends xmlTemplate {
 	 * @return string Invalid reason, or false if not invalid
 	 */
 	public function isInValid() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if ($this->invalid)
 			return $this->invalid_reason;
 		else
@@ -1065,9 +962,6 @@ class Template extends xmlTemplate {
 	}
 
 	public function isAdminDisabled() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->invalid_admin);
-
 		return $this->invalid_admin;
 	}
 
@@ -1078,9 +972,6 @@ class Template extends xmlTemplate {
 	 * @param int
 	 */
 	private function setMinValueCount($attr,$value) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$attribute = $this->getAttribute($attr);
 
 		if (! is_null($attribute))
@@ -1094,9 +985,6 @@ class Template extends xmlTemplate {
 	 * @param string (MUST,MAY,OPTIONAL)
 	 */
 	private function setAttrLDAPtype($attr,$value) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$attribute = $this->getAttribute($attr);
 
 		if (is_null($attribute))
@@ -1109,9 +997,6 @@ class Template extends xmlTemplate {
 	 * OnChangeAdd javascript processing
 	 */
 	public function OnChangeAdd($origin,$value) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$attribute = $this->getAttribute($origin);
 
 		if (preg_match('/^=(\w+)\((.*)\)$/',$value,$matches)) {
@@ -1220,13 +1105,13 @@ class Template extends xmlTemplate {
 						$attribute->js['autoFill'] .= sprintf("   %s = %s.split(':')[%s];\n",$match_attr,$match_attr,$tok_idx);
 
 					} elseif (strstr($match_mod,'K')) {
-						preg_match_all('/([0-9]+)/',trim($match_subst),$substrarray); 
-						if (isset($substrarray[1][0])) { 
-							$tok_idx = $substrarray[1][0]; 
-						} else { 
-							$tok_idx = '0'; 
-						} 
-						$attribute->js['autoFill'] .= sprintf("   %s = %s.split(' ')[%s];\n",$match_attr,$match_attr,$tok_idx); 
+						preg_match_all('/([0-9]+)/',trim($match_subst),$substrarray);
+						if (isset($substrarray[1][0])) {
+							$tok_idx = $substrarray[1][0];
+						} else {
+							$tok_idx = '0';
+						}
+						$attribute->js['autoFill'] .= sprintf("   %s = %s.split(' ')[%s];\n",$match_attr,$match_attr,$tok_idx);
 
 					} else {
 						preg_match_all('/([0-9]*)-([0-9]*)/',trim($match_subst),$substrarray);
@@ -1275,9 +1160,6 @@ class Template extends xmlTemplate {
 	 * STRUCTURAL - without one, creating an entry will just product an LDAP error.
 	 */
 	private function rebuildTemplateAttrs() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$server = $this->getServer();
 
 		# Collect our structural, MUST & MAY attributes.
@@ -1390,9 +1272,6 @@ class Template extends xmlTemplate {
 	 * Attributes with empty values will be excluded.
 	 */
 	public function getLDAPadd($attrsOnly=false) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$return = array();
 		$returnattrs = array();
 
@@ -1425,9 +1304,6 @@ class Template extends xmlTemplate {
 	 * @param boolean Return the attribute objects (useful for a confirmation process), or the modification array for ldap_modify()
 	 */
 	public function getLDAPmodify($attrsOnly=false,$index=0) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		static $return = array();
 		static $returnattrs = array();
 
@@ -1506,9 +1382,6 @@ class Template extends xmlTemplate {
 	 * We'll cache this result in the event of multiple calls.
 	 */
 	public function getForceDeleteAttrs() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		static $result = array();
 
 		if (count($result))
@@ -1525,9 +1398,6 @@ class Template extends xmlTemplate {
 	 * Get available attributes
 	 */
 	public function getAvailAttrs() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$attributes = array();
 		$server = $this->getServer();
 

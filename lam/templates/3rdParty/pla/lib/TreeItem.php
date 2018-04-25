@@ -39,9 +39,6 @@ class TreeItem {
 	private $reading_children = false;
 
 	public function __construct($server_id,$dn) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->server_id = $server_id;
 		$this->dn = $dn;
 	}
@@ -52,9 +49,6 @@ class TreeItem {
 	 * @return DN The DN of this item.
 	 */
 	public function getDN() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->dn);
-
 		return $this->dn;
 	}
 
@@ -68,9 +62,6 @@ class TreeItem {
 	 * @return RDN The RDN of this items DN.
 	 */
 	public function getRDN() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return get_rdn($this->getDn(),0,true);
 	}
 
@@ -78,9 +69,6 @@ class TreeItem {
 	 * Set this item as a LDAP base DN item.
 	 */
 	public function setBase() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->base_entry = true;
 	}
 
@@ -88,30 +76,18 @@ class TreeItem {
 	 * Return if this item is a base DN item.
 	 */
 	public function isBaseDN() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->base_entry);
-
 		return $this->base_entry;
 	}
 
 	public function setObjectClasses($oc) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->objectclasses = $oc;
 	}
 
 	public function getObjectClasses() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->objectclasses);
-
 		return $this->objectclasses;
 	}
 
 	public function isInLDAP() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return count($this->objectclasses) ? true : false;
 	}
 
@@ -120,9 +96,6 @@ class TreeItem {
 	 * or an array of the dn of the children
 	 */
 	public function getChildren() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->children);
-
 		if ($this->childsort && ! $this->reading_children) {
 			usort($this->children,'pla_compare_dns');
 			$this->childsort = false;
@@ -139,9 +112,6 @@ class TreeItem {
 	 * Do the children require resorting
 	 */
 	public function isChildSorted() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->childsort);
-
 		return $this->childsort;
 	}
 
@@ -149,9 +119,6 @@ class TreeItem {
 	 * Mark the children as sorted
 	 */
 	public function childSorted() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->childsort = false;
 	}
 
@@ -161,9 +128,6 @@ class TreeItem {
 	 * @param DN The DN to add.
 	 */
 	public function addChild($dn) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if (in_array($dn,$this->children))
 			return;
 
@@ -177,9 +141,6 @@ class TreeItem {
 	 * @param DN The DN to add.
 	 */
 	public function delChild($dn) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if ($this->children) {
 			# If the parent hasnt been opened in the tree, then there wont be any children.
 			$index = array_search($dn,$this->children);
@@ -195,9 +156,6 @@ class TreeItem {
 	 * @param DN The DN to rename to.
 	 */
 	public function rename($dn) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->dn = $dn;
 	}
 
@@ -205,9 +163,6 @@ class TreeItem {
 	 * Return if this item has been opened.
 	 */
 	public function isOpened() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->open);
-
 		return $this->open;
 	}
 
@@ -215,9 +170,6 @@ class TreeItem {
 	 * Mark this node as closed.
 	 */
 	public function close() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->open = false;
 	}
 
@@ -225,9 +177,6 @@ class TreeItem {
 	 * Opens the node ; the children of the node must have been defined
 	 */
 	public function open() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->open = true;
 	}
 
@@ -235,9 +184,6 @@ class TreeItem {
 	 * Mark this node as a leaf.
 	 */
 	public function setLeaf() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->leaf = true;
 	}
 
@@ -245,9 +191,6 @@ class TreeItem {
 	 * Return if this node is a leaf.
 	 */
 	public function isLeaf() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->leaf);
-
 		return $this->leaf;
 	}
 
@@ -256,9 +199,6 @@ class TreeItem {
 	 * If the icon hasnt been set, it will call get_icon()
 	 */
 	public function getIcon() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->icon);
-
 		if (! $this->icon)
 			$this->icon = get_icon($this->server_id,$this->dn,$this->objectclasses);
 
@@ -269,9 +209,6 @@ class TreeItem {
 	 * Mark this node as a size limited (it wont have all its children).
 	 */
 	public function setSizeLimited() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->size_limited = true;
 	}
 
@@ -279,9 +216,6 @@ class TreeItem {
 	 * Clear the size limited flag.
 	 */
 	public function unsetSizeLimited() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->size_limited = false;
 	}
 
@@ -289,23 +223,14 @@ class TreeItem {
 	 * Return if this node has hit an LDAP size limit (and thus doesnt have all its children).
 	 */
 	public function isSizeLimited() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return $this->size_limited;
 	}
 
 	public function setTemplate($template) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->template = $template;
 	}
 
 	public function getTemplate() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',33,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return $this->template;
 	}
 }

@@ -18,13 +18,6 @@ class QueryRender extends PageRender {
 	 * Intialise and Render the QueryRender
 	 */
 	public function accept() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-		if (DEBUGTMP||DEBUGTMPSUB) printf('<font size=-2>* %s [GETquery:%s]</font><br />',__METHOD__,get_request('query','REQUEST'));
-		if (DEBUGTMP||DEBUGTMPSUB) printf('<font size=-2>* %s [Page:%s]</font><br />',__METHOD__,get_request('page','REQUEST'));
-
 		$this->template_id = $this->getTemplateChoice();
 		$this->page = get_request('page','REQUEST',false,1);
 
@@ -46,9 +39,6 @@ class QueryRender extends PageRender {
 	 * Get our templates applicable for this object
 	 */
 	protected function getTemplates() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return new Queries($this->server_id);
 	}
 
@@ -56,9 +46,6 @@ class QueryRender extends PageRender {
 	 * Are default queries enabled?
 	 */
 	protected function haveDefaultTemplate() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$server = $this->getServer();
 
 		if ($server->getValue('query','disable_default'))
@@ -68,8 +55,6 @@ class QueryRender extends PageRender {
 	}
 
 	protected function drawTemplateChoice() {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$server = $this->getServer();
 
 		$this->drawTitle(_('Search'));
@@ -184,18 +169,12 @@ class QueryRender extends PageRender {
 	}
 
 	private function visitStart() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->drawTitle(_('Search Results'));
 		$this->drawSubTitle();
 		echo '<br/>';
 	}
 
 	private function visitEnd() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$server = $this->getServer();
 		$afattrs = $this->getAFAttrs();
 
@@ -413,9 +392,6 @@ class QueryRender extends PageRender {
 	}
 
 	private function getAFattrs() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$attribute_factory = new AttributeFactory();
 		$results = array();
 
@@ -426,9 +402,6 @@ class QueryRender extends PageRender {
 	}
 
 	private function getAjaxRef($dn) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return preg_replace('/=/','.',base64_encode($dn));
 	}
 
