@@ -888,9 +888,6 @@ function masort(&$data,$sortby,$rev=0) {
 	# if the array to sort is null or empty
 	if (! $data) return;
 
-	static $CACHE = array();
-
-	if (empty($CACHE[$sortby])) {
 		$code = "\$c=0;\n";
 
 		foreach (explode(',',$sortby) as $key) {
@@ -962,10 +959,7 @@ function masort(&$data,$sortby,$rev=0) {
 
 		$code .= 'return $c;';
 
-		$CACHE[$sortby] = create_function('$a, $b',$code);
-	}
-
-	uasort($data,$CACHE[$sortby]);
+	uasort($data, create_function('$a, $b',$code));
 }
 
 /**
