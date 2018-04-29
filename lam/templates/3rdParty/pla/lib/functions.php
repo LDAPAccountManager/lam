@@ -876,90 +876,99 @@ function get_custom_file($index,$filename,$path) {
 	return $return;
 }
 
+$masortSortBy = array();
+
 /**
  * Sort a multi dimensional array.
  *
  * @param array Multi demension array passed by reference
  * @param string Comma delimited string of sort keys.
  * @param boolean Whether to reverse sort.
- * @return array Sorted multi demension array.
  */
-function masort(&$data,$sortby,$rev=0) {
-	# if the array to sort is null or empty
-	if (! $data) return;
+function masort(&$data,$sortby,$rev=false) {
+	global $masortSortBy;
+	$masortSortBy = explode(',', $sortby);
+	foreach ($masortSortBy as $index => $value) {
+		if (!preg_match('/^[a-zA-z0-9_]+$/', $value)) {
+			unset($masortSortBy[$index]);
+		}
+	}
+	$masortSortBy = array_values($masortSortBy);
+	uasort($data, 'masortCallback');
+	if ($rev) {
+		$data = array_reverse($data, true);
+	}
+}
 
-		$code = "\$c=0;\n";
-
-		foreach (explode(',',$sortby) as $key) {
-			if (!preg_match('/^[a-zA-z0-9_]+$/', $key)) {
-				return;
+/**
+ * Callback to sort for masort().
+ *
+ * @param array|object $a first parameter
+ * @param array|object $b second parameter
+ * @return int comparison result
+ */
+function masortCallback($a, $b) {
+	global $masortSortBy;
+	foreach ($masortSortBy as $key) {
+		if (is_object($a)) {
+			if (is_array($a->$key)) {
+				asort($a->$key);
+				$aa = array_shift($a->$key);
 			}
-			$code .= "if (is_object(\$a) || is_object(\$b)) {\n";
-
-			$code .= "	if (is_array(\$a->$key)) {\n";
-			$code .= "		asort(\$a->$key);\n";
-			$code .= "		\$aa = array_shift(\$a->$key);\n";
-			$code .= "	} else\n";
-			$code .= "		\$aa = \$a->$key;\n";
-
-			$code .= "	if (is_array(\$b->$key)) {\n";
-			$code .= "		asort(\$b->$key);\n";
-			$code .= "		\$bb = array_shift(\$b->$key);\n";
-			$code .= "	} else\n";
-			$code .= "		\$bb = \$b->$key;\n";
-
-			$code .= "	if (\$aa != \$bb)";
-			if ($rev)
-				$code .= "	return (\$aa < \$bb ? 1 : -1);\n";
-			else
-				$code .= "	return (\$aa > \$bb ? 1 : -1);\n";
-
-			$code .= "} else {\n";
-
-			$code .= "	\$a = array_change_key_case(\$a);\n";
-			$code .= "	\$b = array_change_key_case(\$b);\n";
-
+			else {
+				$aa = $a->$key;
+			}
+			if (is_array($b->$key)) {
+				asort($b->$key);
+				$bb = array_shift($b->$key);
+			}
+			else {
+				$bb = $b->$key;
+			}
+			if ($aa != $bb) {
+				return ($aa > $bb ? 1 : -1);
+			}
+		}
+		else {
+			$a = array_change_key_case($a);
+			$b = array_change_key_case($b);
 			$key = strtolower($key);
 
-			$code .= "	if ((! isset(\$a['$key'])) && isset(\$b['$key'])) return 1;\n";
-			$code .= "	if (isset(\$a['$key']) && (! isset(\$b['$key']))) return -1;\n";
+			if ((! isset($a[$key])) && isset($b[$key])) {
+				return 1;
+			}
+			if (isset($a[$key]) && (! isset($b[$key]))) {
+				return -1;
+			}
+			if ((isset($a[$key])) && (isset($b[$key]))) {
+				if (is_array($a[$key])) {
+					asort($a[$key]);
+					$aa = array_shift($a[$key]);
+				}
+				else {
+					$aa = $a[$key];
+				}
+				if (is_array($b[$key])) {
+					asort($b[$key]);
+					$bb = array_shift($b[$key]);
+				}
+				else {
+					$bb = $b[$key];
+				}
 
-			$code .= "	if ((isset(\$a['$key'])) && (isset(\$b['$key']))) {\n";
-			$code .= "		if (is_array(\$a['$key'])) {\n";
-			$code .= "			asort(\$a['$key']);\n";
-			$code .= "			\$aa = array_shift(\$a['$key']);\n";
-			$code .= "		} else\n";
-			$code .= "			\$aa = \$a['$key'];\n";
-
-			$code .= "		if (is_array(\$b['$key'])) {\n";
-			$code .= "			asort(\$b['$key']);\n";
-			$code .= "			\$bb = array_shift(\$b['$key']);\n";
-			$code .= "		} else\n";
-			$code .= "			\$bb = \$b['$key'];\n";
-
-			$code .= "		if (\$aa != \$bb)\n";
-			$code .= "			if (is_numeric(\$aa) && is_numeric(\$bb)) {\n";
-
-			if ($rev)
-				$code .= "				return (\$aa < \$bb ? 1 : -1);\n";
-			else
-				$code .= "				return (\$aa > \$bb ? 1 : -1);\n";
-
-			$code .= "			} else {\n";
-
-			if ($rev)
-				$code .= "				if ( (\$c = strcasecmp(\$bb,\$aa)) != 0 ) return \$c;\n";
-			else
-				$code .= "				if ( (\$c = strcasecmp(\$aa,\$bb)) != 0 ) return \$c;\n";
-
-			$code .= "		}\n";
-			$code .= "	}\n";
-			$code .= "}\n";
+				if ($aa != $bb) {
+					if (is_numeric($aa) && is_numeric($bb)) {
+						return ($aa > $bb ? 1 : -1);
+					}
+					else {
+						if (($c = strcasecmp($aa,$bb)) != 0 ) {
+							return $c;
+						}
+					}
+				}
+			}
 		}
-
-		$code .= 'return $c;';
-
-	uasort($data, create_function('$a, $b',$code));
+	}
 }
 
 /**

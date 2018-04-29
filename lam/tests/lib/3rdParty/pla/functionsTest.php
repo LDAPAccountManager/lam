@@ -132,6 +132,26 @@ class PlaFunctionsTest extends PHPUnit_Framework_TestCase {
 		$this->compareArray($dataWanted, $data);
 	}
 
+	public function test_masortObjectMultiSort() {
+		$data = array(
+			'a' => (object) ['key1' => '1'],
+			'b' => (object) ['key1' => '5', 'key2' => 3],
+			'c' => (object) ['key1' => '2'],
+			'd' => (object) ['key1' => '5', 'key2' => 1],
+		);
+
+		masort($data, 'key1,key2', 0);
+
+		$dataWanted = array(
+			'a' => (object) ['key1' => '1'],
+			'c' => (object) ['key1' => '2'],
+			'd' => (object) ['key1' => '5', 'key2' => 1],
+			'b' => (object) ['key1' => '5', 'key2' => 3],
+		);
+
+		$this->compareArray($dataWanted, $data);
+	}
+
 	private function compareArray($dataWanted, $dataNew) {
 		$this->assertEquals(sizeof($dataWanted), sizeof($dataNew));
 		$keysWanted = array_keys($dataWanted);
