@@ -2240,9 +2240,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 				// passwords ( = host name)
 				$partialAccounts[$i]['sambaPwdLastSet'] = time();
 				if (isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) && ($this->moduleSettings['sambaSamAccount_lmHash'][0] == 'no')) {
-					$partialAccounts[$i]['sambaLMPassword'] = lmPassword(substr($partialAccounts[$i]['uid'], 0, sizeof($partialAccounts[$i]['uid']) - 1));
+					$partialAccounts[$i]['sambaLMPassword'] = lmPassword(substr($partialAccounts[$i]['uid'], 0, strlen($partialAccounts[$i]['uid']) - 1));
 				}
-				$partialAccounts[$i]['sambaNTPassword'] = ntPassword(substr($partialAccounts[$i]['uid'], 0, sizeof($partialAccounts[$i]['uid']) - 1));
+				$partialAccounts[$i]['sambaNTPassword'] = ntPassword(substr($partialAccounts[$i]['uid'], 0, strlen($partialAccounts[$i]['uid']) - 1));
 				// flags
 				$partialAccounts[$i]['sambaAcctFlags'] = "[W          ]";
 			}
