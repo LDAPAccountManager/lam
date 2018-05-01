@@ -157,6 +157,7 @@ class PlaFunctionsTest extends PHPUnit_Framework_TestCase {
 		$keysWanted = array_keys($dataWanted);
 		$keysNew = array_keys($dataNew);
 		foreach ($keysWanted as $index => $key) {
+			$this->assertEquals($keysWanted[$index], $keysNew[$index]);
 			if (is_array($dataWanted[$key])) {
 				$this->compareArray($dataWanted[$key], $dataNew[$keysNew[$index]]);
 			}
