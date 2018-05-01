@@ -1,9 +1,11 @@
-June 2018
+June 2018 6.4
   - Passwords can be checked against external service (e.g. https://api.pwnedpasswords.com/range)
   - IMAP: create mailbox via file upload
   - PHP 7.2 support
   - LAM Pro:
    -> Better support for 389ds password expiration
+  - Fixed bugs:
+   -> Error on password reset page when custom fields is used (194)
 
 19.03.2018 6.3
   - Server profile: added option if referential integrity overlay is active to skip cleanup actions
