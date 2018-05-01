@@ -281,7 +281,7 @@ class ldapPublicKey extends baseModule {
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
-		if (sizeof($this->attributes['sshPublicKey']) > 0) {
+		if (!empty($this->attributes['sshPublicKey'])) {
 			$pdfTable = new PDFTable(_('SSH public keys'));
 			for ($i = 0; $i < sizeof($this->attributes['sshPublicKey']); $i++) {
 				$pdfRow = new PDFTableRow();
