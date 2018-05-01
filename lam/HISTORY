@@ -1,6 +1,7 @@
 June 2018
   - Passwords can be checked against external service (e.g. https://api.pwnedpasswords.com/range)
   - IMAP: create mailbox via file upload
+  - PHP 7.2 support
   - LAM Pro:
    -> Better support for 389ds password expiration
 
