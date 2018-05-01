@@ -1,9 +1,8 @@
 <?php
 /*
- $Id$
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2016  Roland Gruber
+ Copyright (C) 2016 - 2018  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -45,6 +44,7 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 		const ONE_YEAR_POLICY = 'cn=policy1,dc=test';
 
 		private $options = array();
+		private $resultLog = null;
 
 		public function setUp() {
 			$this->job = $this->getMockBuilder('PPolicyPasswordNotifyJob')
@@ -60,6 +60,8 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 			));
 			$this->options['test_mailNotificationPeriod' . PPolicyUserPasswordNotifyJobTest::JOB_ID][0] = PPolicyUserPasswordNotifyJobTest::WARNING;
 			$this->options['test_mailDefaultPolicy' . PPolicyUserPasswordNotifyJobTest::JOB_ID][0] = PPolicyUserPasswordNotifyJobTest::DEFAULT_POLICY;
+			$this->resultLog = new \LAM\JOB\JobResultLog();
+			$this->assertFalse($this->resultLog->hasError());
 		}
 
 		public function testNoAccounts() {
@@ -69,7 +71,8 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 			$this->job->expects($this->never())->method('sendMail');
 
 			$pdo = array();
-			$this->job->execute(PPolicyUserPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false);
+			$this->job->execute(PPolicyUserPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
 		}
 
 		public function testAccountDoesNotExpire() {
@@ -83,7 +86,8 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 			$this->job->expects($this->never())->method('sendMail');
 
 			$pdo = array();
-			$this->job->execute(PPolicyUserPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false);
+			$this->job->execute(PPolicyUserPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
 		}
 
 		public function testAccountLocked() {
@@ -98,7 +102,8 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 			$this->job->expects($this->never())->method('sendMail');
 
 			$pdo = array();
-			$this->job->execute(PPolicyUserPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false);
+			$this->job->execute(PPolicyUserPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
 		}
 
 		public function testAccountExpired() {
@@ -112,7 +117,8 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 			$this->job->expects($this->never())->method('sendMail');
 
 			$pdo = array();
-			$this->job->execute(PPolicyUserPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false);
+			$this->job->execute(PPolicyUserPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
 		}
 
 		public function testWarningNotReached() {
@@ -130,7 +136,8 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 			$this->job->expects($this->never())->method('sendMail');
 
 			$pdo = array();
-			$this->job->execute(PPolicyUserPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false);
+			$this->job->execute(PPolicyUserPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
 		}
 
 		public function testAlreadyWarned() {
@@ -149,7 +156,8 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 			$this->job->expects($this->never())->method('sendMail');
 
 			$pdo = array();
-			$this->job->execute(PPolicyUserPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false);
+			$this->job->execute(PPolicyUserPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
 		}
 
 		public function testWarning() {
@@ -168,7 +176,8 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 			$this->job->expects($this->once())->method('sendMail');
 
 			$pdo = array();
-			$this->job->execute(PPolicyUserPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false);
+			$this->job->execute(PPolicyUserPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
 		}
 
 		public function testWarningDryRun() {
@@ -187,7 +196,8 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 			$this->job->expects($this->never())->method('sendMail');
 
 			$pdo = array();
-			$this->job->execute(PPolicyUserPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, true);
+			$this->job->execute(PPolicyUserPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, true, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
 		}
 
 		public function testGetWarningTimeInSeconds() {

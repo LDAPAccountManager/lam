@@ -22,12 +22,6 @@ class TemplateRender extends PageRender {
 	 * Initialise and Render the TemplateRender
 	 */
 	public function accept($norender=false) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s:%s</font><br />',time(),__METHOD__);
-		if (DEBUGTMP||DEBUGTMPSUB) printf('<font size=-2>* %s [Visit-Start:%s]</font><br />',__METHOD__,get_class($this));
-
 		$tree = get_cached_item($this->server_id,'tree');
 		if (! $tree)
 			$tree = Tree::getInstance($this->server_id);
@@ -79,16 +73,11 @@ class TemplateRender extends PageRender {
 					$attribute->show();
 			}
 
-			if (DEBUGTMP||DEBUGTMPSUB) printf('<font size=-2>* %s [Visit-End:%s]</font><br />',__METHOD__,get_class($this));
-
 			$this->visitEnd();
 		}
 	}
 
 	protected function getDefaultAttribute($attribute,$container,$type) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		switch ($type) {
 			case 'autovalue':
 				$autovalue = $attribute->getAutoValue();
@@ -432,9 +421,6 @@ class TemplateRender extends PageRender {
 	 * Applicable modes are "create" or "edit"
 	 */
 	protected function getMode() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if ($this->dn)
 			return 'modification';
 		elseif ($this->container)
@@ -449,9 +435,6 @@ class TemplateRender extends PageRender {
 	 * Return the container for this mode
 	 */
 	protected function getModeContainer() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		switch ($this->getMode()) {
 			case 'creation':
 				return $this->container;
@@ -470,9 +453,6 @@ class TemplateRender extends PageRender {
 	 * Is the default template enabled?
 	 */
 	protected function haveDefaultTemplate() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if ($_SESSION[APPCONFIG]->getValue('appearance','disable_default_template'))
 			return false;
 		else
@@ -483,8 +463,6 @@ class TemplateRender extends PageRender {
 	 * Present a list of available templates for creating and editing LDAP entries
 	 */
 	protected function drawTemplateChoice() {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$this->drawTitle();
 		$this->drawSubTitle();
 		echo "\n";
@@ -607,11 +585,6 @@ class TemplateRender extends PageRender {
 	 * so that it can be rendered.
 	 */
 	private function visitStart() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		# If we have a DN, then we are an editing template
 		if ($this->dn)
 			$this->template->setDN($this->dn);
@@ -628,11 +601,6 @@ class TemplateRender extends PageRender {
 	}
 
 	private function visitEnd() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		foreach ($this->template->getAttributesShown() as $attribute)
 			if ($attribute->getPage() > $this->pagelast)
 				$this->pagelast = $attribute->getPage();
@@ -675,8 +643,6 @@ class TemplateRender extends PageRender {
 	/** PAGE DRAWING METHODS **/
 
 	private function drawHeader() {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		# Title
 		$this->drawTitle();
 		if (get_request('create_base'))
@@ -690,8 +656,6 @@ class TemplateRender extends PageRender {
 	}
 
 	public function drawTitle($title=null) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		if (is_null($title))
 			switch ($this->getMode()) {
 				case 'creation':
@@ -710,8 +674,6 @@ class TemplateRender extends PageRender {
 	}
 
 	public function drawSubTitle($subtitle=null) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		if ($subtitle)
 			return parent::drawSubTitle($subtitle);
 
@@ -742,8 +704,6 @@ class TemplateRender extends PageRender {
 	/** PAGE ENTRY MENU **/
 
 	private function drawMenu() {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		# We only have a menu for editing entries.
 		if ($this->template->getContext() == 'edit') {
 
@@ -834,11 +794,6 @@ class TemplateRender extends PageRender {
 	/** PAGE ENTRY MENU ITEMS **/
 
 	private function getMenuItem($i) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s (%s)</font><br />',__METHOD__,$i);
-
 		switch ($i) {
 			case 'entryrefresh':
 				if ($_SESSION[APPCONFIG]->isCommandAvailable('cmd','entry_refresh'))
@@ -996,11 +951,6 @@ class TemplateRender extends PageRender {
 	}
 
 	protected function getDeleteAttributeMessage() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		if ($_SESSION[APPCONFIG]->isCommandAvailable('script','delete_attr') && ! $this->template->isReadOnly())
 			return sprintf($this->layout['hint'],_('Hint: To delete an attribute, empty the text field and click save.'));
 		else
@@ -1008,11 +958,6 @@ class TemplateRender extends PageRender {
 	}
 
 	protected function getModifiedAttributesMessage(&$modified_attributes) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		return sprintf($this->layout['hint'],
 			(count($modified_attributes) == 1) ?
 			sprintf(_('An attribute (%s) was modified and is highlighted below.'),implode('',$modified_attributes)) :
@@ -1020,31 +965,16 @@ class TemplateRender extends PageRender {
 	}
 
 	protected function getReadOnlyMessage() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		return sprintf($this->layout['hint'],_('Viewing entry in read-only mode.'));
 	}
 
 	protected function getViewSchemaMessage() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		return sprintf($this->layout['hint'],('Hint: To view the schema for an attribute, click the attribute name.'));
 	}
 
 	/** PAGE ENTRY MENU ITEMS DETAILS **/
 
 	private function getMenuItemRefresh() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$href = sprintf('cmd=template_engine&%s&junk=%s',$this->url_base,random_junk());
 
 		if (isAjaxEnabled())
@@ -1056,9 +986,6 @@ class TemplateRender extends PageRender {
 	}
 
 	protected function getMenuItemSwitchTemplate() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$href = sprintf('cmd=template_engine&%s&template=',$this->url_base);
 
 		if (isAjaxEnabled())
@@ -1070,11 +997,6 @@ class TemplateRender extends PageRender {
 	}
 
 	protected function getMenuItemExportBase() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$href = sprintf('cmd=export_form&%s&scope=base',$this->url_base);
 
 		if (isAjaxEnabled())
@@ -1086,11 +1008,6 @@ class TemplateRender extends PageRender {
 	}
 
 	private function getMenuItemMove() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$href = sprintf('cmd=copy_form&%s',$this->url_base);
 
 		if (isAjaxEnabled())
@@ -1104,11 +1021,6 @@ class TemplateRender extends PageRender {
 	}
 
 	protected function getMenuItemInternalAttributes() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		if (get_request('show_internal_attrs','REQUEST')) {
 			$href = sprintf('cmd=template_engine&%s&junk=',$this->url_base,random_junk());
 
@@ -1124,11 +1036,6 @@ class TemplateRender extends PageRender {
 	}
 
 	private function getMenuItemDelete() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$href = sprintf('cmd=delete_form&%s',$this->url_base);
 
 		if (isAjaxEnabled())
@@ -1141,11 +1048,6 @@ class TemplateRender extends PageRender {
 	}
 
 	protected function getMenuItemRename() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$href = sprintf('cmd=rename_form&%s&template=%s',$this->url_base,$this->template->getID());
 
 		if (isAjaxEnabled())
@@ -1157,11 +1059,6 @@ class TemplateRender extends PageRender {
 	}
 
 	protected function getMenuItemCompare() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$href = sprintf('cmd=compare_form&%s',$this->url_base);
 
 		if (isAjaxEnabled())
@@ -1174,11 +1071,6 @@ class TemplateRender extends PageRender {
 	}
 
 	protected function getMenuItemCreate() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$href = sprintf('cmd=template_engine&server_id=%s&container=%s',$this->getServerID(),$this->template->getDNEncode());
 
 		if (isAjaxEnabled())
@@ -1191,11 +1083,6 @@ class TemplateRender extends PageRender {
 	}
 
 	protected function getMenuItemAddAttribute() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		if (! $this->template->getAvailAttrs())
 			return '';
 
@@ -1212,11 +1099,6 @@ class TemplateRender extends PageRender {
 	}
 
 	protected function getMenuItemShowChildren($children_count) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$href = sprintf('cmd=query_engine&server_id=%s&filter=%s&base=%s&scope=one&query=none&size_limit=0&search=true',
 			$this->getServerID(),rawurlencode('objectClass=*'),$this->template->getDNEncode());
 
@@ -1232,11 +1114,6 @@ class TemplateRender extends PageRender {
 	}
 
 	protected function getMenuItemExportSub() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$href = sprintf('cmd=export_form&%s&scope=%s',$this->url_base,'sub');
 
 		if (isAjaxEnabled())
@@ -1254,8 +1131,6 @@ class TemplateRender extends PageRender {
 	 * RDN Chooser
 	 */
 	protected function drawRDNChooser() {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		if (! count($this->template->getRDNAttrs())) {
 			printf('<tr><th colspan="2">%s</th></tr>','RDN');
 
@@ -1295,8 +1170,6 @@ class TemplateRender extends PageRender {
 	 * Container Chooser
 	 */
 	protected function drawContainerChooser($default_container) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		echo '<tr>';
 		printf('<td class="heading">%s</td>',_('Container'));
 		echo '<td>';
@@ -1314,8 +1187,6 @@ class TemplateRender extends PageRender {
 	 * Object Class Chooser
 	 */
 	protected function drawObjectClassChooser() {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$socs = $this->getServer()->SchemaObjectClasses();
 		if (! $socs)
 			$socs = array();
@@ -1357,8 +1228,6 @@ class TemplateRender extends PageRender {
 	}
 
 	protected function drawInternalAttribute($attribute) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$this->draw('Template',$attribute);
 	}
 
@@ -1376,8 +1245,6 @@ class TemplateRender extends PageRender {
 	}
 
 	protected function drawForm($nosubmit=false) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		echo '<div>';
 		printf('<input type="hidden" name="server_id" value="%s" />',$this->getServerID());
 		printf('<input type="hidden" name="dn" value="%s" />',$this->template->getDNEncode(false));
@@ -1398,8 +1265,6 @@ class TemplateRender extends PageRender {
 	}
 
 	public function drawFormEnd() {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		# Include the RDN details to support creating the base
 		if (get_request('create_base')) {
 			if (get_request('rdn')) {
@@ -1415,25 +1280,9 @@ class TemplateRender extends PageRender {
 
 		# Javascript
 		$this->drawJavascript();
-
-		# For debugging, show the template object.
-		if (! $_SESSION[APPCONFIG]->getValue('appearance','hide_debug_info') && get_request('debug','GET')) {
-			echo "\n\n";
-			printf('<img src="%s/plus.png" alt="Plus" onclick="if (document.getElementById(\'DEBUGtemplate\').style.display == \'none\') { document.getElementById(\'DEBUGtemplate\').style.display = \'block\' } else { document.getElementById(\'DEBUGtemplate\').style.display = \'none\' };"/>',IMGDIR);
-			echo '<div id="DEBUGtemplate" style="display: none">';
-			echo '<fieldset>';
-			printf('<legend>DEBUG: %s</legend>',$this->template->getDescription());
-			echo '<textarea cols="120" rows="20">';
-			debug_dump($this);
-			echo '</textarea>';
-			echo '</fieldset>';
-			echo '</div>';
-		}
 	}
 
 	public function drawFormSubmitButton() {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		if (! $this->template->isReadOnly())
 			// @todo cant use AJAX here, it affects file uploads.
 			printf('<tr><td colspan="2" style="text-align: center;"><input type="submit" id="create_button" name="submit" value="%s" /></td></tr>',
@@ -1443,9 +1292,6 @@ class TemplateRender extends PageRender {
 	/** STEP FORM METHODS **/
 
 	private function drawStepTitle($page) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-		if (DEBUGTMP||DEBUGTMPSUB) printf('<font size=-2>* %s [templateNAME:%s]</font><br />',__METHOD__,$this->template->getName());
-
 		# The default template needs to ask the user for objectClasses.
 		if ($this->template->isType('default')) {
 			# The default template only uses 2 pages
@@ -1468,8 +1314,6 @@ class TemplateRender extends PageRender {
 	}
 
 	private function drawStepFormStart($page) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		if (($this->template->isType('default') && $this->template->getContext() == 'create' && $page == 1) || $page < $this->pagelast) {
 			echo '<form action="cmd.php?cmd=template_engine" method="post" enctype="multipart/form-data" id="entry_form" onsubmit="return submitForm(this)">';
 			echo '<div>';
@@ -1486,8 +1330,6 @@ class TemplateRender extends PageRender {
 	}
 
 	protected function drawStepForm($page) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		printf('<input type="hidden" name="server_id" value="%s" />',$this->getServerID());
 		printf('<input type="hidden" name="template" value="%s" />',$this->template->getID());
 		printf('<input type="hidden" name="page" value="%s" />',$page+1);
@@ -1524,14 +1366,10 @@ class TemplateRender extends PageRender {
 	}
 
 	private function drawStepFormEnd() {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$this->drawFormEnd();
 	}
 
 	private function drawStepFormSubmitButton($page) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		echo '<tr>';
 		if ($page < $this->pagelast)
 			printf('<td>&nbsp;</td><td><input type="submit" id="create_button" value="%s &gt;&gt;" /></td>',_('Proceed'));
@@ -1546,8 +1384,6 @@ class TemplateRender extends PageRender {
 	 * Given our known objectClass in the template, this will render the required MAY and optional MUST attributes
 	 */
 	private function drawStepFormDefaultAttributes() {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		# Put required attributes first
 		$attrs = array();
 		$attrs['required'] = array();
@@ -1586,8 +1422,6 @@ class TemplateRender extends PageRender {
 	/** DRAW ATTRIBUTES **/
 
 	private function drawShownAttributes() {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		foreach ($this->template->getAttributesShown() as $attribute)
 			if (($attribute->getPage() == $this->page) && ($attribute->isRequired() || $attribute->isMay())) {
 				$this->draw('Template',$attribute);
@@ -1598,8 +1432,6 @@ class TemplateRender extends PageRender {
 	/** DRAW PAGE JAVACRIPT */
 
 	protected function drawJavascript() {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		echo "\n";
 		printf('<!-- START: %s -->',__METHOD__);
 		echo "\n";
@@ -1751,8 +1583,6 @@ function fillRec(id,value) {
 	/** ATTRIBUTE TITLE **/
 
 	protected function drawTitleAttribute($attribute) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		if (($this->template->getContext() == 'edit')
 			&& ($attribute->hasBeenModified() || in_array($attribute->getName(),get_request('modified_attrs','REQUEST',false,array()))))
 			echo '<tr class="updated">';
@@ -1776,8 +1606,6 @@ function fillRec(id,value) {
 	/** ATTRIBUTE LINE **/
 
 	protected function drawStartValueLineAttribute($attribute) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		if (($this->template->getContext() == 'edit')
 			&& ($attribute->hasBeenModified() || in_array($attribute->getName(),get_request('modified_attrs','REQUEST',false,array()))))
 			echo '<tr class="updated">';
@@ -1788,8 +1616,6 @@ function fillRec(id,value) {
 	}
 
 	protected function drawEndValueLineAttribute($attribute) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		echo '</td>';
 		echo '</tr>';
 
@@ -1802,15 +1628,11 @@ function fillRec(id,value) {
 	}
 
 	protected function drawTemplateAttribute($attribute) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$this->draw('Title',$attribute);
 		$this->draw('TemplateValues',$attribute);
 	}
 
 	protected function drawTemplateValuesAttribute($attribute) {
-		if (DEBUGTMP) printf('<font size=-2>%s:%s</font><br />',time(),__METHOD__);
-
 		$this->draw('StartValueLine',$attribute);
 
 		# Draws values
@@ -1839,8 +1661,6 @@ function fillRec(id,value) {
 	/** DRAW ICONS FOR ATTRIBUTES VALUES **/
 
 	protected function drawIconAttribute($attribute,$val) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		if (is_dn_string($val) || $this->getServer()->isDNAttr($attribute->getName()))
 			$this->draw('DnValueIcon',$attribute,$val);
 		elseif (is_mail_string($val))
@@ -1855,8 +1675,6 @@ function fillRec(id,value) {
 	}
 
 	protected function drawDnValueIconAttribute($attribute,$val) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		if (strlen($val) <= 0)
 			printf('<img src="%s/ldap-alias.png" alt="Go" style="float: right;" />&nbsp;',IMGDIR);
 		elseif ($this->getServer()->dnExists($val))
@@ -1867,8 +1685,6 @@ function fillRec(id,value) {
 	}
 
 	protected function drawMailValueIconAttribute($attribute,$val) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$img = sprintf('<img src="%s/mail.png" alt="%s" style="float: right;" />',IMGDIR,_('Email'));
 		if (strlen($val) <= 0)
 			echo $img;
@@ -1878,8 +1694,6 @@ function fillRec(id,value) {
 	}
 
 	protected function drawUrlValueIconAttribute($attribute,$val) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$img = sprintf('<img src="%s/ldap-dc.png" alt="%s" style="float: right;" />',IMGDIR,_('URL'));
 		$url = explode(' +',$val,2);
 
@@ -1948,20 +1762,10 @@ function fillRec(id,value) {
 	}
 
 	protected function getFocusJavascriptAttribute($attribute,$component) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		return '';
 	}
 
 	protected function getBlurJavascriptAttribute($attribute,$component) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$j = "\t".'fill('.$component.'.id,pla_getComponentValue('.$component.'));'."\n";
 		$j .= "\t".'validate_'.$attribute->getName().'('.$component.',false);'."\n";
 
@@ -1998,8 +1802,6 @@ function fillRec(id,value) {
 	/** ATTRIBUTE MENU **/
 
 	protected function drawMenuAttribute($attribute) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$result = '';
 		$item = '';
 
@@ -2017,11 +1819,6 @@ function fillRec(id,value) {
 	}
 
 	protected function getMenuItemAttribute($attribute,$action) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		# If there is no DN, then this is a creating entry.
 		if (($this->template->getContext() == 'create') || $this->template->isReadOnly())
 			return false;
@@ -2060,11 +1857,6 @@ function fillRec(id,value) {
 	}
 
 	protected function getAddValueMenuItemAttribute($attribute) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$href_parm = htmlspecialchars(sprintf('cmd=add_value_form&server_id=%s&dn=%s&attr=%s',
 			$this->getServerID(),$this->template->getDNEncode(),rawurlencode($attribute->getName(false))));
 
@@ -2078,11 +1870,6 @@ function fillRec(id,value) {
 	}
 
 	protected function getAddValueMenuItemObjectClassAttribute($attribute) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$href_parm = htmlspecialchars(sprintf('cmd=add_value_form&server_id=%s&dn=%s&attr=%s',
 			$this->getServerID(),$this->template->getDNEncode(),rawurlencode($attribute->getName(false))));
 
@@ -2096,11 +1883,6 @@ function fillRec(id,value) {
 	}
 
 	protected function getModifyMemberMenuItemAttribute($attribute) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$href = sprintf('cmd=modify_member_form&server_id=%s&dn=%s&attr=%s',
 			$this->getServerID(),$this->template->getDNEncode(),rawurlencode($attribute->getName()));
 
@@ -2115,11 +1897,6 @@ function fillRec(id,value) {
 	}
 
 	protected function getRenameMenuItemAttribute($attribute) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$href = sprintf('cmd.php?cmd=rename_form&server_id=%s&dn=%s&template=%s',
 			$this->getServerID(),$this->template->getDNEncode(),$this->template->getID());
 
@@ -2129,8 +1906,6 @@ function fillRec(id,value) {
 	/** values **/
 
 	protected function drawValueAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		if ($attribute->isMultiple() && $i > 0)
 			return;
 
@@ -2161,8 +1936,6 @@ function fillRec(id,value) {
 
 	# @todo for userPasswords, we need to capture the default value of select lists, without specifying <default>
 	protected function drawHelperAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$params = $attribute->getHelper();
 
 		# We take the first <id> only
@@ -2248,8 +2021,6 @@ function fillRec(id,value) {
 	}
 
 	protected function drawRequiredSymbolAttribute($attribute) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		if ($attribute->isRequired() && ! $attribute->isReadOnly())
 			echo '*';
 	}
@@ -2302,8 +2073,6 @@ function deleteAttribute(attrName,friendlyName,i)
 	/** DATE ATTRIBUTE RENDERING **/
 
 	protected function drawJavaScriptDateAttribute($attribute) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		printf('<!-- START: DATE ATTRIBUTE %s (%s)-->',__METHOD__,$attribute->getName());
 		echo "\n";
 
@@ -2352,8 +2121,6 @@ function deleteAttribute(attrName,friendlyName,i)
 	/** DN ATTRIBUTES **/
 
 	protected function drawIconDnAttribute($attribute,$val) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$this->draw('DnValueIcon',$attribute,$val);
 	}
 
@@ -2395,8 +2162,6 @@ function deleteAttribute(attrName,friendlyName,i)
 	}
 
 	protected function drawCheckLinkPasswordAttribute($attribute,$component_id) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		printf('<small><a href="javascript:passwordComparePopup(\'%s\',\'%s\')">%s...</a></small><br />',
 			$component_id,$attribute->getName(),_('Check password'));
 	}
@@ -2409,8 +2174,6 @@ function deleteAttribute(attrName,friendlyName,i)
 	 * @todo This function doesnt work well if there are more than 1 RandomPasswordAttributes on the form for the same attribute (unlikely situation)
 	 */
 	protected function drawJavascriptRandomPasswordAttribute($attribute) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		printf("\n<!-- START: %s -->\n",__METHOD__);
 		$this->drawJavascriptPasswordAttribute($attribute);
 
@@ -2484,18 +2247,11 @@ function deleteAttribute(attrName,friendlyName,i)
 	/** SELECTION ATTRIBUTE RENDERING **/
 
 	protected function drawIconSelectionAttribute($attribute,$val) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		if (! $attribute->isMultiple() || $attribute->isReadOnly())
 			$this->drawIconAttribute($attribute,$val);
 	}
 
 	protected function getMenuItemSelectionAttribute($attribute,$i) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		switch ($i) {
 			case 'add':
 				if (! $attribute->isMultiple())

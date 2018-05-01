@@ -1,9 +1,8 @@
 <?php
 /*
- $Id$
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2016 - 2017  Roland Gruber
+ Copyright (C) 2016 - 2018  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -131,6 +130,7 @@ if (is_readable('lam/lib/passwordExpirationJob.inc')) {
 		const WARNING = '14';
 
 		private $options = array();
+		private $resultLog = null;
 
 		public function setUp() {
 			$this->job = $this->getMockBuilder('ShadowAccountPasswordNotifyJob')
@@ -139,6 +139,7 @@ if (is_readable('lam/lib/passwordExpirationJob.inc')) {
 			$this->job->method('getConfigPrefix')->willReturn('test');
 			$this->job->method('sendMail')->willReturn(true);
 			$this->options['test_mailNotificationPeriod' . ShadowAccountPasswordNotifyJobTest::JOB_ID][0] = ShadowAccountPasswordNotifyJobTest::WARNING;
+			$this->resultLog = new \LAM\JOB\JobResultLog();
 		}
 
 		public function testNoAccounts() {
@@ -148,7 +149,8 @@ if (is_readable('lam/lib/passwordExpirationJob.inc')) {
 			$this->job->expects($this->never())->method('sendMail');
 
 			$pdo = array();
-			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false);
+			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
 		}
 
 		public function testAccountDoesNotExpire() {
@@ -162,7 +164,8 @@ if (is_readable('lam/lib/passwordExpirationJob.inc')) {
 			$this->job->expects($this->never())->method('sendMail');
 
 			$pdo = array();
-			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false);
+			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
 		}
 
 		public function testAccountExpired() {
@@ -176,7 +179,8 @@ if (is_readable('lam/lib/passwordExpirationJob.inc')) {
 			$this->job->expects($this->never())->method('sendMail');
 
 			$pdo = array();
-			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false);
+			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
 		}
 
 		public function testWarningNotReached() {
@@ -193,7 +197,8 @@ if (is_readable('lam/lib/passwordExpirationJob.inc')) {
 			$this->job->expects($this->never())->method('sendMail');
 
 			$pdo = array();
-			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false);
+			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
 		}
 
 		public function testAlreadyWarned() {
@@ -211,7 +216,8 @@ if (is_readable('lam/lib/passwordExpirationJob.inc')) {
 			$this->job->expects($this->never())->method('sendMail');
 
 			$pdo = array();
-			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false);
+			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
 		}
 
 		public function testWarning() {
@@ -229,7 +235,8 @@ if (is_readable('lam/lib/passwordExpirationJob.inc')) {
 			$this->job->expects($this->once())->method('sendMail');
 
 			$pdo = array();
-			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false);
+			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, false, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
 		}
 
 		public function testWarningDryRun() {
@@ -247,7 +254,8 @@ if (is_readable('lam/lib/passwordExpirationJob.inc')) {
 			$this->job->expects($this->never())->method('sendMail');
 
 			$pdo = array();
-			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, true);
+			$this->job->execute(ShadowAccountPasswordNotifyJobTest::JOB_ID, $this->options, $pdo, true, $this->resultLog);
+			$this->assertFalse($this->resultLog->hasError());
 		}
 
 	}

@@ -23,9 +23,6 @@ class myldap extends DS {
 	private $force_may = array();
 
 	public function __construct($index) {
-		if (defined('DEBUG_ENABLED') && DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->index = $index;
 		$this->type = 'ldap';
 
@@ -127,9 +124,6 @@ class myldap extends DS {
 	 * @return resource|null Connection resource if successful, null if not.
 	 */
 	protected function connect($method,$debug=false,$new=false) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		static $CACHE = array();
 
 		$method = $this->getMethod($method);
@@ -159,10 +153,6 @@ class myldap extends DS {
 		$CACHE[$this->index][$method] = null;
 
 		# No identifiable connection exists, lets create a new one.
-		if (DEBUG_ENABLED)
-			debug_log('Creating NEW connection [%s] for index [%s]',16,0,__FILE__,__LINE__,__METHOD__,
-				$method,$this->index);
-
 		if (function_exists('run_hook'))
 			run_hook('pre_connect',array('server_id'=>$this->index,'method'=>$method));
 
@@ -172,10 +162,6 @@ class myldap extends DS {
 			$resource = ldap_connect($this->getValue('server','host'));
 
 		$CACHE[$this->index][$method] = $resource;
-
-		if (DEBUG_ENABLED)
-			debug_log('LDAP Resource [%s], Host [%s], Port [%s]',16,0,__FILE__,__LINE__,__METHOD__,
-				$resource,$this->getValue('server','host'),$this->getValue('server','port'));
 
 		if (! is_resource($resource))
 			debug_dump_backtrace('UNHANDLED, $resource is not a resource',1);
@@ -205,13 +191,7 @@ class myldap extends DS {
 		if ($debug)
 			debug_dump(array('method'=>$method,'bind'=>$bind,'USER'=>$_SESSION['USER']));
 
-		if (DEBUG_ENABLED)
-			debug_log('Resource [%s], Bind Result [%s]',16,0,__FILE__,__LINE__,__METHOD__,$resource,$bind);
-
 		if (! $bind['result']) {
-			if (DEBUG_ENABLED)
-				debug_log('Leaving with FALSE, bind FAILed',16,0,__FILE__,__LINE__,__METHOD__);
-
 			$this->noconnect = true;
 
 			system_message(array(
@@ -247,9 +227,6 @@ class myldap extends DS {
 	 * @return boolean true|false for successful login.
 	 */
 	public function login($user=null,$pass=null,$method=null,$new=false) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$userDN = null;
 
 		# Get the userDN from the username.
@@ -311,9 +288,6 @@ class myldap extends DS {
 	 * @return array|null Results of query.
 	 */
 	public function query($query,$method,$index=null,$debug=false) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$attrs_only = 0;
 
 		# Defaults
@@ -354,9 +328,6 @@ class myldap extends DS {
 			return array();
 		}
 
-		if (DEBUG_ENABLED)
-			debug_log('%s search PREPARE.',16,0,__FILE__,__LINE__,__METHOD__,$query['scope']);
-
 		if ($debug)
 			debug_dump(array('query'=>$query,'server'=>$this->getIndex(),'con'=>$this->connect($method)));
 
@@ -379,10 +350,6 @@ class myldap extends DS {
 
 		if ($debug)
 			debug_dump(array('method'=>$method,'search'=>$search,'error'=>$this->getErrorMessage()));
-
-		if (DEBUG_ENABLED)
-			debug_log('Search scope [%s] base [%s] filter [%s] attrs [%s] COMPLETE (%s).',16,0,__FILE__,__LINE__,__METHOD__,
-				$query['scope'],$query['base'],$query['filter'],$query['attrs'],is_null($search));
 
 		if (! $search)
 			return array();
@@ -432,9 +399,6 @@ class myldap extends DS {
 				ksort($return[$key]);
 		}
 
-		if (DEBUG_ENABLED)
-			debug_log('Returning (%s)',17,0,__FILE__,__LINE__,__METHOD__,$return);
-
 		return $return;
 	}
 
@@ -444,9 +408,6 @@ class myldap extends DS {
 	 * @param string Which connection method resource to use
 	 */
 	public function getErrorMessage($method=null) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return ldap_error($this->connect($method));
 	}
 
@@ -456,9 +417,6 @@ class myldap extends DS {
 	 * @param string Which connection method resource to use
 	 */
 	public function getErrorNum($method=null) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return ldap_errno($this->connect($method));
 	}
 
@@ -471,9 +429,6 @@ class myldap extends DS {
 	 * @param string Which connection method resource to use
 	 */
 	public function getLoginID($user,$method=null) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$query['filter'] = sprintf('(&(%s=%s)%s)',
 			$this->getValue('login','attr'),$user,
 			$this->getLoginClass() ? sprintf('(objectclass=%s)',join(')(objectclass=',$this->getLoginClass())) : '');
@@ -504,9 +459,6 @@ class myldap extends DS {
 	 * If no login base DNs are defined, then the LDAP server Base DNs are used.
 	 */
 	private function getLoginBaseDN() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if ($this->getValue('login','base'))
 			return $this->getValue('login','base');
 		else
@@ -517,9 +469,6 @@ class myldap extends DS {
 	 * Return the login classes that a user must have to login
 	 */
 	private function getLoginClass() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return $this->getValue('login','class');
 	}
 
@@ -527,9 +476,6 @@ class myldap extends DS {
 	 * Return if anonymous bind is allowed in the configuration
 	 */
 	public function isAnonBindAllowed() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return $this->getValue('login','anon_bind');
 	}
 
@@ -544,9 +490,6 @@ class myldap extends DS {
 	 * @return boolean
 	 */
 	private function isTLSEnabled() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if ($this->getValue('server','tls') && ! function_exists('ldap_start_tls')) {
 				error(('TLS has been enabled in your config, but your PHP install does not support TLS. TLS will be disabled.'),'warn');
 			return false;
@@ -559,9 +502,6 @@ class myldap extends DS {
 	 * If TLS is configured, then start it
 	 */
 	private function startTLS($resource) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if (! $this->getValue('server','tls') || (function_exists('ldap_start_tls') && ! @ldap_start_tls($resource))) {
 			system_message(array(
 				'title'=>sprintf('%s (%s)',('Could not start TLS.'),$this->getName()),
@@ -585,9 +525,6 @@ class myldap extends DS {
 	 * @return boolean
 	 */
 	private function isSASLEnabled() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if ($this->getValue('server','sasl') && ! function_exists('ldap_sasl_bind')) {
 				error(('SASL has been enabled in your config, but your PHP install does not support SASL. SASL will be disabled.'),'warn');
 			return false;
@@ -603,9 +540,6 @@ class myldap extends DS {
 	 * @todo This has not been tested, please let the developers know if this function works as expected.
 	 */
 	private function startSASL($resource,$method) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		static $CACHE = array();
 
 		if (! $this->getValue('server','sasl') || ! function_exists('ldap_start_tls'))
@@ -622,12 +556,6 @@ class myldap extends DS {
 		if (! isset($CACHE['authz_id']))
 			if (! trim($this->getValue('sasl','authz_id')) && $mech != 'gssapi') {
 
-			if (DEBUG_ENABLED)
-				debug_log('Rewriting bind DN [%s] -> authz_id with regex [%s] and replacement [%s].',9,0,__FILE__,__LINE__,__METHOD__,
-					$CACHE['login_dn'],
-					$this->getValue('sasl','authz_id_regex'),
-					$this->getValue('sasl','authz_id_replacement'));
-
 			$CACHE['authz_id'] = @preg_replace($this->getValue('sasl','authz_id_regex'),
 				$this->getValue('sasl','authz_id_replacement'),$CACHE['login_dn']);
 
@@ -636,14 +564,6 @@ class myldap extends DS {
 				error(sprintf(('It seems that sasl_authz_id_regex "%s" contains invalid PCRE regular expression. The error is "%s".'),
 					$this->getValue('sasl','authz_id_regex'),(isset($php_errormsg) ? $php_errormsg : '')),
 					'error','index.php');
-
-			if (DEBUG_ENABLED)
-				debug_log('Resource [%s], SASL OPTIONS: mech [%s], realm [%s], authz_id [%s], props [%s]',9,0,__FILE__,__LINE__,__METHOD__,
-					$resource,
-					$this->getValue('sasl','mech'),
-					$this->getValue('sasl','realm'),
-					$CACHE['authz_id'],
-					$this->getValue('sasl','props'));
 
 			} else
 				$CACHE['authz_id'] = $this->getValue('sasl','authz_id');
@@ -667,9 +587,6 @@ class myldap extends DS {
 	 * @return boolean
 	 */
 	private function isProxyEnabled() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return $this->getValue('login','auth_type') == 'proxy' ? true : false;
 	}
 
@@ -677,9 +594,6 @@ class myldap extends DS {
 	 * If PROXY AUTH is configured, then start it
 	 */
 	private function startProxy($resource,$method) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$rootdse = $this->getRootDSE();
 
 		if (! (isset($rootdse['supportedcontrol']) && in_array('2.16.840.1.113730.3.4.18',$rootdse['supportedcontrol']))) {
@@ -766,9 +680,6 @@ class myldap extends DS {
 	 * Modify attributes of a DN
 	 */
 	public function modify($dn,$attrs,$method=null) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# We need to supress the error here - programming should detect and report it.
 		return @ldap_mod_replace($this->connect($method),$dn,$attrs);
 	}
@@ -789,9 +700,6 @@ class myldap extends DS {
 	 * @todo Sort the entries, so that they are in the correct DN order.
 	 */
 	public function getBaseDN($method=null) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		static $CACHE;
 
 		$method = $this->getMethod($method);
@@ -802,25 +710,16 @@ class myldap extends DS {
 
 		# If the base is set in the configuration file, then just return that.
 		if (count($this->getValue('server','base'))) {
-			if (DEBUG_ENABLED)
-				debug_log('Return BaseDN from Config [%s]',17,0,__FILE__,__LINE__,__METHOD__,implode('|',$this->getValue('server','base')));
-
 			$CACHE[$this->index][$method] = $this->getValue('server','base');
 
 		# We need to figure it out.
 		} else {
-			if (DEBUG_ENABLED)
-				debug_log('Connect to LDAP to find BaseDN',80,0,__FILE__,__LINE__,__METHOD__);
-
 			# Set this to empty, in case we loop back here looking for the baseDNs
 			$CACHE[$this->index][$method] = array();
 
 			$results = $this->getDNAttrValues('',$method);
 
 			if (isset($results['namingcontexts'])) {
-				if (DEBUG_ENABLED)
-					debug_log('LDAP Entries:%s',80,0,__FILE__,__LINE__,__METHOD__,implode('|',$results['namingcontexts']));
-
 				$result = $results['namingcontexts'];
 			}
 
@@ -839,9 +738,6 @@ class myldap extends DS {
 	 * @return boolean
 	 */
 	public function dnExists($dn,$method=null) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$results = $this->getDNAttrValues($dn,$method);
 
 		if ($results)
@@ -857,9 +753,6 @@ class myldap extends DS {
 	 * @return string The container
 	 */
 	public function getContainerTop($dn) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$return = $dn;
 
 		foreach ($this->getBaseDN() as $base) {
@@ -868,9 +761,6 @@ class myldap extends DS {
 				break;
 			}
 		}
-
-		if (DEBUG_ENABLED)
-			debug_log('Returning (%s)',17,0,__FILE__,__LINE__,__METHOD__,$return);
 
 		return $return;
 	}
@@ -883,9 +773,6 @@ class myldap extends DS {
 	 * @return string The container
 	 */
 	public function getContainerPath($dn,$path='..') {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$top = $this->getContainerTop($dn);
 
 		if ($path[0] == '/') {
@@ -930,9 +817,6 @@ class myldap extends DS {
 	 * @return string The container
 	 */
 	public function getContainer($dn) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$parts = $this->explodeDN($dn);
 
 		if (count($parts) <= 1)
@@ -944,9 +828,6 @@ class myldap extends DS {
 			for ($i=2;$i<count($parts);$i++)
 				$return .= sprintf(',%s',$parts[$i]);
 		}
-
-		if (DEBUG_ENABLED)
-			debug_log('Returning (%s)',17,0,__FILE__,__LINE__,__METHOD__,$return);
 
 		return $return;
 	}
@@ -985,9 +866,6 @@ class myldap extends DS {
 	 * @return array An array of DN strings listing the immediate children of the specified entry.
 	 */
 	public function getContainerContents($dn,$method=null,$size_limit=0,$filter='(objectClass=*)',$deref=LDAP_DEREF_NEVER) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$return = array();
 
 		$query = array();
@@ -1005,9 +883,6 @@ class myldap extends DS {
 				array_push($return,$child_dn);
 			}
 		}
-
-		if (DEBUG_ENABLED)
-			debug_log('Returning (%s)',17,0,__FILE__,__LINE__,__METHOD__,$return);
 
 		# Sort the results
 		asort($return);
@@ -1035,16 +910,9 @@ class myldap extends DS {
 	 * NOTE: When a multivalue RDN is passed to ldap_explode_dn, the results returns with 'value + value';
 	 */
 	private function explodeDN($dn,$with_attributes=0) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		static $CACHE;
 
 		if (isset($CACHE['explode'][$dn][$with_attributes])) {
-			if (DEBUG_ENABLED)
-				debug_log('Return CACHED result (%s) for (%s)',1,0,__FILE__,__LINE__,__METHOD__,
-					$CACHE['explode'][$dn][$with_attributes],$dn);
-
 			return $CACHE['explode'][$dn][$with_attributes];
 		}
 
@@ -1054,9 +922,6 @@ class myldap extends DS {
 		$result[0] = ldap_explode_dn($this->escapeDN($dn),0);
 		$result[1] = ldap_explode_dn($this->escapeDN($dn),1);
 		if (! $result[$with_attributes]) {
-			if (DEBUG_ENABLED)
-				debug_log('Returning NULL - NO result.',1,0,__FILE__,__LINE__,__METHOD__);
-
 			return array();
 		}
 
@@ -1073,9 +938,6 @@ class myldap extends DS {
 			$CACHE['explode'][implode(',',array_reverse($result[0]))][$key] = array_reverse($result[$key]);
 		}
 
-		if (DEBUG_ENABLED)
-			debug_log('Returning (%s)',17,0,__FILE__,__LINE__,__METHOD__,$result[$with_attributes]);
-
 		return $result[$with_attributes];
 	}
 
@@ -1083,9 +945,6 @@ class myldap extends DS {
 	 * Parse a DN and escape any special characters
 	 */
 	protected function escapeDN($dn) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if (! trim($dn))
 			return $dn;
 
@@ -1095,16 +954,10 @@ class myldap extends DS {
 
 		$dn = preg_replace('/([^\\\\]),(\s*[^=]*\s*)([^,])$/','$1\\\\2C$2$3',$dn);
 
-		if (DEBUG_ENABLED)
-			debug_log('Returning (%s)',17,0,__FILE__,__LINE__,__METHOD__,$dn);
-
 		return $dn;
 	}
 
 	public function getRootDSE($method=null) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$query = array();
 		$query['base'] = '';
 		$query['scope'] = 'base';
@@ -1130,9 +983,6 @@ class myldap extends DS {
 	 * @return array|false Schema if available, null if its not or false if we cant connect.
 	 */
 	private function getSchemaDN($method=null,$dn='') {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',25,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# If we already got the SchemaDN, then return it.
 		if ($this->_schemaDN)
 			return $this->_schemaDN;
@@ -1142,22 +992,11 @@ class myldap extends DS {
 
 		$search = @ldap_read($this->connect($method),$dn,'objectclass=*',array('subschemaSubentry'),false,0,10,LDAP_DEREF_NEVER);
 
-		if (DEBUG_ENABLED)
-			debug_log('Search returned (%s)',24,0,__FILE__,__LINE__,__METHOD__,is_resource($search));
-
 		# Fix for broken ldap.conf configuration.
 		if (! $search && ! $dn) {
-			if (DEBUG_ENABLED)
-				debug_log('Trying to find the DN for "broken" ldap.conf',80,0,__FILE__,__LINE__,__METHOD__);
-
 			if (isset($this->_baseDN)) {
 				foreach ($this->_baseDN as $base) {
 					$search = @ldap_read($this->connect($method),$base,'objectclass=*',array('subschemaSubentry'),false,0,10,LDAP_DEREF_NEVER);
-
-					if (DEBUG_ENABLED)
-						debug_log('Search returned (%s) for base (%s)',24,0,__FILE__,__LINE__,__METHOD__,
-							is_resource($search),$base);
-
 					if ($search)
 						break;
 				}
@@ -1168,40 +1007,25 @@ class myldap extends DS {
 			return null;
 
 		if (! @ldap_count_entries($this->connect($method),$search)) {
-			if (DEBUG_ENABLED)
-				debug_log('Search returned 0 entries. Returning NULL',25,0,__FILE__,__LINE__,__METHOD__);
-
 			return null;
 		}
 
 		$entries = @ldap_get_entries($this->connect($method),$search);
-
-		if (DEBUG_ENABLED)
-			debug_log('Search returned [%s]',24,0,__FILE__,__LINE__,__METHOD__,$entries);
 
 		if (! $entries || ! is_array($entries))
 			return null;
 
 		$entry = isset($entries[0]) ? $entries[0] : false;
 		if (! $entry) {
-			if (DEBUG_ENABLED)
-				debug_log('Entry is false, Returning NULL',80,0,__FILE__,__LINE__,__METHOD__);
-
 			return null;
 		}
 
 		$sub_schema_sub_entry = isset($entry[0]) ? $entry[0] : false;
 		if (! $sub_schema_sub_entry) {
-			if (DEBUG_ENABLED)
-				debug_log('Sub Entry is false, Returning NULL',80,0,__FILE__,__LINE__,__METHOD__);
-
 			return null;
 		}
 
 		$this->_schemaDN = isset($entry[$sub_schema_sub_entry][0]) ? $entry[$sub_schema_sub_entry][0] : false;
-
-		if (DEBUG_ENABLED)
-			debug_log('Returning (%s)',25,0,__FILE__,__LINE__,__METHOD__,$this->_schemaDN);
 
 		return $this->_schemaDN;
 	}
@@ -1234,9 +1058,6 @@ class myldap extends DS {
 	 *	etc.
 	 */
 	private function getRawSchema($method,$schema_to_fetch,$dn='') {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',25,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$valid_schema_to_fetch = array('objectclasses','attributetypes','ldapsyntaxes','matchingrules','matchingruleuse');
 
 		if (! $this->connect($method) || $this->noconnect)
@@ -1247,10 +1068,6 @@ class myldap extends DS {
 
 		if (! is_null($this->_schema_entries) && isset($this->_schema_entries[$schema_to_fetch])) {
 			$schema = $this->_schema_entries[$schema_to_fetch];
-
-			if (DEBUG_ENABLED)
-				debug_log('Returning CACHED (%s)',25,0,__FILE__,__LINE__,__METHOD__,$schema);
-
 			return $schema;
 		}
 
@@ -1270,13 +1087,7 @@ class myldap extends DS {
 		$schema_search = null;
 
 		if ($schema_dn) {
-			if (DEBUG_ENABLED)
-				debug_log('Using Schema DN (%s)',24,0,__FILE__,__LINE__,__METHOD__,$schema_dn);
-
 			foreach (array('(objectClass=*)','(objectClass=subschema)') as $schema_filter) {
-				if (DEBUG_ENABLED)
-					debug_log('Looking for schema with Filter (%s)',24,0,__FILE__,__LINE__,__METHOD__,$schema_filter);
-
 				$schema_search = @ldap_read($this->connect($method),$schema_dn,$schema_filter,array($schema_to_fetch),false,0,10,LDAP_DEREF_NEVER);
 
 				if (is_null($schema_search))
@@ -1284,19 +1095,9 @@ class myldap extends DS {
 
 				$schema_entries = @ldap_get_entries($this->connect($method),$schema_search);
 
-				if (DEBUG_ENABLED)
-					debug_log('Search returned [%s]',24,0,__FILE__,__LINE__,__METHOD__,$schema_entries);
-
 				if (is_array($schema_entries) && isset($schema_entries['count']) && $schema_entries['count']) {
-					if (DEBUG_ENABLED)
-						debug_log('Found schema with (DN:%s) (FILTER:%s) (ATTR:%s)',24,0,__FILE__,__LINE__,__METHOD__,
-							$schema_dn,$schema_filter,$schema_to_fetch);
-
 					break;
 				}
-
-				if (DEBUG_ENABLED)
-					debug_log('Didnt find schema with filter (%s)',24,0,__FILE__,__LINE__,__METHOD__,$schema_filter);
 
 				unset($schema_entries);
 				$schema_search = null;
@@ -1306,9 +1107,6 @@ class myldap extends DS {
 		/* Second chance: If the DN or Root DSE didn't give us the subschemaSubentry, ie $schema_search
 		 * is still null, use some common subSchemaSubentry DNs as a work-around. */
 		if (is_null($schema_search)) {
-			if (DEBUG_ENABLED)
-				debug_log('Attempting work-arounds for "broken" LDAP servers...',24,0,__FILE__,__LINE__,__METHOD__);
-
 			foreach ($this->getBaseDN() as $base) {
 				$ldap['W2K3 AD'][expand_dn_with_base($base,'cn=Aggregate,cn=Schema,cn=configuration,')] = '(objectClass=*)';
 				$ldap['W2K AD'][expand_dn_with_base($base,'cn=Schema,cn=configuration,')] = '(objectClass=*)';
@@ -1320,28 +1118,15 @@ class myldap extends DS {
 
 			foreach ($ldap as $ldap_server_name => $ldap_options) {
 				foreach ($ldap_options as $ldap_dn => $ldap_filter) {
-					if (DEBUG_ENABLED)
-						debug_log('Attempting [%s] (%s) (%s)<BR>',24,0,__FILE__,__LINE__,__METHOD__,
-							$ldap_server_name,$ldap_dn,$ldap_filter);
-
 					$schema_search = @ldap_read($this->connect($method),$ldap_dn,$ldap_filter,array($schema_to_fetch),false,0,10,LDAP_DEREF_NEVER);
 					if (is_null($schema_search))
 						continue;
 
 					$schema_entries = @ldap_get_entries($this->connect($method),$schema_search);
 
-					if (DEBUG_ENABLED)
-						debug_log('Search returned [%s]',24,0,__FILE__,__LINE__,__METHOD__,$schema_entries);
-
 					if ($schema_entries && isset($schema_entries[0][$schema_to_fetch])) {
-						if (DEBUG_ENABLED)
-							debug_log('Found schema with filter of (%s)',24,0,__FILE__,__LINE__,__METHOD__,$ldap_filter);
-
 						break;
 					}
-
-					if (DEBUG_ENABLED)
-						debug_log('Didnt find schema with filter (%s)',24,0,__FILE__,__LINE__,__METHOD__,$ldap_filter);
 
 					unset($schema_entries);
 					$schema_search = null;
@@ -1356,10 +1141,6 @@ class myldap extends DS {
 			 * Attempt to pull schema from Root DSE with scope "base", or
 			 * Attempt to pull schema from Root DSE with scope "one" (work-around for Isode M-Vault X.500/LDAP) */
 			foreach (array('base','one') as $ldap_scope) {
-				if (DEBUG_ENABLED)
-					debug_log('Attempting to find schema with scope (%s), filter (objectClass=*) and a blank base.',24,0,__FILE__,__LINE__,__METHOD__,
-						$ldap_scope);
-
 				switch ($ldap_scope) {
 					case 'base':
 						$schema_search = @ldap_read($this->connect($method),'','(objectClass=*)',array($schema_to_fetch),false,0,10,LDAP_DEREF_NEVER);
@@ -1374,18 +1155,9 @@ class myldap extends DS {
 					continue;
 
 				$schema_entries = @ldap_get_entries($this->connect($method),$schema_search);
-				if (DEBUG_ENABLED)
-					debug_log('Search returned [%s]',24,0,__FILE__,__LINE__,__METHOD__,$schema_entries);
-
 				if ($schema_entries && isset($schema_entries[0][$schema_to_fetch])) {
-					if (DEBUG_ENABLED)
-						debug_log('Found schema with filter of (%s)',24,0,__FILE__,__LINE__,__METHOD__,'(objectClass=*)');
-
 					break;
 				}
-
-				if (DEBUG_ENABLED)
-					debug_log('Didnt find schema with filter (%s)',24,0,__FILE__,__LINE__,__METHOD__,'(objectClass=*)');
 
 				unset($schema_entries);
 				$schema_search = null;
@@ -1403,9 +1175,6 @@ class myldap extends DS {
 					'title'=>sprintf('%s (%s)',('Our attempts to find your SCHEMA have failed'),$schema_to_fetch),
 					'body'=>sprintf('<b>%s</b>: %s',('Error'),$schema_error_message),
 					'type'=>'error'));
-			else
-				if (DEBUG_ENABLED)
-					debug_log('Returning because schema_search is NULL ()',25,0,__FILE__,__LINE__,__METHOD__);
 
 			# We'll set this, so if we return here our cache will return the known false.
 			$this->_schema_entries[$schema_to_fetch] = false;
@@ -1414,9 +1183,6 @@ class myldap extends DS {
 
 		if (! $schema_entries) {
 			$return = false;
-			if (DEBUG_ENABLED)
-				debug_log('Returning false since ldap_get_entries() returned false.',25,0,__FILE__,__LINE__,__METHOD__,$return);
-
 			return $return;
 		}
 
@@ -1427,10 +1193,6 @@ class myldap extends DS {
 
 			} else {
 				$return = false;
-
-				if (DEBUG_ENABLED)
-					debug_log('Returning because (%s) isnt in the schema array. (%s)',25,0,__FILE__,__LINE__,__METHOD__,$schema_to_fetch,$return);
-
 				return $return;
 			}
 		}
@@ -1444,9 +1206,6 @@ class myldap extends DS {
 		$schema = $schema_entries[0][$schema_to_fetch];
 		unset($schema['count']);
 		$this->_schema_entries[$schema_to_fetch] = $schema;
-
-		if (DEBUG_ENABLED)
-			debug_log('Returning (%s)',25,0,__FILE__,__LINE__,__METHOD__,$schema);
 
 		return $schema;
 	}
@@ -1464,9 +1223,6 @@ class myldap extends DS {
 	 * @see SchemaObjectClasses
 	 */
 	public function getSchemaObjectClass($oclass_name,$method=null,$dn='') {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',25,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$oclass_name = strtolower($oclass_name);
 		$socs = $this->SchemaObjectClasses($method,$dn);
 
@@ -1475,9 +1231,6 @@ class myldap extends DS {
 
 		if (isset($socs[$oclass_name]))
 			$return = $socs[$oclass_name];
-
-		if (DEBUG_ENABLED)
-			debug_log('Returning (%s)',25,0,__FILE__,__LINE__,__METHOD__,$return);
 
 		return $return;
 	}
@@ -1495,9 +1248,6 @@ class myldap extends DS {
 	 * @see SchemaAttributes
 	 */
 	public function getSchemaAttribute($attr_name,$method=null,$dn='') {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',25,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$attr_name = strtolower($attr_name);
 		$sattrs = $this->SchemaAttributes($method,$dn);
 
@@ -1506,9 +1256,6 @@ class myldap extends DS {
 
 		if (isset($sattrs[$attr_name]))
 			$return = $sattrs[$attr_name];
-
-		if (DEBUG_ENABLED)
-			debug_log('Returning (%s)',25,0,__FILE__,__LINE__,__METHOD__,$return);
 
 		return $return;
 	}
@@ -1527,16 +1274,10 @@ class myldap extends DS {
 	 * @see getSchemaObjectClass
 	 */
 	public function SchemaObjectClasses($method=null,$dn='') {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',25,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# Set default return
 		$return = null;
 
 		if ($return = get_cached_item($this->index,'schema','objectclasses')) {
-			if (DEBUG_ENABLED)
-				debug_log('Returning CACHED [%s] (%s)',25,0,__FILE__,__LINE__,__METHOD__,$this->index,'objectclasses');
-
 			return $return;
 		}
 
@@ -1566,9 +1307,6 @@ class myldap extends DS {
 			set_cached_item($this->index,'schema','objectclasses',$return);
 		}
 
-		if (DEBUG_ENABLED)
-			debug_log('Returning (%s)',25,0,__FILE__,__LINE__,__METHOD__,$return);
-
 		return $return;
 	}
 
@@ -1583,16 +1321,10 @@ class myldap extends DS {
 	 * @return array An array of AttributeType objects.
 	 */
 	public function SchemaAttributes($method=null,$dn='') {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',25,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# Set default return
 		$return = null;
 
 		if ($return = get_cached_item($this->index,'schema','attributes')) {
-			if (DEBUG_ENABLED)
-				debug_log('(): Returning CACHED [%s] (%s)',25,0,__FILE__,__LINE__,__METHOD__,$this->index,'attributes');
-
 			return $return;
 		}
 
@@ -1751,9 +1483,6 @@ class myldap extends DS {
 			set_cached_item($this->index,'schema','attributes',$return);
 		}
 
-		if (DEBUG_ENABLED)
-			debug_log('Returning (%s)',25,0,__FILE__,__LINE__,__METHOD__,$return);
-
 		return $return;
 	}
 
@@ -1762,16 +1491,10 @@ class myldap extends DS {
 	 * The key of each entry is the OID of the matching rule.
 	 */
 	public function MatchingRules($method=null,$dn='') {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',25,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# Set default return
 		$return = null;
 
 		if ($return = get_cached_item($this->index,'schema','matchingrules')) {
-			if (DEBUG_ENABLED)
-				debug_log('Returning CACHED [%s] (%s).',25,0,__FILE__,__LINE__,__METHOD__,$this->index,'matchingrules');
-
 			return $return;
 		}
 
@@ -1827,9 +1550,6 @@ class myldap extends DS {
 			set_cached_item($this->index,'schema','matchingrules',$return);
 		}
 
-		if (DEBUG_ENABLED)
-			debug_log('Returning (%s)',25,0,__FILE__,__LINE__,__METHOD__,$return);
-
 		return $return;
 	}
 
@@ -1838,16 +1558,10 @@ class myldap extends DS {
 	 * their descriptions. The key of each entry is the OID of the Syntax.
 	 */
 	public function SchemaSyntaxes($method=null,$dn='') {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',25,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# Set default return
 		$return = null;
 
 		if ($return = get_cached_item($this->index,'schema','syntaxes')) {
-			if (DEBUG_ENABLED)
-				debug_log('Returning CACHED [%s] (%s).',25,0,__FILE__,__LINE__,__METHOD__,$this->index,'syntaxes');
-
 			return $return;
 		}
 
@@ -1876,9 +1590,6 @@ class myldap extends DS {
 			set_cached_item($this->index,'schema','syntaxes',$return);
 		}
 
-		if (DEBUG_ENABLED)
-			debug_log('Returning (%s)',25,0,__FILE__,__LINE__,__METHOD__,$return);
-
 		return $return;
 	}
 
@@ -1890,9 +1601,6 @@ class myldap extends DS {
 	 *              otherwise.
 	 */
 	function isForceMay($attr_name) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return in_array($attr_name,$this->force_may);
 	}
 
@@ -1925,9 +1633,6 @@ class myldap extends DS {
 	 * @todo Caching these values may be problematic with multiple calls and different deref values.
 	 */
 	public function getDNAttrValue($dn,$attr,$method=null,$deref=LDAP_DEREF_NEVER) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# Ensure our attr is in lowercase
 		$attr = strtolower($attr);
 
@@ -1979,9 +1684,6 @@ class myldap extends DS {
 	 * @see getDNAttrValue
 	 */
 	public function getDNAttrValues($dn,$method=null,$deref=LDAP_DEREF_NEVER,$attrs=array('*','+')) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		static $CACHE;
 
 		$cacheindex = null;
@@ -1996,10 +1698,6 @@ class myldap extends DS {
 
 		if (! is_null($cacheindex) && isset($CACHE[$this->index][$method][$dn][$cacheindex])) {
 			$results = $CACHE[$this->index][$method][$dn][$cacheindex];
-
-			if (DEBUG_ENABLED)
-				debug_log('Returning (%s)',17,0,__FILE__,__LINE__,__METHOD__,$results);
-
 		} else {
 			$query = array();
 			$query['base'] = $this->escapeDN($dn);
@@ -2037,9 +1735,6 @@ class myldap extends DS {
 	 * @return boolean
 	 */
 	function isDNAttr($attr_name,$method=null) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# Simple test first
 		$dn_attrs = array('aliasedObjectName');
 		foreach ($dn_attrs as $dn_attr)
@@ -2078,9 +1773,6 @@ class myldap extends DS {
 	 * @see draw_jpeg_photo
 	 */
 	function isJpegPhoto($attr_name) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# easy quick check
 		if (! strcasecmp($attr_name,'jpegPhoto') || ! strcasecmp($attr_name,'photo'))
 			return true;
@@ -2109,9 +1801,6 @@ class myldap extends DS {
 	 * @return boolean
 	 */
 	function isAttrBoolean($attr_name) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$type = ($sattr = $this->getSchemaAttribute($attr_name)) ? $sattr->getType() : null;
 
 		if (! strcasecmp('boolean',$type) ||
@@ -2135,9 +1824,6 @@ class myldap extends DS {
 	 * @see isJpegPhoto
 	 */
 	function isAttrBinary($attr_name) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		/**
 		 * Determining if an attribute is binary can be an expensive operation.
 		 * We cache the results for each attr name on each server in the $attr_cache
@@ -2221,9 +1907,6 @@ class myldap extends DS {
 	 * @return bool true|false
 	 */
 	function userIsMember($user,$group) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$user = strtolower($user);
 		$group = $this->getDNAttrValues($group);
 
@@ -2252,18 +1935,12 @@ class myldap extends DS {
 	 * This function will determine if the user is allowed to login based on a filter
 	 */
 	protected function userIsAllowedLogin($dn) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$dn = trim(strtolower($dn));
 
 		if (! $this->getValue('login','allowed_dns'))
 			return true;
 
         foreach ($this->getValue('login','allowed_dns') as $login_allowed_dn) {
-            if (DEBUG_ENABLED)
-                debug_log('Working through (%s)',80,0,__FILE__,__LINE__,__METHOD__,$login_allowed_dn);
-
             /* Check if $login_allowed_dn is an ldap search filter
              * Is first occurence of 'filter=' (case ensitive) at position 0 ? */
             if (preg_match('/^\([&|]\(/',$login_allowed_dn)) {
@@ -2276,10 +1953,6 @@ class myldap extends DS {
 
                     $results = $this->query($query,null);
 
-                    if (DEBUG_ENABLED)
-                        debug_log('Search, Filter [%s], BaseDN [%s] Results [%s]',16,0,__FILE__,__LINE__,__METHOD__,
-                            $query['filter'],$query['base'],$results);
-
                     if ($results) {
                     	$dn_array = array();
 
@@ -2290,9 +1963,6 @@ class myldap extends DS {
 
                         if (count($dn_array))
                             foreach ($dn_array as $result_dn) {
-                                if (DEBUG_ENABLED)
-                                    debug_log('Comparing with [%s]',80,0,__FILE__,__LINE__,__METHOD__,$result_dn);
-
                                 # Check if $result_dn is a user DN
                                 if (strcasecmp($dn,trim(strtolower($result_dn))) == 0)
                                     return true;

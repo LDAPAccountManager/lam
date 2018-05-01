@@ -214,14 +214,14 @@ class Config {
 			'default'=>'AJAXTree');
 
 		/** Tree display
-		 * An array of format strings used to display enties in the 
-		 * tree viewer (left-hand side). The first format string that 
-		 * is completely defined (i.e., does not reference attributes 
-		 * that are not defined the object). If there is no format 
-		 * string that is completely defined, the last one is used. 
-		 * 
-		 * You can use special tokens to draw the entries as you wish. 
-		 * You can even mix in HTML to format the string. 
+		 * An array of format strings used to display enties in the
+		 * tree viewer (left-hand side). The first format string that
+		 * is completely defined (i.e., does not reference attributes
+		 * that are not defined the object). If there is no format
+		 * string that is completely defined, the last one is used.
+		 *
+		 * You can use special tokens to draw the entries as you wish.
+		 * You can even mix in HTML to format the string.
 		 * Here are all the tokens you can use:
 		 *	%rdn - draw the RDN of the entry (ie, "cn=Dave")
 		 *	%dn - draw the DN of the entry (ie, "cn=Dave,ou=People,dc=example,dc=com"
@@ -630,9 +630,6 @@ class Config {
 	 * Function to check and warn about any unusual defined variables.
 	 */
 	public function CheckCustom() {
-		if (defined('DEBUG_ENABLED') && DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',3,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if (isset($this->custom)) {
 			foreach ($this->custom as $masterkey => $masterdetails) {
 
@@ -665,9 +662,6 @@ class Config {
 	 * Get a list of available commands.
 	 */
 	public function getCommandList() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',3,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$config = $this->getConfigArray(false);
 
 		masort($config['command'],'summary');
@@ -682,9 +676,6 @@ class Config {
 	 * Simple ACL to see if commands can be run
 	 */
 	public function isCommandAvailable($index='cmd') {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',3,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$a = func_get_args();
 		array_shift($a);
 		$a = $a[0];
@@ -699,9 +690,6 @@ class Config {
 	}
 
 	public function configDefinition($key,$index,$config) {
-		if (defined('DEBUG_ENABLED') && DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',3,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if (! is_array($config) || ! array_key_exists('desc',$config) || ! array_key_exists('default',$config))
 			return;
 
@@ -716,9 +704,6 @@ class Config {
 	 * Return the friendly attributes names
 	 */
 	private function getFriendlyAttrs() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',3,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return array_change_key_case($this->getValue('appearance','friendly_attrs'));
 	}
 
@@ -730,9 +715,6 @@ class Config {
 	 * @return string friendly name|attribute
 	 */
 	public function getFriendlyName($attr) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',3,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		static $friendly_attrs;
 
 		if (! $friendly_attrs)
@@ -758,9 +740,6 @@ class Config {
 	 * @return boolean true|false
 	 */
 	public function haveFriendlyName($attr) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',3,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return $attr->getName(false) != $this->getFriendlyName($attr);
 	}
 
@@ -771,9 +750,7 @@ class Config {
 	 * @return string html for the friendly name.
 	 */
 	public function getFriendlyHTML($attr) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',3,0,__FILE__,__LINE__,__METHOD__,$fargs);
-			return $attr->getName(false);
+		return $attr->getName(false);
 	}
 
 	public function setServers($servers) {
@@ -789,9 +766,6 @@ class Config {
 	 * @param boolean $visible - Only return visible servers
 	 */
 	public function getServerList($visible=true) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',3,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return $this->servers->getServerList($visible);
 	}
 }

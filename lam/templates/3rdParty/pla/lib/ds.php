@@ -68,9 +68,6 @@ abstract class DS {
 	 * Return a configuration value
 	 */
 	public function getValue($key,$setting,$fatal=true) {
-		if (defined('DEBUG_ENABLED') && DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,1,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if (isset($this->custom->{$key}[$setting]))
 			return $this->custom->{$key}[$setting];
 
@@ -116,9 +113,6 @@ abstract class DS {
 	 * Get the name of this datastore
 	 */
 	public function getName() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return $this->getValue('server','name');
 	}
 
@@ -129,9 +123,6 @@ abstract class DS {
 	 * Return the authentication type for this object
 	 */
 	public function getAuthType() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		switch ($this->getValue('login','auth_type')) {
 			case 'cookie':
 			case 'config':
@@ -153,9 +144,6 @@ abstract class DS {
 	 * If this returns '', we are logged in with anonymous
 	 */
 	public function getLogin($method=null) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$method = $this->getMethod($method);
 
 		# For anonymous binds
@@ -203,9 +191,6 @@ abstract class DS {
 	 * Set the login details of the user logged into this datastore's connection method
 	 */
 	protected function setLogin($user,$pass,$method=null) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$method = $this->getMethod($method);
 
 		switch ($this->getAuthType()) {
@@ -238,9 +223,6 @@ abstract class DS {
 	 * Get the login password of the user logged into this datastore's connection method
 	 */
 	protected function getPassword($method=null) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$method = $this->getMethod($method);
 
 		# For anonymous binds
@@ -283,9 +265,6 @@ abstract class DS {
 	 * Return if this datastore's connection method has been logged into
 	 */
 	public function isLoggedIn($method=null) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		static $CACHE = array();
 
 		$method = $this->getMethod($method);
@@ -387,9 +366,6 @@ abstract class DS {
 	 * Logout of this datastore's connection method
 	 */
 	public function logout($method=null) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$method = $this->getMethod($method);
 
 		unset ($_SESSION['cache'][$this->index]);
@@ -420,16 +396,10 @@ abstract class DS {
 	 * Functions that return the condition of the datasource
 	 */
 	public function isVisible() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return $this->getValue('server','visible');
 	}
 
 	public function isReadOnly() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if (! trim($this->getLogin(null)) && $_SESSION[APPCONFIG]->getValue('appearance','anonymous_bind_implies_read_only'))
 			return true;
 		else
@@ -437,13 +407,10 @@ abstract class DS {
 	}
 
 	public function getIndex() {
-		if (defined('DEBUG_ENABLED') && DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,1,__FILE__,__LINE__,__METHOD__,$fargs,$this->index);
-
 		return $this->index;
 	}
 
-	/** 
+	/**
 	 * Work out which connection method to use.
 	 * If a method is passed, then it will be passed back. If no method is passed, then we'll
 	 * check to see if the user is logged in. If they are, then 'user' is used, otherwise
@@ -453,9 +420,6 @@ abstract class DS {
 	 * @return string Connection Method
 	 */
 	protected function getMethod($method=null) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		static $CACHE = array();
 
 		# Immediately return if method is set.
@@ -478,9 +442,6 @@ abstract class DS {
 	 * This method should be overridden in application specific ds files
 	 */
 	public function isSessionValid() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,1,__FILE__,__LINE__,__METHOD__,$fargs,true);
-
 		return true;
 	}
 
@@ -489,9 +450,6 @@ abstract class DS {
 	 * this function will return null.
 	 */
 	public function inactivityTime() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if ($this->isLoggedIn() && ! in_array($this->getAuthType(),array('config','http')))
 			return time()+($this->getValue('login','timeout')*60);
 		else
@@ -638,9 +596,6 @@ class Datastore {
 	 * @return array list of all configured servers.
 	 */
 	public function getServerList($isVisible=true) {
-		if (defined('DEBUG_ENABLED') && DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		static $CACHE;
 
 		if (isset($CACHE[$isVisible]))
@@ -671,18 +626,12 @@ class Datastore {
 	 * @return object Datastore instance object.
 	 */
 	public function Instance($index=null) {
-		if (defined('DEBUG_ENABLED') && DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# If no index defined, then pick the lowest one.
 		if (is_null($index) || ! trim($index) || ! is_numeric($index))
 			$index = min($this->GetServerList())->getIndex();
 
 		if (! isset($this->objects[$index]))
 			debug_dump_backtrace(sprintf('Error: Datastore instance [%s] doesnt exist?',htmlspecialchars($index)),1);
-
-		if (defined('DEBUG_ENABLED') && DEBUG_ENABLED)
-			debug_log('Returning instance of database (%s)',3,0,__FILE__,__LINE__,__METHOD__,$index);
 
 		return $this->objects[$index];
 	}
@@ -694,9 +643,6 @@ class Datastore {
 	 * @return object Datastore instance object.
 	 */
 	public function InstanceName($name=null) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		foreach ($this->getServerList(false) as $index)
 			if ($this->objects[$index]->getName() == $name)
 				return $this->objects[$index];
@@ -712,9 +658,6 @@ class Datastore {
 	 * @return object Datastore instance object.
 	 */
 	public function InstanceId($id=null) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		foreach ($this->getServerList(false) as $index)
 			if ($this->objects[$index->getIndex()]->getValue('server','id') == $id)
 				return $this->objects[$index->getIndex()];

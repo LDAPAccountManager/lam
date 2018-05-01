@@ -148,7 +148,9 @@ $tabindex = 1;
 $modules = array_keys($options);
 $_SESSION['conf_types'] = array();
 for ($i = 0; $i < sizeof($modules); $i++) {
-	if (sizeof($options[$modules[$i]]) < 1) continue;
+	if (empty($options[$modules[$i]])) {
+		continue;
+	}
 	$module = moduleCache::getModule($modules[$i], 'none');
 	$iconImage = $module->getIcon();
 	if ($iconImage != null) {

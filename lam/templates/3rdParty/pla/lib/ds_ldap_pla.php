@@ -156,9 +156,6 @@ class ldap_pla extends myldap {
 	 * @return boolean true if the feature is enabled and false otherwise.
 	 */
 	function isShowCreateEnabled() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if (! $_SESSION[APPCONFIG]->isCommandAvailable('script','create'))
 			return false;
 		else
@@ -175,17 +172,11 @@ class ldap_pla extends myldap {
 	 * @return boolean
 	 */
 	public function isAnonBindAllowed() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# If only_login_allowed_dns is set, then we cant have anonymous.
 		if (count($this->getValue('login','allowed_dns')) > 0)
 			$return = false;
 		else
 			$return = $this->getValue('login','anon_bind');
-
-		if (DEBUG_ENABLED)
-			debug_log('Returning (%s)',17,0,__FILE__,__LINE__,__METHOD__,$return);
 
 		return $return;
 	}
@@ -201,9 +192,6 @@ class ldap_pla extends myldap {
 	 * @return boolean
 	 */
 	function isBranchRenameEnabled() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
  		return $this->getValue('server','branch_rename');
 	}
 
@@ -225,9 +213,6 @@ class ldap_pla extends myldap {
 	 * @return boolean
 	 */
 	function isMultiLineAttr($attr_name,$val=null) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# Set default return
 		$return = false;
 
@@ -258,9 +243,6 @@ class ldap_pla extends myldap {
 						}
 			}
 		}
-
-		if (DEBUG_ENABLED)
-			debug_log('Returning (%s)',17,0,__FILE__,__LINE__,__METHOD__,$return);
 
 		return $return;
 	}
@@ -302,9 +284,6 @@ class ldap_pla extends myldap {
 	 * @return boolean
 	 */
 	public function isAttrReadOnly($attr) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$attrs = $_SESSION[APPCONFIG]->getValue('appearance','readonly_attrs');
 		$except_dn = $_SESSION[APPCONFIG]->getValue('appearance','readonly_attrs_exempt');
 
@@ -323,9 +302,6 @@ class ldap_pla extends myldap {
 	 * @return boolean
 	 */
 	public function isAttrHidden($attr) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$attrs = $_SESSION[APPCONFIG]->getValue('appearance','hide_attrs');
 		$except_dn = $_SESSION[APPCONFIG]->getValue('appearance','hide_attrs_exempt');
 
@@ -336,9 +312,6 @@ class ldap_pla extends myldap {
 	 * Add objects
 	 */
 	public function add($dn,$entry_array,$method=null) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		foreach ($entry_array as $attr => $val)
 			$entry_array[$attr] = dn_unescape($val);
 
@@ -380,9 +353,6 @@ class ldap_pla extends myldap {
 	 * Delete objects
 	 */
 	public function delete($dn,$method=null) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$result = false;
 
 		if (run_hook('pre_entry_delete',array('server_id'=>$this->index,'method'=>$method,'dn'=>$dn))) {
@@ -406,9 +376,6 @@ class ldap_pla extends myldap {
 	 * Rename objects
 	 */
 	public function rename($dn,$new_rdn,$container,$deleteoldrdn,$method=null) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$result = false;
 
 		if (run_hook('pre_entry_rename',array('server_id'=>$this->index,'method'=>$method,'dn'=>$dn,'rdn'=>$new_rdn,'container'=>$container))) {
@@ -433,9 +400,6 @@ class ldap_pla extends myldap {
 	 * Modify objects
 	 */
 	public function modify($dn,$attrs,$method=null) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# Check our unique attributes.
 		if (! $this->checkUniqueAttrs($dn,$attrs))
 			return false;
@@ -546,9 +510,6 @@ class ldap_pla extends myldap {
 	 * @return boolean
 	 */
 	public function isAttrUnique($attr) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# Should this attribute value be unique
 		if (in_array_ignore_case($attr,$this->getValue('unique','attrs')))
 			return true;
@@ -567,9 +528,6 @@ class ldap_pla extends myldap {
 	 * @param string|array New values for the attribute
 	 */
 	public function checkUniqueAttrs($dn,$attrs) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# If none of the attributes are defined unique, we'll return immediately;
 		if (! $checkattrs = array_intersect(arrayLower($this->getValue('unique','attrs')),array_keys(array_change_key_case($attrs))))
 			return true;
@@ -631,9 +589,6 @@ class ldap_pla extends myldap {
 	 * Check if the session timeout has occured for this LDAP server.
 	 */
 	public function isSessionValid() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# If inactiveTime() returns a value, we need to check that it has not expired.
 		if (is_null($this->inactivityTime()) || ! $this->isLoggedIn())
 			return true;

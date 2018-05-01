@@ -26,9 +26,6 @@ class page {
 	protected $_default;
 
 	public function __construct($index=null) {
-		if (defined('DEBUG_ENABLED') && DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# If we done have a configuration, then our IMGDIR and CSS are not defined
 		if (! defined('IMGDIR'))
 			define('IMGDIR','images/default');
@@ -65,9 +62,6 @@ class page {
 		header('Content-type: text/html; charset="UTF-8"');
 		if (isCompress()) {
 			header('Content-Encoding: gzip');
-
-			if (defined('DEBUG_ENABLED') && DEBUG_ENABLED)
-				debug_log('Sent COMPRESSED header to browser and discarded (%s)',129,0,__FILE__,__LINE__,__METHOD__,$preOutput);
 		}
 
 		if (isset($_SESSION[APPCONFIG])
@@ -85,17 +79,11 @@ class page {
 
 	/* Add to the HTML Header */
 	public function head_add($html) {
-		if (defined('DEBUG_ENABLED') && DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->_head[] .= $html;
 	}
 
 	/* Print out the HTML header */
 	private function pageheader_print() {
-		if (defined('DEBUG_ENABLED') && DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# HTML prepage requirements.
 		foreach ($this->_pageheader as $line)
 			echo $line."\n";
@@ -139,9 +127,6 @@ class page {
 	}
 
 	private function head_print() {
-		if (defined('DEBUG_ENABLED') && DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if (isset($_SESSION[APPCONFIG]))
 			$pagetitle = $_SESSION[APPCONFIG]->getValue('appearance','page_title') ? ' - '.$_SESSION[APPCONFIG]->getValue('appearance','page_title') : '';
 		else
@@ -175,9 +160,6 @@ class page {
 	}
 
 	private function control_print() {
-		if (defined('DEBUG_ENABLED') && DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		echo '<table class="control" width="100%" border="0">';
 		echo '<tr><td>';
 
@@ -203,9 +185,6 @@ class page {
 	}
 
 	protected function tree() {
-		if (defined('DEBUG_ENABLED') && DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if (! isset($_SESSION[APPCONFIG]))
 			return;
 
@@ -232,9 +211,6 @@ class page {
 	}
 
 	public function block_add($side,$object) {
-		if (defined('DEBUG_ENABLED') && DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if (! is_object($object))
 			error(sprintf('block_add called with [%s], but it is not an object',serialize($object)));
 
@@ -242,9 +218,6 @@ class page {
 	}
 
 	private function block_print($side) {
-		if (defined('DEBUG_ENABLED') && DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if (! isset($this->_block[$side]))
 			return;
 
@@ -255,9 +228,6 @@ class page {
 	}
 
 	private function sysmsg() {
-		if (defined('DEBUG_ENABLED') && DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if (isset($this->sysmsg)) {
 			foreach ($this->sysmsg as $index => $details) {
 				switch ($details['type']) {
@@ -293,12 +263,9 @@ class page {
 	}
 
 	private function body($raw=false) {
-		if (defined('DEBUG_ENABLED') && DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# Add the Session System Messages
 		if (isset($_SESSION['sysmsg']) && is_array($_SESSION['sysmsg'])) {
-			foreach ($_SESSION['sysmsg'] as $msg) 
+			foreach ($_SESSION['sysmsg'] as $msg)
 				$this->setsysmsg($msg);
 
 			unset($_SESSION['sysmsg']);
@@ -317,9 +284,6 @@ class page {
 	}
 
 	private function footer_print() {
-		if (defined('DEBUG_ENABLED') && DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		printf('<tr class="foot"><td><small>%s</small></td><td colspan="2"><div id="ajFOOT">%s</div>%s</td></tr>',
 			isCompress() ? '[C]' : '&nbsp;',
 			app_version(),
@@ -330,9 +294,6 @@ class page {
 	 * Only show a particular page frame - used by an AJAX call
 	 */
 	public function show($frame,$compress=false,$raw=false) {
-		if (defined('DEBUG_ENABLED') && DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# If the body is called via AJAX, and compression is enable, we need to compress the output
 		if ($compress && ob_get_level() && isCompress()) {
 			ob_end_clean();
@@ -356,18 +317,11 @@ class page {
 			$output = ob_get_contents();
 			ob_end_clean();
 
-			if (defined('DEBUG_ENABLED') && DEBUG_ENABLED)
-				debug_log('Sending COMPRESSED output to browser[(%s),%s]',129,0,__FILE__,__LINE__,__METHOD__,
-					strlen($output),$output);
-
 			print gzencode($output);
 		}
 	}
 
 	public function display($filter=array()) {
-		if (defined('DEBUG_ENABLED') && DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		# Control what is displayed.
 		$display = array(
 			'HEAD'=>false,
@@ -434,18 +388,11 @@ class page {
 			$output = ob_get_contents();
 			ob_end_clean();
 
-			if (defined('DEBUG_ENABLED') && DEBUG_ENABLED)
-				debug_log('Sending COMPRESSED output to browser[(%s),%s]',129,0,__FILE__,__LINE__,__METHOD__,
-					strlen($output),$output);
-
 			print gzencode($output);
 		}
 	}
 
 	public function setsysmsg($data) {
-		if (defined('DEBUG_ENABLED') && DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if (! is_array($data))
 			return;
 

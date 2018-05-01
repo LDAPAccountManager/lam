@@ -197,24 +197,9 @@ if (isset($_SERVER['SERVER_SOFTWARE']) && ! isset($_SESSION[APPCONFIG])) {
 if ($_SESSION[APPCONFIG]->getValue('appearance','timezone'))
 	date_default_timezone_set($_SESSION[APPCONFIG]->getValue('appearance','timezone'));
 
-# If we are here, $_SESSION is set - so enabled DEBUGing if it has been configured.
-if (($_SESSION[APPCONFIG]->getValue('debug','syslog') || $_SESSION[APPCONFIG]->getValue('debug','file'))
-	&& $_SESSION[APPCONFIG]->getValue('debug','level'))
-	define('DEBUG_ENABLED',1);
-else
-	define('DEBUG_ENABLED',0);
-
-if (DEBUG_ENABLED)
-	debug_log('Application (%s) initialised and starting with (%s).',1,0,__FILE__,__LINE__,__METHOD__,
-		app_version(),$_REQUEST);
-
 # Set our PHP timelimit.
 if ($_SESSION[APPCONFIG]->getValue('session','timelimit') && ! @ini_get('safe_mode'))
 	set_time_limit($_SESSION[APPCONFIG]->getValue('session','timelimit'));
-
-# If debug mode is set, increase the time_limit, since we probably need it.
-if (DEBUG_ENABLED && $_SESSION[APPCONFIG]->getValue('session','timelimit') && ! @ini_get('safe_mode'))
-	set_time_limit($_SESSION[APPCONFIG]->getValue('session','timelimit') * 5);
 
 setlanguage();
 

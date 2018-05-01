@@ -30,9 +30,6 @@ elseif (file_exists('welcome.php'))
 else
 	$app['script_cmd'] = null;
 
-if (DEBUG_ENABLED)
-	debug_log('Ready to render page for command [%s,%s].',128,0,__FILE__,__LINE__,__METHOD__,$www['cmd'],$app['script_cmd']);
-
 # Create page.
 # Set the index so that we render the right server tree.
 $www['page'] = new page($app['server']->getIndex());

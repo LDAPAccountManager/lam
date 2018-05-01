@@ -191,7 +191,7 @@ class quota extends baseModule {
 			$remote->connect($server);
 			$quotas = $remote->execute(implode(quota::$SPLIT_DELIMITER, array($userName, "quota", "get", $this->get_scope())));
 			$remote->disconnect();
-			if (sizeof($quotas) == 0) {
+			if (empty($quotas)) {
 				continue;
 			}
 			$allQuotas = explode(":", $quotas);

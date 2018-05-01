@@ -112,9 +112,6 @@ if ($copy_result) {
 }
 
 function r_copy_dn($serverSRC,$serverDST,$snapshottree,$dnSRC,$dnDST,$remove) {
-	if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-		debug_log('Entered (%%)',1,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 	$copy_message = array();
 
 	$children = isset($snapshottree[$dnSRC]) ? $snapshottree[$dnSRC] : null;
@@ -162,9 +159,6 @@ function r_copy_dn($serverSRC,$serverDST,$snapshottree,$dnSRC,$dnDST,$remove) {
 }
 
 function copy_dn($serverSRC,$serverDST,$dnSRC,$dnDST,$remove) {
-	if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-		debug_log('Entered (%%)',1,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 	$request = array();
 	$request['pageSRC'] = new PageRender($serverSRC->getIndex(),get_request('template','REQUEST',false,'none'));
 	$request['pageSRC']->setDN($dnSRC);
@@ -186,9 +180,6 @@ function copy_dn($serverSRC,$serverDST,$dnSRC,$dnDST,$remove) {
 }
 
 function build_tree($server,$dn,$buildtree) {
-	if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-		debug_log('Entered (%%)',1,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 	# We search all children, not only the visible children in the tree
 	$children = $server->getContainerContents($dn,null,0);
 
@@ -197,9 +188,6 @@ function build_tree($server,$dn,$buildtree) {
 		foreach ($children as $child_dn)
 			$buildtree = build_tree($server,$child_dn,$buildtree);
 	}
-
-	if (DEBUG_ENABLED)
-		debug_log('Returning (%s)',1,0,__FILE__,__LINE__,__METHOD__,$buildtree);
 
 	return $buildtree;
 }

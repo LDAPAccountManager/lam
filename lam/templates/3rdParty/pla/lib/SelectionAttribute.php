@@ -38,9 +38,6 @@ class SelectionAttribute extends Attribute {
 	}
 
 	public function addValue($new_val,$i=-1) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',5,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->addOption($new_val,$new_val);
 	}
 

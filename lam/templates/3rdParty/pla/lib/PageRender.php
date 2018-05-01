@@ -21,9 +21,6 @@ class PageRender extends Visitor {
 	protected $page;
 
 	public function __construct($server_id,$template_id) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$this->server_id = $server_id;
 		$this->template_id = $template_id;
 	}
@@ -37,23 +34,14 @@ class PageRender extends Visitor {
 	 * Get our templates applicable for this object
 	 */
 	protected function getTemplates() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return new Templates($this->server_id);
 	}
 
 	public function getTemplate() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return $this->template;
 	}
 
 	public function getTemplateID() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		return $this->template->getID();
 	}
 
@@ -61,11 +49,6 @@ class PageRender extends Visitor {
 	 * Initialise the PageRender
 	 */
 	public function accept() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s:%s</font><br />',time(),__METHOD__);
-
 		if ($this->template_id) {
 			$templates = $this->getTemplates();
 			$this->template = $templates->getTemplate($this->template_id);
@@ -93,8 +76,6 @@ class PageRender extends Visitor {
 				}
 
 			foreach ($this->template->getAttributes(true) as $attribute) {
-				if (DEBUGTMP||DEBUGTMPSUB) printf('<font size=-2>* %s [Accept:%s]</font><br />',__METHOD__,get_class($attribute));
-
 				$this->visit('',$attribute);
 			}
 		}
@@ -113,9 +94,6 @@ class PageRender extends Visitor {
 	}
 
 	public function setDN($dn) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if ($this->container)
 			system_message(array(
 				'title'=>__METHOD__,
@@ -126,9 +104,6 @@ class PageRender extends Visitor {
 	}
 
 	public function setContainer($dn) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		if ($this->dn)
 			system_message(array(
 				'title'=>__METHOD__,
@@ -148,9 +123,6 @@ class PageRender extends Visitor {
 	 * Process our <post> arguments from the templates
 	 */
 	protected function getPostAttribute($attribute,$i) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$autovalue = $attribute->getPostValue();
 		$args = explode(';',$autovalue['args']);
 		$server = $this->getServer();
@@ -311,32 +283,21 @@ class PageRender extends Visitor {
 	 * @return string Template ID to be used or null if the user was presented with a list.
 	 */
 	protected function getTemplateChoice() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		# First work out our template
 		$templates = $this->getTemplates();
 		$template = $templates->getTemplate($this->template_id);
 
 		# If the template we asked for is available
 		if ($this->template_id === $template->getID()) {
-			if (DEBUGTMP) printf('<font size=-2>%s:<u>%s</u></font><br />',__METHOD__,'Choosing the SELECTED template');
-
 			return $this->template_id;
 
 		# If there are no defined templates
 		} elseif (count($templates->getTemplates($this->getMode(),$this->getModeContainer(),false)) <= 0) {
-			if (DEBUGTMP) printf('<font size=-2>%s:<u>%s</u></font><br />',__METHOD__,'Choosing the DEFAULT template, no other template applicable');
-
 			# Since getTemplate() returns a default template if the one we want doesnt exist, we can return $templates->getID(), it should be the default.
 			return $template->getID();
 
 		# If there is only 1 defined template, and no default available, then that is our template.
 		} elseif ((count($templates->getTemplates($this->getMode(),$this->getModeContainer(),true)) == 1) && ! $this->haveDefaultTemplate()) {
-			if (DEBUGTMP) printf('<font size=-2>%s:<u>%s</u></font><br />',__METHOD__,'AUTOMATIC choosing a template, only 1 template applicable');
-
 			$template = $templates->getTemplates($this->getMode(),$this->getModeContainer(),true);
 			$template = array_shift($template);
 
@@ -347,8 +308,6 @@ class PageRender extends Visitor {
 				$this->drawTemplateChoice();
 
 		} else {
-			if (DEBUGTMP) printf('<font size=-2>%s:<u>%s</u></font><br />',__METHOD__,'SELECT a template to use.');
-
 			# Propose the template choice
 			$this->drawTemplateChoice();
 		}
@@ -360,8 +319,6 @@ class PageRender extends Visitor {
 	/** DRAW ATTRIBUTE NAME **/
 
 	final protected function drawNameAttribute($attribute) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$href = sprintf('cmd.php?cmd=schema&server_id=%s&view=attributes&viewvalue=%s',
 			$this->getServerID(),$attribute->getName());
 
@@ -374,15 +331,11 @@ class PageRender extends Visitor {
 				('Click to view the schema definition for attribute type'),$attribute->getName(false),_($attribute->getFriendlyName()));
 		else
 			printf('<acronym title="%s">%s</acronym>',_('This attribute is not defined in the LDAP schema'),_($attribute->getFriendlyName()));
-
-		if (DEBUGTMPSUB) printf(' <small>[%s]</small>',get_class($attribute));
 	}
 
 	/** ATTRIBUTE NOTES */
 
 	protected function drawNotesAttribute($attribute) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$attr_note = '';
 
 		foreach (array('NoteAlias','NoteRequired','NoteRDN','NoteHint','NoteRO') as $note) {
@@ -406,11 +359,6 @@ class PageRender extends Visitor {
 
 	#@todo this function shouldnt re-calculate requiredness, it should be known in the template already - need to set the ldaptype when initiating the attribute.
 	protected function getNoteRequiredAttribute($attribute) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$required_by = '';
 		$sattr_required = '';
 
@@ -448,11 +396,6 @@ class PageRender extends Visitor {
 	}
 
 	protected function getNoteRDNAttribute($attribute) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		# Is this attribute required because its the RDN
 		if ($attribute->isRDN())
 			return sprintf('<acronym title="%s">rdn</acronym>',_('This attribute is required for the RDN.'));
@@ -461,11 +404,6 @@ class PageRender extends Visitor {
 	}
 
 	protected function getNoteHintAttribute($attribute) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		# Is there a hint for this attribute
 		if ($attribute->getHint())
 			return sprintf('<acronym title="%s">%s</acronym>',_($attribute->getHint()),_('hint'));
@@ -474,11 +412,6 @@ class PageRender extends Visitor {
 	}
 
 	protected function getNoteROAttribute($attribute) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		return '';
 	}
 	/** DRAW HIDDEN VALUES **/
@@ -487,9 +420,6 @@ class PageRender extends Visitor {
 	 * Draw all hidden attributes
 	 */
 	final public function drawHiddenAttributes() {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		foreach ($this->template->getAttributes(true) as $attribute)
 			if ($attribute->hasbeenModified()) {
 				if ($attribute->getValues())
@@ -506,8 +436,6 @@ class PageRender extends Visitor {
 	 * Draw specific hidden attribute
 	 */
 	final protected function drawHiddenValueAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$val = $attribute->getValue($i);
 
 		printf('<input type="hidden" name="new_values[%s][%s]" id="new_values_%s_%s" value="%s" />',
@@ -517,23 +445,17 @@ class PageRender extends Visitor {
 
 	/** DRAW DISPLAYED OLD VALUES **/
 	protected function drawOldValuesAttribute($attribute) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		foreach ($attribute->getValues() as $index => $details)
 			$this->draw('OldValue',$attribute,$index);
 	}
 
 	final protected function drawOldValueAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		echo $attribute->getOldValue($i);
 	}
 
 	/** DRAW DISPLAYED CURRENT VALUES **/
 
 	protected function drawCurrentValuesAttribute($attribute) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		for ($i=0;$i<$attribute->getValueCount();$i++) {
 			if ($i > 0)
 				echo '<br/>';
@@ -546,9 +468,6 @@ class PageRender extends Visitor {
 	 * Draw the current specific value of an attribute
 	 */
 	final protected function drawCurrentValueAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-		if (DEBUGTMPSUB) printf(' <small>[%s]</small>',__METHOD__);
-
 		echo htmlspecialchars($attribute->getValue($i));
 	}
 
@@ -556,9 +475,6 @@ class PageRender extends Visitor {
 	 * Draw a input value for an attribute - used in a form.
 	 */
 	protected function drawFormValueAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-		if (DEBUGTMPSUB) printf(' <small>[%s]</small>',__METHOD__);
-
 		if ($this->getServer()->isReadOnly() || $attribute->isReadOnly()
 			|| ($attribute->isRDN() && $this->template->getType() != 'creation' && $i < count($attribute->getValues())))
 
@@ -575,8 +491,6 @@ class PageRender extends Visitor {
 	}
 
 	protected function drawFormReadOnlyValueAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$val = $attribute->getValue($i);
 
 		printf('<input type="text" class="roval" name="new_values[%s][%s]" id="new_values_%s_%s" value="%s" readonly="readonly" />',
@@ -584,8 +498,6 @@ class PageRender extends Visitor {
 	}
 
 	protected function drawFormReadWriteValueAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$val = $attribute->getValue($i);
 
 		if ($attribute->getHelper() || $attribute->getVerify())
@@ -628,8 +540,6 @@ class PageRender extends Visitor {
 	 * Draw specific hidden binary attribute
 	 */
 	final protected function drawHiddenValueBinaryAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$val = $attribute->getValue($i);
 
 		printf('<input type="hidden" name="new_values[%s][%s]" value="%s" />',
@@ -652,8 +562,6 @@ class PageRender extends Visitor {
 	}
 
 	protected function drawFormReadOnlyValueBinaryAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$this->draw('CurrentValue',$attribute,$i);
 		echo '<br/><br/>';
 
@@ -667,8 +575,6 @@ class PageRender extends Visitor {
 	}
 
 	protected function drawFormReadWriteValueBinaryAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		if ($attribute->getValue($i)) {
 			$this->draw('FormReadOnlyValue',$attribute,$i);
 
@@ -688,8 +594,6 @@ class PageRender extends Visitor {
 	}
 
 	protected function drawFormReadWriteValueDateAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$val = $attribute->getValue($i);
 
 		echo '<span style="white-space: nowrap;">';
@@ -706,8 +610,6 @@ class PageRender extends Visitor {
 	}
 
 	protected function drawFormReadWriteValueDnAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$val = $attribute->getValue($i);
 
 		if ($attribute->getHelper())
@@ -737,8 +639,6 @@ class PageRender extends Visitor {
 	}
 
 	protected function drawFormReadWriteValueGidAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$this->drawFormReadWriteValueAttribute($attribute,$i);
 
 		$server = $this->getServer();
@@ -790,9 +690,6 @@ class PageRender extends Visitor {
 	 * Draw a Jpeg Attribute
 	 */
 	final protected function drawOldValueJpegAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-		if (DEBUGTMPSUB) printf(' <small>[%s]</small>',__METHOD__);
-
 		# If we dont have a value, we'll just return;
 		if (! $attribute->getOldValue($i))
 			return;
@@ -804,9 +701,6 @@ class PageRender extends Visitor {
 	 * Draw a Jpeg Attribute
 	 */
 	final protected function drawCurrentValueJpegAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-		if (DEBUGTMPSUB) printf(' <small>[%s]</small>',__METHOD__);
-
 		# If we dont have a value, we'll just return;
 		if (! $attribute->getValue($i))
 			return;
@@ -827,8 +721,6 @@ class PageRender extends Visitor {
 	}
 
 	protected function drawFormReadOnlyValueMultiLineAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$val = $attribute->getValue($i);
 
 		printf('<textarea class="roval" rows="%s" cols="%s" name="new_values[%s][%s]" id="new_values_%s_%s" readonly="readonly">%s</textarea>',
@@ -840,8 +732,6 @@ class PageRender extends Visitor {
 	}
 
 	protected function drawFormReadWriteValueMultiLineAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$val = $attribute->getValue($i);
 
 		printf('<textarea class="value" rows="%s" cols="%s" name="new_values[%s][%s]" id="new_values_%s_%s" %s%s>%s</textarea>',
@@ -855,8 +745,6 @@ class PageRender extends Visitor {
 	}
 
 	protected function drawFormValueObjectClassAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$val = $attribute->getValue($i);
 
 		/* It seems that openLDAP allows us to remove additional structural objectclasses
@@ -895,9 +783,6 @@ class PageRender extends Visitor {
 	}
 
 	protected function drawOldValuePasswordAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-		if (DEBUGTMPSUB) printf(' <small>[%s]</small>',__METHOD__);
-
 		$val = $attribute->getOldValue($i);
 
 		if (obfuscate_password_display(get_enc_type($val)))
@@ -907,9 +792,6 @@ class PageRender extends Visitor {
 	}
 
 	final protected function drawCurrentValuePasswordAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-		if (DEBUGTMPSUB) printf(' <small>[%s]</small>',__METHOD__);
-
 		$val = $attribute->getValue($i);
 
 		if (obfuscate_password_display(get_enc_type($val)))
@@ -919,8 +801,6 @@ class PageRender extends Visitor {
 	}
 
 	protected function drawFormReadOnlyValuePasswordAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$server = $this->getServer();
 		$val = $attribute->getValue($i);
 
@@ -941,8 +821,6 @@ class PageRender extends Visitor {
 	}
 
 	protected function drawFormReadWriteValuePasswordAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$server = $this->getServer();
 		$val = $attribute->getValue($i);
 
@@ -994,8 +872,6 @@ class PageRender extends Visitor {
 	}
 
 	protected function drawFormReadWriteValueSelectionAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		if ($attribute->isMultiple()) {
 			# For multiple selection, we draw the component only one time
 			if ($i > 0)
@@ -1126,9 +1002,6 @@ class PageRender extends Visitor {
 	 * @param string A shadow attribute name
 	 */
 	private function shadow_date($attribute) {
-		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
-			debug_log('Entered (%%)',129,0,__FILE__,__LINE__,__METHOD__,$fargs);
-
 		$shadowattr = array();
 		$shadowattr['lastchange'] = $this->template->getAttribute('shadowlastchange');
 		$shadowattr['max'] = $this->template->getAttribute('shadowmax');
@@ -1165,8 +1038,6 @@ class PageRender extends Visitor {
 	}
 
 	protected function drawShadowDateShadowAttribute($attribute) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$shadow_before_today_attrs = arrayLower($attribute->shadow_before_today_attrs);
 		$shadow_after_today_attrs = arrayLower($attribute->shadow_after_today_attrs);
 		$shadow_date = $this->shadow_date($attribute);
@@ -1193,15 +1064,11 @@ class PageRender extends Visitor {
 	}
 
 	protected function drawFormReadOnlyValueShadowAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$this->drawFormReadOnlyValueAttribute($attribute,$i);
 		$this->draw('ShadowDate',$attribute);
 	}
 
 	protected function drawFormReadWriteValueShadowAttribute($attribute,$i) {
-		if (DEBUGTMP) printf('<font size=-2>%s</font><br />',__METHOD__);
-
 		$this->drawFormReadWriteValueAttribute($attribute,$i);
 		$this->draw('ShadowDate',$attribute);
 	}
