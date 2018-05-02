@@ -15,13 +15,16 @@ use \htmlInputFileUpload;
 use \htmlHelpLink;
 use \htmlInputField;
 use \htmlHiddenInput;
+use \htmlResponsiveRow;
+use \htmlResponsiveSelect;
+use \htmlGroup;
 use \LAM\TYPES\TypeManager;
 /*
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2017  Roland Gruber
+                2005 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -206,7 +209,7 @@ foreach ($templateClasses as $templateClass) {
 		exit;
 	}
 }
-include '../main_header.php';
+include '../../lib/adminHeader.inc';
 
 ?>
 <div class="user-bright smallPaddingContent">
@@ -361,9 +364,9 @@ include '../main_header.php';
 			echo "<div id=\"exportDialog_$typeId\" class=\"hidden\">\n";
 			echo "<form id=\"exportDialogForm_$typeId\" method=\"post\" action=\"pdfmain.php\">\n";
 
-			$container = new htmlTable();
+			$containerTarget = new htmlResponsiveRow();
 
-			$container->addElement(new htmlOutputText(_("Target server profile")), true);
+			$containerTarget->add(new htmlOutputText(_("Target server profile")), 12);
 			$exportOptions = array();
 			foreach ($configProfiles as $profile) {
 				$typeManagerExport = new TypeManager($serverProfiles[$profile]);
@@ -376,27 +379,28 @@ include '../main_header.php';
 			}
 			$exportOptions['*' . _('Global templates')][_('Global templates')] = 'templates*##';
 
-			$select = new htmlSelect('exportProfiles_' . $typeId, $exportOptions, array(), count($exportOptions) < 10 ? count($exportOptions, 1) : 10);
+			$exportSize = count($exportOptions) < 10 ? count($exportOptions, 1) : 10;
+			$select = new htmlSelect('exportProfiles_' . $typeId, $exportOptions, array(), $exportSize);
 			$select->setHasDescriptiveElements(true);
 			$select->setContainsOptgroups(true);
 			$select->setMultiSelect(true);
 
-			$container->addElement($select);
-			$container->addElement(new htmlHelpLink('363'), true);
+			$containerTarget->add($select, 11);
+			$containerTarget->add(new htmlHelpLink('363'), 1);
 
-			$container->addElement(new htmlSpacer(null, '10px'), true);
+			$containerTarget->addVerticalSpacer('2rem');
 
-			$container->addElement(new htmlOutputText(_("Master password")), true);
+			$containerTarget->add(new htmlOutputText(_("Master password")), 12);
 			$exportPasswd = new htmlInputField('passwd_e_' . $typeId);
 			$exportPasswd->setIsPassword(true);
-			$container->addElement($exportPasswd);
-			$container->addElement(new htmlHelpLink('236'));
-			$container->addElement(new htmlHiddenInput('export', '1'), true);
-			$container->addElement(new htmlHiddenInput('typeId', $typeId), true);
-			$container->addElement(new htmlHiddenInput('name_' . $typeId, '_'), true);
-			addSecurityTokenToMetaHTML($container);
+			$containerTarget->add($exportPasswd, 11);
+			$containerTarget->add(new htmlHelpLink('236'), 1);
+			$containerTarget->add(new htmlHiddenInput('export', '1'), 12);
+			$containerTarget->add(new htmlHiddenInput('typeId', $typeId), 12);
+			$containerTarget->add(new htmlHiddenInput('name_' . $typeId, '_'), 12);
+			addSecurityTokenToMetaHTML($containerTarget);
 
-			parseHtml(null, $container, array(), false, $tabindex, 'user');
+			parseHtml(null, $containerTarget, array(), false, $tabindex, 'user');
 
 			echo '</form>';
 			echo "</div>\n";
@@ -413,7 +417,7 @@ echo '<div id="deleteProfileDialog" class="hidden"><form id="deleteProfileForm" 
 	echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';
 echo '</form></div>';
 
-include '../main_footer.php';
+include '../../lib/adminFooter.inc';
 
 
 /**
