@@ -332,8 +332,8 @@ include '../../lib/adminHeader.inc';
 			echo "<div id=\"importDialog_$typeId\" class=\"hidden\">\n";
 			echo "<form id=\"importDialogForm_$typeId\" method=\"post\" action=\"pdfmain.php\">\n";
 
-			$container = new htmlTable();
-			$container->addElement(new htmlOutputText(_('PDF structures')), true);
+			$containerStructures = new htmlResponsiveRow();
+			$containerStructures->add(new htmlOutputText(_('PDF structures')), 12);
 
 			$select = new htmlSelect('importProfiles_' . $typeId, $importOptions, array(), count($importOptions, 1) < 15 ? count($importOptions, 1) : 15);
 			$select->setMultiSelect(true);
@@ -341,21 +341,21 @@ include '../../lib/adminHeader.inc';
 			$select->setContainsOptgroups(true);
 			$select->setWidth('290px');
 
-			$container->addElement($select);
-			$container->addElement(new htmlHelpLink('408'), true);
+			$containerStructures->add($select, 11);
+			$containerStructures->add(new htmlHelpLink('408'), 1);
 
-			$container->addElement(new htmlSpacer(null, '10px'), true);
+			$containerStructures->addVerticalSpacer('2rem');
 
-			$container->addElement(new htmlOutputText(_("Master password")), true);
+			$containerStructures->add(new htmlOutputText(_("Master password")), 12);
 			$exportPasswd = new htmlInputField('passwd_i_' . $typeId);
 			$exportPasswd->setIsPassword(true);
-			$container->addElement($exportPasswd);
-			$container->addElement(new htmlHelpLink('236'));
-			$container->addElement(new htmlHiddenInput('import', '1'));
-			$container->addElement(new htmlHiddenInput('typeId', $typeId), true);
-			addSecurityTokenToMetaHTML($container);
+			$containerStructures->add($exportPasswd, 11);
+			$containerStructures->add(new htmlHelpLink('236'), 1);
+			$containerStructures->add(new htmlHiddenInput('import', '1'), 12);
+			$containerStructures->add(new htmlHiddenInput('typeId', $typeId), 12);
+			addSecurityTokenToMetaHTML($containerStructures);
 
-			parseHtml(null, $container, array(), false, $tabindex, 'user');
+			parseHtml(null, $containerStructures, array(), false, $tabindex, 'user');
 
 			echo '</form>';
 			echo "</div>\n";
