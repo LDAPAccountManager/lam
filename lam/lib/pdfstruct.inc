@@ -4,11 +4,9 @@ namespace LAM\PDF;
 use \htmlStatusMessage;
 use \LAMException;
 /*
-$Id$
-
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2011 - 2017  Roland Gruber
+                2011 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -207,13 +205,19 @@ function deletePDFLogo($name) {
 	// check if still in use
 	$typeManager = new \LAM\TYPES\TypeManager();
 	$activeTypes = $typeManager->getConfiguredTypes();
+	$reader = new PDFStructureReader();
 	foreach ($activeTypes as $type) {
 		$structures = getPDFStructures($type->getId());
 		foreach ($structures as $structure) {
-			$data = loadPDFStructure($type->getId(), $structure);
-			if ($data['page_definitions']['filename'] == $name) {
-				return new htmlStatusMessage('ERROR', _('Unable to delete logo file.'),
-					sprintf(_('Logo is still in use by PDF structure "%s" in account type "%s".'), $structure, $type->getAlias()));
+			try {
+				$data = $reader->read($type->getId(), $structure);
+				if ($data->getLogo() == $name) {
+					return new htmlStatusMessage('ERROR', _('Unable to delete logo file.'),
+						sprintf(_('Logo is still in use by PDF structure "%s" in account type "%s".'), $structure, $type->getAlias()));
+				}
+			}
+			catch (LAMException $e) {
+				logNewMessage(LOG_ERR, 'Error reading PDF file ' . $e->getMessage());
 			}
 		}
 	}
@@ -367,7 +371,7 @@ class PDFStructureReader {
 				$sections[] = $this->readSection($xml);
 			}
 			else {
-				logNewMessage(LOG_ERR, 'Unexpected tag name: ' . $xml->name);
+				logNewMessage(LOG_ERR, 'Unexpected tag name: ' . $xml->name . ' in ' . $file);
 				throw new \LAMException(_('Unable to read PDF structure.'));
 			}
 		}

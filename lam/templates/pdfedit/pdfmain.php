@@ -1,6 +1,5 @@
 <?php
 namespace LAM\TOOLS\PDF_EDITOR;
-use \htmlTable;
 use \htmlTitle;
 use \htmlStatusMessage;
 use \LAMCfgMain;
@@ -16,7 +15,6 @@ use \htmlHelpLink;
 use \htmlInputField;
 use \htmlHiddenInput;
 use \htmlResponsiveRow;
-use \htmlResponsiveSelect;
 use \htmlGroup;
 use \LAM\TYPES\TypeManager;
 /*
@@ -104,21 +102,19 @@ foreach ($types as $type) {
 }
 natcasesort($sortedTypes);
 
-$container = new htmlTable();
-$container->addElement(new htmlTitle(_('PDF editor')), true);
+$container = new htmlResponsiveRow();
+$container->add(new htmlTitle(_('PDF editor')), 12);
 
 if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
 	$typeToDelete = $typeManager->getConfiguredType($_POST['profileDeleteType']);
 	// delete structure
 	if (\LAM\PDF\deletePDFStructure($_POST['profileDeleteType'], $_POST['profileDeleteName'])) {
 		$message = new htmlStatusMessage('INFO', _('Deleted PDF structure.'), $typeToDelete->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
-		$message->colspan = 10;
-		$container->addElement($message, true);
+		$container->add($message, 12);
 	}
 	else {
 		$message = new htmlStatusMessage('ERROR', _('Unable to delete PDF structure!'), $typeToDelete->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
-		$message->colspan = 10;
-		$container->addElement($message, true);
+		$container->add($message, 12);
 	}
 }
 
@@ -147,7 +143,7 @@ if (!empty($_POST['import'])) {
 	}
 	if ($errMessage !== null) {
 		$errMessage->colspan = 10;
-		$container->addElement($errMessage, true);
+		$container->add($errMessage, 12);
 	}
 }
 
@@ -172,7 +168,7 @@ if (!empty($_POST['export'])) {
 	}
 	if ($errMessage !== null) {
 		$errMessage->colspan = 10;
-		$container->addElement($errMessage, true);
+		$container->add($errMessage, 12);
 	}
 }
 
@@ -180,13 +176,13 @@ if (!empty($_POST['export'])) {
 if (isset($_POST['uploadLogo']) && !empty($_FILES['logoUpload']) && !empty($_FILES['logoUpload']['size'])) {
 	$file = $_FILES['logoUpload']['tmp_name'];
 	$filename = $_FILES['logoUpload']['name'];
-	$container->addElement(\LAM\PDF\uploadPDFLogo($file, $filename), true);
+	$container->add(\LAM\PDF\uploadPDFLogo($file, $filename), 12);
 }
 
 // delete logo file
 if (isset($_POST['delLogo'])) {
 	$toDel = $_POST['logo'];
-	$container->addElement(\LAM\PDF\deletePDFLogo($toDel), true);
+	$container->add(\LAM\PDF\deletePDFLogo($toDel), 12);
 }
 
 // get list of account types
@@ -218,70 +214,64 @@ include '../../lib/adminHeader.inc';
 	<?php
 		if (isset($_GET['savedSuccessfully'])) {
 			$message = new htmlStatusMessage("INFO", _("PDF structure was successfully saved."), htmlspecialchars($_GET['savedSuccessfully']));
-			$message->colspan = 10;
-			$container->addElement($message, true);
+			$container->add($message, 12);
 		}
 
 		if (isset($_GET['loadFailed'])) {
 			$message = new htmlStatusMessage("ERROR", _("Unable to read PDF structure."), htmlspecialchars($_GET['name']));
-			$message->colspan = 10;
-			$container->addElement($message, true);
+			$container->add($message, 12);
 		}
 
 		// new template
 		if (!empty($availableTypes)) {
-			$container->addElement(new htmlSubTitle(_('Create a new PDF structure')), true);
-			$newPDFContainer = new htmlTable();
+			$container->add(new htmlSubTitle(_('Create a new PDF structure')), 12);
 			$newProfileSelect = new htmlSelect('typeId', $availableTypes);
 			$newProfileSelect->setHasDescriptiveElements(true);
 			$newProfileSelect->setWidth('15em');
-			$newPDFContainer->addElement($newProfileSelect);
-			$newPDFContainer->addElement(new htmlSpacer('10px', null));
-			$newPDFContainer->addElement(new htmlButton('createNewTemplate', _('Create')));
-			$container->addElement($newPDFContainer, true);
-			$container->addElement(new htmlSpacer(null, '10px'), true);
+			$container->addLabel($newProfileSelect);
+			$container->addField(new htmlButton('createNewTemplate', _('Create')));
+			$container->addVerticalSpacer('2rem');
 		}
 
 		// existing templates
-		$container->addElement(new htmlSubTitle(_("Manage existing PDF structures")), true);
-		$existingContainer = new htmlTable();
+		$container->add(new htmlSubTitle(_("Manage existing PDF structures")), 12);
 		foreach ($templateClasses as $templateClass) {
-			$existingContainer->addElement(new htmlImage('../../graphics/' . $templateClass['icon']));
-			$existingContainer->addElement(new htmlSpacer('3px', null));
-			$existingContainer->addElement(new htmlOutputText($templateClass['title']));
-			$existingContainer->addElement(new htmlSpacer('3px', null));
+			$labelGroup = new htmlGroup();
+			$labelGroup->addElement(new htmlImage('../../graphics/' . $templateClass['icon']));
+			$labelGroup->addElement(new htmlSpacer('3px', null));
+			$labelGroup->addElement(new htmlOutputText($templateClass['title']));
+			$container->add($labelGroup, 12, 4);
 			$select = new htmlSelect('template_' . $templateClass['typeId'], $templateClass['templates']);
 			$select->setWidth('15em');
-			$existingContainer->addElement($select);
-			$existingContainer->addElement(new htmlSpacer('3px', null));
+			$container->add($select, 12, 4);
+			$buttonGroup = new htmlGroup();
 			$exEditButton = new htmlButton('editTemplate_' . $templateClass['typeId'], 'edit.png', true);
 			$exEditButton->setTitle(_('Edit'));
-			$existingContainer->addElement($exEditButton);
+			$buttonGroup->addElement($exEditButton);
 			$deleteLink = new htmlLink(null, '#', '../../graphics/delete.png');
 			$deleteLink->setTitle(_('Delete'));
 			$deleteLink->setOnClick("profileShowDeleteDialog('" . _('Delete') . "', '" . _('Ok') . "', '" . _('Cancel') . "', '" . $templateClass['typeId'] . "', '" . 'template_' . $templateClass['typeId'] . "');");
-			$existingContainer->addElement($deleteLink);
+			$buttonGroup->addElement($deleteLink);
 
 			if (count($configProfiles) > 1) {
 				$importLink = new htmlLink(null, '#', '../../graphics/import.png');
 				$importLink->setTitle(_('Import PDF structures'));
 				$importLink->setOnClick("showDistributionDialog('" . _("Import PDF structures") . "', '" .
 										_('Ok') . "', '" . _('Cancel') . "', '" . $templateClass['typeId'] . "', 'import');");
-				$existingContainer->addElement($importLink);
+				$buttonGroup->addElement($importLink);
 			}
 			$exportLink = new htmlLink(null, '#', '../../graphics/export.png');
 			$exportLink->setTitle(_('Export PDF structure'));
 			$exportLink->setOnClick("showDistributionDialog('" . _("Export PDF structure") . "', '" .
 									_('Ok') . "', '" . _('Cancel') . "', '" . $templateClass['typeId'] . "', 'export', '" . 'template_' . $templateClass['typeId'] . "', '" . $_SESSION['config']->getName() . "');");
-			$existingContainer->addElement($exportLink);
-			$existingContainer->addNewLine();
+			$buttonGroup->addElement($exportLink);
+			$container->add($buttonGroup, 12, 4);
+			$container->addVerticalSpacer('1rem');
 		}
-		$container->addElement($existingContainer, true);
 
 		// manage logos
-		$logoContainer = new htmlTable();
-		$logoContainer->addElement(new htmlSpacer(null, '30px'), true);
-		$logoContainer->addElement(new htmlSubTitle(_('Manage logos')), true);
+		$container->addVerticalSpacer('4rem');
+		$container->add(new htmlSubTitle(_('Manage logos')), 12);
 		$logos = \LAM\PDF\getAvailableLogos();
 		$logoOptions = array();
 		foreach ($logos as $logo) {
@@ -291,17 +281,17 @@ include '../../lib/adminHeader.inc';
 		}
 		$logoSelect = new htmlSelect('logo', $logoOptions, null);
 		$logoSelect->setHasDescriptiveElements(true);
-		$logoContainer->addElement($logoSelect);
+		$container->addLabel($logoSelect);
 		$delLogo = new htmlButton('delLogo', _('Delete'));
 		$delLogo->setIconClass('deleteButton');
-		$logoContainer->addElement($delLogo, true);
-		$logoContainer->addElement(new htmlInputFileUpload('logoUpload'));
+		$container->addField($delLogo);
+		$container->addVerticalSpacer('2rem');
+		$container->addLabel(new htmlInputFileUpload('logoUpload'));
 		$logoUpload = new htmlButton('uploadLogo', _('Upload'));
 		$logoUpload->setIconClass('upButton');
-		$logoContainer->addElement($logoUpload);
-		$container->addElement($logoContainer, true);
+		$container->addField($logoUpload);
 
-		$container->addElement(new htmlSpacer(null, '10px'), true);
+		$container->addVerticalSpacer('2rem');
 		// generate content
 		$tabindex = 1;
 		parseHtml(null, $container, array(), false, $tabindex, 'user');
