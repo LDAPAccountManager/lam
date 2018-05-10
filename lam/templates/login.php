@@ -453,7 +453,7 @@ function display_LoginPage($licenseValidator, $error_message) {
 		<br><br>
 		<?PHP
 			if (isLAMProVersion() && $licenseValidator->isExpiringSoon()) {
-				$licenseMessage = sprintf(_('Your licence expires on %s.'), $licenseValidator->getLicense()->getExpirationDate()->format('Y-m-d'));
+				$licenseMessage = sprintf(_('Your licence expires on %s. You need to purchase a new license to be able to use LAM Pro after this date.'), $licenseValidator->getLicense()->getExpirationDate()->format('Y-m-d'));
 				StatusMessage('WARN', $licenseMessage);
 			}
 		?>
