@@ -250,20 +250,25 @@ include '../../lib/adminHeader.inc';
 			$buttonGroup->addElement($exEditButton);
 			$deleteLink = new htmlLink(null, '#', '../../graphics/delete.png');
 			$deleteLink->setTitle(_('Delete'));
-			$deleteLink->setOnClick("profileShowDeleteDialog('" . _('Delete') . "', '" . _('Ok') . "', '" . _('Cancel') . "', '" . $templateClass['typeId'] . "', '" . 'template_' . $templateClass['typeId'] . "');");
+			$deleteLink->setOnClick("profileShowDeleteDialog('" . _('Delete') . "', '" . _('Ok') . "', '" .
+										_('Cancel') . "', '" . $templateClass['typeId'] . "', '" . 'template_' .
+										$templateClass['typeId'] . "'); return false;");
 			$buttonGroup->addElement($deleteLink);
 
 			if (count($configProfiles) > 1) {
 				$importLink = new htmlLink(null, '#', '../../graphics/import.png');
 				$importLink->setTitle(_('Import PDF structures'));
 				$importLink->setOnClick("showDistributionDialog('" . _("Import PDF structures") . "', '" .
-										_('Ok') . "', '" . _('Cancel') . "', '" . $templateClass['typeId'] . "', 'import');");
+										_('Ok') . "', '" . _('Cancel') . "', '" . $templateClass['typeId'] .
+										"', 'import'); return false;");
 				$buttonGroup->addElement($importLink);
 			}
 			$exportLink = new htmlLink(null, '#', '../../graphics/export.png');
 			$exportLink->setTitle(_('Export PDF structure'));
 			$exportLink->setOnClick("showDistributionDialog('" . _("Export PDF structure") . "', '" .
-									_('Ok') . "', '" . _('Cancel') . "', '" . $templateClass['typeId'] . "', 'export', '" . 'template_' . $templateClass['typeId'] . "', '" . $_SESSION['config']->getName() . "');");
+									_('Ok') . "', '" . _('Cancel') . "', '" . $templateClass['typeId'] .
+									"', 'export', '" . 'template_' . $templateClass['typeId'] . "', '" .
+									$_SESSION['config']->getName() . "'); return false;");
 			$buttonGroup->addElement($exportLink);
 			$container->add($buttonGroup, 12, 4);
 			$container->addVerticalSpacer('1rem');
