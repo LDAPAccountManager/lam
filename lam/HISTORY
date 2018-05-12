@@ -1,4 +1,5 @@
 June 2018 6.4
+  - Imagick PHP extension required
   - Passwords can be checked against external service (e.g. https://api.pwnedpasswords.com/range)
   - IMAP: create mailbox via file upload
   - PHP 7.2 support

@@ -97,7 +97,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$this->messages['uid'][3] = array('ERROR', _('Account %s:') . ' inetOrgPerson_userName', _('User name already exists!'));
 		$this->messages['manager'][0] = array('ERROR', _('Account %s:') . ' inetOrgPerson_manager', _('This is not a valid DN!'));
 		$this->messages['file'][0] = array('ERROR', _('No file selected.'));
-		$this->messages['file'][1] = array('ERROR', _('Please upload a .jpg/.jpeg file.'));
 		$this->messages['file'][2] = array('ERROR', _('Unable to process this file.'));
 		$this->messages['file'][3] = array('ERROR', _('File is too large. Maximum allowed size is %s kB.'));
 		$this->messages['businessCategory'][0] = array('ERROR', _('Business category'), _('Please enter a valid business category!'));
@@ -1620,10 +1619,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if ($_FILES['photoFile'] && ($_FILES['photoFile']['size'] > 0)) {
 			$name = $_FILES['photoFile']['name'];
 			$extension = strtolower(substr($name, strpos($name, '.') + 1));
-			if (!extension_loaded('imagick') && !($extension == 'jpg') && !($extension == 'jpeg')) {
-				$messages[] = $this->messages['file'][1];
-				return $messages;
-			}
 			$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
 			$data = fread($handle, 10000000);
 			if (!empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]) && (strlen($data) > (1024 * $this->moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]))) {
@@ -1633,27 +1628,25 @@ class inetOrgPerson extends baseModule implements passwordService {
 				return array($errMsg);
 			}
 			fclose($handle);
-			if (extension_loaded('imagick')) {
-				// convert to JPG if imagick extension is available
-				$image = new Imagick();
-				try {
-				$image->readImageBlob($data);
-				// resize if maximum values specified
-				if (!empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0]) || !empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0])) {
-					$maxWidth = empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0]) ? $image->getimagewidth() : $this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0];
-					$maxHeight = empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0]) ? $image->getimageheight() : $this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0];
-					$image->thumbnailimage($maxWidth, $maxHeight, true);
-				}
-				$image->setImageCompression(Imagick::COMPRESSION_JPEG);
-				$image->setImageFormat('jpeg');
-				$data = $image->getimageblob();
-				}
-				catch (Exception $e) {
-					$msg =  $this->messages['file'][2];
-					$msg[] = htmlspecialchars($e->getMessage());
-					$messages[] = $msg;
-					return $messages;
-				}
+			// convert to JPG if imagick extension is available
+			$image = new Imagick();
+			try {
+			$image->readImageBlob($data);
+			// resize if maximum values specified
+			if (!empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0]) || !empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0])) {
+				$maxWidth = empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0]) ? $image->getimagewidth() : $this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0];
+				$maxHeight = empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0]) ? $image->getimageheight() : $this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0];
+				$image->thumbnailimage($maxWidth, $maxHeight, true);
+			}
+			$image->setImageCompression(Imagick::COMPRESSION_JPEG);
+			$image->setImageFormat('jpeg');
+			$data = $image->getimageblob();
+			}
+			catch (Exception $e) {
+				$msg =  $this->messages['file'][2];
+				$msg[] = htmlspecialchars($e->getMessage());
+				$messages[] = $msg;
+				return $messages;
 			}
 			$this->attributes['jpegPhoto'][0] = $data;
 		}
@@ -1670,10 +1663,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 	*/
 	function display_html_photo() {
 		$container = new htmlTable();
-		$label = _('Photo file (JPG format)');
-		if (extension_loaded('imagick')) {
-			$label = _('Photo file');
-		}
+		$label = _('Photo file');
 		$container->addElement(new htmlTableExtendedInputFileUpload('photoFile', $label, 'photoUpload'), true);
 		$buttonContainer = new htmlTable();
 		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'submit', _('Add photo')));
@@ -2434,10 +2424,8 @@ class inetOrgPerson extends baseModule implements passwordService {
 	public function getSelfServiceSettings($profile) {
 		$container = new htmlResponsiveRow();
 		$container->add(new htmlSubTitle(_('Photo')), 12);
-		if (extension_loaded('imagick')) {
-			$container->add(new htmlResponsiveInputField(_('Maximum width (px)'), 'inetOrgPerson_jpegPhoto_maxWidth', null, array('crop', get_class($this))), 12);
-			$container->add(new htmlResponsiveInputField(_('Maximum height (px)'), 'inetOrgPerson_jpegPhoto_maxHeight', null, array('crop', get_class($this))), 12);
-		}
+		$container->add(new htmlResponsiveInputField(_('Maximum width (px)'), 'inetOrgPerson_jpegPhoto_maxWidth', null, array('crop', get_class($this))), 12);
+		$container->add(new htmlResponsiveInputField(_('Maximum height (px)'), 'inetOrgPerson_jpegPhoto_maxHeight', null, array('crop', get_class($this))), 12);
 		$container->add(new htmlResponsiveInputField(_('Maximum file size (kB)'), 'inetOrgPerson_jpegPhoto_maxSize'), 12);
 		return $container;
 	}
@@ -3225,15 +3213,13 @@ class inetOrgPerson extends baseModule implements passwordService {
 					$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
 					$data = fread($handle, 100000000);
 					fclose($handle);
-					if (extension_loaded('imagick')) {
-						try {
-							$data = inetOrgPerson::resizeAndConvertImage($data, $moduleSettings);
-						}
-						catch (Exception $e) {
-							$msg =  $this->messages['file'][2];
-							$msg[] = htmlspecialchars($e->getMessage());
-							$return['messages'][] = $msg;
-						}
+					try {
+						$data = inetOrgPerson::resizeAndConvertImage($data, $moduleSettings);
+					}
+					catch (Exception $e) {
+						$msg =  $this->messages['file'][2];
+						$msg[] = htmlspecialchars($e->getMessage());
+						$return['messages'][] = $msg;
 					}
 					if (isset($_POST['removeReplacePhoto']) && ($_POST['removeReplacePhoto'] == 'on')) {
 						$return['mod']['jpegPhoto'][0] = $data;
@@ -3352,20 +3338,18 @@ class inetOrgPerson extends baseModule implements passwordService {
 	 * @return array binary image data
 	 */
 	private static function resizeAndConvertImage($data, $settings) {
-		if (extension_loaded('imagick')) {
-			// convert to JPG if imagick extension is available
-			$image = new Imagick();
-			$image->readImageBlob($data);
-			// resize if maximum values specified
-			if (!empty($settings['inetOrgPerson_jpegPhoto_maxWidth'][0]) || !empty($settings['inetOrgPerson_jpegPhoto_maxHeight'][0])) {
-				$maxWidth = empty($settings['inetOrgPerson_jpegPhoto_maxWidth'][0]) ? $image->getimagewidth() : $settings['inetOrgPerson_jpegPhoto_maxWidth'][0];
-				$maxHeight = empty($settings['inetOrgPerson_jpegPhoto_maxHeight'][0]) ? $image->getimageheight() : $settings['inetOrgPerson_jpegPhoto_maxHeight'][0];
-				$image->thumbnailimage($maxWidth, $maxHeight, true);
-			}
-			$image->setImageCompression(Imagick::COMPRESSION_JPEG);
-			$image->setImageFormat('jpeg');
-			$data = $image->getimageblob();
+		// convert to JPG if imagick extension is available
+		$image = new Imagick();
+		$image->readImageBlob($data);
+		// resize if maximum values specified
+		if (!empty($settings['inetOrgPerson_jpegPhoto_maxWidth'][0]) || !empty($settings['inetOrgPerson_jpegPhoto_maxHeight'][0])) {
+			$maxWidth = empty($settings['inetOrgPerson_jpegPhoto_maxWidth'][0]) ? $image->getimagewidth() : $settings['inetOrgPerson_jpegPhoto_maxWidth'][0];
+			$maxHeight = empty($settings['inetOrgPerson_jpegPhoto_maxHeight'][0]) ? $image->getimageheight() : $settings['inetOrgPerson_jpegPhoto_maxHeight'][0];
+			$image->thumbnailimage($maxWidth, $maxHeight, true);
 		}
+		$image->setImageCompression(Imagick::COMPRESSION_JPEG);
+		$image->setImageFormat('jpeg');
+		$data = $image->getimageblob();
 		return $data;
 	}
 
@@ -3718,10 +3702,8 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$advancedOptions->add(new htmlResponsiveInputCheckbox($id, false, $label, null, true), 12, 4);
 		}
 		$advancedOptions->add(new htmlSubTitle(_('Photo')), 12);
-		if (extension_loaded('imagick')) {
-			$advancedOptions->add(new htmlResponsiveInputField(_('Maximum width (px)'), 'inetOrgPerson_jpegPhoto_maxWidth', null, 'crop'), 12);
-			$advancedOptions->add(new htmlResponsiveInputField(_('Maximum height (px)'), 'inetOrgPerson_jpegPhoto_maxHeight', null, 'crop'), 12);
-		}
+		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum width (px)'), 'inetOrgPerson_jpegPhoto_maxWidth', null, 'crop'), 12);
+		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum height (px)'), 'inetOrgPerson_jpegPhoto_maxHeight', null, 'crop'), 12);
 		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum file size (kB)'), 'inetOrgPerson_jpegPhoto_maxSize'), 12);
 		$advancedOptionsAccordion = new htmlAccordion('inetOrgPersonAdvancedOptions', array(_('Advanced options') => $advancedOptions), false);
 		$configContainer->add($advancedOptionsAccordion, 12);

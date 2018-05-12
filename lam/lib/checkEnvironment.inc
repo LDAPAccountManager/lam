@@ -1,9 +1,8 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2015  Roland Gruber
+  Copyright (C) 2010 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -81,6 +80,10 @@ if (! function_exists('utf8_decode') || !extension_loaded('xml')) {
 }
 if (!extension_loaded('libxml')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no Lib XML support!", "Please install the Lib XML extension for PHP.");
+}
+// imagick
+if (!extension_loaded('imagick')) {
+	$criticalErrors[] = array("ERROR", "Your PHP has no imagick support.", "Please install the imagick extension for PHP.");
 }
 // check if PHP has GD support
 if (! function_exists('getimagesize')) {

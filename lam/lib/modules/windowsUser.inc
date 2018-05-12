@@ -2,10 +2,9 @@
 use \LAM\TYPES\TypeManager;
 use LAM\TYPES\ConfiguredType;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2017  Roland Gruber
+  Copyright (C) 2013 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1747,10 +1746,7 @@ class windowsUser extends baseModule implements passwordService {
 	*/
 	function display_html_photo() {
 		$container = new htmlTable();
-		$label = _('Photo file (JPG format)');
-		if (extension_loaded('imagick')) {
-			$label = _('Photo file');
-		}
+		$label = _('Photo file');
 		$container->addElement(new htmlTableExtendedInputFileUpload('photoFile', $label, 'photoUpload'), true);
 		$buttonContainer = new htmlTable();
 		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'submit', _('Add photo')));
@@ -1770,10 +1766,6 @@ class windowsUser extends baseModule implements passwordService {
 		if ($_FILES['photoFile'] && ($_FILES['photoFile']['size'] > 0)) {
 			$name = $_FILES['photoFile']['name'];
 			$extension = strtolower(substr($name, strpos($name, '.') + 1));
-			if (!extension_loaded('imagick') && !($extension == 'jpg') && !($extension == 'jpeg')) {
-				$messages[] = $this->messages['file'][1];
-				return $messages;
-			}
 			$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
 			$data = fread($handle, 10000000);
 			if (!empty($this->moduleSettings['windowsUser_jpegPhoto_maxSize'][0]) && (strlen($data) > (1024 * $this->moduleSettings['windowsUser_jpegPhoto_maxSize'][0]))) {
@@ -1783,27 +1775,25 @@ class windowsUser extends baseModule implements passwordService {
 				return array($errMsg);
 			}
 			fclose($handle);
-			if (extension_loaded('imagick')) {
-				// convert to JPG if imagick extension is available
-				$image = new Imagick();
-				try {
-				$image->readImageBlob($data);
-				// resize if maximum values specified
-				if (!empty($this->moduleSettings['windowsUser_jpegPhoto_maxWidth'][0]) || !empty($this->moduleSettings['windowsUser_jpegPhoto_maxHeight'][0])) {
-					$maxWidth = empty($this->moduleSettings['windowsUser_jpegPhoto_maxWidth'][0]) ? $image->getimagewidth() : $this->moduleSettings['windowsUser_jpegPhoto_maxWidth'][0];
-					$maxHeight = empty($this->moduleSettings['windowsUser_jpegPhoto_maxHeight'][0]) ? $image->getimageheight() : $this->moduleSettings['windowsUser_jpegPhoto_maxHeight'][0];
-					$image->thumbnailimage($maxWidth, $maxHeight, true);
-				}
-				$image->setImageCompression(Imagick::COMPRESSION_JPEG);
-				$image->setImageFormat('jpeg');
-				$data = $image->getimageblob();
-				}
-				catch (Exception $e) {
-					$msg =  $this->messages['file'][2];
-					$msg[] = htmlspecialchars($e->getMessage());
-					$messages[] = $msg;
-					return $messages;
-				}
+			// convert to JPG if imagick extension is available
+			$image = new Imagick();
+			try {
+			$image->readImageBlob($data);
+			// resize if maximum values specified
+			if (!empty($this->moduleSettings['windowsUser_jpegPhoto_maxWidth'][0]) || !empty($this->moduleSettings['windowsUser_jpegPhoto_maxHeight'][0])) {
+				$maxWidth = empty($this->moduleSettings['windowsUser_jpegPhoto_maxWidth'][0]) ? $image->getimagewidth() : $this->moduleSettings['windowsUser_jpegPhoto_maxWidth'][0];
+				$maxHeight = empty($this->moduleSettings['windowsUser_jpegPhoto_maxHeight'][0]) ? $image->getimageheight() : $this->moduleSettings['windowsUser_jpegPhoto_maxHeight'][0];
+				$image->thumbnailimage($maxWidth, $maxHeight, true);
+			}
+			$image->setImageCompression(Imagick::COMPRESSION_JPEG);
+			$image->setImageFormat('jpeg');
+			$data = $image->getimageblob();
+			}
+			catch (Exception $e) {
+				$msg =  $this->messages['file'][2];
+				$msg[] = htmlspecialchars($e->getMessage());
+				$messages[] = $msg;
+				return $messages;
 			}
 			$this->attributes['jpegPhoto'][0] = $data;
 		}
@@ -3222,10 +3212,8 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		$advancedOptions = new htmlResponsiveRow();
 		$advancedOptions->add(new htmlSubTitle(_('Photo')), 12);
-		if (extension_loaded('imagick')) {
-			$advancedOptions->add(new htmlResponsiveInputField(_('Maximum width (px)'), 'windowsUser_jpegPhoto_maxWidth', null, 'crop'), 12);
-			$advancedOptions->add(new htmlResponsiveInputField(_('Maximum height (px)'), 'windowsUser_jpegPhoto_maxHeight', null, 'crop'), 12);
-		}
+		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum width (px)'), 'windowsUser_jpegPhoto_maxWidth', null, 'crop'), 12);
+		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum height (px)'), 'windowsUser_jpegPhoto_maxHeight', null, 'crop'), 12);
 		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum file size (kB)'), 'windowsUser_jpegPhoto_maxSize'), 12);
 		$advancedOptionsAccordion = new htmlAccordion('inetOrgPersonAdvancedOptions', array(_('Advanced options') => $advancedOptions), false);
 		$advancedOptionsAccordion->colspan = 5;
