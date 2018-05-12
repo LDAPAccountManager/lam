@@ -1607,15 +1607,43 @@ class inetOrgPerson extends baseModule implements passwordService {
 
 	/**
 	* Sets a new photo.
+	*
+	* @return array list of error messages if any
 	*/
-	function process_photo() {
-		if (!isset($_POST['form_subpage_' . get_class($this) . '_attributes_submit'])) {
+	public function process_photo() {
+		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_back'])) {
 			return array();
 		}
-		$messages = array();
 		if ($this->isAdminReadOnly('jpegPhoto')) {
+			return array();
+		}
+		if (isset($_POST['form_subpage_' . get_class($this) . '_photo_upload'])) {
+			return $this->uploadPhoto();
+		}
+		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_crop'])) {
+			$messages = array();
+			$image = new Imagick();
+			try {
+				$image->readImageBlob($this->attributes['jpegPhoto'][0]);
+				$image->cropimage($_POST['croppingDataWidth'], $_POST['croppingDataHeight'], $_POST['croppingDataX'], $_POST['croppingDataY']);
+				$this->attributes['jpegPhoto'][0] = $image->getimageblob();
+			}
+			catch (Exception $e) {
+				$msg =  $this->messages['file'][2];
+				$msg[] = htmlspecialchars($e->getMessage());
+				$messages[] = $msg;
+			}
 			return $messages;
 		}
+	}
+
+	/**
+	 * Uploads the photo file.
+	 *
+	 * @return array error messages if any
+	 */
+	private function uploadPhoto() {
+		$messages = array();
 		if ($_FILES['photoFile'] && ($_FILES['photoFile']['size'] > 0)) {
 			$name = $_FILES['photoFile']['name'];
 			$extension = strtolower(substr($name, strpos($name, '.') + 1));
@@ -1628,19 +1656,19 @@ class inetOrgPerson extends baseModule implements passwordService {
 				return array($errMsg);
 			}
 			fclose($handle);
-			// convert to JPG if imagick extension is available
+			// convert to JPG
 			$image = new Imagick();
 			try {
-			$image->readImageBlob($data);
-			// resize if maximum values specified
-			if (!empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0]) || !empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0])) {
-				$maxWidth = empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0]) ? $image->getimagewidth() : $this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0];
-				$maxHeight = empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0]) ? $image->getimageheight() : $this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0];
-				$image->thumbnailimage($maxWidth, $maxHeight, true);
-			}
-			$image->setImageCompression(Imagick::COMPRESSION_JPEG);
-			$image->setImageFormat('jpeg');
-			$data = $image->getimageblob();
+				$image->readImageBlob($data);
+				// resize if maximum values specified
+				if (!empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0]) || !empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0])) {
+					$maxWidth = empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0]) ? $image->getimagewidth() : $this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0];
+					$maxHeight = empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0]) ? $image->getimageheight() : $this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0];
+					$image->thumbnailimage($maxWidth, $maxHeight, true);
+				}
+				$image->setImageCompression(Imagick::COMPRESSION_JPEG);
+				$image->setImageFormat('jpeg');
+				$data = $image->getimageblob();
 			}
 			catch (Exception $e) {
 				$msg =  $this->messages['file'][2];
@@ -1661,14 +1689,34 @@ class inetOrgPerson extends baseModule implements passwordService {
 	*
 	* @return array meta HTML code
 	*/
-	function display_html_photo() {
+	public function display_html_photo() {
 		$container = new htmlTable();
-		$label = _('Photo file');
-		$container->addElement(new htmlTableExtendedInputFileUpload('photoFile', $label, 'photoUpload'), true);
-		$buttonContainer = new htmlTable();
-		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'submit', _('Add photo')));
-		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
-		$container->addElement($buttonContainer);
+		if (empty($this->attributes['jpegPhoto'][0])) {
+			$container->addElement(new htmlSubTitle(_('Upload image')), true);
+			$label = _('Photo file');
+			$container->addElement(new htmlTableExtendedInputFileUpload('photoFile', $label, 'photoUpload'), true);
+			$container->addVerticalSpace('1rem');
+			$buttonContainer = new htmlTable();
+			$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'photo', 'upload', _('Upload')));
+			$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
+			$container->addElement($buttonContainer);
+		}
+		else {
+			$container->addElement(new htmlSubTitle(_('Crop image')), true);
+			$jpeg_filename = 'jpg' . getRandomNumber() . '.jpg';
+			$outjpeg = @fopen(dirname(__FILE__) . '/../../tmp/' . $jpeg_filename, "wb");
+			fwrite($outjpeg, $this->attributes['jpegPhoto'][0]);
+			fclose ($outjpeg);
+			$photoFile = '../../tmp/' . $jpeg_filename;
+			$img = new htmlImage($photoFile);
+			$img->setCSSClasses(array('photo'));
+			$img->enableCropping();
+			$container->addElement($img, true);
+			$container->addVerticalSpace('1rem');
+			$buttonContainer = new htmlTable();
+			$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'crop', _('Done')));
+			$container->addElement($buttonContainer, true);
+		}
 		return $container;
 	}
 

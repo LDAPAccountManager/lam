@@ -2543,6 +2543,8 @@ class htmlImage extends htmlElement {
 	private $title;
 	/** onClick event */
 	private $onClick = null;
+	/** enable cropping */
+	private $crop = false;
 
 	/**
 	 * Constructor.
@@ -2553,7 +2555,7 @@ class htmlImage extends htmlElement {
 	 * @param String $alt alt text (optional)
 	 * @param String $onClick onClick code (optional)
 	 */
-	function __construct($path, $width = null, $height = null, $alt = ' ', $title = null, $onClick = null) {
+	public function __construct($path, $width = null, $height = null, $alt = ' ', $title = null, $onClick = null) {
 		$this->path = htmlspecialchars($path);
 		$this->width = $width;
 		$this->height = $height;
@@ -2573,7 +2575,7 @@ class htmlImage extends htmlElement {
 	 * @param string $scope Account type
 	 * @return array List of input field names and their type (name => type)
 	 */
-	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$path = ' src="' . $this->path . '"';
 		$width = '';
 		if ($this->width != null) {
@@ -2588,6 +2590,9 @@ class htmlImage extends htmlElement {
 		if (!empty($this->title)) {
 			$title = ' title="' . $this->title . '"';
 		}
+		if ($this->crop) {
+			$this->cssClasses[] = 'cropperjsImage';
+		}
 		$classes = '';
 		if (!empty($this->cssClasses)) {
 			$classes = 'class="' . implode(' ', $this->cssClasses) . '"';
@@ -2597,7 +2602,44 @@ class htmlImage extends htmlElement {
 			$onClick = ' onclick="' . $this->onClick . '"';
 		}
 		echo '<img' . $path . $width . $height . $alt . $title . $classes . $onClick . ">";
+		if ($this->crop) {
+			$cropJsPath = 'templates/lib/extra/cropperjs/cropper.js';
+			if (is_file('../../templates/login.php')) {
+				$cropJsPath = '../../' . $cropJsPath;
+			}
+			else {
+				$cropJsPath = '../' . $cropJsPath;
+			}
+			echo '<script type="text/javascript" src="' . $cropJsPath . '"></script>';
+			echo '<script type="text/javascript">
+					var image = jQuery(\'.cropperjsImage\')[0];
+					var cropper = new Cropper(image, {
+						viewMode: 1,
+						movable: false,
+						zoomable: false,
+						crop: function(event) {
+							jQuery(\'#croppingDataX\').val(event.detail.x);
+							jQuery(\'#croppingDataY\').val(event.detail.y);
+							jQuery(\'#croppingDataWidth\').val(event.detail.width);
+							jQuery(\'#croppingDataHeight\').val(event.detail.height);
+						}
+					});
+					</script>';
+			echo '<input id="croppingDataX" type="hidden" name="croppingDataX" value="0"/>';
+			echo '<input id="croppingDataY" type="hidden" name="croppingDataY" value="0"/>';
+			echo '<input id="croppingDataWidth" type="hidden" name="croppingDataWidth" value="0"/>';
+			echo '<input id="croppingDataHeight" type="hidden" name="croppingDataHeight" value="0"/>';
+		}
 		return array();
+	}
+
+	/**
+	 * Enables cropping feature.
+	 * This will display a cropping box on the image. The cropping data
+	 * can be found in POST data (croppingDataX, croppingDataY, croppingDataWidth, croppingDataHeight).
+	 */
+	public function enableCropping() {
+		$this->crop = true;
 	}
 
 }

@@ -208,5 +208,6 @@ templates/lib/*jquery*.js                   B  2010  John Resig, Paul Bakaus, Fr
 templates/lib/*jquery-dropmenu-*.js         B  2010  Fred Heusschen
 templates/lib/*jquery-validationEngine-*.js B  2010  Cedric Dugas and Olivier Refalo
 templates/lib/*jquery-fineuploader-*.js     B  2010  Andrew Valums
-
+templates/lib/extra/cropperjs               B  2018  Chen Fengyuan
+style/600_cropper.css                       B  2018  Chen Fengyuan
 
