@@ -1392,7 +1392,7 @@ class LAMConfig {
 	* @return string password
 	*/
 	public function getScriptSSHKeyPassword() {
-		return $this->scriptSSHKeyPassword;
+		return deobfuscateText($this->scriptSSHKeyPassword);
 	}
 
 	/**
@@ -1401,7 +1401,7 @@ class LAMConfig {
 	* @param string $value password
 	*/
 	public function setScriptSSHKeyPassword($value) {
-		$this->scriptSSHKeyPassword = $value;
+		$this->scriptSSHKeyPassword = obfuscateText($value);
 	}
 
 	/**
@@ -1706,7 +1706,7 @@ class LAMConfig {
 	 * @param String $loginSearchPassword password
 	 */
 	public function setLoginSearchPassword($loginSearchPassword) {
-		$this->loginSearchPassword = $loginSearchPassword;
+		$this->loginSearchPassword = obfuscateText($loginSearchPassword);
 	}
 
 	/**
@@ -1715,7 +1715,7 @@ class LAMConfig {
 	 * @return String password
 	 */
 	public function getLoginSearchPassword() {
-		return $this->loginSearchPassword;
+		return deobfuscateText($this->loginSearchPassword);
 	}
 
 	/**
