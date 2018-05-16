@@ -56,6 +56,8 @@ class inetOrgPerson extends baseModule implements passwordService {
 
 	/** session variable for existing user certificates in self service */
 	const SESS_CERTIFICATES_LIST = 'inetOrgPerson_certificatesList';
+	/** session variable for existing user certificates in self service */
+	const SESS_PHOTO = 'inetOrgPerson_jpegPhoto';
 
 	/**
 	* This function fills the message array.
@@ -1648,7 +1650,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$name = $_FILES['photoFile']['name'];
 			$extension = strtolower(substr($name, strpos($name, '.') + 1));
 			$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
-			$data = fread($handle, 10000000);
+			$data = fread($handle, 100000000);
 			if (!empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]) && (strlen($data) > (1024 * $this->moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]))) {
 				$errMsg = $this->messages['file'][3];
 				$errMsg[] = null;
@@ -2740,31 +2742,18 @@ class inetOrgPerson extends baseModule implements passwordService {
 			);
 		}
 		if (in_array('jpegPhoto', $fields)) {
+			$_SESSION[self::SESS_PHOTO] = null;
 			if (isset($attributes['jpegPhoto'][0])) {
-				$jpeg_filename = 'jpegPhoto' . session_id() . '.jpg';
-				$outjpeg = fopen(realpath('../../') . '/tmp/' . $jpeg_filename, "wb");
-				fwrite($outjpeg, $attributes['jpegPhoto'][0]);
-				fclose ($outjpeg);
-				$photoFile = '../../tmp/' . $jpeg_filename;
-				$photoSub = new htmlTable();
-				$img = new htmlImage($photoFile);
-				$img->setCSSClasses(array('photo'));
-				$photoSub->addElement($img, true);
-				if (!in_array('jpegPhoto', $readOnlyFields)) {
-					$photoSubSub = new htmlTable();
-					$upload = new htmlInputFileUpload('photoFile');
-					$upload->colspan = 2;
-					$photoSubSub->addElement($upload, true);
-					$photoSubSub->addElement(new htmlTableExtendedInputCheckbox('removeReplacePhoto', false, _('Remove/replace photo'), null, false));
-					$photoSub->addElement($photoSubSub);
-				}
-				$return['jpegPhoto'] = new htmlResponsiveRow(new htmlOutputText($this->getSelfServiceLabel('jpegPhoto', _('Photo'))), $photoSub);
+				$_SESSION[self::SESS_PHOTO] = $attributes['jpegPhoto'][0];
 			}
-			elseif (!in_array('jpegPhoto', $readOnlyFields)) {
-				$photoSub = new htmlTable();
-				$photoSub->addElement(new htmlTableExtendedInputFileUpload('photoFile', _('Add photo')));
-				$photoSub->addElement(new htmlHiddenInput('addPhoto', 'true'));
-				$return['jpegPhoto'] = new htmlResponsiveRow(new htmlOutputText($this->getSelfServiceLabel('jpegPhoto', _('Photo'))), $photoSub);
+			$readOnlyPhoto = in_array('jpegPhoto', $readOnlyFields);
+			if (!empty($attributes['jpegPhoto'][0]) || !$readOnlyPhoto) {
+				$photoSub = new htmlDiv('inetOrgPersonPhotoUploadContent', $this->getSelfServicePhoto($readOnlyPhoto, false));
+				$photoRow = new htmlResponsiveRow();
+				$photoRow->add($this->getSelfServicePhotoJS($readOnlyPhoto), 0);
+				$photoRow->addLabel(new htmlOutputText($this->getSelfServiceLabel('jpegPhoto', _('Photo'))));
+				$photoRow->addField(new htmlDiv('jpegPhotoDiv', $photoSub));
+				$return['jpegPhoto'] = $photoRow;
 			}
 		}
 		if (in_array('departmentNumber', $fields)) {
@@ -2822,7 +2811,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 			// upload status
 			$uploadStatus = new htmlDiv('inetOrgPerson_upload_status_cert', new htmlOutputText(''));
 			$uploadStatus->setCSSClasses(array('qq-upload-list'));
-			$uploadStatus->colspan = 7;
 			$certTable->add($uploadStatus, 12);
 			$certLabel = new htmlOutputText($this->getSelfServiceLabel('userCertificate', _('User certificates')));
 			$return['userCertificate'] = new htmlResponsiveRow($certLabel, $certTable);
@@ -2927,6 +2915,110 @@ class inetOrgPerson extends baseModule implements passwordService {
 	}
 
 	/**
+	 * Renders the photo area for self service.
+	 *
+	 * @param boolean $readOnly content is read-only
+	 * @param boolean $crop enable cropping
+	 * @return htmlResponsiveRow content
+	 */
+	private function getSelfServicePhoto($readOnly, $crop) {
+		$photo = $_SESSION[self::SESS_PHOTO];
+		$row = new htmlResponsiveRow();
+		if (!empty($photo)) {
+			$jpeg_filename = 'jpegPhoto' . getRandomNumber() . '.jpg';
+			$outjpeg = fopen(realpath('../../') . '/tmp/' . $jpeg_filename, "wb");
+			fwrite($outjpeg, $photo);
+			fclose ($outjpeg);
+			$photoFile = '../../tmp/' . $jpeg_filename;
+			$img = new htmlImage($photoFile);
+			$img->setCSSClasses(array('photo'));
+			if ($crop) {
+				$img->enableCropping();
+			}
+			$row->add($img, 12);
+			if (!$readOnly) {
+				$row->addVerticalSpacer('0.5rem');
+				$deleteButton = new htmlLink(_('Delete'), '#', '../../graphics/delete.png', true);
+				$deleteButton->setOnClick('inetOrgPersonDeletePhoto(); return false;');
+				$row->add($deleteButton, 12);
+			}
+			$row->addVerticalSpacer('0.5rem');
+		}
+		// upload button
+		$row->add(new htmlDiv('inetOrgPersonPhotoUploadId', new htmlOutputText('')), 12);
+		$row->add(new htmlJavaScript('inetOrgPersonUploadPhoto(\'inetOrgPersonPhotoUploadId\');'), 0);
+		$uploadStatus = new htmlDiv('inetOrgPersonPhotoUploadStatus', new htmlOutputText(''));
+		$uploadStatus->setCSSClasses(array('qq-upload-list'));
+		$row->add($uploadStatus, 12);
+		return $row;
+	}
+
+	/**
+	 * Returns the Java Script functions to manage the photo.
+	 *
+	 * @param boolean $readOnly content is read-only
+	 * @return htmlJavaScript JS block
+	 */
+	private static function getSelfServicePhotoJS($readOnly) {
+		if ($readOnly) {
+			return new htmlGroup();
+		}
+		$content = '
+				function inetOrgPersonUploadPhoto(elementID) {
+				var uploadStatus = document.getElementById(\'inetOrgPersonPhotoUploadStatus\');
+				var params = { action: \'ajaxPhotoUpload\' };
+				params["' . getSecurityTokenName() . '"] = "' . getSecurityTokenValue() . '";
+				var uploader = new qq.FineUploader({
+					element: document.getElementById(elementID),
+					listElement: uploadStatus,
+					request: {
+						endpoint: \'../misc/ajax.php?selfservice=1&module=inetOrgPerson&scope=user'
+						 . '&' . getSecurityTokenName() . '=' . getSecurityTokenValue() . '\',
+						forceMultipart: true,
+						params: params
+					},
+					multiple: false,
+					callbacks: {
+						onComplete: function(id, fileName, data) {
+							if (data.success) {
+								if (data.html) {
+									jQuery(\'#inetOrgPersonPhotoUploadContent\').html(data.html);
+								}
+							}
+							else {
+								alert(data.error);
+							}
+						}
+					}
+				});
+			}
+
+			function inetOrgPersonDeletePhoto(id) {
+				var actionJSON = {
+					"action": "deletePhoto",
+					"id": id
+				};
+				var data = {jsonInput: actionJSON};
+				data["' . getSecurityTokenName() . '"] = "' . getSecurityTokenValue() . '";
+				jQuery.post(\'../misc/ajax.php?selfservice=1&module=inetOrgPerson&scope=user\',
+						data, function(data) {inetOrgPersonDeletePhotoHandleReply(data);}, \'json\');
+			}
+
+			function inetOrgPersonDeletePhotoHandleReply(data) {
+				if (data.errorsOccured == "false") {
+					jQuery(\'#inetOrgPersonPhotoUploadContent\').html(data.html);
+				}
+				else {
+					alert(data.errormessage);
+				}
+			}
+
+				';
+		return new htmlJavaScript($content);
+	}
+
+
+	/**
 	 * Returns the meta HTML code to display the certificate area.
 	 * This also includes the file upload.
 	 *
@@ -2986,7 +3078,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$content = '
 			function inetOrgPersonDeleteCertificate(id) {
 				var actionJSON = {
-					"action": "delete",
+					"action": "deleteCert",
 					"id": id
 				};
 				var data = {jsonInput: actionJSON};
@@ -3243,38 +3335,39 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		// photo
 		if (in_array('jpegPhoto', $fields) && !in_array('jpegPhoto', $readOnlyFields)) {
+			$data = $_SESSION[self::SESS_PHOTO];
 			// remove photo
-			if (isset($_POST['removeReplacePhoto']) && ($_POST['removeReplacePhoto'] == 'on')
-					&& (empty($_FILES['replacePhotoFile']) || ($_FILES['replacePhotoFile']['size'] == 0))) {
+			if (!empty($attributes['jpegPhoto'][0]) && empty($data)) {
 				$return['mod']['jpegPhoto'] = array();
 			}
 			// set/replace photo
-			if (isset($_FILES['photoFile']) && ($_FILES['photoFile']['size'] > 0)) {
+			elseif (!empty($data) && (empty($attributes['jpegPhoto'][0]) || ($data != $attributes['jpegPhoto'][0]))) {
 				$moduleSettings = $this->selfServiceSettings->moduleSettings;
-				if (!empty($moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]) && ($moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0] < ($_FILES['photoFile']['size'] / 1024))) {
-					$msg =  $this->messages['file'][3];
-					$msg[] = null;
-					$msg[] = htmlspecialchars($moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]);
-					$return['messages'][] = $msg;
-				}
-				else {
-					$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
-					$data = fread($handle, 100000000);
-					fclose($handle);
-					try {
-						$data = inetOrgPerson::resizeAndConvertImage($data, $moduleSettings);
-					}
-					catch (Exception $e) {
-						$msg =  $this->messages['file'][2];
-						$msg[] = htmlspecialchars($e->getMessage());
+				try {
+					$image = new Imagick();
+					$image->readimageblob($data);
+					$image->cropimage($_POST['croppingDataWidth'], $_POST['croppingDataHeight'], $_POST['croppingDataX'], $_POST['croppingDataY']);
+					$data = $image->getimageblob();
+					$data = inetOrgPerson::resizeAndConvertImage($data, $moduleSettings);
+					if (!empty($moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]) && ($moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0] < (strlen($data) / 1024))) {
+						$msg =  $this->messages['file'][3];
+						$msg[] = null;
+						$msg[] = htmlspecialchars($moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]);
 						$return['messages'][] = $msg;
 					}
-					if (isset($_POST['removeReplacePhoto']) && ($_POST['removeReplacePhoto'] == 'on')) {
-						$return['mod']['jpegPhoto'][0] = $data;
+					else {
+						if (!empty($attributes['jpegPhoto'][0])) {
+							$return['mod']['jpegPhoto'][0] = $data;
+						}
+						else {
+							$return['add']['jpegPhoto'][0] = $data;
+						}
 					}
-					elseif (isset($_POST['addPhoto'])) {
-						$return['add']['jpegPhoto'][0] = $data;
-					}
+				}
+				catch (Exception $e) {
+					$msg =  $this->messages['file'][2];
+					$msg[] = htmlspecialchars($e->getMessage());
+					$return['messages'][] = $msg;
 				}
 			}
 		}
@@ -3408,23 +3501,30 @@ class inetOrgPerson extends baseModule implements passwordService {
 	public function handleAjaxRequest() {
 		// AJAX uploads are non-JSON
 		if (isset($_GET['action']) && ($_GET['action'] == 'ajaxCertUpload')) {
-			$this->ajaxUpload();
+			$this->ajaxUploadCert();
+			return;
+		}
+		if (isset($_GET['action']) && ($_GET['action'] == 'ajaxPhotoUpload')) {
+			$this->ajaxUploadPhoto();
 			return;
 		}
 		$jsonInput = $_POST['jsonInput'];
 		$jsonReturn = self::invalidAjaxRequest();
 		if (isset($jsonInput['action'])) {
-			if ($jsonInput['action'] == 'delete') {
+			if ($jsonInput['action'] == 'deleteCert') {
 				$jsonReturn = $this->ajaxDeleteSelfServiceUserCertificate($jsonInput);
+			}
+			elseif ($jsonInput['action'] == 'deletePhoto') {
+				$jsonReturn = $this->ajaxDeleteSelfServicePhoto($jsonInput);
 			}
 		}
 		echo json_encode($jsonReturn);
 	}
 
 	/**
-	 * Handles an AJAX file upload and prints the JSON result.
+	 * Handles an AJAX certificate file upload and prints the JSON result.
 	 */
-	private function ajaxUpload() {
+	private function ajaxUploadCert() {
 		$result = array('success' => true);
 		if (!isset($_FILES['qqfile']) || ($_FILES['qqfile']['size'] < 100)) {
 			$result = array('error' => _('No file received.'));
@@ -3456,6 +3556,65 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$result['html'] = $content;
 		}
 		echo json_encode($result);
+	}
+
+	/**
+	 * Handles an AJAX photo file upload and prints the JSON result.
+	 */
+	private function ajaxUploadPhoto() {
+		$result = array('success' => true);
+		if (!isset($_FILES['qqfile']) || ($_FILES['qqfile']['size'] < 100)) {
+			$result = array('error' => _('No file received.'));
+		}
+		else {
+			$handle = fopen($_FILES['qqfile']['tmp_name'], "r");
+			$data = fread($handle, 100000000);
+			fclose($handle);
+			$image = new Imagick();
+			try {
+				$image->readImageBlob($data);
+				$image->setImageCompression(Imagick::COMPRESSION_JPEG);
+				$image->setImageFormat('jpeg');
+				$data = $image->getimageblob();
+			}
+			catch (Exception $e) {
+				$result = array('success' => false, 'error' => htmlspecialchars($e->getMessage()));
+				echo json_encode($result);
+				return;
+			}
+			$_SESSION[inetOrgPerson::SESS_PHOTO] = $data;
+			ob_start();
+			$contentElement = $this->getSelfServicePhoto(false, true);
+			ob_end_clean();
+			ob_start();
+			$tabindex = 999;
+			parseHtml(null, $contentElement, array(), true, $tabindex, $this->get_scope());
+			$content = ob_get_contents();
+			ob_end_clean();
+			$result['html'] = $content;
+		}
+		echo json_encode($result);
+	}
+
+	/**
+	 * Manages the deletion of a photo.
+	 *
+	 * @param array $data JSON data
+	 */
+	private function ajaxDeleteSelfServicePhoto($data) {
+		$_SESSION[self::SESS_PHOTO] = null;
+		ob_start();
+		$contentElement = $this->getSelfServicePhoto(false, false);
+		ob_end_clean();
+		ob_start();
+		$tabindex = 999;
+		parseHtml(null, $contentElement, array(), true, $tabindex, $this->get_scope());
+		$content = ob_get_contents();
+		ob_end_clean();
+		return array(
+			'errorsOccured' => 'false',
+			'html' => $content,
+		);
 	}
 
 	/**
