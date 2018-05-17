@@ -1,13 +1,12 @@
 <?php
 namespace LAM\TOOLS\PROFILE_EDITOR;
-use \htmlTable;
+use \htmlResponsiveRow;
 use \htmlTitle;
-use \htmlTableExtendedInputField;
-use \htmlSpacer;
-use \htmlTableExtendedSelect;
-use \htmlFieldset;
+use \htmlResponsiveInputField;
+use \htmlResponsiveSelect;
 use \htmlButton;
 use \htmlHiddenInput;
+use \htmlSubTitle;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -140,6 +139,7 @@ if (isset($_POST['save'])) {
 
 // print header
 include '../../lib/adminHeader.inc';
+echo '<div class="user-bright smallPaddingContent">';
 
 // print error messages if any
 if (sizeof($errors) > 0) {
@@ -182,13 +182,13 @@ if (isset($_GET['edit'])) {
 
 $tabindex = 1;
 
-$container = new htmlTable();
-$container->addElement(new htmlTitle(_("Profile editor")), true);
+$container = new htmlResponsiveRow();
+$container->add(new htmlTitle(_("Profile editor")), 12);
 
 // general options
-$dnContent = new htmlTable();
-$dnContent->addElement(new htmlTableExtendedInputField(_("Profile name") . '*', 'profname', $profName, '360'), true);
-$dnContent->addElement(new htmlSpacer(null, '10px'), true);
+$container->add(new htmlSubTitle(_("General settings"), '../../graphics/logo32.png', null, true), 12);
+$container->add(new htmlResponsiveInputField(_("Profile name") . '*', 'profname', $profName, '360'), 12);
+$container->addVerticalSpacer('1rem');
 // suffix box
 // get root suffix
 $rootsuffix = $type->getSuffix();
@@ -202,21 +202,20 @@ $selectedSuffix = array();
 if (isset($old_options['ldap_suffix'][0])) {
 	$selectedSuffix[] = $old_options['ldap_suffix'][0];
 }
-$suffixSelect = new htmlTableExtendedSelect('ldap_suffix', $suffixes, $selectedSuffix, _("LDAP suffix"), '361');
+$suffixSelect = new htmlResponsiveSelect('ldap_suffix', $suffixes, $selectedSuffix, _("LDAP suffix"), '361');
 $suffixSelect->setHasDescriptiveElements(true);
 $suffixSelect->setSortElements(false);
 $suffixSelect->setRightToLeftTextDirection(true);
-$dnContent->addElement($suffixSelect, true);
+$container->add($suffixSelect, 12);
 // RDNs
 $rdns = getRDNAttributes($type->getId());
 $selectedRDN = array();
 if (isset($old_options['ldap_rdn'][0])) {
 	$selectedRDN[] = $old_options['ldap_rdn'][0];
 }
-$dnContent->addElement(new htmlTableExtendedSelect('ldap_rdn', $rdns, $selectedRDN, _("RDN identifier"), '301'), true);
+$container->add(new htmlResponsiveSelect('ldap_rdn', $rdns, $selectedRDN, _("RDN identifier"), '301'), 12);
 
-$container->addElement(new htmlFieldset($dnContent, _("General settings"), '../../graphics/logo32.png'), true);
-$container->addElement(new htmlSpacer(null, '15px'), true);
+$container->addVerticalSpacer('2rem');
 
 $_SESSION['profile_types'] = parseHtml(null, $container, $old_options, false, $tabindex, $type->getScope());
 
@@ -231,21 +230,22 @@ foreach ($options as $moduleName => $moduleOptions) {
 	if (!empty($icon) && !(strpos($icon, 'http') === 0) && !(strpos($icon, '/') === 0)) {
 		$icon = '../../graphics/' . $icon;
 	}
-	$container = new htmlTable();
-	$container->addElement(new htmlFieldset($moduleOptions, getModuleAlias($moduleName, $type->getScope()), $icon), true);
-	$container->addElement(new htmlSpacer(null, '15px'), true);
-	$_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml($moduleName, $container, $old_options, false, $tabindex, $type->getScope()));
+	$modContainer = new htmlResponsiveRow();
+	$modContainer->add(new htmlSubTitle(getModuleAlias($moduleName, $type->getScope()), $icon, null, true), 12);
+	$modContainer->add($moduleOptions, 12);
+	$modContainer->addVerticalSpacer('2rem');
+	$_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml($moduleName, $modContainer, $old_options, false, $tabindex, $type->getScope()));
 }
 
 // profile name and submit/abort buttons
-$buttonTable = new htmlTable();
+$buttonTable = new htmlResponsiveRow();
 $saveButton = new htmlButton('save', _('Save'));
 $saveButton->setIconClass('saveButton');
-$buttonTable->addElement($saveButton);
+$buttonTable->addLabel($saveButton);
 $cancelButton = new htmlButton('abort', _('Cancel'));
 $cancelButton->setIconClass('cancelButton');
-$buttonTable->addElement($cancelButton);
-$buttonTable->addElement(new htmlHiddenInput('accounttype', $type->getId()));
+$buttonTable->addField($cancelButton);
+$buttonTable->add(new htmlHiddenInput('accounttype', $type->getId()), 0);
 
 $_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml(null, $buttonTable, $old_options, false, $tabindex, $type->getScope()));
 
@@ -263,8 +263,9 @@ $_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml(n
 		});
 	});
 </script>
+</form>
+</div>
 <?php
-echo ("</form>\n");
 include '../../lib/adminFooter.inc';
 
 ?>
