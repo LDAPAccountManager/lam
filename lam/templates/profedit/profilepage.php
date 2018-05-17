@@ -9,7 +9,6 @@ use \htmlFieldset;
 use \htmlButton;
 use \htmlHiddenInput;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2018  Roland Gruber
@@ -140,7 +139,7 @@ if (isset($_POST['save'])) {
 }
 
 // print header
-include '../main_header.php';
+include '../../lib/adminHeader.inc';
 
 // print error messages if any
 if (sizeof($errors) > 0) {
@@ -266,6 +265,6 @@ $_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml(n
 </script>
 <?php
 echo ("</form>\n");
-include '../main_footer.php';
+include '../../lib/adminFooter.inc';
 
 ?>

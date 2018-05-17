@@ -1,6 +1,5 @@
 <?php
 namespace LAM\TOOLS\PROFILE_EDITOR;
-use \htmlTable;
 use \htmlTitle;
 use \htmlStatusMessage;
 use \LAMCfgMain;
@@ -14,12 +13,13 @@ use \htmlOutputText;
 use \htmlHelpLink;
 use \htmlHiddenInput;
 use \htmlInputField;
+use \htmlResponsiveRow;
+use \htmlGroup;
 use \LAM\TYPES\TypeManager;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2017  Roland Gruber
+  Copyright (C) 2003 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -70,6 +70,76 @@ if (!empty($_POST)) {
 
 $typeManager = new TypeManager();
 $types = $typeManager->getConfiguredTypes();
+
+$container = new htmlResponsiveRow();
+$container->add(new htmlTitle(_("Profile editor")), 12);
+
+if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
+	$type = $typeManager->getConfiguredType($_POST['profileDeleteType']);
+	if ($type->isHidden()) {
+		logNewMessage(LOG_ERR, 'User tried to delete hidden account type profile: ' . $_POST['profileDeleteType']);
+		die();
+	}
+	// delete profile
+	if (\LAM\PROFILES\delAccountProfile($_POST['profileDeleteName'], $_POST['profileDeleteType'])) {
+		$message = new htmlStatusMessage('INFO', _('Deleted profile.'), $type->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
+		$container->add($message, 12);
+	}
+	else {
+		$message = new htmlStatusMessage('ERROR', _('Unable to delete profile!'), $type->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
+		$container->add($message, 12);
+	}
+}
+
+$configProfiles = getConfigProfiles();
+$serverProfiles = array();
+foreach ($configProfiles as $profileName) {
+	$serverProfiles[$profileName] = new \LAMConfig($profileName);
+}
+
+// import profiles
+if (!empty($_POST['import'])) {
+	$cfg = new LAMCfgMain();
+	// check master password
+	$errMessage = null;
+	if (!$cfg->checkPassword($_POST['passwd_i_' . $_POST['typeId']])) {
+		$errMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
+	}
+	elseif (!empty($_POST['importProfiles'])) {
+		$options = array();
+		foreach ($_POST['importProfiles'] as $importProfiles) {
+			$parts = explode('##', $importProfiles);
+			$options[] = array('conf' => $parts[0], 'typeId' => $parts[1], 'name' => $parts[2]);
+		}
+		$errMessage = importProfiles($_POST['typeId'], $options, $serverProfiles, $typeManager);
+	}
+	if ($errMessage !== null) {
+		$container->add($errMessage, 12);
+	}
+}
+// export profiles
+if (!empty($_POST['export'])) {
+	$cfg = new LAMCfgMain();
+	// check master password
+	$errMessage = null;
+	if (!$cfg->checkPassword($_POST['passwd_e_' . $_POST['typeId']])) {
+		$errMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
+	}
+	elseif (!empty($_POST['exportProfiles'])) {
+		$options = array();
+		foreach ($_POST['exportProfiles'] as $importProfiles) {
+			$parts = explode('##', $importProfiles);
+			$options[] = array('conf' => $parts[0], 'typeId' => $parts[1]);
+		}
+		$typeId = $_POST['typeId'];
+		$name = $_POST['name_' . $typeId];
+		$errMessage = exportProfiles($typeId, $name, $options, $serverProfiles, $typeManager);
+	}
+	if ($errMessage !== null) {
+		$container->add($errMessage, 12);
+	}
+}
+
 $profileClasses = array();
 $profileClassesTemp = array();
 foreach ($types as $type) {
@@ -112,147 +182,67 @@ foreach ($profileClasses as $profileClass) {
 	}
 }
 
-include '../main_header.php';
+include '../../lib/adminHeader.inc';
 echo "<div class=\"user-bright smallPaddingContent\">\n";
 echo "<form name=\"profilemainForm\" action=\"profilemain.php\" method=\"post\">\n";
 echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';
 
-$container = new htmlTable();
-$container->addElement(new htmlTitle(_("Profile editor")), true);
-
-if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
-	$type = $typeManager->getConfiguredType($_POST['profileDeleteType']);
-	if ($type->isHidden()) {
-		logNewMessage(LOG_ERR, 'User tried to delete hidden account type profile: ' . $_POST['profileDeleteType']);
-		die();
-	}
-	// delete profile
-	if (\LAM\PROFILES\delAccountProfile($_POST['profileDeleteName'], $_POST['profileDeleteType'])) {
-		$message = new htmlStatusMessage('INFO', _('Deleted profile.'), $type->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
-		$message->colspan = 10;
-		$container->addElement($message, true);
-	}
-	else {
-		$message = new htmlStatusMessage('ERROR', _('Unable to delete profile!'), $type->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
-		$message->colspan = 10;
-		$container->addElement($message, true);
-	}
-}
-
-$configProfiles = getConfigProfiles();
-$serverProfiles = array();
-foreach ($configProfiles as $profileName) {
-	$serverProfiles[$profileName] = new \LAMConfig($profileName);
-}
-
-// import profiles
-if (!empty($_POST['import'])) {
-	$cfg = new LAMCfgMain();
-	// check master password
-	$errMessage = null;
-	if (!$cfg->checkPassword($_POST['passwd_i_' . $_POST['typeId']])) {
-		$errMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
-	}
-	elseif (!empty($_POST['importProfiles'])) {
-		$options = array();
-		foreach ($_POST['importProfiles'] as $importProfiles) {
-			$parts = explode('##', $importProfiles);
-			$options[] = array('conf' => $parts[0], 'typeId' => $parts[1], 'name' => $parts[2]);
-		}
-		$errMessage = importProfiles($_POST['typeId'], $options, $serverProfiles, $typeManager);
-	}
-	if ($errMessage !== null) {
-		$errMessage->colspan = 10;
-		$container->addElement($errMessage, true);
-	}
-}
-// export profiles
-if (!empty($_POST['export'])) {
-	$cfg = new LAMCfgMain();
-	// check master password
-	$errMessage = null;
-	if (!$cfg->checkPassword($_POST['passwd_e_' . $_POST['typeId']])) {
-		$errMessage = new htmlStatusMessage('ERROR', _('Master password is wrong!'));
-	}
-	elseif (!empty($_POST['exportProfiles'])) {
-		$options = array();
-		foreach ($_POST['exportProfiles'] as $importProfiles) {
-			$parts = explode('##', $importProfiles);
-			$options[] = array('conf' => $parts[0], 'typeId' => $parts[1]);
-		}
-		$typeId = $_POST['typeId'];
-		$name = $_POST['name_' . $typeId];
-		$errMessage = exportProfiles($typeId, $name, $options, $serverProfiles, $typeManager);
-	}
-	if ($errMessage !== null) {
-		$errMessage->colspan = 10;
-		$container->addElement($errMessage, true);
-	}
-}
-
 if (isset($_GET['savedSuccessfully'])) {
 	$message = new htmlStatusMessage("INFO", _("Profile was saved."), htmlspecialchars($_GET['savedSuccessfully']));
-	$message->colspan = 10;
-	$container->addElement($message, true);
+	$container->add($message, 12);
 }
 
 // new profile
 if (!empty($profileClasses)) {
-	$container->addElement(new htmlSubTitle(_('Create a new profile')), true);
+	$container->add(new htmlSubTitle(_('Create a new profile')), 12);
 	$sortedTypes = array();
 	foreach ($profileClasses as $profileClass) {
 		$sortedTypes[$profileClass['title']] = $profileClass['typeId'];
 	}
 	natcasesort($sortedTypes);
-	$newContainer = new htmlTable();
 	$newProfileSelect = new htmlSelect('createProfile', $sortedTypes);
 	$newProfileSelect->setHasDescriptiveElements(true);
-	$newProfileSelect->setWidth('15em');
-	$newContainer->addElement($newProfileSelect);
-	$newContainer->addElement(new htmlSpacer('10px', null));
-	$newContainer->addElement(new htmlButton('createProfileButton', _('Create')), true);
-	$container->addElement($newContainer, true);
+	$container->addLabel($newProfileSelect);
+	$container->addField(new htmlButton('createProfileButton', _('Create')));
 }
 
-$container->addElement(new htmlSpacer(null, '10px'), true);
+$container->addVerticalSpacer('1rem');
 
 // existing profiles
-$container->addElement(new htmlSubTitle(_('Manage existing profiles')), true);
-$existingContainer = new htmlTable();
-$existingContainer->colspan = 5;
+$container->add(new htmlSubTitle(_('Manage existing profiles')), 12);
 
 foreach ($profileClasses as $profileClass) {
-	$existingContainer->addElement(new htmlImage('../../graphics/' . $profileClass['icon']));
-	$existingContainer->addElement(new htmlSpacer('3px', null));
-	$existingContainer->addElement(new htmlOutputText($profileClass['title']));
-	$existingContainer->addElement(new htmlSpacer('3px', null));
+	$labelGroup = new htmlGroup();
+	$labelGroup->addElement(new htmlImage('../../graphics/' . $profileClass['icon']));
+	$labelGroup->addElement(new htmlSpacer('3px', null));
+	$labelGroup->addElement(new htmlOutputText($profileClass['title']));
+	$container->add($labelGroup, 12, 4);
 	$select = new htmlSelect('profile_' . $profileClass['typeId'], $profileClass['profiles']);
-	$select->setWidth('15em');
-	$existingContainer->addElement($select);
-	$existingContainer->addElement(new htmlSpacer('3px', null));
+	$container->add($select, 12, 4);
+	$buttonGroup = new htmlGroup();
 	$editButton = new htmlButton('editProfile_' . $profileClass['typeId'], 'edit.png', true);
 	$editButton->setTitle(_('Edit'));
-	$existingContainer->addElement($editButton);
+	$buttonGroup->addElement($editButton);
 	$deleteLink = new htmlLink(null, '#', '../../graphics/delete.png');
 	$deleteLink->setTitle(_('Delete'));
-	$deleteLink->setOnClick("profileShowDeleteDialog('" . _('Delete') . "', '" . _('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', '" . 'profile_' . $profileClass['typeId'] . "');");
-	$existingContainer->addElement($deleteLink);
+	$deleteLink->setOnClick("profileShowDeleteDialog('" . _('Delete') . "', '" . _('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', '" . 'profile_' . $profileClass['typeId'] . "'); return false;");
+	$buttonGroup->addElement($deleteLink);
 	if (count($configProfiles) > 1) {
 		$importLink = new htmlLink(null, '#', '../../graphics/import.png');
 		$importLink->setTitle(_('Import profiles'));
 		$importLink->setOnClick("showDistributionDialog('" . _("Import profiles") . "', '" .
-								_('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', 'import');");
-		$existingContainer->addElement($importLink);
+								_('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', 'import'); return false;");
+		$buttonGroup->addElement($importLink);
 	}
 	$exportLink = new htmlLink(null, '#', '../../graphics/export.png');
 	$exportLink->setTitle(_('Export profile'));
 	$exportLink->setOnClick("showDistributionDialog('" . _("Export profile") . "', '" .
-							_('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', 'export', '" . 'profile_' . $profileClass['typeId'] . "');");
-	$existingContainer->addElement($exportLink);
-	$existingContainer->addNewLine();
+							_('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', 'export', '" . 'profile_' . $profileClass['typeId'] . "'); return false;");
+	$buttonGroup->addElement($exportLink);
+	$container->add($buttonGroup, 12, 4);
+	$container->addVerticalSpacer('1rem');
 }
-$container->addElement($existingContainer);
-$container->addElement(new htmlSpacer(null, '10px'), true);
+$container->addVerticalSpacer('1rem');
 
 // generate content
 $tabindex = 1;
@@ -284,30 +274,29 @@ foreach ($profileClasses as $profileClass) {
 	echo "<div id=\"importDialog_$typeId\" class=\"hidden\">\n";
 	echo "<form id=\"importDialogForm_$typeId\" method=\"post\" action=\"profilemain.php\">\n";
 
-	$container = new htmlTable();
-	$container->addElement(new htmlOutputText(_('Profiles')), true);
+	$containerProfiles = new htmlResponsiveRow();;
+	$containerProfiles->add(new htmlOutputText(_('Profiles')), 12);
 
 	$select = new htmlSelect('importProfiles', $importOptions, array(), count($importOptions, 1) < 15 ? count($importOptions, 1) : 15);
 	$select->setMultiSelect(true);
 	$select->setHasDescriptiveElements(true);
 	$select->setContainsOptgroups(true);
-	$select->setWidth('290px');
 
-	$container->addElement($select);
-	$container->addElement(new htmlHelpLink('362'), true);
+	$containerProfiles->add($select, 11);
+	$containerProfiles->add(new htmlHelpLink('362'), 1);
 
-	$container->addElement(new htmlSpacer(null, '10px'), true);
+	$containerProfiles->addVerticalSpacer('2rem');
 
-	$container->addElement(new htmlOutputText(_("Master password")), true);
+	$containerProfiles->add(new htmlOutputText(_("Master password")), 12);
 	$exportPasswd = new htmlInputField('passwd_i_' . $typeId);
 	$exportPasswd->setIsPassword(true);
-	$container->addElement($exportPasswd);
-	$container->addElement(new htmlHelpLink('236'));
-	$container->addElement(new htmlHiddenInput('import', '1'));
-	$container->addElement(new htmlHiddenInput('typeId', $typeId), true);
-	addSecurityTokenToMetaHTML($container);
+	$containerProfiles->add($exportPasswd, 11);
+	$containerProfiles->add(new htmlHelpLink('236'), 1);
+	$containerProfiles->add(new htmlHiddenInput('import', '1'), 0);
+	$containerProfiles->add(new htmlHiddenInput('typeId', $typeId), 0);
+	addSecurityTokenToMetaHTML($containerProfiles);
 
-	parseHtml(null, $container, array(), false, $tabindex, 'user');
+	parseHtml(null, $containerProfiles, array(), false, $tabindex, 'user');
 
 	echo '</form>';
 	echo "</div>\n";
@@ -316,9 +305,9 @@ foreach ($profileClasses as $profileClass) {
 	echo "<div id=\"exportDialog_$typeId\" class=\"hidden\">\n";
 	echo "<form id=\"exportDialogForm_$typeId\" method=\"post\" action=\"profilemain.php\">\n";
 
-	$container = new htmlTable();
+	$containerTarget = new htmlResponsiveRow();
 
-	$container->addElement(new htmlOutputText(_("Target server profile")), true);
+	$containerTarget->add(new htmlOutputText(_("Target server profile")), 12);
 	$exportOptions = array();
 	foreach ($configProfiles as $profile) {
 		$typeManagerExport = new TypeManager($serverProfiles[$profile]);
@@ -336,22 +325,22 @@ foreach ($profileClasses as $profileClass) {
 	$select->setContainsOptgroups(true);
 	$select->setMultiSelect(true);
 
-	$container->addElement($select);
-	$container->addElement(new htmlHelpLink('363'), true);
+	$containerTarget->add($select, 11);
+	$containerTarget->add(new htmlHelpLink('363'), 1);
 
-	$container->addElement(new htmlSpacer(null, '10px'), true);
+	$containerTarget->addVerticalSpacer('2rem');
 
-	$container->addElement(new htmlOutputText(_("Master password")), true);
+	$containerTarget->add(new htmlOutputText(_("Master password")), 12);
 	$exportPasswd = new htmlInputField('passwd_e_' . $typeId);
 	$exportPasswd->setIsPassword(true);
-	$container->addElement($exportPasswd);
-	$container->addElement(new htmlHelpLink('236'));
-	$container->addElement(new htmlHiddenInput('export', '1'), true);
-	$container->addElement(new htmlHiddenInput('typeId', $typeId), true);
-	$container->addElement(new htmlHiddenInput('name_' . $typeId, '_'), true);
-	addSecurityTokenToMetaHTML($container);
+	$containerTarget->add($exportPasswd, 11);
+	$containerTarget->add(new htmlHelpLink('236'), 1);
+	$containerTarget->add(new htmlHiddenInput('export', '1'), 0);
+	$containerTarget->add(new htmlHiddenInput('typeId', $typeId), 0);
+	$containerTarget->add(new htmlHiddenInput('name_' . $typeId, '_'), 0);
+	addSecurityTokenToMetaHTML($containerTarget);
 
-	parseHtml(null, $container, array(), false, $tabindex, 'user');
+	parseHtml(null, $containerTarget, array(), false, $tabindex, 'user');
 
 	echo '</form>';
 	echo "</div>\n";
@@ -369,7 +358,7 @@ echo '<div id="deleteProfileDialog" class="hidden"><form id="deleteProfileForm" 
 	echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';
 echo '</form></div>';
 
-include '../main_footer.php';
+include '../../lib/adminFooter.inc';
 
 /**
  * Imports the selected account profiles.

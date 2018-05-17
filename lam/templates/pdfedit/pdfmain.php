@@ -141,7 +141,6 @@ if (!empty($_POST['import'])) {
 		$errMessage = importStructures($_POST['typeId'], $options, $serverProfiles, $typeManager);
 	}
 	if ($errMessage !== null) {
-		$errMessage->colspan = 10;
 		$container->add($errMessage, 12);
 	}
 }
@@ -166,7 +165,6 @@ if (!empty($_POST['export'])) {
 		$errMessage = exportStructures($typeId, $name, $options, $serverProfiles, $typeManager);
 	}
 	if ($errMessage !== null) {
-		$errMessage->colspan = 10;
 		$container->add($errMessage, 12);
 	}
 }
@@ -226,7 +224,6 @@ include '../../lib/adminHeader.inc';
 			$container->add(new htmlSubTitle(_('Create a new PDF structure')), 12);
 			$newProfileSelect = new htmlSelect('typeId', $availableTypes);
 			$newProfileSelect->setHasDescriptiveElements(true);
-			$newProfileSelect->setWidth('15em');
 			$container->addLabel($newProfileSelect);
 			$container->addField(new htmlButton('createNewTemplate', _('Create')));
 			$container->addVerticalSpacer('2rem');
@@ -241,7 +238,6 @@ include '../../lib/adminHeader.inc';
 			$labelGroup->addElement(new htmlOutputText($templateClass['title']));
 			$container->add($labelGroup, 12, 4);
 			$select = new htmlSelect('template_' . $templateClass['typeId'], $templateClass['templates']);
-			$select->setWidth('15em');
 			$container->add($select, 12, 4);
 			$buttonGroup = new htmlGroup();
 			$exEditButton = new htmlButton('editTemplate_' . $templateClass['typeId'], 'edit.png', true);
@@ -333,7 +329,6 @@ include '../../lib/adminHeader.inc';
 			$select->setMultiSelect(true);
 			$select->setHasDescriptiveElements(true);
 			$select->setContainsOptgroups(true);
-			$select->setWidth('290px');
 
 			$containerStructures->add($select, 11);
 			$containerStructures->add(new htmlHelpLink('408'), 1);
