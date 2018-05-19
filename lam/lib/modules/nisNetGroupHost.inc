@@ -3,10 +3,9 @@ use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2016 - 2017  Roland Gruber
+  Copyright (C) 2016 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -214,17 +213,17 @@ class nisNetGroupHost extends nisNetGroupUser {
 		foreach ($groups as $group) {
 			$groupOptions[$group['cn'][0]] = $group['cn'][0] . '#+#' . $group['dn'];
 		}
-		$return = new htmlTable();
-		$return->addElement(new htmlOutputText(_('Group')));
-		$return->addElement(new htmlOutputText(_('User name')));
-		$return->addElement(new htmlOutputText(_('Domain name')), true);
+		$return = new htmlResponsiveRow();
+		$labels = array(_('Group'), _('User name'), _('Domain name'));
+		$data = array();
 		for ($i = 0; $i < 5; $i++) {
 			$select = new htmlSelect('nisNetGroupUser_group' . $i, $groupOptions, array(''));
 			$select->setHasDescriptiveElements(true);
-			$return->addElement($select);
-			$return->addElement(new htmlInputField('nisNetGroupUser_user' . $i));
-			$return->addElement(new htmlInputField('nisNetGroupUser_domain' . $i), true);
+			$data[$i][] = $select;
+			$data[$i][] = new htmlInputField('nisNetGroupUser_user' . $i);
+			$data[$i][] = new htmlInputField('nisNetGroupUser_domain' . $i);
 		}
+		$return->add(new htmlResponsiveTable($labels, $data), 12);
 		return $return;
 	}
 

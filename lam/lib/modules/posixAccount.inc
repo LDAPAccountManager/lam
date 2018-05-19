@@ -1726,7 +1726,7 @@ class posixAccount extends baseModule implements passwordService {
 	* {@inheritDoc}
 	*/
 	function get_profileOptions($typeId) {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		$typeManager = new TypeManager();
 		$modules = $typeManager->getConfiguredType($typeId)->getModules();
 		$groupList = $this->findGroups($modules);
@@ -1737,12 +1737,12 @@ class posixAccount extends baseModule implements passwordService {
 		if ($this->get_scope() == 'user') {
 			$shelllist = $this->getShells(); // list of all valid shells
 			// primary Unix group
-			$return->addElement(new htmlTableExtendedSelect('posixAccount_primaryGroup', $groups, array(), _('Primary group'), 'gidNumber'), true);
+			$return->add(new htmlResponsiveSelect('posixAccount_primaryGroup', $groups, array(), _('Primary group'), 'gidNumber'), 12);
 			// additional group memberships
-			$addGroupSelect = new htmlTableExtendedSelect('posixAccount_additionalGroup', $groups, array(), _('Additional groups'), 'addgroup', 10);
+			$addGroupSelect = new htmlResponsiveSelect('posixAccount_additionalGroup', $groups, array(), _('Additional groups'), 'addgroup', 10);
 			$addGroupSelect->setMultiSelect(true);
 			$addGroupSelect->setTransformSingleSelect(false);
-			$return->addElement($addGroupSelect, true);
+			$return->add($addGroupSelect, 12);
 			// group of names
 			if (self::areGroupOfNamesActive()) {
 				$gons = $this->findGroupOfNames();
@@ -1750,43 +1750,36 @@ class posixAccount extends baseModule implements passwordService {
 				foreach ($gons as $dn => $attr) {
 					$gonList[$attr['cn'][0]] = $dn;
 				}
-				$gonSelect = new htmlTableExtendedSelect('posixAccount_gon', $gonList, array(), _('Groups of names'), 'addgroup', 10);
+				$gonSelect = new htmlResponsiveSelect('posixAccount_gon', $gonList, array(), _('Groups of names'), 'addgroup', 10);
 				$gonSelect->setHasDescriptiveElements(true);
 				$gonSelect->setMultiSelect(true);
 				$gonSelect->setTransformSingleSelect(false);
-				$return->addElement($gonSelect, true);
+				$return->add($gonSelect, 12);
 			}
 			// home directory
-			$return->addElement(new htmlTableExtendedInputField(_('Home directory'), 'posixAccount_homeDirectory', '/home/$user', 'homeDirectory'), true);
+			$return->add(new htmlResponsiveInputField(_('Home directory'), 'posixAccount_homeDirectory', '/home/$user', 'homeDirectory'), 12);
 			// login shell
-			$return->addElement(new htmlTableExtendedSelect('posixAccount_loginShell', $shelllist, array("/bin/bash"), _('Login shell'), 'loginShell'), true);
+			$return->add(new htmlResponsiveSelect('posixAccount_loginShell', $shelllist, array("/bin/bash"), _('Login shell'), 'loginShell'), 12);
 			// lamdaemon settings
 			if (($_SESSION['config']->get_scriptPath() != null)) {
-				$homeDirLabel = new htmlOutputText(_('Create home directory'));
-				$homeDirLabel->alignment = htmlElement::ALIGN_TOP;
-				$return->addElement($homeDirLabel);
+				$return->add(new htmlSubTitle(_('Create home directory')), 12);
 				$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
 				for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
 					$temp = explode(":", $lamdaemonServers[$i]);
 					if (isset($temp[1])) $lamdaemonServers[$i] = $temp[1];
 					else $lamdaemonServers[$i] = $temp[0];
 				}
-				$homeServerContainer = new htmlTable();
 				for ($h = 0; $h < sizeof($lamdaemonServers); $h++) {
-					$homeServerContainer->addElement(new htmlTableExtendedInputCheckbox('posixAccount_createHomedir_' . $h, in_array($lamdaemonServers[$h], $this->lamdaemonServers), $lamdaemonServers[$h], null, false), true);
+					$return->add(new htmlResponsiveInputCheckbox('posixAccount_createHomedir_' . $h, in_array($lamdaemonServers[$h], $this->lamdaemonServers), $lamdaemonServers[$h], 'createhomedir', false), 12);
 				}
-				$return->addElement($homeServerContainer);
-				$homeDirHelp = new htmlHelpLink('createhomedir');
-				$homeDirHelp->alignment = htmlElement::ALIGN_TOP;
-				$return->addElement($homeDirHelp, true);
 			}
 		}
 		elseif ($this->get_scope() == 'host') {
 			// primary Unix group
-			$return->addElement(new htmlTableExtendedSelect('posixAccount_primaryGroup', $groups, array(), _('Primary group'), 'gidNumber'));
+			$return->add(new htmlResponsiveSelect('posixAccount_primaryGroup', $groups, array(), _('Primary group'), 'gidNumber'), 12);
 		}
 		if ($this->isOptional($modules)) {
-			$return->addElement(new htmlTableExtendedInputCheckbox('posixAccount_addExt', false, _('Automatically add this extension'), 'autoAdd'), true);
+			$return->add(new htmlResponsiveInputCheckbox('posixAccount_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
 		}
 		return $return;
 	}

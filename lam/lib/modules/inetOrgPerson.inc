@@ -2006,76 +2006,75 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$modules = $typeManager->getConfiguredType($typeId)->getModules();
 		$profileElements = array();
 		if (!$this->isUnixActive($modules)) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Common name'), 'inetOrgPerson_cn', null, 'cn');
+			$profileElements[] = new htmlResponsiveInputField(_('Common name'), 'inetOrgPerson_cn', null, 'cn');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Initials'), 'inetOrgPerson_initials', null, 'initials');
+			$profileElements[] = new htmlResponsiveInputField(_('Initials'), 'inetOrgPerson_initials', null, 'initials');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Description'), 'inetOrgPerson_description', null, 'description');
+			$profileElements[] = new htmlResponsiveInputField(_('Description'), 'inetOrgPerson_description', null, 'description');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Street'), 'inetOrgPerson_street', null, 'streetList');
+			$profileElements[] = new htmlResponsiveInputField(_('Street'), 'inetOrgPerson_street', null, 'streetList');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostOfficeBox')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Post office box'), 'inetOrgPerson_postOfficeBox', null, 'postOfficeBoxList');
+			$profileElements[] = new htmlResponsiveInputField(_('Post office box'), 'inetOrgPerson_postOfficeBox', null, 'postOfficeBoxList');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalCode')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Postal code'), 'inetOrgPerson_postalCode', null, 'postalCodeList');
+			$profileElements[] = new htmlResponsiveInputField(_('Postal code'), 'inetOrgPerson_postalCode', null, 'postalCodeList');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Location'), 'inetOrgPerson_l', null, 'lList');
+			$profileElements[] = new htmlResponsiveInputField(_('Location'), 'inetOrgPerson_l', null, 'lList');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideState')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('State'), 'inetOrgPerson_st', null, 'stList');
+			$profileElements[] = new htmlResponsiveInputField(_('State'), 'inetOrgPerson_st', null, 'stList');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Postal address'), 'inetOrgPerson_postalAddress', null, 'postalAddress');
+			$profileElements[] = new htmlResponsiveInputField(_('Postal address'), 'inetOrgPerson_postalAddress', null, 'postalAddress');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRegisteredAddress')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Registered address'), 'inetOrgPerson_registeredAddress', null, 'registeredAddress');
+			$profileElements[] = new htmlResponsiveInputField(_('Registered address'), 'inetOrgPerson_registeredAddress', null, 'registeredAddress');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Office name'), 'inetOrgPerson_physicalDeliveryOfficeName', null, 'physicalDeliveryOfficeName');
+			$profileElements[] = new htmlResponsiveInputField(_('Office name'), 'inetOrgPerson_physicalDeliveryOfficeName', null, 'physicalDeliveryOfficeName');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRoomNumber')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Room number'), 'inetOrgPerson_roomNumber', null, 'roomNumber');
+			$profileElements[] = new htmlResponsiveInputField(_('Room number'), 'inetOrgPerson_roomNumber', null, 'roomNumber');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Telephone number'), 'inetOrgPerson_telephoneNumber', null, 'telephoneNumberList');
+			$profileElements[] = new htmlResponsiveInputField(_('Telephone number'), 'inetOrgPerson_telephoneNumber', null, 'telephoneNumberList');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Fax number'), 'inetOrgPerson_facsimileTelephoneNumber', null, 'facsimileTelephoneNumberList');
+			$profileElements[] = new htmlResponsiveInputField(_('Fax number'), 'inetOrgPerson_facsimileTelephoneNumber', null, 'facsimileTelephoneNumberList');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Email address'), 'inetOrgPerson_mail', null, 'mailList');
+			$profileElements[] = new htmlResponsiveInputField(_('Email address'), 'inetOrgPerson_mail', null, 'mailList');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLabeledURI')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Web site'), 'inetOrgPerson_labeledURI', null, 'labeledURIList');
+			$profileElements[] = new htmlResponsiveInputField(_('Web site'), 'inetOrgPerson_labeledURI', null, 'labeledURIList');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Department'), 'inetOrgPerson_departmentNumber', null, 'departmentNumberList');
+			$profileElements[] = new htmlResponsiveInputField(_('Department'), 'inetOrgPerson_departmentNumber', null, 'departmentNumberList');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOu')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Organisational unit'), 'inetOrgPerson_ou', null, 'ouList');
+			$profileElements[] = new htmlResponsiveInputField(_('Organisational unit'), 'inetOrgPerson_ou', null, 'ouList');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideO')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Organisation'), 'inetOrgPerson_o', null, 'oList');
+			$profileElements[] = new htmlResponsiveInputField(_('Organisation'), 'inetOrgPerson_o', null, 'oList');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Job title'), 'inetOrgPerson_title', null, 'title');
+			$profileElements[] = new htmlResponsiveInputField(_('Job title'), 'inetOrgPerson_title', null, 'title');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Employee type'), 'inetOrgPerson_employeeType', null, 'employeeType');
+			$profileElements[] = new htmlResponsiveInputField(_('Employee type'), 'inetOrgPerson_employeeType', null, 'employeeType');
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
-		    $profileElements[] = new htmlTableExtendedInputField(_('Business category'), 'inetOrgPerson_businessCategory', null, 'businessCategory');
+		    $profileElements[] = new htmlResponsiveInputField(_('Business category'), 'inetOrgPerson_businessCategory', null, 'businessCategory');
 		}
 		if (sizeof($profileElements) > 0) {
-			$profileContainer = new htmlTable();
+			$profileContainer = new htmlResponsiveRow();
 			for ($i = 0; $i < sizeof($profileElements); $i++) {
-				$profileContainer->addElement($profileElements[$i]);
-				$profileContainer->addNewLine();
+				$profileContainer->add($profileElements[$i], 12);
 			}
 			return $profileContainer;
 		}
