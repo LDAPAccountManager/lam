@@ -121,10 +121,10 @@ class asteriskVoicemail extends baseModule implements passwordService {
 			),
 		);
 		// profile options
-		$profileContainer = new htmlTable();
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Options'), 'asteriskVoicemail_AstVoicemailOptions', null, 'AstVoicemailOptions'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Voicemail context'), 'asteriskVoicemail_AstVoicemailContext', null, 'AstVoicemailContext'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Account context'), 'asteriskVoicemail_AstContext', null, 'AstContext'), true);
+		$profileContainer = new htmlResponsiveRow();
+		$profileContainer->add(new htmlResponsiveInputField(_('Options'), 'asteriskVoicemail_AstVoicemailOptions', null, 'AstVoicemailOptions'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Voicemail context'), 'asteriskVoicemail_AstVoicemailContext', null, 'AstVoicemailContext'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Account context'), 'asteriskVoicemail_AstContext', null, 'AstContext'), 12);
 		$return['profile_options'] = $profileContainer;
 		// profile mappings
 		$return['profile_mappings'] = array(

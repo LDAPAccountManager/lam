@@ -1,9 +1,8 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2015  Roland Gruber
+  Copyright (C) 2009 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -151,8 +150,8 @@ class eduPerson extends baseModule {
 				"Text" => _("This will enable the extension automatically if this profile is loaded.")
 			));
 		// profile options
-		$profileContainer = new htmlTable();
-		$profileContainer->addElement(new htmlTableExtendedInputCheckbox('eduPerson_addExt', false, _('Automatically add this extension'), 'autoAdd'));
+		$profileContainer = new htmlResponsiveRow();
+		$profileContainer->add(new htmlResponsiveInputCheckbox('eduPerson_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
 		$return['profile_options'] = $profileContainer;
 		// upload fields
 		$return['upload_columns'] = array(

@@ -3,11 +3,10 @@ use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
 /*
-  $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2009 - 2012  Pavel Pozdniak
-                2009 - 2017  Roland Gruber
+                2009 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -127,8 +126,8 @@ class asteriskExtension extends baseModule {
         );
 
         // profile options
-        $profileContainer = new htmlTable();
-        $profileContainer->addElement(new htmlTableExtendedInputField(_('Account context'), 'AsteriskExtension_AstContext', null, 'AstContext'), true);
+        $profileContainer = new htmlResponsiveRow();
+        $profileContainer->add(new htmlResponsiveInputField(_('Account context'), 'AsteriskExtension_AstContext', null, 'AstContext'), 12);
         $return['profile_options'] = $profileContainer;
         $return['profile_mappings'] = array(
             'AsteriskExtension_AstContext' => 'AstContext',

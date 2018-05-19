@@ -1,9 +1,8 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2017  Roland Gruber
+  Copyright (C) 2011 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -131,7 +130,7 @@ class freeRadius extends baseModule {
 		// profile settings
 		$profileElements = array();
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusFramedIPNetmask')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Net mask'), 'freeRadius_radiusFramedIPNetmask', null, 'radiusFramedIPNetmask');
+			$profileElements[] = new htmlResponsiveInputField(_('Net mask'), 'freeRadius_radiusFramedIPNetmask', null, 'radiusFramedIPNetmask');
 			$return['profile_checks']['freeRadius_radiusFramedIPNetmask'] = array(
 				'type' => 'ext_preg',
 				'regex' => 'ip',
@@ -139,7 +138,7 @@ class freeRadius extends baseModule {
 			$return['profile_mappings']['freeRadius_radiusFramedIPNetmask'] = 'radiusFramedIPNetmask';
 		}
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusRealm')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Realm'), 'freeRadius_radiusRealm', null, 'radiusRealm');
+			$profileElements[] = new htmlResponsiveInputField(_('Realm'), 'freeRadius_radiusRealm', null, 'radiusRealm');
 			$return['profile_checks']['freeRadius_radiusRealm'] = array(
 				'type' => 'ext_preg',
 				'regex' => 'DNSname',
@@ -147,10 +146,10 @@ class freeRadius extends baseModule {
 			$return['profile_mappings']['freeRadius_radiusRealm'] = 'radiusRealm';
 		}
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusGroupName')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Group names'), 'freeRadius_radiusGroupName', null, 'radiusGroupNameList');
+			$profileElements[] = new htmlResponsiveInputField(_('Group names'), 'freeRadius_radiusGroupName', null, 'radiusGroupNameList');
 		}
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusIdleTimeout')) {
-			$profileElements[] = new htmlTableExtendedInputField(_('Idle timeout'), 'freeRadius_radiusIdleTimeout', null, 'radiusIdleTimeout');
+			$profileElements[] = new htmlResponsiveInputField(_('Idle timeout'), 'freeRadius_radiusIdleTimeout', null, 'radiusIdleTimeout');
 			$return['profile_checks']['freeRadius_radiusIdleTimeout'] = array(
 				'type' => 'ext_preg',
 				'regex' => 'digit',
@@ -159,7 +158,7 @@ class freeRadius extends baseModule {
 		}
 		if (!$this->isBooleanConfigOptionSet('freeRadius_hideDialupAccess')) {
 			$enabledOptions = array('-' => '', _('Yes') => 'true', _('No') => 'false');
-			$dialupAccessSelect = new htmlTableExtendedSelect('freeRadius_dialupAccess', $enabledOptions, array('true'), _('Enabled'), 'dialupAccess');
+			$dialupAccessSelect = new htmlResponsiveSelect('freeRadius_dialupAccess', $enabledOptions, array('true'), _('Enabled'), 'dialupAccess');
 			$dialupAccessSelect->setHasDescriptiveElements(true);
 			$profileElements[] = $dialupAccessSelect;
 			$return['profile_mappings']['freeRadius_dialupAccess'] = 'dialupAccess';
@@ -169,16 +168,15 @@ class freeRadius extends baseModule {
 			foreach ($this->getProfiles() as $dn) {
 				$profileOptions[getAbstractDN($dn)] = $dn;
 			}
-			$profileSelect = new htmlTableExtendedSelect('freeRadius_radiusProfileDn', $profileOptions, array(''), _('Profile'), 'radiusProfileDn');
+			$profileSelect = new htmlResponsiveSelect('freeRadius_radiusProfileDn', $profileOptions, array(''), _('Profile'), 'radiusProfileDn');
 			$profileSelect->setHasDescriptiveElements(true);
 			$profileElements[] = $profileSelect;
 			$return['profile_mappings']['freeRadius_radiusProfileDn'] = 'radiusProfileDn';
 		}
 		if (sizeof($profileElements) > 0) {
-			$profileContainer = new htmlTable();
+			$profileContainer = new htmlResponsiveRow();
 			for ($i = 0; $i < sizeof($profileElements); $i++) {
-				$profileContainer->addElement($profileElements[$i]);
-				$profileContainer->addNewLine();
+				$profileContainer->add($profileElements[$i], 12);
 			}
 			$return['profile_options'] = $profileContainer;
 		}

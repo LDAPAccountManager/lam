@@ -1,10 +1,9 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008        Thomas Manninger
-                2008 - 2017 Roland Gruber
+                2008 - 2018 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -223,19 +222,19 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			'unknownClients' => _('Unknown clients'),
 		);
 		// profile elements
-		$profileContainer = new htmlTable();
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Subnet'), 'cn', null, 'subnet'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Domain name'), 'domainname', null, 'domainname'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Lease time'), 'lease_time', null, 'leasetime'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Maximum lease time'), 'max_lease_time', null, 'max_leasetime'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('DNS'), 'dns', null, 'dns'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Default gateway'), 'routers', null, 'gateway'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Netbios name servers'), 'netbios', null, 'netbios'), true);
+		$profileContainer = new htmlResponsiveRow();
+		$profileContainer->add(new htmlResponsiveInputField(_('Subnet'), 'cn', null, 'subnet'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Domain name'), 'domainname', null, 'domainname'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Lease time'), 'lease_time', null, 'leasetime'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Maximum lease time'), 'max_lease_time', null, 'max_leasetime'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('DNS'), 'dns', null, 'dns'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Default gateway'), 'routers', null, 'gateway'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Netbios name servers'), 'netbios', null, 'netbios'), 12);
 		$nodeList = array_flip($this->all_netbios_node_types);
-		$profileNodeSelect = new htmlTableExtendedSelect('netbios_node_type', $nodeList, null, _('Netbios node type'), 'netbios_type');
+		$profileNodeSelect = new htmlResponsiveSelect('netbios_node_type', $nodeList, null, _('Netbios node type'), 'netbios_type');
 		$profileNodeSelect->setHasDescriptiveElements(true);
-		$profileContainer->addElement($profileNodeSelect, true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Subnet mask'), 'subnet', null, 'subnetmask'), true);
+		$profileContainer->add($profileNodeSelect, 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Subnet mask'), 'subnet', null, 'subnetmask'), 12);
 		$return['profile_options'] = $profileContainer;
 		// upload fields
 		$uploadAllowDenyOption = $this->allowDenyOptions;

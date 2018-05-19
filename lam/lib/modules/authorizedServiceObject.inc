@@ -108,9 +108,9 @@ class authorizedServiceObject extends baseModule {
 			'authorizedService' => _('Authorized Services')
 		);
 		// profile options
-		$profileContainer = new htmlTable();
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Authorized Services'), 'authorizedServiceObject_services', null, 'authorizedServices'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputCheckbox('authorizedServiceObject_addExt', false, _('Automatically add this extension'), 'autoAdd'));
+		$profileContainer = new htmlResponsiveRow();
+		$profileContainer->add(new htmlResponsiveInputField(_('Authorized Services'), 'authorizedServiceObject_services', null, 'authorizedServices'), 12);
+		$profileContainer->add(new htmlResponsiveInputCheckbox('authorizedServiceObject_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
 		$return['profile_options'] = $profileContainer;
 		// profile checks
 		$return['profile_checks']['authorizedServiceObject_services'] = array('type' => 'ext_preg', 'regex' => 'ascii',

@@ -248,10 +248,10 @@ class asteriskAccount extends baseModule implements passwordService {
 		$selfServiceContainer->add(new htmlResponsiveInputField(_('Asterisk realm'), 'asteriskAccount_AsteriskRealm', null, array('AsteriskRealm', get_class($this))), 12);
 		$return['selfServiceSettings'] = $selfServiceContainer;
 		// profile options
-		$profileContainer = new htmlTable();
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Host'), 'asteriskAccount_AstAccountHost', null, 'AstAccountHost'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Account context'), 'asteriskAccount_AstAccountContext', null, 'AstAccountContext'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Account type'), 'asteriskAccount_AstAccountType', null, 'AstAccountType'), true);
+		$profileContainer = new htmlResponsiveRow();
+		$profileContainer->add(new htmlResponsiveInputField(_('Host'), 'asteriskAccount_AstAccountHost', null, 'AstAccountHost'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Account context'), 'asteriskAccount_AstAccountContext', null, 'AstAccountContext'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Account type'), 'asteriskAccount_AstAccountType', null, 'AstAccountType'), 12);
 		$return['profile_options'] = $profileContainer;
 		// profile mappings
 		$return['profile_mappings'] = array(

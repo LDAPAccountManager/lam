@@ -139,8 +139,8 @@ class courierMailAccount extends baseModule {
 			),
 		);
 		// profile options
-		$profileContainer = new htmlTable();
-		$profileContainer->addElement(new htmlTableExtendedInputCheckbox('courierMailAccount_addExt', false, _('Automatically add this extension'), 'autoAdd'), true);
+		$profileContainer = new htmlResponsiveRow();
+		$profileContainer->add(new htmlResponsiveInputCheckbox('courierMailAccount_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
 		$return['profile_options'] = $profileContainer;
 		// PDF fields
 		$return['PDF_fields'] = array(
