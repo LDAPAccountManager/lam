@@ -3,10 +3,9 @@ use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
 /*
-$Id$
 
   This code is not yet part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2012 - 2017  Roland Gruber
+  Copyright (C) 2012 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -169,17 +168,17 @@ class puppetClient extends baseModule {
 			'puppetvar' => _('Variables'),
 		);
 		// profile options
-		$profileContainer = new htmlTable();
-		$profileContainer->addElement(new htmlTableExtendedInputCheckbox('puppetClient_addExt', false, _('Automatically add this extension'), 'autoAdd'), true);
-		$profileEnvironment = new htmlTableExtendedInputField(_('Environment'), 'puppetClient_environment', null, 'environment');
+		$profileContainer = new htmlResponsiveRow();
+		$profileContainer->add(new htmlResponsiveInputCheckbox('puppetClient_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
+		$profileEnvironment = new htmlResponsiveInputField(_('Environment'), 'puppetClient_environment', null, 'environment');
 		$autocompleteEnvironment = array();
 		if (isset($this->moduleSettings['puppetClient_environments'])) {
 			$autocompleteEnvironment = $this->moduleSettings['puppetClient_environments'];
 		}
 		$profileEnvironment->enableAutocompletion($autocompleteEnvironment);
-		$profileContainer->addElement($profileEnvironment, true);
-		$profileContainer->addElement(new htmlTableExtendedInputTextarea('puppetClient_puppetclass', '', 60, 5, _('Classes'), 'puppetclass'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputTextarea('puppetClient_puppetvar', '', 60, 5, _('Variables'), 'puppetvar'), true);
+		$profileContainer->add($profileEnvironment, 12);
+		$profileContainer->add(new htmlResponsiveInputTextarea('puppetClient_puppetclass', '', 60, 5, _('Classes'), 'puppetclass'), 12);
+		$profileContainer->add(new htmlResponsiveInputTextarea('puppetClient_puppetvar', '', 60, 5, _('Variables'), 'puppetvar'), 12);
 		$return['profile_options'] = $profileContainer;
 		// profile checks
 		$return['profile_checks']['puppetClient_environment'] = array('type' => 'ext_preg', 'regex' => 'ascii', 'error_message' => $this->messages['environment'][0]);
@@ -433,7 +432,7 @@ class puppetClient extends baseModule {
 		array_unshift($possibleParentNodes, '-');
 		$possibleParentNodes = array_values($possibleParentNodes);
 		if (sizeof($possibleParentNodes) > 0) {
-			$return->addElement(new htmlTableExtendedSelect('puppetClient_parentnode', $possibleParentNodes, array(), _('Parent node'), 'parentnode'), true);
+			$return->add(new htmlResponsiveSelect('puppetClient_parentnode', $possibleParentNodes, array(), _('Parent node'), 'parentnode'), 12);
 		}
 		return $return;
 	}

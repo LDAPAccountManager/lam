@@ -136,8 +136,8 @@ class imapAccess extends baseModule {
 			'required_message' => $this->messages['config'][1],
 			'error_message' => $this->messages['config'][1]);
 		// profile options
-		$profileContainer = new htmlTable();
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Quota'), 'ImapAccess_QuotaLimit', null, 'ImapUserQuotaLimit'), true);
+		$profileContainer = new htmlResponsiveRow();
+		$profileContainer->add(new htmlResponsiveInputField(_('Quota'), 'ImapAccess_QuotaLimit', null, 'ImapUserQuotaLimit'), 12);
 		$return['profile_options'] = $profileContainer;
 		$return['profile_checks']['ImapAccess_QuotaLimit'] = array(
 			'type' => 'ext_preg',

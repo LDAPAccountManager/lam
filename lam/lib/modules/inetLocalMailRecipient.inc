@@ -91,11 +91,11 @@ class inetLocalMailRecipient extends baseModule {
 				"Text" => _("This is the mail server for the user.")
 			));
 		// profile options
-		$profileContainer = new htmlTable();
-		$profileContainer->addElement(new htmlTableExtendedInputCheckbox('inetLocalMailRecipient_addExt', false, _('Automatically add this extension'), 'autoAdd'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Routing address'), 'inetLocalMailRecipient_mailRoutingAddress', null, 'mailRoutingAddress'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Local address'), 'inetLocalMailRecipient_mailLocalAddress', null, 'localAdr'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Mail server'), 'inetLocalMailRecipient_host', null, 'mailHost'), true);
+		$profileContainer = new htmlResponsiveRow();
+		$profileContainer->add(new htmlResponsiveInputCheckbox('inetLocalMailRecipient_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Routing address'), 'inetLocalMailRecipient_mailRoutingAddress', null, 'mailRoutingAddress'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Local address'), 'inetLocalMailRecipient_mailLocalAddress', null, 'localAdr'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Mail server'), 'inetLocalMailRecipient_host', null, 'mailHost'), 12);
 		$return['profile_options'] = $profileContainer;
 		// profile checks
 		$return['profile_checks']['inetLocalMailRecipient_host'] = array(

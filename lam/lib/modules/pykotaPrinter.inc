@@ -1,9 +1,8 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2015  Roland Gruber
+  Copyright (C) 2013 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -131,8 +130,8 @@ class pykotaPrinter extends baseModule {
 			),
 		);
 		// profile options
-		$profileContainer = new htmlTable();
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Maximum job size'), 'pykotaPrinter_pykotaMaxJobSize', '', 'pykotaMaxJobSize'), true);
+		$profileContainer = new htmlResponsiveRow();
+		$profileContainer->add(new htmlResponsiveInputField(_('Maximum job size'), 'pykotaPrinter_pykotaMaxJobSize', '', 'pykotaMaxJobSize'), 12);
 		$return['profile_options'] = $profileContainer;
 		$return['profile_mappings']['pykotaPrinter_pykotaMaxJobSize'] = 'pykotaMaxJobSize';
 		$return['profile_checks']['pykotaPrinter_pykotaMaxJobSize'] = array(

@@ -99,8 +99,8 @@ class ldapPublicKey extends baseModule {
 			),
 		);
 		// profile options
-		$profileContainer = new htmlTable();
-		$profileContainer->addElement(new htmlTableExtendedInputCheckbox('ldapPublicKey_addExt', false, _('Automatically add this extension'), 'autoAdd'), true);
+		$profileContainer = new htmlResponsiveRow();
+		$profileContainer->add(new htmlResponsiveInputCheckbox('ldapPublicKey_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
 		$return['profile_options'] = $profileContainer;
 		// upload fields
 		$return['upload_columns'] = array(

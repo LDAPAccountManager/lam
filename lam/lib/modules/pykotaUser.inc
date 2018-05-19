@@ -4,10 +4,9 @@ use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
 use \LAM\TYPES\TypeManager;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2017  Roland Gruber
+  Copyright (C) 2013 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -166,16 +165,16 @@ class pykotaUser extends baseModule {
 			),
 		);
 		// profile options
-		$profileContainer = new htmlTable();
-		$pykotaLimitByProfileOption = new htmlTableExtendedSelect('pykotaUser_pykotaLimitBy', $this->limitOptions, array(), _('Limit type'), 'pykotaLimitBy');
+		$profileContainer = new htmlResponsiveRow();
+		if (!$this->isStructural()) {
+			$profileContainer->add(new htmlResponsiveInputCheckbox('pykotaUser_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
+		}
+		$pykotaLimitByProfileOption = new htmlResponsiveSelect('pykotaUser_pykotaLimitBy', $this->limitOptions, array(), _('Limit type'), 'pykotaLimitBy');
 		$pykotaLimitByProfileOption->setHasDescriptiveElements(true);
 		$pykotaLimitByProfileOption->setSortElements(false);
-		$profileContainer->addElement($pykotaLimitByProfileOption, true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Balance'), 'pykotaUser_pykotaBalance', '', 'pykotaBalance'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Overcharge factor'), 'pykotaUser_pykotaOverCharge', '', 'pykotaOverCharge'), true);
-		if (!$this->isStructural()) {
-			$profileContainer->addElement(new htmlTableExtendedInputCheckbox('pykotaUser_addExt', false, _('Automatically add this extension'), 'autoAdd'), true);
-		}
+		$profileContainer->add($pykotaLimitByProfileOption, 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Balance'), 'pykotaUser_pykotaBalance', '', 'pykotaBalance'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Overcharge factor'), 'pykotaUser_pykotaOverCharge', '', 'pykotaOverCharge'), 12);
 		$return['profile_options'] = $profileContainer;
 		$return['profile_mappings']['pykotaUser_pykotaLimitBy'] = 'pykotaLimitBy';
 		$return['profile_mappings']['pykotaUser_pykotaOverCharge'] = 'pykotaOverCharge';

@@ -1,9 +1,8 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2015  Roland Gruber
+  Copyright (C) 2011 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -97,8 +96,8 @@ class hostObject extends baseModule {
 		$return['PDF_fields'] = array(
 			'hosts' => _('Host list')
 		);
-		$profileContainer = new htmlTable();
-		$profileContainer->addElement(new htmlTableExtendedInputCheckbox('hostObject_addExt', false, _('Automatically add this extension'), 'autoAdd'));
+		$profileContainer = new htmlResponsiveRow();
+		$profileContainer->add(new htmlResponsiveInputCheckbox('hostObject_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
 		$return['profile_options'] = $profileContainer;
 		return $return;
 	}

@@ -1,10 +1,9 @@
 <?php
 use \LAM\TYPES\TypeManager;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2017  Roland Gruber
+  Copyright (C) 2013 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -126,13 +125,13 @@ class pykotaGroup extends baseModule {
 			),
 		);
 		// profile options
-		$profileContainer = new htmlTable();
-		$pykotaLimitByProfileOption = new htmlTableExtendedSelect('pykotaGroup_pykotaLimitBy', $this->limitOptions, array(), _('Limit type'), 'pykotaLimitBy');
+		$profileContainer = new htmlResponsiveRow();
+		$pykotaLimitByProfileOption = new htmlResponsiveSelect('pykotaGroup_pykotaLimitBy', $this->limitOptions, array(), _('Limit type'), 'pykotaLimitBy');
 		$pykotaLimitByProfileOption->setHasDescriptiveElements(true);
 		$pykotaLimitByProfileOption->setSortElements(false);
-		$profileContainer->addElement($pykotaLimitByProfileOption, true);
+		$profileContainer->add($pykotaLimitByProfileOption, 12);
 		if (!$this->isStructural()) {
-			$profileContainer->addElement(new htmlTableExtendedInputCheckbox('pykotaGroup_addExt', false, _('Automatically add this extension'), 'autoAdd'), true);
+			$profileContainer->add(new htmlResponsiveInputCheckbox('pykotaGroup_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
 		}
 		$return['profile_options'] = $profileContainer;
 		$return['profile_mappings']['pykotaGroup_pykotaLimitBy'] = 'pykotaLimitBy';

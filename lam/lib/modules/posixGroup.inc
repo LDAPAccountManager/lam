@@ -432,8 +432,8 @@ class posixGroup extends baseModule implements passwordService {
 		$return['attributes'] = array('gidNumber', $this->passwordAttrName, 'memberUid');
 		// profile options
 		if (!$this->autoAddObjectClasses) {
-			$profileContainer = new htmlTable();
-			$profileContainer->addElement(new htmlTableExtendedInputCheckbox('posixGroup_addExt', false, _('Automatically add this extension'), 'autoAdd'), true);
+			$profileContainer = new htmlResponsiveRow();
+			$profileContainer->add(new htmlResponsiveInputCheckbox('posixGroup_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
 			$return['profile_options'] = $profileContainer;
 		}
 		// available PDF fields

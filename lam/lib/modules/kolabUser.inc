@@ -3,10 +3,9 @@ use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2017  Roland Gruber
+  Copyright (C) 2004 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -97,9 +96,9 @@ class kolabUser extends baseModule {
 			$return['attributes'][] = 'mailQuota';
 		}
 		// profile options
-		$profileContainer = new htmlTable();
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Mail server'), 'kolab_mailHost', null, 'mailHost'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Mailbox quota'), 'kolab_mailQuota', null, 'mailQuota'), true);
+		$profileContainer = new htmlResponsiveRow();
+		$profileContainer->add(new htmlResponsiveInputField(_('Mail server'), 'kolab_mailHost', null, 'mailHost'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Mailbox quota'), 'kolab_mailQuota', null, 'mailQuota'), 12);
 		$return['profile_options'] = $profileContainer;
 		// profile checks
 		$return['profile_checks']['kolab_mailHost'] = array(
