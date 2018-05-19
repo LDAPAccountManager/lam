@@ -1,10 +1,9 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-  Copyright (C) 2007 - 2017  Roland Gruber
+  Copyright (C) 2007 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -101,37 +100,33 @@ class shadowAccount extends baseModule implements passwordService {
 		for ( $i=1; $i<=31; $i++ ) $day[] = $i;
 		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
 		for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
-		$profileOptionsTable = new htmlTable();
+		$profileOptionsTable = new htmlResponsiveRow();
 		// auto add extension
-		$profileOptionsTable->addElement(new htmlTableExtendedInputCheckbox('shadowAccount_addExt', false, _('Automatically add this extension'), 'autoAdd'), true);
+		$profileOptionsTable->add(new htmlResponsiveInputCheckbox('shadowAccount_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
 		// password warning
-		$profilePwdWarning = new htmlTableExtendedInputField(_('Password warning'), 'shadowAccount_shadowWarning', null, 'shadowWarning');
-		$profilePwdWarning->setFieldSize(5);
+		$profilePwdWarning = new htmlResponsiveInputField(_('Password warning'), 'shadowAccount_shadowWarning', null, 'shadowWarning');
 		$profilePwdWarning->setFieldMaxLength(4);
-		$profileOptionsTable->addElement($profilePwdWarning, true);
+		$profileOptionsTable->add($profilePwdWarning, 12);
 		// password expiration
-		$profilePwdExpiration = new htmlTableExtendedInputField(_('Password expiration'), 'shadowAccount_shadowInactive', null, 'shadowInactive');
-		$profilePwdExpiration->setFieldSize(5);
+		$profilePwdExpiration = new htmlResponsiveInputField(_('Password expiration'), 'shadowAccount_shadowInactive', null, 'shadowInactive');
 		$profilePwdExpiration->setFieldMaxLength(4);
-		$profileOptionsTable->addElement($profilePwdExpiration, true);
+		$profileOptionsTable->add($profilePwdExpiration, 12);
 		// minimum password age
-		$profilePwdMinAge = new htmlTableExtendedInputField(_('Minimum password age'), 'shadowAccount_shadowMin', null, 'shadowMin');
-		$profilePwdMinAge->setFieldSize(5);
+		$profilePwdMinAge = new htmlResponsiveInputField(_('Minimum password age'), 'shadowAccount_shadowMin', null, 'shadowMin');
 		$profilePwdMinAge->setFieldMaxLength(5);
-		$profileOptionsTable->addElement($profilePwdMinAge, true);
+		$profileOptionsTable->add($profilePwdMinAge, 12);
 		// maximum password age
-		$profilePwdMinAge = new htmlTableExtendedInputField(_('Maximum password age'), 'shadowAccount_shadowMax', null, 'shadowMax');
-		$profilePwdMinAge->setFieldSize(5);
+		$profilePwdMinAge = new htmlResponsiveInputField(_('Maximum password age'), 'shadowAccount_shadowMax', null, 'shadowMax');
 		$profilePwdMinAge->setFieldMaxLength(5);
-		$profileOptionsTable->addElement($profilePwdMinAge, true);
+		$profileOptionsTable->add($profilePwdMinAge, 12);
 		// expiration date
-		$profileOptionsTable->addElement(new htmlOutputText(_('Account expiration date')));
-		$profileOptionsExpire = new htmlTable();
-		$profileOptionsExpire->addElement(new htmlSelect('shadowAccount_shadowExpire_day', $day, array('-')));
-		$profileOptionsExpire->addElement(new htmlSelect('shadowAccount_shadowExpire_mon', $mon, array('-')));
-		$profileOptionsExpire->addElement(new htmlSelect('shadowAccount_shadowExpire_yea', $year, array('-')));
-		$profileOptionsTable->addElement($profileOptionsExpire);
-		$profileOptionsTable->addElement(new htmlHelpLink('shadowExpire'));
+		$profileOptionsTable->addLabel(new htmlOutputText(_('Account expiration date')));
+		$profileOptionsExpire = new htmlResponsiveRow();
+		$profileOptionsExpire->add(new htmlSelect('shadowAccount_shadowExpire_day', $day, array('-')), 2, 2, 2, 'padding-right05');
+		$profileOptionsExpire->add(new htmlSelect('shadowAccount_shadowExpire_mon', $mon, array('-')), 2, 2, 2, 'padding-left-right05');
+		$profileOptionsExpire->add(new htmlSelect('shadowAccount_shadowExpire_yea', $year, array('-')), 6, 6, 6, 'padding-left-right05');
+		$profileOptionsExpire->add(new htmlHelpLink('shadowExpire'), 2, 2, 2, 'padding-left-right05');
+		$profileOptionsTable->addField($profileOptionsExpire);
 		$return['profile_options'] = $profileOptionsTable;
 		// profile checks
 		$return['profile_checks']['shadowAccount_shadowMin'] = array(

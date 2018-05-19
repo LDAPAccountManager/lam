@@ -243,8 +243,8 @@ class windowsGroup extends baseModule {
 		}
 		// profile options
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30NisDomain', true)) {
-			$profileContainer = new htmlTable();
-			$profileContainer->addElement(new htmlTableExtendedInputField(_('NIS domain'), 'windowsGroup_msSFU30NisDomain', null, 'msSFU30NisDomain'), true);
+			$profileContainer = new htmlResponsiveRow();
+			$profileContainer->add(new htmlResponsiveInputField(_('NIS domain'), 'windowsGroup_msSFU30NisDomain', null, 'msSFU30NisDomain'), 12);
 			$return['profile_options'] = $profileContainer;
 			$return['profile_mappings']['windowsGroup_msSFU30NisDomain'] = 'msSFU30NisDomain';
 		}

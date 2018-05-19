@@ -158,6 +158,15 @@ textarea {
 	padding: 0em !important;
 }
 
+.padding-right05 {
+	padding-right: 0.5rem !important;
+}
+
+.padding-left-right05 {
+	padding-left: 0.5rem !important;
+	padding-right: 0.5rem !important;
+}
+
 .padding05 {
 	padding: 0.5em;
 }

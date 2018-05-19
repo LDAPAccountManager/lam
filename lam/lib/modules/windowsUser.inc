@@ -732,38 +732,38 @@ class windowsUser extends baseModule implements passwordService {
 			);
 		}
 		// profile options
-		$profileContainer = new htmlTable();
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Common name'), 'windowsUser_cn', null, 'cn'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Display name'), 'windowsUser_displayName', null, 'displayName'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Email address'), 'windowsUser_mail', null, 'mail'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Email alias'), 'windowsUser_otherMailbox', null, 'otherMailboxList'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Logon script'), 'windowsUser_scriptPath', null, 'scriptPath'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Profile path'), 'windowsUser_profilePath', null, 'profilePath'), true);
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Home directory'), 'windowsUser_homeDirectory', null, 'homeDirectory'), true);
+		$profileContainer = new htmlResponsiveRow();
+		$profileContainer->add(new htmlResponsiveInputField(_('Common name'), 'windowsUser_cn', null, 'cn'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Display name'), 'windowsUser_displayName', null, 'displayName'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Email address'), 'windowsUser_mail', null, 'mail'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Email alias'), 'windowsUser_otherMailbox', null, 'otherMailboxList'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Logon script'), 'windowsUser_scriptPath', null, 'scriptPath'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Profile path'), 'windowsUser_profilePath', null, 'profilePath'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Home directory'), 'windowsUser_homeDirectory', null, 'homeDirectory'), 12);
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
-			$profileContainer->addElement(new htmlTableExtendedInputField(_('NIS domain'), 'windowsUser_msSFU30NisDomain', null, 'msSFU30NisDomain'), true);
+			$profileContainer->add(new htmlResponsiveInputField(_('NIS domain'), 'windowsUser_msSFU30NisDomain', null, 'msSFU30NisDomain'), 12);
 		}
-		$profileContainer->addElement(new htmlTableExtendedInputField(_('Account expiration'), 'windowsUser_accountExpires', null, 'accountExpiresProfile'), true);
+		$profileContainer->add(new htmlResponsiveInputField(_('Account expiration'), 'windowsUser_accountExpires', null, 'accountExpiresProfile'), 12);
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidecompany', true)) {
-			$profileContainer->addElement(new htmlTableExtendedInputField(_('Company'), 'windowsUser_company', null, 'company'), true);
+			$profileContainer->add(new htmlResponsiveInputField(_('Company'), 'windowsUser_company', null, 'company'), 12);
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment', true)) {
-			$profileContainer->addElement(new htmlTableExtendedInputField(_('Department'), 'windowsUser_department', null, 'department'), true);
+			$profileContainer->add(new htmlResponsiveInputField(_('Department'), 'windowsUser_department', null, 'department'), 12);
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
-			$profileContainer->addElement(new htmlTableExtendedInputField(_('Organisational unit'), 'windowsUser_ou', null, 'ouList'), true);
+			$profileContainer->add(new htmlResponsiveInputField(_('Organisational unit'), 'windowsUser_ou', null, 'ouList'), 12);
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideo', true)) {
-			$profileContainer->addElement(new htmlTableExtendedInputField(_('Organisation'), 'windowsUser_o', null, 'oList'), true);
+			$profileContainer->add(new htmlResponsiveInputField(_('Organisation'), 'windowsUser_o', null, 'oList'), 12);
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)) {
-			$profileContainer->addElement(new htmlTableExtendedInputField(_('Job title'), 'windowsUser_title', null, 'title'), true);
+			$profileContainer->add(new htmlResponsiveInputField(_('Job title'), 'windowsUser_title', null, 'title'), 12);
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideemployeeType', true)) {
-			$profileContainer->addElement(new htmlTableExtendedInputField(_('Employee type'), 'windowsUser_employeeType', null, 'employeeType'), true);
+			$profileContainer->add(new htmlResponsiveInputField(_('Employee type'), 'windowsUser_employeeType', null, 'employeeType'), 12);
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)) {
-		    $profileContainer->addElement(new htmlTableExtendedInputField(_('Business category'), 'windowsUser_businessCategory', null, 'businessCategory'), true);
+		    $profileContainer->add(new htmlResponsiveInputField(_('Business category'), 'windowsUser_businessCategory', null, 'businessCategory'), 12);
 		}
 		$return['profile_options'] = $profileContainer;
 		// profile mappings
@@ -2521,17 +2521,17 @@ class windowsUser extends baseModule implements passwordService {
 		// domain
 		$domains = $this->getDomains();
 		$domains[] = '';
-		$return->addElement(new htmlTableExtendedSelect('windowsUser_userPrincipalNameDomain', $domains, array(), _('Domain'), 'userPrincipalNameDomain'), true);
+		$return->add(new htmlResponsiveSelect('windowsUser_userPrincipalNameDomain', $domains, array(), _('Domain'), 'userPrincipalNameDomain'), 12);
 		// group memberships
 		$groups = $this->findGroups();
 		$groupList = array();
 		foreach ($groups as $dn) {
 			$groupList[extractRDNValue($dn)] = $dn;
 		}
-		$groupSelect = new htmlTableExtendedSelect('windowsUser_groups', $groupList, array(), _('Groups'), 'groups', 10);
+		$groupSelect = new htmlResponsiveSelect('windowsUser_groups', $groupList, array(), _('Groups'), 'groups', 10);
 		$groupSelect->setHasDescriptiveElements(true);
 		$groupSelect->setMultiSelect(true);
-		$return->addElement($groupSelect, true);
+		$return->add($groupSelect, 12);
 		return $return;
 	}
 

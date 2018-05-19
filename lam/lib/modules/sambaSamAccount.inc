@@ -1,11 +1,10 @@
 <?php
 
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2017  Roland Gruber
+                2005 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -162,8 +161,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 		// PHP extensions
 		$return['extensions'] = array('hash', 'iconv');
 		// profile options
-		$profileContainer = new htmlTable();
-		$profileContainer->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_addExt', false, _('Automatically add this extension'), 'autoAdd'), true);
+		$profileContainer = new htmlResponsiveRow();
+		$profileContainer->add(new htmlResponsiveInputCheckbox('sambaSamAccount_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
 		$return['profile_options'] = $profileContainer;
 		// profile checks
 		$return['profile_checks']['sambaSamAccount_smbhome'] = array(
@@ -1689,42 +1688,42 @@ class sambaSamAccount extends baseModule implements passwordService {
 			for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
 			for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
 			// display name
-			$return->addElement(new htmlTableExtendedInputField(_('Display name'), 'sambaSamAccount_displayName', '', 'displayName'), true);
+			$return->add(new htmlResponsiveInputField(_('Display name'), 'sambaSamAccount_displayName', '', 'displayName'), 12);
 			// use no password at all
-			$return->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_sambaAcctFlagsN', false, _('Use no password'), 'noPassword'), true);
+			$return->add(new htmlResponsiveInputCheckbox('sambaSamAccount_sambaAcctFlagsN', false, _('Use no password'), 'noPassword'), 12);
 			// account deactivation
-			$return->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_sambaAcctFlagsD', false, _('Account is deactivated'), 'deactivated'), true);
+			$return->add(new htmlResponsiveInputCheckbox('sambaSamAccount_sambaAcctFlagsD', false, _('Account is deactivated'), 'deactivated'), 12);
 			// password never expires
-			$return->addElement(new htmlTableExtendedInputCheckbox('sambaSamAccount_sambaAcctFlagsX', false, _('Password does not expire'), 'noExpire'), true);
+			$return->add(new htmlResponsiveInputCheckbox('sambaSamAccount_sambaAcctFlagsX', false, _('Password does not expire'), 'noExpire'), 12);
 			// expiration date
-			$return->addElement(new htmlOutputText(_('Account expiration date')));
-			$expireContainer = new htmlTable();
-			$expireContainer->addElement(new htmlSelect('sambaSamAccount_expire_day', $day, array('1')));
-			$expireContainer->addElement(new htmlSelect('sambaSamAccount_expire_mon', $mon, array('1')));
-			$expireContainer->addElement(new htmlSelect('sambaSamAccount_expire_yea', $year, array('2030')));
-			$return->addElement($expireContainer);
-			$return->addElement(new htmlHelpLink('expireDate'), true);
+			$return->addLabel(new htmlOutputText(_('Account expiration date')));
+			$expireContainer = new htmlResponsiveRow();
+			$expireContainer->add(new htmlSelect('sambaSamAccount_expire_day', $day, array('1')), 2, 2, 2, 'padding-right05');
+			$expireContainer->add(new htmlSelect('sambaSamAccount_expire_mon', $mon, array('1')), 2, 2, 2, 'padding-left-right05');
+			$expireContainer->add(new htmlSelect('sambaSamAccount_expire_yea', $year, array('2030')), 6, 6, 6, 'padding-left-right05');
+			$expireContainer->add(new htmlHelpLink('expireDate'), 2, 2, 2, 'padding-left-right05');
+			$return->addField($expireContainer, 12);
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomeDrive')) {
 				// letter of home drive
 				$drives = array('-');
 				for ($i = 90; $i > 67; $i--) $drives[] = chr($i) . ':';
-				$return->addElement(new htmlTableExtendedSelect('sambaSamAccount_sambaHomeDrive', $drives, array('-'), _('Home drive'), 'homeDrive'), true);
+				$return->add(new htmlResponsiveSelect('sambaSamAccount_sambaHomeDrive', $drives, array('-'), _('Home drive'), 'homeDrive'), 12);
 			}
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomePath')) {
 				// path to home directory
-				$return->addElement(new htmlTableExtendedInputField(_('Home path'), 'sambaSamAccount_smbhome', '', 'homePath'), true);
+				$return->add(new htmlResponsiveInputField(_('Home path'), 'sambaSamAccount_smbhome', '', 'homePath'), 12);
 			}
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideProfilePath')) {
 				// profile path
-				$return->addElement(new htmlTableExtendedInputField(_('Profile path'), 'sambaSamAccount_profilePath', '', 'profilePath'), true);
+				$return->add(new htmlResponsiveInputField(_('Profile path'), 'sambaSamAccount_profilePath', '', 'profilePath'), 12);
 			}
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonScript')) {
 				// logon script
-				$return->addElement(new htmlTableExtendedInputField(_('Logon script'), 'sambaSamAccount_logonScript', '', 'scriptPath'), true);
+				$return->add(new htmlResponsiveInputField(_('Logon script'), 'sambaSamAccount_logonScript', '', 'scriptPath'), 12);
 			}
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideWorkstations')) {
 				// allowed workstations
-				$return->addElement(new htmlTableExtendedInputField(_('Samba workstations'), 'sambaSamAccount_userWorkstations', '', 'workstations'), true);
+				$return->add(new htmlResponsiveInputField(_('Samba workstations'), 'sambaSamAccount_userWorkstations', '', 'workstations'), 12);
 			}
 			// domains
 			$sambaDomains = $this->getDomains();
@@ -1732,19 +1731,19 @@ class sambaSamAccount extends baseModule implements passwordService {
 			for ($i = 0; $i < count($sambaDomains); $i++) {
 				$sambaDomainNames[] = $sambaDomains[$i]->name;
 			}
-			$return->addElement(new htmlTableExtendedSelect('sambaSamAccount_sambaDomainName', $sambaDomainNames, null, _('Domain'), 'domain'), true);
+			$return->add(new htmlResponsiveSelect('sambaSamAccount_sambaDomainName', $sambaDomainNames, null, _('Domain'), 'domain'), 12);
 			// Windows group
 			$groups = array();
 			foreach ($this->groupRids as $key => $value) {
 				$groups[$key] = $value;
 			}
 			$groups["-"] = "-";
-			$groupSelect = new htmlTableExtendedSelect('sambaSamAccount_group', $groups, array('513'), _('Windows group'), 'group');
+			$groupSelect = new htmlResponsiveSelect('sambaSamAccount_group', $groups, array('513'), _('Windows group'), 'group');
 			$groupSelect->setHasDescriptiveElements(true);
-			$return->addElement($groupSelect, true);
+			$return->add($groupSelect, 12);
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonHours')) {
 				// logon hours
-				$return->addElement(new htmlTableExtendedInputField(_('Logon hours'), 'sambaSamAccount_logonHours', '', 'logonHoursUpload'), true);
+				$return->add(new htmlResponsiveInputField(_('Logon hours'), 'sambaSamAccount_logonHours', '', 'logonHoursUpload'), 12);
 			}
 		}
 		elseif ($this->get_scope() == 'host') {
@@ -1754,7 +1753,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			for ($i = 0; $i < count($sambaDomains); $i++) {
 				$sambaDomainNames[] = $sambaDomains[$i]->name;
 			}
-			$return->addElement(new htmlTableExtendedSelect('sambaSamAccount_sambaDomainName', $sambaDomainNames, null, _('Domain'), 'domain'), true);
+			$return->add(new htmlResponsiveSelect('sambaSamAccount_sambaDomainName', $sambaDomainNames, null, _('Domain'), 'domain'), 12);
 		}
 		return $return;
 	}
