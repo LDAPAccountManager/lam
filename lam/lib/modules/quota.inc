@@ -3,7 +3,6 @@ use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
@@ -531,7 +530,7 @@ class quota extends baseModule {
 	* {@inheritDoc}
 	*/
 	function get_profileOptions($typeId) {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		$optionsAvailable = false;
 		// get list of lamdaemon servers
 		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
@@ -568,44 +567,26 @@ class quota extends baseModule {
 				$dirs = array_values($dirs);
 				if (sizeof($dirs) < 1) continue; // stop if no quota directories were found
 				$optionsAvailable = true;
-				$return->addElement(new htmlSubTitle($description), true);
-				$return->addElement(new htmlOutputText('&nbsp;' . _('Mountpoint') . '&nbsp;', false));
-				$return->addElement(new htmlOutputText('&nbsp;' . _('Soft block limit') . '&nbsp;', false));
-				$return->addElement(new htmlOutputText('&nbsp;' . _('Hard block limit') . '&nbsp;', false));
-				$return->addElement(new htmlOutputText('&nbsp;' . _('Soft inode limit') . '&nbsp;', false));
-				$return->addElement(new htmlOutputText('&nbsp;' . _('Hard inode limit') . '&nbsp;', false));
-				$return->addNewLine();
-				$return->addElement(new htmlHelpLink('Mountpoint'));
-				$return->addElement(new htmlHelpLink('SoftBlockLimit'));
-				$return->addElement(new htmlHelpLink('HardBlockLimit'));
-				$return->addElement(new htmlHelpLink('SoftInodeLimit'));
-				$return->addElement(new htmlHelpLink('HardInodeLimit'));
-				$return->addNewLine();
-
+				$return->add(new htmlSubTitle($description), 12);
 				for ($i = 0; $i < sizeof($dirs); $i++) {
-					$return->addElement(new htmlOutputText($dirs[$i]));
-					$sbLimit = new htmlInputField("quota_softblock_" . $id . "_" . $dirs[$i]);
-					$sbLimit->setFieldSize(12);
+					$return->add(new htmlOutputText($dirs[$i]), 12);
+					$sbLimit = new htmlResponsiveInputField(_('Soft block limit'), "quota_softblock_" . $id . "_" . $dirs[$i], null, 'SoftBlockLimit');
 					$sbLimit->setFieldMaxLength(20);
-					$return->addElement($sbLimit);
-					$hbLimit = new htmlInputField("quota_hardblock_" . $id . "_" . $dirs[$i]);
-					$hbLimit->setFieldSize(12);
+					$return->add($sbLimit, 12);
+					$hbLimit = new htmlResponsiveInputField(_('Hard block limit'), "quota_hardblock_" . $id . "_" . $dirs[$i], null, 'HardBlockLimit');
 					$hbLimit->setFieldMaxLength(20);
-					$return->addElement($hbLimit);
-					$siLimit = new htmlInputField("quota_softinode_" . $id . "_" . $dirs[$i]);
-					$siLimit->setFieldSize(12);
+					$return->add($hbLimit, 12);
+					$siLimit = new htmlResponsiveInputField(_('Soft inode limit'), "quota_softinode_" . $id . "_" . $dirs[$i], null, 'SoftInodeLimit');
 					$siLimit->setFieldMaxLength(20);
-					$return->addElement($siLimit);
-					$hiLimit = new htmlInputField("quota_hardinode_" . $id . "_" . $dirs[$i]);
-					$hiLimit->setFieldSize(12);
+					$return->add($siLimit, 12);
+					$hiLimit = new htmlResponsiveInputField(_('Hard inode limit'), "quota_hardinode_" . $id . "_" . $dirs[$i], null, 'HardInodeLimit');
 					$hiLimit->setFieldMaxLength(20);
-					$return->addElement($hiLimit);
-					$return->addNewLine();
+					$return->add($hiLimit, 12);
 				}
 			}
 		}
 		catch (LAMException $e) {
-			$return->addElement(new htmlStatusMessage('WARN', $e->getTitle()));
+			$return->add(new htmlStatusMessage('WARN', $e->getTitle()), 12);
 			return $return;
 		}
 		if (!$optionsAvailable) {

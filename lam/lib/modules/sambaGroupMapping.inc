@@ -1,11 +1,10 @@
 <?php
 use \LAM\TYPES\TypeManager;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2007 - 2017  Roland Gruber
+                2007 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -539,7 +538,7 @@ class sambaGroupMapping extends baseModule {
 	* {@inheritDoc}
 	*/
 	function get_profileOptions($typeId) {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		// get list of domains
 		$sambaDomains = $this->getDomains();
 		$sambaDomainNames = array();
@@ -548,7 +547,7 @@ class sambaGroupMapping extends baseModule {
 			$sambaDomainNames[] = $sambaDomains[$i]->name;
 		}
 		// domain
-		$return->addElement(new htmlTableExtendedSelect('sambaGroupMapping_sambaDomainName', $sambaDomainNames, null, _('Domain'), 'sambaDomainName'));
+		$return->add(new htmlResponsiveSelect('sambaGroupMapping_sambaDomainName', $sambaDomainNames, null, _('Domain'), 'sambaDomainName'), 12);
 		return $return;
 	}
 
