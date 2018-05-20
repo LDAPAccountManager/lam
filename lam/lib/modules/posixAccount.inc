@@ -2250,7 +2250,11 @@ class posixAccount extends baseModule implements passwordService {
 				$partialAccounts[$i]['gidNumber'] = $rawAccount[$ids['posixAccount_group']];
 			}
 			if (get_preg($rawAccount[$ids['posixAccount_group']], 'groupname')) {
-				$gid = $groupMap[$rawAccount[$ids['posixAccount_group']]];
+				$groupName = $rawAccount[$ids['posixAccount_group']];
+				$gid = nuLL;
+				if (isset($groupMap[$groupName])) {
+					$gid = $groupMap[$groupName];
+				}
 				if (is_numeric($gid)) {
 					$partialAccounts[$i]['gidNumber'] = $gid;
 				}
