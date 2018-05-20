@@ -1802,28 +1802,28 @@ class accountContainer {
 		}
 		// build DN for new accounts and change it for existing ones if needed
 		if (isset($attributes[$this->dn_orig]['modify'][$this->rdn][0])) {
-			$this->finalDN = $this->rdn . '=' . $attributes[$this->dn_orig]['modify'][$this->rdn][0] . ',' . $this->dnSuffix;
+			$this->finalDN = $this->rdn . '=' . escapeRDN($attributes[$this->dn_orig]['modify'][$this->rdn][0]) . ',' . $this->dnSuffix;
 			if ($this->dn_orig != $this->finalDN) {
 				$attributes[$this->finalDN] = $attributes[$this->dn_orig];
 				unset($attributes[$this->dn_orig]);
 			}
 		}
 		elseif (isset($attributes[$this->dn_orig]['add'][$this->rdn][0])) {
-			$this->finalDN = $this->rdn . '=' . $attributes[$this->dn_orig]['add'][$this->rdn][0] . ',' . $this->dnSuffix;
+			$this->finalDN = $this->rdn . '=' . escapeRDN($attributes[$this->dn_orig]['add'][$this->rdn][0]) . ',' . $this->dnSuffix;
 			if ($this->dn_orig != $this->finalDN) {
 				$attributes[$this->finalDN] = $attributes[$this->dn_orig];
 				unset($attributes[$this->dn_orig]);
 			}
 		}
 		elseif (isset($attributes[$this->dn_orig]['remove'][$this->rdn][0]) && isset($attributes[$this->dn_orig]['notchanged'][$this->rdn][0])) {
-			$this->finalDN = $this->rdn . '=' . $attributes[$this->dn_orig]['notchanged'][$this->rdn][0] . ',' . $this->dnSuffix;
+			$this->finalDN = $this->rdn . '=' . escapeRDN($attributes[$this->dn_orig]['notchanged'][$this->rdn][0]) . ',' . $this->dnSuffix;
 			if ($this->dn_orig != $this->finalDN) {
 				$attributes[$this->finalDN] = $attributes[$this->dn_orig];
 				unset($attributes[$this->dn_orig]);
 			}
 		}
 		elseif (!$this->isNewAccount && (($this->dnSuffix != extractDNSuffix($this->dn_orig)) || ($this->rdn != extractRDNAttribute($this->dn_orig)))) {
-			$this->finalDN = $this->rdn . '=' . $attributes[$this->dn_orig]['notchanged'][$this->rdn][0] . ',' . $this->dnSuffix;
+			$this->finalDN = $this->rdn . '=' . escapeRDN($attributes[$this->dn_orig]['notchanged'][$this->rdn][0]) . ',' . $this->dnSuffix;
 			$attributes[$this->finalDN] = $attributes[$this->dn_orig];
 			unset($attributes[$this->dn_orig]);
 		}

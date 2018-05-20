@@ -632,6 +632,18 @@ function escapeDN($dn) {
 }
 
 /**
+ * Escapes special characters in RDN part.
+ *
+ * @param string $rdn RDN
+ */
+function escapeRDN($rdn) {
+	return str_replace(
+		array(','),
+		array('\\2C'),
+		$rdn);
+}
+
+/**
  * Connects to an LDAP server using the given URL.
  *
  * @param string $serverURL URL

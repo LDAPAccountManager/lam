@@ -1,9 +1,8 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2007 - 2017  Roland Gruber
+  Copyright (C) 2007 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -52,7 +51,6 @@ if (!preg_match('/^[a-z0-9_]+$/i', $type)) {
 }
 
 if (isset($dn) && isset($type)) {
-	$dn = str_replace("\\", '',$dn);
 	if (substr($dn, 0, 1) === "'") {
 		$dn = substr($dn, 1);
 	}

@@ -4,6 +4,7 @@ June 2018 6.4
   - Personal/Windows: image cropping support
   - IMAP: create mailbox via file upload
   - PHP 7.2 support
+  - Support for "," in DN
   - LAM Pro:
    -> Better support for 389ds password expiration
   - Fixed bugs:
