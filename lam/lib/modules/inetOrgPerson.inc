@@ -79,6 +79,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$this->messages['pager'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_pager', _('Please enter a valid telephone number!'));
 		$this->messages['mail'][0] = array('ERROR', _('Email address'), _('Please enter a valid email address!'));
 		$this->messages['mail'][1] = array('WARN', _('Email address'), _('Email "%s" already in use.'));
+		$this->messages['mail'][2] = array('WARN', _('Account %s:') . ' inetOrgPerson_email', _('Email "%s" already in use.'));
 		$this->messages['email'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_email', _('Please enter a valid email address!'));
 		$this->messages['street'][0] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
 		$this->messages['street'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_street', _('Please enter a valid street name!'));
@@ -2218,6 +2219,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 		for ($e = 0; $e < sizeof($existingUsers); $e++) {
 			$existingUsers[$e] = $existingUsers[$e]['uid'][0];
 		}
+		$existingMails = searchLDAPByAttribute('mail', '*', 'inetOrgPerson', array('mail'), array('user'));
+		for ($e = 0; $e < sizeof($existingMails); $e++) {
+			$existingMails[$e] = $existingMails[$e]['mail'][0];
+		}
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			if (!in_array("inetOrgPerson", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "inetOrgPerson";
 			// last name
@@ -2339,6 +2344,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 						array_push($errMsg, array($i));
 						$errors[] = $errMsg;
 						break;
+					}
+					elseif (in_array($mailList[$x], $existingMails)) {
+						$errMsg = $this->messages['mail'][2];
+						array_push($errMsg, array($i, $mailList[$x]));
+						$errors[] = $errMsg;
 					}
 				}
 			}

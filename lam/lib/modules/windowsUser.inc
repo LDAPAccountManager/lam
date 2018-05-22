@@ -977,8 +977,12 @@ class windowsUser extends baseModule implements passwordService {
 		$this->messages['postalCode'][1] = array('ERROR', _('Account %s:') . ' windowsUser_postalCode', _('Please enter a valid postal code!'));
 		$this->messages['mail'][0] = array('ERROR', _('Email address'), _('Please enter a valid email address!'));
 		$this->messages['mail'][1] = array('ERROR', _('Account %s:') . ' windowsUser_mail', _('Please enter a valid email address!'));
+		$this->messages['mail'][2] = array('WARN', _('Email address'), _('Email "%s" already in use.'));
+		$this->messages['mail'][3] = array('WARN', _('Account %s:') . ' windowsUser_mail', _('Email "%s" already in use.'));
 		$this->messages['otherMailbox'][0] = array('ERROR', _('Email alias'), _('Email alias is invalid!'));
 		$this->messages['otherMailbox'][1] = array('ERROR', _('Account %s:') . ' windowsUser_otherMailbox', _('Email alias is invalid!'));
+		$this->messages['otherMailbox'][2] = array('WARN', _('Email alias'), _('Email alias "%s" already in use.'));
+		$this->messages['otherMailbox'][3] = array('WARN', _('Account %s:') . ' windowsUser_otherMailbox', _('Email alias "%s" already in use.'));
 		$this->messages['profilePath'][0] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
 		$this->messages['profilePath'][1] = array('ERROR', _('Account %s:') . ' windowsUser_profilePath', _('Profile path is invalid!'));
 		$this->messages['scriptPath'][0] = array('ERROR', _('Logon script'), _('Logon script is invalid!'));
@@ -1383,8 +1387,26 @@ class windowsUser extends baseModule implements passwordService {
 		if (!empty($this->attributes['mail'][0]) && !get_preg($this->attributes['mail'][0], 'email')) {
 			$return[] = $this->messages['mail'][0];
 		}
+		elseif (!empty($this->attributes['mail'][0]) && $this->getAccountContainer()->isNewAccount) {
+			$existingMailAccounts = searchLDAPByAttribute('mail', $this->attributes['mail'][0], 'user', array('mail'), array('user'));
+			if (!empty($existingMailAccounts)) {
+				$msg = $this->messages['mail'][2];
+				$msg[] = array($this->attributes['mail'][0]);
+				$return[] = $msg;
+			}
+		}
 		// email aliases
 		$this->processMultiValueInputTextField('otherMailbox', $return, 'email');
+		if (!empty($this->attributes['otherMailbox'][0]) && $this->getAccountContainer()->isNewAccount) {
+			foreach ($this->attributes['otherMailbox'] as $otherMailbox) {
+				$existingMailAccounts = searchLDAPByAttribute('otherMailbox', $otherMailbox, 'user', array('otherMailbox'), array('user'));
+				if (!empty($existingMailAccounts)) {
+					$msg = $this->messages['otherMailbox'][2];
+					$msg[] = array($otherMailbox);
+					$return[] = $msg;
+				}
+			}
+		}
 		// other telephones
 		$this->processMultiValueInputTextField('otherTelephone', $return, 'telephone');
 		// fax number
@@ -1991,6 +2013,16 @@ class windowsUser extends baseModule implements passwordService {
 			$groupMap[extractRDNValue($dn)] = $dn;
 		}
 		$existingUsers = $this->getUserNames();
+		$existingMailAccounts = searchLDAPByAttribute(null, null, 'user', array('mail', 'otherMailbox'), array('user'));
+		$existingMails = array();
+		foreach ($existingMailAccounts as $existingMailAccount) {
+			if (!empty($existingMailAccount['mail'][0])) {
+				$existingMails[] = $existingMailAccount['mail'][0];
+			}
+			if (!empty($existingMailAccount['othermailbox'][0])) {
+				$existingMails = array_merge($existingMails, $existingMailAccount['othermailbox']);
+			}
+		}
 		$booleanOptions = array(_('yes') => true, _('no') => false);
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
@@ -2116,6 +2148,11 @@ class windowsUser extends baseModule implements passwordService {
 			if ($rawAccounts[$i][$ids['windowsUser_mail']] != "") {
 				if (get_preg($rawAccounts[$i][$ids['windowsUser_mail']], 'email')) {
 					$partialAccounts[$i]['mail'] = $rawAccounts[$i][$ids['windowsUser_mail']];
+					if (in_array_ignore_case($partialAccounts[$i]['mail'], $existingMails)) {
+						$errMsg = $this->messages['mail'][3];
+						array_push($errMsg, array($i, $partialAccounts[$i]['mail']));
+						$errors[] = $errMsg;
+					}
 				}
 				else {
 					$errMsg = $this->messages['mail'][1];
@@ -2133,6 +2170,11 @@ class windowsUser extends baseModule implements passwordService {
 						array_push($errMsg, array($i));
 						$errors[] = $errMsg;
 						break;
+					}
+					if (in_array_ignore_case($valueList[$x], $existingMails)) {
+						$errMsg = $this->messages['otherMailbox'][3];
+						array_push($errMsg, array($i, $valueList[$x]));
+						$errors[] = $errMsg;
 					}
 				}
 			}

@@ -522,12 +522,23 @@ function buildUploadAccounts($type, $data, $ids, $selectedModules, htmlResponsiv
 	foreach ($data as $i => $dataRow) {
 		$partialAccounts[$i]['objectClass'] = array();
 	}
+	$stopUpload = false;
 	for ($i = 0; $i < sizeof($ordered); $i++) {
 		$module = new $ordered[$i]($type->getScope());
-		$errors = $module->build_uploadAccounts($data, $ids, $partialAccounts, $selectedModules, $type);
-		if (sizeof($errors) > 0) {
-			array_unshift($errors, array("INFO", _("Displayed account numbers start at \"0\". Add 2 to get the row in your spreadsheet."), ""));
-			$errors[] = array("ERROR", _("Upload was stopped after errors in %s module!"), "", array($module->get_alias()));
+		$moduleErrors = $module->build_uploadAccounts($data, $ids, $partialAccounts, $selectedModules, $type);
+		if (sizeof($moduleErrors) > 0) {
+			$errors = array_merge($errors, $moduleErrors);
+			foreach ($moduleErrors as $error) {
+				if ($error[0] == 'ERROR') {
+					array_unshift($errors, array("INFO", _("Displayed account numbers start at \"0\". Add 2 to get the row in your spreadsheet."), ""));
+					$errors[] = array("ERROR", _("Upload was stopped after errors in %s module!"), "", array($module->get_alias()));
+					// skip other modules if error was found
+					$stopUpload = true;
+					break;
+				}
+			}
+		}
+		if ($stopUpload) {
 			break;
 		}
 	}
@@ -537,6 +548,8 @@ function buildUploadAccounts($type, $data, $ids, $selectedModules, htmlResponsiv
 			$values = empty($errors[$i][3]) ? null : $errors[$i][3];
 			$container->add(new htmlStatusMessage($errors[$i][0], $errors[$i][1], $text, $values), 12);
 		}
+	}
+	if ($stopUpload) {
 		return false;
 	}
 	return $partialAccounts;
