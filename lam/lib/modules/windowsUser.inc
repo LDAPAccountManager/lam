@@ -71,6 +71,8 @@ class windowsUser extends baseModule implements passwordService {
 	private static $lockoutDurationCache = array();
 	/** cache for user name */
 	private $cachedUserNameList = null;
+	/** cache for cn */
+	private $cachedCnList = null;
 
 
 	/**
@@ -951,6 +953,8 @@ class windowsUser extends baseModule implements passwordService {
 		$this->messages['userPrincipalName'][3] = array('ERROR', _('Account %s:') . ' windowsUser_userPrincipalName', _('User name already exists!'));
 		$this->messages['cn'][0] = array('ERROR', _('Common name'), _('Please enter a valid common name!'));
 		$this->messages['cn'][1] = array('ERROR', _('Account %s:') . ' windowsUser_cn', _('Please enter a valid common name!'));
+		$this->messages['cn'][2] = array('WARN', _('Common name already exists.'));
+		$this->messages['cn'][3] = array('WARN', _('Account %s:') . ' windowsUser_cn', _('Common name already exists.'));
 		$this->messages['sAMAccountName'][0] = array('ERROR', _('User name (pre W2K)'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['sAMAccountName'][1] = array('ERROR', _('Account %s:') . ' windowsUser_sAMAccountName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['displayName'][0] = array('ERROR', _('Display name'), _('Please enter a valid display name!'));
@@ -1346,6 +1350,12 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		if (!get_preg($this->attributes['cn'][0], 'cn')) {
 			$return[] = $this->messages['cn'][0];
+		}
+		if ($this->getAccountContainer()->isNewAccount && !empty($this->attributes['cn'][0])) {
+			$existingCns = $this->getCns();
+			if (array_key_exists($this->attributes['cn'][0], $existingCns)) {
+				$return[] = $this->messages['cn'][2];
+			}
 		}
 		// sAMAccountName
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidesAMAccountName', true)) {
@@ -2013,6 +2023,7 @@ class windowsUser extends baseModule implements passwordService {
 			$groupMap[extractRDNValue($dn)] = $dn;
 		}
 		$existingUsers = $this->getUserNames();
+		$existingCns = $this->getCns();
 		$existingMailAccounts = searchLDAPByAttribute(null, null, 'user', array('mail', 'otherMailbox'), array('user'));
 		$existingMails = array();
 		foreach ($existingMailAccounts as $existingMailAccount) {
@@ -2067,6 +2078,11 @@ class windowsUser extends baseModule implements passwordService {
 			if ($rawAccounts[$i][$ids['windowsUser_cn']] != "") {
 				if (get_preg($rawAccounts[$i][$ids['windowsUser_cn']], 'cn')) {
 					$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['windowsUser_cn']];
+					if (array_key_exists($partialAccounts[$i]['cn'], $existingCns)) {
+						$errMsg = $this->messages['cn'][3];
+						array_push($errMsg, array($i));
+						$errors[] = $errMsg;
+					}
 				}
 				else {
 					$errMsg = $this->messages['cn'][1];
@@ -3191,6 +3207,36 @@ class windowsUser extends baseModule implements passwordService {
 			}
 		}
 		return $this->cachedUserNameList;
+	}
+
+	/**
+	 * Returns a list of all CNs in LDAP.
+	 *
+	 * @return array CN list
+	 */
+	private function getCns() {
+		if ($this->cachedCnList != null) {
+			return $this->cachedCnList;
+		}
+		$this->cachedCnList = array();
+		$attrs = array('cn');
+		$filter = '(&(objectClass=user)(cn=*))';
+		$typeManager = new TypeManager();
+		$typesUser = $typeManager->getConfiguredTypesForScope('user');
+		$suffixes = array();
+		if (!empty($typesUser)) {
+			foreach ($typesUser as $type) {
+				$suffixes[] = $type->getSuffix();
+			}
+		}
+		$suffixes = array_unique($suffixes);
+		foreach ($suffixes as $suffix) {
+			$result = searchLDAP($suffix, $filter, $attrs);
+			foreach ($result as $resultEntry) {
+				$this->cachedCnList[$resultEntry['cn'][0]] = $resultEntry['dn'];
+			}
+		}
+		return $this->cachedCnList;
 	}
 
 	/**
