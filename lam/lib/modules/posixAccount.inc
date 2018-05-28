@@ -1257,7 +1257,126 @@ class posixAccount extends baseModule implements passwordService {
 				$this->gonList = array_delete($_POST['removegons'], $this->gonList);
 			}
 		}
+		// sync Unix to GoN
+		if (isset($_POST['form_subpage_posixAccount_group_syncU2GON'])) {
+			$this->manualSyncUnixToGon($typeId);
+		}
+		// sync GoN to Unix
+		if (isset($_POST['form_subpage_posixAccount_group_syncGON2U'])) {
+			$this->manualSyncGonToUnix($typeId);
+		}
 		return array();
+	}
+
+	/**
+	 * Syncs the Unix groups to group of names.
+	 *
+	 * @param string $typeId type ID
+	 */
+	private function manualSyncUnixToGon($typeId) {
+		$allGons = $this->findGroupOfNames();
+		$namesToIgnore = array();
+		if (!empty($this->moduleSettings['posixAccount_' . $typeId . '_syncGroupsExclusions'])) {
+			$namesToIgnore = $this->moduleSettings['posixAccount_' . $typeId . '_syncGroupsExclusions'];
+			array_map('trim', $namesToIgnore);
+		}
+		// remove all groups that are not in Unix
+		if (isset($_POST['syncDeleteGroups']) && ($_POST['syncDeleteGroups'] == 'on')) {
+			$toDelete = array();
+			foreach ($this->gonList as $currentGon) {
+				$gonName = $this->getGonName($currentGon, $allGons);
+				if (in_array($gonName, $namesToIgnore) || in_array($gonName, $this->groups)) {
+					continue;
+				}
+				$toDelete[] = $currentGon;
+			}
+			$this->gonList = array_delete($toDelete, $this->gonList);
+		}
+		// add groups that are not yet in groups of names
+		foreach ($this->groups as $currentName) {
+			if (in_array($currentName, $namesToIgnore)) {
+				continue;
+			}
+			$found = false;
+			foreach ($this->gonList as $currentGon) {
+				if ($currentName == $this->getGonName($currentGon, $allGons)) {
+					$found = true;
+					break;
+				}
+			}
+			if ($found) {
+				continue;
+			}
+			foreach ($allGons as $currentGon) {
+				if ($currentName == $this->getGonName($currentGon['dn'], $allGons)) {
+					$this->gonList[] = $currentGon['dn'];
+					break;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Syncs the group of names to Unix groups.
+	 *
+	 * @param string $typeId type ID
+	 */
+	private function manualSyncGonToUnix($typeId) {
+		$allGons = $this->findGroupOfNames();
+		$allGroups = $this->findGroups($modules);
+		foreach ($allGroups as $index => $groupData) {
+			$allGroups[$index] = $groupData[1];
+		}
+		$namesToIgnore = array();
+		if (!empty($this->moduleSettings['posixAccount_' . $typeId . '_syncGroupsExclusions'])) {
+			$namesToIgnore = $this->moduleSettings['posixAccount_' . $typeId . '_syncGroupsExclusions'];
+			array_map('trim', $namesToIgnore);
+		}
+		// remove all groups that are not in group of names
+		if (isset($_POST['syncDeleteGroups']) && ($_POST['syncDeleteGroups'] == 'on')) {
+			$toDelete = array();
+			foreach ($this->groups as $currentName) {
+				if (in_array($currentName, $namesToIgnore)) {
+					continue;
+				}
+				$found = false;
+				foreach ($this->gonList as $currentGon) {
+					$gonName = $this->getGonName($currentGon, $allGons);
+					if ($gonName == $currentName) {
+						$found = true;
+						break;
+					}
+				}
+				if (!$found) {
+					$toDelete[] = $currentName;
+				}
+			}
+			$this->groups = array_delete($toDelete, $this->groups);
+		}
+		// add groups that are not yet in Unix groups
+		foreach ($this->gonList as $currentGon) {
+			$gonName = $this->getGonName($currentGon, $allGons);
+			if (in_array($gonName, $namesToIgnore)) {
+				continue;
+			}
+			if (!in_array($gonName, $this->groups) && in_array($gonName, $allGroups)) {
+				$this->groups[] = $gonName;
+			}
+		}
+	}
+
+	/**
+	 * Returns the cn of the given group of names.
+	 *
+	 * @param string $dn DN of group of names
+	 * @param $allGons list of all group of names
+	 * @return string cn value
+	 */
+	private function getGonName($dn, &$allGons) {
+		if (!empty($allGons[$dn]['cn'][0])) {
+			return $allGons[$dn]['cn'][0];
+		}
+		return extractRDNValue($dn);
 	}
 
 	/**
@@ -1543,7 +1662,9 @@ class posixAccount extends baseModule implements passwordService {
 		$return = new htmlTable();
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		$typeId = $this->getAccountContainer()->get_type()->getId();
-		if (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hideposixGroups')) {
+		$showUnix = !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hideposixGroups');
+		$autoSyncGon = $this->isBooleanConfigOptionSet('posixGroup_autoSyncGon');
+		if ($showUnix) {
 			// load list with all groups
 			$groups = $this->findGroups($modules);
 			for ($i = 0; $i < sizeof($groups); $i++) {
@@ -1560,7 +1681,7 @@ class posixAccount extends baseModule implements passwordService {
 			$unixContainer = new htmlTable();
 			$unixContainer->alignment = htmlElement::ALIGN_TOP;
 			$unixContainer->addElement(new htmlSubTitle(_("Unix groups")), true);
-			if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
+			if ($autoSyncGon) {
 				$this->syncGonToGroups();
 				foreach ($this->groups as $group) {
 					$unixContainer->addElement(new htmlOutputText($group), true);
@@ -1591,7 +1712,8 @@ class posixAccount extends baseModule implements passwordService {
 			$return->addVerticalSpace('3rem');
 		}
 
-		if (self::areGroupOfNamesActive() && !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegon')) {
+		$showGon = self::areGroupOfNamesActive() && !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegon');
+		if ($showGon) {
 			$gons = $this->findGroupOfNames();
 
 			$gonContainer = new htmlTable();
@@ -1638,6 +1760,24 @@ class posixAccount extends baseModule implements passwordService {
 			$gonContainer->addElement($addGonSelect);
 			$gonContainer->addNewLine();
 			$return->addElement($gonContainer, true);
+			$return->addVerticalSpace('3rem');
+		}
+
+		if ($showUnix && $showGon && !$autoSyncGon && !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_syncGroups')) {
+			$return->addElement(new htmlSubTitle(_('Sync groups')), true);
+			$syncOptionTable = new htmlTable();
+			$syncOptionTable->addElement(new htmlTableExtendedInputCheckbox('syncDeleteGroups', true, _('Delete non-matching entries')), true);
+			$return->addElement($syncOptionTable, true);
+			$return->addVerticalSpace('1rem');
+			$syncButtons = new htmlGroup();
+			$u2gonButton = new htmlAccountPageButton(get_class($this), 'group', 'syncU2GON', _('Sync Unix to group of names'));
+			$u2gonButton->setIconClass('unixButton');
+			$syncButtons->addElement($u2gonButton);
+			$syncButtons->addElement(new htmlSpacer('2rem', null));
+			$gon2uButton = new htmlAccountPageButton(get_class($this), 'group', 'syncGON2U', _('Sync group of names to Unix'));
+			$gon2uButton->setIconClass('groupButton');
+			$syncButtons->addElement($gon2uButton);
+			$return->addElement($syncButtons, true);
 			$return->addVerticalSpace('3rem');
 		}
 
@@ -1976,6 +2116,10 @@ class posixAccount extends baseModule implements passwordService {
 				if (in_array('groupOfNames', $confActiveGONModules) || in_array('groupOfMembers', $confActiveGONModules) || in_array('groupOfUniqueNames', $confActiveGONModules)) {
 					$configUserContainer->add(new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_hidegon', false, _('Groups of names'), null, false), 12);
 					$configUserContainer->add(new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_hideposixGroups', false, _('Unix groups'), null, false), 12);
+					$syncGroupsCheckbox = new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_syncGroups', false, _('Sync groups'), null, false);
+					$syncGroupsCheckbox->setTableRowsToHide(array('posixAccount_' . $typeId . '_syncGroupsExclusions'));
+					$configUserContainer->add($syncGroupsCheckbox, 12);
+					$configUserContainer->add(new htmlResponsiveInputTextarea('posixAccount_' . $typeId . '_syncGroupsExclusions', '', 20, 4, _('Exclude from group sync')), 12);
 				}
 				$configUserContainer->addVerticalSpacer('1rem');
 				$configUserContainer->add(new htmlResponsiveInputField(_('User name suggestion'), 'posixAccount_' . $typeId . '_userNameSuggestion', '@givenname@%sn%', 'userNameSuggestion'), 12);

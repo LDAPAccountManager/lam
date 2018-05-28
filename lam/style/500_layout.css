@@ -361,6 +361,18 @@ table.collapse {
 	background-position: 0px 0px !important;
 }
 
+.unixButton {
+	background-image: url(../graphics/tux.png) !important;
+	background-size: 16px 16px;
+	background-position: 0px 0px !important;
+}
+
+.groupButton {
+	background-image: url(../graphics/group.png) !important;
+	background-size: 16px 16px;
+	background-position: 0px 0px !important;
+}
+
 .smallPadding span {
 	padding: 0.1em 0.4em !important;
 }
