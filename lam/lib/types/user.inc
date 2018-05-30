@@ -915,15 +915,22 @@ class lamUserList extends lamList {
 	 */
 	protected function buildLDAPAttributeFilter() {
 		$this->accountStatusFilter = null;
-		$text = '';
 		foreach ($this->filters as $attr => $filter) {
 			if ($attr == self::ATTR_ACCOUNT_STATUS) {
 				$this->accountStatusFilter = $filter;
-				continue;
+				break;
 			}
-			$text .= '(' . $attr . '=' . $filter . ')';
 		}
-		return $text;
+		return parent::buildLDAPAttributeFilter();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see lamList::isAttributeFilteredByServer()
+	 */
+	protected function isAttributeFilteredByServer($attrName) {
+		// do not filter status server side
+		return $attrName != self::ATTR_ACCOUNT_STATUS;
 	}
 
 	/**

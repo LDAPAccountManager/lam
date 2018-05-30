@@ -980,9 +980,22 @@ class lamList {
 	protected function buildLDAPAttributeFilter() {
 		$text = '';
 		foreach ($this->filters as $attr => $filter) {
+			if (!$this->isAttributeFilteredByServer($attr)) {
+				continue;
+			}
 			$text .= '(' . $attr . '=' . $filter . ')';
 		}
 		return $text;
+	}
+
+	/**
+	 * Specifies if the given attribute name is used for server side filtering (LDAP filter string).
+	 *
+	 * @param string $attrName attribute name
+	 * @return bool filter server side
+	 */
+	protected function isAttributeFilteredByServer($attrName) {
+		return true;
 	}
 
 	/**
