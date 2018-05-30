@@ -1,11 +1,10 @@
 <?php
 
 /*
-  $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2009 - 2012  Pozdnyak Pavel
-                2010 - 2016  Roland Gruber
+                2010 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -167,7 +166,6 @@ class lamAsteriskExtList extends lamList {
      * @see lamList::listRefreshData()
      */
     protected function listRefreshData() {
-        parent::listRefreshData();
         // configure search filter
         $module_filter = get_ldap_filter($this->type->getId());  // basic filter is provided by modules
         $filter = "(&" . $module_filter . $this->buildLDAPAttributeFilter() . ")";
@@ -179,8 +177,11 @@ class lamAsteriskExtList extends lamList {
             call_user_func_array('StatusMessage', $lastError);
         }
 
-        $entries = $this->normalizeLdapOutput($entries);
-        $this->entries = $entries;
+        $this->ldapEntries = $this->normalizeLdapOutput($entries);
+    	$this->entries = array();
+		foreach ($this->ldapEntries as $index => &$attrs) {
+			$this->entries[$index] = &$attrs;
+		}
         // generate list of possible suffixes
         $this->possibleSuffixes = $this->type->getSuffixList();
     }

@@ -930,7 +930,10 @@ class lamUserList extends lamList {
 	 */
 	protected function isAttributeFilteredByServer($attrName) {
 		// do not filter status server side
-		return $attrName != self::ATTR_ACCOUNT_STATUS;
+		if ($attrName == self::ATTR_ACCOUNT_STATUS) {
+			return false;
+		}
+		return parent::isAttributeFilteredByServer($attrName);
 	}
 
 	/**
@@ -966,20 +969,20 @@ class lamUserList extends lamList {
 	 * Injects values for the virtual account status attribute to make it sortable.
 	 */
 	private function injectAccountStatusAttributeAndFilterByStatus() {
-		$entryCount = sizeof($this->entries);
+		$entryCount = sizeof($this->ldapEntries);
 		for ($i = 0; $i < $entryCount; $i++) {
-			$unixAvailable = self::isUnixAvailable($this->entries[$i]);
-			$sambaAvailable = self::isSambaAvailable($this->entries[$i]);
-			$ppolicyAvailable = $this->isPPolicyAvailable($this->entries[$i]);
-			$windowsAvailable = self::isWindowsAvailable($this->entries[$i]);
-			$unixLocked = self::isUnixLocked($this->entries[$i]);
-			$sambaLocked = self::isSambaLocked($this->entries[$i]);
-			$ppolicyLocked = self::isPPolicyLocked($this->entries[$i]);
-			$windowsLocked = self::isWindowsLocked($this->entries[$i]);
-			$windowsPasswordLocked = ($this->getWindowsPasswordLockedTime($this->entries[$i]) != null);
-			$is389dsLocked = self::is389dsLocked($this->entries[$i]);
-			$is389dsDeactivated = self::is389dsDeactivated($this->entries[$i]);
-			$is389dsPwdExpired = self::is389dsPwdExpired($this->entries[$i]);
+			$unixAvailable = self::isUnixAvailable($this->ldapEntries[$i]);
+			$sambaAvailable = self::isSambaAvailable($this->ldapEntries[$i]);
+			$ppolicyAvailable = $this->isPPolicyAvailable($this->ldapEntries[$i]);
+			$windowsAvailable = self::isWindowsAvailable($this->ldapEntries[$i]);
+			$unixLocked = self::isUnixLocked($this->ldapEntries[$i]);
+			$sambaLocked = self::isSambaLocked($this->ldapEntries[$i]);
+			$ppolicyLocked = self::isPPolicyLocked($this->ldapEntries[$i]);
+			$windowsLocked = self::isWindowsLocked($this->ldapEntries[$i]);
+			$windowsPasswordLocked = ($this->getWindowsPasswordLockedTime($this->ldapEntries[$i]) != null);
+			$is389dsLocked = self::is389dsLocked($this->ldapEntries[$i]);
+			$is389dsDeactivated = self::is389dsDeactivated($this->ldapEntries[$i]);
+			$is389dsPwdExpired = self::is389dsPwdExpired($this->ldapEntries[$i]);
 			$hasLocked = ($unixAvailable && $unixLocked)
 							|| ($sambaAvailable && $sambaLocked)
 							|| ($ppolicyAvailable && $ppolicyLocked)
@@ -990,9 +993,9 @@ class lamUserList extends lamList {
 							|| ($sambaAvailable && !$sambaLocked)
 							|| ($ppolicyAvailable && !$ppolicyLocked)
 							|| ($windowsAvailable && !$windowsLocked);
-			$shadowExpired = shadowAccount::isAccountExpired($this->entries[$i]);
-			$shadowPasswordExpired = shadowAccount::isPasswordExpired($this->entries[$i]);
-			$windowsExpired = windowsUser::isAccountExpired($this->entries[$i]);
+			$shadowExpired = shadowAccount::isAccountExpired($this->ldapEntries[$i]);
+			$shadowPasswordExpired = shadowAccount::isPasswordExpired($this->ldapEntries[$i]);
+			$windowsExpired = windowsUser::isAccountExpired($this->ldapEntries[$i]);
 			$expired = $shadowExpired || $shadowPasswordExpired || $windowsExpired;
 			$status = self::FILTER_UNLOCKED;
 			if ($expired) {
@@ -1007,14 +1010,14 @@ class lamUserList extends lamList {
 			// filter accounts
 			if (!empty($this->accountStatusFilter)) {
 				if ($status != $this->accountStatusFilter) {
-					unset($this->entries[$i]);
+					unset($this->ldapEntries[$i]);
 					continue;
 				}
 			}
 			// add virtual attribute
-			$this->entries[$i][self::ATTR_ACCOUNT_STATUS][0] = $status;
+			$this->ldapEntries[$i][self::ATTR_ACCOUNT_STATUS][0] = $status;
 		}
-		$this->entries = array_values($this->entries);
+		$this->ldapEntries = array_values($this->ldapEntries);
 	}
 
 	/**

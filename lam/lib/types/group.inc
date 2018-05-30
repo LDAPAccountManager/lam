@@ -1,10 +1,9 @@
 <?php
 use \LAM\TYPES\TypeManager;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2017  Roland Gruber
+  Copyright (C) 2005 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -399,17 +398,19 @@ class lamGroupList extends lamList {
 	function groupRefreshPrimary() {
 		$this->refresh_primary = false;
 		// return unless some entries
-		if (sizeof($this->entries) <= 0) return;
+		if (sizeof($this->ldapEntries) <= 0) {
+			return;
+		}
 
 		$scope = "user";
 		// configure search filter
 		$module_filter = get_ldap_filter($scope);  // basic filter is provided by modules
 		$attrs = array( "uid" );
-		for ($i = 0; $i < sizeof($this->entries); $i++) {
-			if (empty($this->entries[$i]['gidnumber'][0])) {
+		for ($i = 0; $i < sizeof($this->ldapEntries); $i++) {
+			if (empty($this->ldapEntries[$i]['gidnumber'][0])) {
 				continue;
 			}
-			$gid = $this->entries[$i]['gidnumber'][0];
+			$gid = $this->ldapEntries[$i]['gidnumber'][0];
 			$filter = "(&(&" . $module_filter  . ")(gidNumber=" . $gid . "))";
 			$entries = searchLDAPByFilter($filter, $attrs, array($scope));
 			for ($j = 0; $j < sizeof($entries); $j++) {

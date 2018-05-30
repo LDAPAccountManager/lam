@@ -74,8 +74,11 @@ class lamList {
 	/** refresh page switch */
 	protected $refresh = true;
 
-	/** LDAP entries */
+	/** entries to show */
 	protected $entries;
+
+	/** entries from LDAP */
+	protected $ldapEntries;
 
 	/** sort mapping for entries array(original index => sorted index) */
 	protected $sortMapping;
@@ -95,11 +98,19 @@ class lamList {
 	/** tabindex for GUI elements */
 	protected $tabindex = 1;
 
+	/** defines if the server side filter changed */
+	protected $serverSideFilterChanged;
+
 	/** ID for list size config option */
 	const LIST_SIZE_OPTION_NAME = "L_SIZE";
 
 	/** prefix for virtual (non-LDAP) attributes */
 	const VIRTUAL_ATTRIBUTE_PREFIX = 'lam_virtual_';
+
+	const SERVER_SIDE_FILTER_ATTRIBUTES = array(
+		'cn', 'uid', 'memberuid', 'description',
+		'sn', 'surname', 'gn', 'givenname'
+	);
 
 	/**
 	 * Constructor
@@ -151,6 +162,8 @@ class lamList {
 		$this->tabindex = 1;
 		// do POST actions
 		$postFragment = $this->listDoPost();
+		// update filter
+		$this->listBuildFilter();
 		// get some parameters
 		$this->listGetParams();
 		// print HTML head
@@ -159,7 +172,6 @@ class lamList {
 		$this->listPrintRedirectMessages();
 		// refresh data if needed
 		if ($this->refresh) {
-			$this->listBuildFilter();
 			$this->listRefreshData();
 		}
 		// sort rows by sort column
@@ -210,7 +222,8 @@ class lamList {
 		if (isset($_GET['accountEditBack'])) {
 			return;
 		}
-		$filter = array();
+		$oldFilter = $this->filters;
+		$this->serverSideFilterChanged = false;
 		$this->filters = array();
 		if (!isset($_POST['clear_filter'])) {
 			// build filter array
@@ -230,6 +243,17 @@ class lamList {
 						StatusMessage('ERROR', _('Please enter a valid filter. Only letters, numbers and " _*$.@-" are allowed.'), htmlspecialchars($foundFilter));
 					}
 				}
+			}
+		}
+		$filterAttrs = array_merge(array_keys($oldFilter), array_keys($this->filters));
+		$filterAttrs = array_unique($filterAttrs);
+		foreach ($filterAttrs as $attrName) {
+			if (!$this->isAttributeFilteredByServer($attrName)) {
+				continue;
+			}
+			if (!isset($oldFilter[$attrName]) || !isset($this->filters[$attrName]) || ($oldFilter[$attrName] != $this->filters[$attrName])) {
+				$this->serverSideFilterChanged = true;
+				break;
 			}
 		}
 	}
@@ -931,9 +955,16 @@ class lamList {
 		}
 		// check if LDAP data should be refreshed
 		$this->refresh = true;
-		if (isset($_GET['norefresh'])) $this->refresh = false;
-		if (isset($_POST['refresh']) || isset($_POST['apply_filter']) || isset($_POST['clear_filter'])) {
+		if (isset($_GET['norefresh'])) {
+			$this->refresh = false;
+		}
+		if (isset($_POST['refresh'])) {
 			$this->refresh = true;
+		}
+		if (isset($_POST['apply_filter']) || isset($_POST['clear_filter'])) {
+			if ($this->serverSideFilterChanged) {
+				$this->refresh = true;
+			}
 		}
 	}
 
@@ -963,7 +994,11 @@ class lamList {
 				$attrs[] = $additionalAttrs[$i];
 			}
 		}
-		$this->entries = searchLDAP($this->suffix, $filter, $attrs);
+		$this->ldapEntries = searchLDAP($this->suffix, $filter, $attrs);
+		$this->entries = array();
+		foreach ($this->ldapEntries as $index => &$attrs) {
+			$this->entries[$index] = &$attrs;
+		}
 		$lastError = getLastLDAPError();
 		if ($lastError != null) {
 			call_user_func_array('StatusMessage', $lastError);
@@ -995,7 +1030,7 @@ class lamList {
 	 * @return bool filter server side
 	 */
 	protected function isAttributeFilteredByServer($attrName) {
-		return true;
+		return in_array(strtolower($attrName), lamList::SERVER_SIDE_FILTER_ATTRIBUTES);
 	}
 
 	/**
