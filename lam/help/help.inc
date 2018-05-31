@@ -174,7 +174,7 @@ $helpArray = array (
 				"249" => array ("Headline" => _('External password check'),
 					"Text" => _('Please specify the URL (e.g. "https://api.pwnedpasswords.com/range/{SHA1PREFIX}") of your external password check.')),
 				"250" => array ("Headline" => _("Filter"),
-					"Text" => _("Here you can input simple filter expressions (e.g. 'value' or 'v*'). The filter is case-sensitive.")),
+					"Text" => _("Here you can input simple filter expressions (e.g. 'value' or 'v*'). The filter is case-insensitive.")),
 				"260" => array ("Headline" => _("Additional LDAP filter"),
 					"Text" => _('Use this to enter an additional LDAP filter (e.g. "(cn!=admin)") to reduce the number of visible elements for this account type.')
 						. ' ' . _('You can use the wildcard @@LOGIN_DN@@ which will be substituted with the DN of the user who is currently logged in to LAM.')

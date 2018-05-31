@@ -2,6 +2,7 @@ June 2018 6.4
   - Imagick PHP extension required
   - Passwords can be checked against external service (e.g. https://api.pwnedpasswords.com/range)
   - Personal/Windows: image cropping support
+  - Better filtering of account lists
   - Unix: Unix and group of names memberships can be synced in group selection
   - IMAP: create mailbox via file upload
   - PHP 7.2 support

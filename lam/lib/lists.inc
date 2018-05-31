@@ -108,8 +108,8 @@ class lamList {
 	const VIRTUAL_ATTRIBUTE_PREFIX = 'lam_virtual_';
 
 	const SERVER_SIDE_FILTER_ATTRIBUTES = array(
-		'cn', 'uid', 'memberuid', 'description',
-		'sn', 'surname', 'gn', 'givenname'
+		'cn', 'commonname', 'uid', 'memberuid', 'description',
+		'sn', 'surname', 'gn', 'givenname', 'company', 'mail'
 	);
 
 	/**
@@ -174,6 +174,8 @@ class lamList {
 		if ($this->refresh) {
 			$this->listRefreshData();
 		}
+		// local filtering
+		$this->applyLocalFilters();
 		// sort rows by sort column
 		if (isset($this->entries)) {
 			$this->listCreateSortMapping($this->entries);
@@ -1031,6 +1033,55 @@ class lamList {
 	 */
 	protected function isAttributeFilteredByServer($attrName) {
 		return in_array(strtolower($attrName), lamList::SERVER_SIDE_FILTER_ATTRIBUTES);
+	}
+
+	/**
+	 * Applies any local filters for attributes that cannot be filtered server side.
+	 */
+	protected function applyLocalFilters() {
+		$this->entries = array();
+		foreach ($this->ldapEntries as $index => &$data) {
+			$this->entries[$index] = &$data;
+		}
+		$toFilter = array();
+		foreach ($this->filters as $filterAttribute => $filterValue) {
+			if ($this->isAttributeFilteredByServer($filterAttribute) || ($filterValue === '')) {
+				continue;
+			}
+			foreach ($this->entries as $index => &$data) {
+				if (in_array($index, $toFilter)) {
+					continue;
+				}
+				$regex = str_replace(array('*'), array('.*'), $filterValue);
+				$regex = '/^' . $regex . '$/i';
+				if (!$this->isFilterMatching($data, $filterAttribute, $regex)) {
+					$toFilter[] = $index;
+				}
+			}
+		}
+		foreach ($toFilter as $index) {
+			unset($this->entries[$index]);
+		}
+		$this->entries = array_values($this->entries);
+	}
+
+	/**
+	 * Checks if the given LDAP data matches the filter.
+	 *
+	 * @param array $data LDAP attributes
+	 * @param string $filterAttribute filter attribute name
+	 * @param string $regex filter attribute regex
+	 */
+	protected function isFilterMatching(&$data, $filterAttribute, $regex) {
+		if (!isset($data[$filterAttribute])) {
+			return false;
+		}
+		foreach ($data[$filterAttribute] as $value) {
+			if (preg_match($regex, $value)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

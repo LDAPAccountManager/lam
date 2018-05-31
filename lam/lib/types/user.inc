@@ -694,7 +694,7 @@ class lamUserList extends lamList {
 		}
 		// show account status
 		if ($this->showAccountStatus) {
-			$this->injectAccountStatusAttributeAndFilterByStatus();
+			$this->injectAccountStatusAttribute();
 		}
 	}
 
@@ -968,7 +968,7 @@ class lamUserList extends lamList {
 	/**
 	 * Injects values for the virtual account status attribute to make it sortable.
 	 */
-	private function injectAccountStatusAttributeAndFilterByStatus() {
+	private function injectAccountStatusAttribute() {
 		$entryCount = sizeof($this->ldapEntries);
 		for ($i = 0; $i < $entryCount; $i++) {
 			$unixAvailable = self::isUnixAvailable($this->ldapEntries[$i]);
@@ -1007,17 +1007,29 @@ class lamUserList extends lamList {
 			elseif (!$hasUnlocked && $hasLocked) {
 				$status = self::FILTER_LOCKED;
 			}
-			// filter accounts
-			if (!empty($this->accountStatusFilter)) {
-				if ($status != $this->accountStatusFilter) {
-					unset($this->ldapEntries[$i]);
-					continue;
-				}
-			}
 			// add virtual attribute
 			$this->ldapEntries[$i][self::ATTR_ACCOUNT_STATUS][0] = $status;
 		}
-		$this->ldapEntries = array_values($this->ldapEntries);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see lamList::isFilterMatching()
+	 */
+	protected function isFilterMatching(&$data, $filterAttribute, $regex) {
+		if ($filterAttribute == self::ATTR_ACCOUNT_STATUS) {
+			return preg_match($regex, $data[self::ATTR_ACCOUNT_STATUS][0]);
+		}
+		if (($filterAttribute == 'gidnumber') && ($this->trans_primary == "on")) {
+			if (!isset($data[$filterAttribute])) {
+				return false;
+			}
+			if (!isset($this->trans_primary_hash[$data[$filterAttribute][0]])) {
+				return false;
+			}
+			return preg_match($regex, $this->trans_primary_hash[$data[$filterAttribute][0]]);
+		}
+		return parent::isFilterMatching($data, $filterAttribute, $regex);
 	}
 
 	/**
