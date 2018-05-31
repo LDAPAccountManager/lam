@@ -63,12 +63,14 @@ include_once("../help/help.inc"); // Include help/help.inc which provides $helpA
  */
 function echoHTMLHead() {
 	echo $_SESSION['header'];
+	$title = "LDAP Account Manager Help";
+	printHeaderContents($title, '..');
 	?>
-			<title>LDAP Account Manager Help Center</title>
-			<link rel="stylesheet" type="text/css" href="../style/500_layout.css">
 		</head>
-		<body>
+		<body class="admin">
 	<?php
+	// include all JavaScript files
+	printJsIncludes('..');
 }
 
 /**
@@ -88,14 +90,14 @@ function echoHTMLFoot() {
  */
 function displayHelp($helpEntry) {
 	echoHTMLHead();
-	echo "		<h1 class=\"help\">" . $helpEntry['Headline'] . "</h1>\n";
-	$format = "		<p class=\"help\">" . $helpEntry['Text'] . "</p>\n";
+	echo "<h1 class=\"help\">" . $helpEntry['Headline'] . "</h1>\n";
+	$format = "<p class=\"help\">" . $helpEntry['Text'] . "</p>\n";
 	if (isset($helpEntry['attr'])) {
 		$format .= '<br><hr>' . _('Technical name') . ': <i>' . $helpEntry['attr'] . '</i>';
 	}
 	echo $format;
 	if(isset($helpEntry['SeeAlso']) && is_array($helpEntry['SeeAlso'])) {
-		echo '		<p class="help">' . _('See also') . ': <a class="helpSeeAlso" href="' . $helpEntry['SeeAlso']['link'] . '">' . $helpEntry['SeeAlso']['text'] . '</a></p>';
+		echo '<p class="help">' . _('See also') . ': <a class="helpSeeAlso" href="' . $helpEntry['SeeAlso']['link'] . '">' . $helpEntry['SeeAlso']['text'] . '</a></p>';
 	}
 	echoHTMLFoot();
 }
@@ -104,7 +106,7 @@ function displayHelp($helpEntry) {
 if (!isset($_GET['HelpNumber'])) {
 	$errorMessage = "Sorry no help number submitted.";
 	echoHTMLHead();
-	statusMessage("ERROR","",$errorMessage);
+	statusMessage("ERROR", "", $errorMessage);
 	echoHTMLFoot();
 	exit;
 }
@@ -121,12 +123,10 @@ if(isset($_GET['module']) && !($_GET['module'] == 'main') && !($_GET['module'] =
 		$helpEntry = getHelp($_GET['module'],$_GET['HelpNumber']);
 	}
 	if (!$helpEntry) {
-		$variables = array();
-		array_push($variables, htmlspecialchars($_GET['HelpNumber']));
-		array_push($variables, htmlspecialchars($_GET['module']));
+		$variables = array(htmlspecialchars($_GET['HelpNumber']), htmlspecialchars($_GET['module']));
 		$errorMessage = _("Sorry this help id ({bold}%s{endbold}) is not available for this module ({bold}%s{endbold}).");
 		echoHTMLHead();
-		statusMessage("ERROR","",$errorMessage,$variables);
+		statusMessage("ERROR", "", $errorMessage, $variables);
 		echoHTMLFoot();
 		exit;
 	}
@@ -135,11 +135,10 @@ if(isset($_GET['module']) && !($_GET['module'] == 'main') && !($_GET['module'] =
 else {
 	/* If submitted help number is not in help/help.inc print error message */
 	if (!array_key_exists($_GET['HelpNumber'],$helpArray)) {
-		$variables = array();
-		array_push($variables, htmlspecialchars($_GET['HelpNumber']));
+		$variables = array(htmlspecialchars($_GET['HelpNumber']));
 		$errorMessage = _("Sorry this help number ({bold}%s{endbold}) is not available.");
 		echoHTMLHead();
-		statusMessage("ERROR","",$errorMessage,$variables);
+		statusMessage("ERROR", "", $errorMessage, $variables);
 		echoHTMLFoot();
 		exit;
 	}
