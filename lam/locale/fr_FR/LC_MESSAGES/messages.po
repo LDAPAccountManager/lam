@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2018-05-12 12:41-0400\n"
+"PO-Revision-Date: 2018-06-02 11:55-0400\n"
 "Last-Translator: Franck Rakotonindrainy <franck.rakotonindrainy@fresenius-"
 "kabi.com>\n"
 "Language-Team: French <>\n"
@@ -2056,7 +2056,7 @@ msgstr "Utilisateur de connexion et mot de passe"
 
 #: ../lib/modules/quota.inc:56 ../lib/modules/systemQuotas.inc:104
 msgid "Block hard quota"
-msgstr "Bloquer le quota strict"
+msgstr "Quota strict de blocs"
 
 #: ../lib/modules/quota.inc:56 ../lib/modules/quota.inc:57
 #: ../lib/modules/systemQuotas.inc:104 ../lib/modules/systemQuotas.inc:105
@@ -2064,16 +2064,16 @@ msgid ""
 "Block hard quota contains invalid characters. Only natural numbers are "
 "allowed."
 msgstr ""
-"Le blocage des quotas stricts contient des caractères invalides. Seuls les "
+"Le quota strict de blocs contient des caractères invalides. Seuls les "
 "chiffres sont autorisés."
 
 #: ../lib/modules/quota.inc:62 ../lib/modules/systemQuotas.inc:110
 msgid "Block quota"
-msgstr "Blocage quota"
+msgstr "Quota de blocs"
 
 #: ../lib/modules/quota.inc:54 ../lib/modules/systemQuotas.inc:102
 msgid "Block soft quota"
-msgstr "Bloquer le quota souple"
+msgstr "Quota souple de blocs"
 
 #: ../lib/modules/quota.inc:54 ../lib/modules/quota.inc:55
 #: ../lib/modules/systemQuotas.inc:102 ../lib/modules/systemQuotas.inc:103
@@ -2081,13 +2081,14 @@ msgid ""
 "Block soft quota contains invalid characters. Only natural numbers are "
 "allowed."
 msgstr ""
-"Le blocage des quotas souples contient des caractères invalides. Seuls les "
+"Le quota souple de blocs contient des caractères invalides. Seuls les "
 "chiffres sont autorisés."
 
 #: ../lib/modules/quota.inc:62 ../lib/modules/quota.inc:63
 #: ../lib/modules/systemQuotas.inc:110 ../lib/modules/systemQuotas.inc:111
 msgid "Block soft quota must be smaller than block hard quota."
-msgstr "Le blocage des quotas souples doit être plus petit que le blocage hard."
+msgstr ""
+"Le quota souple de blocs doit être plus petit que le quota strict de blocs."
 
 #: ../templates/lists/changePassword.php:347
 #: ../templates/config/confmain.php:424
@@ -5198,14 +5199,14 @@ msgstr "Période de grâce pour l'authentification"
 
 #: ../lib/modules/quota.inc:128 ../lib/modules/quota.inc:406
 msgid "Grace block period"
-msgstr "Période de grâce d'un blocage"
+msgstr "Période de grâce bloc"
 
 #: ../lib/modules/quota.inc:129
 msgid ""
 "Grace block period. Most filesystems use a fixed maximum value of 7 days."
 msgstr ""
-"Période de grâce d'un blocage. La plupart des systèmes de fichiers utilisent "
-"une valeur fixe de 7 jours."
+"Période de grâce bloc. La plupart des systèmes de fichiers utilisent une "
+"valeur fixe de 7 jours."
 
 #: ../lib/modules/quota.inc:151
 msgid ""
@@ -5421,7 +5422,7 @@ msgstr "Groupes"
 #: ../lib/modules/groupOfNamesUser.inc:334
 #: ../lib/modules/groupOfNamesUser.inc:371
 msgid "Groups of names"
-msgstr "Groupe de noms"
+msgstr "Groupes de noms"
 
 #: ../lib/modules/dhcp_settings.inc:104
 msgid "H-Node (0x08)"
@@ -5450,26 +5451,26 @@ msgstr "Port HTTP"
 
 #: ../lib/modules/quota.inc:631 ../lib/modules/systemQuotas.inc:381
 msgid "Hard block"
-msgstr "Bloc dur"
+msgstr "Stricte de blocs"
 
 #: ../lib/modules/quota.inc:122 ../lib/modules/quota.inc:123
 #: ../lib/modules/quota.inc:405 ../lib/modules/quota.inc:509
 #: ../lib/modules/systemQuotas.inc:129
 msgid "Hard block limit"
-msgstr "Limite de bloc dur"
+msgstr "Limite stricte de blocs"
 
 #: ../lib/modules/quota.inc:633 ../lib/modules/systemQuotas.inc:383
 msgid "Hard inode"
-msgstr "Inode dur"
+msgstr "Stricte d'inodes"
 
 #: ../lib/modules/quota.inc:145
 msgid "Hard inode (files) limit"
-msgstr "Limite d'inode (fichiers) dur"
+msgstr "Limite stricte d'inodes (fichiers)"
 
 #: ../lib/modules/quota.inc:144 ../lib/modules/quota.inc:409
 #: ../lib/modules/quota.inc:511 ../lib/modules/systemQuotas.inc:133
 msgid "Hard inode limit"
-msgstr "Limite d'inode dur"
+msgstr "Limite stricte d'inodes"
 
 #: ../lib/modules/generalInformation.inc:106
 msgid "Has subentries"
@@ -6227,8 +6228,7 @@ msgstr ""
 #: ../lib/modules/sambaSamAccount.inc:270
 msgid "If checked Unix password will also be used as Samba password."
 msgstr ""
-"Si sélectionné, le mot de passe Unix sera aussi utilisé comme mot de passe "
-"Samba."
+"Si coché, le mot de passe Unix sera aussi utilisé comme mot de passe Samba."
 
 #: ../lib/modules/posixAccount.inc:456
 msgid ""
@@ -6248,7 +6248,7 @@ msgstr "Si coché, le mot de passe n'expire jamais."
 
 #: ../lib/modules/sambaSamAccount.inc:282
 msgid "If checked password does not expire. (Setting X-Flag)"
-msgstr "Si sélectionné, le mot de passe n'expirera pas (paramètre X-Flag)."
+msgstr "Si coché, le mot de passe n'expirera pas (paramètre X-Flag)."
 
 #: ../help/help.inc:298
 msgid ""
@@ -6525,7 +6525,7 @@ msgid ""
 "If you set this option then the user has to change his password at the next "
 "login."
 msgstr ""
-"Cette option oblige l'utilisateur à changer son mot de passe lors de se "
+"Cette option oblige l'utilisateur à changer son mot de passe lors de sa "
 "prochaine connexion."
 
 #: ../lib/modules/mitKerberos.inc:181
@@ -6687,7 +6687,7 @@ msgstr "Démarré"
 
 #: ../lib/modules/quota.inc:60 ../lib/modules/systemQuotas.inc:108
 msgid "Inode hard quota"
-msgstr "Quota dur d'inode"
+msgstr "Quota strict d'inodes"
 
 #: ../lib/modules/quota.inc:60 ../lib/modules/quota.inc:61
 #: ../lib/modules/systemQuotas.inc:108 ../lib/modules/systemQuotas.inc:109
@@ -6695,16 +6695,16 @@ msgid ""
 "Inode hard quota contains invalid characters. Only natural numbers are "
 "allowed."
 msgstr ""
-"Le quota strict des inodes contient des caractères invalides. Seuls les "
+"Le quota strict d'inodes contient des caractères invalides. Seuls les "
 "chiffres sont autorisés."
 
 #: ../lib/modules/quota.inc:64 ../lib/modules/systemQuotas.inc:112
 msgid "Inode quota"
-msgstr "Quota inode"
+msgstr "Quota d'inodes"
 
 #: ../lib/modules/quota.inc:58 ../lib/modules/systemQuotas.inc:106
 msgid "Inode soft quota"
-msgstr "Quota souple d'inode"
+msgstr "Quota souple d'inodes"
 
 #: ../lib/modules/quota.inc:58 ../lib/modules/quota.inc:59
 #: ../lib/modules/systemQuotas.inc:106 ../lib/modules/systemQuotas.inc:107
@@ -6712,13 +6712,13 @@ msgid ""
 "Inode soft quota contains invalid characters. Only natural numbers are "
 "allowed."
 msgstr ""
-"Le quota souple des inodes contient des caractères invalides. Seuls les "
+"Le quota souple d'inodes contient des caractères invalides. Seuls les "
 "chiffres sont autorisés."
 
 #: ../lib/modules/quota.inc:64 ../lib/modules/quota.inc:65
 #: ../lib/modules/systemQuotas.inc:112 ../lib/modules/systemQuotas.inc:113
 msgid "Inode soft quota must be smaller than inode hard quota."
-msgstr "Quota souple d'inode doit être plus petit que quota strict d'inode."
+msgstr "Quota souple d'inodes doit être plus petit que quota strict d'inodes."
 
 #: ../templates/selfService/adminMain.php:732
 msgid "Input fields"
@@ -6922,12 +6922,12 @@ msgstr "Kopano"
 
 #: ../lib/modules/kopanoAddressList.inc:51
 msgid "Kopano address list"
-msgstr "Liste d'adresse Kopano"
+msgstr "Liste d'adresses Kopano"
 
 #: ../lib/types/kopanoAddressListType.inc:40
 #: ../lib/types/kopanoAddressListType.inc:49
 msgid "Kopano address lists"
-msgstr "Listes d'adresse Kopano"
+msgstr "Listes d'adresses Kopano"
 
 #: ../lib/modules/kopanoContact.inc:60
 msgid "Kopano contact"
@@ -7371,7 +7371,7 @@ msgstr "Bail"
 #: ../templates/config/mainmanage.php:327 ../templates/config/mainmanage.php:329
 #: ../help/help.inc:225
 msgid "Licence"
-msgstr "License"
+msgstr "Licence"
 
 #: ../lib/env.inc:147
 msgid "Licence data"
@@ -7970,7 +7970,7 @@ msgstr "Manager"
 
 #: ../lib/tools/ouEditor.inc:54
 msgid "Manages OU objects in your LDAP tree."
-msgstr "Gère les Objets OU dans l'arbre LDAP."
+msgstr "Gère les objets OU dans l'arbre LDAP."
 
 #: ../lib/modules/kolabUser.inc:55
 msgid "Manual"
@@ -11252,8 +11252,8 @@ msgid ""
 "block limit},{hard block limit},{soft inode limit},{hard inode limit}"
 msgstr ""
 "Entrer les paramètres de quota pour ce point de montage. La syntaxe est : "
-"{limite souple de bloc},{limite stricte de bloc},{limite souple d'inode},"
-"{limite stricte d'inode}"
+"{limite souple de blocs},{limite stricte de blocs},{limite souple d'inodes},"
+"{limite stricte d'inodes}"
 
 #: ../lib/modules/systemQuotas.inc:72
 msgid ""
@@ -11261,8 +11261,8 @@ msgid ""
 "{soft block limit},{hard block limit},{soft inode limit},{hard inode limit}."
 msgstr ""
 "Entrer les valeurs de quota pour cet utilisateur. La syntaxe est : {point de "
-"montage},{limite souple de bloc},{limite stricte de bloc},{limite souple "
-"d'inode},{limite stricte d'inode}."
+"montage},{limite souple de blocs},{limite stricte de blocs},{limite souple "
+"d'inodes},{limite stricte d'inodes}."
 
 #: ../lib/modules/nisMailAlias.inc:86
 msgid "Please enter the recipients for this alias."
@@ -11292,7 +11292,8 @@ msgstr ""
 
 #: ../lib/modules/selfRegistration.inc:111
 msgid "Please enter the site and secret key you got from Google reCAPTCHA."
-msgstr "Veuillez saisir le site et la clé secrète fournis par Google reCAPTCHA."
+msgstr ""
+"Veuillez saisir les clés de site et secrète fournies par Google reCAPTCHA."
 
 #: ../lib/modules/sambaSamAccount.inc:372
 msgid "Please enter the time limit in minutes. 0 means unlimited."
@@ -13423,20 +13424,20 @@ msgstr "Passer"
 
 #: ../lib/modules/quota.inc:630 ../lib/modules/systemQuotas.inc:380
 msgid "Soft block"
-msgstr "Bloc souple"
+msgstr "Souple de blocs"
 
 #: ../lib/modules/quota.inc:116 ../lib/modules/quota.inc:404
 #: ../lib/modules/quota.inc:508 ../lib/modules/systemQuotas.inc:127
 msgid "Soft block limit"
-msgstr "Limite de bloc souple"
+msgstr "Limite souple de blocs"
 
 #: ../lib/modules/quota.inc:117
 msgid "Soft block limit."
-msgstr "Limite de bloc souple"
+msgstr "Limite souple de blocs"
 
 #: ../lib/modules/quota.inc:632 ../lib/modules/systemQuotas.inc:382
 msgid "Soft inode"
-msgstr "Inode souple"
+msgstr "Souple d'inodes"
 
 #: ../lib/modules/quota.inc:139
 msgid "Soft inode (files) limit."
@@ -13445,7 +13446,7 @@ msgstr "Limite souple d'inodes (fichiers)."
 #: ../lib/modules/quota.inc:138 ../lib/modules/quota.inc:408
 #: ../lib/modules/quota.inc:510 ../lib/modules/systemQuotas.inc:131
 msgid "Soft inode limit"
-msgstr "Limite d'inode souple"
+msgstr "Limite souple d'inodes"
 
 #: ../lib/modules/imapAccess.inc:103
 msgid ""
@@ -13616,7 +13617,7 @@ msgstr "Décrit le type de dossier (ex : dossier de mail partagé)."
 
 #: ../lib/modules/customFields.inc:165
 msgid "Specifies the maximum allowed file size in bytes."
-msgstr "Définit maximale autorisée en bytes pour les fichiers."
+msgstr "Définit la taille maximale autorisée en bytes pour les fichiers."
 
 #: ../lib/modules/mitKerberos.inc:137 ../lib/modules/heimdalKerberos.inc:111
 msgid "Specifies the maximum lifetime of a ticket in days."
@@ -13735,7 +13736,7 @@ msgstr "Définit le port utilisé pour cette entrée."
 
 #: ../lib/modules/asteriskAccount.inc:176
 msgid "Specifies the user's pickup group."
-msgstr ""
+msgstr "Spécifie le groupe d'appartenance de l'utilisateur"
 
 #: ../lib/modules/bindDLZ.inc:191 ../lib/modules/bindDLZ.inc:195
 msgid "Specifies the weight of this entry (relative value)."
@@ -17362,7 +17363,7 @@ msgstr "Blocs utilisés"
 
 #: ../lib/modules/quota.inc:113
 msgid "Used blocks. 1000 blocks are usually 1MB"
-msgstr "Blocs utilisés. 1000 blocs représentent d'habitude 1 Mo."
+msgstr "Blocs utilisés. 1000 blocs représentent normalement 1 Mo."
 
 #: ../templates/schema/schema.php:269
 msgid "Used by attributes"
