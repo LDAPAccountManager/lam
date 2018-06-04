@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2018-05-29 18:04+0100\n"
+"PO-Revision-Date: 2018-06-04 18:27+0100\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
 "Language: de\n"
@@ -518,7 +518,7 @@ msgstr "Account"
 msgid "Account %s:"
 msgstr "Account %s:"
 
-#: ../lib/types/asteriskExt.inc:97 ../lib/types/asteriskExt.inc:160
+#: ../lib/types/asteriskExt.inc:96 ../lib/types/asteriskExt.inc:159
 #: ../lib/modules/asteriskAccount.inc:110
 #: ../lib/modules/asteriskAccount.inc:253
 #: ../lib/modules/asteriskAccount.inc:265
@@ -561,7 +561,7 @@ msgid "Account details"
 msgstr "Accountdetails"
 
 #: ../lib/types/user.inc:362 ../lib/types/user.inc:372
-#: ../lib/types/user.inc:1062 ../lib/types/user.inc:1099
+#: ../lib/types/user.inc:1084 ../lib/types/user.inc:1121
 #: ../lib/modules/windowsUser.inc:293 ../lib/modules/windowsUser.inc:750
 #: ../lib/modules/windowsUser.inc:1001
 msgid "Account expiration"
@@ -625,7 +625,7 @@ msgid "Account name:"
 msgstr "Accountname:"
 
 #: ../lib/types/user.inc:355 ../lib/types/user.inc:859
-#: ../lib/types/user.inc:1118 ../lib/modules/qmailUser.inc:177
+#: ../lib/types/user.inc:1140 ../lib/modules/qmailUser.inc:177
 #: ../lib/modules/qmailUser.inc:249 ../lib/modules/qmailUser.inc:359
 #: ../lib/modules/qmailUser.inc:574 ../lib/modules/qmailUser.inc:1108
 msgid "Account status"
@@ -1295,7 +1295,7 @@ msgstr "Aliase für Email"
 msgid "Aliases for user name"
 msgstr "Aliase für Benutzername"
 
-#: ../lib/lists.inc:729
+#: ../lib/lists.inc:755
 #, php-format
 msgid "All accounts (%s)"
 msgstr "Alle Accounts (%s)"
@@ -1305,7 +1305,7 @@ msgstr "Alle Accounts (%s)"
 msgid "All changes were successful."
 msgstr "Alle Änderungen waren erfolgreich."
 
-#: ../lib/lists.inc:728
+#: ../lib/lists.inc:754
 #, php-format
 msgid "All selected accounts (%s)"
 msgstr "Alle selektierten Accounts (%s)"
@@ -1592,11 +1592,11 @@ msgstr "Asterisk AMA (Automated Message Accounting) Flags."
 msgid "Asterisk extension"
 msgstr "Asterisk-Erweiterung"
 
-#: ../lib/types/asteriskExt.inc:58
+#: ../lib/types/asteriskExt.inc:57
 msgid "Asterisk extensions"
 msgstr "Asterisk-Erweiterungen"
 
-#: ../lib/types/asteriskExt.inc:67
+#: ../lib/types/asteriskExt.inc:66
 msgid "Asterisk extensions entries"
 msgstr "Asterisk-Erweiterungseinträge"
 
@@ -1839,7 +1839,7 @@ msgstr "Zurück"
 msgid "Back to DHCP list"
 msgstr "Zurück zur DHCP-Liste"
 
-#: ../lib/types/bind.inc:32
+#: ../lib/types/bind.inc:31
 msgid "Back to DNS list"
 msgstr "Zurück zur DNS-Liste"
 
@@ -1876,13 +1876,13 @@ msgstr "Zurück zur Datenbankliste"
 msgid "Back to domain list"
 msgstr "Zurück zur Domänenliste"
 
-#: ../lib/types/asteriskExt.inc:49
+#: ../lib/types/asteriskExt.inc:48
 msgid "Back to extensions list"
 msgstr "Zurück zur Erweiterungsliste"
 
 #: ../templates/lists/userlink.php:65
 #: ../lib/types/kopanoDynamicGroupType.inc:31 ../lib/types/gon.inc:33
-#: ../lib/types/zarafaDynamicGroupType.inc:46 ../lib/types/group.inc:48
+#: ../lib/types/zarafaDynamicGroupType.inc:46 ../lib/types/group.inc:47
 #: ../lib/types/netgroup.inc:46
 msgid "Back to group list"
 msgstr "Zurück zur Gruppenliste"
@@ -1915,7 +1915,7 @@ msgstr "Zurück zur Druckerliste"
 msgid "Back to profile login"
 msgstr "Zurück zum Konfigurationslogin"
 
-#: ../lib/types/gon.inc:38 ../lib/types/group.inc:53
+#: ../lib/types/gon.inc:38 ../lib/types/group.inc:52
 msgid "Back to role list"
 msgstr "Zurück zur Rollenliste"
 
@@ -2096,11 +2096,11 @@ msgstr "Binärwert"
 msgid "Bind"
 msgstr "Bind"
 
-#: ../lib/types/bind.inc:41
+#: ../lib/types/bind.inc:40
 msgid "Bind DNS"
 msgstr "Bind DNS"
 
-#: ../lib/types/bind.inc:50
+#: ../lib/types/bind.inc:49
 msgid "Bind DNS entries"
 msgstr "Bind DNS-Einträge"
 
@@ -2335,7 +2335,7 @@ msgstr "Kann weiterleiten"
 #: ../templates/3rdParty/pla/htdocs/mass_delete.php:119
 #: ../templates/initsuff.php:201 ../templates/login2Factor.php:174
 #: ../lib/types/automountType.inc:213 ../lib/types/user.inc:353
-#: ../lib/types/bind.inc:154 ../lib/modules/locking389ds.inc:168
+#: ../lib/types/bind.inc:153 ../lib/modules/locking389ds.inc:168
 #: ../lib/modules/kolabGroup.inc:278 ../lib/modules/pykotaPrinter.inc:430
 #: ../lib/modules/mitKerberos.inc:684 ../lib/modules/qmailUser.inc:883
 #: ../lib/modules/zarafaContact.inc:423 ../lib/modules/windowsHost.inc:226
@@ -2356,7 +2356,7 @@ msgstr "Kann weiterleiten"
 #: ../lib/modules/heimdalKerberos.inc:595 ../lib/modules/windowsGroup.inc:616
 #: ../lib/modules/windowsGroup.inc:679 ../lib/modules/groupOfNames.inc:359
 #: ../lib/modules/groupOfNames.inc:515 ../lib/modules/nisMailAlias.inc:385
-#: ../lib/lists.inc:738 ../lib/lists.inc:819 ../lib/modules.inc:1303
+#: ../lib/lists.inc:764 ../lib/lists.inc:845 ../lib/modules.inc:1303
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -2505,7 +2505,7 @@ msgstr "Standardprofil wechseln"
 msgid "Change field label."
 msgstr "Feldbezeichner ändern."
 
-#: ../lib/lists.inc:819
+#: ../lib/lists.inc:845
 msgid "Change list settings"
 msgstr "Listeneinstellungen ändern"
 
@@ -2532,7 +2532,7 @@ msgstr "Passwort jetzt ändern?"
 msgid "Change passwords"
 msgstr "Passwörter ändern"
 
-#: ../lib/lists.inc:820
+#: ../lib/lists.inc:846
 msgid "Change settings"
 msgstr "Einstellungen ändern"
 
@@ -2621,7 +2621,7 @@ msgstr "Klassen"
 msgid "Cleanup expired user accounts"
 msgstr "Abgelaufene Benutzerkonten löschen"
 
-#: ../lib/lists.inc:390
+#: ../lib/lists.inc:416
 msgid "Clear filter"
 msgstr "Suchfilter löschen"
 
@@ -2978,7 +2978,7 @@ msgstr "Courier"
 msgid "Create"
 msgstr "Erstellen"
 
-#: ../lib/lists.inc:516 ../lib/lists.inc:706 ../lib/modules.inc:1413
+#: ../lib/lists.inc:542 ../lib/lists.inc:732 ../lib/modules.inc:1413
 #: ../help/help.inc:246
 msgid "Create PDF file"
 msgstr "PDF-Datei erstellen"
@@ -3005,7 +3005,7 @@ msgstr "Neues Profil erstellen"
 msgid "Create another DHCP entry"
 msgstr "Neuen DHCP-Eintrag anlegen"
 
-#: ../lib/types/bind.inc:31
+#: ../lib/types/bind.inc:30
 msgid "Create another DNS entry"
 msgstr "Weiteren DNS-Eintrag anlegen"
 
@@ -3046,12 +3046,12 @@ msgstr "Weitere Domäne anlegen"
 msgid "Create another entry"
 msgstr "Weiteren Eintrag anlegen"
 
-#: ../lib/types/asteriskExt.inc:48
+#: ../lib/types/asteriskExt.inc:47
 msgid "Create another extension"
 msgstr "Weitere Erweiterung anlegen"
 
 #: ../lib/types/kopanoDynamicGroupType.inc:30 ../lib/types/gon.inc:32
-#: ../lib/types/zarafaDynamicGroupType.inc:45 ../lib/types/group.inc:47
+#: ../lib/types/zarafaDynamicGroupType.inc:45 ../lib/types/group.inc:46
 #: ../lib/types/netgroup.inc:45
 msgid "Create another group"
 msgstr "Weitere Gruppe anlegen"
@@ -3068,7 +3068,7 @@ msgstr "Weitere Richtlinie anlegen"
 msgid "Create another printer"
 msgstr "Weiteren Drucker anlegen"
 
-#: ../lib/types/gon.inc:37 ../lib/types/group.inc:52
+#: ../lib/types/gon.inc:37 ../lib/types/group.inc:51
 msgid "Create another role"
 msgstr "Weitere Rolle anlegen"
 
@@ -3088,7 +3088,7 @@ msgstr "Weiteren Benutzer anlegen"
 msgid "Create another view"
 msgstr "Weitere Ansicht anlegen"
 
-#: ../lib/lists.inc:718
+#: ../lib/lists.inc:744
 msgid "Create for"
 msgstr "Erstellen für"
 
@@ -3138,7 +3138,7 @@ msgstr "Neue Automount-Map wurde angelegt."
 msgid "Created new profile."
 msgstr "Neues Profil wurde erstellt."
 
-#: ../lib/types/bind.inc:220
+#: ../lib/types/bind.inc:219
 msgid "Created new zone."
 msgstr "Neue Zone wurde erstellt."
 
@@ -3297,7 +3297,7 @@ msgstr "DNS (Domain Name System)"
 msgid "DNS entry"
 msgstr "DNS-Eintrag"
 
-#: ../lib/types/bind.inc:138
+#: ../lib/types/bind.inc:137
 #, php-format
 msgid "DNS entry count: %s"
 msgstr "Anzahl DNS-Einträge: %s"
@@ -3398,7 +3398,7 @@ msgstr ""
 msgid "Deactivate"
 msgstr "Deaktivieren"
 
-#: ../lib/types/user.inc:334 ../lib/types/user.inc:1111
+#: ../lib/types/user.inc:334 ../lib/types/user.inc:1133
 msgid "Deactivated"
 msgstr "Deaktiviert"
 
@@ -3531,7 +3531,7 @@ msgstr ""
 #: ../lib/modules/nisnetgroup.inc:256 ../lib/modules/inetOrgPerson.inc:2950
 #: ../lib/modules/inetOrgPerson.inc:3071 ../lib/modules/kopanoUser.inc:1469
 #: ../lib/modules/kopanoUser.inc:1520 ../lib/modules/customFields.inc:2485
-#: ../lib/modules/customFields.inc:4312 ../lib/lists.inc:510
+#: ../lib/modules/customFields.inc:4312 ../lib/lists.inc:536
 msgid "Delete"
 msgstr "Löschen"
 
@@ -3608,7 +3608,7 @@ msgstr "Lösche Regel"
 msgid "Delete selected DHCP entries"
 msgstr "Ausgewählte DHCP-Einträge entfernen"
 
-#: ../lib/types/bind.inc:141
+#: ../lib/types/bind.inc:140
 msgid "Delete selected DNS entries"
 msgstr "Ausgewählte DNS-Einträge entfernen"
 
@@ -3645,12 +3645,12 @@ msgstr "Ausgewählte Domänen löschen"
 msgid "Delete selected entries"
 msgstr "Ausgewählte Einträge entfernen"
 
-#: ../lib/types/asteriskExt.inc:148
+#: ../lib/types/asteriskExt.inc:147
 msgid "Delete selected extensions"
 msgstr "Ausgewählte Erweiterungen löschen"
 
 #: ../lib/types/kopanoDynamicGroupType.inc:163 ../lib/types/gon.inc:196
-#: ../lib/types/zarafaDynamicGroupType.inc:178 ../lib/types/group.inc:248
+#: ../lib/types/zarafaDynamicGroupType.inc:178 ../lib/types/group.inc:247
 #: ../lib/types/netgroup.inc:174
 msgid "Delete selected groups"
 msgstr "Ausgewählte Gruppen löschen"
@@ -3659,7 +3659,7 @@ msgstr "Ausgewählte Gruppen löschen"
 msgid "Delete selected hosts"
 msgstr "Ausgewählte Hosts löschen"
 
-#: ../lib/lists.inc:116
+#: ../lib/lists.inc:127
 msgid "Delete selected objects"
 msgstr "Ausgewählte Objekte löschen"
 
@@ -3671,7 +3671,7 @@ msgstr "Ausgewählte Richtlinien löschen"
 msgid "Delete selected printers"
 msgstr "Ausgewählte Drucker löschen"
 
-#: ../lib/types/gon.inc:203 ../lib/types/group.inc:255
+#: ../lib/types/gon.inc:203 ../lib/types/group.inc:254
 msgid "Delete selected roles"
 msgstr "Ausgewählte Rollen löschen"
 
@@ -3758,7 +3758,7 @@ msgstr "Lösche Objekte"
 msgid "Deletion date"
 msgstr "Löschdatum"
 
-#: ../lib/lists.inc:1082
+#: ../lib/lists.inc:1181
 msgid "Deletion was successful."
 msgstr "Löschen war erfolgreich."
 
@@ -4074,7 +4074,7 @@ msgstr "Anzeigeformat"
 msgid "Display multiple groups as accordion"
 msgstr "Mehrere Gruppen als Akkordeon anzeigen"
 
-#: ../templates/config/confmain.php:223 ../lib/types/group.inc:110
+#: ../templates/config/confmain.php:223 ../lib/types/group.inc:109
 #: ../lib/types/user.inc:95 ../lib/modules/sambaSamAccount.inc:111
 #: ../lib/modules/sambaSamAccount.inc:210
 #: ../lib/modules/sambaSamAccount.inc:260
@@ -4329,7 +4329,7 @@ msgstr ""
 #: ../templates/profedit/profilemain.php:224
 #: ../lib/modules/sambaSamAccount.inc:1230
 #: ../lib/modules/sambaSamAccount.inc:1235 ../lib/modules/windowsGroup.inc:380
-#: ../lib/modules/windowsGroup.inc:407 ../lib/lists.inc:504
+#: ../lib/modules/windowsGroup.inc:407 ../lib/lists.inc:530
 msgid "Edit"
 msgstr "Editieren"
 
@@ -4705,7 +4705,7 @@ msgstr "Geben Sie die neuen Werte ein:"
 msgid "Entitlements"
 msgstr "Berechtigungen"
 
-#: ../lib/types/group.inc:116 ../lib/modules/dynamicList.inc:98
+#: ../lib/types/group.inc:115 ../lib/modules/dynamicList.inc:98
 #: ../lib/modules/dynamicList.inc:151 ../lib/modules/dynamicList.inc:216
 msgid "Entries"
 msgstr "Einträge"
@@ -4915,12 +4915,12 @@ msgstr "Export war erfolgreich"
 msgid "Extended"
 msgstr "Erweitert"
 
-#: ../lib/types/asteriskExt.inc:145
+#: ../lib/types/asteriskExt.inc:144
 #, php-format
 msgid "Extension count: %s"
 msgstr "Anzahl Erweiterungen: %s"
 
-#: ../lib/types/asteriskExt.inc:96 ../lib/types/asteriskExt.inc:160
+#: ../lib/types/asteriskExt.inc:95 ../lib/types/asteriskExt.inc:159
 #: ../lib/modules/asteriskExtension.inc:103
 #: ../lib/modules/asteriskExtension.inc:138
 #: ../lib/modules/asteriskExtension.inc:146
@@ -5054,7 +5054,7 @@ msgstr "Dateipfad"
 
 #: ../templates/upload/masscreate.php:272 ../lib/tools/fileUpload.inc:45
 #: ../lib/modules/ldapPublicKey.inc:93 ../lib/modules/customFields.inc:4133
-#: ../lib/lists.inc:804
+#: ../lib/lists.inc:830
 msgid "File upload"
 msgstr "Dateiupload"
 
@@ -5100,7 +5100,7 @@ msgstr "Dateiupload"
 #: ../lib/modules/groupOfNames.inc:323 ../lib/modules/groupOfNames.inc:414
 #: ../lib/modules/groupOfNames.inc:479 ../lib/modules/groupOfNames.inc:570
 #: ../lib/modules/nisMailAlias.inc:93 ../lib/modules/nisMailAlias.inc:373
-#: ../lib/lists.inc:385 ../help/help.inc:176
+#: ../lib/lists.inc:411 ../help/help.inc:176
 msgid "Filter"
 msgstr "Filtern"
 
@@ -5156,7 +5156,7 @@ msgstr "Faltmarken"
 msgid "Follow referrals"
 msgstr "Referrals folgen"
 
-#: ../templates/upload/masscreate.php:307 ../lib/lists.inc:710
+#: ../templates/upload/masscreate.php:307 ../lib/lists.inc:736
 #: ../help/help.inc:262
 msgid "Font"
 msgstr "Schriftart"
@@ -5296,7 +5296,7 @@ msgstr "DE-12345"
 msgid "GID generator"
 msgstr "GID-Generator"
 
-#: ../lib/types/host.inc:98 ../lib/types/group.inc:111 ../lib/types/user.inc:98
+#: ../lib/types/host.inc:98 ../lib/types/group.inc:110 ../lib/types/user.inc:98
 #: ../lib/modules/qmailUser.inc:201 ../lib/modules/qmailUser.inc:298
 #: ../lib/modules/qmailUser.inc:375 ../lib/modules/qmailUser.inc:546
 #: ../lib/modules/qmailUser.inc:1094 ../lib/modules/qmailUser.inc:1218
@@ -5430,18 +5430,18 @@ msgstr "Inode-Frist"
 msgid "Group"
 msgstr "Gruppe"
 
-#: ../lib/types/group.inc:79
+#: ../lib/types/group.inc:78
 msgid "Group accounts (e.g. Unix and Samba)"
 msgstr "Gruppenaccounts (z.B. Unix und Samba)"
 
 #: ../lib/types/kopanoDynamicGroupType.inc:160 ../lib/types/gon.inc:193
-#: ../lib/types/zarafaDynamicGroupType.inc:175 ../lib/types/group.inc:245
+#: ../lib/types/zarafaDynamicGroupType.inc:175 ../lib/types/group.inc:244
 #: ../lib/types/netgroup.inc:171
 #, php-format
 msgid "Group count: %s"
 msgstr "Anzahl Gruppen: %s"
 
-#: ../lib/types/group.inc:109 ../lib/modules/posixGroup.inc:76
+#: ../lib/types/group.inc:108 ../lib/modules/posixGroup.inc:76
 #: ../lib/modules/nisnetgroup.inc:123
 msgid "Group description"
 msgstr "Gruppenbeschreibung"
@@ -5454,13 +5454,13 @@ msgstr "Gruppenbeschreibung."
 msgid "Group description. If left empty group name will be used."
 msgstr "Gruppenbeschreibung. Falls leer wird der Gruppename verwendet."
 
-#: ../lib/types/gon.inc:94 ../lib/types/gon.inc:95 ../lib/types/group.inc:112
-#: ../lib/types/group.inc:115
+#: ../lib/types/gon.inc:94 ../lib/types/gon.inc:95 ../lib/types/group.inc:111
+#: ../lib/types/group.inc:114
 msgid "Group member DNs"
 msgstr "DNs der Gruppenmitglieder"
 
 #: ../templates/3rdParty/pla/htdocs/modify_member_form.php:94
-#: ../lib/types/group.inc:113 ../lib/modules/pykotaPrinter.inc:118
+#: ../lib/types/group.inc:112 ../lib/modules/pykotaPrinter.inc:118
 #: ../lib/modules/pykotaPrinter.inc:122 ../lib/modules/pykotaPrinter.inc:185
 #: ../lib/modules/pykotaPrinter.inc:198 ../lib/modules/pykotaPrinter.inc:264
 #: ../lib/modules/pykotaPrinter.inc:602 ../lib/modules/posixGroup.inc:85
@@ -5476,7 +5476,7 @@ msgid "Group members (incl. primary members)"
 msgstr "Gruppenmitglieder (inkl. primären Mitgliedern)"
 
 #: ../lib/types/kopanoDynamicGroupType.inc:78 ../lib/types/gon.inc:93
-#: ../lib/types/zarafaDynamicGroupType.inc:93 ../lib/types/group.inc:108
+#: ../lib/types/zarafaDynamicGroupType.inc:93 ../lib/types/group.inc:107
 #: ../lib/types/netgroup.inc:93 ../lib/modules/zarafaDynamicGroup.inc:62
 #: ../lib/modules/zarafaDynamicGroup.inc:115
 #: ../lib/modules/zarafaDynamicGroup.inc:164
@@ -5606,7 +5606,7 @@ msgstr "Gruppenbereich"
 msgid "Group type"
 msgstr "Gruppentyp"
 
-#: ../lib/types/group.inc:70 ../lib/modules/posixGroup.inc:548
+#: ../lib/types/group.inc:69 ../lib/modules/posixGroup.inc:548
 #: ../lib/modules/zarafaGroup.inc:737 ../lib/modules/kopanoGroup.inc:747
 #: ../lib/modules/windowsUser.inc:236 ../lib/modules/windowsUser.inc:239
 #: ../lib/modules/windowsUser.inc:581 ../lib/modules/windowsUser.inc:839
@@ -5859,10 +5859,10 @@ msgstr ""
 #: ../help/help.inc:177
 msgid ""
 "Here you can input simple filter expressions (e.g. 'value' or 'v*'). The "
-"filter is case-sensitive."
+"filter is case-insensitive."
 msgstr ""
 "Hier können Sie einfache Filter angeben (z.B. 'wert' oder 'w*'). LAM filtert "
-"mit Berücksichtigung von Groß-/Kleinschreibung."
+"ohne Berücksichtigung von Groß-/Kleinschreibung."
 
 #: ../help/help.inc:245
 msgid ""
@@ -6245,7 +6245,7 @@ msgstr "Hostbeschreibung. Falls leer wird der Hostname verwendet."
 msgid "Host list"
 msgstr "Hostliste"
 
-#: ../lib/types/host.inc:93 ../lib/types/bind.inc:79
+#: ../lib/types/host.inc:93 ../lib/types/bind.inc:78
 #: ../lib/modules/account.inc:85 ../lib/modules/account.inc:217
 #: ../lib/modules/windowsHost.inc:74 ../lib/modules/windowsHost.inc:94
 #: ../lib/modules/windowsHost.inc:119 ../lib/modules/windowsHost.inc:131
@@ -6286,8 +6286,8 @@ msgstr ""
 #, php-format
 msgid "Host name in use (%s). Selected next free host name."
 msgstr ""
-"Hostname wird bereits verwendet (%s). Nächster freier Hostname wurde"
-" ausgewählt."
+"Hostname wird bereits verwendet (%s). Nächster freier Hostname wurde "
+"ausgewählt."
 
 #: ../lib/modules/sambaSamAccount.inc:1044
 msgid "Host name must end with $!"
@@ -7103,11 +7103,11 @@ msgstr "Berufsbezeichnung des Benutzers: Präsident, Abteilungsleiter, ..."
 msgid "Jobs"
 msgstr "Jobs"
 
-#: ../lib/lists.inc:298
+#: ../lib/lists.inc:324
 msgid "Jump 10 pages backward"
 msgstr "Springe 10 Seiten zurück"
 
-#: ../lib/lists.inc:323
+#: ../lib/lists.inc:349
 msgid "Jump 10 pages forward"
 msgstr "Springe 10 Seiten vorwärts"
 
@@ -7123,11 +7123,11 @@ msgstr "Wechseln des Attributtyps"
 msgid "Jump to an object class"
 msgstr "Wechseln der Objektklasse"
 
-#: ../lib/lists.inc:293
+#: ../lib/lists.inc:319
 msgid "Jump to first page"
 msgstr "Springe zur ersten Seite"
 
-#: ../lib/lists.inc:328
+#: ../lib/lists.inc:354
 msgid "Jump to last page"
 msgstr "Springe zur letzten Seite"
 
@@ -7831,12 +7831,12 @@ msgid "Lock password"
 msgstr "Passwort deaktivieren"
 
 #: ../lib/types/user.inc:330 ../lib/types/user.inc:901
-#: ../lib/types/user.inc:1107
+#: ../lib/types/user.inc:1129
 msgid "Locked"
 msgstr "Gesperrt"
 
 #: ../templates/lists/changePassword.php:442 ../lib/types/user.inc:326
-#: ../lib/types/user.inc:516 ../lib/types/user.inc:1103
+#: ../lib/types/user.inc:516 ../lib/types/user.inc:1125
 #: ../lib/modules/locking389ds.inc:93
 msgid "Locked till"
 msgstr "Gesperrt bis"
@@ -8400,7 +8400,7 @@ msgstr "Maximale Lease-Zeit"
 msgid "Maximum length"
 msgstr "Maximale Länge"
 
-#: ../lib/lists.inc:1024 ../help/help.inc:101
+#: ../lib/lists.inc:1123 ../help/help.inc:101
 msgid "Maximum list entries"
 msgstr "Maximale Listeneinträge"
 
@@ -8920,7 +8920,7 @@ msgstr "NS-Eintrag"
 #: ../templates/upload/masscreate.php:325 ../lib/types/automountType.inc:88
 #: ../lib/types/automountType.inc:228 ../lib/types/nsviewType.inc:79
 #: ../lib/types/oracleContextType.inc:79 ../lib/types/ppolicyType.inc:79
-#: ../lib/types/bind.inc:169 ../lib/modules/dynamicList.inc:62
+#: ../lib/types/bind.inc:168 ../lib/modules/dynamicList.inc:62
 #: ../lib/modules/dynamicList.inc:82 ../lib/modules/dynamicList.inc:96
 #: ../lib/modules/dynamicList.inc:122 ../lib/modules/dynamicList.inc:207
 #: ../lib/modules/device.inc:65 ../lib/modules/device.inc:157
@@ -9018,7 +9018,7 @@ msgstr "Netbios-Knotentyp"
 msgid "New DHCP"
 msgstr "Neuer DHCP"
 
-#: ../lib/types/bind.inc:102 ../lib/types/bind.inc:140
+#: ../lib/types/bind.inc:101 ../lib/types/bind.inc:139
 msgid "New DNS entry"
 msgstr "Neuer DNS-Eintrag"
 
@@ -9076,7 +9076,7 @@ msgstr "Neue Domäne"
 msgid "New entry"
 msgstr "Neuer Eintrag"
 
-#: ../lib/types/asteriskExt.inc:119 ../lib/types/asteriskExt.inc:147
+#: ../lib/types/asteriskExt.inc:118 ../lib/types/asteriskExt.inc:146
 msgid "New extension"
 msgstr "Neue Erweiterung"
 
@@ -9087,8 +9087,8 @@ msgstr "Neues Feld"
 #: ../lib/types/kopanoDynamicGroupType.inc:106
 #: ../lib/types/kopanoDynamicGroupType.inc:162 ../lib/types/gon.inc:131
 #: ../lib/types/gon.inc:195 ../lib/types/zarafaDynamicGroupType.inc:121
-#: ../lib/types/zarafaDynamicGroupType.inc:177 ../lib/types/group.inc:168
-#: ../lib/types/group.inc:247 ../lib/types/netgroup.inc:118
+#: ../lib/types/zarafaDynamicGroupType.inc:177 ../lib/types/group.inc:167
+#: ../lib/types/group.inc:246 ../lib/types/netgroup.inc:118
 #: ../lib/types/netgroup.inc:173
 msgid "New group"
 msgstr "Neue Gruppe"
@@ -9109,7 +9109,7 @@ msgstr "Neues Hauptpasswort"
 msgid "New master password set successfully."
 msgstr "Neues Hauptpasswort wurde erfolgreich gesetzt."
 
-#: ../lib/lists.inc:115
+#: ../lib/lists.inc:126
 msgid "New object"
 msgstr "Neues Objekt"
 
@@ -9158,7 +9158,7 @@ msgstr "Neuer Empfänger"
 msgid "New required attributes"
 msgstr "Neue erforderliche Attribute"
 
-#: ../lib/types/gon.inc:202 ../lib/types/group.inc:254
+#: ../lib/types/gon.inc:202 ../lib/types/group.inc:253
 msgid "New role"
 msgstr "Neue Rolle"
 
@@ -9196,7 +9196,7 @@ msgstr "Neuer Wert"
 msgid "New view"
 msgstr "Neue Ansicht"
 
-#: ../lib/types/bind.inc:153 ../lib/types/bind.inc:154
+#: ../lib/types/bind.inc:152 ../lib/types/bind.inc:153
 msgid "New zone"
 msgstr "Neue Zone"
 
@@ -9261,7 +9261,7 @@ msgstr "Spitznamen"
 msgid "No"
 msgstr "Nein"
 
-#: ../lib/types/asteriskExt.inc:146
+#: ../lib/types/asteriskExt.inc:145
 msgid "No Asterisk extensions found."
 msgstr "Keine Asterisk-Erweiterungen gefunden."
 
@@ -9269,7 +9269,7 @@ msgstr "Keine Asterisk-Erweiterungen gefunden."
 msgid "No DHCPs found!"
 msgstr "Keine DHCPs gefunden!"
 
-#: ../lib/types/bind.inc:139
+#: ../lib/types/bind.inc:138
 msgid "No DNS entries found!"
 msgstr "Keine DNS-Einträge gefunden!"
 
@@ -9374,7 +9374,7 @@ msgid "No free ID-Number!"
 msgstr "Keine ID-Nummer mehr frei!"
 
 #: ../lib/types/kopanoDynamicGroupType.inc:161 ../lib/types/gon.inc:194
-#: ../lib/types/zarafaDynamicGroupType.inc:176 ../lib/types/group.inc:246
+#: ../lib/types/zarafaDynamicGroupType.inc:176 ../lib/types/group.inc:245
 #: ../lib/types/netgroup.inc:172
 msgid "No groups found!"
 msgstr "Keine Gruppen gefunden!"
@@ -9432,7 +9432,7 @@ msgstr "Keine neuen Attribute für diesen Eintrag verfügbar"
 msgid "No new entries"
 msgstr "Keine neuen Einträge"
 
-#: ../templates/multiEdit.php:342 ../lib/lists.inc:114
+#: ../templates/multiEdit.php:342 ../lib/lists.inc:125
 msgid "No objects found!"
 msgstr "Keine Objekte gefunden!"
 
@@ -9469,7 +9469,7 @@ msgstr "Keine Auslieferung mit Programm"
 msgid "No quota"
 msgstr "Kein Quota"
 
-#: ../lib/types/gon.inc:201 ../lib/types/group.inc:253
+#: ../lib/types/gon.inc:201 ../lib/types/group.inc:252
 msgid "No roles found!"
 msgstr "Keine Rollen gefunden!"
 
@@ -9693,7 +9693,7 @@ msgstr "Objektklasse"
 msgid "Object classes"
 msgstr "Objektklassen"
 
-#: ../lib/lists.inc:113
+#: ../lib/lists.inc:124
 #, php-format
 msgid "Object count: %s"
 msgstr "Anzahl Objekte: %s"
@@ -9744,7 +9744,7 @@ msgstr "Büroname"
 #: ../templates/profedit/profilemain.php:228
 #: ../templates/profedit/profilemain.php:234
 #: ../templates/profedit/profilemain.php:240 ../lib/types/automountType.inc:213
-#: ../lib/types/user.inc:353 ../lib/types/bind.inc:154
+#: ../lib/types/user.inc:353 ../lib/types/bind.inc:153
 #: ../lib/modules/selfRegistration.inc:459 ../lib/modules/zarafaContact.inc:471
 #: ../lib/modules/zarafaGroup.inc:486 ../lib/modules/device.inc:289
 #: ../lib/modules/kopanoGroup.inc:486 ../lib/modules/sambaSamAccount.inc:1392
@@ -9760,8 +9760,8 @@ msgstr "Büroname"
 #: ../lib/modules/passwordSelfReset.inc:1326
 #: ../lib/modules/windowsGroup.inc:725 ../lib/modules/groupOfNames.inc:379
 #: ../lib/modules/groupOfNames.inc:535 ../lib/modules/nisMailAlias.inc:375
-#: ../lib/modules/nisMailAlias.inc:384 ../lib/lists.inc:737
-#: ../lib/lists.inc:819 ../lib/modules.inc:992 ../lib/modules.inc:1302
+#: ../lib/modules/nisMailAlias.inc:384 ../lib/lists.inc:763
+#: ../lib/lists.inc:845 ../lib/modules.inc:992 ../lib/modules.inc:1302
 msgid "Ok"
 msgstr "Ok"
 
@@ -9993,8 +9993,8 @@ msgstr "Overlays"
 msgid "Override default quota settings."
 msgstr "Standardmäßige Quotaeinstellungen überschreiben."
 
-#: ../templates/config/confmain.php:300 ../lib/types/asteriskExt.inc:98
-#: ../lib/types/asteriskExt.inc:160
+#: ../templates/config/confmain.php:300 ../lib/types/asteriskExt.inc:97
+#: ../lib/types/asteriskExt.inc:159
 msgid "Owner"
 msgstr "Besitzer"
 
@@ -10027,7 +10027,7 @@ msgstr "PC01"
 msgid "PDF editor"
 msgstr "PDF-Editor"
 
-#: ../templates/upload/masscreate.php:305 ../lib/lists.inc:708
+#: ../templates/upload/masscreate.php:305 ../lib/lists.inc:734
 #: ../help/help.inc:250
 msgid "PDF structure"
 msgstr "PDF-Struktur"
@@ -10267,7 +10267,7 @@ msgid "Password does not expire"
 msgstr "Passwort läuft nicht ab"
 
 #: ../lib/types/user.inc:110 ../lib/types/user.inc:365
-#: ../lib/types/user.inc:1065 ../lib/modules/locking389ds.inc:65
+#: ../lib/types/user.inc:1087 ../lib/modules/locking389ds.inc:65
 #: ../lib/modules/locking389ds.inc:77 ../lib/modules/locking389ds.inc:123
 #: ../lib/modules/locking389ds.inc:391 ../lib/modules/shadowAccount.inc:60
 #: ../lib/modules/shadowAccount.inc:111 ../lib/modules/shadowAccount.inc:176
@@ -10280,7 +10280,7 @@ msgstr "Passwortablauf"
 msgid "Password expiration must be are natural number or -1."
 msgstr "Passwortablauf muss eine natürliche Zahl oder -1 sein."
 
-#: ../lib/types/user.inc:340 ../lib/types/user.inc:1115
+#: ../lib/types/user.inc:340 ../lib/types/user.inc:1137
 msgid "Password expired"
 msgstr "Passwort abgelaufen"
 
@@ -10358,7 +10358,7 @@ msgid "Password policies (ppolicy)"
 msgstr "Passwortrichtlinien (ppolicy)"
 
 #: ../templates/config/mainmanage.php:368 ../lib/types/user.inc:315
-#: ../lib/types/user.inc:1089 ../lib/modules/ppolicyUser.inc:44
+#: ../lib/types/user.inc:1111 ../lib/modules/ppolicyUser.inc:44
 #: ../lib/modules/ppolicyUser.inc:55 ../lib/modules/ppolicyUser.inc:71
 #: ../lib/modules/ppolicyUser.inc:87 ../lib/modules/ppolicyUser.inc:127
 #: ../lib/modules/ppolicyUser.inc:255 ../lib/modules/ppolicyUser.inc:287
@@ -10616,7 +10616,7 @@ msgstr "Zum (Ent)Sperren bitte klicken."
 msgid "Please create a profile by clicking on the link below."
 msgstr "Bitte erstellen Sie ein Profil indem Sie auf den untigen Link klicken."
 
-#: ../lib/lists.inc:1091
+#: ../lib/lists.inc:1190
 msgid ""
 "Please do not edit multiple accounts in parallel in multiple browser tabs."
 msgstr ""
@@ -10876,7 +10876,7 @@ msgstr "Bitte geben Sie ein Passwort ein."
 msgid "Please enter a valid DN in the field:"
 msgstr "Bitte geben Sie einen gültigen DN ein. Feld:"
 
-#: ../lib/types/bind.inc:185
+#: ../lib/types/bind.inc:184
 msgid "Please enter a valid DNS name."
 msgstr "Bitte geben Sie einen gültigen DNS-Namen ein."
 
@@ -11034,7 +11034,7 @@ msgstr ""
 "Bitte geben Sie einen gültigen Feldnamen ein. Es sind Buchstaben, Zahlen und "
 "Minus erlaubt."
 
-#: ../lib/lists.inc:230
+#: ../lib/lists.inc:245
 msgid ""
 "Please enter a valid filter. Only letters, numbers and \" _*$.@-\" are "
 "allowed."
@@ -12595,7 +12595,7 @@ msgstr "Referrals"
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:984
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:985
 #: ../templates/3rdParty/pla/lib/HTMLTree.php:237
-#: ../lib/modules/asteriskExtension.inc:455 ../lib/lists.inc:815
+#: ../lib/modules/asteriskExtension.inc:455 ../lib/lists.inc:841
 msgid "Refresh"
 msgstr "Aktualisieren"
 
@@ -13002,23 +13002,23 @@ msgstr "Rechte für das Heimatverzeichnis"
 msgid "Role"
 msgstr "Rolle"
 
-#: ../lib/types/gon.inc:200 ../lib/types/group.inc:252
+#: ../lib/types/gon.inc:200 ../lib/types/group.inc:251
 #, php-format
 msgid "Role count: %s"
 msgstr "Anzahl Rollen: %s"
 
-#: ../lib/types/gon.inc:96 ../lib/types/group.inc:114
+#: ../lib/types/gon.inc:96 ../lib/types/group.inc:113
 msgid "Role member DNs"
 msgstr "DNs der Rollenmitglieder"
 
-#: ../lib/types/gon.inc:102 ../lib/types/group.inc:121 ../lib/types/sudo.inc:79
+#: ../lib/types/gon.inc:102 ../lib/types/group.inc:120 ../lib/types/sudo.inc:79
 #: ../lib/modules/sudoRole.inc:65 ../lib/modules/sudoRole.inc:145
 #: ../lib/modules/sudoRole.inc:213 ../lib/modules/sudoRole.inc:298
 #: ../lib/modules/sudoRole.inc:745
 msgid "Role name"
 msgstr "Rollenname"
 
-#: ../lib/types/gon.inc:52 ../lib/types/group.inc:67
+#: ../lib/types/gon.inc:52 ../lib/types/group.inc:66
 #: ../lib/modules/organizationalRoleUser.inc:54
 #: ../lib/modules/organizationalRoleUser.inc:56
 #: ../lib/modules/organizationalRoleUser.inc:60
@@ -13184,7 +13184,7 @@ msgid "Samba"
 msgstr "Samba"
 
 #: ../lib/types/user.inc:307 ../lib/types/user.inc:457
-#: ../lib/types/user.inc:496 ../lib/types/user.inc:1081
+#: ../lib/types/user.inc:496 ../lib/types/user.inc:1103
 #: ../lib/modules/sambaSamAccount.inc:146
 #: ../lib/modules/sambaGroupMapping.inc:101
 msgid "Samba 3"
@@ -13412,7 +13412,7 @@ msgstr "Sicherheitsfragen"
 msgid "Security settings"
 msgstr "Sicherheitseinstellungen"
 
-#: ../templates/help.php:98
+#: ../templates/help.php:100
 msgid "See also"
 msgstr "Siehe auch"
 
@@ -13428,7 +13428,7 @@ msgstr "Wählen Sie eine Vorlage für den Anlegevorgang"
 msgid "Select a template to edit the entry"
 msgstr "Wählen Sie eine Vorlage zum Editieren"
 
-#: ../lib/lists.inc:360 ../lib/lists.inc:487
+#: ../lib/lists.inc:386 ../lib/lists.inc:513
 msgid "Select all"
 msgstr "Alle auswählen"
 
@@ -13791,7 +13791,7 @@ msgstr ""
 "mehr."
 
 #: ../lib/types/user.inc:362 ../lib/types/user.inc:365
-#: ../lib/types/user.inc:1062 ../lib/types/user.inc:1065
+#: ../lib/types/user.inc:1084 ../lib/types/user.inc:1087
 #: ../lib/modules/shadowAccount.inc:90 ../lib/modules/shadowAccount.inc:827
 #: ../lib/modules/shadowAccount.inc:930
 msgid "Shadow"
@@ -13864,7 +13864,7 @@ msgstr "Interne Attribute anzeigen"
 msgid "Show only Asterisk accounts"
 msgstr "Nur Asterisk-Accounts anzeigen"
 
-#: ../lib/types/group.inc:428
+#: ../lib/types/group.inc:429
 msgid "Show primary group members as normal group members"
 msgstr "Zeige primäre Gruppenmitglieder als normale Mitglieder"
 
@@ -13943,7 +13943,7 @@ msgstr ""
 "Diese Hilfenummer ({bold}%s{endbold}) ist leider nicht verfügbar für das "
 "Modul: {bold}%s{endbold}."
 
-#: ../templates/help.php:140
+#: ../templates/help.php:139
 #, php-format
 msgid "Sorry this help number ({bold}%s{endbold}) is not available."
 msgstr "Diese Hilfenummer ist leider nicht verfügbar: {bold}%s{endbold}"
@@ -14530,7 +14530,7 @@ msgstr "Ziel der Einladungsregel ist ungültig."
 msgid "Target server profile"
 msgstr "Zielserverprofil"
 
-#: ../templates/help.php:94 ../lib/modules.inc:707
+#: ../templates/help.php:96 ../lib/modules.inc:707
 msgid "Technical name"
 msgstr "Technischer Name"
 
@@ -17446,7 +17446,7 @@ msgstr "Kann neue Automount-Map nicht erstellen."
 msgid "Unable to create new profile!"
 msgstr "Kann das Profil nicht erstellen!"
 
-#: ../lib/types/bind.inc:195
+#: ../lib/types/bind.inc:194
 msgid "Unable to create new zone."
 msgstr "Kann neue Zone nicht erstellen."
 
@@ -17642,7 +17642,7 @@ msgstr "Universell"
 #: ../templates/lists/changePassword.php:418
 #: ../templates/lists/changePassword.php:462 ../lib/types/user.inc:299
 #: ../lib/types/user.inc:453 ../lib/types/user.inc:492
-#: ../lib/types/user.inc:1073 ../lib/modules/posixGroup.inc:422
+#: ../lib/types/user.inc:1095 ../lib/modules/posixGroup.inc:422
 #: ../lib/modules/posixAccount.inc:158
 msgid "Unix"
 msgstr "Unix"
@@ -17761,7 +17761,7 @@ msgstr "Datei hochladen"
 msgid "Upload file and create accounts"
 msgstr "Datei hochladen und Accounts erstellen"
 
-#: ../lib/upload.inc:195 ../lib/lists.inc:1085
+#: ../lib/upload.inc:195 ../lib/lists.inc:1184
 msgid "Upload has finished"
 msgstr "Upload wurde beendet"
 
@@ -18483,8 +18483,8 @@ msgstr ""
 #: ../templates/lists/changePassword.php:438
 #: ../templates/lists/changePassword.php:478 ../lib/types/user.inc:323
 #: ../lib/types/user.inc:372 ../lib/types/user.inc:469
-#: ../lib/types/user.inc:512 ../lib/types/user.inc:1097
-#: ../lib/types/user.inc:1099 ../lib/modules/windowsHost.inc:64
+#: ../lib/types/user.inc:512 ../lib/types/user.inc:1119
+#: ../lib/types/user.inc:1121 ../lib/modules/windowsHost.inc:64
 #: ../lib/modules/windowsUser.inc:107 ../lib/modules/windowsUser.inc:3576
 #: ../lib/modules/windowsUser.inc:3725 ../lib/modules/windowsGroup.inc:105
 msgid "Windows"
@@ -18621,7 +18621,7 @@ msgstr ""
 msgid "You can delete or move expired accounts."
 msgstr "Sie können abgelaufene Konten löschen oder verschieben."
 
-#: ../lib/lists.inc:1087
+#: ../lib/lists.inc:1186
 #, php-format
 msgid ""
 "You can download your PDF files {link=%s}{color=#d2131a}here{endcolor}"
@@ -18841,8 +18841,8 @@ msgid ""
 "Your licence expires on %s. You need to purchase a new license to be able to "
 "use LAM Pro after this date."
 msgstr ""
-"Ihre Lizenz läuft am %s ab. Für die weitere Nutzung nach diesem Datum ist"
-" eine neue Lizenz erforderlich."
+"Ihre Lizenz läuft am %s ab. Für die weitere Nutzung nach diesem Datum ist "
+"eine neue Lizenz erforderlich."
 
 #: ../lib/modules/selfRegistration.inc:812
 msgid ""
@@ -18939,7 +18939,7 @@ msgstr "Zarafa-Schema"
 msgid "Zarafa will store the user's archives on these servers."
 msgstr "Zarafa speichert die Archive des Benutzers auf diesen Servern."
 
-#: ../lib/types/bind.inc:80 ../lib/modules/ddns.inc:102
+#: ../lib/types/bind.inc:79 ../lib/modules/ddns.inc:102
 #: ../lib/modules/ddns.inc:113 ../lib/modules/ddns.inc:128
 #: ../lib/modules/ddns.inc:393 ../lib/modules/ddns.inc:423
 msgid "Zone name"
