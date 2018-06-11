@@ -2105,6 +2105,8 @@ class posixAccount extends baseModule implements passwordService {
 				$magicNumberUser->setRequired(true);
 				$configUserContainer->add($magicNumberUser, 12);
 				$configUserContainer->add(new htmlResponsiveInputField(_('Suffix for UID/user name check'), 'posixAccount_' . $typeId . '_uidCheckSuffixUser', '', 'uidCheckSuffix'), 12);
+				$configUserContainer->add(new htmlResponsiveInputField(_('User name suggestion'), 'posixAccount_' . $typeId . '_userNameSuggestion', '@givenname@%sn%', 'userNameSuggestion'), 12);
+				$configUserContainer->addVerticalSpacer('2rem');
 				$hiddenOptionsContainerHead = new htmlGroup();
 				$hiddenOptionsContainerHead->addElement(new htmlOutputText(_('Hidden options')));
 				$hiddenOptionsContainerHead->addElement(new htmlHelpLink('hiddenOptions'));
@@ -2121,9 +2123,6 @@ class posixAccount extends baseModule implements passwordService {
 					$configUserContainer->add($syncGroupsCheckbox, 12);
 					$configUserContainer->add(new htmlResponsiveInputTextarea('posixAccount_' . $typeId . '_syncGroupsExclusions', '', 20, 4, _('Exclude from group sync')), 12);
 				}
-				$configUserContainer->addVerticalSpacer('1rem');
-				$configUserContainer->add(new htmlResponsiveInputField(_('User name suggestion'), 'posixAccount_' . $typeId . '_userNameSuggestion', '@givenname@%sn%', 'userNameSuggestion'), 12);
-				$configUserContainer->addVerticalSpacer('2rem');
 			}
 			$return[] = $configUserContainer;
 		}
