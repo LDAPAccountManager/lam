@@ -380,10 +380,26 @@ class posixGroup extends baseModule implements passwordService {
 		}
 		if ($gon != null) {
 			$return->addElement(new htmlSpacer(null, '20px'), true);
+			$syncGroup = new htmlTable();
+			$syncGroup->colspan = 5;
 			$syncButton = new htmlButton('syncGON', sprintf(_('Sync from %s'), $gon->get_alias()));
-			$syncButton->colspan = 5;
 			$syncButton->setIconClass('refreshButton');
-			$return->addElement($syncButton, true);
+			$syncGroup->addElement($syncButton);
+			$syncGroup->addSpace('2rem');
+			$syncGroup->addElement(new htmlTableExtendedInputCheckbox('syncGON_delete', true, _('Delete non-matching entries'), null, false));
+			$return->addElement($syncGroup, true);
+		}
+		$windows = $this->getAccountContainer()->getAccountModule('windowsGroup');
+		if ($windows != null) {
+			$return->addElement(new htmlSpacer(null, '20px'), true);
+			$syncGroup = new htmlTable();
+			$syncGroup->colspan = 5;
+			$syncButton = new htmlButton('syncWindows', sprintf(_('Sync from %s'), $windows->get_alias()));
+			$syncButton->setIconClass('refreshButton');
+			$syncGroup->addElement($syncButton);
+			$syncGroup->addSpace('2rem');
+			$syncGroup->addElement(new htmlTableExtendedInputCheckbox('syncWindows_delete', true, _('Delete non-matching entries'), null, false));
+			$return->addElement($syncGroup, true);
 		}
 
 		// back button
@@ -985,6 +1001,10 @@ class posixGroup extends baseModule implements passwordService {
 		elseif (isset($_POST['syncGON'])) {
 			$return = array_merge($return, $this->syncGon());
 		}
+		// sync Windows
+		elseif (isset($_POST['syncWindows'])) {
+			$return = array_merge($return, $this->syncWindows());
+		}
 		return $return;
 	}
 
@@ -994,6 +1014,7 @@ class posixGroup extends baseModule implements passwordService {
 	 * @return array list of status messages
 	 */
 	protected function syncGon() {
+		$delete = isset($_POST['syncGON_delete']) && ($_POST['syncGON_delete'] == 'on');
 		$return = array();
 		$gon = $this->getAccountContainer()->getAccountModule('groupOfNames');
 		if ($gon == null) {
@@ -1008,7 +1029,9 @@ class posixGroup extends baseModule implements passwordService {
 		$memberDNs = $gon->getMembers();
 		$users = $this->getUsers();
 		$oldValues = $this->attributes['memberUid'];
-		$this->attributes['memberUid'] = array();
+		if ($delete) {
+			$this->attributes['memberUid'] = array();
+		}
 		foreach ($memberDNs as $dn) {
 			foreach ($users as $userName => $userAttrs) {
 				if ($userAttrs['dn'] != $dn) {
@@ -1021,9 +1044,54 @@ class posixGroup extends baseModule implements passwordService {
 		if (!empty($added)) {
 			$return[] = array('INFO', _('Added users'), htmlspecialchars(implode($added, ', ')));
 		}
-		$deleted = array_delete($this->attributes['memberUid'], $oldValues);
-		if (!empty($deleted)) {
-			$return[] = array('INFO', _('Removed users'), htmlspecialchars(implode($deleted, ', ')));
+		if ($delete) {
+			$deleted = array_delete($this->attributes['memberUid'], $oldValues);
+			if (!empty($deleted)) {
+				$return[] = array('INFO', _('Removed users'), htmlspecialchars(implode($deleted, ', ')));
+			}
+		}
+		return $return;
+	}
+
+	/**
+	 * Syncs with Windows.
+	 *
+	 * @return array list of status messages
+	 */
+	protected function syncWindows() {
+		$delete = isset($_POST['syncWindows_delete']) && ($_POST['syncWindows_delete'] == 'on');
+		$return = array();
+		$windows = $this->getAccountContainer()->getAccountModule('windowsGroup');
+		if (!isset($this->attributes['memberUid'])) {
+			$this->attributes['memberUid'] = array();
+		}
+		$windowsAttributes = $windows->getAttributes();
+		$memberDNs = array();
+		if (!empty($windowsAttributes['member'])) {
+			$memberDNs = $windowsAttributes['member'];
+		}
+		$users = $this->getUsers();
+		$oldValues = $this->attributes['memberUid'];
+		if ($delete) {
+			$this->attributes['memberUid'] = array();
+		}
+		foreach ($memberDNs as $dn) {
+			foreach ($users as $userName => $userAttrs) {
+				if ($userAttrs['dn'] != $dn) {
+					continue;
+				}
+				$this->attributes['memberUid'][] = $userName;
+			}
+		}
+		$added = array_delete($oldValues, $this->attributes['memberUid']);
+		if (!empty($added)) {
+			$return[] = array('INFO', _('Added users'), htmlspecialchars(implode($added, ', ')));
+		}
+		if ($delete) {
+			$deleted = array_delete($this->attributes['memberUid'], $oldValues);
+			if (!empty($deleted)) {
+				$return[] = array('INFO', _('Removed users'), htmlspecialchars(implode($deleted, ', ')));
+			}
 		}
 		return $return;
 	}
