@@ -1,6 +1,7 @@
 <?php
 use \LAM\TYPES\TypeManager;
 use function LAM\TYPES\getScopeFromTypeId;
+use LAM\TYPES\ConfiguredType;
 /*
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -1263,7 +1264,11 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		// sync GoN to Unix
 		if (isset($_POST['form_subpage_posixAccount_group_syncGON2U'])) {
-			$this->manualSyncGonToUnix($typeId);
+			$this->manualSyncGonToUnix($this->getAccountContainer()->get_type());
+		}
+		// sync Windows to Unix
+		if (isset($_POST['form_subpage_posixAccount_group_syncWin2U'])) {
+			$this->manualSyncWindowsToUnix($this->getAccountContainer()->get_type());
 		}
 		return array();
 	}
@@ -1319,17 +1324,18 @@ class posixAccount extends baseModule implements passwordService {
 	/**
 	 * Syncs the group of names to Unix groups.
 	 *
-	 * @param string $typeId type ID
+	 * @param ConfiguredType $type type
 	 */
-	private function manualSyncGonToUnix($typeId) {
+	private function manualSyncGonToUnix($type) {
 		$allGons = $this->findGroupOfNames();
+		$modules = $type->getModules();
 		$allGroups = $this->findGroups($modules);
 		foreach ($allGroups as $index => $groupData) {
 			$allGroups[$index] = $groupData[1];
 		}
 		$namesToIgnore = array();
-		if (!empty($this->moduleSettings['posixAccount_' . $typeId . '_syncGroupsExclusions'])) {
-			$namesToIgnore = $this->moduleSettings['posixAccount_' . $typeId . '_syncGroupsExclusions'];
+		if (!empty($this->moduleSettings['posixAccount_' . $type->getId() . '_syncGroupsExclusions'])) {
+			$namesToIgnore = $this->moduleSettings['posixAccount_' . $type->getId() . '_syncGroupsExclusions'];
 			array_map('trim', $namesToIgnore);
 		}
 		// remove all groups that are not in group of names
@@ -1366,6 +1372,56 @@ class posixAccount extends baseModule implements passwordService {
 	}
 
 	/**
+	 * Syncs the Windows to Unix groups.
+	 *
+	 * @param ConfiguredType $type type
+	 */
+	private function manualSyncWindowsToUnix($type) {
+		$windowsGroups = $this->getAccountContainer()->getAccountModule('windowsUser')->getGroupList();
+		$allWindowsGroups = searchLDAPByAttribute('gidNumber', '*', null, array('cn'), array('group'));
+		$allGroups = $this->findGroups($modules);
+		foreach ($allGroups as $index => $groupData) {
+			$allGroups[$index] = $groupData[1];
+		}
+		$namesToIgnore = array();
+		if (!empty($this->moduleSettings['posixAccount_' . $type->getId() . '_syncGroupsExclusions'])) {
+			$namesToIgnore = $this->moduleSettings['posixAccount_' . $type->getId() . '_syncGroupsExclusions'];
+			array_map('trim', $namesToIgnore);
+		}
+		// remove all groups that are not in Windows groups
+		if (isset($_POST['syncDeleteGroups']) && ($_POST['syncDeleteGroups'] == 'on')) {
+			$toDelete = array();
+			foreach ($this->groups as $currentName) {
+				if (in_array($currentName, $namesToIgnore)) {
+					continue;
+				}
+				$found = false;
+				foreach ($windowsGroups as $currentWindowsGroup) {
+					$windowsGroupName = $this->getWindowsGroupName($allWindowsGroups, $currentWindowsGroup);
+					if ($windowsGroupName == $currentName) {
+						$found = true;
+						break;
+					}
+				}
+				if (!$found) {
+					$toDelete[] = $currentName;
+				}
+			}
+			$this->groups = array_delete($toDelete, $this->groups);
+		}
+		// add groups that are not yet in Unix groups
+		foreach ($windowsGroups as $currentWindowsGroup) {
+			$windowsGroupName = $this->getWindowsGroupName($allWindowsGroups, $currentWindowsGroup);
+			if (in_array($windowsGroupName, $namesToIgnore)) {
+				continue;
+			}
+			if (!in_array($windowsGroupName, $this->groups) && in_array($windowsGroupName, $allGroups)) {
+				$this->groups[] = $windowsGroupName;
+			}
+		}
+	}
+
+	/**
 	 * Returns the cn of the given group of names.
 	 *
 	 * @param string $dn DN of group of names
@@ -1377,6 +1433,21 @@ class posixAccount extends baseModule implements passwordService {
 			return $allGons[$dn]['cn'][0];
 		}
 		return extractRDNValue($dn);
+	}
+
+	/**
+	 * Returns the Windows group name.
+	 *
+	 * @param array $allWindowsGroups LDAP data of all Windows groups
+	 * @param string $dn DN
+	 */
+	private function getWindowsGroupName(&$allWindowsGroups, $dn) {
+		foreach ($allWindowsGroups as $data) {
+			if ($data['dn'] == $dn) {
+				return $data['cn'][0];
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -1763,21 +1834,38 @@ class posixAccount extends baseModule implements passwordService {
 			$return->addVerticalSpace('3rem');
 		}
 
-		if ($showUnix && $showGon && !$autoSyncGon && !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_syncGroups')) {
+		$showGonSync = $showGon && !$autoSyncGon;
+		$showUnixSync = $showUnix && !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_syncGroups');
+		$moduleList = $this->getAccountContainer()->get_type()->getModules();
+		$showWindowsSync = $this->isWindows($moduleList);
+		if ($showUnixSync && ($showGonSync || $showWindowsSync)) {
 			$return->addElement(new htmlSubTitle(_('Sync groups')), true);
 			$syncOptionTable = new htmlTable();
 			$syncOptionTable->addElement(new htmlTableExtendedInputCheckbox('syncDeleteGroups', true, _('Delete non-matching entries')), true);
 			$return->addElement($syncOptionTable, true);
 			$return->addVerticalSpace('1rem');
-			$syncButtons = new htmlGroup();
-			$u2gonButton = new htmlAccountPageButton(get_class($this), 'group', 'syncU2GON', _('Sync Unix to group of names'));
-			$u2gonButton->setIconClass('unixButton');
-			$syncButtons->addElement($u2gonButton);
-			$syncButtons->addElement(new htmlSpacer('2rem', null));
-			$gon2uButton = new htmlAccountPageButton(get_class($this), 'group', 'syncGON2U', _('Sync group of names to Unix'));
-			$gon2uButton->setIconClass('groupButton');
-			$syncButtons->addElement($gon2uButton);
-			$return->addElement($syncButtons, true);
+			if ($showGonSync) {
+				$syncButtons = new htmlGroup();
+				$u2gonButton = new htmlAccountPageButton(get_class($this), 'group', 'syncU2GON', _('Sync Unix to group of names'));
+				$u2gonButton->setIconClass('unixButton');
+				$syncButtons->addElement($u2gonButton);
+				$syncButtons->addElement(new htmlSpacer('2rem', null));
+				$gon2uButton = new htmlAccountPageButton(get_class($this), 'group', 'syncGON2U', _('Sync group of names to Unix'));
+				$gon2uButton->setIconClass('groupButton');
+				$syncButtons->addElement($gon2uButton);
+				$return->addElement($syncButtons);
+				if ($showWindowsSync) {
+					$syncButtons->addElement(new htmlSpacer('2rem', null));
+				}
+			}
+			if ($showWindowsSync) {
+				$syncButtons = new htmlGroup();
+				$gon2uButton = new htmlAccountPageButton(get_class($this), 'group', 'syncWin2U', _('Sync Windows to Unix'));
+				$gon2uButton->setIconClass('sambaButton');
+				$syncButtons->addElement($gon2uButton);
+				$return->addElement($syncButtons);
+			}
+			$return->addNewLine();
 			$return->addVerticalSpace('3rem');
 		}
 

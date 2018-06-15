@@ -44,9 +44,9 @@ class windowsUser extends baseModule implements passwordService {
 	/** account is disabled */
 	const AC_ACCOUNT_DISABLED = 0x00000002;
 
-	/** current group of names list */
+	/** current group list */
 	private $groupList = array();
-	/** original group of names list */
+	/** original group list */
 	private $groupList_orig = array();
 	/** cache for groups */
 	private $groupCache = null;
@@ -3552,6 +3552,15 @@ class windowsUser extends baseModule implements passwordService {
 		$time->add(new DateInterval('PT' . $seconds . 'S'));
 		$now = new DateTime(null, getTimeZone());
 		return ($time < $now);
+	}
+
+	/**
+	 * Returns the list of groups.
+	 *
+	 * @return array DNs of Windows groups
+	 */
+	public function getGroupList() {
+		return $this->groupList;
 	}
 
 }
