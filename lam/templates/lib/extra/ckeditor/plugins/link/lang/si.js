@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or http://ckeditor.com/license
+Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang( 'link', 'si', {
 	acccessKey: 'ප්‍රවේශ  යතුර',
@@ -19,6 +19,8 @@ CKEDITOR.plugins.setLang( 'link', 'si', {
 	anchorName: 'By Anchor Name', // MISSING
 	charset: 'Linked Resource Charset', // MISSING
 	cssClasses: 'විලාසපත්‍ර පන්තිය',
+	download: 'Force Download', // MISSING
+	displayText: 'Display Text', // MISSING
 	emailAddress: 'E-Mail Address', // MISSING
 	emailBody: 'Message Body', // MISSING
 	emailSubject: 'Message Subject', // MISSING

@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or http://ckeditor.com/license
+Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang( 'link', 'cy', {
 	acccessKey: 'Allwedd Mynediad',
@@ -19,6 +19,8 @@ CKEDITOR.plugins.setLang( 'link', 'cy', {
 	anchorName: 'Gan Enw\'r Angor',
 	charset: 'Set Nodau\'r Adnodd Cysylltiedig',
 	cssClasses: 'Dosbarthiadau Dalen Arddull',
+	download: 'Force Download', // MISSING
+	displayText: 'Display Text', // MISSING
 	emailAddress: 'Cyfeiriad E-Bost',
 	emailBody: 'Corff y Neges',
 	emailSubject: 'Testun y Neges',

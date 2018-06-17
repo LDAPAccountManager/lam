@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or http://ckeditor.com/license
+Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang( 'link', 'no', {
 	acccessKey: 'Aksessknapp',
@@ -19,6 +19,8 @@ CKEDITOR.plugins.setLang( 'link', 'no', {
 	anchorName: 'Anker etter navn',
 	charset: 'Lenket tegnsett',
 	cssClasses: 'Stilarkklasser',
+	download: 'Force Download', // MISSING
+	displayText: 'Tekst som skal vises',
 	emailAddress: 'E-postadresse',
 	emailBody: 'Melding',
 	emailSubject: 'Meldingsemne',

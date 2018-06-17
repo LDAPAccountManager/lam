@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or http://ckeditor.com/license
+Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang( 'link', 'sv', {
 	acccessKey: 'Behörighetsnyckel',
@@ -19,6 +19,8 @@ CKEDITOR.plugins.setLang( 'link', 'sv', {
 	anchorName: 'Efter ankarnamn',
 	charset: 'Teckenuppställning',
 	cssClasses: 'Stilmall',
+	download: 'Tvinga nerladdning',
+	displayText: 'Visningstext',
 	emailAddress: 'E-postadress',
 	emailBody: 'Innehåll',
 	emailSubject: 'Ämne',
@@ -40,7 +42,7 @@ CKEDITOR.plugins.setLang( 'link', 'sv', {
 	popupLeft: 'Position från vänster',
 	popupLocationBar: 'Adressfält',
 	popupMenuBar: 'Menyfält',
-	popupResizable: 'Resizable',
+	popupResizable: 'Skalbart',
 	popupScrollBars: 'Scrolllista',
 	popupStatusBar: 'Statusfält',
 	popupToolbar: 'Verktygsfält',

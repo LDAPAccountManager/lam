@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or http://ckeditor.com/license
+Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang( 'link', 'mn', {
 	acccessKey: 'Холбох түлхүүр',
@@ -19,6 +19,8 @@ CKEDITOR.plugins.setLang( 'link', 'mn', {
 	anchorName: 'Зангуугийн нэрээр',
 	charset: 'Тэмдэгт оноох нөөцөд холбогдсон',
 	cssClasses: 'Stylesheet классууд',
+	download: 'Force Download', // MISSING
+	displayText: 'Display Text', // MISSING
 	emailAddress: 'Э-шуудангийн хаяг',
 	emailBody: 'Зурвасны их бие',
 	emailSubject: 'Зурвасны гарчиг',

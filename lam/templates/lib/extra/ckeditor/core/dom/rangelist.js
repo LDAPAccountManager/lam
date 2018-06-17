@@ -1,6 +1,6 @@
-﻿/**
- * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or http://ckeditor.com/license
+/**
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 ( function() {
@@ -39,9 +39,6 @@
 		createIterator: function() {
 			var rangeList = this,
 				bookmark = CKEDITOR.dom.walker.bookmark(),
-				guard = function( node ) {
-					return !( node.is && node.is( 'tr' ) );
-				},
 				bookmarks = [],
 				current;
 
@@ -54,7 +51,7 @@
 				 * ranges into single, e.g. consequent table cells.
 				 */
 				getNextRange: function( mergeConsequent ) {
-					current = current == undefined ? 0 : current + 1;
+					current = current === undefined ? 0 : current + 1;
 
 					var range = rangeList[ current ];
 
@@ -89,8 +86,9 @@
 											left = next;
 											continue;
 										}
-									} else
+									} else {
 										found = 1;
+									}
 
 									break;
 								}
@@ -166,7 +164,7 @@
 	};
 
 	// Update the specified range which has been mangled by previous insertion of
-	// range bookmark nodes.(#3256)
+	// range bookmark nodes.(https://dev.ckeditor.com/ticket/3256)
 	function updateDirtyRange( bookmark, dirtyRange, checkEnd ) {
 		var serializable = bookmark.serializable,
 			container = dirtyRange[ checkEnd ? 'endContainer' : 'startContainer' ],

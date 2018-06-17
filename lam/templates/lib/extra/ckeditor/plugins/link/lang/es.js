@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or http://ckeditor.com/license
+Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang( 'link', 'es', {
 	acccessKey: 'Tecla de Acceso',
@@ -19,6 +19,8 @@ CKEDITOR.plugins.setLang( 'link', 'es', {
 	anchorName: 'Por Nombre de Referencia',
 	charset: 'Fuente de caracteres vinculado',
 	cssClasses: 'Clases de hojas de estilo',
+	download: 'Force Download', // MISSING
+	displayText: 'Display Text', // MISSING
 	emailAddress: 'Dirección de E-Mail',
 	emailBody: 'Cuerpo del Mensaje',
 	emailSubject: 'Título del Mensaje',

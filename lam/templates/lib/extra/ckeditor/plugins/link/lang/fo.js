@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or http://ckeditor.com/license
+Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang( 'link', 'fo', {
 	acccessKey: 'Snarvegisknöttur',
@@ -19,6 +19,8 @@ CKEDITOR.plugins.setLang( 'link', 'fo', {
 	anchorName: 'Eftir navni á marknasteini',
 	charset: 'Atknýtt teknsett',
 	cssClasses: 'Typografi klassar',
+	download: 'Force Download', // MISSING
+	displayText: 'Display Text', // MISSING
 	emailAddress: 'Teldupost-adressa',
 	emailBody: 'Breyðtekstur',
 	emailSubject: 'Evni',

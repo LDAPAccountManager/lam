@@ -1,6 +1,6 @@
-﻿/**
- * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or http://ckeditor.com/license
+/**
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -17,7 +17,7 @@
  */
 CKEDITOR.htmlParser = function() {
 	this._ = {
-		htmlPartsRegex: new RegExp( '<(?:(?:\\/([^>]+)>)|(?:!--([\\S|\\s]*?)-->)|(?:([^\\s>]+)\\s*((?:(?:"[^"]*")|(?:\'[^\']*\')|[^"\'>])*)\\/?>))', 'g' )
+		htmlPartsRegex: /<(?:(?:\/([^>]+)>)|(?:!--([\S|\s]*?)-->)|(?:([^\/\s>]+)((?:\s+[\w\-:.]+(?:\s*=\s*?(?:(?:"[^"]*")|(?:'[^']*')|[^\s"'\/>]+))?)*)[\S\s]*?(\/?)>))/g
 	};
 };
 
@@ -129,14 +129,12 @@ CKEDITOR.htmlParser = function() {
 
 				nextIndex = this._.htmlPartsRegex.lastIndex;
 
-				/*
-				 "parts" is an array with the following items:
-					0 : The entire match for opening/closing tags and comments.
-					1 : Group filled with the tag name for closing tags.
-					2 : Group filled with the comment text.
-					3 : Group filled with the tag name for opening tags.
-					4 : Group filled with the attributes part of opening tags.
-				 */
+				// "parts" is an array with the following items:
+				//		0 : The entire match for opening/closing tags and comments.
+				//		  : Group filled with the tag name for closing tags.
+				//		2 : Group filled with the comment text.
+				//		3 : Group filled with the tag name for opening tags.
+				//		4 : Group filled with the attributes part of opening tags.
 
 				// Closing tag
 				if ( ( tagName = parts[ 1 ] ) ) {
@@ -165,14 +163,14 @@ CKEDITOR.htmlParser = function() {
 					tagName = tagName.toLowerCase();
 
 					// There are some tag names that can break things, so let's
-					// simply ignore them when parsing. (#5224)
+					// simply ignore them when parsing. (https://dev.ckeditor.com/ticket/5224)
 					if ( /="/.test( tagName ) )
 						continue;
 
 					var attribs = {},
 						attribMatch,
 						attribsPart = parts[ 4 ],
-						selfClosing = !!( attribsPart && attribsPart.charAt( attribsPart.length - 1 ) == '/' );
+						selfClosing = !!parts[ 5 ];
 
 					if ( attribsPart ) {
 						while ( ( attribMatch = attribsRegex.exec( attribsPart ) ) ) {

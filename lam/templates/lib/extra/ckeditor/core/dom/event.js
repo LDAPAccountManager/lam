@@ -1,6 +1,6 @@
-﻿/**
- * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or http://ckeditor.com/license
+/**
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -142,11 +142,11 @@ CKEDITOR.dom.event.prototype = {
 	 * @returns {Number} return.x
 	 * @returns {Number} return.y
 	 */
-	getPageOffset : function() {
+	getPageOffset: function() {
 		var doc = this.getTarget().getDocument().$;
 		var pageX = this.$.pageX || this.$.clientX + ( doc.documentElement.scrollLeft || doc.body.scrollLeft );
 		var pageY = this.$.pageY || this.$.clientY + ( doc.documentElement.scrollTop || doc.body.scrollTop );
-		return { x : pageX, y : pageY };
+		return { x: pageX, y: pageY };
 	}
 };
 

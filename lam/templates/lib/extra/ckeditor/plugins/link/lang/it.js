@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or http://ckeditor.com/license
+Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang( 'link', 'it', {
 	acccessKey: 'Scorciatoia da tastiera',
@@ -19,6 +19,8 @@ CKEDITOR.plugins.setLang( 'link', 'it', {
 	anchorName: 'Per Nome',
 	charset: 'Set di caretteri della risorsa collegata',
 	cssClasses: 'Nome classe CSS',
+	download: 'Forza scaricamento',
+	displayText: 'Mostra testo',
 	emailAddress: 'Indirizzo E-Mail',
 	emailBody: 'Corpo del messaggio',
 	emailSubject: 'Oggetto del messaggio',

@@ -1,6 +1,6 @@
-﻿/**
- * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or http://ckeditor.com/license
+/**
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 'use strict';
@@ -104,9 +104,15 @@
 		 */
 		getAscendant: function( condition ) {
 			var checkFn =
-				typeof condition == 'function' ?	condition :
-				typeof condition == 'string' ?		function( el ) { return el.name == condition; } :
-													function( el ) { return el.name in condition; };
+				typeof condition == 'function' ?
+					condition :
+				typeof condition == 'string' ?
+					function( el ) {
+						return el.name == condition;
+					} :
+					function( el ) {
+						return el.name in condition;
+					};
 
 			var parent = this.parent;
 

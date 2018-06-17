@@ -1,22 +1,22 @@
 ﻿/*
-Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or http://ckeditor.com/license
+Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang( 'toolbar', 'af', {
 	toolbarCollapse: 'Verklein werkbalk',
 	toolbarExpand: 'Vergroot werkbalk',
 	toolbarGroups: {
-		document: 'Document',
-		clipboard: 'Clipboard/Undo',
-		editing: 'Editing',
-		forms: 'Forms',
-		basicstyles: 'Basic Styles',
-		paragraph: 'Paragraph',
-		links: 'Links',
-		insert: 'Insert',
-		styles: 'Styles',
-		colors: 'Colors',
-		tools: 'Tools'
+		document: 'Dokument',
+		clipboard: 'Knipbord/Undo',
+		editing: 'Verander',
+		forms: 'Vorms',
+		basicstyles: 'Eenvoudige Styl',
+		paragraph: 'Paragraaf',
+		links: 'Skakels',
+		insert: 'Toevoeg',
+		styles: 'Style',
+		colors: 'Kleure',
+		tools: 'Gereedskap'
 	},
-	toolbars: 'Editor toolbars' // MISSING
+	toolbars: 'Werkbalke'
 } );

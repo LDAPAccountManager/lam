@@ -1,24 +1,25 @@
 ﻿/**
- * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or http://ckeditor.com/license
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 ( function() {
 	var template = '<a id="{id}"' +
 		' class="cke_button cke_button__{name} cke_button_{state} {cls}"' +
-		( CKEDITOR.env.gecko && CKEDITOR.env.version >= 10900 && !CKEDITOR.env.hc ? '' : ' href="javascript:void(\'{titleJs}\')"' ) +
+		( CKEDITOR.env.gecko && !CKEDITOR.env.hc ? '' : ' href="javascript:void(\'{titleJs}\')"' ) +
 		' title="{title}"' +
 		' tabindex="-1"' +
 		' hidefocus="true"' +
 		' role="button"' +
 		' aria-labelledby="{id}_label"' +
+		' aria-describedby="{id}_description"' +
 		' aria-haspopup="{hasArrow}"' +
 		' aria-disabled="{ariaDisabled}"';
 
 	// Some browsers don't cancel key events in the keydown but in the
 	// keypress.
-	// TODO: Check if really needed for Gecko+Mac.
-	if ( CKEDITOR.env.opera || ( CKEDITOR.env.gecko && CKEDITOR.env.mac ) )
+	// TODO: Check if really needed.
+	if ( CKEDITOR.env.gecko && CKEDITOR.env.mac )
 		template += ' onkeypress="return false;"';
 
 	// With Firefox, we need to force the button to redraw, otherwise it
@@ -28,14 +29,14 @@
 
 	template += ' onkeydown="return CKEDITOR.tools.callFunction({keydownFn},event);"' +
 		' onfocus="return CKEDITOR.tools.callFunction({focusFn},event);" ' +
-		' onmousedown="return CKEDITOR.tools.callFunction({mousedownFn},event);" ' +
-		( CKEDITOR.env.ie ? 'onclick="return false;" onmouseup' : 'onclick' ) + // #188
+		( CKEDITOR.env.ie ? 'onclick="return false;" onmouseup' : 'onclick' ) + // https://dev.ckeditor.com/ticket/188
 			'="CKEDITOR.tools.callFunction({clickFn},this);return false;">' +
 		'<span class="cke_button_icon cke_button__{iconName}_icon" style="{style}"';
 
 
 	template += '>&nbsp;</span>' +
 		'<span id="{id}_label" class="cke_button_label cke_button__{name}_label" aria-hidden="false">{label}</span>' +
+		'<span id="{id}_description" class="cke_button_label" aria-hidden="false">{ariaShortcut}</span>' +
 		'{arrowHtml}' +
 		'</a>';
 
@@ -48,7 +49,9 @@
 		btnTpl = CKEDITOR.addTemplate( 'button', template );
 
 	CKEDITOR.plugins.add( 'button', {
-		lang: 'ca,cs,el,en,en-gb,fa,fr,gl,hu,ja,km,nl,pl,pt,pt-br,ru,sl,sv,uk,zh-cn', // %REMOVE_LINE_CORE%
+		// jscs:disable maximumLineLength
+		lang: 'af,ar,az,bg,ca,cs,da,de,de-ch,el,en,en-au,en-gb,eo,es,es-mx,eu,fa,fi,fr,gl,he,hr,hu,id,it,ja,km,ko,ku,lt,nb,nl,no,oc,pl,pt,pt-br,ro,ru,sk,sl,sq,sv,tr,tt,ug,uk,vi,zh,zh-cn', // %REMOVE_LINE_CORE%
+		// jscs:enable maximumLineLength
 		beforeInit: function( editor ) {
 			editor.ui.addHandler( CKEDITOR.UI_BUTTON, CKEDITOR.ui.button.handler );
 		}
@@ -86,7 +89,7 @@
 	};
 
 	/**
-	 * Represents button handler object.
+	 * Represents the button handler object.
 	 *
 	 * @class
 	 * @singleton
@@ -94,7 +97,7 @@
 	 */
 	CKEDITOR.ui.button.handler = {
 		/**
-		 * Transforms a button definition in a {@link CKEDITOR.ui.button} instance.
+		 * Transforms a button definition into a {@link CKEDITOR.ui.button} instance.
 		 *
 		 * @member CKEDITOR.ui.button.handler
 		 * @param {Object} definition
@@ -112,16 +115,38 @@
 		 *
 		 * @param {CKEDITOR.editor} editor The editor instance which this button is
 		 * to be used by.
-		 * @param {Array} output The output array to which append the HTML relative
-		 * to this button.
+		 * @param {Array} output The output array to which the HTML code related to
+		 * this button should be appended.
 		 */
 		render: function( editor, output ) {
+			var modeStates = null;
+
+			function updateState() {
+				// "this" is a CKEDITOR.ui.button instance.
+				var mode = editor.mode;
+
+				if ( mode ) {
+					// Restore saved button state.
+					var state = this.modes[ mode ] ? modeStates[ mode ] !== undefined ? modeStates[ mode ] : CKEDITOR.TRISTATE_OFF : CKEDITOR.TRISTATE_DISABLED;
+
+					state = editor.readOnly && !this.readOnly ? CKEDITOR.TRISTATE_DISABLED : state;
+
+					this.setState( state );
+
+					// Let plugin to disable button.
+					if ( this.refresh )
+						this.refresh();
+				}
+			}
+
 			var env = CKEDITOR.env,
 				id = this._.id = CKEDITOR.tools.getNextId(),
 				stateName = '',
 				command = this.command,
 				// Get the command name.
-				clickFn;
+				clickFn,
+				keystroke,
+				shortcut;
 
 			this._.editor = editor;
 
@@ -154,24 +179,10 @@
 				if ( instance.onfocus )
 					retVal = ( instance.onfocus( instance, new CKEDITOR.dom.event( ev ) ) !== false );
 
-				// FF2: prevent focus event been bubbled up to editor container, which caused unexpected editor focus.
-				if ( CKEDITOR.env.gecko && CKEDITOR.env.version < 10900 )
-					ev.preventBubble();
 				return retVal;
 			} );
 
 			var selLocked = 0;
-
-			var mousedownFn = CKEDITOR.tools.addFunction( function() {
-				// Opera: lock to prevent loosing editable text selection when clicking on button.
-				if ( CKEDITOR.env.opera ) {
-					var edt = editor.editable();
-					if ( edt.isInline() && edt.hasFocus ) {
-						editor.lockSelection();
-						selLocked = 1;
-					}
-				}
-			} );
 
 			instance.clickFn = clickFn = CKEDITOR.tools.addFunction( function() {
 
@@ -180,33 +191,18 @@
 					editor.unlockSelection( 1 );
 					selLocked = 0;
 				}
-
 				instance.execute();
+
+				// Fixed iOS focus issue when your press disabled button (https://dev.ckeditor.com/ticket/12381).
+				if ( env.iOS ) {
+					editor.focus();
+				}
 			} );
 
 
 			// Indicate a mode sensitive button.
 			if ( this.modes ) {
-				var modeStates = {};
-
-				function updateState() {
-					// "this" is a CKEDITOR.ui.button instance.
-
-					var mode = editor.mode;
-
-					if ( mode ) {
-						// Restore saved button state.
-						var state = this.modes[ mode ] ? modeStates[ mode ] != undefined ? modeStates[ mode ] : CKEDITOR.TRISTATE_OFF : CKEDITOR.TRISTATE_DISABLED;
-
-						state = editor.readOnly && !this.readOnly ? CKEDITOR.TRISTATE_DISABLED : state;
-
-						this.setState( state );
-
-						// Let plugin to disable button.
-						if ( this.refresh )
-							this.refresh();
-					}
-				}
+				modeStates = {};
 
 				editor.on( 'beforeModeUnload', function() {
 					if ( editor.mode && this._.state != CKEDITOR.TRISTATE_DISABLED )
@@ -232,6 +228,8 @@
 				}
 			}
 
+			var iconName;
+
 			// For button that has text-direction awareness on selection path.
 			if ( this.directional ) {
 				editor.on( 'contentDirChanged', function( evt ) {
@@ -251,16 +249,42 @@
 				}, this );
 			}
 
-			if ( !command )
+			if ( !command ) {
 				stateName += 'off';
+			} else {
+				keystroke = editor.getCommandKeystroke( command );
+
+				if ( keystroke ) {
+					shortcut = CKEDITOR.tools.keystrokeToString( editor.lang.common.keyboard, keystroke );
+				}
+			}
 
 			var name = this.name || this.command,
-				iconName = name;
+				iconPath = null,
+				overridePath = this.icon;
 
-			// Check if we're pointing to an icon defined by another command. (#9555)
+			iconName = name;
+
+			// Check if we're pointing to an icon defined by another command. (https://dev.ckeditor.com/ticket/9555)
 			if ( this.icon && !( /\./ ).test( this.icon ) ) {
 				iconName = this.icon;
-				this.icon = null;
+				overridePath = null;
+
+			} else {
+				// Register and use custom icon for button (#1530).
+				if ( this.icon ) {
+					iconPath = this.icon;
+				}
+				if ( CKEDITOR.env.hidpi && this.iconHiDpi ) {
+					iconPath = this.iconHiDpi;
+				}
+			}
+
+			if ( iconPath ) {
+				CKEDITOR.skin.addIcon( iconPath, iconPath );
+				overridePath = null;
+			} else {
+				iconPath = iconName;
 			}
 
 			var params = {
@@ -271,14 +295,14 @@
 				cls: this.className || '',
 				state: stateName,
 				ariaDisabled: stateName == 'disabled' ? 'true' : 'false',
-				title: this.title,
-				titleJs: env.gecko && env.version >= 10900 && !env.hc ? '' : ( this.title || '' ).replace( "'", '' ),
+				title: this.title + ( shortcut ? ' (' + shortcut.display + ')' : '' ),
+				ariaShortcut: shortcut ? editor.lang.common.keyboardShortcut + ' ' + shortcut.aria : '',
+				titleJs: env.gecko && !env.hc ? '' : ( this.title || '' ).replace( "'", '' ),
 				hasArrow: this.hasArrow ? 'true' : 'false',
 				keydownFn: keydownFn,
-				mousedownFn: mousedownFn,
 				focusFn: focusFn,
 				clickFn: clickFn,
-				style: CKEDITOR.skin.getIconStyle( iconName, ( editor.lang.dir == 'rtl' ), this.icon, this.iconOffset ),
+				style: CKEDITOR.skin.getIconStyle( iconPath, ( editor.lang.dir == 'rtl' ), overridePath, this.iconOffset ),
 				arrowHtml: this.hasArrow ? btnArrowTpl.output() : ''
 			};
 
@@ -291,7 +315,10 @@
 		},
 
 		/**
-		 * @todo
+		 * Sets the button state.
+		 *
+		 * @param {Number} state Indicates the button state. One of {@link CKEDITOR#TRISTATE_ON},
+		 * {@link CKEDITOR#TRISTATE_OFF}, or {@link CKEDITOR#TRISTATE_DISABLED}.
 		 */
 		setState: function( state ) {
 			if ( this._.state == state )
@@ -309,7 +336,7 @@
 					element.removeAttribute( 'aria-disabled' );
 
 				if ( !this.hasArrow ) {
-					// Note: aria-pressed attribute should not be added to menuButton instances. (#11331)
+					// Note: aria-pressed attribute should not be added to menuButton instances. (https://dev.ckeditor.com/ticket/11331)
 					state == CKEDITOR.TRISTATE_ON ?
 						element.setAttribute( 'aria-pressed', true ) :
 						element.removeAttribute( 'aria-pressed' );
@@ -320,14 +347,18 @@
 				}
 
 				return true;
-			} else
+			} else {
 				return false;
+			}
 		},
 
 		/**
-		 * @todo
+		 * Gets the button state.
+		 *
+		 * @returns {Number} The button state. One of {@link CKEDITOR#TRISTATE_ON},
+		 * {@link CKEDITOR#TRISTATE_OFF}, or {@link CKEDITOR#TRISTATE_DISABLED}.
 		 */
-		getState: function( state ) {
+		getState: function() {
 			return this._.state;
 		},
 
@@ -336,10 +367,10 @@
 		 *
 		 * It may be this button instance if it has at least one of
 		 * `allowedContent` and `requiredContent` properties. Otherwise,
-		 * if command is bound to this button by `command` property, then
+		 * if a command is bound to this button by the `command` property, then
 		 * that command will be returned.
 		 *
-		 * This method implements {@link CKEDITOR.feature#toFeature} interface method.
+		 * This method implements the {@link CKEDITOR.feature#toFeature} interface method.
 		 *
 		 * @since 4.1
 		 * @param {CKEDITOR.editor} Editor instance.
@@ -371,6 +402,36 @@
 	 * @member CKEDITOR.ui
 	 * @param {String} name The button name.
 	 * @param {Object} definition The button definition.
+	 * @param {String} definition.label The textual part of the button (if visible) and its tooltip.
+	 * @param {String} definition.command The command to be executed once the button is activated.
+	 * @param {String} definition.toolbar The {@link CKEDITOR.config#toolbarGroups toolbar group} into which
+	 * the button will be added. An optional index value (separated by a comma) determines the button position within the group.
+	 * @param {String} definition.icon The path to a custom icon or icon name registered by another plugin. Custom icon paths
+	 * are supported since the **4.9.0** version.
+	 *
+	 * To use icon registered by another plugin, icon parameter should be used like:
+	 *
+	 * 		editor.ui.addButton( 'my_button', {
+	 * 			icon: 'Link' // Uses link icon from Link plugin.
+	 * 		} );
+	 *
+	 * If the plugin provides a HiDPI version of an icon, it will be used for HiDPI displays (so defining `iconHiDpi` is not needed
+	 * in this case).
+	 *
+	 * To use a custom icon, the path to the icon should be provided:
+	 *
+	 * 		editor.ui.addButton( 'my_button', {
+	 * 			icon: 'assets/icons/my_button.png'
+	 * 		} )
+	 *
+	 * This icon will be used for both standard and HiDPI displays unless `iconHiDpi` is explicitly defined.
+	 * **Important**: CKEditor will resolve relative paths based on {@link CKEDITOR#basePath}.
+	 * @param {String} definition.iconHiDpi The path to the custom HiDPI icon version. Supported since **4.9.0** version.
+	 * It will be used only in HiDPI environments. The usage is similar to the `icon` parameter:
+	 *
+	 * 		editor.ui.addButton( 'my_button', {
+	 * 			iconHiDpi: 'assets/icons/my_button.hidpi.png'
+	 * 		} )
 	 */
 	CKEDITOR.ui.prototype.addButton = function( name, definition ) {
 		this.add( name, CKEDITOR.UI_BUTTON, definition );

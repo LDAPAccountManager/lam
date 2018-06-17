@@ -1,6 +1,6 @@
-﻿/**
- * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or http://ckeditor.com/license
+/**
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -19,7 +19,7 @@
 CKEDITOR.lang[ 'sq' ] = {
 	// ARIA description.
 	editor: 'Redaktues i Pasur Teksti',
-	editorPanel: 'Rich Text Editor panel', // MISSING
+	editorPanel: 'Paneli i redaktuesit të tekstit të plotë',
 
 	// Common messages and labels.
 	common: {
@@ -77,21 +77,70 @@ CKEDITOR.lang[ 'sq' ] = {
 		width: 'Gjerësi',
 		height: 'Lartësi',
 		align: 'Rreshtim',
-		alignLeft: 'Majtas',
-		alignRight: 'Djathtas',
-		alignCenter: 'Qendër',
+		left: 'Majtas',
+		right: 'Djathtas',
+		center: 'Qendër',
+		justify: 'Zgjero',
+		alignLeft: 'Rreshto majtas',
+		alignRight: 'Rreshto Djathtas',
+		alignCenter: 'Align Center', // MISSING
 		alignTop: 'Lart',
 		alignMiddle: 'Në mes',
 		alignBottom: 'Poshtë',
-		invalidValue	: 'Vlerë e pavlefshme',
+		alignNone: 'Asnjë',
+		invalidValue: 'Vlerë e pavlefshme',
 		invalidHeight: 'Lartësia duhet të jetë një numër',
 		invalidWidth: 'Gjerësia duhet të jetë një numër',
+		invalidLength: 'Vlera e përcaktuar për fushën "%1" duhet të jetë pozitive me ose pa njësi matëse me vlerë (%2).',
 		invalidCssLength: 'Vlera e fushës "%1" duhet të jetë një numër pozitiv me apo pa njësi matëse të vlefshme CSS (px, %, in, cm, mm, em, ex, pt ose pc).',
 		invalidHtmlLength: 'Vlera e fushës "%1" duhet të jetë një numër pozitiv me apo pa njësi matëse të vlefshme HTML (px ose %)',
 		invalidInlineStyle: 'Stili inline duhet të jetë një apo disa vlera të formatit "emër: vlerë", ndarë nga pikëpresje.',
 		cssLengthTooltip: 'Fut një numër për vlerën në pixel apo një numër me një njësi të vlefshme CSS (px, %, in, cm, mm, ex, pt, ose pc).',
 
 		// Put the voice-only part of the label in the span.
-		unavailable: '%1<span class="cke_accessibility">, i padisponueshëm</span>'
+		unavailable: '%1<span class="cke_accessibility">, i padisponueshëm</span>',
+
+		// Keyboard keys translations used for creating shortcuts descriptions in tooltips, context menus and ARIA labels.
+		keyboard: {
+			8: 'Prapa',
+			13: 'Enter',
+			16: 'Shift',
+			17: 'Ctrl',
+			18: 'Alt',
+			32: 'Hapësirë',
+			35: 'End',
+			36: 'Home',
+			46: 'Grise',
+			112: 'F1',
+			113: 'F2',
+			114: 'F3',
+			115: 'F4',
+			116: 'F5',
+			117: 'F6',
+			118: 'F7',
+			119: 'F8',
+			120: 'F9',
+			121: 'F10',
+			122: 'F11',
+			123: 'F12',
+			124: 'F13',
+			125: 'F14',
+			126: 'F15',
+			127: 'F16',
+			128: 'F17',
+			129: 'F18',
+			130: 'F19',
+			131: 'F20',
+			132: 'F21',
+			133: 'F22',
+			134: 'F23',
+			135: 'F24',
+			224: 'Urdhëri'
+		},
+
+		// Prepended to ARIA labels with shortcuts.
+		keyboardShortcut: 'Shkurtesat e tastierës',
+
+		optionDefault: 'Parazgjedhur'
 	}
 };

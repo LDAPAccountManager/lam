@@ -1,6 +1,6 @@
-﻿/**
- * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or http://ckeditor.com/license
+/**
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -13,6 +13,7 @@
  *		} );
  *
  * @class
+ * @extends CKEDITOR.commandDefinition
  * @mixins CKEDITOR.event
  * @constructor Creates a command class instance.
  * @param {CKEDITOR.editor} editor The editor instance this command will be
@@ -35,6 +36,9 @@ CKEDITOR.command = function( editor, commandDefinition ) {
 	 *
 	 *		command.exec(); // The command gets executed.
 	 *
+	 * **Note:** You should use the {@link CKEDITOR.editor#execCommand} method instead of calling
+	 * `command.exec()` directly.
+	 *
 	 * @param {Object} [data] Any data to pass to the command. Depends on the
 	 * command implementation and requirements.
 	 * @returns {Boolean} A boolean indicating that the command has been successfully executed.
@@ -43,7 +47,7 @@ CKEDITOR.command = function( editor, commandDefinition ) {
 		if ( this.state == CKEDITOR.TRISTATE_DISABLED || !this.checkAllowed() )
 			return false;
 
-		if ( this.editorFocus ) // Give editor focus if necessary (#4355).
+		if ( this.editorFocus ) // Give editor focus if necessary (https://dev.ckeditor.com/ticket/4355).
 			editor.focus();
 
 		if ( this.fire( 'exec' ) === false )

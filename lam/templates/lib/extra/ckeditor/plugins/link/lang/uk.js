@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or http://ckeditor.com/license
+Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang( 'link', 'uk', {
 	acccessKey: 'Гаряча клавіша',
@@ -19,6 +19,8 @@ CKEDITOR.plugins.setLang( 'link', 'uk', {
 	anchorName: 'За ім\'ям елементу',
 	charset: 'Кодування',
 	cssClasses: 'Клас CSS',
+	download: 'Force Download', // MISSING
+	displayText: 'Display Text', // MISSING
 	emailAddress: 'Адреса ел. пошти',
 	emailBody: 'Тіло повідомлення',
 	emailSubject: 'Тема листа',

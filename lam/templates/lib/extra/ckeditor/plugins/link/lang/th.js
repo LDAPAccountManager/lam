@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or http://ckeditor.com/license
+Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang( 'link', 'th', {
 	acccessKey: 'แอคเซส คีย์',
@@ -19,6 +19,8 @@ CKEDITOR.plugins.setLang( 'link', 'th', {
 	anchorName: 'ชื่อ',
 	charset: 'ลิงค์เชื่อมโยงไปยังชุดตัวอักษร',
 	cssClasses: 'คลาสของไฟล์กำหนดลักษณะการแสดงผล',
+	download: 'Force Download', // MISSING
+	displayText: 'Display Text', // MISSING
 	emailAddress: 'อีเมล์ (E-Mail)',
 	emailBody: 'ข้อความ',
 	emailSubject: 'หัวเรื่อง',

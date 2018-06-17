@@ -1,6 +1,6 @@
-﻿/**
- * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or http://ckeditor.com/license
+/**
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -36,34 +36,34 @@ CKEDITOR.lang[ 'de' ] = {
 		image: 'Bild',
 		flash: 'Flash',
 		form: 'Formular',
-		checkbox: 'Checkbox',
-		radio: 'Radiobutton',
-		textField: 'Textfeld einzeilig',
-		textarea: 'Textfeld mehrzeilig',
+		checkbox: 'Kontrollbox',
+		radio: 'Optionsfeld',
+		textField: 'Textfeld',
+		textarea: 'Textfeld',
 		hiddenField: 'Verstecktes Feld',
-		button: 'Klickbutton',
+		button: 'Schaltfläche',
 		select: 'Auswahlfeld',
-		imageButton: 'Bildbutton',
-		notSet: '<nichts>',
-		id: 'ID',
+		imageButton: 'Bildschaltfläche',
+		notSet: '<nicht festgelegt>',
+		id: 'Kennung',
 		name: 'Name',
 		langDir: 'Schreibrichtung',
 		langDirLtr: 'Links nach Rechts (LTR)',
 		langDirRtl: 'Rechts nach Links (RTL)',
-		langCode: 'Sprachenkürzel',
-		longDescr: 'Langform URL',
-		cssClass: 'Stylesheet Klasse',
+		langCode: 'Sprachcode',
+		longDescr: 'Langbeschreibungs-URL',
+		cssClass: 'Formatvorlagenklassen',
 		advisoryTitle: 'Titel Beschreibung',
-		cssStyle: 'Style',
+		cssStyle: 'Stil',
 		ok: 'OK',
 		cancel: 'Abbrechen',
 		close: 'Schließen',
 		preview: 'Vorschau',
-		resize: 'Zum Vergrößern ziehen',
+		resize: 'Größe ändern',
 		generalTab: 'Allgemein',
 		advancedTab: 'Erweitert',
 		validateNumberFailed: 'Dieser Wert ist keine Nummer.',
-		confirmNewPage: 'Alle nicht gespeicherten Änderungen gehen verlohren. Sind Sie sicher die neue Seite zu laden?',
+		confirmNewPage: 'Alle nicht gespeicherten Änderungen gehen verloren. Sind Sie sicher die neue Seite zu laden?',
 		confirmCancel: 'Einige Optionen wurden geändert. Wollen Sie den Dialog dennoch schließen?',
 		options: 'Optionen',
 		target: 'Zielseite',
@@ -78,21 +78,70 @@ CKEDITOR.lang[ 'de' ] = {
 		width: 'Breite',
 		height: 'Höhe',
 		align: 'Ausrichtung',
-		alignLeft: 'Links',
-		alignRight: 'Rechts',
-		alignCenter: 'Zentriert',
+		left: 'Links',
+		right: 'Rechts',
+		center: 'Zentriert',
+		justify: 'Blocksatz',
+		alignLeft: 'Linksbündig',
+		alignRight: 'Rechtsbündig',
+		alignCenter: 'Align Center', // MISSING
 		alignTop: 'Oben',
 		alignMiddle: 'Mitte',
 		alignBottom: 'Unten',
-		invalidValue	: 'Ungültiger Wert.',
+		alignNone: 'Keine',
+		invalidValue: 'Ungültiger Wert.',
 		invalidHeight: 'Höhe muss eine Zahl sein.',
 		invalidWidth: 'Breite muss eine Zahl sein.',
+		invalidLength: 'Value specified for the "%1" field must be a positive number with or without a valid measurement unit (%2).', // MISSING
 		invalidCssLength: 'Wert spezifiziert für "%1" Feld muss ein positiver numerischer Wert sein mit oder ohne korrekte CSS Messeinheit (px, %, in, cm, mm, em, ex, pt oder pc).',
 		invalidHtmlLength: 'Wert spezifiziert für "%1" Feld muss ein positiver numerischer Wert sein mit oder ohne korrekte HTML Messeinheit (px oder %).',
 		invalidInlineStyle: 'Wert spezifiziert für inline Stilart muss enthalten ein oder mehr Tupels mit dem Format "Name : Wert" getrennt mit Semikolons.',
 		cssLengthTooltip: 'Gebe eine Zahl ein für ein Wert in pixels oder eine Zahl mit einer korrekten CSS Messeinheit (px, %, in, cm, mm, em, ex, pt oder pc).',
 
 		// Put the voice-only part of the label in the span.
-		unavailable: '%1<span class="cke_accessibility">, nicht verfügbar</span>'
+		unavailable: '%1<span class="cke_accessibility">, nicht verfügbar</span>',
+
+		// Keyboard keys translations used for creating shortcuts descriptions in tooltips, context menus and ARIA labels.
+		keyboard: {
+			8: 'Rücktaste',
+			13: 'Eingabe',
+			16: 'Umschalt',
+			17: 'Strg',
+			18: 'Alt',
+			32: 'Leer',
+			35: 'Ende',
+			36: 'Pos1',
+			46: 'Entfernen',
+			112: 'F1', // MISSING
+			113: 'F2', // MISSING
+			114: 'F3', // MISSING
+			115: 'F4', // MISSING
+			116: 'F5', // MISSING
+			117: 'F6', // MISSING
+			118: 'F7', // MISSING
+			119: 'F8', // MISSING
+			120: 'F9', // MISSING
+			121: 'F10', // MISSING
+			122: 'F11', // MISSING
+			123: 'F12', // MISSING
+			124: 'F13', // MISSING
+			125: 'F14', // MISSING
+			126: 'F15', // MISSING
+			127: 'F16', // MISSING
+			128: 'F17', // MISSING
+			129: 'F18', // MISSING
+			130: 'F19', // MISSING
+			131: 'F20', // MISSING
+			132: 'F21', // MISSING
+			133: 'F22', // MISSING
+			134: 'F23', // MISSING
+			135: 'F24', // MISSING
+			224: 'Befehl'
+		},
+
+		// Prepended to ARIA labels with shortcuts.
+		keyboardShortcut: 'Tastaturkürzel',
+
+		optionDefault: 'Default' // MISSING
 	}
 };
