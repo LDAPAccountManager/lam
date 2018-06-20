@@ -19,7 +19,7 @@ elif [ "$1" = "-b" ]
 then
 	export REPO_BRANCH="$2"
 else
-	export REPO_BRANCH="tags/$1"
+	export REPO_BRANCH="$1"
 fi
 
 # minifies the JavaScript files
@@ -51,17 +51,15 @@ function minifyCSS {
 }
 
 echo "Getting files..."
-git clone git@github.com:LDAPAccountManager/lam.git github
+git clone -b $REPO_BRANCH --single-branch git@github.com:LDAPAccountManager/lam.git github
 cd github
-git checkout $REPO_BRANCH
 mv lam ../
 mv lam-packaging ../
 cd ..
 rm -rf github
 
-git clone git@gitlab.com:LDAPAccountManager/lamPro.git lamPro
+git clone -b $REPO_BRANCH --single-branch git@gitlab.com:LDAPAccountManager/lamPro.git lamPro
 cd lamPro
-git checkout $REPO_BRANCH
 rm -rf .git
 cd ..
 
