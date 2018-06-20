@@ -1527,6 +1527,7 @@ class posixAccount extends baseModule implements passwordService {
 	 */
 	function display_html_attributes() {
 		$return = new htmlTable();
+		$this->checkForInvalidConfiguration($return);
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		$typeId = $this->getAccountContainer()->get_type()->getId();
 		if (!$this->isOptional($modules) || $this->skipObjectClass() || (isset($this->attributes['objectClass']) && in_array('posixAccount', $this->attributes['objectClass']))) {
@@ -1700,6 +1701,26 @@ class posixAccount extends baseModule implements passwordService {
 			$return->addElement(new htmlButton('addObjectClass', _('Add Unix extension')));
 		}
 		return $return;
+	}
+
+	/**
+	 * Checks if the configuration is valid and prints an error if not.
+	 *
+	 * @param htmlTable $content content area
+	 */
+	private function checkForInvalidConfiguration(htmlTable $content) {
+		$typeId = $this->getAccountContainer()->get_type()->getId();
+		if ($this->get_scope() == 'user') {
+			$generatorOption = 'posixAccount_' . $typeId . '_uidGeneratorUsers';
+		}
+		else {
+			$generatorOption = 'posixAccount_' . $typeId . '_uidGeneratorHosts';
+		}
+		if (empty($this->moduleSettings[$generatorOption])) {
+			$message = new htmlStatusMessage('ERROR', _('Invalid configuration detected. Please edit your server profile (module settings) and fill all required fields.'));
+			$message->colspan = 5;
+			$content->addElement($message, true);
+		}
 	}
 
 	/**
