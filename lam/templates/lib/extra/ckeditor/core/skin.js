@@ -1,6 +1,6 @@
-﻿/**
- * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or http://ckeditor.com/license
+/**
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -51,8 +51,9 @@
 				CKEDITOR.scriptLoader.load( CKEDITOR.getUrl( getConfigPath() + 'skin.js' ), function() {
 					loadCss( part, fn );
 				} );
-			} else
+			} else {
 				loadCss( part, fn );
+			}
 		},
 
 		/**
@@ -85,7 +86,7 @@
 				this.icons[ name ] = {
 					path: path,
 					offset: offset || 0,
-					bgsize : bgsize || '16px'
+					bgsize: bgsize || '16px'
 				};
 			}
 		},
@@ -124,35 +125,41 @@
 			offset = overrideOffset || ( icon && icon.offset );
 			bgsize = overrideBgsize || ( icon && icon.bgsize ) || '16px';
 
+			// If we use apostrophes in background-image, we must escape apostrophes in path (just to be sure). (https://dev.ckeditor.com/ticket/13361)
+			if ( path )
+				path = path.replace( /'/g, '\\\'' );
+
 			return path &&
-				( 'background-image:url(' + CKEDITOR.getUrl( path ) + ');background-position:0 ' + offset + 'px;background-size:' + bgsize + ';' );
+				( 'background-image:url(\'' + CKEDITOR.getUrl( path ) + '\');background-position:0 ' + offset + 'px;background-size:' + bgsize + ';' );
 		}
 	};
 
 	function getCssPath( part ) {
-			// Check for ua-specific version of skin part.
-			var uas = CKEDITOR.skin[ 'ua_' + part ], env = CKEDITOR.env;
-			if ( uas ) {
+		// Check for ua-specific version of skin part.
+		var uas = CKEDITOR.skin[ 'ua_' + part ], env = CKEDITOR.env;
+		if ( uas ) {
 
-				// Having versioned UA checked first.
-				uas = uas.split( ',' ).sort( function( a, b ) { return a > b ? -1 : 1; } );
+			// Having versioned UA checked first.
+			uas = uas.split( ',' ).sort( function( a, b ) {
+				return a > b ? -1 : 1;
+			} );
 
-				// Loop through all ua entries, checking is any of them match the current ua.
-				for ( var i = 0, ua; i < uas.length; i++ ) {
-					ua = uas[ i ];
+			// Loop through all ua entries, checking is any of them match the current ua.
+			for ( var i = 0, ua; i < uas.length; i++ ) {
+				ua = uas[ i ];
 
-					if ( env.ie ) {
-						if ( ( ua.replace( /^ie/, '' ) == env.version ) || ( env.quirks && ua == 'iequirks' ) )
-							ua = 'ie';
-					}
+				if ( env.ie ) {
+					if ( ( ua.replace( /^ie/, '' ) == env.version ) || ( env.quirks && ua == 'iequirks' ) )
+						ua = 'ie';
+				}
 
-					if ( env[ ua ] ) {
-						part += '_' + uas[ i ];
-						break;
-					}
+				if ( env[ ua ] ) {
+					part += '_' + uas[ i ];
+					break;
 				}
 			}
-			return CKEDITOR.getUrl( getConfigPath() + part + '.css' );
+		}
+		return CKEDITOR.getUrl( getConfigPath() + part + '.css' );
 	}
 
 	function loadCss( part, callback ) {
@@ -192,16 +199,24 @@
 			var uiStyle = getStylesheet( CKEDITOR.document );
 
 			return ( this.setUiColor = function( color ) {
-				var chameleon = CKEDITOR.skin.chameleon;
-
-				var replace = [ [ uiColorRegexp, color ] ];
 				this.uiColor = color;
 
+				var chameleon = CKEDITOR.skin.chameleon,
+					editorStyleContent = '',
+					panelStyleContent = '';
+
+				if ( typeof chameleon == 'function' ) {
+					editorStyleContent = chameleon( this, 'editor' );
+					panelStyleContent = chameleon( this, 'panel' );
+				}
+
+				var replace = [ [ uiColorRegexp, color ] ];
+
 				// Update general style.
-				updateStylesheets( [ uiStyle ], chameleon( this, 'editor' ), replace );
+				updateStylesheets( [ uiStyle ], editorStyleContent, replace );
 
 				// Update panel styles.
-				updateStylesheets( uiColorMenus, chameleon( this, 'panel' ), replace );
+				updateStylesheets( uiColorMenus, panelStyleContent, replace );
 			} ).call( this, color );
 		}
 	} );
@@ -214,8 +229,8 @@
 		var node = document.getById( uiColorStylesheetId );
 		if ( !node ) {
 			node = document.getHead().append( 'style' );
-			node.setAttribute( "id", uiColorStylesheetId );
-			node.setAttribute( "type", "text/css" );
+			node.setAttribute( 'id', uiColorStylesheetId );
+			node.setAttribute( 'type', 'text/css' );
 		}
 		return node;
 	}

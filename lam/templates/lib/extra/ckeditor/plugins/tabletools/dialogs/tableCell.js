@@ -1,6 +1,6 @@
 ﻿/**
- * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or http://ckeditor.com/license
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
@@ -9,9 +9,8 @@ CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
 		langCommon = editor.lang.common,
 		validate = CKEDITOR.dialog.validate,
 		widthPattern = /^(\d+(?:\.\d+)?)(px|%)$/,
-		heightPattern = /^(\d+(?:\.\d+)?)px$/,
-		bind = CKEDITOR.tools.bind,
 		spacer = { type: 'html', html: '&nbsp;' },
+		hiddenSpacer,
 		rtl = editor.lang.dir == 'rtl',
 		colorDialog = editor.plugins.colordialog;
 
@@ -66,30 +65,26 @@ CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
 		title: langCell.title,
 		minWidth: CKEDITOR.env.ie && CKEDITOR.env.quirks ? 450 : 410,
 		minHeight: CKEDITOR.env.ie && ( CKEDITOR.env.ie7Compat || CKEDITOR.env.quirks ) ? 230 : 220,
-		contents: [
-			{
+		contents: [ {
 			id: 'info',
 			label: langCell.title,
 			accessKey: 'I',
-			elements: [
-				{
+			elements: [ {
 				type: 'hbox',
 				widths: [ '40%', '5%', '40%' ],
-				children: [
-					{
+				children: [ {
 					type: 'vbox',
 					padding: 0,
-					children: [
-						{
+					children: [ {
 						type: 'hbox',
 						widths: [ '70%', '30%' ],
-						children: [
-							{
+						children: [ {
 							type: 'text',
 							id: 'width',
 							width: '100px',
+							requiredContent: 'td{width,height}',
 							label: langCommon.width,
-							validate: validate[ 'number' ]( langCell.invalidWidth ),
+							validate: validate.number( langCell.invalidWidth ),
 
 							// Extra labelling of width unit type.
 							onLoad: function() {
@@ -114,7 +109,7 @@ CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
 									// There might be no widthType value, i.e. when multiple cells are
 									// selected but some of them have width expressed in pixels and some
 									// of them in percent. Try to re-read the unit from the cell in such
-									// case (#11439).
+									// case (https://dev.ckeditor.com/ticket/11439).
 									unit = this.getDialog().getValueOf( 'info', 'widthType' ) || getCellWidthType( element );
 
 								if ( !isNaN( value ) )
@@ -126,31 +121,31 @@ CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
 							},
 							'default': ''
 						},
-							{
+						{
 							type: 'select',
 							id: 'widthType',
+							requiredContent: 'td{width,height}',
 							label: editor.lang.table.widthUnit,
 							labelStyle: 'visibility:hidden',
 							'default': 'px',
 							items: [
 								[ langTable.widthPx, 'px' ],
 								[ langTable.widthPc, '%' ]
-								],
+							],
 							setup: setupCells( getCellWidthType )
-						}
-						]
+						} ]
 					},
-						{
+					{
 						type: 'hbox',
 						widths: [ '70%', '30%' ],
-						children: [
-							{
+						children: [ {
 							type: 'text',
 							id: 'height',
+							requiredContent: 'td{width,height}',
 							label: langCommon.height,
 							width: '100px',
 							'default': '',
-							validate: validate[ 'number' ]( langCell.invalidHeight ),
+							validate: validate.number( langCell.invalidHeight ),
 
 							// Extra labelling of height unit type.
 							onLoad: function() {
@@ -158,6 +153,13 @@ CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
 									labelElement = heightType.getElement(),
 									inputElement = this.getInputElement(),
 									ariaLabelledByAttr = inputElement.getAttribute( 'aria-labelledby' );
+
+								if ( this.getDialog().getContentElement( 'info', 'height' ).isVisible() ) {
+									labelElement.setHtml( '<br />' + langTable.widthPx );
+									labelElement.setStyle( 'display', 'block' );
+
+									this.getDialog().getContentElement( 'info', 'hiddenSpacer' ).getElement().setStyle( 'display', 'block' );
+								}
 
 								inputElement.setAttribute( 'aria-labelledby', [ ariaLabelledByAttr, labelElement.$.id ].join( ' ' ) );
 							},
@@ -180,14 +182,19 @@ CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
 								element.removeAttribute( 'height' );
 							}
 						},
-							{
+						{
 							id: 'htmlHeightType',
 							type: 'html',
-							html: '<br />' + langTable.widthPx
-						}
-						]
+							html: '',
+							style: 'display: none'
+						} ]
 					},
-						spacer,
+					hiddenSpacer = {
+						type: 'html',
+						id: 'hiddenSpacer',
+						html: '&nbsp;',
+						style: 'display: none'
+					},
 					{
 						type: 'select',
 						id: 'wordWrap',
@@ -196,7 +203,7 @@ CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
 						items: [
 							[ langCell.yes, 'yes' ],
 							[ langCell.no, 'no' ]
-							],
+						],
 						setup: setupCells( function( element ) {
 							var wordWrapAttr = element.getAttribute( 'noWrap' ),
 								wordWrapStyle = element.getStyle( 'white-space' );
@@ -213,7 +220,7 @@ CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
 							element.removeAttribute( 'noWrap' );
 						}
 					},
-						spacer,
+					spacer,
 					{
 						type: 'select',
 						id: 'hAlign',
@@ -221,10 +228,11 @@ CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
 						'default': '',
 						items: [
 							[ langCommon.notSet, '' ],
-							[ langCommon.alignLeft, 'left' ],
-							[ langCommon.alignCenter, 'center' ],
-							[ langCommon.alignRight, 'right' ]
-							],
+							[ langCommon.left, 'left' ],
+							[ langCommon.center, 'center' ],
+							[ langCommon.right, 'right' ],
+							[ langCommon.justify, 'justify' ]
+						],
 						setup: setupCells( function( element ) {
 							var alignAttr = element.getAttribute( 'align' ),
 								textAlignStyle = element.getStyle( 'text-align' );
@@ -242,7 +250,7 @@ CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
 							selectedCell.removeAttribute( 'align' );
 						}
 					},
-						{
+					{
 						type: 'select',
 						id: 'vAlign',
 						label: langCell.vAlign,
@@ -253,7 +261,7 @@ CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
 							[ langCommon.alignMiddle, 'middle' ],
 							[ langCommon.alignBottom, 'bottom' ],
 							[ langCell.alignBaseline, 'baseline' ]
-							],
+						],
 						setup: setupCells( function( element ) {
 							var vAlignAttr = element.getAttribute( 'vAlign' ),
 								vAlignStyle = element.getStyle( 'vertical-align' );
@@ -281,15 +289,13 @@ CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
 
 							element.removeAttribute( 'vAlign' );
 						}
-					}
-					]
+					} ]
 				},
-					spacer,
+				spacer,
 				{
 					type: 'vbox',
 					padding: 0,
-					children: [
-						{
+					children: [ {
 						type: 'select',
 						id: 'cellType',
 						label: langCell.cellType,
@@ -297,7 +303,7 @@ CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
 						items: [
 							[ langCell.data, 'td' ],
 							[ langCell.header, 'th' ]
-							],
+						],
 						setup: setupCells( function( selectedCell ) {
 							return selectedCell.getName();
 						} ),
@@ -305,7 +311,7 @@ CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
 							selectedCell.renameNode( this.getValue() );
 						}
 					},
-						spacer,
+					spacer,
 					{
 						type: 'text',
 						id: 'rowSpan',
@@ -325,7 +331,7 @@ CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
 								selectedCell.removeAttribute( 'rowSpan' );
 						}
 					},
-						{
+					{
 						type: 'text',
 						id: 'colSpan',
 						label: langCell.colSpan,
@@ -344,13 +350,12 @@ CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
 								selectedCell.removeAttribute( 'colSpan' );
 						}
 					},
-						spacer,
+					spacer,
 					{
 						type: 'hbox',
 						padding: 0,
 						widths: [ '60%', '40%' ],
-						children: [
-							{
+						children: [ {
 							type: 'text',
 							id: 'bgColor',
 							label: langCell.bgColor,
@@ -375,10 +380,10 @@ CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
 						colorDialog ? {
 							type: 'button',
 							id: 'bgColorChoose',
-							"class": 'colorChooser',
+							'class': 'colorChooser', // jshint ignore:line
 							label: langCell.chooseColor,
 							onLoad: function() {
-								// Stick the element to the bottom (#5587)
+								// Stick the element to the bottom (https://dev.ckeditor.com/ticket/5587)
 								this.getElement().getParent().setStyle( 'vertical-align', 'bottom' );
 							},
 							onClick: function() {
@@ -388,16 +393,14 @@ CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
 									this.focus();
 								}, this );
 							}
-						} : spacer
-						]
+						} : spacer ]
 					},
-						spacer,
+					spacer,
 					{
 						type: 'hbox',
 						padding: 0,
 						widths: [ '60%', '40%' ],
-						children: [
-							{
+						children: [ {
 							type: 'text',
 							id: 'borderColor',
 							label: langCell.borderColor,
@@ -422,11 +425,11 @@ CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
 						colorDialog ? {
 							type: 'button',
 							id: 'borderColorChoose',
-							"class": 'colorChooser',
+							'class': 'colorChooser', // jshint ignore:line
 							label: langCell.chooseColor,
 							style: ( rtl ? 'margin-right' : 'margin-left' ) + ': 10px',
 							onLoad: function() {
-								// Stick the element to the bottom (#5587)
+								// Stick the element to the bottom (https://dev.ckeditor.com/ticket/5587)
 								this.getElement().getParent().setStyle( 'vertical-align', 'bottom' );
 							},
 							onClick: function() {
@@ -436,16 +439,11 @@ CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
 									this.focus();
 								}, this );
 							}
-						} : spacer
-						]
-					}
-					]
-				}
-				]
-			}
-			]
-		}
-		],
+						} : spacer ]
+					} ]
+				} ]
+			} ]
+		} ],
 		onShow: function() {
 			this.cells = CKEDITOR.plugins.tabletools.getSelectedCells( this._.editor.getSelection() );
 			this.setupContent( this.cells );
@@ -467,7 +465,7 @@ CKEDITOR.dialog.add( 'cellProperties', function( editor ) {
 
 			// Prevent from changing cell properties when the field's value
 			// remains unaltered, i.e. when selected multiple cells and dialog loaded
-			// only the properties of the first cell (#11439).
+			// only the properties of the first cell (https://dev.ckeditor.com/ticket/11439).
 			this.foreach( function( field ) {
 				if ( !field.setup || !field.commit )
 					return;

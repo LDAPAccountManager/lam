@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or http://ckeditor.com/license
+Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang( 'colorbutton', 'ru', {
 	auto: 'Автоматически',
@@ -45,7 +45,29 @@ CKEDITOR.plugins.setLang( 'colorbutton', 'ru', {
 		F0FFFF: 'Лазурный',
 		F0F8FF: 'Бледно-голубой',
 		E6E6FA: 'Лавандовый',
-		FFF: 'Белый'
+		FFF: 'Белый',
+		'1ABC9C': 'Strong Cyan', // MISSING
+		'2ECC71': 'Изумрудный',
+		'3498DB': 'Светло-синий',
+		'9B59B6': 'Аметист',
+		'4E5F70': 'Сине-серый',
+		'F1C40F': 'Ярко-желтый',
+		'16A085': 'Dark Cyan', // MISSING
+		'27AE60': 'Тёмно-изумрудный',
+		'2980B9': 'Strong Blue', // MISSING
+		'8E44AD': 'Тёмно-фиолетовый',
+		'2C3E50': 'Desaturated Blue', // MISSING
+		'F39C12': 'Оранжевый',
+		'E67E22': 'Морковный',
+		'E74C3C': 'Pale Red', // MISSING
+		'ECF0F1': 'Bright Silver', // MISSING
+		'95A5A6': 'Light Grayish Cyan', // MISSING
+		'DDD': 'Светло-серый',
+		'D35400': 'Цвет тыквы',
+		'C0392B': 'Strong Red', // MISSING
+		'BDC3C7': 'Серебристый',
+		'7F8C8D': 'Grayish Cyan', // MISSING
+		'999': 'Тёмно-серый'
 	},
 	more: 'Ещё цвета...',
 	panelTitle: 'Цвета',

@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or http://ckeditor.com/license
+Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang( 'link', 'af', {
 	acccessKey: 'Toegangsleutel',
@@ -19,6 +19,8 @@ CKEDITOR.plugins.setLang( 'link', 'af', {
 	anchorName: 'Op ankernaam',
 	charset: 'Karakterstel van geskakelde bron',
 	cssClasses: 'CSS klasse',
+	download: 'Force Download', // MISSING
+	displayText: 'Display Text', // MISSING
 	emailAddress: 'E-posadres',
 	emailBody: 'Berig-inhoud',
 	emailSubject: 'Berig-onderwerp',

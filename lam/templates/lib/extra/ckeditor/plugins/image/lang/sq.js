@@ -1,9 +1,8 @@
 ﻿/*
-Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or http://ckeditor.com/license
+Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang( 'image', 'sq', {
-	alertUrl: 'Ju lutemi shkruani URL-në e fotos',
 	alt: 'Tekst Alternativ',
 	border: 'Korniza',
 	btnUpload: 'Dërgo në server',

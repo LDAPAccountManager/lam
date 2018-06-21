@@ -1,12 +1,12 @@
 ﻿/*
-Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or http://ckeditor.com/license
+Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang( 'basicstyles', 'fa', {
 	bold: 'درشت',
 	italic: 'خمیده',
-	strike: 'میانخط',
+	strike: 'خط‌خورده',
 	subscript: 'زیرنویس',
 	superscript: 'بالانویس',
-	underline: 'زیرخطدار'
+	underline: 'زیرخط‌دار'
 } );

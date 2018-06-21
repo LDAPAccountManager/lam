@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or http://ckeditor.com/license
+Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang( 'link', 'sq', {
 	acccessKey: 'Sipas ID-së së Elementit',
@@ -19,6 +19,8 @@ CKEDITOR.plugins.setLang( 'link', 'sq', {
 	anchorName: 'Sipas Emrit të Spirancës',
 	charset: 'Seti i Karaktereve të Burimeve të Nëdlidhura',
 	cssClasses: 'Klasa stili CSS',
+	download: 'Force Download', // MISSING
+	displayText: 'Display Text', // MISSING
 	emailAddress: 'Posta Elektronike',
 	emailBody: 'Trupi i Porosisë',
 	emailSubject: 'Titulli i Porosisë',
@@ -41,14 +43,14 @@ CKEDITOR.plugins.setLang( 'link', 'sq', {
 	popupLocationBar: 'Shiriti i Lokacionit',
 	popupMenuBar: 'Shiriti i Menysë',
 	popupResizable: 'I ndryshueshëm',
-	popupScrollBars: 'Scroll Bars', // MISSING
+	popupScrollBars: 'Shiritat zvarritës',
 	popupStatusBar: 'Shiriti i Statutit',
 	popupToolbar: 'Shiriti i Mejteve',
 	popupTop: 'Top Pozita',
 	rel: 'Marrëdhëniet',
 	selectAnchor: 'Përzgjidh një Spirancë',
 	styles: 'Stil',
-	tabIndex: 'Tab Index', // MISSING
+	tabIndex: 'Indeksi i fletave',
 	target: 'Objektivi',
 	targetFrame: '<frame>',
 	targetFrameName: 'Emri i Kornizës së Synuar',

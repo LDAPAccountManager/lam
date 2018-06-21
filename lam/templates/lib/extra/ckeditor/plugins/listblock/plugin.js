@@ -1,6 +1,6 @@
 ﻿/**
- * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or http://ckeditor.com/license
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 CKEDITOR.plugins.add( 'listblock', {
@@ -12,7 +12,7 @@ CKEDITOR.plugins.add( 'listblock', {
 				'<a id="{id}_option" _cke_focus=1 hidefocus=true' +
 					' title="{title}"' +
 					' href="javascript:void(\'{val}\')" ' +
-					' {onclick}="CKEDITOR.tools.callFunction({clickFn},\'{val}\'); return false;"' + // #188
+					' {onclick}="CKEDITOR.tools.callFunction({clickFn},\'{val}\'); return false;"' + // https://dev.ckeditor.com/ticket/188
 						' role="option">' +
 					'{text}' +
 				'</a>' +
@@ -50,7 +50,7 @@ CKEDITOR.plugins.add( 'listblock', {
 				keys[ 38 ] = 'prev'; // ARROW-UP
 				keys[ CKEDITOR.SHIFT + 9 ] = 'prev'; // SHIFT + TAB
 				keys[ 32 ] = CKEDITOR.env.ie ? 'mouseup' : 'click'; // SPACE
-				CKEDITOR.env.ie && ( keys[ 13 ] = 'mouseup' ); // Manage ENTER, since onclick is blocked in IE (#8041).
+				CKEDITOR.env.ie && ( keys[ 13 ] = 'mouseup' ); // Manage ENTER, since onclick is blocked in IE (https://dev.ckeditor.com/ticket/8041).
 
 				this._.pendingHtml = [];
 				this._.pendingList = [];
@@ -180,6 +180,14 @@ CKEDITOR.plugins.add( 'listblock', {
 					this.onMark && this.onMark( item );
 				},
 
+				markFirstDisplayed: function() {
+					var context = this;
+					this._.markFirstDisplayed( function() {
+						if ( !context.multiSelect )
+							context.unmarkAll();
+					} );
+				},
+
 				unmark: function( value ) {
 					var doc = this.element.getDocument(),
 						itemId = this._.items[ value ],
@@ -227,8 +235,9 @@ CKEDITOR.plugins.add( 'listblock', {
 							}
 						}
 					}
-					else
+					else {
 						this.element.focus();
+					}
 
 					selected && setTimeout( function() {
 						selected.focus();

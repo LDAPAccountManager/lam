@@ -1,6 +1,6 @@
 ﻿/**
- * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or http://ckeditor.com/license
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 ( function() {
@@ -8,7 +8,9 @@
 
 	CKEDITOR.plugins.add( 'stylescombo', {
 		requires: 'richcombo',
-		lang: 'af,ar,bg,bn,bs,ca,cs,cy,da,de,el,en,en-au,en-ca,en-gb,eo,es,et,eu,fa,fi,fo,fr,fr-ca,gl,gu,he,hi,hr,hu,id,is,it,ja,ka,km,ko,ku,lt,lv,mk,mn,ms,nb,nl,no,pl,pt,pt-br,ro,ru,si,sk,sl,sq,sr,sr-latn,sv,th,tr,ug,uk,vi,zh,zh-cn', // %REMOVE_LINE_CORE%
+		// jscs:disable maximumLineLength
+		lang: 'af,ar,az,bg,bn,bs,ca,cs,cy,da,de,de-ch,el,en,en-au,en-ca,en-gb,eo,es,es-mx,et,eu,fa,fi,fo,fr,fr-ca,gl,gu,he,hi,hr,hu,id,is,it,ja,ka,km,ko,ku,lt,lv,mk,mn,ms,nb,nl,no,oc,pl,pt,pt-br,ro,ru,si,sk,sl,sq,sr,sr-latn,sv,th,tr,tt,ug,uk,vi,zh,zh-cn', // %REMOVE_LINE_CORE%
+		// jscs:enable maximumLineLength
 
 		init: function( editor ) {
 			var config = editor.config,
@@ -24,25 +26,29 @@
 				if ( !stylesDefinitions )
 					return;
 
-				var style, styleName;
+				var style, styleName, styleType;
 
 				// Put all styles into an Array.
 				for ( var i = 0, count = stylesDefinitions.length; i < count; i++ ) {
 					var styleDefinition = stylesDefinitions[ i ];
 
-					if ( editor.blockless && ( styleDefinition.element in CKEDITOR.dtd.$block ) )
+					if ( editor.blockless && ( styleDefinition.element in CKEDITOR.dtd.$block ) ||
+						( typeof styleDefinition.type == 'string' && !CKEDITOR.style.customHandlers[ styleDefinition.type ] ) ) {
+
 						continue;
+					}
 
 					styleName = styleDefinition.name;
-
 					style = new CKEDITOR.style( styleDefinition );
 
 					if ( !editor.filter.customConfig || editor.filter.check( style ) ) {
 						style._name = styleName;
 						style._.enterMode = config.enterMode;
+						// Get the type (which will be used to assign style to one of 3 groups) from assignedTo if it's defined.
+						style._.type = styleType = style.assignedTo || style.type;
 
-						// Weight is used to sort styles (#9029).
-						style._.weight = i + ( style.type == CKEDITOR.STYLE_OBJECT ? 1 : style.type == CKEDITOR.STYLE_BLOCK ? 2 : 3 ) * 1000;
+						// Weight is used to sort styles (https://dev.ckeditor.com/ticket/9029).
+						style._.weight = i + ( styleType == CKEDITOR.STYLE_OBJECT ? 1 : styleType == CKEDITOR.STYLE_BLOCK ? 2 : 3 ) * 1000;
 
 						styles[ styleName ] = style;
 						stylesList.push( style );
@@ -50,8 +56,10 @@
 					}
 				}
 
-				// Sorts the Array, so the styles get grouped by type in proper order (#9029).
-				stylesList.sort( function( styleA, styleB ) { return styleA._.weight - styleB._.weight; } );
+				// Sorts the Array, so the styles get grouped by type in proper order (https://dev.ckeditor.com/ticket/9029).
+				stylesList.sort( function( styleA, styleB ) {
+					return styleA._.weight - styleB._.weight;
+				} );
 			} );
 
 			editor.ui.addRichCombo( 'Styles', {
@@ -74,7 +82,7 @@
 					for ( i = 0, count = stylesList.length; i < count; i++ ) {
 						style = stylesList[ i ];
 						styleName = style._name;
-						type = style.type;
+						type = style._.type;
 
 						if ( type != lastType ) {
 							this.startGroup( lang[ 'panelTitle' + String( type ) ] );
@@ -94,7 +102,14 @@
 					var style = styles[ value ],
 						elementPath = editor.elementPath();
 
-					editor[ style.checkActive( elementPath ) ? 'removeStyle' : 'applyStyle' ]( style );
+					// When more then one style from the same group is active ( which is not ok ),
+					// remove all other styles from this group and apply selected style.
+					if ( style.group && style.removeStylesFromSameGroup( editor ) ) {
+						editor.applyStyle( style );
+					} else {
+						editor[ style.checkActive( elementPath, editor ) ? 'removeStyle' : 'applyStyle' ]( style );
+					}
+
 					editor.fire( 'saveSnapshot' );
 				},
 
@@ -111,7 +126,7 @@
 							// Check if the element is removable by any of
 							// the styles.
 							for ( var value in styles ) {
-								if ( styles[ value ].checkElementRemovable( element, true ) ) {
+								if ( styles[ value ].checkElementRemovable( element, true, editor ) ) {
 									if ( value != currentValue )
 										this.setValue( value );
 									return;
@@ -126,7 +141,9 @@
 
 				onOpen: function() {
 					var selection = editor.getSelection(),
-						element = selection.getSelectedElement(),
+						// When editor is focused but is returned `null` as selected element, then return editable (#646).
+						// In case when selection dosen't cover whole element, we try to return element where selection starts (#862).
+						element = selection.getSelectedElement() || selection.getStartElement() || editor.editable(),
 						elementPath = editor.elementPath( element ),
 						counter = [ 0, 0, 0, 0 ];
 
@@ -134,14 +151,14 @@
 					this.unmarkAll();
 					for ( var name in styles ) {
 						var style = styles[ name ],
-							type = style.type;
+							type = style._.type;
 
-						if ( style.checkApplicable( elementPath, editor.activeFilter ) )
+						if ( style.checkApplicable( elementPath, editor, editor.activeFilter ) )
 							counter[ type ]++;
 						else
 							this.hideItem( name );
 
-						if ( style.checkActive( elementPath ) )
+						if ( style.checkActive( elementPath, editor ) )
 							this.mark( name );
 					}
 
@@ -164,7 +181,7 @@
 					for ( var name in styles ) {
 						var style = styles[ name ];
 
-						if ( style.checkApplicable( elementPath, editor.activeFilter ) )
+						if ( style.checkApplicable( elementPath, editor, editor.activeFilter ) )
 							return;
 					}
 					this.setState( CKEDITOR.TRISTATE_DISABLED );

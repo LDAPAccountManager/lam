@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or http://ckeditor.com/license
+Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang( 'link', 'en-au', {
 	acccessKey: 'Access Key',
@@ -19,6 +19,8 @@ CKEDITOR.plugins.setLang( 'link', 'en-au', {
 	anchorName: 'By Anchor Name',
 	charset: 'Linked Resource Charset',
 	cssClasses: 'Stylesheet Classes',
+	download: 'Force Download',
+	displayText: 'Display Text',
 	emailAddress: 'E-Mail Address',
 	emailBody: 'Message Body',
 	emailSubject: 'Message Subject',
@@ -45,7 +47,7 @@ CKEDITOR.plugins.setLang( 'link', 'en-au', {
 	popupStatusBar: 'Status Bar',
 	popupToolbar: 'Toolbar',
 	popupTop: 'Top Position',
-	rel: 'Relationship', // MISSING
+	rel: 'Relationship',
 	selectAnchor: 'Select an Anchor',
 	styles: 'Style',
 	tabIndex: 'Tab Index',

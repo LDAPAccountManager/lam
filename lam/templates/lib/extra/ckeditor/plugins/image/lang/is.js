@@ -1,9 +1,8 @@
 ﻿/*
-Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or http://ckeditor.com/license
+Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang( 'image', 'is', {
-	alertUrl: 'Sláðu inn slóðina að myndinni',
 	alt: 'Baklægur texti',
 	border: 'Rammi',
 	btnUpload: 'Hlaða upp',

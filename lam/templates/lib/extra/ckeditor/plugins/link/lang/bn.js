@@ -1,9 +1,9 @@
 ﻿/*
-Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or http://ckeditor.com/license
+Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang( 'link', 'bn', {
-	acccessKey: 'এক্সেস কী',
+	acccessKey: 'প্রবেশ কী',
 	advanced: 'এডভান্সড',
 	advisoryContentType: 'পরামর্শ কন্টেন্টের প্রকার',
 	advisoryTitle: 'পরামর্শ শীর্ষক',
@@ -19,6 +19,8 @@ CKEDITOR.plugins.setLang( 'link', 'bn', {
 	anchorName: 'নোঙরের নাম দিয়ে',
 	charset: 'লিংক রিসোর্স ক্যারেক্টর সেট',
 	cssClasses: 'স্টাইল-শীট ক্লাস',
+	download: 'Force Download', // MISSING
+	displayText: 'Display Text', // MISSING
 	emailAddress: 'ইমেইল ঠিকানা',
 	emailBody: 'মেসেজের দেহ',
 	emailSubject: 'মেসেজের বিষয়',

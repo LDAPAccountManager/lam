@@ -1,6 +1,6 @@
-﻿/**
- * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or http://ckeditor.com/license
+/**
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -84,7 +84,7 @@
  *		someObject.on( 'someEvent', function( event ) {
  *			// This one will not be called.
  *		} );
- *		alert( someObject.fire( 'someEvent' ) ); // false
+ *		alert( someObject.fire( 'someEvent' ) ); // true
  *
  * @method stop
  */
@@ -98,7 +98,7 @@
  *		someObject.on( 'someEvent', function( event ) {
  *			// This one will not be called.
  *		} );
- *		alert( someObject.fire( 'someEvent' ) ); // true
+ *		alert( someObject.fire( 'someEvent' ) ); // false
  *
  * @method cancel
  */

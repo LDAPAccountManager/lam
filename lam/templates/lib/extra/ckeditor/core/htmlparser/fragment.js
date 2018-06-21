@@ -1,6 +1,6 @@
-﻿/**
- * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or http://ckeditor.com/license
+/**
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 'use strict';
@@ -61,7 +61,7 @@ CKEDITOR.htmlParser.fragment = function() {
 		if ( node.attributes[ 'data-cke-survive' ] )
 			return false;
 
-		// Empty link is to be removed when empty but not anchor. (#7894)
+		// Empty link is to be removed when empty but not anchor. (https://dev.ckeditor.com/ticket/7894)
 		return node.name == 'a' && node.attributes.href || CKEDITOR.dtd.$removeEmpty[ node.name ];
 	}
 
@@ -130,7 +130,7 @@ CKEDITOR.htmlParser.fragment = function() {
 						i--;
 					} else {
 						// Some element of the same type cannot be nested, flat them,
-						// e.g. <a href="#">foo<a href="#">bar</a></a>. (#7894)
+						// e.g. <a href="#">foo<a href="#">bar</a></a>. (https://dev.ckeditor.com/ticket/7894)
 						if ( pendingName == currentNode.name )
 							addElement( currentNode, currentNode.parent, 1 ), i--;
 					}
@@ -143,7 +143,7 @@ CKEDITOR.htmlParser.fragment = function() {
 				addElement( pendingBRs.shift(), currentNode );
 		}
 
-		// Rtrim empty spaces on block end boundary. (#3585)
+		// Rtrim empty spaces on block end boundary. (https://dev.ckeditor.com/ticket/3585)
 		function removeTailWhitespace( element ) {
 			if ( element._.isBlockLike && element.name != 'pre' && element.name != 'textarea' ) {
 
@@ -202,8 +202,9 @@ CKEDITOR.htmlParser.fragment = function() {
 			if ( element.returnPoint ) {
 				currentNode = element.returnPoint;
 				delete element.returnPoint;
-			} else
+			} else {
 				currentNode = moveCurrent ? target : savedCurrent;
+			}
 		}
 
 		// Auto paragraphing should happen when inline content enters the root element.
@@ -211,9 +212,9 @@ CKEDITOR.htmlParser.fragment = function() {
 
 			// Check for parent that can contain block.
 			if ( ( parent == root || parent.name == 'body' ) && fixingBlock &&
-					 ( !parent.name || CKEDITOR.dtd[ parent.name ][ fixingBlock ] ) )
-			{
+					( !parent.name || CKEDITOR.dtd[ parent.name ][ fixingBlock ] ) ) {
 				var name, realName;
+
 				if ( node.attributes && ( realName = node.attributes[ 'data-cke-real-element-type' ] ) )
 					name = realName;
 				else
@@ -221,9 +222,9 @@ CKEDITOR.htmlParser.fragment = function() {
 
 				// Text node, inline elements are subjected, except for <script>/<style>.
 				return name && name in CKEDITOR.dtd.$inline &&
-				       !( name in CKEDITOR.dtd.head ) &&
-				       !node.isOrphan ||
-				       node.type == CKEDITOR.NODE_TEXT;
+					!( name in CKEDITOR.dtd.head ) &&
+					!node.isOrphan ||
+					node.type == CKEDITOR.NODE_TEXT;
 			}
 		}
 
@@ -257,8 +258,9 @@ CKEDITOR.htmlParser.fragment = function() {
 			else if ( tagName == 'br' && inPre ) {
 				currentNode.add( new CKEDITOR.htmlParser.text( '\n' ) );
 				return;
-			} else if ( tagName == 'textarea' )
+			} else if ( tagName == 'textarea' ) {
 				inTextarea = true;
+			}
 
 			if ( tagName == 'br' ) {
 				pendingBRs.push( element );
@@ -273,10 +275,10 @@ CKEDITOR.htmlParser.fragment = function() {
 				// If the element cannot be child of the current element.
 				if ( !element.isUnknown && !currentNode.isUnknown && !currentDtd[ tagName ] ) {
 					// Current node doesn't have a close tag, time for a close
-					// as this element isn't fit in. (#7497)
+					// as this element isn't fit in. (https://dev.ckeditor.com/ticket/7497)
 					if ( currentNode.isOptionalClose )
 						parser.onTagClose( currentName );
-					// Fixing malformed nested lists by moving it into a previous list item. (#3828)
+					// Fixing malformed nested lists by moving it into a previous list item. (https://dev.ckeditor.com/ticket/3828)
 					else if ( tagName in listBlocks && currentName in listBlocks ) {
 						var children = currentNode.children,
 							lastChild = children[ children.length - 1 ];
@@ -289,7 +291,7 @@ CKEDITOR.htmlParser.fragment = function() {
 						currentNode = lastChild;
 					}
 					// Establish new list root for orphan list items, but NOT to create
-					// new list for the following ones, fix them instead. (#6975)
+					// new list for the following ones, fix them instead. (https://dev.ckeditor.com/ticket/6975)
 					// <dl><dt>foo<dd>bar</dl>
 					// <ul><li>foo<li>bar</ul>
 					else if ( tagName in CKEDITOR.dtd.$listItem &&
@@ -323,8 +325,9 @@ CKEDITOR.htmlParser.fragment = function() {
 							break;
 						}
 					}
-				} else
+				} else {
 					break;
+				}
 			}
 
 			checkPending( tagName );
@@ -406,7 +409,7 @@ CKEDITOR.htmlParser.fragment = function() {
 			var currentName = currentNode.name,
 				currentDtd = currentName ? ( CKEDITOR.dtd[ currentName ] || ( currentNode._.isBlockLike ? CKEDITOR.dtd.div : CKEDITOR.dtd.span ) ) : rootDtd;
 
-			// Fix orphan text in list/table. (#8540) (#8870)
+			// Fix orphan text in list/table. (https://dev.ckeditor.com/ticket/8540) (https://dev.ckeditor.com/ticket/8870)
 			if ( !inTextarea && !currentDtd[ '#' ] && currentName in nonBreakingBlocks ) {
 				parser.onTagOpen( structureFixes[ currentName ] || '' );
 				parser.onText( text );

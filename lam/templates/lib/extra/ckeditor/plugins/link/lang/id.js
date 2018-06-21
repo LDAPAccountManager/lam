@@ -1,6 +1,6 @@
 ﻿/*
-Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or http://ckeditor.com/license
+Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang( 'link', 'id', {
 	acccessKey: 'Access Key', // MISSING
@@ -19,21 +19,23 @@ CKEDITOR.plugins.setLang( 'link', 'id', {
 	anchorName: 'By Anchor Name', // MISSING
 	charset: 'Linked Resource Charset', // MISSING
 	cssClasses: 'Kelas Stylesheet',
-	emailAddress: 'E-Mail Address', // MISSING
+	download: 'Force Download', // MISSING
+	displayText: 'Display Text', // MISSING
+	emailAddress: 'Alamat E-mail',
 	emailBody: 'Message Body', // MISSING
-	emailSubject: 'Message Subject', // MISSING
+	emailSubject: 'Judul Pesan',
 	id: 'Id',
 	info: 'Link Info', // MISSING
 	langCode: 'Kode Bahasa',
 	langDir: 'Arah Bahasa',
 	langDirLTR: 'Kiri ke Kanan (LTR)',
 	langDirRTL: 'Kanan ke Kiri (RTL)',
-	menu: 'Edit Link', // MISSING
+	menu: 'Sunting Tautan',
 	name: 'Nama',
 	noAnchors: '(No anchors available in the document)', // MISSING
-	noEmail: 'Please type the e-mail address', // MISSING
-	noUrl: 'Please type the link URL', // MISSING
-	other: '<other>', // MISSING
+	noEmail: 'Silahkan ketikkan alamat e-mail',
+	noUrl: 'Silahkan ketik URL tautan',
+	other: '<lainnya>',
 	popupDependent: 'Dependent (Netscape)', // MISSING
 	popupFeatures: 'Popup Window Features', // MISSING
 	popupFullScreen: 'Full Screen (IE)', // MISSING
@@ -45,7 +47,7 @@ CKEDITOR.plugins.setLang( 'link', 'id', {
 	popupStatusBar: 'Status Bar', // MISSING
 	popupToolbar: 'Toolbar', // MISSING
 	popupTop: 'Top Position', // MISSING
-	rel: 'Relationship', // MISSING
+	rel: 'Hubungan',
 	selectAnchor: 'Select an Anchor', // MISSING
 	styles: 'Gaya',
 	tabIndex: 'Tab Index', // MISSING

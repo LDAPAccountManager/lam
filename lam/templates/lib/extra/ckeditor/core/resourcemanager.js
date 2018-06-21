@@ -1,6 +1,6 @@
-﻿/**
- * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or http://ckeditor.com/license
+/**
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -71,7 +71,7 @@ CKEDITOR.resourceManager.prototype = {
 	 */
 	add: function( name, definition ) {
 		if ( this.registered[ name ] )
-			throw '[CKEDITOR.resourceManager.add] The resource name "' + name + '" is already registered.';
+			throw new Error( '[CKEDITOR.resourceManager.add] The resource name "' + name + '" is already registered.' );
 
 		var resource = this.registered[ name ] = definition || {};
 		resource.name = name;
@@ -124,13 +124,13 @@ CKEDITOR.resourceManager.prototype = {
 	 * Registers one or more resources to be loaded from an external path
 	 * instead of the core base path.
 	 *
-	 *		// Loads a plugin from '/myplugin/samples/plugin.js'.
+	 *		// Loads a plugin from '/myplugins/sample/plugin.js'.
 	 *		CKEDITOR.plugins.addExternal( 'sample', '/myplugins/sample/' );
 	 *
-	 *		// Loads a plugin from '/myplugin/samples/my_plugin.js'.
+	 *		// Loads a plugin from '/myplugins/sample/my_plugin.js'.
 	 *		CKEDITOR.plugins.addExternal( 'sample', '/myplugins/sample/', 'my_plugin.js' );
 	 *
-	 *		// Loads a plugin from '/myplugin/samples/my_plugin.js'.
+	 *		// Loads a plugin from '/myplugins/sample/my_plugin.js'.
 	 *		CKEDITOR.plugins.addExternal( 'sample', '/myplugins/sample/my_plugin.js', '' );
 	 *
 	 * @param {String} names The resource names, separated by commas.
@@ -201,14 +201,15 @@ CKEDITOR.resourceManager.prototype = {
 				if ( !( url in urlsNames ) )
 					urlsNames[ url ] = [];
 				urlsNames[ url ].push( name );
-			} else
+			} else {
 				resources[ name ] = this.get( name );
+			}
 		}
 
 		CKEDITOR.scriptLoader.load( urls, function( completed, failed ) {
 			if ( failed.length ) {
-				throw '[CKEDITOR.resourceManager.load] Resource name "' + urlsNames[ failed[ 0 ] ].join( ',' )
-					+ '" was not found at "' + failed[ 0 ] + '".';
+				throw new Error( '[CKEDITOR.resourceManager.load] Resource name "' + urlsNames[ failed[ 0 ] ].join( ',' ) +
+					'" was not found at "' + failed[ 0 ] + '".' );
 			}
 
 			for ( var i = 0; i < completed.length; i++ ) {

@@ -1,24 +1,24 @@
 ﻿/**
- * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or http://ckeditor.com/license
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 CKEDITOR.plugins.setLang( 'specialchar', 'ar', {
 	euro: 'رمز اليورو',
-	lsquo: 'علامة تنصيص علي اليسار',
-	rsquo: 'علامة تنصيص علي اليمين',
+	lsquo: 'علامة تنصيص فردية علي اليسار',
+	rsquo: 'علامة تنصيص فردية علي اليمين',
 	ldquo: 'علامة تنصيص مزدوجة علي اليسار',
 	rdquo: 'علامة تنصيص مزدوجة علي اليمين',
-	ndash: 'En dash –',
-	mdash: 'Em dash —',
+	ndash: 'En dash',
+	mdash: 'Em dash',
 	iexcl: 'علامة تعجب مقلوبة',
-	cent: 'رمز سنتيم',
+	cent: 'رمز السنت',
 	pound: 'رمز الاسترليني',
 	curren: 'رمز العملة',
-	yen: 'رمز الين الياباني',
-	brvbar: 'خط عمودي مكسور',
-	sect: 'رمز الفصيلة',
-	uml: 'Diaeresis', // MISSING
+	yen: 'رمز الين',
+	brvbar: 'شريط مقطوع',
+	sect: 'رمز القسم',
+	uml: 'Diaeresis',
 	copy: 'علامة حقوق الطبع',
 	ordf: 'Feminine ordinal indicator', // MISSING
 	laquo: 'Left-pointing double angle quotation mark', // MISSING
@@ -46,7 +46,7 @@ CKEDITOR.plugins.setLang( 'specialchar', 'ar', {
 	Atilde: 'Latin capital letter A with tilde', // MISSING
 	Auml: 'Latin capital letter A with diaeresis', // MISSING
 	Aring: 'Latin capital letter A with ring above', // MISSING
-	AElig: 'Latin Capital letter Æ', // MISSING
+	AElig: 'Latin capital letter Æ', // MISSING
 	Ccedil: 'Latin capital letter C with cedilla', // MISSING
 	Egrave: 'Latin capital letter E with grave accent', // MISSING
 	Eacute: 'Latin capital letter E with acute accent', // MISSING
