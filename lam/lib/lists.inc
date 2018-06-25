@@ -718,7 +718,7 @@ class lamList {
 		// get possible PDF structures
 		$pdf_structures = \LAM\PDF\getPDFStructures($this->type->getId());
 
-		$this->listPrintHeader();
+		$this->printHeader();
 
 		echo "<div class=\"ui-tabs-nav " . $this->type->getScope() . "-bright\">";
 		echo "<div class=\"smallPaddingContent\">\n";
@@ -728,25 +728,24 @@ class lamList {
 		}
 		echo "<form action=\"list.php?type=" . $this->type->getId() . $refresh . "\" method=\"post\">\n";
 
-		$container = new htmlTable();
-		$container->addElement(new htmlSubTitle(_('Create PDF file')), true);
+		$container = new htmlResponsiveRow();
+		$container->add(new htmlSubTitle(_('Create PDF file')), 12);
 
-		$container->addElement(new htmlTableExtendedSelect('pdf_structure', $pdf_structures, array('default'), _('PDF structure'), '405'), true);
+		$container->add(new htmlResponsiveSelect('pdf_structure', $pdf_structures, array('default'), _('PDF structure'), '405'), 12);
 		$fonts = \LAM\PDF\getPdfFonts();
-		$fontSelection = new htmlTableExtendedSelect('pdf_font', $fonts, array(), _('Font'), '411');
+		$fontSelection = new htmlResponsiveSelect('pdf_font', $fonts, array(), _('Font'), '411');
 		$fontSelection->setCSSClasses(array('lam-save-selection'));
 		$fontSelection->setHasDescriptiveElements(true);
 		$fontSelection->setSortElements(false);
-		$container->addElement($fontSelection, true);
-		$container->addElement(new htmlEqualWidth(array('pdf_font', 'pdf_structure')));
+		$container->add($fontSelection, 12);
 
-		$container->addElement(new htmlSpacer(null, '5px'), true);
-		$container->addElement(new htmlOutputText(_('Create for')));
+		$container->addVerticalSpacer('1rem');
+		$container->addLabel(new htmlOutputText(_('Create for')));
 		// check if account object is already in session
 		if ($sessionObject != null) {
-			$container->addElement(new htmlOutputText($sessionObject->finalDN));
-			$container->addElement(new htmlHiddenInput('createFor', 'SESSION'));
-			$container->addElement(new htmlHiddenInput('PDFSessionID', $PDFSessionID), true);
+			$container->addField(new htmlOutputText($sessionObject->finalDN));
+			$container->add(new htmlHiddenInput('createFor', 'SESSION'), 0);
+			$container->add(new htmlHiddenInput('PDFSessionID', $PDFSessionID), 0);
 		}
 		else {
 			$radioOptions = array(
@@ -754,25 +753,26 @@ class lamList {
 				sprintf(_('All selected accounts (%s)'), sizeof($selAccounts)) => 'SELECTED',
 				sprintf(_('All accounts (%s)'), sizeof($this->entries)) => 'ALL'
 			);
-			$container->addElement(new htmlRadio('createFor', $radioOptions, 'DN'), true);
+			$container->addField(new htmlRadio('createFor', $radioOptions, 'DN'));
 		}
 
-		$container->addElement(new htmlSpacer(null, '10px'), true);
-		$buttonContainer = new htmlTable();
-		$buttonContainer->colspan = 3;
+		$container->addVerticalSpacer('2rem');
+		$container->addLabel(new htmlOutputText('&nbsp;', false));
+		$buttonContainer = new htmlGroup();
 		$buttonContainer->addElement(new htmlButton('createPDFok', _('Ok')));
+		$buttonContainer->addElement(new htmlSpacer('0.5rem', null));
 		$buttonContainer->addElement(new htmlButton('createPDFCancel', _('Cancel')));
-		$container->addElement($buttonContainer, true);
+		$container->addField($buttonContainer);
 		// hidden inputs for selected accounts
 		for ($i = 0; $i < sizeof($selAccounts); $i++) {
-			$container->addElement(new htmlHiddenInput($selAccounts[$i], 'on'));
+			$container->add(new htmlHiddenInput($selAccounts[$i], 'on'), 0);
 		}
-		$container->addElement(new htmlHiddenInput('clickedAccount', $id));
+		$container->add(new htmlHiddenInput('clickedAccount', $id), 0);
 		addSecurityTokenToMetaHTML($container);
 
 		parseHtml(null, $container, array(), false, $this->tabindex, $this->type->getScope());
 
-		$this->listPrintFooter();
+		$this->printFooter();
 	}
 
 	/**
@@ -864,15 +864,51 @@ class lamList {
 
 	/**
 	 * Prints the HTML header.
+	 *
+	 * @deprecated
 	 */
 	protected function listPrintHeader() {
 		include '../main_header.php';
+		$this->printHeaderContent();
+	}
+
+	/**
+	 * Prints the header part of the page.
+	 */
+	private function printHeader() {
+		include 'adminHeader.inc';
+		$this->printHeaderContent();
+	}
+
+	/**
+	 * Prints any extra HTML for the header part.
+	 */
+	protected function printHeaderContent() {
+		// implemented by child classes if needed
 	}
 
 	/**
 	 * Prints the HTML footer.
+	 *
+	 * @deprecated
 	 */
 	protected function listPrintFooter() {
+		$this->printFooterContent();
+		include '../main_footer.php';
+	}
+
+	/**
+	 * Prints the footer area of the page.
+	 */
+	private function printFooter() {
+		$this->printFooterContent();
+		include 'adminFooter.inc';
+	}
+
+	/**
+	 * Prints any extra HTML for the footer part.
+	 */
+	protected function printFooterContent() {
 		?>
 		<input type="hidden" name="<?php echo getSecurityTokenName(); ?>" value="<?php echo getSecurityTokenValue(); ?>">
 			</form></div></div>
@@ -886,7 +922,6 @@ class lamList {
 				});
 			</script>
 		<?php
-		include '../main_footer.php';
 	}
 
 	/**
