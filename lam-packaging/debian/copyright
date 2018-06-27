@@ -15,9 +15,11 @@ time.
 * lib/modules/aliasEntry.inc
 * lib/modules/automount.inc
 * lib/modules/bindDLZ.inc
+* lib/modules/customBaseType.inc
 * lib/modules/customFields.inc
 * lib/modules/customScripts.inc
 * lib/modules/device.inc
+* lib/modules/dynamicList.inc
 * lib/modules/groupOfNames.inc
 * lib/modules/groupOfNamesUser.inc
 * lib/modules/groupOfUniqueNames.inc
@@ -48,8 +50,9 @@ time.
 * lib/modules/zarafaServer.inc
 * lib/modules/zarafaUser.inc
 * lib/types/alias.inc
-* lib/types/bind.inc
 * lib/types/automountType.inc
+* lib/types/bind.inc
+* lib/types/customType.inc
 * lib/types/gon.inc
 * lib/types/nisObjectType.inc
 * lib/types/nsview.inc
@@ -206,5 +209,9 @@ templates/lib/*jquery*.js                   B  2010  John Resig, Paul Bakaus, Fr
 templates/lib/*jquery-dropmenu-*.js         B  2010  Fred Heusschen
 templates/lib/*jquery-validationEngine-*.js B  2010  Cedric Dugas and Olivier Refalo
 templates/lib/*jquery-fineuploader-*.js     B  2010  Andrew Valums
+templates/lib/extra/cropperjs               B  2018  Chen Fengyuan
+style/600_cropper.css                       B  2018  Chen Fengyuan
+style/responsive/105_normalize.css          B        Nicolas Gallagher and Jonathan Neal
+style/responsive/110_grid.css               B
 
 

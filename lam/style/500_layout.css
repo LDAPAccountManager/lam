@@ -68,8 +68,9 @@ text-decoration: none;
 }
 
 a:hover {
-color: red;
-text-decoration: none;
+	color: red;
+	text-decoration: none;
+	cursor: pointer;
 }
 
 a:active {
