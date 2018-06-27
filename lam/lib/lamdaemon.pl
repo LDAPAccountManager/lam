@@ -1,10 +1,8 @@
 #! /usr/bin/perl
 
-# $Id$
-#
 #  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 #  Copyright (C) 2003 - 2006  Tilo Lutz
-#  Copyright (C) 2006 - 2015  Roland Gruber
+#  Copyright (C) 2006 - 2018  Roland Gruber
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -70,13 +68,19 @@ sub get_fs { # Load mountpoints from mtab if enabled quotas
 	Quota::setmntent();
 	my $i=0;
 	my @args;
+	my %deviceList;
 	while (my @temp = Quota::getmntent()) {
+		if (exists($deviceList{$temp[0]})) {
+			# skip duplicate devices
+			next;
+		}
 		$args[$i][0] = $temp[0];
 		$args[$i][1] = $temp[1];
 		$args[$i][2] = $temp[2];
 		$args[$i][3] = $temp[3];
+		$deviceList{$temp[0]} = 1;
 		$i++;
-		}
+	}
 	Quota::endmntent();
 	my $j=0; my $k=0; $i=0;
 	while ($args[$i][0]) {
@@ -363,7 +367,7 @@ sub checkHomedir {
 		$return = "missing";
 	}
 }
-	
+
 #
 # Handles all directory related commands
 #
