@@ -46,6 +46,8 @@ install:
 
 	# 3rd party libs are linked
 	install -d --mode=755 debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty
+	ln -s /usr/share/php/phpseclib debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/phpseclib
+	ln -s /usr/share/php/tcpdf debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/tcpdf
 
 	cp -r locale debian/ldap-account-manager/usr/share/ldap-account-manager/
 	install -D --mode=644 sess/.htaccess debian/ldap-account-manager/var/lib/ldap-account-manager/sess/.htaccess
@@ -68,8 +70,6 @@ binary-indep: build install
 	dh_compress
 	dh_fixperms
 	dh_link /usr/share/doc/ldap-account-manager/docs /usr/share/ldap-account-manager/docs
-	dh_link /usr/share/php/phpseclib /usr/share/ldap-account-manager/lib/3rdParty/phpseclib
-	dh_link /usr/share/php/tcpdf /usr/share/ldap-account-manager/lib/3rdParty/tcpdf
 	install -D --mode=644 debian/lam.apache.conf debian/ldap-account-manager/etc/ldap-account-manager/apache.conf
 	install -D --mode=644 debian/lam.nginx.conf debian/ldap-account-manager/etc/ldap-account-manager/nginx.conf
 	install -D --mode=644 config/config.cfg.sample debian/ldap-account-manager/etc/ldap-account-manager/config.cfg
