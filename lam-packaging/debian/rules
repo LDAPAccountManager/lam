@@ -46,8 +46,6 @@ install:
 
 	# 3rd party libs are linked
 	install -d --mode=755 debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty
-	ln -s /usr/share/php/phpseclib debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/phpseclib
-	ln -s /usr/share/php/tcpdf debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/tcpdf
 
 	cp -r locale debian/ldap-account-manager/usr/share/ldap-account-manager/
 	install -D --mode=644 sess/.htaccess debian/ldap-account-manager/var/lib/ldap-account-manager/sess/.htaccess
