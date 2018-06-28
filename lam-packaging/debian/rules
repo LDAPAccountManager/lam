@@ -45,7 +45,7 @@ install:
 	cp -r lib/tools debian/ldap-account-manager/usr/share/ldap-account-manager/lib/
 
 	# link 3rd party libs
-	install -d --mode=755 debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty
+	rm -rf debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/*
 	ln -s /usr/share/php/phpseclib debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/
 	ln -s /usr/share/php/tcpdf debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/
 
