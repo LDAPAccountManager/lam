@@ -1,3 +1,12 @@
+ldap-account-manager (6.5.DEV-1) unstable; urgency=medium
+
+  * new upstream release
+  * Fix "Embedded code copies" by adding dependency to phpseclib
+    (phpLDAPadmin code is customized and cannot be reused)
+    (Closes: #781419)
+
+ -- Roland Gruber <post@rolandgruber.de>  Thu, 28 Jun 2018 13:35:58 +0200
+
 ldap-account-manager (6.4-1) unstable; urgency=medium
 
   * new upstream release
