@@ -4,10 +4,13 @@
  */
 
 CKEDITOR.editorConfig = function( config ) {
-	
+
 	// %REMOVE_START%
 	// The configuration options below are needed when running CKEditor from source files.
-	config.plugins = 'dialogui,dialog,basicstyles,blockquote,notification,button,toolbar,clipboard,panel,floatpanel,menu,contextmenu,resize,elementspath,enterkey,entities,popup,filetools,filebrowser,floatingspace,listblock,richcombo,format,horizontalrule,htmlwriter,wysiwygarea,image,indent,indentlist,fakeobjects,link,list,magicline,maximize,pastetext,removeformat,showborders,sourcearea,specialchar,menubutton,stylescombo,tab,table,tabletools,tableselection,undo,lineutils,widgetselection,widget,notificationaggregator,iframe,justify,font,panelbutton,colordialog,colorbutton,youtube';
+	config.plugins = 'dialogui,dialog,basicstyles,blockquote,notification,button,toolbar,clipboard,panel,floatpanel,menu,contextmenu,resize,elementspath'
+		+ ',enterkey,entities,popup,filetools,filebrowser,floatingspace,listblock,richcombo,format,horizontalrule,htmlwriter,wysiwygarea,image,indent'
+		+ ',indentlist,fakeobjects,link,list,magicline,maximize,pastetext,removeformat,showborders,sourcearea,specialchar,menubutton,stylescombo,tab'
+		+ ',table,tabletools,tableselection,undo,lineutils,widgetselection,widget,notificationaggregator,iframe,justify,font,panelbutton,colordialog,colorbutton,youtube';
 	config.skin = 'kama';
 	// %REMOVE_END%
 
