@@ -89,16 +89,18 @@ class host extends baseType {
 	* @return array list of descriptions
 	*/
 	function getListAttributeDescriptions() {
-		return array (
-			"uid" => _("Host name"),
-			"cn" => _("Common name"),
-			"rid" => _("RID (Windows UID)"),
-			"description" => _("Host description"),
-			"uidnumber" => _("UID number"),
-			"gidnumber" => _("GID number"),
-			'location' => _('Location'),
-			'serialNumber' => _('Serial number')
-			);
+		return array_merge(
+			parent::getListAttributeDescriptions(),
+			array (
+				"uid" => _("Host name"),
+				"cn" => _("Common name"),
+				"rid" => _("RID (Windows UID)"),
+				"description" => _("Host description"),
+				"uidnumber" => _("UID number"),
+				"gidnumber" => _("GID number"),
+				'location' => _('Location'),
+				'serialNumber' => _('Serial number')
+			));
 	}
 
 	/**

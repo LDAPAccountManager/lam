@@ -91,11 +91,13 @@ class asteriskExt extends baseType {
      * @return array list of descriptions
      */
     function getListAttributeDescriptions() {
-        return array(
-            "astextension" => _("Extension name"),
-            "astcontext" => _("Account context"),
-            "member" => _("Owner"),
-        );
+        return array_merge(
+			parent::getListAttributeDescriptions(),
+        	array(
+            	"astextension" => _("Extension name"),
+            	"astcontext" => _("Account context"),
+            	"member" => _("Owner"),
+        ));
     }
 
 	/**

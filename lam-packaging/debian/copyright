@@ -19,6 +19,7 @@ time.
 * lib/modules/customFields.inc
 * lib/modules/customScripts.inc
 * lib/modules/device.inc
+* lib/modules/autoDelete.inc
 * lib/modules/dynamicList.inc
 * lib/modules/groupOfNames.inc
 * lib/modules/groupOfNamesUser.inc

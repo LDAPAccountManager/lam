@@ -1,10 +1,9 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2009 - 2017  Roland Gruber
+                2009 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -92,11 +91,13 @@ class dhcp extends baseType {
 	* @return array list of descriptions
 	*/
 	public function getListAttributeDescriptions() {
-		return array (
-			"cn" => _("Subnet"),
-			"dhcprange" => _("Ranges"),
-			"fixed_ips" => _("IP address") . ' / ' . _('MAC address') . ' / ' . _("Description")
-			);
+		return array_merge(
+			parent::getListAttributeDescriptions(),
+			array (
+				"cn" => _("Subnet"),
+				"dhcprange" => _("Ranges"),
+				"fixed_ips" => _("IP address") . ' / ' . _('MAC address') . ' / ' . _("Description")
+			));
 	}
 
 	/**

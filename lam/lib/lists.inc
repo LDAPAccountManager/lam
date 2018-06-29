@@ -566,9 +566,14 @@ class lamList {
 		// print all attribute entries seperated by "; "
 		if (isset($entry[$attribute]) && sizeof($entry[$attribute]) > 0) {
 			if (is_array($entry[$attribute])) {
-				// sort array
-				sort($entry[$attribute]);
-				echo htmlspecialchars(implode("; ", $entry[$attribute]), ENT_QUOTES, "UTF-8");
+				if (($attribute == 'entryexpiretimestamp') && !empty($entry[$attribute][0])) {
+					echo formatLDAPTimestamp($entry[$attribute][0]);
+				}
+				else {
+					// sort array
+					sort($entry[$attribute]);
+					echo htmlspecialchars(implode("; ", $entry[$attribute]), ENT_QUOTES, "UTF-8");
+				}
 			}
 			else {
 				echo htmlspecialchars($entry[$attribute], ENT_QUOTES, "UTF-8");

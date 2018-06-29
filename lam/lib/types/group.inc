@@ -103,17 +103,19 @@ class group extends baseType {
 	* @return array list of descriptions
 	*/
 	function getListAttributeDescriptions() {
-		$return = array (
-			"cn" => _("Group name"),
-			"description" => _("Group description"),
-			"displayName" => _("Display name"),
-			"gidnumber" => _("GID number"),
-			"member" => _("Group member DNs"),
-			"memberuid" => _("Group members"),
-			"roleOccupant" => _("Role member DNs"),
-			"uniqueMember" => _("Group member DNs"),
-			"memberUrl" => _("Entries"),
-		);
+		$return = array_merge(
+			parent::getListAttributeDescriptions(),
+			array(
+				"cn" => _("Group name"),
+				"description" => _("Group description"),
+				"displayName" => _("Display name"),
+				"gidnumber" => _("GID number"),
+				"member" => _("Group member DNs"),
+				"memberuid" => _("Group members"),
+				"roleOccupant" => _("Role member DNs"),
+				"uniqueMember" => _("Group member DNs"),
+				"memberUrl" => _("Entries"),
+		));
 		if ($this->getType() != null) {
 			$modules = $this->getType()->getModules();
 			if (in_array('organizationalRole', $modules)) {

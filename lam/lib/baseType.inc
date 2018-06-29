@@ -102,7 +102,10 @@ class baseType {
 	* @return array list of descriptions
 	*/
 	public function getListAttributeDescriptions() {
-		return array();
+		return array(
+			'entryexpiretimestamp' => _('Deletion time'),
+			"description" => _("Description"),
+		);
 	}
 
 	/**

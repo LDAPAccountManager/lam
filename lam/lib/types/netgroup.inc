@@ -1,9 +1,8 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2012  Roland Gruber
+  Copyright (C) 2009 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -89,12 +88,14 @@ class netgroup extends baseType {
 	* @return array list of descriptions
 	*/
 	function getListAttributeDescriptions() {
-		return array (
-			"cn" => _("Group name"),
-			'description' => _('Description'),
-			'membernisnetgroup' => _('Subgroups'),
-			'nisnetgrouptriple' => _('Members')
-			);
+		return array_merge(
+			parent::getListAttributeDescriptions(),
+			array (
+				"cn" => _("Group name"),
+				'description' => _('Description'),
+				'membernisnetgroup' => _('Subgroups'),
+				'nisnetgrouptriple' => _('Members')
+			));
 	}
 
 	/**

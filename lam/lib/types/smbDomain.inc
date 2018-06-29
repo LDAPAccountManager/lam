@@ -1,9 +1,8 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2012  Roland Gruber
+  Copyright (C) 2005 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -89,10 +88,12 @@ class smbDomain extends baseType {
 	* @return array list of descriptions
 	*/
 	function getListAttributeDescriptions() {
-		return array(
-			"sambasid" => _("Domain SID"),
-			"sambadomainname" => _("Domain name")
-			);
+		return array_merge(
+			parent::getListAttributeDescriptions(),
+			array(
+				"sambasid" => _("Domain SID"),
+				"sambadomainname" => _("Domain name")
+		));
 	}
 
 	/**
