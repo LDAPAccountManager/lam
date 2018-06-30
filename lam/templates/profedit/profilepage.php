@@ -222,7 +222,7 @@ $_SESSION['profile_types'] = parseHtml(null, $container, $old_options, false, $t
 // display module options
 foreach ($options as $moduleName => $moduleOptions) {
 	// ignore modules without options
-	if (sizeof($moduleOptions) < 1) {
+	if (empty($moduleOptions)) {
 		continue;
 	}
 	$module = new $moduleName($type->getScope());
