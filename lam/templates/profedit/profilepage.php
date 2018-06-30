@@ -172,7 +172,7 @@ elseif (isset($_GET['edit'])) {
 }
 
 // display formular
-echo "<form action=\"profilepage.php?type=" . $type->getId() . "\" method=\"post\">\n";
+echo "<form id=\"profilepage\" action=\"profilepage.php?type=" . $type->getId() . "\" method=\"post\">\n";
 echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';
 
 $profName = '';
@@ -251,17 +251,7 @@ $_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml(n
 
 ?>
 <script type="text/javascript">
-	jQuery(document).ready(function() {
-		var maxWidth = 0;
-		jQuery('fieldset').each(function() {
-			if (jQuery(this).width() > maxWidth) {
-				maxWidth = jQuery(this).width();
-			};
-		});
-		jQuery('fieldset').each(function() {
-			jQuery(this).css({'width': maxWidth});
-		});
-	});
+	jQuery("#profilepage").validationEngine();
 </script>
 </form>
 </div>
