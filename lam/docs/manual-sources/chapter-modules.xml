@@ -5793,6 +5793,76 @@ OK (10 msec)</programlisting>
   </section>
 
   <section>
+    <title>Auto delete (LAM Pro)</title>
+
+    <para>This module allows to mark any new entry to be marked for auto
+    deletion. The cleanup is done by the LDAP server itself. Please note that
+    this will not delete any relations etc. in other entries (e.g. group
+    memberships).</para>
+
+    <para><emphasis role="bold">Requirements</emphasis></para>
+
+    <itemizedlist>
+      <listitem>
+        <para>PHP 7.2 or later: the module will not be shown if you use an
+        older PHP version since the required LDAP commands are not
+        supported.</para>
+      </listitem>
+
+      <listitem>
+        <para>LDAP server with DDS (Dynamic Directory Services) support: your
+        LDAP server needs to be configured to allow auto deletion of entries.
+        See e.g. <ulink
+        url="http://www.openldap.org/doc/admin24/overlays.html">OpenLDAP
+        configuration</ulink>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Your user has the right to set a deletion date. This is
+        configured on your LDAP server via ACLs. E.g. OpenLDAP requires manage
+        rights to attribute "entryTtl".</para>
+      </listitem>
+    </itemizedlist>
+
+    <para><emphasis role="bold">Restrictions</emphasis></para>
+
+    <para>The maximum time for auto deletion is one year and six days. This is
+    a restriction by the DDS standard itself. The deletion date can be
+    extended for existing accounts but always by a maximum of one year and six
+    days.</para>
+
+    <para>You should configure the maximum TTL value on your LDAP server as
+    default is often much less than a year.</para>
+
+    <para>A deletion date on an existing entry cannot be removed but only be
+    extended.</para>
+
+    <para><emphasis role="bold">Configuration</emphasis></para>
+
+    <para>You can add the auto delete module to any account type.</para>
+
+    <para><graphic fileref="images/mod_autoDelete1.png"/></para>
+
+    <para><emphasis role="bold">Usage</emphasis></para>
+
+    <para>You can set a deletion time for any new account. Please note the
+    restrictions above. If you get an error about invalid TTL then you might
+    have exceeded the maximum TTL.</para>
+
+    <para>Existing accounts cannot be marked for deletion. But you may update
+    the deletion date on existing accounts that are already marked for
+    deletion.</para>
+
+    <para>Profile editor can be used to setup a default deletion time.</para>
+
+    <screenshot>
+      <graphic fileref="images/mod_autoDelete2.png"/>
+    </screenshot>
+
+    <para/>
+  </section>
+
+  <section>
     <title>General information</title>
 
     <para>This module is available for all account types. It shows some

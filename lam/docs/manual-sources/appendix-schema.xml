@@ -14,7 +14,7 @@
     <tgroup cols="6">
       <thead>
         <row>
-          <entry></entry>
+          <entry/>
 
           <entry>Account type</entry>
 
@@ -32,7 +32,7 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_unix.png" />
+                <imagedata fileref="images/schema_unix.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -53,7 +53,7 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_inetOrgPerson.png" />
+                <imagedata fileref="images/schema_inetOrgPerson.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -65,13 +65,13 @@
 
           <entry>Part of OpenLDAP installation</entry>
 
-          <entry></entry>
+          <entry/>
         </row>
 
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_samba.png" />
+                <imagedata fileref="images/schema_samba.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -83,13 +83,13 @@
 
           <entry>Part of Samba tarball (examples/LDAP/samba.schema)</entry>
 
-          <entry></entry>
+          <entry/>
         </row>
 
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_samba.png" />
+                <imagedata fileref="images/schema_samba.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -97,17 +97,17 @@
 
           <entry>user, group, computer</entry>
 
-          <entry></entry>
+          <entry/>
 
           <entry>Samba 4 built-in</entry>
 
-          <entry></entry>
+          <entry/>
         </row>
 
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_kolab.png" />
+                <imagedata fileref="images/schema_kolab.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -119,13 +119,13 @@
 
           <entry>Part of Kolab 2/3 installation</entry>
 
-          <entry></entry>
+          <entry/>
         </row>
 
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_asterisk.png" />
+                <imagedata fileref="images/schema_asterisk.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -137,13 +137,13 @@
 
           <entry>Part of Asterisk installation</entry>
 
-          <entry></entry>
+          <entry/>
         </row>
 
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_pykota.png" />
+                <imagedata fileref="images/schema_pykota.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -156,13 +156,13 @@
 
           <entry>Part of PyKota installation</entry>
 
-          <entry></entry>
+          <entry/>
         </row>
 
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_mailAlias.png" />
+                <imagedata fileref="images/schema_mailAlias.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -174,13 +174,13 @@
 
           <entry>Part of OpenLDAP installation</entry>
 
-          <entry></entry>
+          <entry/>
         </row>
 
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_hostObject.png" />
+                <imagedata fileref="images/schema_hostObject.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -198,7 +198,7 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_authorizedServices.png" />
+                <imagedata fileref="images/schema_authorizedServices.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -210,13 +210,13 @@
 
           <entry>Part of libpam-ldap installation</entry>
 
-          <entry></entry>
+          <entry/>
         </row>
 
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_mailAlias.png" />
+                <imagedata fileref="images/schema_mailAlias.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -228,13 +228,13 @@
 
           <entry>Part of OpenLDAP installation</entry>
 
-          <entry></entry>
+          <entry/>
         </row>
 
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_mailAlias.png" />
+                <imagedata fileref="images/schema_mailAlias.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -253,7 +253,7 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_mac.png" />
+                <imagedata fileref="images/schema_mac.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -265,13 +265,13 @@
 
           <entry>Part of OpenLDAP installation</entry>
 
-          <entry></entry>
+          <entry/>
         </row>
 
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_ipHost.png" />
+                <imagedata fileref="images/schema_ipHost.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -289,7 +289,7 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_puppet.png" />
+                <imagedata fileref="images/schema_puppet.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -303,13 +303,13 @@
           url="https://github.com/puppetlabs/puppet/blob/master/ext/ldap/puppet.schema">Puppet
           on GitHub</ulink></entry>
 
-          <entry></entry>
+          <entry/>
         </row>
 
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_eduPerson.png" />
+                <imagedata fileref="images/schema_eduPerson.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -322,13 +322,13 @@
           <entry><ulink
           url="http://middleware.internet2.edu/eduperson/">http://middleware.internet2.edu</ulink></entry>
 
-          <entry></entry>
+          <entry/>
         </row>
 
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_user.png" />
+                <imagedata fileref="images/schema_user.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -340,13 +340,13 @@
 
           <entry>Part of OpenLDAP installation</entry>
 
-          <entry></entry>
+          <entry/>
         </row>
 
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_ssh.png" />
+                <imagedata fileref="images/schema_ssh.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -359,13 +359,13 @@
           <entry>Included in patch from <ulink
           url="http://code.google.com/p/openssh-lpk/">http://code.google.com/p/openssh-lpk/</ulink></entry>
 
-          <entry></entry>
+          <entry/>
         </row>
 
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_quota.png" />
+                <imagedata fileref="images/schema_quota.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -379,13 +379,13 @@
           url="http://sourceforge.net/projects/linuxquota/">Linux
           DiskQuota</ulink></entry>
 
-          <entry></entry>
+          <entry/>
         </row>
 
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_group.png" />
+                <imagedata fileref="images/schema_group.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -403,7 +403,7 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_group.png" />
+                <imagedata fileref="images/schema_group.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -421,7 +421,7 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_dhcp.png" />
+                <imagedata fileref="images/schema_dhcp.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -440,7 +440,7 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_bind.png" />
+                <imagedata fileref="images/schema_bind.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -460,7 +460,7 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_alias.png" />
+                <imagedata fileref="images/schema_alias.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -478,7 +478,7 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_netgroup.png" />
+                <imagedata fileref="images/schema_netgroup.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -490,13 +490,13 @@
 
           <entry>Part of OpenLDAP installation</entry>
 
-          <entry></entry>
+          <entry/>
         </row>
 
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_nisObject.png" />
+                <imagedata fileref="images/schema_nisObject.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -514,7 +514,7 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_nisObject.png" />
+                <imagedata fileref="images/schema_nisObject.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -532,7 +532,7 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_oracle.png" />
+                <imagedata fileref="images/schema_oracle.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -553,7 +553,7 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_ppolicy.png" />
+                <imagedata fileref="images/schema_ppolicy.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -571,7 +571,7 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_freeRadius.png" />
+                <imagedata fileref="images/schema_freeRadius.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -583,13 +583,13 @@
 
           <entry>Part of FreeRadius installation</entry>
 
-          <entry></entry>
+          <entry/>
         </row>
 
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_heimdal.png" />
+                <imagedata fileref="images/schema_heimdal.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -607,7 +607,7 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_mitKerberos.png" />
+                <imagedata fileref="images/schema_mitKerberos.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -625,7 +625,7 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_sudo.png" />
+                <imagedata fileref="images/schema_sudo.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -643,7 +643,7 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_kopano.png" />
+                <imagedata fileref="images/schema_kopano.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -662,7 +662,7 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_zarafa.png" />
+                <imagedata fileref="images/schema_zarafa.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -680,7 +680,7 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_mailAlias.png" />
+                <imagedata fileref="images/schema_mailAlias.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -698,7 +698,7 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_nsview.png" />
+                <imagedata fileref="images/schema_nsview.png"/>
               </imageobject>
             </inlinemediaobject></entry>
 
@@ -711,6 +711,25 @@
           <entry>Part of LDAP server installation (e.g. 389 server)</entry>
 
           <entry>LAM Pro only</entry>
+        </row>
+
+        <row>
+          <entry><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="images/schema_autoDelete.png"/>
+              </imageobject>
+            </inlinemediaobject></entry>
+
+          <entry>All</entry>
+
+          <entry>dynamicObject</entry>
+
+          <entry>built-in with DDS module</entry>
+
+          <entry>Part of LDAP server installation</entry>
+
+          <entry>LAM Pro only, requires DDS extension on LDAP server
+          side</entry>
         </row>
       </tbody>
     </tgroup>
