@@ -915,6 +915,8 @@ class inetOrgPerson extends baseModule implements passwordService {
 	 */
 	public function postModifyActions($newAccount, $attributes) {
 		$messages = array();
+		// set exop password
+		$messages = array_merge($messages, $this->setExopPassword($this->moduleSettings));
 		// add address book
 		$accountContainer = $this->getAccountContainer();
 		if ($this->isBooleanConfigOptionSet('inetOrgPerson_addAddressbook') && !empty($accountContainer)) {
@@ -938,6 +940,23 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 		}
 		return $messages;
+	}
+
+	/**
+	 * Sets the password via ldap_exop if configured.
+	 *
+	 * @param array $settings settings
+	 * @return array error message parameters if any
+	 */
+	private function setExopPassword($settings) {
+		if (!empty($this->clearTextPassword) && !empty($settings['posixAccount_pwdHash'][0])
+				&& ($settings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
+			$success = ldap_exop_passwd($_SESSION['ldap']->server(), $this->getAccountContainer()->finalDN, null, $this->clearTextPassword);
+			if (!$success) {
+				return array('ERROR', _('Unable to set password'), getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
+			}
+		}
+		return array();
 	}
 
 	/**
@@ -2384,8 +2403,12 @@ class inetOrgPerson extends baseModule implements passwordService {
 					}
 				}
 				// password
+				// delay exop passwords
+				if (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
+					// changed in post action
+				}
 				// set SASL password
-				if (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')) {
+				elseif (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')) {
 					$partialAccounts[$i]['userPassword'] = '{SASL}' . $partialAccounts[$i]['uid'];
 				}
 				// set K5KEY password
@@ -2452,6 +2475,22 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 				else {
 					logNewMessage(LOG_NOTICE, 'Added addressbook for user ' . $accounts[$temp['counter']]['dn']);
+				}
+			}
+			// set password via exop
+			if (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
+				if (isset($ids['inetOrgPerson_userPassword']) && !empty($data[$temp['counter']][$ids['inetOrgPerson_userPassword']])) {
+					$dn = $accounts[$temp['counter']]['dn'];
+					$password = $data[$temp['counter']][$ids['inetOrgPerson_userPassword']];
+					$success = ldap_exop_passwd($_SESSION['ldap']->server(), $dn, null, $password);
+					if (!$success) {
+						$errors[] = array(
+							"ERROR",
+							_('Unable to set password'),
+							$dn . '<br>' . getDefaultLDAPErrorString($_SESSION['ldap']->server()),
+							array($temp['groups'][$temp['counter']])
+						);
+					}
 				}
 			}
 		}
@@ -3722,6 +3761,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!empty($this->attributes['uid'][0]) && !empty($this->moduleSettings['posixAccount_pwdHash'][0])
 				&& ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')) {
 			$this->attributes['userPassword'][0] = '{SASL}' . $this->attributes['uid'][0];
+		}
+		// delay on ldap_exop
+		elseif (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
+			logNewMessage(LOG_DEBUG, 'Setting password in post action, exop');
 		}
 		// set normal password
 		else {
