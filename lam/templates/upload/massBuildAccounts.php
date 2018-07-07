@@ -205,7 +205,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 			// set DN
 			foreach ($accounts as $i => $account) {
 				// check against list of possible RDN attributes
-				if (!in_array($data[$i][$ids['dn_rdn']], $rdnList)) {
+				if (!in_array($data[$i][$ids['dn_rdn']], $rdnList) || !isset($account[$data[$i][$ids['dn_rdn']]])) {
 					$errors[] = array(_('Account %s:') . ' dn_rdn ' . $account[$data[$i][$ids['dn_rdn']]], _("Invalid RDN attribute!"), array($i));
 				}
 				else {
