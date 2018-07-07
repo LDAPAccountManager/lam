@@ -2429,7 +2429,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 				else {
 					// update password history
 					if (sambaSamAccount::isPasswordHistoryEnabled($this->selfServiceSettings->moduleSettings)) {
-						$sambaPasswordHistory = empty($attributes['sambaPasswordHistory']) ? null : $attributes['sambaPasswordHistory'];
+						$sambaPasswordHistory = empty($attributes['sambaPasswordHistory']) ? array() : $attributes['sambaPasswordHistory'];
 						while (sizeof($sambaPasswordHistory) > ($sambaDomain->pwdHistoryLength - 1)) {
 							if (empty($this->selfServiceSettings->moduleSettings['sambaSamAccount_history'][0]) || ($this->selfServiceSettings->moduleSettings['sambaSamAccount_history'][0] == 'yes_deleteLast')) {
 								array_pop($sambaPasswordHistory);
