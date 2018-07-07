@@ -696,8 +696,10 @@ class posixAccount extends baseModule implements passwordService {
 			return $messages;
 		}
 		$modules = $accountContainer->get_type()->getModules();
-		$homeDirAttr = $this->getHomedirAttrName($modules);
+		// set exop password
+		$messages = array_merge($messages, $this->setExopPassword($this->moduleSettings));
 		// create home directories if needed
+		$homeDirAttr = $this->getHomedirAttrName($modules);
 		if (sizeof($this->lamdaemonServers) > 0) {
 			$server = null;
 			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
@@ -874,6 +876,23 @@ class posixAccount extends baseModule implements passwordService {
 			}
 		}
 		return $messages;
+	}
+
+	/**
+	 * Sets the password via ldap_exop if configured.
+	 *
+	 * @param array $settings settings
+	 * @return array error message parameters if any
+	 */
+	private function setExopPassword($settings) {
+		if (!empty($this->clearTextPassword) && !empty($settings['posixAccount_pwdHash'][0])
+				&& ($settings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
+			$success = ldap_exop_passwd($_SESSION['ldap']->server(), $this->getAccountContainer()->finalDN, null, $this->clearTextPassword);
+			if (!$success) {
+				return array('ERROR', _('Unable to set password'), getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
+			}
+		}
+		return array();
 	}
 
 	/**
@@ -2627,8 +2646,12 @@ class posixAccount extends baseModule implements passwordService {
 					$errors[] = $errMsg;
 				}
 				// password
+				// delay exop passwords
+				if (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
+					// changed in post action
+				}
 				// set SASL passwords
-				if (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')) {
+				elseif (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')) {
 					$partialAccounts[$i][$pwdAttrName] = '{SASL}' . $partialAccounts[$i]['uid'];
 				}
 				// set K5KEY password
@@ -2743,6 +2766,7 @@ class posixAccount extends baseModule implements passwordService {
 			$temp['groups'] = array();
 			$temp['dn_gon'] = array();
 			$temp['createHomes'] = array();
+			$temp['exop'] = array();
 			$temp['counter'] = 0;
 			$col = $ids['posixAccount_additionalGroups'];
 			$col_home = $ids['posixAccount_createHomeDir'];
@@ -2795,6 +2819,11 @@ class posixAccount extends baseModule implements passwordService {
 				if (!empty($dataRow[$col_home])) {
 					$temp['createHomes'][] = $i;
 				}
+				if (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
+					if (isset($ids['posixAccount_password']) && !empty($dataRow[$ids['posixAccount_password']])) {
+						$temp['exop'][] = array($accounts[$i]['dn'], $dataRow[$ids['posixAccount_password']]);
+					}
+				}
 			}
 			$temp['dn_gon_keys'] = array_keys($temp['dn_gon']);
 			return array(
@@ -2832,7 +2861,7 @@ class posixAccount extends baseModule implements passwordService {
 				$temp['counter']++;
 				return array (
 					'status' => 'inProgress',
-					'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon'])),
+					'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']) + sizeof($temp['exop'])),
 					'errors' => $errors
 				);
 			}
@@ -2840,7 +2869,7 @@ class posixAccount extends baseModule implements passwordService {
 				$temp['counter']++;
 				return array (
 					'status' => 'inProgress',
-					'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups'] + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']))),
+					'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups'] + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']) + sizeof($temp['exop']))),
 					'errors' => array(array('ERROR', _('Unable to find group in LDAP.'), $temp['groups'][$temp['counter']]))
 				);
 			}
@@ -2879,7 +2908,7 @@ class posixAccount extends baseModule implements passwordService {
 			$temp['counter']++;
 			return array (
 				'status' => 'inProgress',
-				'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon'])),
+				'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']) + sizeof($temp['exop'])),
 				'errors' => $errors
 			);
 		}
@@ -2898,10 +2927,31 @@ class posixAccount extends baseModule implements passwordService {
 				);
 			}
 			$temp['counter']++;
-			$errors = array();
 			return array (
 				'status' => 'inProgress',
-				'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon'])),
+				'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']) + sizeof($temp['exop'])),
+				'errors' => $errors
+			);
+		}
+		// run password exop commands
+		elseif ($temp['counter'] < (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']) + sizeof($temp['exop']))) {
+			$data = $temp['exop'][$temp['counter'] - sizeof($temp['groups']) - sizeof($temp['createHomes']) - sizeof($temp['dn_gon'])];
+			$dn = $data[0];
+			$password = $data[1];
+			$success = ldap_exop_passwd($_SESSION['ldap']->server(), $dn, null, $password);
+			$errors = array();
+			if (!$success) {
+				$errors[] = array(
+					"ERROR",
+					_('Unable to set password'),
+					$dn . '<br>' . getDefaultLDAPErrorString($_SESSION['ldap']->server()),
+					array($temp['groups'][$temp['counter']])
+				);
+			}
+			$temp['counter']++;
+			return array (
+				'status' => 'inProgress',
+				'progress' => ($temp['counter'] * 100) / (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']) + sizeof($temp['exop'])),
 				'errors' => $errors
 			);
 		}
@@ -3178,6 +3228,10 @@ class posixAccount extends baseModule implements passwordService {
 								if (!empty($attributes['uid'][0]) && ($passwordHash === 'SASL')) {
 									$return['mod']['userPassword'][0] = '{SASL}' . $attributes['uid'][0];
 								}
+								elseif ($passwordHash === 'LDAP_EXOP') {
+									// no LDAP modify action, use ldap_exop_passwd
+									$return['info']['userPasswordModify'][0] = 'exop';
+								}
 								// set other password hashes
 								else {
 									$return['mod']['userPassword'][0] = pwd_hash($_POST['posixAccount_password'], true, $passwordHash);
@@ -3239,6 +3293,27 @@ class posixAccount extends baseModule implements passwordService {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 * @see baseModule::postModifySelfService()
+	 */
+	public function postModifySelfService($newAccount, $attributes) {
+		if (isset($attributes['INFO.userPasswordModify'][0])
+			&& ($attributes['INFO.userPasswordModify'][0] === 'exop')) {
+			$password = $attributes['INFO.userPasswordClearText'][0];
+			$dn = $attributes['dn'][0];
+			$success = ldap_exop_passwd($_SESSION['ldapHandle'], $dn, null, $password);
+			if (!$success) {
+				StatusMessage('ERROR', _('Unable to set password'), getExtendedLDAPErrorMessage($_SESSION['ldapHandle']));
+			}
+			else {
+				StatusMessage('INFO', _('Password changed.'));
+			}
+			return $success;
+		}
+		return true;
+	}
+
+	/**
 	 * This method specifies if a module manages password attributes.
 	 * @see passwordService::managesPasswordAttributes
 	 *
@@ -3295,6 +3370,10 @@ class posixAccount extends baseModule implements passwordService {
 		if (!empty($this->attributes['uid'][0]) && !empty($this->moduleSettings['posixAccount_pwdHash'][0])
 				&& ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')) {
 			$this->attributes[$this->getPasswordAttrName($accountModules)][0] = '{SASL}' . $this->attributes['uid'][0];
+		}
+		// delay on ldap_exop
+		elseif (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
+			logNewMessage(LOG_DEBUG, 'Setting password in post action, exop');
 		}
 		// set normal password
 		else {
