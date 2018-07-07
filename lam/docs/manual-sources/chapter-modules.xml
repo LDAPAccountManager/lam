@@ -755,7 +755,7 @@
         <listitem>
           <para>Password hash type: If possible use CRYPT-SHA512 or SSHA to
           protect your user's passwords. The option SASL will set the password
-          to "{SASL}&lt;user name&gt;".</para>
+          to "{SASL}&lt;user name&gt;". If you want to use an LDAP EXOP password operation to update the password then select LDAP_EXOP.</para>
         </listitem>
 
         <listitem>
@@ -1998,7 +1998,7 @@
 
       <literallayout>
 #!/bin/bash
-uid=$1 
+uid=$1
 server=ldap.domain.com
 baseDN=ou=people,dc=example,dc=com
 port=389
