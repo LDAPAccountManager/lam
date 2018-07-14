@@ -755,7 +755,9 @@
         <listitem>
           <para>Password hash type: If possible use CRYPT-SHA512 or SSHA to
           protect your user's passwords. The option SASL will set the password
-          to "{SASL}&lt;user name&gt;". If you want to use an LDAP EXOP password operation to update the password then select LDAP_EXOP.</para>
+          to "{SASL}&lt;user name&gt;". If you want to use an LDAP EXOP
+          password operation to update the password then select
+          LDAP_EXOP.</para>
         </listitem>
 
         <listitem>
@@ -1408,32 +1410,10 @@
         </mediaobject>
       </screenshot>
 
-      <para>Attention: LAM will add the object class "mailrecipient" by
-      default. This object class is available on 389 directory server but may
-      not be present on e.g. OpenLDAP. Please deactivate the following setting
-      (LAM server profile, module settings) if you do not use this object
-      class.</para>
-
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/mod_kolab5.png"/>
-          </imageobject>
-        </mediaobject>
-      </screenshot>
-
       <para>Please enter an email address at the Personal page and set a Unix
       password first. Both are required that Kolab accepts the accounts. The
       email address ("Personal" page) must match your Kolab domain, otherwise
       the account will not work.</para>
-
-      <para><emphasis role="bold">Attention:</emphasis> The mailbox server
-      cannot be changed after the account has been saved. Please make sure
-      that the value is correct.</para>
-
-      <para>Kolab users should not be directly deleted with LAM. You can mark
-      an account for deletion which then is done by the Kolab server itself.
-      This makes sure that the mailbox etc. is also deleted.</para>
 
       <screenshot>
         <mediaobject>

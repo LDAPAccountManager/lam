@@ -36,8 +36,6 @@ class kolabGroup extends baseModule {
 
 	/** cache for mail attribute */
 	private $mailCache = null;
-	/** cache for mailHost values */
-	private $mailHostCache = null;
 
 	/**
 	* Creates a new kolabGroup object.
@@ -77,7 +75,7 @@ class kolabGroup extends baseModule {
 		// managed object classes
 		$return['objectClasses'] = array('kolabGroupOfUniqueNames');
 		// managed attributes
-		$return['attributes'] = array('kolabAllowSMTPRecipient', 'kolabAllowSMTPSender', 'kolabDeleteflag');
+		$return['attributes'] = array('kolabAllowSMTPRecipient', 'kolabAllowSMTPSender');
 		// help Entries
 		$return['help'] = array(
 			'mail' => array(
@@ -90,25 +88,21 @@ class kolabGroup extends baseModule {
 			),
 			'kolabAllowSMTPRecipient' => array (
 				"Headline" => _('Allowed recipients'), 'attr' => 'kolabAllowSMTPRecipient',
-				"Text" => _('Describes the allowed or disallowed SMTP recipient addresses for mail sent by this account (e.g. "domain.tld" or "-user@domain.tld").')
+				"Text" => _('Describes the allowed or disallowed SMTP recipient addresses for mail sent by this account (e.g. "domain.tld" or "user@domain.tld").')
 			),
 			'kolabAllowSMTPRecipientList' => array (
 				"Headline" => _('Allowed recipients'), 'attr' => 'kolabAllowSMTPRecipient',
-				"Text" => _('Describes the allowed or disallowed SMTP recipient addresses for mail sent by this account (e.g. "domain.tld" or "-user@domain.tld").')
+				"Text" => _('Describes the allowed or disallowed SMTP recipient addresses for mail sent by this account (e.g. "domain.tld" or "user@domain.tld").')
 							. ' ' . _("Multiple values are separated by semicolon.")
 			),
 			'kolabAllowSMTPSender' => array (
 				"Headline" => _('Allowed senders'), 'attr' => 'kolabAllowSMTPSender',
-				"Text" => _('Describes the allowed or disallowed SMTP addresses sending mail to this account (e.g. "domain.tld" or "-user@domain.tld").')
+				"Text" => _('Describes the allowed or disallowed SMTP addresses sending mail to this account (e.g. "domain.tld" or "user@domain.tld").')
 			),
 			'kolabAllowSMTPSenderList' => array (
 				"Headline" => _('Allowed senders'), 'attr' => 'kolabAllowSMTPSender',
-				"Text" => _('Describes the allowed or disallowed SMTP addresses sending mail to this account (e.g. "domain.tld" or "-user@domain.tld").')
+				"Text" => _('Describes the allowed or disallowed SMTP addresses sending mail to this account (e.g. "domain.tld" or "user@domain.tld").')
 							. ' ' . _("Multiple values are separated by semicolon.")
-			),
-			'deleteFlag' => array(
-				"Headline" => _("Mark for deletion"), 'attr' => 'kolabDeleteflag',
-				"Text" => _("This will set a special flag on the account which tells Kolabd to remove it. Use this to cleanly delete Kolab accounts (e.g. this removes mail boxes).")
 			),
 			'autoAdd' => array(
 				"Headline" => _("Automatically add this extension"),
@@ -176,11 +170,6 @@ class kolabGroup extends baseModule {
 	function display_html_attributes() {
 		$container = new htmlTable();
 		if (isset($this->attributes['objectClass']) && in_array('kolabGroupOfUniqueNames', $this->attributes['objectClass'])) {
-			// check if account is marked for deletion
-			if (isset($this->attributes['kolabDeleteflag'])) {
-				$container->addElement(new htmlOutputText(_('This account is marked for deletion.')));
-				return $container;
-			}
 			// mail
 			if ($this->manageMail($this->getAccountContainer()->get_type()->getModules())) {
 				$this->addSimpleInputTextField($container, 'mail', _('Email address'), true);
@@ -189,15 +178,6 @@ class kolabGroup extends baseModule {
 			$this->addMultiValueInputTextField($container, 'kolabAllowSMTPRecipient', _('Allowed recipients'));
 			// allowed senders
 			$this->addMultiValueInputTextField($container, 'kolabAllowSMTPSender', _('Allowed senders'));
-			// delete flag
-			$this->loadMailHostCache();
-			if (!$this->getAccountContainer()->isNewAccount && (sizeof($this->mailHostCache) > 0)) {
-				$deleteContainer = new htmlTable();
-				$deleteContainer->addElement(new htmlSpacer(null, '20px'), true);
-				$deleteContainer->addElement(new htmlAccountPageButton(get_class($this), 'deleteFlag', 'open', _('Mark account for deletion')));
-				$deleteContainer->addElement(new htmlHelpLink('deleteFlag'));
-				$container->addElement($deleteContainer);
-			}
 		}
 		else {
 			// add button
@@ -257,37 +237,6 @@ class kolabGroup extends baseModule {
 		// allowed senders
 		$this->processMultiValueInputTextField('kolabAllowSMTPSender', $errors, 'kolabEmailPrefix');
 		return $errors;
-	}
-
-	/**
-	* This function will create the meta HTML code to show a page to mark an account for deletion.
-	*
-	* @return htmlElement HTML meta data
-	*/
-	function display_html_deleteFlag() {
-		$return = new htmlTable();
-		$message = new htmlOutputText(_('Do you really want to mark this account for deletion?'));
-		$return->addElement($message, true);
-		$return->addElement(new htmlSpacer(null, '10px'), true);
-		$serverTable = new htmlTable();
-		$serverTable->addElement(new htmlTableExtendedSelect('deletionServer', $this->mailHostCache, array(), _('Server'), 'deleteFlag'));
-		$return->addElement($serverTable, true);
-		$return->addElement(new htmlSpacer(null, '10px'), true);
-		$buttonGroup = new htmlGroup();
-		$buttonGroup->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'confirm', _('Mark account for deletion')));
-		$buttonGroup->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'cancel', _('Cancel')));
-		$return->addElement($buttonGroup, true);
-		return $return;
-	}
-
-	/**
-	* Write variables into object and do some regex checks
-	*/
-	function process_deleteFlag() {
-		if (isset($_POST['form_subpage_kolabGroup_attributes_confirm'])) {
-			// set delete flag
-			$this->attributes['kolabDeleteflag'][0] = $_POST['deletionServer'];
-		}
 	}
 
 	/**
@@ -440,22 +389,6 @@ class kolabGroup extends baseModule {
 		foreach ($results as $result) {
 			if (isset($result['mail'][0])) {
 				$this->mailCache[] = $result['mail'][0];
-			}
-		}
-	}
-
-	/**
-	 * Loads the list of mail hosts into the cache.
-	 */
-	private function loadMailHostCache() {
-		if ($this->mailHostCache != null) {
-			return;
-		}
-		$results = searchLDAPByFilter('(mailHost=*)', array('mailHost'), array('user'));
-		$this->mailHostCache = array();
-		foreach ($results as $result) {
-			if (isset($result['mailhost'][0]) && !in_array_ignore_case($result['mailhost'][0], $this->mailHostCache)) {
-				$this->mailHostCache[] = $result['mailhost'][0];
 			}
 		}
 	}
