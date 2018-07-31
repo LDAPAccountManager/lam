@@ -150,7 +150,7 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 	$hash = "";
 	switch ($hashType) {
 		case 'CRYPT':
-			$hash = "{CRYPT}" . crypt($password);
+			$hash = "{CRYPT}" . crypt($password, generateSalt(2));
 			break;
 		case 'CRYPT-SHA512':
 			$hash = "{CRYPT}" . crypt($password, '$6$' . generateSalt(16));
