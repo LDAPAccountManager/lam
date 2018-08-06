@@ -231,6 +231,8 @@ $helpArray = array (
 				// profile editor, file upload
 				"301" => array ("Headline" => _("RDN identifier"),
 					"Text" => _("This is the identifier for the relative DN value. It must be one of the given allowed LDAP attributes (e.g. user accounts usually use \"uid\" while groups use \"cn\").")),
+				"302" => array ("Headline" => _("Overwrite"),
+					"Text" => _("Set to true to overwrite an existing LDAP entry.")),
 				"360" => array ("Headline" => _("Profile name"),
 					"Text" => _("Name under which the profile will be saved. If a profile with the same name exists, it will be overwritten.")),
 				"361" => array ("Headline" => _("DN suffix"),

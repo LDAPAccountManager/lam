@@ -202,8 +202,8 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 		if ($accounts !== false) {
 			$rdnList = getRDNAttributes($type->getId(), $selectedModules);
 			$suffix = $type->getSuffix();
-			// set DN
 			foreach ($accounts as $i => $account) {
+				// set DN
 				// check against list of possible RDN attributes
 				if (!in_array($data[$i][$ids['dn_rdn']], $rdnList) || !isset($account[$data[$i][$ids['dn_rdn']]])) {
 					$errors[] = array(_('Account %s:') . ' dn_rdn ' . $account[$data[$i][$ids['dn_rdn']]], _("Invalid RDN attribute!"), array($i));
@@ -213,6 +213,10 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 					if ($data[$i][$ids['dn_suffix']] == "") $account_dn = $account_dn . $suffix;
 					else $account_dn = $account_dn . $data[$i][$ids['dn_suffix']];
 					$accounts[$i]['dn'] = $account_dn;
+				}
+				// set overwrite
+				if (isset($ids['overwrite']) && ($data[$i][$ids['overwrite']] === 'true')) {
+					$accounts[$i]['INFO.overwrite'] = 'true';
 				}
 			}
 			// print errors if DN could not be built

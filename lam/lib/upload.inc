@@ -6,7 +6,7 @@ use accountContainer;
  $Id$
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2016 - 2017  Roland Gruber
+ Copyright (C) 2016 - 2018  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -142,6 +142,12 @@ class Uploader {
 			}
 		}
 		if ($preActionOk) {
+			$errors = $this->deleteOldEntryIfNeeded($dn, $this->accounts[$position]);
+			if (!empty($errors)) {
+				$_SESSION['mass_errors'] = array_merge($_SESSION['mass_errors'], $errors);
+				$_SESSION['mass_failed'][] = $position;
+				return;
+			}
 			// add LDAP entry
 			$success = @ldap_add($_SESSION['ldap']->server(), $dn, $attrs);
 			if (!$success) {
@@ -154,6 +160,23 @@ class Uploader {
 				$_SESSION['mass_failed'][] = $position;
 			}
 		}
+	}
+
+	/**
+	 * Deletes an existing entry if overwrite option is used.
+	 *
+	 * @param string $dn DN
+	 * @param array $attributes attribute list
+	 * @return array list of error messages
+	 */
+	private function deleteOldEntryIfNeeded($dn, $attributes) {
+		if (isset($attributes['INFO.overwrite']) && ($attributes['INFO.overwrite'] === 'true')) {
+			$attrs = ldapGetDN($dn, array('dn'));
+			if ($attrs !== null) {
+				return deleteDN($dn, true);
+			}
+		}
+		return array();
 	}
 
 	/**

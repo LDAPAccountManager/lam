@@ -1,5 +1,6 @@
 September 2018 6.5
   - Password change possible via LDAP EXOP operation (set LDAP_EXOP as password hash)
+  - Upload: allow to overwrite existing accounts
   - Kolab updates
   - LAM Pro:
    -> Auto deletion of entries with dynamic directory services support (requires PHP 7.2).

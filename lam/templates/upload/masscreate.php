@@ -324,6 +324,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 	$row->add($dnTitle, 12);
 	$titles = array(_('Name'), _("Identifier"), _("Example value"), _("Default value"), _("Possible values"));
 	$data = array();
+	// DN suffix
 	$dnSuffixRowCells = array();
 	$nameGroup = new htmlGroup();
 	$help = new htmlHelpLink('361');
@@ -340,6 +341,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 	$dnSuffixRowCells[] = new htmlOutputText($type->getSuffix());
 	$dnSuffixRowCells[] = new htmlOutputText('');
 	$data[] = $dnSuffixRowCells;
+	// RDN
 	$dnRDNRowCells = array();
 	$rdnText = new htmlOutputText(_("RDN identifier"));
 	$rdnText->setMarkAsRequired(true);
@@ -360,6 +362,24 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 	$dnRDNRowCells[] = new htmlOutputText(implode(", ", $rdnAttributes));
 	$dnRDNRowCells[] = new htmlHelpLink('301');
 	$data[] = $dnRDNRowCells;
+	// replace existing
+	$replaceRowCells = array();
+	$nameGroup = new htmlGroup();
+	$help = new htmlHelpLink('302');
+	$help->setCSSClasses(array('hide-on-mobile'));
+	$nameGroup->addElement($help);
+	$nameGroup->addElement(new htmlSpacer('0.25rem', '16px'));
+	$nameGroup->addElement(new htmlOutputText(_("Overwrite")));
+	$help = new htmlHelpLink('302');
+	$help->setCSSClasses(array('hide-on-tablet'));
+	$nameGroup->addElement($help);
+	$replaceRowCells[] = $nameGroup;
+	$replaceRowCells[] = new htmlOutputText('overwrite');
+	$replaceRowCells[] = new htmlOutputText('false');
+	$replaceRowCells[] = new htmlOutputText('false');
+	$replaceRowCells[] = new htmlOutputText('true, false');
+	$data[] = $replaceRowCells;
+
 	$table = new htmlResponsiveTable($titles, $data);
 	$table->setCSSClasses(array('alternating-color'));
 	$row->add($table, 12);
@@ -434,6 +454,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 		// DN attributes
 		$sampleCSV_head[] = "\"dn_suffix\"";
 		$sampleCSV_head[] = "\"dn_rdn\"";
+		$sampleCSV_head[] = "\"overwrite\"";
 		// module attributes
 		foreach ($modules as $moduleName) {
 			if (sizeof($columns[$moduleName]) < 1) {
@@ -447,6 +468,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 		// DN attributes
 		$sampleCSV_row[] = "\"" . $type->getSuffix() . "\"";
 		$sampleCSV_row[] = "\"" . $RDNs[0] . "\"";
+		$sampleCSV_row[] = "\"false\"";
 		// module attributes
 		foreach ($modules as $moduleName) {
 			if (sizeof($columns[$moduleName]) < 1) {
