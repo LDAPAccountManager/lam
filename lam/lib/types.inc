@@ -1,10 +1,9 @@
 <?php
 namespace LAM\TYPES;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2017  Roland Gruber
+  Copyright (C) 2005 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -423,7 +422,11 @@ class TypeManager {
 		$configuredTypes = array();
 		$activeTypes = $this->config->get_ActiveTypes();
 		foreach ($activeTypes as $typeId) {
-			$configuredTypes[] = $this->buildConfiguredType($typeId);
+			$type = $this->buildConfiguredType($typeId);
+			if ($type === null) {
+				continue;
+			}
+			$configuredTypes[] = $type;
 		}
 		return $configuredTypes;
 	}
@@ -469,6 +472,9 @@ class TypeManager {
 	 */
 	private function buildConfiguredType($typeId) {
 		$scope = getScopeFromTypeId($typeId);
+		if (!class_exists($scope)) {
+			return null;
+		}
 		return new ConfiguredType($this, $scope, $typeId);
 	}
 
