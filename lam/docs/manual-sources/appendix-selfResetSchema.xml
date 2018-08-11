@@ -1,245 +1,241 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
 "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
-  <appendix id="a_passwordSelfResetSchema">
-    <title>Setup password self reset schema (LAM Pro)</title>
+<appendix id="a_passwordSelfResetSchema">
+  <title>Setup password self reset schema (LAM Pro)</title>
 
-    <section id="passwordSelfResetSchema_new">
-      <title>New installation</title>
+  <section id="passwordSelfResetSchema_new">
+    <title>New installation</title>
 
-      <para>Please see <link
-      linkend="passwordSelfResetSchema_update">here</link> if you want to
-      upgrade an existing schema version.</para>
+    <para>Please see <link
+    linkend="passwordSelfResetSchema_update">here</link> if you want to
+    upgrade an existing schema version.</para>
 
-      <para><emphasis role="bold">Schema installation</emphasis></para>
+    <para><emphasis role="bold">Schema installation</emphasis></para>
 
-      <para>Please install the schema that comes with LAM Pro. The schema
-      files are located in:</para>
+    <para>Please install the schema that comes with LAM Pro. The schema files
+    are located in:</para>
 
-      <itemizedlist>
-        <listitem>
-          <para>tar.bz2: docs/schema</para>
-        </listitem>
+    <itemizedlist>
+      <listitem>
+        <para>tar.bz2: docs/schema</para>
+      </listitem>
 
-        <listitem>
-          <para>DEB: /usr/share/doc/ldap-account-manager/docs/schema</para>
-        </listitem>
+      <listitem>
+        <para>DEB: /usr/share/doc/ldap-account-manager/docs/schema</para>
+      </listitem>
 
-        <listitem>
-          <para>RPM:
-          /usr/share/doc/ldap-account-manager-{VERSION}/schema</para>
-        </listitem>
-      </itemizedlist>
+      <listitem>
+        <para>RPM: /usr/share/doc/ldap-account-manager-{VERSION}/schema</para>
+      </listitem>
+    </itemizedlist>
 
-      <literallayout>
+    <literallayout>
 </literallayout>
 
-      <para><emphasis role="bold">OpenLDAP with slapd.conf
-      configuration</emphasis></para>
+    <para><emphasis role="bold">OpenLDAP with slapd.conf
+    configuration</emphasis></para>
 
-      <para>For a configuration with slapd.conf-file copy
-      passwordSelfReset.schema to /etc/ldap/schema/ and add this line to
-      slapd.conf:</para>
+    <para>For a configuration with slapd.conf-file copy
+    passwordSelfReset.schema to /etc/ldap/schema/ and add this line to
+    slapd.conf:</para>
 
-      <literallayout>  include         /etc/ldap/schema/passwordSelfReset.schema
+    <literallayout>  include         /etc/ldap/schema/passwordSelfReset.schema
 
 </literallayout>
 
-      <para><emphasis role="bold">OpenLDAP with slapd.d
-      configuration</emphasis></para>
+    <para><emphasis role="bold">OpenLDAP with slapd.d
+    configuration</emphasis></para>
 
-      <para>For slapd.d configurations you need to upload the schema file
-      passwordSelfReset.ldif via ldapadd command:</para>
+    <para>For slapd.d configurations you need to upload the schema file
+    passwordSelfReset.ldif via ldapadd command:</para>
 
-      <para>ldapadd -x -W -H ldap://localhost -D "cn=admin,o=test,c=de" -f
-      passwordSelfReset.ldif</para>
+    <para>ldapadd -x -W -H ldap://<emphasis>localhost</emphasis> -D
+    "<emphasis>cn=admin,o=test,c=de</emphasis>" -f
+    passwordSelfReset.ldif</para>
 
-      <para>Please replace "localhost" with your LDAP server and
-      "cn=admin,o=test,c=de" with your LDAP admin user (usually starts with
-      cn=admin or cn=manager).</para>
+    <para>Please replace "<emphasis>localhost</emphasis>" with your LDAP
+    server and "<emphasis>cn=admin,o=test,c=de</emphasis>" with your LDAP
+    admin user (usually starts with cn=admin or cn=manager).</para>
 
-      <literallayout>
+    <literallayout>
 </literallayout>
 
-      <para><emphasis role="bold">389 server</emphasis></para>
+    <para><emphasis role="bold">389 server</emphasis></para>
 
-      <para>Please replace INSTANCE with installation ID, e.g.
-      slapd-389ds.</para>
+    <para>Please replace INSTANCE with installation ID, e.g.
+    slapd-389ds.</para>
 
-      <literallayout>  cp passwordSelfReset-389server.ldif /etc/dirsrv/INSTANCE/schema/70pwdreset.ldif
+    <literallayout>  cp passwordSelfReset-389server.ldif /etc/dirsrv/INSTANCE/schema/70pwdreset.ldif
   systemctl restart dirsrv.target
 
 </literallayout>
 
-      <para><emphasis role="bold">Samba 4</emphasis></para>
+    <para><emphasis role="bold">Samba 4</emphasis></para>
 
-      <para>The schema files are passwordSelfReset-Samba4-attributes.ldif and
-      passwordSelfReset-Samba4-objectClass.ldif.</para>
+    <para>The schema files are passwordSelfReset-Samba4-attributes.ldif and
+    passwordSelfReset-Samba4-objectClass.ldif.</para>
 
-      <para>First, you need to edit them and replace "DOMAIN_TOP_DN" with your
-      LDAP suffix (e.g. dc=samba4,dc=test).</para>
+    <para>First, you need to edit them and replace "DOMAIN_TOP_DN" with your
+    LDAP suffix (e.g. dc=samba4,dc=test).</para>
 
-      <para>Then install the attribute and afterwards the object class schema
-      file:</para>
+    <para>Then install the attribute and afterwards the object class schema
+    file:</para>
 
-      <literallayout>  ldbmodify -H /var/lib/samba/private/sam.ldb passwordSelfReset-Samba4-attributes.ldif --option="dsdb:schema update allowed"=true
+    <literallayout>  ldbmodify -H /var/lib/samba/private/sam.ldb passwordSelfReset-Samba4-attributes.ldif --option="dsdb:schema update allowed"=true
   ldbmodify -H /var/lib/samba/private/sam.ldb passwordSelfReset-Samba4-objectClass.ldif --option="dsdb:schema update allowed"=true
 
 </literallayout>
 
-      <para><emphasis role="bold">Windows</emphasis></para>
+    <para><emphasis role="bold">Windows</emphasis></para>
 
-      <para>The schema file is passwordSelfReset-Windows.ldif.</para>
+    <para>The schema file is passwordSelfReset-Windows.ldif.</para>
 
-      <para>First, you need to edit it and replace "DOMAIN_TOP_DN" with your
-      LDAP suffix (e.g. dc=windows,dc=test).</para>
+    <para>First, you need to edit it and replace "DOMAIN_TOP_DN" with your
+    LDAP suffix (e.g. dc=windows,dc=test).</para>
 
-      <para>Then install the schema file as administrator on a command
-      line:</para>
+    <para>Then install the schema file as administrator on a command
+    line:</para>
 
-      <literallayout>  ldifde -v -i -f passwordSelfReset-Windows.ldif
+    <literallayout>  ldifde -v -i -f passwordSelfReset-Windows.ldif
 
 </literallayout>
 
-      <para>This allows to set a security question + answer for each
-      account.</para>
-    </section>
+    <para>This allows to set a security question + answer for each
+    account.</para>
+  </section>
 
-    <section id="passwordSelfResetSchema_update">
-      <title>Schema update</title>
+  <section id="passwordSelfResetSchema_update">
+    <title>Schema update</title>
 
-      <para>The schema files are located in:</para>
+    <para>The schema files are located in:</para>
 
-      <itemizedlist>
-        <listitem>
-          <para>tar.bz2: docs/schema/updates</para>
-        </listitem>
+    <itemizedlist>
+      <listitem>
+        <para>tar.bz2: docs/schema/updates</para>
+      </listitem>
 
-        <listitem>
-          <para>DEB:
-          /usr/share/doc/ldap-account-manager/docs/schema/updates</para>
-        </listitem>
+      <listitem>
+        <para>DEB:
+        /usr/share/doc/ldap-account-manager/docs/schema/updates</para>
+      </listitem>
 
-        <listitem>
-          <para>RPM:
-          /usr/share/doc/ldap-account-manager-{VERSION}/schema/updates</para>
-        </listitem>
-      </itemizedlist>
+      <listitem>
+        <para>RPM:
+        /usr/share/doc/ldap-account-manager-{VERSION}/schema/updates</para>
+      </listitem>
+    </itemizedlist>
 
-      <literallayout>
+    <literallayout>
 </literallayout>
 
-      <para>Schema versions:</para>
+    <para>Schema versions:</para>
 
-      <orderedlist>
-        <listitem>
-          <para>Initial version (LAM Pro 3.6 - 4.4)</para>
-        </listitem>
+    <orderedlist>
+      <listitem>
+        <para>Initial version (LAM Pro 3.6 - 4.4)</para>
+      </listitem>
 
-        <listitem>
-          <para>Added passwordSelfResetBackupMail (LAM Pro 4.5 - 5.5)</para>
-        </listitem>
+      <listitem>
+        <para>Added passwordSelfResetBackupMail (LAM Pro 4.5 - 5.5)</para>
+      </listitem>
 
-        <listitem>
-          <para>Multiple security questions (LAM Pro 5.6)</para>
-        </listitem>
-      </orderedlist>
+      <listitem>
+        <para>Multiple security questions (LAM Pro 5.6)</para>
+      </listitem>
+    </orderedlist>
 
-      <literallayout>
+    <literallayout>
 </literallayout>
 
-      <para><emphasis role="bold">OpenLDAP with slapd.conf
-      configuration</emphasis></para>
+    <para><emphasis role="bold">OpenLDAP with slapd.conf
+    configuration</emphasis></para>
 
-      <para>Install the schema file like a <link
-      linkend="passwordSelfResetSchema_new">new install</link> (skip
-      modification of slapd.conf file).</para>
+    <para>Install the schema file like a <link
+    linkend="passwordSelfResetSchema_new">new install</link> (skip
+    modification of slapd.conf file).</para>
 
-      <literallayout>
+    <literallayout>
 </literallayout>
 
-      <para><emphasis role="bold">OpenLDAP with slapd.d
-      configuration</emphasis></para>
+    <para><emphasis role="bold">OpenLDAP with slapd.d
+    configuration</emphasis></para>
 
-      <para>The upgrade requires to stop the LDAP server.</para>
+    <para>The upgrade requires to stop the LDAP server.</para>
 
-      <para>Steps:</para>
+    <para>Steps:</para>
 
-      <orderedlist>
-        <listitem>
-          <para>Stop OpenLDAP with e.g. "/etc/init.d/slapd stop"</para>
-        </listitem>
+    <orderedlist>
+      <listitem>
+        <para>Stop OpenLDAP with e.g. "/etc/init.d/slapd stop"</para>
+      </listitem>
 
-        <listitem>
-          <para>Delete the old schema file. It is located in e.g.
-          "/etc/ldap/slapd.d/cn=config/cn=schema" and called
-          "cn={XX}passwordselfreset.ldif" (XX can be any number)</para>
-        </listitem>
+      <listitem>
+        <para>Delete the old schema file. It is located in e.g.
+        "/etc/ldap/slapd.d/cn=config/cn=schema" and called
+        "cn={XX}passwordselfreset.ldif" (XX can be any number)</para>
+      </listitem>
 
-        <listitem>
-          <para>Start OpenLDAP with e.g. "/etc/init.d/slapd start"</para>
-        </listitem>
+      <listitem>
+        <para>Start OpenLDAP with e.g. "/etc/init.d/slapd start"</para>
+      </listitem>
 
-        <listitem>
-          <para>Install the schema file like a <link
-          linkend="passwordSelfResetSchema_new">new install</link></para>
-        </listitem>
-      </orderedlist>
+      <listitem>
+        <para>Install the schema file like a <link
+        linkend="passwordSelfResetSchema_new">new install</link></para>
+      </listitem>
+    </orderedlist>
 
-      <literallayout>
+    <literallayout>
 </literallayout>
 
-      <para><emphasis role="bold">Samba 4</emphasis></para>
+    <para><emphasis role="bold">Samba 4</emphasis></para>
 
-      <para>Install the these update files by following the install
-      instructions in the file. In case you you upgrade with a version
-      difference of 2 or more you will need to apply all intermediate update
-      scripts.</para>
+    <para>Install the these update files by following the install instructions
+    in the file. In case you you upgrade with a version difference of 2 or
+    more you will need to apply all intermediate update scripts.</para>
 
-      <itemizedlist>
-        <listitem>
-          <para>samba4_version_1_to_2_attributes.ldif (upgrade from version 1
-          only)</para>
-        </listitem>
+    <itemizedlist>
+      <listitem>
+        <para>samba4_version_1_to_2_attributes.ldif (upgrade from version 1
+        only)</para>
+      </listitem>
 
-        <listitem>
-          <para>samba4_version_1_to_2_objectClass.ldif (upgrade from version 1
-          only)</para>
-        </listitem>
+      <listitem>
+        <para>samba4_version_1_to_2_objectClass.ldif (upgrade from version 1
+        only)</para>
+      </listitem>
 
-        <listitem>
-          <para>samba4_version_2_to_3_attributes.ldif (upgrade from version
-          2)</para>
-        </listitem>
+      <listitem>
+        <para>samba4_version_2_to_3_attributes.ldif (upgrade from version
+        2)</para>
+      </listitem>
 
-        <listitem>
-          <para>samba4_version_2_to_3_objectClass.ldif (upgrade from version
-          2)</para>
-        </listitem>
-      </itemizedlist>
+      <listitem>
+        <para>samba4_version_2_to_3_objectClass.ldif (upgrade from version
+        2)</para>
+      </listitem>
+    </itemizedlist>
 
-      <para>Please note that attributes file needs to be installed
-      first.</para>
+    <para>Please note that attributes file needs to be installed first.</para>
 
-      <literallayout>
+    <literallayout>
 </literallayout>
 
-      <para><emphasis role="bold">Windows</emphasis></para>
+    <para><emphasis role="bold">Windows</emphasis></para>
 
-      <para>Install the file(s) by following the install instructions in the
-      file. In case you you upgrade with a version difference of 2 or more you
-      will need to apply all intermediate update scripts.</para>
+    <para>Install the file(s) by following the install instructions in the
+    file. In case you you upgrade with a version difference of 2 or more you
+    will need to apply all intermediate update scripts.</para>
 
-      <itemizedlist>
-        <listitem>
-          <para>windows_version_1_to_2.ldif (upgrade from version 1
-          only)</para>
-        </listitem>
+    <itemizedlist>
+      <listitem>
+        <para>windows_version_1_to_2.ldif (upgrade from version 1 only)</para>
+      </listitem>
 
-        <listitem>
-          <para>windows_version_2_to_3.ldif (upgrade from version 2)</para>
-        </listitem>
-      </itemizedlist>
-    </section>
-  </appendix>
- 
+      <listitem>
+        <para>windows_version_2_to_3.ldif (upgrade from version 2)</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+</appendix>
