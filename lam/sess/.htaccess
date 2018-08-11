@@ -1,9 +1,3 @@
 <Files *>
-  <IfModule !mod_authz_core.c>
-    Order allow,deny
-    Deny from all
-  </IfModule>
-  <IfModule mod_authz_core.c>
-    Require all denied
-  </IfModule>
+  Require all denied
 </Files>

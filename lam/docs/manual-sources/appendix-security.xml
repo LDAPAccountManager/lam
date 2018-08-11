@@ -319,7 +319,7 @@ semodule -i httpdlocal.pp</programlisting>
 
       <para><inlinemediaobject>
           <imageobject>
-            <imagedata fileref="images/selfServiceProxy.png" />
+            <imagedata fileref="images/selfServiceProxy.png"/>
           </imageobject>
         </inlinemediaobject></para>
 
@@ -333,8 +333,7 @@ semodule -i httpdlocal.pp</programlisting>
         CustomLog /var/log/apache2/lam-proxy-access.log combined
         DocumentRoot /var/www/lam-proxy
         &lt;Proxy *&gt;
-            Order deny,allow
-            Allow from all
+            Require all granted
         &lt;/Proxy&gt;
         SSLProxyEngine on
         SSLEngine on

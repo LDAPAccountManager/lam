@@ -1,5 +1,6 @@
 September 2018 6.5
   - Password change possible via LDAP EXOP operation (set LDAP_EXOP as password hash)
+  - Dropped suppurt for Apache 2.2
   - Upload: allow to overwrite existing accounts
   - Kolab updates
   - LAM Pro:
