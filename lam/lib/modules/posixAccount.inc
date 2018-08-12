@@ -108,8 +108,8 @@ class posixAccount extends baseModule implements passwordService {
 		$this->messages['uid'][6] = array('WARN', _('Host name'), _('Host name in use (%s). Selected next free host name.'));
 		$this->messages['uid'][7] = array('ERROR', _('Account %s:') . ' posixAccount_userName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['uid'][8] = array('ERROR', _('Account %s:') . ' posixAccount_hostName', _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['uid'][9] = array('ERROR', _('Account %s:') . ' posixAccount_userName', _('User name already exists!') . ' ' . _('You might want to use %s instead of %s.') . ' %s');
-		$this->messages['uid'][10] = array('ERROR', _('Account %s:') . ' posixAccount_hostName', _('Host name already exists!') . ' ' . _('You might want to use %s instead of %s.') . ' %s');
+		$this->messages['uid'][9] = array('WARN', _('Account %s:') . ' posixAccount_userName', _('User name already exists!') . ' ' . _('You might want to use %s instead of %s.') . ' %s');
+		$this->messages['uid'][10] = array('WARN', _('Account %s:') . ' posixAccount_hostName', _('Host name already exists!') . ' ' . _('You might want to use %s instead of %s.') . ' %s');
 		$this->messages['gidNumber'][0] = array('ERROR', _('Account %s:') . ' posixAccount_group', _('LAM was unable to find a group with this name!'));
 		$this->messages['gidNumber'][1] = array('ERROR', _('Account %s:') . ' posixAccount_group', _('This GID number is invalid! Please provide either a number or a group name.'));
 		$this->messages['gidNumber'][2] = array('INFO', _('GID number'), _('GID number has changed. To keep file ownership you have to run the following command as root: \'find / -gid %s -uid %s -exec chgrp %s {} \;\''));
@@ -2599,7 +2599,7 @@ class posixAccount extends baseModule implements passwordService {
 						htmlspecialchars($existingUsers[$rawAccount[$ids['posixAccount_userName']]])));
 					$errors[] = $errMsg;
 				}
-				elseif (get_preg($rawAccount[$ids['posixAccount_userName']], 'username')) {
+				if (get_preg($rawAccount[$ids['posixAccount_userName']], 'username')) {
 					$partialAccounts[$i]['uid'] = $rawAccount[$ids['posixAccount_userName']];
 				}
 				else {
@@ -2709,7 +2709,7 @@ class posixAccount extends baseModule implements passwordService {
 						htmlspecialchars($existingUsers[$rawAccount[$ids['posixAccount_userName']]])));
 					$errors[] = $errMsg;
 				}
-				elseif (get_preg($rawAccount[$ids['posixAccount_hostName']], 'hostname')) {
+				if (get_preg($rawAccount[$ids['posixAccount_hostName']], 'hostname')) {
 					$partialAccounts[$i]['uid'] = $rawAccount[$ids['posixAccount_hostName']];
 					$partialAccounts[$i]['cn'] = $rawAccount[$ids['posixAccount_hostName']];
 				}
