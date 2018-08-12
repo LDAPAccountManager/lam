@@ -870,11 +870,15 @@ class imapAccess extends baseModule {
 			$imapConnection = 0;//default state is false
 			if ($imap_admin_password) {
 				$imapConnection = @imap_open("{" . $imap_server_address . "}", $imap_admin_user, $imap_admin_password, OP_HALFOPEN, 1);
-				$createErrors = $this->createMailbox($imapConnection, $uid, $email_domain);
-				$errors = array_merge($errors, $createErrors);
-				if (empty($createErrors)) {
-					$quotaErrors = $this->setQuota($imapConnection, $uid, $email_domain, $limit);
-					$errors = array_merge($errors, $quotaErrors);
+				$prefix = $this->getMailboxPrefix();
+				$list = imap_list($imapConnection, "{" . $imap_server_address . "}", $prefix . $this->getSep() . $uid);
+				if (empty($list)) {
+					$createErrors = $this->createMailbox($imapConnection, $uid, $email_domain);
+					$errors = array_merge($errors, $createErrors);
+					if (empty($createErrors)) {
+						$quotaErrors = $this->setQuota($imapConnection, $uid, $email_domain, $limit);
+						$errors = array_merge($errors, $quotaErrors);
+					}
 				}
 			}
 			if ($imapConnection) {
