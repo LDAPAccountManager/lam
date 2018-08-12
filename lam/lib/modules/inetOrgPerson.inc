@@ -97,7 +97,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$this->messages['cn'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_cn', _('Please enter a valid common name!'));
 		$this->messages['uid'][0] = array('ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['uid'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_userName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['uid'][3] = array('ERROR', _('Account %s:') . ' inetOrgPerson_userName', _('User name already exists!'));
+		$this->messages['uid'][3] = array('WARN', _('Account %s:') . ' inetOrgPerson_userName', _('User name already exists!'));
 		$this->messages['manager'][0] = array('ERROR', _('Account %s:') . ' inetOrgPerson_manager', _('This is not a valid DN!'));
 		$this->messages['file'][0] = array('ERROR', _('No file selected.'));
 		$this->messages['file'][2] = array('ERROR', _('Unable to process this file.'));
@@ -2272,7 +2272,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 						array_push($errMsg, array($i));
 						$errors[] = $errMsg;
 					}
-					elseif (get_preg($rawAccounts[$i][$ids['inetOrgPerson_userName']], 'username')) {
+					if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_userName']], 'username')) {
 						$partialAccounts[$i]['uid'] = $rawAccounts[$i][$ids['inetOrgPerson_userName']];
 					}
 					else {
