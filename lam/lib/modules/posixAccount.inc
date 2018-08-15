@@ -1161,7 +1161,7 @@ class posixAccount extends baseModule implements passwordService {
 		else {
 			// Change uid to a new uid until a free uid is found
 			while ($this->userNameExists($this->attributes['uid'][0], $typeId)) {
-				$this->attributes['uid'][0] = $this->getNextUserName($this->attributes['uid'][0]);
+				$this->attributes['uid'][0] = $this->getNextUserName($this->attributes['uid'][0], array_keys($this->getAccountContainer()->getAccountModules()));
 			}
 		}
 		// Show warning if LAM has changed username
@@ -1571,7 +1571,7 @@ class posixAccount extends baseModule implements passwordService {
 					$firstSuggestion = $this->attributes['uid'][0];
 					if (!empty($this->attributes['uid'][0]) && $this->userNameExists($this->attributes['uid'][0], $typeId)) {
 						while ($this->userNameExists($this->attributes['uid'][0], $typeId)) {
-							$this->attributes['uid'][0] = $this->getNextUserName($this->attributes['uid'][0]);
+							$this->attributes['uid'][0] = $this->getNextUserName($this->attributes['uid'][0], array_keys($this->getAccountContainer()->getAccountModules()));
 						}
 						$users = $this->getUserNames($typeId);
 						$msg = new htmlStatusMessage($this->messages['uid'][5][0],
@@ -2592,7 +2592,7 @@ class posixAccount extends baseModule implements passwordService {
 				if (array_key_exists($rawAccount[$ids['posixAccount_userName']], $existingUsers)) {
 					$userName = $rawAccount[$ids['posixAccount_userName']];
 					while (array_key_exists($userName, $existingUsers)) {
-						$userName = $this->getNextUserName($userName);
+						$userName = $this->getNextUserName($userName, $selectedModules);
 					}
 					$errMsg = $this->messages['uid'][9];
 					array_push($errMsg, array($i, $userName, $rawAccount[$ids['posixAccount_userName']],
@@ -2702,11 +2702,11 @@ class posixAccount extends baseModule implements passwordService {
 				if (array_key_exists($rawAccount[$ids['posixAccount_hostName']], $existingUsers)) {
 					$userName = $rawAccount[$ids['posixAccount_hostName']];
 					while (array_key_exists($userName, $existingUsers)) {
-						$userName = $this->getNextUserName($userName);
+						$userName = $this->getNextUserName($userName, $selectedModules);
 					}
 					$errMsg = $this->messages['uid'][10];
 					array_push($errMsg, array($i, $userName, $rawAccount[$ids['posixAccount_hostName']],
-						htmlspecialchars($existingUsers[$rawAccount[$ids['posixAccount_userName']]])));
+						htmlspecialchars($existingUsers[$rawAccount[$ids['posixAccount_hostName']]])));
 					$errors[] = $errMsg;
 				}
 				if (get_preg($rawAccount[$ids['posixAccount_hostName']], 'hostname')) {
@@ -3746,23 +3746,23 @@ class posixAccount extends baseModule implements passwordService {
 	 * <br>Attention: This user name might still be in use. This needs to be checked separately.
 	 *
 	 * @param String $userName user name
+	 * @param string[] $moduleNames list of account module names
 	 * @return String new user name
 	 */
-	protected function getNextUserName($userName) {
-		if ($this->get_scope()=='host') {
+	protected function getNextUserName($userName, $moduleNames) {
+		if ($this->get_scope() == 'host' && in_array('sambaSamAccount', $moduleNames)) {
 			$userName = substr($userName, 0, -1);
 		}
 		// get last character of username
 		$lastchar = substr($userName, strlen($userName) - 1, 1);
+		$suffix = '';
+		if (($this->get_scope() == 'host') && in_array('sambaSamAccount', $moduleNames)) {
+			$suffix = '$';
+		}
 		// Last character is no number
 		if ( !preg_match('/^([0-9])+$/', $lastchar)) {
 			// Last character is no number. Therefore we only have to add "2" to it.
-			if ($this->get_scope()=='host') {
-				$userName = $userName . '2$';
-			}
-			else {
-				$userName = $userName . '2';
-			}
+			$userName = $userName . '2' . $suffix;
 		}
 		else {
 			/* Last character is a number -> we have to increase the number until we've
@@ -3786,12 +3786,7 @@ class posixAccount extends baseModule implements passwordService {
 			$firstchars = substr($userName, 0, $i + 1);
 			$lastchars = substr($userName, $i + 1, strlen($userName) - $i);
 			// Put username together
-			if ($this->get_scope()=='host') {
-				$userName = $firstchars . (intval($lastchars) + 1) . "$";
-			}
-			else {
-				$userName = $firstchars . (intval($lastchars) + 1);
-			}
+			$userName = $firstchars . (intval($lastchars) + 1) . $suffix;
 		}
 		return $userName;
 	}
