@@ -1,5 +1,6 @@
 <?php
 use LAM\TYPES\ConfiguredType;
+use phpseclib\Net\SFTP\Stream;
 
 /*
 
@@ -107,7 +108,12 @@ class lamList {
 	/** prefix for virtual (non-LDAP) attributes */
 	const VIRTUAL_ATTRIBUTE_PREFIX = 'lam_virtual_';
 
-	const SERVER_SIDE_FILTER_ATTRIBUTES = array(
+	/**
+	 * List of attributes to filter on server side.
+	 *
+	 * @var string[]
+	 */
+	protected $serverSideFilterAttributes = array(
 		'cn', 'commonname', 'uid', 'memberuid', 'description',
 		'sn', 'surname', 'gn', 'givenname', 'company', 'mail'
 	);
@@ -1072,7 +1078,7 @@ class lamList {
 	 * @return bool filter server side
 	 */
 	protected function isAttributeFilteredByServer($attrName) {
-		return in_array(strtolower($attrName), lamList::SERVER_SIDE_FILTER_ATTRIBUTES);
+		return in_array(strtolower($attrName), $this->serverSideFilterAttributes);
 	}
 
 	/**
