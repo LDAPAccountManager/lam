@@ -2925,16 +2925,29 @@ class posixAccount extends baseModule implements passwordService {
 		// add users to group of names
 		elseif ($temp['counter'] < (sizeof($temp['groups']) + sizeof($temp['createHomes']) + sizeof($temp['dn_gon']))) {
 			$gonDn = $temp['dn_gon_keys'][$temp['counter'] - sizeof($temp['groups']) - sizeof($temp['createHomes'])];
-			$gonAttr = $temp['dn_gon'][$gonDn];
-			$success = @ldap_mod_add($_SESSION['ldap']->server(), $gonDn, $gonAttr);
-			$errors = array();
-			if (!$success) {
-				$errors[] = array(
-					"ERROR",
-					_("LAM was unable to modify group memberships for group: %s"),
-					getDefaultLDAPErrorString($_SESSION['ldap']->server()),
-					array($temp['groups'][$temp['counter']])
-				);
+			$gonAttrToAdd = $temp['dn_gon'][$gonDn];
+			$gonAttrNames = array_keys($gonAttrToAdd);
+			$gonAttrs = ldapGetDN($gonDn, $gonAttrNames);
+			foreach ($gonAttrNames as $gonAttrName) {
+				$gonAttrNameLower = strtolower($gonAttrName);
+				if (!empty($gonAttrs[$gonAttrNameLower])) {
+					$gonAttrToAdd[$gonAttrName] = array_delete($gonAttrs[$gonAttrNameLower], $gonAttrToAdd[$gonAttrName]);
+				}
+				if (empty($gonAttrToAdd[$gonAttrName])) {
+					unset($gonAttrToAdd[$gonAttrName]);
+				}
+			}
+			if (!empty($gonAttrToAdd)) {
+				$success = @ldap_mod_add($_SESSION['ldap']->server(), $gonDn, $gonAttrToAdd);
+				$errors = array();
+				if (!$success) {
+					$errors[] = array(
+						"ERROR",
+						_("LAM was unable to modify group memberships for group: %s"),
+						getDefaultLDAPErrorString($_SESSION['ldap']->server()),
+						array($temp['groups'][$temp['counter']])
+					);
+				}
 			}
 			$temp['counter']++;
 			return array (
