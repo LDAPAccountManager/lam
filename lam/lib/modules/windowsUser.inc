@@ -950,7 +950,7 @@ class windowsUser extends baseModule implements passwordService {
 		$this->messages['userPrincipalName'][0] = array('ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['userPrincipalName'][1] = array('ERROR', _('Account %s:') . ' windowsUser_userPrincipalName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['userPrincipalName'][2] = array('ERROR', _('User name already exists!'));
-		$this->messages['userPrincipalName'][3] = array('ERROR', _('Account %s:') . ' windowsUser_userPrincipalName', _('User name already exists!'));
+		$this->messages['userPrincipalName'][3] = array('WARN', _('Account %s:') . ' windowsUser_userPrincipalName', _('User name already exists!'));
 		$this->messages['cn'][0] = array('ERROR', _('Common name'), _('Please enter a valid common name!'));
 		$this->messages['cn'][1] = array('ERROR', _('Account %s:') . ' windowsUser_cn', _('Please enter a valid common name!'));
 		$this->messages['cn'][2] = array('WARN', _('Common name already exists.'));
