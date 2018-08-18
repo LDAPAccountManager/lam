@@ -2848,15 +2848,25 @@ class posixAccount extends baseModule implements passwordService {
 		// add users to groups
 		elseif ($temp['counter'] < sizeof($temp['groups'])) {
 			if (isset($temp['dn'][$temp['groups'][$temp['counter']]])) {
-				$success = @ldap_mod_add($_SESSION['ldap']->server(), $temp['dn'][$temp['groups'][$temp['counter']]], array('memberUID' => $temp['members'][$temp['groups'][$temp['counter']]]));
-				$errors = array();
-				if (!$success) {
-					$errors[] = array(
-						"ERROR",
-						_("LAM was unable to modify group memberships for group: %s"),
-						getDefaultLDAPErrorString($_SESSION['ldap']->server()),
-						array($temp['groups'][$temp['counter']])
-					);
+				$memberUid = $temp['members'][$temp['groups'][$temp['counter']]];
+				$dnToUpdate = $temp['dn'][$temp['groups'][$temp['counter']]];
+				$groupAttrs = ldapGetDN($dnToUpdate, array('memberUID'));
+				if (!empty($groupAttrs['memberuid'])) {
+					// skip members that are already set
+					$memberUid = array_delete($groupAttrs['memberuid'], $memberUid);
+				}
+				if (!empty($memberUid)) {
+					$toAdd = array('memberUID' => $memberUid);
+					$success = @ldap_mod_add($_SESSION['ldap']->server(), $dnToUpdate, $toAdd);
+					$errors = array();
+					if (!$success) {
+						$errors[] = array(
+							"ERROR",
+							_("LAM was unable to modify group memberships for group: %s"),
+							getDefaultLDAPErrorString($_SESSION['ldap']->server()),
+							array($temp['groups'][$temp['counter']])
+						);
+					}
 				}
 				$temp['counter']++;
 				return array (
