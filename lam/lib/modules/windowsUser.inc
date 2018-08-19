@@ -1,6 +1,7 @@
 <?php
 use \LAM\TYPES\TypeManager;
 use LAM\TYPES\ConfiguredType;
+use LAM\ImageUtils\ImageManipulationFactory;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -1829,11 +1830,11 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_crop'])) {
 			$messages = array();
-			$image = new Imagick();
 			try {
-				$image->readImageBlob($this->attributes['jpegPhoto'][0]);
-				$image->cropimage($_POST['croppingDataWidth'], $_POST['croppingDataHeight'], $_POST['croppingDataX'], $_POST['croppingDataY']);
-				$this->attributes['jpegPhoto'][0] = $image->getimageblob();
+				include_once dirname(__FILE__) . '/../imageutils.inc';
+				$imageManipulator = ImageManipulationFactory::getImageManipulator($this->attributes['jpegPhoto'][0]);
+				$imageManipulator->crop($_POST['croppingDataX'], $_POST['croppingDataY'], $_POST['croppingDataWidth'], $_POST['croppingDataHeight']);
+				$this->attributes['jpegPhoto'][0] = $imageManipulator->getImageData();
 			}
 			catch (Exception $e) {
 				$msg =  $this->messages['file'][2];
@@ -1864,18 +1865,17 @@ class windowsUser extends baseModule implements passwordService {
 			}
 			fclose($handle);
 			// convert to JPG
-			$image = new Imagick();
 			try {
-				$image->readImageBlob($data);
+				include_once dirname(__FILE__) . '/../imageutils.inc';
+				$imageManipulator = ImageManipulationFactory::getImageManipulator($data);
 				// resize if maximum values specified
 				if (!empty($this->moduleSettings['windowsUser_jpegPhoto_maxWidth'][0]) || !empty($this->moduleSettings['windowsUser_jpegPhoto_maxHeight'][0])) {
-					$maxWidth = empty($this->moduleSettings['windowsUser_jpegPhoto_maxWidth'][0]) ? $image->getimagewidth() : $this->moduleSettings['windowsUser_jpegPhoto_maxWidth'][0];
-					$maxHeight = empty($this->moduleSettings['windowsUser_jpegPhoto_maxHeight'][0]) ? $image->getimageheight() : $this->moduleSettings['windowsUser_jpegPhoto_maxHeight'][0];
-					$image->thumbnailimage($maxWidth, $maxHeight, true);
+					$maxWidth = empty($this->moduleSettings['windowsUser_jpegPhoto_maxWidth'][0]) ? $imageManipulator->getWidth() : $this->moduleSettings['windowsUser_jpegPhoto_maxWidth'][0];
+					$maxHeight = empty($this->moduleSettings['windowsUser_jpegPhoto_maxHeight'][0]) ? $imageManipulator->getHeight() : $this->moduleSettings['windowsUser_jpegPhoto_maxHeight'][0];
+					$imageManipulator->thumbnail($maxWidth, $maxHeight);
 				}
-				$image->setImageCompression(Imagick::COMPRESSION_JPEG);
-				$image->setImageFormat('jpeg');
-				$data = $image->getimageblob();
+				$imageManipulator->convertToJpeg();
+				$data = $imageManipulator->getImageData();
 			}
 			catch (Exception $e) {
 				$msg =  $this->messages['file'][2];
