@@ -1,5 +1,6 @@
 <?php
 use \LAM\TYPES\TypeManager;
+use LAM\ImageUtils\ImageManipulationFactory;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -1644,11 +1645,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_crop'])) {
 			$messages = array();
-			$image = new Imagick();
 			try {
-				$image->readImageBlob($this->attributes['jpegPhoto'][0]);
-				$image->cropimage($_POST['croppingDataWidth'], $_POST['croppingDataHeight'], $_POST['croppingDataX'], $_POST['croppingDataY']);
-				$this->attributes['jpegPhoto'][0] = $image->getimageblob();
+				include_once dirname(__FILE__) . '/../imageutils.inc';
+				$imageManipulator = ImageManipulationFactory::getImageManipulator($this->attributes['jpegPhoto'][0]);
+				$imageManipulator->crop($_POST['croppingDataX'], $_POST['croppingDataY'], $_POST['croppingDataWidth'], $_POST['croppingDataHeight']);
+				$this->attributes['jpegPhoto'][0] = $imageManipulator->getImageData();
 			}
 			catch (Exception $e) {
 				$msg =  $this->messages['file'][2];
@@ -1679,18 +1680,17 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			fclose($handle);
 			// convert to JPG
-			$image = new Imagick();
 			try {
-				$image->readImageBlob($data);
+				include_once dirname(__FILE__) . '/../imageutils.inc';
+				$imageManipulator = ImageManipulationFactory::getImageManipulator($data);
 				// resize if maximum values specified
 				if (!empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0]) || !empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0])) {
-					$maxWidth = empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0]) ? $image->getimagewidth() : $this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0];
-					$maxHeight = empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0]) ? $image->getimageheight() : $this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0];
-					$image->thumbnailimage($maxWidth, $maxHeight, true);
+					$maxWidth = empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0]) ? $imageManipulator->getWidth() : $this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0];
+					$maxHeight = empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0]) ? $imageManipulator->getHeight() : $this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0];
+					$imageManipulator->thumbnail($maxWidth, $maxHeight);
 				}
-				$image->setImageCompression(Imagick::COMPRESSION_JPEG);
-				$image->setImageFormat('jpeg');
-				$data = $image->getimageblob();
+				$imageManipulator->convertToJpeg();
+				$data = $imageManipulator->getImageData();
 			}
 			catch (Exception $e) {
 				$msg =  $this->messages['file'][2];
@@ -3392,10 +3392,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 			elseif (!empty($data) && (empty($attributes['jpegPhoto'][0]) || ($data != $attributes['jpegPhoto'][0]))) {
 				$moduleSettings = $this->selfServiceSettings->moduleSettings;
 				try {
-					$image = new Imagick();
-					$image->readimageblob($data);
-					$image->cropimage($_POST['croppingDataWidth'], $_POST['croppingDataHeight'], $_POST['croppingDataX'], $_POST['croppingDataY']);
-					$data = $image->getimageblob();
+					include_once dirname(__FILE__) . '/../imageutils.inc';
+					$imageManipulator = ImageManipulationFactory::getImageManipulator($data);
+					$imageManipulator->crop($_POST['croppingDataX'], $_POST['croppingDataY'], $_POST['croppingDataWidth'], $_POST['croppingDataHeight']);
+					$data = $imageManipulator->getImageData();
 					$data = inetOrgPerson::resizeAndConvertImage($data, $moduleSettings);
 					if (!empty($moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]) && ($moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0] < (strlen($data) / 1024))) {
 						$msg =  $this->messages['file'][3];
@@ -3527,18 +3527,16 @@ class inetOrgPerson extends baseModule implements passwordService {
 	 * @return array binary image data
 	 */
 	private static function resizeAndConvertImage($data, $settings) {
-		// convert to JPG if imagick extension is available
-		$image = new Imagick();
-		$image->readImageBlob($data);
+		include_once dirname(__FILE__) . '/../imageutils.inc';
+		$imageManipulator = ImageManipulationFactory::getImageManipulator($data);
 		// resize if maximum values specified
 		if (!empty($settings['inetOrgPerson_jpegPhoto_maxWidth'][0]) || !empty($settings['inetOrgPerson_jpegPhoto_maxHeight'][0])) {
-			$maxWidth = empty($settings['inetOrgPerson_jpegPhoto_maxWidth'][0]) ? $image->getimagewidth() : $settings['inetOrgPerson_jpegPhoto_maxWidth'][0];
-			$maxHeight = empty($settings['inetOrgPerson_jpegPhoto_maxHeight'][0]) ? $image->getimageheight() : $settings['inetOrgPerson_jpegPhoto_maxHeight'][0];
-			$image->thumbnailimage($maxWidth, $maxHeight, true);
+			$maxWidth = empty($settings['inetOrgPerson_jpegPhoto_maxWidth'][0]) ? $imageManipulator->getWidth() : $settings['inetOrgPerson_jpegPhoto_maxWidth'][0];
+			$maxHeight = empty($settings['inetOrgPerson_jpegPhoto_maxHeight'][0]) ? $imageManipulator->getHeight() : $settings['inetOrgPerson_jpegPhoto_maxHeight'][0];
+			$imageManipulator->thumbnail($maxWidth, $maxHeight);
 		}
-		$image->setImageCompression(Imagick::COMPRESSION_JPEG);
-		$image->setImageFormat('jpeg');
-		$data = $image->getimageblob();
+		$imageManipulator->convertToJpeg();
+		$data = $imageManipulator->getImageData();
 		return $data;
 	}
 
@@ -3618,12 +3616,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$handle = fopen($_FILES['qqfile']['tmp_name'], "r");
 			$data = fread($handle, 100000000);
 			fclose($handle);
-			$image = new Imagick();
 			try {
-				$image->readImageBlob($data);
-				$image->setImageCompression(Imagick::COMPRESSION_JPEG);
-				$image->setImageFormat('jpeg');
-				$data = $image->getimageblob();
+				include_once dirname(__FILE__) . '/../imageutils.inc';
+				$imageManipulator = ImageManipulationFactory::getImageManipulator($data);
+				$imageManipulator->convertToJpeg();
+				$data = $imageManipulator->getImageData();
 			}
 			catch (Exception $e) {
 				$result = array('success' => false, 'error' => htmlspecialchars($e->getMessage()));
