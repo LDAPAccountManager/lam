@@ -1,5 +1,6 @@
 September 2018 6.5
   - Password change possible via LDAP EXOP operation (set LDAP_EXOP as password hash, requires PHP 7.2)
+  - Support Imagick and GD
   - Dropped support for Apache 2.2
   - Upload: allow to overwrite existing accounts
   - Personal: photos can be printed in PDF export
