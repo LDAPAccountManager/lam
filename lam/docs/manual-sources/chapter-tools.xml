@@ -1,410 +1,407 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
-"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"> 
-  <chapter>
-    <title>Tools</title>
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+<chapter>
+  <title>Tools</title>
 
-    <para></para>
+  <para/>
 
-    <section id="a_accountProfile">
-      <title>Profile editor</title>
+  <section id="a_accountProfile">
+    <title>Profile editor</title>
 
-      <para>The account profiles are templates for your accounts. Here you can
-      specify default values which can then be loaded when you create
-      accounts. You may also load a template for an existing account to reset
-      it to default values. When you create a new account then LAM will always
-      load the profile named <emphasis role="bold">"default"</emphasis>. This
-      account profile can include default values for all your accounts.</para>
+    <para>The account profiles are templates for your accounts. Here you can
+    specify default values which can then be loaded when you create accounts.
+    You may also load a template for an existing account to reset it to
+    default values. When you create a new account then LAM will always load
+    the profile named <emphasis role="bold">"default"</emphasis>. This account
+    profile can include default values for all your accounts.</para>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/profileEditor2.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/profileEditor2.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
 
-      <para>You can enter the LDAP suffix, RDN identifier and various other
-      attributes depending on account type and activated modules.</para>
+    <para>You can enter the LDAP suffix, RDN identifier and various other
+    attributes depending on account type and activated modules.</para>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/profileEditor.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/profileEditor.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
 
-      <para><emphasis role="bold">Import/export:</emphasis></para>
+    <para><emphasis role="bold">Import/export:</emphasis></para>
 
-      <para>Profiles can be exported to and imported from other server
-      profiles.</para>
+    <para>Profiles can be exported to and imported from other server
+    profiles.</para>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/profileEditor3.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/profileEditor3.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/profileEditor4.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/profileEditor4.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
 
-      <para>There is a special export target called "*Global templates". All
-      profiles exported here will be copied to all other server profiles
-      (incl. new ones). But existing profiles with the same name are not
-      overwritten. So a profile in global templates is treated as default
-      profile for all server profiles.</para>
+    <para>There is a special export target called "*Global templates". All
+    profiles exported here will be copied to all other server profiles (incl.
+    new ones). But existing profiles with the same name are not overwritten.
+    So a profile in global templates is treated as default profile for all
+    server profiles.</para>
 
-      <para>Use this if you would like to setup default profiles that are
-      valid for all server profiles.</para>
+    <para>Use this if you would like to setup default profiles that are valid
+    for all server profiles.</para>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/profileEditor5.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
-    </section>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/profileEditor5.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </section>
 
-    <section>
-      <title>File upload</title>
+  <section>
+    <title>File upload</title>
 
-      <para>When you need to create lots of accounts then you can use LAM's
-      file upload to create them. LAM will read a CSV formatted file and
-      create the related LDAP entries. Please check the data in you CSV file
-      carefully. LAM will do less checks for the file upload than for single
-      account creation.</para>
+    <para>When you need to create lots of accounts then you can use LAM's file
+    upload to create them. LAM will read a CSV formatted file and create the
+    related LDAP entries. Please check the data in you CSV file carefully. LAM
+    will do less checks for the file upload than for single account
+    creation.</para>
 
-      <para>At the first page please select the account type and what
-      extensions should be activated.</para>
+    <para>At the first page please select the account type and what extensions
+    should be activated.</para>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/fileUpload1.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/fileUpload1.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
 
-      <para>The next page shows all available options for the file upload. You
-      will also find a sample CSV file which can be used as template for your
-      CSV file. All red options are required columns in the file. You need to
-      specify a value for each account.</para>
+    <para>The next page shows all available options for the file upload. You
+    will also find a sample CSV file which can be used as template for your
+    CSV file. All red options are required columns in the file. You need to
+    specify a value for each account.</para>
 
-      <para>When you upload the CSV file then LAM first does some checks on
-      this file. This includes syntax checks and if all required data was
-      entered. No changes in the LDAP directory are done at this time.</para>
+    <para>When you upload the CSV file then LAM first does some checks on this
+    file. This includes syntax checks and if all required data was entered. No
+    changes in the LDAP directory are done at this time.</para>
 
-      <para>If the checks were successful then LAM will ask again if you want
-      to create the accounts. You will also have the chance to check the
-      upload by viewing the changes in LDIF format.</para>
+    <para>If the checks were successful then LAM will ask again if you want to
+    create the accounts. You will also have the chance to check the upload by
+    viewing the changes in LDIF format.</para>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/fileUpload2.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
-    </section>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/fileUpload2.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </section>
 
-    <section>
-      <title id="toolMultiEdit">Multi edit</title>
+  <section>
+    <title id="toolMultiEdit">Multi edit</title>
 
-      <para>This tool allows you to modify a large list of LDAP entries in
-      batch mode. You can add new attributes/object classes, remove attributes
-      and set attributes to a specific value.</para>
+    <para>This tool allows you to modify a large list of LDAP entries in batch
+    mode. You can add new attributes/object classes, remove attributes and set
+    attributes to a specific value.</para>
 
-      <para>At the beginning, you need to specify where the entries are stored
-      that should be changed. You can select an account suffix, the tree
-      suffix or enter your own DN by selecting "Other".</para>
+    <para>At the beginning, you need to specify where the entries are stored
+    that should be changed. You can select an account suffix, the tree suffix
+    or enter your own DN by selecting "Other".</para>
 
-      <para>Next, enter an additional LDAP filter to limit the entries that
-      should be changed. E.g. use "(objectclass=inetOrgPerson)" to filter for
-      users. You may also enter e.g. "(!(objectClass=passwordSelfReset))" to
-      match all accounts that do not yet have the <link
-      linkend="passwordSelfResetUser">password self reset</link>
-      feature.</para>
+    <para>Next, enter an additional LDAP filter to limit the entries that
+    should be changed. E.g. use "(objectclass=inetOrgPerson)" to filter for
+    users. You may also enter e.g. "(!(objectClass=passwordSelfReset))" to
+    match all accounts that do not yet have the <link
+    linkend="passwordSelfResetUser">password self reset</link> feature.</para>
 
-      <literallayout>
+    <literallayout>
 </literallayout>
 
-      <para>Now, it is time to define the changes that should be done. The
-      following operations are possible:</para>
+    <para>Now, it is time to define the changes that should be done. The
+    following operations are possible:</para>
 
-      <itemizedlist>
-        <listitem>
-          <para>Add: Adds an attribute value if not yet existing. Please do
-          not use for single-value attributes that already have a
-          value.</para>
-        </listitem>
+    <itemizedlist>
+      <listitem>
+        <para>Add: Adds an attribute value if not yet existing. Please do not
+        use for single-value attributes that already have a value.</para>
+      </listitem>
 
-        <listitem>
-          <para>Modify: Sets an attribute to the given value. If the attribute
-          does not yet exist then it is added. If the attribute has multiple
-          values then all other values are removed.</para>
-        </listitem>
+      <listitem>
+        <para>Modify: Sets an attribute to the given value. If the attribute
+        does not yet exist then it is added. If the attribute has multiple
+        values then all other values are removed.</para>
+      </listitem>
 
-        <listitem>
-          <para>Delete: Deletes the specified value from this attribute. If
-          you leave the value field blank then all attribute values are
-          removed.</para>
-        </listitem>
-      </itemizedlist>
+      <listitem>
+        <para>Delete: Deletes the specified value from this attribute. If you
+        leave the value field blank then all attribute values are
+        removed.</para>
+      </listitem>
+    </itemizedlist>
 
-      <para>Please note that all actions are run as separate LDAP commands.
-      You cannot add an object class and a required attribute at the same
-      time.</para>
+    <para>Please note that all actions are run as separate LDAP commands. You
+    cannot add an object class and a required attribute at the same
+    time.</para>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/multiEdit1.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/multiEdit1.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
 
-      <para><emphasis role="bold">Dry run</emphasis></para>
+    <para><emphasis role="bold">Dry run</emphasis></para>
 
-      <para>You should always start with a dry run. It will not do any changes
-      to your LDAP directory but print out all modifications that will be
-      done. You will also be able to download the changes in LDIF format to
-      use with ldapmodify. This is useful if you want to adjust some actions
-      manually.</para>
+    <para>You should always start with a dry run. It will not do any changes
+    to your LDAP directory but print out all modifications that will be done.
+    You will also be able to download the changes in LDIF format to use with
+    ldapmodify. This is useful if you want to adjust some actions
+    manually.</para>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/multiEdit2.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/multiEdit2.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
 
-      <para><emphasis role="bold">Apply changes</emphasis></para>
+    <para><emphasis role="bold">Apply changes</emphasis></para>
 
-      <para>This will run the actions against your LDAP directory. You will
-      see which accounts are edited in the progress area and also if any
-      errors occured.</para>
+    <para>This will run the actions against your LDAP directory. You will see
+    which accounts are edited in the progress area and also if any errors
+    occured.</para>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/multiEdit3.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
-    </section>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/multiEdit3.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </section>
 
-    <section>
-      <title>OU editor</title>
+  <section>
+    <title>OU editor</title>
 
-      <para>This is a simple editor to add/delete organisational units in your
-      LDAP tree. This way you can structure the accounts.</para>
+    <para>This is a simple editor to add/delete organisational units in your
+    LDAP tree. This way you can structure the accounts.</para>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/ouEditor.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
-    </section>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/ouEditor.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </section>
 
-    <section id="pdfEditor">
-      <title>PDF editor</title>
+  <section id="pdfEditor">
+    <title>PDF editor</title>
 
-      <para>All accounts in LAM may be exported as PDF files. You can specify
-      the page structure and displayed information by editing the PDF
-      profiles.</para>
+    <para>All accounts in LAM may be exported as PDF files. You can specify
+    the page structure and displayed information by editing the PDF
+    profiles.</para>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/pdfEditor2.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/pdfEditor2.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
 
-      <para>When you export accounts to PDF then each account will get its own
-      page inside the PDF. There is a headline on each page where you can show
-      a page title. You may also add a logo to each page. To add more logos
-      please use the logo management on the PDF editor main page.</para>
+    <para>When you export accounts to PDF then each account will get its own
+    page inside the PDF. There is a headline on each page where you can show a
+    page title. You may also add a logo to each page. To add more logos please
+    use the logo management on the PDF editor main page.</para>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/pdfEditor.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/pdfEditor.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
 
-      <para>The main part is structured into sections of information. Each
-      section has a title. This can either be static text or the value of an
-      attribute. You may also insert a static text block as section. Sections
-      can be moved by using the arrows next to the section title.</para>
+    <para>The main part is structured into sections of information. Each
+    section has a title. This can either be static text or the value of an
+    attribute. You may also insert a static text block as section. Sections
+    can be moved by using the arrows next to the section title.</para>
 
-      <para>Each section can contain multiple fields which usually represent
-      LDAP attributes. You can simply add new fields by selecting the field
-      name and its position. Then use the arrows to move the field inside the
-      section.</para>
+    <para>Each section can contain multiple fields which usually represent
+    LDAP attributes. You can simply add new fields by selecting the field name
+    and its position. Then use the arrows to move the field inside the
+    section.</para>
 
-      <literallayout>
+    <literallayout>
 </literallayout>
 
-      <para><emphasis role="bold">Import/export:</emphasis></para>
+    <para><emphasis role="bold">Import/export:</emphasis></para>
 
-      <para>PDF structures can be exported to and imported from other server
-      profiles.</para>
+    <para>PDF structures can be exported to and imported from other server
+    profiles.</para>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/pdfEditor3.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/pdfEditor4.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para>There is a special export target called "*Global templates". All PDF
+    structures exported here will be copied to all other server profiles
+    (incl. new ones). But existing PDF structures with the same name are not
+    overwritten. So a PDF structure in global templates is treated as default
+    structure for all server profiles.</para>
+
+    <para>Use this if you would like to setup default PDF structures that are
+    valid for all server profiles.</para>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/pdfEditor5.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para><emphasis role="bold">Logo management:</emphasis></para>
+
+    <para>You can upload image files to put a custom logo on the PDF files.
+    The image file name must end with .png or .jpg.</para>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/pdfEditor6.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </section>
+
+  <section>
+    <title>Schema browser</title>
+
+    <para>Here you browse the schema of your LDAP server. You can view what
+    object classes, attributes, syntaxes and matching rules are available.
+    This is useful if you need to check if a certain object class is
+    available.</para>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/schemaBrowser.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </section>
+
+  <section>
+    <title>Server information</title>
+
+    <para>This shows information and statistics about your LDAP server. This
+    includes the suffixes, used overlays, connection data and operation
+    statistics. You will need "cn=monitor" setup to see all details. Some data
+    may not be available depending on your LDAP server software.</para>
+
+    <para>Please see the following links how to setup "cn=monitor":</para>
+
+    <itemizedlist>
+      <listitem>
+        <para><ulink
+        url="http://www.openldap.org/doc/admin24/monitoringslapd.html">OpenLDAP</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink type=""
+        url="http://directory.fedoraproject.org/wiki/Howto:CN%3DMonitor_LDAP_Monitoring">389
+        server</ulink></para>
+      </listitem>
+    </itemizedlist>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/serverInfo.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </section>
+
+  <section>
+    <title>Tests</title>
+
+    <para>This allows you to check if your LDAP schema is compatible with LAM
+    and to find possible problems.</para>
+
+    <section>
+      <title>Lamdaemon test</title>
+
+      <para>LAM provides an external script to manage home directories and
+      quotas. You can test here if everything is setup correctly.</para>
+
+      <para>If you get an error like "no tty present and no askpass program
+      specified" then the path to the lamdaemon.pl may be wrong. Please see
+      the <link linkend="a_lamdaemon">lamdaemon installation
+      instructions</link> for setup details.</para>
 
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/pdfEditor3.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
-
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/pdfEditor4.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
-
-      <para>There is a special export target called "*Global templates". All
-      PDF structures exported here will be copied to all other server profiles
-      (incl. new ones). But existing PDF structures with the same name are not
-      overwritten. So a PDF structure in global templates is treated as
-      default structure for all server profiles.</para>
-
-      <para>Use this if you would like to setup default PDF structures that
-      are valid for all server profiles.</para>
-
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/pdfEditor5.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
-
-      <para><emphasis role="bold">Logo management:</emphasis></para>
-
-      <para>You can upload image files to put a custom logo on the PDF files.
-      The image file name must end with .png or .jpg and the size must not
-      exceed 2000x300px.</para>
-
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/pdfEditor6.png" />
+            <imagedata fileref="images/lamdaemonTest.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
     </section>
 
     <section>
-      <title>Schema browser</title>
+      <title>Schema test</title>
 
-      <para>Here you browse the schema of your LDAP server. You can view what
-      object classes, attributes, syntaxes and matching rules are available.
-      This is useful if you need to check if a certain object class is
-      available.</para>
+      <para>This will test if your LDAP schema supports all object classes and
+      attributes of the active LAM modules. If you get a message that
+      something is missing please check that you installed all <link
+      linkend="a_schema">required schemas</link>.</para>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/schemaBrowser.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
-    </section>
-
-    <section>
-      <title>Server information</title>
-
-      <para>This shows information and statistics about your LDAP server. This
-      includes the suffixes, used overlays, connection data and operation
-      statistics. You will need "cn=monitor" setup to see all details. Some
-      data may not be available depending on your LDAP server software.</para>
-
-      <para>Please see the following links how to setup "cn=monitor":</para>
-
-      <itemizedlist>
-        <listitem>
-          <para><ulink
-          url="http://www.openldap.org/doc/admin24/monitoringslapd.html">OpenLDAP</ulink></para>
-        </listitem>
-
-        <listitem>
-          <para><ulink type=""
-          url="http://directory.fedoraproject.org/wiki/Howto:CN%3DMonitor_LDAP_Monitoring">389
-          server</ulink></para>
-        </listitem>
-      </itemizedlist>
+      <para>If you get error messages about object class violations then this
+      test can tell you what is missing.</para>
 
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/serverInfo.png" />
+            <imagedata fileref="images/schemaTest.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
     </section>
-
-    <section>
-      <title>Tests</title>
-
-      <para>This allows you to check if your LDAP schema is compatible with
-      LAM and to find possible problems.</para>
-
-      <section>
-        <title>Lamdaemon test</title>
-
-        <para>LAM provides an external script to manage home directories and
-        quotas. You can test here if everything is setup correctly.</para>
-
-        <para>If you get an error like "no tty present and no askpass program
-        specified" then the path to the lamdaemon.pl may be wrong. Please see
-        the <link linkend="a_lamdaemon">lamdaemon installation
-        instructions</link> for setup details.</para>
-
-        <screenshot>
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/lamdaemonTest.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-      </section>
-
-      <section>
-        <title>Schema test</title>
-
-        <para>This will test if your LDAP schema supports all object classes
-        and attributes of the active LAM modules. If you get a message that
-        something is missing please check that you installed all <link
-        linkend="a_schema">required schemas</link>.</para>
-
-        <para>If you get error messages about object class violations then
-        this test can tell you what is missing.</para>
-
-        <screenshot>
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/schemaTest.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-      </section>
-    </section>
-  </chapter>
+  </section>
+</chapter>

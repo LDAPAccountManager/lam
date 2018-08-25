@@ -1,4 +1,6 @@
 <?php
+use LAM\ImageUtils\ImageManipulationFactory;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -754,15 +756,18 @@ class lamUserList extends lamList {
 			fwrite($outjpeg, $entry[$attribute][0]);
 			fclose ($outjpeg);
 			$photoFile = '../../tmp/' . $jpeg_filename;
-			$imgSize = getimagesize($photoFile);
+			include_once dirname(__FILE__) . '/../imageutils.inc';
+			$imageManipulator = ImageManipulationFactory::getImageManipulator($entry[$attribute][0]);
+			$imgHeight = $imageManipulator->getHeight();
+			$imageManipulator = null;
 			$minSize = 64;
-			if ($imgSize[0] < 64) {
-				$minSize = $imgSize[0];
+			if ($imgHeight < 64) {
+				$minSize = $imgHeight;
 			}
 			$imgTitle = _('Click to switch between thumbnail and original size.');
 			echo "<img id=\"img$imgNumber\" title=\"$imgTitle\" height=$minSize src=\"" . $photoFile . "\" alt=\"" . _('Photo') . "\">";
 			echo '<script type="text/javascript">';
-			echo "addResizeHandler(document.getElementById(\"img$imgNumber\"), $minSize, " . $imgSize[1] . ")";
+			echo "addResizeHandler(document.getElementById(\"img$imgNumber\"), $minSize, " . $imgHeight . ")";
 			echo '</script>';
 		}
 		elseif (($attribute == 'mail') || ($attribute == 'rfc822Mailbox')) {

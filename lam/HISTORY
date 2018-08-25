@@ -1,7 +1,8 @@
 September 2018 6.5
-  - Password change possible via LDAP EXOP operation (set LDAP_EXOP as password hash)
-  - Dropped suppurt for Apache 2.2
+  - Password change possible via LDAP EXOP operation (set LDAP_EXOP as password hash, requires PHP 7.2)
+  - Dropped support for Apache 2.2
   - Upload: allow to overwrite existing accounts
+  - Personal: photos can be printed in PDF export
   - Kolab updates
   - LAM Pro:
    -> Auto deletion of entries with dynamic directory services support (requires PHP 7.2).

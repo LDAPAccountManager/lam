@@ -81,13 +81,9 @@ if (! function_exists('utf8_decode') || !extension_loaded('xml')) {
 if (!extension_loaded('libxml')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no Lib XML support!", "Please install the Lib XML extension for PHP.");
 }
-// imagick
-if (!extension_loaded('imagick')) {
-	$criticalErrors[] = array("ERROR", "Your PHP has no imagick support.", "Please install the imagick extension for PHP.");
-}
-// check if PHP has GD support
-if (! function_exists('getimagesize')) {
-	$criticalErrors[] = array("ERROR", "Your PHP has no GD support!", "Please install the GD extension for PHP.");
+// imagick/GD
+if (!extension_loaded('imagick') && !function_exists('getimagesize')) {
+	$criticalErrors[] = array("ERROR", "Your PHP has no imagick or GD support.", "Please install the imagick or GD extension for PHP.");
 }
 // check if PHP has JSON support
 if (! function_exists('json_encode')) {
