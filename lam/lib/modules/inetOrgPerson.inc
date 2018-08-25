@@ -1,6 +1,7 @@
 <?php
 use \LAM\TYPES\TypeManager;
 use LAM\ImageUtils\ImageManipulationFactory;
+use LAM\PDF\PDFImage;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -555,6 +556,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
 			$return['PDF_fields']['initials'] = _('Initials');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidejpegPhoto')) {
+			$return['PDF_fields']['jpegPhoto'] = _('Photo');
 		}
 		// help Entries
 		$return['help'] = array (
@@ -2014,6 +2018,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		else if (isset($this->attributes['INFO.userPasswordClearText'])) {
 			$this->addPDFKeyValue($return, 'userPassword', _('Password'), $this->attributes['INFO.userPasswordClearText']);
 		}
+		$this->addPDFImage($return, 'jpegPhoto');
 		return $return;
 	}
 

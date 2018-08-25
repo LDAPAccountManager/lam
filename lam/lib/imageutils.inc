@@ -44,6 +44,20 @@ class ImageManipulationFactory {
 		if (extension_loaded('imagick')) {
 			return new ImageManipulatorImagick($imageData);
 		}
+		return new ImageManipulatorGd($imageData);
+	}
+
+	/**
+	 * Returns an image manipulator based on installed PHP modules.
+	 *
+	 * @param string $path path to image file
+	 * @return ImageManipulator manipulator
+	 */
+	public static function getImageManipulatorFromFile($path) {
+		$handle = fopen($path, "r");
+		$data = fread($handle, 100000000);
+		fclose($handle);
+		return ImageManipulationFactory::getImageManipulator($data);
 	}
 
 }
@@ -130,7 +144,7 @@ class ImageManipulatorImagick implements ImageManipulator {
 	 * @see \LAM\ImageUtils\ImageManipulator::getHeight()
 	 */
 	public function getHeight() {
-		$this->image->getimageheight();
+		return $this->image->getimageheight();
 	}
 
 	/**
@@ -138,7 +152,7 @@ class ImageManipulatorImagick implements ImageManipulator {
 	 * @see \LAM\ImageUtils\ImageManipulator::getWidth()
 	 */
 	public function getWidth() {
-		$this->image->getimagewidth();
+		return $this->image->getimagewidth();
 	}
 
 	/**
@@ -157,14 +171,18 @@ class ImageManipulatorImagick implements ImageManipulator {
 	public function crop($x, $y, $width, $height) {
 		$this->image->cropimage($width, $height, $x, $y);
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @see \LAM\ImageUtils\ImageManipulator::resize()
 	 */
 	public function thumbnail($width, $height) {
+		if (($this->getWidth() <= $width) && ($this->getHeight() <= $height)) {
+			// skip if smaller than target size
+			return;
+		}
 		$this->image->thumbnailimage($width, $height, true);
 	}
-
 
 	/**
 	 * {@inheritDoc}
@@ -176,5 +194,134 @@ class ImageManipulatorImagick implements ImageManipulator {
 
 }
 
+/**
+ * Manipulates images using gd library.
+ *
+ * @author Roland Gruber
+ */
+class ImageManipulatorGd implements ImageManipulator {
+
+	/**
+	 * Image
+	 *
+	 * @var resource image
+	 */
+	private $image;
+
+	/**
+	 * GD image type
+	 *
+	 * @var int image type
+	 */
+	private $type;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param string $imageData original image as binary string
+	 */
+	public function __construct($imageData) {
+		$this->image = imagecreatefromstring($imageData);
+		$info = getimagesizefromstring($imageData);
+		$this->type = $info[2];
+	}
+
+	/**
+	 * Destructor
+	 */
+	public function __destruct() {
+		if ($this->image != null) {
+			imagedestroy($this->image);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\ImageUtils\ImageManipulator::getHeight()
+	 */
+	public function getHeight() {
+		return imagesy($this->image);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\ImageUtils\ImageManipulator::getWidth()
+	 */
+	public function getWidth() {
+		return imagesx($this->image);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\ImageUtils\ImageManipulator::getAsJpeg()
+	 */
+	public function convertToJpeg() {
+		$this->type = IMAGETYPE_JPEG;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\ImageUtils\ImageManipulator::crop()
+	 */
+	public function crop($x, $y, $width, $height) {
+		$this->image = imagecrop($this->image, array(
+			'x' => $x,
+			'y' => $y,
+			'width' => $width,
+			'height' => $height
+		));
+	}
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\ImageUtils\ImageManipulator::resize()
+	 */
+	public function thumbnail($width, $height) {
+		if (($this->getWidth() <= $width) && ($this->getHeight() <= $height)) {
+			// skip if smaller than target size
+			return;
+		}
+		$thumbWidth = $this->getWidth();
+		$thumbHeight = $this->getHeight();
+		if ($thumbWidth > $width) {
+			$factor = $width / $thumbWidth;
+			$thumbWidth = $thumbWidth * $factor;
+			$thumbHeight = $thumbHeight * $factor;
+		}
+		if ($thumbHeight > $height) {
+			$factor = $height / $thumbHeight;
+			$thumbWidth = $thumbWidth * $factor;
+			$thumbHeight = $thumbHeight * $factor;
+		}
+		$thumbnail = imagecreatetruecolor($thumbWidth, $thumbHeight);
+		imagecopyresampled(
+			$thumbnail,
+			$this->image,
+			0, 0, 0, 0,
+			$thumbWidth,
+			$thumbHeight,
+			$this->getWidth(),
+			$this->getHeight());
+		$this->image = $thumbnail;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\ImageUtils\ImageManipulator::getImageData()
+	 */
+	public function getImageData() {
+		ob_start();
+		if ($this->type == IMAGETYPE_JPEG) {
+			imagejpeg($this->image);
+		}
+		else if ($this->type == IMAGETYPE_PNG) {
+			imagepng($this->image);
+		}
+		$output = ob_get_contents();
+		ob_clean();
+		return $output;
+	}
+
+}
 
 ?>

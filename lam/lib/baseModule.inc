@@ -3,6 +3,7 @@ use \LAM\PDF\PDFLabelValue;
 use \LAM\PDF\PDFTable;
 use LAM\TYPES\ConfiguredType;
 use function LAM\TYPES\getScopeFromTypeId;
+use LAM\PDF\PDFImage;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -844,6 +845,19 @@ abstract class baseModule {
 			return;
 		}
 		$result[get_class($this) . '_' . $name][] = $table;
+	}
+
+	/**
+	 * Adds an image to the PDF.
+	 *
+	 * @param array $result result array (entry will be added here)
+	 * @param String $attrName attribute name
+	 * @param PDFTable $table table
+	 */
+	public function addPDFImage(&$result, $attrName) {
+		if (isset($this->attributes[$attrName]) && (sizeof($this->attributes[$attrName]) > 0)) {
+			$result[get_class($this) . '_' . $attrName][] = new PDFImage($this->attributes[$attrName][0]);
+		}
 	}
 
 	/**

@@ -3,6 +3,7 @@ namespace LAM\PDF;
 
 use \htmlStatusMessage;
 use \LAMException;
+use \LAM\ImageUtils\ImageManipulationFactory;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
@@ -102,10 +103,11 @@ function getAvailableLogos() {
 	$dirHandle = opendir($dirPath);
 	while($file = readdir($dirHandle)) {
 		if(!is_dir($file) && $file != '.' && $file != '..' && preg_match('/\\.(jpg|png)$/i',$file)) {
-			$infos = getimagesize($dirPath . $file);
-			if($infos[0] <= 2000 && $infos[1] <= 300) {
-				array_push($return, array('filename' => $file, 'infos' => $infos));
-			}
+			include_once dirname(__FILE__) . '/imageutils.inc';
+			$imageManipulator = ImageManipulationFactory::getImageManipulatorFromFile($dirPath . $file);
+			$infos = array($imageManipulator->getWidth(), $imageManipulator->getHeight());
+			$imageManipulator = null;
+			array_push($return, array('filename' => $file, 'infos' => $infos));
 		}
 	}
 	sort($return);
@@ -169,18 +171,14 @@ function uploadPDFLogo($file, $name) {
 	if (!preg_match('/[a-zA-Z0-9_-]+\\.(png)|(jpg)/i', $name)) {
 		return new htmlStatusMessage('ERROR', _('Unable to upload logo file.'), _('The file name must end with ".png" or ".jpg".'));
 	}
-	$infos = getimagesize($file);
-	if ($infos[0] <= 2000 && $infos[1] <= 300) {
-		$dirPath = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/logos/';
-		$success = copy($file, $dirPath . '/' . $name);
-		if ($success) {
-			return new htmlStatusMessage('INFO', _('Uploaded logo file.'), $name);
-		}
-		else {
-			return new htmlStatusMessage('ERROR', _('Unable to upload logo file.'), $name);
-		}
+	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/logos/';
+	$success = copy($file, $dirPath . '/' . $name);
+	if ($success) {
+		return new htmlStatusMessage('INFO', _('Uploaded logo file.'), $name);
 	}
-	return new htmlStatusMessage('ERROR', _('Unable to upload logo file.'), _('The file must not exeed 2000x300px.'));
+	else {
+		return new htmlStatusMessage('ERROR', _('Unable to upload logo file.'), $name);
+	}
 }
 
 /**

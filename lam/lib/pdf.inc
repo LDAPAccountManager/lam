@@ -1,5 +1,7 @@
 <?php
 namespace LAM\PDF;
+use LAM\ImageUtils\ImageManipulationFactory;
+
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2004  Michael Duergner
@@ -144,6 +146,9 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 								else if ($valueEntry instanceof PDFTable) {
 									printTable($pdf, $valueEntry, $font);
 								}
+								else if ($valueEntry instanceof PDFImage) {
+									printImage($pdf, $valueEntry, $font);
+								}
 							}
 						}
 					}
@@ -229,6 +234,28 @@ function printTable(&$pdf, $table, $fontName) {
 		$pdf->Ln(LAMPDF_LINEHEIGHT);
 	}
 	$pdf->Ln(LAMPDF_LINEHEIGHT);
+}
+
+/**
+ * Prints a PDFLabelValue entry.
+ *
+ * @param LAMTCPDF $pdf PDF
+ * @param PDFImage $imageEntry entry
+ * @param string $fontName font name
+ */
+function printImage(&$pdf, $imageEntry, $fontName) {
+	include_once dirname(__FILE__) . '/imageutils.inc';
+	$imageManipulator = ImageManipulationFactory::getImageManipulator($imageEntry->getImageData());
+	$height = $imageManipulator->getHeight() / 2.9;
+	if ($height > 40) {
+		$height = 40;
+	}
+	$pdf->Image('@' . $imageManipulator->getImageData(), null, null, null, $height,
+			'JPG', null, 'T', true, 300, 'R',
+			false, false, 0, false, false, false);
+	$pdf->Ln($height);
+	$pdf->Ln(LAMPDF_LINEHEIGHT);
+	$imageManipulator = null;
 }
 
 /**
@@ -378,6 +405,44 @@ class PDFLabelValue implements PDFEntry {
 	 */
 	public function getHeadline() {
 		return $this->value;
+	}
+
+}
+
+/**
+ * Adds an image to the PDF file.
+ *
+ * @package PDF
+ * @author Roland Gruber
+ */
+class PDFImage implements PDFEntry {
+
+	private $binaryData;
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $binaryData image data
+	 */
+	public function __construct($binaryData) {
+		$this->binaryData = $binaryData;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\PDF\PDFEntry::getHeadline()
+	 */
+	public function getHeadline() {
+		return '';
+	}
+
+	/**
+	 * Returns the image data.
+	 *
+	 * @return string image data
+	 */
+	public function getImageData() {
+		return $this->binaryData;
 	}
 
 }
