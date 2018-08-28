@@ -3988,6 +3988,8 @@ class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
 	private $label;
 	/** help ID */
 	private $helpID;
+	/** help module */
+	private $helpModule = null;
 	/** render HTML of parent class */
 	private $renderParentHtml = false;
 
@@ -4001,7 +4003,13 @@ class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
 	function __construct($name, $label, $helpID = null) {
 		parent::__construct($name);
 		$this->label = htmlspecialchars($label);
-		$this->helpID = $helpID;
+		if (is_string($helpID)) {
+			$this->helpID = $helpID;
+		}
+		elseif (is_array($helpID)) {
+			$this->helpID = $helpID[0];
+			$this->helpModule = $helpID[1];
+		}
 	}
 
 	/**
