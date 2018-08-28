@@ -60,7 +60,7 @@ class toolServerInformation implements \LAMTool {
 	 * @return string link
 	 */
 	function getLink() {
-		return "serverInfo.php";
+		return "tools/serverInfo.php";
 	}
 
 	/**

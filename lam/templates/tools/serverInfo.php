@@ -28,9 +28,9 @@
 */
 
 /** security functions */
-include_once("../lib/security.inc");
+include_once("../../lib/security.inc");
 /** access to configuration options */
-include_once("../lib/config.inc");
+include_once("../../lib/config.inc");
 
 // start session
 startSecureSession();
@@ -94,7 +94,7 @@ foreach ($monitorResults as $monitorResult) {
 }
 $monitorEntries = array_change_key_case($monitorEntries, CASE_LOWER);
 
-include '../lib/adminHeader.inc';
+include '../../lib/adminHeader.inc';
 echo '<div class="user-bright smallPaddingContent">';
 $tabindex = 1;
 $container = new htmlResponsiveRow();
@@ -364,6 +364,6 @@ elseif (isset($monitorEntries['cn=monitor']['opsinitiated'])) {
 parseHtml(null, $container, array(), true, $tabindex, 'user');
 
 echo '</div>';
-include '../lib/adminFooter.inc';
+include '../../lib/adminFooter.inc';
 
 ?>

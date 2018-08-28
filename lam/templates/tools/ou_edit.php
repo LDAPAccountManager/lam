@@ -40,13 +40,13 @@ use \htmlGroup;
 */
 
 /** security functions */
-include_once("../lib/security.inc");
+include_once("../../lib/security.inc");
 /** access to configuration data */
-include_once("../lib/config.inc");
+include_once("../../lib/config.inc");
 /** access LDAP server */
-include_once("../lib/ldap.inc");
+include_once("../../lib/ldap.inc");
 /** used to print status messages */
-include_once("../lib/status.inc");
+include_once("../../lib/status.inc");
 
 // start session
 startSecureSession();
@@ -118,7 +118,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 		$info = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 		if ($sr && $info['count'] == 0) {
 			// print header
-			include 'main_header.php';
+			include '../main_header.php';
 			echo '<div class="user-bright smallPaddingContent">';
 			echo "<form action=\"ou_edit.php\" method=\"post\">\n";
 			$tabindex = 1;
@@ -142,7 +142,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 			parseHtml(null, $container, array(), false, $tabindex, 'user');
 			echo "</form>";
 			echo '</div>';
-			include 'main_footer.php';
+			include '../main_footer.php';
 			exit();
 		}
 		else {
@@ -161,7 +161,7 @@ display_main($message, $error);
  */
 function display_main($message, $error) {
 	// display main page
-	include '../lib/adminHeader.inc';
+	include '../../lib/adminHeader.inc';
 	echo '<div class="user-bright smallPaddingContent">';
 	echo "<form action=\"ou_edit.php\" method=\"post\">\n";
 
@@ -230,5 +230,5 @@ function display_main($message, $error) {
 	parseHtml(null, $container, array(), false, $tabindex, 'user');
 	echo ("</form>\n");
 	echo '</div>';
-	include '../lib/adminFooter.inc';
+	include '../../lib/adminFooter.inc';
 }

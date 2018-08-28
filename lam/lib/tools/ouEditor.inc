@@ -60,7 +60,7 @@ class toolOUEditor implements \LAMTool {
 	 * @return string link
 	 */
 	function getLink() {
-		return "ou_edit.php";
+		return "tools/ou_edit.php";
 	}
 
 	/**

@@ -60,7 +60,7 @@ class toolMultiEdit implements \LAMTool {
 	 * @return string link
 	 */
 	function getLink() {
-		return "multiEdit.php";
+		return "tools/multiEdit.php";
 	}
 
 	/**

@@ -4,10 +4,8 @@ use \htmlTable;
 use \htmlTitle;
 use \htmlSelect;
 use \htmlOutputText;
-use \htmlHelpLink;
 use \htmlInputField;
 use \htmlSubTitle;
-use \htmlTableExtendedInputField;
 use \htmlButton;
 use \htmlStatusMessage;
 use \htmlSpacer;
@@ -50,13 +48,13 @@ use \htmlResponsiveTable;
 */
 
 /** security functions */
-include_once("../lib/security.inc");
+include_once("../../lib/security.inc");
 /** access to configuration data */
-include_once("../lib/config.inc");
+include_once("../../lib/config.inc");
 /** access LDAP server */
-include_once("../lib/ldap.inc");
+include_once("../../lib/ldap.inc");
 /** used to print status messages */
-include_once("../lib/status.inc");
+include_once("../../lib/status.inc");
 
 // start session
 startSecureSession();
@@ -95,7 +93,7 @@ else {
  */
 function displayStartPage() {
 	// display main page
-	include '../lib/adminHeader.inc';
+	include '../../lib/adminHeader.inc';
 	echo '<div class="user-bright smallPaddingContent">';
 	echo "<form action=\"multiEdit.php\" method=\"post\">\n";
 	$errors = array();
@@ -205,7 +203,7 @@ function displayStartPage() {
 	parseHtml(null, $container, array(), false, $tabindex, 'user');
 	echo ("</form>\n");
 	echo '</div>';
-	include '../lib/adminFooter.inc';
+	include '../../lib/adminFooter.inc';
 }
 
 /**
@@ -465,10 +463,10 @@ function dryRun() {
 	$container->addVerticalSpace('20px');
 	// store LDIF
 	$filename = 'ldif' . getRandomNumber() . '.ldif';
-	$out = @fopen(dirname(__FILE__) . '/../tmp/' . $filename, "wb");
+	$out = @fopen(dirname(__FILE__) . '/../../tmp/' . $filename, "wb");
 	fwrite($out, $ldif);
 	$container->addElement(new htmlOutputText(_('LDIF file')), true);
-	$ldifLink = new htmlLink($filename, '../tmp/' . $filename);
+	$ldifLink = new htmlLink($filename, '../../tmp/' . $filename);
 	$ldifLink->setTargetWindow('_blank');
 	$container->addElement($ldifLink, true);
 	$container->addVerticalSpace('20px');
