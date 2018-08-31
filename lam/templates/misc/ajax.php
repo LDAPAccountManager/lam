@@ -1,5 +1,6 @@
 <?php
 namespace LAM\AJAX;
+use \LAM\TOOLS\IMPORT_EXPORT\Importer;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -91,7 +92,15 @@ class Ajax {
 		if ($function == 'passwordChange') {
 			$this->managePasswordChange($jsonInput);
 		}
-		elseif ($function == 'upload') {
+		elseif ($function === 'import') {
+			include_once('../../lib/import.inc');
+			$importer = new Importer();
+			ob_start();
+			$jsonOut = $importer->doImport();
+			ob_end_clean();
+			echo $jsonOut;
+		}
+		elseif ($function === 'upload') {
 			include_once('../../lib/upload.inc');
 			$typeManager = new \LAM\TYPES\TypeManager();
 			$uploader = new \LAM\UPLOAD\Uploader($typeManager->getConfiguredType($_GET['typeId']));

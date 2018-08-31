@@ -901,6 +901,43 @@ window.lam.tools.schema.select = function() {
 	});
 };
 
+window.lam.import = window.lam.import || {};
+
+/**
+ * Starts the import process.
+ *
+ * @param tokenName name of CSRF token
+ * @param tokenValue value of CSRF token
+ */
+window.lam.import.startImport = function(tokenName, tokenValue) {
+	jQuery(document).ready(function() {
+		var output = jQuery('#importResults');
+		var data = {
+			jsonInput: ''
+		};
+		data[tokenName] = tokenValue;
+		jQuery.ajax({
+			url: '../misc/ajax.php?function=import',
+			method: 'POST',
+			data: data
+		})
+		.done(function(jsonData){
+			if (jsonData.status == 'done') {
+				jQuery('#progressbarImport').hide();
+				jQuery('#btn_submitImportCancel').hide();
+				jQuery('#statusImportInprogress').hide();
+				jQuery('#statusImportDone').show();
+			}
+			else {
+				jQuery('#progressbarImport').progressbar({
+					value: jsonData.progress
+				});
+				window.lam.import.startImport(tokenName, tokenValue);
+			}
+		});
+	});
+};
+
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();
 	window.lam.form.autoTrim();

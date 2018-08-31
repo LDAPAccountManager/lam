@@ -330,7 +330,7 @@ $helpArray = array (
 					"Text" => _("This will create a new organisational unit under the selected one.")),
 				"602" => array ("Headline" => _("OU-Editor") . " - " . _("Delete organisational unit"),
 					"Text" => _("This will delete the selected organisational unit. The OU has to be empty.")),
-				// 700 - 799
+				// 700 - 749
 				// multi edit tool
 				"700" => array ("Headline" => _('LDAP suffix'),
 					"Text" => _('Please select the suffix where changes should be done.')),
@@ -338,6 +338,10 @@ $helpArray = array (
 					"Text" => _('Use this to enter an additional LDAP filter (e.g. "(cn!=admin)") to reduce the number of entries to modify.')),
 				"702" => array ("Headline" => _('Operations'),
 					"Text" => _('Please specify which attributes should be changed. The modify operation will also add an value if the attribute does not yet exist. To delete all values of an attribute please leave the value field empty.')),
+				// 750 - 799
+				// import/export
+				"750" => array ("Headline" => _('LDIF data'),
+					"Text" => _('The input data must be formatted in LDIF format.')),
 				// 800 - 899
 				// jobs
 				'800' => array(
