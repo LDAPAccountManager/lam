@@ -1,5 +1,7 @@
 <?php
 namespace LAM\TOOLS\IMPORT_EXPORT;
+use \htmlStatusMessage;
+use \LAMException;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -39,50 +41,139 @@ include_once('ldap.inc');
  */
 class Importer {
 
-	const SESSION_KEY_ENTRIES = 'import_entries';
+	const SESSION_KEY_TASKS = 'import_tasks';
 	const SESSION_KEY_COUNT = 'import_count';
 	const STATUS = 'status';
 	const PROGRESS = 'progress';
 	const DATA = 'data';
 	const TIME_LIMIT = 10;
+	const KEY = 0;
+	const VALUE = 1;
+	const CHANGETYPE = 'changeType';
+
+	/**
+	 * Extracts the single entries in the file.
+	 *
+	 * @param string[] $lines LDIF lines
+	 * @return string|array array of string[]
+	 * @throws LAMException invalid format
+	 */
+	private function extractImportChunks($lines) {
+		$entries = array();
+		$currentEntry = array();
+		foreach ($lines as $line) {
+			if (substr(trim($line), 0, 1) === '#') {
+				// skip comments
+				continue;
+			}
+			if (empty(trim($line))) {
+				// end of entry
+				if (!empty($currentEntry)) {
+					$entries[] = $currentEntry;
+					$currentEntry = array();
+				}
+			}
+			elseif (substr($line, 0, 1) === ' ') {
+				// append to last line if starting with a space
+				if (empty($currentEntry)) {
+					throw new LAMException(_('Invalid data'), htmlspecialchars($line));
+				}
+				else {
+					$currentEntry[sizeof($currentEntry) - 1] .= substr($line, 1);
+				}
+			}
+			else {
+				$parts = explode(':', $line, 2);
+				if (sizeof($parts) < 2) {
+					throw new LAMException(_('Invalid data'), htmlspecialchars($line));
+				}
+				$currentEntry[] = $line;
+			}
+		}
+		if (!empty($currentEntry)) {
+			$entries[] = $currentEntry;
+		}
+		return $entries;
+	}
+
+	/**
+	 * Converts the lines to LDAP import tasks.
+	 *
+	 * @param string[] $lines import lines
+	 * @throws LAMException if invalid format was found
+	 * @return ImporterTask[] tasks
+	 */
+	public function getTasks($lines) {
+		$chunks = $this->extractImportChunks($lines);
+		$tasks = $this->convertToTasks($chunks);
+		return $tasks;
+	}
 
 	/**
 	 * Processes the import data stored in session.
 	 */
 	public function doImport() {
-		$entries = &$_SESSION[Importer::SESSION_KEY_ENTRIES];
+		$data = '';
+		$tasks = &$_SESSION[Importer::SESSION_KEY_TASKS];
 		// check if any actions are needed at all
-		if (empty($entries)) {
-			return $this->getStatus();
+		if (empty($tasks)) {
+			return $this->getStatus($data);
 		}
 		$endTime = $this->getEndTime();
-		while ((!empty($entries)) && ($endTime > time())) {
-			$this->continueImport($entries);
+		while ((!empty($tasks)) && ($endTime > time())) {
+			$task = array_shift($tasks);
+			try {
+				$data .= $task->run();
+			}
+			catch (LAMException $e) {
+				return $this->stopImport($data, $e);
+			}
 		}
-		return $this->getStatus();
+		return $this->getStatus($data);
+	}
+
+	/**
+	 * Stops the import process because of an exception.
+	 *
+	 * @param string $data HTML output
+	 * @param LAMException $e exception
+	 * @return string JSON status
+	 */
+	private function stopImport($data, LAMException $e) {
+		$data .= Importer::formatMessage('ERROR', $e->getTitle(), $e->getMessage());
+		if (isset($_SESSION[Importer::SESSION_KEY_TASKS])) {
+			unset($_SESSION[Importer::SESSION_KEY_TASKS]);
+		}
+		$status = array(
+			Importer::STATUS => 'failed',
+			Importer::DATA => $data
+		);
+		return json_encode($status);
 	}
 
 	/**
 	 * Returns the current status as JSON.
 	 *
+	 * @param string $data HTML output to display
 	 * @return string JSON status
 	 */
-	private function getStatus() {
-		if (empty($entries)) {
-			if (isset($_SESSION[Importer::SESSION_KEY_ENTRIES])) {
-				unset($_SESSION[Importer::SESSION_KEY_ENTRIES]);
+	private function getStatus($data) {
+		if (empty($_SESSION[Importer::SESSION_KEY_TASKS])) {
+			if (isset($_SESSION[Importer::SESSION_KEY_TASKS])) {
+				unset($_SESSION[Importer::SESSION_KEY_TASKS]);
 			}
 			$status = array(
-				Importer::STATUS => 'done'
+				Importer::STATUS => 'done',
+				Importer::DATA => $data
 			);
 			return json_encode($status);
 		}
-		$progress = (sizeof($_SESSION[Importer::SESSION_KEY_ENTRIES]) / $_SESSION[Importer::SESSION_KEY_COUNT]) * 100.0;
+		$progress = (sizeof($_SESSION[Importer::SESSION_KEY_TASKS]) / $_SESSION[Importer::SESSION_KEY_COUNT]) * 100.0;
 		$progress = floor(100 - $progress);
 		$status = array(
 			Importer::STATUS => 'inProgress',
 			Importer::PROGRESS => $progress,
-			Importer::DATA => ''
+			Importer::DATA => $data
 		);
 		return json_encode($status);
 	}
@@ -108,9 +199,159 @@ class Importer {
 	 * Continues the import with processing of a single entry.
 	 *
 	 * @param array[] $entries import entries
+	 * @return ImporterTask[] tasks
 	 */
-	private function continueImport(&$entries) {
-		$entry = array_shift($entries);
+	private function convertToTasks($entries) {
+		$tasks = array();
+		$count = sizeof($entries);
+		for ($i = 0; $i < $count; $i++) {
+			$entry = $entries[$i];
+			$firstParts = explode(':', $entry[0], 2);
+			if ($firstParts[Importer::KEY] == 'version') {
+				if ($i > 0) {
+					// allow version only as first chunk
+					throw new LAMException(_('Invalid data'), _('Duplicate version entry found.'));
+				}
+				$this->processVersion($entry);
+			}
+			elseif ($firstParts[Importer::KEY] == 'dn') {
+				$tasks[] = $this->processDnEntry($entry);
+			}
+			else {
+				throw new LAMException(_('A valid dn line is required'), htmlspecialchars($entry[0]));
+			}
+		}
+		return $tasks;
+	}
+
+	/**
+	 * Checks a version entry.
+	 *
+	 * @param string[] $entry entry
+	 * @throws LAMException if version is invalid
+	 */
+	private function processVersion($entry) {
+		$keyValue = $this->getLineKeyValue($entry[0]);
+		if (($keyValue[Importer::VALUE] != '1') || (sizeof($entry) > 1)) {
+			$escapedLines = array_map('htmlspecialchars', $entry);
+			throw new LAMException(_('LDIF import only supports version 1.'), implode('<br>', $escapedLines));
+		}
+	}
+
+	/**
+	 * Checks a dn entry.
+	 *
+	 * @param string[] $entry entry
+	 * @return ImporterTask task
+	 * @throws LAMException if invalid format
+	 */
+	private function processDnEntry($entry) {
+		$dnLine = array_shift($entry);
+		$keyValue = $this->getLineKeyValue($dnLine);
+		$dn = $keyValue[Importer::VALUE];
+		if (empty($entry)) {
+			throw new LAMException(_('Invalid data'), htmlspecialchars($dnLine));
+		}
+		$firstAttributeLine = array_shift($entry);
+		$firstAttribute = $this->getLineKeyValue($firstAttributeLine);
+		if ($firstAttribute[Importer::KEY] != Importer::CHANGETYPE) {
+			// complete DN
+			$attributes = array(
+				$firstAttribute[Importer::KEY] => array($firstAttribute[Importer::VALUE])
+			);
+			foreach ($entry as $attributeLine) {
+				$attribute = $this->getLineKeyValue($attributeLine);
+				$attributes[$attribute[Importer::KEY]][] = $attribute[Importer::VALUE];
+			}
+			return new AddEntryTask($dn, $attributes);
+		}
+	}
+
+	/**
+	 * Returns the HTML for an error message.
+	 *
+	 * @param string $type message type (e.g. INFO)
+	 * @param string $title title
+	 * @param string $message message
+	 * @return string HTML
+	 */
+	public static function formatMessage($type, $title, $message) {
+		$msg = new htmlStatusMessage($type, $title, $message);
+		$tabindex = 0;
+		ob_start();
+		$msg->generateHTML(null, array($msg), array(), true, $tabindex, 'user');
+		$data = ob_get_contents();
+		ob_clean();
+		return $data;
+	}
+
+	/**
+	 * Returns the key and value part of the line.
+	 *
+	 * @param string $line line
+	 * @return string[] array(key, value)
+	 */
+	private function getLineKeyValue($line) {
+		$parts = explode(':', $line, 2);
+		if (substr($parts[Importer::VALUE], 0, 1) == ':') {
+			$value = base64_decode(trim(substr($parts[Importer::VALUE], 1)));
+		}
+		else {
+			$value = trim($parts[Importer::VALUE]);
+		}
+		return array($parts[Importer::KEY], $value);
+	}
+
+}
+
+/**
+ * A single import task.
+ *
+ * @author Roland Gruber
+ */
+interface ImporterTask {
+
+	/**
+	 * Runs the task.
+	 *
+	 * @return string HTML output or LAMException if error occured
+	 */
+	public function run();
+
+}
+
+/**
+ * Adds a complete LDAP entry.
+ *
+ * @author Roland Gruber
+ */
+class AddEntryTask implements ImporterTask {
+
+	private $dn = '';
+	private $attributes = array();
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $dn DN
+	 * @param array[string[]] $attributes list of attributes
+	 */
+	public function __construct($dn, $attributes) {
+		$this->dn = $dn;
+		$this->attributes = $attributes;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\TOOLS\IMPORT_EXPORT\ImporterTask::run()
+	 */
+	public function run() {
+		$ldap = $_SESSION['ldap']->server();
+		$success = @ldap_add($ldap, $this->dn, $this->attributes);
+		if ($success) {
+			return Importer::formatMessage('INFO', _('Entry created'), htmlspecialchars($this->dn));
+		}
+		throw new LAMException(sprintf(_('Was unable to create DN: %s.'), $this->dn), getExtendedLDAPErrorMessage($ldap));
 	}
 
 }

@@ -911,6 +911,7 @@ window.lam.import = window.lam.import || {};
  */
 window.lam.import.startImport = function(tokenName, tokenValue) {
 	jQuery(document).ready(function() {
+		jQuery('#progressbarImport').progressbar();
 		var output = jQuery('#importResults');
 		var data = {
 			jsonInput: ''
@@ -922,11 +923,21 @@ window.lam.import.startImport = function(tokenName, tokenValue) {
 			data: data
 		})
 		.done(function(jsonData){
+			if (jsonData.data && (jsonData.data != '')) {
+				output.append(jsonData.data);
+			}
 			if (jsonData.status == 'done') {
 				jQuery('#progressbarImport').hide();
 				jQuery('#btn_submitImportCancel').hide();
 				jQuery('#statusImportInprogress').hide();
 				jQuery('#statusImportDone').show();
+				jQuery('.newimport').show();
+			}
+			else if (jsonData.status == 'failed') {
+				jQuery('#btn_submitImportCancel').hide();
+				jQuery('#statusImportInprogress').hide();
+				jQuery('#statusImportFailed').show();
+				jQuery('.newimport').show();
 			}
 			else {
 				jQuery('#progressbarImport').progressbar({

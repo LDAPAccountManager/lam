@@ -10,6 +10,8 @@ use \htmlStatusMessage;
 use \htmlDiv;
 use \htmlOutputText;
 use \htmlJavaScript;
+use \LAMException;
+use \htmlLink;
 
 /*
 
@@ -66,8 +68,8 @@ if (!empty($_POST)) {
 }
 
 // clean old data
-if (isset($_SESSION[Importer::SESSION_KEY_ENTRIES])) {
-	unset($_SESSION[Importer::SESSION_KEY_ENTRIES]);
+if (isset($_SESSION[Importer::SESSION_KEY_TASKS])) {
+	unset($_SESSION[Importer::SESSION_KEY_TASKS]);
 }
 if (isset($_SESSION[Importer::SESSION_KEY_COUNT])) {
 	unset($_SESSION[Importer::SESSION_KEY_COUNT]);
@@ -157,13 +159,14 @@ function printImportTabContent(&$tabindex) {
  * @param int $tabindex tabindex
  */
 function printImportTabProcessing(&$tabindex) {
-	$message = checkImportData();
-	if (!empty($message)) {
+	try {
+		checkImportData();
+	}
+	catch (LAMException $e) {
 		$container = new htmlResponsiveRow();
-		$container->add(new htmlStatusMessage('ERROR', $message), 12);
+		$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
 		parseHtml(null, $container, array(), false, $tabindex, 'user');
 		printImportTabContent($tabindex);
-		return;
 	}
 	echo "<form enctype=\"multipart/form-data\" action=\"importexport.php\" method=\"post\">\n";
 	$container = new htmlResponsiveRow();
@@ -171,16 +174,22 @@ function printImportTabProcessing(&$tabindex) {
 
 	$container->add(new htmlDiv('statusImportInprogress', new htmlOutputText(_('Status') . ': ' . _('in progress'))), 12);
 	$container->add(new htmlDiv('statusImportDone', new htmlOutputText(_('Status') . ': ' . _('done')), array('hidden')), 12);
+	$container->add(new htmlDiv('statusImportFailed', new htmlOutputText(_('Status') . ': ' . _('failed')), array('hidden')), 12);
+	$container->addVerticalSpacer('1rem');
 	$container->add(new htmlDiv('progressbarImport', new htmlOutputText('')), 12);
+	$container->addVerticalSpacer('3rem');
+	$button = new htmlButton('submitImportCancel', _('Cancel'));
+	$container->add($button, 12, 12, 12, 'text-center');
+
+	$newImportButton = new htmlLink(_('New import'), null, null, true);
+	$container->add($newImportButton, 12, 12, 12, 'text-center hidden newimport');
+
+	$container->addVerticalSpacer('3rem');
+
 	$container->add(new htmlDiv('importResults', new htmlOutputText('')), 12);
 	$container->add(new htmlJavaScript(
 			'window.lam.import.startImport(\'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\');'
 		), 12);
-
-	$container->addVerticalSpacer('3rem');
-
-	$button = new htmlButton('submitImportCancel', _('Cancel'));
-	$container->add($button, 12, 12, 12, 'text-center');
 
 	addSecurityTokenToMetaHTML($container);
 
@@ -191,7 +200,7 @@ function printImportTabProcessing(&$tabindex) {
 /**
  * Checks if the import data is ok.
  *
- * @return string error message if not valid
+ * @throws LAMException error message if not valid
  */
 function checkImportData() {
 	$source = $_POST['source'];
@@ -205,59 +214,13 @@ function checkImportData() {
 		fclose($handle);
 	}
 	if (empty($ldif)) {
-		return _('You must either upload a file or provide an import in the text box.');
+		throw new LAMException(_('You must either upload a file or provide an import in the text box.'));
 	}
 	$lines = preg_split("/\n|\r\n|\r/", $ldif);
-	$entriesData = extractImportEntries($lines);
-	if (!is_array($entriesData)) {
-		return $entriesData;
-	}
-	$_SESSION[Importer::SESSION_KEY_ENTRIES] = $entriesData;
-	$_SESSION[Importer::SESSION_KEY_COUNT] = sizeof($entriesData);
-}
-
-/**
- * Extracts the single entries in the file.
- *
- * @param string[] $lines LDIF lines
- * @return string|array array of string[]
- */
-function extractImportEntries($lines) {
-	$entries = array();
-	$currentEntry = array();
-	foreach ($lines as $line) {
-		if (substr(trim($line), 0, 1) === '#') {
-			// skip comments
-			continue;
-		}
-		if (empty(trim($line))) {
-			// end of entry
-			if (!empty($currentEntry)) {
-				$entries[] = $currentEntry;
-				$currentEntry = array();
-			}
-		}
-		elseif (substr($line, 0, 1) === ' ') {
-			// append to last line if starting with a space
-			if (empty($currentEntry)) {
-				return _('Invalid data:') . ' ' . htmlspecialchars($line);
-			}
-			else {
-				$currentEntry[sizeof($currentEntry) - 1] .= substr($line, 1);
-			}
-		}
-		else {
-			$parts = explode(':', $line, 2);
-			if (sizeof($parts) < 2) {
-				return _('Invalid data:') . ' ' . htmlspecialchars($line);
-			}
-			$currentEntry[] = $line;
-		}
-	}
-	if (!empty($currentEntry)) {
-		$entries[] = $currentEntry;
-	}
-	return $entries;
+	$importer = new Importer();
+	$tasks = $importer->getTasks($lines);
+	$_SESSION[Importer::SESSION_KEY_TASKS] = $tasks;
+	$_SESSION[Importer::SESSION_KEY_COUNT] = sizeof($tasks);
 }
 
 include '../../lib/adminFooter.inc';

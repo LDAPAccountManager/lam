@@ -31,6 +31,8 @@ use \LAM\TOOLS\IMPORT_EXPORT\Importer;
 
 /** security functions */
 include_once("../../lib/security.inc");
+/** LDIF import */
+include_once("../../lib/import.inc");
 
 // start session
 if (isset($_GET['selfservice'])) {
