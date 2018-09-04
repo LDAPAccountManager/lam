@@ -265,6 +265,49 @@ class Importer {
 			}
 			return new AddEntryTask($dn, $attributes);
 		}
+		else {
+			$type = $firstAttribute[Importer::VALUE];
+			$changes = array();
+			$subtasks = array();
+			$currentLines = array();
+			$linesCount = sizeof($entry);
+			for ($i = 0; $i < $linesCount; $i++) {
+				$line = $entry[$i];
+				if ($line === '-') {
+					$subtasks[] = $this->getChangeTypeTask($dn, $currentLines, $type);
+					$currentLines = array();
+					$i++;
+					$line = $entry[$i];
+					$lineTypeData = $this->getLineKeyValue($line);
+					if ($lineTypeData[Importer::KEY] != Importer::CHANGETYPE) {
+						throw new LAMException(_('Invalid data'), htmlspecialchars($line));
+					}
+				}
+				$currentLines[] = $line;
+			}
+			$subtasks[] = $this->getChangeTypeTask($dn, $currentLines, $type);
+			return new MultiTask($subtasks);
+		}
+	}
+
+	/**
+	 * Returns a task for LDIF changeType entry.
+	 *
+	 * @param string $dn DN
+	 * @param string $lines lines
+	 * @param string $type change type
+	 * @return ImporterTask task
+	 */
+	private function getChangeTypeTask($dn, $lines, $type) {
+		$attributes = array();
+		foreach ($lines as $line) {
+			$lineData = $this->getLineKeyValue($line);
+			$attributes[$lineData[Importer::KEY]][] = $lineData[Importer::VALUE];
+		}
+		if ($type === 'add') {
+			return new AddAttributesTask($dn, $attributes);
+		}
+		throw new LAMException(_('Invalid data'), htmlspecialchars($dn) . ' - ' . Importer::CHANGETYPE . ': ' . htmlspecialchars($type));
 	}
 
 	/**
@@ -293,6 +336,9 @@ class Importer {
 	 */
 	private function getLineKeyValue($line) {
 		$parts = explode(':', $line, 2);
+		if (sizeof($parts) !== 2) {
+			throw new LAMException(_('Invalid data'), htmlspecialchars($line));
+		}
 		if (substr($parts[Importer::VALUE], 0, 1) == ':') {
 			$value = base64_decode(trim(substr($parts[Importer::VALUE], 1)));
 		}
@@ -350,6 +396,85 @@ class AddEntryTask implements ImporterTask {
 		$success = @ldap_add($ldap, $this->dn, $this->attributes);
 		if ($success) {
 			return Importer::formatMessage('INFO', _('Entry created'), htmlspecialchars($this->dn));
+		}
+		throw new LAMException(sprintf(_('Was unable to create DN: %s.'), $this->dn), getExtendedLDAPErrorMessage($ldap));
+	}
+
+}
+
+/**
+ * Combines multiple import tasks.
+ *
+ * @author Roland Gruber
+ */
+class MultiTask implements ImporterTask {
+
+	/**
+	 * @var ImporterTask[] tasks
+	 */
+	private $tasks = array();
+
+	/**
+	 * Constructor
+	 *
+	 * @param ImporterTask[] $tasks tasks
+	 */
+	public function __construct($tasks) {
+		$this->tasks = $tasks;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\TOOLS\IMPORT_EXPORT\ImporterTask::run()
+	 */
+	public function run() {
+		foreach ($this->tasks as $task) {
+			$task->run();
+		}
+		return Importer::formatMessage('INFO', _('LDAP operation successful.'), htmlspecialchars($this->dn));
+	}
+
+	/**
+	 * Returns the list of subtasks.
+	 *
+	 * @return ImporterTask[]
+	 */
+	public function getTasks() {
+		return $this->tasks;
+	}
+
+}
+
+/**
+ * Adds attributes to an existing LDAP entry.
+ *
+ * @author Roland Gruber
+ */
+class AddAttributesTask implements ImporterTask {
+
+	private $dn = '';
+	private $attributes = array();
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $dn DN
+	 * @param array[string[]] $attributes list of attributes
+	 */
+	public function __construct($dn, $attributes) {
+		$this->dn = $dn;
+		$this->attributes = $attributes;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\TOOLS\IMPORT_EXPORT\ImporterTask::run()
+	 */
+	public function run() {
+		$ldap = $_SESSION['ldap']->server();
+		$success = @ldap_mod_add($ldap, $this->dn, $this->attributes);
+		if ($success) {
+			return '';
 		}
 		throw new LAMException(sprintf(_('Was unable to create DN: %s.'), $this->dn), getExtendedLDAPErrorMessage($ldap));
 	}

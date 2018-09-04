@@ -1,5 +1,7 @@
 <?php
 use \LAM\TOOLS\IMPORT_EXPORT\Importer;
+use LAM\TOOLS\IMPORT_EXPORT\MultiTask;
+use LAM\TOOLS\IMPORT_EXPORT\AddAttributesTask;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -120,6 +122,45 @@ class ImporterTest extends PHPUnit_Framework_TestCase {
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
 		$this->assertEquals(1, sizeof($tasks));
+	}
+
+	/**
+	 * Change entry with invalid changetype.
+	 */
+	public function testChangeInvalidType() {
+		$lines = array(
+			"version: 1",
+			"",
+			"dn: uid=test,dc=example,dc=com",
+			"changeType: invalid",
+			"uid: test",
+		);
+
+		$this->setExpectedException(LAMException::class, 'uid=test,dc=example,dc=com - changeType: invalid');
+
+		$importer = new Importer();
+		$tasks = $importer->getTasks($lines);
+	}
+
+	/**
+	 * Change entry with add changetype.
+	 */
+	public function testChangeAdd() {
+		$lines = array(
+			"version: 1",
+			"",
+			"dn: uid=test,dc=example,dc=com",
+			"changeType: add",
+			"uid: test",
+		);
+
+		$importer = new Importer();
+		$tasks = $importer->getTasks($lines);
+		$this->assertEquals(1, sizeof($tasks));
+		$multiTask = $tasks[0];
+		$this->assertEquals(MultiTask::class, get_class($multiTask));
+		$this->assertEquals(1, sizeof($multiTask->getTasks()));
+		$this->assertEquals(AddAttributesTask::class, get_class($multiTask->getTasks()[0]));
 	}
 
 }
