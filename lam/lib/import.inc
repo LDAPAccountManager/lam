@@ -267,6 +267,14 @@ class Importer {
 		}
 		else {
 			$type = $firstAttribute[Importer::VALUE];
+			if ($type === 'add') {
+				$attributes = array();
+				foreach ($entry as $line) {
+					$lineData = $this->getLineKeyValue($line);
+					$attributes[$lineData[Importer::KEY]][] = $lineData[Importer::VALUE];
+				}
+				return new AddEntryTask($dn, $attributes);
+			}
 			$changes = array();
 			$subtasks = array();
 			$currentLines = array();
@@ -286,7 +294,7 @@ class Importer {
 				$currentLines[] = $line;
 			}
 			$subtasks[] = $this->getChangeTypeTask($dn, $currentLines, $type);
-			return new MultiTask($subtasks);
+			return new MultiTask($subtasks, $dn);
 		}
 	}
 
@@ -305,7 +313,7 @@ class Importer {
 			$attributes[$lineData[Importer::KEY]][] = $lineData[Importer::VALUE];
 		}
 		if ($type === 'add') {
-			return new AddAttributesTask($dn, $attributes);
+			return new AddEntryTask($dn, $attributes);
 		}
 		throw new LAMException(_('Invalid data'), htmlspecialchars($dn) . ' - ' . Importer::CHANGETYPE . ': ' . htmlspecialchars($type));
 	}
@@ -415,12 +423,18 @@ class MultiTask implements ImporterTask {
 	private $tasks = array();
 
 	/**
+	 * @var string DN
+	 */
+	private $dn = null;
+
+	/**
 	 * Constructor
 	 *
 	 * @param ImporterTask[] $tasks tasks
 	 */
-	public function __construct($tasks) {
+	public function __construct($tasks, $dn) {
 		$this->tasks = $tasks;
+		$this->dn = $dn;
 	}
 
 	/**
