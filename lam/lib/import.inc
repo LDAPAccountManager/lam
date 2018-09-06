@@ -275,6 +275,9 @@ class Importer {
 				}
 				return new AddEntryTask($dn, $attributes);
 			}
+			elseif ($type === 'modrdn') {
+				return $this->createModRdnTask($dn, $entry);
+			}
 			$changes = array();
 			$subtasks = array();
 			$currentLines = array();
@@ -296,6 +299,31 @@ class Importer {
 			$subtasks[] = $this->getChangeTypeTask($dn, $currentLines, $type);
 			return new MultiTask($subtasks, $dn);
 		}
+	}
+
+	/**
+	 * Returns a modrdn task.
+	 *
+	 * @param string $dn DN
+	 * @param string[] $entry entry lines
+	 * @return
+	 * @throws LAMException syntax error
+	 */
+	private function createModRdnTask($dn, $entry) {
+		if (sizeof($entry) !== 2) {
+			throw new LAMException(_('Invalid data'), htmlspecialchars($dn));
+		}
+		$newRdnData = $this->getLineKeyValue($entry[0]);
+		if ($newRdnData[Importer::KEY] !== 'newrdn') {
+			throw new LAMException(_('Invalid data'), htmlspecialchars($dn) . '<br>' . $newRdnData);
+		}
+		$newRdn = $newRdnData[Importer::VALUE];
+		$delOldRdnData = $this->getLineKeyValue($entry[1]);
+		if (($delOldRdnData[Importer::KEY] !== 'deleteoldrdn') || !in_array($delOldRdnData[Importer::VALUE], array('0', '1'), true)) {
+			throw new LAMException(_('Invalid data'), htmlspecialchars($dn) . '<br>' . $delOldRdnData);
+		}
+		$delOldRdn = ($delOldRdnData[Importer::VALUE] === '0') ? false : true;
+		return new RenameEntryTask($dn, $newRdn, $delOldRdn);
 	}
 
 	/**
@@ -406,6 +434,45 @@ class AddEntryTask implements ImporterTask {
 			return Importer::formatMessage('INFO', _('Entry created'), htmlspecialchars($this->dn));
 		}
 		throw new LAMException(sprintf(_('Was unable to create DN: %s.'), $this->dn), getExtendedLDAPErrorMessage($ldap));
+	}
+
+}
+
+/**
+ * Renames an LDAP entry.
+ *
+ * @author Roland Gruber
+ */
+class RenameEntryTask implements ImporterTask {
+
+	private $dn = '';
+	private $newRdn = '';
+	private $deleteOldRdn = true;
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $dn DN
+	 * @param string $newRdn new RDN value
+	 * @param bool $deleteOldRdn delete old RDN value
+	 */
+	public function __construct($dn, $newRdn, $deleteOldRdn) {
+		$this->dn = $dn;
+		$this->newRdn = $newRdn;
+		$this->deleteOldRdn = $deleteOldRdn;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\TOOLS\IMPORT_EXPORT\ImporterTask::run()
+	 */
+	public function run() {
+		$ldap = $_SESSION['ldap']->server();
+		$success = @ldap_rename($ldap, $this->dn, $this->newRdn, null, $this->deleteOldRdn);
+		if ($success) {
+			return Importer::formatMessage('INFO', _('Rename successful!'), htmlspecialchars($this->dn));
+		}
+		throw new LAMException(_('Could not rename the entry.') . '<br>' . $this->dn, getExtendedLDAPErrorMessage($ldap));
 	}
 
 }

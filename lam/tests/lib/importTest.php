@@ -3,6 +3,7 @@ use \LAM\TOOLS\IMPORT_EXPORT\Importer;
 use LAM\TOOLS\IMPORT_EXPORT\MultiTask;
 use LAM\TOOLS\IMPORT_EXPORT\AddAttributesTask;
 use LAM\TOOLS\IMPORT_EXPORT\AddEntryTask;
+use LAM\TOOLS\IMPORT_EXPORT\RenameEntryTask;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -160,6 +161,63 @@ class ImporterTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(1, sizeof($tasks));
 		$task = $tasks[0];
 		$this->assertEquals(AddEntryTask::class, get_class($task));
+	}
+
+	/**
+	 * Change entry with modrdn changetype and invalid options.
+	 */
+	public function testChangeModRdnInvalidData() {
+		$lines = array(
+			"version: 1",
+			"",
+			"dn: uid=test,dc=example,dc=com",
+			"changeType: modrdn",
+			"uid: test",
+		);
+
+		$this->setExpectedException(LAMException::class, 'uid=test,dc=example,dc=com');
+
+		$importer = new Importer();
+		$tasks = $importer->getTasks($lines);
+	}
+
+	/**
+	 * Change entry with modrdn changetype and invalid deleteoldrdn.
+	 */
+	public function testChangeModRdnInvalidDeleteoldrdn() {
+		$lines = array(
+			"version: 1",
+			"",
+			"dn: uid=test,dc=example,dc=com",
+			"changeType: modrdn",
+			"newrdn: uid1=test",
+			"deleteoldrdn: x",
+		);
+
+		$this->setExpectedException(LAMException::class, 'uid=test,dc=example,dc=com');
+
+		$importer = new Importer();
+		$tasks = $importer->getTasks($lines);
+	}
+
+	/**
+	 * Change entry with modrdn changetype.
+	 */
+	public function testChangeModRdn() {
+		$lines = array(
+			"version: 1",
+			"",
+			"dn: uid=test,dc=example,dc=com",
+			"changeType: modrdn",
+			"newrdn: uid1=test",
+			"deleteoldrdn: 0",
+		);
+
+		$importer = new Importer();
+		$tasks = $importer->getTasks($lines);
+		$this->assertEquals(1, sizeof($tasks));
+		$task = $tasks[0];
+		$this->assertEquals(RenameEntryTask::class, get_class($task));
 	}
 
 }
