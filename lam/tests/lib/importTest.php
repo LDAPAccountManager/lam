@@ -4,6 +4,7 @@ use LAM\TOOLS\IMPORT_EXPORT\MultiTask;
 use LAM\TOOLS\IMPORT_EXPORT\AddAttributesTask;
 use LAM\TOOLS\IMPORT_EXPORT\AddEntryTask;
 use LAM\TOOLS\IMPORT_EXPORT\RenameEntryTask;
+use LAM\TOOLS\IMPORT_EXPORT\DeleteEntryTask;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -218,6 +219,42 @@ class ImporterTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(1, sizeof($tasks));
 		$task = $tasks[0];
 		$this->assertEquals(RenameEntryTask::class, get_class($task));
+	}
+
+	/**
+	 * Change entry with delete changetype with extra line.
+	 */
+	public function testChangeDeleteInvalid() {
+		$lines = array(
+			"version: 1",
+			"",
+			"dn: uid=test,dc=example,dc=com",
+			"changeType: delete",
+			"uid: test",
+		);
+
+		$this->setExpectedException(LAMException::class, 'uid=test,dc=example,dc=com');
+
+		$importer = new Importer();
+		$tasks = $importer->getTasks($lines);
+	}
+
+	/**
+	 * Change entry with delete changetype.
+	 */
+	public function testChangeDelete() {
+		$lines = array(
+			"version: 1",
+			"",
+			"dn: uid=test,dc=example,dc=com",
+			"changeType: delete",
+		);
+
+		$importer = new Importer();
+		$tasks = $importer->getTasks($lines);
+		$this->assertEquals(1, sizeof($tasks));
+		$task = $tasks[0];
+		$this->assertEquals(DeleteEntryTask::class, get_class($task));
 	}
 
 }

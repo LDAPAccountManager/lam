@@ -278,6 +278,12 @@ class Importer {
 			elseif ($type === 'modrdn') {
 				return $this->createModRdnTask($dn, $entry);
 			}
+			elseif ($type === 'delete') {
+				if (!empty($entry)) {
+					throw new LAMException(_('Invalid data'), htmlspecialchars($dn));
+				}
+				return new DeleteEntryTask($dn);
+			}
 			$changes = array();
 			$subtasks = array();
 			$currentLines = array();
@@ -473,6 +479,39 @@ class RenameEntryTask implements ImporterTask {
 			return Importer::formatMessage('INFO', _('Rename successful!'), htmlspecialchars($this->dn));
 		}
 		throw new LAMException(_('Could not rename the entry.') . '<br>' . $this->dn, getExtendedLDAPErrorMessage($ldap));
+	}
+
+}
+
+/**
+ * Deletes an LDAP entry.
+ *
+ * @author Roland Gruber
+ */
+class DeleteEntryTask implements ImporterTask {
+
+	private $dn = '';
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $dn DN
+	 */
+	public function __construct($dn) {
+		$this->dn = $dn;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\TOOLS\IMPORT_EXPORT\ImporterTask::run()
+	 */
+	public function run() {
+		$ldap = $_SESSION['ldap']->server();
+		$success = @ldap_delete($ldap, $this->dn);
+		if ($success) {
+			return Importer::formatMessage('INFO', sprintf(_('Successfully deleted DN %s'), $this->dn), '');
+		}
+		throw new LAMException(_('Could not delete the entry.') . '<br>' . $this->dn, getExtendedLDAPErrorMessage($ldap));
 	}
 
 }
