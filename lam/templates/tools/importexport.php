@@ -12,6 +12,12 @@ use \htmlOutputText;
 use \htmlJavaScript;
 use \LAMException;
 use \htmlLink;
+use \htmlResponsiveInputCheckbox;
+use \htmlResponsiveSelect;
+use \htmlResponsiveInputField;
+use \htmlGroup;
+use \htmlInputField;
+use LAM\TYPES\TypeManager;
 
 /*
 
@@ -109,6 +115,14 @@ include '../../lib/adminHeader.inc';
 			?>
 		</div>
 		<div id="tab-export">
+			<?php
+				if (isset($_POST['submitExport'])) {
+					printExportTabProcessing($tabindex);
+				}
+				else {
+					printExportTabContent($tabindex);
+				}
+			?>
 		</div>
 	</div>
 </div>
@@ -145,7 +159,7 @@ function printImportTabContent(&$tabindex) {
 	$container->addVerticalSpacer('1rem');
 	$container->add(new htmlResponsiveInputFileUpload('file', _('File'), '750'), 12);
 	$container->add(new htmlResponsiveInputTextarea('text', '', '60', '20', _('LDIF data'), '750'), 12);
-	$container->add(new \htmlResponsiveInputCheckbox('noStop', false, _('Don\'t stop on errors')), 12);
+	$container->add(new htmlResponsiveInputCheckbox('noStop', false, _('Don\'t stop on errors')), 12);
 
 	$container->addVerticalSpacer('3rem');
 	$button = new htmlButton('submitImport', _('Submit'));
@@ -227,6 +241,84 @@ function checkImportData() {
 	$_SESSION[Importer::SESSION_KEY_TASKS] = $tasks;
 	$_SESSION[Importer::SESSION_KEY_COUNT] = sizeof($tasks);
 	$_SESSION[Importer::SESSION_KEY_STOP_ON_ERROR] = (!isset($_POST['noStop']) || ($_POST['noStop'] != 'on'));
+}
+
+/**
+ * Prints the content area for the export tab.
+ *
+ * @param int $tabindex tabindex
+ */
+function printExportTabContent(&$tabindex) {
+	echo "<form enctype=\"multipart/form-data\" action=\"importexport.php\" method=\"post\">\n";
+	$container = new htmlResponsiveRow();
+	$container->add(new htmlTitle(_("Export")), 12);
+
+	$container->addLabel(new htmlOutputText(_('Base DN')));
+	$baseDnGroup = new htmlGroup();
+	$baseDnGroup->addElement(new htmlInputField('baseDn', getDefaultBaseDn()));
+	$container->addField($baseDnGroup);
+
+	$searchScopes = array(
+		_('Base (base dn only)') => 'base',
+		_('One (one level beneath base)') => 'one',
+		_('Sub (entire subtree)') => 'sub'
+	);
+	$searchScopeSelect = new htmlResponsiveSelect('searchscope', $searchScopes, array('sub'), _('Search scope'));
+	$searchScopeSelect->setHasDescriptiveElements(true);
+	$searchScopeSelect->setSortElements(false);
+	$container->add($searchScopeSelect, 12);
+	$container->add(new htmlResponsiveInputField(_('Search filter'), 'filter', '(objectClass=*)'), 12);
+	$container->add(new htmlResponsiveInputField(_('Attributes'), 'attributes', '*'), 12);
+	$container->add(new htmlResponsiveInputCheckbox('includeSystem', false, _('Include system attributes')), 12);
+	$container->add(new htmlResponsiveInputCheckbox('saveAsFile', false, _('Save as file')), 12);
+
+	$formats = array(
+		'CSV' => 'csv',
+		'LDIF' => 'ldif'
+	);
+	$formatSelect = new htmlResponsiveSelect('format', $formats, array('ldif'), _('Export format'));
+	$formatSelect->setHasDescriptiveElements(true);
+	$formatSelect->setSortElements(false);
+	$container->add($formatSelect, 12);
+
+	$endings = array(
+		'Windows' => 'windows',
+		'Unix' => 'unix'
+	);
+	$endingsSelect = new htmlResponsiveSelect('ending', $endings, array('unix'), _('End of line'));
+	$endingsSelect->setHasDescriptiveElements(true);
+	$endingsSelect->setSortElements(false);
+	$container->add($endingsSelect, 12);
+
+	$container->addVerticalSpacer('3rem');
+	$button = new htmlButton('submitExport', _('Submit'));
+	$container->add($button, 12, 12, 12, 'text-center');
+
+	addSecurityTokenToMetaHTML($container);
+
+	parseHtml(null, $container, array(), false, $tabindex, 'user');
+	echo ("</form>\n");
+}
+
+/**
+ * Returns the default base DN.
+ *
+ * @return string base DN
+ */
+function getDefaultBaseDn() {
+	$typeManager = new TypeManager();
+	$baseDn = '';
+	foreach ($typeManager->getConfiguredTypes() as $type) {
+		$suffix = $type->getSuffix();
+		if (empty($baseDn) || (!empty($suffix) && (strlen($suffix) < strlen($baseDn)))) {
+			$baseDn = $suffix;
+		}
+	}
+	$treeSuffix = $_SESSION['config']->get_Suffix('tree');
+	if (empty($baseDn) || (!empty($treeSuffix) && (strlen($treeSuffix) < strlen($baseDn)))) {
+		$baseDn = $treeSuffix;
+	}
+	return $baseDn;
 }
 
 include '../../lib/adminFooter.inc';
