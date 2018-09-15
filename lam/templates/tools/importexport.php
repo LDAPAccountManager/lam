@@ -167,6 +167,7 @@ function printImportTabProcessing(&$tabindex) {
 		$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
 		parseHtml(null, $container, array(), false, $tabindex, 'user');
 		printImportTabContent($tabindex);
+		return;
 	}
 	echo "<form enctype=\"multipart/form-data\" action=\"importexport.php\" method=\"post\">\n";
 	$container = new htmlResponsiveRow();
