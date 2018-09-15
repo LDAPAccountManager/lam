@@ -5,6 +5,8 @@ use LAM\TOOLS\IMPORT_EXPORT\AddAttributesTask;
 use LAM\TOOLS\IMPORT_EXPORT\AddEntryTask;
 use LAM\TOOLS\IMPORT_EXPORT\RenameEntryTask;
 use LAM\TOOLS\IMPORT_EXPORT\DeleteEntryTask;
+use LAM\TOOLS\IMPORT_EXPORT\DeleteAttributesTask;
+use LAM\TOOLS\IMPORT_EXPORT\ReplaceAttributesTask;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -255,6 +257,186 @@ class ImporterTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(1, sizeof($tasks));
 		$task = $tasks[0];
 		$this->assertEquals(DeleteEntryTask::class, get_class($task));
+	}
+
+	/**
+	 * Change entry with modify changetype with invalid operation.
+	 */
+	public function testChangeModifyInvalid() {
+		$lines = array(
+			"version: 1",
+			"",
+			"dn: uid=test,dc=example,dc=com",
+			"changeType: modify",
+			"invalid: test",
+		);
+
+		$this->setExpectedException(LAMException::class, 'uid=test,dc=example,dc=com');
+
+		$importer = new Importer();
+		$tasks = $importer->getTasks($lines);
+	}
+
+	/**
+	 * Change entry with modify changetype and add operation.
+	 */
+	public function testChangeModifyAdd() {
+		$lines = array(
+			"version: 1",
+			"",
+			"dn: uid=test,dc=example,dc=com",
+			"changeType: modify",
+			"add: uid",
+			"uid: uid1",
+			"uid: uid2"
+		);
+
+		$importer = new Importer();
+		$tasks = $importer->getTasks($lines);
+		$this->assertEquals(1, sizeof($tasks));
+		$task = $tasks[0];
+		$this->assertEquals(MultiTask::class, get_class($task));
+		$subtasks = $task->getTasks();
+		$this->assertEquals(1, sizeof($subtasks));
+		$subTask = $subtasks[0];
+		$this->assertEquals(AddAttributesTask::class, get_class($subTask));
+		$this->assertEquals($subTask->getDn(), 'uid=test,dc=example,dc=com');
+		$attributes = $subTask->getAttributes();
+		$this->assertEquals(1, sizeof($attributes));
+		$this->assertEquals(2, sizeof($attributes['uid']));
+		$this->assertTrue(in_array('uid1', $attributes['uid']));
+		$this->assertTrue(in_array('uid2', $attributes['uid']));
+	}
+
+	/**
+	 * Change entry with modify changetype and two add operations.
+	 */
+	public function testChangeModifyAddTwice() {
+		$lines = array(
+			"version: 1",
+			"",
+			"dn: uid=test,dc=example,dc=com",
+			"changeType: modify",
+			"add: uid",
+			"uid: uid1",
+			"uid: uid2",
+			"-",
+			"add: gn",
+			"gn: name1",
+			"gn: name2"
+		);
+
+		$importer = new Importer();
+		$tasks = $importer->getTasks($lines);
+		$this->assertEquals(1, sizeof($tasks));
+		$task = $tasks[0];
+		$this->assertEquals(MultiTask::class, get_class($task));
+		$subtasks = $task->getTasks();
+		$this->assertEquals(2, sizeof($subtasks));
+		$subTask = $subtasks[0];
+		$this->assertEquals(AddAttributesTask::class, get_class($subTask));
+		$this->assertEquals($subTask->getDn(), 'uid=test,dc=example,dc=com');
+		$attributes = $subTask->getAttributes();
+		$this->assertEquals(1, sizeof($attributes));
+		$this->assertEquals(2, sizeof($attributes['uid']));
+		$this->assertTrue(in_array('uid1', $attributes['uid']));
+		$this->assertTrue(in_array('uid2', $attributes['uid']));
+		$subTask = $subtasks[1];
+		$this->assertEquals(AddAttributesTask::class, get_class($subTask));
+		$this->assertEquals($subTask->getDn(), 'uid=test,dc=example,dc=com');
+		$attributes = $subTask->getAttributes();
+		$this->assertEquals(1, sizeof($attributes));
+		$this->assertEquals(2, sizeof($attributes['gn']));
+		$this->assertTrue(in_array('name1', $attributes['gn']));
+		$this->assertTrue(in_array('name2', $attributes['gn']));
+	}
+
+	/**
+	 * Change entry with modify changetype and delete operation.
+	 */
+	public function testChangeModifyDelete() {
+		$lines = array(
+			"version: 1",
+			"",
+			"dn: uid=test,dc=example,dc=com",
+			"changeType: modify",
+			"delete: uid",
+			"uid: uid1",
+			"uid: uid2"
+		);
+
+		$importer = new Importer();
+		$tasks = $importer->getTasks($lines);
+		$this->assertEquals(1, sizeof($tasks));
+		$task = $tasks[0];
+		$this->assertEquals(MultiTask::class, get_class($task));
+		$subtasks = $task->getTasks();
+		$this->assertEquals(1, sizeof($subtasks));
+		$subTask = $subtasks[0];
+		$this->assertEquals(DeleteAttributesTask::class, get_class($subTask));
+		$this->assertEquals($subTask->getDn(), 'uid=test,dc=example,dc=com');
+		$attributes = $subTask->getAttributes();
+		$this->assertEquals(1, sizeof($attributes));
+		$this->assertEquals(2, sizeof($attributes['uid']));
+		$this->assertTrue(in_array('uid1', $attributes['uid']));
+		$this->assertTrue(in_array('uid2', $attributes['uid']));
+	}
+
+	/**
+	 * Change entry with modify changetype and delete operation.
+	 */
+	public function testChangeModifyDeleteAll() {
+		$lines = array(
+			"version: 1",
+			"",
+			"dn: uid=test,dc=example,dc=com",
+			"changeType: modify",
+			"delete: uid",
+		);
+
+		$importer = new Importer();
+		$tasks = $importer->getTasks($lines);
+		$this->assertEquals(1, sizeof($tasks));
+		$task = $tasks[0];
+		$this->assertEquals(MultiTask::class, get_class($task));
+		$subtasks = $task->getTasks();
+		$this->assertEquals(1, sizeof($subtasks));
+		$subTask = $subtasks[0];
+		$this->assertEquals(DeleteAttributesTask::class, get_class($subTask));
+		$this->assertEquals($subTask->getDn(), 'uid=test,dc=example,dc=com');
+		$attributes = $subTask->getAttributes();
+		$this->assertTrue(empty($attributes));
+	}
+
+	/**
+	 * Change entry with modify changetype and replace operation.
+	 */
+	public function testChangeModifyReplace() {
+		$lines = array(
+			"version: 1",
+			"",
+			"dn: uid=test,dc=example,dc=com",
+			"changeType: modify",
+			"replace: uid",
+			"uid: uid1",
+			"uid: uid2",
+		);
+
+		$importer = new Importer();
+		$tasks = $importer->getTasks($lines);
+		$this->assertEquals(1, sizeof($tasks));
+		$task = $tasks[0];
+		$this->assertEquals(MultiTask::class, get_class($task));
+		$subtasks = $task->getTasks();
+		$this->assertEquals(1, sizeof($subtasks));
+		$subTask = $subtasks[0];
+		$this->assertEquals(ReplaceAttributesTask::class, get_class($subTask));
+		$this->assertEquals($subTask->getDn(), 'uid=test,dc=example,dc=com');
+		$attributes = $subTask->getAttributes();
+		$this->assertEquals(1, sizeof($attributes));
+		$this->assertEquals(2, sizeof($attributes['uid']));
+		$this->assertTrue(in_array('uid1', $attributes['uid']));
+		$this->assertTrue(in_array('uid2', $attributes['uid']));
 	}
 
 }

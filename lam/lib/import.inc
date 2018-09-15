@@ -82,6 +82,9 @@ class Importer {
 					$currentEntry[sizeof($currentEntry) - 1] .= substr($line, 1);
 				}
 			}
+			elseif ($line === '-') {
+				$currentEntry[] = $line;
+			}
 			else {
 				$parts = explode(':', $line, 2);
 				if (sizeof($parts) < 2) {
@@ -284,6 +287,9 @@ class Importer {
 				}
 				return new DeleteEntryTask($dn);
 			}
+			elseif ($type !== 'modify') {
+				throw new LAMException(_('Invalid data'), htmlspecialchars($dn) . ' - changeType: ' . htmlspecialchars($type));
+			}
 			$changes = array();
 			$subtasks = array();
 			$currentLines = array();
@@ -291,18 +297,14 @@ class Importer {
 			for ($i = 0; $i < $linesCount; $i++) {
 				$line = $entry[$i];
 				if ($line === '-') {
-					$subtasks[] = $this->getChangeTypeTask($dn, $currentLines, $type);
+					$subtasks[] = $this->getChangeTypeTask($dn, $currentLines);
 					$currentLines = array();
-					$i++;
-					$line = $entry[$i];
-					$lineTypeData = $this->getLineKeyValue($line);
-					if ($lineTypeData[Importer::KEY] != Importer::CHANGETYPE) {
-						throw new LAMException(_('Invalid data'), htmlspecialchars($line));
-					}
 				}
-				$currentLines[] = $line;
+				else {
+					$currentLines[] = $line;
+				}
 			}
-			$subtasks[] = $this->getChangeTypeTask($dn, $currentLines, $type);
+			$subtasks[] = $this->getChangeTypeTask($dn, $currentLines);
 			return new MultiTask($subtasks, $dn);
 		}
 	}
@@ -326,7 +328,7 @@ class Importer {
 		$newRdn = $newRdnData[Importer::VALUE];
 		$delOldRdnData = $this->getLineKeyValue($entry[1]);
 		if (($delOldRdnData[Importer::KEY] !== 'deleteoldrdn') || !in_array($delOldRdnData[Importer::VALUE], array('0', '1'), true)) {
-			throw new LAMException(_('Invalid data'), htmlspecialchars($dn) . '<br>' . $delOldRdnData);
+			throw new LAMException(_('Invalid data'), htmlspecialchars($dn) . '<br>' . $entry[1]);
 		}
 		$delOldRdn = ($delOldRdnData[Importer::VALUE] === '0') ? false : true;
 		return new RenameEntryTask($dn, $newRdn, $delOldRdn);
@@ -337,19 +339,31 @@ class Importer {
 	 *
 	 * @param string $dn DN
 	 * @param string $lines lines
-	 * @param string $type change type
 	 * @return ImporterTask task
 	 */
-	private function getChangeTypeTask($dn, $lines, $type) {
+	private function getChangeTypeTask($dn, $lines) {
+		$firstLine = array_shift($lines);
+		$firstLineData = $this->getLineKeyValue($firstLine);
+		$type = $firstLineData[Importer::KEY];
+		$attributeName = $firstLineData[Importer::VALUE];
 		$attributes = array();
 		foreach ($lines as $line) {
 			$lineData = $this->getLineKeyValue($line);
-			$attributes[$lineData[Importer::KEY]][] = $lineData[Importer::VALUE];
+			if ($lineData[Importer::KEY] !== $attributeName) {
+				throw new LAMException(_('Invalid data'), htmlspecialchars($dn) . ' - ' . htmlspecialchars($type));
+			}
+			$attributes[$attributeName][] = $lineData[Importer::VALUE];
 		}
 		if ($type === 'add') {
-			return new AddEntryTask($dn, $attributes);
+			return new AddAttributesTask($dn, $attributes);
 		}
-		throw new LAMException(_('Invalid data'), htmlspecialchars($dn) . ' - ' . Importer::CHANGETYPE . ': ' . htmlspecialchars($type));
+		elseif ($type === 'delete') {
+			return new DeleteAttributesTask($dn, $attributeName, $attributes);
+		}
+		elseif ($type === 'replace') {
+			return new ReplaceAttributesTask($dn, $attributes);
+		}
+		throw new LAMException(_('Invalid data'), htmlspecialchars($dn) . ' - ' . htmlspecialchars($type));
 	}
 
 	/**
@@ -597,6 +611,158 @@ class AddAttributesTask implements ImporterTask {
 			return '';
 		}
 		throw new LAMException(sprintf(_('Was unable to create DN: %s.'), $this->dn), getExtendedLDAPErrorMessage($ldap));
+	}
+
+	/**
+	 * Returns the DN.
+	 *
+	 * @return string DN
+	 */
+	public function getDn() {
+		return $this->dn;
+	}
+
+	/**
+	 * Returns the attributes to add.
+	 *
+	 * @return string[] attributes (array('attr' => array('val1', 'val2')))
+	 */
+	public function getAttributes() {
+		return $this->attributes;
+	}
+
+}
+
+/**
+ * Deletes attributes from an existing LDAP entry.
+ *
+ * @author Roland Gruber
+ */
+class DeleteAttributesTask implements ImporterTask {
+
+	private $dn = '';
+	private $attributes = array();
+	private $attributeName = null;
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $dn DN
+	 * @param string $attributeName attribute name
+	 * @param array[string[]] $attributes list of attributes
+	 */
+	public function __construct($dn, $attributeName, $attributes) {
+		$this->dn = $dn;
+		$this->attributeName = $attributeName;
+		$this->attributes = $attributes;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\TOOLS\IMPORT_EXPORT\ImporterTask::run()
+	 */
+	public function run() {
+		$ldap = $_SESSION['ldap']->server();
+		if (!empty($this->attributes)) {
+			$success = @ldap_mod_del($ldap, $this->dn, $this->attributes);
+		}
+		else {
+			$success = @ldap_modify($ldap, $this->dn, array($this->attributeName => array()));
+		}
+		if ($success) {
+			return '';
+		}
+		throw new LAMException(sprintf(_('Was unable to create DN: %s.'), $this->dn), getExtendedLDAPErrorMessage($ldap));
+	}
+
+	/**
+	 * Returns the DN.
+	 *
+	 * @return string DN
+	 */
+	public function getDn() {
+		return $this->dn;
+	}
+
+	/**
+	 * Returns the attributes to add.
+	 *
+	 * @return string[] attributes (array('attr' => array('val1', 'val2')))
+	 */
+	public function getAttributes() {
+		return $this->attributes;
+	}
+
+	/**
+	 * Returns the attributes name.
+	 *
+	 * @return string name
+	 */
+	public function getAttributeName() {
+		return $this->attributeName;
+	}
+
+}
+
+/**
+ * Replaces attributes in an existing LDAP entry.
+ *
+ * @author Roland Gruber
+ */
+class ReplaceAttributesTask implements ImporterTask {
+
+	private $dn = '';
+	private $attributes = array();
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $dn DN
+	 * @param array[string[]] $attributes list of attributes
+	 */
+	public function __construct($dn, $attributes) {
+		$this->dn = $dn;
+		$this->attributes = $attributes;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\TOOLS\IMPORT_EXPORT\ImporterTask::run()
+	 */
+	public function run() {
+		$ldap = $_SESSION['ldap']->server();
+		$success = @ldap_modify($ldap, $this->dn, $this->attributes);
+		if ($success) {
+			return '';
+		}
+		throw new LAMException(sprintf(_('Was unable to create DN: %s.'), $this->dn), getExtendedLDAPErrorMessage($ldap));
+	}
+
+	/**
+	 * Returns the DN.
+	 *
+	 * @return string DN
+	 */
+	public function getDn() {
+		return $this->dn;
+	}
+
+	/**
+	 * Returns the attributes to add.
+	 *
+	 * @return string[] attributes (array('attr' => array('val1', 'val2')))
+	 */
+	public function getAttributes() {
+		return $this->attributes;
+	}
+
+	/**
+	 * Returns the attributes name.
+	 *
+	 * @return string name
+	 */
+	public function getAttributeName() {
+		return $this->attributeName;
 	}
 
 }
