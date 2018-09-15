@@ -41,7 +41,7 @@ class ImportExport implements \LAMTool {
 	 * @return string name
 	 */
 	 function getName() {
-	 	return _("Import/Export");
+	 	return _("LDAP import/export");
 	 }
 
 	/**
