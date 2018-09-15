@@ -43,6 +43,7 @@ class Importer {
 
 	const SESSION_KEY_TASKS = 'import_tasks';
 	const SESSION_KEY_COUNT = 'import_count';
+	const SESSION_KEY_STOP_ON_ERROR = 'import_stop_on_error';
 	const STATUS = 'status';
 	const PROGRESS = 'progress';
 	const DATA = 'data';
@@ -118,6 +119,7 @@ class Importer {
 	public function doImport() {
 		$data = '';
 		$tasks = &$_SESSION[Importer::SESSION_KEY_TASKS];
+		$stopOnError = $_SESSION[Importer::SESSION_KEY_STOP_ON_ERROR];
 		// check if any actions are needed at all
 		if (empty($tasks)) {
 			return $this->getStatus($data);
@@ -129,7 +131,12 @@ class Importer {
 				$data .= $task->run();
 			}
 			catch (LAMException $e) {
-				return $this->stopImport($data, $e);
+				if ($stopOnError) {
+					return $this->stopImport($data, $e);
+				}
+				else {
+					$data .= Importer::formatMessage('ERROR', $e->getTitle(), $e->getMessage());
+				}
 			}
 		}
 		return $this->getStatus($data);

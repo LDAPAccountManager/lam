@@ -74,6 +74,9 @@ if (isset($_SESSION[Importer::SESSION_KEY_TASKS])) {
 if (isset($_SESSION[Importer::SESSION_KEY_COUNT])) {
 	unset($_SESSION[Importer::SESSION_KEY_COUNT]);
 }
+if (isset($_SESSION[Importer::SESSION_KEY_STOP_ON_ERROR])) {
+	unset($_SESSION[Importer::SESSION_KEY_STOP_ON_ERROR]);
+}
 
 include '../../lib/adminHeader.inc';
 	$tabindex = 1;
@@ -142,6 +145,7 @@ function printImportTabContent(&$tabindex) {
 	$container->addVerticalSpacer('1rem');
 	$container->add(new htmlResponsiveInputFileUpload('file', _('File'), '750'), 12);
 	$container->add(new htmlResponsiveInputTextarea('text', '', '60', '20', _('LDIF data'), '750'), 12);
+	$container->add(new \htmlResponsiveInputCheckbox('noStop', false, _('Don\'t stop on errors')), 12);
 
 	$container->addVerticalSpacer('3rem');
 	$button = new htmlButton('submitImport', _('Submit'));
@@ -222,6 +226,7 @@ function checkImportData() {
 	$tasks = $importer->getTasks($lines);
 	$_SESSION[Importer::SESSION_KEY_TASKS] = $tasks;
 	$_SESSION[Importer::SESSION_KEY_COUNT] = sizeof($tasks);
+	$_SESSION[Importer::SESSION_KEY_STOP_ON_ERROR] = (!isset($_POST['noStop']) || ($_POST['noStop'] != 'on'));
 }
 
 include '../../lib/adminFooter.inc';
