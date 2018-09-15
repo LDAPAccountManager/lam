@@ -280,6 +280,26 @@ class ImporterTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Change entry with modify changetype and add operation.
 	 */
+	public function testChangeModifyAddInvalid() {
+		$lines = array(
+			"version: 1",
+			"",
+			"dn: uid=test,dc=example,dc=com",
+			"changeType: modify",
+			"add: uid",
+			"uid: uid1",
+			"invalid: uid2"
+		);
+
+		$this->setExpectedException(LAMException::class, 'uid=test,dc=example,dc=com');
+
+		$importer = new Importer();
+		$tasks = $importer->getTasks($lines);
+	}
+
+	/**
+	 * Change entry with modify changetype and add operation.
+	 */
 	public function testChangeModifyAdd() {
 		$lines = array(
 			"version: 1",
