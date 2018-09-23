@@ -85,12 +85,20 @@ if (isset($_SESSION[Importer::SESSION_KEY_STOP_ON_ERROR])) {
 }
 
 include '../../lib/adminHeader.inc';
-	$tabindex = 1;
+$tabindex = 1;
+$activeTab = 0;
+if (!empty($_GET['tab']) && ($_GET['tab'] === 'export')) {
+	$activeTab = 1;
+}
+
 ?>
 
 <script>
   $(function() {
-    $("#tabs").tabs();
+	jQuery("#tabs").tabs({
+        active: <?php echo $activeTab; ?>
+    });
+	jQuery(".inputForm").validationEngine();
   });
 </script>
 
@@ -135,7 +143,7 @@ include '../../lib/adminHeader.inc';
  * @param int $tabindex tabindex
  */
 function printImportTabContent(&$tabindex) {
-	echo "<form enctype=\"multipart/form-data\" action=\"importexport.php\" method=\"post\">\n";
+	echo "<form class=\"inputForm\" enctype=\"multipart/form-data\" action=\"importexport.php\" method=\"post\">\n";
 	$container = new htmlResponsiveRow();
 	$container->add(new htmlTitle(_("Import")), 12);
 	$sources = array(
@@ -187,7 +195,7 @@ function printImportTabProcessing(&$tabindex) {
 		printImportTabContent($tabindex);
 		return;
 	}
-	echo "<form enctype=\"multipart/form-data\" action=\"importexport.php\" method=\"post\">\n";
+	echo "<form class=\"inputForm\" enctype=\"multipart/form-data\" action=\"importexport.php\" method=\"post\">\n";
 	$container = new htmlResponsiveRow();
 	$container->add(new htmlTitle(_("Import")), 12);
 
@@ -249,13 +257,15 @@ function checkImportData() {
  * @param int $tabindex tabindex
  */
 function printExportTabContent(&$tabindex) {
-	echo "<form enctype=\"multipart/form-data\" action=\"importexport.php\" method=\"post\">\n";
+	echo "<form class=\"inputForm\" enctype=\"multipart/form-data\" action=\"importexport.php?tab=export\" method=\"post\">\n";
 	$container = new htmlResponsiveRow();
 	$container->add(new htmlTitle(_("Export")), 12);
 
-	$container->addLabel(new htmlOutputText(_('Base DN')));
+	$container->addLabel(new htmlOutputText(_('Base DN'), true, true));
 	$baseDnGroup = new htmlGroup();
-	$baseDnGroup->addElement(new htmlInputField('baseDn', getDefaultBaseDn()));
+	$baseDnInput = new htmlInputField('baseDn', getDefaultBaseDn());
+	$baseDnInput->setRequired(true);
+	$baseDnGroup->addElement($baseDnInput);
 	$container->addField($baseDnGroup);
 
 	$searchScopes = array(
@@ -319,6 +329,62 @@ function getDefaultBaseDn() {
 		$baseDn = $treeSuffix;
 	}
 	return $baseDn;
+}
+
+/**
+ * Prints the content area for the export tab during processing state.
+ *
+ * @param int $tabindex tabindex
+ */
+function printExportTabProcessing(&$tabindex) {
+	try {
+		checkExportData();
+	}
+	catch (LAMException $e) {
+		$container = new htmlResponsiveRow();
+		$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
+		parseHtml(null, $container, array(), false, $tabindex, 'user');
+		printExportTabContent($tabindex);
+		return;
+	}
+	echo "<form class=\"inputForm\" enctype=\"multipart/form-data\" action=\"importexport.php?tab=export\" method=\"post\">\n";
+	$container = new htmlResponsiveRow();
+	$container->add(new htmlTitle(_("Export")), 12);
+
+	$container->add(new htmlDiv('statusExportInprogress', new htmlOutputText(_('Status') . ': ' . _('in progress'))), 12);
+	$container->add(new htmlDiv('statusExportDone', new htmlOutputText(_('Status') . ': ' . _('done')), array('hidden')), 12);
+	$container->add(new htmlDiv('statusExportFailed', new htmlOutputText(_('Status') . ': ' . _('failed')), array('hidden')), 12);
+	$container->addVerticalSpacer('1rem');
+	$container->add(new htmlDiv('progressbarExport', new htmlOutputText('')), 12);
+	$container->addVerticalSpacer('3rem');
+	$button = new htmlButton('submitExportCancel', _('Cancel'));
+	$container->add($button, 12, 12, 12, 'text-center');
+
+	$newExportButton = new htmlLink(_('New export'), null, null, true);
+	$container->add($newExportButton, 12, 12, 12, 'text-center hidden newexport');
+
+	$container->addVerticalSpacer('3rem');
+
+	$container->add(new htmlDiv('exportResults', new htmlOutputText('')), 12);
+	$container->add(new htmlJavaScript(
+			'window.lam.export.startExport(\'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\');'
+		), 12);
+
+	addSecurityTokenToMetaHTML($container);
+
+	parseHtml(null, $container, array(), false, $tabindex, 'user');
+	echo ("</form>\n");
+}
+
+/**
+ * Checks if the export data is ok.
+ *
+ * @throws LAMException error message if not valid
+ */
+function checkExportData() {
+	if (empty($_POST['baseDn'])) {
+		throw new LAMException(_('This field is required.'), _('Base DN'));
+	}
 }
 
 include '../../lib/adminFooter.inc';
