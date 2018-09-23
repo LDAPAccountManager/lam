@@ -1,6 +1,7 @@
 <?php
 namespace LAM\AJAX;
 use \LAM\TOOLS\IMPORT_EXPORT\Importer;
+use \LAM\TOOLS\IMPORT_EXPORT\Exporter;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -99,6 +100,22 @@ class Ajax {
 			$importer = new Importer();
 			ob_start();
 			$jsonOut = $importer->doImport();
+			ob_end_clean();
+			echo $jsonOut;
+		}
+		elseif ($function === 'export') {
+			include_once('../../lib/export.inc');
+			$attributes = $_POST['attributes'];
+			$baseDn = $_POST['baseDn'];
+			$ending = $_POST['ending'];
+			$filter = $_POST['filter'];
+			$format = $_POST['format'];
+			$includeSystem = ($_POST['includeSystem'] === 'true');
+			$saveAsFile = ($_POST['saveAsFile'] === 'true');
+			$searchScope = $_POST['searchScope'];
+			$exporter = new Exporter($baseDn, $searchScope, $filter, $attributes, $includeSystem, $saveAsFile, $format, $ending);
+			ob_start();
+			$jsonOut = $exporter->doExport();
 			ob_end_clean();
 			echo $jsonOut;
 		}

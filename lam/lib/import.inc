@@ -34,7 +34,7 @@ use \LAMException;
 include_once('ldap.inc');
 
 /**
- * Creates LDAP accounts for file upload.
+ * Imports LDIF files.
  *
  * @author Roland Gruber
  * @package tools

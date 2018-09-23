@@ -901,7 +901,7 @@ window.lam.tools.schema.select = function() {
 	});
 };
 
-window.lam.import = window.lam.import || {};
+window.lam.importexport = window.lam.importexport || {};
 
 /**
  * Starts the import process.
@@ -909,7 +909,7 @@ window.lam.import = window.lam.import || {};
  * @param tokenName name of CSRF token
  * @param tokenValue value of CSRF token
  */
-window.lam.import.startImport = function(tokenName, tokenValue) {
+window.lam.importexport.startImport = function(tokenName, tokenValue) {
 	jQuery(document).ready(function() {
 		jQuery('#progressbarImport').progressbar();
 		var output = jQuery('#importResults');
@@ -944,6 +944,55 @@ window.lam.import.startImport = function(tokenName, tokenValue) {
 					value: jsonData.progress
 				});
 				window.lam.import.startImport(tokenName, tokenValue);
+			}
+		});
+	});
+};
+
+/**
+ * Starts the export process.
+ *
+ * @param tokenName name of CSRF token
+ * @param tokenValue value of CSRF token
+ */
+window.lam.importexport.startExport = function(tokenName, tokenValue) {
+	jQuery(document).ready(function() {
+		jQuery('#progressbarExport').progressbar({value: 50});
+		var output = jQuery('#exportResults');
+		var data = {
+			jsonInput: ''
+		};
+		data[tokenName] = tokenValue;
+		data['baseDn'] = jQuery('#baseDn').val();
+		data['searchScope'] = jQuery('#searchScope').val();
+		data['filter'] = jQuery('#filter').val();
+		data['attributes'] = jQuery('#attributes').val();
+		data['format'] = jQuery('#format').val();
+		data['ending'] = jQuery('#ending').val();
+		data['includeSystem'] = jQuery('#includeSystem').val();
+		data['saveAsFile'] = jQuery('#saveAsFile').val();
+		jQuery.ajax({
+			url: '../misc/ajax.php?function=export',
+			method: 'POST',
+			data: data
+		})
+		.done(function(jsonData){
+			if (jsonData.data && (jsonData.data != '')) {
+				output.append(jsonData.data);
+			}
+			if (jsonData.status == 'done') {
+				jQuery('#progressbarExport').hide();
+				jQuery('#btn_submitExportCancel').hide();
+				jQuery('#statusExportInprogress').hide();
+				jQuery('#statusExportDone').show();
+				jQuery('.newexport').show();
+			}
+			else {
+				jQuery('#progressbarExport').hide();
+				jQuery('#btn_submitExportCancel').hide();
+				jQuery('#statusExportInprogress').hide();
+				jQuery('#statusExportFailed').show();
+				jQuery('.newexport').show();
 			}
 		});
 	});

@@ -17,6 +17,7 @@ use \htmlResponsiveSelect;
 use \htmlResponsiveInputField;
 use \htmlGroup;
 use \htmlInputField;
+use \htmlHiddenInput;
 use LAM\TYPES\TypeManager;
 
 /*
@@ -215,7 +216,7 @@ function printImportTabProcessing(&$tabindex) {
 
 	$container->add(new htmlDiv('importResults', new htmlOutputText('')), 12);
 	$container->add(new htmlJavaScript(
-			'window.lam.import.startImport(\'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\');'
+			'window.lam.importexport.startImport(\'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\');'
 		), 12);
 
 	addSecurityTokenToMetaHTML($container);
@@ -273,7 +274,7 @@ function printExportTabContent(&$tabindex) {
 		_('One (one level beneath base)') => 'one',
 		_('Sub (entire subtree)') => 'sub'
 	);
-	$searchScopeSelect = new htmlResponsiveSelect('searchscope', $searchScopes, array('sub'), _('Search scope'));
+	$searchScopeSelect = new htmlResponsiveSelect('searchScope', $searchScopes, array('sub'), _('Search scope'));
 	$searchScopeSelect->setHasDescriptiveElements(true);
 	$searchScopeSelect->setSortElements(false);
 	$container->add($searchScopeSelect, 12);
@@ -351,6 +352,15 @@ function printExportTabProcessing(&$tabindex) {
 	$container = new htmlResponsiveRow();
 	$container->add(new htmlTitle(_("Export")), 12);
 
+	$container->add(new htmlHiddenInput('baseDn', $_POST['baseDn']), 12);
+	$container->add(new htmlHiddenInput('searchScope', $_POST['searchScope']), 12);
+	$container->add(new htmlHiddenInput('filter', $_POST['filter']), 12);
+	$container->add(new htmlHiddenInput('attributes', $_POST['attributes']), 12);
+	$container->add(new htmlHiddenInput('format', $_POST['format']), 12);
+	$container->add(new htmlHiddenInput('ending', $_POST['ending']), 12);
+	$container->add(new htmlHiddenInput('includeSystem', isset($_POST['includeSystem']) && ($_POST['includeSystem'] === 'on') ? 'true' : 'false'), 12);
+	$container->add(new htmlHiddenInput('saveAsFile', isset($_POST['saveAsFile']) && ($_POST['saveAsFile'] === 'on') ? 'true' : 'false'), 12);
+
 	$container->add(new htmlDiv('statusExportInprogress', new htmlOutputText(_('Status') . ': ' . _('in progress'))), 12);
 	$container->add(new htmlDiv('statusExportDone', new htmlOutputText(_('Status') . ': ' . _('done')), array('hidden')), 12);
 	$container->add(new htmlDiv('statusExportFailed', new htmlOutputText(_('Status') . ': ' . _('failed')), array('hidden')), 12);
@@ -367,7 +377,7 @@ function printExportTabProcessing(&$tabindex) {
 
 	$container->add(new htmlDiv('exportResults', new htmlOutputText('')), 12);
 	$container->add(new htmlJavaScript(
-			'window.lam.export.startExport(\'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\');'
+			'window.lam.importexport.startExport(\'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\');'
 		), 12);
 
 	addSecurityTokenToMetaHTML($container);
