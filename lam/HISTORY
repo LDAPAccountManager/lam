@@ -1,4 +1,4 @@
-September 2018 6.5
+25.09.2018 6.5
   - Password change possible via LDAP EXOP operation (set LDAP_EXOP as password hash, requires PHP 7.2)
   - Support Imagick and GD
   - Dropped support for Apache 2.2
