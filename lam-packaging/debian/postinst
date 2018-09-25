@@ -12,7 +12,9 @@ db_version 2.0 || [ $? -lt 30 ]
 # 3rd party libs
 phpThirdPartyLibs='phpseclib tcpdf'
 for phpThirdPartyLib in $phpThirdPartyLibs; do
-	ln -s /usr/share/php/${phpThirdPartyLib} /usr/share/ldap-account-manager/lib/3rdParty/${phpThirdPartyLib}
+	if [ ! -L /usr/share/ldap-account-manager/lib/3rdParty/${phpThirdPartyLib} ] ; then
+		ln -s /usr/share/php/${phpThirdPartyLib} /usr/share/ldap-account-manager/lib/3rdParty/${phpThirdPartyLib}
+	fi
 done
 
 cd /usr/share/ldap-account-manager/config-samples/profiles
