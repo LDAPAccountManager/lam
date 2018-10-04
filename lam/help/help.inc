@@ -342,6 +342,14 @@ $helpArray = array (
 				// import/export
 				"750" => array ("Headline" => _('LDIF data'),
 					"Text" => _('The input data must be formatted in LDIF format.')),
+				"751" => array ("Headline" => _('Base DN'),
+					"Text" => _('The export will read entries of this DN.')),
+				"752" => array ("Headline" => _('Search filter'),
+					"Text" => _('Please enter an LDAP filter to specifiy the exported entries.')),
+				"753" => array ("Headline" => _('Attributes'),
+					"Text" => _('Please enter a comma separated list of attributes to export. Using "*" will export all attributes.')),
+				"754" => array ("Headline" => _('Include system attributes'),
+					"Text" => _('Activate this option to export internal attributes that are not visible by default.')),
 				// 800 - 899
 				// jobs
 				'800' => array(

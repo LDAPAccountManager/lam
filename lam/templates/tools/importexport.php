@@ -262,12 +262,7 @@ function printExportTabContent(&$tabindex) {
 	$container = new htmlResponsiveRow();
 	$container->add(new htmlTitle(_("Export")), 12);
 
-	$container->addLabel(new htmlOutputText(_('Base DN'), true, true));
-	$baseDnGroup = new htmlGroup();
-	$baseDnInput = new htmlInputField('baseDn', getDefaultBaseDn());
-	$baseDnInput->setRequired(true);
-	$baseDnGroup->addElement($baseDnInput);
-	$container->addField($baseDnGroup);
+	$container->add(new htmlResponsiveInputField(_('Base DN'), 'baseDn', getDefaultBaseDn(), '751', true), 12);
 
 	$searchScopes = array(
 		_('Base (base dn only)') => 'base',
@@ -278,9 +273,9 @@ function printExportTabContent(&$tabindex) {
 	$searchScopeSelect->setHasDescriptiveElements(true);
 	$searchScopeSelect->setSortElements(false);
 	$container->add($searchScopeSelect, 12);
-	$container->add(new htmlResponsiveInputField(_('Search filter'), 'filter', '(objectClass=*)'), 12);
-	$container->add(new htmlResponsiveInputField(_('Attributes'), 'attributes', '*'), 12);
-	$container->add(new htmlResponsiveInputCheckbox('includeSystem', false, _('Include system attributes')), 12);
+	$container->add(new htmlResponsiveInputField(_('Search filter'), 'filter', '(objectClass=*)', '752'), 12);
+	$container->add(new htmlResponsiveInputField(_('Attributes'), 'attributes', '*', '753'), 12);
+	$container->add(new htmlResponsiveInputCheckbox('includeSystem', false, _('Include system attributes'), '754'), 12);
 	$container->add(new htmlResponsiveInputCheckbox('saveAsFile', false, _('Save as file')), 12);
 
 	$formats = array(
@@ -375,7 +370,9 @@ function printExportTabProcessing(&$tabindex) {
 
 	$container->addVerticalSpacer('3rem');
 
-	$container->add(new htmlDiv('exportResults', new htmlOutputText('')), 12);
+	$exportText = new htmlOutputText('');
+	$exportText->setPreformatted(true);
+	$container->add(new htmlDiv('exportResults', $exportText), 12);
 	$container->add(new htmlJavaScript(
 			'window.lam.importexport.startExport(\'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\');'
 		), 12);

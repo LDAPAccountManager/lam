@@ -986,6 +986,12 @@ window.lam.importexport.startExport = function(tokenName, tokenValue) {
 				jQuery('#statusExportInprogress').hide();
 				jQuery('#statusExportDone').show();
 				jQuery('.newexport').show();
+				if (jsonData.output) {
+					jQuery('#exportResults > pre').text(jsonData.output);
+				}
+				else if (jsonData.file) {
+					window.open(jsonData.file, '_blank');
+				}
 			}
 			else {
 				jQuery('#progressbarExport').hide();
@@ -994,6 +1000,13 @@ window.lam.importexport.startExport = function(tokenName, tokenValue) {
 				jQuery('#statusExportFailed').show();
 				jQuery('.newexport').show();
 			}
+		})
+		.fail(function() {
+			jQuery('#progressbarExport').hide();
+			jQuery('#btn_submitExportCancel').hide();
+			jQuery('#statusExportInprogress').hide();
+			jQuery('#statusExportFailed').show();
+			jQuery('.newexport').show();
 		});
 	});
 };
