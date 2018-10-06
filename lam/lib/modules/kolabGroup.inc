@@ -88,20 +88,20 @@ class kolabGroup extends baseModule {
 			),
 			'kolabAllowSMTPRecipient' => array (
 				"Headline" => _('Allowed recipients'), 'attr' => 'kolabAllowSMTPRecipient',
-				"Text" => _('Describes the allowed or disallowed SMTP recipient addresses for mail sent by this account (e.g. "domain.tld" or "user@domain.tld").')
+				"Text" => _('Describes the allowed or disallowed SMTP recipient addresses for mail sent by this account (e.g. "domain.tld" or "-user@domain.tld").')
 			),
 			'kolabAllowSMTPRecipientList' => array (
 				"Headline" => _('Allowed recipients'), 'attr' => 'kolabAllowSMTPRecipient',
-				"Text" => _('Describes the allowed or disallowed SMTP recipient addresses for mail sent by this account (e.g. "domain.tld" or "user@domain.tld").')
+				"Text" => _('Describes the allowed or disallowed SMTP recipient addresses for mail sent by this account (e.g. "domain.tld" or "-user@domain.tld").')
 							. ' ' . _("Multiple values are separated by semicolon.")
 			),
 			'kolabAllowSMTPSender' => array (
 				"Headline" => _('Allowed senders'), 'attr' => 'kolabAllowSMTPSender',
-				"Text" => _('Describes the allowed or disallowed SMTP addresses sending mail to this account (e.g. "domain.tld" or "user@domain.tld").')
+				"Text" => _('Describes the allowed or disallowed SMTP addresses sending mail to this account (e.g. "domain.tld" or "-user@domain.tld").')
 			),
 			'kolabAllowSMTPSenderList' => array (
 				"Headline" => _('Allowed senders'), 'attr' => 'kolabAllowSMTPSender',
-				"Text" => _('Describes the allowed or disallowed SMTP addresses sending mail to this account (e.g. "domain.tld" or "user@domain.tld").')
+				"Text" => _('Describes the allowed or disallowed SMTP addresses sending mail to this account (e.g. "domain.tld" or "-user@domain.tld").')
 							. ' ' . _("Multiple values are separated by semicolon.")
 			),
 			'autoAdd' => array(

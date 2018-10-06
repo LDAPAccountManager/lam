@@ -1384,7 +1384,7 @@ function getExtendedLDAPErrorMessage($server) {
 	$ldapMsg = null;
 	ldap_get_option($server, LDAP_OPT_ERROR_STRING, $ldapMsg);
 	if (empty($ldapMsg)) {
-		return null;
+		return ldap_error($server);
 	}
 	return $ldapMsg;
 }

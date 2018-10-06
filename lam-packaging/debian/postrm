@@ -49,6 +49,15 @@ if [ -f /usr/share/debconf/confmodule ]; then
 		done
 	fi
 
+	# 3rd party libs
+	phpThirdPartyLibs='phpseclib tcpdf'
+	for phpThirdPartyLib in $phpThirdPartyLibs; do
+		if [ -L /usr/share/ldap-account-manager/lib/3rdParty/${phpThirdPartyLib} ] ; then
+			rm /usr/share/ldap-account-manager/lib/3rdParty/${phpThirdPartyLib}
+		fi
+	done
+
+
 	set -e
 	if [ "$1" = "purge" ]; then
 		rm -r -f /usr/share/ldap-account-manager
