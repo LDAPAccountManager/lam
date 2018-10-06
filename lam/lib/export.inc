@@ -184,7 +184,7 @@ class Exporter {
 			));
 		}
 		return json_encode(array(
-			Exporter::OUTPUT => htmlspecialchars($output),
+			Exporter::OUTPUT => htmlspecialchars($output, ENT_NOQUOTES),
 			Exporter::STATUS => 'done'
 		));
 	}
@@ -196,7 +196,50 @@ class Exporter {
 	 * @param string $lineEnding line ending
 	 */
 	private function getCsvOutput(&$entries, $lineEnding) {
-		return 'CSV';
+		$attributeNames = array();
+		foreach ($entries as $entry) {
+			$entryAttributeNames = array_keys($entry);
+			foreach ($entryAttributeNames as $name) {
+				if (!in_array($name, $attributeNames)) {
+					$attributeNames[] = $name;
+				}
+			}
+		}
+		$attributeNames = array_delete(array('dn'), $attributeNames);
+		sort($attributeNames);
+		array_unshift($attributeNames, 'dn');
+
+		$attributeNamesQuoted = array_map(array($this, 'escapeCsvAndAddQuotes'), $attributeNames);
+		$output = '';
+		// header
+		$output .= implode(',', $attributeNamesQuoted) . $lineEnding;
+		// content
+		foreach ($entries as $entry) {
+			$values = array();
+			foreach ($attributeNames as $name) {
+				if (!isset($entry[$name])) {
+					$values[] = $this->escapeCsvAndAddQuotes('');
+				}
+				elseif (is_array($entry[$name])) {
+					$values[] = $this->escapeCsvAndAddQuotes(implode(' | ', $entry[$name]));
+				}
+				else {
+					$values[] = $this->escapeCsvAndAddQuotes($entry[$name]);
+				}
+			}
+			$output .= implode(',', $values) . $lineEnding;
+		}
+		return $output;
+	}
+
+	/**
+	 * Escapes a CSV value and adds quotes arround it.
+	 *
+	 * @param string $value CSV value
+	 * @return string escaped and quoted value
+	 */
+	private function escapeCsvAndAddQuotes($value) {
+		return '"' . str_replace('"', '""', $value) . '"';
 	}
 
 	/**
