@@ -1,3 +1,7 @@
+December 2018 6.6
+  - New import/export in tools menu
+
+
 25.09.2018 6.5
   - Password change possible via LDAP EXOP operation (set LDAP_EXOP as password hash, requires PHP 7.2)
   - Support Imagick and GD
@@ -24,6 +28,7 @@
    -> Better support for 389ds password expiration
   - Fixed bugs:
    -> Error on password reset page when custom fields is used (194)
+
 
 19.03.2018 6.3
   - Server profile: added option if referential integrity overlay is active to skip cleanup actions

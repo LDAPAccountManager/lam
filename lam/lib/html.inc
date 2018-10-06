@@ -472,6 +472,8 @@ class htmlInputField extends htmlElement {
 	protected $autocompleteMinLength = 1;
 	/** show calendar */
 	protected $showCalendar = false;
+	/** show DN selection */
+	protected $showDnSelection = false;
 	/** calendar format */
 	protected $calendarFormat = '';
 	/** title attribute */
@@ -589,8 +591,19 @@ class htmlInputField extends htmlElement {
 		if (!empty($this->title)) {
 			$title = ' title="' . $this->title . '"';
 		}
+		if ($this->showDnSelection) {
+			echo '<span class="nowrap">';
+		}
 		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength
 			. $min . $max . $size . $fieldTabIndex . $onKeyPress . $onKeyUp . $title . $disabled . '>';
+		if ($this->showDnSelection) {
+			echo '<img class="align-middle" src="../../graphics/view.png"
+					   width="16" height="16" title="' . _('Choose entry') . '"
+					   onclick="window.lam.html.showDnSelection(\'' . $this->fieldName . '\', \'' . _('Choose entry') . '\'
+					   			, \'' . _('Ok') . '\', \'' . _('Cancel') . '\', \'' . getSecurityTokenName() . '\'
+					   			, \'' . getSecurityTokenValue() . '\');">';
+			echo '</span>';
+		}
 		// autocompletion
 		if ($this->autocomplete) {
 			echo "<script type=\"text/javascript\">\n";
@@ -803,6 +816,13 @@ class htmlInputField extends htmlElement {
 	public function showCalendar($format) {
 		$this->showCalendar = true;
 		$this->calendarFormat = $format;
+	}
+
+	/**
+	 * Shows a DN selection next to input field.
+	 */
+	public function showDnSelection() {
+		$this->showDnSelection = true;
 	}
 
 	/**

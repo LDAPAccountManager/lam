@@ -1011,6 +1011,51 @@ window.lam.importexport.startExport = function(tokenName, tokenValue) {
 	});
 };
 
+window.lam.html = window.lam.html || {};
+
+/**
+ * Shows a DN selection for the given input field.
+ *
+ * @param fieldId id of input field
+ * @param title title of dialog
+ * @param okText ok button text
+ * @param cancelText cancel button text
+ * @param tokenName CSRF token name
+ * @param tokenValue CSRF token value
+ */
+window.lam.html.showDnSelection = function(fieldId, title, okText, cancelText, tokenName, tokenValue) {
+	var field = jQuery('#' + fieldId);
+	var fieldDiv = jQuery('#dlg_' + fieldId);
+	if (!fieldDiv.length > 0) {
+		jQuery('body').append(jQuery('<div class="hidden" id="dlg_' + fieldId + '"></div>'));
+	}
+	var dnValue = field.val();
+	var data = {
+		jsonInput: ''
+	};
+	data[tokenName] = tokenValue;
+	data['dn'] = dnValue;
+	jQuery.ajax({
+		url: '../misc/ajax.php?function=dnselection',
+		method: 'POST',
+		data: data
+	})
+	.done(function(jsonData){
+	})
+	.fail(function() {
+	});
+	var buttonList = {};
+	buttonList[okText] = function() { alert('OK'); };
+	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
+	jQuery('#dlg_' + fieldId).dialog({
+		modal: true,
+		title: title,
+		dialogClass: 'defaultBackground',
+		buttons: buttonList,
+		width: 'auto'
+	});
+};
+
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();
 	window.lam.form.autoTrim();

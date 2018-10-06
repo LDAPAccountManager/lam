@@ -262,7 +262,9 @@ function printExportTabContent(&$tabindex) {
 	$container = new htmlResponsiveRow();
 	$container->add(new htmlTitle(_("Export")), 12);
 
-	$container->add(new htmlResponsiveInputField(_('Base DN'), 'baseDn', getDefaultBaseDn(), '751', true), 12);
+	$baseDnField = new htmlResponsiveInputField(_('Base DN'), 'baseDn', getDefaultBaseDn(), '751', true);
+	$baseDnField->showDnSelection();
+	$container->add($baseDnField, 12);
 
 	$searchScopes = array(
 		_('Base (base dn only)') => 'base',
