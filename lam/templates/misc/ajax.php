@@ -2,6 +2,12 @@
 namespace LAM\AJAX;
 use \LAM\TOOLS\IMPORT_EXPORT\Importer;
 use \LAM\TOOLS\IMPORT_EXPORT\Exporter;
+use \LAM\TYPES\TypeManager;
+use \htmlResponsiveRow;
+use \htmlDiv;
+use \htmlGroup;
+use \htmlOutputText;
+use \htmlButton;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -128,6 +134,12 @@ class Ajax {
 			ob_end_clean();
 			echo $jsonOut;
 		}
+		elseif ($function === 'dnselection') {
+			ob_start();
+			$jsonOut = $this->dnSelection();
+			ob_end_clean();
+			echo $jsonOut;
+		}
 	}
 
 	/**
@@ -158,6 +170,72 @@ class Ajax {
 		$password = $input['password'];
 		$result = checkPasswordStrength($password, null, null);
 		echo json_encode(array("result" => $result));
+	}
+	
+	/**
+	 * Handles DN selection fields.
+	 * 
+	 * @return string JSON output
+	 */
+	private function dnSelection() {
+		$dn = trim($_POST['dn']);
+		if (empty($dn) || !get_preg($dn, 'dn')) {
+			$dnList = $this->getDefaultDns();
+		}
+		$dnList = $this->getDefaultDns(); // TODO remove
+		$html = $this->buildDnSelectionHtml($dnList);
+		return json_encode(array('dialogData' => $html));
+	}
+	
+	/**
+	 * Returns a list of default DNs from account types + tree suffix.
+	 * 
+	 * @return string[] default DNs
+	 */
+	private function getDefaultDns() {
+		$typeManager = new TypeManager();
+		$baseDnList = array();
+		foreach ($typeManager->getConfiguredTypes() as $type) {
+			$suffix = $type->getSuffix();
+			if (!empty($suffix)) {
+				$baseDnList[] = $suffix;
+			}
+		}
+		$treeSuffix = $_SESSION['config']->get_Suffix('tree');
+		if (!empty($treeSuffix)) {
+			$baseDnList[] = $suffix;
+		}
+		$baseDnList = array_unique($baseDnList);
+		sort($baseDnList);
+		return $baseDnList;
+	}
+	
+	/**
+	 * Returns the HTML to build the DN selection list.
+	 * 
+	 * @param string[] $dnList DN list
+	 */
+	private function buildDnSelectionHtml($dnList) {
+		$fieldId = trim($_POST['fieldId']);
+		$mainRow = new htmlResponsiveRow();
+		foreach ($dnList as $dn) {
+			$row = new htmlResponsiveRow();
+			$row->addDataAttribute('dn', $dn);
+			$row->add(new htmlOutputText($dn), 12, 9);
+			$buttonId = base64_encode($dn);
+			$buttonId = str_replace('=', '', $buttonId);
+			$button = new htmlButton($buttonId, _('Ok'));
+			$button->setIconClass('okButton');
+			$button->setOnClick('window.lam.html.selectDn(this, \'' . htmlspecialchars($fieldId) . '\')');
+			$row->add($button, 12, 3);
+			$mainRow->add($row, 12);
+		}
+		$tabindex = 1000;
+		ob_start();
+		parseHtml(null, $mainRow, array(), false, $tabindex, 'user');
+		$out = ob_get_contents();
+		ob_end_clean();
+		return $out;
 	}
 
 }

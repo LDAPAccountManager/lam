@@ -1034,18 +1034,20 @@ window.lam.html.showDnSelection = function(fieldId, title, okText, cancelText, t
 		jsonInput: ''
 	};
 	data[tokenName] = tokenValue;
+	data['fieldId'] = fieldId;
 	data['dn'] = dnValue;
 	jQuery.ajax({
 		url: '../misc/ajax.php?function=dnselection',
 		method: 'POST',
 		data: data
 	})
-	.done(function(jsonData){
+	.done(function(jsonData) {
+		jQuery('#dlg_' + fieldId).html(jsonData.dialogData);
 	})
 	.fail(function() {
+		jQuery(this).dialog("close");
 	});
 	var buttonList = {};
-	buttonList[okText] = function() { alert('OK'); };
 	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
 	jQuery('#dlg_' + fieldId).dialog({
 		modal: true,
@@ -1055,6 +1057,21 @@ window.lam.html.showDnSelection = function(fieldId, title, okText, cancelText, t
 		width: 'auto'
 	});
 };
+
+/**
+ * Selects the DN from dialog.
+ * 
+ * @param el ok button in dialog
+ * @param fieldId field id of input field
+ * @returns false
+ */
+window.lam.html.selectDn = function(el, fieldId) {
+	var field = jQuery('#' + fieldId);
+	var dn = jQuery(el).parents('.row').data('dn');
+	field.val(dn);
+	jQuery('#dlg_' + fieldId).dialog("close");
+	return false;
+}
 
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();

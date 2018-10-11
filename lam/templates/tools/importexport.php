@@ -15,8 +15,6 @@ use \htmlLink;
 use \htmlResponsiveInputCheckbox;
 use \htmlResponsiveSelect;
 use \htmlResponsiveInputField;
-use \htmlGroup;
-use \htmlInputField;
 use \htmlHiddenInput;
 use LAM\TYPES\TypeManager;
 

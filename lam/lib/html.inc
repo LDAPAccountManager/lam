@@ -3960,7 +3960,7 @@ class htmlResponsiveRow extends htmlElement {
 		if ($this->id !== null) {
 			$idParam = ' id="' . $this->id . '"';
 		}
-		echo '<div class="row ' . $cssClasses . '"' . $idParam . '>';
+		echo '<div class="row ' . $cssClasses . '"' .  $this->getDataAttributesAsString() . $idParam . '>';
 		foreach ($this->cells as $cell) {
 			$return = array_merge($return, $cell->generateHTML($module, $input, $values, $restricted, $tabindex, $scope));
 		}
