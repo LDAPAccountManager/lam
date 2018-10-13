@@ -4,8 +4,7 @@ use \LAM\TOOLS\IMPORT_EXPORT\Importer;
 use \LAM\TOOLS\IMPORT_EXPORT\Exporter;
 use \LAM\TYPES\TypeManager;
 use \htmlResponsiveRow;
-use \htmlDiv;
-use \htmlGroup;
+use \htmlLink;
 use \htmlOutputText;
 use \htmlButton;
 /*
@@ -171,25 +170,28 @@ class Ajax {
 		$result = checkPasswordStrength($password, null, null);
 		echo json_encode(array("result" => $result));
 	}
-	
+
 	/**
 	 * Handles DN selection fields.
-	 * 
+	 *
 	 * @return string JSON output
 	 */
 	private function dnSelection() {
 		$dn = trim($_POST['dn']);
 		if (empty($dn) || !get_preg($dn, 'dn')) {
 			$dnList = $this->getDefaultDns();
+			$dn = null;
 		}
-		$dnList = $this->getDefaultDns(); // TODO remove
-		$html = $this->buildDnSelectionHtml($dnList);
+		else {
+			$dnList = $this->getSubDns($dn);
+		}
+		$html = $this->buildDnSelectionHtml($dnList, $dn);
 		return json_encode(array('dialogData' => $html));
 	}
-	
+
 	/**
 	 * Returns a list of default DNs from account types + tree suffix.
-	 * 
+	 *
 	 * @return string[] default DNs
 	 */
 	private function getDefaultDns() {
@@ -206,22 +208,57 @@ class Ajax {
 			$baseDnList[] = $suffix;
 		}
 		$baseDnList = array_unique($baseDnList);
-		sort($baseDnList);
+		usort($baseDnList, 'compareDN');
 		return $baseDnList;
 	}
-	
+
 	/**
 	 * Returns the HTML to build the DN selection list.
-	 * 
+	 *
 	 * @param string[] $dnList DN list
+	 * @param string $currentDn current DN
 	 */
-	private function buildDnSelectionHtml($dnList) {
+	private function buildDnSelectionHtml($dnList, $currentDn) {
 		$fieldId = trim($_POST['fieldId']);
 		$mainRow = new htmlResponsiveRow();
+		if (!empty($currentDn)) {
+			$row = new htmlResponsiveRow();
+			$row->addDataAttribute('dn', $currentDn);
+			$text = new htmlOutputText($currentDn);
+			$text->setIsBold(true);
+			$row->add($text, 12, 9);
+			$row->setCSSClasses(array('text-right'));
+			$buttonId = base64_encode($currentDn);
+			$buttonId = str_replace('=', '', $buttonId);
+			$button = new htmlButton($buttonId, _('Ok'));
+			$button->setIconClass('okButton');
+			$button->setOnClick('window.lam.html.selectDn(this, \'' . htmlspecialchars($fieldId) . '\')');
+			$row->add($button, 12, 3);
+			$mainRow->add($row, 12);
+			// back up
+			$onclickUp = 'window.lam.html.updateDnSelection(this, \''
+					. htmlspecialchars($fieldId) . '\', \'' . getSecurityTokenName() . '\', \''
+					. getSecurityTokenValue() . '\')';
+			$row = new htmlResponsiveRow();
+			$row->addDataAttribute('dn', extractDNSuffix($currentDn));
+			$text = new htmlLink('..', '#');
+			$text->setCSSClasses(array('bold'));
+			$text->setOnClick($onclickUp);
+			$row->add($text, 12, 9);
+			$row->setCSSClasses(array('text-right'));
+			$buttonId = base64_encode('..');
+			$buttonId = str_replace('=', '', $buttonId);
+			$button = new htmlButton($buttonId, _('Up'));
+			$button->setIconClass('upButton');
+			$button->setOnClick($onclickUp);
+			$row->add($button, 12, 3);
+			$mainRow->add($row, 12);
+		}
 		foreach ($dnList as $dn) {
 			$row = new htmlResponsiveRow();
 			$row->addDataAttribute('dn', $dn);
 			$row->add(new htmlOutputText($dn), 12, 9);
+			$row->setCSSClasses(array('text-right'));
 			$buttonId = base64_encode($dn);
 			$buttonId = str_replace('=', '', $buttonId);
 			$button = new htmlButton($buttonId, _('Ok'));
@@ -236,6 +273,22 @@ class Ajax {
 		$out = ob_get_contents();
 		ob_end_clean();
 		return $out;
+	}
+
+	/**
+	 * Returns the sub DNs of given DN.
+	 *
+	 * @param string $dn DN
+	 * @return string[] sub DNs
+	 */
+	private function getSubDns($dn) {
+		$dnEntries = ldapListDN($dn);
+		$dnList = array();
+		foreach ($dnEntries as $entry) {
+			$dnList[] = $entry['dn'];
+		}
+		usort($dnList, 'compareDN');
+		return $dnList;
 	}
 
 }

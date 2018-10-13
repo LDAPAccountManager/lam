@@ -1043,24 +1043,21 @@ window.lam.html.showDnSelection = function(fieldId, title, okText, cancelText, t
 	})
 	.done(function(jsonData) {
 		jQuery('#dlg_' + fieldId).html(jsonData.dialogData);
-	})
-	.fail(function() {
-		jQuery(this).dialog("close");
-	});
-	var buttonList = {};
-	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
-	jQuery('#dlg_' + fieldId).dialog({
-		modal: true,
-		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
-		width: 'auto'
+		var buttonList = {};
+		buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
+		jQuery('#dlg_' + fieldId).dialog({
+			modal: true,
+			title: title,
+			dialogClass: 'defaultBackground',
+			buttons: buttonList,
+			width: 'auto'
+		});
 	});
 };
 
 /**
  * Selects the DN from dialog.
- * 
+ *
  * @param el ok button in dialog
  * @param fieldId field id of input field
  * @returns false
@@ -1071,6 +1068,39 @@ window.lam.html.selectDn = function(el, fieldId) {
 	field.val(dn);
 	jQuery('#dlg_' + fieldId).dialog("close");
 	return false;
+}
+
+/**
+ * Updates the DN selection.
+ *
+ * @param el element
+ * @param fieldId field id of dialog
+ * @param tokenName CSRF token name
+ * @param tokenValue CSRF token value
+ */
+window.lam.html.updateDnSelection = function(el, fieldId, tokenName, tokenValue) {
+	var fieldDiv = jQuery('#dlg_' + fieldId);
+	var dn = jQuery(el).parents('.row').data('dn');
+	var data = {
+		jsonInput: ''
+	};
+	data[tokenName] = tokenValue;
+	data['fieldId'] = fieldId;
+	data['dn'] = dn;
+	jQuery.ajax({
+		url: '../misc/ajax.php?function=dnselection',
+		method: 'POST',
+		data: data
+	})
+	.done(function(jsonData) {
+		jQuery('#dlg_' + fieldId).html(jsonData.dialogData);
+		jQuery(fieldDiv).dialog({
+		    position: {my: 'center', at: 'center', of: window}
+		});
+	})
+	.fail(function() {
+		jQuery(fieldDiv).dialog("close");
+	});
 }
 
 jQuery(document).ready(function() {
