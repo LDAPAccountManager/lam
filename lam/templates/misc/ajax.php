@@ -221,6 +221,9 @@ class Ajax {
 	private function buildDnSelectionHtml($dnList, $currentDn) {
 		$fieldId = trim($_POST['fieldId']);
 		$mainRow = new htmlResponsiveRow();
+		$onclickUp = 'window.lam.html.updateDnSelection(this, \''
+				. htmlspecialchars($fieldId) . '\', \'' . getSecurityTokenName() . '\', \''
+				. getSecurityTokenValue() . '\')';
 		if (!empty($currentDn)) {
 			$row = new htmlResponsiveRow();
 			$row->addDataAttribute('dn', $currentDn);
@@ -236,9 +239,6 @@ class Ajax {
 			$row->add($button, 12, 3);
 			$mainRow->add($row, 12);
 			// back up
-			$onclickUp = 'window.lam.html.updateDnSelection(this, \''
-					. htmlspecialchars($fieldId) . '\', \'' . getSecurityTokenName() . '\', \''
-					. getSecurityTokenValue() . '\')';
 			$row = new htmlResponsiveRow();
 			$row->addDataAttribute('dn', extractDNSuffix($currentDn));
 			$text = new htmlLink('..', '#');
@@ -257,7 +257,9 @@ class Ajax {
 		foreach ($dnList as $dn) {
 			$row = new htmlResponsiveRow();
 			$row->addDataAttribute('dn', $dn);
-			$row->add(new htmlOutputText($dn), 12, 9);
+			$link = new htmlLink($dn, '#');
+			$link->setOnClick($onclickUp);
+			$row->add($link, 12, 9);
 			$row->setCSSClasses(array('text-right'));
 			$buttonId = base64_encode($dn);
 			$buttonId = str_replace('=', '', $buttonId);

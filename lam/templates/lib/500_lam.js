@@ -1044,13 +1044,15 @@ window.lam.html.showDnSelection = function(fieldId, title, okText, cancelText, t
 	.done(function(jsonData) {
 		jQuery('#dlg_' + fieldId).html(jsonData.dialogData);
 		var buttonList = {};
-		buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
+		buttonList[cancelText] = function() { jQuery(this).dialog("destroy"); };
 		jQuery('#dlg_' + fieldId).dialog({
 			modal: true,
 			title: title,
 			dialogClass: 'defaultBackground',
 			buttons: buttonList,
-			width: 'auto'
+			width: 'auto',
+			maxHeight: 600,
+			position: {my: 'center', at: 'center', of: window}
 		});
 	});
 };
@@ -1066,7 +1068,7 @@ window.lam.html.selectDn = function(el, fieldId) {
 	var field = jQuery('#' + fieldId);
 	var dn = jQuery(el).parents('.row').data('dn');
 	field.val(dn);
-	jQuery('#dlg_' + fieldId).dialog("close");
+	jQuery('#dlg_' + fieldId).dialog("destroy");
 	return false;
 }
 
