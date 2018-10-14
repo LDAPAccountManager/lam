@@ -5880,9 +5880,6 @@ OK (10 msec)</programlisting>
 
     <para>There are also some special functions available:</para>
 
-    <para><emphasis role="bold">Export:</emphasis> This allows you to export
-    entries to a file (e.g. LDIF or CSV format).</para>
-
     <para><emphasis role="bold">Show internal attributes:</emphasis> Shows
     internal attributes of the current entry. This includes information about
     the creator and creation time of the entry.</para>

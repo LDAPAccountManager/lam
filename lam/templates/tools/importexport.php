@@ -146,8 +146,8 @@ function printImportTabContent(&$tabindex) {
 	$container = new htmlResponsiveRow();
 	$container->add(new htmlTitle(_("Import")), 12);
 	$sources = array(
+		_('Text input') => 'text',
 		_('File') => 'file',
-		_('Text input') => 'text'
 	);
 	$sourceRadio = new htmlResponsiveRadio(_('Source'), 'source', $sources, 'text');
 	$sourceRadio->setTableRowsToHide(
