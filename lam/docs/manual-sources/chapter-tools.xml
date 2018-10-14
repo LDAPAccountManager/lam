@@ -74,14 +74,16 @@
     </screenshot>
   </section>
 
-  <section>
+  <section id="tool_upload">
     <title>File upload</title>
 
     <para>When you need to create lots of accounts then you can use LAM's file
-    upload to create them. LAM will read a CSV formatted file and create the
-    related LDAP entries. Please check the data in you CSV file carefully. LAM
-    will do less checks for the file upload than for single account
-    creation.</para>
+    upload to create them. In contrast to <link linkend="tool_upload">LDAP
+    import/export</link> this operates on account type level.</para>
+
+    <para>LAM will read a CSV formatted file and create the related LDAP
+    entries. Please check the data in you CSV file carefully. LAM will do less
+    checks for the file upload than for single account creation.</para>
 
     <para>At the first page please select the account type and what extensions
     should be activated.</para>
@@ -199,6 +201,66 @@
         </imageobject>
       </mediaobject>
     </screenshot>
+  </section>
+
+  <section id="tool_importexport">
+    <title>LDAP import/export</title>
+
+    <para>Here you can import and export plain LDAP data. In contrast to <link
+    linkend="tool_upload">file upload</link> this operates on plain LDAP
+    attribute level.</para>
+
+    <section>
+      <title>Import</title>
+
+      <para>The LDAP import supports input data in <ulink
+      url="https://en.wikipedia.org/wiki/LDAP_Data_Interchange_Format">LDIF</ulink>
+      format. You can provide plain text or upload an LDIF file.</para>
+
+      <para>The "Don't stop on errors" option will cause the import to
+      continue even if entries could not be created.</para>
+
+      <screenshot>
+        <graphic fileref="images/tool_import.png"/>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>Export</title>
+
+      <para>Here you can export your plain LDAP data as LDIF or CSV
+      file.</para>
+
+      <screenshot>
+        <graphic fileref="images/tool_export.png"/>
+      </screenshot>
+
+      <para>Base DN: this is the starting point of the export. Enter a DN or
+      press the magnifying glass icon to open the DN selection dialog.</para>
+
+      <para>Search scope: You can export just the base DN, base DN + its
+      direct children or the whole subtree.</para>
+
+      <para>Search filter: this can be used to filter the entries by
+      specifying a standard LDAP filter. The preselected filter
+      "(objectclass=*)" matches all entries.</para>
+
+      <para>Attributes: the list of attributes that should be part of export.
+      "*" matches all standard attributes (excluding system
+      attributes).</para>
+
+      <para>Include system attributes: this will also include system
+      attributes like the entry creation time and creator's DN.</para>
+
+      <para>Save as file: will save to file instead of printing the data on
+      the web page.</para>
+
+      <para>Export format: you can select LDIF or CSV (e.g. for usage in
+      spreadsheet applications).</para>
+
+      <para>End of line: use the one appropriate for your operating
+      system.</para>
+    </section>
   </section>
 
   <section>

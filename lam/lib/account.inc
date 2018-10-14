@@ -855,6 +855,32 @@ function ldapGetDN($dn, $attributes = array('dn'), $handle = null) {
 }
 
 /**
+ * Returns the DN and children of a given DN.
+ *
+ * @param String $dn DN
+ * @param String $filter LDAP filter
+ * @param array $attributes list of attributes to fetch
+ * @param handle $handle LDAP handle (optional for admin interface pages)
+ * @return array attributes or null if not found
+ */
+function ldapListDN($dn, $filter = '(objectclass=*)', $attributes = array('dn'), $handle = null) {
+	if ($handle == null) {
+		$handle = $_SESSION['ldap']->server();
+	}
+	$return = null;
+	$sr = @ldap_list($handle, escapeDN($dn), $filter, $attributes, 0, 0, 0, LDAP_DEREF_NEVER);
+	if ($sr) {
+		$entries = ldap_get_entries($handle, $sr);
+		if ($entries) {
+			cleanLDAPResult($entries);
+			$return = $entries;
+		}
+		@ldap_free_result($sr);
+	}
+	return $return;
+}
+
+/**
 * Deletes a DN and all child entries.
 *
 * @param string $dn DN to delete

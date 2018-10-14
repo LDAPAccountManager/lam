@@ -472,6 +472,8 @@ class htmlInputField extends htmlElement {
 	protected $autocompleteMinLength = 1;
 	/** show calendar */
 	protected $showCalendar = false;
+	/** show DN selection */
+	protected $showDnSelection = false;
 	/** calendar format */
 	protected $calendarFormat = '';
 	/** title attribute */
@@ -589,8 +591,19 @@ class htmlInputField extends htmlElement {
 		if (!empty($this->title)) {
 			$title = ' title="' . $this->title . '"';
 		}
+		if ($this->showDnSelection) {
+			echo '<span class="nowrap">';
+		}
 		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength
 			. $min . $max . $size . $fieldTabIndex . $onKeyPress . $onKeyUp . $title . $disabled . '>';
+		if ($this->showDnSelection) {
+			echo '<img class="align-middle" src="../../graphics/view.png"
+					   width="16" height="16" title="' . _('Choose entry') . '"
+					   onclick="window.lam.html.showDnSelection(\'' . $this->fieldName . '\', \'' . _('Choose entry') . '\'
+					   			, \'' . _('Ok') . '\', \'' . _('Cancel') . '\', \'' . getSecurityTokenName() . '\'
+					   			, \'' . getSecurityTokenValue() . '\');">';
+			echo '</span>';
+		}
 		// autocompletion
 		if ($this->autocomplete) {
 			echo "<script type=\"text/javascript\">\n";
@@ -803,6 +816,13 @@ class htmlInputField extends htmlElement {
 	public function showCalendar($format) {
 		$this->showCalendar = true;
 		$this->calendarFormat = $format;
+	}
+
+	/**
+	 * Shows a DN selection next to input field.
+	 */
+	public function showDnSelection() {
+		$this->showDnSelection = true;
 	}
 
 	/**
@@ -1623,6 +1643,10 @@ class htmlRadio extends htmlElement {
 	private $isEnabled = true;
 	/** on change code */
 	private $onchangeEvent = null;
+	/** list of enclosing table rows to hide when checked */
+	protected $tableRowsToHide = array();
+	/** list of enclosing table rows to show when checked */
+	protected $tableRowsToShow = array();
 
 	/**
 	 * Constructor.
@@ -1663,13 +1687,23 @@ class htmlRadio extends htmlElement {
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
 		}
-		$onchange = '';
-		if ($this->onchangeEvent != null) {
-			$onchange = ' onchange="' . $this->onchangeEvent . '"';
+		if (($this->tableRowsToHide != null) || ($this->tableRowsToShow != null)) {
+			$this->printInitialState();
 		}
 		// print radio list
 		$counter = 0;
 		foreach ($this->elements as $label => $value) {
+			$showHideOnchange = '';
+			if (($this->tableRowsToHide != null) || ($this->tableRowsToShow != null)) {
+				$showHideOnchange = $this->getOnchangeCodeForShowHideTableRows($counter);
+			}
+			$onchange = '';
+			if ($this->onchangeEvent != null) {
+				$onchange = ' onchange="' . $this->onchangeEvent . '"';
+			}
+			elseif (!empty($showHideOnchange)) {
+				$onchange = ' onchange="' . $showHideOnchange . '"';
+			}
 			$onClick = 'onClick="
 				jQuery(\'input[name=' . $this->name . ']\').prop(\'checked\', false);
 				jQuery(\'#' . $this->name . $counter . '\').prop(\'checked\', true);
@@ -1707,6 +1741,104 @@ class htmlRadio extends htmlElement {
 	 */
 	public function setOnchangeEvent($onchangeEvent) {
 		$this->onchangeEvent = htmlspecialchars($onchangeEvent);
+	}
+
+	/**
+	 * Returns the selector to use to find the show/hide elements.
+	 *
+	 * @return string selector
+	 */
+	protected function getShowHideSelector() {
+		return 'tr';
+	}
+
+	/**
+	 * Creates the JavaScript code to hide/show table rows based on the select value.
+	 *
+	 * @param int $counter index
+	 * @return String onChange code
+	 */
+	private function getOnchangeCodeForShowHideTableRows($counter) {
+		$onChange = '';
+		if ((sizeof($this->tableRowsToHide) == 0) && (sizeof($this->tableRowsToShow) == 0)) {
+			return;
+		}
+		$values = array();
+		if (!empty($this->tableRowsToHide)) {
+			$values = array_merge($values, array_keys($this->tableRowsToHide));
+		}
+		if (!empty($this->tableRowsToShow)) {
+			$values = array_merge($values, array_keys($this->tableRowsToShow));
+		}
+		$values = array_unique($values);
+		$selector = $this->getShowHideSelector();
+		// build Java script to show/hide depending fields
+		foreach ($values as $val) {
+			// build onChange listener
+			$onChange .= 'if (jQuery(\'#' . $this->name . $counter . '\').val() == \'' . $val . '\') {';
+			if (isset($this->tableRowsToShow[$val])) {
+				for ($i = 0; $i < sizeof($this->tableRowsToShow[$val]); $i++) {
+					$onChange .= 'jQuery(\'#' . $this->tableRowsToShow[$val][$i] . '\').closest(\'' . $selector . '\').removeClass(\'hidden\');';
+				}
+			}
+			if (isset($this->tableRowsToHide[$val])) {
+				for ($i = 0; $i < sizeof($this->tableRowsToHide[$val]); $i++) {
+					$onChange .= 'jQuery(\'#' . $this->tableRowsToHide[$val][$i] . '\').closest(\'' . $selector . '\').addClass(\'hidden\');';
+				}
+			}
+			$onChange .= '};';
+		}
+		return $onChange;
+	}
+
+	private function printInitialState() {
+		$selector = $this->getShowHideSelector();
+		// build script to set initial state
+		$script = '<script type="text/javascript">jQuery(document).ready(function() {' . "\n";
+		if (isset($this->tableRowsToShow[$this->selectedElement])) {
+			for ($i = 0; $i < sizeof($this->tableRowsToShow[$this->selectedElement]); $i++) {
+				$classType = 'removeClass';
+				$script .= 'jQuery(\'#' . $this->tableRowsToShow[$this->selectedElement][$i] . '\').closest(\'' . $selector . '\').' . $classType . '(\'hidden\');' . "\n";
+			}
+		}
+		if (isset($this->tableRowsToHide[$this->selectedElement])) {
+			for ($i = 0; $i < sizeof($this->tableRowsToHide[$this->selectedElement]); $i++) {
+				$classType = 'addClass';
+				$script .= 'jQuery(\'#' . $this->tableRowsToHide[$this->selectedElement][$i] . '\').closest(\'' . $selector . '\').' . $classType . '(\'hidden\');' . "\n";
+			}
+		}
+		$script .= '});</script>';
+		echo $script;
+	}
+
+	/**
+	 * This will hide the given table rows when the radio is changed to the specified value.
+	 * The given IDs can be of any e.g. input element. Starting from this element
+	 * the first parent "<tr>" element will be used to show/hide.
+	 * <br>
+	 * <br>
+	 * <br> Example for $tableRowsToHide:
+	 * <br> array('val1' => array('option1', 'option2'), 'val2' => array('option3'))
+	 *
+	 * @param array $tableRowsToHide array of select value => array of IDs of child elements to hide
+	 */
+	public function setTableRowsToHide($tableRowsToHide) {
+		$this->tableRowsToHide = $tableRowsToHide;
+	}
+
+	/**
+	 * This will show the given table rows when the radio is changed to the specified value.
+	 * The given IDs can be of any e.g. input element. Starting from this element
+	 * the first parent "<tr>" element will be used to show/hide.
+	 * <br>
+	 * <br>
+	 * <br> Example for $tableRowsToShow:
+	 * <br> array('val1' => array('option1', 'option2'), 'val2' => array('option3'))
+	 *
+	 * @param array $tableRowsToShow array of select value => array of IDs of child elements to show
+	 */
+	public function setTableRowsToShow($tableRowsToShow) {
+		$this->tableRowsToShow = $tableRowsToShow;
 	}
 
 }
@@ -2292,7 +2424,7 @@ class htmlInputFileUpload extends htmlElement {
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
 		}
-		echo '<input type="file" name="' . $this->name . '"' . $tabindexValue . $disabled . '>';
+		echo '<input type="file" id="' . $this->name . '" name="' . $this->name . '"' . $tabindexValue . $disabled . '>';
 		return array($this->name => 'file');
 	}
 
@@ -3828,7 +3960,7 @@ class htmlResponsiveRow extends htmlElement {
 		if ($this->id !== null) {
 			$idParam = ' id="' . $this->id . '"';
 		}
-		echo '<div class="row ' . $cssClasses . '"' . $idParam . '>';
+		echo '<div class="row ' . $cssClasses . '"' .  $this->getDataAttributesAsString() . $idParam . '>';
 		foreach ($this->cells as $cell) {
 			$return = array_merge($return, $cell->generateHTML($module, $input, $values, $restricted, $tabindex, $scope));
 		}
@@ -4286,6 +4418,15 @@ class htmlResponsiveRadio extends htmlRadio {
 		}
 		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');
 		return $row->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+	}
+
+	/**
+	 * Returns the selector to use to find the show/hide elements.
+	 *
+	 * @return string selector
+	 */
+	protected function getShowHideSelector() {
+		return '.row';
 	}
 
 }

@@ -901,6 +901,210 @@ window.lam.tools.schema.select = function() {
 	});
 };
 
+window.lam.importexport = window.lam.importexport || {};
+
+/**
+ * Starts the import process.
+ *
+ * @param tokenName name of CSRF token
+ * @param tokenValue value of CSRF token
+ */
+window.lam.importexport.startImport = function(tokenName, tokenValue) {
+	jQuery(document).ready(function() {
+		jQuery('#progressbarImport').progressbar();
+		var output = jQuery('#importResults');
+		var data = {
+			jsonInput: ''
+		};
+		data[tokenName] = tokenValue;
+		jQuery.ajax({
+			url: '../misc/ajax.php?function=import',
+			method: 'POST',
+			data: data
+		})
+		.done(function(jsonData){
+			if (jsonData.data && (jsonData.data != '')) {
+				output.append(jsonData.data);
+			}
+			if (jsonData.status == 'done') {
+				jQuery('#progressbarImport').hide();
+				jQuery('#btn_submitImportCancel').hide();
+				jQuery('#statusImportInprogress').hide();
+				jQuery('#statusImportDone').show();
+				jQuery('.newimport').show();
+			}
+			else if (jsonData.status == 'failed') {
+				jQuery('#btn_submitImportCancel').hide();
+				jQuery('#statusImportInprogress').hide();
+				jQuery('#statusImportFailed').show();
+				jQuery('.newimport').show();
+			}
+			else {
+				jQuery('#progressbarImport').progressbar({
+					value: jsonData.progress
+				});
+				window.lam.import.startImport(tokenName, tokenValue);
+			}
+		});
+	});
+};
+
+/**
+ * Starts the export process.
+ *
+ * @param tokenName name of CSRF token
+ * @param tokenValue value of CSRF token
+ */
+window.lam.importexport.startExport = function(tokenName, tokenValue) {
+	jQuery(document).ready(function() {
+		jQuery('#progressbarExport').progressbar({value: 50});
+		var output = jQuery('#exportResults');
+		var data = {
+			jsonInput: ''
+		};
+		data[tokenName] = tokenValue;
+		data['baseDn'] = jQuery('#baseDn').val();
+		data['searchScope'] = jQuery('#searchScope').val();
+		data['filter'] = jQuery('#filter').val();
+		data['attributes'] = jQuery('#attributes').val();
+		data['format'] = jQuery('#format').val();
+		data['ending'] = jQuery('#ending').val();
+		data['includeSystem'] = jQuery('#includeSystem').val();
+		data['saveAsFile'] = jQuery('#saveAsFile').val();
+		jQuery.ajax({
+			url: '../misc/ajax.php?function=export',
+			method: 'POST',
+			data: data
+		})
+		.done(function(jsonData){
+			if (jsonData.data && (jsonData.data != '')) {
+				output.append(jsonData.data);
+			}
+			if (jsonData.status == 'done') {
+				jQuery('#progressbarExport').hide();
+				jQuery('#btn_submitExportCancel').hide();
+				jQuery('#statusExportInprogress').hide();
+				jQuery('#statusExportDone').show();
+				jQuery('.newexport').show();
+				if (jsonData.output) {
+					jQuery('#exportResults > pre').text(jsonData.output);
+				}
+				else if (jsonData.file) {
+					window.open(jsonData.file, '_blank');
+				}
+			}
+			else {
+				jQuery('#progressbarExport').hide();
+				jQuery('#btn_submitExportCancel').hide();
+				jQuery('#statusExportInprogress').hide();
+				jQuery('#statusExportFailed').show();
+				jQuery('.newexport').show();
+			}
+		})
+		.fail(function() {
+			jQuery('#progressbarExport').hide();
+			jQuery('#btn_submitExportCancel').hide();
+			jQuery('#statusExportInprogress').hide();
+			jQuery('#statusExportFailed').show();
+			jQuery('.newexport').show();
+		});
+	});
+};
+
+window.lam.html = window.lam.html || {};
+
+/**
+ * Shows a DN selection for the given input field.
+ *
+ * @param fieldId id of input field
+ * @param title title of dialog
+ * @param okText ok button text
+ * @param cancelText cancel button text
+ * @param tokenName CSRF token name
+ * @param tokenValue CSRF token value
+ */
+window.lam.html.showDnSelection = function(fieldId, title, okText, cancelText, tokenName, tokenValue) {
+	var field = jQuery('#' + fieldId);
+	var fieldDiv = jQuery('#dlg_' + fieldId);
+	if (!fieldDiv.length > 0) {
+		jQuery('body').append(jQuery('<div class="hidden" id="dlg_' + fieldId + '"></div>'));
+	}
+	var dnValue = field.val();
+	var data = {
+		jsonInput: ''
+	};
+	data[tokenName] = tokenValue;
+	data['fieldId'] = fieldId;
+	data['dn'] = dnValue;
+	jQuery.ajax({
+		url: '../misc/ajax.php?function=dnselection',
+		method: 'POST',
+		data: data
+	})
+	.done(function(jsonData) {
+		jQuery('#dlg_' + fieldId).html(jsonData.dialogData);
+		var buttonList = {};
+		buttonList[cancelText] = function() { jQuery(this).dialog("destroy"); };
+		jQuery('#dlg_' + fieldId).dialog({
+			modal: true,
+			title: title,
+			dialogClass: 'defaultBackground',
+			buttons: buttonList,
+			width: 'auto',
+			maxHeight: 600,
+			position: {my: 'center', at: 'center', of: window}
+		});
+	});
+};
+
+/**
+ * Selects the DN from dialog.
+ *
+ * @param el ok button in dialog
+ * @param fieldId field id of input field
+ * @returns false
+ */
+window.lam.html.selectDn = function(el, fieldId) {
+	var field = jQuery('#' + fieldId);
+	var dn = jQuery(el).parents('.row').data('dn');
+	field.val(dn);
+	jQuery('#dlg_' + fieldId).dialog("destroy");
+	return false;
+}
+
+/**
+ * Updates the DN selection.
+ *
+ * @param el element
+ * @param fieldId field id of dialog
+ * @param tokenName CSRF token name
+ * @param tokenValue CSRF token value
+ */
+window.lam.html.updateDnSelection = function(el, fieldId, tokenName, tokenValue) {
+	var fieldDiv = jQuery('#dlg_' + fieldId);
+	var dn = jQuery(el).parents('.row').data('dn');
+	var data = {
+		jsonInput: ''
+	};
+	data[tokenName] = tokenValue;
+	data['fieldId'] = fieldId;
+	data['dn'] = dn;
+	jQuery.ajax({
+		url: '../misc/ajax.php?function=dnselection',
+		method: 'POST',
+		data: data
+	})
+	.done(function(jsonData) {
+		jQuery('#dlg_' + fieldId).html(jsonData.dialogData);
+		jQuery(fieldDiv).dialog({
+		    position: {my: 'center', at: 'center', of: window}
+		});
+	})
+	.fail(function() {
+		jQuery(fieldDiv).dialog("close");
+	});
+}
+
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();
 	window.lam.form.autoTrim();
