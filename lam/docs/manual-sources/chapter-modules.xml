@@ -1993,6 +1993,74 @@ AuthorizedKeysCommandUser root</literallayout>
     </section>
 
     <section>
+      <title>YubiKey</title>
+
+      <para>You can manage your YubiKey ids with LAM. It supports the <ulink
+      url="https://github.com/mludvig/yubikey-ldap">yubiKeyUser schema</ulink>
+      or any other attribute mapping.</para>
+
+      <para><emphasis role="bold">Configuration</emphasis></para>
+
+      <para>First, you need to activate the YubiKey module for users in your
+      LAM server profile.</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_yubikey1.png"/>
+      </screenshot>
+
+      <para>Second, you need to specify which object class and attribute name
+      should be used.</para>
+
+      <para>Object class: If you have an object class just for the YubiKey ids
+      then enter it here. LAM will then provide options to add and remove it.
+      In case you reuse some existing attribute from e.g. inetOrgPerson please
+      leave object class name blank.</para>
+
+      <para>Attribute name: please enter the attribute name that is used for
+      the key ids.</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_yubikey2.png"/>
+      </screenshot>
+
+      <para>You will then be able to manage the key ids for your users.</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_yubikey3.png"/>
+      </screenshot>
+
+      <para><emphasis role="bold">Self Service (LAM Pro)</emphasis></para>
+
+      <para>This will allow your users to update their own keys.</para>
+
+      <para>You need to configure the object class and attribute name first.
+      This is done on tab "Module settings" in self service profile.</para>
+
+      <para><emphasis role="bold">Attention: </emphasis>Please note that both
+      fields are mandatory here. Even if you reused an attribute from some
+      existing object class you need to set it here. LAM needs this to detect
+      if the user can add keys.</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_yubikey5.png"/>
+      </screenshot>
+
+      <para>Then add the YubiKey ids field to your self service profile on tab
+      "Page layout".</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_yubikey4.png"/>
+      </screenshot>
+
+      <para>When a user with the specified object class logs in then the key
+      input fields are shown.</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_yubikey6.png"/>
+      </screenshot>
+    </section>
+
+    <section>
       <title>Authorized services</title>
 
       <para>You can setup PAM to check if a user is allowed to run a specific
