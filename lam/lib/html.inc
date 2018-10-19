@@ -3153,9 +3153,13 @@ class htmlLink extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$text = $this->getContent();
 		$image = '';
 		if ($this->image != null) {
-			$image = '<img class="align-middle" src="' . $this->image . '" alt="' . $this->getAlt() . '">&nbsp;';
+			$image = '<img class="align-middle" src="' . $this->image . '" alt="' . $this->getAlt() . '">';
+			if (!empty($text)) {
+				$image .= '&nbsp;';
+			}
 		}
 		$title = '';
 		if ($this->title != null) {
@@ -3178,7 +3182,7 @@ class htmlLink extends htmlElement {
 		if (sizeof($this->cssClasses) > 0) {
 			$classAttr = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
-		echo '<a href="' . $this->target . '"' . $idAttr . $classAttr . $title . $targetWindow . $onClick . '>' . $image . $this->getContent() . '</a>';
+		echo '<a href="' . $this->target . '"' . $idAttr . $classAttr . $title . $targetWindow . $onClick . '>' . $image . $text . '</a>';
 		if ($this->showAsButton) {
 			echo '<script type="text/javascript">';
 			echo ' jQuery(document).ready(function() {';
