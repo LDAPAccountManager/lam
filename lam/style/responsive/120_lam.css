@@ -54,6 +54,7 @@ img.max16 {
 
 div.dialog-page {
 	float: left;
+	width: 100%;
 }
 
 div.lam-dialog-msg {
