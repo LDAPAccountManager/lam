@@ -1559,6 +1559,117 @@ abstract class baseModule {
 	}
 
 	/**
+	 * Adds a simple text input field for the self service.
+	 * The field name will be the same as the class name plus "_" plus attribute name (e.g. posixAccount_cn).
+	 *
+	 * @param array $container array that is used as return value for getSelfServiceOptions()
+	 * @param String $name attribute name (== field name)
+	 * @param String $label label to display in front of input field
+	 * @param array $fields list of active fields
+	 * @param array $attributes attributes of LDAP account
+	 * @param array $readOnlyFields list of read-only fields
+	 * @param boolean $required field is required
+	 * @param boolean $isTextArea display as text area
+	 */
+	protected function addMultiValueSelfServiceTextField(&$container, $name, $label, &$fields, &$attributes, &$readOnlyFields, $required = false, $isTextArea = false) {
+		$values = array();
+		if (isset($attributes[$name][0])) {
+			$values = $attributes[$name];
+		}
+		$readOnly = in_array($name, $readOnlyFields);
+		$field = new htmlResponsiveRow();
+		if (!$readOnly) {
+			if (empty($values)) {
+				$values[] = '';
+			}
+			$fieldNamePrefix = get_class($this) . '_' . $name . '_';
+			for ($i = 0; $i < sizeof($values); $i++) {
+				$fieldRow = new htmlResponsiveRow();
+				$value = $values[$i];
+				if (!$isTextArea) {
+					$inputField = new htmlInputField($fieldNamePrefix . $i, $value);
+					$inputField->setRequired($required);
+					$inputField->setFieldSize(null);
+				}
+				else {
+					$inputField = new htmlInputTextarea($fieldNamePrefix . $i, $value, null, null);
+				}
+				$fieldRow->add($inputField, 9);
+				if (!empty($value)) {
+					$linkGroup = new htmlGroup();
+					$delLink = new htmlLink(null, '#', '../../graphics/del.png');
+					$delLink->setOnClick('window.lam.selfservice.delMultiValue(\'' . $fieldNamePrefix . '\', this); return false;');
+					$delLink->setCSSClasses(array('del-link'));
+					$linkGroup->addElement($delLink);
+					if ($i === (sizeof($values) - 1)) {
+						$addLink = new htmlLink(null, '#', '../../graphics/add.png');
+						$addLink->setOnClick('window.lam.selfservice.addMultiValue(\'' . $fieldNamePrefix . '\', this); return false;');
+						$addLink->setCSSClasses(array('add-link', 'margin-left5'));
+						$linkGroup->addElement($addLink);
+					}
+					$fieldRow->add($linkGroup, 3);
+				}
+				$field->add($fieldRow, 12);
+			}
+		}
+		else {
+			foreach ($values as $value) {
+				if (!$isTextArea) {
+					$inputField = new htmlOutputText($value);
+				}
+				else {
+					$inputField = new htmlOutputText($value);
+					$inputField->setPreformatted(true);
+				}
+				$field->add($inputField, 12);
+			}
+		}
+		$row = new htmlResponsiveRow();
+		$label = new htmlOutputText($this->getSelfServiceLabel($name, $label));
+		$label->setMarkAsRequired($required);
+		$row->addLabel($label);
+		$row->addField($field);
+		$container[$name] = $row;
+	}
+
+	/**
+	 * Checks the input value of a self service multi-value text field.
+	 * The field name must be the same as the class name plus "_" plus attribute name (e.g. posixAccount_cn).
+	 * If validation is used then there must exist a message named [{attribute name}][0] (e.g. $this->messages['street'][0]).
+	 *
+	 * @param array $container return value of checkSelfServiceOptions()
+	 * @param String $name attribute name
+	 * @param array $attributes LDAP attributes
+	 * @param string $fields input fields
+	 * @param array $readOnlyFields list of read-only fields
+	 * @param String $validationID validation ID for get_preg()
+	 */
+	protected function checkMultiValueSelfServiceTextField(&$container, $name, &$attributes, $fields, &$readOnlyFields, $validationID = null) {
+		if (in_array($name, $fields) && !in_array($name, $readOnlyFields)) {
+			$fieldName = get_class($this) . '_' . $name;
+			$valuesNew = array();
+			foreach ($_POST as $postKey => $postValue) {
+				if (strpos($postKey, $fieldName) === false) {
+					continue;
+				}
+				if (empty($postValue)) {
+					continue;
+				}
+				if (($validationID != null) && !get_preg($postValue, $validationID)) {
+					$container['messages'][] = $this->messages[$name][0];
+					return;
+				}
+				$valuesNew[] = $postValue;
+			}
+			$valuesOld = isset($attributes[$name]) ? $attributes[$name] : array();
+			$intersect = array_intersect($valuesOld, $valuesNew);
+			if ((sizeof($valuesOld) != sizeof($valuesNew)) || (sizeof($intersect) != sizeof($valuesOld))) {
+				$container['mod'][$name] = $valuesNew;
+			}
+		}
+	}
+
+	/**
 	 * Returns a list of managed object classes for this module.
 	 *
 	 * Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>

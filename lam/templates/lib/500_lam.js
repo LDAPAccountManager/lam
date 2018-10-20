@@ -1105,6 +1105,58 @@ window.lam.html.updateDnSelection = function(el, fieldId, tokenName, tokenValue)
 	});
 }
 
+window.lam.selfservice = window.lam.selfservice || {};
+
+/**
+ * Deletes a value of a multi-value field.
+ *
+ * @param fieldNamePrefix prefix of input field name
+ * @param delButton delete button that was clicked
+ */
+window.lam.selfservice.delMultiValue = function(fieldNamePrefix, delButton) {
+	var fields = jQuery("input[name^='" + fieldNamePrefix + "']");
+	var isOnlyOneField = (fields.length === 1);
+	if (!isOnlyOneField) {
+		// move add button if present
+		var addButton = jQuery(delButton).siblings('.add-link');
+		if (addButton.length === 1) {
+			var lastLastDelLink = jQuery(fields[fields.length - 2]).parent().parent().find('.del-link');
+			var lastLastDelLinkParent = jQuery(lastLastDelLink[0]).parent();
+			jQuery(addButton[0]).appendTo(lastLastDelLinkParent[0]);
+		}
+		// delete row
+		var row = jQuery(delButton).closest(".row").parent();
+		row.remove();
+	}
+	else {
+		fields[0].value = '';
+	}
+};
+
+/**
+ * Adds a value to a multi-value field.
+ *
+ * @param fieldNamePrefix prefix of input field name
+ * @param addButton add button that was clicked
+ */
+window.lam.selfservice.addMultiValue = function(fieldNamePrefix, addButton) {
+	var fields = jQuery("input[name^='" + fieldNamePrefix + "']");
+	// get next field number
+	var lastFieldName = fields[fields.length - 1].name;
+	var lastFieldNameIndex = lastFieldName.substring(fieldNamePrefix.length);
+	var newFieldNameIndex = parseInt(lastFieldNameIndex) + 1;
+	// copy row
+	var row = jQuery(addButton).closest(".row").parent();
+	var clone = row.clone();
+	clone = clone.appendTo(row.parent());
+	var cloneInput = clone.find("input[name^='" + fieldNamePrefix + "']");
+	cloneInput[0].name = fieldNamePrefix + newFieldNameIndex;
+	cloneInput[0].id = fieldNamePrefix + newFieldNameIndex;
+	cloneInput[0].value = '';
+	// delete add link from old row
+	jQuery(addButton).remove();
+};
+
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();
 	window.lam.form.autoTrim();
