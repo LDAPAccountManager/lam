@@ -57,6 +57,8 @@ class windowsUser extends baseModule implements passwordService {
 	private $clearTextPassword;
 	/** cache for departments */
 	private $departmentCache = null;
+	/** cache for department numbers */
+	private $departmentNumberCache = null;
 	/** organization cache */
 	private $oCache = null;
 	/** organizational unit cache */
@@ -116,7 +118,7 @@ class windowsUser extends baseModule implements passwordService {
 			'streetAddress', 'telephoneNumber', 'url', 'wWWHomePage', 'userAccountControl', 'profilePath', 'scriptPath',
 			'pwdLastSet', 'otherMailbox', 'homeDirectory', 'homeDrive', 'msSFU30Name', 'msSFU30NisDomain', 'pwdLastSet',
 			'lastLogonTimestamp', 'accountExpires', 'jpegPhoto', 'title', 'carLicense', 'employeeNumber', 'employeeType',
-			'businessCategory', 'department', 'ou', 'o', 'manager', 'facsimileTelephoneNumber', 'company',
+			'businessCategory', 'department', 'departmentNumber', 'ou', 'o', 'manager', 'facsimileTelephoneNumber', 'company',
 			'pager', 'otherPager', 'mobile', 'otherMobile', 'proxyAddresses', 'lockoutTime'
 		);
 		// help Entries
@@ -325,6 +327,14 @@ class windowsUser extends baseModule implements passwordService {
 			'department' => array(
 				"Headline" => _("Department"), 'attr' => 'department',
 				"Text" => _("Here you can enter the user's department.")
+			),
+			'departmentNumber' => array(
+				"Headline" => _("Department number"), 'attr' => 'departmentNumber',
+				"Text" => _("Here you can enter the user's department number.")
+			),
+			'departmentNumberList' => array(
+				"Headline" => _("Department number"), 'attr' => 'departmentNumber',
+				"Text" => _("Here you can enter the user's department number.") . ' ' . _("Multiple values are separated by semicolon.")
 			),
 			'ou' => array(
 				"Headline" => _("Organisational unit"), 'attr' => 'ou',
@@ -712,6 +722,14 @@ class windowsUser extends baseModule implements passwordService {
 				'example' => _('Administration'),
 			);
 		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_departmentNumber',
+				'description' => _('Department number'),
+				'help' => 'departmentNumberList',
+				'example' => 'A123',
+			);
+		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
 			$return['upload_columns'][] = array(
 				'name' => 'windowsUser_ou',
@@ -754,6 +772,9 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment', true)) {
 			$profileContainer->add(new htmlResponsiveInputField(_('Department'), 'windowsUser_department', null, 'department'), 12);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
+			$profileContainer->add(new htmlResponsiveInputField(_('Department number'), 'windowsUser_departmentNumber', null, 'departmentNumberList'), 12);
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
 			$profileContainer->add(new htmlResponsiveInputField(_('Organisational unit'), 'windowsUser_ou', null, 'ouList'), 12);
@@ -882,6 +903,9 @@ class windowsUser extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment', true)) {
 			$return['PDF_fields']['department'] = _('Department');
 		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
+			$return['PDF_fields']['departmentNumber'] = _('Department number');
+		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
 			$return['PDF_fields']['ou'] = _('Organisational unit');
 		}
@@ -925,10 +949,12 @@ class windowsUser extends baseModule implements passwordService {
 			'pwdLastSet' => _('Last password change (read-only)'),
 			'accountExpires' => _('Account expiration date (read-only)'),
 			'department' => _('Department'),
+			'departmentNumber' => _('Department number'),
 		);
 		// possible self service read-only fields
 		$return['selfServiceReadOnlyFields'] = array('physicalDeliveryOfficeName', 'telephoneNumber',
-			'facsimileTelephoneNumber', 'wWWHomePage', 'streetAddress', 'st', 'l', 'postOfficeBox', 'postalCode');
+			'facsimileTelephoneNumber', 'wWWHomePage', 'streetAddress', 'st', 'l', 'postOfficeBox',
+			'departmentNumber', 'postalCode');
 		return $return;
 	}
 
@@ -1155,6 +1181,9 @@ class windowsUser extends baseModule implements passwordService {
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment', true)) {
 				$this->addSimpleInputTextField($containerLeft, 'department', _('Department'), false, null, false, array_slice($this->departmentCache, 0, 300));
 			}
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
+				$this->addMultiValueInputTextField($containerLeft, 'departmentNumber', _('Department number'), false, null, false, array_slice($this->departmentNumberCache, 0, 300));
+			}
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
 				$this->addMultiValueInputTextField($containerLeft, 'ou', _('Organisational unit'), false, null, false, array_slice($this->ouCache, 0, 300));
 			}
@@ -1304,6 +1333,7 @@ class windowsUser extends baseModule implements passwordService {
 				&& $this->isBooleanConfigOptionSet('windowsUser_hideemployeeType', true)
 				&& $this->isBooleanConfigOptionSet('windowsUser_hidebusinessCategory', true)
 				&& $this->isBooleanConfigOptionSet('windowsUser_hidedepartment', true)
+				&& $this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)
 				&& $this->isBooleanConfigOptionSet('windowsUser_hideou', true)
 				&& $this->isBooleanConfigOptionSet('windowsUser_hideo', true)
 				&& $this->isBooleanConfigOptionSet('windowsUser_hidecompany', true)
@@ -1543,6 +1573,10 @@ class windowsUser extends baseModule implements passwordService {
 		// department
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment', true)) {
 			$this->attributes['department'][0] = $_POST['department'];
+		}
+		// department number
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
+			$this->processMultiValueInputTextField('departmentNumber', $return);
 		}
 		// organizational unit
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
@@ -2348,7 +2382,11 @@ class windowsUser extends baseModule implements passwordService {
 			}
 			// departments
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment', true)) {
-				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_department', 'department', null, null, $errors, '/;[ ]*/');
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_department', 'department', null, null, $errors);
+			}
+			// department numbers
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_departmentNumber', 'departmentNumber', null, null, $errors, '/;[ ]*/');
 			}
 			// organisational unit
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
@@ -2540,6 +2578,7 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addSimplePDFField($return, 'employeeType', _('Employee type'));
 		$this->addSimplePDFField($return, 'businessCategory', _('Business category'));
 		$this->addSimplePDFField($return, 'department', _('Department'));
+		$this->addSimplePDFField($return, 'departmentNumber', _('Department number'));
 		$this->addSimplePDFField($return, 'ou', _('Organisational unit'));
 		$this->addSimplePDFField($return, 'o', _('Organisation'));
 		$this->addSimplePDFField($return, 'manager', _('Manager'));
@@ -2648,6 +2687,14 @@ class windowsUser extends baseModule implements passwordService {
 				$this->attributes['department'] = array_map('trim', $departments);
 			}
 		}
+		// department numbers
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber')) {
+			if (!empty($profile['windowsUser_departmentNumber'][0])) {
+				$departmentNumbers = explode(';', $profile['windowsUser_departmentNumber'][0]);
+				// remove extra spaces and set attributes
+				$this->attributes['departmentNumber'] = array_map('trim', $departmentNumbers);
+			}
+		}
 		// organizational unit
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideou') && isset($profile['windowsUser_ou'][0])) {
 			$oList = preg_split('/;[ ]*/', $profile['windowsUser_ou'][0]);
@@ -2702,6 +2749,7 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addSimpleSelfServiceTextField($return, 'postOfficeBox', _('Post office box'), $fields, $attributes, $readOnlyFields);
 		$this->addSimpleSelfServiceTextField($return, 'postalCode', _('Postal code'), $fields, $attributes, $readOnlyFields);
 		$this->addSimpleSelfServiceTextField($return, 'department', _('Department'), $fields, $attributes, $readOnlyFields);
+		$this->addMultiValueSelfServiceTextField($return, 'departmentNumber', _('Department number'), $fields, $attributes, $readOnlyFields);
 		// last password change
 		$row = new htmlResponsiveRow();
 		$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('pwdLastSet', _('Last password change'))));
@@ -2780,6 +2828,7 @@ class windowsUser extends baseModule implements passwordService {
 		$this->checkSimpleSelfServiceTextField($return, 'postOfficeBox', $attributes, $fields, $readOnlyFields);
 		$this->checkSimpleSelfServiceTextField($return, 'postalCode', $attributes, $fields, $readOnlyFields, 'postalCode');
 		$this->checkSimpleSelfServiceTextField($return, 'department', $attributes, $fields, $readOnlyFields);
+		$this->checkMultiValueSelfServiceTextField($return, 'departmentNumber', $attributes, $fields, $readOnlyFields);
 		return $return;
 	}
 
@@ -3384,10 +3433,11 @@ class windowsUser extends baseModule implements passwordService {
 		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidebusinessCategory', true, _('Business category'), null, true), 12, 4);
 		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidecompany', true, _('Company'), null, true), 12, 4);
 		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidedepartment', true, _('Department'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidedepartmentNumber', true, _('Department number'), null, true), 12, 4);
 		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hideou', true, _('Organisational unit'), null, true), 12, 4);
 		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hideo', true, _('Organisation'), null, true), 12, 4);
 		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidemanager', true, _('Manager'), null, true), 12, 4);
-		for ($i = 0; $i < 2; $i++) {
+		for ($i = 0; $i < 1; $i++) {
 			$configContainer->add(new htmlOutputText(''), 0, 4);
 		}
 		$advancedOptions = new htmlResponsiveRow();
@@ -3412,6 +3462,9 @@ class windowsUser extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment', true)) {
 			$attrs[] = 'department';
 		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber', true)) {
+			$attrs[] = 'departmentNumber';
+		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideou', true)) {
 			$attrs[] = 'ou';
 		}
@@ -3428,6 +3481,7 @@ class windowsUser extends baseModule implements passwordService {
 			$attrs[] = 'businessCategory';
 		}
 		$departments = array();
+		$departmentNumbers = array();
 		$ous = array();
 		$os = array();
 		$titles = array();
@@ -3439,6 +3493,11 @@ class windowsUser extends baseModule implements passwordService {
 				if (isset($attributes['department'])) {
 					foreach ($attributes['department'] as $val) {
 						$departments[] = $val;
+					}
+				}
+				if (isset($attributes['departmentnumber'])) {
+					foreach ($attributes['departmentnumber'] as $val) {
+						$departmentNumbers[] = $val;
 					}
 				}
 				if (isset($attributes['ou'])) {
@@ -3469,6 +3528,7 @@ class windowsUser extends baseModule implements passwordService {
 			}
 		}
 		$this->departmentCache = array_values(array_unique($departments));
+		$this->departmentNumberCache = array_values(array_unique($departmentNumbers));
 		$this->oCache = array_values(array_unique($os));
 		$this->ouCache = array_values(array_unique($ous));
 		$this->titleCache = array_values(array_unique($titles));

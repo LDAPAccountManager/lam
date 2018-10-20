@@ -1,6 +1,7 @@
 December 2018 6.6
   - New import/export in tools menu
   - YubiKey support
+  - Windows users: manage "departmentNumber" (needs to be activated via LAM server profile)
 
 
 25.09.2018 6.5
