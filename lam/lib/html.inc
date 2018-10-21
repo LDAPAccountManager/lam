@@ -3816,10 +3816,16 @@ class htmlAccordion extends htmlElement {
 			echo '</div>';
 		}
 		echo '</div>';
+		$hiddenIndexId = $this->id . "_index";
+		echo '<input type="hidden" name="' . $hiddenIndexId . '" id="' . $hiddenIndexId . '" value="' . $active . '">';
 		$script = 'jQuery(function() {
 						$( "#' . $this->id . '" ).accordion({
 						collapsible: ' . $collapsible . ',
-						active: ' . $active . '
+						active: ' . $active . ',
+						activate: function( event, ui ) {
+									var newOption = jQuery("#' . $this->id . '").accordion( "option", "active" );
+									jQuery("#' . $this->id . '_index").val(newOption);
+								}
 						});
 					});';
 		$js = new htmlJavaScript($script);
