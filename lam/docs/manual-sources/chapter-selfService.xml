@@ -242,6 +242,13 @@
             </row>
 
             <row>
+              <entry>Base color</entry>
+
+              <entry>Here you can change the background color for the user
+              pages.</entry>
+            </row>
+
+            <row>
               <entry>Additional CSS links</entry>
 
               <entry>Here you can specify additional CSS links to change the

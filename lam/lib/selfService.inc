@@ -335,6 +335,9 @@ class selfServiceProfile {
 	/** header for self service pages */
 	public $pageHeader;
 
+	/** base color */
+	public $baseColor = '#fffde2';
+
 	/** list of additional CSS links (separated by \n) */
 	public $additionalCSS;
 
@@ -416,6 +419,7 @@ class selfServiceProfile {
 		$this->httpAuthentication = false;
 		$this->pageHeader = '<table border=0 width="100%" class="lamHeader ui-corner-all"><tr><td align="left" height="30"><a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">LDAP Account Manager</a></td></tr></table><br>';
 		$this->additionalCSS = '';
+		$this->baseColor = '#fffde2';
 		$this->loginCaption = '<b>' . _("Welcome to LAM self service. Please enter your user name and password.") . '</b>';
 		$this->loginAttributeText = _('User name');
 		$this->passwordLabel = '';

@@ -2657,6 +2657,127 @@ class htmlTableExtendedInputTextarea extends htmlInputTextarea {
 }
 
 /**
+ * Prints the HTML code for a color picker field.
+ *
+ * @package metaHTML
+ */
+class htmlInputColorPicker extends htmlElement {
+
+	/** unique name of input element */
+	private $name;
+	/** color value */
+	private $color;
+	/** enabled or disabled */
+	private $isEnabled = true;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param string $name unique name
+	 * @param string $colorValue color value (e.g. #000000)
+	 */
+	public function __construct($name, $colorValue = '#000000') {
+		$this->name = htmlspecialchars($name);
+		$this->color = htmlspecialchars($colorValue);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see htmlElement::generateHTML()
+	 */
+	public function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$tabindexValue = ' tabindex="' . $tabindex . '"';
+		$tabindex++;
+		$disabled = '';
+		if (!$this->isEnabled) {
+			$disabled = ' disabled';
+		}
+		echo '<input type="color" value="' . $this->color . '" id="' . $this->name . '" name="' . $this->name . '"' . $tabindexValue . $disabled . '>';
+		return array($this->name => 'file');
+	}
+
+	/**
+	 * Specifies if this component is enabled and accepts user modification.
+	 *
+	 * @param boolean $isEnabled enabled if true
+	 */
+	public function setIsEnabled($isEnabled) {
+		$this->isEnabled = $isEnabled;
+	}
+
+}
+
+/**
+ * Color picker with descriptive label and help link.
+ *
+ * @package metaHTML
+ */
+class htmlResponsiveInputColorPicker extends htmlInputColorPicker {
+
+	/** descriptive label */
+	private $label;
+	/** help ID */
+	private $helpID;
+	/** help module */
+	private $helpModule = null;
+	/** render HTML of parent class */
+	private $renderParentHtml = false;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param string $name unique name
+	 * @param string $colorValue color value (e.g. #000000)
+	 * @param string $label descriptive label
+	 * @param string $helpID help ID
+	 */
+	public function __construct($name, $colorValue, $label, $helpID = null) {
+		parent::__construct($name, $colorValue);
+		$this->label = htmlspecialchars($label);
+		if (is_string($helpID)) {
+			$this->helpID = $helpID;
+		}
+		elseif (is_array($helpID)) {
+			$this->helpID = $helpID[0];
+			$this->helpModule = $helpID[1];
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see htmlInputColorPicker::generateHTML()
+	 */
+	public function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		if ($this->renderParentHtml) {
+			return parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		}
+		// HTML of parent class is rendered on second call (done by htmlResponsiveRow)
+		$this->renderParentHtml = true;
+		$row = new htmlResponsiveRow();
+		// label text
+		$labelGroup = new htmlGroup();
+		$labelGroup->addElement(new htmlOutputText($this->label));
+		if (!empty($this->helpID)) {
+			$helpLinkLabel = new htmlHelpLink($this->helpID, $this->helpModule);
+			$helpLinkLabel->setCSSClasses(array('hide-on-tablet', 'margin-left5'));
+			$labelGroup->addElement($helpLinkLabel);
+		}
+		$row->add($labelGroup, 12, 6, 6, 'responsiveLabel');
+		// input field
+		$fieldGroup = new htmlGroup();
+		$fieldGroup->addElement($this);
+		if (!empty($this->helpID)) {
+			$helpLinkField = new htmlHelpLink($this->helpID, $this->helpModule);
+			$helpLinkField->setCSSClasses(array('hide-on-mobile'));
+			$fieldGroup->addElement($helpLinkField);
+		}
+		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');
+		return $row->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+	}
+
+}
+
+/**
  * Prints the HTML code for an image.
  *
  * @package metaHTML

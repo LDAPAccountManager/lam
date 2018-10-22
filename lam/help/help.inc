@@ -309,6 +309,8 @@ $helpArray = array (
 					"Text" => _('Please enter the site and secret key you got from Google reCAPTCHA.')),
 				"522" => array ("Headline" => _('Secure login'),
 					"Text" => _('Protect the self service login with a captcha.')),
+				"523" => array ("Headline" => _('Base color'),
+					"Text" => _('Background color for self service pages.')),
 				"550" => array ("Headline" => _("From address"),
 					"Text" => _("This email address will be set as sender address of all password mails. If empty the system default (php.ini) will be used.")),
 				"551" => array ("Headline" => _("Subject"),
