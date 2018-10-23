@@ -1,6 +1,5 @@
 <?php
 use LAM\TYPES\ConfiguredType;
-use phpseclib\Net\SFTP\Stream;
 
 /*
 
@@ -173,7 +172,7 @@ class lamList {
 		// get some parameters
 		$this->listGetParams();
 		// print HTML head
-		$this->listPrintHeader();
+		$this->printHeader();
 		// print messages when redirected from other pages
 		$this->listPrintRedirectMessages();
 		// refresh data if needed
@@ -220,7 +219,7 @@ class lamList {
 			$this->listPrintTableHeader();
 			echo "</table><br>\n";
 		}
-		$this->listPrintFooter();
+		$this->printFooter();
 	}
 
 	/**
@@ -874,16 +873,6 @@ class lamList {
 	}
 
 	/**
-	 * Prints the HTML header.
-	 *
-	 * @deprecated
-	 */
-	protected function listPrintHeader() {
-		include '../main_header.php';
-		$this->printHeaderContent();
-	}
-
-	/**
 	 * Prints the header part of the page.
 	 */
 	private function printHeader() {
@@ -896,16 +885,6 @@ class lamList {
 	 */
 	protected function printHeaderContent() {
 		// implemented by child classes if needed
-	}
-
-	/**
-	 * Prints the HTML footer.
-	 *
-	 * @deprecated
-	 */
-	protected function listPrintFooter() {
-		$this->printFooterContent();
-		include '../main_footer.php';
 	}
 
 	/**
