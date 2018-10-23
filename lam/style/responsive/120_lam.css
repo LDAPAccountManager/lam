@@ -145,6 +145,10 @@ table.responsive-table td {
 		font-weight: bold;
 	}
 
+	.fullwidth-mobile-only {
+		width: 100%;
+	}
+
 }
 
 /* tablet */

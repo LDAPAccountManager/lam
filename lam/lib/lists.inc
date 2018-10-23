@@ -815,51 +815,52 @@ class lamList {
 	 * @param int $tabindex HTML tabindex counter
 	 */
 	protected function listPrintButtons($createOnly) {
-		$table = new htmlTable('100%');
+		$row = new htmlResponsiveRow();
+		$row->setCSSClasses(array('maxrow'));
 		$left = new htmlGroup();
 		// button part
-		$left->alignment = htmlElement::ALIGN_LEFT;
 		if (checkIfWriteAccessIsAllowed($this->type->getId())) {
 			// add button
 			if (checkIfNewEntriesAreAllowed($this->type->getId())) {
 				$newButton = new htmlButton('new', $this->labels['newEntry']);
 				$newButton->setIconClass('createButton');
+				$newButton->setCSSClasses(array('fullwidth-mobile-only'));
 				$left->addElement($newButton);
 			}
 			// delete button
 			if (!$createOnly && checkIfDeleteEntriesIsAllowed($this->type->getId())) {
-				$left->addElement(new htmlSpacer('1px', null));
 				$delButton = new htmlButton('del', $this->labels['deleteEntry']);
 				$delButton->setIconClass('deleteButton');
+				$delButton->setCSSClasses(array('fullwidth-mobile-only'));
 				$left->addElement($delButton);
 			}
 			$toolSettings = $_SESSION['config']->getToolSettings();
 			if ($this->type->getBaseType()->supportsFileUpload() && checkIfNewEntriesAreAllowed($this->type->getId())
 					&& !(isset($toolSettings['tool_hide_toolFileUpload']) && ($toolSettings['tool_hide_toolFileUpload'] == 'true'))) {
-				$left->addElement(new htmlSpacer('20px', null));
 				$uploadButton = new htmlButton('fileUpload', _('File upload'));
 				$uploadButton->setIconClass('upButton');
+				$uploadButton->setCSSClasses(array('fullwidth-mobile-only'));
 				$left->addElement($uploadButton);
 			}
 		}
 
 		// OU selection and settings
-		$right = new htmlGroup();
-		$right->alignment = htmlElement::ALIGN_RIGHT;
-		$right->addElement($this->listShowOUSelection());
+		$right = new htmlResponsiveRow();
+		$right->add($this->listShowOUSelection(), 12, 12, 10);
+		$rightButtonGroup = new htmlGroup();
 		$refreshButton = new htmlButton('refresh', 'refresh.png', true);
 		$refreshButton->setTitle(_("Refresh"));
-		$right->addElement($refreshButton);
-		$right->addElement(new htmlSpacer('1px', null));
+		$rightButtonGroup->addElement($refreshButton);
 		$settingsLink = new htmlLink('', '#', '../../graphics/tools.png');
 		$settingsLink->setOnClick('listShowSettingsDialog(\'' . _('Change list settings') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\');');
 		$settingsLink->setTitle(_('Change settings'));
-		$right->addElement($settingsLink);
+		$rightButtonGroup->addElement($settingsLink);
+		$right->add($rightButtonGroup, 12, 12, 2);
 
 		$this->addExtraInputElementsToTopArea($left, $right);
-		$table->addElement($left);
-		$table->addElement($right);
-		parseHtml(null, $table, array(), false, $this->tabindex, $this->type->getScope());
+		$row->add($left, 12, 6, 6, 'text-left');
+		$row->add($right, 12, 6, 6, 'text-right');
+		parseHtml(null, $row, array(), false, $this->tabindex, $this->type->getScope());
 	}
 
 	/**
