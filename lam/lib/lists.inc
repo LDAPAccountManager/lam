@@ -312,23 +312,27 @@ class lamList {
 	*/
 	protected function listDrawNavigationBar($count) {
 		$filter = $this->getFilterAsTextForURL();
-		echo("<table width=\"100%\" border=\"0\">\n");
-		echo("<tr>\n");
-		echo("<td align=\"left\">");
-		printf($this->labels['nav'], $count);
-		echo("</td>");
-
+		$row = new htmlResponsiveRow();
+		$row->setCSSClasses(array('maxrow'));
+		$countLabel = new htmlOutputText(sprintf($this->labels['nav'], $count));
+		$row->add($countLabel, 12, 6, 6);
+		$navGroup = new htmlGroup();
 		if ($count > $this->maxPageEntries) {
-			echo("<td class=\"activepage\" align=\"right\">");
 			if ($this->page != 1) {
-				echo("<a title=\"" . _('Jump to first page') . "\" href=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true&amp;page=1" .
-					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" .
-					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-first.png\"></a>\n");
+				$linkHref = "list.php?type=" . $this->type->getId() . "&norefresh=true&page=1" .
+						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
+				$link = new htmlLink(null, $linkHref, '../../graphics/go-first.png');
+				$link->setTitle(_('Jump to first page'));
+				$link->setCSSClasses(array('margin5'));
+				$navGroup->addElement($link);
 			}
 			if ($this->page > 11) {
-				echo("<a title=\"" . _('Jump 10 pages backward') . "\" href=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true&amp;page=" . ($this->page - 10) .
-					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" .
-					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-previous.png\"></a>\n");
+				$linkHref = "list.php?type=" . $this->type->getId() . "&norefresh=true&page=" . ($this->page - 10) .
+						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
+				$link = new htmlLink(null, $linkHref, '../../graphics/go-previous.png');
+				$link->setTitle(_('Jump 10 pages backward'));
+				$link->setCSSClasses(array('margin5'));
+				$navGroup->addElement($link);
 			}
 			$pageCount =  ceil($count / $this->maxPageEntries);
 			for ($i = $this->page - 6; $i < ($this->page + 5); $i++) {
@@ -339,30 +343,41 @@ class lamList {
 					continue;
 				}
 				if ($i == $this->page - 1) {
-					$url = "list.php?type=" . $this->type->getId() . "&amp;norefresh=true" .
-					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter;
-					echo '<input type="number" class="listPageInput" id="listNavPage" name="listNavPage"'
-						. ' value="' . ($i + 1) . '" min="1" max="' . $pageCount . '"'
-						. ' onkeypress="listPageNumberKeyPress(\'' . $url . '\', event);">';
+					$url = "list.php?type=" . $this->type->getId() . "&norefresh=true" .
+							"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
+					$navInput = new htmlInputField('listNavPage', ($i + 1));
+					$navInput->setMinimumAndMaximumNumber(1, $pageCount);
+					$navInput->setCSSClasses(array('listPageInput'));
+					$navInput->setOnKeyPress('listPageNumberKeyPress(\'' . $url . '\', event);');
+					$navGroup->addElement($navInput);
 				}
 				else {
-					echo "&nbsp;<a href=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true&amp;page=" . ($i + 1) .
-					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" . ($i + 1) . "</a>\n";
+					$linkHref = "list.php?type=" . $this->type->getId() . "&norefresh=true&page=" . ($i + 1) .
+					"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
+					$link = new htmlLink(($i + 1), $linkHref);
+					$link->setCSSClasses(array('margin5'));
+					$navGroup->addElement($link);
 				}
 			}
 			if ($this->page < ($pageCount - 10)) {
-				echo("<a title=\"" . _('Jump 10 pages forward') . "\" href=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true&amp;page=" . ($this->page + 10) .
-					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" .
-					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-next.png\"></a>\n");
+				$linkHref = "list.php?type=" . $this->type->getId() . "&norefresh=true&page=" . ($this->page + 10) .
+						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
+				$link = new htmlLink(null, $linkHref, '../../graphics/go-next.png');
+				$link->setTitle(_('Jump 10 pages forward'));
+				$link->setCSSClasses(array('margin5'));
+				$navGroup->addElement($link);
 			}
 			if ($this->page < $pageCount) {
-				echo("<a title=\"" . _('Jump to last page') . "\" href=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true&amp;page=" . $pageCount .
-					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" .
-					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-last.png\"></a>\n");
+				$linkHref = "list.php?type=" . $this->type->getId() . "&norefresh=true&page=" . $pageCount .
+						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
+				$link = new htmlLink(null, $linkHref, '../../graphics/go-last.png');
+				$link->setTitle(_('Jump to last page'));
+				$link->setCSSClasses(array('margin5'));
+				$navGroup->addElement($link);
 			}
-			echo "</td>";
 		}
-		echo "</tr></table>\n";
+		$row->add($navGroup, 12, 6, 6, 'responsiveLabel');
+		parseHtml(null, $row, array(), false, $this->tabindex, $this->type->getScope());
 	}
 
 	/**
