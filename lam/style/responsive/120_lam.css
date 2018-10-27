@@ -61,6 +61,11 @@ div.lam-dialog-msg {
 	margin: 10px;
 }
 
+div.dialog-content {
+	overflow: visible !important;
+	margin: 2rem;
+}
+
 table.padding5 td {
 	padding: 0.5rem;
 }

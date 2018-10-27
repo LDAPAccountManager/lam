@@ -1171,20 +1171,18 @@ class lamList {
 	 * Prints the list configuration page.
 	 */
 	protected function listPrintConfigurationPage() {
-		echo "<div id=\"settingsDialog\" class=\"hidden\">\n";
+		echo "<div id=\"settingsDialog\" class=\"hidden dialog-content\">\n";
 		echo "<form id=\"settingsDialogForm\" action=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true\" method=\"post\">\n";
-		echo '<table width="100%"><tr><td>';
 
-		$configContainer = new htmlTable();
+		$configContainer = new htmlResponsiveRow();
 		for ($i = 0; $i < sizeof($this->configOptions); $i++) {
-			$configContainer->mergeTableElements($this->configOptions[$i]->getMetaHTML());
+			$configContainer->add($this->configOptions[$i]->getMetaHTML(), 12);
 		}
-		$configContainer->addElement(new htmlHiddenInput('saveConfigOptions', 'ok'));
+		$configContainer->add(new htmlHiddenInput('saveConfigOptions', 'ok'), 12);
 		addSecurityTokenToMetaHTML($configContainer);
 
 		parseHtml('', $configContainer, array(), false, $this->tabindex, $this->type->getScope());
 
-		echo "</td></tr></table>\n";
 		echo '</form>';
 		echo "</div>\n";
 	}
@@ -1364,7 +1362,7 @@ abstract class lamListOption {
 	/**
 	 * Returns the meta HTML data to display this option.
 	 *
-	 * @return htmlTable meta HTML
+	 * @return htmlResponsiveRow meta HTML
 	 */
 	public abstract function getMetaHTML();
 
@@ -1417,13 +1415,12 @@ class lamBooleanListOption extends lamListOption {
 	}
 
 	/**
-	 * Returns the meta HTML data to display this option.
-	 *
-	 * @return htmlTable meta HTML
+	 * {@inheritDoc}
+	 * @see lamListOption::getMetaHTML()
 	 */
 	public function getMetaHTML() {
-		$return = new htmlTable();
-		$return->addElement(new htmlTableExtendedInputCheckbox($this->getID(), $this->isSelected(), $this->name));
+		$return = new htmlResponsiveRow();
+		$return->add(new htmlResponsiveInputCheckbox($this->getID(), $this->isSelected(), $this->name), 12);
 		return $return;
 	}
 
@@ -1482,13 +1479,12 @@ class lamSelectListOption extends lamListOption {
 	}
 
 	/**
-	 * Returns the meta HTML data to display this option.
-	 *
-	 * @return htmlTable meta HTML
+	 * {@inheritDoc}
+	 * @see lamListOption::getMetaHTML()
 	 */
 	public function getMetaHTML() {
-		$return = new htmlTable();
-		$return->addElement(new htmlTableExtendedSelect($this->getID(), $this->options, array($this->getValue()), $this->name, $this->helpID));
+		$return = new htmlResponsiveRow();
+		$return->add(new htmlResponsiveSelect($this->getID(), $this->options, array($this->getValue()), $this->name, $this->helpID), 12);
 		return $return;
 	}
 
