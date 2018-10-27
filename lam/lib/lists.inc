@@ -408,10 +408,15 @@ class lamList {
 		$data = array();
 		$data[] = $this->getSortingElements();
 		$data[] = $this->getFilterElements();
+		$onClickEvents = array();
+		$onDoubleClickEvents = array();
+		$this->addDataElements($data, $info, $onClickEvents, $onDoubleClickEvents);
 
 		$table = new htmlResponsiveTable($titles, $data);
 		$table->setRowClasses($scope . '-dark', $scope . '-bright');
 		$table->setCSSClasses(array($scope . '-border accountlist'));
+		$table->setOnClickEvents($onClickEvents);
+		$table->setOnDoubleClickEvents($onDoubleClickEvents);
 
 		parseHtml(null, $table, array(), false, $this->tabindex, $scope);
 	}
@@ -491,7 +496,90 @@ class lamList {
 	}
 
 	/**
+	 * Adds the LDAP data elements to the given array.
+	 *
+	 * @param array $data data for responsible table
+	 * @param array $info entries
+	 * @param array $onClickEvents row number => code
+	 * @param array $onDoubleClickEvents row number => code
+	 */
+	private function addDataElements(&$data, &$info, &$onClickEvents, &$onDoubleClickEvents) {
+		// calculate which rows to show
+		$table_begin = ($this->page - 1) * $this->maxPageEntries;
+		if (($this->page * $this->maxPageEntries) > sizeof($info)) $table_end = sizeof($info);
+		else $table_end = ($this->page * $this->maxPageEntries);
+		// get sort mapping
+		$sortMapping = &$this->sortMapping;
+		if (empty($sortMapping)) {
+			$sortMapping = array();
+			$infoSize = sizeof($info);
+			for ($i = 0; $i < $infoSize; $i++) {
+				$sortMapping[$i] = $i;
+			}
+		}
+		// print account list
+		for ($i = $table_begin; $i < $table_end; $i++) {
+			$row = array();
+			$index = $sortMapping[$i];
+			$rowID = base64_encode($info[$index]['dn']);
+			$actionElement = new htmlGroup();
+			$checkbox = new htmlInputCheckbox($rowID, false);
+			$checkbox->setOnClick("list_click('" . $rowID . "');");
+			$checkbox->setCSSClasses(array('accountBoxUnchecked align-middle'));
+			$actionElement->addElement($checkbox);
+			$actionElement->addElement(new htmlSpacer('0.5rem', null));
+			$onClickEvents[$i + 2] = "list_click('" . $rowID . "');";
+			$onDoubleClickEvents[$i + 2] = "top.location.href='../account/edit.php?type=" . $this->type->getId() . "&amp;DN=" . rawurlencode($info[$index]['dn']) . "';";
+			$this->addToolLinks($info[$index], $rowID, $actionElement);
+			$row[] = $actionElement;
+			foreach ($this->attrArray as $attributeName) {
+				$attributeName = strtolower($attributeName);
+				$row[] = new htmlOutputText($attributeName); // TODO
+				//$this->listPrintTableCellContent($info[$index], $attributeName);
+			}
+			$data[] = $row;
+		}
+	}
+
+	/**
+	 * Adds the tool image links (e.g. edit and delete) for each account.
+	 *
+	 * @param array $account LDAP attributes
+	 * @param String $id account ID
+	 * @param htmlGroup $element location where to add tools
+	 */
+	private function addToolLinks($account, $id, &$element) {
+		$toolCount = 0;
+		// edit link
+		$editLink = new htmlLink('', "../account/edit.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/edit.png');
+		$editLink->setTitle(_("Edit"));
+		$element->addElement($editLink);
+		$toolCount++;
+		// delete link
+		if (checkIfWriteAccessIsAllowed($this->type->getId()) && checkIfDeleteEntriesIsAllowed($this->type->getId())) {
+			$deleteLink = new htmlLink('', "deletelink.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/delete.png');
+			$deleteLink->setTitle(_("Delete"));
+			$element->addElement($deleteLink);
+			$toolCount++;
+		}
+		// PDF button
+		$pdfButton = new htmlButton("createPDF_" . $id, 'pdf.png', true);
+		$pdfButton->setTitle(_('Create PDF file'));
+		$element->addElement($pdfButton);
+		$toolCount++;
+		// additional tools
+		$tools = $this->getAdditionalTools();
+		for ($i = 0; $i < sizeof($tools); $i++) {
+			$toolLink = new htmlLink('', $tools[$i]->getLinkTarget() . "?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/' . $tools[$i]->getImage());
+			$toolLink->setTitle($tools[$i]->getName());
+			$element->addElement($toolLink);
+			$toolCount++;
+		}
+	}
+
+	/**
 	* Prints the attribute and filter row at the account table head
+	* @deprecated
 	*/
 	protected function listPrintTableHeader() {
 		$filter = $this->getFilterAsTextForURL();
@@ -551,6 +639,7 @@ class lamList {
 	 *
 	 * @param String $attrName attribute name
 	 * @param boolean $clearFilter true if filter value should be cleared
+	 * @deprecated
 	 */
 	protected function printFilterArea($attrName, $clearFilter) {
 		$value = "";
@@ -582,6 +671,7 @@ class lamList {
 	* Prints the entry list
 	*
 	* @param array $info entries
+	* @deprecated
 	*/
 	protected function listPrintTableBody(&$info) {
 		echo "<tbody>\n";
@@ -638,6 +728,7 @@ class lamList {
 	 *
 	 * @param array $account LDAP attributes
 	 * @param String $id account ID
+	 * @deprecated
 	 */
 	private function listPrintToolLinks($account, $id) {
 		$toolCount = 0;
