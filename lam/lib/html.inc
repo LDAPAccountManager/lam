@@ -4682,6 +4682,10 @@ class htmlResponsiveTable extends htmlElement {
 	private $cssOddRow;
 	/** CSS class for even row numbers */
 	private $cssEvenRow;
+	/** onclick code (row number => code) */
+	private $onClick = array();
+	/** ondoubleclick code (row number => code) */
+	private $onDoubleClick = array();
 
 	/**
 	 * Creates the table.
@@ -4739,7 +4743,15 @@ class htmlResponsiveTable extends htmlElement {
 			if (!empty($cssClasses)) {
 				$cssClass = ' class="' . implode(' ', $cssClasses) . '"';
 			}
-			echo '<tr ' . $cssClass . '>';
+			$onClick = '';
+			if (!empty($this->onClick[$counter])) {
+				$onClick = ' onclick="' . $this->onClick[$counter] . '"';
+			}
+			$onDoubleClick = '';
+			if (!empty($this->onDoubleClick[$counter])) {
+				$onDoubleClick = ' ondblclick="' . $this->onDoubleClick[$counter] . '"';
+			}
+			echo '<tr ' . $cssClass . $onClick . $onDoubleClick . '>';
 			for ($i = 0; $i < $titleCount; $i++) {
 				echo '<td data-label="' . $this->titles[$i] . '">';
 				$ids = parseHtml($module, $row[$i], $values, $restricted, $tabindex, $scope);
@@ -4768,6 +4780,24 @@ class htmlResponsiveTable extends htmlElement {
 	public function setRowClasses($oddClass, $evenClass) {
 		$this->cssOddRow = $oddClass;
 		$this->cssEvenRow = $evenClass;
+	}
+
+	/**
+	 * Sets the onclick code for the rows.
+	 *
+	 * @param array $calls row number => code
+	 */
+	public function setOnClickEvents($calls) {
+		$this->onClick = $calls;
+	}
+
+	/**
+	 * Sets the ondoubleclick code for the rows.
+	 *
+	 * @param array $calls row number => code
+	 */
+	public function setOnDoubleClickEvents($calls) {
+		$this->onDoubleClick = $calls;
 	}
 
 }
