@@ -202,6 +202,7 @@ class lamList {
 			$this->listDrawNavigationBar(sizeof($this->entries));
 			echo ("<br>\n");
 			echo "<div id=\"listScrollArea\" style=\"overflow: auto; padding: 1px;\">";
+			$this->printAccountTable($this->entries);
 			// account table head
 			$this->listPrintTableHeader();
 			// account table body
@@ -215,6 +216,8 @@ class lamList {
 			// navigation bar
 			$this->listDrawNavigationBar(sizeof($this->entries));
 			echo ("<br>\n");
+			$accounts = array();
+			$this->printAccountTable($accounts);
 			// account table head
 			$this->listPrintTableHeader();
 			echo "</table><br>\n";
@@ -388,9 +391,103 @@ class lamList {
 	protected function getFilterAsTextForURL() {
 		$text = '';
 		foreach ($this->filters as $attr => $filter) {
-			$text .= "&amp;filter" . strtolower($attr) . '=' . $filter;
+			$text .= "&filter" . strtolower($attr) . '=' . $filter;
 		}
 		return $text;
+	}
+
+	/**
+	* Prints the entry list
+	*
+	* @param array $info entries
+	*/
+	private function printAccountTable(&$info) {
+		$scope = $this->type->getScope();
+		$titles = $this->descArray;
+		array_unshift($titles, _('Actions'));
+		$data = array();
+		$data[] = $this->getSortingElements();
+		$data[] = $this->getFilterElements();
+
+		$table = new htmlResponsiveTable($titles, $data);
+		$table->setRowClasses($scope . '-dark', $scope . '-bright');
+		$table->setCSSClasses(array($scope . '-border accountlist'));
+
+		parseHtml(null, $table, array(), false, $this->tabindex, $scope);
+	}
+
+	/**
+	 * Returns the elements to show in sorting row.
+	 *
+	 * @return htmlElement[] elements
+	 */
+	private function getSortingElements() {
+		$filter = $this->getFilterAsTextForURL();
+		$sortElements = array(new htmlOutputText(_('Sort sequence')));
+		foreach ($this->attrArray as $attributeName) {
+			$link = "list.php?type=" . $this->type->getId() . "&".
+				"sort=" . strtolower($attributeName) . $filter . "&norefresh=y";
+			$buttons = new htmlGroup();
+			if (strtolower($attributeName) == $this->sortColumn) {
+				if ($this->sortDirection < 0) {
+					$buttons->addElement(new htmlLink(null, $link . '&sortdirection=1', '../../graphics/downarrows.png'));
+					$buttons->addElement(new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/uparrows-black.png'));
+				}
+				else {
+					$buttons->addElement(new htmlLink(null, $link . '&sortdirection=1', '../../graphics/downarrows-black.png'));
+					$buttons->addElement(new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/uparrows.png'));
+				}
+			}
+			else {
+				$buttons->addElement(new htmlLink(null, $link . '&sortdirection=1', '../../graphics/downarrows.png'));
+				$buttons->addElement(new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/uparrows.png'));
+			}
+			$sortElements[] = $buttons;
+		}
+		return $sortElements;
+	}
+
+	/**
+	 * Returns the elements to show in filter row.
+	 *
+	 * @return htmlElement[] elements
+	 */
+	private function getFilterElements() {
+		$actionElement = new htmlGroup();
+		$selectAll = new htmlInputCheckbox('tableSelectAll', false);
+		$selectAll->setCSSClasses(array('align-middle'));
+		$selectAll->setOnClick('list_switchAccountSelection();');
+		$actionElement->addElement($selectAll);
+		$actionElement->addElement(new htmlSpacer('1rem', null));
+		$actionElement->addElement(new htmlOutputText(_('Filter')));
+		$filterButton = new htmlButton('apply_filter', 'filter.png', true);
+		$filterButton->setTitle(_("Here you can input simple filter expressions (e.g. 'value' or 'v*'). The filter is case-insensitive."));
+		$actionElement->addElement($filterButton);
+		if (sizeof($this->filters) > 0) {
+			$clearFilterButton = new htmlButton('clear_filter', 'clearFilter.png', true);
+			$clearFilterButton->setTitle(_('Clear filter'));
+			$actionElement->addElement($clearFilterButton);
+		}
+
+		$filterElements = array($actionElement);
+		$clearFilter = isset($_POST['clear_filter']);
+		foreach ($this->attrArray as $attributeName) {
+			$attributeName = strtolower($attributeName);
+			if ($this->canBeFiltered($attributeName)) {
+				$value = "";
+				if (!$clearFilter && isset($this->filters[$attributeName])) {
+					$value = $this->filters[$attributeName];
+				}
+				$filterInput = new htmlInputField('filter' . $attributeName, $value);
+				$filterInput->setCSSClasses(array($this->type->getScope() . '-bright'));
+				$filterInput->setOnKeyPress("SubmitForm('apply_filter', event);");
+				$filterElements[] = $filterInput;
+			}
+			else {
+				$filterElements[] = new htmlOutputText('');
+			}
+		}
+		return $filterElements;
 	}
 
 	/**
@@ -981,7 +1078,7 @@ class lamList {
 		}
 		// get sort order
 		if (isset($_GET['sortdirection'])) {
-			$this->sortDirection = $_GET['sortdirection'];
+			$this->sortDirection = htmlspecialchars($_GET['sortdirection']);
 		}
 		// check search suffix
 		if (isset($_POST['suffix'])) {

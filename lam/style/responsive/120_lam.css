@@ -78,11 +78,15 @@ table.responsive-table {
 	margin-top: 1rem;
 	table-layout: fixed;
 	width: 100%;
+	border-collapse: collapse;
 }
 
 table.responsive-table th {
 	text-align: left;
-	padding: 0;
+	padding-bottom: 0.5rem;
+	padding-top: 0.5rem;
+	padding-right: 0.3rem;
+	padding-left: 0.3rem;
 }
 
 table.responsive-table td {
@@ -90,8 +94,8 @@ table.responsive-table td {
 	vertical-align: top;
 	padding-bottom: 0.5rem;
 	padding-top: 0.5rem;
-	padding-right: 0.1rem;
-	padding-left: 0.1rem;
+	padding-right: 0.3rem;
+	padding-left: 0.3rem;
 	word-break: break-all;
 }
 

@@ -2040,6 +2040,8 @@ class htmlInputCheckbox extends htmlElement {
 	protected $elementsToEnable = array();
 	/** list of input elements to disable when checked */
 	protected $elementsToDisable = array();
+	/** onclick event code */
+	private $onClick;
 
 
 	/**
@@ -2167,7 +2169,11 @@ class htmlInputCheckbox extends htmlElement {
 		if (!empty($onChange)) {
 			$onChange = ' onChange="' . $onChange . '"';
 		}
-		echo '<input type="checkbox" id="' . $this->name . '" name="' . $this->name . '"' . $classes . $tabindexValue . $onChange . $checked . $disabled . '>';
+		$onClick = '';
+		if (!empty($this->onClick)) {
+			$onClick = ' onclick="' . $this->onClick . '"';
+		}
+		echo '<input type="checkbox" id="' . $this->name . '" name="' . $this->name . '"' . $classes . $tabindexValue . $onChange . $onClick . $checked . $disabled . '>';
 		echo $script;
 		if ($this->transient) {
 			return array();
@@ -2248,6 +2254,15 @@ class htmlInputCheckbox extends htmlElement {
 	 */
 	protected function getShowHideSelector() {
 		return 'tr';
+	}
+
+	/**
+	 * Sets the onclick code.
+	 *
+	 * @param string $code JS code
+	 */
+	public function setOnClick($code) {
+		$this->onClick = $code;
 	}
 
 }
@@ -4663,6 +4678,10 @@ class htmlResponsiveTable extends htmlElement {
 
 	/** highlighted rows */
 	private $highlighted = array();
+	/** CSS class for odd row numbers */
+	private $cssOddRow;
+	/** CSS class for even row numbers */
+	private $cssEvenRow;
 
 	/**
 	 * Creates the table.
@@ -4689,7 +4708,8 @@ class htmlResponsiveTable extends htmlElement {
 		$classes[] = 'responsive-table';
 		echo '<table class="' . implode(' ', $classes) . '">';
 		echo '<thead>';
-		echo '<tr>';
+		$headClass = empty($this->cssOddRow) ? '' : ' class="' . $this->cssOddRow . '"';
+		echo '<tr ' . $headClass . '>';
 		$counter = 0;
 		foreach ($this->titles as $title) {
 			$width = '';
@@ -4706,8 +4726,18 @@ class htmlResponsiveTable extends htmlElement {
 		$counter = 0;
 		foreach ($this->data as $row) {
 			$cssClass = '';
+			$cssClasses = array();
 			if (in_array($counter, $this->highlighted)) {
-				$cssClass = ' class="bold"';
+				$cssClasses[] = 'bold';
+			}
+			if (!empty($this->cssEvenRow) && ($counter % 2 === 0)) {
+				$cssClasses[] = $this->cssEvenRow;
+			}
+			if (!empty($this->cssOddRow) && ($counter % 2 === 1)) {
+				$cssClasses[] = $this->cssOddRow;
+			}
+			if (!empty($cssClasses)) {
+				$cssClass = ' class="' . implode(' ', $cssClasses) . '"';
 			}
 			echo '<tr ' . $cssClass . '>';
 			for ($i = 0; $i < $titleCount; $i++) {
@@ -4726,6 +4756,18 @@ class htmlResponsiveTable extends htmlElement {
 
 	public function setWidths($widths) {
 		$this->widths = $widths;
+	}
+
+	/**
+	 * Sets the CSS classes for odd and even rows.
+	 * The title row counts as row number -1.
+	 *
+	 * @param string $oddClass class for odd rows
+	 * @param string $evenClass class for even rows
+	 */
+	public function setRowClasses($oddClass, $evenClass) {
+		$this->cssOddRow = $oddClass;
+		$this->cssEvenRow = $evenClass;
 	}
 
 }
