@@ -178,12 +178,10 @@ class lamDHCPList extends lamList {
 	}
 
 	/**
-	 * Prints the content of a cell in the account list for a given LDAP entry and attribute.
-	 *
-	 * @param array $entry LDAP attributes
-	 * @param string $attribute attribute name
+	 * {@inheritDoc}
+	 * @see lamList::getTableCellContent()
 	 */
-	public function listPrintTableCellContent(&$entry, &$attribute) {
+	public function getTableCellContent(&$entry, &$attribute) {
 	    // Fixed IPs
         if ($attribute=="fixed_ips") {
         	// find all fixed addresses:
@@ -197,48 +195,59 @@ class lamDHCPList extends lamList {
 						$order[$i] = fixed_ip::extractIP($entries[$i]['dhcpstatements']);
 					}
 				}
+				$group = new htmlGroup();
 				natcasesort($order);
-				echo "<table border=\"0\" width=\"100%\">";
-				foreach ($order as $i => $sortval) {
+				for ($i = 0; $i < sizeof($order); $i++) {
 					$dhcpstatements = array();
 					if (isset($entries[$i]['dhcpstatements'][0])) {
 						$dhcpstatements = $entries[$i]['dhcpstatements'];
 					}
-					$style = '';
+					$cssClasses = array('nowrap');
 					if (!fixed_ip::isActive($dhcpstatements)) {
-						$style = 'style="text-decoration: line-through;"';
+						$cssClasses[] = 'strike-through';
 					}
-					echo "<tr " . $style . ">";
-					echo "<td width=\"25%\">" . fixed_ip::extractIP($dhcpstatements) . "</td>";
 					$dhcphwaddress = explode(" ",$entries[$i]['dhcphwaddress'][0]);
-					echo "<td width=\"35%\">".array_pop($dhcphwaddress)."</td>";
-					echo "<td width=\"40%\">".$entries[$i]['cn'][0]."</td>";
-					echo "</tr>";
-				}
-				echo "</table>";
-			}
-        }
-		// fixed ip address
-        elseif ($attribute=="dhcpstatements") {
-			// Search after the fixed ip entry
-			if (is_array($entry['dhcpstatements'])) {
-				foreach($entry['dhcpstatements'] AS $id => $value) {
-
-					if (!is_array($value) && array_shift( explode(" ", $value) ) == "fixed-address") {
-					    $ip = explode(" ", $value);
-						echo $ip['1'];
+					$ipAddress = fixed_ip::extractIP($dhcpstatements);
+					$ip = new htmlOutputText($ipAddress);
+					$ip->setCSSClasses($cssClasses);
+					$group->addElement($ip);
+					if (!empty($ipAddress)) {
+						$group->addElement(new htmlOutputText('<br>', false));
+					}
+					$macAddress = array_pop($dhcphwaddress);
+					$mac = new htmlOutputText($macAddress);
+					$mac->setCSSClasses($cssClasses);
+					$group->addElement($mac);
+					if (!empty($macAddress)) {
+						$group->addElement(new htmlOutputText('<br>', false));
+					}
+					$name = new htmlOutputText($entries[$i]['cn'][0]);
+					$name->setCSSClasses($cssClasses);
+					$group->addElement($name);
+					$group->addElement(new htmlOutputText('<br>', false));
+					if ($i < (sizeof($order) - 1)) {
+						$group->addElement(new htmlOutputText('<br>', false));
 					}
 				}
+				return $group;
 			}
         }
         elseif ($attribute=="dhcprange") { // DHCP Range
             if (isset($entry['dhcprange'])) {
-                echo"<table cellspacing=\"0\">";
+            	$table = new htmlTable();
+            	$table->setCSSClasses(array('nowrap'));
                 $ranges = array();
 				foreach($entry['dhcprange'] AS $id => $value) {
 					if (!empty($value) && !is_numeric($value)) {
 						$ex = explode(" ", $value);
-						$ranges[] = "<tr><td>".$ex[0]."</td><td width=\"20\"><center>-</center></td><td>".$ex[1]."</td></tr>";
+						$row = new htmlTableRow(
+							array(
+								new htmlOutputText($ex[0]),
+								new htmlOutputText(' - '),
+								new htmlOutputText($ex[1])
+							)
+						);
+						$ranges[$ex[0] . ' - ' . $ex[1]] = $row;
 					}
 				}
 				$pooledRanges = searchLDAP($entry['dn'], '(objectclass=dhcpPool)', array('dhcprange'));
@@ -249,18 +258,26 @@ class lamDHCPList extends lamList {
 					foreach($pool['dhcprange'] AS $id => $value) {
 						if (!empty($value) && !is_numeric($value)) {
 							$ex = explode(" ", $value);
-							$ranges[] = "<tr><td>".$ex[0]."</td><td width=\"20\"><center>-</center></td><td>".$ex[1]."</td></tr>";
+							$row = new htmlTableRow(
+								array(
+									new htmlOutputText($ex[0]),
+									new htmlOutputText(' - '),
+									new htmlOutputText($ex[1])
+								)
+							);
+							$ranges[$ex[0] . ' - ' . $ex[1]] = $row;
 						}
 					}
 				}
-				natcasesort($ranges);
-				echo implode('', $ranges);
-				echo"</table>";
+				uksort($ranges, 'strnatcasecmp');
+				foreach ($ranges as $text => $row) {
+					$table->addElement($row);
+				}
+				return $table;
 			}
         }
-		else
-		{
-			parent::listPrintTableCellContent($entry, $attribute);
+		else {
+			return parent::getTableCellContent($entry, $attribute);
 		}
 	}
 
