@@ -1288,6 +1288,7 @@ class windowsUser extends baseModule implements passwordService {
 			}
 			$img = new htmlImage($photoFile);
 			$img->setCSSClasses(array('photo'));
+			$img->enableLightbox();
 			$imageContainer->addElement($img, true);
 			if ($noPhoto) {
 				$imageContainer->addElement(new htmlAccountPageButton(get_class($this), 'photo', 'open', _('Add photo')));
