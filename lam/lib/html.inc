@@ -2813,6 +2813,8 @@ class htmlImage extends htmlElement {
 	private $onClick = null;
 	/** enable cropping */
 	private $crop = false;
+	/** enable lightbox */
+	private $lightbox = false;
 
 	/**
 	 * Constructor.
@@ -2869,7 +2871,13 @@ class htmlImage extends htmlElement {
 		if ($this->onClick != null) {
 			$onClick = ' onclick="' . $this->onClick . '"';
 		}
+		if ($this->lightbox) {
+			echo '<a href="' . $this->path . '" class="lam-lightbox">';
+		}
 		echo '<img' . $path . $width . $height . $alt . $title . $classes . $onClick . ">";
+		if ($this->lightbox) {
+			echo '</a>';
+		}
 		if ($this->crop) {
 			$cropJsPath = 'templates/lib/extra/cropperjs/cropper.js';
 			if (is_file('../../templates/login.php')) {
@@ -2908,6 +2916,13 @@ class htmlImage extends htmlElement {
 	 */
 	public function enableCropping() {
 		$this->crop = true;
+	}
+
+	/**
+	 * Enables lightbox feature.
+	 */
+	public function enableLightbox() {
+		$this->lightbox = true;
 	}
 
 }

@@ -654,6 +654,11 @@ img.photo {
 	max-height: 400px;
 }
 
+img.thumbnail {
+	max-width: 64px;
+	max-height: 64px;
+}
+
 div.confModList {
 	max-height: 300px;
 	overflow-y: auto;

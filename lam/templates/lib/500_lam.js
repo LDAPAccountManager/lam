@@ -1088,6 +1088,18 @@ window.lam.html.updateDnSelection = function(el, fieldId, tokenName, tokenValue)
 	});
 }
 
+/**
+ * Activates the lightboxes on images.
+ */
+window.lam.html.activateLightboxes = function() {
+	jQuery('.lam-lightbox').magnificPopup({
+		type:'image',
+		zoom: {
+		    enabled: true
+		}
+	});
+};
+
 window.lam.selfservice = window.lam.selfservice || {};
 
 /**
@@ -1148,4 +1160,5 @@ jQuery(document).ready(function() {
 	window.lam.tools.activateTab();
 	window.lam.tools.setInitialFocus();
 	window.lam.tools.schema.select();
+	window.lam.html.activateLightboxes();
 });

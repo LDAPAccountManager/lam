@@ -753,15 +753,10 @@ class lamUserList extends lamList {
 			fwrite($outjpeg, $entry[$attribute][0]);
 			fclose ($outjpeg);
 			$photoFile = '../../tmp/' . $jpeg_filename;
-			include_once dirname(__FILE__) . '/../imageutils.inc';
-			$imageManipulator = ImageManipulationFactory::getImageManipulator($entry[$attribute][0]);
-			$imgHeight = $imageManipulator->getHeight();
-			$imageManipulator = null;
-			$minSize = 64;
-			if ($imgHeight < 64) {
-				$minSize = $imgHeight;
-			}
-			return new htmlImage($photoFile, null, $minSize, _('Photo'));
+			$image = new htmlImage($photoFile);
+			$image->enableLightbox();
+			$image->setCSSClasses(array('thumbnail'));
+			return $image;
 		}
 		elseif (($attribute == 'mail') || ($attribute == 'rfc822Mailbox')) {
 			$group = new htmlGroup();
