@@ -717,24 +717,21 @@ class lamUserList extends lamList {
 	}
 
 	/**
-	 * Prints the content of a cell in the account list for a given LDAP entry and attribute.
-	 *
-	 * @param array $entry LDAP attributes
-	 * @param string $attribute attribute name
+	 * {@inheritDoc}
+	 * @see lamList::getTableCellContent()
 	 */
-	protected function listPrintTableCellContent(&$entry, &$attribute) {
+	protected function getTableCellContent(&$entry, &$attribute) {
 		// check if there is something to display at all
 		if (($attribute != self::ATTR_ACCOUNT_STATUS) && (!isset($entry[$attribute]) || !is_array($entry[$attribute]) || (sizeof($entry[$attribute]) < 1))) {
-			parent::listPrintTableCellContent($entry, $attribute);
-			return;
+			return parent::getTableCellContent($entry, $attribute);
 		}
 		// translate GID to group name
 		if (($attribute == "gidnumber") && ($this->trans_primary == "on")) {
 			if (isset($this->trans_primary_hash[$entry[$attribute][0]])) {
-				echo $this->trans_primary_hash[$entry[$attribute][0]];
+				return new htmlOutputText($this->trans_primary_hash[$entry[$attribute][0]]);
 			}
 			else {
-				parent::listPrintTableCellContent($entry, $attribute);
+				return parent::getTableCellContent($entry, $attribute);
 			}
 		}
 		// show user photos
@@ -764,47 +761,45 @@ class lamUserList extends lamList {
 			if ($imgHeight < 64) {
 				$minSize = $imgHeight;
 			}
-			$imgTitle = _('Click to switch between thumbnail and original size.');
-			echo "<img id=\"img$imgNumber\" title=\"$imgTitle\" height=$minSize src=\"" . $photoFile . "\" alt=\"" . _('Photo') . "\">";
-			echo '<script type="text/javascript">';
-			echo "addResizeHandler(document.getElementById(\"img$imgNumber\"), $minSize, " . $imgHeight . ")";
-			echo '</script>';
+			return new htmlImage($photoFile, null, $minSize, _('Photo'));
 		}
 		elseif (($attribute == 'mail') || ($attribute == 'rfc822Mailbox')) {
+			$group = new htmlGroup();
 			if (isset($entry[$attribute][0]) && ($entry[$attribute][0] != '')) {
 				for ($i = 0; $i < sizeof($entry[$attribute]); $i++) {
 					if ($i > 0) {
-						echo ", ";
+						$group->addElement(new htmlOutputText(", "));
 					}
-					echo "<a href=\"mailto:" . $entry[$attribute][$i] . "\">" . $entry[$attribute][$i] . "</a>\n";
+					$group->addElement(new htmlLink($entry[$attribute][$i], "mailto:" . $entry[$attribute][$i]));
 				}
 			}
+			return $group;
 		}
 		// expire dates
 		elseif ($attribute == 'shadowexpire') {
 			if (!empty($entry[$attribute][0])) {
 				$time = new DateTime('@' . $entry[$attribute][0] * 24 * 3600, getTimeZone());
-				echo $time->format('d.m.Y');
+				return new htmlOutputText($time->format('d.m.Y'));
 			}
 		}
 		elseif ($attribute == 'sambakickofftime') {
 			if (!empty($entry[$attribute][0])) {
 				if ($entry[$attribute][0] > 2147483648) {
-					echo "∞";
+					return new htmlOutputText("∞");
 				}
 				else {
 					$date = new DateTime('@' . $entry[$attribute][0], new DateTimeZone('UTC'));
-					echo $date->format('d.m.Y');
+					return new htmlOutputText($date->format('d.m.Y'));
 				}
 			}
 		}
 		// account status
 		elseif ($attribute == self::ATTR_ACCOUNT_STATUS) {
-			$this->printAccountStatus($entry);
+			return $this->getAccountStatus($entry);
 		}
 		// print all other attributes
 		else {
-			parent::listPrintTableCellContent($entry, $attribute);
+			return parent::getTableCellContent($entry, $attribute);
 		}
 	}
 
@@ -1040,11 +1035,12 @@ class lamUserList extends lamList {
 	}
 
 	/**
-	 * Prints the account status.
+	 * Returns the account status.
 	 *
 	 * @param array $attrs LDAP attributes
+	 * @return htmlElement content
 	 */
-	private function printAccountStatus(&$attrs) {
+	private function getAccountStatus(&$attrs) {
 		// check status
 		$unixAvailable = self::isUnixAvailable($attrs);
 		$sambaAvailable = self::isSambaAvailable($attrs);
@@ -1144,10 +1140,10 @@ class lamUserList extends lamList {
 				$tipContent .= '<tr><td>' . _('Password expired') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/lock.png&quot;></td></tr>';
 			}
 			$tipContent .= '</table>';
-			echo '<img helptitle="' . _('Account status') . '" helpdata="' . $tipContent . '" alt="status" height=16 width=16 src="../../graphics/' . $icon . '">';
+			return new htmlOutputText('<img helptitle="' . _('Account status') . '" helpdata="' . $tipContent . '" alt="status" height=16 width=16 src="../../graphics/' . $icon . '">', false);
 		}
 		else {
-			echo '<img alt="status" height=16 width=16 src="../../graphics/' . $icon . '">';
+			return new htmlImage('../../graphics/' . $icon, 16, 16, 'status');
 		}
 	}
 

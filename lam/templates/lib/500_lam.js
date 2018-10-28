@@ -63,23 +63,6 @@ function listPageNumberKeyPress(url, e) {
 }
 
 /**
- * Resizes the content area of the account lists to fit the window size.
- * This prevents that the whole page is scrolled in the browser. Only the account table has scroll bars.
- */
-function listResizeITabContentDiv() {
-	var myDiv = document.getElementById("listTabContentArea");
-    var height = document.documentElement.clientHeight;
-    height -= myDiv.offsetTop;
-    height -= 105;
-    myDiv.style.height = height +"px";
-
-    var myDivScroll = document.getElementById("listScrollArea");
-	var top = myDivScroll.offsetTop;
-	var scrollHeight = height - (top - myDiv.offsetTop);
-	myDivScroll.style.height = scrollHeight + "px";
-};
-
-/**
  * Shows the dialog to change the list settings.
  *
  * @param title dialog title

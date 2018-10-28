@@ -284,12 +284,10 @@ class lamGroupList extends lamList {
 	}
 
 	/**
-	 * Prints the content of a cell in the account list for a given LDAP entry and attribute.
-	 *
-	 * @param array $entry LDAP attributes
-	 * @param string $attribute attribute name
+	 * {@inheritDoc}
+	 * @see lamList::getTableCellContent()
 	 */
-	function listPrintTableCellContent(&$entry, &$attribute) {
+	protected function getTableCellContent(&$entry, &$attribute) {
 		if ($attribute == "memberuid") {
 			// $gid is used for linking primary group memebers
 			$gid = -1;
@@ -350,11 +348,10 @@ class lamGroupList extends lamList {
 					}
 				}
 			}
-			echo implode("; ", $linklist);
+			return new htmlOutputText(implode("; ", $linklist), false);
 		}
 		// pretty print member DNs
 		elseif (in_array_ignore_case($attribute, array('member', 'uniqueMember', 'owner', 'roleOccupant')) && !empty($entry[$attribute])) {
-			echo '<div class="rightToLeftText">';
 			$values = $entry[$attribute];
 			if (!empty($values)) {
 				usort($values, 'compareDN');
@@ -375,12 +372,11 @@ class lamGroupList extends lamList {
 					$values[$i] = getAbstractDN($values[$i]);
 				}
 			}
-			echo implode('<br>', $values);
-			echo '</div>';
+			return new htmlDiv(null, new htmlOutputText(implode('<br>', $values), false), array('rightToLeftText'));
 		}
 		// print all other attributes
 		else {
-			parent::listPrintTableCellContent($entry, $attribute);
+			return parent::getTableCellContent($entry, $attribute);
 		}
 	}
 

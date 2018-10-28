@@ -201,13 +201,7 @@ class lamList {
 			// navigation bar
 			$this->listDrawNavigationBar(sizeof($this->entries));
 			echo ("<br>\n");
-			echo "<div id=\"listScrollArea\" style=\"overflow: auto; padding: 1px;\">";
 			$this->printAccountTable($this->entries);
-			// account table head
-			$this->listPrintTableHeader();
-			// account table body
-			$this->listPrintTableBody($this->entries);
-			echo "</div>";
 		}
 		else {
 			// buttons
@@ -218,8 +212,6 @@ class lamList {
 			echo ("<br>\n");
 			$accounts = array();
 			$this->printAccountTable($accounts);
-			// account table head
-			$this->listPrintTableHeader();
 			echo "</table><br>\n";
 		}
 		$this->printFooter();
@@ -474,7 +466,7 @@ class lamList {
 			$actionElement->addElement($clearFilterButton);
 		}
 
-		$filterElements = array($actionElement);
+		$filterElements = array(new htmlDiv(null, $actionElement, array('nowrap')));
 		$clearFilter = isset($_POST['clear_filter']);
 		foreach ($this->attrArray as $attributeName) {
 			$attributeName = strtolower($attributeName);
@@ -483,7 +475,7 @@ class lamList {
 				if (!$clearFilter && isset($this->filters[$attributeName])) {
 					$value = $this->filters[$attributeName];
 				}
-				$filterInput = new htmlInputField('filter' . $attributeName, $value);
+				$filterInput = new htmlInputField('filter' . $attributeName, $value, null);
 				$filterInput->setCSSClasses(array($this->type->getScope() . '-bright'));
 				$filterInput->setOnKeyPress("SubmitForm('apply_filter', event);");
 				$filterElements[] = $filterInput;
@@ -531,11 +523,10 @@ class lamList {
 			$onClickEvents[$i + 2] = "list_click('" . $rowID . "');";
 			$onDoubleClickEvents[$i + 2] = "top.location.href='../account/edit.php?type=" . $this->type->getId() . "&amp;DN=" . rawurlencode($info[$index]['dn']) . "';";
 			$this->addToolLinks($info[$index], $rowID, $actionElement);
-			$row[] = $actionElement;
+			$row[] = new htmlDiv(null, $actionElement, array('nowrap'));
 			foreach ($this->attrArray as $attributeName) {
 				$attributeName = strtolower($attributeName);
-				$row[] = new htmlOutputText($attributeName); // TODO
-				//$this->listPrintTableCellContent($info[$index], $attributeName);
+				$row[] = $this->getTableCellContent($info[$index], $attributeName);
 			}
 			$data[] = $row;
 		}
@@ -578,84 +569,6 @@ class lamList {
 	}
 
 	/**
-	* Prints the attribute and filter row at the account table head
-	* @deprecated
-	*/
-	protected function listPrintTableHeader() {
-		$filter = $this->getFilterAsTextForURL();
-		// print table header
-		echo "<table id=\"accountTable\" frame=\"box\" rules=\"none\" class=\"" . $this->type->getScope() . "-border collapse accountlist ui-corner-all\" width=\"100%\"><thead>\n";
-		echo "<tr class=\"" . $this->type->getScope() . "-dark\">\n";
-		echo "<th width=22 height=34><a href=\"#\" onClick=\"list_switchAccountSelection();\"><img height=16 width=16 src=\"../../graphics/selectDown.png\" alt=\"select all\"></a></th>\n";
-		echo "<td>&nbsp;<a href=\"#\" onClick=\"list_switchAccountSelection();\">" .
-			"<font color=\"black\"><small>" . _("Select all") . "</small></font></a></td>\n";
-		// table header
-		for ($k = 0; $k < sizeof($this->descArray); $k++) {
-			if (strtolower($this->attrArray[$k]) == $this->sortColumn) {
-				$sortImage = "sort_asc.png";
-				if ($this->sortDirection < 0) {
-					$sortImage = "sort_desc.png";
-				}
-				echo "<th align=\"left\"><a href=\"list.php?type=" . $this->type->getId() . "&amp;".
-					"sort=" . strtolower($this->attrArray[$k]) . $filter . "&amp;norefresh=y" . "\">" . $this->descArray[$k] .
-					"&nbsp;<img height=16 width=16 style=\"vertical-align: middle;\" src=\"../../graphics/$sortImage\" alt=\"sort direction\"></a></th>\n";
-			}
-			else echo "<th align=\"left\"><a href=\"list.php?type=" . $this->type->getId() . "&amp;".
-				"sort=" . strtolower($this->attrArray[$k]) . $filter . "&amp;norefresh=y" . "\">" . $this->descArray[$k] . "</a></th>\n";
-		}
-		echo "</tr>\n";
-
-		// print filter row
-		echo "<tr align=\"center\" class=\"" . $this->type->getScope() . "-bright\">\n";
-		echo "<td width=22 height=34>";
-			printHelpLink(getHelp('', '250'), '250');
-		echo "</td>\n";
-		echo "<td>";
-		$filterGroup = new htmlGroup();
-		$filterButton = new htmlButton('apply_filter', 'filter.png', true);
-		$filterButton->setTitle(_("Filter"));
-		$filterGroup->addElement($filterButton);
-		if (sizeof($this->filters) > 0) {
-			$filterGroup->addElement(new htmlSpacer('1px', null));
-			$clearFilterButton = new htmlButton('clear_filter', 'clearFilter.png', true);
-			$clearFilterButton->setTitle(_('Clear filter'));
-			$filterGroup->addElement($clearFilterButton);
-		}
-		parseHtml(null, $filterGroup, array(), false, $this->tabindex, $this->type->getScope());
-		echo "</td>\n";
-		// print input boxes for filters
-		for ($k = 0; $k < sizeof($this->descArray); $k++) {
-			echo "<td align=\"left\">";
-			if ($this->canBeFiltered($this->attrArray[$k])) {
-				$this->printFilterArea($this->attrArray[$k], isset($_POST['clear_filter']));
-			}
-			echo "</td>\n";
-		}
-		echo "</tr></thead>\n";
-	}
-
-	/**
-	 * Prints the content of a single attribute filter area.
-	 *
-	 * @param String $attrName attribute name
-	 * @param boolean $clearFilter true if filter value should be cleared
-	 * @deprecated
-	 */
-	protected function printFilterArea($attrName, $clearFilter) {
-		$value = "";
-		if (!$clearFilter) {
-			if (isset($this->filters[strtolower($attrName)])) {
-				$value = $this->filters[strtolower($attrName)];
-			}
-		}
-		$filterInput = new htmlInputField('filter' . strtolower($attrName), $value);
-		$filterInput->setCSSClasses(array($this->type->getScope() . '-dark'));
-		$filterInput->setFieldSize('15');
-		$filterInput->setOnKeyPress("SubmitForm('apply_filter', event);");
-		parseHtml(null, $filterInput, array(), false, $this->tabindex, $this->type->getScope());
-	}
-
-	/**
 	 * Returns if the given attribute can be filtered.
 	 * If filtering is not possible then no filter box will be displayed.
 	 * By default all attributes can be filtered.
@@ -668,123 +581,27 @@ class lamList {
 	}
 
 	/**
-	* Prints the entry list
-	*
-	* @param array $info entries
-	* @deprecated
-	*/
-	protected function listPrintTableBody(&$info) {
-		echo "<tbody>\n";
-		// calculate which rows to show
-		$table_begin = ($this->page - 1) * $this->maxPageEntries;
-		if (($this->page * $this->maxPageEntries) > sizeof($info)) $table_end = sizeof($info);
-		else $table_end = ($this->page * $this->maxPageEntries);
-		// get sort mapping
-		$sortMapping = &$this->sortMapping;
-		if (empty($sortMapping)) {
-			$sortMapping = array();
-			$infoSize = sizeof($info);
-			for ($i = 0; $i < $infoSize; $i++) {
-				$sortMapping[$i] = $i;
-			}
-		}
-		// print account list
-		for ($i = $table_begin; $i < $table_end; $i++) {
-			$index = $sortMapping[$i];
-			$rowID = base64_encode($info[$index]['dn']);
-			if ((($i - $table_begin) % 2) == 1) {
-				$classes = ' ' . $this->type->getScope() . '-bright';
-			}
-			else {
-				$classes = ' ' . $this->type->getScope() . '-dark';
-			}
-			echo("<tr class=\"$classes\"" .
-				" onClick=\"list_click('" . $rowID . "')\"\n" .
-				" onDblClick=\"top.location.href='../account/edit.php?type=" . $this->type->getId() . "&amp;DN=" . rawurlencode($info[$index]['dn']) . "'\">\n");
-			echo " <td align=\"center\"><input class=\"accountBoxUnchecked\" onClick=\"list_click('" . $rowID . "')\"" .
-				" type=\"checkbox\" name=\"" . $rowID . "\"></td>\n";
-			$this->listPrintToolLinks($info[$index], $rowID);
-			for ($k = 0; $k < sizeof($this->attrArray); $k++) {
-				echo ("<td>");
-				$attrName = strtolower($this->attrArray[$k]);
-				$this->listPrintTableCellContent($info[$index], $attrName);
-				echo ("</td>\n");
-			}
-			echo("</tr>\n");
-		}
-		// display select all link
-		$colspan = sizeof($this->attrArray) + 1;
-		echo "<tr class=\"" . $this->type->getScope() . "-bright\">\n";
-		echo "<td align=\"center\"><a href=\"#\" onClick=\"list_switchAccountSelection();\"><img height=16 width=16 src=\"../../graphics/select.png\" alt=\"select all\"></a></td>\n";
-		echo "<td colspan=$colspan>&nbsp;<a href=\"#\" onClick=\"list_switchAccountSelection();\">" .
-			"<font color=\"black\"><small>" . _("Select all") . "</small></font></a></td>\n";
-		echo "</tr>\n";
-		echo "</tbody>\n";
-		echo "</table>\n";
-	}
-
-	/**
-	 * Prints the tool image links (e.g. edit and delete) for each account.
-	 *
-	 * @param array $account LDAP attributes
-	 * @param String $id account ID
-	 * @deprecated
-	 */
-	private function listPrintToolLinks($account, $id) {
-		$toolCount = 0;
-		$group = new htmlGroup();
-		// edit link
-		$editLink = new htmlLink('', "../account/edit.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/edit.png');
-		$editLink->setTitle(_("Edit"));
-		$group->addElement($editLink);
-		$toolCount++;
-		// delete link
-		if (checkIfWriteAccessIsAllowed($this->type->getId()) && checkIfDeleteEntriesIsAllowed($this->type->getId())) {
-			$deleteLink = new htmlLink('', "deletelink.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/delete.png');
-			$deleteLink->setTitle(_("Delete"));
-			$group->addElement($deleteLink);
-			$toolCount++;
-		}
-		// PDF button
-		$pdfButton = new htmlButton("createPDF_" . $id, 'pdf.png', true);
-		$pdfButton->setTitle(_('Create PDF file'));
-		$group->addElement($pdfButton);
-		$toolCount++;
-		// additional tools
-		$tools = $this->getAdditionalTools();
-		for ($i = 0; $i < sizeof($tools); $i++) {
-			$toolLink = new htmlLink('', $tools[$i]->getLinkTarget() . "?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/' . $tools[$i]->getImage());
-			$toolLink->setTitle($tools[$i]->getName());
-			$group->addElement($toolLink);
-			$toolCount++;
-		}
-		$width = ($toolCount * 20) + 20;
-		echo "<td align='center' style=\"white-space: nowrap; width: ${width}px;\">";
-		parseHtml(null, $group, array(), false, $this->tabindex, $this->type->getScope());
-		echo "</td>\n";
-	}
-
-	/**
-	 * Prints the content of a cell in the account list for a given LDAP entry and attribute.
+	 * Returns the content of a cell in the account list for a given LDAP entry and attribute.
 	 *
 	 * @param array $entry LDAP attributes
 	 * @param string $attribute attribute name
+	 * @return htmlElement content
 	 */
-	protected function listPrintTableCellContent(&$entry, &$attribute) {
+	protected function getTableCellContent(&$entry, &$attribute) {
 		// print all attribute entries seperated by "; "
 		if (isset($entry[$attribute]) && sizeof($entry[$attribute]) > 0) {
 			if (is_array($entry[$attribute])) {
 				if (($attribute == 'entryexpiretimestamp') && !empty($entry[$attribute][0])) {
-					echo formatLDAPTimestamp($entry[$attribute][0]);
+					return new htmlOutputText(formatLDAPTimestamp($entry[$attribute][0]));
 				}
 				else {
 					// sort array
 					sort($entry[$attribute]);
-					echo htmlspecialchars(implode("; ", $entry[$attribute]), ENT_QUOTES, "UTF-8");
+					return new htmlOutputText(implode("; ", $entry[$attribute]));
 				}
 			}
 			else {
-				echo htmlspecialchars($entry[$attribute], ENT_QUOTES, "UTF-8");
+				return new htmlOutputText($entry[$attribute]);
 			}
 		}
 	}
@@ -1110,9 +927,6 @@ class lamList {
 				jQuery(document).ready(function() {
 					jQuery('#tab_<?php echo $this->type->getId(); ?>').addClass('ui-tabs-active');
 					jQuery('#tab_<?php echo $this->type->getId(); ?>').addClass('ui-state-active');
-					window.onload = listResizeITabContentDiv;
-					window.onresize = listResizeITabContentDiv;
-					jQuery('#filterButton').button();
 				});
 			</script>
 		<?php
