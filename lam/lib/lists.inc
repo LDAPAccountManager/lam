@@ -1,6 +1,5 @@
 <?php
 use LAM\TYPES\ConfiguredType;
-use phpseclib\Net\SFTP\Stream;
 
 /*
 
@@ -173,7 +172,7 @@ class lamList {
 		// get some parameters
 		$this->listGetParams();
 		// print HTML head
-		$this->listPrintHeader();
+		$this->printHeader();
 		// print messages when redirected from other pages
 		$this->listPrintRedirectMessages();
 		// refresh data if needed
@@ -202,12 +201,7 @@ class lamList {
 			// navigation bar
 			$this->listDrawNavigationBar(sizeof($this->entries));
 			echo ("<br>\n");
-			echo "<div id=\"listScrollArea\" style=\"overflow: auto; padding: 1px;\">";
-			// account table head
-			$this->listPrintTableHeader();
-			// account table body
-			$this->listPrintTableBody($this->entries);
-			echo "</div>";
+			$this->printAccountTable($this->entries);
 		}
 		else {
 			// buttons
@@ -216,11 +210,11 @@ class lamList {
 			// navigation bar
 			$this->listDrawNavigationBar(sizeof($this->entries));
 			echo ("<br>\n");
-			// account table head
-			$this->listPrintTableHeader();
+			$accounts = array();
+			$this->printAccountTable($accounts);
 			echo "</table><br>\n";
 		}
-		$this->listPrintFooter();
+		$this->printFooter();
 	}
 
 	/**
@@ -313,23 +307,27 @@ class lamList {
 	*/
 	protected function listDrawNavigationBar($count) {
 		$filter = $this->getFilterAsTextForURL();
-		echo("<table width=\"100%\" border=\"0\">\n");
-		echo("<tr>\n");
-		echo("<td align=\"left\">");
-		printf($this->labels['nav'], $count);
-		echo("</td>");
-
+		$row = new htmlResponsiveRow();
+		$row->setCSSClasses(array('maxrow'));
+		$countLabel = new htmlOutputText(sprintf($this->labels['nav'], $count));
+		$row->add($countLabel, 12, 6, 6);
+		$navGroup = new htmlGroup();
 		if ($count > $this->maxPageEntries) {
-			echo("<td class=\"activepage\" align=\"right\">");
 			if ($this->page != 1) {
-				echo("<a title=\"" . _('Jump to first page') . "\" href=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true&amp;page=1" .
-					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" .
-					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-first.png\"></a>\n");
+				$linkHref = "list.php?type=" . $this->type->getId() . "&norefresh=true&page=1" .
+						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
+				$link = new htmlLink(null, $linkHref, '../../graphics/go-first.png');
+				$link->setTitle(_('Jump to first page'));
+				$link->setCSSClasses(array('margin5'));
+				$navGroup->addElement($link);
 			}
 			if ($this->page > 11) {
-				echo("<a title=\"" . _('Jump 10 pages backward') . "\" href=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true&amp;page=" . ($this->page - 10) .
-					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" .
-					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-previous.png\"></a>\n");
+				$linkHref = "list.php?type=" . $this->type->getId() . "&norefresh=true&page=" . ($this->page - 10) .
+						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
+				$link = new htmlLink(null, $linkHref, '../../graphics/go-previous.png');
+				$link->setTitle(_('Jump 10 pages backward'));
+				$link->setCSSClasses(array('margin5'));
+				$navGroup->addElement($link);
 			}
 			$pageCount =  ceil($count / $this->maxPageEntries);
 			for ($i = $this->page - 6; $i < ($this->page + 5); $i++) {
@@ -340,30 +338,41 @@ class lamList {
 					continue;
 				}
 				if ($i == $this->page - 1) {
-					$url = "list.php?type=" . $this->type->getId() . "&amp;norefresh=true" .
-					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter;
-					echo '<input type="number" class="listPageInput" id="listNavPage" name="listNavPage"'
-						. ' value="' . ($i + 1) . '" min="1" max="' . $pageCount . '"'
-						. ' onkeypress="listPageNumberKeyPress(\'' . $url . '\', event);">';
+					$url = "list.php?type=" . $this->type->getId() . "&norefresh=true" .
+							"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
+					$navInput = new htmlInputField('listNavPage', ($i + 1));
+					$navInput->setMinimumAndMaximumNumber(1, $pageCount);
+					$navInput->setCSSClasses(array('listPageInput'));
+					$navInput->setOnKeyPress('listPageNumberKeyPress(\'' . $url . '\', event);');
+					$navGroup->addElement($navInput);
 				}
 				else {
-					echo "&nbsp;<a href=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true&amp;page=" . ($i + 1) .
-					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" . ($i + 1) . "</a>\n";
+					$linkHref = "list.php?type=" . $this->type->getId() . "&norefresh=true&page=" . ($i + 1) .
+					"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
+					$link = new htmlLink(($i + 1), $linkHref);
+					$link->setCSSClasses(array('margin5'));
+					$navGroup->addElement($link);
 				}
 			}
 			if ($this->page < ($pageCount - 10)) {
-				echo("<a title=\"" . _('Jump 10 pages forward') . "\" href=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true&amp;page=" . ($this->page + 10) .
-					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" .
-					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-next.png\"></a>\n");
+				$linkHref = "list.php?type=" . $this->type->getId() . "&norefresh=true&page=" . ($this->page + 10) .
+						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
+				$link = new htmlLink(null, $linkHref, '../../graphics/go-next.png');
+				$link->setTitle(_('Jump 10 pages forward'));
+				$link->setCSSClasses(array('margin5'));
+				$navGroup->addElement($link);
 			}
 			if ($this->page < $pageCount) {
-				echo("<a title=\"" . _('Jump to last page') . "\" href=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true&amp;page=" . $pageCount .
-					"&amp;sort=" . $this->sortColumn . "&amp;sortdirection=" . $this->sortDirection . $filter . "\">" .
-					"<img height=16 width=16 class=\"align-middle\" alt=\"\" src=\"../../graphics/go-last.png\"></a>\n");
+				$linkHref = "list.php?type=" . $this->type->getId() . "&norefresh=true&page=" . $pageCount .
+						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
+				$link = new htmlLink(null, $linkHref, '../../graphics/go-last.png');
+				$link->setTitle(_('Jump to last page'));
+				$link->setCSSClasses(array('margin5'));
+				$navGroup->addElement($link);
 			}
-			echo "</td>";
 		}
-		echo "</tr></table>\n";
+		$row->add($navGroup, 12, 6, 6, 'responsiveLabel');
+		parseHtml(null, $row, array(), false, $this->tabindex, $this->type->getScope());
 	}
 
 	/**
@@ -374,97 +383,9 @@ class lamList {
 	protected function getFilterAsTextForURL() {
 		$text = '';
 		foreach ($this->filters as $attr => $filter) {
-			$text .= "&amp;filter" . strtolower($attr) . '=' . $filter;
+			$text .= "&filter" . strtolower($attr) . '=' . $filter;
 		}
 		return $text;
-	}
-
-	/**
-	* Prints the attribute and filter row at the account table head
-	*/
-	protected function listPrintTableHeader() {
-		$filter = $this->getFilterAsTextForURL();
-		// print table header
-		echo "<table id=\"accountTable\" frame=\"box\" rules=\"none\" class=\"" . $this->type->getScope() . "-border collapse accountlist ui-corner-all\" width=\"100%\"><thead>\n";
-		echo "<tr class=\"" . $this->type->getScope() . "-dark\">\n";
-		echo "<th width=22 height=34><a href=\"#\" onClick=\"list_switchAccountSelection();\"><img height=16 width=16 src=\"../../graphics/selectDown.png\" alt=\"select all\"></a></th>\n";
-		echo "<td>&nbsp;<a href=\"#\" onClick=\"list_switchAccountSelection();\">" .
-			"<font color=\"black\"><small>" . _("Select all") . "</small></font></a></td>\n";
-		// table header
-		for ($k = 0; $k < sizeof($this->descArray); $k++) {
-			if (strtolower($this->attrArray[$k]) == $this->sortColumn) {
-				$sortImage = "sort_asc.png";
-				if ($this->sortDirection < 0) {
-					$sortImage = "sort_desc.png";
-				}
-				echo "<th align=\"left\"><a href=\"list.php?type=" . $this->type->getId() . "&amp;".
-					"sort=" . strtolower($this->attrArray[$k]) . $filter . "&amp;norefresh=y" . "\">" . $this->descArray[$k] .
-					"&nbsp;<img height=16 width=16 style=\"vertical-align: middle;\" src=\"../../graphics/$sortImage\" alt=\"sort direction\"></a></th>\n";
-			}
-			else echo "<th align=\"left\"><a href=\"list.php?type=" . $this->type->getId() . "&amp;".
-				"sort=" . strtolower($this->attrArray[$k]) . $filter . "&amp;norefresh=y" . "\">" . $this->descArray[$k] . "</a></th>\n";
-		}
-		echo "</tr>\n";
-
-		// print filter row
-		echo "<tr align=\"center\" class=\"" . $this->type->getScope() . "-bright\">\n";
-		echo "<td width=22 height=34>";
-			printHelpLink(getHelp('', '250'), '250');
-		echo "</td>\n";
-		echo "<td>";
-		$filterGroup = new htmlGroup();
-		$filterButton = new htmlButton('apply_filter', 'filter.png', true);
-		$filterButton->setTitle(_("Filter"));
-		$filterGroup->addElement($filterButton);
-		if (sizeof($this->filters) > 0) {
-			$filterGroup->addElement(new htmlSpacer('1px', null));
-			$clearFilterButton = new htmlButton('clear_filter', 'clearFilter.png', true);
-			$clearFilterButton->setTitle(_('Clear filter'));
-			$filterGroup->addElement($clearFilterButton);
-		}
-		parseHtml(null, $filterGroup, array(), false, $this->tabindex, $this->type->getScope());
-		echo "</td>\n";
-		// print input boxes for filters
-		for ($k = 0; $k < sizeof($this->descArray); $k++) {
-			echo "<td align=\"left\">";
-			if ($this->canBeFiltered($this->attrArray[$k])) {
-				$this->printFilterArea($this->attrArray[$k], isset($_POST['clear_filter']));
-			}
-			echo "</td>\n";
-		}
-		echo "</tr></thead>\n";
-	}
-
-	/**
-	 * Prints the content of a single attribute filter area.
-	 *
-	 * @param String $attrName attribute name
-	 * @param boolean $clearFilter true if filter value should be cleared
-	 */
-	protected function printFilterArea($attrName, $clearFilter) {
-		$value = "";
-		if (!$clearFilter) {
-			if (isset($this->filters[strtolower($attrName)])) {
-				$value = $this->filters[strtolower($attrName)];
-			}
-		}
-		$filterInput = new htmlInputField('filter' . strtolower($attrName), $value);
-		$filterInput->setCSSClasses(array($this->type->getScope() . '-dark'));
-		$filterInput->setFieldSize('15');
-		$filterInput->setOnKeyPress("SubmitForm('apply_filter', event);");
-		parseHtml(null, $filterInput, array(), false, $this->tabindex, $this->type->getScope());
-	}
-
-	/**
-	 * Returns if the given attribute can be filtered.
-	 * If filtering is not possible then no filter box will be displayed.
-	 * By default all attributes can be filtered.
-	 *
-	 * @param String $attr attribute name
-	 * @return boolean filtering possible
-	 */
-	protected function canBeFiltered($attr) {
-		return true;
 	}
 
 	/**
@@ -472,8 +393,109 @@ class lamList {
 	*
 	* @param array $info entries
 	*/
-	protected function listPrintTableBody(&$info) {
-		echo "<tbody>\n";
+	private function printAccountTable(&$info) {
+		$scope = $this->type->getScope();
+		$titles = $this->descArray;
+		array_unshift($titles, _('Actions'));
+		$data = array();
+		$data[] = $this->getSortingElements();
+		$data[] = $this->getFilterElements();
+		$onClickEvents = array();
+		$onDoubleClickEvents = array();
+		$this->addDataElements($data, $info, $onClickEvents, $onDoubleClickEvents);
+
+		$table = new htmlResponsiveTable($titles, $data);
+		$table->setRowClasses($scope . '-dark', $scope . '-bright');
+		$table->setCSSClasses(array($scope . '-border accountlist'));
+		$table->setOnClickEvents($onClickEvents);
+		$table->setOnDoubleClickEvents($onDoubleClickEvents);
+
+		parseHtml(null, $table, array(), false, $this->tabindex, $scope);
+	}
+
+	/**
+	 * Returns the elements to show in sorting row.
+	 *
+	 * @return htmlElement[] elements
+	 */
+	private function getSortingElements() {
+		$filter = $this->getFilterAsTextForURL();
+		$sortElements = array(new htmlOutputText(_('Sort sequence')));
+		foreach ($this->attrArray as $attributeName) {
+			$link = "list.php?type=" . $this->type->getId() . "&".
+				"sort=" . strtolower($attributeName) . $filter . "&norefresh=y";
+			$buttons = new htmlGroup();
+			if (strtolower($attributeName) == $this->sortColumn) {
+				if ($this->sortDirection < 0) {
+					$buttons->addElement(new htmlLink(null, $link . '&sortdirection=1', '../../graphics/downarrows.png'));
+					$buttons->addElement(new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/uparrows-black.png'));
+				}
+				else {
+					$buttons->addElement(new htmlLink(null, $link . '&sortdirection=1', '../../graphics/downarrows-black.png'));
+					$buttons->addElement(new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/uparrows.png'));
+				}
+			}
+			else {
+				$buttons->addElement(new htmlLink(null, $link . '&sortdirection=1', '../../graphics/downarrows.png'));
+				$buttons->addElement(new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/uparrows.png'));
+			}
+			$sortElements[] = $buttons;
+		}
+		return $sortElements;
+	}
+
+	/**
+	 * Returns the elements to show in filter row.
+	 *
+	 * @return htmlElement[] elements
+	 */
+	private function getFilterElements() {
+		$actionElement = new htmlGroup();
+		$selectAll = new htmlInputCheckbox('tableSelectAll', false);
+		$selectAll->setCSSClasses(array('align-middle'));
+		$selectAll->setOnClick('list_switchAccountSelection();');
+		$actionElement->addElement($selectAll);
+		$actionElement->addElement(new htmlSpacer('1rem', null));
+		$actionElement->addElement(new htmlOutputText(_('Filter')));
+		$filterButton = new htmlButton('apply_filter', 'filter.png', true);
+		$filterButton->setTitle(_("Here you can input simple filter expressions (e.g. 'value' or 'v*'). The filter is case-insensitive."));
+		$actionElement->addElement($filterButton);
+		if (sizeof($this->filters) > 0) {
+			$clearFilterButton = new htmlButton('clear_filter', 'clearFilter.png', true);
+			$clearFilterButton->setTitle(_('Clear filter'));
+			$actionElement->addElement($clearFilterButton);
+		}
+
+		$filterElements = array(new htmlDiv(null, $actionElement, array('nowrap')));
+		$clearFilter = isset($_POST['clear_filter']);
+		foreach ($this->attrArray as $attributeName) {
+			$attributeName = strtolower($attributeName);
+			if ($this->canBeFiltered($attributeName)) {
+				$value = "";
+				if (!$clearFilter && isset($this->filters[$attributeName])) {
+					$value = $this->filters[$attributeName];
+				}
+				$filterInput = new htmlInputField('filter' . $attributeName, $value, null);
+				$filterInput->setCSSClasses(array($this->type->getScope() . '-bright'));
+				$filterInput->setOnKeyPress("SubmitForm('apply_filter', event);");
+				$filterElements[] = $filterInput;
+			}
+			else {
+				$filterElements[] = new htmlOutputText('');
+			}
+		}
+		return $filterElements;
+	}
+
+	/**
+	 * Adds the LDAP data elements to the given array.
+	 *
+	 * @param array $data data for responsible table
+	 * @param array $info entries
+	 * @param array $onClickEvents row number => code
+	 * @param array $onDoubleClickEvents row number => code
+	 */
+	private function addDataElements(&$data, &$info, &$onClickEvents, &$onDoubleClickEvents) {
 		// calculate which rows to show
 		$table_begin = ($this->page - 1) * $this->maxPageEntries;
 		if (($this->page * $this->maxPageEntries) > sizeof($info)) $table_end = sizeof($info);
@@ -489,100 +511,97 @@ class lamList {
 		}
 		// print account list
 		for ($i = $table_begin; $i < $table_end; $i++) {
+			$row = array();
 			$index = $sortMapping[$i];
 			$rowID = base64_encode($info[$index]['dn']);
-			if ((($i - $table_begin) % 2) == 1) {
-				$classes = ' ' . $this->type->getScope() . '-bright';
+			$actionElement = new htmlGroup();
+			$checkbox = new htmlInputCheckbox($rowID, false);
+			$checkbox->setOnClick("list_click('" . $rowID . "');");
+			$checkbox->setCSSClasses(array('accountBoxUnchecked align-middle'));
+			$actionElement->addElement($checkbox);
+			$actionElement->addElement(new htmlSpacer('0.5rem', null));
+			$onClickEvents[$i + 2] = "list_click('" . $rowID . "');";
+			$onDoubleClickEvents[$i + 2] = "top.location.href='../account/edit.php?type=" . $this->type->getId() . "&amp;DN=" . rawurlencode($info[$index]['dn']) . "';";
+			$this->addToolLinks($info[$index], $rowID, $actionElement);
+			$row[] = new htmlDiv(null, $actionElement, array('nowrap'));
+			foreach ($this->attrArray as $attributeName) {
+				$attributeName = strtolower($attributeName);
+				$row[] = $this->getTableCellContent($info[$index], $attributeName);
 			}
-			else {
-				$classes = ' ' . $this->type->getScope() . '-dark';
-			}
-			echo("<tr class=\"$classes\"" .
-				" onClick=\"list_click('" . $rowID . "')\"\n" .
-				" onDblClick=\"top.location.href='../account/edit.php?type=" . $this->type->getId() . "&amp;DN=" . rawurlencode($info[$index]['dn']) . "'\">\n");
-			echo " <td align=\"center\"><input class=\"accountBoxUnchecked\" onClick=\"list_click('" . $rowID . "')\"" .
-				" type=\"checkbox\" name=\"" . $rowID . "\"></td>\n";
-			$this->listPrintToolLinks($info[$index], $rowID);
-			for ($k = 0; $k < sizeof($this->attrArray); $k++) {
-				echo ("<td>");
-				$attrName = strtolower($this->attrArray[$k]);
-				$this->listPrintTableCellContent($info[$index], $attrName);
-				echo ("</td>\n");
-			}
-			echo("</tr>\n");
+			$data[] = $row;
 		}
-		// display select all link
-		$colspan = sizeof($this->attrArray) + 1;
-		echo "<tr class=\"" . $this->type->getScope() . "-bright\">\n";
-		echo "<td align=\"center\"><a href=\"#\" onClick=\"list_switchAccountSelection();\"><img height=16 width=16 src=\"../../graphics/select.png\" alt=\"select all\"></a></td>\n";
-		echo "<td colspan=$colspan>&nbsp;<a href=\"#\" onClick=\"list_switchAccountSelection();\">" .
-			"<font color=\"black\"><small>" . _("Select all") . "</small></font></a></td>\n";
-		echo "</tr>\n";
-		echo "</tbody>\n";
-		echo "</table>\n";
 	}
 
 	/**
-	 * Prints the tool image links (e.g. edit and delete) for each account.
+	 * Adds the tool image links (e.g. edit and delete) for each account.
 	 *
 	 * @param array $account LDAP attributes
 	 * @param String $id account ID
+	 * @param htmlGroup $element location where to add tools
 	 */
-	private function listPrintToolLinks($account, $id) {
+	private function addToolLinks($account, $id, &$element) {
 		$toolCount = 0;
-		$group = new htmlGroup();
 		// edit link
 		$editLink = new htmlLink('', "../account/edit.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/edit.png');
 		$editLink->setTitle(_("Edit"));
-		$group->addElement($editLink);
+		$element->addElement($editLink);
 		$toolCount++;
 		// delete link
 		if (checkIfWriteAccessIsAllowed($this->type->getId()) && checkIfDeleteEntriesIsAllowed($this->type->getId())) {
 			$deleteLink = new htmlLink('', "deletelink.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/delete.png');
 			$deleteLink->setTitle(_("Delete"));
-			$group->addElement($deleteLink);
+			$element->addElement($deleteLink);
 			$toolCount++;
 		}
 		// PDF button
 		$pdfButton = new htmlButton("createPDF_" . $id, 'pdf.png', true);
 		$pdfButton->setTitle(_('Create PDF file'));
-		$group->addElement($pdfButton);
+		$element->addElement($pdfButton);
 		$toolCount++;
 		// additional tools
 		$tools = $this->getAdditionalTools();
 		for ($i = 0; $i < sizeof($tools); $i++) {
 			$toolLink = new htmlLink('', $tools[$i]->getLinkTarget() . "?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/' . $tools[$i]->getImage());
 			$toolLink->setTitle($tools[$i]->getName());
-			$group->addElement($toolLink);
+			$element->addElement($toolLink);
 			$toolCount++;
 		}
-		$width = ($toolCount * 20) + 20;
-		echo "<td align='center' style=\"white-space: nowrap; width: ${width}px;\">";
-		parseHtml(null, $group, array(), false, $this->tabindex, $this->type->getScope());
-		echo "</td>\n";
 	}
 
 	/**
-	 * Prints the content of a cell in the account list for a given LDAP entry and attribute.
+	 * Returns if the given attribute can be filtered.
+	 * If filtering is not possible then no filter box will be displayed.
+	 * By default all attributes can be filtered.
+	 *
+	 * @param String $attr attribute name
+	 * @return boolean filtering possible
+	 */
+	protected function canBeFiltered($attr) {
+		return true;
+	}
+
+	/**
+	 * Returns the content of a cell in the account list for a given LDAP entry and attribute.
 	 *
 	 * @param array $entry LDAP attributes
 	 * @param string $attribute attribute name
+	 * @return htmlElement content
 	 */
-	protected function listPrintTableCellContent(&$entry, &$attribute) {
+	protected function getTableCellContent(&$entry, &$attribute) {
 		// print all attribute entries seperated by "; "
 		if (isset($entry[$attribute]) && sizeof($entry[$attribute]) > 0) {
 			if (is_array($entry[$attribute])) {
 				if (($attribute == 'entryexpiretimestamp') && !empty($entry[$attribute][0])) {
-					echo formatLDAPTimestamp($entry[$attribute][0]);
+					return new htmlOutputText(formatLDAPTimestamp($entry[$attribute][0]));
 				}
 				else {
 					// sort array
 					sort($entry[$attribute]);
-					echo htmlspecialchars(implode("; ", $entry[$attribute]), ENT_QUOTES, "UTF-8");
+					return new htmlOutputText(implode("; ", $entry[$attribute]));
 				}
 			}
 			else {
-				echo htmlspecialchars($entry[$attribute], ENT_QUOTES, "UTF-8");
+				return new htmlOutputText($entry[$attribute]);
 			}
 		}
 	}
@@ -816,51 +835,52 @@ class lamList {
 	 * @param int $tabindex HTML tabindex counter
 	 */
 	protected function listPrintButtons($createOnly) {
-		$table = new htmlTable('100%');
+		$row = new htmlResponsiveRow();
+		$row->setCSSClasses(array('maxrow'));
 		$left = new htmlGroup();
 		// button part
-		$left->alignment = htmlElement::ALIGN_LEFT;
 		if (checkIfWriteAccessIsAllowed($this->type->getId())) {
 			// add button
 			if (checkIfNewEntriesAreAllowed($this->type->getId())) {
 				$newButton = new htmlButton('new', $this->labels['newEntry']);
 				$newButton->setIconClass('createButton');
+				$newButton->setCSSClasses(array('fullwidth-mobile-only'));
 				$left->addElement($newButton);
 			}
 			// delete button
 			if (!$createOnly && checkIfDeleteEntriesIsAllowed($this->type->getId())) {
-				$left->addElement(new htmlSpacer('1px', null));
 				$delButton = new htmlButton('del', $this->labels['deleteEntry']);
 				$delButton->setIconClass('deleteButton');
+				$delButton->setCSSClasses(array('fullwidth-mobile-only'));
 				$left->addElement($delButton);
 			}
 			$toolSettings = $_SESSION['config']->getToolSettings();
 			if ($this->type->getBaseType()->supportsFileUpload() && checkIfNewEntriesAreAllowed($this->type->getId())
 					&& !(isset($toolSettings['tool_hide_toolFileUpload']) && ($toolSettings['tool_hide_toolFileUpload'] == 'true'))) {
-				$left->addElement(new htmlSpacer('20px', null));
 				$uploadButton = new htmlButton('fileUpload', _('File upload'));
 				$uploadButton->setIconClass('upButton');
+				$uploadButton->setCSSClasses(array('fullwidth-mobile-only'));
 				$left->addElement($uploadButton);
 			}
 		}
 
 		// OU selection and settings
-		$right = new htmlGroup();
-		$right->alignment = htmlElement::ALIGN_RIGHT;
-		$right->addElement($this->listShowOUSelection());
+		$right = new htmlResponsiveRow();
+		$right->add($this->listShowOUSelection(), 12, 12, 10);
+		$rightButtonGroup = new htmlGroup();
 		$refreshButton = new htmlButton('refresh', 'refresh.png', true);
 		$refreshButton->setTitle(_("Refresh"));
-		$right->addElement($refreshButton);
-		$right->addElement(new htmlSpacer('1px', null));
+		$rightButtonGroup->addElement($refreshButton);
 		$settingsLink = new htmlLink('', '#', '../../graphics/tools.png');
 		$settingsLink->setOnClick('listShowSettingsDialog(\'' . _('Change list settings') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\');');
 		$settingsLink->setTitle(_('Change settings'));
-		$right->addElement($settingsLink);
+		$rightButtonGroup->addElement($settingsLink);
+		$right->add($rightButtonGroup, 12, 12, 2);
 
 		$this->addExtraInputElementsToTopArea($left, $right);
-		$table->addElement($left);
-		$table->addElement($right);
-		parseHtml(null, $table, array(), false, $this->tabindex, $this->type->getScope());
+		$row->add($left, 12, 6, 6, 'text-left');
+		$row->add($right, 12, 6, 6, 'text-right');
+		parseHtml(null, $row, array(), false, $this->tabindex, $this->type->getScope());
 	}
 
 	/**
@@ -871,16 +891,6 @@ class lamList {
 	 */
 	protected function addExtraInputElementsToTopArea(&$left, &$right) {
 		// only used by subclasses
-	}
-
-	/**
-	 * Prints the HTML header.
-	 *
-	 * @deprecated
-	 */
-	protected function listPrintHeader() {
-		include '../main_header.php';
-		$this->printHeaderContent();
 	}
 
 	/**
@@ -896,16 +906,6 @@ class lamList {
 	 */
 	protected function printHeaderContent() {
 		// implemented by child classes if needed
-	}
-
-	/**
-	 * Prints the HTML footer.
-	 *
-	 * @deprecated
-	 */
-	protected function listPrintFooter() {
-		$this->printFooterContent();
-		include '../main_footer.php';
 	}
 
 	/**
@@ -927,9 +927,6 @@ class lamList {
 				jQuery(document).ready(function() {
 					jQuery('#tab_<?php echo $this->type->getId(); ?>').addClass('ui-tabs-active');
 					jQuery('#tab_<?php echo $this->type->getId(); ?>').addClass('ui-state-active');
-					window.onload = listResizeITabContentDiv;
-					window.onresize = listResizeITabContentDiv;
-					jQuery('#filterButton').button();
 				});
 			</script>
 		<?php
@@ -986,7 +983,7 @@ class lamList {
 		}
 		// get sort order
 		if (isset($_GET['sortdirection'])) {
-			$this->sortDirection = $_GET['sortdirection'];
+			$this->sortDirection = htmlspecialchars($_GET['sortdirection']);
 		}
 		// check search suffix
 		if (isset($_POST['suffix'])) {
@@ -1176,20 +1173,18 @@ class lamList {
 	 * Prints the list configuration page.
 	 */
 	protected function listPrintConfigurationPage() {
-		echo "<div id=\"settingsDialog\" class=\"hidden\">\n";
+		echo "<div id=\"settingsDialog\" class=\"hidden dialog-content\">\n";
 		echo "<form id=\"settingsDialogForm\" action=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true\" method=\"post\">\n";
-		echo '<table width="100%"><tr><td>';
 
-		$configContainer = new htmlTable();
+		$configContainer = new htmlResponsiveRow();
 		for ($i = 0; $i < sizeof($this->configOptions); $i++) {
-			$configContainer->mergeTableElements($this->configOptions[$i]->getMetaHTML());
+			$configContainer->add($this->configOptions[$i]->getMetaHTML(), 12);
 		}
-		$configContainer->addElement(new htmlHiddenInput('saveConfigOptions', 'ok'));
+		$configContainer->add(new htmlHiddenInput('saveConfigOptions', 'ok'), 12);
 		addSecurityTokenToMetaHTML($configContainer);
 
 		parseHtml('', $configContainer, array(), false, $this->tabindex, $this->type->getScope());
 
-		echo "</td></tr></table>\n";
 		echo '</form>';
 		echo "</div>\n";
 	}
@@ -1369,7 +1364,7 @@ abstract class lamListOption {
 	/**
 	 * Returns the meta HTML data to display this option.
 	 *
-	 * @return htmlTable meta HTML
+	 * @return htmlResponsiveRow meta HTML
 	 */
 	public abstract function getMetaHTML();
 
@@ -1422,13 +1417,12 @@ class lamBooleanListOption extends lamListOption {
 	}
 
 	/**
-	 * Returns the meta HTML data to display this option.
-	 *
-	 * @return htmlTable meta HTML
+	 * {@inheritDoc}
+	 * @see lamListOption::getMetaHTML()
 	 */
 	public function getMetaHTML() {
-		$return = new htmlTable();
-		$return->addElement(new htmlTableExtendedInputCheckbox($this->getID(), $this->isSelected(), $this->name));
+		$return = new htmlResponsiveRow();
+		$return->add(new htmlResponsiveInputCheckbox($this->getID(), $this->isSelected(), $this->name), 12);
 		return $return;
 	}
 
@@ -1487,13 +1481,12 @@ class lamSelectListOption extends lamListOption {
 	}
 
 	/**
-	 * Returns the meta HTML data to display this option.
-	 *
-	 * @return htmlTable meta HTML
+	 * {@inheritDoc}
+	 * @see lamListOption::getMetaHTML()
 	 */
 	public function getMetaHTML() {
-		$return = new htmlTable();
-		$return->addElement(new htmlTableExtendedSelect($this->getID(), $this->options, array($this->getValue()), $this->name, $this->helpID));
+		$return = new htmlResponsiveRow();
+		$return->add(new htmlResponsiveSelect($this->getID(), $this->options, array($this->getValue()), $this->name, $this->helpID), 12);
 		return $return;
 	}
 
