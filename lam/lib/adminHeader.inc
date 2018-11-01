@@ -178,8 +178,8 @@ jQuery(document).ready(function() {
 </script>
 
 <br>
-<div class="ui-tabs ui-widget ui-widget-content ui-corner-all">
-<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+<div class="ui-tabs ui-corner-all ui-widget ui-widget-content">
+<ul class="ui-tabs-nav ui-corner-all ui-helper-reset ui-helper-clearfix ui-widget-header">
 	<?php
 		printTypeTabs($headerPrefix);
 	?>
@@ -194,11 +194,11 @@ function printTypeTabs($headerPrefix) {
 		if ($type->isHidden()) {
 			continue;
 		}
-		$link = '<a href="' . $headerPrefix . '/templates/lists/list.php?type=' . $type->getId() .
+		$link = '<a class="ui-tabs-anchor" href="' . $headerPrefix . '/templates/lists/list.php?type=' . $type->getId() .
 		'" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">' .
 		'<img height="16" width="16" alt="' . $type->getId() . '" src="' . $headerPrefix . '/graphics/' . $type->getIcon() . '">&nbsp;' .
 		$type->getAlias() . '</a>';
-		echo '<li id="tab_' . $type->getId() . '" class="ui-state-default ui-corner-top">';
+		echo '<li id="tab_' . $type->getId() . '" class="ui-tabs-tab ui-corner-top ui-state-default ui-tab">';
 		echo $link;
 		echo "</li>\n";
 	}
