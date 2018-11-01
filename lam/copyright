@@ -205,13 +205,17 @@ main license and authors:
 lib/3rdParty/tcpdf/fonts/DejaVu*.ttf        A        Public Domain, Bitstream, Inc., Tavmjong Bah
 lib/3rdParty/tcpdf/fonts/DejaVu*.z          A        Public Domain, Bitstream, Inc., Tavmjong Bah
 lib/3rdParty/phpseclib                      B        Jim Wigginton
-templates/lib/*jquery*.js                   B  2010  John Resig, Paul Bakaus, Fred Heusschen
+templates/lib/*jquery*.js                   B  2018  jQuery Foundation and other contributors
+style/120_jquery-ui*.css					B  2016  jQuery Foundation and other contributors
 templates/lib/*jquery-dropmenu-*.js         B  2010  Fred Heusschen
-templates/lib/*jquery-validationEngine-*.js B  2010  Cedric Dugas and Olivier Refalo
+style/150_jquery-dropmenu*.css              B  2010  Fred Heusschen
 templates/lib/*jquery-fineuploader-*.js     B  2010  Andrew Valums
+style/150_jquery-fineuploader*.css          B  2010  Andrew Valums
+templates/lib/*jquery-validationEngine-*.js B  2010  Cedric Dugas and Olivier Refalo
+style/150_jquery-validationEngine*.css      B  2010  Cedric Dugas and Olivier Refalo
 templates/lib/extra/cropperjs               B  2018  Chen Fengyuan
+style/600_cropper*.css                      B  2018  Chen Fengyuan
 templates/lib/600_jquery.magnific-popup.js  B  2016  Dmitry Semenov
-style/600_cropper.css                       B  2018  Chen Fengyuan
 style/610_magnific-popup.css                B  2016  Dmitry Semenov
 style/responsive/105_normalize.css          B        Nicolas Gallagher and Jonathan Neal
 style/responsive/110_grid.css               B
