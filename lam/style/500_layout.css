@@ -531,6 +531,10 @@ tr.account {
 
 /* --- workaround for vertical tabs --- */
 
+#lamVerticalTabs {
+	background: none;
+}
+
 #lamVerticalTabs .ui-tabs-nav li {
 	margin: 0 -1px .2em 0;
 	clear: left;
@@ -545,6 +549,7 @@ tr.account {
 	border-right-width: 1px;
 	padding-bottom: 0;
 	padding-right: .1em;
+	border: 1px solid #c5c5c5
 }
 
 #lamVerticalTabs .ui-tabs-nav {
