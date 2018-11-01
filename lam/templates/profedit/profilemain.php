@@ -226,18 +226,21 @@ foreach ($profileClasses as $profileClass) {
 	$deleteLink = new htmlLink(null, '#', '../../graphics/delete.png');
 	$deleteLink->setTitle(_('Delete'));
 	$deleteLink->setOnClick("profileShowDeleteDialog('" . _('Delete') . "', '" . _('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', '" . 'profile_' . $profileClass['typeId'] . "'); return false;");
+	$deleteLink->setCSSClasses(array('margin3'));
 	$buttonGroup->addElement($deleteLink);
 	if (count($configProfiles) > 1) {
 		$importLink = new htmlLink(null, '#', '../../graphics/import.png');
 		$importLink->setTitle(_('Import profiles'));
 		$importLink->setOnClick("showDistributionDialog('" . _("Import profiles") . "', '" .
 								_('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', 'import'); return false;");
+		$importLink->setCSSClasses(array('margin3'));
 		$buttonGroup->addElement($importLink);
 	}
 	$exportLink = new htmlLink(null, '#', '../../graphics/export.png');
 	$exportLink->setTitle(_('Export profile'));
 	$exportLink->setOnClick("showDistributionDialog('" . _("Export profile") . "', '" .
 							_('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', 'export', '" . 'profile_' . $profileClass['typeId'] . "'); return false;");
+	$exportLink->setCSSClasses(array('margin3'));
 	$buttonGroup->addElement($exportLink);
 	$container->add($buttonGroup, 12, 4);
 	$container->addVerticalSpacer('1rem');

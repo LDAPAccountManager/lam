@@ -575,10 +575,6 @@ tr.account {
 
 /* --- end of workaround for vertical tabs --- */
 
-.tabs-hover {
-	background: #dadada url(images/ui-bg_glass_75_dadada_1x400.png) 50% 50% repeat-x !important;
-}
-
 /* title bar */
 .titleBar {
 	background: #AAAAAA url(images/ui-bg_highlight-soft_75_cccccc_1x100.png) repeat-x scroll 50% 50%;

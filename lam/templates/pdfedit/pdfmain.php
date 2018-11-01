@@ -248,6 +248,7 @@ include '../../lib/adminHeader.inc';
 			$deleteLink->setOnClick("profileShowDeleteDialog('" . _('Delete') . "', '" . _('Ok') . "', '" .
 										_('Cancel') . "', '" . $templateClass['typeId'] . "', '" . 'template_' .
 										$templateClass['typeId'] . "'); return false;");
+			$deleteLink->setCSSClasses(array('margin3'));
 			$buttonGroup->addElement($deleteLink);
 
 			if (count($configProfiles) > 1) {
@@ -256,6 +257,7 @@ include '../../lib/adminHeader.inc';
 				$importLink->setOnClick("showDistributionDialog('" . _("Import PDF structures") . "', '" .
 										_('Ok') . "', '" . _('Cancel') . "', '" . $templateClass['typeId'] .
 										"', 'import'); return false;");
+				$importLink->setCSSClasses(array('margin3'));
 				$buttonGroup->addElement($importLink);
 			}
 			$exportLink = new htmlLink(null, '#', '../../graphics/export.png');
@@ -264,6 +266,7 @@ include '../../lib/adminHeader.inc';
 									_('Ok') . "', '" . _('Cancel') . "', '" . $templateClass['typeId'] .
 									"', 'export', '" . 'template_' . $templateClass['typeId'] . "', '" .
 									$_SESSION['config']->getName() . "'); return false;");
+			$exportLink->setCSSClasses(array('margin3'));
 			$buttonGroup->addElement($exportLink);
 			$container->add($buttonGroup, 12, 4);
 			$container->addVerticalSpacer('1rem');
