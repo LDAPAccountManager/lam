@@ -2986,7 +2986,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$photoFile = '../../tmp/' . $jpeg_filename;
 			$img = new htmlImage($photoFile);
 			$img->setCSSClasses(array('photo'));
-			$img->enableLightbox();
 			if ($crop) {
 				$img->enableCropping();
 			}

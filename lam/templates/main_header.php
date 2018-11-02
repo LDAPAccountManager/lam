@@ -1,10 +1,9 @@
 <?php
 namespace LAM\HEADER;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2017  Roland Gruber
+  Copyright (C) 2003 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -197,8 +196,8 @@ jQuery(document).ready(function() {
 </script>
 
 <br>
-<div class="ui-tabs ui-widget ui-widget-content ui-corner-all">
-<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+<div class="ui-tabs ui-corner-all ui-widget ui-widget-content">
+<ul class="ui-tabs-nav ui-corner-all ui-helper-reset ui-helper-clearfix ui-widget-header">
 	<?php
 		printTypeTabs($headerPrefix);
 	?>
@@ -213,11 +212,11 @@ function printTypeTabs($headerPrefix) {
 		if ($type->isHidden()) {
 			continue;
 		}
-		$link = '<a href="' . $headerPrefix . 'lists/list.php?type=' . $type->getId() .
+		$link = '<a class="ui-tabs-anchor" href="' . $headerPrefix . 'lists/list.php?type=' . $type->getId() .
 		'" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">' .
 		'<img height="16" width="16" alt="' . $type->getId() . '" src="' . $headerPrefix . '../graphics/' . $type->getIcon() . '">&nbsp;' .
 		$type->getAlias() . '</a>';
-		echo '<li id="tab_' . $type->getId() . '" class="ui-state-default ui-corner-top">';
+		echo '<li id="tab_' . $type->getId() . '" class="ui-tabs-tab ui-corner-top ui-state-default ui-tab">';
 		echo $link;
 		echo "</li>\n";
 	}

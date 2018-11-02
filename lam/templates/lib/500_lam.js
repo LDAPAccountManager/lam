@@ -860,7 +860,7 @@ window.lam.tools.addSavedSelectListener = function() {
  * Activates tabs.
  */
 window.lam.tools.activateTab = function() {
-	jQuery('.lam-active-tab').addClass('ui-tabs-active ui-state-active user-bright');
+	jQuery('.lam-active-tab').addClass('ui-tabs-active ui-state-active');
 };
 
 /**

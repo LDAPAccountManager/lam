@@ -2,7 +2,7 @@
 namespace LAM\CONFIG;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017  Roland Gruber
+  Copyright (C) 2017 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -120,27 +120,27 @@ function printConfigurationPageTabs($active) {
 
 	// tabs
 	?>
-	<div class="ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<div class="ui-tabs ui-corner-all ui-widget ui-widget-content user-bright">
 
-		<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<ul class="ui-tabs-nav ui-corner-all ui-helper-reset ui-helper-clearfix ui-widget-header">
 	<?php
 		foreach ($tabs as $tab => $settings) {
 			$isActive = ($tab === $active);
-			$liClasses = 'ui-state-default ui-corner-top';
+			$liClasses = 'ui-tabs-tab ui-corner-top ui-state-default ui-tab';
 			$hover = ' onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');"';
 			if ($isActive) {
 				$liClasses .= ' lam-active-tab';
 				$hover = '';
 			}
 			echo '<li id="' . $settings['id'] . '" class="' . $liClasses . '"' . $hover . '>';
-				echo '<a href="#" onclick="document.getElementsByName(\'' . $settings['id'] . '\')[0].click();"><img src="../../graphics/' . $settings['icon'] . '" alt=""> ';
+				echo '<a class="ui-tabs-anchor" href="#" onclick="document.getElementsByName(\'' . $settings['id'] . '\')[0].click();"><img src="../../graphics/' . $settings['icon'] . '" alt=""> ';
 					echo '<span class="hide-on-mobile">' . $settings['label'] . '</span>';
 				echo '</a>';
 			echo '</li>';
 		}
 	?>
 		</ul>
-		<div class="ui-tabs-panel ui-widget-content ui-corner-bottom user-bright">
+		<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
 	<?php
 }
 
