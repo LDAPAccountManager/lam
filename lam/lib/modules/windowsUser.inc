@@ -1713,7 +1713,12 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		elseif (strpos($buttonName, '_del') !== false) {
 			// remove attribute value
-			unset($this->attributes[$attr]);
+			if (!isset($this->orig[$attr][0])) {
+				unset($this->attributes[$attr]);
+			}
+			else {
+				$this->attributes[$attr][0] = '0';
+			}
 			// sync other modules
 			if (isset($_POST['syncShadow']) && ($_POST['syncShadow'] == 'on')) {
 				$this->getAccountContainer()->getAccountModule('shadowAccount')->setExpirationDate(
@@ -3546,7 +3551,8 @@ class windowsUser extends baseModule implements passwordService {
 	public function getSupportedJobs(&$config) {
 		return array(
 			new WindowsPasswordNotifyJob(),
-			new WindowsAccountExpirationCleanupJob()
+			new WindowsAccountExpirationCleanupJob(),
+			new WindowsAccountExpirationNotifyJob()
 		);
 	}
 
@@ -3774,6 +3780,97 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			// update DB if mail was sent successfully
 			if ($success) {
 				$this->setDBLastPwdChangeTime($jobID, $pdo, $dn, $user['pwdlastset'][0]);
+			}
+		}
+
+	}
+
+	/**
+	 * Job to notify users about account expiration.
+	 *
+	 * @package jobs
+	 */
+	class WindowsAccountExpirationNotifyJob extends \LAM\JOB\PasswordExpirationJob {
+
+		/**
+		 * {@inheritDoc}
+		 * @see \LAM\JOB\Job::getAlias()
+		 */
+		public function getAlias() {
+			return _('Windows') . ': ' . _('Notify users about account expiration');
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * @see \LAM\JOB\PasswordExpirationJob::getDescription()
+		 */
+		public function getDescription() {
+			return _('This job sends out emails to inform your users that their account will expire soon.');
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * @see \LAM\JOB\PasswordExpirationJob::findUsers()
+		 */
+		protected function findUsers($jobID, $options) {
+			// read users
+			$sysattrs = array('mail', 'accountExpires', 'useraccountcontrol');
+			$attrs = $this->getAttrWildcards($jobID, $options);
+			$attrs = array_values(array_unique(array_merge($attrs, $sysattrs)));
+			$userResults = searchLDAPByFilter('(&(accountExpires=*)(!(accountExpires=0))(mail=*))', $attrs, array('user'));
+			return $userResults;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * @see \LAM\JOB\PasswordExpirationJob::checkSingleUser()
+		 */
+		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
+			$dn = $user['dn'];
+			// skip if account is deactivated
+			if (windowsUser::isDeactivated($user)) {
+				$this->jobResultLog->logDebug($dn . ' is deactivated.');
+				return;
+			}
+			// skip if account itself is expired
+			if (!empty($user['accountexpires'][0])) {
+				$accountExpiration = windowsUser::getFileTime($user['accountexpires'][0]);
+				if ($accountExpiration <= $now) {
+					$this->jobResultLog->logDebug($dn . ' already expired');
+					return;
+				}
+			}
+			// get time when account expires
+			$expirationTime = windowsUser::getFileTime($user['accountexpires'][0]);
+			$this->jobResultLog->logDebug("Account expiration on " . $expirationTime->format('Y-m-d'));
+			$numDaysToWarn = $options[$this->getConfigPrefix() . '_mailNotificationPeriod' . $jobID][0];
+			$this->jobResultLog->logDebug("Number of days before warning " . $numDaysToWarn);
+			// calculate time of notification
+			$notifyTime = clone $expirationTime;
+			$notifyTime->sub(new DateInterval('P' . $numDaysToWarn . 'D'));
+			$notifyTime->setTimeZone(getTimeZone());
+			$this->jobResultLog->logDebug("Password notification on " . $notifyTime->format('Y-m-d H:i'));
+			// skip if notification is in the future
+			if ($notifyTime > $now) {
+				$this->jobResultLog->logDebug($dn . ' does not need notification yet.');
+				return;
+			}
+			$dbLastChange = $this->getDBLastPwdChangeTime($jobID, $pdo, $dn);
+			// skip entries where mail was already sent
+			if ($dbLastChange == $user['accountexpires'][0]) {
+				$this->jobResultLog->logDebug($dn . ' was already notified.');
+				return;
+			}
+			if ($isDryRun) {
+				// no action for dry run
+				$this->jobResultLog->logInfo('Not sending email to ' . $dn . ' because of dry run.');
+				return;
+			}
+			// send email
+			$success = $this->sendMail($options, $jobID, $user, $expirationTime);
+			// update DB if mail was sent successfully
+			if ($success) {
+				$this->setDBLastPwdChangeTime($jobID, $pdo, $dn, $user['accountexpires'][0]);
 			}
 		}
 
