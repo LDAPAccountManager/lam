@@ -879,7 +879,51 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           </mediaobject>
         </screenshot>
 
-        <section>
+        <para>Available jobs:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para><link linkend="job_ppolicy_password_expire">PPolicy: Notify
+            users about password expiration</link></para>
+          </listitem>
+
+          <listitem>
+            <para><link linkend="job_389_password_expire">389ds: Notify users
+            about password expiration</link></para>
+          </listitem>
+
+          <listitem>
+            <para><link linkend="job_shadow_password_expire">Shadow: Notify
+            users about password expiration</link></para>
+          </listitem>
+
+          <listitem>
+            <para><link linkend="job_shadow_move_expired">Shadow: Delete or
+            move expired accounts</link></para>
+          </listitem>
+
+          <listitem>
+            <para><link linkend="job_windows_password_expire">Windows: Notify
+            users about password expiration</link></para>
+          </listitem>
+
+          <listitem>
+            <para><link linkend="job_windows_move_expired">Windows: Delete or
+            move expired accounts</link></para>
+          </listitem>
+
+          <listitem>
+            <para><link linkend="job_freeradius_move_expired">FreeRadius:
+            Delete or move expired accounts</link></para>
+          </listitem>
+
+          <listitem>
+            <para><link linkend="job_qmail_move_expired">Qmail: Delete or move
+            expired accounts</link></para>
+          </listitem>
+        </itemizedlist>
+
+        <section id="job_ppolicy_password_expire">
           <title>PPolicy: Notify users about password expiration</title>
 
           <para>This will send your users an email reminder before their
@@ -993,7 +1037,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           "2016-12-31".</para>
         </section>
 
-        <section>
+        <section id="job_389_password_expire">
           <title>389ds: Notify users about password expiration</title>
 
           <para>This will send your users an email reminder before their
@@ -1086,7 +1130,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           "2016-12-31".</para>
         </section>
 
-        <section>
+        <section id="job_shadow_password_expire">
           <title>Shadow: Notify users about password expiration</title>
 
           <para>This will send your users an email reminder before their
@@ -1187,7 +1231,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           "2016-12-31".</para>
         </section>
 
-        <section>
+        <section id="job_shadow_move_expired">
           <title>Shadow: Delete or move expired accounts</title>
 
           <para>You can automatically delete or move expired accounts. The job
@@ -1237,7 +1281,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           </table>
         </section>
 
-        <section>
+        <section id="job_windows_password_expire">
           <title>Windows: Notify users about password expiration</title>
 
           <para>This will send your users an email reminder before their
@@ -1329,7 +1373,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           "2016-12-31".</para>
         </section>
 
-        <section>
+        <section id="job_windows_move_expired">
           <title>Windows: Delete or move expired accounts</title>
 
           <para>You can automatically delete or move expired accounts.</para>
@@ -1377,7 +1421,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           </table>
         </section>
 
-        <section>
+        <section id="job_freeradius_move_expired">
           <title>FreeRadius: Delete or move expired accounts</title>
 
           <para>You can automatically delete or move expired accounts.</para>
@@ -1425,7 +1469,7 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           </table>
         </section>
 
-        <section>
+        <section id="job_qmail_move_expired">
           <title>Qmail: Delete or move expired accounts</title>
 
           <para>You can automatically delete or move expired accounts. The job
