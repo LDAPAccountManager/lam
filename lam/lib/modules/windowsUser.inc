@@ -3849,7 +3849,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			$notifyTime = clone $expirationTime;
 			$notifyTime->sub(new DateInterval('P' . $numDaysToWarn . 'D'));
 			$notifyTime->setTimeZone(getTimeZone());
-			$this->jobResultLog->logDebug("Password notification on " . $notifyTime->format('Y-m-d H:i'));
+			$this->jobResultLog->logDebug("Account expiration notification on " . $notifyTime->format('Y-m-d H:i'));
 			// skip if notification is in the future
 			if ($notifyTime > $now) {
 				$this->jobResultLog->logDebug($dn . ' does not need notification yet.');

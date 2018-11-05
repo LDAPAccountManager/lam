@@ -776,7 +776,8 @@ class freeRadius extends baseModule {
 	 */
 	public function getSupportedJobs(&$config) {
 		return array(
-			new FreeRadiusAccountExpirationCleanupJob()
+			new FreeRadiusAccountExpirationCleanupJob(),
+			new FreeRadiusAccountExpirationNotifyJob()
 		);
 	}
 
@@ -851,6 +852,89 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			$this->jobResultLog->logDebug("Action time on " . $actionTime->format('Y-m-d'));
 			if ($actionTime <= $now) {
 				$this->performAction($jobID, $options, $user, $isDryRun);
+			}
+		}
+
+	}
+
+	/**
+	 * Job to notify users about account expiration.
+	 *
+	 * @package jobs
+	 */
+	class FreeRadiusAccountExpirationNotifyJob extends \LAM\JOB\PasswordExpirationJob {
+
+		/**
+		 * {@inheritDoc}
+		 * @see \LAM\JOB\Job::getAlias()
+		 */
+		public function getAlias() {
+			return _('FreeRadius') . ': ' . _('Notify users about account expiration');
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * @see \LAM\JOB\PasswordExpirationJob::getDescription()
+		 */
+		public function getDescription() {
+			return _('This job sends out emails to inform your users that their account will expire soon.');
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * @see \LAM\JOB\PasswordExpirationJob::findUsers()
+		 */
+		protected function findUsers($jobID, $options) {
+			// read users
+			$sysattrs = array('radiusExpiration', 'mail');
+			$attrs = $this->getAttrWildcards($jobID, $options);
+			$attrs = array_values(array_unique(array_merge($attrs, $sysattrs)));
+			$userResults = searchLDAPByFilter('(&(radiusExpiration=*)(mail=*))', $attrs, array('user'));
+			return $userResults;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * @see \LAM\JOB\PasswordExpirationJob::checkSingleUser()
+		 */
+		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
+			$dn = $user['dn'];
+			// get time when account expires
+			$expirationTime = DateTime::createFromFormat('d M Y H:i', $user['radiusexpiration'][0], new DateTimeZone('UTC'));
+			$this->jobResultLog->logDebug("Account expiration on " . $expirationTime->format('Y-m-d'));
+			// skip if account itself is expired
+			if ($expirationTime <= $now) {
+				$this->jobResultLog->logDebug($dn . ' already expired');
+				return;
+			}
+			$numDaysToWarn = $options[$this->getConfigPrefix() . '_mailNotificationPeriod' . $jobID][0];
+			$this->jobResultLog->logDebug("Number of days before warning " . $numDaysToWarn);
+			// calculate time of notification
+			$notifyTime = clone $expirationTime;
+			$notifyTime->sub(new DateInterval('P' . $numDaysToWarn . 'D'));
+			$notifyTime->setTimeZone(getTimeZone());
+			$this->jobResultLog->logDebug("Account expiration notification on " . $notifyTime->format('Y-m-d H:i'));
+			// skip if notification is in the future
+			if ($notifyTime > $now) {
+				$this->jobResultLog->logDebug($dn . ' does not need notification yet.');
+				return;
+			}
+			$dbLastChange = $this->getDBLastPwdChangeTime($jobID, $pdo, $dn);
+			// skip entries where mail was already sent
+			if ($dbLastChange == $user['radiusexpiration'][0]) {
+				$this->jobResultLog->logDebug($dn . ' was already notified.');
+				return;
+			}
+			if ($isDryRun) {
+				// no action for dry run
+				$this->jobResultLog->logInfo('Not sending email to ' . $dn . ' because of dry run.');
+				return;
+			}
+			// send email
+			$success = $this->sendMail($options, $jobID, $user, $expirationTime);
+			// update DB if mail was sent successfully
+			if ($success) {
+				$this->setDBLastPwdChangeTime($jobID, $pdo, $dn, $user['radiusexpiration'][0]);
 			}
 		}
 

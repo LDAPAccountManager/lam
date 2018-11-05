@@ -4,6 +4,7 @@ December 2018 6.6
   - Windows users: manage "departmentNumber" (needs to be activated via LAM server profile)
   - LAM Pro:
     -> Easy setting of background color in self service profile
+    -> Cron jobs: added Windows/Qmail/FreeRadius account expiration notification jobs
 
 
 25.09.2018 6.5
