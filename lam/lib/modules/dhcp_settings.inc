@@ -735,7 +735,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 */
 	private function getDefaultLeaseTime() {
 		$return = null;
-		if (is_array($this->attributes['dhcpStatements'])) {
+		if (!empty($this->attributes['dhcpStatements'])) {
 			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
 				if (substr($this->attributes['dhcpStatements'][$i], 0, 19) == 'default-lease-time ') {
 					$return = substr($this->attributes['dhcpStatements'][$i],19);
@@ -773,7 +773,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 */
 	private function getUnknownClients() {
 		$return = null;
-		if (is_array($this->attributes['dhcpStatements'])) {
+		if (!empty($this->attributes['dhcpStatements'])) {
 			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
 				$val = $this->attributes['dhcpStatements'][$i];
 				if (strpos($val, 'unknown-clients') === (strlen($val) - strlen('unknown-clients'))) {
@@ -791,7 +791,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 * @param String $option allow/deny
 	 */
 	private function setUnknownClients($option) {
-		if (!is_array($this->attributes['dhcpStatements'])) {
+		if (!isset($this->attributes['dhcpStatements'])) {
 			$this->attributes['dhcpStatements'] = array();
 		}
 		for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
@@ -813,7 +813,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 */
 	private function getMaxLeaseTime() {
 		$return = null;
-		if (is_array($this->attributes['dhcpStatements'])) {
+		if (!empty($this->attributes['dhcpStatements'])) {
 			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
 				if (substr($this->attributes['dhcpStatements'][$i], 0, 15) == 'max-lease-time ') {
 					$return = substr($this->attributes['dhcpStatements'][$i],15);

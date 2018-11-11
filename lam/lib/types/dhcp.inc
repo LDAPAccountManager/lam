@@ -182,7 +182,7 @@ class lamDHCPList extends lamList {
 	 * @see lamList::isFilterMatching()
 	 */
 	protected function isFilterMatching(&$data, $filterAttribute, $regex) {
-		if ($filterAttribute == "fixed_ips") {
+		if ($filterAttribute === "fixed_ips") {
 			if (empty($regex)) {
 				return true;
 			}
@@ -211,6 +211,26 @@ class lamDHCPList extends lamList {
 			}
 			return false;
 		}
+        elseif ($filterAttribute === "dhcprange") {
+            if (isset($entry['dhcprange'])) {
+            	foreach ($entry['dhcprange'] as $range) {
+            		if (preg_match($regex, $range)) {
+            			return true;
+            		}
+            	}
+            }
+            $pooledRanges = searchLDAP($data['dn'], '(objectclass=dhcpPool)', array('dhcprange'));
+            foreach ($pooledRanges as $pooledRange) {
+            	if (empty($pooledRange['dhcprange'])) {
+            		continue;
+            	}
+            	foreach ($pooledRange['dhcprange'] as $range) {
+            		if (preg_match($regex, $range)) {
+            			return true;
+            		}
+            	}
+            }
+        }
 		return parent::isFilterMatching($data, $filterAttribute, $regex);
 	}
 
