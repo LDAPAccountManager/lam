@@ -770,7 +770,7 @@ class fixed_ip extends baseModule {
 	/**
 	 * Extracts the IP from a list of DHCP statements.
 	 *
-	 * @param array $dhcpStatements values of dhcpStatements attribute
+	 * @param string $dhcpStatements values of dhcpStatements attribute
 	 */
 	public static function extractIP($dhcpStatements) {
 		$return = null;

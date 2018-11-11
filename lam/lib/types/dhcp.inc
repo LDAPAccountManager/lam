@@ -179,6 +179,43 @@ class lamDHCPList extends lamList {
 
 	/**
 	 * {@inheritDoc}
+	 * @see lamList::isFilterMatching()
+	 */
+	protected function isFilterMatching(&$data, $filterAttribute, $regex) {
+		if ($filterAttribute == "fixed_ips") {
+			if (empty($regex)) {
+				return true;
+			}
+			$entries = searchLDAP($data['dn'], 'objectClass=dhcpHost', array('dhcpstatements', 'dhcphwaddress', 'cn'));
+			if (sizeof($entries) > 0) {
+				foreach ($entries as $entry) {
+					foreach ($entry as $attrName => $attrValues) {
+						if (!is_array($attrValues)) {
+							continue;
+						}
+						foreach ($attrValues as $attrValue) {
+							if (preg_match($regex, $attrValue)) {
+								return true;
+							}
+						}
+						if (!empty($entry['dhcpstatements'])) {
+							$ip = fixed_ip::extractIP($entry['dhcpstatements']);
+							if (!empty($ip)) {
+								if (preg_match($regex, $ip)) {
+									return true;
+								}
+							}
+						}
+					}
+				}
+			}
+			return false;
+		}
+		return parent::isFilterMatching($data, $filterAttribute, $regex);
+	}
+
+	/**
+	 * {@inheritDoc}
 	 * @see lamList::getTableCellContent()
 	 */
 	public function getTableCellContent(&$entry, &$attribute) {
