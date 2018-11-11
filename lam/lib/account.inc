@@ -1501,19 +1501,19 @@ function unformatShortFormatToSeconds($text) {
 		return $text;
 	}
 	$matches = array();
-	if (preg_match('/^([0-9]+d)?([0-9]+h)?([0-9]+m)?([0-9]+s)?$/', $text, $matches)) {
+	if (preg_match('/^(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?$/', $text, $matches)) {
 		$newValue = 0;
-		if (!empty($matches[1])) {
-			$newValue += $matches[1] * 86400;
-		}
 		if (!empty($matches[2])) {
-			$newValue += $matches[2] * 3600;
-		}
-		if (!empty($matches[3])) {
-			$newValue += $matches[3] * 60;
+			$newValue += $matches[2] * 86400;
 		}
 		if (!empty($matches[4])) {
-			$newValue += $matches[4];
+			$newValue += $matches[4] * 3600;
+		}
+		if (!empty($matches[6])) {
+			$newValue += $matches[6] * 60;
+		}
+		if (!empty($matches[8])) {
+			$newValue += $matches[8];
 		}
 		return $newValue;
 	}
