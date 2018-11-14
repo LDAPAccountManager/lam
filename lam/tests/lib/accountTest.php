@@ -48,6 +48,7 @@ class AccountTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(7215, unformatShortFormatToSeconds('2h15s'));
 		$this->assertEquals(172815, unformatShortFormatToSeconds('2d15s'));
 		$this->assertEquals(173700, unformatShortFormatToSeconds('2d15m'));
+		$this->assertEquals(1209615, unformatShortFormatToSeconds('2w15s'));
 	}
 
 	/**
@@ -56,6 +57,35 @@ class AccountTest extends PHPUnit_Framework_TestCase {
 	function testUnformatShortFormatToSeconds_invalidNumber() {
 		$this->assertEquals('abc', unformatShortFormatToSeconds('abc'));
 		$this->assertEquals('', unformatShortFormatToSeconds(''));
+	}
+
+	/**
+	 * Tests formatShortFormatToSeconds() without characters.
+	 */
+	function testFormatSecondsToShortFormat_basic() {
+		$this->assertEquals("15s", formatSecondsToShortFormat('15'));
+	}
+
+	/**
+	 * Tests formatShortFormatToSeconds() with characters.
+	 */
+	function testFormatSecondsToShortFormat_conversion() {
+		$this->assertEquals('12s', formatSecondsToShortFormat(12));
+		$this->assertEquals('3m', formatSecondsToShortFormat(180));
+		$this->assertEquals('2h', formatSecondsToShortFormat(7200));
+		$this->assertEquals('1d', formatSecondsToShortFormat(86400));
+		$this->assertEquals('2m15s', formatSecondsToShortFormat(135));
+		$this->assertEquals('2h15s', formatSecondsToShortFormat(7215));
+		$this->assertEquals('2d15s', formatSecondsToShortFormat(172815));
+		$this->assertEquals('2d15m', formatSecondsToShortFormat(173700));
+		$this->assertEquals('2w15s', formatSecondsToShortFormat(1209615));
+	}
+
+	/**
+	 * Tests formatShortFormatToSeconds() with invalid values.
+	 */
+	function testFormatSecondsToShortFormat_invalidNumber() {
+		$this->assertEquals('', formatSecondsToShortFormat(''));
 	}
 
 }

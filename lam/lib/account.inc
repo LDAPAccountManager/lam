@@ -1485,9 +1485,11 @@ function formatSecondsToShortFormat($numSeconds) {
 	$minutes = ($minutes == 0) ? '' : $minutes . 'm';
 	$hours = floor(($numSeconds % 86400) / 3600);
 	$hours = ($hours == 0) ? '' : $hours . 'h';
-	$days = floor($numSeconds / 86400);
+	$days = floor(($numSeconds % 604800) / 86400);
 	$days = ($days == 0) ? '' : $days . 'd';
-	return $days . $hours . $minutes . $seconds;
+	$weeks = floor($numSeconds / 604800);
+	$weeks = ($weeks == 0) ? '' : $weeks . 'w';
+	return $weeks . $days . $hours . $minutes . $seconds;
 }
 
 /**
@@ -1501,19 +1503,22 @@ function unformatShortFormatToSeconds($text) {
 		return $text;
 	}
 	$matches = array();
-	if (preg_match('/^(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?$/', $text, $matches)) {
+	if (preg_match('/^(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?$/', $text, $matches)) {
 		$newValue = 0;
 		if (!empty($matches[2])) {
-			$newValue += $matches[2] * 86400;
+			$newValue += $matches[2] * 604800;
 		}
 		if (!empty($matches[4])) {
-			$newValue += $matches[4] * 3600;
+			$newValue += $matches[4] * 86400;
 		}
 		if (!empty($matches[6])) {
-			$newValue += $matches[6] * 60;
+			$newValue += $matches[6] * 3600;
 		}
 		if (!empty($matches[8])) {
-			$newValue += $matches[8];
+			$newValue += $matches[8] * 60;
+		}
+		if (!empty($matches[10])) {
+			$newValue += $matches[10];
 		}
 		return $newValue;
 	}
