@@ -5,6 +5,7 @@ December 2018 6.6
   - LAM Pro:
     -> Easy setting of background color in self service profile
     -> Cron jobs: added Windows/Qmail/FreeRadius account expiration notification jobs
+    -> Bind DLZ: usability improvements and small fixes
 
 
 25.09.2018 6.5
