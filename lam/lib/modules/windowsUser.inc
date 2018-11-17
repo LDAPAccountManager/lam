@@ -1804,14 +1804,12 @@ class windowsUser extends baseModule implements passwordService {
 		$typeManager = new TypeManager();
 		$syncTypes = $typeManager->getConfiguredTypesForScopes(array('group', 'gon', 'user'));
 		$syncActive = false;
-		$syncUnixActive = false;
 		$syncGonActive = false;
 		$possibleGonSyncModules = array('groupOfNames', 'groupOfMembers', 'groupOfUniqueNames');
 		foreach ($syncTypes as $syncType) {
 			$modules = $syncType->getModules();
 			foreach ($possibleGonSyncModules as $possibleModule) {
 				if (in_array($possibleModule, $modules)) {
-					$syncActive = true;
 					$syncGonActive = true;
 					break;
 				}
@@ -1819,7 +1817,6 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		if (in_array('posixAccount', $this->getAccountContainer()->get_type()->getModules())) {
 			$syncActive = true;
-			$syncUnixActive = true;
 		}
 		$syncActive = $syncActive && !$this->isBooleanConfigOptionSet('windowsUser_syncGroups');
 		if ($syncActive) {
@@ -1829,12 +1826,10 @@ class windowsUser extends baseModule implements passwordService {
 			$return->addElement($syncOptionTable, true);
 			$return->addVerticalSpace('1rem');
 			$syncButtons = new htmlGroup();
-			if ($syncUnixActive) {
-				$u2wButton = new htmlAccountPageButton(get_class($this), 'group', 'syncU2W', _('Sync Unix to Windows'));
-				$u2wButton->setIconClass('unixButton');
-				$syncButtons->addElement($u2wButton);
-				$syncButtons->addElement(new htmlSpacer('2rem', null));
-			}
+			$u2wButton = new htmlAccountPageButton(get_class($this), 'group', 'syncU2W', _('Sync Unix to Windows'));
+			$u2wButton->setIconClass('unixButton');
+			$syncButtons->addElement($u2wButton);
+			$syncButtons->addElement(new htmlSpacer('2rem', null));
 			if ($syncGonActive) {
 				$g2wButton = new htmlAccountPageButton(get_class($this), 'group', 'syncG2W', _('Sync group of names to Windows'));
 				$g2wButton->setIconClass('groupButton');
