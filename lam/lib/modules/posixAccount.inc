@@ -408,6 +408,10 @@ class posixAccount extends baseModule implements passwordService {
 			'noObjectClass' => array(
 				"Headline" => _("Do not add object class"),
 				"Text" => _("This will not add the posixAccount object class to the account.")
+				),
+			'excludeFromGroupSync' => array (
+				"Headline" => _('Exclude from group sync'),
+				"Text" => _('Enter one group per line that should be ignored when syncing groups.')
 			),
 			'user' => array(
 				'uid' => array(
@@ -1447,7 +1451,7 @@ class posixAccount extends baseModule implements passwordService {
 	 * @param $allGons list of all group of names
 	 * @return string cn value
 	 */
-	private function getGonName($dn, &$allGons) {
+	public function getGonName($dn, &$allGons) {
 		if (!empty($allGons[$dn]['cn'][0])) {
 			return $allGons[$dn]['cn'][0];
 		}
@@ -2249,7 +2253,7 @@ class posixAccount extends baseModule implements passwordService {
 					$syncGroupsCheckbox = new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_syncGroups', false, _('Sync groups'), null, false);
 					$syncGroupsCheckbox->setTableRowsToHide(array('posixAccount_' . $typeId . '_syncGroupsExclusions'));
 					$configUserContainer->add($syncGroupsCheckbox, 12);
-					$configUserContainer->add(new htmlResponsiveInputTextarea('posixAccount_' . $typeId . '_syncGroupsExclusions', '', 20, 4, _('Exclude from group sync')), 12);
+					$configUserContainer->add(new htmlResponsiveInputTextarea('posixAccount_' . $typeId . '_syncGroupsExclusions', '', 20, 4, _('Exclude from group sync'), 'excludeFromGroupSync'), 12);
 				}
 			}
 			$return[] = $configUserContainer;
@@ -3485,7 +3489,7 @@ class posixAccount extends baseModule implements passwordService {
 	 *
 	 * @return array groups array(dn => array('cn' => array('groupName'), 'objectclass' => array('top', 'groupOfNames')))
 	 */
-	private function findGroupOfNames() {
+	public function findGroupOfNames() {
 		if ($this->gonCache != null) {
 			return $this->gonCache;
 		}
@@ -3946,6 +3950,24 @@ class posixAccount extends baseModule implements passwordService {
 			$replacements['group'] = $this->getGroupName($this->attributes['gidNumber'][0]);
 		}
 		return $replacements;
+	}
+
+	/**
+	 * Returns the current group names.
+	 *
+	 * @return string[] group names
+	 */
+	public function getGroups() {
+		return $this->groups;
+	}
+
+	/**
+	 * Returns the list of group of names where this user is member.
+	 *
+	 * @return string[] list of DNs
+	 */
+	public function getGroupOfNames() {
+		return $this->gonList;
 	}
 
 }

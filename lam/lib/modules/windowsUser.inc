@@ -400,6 +400,10 @@ class windowsUser extends baseModule implements passwordService {
 				"Headline" => _("Add photo"), 'attr' => 'jpegPhoto',
 				"Text" => _("Please select an image file to upload. It must be in JPG format (.jpg/.jpeg).")
 			),
+			'excludeFromGroupSync' => array (
+				"Headline" => _('Exclude from group sync'),
+				"Text" => _('Enter one group per line that should be ignored when syncing groups.')
+			),
 		);
 		// upload fields
 		$return['upload_columns'] = array(
@@ -1745,7 +1749,7 @@ class windowsUser extends baseModule implements passwordService {
 	*
 	* @return htmlElement meta HTML code
 	*/
-	function display_html_group() {
+	public function display_html_group() {
 		$return = new htmlTable();
 		$groups = $this->findGroups();
 		// sort by DN
@@ -1796,6 +1800,51 @@ class windowsUser extends baseModule implements passwordService {
 		$return->addElement($groupContainer);
 		$return->addNewLine();
 
+		// sync options
+		$typeManager = new TypeManager();
+		$syncTypes = $typeManager->getConfiguredTypesForScopes(array('group', 'gon', 'user'));
+		$syncActive = false;
+		$syncUnixActive = false;
+		$syncGonActive = false;
+		$possibleGonSyncModules = array('groupOfNames', 'groupOfMembers', 'groupOfUniqueNames');
+		foreach ($syncTypes as $syncType) {
+			$modules = $syncType->getModules();
+			foreach ($possibleGonSyncModules as $possibleModule) {
+				if (in_array($possibleModule, $modules)) {
+					$syncActive = true;
+					$syncGonActive = true;
+					break;
+				}
+			}
+		}
+		if (in_array('posixAccount', $this->getAccountContainer()->get_type()->getModules())) {
+			$syncActive = true;
+			$syncUnixActive = true;
+		}
+		$syncActive = $syncActive && !$this->isBooleanConfigOptionSet('windowsUser_syncGroups');
+		if ($syncActive) {
+			$return->addElement(new htmlSubTitle(_('Sync groups')), true);
+			$syncOptionTable = new htmlTable();
+			$syncOptionTable->addElement(new htmlTableExtendedInputCheckbox('syncDeleteGroups', true, _('Delete non-matching entries')), true);
+			$return->addElement($syncOptionTable, true);
+			$return->addVerticalSpace('1rem');
+			$syncButtons = new htmlGroup();
+			if ($syncUnixActive) {
+				$u2wButton = new htmlAccountPageButton(get_class($this), 'group', 'syncU2W', _('Sync Unix to Windows'));
+				$u2wButton->setIconClass('unixButton');
+				$syncButtons->addElement($u2wButton);
+				$syncButtons->addElement(new htmlSpacer('2rem', null));
+			}
+			if ($syncGonActive) {
+				$g2wButton = new htmlAccountPageButton(get_class($this), 'group', 'syncG2W', _('Sync group of names to Windows'));
+				$g2wButton->setIconClass('groupButton');
+				$syncButtons->addElement($g2wButton);
+				$syncButtons->addElement(new htmlSpacer('2rem', null));
+			}
+			$return->addElement($syncButtons, true);
+			$return->addElement(new htmlSpacer(null, '2rem'), true);
+		}
+
 		$backGroup = new htmlGroup();
 		$backGroup->colspan = 10;
 		$backGroup->addElement(new htmlSpacer(null, '10px'), true);
@@ -1811,7 +1860,7 @@ class windowsUser extends baseModule implements passwordService {
 	*
 	* @return array list of info/error messages
 	*/
-	function process_group() {
+	public function process_group() {
 		if (isset($_POST['addgroups']) && isset($_POST['addgroups_button'])) { // Add groups to list
 			// add new group
 			$this->groupList = @array_merge($this->groupList, $_POST['addgroups']);
@@ -1819,7 +1868,116 @@ class windowsUser extends baseModule implements passwordService {
 		elseif (isset($_POST['removegroups']) && isset($_POST['removegroups_button'])) { // remove groups from list
 			$this->groupList = array_delete($_POST['removegroups'], $this->groupList);
 		}
+		// sync Unix to Windows
+		if (isset($_POST['form_subpage_windowsUser_group_syncU2W'])) {
+			$this->manualSyncUnixToWindows();
+		}
+		// sync group of names to Windows
+		if (isset($_POST['form_subpage_windowsUser_group_syncG2W'])) {
+			$this->manualSyncGonToWindows();
+		}
 		return array();
+	}
+
+	/**
+	 * Syncs the Unix groups to Windows.
+	 */
+	private function manualSyncUnixToWindows() {
+		$windowsGroups = $this->getGroupList();
+		$unixGroups = $this->getAccountContainer()->getAccountModule('posixAccount')->getGroups();
+		$allWindowsGroups = searchLDAPByAttribute('cn', '*', 'group', array('cn'), array('group'));
+		$dnToCn = array();
+		foreach ($allWindowsGroups as $windowsGroup) {
+			$dnToCn[$windowsGroup['dn']] = $windowsGroup['cn'][0];
+		}
+		$cnToDn = array_flip($dnToCn);
+		$currentGroupNames = array();
+		foreach ($windowsGroups as $windowsGroup) {
+			$currentGroupNames[] = $dnToCn[$windowsGroup];
+		}
+		$deleteNonMatching = isset($_POST['syncDeleteGroups']) && ($_POST['syncDeleteGroups'] == 'on');
+		$namesToIgnore = array();
+		if (!empty($this->moduleSettings['windowsUser_syncGroupsExclusions'])) {
+			$namesToIgnore = $this->moduleSettings['windowsUser_syncGroupsExclusions'];
+			array_map('trim', $namesToIgnore);
+		}
+		foreach ($unixGroups as $unixGroup) {
+			if (in_array($unixGroup, $namesToIgnore)) {
+				continue;
+			}
+			if (!in_array($unixGroup, $currentGroupNames) && isset($cnToDn[$unixGroup])) {
+				$windowsGroups[] = $cnToDn[$unixGroup];
+			}
+		}
+		if ($deleteNonMatching) {
+			foreach ($currentGroupNames as $currentGroupName) {
+				if (in_array($currentGroupName, $namesToIgnore)) {
+					continue;
+				}
+				if (!in_array($currentGroupName, $unixGroups)) {
+					foreach ($windowsGroups as $windowsGroup) {
+						if ($dnToCn[$windowsGroup] == $currentGroupName) {
+							$windowsGroups = array_delete(array($windowsGroup), $windowsGroups);
+							break;
+						}
+					}
+				}
+			}
+		}
+		$this->groupList = $windowsGroups;
+	}
+
+	/**
+	 * Syncs the group of names to Windows.
+	 */
+	private function manualSyncGonToWindows() {
+		$windowsGroups = $this->getGroupList();
+		$gonGroupDns = $this->getAccountContainer()->getAccountModule('posixAccount')->getGroupOfNames();
+		$allGons = $this->getAccountContainer()->getAccountModule('posixAccount')->findGroupOfNames();
+		$gonGroups = array();
+		foreach ($gonGroupDns as $gonGroupDn) {
+			$gonGroups[] = $this->getAccountContainer()->getAccountModule('posixAccount')->getGonName($gonGroupDn, $allGons);
+		}
+		$allWindowsGroups = searchLDAPByAttribute('cn', '*', 'group', array('cn'), array('group'));
+		$dnToCn = array();
+		foreach ($allWindowsGroups as $windowsGroup) {
+			$dnToCn[$windowsGroup['dn']] = $windowsGroup['cn'][0];
+		}
+		$cnToDn = array_flip($dnToCn);
+		$currentGroupNames = array();
+		foreach ($windowsGroups as $windowsGroup) {
+			$currentGroupNames[] = $dnToCn[$windowsGroup];
+		}
+		$deleteNonMatching = isset($_POST['syncDeleteGroups']) && ($_POST['syncDeleteGroups'] == 'on');
+		$namesToIgnore = array();
+		if (!empty($this->moduleSettings['windowsUser_syncGroupsExclusions'])) {
+			$namesToIgnore = $this->moduleSettings['windowsUser_syncGroupsExclusions'];
+			array_map('trim', $namesToIgnore);
+		}
+		foreach ($gonGroups as $gonGroup) {
+			if (in_array($gonGroup, $namesToIgnore)) {
+				continue;
+			}
+			if (!in_array($gonGroup, $currentGroupNames) && isset($cnToDn[$gonGroup])) {
+				$windowsGroups[] = $cnToDn[$gonGroup];
+			}
+		}
+		if ($deleteNonMatching) {
+			foreach ($currentGroupNames as $currentGroupName) {
+				if (in_array($currentGroupName, $namesToIgnore)) {
+					continue;
+				}
+				if (!in_array($currentGroupName, $gonGroups)) {
+					foreach ($windowsGroups as $windowsGroup) {
+						if ($dnToCn[$windowsGroup] == $currentGroupName) {
+							$windowsGroups = array_delete(array($windowsGroup), $windowsGroups);
+							break;
+						}
+					}
+				}
+			}
+		}
+		$this->groupList = $windowsGroups;
 	}
 
 	/**
@@ -3413,6 +3571,7 @@ class windowsUser extends baseModule implements passwordService {
 	 * @see baseModule::get_configOptions()
 	 */
 	public function get_configOptions($scopes, $allScopes) {
+		$typeManager = new TypeManager($_SESSION['conf_config']);
 		// configuration options
 		$configContainer = new htmlResponsiveRow();
 		$configContainer->add(new htmlResponsiveInputTextarea('windowsUser_domains', '', 30, 3, _('Domains'), 'domains'), 12);
@@ -3443,8 +3602,24 @@ class windowsUser extends baseModule implements passwordService {
 		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hideou', true, _('Organisational unit'), null, true), 12, 4);
 		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hideo', true, _('Organisation'), null, true), 12, 4);
 		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidemanager', true, _('Manager'), null, true), 12, 4);
-		for ($i = 0; $i < 1; $i++) {
-			$configContainer->add(new htmlOutputText(''), 0, 4);
+		$syncTypes = $typeManager->getConfiguredTypesForScopes(array('group', 'gon', 'user'));
+		$syncActive = false;
+		$possibleSyncModules = array('groupOfNames', 'groupOfMembers', 'groupOfUniqueNames', 'posixAccount');
+		foreach ($syncTypes as $syncType) {
+			$modules = $syncType->getModules();
+			foreach ($possibleSyncModules as $possibleModule) {
+				if (in_array($possibleModule, $modules)) {
+					$syncActive = true;
+					break;
+				}
+			}
+		}
+		if ($syncActive) {
+			$syncGroupsCheckbox = new htmlResponsiveInputCheckbox('windowsUser_syncGroups', false, _('Sync groups'), null, true);
+			$syncGroupsCheckbox->setTableRowsToHide(array('windowsUser_syncGroupsExclusions'));
+			$configContainer->add($syncGroupsCheckbox, 12, 4);
+			$configContainer->addVerticalSpacer('2rem');
+			$configContainer->add(new htmlResponsiveInputTextarea('windowsUser_syncGroupsExclusions', '', 20, 4, _('Exclude from group sync'), 'excludeFromGroupSync'), 12);
 		}
 		$advancedOptions = new htmlResponsiveRow();
 		$advancedOptions->add(new htmlSubTitle(_('Photo')), 12);

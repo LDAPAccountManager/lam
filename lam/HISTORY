@@ -1,7 +1,9 @@
 December 2018 6.6
   - New import/export in tools menu
   - YubiKey support
-  - Windows users: manage "departmentNumber" (needs to be activated via LAM server profile)
+  - Windows users:
+    -> Manage "departmentNumber" (needs to be activated via LAM server profile)
+    -> Sync group memberships from Unix and group of names
   - LAM Pro:
     -> Easy setting of background color in self service profile
     -> Cron jobs: added Windows/Qmail/FreeRadius account expiration notification jobs

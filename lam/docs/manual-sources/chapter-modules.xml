@@ -1186,7 +1186,7 @@
     </section>
 
     <section>
-      <title>Windows (Samba 4)</title>
+      <title>Windows (Samba 4/Active Directory)</title>
 
       <para>Please activate the account type "Users" in your LAM server
       profile and then add the user module "Windows (windowsUser)(*)".</para>
@@ -1218,10 +1218,14 @@
 
       <para>NIS support is deactivated by default. Enable it if needed.</para>
 
+      <para>You can also set maximum values for user photos in advanced
+      options.</para>
+
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/mod_windowsUser5.png"/>
+            <imagedata contentwidth="1172"
+                       fileref="images/mod_windowsUser5.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
