@@ -309,6 +309,10 @@ function extractConfigOptionsFromPOST($confTypes) {
 * @param string $page the URL of the target page
 */
 function metaRefresh($page) {
+	if (!headers_sent()) {
+		header('Location: ' . $page);
+		return;
+	}
 	if (isset($_SESSION['header'])) {
 		echo $_SESSION['header'];
 	}

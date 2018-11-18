@@ -64,9 +64,9 @@ if (isset($dn) && isset($type)) {
 }
 else {
 	// print error message if arguments are missing
-	include '../main_header.php';
+	include '../../lib/adminHeader.inc';
 	StatusMessage("ERROR", "No account or type given.");
-	include '../main_footer.php';
+	include '../../lib/adminFooter.inc';
 }
 
 ?>

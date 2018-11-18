@@ -1,9 +1,8 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2017  Roland Gruber
+  Copyright (C) 2003 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -153,7 +152,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 			}
 		}
 	}
-	include 'main_header.php';
+	include '../lib/adminHeader.inc';
 	// print error/success messages
 	if (isset($_POST['add_suff'])) {
 		if (sizeof($failedDNs) > 0) {
@@ -161,7 +160,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 			foreach ($failedDNs as $suffix => $error) {
 				StatusMessage("ERROR", _("Failed to create entry!") . "<br>" . htmlspecialchars($error), htmlspecialchars($suffix));
 			}
-			include 'main_footer.php';
+			include '../lib/adminFooter.inc';
 		}
 		else {
 			// print success message
@@ -172,7 +171,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 	else {
 		// no suffixes were created
 		StatusMessage("INFO", "", _("No changes were made."));
-		include 'main_footer.php';
+		include '../lib/adminFooter.inc';
 	}
 	exit;
 }
@@ -183,24 +182,24 @@ $newSuffixes = str_replace("\\", "", $newSuffixes);
 $newSuffixes = str_replace("'", "", $newSuffixes);
 $newSuffixes = explode(";", $newSuffixes);
 
-include 'main_header.php';
+include '../lib/adminHeader.inc';
 	echo '<div class="user-bright smallPaddingContent">';
 	echo "<form action=\"initsuff.php\" method=\"post\">\n";
-	$container = new htmlTable();
-	$container->addElement(new htmlOutputText(_("The following suffixes are missing in LDAP. LAM can create them for you.")), true);
-	$container->addElement(new htmlOutputText(_("You can setup the LDAP suffixes for all account types in your LAM server profile on tab \"Account types\".")), true);
-	$container->addElement(new htmlSpacer(null, '10px'), true);
+	$container = new htmlResponsiveRow();
+	$container->add(new htmlOutputText(_("The following suffixes are missing in LDAP. LAM can create them for you.")), 12);
+	$container->add(new htmlOutputText(_("You can setup the LDAP suffixes for all account types in your LAM server profile on tab \"Account types\".")), 12);
+	$container->addVerticalSpacer('1rem');
 	// print missing suffixes
 	foreach ($newSuffixes as $newSuffix) {
-		$container->addElement(new htmlOutputText($newSuffix), true);
+		$container->add(new htmlOutputText($newSuffix), 12);
 	}
-	$container->addElement(new htmlSpacer(null, '10px'), true);
+	$container->addVerticalSpacer('2rem');
 
-	$buttonContainer = new htmlTable();
+	$buttonContainer = new htmlGroup();
 	$buttonContainer->addElement(new htmlButton('add_suff', _("Create")));
 	$buttonContainer->addElement(new htmlButton('cancel', _("Cancel")));
 	$buttonContainer->addElement(new htmlHiddenInput('new_suff', implode(";", $newSuffixes)));
-	$container->addElement($buttonContainer);
+	$container->add($buttonContainer, 12);
 	addSecurityTokenToMetaHTML($container);
 
 	$tabindex = 1;
@@ -208,5 +207,5 @@ include 'main_header.php';
 
 	echo "</form><br>\n";
 	echo "</div>\n";
-include 'main_footer.php';
+include '../lib/adminFooter.inc';
 ?>

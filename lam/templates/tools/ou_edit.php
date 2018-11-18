@@ -118,7 +118,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 		$info = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 		if ($sr && $info['count'] == 0) {
 			// print header
-			include '../main_header.php';
+			include '../../lib/adminHeader.inc';
 			echo '<div class="user-bright smallPaddingContent">';
 			echo "<form action=\"ou_edit.php\" method=\"post\">\n";
 			$tabindex = 1;
@@ -142,7 +142,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 			parseHtml(null, $container, array(), false, $tabindex, 'user');
 			echo "</form>";
 			echo '</div>';
-			include '../main_footer.php';
+			include '../../lib/adminFooter.inc';
 			exit();
 		}
 		else {
