@@ -1,9 +1,8 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2017  Roland Gruber
+  Copyright (C) 2010 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -40,7 +39,7 @@ enforceUserIsLoggedIn();
 
 setlanguage();
 
-include '../main_header.php';
+include '../../lib/adminHeader.inc';
 
 ?>
 <div id="tabcontent" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
@@ -59,5 +58,5 @@ window.onresize = resizeIframe;
 </div>
 
 <?php
-include '../main_footer.php';
+include '../../lib/adminFooter.inc';
 ?>
