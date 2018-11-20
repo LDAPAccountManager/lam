@@ -1,10 +1,9 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2017  Roland Gruber
+                2005 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -84,16 +83,16 @@ if (isset($_GET['DN'])) {
 	$_SESSION['account'] = new accountContainer($type, 'account', getRandomNumber());
 	$result = $_SESSION['account']->load_account($DN);
 	if (sizeof($result) > 0) {
-		include '../main_header.php';
+		include '../../lib/adminHeader.inc';
 		foreach ($result as $message) {
 			call_user_func_array("StatusMessage", $message);
 		}
-		include '../main_footer.php';
+		include '../../lib/adminFooter.inc';
 		die();
 	}
 }
 // new account
-else if (count($_POST)==0) {
+else if (count($_POST) == 0) {
 	$type = $typeManager->getConfiguredType($_GET['type']);
 	if ($type->isHidden()) {
 		logNewMessage(LOG_ERR, 'User tried to access hidden account type: ' . $type->getId());
