@@ -1752,18 +1752,14 @@ class posixAccount extends baseModule implements passwordService {
 	* @return htmlElement meta HTML code
 	*/
 	function display_html_delete() {
-		$return = null;
+		$return = new htmlResponsiveRow();
 		if ($this->get_scope() == 'user' && ($_SESSION['config']->get_scriptPath() != null)) {
-			$return = new htmlTable();
-			$return->addElement(new htmlTableExtendedInputCheckbox('deletehomedir', true, _('Delete home directory'), 'deletehomedir'), true);
+			$return->add(new htmlResponsiveInputCheckbox('deletehomedir', true, _('Delete home directory'), 'deletehomedir'), 12);
 		}
 		$typeManager = new TypeManager();
 		$sudoTypes = $typeManager->getConfiguredTypesForScope('sudo');
 		if (($this->get_scope() == 'user') && !empty($sudoTypes)) {
-			if ($return == null) {
-				$return = new htmlTable();
-			}
-			$return->addElement(new htmlTableExtendedInputCheckbox('deleteSudoers', true, _('Delete sudo rights'), 'deleteSudoers'), true);
+			$return->add(new htmlResponsiveInputCheckbox('deleteSudoers', true, _('Delete sudo rights'), 'deleteSudoers'), 12);
 		}
 		return $return;
 	}

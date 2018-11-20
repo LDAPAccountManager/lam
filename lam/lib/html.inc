@@ -3000,11 +3000,38 @@ class htmlStatusMessage extends htmlElement {
 	 * @param String $text message (optional)
 	 * @param array $params additional message parameters
 	 */
-	function __construct($type, $title, $text = null, $params = null) {
+	public function __construct($type, $title, $text = null, $params = null) {
 		$this->type = $type;
 		$this->title = $title;
 		$this->text = $text;
 		$this->params = $params;
+	}
+
+	/**
+	 * Constructor with parameter array.
+	 *
+	 * @param array $params parameters in same order as normal constructor
+	 * @return htmlStatusMessage
+	 */
+	public static function fromParamArray($params) {
+		if (sizeof($params) < 2) {
+			throw new BadMethodCallException("Invalid parameter count");
+		}
+
+		$count = count($params);
+		switch ($count) {
+			case 2:
+				return new htmlStatusMessage($params[0], $params[1]);
+				break;
+			case 3:
+				return new htmlStatusMessage($params[0], $params[1], $params[2]);
+				break;
+			case 4:
+				return new htmlStatusMessage($params[0], $params[1], $params[2], $params[3]);
+				break;
+			default:
+				throw new BadMethodCallException("Invalid parameter count");
+		}
 	}
 
 	/**
@@ -3018,7 +3045,7 @@ class htmlStatusMessage extends htmlElement {
 	 * @param string $scope Account type
 	 * @return array List of input field names and their type (name => type)
 	 */
-	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+	public function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		StatusMessage($this->type, $this->title, $this->text, $this->params);
 		return array();
 	}

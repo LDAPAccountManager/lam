@@ -272,7 +272,7 @@ table.collapse {
 }
 
 .cancelButton {
-	background-image: url(../graphics/del.png) !important;
+	background-image: url(../graphics/cancel.png) !important;
 	background-position: 0px 0px !important;
 }
 

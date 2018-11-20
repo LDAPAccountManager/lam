@@ -1203,7 +1203,7 @@ abstract class baseModule {
 	* @see htmlElement
 	*/
 	public function display_html_delete() {
-		return 0;
+		return null;
 	}
 
 	/**

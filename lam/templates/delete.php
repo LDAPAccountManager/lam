@@ -1,11 +1,17 @@
 <?php
 namespace LAM\DELETE;
+use \htmlGroup;
+use \htmlResponsiveRow;
+use \htmlButton;
+use \htmlSpacer;
+use \htmlHiddenInput;
+use \htmlOutputText;
+use \htmlStatusMessage;
 /*
-	$Id$
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-	Copyright (C) 2007 - 2017  Roland Gruber
+	Copyright (C) 2007 - 2018  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -96,55 +102,56 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	//load account
 	$_SESSION['account'] = new \accountContainer($type, 'account');
 	// Show HTML Page
-	include 'main_header.php';
+	include '../lib/adminHeader.inc';
 	echo "<div class=\"" . $type->getScope() . "-bright smallPaddingContent\">";
 	echo "<br>\n";
 	echo "<form action=\"delete.php\" method=\"post\">\n";
-	echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';
-	echo "<input name=\"type\" type=\"hidden\" value=\"" . $type->getId() . "\">\n";
-	echo "<b>" . _("Do you really want to remove the following accounts?") . "</b>";
-	echo "<br><br>\n";
-	echo "<table border=0>\n";
+	$tabindex = 1;
+	$container = new htmlResponsiveRow();
+	$container->add(new htmlOutputText(_("Do you really want to remove the following accounts?")), 12);
+	$container->addVerticalSpacer('2rem');
 	$userCount = sizeof($users);
 	for ($i = 0; $i < $userCount; $i++) {
-		echo "<tr>\n";
-		echo "<td><b>" . _("Account name:") . "</b> " . htmlspecialchars($users[$i]) . "</td>\n";
-		echo "<td>&nbsp;&nbsp;<b>" . _('DN') . ":</b> " . htmlspecialchars($_SESSION['delete_dn'][$i]) . "</td>\n";
+		$container->addLabel(new htmlOutputText(_("Account name:")));
+		$container->addField(new htmlOutputText($users[$i]));
+		$container->addLabel(new htmlOutputText(_('DN') . ':'));
+		$container->addField(new htmlOutputText($_SESSION['delete_dn'][$i]));
 		$_SESSION['account']->load_account($_SESSION['delete_dn'][$i]);
 		if (!$_SESSION['account']->hasOnlyVirtualChildren()) {
 			$childCount = getChildCount($_SESSION['delete_dn'][$i]);
 			if ($childCount > 0) {
-				echo "<td>&nbsp;&nbsp;<b>" . _('Number of child entries') . ":</b> " . $childCount . "</td>\n";
+				$container->addLabel(new htmlOutputText(_('Number of child entries') . ':'));
+				$container->addField(new htmlOutputText($childCount));
 			}
 		}
-		echo "</tr>\n";
 	}
-	echo "</table>\n";
-	echo "<br>\n";
+	addSecurityTokenToMetaHTML($container);
+	$container->add(new htmlHiddenInput('type', $type->getId()), 12);
+	$container->addVerticalSpacer('1rem');
+	parseHtml(null, $container, array(), false, $tabindex, $type->getScope());
 	// Print delete rows from modules
-	echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 	$modules = $_SESSION['config']->get_AccountModules($type->getId());
 	$values = array();
-	$tabindex = 100;
 	foreach ($modules as $module) {
 		$module = \moduleCache::getModule($module, $type->getScope());
 		parseHtml(get_class($module), $module->display_html_delete(), $values, true, $tabindex, $type->getScope());
 	}
-	echo "</table>\n";
-	echo "<br>\n";
-	echo "<button class=\"smallPadding\" name=\"delete\" id=\"submitButton\">" . _('Delete') . "</button>&nbsp;\n";
-	echo "<button class=\"smallPadding\" name=\"cancel\" id=\"cancelButton\">" . _('Cancel') . "</button>\n";
+	$buttonContainer = new htmlResponsiveRow();
+	$buttonContainer->addVerticalSpacer('1rem');
+	$buttonGroup = new htmlGroup();
+	$delButton = new htmlButton('delete', _('Delete'));
+	$delButton->setIconClass('deleteButton');
+	$buttonGroup->addElement($delButton);
+	$buttonGroup->addElement(new htmlSpacer('0.5rem', null));
+	$cancelButton = new htmlButton('cancel', _('Cancel'));
+	$cancelButton->setIconClass('cancelButton');
+	$buttonGroup->addElement($cancelButton);
+	$buttonContainer->add($buttonGroup, 12);
+	$buttonContainer->addVerticalSpacer('1rem');
+	parseHtml(null, $buttonContainer, array(), false, $tabindex, $type->getScope());
 	echo "</form>\n";
 	echo "</div>\n";
-	?>
-	<script type="text/javascript">
-	jQuery(document).ready(function() {
-		jQuery('#submitButton').button();
-		jQuery('#cancelButton').button();
-	});
-	</script>
-	<?php
-	include 'main_footer.php';
+	include '../lib/adminFooter.inc';
 }
 
 if (isset($_POST['cancel'])) {
@@ -153,7 +160,7 @@ if (isset($_POST['cancel'])) {
 }
 elseif (isset($_POST['cancelAllOk'])) {
 	if (isset($_SESSION['delete_dn'])) unset($_SESSION['delete_dn']);
-	metaRefresh("lists/list.php?type=" . $_POST['type'] . '&amp;deleteAllOk=1');
+	metaRefresh("lists/list.php?type=" . $_POST['type'] . '&deleteAllOk=1');
 }
 
 if (isset($_POST['delete'])) {
@@ -164,12 +171,12 @@ if (isset($_POST['delete'])) {
 		die();
 	}
 	// Show HTML Page
-	include 'main_header.php';
+	include '../lib/adminHeader.inc';
 	echo "<form action=\"delete.php\" method=\"post\">\n";
-	echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';
-	echo "<input name=\"type\" type=\"hidden\" value=\"" . $type->getId() . "\">\n";
 	echo "<div class=\"" . $type->getScope() . "-bright smallPaddingContent\"><br>\n";
-	echo "<br>\n";
+	$container = new htmlResponsiveRow();
+	addSecurityTokenToMetaHTML($container);
+	$container->add(new htmlHiddenInput('type', $type->getId()), 12);
 
 	// Delete dns
 	$allOk = true;
@@ -289,41 +296,39 @@ if (isset($_POST['delete'])) {
 			}
 		}
 		if (!$stopprocessing) {
-			echo sprintf(_('Deleted DN: %s'), $deleteDN) . "<br>\n";
+			$container->add(new htmlOutputText(sprintf(_('Deleted DN: %s'), $deleteDN)), 12);
 			foreach ($errors as $error) {
-				call_user_func_array('StatusMessage', $error);
+				$container->add(htmlStatusMessage::fromParamArray($error), 12);
 			}
-			echo "<br>\n";
-			flush();
 		}
 		else {
-			echo sprintf(_('Error while deleting DN: %s'), $deleteDN) . "<br>\n";
+			$container->add(new htmlOutputText(sprintf(_('Error while deleting DN: %s'), $deleteDN)), 12);
 			foreach ($errors as $error) {
-				call_user_func_array('StatusMessage', $error);
+				$container->add(htmlStatusMessage::fromParamArray($error), 12);
 			}
-			echo "<br>\n";
 		}
 		$allErrors = array_merge($allErrors, $errors);
 	}
-	echo "<br>\n";
-	echo "<br><button class=\"smallPadding\" name=\"cancel\" id=\"backButton\">" . _('Back to list') . "</button>\n";
-	echo "<br><button class=\"hidden\" name=\"cancelAllOk\" id=\"backButtonAllOk\"> </button>\n";
+	$container->addVerticalSpacer('2rem');
+	$buttonName = $allOk ? 'cancelAllOk' : 'cancel';
+	$container->add(new htmlButton($buttonName, _('Back to list')), 12);
+	$container->addVerticalSpacer('1rem');
+	parseHtml(null, $container, array(), false, $tabindex, $type->getScope());
 	echo "</div>\n";
 	echo "</form>\n";
 	?>
 	<script type="text/javascript">
 	jQuery(document).ready(function() {
-		jQuery('#backButton').button();
 		<?php
 		if ($allOk) {
 			$_SESSION['listRedirectMessages'] = $allErrors;
-			echo "jQuery('#backButtonAllOk').click();";
+			echo "jQuery('#btn_cancelAllOk').click();";
 		}
 		?>
 	});
 	</script>
 	<?php
-	include 'main_footer.php';
+	include '../lib/adminFooter.inc';
 
 }
 
