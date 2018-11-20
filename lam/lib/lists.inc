@@ -632,6 +632,9 @@ class lamList {
 				// build DN list
 				$_SESSION['delete_dn'] = array();
 				for ($i = 0; $i < sizeof($accounts); $i++) {
+					if ($accounts[$i] == 'tableSelectAll') {
+						continue;
+					}
 					$_SESSION['delete_dn'][] = base64_decode($accounts[$i]);
 				}
 				if (sizeof($accounts) > 0) {
