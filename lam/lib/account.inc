@@ -1636,6 +1636,22 @@ function printJsIncludes($prefix) {
 }
 
 /**
+ * Converts an UTF-8 string to UTF16LE.
+ *
+ * @param string $input UTF-8 value
+ */
+function convertUtf8ToUtf16Le($input) {
+	if (($input == null) || (strlen($input) == 0)) {
+		return $input;
+	}
+	$output = iconv('UTF-8', 'UTF-16LE', $input);
+	if (($output === false) || ($output == '')) {
+		$output = mb_convert_encoding($input, 'UTF-8', 'UTF-16LE');
+	}
+	return $output;
+}
+
+/**
  * LAM exception with title and message.
  *
  * @author Roland Gruber

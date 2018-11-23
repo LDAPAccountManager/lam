@@ -3177,7 +3177,7 @@ class windowsUser extends baseModule implements passwordService {
 	 * @param String $password password
 	 */
 	public static function pwdAttributeValue($password) {
-		return iconv('UTF-8', 'UTF-16LE', '"' . $password . '"');
+		return convertUtf8ToUtf16Le('"' . $password . '"');
 	}
 
 	/**

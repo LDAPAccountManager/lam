@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2006 Roland Gruber
+  Copyright (C) 2004 - 2018 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -349,7 +349,7 @@ private $sbox = array(array(array(14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12
 	* @return string hash value
 	*/
 	public function nthash($password = "") {
-		return strtoupper(hash('md4', iconv("UTF-8","UTF-16LE",$password)));
+		return strtoupper(hash('md4', convertUtf8ToUtf16Le($password)));
 	}
 
 	/**
