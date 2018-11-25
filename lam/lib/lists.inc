@@ -622,7 +622,7 @@ class lamList {
 			}
 			// add new account
 			if (isset($_POST['new']) && checkIfNewEntriesAreAllowed($this->type->getId())){
-				metaRefresh("../account/edit.php?type=" . $this->type->getId() . "&amp;suffix=" . $this->suffix);
+				metaRefresh("../account/edit.php?type=" . $this->type->getId() . "&suffix=" . $this->suffix);
 				exit;
 			}
 			// delete account(s)

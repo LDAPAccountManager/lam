@@ -55,7 +55,7 @@ $dn = search_username($user);
 
 if ($dn) {
 	// redirect to account/edit.php
-	metaRefresh("../account/edit.php?type=user&amp;DN='" . rawurlencode($dn) . "'");
+	metaRefresh("../account/edit.php?type=user&DN='" . rawurlencode($dn) . "'");
 
 }
 else {

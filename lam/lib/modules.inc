@@ -849,7 +849,7 @@ class accountContainer {
 	*/
 	function continue_main() {
 		if (!empty($_POST['account_randomID']) && ($this->randomID != $_POST['account_randomID'])) {
-			metaRefresh("../lists/list.php?type=" . $this->type->getId() . '&amp;accountEditInvalidID=true');
+			metaRefresh("../lists/list.php?type=" . $this->type->getId() . '&accountEditInvalidID=true');
 			exit();
 		}
 		$oldPage = $this->current_page;
@@ -880,26 +880,26 @@ class accountContainer {
 			if (isset($_POST['accountContainerCreateAgain'])) {
 				// open fresh account page
 				unset($_SESSION[$this->base]);
-				metaRefresh("edit.php?type=" . $this->type->getId() . "&amp;suffix=" . $this->dnSuffix);
+				metaRefresh("edit.php?type=" . $this->type->getId() . "&suffix=" . $this->dnSuffix);
 				exit();
 			}
 			// reedit account
 			if (isset($_POST['accountContainerBackToEdit'])) {
 				// open fresh account page
 				unset($_SESSION[$this->base]);
-				metaRefresh("edit.php?type=" . $this->type->getId() . "&amp;DN=" . urlencode($this->finalDN));
+				metaRefresh("edit.php?type=" . $this->type->getId() . "&DN=" . urlencode($this->finalDN));
 				exit();
 			}
 			// back to account list
 			if (isset($_POST['accountContainerBackToList'])) {
 				// Return to account list
 				unset($_SESSION[$this->base]);
-				metaRefresh("../lists/list.php?type=" . $this->type->getId() . '&amp;accountEditBack=true');
+				metaRefresh("../lists/list.php?type=" . $this->type->getId() . '&accountEditBack=true');
 				exit;
 			}
 			// create PDF file
 			if (isset($_POST['accountContainerCreatePDF'])) {
-				metaRefresh('../lists/list.php?printPDF=1&amp;type=' . $this->type->getId() . "&amp;refresh=true&amp;PDFSessionID=" . $this->base);
+				metaRefresh('../lists/list.php?printPDF=1&type=' . $this->type->getId() . "&refresh=true&PDFSessionID=" . $this->base);
 				exit;
 			}
 			// module actions
