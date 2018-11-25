@@ -177,7 +177,7 @@ elseif (isset($_POST['createProfileButton'])) {
 foreach ($profileClasses as $profileClass) {
 	if (isset($_POST['editProfile_' . $profileClass['typeId']]) || isset($_POST['editProfile_' . $profileClass['typeId'] . '_x'])) {
 		metaRefresh("profilepage.php?type=" . htmlspecialchars($profileClass['typeId']) .
-					"&amp;edit=" . htmlspecialchars($_POST['profile_' . $profileClass['typeId']]));
+					"&edit=" . htmlspecialchars($_POST['profile_' . $profileClass['typeId']]));
 		exit;
 	}
 }
