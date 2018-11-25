@@ -205,6 +205,15 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				"Headline" => _("Unknown clients"), 'attr' => 'dhcpStatements',
 				"Text" => _("Specifies if unknown clients are allowed.")
 			),
+			'INFO_domain-search' => array(
+				'Headline' => _('Search domains'), 'attr' => 'dhcpOptions',
+				'Text' => _('This is a list of domain names to be used by the client to locate not-fully-qualified domain names.')
+			),
+			'domain-search' => array(
+				'Headline' => _('Search domains'), 'attr' => 'dhcpOptions',
+				'Text' => _('This is a list of domain names to be used by the client to locate not-fully-qualified domain names.')
+					. ' ' . _("Multiple values are separated by semicolon.")
+			),
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
@@ -220,6 +229,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			'netMask' => _('Net mask'),
 			'description' => _('Description'),
 			'unknownClients' => _('Unknown clients'),
+			'domain-search' => _('Search domains'),
 		);
 		// profile elements
 		$profileContainer = new htmlResponsiveRow();
@@ -228,6 +238,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$profileContainer->add(new htmlResponsiveInputField(_('Lease time'), 'lease_time', null, 'leasetime'), 12);
 		$profileContainer->add(new htmlResponsiveInputField(_('Maximum lease time'), 'max_lease_time', null, 'max_leasetime'), 12);
 		$profileContainer->add(new htmlResponsiveInputField(_('DNS'), 'dns', null, 'dns'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Search domains'), 'domain-search', null, 'domain-search'), 12);
 		$profileContainer->add(new htmlResponsiveInputField(_('Default gateway'), 'routers', null, 'gateway'), 12);
 		$profileContainer->add(new htmlResponsiveInputField(_('Netbios name servers'), 'netbios', null, 'netbios'), 12);
 		$nodeList = array_flip($this->all_netbios_node_types);
@@ -272,6 +283,12 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				'description' => _('DNS'),
 				'help' => 'dns',
 				'example' => '192.168.10.250',
+			),
+			array(
+				'name' => 'dhcp_settings_domain-search',
+				'description' => _('Search domains'),
+				'help' => 'domain-search',
+				'example' => 'example.com',
 			),
 			array(
 				'name' => 'dhcp_settings_gateway',
@@ -338,9 +355,11 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$this->messages['subnet'][0] = array('ERROR', _('The subnet mask is invalid.'));
 		$this->messages['subnet'][1] = array('ERROR', _('Account %s:') . ' dhcp_settings_subnetMask', _('The subnet mask is invalid.'));
 		$this->messages['ranges_reload'][0] = array('INFO', _('The DHCP ranges were changed to fit for the new subnet.'));
-		$this->messages['ips_reload'][0] = array('INFO', 'The fixed IP addresses were changed to fit for the new subnet.');
+		$this->messages['ips_reload'][0] = array('INFO', _('The fixed IP addresses were changed to fit for the new subnet.'));
 		$this->messages['domainname'][2] = array('ERROR', _('The domain name includes invalid characters. Valid characters are A-Z, a-z, 0-9, ".", "_","-".'));
 		$this->messages['domainname'][5] = array('ERROR', _('Account %s:') . ' dhcp_settings_domainName', _('The domain name includes invalid characters. Valid characters are A-Z, a-z, 0-9, ".", "_","-".'));
+		$this->messages['INFO_domain-search'][0] = array('ERROR', _('Please enter valid domain names for search domains.'));
+		$this->messages['INFO_domain-search'][1] = array('ERROR', _('Account %s:') . ' dhcp_settings_domain-search', _('Please enter valid domain names for search domains.'));
 	}
 
 	/**
@@ -440,6 +459,14 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			}
 		}
 		$this->setDHCPOption('domain-name-servers', $_POST['dns']);
+		// domain search
+		$this->processMultiValueInputTextField('INFO_domain-search', $errors, 'domainname');
+		foreach ($this->attributes['INFO_domain-search'] as $key => $domainName) {
+			$this->attributes['INFO_domain-search'][$key] = '"' . $domainName . '"';
+		}
+		$domainSearch = implode(', ', $this->attributes['INFO_domain-search']);
+		$this->setDHCPOption('domain-search', $domainSearch);
+		unset($this->attributes['INFO_domain-search']);
 
 		// Lease Time
 		if (!empty($_POST['lease_time'])) {
@@ -576,6 +603,14 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$return->addElement($max_leasetimeInput, true);
 		// DNS
 		$return->addElement(new htmlTableExtendedInputField(_('DNS'), 'dns', $this->getDHCPOption('domain-name-servers'), 'dns'), true);
+		// domain search
+		$domainSearchEntries = $this->getDHCPOption('domain-search');
+		if ($domainSearchEntries === null) {
+			$domainSearchEntries = '';
+		}
+		$domainSearchEntries = explode(', ', $domainSearchEntries);
+		$this->attributes['INFO_domain-search'] = $domainSearchEntries;
+		$this->addMultiValueInputTextField($return, 'INFO_domain-search', _('Search domains'));
 		// gateway
 		$return->addElement(new htmlTableExtendedInputField(_('Default gateway'), 'routers', $this->getDHCPOption('routers'), 'gateway'), true);
 		// netbios name servers
@@ -640,6 +675,11 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$this->setDHCPOption('routers', $profile['routers'][0]);
 		$this->setDHCPOption('netbios-name-servers', $profile['netbios'][0]);
 		$this->setDHCPOption('netbios-node-type', $profile['netbios_node_type'][0]);
+		if (!empty($profile['domain-search'][0])) {
+			$domains = '"' . $profile['domain-search'][0] . '"';
+			$domains = str_replace(';', '", "', $domains);
+			$this->setDHCPOption('domain-search', $domains);
+		}
 
 		if (!$this->isRootNode()) {
 			$this->setDHCPOption('subnet-mask', $profile['subnet'][0]);
@@ -675,6 +715,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$this->addPDFKeyValue($return, 'leaseTime', _('Lease time'), $this->getDefaultLeaseTime());
 		$this->addPDFKeyValue($return, 'maxLeaseTime', _('Maximum lease time'), $this->getMaxLeaseTime());
 		$this->addPDFKeyValue($return, 'DNSserver', _('DNS'), $this->getDHCPOption('domain-name-servers'));
+		$this->addPDFKeyValue($return, 'domain-search', _('Search domains'), $this->getDHCPOption('domain-search'));
 		$this->addPDFKeyValue($return, 'gateway', _('Default gateway'), $this->getDHCPOption('routers'));
 		$this->addPDFKeyValue($return, 'netbiosServer', _('Netbios name servers'), $this->getDHCPOption('netbios-name-servers'));
 		$this->addPDFKeyValue($return, 'netbiosType', _('Netbios node type'), $nodeTypeValue);
@@ -714,7 +755,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 * @param String $value option value
 	 */
 	private function setDHCPOption($name, $value) {
-		if (!is_array($this->attributes['dhcpOption'])) {
+		if (empty($this->attributes['dhcpOption'])) {
 			$this->attributes['dhcpOption'] = array();
 		}
 		for ($i = 0; $i < sizeof($this->attributes['dhcpOption']); $i++) {
@@ -752,7 +793,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 * @param String $time time
 	 */
 	private function setDefaultLeaseTime($time) {
-		if (!is_array($this->attributes['dhcpStatements'])) {
+		if (empty($this->attributes['dhcpStatements'])) {
 			$this->attributes['dhcpStatements'] = array();
 		}
 		for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
@@ -910,6 +951,27 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				}
 				else {
 					$error = $this->messages['dns'][1];
+					array_push($error, $i);
+					$messages[] = $error;
+				}
+			}
+			// search domains
+			if ($rawAccounts[$i][$ids['dhcp_settings_domain-search']] != '') {
+				$domains = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['dhcp_settings_domain-search']]);
+				$invalid = false;
+				foreach($domains AS $key => $name) {
+		            if (!get_preg($name, 'domainname')) {
+				        $invalid = true;
+				    }
+				    else {
+				    	$domains[$key] = '"' . $name . '"';
+				    }
+				}
+				if (!$invalid) {
+					$partialAccounts[$i]['dhcpOption'][] = 'domain-search ' . implode(', ', $domains);
+				}
+				else {
+					$error = $this->messages['INFO_domain-search'][1];
 					array_push($error, $i);
 					$messages[] = $error;
 				}
