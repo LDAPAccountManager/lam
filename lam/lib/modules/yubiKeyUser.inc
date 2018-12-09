@@ -71,7 +71,7 @@ class yubiKeyUser extends baseModule {
 		// icon
 		$return['icon'] = 'yubikey.png';
 		// alias name
-		$return["alias"] = _("YubiKey");
+		$return["alias"] = "YubiKey";
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// managed object classes

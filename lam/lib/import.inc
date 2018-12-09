@@ -244,7 +244,7 @@ class Importer {
 		$keyValue = $this->getLineKeyValue($entry[0]);
 		if (($keyValue[Importer::VALUE] != '1') || (sizeof($entry) > 1)) {
 			$escapedLines = array_map('htmlspecialchars', $entry);
-			throw new LAMException(_('LDIF import only supports version 1.'), implode('<br>', $escapedLines));
+			throw new LAMException(_('LDIF import only supports version 1'), implode('<br>', $escapedLines));
 		}
 	}
 
