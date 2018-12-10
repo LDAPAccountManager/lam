@@ -30,9 +30,9 @@ function minify {
 	local files=`ls $dir/*.js`
 	local jsFiles=""
 	for file in $files; do
-		jsFiles="$jsFiles --js $file"
+		jsFiles="$jsFiles $file"
 	done
-	closure-compiler --charset UTF-8 $jsFiles --js_output_file $outFile
+	uglifyjs -o $outFile $jsFiles
 	rm $files
 	# add final new line to supress Debian warnings
 	echo "" >> $outFile

@@ -3,7 +3,7 @@ Maintainer: Roland Gruber <post@rolandgruber.de>
 Section: web
 Priority: optional
 Standards-Version: 4.2.1
-Build-Depends: debhelper (>= 9), po-debconf, cleancss, closure-compiler
+Build-Depends: debhelper (>= 9), po-debconf, cleancss, node-uglify
 Homepage: https://www.ldap-account-manager.org/
 
 Package: ldap-account-manager
