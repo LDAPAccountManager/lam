@@ -42,9 +42,9 @@ use \htmlResponsiveRow;
 */
 
 /** security functions */
-include_once("../../lib/security.inc");
+include_once(__DIR__ . "/../../lib/security.inc");
 /** access to configuration options */
-include_once("../../lib/config.inc");
+include_once(__DIR__ . "/../../lib/config.inc");
 
 // start session
 startSecureSession();

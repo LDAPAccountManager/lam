@@ -37,13 +37,13 @@ use function \LAM\SCHEMA\get_cached_schema;
 */
 
 /** security functions */
-include_once("../../lib/security.inc");
+include_once(__DIR__ . "/../../lib/security.inc");
 /** access to configuration options */
-include_once("../../lib/config.inc");
+include_once(__DIR__ . "/../../lib/config.inc");
 /** account modules */
-include_once("../../lib/modules.inc");
+include_once(__DIR__ . "/../../lib/modules.inc");
 /** LDAP schema */
-include_once("../../lib/schema.inc");
+include_once(__DIR__ . "/../../lib/schema.inc");
 
 // start session
 startSecureSession();
