@@ -10,4 +10,5 @@ cache:
     - '$HOME/.sonar/cache'
 
 script:
+  - phpunit
   - sonar-scanner
