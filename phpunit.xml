@@ -11,4 +11,13 @@
 	<logging>
 		<log type="coverage-html" target="../code-coverage/html"/>
 	</logging>
+	<filter>
+	  <whitelist processUncoveredFilesFromWhitelist="true">
+	    <directory suffix=".php">lam</directory>
+	    <directory suffix=".inc">lam</directory>
+	    <exclude>
+	      <directory>lam/tests</directory>
+	    </exclude>
+	  </whitelist>
+	</filter>
 </phpunit>
