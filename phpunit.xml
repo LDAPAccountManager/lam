@@ -17,6 +17,8 @@
 	    <directory suffix=".inc">lam</directory>
 	    <exclude>
 	      <directory>lam/tests</directory>
+	      <directory>lam/lib/3rdParty</directory>
+	      <directory>lam/templates/3rdParty</directory>
 	    </exclude>
 	  </whitelist>
 	</filter>
