@@ -74,8 +74,6 @@ class PlaFunctionsTest extends PHPUnit_Framework_TestCase {
 		$data = array(
 			'a' => array('key1' => '1'),
 			'b' => array('key1' => '5', 'key2' => 3),
-			'c' => array('key1' => '2'),
-			'd' => array('key1' => '3'),
 		);
 
 		masort($data, 'key2', 0);
@@ -83,8 +81,6 @@ class PlaFunctionsTest extends PHPUnit_Framework_TestCase {
 		$dataWanted = array(
 			'b' => array('key1' => '5', 'key2' => 3),
 			'a' => array('key1' => '1'),
-			'c' => array('key1' => '2'),
-			'd' => array('key1' => '3'),
 		);
 
 		$this->compareArray($dataWanted, $data);

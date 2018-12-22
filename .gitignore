@@ -2,3 +2,5 @@
 /.buildpath
 /.project
 /.Readme.md.html
+/vendor/
+/composer.lock
