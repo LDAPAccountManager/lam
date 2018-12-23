@@ -9,7 +9,9 @@
 		<includePath>.</includePath>
 	</php>
 	<logging>
-		<log type="coverage-html" target="../code-coverage/html"/>
+		<log type="coverage-html" target="../code-coverage/report.html"/>
+		<log type="coverage-clover" target="../code-coverage/clover.xml"/>
+		<log type="junit" target="../code-coverage/junit.xml"/>
 	</logging>
 	<filter>
 	  <whitelist processUncoveredFilesFromWhitelist="true">
