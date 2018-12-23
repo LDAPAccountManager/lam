@@ -36,9 +36,9 @@ use \htmlButton;
 */
 
 /** security functions */
-include_once("../../lib/security.inc");
+include_once(__DIR__ . "/../../lib/security.inc");
 /** LDIF import */
-include_once("../../lib/import.inc");
+include_once(__DIR__ . "/../../lib/import.inc");
 
 // start session
 if (isset($_GET['selfservice'])) {

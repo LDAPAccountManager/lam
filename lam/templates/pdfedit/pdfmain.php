@@ -48,15 +48,15 @@ use \LAM\TYPES\TypeManager;
 */
 
 /** security functions */
-include_once("../../lib/security.inc");
+include_once(__DIR__ . "/../../lib/security.inc");
 /** access to PDF configuration files */
-include_once("../../lib/pdfstruct.inc");
+include_once(__DIR__ . "/../../lib/pdfstruct.inc");
 /** LDAP object */
-include_once("../../lib/ldap.inc");
+include_once(__DIR__ . "/../../lib/ldap.inc");
 /** for language settings */
-include_once("../../lib/config.inc");
+include_once(__DIR__ . "/../../lib/config.inc");
 /** module functions */
-include_once("../../lib/modules.inc");
+include_once(__DIR__ . "/../../lib/modules.inc");
 
 // start session
 startSecureSession();
@@ -202,7 +202,7 @@ foreach ($templateClasses as $templateClass) {
 		exit;
 	}
 }
-include '../../lib/adminHeader.inc';
+include __DIR__ . '/../../lib/adminHeader.inc';
 
 ?>
 <div class="user-bright smallPaddingContent">
@@ -409,7 +409,7 @@ echo '<div id="deleteProfileDialog" class="hidden"><form id="deleteProfileForm" 
 	echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';
 echo '</form></div>';
 
-include '../../lib/adminFooter.inc';
+include __DIR__ . '/../../lib/adminFooter.inc';
 
 
 /**

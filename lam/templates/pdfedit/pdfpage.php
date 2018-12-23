@@ -50,15 +50,15 @@ use LAM\PDF\PDFStructureWriter;
 */
 
 /** security functions */
-include_once("../../lib/security.inc");
+include_once(__DIR__ . "/../../lib/security.inc");
 /** access to PDF configuration files */
-include_once('../../lib/pdfstruct.inc');
+include_once(__DIR__ . '/../../lib/pdfstruct.inc');
 /** LDAP object */
-include_once('../../lib/ldap.inc');
+include_once(__DIR__ . '/../../lib/ldap.inc');
 /** LAM configuration */
-include_once('../../lib/config.inc');
+include_once(__DIR__ . '/../../lib/config.inc');
 /** module functions */
-include_once('../../lib/modules.inc');
+include_once(__DIR__ . '/../../lib/modules.inc');
 
 // start session
 startSecureSession();
@@ -180,7 +180,7 @@ foreach($sortedModules as $module => $title) {
 $modules = join(',',$modules);
 
 // print header
-include '../../lib/adminHeader.inc';
+include __DIR__ . '/../../lib/adminHeader.inc';
 ?>
 	<div class="user-bright smallPaddingContent">
 <?php
@@ -465,7 +465,7 @@ if ((sizeof($saveErrors) == 0) && isset($_POST['scrollPositionTop']) && isset($_
 }
 
 echo '</form></div>';
-include '../../lib/adminFooter.inc';
+include __DIR__ . '/../../lib/adminFooter.inc';
 
 
 /**
