@@ -40,13 +40,13 @@ use \htmlSubTitle;
 
 
 /** security functions */
-include_once("../../lib/security.inc");
+include_once(__DIR__ . "/../../lib/security.inc");
 /** access to LDAP server */
-include_once("../../lib/ldap.inc");
+include_once(__DIR__ . "/../../lib/ldap.inc");
 /** access to configuration options */
-include_once("../../lib/config.inc");
+include_once(__DIR__ . "/../../lib/config.inc");
 /** schema functions */
-require_once("../../lib/schema.inc");
+require_once(__DIR__ . "/../../lib/schema.inc");
 
 // start session
 startSecureSession();
@@ -56,7 +56,7 @@ checkIfToolIsActive('toolSchemaBrowser');
 
 setlanguage();
 
-include '../../lib/adminHeader.inc';
+include __DIR__ . '/../../lib/adminHeader.inc';
 echo "<div class=\"user-bright smallPaddingContent\">\n";
 
 $availableViews = array('objectClass', 'attribute', 'syntax', 'rule');
@@ -93,7 +93,7 @@ elseif( $selectedView == 'objectClass' ) {
 parseHtml(null, $row, array(), false, $tabindex, 'user');
 
 echo '</div>';
-include '../../lib/adminFooter.inc';
+include __DIR__ . '/../../lib/adminFooter.inc';
 
 /**
  * Displays the syntax list.

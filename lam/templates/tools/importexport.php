@@ -47,15 +47,15 @@ use LAM\TYPES\TypeManager;
 */
 
 /** security functions */
-include_once("../../lib/security.inc");
+include_once(__DIR__ . "/../../lib/security.inc");
 /** access to configuration data */
-include_once("../../lib/config.inc");
+include_once(__DIR__ . "/../../lib/config.inc");
 /** access LDAP server */
-include_once("../../lib/ldap.inc");
+include_once(__DIR__ . "/../../lib/ldap.inc");
 /** used to print status messages */
-include_once("../../lib/status.inc");
+include_once(__DIR__ . "/../../lib/status.inc");
 /** import class */
-include_once("../../lib/import.inc");
+include_once(__DIR__ . "/../../lib/import.inc");
 
 // start session
 startSecureSession();
@@ -85,7 +85,7 @@ if (isset($_SESSION[Importer::SESSION_KEY_STOP_ON_ERROR])) {
 	unset($_SESSION[Importer::SESSION_KEY_STOP_ON_ERROR]);
 }
 
-include '../../lib/adminHeader.inc';
+include __DIR__ . '/../../lib/adminHeader.inc';
 $tabindex = 1;
 $activeTab = 0;
 if (!empty($_GET['tab']) && ($_GET['tab'] === 'export')) {
@@ -396,4 +396,4 @@ function checkExportData() {
 	}
 }
 
-include '../../lib/adminFooter.inc';
+include __DIR__ . '/../../lib/adminFooter.inc';

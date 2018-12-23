@@ -48,13 +48,13 @@ use \htmlResponsiveTable;
 */
 
 /** security functions */
-include_once("../../lib/security.inc");
+include_once(__DIR__ . "/../../lib/security.inc");
 /** access to configuration data */
-include_once("../../lib/config.inc");
+include_once(__DIR__ . "/../../lib/config.inc");
 /** access LDAP server */
-include_once("../../lib/ldap.inc");
+include_once(__DIR__ . "/../../lib/ldap.inc");
 /** used to print status messages */
-include_once("../../lib/status.inc");
+include_once(__DIR__ . "/../../lib/status.inc");
 
 // start session
 startSecureSession();
@@ -93,7 +93,7 @@ else {
  */
 function displayStartPage() {
 	// display main page
-	include '../../lib/adminHeader.inc';
+	include __DIR__ . '/../../lib/adminHeader.inc';
 	echo '<div class="user-bright smallPaddingContent">';
 	echo "<form action=\"multiEdit.php\" method=\"post\">\n";
 	$errors = array();
@@ -203,7 +203,7 @@ function displayStartPage() {
 	parseHtml(null, $container, array(), false, $tabindex, 'user');
 	echo "</form>\n";
 	echo '</div>';
-	include '../../lib/adminFooter.inc';
+	include __DIR__ . '/../../lib/adminFooter.inc';
 }
 
 /**

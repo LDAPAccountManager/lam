@@ -40,13 +40,13 @@ use \htmlGroup;
 */
 
 /** security functions */
-include_once("../../lib/security.inc");
+include_once(__DIR__ . "/../../lib/security.inc");
 /** access to configuration data */
-include_once("../../lib/config.inc");
+include_once(__DIR__ . "/../../lib/config.inc");
 /** access LDAP server */
-include_once("../../lib/ldap.inc");
+include_once(__DIR__ . "/../../lib/ldap.inc");
 /** used to print status messages */
-include_once("../../lib/status.inc");
+include_once(__DIR__ . "/../../lib/status.inc");
 
 // start session
 startSecureSession();
@@ -161,7 +161,7 @@ display_main($message, $error);
  */
 function display_main($message, $error) {
 	// display main page
-	include '../../lib/adminHeader.inc';
+	include __DIR__ . '/../../lib/adminHeader.inc';
 	echo '<div class="user-bright smallPaddingContent">';
 	echo "<form action=\"ou_edit.php\" method=\"post\">\n";
 
@@ -230,5 +230,5 @@ function display_main($message, $error) {
 	parseHtml(null, $container, array(), false, $tabindex, 'user');
 	echo "</form>\n";
 	echo '</div>';
-	include '../../lib/adminFooter.inc';
+	include __DIR__ . '/../../lib/adminFooter.inc';
 }
