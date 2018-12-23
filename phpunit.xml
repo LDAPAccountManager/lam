@@ -13,8 +13,7 @@
 	</logging>
 	<filter>
 	  <whitelist processUncoveredFilesFromWhitelist="true">
-	    <directory suffix=".php">lam</directory>
-	    <directory suffix=".inc">lam</directory>
+	    <directory suffix=".inc">lam/lib</directory>
 	    <exclude>
 	      <directory>lam/tests</directory>
 	      <directory>lam/lib/3rdParty</directory>
