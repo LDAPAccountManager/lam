@@ -30,11 +30,11 @@
 */
 
 /** security functions */
-include_once("../../lib/security.inc");
+include_once(__DIR__ . "/../../lib/security.inc");
 /** Needed to find DNs of users */
-include_once("../../lib/ldap.inc");
+include_once(__DIR__ . "/../../lib/ldap.inc");
 /** Used to display error messages */
-include_once("../../lib/status.inc");
+include_once(__DIR__ . "/../../lib/status.inc");
 
 // start session
 startSecureSession();
@@ -64,9 +64,9 @@ if (isset($dn) && isset($type)) {
 }
 else {
 	// print error message if arguments are missing
-	include '../../lib/adminHeader.inc';
+	include __DIR__ . '/../../lib/adminHeader.inc';
 	StatusMessage("ERROR", "No account or type given.");
-	include '../../lib/adminFooter.inc';
+	include __DIR__ . '/../../lib/adminFooter.inc';
 }
 
 ?>

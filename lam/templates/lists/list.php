@@ -30,11 +30,11 @@ $Id$
 */
 
 /** security functions */
-include_once("../../lib/security.inc");
+include_once(__DIR__ . "/../../lib/security.inc");
 /** Used to get type information. */
-include_once("../../lib/types.inc");
+include_once(__DIR__ . "/../../lib/types.inc");
 /** Access to configuration options */
-include_once("../../lib/config.inc");
+include_once(__DIR__ . "/../../lib/config.inc");
 
 // start session
 startSecureSession();

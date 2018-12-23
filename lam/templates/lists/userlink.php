@@ -33,11 +33,11 @@ use \htmlStatusMessage;
 */
 
 /** security functions */
-include_once("../../lib/security.inc");
+include_once(__DIR__ . "/../../lib/security.inc");
 /** Needed to find DNs of users */
-include_once("../../lib/ldap.inc");
+include_once(__DIR__ . "/../../lib/ldap.inc");
 /** Used to display error messages */
-include_once("../../lib/status.inc");
+include_once(__DIR__ . "/../../lib/status.inc");
 
 // start session
 startSecureSession();
@@ -60,14 +60,14 @@ if ($dn) {
 }
 else {
 	// print error message if user was not found
-	include '../../lib/adminHeader.inc';
+	include __DIR__ . '/../../lib/adminHeader.inc';
 	$container = new htmlResponsiveRow();
 	$container->addVerticalSpacer('1rem');
 	$container->add(new htmlStatusMessage("ERROR", _("This user was not found!"), htmlspecialchars($user)), 12);
 	$container->addVerticalSpacer('1rem');
 	$container->add(new \htmlLink(_("Back to group list"), 'javascript:history.back()'), 12);
 	parseHtml(null, $container, array(), false, $tabindex, 'user');
-	include '../../lib/adminFooter.inc';
+	include __DIR__ . '/../../lib/adminFooter.inc';
 }
 
 

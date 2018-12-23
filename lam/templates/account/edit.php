@@ -32,17 +32,17 @@
 */
 
 /** security functions */
-include_once("../../lib/security.inc");
+include_once(__DIR__ . "/../../lib/security.inc");
 /** configuration options */
-include_once('../../lib/config.inc');
+include_once(__DIR__ . '/../../lib/config.inc');
 /** functions to load and save profiles */
-include_once('../../lib/profiles.inc');
+include_once(__DIR__ . '/../../lib/profiles.inc');
 /** Return error-message */
-include_once('../../lib/status.inc');
+include_once(__DIR__ . '/../../lib/status.inc');
 /** Return a pdf-file */
-include_once('../../lib/pdf.inc');
+include_once(__DIR__ . '/../../lib/pdf.inc');
 /** module functions */
-include_once('../../lib/modules.inc');
+include_once(__DIR__ . '/../../lib/modules.inc');
 
 // Start session
 startSecureSession();
@@ -83,11 +83,11 @@ if (isset($_GET['DN'])) {
 	$_SESSION['account'] = new accountContainer($type, 'account', getRandomNumber());
 	$result = $_SESSION['account']->load_account($DN);
 	if (sizeof($result) > 0) {
-		include '../../lib/adminHeader.inc';
+		include __DIR__ . '/../../lib/adminHeader.inc';
 		foreach ($result as $message) {
 			call_user_func_array("StatusMessage", $message);
 		}
-		include '../../lib/adminFooter.inc';
+		include __DIR__ . '/../../lib/adminFooter.inc';
 		die();
 	}
 }
