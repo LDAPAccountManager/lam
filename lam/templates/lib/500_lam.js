@@ -139,8 +139,8 @@ function list_switchAccountSelection() {
 	jQuery('input.accountBoxUnchecked').prop('checked', true);
 	jQuery('input.accountBoxChecked').prop('checked', false);
 	// switch CSS class
-	nowChecked = jQuery('.accountBoxUnchecked');
-	nowUnchecked = jQuery('.accountBoxChecked');
+	var nowChecked = jQuery('.accountBoxUnchecked');
+	var nowUnchecked = jQuery('.accountBoxChecked');
 	nowChecked.addClass('accountBoxChecked');
 	nowChecked.removeClass('accountBoxUnchecked');
 	nowUnchecked.addClass('accountBoxUnchecked');
