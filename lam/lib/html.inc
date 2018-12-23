@@ -190,9 +190,9 @@ abstract class htmlElement {
 class htmlTable extends htmlElement {
 
 	/** table footer */
-	const footer = "</table>\n";
+	const FOOTER = "</table>\n";
 	/** new line */
-	const newLine = "</tr><tr>\n";
+	const NEWLINE = "</tr><tr>\n";
 
 	/** list of subelements */
 	private $elements = array();
@@ -270,7 +270,7 @@ class htmlTable extends htmlElement {
 			$this->elements[] = "<tr>\n";
 		}
 		else {
-			$this->elements[] = htmlTable::newLine;
+			$this->elements[] = htmlTable::NEWLINE;
 		}
 	}
 
@@ -327,7 +327,7 @@ class htmlTable extends htmlElement {
 			}
 			// print simple Strings
 			else {
-				if ($i != (sizeof($this->elements) - 1) || !($this->elements[$i] == htmlTable::newLine) ) {
+				if ($i != (sizeof($this->elements) - 1) || !($this->elements[$i] == htmlTable::NEWLINE) ) {
 					echo $this->elements[$i];
 				}
 			}
@@ -335,7 +335,7 @@ class htmlTable extends htmlElement {
 		if ($this->rowOpen) {
 			echo "</tr>\n";
 		}
-		echo htmlTable::footer;
+		echo htmlTable::FOOTER;
 		return $return;
 	}
 
@@ -349,7 +349,7 @@ class htmlTable extends htmlElement {
 			return;
 		}
 		// remove obsolete new lines at the end
-		if ($table->elements[sizeof($table->elements) - 1] == htmlTable::newLine) {
+		if ($table->elements[sizeof($table->elements) - 1] == htmlTable::NEWLINE) {
 			unset($table->elements[sizeof($table->elements) - 1]);
 		}
 		// close last row of other table if needed
@@ -358,7 +358,7 @@ class htmlTable extends htmlElement {
 		}
 		// close last own row if needed
 		if ($this->rowOpen) {
-			if ($this->elements[sizeof($this->elements) - 1] == htmlTable::newLine) {
+			if ($this->elements[sizeof($this->elements) - 1] == htmlTable::NEWLINE) {
 				unset($this->elements[sizeof($this->elements) - 1]);
 			}
 			else {

@@ -939,11 +939,12 @@ class posixGroup extends baseModule implements passwordService {
 					// get last character of group name
 					$lastchar = substr($this->attributes['cn'][0], strlen($this->attributes['cn'][0])-1, 1);
 					// Last character is no number
-					if ( !preg_match('/^([0-9])+$/', $lastchar))
-					/* Last character is no number. Therefore we only have to
-					* add "2" to it.
-					*/
-					$this->attributes['cn'][0] = $this->attributes['cn'][0] . '2';
+					if (!preg_match('/^([0-9])+$/', $lastchar)) {
+						/* Last character is no number. Therefore we only have to
+						* add "2" to it.
+						*/
+						$this->attributes['cn'][0] = $this->attributes['cn'][0] . '2';
+					}
 					else {
 						/* Last character is a number -> we have to increase the number until we've
 						* found a groupname with trailing number which is not in use.
@@ -951,12 +952,15 @@ class posixGroup extends baseModule implements passwordService {
 						* $i will show us were we have to split groupname so we get a part
 						* with the groupname and a part with the trailing number
 						*/
-						$i=strlen($this->attributes['cn'][0])-1;
-						$mark = false;
+						$i = strlen($this->attributes['cn'][0]) - 1;
 						// Set $i to the last character which is a number in $account_new->general_username
-						while (!$mark) {
-							if (preg_match('/^([0-9])+$/',substr($this->attributes['cn'][0], $i, strlen($this->attributes['cn'][0])-$i))) $i--;
-							else $mark=true;
+						while (true) {
+							if (preg_match('/^([0-9])+$/',substr($this->attributes['cn'][0], $i, strlen($this->attributes['cn'][0]) - $i))) {
+								$i--;
+							}
+							else {
+								break;
+							}
 						}
 						// increase last number with one
 						$firstchars = substr($this->attributes['cn'][0], 0, $i+1);
@@ -1148,10 +1152,9 @@ class posixGroup extends baseModule implements passwordService {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		// add extension
-		if (isset($profile['posixGroup_addExt'][0]) && ($profile['posixGroup_addExt'][0] == "true")) {
-			if (!in_array('posixGroup', $this->attributes['objectClass'])) {
-				$this->attributes['objectClass'][] = 'posixGroup';
-			}
+		if (isset($profile['posixGroup_addExt'][0]) && ($profile['posixGroup_addExt'][0] == "true")
+				&& !in_array('posixGroup', $this->attributes['objectClass'])) {
+			$this->attributes['objectClass'][] = 'posixGroup';
 		}
 	}
 
@@ -1187,7 +1190,9 @@ class posixGroup extends baseModule implements passwordService {
 		$gidList = $this->getGIDs($type);
 		$gids = array();
 		foreach ($gidList as $gid) {
-			if (($gid <= $maxID) && ($gid >= $minID)) $gids[] = $gid;  // ignore GIDs > maxID and GIDs < minID
+			if (($gid <= $maxID) && ($gid >= $minID)) {
+				$gids[] = $gid;  // ignore GIDs > maxID and GIDs < minID
+			}
 		}
 		for ($i = 0; $i < $count; $i++) {
 			if (count($gids) != 0) {
@@ -1207,8 +1212,12 @@ class posixGroup extends baseModule implements passwordService {
 				// find free numbers between existing ones
 				else {
 					$k = intval($minID);
-					while (in_array($k, $gids)) $k++;
-					if ($k > $maxID) return null;
+					while (in_array($k, $gids)) {
+						$k++;
+					}
+					if ($k > $maxID) {
+						return null;
+					}
 					else {
 						$ret[] = $k;
 						$gids[] = $k;
@@ -1426,12 +1435,7 @@ class posixGroup extends baseModule implements passwordService {
 	 * @return boolean is Windows
 	 */
 	private function isWindows() {
-		if (in_array('windowsGroup', $this->getAccountContainer()->get_type()->getModules())) {
-			return true;
-		}
-		else {
-			return false;
-		}
+		return (in_array('windowsGroup', $this->getAccountContainer()->get_type()->getModules()));
 	}
 
 	/**
