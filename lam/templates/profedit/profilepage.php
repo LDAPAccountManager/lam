@@ -36,17 +36,17 @@ use \htmlSubTitle;
 */
 
 /** security functions */
-include_once("../../lib/security.inc");
+include_once(__DIR__ . "/../../lib/security.inc");
 /** helper functions for profiles */
-include_once("../../lib/profiles.inc");
+include_once(__DIR__ . "/../../lib/profiles.inc");
 /** access to LDAP server */
-include_once("../../lib/ldap.inc");
+include_once(__DIR__ . "/../../lib/ldap.inc");
 /** access to configuration options */
-include_once("../../lib/config.inc");
+include_once(__DIR__ . "/../../lib/config.inc");
 /** access to account modules */
-include_once("../../lib/modules.inc");
+include_once(__DIR__ . "/../../lib/modules.inc");
 /** Used to display status messages */
-include_once("../../lib/status.inc");
+include_once(__DIR__ . "/../../lib/status.inc");
 
 // start session
 startSecureSession();
@@ -138,7 +138,7 @@ if (isset($_POST['save'])) {
 }
 
 // print header
-include '../../lib/adminHeader.inc';
+include __DIR__ . '/../../lib/adminHeader.inc';
 echo '<div class="user-bright smallPaddingContent">';
 
 // print error messages if any
@@ -256,6 +256,6 @@ $_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml(n
 </form>
 </div>
 <?php
-include '../../lib/adminFooter.inc';
+include __DIR__ . '/../../lib/adminFooter.inc';
 
 ?>
