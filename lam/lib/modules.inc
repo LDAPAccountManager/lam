@@ -543,7 +543,7 @@ function buildUploadAccounts($type, $data, $ids, $selectedModules, htmlResponsiv
 		}
 	}
 	if (sizeof($errors) > 0) {
-		for ($i = 0; (($i < sizeof($errors)) || ($i > 49)); $i++) {
+		for ($i = 0; (($i < sizeof($errors)) && ($i < 50)); $i++) {
 			$text = empty($errors[$i][2]) ? null : $errors[$i][2];
 			$values = empty($errors[$i][3]) ? null : $errors[$i][3];
 			$container->add(new htmlStatusMessage($errors[$i][0], $errors[$i][1], $text, $values), 12);
