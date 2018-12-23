@@ -539,14 +539,11 @@ tr.account {
 	margin: 0 -1px .2em 0;
 	clear: left;
 	width: 100%;
-	border-bottom-width: 1px !important;
 	border-right-width: 0 !important;
 	border-bottom: 1px solid #AAAAAA !important;
 }
 
 #lamVerticalTabs .ui-tabs-nav li.ui-tabs-selected {
-	border-right-width: 1px;
-	border-right-width: 1px;
 	padding-bottom: 0;
 	padding-right: .1em;
 	border: 1px solid #c5c5c5
