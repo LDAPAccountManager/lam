@@ -40,7 +40,7 @@ elseif (is_file("../../../templates/login.php")) {
 }
 
 /** tool definitions */
-include_once($headerPrefix . "/lib/tools.inc");
+include_once(__DIR__ . "/tools.inc");
 
 $pro = '';
 if (isLAMProVersion()) {

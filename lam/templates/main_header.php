@@ -33,7 +33,7 @@ if (is_file("../login.php")) $headerPrefix = "../";
 elseif (is_file("../../login.php")) $headerPrefix = "../../";
 
 /** tool definitions */
-include_once($headerPrefix . "../lib/tools.inc");
+include_once(__DIR__ . "/../lib/tools.inc");
 
 $pro = '';
 if (isLAMProVersion()) {
