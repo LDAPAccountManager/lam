@@ -29,17 +29,17 @@ namespace LAM\UPLOAD;
 */
 
 /** security functions */
-include_once("../../lib/security.inc");
+include_once(__DIR__ . "/../../lib/security.inc");
 /** access to configuration */
-include_once('../../lib/config.inc');
+include_once(__DIR__ . '/../../lib/config.inc');
 /** LDAP handle */
-include_once('../../lib/ldap.inc');
+include_once(__DIR__ . '/../../lib/ldap.inc');
 /** status messages */
-include_once('../../lib/status.inc');
+include_once(__DIR__ . '/../../lib/status.inc');
 /** account modules */
-include_once('../../lib/modules.inc');
+include_once(__DIR__ . '/../../lib/modules.inc');
 /** PDF */
-include_once('../../lib/pdf.inc');
+include_once(__DIR__ . '/../../lib/pdf.inc');
 
 
 // Start session
@@ -61,7 +61,7 @@ if (!isLoggedIn()) {
 // Set correct language, codepages, ....
 setlanguage();
 
-include '../../lib/adminHeader.inc';
+include __DIR__ . '/../../lib/adminHeader.inc';
 $typeId = htmlspecialchars($_SESSION['mass_typeId']);
 $typeManager = new \LAM\TYPES\TypeManager();
 $type = $typeManager->getConfiguredType($typeId);
@@ -87,5 +87,5 @@ $tokenPrefix = '?' . getSecurityTokenName() . '=' . getSecurityTokenValue();
 
 <?php
 echo '</div>';
-include '../../lib/adminFooter.inc';
+include __DIR__ . '/../../lib/adminFooter.inc';
 ?>

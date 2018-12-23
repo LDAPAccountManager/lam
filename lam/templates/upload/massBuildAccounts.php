@@ -35,13 +35,13 @@ use \htmlResponsiveRow;
 */
 
 /** security functions */
-include_once("../../lib/security.inc");
+include_once(__DIR__ . "/../../lib/security.inc");
 /** access to configuration */
-include_once('../../lib/config.inc');
+include_once(__DIR__ . '/../../lib/config.inc');
 /** status messages */
-include_once('../../lib/status.inc');
+include_once(__DIR__ . '/../../lib/status.inc');
 /** account modules */
-include_once('../../lib/modules.inc');
+include_once(__DIR__ . '/../../lib/modules.inc');
 
 
 // Start session
@@ -95,7 +95,7 @@ if (isset($_GET['showldif'])) {
 	exit;
 }
 
-include '../../lib/adminHeader.inc';
+include __DIR__ . '/../../lib/adminHeader.inc';
 $typeId = htmlspecialchars($_POST['typeId']);
 $typeManager = new \LAM\TYPES\TypeManager();
 $type = $typeManager->getConfiguredType($typeId);
@@ -279,7 +279,7 @@ parseHtml(null, $container, array(), false, $tabindex, $type->getScope());
 
 echo '</div>';
 echo '</form>';
-include '../../lib/adminFooter.inc';
+include __DIR__ . '/../../lib/adminFooter.inc';
 
 /**
  * Prints a back button to the page where the user enters a file to upload.

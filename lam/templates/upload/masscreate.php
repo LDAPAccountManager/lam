@@ -47,17 +47,17 @@ use \moduleCache;
 */
 
 /** security functions */
-include_once("../../lib/security.inc");
+include_once(__DIR__ . "/../../lib/security.inc");
 /** access to configuration */
-include_once('../../lib/config.inc');
+include_once(__DIR__ . '/../../lib/config.inc');
 /** status messages */
-include_once('../../lib/status.inc');
+include_once(__DIR__ . '/../../lib/status.inc');
 /** account modules */
-include_once('../../lib/modules.inc');
+include_once(__DIR__ . '/../../lib/modules.inc');
 /** Used to get PDF information. */
-include_once('../../lib/pdfstruct.inc');
+include_once(__DIR__ . '/../../lib/pdfstruct.inc');
 /** upload functions */
-include_once('../../lib/upload.inc');
+include_once(__DIR__ . '/../../lib/upload.inc');
 
 // Start session
 startSecureSession();
@@ -95,7 +95,7 @@ if (isset($_GET['getCSV'])) {
 
 Uploader::cleanSession();
 
-include '../../lib/adminHeader.inc';
+include __DIR__ . '/../../lib/adminHeader.inc';
 
 // get possible types and remove those which do not support file upload
 $typeManager = new \LAM\TYPES\TypeManager();
@@ -248,7 +248,7 @@ function changeVisibleModules(element) {
 echo "</form>\n";
 
 echo '</div>';
-include '../../lib/adminFooter.inc';
+include __DIR__ . '/../../lib/adminFooter.inc';
 
 /**
 * Displays the acount type specific main page of the upload.

@@ -29,9 +29,9 @@
 */
 
 /** security functions */
-include_once("../../lib/security.inc");
+include_once(__DIR__ . "/../../lib/security.inc");
 /** access to configuration options */
-include_once("../../lib/config.inc");
+include_once(__DIR__ . "/../../lib/config.inc");
 
 // start session
 startSecureSession();
@@ -39,7 +39,7 @@ enforceUserIsLoggedIn();
 
 setlanguage();
 
-include '../../lib/adminHeader.inc';
+include __DIR__ . '/../../lib/adminHeader.inc';
 
 ?>
 <div id="tabcontent" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
@@ -64,5 +64,5 @@ window.onresize = resizeIframe;
 </div>
 
 <?php
-include '../../lib/adminFooter.inc';
+include __DIR__ . '/../../lib/adminFooter.inc';
 ?>

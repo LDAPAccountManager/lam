@@ -39,19 +39,19 @@ use \htmlStatusMessage;
 
 
 /** security functions */
-include_once("../lib/security.inc");
+include_once(__DIR__ . "/../lib/security.inc");
 /** account functions */
-include_once('../lib/account.inc');
+include_once(__DIR__ . '/../lib/account.inc');
 /** current configuration options */
-include_once('../lib/config.inc');
+include_once(__DIR__ . '/../lib/config.inc');
 /** message displaying */
-include_once('../lib/status.inc');
+include_once(__DIR__ . '/../lib/status.inc');
 /** LDAP connection */
-include_once('../lib/ldap.inc');
+include_once(__DIR__ . '/../lib/ldap.inc');
 /** remote interface */
-include_once('../lib/remote.inc');
+include_once(__DIR__ . '/../lib/remote.inc');
 /** module interface */
-include_once('../lib/modules.inc');
+include_once(__DIR__ . '/../lib/modules.inc');
 
 // Start session
 startSecureSession();
@@ -155,11 +155,15 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 }
 
 if (isset($_POST['cancel'])) {
-	if (isset($_SESSION['delete_dn'])) unset($_SESSION['delete_dn']);
+	if (isset($_SESSION['delete_dn'])) {
+		unset($_SESSION['delete_dn']);
+	}
 	metaRefresh("lists/list.php?type=" . $_POST['type']);
 }
 elseif (isset($_POST['cancelAllOk'])) {
-	if (isset($_SESSION['delete_dn'])) unset($_SESSION['delete_dn']);
+	if (isset($_SESSION['delete_dn'])) {
+		unset($_SESSION['delete_dn']);
+	}
 	metaRefresh("lists/list.php?type=" . $_POST['type'] . '&deleteAllOk=1');
 }
 
@@ -171,7 +175,7 @@ if (isset($_POST['delete'])) {
 		die();
 	}
 	// Show HTML Page
-	include '../lib/adminHeader.inc';
+	include __DIR__ . '/../lib/adminHeader.inc';
 	echo "<form action=\"delete.php\" method=\"post\">\n";
 	echo "<div class=\"" . $type->getScope() . "-bright smallPaddingContent\"><br>\n";
 	$container = new htmlResponsiveRow();
@@ -328,7 +332,7 @@ if (isset($_POST['delete'])) {
 	});
 	</script>
 	<?php
-	include '../lib/adminFooter.inc';
+	include __DIR__ . '/../lib/adminFooter.inc';
 
 }
 
