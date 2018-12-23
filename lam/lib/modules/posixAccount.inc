@@ -1183,15 +1183,15 @@ class posixAccount extends baseModule implements passwordService {
 				$errors[] = $error;
 			}
 		}
-		if ($this->get_scope()=='user') {
+		if (($this->get_scope() == 'user') && !get_preg($this->attributes['uid'][0], 'username')) {
 			// Check if Username contains only valid characters
-			if (!get_preg($this->attributes['uid'][0], 'username'))
 			$errors[] = $this->messages['uid'][2];
 		}
-		if ($this->get_scope()=='host') {
+		if ($this->get_scope() == 'host') {
 			// Check if Hostname contains only valid characters
-			if (!get_preg($this->attributes['uid'][0], 'hostname'))
-			$errors[] = $this->messages['uid'][4];
+			if (!get_preg($this->attributes['uid'][0], 'hostname')) {
+				$errors[] = $this->messages['uid'][4];
+			}
 			if (!isset($this->attributes[$homedirAttrName][0])) {
 				$this->attributes[$homedirAttrName][0] = '/dev/null';
 			}

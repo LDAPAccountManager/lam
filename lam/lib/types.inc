@@ -42,9 +42,10 @@ include_once("selfService.inc");
 $typesINC_dirname = substr(__FILE__, 0, strlen(__FILE__) - 10) . "/types";
 $typesINC_dir = dir($typesINC_dirname);
 // get module names.
-while ($entry = $typesINC_dir->read())
-if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($typesINC_dirname . '/'.$entry)) {
-	include_once($typesINC_dirname . '/'.$entry);
+while ($entry = $typesINC_dir->read()) {
+	if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($typesINC_dirname . '/'.$entry)) {
+		include_once($typesINC_dirname . '/'.$entry);
+	}
 }
 
 

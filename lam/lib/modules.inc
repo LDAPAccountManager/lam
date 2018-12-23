@@ -57,9 +57,10 @@ include_once("html.inc");
 $modulesINC_dirname = substr(__FILE__, 0, strlen(__FILE__) - 12) . "/modules";
 $modulesINC_dir = dir($modulesINC_dirname);
 // get module names.
-while ($entry = $modulesINC_dir->read())
-if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($modulesINC_dirname . '/'.$entry)) {
-	include_once($modulesINC_dirname . '/'.$entry);
+while ($entry = $modulesINC_dir->read()) {
+	if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($modulesINC_dirname . '/'.$entry)) {
+		include_once($modulesINC_dirname . '/'.$entry);
+	}
 }
 
 /**

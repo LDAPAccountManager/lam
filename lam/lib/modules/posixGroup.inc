@@ -924,8 +924,9 @@ class posixGroup extends baseModule implements passwordService {
 				$errors[] = $this->messages['cn'][0];
 			}
 			// Check if Groupname contains only valid characters
-			if ( !get_preg($this->attributes['cn'][0],'groupname'))
-			$errors[] = $this->messages['cn'][2];
+			if (!get_preg($this->attributes['cn'][0],'groupname')) {
+				$errors[] = $this->messages['cn'][2];
+			}
 			// Create automatic useraccount with number if original user already exists
 			// Reset name to original name if new name is in use
 			// Set username back to original name if new group name is in use
@@ -933,34 +934,36 @@ class posixGroup extends baseModule implements passwordService {
 				$this->attributes['cn'][0] = $this->orig['cn'][0];
 			}
 			// Change gid to a new gid until a free gid is found
-			else while ($this->groupNameExists($this->attributes['cn'][0])) {
-				// get last character of group name
-				$lastchar = substr($this->attributes['cn'][0], strlen($this->attributes['cn'][0])-1, 1);
-				// Last character is no number
-				if ( !preg_match('/^([0-9])+$/', $lastchar))
-				/* Last character is no number. Therefore we only have to
-				* add "2" to it.
-				*/
-				$this->attributes['cn'][0] = $this->attributes['cn'][0] . '2';
-				else {
-					/* Last character is a number -> we have to increase the number until we've
-					* found a groupname with trailing number which is not in use.
-					*
-					* $i will show us were we have to split groupname so we get a part
-					* with the groupname and a part with the trailing number
+			else {
+				while ($this->groupNameExists($this->attributes['cn'][0])) {
+					// get last character of group name
+					$lastchar = substr($this->attributes['cn'][0], strlen($this->attributes['cn'][0])-1, 1);
+					// Last character is no number
+					if ( !preg_match('/^([0-9])+$/', $lastchar))
+					/* Last character is no number. Therefore we only have to
+					* add "2" to it.
 					*/
-					$i=strlen($this->attributes['cn'][0])-1;
-					$mark = false;
-					// Set $i to the last character which is a number in $account_new->general_username
-					while (!$mark) {
-						if (preg_match('/^([0-9])+$/',substr($this->attributes['cn'][0], $i, strlen($this->attributes['cn'][0])-$i))) $i--;
-						else $mark=true;
+					$this->attributes['cn'][0] = $this->attributes['cn'][0] . '2';
+					else {
+						/* Last character is a number -> we have to increase the number until we've
+						* found a groupname with trailing number which is not in use.
+						*
+						* $i will show us were we have to split groupname so we get a part
+						* with the groupname and a part with the trailing number
+						*/
+						$i=strlen($this->attributes['cn'][0])-1;
+						$mark = false;
+						// Set $i to the last character which is a number in $account_new->general_username
+						while (!$mark) {
+							if (preg_match('/^([0-9])+$/',substr($this->attributes['cn'][0], $i, strlen($this->attributes['cn'][0])-$i))) $i--;
+							else $mark=true;
+						}
+						// increase last number with one
+						$firstchars = substr($this->attributes['cn'][0], 0, $i+1);
+						$lastchars = substr($this->attributes['cn'][0], $i+1, strlen($this->attributes['cn'][0])-$i);
+						// Put username together
+						$this->attributes['cn'][0] = $firstchars . (intval($lastchars)+1);
 					}
-					// increase last number with one
-					$firstchars = substr($this->attributes['cn'][0], 0, $i+1);
-					$lastchars = substr($this->attributes['cn'][0], $i+1, strlen($this->attributes['cn'][0])-$i);
-					// Put username together
-					$this->attributes['cn'][0] = $firstchars . (intval($lastchars)+1);
 				}
 			}
 			// Show warning if lam has changed group name
