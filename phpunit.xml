@@ -6,7 +6,7 @@
 		</testsuite>
 	</testsuites>
 	<php>
-		<includePath>.</includePath>
+		<includePath>lam</includePath>
 	</php>
 	<logging>
 		<log type="coverage-html" target="code-coverage/report.html"/>
@@ -22,6 +22,9 @@
 	      <directory>lam/templates/3rdParty</directory>
 	      <file>lam/lib/adminHeader.inc</file>
 	      <file>lam/lib/adminFooter.inc</file>
+	      <file>lam/lib/cron.inc</file>
+	      <file>lam/lib/security.inc</file>
+	      <file>lam/lib/checkEnvironment.inc</file>
 	    </exclude>
 	  </whitelist>
 	</filter>
