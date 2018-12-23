@@ -18,6 +18,8 @@
 	      <directory>lam/tests</directory>
 	      <directory>lam/lib/3rdParty</directory>
 	      <directory>lam/templates/3rdParty</directory>
+	      <file>lam/lib/adminHeader.inc</file>
+	      <file>lam/lib/adminFooter.inc</file>
 	    </exclude>
 	  </whitelist>
 	</filter>
