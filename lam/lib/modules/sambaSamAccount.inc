@@ -870,7 +870,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 				$workstations = array_merge($workstations, $_POST['availableSambaUserWorkstations']);
 				// remove doubles
 				$workstations = array_flip($workstations);
-				array_unique($workstations);
+				$workstations = array_unique($workstations);
 				$workstations = array_flip($workstations);
 				// sort workstations
 				sort($workstations);
