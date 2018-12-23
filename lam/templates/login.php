@@ -229,7 +229,7 @@ function display_LoginPage($licenseValidator, $error_message) {
 				</td>
 				<td align="center" height=30 width="34%">
 					<span class="hide-for-small">
-						<a href="http://www.ldap-account-manager.org/lamcms/lamPro"> <?php if (!isLAMProVersion()) { echo (_("Want more features? Get LAM Pro!"));} ?> </a>
+						<a href="http://www.ldap-account-manager.org/lamcms/lamPro"> <?php if (!isLAMProVersion()) { echo _("Want more features? Get LAM Pro!");} ?> </a>
 					</span>
 				</td>
 				<td align="right" height=30 width="34%">

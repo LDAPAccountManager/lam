@@ -62,7 +62,9 @@ startSecureSession();
 enforceUserIsLoggedIn();
 
 // die if no write access
-if (!checkIfWriteAccessIsAllowed()) die();
+if (!checkIfWriteAccessIsAllowed()) {
+	die();
+}
 
 checkIfToolIsActive('ImportExport');
 
@@ -175,7 +177,7 @@ function printImportTabContent(&$tabindex) {
 	addSecurityTokenToMetaHTML($container);
 
 	parseHtml(null, $container, array(), false, $tabindex, 'user');
-	echo ("</form>\n");
+	echo "</form>\n";
 }
 
 /**
@@ -220,7 +222,7 @@ function printImportTabProcessing(&$tabindex) {
 	addSecurityTokenToMetaHTML($container);
 
 	parseHtml(null, $container, array(), false, $tabindex, 'user');
-	echo ("</form>\n");
+	echo "</form>\n";
 }
 
 /**
@@ -303,7 +305,7 @@ function printExportTabContent(&$tabindex) {
 	addSecurityTokenToMetaHTML($container);
 
 	parseHtml(null, $container, array(), false, $tabindex, 'user');
-	echo ("</form>\n");
+	echo "</form>\n";
 }
 
 /**
@@ -380,7 +382,7 @@ function printExportTabProcessing(&$tabindex) {
 	addSecurityTokenToMetaHTML($container);
 
 	parseHtml(null, $container, array(), false, $tabindex, 'user');
-	echo ("</form>\n");
+	echo "</form>\n";
 }
 
 /**

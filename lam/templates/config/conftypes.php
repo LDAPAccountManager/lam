@@ -143,9 +143,11 @@ printJsIncludes('../..');
 printConfigurationPageHeaderBar($conf);
 
 // print error messages
-for ($i = 0; $i < sizeof($errorsToDisplay); $i++) call_user_func_array('StatusMessage', $errorsToDisplay[$i]);
+for ($i = 0; $i < sizeof($errorsToDisplay); $i++) {
+	call_user_func_array('StatusMessage', $errorsToDisplay[$i]);
+}
 
-echo ("<form action=\"conftypes.php\" method=\"post\">\n");
+echo "<form action=\"conftypes.php\" method=\"post\">\n";
 
 printConfigurationPageTabs(ConfigurationPageTab::TYPES);
 

@@ -228,7 +228,7 @@ function display_main($message, $error) {
 
 	addSecurityTokenToMetaHTML($container);
 	parseHtml(null, $container, array(), false, $tabindex, 'user');
-	echo ("</form>\n");
+	echo "</form>\n";
 	echo '</div>';
 	include '../../lib/adminFooter.inc';
 }

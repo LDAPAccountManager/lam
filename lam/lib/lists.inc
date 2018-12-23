@@ -192,24 +192,24 @@ class lamList {
 		// show form
 		echo "<div class=\"ui-tabs-panel ui-widget-content ui-corner-bottom\">";
 		echo "<div id=\"listTabContentArea\">\n";
-		echo ("<form action=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true\" method=\"post\">\n");
+		echo "<form action=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true\" method=\"post\">\n";
 		// draw account list if accounts were found
 		if (sizeof($this->entries) > 0) {
 			// buttons
 			$this->listPrintButtons(false);
-			echo ("<br>\n");
+			echo "<br>\n";
 			// navigation bar
 			$this->listDrawNavigationBar(sizeof($this->entries));
-			echo ("<br>\n");
+			echo "<br>\n";
 			$this->printAccountTable($this->entries);
 		}
 		else {
 			// buttons
 			$this->listPrintButtons(true);
-			echo ("<br>\n");
+			echo "<br>\n";
 			// navigation bar
 			$this->listDrawNavigationBar(sizeof($this->entries));
-			echo ("<br>\n");
+			echo "<br>\n";
 			$accounts = array();
 			$this->printAccountTable($accounts);
 			echo "</table><br>\n";
@@ -267,8 +267,9 @@ class lamList {
 	* @param array $info the account list
 	*/
 	protected function listCreateSortMapping(&$info) {
-		if (!is_array($this->attrArray)) return;
-		if (!is_string($this->sortColumn)) return;
+		if (!is_array($this->attrArray) || !is_string($this->sortColumn)) {
+			return;
+		}
 		$toSort = array();
 		$col = $this->sortColumn;
 		$size = sizeof($info);
@@ -498,8 +499,12 @@ class lamList {
 	private function addDataElements(&$data, &$info, &$onClickEvents, &$onDoubleClickEvents) {
 		// calculate which rows to show
 		$table_begin = ($this->page - 1) * $this->maxPageEntries;
-		if (($this->page * $this->maxPageEntries) > sizeof($info)) $table_end = sizeof($info);
-		else $table_end = ($this->page * $this->maxPageEntries);
+		if (($this->page * $this->maxPageEntries) > sizeof($info)) {
+			$table_end = sizeof($info);
+		}
+		else {
+			$table_end = ($this->page * $this->maxPageEntries);
+		}
 		// get sort mapping
 		$sortMapping = &$this->sortMapping;
 		if (empty($sortMapping)) {
@@ -964,8 +969,12 @@ class lamList {
 			exit();
 		}
 		// get current page
-		if (!empty($_GET["page"])) $this->page = $_GET["page"];
-		else $this->page = 1;
+		if (!empty($_GET["page"])) {
+			$this->page = $_GET["page"];
+		}
+		else {
+			$this->page = 1;
+		}
 		// generate attribute-description table
 		$temp_array = $this->listGetAttributeDescriptionList();
 		$this->attrArray = array_keys($temp_array);	// list of LDAP attributes to show

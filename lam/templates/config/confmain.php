@@ -152,7 +152,7 @@ $tabindex = 1;
 
 echo $_SESSION['header'];
 printHeaderContents(_("LDAP Account Manager Configuration"), '../..');
-echo ("<body class=\"admin\">\n");
+echo "<body class=\"admin\">\n";
 // include all JavaScript files
 printJsIncludes('../..');
 printConfigurationPageHeaderBar($conf);
@@ -171,7 +171,7 @@ if (sizeof($errorsToDisplay) > 0) {
 }
 
 // display formular
-echo ("<form enctype=\"multipart/form-data\" action=\"confmain.php\" method=\"post\" autocomplete=\"off\">\n");
+echo "<form enctype=\"multipart/form-data\" action=\"confmain.php\" method=\"post\" autocomplete=\"off\">\n";
 
 printConfigurationPageTabs(ConfigurationPageTab::GENERAL);
 
