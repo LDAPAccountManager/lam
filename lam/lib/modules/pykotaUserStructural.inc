@@ -29,7 +29,7 @@ $Id$
 */
 
 /** include parent class */
-include_once("pykotaUser.inc");
+include_once(__DIR__ . "/pykotaUser.inc");
 
 /**
 * Manages PyKota user accounts.
@@ -37,11 +37,11 @@ include_once("pykotaUser.inc");
 * @package modules
 */
 class pykotaUserStructural extends pykotaUser {
-	
+
 	/**
 	 * Returns if this module also manages the structural object class pykotaObject.
 	 * This is overridden by a submodule that must provide the structural object class.
-	 * 
+	 *
 	 * @return boolean structural usage
 	 */
 	public function isStructural() {
@@ -52,7 +52,7 @@ class pykotaUserStructural extends pykotaUser {
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
-	* 
+	*
 	* @see baseModule::get_metaData()
 	*/
 	function get_metaData() {

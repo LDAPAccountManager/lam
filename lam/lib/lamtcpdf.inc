@@ -27,7 +27,7 @@ namespace LAM\PDF;
  */
 
 /** PDF generator class */
-include_once("3rdParty/tcpdf/tcpdf.php");
+include_once(__DIR__ . "/3rdParty/tcpdf/tcpdf.php");
 
 class LAMTCPDF extends \TCPDF {
 

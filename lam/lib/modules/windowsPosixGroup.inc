@@ -28,7 +28,7 @@ $Id$
 */
 
 /** include parent class */
-include_once("posixGroup.inc");
+include_once(__DIR__ . "/posixGroup.inc");
 
 /**
 * Manages Unix groups in Windows LDAP schema.

@@ -22,7 +22,7 @@
 */
 
 /** access to configuration options */
-include_once("../../lib/config.inc"); // Include config.inc which provides Config class
+include_once(__DIR__ . "/../../lib/config.inc"); // Include config.inc which provides Config class
 
 // set session save path
 if (strtolower(session_module_name()) == 'files') {

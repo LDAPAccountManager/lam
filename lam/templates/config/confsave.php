@@ -34,10 +34,10 @@ $Id$
 
 
 /** Access to config functions */
-include_once("../../lib/config.inc");
+include_once(__DIR__ . "/../../lib/config.inc");
 
 /** access to module settings */
-include_once("../../lib/modules.inc");
+include_once(__DIR__ . "/../../lib/modules.inc");
 
 // start session
 if (strtolower(session_module_name()) == 'files') {

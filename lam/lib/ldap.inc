@@ -29,7 +29,7 @@ $Id$
 */
 
 /** Access to configuration data */
-include_once("config.inc");
+include_once(__DIR__ . "/config.inc");
 
 /**
 * Ldap manages connection to LDAP and includes several helper functions.

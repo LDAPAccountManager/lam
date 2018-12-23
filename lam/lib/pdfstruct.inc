@@ -32,10 +32,10 @@ use \LAM\ImageUtils\ImageManipulationFactory;
  */
 
 /** LAM configuration */
-include_once("config.inc");
+include_once(__DIR__ . "/config.inc");
 
 /** LDAP object */
-include_once("ldap.inc");
+include_once(__DIR__ . "/ldap.inc");
 
 /**
  * This function will return all available PDF structure definitions for the submitted

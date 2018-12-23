@@ -51,15 +51,15 @@ use \htmlGroup;
 
 
 /** Access to config functions */
-include_once("../../lib/config.inc");
+include_once(__DIR__ . "/../../lib/config.inc");
 /** access to module settings */
-include_once("../../lib/modules.inc");
+include_once(__DIR__ . "/../../lib/modules.inc");
 /** access to tools */
-include_once("../../lib/tools.inc");
+include_once(__DIR__ . "/../../lib/tools.inc");
 /** 2-factor */
-include_once '../../lib/2factor.inc';
+include_once __DIR__ . '/../../lib/2factor.inc';
 /** common functions */
-include_once '../../lib/configPages.inc';
+include_once __DIR__ . '/../../lib/configPages.inc';
 
 // start session
 if (strtolower(session_module_name()) == 'files') {

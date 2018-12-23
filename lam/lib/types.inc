@@ -29,11 +29,11 @@ namespace LAM\TYPES;
 */
 
 /** parent class of account types */
-include_once("baseType.inc");
+include_once(__DIR__ . "/baseType.inc");
 /** parent class of list views */
-include_once("lists.inc");
+include_once(__DIR__ . "/lists.inc");
 /** Used to check if this is a LAM Pro release. */
-include_once("selfService.inc");
+include_once(__DIR__ . "/selfService.inc");
 
 
 /**

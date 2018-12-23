@@ -31,11 +31,11 @@ use LAM\TYPES\ConfiguredType;
 */
 
 /** Used to get type information. */
-include_once("types.inc");
+include_once(__DIR__ . "/types.inc");
 /** Used to get PDF information. */
-include_once("pdfstruct.inc");
+include_once(__DIR__ . "/pdfstruct.inc");
 /** Used to create PDF files. */
-include_once("pdf.inc");
+include_once(__DIR__ . "/pdf.inc");
 
 
 /**

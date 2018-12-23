@@ -110,7 +110,7 @@ function smbflag($input) {
 */
 function lmPassword($password) {
 	// Needed to calculate Samba passwords
-	include_once("createntlm.inc");
+	include_once(__DIR__ . "/createntlm.inc");
 	// get hash
 	$hash = new smbHash();
 	return $hash->lmhash($password);
@@ -124,7 +124,7 @@ function lmPassword($password) {
 */
 function ntPassword($password) {
 	// Needed to calculate Samba passwords
-	include_once("createntlm.inc");
+	include_once(__DIR__ . "/createntlm.inc");
 	// get hash
 	$hash = new smbHash();
 	return $hash->nthash($password);

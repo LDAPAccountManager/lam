@@ -31,7 +31,7 @@ use \LAM\PDF\PDFTableRow;
 */
 
 /** include parent class */
-include_once("nisNetGroupUser.inc");
+include_once(__DIR__ . "/nisNetGroupUser.inc");
 
 /**
 * Manages memberships in NIS net groups.

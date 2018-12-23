@@ -30,10 +30,10 @@
 */
 
 /** status messages */
-include_once("../lib/status.inc");
+include_once(__DIR__ . "/../lib/status.inc");
 
 /** config */
-include_once("../lib/config.inc");
+include_once(__DIR__ . "/../lib/config.inc");
 
 // check if PHP >= 5.6.0
 if (version_compare(phpversion(), '5.6.0') < 0) {

@@ -34,7 +34,7 @@ include_once('../../lib/config.inc');
 /** Used to print status messages */
 include_once('../../lib/status.inc');
 if (isLAMProVersion()) {
-	include_once("../../lib/env.inc");
+	include_once(__DIR__ . "/../../lib/env.inc");
 }
 
 // start session

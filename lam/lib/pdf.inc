@@ -95,7 +95,7 @@ function createModulePDF($accounts, $pdf_structure="default", $font, $returnAsSt
  */
 function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $returnAsString) {
 	/** PDF generator class */
-	include_once("lamtcpdf.inc");
+	include_once(__DIR__ . "/lamtcpdf.inc");
 	$pdf = new LAMTCPDF($structure, $font);
 
 	// Loop over each account and add a new page in the PDF file for it
