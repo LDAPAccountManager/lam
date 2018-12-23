@@ -43,7 +43,13 @@ include '../../lib/adminHeader.inc';
 
 ?>
 <div id="tabcontent" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
-<iframe id="treeframe" style="width: 100%; height: 800px;" src="../3rdParty/pla/htdocs/index.php" frameborder="0"></iframe>
+<iframe
+	id="treeframe"
+	style="width: 100%; height: 800px;"
+	src="../3rdParty/pla/htdocs/index.php"
+	frameborder="0"
+	title="Tree view">
+</iframe>
 <script type="text/javascript">
 function resizeIframe() {
     var height = document.documentElement.clientHeight;
