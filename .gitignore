@@ -4,3 +4,4 @@
 /.Readme.md.html
 /vendor/
 /composer.lock
+/code-coverage/

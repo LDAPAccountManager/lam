@@ -11,4 +11,5 @@ cache:
 
 script:
   - phpunit
+  - ls -l code-coverage/*
   - sonar-scanner
