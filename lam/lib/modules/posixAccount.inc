@@ -837,8 +837,9 @@ class posixAccount extends baseModule implements passwordService {
 						if ($found) {
 							$success = @ldap_mod_replace($_SESSION['ldap']->server(), $ownerGroups[$i]['dn'], array($searchAttr => $newOwners));
 							if (!$success) {
-								logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to modify attributes of DN: ' . $ownerGroups[$i]['dn'] . ' (' . ldap_error($_SESSION['ldap']->server())) . ').';
-								$messages[] = array('ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $ownerGroups[$i]['dn']), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+								$ldapError = getDefaultLDAPErrorString($_SESSION['ldap']->server());
+								logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to modify attributes of DN: ' . $ownerGroups[$i]['dn'] . ' (' . $ldapError . ').');
+								$messages[] = array('ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $ownerGroups[$i]['dn']), $ldapError);
 							}
 						}
 					}
