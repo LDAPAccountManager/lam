@@ -28,13 +28,13 @@
 */
 
 /** security functions */
-include_once("../lib/security.inc");
+include_once(__DIR__ . "/../lib/security.inc");
 /** access to configuration settings */
-include_once("../lib/config.inc");
+include_once(__DIR__ . "/../lib/config.inc");
 /** LDAP access */
-include_once("../lib/ldap.inc");
+include_once(__DIR__ . "/../lib/ldap.inc");
 /** status messages */
-include_once("../lib/status.inc");
+include_once(__DIR__ . "/../lib/status.inc");
 
 // start session
 startSecureSession();
@@ -182,7 +182,7 @@ $newSuffixes = str_replace("\\", "", $newSuffixes);
 $newSuffixes = str_replace("'", "", $newSuffixes);
 $newSuffixes = explode(";", $newSuffixes);
 
-include '../lib/adminHeader.inc';
+include __DIR__ . '/../lib/adminHeader.inc';
 	echo '<div class="user-bright smallPaddingContent">';
 	echo "<form action=\"initsuff.php\" method=\"post\">\n";
 	$container = new htmlResponsiveRow();
@@ -207,5 +207,5 @@ include '../lib/adminHeader.inc';
 
 	echo "</form><br>\n";
 	echo "</div>\n";
-include '../lib/adminFooter.inc';
+include __DIR__ . '/../lib/adminFooter.inc';
 ?>

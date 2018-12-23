@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2017  Roland Gruber
+  Copyright (C) 2003 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -36,11 +36,11 @@ if (function_exists('openssl_random_pseudo_bytes')) {
 }
 
 /** security functions */
-include_once("../lib/security.inc");
+include_once(__DIR__ . "/../lib/security.inc");
 /** Used to display status messages */
-include_once("../lib/status.inc");
+include_once(__DIR__ . "/../lib/status.inc");
 /** LDAP settings are deleted at logout */
-include_once("../lib/ldap.inc");
+include_once(__DIR__ . "/../lib/ldap.inc");
 
 // start session
 startSecureSession();

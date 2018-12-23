@@ -33,13 +33,13 @@ namespace LAM\HELP;
  */
 
 /** LDAP connection */
-include_once("../lib/ldap.inc");
+include_once(__DIR__ . "/../lib/ldap.inc");
 
 /** configuration */
-include_once("../lib/config.inc");
+include_once(__DIR__ . "/../lib/config.inc");
 
 /** self service functions */
-include_once("../lib/selfService.inc");
+include_once(__DIR__ . "/../lib/selfService.inc");
 if (!empty($_GET['selfService']) && ($_GET['selfService'] === '1')) {
 	session_name('SELFSERVICE');
 }
@@ -50,12 +50,12 @@ if (strtolower(session_module_name()) == 'files') {
 lam_start_session();
 
 /** status messages */
-include_once("../lib/status.inc");
+include_once(__DIR__ . "/../lib/status.inc");
 
 setlanguage();
 
 /** help data */
-include_once("../help/help.inc"); // Include help/help.inc which provides $helpArray where the help pages are stored
+include_once(__DIR__ . "/../help/help.inc"); // Include help/help.inc which provides $helpArray where the help pages are stored
 
 
 /**
@@ -115,7 +115,7 @@ $helpEntry = array();
 
 // module help
 if(isset($_GET['module']) && !($_GET['module'] == 'main') && !($_GET['module'] == '')) {
-	include_once("../lib/modules.inc");
+	include_once(__DIR__ . "/../lib/modules.inc");
 	if (isset($_GET['scope'])) {
 		$helpEntry = getHelp($_GET['module'],$_GET['HelpNumber'],$_GET['scope']);
 	}

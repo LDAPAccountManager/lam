@@ -45,26 +45,26 @@ use \htmlDiv;
 */
 
 /** status messages */
-include_once("../lib/status.inc");
+include_once(__DIR__ . "/../lib/status.inc");
 
 /** check environment */
-include '../lib/checkEnvironment.inc';
+include __DIR__ . '/../lib/checkEnvironment.inc';
 
 /** security functions */
-include_once("../lib/security.inc");
+include_once(__DIR__ . "/../lib/security.inc");
 /** self service functions */
-include_once("../lib/selfService.inc");
+include_once(__DIR__ . "/../lib/selfService.inc");
 /** access to configuration options */
-include_once("../lib/config.inc");
+include_once(__DIR__ . "/../lib/config.inc");
 $licenseValidator = null;
 if (isLAMProVersion()) {
-	include_once("../lib/env.inc");
+	include_once(__DIR__ . "/../lib/env.inc");
 	$licenseValidator = new \LAM\ENV\LAMLicenseValidator();
 	$licenseValidator->validateAndRedirect('config/mainlogin.php?invalidLicense=1', 'config/mainlogin.php?invalidLicense=2');
 }
 
 /** Upgrade functions */
-include_once("../lib/upgrade.inc");
+include_once(__DIR__ . "/../lib/upgrade.inc");
 
 // set session save path
 if (strtolower(session_module_name()) == 'files') {
@@ -465,7 +465,7 @@ function display_LoginPage($licenseValidator, $error_message) {
 
 // checking if the submitted username/password is correct.
 if(isset($_POST['checklogin'])) {
-	include_once("../lib/ldap.inc"); // Include ldap.php which provides Ldap class
+	include_once(__DIR__ . "/../lib/ldap.inc"); // Include ldap.php which provides Ldap class
 
 	$_SESSION['ldap'] = new Ldap($_SESSION['config']); // Create new Ldap object
 

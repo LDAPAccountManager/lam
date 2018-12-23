@@ -34,11 +34,11 @@ $Id$
 */
 
 /** security functions */
-include_once("../lib/security.inc");
+include_once(__DIR__ . "/../lib/security.inc");
 /** access to configuration options */
-include_once("../lib/config.inc");
+include_once(__DIR__ . "/../lib/config.inc");
 /** tool definitions */
-include_once("../lib/tools.inc");
+include_once(__DIR__ . "/../lib/tools.inc");
 
 // start session
 startSecureSession();
