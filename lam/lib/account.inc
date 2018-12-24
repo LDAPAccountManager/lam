@@ -42,12 +42,14 @@ function array_delete($values, $array) {
 	// Loop for every entry and check if it should be removed
 	if (is_array($array)) {
 		$return = array();
-		foreach ($array as $array_value)
-			if (!@in_array($array_value, $values))
+		foreach ($array as $array_value) {
+			if (!@in_array($array_value, $values)) {
 				$return[] = $array_value;
+			}
+		}
 		return $return;
 	}
-	else return array();
+	return array();
 }
 
 
@@ -58,13 +60,17 @@ function array_delete($values, $array) {
  * @param array $haystack array
  */
 function in_array_ignore_case($needle, $haystack) {
-    if( ! is_array( $haystack ) )
+    if (!is_array($haystack)) {
         return false;
-    if( ! is_string( $needle ) )
+    }
+    if (!is_string($needle)) {
         return false;
-    foreach( $haystack as $element )
-        if( is_string( $element ) && 0 == strcasecmp( $needle, $element ) )
+    }
+    foreach ($haystack as $element) {
+        if( is_string( $element ) && 0 == strcasecmp( $needle, $element ) ) {
             return true;
+        }
+    }
     return false;
 }
 
@@ -77,7 +83,7 @@ function getdays() {
 	$days = time() / 86400;
 	settype($days, 'integer');
 	return $days;
-	}
+}
 
 /**
 * Takes a list of Samba flags and creates the corresponding flag string.
@@ -89,17 +95,31 @@ function smbflag($input) {
 	// Start character
 	$flag = "[";
 	// Add Options
-	if ($input['W']) $flag .= "W"; else $flag .= "U";
-	if ($input['D']) $flag .= "D";
-	if ($input['X']) $flag .= "X";
-	if ($input['N']) $flag .= "N";
-	if ($input['S']) $flag .= "S";
-	if ($input['H']) $flag .= "H";
+	if ($input['W']) {
+		$flag .= "W";
+	}
+	else {
+		$flag .= "U";
+	}
+	if ($input['D']) {
+		$flag .= "D";
+	}
+	if ($input['X']) {
+		$flag .= "X";
+	}
+	if ($input['N']) {
+		$flag .= "N";
+	}
+	if ($input['S']) {
+		$flag .= "S";
+	}
+	if ($input['H']) {
+		$flag .= "H";
+	}
 	// Expand string to fixed length
 	$flag = str_pad($flag, 12);
 	// End character
-	$flag = $flag. "]";
-	return $flag;
+	return $flag . "]";
 }
 
 /**
@@ -129,8 +149,6 @@ function ntPassword($password) {
 	$hash = new smbHash();
 	return $hash->nthash($password);
 }
-
-
 
 
 /**
@@ -178,8 +196,10 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 			break;
 	}
 	// enable/disable password
-	if (! $enabled) return pwd_disable($hash);
-	else return $hash;
+	if (!$enabled) {
+		return pwd_disable($hash);
+	}
+	return $hash;
 }
 
 /**
@@ -231,9 +251,13 @@ function pwd_enable($hash) {
 				// enable hash
 				return substr($hash, 0, $pos + 1) . substr($hash, $pos + 2, strlen($hash));
 			}
-			else return $hash;  // not disabled
+			else {
+				return $hash;  // not disabled
+			}
 		}
-		else return $hash;  // password is plain text
+		else {
+			return $hash;  // password is plain text
+		}
 	}
 }
 
@@ -256,9 +280,13 @@ function pwd_disable($hash) {
 				// hash already disabled
 				return $hash;
 			}
-			else return substr($hash, 0, $pos + 1) . "!" . substr($hash, $pos + 1, strlen($hash));  // not disabled
+			else {
+				return substr($hash, 0, $pos + 1) . "!" . substr($hash, $pos + 1, strlen($hash));  // not disabled
+			}
 		}
-		else return $hash;  // password is plain text
+		else {
+			return $hash;  // password is plain text
+		}
 	}
 }
 
@@ -288,14 +316,17 @@ function pwd_is_lockable($password) {
 */
 function pwd_is_enabled($hash) {
 	// disabled passwords have a "!" or "*" at the beginning (old wrong LAM method)
-	if ((substr($hash, 0, 2) == "!{") || ((substr($hash, 0, 2) == "*{"))) return false;
+	if ((substr($hash, 0, 2) == "!{") || ((substr($hash, 0, 2) == "*{"))) {
+		return false;
+	}
 	if (substr($hash, 0, 1) == "{") {
 		$pos = strrpos($hash, "}");
 		// check if hash starts with "!" or "*"
-		if ((substr($hash, $pos + 1, 1) == "!") || (substr($hash, $pos + 1, 1) == "*")) return false;
-		else return true;
+		return ((substr($hash, $pos + 1, 1) !== "!") && (substr($hash, $pos + 1, 1) !== "*"));
 	}
-	else return true;
+	else {
+		return true;
+	}
 }
 
 /**
@@ -402,13 +433,27 @@ function search_domains($server = null, $suffix = null) {
 		$ret[$i]->dn = $units[$i]['dn'];
 		$ret[$i]->name = $units[$i]['sambadomainname'][0];
 		$ret[$i]->SID = $units[$i]['sambasid'][0];
-		if (isset($units[$i]['sambanextrid'][0])) $ret[$i]->nextRID = $units[$i]['sambanextrid'][0];
-		if (isset($units[$i]['sambanextgrouprid'][0])) $ret[$i]->nextGroupRID = $units[$i]['sambanextgrouprid'][0];
-		if (isset($units[$i]['sambanextuserrid'][0])) $ret[$i]->nextUserRID = $units[$i]['sambanextuserrid'][0];
-		if (isset($units[$i]['sambaalgorithmicridbase'][0])) $ret[$i]->RIDbase = $units[$i]['sambaalgorithmicridbase'][0];
-		if (isset($units[$i]['sambaminpwdage'][0])) $ret[$i]->minPwdAge = $units[$i]['sambaminpwdage'][0];
-		if (isset($units[$i]['sambamaxpwdage'][0])) $ret[$i]->maxPwdAge = $units[$i]['sambamaxpwdage'][0];
-		if (isset($units[$i]['sambapwdhistorylength'][0])) $ret[$i]->pwdHistoryLength = $units[$i]['sambapwdhistorylength'][0];
+		if (isset($units[$i]['sambanextrid'][0])) {
+			$ret[$i]->nextRID = $units[$i]['sambanextrid'][0];
+		}
+		if (isset($units[$i]['sambanextgrouprid'][0])) {
+			$ret[$i]->nextGroupRID = $units[$i]['sambanextgrouprid'][0];
+		}
+		if (isset($units[$i]['sambanextuserrid'][0])) {
+			$ret[$i]->nextUserRID = $units[$i]['sambanextuserrid'][0];
+		}
+		if (isset($units[$i]['sambaalgorithmicridbase'][0])) {
+			$ret[$i]->RIDbase = $units[$i]['sambaalgorithmicridbase'][0];
+		}
+		if (isset($units[$i]['sambaminpwdage'][0])) {
+			$ret[$i]->minPwdAge = $units[$i]['sambaminpwdage'][0];
+		}
+		if (isset($units[$i]['sambamaxpwdage'][0])) {
+			$ret[$i]->maxPwdAge = $units[$i]['sambamaxpwdage'][0];
+		}
+		if (isset($units[$i]['sambapwdhistorylength'][0])) {
+			$ret[$i]->pwdHistoryLength = $units[$i]['sambapwdhistorylength'][0];
+		}
 	}
 	return $ret;
 }
@@ -593,12 +638,11 @@ function get_preg($argument, $regexp) {
 					$pregexpr = '/^[[:digit:]]+[KMGTkmgt]?$/';
 					break;
 	}
-	if ($pregexpr!='')
-		if (preg_match($pregexpr, $argument)) {
-			/* Bug in php preg_match doesn't work correct with utf8 */
-			setlocale(LC_ALL, $language);
-			return true;
-		}
+	if (($pregexpr != '') && preg_match($pregexpr, $argument)) {
+		/* Bug in php preg_match doesn't work correct with utf8 */
+		setlocale(LC_ALL, $language);
+		return true;
+	}
 	// Now we check "negative" cases, characters which are not allowed
 	$pregexpr = '';
 	switch ($regexp) {
@@ -612,12 +656,11 @@ function get_preg($argument, $regexp) {
 			$pregexpr = '/[[:digit:]]/';
 			break;
 	}
-	if ($pregexpr!='')
-		if (!preg_match($pregexpr, $argument)) {
-			/* Bug in php preg_match doesn't work correct with utf8 */
-			setlocale(LC_ALL, $language);
-			return true;
-		}
+	if (($pregexpr != '') && !preg_match($pregexpr, $argument)) {
+		/* Bug in php preg_match doesn't work correct with utf8 */
+		setlocale(LC_ALL, $language);
+		return true;
+	}
 	/* Bug in php preg_match doesn't work correct with utf8 */
 	setlocale(LC_ALL, $language);
 	return false;
@@ -901,7 +944,9 @@ function deleteDN($dn, $recursive) {
 			for ($i = 0; $i < sizeof($entries); $i++) {
 				// delete recursively
 				$subErrors = deleteDN($entries[$i]['dn'], $recursive);
-				for ($e = 0; $e < sizeof($subErrors); $e++) $errors[] = $subErrors[$e];
+				for ($e = 0; $e < sizeof($subErrors); $e++) {
+					$errors[] = $subErrors[$e];
+				}
 			}
 		}
 		else {
@@ -1029,9 +1074,15 @@ function compareDN(&$a, &$b) {
 		// compare parts
 		if ($part_a == $part_b) { // part is identical
 			if ($i == ($len - 1)) {
-				if ($len_a > $len_b) return 1;
-				elseif ($len_a < $len_b) return -1;
-				else return 0; // DNs are identical
+				if ($len_a > $len_b) {
+					return 1;
+				}
+				elseif ($len_a < $len_b) {
+					return -1;
+				}
+				else {
+					return 0; // DNs are identical
+				}
 			}
 		}
 		else {
@@ -1110,12 +1161,7 @@ function isObfuscatedText($text) {
 		return false;
 	}
 	$deob = base64_decode(str_rot13($text));
-	if (strpos($deob, 'LAM_OBFUSCATE:') === 0) {
-		return true;
-	}
-	else {
-		return false;
-	}
+	return (strpos($deob, 'LAM_OBFUSCATE:') === 0);
 }
 
 /**
@@ -1125,7 +1171,9 @@ function isObfuscatedText($text) {
  * @return String RDN attribute name
  */
 function extractRDNAttribute($dn) {
-	if ($dn == null) return null;
+	if ($dn == null) {
+		return null;
+	}
 	$parts = explode("=", substr($dn, 0, strpos($dn, ',')));
 	return $parts[0];
 }
@@ -1137,7 +1185,9 @@ function extractRDNAttribute($dn) {
  * @return String RDN attribute value
  */
 function extractRDNValue($dn) {
-	if (empty($dn)) return null;
+	if (empty($dn)) {
+		return null;
+	}
 	if (strpos($dn, '=') === false) {
 		return $dn;
 	}
@@ -1157,7 +1207,9 @@ function extractRDNValue($dn) {
  * @return String DN suffix
  */
 function extractDNSuffix($dn) {
-	if ($dn == null) return null;
+	if ($dn == null) {
+		return null;
+	}
 	return substr($dn, strpos($dn, ',')+1);
 }
 
