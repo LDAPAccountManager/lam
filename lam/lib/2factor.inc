@@ -5,7 +5,7 @@ use \LAMConfig;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017  Roland Gruber
+  Copyright (C) 2017 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ interface TwoFactorProvider {
 	 *
 	 * @param string $user user name
 	 * @param string $password password
+	 * @return string[] serials
 	 * @throws \Exception error getting serials
 	 */
 	public function getSerials($user, $password);
@@ -151,6 +152,7 @@ class PrivacyIDEAProvider implements TwoFactorProvider {
 	 *
 	 * @param string $user user name
 	 * @param string $token login token
+	 * @return string[] serials
 	 * @throws \Exception error during serial reading
 	 */
 	private function getSerialsForUser($user, $token) {
