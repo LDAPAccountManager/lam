@@ -98,8 +98,12 @@ abstract class baseModule {
 		$this->scope = $scope;
 		// load configuration
 		if ($this->can_manage() || ($scope == 'none')) {
-			if (isset($_SESSION['config'])) $this->moduleSettings = $_SESSION['config']->get_moduleSettings();
-			if (isset($_SESSION['selfServiceProfile'])) $this->selfServiceSettings = $_SESSION['selfServiceProfile'];
+			if (isset($_SESSION['config'])) {
+				$this->moduleSettings = $_SESSION['config']->get_moduleSettings();
+			}
+			if (isset($_SESSION['selfServiceProfile'])) {
+				$this->selfServiceSettings = $_SESSION['selfServiceProfile'];
+			}
 			// initialize module
 			$this->load_Messages();
 			$this->meta = $this->get_metaData();
@@ -415,8 +419,7 @@ abstract class baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	public function is_base_module() {
-		if (isset($this->meta['is_base']) && ($this->meta['is_base'] == true)) return true;
-		else return false;
+		return (isset($this->meta['is_base']) && ($this->meta['is_base']));
 	}
 
 	/**
@@ -436,8 +439,10 @@ abstract class baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	public function get_ldap_filter($typeId) {
-		if (isset($this->meta['ldap_filter'])) return $this->meta['ldap_filter'];
-		else return "";
+		if (isset($this->meta['ldap_filter'])) {
+			return $this->meta['ldap_filter'];
+		}
+		return "";
 	}
 
 	/**
@@ -454,8 +459,10 @@ abstract class baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	public function get_alias() {
-		if (isset($this->meta['alias'])) return $this->meta['alias'];
-		else return get_class($this);
+		if (isset($this->meta['alias'])) {
+			return $this->meta['alias'];
+		}
+		return get_class($this);
 	}
 
 	/**
@@ -475,8 +482,10 @@ abstract class baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	public function get_RDNAttributes($typeId) {
-		if (isset($this->meta['RDN'])) return $this->meta['RDN'];
-		else return array();
+		if (isset($this->meta['RDN'])) {
+			return $this->meta['RDN'];
+		}
+		return array();
 	}
 
 	/**
@@ -498,9 +507,11 @@ abstract class baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	public function get_dependencies() {
-		if (isset($this->meta['dependencies'])) return $this->meta['dependencies'];
-		else return array('depends' => array(), 'conflicts' => array());
+		if (isset($this->meta['dependencies'])) {
+			return $this->meta['dependencies'];
 		}
+		return array('depends' => array(), 'conflicts' => array());
+	}
 
 	/**
 	* This function defines what attributes will be used in the account profiles and their appearance in the profile editor.
@@ -519,8 +530,10 @@ abstract class baseModule {
 	* @see htmlElement
 	*/
 	public function get_profileOptions($typeId) {
-		if (isset($this->meta['profile_options'])) return $this->meta['profile_options'];
-		else return array();
+		if (isset($this->meta['profile_options'])) {
+			return $this->meta['profile_options'];
+		}
+		return array();
 	}
 
 	/**
@@ -557,7 +570,9 @@ abstract class baseModule {
 					// check by regular expression (from account.inc)
 					case "ext_preg":
 						// ignore empty fileds
-						if ($options[$identifiers[$i]][0] == '') continue;
+						if ($options[$identifiers[$i]][0] == '') {
+							continue;
+						}
 						if (! get_preg($options[$identifiers[$i]][0], $this->meta['profile_checks'][$identifiers[$i]]['regex'])) {
 							$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['error_message'];
 						}
@@ -565,7 +580,9 @@ abstract class baseModule {
 					// check by regular expression (case insensitive)
 					case 'regex_i':
 						// ignore empty fileds
-						if ($options[$identifiers[$i]][0] == '') continue;
+						if ($options[$identifiers[$i]][0] == '') {
+							continue;
+						}
 						if (! preg_match('/' . $this->meta['profile_checks'][$identifiers[$i]]['regex'] . '/i', $options[$identifiers[$i]][0])) {
 							$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['error_message'];
 						}
@@ -573,7 +590,9 @@ abstract class baseModule {
 					// check by regular expression (case sensitive)
 					case 'regex':
 						// ignore empty fileds
-						if ($options[$identifiers[$i]][0] == '') continue;
+						if ($options[$identifiers[$i]][0] == '') {
+							continue;
+						}
 						if (! preg_match('/' . $this->meta['profile_checks'][$identifiers[$i]]['regex'] . '/', $options[$identifiers[$i]][0])) {
 							$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['error_message'];
 						}
@@ -581,7 +600,9 @@ abstract class baseModule {
 					// check by integer comparison (greater)
 					case 'int_greater':
 						// ignore if both fields are empty
-						if (($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name1']][0] == '') && ($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name2']][0] == '')) continue;
+						if (($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name1']][0] == '') && ($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name2']][0] == '')) {
+							continue;
+						}
 						// print error message if only one field is empty
 						if (($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name1']][0] == '') || ($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name2']][0] == '')) {
 							$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['error_message'];
@@ -595,7 +616,9 @@ abstract class baseModule {
 					// check by integer comparison (greater or equal)
 					case 'int_greaterOrEqual':
 						// ignore if both fields are empty
-						if (($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name1']][0] == '') && ($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name2']][0] == '')) continue;
+						if (($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name1']][0] == '') && ($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name2']][0] == '')) {
+							continue;
+						}
 						// print error message if only one field is empty
 						if (($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name1']][0] == '') || ($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name2']][0] == '')) {
 							$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['error_message'];
@@ -714,7 +737,9 @@ abstract class baseModule {
 						// check by regular expression (from account.inc)
 						case "ext_preg":
 							// ignore empty fileds
-							if ($options[$identifiers[$i]][0] == '') continue;
+							if ($options[$identifiers[$i]][0] == '') {
+								continue;
+							}
 							if (! get_preg($options[$identifiers[$i]][0], $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['regex'])) {
 								$messages[] = $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['error_message'];
 							}
@@ -722,7 +747,9 @@ abstract class baseModule {
 						// check by regular expression (case insensitive)
 						case "regex_i":
 							// ignore empty fileds
-							if ($options[$identifiers[$i]][0] == '') continue;
+							if ($options[$identifiers[$i]][0] == '') {
+								continue;
+							}
 							if (! preg_match('/' . $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['regex'] . '/i', $options[$identifiers[$i]][0])) {
 								$messages[] = $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['error_message'];
 							}
@@ -730,7 +757,9 @@ abstract class baseModule {
 						// check by regular expression (case sensitive)
 						case "regex":
 							// ignore empty fileds
-							if ($options[$identifiers[$i]][0] == '') continue;
+							if ($options[$identifiers[$i]][0] == '') {
+								continue;
+							}
 							if (! preg_match('/' . $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['regex'] . '/', $options[$identifiers[$i]][0])) {
 								$messages[] = $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['error_message'];
 							}
@@ -738,7 +767,9 @@ abstract class baseModule {
 						// check by integer comparison (greater)
 						case "int_greater":
 							// ignore if both fields are empty
-							if (($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name1']][0] == '') && ($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name2']][0] == '')) continue;
+							if (($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name1']][0] == '') && ($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name2']][0] == '')) {
+								continue;
+							}
 							// print error message if only one field is empty
 							if (($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name1']][0] == '') || ($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name2']][0] == '')) {
 								$messages[] = $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['error_message'];
@@ -752,7 +783,9 @@ abstract class baseModule {
 						// check by integer comparison (greater or equal)
 						case "int_greaterOrEqual":
 							// ignore if both fields are empty
-							if (($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name1']][0] == '') && ($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name2']][0] == '')) continue;
+							if (($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name1']][0] == '') && ($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name2']][0] == '')) {
+								continue;
+							}
 							// print error message if only one field is empty
 							if (($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name1']][0] == '') || ($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name2']][0] == '')) {
 								$messages[] = $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['error_message'];
@@ -889,8 +922,10 @@ abstract class baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	public function get_uploadColumns($selectedModules, &$type) {
-		if (isset($this->meta['upload_columns'])) return $this->meta['upload_columns'];
-		else return array();
+		if (isset($this->meta['upload_columns'])) {
+			return $this->meta['upload_columns'];
+		}
+		return array();
 	}
 
 	/**
@@ -905,8 +940,10 @@ abstract class baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	public function get_uploadPreDepends() {
-		if (isset($this->meta['upload_preDepends'])) return $this->meta['upload_preDepends'];
-		else return array();
+		if (isset($this->meta['upload_preDepends'])) {
+			return $this->meta['upload_preDepends'];
+		}
+		return array();
 	}
 
 	/**
@@ -1684,8 +1721,10 @@ abstract class baseModule {
 	 * @see baseModule::get_metaData()
 	 */
 	public function getManagedObjectClasses($typeId) {
-		if (isset($this->meta['objectClasses']) && is_array($this->meta['objectClasses'])) return $this->meta['objectClasses'];
-		else return array();
+		if (isset($this->meta['objectClasses']) && is_array($this->meta['objectClasses'])) {
+			return $this->meta['objectClasses'];
+		}
+		return array();
 	}
 
 	/**
@@ -1701,8 +1740,10 @@ abstract class baseModule {
 	 * @see baseModule::get_metaData()
 	 */
 	public function getLDAPAliases($typeId) {
-		if (isset($this->meta['LDAPaliases']) && is_array($this->meta['LDAPaliases'])) return $this->meta['LDAPaliases'];
-		else return array();
+		if (isset($this->meta['LDAPaliases']) && is_array($this->meta['LDAPaliases'])) {
+			return $this->meta['LDAPaliases'];
+		}
+		return array();
 	}
 
 	/**
@@ -1715,8 +1756,10 @@ abstract class baseModule {
 	 * @see baseModule::get_metaData()
 	 */
 	public function getManagedAttributes($typeId) {
-		if (isset($this->meta['attributes']) && is_array($this->meta['attributes'])) return $this->meta['attributes'];
-		else return array();
+		if (isset($this->meta['attributes']) && is_array($this->meta['attributes'])) {
+			return $this->meta['attributes'];
+		}
+		return array();
 	}
 
 	/**
@@ -1728,8 +1771,10 @@ abstract class baseModule {
 	 * @see baseModule::get_metaData()
 	 */
 	public function getManagedHiddenAttributes($typeId) {
-		if (isset($this->meta['hiddenAttributes']) && is_array($this->meta['hiddenAttributes'])) return $this->meta['hiddenAttributes'];
-		else return array();
+		if (isset($this->meta['hiddenAttributes']) && is_array($this->meta['hiddenAttributes'])) {
+			return $this->meta['hiddenAttributes'];
+		}
+		return array();
 	}
 
 	/**
@@ -1742,8 +1787,10 @@ abstract class baseModule {
 	 * @see baseModule::get_metaData()
 	 */
 	public function getRequiredExtensions() {
-		if (isset($this->meta['extensions']) && is_array($this->meta['extensions'])) return $this->meta['extensions'];
-		else return array();
+		if (isset($this->meta['extensions']) && is_array($this->meta['extensions'])) {
+			return $this->meta['extensions'];
+		}
+		return array();
 	}
 
 	/**
@@ -1756,8 +1803,10 @@ abstract class baseModule {
 	 * @see baseModule::get_metaData()
 	 */
 	public function getSelfServiceSearchAttributes() {
-		if (isset($this->meta['selfServiceSearchAttributes']) && is_array($this->meta['selfServiceSearchAttributes'])) return $this->meta['selfServiceSearchAttributes'];
-		else return array();
+		if (isset($this->meta['selfServiceSearchAttributes']) && is_array($this->meta['selfServiceSearchAttributes'])) {
+			return $this->meta['selfServiceSearchAttributes'];
+		}
+		return array();
 	}
 
 	/**
@@ -1772,8 +1821,10 @@ abstract class baseModule {
 	 * @see baseModule::get_metaData()
 	 */
 	public function getSelfServiceFields() {
-		if (isset($this->meta['selfServiceFieldSettings']) && is_array($this->meta['selfServiceFieldSettings'])) return $this->meta['selfServiceFieldSettings'];
-		else return array();
+		if (isset($this->meta['selfServiceFieldSettings']) && is_array($this->meta['selfServiceFieldSettings'])) {
+			return $this->meta['selfServiceFieldSettings'];
+		}
+		return array();
 	}
 
 	/**

@@ -94,8 +94,8 @@ function setlanguage() {
  * @return true, if the chmod $right for $target were set
  */
 function checkChmod($right, $target, $chmod) {
-	$right_arr=array("read","write","execute");
-	$target_arr=array("owner","group","other");
+	$right_arr = array("read","write","execute");
+	$target_arr = array("owner","group","other");
 
 	// Check, if $right and $target has right parameters
 	if (!in_array($right, $right_arr) ||!in_array($target, $target_arr)) {
@@ -104,9 +104,15 @@ function checkChmod($right, $target, $chmod) {
 
 	$chmod_num = -1;
 	// owner:
-	if ($target == "owner") $chmod_num = 0;
-	if ($target == "group") $chmod_num = 1;
-	if ($target == "other") $chmod_num = 2;
+	if ($target == "owner") {
+		$chmod_num = 0;
+	}
+	if ($target == "group") {
+		$chmod_num = 1;
+	}
+	if ($target == "other") {
+		$chmod_num = 2;
+	}
 
 	// Cut the number from the chmod:
 	$chmod_num = $chmod{$chmod_num};
@@ -118,10 +124,12 @@ function checkChmod($right, $target, $chmod) {
 	$write = array(2,3,6,7);
 	// What numbers allow "execute"
 	$execute = array(1,3,5,7);
-	if (($right == "read") && in_array($chmod_num, $read)) return true;
-	elseif (($right == "write") && in_array($chmod_num, $write)) return true;
-	elseif (($right == "execute") && in_array($chmod_num, $execute)) return true;
-	else return false;
+	if ((($right == "read") && in_array($chmod_num, $read))
+			|| (($right == "write") && in_array($chmod_num, $write))
+			|| (($right == "execute") && in_array($chmod_num, $execute))) {
+		return true;
+	}
+	return false;
 }
 
 /**
@@ -219,11 +227,9 @@ function deleteConfigProfile($name) {
 		if (is_dir($subDirs[$i])) {
 			$dirHandle = @opendir($subDirs[$i]);
 			while (false !== ($path = readdir($dirHandle))) {
-				if ($path != '.'  && $path != '..') {
-					if (!@unlink($subDirs[$i] . '/' . $path)) {
-						logNewMessage(LOG_ERR, 'Unable to delete ' . $subDirs[$i] . '/' . $path);
-						return _("Unable to delete profile!");
-					}
+				if (($path != '.')  && ($path != '..') && !@unlink($subDirs[$i] . '/' . $path)) {
+					logNewMessage(LOG_ERR, 'Unable to delete ' . $subDirs[$i] . '/' . $path);
+					return _("Unable to delete profile!");
 				}
 			}
 			@closedir($dirHandle);
@@ -283,8 +289,12 @@ function extractConfigOptionsFromPOST($confTypes) {
 		}
 		// checkboxes
 		elseif ($type == "checkbox") {
-			if (isset($_POST[$element]) && ($_POST[$element] == "on")) $options[$element] = array('true');
-			else $options[$element] = array('false');
+			if (isset($_POST[$element]) && ($_POST[$element] == "on")) {
+				$options[$element] = array('true');
+			}
+			else {
+				$options[$element] = array('false');
+			}
 		}
 		// dropdownbox
 		elseif ($type == "select") {
@@ -340,7 +350,7 @@ function metaRefresh($page) {
  */
 function isAccountTypeHidden($type) {
 	$typeSettings = $_SESSION['config']->get_typeSettings();
-	return isset($typeSettings['hidden_' . $type]) && ($typeSettings['hidden_' . $type] == true);
+	return isset($typeSettings['hidden_' . $type]) && ($typeSettings['hidden_' . $type]);
 }
 
 /**
@@ -352,11 +362,13 @@ function getLanguages() {
 	$languages = array();
 	// loading available languages from language.conf file
 	$languagefile = dirname(__FILE__) . "/../config/language";
-	if(is_file($languagefile) == true) {
+	if(is_file($languagefile)) {
 		$file = fopen($languagefile, "r");
 		while(!feof($file)) {
 			$line = fgets($file, 1024);
-			if($line == "" || $line == "\n" || $line[0] == "#") continue; // ignore comment and empty lines
+			if($line == "" || $line == "\n" || $line[0] == "#") {
+				continue; // ignore comment and empty lines
+			}
 			$value = explode(":", $line);
 			$languages[] = new LAMLanguage($value[0], $value[1], $value[2]);
 		}
@@ -625,9 +637,11 @@ class LAMConfig {
 	*/
 	private function reload() {
 		$conffile = $this->getPath();
-		if (is_file($conffile) == True) {
+		if (is_file($conffile)) {
 			$file = @fopen($conffile, "r");
-			if (!$file) return false; // abort if file is not readable
+			if (!$file) {
+				return false; // abort if file is not readable
+			}
 			while (!feof($file)) {
 				$line = fgets($file, 1000000);
 				$line = trim($line);  // remove spaces at the beginning and end
@@ -712,7 +726,9 @@ class LAMConfig {
 				// only return available modules
 				$ret = array();
 				for ($i = 0; $i < sizeof($modules); $i++) {
-					if (in_array($modules[$i], $available)) $ret[] = $modules[$i];
+					if (in_array($modules[$i], $available)) {
+						$ret[] = $modules[$i];
+					}
 				}
 				$this->typeSettings[$moduleVar] = implode(",", $ret);
 			}
@@ -722,7 +738,7 @@ class LAMConfig {
 	/** Saves preferences to config file */
 	public function save() {
 		$conffile = $this->getPath();
-		if (is_file($conffile) == True) {
+		if (is_file($conffile)) {
 			$file = fopen($conffile, "r");
 			$file_array = array();
 			// read config file
