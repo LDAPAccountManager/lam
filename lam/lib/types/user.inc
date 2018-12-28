@@ -1,5 +1,4 @@
 <?php
-use LAM\ImageUtils\ImageManipulationFactory;
 
 /*
 
@@ -1169,7 +1168,7 @@ class lamUserList extends lamList {
 	 * @return boolean Unix part locked
 	 */
 	public static function isUnixLocked(&$attrs) {
-		return ((isset($attrs['userpassword'][0]) && !pwd_is_enabled($attrs['userpassword'][0])));
+		return (isset($attrs['userpassword'][0]) && !pwd_is_enabled($attrs['userpassword'][0]));
 	}
 
 	/**

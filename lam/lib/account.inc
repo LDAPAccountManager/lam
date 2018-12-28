@@ -240,7 +240,7 @@ function generateSalt($len) {
 */
 function pwd_enable($hash) {
 	// check if password is disabled (old wrong LAM method)
-	if ((substr($hash, 0, 2) == "!{") || ((substr($hash, 0, 2) == "*{"))) {
+	if ((substr($hash, 0, 2) == "!{") || (substr($hash, 0, 2) == "*{")) {
 		return substr($hash, 1, strlen($hash));
 	}
 	// check for "!" or "*" at beginning of password hash
@@ -269,7 +269,7 @@ function pwd_enable($hash) {
 */
 function pwd_disable($hash) {
 	// check if password is disabled (old wrong LAM method)
-	if ((substr($hash, 0, 2) == "!{") || ((substr($hash, 0, 2) == "*{"))) {
+	if ((substr($hash, 0, 2) == "!{") || (substr($hash, 0, 2) == "*{")) {
 		return $hash;
 	}
 	// check for "!" or "*" at beginning of password hash
@@ -316,7 +316,7 @@ function pwd_is_lockable($password) {
 */
 function pwd_is_enabled($hash) {
 	// disabled passwords have a "!" or "*" at the beginning (old wrong LAM method)
-	if ((substr($hash, 0, 2) == "!{") || ((substr($hash, 0, 2) == "*{"))) {
+	if ((substr($hash, 0, 2) == "!{") || (substr($hash, 0, 2) == "*{")) {
 		return false;
 	}
 	if (substr($hash, 0, 1) == "{") {

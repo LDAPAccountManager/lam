@@ -156,7 +156,7 @@ class Ldap{
 		$dir = @opendir($tmpDir);
 		$file = @readdir($dir);
 		while ($file) {
-			if ((substr($file, -4) == '.tmp')) {
+			if (substr($file, -4) == '.tmp') {
 				$path = $tmpDir . $file;
 				if ($time - filemtime($path) > (3600 * 24)) {
 					@unlink($path);

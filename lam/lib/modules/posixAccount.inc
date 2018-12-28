@@ -2030,7 +2030,7 @@ class posixAccount extends baseModule implements passwordService {
 			// login shell
 			$return->add(new htmlResponsiveSelect('posixAccount_loginShell', $shelllist, array("/bin/bash"), _('Login shell'), 'loginShell'), 12);
 			// lamdaemon settings
-			if (($_SESSION['config']->get_scriptPath() != null)) {
+			if ($_SESSION['config']->get_scriptPath() != null) {
 				$return->add(new htmlSubTitle(_('Create home directory')), 12);
 				$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
 				for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {

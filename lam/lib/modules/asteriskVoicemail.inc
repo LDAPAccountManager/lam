@@ -324,7 +324,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 				$errors[] = $this->messages['AstVoicemailMailbox'][1];
 			}
 			// check for duplicate Voicemail ID
-			else if (!isset($this->orig['AstVoicemailMailbox'][0]) || (($this->orig['AstVoicemailMailbox'][0] != $this->attributes['AstVoicemailMailbox'][0]))) {
+			else if (!isset($this->orig['AstVoicemailMailbox'][0]) || ($this->orig['AstVoicemailMailbox'][0] != $this->attributes['AstVoicemailMailbox'][0])) {
 				$entries = searchLDAPByAttribute('AstVoicemailMailbox', $this->attributes['AstVoicemailMailbox'][0], 'AstVoicemailMailbox', array('dn'), array('user'));
 				if (sizeof($entries) > 0) {
 					$errors[] = $this->messages['AstVoicemailMailbox'][2];
