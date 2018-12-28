@@ -592,8 +592,8 @@ class shadowAccount extends baseModule implements passwordService {
 				'digit', $this->messages['shadowMax'][1], $messages);
 			// minAge <= maxAge
 			if ((($rawAccounts[$i][$ids['shadowAccount_minAge']] != '') || ($rawAccounts[$i][$ids['shadowAccount_maxAge']] != '')) &&  // if at least one is set
-			(($rawAccounts[$i][$ids['shadowAccount_minAge']] == '') || ($rawAccounts[$i][$ids['shadowAccount_maxAge']] == '') || (  // and one is not set
-			($rawAccounts[$i][$ids['shadowAccount_minAge']] > $rawAccounts[$i][$ids['shadowAccount_maxAge']])))) {  // or minAge > maxAge
+			(($rawAccounts[$i][$ids['shadowAccount_minAge']] == '') || ($rawAccounts[$i][$ids['shadowAccount_maxAge']] == '') ||   // and one is not set
+			 ($rawAccounts[$i][$ids['shadowAccount_minAge']] > $rawAccounts[$i][$ids['shadowAccount_maxAge']]))) {  // or minAge > maxAge
 				$errMsg = $this->messages['shadow_cmp'][1];
 				array_push($errMsg, array($i));
 				$messages[] = $errMsg;

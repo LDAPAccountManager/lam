@@ -1141,7 +1141,7 @@ class accountContainer {
 			$pwdMailCheckbox->setTableRowsToShow(array('lamPasswordChangeSendMailAddress'));
 			$container->addElement($pwdMailCheckbox);
 			$container->addElement(new htmlHelpLink('407'), true);
-			if (($_SESSION['config']->getLamProMailAllowAlternateAddress() != 'false')) {
+			if ($_SESSION['config']->getLamProMailAllowAlternateAddress() != 'false') {
 				$alternateMail = '';
 				$pwdResetModule = $this->getAccountModule('passwordSelfReset');
 				if (!empty($pwdResetModule)) {
