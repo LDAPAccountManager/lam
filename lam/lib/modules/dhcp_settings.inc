@@ -47,7 +47,7 @@ if (!function_exists('check_ip')) {
 	 */
 	function check_ip($ip, $subnet = false) {
 		$part = explode(".", $ip);
-		// Wenn... Keine 4 Segmente gefunden wurde
+		// IP must contain 4 segments
 		if (count($part) != 4) {
 			return false;
 		}
@@ -55,18 +55,12 @@ if (!function_exists('check_ip')) {
 			// check each segment
 			for ($i = 0; $i < count($part); $i++) {
 				// only numbers are allowed
-				if (!is_numeric($part[$i])) {
-					return false;
-				}
-				elseif ($part[$i] > 255) {
-					return false;
-				}
-				// non-subnet must be > 0 on last digit
-				elseif (!$subnet && ($i == 3) && ($part[$i] < 1)) {
-					return false;
-				}
-				// subnet must be >= 0 on last digit
-				elseif ($subnet && ($i == 3) && ($part[$i] < 0)) {
+				if (!is_numeric($part[$i])
+						|| ($part[$i] > 255)
+						// non-subnet must be > 0 on last digit
+						|| (!$subnet && ($i == 3) && ($part[$i] < 1))
+						// subnet must be >= 0 on last digit
+						|| ($subnet && ($i == 3) && ($part[$i] < 0))) {
 					return false;
 				}
 			}

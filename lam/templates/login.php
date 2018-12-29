@@ -533,13 +533,17 @@ if(isset($_POST['checklogin'])) {
 				else {
 					$searchSuccess = false;
 					$searchError = _('Unable to find the user name in LDAP.');
-					if (ldap_errno($searchLDAP->server()) != 0) $searchError .= ' ' . getDefaultLDAPErrorString($searchLDAP->server());
+					if (ldap_errno($searchLDAP->server()) != 0) {
+						$searchError .= ' ' . getDefaultLDAPErrorString($searchLDAP->server());
+					}
 				}
 			}
 			else {
 				$searchSuccess = false;
 				$searchError = _('Unable to find the user name in LDAP.');
-				if (ldap_errno($searchLDAP->server()) != 0) $searchError .= ' ' . getDefaultLDAPErrorString($searchLDAP->server());
+				if (ldap_errno($searchLDAP->server()) != 0) {
+					$searchError .= ' ' . getDefaultLDAPErrorString($searchLDAP->server());
+				}
 			}
 		}
 		if (!$searchSuccess) {
@@ -579,12 +583,8 @@ if(isset($_POST['checklogin'])) {
 		die();
 	}
 	else {
-		if ($result === False) {
-			// connection failed
-			$error_message = _("Cannot connect to specified LDAP server. Please try again.");
-			logNewMessage(LOG_ERR, 'User ' . $username . ' (' . $clientSource . ') failed to log in (LDAP error: ' . ldap_err2str($result) . ').');
-		}
-		elseif ($result == 81) {
+		if (($result === False)
+				|| ($result == 81)) {
 			// connection failed
 			$error_message = _("Cannot connect to specified LDAP server. Please try again.");
 			logNewMessage(LOG_ERR, 'User ' . $username . ' (' . $clientSource . ') failed to log in (LDAP error: ' . ldap_err2str($result) . ').');

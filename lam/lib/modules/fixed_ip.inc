@@ -148,15 +148,12 @@ class fixed_ip extends baseModule {
 	}
 
 	/**
+	 * Checks if IPs are not overlaped.
 	 *
-	 * Checked, if ips are overlapd.
-	 *
-	 * @param ip
-	 *
-	 * @return false, if overlapd, else true.
-	 *
+	 * @param ip IP address
+	 * @return not overlaped
 	 **/
-	public function overlapd_ip($ip) {
+	public function isNotOverlapedIp($ip) {
 		if (in_array($ip, $this->overlapd)) {
 		    return false;
 		}
@@ -216,8 +213,9 @@ class fixed_ip extends baseModule {
 					$ex = explode(".", $this->fixed_ip[$id]['ip']);
 					$tmp = $this->fixed_ip[$id]['ip'];
 					$this->fixed_ip[$id]['ip'] = $ex_subnet['0'].".".$ex_subnet['1'].".".$ex_subnet['2'].".".$ex['3'];
-					if ($tmp!=$this->fixed_ip[$id]['ip'])
+					if ($tmp!=$this->fixed_ip[$id]['ip']) {
 						$ip_edit = true;
+					}
 		        }
 		    }
 		}
@@ -231,8 +229,8 @@ class fixed_ip extends baseModule {
 	 */
 	function load_attributes($attr) {
 	    if (!$this->isRootNode()) {
-	    	$attributes = array('cn', 'dhcphwaddress', 'dhcpstatements', 'dhcpcomments');
-	    	$entries = searchLDAP($this->getAccountContainer()->dn_orig, '(objectClass=dhcpHost)', $attributes);
+	    	$searchAttributes = array('cn', 'dhcphwaddress', 'dhcpstatements', 'dhcpcomments');
+	    	$entries = searchLDAP($this->getAccountContainer()->dn_orig, '(objectClass=dhcpHost)', $searchAttributes);
 			for ($i = 0; $i < sizeof($entries); $i++) {
 				$dhcphwaddress = explode(" ", $entries[$i]['dhcphwaddress'][0]);
 				$dhcphwaddress = array_pop($dhcphwaddress);
@@ -332,11 +330,8 @@ class fixed_ip extends baseModule {
 				if (!empty($_POST['ip_'.$id])) {
 					$_POST['ip_'.$id] = trim($_POST['ip_'.$id]);
 				}
-				if (!empty($_POST['ip_'.$id]) && !(check_ip($_POST['ip_'.$id]))) {
-					$error = true;
-					$this->fixed_ip[$id]['ip'] = $_POST['ip_'.$id];
-				}
-				elseif (!empty($_POST['ip_'.$id]) && !$this->overlapd_ip($_POST['ip_'.$id])) {
+				if ((!empty($_POST['ip_'.$id]) && !(check_ip($_POST['ip_'.$id])))
+						|| (!empty($_POST['ip_'.$id]) && !$this->isNotOverlapedIp($_POST['ip_'.$id]))) {
 					$error = true;
 					$this->fixed_ip[$id]['ip'] = $_POST['ip_'.$id];
 				}
@@ -352,7 +347,9 @@ class fixed_ip extends baseModule {
 				}
 
 				// cn:
-				if (!empty($_POST['pc_'.$id])) $_POST['pc_'.$id] = trim($_POST['pc_'.$id]);
+				if (!empty($_POST['pc_'.$id])) {
+					$_POST['pc_'.$id] = trim($_POST['pc_'.$id]);
+				}
                 if (!empty($_POST['pc_'.$id])) {
 
 					// name already in use
@@ -415,7 +412,7 @@ class fixed_ip extends baseModule {
        	// auto-completion for host names
 		$autoNames = array();
 		if (!empty($this->hostCache) && (sizeof($this->hostCache) < 200)) {
-			foreach ($this->hostCache as $index => $attrs) {
+			foreach ($this->hostCache as $attrs) {
 				if (!empty($attrs['cn'][0])) {
 					$autoNames[] = $attrs['cn'][0];
 				}
@@ -452,10 +449,10 @@ class fixed_ip extends baseModule {
 			$this->fixed_ip = array();
 		}
 		$pcs = array();
-        foreach($this->fixed_ip AS $id=>$arr) {
+        foreach($this->fixed_ip AS $id => $arr) {
 			// pc name
 			$pcError = "";
-			$existsInDifferentDn = $this->hostNameExists($_POST['pc_'.$id]);
+			$existsInDifferentDn = !empty($_POST['pc_' . $id]) && $this->hostNameExists($_POST['pc_' . $id]);
 			if (!$this->processed) {
                	$pcError = "";
 			}
@@ -507,7 +504,7 @@ class fixed_ip extends baseModule {
 												$this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask'))) {
 			    $ipError = _("The IP address does not match the subnet.");
 			}
-			elseif (!$this->overlapd_ip($this->fixed_ip[$id]['ip'])) {
+			elseif (!$this->isNotOverlapedIp($this->fixed_ip[$id]['ip'])) {
 			    $ipError = _("The IP address is already in use.");
 			}
 			$error = '';

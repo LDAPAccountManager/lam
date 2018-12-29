@@ -61,7 +61,9 @@ function lam_start_session() {
  */
 function startSecureSession($redirectToLogin = true, $initSecureData = false) {
 	// start session
-	if (isset($_SESSION)) unset($_SESSION);
+	if (isset($_SESSION)) {
+		unset($_SESSION);
+	}
 	if (strtolower(session_module_name()) == 'files') {
 		$sessionDir = dirname(__FILE__) . "/../sess";
 		session_save_path($sessionDir);
@@ -125,8 +127,12 @@ function startSecureSession($redirectToLogin = true, $initSecureData = false) {
  *
  */
 function checkClientIP() {
-	if (isset($_SESSION['cfgMain'])) $cfg = $_SESSION['cfgMain'];
-	else $cfg = new LAMCfgMain();
+	if (isset($_SESSION['cfgMain'])) {
+		$cfg = $_SESSION['cfgMain'];
+	}
+	else {
+		$cfg = new LAMCfgMain();
+	}
 	$allowedHosts = $cfg->allowedHosts;
 	$url = getCallingURL();
 	if ((strpos($url, '/selfService/selfService') !== false) || ((strpos($url, '/misc/ajax.php?') !== false) && strpos($url, 'selfservice=1') !== false)) {
@@ -142,7 +148,9 @@ function checkClientIP() {
 	for ($i = 0; $i < sizeof($allowedHosts); $i++) {
 		$host = $allowedHosts[$i];
 		$ipRegex = '/^[0-9a-z\\.:\\*]+$/i';
-		if (!preg_match($ipRegex, $host)) continue;
+		if (!preg_match($ipRegex, $host)) {
+			continue;
+		}
 		$hostRegex = str_replace(".", "\\.", $host);
 		$hostRegex = '/^' . str_replace("*", ".*", $hostRegex) . '$/';
 		$clientIP = $_SERVER['REMOTE_ADDR'];
@@ -225,8 +233,12 @@ function logoffAndBackToLoginPage() {
  * @return boolean debug enabled
  */
 function isDebugLoggingEnabled() {
-	if (isset($_SESSION['cfgMain'])) $cfg = $_SESSION['cfgMain'];
-	else $cfg = new LAMCfgMain();
+	if (isset($_SESSION['cfgMain'])) {
+		$cfg = $_SESSION['cfgMain'];
+	}
+	else {
+		$cfg = new LAMCfgMain();
+	}
 	return $cfg->logLevel >= LOG_DEBUG;
 }
 
@@ -238,13 +250,21 @@ function isDebugLoggingEnabled() {
  */
 function logNewMessage($level, $message) {
 	$possibleLevels = array(LOG_DEBUG => 'DEBUG', LOG_NOTICE => 'NOTICE', LOG_WARNING => 'WARNING', LOG_ERR => 'ERROR');
-	if (!in_array($level, array_keys($possibleLevels))) StatusMessage('ERROR', 'Invalid log level!', $level);
-	if (isset($_SESSION['cfgMain'])) $cfg = $_SESSION['cfgMain'];
-	else $cfg = new LAMCfgMain();
+	if (!in_array($level, array_keys($possibleLevels))) {
+		StatusMessage('ERROR', 'Invalid log level!', $level);
+	}
+	if (isset($_SESSION['cfgMain'])) {
+		$cfg = $_SESSION['cfgMain'];
+	}
+	else {
+		$cfg = new LAMCfgMain();
+	}
 	// check if logging is disabled
-	if ($cfg->logDestination == 'NONE') return;
-	// check if log level is high enough
-	elseif ($cfg->logLevel < $level) return;
+	if (($cfg->logDestination == 'NONE')
+			// check if log level is high enough
+			|| ($cfg->logLevel < $level)) {
+		return;
+	}
 	// ok to log, build log message
 	$prefix = "LDAP Account Manager (" . session_id() . ' - ' . getClientIPForLogging() . ") - " . $possibleLevels[$level] . ": ";
 	$message = $prefix . $message;
@@ -286,11 +306,10 @@ function checkIfWriteAccessIsAllowed($scope = null) {
 	}
 	if ($_SESSION['config']->getAccessLevel() >= LAMConfig::ACCESS_ALL) {
 		$typeSettings = $_SESSION['config']->get_typeSettings();
-		if ($scope == null) {
-			return true;
-		}
-		elseif (!isset($typeSettings['readOnly_' . $scope]) || !$typeSettings['readOnly_' . $scope]) {
-			// check if write for this type is allowed
+		if (($scope == null)
+				// check if write for this type is allowed
+				|| !isset($typeSettings['readOnly_' . $scope])
+				|| !$typeSettings['readOnly_' . $scope]) {
 			return true;
 		}
 	}
@@ -365,8 +384,12 @@ function checkPasswordStrength($password, $userName, $otherUserAttrs) {
 	if ($password == null) {
 		$password = "";
 	}
-	if (isset($_SESSION['cfgMain'])) $cfg = $_SESSION['cfgMain'];
-	else $cfg = new LAMCfgMain();
+	if (isset($_SESSION['cfgMain'])) {
+		$cfg = $_SESSION['cfgMain'];
+	}
+	else {
+		$cfg = new LAMCfgMain();
+	}
 	// check length
 	if (strlen($password) < $cfg->passwordMinLength) {
 		return sprintf(_('The password is too short. You have to enter at least %s characters.'), $cfg->passwordMinLength);
@@ -656,8 +679,9 @@ function lamEncrypt($data, $prefix='') {
 	// use OpenSSL if available
 	if (function_exists('openssl_random_pseudo_bytes')) {
 		// OpenSSL may have been enabled in a running session
-		if (!isset($_COOKIE[$prefix . "IV"]) || ($_COOKIE[$prefix . "IV"] == '')) return $data;
-		if ($_COOKIE[$prefix . "IV"] == "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx") {
+		if (!isset($_COOKIE[$prefix . "IV"])
+				|| ($_COOKIE[$prefix . "IV"] == '')
+				|| ($_COOKIE[$prefix . "IV"] == "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")) {
 			return $data;
 		}
 		// read key and iv from cookie
@@ -683,8 +707,9 @@ function lamDecrypt($data, $prefix='') {
 	// use OpenSSL if available
 	if (function_exists('openssl_random_pseudo_bytes')) {
 		// OpenSSL may have been enabled in a running session
-		if (!isset($_COOKIE[$prefix . "IV"]) || ($_COOKIE[$prefix . "IV"] == '')) return $data;
-		if ($_COOKIE[$prefix . "IV"] == "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx") {
+		if (!isset($_COOKIE[$prefix . "IV"])
+				|| ($_COOKIE[$prefix . "IV"] == '')
+				|| ($_COOKIE[$prefix . "IV"] == "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")) {
 			return $data;
 		}
 		// read key and iv from cookie
@@ -692,8 +717,7 @@ function lamDecrypt($data, $prefix='') {
 		$key = base64_decode($_COOKIE[$prefix . "Key"]);
 		// decrypt string
 		$ret = openssl_decrypt($data, lamEncryptionAlgo(), $key, 0, $iv);
-		$ret = base64_decode(str_replace(chr(00), "", $ret));
-		return $ret;
+		return base64_decode(str_replace(chr(00), "", $ret));
 	}
 	// otherwise do not decrypt
 	else {

@@ -7,7 +7,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2008 - 2017  Roland Gruber
+                2008 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -164,16 +164,10 @@ class range extends baseModule {
 	public function check_range($first_ip, $second_ip) {
 		$ex_first = explode(".", $first_ip);
 		$ex_second = explode(".", $second_ip);
-		if ($ex_first[0]<$ex_second[0])
-		    return true;
-		if ($ex_first[1]<$ex_second[1])
-		    return true;
-		if ($ex_first[2]<$ex_second[2])
-		    return true;
-		if ($ex_first[3]<$ex_second[3]) {
-			return true;
-		}
-		return false;
+		return ($ex_first[0] < $ex_second[0])
+			|| ($ex_first[1] < $ex_second[1])
+			|| ($ex_first[2] < $ex_second[2])
+			|| ($ex_first[3] < $ex_second[3]);
 	}
 
 	/**
@@ -191,15 +185,15 @@ class range extends baseModule {
 
 	/**
 	 *
-	 * Checked, if Ranges are overlaped.
+	 * Checks if ranges are not overlaped.
 	 *
 	 * @param first ip
 	 * @param second ip
 	 *
-	 * @return false, if overlaped, else true.
+	 * @return not overlaped
 	 *
 	 **/
-	function overlaped_range($ip,$ipB) {
+	function isNotOverlapedRange($ip,$ipB) {
 		$ex = explode(".", $ip);
 		$exB = explode(".", $ipB);
 
@@ -286,16 +280,18 @@ class range extends baseModule {
 					$ex = explode(".", $this->ranges[$id]['range_start']);
 					$tmp = $this->ranges[$id]['range_start'];
 					$this->ranges[$id]['range_start'] = $ex_subnet['0'].".".$ex_subnet['1'].".".$ex_subnet['2'].".".$ex['3'];
-					if($tmp!=$this->ranges[$id]['range_start'])
+					if($tmp!=$this->ranges[$id]['range_start']) {
 						$range_edit = true;
+					}
 		        }
 		        if (!empty($this->ranges[$id]['range_end']) && !range::check_subnet_range($this->ranges[$id]['range_end'],$dhcpAttrs['cn'][0], $mask)) {
 		            // Range anpassen:
 					$ex = explode(".", $this->ranges[$id]['range_end']);
 					$tmp = $this->ranges[$id]['range_end'];
 					$this->ranges[$id]['range_end'] = $ex_subnet['0'].".".$ex_subnet['1'].".".$ex_subnet['2'].".".$ex['3'];
-					if($tmp!=$this->ranges[$id]['range_end'])
+					if($tmp!=$this->ranges[$id]['range_end']) {
 						$range_edit = true;
+					}
 		        }
 		    }
 		    if ($range_edit) {
@@ -354,7 +350,7 @@ class range extends baseModule {
 		            $this->ranges[$id]['range_end'] = $_POST['range_end_'.$id];
 
 			        // Check if ip overlaped:
-			        if(!$this->overlaped_range($_POST['range_start_'.$id],$_POST['range_end_'.$id])) {
+			        if(!$this->isNotOverlapedRange($_POST['range_start_'.$id],$_POST['range_end_'.$id])) {
 			            $errorOccured = true;
 			        }
 
@@ -438,16 +434,11 @@ class range extends baseModule {
 					else {
 						$this->poolsNew[$index]['dhcprange'][$rIndex] = $from . ' ' . $to;
 						// check ranges
-						if (!check_ip($from) || !check_ip($to)) {
-							$errorOccured = true;
-						}
-						elseif (!$this->overlaped_range($from, $to)) {
-							$errorOccured = true;
-						}
-						elseif (!range::check_subnet_range($from, $subnet, $mask) || !range::check_subnet_range($to, $subnet, $mask)) {
-							$errorOccured = true;
-						}
-						elseif (!$this->check_range($from, $to)) {
+						if (!check_ip($from) || !check_ip($to)
+								|| !$this->isNotOverlapedRange($from, $to)
+								|| !range::check_subnet_range($from, $subnet, $mask)
+								|| !range::check_subnet_range($to, $subnet, $mask)
+								|| !$this->check_range($from, $to)) {
 							$errorOccured = true;
 						}
 					}
@@ -510,7 +501,7 @@ class range extends baseModule {
                     $error = _("The range end needs to be greater than the range start.");
 				} elseif ($this->processed && !range::check_subnet_range($this->ranges[$id]['range_start'], $subnet, $mask)) {
 					$error = _("The IP does not match the subnet.");
-				} elseif ($this->processed && !$this->overlaped_range($this->ranges[$id]['range_start'],$this->ranges[$id]['range_end']) ) {
+				} elseif ($this->processed && !$this->isNotOverlapedRange($this->ranges[$id]['range_start'],$this->ranges[$id]['range_end']) ) {
 					$error = _("The range conflicts with another range.");
 				}
 			}
@@ -590,7 +581,7 @@ class range extends baseModule {
 							elseif (!range::check_subnet_range($from, $subnet, $mask)) {
 								$message = _("The IP does not match the subnet.");
 							}
-							elseif (!$this->overlaped_range($from, $to)) {
+							elseif (!$this->isNotOverlapedRange($from, $to)) {
 								$message = _("The range conflicts with another range.");
 							}
 						}
@@ -781,7 +772,7 @@ class range extends baseModule {
 
 
 			if (!empty($this->poolsNew)) {
-				foreach ($this->poolsNew as $index => $poolAttrs) {
+				foreach ($this->poolsNew as $poolAttrs) {
 					$cn = !empty($poolAttrs['cn'][0]) ? $poolAttrs['cn'][0] : '';
 					$peer = '';
 					if (!empty($poolAttrs['dhcpstatements'])) {
@@ -792,7 +783,7 @@ class range extends baseModule {
 						}
 					}
 					if (!empty($poolAttrs['dhcprange'])) {
-						foreach ($poolAttrs['dhcprange'] as $rIndex => $range) {
+						foreach ($poolAttrs['dhcprange'] as $range) {
 							$range = explode(' ', $range);
 							$from = !empty($range[0]) ? $range[0] : '';
 							$to = !empty($range[1]) ? $range[1] : '';
