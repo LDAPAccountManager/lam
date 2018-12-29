@@ -138,25 +138,24 @@ class lamList {
 	 * Reads the list options from the cookie value.
 	 */
 	private function listReadOptionsFromCookie() {
-		if (sizeof($this->configOptions) > 0) {
-			if (isset($_COOKIE["ListOptions_" . $this->type->getId()])) {
-				$cookieValue = $_COOKIE["ListOptions_" . $this->type->getId()];
-				$valueParts = explode(";", $cookieValue);
-				$values = array();
-				for ($i = 0; $i < sizeof($valueParts); $i++) {
-					$key_value = explode('=', $valueParts[$i]);
-					if (sizeof($key_value) == 2) {
-						$values[$key_value[0]] = $key_value[1];
-					}
+		if ((sizeof($this->configOptions) > 0)
+				&& isset($_COOKIE["ListOptions_" . $this->type->getId()])) {
+			$cookieValue = $_COOKIE["ListOptions_" . $this->type->getId()];
+			$valueParts = explode(";", $cookieValue);
+			$values = array();
+			for ($i = 0; $i < sizeof($valueParts); $i++) {
+				$key_value = explode('=', $valueParts[$i]);
+				if (sizeof($key_value) == 2) {
+					$values[$key_value[0]] = $key_value[1];
 				}
-				for ($i = 0; $i < sizeof($this->configOptions); $i++) {
-					if (isset($values[$this->configOptions[$i]->getID()])) {
-						$this->configOptions[$i]->setValue($values[$this->configOptions[$i]->getID()]);
-					}
-				}
-				// notify subclasses
-				$this->listConfigurationChanged();
 			}
+			for ($i = 0; $i < sizeof($this->configOptions); $i++) {
+				if (isset($values[$this->configOptions[$i]->getID()])) {
+					$this->configOptions[$i]->setValue($values[$this->configOptions[$i]->getID()]);
+				}
+			}
+			// notify subclasses
+			$this->listConfigurationChanged();
 		}
 	}
 
@@ -1018,10 +1017,9 @@ class lamList {
 		if (isset($_POST['refresh'])) {
 			$this->refresh = true;
 		}
-		if (isset($_POST['apply_filter']) || isset($_POST['clear_filter'])) {
-			if ($this->serverSideFilterChanged) {
-				$this->refresh = true;
-			}
+		if ((isset($_POST['apply_filter']) || isset($_POST['clear_filter']))
+				&& $this->serverSideFilterChanged) {
+			$this->refresh = true;
 		}
 	}
 
@@ -1223,7 +1221,6 @@ class lamList {
 		if ($sizeOption->getValue() != null) {
 			$this->maxPageEntries = $sizeOption->getValue();
 		}
-		return;
 	}
 
 	/**

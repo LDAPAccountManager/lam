@@ -70,8 +70,6 @@ class windowsUser extends baseModule implements passwordService {
 	/** business category cache */
 	private $businessCategoryCache = null;
 
-	/** cache for lockout duration */
-	private static $lockoutDurationCache = array();
 	/** cache for user name */
 	private $cachedUserNameList = null;
 	/** cache for cn */
@@ -1250,7 +1248,9 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addSimpleInputTextField($containerLeft, 'scriptPath', _('Logon script'));
 		// home drive
 		$drives = array('-');
-		for ($i=90; $i>67; $i--) $drives[] = chr($i) . ':';
+		for ($i=90; $i>67; $i--) {
+			$drives[] = chr($i) . ':';
+		}
 		if (!empty($this->attributes['homeDrive'][0])) {
 			$selected = array(strtoupper($this->attributes['homeDrive'][0]));
 		}
@@ -1503,10 +1503,9 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		// save pwdLastSet for postModifyActions
 		$this->pwdLastSet = null;
-		if (isset($this->attributes['pwdLastSet'][0])) {
-			if (!isset($this->orig['pwdLastSet'][0]) || ($this->orig['pwdLastSet'][0] != $this->attributes['pwdLastSet'][0])) {
-				$this->pwdLastSet = $this->attributes['pwdLastSet'][0];
-			}
+		if (isset($this->attributes['pwdLastSet'][0])
+				&& (!isset($this->orig['pwdLastSet'][0]) || ($this->orig['pwdLastSet'][0] != $this->attributes['pwdLastSet'][0]))) {
+			$this->pwdLastSet = $this->attributes['pwdLastSet'][0];
 		}
 		// deactivated
 		$deactivated = isset($_POST['deactivated']) && ($_POST['deactivated'] == 'on');
@@ -1622,10 +1621,9 @@ class windowsUser extends baseModule implements passwordService {
 			$this->processMultiValueInputTextField('proxyAddresses', $return);
 		}
 		// photo
-		if (!$this->isBooleanConfigOptionSet('windowsUser_hidejpegPhoto', true)) {
-			if (isset($_POST['delPhoto'])) {
-				unset($this->attributes['jpegPhoto']);
-			}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidejpegPhoto', true)
+				&& isset($_POST['delPhoto'])) {
+			unset($this->attributes['jpegPhoto']);
 		}
 		return $return;
 	}
@@ -1644,9 +1642,15 @@ class windowsUser extends baseModule implements passwordService {
 		if (!empty($this->attributes[$attr][0]) && !($this->attributes[$attr][0] == '0')) {
 			$datetime = windowsUser::getFileTime($this->attributes[$attr][0]);
 		}
-		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
-		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
-		for ( $i=2003; $i<=2050; $i++ ) $year[] = $i;
+		for ( $i=1; $i<=31; $i++ ) {
+			$mday[] = $i;
+		}
+		for ( $i=1; $i<=12; $i++ ) {
+			$mon[] = $i;
+		}
+		for ( $i=2003; $i<=2050; $i++ ) {
+			$year[] = $i;
+		}
 		$return->addElement(new htmlOutputText($text));
 		$return->addElement(new htmlSelect('expire_day', $mday, array($datetime->format('d'))));
 		$return->addElement(new htmlSelect('expire_mon', $mon, array($datetime->format('m'))));
@@ -1691,7 +1695,9 @@ class windowsUser extends baseModule implements passwordService {
 				$buttonName = $postKeys[$i];
 			}
 		}
-		if (($buttonName == '') || (strpos($buttonName, '_back') !== false)) return array();
+		if (($buttonName == '') || (strpos($buttonName, '_back') !== false)) {
+			return array();
+		}
 		$attr = 'accountExpires';
 		// determine action
 		if (strpos($buttonName, '_change') !== false) {
@@ -2046,8 +2052,6 @@ class windowsUser extends baseModule implements passwordService {
 	private function uploadPhoto() {
 		$messages = array();
 		if ($_FILES['photoFile'] && ($_FILES['photoFile']['size'] > 0)) {
-			$name = $_FILES['photoFile']['name'];
-			$extension = strtolower(substr($name, strpos($name, '.') + 1));
 			$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
 			$data = fread($handle, 10000000);
 			if (!empty($this->moduleSettings['windowsUser_jpegPhoto_maxSize'][0]) && (strlen($data) > (1024 * $this->moduleSettings['windowsUser_jpegPhoto_maxSize'][0]))) {
@@ -2111,7 +2115,9 @@ class windowsUser extends baseModule implements passwordService {
 			$selectedManager[] = $this->attributes['manager'][0];
 		}
 		$size = 20;
-		if (sizeof($options) < 20) $size = sizeof($options);
+		if (sizeof($options) < 20) {
+			$size = sizeof($options);
+		}
 		$managerSelect = new htmlSelect('manager', $options, $selectedManager, $size);
 		$managerSelect->setHasDescriptiveElements(true);
 		$managerSelect->setRightToLeftTextDirection(true);
@@ -2162,7 +2168,6 @@ class windowsUser extends baseModule implements passwordService {
 		$groups = $this->findGroups();
 		$toAdd = array_values(array_diff($this->groupList, $this->groupList_orig));
 		$toRem = array_values(array_diff($this->groupList_orig, $this->groupList));
-		$toUpdate = array_values(array_intersect($this->groupList, $this->groupList_orig));
 		$ldapUser = $_SESSION['ldap']->decrypt_login();
 		$ldapUser = $ldapUser[0];
 		// add groups
@@ -2230,7 +2235,9 @@ class windowsUser extends baseModule implements passwordService {
 		$booleanOptions = array(_('yes') => true, _('no') => false);
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
-			if (!in_array('user', $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = 'user';
+			if (!in_array('user', $partialAccounts[$i]['objectClass'])) {
+				$partialAccounts[$i]['objectClass'][] = 'user';
+			}
 			// userPrincipalName
 			if (get_preg($rawAccounts[$i][$ids['windowsUser_userPrincipalName']], 'username')) {
 				$partialAccounts[$i]['userPrincipalName'] = $rawAccounts[$i][$ids['windowsUser_userPrincipalName']];
@@ -2445,10 +2452,9 @@ class windowsUser extends baseModule implements passwordService {
 			$partialAccounts[$i]['userAccountControl'][0] = $userAccountControlAttr['userAccountControl'][0];
 			// end user account control
 			// password change at next login
-			if ($rawAccounts[$i][$ids['windowsUser_pwdMustChange']] != "") {
-				if (!isset($booleanOptions[$rawAccounts[$i][$ids['windowsUser_pwdMustChange']]])) {
-					$errors[] = array('ERROR', sprintf(_('Account %s:'), $i) . ' windowsUser_pwdMustChange', _('Please enter either yes or no.'));
-				}
+			if (($rawAccounts[$i][$ids['windowsUser_pwdMustChange']] != "")
+					&& !isset($booleanOptions[$rawAccounts[$i][$ids['windowsUser_pwdMustChange']]])) {
+				$errors[] = array('ERROR', sprintf(_('Account %s:'), $i) . ' windowsUser_pwdMustChange', _('Please enter either yes or no.'));
 				// attribute must be set in postModify
 			}
 			// profile path
@@ -2839,20 +2845,19 @@ class windowsUser extends baseModule implements passwordService {
 			$this->setExpirationDate($dateTarget->format('Y'), $dateTarget->format('m'), $dateTarget->format('d'));
 		}
 		// departments
-		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment')) {
-			if (isset($profile['windowsUser_department'][0]) && $profile['windowsUser_department'][0] != '') {
-				$departments = explode(';', $profile['windowsUser_department'][0]);
-				// remove extra spaces and set attributes
-				$this->attributes['department'] = array_map('trim', $departments);
-			}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartment')
+				&& isset($profile['windowsUser_department'][0])
+				&& ($profile['windowsUser_department'][0] != '')) {
+			$departments = explode(';', $profile['windowsUser_department'][0]);
+			// remove extra spaces and set attributes
+			$this->attributes['department'] = array_map('trim', $departments);
 		}
 		// department numbers
-		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber')) {
-			if (!empty($profile['windowsUser_departmentNumber'][0])) {
-				$departmentNumbers = explode(';', $profile['windowsUser_departmentNumber'][0]);
-				// remove extra spaces and set attributes
-				$this->attributes['departmentNumber'] = array_map('trim', $departmentNumbers);
-			}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedepartmentNumber')
+				&& !empty($profile['windowsUser_departmentNumber'][0])) {
+			$departmentNumbers = explode(';', $profile['windowsUser_departmentNumber'][0]);
+			// remove extra spaces and set attributes
+			$this->attributes['departmentNumber'] = array_map('trim', $departmentNumbers);
 		}
 		// organizational unit
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideou') && isset($profile['windowsUser_ou'][0])) {
@@ -2941,32 +2946,32 @@ class windowsUser extends baseModule implements passwordService {
 	 */
 	function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
 		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
-		if (in_array('unicodePwd', $fields)) {
-			if (isset($_POST['windowsUser_unicodePwd']) && ($_POST['windowsUser_unicodePwd'] != '')) {
-				if ($_POST['windowsUser_unicodePwd'] != $_POST['windowsUser_unicodePwd2']) {
-					$return['messages'][] = $this->messages['unicodePwd'][0];
+		if (in_array('unicodePwd', $fields)
+				&& isset($_POST['windowsUser_unicodePwd'])
+				&& ($_POST['windowsUser_unicodePwd'] != '')) {
+			if ($_POST['windowsUser_unicodePwd'] != $_POST['windowsUser_unicodePwd2']) {
+				$return['messages'][] = $this->messages['unicodePwd'][0];
+			}
+			else {
+				if (!get_preg($_POST['windowsUser_unicodePwd'], 'password')) {
+					$return['messages'][] = $this->messages['unicodePwd'][1];
 				}
 				else {
-					if (!get_preg($_POST['windowsUser_unicodePwd'], 'password')) {
-						$return['messages'][] = $this->messages['unicodePwd'][1];
+					$userName = empty($attributes['userPrincipalName'][0]) ? null : $attributes['userPrincipalName'][0];
+					$additionalAttrs = array();
+					if (!empty($attributes['sn'][0])) {
+						$additionalAttrs[] = $attributes['sn'][0];
+					}
+					if (!empty($attributes['givenName'][0])) {
+						$additionalAttrs[] = $attributes['givenName'][0];
+					}
+					$pwdPolicyResult = checkPasswordStrength($_POST['windowsUser_unicodePwd'], $userName, $additionalAttrs);
+					if ($pwdPolicyResult === true) {
+						$this->setSelfServicePassword($return, $attributes);
+						$return['info']['userPasswordClearText'][0] = $_POST['windowsUser_unicodePwd'];
 					}
 					else {
-						$userName = empty($attributes['userPrincipalName'][0]) ? null : $attributes['userPrincipalName'][0];
-						$additionalAttrs = array();
-						if (!empty($attributes['sn'][0])) {
-							$additionalAttrs[] = $attributes['sn'][0];
-						}
-						if (!empty($attributes['givenName'][0])) {
-							$additionalAttrs[] = $attributes['givenName'][0];
-						}
-						$pwdPolicyResult = checkPasswordStrength($_POST['windowsUser_unicodePwd'], $userName, $additionalAttrs);
-						if ($pwdPolicyResult === true) {
-							$this->setSelfServicePassword($return, $attributes);
-							$return['info']['userPasswordClearText'][0] = $_POST['windowsUser_unicodePwd'];
-						}
-						else {
-							$return['messages'][] = array('ERROR', $pwdPolicyResult);
-						}
+						$return['messages'][] = array('ERROR', $pwdPolicyResult);
 					}
 				}
 			}
@@ -3019,7 +3024,7 @@ class windowsUser extends baseModule implements passwordService {
 				'values' => array($newPasswordVal)
 			)
 		);
-		$success = @ldap_modify_batch($_SESSION['ldapHandle'], $dn, $operation);
+		@ldap_modify_batch($_SESSION['ldapHandle'], $dn, $operation);
 		$returnCode = ldap_errno($_SESSION['ldapHandle']);
 		if ($returnCode != 0) {
 			$outputMessages = htmlspecialchars(getExtendedLDAPErrorMessage($_SESSION['ldapHandle']));
@@ -3029,7 +3034,6 @@ class windowsUser extends baseModule implements passwordService {
 			}
 			logNewMessage(LOG_ERR, 'Changing user password failed: ' . $outputMessages);
 			$return['messages'][] = array('ERROR', _('Unable to change password.'), $outputMessages);
-			return;
 		}
 		else {
 			// update session password for next page load
@@ -3104,7 +3108,6 @@ class windowsUser extends baseModule implements passwordService {
 			}
 			logNewMessage(LOG_ERR, 'Changing user password failed: ' . $outputMessages);
 			$return['messages'][] = array('ERROR', _('Unable to change password.'), $outputMessages);
-			return;
 		}
 		else {
 			// update session password for next page load
@@ -3230,18 +3233,22 @@ class windowsUser extends baseModule implements passwordService {
 	private static function getDomainLockoutDuration($dn) {
 		$lowerDn = strtolower($dn);
 		$domainRoot = substr($lowerDn, strpos($lowerDn, 'dc='));
-		if (isset(windowsUser::$lockoutDurationCache[$domainRoot])) {
-			return windowsUser::$lockoutDurationCache[$domainRoot];
+		if (!isset($_SESSION['windowsUser_cacheDomainLockoutDuration'])) {
+			$_SESSION['windowsUser_cacheDomainLockoutDuration'] = array();
+		}
+		$cache = &$_SESSION['windowsUser_cacheDomainLockoutDuration'];
+		if (isset($cache[$domainRoot])) {
+			return $cache[$domainRoot];
 		}
 		$policyDN = 'cn=builtin,' . $domainRoot;
 		$policyAttrs = ldapGetDN($policyDN, array('lockoutduration'));
 		if (!empty($policyAttrs['lockoutduration'][0])) {
-			windowsUser::$lockoutDurationCache[$domainRoot] = $policyAttrs['lockoutduration'][0];
+			$cache[$domainRoot] = $policyAttrs['lockoutduration'][0];
 		}
 		else {
-			windowsUser::$lockoutDurationCache[$domainRoot] = null;
+			$cache[$domainRoot] = null;
 		}
-		return windowsUser::$lockoutDurationCache[$domainRoot];
+		return $cache[$domainRoot];
 	}
 
 	/**
@@ -3869,8 +3876,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			$sysattrs = array('mail', 'pwdLastSet', 'accountExpires', 'useraccountcontrol');
 			$attrs = $this->getAttrWildcards($jobID, $options);
 			$attrs = array_values(array_unique(array_merge($attrs, $sysattrs)));
-			$userResults = searchLDAPByFilter('(&(pwdLastSet=*)(mail=*))', $attrs, array('user'));
-			return $userResults;
+			return searchLDAPByFilter('(&(pwdLastSet=*)(mail=*))', $attrs, array('user'));
 		}
 
 		/**
@@ -3987,8 +3993,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			$sysattrs = array('mail', 'accountExpires', 'useraccountcontrol');
 			$attrs = $this->getAttrWildcards($jobID, $options);
 			$attrs = array_values(array_unique(array_merge($attrs, $sysattrs)));
-			$userResults = searchLDAPByFilter('(&(accountExpires=*)(!(accountExpires=0))(mail=*))', $attrs, array('user'));
-			return $userResults;
+			return searchLDAPByFilter('(&(accountExpires=*)(!(accountExpires=0))(mail=*))', $attrs, array('user'));
 		}
 
 		/**
@@ -4081,8 +4086,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		protected function findUsers($jobID, $options) {
 			// read users
 			$attrs = array('accountExpires');
-			$userResults = searchLDAPByFilter('(accountExpires=*)', $attrs, array('user'));
-			return $userResults;
+			return searchLDAPByFilter('(accountExpires=*)', $attrs, array('user'));
 		}
 
 		/**

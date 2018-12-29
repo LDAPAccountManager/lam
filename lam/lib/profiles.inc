@@ -5,7 +5,7 @@ use \LAMException;
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2017  Roland Gruber
+  Copyright (C) 2003 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -94,17 +94,18 @@ function loadAccountProfile($profile, $typeId) {
 	}
 	$settings = array();
 	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/"  . $_SESSION['config']->getName() . '/' . $profile . "." . $typeId;
-	if (is_file($file) == True) {
+	if (is_file($file)) {
 		$file = @fopen($file, "r");
 		if ($file) {
 			while (!feof($file)) {
 				$line = fgets($file, 1024);
-				if (($line == "\n")||($line[0] == "#")) continue; // ignore comments
+				if (($line == "\n")||($line[0] == "#")) {
+					continue; // ignore comments
+				}
 				// search keywords
 				$parts = array();
 				$parts = explode(": ", $line);
-				if (sizeof($parts) != 2) continue;  // ignore malformed settings
-				else {
+				if (sizeof($parts) == 2) {
 					$option = $parts[0];
 					$value = $parts[1];
 					// remove line ends
@@ -188,7 +189,7 @@ function delAccountProfile($file, $typeId) {
 	if (is_file($prof)) {
 		return @unlink($prof);
 	}
-	else return false;
+	return false;
 }
 
 /**

@@ -4,7 +4,7 @@ $Id:
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2012  Christian Kropp
-                2012 - 2016  Roland Gruber
+                2012 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -43,8 +43,7 @@ function testPermissions() {
 		$result[] = htmlspecialchars(realpath('../config'));
 	}
 	$result = array_merge($result, testPermissionRecursive('../config/profiles/'));
-    $result = array_merge($result, testPermissionRecursive('../config/pdf/'));
-    return $result;
+    return array_merge($result, testPermissionRecursive('../config/pdf/'));
 }
 
 /**
@@ -183,8 +182,8 @@ function recursiveDelete($src, $profiles) {
 		if ($tmpState === false) {
 			StatusMessage('ERROR', 'Upgrade failed.', 'The file ' . $src . ' could not be deleted.');
 		}
-		return;
-	} else if (is_dir($src) && is_writable($src)) {
+	}
+	elseif (is_dir($src) && is_writable($src)) {
 		$dir = @opendir($src);
 		while (false !== ($path = readdir($dir))) {
 			if ($path != '.'  && $path != '..' && !in_array($path, $profiles)) {
@@ -199,10 +198,9 @@ function recursiveDelete($src, $profiles) {
 				StatusMessage('ERROR', 'Upgrade failed.', 'The directory ' . $src . ' could not be deleted.');
 			}
 		}
-		return;
-	} else {
+	}
+	else {
 		StatusMessage('ERROR', 'Upgrade failed.', 'The directory ' . $src . ' has missing write permissions.');
-		return;
 	}
 }
 

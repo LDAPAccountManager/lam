@@ -225,9 +225,7 @@ function deletePDFLogo($name) {
 	if ($success) {
 		return new htmlStatusMessage('INFO', _('Logo file deleted.'), $name);
 	}
-	else {
-		return new htmlStatusMessage('ERROR', _('Unable to delete logo file.'), $name);
-	}
+	return new htmlStatusMessage('ERROR', _('Unable to delete logo file.'), $name);
 }
 
 /**
@@ -350,10 +348,8 @@ class PDFStructureReader {
 		$structure->setFoldingMarks($xml->getAttribute('foldingmarks'));
 		$sections = array();
 		while ($xml->read()) {
-			if ($xml->nodeType === \XMLReader::SIGNIFICANT_WHITESPACE) {
-				continue;
-			}
-			elseif (($xml->name === 'pdf') && ($xml->nodeType == \XMLReader::END_ELEMENT)) {
+			if (($xml->nodeType === \XMLReader::SIGNIFICANT_WHITESPACE)
+					|| (($xml->name === 'pdf') && ($xml->nodeType == \XMLReader::END_ELEMENT))) {
 				continue;
 			}
 			elseif ($xml->name === 'text') {
@@ -390,10 +386,8 @@ class PDFStructureReader {
 			if (($xml->name === 'section') && ($xml->nodeType == \XMLReader::END_ELEMENT)) {
 				break;
 			}
-			elseif ($xml->nodeType === \XMLReader::END_ELEMENT) {
-				continue;
-			}
-			elseif ($xml->nodeType === \XMLReader::SIGNIFICANT_WHITESPACE) {
+			elseif (($xml->nodeType === \XMLReader::END_ELEMENT)
+					|| ($xml->nodeType === \XMLReader::SIGNIFICANT_WHITESPACE)) {
 				continue;
 			}
 			elseif ($xml->name === 'entry') {

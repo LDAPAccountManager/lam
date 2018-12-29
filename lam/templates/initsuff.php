@@ -100,7 +100,9 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 						$dnPartsCount = sizeof($dnParts);
 						for ($k = 0; $k < $dnPartsCount; $k++) {
 							$part = explode("=", $dnParts[$k]);
-							if ($part[0] == "ou") $subsuffs[] = implode(",", array_slice($dnParts, $k));
+							if ($part[0] == "ou") {
+								$subsuffs[] = implode(",", array_slice($dnParts, $k));
+							}
 							else {
 								$subsuffs[] = implode(",", array_slice($dnParts, $k));
 								break;
