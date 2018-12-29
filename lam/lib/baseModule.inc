@@ -1354,9 +1354,10 @@ abstract class baseModule {
 	 * @param array $autoCompleteValues values for auto-completion
 	 * @param integer $fieldSize field size
 	 * @param array $htmlIDs reference to array where to add the generated HTML IDs of the input fields
+	 * @param string $cssClasses additional CSS classes of input fields
 	 */
 	protected function addMultiValueInputTextField(&$container, $attrName, $label, $required = false, $length = null, $isTextArea = false,
-				$autoCompleteValues = null, $fieldSize = null, &$htmlIDs = null) {
+				$autoCompleteValues = null, $fieldSize = null, &$htmlIDs = null, $cssClasses = '') {
 			$values = array();
 			if (isset($this->attributes[$attrName][0])) {
 				$values = $this->attributes[$attrName];
@@ -1376,6 +1377,9 @@ abstract class baseModule {
 			for ($i = 0; $i < sizeof($values); $i++) {
 				if (!$isTextArea) {
 					$input = new htmlInputField($attrName . '_' . $i, $values[$i]);
+					if (!empty($cssClasses)) {
+						$input->setCSSClasses(array($cssClasses));
+					}
 					if (!empty($length)) {
 						$input->setFieldMaxLength($length);
 					}
@@ -1392,7 +1396,11 @@ abstract class baseModule {
 					if ($length != null) {
 						$cols = $length;
 					}
-					$subContainer->addElement(new htmlInputTextarea($attrName . '_' . $i, $values[$i], $cols, 3));
+					$textArea = new htmlInputTextarea($attrName . '_' . $i, $values[$i], $cols, 3);
+					if (!empty($cssClasses)) {
+						$textArea->setCSSClasses(array($cssClasses));
+					}
+					$subContainer->addElement($textArea);
 				}
 				if (!empty($htmlIDs)) {
 					$htmlIDs[] = $attrName . '_' . $i;

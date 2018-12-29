@@ -145,7 +145,8 @@ class yubiKeyUser extends baseModule {
 			return $return;
 		}
 		if (empty($objectClass) || in_array($objectClass, $this->attributes['objectClass'])) {
-			$this->addMultiValueInputTextField($return, $attributeName, _('YubiKey ids'), false, '256', false, null, '50');
+			$htmlIds = array();
+			$this->addMultiValueInputTextField($return, $attributeName, _('YubiKey ids'), false, '12', false, null, null, $htmlIds, 'lam-prevent-enter');
 			if (!empty($objectClass)) {
 				$return->addElement(new htmlSpacer(null, '30px'), true);
 

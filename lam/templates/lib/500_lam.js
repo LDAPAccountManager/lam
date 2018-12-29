@@ -1100,6 +1100,17 @@ window.lam.html.activateLightboxes = function() {
 	});
 };
 
+/**
+ * Prevents enter key on input fields with class "lam-prevent-enter".
+ */
+window.lam.html.preventEnter = function() {
+	jQuery('.lam-prevent-enter').keypress(function (event) {
+	    if (event.keyCode === 10 || event.keyCode === 13) {
+	        event.preventDefault();
+	    }
+	});
+}
+
 window.lam.selfservice = window.lam.selfservice || {};
 
 /**
@@ -1161,4 +1172,5 @@ jQuery(document).ready(function() {
 	window.lam.tools.setInitialFocus();
 	window.lam.tools.schema.select();
 	window.lam.html.activateLightboxes();
+	window.lam.html.preventEnter();
 });
