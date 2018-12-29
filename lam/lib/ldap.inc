@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2017  Roland Gruber
+  Copyright (C) 2003 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ class Ldap{
 	*
 	* @param object $config an object of class Config
 	*/
-	function __construct($config) {
+	public function __construct($config) {
 		if (is_object($config)) {
 			$this->conf = $config;
 		}
@@ -75,7 +75,7 @@ class Ldap{
 	* @param boolean $allowAnonymous specifies if anonymous binds are allowed
 	* @return mixed if connect succeeds the 0 is returned, else false or error number
 	*/
-	function connect($user, $passwd, $allowAnonymous=false) {
+	public function connect($user, $passwd, $allowAnonymous=false) {
 		// close any prior connection
 		@$this->close();
 		// do not allow anonymous bind
@@ -105,7 +105,7 @@ class Ldap{
 	}
 
 	/** Closes connection to server */
-	function close() {
+	public function close() {
 		if ($this->server != null) {
 			@ldap_close($this->server);
 		}
@@ -116,7 +116,7 @@ class Ldap{
 	*
 	* @return object connection handle
 	*/
-	function server() {
+	public function server() {
 		if (!$this->is_connected) {
 			$data = $this->decrypt_login();
 			$this->connect($data[0], $data[1]);
@@ -126,14 +126,14 @@ class Ldap{
 	}
 
 	/** Closes connection to LDAP server before serialization */
-	function __sleep() {
+	public function __sleep() {
 		$this->close();
 		// define which attributes to save
 		return array("conf", "username", "password");
 	}
 
 	/** Reconnects to LDAP server when deserialized */
-	function __wakeup() {
+	public function __wakeup() {
 		$this->is_connected = false;
 		// delete PDF files and images which are older than 15 min
 		$tmpDir = dirname(__FILE__) . '/../tmp/';
@@ -173,7 +173,7 @@ class Ldap{
 	* @param string $username LDAP user name
 	* @param string $password LDAP password
 	*/
-	function encrypt_login($username, $password) {
+	public function encrypt_login($username, $password) {
 		// encrypt username and password
 		$this->username = base64_encode(lamEncrypt($username));
 		$this->password = base64_encode(lamEncrypt($password));
@@ -184,7 +184,7 @@ class Ldap{
 	*
 	* @return array array(user name, password)
 	*/
-	function decrypt_login() {
+	public function decrypt_login() {
 		// decrypt username and password
 		$username = lamDecrypt(base64_decode($this->username));
 		$password = lamDecrypt(base64_decode($this->password));
@@ -192,8 +192,26 @@ class Ldap{
 		return $ret;
 	}
 
+	/**
+	 * Returns the LDAP user name.
+	 *
+	 * @return string user name
+	 */
+	public function getUserName() {
+		return lamDecrypt(base64_decode($this->username));
+	}
+
+	/**
+	 * Returns the LDAP password.
+	 *
+	 * @return string password
+	 */
+	public function getPassword() {
+		return lamDecrypt(base64_decode($this->password));
+	}
+
 	/** Closes connection to LDAP server and deletes encrypted username/password */
-	function destroy() {
+	public function destroy() {
 		$this->close();
 		$this->username="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 		$this->password="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
