@@ -12,7 +12,7 @@
  * @version 2.0
  * @link https://www.yubico.com/
  *
- *       Adapted for LAM.
+ * Adapted for LAM.
  */
 
 /**
@@ -40,20 +40,6 @@ class Auth_Yubico {
 	 * @var string
 	 */
 	private $url;
-
-	/**
-	 * Last query to server
-	 *
-	 * @var string
-	 */
-	private $lastquery;
-
-	/**
-	 * Response from server
-	 *
-	 * @var string
-	 */
-	private $response;
 
 	/**
 	 * Flag whether to verify HTTPS server certificates or not.
@@ -108,33 +94,6 @@ class Auth_Yubico {
 	}
 
 	/**
-	 * Parse parameters from last response
-	 *
-	 * example: getParameters("timestamp", "sessioncounter", "sessionuse");
-	 *
-	 * @param array @parameters Array with strings representing
-	 *        parameters to parse
-	 * @return array parameter array from last response
-	 */
-	private function getParameters($parameters) {
-		if ($parameters == null) {
-			$parameters = array(
-				'timestamp',
-				'sessioncounter',
-				'sessionuse'
-			);
-		}
-		$param_array = array();
-		foreach ($parameters as $param) {
-			if (!preg_match("/" . $param . "=([0-9]+)/", $this->response, $out)) {
-				throw new LAMException(_('Error'), 'Could not parse parameter ' . $param . ' from response');
-			}
-			$param_array[$param] = $out[1];
-		}
-		return $param_array;
-	}
-
-	/**
 	 * Verify Yubico OTP against multiple URLs
 	 * Protocol specification 2.0 is used to construct validation requests
 	 *
@@ -142,12 +101,10 @@ class Auth_Yubico {
 	 * @param int $use_timestamp 1=>send request with &timestamp=1 to
 	 *        get timestamp and session information
 	 *        in the response
-	 * @param string $sl Sync level in percentage between 0
-	 *        and 100 or "fast" or "secure".
-	 * @param int $timeout Max number of seconds to wait
-	 *        for responses
+	 * @throws LAMException if verification failed
 	 */
-	public function verify($token, $use_timestamp = null, $sl = null, $timeout = null) {
+	public function verify($token, $use_timestamp = null) {
+		$timeout = 10;
 		/* Construct parameters string */
 		$ret = $this->parsePasswordOTP($token);
 		if (!$ret) {
@@ -162,12 +119,7 @@ class Auth_Yubico {
 		if ($use_timestamp) {
 			$params['timestamp'] = 1;
 		}
-		if ($sl) {
-			$params['sl'] = $sl;
-		}
-		if ($timeout) {
-			$params['timeout'] = $timeout;
-		}
+		$params['timeout'] = $timeout;
 		ksort($params);
 		$parameters = '';
 		foreach ($params as $p => $v) {
@@ -182,12 +134,8 @@ class Auth_Yubico {
 			$parameters .= '&h=' . $signature;
 		}
 
-		/* Generate and prepare request. */
-		$mh = curl_multi_init();
-		$ch = array();
 		$query = $this->url . "?" . $parameters;
 
-		$this->lastquery = $query;
 		logNewMessage(LOG_DEBUG, 'Yubico url: ' . $query);
 
 		$handle = curl_init($query);
@@ -198,153 +146,106 @@ class Auth_Yubico {
 			curl_setopt($handle, CURLOPT_SSL_VERIFYHOST, 0);
 		}
 		curl_setopt($handle, CURLOPT_FAILONERROR, true);
-		/*
-		 * If timeout is set, we better apply it here as well
-		 * in case the validation server fails to follow it.
-		 */
-		if ($timeout) {
-			curl_setopt($handle, CURLOPT_TIMEOUT, $timeout);
-		}
-		// TODO single curl call
-		curl_multi_add_handle($mh, $handle);
-
-		$ch[(int) $handle] = $handle;
+		curl_setopt($handle, CURLOPT_TIMEOUT, $timeout);
 
 		/* Execute and read request. */
 		$this->response = null;
-		$replay = False;
-		$valid = False;
-		do {
-			/* Let curl do its work. */
-			while (($mrc = curl_multi_exec($mh, $active)) == CURLM_CALL_MULTI_PERFORM);
+		$str = curl_exec($handle);
+		$httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+		curl_close($handle);
+		logNewMessage(LOG_DEBUG, 'Server answer: ' . $str);
+		if (is_string($str) && ($httpCode == 200) && preg_match("/status=([a-zA-Z0-9_]+)/", $str, $out)) {
+			$status = $out[1];
 
-			while ($info = curl_multi_info_read($mh)) {
-				if ($info['result'] == CURLE_OK) {
-
-					/* We have a complete response from one server. */
-
-					$str = curl_multi_getcontent($info['handle']);
-					logNewMessage(LOG_DEBUG, 'Yubico answer: ' . $str);
-					$cinfo = curl_getinfo($info['handle']);
-
-					if (preg_match("/status=([a-zA-Z0-9_]+)/", $str, $out)) {
-						$status = $out[1];
-
-						/*
-						 * There are 3 cases.
-						 *
-						 * 1. OTP or Nonce values doesn't match - ignore
-						 * response.
-						 *
-						 * 2. We have a HMAC key. If signature is invalid -
-						 * ignore response. Return if status=OK/REPLAYED_OTP/BAD_OTP.
-						 *
-						 * 3. Return if status=OK or status=REPLAYED_OTP.
-						 */
-						if (!preg_match("/otp=" . $params['otp'] . "/", $str) || !preg_match("/nonce=" . $params['nonce'] . "/", $str)) {
-							/* Case 1. Ignore response. */
-						}
-						elseif ($this->clientKey != "") {
-							/* Case 2. Verify signature first */
-							$rows = explode("\r\n", trim($str));
-							$response = array();
-							foreach ($rows as $key => $val) {
-								/*
-								 * = is also used in BASE64 encoding so we only replace the first = by # which is not
-								 * used in BASE64
-								 */
-								$val = preg_replace('/=/', '#', $val, 1);
-								$row = explode("#", $val);
-								$response[$row[0]] = $row[1];
-							}
-
-							$parameters = array(
-								'nonce',
-								'otp',
-								'sessioncounter',
-								'sessionuse',
-								'sl',
-								'status',
-								't',
-								'timeout',
-								'timestamp'
-							);
-							sort($parameters);
-							$check = Null;
-							foreach ($parameters as $param) {
-								if (array_key_exists($param, $response)) {
-									if ($check) $check = $check . '&';
-									$check = $check . $param . '=' . $response[$param];
-								}
-							}
-
-							$checksignature = base64_encode(hash_hmac('sha1', utf8_encode($check), $this->clientKey, true));
-
-							if ($response['h'] == $checksignature) {
-								if ($status == 'REPLAYED_OTP') {
-									$this->response = $str;
-									$replay = True;
-								}
-								if ($status == 'OK') {
-									$this->response = $str;
-									$valid = True;
-								}
-								// TODO status BAD_OTP
-							}
-							else {
-								// TODO throw invalid signature exception
-							}
-						}
-						else {
-							/* Case 3. We check the status directly */
-							if ($status == 'REPLAYED_OTP') {
-								$this->response = $str;
-								$replay = True;
-							}
-							if ($status == 'OK') {
-								$this->response = $str;
-								$valid = True;
-							}
-							// TODO status BAD_OTP
-						}
-					}
-					if ($valid || $replay) {
-						/* We have status=OK or status=REPLAYED_OTP, return. */
-						foreach ($ch as $h) {
-							curl_multi_remove_handle($mh, $h);
-							curl_close($h);
-						}
-						curl_multi_close($mh);
-						if ($replay) {
-							throw new LAMException(_('Error'), 'OTP replay detected.');
-						}
-						if ($valid) {
-							return;
-						}
-					}
-
-					curl_multi_remove_handle($mh, $info['handle']);
-					curl_close($info['handle']);
-					unset($ch[(int) $info['handle']]);
+			/*
+			 * There are 3 cases.
+			 *
+			 * 1. OTP or Nonce values doesn't match - ignore
+			 * response.
+			 *
+			 * 2. We have a HMAC key. If signature is invalid -
+			 * ignore response. Return if status=OK/REPLAYED_OTP/BAD_OTP.
+			 *
+			 * 3. Return if status=OK or status=REPLAYED_OTP.
+			 */
+			if (!preg_match("/otp=" . $params['otp'] . "/", $str) || !preg_match("/nonce=" . $params['nonce'] . "/", $str)) {
+				if ($status == 'BAD_OTP') {
+					throw new LAMException(_('Error'), 'OTP not accepted. Maybe key is not registered.');
 				}
-				curl_multi_select($mh);
+				throw new LAMException(_('Error'), 'Invalid answer ' . $str);
+			}
+			elseif ($this->clientKey != "") {
+				/* Case 2. Verify signature first */
+				$rows = explode("\r\n", trim($str));
+				$response = array();
+				foreach ($rows as $val) {
+					/*
+					 * '=' is also used in BASE64 encoding so we only replace the first = by # which is not
+					 * used in BASE64
+					 */
+					$val = preg_replace('/=/', '#', $val, 1);
+					$row = explode("#", $val);
+					$response[$row[0]] = $row[1];
+				}
+
+				$parameters = array(
+					'nonce',
+					'otp',
+					'sessioncounter',
+					'sessionuse',
+					'sl',
+					'status',
+					't',
+					'timeout',
+					'timestamp'
+				);
+				sort($parameters);
+				$check = Null;
+				foreach ($parameters as $param) {
+					if (array_key_exists($param, $response)) {
+						if ($check) {
+							$check = $check . '&';
+						}
+						$check = $check . $param . '=' . $response[$param];
+					}
+				}
+
+				$checksignature = base64_encode(hash_hmac('sha1', utf8_encode($check), $this->clientKey, true));
+
+				if ($response['h'] == $checksignature) {
+					$this->checkStatus($status);
+					return;
+				}
+				else {
+					throw new LAMException(_('Error'), 'Invalid signature, expected ' . $checksignature);
+				}
+			}
+			else {
+				/* Case 3. We check the status directly */
+				$this->checkStatus($status);
+				return;
 			}
 		}
-		while ($active);
+		throw new LAMException(_('Error'), 'Call to verification service failed with ' . $httpCode);
+	}
 
-		/*
-		 * Typically this is only reached
-		 * when the timeout is reached and there is no
-		 * OK/REPLAYED_REQUEST answer (think firewall).
-		 */
-
-		foreach ($ch as $h) {
-			curl_multi_remove_handle($mh, $h);
-			curl_close($h);
+	/**
+	 * Checks if the status is ok.
+	 *
+	 * @param string $status status
+	 * @throws LAMException invalid status
+	 */
+	private function checkStatus($status) {
+		if ($status == 'REPLAYED_OTP') {
+			throw new LAMException(_('Error'), 'OTP replay detected.');
 		}
-		curl_multi_close($mh);
-
-		throw new LAMException(_('Error'), 'Invalid answer: ' . print_r($this->response, true));
+		elseif ($status == 'BAD_OTP') {
+			throw new LAMException(_('Error'), 'OTP not accepted. Maybe key is not registered.');
+		}
+		elseif ($status == 'OK') {
+			return;
+		}
+		throw new LAMException(_('Error'), 'Invalid status: ' . $status);
 	}
 
 }
