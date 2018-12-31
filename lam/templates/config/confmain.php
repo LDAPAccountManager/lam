@@ -22,7 +22,7 @@ use \htmlGroup;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2017  Roland Gruber
+  Copyright (C) 2003 - 2018  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -460,19 +460,29 @@ if (extension_loaded('curl')) {
 	$twoFactorOptions = array(
 			_('None') => TwoFactorProviderService::TWO_FACTOR_NONE,
 			'privacyIDEA' => TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA,
+			'YubiKey' => TwoFactorProviderService::TWO_FACTOR_YUBICO,
 	);
 	$twoFactorSelect = new htmlResponsiveSelect('twoFactor', $twoFactorOptions, array($conf->getTwoFactorAuthentication()), _('Provider'), '514');
 	$twoFactorSelect->setHasDescriptiveElements(true);
 	$twoFactorSelect->setTableRowsToHide(array(
-			TwoFactorProviderService::TWO_FACTOR_NONE => array('twoFactorURL', 'twoFactorInsecure', 'twoFactorLabel', 'twoFactorOptional', 'twoFactorCaption')
+			TwoFactorProviderService::TWO_FACTOR_NONE => array('twoFactorURL', 'twoFactorInsecure', 'twoFactorLabel',
+				'twoFactorOptional', 'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey'),
+			TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA => array('twoFactorClientId', 'twoFactorSecretKey')
 	));
 	$twoFactorSelect->setTableRowsToShow(array(
-			TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA => array('twoFactorURL', 'twoFactorInsecure', 'twoFactorLabel', 'twoFactorOptional', 'twoFactorCaption')
+			TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA => array('twoFactorURL', 'twoFactorInsecure', 'twoFactorLabel',
+				'twoFactorOptional', 'twoFactorCaption'),
+			TwoFactorProviderService::TWO_FACTOR_YUBICO => array('twoFactorURL', 'twoFactorInsecure', 'twoFactorLabel',
+				'twoFactorOptional', 'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey'),
 	));
 	$row->add($twoFactorSelect, 12);
 	$twoFactorUrl = new htmlResponsiveInputField(_("Base URL"), 'twoFactorURL', $conf->getTwoFactorAuthenticationURL(), '515');
 	$twoFactorUrl->setRequired(true);
 	$row->add($twoFactorUrl, 12);
+	$twoFactorClientId = new htmlResponsiveInputField(_("Client id"), 'twoFactorClientId', $conf->getTwoFactorAuthenticationClientId(), '524');
+	$row->add($twoFactorClientId, 12);
+	$twoFactorSecretKey = new htmlResponsiveInputField(_("Secret key"), 'twoFactorSecretKey', $conf->getTwoFactorAuthenticationSecretKey(), '525');
+	$row->add($twoFactorSecretKey, 12);
 	$twoFactorLabel = new htmlResponsiveInputField(_("Label"), 'twoFactorLabel', $conf->getTwoFactorAuthenticationLabel(), '517');
 	$row->add($twoFactorLabel, 12);
 	$row->add(new htmlResponsiveInputCheckbox('twoFactorOptional', $conf->getTwoFactorAuthenticationOptional(), _('Optional'), '519'), 12);
@@ -677,6 +687,8 @@ function checkInput() {
 	if (extension_loaded('curl')) {
 		$conf->setTwoFactorAuthentication($_POST['twoFactor']);
 		$conf->setTwoFactorAuthenticationURL($_POST['twoFactorURL']);
+		$conf->setTwoFactorAuthenticationClientId($_POST['twoFactorClientId']);
+		$conf->setTwoFactorAuthenticationSecretKey($_POST['twoFactorSecretKey']);
 		$conf->setTwoFactorAuthenticationInsecure(isset($_POST['twoFactorInsecure']) && ($_POST['twoFactorInsecure'] == 'on'));
 		$conf->setTwoFactorAuthenticationLabel($_POST['twoFactorLabel']);
 		$conf->setTwoFactorAuthenticationOptional(isset($_POST['twoFactorOptional']) && ($_POST['twoFactorOptional'] == 'on'));

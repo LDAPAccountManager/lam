@@ -53,6 +53,8 @@ interface TwoFactorProvider {
 	 */
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput);
 
+
+
 }
 
 /**
@@ -224,6 +226,71 @@ class PrivacyIDEAProvider implements TwoFactorProvider {
 }
 
 /**
+ * Authentication via YubiKeys.
+ *
+ * @author Roland Gruber
+ */
+class YubicoProvider implements TwoFactorProvider {
+
+	private $config;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param TwoFactorConfiguration $config configuration
+	 */
+	public function __construct(&$config) {
+		$this->config = $config;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::getSerials()
+	 */
+	public function getSerials($user, $password) {
+		$keyAttributeName = strtolower('yubiKeyId');
+		$loginDn = $_SESSION['ldap']->getUserName();
+		$handle = getLDAPServerHandle();
+		$ldapData = ldapGetDN($loginDn, array($keyAttributeName), $handle);
+		if (empty($ldapData[$keyAttributeName])) {
+			return array();
+		}
+		return array(implode(', ', $ldapData[$keyAttributeName]));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::verify2ndFactor()
+	 */
+	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
+		include_once(__DIR__ . "/3rdParty/yubico/Yubico.php");
+		$serialData = $this->getSerials($user, $password);
+		if (empty($serialData)) {
+			return false;
+		}
+		$serials = explode(', ', $serialData[0]);
+		$serialMatched = false;
+		foreach ($serials as $serial) {
+			if (strpos($twoFactorInput, $serial) === 0) {
+				$serialMatched = true;
+				break;
+			}
+		}
+		if (!$serialMatched) {
+			throw new \Exception(_('YubiKey id does not match allowed list of key ids.'));
+		}
+		$url = $this->config->twoFactorAuthenticationURL;
+		$httpsverify = !$this->config->twoFactorAuthenticationInsecure;
+		$clientId = $this->config->twoFactorAuthenticationClientId;
+		$secretKey = $this->config->twoFactorAuthenticationSecretKey;
+		$auth = new \Auth_Yubico($clientId, $secretKey, $url, $httpsverify);
+		$auth->verify($twoFactorInput);
+		return true;
+	}
+
+}
+
+/**
  * Returns the correct 2 factor provider.
  */
 class TwoFactorProviderService {
@@ -232,6 +299,8 @@ class TwoFactorProviderService {
 	const TWO_FACTOR_NONE = 'none';
 	/** 2factor authentication via privacyIDEA */
 	const TWO_FACTOR_PRIVACYIDEA = 'privacyidea';
+	/** 2factor authentication via YubiKey */
+	const TWO_FACTOR_YUBICO = 'yubico';
 
 	private $config;
 
@@ -260,6 +329,9 @@ class TwoFactorProviderService {
 		if ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA) {
 			return new PrivacyIDEAProvider($this->config);
 		}
+		elseif ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO) {
+			return new YubicoProvider($this->config);
+		}
 		throw new \Exception('Invalid provider: ' . $this->config->twoFactorAuthentication);
 	}
 
@@ -270,11 +342,11 @@ class TwoFactorProviderService {
 	 * @return TwoFactorConfiguration configuration
 	 */
 	private function getConfigSelfService(&$profile) {
-		$config = new TwoFactorConfiguration();
-		$config->twoFactorAuthentication = $profile->twoFactorAuthentication;
-		$config->twoFactorAuthenticationInsecure = $profile->twoFactorAuthenticationInsecure;
-		$config->twoFactorAuthenticationURL = $profile->twoFactorAuthenticationURL;
-		return $config;
+		$tfConfig = new TwoFactorConfiguration();
+		$tfConfig->twoFactorAuthentication = $profile->twoFactorAuthentication;
+		$tfConfig->twoFactorAuthenticationInsecure = $profile->twoFactorAuthenticationInsecure;
+		$tfConfig->twoFactorAuthenticationURL = $profile->twoFactorAuthenticationURL;
+		return $tfConfig;
 	}
 
 	/**
@@ -284,11 +356,13 @@ class TwoFactorProviderService {
 	 * @return TwoFactorConfiguration configuration
 	 */
 	private function getConfigAdmin($conf) {
-		$config = new TwoFactorConfiguration();
-		$config->twoFactorAuthentication = $conf->getTwoFactorAuthentication();
-		$config->twoFactorAuthenticationInsecure = $conf->getTwoFactorAuthenticationInsecure();
-		$config->twoFactorAuthenticationURL = $conf->getTwoFactorAuthenticationURL();
-		return $config;
+		$tfConfig = new TwoFactorConfiguration();
+		$tfConfig->twoFactorAuthentication = $conf->getTwoFactorAuthentication();
+		$tfConfig->twoFactorAuthenticationInsecure = $conf->getTwoFactorAuthenticationInsecure();
+		$tfConfig->twoFactorAuthenticationURL = $conf->getTwoFactorAuthenticationURL();
+		$tfConfig->twoFactorAuthenticationClientId = $conf->getTwoFactorAuthenticationClientId();
+		$tfConfig->twoFactorAuthenticationSecretKey = $conf->getTwoFactorAuthenticationSecretKey();
+		return $tfConfig;
 	}
 
 }
@@ -299,7 +373,30 @@ class TwoFactorProviderService {
  * @author Roland Gruber
  */
 class TwoFactorConfiguration {
+
+	/**
+	 * @var string provider id
+	 */
 	public $twoFactorAuthentication = null;
+
+	/**
+	 * @var service URL
+	 */
 	public $twoFactorAuthenticationURL = null;
+
+	/**
+	 * @var disable certificate check
+	 */
 	public $twoFactorAuthenticationInsecure = false;
+
+	/**
+	 * @var client ID for API access
+	 */
+	public $twoFactorAuthenticationClientId = null;
+
+	/**
+	 * @var secret key for API access
+	 */
+	public $twoFactorAuthenticationSecretKey = null;
+
 }

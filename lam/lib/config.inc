@@ -591,6 +591,8 @@ class LAMConfig {
 
 	private $twoFactorAuthentication = TwoFactorProviderService::TWO_FACTOR_NONE;
 	private $twoFactorAuthenticationURL = 'https://localhost';
+	private $twoFactorAuthenticationClientId = null;
+	private $twoFactorAuthenticationSecretKey = null;
 	private $twoFactorAuthenticationInsecure = false;
 	private $twoFactorAuthenticationLabel = null;
 	private $twoFactorAuthenticationOptional = false;
@@ -607,7 +609,7 @@ class LAMConfig {
 		'pwdResetAllowScreenPassword', 'pwdResetForcePasswordChange', 'pwdResetDefaultPasswordOutput',
 		'scriptUserName', 'scriptSSHKey', 'scriptSSHKeyPassword', 'twoFactorAuthentication', 'twoFactorAuthenticationURL',
 		'twoFactorAuthenticationInsecure', 'twoFactorAuthenticationLabel', 'twoFactorAuthenticationOptional',
-		'twoFactorAuthenticationCaption', 'referentialIntegrityOverlay'
+		'twoFactorAuthenticationCaption', 'twoFactorAuthenticationClientId', 'twoFactorAuthenticationSecretKey', 'referentialIntegrityOverlay'
 	);
 
 
@@ -867,6 +869,8 @@ class LAMConfig {
 			if (!in_array("pwdResetDefaultPasswordOutput", $saved)) array_push($file_array, "\n" . "pwdResetDefaultPasswordOutput: " . $this->pwdResetDefaultPasswordOutput . "\n");
 			if (!in_array("twoFactorAuthentication", $saved)) array_push($file_array, "\n" . "twoFactorAuthentication: " . $this->twoFactorAuthentication . "\n");
 			if (!in_array("twoFactorAuthenticationURL", $saved)) array_push($file_array, "\n" . "twoFactorAuthenticationURL: " . $this->twoFactorAuthenticationURL . "\n");
+			if (!in_array("twoFactorAuthenticationClientId", $saved)) array_push($file_array, "\n" . "twoFactorAuthenticationClientId: " . $this->twoFactorAuthenticationClientId . "\n");
+			if (!in_array("twoFactorAuthenticationSecretKey", $saved)) array_push($file_array, "\n" . "twoFactorAuthenticationSecretKey: " . $this->twoFactorAuthenticationSecretKey . "\n");
 			if (!in_array("twoFactorAuthenticationInsecure", $saved)) array_push($file_array, "\n" . "twoFactorAuthenticationInsecure: " . $this->twoFactorAuthenticationInsecure . "\n");
 			if (!in_array("twoFactorAuthenticationLabel", $saved)) array_push($file_array, "\n" . "twoFactorAuthenticationLabel: " . $this->twoFactorAuthenticationLabel . "\n");
 			if (!in_array("twoFactorAuthenticationOptional", $saved)) array_push($file_array, "\n" . "twoFactorAuthenticationOptional: " . $this->twoFactorAuthenticationOptional . "\n");
@@ -2151,7 +2155,7 @@ class LAMConfig {
 	/**
 	 * Returns the authentication URL.
 	 *
-	 * @return string $twoFactorAuthenticationURL authentication URL
+	 * @return string authentication URL
 	 */
 	public function getTwoFactorAuthenticationURL() {
 		return $this->twoFactorAuthenticationURL;
@@ -2167,9 +2171,45 @@ class LAMConfig {
 	}
 
 	/**
+	 * Sets the client id.
+	 *
+	 * @param string $clientId client id
+	 */
+	public function setTwoFactorAuthenticationClientId($clientId) {
+		$this->twoFactorAuthenticationClientId = $clientId;
+	}
+
+	/**
+	 * Returns the client id.
+	 *
+	 * @return string client id
+	 */
+	public function getTwoFactorAuthenticationClientId() {
+		return $this->twoFactorAuthenticationClientId;
+	}
+
+	/**
+	 * Sets the secret key.
+	 *
+	 * @param string $secretKey secret key
+	 */
+	public function setTwoFactorAuthenticationSecretKey($secretKey) {
+		$this->twoFactorAuthenticationSecretKey = $secretKey;
+	}
+
+	/**
+	 * Returns the secret key.
+	 *
+	 * @return string secret key
+	 */
+	public function getTwoFactorAuthenticationSecretKey() {
+		return $this->twoFactorAuthenticationSecretKey;
+	}
+
+	/**
 	 * Returns if SSL certificate verification is turned off.
 	 *
-	 * @return bool $twoFactorAuthenticationInsecure SSL certificate verification is turned off
+	 * @return bool SSL certificate verification is turned off
 	 */
 	public function getTwoFactorAuthenticationInsecure() {
 		return $this->twoFactorAuthenticationInsecure;
@@ -2187,7 +2227,7 @@ class LAMConfig {
 	/**
 	 * Returns the authentication label.
 	 *
-	 * @return string $twoFactorAuthenticationLabel authentication label
+	 * @return string authentication label
 	 */
 	public function getTwoFactorAuthenticationLabel() {
 		return $this->twoFactorAuthenticationLabel;
@@ -2205,7 +2245,7 @@ class LAMConfig {
 	/**
 	 * Returns if 2nd factor is optional.
 	 *
-	 * @return bool $twoFactorAuthenticationOptional 2nd factor is optional
+	 * @return bool 2nd factor is optional
 	 */
 	public function getTwoFactorAuthenticationOptional() {
 		return $this->twoFactorAuthenticationOptional;
@@ -2223,7 +2263,7 @@ class LAMConfig {
 	/**
 	 * Returns the caption HTML.
 	 *
-	 * @return string $twoFactorAuthenticationCaption caption HTML
+	 * @return string caption HTML
 	 */
 	public function getTwoFactorAuthenticationCaption() {
 		return $this->twoFactorAuthenticationCaption;

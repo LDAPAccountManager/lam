@@ -500,6 +500,94 @@ class LAMConfigTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Tests LAMConfig->getTwoFactorAuthentication() and LAMConfig->setTwoFactorAuthentication()
+	 */
+	public function testTwoFactorAuthentication() {
+		$val = '2fid';
+		$this->lAMConfig->setTwoFactorAuthentication($val);
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthentication());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthentication());
+	}
+
+	/**
+	 * Tests LAMConfig->getTwoFactorAuthenticationURL() and LAMConfig->setTwoFactorAuthenticationURL()
+	 */
+	public function testTwoFactorAuthenticationURL() {
+		$val = 'http://example.com';
+		$this->lAMConfig->setTwoFactorAuthenticationURL($val);
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationURL());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationURL());
+	}
+
+	/**
+	 * Tests LAMConfig->getTwoFactorAuthenticationClientId() and LAMConfig->setTwoFactorAuthenticationClientId()
+	 */
+	public function testTwoFactorAuthenticationClientId() {
+		$val = '1234';
+		$this->lAMConfig->setTwoFactorAuthenticationClientId($val);
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationClientId());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationClientId());
+	}
+
+	/**
+	 * Tests LAMConfig->getTwoFactorAuthenticationSecretKey() and LAMConfig->setTwoFactorAuthenticationSecretKey()
+	 */
+	public function testTwoFactorAuthenticationSecretKey() {
+		$val = '3333key';
+		$this->lAMConfig->setTwoFactorAuthenticationSecretKey($val);
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationSecretKey());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationSecretKey());
+	}
+
+	/**
+	 * Tests LAMConfig->getTwoFactorAuthenticationInsecure() and LAMConfig->setTwoFactorAuthenticationInsecure()
+	 */
+	public function testTwoFactorAuthenticationInsecure() {
+		$val = true;
+		$this->lAMConfig->setTwoFactorAuthenticationInsecure($val);
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationInsecure());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationInsecure());
+	}
+
+	/**
+	 * Tests LAMConfig->getTwoFactorAuthenticationLabel() and LAMConfig->setTwoFactorAuthenticationLabel()
+	 */
+	public function testTwoFactorAuthenticationLabel() {
+		$val = '2falabel';
+		$this->lAMConfig->setTwoFactorAuthenticationLabel($val);
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationLabel());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationLabel());
+	}
+
+	/**
+	 * Tests LAMConfig->getTwoFactorAuthenticationOptional() and LAMConfig->setTwoFactorAuthenticationOptional()
+	 */
+	public function testTwoFactorAuthenticationOptional() {
+		$val = true;
+		$this->lAMConfig->setTwoFactorAuthenticationOptional($val);
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationOptional());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationOptional());
+	}
+
+	/**
+	 * Tests LAMConfig->getTwoFactorAuthenticationCaption() and LAMConfig->setTwoFactorAuthenticationCaption()
+	 */
+	public function testTwoFactorAuthenticationCaption() {
+		$val = '2facaption';
+		$this->lAMConfig->setTwoFactorAuthenticationCaption($val);
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationCaption());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationCaption());
+	}
+
+	/**
 	 * Tests LAMConfig->getLamProMailFrom() and LAMConfig->setLamProMailFrom()
 	 */
 	public function testLamProMailFrom() {
