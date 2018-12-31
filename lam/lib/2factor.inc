@@ -248,7 +248,7 @@ class YubicoProvider implements TwoFactorProvider {
 	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::getSerials()
 	 */
 	public function getSerials($user, $password) {
-		$keyAttributeName = strtolower('yubiKeyId');
+		$keyAttributeName = strtolower($this->config->twoFactorAuthenticationSerialAttributeName);
 		$loginDn = $_SESSION['ldap']->getUserName();
 		$handle = getLDAPServerHandle();
 		$ldapData = ldapGetDN($loginDn, array($keyAttributeName), $handle);
@@ -362,6 +362,15 @@ class TwoFactorProviderService {
 		$tfConfig->twoFactorAuthenticationURL = $conf->getTwoFactorAuthenticationURL();
 		$tfConfig->twoFactorAuthenticationClientId = $conf->getTwoFactorAuthenticationClientId();
 		$tfConfig->twoFactorAuthenticationSecretKey = $conf->getTwoFactorAuthenticationSecretKey();
+		if ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO) {
+			$moduleSettings = $conf->get_moduleSettings();
+			if (!empty($moduleSettings['yubiKeyUser_attributeName'][0])) {
+				$tfConfig->twoFactorAuthenticationSerialAttributeName = $moduleSettings['yubiKeyUser_attributeName'][0];
+			}
+			else {
+				$tfConfig->twoFactorAuthenticationSerialAttributeName = 'yubiKeyId';
+			}
+		}
 		return $tfConfig;
 	}
 
@@ -398,5 +407,10 @@ class TwoFactorConfiguration {
 	 * @var secret key for API access
 	 */
 	public $twoFactorAuthenticationSecretKey = null;
+
+	/**
+	 * @var LDAP attribute name that stores the token serials
+	 */
+	public $twoFactorAuthenticationSerialAttributeName = null;
 
 }
