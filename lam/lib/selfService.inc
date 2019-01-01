@@ -3,7 +3,7 @@ use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2018  Roland Gruber
+  Copyright (C) 2006 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -300,6 +300,38 @@ function isSelfService() {
 	return session_name() == 'SELFSERVICE';
 }
 
+/**
+ * Opens the LDAP connection and returns the handle. No bind is done.
+ *
+ * @param selfServiceProfile $profile profile
+ * @return handle LDAP handle or null if connection failed
+ */
+function openSelfServiceLdapConnection($profile) {
+	$server = connectToLDAP($profile->serverURL, $profile->useTLS);
+	if ($server != null) {
+		// follow referrals
+		ldap_set_option($server, LDAP_OPT_REFERRALS, $profile->followReferrals);
+	}
+	return $server;
+}
+
+/**
+ * Binds the LDAP connections with given user and password.
+ *
+ * @param handle $handle LDAP handle
+ * @param selfServiceProfile profile
+ * @param string $userDn bind DN
+ * @param string $password bind password
+ * @return boolean binding successful
+ */
+function bindLdapUser($handle, $profile, $userDn, $password) {
+	if ($profile->useForAllOperations) {
+		$userDn = $profile->LDAPUser;
+		$password = deobfuscateText($profile->LDAPPassword);
+	}
+	return @ldap_bind($handle, $userDn, $password);
+}
+
 
 /**
  * Includes all settings of a self service profile.
@@ -391,6 +423,8 @@ class selfServiceProfile {
 	public $twoFactorAuthenticationLabel = null;
 	public $twoFactorAuthenticationOptional = false;
 	public $twoFactorAuthenticationCaption = '';
+	public $twoFactorAuthenticationClientId = '';
+	public $twoFactorAuthenticationSecretKey = '';
 
 	/** provider for captcha (-/google) */
 	public $captchaProvider = '-';
@@ -445,6 +479,8 @@ class selfServiceProfile {
 		$this->twoFactorAuthenticationLabel = null;
 		$this->twoFactorAuthenticationOptional = false;
 		$this->twoFactorAuthenticationCaption = '';
+		$this->twoFactorAuthenticationClientId = '';
+		$this->twoFactorAuthenticationSecretKey = '';
 		$this->captchaProvider = '-';
 		$this->reCaptchaSiteKey = '';
 		$this->reCaptchaSecretKey = '';

@@ -5,7 +5,7 @@ use \LAMConfig;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2018  Roland Gruber
+  Copyright (C) 2017 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -249,7 +249,12 @@ class YubicoProvider implements TwoFactorProvider {
 	 */
 	public function getSerials($user, $password) {
 		$keyAttributeName = strtolower($this->config->twoFactorAuthenticationSerialAttributeName);
-		$loginDn = $_SESSION['ldap']->getUserName();
+		if (isset($_SESSION['selfService_clientDN'])) {
+			$loginDn = lamDecrypt($_SESSION['selfService_clientDN'], 'SelfService');
+		}
+		else {
+			$loginDn = $_SESSION['ldap']->getUserName();
+		}
 		$handle = getLDAPServerHandle();
 		$ldapData = ldapGetDN($loginDn, array($keyAttributeName), $handle);
 		if (empty($ldapData[$keyAttributeName])) {
@@ -346,6 +351,17 @@ class TwoFactorProviderService {
 		$tfConfig->twoFactorAuthentication = $profile->twoFactorAuthentication;
 		$tfConfig->twoFactorAuthenticationInsecure = $profile->twoFactorAuthenticationInsecure;
 		$tfConfig->twoFactorAuthenticationURL = $profile->twoFactorAuthenticationURL;
+		$tfConfig->twoFactorAuthenticationClientId = $profile->twoFactorAuthenticationClientId;
+		$tfConfig->twoFactorAuthenticationSecretKey = $profile->twoFactorAuthenticationSecretKey;
+		if ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO) {
+			$moduleSettings = $profile->moduleSettings;
+			if (!empty($moduleSettings['yubiKeyUser_attributeName'][0])) {
+				$tfConfig->twoFactorAuthenticationSerialAttributeName = $moduleSettings['yubiKeyUser_attributeName'][0];
+			}
+			else {
+				$tfConfig->twoFactorAuthenticationSerialAttributeName = 'yubiKeyId';
+			}
+		}
 		return $tfConfig;
 	}
 
