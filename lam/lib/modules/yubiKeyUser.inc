@@ -5,7 +5,7 @@ use \LAM\PDF\PDFTableRow;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2018  Roland Gruber
+  Copyright (C) 2018 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -308,7 +308,7 @@ class yubiKeyUser extends baseModule {
 			for ($i = 0; $i < sizeof($keys); $i++) {
 				$group = new htmlGroup();
 				$keyInput = new htmlInputField('yubiKeyId_' . $i, $keys[$i]);
-				$keyInput->setFieldMaxLength(16384);
+				$keyInput->setFieldMaxLength(12);
 				$group->addElement($keyInput);
 				$delLink = new htmlLink('', '#', '../../graphics/del.png');
 				$delLink->setTitle(_('Delete'));
