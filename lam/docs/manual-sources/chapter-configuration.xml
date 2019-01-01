@@ -596,11 +596,53 @@
             <para><ulink
             url="https://www.privacyidea.org/">privacyIdea</ulink></para>
           </listitem>
+
+          <listitem>
+            <para><ulink url="https://www.yubico.com/">YubiKey</ulink></para>
+          </listitem>
         </itemizedlist>
 
-        <para>By default LAM will enforce to use a token and reject users that
-        did not setup one. You can set this check to optional. But if a user
-        has setup a token then this will always be required.</para>
+        <para>Configuration options:</para>
+
+        <para>privacyIDEA:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Base URL: please enter the URL of your privacyIDEA
+            instance</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>YubiKey:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Base URL: please enter the URL of your YubiKey verfication
+            server. For YubiKey cloud this is
+            "https://api.yubico.com/wsapi/2.0/verify". If you run a custom
+            verification API such as yubiserver then enter its URL (e.g.
+            http://www.example.com:8000/wsapi/2.0/verify). The URL needs to
+            end with "/wsapi/2.0/verify".</para>
+          </listitem>
+
+          <listitem>
+            <para>Client id: this is only required for YubiKey cloud. You can
+            register here: https://upgrade.yubico.com/getapikey/</para>
+          </listitem>
+
+          <listitem>
+            <para>Secret key: this is only required for YubiKey cloud. You can
+            register here: https://upgrade.yubico.com/getapikey/</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Optional: By default LAM will enforce to use a token and reject
+        users that did not setup one. You can set this check to optional. But
+        if a user has setup a token then this will always be required.</para>
+
+        <para>Disable certificate check: This should be used on development
+        instances only. It skips the certificate check when connecting to
+        verification server.</para>
 
         <screenshot>
           <mediaobject>

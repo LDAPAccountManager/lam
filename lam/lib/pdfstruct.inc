@@ -284,7 +284,7 @@ function installPDFTemplates() {
 		$entry = $templateDir->read();
 		while ($entry){
 			$path = $basePath . '/logos/' . $entry;
-			if ((strpos($entry, '.') !== 1) && !is_file($path)) {
+			if ((strpos($entry, '.') !== 0) && !is_file($path)) {
 				$template = $templatePath . '/' . $entry;
 				logNewMessage(LOG_DEBUG, 'Copy template ' . $template . ' to ' . $path);
 				@copy($template, $path);
