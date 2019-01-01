@@ -1,3 +1,6 @@
+March 2019
+  - Added YubiKey as 2-factor authentication provider
+
 28.12.2018 6.6
   - New import/export in tools menu
   - YubiKey support

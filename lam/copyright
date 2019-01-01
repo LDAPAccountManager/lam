@@ -1,4 +1,4 @@
-This software is copyright (c) 2003 - 2018 by Roland Gruber
+This software is copyright (c) 2003 - 2019 by Roland Gruber
 
 If you purchased a copy of LDAP Account Manager Pro then the following
 files are licensed under the conditions which you accepted at purchase
@@ -198,6 +198,29 @@ B:
    OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+C:
+
+   Redistribution and use in source and binary forms, with or without modification,
+   are permitted provided that the following conditions are met:
+
+   1. Redistributions of source code must retain the above copyright notice, this list
+   of conditions and the following disclaimer.
+
+   2. Redistributions in binary form must reproduce the above copyright notice, this
+   list of conditions and the following disclaimer in the documentation and/or other
+   materials provided with the distribution.
+
+   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+   IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+   INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+   BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+   OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+   OF THE POSSIBILITY OF SUCH DAMAGE.
+
 
 Programs and licenses with other licenses and/or authors than the
 main license and authors:
@@ -205,6 +228,7 @@ main license and authors:
 lib/3rdParty/tcpdf/fonts/DejaVu*.ttf        A        Public Domain, Bitstream, Inc., Tavmjong Bah
 lib/3rdParty/tcpdf/fonts/DejaVu*.z          A        Public Domain, Bitstream, Inc., Tavmjong Bah
 lib/3rdParty/phpseclib                      B        Jim Wigginton
+lib/3rdParty/yubico/Yubico.php              C  2015  Yubico AB
 templates/lib/*jquery*.js                   B  2018  jQuery Foundation and other contributors
 style/120_jquery-ui*.css					B  2016  jQuery Foundation and other contributors
 templates/lib/*jquery-dropmenu-*.js         B  2010  Fred Heusschen
