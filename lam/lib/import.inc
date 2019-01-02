@@ -5,7 +5,7 @@ use \LAMException;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2018  Roland Gruber
+ Copyright (C) 2018 - 2019  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -109,8 +109,7 @@ class Importer {
 	 */
 	public function getTasks($lines) {
 		$chunks = $this->extractImportChunks($lines);
-		$tasks = $this->convertToTasks($chunks);
-		return $tasks;
+		return $this->convertToTasks($chunks);
 	}
 
 	/**
@@ -297,7 +296,6 @@ class Importer {
 			elseif ($type !== 'modify') {
 				throw new LAMException(_('Invalid data'), htmlspecialchars($dn) . ' - changeType: ' . htmlspecialchars($type));
 			}
-			$changes = array();
 			$subtasks = array();
 			$currentLines = array();
 			$linesCount = sizeof($entry);
@@ -337,7 +335,7 @@ class Importer {
 		if (($delOldRdnData[Importer::KEY] !== 'deleteoldrdn') || !in_array($delOldRdnData[Importer::VALUE], array('0', '1'), true)) {
 			throw new LAMException(_('Invalid data'), htmlspecialchars($dn) . '<br>' . $entry[1]);
 		}
-		$delOldRdn = ($delOldRdnData[Importer::VALUE] === '0') ? false : true;
+		$delOldRdn = ($delOldRdnData[Importer::VALUE] !== '0');
 		return new RenameEntryTask($dn, $newRdn, $delOldRdn);
 	}
 

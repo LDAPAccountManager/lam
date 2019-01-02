@@ -3,7 +3,7 @@ use \LAM\TYPES\TypeManager;
 /*
  * This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
  * Copyright (C) 2017 Lars Althof
- *               2017 Roland Gruber
+ *               2017 - 2019 Roland Gruber
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -559,10 +559,10 @@ class courierMailAccount extends baseModule {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		// add extension
-		if (isset($profile['courierMailAccount_addExt'][0]) && ($profile['courierMailAccount_addExt'][0] == "true")) {
-			if (!in_array('courierMailAccount', $this->attributes['objectClass'])) {
-				$this->attributes['objectClass'][] = 'courierMailAccount';
-			}
+		if (isset($profile['courierMailAccount_addExt'][0])
+				&& ($profile['courierMailAccount_addExt'][0] == "true")
+				&& !in_array('courierMailAccount', $this->attributes['objectClass'])) {
+			$this->attributes['objectClass'][] = 'courierMailAccount';
 		}
 	}
 
@@ -573,12 +573,7 @@ class courierMailAccount extends baseModule {
 	 * @return boolean only virtual account
 	 */
 	private function isUnixDisabled($modules) {
-		if (in_array('posixAccount', $modules)) {
-			return false;
-		}
-		else {
-			return true;
-		}
+		return !in_array('posixAccount', $modules);
 	}
 
 }

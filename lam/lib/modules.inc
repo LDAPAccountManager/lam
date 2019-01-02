@@ -4,7 +4,7 @@ use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2018  Roland Gruber
+  Copyright (C) 2003 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -139,8 +139,7 @@ function get_ldap_filter($typeId) {
 		$finalFilter = "(&" . implode("", $filters['and']) . ")";
 	}
 	$loginData = $_SESSION['ldap']->decrypt_login();
-	$finalFilter = str_replace('@@LOGIN_DN@@', $loginData[0], $finalFilter);
-	return $finalFilter;
+	return str_replace('@@LOGIN_DN@@', $loginData[0], $finalFilter);
 }
 
 /**
@@ -190,7 +189,9 @@ function getRDNAttributes($typeId, $selectedModules=null) {
 		if (!in_array($attrs_normal[$i], $return)) $return[] = $attrs_normal[$i];
 	}
 	for ($i = 0; $i < sizeof($attrs_low); $i++) {
-		if (!in_array($attrs_low[$i], $return)) $return[] = $attrs_low[$i];
+		if (!in_array($attrs_low[$i], $return)) {
+			$return[] = $attrs_low[$i];
+		}
 	}
 	return $return;
 }
@@ -252,8 +253,10 @@ function check_module_depends($selected, $deps) {
 			}
 		}
 	}
-	if (sizeof($ret) > 0) return $ret;
-	else return false;
+	if (sizeof($ret) > 0) {
+		return $ret;
+	}
+	return false;
 }
 
 /**
@@ -273,8 +276,10 @@ function check_module_conflicts($selected, $deps) {
 			}
 		}
 	}
-	if (sizeof($ret) > 0) return $ret;
-	else return false;
+	if (sizeof($ret) > 0) {
+		return $ret;
+	}
+	return false;
 }
 
 /**
@@ -289,7 +294,7 @@ function getAvailableModules($scope, $mustSupportAdminInterface = false) {
 	$dir = dir($dirname);
 	$return = array();
 	// get module names.
-	while ($entry = $dir->read())
+	while ($entry = $dir->read()) {
 		if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($dirname . '/'.$entry)) {
 			$entry = substr($entry, 0, strpos($entry, '.'));
 			$temp = moduleCache::getModule($entry, $scope);
@@ -300,6 +305,7 @@ function getAvailableModules($scope, $mustSupportAdminInterface = false) {
 				$return[] = $entry;
 			}
 		}
+	}
 	return $return;
 }
 
@@ -389,7 +395,9 @@ function getHelp($module,$helpID,$scope='') {
 	global $helpArray;
 	if (!isset($module) || ($module == '') || ($module == 'main')) {
 		$helpPath = "../help/help.inc";
-		if (is_file("../../help/help.inc")) $helpPath = "../../help/help.inc";
+		if (is_file("../../help/help.inc")) {
+			$helpPath = "../../help/help.inc";
+		}
 		if (!isset($helpArray)) {
 			include_once($helpPath);
 		}
@@ -512,7 +520,9 @@ function buildUploadAccounts($type, $data, $ids, $selectedModules, htmlResponsiv
 				break;
 			}
 		}
-		if ($newRound) continue;
+		if ($newRound) {
+			continue;
+		}
 		// this point should never be reached, LAM was unable to find a correct module order
 		$container->add(new htmlStatusMessage("ERROR", "Internal Error: Unable to find correct module order."), 12);
 		return false;
@@ -701,7 +711,9 @@ function lamCompareDescriptiveOptions(&$a, &$b) {
  */
 function printHelpLink($entry, $number, $module = '', $scope = '', $classes = array()) {
 	$helpPath = "../";
-	if (is_file("./help.php")) $helpPath = "";
+	if (is_file("./help.php")) {
+		$helpPath = "";
+	}
 	$title = $entry['Headline'];
 	$message = $entry['Text'];
 	if (isset($entry['attr'])) {
@@ -736,8 +748,12 @@ class accountContainer {
 	* @param integer $randomID random ID to avoid parallel editing (default: null)
 	*/
 	function __construct($type, $base, $randomID = null) {
-		if (!($type instanceof ConfiguredType)) trigger_error('Argument of accountContainer must be ConfiguredType.', E_USER_ERROR);
-		if (!is_string($base)) trigger_error('Argument of accountContainer must be string.', E_USER_ERROR);
+		if (!($type instanceof ConfiguredType)) {
+			trigger_error('Argument of accountContainer must be ConfiguredType.', E_USER_ERROR);
+		}
+		if (!is_string($base)) {
+			trigger_error('Argument of accountContainer must be string.', E_USER_ERROR);
+		}
 		$this->type = $type;
 		$this->base = $base;
 		// Set startpage
@@ -855,13 +871,14 @@ class accountContainer {
 		}
 		$oldPage = $this->current_page;
 		$oldSubpage = $this->subpage;
-		$post = $_POST;
 		$result = array();
 		$stopProcessing = false; // when set to true, no module options are displayed
 		$errorsOccured = false;
 		$typeObject = $this->type->getBaseType();
 		$profileLoaded = $this->loadProfileIfRequested();
-		if ($this->subpage=='') $this->subpage='attributes';
+		if ($this->subpage == '') {
+			$this->subpage='attributes';
+		}
 		if (isset($_POST['accountContainerReset'])) {
 			$result = $this->load_account($this->dn_orig);
 		}
@@ -1225,7 +1242,7 @@ class accountContainer {
 		$return['forcePasswordChange'] = $forcePasswordChange;
 		if ($return['errorsOccured'] == 'false') {
 			// set new password
-			foreach ($this->module as $name => $module) {
+			foreach ($this->module as $module) {
 				if ($module instanceof passwordService) {
 					$messages = $module->passwordChangeRequested($password1, $modules, $forcePasswordChange);
 					for ($m = 0; $m < sizeof($messages); $m++) {
@@ -1334,7 +1351,7 @@ class accountContainer {
 	 * @return boolean show or hide button
 	 */
 	private function showSetPasswordButton() {
-		foreach ($this->module as $name => $module) {
+		foreach ($this->module as $module) {
 			if (($module instanceof passwordService) && $module->managesPasswordAttributes()) {
 				return true;
 			}
@@ -1442,11 +1459,12 @@ class accountContainer {
 			$this->lastLoadedProfile = $_POST['accountContainerSelectLoadProfile'];
 			// pass profile to each module
 			$modules = array_keys($this->module);
-			foreach ($modules as $module) $this->module[$module]->load_profile($profile);
-			if (isset($profile['ldap_rdn'][0])) {
-				if (in_array($profile['ldap_rdn'][0], getRDNAttributes($this->type->getId()))) {
-					$this->rdn = $profile['ldap_rdn'][0];
-				}
+			foreach ($modules as $module) {
+				$this->module[$module]->load_profile($profile);
+			}
+			if (isset($profile['ldap_rdn'][0])
+					&& in_array($profile['ldap_rdn'][0], getRDNAttributes($this->type->getId()))) {
+				$this->rdn = $profile['ldap_rdn'][0];
 			}
 			if (isset($profile['ldap_suffix'][0]) && ($profile['ldap_suffix'][0] != '-')) {
 				$this->dnSuffix = $profile['ldap_suffix'][0];
@@ -1468,7 +1486,9 @@ class accountContainer {
 			$buttonStatus = $this->module[$this->order[$i]]->getButtonStatus();
 			$alias = $this->module[$this->order[$i]]->get_alias();
 			// skip hidden buttons
-			if ($buttonStatus == 'hidden') continue;
+			if ($buttonStatus == 'hidden') {
+				continue;
+			}
 			$buttonImage = $this->module[$this->order[$i]]->getIcon();
 			$activatedClass = '';
 			if ($this->order[$this->current_page] == $this->order[$i]) {
@@ -1479,7 +1499,9 @@ class accountContainer {
 			$buttonStyle = 'background-color:transparent;;border:0px solid;min-width: 200px;';
 			echo "<button style=\"" . $buttonStyle . "\" name=\"form_main_".$this->order[$i]."\"";
 			echo " tabindex=$x";
-			if ($buttonStatus == 'disabled') echo " disabled";
+			if ($buttonStatus == 'disabled') {
+				echo " disabled";
+			}
 			echo ' onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
 			if ($buttonImage != null) {
 				if (!(strpos($buttonImage, 'http') === 0) && !(strpos($buttonImage, '/') === 0)) {
@@ -1523,10 +1545,10 @@ class accountContainer {
 			if (isset($orig[$name]) && is_array($orig[$name])) {
 				foreach ($orig[$name] as $j => $value) {
 					if (is_array($attributes[$name])) {
-						if (!in_array($value, $attributes[$name], true)) {
-							if (($value !== null) && ($value !== '')) {
-								$torem[$name][] = $value;
-							}
+						if (!in_array($value, $attributes[$name], true)
+								&& ($value !== null)
+								&& ($value !== '')) {
+							$torem[$name][] = $value;
 						}
 					}
 					elseif (($value !== null) && ($value !== '')) {
@@ -1538,10 +1560,10 @@ class accountContainer {
 			if (isset($attributes[$name]) && is_array($attributes[$name])) {
 				foreach ($attributes[$name] as $j => $value) {
 					if (isset($orig[$name]) && is_array($orig[$name])) {
-						if (!in_array($value, $orig[$name], true))
-							if (($value !== null) && ($value !== '')) {
-								$toadd[$name][] = $value;
-							}
+						if (!in_array($value, $orig[$name], true)
+								&& ($value !== null)
+								&& ($value !== ''))
+							$toadd[$name][] = $value;
 					}
 					elseif (($value !== null) && ($value !== '')) {
 						$toadd[$name][] = $value;
@@ -1663,7 +1685,9 @@ class accountContainer {
 	 * @return array fixed attributes
 	 */
 	function fixLDAPAttributes($attributes, $modules) {
-		if (!is_array($attributes)) return $attributes;
+		if (!is_array($attributes)) {
+			return $attributes;
+		}
 		$keys = array_keys($attributes);
 		// get correct object class names, aliases and attributes
 		$objectClasses = array();
@@ -1800,10 +1824,14 @@ class accountContainer {
 		foreach ($module as $singlemodule) {
 			// load changes
 			$temp = $this->module[$singlemodule]->save_attributes();
-			if (!is_array($temp)) $temp = array();
+			if (!is_array($temp)) {
+				$temp = array();
+			}
 			// merge changes
 			$DNs = array_keys($temp);
-			if (is_array($temp)) $attributes = array_merge_recursive($temp, $attributes);
+			if (is_array($temp)) {
+				$attributes = array_merge_recursive($temp, $attributes);
+			}
 			for ($i = 0; $i < count($DNs); $i++) {
 				$ops = array_keys($temp[$DNs[$i]]);
 				for ($j=0; $j<count($ops); $j++) {
@@ -2075,8 +2103,7 @@ class accountContainer {
 		if (isset($this->finalDN)) {
 			$dn = $this->finalDN;
 		}
-		$return = array_merge($return,array('main_dn' => array(new \LAM\PDF\PDFLabelValue(_('DN'), $dn))));
-		return $return;
+		return array_merge($return,array('main_dn' => array(new \LAM\PDF\PDFLabelValue(_('DN'), $dn))));
 	}
 
 	/**
@@ -2150,7 +2177,9 @@ class accountContainer {
 		}
 		// add modules which could not be sorted (e.g. because of cyclic dependencies)
 		if (sizeof($depModules) > 0) {
-			for ($i = 0; $i < sizeof($depModules); $i++) $order[] = $depModules[$i];
+			for ($i = 0; $i < sizeof($depModules); $i++) {
+				$order[] = $depModules[$i];
+			}
 		}
 		// move disabled modules to end
 		$activeModules = array();
@@ -2177,9 +2206,10 @@ class accountContainer {
 	 * @return String RDN
 	 */
 	function getRDN($dn) {
-		if (($dn == "") || ($dn == null)) return "";
-		$rdn = substr($dn, 0, strpos($dn, ","));
-		return $rdn;
+		if (($dn == "") || ($dn == null)) {
+			return "";
+		}
+		return substr($dn, 0, strpos($dn, ","));
 	}
 
 	/**
@@ -2189,9 +2219,10 @@ class accountContainer {
 	 * @return String DN
 	 */
 	function getParentDN($dn) {
-		if (($dn == "") || ($dn == null)) return "";
-		$parent = substr($dn, strpos($dn, ",") + 1);
-		return $parent;
+		if (($dn == "") || ($dn == null)) {
+			return "";
+		}
+		return substr($dn, strpos($dn, ",") + 1);
 	}
 
 	/**

@@ -217,8 +217,6 @@ class PrivacyIDEAProvider implements TwoFactorProvider {
 		if (($status == 'true') && ($value == 'true')) {
 			return true;
 		}
-		$errCode = isset($output->result->error) && isset($output->result->error->code) ? $output->result->error->code : '';
-		$errMessage = isset($output->result->error) && isset($output->result->error->message) ? $output->result->error->message : '';
 		logNewMessage(LOG_DEBUG, "Unable to verify token: " . print_r($output, true));
 		return false;
 	}

@@ -6,7 +6,7 @@ use \LAM\PDF\PDFTableRow;
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2017  Roland Gruber
+  Copyright (C) 2009 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -192,13 +192,17 @@ class nisnetgroup extends baseModule {
 		$return = new htmlTable();
 		// user name
 		$groupName = '';
-		if (isset($this->attributes['cn'][0])) $groupName = $this->attributes['cn'][0];
+		if (isset($this->attributes['cn'][0])) {
+			$groupName = $this->attributes['cn'][0];
+		}
 		$nameInput = new htmlTableExtendedInputField(_("Group name"), 'cn', $groupName, 'cn');
 		$nameInput->setRequired(true);
 		$nameInput->setFieldMaxLength(20);
 		$return->addElement($nameInput, true);
 		$description = '';
-		if (isset($this->attributes['description'][0])) $description = $this->attributes['description'][0];
+		if (isset($this->attributes['description'][0])) {
+			$description = $this->attributes['description'][0];
+		}
 		$return->addElement(new htmlTableExtendedInputField(_('Description'), 'description', $description, 'description'), true);
 		$subgroupsContainer = new htmlTable();
 		if (isset($this->attributes['memberNisNetgroup']) && is_array($this->attributes['memberNisNetgroup'])) {
@@ -262,9 +266,15 @@ class nisnetgroup extends baseModule {
 		$hostNew = '';
 		$userNew = '';
 		$domainNew = '';
-		if (isset($_POST['host_new'])) $hostNew = $_POST['host_new'];
-		if (isset($_POST['user_new'])) $userNew = $_POST['user_new'];
-		if (isset($_POST['domain_new'])) $domainNew = $_POST['domain_new'];
+		if (isset($_POST['host_new'])) {
+			$hostNew = $_POST['host_new'];
+		}
+		if (isset($_POST['user_new'])) {
+			$userNew = $_POST['user_new'];
+		}
+		if (isset($_POST['domain_new'])) {
+			$domainNew = $_POST['domain_new'];
+		}
 		$hostField = new htmlInputField('host_new', $hostNew);
 		$hostField->setFieldSize(20);
 		$memberTable->addElement($hostField);
@@ -482,12 +492,16 @@ class nisnetgroup extends baseModule {
 		$return->addElement(new htmlButton($filterButtonName, _('Ok')));
 		$return->addElement(new htmlHelpLink('filter'), true);
 		$title = _('Host name');
-		if (!$selectHost) $title = _('User name');
+		if (!$selectHost) {
+			$title = _('User name');
+		}
 		$return->addElement(new htmlOutputText($title));
 		$return->addElement(new htmlSelect('selectBox', $options), true);
 		$return->addElement(new htmlSpacer(null, '10px'), true);
 		$type = 'host';
-		if (!$selectHost) $type = 'user';
+		if (!$selectHost) {
+			$type = 'user';
+		}
 		$buttonContainer = new htmlTable();
 		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'select', _('Ok')));
 		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Cancel')));
@@ -527,7 +541,9 @@ class nisnetgroup extends baseModule {
 		$existingGroups = $this->getGroupList();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
-			if (!in_array('nisNetgroup', $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = 'nisNetgroup';
+			if (!in_array('nisNetgroup', $partialAccounts[$i]['objectClass'])) {
+				$partialAccounts[$i]['objectClass'][] = 'nisNetgroup';
+			}
 			// add cn
 			$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['nisnetgroup_cn']];
 			// description (UTF-8, no regex check needed)
@@ -558,12 +574,7 @@ class nisnetgroup extends baseModule {
 	* @return boolean true, if settings are complete
 	*/
 	function module_complete() {
-		if (isset($this->attributes['cn']) && (sizeof($this->attributes['cn']) > 0)) {
-			return true;
-		}
-		else {
-			return false;
-		}
+		return (isset($this->attributes['cn']) && (sizeof($this->attributes['cn']) > 0));
 	}
 
 	/**

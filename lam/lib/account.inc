@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2009 - 2018  Roland Gruber
+                2009 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -341,7 +341,6 @@ function generateRandomPassword() {
 	if ($length < 12) {
 		$length = 12;
 	}
-	$isOk = false;
 	for ($x = 0; $x < 10000; $x++) {
 		$password = '';
 		for ($i = 0; $i < $length; $i++) {

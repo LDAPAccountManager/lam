@@ -6,7 +6,7 @@ use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2018  Roland Gruber
+  Copyright (C) 2013 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -961,7 +961,9 @@ class pykotaUser extends baseModule {
 		$return = array();
 		if (in_array('pykotaBalance', $fields)) {
 			$pykotaBalance = '';
-			if (isset($attributes['pykotaBalance'][0])) $pykotaBalance = $attributes['pykotaBalance'][0];
+			if (isset($attributes['pykotaBalance'][0])) {
+				$pykotaBalance = $attributes['pykotaBalance'][0];
+			}
 			$row = new htmlResponsiveRow();
 			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('pykotaBalance', _('Balance'))));
 			$row->addField(new htmlOutputText($pykotaBalance));
@@ -969,7 +971,9 @@ class pykotaUser extends baseModule {
 		}
 		if (in_array('pykotaLifeTimePaid', $fields)) {
 			$pykotaLifeTimePaid = '';
-			if (isset($attributes['pykotaLifeTimePaid'][0])) $pykotaLifeTimePaid = $attributes['pykotaLifeTimePaid'][0];
+			if (isset($attributes['pykotaLifeTimePaid'][0])) {
+				$pykotaLifeTimePaid = $attributes['pykotaLifeTimePaid'][0];
+			}
 			$row = new htmlResponsiveRow();
 			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('pykotaLifeTimePaid', _('Total paid'))));
 			$row->addField(new htmlOutputText($pykotaLifeTimePaid));
@@ -989,7 +993,6 @@ class pykotaUser extends baseModule {
 					$amount = new htmlOutputText($parts[1]);
 					$amount->alignment = htmlElement::ALIGN_RIGHT;
 					$pykotaPayments->add($amount, 3);
-					$comment = empty($parts[2]) ? '' : $parts[2];
 					$pykotaPayments->add(new htmlOutputText(base64_decode($parts[2])), 6);
 				}
 			}
@@ -1045,10 +1048,10 @@ class pykotaUser extends baseModule {
 	 */
 	public function checkSelfServiceSettings(&$options, &$profile) {
 		$errors = array();
-		if (get_class($this) == 'pykotaUser') {
-			if (!empty($options['pykotaUser_jobSuffix'][0]) && !get_preg($options['pykotaUser_jobSuffix'][0], 'dn')) {
-				$errors[] = $this->messages['jobSuffix'][0];
-			}
+		if ((get_class($this) == 'pykotaUser')
+				&& !empty($options['pykotaUser_jobSuffix'][0])
+				&& !get_preg($options['pykotaUser_jobSuffix'][0], 'dn')) {
+			$errors[] = $this->messages['jobSuffix'][0];
 		}
 		return $errors;
 	}
@@ -1060,13 +1063,7 @@ class pykotaUser extends baseModule {
 	 * @return boolean manage uid attribute
 	 */
 	private function manageUid($modules) {
-		if (in_array('inetOrgPerson', $modules)
-			|| in_array('posixAccount', $modules)) {
-			return false;
-		}
-		else {
-			return true;
-		}
+		return !in_array('inetOrgPerson', $modules) && !in_array('posixAccount', $modules);
 	}
 
 	/**
@@ -1076,12 +1073,7 @@ class pykotaUser extends baseModule {
 	 * @return boolean manage mail attribute
 	 */
 	private function manageMail($modules) {
-		if (in_array('inetOrgPerson', $modules)) {
-			return false;
-		}
-		else {
-			return true;
-		}
+		return !in_array('inetOrgPerson', $modules);
 	}
 
 	/**
@@ -1091,12 +1083,7 @@ class pykotaUser extends baseModule {
 	 * @return boolean manage description attribute
 	 */
 	private function manageDescription($modules) {
-		if (in_array('inetOrgPerson', $modules)) {
-			return false;
-		}
-		else {
-			return true;
-		}
+		return !in_array('inetOrgPerson', $modules);
 	}
 
 	/**

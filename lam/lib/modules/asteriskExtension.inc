@@ -6,7 +6,7 @@ use \LAM\PDF\PDFTableRow;
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2009 - 2012  Pavel Pozdniak
-                2009 - 2018  Roland Gruber
+                2009 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -345,7 +345,8 @@ class asteriskExtension extends baseModule {
             $displayEntrNum++;
             $this->addRuleFlag = false;
         }
-        $hidenInput = new htmlHiddenInput("extension_rows", $displayEntrNum); //the size of found rows plus 1 for new one;
+        // the size of found rows plus 1 for new one
+        $hidenInput = new htmlHiddenInput("extension_rows", $displayEntrNum);
         $renderContainer->addElement($hidenInput, true);
 
         $renderContainer->addElement(new htmlButton("add_rule", _('Add another rule')), true);
@@ -509,8 +510,9 @@ class asteriskExtension extends baseModule {
                 $this->searchOwnersInTreeSuffix = false;
             }
         }
-        if (!isset($this->extensionOwners))
+        if (!isset($this->extensionOwners)) {
             $this->extensionOwners = array();
+        }
         if (isset($_POST['addusers']) && isset($_POST['addusers_button'])) { // Add users to list
             // Add new user
             $this->extensionOwners = @array_merge($this->extensionOwners, $_POST['addusers']);
@@ -662,8 +664,7 @@ class asteriskExtension extends baseModule {
      */
     function getDefaultExtensionOwner(){
         $credentials = $_SESSION['ldap']->decrypt_login();
-		$login = $credentials[0];
-        return $login;
+        return $credentials[0];
     }
 
     /**
@@ -691,10 +692,9 @@ class asteriskExtension extends baseModule {
         $extRow["objectclass"][2] = "AsteriskExtension";
 
         $extRow['astapplication'][0] = $_POST['AstApplication_' . $entryCounter];
-        if (!isset($_POST['AstApplication_' . $entryCounter]) || $_POST['AstApplication_' . $entryCounter] == '') {
-            if ($entryCounter < ($_POST['extension_rows'] - 1)) {
-                $errors[] = $this->messages['AstApplication'][0];
-            }
+        if ((!isset($_POST['AstApplication_' . $entryCounter]) || $_POST['AstApplication_' . $entryCounter] == '')
+        		&& ($entryCounter < ($_POST['extension_rows'] - 1))) {
+			$errors[] = $this->messages['AstApplication'][0];
         }
 
         $extRow['astpriority'][0] = $extensionPriorityCntr;
@@ -707,10 +707,9 @@ class asteriskExtension extends baseModule {
 
         //Fille the member filed
         $extRow['member'] = $this->extensionOwners;
-        if (!isset($extRow['member']) || count($extRow['member']) == 0) {
-            if (!isset($_POST['form_subpage_' . get_class($this) . '_user_open'])) {
-                $errors[] = $this->messages['member'][0];
-            }
+        if ((!isset($extRow['member']) || count($extRow['member']) == 0)
+        		&& !isset($_POST['form_subpage_' . get_class($this) . '_user_open'])) {
+			$errors[] = $this->messages['member'][0];
         }
         return $errors;
     }
@@ -800,8 +799,6 @@ class asteriskExtension extends baseModule {
 	 * @see baseModule::get_pdfEntries()
 	 */
     function get_pdfEntries($pdfKeys, $typeId) {
-    	$a = $this->attributes;
-    	$o = $this->orig;
         $return = array();
         $extName = '';
         if (isset($this->attributes['AstExtension'][0])) {
@@ -849,10 +846,12 @@ class asteriskExtension extends baseModule {
         $extensionNamePriorityMap = array();
         for ($i = 0; $i < sizeof($rawAccounts); $i++) {
             // add object class
-            if (!in_array("AsteriskExtension", $partialAccounts[$i]['objectClass']))
+            if (!in_array("AsteriskExtension", $partialAccounts[$i]['objectClass'])) {
                 $partialAccounts[$i]['objectClass'][] = "AsteriskExtension";
-            if (!in_array("groupOfNames", $partialAccounts[$i]['objectClass']))
+            }
+            if (!in_array("groupOfNames", $partialAccounts[$i]['objectClass'])) {
                 $partialAccounts[$i]['objectClass'][] = "groupOfNames";
+            }
             // attributes
             $this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'asteriskExtension_AstExtension', 'AstExtension');
 
@@ -891,7 +890,6 @@ class asteriskExtension extends baseModule {
      */
     function moveExtentionToNewSuffix($rowOrig) {
         if ($this->isMoveToNewSuffix()) {
-            $orig_suffix = extractDNSuffix($this->getAccountContainer()->dn_orig);
             $oldDN = "cn=" . $rowOrig["cn"][0] . "," . extractDNSuffix($this->getAccountContainer()->dn_orig);
             $newRDN = "cn=" . $rowOrig["cn"][0];
             $is_rename_success = false;
@@ -924,7 +922,6 @@ class asteriskExtension extends baseModule {
 	* @return array list of modifications
 	*/
 	function save_attributes() {
-	$errors = array();
         $this->extensionRows = $this->array_sort($this->extensionRows, 'astpriority');
 
         //Modify existent config roes if necessary
@@ -949,7 +946,8 @@ class asteriskExtension extends baseModule {
                     $diffVals = array_map("unserialize", $diffValsSerialysed);
                     if($row["cn"][0] ==  $rowOrig["cn"][0]){
                         ldap_mod_replace($_SESSION['ldap']->server(), "cn=" . $row["cn"][0] . "," . $this->getAccountContainer()->dnSuffix, $diffVals);
-                    }else{
+                    }
+                    else {
                         $origDN = "cn=" . $rowOrig["cn"][0] . "," . $this->getAccountContainer()->dnSuffix;
                         $newRDN = "cn=" . $row["cn"][0];
 
@@ -971,9 +969,7 @@ class asteriskExtension extends baseModule {
         $this->getAccountContainer()->dn_orig = "cn=" .  $this->extensionRows[0]['cn'][0] . "," . $this->getAccountContainer()->dnSuffix;
         $this->getAccountContainer()->finalDN = "cn=" .  $this->extensionRows[0]['cn'][0] . "," . $this->getAccountContainer()->dnSuffix;
 
-        $retun_obj = $this->getAccountContainer()->save_module_attributes($this->orig, $this->orig);
-
-        return $retun_obj;
+        return $this->getAccountContainer()->save_module_attributes($this->orig, $this->orig);
     }
 
     /**

@@ -312,13 +312,13 @@ function showConfirmationDialog(title, okText, cancelText, dialogDiv, formName, 
 		jQuery('#' + dialogDiv).dialog('close');
 		if (resultField) {
 			jQuery('#' + resultField).val('ok');
-		};
+		}
 		appendDialogInputsToFormAndSubmit(dialogDiv, formName);
 	};
 	buttonList[cancelText] = function() {
 		if (resultField) {
 			jQuery('#' + resultField).val('cancel');
-		};
+		}
 		jQuery(this).dialog("close");
 	};
 	jQuery('#' + dialogDiv).dialog({
@@ -375,7 +375,7 @@ function equalWidth(elementIDs) {
 	for (var i = 0; i < elementIDs.length; ++i) {
 		if (jQuery(elementIDs[i]).width() > maxWidth) {
 			maxWidth = jQuery(elementIDs[i]).width();
-		};
+		}
 	}
 	if (maxWidth < 5) {
 		// no action if invalid width value (e.g. because of hidden tab)
@@ -396,7 +396,7 @@ function equalHeight(elementIDs) {
 	for (var i = 0; i < elementIDs.length; ++i) {
 		if (jQuery(elementIDs[i]).height() > max) {
 			max = jQuery(elementIDs[i]).height();
-		};
+		}
 	}
 	for (var i = 0; i < elementIDs.length; ++i) {
 		jQuery(elementIDs[i]).css({'height': max - (jQuery(elementIDs[i]).outerHeight() - jQuery(elementIDs[i]).height())});
@@ -768,7 +768,7 @@ window.lam.gui.equalHeight = function() {
 	jQuery('.lamEqualHeightTabContent').each(function() {
 		if (jQuery(this).height() > maxHeight) {
 			maxHeight = jQuery(this).height();
-		};
+		}
 	});
 	jQuery('.lamEqualHeightTabContent').each(function() {
 		jQuery(this).css({'height': maxHeight});

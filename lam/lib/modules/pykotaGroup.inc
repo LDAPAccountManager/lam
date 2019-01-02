@@ -3,7 +3,7 @@ use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2018  Roland Gruber
+  Copyright (C) 2013 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -367,10 +367,10 @@ class pykotaGroup extends baseModule {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		// add extension
-		if (isset($profile['pykotaGroup_addExt'][0]) && ($profile['pykotaGroup_addExt'][0] == "true")) {
-			if (!in_array('pykotaGroup', $this->attributes['objectClass'])) {
-				$this->attributes['objectClass'][] = 'pykotaGroup';
-			}
+		if (isset($profile['pykotaGroup_addExt'][0])
+				&& ($profile['pykotaGroup_addExt'][0] == "true")
+				&& !in_array('pykotaGroup', $this->attributes['objectClass'])) {
+			$this->attributes['objectClass'][] = 'pykotaGroup';
 		}
 	}
 
@@ -504,14 +504,9 @@ class pykotaGroup extends baseModule {
 	 * @return bool not active
 	 */
 	private function isUnixOrGonInactive($modules) {
-		if (in_array('posixGroup', $modules)
-			|| in_array('groupOfNames', $modules)
-			|| in_array('groupOfUniqueNames', $modules)) {
-			return false;
-		}
-		else {
-			return true;
-		}
+		return !in_array('posixGroup', $modules)
+			&& !in_array('groupOfNames', $modules)
+			&& !in_array('groupOfUniqueNames', $modules);
 	}
 
 	/**

@@ -3,7 +3,7 @@ use LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2018  Roland Gruber
+  Copyright (C) 2013 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -268,10 +268,10 @@ class kolabGroup extends baseModule {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		// add extension
-		if (isset($profile['kolabGroup_addExt'][0]) && ($profile['kolabGroup_addExt'][0] == "true")) {
-			if (!in_array('kolabGroupOfUniqueNames', $this->attributes['objectClass'])) {
-				$this->attributes['objectClass'][] = 'kolabGroupOfUniqueNames';
-			}
+		if (isset($profile['kolabGroup_addExt'][0])
+				&& ($profile['kolabGroup_addExt'][0] == "true")
+				&& !in_array('kolabGroupOfUniqueNames', $this->attributes['objectClass'])) {
+			$this->attributes['objectClass'][] = 'kolabGroupOfUniqueNames';
 		}
 	}
 
@@ -369,12 +369,7 @@ class kolabGroup extends baseModule {
 	 * @return boolean manage mail attribute
 	 */
 	private function manageMail($modules) {
-		if (in_array('qmailGroup', $modules)) {
-			return false;
-		}
-		else {
-			return true;
-		}
+		return !in_array('qmailGroup', $modules);
 	}
 
 	/**
