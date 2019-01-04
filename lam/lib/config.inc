@@ -3,7 +3,7 @@ use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2018  Roland Gruber
+  Copyright (C) 2003 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -138,14 +138,15 @@ function checkChmod($right, $target, $chmod) {
 * @return array profile names
 */
 function getConfigProfiles() {
-	$dir = dir(substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config");
+	$dirName = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config";
+	$dir = dir($dirName);
 	$ret = array();
 	$pos = 0;
 	while ($entry = $dir->read()){
 		$ext = substr($entry, strlen($entry)-5, 5);
 		$name = substr($entry, 0, strlen($entry)-5);
 		// check if extension is right, add to profile list
-		if ($ext == ".conf") {
+		if (($ext == ".conf") && is_readable($dirName . '/' . $entry)) {
 			$ret[$pos] = $name;
 			$pos ++;
 		}
@@ -740,7 +741,7 @@ class LAMConfig {
 	/** Saves preferences to config file */
 	public function save() {
 		$conffile = $this->getPath();
-		if (is_file($conffile)) {
+		if (is_file($conffile) && is_readable($conffile)) {
 			$file = fopen($conffile, "r");
 			$file_array = array();
 			// read config file
@@ -917,6 +918,7 @@ class LAMConfig {
 			}
 			return $saveResult;
 		}
+		return LAMConfig::SAVE_FAIL;
 	}
 
 	/**
