@@ -1391,7 +1391,6 @@ class posixGroup extends baseModule implements passwordService {
 			}
 		}
 		logNewMessage(LOG_DEBUG, 'Found ' . $resultCount . ' Unix users.');
-		logNewMessage(LOG_DEBUG, print_r($result, true));
 		return $this->cachedUserToGIDList;
 	}
 
