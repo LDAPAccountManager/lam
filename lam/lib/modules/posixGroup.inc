@@ -405,7 +405,6 @@ class posixGroup extends baseModule implements passwordService {
 		// back button
 		$return->addElement(new htmlSpacer(null, '20px'), true);
 		$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')), true);
-		$return->addElement(new htmlEqualHeight(array('removeusers', 'addusers')));
 
 		return $return;
 	}
