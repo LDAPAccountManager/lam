@@ -5,7 +5,7 @@ use LAM\ImageUtils\ImageManipulationFactory;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2018  Roland Gruber
+  Copyright (C) 2013 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -952,6 +952,7 @@ class windowsUser extends baseModule implements passwordService {
 			'accountExpires' => _('Account expiration date (read-only)'),
 			'department' => _('Department'),
 			'departmentNumber' => _('Department number'),
+			'proxyAddresses' => _('Proxy-Addresses (read-only)'),
 		);
 		// possible self service read-only fields
 		$return['selfServiceReadOnlyFields'] = array('physicalDeliveryOfficeName', 'telephoneNumber',
@@ -2924,6 +2925,17 @@ class windowsUser extends baseModule implements passwordService {
 		$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('accountExpires', _('Account expiration date'))));
 		$row->addField(new htmlOutputText($this->formatAccountExpires($attributes)));
 		$return['accountExpires'] = $row;
+		if (in_array('proxyAddresses', $fields)) {
+			$proxyAddresses = array();
+			if (isset($attributes['proxyAddresses'])) {
+				$proxyAddresses = $attributes['proxyAddresses'];
+			}
+			array_map('htmlspecialchars', $proxyAddresses);
+			$row = new htmlResponsiveRow();
+			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('proxyAddresses', _('Proxy-Addresses'))));
+			$row->addField(new htmlOutputText(implode('<br>', $proxyAddresses), false));
+			$return['proxyAddresses'] = $row;
+		}
 		return $return;
 	}
 

@@ -686,6 +686,18 @@
             </row>
 
             <row>
+              <entry><inlinemediaobject>
+                  <imageobject>
+                    <imagedata fileref="images/schema_mailAlias.png"/>
+                  </imageobject>
+                </inlinemediaobject> Mail routing</entry>
+
+              <entry>Local address (read-only)</entry>
+
+              <entry/>
+            </row>
+
+            <row>
               <entry morerows="4"><inlinemediaobject>
                   <imageobject>
                     <imagedata fileref="images/schema_samba.png"/>
@@ -741,7 +753,7 @@
             </row>
 
             <row>
-              <entry morerows="8"><inlinemediaobject>
+              <entry morerows="9"><inlinemediaobject>
                   <imageobject>
                     <imagedata fileref="images/schema_samba.png"/>
                   </imageobject>
@@ -772,6 +784,12 @@
 
             <row>
               <entry>Post office box</entry>
+
+              <entry/>
+            </row>
+
+            <row>
+              <entry>Proxy-Addresses (read-only)</entry>
 
               <entry/>
             </row>

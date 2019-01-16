@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2018  Roland Gruber
+  Copyright (C) 2004 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -134,6 +134,10 @@ class inetLocalMailRecipient extends baseModule {
 			'routingAdr' => _('Routing address'),
 			'localAdr' => _('Local address list'),
 			'host' => _('Mail server')
+		);
+		// self service
+		$return['selfServiceFieldSettings'] = array(
+			'mailLocalAddress' => _('Local address (read-only)'),
 		);
 		return $return;
 	}
@@ -351,6 +355,25 @@ class inetLocalMailRecipient extends baseModule {
 		$this->addSimplePDFField($return, 'routingAdr', _('Routing address'), 'mailRoutingAddress');
 		$this->addSimplePDFField($return, 'localAdr', _('Local address list'), 'mailLocalAddress');
 		$this->addSimplePDFField($return, 'host', _('Mail server'), 'mailHost');
+		return $return;
+	}
+
+	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
+		if ($passwordChangeOnly) {
+			return array(); // no processing as long no LDAP content can be read
+		}
+		$return = array();
+		if (in_array('mailLocalAddress', $fields)) {
+			$mailLocalAddress = array();
+			if (isset($attributes['mailLocalAddress'])) {
+				$mailLocalAddress = $attributes['mailLocalAddress'];
+			}
+			array_map('htmlspecialchars', $mailLocalAddress);
+			$row = new htmlResponsiveRow();
+			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('mailLocalAddress', _('Local address'))));
+			$row->addField(new htmlOutputText(implode('<br>', $mailLocalAddress), false));
+			$return['mailLocalAddress'] = $row;
+		}
 		return $return;
 	}
 
