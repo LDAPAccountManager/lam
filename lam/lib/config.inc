@@ -520,7 +520,7 @@ class LAMConfig {
 	private $searchLimit = 0;
 
 	/** Active account types */
-	private $activeTypes = "user,group,host,smbDomain";
+	private $activeTypes = "";
 
 	/** Name of configuration file */
 	private $file;
