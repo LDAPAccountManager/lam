@@ -1,7 +1,9 @@
 March 2019
   - Added YubiKey as 2-factor authentication provider
   - LAM Pro:
-   - New self service fields: Mail routing (Local address) and Windows (Proxy-Addresses)
+   -> New self service fields: Mail routing (Local address) and Windows (Proxy-Addresses)
+  - Fixed bugs:
+   -> Allow tree-only configurations without any other tab
 
 28.12.2018 6.6
   - New import/export in tools menu
