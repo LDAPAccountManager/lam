@@ -4098,7 +4098,10 @@ Run slapindex to rebuild the index.
     extension to the DNS server <ulink
     url="http://www.isc.org/software/bind">Bind</ulink> that allows to store
     DNS entries inside LDAP. Please install the Bind DLZ schema file on your
-    LDAP server. It is part of the DLZ patch.</para>
+    LDAP server. It is part of the Bind download. You can also get it from
+    Bind's <ulink
+    url="https://gitlab.isc.org/isc-projects/bind9/blob/master/contrib/dlz/modules/ldap/testing/dlz.schema">git
+    repository</ulink>.</para>
 
     <para><emphasis role="bold">Configuration</emphasis></para>
 
