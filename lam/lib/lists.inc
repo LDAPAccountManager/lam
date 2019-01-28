@@ -4,7 +4,7 @@ use LAM\TYPES\ConfiguredType;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2018  Roland Gruber
+  Copyright (C) 2003 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -505,18 +505,17 @@ class lamList {
 			$table_end = ($this->page * $this->maxPageEntries);
 		}
 		// get sort mapping
-		$sortMapping = &$this->sortMapping;
-		if (empty($sortMapping)) {
-			$sortMapping = array();
+		if (empty($this->sortMapping)) {
+			$this->sortMapping = array();
 			$infoSize = sizeof($info);
 			for ($i = 0; $i < $infoSize; $i++) {
-				$sortMapping[$i] = $i;
+				$this->sortMapping[$i] = $i;
 			}
 		}
 		// print account list
 		for ($i = $table_begin; $i < $table_end; $i++) {
 			$row = array();
-			$index = $sortMapping[$i];
+			$index = $this->sortMapping[$i];
 			$rowID = base64_encode($info[$index]['dn']);
 			$actionElement = new htmlGroup();
 			$checkbox = new htmlInputCheckbox($rowID, false);
@@ -524,8 +523,9 @@ class lamList {
 			$checkbox->setCSSClasses(array('accountBoxUnchecked align-middle'));
 			$actionElement->addElement($checkbox);
 			$actionElement->addElement(new htmlSpacer('0.5rem', null));
-			$onClickEvents[$i + 2] = "list_click('" . $rowID . "');";
-			$onDoubleClickEvents[$i + 2] = "top.location.href='../account/edit.php?type=" . $this->type->getId() . "&amp;DN=" . rawurlencode($info[$index]['dn']) . "';";
+			$rowNumber = $i - $table_begin + 2;
+			$onClickEvents[$rowNumber] = "list_click('" . $rowID . "');";
+			$onDoubleClickEvents[$rowNumber] = "top.location.href='../account/edit.php?type=" . $this->type->getId() . "&amp;DN=" . rawurlencode($info[$index]['dn']) . "';";
 			$this->addToolLinks($info[$index], $rowID, $actionElement);
 			$row[] = new htmlDiv(null, $actionElement, array('nowrap'));
 			foreach ($this->attrArray as $attributeName) {
@@ -719,18 +719,16 @@ class lamList {
 			}
 		}
 		// check if back from configuration page
-		if (sizeof($this->configOptions) > 0) {
-			if (isset($_POST['saveConfigOptions'])) {
-				$cookieValue = '';
-				for ($i = 0; $i < sizeof($this->configOptions); $i++) {
-					$this->configOptions[$i]->fillFromPostData();
-					$cookieValue .= $this->configOptions[$i]->getID() . "=" . $this->configOptions[$i]->getValue() . ';';
-				}
-				// save options as cookie for one year
-				setcookie("ListOptions_" . $this->type->getId(), $cookieValue, time()+60*60*24*365, "/", null, null, true);
-				// notify subclasses
-				$this->listConfigurationChanged();
+		if ((sizeof($this->configOptions) > 0) && isset($_POST['saveConfigOptions'])) {
+			$cookieValue = '';
+			for ($i = 0; $i < sizeof($this->configOptions); $i++) {
+				$this->configOptions[$i]->fillFromPostData();
+				$cookieValue .= $this->configOptions[$i]->getID() . "=" . $this->configOptions[$i]->getValue() . ';';
 			}
+			// save options as cookie for one year
+			setcookie("ListOptions_" . $this->type->getId(), $cookieValue, time()+60*60*24*365, "/", null, null, true);
+			// notify subclasses
+			$this->listConfigurationChanged();
 		}
 		return '';
 	}
@@ -759,11 +757,11 @@ class lamList {
 
 		echo "<div class=\"ui-tabs-nav " . $this->type->getScope() . "-bright\">";
 		echo "<div class=\"smallPaddingContent\">\n";
-		$refresh = '&amp;norefresh=true';
+		$refreshParam = '&amp;norefresh=true';
 		if (isset($_GET['refresh']) && ($_GET['refresh'] == 'true')) {
-			$refresh = '&amp;refresh=true';
+			$refreshParam = '&amp;refresh=true';
 		}
-		echo "<form action=\"list.php?type=" . $this->type->getId() . $refresh . "\" method=\"post\">\n";
+		echo "<form action=\"list.php?type=" . $this->type->getId() . $refreshParam . "\" method=\"post\">\n";
 
 		$container = new htmlResponsiveRow();
 		$container->add(new htmlSubTitle(_('Create PDF file')), 12);
