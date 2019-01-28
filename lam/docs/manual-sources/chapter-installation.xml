@@ -150,9 +150,9 @@
                 role="bold">rpm -i &lt;path to LAM
                 package&gt;</emphasis></para><literallayout>
 </literallayout><para><emphasis role="bold">Note:</emphasis> The RPM packages
-                for Fedora/CentOS do not contain a dependency to PHP due to
-                the various package names for it. Please make sure that you
-                install Apache/Nginx with PHP.</para></entry>
+                do not contain a dependency to PHP due to the various package
+                names for it. Please make sure that you install Apache/Nginx
+                with PHP.</para></entry>
               </row>
             </tbody>
           </tgroup>
