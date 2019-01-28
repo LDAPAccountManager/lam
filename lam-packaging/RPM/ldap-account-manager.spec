@@ -22,17 +22,6 @@ Vendor:		Roland Gruber
 Packager:	Roland Gruber <post@rolandgruber.de>
 BuildArch:	noarch
 AutoReqProv:  no
-%if %is_suse
-Requires:      php5
-Requires:      php5-ldap
-Requires:      php5-hash
-Requires:      php5-gd
-Requires:      php5-gettext
-Requires:      perl
-%endif
-%if %is_fedora
-Requires:      perl
-%endif
 
 Source1:      lam.nginx.conf
 Source2:      lam.apache.conf
