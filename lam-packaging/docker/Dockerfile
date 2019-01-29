@@ -52,5 +52,5 @@ RUN echo "RewriteEngine on" >> /etc/apache2/conf-enabled/laminit.conf \
  && echo "RewriteRule   ^/$  /lam/ [R,L]" >> /etc/apache2/conf-enabled/laminit.conf
 
 # start Apache when container starts
-ENTRYPOINT service apache2 start && /bin/bash
+ENTRYPOINT service apache2 start && sleep infinity
 
