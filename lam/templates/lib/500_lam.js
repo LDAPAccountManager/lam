@@ -1,7 +1,7 @@
 /**
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2018  Roland Gruber
+  Copyright (C) 2003 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -783,7 +783,7 @@ window.lam.form = window.lam.form || {};
 window.lam.form.autoTrim = function() {
 	jQuery('form').submit(function(e) {
 		jQuery('.lam-autotrim').each(function() {
-			this.value = String.trim(this.value);
+			this.value = String(this.value).trim();
 		});
 	});
 };
