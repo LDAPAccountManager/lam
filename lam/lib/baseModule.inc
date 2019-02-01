@@ -738,7 +738,7 @@ abstract class baseModule {
 						case "ext_preg":
 							// ignore empty fileds
 							if ($options[$identifiers[$i]][0] == '') {
-								continue;
+								break;
 							}
 							if (! get_preg($options[$identifiers[$i]][0], $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['regex'])) {
 								$messages[] = $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['error_message'];
@@ -748,7 +748,7 @@ abstract class baseModule {
 						case "regex_i":
 							// ignore empty fileds
 							if ($options[$identifiers[$i]][0] == '') {
-								continue;
+								break;
 							}
 							if (! preg_match('/' . $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['regex'] . '/i', $options[$identifiers[$i]][0])) {
 								$messages[] = $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['error_message'];
@@ -758,7 +758,7 @@ abstract class baseModule {
 						case "regex":
 							// ignore empty fileds
 							if ($options[$identifiers[$i]][0] == '') {
-								continue;
+								break;
 							}
 							if (! preg_match('/' . $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['regex'] . '/', $options[$identifiers[$i]][0])) {
 								$messages[] = $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['error_message'];
@@ -768,12 +768,12 @@ abstract class baseModule {
 						case "int_greater":
 							// ignore if both fields are empty
 							if (($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name1']][0] == '') && ($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name2']][0] == '')) {
-								continue;
+								break;
 							}
 							// print error message if only one field is empty
 							if (($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name1']][0] == '') || ($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name2']][0] == '')) {
 								$messages[] = $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['error_message'];
-								continue;
+								break;
 							}
 							// compare
 							if (!(intval($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name1']][0]) > intval($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name2']][0]))) {
@@ -784,12 +784,12 @@ abstract class baseModule {
 						case "int_greaterOrEqual":
 							// ignore if both fields are empty
 							if (($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name1']][0] == '') && ($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name2']][0] == '')) {
-								continue;
+								break;
 							}
 							// print error message if only one field is empty
 							if (($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name1']][0] == '') || ($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name2']][0] == '')) {
 								$messages[] = $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['error_message'];
-								continue;
+								break;
 							}
 							// compare
 							if (!(intval($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name1']][0]) >= intval($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name2']][0]))) {
