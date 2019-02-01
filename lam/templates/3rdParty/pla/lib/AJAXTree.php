@@ -57,25 +57,30 @@ class AJAXTree extends HTMLTree {
 		$child_count = $this->readChildrenNumber($entry->getDN());
 
 		$nb = 0;
-		if ($first_child)
+		if ($first_child) {
 			$nb += 1;
-		if ($last_child)
+		}
+		if ($last_child) {
 			$nb += 2;
+		}
+		if ($level < 1) {
+			$nb += 1;
+		}
 
 		$imgs['expand'] = array('tree_expand.png','tree_expand.png','tree_expand_corner.png',
-			($level > 0) ? 'tree_expand_corner.png' : 'tree_expand_corner_first.png');
+			'tree_expand_corner.png', 'tree_expand_corner_first.png');
 
 		$imgs['collapse'] = array('tree_collapse.png','tree_collapse.png','tree_collapse_corner.png',
-			($level > 0) ? 'tree_collapse_corner.png' : 'tree_collapse_corner_first.png');
+			'tree_collapse_corner.png', 'tree_collapse_corner_first.png');
 
-		$imgs['tree'] = array('tree_split.png','tree_split.png','tree_corner.png','tree_corner.png');
+		$imgs['tree'] = array('tree_split.png','tree_split.png','tree_corner.png','tree_corner.png','tree_corner.png');
 
 		/** Information on array[$nb]
 		 * nb == 1 => the node is the first child
 		 * nb == 2 => the node is the last child
 		 * nb == 3 => the node is the unique child
 		 * nb == 0 => the node is a child */
-		$new_code = array('1','1','0','0');
+		$new_code = array('1','1','0','0','0');
 
 		# Links
 		$parms['openclose'] = htmlspecialchars(sprintf('server_id=%s&dn=%s&code=%s%s',$this->getServerID(),$entry->getDNEncode(),$code,$new_code[$nb]));
