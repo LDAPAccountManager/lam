@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2018  Roland Gruber
+  Copyright (C) 2006 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -664,7 +664,9 @@ function getSecurityTokenValue() {
 function setLAMHeaders() {
 	if (!headers_sent()) {
 		header('X-Frame-Options: sameorigin');
-		header('Content-Security-Policy: frame-ancestors \'self\'');
+		header('Content-Security-Policy: frame-ancestors \'self\'; form-action \'self\'; base-uri \'none\'; object-src \'none\'; frame-src \'self\'; worker-src \'self\'');
+		header('X-Content-Type-Options: nosniff');
+		header('X-XSS-Protection: 1; mode=block');
 	}
 }
 
