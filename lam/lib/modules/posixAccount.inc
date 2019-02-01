@@ -6,7 +6,7 @@ use LAM\TYPES\ConfiguredType;
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-    Copyright (C) 2005 - 2018  Roland Gruber
+    Copyright (C) 2005 - 2019  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -2352,7 +2352,7 @@ class posixAccount extends baseModule implements passwordService {
 					}
 					// minUID < maxUID
 					if (isset($options['posixAccount_' . $typeId . '_minUID'][0]) && isset($options['posixAccount_' . $typeId . '_maxUID'][0])) {
-						if ($options['posixAccount_' . $typeId . '_minUID'][0] > $options['posixAccount_' . $typeId . '_maxUID'][0]) {
+						if ($options['posixAccount_' . $typeId . '_minUID'][0] >= $options['posixAccount_' . $typeId . '_maxUID'][0]) {
 							$return[] = $this->messages['cmp_UID'][0];
 						}
 					}
@@ -2381,7 +2381,7 @@ class posixAccount extends baseModule implements passwordService {
 					}
 					// minUID < maxUID
 					if (isset($options['posixAccount_' . $typeId . '_minMachine'][0]) && isset($options['posixAccount_' . $typeId . '_maxMachine'][0])) {
-						if ($options['posixAccount_' . $typeId . '_minMachine'][0] > $options['posixAccount_' . $typeId . '_maxMachine'][0]) {
+						if ($options['posixAccount_' . $typeId . '_minMachine'][0] >= $options['posixAccount_' . $typeId . '_maxMachine'][0]) {
 							$return[] = $this->messages['cmp_Machine'][0];
 						}
 					}
