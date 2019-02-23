@@ -25,7 +25,7 @@ use \htmlHiddenInput;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2018  Roland Gruber
+  Copyright (C) 2003 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -96,7 +96,9 @@ if (isset($_POST['submitFormData'])) {
 			$msg = _("New master password set successfully.");
 			unset($_SESSION["mainconf_password"]);
 		}
-		else $errors[] = _("Master passwords are different or empty!");
+		else {
+			$errors[] = _("Master passwords are different or empty!");
+		}
 	}
 	// set license
 	if (isLAMProVersion()) {
@@ -125,7 +127,9 @@ if (isset($_POST['submitFormData'])) {
 		}
 		$allowedHosts = implode(",", $allowedHostsList);
 	}
-	else $allowedHosts = "";
+	else {
+		$allowedHosts = "";
+	}
 	$cfg->allowedHosts = $allowedHosts;
 	// set allowed hosts for self service
 	if (isLAMProVersion()) {
@@ -147,7 +151,9 @@ if (isset($_POST['submitFormData'])) {
 			}
 			$allowedHostsSelfService = implode(",", $allowedHostsSelfServiceList);
 		}
-		else $allowedHostsSelfService = "";
+		else {
+			$allowedHostsSelfService = "";
+		}
 		$cfg->allowedHostsSelfService = $allowedHostsSelfService;
 	}
 	// set session encryption
@@ -161,13 +167,26 @@ if (isset($_POST['submitFormData'])) {
 	// set log level
 	$cfg->logLevel = $_POST['logLevel'];
 	// set log destination
-	if ($_POST['logDestination'] == "none") $cfg->logDestination = "NONE";
-	elseif ($_POST['logDestination'] == "syslog") $cfg->logDestination = "SYSLOG";
+	if ($_POST['logDestination'] == "none") {
+		$cfg->logDestination = "NONE";
+	}
+	elseif ($_POST['logDestination'] == "syslog") {
+		$cfg->logDestination = "SYSLOG";
+	}
+	elseif ($_POST['logDestination'] == "remote") {
+		$cfg->logDestination = "REMOTE:" . $_POST['logRemote'];
+		$remoteParts = explode(':', $_POST['logRemote']);
+		if ((sizeof($remoteParts) !== 2) || !get_preg($remoteParts[0], 'DNSname') || !get_preg($remoteParts[1], 'digit')) {
+			$errors[] = _("Please enter a valid remote server in format \"server:port\".");
+		}
+	}
 	else {
 		if (isset($_POST['logFile']) && ($_POST['logFile'] != "") && preg_match("/^[a-z0-9\\/\\\\:\\._-]+$/i", $_POST['logFile'])) {
 			$cfg->logDestination = $_POST['logFile'];
 		}
-		else $errors[] = _("The log file is empty or contains invalid characters! Valid characters are: a-z, A-Z, 0-9, /, \\, ., :, _ and -.");
+		else {
+			$errors[] = _("The log file is empty or contains invalid characters! Valid characters are: a-z, A-Z, 0-9, /, \\, ., :, _ and -.");
+		}
 	}
 	// password policies
 	$cfg->passwordMinLength = $_POST['passwordMinLength'];
@@ -380,9 +399,9 @@ $rulesCountOptions = array(_('all') => '-1', '3' => '3', '4' => '4');
 $rulesCountSelect = new htmlResponsiveSelect('passwordRulesCount', $rulesCountOptions, array($cfg->checkedRulesCount), _('Number of rules that must match'), '246');
 $rulesCountSelect->setHasDescriptiveElements(true);
 $row->add($rulesCountSelect, 12);
-$passwordMustNotContainUser = ($cfg->passwordMustNotContainUser === 'true') ? true : false;
+$passwordMustNotContainUser = ($cfg->passwordMustNotContainUser === 'true');
 $row->add(new htmlResponsiveInputCheckbox('passwordMustNotContainUser',$passwordMustNotContainUser , _('Password must not contain user name'), '247'), 12);
-$passwordMustNotContain3Chars = ($cfg->passwordMustNotContain3Chars === 'true') ? true : false;
+$passwordMustNotContain3Chars = ($cfg->passwordMustNotContain3Chars === 'true');
 $row->add(new htmlResponsiveInputCheckbox('passwordMustNotContain3Chars', $passwordMustNotContain3Chars, _('Password must not contain part of user/first/last name'), '248'), 12);
 if (function_exists('curl_init')) {
 	$row->addVerticalSpacer('1rem');
@@ -395,9 +414,15 @@ $levelOptions = array(_("Debug") => LOG_DEBUG, _("Notice") => LOG_NOTICE, _("War
 $levelSelect = new htmlResponsiveSelect('logLevel', $levelOptions, array($cfg->logLevel), _("Log level"), '239');
 $levelSelect->setHasDescriptiveElements(true);
 $row->add($levelSelect, 12);
-$destinationOptions = array(_("No logging") => "none", _("System logging") => "syslog", _("File") => 'file');
+$destinationOptions = array(
+	_("No logging") => "none",
+	_("System logging") => "syslog",
+	_("File") => 'file',
+	_("Remote") => 'remote',
+);
 $destinationSelected = 'file';
 $destinationPath = $cfg->logDestination;
+$destinationRemote = '';
 if ($cfg->logDestination == 'NONE') {
 	$destinationSelected = 'none';
 	$destinationPath = '';
@@ -406,17 +431,27 @@ elseif ($cfg->logDestination == 'SYSLOG') {
 	$destinationSelected = 'syslog';
 	$destinationPath = '';
 }
+elseif (strpos($cfg->logDestination, 'REMOTE') === 0) {
+	$destinationSelected = 'remote';
+	$remoteParts = explode(':', $cfg->logDestination, 2);
+	$destinationRemote = empty($remoteParts[1]) ? '' : $remoteParts[1];
+	$destinationPath = '';
+}
 $logDestinationSelect = new htmlResponsiveSelect('logDestination', $destinationOptions, array($destinationSelected), _("Log destination"), '240');
 $logDestinationSelect->setTableRowsToHide(array(
-	'none' => array('logFile'),
-	'syslog' => array('logFile'),
+	'none' => array('logFile', 'logRemote'),
+	'syslog' => array('logFile', 'logRemote'),
+	'remote' => array('logFile'),
+	'file' => array('logRemote'),
 ));
 $logDestinationSelect->setTableRowsToShow(array(
 	'file' => array('logFile'),
+	'remote' => array('logRemote'),
 ));
 $logDestinationSelect->setHasDescriptiveElements(true);
 $row->add($logDestinationSelect, 12);
 $row->add(new htmlResponsiveInputField(_('File'), 'logFile', $destinationPath), 12);
+$row->add(new htmlResponsiveInputField(_('Remote server'), 'logRemote', $destinationRemote, '251'), 12);
 $errorLogOptions = array(
 	_('PHP system setting') => LAMCfgMain::ERROR_REPORTING_SYSTEM,
 	_('default') => LAMCfgMain::ERROR_REPORTING_DEFAULT,
@@ -472,7 +507,6 @@ parseHtml(null, $box, array(), false, $tabindex, 'user');
  * @return String formated time
  */
 function formatSSLTimestamp($time) {
-	$matches = array();
 	if (!empty($time)) {
 		$timeZone = 'UTC';
 		$sysTimeZone = @date_default_timezone_get();
