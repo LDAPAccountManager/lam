@@ -764,10 +764,10 @@ window.lam.gui = window.lam.gui || {};
  * Resizes input fields etc. when they are marked as equally high.
  */
 window.lam.gui.equalHeight = function() {
-	var maxHeight = 0;
+	var maxHeight = 20;
 	jQuery('.lamEqualHeightTabContent').each(function() {
 		if (jQuery(this).height() > maxHeight) {
-			maxHeight = jQuery(this).height();
+			maxHeight = jQuery(this).height() + 20;
 		}
 	});
 	jQuery('.lamEqualHeightTabContent').each(function() {

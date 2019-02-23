@@ -1055,44 +1055,47 @@ class accountContainer {
 		}
 		echo "<tr class=\"" . $this->type->getScope() . "-bright\" valign=\"top\"><td style=\"padding: 15px;\">";
 		// print title bar
-		echo '<div class="titleBar ui-corner-top">';
-		echo '<table width="100%"><tr>';
-		echo '<td><div class="titleBarTitle">';
-		echo $this->titleBarTitle;
-		echo '</div></td>';
-		echo '<td align="right">';
-			$group = new htmlGroup();
-			// suffix
-			$group->addElement(new htmlOutputText(_('Suffix')));
-			$group->addElement(new htmlSpacer('2px', null));
-			$suffixList = array();
-			foreach ($this->getOUs() as $suffix) {
-				$suffixList[getAbstractDN($suffix)] = $suffix;
-			}
-			if (!($this->dnSuffix == '') && !in_array($this->dnSuffix, $this->getOUs())) {
-				$suffixList[getAbstractDN($this->dnSuffix)] = $this->dnSuffix;
-			}
-			$selectedSuffix = array($this->dnSuffix);
-			$suffixSelect = new htmlSelect('accountContainerSuffix', $suffixList, $selectedSuffix);
-			$suffixSelect->setHasDescriptiveElements(true);
-			$suffixSelect->setRightToLeftTextDirection(true);
-			$group->addElement($suffixSelect);
-			$group->addElement(new htmlSpacer('10px', null));
-			// RDN selection
-			$group->addElement(new htmlOutputText(_('RDN identifier')));
-			$group->addElement(new htmlSpacer('2px', null));
-			$rdnlist = getRDNAttributes($this->type->getId());
-			$group->addElement(new htmlSelect('accountContainerRDN', $rdnlist, array($this->rdn)));
-			$group->addElement(new htmlHelpLink('301'));
-			parseHtml(null, $group, array(), true, $tabindex, $this->type->getScope());
-		echo '</td>';
-		echo '</tr></table>';
-		if ($this->titleBarSubtitle != null) {
-			echo '<div class="titleBarSubtitle">';
-			echo $this->titleBarSubtitle;
-			echo '</div>';
+		$titleBarContainer = new htmlResponsiveRow();
+		$titleBarContainer->setCSSClasses(array('maxrow'));
+		$titleBarTitleText = new htmlOutputText($this->titleBarTitle, false);
+		$titleBarContainer->add(new htmlDiv(null, $titleBarTitleText, array('titleBarTitle', 'text-left')), 12);
+		$titleBarContainer->addVerticalSpacer('0.5rem');
+		$titleBarSubtitleText = new htmlOutputText($this->titleBarSubtitle, false);
+		$titleBarContainer->add(new htmlDiv(null, $titleBarSubtitleText, array('titleBarSubtitle', 'text-left')), 12);
+		$titleBarContainer->addVerticalSpacer('1rem');
+		$titleBarSuffixRdn = new htmlResponsiveRow();
+		// suffix
+		$suffixList = array();
+		foreach ($this->getOUs() as $suffix) {
+			$suffixList[getAbstractDN($suffix)] = $suffix;
 		}
-		echo '</div>';
+		if (!($this->dnSuffix == '') && !in_array($this->dnSuffix, $this->getOUs())) {
+			$suffixList[getAbstractDN($this->dnSuffix)] = $this->dnSuffix;
+		}
+		$selectedSuffix = array($this->dnSuffix);
+		$suffixGroup = new htmlGroup();
+		$suffixGroup->addElement(new htmlOutputText(_('Suffix')));
+		$suffixSelect = new htmlSelect('accountContainerSuffix', $suffixList, $selectedSuffix);
+		$suffixSelect->setHasDescriptiveElements(true);
+		$suffixSelect->setRightToLeftTextDirection(true);
+		$suffixSelect->setCSSClasses(array('auto-width'));
+		$suffixGroup->addElement($suffixSelect);
+		$suffixGroup->addElement(new htmlHelpLink('361'));
+		$titleBarSuffixRdn->add($suffixGroup, 12, 6, 6, 'nowrap maxrow');
+		// RDN selection
+		$rdnGroup = new htmlGroup();
+		$rdnGroup->addElement(new htmlOutputText(_('RDN identifier')));
+		$rdnlist = getRDNAttributes($this->type->getId());
+		$rdnSelect = new htmlSelect('accountContainerRDN', $rdnlist, array($this->rdn));
+		$rdnSelect->setCSSClasses(array('auto-width'));
+		$rdnGroup->addElement($rdnSelect);
+		$rdnGroup->addElement(new htmlHelpLink('301'), 1);
+		$titleBarSuffixRdn->add($rdnGroup, 12, 6, 6, 'nowrap maxrow');
+		$titleBarContainer->add($titleBarSuffixRdn, 12);
+
+		$titleBarDiv = new htmlDiv(null, $titleBarContainer, array('titleBar', 'ui-corner-top'));
+		parseHtml(null, $titleBarDiv, array(), false, $tabindex, $this->type->getScope());
+
 		echo '<div id="lamVerticalTabs" class="ui-tabs ui-widget ui-widget-content ui-corner-bottom ui-helper-clearfix">';
 		echo '<table>';
 			echo '<tr><td>';
@@ -1298,7 +1301,8 @@ class accountContainer {
 	 * @param int $tabindex tabindex for GUI elements
 	 */
 	private function printCommonControls(&$tabindex) {
-		$table = new htmlTable('100%');
+		$row = new htmlResponsiveRow();
+		$row->setCSSClasses(array('maxrow'));
 		$leftButtonGroup = new htmlGroup();
 		$leftButtonGroup->alignment = htmlElement::ALIGN_LEFT;
 		// save button
@@ -1322,14 +1326,15 @@ class accountContainer {
 				 . getSecurityTokenName() . '\',\'' . getSecurityTokenValue() . '\');');
 			$leftButtonGroup->addElement($passwordButton);
 		}
-		$table->addElement($leftButtonGroup);
+		$row->add($leftButtonGroup, 12, 7);
 
 		$rightGroup = new htmlGroup();
-		$rightGroup->alignment = htmlElement::ALIGN_RIGHT;
 		// profile selection
 		$profilelist = \LAM\PROFILES\getAccountProfiles($this->type->getId());
 		if (sizeof($profilelist) > 0) {
-			$rightGroup->addElement(new htmlSelect('accountContainerSelectLoadProfile', $profilelist, array($this->lastLoadedProfile)));
+			$profilesSelect = new htmlSelect('accountContainerSelectLoadProfile', $profilelist, array($this->lastLoadedProfile));
+			$profilesSelect->setCSSClasses(array('auto-width'));
+			$rightGroup->addElement($profilesSelect);
 			$profileButton = new htmlButton('accountContainerLoadProfile', _('Load profile'));
 			$profileButton->setIconClass('loadProfileButton');
 			if (!$this->isNewAccount) {
@@ -1340,9 +1345,9 @@ class accountContainer {
 			$rightGroup->addElement(new htmlSpacer('1px', null));
 			$rightGroup->addElement(new htmlHelpLink('401'));
 		}
-		$table->addElement($rightGroup);
+		$row->add($rightGroup, 12, 5, 5, 'text-right');
 
-		parseHtml(null, $table, array(), false, $tabindex, $this->type->getScope());
+		parseHtml(null, $row, array(), false, $tabindex, $this->type->getScope());
 	}
 
 	/**
@@ -1366,7 +1371,7 @@ class accountContainer {
 		if (!empty($_POST)) {
 			validateSecurityToken();
 		}
-		include '../main_header.php';
+		include '../../lib/adminHeader.inc';
 		echo '<script type="text/javascript">
 				jQuery(document).ready(function() {
 					jQuery("#inputForm").validationEngine();
@@ -1382,7 +1387,7 @@ class accountContainer {
 	 */
 	private function printPageFooter() {
 		echo "</form>\n";
-		include '../main_footer.php';
+		include '../../lib/adminFooter.inc';
 	}
 
 	/**

@@ -2,7 +2,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003  Leonhard Walchshaeusl
-  Copyright (C) 2005 - 2018  Roland Gruber
+  Copyright (C) 2005 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -536,7 +536,7 @@ tr.account {
 }
 
 #lamVerticalTabs .ui-tabs-nav li {
-	margin: 0 -1px .2em 0;
+	margin: 0 -1px .2em 1 !important;
 	clear: left;
 	width: 100%;
 	border-right-width: 0 !important;
@@ -551,7 +551,8 @@ tr.account {
 
 #lamVerticalTabs .ui-tabs-nav {
 	float: left;
-	padding: .2em .1em .2em .2em !IMPORTANT;
+	padding: .2em 0em .2em .2em !IMPORTANT;
+	border-right: 0px;
 }
 
 #lamVerticalTabs .ui-tabs-panel {

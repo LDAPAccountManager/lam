@@ -1,7 +1,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2018  Roland Gruber
+  Copyright (C) 2017 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -72,6 +72,10 @@ table.padding5 td {
 
 .maxrow {
 	max-width: none;
+}
+
+select.auto-width {
+	width: auto;
 }
 
 table.responsive-table {

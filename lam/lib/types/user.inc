@@ -3,7 +3,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2018  Roland Gruber
+  Copyright (C) 2005 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -413,7 +413,7 @@ class user extends baseType {
 							&& (!$ppolicyAvailable || $ppolicyLocked)
 							&& (!$windowsAvailable || $windowsLocked || $windowsPasswordLocked);
 
-		$container = new htmlTable();
+		$container = new htmlResponsiveRow();
 
 		// show radio buttons for lock/unlock
 		$radioDisabled = true;
@@ -436,16 +436,16 @@ class user extends baseType {
 		if (!$radioDisabled) {
 			$radio = new htmlRadio('lam_accountStatusAction', array(_('Lock') => 'lock', _('Unlock') => 'unlock'), $selectedRadio);
 			$radio->setOnchangeEvent($onchange);
-			$container->addElement($radio, true);
+			$container->add($radio, 12);
 		}
 		else {
 			$radio = new htmlRadio('lam_accountStatusActionDisabled', array(_('Lock') => 'lock', _('Unlock') => 'unlock'), $selectedRadio);
 			$radio->setIsEnabled(false);
-			$container->addElement($radio, true);
-			$container->addElement(new htmlHiddenInput('lam_accountStatusAction', $selectedRadio), true);
+			$container->add($radio, 12);
+			$container->add(new htmlHiddenInput('lam_accountStatusAction', $selectedRadio), 12);
 		}
 
-		$container->addElement(new htmlHiddenInput('lam_accountStatusResult', 'cancel'), true);
+		$container->add(new htmlHiddenInput('lam_accountStatusResult', 'cancel'), 12);
 
 		// locking part
 		if (!$fullyLocked) {
@@ -484,7 +484,7 @@ class user extends baseType {
 			if ($fullyLocked || $partiallyLocked) {
 				$lockDiv->setCSSClasses(array('hidden'));
 			}
-			$container->addElement($lockDiv, true);
+			$container->add($lockDiv, 12);
 		}
 		// unlocking part
 		if ($partiallyLocked) {
@@ -527,7 +527,7 @@ class user extends baseType {
 			if (!$fullyLocked && !$partiallyLocked) {
 				$unlockDiv->setCSSClasses(array('hidden'));
 			}
-			$container->addElement($unlockDiv, true);
+			$container->add($unlockDiv, 12);
 		}
 
 		$div = new htmlDiv('lam_accountStatusDialog', $container);
