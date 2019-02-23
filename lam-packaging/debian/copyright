@@ -230,6 +230,7 @@ lib/3rdParty/tcpdf/fonts/DejaVu*.ttf        A        Public Domain, Bitstream, I
 lib/3rdParty/tcpdf/fonts/DejaVu*.z          A        Public Domain, Bitstream, Inc., Tavmjong Bah
 lib/3rdParty/phpseclib                      B        Jim Wigginton
 lib/3rdParty/Monolog						B  2011  Jordi Boggiano
+lib/3rdParty/Psr							B  2012  PHP Framework Interoperability Group
 lib/3rdParty/yubico/Yubico.php              C  2015  Yubico AB
 templates/lib/*jquery*.js                   B  2018  jQuery Foundation and other contributors
 style/120_jquery-ui*.css					B  2016  jQuery Foundation and other contributors

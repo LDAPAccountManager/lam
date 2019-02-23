@@ -759,12 +759,22 @@ function lamEncryptionAlgo() {
  * @param LAMCfgMain $cfgMain main configuration
  */
 function lamLogRemoteMessage($level, $message, $cfgMain) {
+	include_once __DIR__ . '/3rdParty/Psr/Log/InvalidArgumentException.php';
+	include_once __DIR__ . '/3rdParty/Psr/Log/LoggerInterface.php';
+	include_once __DIR__ . '/3rdParty/Monolog/ResettableInterface.php';
 	include_once __DIR__ . '/3rdParty/Monolog/Logger.php';
+	include_once __DIR__ . '/3rdParty/Monolog/Formatter/FormatterInterface.php';
+	include_once __DIR__ . '/3rdParty/Monolog/Formatter/NormalizerFormatter.php';
 	include_once __DIR__ . '/3rdParty/Monolog/Formatter/LineFormatter.php';
+	include_once __DIR__ . '/3rdParty/Monolog/Handler/HandlerInterface.php';
+	include_once __DIR__ . '/3rdParty/Monolog/Handler/AbstractHandler.php';
+	include_once __DIR__ . '/3rdParty/Monolog/Handler/AbstractProcessingHandler.php';
+	include_once __DIR__ . '/3rdParty/Monolog/Handler/AbstractSyslogHandler.php';
+	include_once __DIR__ . '/3rdParty/Monolog/Handler/SyslogUdp/UdpSocket.php';
 	include_once __DIR__ . '/3rdParty/Monolog/Handler/SyslogUdpHandler.php';
 	$remoteParts = explode(':', $cfgMain->logDestination);
-	$server = $remoteParts[0];
-	$port = $remoteParts[1];
+	$server = $remoteParts[1];
+	$port = intval($remoteParts[2]);
 	$output = "%channel%.%level_name%: %message%";
 	$formatter = new Monolog\Formatter\LineFormatter($output);
 	$logger = new Monolog\Logger('lam');
