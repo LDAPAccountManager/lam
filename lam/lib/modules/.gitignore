@@ -41,3 +41,5 @@
 /autoDelete.inc
 /pegasus.inc
 /pegasus
+/nPosixGroup.inc
+/nPosixUser.inc
