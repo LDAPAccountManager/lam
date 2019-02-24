@@ -5,7 +5,7 @@ use \LAM\TYPES\TypeManager;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006 Michael Duergner
-                2003 - 2018 Roland Gruber
+                2003 - 2019 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -175,6 +175,8 @@ $helpArray = array (
 					"Text" => _('Please specify the URL (e.g. "https://api.pwnedpasswords.com/range/{SHA1PREFIX}") of your external password check.')),
 				"250" => array ("Headline" => _("Filter"),
 					"Text" => _("Here you can input simple filter expressions (e.g. 'value' or 'v*'). The filter is case-insensitive.")),
+				"251" => array ("Headline" => _("Remote serrver"),
+					"Text" => _("Please enter the syslog remote server in format \"server:port\".")),
 				"260" => array ("Headline" => _("Additional LDAP filter"),
 					"Text" => _('Use this to enter an additional LDAP filter (e.g. "(cn!=admin)") to reduce the number of visible elements for this account type.')
 						. ' ' . _('You can use the wildcard @@LOGIN_DN@@ which will be substituted with the DN of the user who is currently logged in to LAM.')

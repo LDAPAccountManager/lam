@@ -1,5 +1,6 @@
 March 2019
   - Added YubiKey as 2-factor authentication provider
+  - Support logging to remote syslog server
   - LAM Pro:
    -> New self service fields: Mail routing (Local address) and Windows (Proxy-Addresses)
    -> Bind DLZ: support DNAME records and descriptions in records (requires latest LDAP schema)

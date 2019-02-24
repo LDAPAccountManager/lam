@@ -249,7 +249,11 @@ function isDebugLoggingEnabled() {
  * @param string $message log message
  */
 function logNewMessage($level, $message) {
-	$possibleLevels = array(LOG_DEBUG => 'DEBUG', LOG_NOTICE => 'NOTICE', LOG_WARNING => 'WARNING', LOG_ERR => 'ERROR');
+	$possibleLevels = array(
+		LOG_DEBUG => 'DEBUG',
+		LOG_NOTICE => 'NOTICE',
+		LOG_WARNING => 'WARNING',
+		LOG_ERR => 'ERROR');
 	if (!in_array($level, array_keys($possibleLevels))) {
 		StatusMessage('ERROR', 'Invalid log level!', $level);
 	}
@@ -271,6 +275,10 @@ function logNewMessage($level, $message) {
 	// Syslog logging
 	if ($cfg->logDestination == 'SYSLOG') {
 		syslog($level, $message);
+	}
+	// remote logging
+	if (strpos($cfg->logDestination, 'REMOTE') === 0) {
+		lamLogRemoteMessage($level, $message, $cfg);
 	}
 	// log to file
 	else {
@@ -741,6 +749,52 @@ function lamEncryptionAlgo() {
 		return 'AES-256-CBC';
 	}
 	return 'AES256';
+}
+
+/**
+ * Logs a message to a remote logging service.
+ *
+ * @param int $level log level
+ * @param string $message log message
+ * @param LAMCfgMain $cfgMain main configuration
+ */
+function lamLogRemoteMessage($level, $message, $cfgMain) {
+	include_once __DIR__ . '/3rdParty/Psr/Log/InvalidArgumentException.php';
+	include_once __DIR__ . '/3rdParty/Psr/Log/LoggerInterface.php';
+	include_once __DIR__ . '/3rdParty/Monolog/ResettableInterface.php';
+	include_once __DIR__ . '/3rdParty/Monolog/Logger.php';
+	include_once __DIR__ . '/3rdParty/Monolog/Formatter/FormatterInterface.php';
+	include_once __DIR__ . '/3rdParty/Monolog/Formatter/NormalizerFormatter.php';
+	include_once __DIR__ . '/3rdParty/Monolog/Formatter/LineFormatter.php';
+	include_once __DIR__ . '/3rdParty/Monolog/Handler/HandlerInterface.php';
+	include_once __DIR__ . '/3rdParty/Monolog/Handler/AbstractHandler.php';
+	include_once __DIR__ . '/3rdParty/Monolog/Handler/AbstractProcessingHandler.php';
+	include_once __DIR__ . '/3rdParty/Monolog/Handler/AbstractSyslogHandler.php';
+	include_once __DIR__ . '/3rdParty/Monolog/Handler/SyslogUdp/UdpSocket.php';
+	include_once __DIR__ . '/3rdParty/Monolog/Handler/SyslogUdpHandler.php';
+	$remoteParts = explode(':', $cfgMain->logDestination);
+	$server = $remoteParts[1];
+	$port = intval($remoteParts[2]);
+	$output = "%channel%.%level_name%: %message%";
+	$formatter = new Monolog\Formatter\LineFormatter($output);
+	$logger = new Monolog\Logger('lam');
+	$syslogHandler = new Monolog\Handler\SyslogUdpHandler($server, $port);
+	$syslogHandler->setFormatter($formatter);
+	$logger->pushHandler($syslogHandler);
+	switch ($level) {
+		case LOG_DEBUG:
+			$logger->addDebug($message);
+			break;
+		case LOG_NOTICE:
+			$logger->addNotice($message);
+			break;
+		case LOG_WARNING:
+			$logger->addWarning($message);
+			break;
+		case LOG_ERR:
+			$logger->addError($message);
+			break;
+	}
 }
 
 ?>

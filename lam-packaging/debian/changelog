@@ -1,3 +1,9 @@
+ldap-account-manager (6.7.DEV-1) unstable; urgency=medium
+
+  * new upstream release
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 24 Feb 2019 11:56:52 +0100
+
 ldap-account-manager (6.6-1) unstable; urgency=medium
 
   * new upstream release

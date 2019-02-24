@@ -2309,7 +2309,7 @@ class LAMCfgMain {
 	/** log level */
 	public $logLevel;
 
-	/** log destination ("SYSLOG":syslog, "/...":file, "NONE":none) */
+	/** log destination ("SYSLOG":syslog, "/...":file, "NONE":none, "REMOTE":server:port) */
 	public $logDestination;
 
 	/** list of hosts which may access LAM */

@@ -11,3 +11,5 @@
 /zarafaDynamicGroupType.inc
 /kopano*.inc
 /customType.inc
+/ngroup.inc
+/nuser.inc
