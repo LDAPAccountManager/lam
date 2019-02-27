@@ -21,7 +21,7 @@ use \moduleCache;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2018  Roland Gruber
+  Copyright (C) 2004 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -487,7 +487,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 	$_SESSION['mass_csv'] = $sampleCSV;
 
 	echo '</div>';
-	include '../main_footer.php';
+	include __DIR__ . '/../../lib/adminFooter.inc';
 	die;
 }
 
