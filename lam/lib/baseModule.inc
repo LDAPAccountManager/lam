@@ -974,7 +974,7 @@ abstract class baseModule {
 	* @param String $position current position in CSV
 	* @param String $colName column name
 	* @param String $attrName LDAP attribute name
-	* @param String $regexID for get_preg() (e.g. 'ascii')
+	* @param String|String[] $regex for get_preg() (e.g. 'ascii')
 	* @param array $message error message to add if regex does not match
 	* @param array $errors list of error messages if any
 	* @param String $regexSplit multiple values are separated and can be split with this preg_split expression (e.g. "/;[ ]?/")
@@ -984,12 +984,11 @@ abstract class baseModule {
 			return;
 		}
 		if (!empty($rawAccounts[$position][$ids[$colName]])) {
+			$regexIDs = is_array($regex) ? $regex : array($regex);
 			// single value
 			if ($regexSplit == null) {
-				if (!empty($regex) && !get_preg($rawAccounts[$position][$ids[$colName]], $regex)) {
-					$errMsg = $message;
-					array_push($errMsg, array($position));
-					$errors[] = $errMsg;
+				if (!empty($regex)) {
+					$this->checkUploadRegex($regexIDs, $rawAccounts[$position][$ids[$colName]], $message, $position, $errors);
 				}
 				$partialAccounts[$position][$attrName] = trim($rawAccounts[$position][$ids[$colName]]);
 			}
@@ -999,16 +998,41 @@ abstract class baseModule {
 				$partialAccounts[$position][$attrName] = $list;
 				if (!empty($regex)) {
 					for ($x = 0; $x < sizeof($list); $x++) {
-						if (!get_preg($list[$x], $regex)) {
-							$errMsg = $message;
-							array_push($errMsg, array($position));
-							$errors[] = $errMsg;
+						if (!$this->checkUploadRegex($regexIDs, $list[$x], $message, $position, $errors)) {
 							break;
 						}
 					}
 				}
 			}
 		}
+	}
+
+	/**
+	 * Checks the upload value against a list of regular expressions.
+	 *
+	 * @param string[] $regexIDs regular expression IDs for get_preg()
+	 * @param string $value value to check
+	 * @param array $message error message array if not matching
+	 * @param int $position upload position
+	 * @param array $errors error messages
+	 * @return value is ok
+	 * @see get_preg()
+	 */
+	private function checkUploadRegex($regexIDs, $value, $message, $position, &$errors) {
+		$matched = false;
+		foreach ($regexIDs as $regexID) {
+			if (get_preg($value, $regexID)) {
+				$matched = true;
+				break;
+			}
+		}
+		if (!$matched) {
+			$errMsg = $message;
+			array_push($errMsg, array($position));
+			$errors[] = $errMsg;
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -1281,7 +1305,7 @@ abstract class baseModule {
 	 * The field name will be the same as the attribute name. There must also be a help entry with the attribute name as ID.
 	 * A new line will also be added after this entry so multiple calls will show the fields one below the other.
 	 *
-	 * @param htmlTable $container parent container
+	 * @param htmlTable|htmlResponsiveRow $container parent container
 	 * @param String $attrName attribute name
 	 * @param String $label label name
 	 * @param boolean $required this is a required field (default false)
@@ -1300,10 +1324,20 @@ abstract class baseModule {
 			if ($length != null) {
 				$cols = $length;
 			}
-			$input = new htmlTableExtendedInputTextarea($attrName, $value, $cols, 3, $label, $attrName);
+			if ($container instanceof htmlResponsiveRow) {
+				$input = new htmlResponsiveInputTextarea($attrName, $value, $cols, 3, $label, $attrName);
+			}
+			else {
+				$input = new htmlTableExtendedInputTextarea($attrName, $value, $cols, 3, $label, $attrName);
+			}
 		}
 		else {
-			$input = new htmlTableExtendedInputField($label, $attrName, $value, $attrName);
+			if ($container instanceof htmlResponsiveRow) {
+				$input = new htmlResponsiveInputField($label, $attrName, $value, $attrName);
+			}
+			else {
+				$input = new htmlTableExtendedInputField($label, $attrName, $value, $attrName);
+			}
 			if ($length != null) {
 				$input->setFieldSize($length);
 			}
@@ -1312,7 +1346,12 @@ abstract class baseModule {
 			}
 		}
 		$input->setRequired($required);
-		$container->addElement($input, true);
+		if ($container instanceof htmlResponsiveRow) {
+			$container->add($input, 12);
+		}
+		else {
+			$container->addElement($input, true);
+		}
 		return $input;
 	}
 
