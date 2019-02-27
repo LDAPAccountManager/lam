@@ -4103,373 +4103,416 @@ Run slapindex to rebuild the index.
     url="https://gitlab.isc.org/isc-projects/bind9/blob/master/contrib/dlz/modules/ldap/testing/dlz.schema">git
     repository</ulink>.</para>
 
-    <para><emphasis role="bold">Configuration</emphasis></para>
+    <section>
+      <title>Configuration</title>
 
-    <para>First, you need to add the Bind DNS account type and the Bind DLZ
-    module:</para>
+      <para>First, you need to add the Bind DNS account type and the Bind DLZ
+      module:</para>
 
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/mod_bind1.png"/>
-        </imageobject>
-      </mediaobject>
-    </screenshot>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind1.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
 
-    <para>Please set the LDAP suffix either to an existing DNS zone (dlzZone)
-    or an organizational unit that should include your DNS zones.</para>
+      <para>Please set the LDAP suffix either to an existing DNS zone
+      (dlzZone) or an organizational unit that should include your DNS
+      zones.</para>
 
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/mod_bind2.png"/>
-        </imageobject>
-      </mediaobject>
-    </screenshot>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind2.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
 
-    <literallayout>
+      <literallayout>
 </literallayout>
 
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/mod_bind3.png"/>
-        </imageobject>
-      </mediaobject>
-    </screenshot>
+      <para>For regular entry management use "DNS entry (bindDLZ)(*)"
+      module.</para>
 
-    <para><emphasis role="bold">Automatic PTR management</emphasis></para>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind3.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
 
-    <para>LAM can automatically create/delete PTR entries for the entered
-    IPv4/6 records. You can enable this feature on the module settings
-    tab.</para>
+      <para><emphasis role="bold">XFR</emphasis></para>
 
-    <para>PTR records will get the same TTL as IP records. Please note that
-    you need to have matching reverse zones (".in-addr.arpa"/".ip6.arpa")
-    under the same suffix as your other DNS entries.</para>
+      <para>If you want to edit XFR entries please add a second account type
+      for XFR. Recommended list attributes are
+      "#dlzipaddr;#dlzrecordid".</para>
 
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/mod_bind12.png"/>
-        </imageobject>
-      </mediaobject>
-    </screenshot>
+      <screenshot>
+        <graphic fileref="images/mod_bind13.png"/>
+      </screenshot>
 
-    <para><emphasis role="bold">Zone management</emphasis></para>
+      <para>Now use the "XFR (bindDLZXfr)(*)" module for this account
+      type.</para>
 
-    <para>If you do not yet have a DNS zone then LAM can create one for you.
-    In list view switch the suffix to an organizational unit DN. Now you will
-    see a button "New zone".</para>
+      <screenshot>
+        <graphic fileref="images/mod_bind14.png"/>
+      </screenshot>
 
-    <para>This will create the zone container entry and a default DNS entry
-    "@" for authoritative information. Now switch the suffix to your new zone
-    and start adding DNS entries.</para>
+      <para><emphasis role="bold">Automatic PTR management</emphasis></para>
 
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/mod_bind4.png"/>
-        </imageobject>
-      </mediaobject>
-    </screenshot>
+      <para>LAM can automatically create/delete PTR entries for the entered
+      IPv4/6 records. You can enable this feature on the module settings
+      tab.</para>
 
-    <para><emphasis role="bold">DNS entries</emphasis></para>
+      <para>PTR records will get the same TTL as IP records. Please note that
+      you need to have matching reverse zones (".in-addr.arpa"/".ip6.arpa")
+      under the same suffix as your other DNS entries.</para>
 
-    <para>LAM supports the following DNS record types:</para>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind12.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
 
-    <itemizedlist>
-      <listitem>
-        <para>SOA: authoritative information</para>
-      </listitem>
+      <para><emphasis role="bold">Zone management</emphasis></para>
 
-      <listitem>
-        <para>NS: name servers</para>
-      </listitem>
+      <para>If you do not yet have a DNS zone then LAM can create one for you.
+      In list view switch the suffix to an organizational unit DN. Now you
+      will see a button "New zone".</para>
 
-      <listitem>
-        <para>A/AAAA: IP addresses</para>
-      </listitem>
+      <para>This will create the zone container entry and a default DNS entry
+      "@" for authoritative information. Now switch the suffix to your new
+      zone and start adding DNS entries.</para>
 
-      <listitem>
-        <para>PTR: reverse DNS entries</para>
-      </listitem>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind4.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
 
-      <listitem>
-        <para>CNAME: alias names</para>
-      </listitem>
+    <section>
+      <title>DNS entries</title>
 
-      <listitem>
-        <para>MX: mail servers</para>
-      </listitem>
+      <para>LAM supports the following DNS record types:</para>
 
-      <listitem>
-        <para>TXT: text records</para>
-      </listitem>
+      <itemizedlist>
+        <listitem>
+          <para>SOA: authoritative information</para>
+        </listitem>
 
-      <listitem>
-        <para>SRV: service entries</para>
-      </listitem>
-    </itemizedlist>
+        <listitem>
+          <para>NS: name servers</para>
+        </listitem>
 
-    <literallayout>
+        <listitem>
+          <para>A/AAAA: IP addresses</para>
+        </listitem>
+
+        <listitem>
+          <para>PTR: reverse DNS entries</para>
+        </listitem>
+
+        <listitem>
+          <para>CNAME: alias names</para>
+        </listitem>
+
+        <listitem>
+          <para>MX: mail servers</para>
+        </listitem>
+
+        <listitem>
+          <para>TXT: text records</para>
+        </listitem>
+
+        <listitem>
+          <para>SRV: service entries</para>
+        </listitem>
+      </itemizedlist>
+
+      <literallayout>
 </literallayout>
 
-    <para><emphasis role="bold">Authoritative (SOA) and name server (NS)
-    records</emphasis></para>
+      <para><emphasis role="bold">Authoritative (SOA) and name server (NS)
+      records</emphasis></para>
 
-    <para>Here you can manage general information about the zone like timeouts
-    and name servers. Please note that name servers must be inserted in a
-    special format (dot at the end).</para>
+      <para>Here you can manage general information about the zone like
+      timeouts and name servers. Please note that name servers must be
+      inserted in a special format (dot at the end).</para>
 
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/mod_bind5.png"/>
-        </imageobject>
-      </mediaobject>
-    </screenshot>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind5.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
 
-    <literallayout>
+      <literallayout>
 </literallayout>
 
-    <para><emphasis role="bold">IP addresses (A/AAAA)</emphasis></para>
+      <para><emphasis role="bold">IP addresses (A/AAAA)</emphasis></para>
 
-    <para>LAM will automatically set the correct type (A/AAAA) depending if
-    you enter an IPv4 or IPv6 address.</para>
+      <para>LAM will automatically set the correct type (A/AAAA) depending if
+      you enter an IPv4 or IPv6 address.</para>
 
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/mod_bind6.png"/>
-        </imageobject>
-      </mediaobject>
-    </screenshot>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind6.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
 
-    <literallayout>
+      <literallayout>
 </literallayout>
 
-    <para><emphasis role="bold">Reverse DNS entries</emphasis></para>
+      <para><emphasis role="bold">Reverse DNS entries</emphasis></para>
 
-    <para>Reverse DNS entries are important when you need to find the DNS name
-    that is associated with a given IP address. Reverse DNS entries are stored
-    in a separate DNS zone.</para>
+      <para>Reverse DNS entries are important when you need to find the DNS
+      name that is associated with a given IP address. Reverse DNS entries are
+      stored in a separate DNS zone.</para>
 
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/mod_bind7.png"/>
-        </imageobject>
-      </mediaobject>
-    </screenshot>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind7.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
 
-    <literallayout>
+      <literallayout>
 </literallayout>
 
-    <para><emphasis role="bold">Alias names (CNAME)</emphasis></para>
+      <para><emphasis role="bold">Alias names (CNAME)</emphasis></para>
 
-    <para>Sometimes a DNS entry should simply point to a different DNS entry
-    (e.g. for migrations). This can be done by adding an alias name.</para>
+      <para>Sometimes a DNS entry should simply point to a different DNS entry
+      (e.g. for migrations). This can be done by adding an alias name.</para>
 
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/mod_bind8.png"/>
-        </imageobject>
-      </mediaobject>
-    </screenshot>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind8.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
 
-    <literallayout>
+      <literallayout>
 </literallayout>
 
-    <para><emphasis role="bold">Mail servers (MX)</emphasis></para>
+      <para><emphasis role="bold">Mail servers (MX)</emphasis></para>
 
-    <para>The mail server entries define where mails to a domain should be
-    delivered. The server with the lowest preference has the highest
-    priority.</para>
+      <para>The mail server entries define where mails to a domain should be
+      delivered. The server with the lowest preference has the highest
+      priority.</para>
 
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/mod_bind9.png"/>
-        </imageobject>
-      </mediaobject>
-    </screenshot>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind9.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
 
-    <literallayout>
+      <literallayout>
 </literallayout>
 
-    <para><emphasis role="bold">Text records (TXT)</emphasis></para>
+      <para><emphasis role="bold">Text records (TXT)</emphasis></para>
 
-    <para>Text records can be added to store a description or other data (e.g.
-    SPF information).</para>
+      <para>Text records can be added to store a description or other data
+      (e.g. SPF information).</para>
 
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/mod_bind10.png"/>
-        </imageobject>
-      </mediaobject>
-    </screenshot>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind10.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
 
-    <literallayout>
+      <literallayout>
 </literallayout>
 
-    <para><emphasis role="bold">Services (SRV)</emphasis></para>
+      <para><emphasis role="bold">Services (SRV)</emphasis></para>
 
-    <para>Service records can be used to specify which servers provide common
-    services such as LDAP. Please note that the host name must be
-    _SERVICE._PROTOCOL (e.g. _ldap._tcp).</para>
+      <para>Service records can be used to specify which servers provide
+      common services such as LDAP. Please note that the host name must be
+      _SERVICE._PROTOCOL (e.g. _ldap._tcp).</para>
 
-    <literallayout>
+      <literallayout>
 </literallayout>
 
-    <para>Priority: The priority of the target host, lower value means more
-    preferred.</para>
+      <para>Priority: The priority of the target host, lower value means more
+      preferred.</para>
 
-    <para>Weight: A relative weight for records with the same priority. E.g.
-    weights 20 and 80 for a service will result in 20% queries to the one
-    server and 80% to the other.</para>
+      <para>Weight: A relative weight for records with the same priority. E.g.
+      weights 20 and 80 for a service will result in 20% queries to the one
+      server and 80% to the other.</para>
 
-    <para>Port: The port number that is used for your service.</para>
+      <para>Port: The port number that is used for your service.</para>
 
-    <para>Server: DNS name where service can be reached (with dot at the
-    end).</para>
+      <para>Server: DNS name where service can be reached (with dot at the
+      end).</para>
 
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/mod_bind11.png"/>
-        </imageobject>
-      </mediaobject>
-    </screenshot>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_bind11.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
 
-    <literallayout>
+      <literallayout>
 </literallayout>
 
-    <para><emphasis role="bold">File upload</emphasis></para>
+      <para><emphasis role="bold">File upload</emphasis></para>
 
-    <para>You can upload complete DNS zones via LAM's file upload. Here is an
-    example for a zone file and the corresponding CSV file.</para>
+      <para>You can upload complete DNS zones via LAM's file upload. Here is
+      an example for a zone file and the corresponding CSV file.</para>
 
-    <table>
-      <title>Zone file</title>
+      <table>
+        <title>Zone file</title>
 
-      <tgroup cols="4">
-        <tbody>
-          <row>
-            <entry>@</entry>
+        <tgroup cols="4">
+          <tbody>
+            <row>
+              <entry>@</entry>
 
-            <entry>IN</entry>
+              <entry>IN</entry>
 
-            <entry>SOA</entry>
+              <entry>SOA</entry>
 
-            <entry>ns1.example.com admin.ns1.example.com (1 360000 3600
-            3600000 370000)</entry>
-          </row>
+              <entry>ns1.example.com admin.ns1.example.com (1 360000 3600
+              3600000 370000)</entry>
+            </row>
 
-          <row>
-            <entry/>
+            <row>
+              <entry/>
 
-            <entry>IN</entry>
+              <entry>IN</entry>
 
-            <entry>NS</entry>
+              <entry>NS</entry>
 
-            <entry>ns1.example.com.</entry>
-          </row>
+              <entry>ns1.example.com.</entry>
+            </row>
 
-          <row>
-            <entry/>
+            <row>
+              <entry/>
 
-            <entry>IN</entry>
+              <entry>IN</entry>
 
-            <entry>NS</entry>
+              <entry>NS</entry>
 
-            <entry>ns2.example.com.</entry>
-          </row>
+              <entry>ns2.example.com.</entry>
+            </row>
 
-          <row>
-            <entry/>
+            <row>
+              <entry/>
 
-            <entry>IN</entry>
+              <entry>IN</entry>
 
-            <entry>MX</entry>
+              <entry>MX</entry>
 
-            <entry>10 mail1.example.com</entry>
-          </row>
+              <entry>10 mail1.example.com</entry>
+            </row>
 
-          <row>
-            <entry/>
+            <row>
+              <entry/>
 
-            <entry>IN</entry>
+              <entry>IN</entry>
 
-            <entry>MX</entry>
+              <entry>MX</entry>
 
-            <entry>20 mail2.example.com</entry>
-          </row>
+              <entry>20 mail2.example.com</entry>
+            </row>
 
-          <row>
-            <entry>foo</entry>
+            <row>
+              <entry>foo</entry>
 
-            <entry>IN</entry>
+              <entry>IN</entry>
 
-            <entry>A</entry>
+              <entry>A</entry>
 
-            <entry>123.123.123.100</entry>
-          </row>
+              <entry>123.123.123.100</entry>
+            </row>
 
-          <row>
-            <entry>foo2</entry>
+            <row>
+              <entry>foo2</entry>
 
-            <entry>IN</entry>
+              <entry>IN</entry>
 
-            <entry>CNAME</entry>
+              <entry>CNAME</entry>
 
-            <entry>foo.example.com</entry>
-          </row>
+              <entry>foo.example.com</entry>
+            </row>
 
-          <row>
-            <entry>bar</entry>
+            <row>
+              <entry>bar</entry>
 
-            <entry>IN</entry>
+              <entry>IN</entry>
 
-            <entry>A</entry>
+              <entry>A</entry>
 
-            <entry>123.123.123.101</entry>
-          </row>
+              <entry>123.123.123.101</entry>
+            </row>
 
-          <row>
-            <entry/>
+            <row>
+              <entry/>
 
-            <entry>IN</entry>
+              <entry>IN</entry>
 
-            <entry>AAAA</entry>
+              <entry>AAAA</entry>
 
-            <entry>1:2:3:4:5</entry>
-          </row>
-        </tbody>
-      </tgroup>
-    </table>
+              <entry>1:2:3:4:5</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
 
-    <para>Please check that you have an existing zone entry that can be used
-    for the file upload. See above to create a new zone.</para>
+      <para>Please check that you have an existing zone entry that can be used
+      for the file upload. See above to create a new zone.</para>
 
-    <para>Hint: If you use the function above to create a new zone then please
-    skip the "@" entry in the CSV file below. LAM creates this entry with
-    sample data.</para>
+      <para>Hint: If you use the function above to create a new zone then
+      please skip the "@" entry in the CSV file below. LAM creates this entry
+      with sample data.</para>
 
-    <para>In this example we assume that the following zone extry
-    exists:</para>
+      <para>In this example we assume that the following zone extry
+      exists:</para>
 
-    <literallayout>dn: dlzZoneName=example.com,ou=bind,dc=example,dc=com
+      <literallayout>dn: dlzZoneName=example.com,ou=bind,dc=example,dc=com
 dlzzonename: example.com
 objectclass: dlzZone
 objectclass: top
 
 </literallayout>
 
-    <para>Here is the corresponding CSV file: <ulink
-    url="resources/bindUpload.csv">bindUpload.csv</ulink></para>
+      <para>Here is the corresponding CSV file: <ulink
+      url="resources/bindUpload.csv">bindUpload.csv</ulink></para>
+    </section>
+
+    <section>
+      <title>XFR entries</title>
+
+      <para>You can manage the XFR entries in the second tab that you
+      configured before.</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_bind16.png"/>
+      </screenshot>
+
+      <para>For each XFR entry you can set a record ID and the IP
+      address.</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_bind15.png"/>
+      </screenshot>
+    </section>
   </section>
 
   <section>

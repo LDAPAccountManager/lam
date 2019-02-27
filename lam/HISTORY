@@ -3,7 +3,7 @@ March 2019
   - Support logging to remote syslog server
   - LAM Pro:
    -> New self service fields: Mail routing (Local address) and Windows (Proxy-Addresses)
-   -> Bind DLZ: support DNAME records and descriptions in records (requires latest LDAP schema)
+   -> Bind DLZ: support DNAME+XFR records and descriptions in records (requires latest LDAP schema)
   - Fixed bugs:
    -> Allow tree-only configurations without any other tab
 
