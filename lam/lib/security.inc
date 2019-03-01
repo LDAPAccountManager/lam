@@ -277,7 +277,7 @@ function logNewMessage($level, $message) {
 		syslog($level, $message);
 	}
 	// remote logging
-	if (strpos($cfg->logDestination, 'REMOTE') === 0) {
+	elseif (strpos($cfg->logDestination, 'REMOTE') === 0) {
 		lamLogRemoteMessage($level, $message, $cfg);
 	}
 	// log to file
