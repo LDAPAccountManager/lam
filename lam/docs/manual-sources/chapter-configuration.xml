@@ -193,15 +193,40 @@
     <section id="conf_logging">
       <title>Logging</title>
 
-      <para>LAM can log events (e.g. user logins). You can use system logging
-      (syslog for Unix, event viewer for Windows) or log to a separate file.
-      Please note that LAM may log sensitive data (e.g. passwords) at log
-      level "Debug". Production systems should be set to "Warning" or
+      <para>LAM can log events (e.g. user logins). You can use e.g. system
+      logging (syslog for Unix, event viewer for Windows) or log to a separate
+      file. Please note that LAM may log sensitive data (e.g. passwords) at
+      log level "Debug". Production systems should be set to "Warning" or
       "Error".</para>
 
       <para>The PHP error reporting is only for developers. By default LAM
       does not show PHP notice messages in the web pages. You can select to
       use the php.ini setting here or printing all errors and notices.</para>
+
+      <para>Log destinations:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>File: all messages will be writen to the given file. LAM will
+          create it if not yet existing.</para>
+        </listitem>
+
+        <listitem>
+          <para>Syslog: uses local system logging (syslog for Unix, event
+          viewer for Windows)</para>
+        </listitem>
+
+        <listitem>
+          <para>Remote: sends log messages to a remote server that supports
+          the Unix <ulink url="https://www.rsyslog.com/">remote
+          Syslogd</ulink> protocol. Please enter destination as "server:port",
+          e.g. "myserver:123".</para>
+        </listitem>
+
+        <listitem>
+          <para>No logging: disabled logging</para>
+        </listitem>
+      </itemizedlist>
 
       <screenshot>
         <mediaobject>
