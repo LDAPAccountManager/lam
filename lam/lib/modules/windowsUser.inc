@@ -953,6 +953,7 @@ class windowsUser extends baseModule implements passwordService {
 			'department' => _('Department'),
 			'departmentNumber' => _('Department number'),
 			'proxyAddresses' => _('Proxy-Addresses (read-only)'),
+			'otherMailbox' => _('Email alias (read-only)'),
 		);
 		// possible self service read-only fields
 		$return['selfServiceReadOnlyFields'] = array('physicalDeliveryOfficeName', 'telephoneNumber',
@@ -2935,6 +2936,17 @@ class windowsUser extends baseModule implements passwordService {
 			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('proxyAddresses', _('Proxy-Addresses'))));
 			$row->addField(new htmlOutputText(implode('<br>', $proxyAddresses), false));
 			$return['proxyAddresses'] = $row;
+		}
+		if (in_array('otherMailbox', $fields)) {
+			$otherMailbox = array();
+			if (isset($attributes['otherMailbox'])) {
+				$otherMailbox = $attributes['otherMailbox'];
+			}
+			array_map('htmlspecialchars', $otherMailbox);
+			$row = new htmlResponsiveRow();
+			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('otherMailbox', _('Email alias'))));
+			$row->addField(new htmlOutputText(implode('<br>', $otherMailbox), false));
+			$return['otherMailbox'] = $row;
 		}
 		return $return;
 	}
