@@ -5,6 +5,7 @@ March 2019
   - LAM Pro:
    -> New self service fields: Mail routing (Local address) and Windows (Proxy-Addresses)
    -> Bind DLZ: support DNAME+XFR records and descriptions in records (requires latest LDAP schema)
+   -> Cron jobs: added Shadow account expiration notification jobs
   - Fixed bugs:
    -> Allow tree-only configurations without any other tab
 

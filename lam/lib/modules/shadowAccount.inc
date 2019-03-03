@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-  Copyright (C) 2007 - 2018  Roland Gruber
+  Copyright (C) 2007 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -762,7 +762,8 @@ class shadowAccount extends baseModule implements passwordService {
 	public function getSupportedJobs(&$config) {
 		return array(
 			new ShadowAccountPasswordNotifyJob(),
-			new ShadowAccountExpirationCleanupJob()
+			new ShadowAccountExpirationCleanupJob(),
+			new ShadowAccountExpirationNotifyJob()
 		);
 	}
 
@@ -909,6 +910,100 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			// update DB if mail was sent successfully
 			if ($success) {
 				$this->setDBLastPwdChangeTime($jobID, $pdo, $user['dn'], $user['shadowlastchange'][0]);
+			}
+		}
+
+	}
+
+	/**
+	 * Job to notify users about account expiration.
+	 *
+	 * @package jobs
+	 */
+	class ShadowAccountExpirationNotifyJob extends \LAM\JOB\PasswordExpirationJob {
+
+		/**
+		 * Returns the alias name of the job.
+		 *
+		 * @return String name
+		 */
+		public function getAlias() {
+			return _('Shadow') . ': ' . _('Notify users about acoount expiration');
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * @see \LAM\JOB\PasswordExpirationJob::getDescription()
+		 */
+		public function getDescription() {
+			return _('This job sends out emails to inform your users that their account will expire soon.');
+		}
+
+		/**
+		 * Searches for users in LDAP.
+		 *
+		 * @param String $jobID unique job identifier
+		 * @param array $options config options (name => value)
+		 * @return array list of user attributes
+		 */
+		protected function findUsers($jobID, $options) {
+			// read users
+			$sysattrs = array('mail', 'shadowExpire');
+			$attrs = $this->getAttrWildcards($jobID, $options);
+			$attrs = array_values(array_unique(array_merge($attrs, $sysattrs)));
+			return searchLDAPByFilter('(&(shadowExpire=*)(mail=*))', $attrs, array('user'));
+		}
+
+		/**
+		 * Checks if a user needs to change his password.
+		 *
+		 * @param integer $jobID job ID
+		 * @param array $options job settings
+		 * @param PDO $pdo PDO
+		 * @param DateTime $now current time
+		 * @param array $policyOptions list of max age values (policy DN => maxAge)
+		 * @param array $user user attributes
+		 * @param boolean $isDryRun just do a dry run, nothing is modified
+		 */
+		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
+			$dn = $user['dn'];
+			$expireTimeUnix = $user['shadowexpire'][0] * 3600 * 24;
+			$expireTime = new DateTime('@' . $expireTimeUnix, new DateTimeZone('UTC'));
+			$this->jobResultLog->logDebug("Expiration on " . $expireTime->format('Y-m-d'));
+			if ($expireTime <= $now) {
+				$this->jobResultLog->logDebug($dn . ' already expired');
+				return;
+			}
+			$numDaysToWarn = 0;
+			if (!empty($options[$this->getConfigPrefix() . '_mailNotificationPeriod' . $jobID][0])) {
+				$numDaysToWarn = $options[$this->getConfigPrefix() . '_mailNotificationPeriod' . $jobID][0];
+			}
+			$actionTime = clone $expireTime;
+			if ($numDaysToWarn != 0) {
+				$actionTime->sub(new DateInterval('P' . $numDaysToWarn . 'D'));
+			}
+			$actionTime->setTimeZone(getTimeZone());
+			$this->jobResultLog->logDebug("Action time on " . $actionTime->format('Y-m-d'));
+			if ($actionTime > $now) {
+				$this->jobResultLog->logDebug($dn . ' does not need notification yet.');
+				return;
+			}
+			$dbLastChange = $this->getDBLastPwdChangeTime($jobID, $pdo, $user['dn']);
+			// skip entries where mail was already sent
+			if ($dbLastChange == $user['shadowexpire'][0]) {
+				$this->jobResultLog->logDebug($dn . ' was already notified.');
+				return;
+			}
+			if ($isDryRun) {
+				// no action for dry run
+				$this->jobResultLog->logInfo('Not sending email to ' . $dn . ' because of dry run.');
+				return;
+			}
+			// send email
+			$success = $this->sendMail($options, $jobID, $user, $expireTime);
+			// update DB if mail was sent successfully
+			if ($success) {
+				$this->setDBLastPwdChangeTime($jobID, $pdo, $dn, $user['shadowexpire'][0]);
 			}
 		}
 
