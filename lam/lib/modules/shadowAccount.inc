@@ -97,9 +97,15 @@ class shadowAccount extends baseModule implements passwordService {
 			'shadowInactive', 'shadowExpire', 'shadowFlag');
 		// lists for expiration date
 		$day = array('-'); $mon = array('-'); $year = array('-');
-		for ( $i=1; $i<=31; $i++ ) $day[] = $i;
-		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
-		for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
+		for ( $i=1; $i<=31; $i++ ) {
+			$day[] = $i;
+		}
+		for ( $i=1; $i<=12; $i++ ) {
+			$mon[] = $i;
+		}
+		for ( $i=2003; $i<=2030; $i++ ) {
+			$year[] = $i;
+		}
 		$profileOptionsTable = new htmlResponsiveRow();
 		// auto add extension
 		$profileOptionsTable->add(new htmlResponsiveInputCheckbox('shadowAccount_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
@@ -231,7 +237,10 @@ class shadowAccount extends baseModule implements passwordService {
 			)
 		);
 		// self service fields
-		$return['selfServiceFieldSettings'] = array('shadowLastChange' => _('Last password change (read-only)'));
+		$return['selfServiceFieldSettings'] = array(
+			'shadowLastChange' => _('Last password change (read-only)'),
+			'shadowExpire' => _('Account expiration date (read-only)')
+		);
 		return $return;
 	}
 
@@ -749,6 +758,17 @@ class shadowAccount extends baseModule implements passwordService {
 			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('shadowLastChange', _('Last password change'))));
 			$row->addField(new htmlOutputText($shadowLastChange));
 			$return['shadowLastChange'] = $row;
+		}
+		if (in_array('shadowExpire', $fields)) {
+			$shadowExpire = '';
+			if (isset($attributes['shadowExpire'][0])) {
+				$date = new DateTime('@' . $attributes['shadowExpire'][0] * 3600 * 24, new DateTimeZone('UTC'));
+				$shadowExpire = $date->format('d.m.Y');
+			}
+			$row = new htmlResponsiveRow();
+			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('shadowExpire', _('Account expiration date'))));
+			$row->addField(new htmlOutputText($shadowExpire));
+			$return['shadowExpire'] = $row;
 		}
 		return $return;
 	}
