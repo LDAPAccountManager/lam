@@ -138,6 +138,7 @@ class inetLocalMailRecipient extends baseModule {
 		// self service
 		$return['selfServiceFieldSettings'] = array(
 			'mailLocalAddress' => _('Local address (read-only)'),
+			'mailRoutingAddress' => _('Routing address (read-only)'),
 		);
 		return $return;
 	}
@@ -373,6 +374,16 @@ class inetLocalMailRecipient extends baseModule {
 			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('mailLocalAddress', _('Local address'))));
 			$row->addField(new htmlOutputText(implode('<br>', $mailLocalAddress), false));
 			$return['mailLocalAddress'] = $row;
+		}
+		if (in_array('mailRoutingAddress', $fields)) {
+			$mailRoutingAddress = null;
+			if (isset($attributes['mailRoutingAddress'][0])) {
+				$mailRoutingAddress = $attributes['mailRoutingAddress'][0];
+			}
+			$row = new htmlResponsiveRow();
+			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('mailRoutingAddress', _('Routing address'))));
+			$row->addField(new htmlOutputText($mailRoutingAddress));
+			$return['mailRoutingAddress'] = $row;
 		}
 		return $return;
 	}
