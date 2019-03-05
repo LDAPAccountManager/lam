@@ -527,15 +527,22 @@ class posixAccount extends baseModule implements passwordService {
 	* @return boolean true, if settings are complete
 	*/
 	function module_complete() {
-		$typeId = $this->getAccountContainer()->get_type()->getId();
 		if (!$this->skipObjectClass() && (!isset($this->attributes['objectClass']) || !in_array('posixAccount', $this->attributes['objectClass']))) {
 			// no checks if object class is not set
 			return true;
 		}
-		if (!isset($this->attributes['uid'][0]) || ($this->attributes['uid'][0] == '')) return false;
-		if (!isset($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] == '')) return false;
-		if (!isset($this->attributes['gidNumber'][0]) || ($this->attributes['gidNumber'][0] == '')) return false;
-		if (!isset($this->attributes['loginShell'][0]) || ($this->attributes['loginShell'][0] == '')) return false;
+		if (!isset($this->attributes['uid'][0]) || ($this->attributes['uid'][0] == '')) {
+			return false;
+		}
+		if (!isset($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] == '')) {
+			return false;
+		}
+		if (!isset($this->attributes['gidNumber'][0]) || ($this->attributes['gidNumber'][0] == '')) {
+			return false;
+		}
+		if (!isset($this->attributes['loginShell'][0]) || ($this->attributes['loginShell'][0] == '')) {
+			return false;
+		}
 		return true;
 	}
 
@@ -849,7 +856,7 @@ class posixAccount extends baseModule implements passwordService {
 			for ($i = 0; $i < sizeof($toAdd); $i++) {
 				if (isset($gons[$toAdd[$i]])) {
 					$attrName = 'member';
-					if (in_array('groupOfUniqueNames', $gons[$toAdd[$i]]['objectclass'])) {
+					if (in_array_ignore_case('groupOfUniqueNames', $gons[$toAdd[$i]]['objectclass'])) {
 						$attrName = 'uniqueMember';
 					}
 					$success = @ldap_mod_add($_SESSION['ldap']->server(), $toAdd[$i], array($attrName => array($accountContainer->finalDN)));
@@ -866,7 +873,7 @@ class posixAccount extends baseModule implements passwordService {
 			for ($i = 0; $i < sizeof($toRem); $i++) {
 				if (isset($gons[$toRem[$i]])) {
 					$attrName = 'member';
-					if (in_array('groupOfUniqueNames', $gons[$toRem[$i]]['objectclass'])) {
+					if (in_array_ignore_case('groupOfUniqueNames', $gons[$toRem[$i]]['objectclass'])) {
 						$attrName = 'uniqueMember';
 					}
 					$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], array($attrName => array($accountContainer->dn_orig)));
@@ -2811,7 +2818,7 @@ class posixAccount extends baseModule implements passwordService {
 					$gons = explode(",", $dataRow[$ids['posixAccount_gon']]);
 					$memberAttr = 'member';
 					for ($g = 0; $g < sizeof($gons); $g++) {
-						if (in_array('groupOfUniqueNames', $gonList[$gonMap[$gons[$g]]]['objectclass'])) {
+						if (in_array_ignore_case('groupOfUniqueNames', $gonList[$gonMap[$gons[$g]]]['objectclass'])) {
 							$memberAttr = 'uniqueMember';
 						}
 						$temp['dn_gon'][$gonMap[$gons[$g]]][$memberAttr][] = $accounts[$i]['dn'];
@@ -3494,13 +3501,12 @@ class posixAccount extends baseModule implements passwordService {
 		$typeManager = new TypeManager();
 		$types = $typeManager->getConfiguredTypesForScopes(array('gon', 'group'));
 		foreach ($types as $type) {
-			$filter = '(|(objectClass=groupOfNames)(objectClass=groupOfMembers)(objectClass=groupOfUniqueNames))';
 			$typeFilter = get_ldap_filter($type->getId());
 			$results = searchLDAP($type->getSuffix(), $typeFilter, array('cn', 'dn', 'objectClass'));
 			for ($i = 0; $i < sizeof($results); $i++) {
-				if ((in_array('groupOfNames', $results[$i]['objectclass'])
-						|| in_array('groupOfMembers', $results[$i]['objectclass'])
-						|| in_array('groupOfUniqueNames', $results[$i]['objectclass']))
+				if ((in_array_ignore_case('groupOfNames', $results[$i]['objectclass'])
+						|| in_array_ignore_case('groupOfMembers', $results[$i]['objectclass'])
+						|| in_array_ignore_case('groupOfUniqueNames', $results[$i]['objectclass']))
 						&& isset($results[$i]['cn'][0])) {
 					$return[$results[$i]['dn']] = $results[$i];
 				}
