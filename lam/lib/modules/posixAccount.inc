@@ -174,7 +174,8 @@ class posixAccount extends baseModule implements passwordService {
 					'password' => _('Password'),
 					'cn' => _('Common name'),
 					'loginShell' => _('Login shell'),
-					'syncWindowsPassword' => _('Sync Unix password with Windows password')
+					'syncWindowsPassword' => _('Sync Unix password with Windows password'),
+					'unixgroups' => _('Groups (read-only)')
 			);
 			// possible self service read-only fields
 			$return['selfServiceReadOnlyFields'] = array('cn', 'loginShell');
@@ -183,6 +184,7 @@ class posixAccount extends baseModule implements passwordService {
 			$selfServiceContainer->add(new htmlResponsiveSelect('posixAccount_pwdHash', getSupportedHashTypes(),
 				array('SSHA'), _("Password hash type"), array('pwdHash', get_class($this))), 12);
 			$selfServiceContainer->add(new htmlResponsiveInputTextarea('posixAccount_shells', implode("\r\n", $this->getShells()), 30, 4, _('Login shells'), array('loginShells', get_class($this))), 12);
+			$selfServiceContainer->add(new htmlResponsiveInputField(_('Group DN'), 'posixAccount_groupDn', '', array('groupDn', get_class($this))), 12);
 			$selfServiceContainer->add(new htmlResponsiveInputCheckbox('posixAccount_useOldPwd', false, _('Password change with old password'), array('useOldPwd', get_class($this))), 12);
 			$return['selfServiceSettings'] = $selfServiceContainer;
 		}
@@ -412,6 +414,10 @@ class posixAccount extends baseModule implements passwordService {
 			'excludeFromGroupSync' => array (
 				"Headline" => _('Exclude from group sync'),
 				"Text" => _('Enter one group per line that should be ignored when syncing groups.')
+			),
+			'groupDn' => array (
+				"Headline" => _('Group DN'),
+				"Text" => _('Enter the base DN of your groups here. This is only required if you want to display memberships on the self service page.')
 			),
 			'user' => array(
 				'uid' => array(
@@ -3188,7 +3194,9 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		if (in_array('cn', $fields)) {
 			$cn = '';
-			if (isset($attributes['cn'][0])) $cn = $attributes['cn'][0];
+			if (isset($attributes['cn'][0])) {
+				$cn = $attributes['cn'][0];
+			}
 			$cnField = new htmlInputField('posixAccount_cn', $cn);
 			if (in_array('cn', $readOnlyFields)) {
 				$cnField = new htmlOutputText($cn);
@@ -3201,7 +3209,9 @@ class posixAccount extends baseModule implements passwordService {
 		if (in_array('loginShell', $fields)) {
 			$shelllist = $this->getShells(); // list of all valid shells
 			$loginShell = '';
-			if (isset($attributes['loginShell'][0])) $loginShell = $attributes['loginShell'][0];
+			if (isset($attributes['loginShell'][0])) {
+				$loginShell = $attributes['loginShell'][0];
+			}
 			$loginShellField = new htmlSelect('posixAccount_loginShell', $shelllist, array($loginShell));
 			if (in_array('loginShell', $readOnlyFields)) {
 				$loginShellField = new htmlOutputText($loginShell);
@@ -3210,6 +3220,25 @@ class posixAccount extends baseModule implements passwordService {
 			$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('loginShell', _('Login shell'))));
 			$row->addField($loginShellField);
 			$return['loginShell'] = $row;
+		}
+		if (in_array('unixgroups', $fields) && !empty($this->selfServiceSettings->moduleSettings['posixAccount_groupDn'][0])) {
+			$groupDn = $this->selfServiceSettings->moduleSettings['posixAccount_groupDn'][0];
+			$gidNumber = $attributes['gidNumber'][0];
+			$userName = $attributes['uid'][0];
+			if (!empty($userName)) {
+				$filter = '(&(objectClass=posixGroup)(|(gidNumber=' . $gidNumber . ')(memberUid=' . $userName . ')))';
+				$results = searchLDAP($groupDn, $filter, array('cn'));
+				$groups = array();
+				foreach ($results as $result) {
+					$groups[] = $result['cn'][0];
+				}
+				$groups = array_unique($groups);
+				natcasesort($groups);
+				$row = new htmlResponsiveRow();
+				$row->addLabel(new htmlOutputText($this->getSelfServiceLabel('unixgroups', _('Groups'))));
+				$row->addField(new htmlOutputText(implode(', ', $groups)));
+				$return['unixgroups'] = $row;
+			}
 		}
 		return $return;
 	}

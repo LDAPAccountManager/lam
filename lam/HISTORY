@@ -6,7 +6,7 @@ March 2019
    -> New self service fields: Mail routing (Local address) and Windows (Proxy-Addresses)
    -> Bind DLZ: support DNAME+XFR records and descriptions in records (requires latest LDAP schema)
    -> Cron jobs: added Shadow account expiration notification jobs
-   -> New self service fields: Shadow account expiration date, mail routing address, Windows mail alias
+   -> New self service fields: Shadow account expiration date, mail routing address, Windows mail alias, Unix group memberships
   - Fixed bugs:
    -> Allow tree-only configurations without any other tab
 
