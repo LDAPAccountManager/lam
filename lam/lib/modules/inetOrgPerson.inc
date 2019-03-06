@@ -958,7 +958,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				&& ($settings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
 			$success = ldap_exop_passwd($_SESSION['ldap']->server(), $this->getAccountContainer()->finalDN, null, $this->clearTextPassword);
 			if (!$success) {
-				return array('ERROR', _('Unable to set password'), getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
+				return array(array('ERROR', _('Unable to set password'), getExtendedLDAPErrorMessage($_SESSION['ldap']->server())));
 			}
 		}
 		return array();
