@@ -445,6 +445,18 @@
             <row>
               <entry><inlinemediaobject>
                   <imageobject>
+                    <imagedata fileref="images/schema_groupOfNames.png"/>
+                  </imageobject>
+                </inlinemediaobject>Group of names</entry>
+
+              <entry>Group memberships (read-only)</entry>
+
+              <entry/>
+            </row>
+
+            <row>
+              <entry><inlinemediaobject>
+                  <imageobject>
                     <imagedata fileref="images/schema_heimdal.png"/>
                   </imageobject>
                 </inlinemediaobject> Kerberos</entry>
@@ -686,13 +698,19 @@
             </row>
 
             <row>
-              <entry><inlinemediaobject>
+              <entry morerows="1"><inlinemediaobject>
                   <imageobject>
                     <imagedata fileref="images/schema_mailAlias.png"/>
                   </imageobject>
                 </inlinemediaobject> Mail routing</entry>
 
               <entry>Local address (read-only)</entry>
+
+              <entry/>
+            </row>
+
+            <row>
+              <entry>Mail routing address (read-only)</entry>
 
               <entry/>
             </row>
@@ -740,12 +758,18 @@
             </row>
 
             <row>
-              <entry><inlinemediaobject>
+              <entry morerows="1"><inlinemediaobject>
                   <imageobject>
                     <imagedata fileref="images/schema_ssh.png"/>
                   </imageobject>
                 </inlinemediaobject> Shadow</entry>
 
+              <entry>Account expiration date (read-only)</entry>
+
+              <entry/>
+            </row>
+
+            <row>
               <entry>Last password change (read-only)</entry>
 
               <entry>Displays the date and time of the user's last password
@@ -753,7 +777,7 @@
             </row>
 
             <row>
-              <entry morerows="9"><inlinemediaobject>
+              <entry morerows="10"><inlinemediaobject>
                   <imageobject>
                     <imagedata fileref="images/schema_samba.png"/>
                   </imageobject>
@@ -766,6 +790,12 @@
 
             <row>
               <entry>Location</entry>
+
+              <entry/>
+            </row>
+
+            <row>
+              <entry>Mail alias (read-only)</entry>
 
               <entry/>
             </row>
@@ -819,13 +849,19 @@
             </row>
 
             <row>
-              <entry morerows="3"><inlinemediaobject>
+              <entry morerows="4"><inlinemediaobject>
                   <imageobject>
                     <imagedata fileref="images/schema_unix.png"/>
                   </imageobject>
                 </inlinemediaobject> Unix</entry>
 
               <entry>Common name</entry>
+
+              <entry/>
+            </row>
+
+            <row>
+              <entry>Group memberships (read-only)</entry>
 
               <entry/>
             </row>
