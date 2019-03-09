@@ -575,6 +575,14 @@
       intermediate release.</para>
 
       <section>
+        <title>6.6 -&gt; 6.7</title>
+
+        <para>Self service: please verify the self service base URL in your
+        self service profiles in case you have password self reset / user self
+        registration enabled.</para>
+      </section>
+
+      <section>
         <title>6.5 -&gt; 6.6</title>
 
         <para>No actions required.</para>

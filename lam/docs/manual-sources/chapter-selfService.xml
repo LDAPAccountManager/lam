@@ -205,6 +205,34 @@
             </row>
 
             <row>
+              <entry>Default language</entry>
+
+              <entry>This language is preselected on login.</entry>
+            </row>
+
+            <row>
+              <entry>Enforce language</entry>
+
+              <entry>Disables language selection and uses default
+              language.</entry>
+            </row>
+
+            <row>
+              <entry>Time zone</entry>
+
+              <entry>Please provide your time zone.</entry>
+            </row>
+
+            <row>
+              <entry>Base URL</entry>
+
+              <entry>Please enter the base URL of your webserver (e.g.
+              https://www.example.com). This is used to generate links in
+              emails for password self reset and user self
+              registration.</entry>
+            </row>
+
+            <row>
               <entry>Login attribute label</entry>
 
               <entry>This is the description for the LDAP search attribute.
