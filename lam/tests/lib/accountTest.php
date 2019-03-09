@@ -19,7 +19,8 @@
 
  */
 
-include_once 'lam/lib/account.inc';
+include_once __DIR__ . '/../../lib/account.inc';
+include_once __DIR__ . '/../../lib/security.inc';
 
 /**
  * LAMConfig test case.
@@ -86,6 +87,45 @@ class AccountTest extends PHPUnit_Framework_TestCase {
 	 */
 	function testFormatSecondsToShortFormat_invalidNumber() {
 		$this->assertEquals('', formatSecondsToShortFormat(''));
+	}
+
+	/**
+	 * Tests getCallingURL().
+	 */
+	function testGetCallingURL_noBaseUrl_noHost() {
+		$_SERVER['REQUEST_URI'] = '/test.php';
+		$_SERVER['HTTP_HOST'] = null;
+		$_SERVER['HTTP_REFERER'] = 'http://referrer/test.php';
+		$_SERVER['HTTPS'] = 'on';
+		$this->assertEquals('http://referrer/test.php', getCallingURL());
+		$_SERVER['HTTP_REFERER'] = null;
+		$this->assertNull(getCallingURL());
+	}
+
+	/**
+	 * Tests getCallingURL().
+	 */
+	function testGetCallingURL_noBaseUrl_host() {
+		$_SERVER['REQUEST_URI'] = '/test.php';
+		$_SERVER['HTTP_HOST'] = 'host';
+		$_SERVER['HTTP_REFERER'] = 'http://referrer/test.php';
+		$_SERVER['HTTPS'] = 'on';
+		$this->assertEquals('https://host/test.php', getCallingURL());
+		$_SERVER['HTTP_REFERER'] = null;
+		$this->assertEquals('https://host/test.php', getCallingURL());
+	}
+
+	/**
+	 * Tests getCallingURL().
+	 */
+	function testGetCallingURL_baseUrl_host() {
+		$_SERVER['REQUEST_URI'] = '/test.php';
+		$_SERVER['HTTP_HOST'] = 'host';
+		$_SERVER['HTTP_REFERER'] = 'http://referrer/test.php';
+		$_SERVER['HTTPS'] = 'on';
+		$this->assertEquals('http://base/test.php', getCallingURL('http://base'));
+		$_SERVER['HTTP_REFERER'] = null;
+		$this->assertEquals('http://base/test.php', getCallingURL('http://base'));
 	}
 
 }

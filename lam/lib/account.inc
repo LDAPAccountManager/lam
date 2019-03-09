@@ -1465,11 +1465,15 @@ function getDefaultLDAPErrorString($server) {
  * Returns the URL under which the page was loaded.
  * This includes any GET parameters set.
  *
+ * @param $baseUrl base URL (e.g. http://www.example.com)
  * @return String URL
  */
-function getCallingURL() {
+function getCallingURL($baseUrl = '') {
 	$url = null;
-	if (!empty($_SERVER['HTTP_HOST']) && !empty($_SERVER['REQUEST_URI'])) {
+	if (!empty($baseUrl) && !empty($_SERVER['REQUEST_URI'])) {
+		$url = $baseUrl . $_SERVER['REQUEST_URI'];
+	}
+	elseif (!empty($_SERVER['REQUEST_URI']) && !empty($_SERVER['HTTP_HOST'])) {
 		$proto = 'http://';
 		if (!empty($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] != 'off')) {
 			$proto = 'https://';
