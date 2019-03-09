@@ -63,8 +63,7 @@ function getSelfServiceSearchAttributes($scope) {
 		$return = array_merge($return, $attributes);
 	}
 	$return = array_unique($return);
-	$return = array_values($return);
-	return $return;
+	return array_values($return);
 }
 
 
@@ -80,7 +79,9 @@ function getSelfServiceFieldSettings($scope) {
 	for ($i = 0; $i < sizeof($modules); $i++) {
 		$m = moduleCache::getModule($modules[$i], $scope);
 		$settings = $m->getSelfServiceFields();
-		if (sizeof($settings) > 0) $return[$modules[$i]] = $settings;
+		if (sizeof($settings) > 0) {
+			$return[$modules[$i]] = $settings;
+		}
 	}
 	return $return;
 }
@@ -100,7 +101,9 @@ function getSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly
 	$return = array();
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
-		if (!isset($fields[$modules[$i]])) continue;
+		if (!isset($fields[$modules[$i]])) {
+			continue;
+		}
 		$m = moduleCache::getModule($modules[$i], $scope);
 		$modReadOnlyFields = array();
 		for ($r = 0; $r < sizeof($readOnlyFields); $r++) {
@@ -110,7 +113,9 @@ function getSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly
 			}
 		}
 		$code = $m->getSelfServiceOptions($fields[$modules[$i]], $attributes, $passwordChangeOnly, $modReadOnlyFields);
-		if (sizeof($code) > 0) $return[$modules[$i]] = $code;
+		if (sizeof($code) > 0) {
+			$return[$modules[$i]] = $code;
+		}
 	}
 	return $return;
 }
@@ -130,7 +135,9 @@ function checkSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOn
 	$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
-		if (!isset($fields[$modules[$i]])) continue;
+		if (!isset($fields[$modules[$i]])) {
+			continue;
+		}
 		$m = moduleCache::getModule($modules[$i], $scope);
 		$modReadOnlyFields = array();
 		for ($r = 0; $r < sizeof($readOnlyFields); $r++) {
@@ -140,11 +147,21 @@ function checkSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOn
 			}
 		}
 		$result = $m->checkSelfServiceOptions($fields[$modules[$i]], $attributes, $passwordChangeOnly, $modReadOnlyFields);
-		if (sizeof($result['messages']) > 0) $return['messages'] = array_merge($result['messages'], $return['messages']);
-		if (sizeof($result['add']) > 0) $return['add'] = array_merge($result['add'], $return['add']);
-		if (sizeof($result['del']) > 0) $return['del'] = array_merge($result['del'], $return['del']);
-		if (sizeof($result['mod']) > 0) $return['mod'] = array_merge($result['mod'], $return['mod']);
-		if (sizeof($result['info']) > 0) $return['info'] = array_merge($result['info'], $return['info']);
+		if (sizeof($result['messages']) > 0) {
+			$return['messages'] = array_merge($result['messages'], $return['messages']);
+		}
+		if (sizeof($result['add']) > 0) {
+			$return['add'] = array_merge($result['add'], $return['add']);
+		}
+		if (sizeof($result['del']) > 0) {
+			$return['del'] = array_merge($result['del'], $return['del']);
+		}
+		if (sizeof($result['mod']) > 0) {
+			$return['mod'] = array_merge($result['mod'], $return['mod']);
+		}
+		if (sizeof($result['info']) > 0) {
+			$return['info'] = array_merge($result['info'], $return['info']);
+		}
 	}
 	return $return;
 }
@@ -187,8 +204,9 @@ function getSelfServiceProfiles() {
 * @return selfServiceProfile true if file was readable
 */
 function loadSelfServiceProfile($name, $scope) {
-	if (!preg_match("/^[0-9a-z _-]+$/i", $name)) return false;
-	if (!preg_match("/^[0-9a-z _-]+$/i", $scope)) return false;
+	if (!preg_match("/^[0-9a-z _-]+$/i", $name) || !preg_match("/^[0-9a-z _-]+$/i", $scope)) {
+		return false;
+	}
 	$profile = new selfServiceProfile();
 	$file = substr(__FILE__, 0, strlen(__FILE__) - 20) . "/config/selfService/" . $name . "." . $scope;
 	if (is_file($file) === True) {
@@ -221,8 +239,9 @@ function loadSelfServiceProfile($name, $scope) {
 */
 function saveSelfServiceProfile($name, $scope, $profile) {
 	// check profile name
-	if (!preg_match("/^[0-9a-z _-]+$/i", $scope)) return false;
-	if (!preg_match("/^[0-9a-z _-]+$/i", $name)) return false;
+	if (!preg_match("/^[0-9a-z _-]+$/i", $scope) || !preg_match("/^[0-9a-z _-]+$/i", $name)) {
+		return false;
+	}
 	if (!get_class($profile) === 'selfServiceProfile') {
 		return false;
 	}
@@ -249,8 +268,9 @@ function saveSelfServiceProfile($name, $scope, $profile) {
 */
 function isSelfServiceProfileWritable($name, $scope) {
 	// check profile name
-	if (!preg_match("/^[0-9a-z _-]+$/i", $scope)) return false;
-	if (!preg_match("/^[0-9a-z _-]+$/i", $name)) return false;
+	if (!preg_match("/^[0-9a-z _-]+$/i", $scope) || !preg_match("/^[0-9a-z _-]+$/i", $name)) {
+		return false;
+	}
 	$path = substr(__FILE__, 0, strlen(__FILE__) - 20) . "/config/selfService/" . $name . "." . $scope;
 	return is_writable($path);
 }
