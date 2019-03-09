@@ -133,6 +133,8 @@ $helpArray = array (
 					"Text" => _("If enabled then LAM will use user and password that is provided by the web server via HTTP authentication.")),
 				"224" => array ("Headline" => _("Bind user and password"),
 					"Text" => _("Here you can specify the DN and password of the bind user that will be used for the LDAP search. This is required if your LDAP server does not allow anonymous access.")),
+				"225" => array ("Headline" => _('Base URL'),
+					"Text" => _("Please enter the base URL of your webserver (e.g. https://www.example.com). This is used to generate links in emails.")),
 				"230" => array ("Headline" => _("Profile management") . " - " . _("Add profile"),
 					"Text" => _("Please enter the name of the new profile and the password to change its settings. Profile names may contain letters, numbers and -/_.")),
 				"231" => array ("Headline" => _("Profile management") . " - " . _("Rename profile"),

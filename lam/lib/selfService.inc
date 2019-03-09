@@ -455,6 +455,9 @@ class selfServiceProfile {
 	/** enable captcha on self service login */
 	public $captchaOnLogin = false;
 
+	/** base URL for the website (e.g. https://example.com) for link generation */
+	private $baseUrl = '';
+
 	/**
 	 * Constructor
 	 *
@@ -505,6 +508,35 @@ class selfServiceProfile {
 		$this->reCaptchaSiteKey = '';
 		$this->reCaptchaSecretKey = '';
 		$this->captchaOnLogin = false;
+		$this->baseUrl = '';
+	}
+
+	/**
+	 * Returns the server's base URL (e.g. https://www.example.com).
+	 *
+	 * @return string URL
+	 */
+	public function getBaseUrl() {
+		if (!empty($this->baseUrl)) {
+			return $this->baseUrl;
+		}
+		$callingUrl = getCallingURL();
+		$matches = array();
+		if (preg_match('/^(http(s)?:\\/\\/[^\\/]+)\\/.+$/', $callingUrl, $matches)) {
+			return $matches[1];
+		}
+	}
+
+	/**
+	 * Sets the server's base URL (e.g. https://www.example.com).
+	 *
+	 * @param string $url URL
+	 */
+	public function setBaseUrl($url) {
+		$this->baseUrl = $url;
+		if (!empty($url) && (substr($url, -1, 1) === '/')) {
+			$this->baseUrl = substr($url, 0, -1);
+		}
 	}
 
 }
