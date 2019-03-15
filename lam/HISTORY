@@ -11,7 +11,7 @@ March 2019 6.7
     -> Unix and group of names memberships
    -> Base URL for emails in self service can be configured in self service profile
    -> Bind DLZ: support DNAME+XFR records and descriptions in records (requires latest LDAP schema)
-   -> Cron jobs: added Shadow account expiration notification jobs
+   -> Cron jobs: added Shadow account expiration notification job
   - Fixed bugs:
    -> Allow tree-only configurations without any other tab
 
