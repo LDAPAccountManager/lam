@@ -46,7 +46,7 @@ install:
 
 	# 3rd party libs are linked
 	install -d --mode=755 debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty
-	install -D --mode=644 lib/3rdParty/yubico/*.php debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/yubico
+	cp -r lib/3rdParty/yubico debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/
 	cp -r lib/3rdParty/tcpdf debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/
 
 	cp -r locale debian/ldap-account-manager/usr/share/ldap-account-manager/
