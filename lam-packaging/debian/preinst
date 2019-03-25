@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+if [ "$1" != "upgrade" ]; then
+    exit 0
+fi
+
+# 3rd party libs
+phpThirdPartyLibs='phpseclib tcpdf Monolog Psr'
+for phpThirdPartyLib in $phpThirdPartyLibs; do
+	if [ -L /usr/share/ldap-account-manager/lib/3rdParty/${phpThirdPartyLib} ] ; then
+		rm /usr/share/ldap-account-manager/lib/3rdParty/${phpThirdPartyLib}
+	fi
+done
+

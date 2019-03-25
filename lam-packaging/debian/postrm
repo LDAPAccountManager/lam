@@ -50,7 +50,7 @@ if [ -f /usr/share/debconf/confmodule ]; then
 	fi
 
 	# 3rd party libs
-	phpThirdPartyLibs='phpseclib tcpdf'
+	phpThirdPartyLibs='phpseclib tcpdf Monolog Psr'
 	for phpThirdPartyLib in $phpThirdPartyLibs; do
 		if [ -L /usr/share/ldap-account-manager/lib/3rdParty/${phpThirdPartyLib} ] ; then
 			rm /usr/share/ldap-account-manager/lib/3rdParty/${phpThirdPartyLib}
