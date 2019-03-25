@@ -409,6 +409,15 @@ class lamList {
 		$table->setCSSClasses(array($scope . '-border accountlist'));
 		$table->setOnClickEvents($onClickEvents);
 		$table->setOnDoubleClickEvents($onDoubleClickEvents);
+		$columnCount = sizeof($titles);
+		if ((100 / $columnCount) > 12) {
+			$widths = array('12%');
+			for ($i = 1; $i < ($columnCount - 1); $i++) {
+				$widths[] = floor((100 - 12) / ($columnCount - 1)) . '%';
+			}
+			$widths[] = ceil((100 - 12) / ($columnCount - 1)) . '%';
+			$table->setWidths($widths);
+		}
 
 		parseHtml(null, $table, array(), false, $this->tabindex, $scope);
 	}

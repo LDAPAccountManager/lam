@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2018  Roland Gruber
+  Copyright (C) 2010 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -4808,6 +4808,11 @@ class htmlResponsiveTable extends htmlElement {
 		return $return;
 	}
 
+	/**
+	 * Sets the width of each column.
+	 *
+	 * @param string[] $widths widths
+	 */
 	public function setWidths($widths) {
 		$this->widths = $widths;
 	}
