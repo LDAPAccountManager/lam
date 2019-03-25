@@ -1,4 +1,4 @@
-March 2019 6.7
+25.03.2019 6.7
   - Added YubiKey as 2-factor authentication provider
   - Support logging to remote syslog server
   - PHP 7.3 support

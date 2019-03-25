@@ -1,8 +1,10 @@
-ldap-account-manager (6.7.RC1-1) unstable; urgency=medium
+ldap-account-manager (6.7-1) unstable; urgency=medium
 
   * new upstream release
+  * Fix "Depends on tcpdf which is considered unfit for buster" removed 
+    dependency and embedded required parts (Closes: #923736)
 
- -- Roland Gruber <post@rolandgruber.de>  Fri, 15 Mar 2019 17:21:36 +0100
+ -- Roland Gruber <post@rolandgruber.de>  Mon, 25 Mar 2019 17:21:36 +0100
 
 ldap-account-manager (6.6-1) unstable; urgency=medium
 
