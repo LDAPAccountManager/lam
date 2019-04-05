@@ -35,7 +35,7 @@ RUN apt-get update \
  && apt-get upgrade -y
 
 # install requirements
-RUN apt-get install -y wget apache2 libapache2-mod-php php php-ldap php-zip php-xml php-curl php-gd php-imagick php-mcrypt php-tcpdf php-phpseclib fonts-dejavu
+RUN apt-get install -y wget apache2 libapache2-mod-php php php-ldap php-zip php-xml php-curl php-gd php-imagick php-mcrypt php-tcpdf php-phpseclib fonts-dejavu php-monolog
 
 # install LAM
 RUN wget http://prdownloads.sourceforge.net/lam/ldap-account-manager_${LAM_RELEASE}-1_all.deb?download -O /tmp/ldap-account-manager_${LAM_RELEASE}-1_all.deb \
