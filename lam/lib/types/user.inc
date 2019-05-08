@@ -706,7 +706,6 @@ class lamUserList extends lamList {
 	 */
 	protected function refreshPrimaryGroupTranslation() {
 		$this->trans_primary_hash = array();
-		$filter = "objectClass=posixGroup";
 		$attrs = array("cn", "gidNumber");
 		$entries = searchLDAPByAttribute(null, null, 'posixGroup', $attrs, array('group'));
 		$entryCount = sizeof($entries);
@@ -874,21 +873,16 @@ class lamUserList extends lamList {
 	}
 
 	/**
-	 * Prints the content of a single attribute filter area.
-	 *
-	 * @param String $attrName attribute name
-	 * @param boolean $clearFilter true if filter value should be cleared
+	 * {@inheritDoc}
+	 * @see lamList::getFilterArea()
 	 */
-	protected function printFilterArea($attrName, $clearFilter) {
+	protected function getFilterArea($attrName, $clearFilter) {
 		if ($attrName != self::ATTR_ACCOUNT_STATUS) {
-			parent::printFilterArea($attrName, $clearFilter);
-			return;
+			return parent::getFilterArea($attrName, $clearFilter);
 		}
 		$value = "-";
-		if (!$clearFilter) {
-			if (isset($this->filters[strtolower($attrName)])) {
-				$value = $this->filters[strtolower($attrName)];
-			}
+		if (!$clearFilter && isset($this->filters[$attrName])) {
+			$value = $this->filters[$attrName];
 		}
 		$filterOptions = array(
 			'' => '',
@@ -898,10 +892,10 @@ class lamUserList extends lamList {
 			_('Expired') => self::FILTER_EXPIRED,
 		);
 		$filterInput = new htmlSelect('filter' . strtolower($attrName), $filterOptions, array($value));
-		$filterInput->setCSSClasses(array($this->type->getScope() . '-dark'));
+		$filterInput->setCSSClasses(array($this->type->getScope() . '-bright'));
 		$filterInput->setHasDescriptiveElements(true);
 		$filterInput->setOnchangeEvent('document.getElementsByName(\'apply_filter\')[0].click();');
-		parseHtml(null, $filterInput, array(), false, $this->tabindex, $this->type->getScope());
+		return $filterInput;
 	}
 
 	/**

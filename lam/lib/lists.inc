@@ -480,20 +480,31 @@ class lamList {
 		foreach ($this->attrArray as $attributeName) {
 			$attributeName = strtolower($attributeName);
 			if ($this->canBeFiltered($attributeName)) {
-				$value = "";
-				if (!$clearFilter && isset($this->filters[$attributeName])) {
-					$value = $this->filters[$attributeName];
-				}
-				$filterInput = new htmlInputField('filter' . $attributeName, $value, null);
-				$filterInput->setCSSClasses(array($this->type->getScope() . '-bright'));
-				$filterInput->setOnKeyPress("SubmitForm('apply_filter', event);");
-				$filterElements[] = $filterInput;
+				$filterElements[] = $this->getFilterArea($attributeName, $clearFilter);
 			}
 			else {
 				$filterElements[] = new htmlOutputText('');
 			}
 		}
 		return $filterElements;
+	}
+
+	/**
+	 * Prints the content of a single attribute filter area.
+	 *
+	 * @param String $attrName attribute name
+	 * @param boolean $clearFilter true if filter value should be cleared
+	 * @return htmlElement element to show
+	 */
+	protected function getFilterArea($attrName, $clearFilter) {
+		$value = "";
+		if (!$clearFilter && isset($this->filters[$attrName])) {
+			$value = $this->filters[$attrName];
+		}
+		$filterInput = new htmlInputField('filter' . $attrName, $value, null);
+		$filterInput->setCSSClasses(array($this->type->getScope() . '-bright'));
+		$filterInput->setOnKeyPress("SubmitForm('apply_filter', event);");
+		return $filterInput;
 	}
 
 	/**
