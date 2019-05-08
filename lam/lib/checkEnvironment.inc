@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2018  Roland Gruber
+  Copyright (C) 2010 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -80,6 +80,12 @@ if (! function_exists('utf8_decode') || !extension_loaded('xml')) {
 }
 if (!extension_loaded('libxml')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no Lib XML support!", "Please install the Lib XML extension for PHP.");
+}
+if (!class_exists('XMLReader')) {
+	$criticalErrors[] = array("ERROR", "Your PHP has no XMLReader support!", "Please active XMLReader for PHP.");
+}
+if (!class_exists('XMLWriter')) {
+	$criticalErrors[] = array("ERROR", "Your PHP has no XMLWriter support!", "Please active XMLWriter for PHP.");
 }
 // imagick/GD
 if (!extension_loaded('imagick') && !function_exists('getimagesize')) {
