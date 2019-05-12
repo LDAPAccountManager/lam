@@ -1707,6 +1707,19 @@ function convertUtf8ToUtf16Le($input) {
 }
 
 /**
+ * Returns the text with LAM and its version for header area.
+ *
+ * @return string LAM version text
+ */
+function getLAMVersionText() {
+	$text = 'LDAP Account Manager';
+	if (isLAMProVersion()) {
+		$text .= ' Pro';
+	}
+	return $text . ' - ' . LAMVersion();
+}
+
+/**
  * LAM exception with title and message.
  *
  * @author Roland Gruber

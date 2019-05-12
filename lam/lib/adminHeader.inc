@@ -3,7 +3,7 @@ namespace LAM\HEADER;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2018  Roland Gruber
+  Copyright (C) 2018 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -93,9 +93,8 @@ foreach ($toSort as $key => $value) {
 			<a class="lamLogo" href="https://www.ldap-account-manager.org/" target="new_window">
 				<span class="hide-on-tablet">&nbsp;</span>
 				<span class="hide-on-mobile">
-				LDAP Account Manager
 				<?php
-				echo $pro . " - " . LAMVersion();
+				echo getLAMVersionText();
 				?>
 				</span>
 			</a>

@@ -2,7 +2,7 @@
 namespace LAM\CONFIG;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2018  Roland Gruber
+  Copyright (C) 2017 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -60,7 +60,9 @@ function printConfigurationPageHeaderBar($conf) {
 		<table border=0 width="100%" class="lamHeader ui-corner-all">
 			<tr>
 				<td align="left" height="30">
-					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">LDAP Account Manager</a>
+					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">
+						<?php echo getLAMVersionText(); ?>
+					</a>
 				</td>
 				<td align="right">
 					<?php echo _('Server profile') . ': ' . $conf->getName(); ?>

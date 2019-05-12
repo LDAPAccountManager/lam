@@ -275,7 +275,9 @@ printHeaderContents(_("Edit general settings"), '../..');
 		<table border=0 width="100%" class="lamHeader ui-corner-all">
 			<tr>
 				<td align="left" height="30">
-					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">LDAP Account Manager</a>
+					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">
+						<?php echo getLAMVersionText(); ?>
+					</a>
 				</td>
 			</tr>
 		</table>

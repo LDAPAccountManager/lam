@@ -18,7 +18,7 @@ use \htmlDiv;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2018  Roland Gruber
+                2005 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -218,12 +218,8 @@ function display_LoginPage($licenseValidator, $error_message) {
 			<tr>
 				<td align="left" height="30" width="34%">
 					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">
-					LAM
 					<?php
-						if (isLAMProVersion()) {
-							echo 'Pro ';
-						}
-						echo ' - ' . LAMVersion();
+						echo getLAMVersionText();
 					?>
 					</a>
 				</td>
