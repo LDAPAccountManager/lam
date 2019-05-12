@@ -22,7 +22,7 @@ use LAM\PDF\PDFStructureWriter;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2007 - 2018  Roland Gruber
+                2007 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -65,7 +65,9 @@ startSecureSession();
 enforceUserIsLoggedIn();
 
 // die if no write access
-if (!checkIfWriteAccessIsAllowed()) die();
+if (!checkIfWriteAccessIsAllowed()) {
+	die();
+}
 
 checkIfToolIsActive('toolPDFEditor');
 
@@ -271,6 +273,9 @@ foreach ($sections as $key => $section) {
 	if($section instanceof PDFEntrySection) {
 		if($section->isAttributeTitle()) {
 			$section_headline = translateFieldIDToName($section->getPdfKey(), $type->getScope(), $availablePDFFields);
+			if ($section_headline === null) {
+				continue;
+			}
 		}
 		else {
 			$section_headline = $section->getTitle();
@@ -312,8 +317,12 @@ foreach ($sections as $key => $section) {
 		// add section entries
 		$sectionEntries = $section->getEntries();
 		foreach ($sectionEntries as $e => $sectionEntry) {
+			$fieldLabel = translateFieldIDToName($sectionEntry->getKey(), $type->getScope(), $availablePDFFields);
+			if ($fieldLabel === null) {
+				continue;
+			}
 			$structureContent->addVerticalSpacer('1rem');
-			$fieldOutput = new htmlOutputText(translateFieldIDToName($sectionEntry->getKey(), $type->getScope(), $availablePDFFields));
+			$fieldOutput = new htmlOutputText($fieldLabel);
 			$structureContent->addLabel($fieldOutput);
 			$actionGroup = new htmlGroup();
 			if ($e != 0) {
@@ -474,6 +483,7 @@ include __DIR__ . '/../../lib/adminFooter.inc';
  * @param String $id field ID
  * @param String $scope account type
  * @param array $availablePDFFields available PDF fields
+ * @return string|null field label or null if no matching module found
  */
 function translateFieldIDToName($id, $scope, $availablePDFFields) {
 	foreach ($availablePDFFields as $module => $fields) {
@@ -491,7 +501,7 @@ function translateFieldIDToName($id, $scope, $availablePDFFields) {
 			}
 		}
 	}
-	return $id;
+	return null;
 }
 
 /**
@@ -669,7 +679,6 @@ function moveDown(PDFStructure &$structure) {
 			$parts = explode('_', $parts);
 			$sectionPos = $parts[0];
 			$entryPos = $parts[1];
-			$entries = $sections[$sectionPos]->getEntries();
 			$entries = $sections[$sectionPos]->getEntries();
 			$entryTmp = $entries[$entryPos + 1];
 			$entries[$entryPos + 1] = $entries[$entryPos];
