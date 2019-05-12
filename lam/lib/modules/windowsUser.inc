@@ -803,6 +803,7 @@ class windowsUser extends baseModule implements passwordService {
 			'windowsUser_profilePath' => 'profilePath',
 			'windowsUser_homeDirectory' => 'homeDirectory',
 			'windowsUser_company' => 'company',
+			'windowsUser_homeDrive' => 'homeDrive'
 		);
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
 			$return['profile_mappings']['windowsUser_msSFU30NisDomain'] = 'msSFU30NisDomain';
@@ -2804,14 +2805,21 @@ class windowsUser extends baseModule implements passwordService {
 		$return->add(new htmlResponsiveSelect('windowsUser_userPrincipalNameDomain', $domains, array(), _('Domain'), 'userPrincipalNameDomain'), 12);
 		// group memberships
 		$groups = $this->findGroups();
-		$groupList = array();
+		$groupOptions = array();
 		foreach ($groups as $dn) {
-			$groupList[extractRDNValue($dn)] = $dn;
+			$groupOptions[extractRDNValue($dn)] = $dn;
 		}
-		$groupSelect = new htmlResponsiveSelect('windowsUser_groups', $groupList, array(), _('Groups'), 'groups', 10);
+		$groupSelect = new htmlResponsiveSelect('windowsUser_groups', $groupOptions, array(), _('Groups'), 'groups', 10);
 		$groupSelect->setHasDescriptiveElements(true);
 		$groupSelect->setMultiSelect(true);
 		$return->add($groupSelect, 12);
+		// home drive
+		$drives = array('-');
+		for ($i = 90; $i > 67; $i--) {
+			$drives[] = chr($i) . ':';
+		}
+		$driveSelect = new htmlResponsiveSelect('windowsUser_homeDrive', $drives, array('-'), _('Home drive'), 'homeDrive');
+		$return->add($driveSelect, 12);
 		return $return;
 	}
 
