@@ -4,7 +4,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2018  Roland Gruber
+                2005 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1683,10 +1683,18 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$return = parent::get_profileOptions($typeId);
 		if ($this->get_scope() == 'user') {
 			// lists for expiration date
-			$day = array(); $mon = array(); $year = array();
-			for ( $i=1; $i<=31; $i++ ) $day[] = $i;
-			for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
-			for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
+			$day = array();
+			$mon = array();
+			$year = array();
+			for ( $i=1; $i<=31; $i++ ) {
+				$day[] = $i;
+			}
+			for ( $i=1; $i<=12; $i++ ) {
+				$mon[] = $i;
+			}
+			for ( $i=2003; $i<=2030; $i++ ) {
+				$year[] = $i;
+			}
 			// display name
 			$return->add(new htmlResponsiveInputField(_('Display name'), 'sambaSamAccount_displayName', '', 'displayName'), 12);
 			// use no password at all
@@ -1706,7 +1714,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomeDrive')) {
 				// letter of home drive
 				$drives = array('-');
-				for ($i = 90; $i > 67; $i--) $drives[] = chr($i) . ':';
+				for ($i = 90; $i > 67; $i--) {
+					$drives[] = chr($i) . ':';
+				}
 				$return->add(new htmlResponsiveSelect('sambaSamAccount_sambaHomeDrive', $drives, array('-'), _('Home drive'), 'homeDrive'), 12);
 			}
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomePath')) {
