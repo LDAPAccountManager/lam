@@ -6,7 +6,7 @@ use \LAM\PDF\PDFTableRow;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2007 - 2018  Roland Gruber
+                2007 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -168,7 +168,9 @@ class quota extends baseModule {
 	 * Initializes the quota values.
 	 */
 	function initQuotas() {
-		if (isset($this->quota)) return;
+		if (isset($this->quota)) {
+			return;
+		}
 		$userName = '+';
 		if (($this->getAccountContainer() != null) && !$this->getAccountContainer()->isNewAccount) {
 			if ($this->get_scope() == 'user') {
@@ -196,14 +198,24 @@ class quota extends baseModule {
 			$allQuotas = explode(":", $quotas);
 			array_pop($allQuotas); // remove empty element at the end
 			for ($i = 0; $i < sizeof($allQuotas); $i++) {
-				if (strpos($allQuotas[$i], quota::$QUOTA_PREFIX) !== 0) continue;
+				if (strpos($allQuotas[$i], quota::$QUOTA_PREFIX) !== 0) {
+					continue;
+				}
 				$allQuotas[$i] = substr($allQuotas[$i], strlen(quota::$QUOTA_PREFIX));
 				$singleQuota = explode(",", $allQuotas[$i]);
 				$this->quota[$server][$i] = $singleQuota;
-				if ($this->quota[$server][$i][4] < time()) $this->quota[$server][$i][4] = '';
-				else $this->quota[$server][$i][4] = strval(intval(($this->quota[$server][$i][4] - time())/3600)) .' '. _('hours');
-				if ($this->quota[$server][$i][8] < time()) $this->quota[$server][$i][8] = '';
-				else $this->quota[$server][$i][8] = strval(intval(($this->quota[$server][$i][8] - time())/3600)) .' '. _('hours');
+				if ($this->quota[$server][$i][4] < time()) {
+					$this->quota[$server][$i][4] = '';
+				}
+				else {
+					$this->quota[$server][$i][4] = strval(intval(($this->quota[$server][$i][4] - time())/3600)) .' '. _('hours');
+				}
+				if ($this->quota[$server][$i][8] < time()) {
+					$this->quota[$server][$i][8] = '';
+				}
+				else {
+					$this->quota[$server][$i][8] = strval(intval(($this->quota[$server][$i][8] - time())/3600)) .' '. _('hours');
+				}
 			}
 		}
 	}
@@ -235,14 +247,11 @@ class quota extends baseModule {
 	function module_ready() {
 		if ($this->get_scope()=='user') {
 			$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
-			if ($attrs['uid'][0]=='') return false;
-		}
-		if ($this->get_scope()=='group') {
-			if (($this->getCn() == null) || ($this->getCn() == '')) {
+			if ($attrs['uid'][0]=='') {
 				return false;
 			}
 		}
-		return true;
+		return ($this->get_scope() != 'group') || !empty($this->getCn());
 	}
 
 	/**
@@ -256,7 +265,9 @@ class quota extends baseModule {
 	 */
 	public function postModifyActions($newAccount, $attributes) {
 		$messages = array();
-		if (!isset($this->quota) || !is_array($this->quota)) return $messages;
+		if (!isset($this->quota) || !is_array($this->quota)) {
+			return $messages;
+		}
 		// determine if this is a user or group account
 		if ($this->get_scope()=='user') {
 			$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
@@ -387,7 +398,9 @@ class quota extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes() {
-		if (!isset($this->quota) || !is_array($this->quota)) return array();
+		if (!isset($this->quota) || !is_array($this->quota)) {
+			return array();
+		}
 		$errors = array();
 		// get list of lamdaemon servers
 		$serverDescriptions = array();
@@ -410,18 +423,24 @@ class quota extends baseModule {
 				$this->quota[$server][$i][6] = $_POST[$i . '_6_' . $id];
 				$this->quota[$server][$i][7] = $_POST[$i . '_7_' . $id];
 				// Check if values are OK and set automatic values. if not error-variable will be set
-				if (!get_preg($this->quota[$server][$i][2], 'quotaNumber'))
+				if (!get_preg($this->quota[$server][$i][2], 'quotaNumber')) {
 					$errors[] = $this->messages['softblock'][0];
-				if (!get_preg($this->quota[$server][$i][3], 'quotaNumber'))
+				}
+				if (!get_preg($this->quota[$server][$i][3], 'quotaNumber')) {
 					$errors[] = $this->messages['hardblock'][0];
-				if (!get_preg($this->quota[$server][$i][6], 'quotaNumber'))
+				}
+				if (!get_preg($this->quota[$server][$i][6], 'quotaNumber')) {
 					$errors[] = $this->messages['softinode'][0];
-				if (!get_preg($this->quota[$server][$i][7], 'quotaNumber'))
+				}
+				if (!get_preg($this->quota[$server][$i][7], 'quotaNumber')) {
 					$errors[] = $this->messages['hardinode'][0];
-				if (intval($this->quota[$server][$i][2]) > intval($this->quota[$server][$i][3]))
+				}
+				if ($this->getQuotaNumber($this->quota[$server][$i][2]) > $this->getQuotaNumber($this->quota[$server][$i][3])) {
 					$errors[] = $this->messages['block_cmp'][0];
-				if (intval($this->quota[$server][$i][6]) > intval($this->quota[$server][$i][7]))
+				}
+				if ($this->getQuotaNumber($this->quota[$server][$i][6]) > $this->getQuotaNumber($this->quota[$server][$i][7])) {
 					$errors[] = $this->messages['inode_cmp'][0];
+				}
 				$i++;
 			}
 		}
@@ -522,8 +541,7 @@ class quota extends baseModule {
 	 * @return string output string
 	 */
 	function replaceSpecialChars($input) {
-		$ret = str_replace(".", "_", $input);
-		return $ret;
+		return str_replace(".", "_", $input);
 	}
 
 	/**
@@ -565,7 +583,9 @@ class quota extends baseModule {
 					$dirs[$i] = $dirs[$i][0];
 				}
 				$dirs = array_values($dirs);
-				if (sizeof($dirs) < 1) continue; // stop if no quota directories were found
+				if (sizeof($dirs) < 1) {
+					continue; // stop if no quota directories were found
+				}
 				$optionsAvailable = true;
 				$return->add(new htmlSubTitle($description), 12);
 				for ($i = 0; $i < sizeof($dirs); $i++) {
@@ -625,12 +645,24 @@ class quota extends baseModule {
 			}
 			$dirs = array_values($dirs);
 			for ($i = 0; $i < sizeof($dirs); $i++) {
-				if (!get_preg($options["quota_softblock_" . $id . "_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['softblock'][0];
-				if (!get_preg($options["quota_hardblock_" . $id . "_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['hardblock'][0];
-				if (!get_preg($options["quota_softinode_" . $id . "_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['softinode'][0];
-				if (!get_preg($options["quota_hardinode_" . $id . "_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['hardinode'][0];
-				if (intval($options["quota_softblock_" . $id . "_" . $dirs[$i]][0]) > intval($options["quota_hardblock_" . $id . "_" . $dirs[$i]][0])) $return[] = $this->messages['block_cmp'][0];
-				if (intval($options["quota_softinode_" . $id . "_" . $dirs[$i]][0]) > intval($options["quota_hardinode_" . $id . "_" . $dirs[$i]][0])) $return[] = $this->messages['inode_cmp'][0];
+				if (!get_preg($options["quota_softblock_" . $id . "_" . $dirs[$i]][0], 'digit')) {
+					$return[] = $this->messages['softblock'][0];
+				}
+				if (!get_preg($options["quota_hardblock_" . $id . "_" . $dirs[$i]][0], 'digit')) {
+					$return[] = $this->messages['hardblock'][0];
+				}
+				if (!get_preg($options["quota_softinode_" . $id . "_" . $dirs[$i]][0], 'digit')) {
+					$return[] = $this->messages['softinode'][0];
+				}
+				if (!get_preg($options["quota_hardinode_" . $id . "_" . $dirs[$i]][0], 'digit')) {
+					$return[] = $this->messages['hardinode'][0];
+				}
+				if ($this->getQuotaNumber($options["quota_softblock_" . $id . "_" . $dirs[$i]][0]) > $this->getQuotaNumber($options["quota_hardblock_" . $id . "_" . $dirs[$i]][0])) {
+					$return[] = $this->messages['block_cmp'][0];
+				}
+				if ($this->getQuotaNumber($options["quota_softinode_" . $id . "_" . $dirs[$i]][0]) > $this->getQuotaNumber($options["quota_hardinode_" . $id . "_" . $dirs[$i]][0])) {
+					$return[] = $this->messages['inode_cmp'][0];
+				}
 				$i++;
 			}
 		}
@@ -649,17 +681,27 @@ class quota extends baseModule {
 		catch (LAMException $e) {
 			logNewMessage(LOG_ERR, $e->getTitle(), $e->getMessage());
 		}
-		if (!isset($this->quota) || !is_array($this->quota)) return;
+		if (!isset($this->quota) || !is_array($this->quota)) {
+			return;
+		}
 		$servers = array_keys($this->quota);
 		for ($s = 0; $s < sizeof($servers); $s++) {
 			$server = $servers[$s];
 			$id = $this->replaceSpecialChars($server);
 			for ($i = 0; $i < sizeof($this->quota[$server]); $i++) {
 				$dir = $this->quota[$server][$i][0];
-				if (isset($profile["quota_softblock_" . $id . "_" . $dir])) $this->quota[$server][$i][2] = $profile["quota_softblock_" . $id . "_" . $dir][0];
-				if (isset($profile["quota_hardblock_" . $id . "_" . $dir])) $this->quota[$server][$i][3] = $profile["quota_hardblock_" . $id . "_" . $dir][0];
-				if (isset($profile["quota_softinode_" . $id . "_" . $dir])) $this->quota[$server][$i][6] = $profile["quota_softinode_" . $id . "_" . $dir][0];
-				if (isset($profile["quota_hardinode_" . $id . "_" . $dir])) $this->quota[$server][$i][7] = $profile["quota_hardinode_" . $id . "_" . $dir][0];
+				if (isset($profile["quota_softblock_" . $id . "_" . $dir])) {
+					$this->quota[$server][$i][2] = $profile["quota_softblock_" . $id . "_" . $dir][0];
+				}
+				if (isset($profile["quota_hardblock_" . $id . "_" . $dir])) {
+					$this->quota[$server][$i][3] = $profile["quota_hardblock_" . $id . "_" . $dir][0];
+				}
+				if (isset($profile["quota_softinode_" . $id . "_" . $dir])) {
+					$this->quota[$server][$i][6] = $profile["quota_softinode_" . $id . "_" . $dir][0];
+				}
+				if (isset($profile["quota_hardinode_" . $id . "_" . $dir])) {
+					$this->quota[$server][$i][7] = $profile["quota_hardinode_" . $id . "_" . $dir][0];
+				}
 			}
 		}
 	}
@@ -687,8 +729,12 @@ class quota extends baseModule {
 				$temp = explode(":", $lamdaemonServers[$s]);
 				$server = $temp[0];
 				$description = $server;
-				if (isset($temp[1])) $description = $temp[1] . " (" . $server . ")";
-				if (!isset($this->quota[$server]) || (sizeof($this->quota[$server]) < 1)) continue;
+				if (isset($temp[1])) {
+					$description = $temp[1] . " (" . $server . ")";
+				}
+				if (!isset($this->quota[$server]) || (sizeof($this->quota[$server]) < 1)) {
+					continue;
+				}
 				$pdfRow = new PDFTableRow();
 				$pdfRow->cells[] = new PDFTableCell($description, null, null, true);
 				$pdfTable->rows[] = $pdfRow;
@@ -793,11 +839,17 @@ class quota extends baseModule {
 			// select user/group name depending on current scope
 			$temp['accounts'] = array();
 			$col = 'invalid';
-			if ($this->get_scope() == 'user') $col = $ids['posixAccount_userName'];
-			elseif ($this->get_scope() == 'group') $col = $ids['posixGroup_cn'];
+			if ($this->get_scope() == 'user') {
+				$col = $ids['posixAccount_userName'];
+			}
+			elseif ($this->get_scope() == 'group') {
+				$col = $ids['posixGroup_cn'];
+			}
 			// create list of account names and their quota values
 			for ($i = 0; $i < sizeof($data); $i++) {
-				if (in_array($i, $failed)) continue; // ignore failed accounts
+				if (in_array($i, $failed)) {
+					continue; // ignore failed accounts
+				}
 				$name = $data[$i][$col];
 				for ($m = 0; $m < sizeof($temp['quotas']); $m++) {
 					if ($data[$i][$ids['quota_' . $temp['quotas'][$m]]] != '') {
@@ -833,13 +885,13 @@ class quota extends baseModule {
 							$errors[] = $errMsg;
 							continue;
 						}
-						if ($parts[0] > $parts[1]) {
+						if ($this->getQuotaNumber($parts[0]) > $this->getQuotaNumber($parts[1])) {
 							$errMsg = $this->messages['block_cmp'][1];
 							array_push($errMsg, array($i, 'quota_' . $temp['quotas'][$m]));
 							$errors[] = $errMsg;
 							continue;
 						}
-						if ($parts[2] > $parts[3]) {
+						if ($this->getQuotaNumber($parts[2]) > $this->getQuotaNumber($parts[3])) {
 							$errMsg = $this->messages['inode_cmp'][1];
 							array_push($errMsg, array($i, 'quota_' . $temp['quotas'][$m]));
 							$errors[] = $errMsg;
