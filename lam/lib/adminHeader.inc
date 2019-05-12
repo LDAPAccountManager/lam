@@ -99,16 +99,33 @@ foreach ($toSort as $key => $value) {
 				</span>
 			</a>
 		</td>
-		<td align="left" height="30" class="nowrap">
-			<span class="hide-on-mobile">
+		<td align="left" height="30" class="nowrap header-user-label">
 			<?php
 				$userData = $_SESSION['ldap']->decrypt_login();
+				$userName = extractRDNValue($userData[0]);
+			?>
+			<span class="hide-on-mobile">
+			<?php
 				echo '&nbsp;&nbsp;<small title="' . $userData[0] . '">';
-				printf('(' . _('Logged in as: %s') . ')', extractRDNValue($userData[0]));
-				$userData = null;
+				$serverProfileLabel = $_SESSION['config']->getName() . ' - ';
+				$serverProfileNames = getConfigProfiles();
+				if (sizeof($serverProfileNames) < 2) {
+					$serverProfileLabel = '';
+				}
+				echo '(' . $serverProfileLabel . $userName . ')';
 				echo '</small>';
 			?>
 			</span>
+			<span class="hide-on-tablet">
+			<?php
+				echo '&nbsp;&nbsp;<small title="' . $userData[0] . '">';
+				echo $userName;
+				echo '</small>';
+			?>
+			</span>
+			<?php
+				$userData = null;
+			?>
 		</td>
 	<td align="right" height=30 width="100%">
 	<ul id="dropmenu" class="dropmenu">
