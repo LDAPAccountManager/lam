@@ -10,7 +10,7 @@ use \htmlButton;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2018  Roland Gruber
+  Copyright (C) 2011 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -95,6 +95,7 @@ class Ajax {
 		$jsonInput = $_POST['jsonInput'];
 		if ($function == 'passwordStrengthCheck') {
 			$this->checkPasswordStrength($jsonInput);
+			die();
 		}
 		enforceUserIsLoggedIn();
 		if ($function == 'passwordChange') {
