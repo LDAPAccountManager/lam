@@ -57,6 +57,6 @@ echo '{
       "sizes": "512x512"
     }
   ],
-  "start_url": "' . $baseUrl . '?source=pwa",
+  "start_url": "' . $baseUrl . '/templates/login.php",
   "display": "standalone"
 }';

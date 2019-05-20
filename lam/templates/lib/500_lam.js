@@ -1176,7 +1176,7 @@ jQuery(document).ready(function() {
 });
 
 /**
- * Setup service worker
+ * Setup service worker.
  */
 if ("serviceWorker" in navigator) {
 	if (!navigator.serviceWorker.controller) {
