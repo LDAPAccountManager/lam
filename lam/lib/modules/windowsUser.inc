@@ -2820,6 +2820,9 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		$driveSelect = new htmlResponsiveSelect('windowsUser_homeDrive', $drives, array('-'), _('Home drive'), 'homeDrive');
 		$return->add($driveSelect, 12);
+		// force password change
+		$passwordChangeCheckbox = new htmlResponsiveInputCheckbox('windowsUser_pwdMustChange', true, _('Password change at next login'), 'pwdMustChange');
+		$return->add($passwordChangeCheckbox, 12);
 		return $return;
 	}
 
@@ -2878,6 +2881,18 @@ class windowsUser extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideo') && isset($profile['windowsUser_o'][0])) {
 			$oList = preg_split('/;[ ]*/', $profile['windowsUser_o'][0]);
 			$this->attributes['o'] = $oList;
+		}
+		// force password change
+		if (isset($profile['windowsUser_pwdMustChange'][0]) && ($profile['windowsUser_pwdMustChange'][0] == "true")) {
+			$this->attributes['pwdLastSet'][0] = '0';
+		}
+		elseif (isset($profile['windowsUser_pwdMustChange'][0]) && ($profile['windowsUser_pwdMustChange'][0] == "false")) {
+			if (isset($this->orig['pwdLastSet'][0]) && ($this->orig['pwdLastSet'][0] !== '0')) {
+				$this->attributes['pwdLastSet'][0] = $this->orig['pwdLastSet'][0];
+			}
+			else {
+				$this->attributes['pwdLastSet'][0] = '-1';
+			}
 		}
 	}
 
