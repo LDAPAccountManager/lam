@@ -554,89 +554,68 @@ abstract class baseModule {
 	* @see baseModule::get_metaData()
 	*/
 	public function check_profileOptions($options, $typeId) {
-		$messages = array();
+		$errors = array();
 		if (isset($this->meta['profile_checks'])) {
-			$identifiers = array_keys($this->meta['profile_checks']);
-			for ($i = 0; $i < sizeof($identifiers); $i++) {
-				// empty input
-				if (!isset($options[$identifiers[$i]][0]) || ($options[$identifiers[$i]][0] == '')) {
-					// check if option is required
-					if (isset($this->meta['profile_checks'][$identifiers[$i]]['required']) && $this->meta['profile_checks'][$identifiers[$i]]['required']) {
-						$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['required_message'];
-					}
+			foreach ($this->meta['profile_checks'] as $identifier => $check) {
+				// check if option is required
+				if (isset($check['required']) && $check['required']
+						&& (!isset($options[$identifier][0]) || ($options[$identifier][0] == ''))) {
+					$errors[] = $check['required_message'];
 					continue;
 				}
-				switch ($this->meta['profile_checks'][$identifiers[$i]]['type']) {
+				switch ($check['type']) {
 					// check by regular expression (from account.inc)
 					case "ext_preg":
 						// ignore empty fileds
-						if ($options[$identifiers[$i]][0] == '') {
-							continue;
-						}
-						if (! get_preg($options[$identifiers[$i]][0], $this->meta['profile_checks'][$identifiers[$i]]['regex'])) {
-							$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['error_message'];
+						if (!empty($options[$identifier][0])
+								&& !get_preg($options[$identifier][0], $check['regex'])) {
+							$errors[] = $check['error_message'];
 						}
 					break;
 					// check by regular expression (case insensitive)
 					case 'regex_i':
 						// ignore empty fileds
-						if ($options[$identifiers[$i]][0] == '') {
-							continue;
-						}
-						if (! preg_match('/' . $this->meta['profile_checks'][$identifiers[$i]]['regex'] . '/i', $options[$identifiers[$i]][0])) {
-							$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['error_message'];
+						if (!empty($options[$identifier][0])
+								&& !preg_match('/' . $check['regex'] . '/i', $options[$identifier][0])) {
+							$errors[] = $check['error_message'];
 						}
 						break;
 					// check by regular expression (case sensitive)
 					case 'regex':
 						// ignore empty fileds
-						if ($options[$identifiers[$i]][0] == '') {
-							continue;
-						}
-						if (! preg_match('/' . $this->meta['profile_checks'][$identifiers[$i]]['regex'] . '/', $options[$identifiers[$i]][0])) {
-							$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['error_message'];
+						if (!empty($options[$identifier][0])
+								&& !preg_match('/' . $check['regex'] . '/', $options[$identifier][0])) {
+							$errors[] = $check['error_message'];
 						}
 						break;
 					// check by integer comparison (greater)
 					case 'int_greater':
+						$val1 = $options[$check['cmp_name1']][0];
+						$val2 = $options[$check['cmp_name2']][0];
 						// ignore if both fields are empty
-						if (($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name1']][0] == '') && ($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name2']][0] == '')) {
-							continue;
-						}
-						// print error message if only one field is empty
-						if (($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name1']][0] == '') || ($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name2']][0] == '')) {
-							$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['error_message'];
-							continue;
-						}
-						// compare
-						if (!(intval($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name1']][0]) > intval($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name2']][0]))) {
-							$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['error_message'];
+						if (!(empty($val1) && empty($val2))
+								&& (($val1 == '') || ($val2 == '') || !(intval($val1) > intval($val2)))) {
+							$errors[] = $check['error_message'];
 						}
 						break;
 					// check by integer comparison (greater or equal)
 					case 'int_greaterOrEqual':
+						$val1 = $options[$check['cmp_name1']][0];
+						$val2 = $options[$check['cmp_name2']][0];
 						// ignore if both fields are empty
-						if (($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name1']][0] == '') && ($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name2']][0] == '')) {
-							continue;
-						}
-						// print error message if only one field is empty
-						if (($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name1']][0] == '') || ($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name2']][0] == '')) {
-							$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['error_message'];
-							continue;
-						}
-						// compare
-						if (!(intval($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name1']][0]) >= intval($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name2']][0]))) {
-							$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['error_message'];
+						if (!(empty($val1) && empty($val2))
+								&& (($val1 == '') || ($val2 == '') || !(intval($val1) >= intval($val2)))) {
+							$errors[] = $check['error_message'];
 						}
 						break;
 					// print error message for invalid types
 					default:
-						StatusMessage("ERROR", "Unsupported type!", $this->meta['profile_checks'][$identifiers[$i]]['type']);
+						StatusMessage("ERROR", "Unsupported type!", $check['type']);
 						break;
 				}
 			}
 		}
-		return $messages;
+		return $errors;
 	}
 
 	/**
