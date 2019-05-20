@@ -164,6 +164,10 @@ $_SESSION['header'] = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitiona
 $_SESSION['header'] .= "<html>\n<head>\n";
 $_SESSION['header'] .= "<meta http-equiv=\"content-type\" content=\"text/html; charset=" . $encoding . "\">\n";
 $_SESSION['header'] .= "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">";
+$manifestUrl = str_replace('/templates/login.php', '', getCallingURL());
+$manifestUrl = preg_replace('/http(s)?:\\/\\/([^\\/])+/', '', $manifestUrl);
+$manifestUrl = preg_replace('/\\?.*/', '', $manifestUrl);
+$_SESSION['header'] .= '<link rel="manifest" href="' . $manifestUrl . '/templates/manifest.php">';
 
 /**
 * Displays the login window.
