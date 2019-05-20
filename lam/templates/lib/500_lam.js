@@ -1174,3 +1174,17 @@ jQuery(document).ready(function() {
 	window.lam.html.activateLightboxes();
 	window.lam.html.preventEnter();
 });
+
+/**
+ * Setup service worker
+ */
+if ("serviceWorker" in navigator) {
+	if (!navigator.serviceWorker.controller) {
+		var basePath = document.currentScript.src;
+		basePath = basePath.replace(/\/[^/]+\.js/gi, '');
+		var workerJS = basePath + '/../../pwa_worker.js';
+		navigator.serviceWorker.register(workerJS, {
+			scope : basePath + "../../"
+		});
+	}
+}
