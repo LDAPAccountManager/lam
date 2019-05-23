@@ -57,6 +57,14 @@ if (!isLoggedIn()) {
 // Set correct language, codepages, ....
 setlanguage();
 
+$sessionAccountPrefix = 'editContainer';
+if (isset($_GET['editKey'])) {
+	$sessionKey = htmlspecialchars($_GET['editKey']);
+}
+else {
+	$sessionKey = $sessionAccountPrefix . (new \DateTime(null, getTimeZone()))->getTimestamp() . getRandomNumber();
+}
+
 $typeManager = new LAM\TYPES\TypeManager();
 //load account
 if (isset($_GET['DN'])) {
@@ -80,8 +88,8 @@ if (isset($_GET['DN'])) {
 		logNewMessage(LOG_ERR, 'User tried to access entry of type ' . $type->getId() . ' outside suffix ' . $suffix);
 		die();
 	}
-	$_SESSION['account'] = new accountContainer($type, 'account');
-	$result = $_SESSION['account']->load_account($DN);
+	$_SESSION[$sessionKey] = new accountContainer($type, $sessionKey);
+	$result = $_SESSION[$sessionKey]->load_account($DN);
 	if (sizeof($result) > 0) {
 		include __DIR__ . '/../../lib/adminHeader.inc';
 		foreach ($result as $message) {
@@ -92,7 +100,7 @@ if (isset($_GET['DN'])) {
 	}
 }
 // new account
-else if (count($_POST) == 0) {
+elseif (empty($_POST)) {
 	$type = $typeManager->getConfiguredType($_GET['type']);
 	if ($type->isHidden()) {
 		logNewMessage(LOG_ERR, 'User tried to access hidden account type: ' . $type->getId());
@@ -102,11 +110,11 @@ else if (count($_POST) == 0) {
 		logNewMessage(LOG_ERR, 'User tried to create entry of forbidden account type: ' . $type->getId());
 		die();
 	}
-	$_SESSION['account'] = new accountContainer($type, 'account');
-	$_SESSION['account']->new_account();
+	$_SESSION[$sessionKey] = new accountContainer($type, $sessionKey);
+	$_SESSION[$sessionKey]->new_account();
 }
 
 // show account page
-$_SESSION['account']->continue_main();
+$_SESSION[$sessionKey]->continue_main();
 
 ?>
