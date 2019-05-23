@@ -1111,23 +1111,6 @@ window.lam.html.preventEnter = function() {
 	});
 }
 
-window.lam.tabs = window.lam.tabs || {};
-
-/**
- * Returns the id of the current browser tab.
- *
- * @returns tab id
- */
-window.lam.tabs.getTabId = function() {
-	var lamTabId = sessionStorage.getItem('lamTabId');
-	if (!lamTabId) {
-		var date = new Date();
-		lamTabId = date.getTime() + '-' + Math.floor(Math.random() * 10000000000);
-		sessionStorage.setItem('lamTabId', lamTabId);
-	}
-	return lamTabId;
-}
-
 window.lam.selfservice = window.lam.selfservice || {};
 
 /**
