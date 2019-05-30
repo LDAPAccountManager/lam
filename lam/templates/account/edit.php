@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2018  Roland Gruber
+                2005 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -57,6 +57,31 @@ if (!isLoggedIn()) {
 // Set correct language, codepages, ....
 setlanguage();
 
+$sessionAccountPrefix = 'editContainer';
+if (isset($_GET['editKey'])) {
+	$sessionKey = htmlspecialchars($_GET['editKey']);
+}
+else {
+	$sessionKey = $sessionAccountPrefix . (new \DateTime(null, getTimeZone()))->getTimestamp() . getRandomNumber();
+}
+
+// cleanup account containers in session
+$cleanupCandidates = array();
+foreach ($_SESSION as $key => $value) {
+	if (strpos($key, $sessionAccountPrefix) === 0) {
+		$cleanupCandidates[] = $key;
+	}
+	$candidateCount = sizeof($cleanupCandidates);
+	if ($candidateCount > 100) {
+		$numToDelete = $candidateCount - 100;
+		natsort($cleanupCandidates);
+		for ($i = 0; $i < $numToDelete; $i++) {
+			$toDelete = array_shift($cleanupCandidates);
+			unset($_SESSION[$toDelete]);
+		}
+	}
+}
+
 $typeManager = new LAM\TYPES\TypeManager();
 //load account
 if (isset($_GET['DN'])) {
@@ -80,8 +105,8 @@ if (isset($_GET['DN'])) {
 		logNewMessage(LOG_ERR, 'User tried to access entry of type ' . $type->getId() . ' outside suffix ' . $suffix);
 		die();
 	}
-	$_SESSION['account'] = new accountContainer($type, 'account', getRandomNumber());
-	$result = $_SESSION['account']->load_account($DN);
+	$_SESSION[$sessionKey] = new accountContainer($type, $sessionKey);
+	$result = $_SESSION[$sessionKey]->load_account($DN);
 	if (sizeof($result) > 0) {
 		include __DIR__ . '/../../lib/adminHeader.inc';
 		foreach ($result as $message) {
@@ -92,7 +117,7 @@ if (isset($_GET['DN'])) {
 	}
 }
 // new account
-else if (count($_POST) == 0) {
+elseif (empty($_POST)) {
 	$type = $typeManager->getConfiguredType($_GET['type']);
 	if ($type->isHidden()) {
 		logNewMessage(LOG_ERR, 'User tried to access hidden account type: ' . $type->getId());
@@ -102,11 +127,11 @@ else if (count($_POST) == 0) {
 		logNewMessage(LOG_ERR, 'User tried to create entry of forbidden account type: ' . $type->getId());
 		die();
 	}
-	$_SESSION['account'] = new accountContainer($type, 'account', getRandomNumber());
-	$_SESSION['account']->new_account();
+	$_SESSION[$sessionKey] = new accountContainer($type, $sessionKey);
+	$_SESSION[$sessionKey]->new_account();
 }
 
 // show account page
-$_SESSION['account']->continue_main();
+$_SESSION[$sessionKey]->continue_main();
 
 ?>

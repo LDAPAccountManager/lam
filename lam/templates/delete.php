@@ -11,7 +11,7 @@ use \htmlStatusMessage;
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-	Copyright (C) 2007 - 2018  Roland Gruber
+	Copyright (C) 2007 - 2019  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -74,6 +74,14 @@ if (!empty($_POST)) {
 	validateSecurityToken();
 }
 
+$sessionAccountPrefix = 'deleteContainer';
+foreach ($_SESSION as $key => $value) {
+	if (strpos($key, $sessionAccountPrefix) === 0) {
+		unset($_SESSION[$key]);
+		logNewMessage(LOG_NOTICE, "del " . $key);
+	}
+}
+
 $typeManager = new \LAM\TYPES\TypeManager();
 
 if (isset($_POST['type']) && ($typeManager->getConfiguredType($_POST['type']) === null)) {
@@ -99,8 +107,9 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 		$users[] = substr($dn, $start, $end-$start);
 	}
 
+	$sessionKey = $sessionAccountPrefix . (new \DateTime(null, getTimeZone()))->getTimestamp() . getRandomNumber();
 	//load account
-	$_SESSION['account'] = new \accountContainer($type, 'account');
+	$_SESSION[$sessionKey] = new \accountContainer($type, $sessionKey);
 	// Show HTML Page
 	include '../lib/adminHeader.inc';
 	echo "<div class=\"" . $type->getScope() . "-bright smallPaddingContent\">";
@@ -116,8 +125,8 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 		$container->addField(new htmlOutputText($users[$i]));
 		$container->addLabel(new htmlOutputText(_('DN') . ':'));
 		$container->addField(new htmlOutputText($_SESSION['delete_dn'][$i]));
-		$_SESSION['account']->load_account($_SESSION['delete_dn'][$i]);
-		if (!$_SESSION['account']->hasOnlyVirtualChildren()) {
+		$_SESSION[$sessionKey]->load_account($_SESSION['delete_dn'][$i]);
+		if (!$_SESSION[$sessionKey]->hasOnlyVirtualChildren()) {
 			$childCount = getChildCount($_SESSION['delete_dn'][$i]);
 			if ($childCount > 0) {
 				$container->addLabel(new htmlOutputText(_('Number of child entries') . ':'));
@@ -182,6 +191,8 @@ if (isset($_POST['delete'])) {
 	addSecurityTokenToMetaHTML($container);
 	$container->add(new htmlHiddenInput('type', $type->getId()), 12);
 
+	$sessionKey = $sessionAccountPrefix . (new \DateTime(null, getTimeZone()))->getTimestamp() . getRandomNumber();
+	$_SESSION[$sessionKey] = new \accountContainer($type, $sessionKey);
 	// Delete dns
 	$allOk = true;
 	$allErrors = array();
@@ -189,10 +200,10 @@ if (isset($_POST['delete'])) {
 		// Set to true if an real error has happened
 		$stopprocessing = false;
 		// First load DN.
-		$_SESSION['account']->load_account($deleteDN);
+		$_SESSION[$sessionKey]->load_account($deleteDN);
 		// get commands and changes of each attribute
-		$moduleNames = array_keys($_SESSION['account']->getAccountModules());
-		$modules = $_SESSION['account']->getAccountModules();
+		$moduleNames = array_keys($_SESSION[$sessionKey]->getAccountModules());
+		$modules = $_SESSION[$sessionKey]->getAccountModules();
 		$attributes = array();
 		$errors = array();
 		// predelete actions
@@ -279,7 +290,7 @@ if (isset($_POST['delete'])) {
 			}
 		}
 		if (!$stopprocessing) {
-			$recursive = !$_SESSION['account']->hasOnlyVirtualChildren();
+			$recursive = !$_SESSION[$sessionKey]->hasOnlyVirtualChildren();
 			$messages = deleteDN($deleteDN, $recursive);
 			$errors = array_merge($errors, $messages);
 			if (sizeof($errors) > 0) {

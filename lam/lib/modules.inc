@@ -745,9 +745,8 @@ class accountContainer {
 	*
 	* @param ConfiguredType $type account type
 	* @param string $base key in $_SESSION where this object is saved
-	* @param integer $randomID random ID to avoid parallel editing (default: null)
 	*/
-	function __construct($type, $base, $randomID = null) {
+	function __construct($type, $base) {
 		if (!($type instanceof ConfiguredType)) {
 			trigger_error('Argument of accountContainer must be ConfiguredType.', E_USER_ERROR);
 		}
@@ -760,7 +759,6 @@ class accountContainer {
 		$this->current_page=0;
 		$this->subpage='attributes';
 		$this->isNewAccount = false;
-		$this->randomID = $randomID;
 		return 0;
 	}
 
@@ -824,8 +822,6 @@ class accountContainer {
 	/** send password via mail to this alternate address */
 	private $sendPasswordViaMailAlternateAddress = null;
 
-	/** random ID number to avoid parallel editing of accounts in multiple browser tabs */
-	private $randomID = null;
 
 	/**
 	 * Returns the account module with the given class name
@@ -865,10 +861,6 @@ class accountContainer {
 	* It prints the HTML code of each account page.
 	*/
 	function continue_main() {
-		if (!empty($_POST['account_randomID']) && ($this->randomID != $_POST['account_randomID'])) {
-			metaRefresh("../lists/list.php?type=" . $this->type->getId() . '&accountEditInvalidID=true');
-			exit();
-		}
 		$oldPage = $this->current_page;
 		$oldSubpage = $this->subpage;
 		$result = array();
@@ -1322,7 +1314,7 @@ class accountContainer {
 			$passwordButton = new htmlButton('accountContainerPassword', _('Set password'));
 			$passwordButton->setIconClass('passwordButton');
 			$passwordButton->setOnClick('passwordShowChangeDialog(\'' . _('Set password') . '\', \'' . _('Ok') . '\', \''
-				 . _('Cancel') . '\', \'' . _('Set random password') . '\', \'../misc/ajax.php?function=passwordChange\',\''
+				 . _('Cancel') . '\', \'' . _('Set random password') . '\', \'../misc/ajax.php?function=passwordChange&editKey=' . htmlspecialchars($this->base) . '\',\''
 				 . getSecurityTokenName() . '\',\'' . getSecurityTokenValue() . '\');');
 			$leftButtonGroup->addElement($passwordButton);
 		}
@@ -1377,8 +1369,7 @@ class accountContainer {
 					jQuery("#inputForm").validationEngine();
 				});
 			</script>';
-		echo "<form id=\"inputForm\" enctype=\"multipart/form-data\" action=\"edit.php\" method=\"post\" onSubmit=\"saveScrollPosition('inputForm')\" autocomplete=\"off\">\n";
-		echo '<input type="hidden" name="account_randomID" value="' . $this->randomID . '">';
+		echo "<form id=\"inputForm\" enctype=\"multipart/form-data\" action=\"edit.php?editKey=" . htmlspecialchars($this->base) . "\" method=\"post\" onSubmit=\"saveScrollPosition('inputForm')\" autocomplete=\"off\">\n";
 		echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';
 	}
 

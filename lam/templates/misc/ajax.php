@@ -75,8 +75,12 @@ class Ajax {
 		if (isset($_GET['module']) && isset($_GET['scope']) && in_array($_GET['module'], getAvailableModules($_GET['scope']))) {
 			enforceUserIsLoggedIn();
 			if (isset($_GET['useContainer']) && ($_GET['useContainer'] == '1')) {
-				if (!isset($_SESSION['account'])) die();
-				$module = $_SESSION['account']->getAccountModule($_GET['module']);
+				$sessionKey  = htmlspecialchars($_GET['editKey']);
+				if (!isset($_SESSION[$sessionKey])) {
+					logNewMessage(LOG_ERR, 'Unable to find account container');
+					die();
+				}
+				$module = $_SESSION[$sessionKey]->getAccountModule($_GET['module']);
 				$module->handleAjaxRequest();
 			}
 			else {
@@ -157,7 +161,8 @@ class Ajax {
 	 * @param array $input input parameters
 	 */
 	private static function managePasswordChange($input) {
-		$return = $_SESSION['account']->setNewPassword($input);
+		$sessionKey  = htmlspecialchars($_GET['editKey']);
+		$return = $_SESSION[$sessionKey]->setNewPassword($input);
 		echo json_encode($return);
 	}
 

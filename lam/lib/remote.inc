@@ -4,10 +4,9 @@ use \LAMException;
 use \phpseclib\Net\SSH2;
 use \phpseclib\Crypt\RSA;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017  Roland Gruber
+  Copyright (C) 2017 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -108,7 +107,9 @@ class Remote {
 			$sr = @ldap_read($_SESSION['ldap']->server(), $credentials[0], "objectClass=posixAccount", array('uid'), 0, 0, 0, LDAP_DEREF_NEVER);
 			if ($sr) {
 				$entry = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
-				$username = $entry[0]['uid'][0];
+				if (!empty($entry[0]['uid'])) {
+					$username = $entry[0]['uid'][0];
+				}
 			}
 			if (empty($username)) {
 				throw new LAMException(sprintf(_("Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"), getAbstractDN($credentials[0])));
