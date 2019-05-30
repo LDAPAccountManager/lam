@@ -65,6 +65,23 @@ else {
 	$sessionKey = $sessionAccountPrefix . (new \DateTime(null, getTimeZone()))->getTimestamp() . getRandomNumber();
 }
 
+// cleanup account containers in session
+$cleanupCandidates = array();
+foreach ($_SESSION as $key => $value) {
+	if (strpos($key, $sessionAccountPrefix) === 0) {
+		$cleanupCandidates[] = $key;
+	}
+	$candidateCount = sizeof($cleanupCandidates);
+	if ($candidateCount > 100) {
+		$numToDelete = $candidateCount - 100;
+		natsort($cleanupCandidates);
+		for ($i = 0; $i < $numToDelete; $i++) {
+			$toDelete = array_shift($cleanupCandidates);
+			unset($_SESSION[$toDelete]);
+		}
+	}
+}
+
 $typeManager = new LAM\TYPES\TypeManager();
 //load account
 if (isset($_GET['DN'])) {
