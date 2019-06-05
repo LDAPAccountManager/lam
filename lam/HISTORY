@@ -2,6 +2,7 @@
   - Parallel editing of multiple entries in different browser tabs supported
   - LAM supports the progressive web app standard which allows to install LAM as an icon on home screen
   - Windows: added home drive and force password change to profile editor
+  - Unix: password management can be disabled in module settings
   - LAM Pro:
    -> Bind DLZ: entry table can show record data (use special attribute "#records" in server profile)
   - Fixed bugs:

@@ -249,20 +249,6 @@ class posixAccount extends baseModule implements passwordService {
 				'values' => implode(", ", $this->getShells()),
 				'default' => '/bin/bash'
 			),
-			array(
-				'name' => 'posixAccount_password',
-				'description' => _('Password'),
-				'help' => 'userPassword',
-				'example' => _('secret')
-			),
-			array(
-				'name' => 'posixAccount_passwordDisabled',
-				'description' => _('Lock password'),
-				'help' => 'userPassword_lock',
-				'example' => 'false',
-				'values' => 'true, false',
-				'default' => 'false'
-			),
 			);
 			if (self::areGroupOfNamesActive()) {
 				$return['upload_columns'][] = array(
@@ -1098,14 +1084,16 @@ class posixAccount extends baseModule implements passwordService {
 			$this->attributes[$homedirAttrName][0] = $_POST['homeDirectory'];
 		}
 		// Load attributes
-		if (isset($_POST['lockPassword'])) {
-			$this->lock($modules);
-		}
-		if (isset($_POST['unlockPassword'])) {
-			$this->unlock($modules);
-		}
-		if (isset($_POST['removePassword'])) {
-			unset($this->attributes[$this->getPasswordAttrName($modules)]);
+		if ($this->isPasswordManaged()) {
+			if (isset($_POST['lockPassword'])) {
+				$this->lock($modules);
+			}
+			if (isset($_POST['unlockPassword'])) {
+				$this->unlock($modules);
+			}
+			if (isset($_POST['removePassword'])) {
+				unset($this->attributes[$this->getPasswordAttrName($modules)]);
+			}
 		}
 		if ($this->manageCn($modules)) {
 			$this->processMultiValueInputTextField('cn', $errors, 'cn');
@@ -1712,7 +1700,9 @@ class posixAccount extends baseModule implements passwordService {
 				$return->addElement(new htmlTableExtendedSelect('loginShell', $shelllist, $selectedShell, _('Login shell'), 'loginShell'), true);
 			}
 			// password buttons
-			if (checkIfWriteAccessIsAllowed($this->get_scope()) && isset($this->attributes[$this->getPasswordAttrName($modules)][0])) {
+			if (checkIfWriteAccessIsAllowed($this->get_scope())
+					&& isset($this->attributes[$this->getPasswordAttrName($modules)][0])
+					&& $this->isPasswordManaged()) {
 				$return->addElement(new htmlOutputText(_('Password')));
 				$pwdContainer = new htmlTable();
 				if (pwd_is_enabled($this->attributes[$this->getPasswordAttrName($modules)][0])) {
@@ -2256,6 +2246,7 @@ class posixAccount extends baseModule implements passwordService {
 				$configUserContainer->addField(new htmlOutputText(''));
 				$configUserContainer->addVerticalSpacer('0.5rem');
 				$configUserContainer->add(new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_hidegecos', false, _('Gecos'), null, false), 12);
+				$configUserContainer->add(new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_hidepassword', false, _('Password'), null, false), 12);
 				$confActiveGONModules = array_merge($_SESSION['conf_config']->get_AccountModules('group'), $_SESSION['conf_config']->get_AccountModules('gon'));
 				if (in_array('groupOfNames', $confActiveGONModules) || in_array('groupOfMembers', $confActiveGONModules) || in_array('groupOfUniqueNames', $confActiveGONModules)) {
 					$configUserContainer->add(new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_hidegon', false, _('Groups of names'), null, false), 12);
@@ -2437,6 +2428,22 @@ class posixAccount extends baseModule implements passwordService {
 	function get_uploadColumns($selectedModules, &$type) {
 		$typeId = $type->getId();
 		$return = parent::get_uploadColumns($selectedModules, $type);
+		if ($this->isPasswordManaged($typeId)) {
+			$return[] = array(
+				'name' => 'posixAccount_password',
+				'description' => _('Password'),
+				'help' => 'userPassword',
+				'example' => _('secret')
+			);
+			$return[] = array(
+				'name' => 'posixAccount_passwordDisabled',
+				'description' => _('Lock password'),
+				'help' => 'userPassword_lock',
+				'example' => 'false',
+				'values' => 'true, false',
+				'default' => 'false'
+			);
+		}
 		if (($this->get_scope() == 'user') && $this->manageCn($selectedModules)) {
 			array_unshift($return, array(
 				'name' => 'posixAccount_cn',
@@ -2645,44 +2652,50 @@ class posixAccount extends baseModule implements passwordService {
 					array_push($errMsg, array($i));
 					$errors[] = $errMsg;
 				}
-				$pwd_enabled = true;
-				// password enabled/disabled
-				if ($rawAccount[$ids['posixAccount_passwordDisabled']] == "") {
+				if ($this->isPasswordManaged($typeId)) {
 					$pwd_enabled = true;
-				}
-				elseif (in_array($rawAccount[$ids['posixAccount_passwordDisabled']], array('true', 'false'))) {
-					if ($rawAccount[$ids['posixAccount_passwordDisabled']] == 'true') $pwd_enabled = false;
-					else $pwd_enabled = true;
-				}
-				else {
-					$errMsg = $this->messages['passwordDisabled'][0];
-					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
-				}
-				// password
-				// delay exop passwords
-				if (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
-					// changed in post action
-				}
-				// set SASL passwords
-				elseif (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')) {
-					$partialAccounts[$i][$pwdAttrName] = '{SASL}' . $partialAccounts[$i]['uid'];
-				}
-				// set K5KEY password
-				elseif (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'K5KEY')) {
-					$partialAccounts[$i][$pwdAttrName] = pwd_hash('x', true, $this->moduleSettings['posixAccount_pwdHash'][0]);
-				}
-				// set normal password
-				else {
-					if (($rawAccount[$ids['posixAccount_password']] != "") && (get_preg($rawAccount[$ids['posixAccount_password']], 'password'))) {
-						$partialAccounts[$i][$pwdAttrName] = pwd_hash($rawAccount[$ids['posixAccount_password']], $pwd_enabled, $this->moduleSettings['posixAccount_pwdHash'][0]);
-						$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccount[$ids['posixAccount_password']]; // for custom scripts etc.
+					// password enabled/disabled
+					if ($rawAccount[$ids['posixAccount_passwordDisabled']] == "") {
+						$pwd_enabled = true;
 					}
-					elseif ($rawAccount[$ids['posixAccount_password']] != "") {
-						$errMsg = $this->messages['userPassword'][4];
-						$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
+					elseif (in_array($rawAccount[$ids['posixAccount_passwordDisabled']], array('true', 'false'))) {
+						if ($rawAccount[$ids['posixAccount_passwordDisabled']] == 'true') {
+							$pwd_enabled = false;
+						}
+						else {
+							$pwd_enabled = true;
+						}
+					}
+					else {
+						$errMsg = $this->messages['passwordDisabled'][0];
 						array_push($errMsg, array($i));
 						$errors[] = $errMsg;
+					}
+					// password
+					// delay exop passwords
+					if (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
+						// changed in post action
+					}
+					// set SASL passwords
+					elseif (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')) {
+						$partialAccounts[$i][$pwdAttrName] = '{SASL}' . $partialAccounts[$i]['uid'];
+					}
+					// set K5KEY password
+					elseif (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'K5KEY')) {
+						$partialAccounts[$i][$pwdAttrName] = pwd_hash('x', true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+					}
+					// set normal password
+					else {
+						if (($rawAccount[$ids['posixAccount_password']] != "") && (get_preg($rawAccount[$ids['posixAccount_password']], 'password'))) {
+							$partialAccounts[$i][$pwdAttrName] = pwd_hash($rawAccount[$ids['posixAccount_password']], $pwd_enabled, $this->moduleSettings['posixAccount_pwdHash'][0]);
+							$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccount[$ids['posixAccount_password']]; // for custom scripts etc.
+						}
+						elseif ($rawAccount[$ids['posixAccount_password']] != "") {
+							$errMsg = $this->messages['userPassword'][4];
+							$errMsg[2] = str_replace('%', '%%', $errMsg[2]); // double "%" because of later sprintf
+							array_push($errMsg, array($i));
+							$errors[] = $errMsg;
+						}
 					}
 				}
 				// cn
@@ -3372,6 +3385,19 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		return true;
 	}
+	
+	/**
+	 * Returns if the module manages the password attribute.
+	 * 
+	 * @param string $typeId account type id
+	 * @return boolean manages password
+	 */
+	private function isPasswordManaged($typeId = null) {
+		if ($typeId === null) {
+			$typeId = $this->getAccountContainer()->get_type()->getId();
+		}
+		return !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidepassword');
+	}
 
 	/**
 	 * This method specifies if a module manages password attributes.
@@ -3380,7 +3406,7 @@ class posixAccount extends baseModule implements passwordService {
 	 * @return boolean true if this module manages password attributes
 	 */
 	public function managesPasswordAttributes() {
-		return true;
+		return $this->isPasswordManaged();
 	}
 
 	/**
