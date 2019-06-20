@@ -6,7 +6,8 @@
   - LAM Pro:
    -> Bind DLZ: entry table can show record data (use special attribute "#records" in server profile)
   - Fixed bugs:
-   -> No drop-down filter box for account status (200)
+   -> Users: No drop-down filter box for account status (200)
+   -> Custom fields: Account type "Groups" not saving/deleting fields (66)
 
 
 25.03.2019 6.7
