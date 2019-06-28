@@ -5,7 +5,7 @@
   - Unix: password management can be disabled in module settings
   - LAM Pro:
    -> Bind DLZ: entry table can show record data (use special attribute "#records" in server profile)
-   -> Self service: support legacy attribute "email" for password self reset
+   -> Self service: support legacy attribute "email" for password self reset and user self registration
   - Fixed bugs:
    -> Users: No drop-down filter box for account status (200)
    -> Custom fields: Account type "Groups" not saving/deleting fields (66)
