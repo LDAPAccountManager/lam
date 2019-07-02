@@ -575,6 +575,12 @@
       intermediate release.</para>
 
       <section>
+        <title>6.7 -&gt; 6.8</title>
+
+        <para>No actions required.</para>
+      </section>
+
+      <section>
         <title>6.6 -&gt; 6.7</title>
 
         <para>Self service: please verify the self service base URL in your
