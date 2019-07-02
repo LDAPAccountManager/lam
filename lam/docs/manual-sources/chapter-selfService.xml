@@ -1259,9 +1259,14 @@
       object class in each line. If you use LAM Pro password self reset
       feature then do not forget to add "passwordSelfReset" here.</para>
 
+      <para/>
+
       <para><emphasis>Attributes:</emphasis> This is a list of additional
       attributes that the user can enter. Please note that user name, password
-      and email address are mandatory anyway and need not be specified.</para>
+      and email address (attribute "mail") are mandatory anyway and need not
+      be specified. Just in case you use the legacy attribute "email" for
+      account it needs to be specified (attribute "mail" will then not be
+      shown).</para>
 
       <para>Each line represents one LDAP attribute. The settings are
       separated by "::". The first setting specifies the field type. The
