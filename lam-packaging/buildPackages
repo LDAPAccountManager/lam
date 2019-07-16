@@ -61,6 +61,7 @@ rm -rf github
 git clone -b $REPO_BRANCH --single-branch git@gitlab.com:LDAPAccountManager/lamPro.git lamPro
 cd lamPro
 rm -rf .git
+rm -rf docker
 cd ..
 
 cp lam-packaging/getVersion ./

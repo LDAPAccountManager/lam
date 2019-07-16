@@ -314,6 +314,27 @@
     </section>
 
     <section>
+      <title>Docker</title>
+
+      <para>You can run LAM inside Docker.</para>
+
+      <para>See here:</para>
+
+      <para><ulink
+      url="https://hub.docker.com/r/ldapaccountmanager/lam">https://hub.docker.com/r/ldapaccountmanager/lam</ulink></para>
+
+      <para/>
+
+      <para>LAM Pro:</para>
+
+      <para>Please request access at support providing your Docker Hub user
+      ID.</para>
+
+      <para><ulink
+      url="https://hub.docker.com/r/ldapaccountmanager/lampro">https://hub.docker.com/r/ldapaccountmanager/lampro</ulink></para>
+    </section>
+
+    <section>
       <title>System configuration</title>
 
       <section>
