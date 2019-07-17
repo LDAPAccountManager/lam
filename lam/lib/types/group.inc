@@ -3,7 +3,7 @@ use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2018  Roland Gruber
+  Copyright (C) 2005 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -115,7 +115,12 @@ class group extends baseType {
 				"roleOccupant" => _("Role member DNs"),
 				"uniqueMember" => _("Group member DNs"),
 				"memberUrl" => _("Entries"),
-		));
+				'memberuid_count' => _('Member count'),
+				'member_count' => _('Member count'),
+				'uniqueMember_count' => _('Member count'),
+				'owner_count' => _('Owner count'),
+				'roleOccupant_count' => _('Member count')
+			));
 		if ($this->getType() != null) {
 			$modules = $this->getType()->getModules();
 			if (in_array('organizationalRole', $modules)) {
@@ -279,8 +284,9 @@ class lamGroupList extends lamList {
 		parent::listGetParams();
 		// generate list primary group memebers
 		// after parent::listGetParams is $this->refresh set to correct value
-		if ($this->include_primary && !$this->refresh && ($this->refresh_primary || (sizeof($this->primary_hash) == 0)))
+		if ($this->include_primary && !$this->refresh && ($this->refresh_primary || (sizeof($this->primary_hash) == 0))) {
 			$this->groupRefreshPrimary();
+		}
 	}
 
 	/**
@@ -288,6 +294,7 @@ class lamGroupList extends lamList {
 	 * @see lamList::getTableCellContent()
 	 */
 	protected function getTableCellContent(&$entry, &$attribute) {
+		$countAttributes = array('memberuid_count', 'member_count', 'uniqueMember_count', 'owner_count', 'roleOccupant_count');
 		if ($attribute == "memberuid") {
 			// $gid is used for linking primary group memebers
 			$gid = -1;
@@ -360,12 +367,10 @@ class lamGroupList extends lamList {
 			for ($i = 0; $i < $count; $i++) {
 				$replaced = false;
 				foreach ($this->suffixList as $suffix => $type) {
-					if (stripos($values[$i], $suffix) > 0) {
-						if (!isAccountTypeHidden($type)) {
-							$values[$i] = '<a href="../account/edit.php?type=' . $type . '&amp;DN=\'' . $values[$i] . '\'">' . getAbstractDN($values[$i]) . '</a>';
-							$replaced = true;
-							break;
-						}
+					if ((stripos($values[$i], $suffix) > 0) && !isAccountTypeHidden($type)) {
+						$values[$i] = '<a href="../account/edit.php?type=' . $type . '&amp;DN=\'' . $values[$i] . '\'">' . getAbstractDN($values[$i]) . '</a>';
+						$replaced = true;
+						break;
 					}
 				}
 				if (!$replaced) {
@@ -373,6 +378,15 @@ class lamGroupList extends lamList {
 				}
 			}
 			return new htmlDiv(null, new htmlOutputText(implode('<br>', $values), false), array('rightToLeftText'));
+		}
+		elseif (in_array_ignore_case($attribute, $countAttributes)) {
+			$count = 0;
+			$realAttributeName = str_replace('_count', '', $attribute);
+			$values = &$entry[$realAttributeName];
+			if (!empty($values)) {
+				$count = sizeof($values);
+			}
+			return new htmlOutputText($count);
 		}
 		// print all other attributes
 		else {

@@ -2259,8 +2259,8 @@ AuthorizedKeysCommandUser root</literallayout>
 
       <para><emphasis role="bold">Configuration</emphasis></para>
 
-      <para>Please add the account type "Groups" and then select account
-      module "Unix (posixGroup)".</para>
+      <para>Special Please add the account type "Groups" and then select
+      account module "Unix (posixGroup)".</para>
 
       <screenshot>
         <mediaobject>
@@ -2269,6 +2269,43 @@ AuthorizedKeysCommandUser root</literallayout>
           </imageobject>
         </mediaobject>
       </screenshot>
+
+      <para>Virtual list attributes:</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_unixGroupConfig2.png"/>
+      </screenshot>
+
+      <para>The following virtual attributes can be shown in the group list.
+      These are no real LDAP attributes but extra data that can be shown by
+      LAM.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>memberuid_count: number of entries in attribute
+          "memberuid"</para>
+        </listitem>
+
+        <listitem>
+          <para>member_count: number of entries in attribute "member"</para>
+        </listitem>
+
+        <listitem>
+          <para>uniqueMember_count: number of entries in attribute
+          "uniquemember"</para>
+        </listitem>
+
+        <listitem>
+          <para>owner_count: number of entries in attribute "owner"</para>
+        </listitem>
+
+        <listitem>
+          <para>roleOccupant_count: number of entries in attribute
+          "roleOccupant"</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Module settings:</para>
 
       <para>GID generator: LAM will suggest GID numbers for your accounts.
       Please note that it may happen that there are duplicate IDs assigned if
@@ -3035,6 +3072,38 @@ AuthorizedKeysCommandUser root</literallayout>
         </imageobject>
       </mediaobject>
     </screenshot>
+
+    <para>Virtual list attributes:</para>
+
+    <screenshot>
+      <graphic fileref="images/mod_gon.png"/>
+    </screenshot>
+
+    <para>The following virtual attributes can be shown in the group list.
+    These are no real LDAP attributes but extra data that can be shown by
+    LAM.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>member_count: number of entries in attribute "member"</para>
+      </listitem>
+
+      <listitem>
+        <para>uniqueMember_count: number of entries in attribute
+        "uniquemember"</para>
+      </listitem>
+
+      <listitem>
+        <para>owner_count: number of entries in attribute "owner"</para>
+      </listitem>
+
+      <listitem>
+        <para>roleOccupant_count: number of entries in attribute
+        "roleOccupant"</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Module settings:</para>
 
     <para>On the module settings tab you set some options like the display
     format for members/owners and if fields like description should not be
