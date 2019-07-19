@@ -6,7 +6,7 @@ use LAM\TYPES\ConfiguredType;
 
 This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 Copyright (C) 2003 - 2006  Tilo Lutz
-              2007 - 2018  Roland Gruber
+              2007 - 2019  Roland Gruber
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -561,12 +561,6 @@ class posixGroup extends baseModule implements passwordService {
 		// configuration options
 		$configContainer = new htmlResponsiveRow();
 		$configContainer->add(new htmlSubTitle(_("Groups")), 12);
-		$genOptions = array(
-			_('Fixed range') => 'range',
-			_('Samba ID pool') => 'sambaPool',
-			_('Windows domain info') => 'windowsDomain',
-			_('Magic number') => 'magicNumber'
-		);
 		foreach ($allScopes[get_class($this)] as $typeId) {
 			if (sizeof($allScopes[get_class($this)]) > 1) {
 				$title = new htmlDiv(null, new htmlOutputText($typeManager->getConfiguredType($typeId)->getAlias()));
@@ -574,39 +568,7 @@ class posixGroup extends baseModule implements passwordService {
 				$configContainer->add($title, 12, 6);
 				$configContainer->add(new htmlOutputText('&nbsp;', false), 0, 6);
 			}
-			$gidGeneratorSelect = new htmlResponsiveSelect('posixGroup_' . $typeId . '_gidGenerator', $genOptions, array('range'), _('GID generator'), 'gidGenerator');
-			$gidGeneratorSelect->setHasDescriptiveElements(true);
-			$gidGeneratorSelect->setTableRowsToHide(array(
-				'range' => array('posixGroup_' . $typeId . '_sambaIDPoolDN', 'posixGroup_' . $typeId . '_windowsIDPoolDN', 'posixGroup_' . $typeId . '_magicNumber'),
-				'sambaPool' => array('posixGroup_' . $typeId . '_minGID', 'posixGroup_' . $typeId . '_maxGID', 'posixGroup_' . $typeId . '_windowsIDPoolDN', 'posixGroup_' . $typeId . '_magicNumber'),
-				'windowsDomain' => array('posixGroup_' . $typeId . '_minGID', 'posixGroup_' . $typeId . '_maxGID', 'posixGroup_' . $typeId . '_sambaIDPoolDN', 'posixGroup_' . $typeId . '_magicNumber'),
-				'magicNumber' => array('posixGroup_' . $typeId . '_minGID', 'posixGroup_' . $typeId . '_maxGID', 'posixGroup_' . $typeId . '_windowsIDPoolDN', 'posixGroup_' . $typeId . '_sambaIDPoolDN')
-			));
-			$gidGeneratorSelect->setTableRowsToShow(array(
-				'range' => array('posixGroup_' . $typeId . '_minGID', 'posixGroup_' . $typeId . '_maxGID'),
-				'sambaPool' => array('posixGroup_' . $typeId . '_sambaIDPoolDN'),
-				'windowsDomain' => array('posixGroup_' . $typeId . '_windowsIDPoolDN'),
-				'magicNumber' => array('posixGroup_' . $typeId . '_magicNumber')
-			));
-			$configContainer->add($gidGeneratorSelect, 12);
-			$minGidInput = new htmlResponsiveInputField(_('Minimum GID number'), 'posixGroup_' . $typeId . '_minGID', null, 'minMaxGID');
-			$minGidInput->setRequired(true);
-			$configContainer->add($minGidInput, 12);
-			$maxGidInput = new htmlResponsiveInputField(_('Maximum GID number'), 'posixGroup_' . $typeId . '_maxGID', null, 'minMaxGID');
-			$maxGidInput->setRequired(true);
-			$configContainer->add($maxGidInput, 12);
-			$gidGeneratorDN = new htmlResponsiveInputField(_('Samba ID pool DN'), 'posixGroup_' . $typeId . '_sambaIDPoolDN', null, 'sambaIDPoolDN');
-			$gidGeneratorDN->setRequired(true);
-			$configContainer->add($gidGeneratorDN, 12);
-			$winGeneratorDN = new htmlResponsiveInputField(_('Windows domain info DN'), 'posixGroup_' . $typeId . '_windowsIDPoolDN', null, 'windowsIDPoolDN');
-			$winGeneratorDN->setRequired(true);
-			$configContainer->add($winGeneratorDN, 12);
-			$magicNumber = new htmlResponsiveInputField(_('Magic number'), 'posixGroup_' . $typeId . '_magicNumber', null, 'magicNumber');
-			$magicNumber->setRequired(true);
-			$configContainer->add($magicNumber, 12);
-			$configContainer->add(new htmlResponsiveInputField(_('Suffix for GID/group name check'), 'posixGroup_' . $typeId . '_gidCheckSuffix', '', 'gidCheckSuffix'), 12);
-			$configContainer->add(new htmlResponsiveInputCheckbox('posixGroup_' . $typeId . '_hidememberUid', false, _('Disable membership management'), 'hidememberUid'), 12);
-			$configContainer->addVerticalSpacer('2rem');
+			$this->addAccountSpecificConfigOptions($configContainer, $typeId);
 		}
 		$gonModules = array('groupOfNames', 'groupOfUniqueNames');
 		$gonFound = false;
@@ -630,6 +592,54 @@ class posixGroup extends baseModule implements passwordService {
 			$configContainer->add(new htmlResponsiveSelect('posixAccount_pwdHash', getSupportedHashTypes(), array('SSHA'), _("Password hash type"), 'pwdHash'), 12);
 		}
 		return $configContainer;
+	}
+
+	/**
+	 * Adds the account specific options to the config container.
+	 *
+	 * @param htmlResponsiveRow $configContainer container
+	 * @param string $typeId type ID
+	 */
+	protected function addAccountSpecificConfigOptions(&$configContainer, $typeId) {
+		$genOptions = array(
+			_('Fixed range') => 'range',
+			_('Samba ID pool') => 'sambaPool',
+			_('Windows domain info') => 'windowsDomain',
+			_('Magic number') => 'magicNumber'
+		);
+		$gidGeneratorSelect = new htmlResponsiveSelect('posixGroup_' . $typeId . '_gidGenerator', $genOptions, array('range'), _('GID generator'), 'gidGenerator');
+		$gidGeneratorSelect->setHasDescriptiveElements(true);
+		$gidGeneratorSelect->setTableRowsToHide(array(
+			'range' => array('posixGroup_' . $typeId . '_sambaIDPoolDN', 'posixGroup_' . $typeId . '_windowsIDPoolDN', 'posixGroup_' . $typeId . '_magicNumber'),
+			'sambaPool' => array('posixGroup_' . $typeId . '_minGID', 'posixGroup_' . $typeId . '_maxGID', 'posixGroup_' . $typeId . '_windowsIDPoolDN', 'posixGroup_' . $typeId . '_magicNumber'),
+			'windowsDomain' => array('posixGroup_' . $typeId . '_minGID', 'posixGroup_' . $typeId . '_maxGID', 'posixGroup_' . $typeId . '_sambaIDPoolDN', 'posixGroup_' . $typeId . '_magicNumber'),
+			'magicNumber' => array('posixGroup_' . $typeId . '_minGID', 'posixGroup_' . $typeId . '_maxGID', 'posixGroup_' . $typeId . '_windowsIDPoolDN', 'posixGroup_' . $typeId . '_sambaIDPoolDN')
+		));
+		$gidGeneratorSelect->setTableRowsToShow(array(
+			'range' => array('posixGroup_' . $typeId . '_minGID', 'posixGroup_' . $typeId . '_maxGID'),
+			'sambaPool' => array('posixGroup_' . $typeId . '_sambaIDPoolDN'),
+			'windowsDomain' => array('posixGroup_' . $typeId . '_windowsIDPoolDN'),
+			'magicNumber' => array('posixGroup_' . $typeId . '_magicNumber')
+		));
+		$configContainer->add($gidGeneratorSelect, 12);
+		$minGidInput = new htmlResponsiveInputField(_('Minimum GID number'), 'posixGroup_' . $typeId . '_minGID', null, 'minMaxGID');
+		$minGidInput->setRequired(true);
+		$configContainer->add($minGidInput, 12);
+		$maxGidInput = new htmlResponsiveInputField(_('Maximum GID number'), 'posixGroup_' . $typeId . '_maxGID', null, 'minMaxGID');
+		$maxGidInput->setRequired(true);
+		$configContainer->add($maxGidInput, 12);
+		$gidGeneratorDN = new htmlResponsiveInputField(_('Samba ID pool DN'), 'posixGroup_' . $typeId . '_sambaIDPoolDN', null, 'sambaIDPoolDN');
+		$gidGeneratorDN->setRequired(true);
+		$configContainer->add($gidGeneratorDN, 12);
+		$winGeneratorDN = new htmlResponsiveInputField(_('Windows domain info DN'), 'posixGroup_' . $typeId . '_windowsIDPoolDN', null, 'windowsIDPoolDN');
+		$winGeneratorDN->setRequired(true);
+		$configContainer->add($winGeneratorDN, 12);
+		$magicNumber = new htmlResponsiveInputField(_('Magic number'), 'posixGroup_' . $typeId . '_magicNumber', null, 'magicNumber');
+		$magicNumber->setRequired(true);
+		$configContainer->add($magicNumber, 12);
+		$configContainer->add(new htmlResponsiveInputField(_('Suffix for GID/group name check'), 'posixGroup_' . $typeId . '_gidCheckSuffix', '', 'gidCheckSuffix'), 12);
+		$configContainer->add(new htmlResponsiveInputCheckbox('posixGroup_' . $typeId . '_hidememberUid', false, _('Disable membership management'), 'hidememberUid'), 12);
+		$configContainer->addVerticalSpacer('2rem');
 	}
 
 	/**
