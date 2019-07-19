@@ -569,6 +569,7 @@ class posixGroup extends baseModule implements passwordService {
 				$configContainer->add(new htmlOutputText('&nbsp;', false), 0, 6);
 			}
 			$this->addAccountSpecificConfigOptions($configContainer, $typeId);
+			$configContainer->addVerticalSpacer('2rem');
 		}
 		$gonModules = array('groupOfNames', 'groupOfUniqueNames');
 		$gonFound = false;
@@ -639,7 +640,6 @@ class posixGroup extends baseModule implements passwordService {
 		$configContainer->add($magicNumber, 12);
 		$configContainer->add(new htmlResponsiveInputField(_('Suffix for GID/group name check'), 'posixGroup_' . $typeId . '_gidCheckSuffix', '', 'gidCheckSuffix'), 12);
 		$configContainer->add(new htmlResponsiveInputCheckbox('posixGroup_' . $typeId . '_hidememberUid', false, _('Disable membership management'), 'hidememberUid'), 12);
-		$configContainer->addVerticalSpacer('2rem');
 	}
 
 	/**
