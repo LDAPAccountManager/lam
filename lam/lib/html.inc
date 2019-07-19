@@ -1320,6 +1320,7 @@ class htmlSelect extends htmlElement {
 		// if select box has only one element then show it as text
 		if ((sizeof($this->elements) == 1) && !$this->multiSelect && $this->transformSingleSelect) {
 			echo '</div>';
+			echo '&nbsp;';
 			if ($this->hasDescriptiveElements) {
 				$keys = array_keys($this->elements);
 				echo $keys[0];
@@ -1327,7 +1328,6 @@ class htmlSelect extends htmlElement {
 			else {
 				echo $this->elements[0];
 			}
-			echo '&nbsp;';
 		}
 		elseif (sizeof($this->elements) == 0) {
 			echo '</div>';
