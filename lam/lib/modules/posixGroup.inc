@@ -366,9 +366,9 @@ class posixGroup extends baseModule implements passwordService {
 		$return->addElement(new htmlOutputText(''));
 		$filterContainer = new htmlGroup();
 		$filterInput = new htmlInputField('newFilter', $filter, 10);
-		$filterInput->setOnKeyPress('SubmitForm(\'setFilter\', event);');
+		$filterInput->filterSelectBox('addusers');
+		$filterContainer->addElement(new htmlOutputText(_('Filter')));
 		$filterContainer->addElement($filterInput);
-		$filterContainer->addElement(new htmlButton('setFilter', _('Filter')));
 		$filterContainer->addElement(new htmlHelpLink('filter'));
 		$filterContainer->addElement(new htmlHiddenInput('filterValue', htmlspecialchars($filter)));
 		$return->addElement($filterContainer, true);
@@ -528,7 +528,7 @@ class posixGroup extends baseModule implements passwordService {
 			'filter' => array(
 				"Headline" => _("Filter"),
 				"Text" => _("Here you can enter a filter value. Only entries which contain the filter text will be shown.")
-					. ' ' . _('Possible wildcards are: "*" = any character, "^" = line start, "$" = line end')
+					. ' ' . _('The filter can be any regular expression, e.g. ".*" = any character, "^" = line start, "$" = line end.')
 			),
 			'hidememberUid' => array(
 				"Headline" => _('Disable membership management'), 'attr' => 'memberUid',
