@@ -299,10 +299,6 @@ class posixGroup extends baseModule implements passwordService {
 	*/
 	function display_html_user() {
 		$return = new htmlTable();
-		$filter = '';
-		if (isset($_POST['setFilter'])) {
-			$filter = $_POST['newFilter'];
-		}
 		if (!isset($this->attributes['memberUid'])) {
 			$this->attributes['memberUid'] = array();
 		}
@@ -312,9 +308,6 @@ class posixGroup extends baseModule implements passwordService {
 		foreach ($userAndGIDs as $user => $userAttrs) {
 			if (!in_array($user, $this->attributes['memberUid'])) {
 				$display = $user . ' (' . $userAttrs['cn'] . ')';
-				if (!empty($filter) && !preg_match('/' . str_replace('*', '.*', $filter) . '/ui', $display)) {
-					continue;
-				}
 				if ($this->attributes['gidNumber'][0] == $userAttrs['gid']) {
 					if (isset($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0])
 						&& ($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0] == 'true')) {
@@ -365,12 +358,11 @@ class posixGroup extends baseModule implements passwordService {
 		$return->addElement(new htmlOutputText(''));
 		$return->addElement(new htmlOutputText(''));
 		$filterContainer = new htmlGroup();
-		$filterInput = new htmlInputField('newFilter', $filter, 10);
+		$filterInput = new htmlInputField('newFilter', null, 10);
 		$filterInput->filterSelectBox('addusers');
 		$filterContainer->addElement(new htmlOutputText(_('Filter')));
 		$filterContainer->addElement($filterInput);
 		$filterContainer->addElement(new htmlHelpLink('filter'));
-		$filterContainer->addElement(new htmlHiddenInput('filterValue', htmlspecialchars($filter)));
 		$return->addElement($filterContainer, true);
 
 		// sync from group of names
