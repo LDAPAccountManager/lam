@@ -1111,6 +1111,139 @@ window.lam.html.preventEnter = function() {
 	});
 }
 
+window.lam.dynamicSelect = window.lam.dynamicSelect || {};
+
+/**
+ * Activates dynamic selection for all marked select fields.
+ */
+window.lam.dynamicSelect.activate = function() {
+	var dynamicSelects = jQuery('.lam-dynamicOptions');
+	dynamicSelects.each(function() {
+		var selectField = jQuery(this);
+		selectField.data('option-height', selectField.find("option").height());
+		selectField.data('select-height', selectField.height());
+		selectField.data('select-last-scroll-top', 0);
+		selectField.data('select-current-scroll', 0);
+		selectField.html('');
+		var options = selectField.data('dynamic-options');
+		var maxOptions = 3000;
+		var numOfOptionBeforeToLoadNextSet = 10;
+		var numberOfOptionsToLoad = 200;
+		for (var i = 0; i < maxOptions; i++) {
+			selectField.append(window.lam.dynamicSelect.createOption(options[i], i));
+		}
+		if (options.length > maxOptions) {
+			// activate scrolling logic only if enough options are set
+			selectField.scroll(function(event) {
+				window.lam.dynamicSelect.onScroll(selectField, event, maxOptions, numOfOptionBeforeToLoadNextSet, numberOfOptionsToLoad);
+			});
+		}
+	});
+}
+
+/**
+ * Creates an option field inside the select.
+ *
+ * @param data option data
+ * @param index index in list of all options
+ * @returns option
+ */
+window.lam.dynamicSelect.createOption = function(data, index) {
+	var newOption = jQuery(document.createElement("option"));
+	newOption.attr('value', data.value);
+	newOption.data('index', index);
+	newOption.text(data.label);
+	return newOption;
+}
+
+/**
+ * Onscroll event.
+ *
+ * @param selectField select field
+ * @param event event
+ * @param maxOptions maximum options to show
+ * @param numOfOptionBeforeToLoadNextSet number of options to reach before end of list
+ * @param numberOfOptionsToLoad number of options to add
+ */
+window.lam.dynamicSelect.onScroll = function(selectField, event, maxOptions, numOfOptionBeforeToLoadNextSet, numberOfOptionsToLoad) {
+	var scrollTop = selectField.scrollTop();
+	var totalHeight = selectField.find("option").length * selectField.data('option-height');
+	var lastScrollTop = selectField.data('select-last-scroll-top');
+	var selectBoxHeight = selectField.data('select-height');
+	var singleOptionHeight = selectField.data('option-height');
+	var currentScroll = scrollTop + selectBoxHeight;
+	selectField.data('select-current-scroll-top', scrollTop);
+	if ((scrollTop >= lastScrollTop)
+			&& ((currentScroll + (numOfOptionBeforeToLoadNextSet * singleOptionHeight)) >= totalHeight)) {
+		window.lam.dynamicSelect.loadNextOptions(selectField, maxOptions, numberOfOptionsToLoad);
+	}
+	else if ((scrollTop <= lastScrollTop)
+			&& ((scrollTop - (numOfOptionBeforeToLoadNextSet * singleOptionHeight)) <= 0)) {
+		window.lam.dynamicSelect.loadPreviousOptions(selectField, maxOptions, numberOfOptionsToLoad);
+	}
+	selectField.data('select-last-scroll-top', scrollTop);
+}
+
+/**
+ * Loads the next bunch of options at the end.
+ *
+ * @param selectField selct field
+ * @param maxOptions maximum options to show
+ * @param numberOfOptionsToLoad number of options to add
+ */
+window.lam.dynamicSelect.loadNextOptions = function(selectField, maxOptions, numberOfOptionsToLoad) {
+	var selectBoxHeight = selectField.data('select-height');
+	var singleOptionHeight = selectField.data('option-height');
+	var currentScrollPosition = selectField.data('select-current-scroll-top') + selectBoxHeight;
+	var options = selectField.data('dynamic-options');
+	var lastIndex = selectField.children().last().data('index');
+	for (var toAdd = 0; toAdd < numberOfOptionsToLoad; toAdd++) {
+		var addPos = lastIndex + 1 + toAdd;
+		if (options[addPos] === undefined) {
+			break;
+		}
+		selectField.append(window.lam.dynamicSelect.createOption(options[addPos], addPos));
+	}
+	var numberOfOptions = selectField.children().length;
+	var toRemove = numberOfOptions - maxOptions;
+	if (toRemove > 0) {
+		selectField.children().slice(0, toRemove).remove();
+	}
+	else {
+		toRemove = 0;
+	}
+	selectField.scrollTop(currentScrollPosition - selectBoxHeight - (toRemove * singleOptionHeight));
+}
+
+/**
+ * Loads the next bunch of options at the beginning.
+ *
+ * @param selectField selct field
+ * @param maxOptions maximum options to show
+ * @param numberOfOptionsToLoad number of options to add
+ */
+window.lam.dynamicSelect.loadPreviousOptions = function(selectField, maxOptions, numberOfOptionsToLoad) {
+	var singleOptionHeight = selectField.data('option-height');
+	var currentScrollPosition = selectField.data('select-current-scroll-top');
+	var options = selectField.data('dynamic-options');
+	var lastIndex = selectField.children().first().data('index');
+	var added = 0;
+	for (var toAdd = 0; toAdd < numberOfOptionsToLoad; toAdd++) {
+		var addPos = lastIndex - 1 - toAdd;
+		if (options[addPos] === undefined) {
+			break;
+		}
+		added++;
+		selectField.prepend(window.lam.dynamicSelect.createOption(options[addPos], addPos));
+	}
+	var numberOfOptions = selectField.children().length;
+	var toRemove = numberOfOptions - maxOptions;
+	if (toRemove > 0) {
+		selectField.children().slice(maxOptions).remove();
+	}
+	selectField.scrollTop(currentScrollPosition + (added * singleOptionHeight));
+}
+
 window.lam.selfservice = window.lam.selfservice || {};
 
 /**
@@ -1173,6 +1306,7 @@ jQuery(document).ready(function() {
 	window.lam.tools.schema.select();
 	window.lam.html.activateLightboxes();
 	window.lam.html.preventEnter();
+	window.lam.dynamicSelect.activate();
 });
 
 /**

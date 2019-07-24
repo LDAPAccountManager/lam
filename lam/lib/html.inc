@@ -1219,6 +1219,8 @@ class htmlSelect extends htmlElement {
 	protected $tableRowsToHide = array();
 	/** list of enclosing table rows to show when checked */
 	protected $tableRowsToShow = array();
+	/** dynamic scrolling */
+	private $dynamicScrolling = false;
 
 	/**
 	 * Constructor.
@@ -1349,6 +1351,10 @@ class htmlSelect extends htmlElement {
 	 * @param array $elements list of options
 	 */
 	private function printOptionsHTML($elements) {
+		if ($this->dynamicScrolling) {
+			echo "<option value=\"#\">#</option>\n";
+			return;
+		}
 		// sorting
 		if ($this->sortElements) {
 			if ($this->hasDescriptiveElements) {
@@ -1566,6 +1572,24 @@ class htmlSelect extends htmlElement {
 	 */
 	protected function getShowHideSelector() {
 		return 'tr';
+	}
+
+	/**
+	 * Enable dynamic scrolling. This limits the number of select options to 10000 by dynamically adding/removing options.
+	 * This will not be enabled when optgroups are used or the option size is less than 10000.
+	 */
+	public function enableDynamicScrolling() {
+		// not possible for optgroups and smaller option lists
+		if ((sizeof($this->elements) < 10000) || $this->containsOptgroups) {
+			return;
+		}
+		$this->dynamicScrolling = true;
+		$elementData = array();
+		foreach ($this->elements as $key => $value) {
+			$elementData[] = array('label' => $key, 'value' => $value);
+		}
+		$this->addDataAttribute('dynamic-options', json_encode($elementData));
+		$this->cssClasses[] = 'lam-dynamicOptions';
 	}
 
 }
