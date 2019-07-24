@@ -851,7 +851,7 @@ class htmlInputField extends htmlElement {
 	 * @param String $name select box name
 	 */
 	public function filterSelectBox($name) {
-		$this->setOnKeyUp('filterSelect(\'' . $this->fieldName . '\', \'' . $name . '\', event);');
+		$this->setOnKeyUp('window.lam.filterSelect.activate(\'' . $this->fieldName . '\', \'' . $name . '\', event);');
 	}
 
 	/**

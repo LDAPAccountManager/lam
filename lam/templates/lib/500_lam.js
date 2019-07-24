@@ -19,6 +19,8 @@
 
 */
 
+window.lam = window.lam || {};
+
 /**
  * Called when user clicks on a table row. This toggles the checkbox in the row.
  *
@@ -608,6 +610,8 @@ function updateModulePositions(id, oldPos, newPos) {
 	jQuery('#' + id).val(positions.join(','));
 }
 
+window.lam.filterSelect = window.lam.filterSelect || {};
+
 /**
  * Filters a select box by the value of the filter input field.
  *
@@ -615,30 +619,73 @@ function updateModulePositions(id, oldPos, newPos) {
  * @param select ID of select box to filter
  * @param event key event
  */
-function filterSelect(filterInput, select, event) {
+window.lam.filterSelect.activate = function (filterInput, select, event) {
+	var inputField = jQuery('#' + filterInput);
+	var selectField = jQuery('#' + select);
+	if (selectField.hasClass('lam-dynamicOptions')) {
+		window.lam.filterSelect.filterDynamic(inputField, selectField);
+	}
+	else {
+		window.lam.filterSelect.filterStandard(inputField, selectField);
+	}
+}
+
+/**
+ * Filters a normal select field.
+ *
+ * @param inputField input field with filter value
+ * @param selectField select field
+ */
+window.lam.filterSelect.filterStandard = function(inputField, selectField) {
 	// if values were not yet saved, save them
-	if (!jQuery('#' + select).data('options')) {
+	if (!selectField.data('options')) {
 		var options = [];
-		jQuery('#' + select).find('option').each(function() {
+		selectField.find('option').each(function() {
 			options.push({value: $(this).val(), text: $(this).text()});
 		});
-		jQuery('#' + select).data('options', options);
+		selectField.data('options', options);
 	}
 	// get matching values
-	var list = jQuery('#' + select).empty().scrollTop(0).data('options');
-	var search = jQuery.trim(jQuery('#' + filterInput).val());
+	var list = selectField.empty().scrollTop(0).data('options');
+	var search = jQuery.trim(inputField.val());
 	var regex = new RegExp(search,'gi');
 	jQuery.each(list, function(i) {
 		var option = list[i];
 		if(option.text.match(regex) !== null) {
-			jQuery('#' + select).append(
+			selectField.append(
 					jQuery('<option>').text(option.text).val(option.value)
 			);
 		}
 	});
 }
 
-window.lam = window.lam || {};
+/**
+ * Filters a select field with dynamic scrolling.
+ *
+ * @param inputField input field with filter value
+ * @param selectField select field
+ */
+window.lam.filterSelect.filterDynamic = function(inputField, selectField) {
+	var optionsOrig = selectField.data('dynamic-options-orig');
+	if (optionsOrig === undefined) {
+		selectField.data('dynamic-options-orig', selectField.data('dynamic-options'));
+		optionsOrig = selectField.data('dynamic-options-orig');
+	}
+	selectField.empty().scrollTop(0);
+	var newOptions = [];
+	// get matching values
+	var search = jQuery.trim(inputField.val());
+	var regex = new RegExp(search,'gi');
+	jQuery.each(optionsOrig, function(i) {
+		var option = optionsOrig[i];
+		if(option.label.match(regex) !== null) {
+			newOptions.push(option);
+		}
+	});
+	selectField.data('dynamic-options', newOptions);
+	window.lam.dynamicSelect.initSelect(selectField);
+}
+
 window.lam.upload = window.lam.upload || {};
 
 /**
