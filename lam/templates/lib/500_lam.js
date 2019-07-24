@@ -1120,25 +1120,34 @@ window.lam.dynamicSelect.activate = function() {
 	var dynamicSelects = jQuery('.lam-dynamicOptions');
 	dynamicSelects.each(function() {
 		var selectField = jQuery(this);
-		selectField.data('option-height', selectField.find("option").height());
-		selectField.data('select-height', selectField.height());
-		selectField.data('select-last-scroll-top', 0);
-		selectField.data('select-current-scroll', 0);
-		selectField.html('');
-		var options = selectField.data('dynamic-options');
-		var maxOptions = 3000;
-		var numOfOptionBeforeToLoadNextSet = 10;
-		var numberOfOptionsToLoad = 200;
-		for (var i = 0; i < maxOptions; i++) {
-			selectField.append(window.lam.dynamicSelect.createOption(options[i], i));
-		}
-		if (options.length > maxOptions) {
-			// activate scrolling logic only if enough options are set
-			selectField.scroll(function(event) {
-				window.lam.dynamicSelect.onScroll(selectField, event, maxOptions, numOfOptionBeforeToLoadNextSet, numberOfOptionsToLoad);
-			});
-		}
+		window.lam.dynamicSelect.initSelect(selectField);
 	});
+}
+
+/**
+ * Sets up a select field for dynamic scrolling.
+ *
+ * @param selectField select
+ */
+window.lam.dynamicSelect.initSelect = function(selectField) {
+	selectField.data('option-height', selectField.find("option").height());
+	selectField.data('select-height', selectField.height());
+	selectField.data('select-last-scroll-top', 0);
+	selectField.data('select-current-scroll', 0);
+	selectField.html('');
+	var options = selectField.data('dynamic-options');
+	var maxOptions = 3000;
+	var numOfOptionBeforeToLoadNextSet = 10;
+	var numberOfOptionsToLoad = 200;
+	for (var i = 0; i < maxOptions; i++) {
+		selectField.append(window.lam.dynamicSelect.createOption(options[i], i));
+	}
+	if (options.length > maxOptions) {
+		// activate scrolling logic only if enough options are set
+		selectField.scroll(function(event) {
+			window.lam.dynamicSelect.onScroll(selectField, event, maxOptions, numOfOptionBeforeToLoadNextSet, numberOfOptionsToLoad);
+		});
+	}
 }
 
 /**
