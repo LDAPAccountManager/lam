@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2010 - 2011  Pavel Pozdniak
-                2010 - 2018  Roland Gruber
+                2010 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -248,7 +248,6 @@ class imapAccess extends baseModule {
 		$return->addElement(new htmlHelpLink('MailAddress'), true);
 		$return->addElement(new htmlSpacer(null, '10px'), true);
 
-		$is_mailbox_exist = false; //default is false
 		$list = imap_list($mbox, "{" . $imap_server_address . "}", $prefix . $this->getSep() . $this->user);
 		if (is_array($list) && sizeof($list) == 1) {
 			$this->renderQuotasForMailbox($return, $mbox, $prefix . $this->getSep() . $this->user);
@@ -550,10 +549,9 @@ class imapAccess extends baseModule {
 	 */
 	public function check_configOptions($typeIds, &$options) {
 		$errors = parent::check_configOptions($typeIds, $options);
-		if ($options['ImapAccess_ImapAdminPasswordSelect'][0] == 'config') {
-			if (empty($options['ImapAccess_ImapAdminPassword'][0])) {
-				$errors[] = $this->messages['config'][2];
-			}
+		if (($options['ImapAccess_ImapAdminPasswordSelect'][0] == 'config')
+				&& empty($options['ImapAccess_ImapAdminPassword'][0])) {
+			$errors[] = $this->messages['config'][2];
 		}
 		return $errors;
 	}
@@ -582,8 +580,7 @@ class imapAccess extends baseModule {
 			$attrNames = array_values(array_unique($attrNames));
 			$attrNames = array_change_key_case($attrNames, CASE_LOWER);
 			// read LAM login user data
-			$data = $_SESSION['ldap']->decrypt_login();
-			$dn = $data[0];
+			$dn = $_SESSION['ldap']->getUserName();
 			$sr = @ldap_read($_SESSION['ldap']->server(), $dn, '(objectclass=*)', $attrNames, 0, 0, 0, LDAP_DEREF_NEVER);
 			if ($sr) {
 				$info = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
@@ -617,8 +614,7 @@ class imapAccess extends baseModule {
 			$imap_admin_password = lamDecrypt($_SESSION['imapAdmPass']);
 		}
 		elseif (isset($this->moduleSettings['ImapAccess_ImapAdminPasswordSelect'][0]) && ($this->moduleSettings['ImapAccess_ImapAdminPasswordSelect'][0] == "lam_user_pass")) {
-			$credentials = $_SESSION['ldap']->decrypt_login();
-			$imap_admin_password = $credentials[1];
+			$imap_admin_password = $_SESSION['ldap']->getPassword();
 		}
 		elseif (!empty($this->moduleSettings['ImapAccess_ImapAdminPasswordSelect'][0]) && ($this->moduleSettings['ImapAccess_ImapAdminPasswordSelect'][0] == "config")
 			&& !empty($this->moduleSettings['ImapAccess_ImapAdminPassword'][0])) {
@@ -678,8 +674,7 @@ class imapAccess extends baseModule {
 		else {
 			$validate_opt = "validate-cert";
 		}
-		$imap_server_address = $imap_server_name . ":" . $imap_port_number . "/" . $imap_encryption_protocol . "/" . $validate_opt;
-		return $imap_server_address;
+		return $imap_server_name . ":" . $imap_port_number . "/" . $imap_encryption_protocol . "/" . $validate_opt;
 	}
 
 	/**

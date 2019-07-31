@@ -6,7 +6,7 @@ use LAM\PDF\PDFImage;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2018  Roland Gruber
+                2005 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -928,19 +928,17 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$dn = 'ou=addressbook,' . $accountContainer->finalDN;
 			$result = ldapGetDN($dn);
 			if (empty($result)) {
-				$ldapUser = $_SESSION['ldap']->decrypt_login();
-				$ldapUser = $ldapUser[0];
 				$attrs = array(
 					'objectClass' => array('organizationalUnit'),
 					'ou' => 'addressbook'
 				);
 				$success = @ldap_add($_SESSION['ldap']->server(), $dn, $attrs);
 				if (!$success) {
-					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to add addressbook for user ' . $accountContainer->finalDN . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+					logNewMessage(LOG_ERR, 'Unable to add addressbook for user ' . $accountContainer->finalDN . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 					$messages[] = array('ERROR', sprintf(_("Was unable to create DN: %s."), htmlspecialchars($dn)), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 				}
 				else {
-					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Added addressbook for user ' . $accountContainer->finalDN);
+					logNewMessage(LOG_NOTICE, 'Added addressbook for user ' . $accountContainer->finalDN);
 				}
 			}
 		}

@@ -1,10 +1,9 @@
 <?php
 use \LAM\TYPES\TypeManager;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2014 - 2017  Roland Gruber
+  Copyright (C) 2014 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -175,7 +174,6 @@ class nisMailAliasUser extends baseModule {
 					$label->colspan = 5;
 					$mailTable->addElement($label, true);
 				}
-				$found = false;
 				for ($i = 0; $i < $count; $i++) {
 					if (empty($aliases[$i]['rfc822mailmember'])) {
 						continue;
@@ -185,7 +183,6 @@ class nisMailAliasUser extends baseModule {
 					if (in_array($mails[$m], $members)
 							&& (!isset($this->recipientsToDelete[$dn]) || !in_array($mails[$m], $this->recipientsToDelete[$dn]))
 							&& !in_array($dn, $this->aliasesToDelete)) {
-						$found = true;
 						$mailTable->addSpace('5px');
 						$mailTable->addElement(new htmlOutputText($aliases[$i]['cn'][0]));
 						$buttonGroup = new htmlGroup();
@@ -334,7 +331,6 @@ class nisMailAliasUser extends baseModule {
 	function display_html_add() {
 		$return = new htmlTable();
 		$aliases = $this->getMailAliasList();
-		$count = sizeof($aliases);
 		$userName = $this->getUserName();
 		$mails = $this->getMailAddresses();
 		$recipient = null;
@@ -411,7 +407,6 @@ class nisMailAliasUser extends baseModule {
 	*/
 	function process_add() {
 		$errors = array();
-		$mails = $this->getMailAddresses();
 		// create new alias entry
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_create'])) {
 			if (empty($_POST['new_cn']) || !get_preg($_POST['new_cn'], 'nis_alias')) {
@@ -421,7 +416,7 @@ class nisMailAliasUser extends baseModule {
 				// build new alias entry
 				$newDN = 'cn=' . $_POST['new_cn'] . ',' . $_POST['new_ou'];
 				$found = false;
-				foreach ($this->cachedAliasList as $key => $attrs) {
+				foreach ($this->cachedAliasList as $attrs) {
 					if ($attrs['dn'] == $newDN) {
 						$found = true;
 						break;
@@ -471,28 +466,26 @@ class nisMailAliasUser extends baseModule {
 	 */
 	public function postModifyActions($newAccount, $attributes) {
 		$errors = array();
-		$ldapUser = $_SESSION['ldap']->decrypt_login();
-		$ldapUser = $ldapUser[0];
 		// delete complete aliases
 		foreach ($this->aliasesToDelete as $dn) {
 			$success = @ldap_delete($_SESSION['ldap']->server(), $dn);
 			if (!$success) {
-				logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to delete ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+				logNewMessage(LOG_ERR, 'Unable to delete ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 				$errors[] = array('ERROR', sprintf(_('Was unable to delete DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 			}
 			else {
-				logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Removed ' . $dn);
+				logNewMessage(LOG_NOTICE, 'Removed ' . $dn);
 			}
 		}
 		// delete recipient entries
 		foreach ($this->recipientsToDelete as $dn => $recipients) {
 			$success = @ldap_mod_del($_SESSION['ldap']->server(), $dn, array('rfc822mailmember' => $recipients));
 			if (!$success) {
-				logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to remove recipients ' . implode(', ', $recipients) . ' from  ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+				logNewMessage(LOG_ERR, 'Unable to remove recipients ' . implode(', ', $recipients) . ' from  ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 				$errors[] = array('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 			}
 			else {
-				logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Removed recipients ' . implode(', ', $recipients) . ' from ' . $dn);
+				logNewMessage(LOG_NOTICE, 'Removed recipients ' . implode(', ', $recipients) . ' from ' . $dn);
 			}
 		}
 		// create new aliases
@@ -500,22 +493,22 @@ class nisMailAliasUser extends baseModule {
 			unset($attrs['dn']);
 			$success = @ldap_add($_SESSION['ldap']->server(), $dn, $attrs);
 			if (!$success) {
-				logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to create mail alias ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+				logNewMessage(LOG_ERR, 'Unable to create mail alias ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 				$errors[] = array('ERROR', sprintf(_('Was unable to create DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 			}
 			else {
-				logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Added mail alias with recipients ' . implode(', ', $attrs['rfc822mailmember']) . ' and DN ' . $dn);
+				logNewMessage(LOG_NOTICE, 'Added mail alias with recipients ' . implode(', ', $attrs['rfc822mailmember']) . ' and DN ' . $dn);
 			}
 		}
 		// add recipients
 		foreach ($this->recipientsToAdd as $dn => $recipients) {
 			$success = @ldap_mod_add($_SESSION['ldap']->server(), $dn, array('rfc822mailmember' => $recipients));
 			if (!$success) {
-				logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to add recipients ' . implode(', ', $recipients) . ' to  ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+				logNewMessage(LOG_ERR, 'Unable to add recipients ' . implode(', ', $recipients) . ' to  ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 				$errors[] = array('ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 			}
 			else {
-				logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Added recipients ' . implode(', ', $recipients) . ' to ' . $dn);
+				logNewMessage(LOG_NOTICE, 'Added recipients ' . implode(', ', $recipients) . ' to ' . $dn);
 			}
 		}
 		return $errors;

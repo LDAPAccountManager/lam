@@ -1483,7 +1483,6 @@ function getCallingURL($baseUrl = '') {
 	elseif (!empty($_SERVER['HTTP_REFERER'])) {
 		$url = $_SERVER['HTTP_REFERER'];
 	}
-	logNewMessage(LOG_DEBUG, 'Calling URL detected as ' . $url);
 	return $url;
 }
 

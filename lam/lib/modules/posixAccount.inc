@@ -601,7 +601,6 @@ class posixAccount extends baseModule implements passwordService {
 	* <br>"info" are values with informational value (e.g. to be used later by pre/postModify actions)
 	*/
 	function save_attributes() {
-		$typeId = $this->getAccountContainer()->get_type()->getId();
 		if (!$this->skipObjectClass() && (!in_array('posixAccount', $this->attributes['objectClass']) && !in_array('posixAccount', $this->orig['objectClass']))) {
 			// skip saving if the extension was not added/modified
 			return array();
@@ -656,7 +655,7 @@ class posixAccount extends baseModule implements passwordService {
 				$add = array_delete($this->groups_orig, $this->groups);
 				$remove = array_delete($this->groups, $this->groups_orig);
 				$groupList = searchLDAPByAttribute('cn', '*', 'posixGroup', array('cn', 'dn'), array('group'));
-				$dn2cn = array();
+				$cn2dn = array();
 				for ($i = 0; $i < sizeof($groupList); $i++) {
 					$cn2dn[$groupList[$i]['cn'][0]] = $groupList[$i]['dn'];
 				}
@@ -815,8 +814,6 @@ class posixAccount extends baseModule implements passwordService {
 			$gons = $this->findGroupOfNames();
 			$toAdd = array_values(array_diff($this->gonList, $this->gonList_orig));
 			$toRem = array_values(array_diff($this->gonList_orig, $this->gonList));
-			$ldapUser = $_SESSION['ldap']->decrypt_login();
-			$ldapUser = $ldapUser[0];
 			// update groups if DN changed
 			if (isset($accountContainer->dn_orig) && ($accountContainer->dn_orig != $accountContainer->finalDN)) {
 				// update owner/member/uniqueMember attributes
@@ -837,7 +834,7 @@ class posixAccount extends baseModule implements passwordService {
 							$success = @ldap_mod_replace($_SESSION['ldap']->server(), $ownerGroups[$i]['dn'], array($searchAttr => $newOwners));
 							if (!$success) {
 								$ldapError = getDefaultLDAPErrorString($_SESSION['ldap']->server());
-								logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to modify attributes of DN: ' . $ownerGroups[$i]['dn'] . ' (' . $ldapError . ').');
+								logNewMessage(LOG_ERR, 'Unable to modify attributes of DN: ' . $ownerGroups[$i]['dn'] . ' (' . $ldapError . ').');
 								$messages[] = array('ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $ownerGroups[$i]['dn']), $ldapError);
 							}
 						}
@@ -853,11 +850,11 @@ class posixAccount extends baseModule implements passwordService {
 					}
 					$success = @ldap_mod_add($_SESSION['ldap']->server(), $toAdd[$i], array($attrName => array($accountContainer->finalDN)));
 					if (!$success) {
-						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to add user ' . $accountContainer->finalDN . ' to group: ' . $toAdd[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+						logNewMessage(LOG_ERR, 'Unable to add user ' . $accountContainer->finalDN . ' to group: ' . $toAdd[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 						$messages[] = array('ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $toAdd[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 					}
 					else {
-						logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Added user ' . $accountContainer->finalDN . ' to group: ' . $toAdd[$i]);
+						logNewMessage(LOG_NOTICE, 'Added user ' . $accountContainer->finalDN . ' to group: ' . $toAdd[$i]);
 					}
 				}
 			}
@@ -870,11 +867,11 @@ class posixAccount extends baseModule implements passwordService {
 					}
 					$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], array($attrName => array($accountContainer->dn_orig)));
 					if (!$success) {
-						logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to delete user ' . $accountContainer->finalDN . ' from group: ' . $toRem[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+						logNewMessage(LOG_ERR, 'Unable to delete user ' . $accountContainer->finalDN . ' from group: ' . $toRem[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 						$messages[] = array('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $toRem[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 					}
 					else {
-						logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Removed user ' . $accountContainer->finalDN . ' from group: ' . $toRem[$i]);
+						logNewMessage(LOG_NOTICE, 'Removed user ' . $accountContainer->finalDN . ' from group: ' . $toRem[$i]);
 					}
 				}
 			}
@@ -3385,10 +3382,10 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Returns if the module manages the password attribute.
-	 * 
+	 *
 	 * @param string $typeId account type id
 	 * @return boolean manages password
 	 */
@@ -3557,6 +3554,7 @@ class posixAccount extends baseModule implements passwordService {
 		$types = $typeManager->getConfiguredTypesForScopes(array('gon', 'group'));
 		foreach ($types as $type) {
 			$typeFilter = get_ldap_filter($type->getId());
+			echo $type->getId() . $typeFilter;
 			$results = searchLDAP($type->getSuffix(), $typeFilter, array('cn', 'dn', 'objectClass'));
 			for ($i = 0; $i < sizeof($results); $i++) {
 				if ((in_array_ignore_case('groupOfNames', $results[$i]['objectclass'])

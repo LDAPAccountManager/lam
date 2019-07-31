@@ -663,8 +663,7 @@ class asteriskExtension extends baseModule {
      * @return String owner
      */
     function getDefaultExtensionOwner(){
-        $credentials = $_SESSION['ldap']->decrypt_login();
-        return $credentials[0];
+        return $_SESSION['ldap']->getUserName();
     }
 
     /**
