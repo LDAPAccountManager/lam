@@ -1,9 +1,8 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2018  Roland Gruber
+  Copyright (C) 2003 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -99,9 +98,13 @@ class Ldap{
 				return $return;
 			}
 			// return error number
-			else return ldap_errno($this->server);
+			else {
+				return ldap_errno($this->server);
+			}
 		}
-		else return false;
+		else {
+			return false;
+		}
 	}
 
 	/** Closes connection to server */
@@ -118,8 +121,7 @@ class Ldap{
 	*/
 	public function server() {
 		if (!$this->is_connected) {
-			$data = $this->decrypt_login();
-			$this->connect($data[0], $data[1]);
+			$this->connect($this->getUserName(), $this->getPassword());
 			$this->is_connected = true;
 		}
 		return $this->server;
@@ -177,19 +179,6 @@ class Ldap{
 		// encrypt username and password
 		$this->username = base64_encode(lamEncrypt($username));
 		$this->password = base64_encode(lamEncrypt($password));
-	}
-
-	/**
-	* Decrypts username and password
-	*
-	* @return array array(user name, password)
-	*/
-	public function decrypt_login() {
-		// decrypt username and password
-		$username = lamDecrypt(base64_decode($this->username));
-		$password = lamDecrypt(base64_decode($this->password));
-		$ret = array($username, $password);
-		return $ret;
 	}
 
 	/**

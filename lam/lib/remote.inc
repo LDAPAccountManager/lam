@@ -101,10 +101,10 @@ class Remote {
 	 */
 	private function loginSSH($handle) {
 		$username = $_SESSION['config']->getScriptUserName();
-		$credentials = $_SESSION['ldap']->decrypt_login();
+		$ldapUser = $_SESSION['ldap']->getUserName();
 		if (empty($username)) {
 			// get user name from current LAM user
-			$sr = @ldap_read($_SESSION['ldap']->server(), $credentials[0], "objectClass=posixAccount", array('uid'), 0, 0, 0, LDAP_DEREF_NEVER);
+			$sr = @ldap_read($_SESSION['ldap']->server(), $ldapUser, "objectClass=posixAccount", array('uid'), 0, 0, 0, LDAP_DEREF_NEVER);
 			if ($sr) {
 				$entry = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
 				if (!empty($entry[0]['uid'])) {
@@ -112,10 +112,10 @@ class Remote {
 				}
 			}
 			if (empty($username)) {
-				throw new LAMException(sprintf(_("Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"), getAbstractDN($credentials[0])));
+				throw new LAMException(sprintf(_("Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"), getAbstractDN($ldapUser)));
 			}
 		}
-		$password = $credentials[1];
+		$password = $_SESSION['ldap']->getPassword();
 		$keyPath = $_SESSION['config']->getScriptSSHKey();
 		if (!empty($keyPath)) {
 			// use key authentication

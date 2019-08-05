@@ -1,9 +1,8 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2018  Roland Gruber
+  Copyright (C) 2003 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -47,8 +46,7 @@ startSecureSession();
 
 // log message
 if (isset($_SESSION['loggedIn']) || ($_SESSION['loggedIn'] === true)) {
-	$ldapUser = $_SESSION['ldap']->decrypt_login();
-	logNewMessage(LOG_NOTICE, 'User ' . $ldapUser[0] . ' logged off.');
+	logNewMessage(LOG_NOTICE, 'User logged off.');
 
 	// close LDAP connection
 	if (!empty($_SESSION["ldap"])) {

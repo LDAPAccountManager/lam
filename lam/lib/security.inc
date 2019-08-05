@@ -173,8 +173,8 @@ function checkClientIP() {
 function logoffAndBackToLoginPage() {
 	// log message
 	if (isset($_SESSION['ldap'])) {
-		$ldapUser = $_SESSION['ldap']->decrypt_login();
-		logNewMessage(LOG_WARNING, 'Session of user ' . $ldapUser[0] . ' expired.');
+		$ldapUser = $_SESSION['ldap']->getUserName();
+		logNewMessage(LOG_WARNING, 'Session of user ' . $ldapUser . ' expired.');
 		// close LDAP connection
 		@$_SESSION["ldap"]->destroy();
 	}

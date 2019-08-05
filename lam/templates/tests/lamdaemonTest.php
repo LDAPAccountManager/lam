@@ -210,13 +210,13 @@ function lamRunTestSuite($serverName, $serverTitle, $testQuota, $container) {
 	$container->addVerticalSpacer('0.5rem');
 
 	// check Unix account of LAM admin
-	$credentials = $_SESSION['ldap']->decrypt_login();
+	$ldapUser = $_SESSION['ldap']->getUserName();
 	if (!$stopTest) {
 		$scriptUserName = $_SESSION['config']->getScriptUserName();
 		if (empty($scriptUserName)) {
 			$container->add(new htmlOutputText(_("Unix account")), 10, 4);
 			$unixOk = false;
-			$sr = @ldap_read($_SESSION['ldap']->server(), $credentials[0], "objectClass=posixAccount", array('uid'), 0, 0, 0, LDAP_DEREF_NEVER);
+			$sr = @ldap_read($_SESSION['ldap']->server(), $ldapUser, "objectClass=posixAccount", array('uid'), 0, 0, 0, LDAP_DEREF_NEVER);
 			if ($sr) {
 				$entry = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
 				$userName = $entry[0]['uid'][0];
@@ -230,7 +230,7 @@ function lamRunTestSuite($serverName, $serverTitle, $testQuota, $container) {
 			}
 			else {
 				$container->add(new htmlImage($failImage), 2);
-				$container->add(new htmlOutputText(sprintf(_("Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"), $credentials[0])), 12, 6);
+				$container->add(new htmlOutputText(sprintf(_("Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"), $ldapUser)), 12, 6);
 				$stopTest = true;
 			}
 			$container->addVerticalSpacer('0.5rem');

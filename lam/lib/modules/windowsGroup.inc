@@ -4,10 +4,9 @@ use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
 use \LAM\TYPES\TypeManager;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2017  Roland Gruber
+  Copyright (C) 2013 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1036,18 +1035,16 @@ class windowsGroup extends baseModule {
 		$toAdd = array_values(array_diff($this->attributes['memberOf'], $this->orig['memberOf']));
 		$toRem = array_values(array_diff($this->orig['memberOf'], $this->attributes['memberOf']));
 		$toUpdate = array_values(array_intersect($this->attributes['memberOf'], $this->orig['memberOf']));
-		$ldapUser = $_SESSION['ldap']->decrypt_login();
-		$ldapUser = $ldapUser[0];
 		// add groups
 		for ($i = 0; $i < sizeof($toAdd); $i++) {
 			if (in_array($toAdd[$i], $groups)) {
 				$success = @ldap_mod_add($_SESSION['ldap']->server(), $toAdd[$i], array('member' => array($this->getAccountContainer()->finalDN)));
 				if (!$success) {
-					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to add group ' . $this->getAccountContainer()->finalDN . ' to group: ' . $toAdd[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+					logNewMessage(LOG_ERR, 'Unable to add group ' . $this->getAccountContainer()->finalDN . ' to group: ' . $toAdd[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 					$messages[] = array('ERROR', sprintf(_('Was unable to add attributes to DN: %s.'), $toAdd[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 				}
 				else {
-					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Added group ' . $this->getAccountContainer()->finalDN . ' to group: ' . $toAdd[$i]);
+					logNewMessage(LOG_NOTICE, 'Added group ' . $this->getAccountContainer()->finalDN . ' to group: ' . $toAdd[$i]);
 				}
 			}
 		}
@@ -1056,11 +1053,11 @@ class windowsGroup extends baseModule {
 			if (in_array($toRem[$i], $groups)) {
 				$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], array('member' => array($this->getAccountContainer()->dn_orig)));
 				if (!$success) {
-					logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to delete group ' . $this->getAccountContainer()->finalDN . ' from group: ' . $toRem[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+					logNewMessage(LOG_ERR, 'Unable to delete group ' . $this->getAccountContainer()->finalDN . ' from group: ' . $toRem[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 					$messages[] = array('ERROR', sprintf(_('Was unable to remove attributes from DN: %s.'), $toRem[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 				}
 				else {
-					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Removed group ' . $this->getAccountContainer()->finalDN . ' from group: ' . $toRem[$i]);
+					logNewMessage(LOG_NOTICE, 'Removed group ' . $this->getAccountContainer()->finalDN . ' from group: ' . $toRem[$i]);
 				}
 			}
 		}

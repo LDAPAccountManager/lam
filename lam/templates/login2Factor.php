@@ -9,10 +9,9 @@ use \htmlSelect;
 use \htmlInputField;
 use \htmlButton;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017  Roland Gruber
+  Copyright (C) 2017 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -46,9 +45,7 @@ startSecureSession();
 setlanguage();
 
 $config = $_SESSION['config'];
-$ldap = $_SESSION['ldap'];
-$credentials = $ldap->decrypt_login();
-$password = $credentials[1];
+$password = $_SESSION['ldap']->getPassword();
 $user = $_SESSION['user2factor'];
 if (get_preg($user, 'dn')) {
 	$user = extractRDNValue($user);
