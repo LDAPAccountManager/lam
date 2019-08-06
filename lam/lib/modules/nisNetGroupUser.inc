@@ -6,7 +6,7 @@ use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2015 - 2018  Roland Gruber
+  Copyright (C) 2015 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -315,8 +315,6 @@ class nisNetGroupUser extends baseModule {
 		if (empty($uid)) {
 			return array();
 		}
-		$ldapUser = $_SESSION['ldap']->decrypt_login();
-		$ldapUser = $ldapUser[0];
 		$messages = array();
 		// calculate differences
 		$toRem = $this->groupsOrig;
@@ -370,7 +368,7 @@ class nisNetGroupUser extends baseModule {
 			);
 			$success = @ldap_mod_replace($_SESSION['ldap']->server(), $dn, $attributes);
 			if (!$success) {
-				logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to modify attributes of DN: ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+				logNewMessage(LOG_ERR, 'Unable to modify attributes of DN: ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 				$messages[] = array('ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 			}
 		}
@@ -397,8 +395,6 @@ class nisNetGroupUser extends baseModule {
 		if (empty($uid)) {
 			return array();
 		}
-		$ldapUser = $_SESSION['ldap']->decrypt_login();
-		$ldapUser = $ldapUser[0];
 		$return = array();
 		// remove from NIS netgroups
 		$changes = array();
@@ -419,7 +415,7 @@ class nisNetGroupUser extends baseModule {
 			);
 			$success = @ldap_mod_replace($_SESSION['ldap']->server(), $dn, $attributes);
 			if (!$success) {
-				logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to modify attributes of DN: ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+				logNewMessage(LOG_ERR, 'Unable to modify attributes of DN: ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 				$messages[] = array('ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 			}
 		}

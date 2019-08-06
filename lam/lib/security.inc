@@ -173,8 +173,8 @@ function checkClientIP() {
 function logoffAndBackToLoginPage() {
 	// log message
 	if (isset($_SESSION['ldap'])) {
-		$ldapUser = $_SESSION['ldap']->decrypt_login();
-		logNewMessage(LOG_WARNING, 'Session of user ' . $ldapUser[0] . ' expired.');
+		$ldapUser = $_SESSION['ldap']->getUserName();
+		logNewMessage(LOG_WARNING, 'Session of user ' . $ldapUser . ' expired.');
 		// close LDAP connection
 		@$_SESSION["ldap"]->destroy();
 	}
@@ -270,7 +270,7 @@ function logNewMessage($level, $message) {
 		return;
 	}
 	// ok to log, build log message
-	$prefix = "LDAP Account Manager (" . session_id() . ' - ' . getClientIPForLogging() . ") - " . $possibleLevels[$level] . ": ";
+	$prefix = "LDAP Account Manager (" . session_id() . ' - ' . getClientIPForLogging() . ' - ' . getLamLdapUser() . ") - " . $possibleLevels[$level] . ": ";
 	$message = $prefix . $message;
 	// Syslog logging
 	if ($cfg->logDestination == 'SYSLOG') {
@@ -606,6 +606,21 @@ function getClientIPForLogging() {
 		$ip .= ',' . $_SERVER['HTTP_X_REAL_IP'];
 	}
 	return $ip;
+}
+
+/**
+ * Returns the login dn of the current user.
+ *
+ * @return string user DN
+ */
+function getLamLdapUser() {
+	if (isset($_SESSION['ldap'])) {
+		return $_SESSION['ldap']->getUserName();
+	}
+	elseif (isset($_SESSION['selfService_clientDN'])) {
+		return lamDecrypt($_SESSION['selfService_clientDN'], 'SelfService');
+	}
+	return '';
 }
 
 /**

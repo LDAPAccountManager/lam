@@ -955,14 +955,12 @@ function deleteDN($dn, $recursive) {
 	}
 	// delete parent DN
 	$success = @ldap_delete($_SESSION['ldap']->server(), $dn);
-	$ldapUser = $_SESSION['ldap']->decrypt_login();
-	$ldapUser = $ldapUser[0];
 	if (!$success) {
-		logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to delete DN: ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
+		logNewMessage(LOG_ERR, 'Unable to delete DN: ' . $dn . ' (' . ldap_error($_SESSION['ldap']->server()) . ').');
 		$errors[] = array ('ERROR', sprintf(_('Was unable to delete DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 	}
 	else {
-		logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Deleted DN: ' . $dn);
+		logNewMessage(LOG_NOTICE, 'Deleted DN: ' . $dn);
 	}
 	return $errors;
 }
@@ -1483,7 +1481,6 @@ function getCallingURL($baseUrl = '') {
 	elseif (!empty($_SERVER['HTTP_REFERER'])) {
 		$url = $_SERVER['HTTP_REFERER'];
 	}
-	logNewMessage(LOG_DEBUG, 'Calling URL detected as ' . $url);
 	return $url;
 }
 

@@ -4,7 +4,6 @@ app_session_start();
 $lamConfig = $_SESSION['config'];
 $lamCfgMain = $_SESSION['cfgMain'];
 $lamLdap = $_SESSION['ldap'];
-$lamLogin = $lamLdap->decrypt_login();
 
 $servers = new Datastore();
 $servers->newServer('ldap_pla');
@@ -12,8 +11,8 @@ $servers->setValue('server','name',null);
 $servers->setValue('server','host',$lamConfig->get_ServerURL());
 $servers->setValue('server','base',array($lamConfig->get_Suffix('tree')));
 $servers->setValue('login','auth_type','config');
-$servers->setValue('login','bind_id',$lamLogin[0]);
-$servers->setValue('login','bind_pass',$lamLogin[1]);
+$servers->setValue('login','bind_id', $lamLdap->getUserName());
+$servers->setValue('login','bind_pass',$lamLdap->getPassword());
 if ($lamConfig->getUseTLS() == 'yes') {
 	$servers->setValue('server','tls',true);
 }

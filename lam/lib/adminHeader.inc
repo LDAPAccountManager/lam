@@ -101,12 +101,12 @@ foreach ($toSort as $key => $value) {
 		</td>
 		<td align="left" height="30" class="nowrap header-user-label">
 			<?php
-				$userData = $_SESSION['ldap']->decrypt_login();
-				$userName = extractRDNValue($userData[0]);
+				$userData = $_SESSION['ldap']->getUserName();
+				$userName = extractRDNValue($userData);
 			?>
 			<span class="hide-on-mobile">
 			<?php
-				echo '&nbsp;&nbsp;<small title="' . $userData[0] . '">';
+				echo '&nbsp;&nbsp;<small title="' . $userData . '">';
 				$serverProfileLabel = $_SESSION['config']->getName() . ' - ';
 				$serverProfileNames = getConfigProfiles();
 				if (sizeof($serverProfileNames) < 2) {
@@ -118,7 +118,7 @@ foreach ($toSort as $key => $value) {
 			</span>
 			<span class="hide-on-tablet">
 			<?php
-				echo '&nbsp;&nbsp;<small title="' . $userData[0] . '">';
+				echo '&nbsp;&nbsp;<small title="' . $userData . '">';
 				echo $userName;
 				echo '</small>';
 			?>
