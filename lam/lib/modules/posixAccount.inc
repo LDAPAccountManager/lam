@@ -3554,7 +3554,6 @@ class posixAccount extends baseModule implements passwordService {
 		$types = $typeManager->getConfiguredTypesForScopes(array('gon', 'group'));
 		foreach ($types as $type) {
 			$typeFilter = get_ldap_filter($type->getId());
-			echo $type->getId() . $typeFilter;
 			$results = searchLDAP($type->getSuffix(), $typeFilter, array('cn', 'dn', 'objectClass'));
 			for ($i = 0; $i < sizeof($results); $i++) {
 				if ((in_array_ignore_case('groupOfNames', $results[$i]['objectclass'])
