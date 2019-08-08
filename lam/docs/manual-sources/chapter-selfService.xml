@@ -250,15 +250,29 @@
             <row>
               <entry>Login caption</entry>
 
-              <entry>This text is displayed at the login page. You can input
-              HTML, too.</entry>
+              <entry>This text is displayed on the login page inside the login
+              mask.</entry>
+            </row>
+
+            <row>
+              <entry>Login footer</entry>
+
+              <entry>This text is displayed on the login page below the login
+              mask.</entry>
             </row>
 
             <row>
               <entry>Main page caption</entry>
 
-              <entry>This text is displayed at self service main page where
-              your users change their data. You can input HTML, too.</entry>
+              <entry>This text is displayed on the self service main page
+              where your users change their data.</entry>
+            </row>
+
+            <row>
+              <entry>Main page footer</entry>
+
+              <entry>This text is displayed as footer on the self service main
+              page where your users change their data.</entry>
             </row>
 
             <row>

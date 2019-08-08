@@ -396,6 +396,9 @@ class selfServiceProfile {
 	/** describing text for user login */
 	public $loginCaption;
 
+	/** describing text for user login */
+	public $loginFooter;
+
 	/** label for password input */
 	public $passwordLabel;
 
@@ -407,6 +410,9 @@ class selfServiceProfile {
 
 	/** describing text for self service main page */
 	public $mainPageText;
+
+	/** describing text for self service main page */
+	public $mainPageFooter;
 
 	/** input fields
 	 * Format: array(

@@ -47,6 +47,10 @@ body.admin {
   padding: 10px;
 }
 
+body.lam-selfservice {
+  padding: 10px;
+}
+
 .defaultBackground {
   background: #F5F5F5 !important;
 }
