@@ -353,6 +353,7 @@ class posixGroup extends baseModule implements passwordService {
 		$addSelect->setMultiSelect(true);
 		$addSelect->setTransformSingleSelect(false);
 		$addSelect->setHasDescriptiveElements(true);
+		$addSelect->enableDynamicScrolling();
 		$return->addElement($addSelect);
 		$return->addNewLine();
 		$return->addElement(new htmlOutputText(''));
