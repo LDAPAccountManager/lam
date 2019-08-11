@@ -334,6 +334,11 @@
             <para>Base URL: please enter the URL of your privacyIDEA
             instance</para>
           </listitem>
+
+          <listitem>
+            <para>User name attribute: please enter the LDAP attribute name
+            that contains the user ID (e.g. "uid")</para>
+          </listitem>
         </itemizedlist>
 
         <para>YubiKey:</para>

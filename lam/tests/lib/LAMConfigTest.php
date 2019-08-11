@@ -3,7 +3,7 @@
  $Id$
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2016 - 2017  Roland Gruber
+ Copyright (C) 2016 - 2019  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -585,6 +585,17 @@ class LAMConfigTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationCaption());
 		$this->doSave();
 		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationCaption());
+	}
+
+	/**
+	 * Tests LAMConfig->getTwoFactorAuthenticationAttribute() and LAMConfig->setTwoFactorAuthenticationAttribute()
+	 */
+	public function testTwoFactorAuthenticationAttribute() {
+		$val = 'user';
+		$this->lAMConfig->setTwoFactorAuthenticationAttribute($val);
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationAttribute());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationAttribute());
 	}
 
 	/**

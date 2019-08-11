@@ -451,6 +451,7 @@ class selfServiceProfile {
 	public $twoFactorAuthenticationCaption = '';
 	public $twoFactorAuthenticationClientId = '';
 	public $twoFactorAuthenticationSecretKey = '';
+	public $twoFactorAuthenticationAttribute = 'uid';
 
 	/** provider for captcha (-/google) */
 	public $captchaProvider = '-';
@@ -510,6 +511,7 @@ class selfServiceProfile {
 		$this->twoFactorAuthenticationCaption = '';
 		$this->twoFactorAuthenticationClientId = '';
 		$this->twoFactorAuthenticationSecretKey = '';
+		$this->twoFactorAuthenticationAttribute = 'uid';
 		$this->captchaProvider = '-';
 		$this->reCaptchaSiteKey = '';
 		$this->reCaptchaSecretKey = '';

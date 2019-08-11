@@ -572,12 +572,6 @@ if(isset($_POST['checklogin'])) {
 		}
 		else {
 			$_SESSION['2factorRequired'] = true;
-			if (($_SESSION['config']->getLoginMethod() == LAMConfig::LOGIN_SEARCH) && ($_SESSION['config']->getHttpAuthentication() == 'true')) {
-				$_SESSION['user2factor'] = $_SERVER['PHP_AUTH_USER'];
-			}
-			else {
-				$_SESSION['user2factor'] = $_POST['username'];
-			}
 			metaRefresh("./login2Factor.php");
 		}
 		die();

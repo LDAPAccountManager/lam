@@ -53,8 +53,6 @@ interface TwoFactorProvider {
 	 */
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput);
 
-
-
 }
 
 /**
@@ -79,8 +77,27 @@ class PrivacyIDEAProvider implements TwoFactorProvider {
 	 */
 	public function getSerials($user, $password) {
 		logNewMessage(LOG_DEBUG, 'PrivacyIDEAProvider: Getting serials for ' . $user);
-		$token = $this->authenticate($user, $password);
-		return $this->getSerialsForUser($user, $token);
+		$loginAttribute = $this->getLoginAttributeValue($user);
+		$token = $this->authenticate($loginAttribute, $password);
+		return $this->getSerialsForUser($loginAttribute, $token);
+	}
+
+	/**
+	 * Returns the value of the user attribute in LDAP.
+	 *
+	 * @param string $userDn user DN
+	 * @return string user name
+	 */
+	private function getLoginAttributeValue($userDn) {
+		$attrName = $this->config->twoFactorAuthenticationSerialAttributeName;
+		$userData = ldapGetDN($userDn, array($attrName));
+		if (empty($userData[$attrName])) {
+			return null;
+		}
+		if (is_array($userData[$attrName])) {
+			return $userData[$attrName][0];
+		}
+		return $userData[$attrName];
 	}
 
 	/**
@@ -89,7 +106,8 @@ class PrivacyIDEAProvider implements TwoFactorProvider {
 	 */
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
 		logNewMessage(LOG_DEBUG, 'PrivacyIDEAProvider: Checking 2nd factor for ' . $user);
-		$token = $this->authenticate($user, $password);
+		$loginAttribute = $this->getLoginAttributeValue($user);
+		$token = $this->authenticate($loginAttribute, $password);
 		return $this->verify($token, $serial, $twoFactorInput);
 	}
 
@@ -360,6 +378,13 @@ class TwoFactorProviderService {
 				$tfConfig->twoFactorAuthenticationSerialAttributeName = 'yubiKeyId';
 			}
 		}
+		if ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA) {
+			$attrName = $profile->twoFactorAuthenticationAttribute;
+			if (empty($attrName)) {
+				$attrName = 'uid';
+			}
+			$tfConfig->twoFactorAuthenticationSerialAttributeName = strtolower($attrName);
+		}
 		return $tfConfig;
 	}
 
@@ -384,6 +409,9 @@ class TwoFactorProviderService {
 			else {
 				$tfConfig->twoFactorAuthenticationSerialAttributeName = 'yubiKeyId';
 			}
+		}
+		if ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA) {
+			$tfConfig->twoFactorAuthenticationSerialAttributeName = strtolower($conf->getTwoFactorAuthenticationAttribute());
 		}
 		return $tfConfig;
 	}

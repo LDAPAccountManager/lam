@@ -46,10 +46,7 @@ setlanguage();
 
 $config = $_SESSION['config'];
 $password = $_SESSION['ldap']->getPassword();
-$user = $_SESSION['user2factor'];
-if (get_preg($user, 'dn')) {
-	$user = extractRDNValue($user);
-}
+$user = $_SESSION['ldap']->getUserName();
 
 // get serials
 try {
@@ -69,7 +66,6 @@ $twoFactorLabel = empty($twoFactorLabelConfig) ? _('PIN+Token') : $twoFactorLabe
 if (sizeof($serials) == 0) {
 	if ($config->getTwoFactorAuthenticationOptional()) {
 		unset($_SESSION['2factorRequired']);
-		unset($_SESSION['user2factor']);
 		metaRefresh("main.php");
 		die();
 	}
@@ -104,7 +100,6 @@ if (isset($_POST['submit'])) {
 		}
 		if ($twoFactorValid) {
 			unset($_SESSION['2factorRequired']);
-			unset($_SESSION['user2factor']);
 			metaRefresh("main.php");
 			die();
 		}

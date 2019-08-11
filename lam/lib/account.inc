@@ -881,7 +881,7 @@ function searchLDAPPaged($server, $dn, $filter, $attributes, $attrsOnly, $limit)
  */
 function ldapGetDN($dn, $attributes = array('dn'), $handle = null) {
 	if ($handle == null) {
-		$handle = $_SESSION['ldap']->server();
+		$handle = getLDAPServerHandle();
 	}
 	$return = null;
 	$sr = @ldap_read($handle, escapeDN($dn), 'objectClass=*', $attributes, 0, 0, 0, LDAP_DEREF_NEVER);

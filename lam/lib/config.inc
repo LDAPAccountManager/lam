@@ -598,6 +598,7 @@ class LAMConfig {
 	private $twoFactorAuthenticationLabel = null;
 	private $twoFactorAuthenticationOptional = false;
 	private $twoFactorAuthenticationCaption = '';
+	private $twoFactorAuthenticationAttribute = '';
 
 	/** List of all settings in config file */
 	private $settings = array("ServerURL", "useTLS", "followReferrals", 'pagedResults', "Passwd", "Admins", "treesuffix",
@@ -610,7 +611,8 @@ class LAMConfig {
 		'pwdResetAllowScreenPassword', 'pwdResetForcePasswordChange', 'pwdResetDefaultPasswordOutput',
 		'scriptUserName', 'scriptSSHKey', 'scriptSSHKeyPassword', 'twoFactorAuthentication', 'twoFactorAuthenticationURL',
 		'twoFactorAuthenticationInsecure', 'twoFactorAuthenticationLabel', 'twoFactorAuthenticationOptional',
-		'twoFactorAuthenticationCaption', 'twoFactorAuthenticationClientId', 'twoFactorAuthenticationSecretKey', 'referentialIntegrityOverlay'
+		'twoFactorAuthenticationCaption', 'twoFactorAuthenticationClientId', 'twoFactorAuthenticationSecretKey',
+		'twoFactorAuthenticationAttribute', 'referentialIntegrityOverlay'
 	);
 
 
@@ -868,14 +870,33 @@ class LAMConfig {
 			if (!in_array("pwdResetAllowScreenPassword", $saved)) array_push($file_array, "\n" . "pwdResetAllowScreenPassword: " . $this->pwdResetAllowScreenPassword . "\n");
 			if (!in_array("pwdResetForcePasswordChange", $saved)) array_push($file_array, "\n" . "pwdResetForcePasswordChange: " . $this->pwdResetForcePasswordChange . "\n");
 			if (!in_array("pwdResetDefaultPasswordOutput", $saved)) array_push($file_array, "\n" . "pwdResetDefaultPasswordOutput: " . $this->pwdResetDefaultPasswordOutput . "\n");
-			if (!in_array("twoFactorAuthentication", $saved)) array_push($file_array, "\n" . "twoFactorAuthentication: " . $this->twoFactorAuthentication . "\n");
-			if (!in_array("twoFactorAuthenticationURL", $saved)) array_push($file_array, "\n" . "twoFactorAuthenticationURL: " . $this->twoFactorAuthenticationURL . "\n");
-			if (!in_array("twoFactorAuthenticationClientId", $saved)) array_push($file_array, "\n" . "twoFactorAuthenticationClientId: " . $this->twoFactorAuthenticationClientId . "\n");
-			if (!in_array("twoFactorAuthenticationSecretKey", $saved)) array_push($file_array, "\n" . "twoFactorAuthenticationSecretKey: " . $this->twoFactorAuthenticationSecretKey . "\n");
-			if (!in_array("twoFactorAuthenticationInsecure", $saved)) array_push($file_array, "\n" . "twoFactorAuthenticationInsecure: " . $this->twoFactorAuthenticationInsecure . "\n");
-			if (!in_array("twoFactorAuthenticationLabel", $saved)) array_push($file_array, "\n" . "twoFactorAuthenticationLabel: " . $this->twoFactorAuthenticationLabel . "\n");
-			if (!in_array("twoFactorAuthenticationOptional", $saved)) array_push($file_array, "\n" . "twoFactorAuthenticationOptional: " . $this->twoFactorAuthenticationOptional . "\n");
-			if (!in_array("twoFactorAuthenticationCaption", $saved)) array_push($file_array, "\n" . "twoFactorAuthenticationCaption: " . $this->twoFactorAuthenticationCaption . "\n");
+			if (!in_array("twoFactorAuthentication", $saved)) {
+				array_push($file_array, "\n" . "twoFactorAuthentication: " . $this->twoFactorAuthentication . "\n");
+			}
+			if (!in_array("twoFactorAuthenticationURL", $saved)) {
+				array_push($file_array, "\n" . "twoFactorAuthenticationURL: " . $this->twoFactorAuthenticationURL . "\n");
+			}
+			if (!in_array("twoFactorAuthenticationClientId", $saved)) {
+				array_push($file_array, "\n" . "twoFactorAuthenticationClientId: " . $this->twoFactorAuthenticationClientId . "\n");
+			}
+			if (!in_array("twoFactorAuthenticationSecretKey", $saved)) {
+				array_push($file_array, "\n" . "twoFactorAuthenticationSecretKey: " . $this->twoFactorAuthenticationSecretKey . "\n");
+			}
+			if (!in_array("twoFactorAuthenticationInsecure", $saved)) {
+				array_push($file_array, "\n" . "twoFactorAuthenticationInsecure: " . $this->twoFactorAuthenticationInsecure . "\n");
+			}
+			if (!in_array("twoFactorAuthenticationLabel", $saved)) {
+				array_push($file_array, "\n" . "twoFactorAuthenticationLabel: " . $this->twoFactorAuthenticationLabel . "\n");
+			}
+			if (!in_array("twoFactorAuthenticationOptional", $saved)) {
+				array_push($file_array, "\n" . "twoFactorAuthenticationOptional: " . $this->twoFactorAuthenticationOptional . "\n");
+			}
+			if (!in_array("twoFactorAuthenticationCaption", $saved)) {
+				array_push($file_array, "\n" . "twoFactorAuthenticationCaption: " . $this->twoFactorAuthenticationCaption . "\n");
+			}
+			if (!in_array("twoFactorAuthenticationAttribute", $saved)) {
+				array_push($file_array, "\n" . "twoFactorAuthenticationAttribute: " . $this->twoFactorAuthenticationAttribute . "\n");
+			}
 			// check if all module settings were added
 			$m_settings = array_keys($this->moduleSettings);
 			for ($i = 0; $i < sizeof($m_settings); $i++) {
@@ -2278,6 +2299,27 @@ class LAMConfig {
 	 */
 	public function setTwoFactorAuthenticationCaption($twoFactorAuthenticationCaption) {
 		$this->twoFactorAuthenticationCaption = $twoFactorAuthenticationCaption;
+	}
+
+	/**
+	 * Returns the user attribute.
+	 *
+	 * @return string user attribute
+	 */
+	public function getTwoFactorAuthenticationAttribute() {
+		if (empty($this->twoFactorAuthenticationAttribute)) {
+			return 'uid';
+		}
+		return $this->twoFactorAuthenticationAttribute;
+	}
+
+	/**
+	 * Sets the user attribute.
+	 *
+	 * @param string $twoFactorAuthenticationAttribute user attribute
+	 */
+	public function setTwoFactorAuthenticationAttribute($twoFactorAuthenticationAttribute) {
+		$this->twoFactorAuthenticationAttribute = $twoFactorAuthenticationAttribute;
 	}
 
 }

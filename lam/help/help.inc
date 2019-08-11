@@ -323,6 +323,8 @@ $helpArray = array (
 					"Text" => _('This text is displayed as footer on the self service login page.')),
 				"527" => array ("Headline" => _('Main page footer'),
 					"Text" => _('This text is displayed as footer on the self service main page.')),
+				"528" => array ("Headline" => _('User name attribute'),
+					"Text" => _('The attribute (e.g. "uid") that contains the user name for the 2-factor service.')),
 				"550" => array ("Headline" => _("From address"),
 					"Text" => _("This email address will be set as sender address of all password mails. If empty the system default (php.ini) will be used.")),
 				"551" => array ("Headline" => _("Subject"),
