@@ -687,7 +687,7 @@ function getSecurityTokenValue() {
 function setLAMHeaders() {
 	if (!headers_sent()) {
 		header('X-Frame-Options: sameorigin');
-		header('Content-Security-Policy: frame-ancestors \'self\'; form-action \'self\'; base-uri \'none\'; object-src \'none\'; frame-src \'self\'; worker-src \'self\'');
+		header('Content-Security-Policy: frame-ancestors \'self\'; form-action \'self\'; base-uri \'none\'; object-src \'none\'; frame-src \'self\' https://*.duosecurity.com; worker-src \'self\'');
 		header('X-Content-Type-Options: nosniff');
 		header('X-XSS-Protection: 1; mode=block');
 	}

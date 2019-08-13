@@ -389,6 +389,31 @@ D:
    permanent authorization for you to choose that version for the
    Library.
 
+E:
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+  1. Redistributions of source code must retain the above copyright
+     notice, this list of conditions and the following disclaimer.
+  2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
+  3. The name of the author may not be used to endorse or promote products
+     derived from this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 
 Programs and licenses with other licenses and/or authors than the
 main license and authors:
@@ -410,6 +435,8 @@ templates/lib/*jquery-validationEngine-*.js B  2010  Cedric Dugas and Olivier Re
 style/150_jquery-validationEngine*.css      B  2010  Cedric Dugas and Olivier Refalo
 templates/lib/extra/cropperjs               B  2018  Chen Fengyuan
 style/600_cropper*.css                      B  2018  Chen Fengyuan
+templates/lib/extra/duo/*.js                E  2019  Duo Security
+lib/3rdParty/duo/*.php                      E  2019  Duo Security
 templates/lib/600_jquery.magnific-popup.js  B  2016  Dmitry Semenov
 style/610_magnific-popup.css                B  2016  Dmitry Semenov
 style/responsive/105_normalize.css          B        Nicolas Gallagher and Jonathan Neal

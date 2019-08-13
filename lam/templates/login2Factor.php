@@ -84,10 +84,10 @@ if (isset($_POST['logout'])) {
 	exit();
 }
 
-if (isset($_POST['submit'])) {
-	$twoFactorInput = $_POST['2factor'];
-	$serial = $_POST['serial'];
-	if (empty($twoFactorInput) || !in_array($serial, $serials)) {
+if (isset($_POST['submit']) || isset($_POST['sig_response'])) {
+	$twoFactorInput = isset($_POST['2factor']) ? $_POST['2factor'] : null;
+	$serial = isset($_POST['serial']) ? $_POST['serial'] : null;
+	if (!$provider->hasCustomInputForm() && (empty($twoFactorInput) || !in_array($serial, $serials))) {
 		$errorMessage = _(sprintf('Please enter "%s".', $twoFactorLabel));
 	}
 	else {
@@ -148,16 +148,24 @@ echo $config->getTwoFactorAuthenticationCaption();
 		$row->add(new \htmlStatusMessage('ERROR', $errorMessage), 12);
 		$row->add(new htmlSpacer('1em', '1em'), 12);
 	}
-	// serial
-	$row->add(new htmlOutputText(_('Serial number')), 12, 12, 12, 'text-left');
-	$serialSelect = new htmlSelect('serial', $serials);
-	$row->add($serialSelect, 12);
-	// token
-	$row->add(new htmlOutputText($twoFactorLabel), 12, 12, 12, 'text-left');
-	$twoFactorInput = new htmlInputField('2factor', '');
-	$twoFactorInput->setFieldSize(null);
-	$twoFactorInput->setIsPassword(true);
-	$row->add($twoFactorInput, 12);
+
+	if (!$provider->hasCustomInputForm()) {
+		// serial
+		$row->add(new htmlOutputText(_('Serial number')), 12, 12, 12, 'text-left');
+		$serialSelect = new htmlSelect('serial', $serials);
+		$row->add($serialSelect, 12);
+		// token
+		$row->add(new htmlOutputText($twoFactorLabel), 12, 12, 12, 'text-left');
+		$twoFactorInput = new htmlInputField('2factor', '');
+		$twoFactorInput->setFieldSize(null);
+		$twoFactorInput->setIsPassword(true);
+		$row->add($twoFactorInput, 12);
+	}
+	else {
+		$provider->addCustomInput($row, $user);
+	}
+
+	// buttons
 	$row->add(new htmlSpacer('1em', '1em'), 12);
 	$submit = new htmlButton('submit', _("Submit"));
 	$submit->setCSSClasses(array('fullwidth'));

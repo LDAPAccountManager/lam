@@ -330,16 +330,17 @@ function pwd_is_enabled($hash) {
 }
 
 /**
- * Generates a random password with 12 digits.
+ * Generates a random password with 12 digits by default.
  *
+ * @param int $length length of password (defaults to 12)
  * @return String password
  */
-function generateRandomPassword() {
+function generateRandomPassword($length = 12) {
 	$list = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-_';
 	$password = '';
-	$length = $_SESSION['cfgMain']->passwordMinLength;
-	if ($length < 12) {
-		$length = 12;
+	$minLength = $_SESSION['cfgMain']->passwordMinLength;
+	if ($minLength > $length) {
+		$length = $minLength;
 	}
 	for ($x = 0; $x < 10000; $x++) {
 		$password = '';

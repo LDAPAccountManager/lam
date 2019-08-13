@@ -3716,6 +3716,42 @@ class htmlJavaScript extends htmlElement {
 }
 
 /**
+ * Creates a iframe element.
+ *
+ * @package metaHTML
+ */
+class htmlIframe extends htmlElement {
+
+	/** HTML id */
+	private $id = null;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param String $content script
+	 */
+	function __construct($id = null) {
+		$this->id = $id;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see htmlElement::generateHTML()
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$return = array();
+		$idAttr = '';
+		if (!empty($this->id)) {
+			$idAttr = ' id="' . $this->id . '"';
+		}
+		echo '<iframe ' . $idAttr . $this->getDataAttributesAsString() . '>';
+		echo '</iframe>';
+		return $return;
+	}
+
+}
+
+/**
  * Creates a Script element to integrate external JavaScript files.
  *
  * @package metaHTML
