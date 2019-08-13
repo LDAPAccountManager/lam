@@ -71,6 +71,13 @@ interface TwoFactorProvider {
 	 * @param string user DN
 	 */
 	public function addCustomInput(&$row, $userDn);
+
+	/**
+	 * Returns if the submit button should be shown.
+	 *
+	 * @return bool show submit button
+	 */
+	public function isShowSubmitButton();
 }
 
 /**
@@ -114,6 +121,14 @@ abstract class BaseProvider implements TwoFactorProvider {
 			return $userData[$attrName][0];
 		}
 		return $userData[$attrName];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::isShowSubmitButton()
+	 */
+	public function isShowSubmitButton() {
+		return true;
 	}
 
 }
@@ -376,6 +391,14 @@ class DuoProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::isShowSubmitButton()
+	 */
+	public function isShowSubmitButton() {
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
 	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::hasCustomInputForm()
 	 */
 	public function hasCustomInputForm() {
@@ -394,7 +417,12 @@ class DuoProvider extends BaseProvider {
 				$this->config->twoFactorAuthenticationSecretKey,
 				$aKey,
 				$loginAttribute);
-		$row->add(new htmlScript("lib/extra/duo/Duo-Web-v2.js", false, false), 12);
+		if ($this->config->isSelfService) {
+			$row->add(new htmlScript("../lib/extra/duo/Duo-Web-v2.js", false, false), 12);
+		}
+		else {
+			$row->add(new htmlScript("lib/extra/duo/Duo-Web-v2.js", false, false), 12);
+		}
 		$iframe = new htmlIframe('duo_iframe');
 		$iframe->addDataAttribute('host', $this->config->twoFactorAuthenticationURL);
 		$iframe->addDataAttribute('sig-request', $signedRequest);
@@ -494,6 +522,7 @@ class TwoFactorProviderService {
 	 */
 	private function getConfigSelfService(&$profile) {
 		$tfConfig = new TwoFactorConfiguration();
+		$tfConfig->isSelfService = true;
 		$tfConfig->twoFactorAuthentication = $profile->twoFactorAuthentication;
 		$tfConfig->twoFactorAuthenticationInsecure = $profile->twoFactorAuthenticationInsecure;
 		$tfConfig->twoFactorAuthenticationURL = $profile->twoFactorAuthenticationURL;
@@ -527,6 +556,7 @@ class TwoFactorProviderService {
 	 */
 	private function getConfigAdmin($conf) {
 		$tfConfig = new TwoFactorConfiguration();
+		$tfConfig->isSelfService = false;
 		$tfConfig->twoFactorAuthentication = $conf->getTwoFactorAuthentication();
 		$tfConfig->twoFactorAuthenticationInsecure = $conf->getTwoFactorAuthenticationInsecure();
 		$tfConfig->twoFactorAuthenticationURL = $conf->getTwoFactorAuthenticationURL();
@@ -556,6 +586,11 @@ class TwoFactorProviderService {
  * @author Roland Gruber
  */
 class TwoFactorConfiguration {
+
+	/**
+	 * @var bool is self service
+	 */
+	public $isSelfService = false;
 
 	/**
 	 * @var string provider id

@@ -167,10 +167,12 @@ echo $config->getTwoFactorAuthenticationCaption();
 
 	// buttons
 	$row->add(new htmlSpacer('1em', '1em'), 12);
-	$submit = new htmlButton('submit', _("Submit"));
-	$submit->setCSSClasses(array('fullwidth'));
-	$row->add($submit, 12, 12, 12, 'fullwidth');
-	$row->add(new htmlSpacer('0.5em', '0.5em'), 12);
+	if ($provider->isShowSubmitButton()) {
+		$submit = new htmlButton('submit', _("Submit"));
+		$submit->setCSSClasses(array('fullwidth'));
+		$row->add($submit, 12, 12, 12, 'fullwidth');
+		$row->add(new htmlSpacer('0.5em', '0.5em'), 12);
+	}
 	$logout = new htmlButton('logout', _("Cancel"));
 	$logout->setCSSClasses(array('fullwidth'));
 	$row->add($logout, 12);
