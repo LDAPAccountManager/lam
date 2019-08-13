@@ -325,6 +325,10 @@
           <listitem>
             <para><ulink url="https://www.yubico.com/">YubiKey</ulink></para>
           </listitem>
+
+          <listitem>
+            <para><ulink url="https://duo.com/">Duo</ulink></para>
+          </listitem>
         </itemizedlist>
 
         <para>privacyIDEA:</para>
@@ -338,6 +342,19 @@
           <listitem>
             <para>User name attribute: please enter the LDAP attribute name
             that contains the user ID (e.g. "uid")</para>
+          </listitem>
+
+          <listitem>
+            <para>Optional: By default LAM will enforce to use a token and
+            reject users that did not setup one. You can set this check to
+            optional. But if a user has setup a token then this will always be
+            required.</para>
+          </listitem>
+
+          <listitem>
+            <para>Disable certificate check: This should be used on
+            development instances only. It skips the certificate check when
+            connecting to verification server.</para>
           </listitem>
         </itemizedlist>
 
@@ -362,15 +379,45 @@
             <para>Secret key: this is only required for YubiKey cloud. You can
             register here: https://upgrade.yubico.com/getapikey/</para>
           </listitem>
+
+          <listitem>
+            <para>Optional: By default LAM will enforce to use a token and
+            reject users that did not setup one. You can set this check to
+            optional. But if a user has setup a token then this will always be
+            required.</para>
+          </listitem>
+
+          <listitem>
+            <para>Disable certificate check: This should be used on
+            development instances only. It skips the certificate check when
+            connecting to verification server.</para>
+          </listitem>
         </itemizedlist>
 
-        <para>Optional: By default LAM will enforce to use a token and reject
-        users that did not setup one. You can set this check to optional. But
-        if a user has setup a token then this will always be required.</para>
+        <para>Duo:</para>
 
-        <para>Disable certificate check: This should be used on development
-        instances only. It skips the certificate check when connecting to
-        verification server.</para>
+        <para>This requires to register a new "Web SDK" application in your
+        Duo admin panel.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>User name attribute: please enter the LDAP attribute name
+            that contains the user ID (e.g. "uid").</para>
+          </listitem>
+
+          <listitem>
+            <para>Base URL: please enter the API-URL of your Duo instance
+            (e.g. api-12345.duosecurity.com).</para>
+          </listitem>
+
+          <listitem>
+            <para>Client id: please enter your integration key.</para>
+          </listitem>
+
+          <listitem>
+            <para>Secret key: please enter your secret key.</para>
+          </listitem>
+        </itemizedlist>
 
         <screenshot>
           <mediaobject>
