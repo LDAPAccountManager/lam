@@ -2,6 +2,9 @@
 namespace LAM\LIB\TWO_FACTOR;
 use \selfServiceProfile;
 use \LAMConfig;
+use \htmlScript;
+use \htmlInputField;
+use \htmlIframe;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -53,14 +56,87 @@ interface TwoFactorProvider {
 	 */
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput);
 
+	/**
+	 * Returns if the service has a custom input form.
+	 * In this case the token field is not displayed.
+	 *
+	 * @return has custom input form
+	 */
+	public function hasCustomInputForm();
+
+	/**
+	 * Adds the custom input fields to the form.
+	 *
+	 * @param htmlResponsiveRow $row row where to add the input fields
+	 * @param string user DN
+	 */
+	public function addCustomInput(&$row, $userDn);
+
+	/**
+	 * Returns if the submit button should be shown.
+	 *
+	 * @return bool show submit button
+	 */
+	public function isShowSubmitButton();
+}
+
+/**
+ * Base class for 2-factor authentication providers.
+ *
+ * @author Roland Gruber
+ */
+abstract class BaseProvider implements TwoFactorProvider {
+
+	protected $config;
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::hasCustomInputForm()
+	 */
+	public function hasCustomInputForm() {
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::addCustomInput()
+	 */
+	public function addCustomInput(&$row, $userDn) {
+		// must be filled by subclass if used
+	}
+
+	/**
+	 * Returns the value of the user attribute in LDAP.
+	 *
+	 * @param string $userDn user DN
+	 * @return string user name
+	 */
+	protected function getLoginAttributeValue($userDn) {
+		$attrName = $this->config->twoFactorAuthenticationSerialAttributeName;
+		$userData = ldapGetDN($userDn, array($attrName));
+		if (empty($userData[$attrName])) {
+			return null;
+		}
+		if (is_array($userData[$attrName])) {
+			return $userData[$attrName][0];
+		}
+		return $userData[$attrName];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::isShowSubmitButton()
+	 */
+	public function isShowSubmitButton() {
+		return true;
+	}
+
 }
 
 /**
  * Provider for privacyIDEA.
  */
-class PrivacyIDEAProvider implements TwoFactorProvider {
-
-	private $config;
+class PrivacyIDEAProvider extends BaseProvider {
 
 	/**
 	 * Constructor.
@@ -80,24 +156,6 @@ class PrivacyIDEAProvider implements TwoFactorProvider {
 		$loginAttribute = $this->getLoginAttributeValue($user);
 		$token = $this->authenticate($loginAttribute, $password);
 		return $this->getSerialsForUser($loginAttribute, $token);
-	}
-
-	/**
-	 * Returns the value of the user attribute in LDAP.
-	 *
-	 * @param string $userDn user DN
-	 * @return string user name
-	 */
-	private function getLoginAttributeValue($userDn) {
-		$attrName = $this->config->twoFactorAuthenticationSerialAttributeName;
-		$userData = ldapGetDN($userDn, array($attrName));
-		if (empty($userData[$attrName])) {
-			return null;
-		}
-		if (is_array($userData[$attrName])) {
-			return $userData[$attrName][0];
-		}
-		return $userData[$attrName];
 	}
 
 	/**
@@ -246,9 +304,7 @@ class PrivacyIDEAProvider implements TwoFactorProvider {
  *
  * @author Roland Gruber
  */
-class YubicoProvider implements TwoFactorProvider {
-
-	private $config;
+class YubicoProvider extends BaseProvider {
 
 	/**
 	 * Constructor.
@@ -312,6 +368,103 @@ class YubicoProvider implements TwoFactorProvider {
 }
 
 /**
+ * Provider for DUO.
+ */
+class DuoProvider extends BaseProvider {
+
+	/**
+	 * Constructor.
+	 *
+	 * @param TwoFactorConfiguration $config configuration
+	 */
+	public function __construct(&$config) {
+		$this->config = $config;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::getSerials()
+	 */
+	public function getSerials($user, $password) {
+		return array('DUO');
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::isShowSubmitButton()
+	 */
+	public function isShowSubmitButton() {
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::hasCustomInputForm()
+	 */
+	public function hasCustomInputForm() {
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\BaseProvider::addCustomInput()
+	 */
+	public function addCustomInput(&$row, $userDn) {
+		$loginAttribute = $this->getLoginAttributeValue($userDn);
+		$aKey = $this->getAKey();
+		include_once(__DIR__ . "/3rdParty/duo/Web.php");
+		$signedRequest = \Duo\Web::signRequest($this->config->twoFactorAuthenticationClientId,
+				$this->config->twoFactorAuthenticationSecretKey,
+				$aKey,
+				$loginAttribute);
+		if ($this->config->isSelfService) {
+			$row->add(new htmlScript("../lib/extra/duo/Duo-Web-v2.js", false, false), 12);
+		}
+		else {
+			$row->add(new htmlScript("lib/extra/duo/Duo-Web-v2.js", false, false), 12);
+		}
+		$iframe = new htmlIframe('duo_iframe');
+		$iframe->addDataAttribute('host', $this->config->twoFactorAuthenticationURL);
+		$iframe->addDataAttribute('sig-request', $signedRequest);
+		$row->add($iframe, 12);
+	}
+
+	/**
+	 * Returns the aKey.
+	 *
+	 * @return String aKey
+	 */
+	private function getAKey() {
+		if (empty($_SESSION['duo_akey'])) {
+			$_SESSION['duo_akey'] = generateRandomPassword(40);
+		}
+		return $_SESSION['duo_akey'];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::verify2ndFactor()
+	 */
+	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
+		logNewMessage(LOG_DEBUG, 'PrivacyIDEAProvider: Checking 2nd factor for ' . $user);
+		$loginAttribute = $this->getLoginAttributeValue($user);
+		$response = $_POST['sig_response'];
+		include_once(__DIR__ . "/3rdParty/duo/Web.php");
+		$result = \Duo\Web::verifyResponse(
+				$this->config->twoFactorAuthenticationClientId,
+				$this->config->twoFactorAuthenticationSecretKey,
+				$this->getAKey(),
+				$response);
+		if ($result === $loginAttribute) {
+			return true;
+		}
+		logNewMessage(LOG_ERR, 'DUO authentication failed');
+		return false;
+	}
+
+}
+
+/**
  * Returns the correct 2 factor provider.
  */
 class TwoFactorProviderService {
@@ -322,6 +475,8 @@ class TwoFactorProviderService {
 	const TWO_FACTOR_PRIVACYIDEA = 'privacyidea';
 	/** 2factor authentication via YubiKey */
 	const TWO_FACTOR_YUBICO = 'yubico';
+	/** 2factor authentication via DUO */
+	const TWO_FACTOR_DUO = 'duo';
 
 	private $config;
 
@@ -353,6 +508,9 @@ class TwoFactorProviderService {
 		elseif ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO) {
 			return new YubicoProvider($this->config);
 		}
+		elseif ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_DUO) {
+			return new DuoProvider($this->config);
+		}
 		throw new \Exception('Invalid provider: ' . $this->config->twoFactorAuthentication);
 	}
 
@@ -364,6 +522,7 @@ class TwoFactorProviderService {
 	 */
 	private function getConfigSelfService(&$profile) {
 		$tfConfig = new TwoFactorConfiguration();
+		$tfConfig->isSelfService = true;
 		$tfConfig->twoFactorAuthentication = $profile->twoFactorAuthentication;
 		$tfConfig->twoFactorAuthenticationInsecure = $profile->twoFactorAuthenticationInsecure;
 		$tfConfig->twoFactorAuthenticationURL = $profile->twoFactorAuthenticationURL;
@@ -378,7 +537,8 @@ class TwoFactorProviderService {
 				$tfConfig->twoFactorAuthenticationSerialAttributeName = 'yubiKeyId';
 			}
 		}
-		if ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA) {
+		if (($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA)
+				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_DUO)) {
 			$attrName = $profile->twoFactorAuthenticationAttribute;
 			if (empty($attrName)) {
 				$attrName = 'uid';
@@ -396,6 +556,7 @@ class TwoFactorProviderService {
 	 */
 	private function getConfigAdmin($conf) {
 		$tfConfig = new TwoFactorConfiguration();
+		$tfConfig->isSelfService = false;
 		$tfConfig->twoFactorAuthentication = $conf->getTwoFactorAuthentication();
 		$tfConfig->twoFactorAuthenticationInsecure = $conf->getTwoFactorAuthenticationInsecure();
 		$tfConfig->twoFactorAuthenticationURL = $conf->getTwoFactorAuthenticationURL();
@@ -410,7 +571,8 @@ class TwoFactorProviderService {
 				$tfConfig->twoFactorAuthenticationSerialAttributeName = 'yubiKeyId';
 			}
 		}
-		if ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA) {
+		if (($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA)
+				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_DUO)) {
 			$tfConfig->twoFactorAuthenticationSerialAttributeName = strtolower($conf->getTwoFactorAuthenticationAttribute());
 		}
 		return $tfConfig;
@@ -424,6 +586,11 @@ class TwoFactorProviderService {
  * @author Roland Gruber
  */
 class TwoFactorConfiguration {
+
+	/**
+	 * @var bool is self service
+	 */
+	public $isSelfService = false;
 
 	/**
 	 * @var string provider id

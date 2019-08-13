@@ -1,6 +1,8 @@
 September 2019 6.9
   - Group account types can show member+owner count in list view
-  - 2-factor authentication: user name attribute for privacyIDEA can be specified
+  - 2-factor authentication:
+   -> Duo support
+   -> user name attribute for privacyIDEA can be specified
   - LAM Pro:
    -> New self service settings for login and main page footer
 
