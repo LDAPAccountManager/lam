@@ -2185,7 +2185,17 @@ class posixAccount extends baseModule implements passwordService {
 				_('Windows domain info') => 'windowsDomain',
 				_('Magic number') => 'magicNumber'
 		);
-		if (in_array('user', $scopes)) {
+		$hasUserConfig = false;
+		$hasHostConfig = false;
+		foreach ($scopes as $typeId) {
+			if (getScopeFromTypeId($typeId) === 'user') {
+				$hasUserConfig = true;
+			}
+			elseif (getScopeFromTypeId($typeId) === 'host') {
+				$hasHostConfig = true;
+			}
+		}
+		if ($hasUserConfig) {
 			// user options
 			$configUserContainer = new htmlResponsiveRow();
 			$configUserContainer->add(new htmlSubTitle(_("Users")), 12);
@@ -2257,7 +2267,7 @@ class posixAccount extends baseModule implements passwordService {
 			$return[] = $configUserContainer;
 		}
 		// host options
-		if (in_array('host', $scopes)) {
+		if ($hasHostConfig) {
 			$configHostContainer = new htmlResponsiveRow();
 			$configHostContainer->add(new htmlSubTitle(_("Hosts")), 12);
 			foreach ($allScopes[get_class($this)] as $typeId) {
