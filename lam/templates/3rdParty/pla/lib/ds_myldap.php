@@ -160,7 +160,12 @@ class myldap extends DS {
 			$resource = ldap_connect($this->getValue('server','host'),$this->getValue('server','port'));
 		else
 			$resource = ldap_connect($this->getValue('server','host'));
-
+		if (defined('LDAP_OPT_X_TLS_CACERTFILE')) {
+			$cfgMain = new LAMCfgMain();
+			if (!empty($cfgMain->getSSLCaCertificates())) {
+				ldap_set_option($resource, LDAP_OPT_X_TLS_CACERTFILE, $cfgMain->getSSLCaCertPath());
+			}
+		}
 		$CACHE[$this->index][$method] = $resource;
 
 		if (! is_resource($resource))

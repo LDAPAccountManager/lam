@@ -703,6 +703,12 @@ function connectToLDAP($serverURL, $startTLS) {
 	if (!$server) {
 		return null;
 	}
+	if (defined('LDAP_OPT_X_TLS_CACERTFILE')) {
+		$cfgMain = new LAMCfgMain();
+		if (!empty($cfgMain->getSSLCaCertificates())) {
+			ldap_set_option($server, LDAP_OPT_X_TLS_CACERTFILE, $cfgMain->getSSLCaCertPath());
+		}
+	}
 	// use LDAPv3
 	ldap_set_option($server, LDAP_OPT_PROTOCOL_VERSION, 3);
 	// start TLS if possible
