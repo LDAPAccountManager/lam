@@ -657,6 +657,13 @@ td.help {
 	font-size: 85%;
 }
 
+img.help-icon {
+	width: 16px;
+	height: 16px;
+	min-width: 16px;
+	min-height: 16px;
+}
+
 img.photo {
 	max-width: 200px;
 	max-height: 400px;
