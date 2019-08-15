@@ -457,6 +457,7 @@ class asteriskExtension extends baseModule {
         $return->add($refreshButton, 12);
         $return->addVerticalSpacer('1rem');
         // owners
+        $return->add(new htmlSubTitle(_("Extension owners")), 12);
         $this->addDoubleSelectionArea($return, _("Selected users"), _("Available users"), $members, array(), $users_dn, array(), 'owners', true);
         // back button
         $backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Ok'));
