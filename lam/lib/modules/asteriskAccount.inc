@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2009 - 2012  Pavel Pozdnyak
-                2009 - 2018  Roland Gruber
+                2009 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -581,7 +581,7 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		if (in_array('AsteriskSIPUser', $this->attributes['objectClass'])) {
 			// caller ID
 			$this->addSimpleInputTextField($return, 'AstAccountCallerID', _("Caller ID"), true);
@@ -605,8 +605,8 @@ class asteriskAccount extends baseModule implements passwordService {
 						$AstAccountAMAFlagsOptions[] = $this->attributes['AstAccountAMAFlags'][0];
 					}
 				}
-				$AstAccountAMAFlagsInput = new htmlTableExtendedSelect('AstAccountAMAFlags', $AstAccountAMAFlagsOptions, $AstAccountAMAFlags, _("AMA flags"), 'AstAccountAMAFlags');
-				$return->addElement($AstAccountAMAFlagsInput, true);
+				$AstAccountAMAFlagsInput = new htmlResponsiveSelect('AstAccountAMAFlags', $AstAccountAMAFlagsOptions, $AstAccountAMAFlags, _("AMA flags"), 'AstAccountAMAFlags');
+				$return->add($AstAccountAMAFlagsInput, 12);
 			}
 			// call groups
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountCallGroup')) {
@@ -622,8 +622,8 @@ class asteriskAccount extends baseModule implements passwordService {
 						$AstAccountDTMFModeOptions[] = $this->attributes['AstAccountDTMFMode'][0];
 					}
 				}
-				$AstAccountDTMFModeInput = new htmlTableExtendedSelect('AstAccountDTMFMode', $AstAccountDTMFModeOptions, $AstAccountDTMFMode, _("DTFM flags"), 'AstAccountDTMFMode');
-				$return->addElement($AstAccountDTMFModeInput, true);
+				$AstAccountDTMFModeInput = new htmlResponsiveSelect('AstAccountDTMFMode', $AstAccountDTMFModeOptions, $AstAccountDTMFMode, _("DTFM flags"), 'AstAccountDTMFMode');
+				$return->add($AstAccountDTMFModeInput, 12);
 			}
 			// from user
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountFromUser')) {
@@ -647,8 +647,8 @@ class asteriskAccount extends baseModule implements passwordService {
 						$AstAccountInsecureOptions[] = $this->attributes['AstAccountInsecure'][0];
 					}
 				}
-				$AstAccountInsecureInput = new htmlTableExtendedSelect('AstAccountInsecure', $AstAccountInsecureOptions, $AstAccountInsecure, _("Insecure"), 'AstAccountInsecure');
-				$return->addElement($AstAccountInsecureInput, true);
+				$AstAccountInsecureInput = new htmlResponsiveSelect('AstAccountInsecure', $AstAccountInsecureOptions, $AstAccountInsecure, _("Insecure"), 'AstAccountInsecure');
+				$return->add($AstAccountInsecureInput, 12);
 			}
 			// mailbox
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountMailbox')) {
@@ -664,8 +664,8 @@ class asteriskAccount extends baseModule implements passwordService {
 						$AstAccountNATOptions[] = $this->attributes['AstAccountNAT'][0];
 					}
 				}
-				$AstAccountNATInput = new htmlTableExtendedSelect('AstAccountNAT', $AstAccountNATOptions, $AstAccountNAT, _("NAT"), 'AstAccountNAT');
-				$return->addElement($AstAccountNATInput, true);
+				$AstAccountNATInput = new htmlResponsiveSelect('AstAccountNAT', $AstAccountNATOptions, $AstAccountNAT, _("NAT"), 'AstAccountNAT');
+				$return->add($AstAccountNATInput, 12);
 			}
 			// deny
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountDeny')) {
@@ -736,8 +736,8 @@ class asteriskAccount extends baseModule implements passwordService {
 						$AstAccountCanCallForwardOptions[] = $this->attributes['AstAccountCanCallForward'][0];
 					}
 				}
-				$AstAccountCanCallForwardInput = new htmlTableExtendedSelect('AstAccountCanCallForward', $AstAccountCanCallForwardOptions, $AstAccountCanCallForward, _("Can call forward"), 'AstAccountCanCallForward');
-				$return->addElement($AstAccountCanCallForwardInput, true);
+				$AstAccountCanCallForwardInput = new htmlResponsiveSelect('AstAccountCanCallForward', $AstAccountCanCallForwardOptions, $AstAccountCanCallForward, _("Can call forward"), 'AstAccountCanCallForward');
+				$return->add($AstAccountCanCallForwardInput, 12);
 			}
 			// IP address
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountIPAddress')) {
@@ -757,7 +757,7 @@ class asteriskAccount extends baseModule implements passwordService {
 			}
 		}
 		else {
-			$return->addElement(new htmlButton('addObjectClass', _('Add Asterisk account')));
+			$return->add(new htmlButton('addObjectClass', _('Add Asterisk account')), 12);
 		}
 		return $return;
 	}

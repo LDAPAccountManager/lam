@@ -201,7 +201,7 @@ class asteriskExtension extends baseModule {
      * @return htmlElement HTML meta data
      */
     function display_html_attributes() {
-    	$return = new htmlTable();
+    	$return = new htmlResponsiveRow();
 
         $extName = '';
         if (isset($this->attributes['AstExtension'][0])) {
@@ -227,17 +227,13 @@ class asteriskExtension extends baseModule {
     /**
      * This function prints management elements to manipulate owners of an extension.
      *
-     * @param htmlTable container
+     * @param htmlResponsiveRow $renderContainer
      */
     function render_exten_owners_set_controls($renderContainer) {
-    	$renderContainer->addElement(new htmlSpacer(null, '10px'), true);
-    	$ownersLabel = new htmlOutputText(_("Extension owners"));
-    	$ownersLabel->setMarkAsRequired(true);
-        $renderContainer->addElement($ownersLabel);
-        $renderContainer->addElement(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Change')));
-        $renderContainer->addElement(new htmlHelpLink('member'));
-        $renderContainer->addNewLine();
-        $renderContainer->addElement(new htmlOutputText(''));
+    	$renderContainer->addVerticalSpacer('1rem');
+    	$title = new htmlSubTitle(_("Extension owners"));
+    	$title->setHelpId('member');
+        $renderContainer->add($title, 12);
         $ownerList = new htmlTable();
         if ((!isset($this->extensionOwners) || sizeof($this->extensionOwners) == 0) && isset($this->extensionRows[0]['member'])) {
             $this->extensionOwners = $this->extensionRows[0]['member'];
@@ -247,7 +243,9 @@ class asteriskExtension extends baseModule {
                 $ownerList->addElement(new htmlOutputText(getAbstractDN($this->extensionOwners[$i])), true);
             }
         }
-        $renderContainer->addElement($ownerList);
+        $renderContainer->add($ownerList, 12);
+    	$renderContainer->addVerticalSpacer('1rem');
+        $renderContainer->add(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Change')), 12);
     }
 
     /**
@@ -276,7 +274,7 @@ class asteriskExtension extends baseModule {
      * Generates the meta HTML for the rules.
      *
      * @param String $extension extension name
-     * @param htmlTable $renderContainer container
+     * @param htmlResponsiveRow $renderContainer container
      */
     function render_extensions_by_priority($extension, $renderContainer) {
         if (!isset($extension) || $extension == "") {
@@ -287,13 +285,13 @@ class asteriskExtension extends baseModule {
 
         if ($this->getAccountContainer()->isNewAccount) {
             $suggestedExtName = $this->generateNextExtensionName();
-            $extNameInput = new htmlTableExtendedInputField(_("Extension name"), 'AstExtension', $suggestedExtName, 'AstExtension');
+            $extNameInput = new htmlResponsiveInputField(_("Extension name"), 'AstExtension', $suggestedExtName, 'AstExtension');
             $extNameInput->setRequired(true);
-            $renderContainer->addElement($extNameInput, true);
+            $renderContainer->add($extNameInput, 12);
         } else {
-            $extNameInput = new htmlTableExtendedInputField(_("Extension name"), 'AstExtension', $extension, 'AstExtension');
+            $extNameInput = new htmlResponsiveInputField(_("Extension name"), 'AstExtension', $extension, 'AstExtension');
             $extNameInput->setRequired(true);
-            $renderContainer->addElement($extNameInput, true);
+            $renderContainer->add($extNameInput, 12);
         }
 
         $accountContext = '';
@@ -304,17 +302,17 @@ class asteriskExtension extends baseModule {
             //LOAD context from attributes, this is treak to deal with profile
             $accountContext = $this->attributes['AstContext'][0];
 	}
-        $accountContextInput = new htmlTableExtendedInputField(_("Account context"), 'AstContext', $accountContext, 'AstContext');
+        $accountContextInput = new htmlResponsiveInputField(_("Account context"), 'AstContext', $accountContext, 'AstContext');
         $accountContextInput->setRequired(true);
-        $renderContainer->addElement($accountContextInput, true);
+        $renderContainer->add($accountContextInput, 12);
 
 
-        $renderContainer->addElement(new htmlSubTitle(_('Rules')));
-        $renderContainer->addElement(new htmlSpacer(null, '20px'), true);
+        $renderContainer->add(new htmlSubTitle(_('Rules')), 12);
+        $renderContainer->addVerticalSpacer('1rem');
 
         for ($i = 0; $i < sizeof($entries); $i++) {
             $this->render_extension($entries[$i], $i, $renderContainer);
-            $renderContainer->addElement(new htmlButton("delete_rule_" . $i, _('Delete rule')), false);
+            $renderContainer->addLabel(new htmlButton("delete_rule_" . $i, _('Delete rule')), false);
 
             $upDownButtons = new htmlTable();
             if ($i > 0) {
@@ -324,9 +322,9 @@ class asteriskExtension extends baseModule {
                     ((sizeof($entries) > 1) || ($this->addRuleFlag) )) {
                 $upDownButtons->addElement(new htmlButton('rule_down_button_' . $i, 'down.gif', true));
             }
-            $renderContainer->addElement($upDownButtons, true);
+            $renderContainer->addField($upDownButtons, true);
 
-            $renderContainer->addElement(new htmlSpacer(null, '30px'), true);
+            $renderContainer->addVerticalSpacer('2rem');
         }
 
         $displayEntrNum = sizeof($entries);
@@ -337,9 +335,9 @@ class asteriskExtension extends baseModule {
 
             if ($this->addRuleFlag) {
                 $upDownButtons = new htmlTable();
-                $renderContainer->addElement(new htmlButton("delete_rule_" . $i, _('Delete rule')), false);
+                $renderContainer->addLabel(new htmlButton("delete_rule_" . $i, _('Delete rule')), false);
                 $upDownButtons->addElement(new htmlButton('rule_up_button_' . $i, 'up.gif', true), false);
-                $renderContainer->addElement($upDownButtons, true);
+                $renderContainer->addField($upDownButtons, true);
             }
 
             $displayEntrNum++;
@@ -347,9 +345,9 @@ class asteriskExtension extends baseModule {
         }
         // the size of found rows plus 1 for new one
         $hidenInput = new htmlHiddenInput("extension_rows", $displayEntrNum);
-        $renderContainer->addElement($hidenInput, true);
+        $renderContainer->add($hidenInput, 12);
 
-        $renderContainer->addElement(new htmlButton("add_rule", _('Add another rule')), true);
+        $renderContainer->add(new htmlButton("add_rule", _('Add another rule')), 12);
     }
 
     /**
@@ -357,7 +355,7 @@ class asteriskExtension extends baseModule {
      *
      * @param array $extensLine attributes of rule
      * @param int $placeInList rule position
-     * @param htmlTable $renderContainer container
+     * @param htmlResponsiveRow $renderContainer container
      */
     function render_extension($extensLine, $placeInList, $renderContainer) {
         // application
@@ -365,17 +363,17 @@ class asteriskExtension extends baseModule {
         if (isset($extensLine['astapplication'][0])) {
             $application = $extensLine['astapplication'][0];
         }
-        $applicationInput = new htmlTableExtendedInputField(_("Application"), "AstApplication_" . $placeInList, $application, 'AstApplication');
+        $applicationInput = new htmlResponsiveInputField(_("Application"), "AstApplication_" . $placeInList, $application, 'AstApplication');
         $applicationInput->setRequired(true);
-        $renderContainer->addElement($applicationInput, true);
+        $renderContainer->add($applicationInput, 12);
         // application data
         $applicationData = '';
         if (isset($extensLine['astapplicationdata'][0])) {
             $applicationData = $extensLine['astapplicationdata'][0];
         }
-        $renderContainer->addElement(new htmlTableExtendedInputField(_("Application data"), "AstApplicationData_" . $placeInList, $applicationData, 'AstApplicationData'), true);
+        $renderContainer->add(new htmlResponsiveInputField(_("Application data"), "AstApplicationData_" . $placeInList, $applicationData, 'AstApplicationData'), 12);
         //delimeter
-        $renderContainer->addElement(new htmlSpacer(null, '5px'), true);
+        $renderContainer->addVerticalSpacer('0.5rem');
     }
 
     /**
@@ -421,10 +419,10 @@ class asteriskExtension extends baseModule {
     /**
      * Displays a list of possible owners of this extension.
      *
-     * @return htmlElement HTML meta data
+     * @return htmlResponsiveRow HTML meta data
      */
     function display_html_user() {
-    	$return = new htmlTable();
+    	$return = new htmlResponsiveRow();
         // load list with all potential owners
         $searchScope = 'user';
         if ($this->searchOwnersInTreeSuffix) {
@@ -452,40 +450,18 @@ class asteriskExtension extends baseModule {
             $members[getAbstractDN($memberList[$i])] = $memberList[$i];
         }
         // options
-        $return->addElement(new htmlTableExtendedInputCheckbox('filterAsteriskUsers', $this->filterOwnerForAsteriskAccounts, _('Show only Asterisk accounts'), 'ownerOptions', false));
+        $return->add(new htmlSubTitle(_("Filters")), 12);
+        $return->add(new htmlResponsiveInputCheckbox('filterAsteriskUsers', $this->filterOwnerForAsteriskAccounts, _('Show only Asterisk accounts'), 'ownerOptions', false), 12);
+        $return->add(new htmlResponsiveInputCheckbox('useTreeSuffix', $this->searchOwnersInTreeSuffix, _('Search tree suffix for users'), 'ownerOptions', false), 12);
         $refreshButton = new htmlButton('changeFilter', _('Refresh'));
-        $refreshButton->rowspan = 2;
-        $return->addElement($refreshButton, true);
-        $return->addElement(new htmlTableExtendedInputCheckbox('useTreeSuffix', $this->searchOwnersInTreeSuffix, _('Search tree suffix for users'), 'ownerOptions', false), true);
-        $return->addElement(new htmlSpacer(null, '10px'), true);
+        $return->add($refreshButton, 12);
+        $return->addVerticalSpacer('1rem');
         // owners
-        $ownerContent = new htmlTable();
-        $ownerContent->addElement(new htmlOutputText(_("Selected users")));
-        $ownerContent->addElement(new htmlOutputText(""));
-        $ownerContent->addElement(new htmlOutputText(_("Available users")));
-        $ownerContent->addNewLine();
-        $selectedList = new htmlSelect('removeusers', $members, null, 15);
-        $selectedList->setHasDescriptiveElements(true);
-        $selectedList->setMultiSelect(true);
-        $selectedList->setRightToLeftTextDirection(true);
-        $ownerContent->addElement($selectedList);
-        $ownerButtons = new htmlTable();
-        $ownerButtons->addElement(new htmlButton('addusers_button', 'back.gif', true), true);
-        $ownerButtons->addElement(new htmlButton('removeusers_button', 'forward.gif', true));
-        $ownerContent->addElement($ownerButtons);
-        $availableList = new htmlSelect('addusers', $users_dn, null, 15);
-        $availableList->setTransformSingleSelect(false);
-        $availableList->setHasDescriptiveElements(true);
-        $availableList->setMultiSelect(true);
-        $availableList->setRightToLeftTextDirection(true);
-        $ownerContent->addElement($availableList);
-        $ownerContent->colspan = 4;
-        $return->addElement(new htmlSubTitle(_("Extension owners")), true);
-        $return->addElement($ownerContent, true);
+        $this->addDoubleSelectionArea($return, _("Selected users"), _("Available users"), $members, array(), $users_dn, array(), 'owners', true);
         // back button
         $backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Ok'));
         $backButton->colspan = 3;
-        $return->addElement($backButton);
+        $return->add($backButton, 12);
         return $return;
     }
 
@@ -513,11 +489,12 @@ class asteriskExtension extends baseModule {
         if (!isset($this->extensionOwners)) {
             $this->extensionOwners = array();
         }
-        if (isset($_POST['addusers']) && isset($_POST['addusers_button'])) { // Add users to list
+        if (isset($_POST['owners_2']) && isset($_POST['owners_left'])) {
             // Add new user
-            $this->extensionOwners = @array_merge($this->extensionOwners, $_POST['addusers']);
-        } elseif (isset($_POST['removeusers']) && isset($_POST['removeusers_button'])) { // remove users from list
-            $this->extensionOwners = array_delete($_POST['removeusers'], $this->extensionOwners);
+            $this->extensionOwners = @array_merge($this->extensionOwners, $_POST['owners_2']);
+        }
+        elseif (isset($_POST['owners_1']) && isset($_POST['owners_right'])) {
+            $this->extensionOwners = array_delete($_POST['owners_1'], $this->extensionOwners);
         }
         $this->attributes['member'] = $this->extensionOwners;
 
