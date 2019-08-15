@@ -580,6 +580,13 @@ button.lam-account-type {
 	border:0px solid;
 }
 
+button.lam-account-type img {
+	width: 32px;
+	height: 32px;
+	min-width: 32px;
+	min-height: 32px;
+}
+
 /* --- end of workaround for vertical tabs --- */
 
 /* title bar */
