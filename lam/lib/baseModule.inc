@@ -1546,6 +1546,55 @@ abstract class baseModule {
 	}
 
 	/**
+	 * Adds an area with two multi-select fields with buttons to move items from right to left and vice-versa.
+	 * <br>Names:
+	 * <ul>
+	 * <li>First select: $namePrefix_1
+	 * <li>Second select: $namePrefix_2
+	 * <li>Button move left: $namePrefix_left
+	 * <li>Button move right: $namePrefix_right
+	 * </ul>
+	 *
+	 * @param htmlResponsiveRow $container row
+	 * @param string $labelFirst label of first selct
+	 * @param string $labelSecond label of second select
+	 * @param string[] $optionsFirst options of first select ('label' => 'value')
+	 * @param string[] $selectedFirst selected options of first select
+	 * @param string[] $optionsSecond options of first select ('label' => 'value')
+	 * @param string[] $selectedSecond selected options of second select
+	 * @param string $namePrefix prefix for select field and button names
+	 * @param bool $rightToLeftText sets the text direction in select to right to left
+	 */
+	protected function addDoubleSelectionArea(&$container, $labelFirst, $labelSecond, $optionsFirst, $selectedFirst,
+			$optionsSecond, $selectedSecond, $namePrefix, $rightToLeftText = false) {
+		// first select
+		$firstRow = new htmlResponsiveRow();
+		$firstRow->add(new htmlOutputText($labelFirst), 12);
+		$firstSelect = new htmlSelect($namePrefix . '_1', $optionsFirst, $selectedFirst, 15);
+		$firstSelect->setHasDescriptiveElements(true);
+		$firstSelect->setMultiSelect(true);
+		$firstSelect->setRightToLeftTextDirection($rightToLeftText);
+		$firstRow->add($firstSelect, 12);
+		$container->add($firstRow, 12, 5);
+		// buttons
+		$buttonRow = new htmlResponsiveRow();
+		$buttonRow->setCSSClasses(array('text-center'));
+		$buttonRow->add(new htmlSpacer(null, '1rem'), 0, 12);
+		$buttonRow->add(new htmlButton($namePrefix . '_left', 'back.gif', true), 12);
+		$buttonRow->add(new htmlButton($namePrefix . '_right', 'forward.gif', true), 12);
+		$container->add($buttonRow, 12, 2);
+		// second select
+		$secondRow = new htmlResponsiveRow();
+		$secondRow->add(new htmlOutputText($labelSecond), 12);
+		$secondSelect = new htmlSelect($namePrefix . '_2', $optionsSecond, $selectedSecond, 15);
+		$secondSelect->setHasDescriptiveElements(true);
+		$secondSelect->setMultiSelect(true);
+		$secondSelect->setRightToLeftTextDirection($rightToLeftText);
+		$secondRow->add($secondSelect, 12);
+		$container->add($secondRow, 12, 5);
+	}
+
+	/**
 	 * Adds a simple text input field for the self service.
 	 * The field name will be the same as the class name plus "_" plus attribute name (e.g. posixAccount_cn).
 	 *
