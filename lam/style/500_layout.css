@@ -575,11 +575,16 @@ tr.account {
 	color: #555555;
 }
 
+button.lam-account-type {
+	background-color:transparent;
+	border:0px solid;
+}
+
 /* --- end of workaround for vertical tabs --- */
 
 /* title bar */
 .titleBar {
-	background: #AAAAAA url(images/ui-bg_highlight-soft_75_cccccc_1x100.png) repeat-x scroll 50% 50%;
+	background: #AAAAAA url(images/ui-bg_highlight-soft_75_cccccc_1x150.png) repeat-x scroll 50% 50%;
 	border-top: 1px solid #AAAAAA;
 	border-left: 1px solid #AAAAAA;
 	border-right: 1px solid #AAAAAA;

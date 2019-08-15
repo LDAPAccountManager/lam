@@ -167,6 +167,10 @@ table.responsive-table td {
 		overflow: hidden;
 	}
 
+	button.lam-account-type {
+		min-width: 20px;
+	}
+
 }
 
 /* tablet */
@@ -186,6 +190,10 @@ table.responsive-table td {
 
 	table.alternating-color tbody tr:nth-child(odd) {
 		background-color:rgba(0, 0, 0, 0.05);
+	}
+
+	button.lam-account-type {
+		min-width: 200px;
 	}
 
 }
@@ -211,6 +219,10 @@ table.responsive-table td {
 
 	table.alternating-color tbody tr:nth-child(odd) {
 		background-color:rgba(0, 0, 0, 0.05);
+	}
+
+	button.lam-account-type {
+		min-width: 200px;
 	}
 
 }

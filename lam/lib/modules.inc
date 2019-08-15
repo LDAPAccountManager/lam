@@ -1092,11 +1092,11 @@ class accountContainer {
 
 		echo '<div id="lamVerticalTabs" class="ui-tabs ui-widget ui-widget-content ui-corner-bottom ui-helper-clearfix">';
 		echo '<table>';
-			echo '<tr><td>';
+			echo '<tr><td style="vertical-align: top;">';
 			// tab menu
 			$this->printModuleTabs();
-			echo '</td><td>';
-			echo "<div class=\"lamEqualHeightTabContent ui-tabs-panel ui-widget-content ui-corner-bottom\">\n";
+			echo '</td><td style="vertical-align: top;">';
+			echo "<div class=\"ui-tabs-panel ui-widget-content ui-corner-bottom\">\n";
 			// content area
 			// display html-code from modules
 			$return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage));
@@ -1478,7 +1478,7 @@ class accountContainer {
 	private function printModuleTabs() {
 		// $x is used to count up tabindex
 		$x=1;
-		echo '<ul class="lamEqualHeightTabContent ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">';
+		echo '<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">';
 		// Loop for each module
 		for ($i = 0; $i < count($this->order); $i++) {
 			$buttonStatus = $this->module[$this->order[$i]]->getButtonStatus();
@@ -1494,8 +1494,7 @@ class accountContainer {
 			}
 			// print button
 			echo '<li class="ui-state-default ui-corner-left' . $activatedClass . '">';
-			$buttonStyle = 'background-color:transparent;;border:0px solid;min-width: 200px;';
-			echo "<button style=\"" . $buttonStyle . "\" name=\"form_main_".$this->order[$i]."\"";
+			echo "<button class=\"lam-account-type\" name=\"form_main_".$this->order[$i]."\"";
 			echo " tabindex=$x";
 			if ($buttonStatus == 'disabled') {
 				echo " disabled";
@@ -1507,7 +1506,9 @@ class accountContainer {
 				}
 				echo "<img height=32 width=32 class=\"align-middle\" style=\"padding: 3px;\" alt=\"\" src=\"$buttonImage\">&nbsp;";
 			}
+			echo '<span class="hide-on-mobile">';
 			echo $alias;
+			echo '<span>';
 			echo "&nbsp;</button>\n";
 			echo "</li>\n";
 			$x++;
