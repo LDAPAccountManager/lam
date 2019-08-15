@@ -1580,8 +1580,10 @@ abstract class baseModule {
 		$buttonRow = new htmlResponsiveRow();
 		$buttonRow->setCSSClasses(array('text-center'));
 		$buttonRow->add(new htmlSpacer(null, '1rem'), 0, 12);
-		$buttonRow->add(new htmlButton($namePrefix . '_left', 'back.gif', true), 12);
-		$buttonRow->add(new htmlButton($namePrefix . '_right', 'forward.gif', true), 12);
+		$buttonRow->add(new htmlButton($namePrefix . '_left', 'back.gif', true), 0, 12);
+		$buttonRow->add(new htmlButton($namePrefix . '_left', 'up.gif', true), 6, 0);
+		$buttonRow->add(new htmlButton($namePrefix . '_right', 'forward.gif', true), 0, 12);
+		$buttonRow->add(new htmlButton($namePrefix . '_right', 'down.gif', true), 6, 0);
 		$container->add($buttonRow, 12, 2);
 		// second select
 		$secondRow = new htmlResponsiveRow();
