@@ -584,7 +584,7 @@ button.lam-account-type {
 
 /* title bar */
 .titleBar {
-	background: #AAAAAA url(images/ui-bg_highlight-soft_75_cccccc_1x150.png) repeat-x scroll 50% 50%;
+	background-image: linear-gradient(#fdfdfd, #cccccc);
 	border-top: 1px solid #AAAAAA;
 	border-left: 1px solid #AAAAAA;
 	border-right: 1px solid #AAAAAA;
@@ -596,7 +596,6 @@ button.lam-account-type {
 }
 
 .titleBarSubtitle {
-/*	font-style: italic;*/
 	padding: 0px 5px 0px 10px;
 }
 

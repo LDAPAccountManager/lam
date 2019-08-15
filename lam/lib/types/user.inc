@@ -209,7 +209,7 @@ class user extends baseType {
 			return $this->buildAccountStatusIcon($container);
 		}
 		$subtitle = $this->buildAccountStatusIcon($container);
-		$spacer = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+		$spacer = ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
 		// check if an email address can be shown
 		if (isset($personalAttributes['mail'][0]) && !empty($personalAttributes['mail'][0])) {
 			$subtitle .= '<a href="mailto:' . htmlspecialchars($personalAttributes['mail'][0]) . '">' . htmlspecialchars($personalAttributes['mail'][0]) . '</a>' . $spacer;

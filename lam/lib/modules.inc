@@ -1056,8 +1056,8 @@ class accountContainer {
 		$titleBarContainer->addVerticalSpacer('0.5rem');
 		$titleBarSubtitleText = new htmlOutputText($this->titleBarSubtitle, false);
 		$titleBarContainer->add(new htmlDiv(null, $titleBarSubtitleText, array('titleBarSubtitle', 'text-left')), 12);
-		$titleBarContainer->addVerticalSpacer('1rem');
 		$titleBarSuffixRdn = new htmlResponsiveRow();
+		$titleBarSuffixRdn->add(new htmlHorizontalLine(), 12);
 		// suffix
 		$suffixList = array();
 		foreach ($this->getOUs() as $suffix) {
@@ -1067,24 +1067,16 @@ class accountContainer {
 			$suffixList[getAbstractDN($this->dnSuffix)] = $this->dnSuffix;
 		}
 		$selectedSuffix = array($this->dnSuffix);
-		$suffixGroup = new htmlGroup();
-		$suffixGroup->addElement(new htmlOutputText(_('Suffix')));
-		$suffixSelect = new htmlSelect('accountContainerSuffix', $suffixList, $selectedSuffix);
+		$suffixSelect = new htmlResponsiveSelect('accountContainerSuffix', $suffixList, $selectedSuffix, _('Suffix'), '361');
 		$suffixSelect->setHasDescriptiveElements(true);
 		$suffixSelect->setRightToLeftTextDirection(true);
 		$suffixSelect->setCSSClasses(array('auto-width'));
-		$suffixGroup->addElement($suffixSelect);
-		$suffixGroup->addElement(new htmlHelpLink('361'));
-		$titleBarSuffixRdn->add($suffixGroup, 12, 6, 6, 'nowrap maxrow');
+		$titleBarSuffixRdn->add($suffixSelect, 12);
 		// RDN selection
-		$rdnGroup = new htmlGroup();
-		$rdnGroup->addElement(new htmlOutputText(_('RDN identifier')));
 		$rdnlist = getRDNAttributes($this->type->getId());
-		$rdnSelect = new htmlSelect('accountContainerRDN', $rdnlist, array($this->rdn));
+		$rdnSelect = new htmlResponsiveSelect('accountContainerRDN', $rdnlist, array($this->rdn), _('RDN identifier'), '301');
 		$rdnSelect->setCSSClasses(array('auto-width'));
-		$rdnGroup->addElement($rdnSelect);
-		$rdnGroup->addElement(new htmlHelpLink('301'), 1);
-		$titleBarSuffixRdn->add($rdnGroup, 12, 6, 6, 'nowrap maxrow');
+		$titleBarSuffixRdn->add($rdnSelect, 12);
 		$titleBarContainer->add($titleBarSuffixRdn, 12);
 
 		$titleBarDiv = new htmlDiv(null, $titleBarContainer, array('titleBar', 'ui-corner-top'));
