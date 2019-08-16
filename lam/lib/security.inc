@@ -690,6 +690,7 @@ function setLAMHeaders() {
 		header('Content-Security-Policy: frame-ancestors \'self\'; form-action \'self\'; base-uri \'none\'; object-src \'none\'; frame-src \'self\' https://*.duosecurity.com; worker-src \'self\'');
 		header('X-Content-Type-Options: nosniff');
 		header('X-XSS-Protection: 1; mode=block');
+		header("Feature-Policy: ambient-light-sensor 'none'; autoplay 'none'; accelerometer 'none'; camera 'none'; encrypted-media 'none'; fullscreen 'self'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; midi 'none'; payment 'none'; picture-in-picture 'none'; speaker 'none'; sync-xhr 'self'; usb 'none'; vr 'none'");
 	}
 }
 
