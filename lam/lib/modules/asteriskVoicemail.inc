@@ -1,10 +1,9 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2010         Pavel Pozdnyak
-                2010 - 2015  Roland Gruber
+                2010 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -234,19 +233,18 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		if (in_array('AsteriskVoiceMail', $this->attributes['objectClass'])) {
 			if (!isset($this->attributes['AstVoicemailPassword'])) {
 				$message = new htmlStatusMessage($this->messages['AstVoicemailPassword'][0][0], $this->messages['AstVoicemailPassword'][0][1]);
-				$message->colspan = 3;
-				$return->addElement($message, true);
+				$return->add($message, 12);
 			}
 			// mailbox
 			$this->addSimpleInputTextField($return, 'AstVoicemailMailbox', _("Mailbox"), true);
 			// account context
 			$this->addSimpleInputTextField($return, 'AstContext', _("Account context"), true);
 
-			$return->addElement(new htmlSpacer(null, '10px'), true);
+			$return->addVerticalSpacer('1rem');
 
 			// full name
 			$this->addSimpleInputTextField($return, 'AstVoicemailFullname', _("Full name"));
@@ -259,14 +257,13 @@ class asteriskVoicemail extends baseModule implements passwordService {
 			// voicemail context
 			$this->addSimpleInputTextField($return, 'AstVoicemailContext', _("Voicemail context"));
 			// remove button
-			$return->addElement(new htmlSpacer(null, '10px'), true);
+			$return->addVerticalSpacer('2rem');
 			$remButton = new htmlButton('remVoicemailObjectClass', _('Remove Asterisk voicemail extension'));
-			$remButton->colspan = 2;
-			$return->addElement($remButton);
+			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
 			// add button
-			$return->addElement(new htmlButton('addVoicemailObjectClass', _('Add Asterisk voicemail extension')));
+			$return->add(new htmlButton('addVoicemailObjectClass', _('Add Asterisk voicemail extension')), 12);
 		}
 		return $return;
 	}
@@ -385,7 +382,9 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		$messages = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
-			if (!in_array("AsteriskVoiceMail", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "AsteriskVoiceMail";
+			if (!in_array("AsteriskVoiceMail", $partialAccounts[$i]['objectClass'])) {
+				$partialAccounts[$i]['objectClass'][] = "AsteriskVoiceMail";
+			}
 
 			//add context
 			if (empty($rawAccounts[$i][$ids['asteriskVoicemail_AstContext']])) {
@@ -425,10 +424,8 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 * @return boolean true if LDAP operation can be done
 	 */
 	function module_complete() {
-		if (in_array('AsteriskVoiceMail', $this->attributes['objectClass'])) {
-			if(!isset($this->attributes['AstVoicemailPassword'][0]) || $this->attributes['AstVoicemailPassword'][0] == "" ) {
-				return false;
-			}
+		if (in_array('AsteriskVoiceMail', $this->attributes['objectClass']) && empty($this->attributes['AstVoicemailPassword'][0])) {
+			return false;
 		}
 		return true;
 	}
