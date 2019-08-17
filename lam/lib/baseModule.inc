@@ -1363,7 +1363,7 @@ abstract class baseModule {
 	 * There must be a help entry with the attribute name as ID.
 	 * A new line will also be added after this entry so multiple calls will show the fields one below the other.
 	 *
-	 * @param htmlTable $container parent container
+	 * @param htmlTable|htmlResponsiveRow $container parent container
 	 * @param String $attrName attribute name
 	 * @param String $label label name
 	 * @param boolean $required this is a required field (default false)
@@ -1388,7 +1388,12 @@ abstract class baseModule {
 			if ($label !== null) {
 				$labelTextOut = new htmlOutputText($label, true, $required);
 				$labelTextOut->alignment = htmlElement::ALIGN_TOP;
-				$container->addElement($labelTextOut);
+				if ($container instanceof htmlTable) {
+					$container->addElement($labelTextOut);
+				}
+				else {
+					$container->addLabel($labelTextOut);
+				}
 			}
 			$subContainer = new htmlTable();
 			$subContainer->alignment = htmlElement::ALIGN_TOP;
@@ -1431,10 +1436,23 @@ abstract class baseModule {
 				}
 				$subContainer->addNewLine();
 			}
-			$container->addElement($subContainer);
 			$help = new htmlHelpLink($attrName);
 			$help->alignment = htmlElement::ALIGN_TOP;
-			$container->addElement($help, true);
+			if ($container instanceof htmlTable) {
+				$container->addElement($subContainer);
+				$container->addElement($help, true);
+			}
+			else {
+				$subContainerWithHelp = new htmlTable();
+				$subContainerWithHelp->addElement($subContainer);
+				$subContainerWithHelp->addElement($help, true);
+				if ($label !== null) {
+					$container->addField($subContainerWithHelp);
+				}
+				else {
+					$container->add($subContainerWithHelp, 12);
+				}
+			}
 	}
 
 	/**
