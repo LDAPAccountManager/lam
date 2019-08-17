@@ -1,10 +1,9 @@
 <?php
 /*
-$Id$
 
   This code is not yet part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2011         J de Jong
-  				2012 - 2017  Roland Gruber
+  				2012 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -155,20 +154,19 @@ class authorizedServiceObject extends baseModule {
 		if (isset($_POST['form_subpage_authorizedServiceObject_attributes_addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'authorizedServiceObject';
 		}
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		if (in_array('authorizedServiceObject', $this->attributes['objectClass'])) {
 			$autocompleteValues = array();
 			if (isset($this->moduleSettings['authorizedServiceObject_services'])) {
 				$autocompleteValues = $this->moduleSettings['authorizedServiceObject_services'];
 			}
 			$this->addMultiValueInputTextField($return, 'authorizedService', _('Authorized Services'), false, null, false, $autocompleteValues);
-			$return->addElement(new htmlSpacer(null, '10px'),true);
+			$return->addVerticalSpacer('2rem');
 			$remButton = new htmlAccountPageButton('authorizedServiceObject', 'attributes', 'remObjectClass', _('Remove Authorized Service extension'));
-			$remButton->colspan = 4;
-			$return->addElement($remButton);
+			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
-			$return->addElement(new htmlAccountPageButton('authorizedServiceObject', 'attributes', 'addObjectClass', _('Add Authorized Service extension')));
+			$return->add(new htmlAccountPageButton('authorizedServiceObject', 'attributes', 'addObjectClass', _('Add Authorized Service extension')), 12);
 		}
 
 
