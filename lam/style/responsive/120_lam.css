@@ -171,6 +171,10 @@ table.responsive-table td {
 		min-width: 20px;
 	}
 
+	.titleBar {
+		padding: 5px 5px 5px 5px;
+	}
+
 }
 
 /* tablet */
@@ -194,6 +198,10 @@ table.responsive-table td {
 
 	button.lam-account-type {
 		min-width: 200px;
+	}
+
+	.titleBar {
+		padding: 5px 20px 5px 20px;
 	}
 
 }
@@ -223,6 +231,10 @@ table.responsive-table td {
 
 	button.lam-account-type {
 		min-width: 200px;
+	}
+
+	.titleBar {
+		padding: 5px 20px 5px 20px;
 	}
 
 }
