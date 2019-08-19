@@ -455,6 +455,23 @@ class lamGroupList extends lamList {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @see lamList::getAdditionalLDAPAttributesToRead()
+	 */
+	protected function getAdditionalLDAPAttributesToRead() {
+		$attrs = $this->type->getAttributes();
+		$ret = array();
+		$countLen = strlen('_count');
+		foreach ($attrs as $attr) {
+			$attrName = $attr->getAttributeName();
+			if (strrpos($attrName, '_count') === (strlen($attrName) - $countLen)) {
+				$ret[] = substr($attrName, 0, strlen($attrName) - $countLen);
+			}
+		}
+		return $ret;
+	}
+
 }
 
 
