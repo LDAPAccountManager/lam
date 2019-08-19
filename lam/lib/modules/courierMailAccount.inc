@@ -237,7 +237,7 @@ class courierMailAccount extends baseModule {
 	 * {@inheritDoc}
 	 */
 	public function display_html_attributes() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		if ($this->isExtensionEnabled()) {
 			if ($this->isUnixDisabled($this->getAccountContainer()->get_type()->getModules())) {
 				// home directory
@@ -254,7 +254,7 @@ class courierMailAccount extends baseModule {
 				$unitIndex = floor(log(substr($this->attributes['quota'][0], 0, -1), 1000));
 				$value = round((float) (substr($this->attributes['quota'][0], 0, -1)) / pow(1000, $unitIndex), 2);
 			}
-			$return->addElement(new htmlOutputText(_('Mailbox quota')));
+			$return->addLabel(new htmlOutputText(_('Mailbox quota')));
 			$tempTable = new htmlTable();
 			$boxInput = new htmlInputField('quotaValue', $value);
 			$boxInput->setFieldSize(5);
@@ -270,25 +270,24 @@ class courierMailAccount extends baseModule {
 			$unitSelect = new htmlSelect('quotaUnit', $units, $selected);
 			$unitSelect->setSortElements(false);
 			$tempTable->addElement($unitSelect);
-			$return->addElement($tempTable);
-			$return->addElement(new htmlHelpLink('quota'), true);
+			$tempTable->addElement(new htmlHelpLink('quota'));
+			$return->addField($tempTable);
 			// check boxes for account access control
 			$disableimap = isset($this->attributes['disableimap'][0]) && ($this->attributes['disableimap'][0] != 0);
-			$return->addElement(new htmlTableExtendedInputCheckbox('disableimap', $disableimap, _('Disable IMAP access'), 'disableimap'), true);
+			$return->add(new htmlResponsiveInputCheckbox('disableimap', $disableimap, _('Disable IMAP access'), 'disableimap'), 12);
 			$disablepop3 = isset($this->attributes['disablepop3'][0]) && ($this->attributes['disablepop3'][0] != 0);
-			$return->addElement(new htmlTableExtendedInputCheckbox('disablepop3', $disablepop3, _('Disable POP3 access'), 'disablepop3'), true);
+			$return->add(new htmlResponsiveInputCheckbox('disablepop3', $disablepop3, _('Disable POP3 access'), 'disablepop3'), 12);
 			$disablewebmail = isset($this->attributes['disablewebmail'][0]) && ($this->attributes['disablewebmail'][0] != 0);
-			$return->addElement(new htmlTableExtendedInputCheckbox('disablewebmail', $disablewebmail, _('Disable webmail access'), 'disablewebmail'), true);
+			$return->add(new htmlResponsiveInputCheckbox('disablewebmail', $disablewebmail, _('Disable webmail access'), 'disablewebmail'), 12);
 			$disableshared = isset($this->attributes['disableshared'][0]) && ($this->attributes['disableshared'][0] != 0);
-			$return->addElement(new htmlTableExtendedInputCheckbox('disableshared', $disableshared, _('Disable shared folder access'), 'disableshared'), true);
+			$return->add(new htmlResponsiveInputCheckbox('disableshared', $disableshared, _('Disable shared folder access'), 'disableshared'), 12);
 			// remove extension
-			$return->addElement(new htmlSpacer(null, '20px'), true);
+			$return->addVerticalSpacer('2rem');
 			$remButton = new htmlButton('remObjectClass', _('Remove Courier mail extension'));
-			$remButton->colspan = 3;
-			$return->addElement($remButton);
+			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
-			$return->addElement(new htmlButton('addObjectClass', _('Add Courier mail extension')));
+			$return->add(new htmlButton('addObjectClass', _('Add Courier mail extension')), 12);
 		}
 		return $return;
 	}

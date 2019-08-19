@@ -2,7 +2,7 @@
 /*
  * This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
  * Copyright (C) 2017 Lars Althof
- *               2017 Roland Gruber
+ *               2017 - 2019 Roland Gruber
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -145,22 +145,16 @@ class courierMailAlias extends baseModule {
 	 * {@inheritdoc}
 	 */
 	function display_html_attributes() {
-		$return = new htmlTable();
-		$mail = (!empty($this->attributes['mail'][0])) ? $this->attributes['mail'][0] : '';
-		$boxInput = new htmlTableExtendedInputField (_('Email address'), 'mail', $mail, 'mail', true);
-		$boxInput->setFieldSize(40);
-		$boxInput->setFieldMaxLength(40);
-		$return->addElement($boxInput, true);
+		$return = new htmlResponsiveRow();
+		$this->addSimpleInputTextField($return, 'mail', _('Email address'), true);
 		$this->addMultiValueInputTextField($return, 'maildrop', _('Recipient address'), true);
-		$return->addElement(new htmlOutputText(_('Mail source')));
+		$return->addVerticalSpacer('0.5rem');
 		$selectedSource = (!empty($this->attributes['mailsource'][0])) ? $this->attributes['mailsource'][0] : "-";
-		$return->addElement(new htmlSelect('mailsource', array('-', 'esmtp', 'local'), array($selectedSource)));
-		$return->addElement(new htmlHelpLink('mailsource'), true);
+		$return->add(new htmlResponsiveSelect('mailsource', array('-', 'esmtp', 'local'), array($selectedSource), _('Mail source'), 'mailsource'), 12);
 		$description = (!empty($this->attributes['description'][0])) ? $this->attributes['description'][0] : '';
-		$boxInput = new htmlTableExtendedInputField(_('Description'), 'description', $description, 'description');
-		$boxInput->setFieldSize(40);
+		$boxInput = new htmlResponsiveInputField(_('Description'), 'description', $description, 'description');
 		$boxInput->setFieldMaxLength(100);
-		$return->addElement($boxInput, true);
+		$return->add($boxInput, 12);
 		return $return;
 	}
 
