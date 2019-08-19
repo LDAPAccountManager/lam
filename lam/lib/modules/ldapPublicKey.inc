@@ -5,7 +5,7 @@ use \LAM\PDF\PDFTableRow;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2018  Roland Gruber
+  Copyright (C) 2005 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ class ldapPublicKey extends baseModule {
 	const SESS_KEY_LIST = 'ldapPublicKey_keyList';
 
 	/**
-	* Creates a new sambaSamAccount object.
+	* Creates a new ldapPublicKey object.
 	*
 	* @param string $scope account type (user, group, host)
 	*/
