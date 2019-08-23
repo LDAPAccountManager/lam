@@ -1,10 +1,9 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2008 - 2017  Roland Gruber
+                2008 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -356,7 +355,7 @@ class ddns extends baseModule {
 	public function display_html_attributes() {
 		$this->attributes = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes;
 		$this->orig = &$this->getAccountContainer()->getAccountModule('dhcp_settings')->orig;
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		// check if DHCP main settings and valid DHCP entry
 		if ($this->isRootNode()) {
 			if (!in_array_ignore_case('dhcpService', $this->attributes['objectClass']) && !in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
@@ -364,21 +363,21 @@ class ddns extends baseModule {
 				return $return;
 			}
 			// DHCP main settings
-			$return->addElement(new htmlTableExtendedInputCheckbox('active', $this->isDynDNSActivated(), _('Activate DynDNS'), 'active'), true);
-			$return->addElement(new htmlTableExtendedInputCheckbox('insert_fixed', $this->addFixIPs(), _('Add fix IP addresses to DNS'), 'fixed_ips'), true);
-			$return->addElement(new htmlTableExtendedInputCheckbox('client_insert', $this->isIgnoreClientUpdates(), _('Disable client updates'), 'client_insert'), true);
-			$keyInput = new htmlTableExtendedInputField(_('Path to key for DNS updates'), 'key_path', $this->getUpdateKey(), 'keypath');
-			$return->addElement($keyInput);
+			$return->add(new htmlResponsiveInputCheckbox('active', $this->isDynDNSActivated(), _('Activate DynDNS'), 'active'), 12);
+			$return->add(new htmlResponsiveInputCheckbox('insert_fixed', $this->addFixIPs(), _('Add fix IP addresses to DNS'), 'fixed_ips'), 12);
+			$return->add(new htmlResponsiveInputCheckbox('client_insert', $this->isIgnoreClientUpdates(), _('Disable client updates'), 'client_insert'), 12);
+			$keyInput = new htmlResponsiveInputField(_('Path to key for DNS updates'), 'key_path', $this->getUpdateKey(), 'keypath');
+			$return->add($keyInput, 12);
 		}
 		else {
 			// Account edit
 			if (!$this->check_if_ddns_is_enable()) {
-				$return->addElement(new htmlOutputText(_("DDNS ist not activated. You can activate it in the DHCP settings (DDNS).")));
+				$return->add(new htmlOutputText(_("DDNS ist not activated. You can activate it in the DHCP settings (DDNS).")), 12);
 			}
 			else {
 				// DNS server
-				$serverInput = new htmlTableExtendedInputField(_('IP address of the DNS server'), 'ip', $this->getDNSServer(), 'dns');
-				$return->addElement($serverInput, true);
+				$serverInput = new htmlResponsiveInputField(_('IP address of the DNS server'), 'ip', $this->getDNSServer(), 'dns');
+				$return->add($serverInput, 12);
 
 				$zones = $this->getZoneNames();
 				$zone = '';
@@ -390,11 +389,11 @@ class ddns extends baseModule {
 					$revzone = $zones[1];
 				}
 				// zone name
-				$zoneInput = new htmlTableExtendedInputField(_('Zone name'), 'zone', $zone, 'zone');
-				$return->addElement($zoneInput, true);
+				$zoneInput = new htmlResponsiveInputField(_('Zone name'), 'zone', $zone, 'zone');
+				$return->add($zoneInput, 12);
 				// reverse zone name
-				$revZoneInput = new htmlTableExtendedInputField(_('Reverse zone name'), 'zone_reverse', $revzone, 'zone_reverse');
-				$return->addElement($revZoneInput);
+				$revZoneInput = new htmlResponsiveInputField(_('Reverse zone name'), 'zone_reverse', $revzone, 'zone_reverse');
+				$return->add($revZoneInput, 12);
 			}
 		}
 

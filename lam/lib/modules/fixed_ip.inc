@@ -3,11 +3,10 @@ use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2008 - 2018  Roland Gruber
+                2008 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -449,27 +448,29 @@ class fixed_ip extends baseModule {
 			$this->fixed_ip = array();
 		}
 		$pcs = array();
+		$messages = array();
         foreach($this->fixed_ip AS $id => $arr) {
 			// pc name
-			$pcError = "";
-			$existsInDifferentDn = !empty($_POST['pc_' . $id]) && $this->hostNameExists($_POST['pc_' . $id]);
-			if (!$this->processed) {
-               	$pcError = "";
+			$existsInDifferentDn = false;
+			if (!empty($_POST['pc_' . $id])) {
+				$existsInDifferentDn = $this->hostNameExists($_POST['pc_' . $id]);
 			}
-			elseif (strlen($this->fixed_ip[$id]['cn'])>20) {
-			    $pcError = _("The PC name may not be longer than 20 characters.");
-			}
-			elseif (strlen($this->fixed_ip[$id]['cn'])<2) {
-			    $pcError = _("The PC name needs to be at least 2 characters long.");
-			}
-			elseif (in_array($this->fixed_ip[$id]['cn'], $pcs) ) {
-			    $pcError = _("This PC name already exists.");
-			}
-			elseif (isset($_POST['pc_'.$id]) && !preg_match("/^[A-Za-z0-9\\._-]*$/", $_POST['pc_'.$id])) {
-				$pcError = _("The PC name may only contain A-Z, a-z and 0-9.");
-			}
-			elseif ($existsInDifferentDn !== false) {
-				$pcError = sprintf(_('This PC name already exists in %s. Use e.g. %s.'), $existsInDifferentDn[0], $existsInDifferentDn[1]);
+			if ($this->processed) {
+				if (strlen($this->fixed_ip[$id]['cn']) > 20) {
+				    $messages[] = new htmlStatusMessage('ERROR', _("The PC name may not be longer than 20 characters."), htmlspecialchars($this->fixed_ip[$id]['cn']));
+				}
+				elseif (strlen($this->fixed_ip[$id]['cn']) < 2) {
+				    $messages[] = new htmlStatusMessage('ERROR', _("The PC name needs to be at least 2 characters long."), htmlspecialchars($this->fixed_ip[$id]['cn']));
+				}
+				elseif (in_array($this->fixed_ip[$id]['cn'], $pcs) ) {
+				    $messages[] = new htmlStatusMessage('ERROR', _("This PC name already exists."), htmlspecialchars($this->fixed_ip[$id]['cn']));
+				}
+				elseif (isset($_POST['pc_' . $id]) && !preg_match("/^[A-Za-z0-9\\._-]*$/", $_POST['pc_' . $id])) {
+					$messages[] = new htmlStatusMessage('ERROR', _("The PC name may only contain A-Z, a-z and 0-9."), htmlspecialchars($_POST['pc_' . $id]));
+				}
+				elseif ($existsInDifferentDn !== false) {
+					$messages[] = new htmlStatusMessage('ERROR', sprintf(_('This PC name already exists in %s. Use e.g. %s.'), $existsInDifferentDn[0], $existsInDifferentDn[1]));
+				}
 			}
 			$pcs[] = $this->fixed_ip[$id]['cn'];
 
@@ -508,9 +509,6 @@ class fixed_ip extends baseModule {
 			    $ipError = _("The IP address is already in use.");
 			}
 			$error = '';
-			if ($pcError != '') {
-				$error .= ' ' . $pcError;
-			}
 			if ($macError != '') {
 				$error .= ' ' . $macError;
 			}
@@ -544,6 +542,10 @@ class fixed_ip extends baseModule {
 		$return->addElement(new htmlInputField('description_add', '', 20));
 		$return->addElement(new htmlInputCheckbox('active_add', true));
 		$return->addElement(new htmlButton('add_ip', 'add.png', true), true);
+
+		foreach ($messages as $message) {
+			$return->addElement($message, true);
+		}
 
 		// add existing host entry
 		if (!empty($this->hostCache)) {

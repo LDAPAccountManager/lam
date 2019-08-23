@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2018  Roland Gruber
+  Copyright (C) 2009 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -270,7 +270,7 @@ class eduPerson extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		if (in_array('eduPerson', $this->attributes['objectClass'])) {
 			// principal name
 			$this->addSimpleInputTextField($return, 'eduPersonPrincipalName', _('Principal name'));
@@ -279,18 +279,18 @@ class eduPerson extends baseModule {
 			if (isset($this->attributes['eduPersonPrimaryAffiliation'][0])) {
 				$primaryAffiliation = array($this->attributes['eduPersonPrimaryAffiliation'][0]);
 			}
-			$return->addElement(new htmlTableExtendedSelect('primaryAffiliation', $this->affiliationTypes, $primaryAffiliation, _('Primary affiliation'), 'primaryAffiliation'), true);
+			$return->add(new htmlResponsiveSelect('primaryAffiliation', $this->affiliationTypes, $primaryAffiliation, _('Primary affiliation'), 'primaryAffiliation'), 12);
 			// scoped affiliations
 			$scopedAffiliationLabel = new htmlOutputText(_('Scoped affiliations'));
 			$scopedAffiliationLabel->alignment = htmlElement::ALIGN_TOP;
-			$return->addElement($scopedAffiliationLabel);
+			$return->addLabel($scopedAffiliationLabel);
 			$scopedAffiliations = new htmlTable();
 			if (isset($this->attributes['eduPersonScopedAffiliation'][0])) {
 				for ($i = 0; $i < sizeof($this->attributes['eduPersonScopedAffiliation']); $i++) {
 					$parts = explode('@', $this->attributes['eduPersonScopedAffiliation'][$i]);
 					$scopedAffiliationPrefix = array($parts[0]);
 					$scopedAffiliation = substr($this->attributes['eduPersonScopedAffiliation'][$i], strlen($parts[0]) + 1);
-					$scopedAffiliationContainer = new htmlGroup();
+					$scopedAffiliationContainer = new htmlTable();
 					$scopedAffiliationContainer->addElement(new htmlSelect('scopedAffiliationPrefix' . $i, $this->affiliationTypes, $scopedAffiliationPrefix));
 					$scopedAffiliationContainer->addElement(new htmlOutputText('@'));
 					$scopedAffiliationContainer->addElement(new htmlInputField('scopedAffiliation' . $i, $scopedAffiliation));
@@ -305,38 +305,35 @@ class eduPerson extends baseModule {
 				$scopedAffiliationContainer = new htmlGroup();
 				$scopedAffiliationContainer->addElement(new htmlOutputText('-'));
 				$scopedAffiliationContainer->addElement(new htmlSpacer('10px', null));
-				$scopedAffiliationContainer->addElement(new htmlButton('addeduPersonScopedAffiliation', 'add.png', true));
+				$scopedAffiliationContainer->addElement(new htmlButton('addeduPersonScopedAffiliation', 'add.png'));
+				$scopedAffiliationContainer->addElement(new htmlHelpLink('scopedAffiliation'), true);
 				$scopedAffiliations->addElement($scopedAffiliationContainer);
 			}
-			$return->addElement($scopedAffiliations);
-			$scopedAffiliationHelp = new htmlHelpLink('scopedAffiliation');
-			$scopedAffiliationHelp->alignment = htmlElement::ALIGN_TOP;
-			$return->addElement($scopedAffiliationHelp, true);
+			$return->addField($scopedAffiliations);
 			// affiliations
 			$affiliations = new htmlTable();
 			if (isset($this->attributes['eduPersonAffiliation'][0])) {
 				for ($i = 0; $i < sizeof($this->attributes['eduPersonAffiliation']); $i++) {
 					$affiliations->addElement(new htmlSelect('affiliation' . $i, $this->affiliationTypes, array($this->attributes['eduPersonAffiliation'][$i])));
 					$affiliationButton = new htmlButton('delAffiliation' . $i, 'del.png', true);
-					$affiliations->addElement($affiliationButton, true);
+					$affiliations->addElement($affiliationButton);
+					if ($i === 0) {
+						$affiliations->addElement(new htmlHelpLink('affiliation'));
+					}
+					$affiliations->addNewLine();
 				}
 			}
 			else {
-				$affiliations->addElement(new htmlOutputText('-'), true);
+				$affiliations->addElement(new htmlOutputText('-'));
+				$affiliations->addElement(new htmlHelpLink('affiliation'), true);
 			}
+			$affiliations->addElement(new htmlSelect('affiliation', $this->affiliationTypes));
+			$affiliations->addElement(new htmlButton('newAffiliation', 'add.png', true));
 			$affiliationLabel = new htmlOutputText(_('Affiliations'));
 			$affiliationLabel->alignment = htmlElement::ALIGN_TOP;
-			$return->addElement($affiliationLabel);
-			$return->addElement($affiliations);
-			$affiliationHelp = new htmlHelpLink('affiliation');
-			$affiliationHelp->alignment = htmlElement::ALIGN_TOP;
-			$return->addElement($affiliationHelp, true);
-			$return->addElement(new htmlOutputText(''));
-			$newAffiliationContainer = new htmlTable();
-			$newAffiliationContainer->addElement(new htmlSelect('affiliation', $this->affiliationTypes));
-			$newAffiliationContainer->addElement(new htmlButton('newAffiliation', 'add.png', true));
-			$return->addElement($newAffiliationContainer);
-			$return->addElement(new htmlOutputText(''), true);
+			$return->addLabel($affiliationLabel);
+			$return->addField($affiliations);
+			$return->addVerticalSpacer('0.5rem');
 			// nick names
 			$this->addMultiValueInputTextField($return, 'eduPersonNickname', _('Nick names'));
 			// entitlements
@@ -350,13 +347,12 @@ class eduPerson extends baseModule {
 			// assurance profiles
 			$this->addMultiValueInputTextField($return, 'eduPersonAssurance', _('Assurance profiles'));
 			// remove button
-			$return->addElement(new htmlSpacer(null, '10px'), true);
+			$return->addVerticalSpacer('2rem');
 			$addButton = new htmlButton('remObjectClass', _('Remove EDU person extension'));
-			$addButton->colspan = 3;
-			$return->addElement($addButton);
+			$return->add($addButton, 12, 12, 12, 'text-center');
 		}
 		else {
-			$return->addElement(new htmlButton('addObjectClass', _('Add EDU person extension')));
+			$return->add(new htmlButton('addObjectClass', _('Add EDU person extension')), 12);
 		}
 		return $return;
 	}

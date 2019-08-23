@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008        Thomas Manninger
-                2008 - 2018 Roland Gruber
+                2008 - 2019 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -566,11 +566,11 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		// check if DHCP main settings and valid DHCP entry
 		if ($this->isRootNode()) {
 			if (!in_array_ignore_case('dhcpService', $this->attributes['objectClass']) && !in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
-				$return->addElement(new htmlStatusMessage('ERROR', _('Please set your LDAP suffix to an LDAP entry with object class "dhcpService" or "dhcpServer".')));
+				$return->add(new htmlStatusMessage('ERROR', _('Please set your LDAP suffix to an LDAP entry with object class "dhcpService" or "dhcpServer".')), 12);
 				return $return;
 			}
 		}
@@ -580,23 +580,22 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			if (isset($this->attributes['cn'][0])) {
 				$cn = $this->attributes['cn'][0];
 			}
-			$subnetInput = new htmlTableExtendedInputField(_('Subnet'), 'cn', $cn, 'subnet');
+			$subnetInput = new htmlResponsiveInputField(_('Subnet'), 'cn', $cn, 'subnet');
 			$subnetInput->setRequired(true);
-			$return->addElement($subnetInput);
-			$return->addElement(new htmlOutputText(_('Example') . ": 192.168.10.0"), true);
+			$return->add($subnetInput, 12);
 		}
 		// domain name
-		$return->addElement(new htmlTableExtendedInputField(_('Domain name'), 'domainname', $this->getDHCPOption('domain-name'), 'domainname'), true);
+		$return->add(new htmlResponsiveInputField(_('Domain name'), 'domainname', $this->getDHCPOption('domain-name'), 'domainname'), 12);
 		// lease Time
-		$leasetimeInput = new htmlTableExtendedInputField(_('Lease time'), 'lease_time', $this->getDefaultLeaseTime(), 'leasetime');
+		$leasetimeInput = new htmlResponsiveInputField(_('Lease time'), 'lease_time', $this->getDefaultLeaseTime(), 'leasetime');
 		$leasetimeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-		$return->addElement($leasetimeInput, true);
+		$return->add($leasetimeInput, 12);
 		// max lease time
-		$max_leasetimeInput = new htmlTableExtendedInputField(_('Maximum lease time'), 'max_lease_time', $this->getMaxLeaseTime(), 'max_leasetime');
+		$max_leasetimeInput = new htmlResponsiveInputField(_('Maximum lease time'), 'max_lease_time', $this->getMaxLeaseTime(), 'max_leasetime');
 		$max_leasetimeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-		$return->addElement($max_leasetimeInput, true);
+		$return->add($max_leasetimeInput, 12);
 		// DNS
-		$return->addElement(new htmlTableExtendedInputField(_('DNS'), 'dns', $this->getDHCPOption('domain-name-servers'), 'dns'), true);
+		$return->add(new htmlResponsiveInputField(_('DNS'), 'dns', $this->getDHCPOption('domain-name-servers'), 'dns'), 12);
 		// domain search
 		$domainSearchEntries = $this->getDHCPOption('domain-search');
 		if ($domainSearchEntries === null) {
@@ -606,9 +605,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$this->attributes['INFO_domain-search'] = $domainSearchEntries;
 		$this->addMultiValueInputTextField($return, 'INFO_domain-search', _('Search domains'));
 		// gateway
-		$return->addElement(new htmlTableExtendedInputField(_('Default gateway'), 'routers', $this->getDHCPOption('routers'), 'gateway'), true);
+		$return->add(new htmlResponsiveInputField(_('Default gateway'), 'routers', $this->getDHCPOption('routers'), 'gateway'), 12);
 		// netbios name servers
-		$return->addElement(new htmlTableExtendedInputField(_('Netbios name servers'), 'netbios', $this->getDHCPOption('netbios-name-servers'), 'netbios'), true);
+		$return->add(new htmlResponsiveInputField(_('Netbios name servers'), 'netbios', $this->getDHCPOption('netbios-name-servers'), 'netbios'), 12);
 		// netbios node type
 		$nodeType = $this->getDHCPOption('netbios-node-type');
 		if ($nodeType == '') {
@@ -618,9 +617,9 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		foreach ($this->all_netbios_node_types as $key => $value) {
 			$nodeOptions[$value] = $key;
 		}
-		$nodeSelect = new htmlTableExtendedSelect('netbios_node_type', $nodeOptions, array($nodeType), _('Netbios node type'), 'netbios_type');
+		$nodeSelect = new htmlResponsiveSelect('netbios_node_type', $nodeOptions, array($nodeType), _('Netbios node type'), 'netbios_type');
 		$nodeSelect->setHasDescriptiveElements(true);
-		$return->addElement($nodeSelect, true);
+		$return->add($nodeSelect, 12);
 
 		if (!$this->isRootNode()) {
 			// unknown clients
@@ -629,17 +628,13 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				$unknownClients = '-';
 			}
 			$unknownClientsOptions = array_flip($this->allowDenyOptions);
-			$unknownClientsSelect = new htmlTableExtendedSelect('unknownClients', $unknownClientsOptions, array($unknownClients), _('Unknown clients'), 'unknownClients');
+			$unknownClientsSelect = new htmlResponsiveSelect('unknownClients', $unknownClientsOptions, array($unknownClients), _('Unknown clients'), 'unknownClients');
 			$unknownClientsSelect->setHasDescriptiveElements(true);
-			$return->addElement($unknownClientsSelect, true);
+			$return->add($unknownClientsSelect, 12);
 			// subnetmask
-			$subnetMaskInput = new htmlTableExtendedInputField(_('Subnet mask'), 'subnet', $this->getDHCPOption('subnet-mask'), 'subnetmask');
+			$subnetMaskInput = new htmlResponsiveInputField(_('Subnet mask'), 'subnet', $this->getDHCPOption('subnet-mask'), 'subnetmask');
 			$subnetMaskInput->setRequired(true);
-			$return->addElement($subnetMaskInput, true);
-			// netmask
-			$return->addElement(new htmlOutputText(_('Net mask')));
-			$return->addElement(new htmlOutputText($this->attributes['dhcpNetMask'][0]));
-			$return->addElement(new htmlHelpLink('netmask'), true);
+			$return->add($subnetMaskInput, 12);
 		}
 
 		// description
@@ -647,7 +642,12 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		if (isset($this->attributes['dhcpComments'][0])) {
 			$description = $this->attributes['dhcpComments'][0];
 		}
-		$return->addElement(new htmlTableExtendedInputField(_('Description'), 'description', $description, 'description'), true);
+		$return->add(new htmlResponsiveInputField(_('Description'), 'description', $description, 'description'), 12);
+		if (!$this->isRootNode()) {
+			// netmask
+			$return->addLabel(new htmlOutputText(_('Net mask')));
+			$return->addField(new htmlOutputText($this->attributes['dhcpNetMask'][0]));
+		}
 		return $return;
 	}
 
