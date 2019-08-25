@@ -475,49 +475,30 @@ class fixed_ip extends baseModule {
 			$pcs[] = $this->fixed_ip[$id]['cn'];
 
 			// MAC address
-			$macError = "";
-			if (!$this->processed) {
-               	$macError = "";
-			}
-			elseif ($this->check_mac($this->fixed_ip[$id]['mac'])) {
-			    $macError = _("Invalid MAC address.");
+			if ($this->processed && $this->check_mac($this->fixed_ip[$id]['mac'])) {
+			    $messages[] = new htmlStatusMessage('ERROR', _("Invalid MAC address."), htmlspecialchars($this->fixed_ip[$id]['mac']));
 			}
 
 			// descripton
-			$descriptionError = "";
-			if (!$this->processed) {
-               	$descriptionError = "";
-			}
-			elseif (!get_preg($this->fixed_ip[$id]['description'], 'ascii')) {
-			    $descriptionError = _("Invalid description.");
+			if ($this->processed && !get_preg($this->fixed_ip[$id]['description'], 'ascii')) {
+			    $messages[] = new htmlStatusMessage('ERROR', _("Invalid description."), htmlspecialchars($this->fixed_ip[$id]['description']));
 			}
 
 			// fixed ip
-			$ipError = "";
-			if (!$this->processed || ($this->fixed_ip[$id]['ip'] == '')) {
-               	$ipError = "";
+			if ($this->processed && !empty($this->fixed_ip[$id]['ip'])) {
+				if (!check_ip($this->fixed_ip[$id]['ip'])) {
+					$messages[] = new htmlStatusMessage('ERROR', _("The IP address is invalid."), htmlspecialchars($this->fixed_ip[$id]['ip']));
+				}
+				elseif (!range::check_subnet_range($this->fixed_ip[$id]['ip'],
+													$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0],
+													$this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask'))) {
+				    $messages[] = new htmlStatusMessage('ERROR', _("The IP address does not match the subnet."), htmlspecialchars($this->fixed_ip[$id]['ip']));
+				}
+				elseif (!$this->isNotOverlapedIp($this->fixed_ip[$id]['ip'])) {
+				    $messages[] = new htmlStatusMessage('ERROR', _("The IP address is already in use."), htmlspecialchars($this->fixed_ip[$id]['ip']));
+				}
 			}
-			elseif (!check_ip($this->fixed_ip[$id]['ip'])) {
-				$ipError = _("The IP address is invalid.");
-			}
-			elseif (!range::check_subnet_range($this->fixed_ip[$id]['ip'],
-												$this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0],
-												$this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask'))) {
-			    $ipError = _("The IP address does not match the subnet.");
-			}
-			elseif (!$this->isNotOverlapedIp($this->fixed_ip[$id]['ip'])) {
-			    $ipError = _("The IP address is already in use.");
-			}
-			$error = '';
-			if ($macError != '') {
-				$error .= ' ' . $macError;
-			}
-			if ($ipError != '') {
-				$error .= ' ' . $ipError;
-			}
-			if ($descriptionError != '') {
-				$error .= ' ' . $descriptionError;
-			}
+
 			$return->addElement(new htmlInputField('ip_'.$id, $this->fixed_ip[$id]['ip'], 20));
 			$pcInput = new htmlInputField('pc_'.$id, $this->fixed_ip[$id]['cn'], 20);
 			if (!empty($autoNames)) {
@@ -527,8 +508,7 @@ class fixed_ip extends baseModule {
 			$return->addElement(new htmlInputField('mac_'.$id, $this->fixed_ip[$id]['mac'], 20));
 			$return->addElement(new htmlInputField('description_'.$id, $this->fixed_ip[$id]['description'], 20));
 			$return->addElement(new htmlInputCheckbox('active_'.$id, $this->fixed_ip[$id]['active']));
-			$return->addElement(new htmlButton('drop_ip_'.$id, 'del.png', true));
-			$return->addElement(new htmlOutputText($error), true);
+			$return->addElement(new htmlButton('drop_ip_'.$id, 'del.png', true), true);
 		}
 		$return->addElement(new htmlSpacer(null, '10px'), true);
 		// add host
@@ -612,7 +592,7 @@ class fixed_ip extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_addHost() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		$this->initCache();
 		$hostNames = array();
 		$spacer = '####';
@@ -634,15 +614,12 @@ class fixed_ip extends baseModule {
 				$hostNames[$host['cn'][0]] = $val;
 			}
 		}
-		$select = new htmlTableExtendedSelect('host', $hostNames, array(), _('Host'));
+		$select = new htmlResponsiveSelect('host', $hostNames, array(), _('Host'));
 		$select->setHasDescriptiveElements(true);
-		$return->addElement($select, true);
-		$return->addVerticalSpace('20px');
-		$buttonContainer = new htmlTable();
-		$buttonContainer->colspan = 3;
-		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'addHost', _('Add')));
-		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'cancel', _('Cancel')));
-		$return->addElement($buttonContainer, true);
+		$return->add($select, 12);
+		$return->addVerticalSpacer('2rem');
+		$return->addLabel(new htmlAccountPageButton(get_class($this), 'attributes', 'addHost', _('Add')));
+		$return->addField(new htmlAccountPageButton(get_class($this), 'attributes', 'cancel', _('Cancel')));
 		return $return;
 	}
 
