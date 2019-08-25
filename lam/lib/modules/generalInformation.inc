@@ -1,9 +1,8 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2016  Roland Gruber
+  Copyright (C) 2011 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -72,30 +71,30 @@ class generalInformation extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		// creation info
 		if (isset($this->attributes['creatorsName'][0])) {
-			$return->addElement(new htmlOutputText(_('Created by')));
-			$return->addElement(new htmlOutputText(getAbstractDN($this->attributes['creatorsName'][0])), true);
+			$return->addLabel(new htmlOutputText(_('Created by')));
+			$return->addField(new htmlOutputText(getAbstractDN($this->attributes['creatorsName'][0])));
 		}
 		if (isset($this->attributes['createTimestamp'][0])) {
-			$return->addElement(new htmlOutputText(_('Creation time')));
-			$return->addElement(new htmlOutputText(formatLDAPTimestamp($this->attributes['createTimestamp'][0])), true);
+			$return->addLabel(new htmlOutputText(_('Creation time')));
+			$return->addField(new htmlOutputText(formatLDAPTimestamp($this->attributes['createTimestamp'][0])));
 		}
 		if (isset($this->attributes['creatorsName'][0]) || isset($this->attributes['createTimestamp'][0])) {
-			$return->addElement(new htmlSpacer(null, '5px'), true);
+			$return->addVerticalSpacer('1rem');
 		}
 		// modification info
 		if (isset($this->attributes['modifiersName'][0])) {
-			$return->addElement(new htmlOutputText(_('Modified by')));
-			$return->addElement(new htmlOutputText(getAbstractDN($this->attributes['modifiersName'][0])), true);
+			$return->addLabel(new htmlOutputText(_('Modified by')));
+			$return->addField(new htmlOutputText(getAbstractDN($this->attributes['modifiersName'][0])));
 		}
 		if (isset($this->attributes['modifyTimestamp'][0])) {
-			$return->addElement(new htmlOutputText(_('Modification time')));
-			$return->addElement(new htmlOutputText(formatLDAPTimestamp($this->attributes['modifyTimestamp'][0])), true);
+			$return->addLabel(new htmlOutputText(_('Modification time')));
+			$return->addField(new htmlOutputText(formatLDAPTimestamp($this->attributes['modifyTimestamp'][0])));
 		}
 		if (isset($this->attributes['modifiersName'][0]) || isset($this->attributes['modifyTimestamp'][0])) {
-			$return->addElement(new htmlSpacer(null, '5px'), true);
+			$return->addVerticalSpacer('1rem');
 		}
 		// children
 		if (isset($this->attributes['hasSubordinates'][0])) {
@@ -103,20 +102,20 @@ class generalInformation extends baseModule {
 			if ($this->attributes['hasSubordinates'][0] == 'TRUE') {
 				$hasChilds = _('yes');
 			}
-			$return->addElement(new htmlOutputText(_('Has subentries')));
-			$return->addElement(new htmlOutputText($hasChilds), true);
-			$return->addElement(new htmlSpacer(null, '5px'), true);
+			$return->addLabel(new htmlOutputText(_('Has subentries')));
+			$return->addField(new htmlOutputText($hasChilds));
+			$return->addVerticalSpacer('1rem');
 		}
 		// group memberships
 		if (isset($this->attributes['memberOf'][0])) {
 			$groupLabel = new htmlOutputText(_('Groups'));
 			$groupLabel->alignment = htmlElement::ALIGN_TOP;
-			$return->addElement($groupLabel);
+			$return->addLabel($groupLabel);
 			$groups = new htmlTable();
 			for ($i = 0; $i < sizeof($this->attributes['memberOf']); $i++) {
 				$groups->addElement(new htmlOutputText(getAbstractDN($this->attributes['memberOf'][$i])), true);
 			}
-			$return->addElement($groups);
+			$return->addField($groups);
 		}
 		return $return;
 	}
