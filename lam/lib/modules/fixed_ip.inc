@@ -402,9 +402,9 @@ class fixed_ip extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]=="") {
-			$return->addElement(new htmlStatusMessage('ERROR', _("Please fill out the DHCP settings first.")), true);
+			$return->add(new htmlStatusMessage('ERROR', _("Please fill out the DHCP settings first.")), 12);
 			return $return;
         }
 		$this->initCache();
@@ -418,28 +418,8 @@ class fixed_ip extends baseModule {
 			}
 			$autoNames = array_values(array_unique($autoNames));
 		}
-       	// caption
-       	$ipContainer = new htmlTable();
-       	$ipContainer->addElement(new htmlOutputText(_('IP address')));
-       	$ipContainer->addElement(new htmlHelpLink('ip'));
-       	$return->addElement($ipContainer);
-       	$pcContainer = new htmlTable();
-       	$pcContainer->addElement(new htmlOutputText(_('PC name'), true, true));
-       	$pcContainer->addElement(new htmlHelpLink('pc'));
-       	$return->addElement($pcContainer);
-       	$macContainer = new htmlTable();
-       	$macContainer->addElement(new htmlOutputText(_('MAC address'), true, true));
-       	$macContainer->addElement(new htmlHelpLink('mac'));
-       	$return->addElement($macContainer);
-       	$commentContainer = new htmlTable();
-       	$commentContainer->addElement(new htmlOutputText(_('Description'), true));
-       	$commentContainer->addElement(new htmlHelpLink('description'));
-       	$return->addElement($commentContainer);
-       	$activeContainer = new htmlTable();
-       	$activeContainer->colspan = 2;
-       	$activeContainer->addElement(new htmlOutputText(_('Active')));
-       	$activeContainer->addElement(new htmlHelpLink('active'));
-       	$return->addElement($activeContainer, true);
+		$titles = array(_('IP address'), _('PC name'), _('MAC address'), _('Description'), _('Active'), ' ');
+		$data = array();
        	// Reset oberlaped ips
 		$this->reset_overlapd_ip();
 
@@ -498,41 +478,48 @@ class fixed_ip extends baseModule {
 				    $messages[] = new htmlStatusMessage('ERROR', _("The IP address is already in use."), htmlspecialchars($this->fixed_ip[$id]['ip']));
 				}
 			}
-
-			$return->addElement(new htmlInputField('ip_'.$id, $this->fixed_ip[$id]['ip'], 20));
-			$pcInput = new htmlInputField('pc_'.$id, $this->fixed_ip[$id]['cn'], 20);
+			$entry = array();
+			$entry[] = new htmlInputField('ip_'.$id, $this->fixed_ip[$id]['ip']);
+			$pcInput = new htmlInputField('pc_'.$id, $this->fixed_ip[$id]['cn']);
 			if (!empty($autoNames)) {
 				$pcInput->enableAutocompletion($autoNames);
 			}
-			$return->addElement($pcInput);
-			$return->addElement(new htmlInputField('mac_'.$id, $this->fixed_ip[$id]['mac'], 20));
-			$return->addElement(new htmlInputField('description_'.$id, $this->fixed_ip[$id]['description'], 20));
-			$return->addElement(new htmlInputCheckbox('active_'.$id, $this->fixed_ip[$id]['active']));
-			$return->addElement(new htmlButton('drop_ip_'.$id, 'del.png', true), true);
+			$entry[] = $pcInput;
+			$entry[] = new htmlInputField('mac_'.$id, $this->fixed_ip[$id]['mac']);
+			$entry[] = new htmlInputField('description_'.$id, $this->fixed_ip[$id]['description']);
+			$entry[] = new htmlInputCheckbox('active_'.$id, $this->fixed_ip[$id]['active']);
+			$entry[] = new htmlButton('drop_ip_'.$id, 'del.png', true);
+			$data[] = $entry;
 		}
-		$return->addElement(new htmlSpacer(null, '10px'), true);
 		// add host
-		$return->addElement(new htmlInputField('ip_add', '', 20));
-		$newPCInput = new htmlInputField('pc_add', '', 20);
+		$newEntry = array();
+		$newEntry[] = new htmlInputField('ip_add');
+		$newPCInput = new htmlInputField('pc_add');
 		if (!empty($autoNames)) {
 			$newPCInput->enableAutocompletion($autoNames);
 		}
-		$return->addElement($newPCInput);
-		$return->addElement(new htmlInputField('mac_add', '', 20));
-		$return->addElement(new htmlInputField('description_add', '', 20));
-		$return->addElement(new htmlInputCheckbox('active_add', true));
-		$return->addElement(new htmlButton('add_ip', 'add.png', true), true);
+		$newEntry[] = $newPCInput;
+		$newEntry[] = new htmlInputField('mac_add');
+		$newEntry[] = new htmlInputField('description_add');
+		$newEntry[] = new htmlInputCheckbox('active_add', true);
+		$newEntry[] = new htmlButton('add_ip', 'add.png', true);
+		$data[] = $newEntry;
+
+		$table = new htmlResponsiveTable($titles, $data);
+		$table->setWidths(array('20%', '20%', '20%', '25%', '10%', '5%'));
+		$table->colspan = 100;
+		$return->add($table, 12);
 
 		foreach ($messages as $message) {
-			$return->addElement($message, true);
+			$return->add($message, 12);
 		}
 
 		// add existing host entry
 		if (!empty($this->hostCache)) {
-			$return->addVerticalSpace('20px');
+			$return->addVerticalSpacer('2rem');
 			$addHostButton = new htmlAccountPageButton(get_class($this), 'addHost', 'add', _('Add existing host'));
 			$addHostButton->setIconClass('createButton');
-			$return->addElement($addHostButton , true);
+			$return->add($addHostButton, 12);
 		}
 		return $return;
 	}
