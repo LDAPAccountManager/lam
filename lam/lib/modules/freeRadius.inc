@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2018  Roland Gruber
+  Copyright (C) 2011 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -336,7 +336,7 @@ class freeRadius extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		if (in_array('radiusprofile', $this->attributes['objectClass'])) {
 			// realm
 			if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusRealm')) {
@@ -365,12 +365,12 @@ class freeRadius extends baseModule {
 				if (isset($this->attributes['radiusExpiration'][0])) {
 					$radiusExpiration = $this->formatExpirationDate($this->attributes['radiusExpiration'][0]);
 				}
-				$return->addElement(new htmlOutputText('Expiration date'));
+				$return->addLabel(new htmlOutputText('Expiration date'));
 				$radiusExpirationList = new htmlGroup();
 				$radiusExpirationList->addElement(new htmlOutputText($radiusExpiration . ' &nbsp;&nbsp;&nbsp;&nbsp;', false));
 				$radiusExpirationList->addElement(new htmlAccountPageButton(get_class($this), 'expiration', 'change', _('Change')));
-				$return->addElement($radiusExpirationList);
-				$return->addElement(new htmlHelpLink('radiusExpiration'), true);
+				$radiusExpirationList->addElement(new htmlHelpLink('radiusExpiration'));
+				$return->addField($radiusExpirationList);
 			}
 			// profile DN
 			if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusProfileDn')) {
@@ -385,9 +385,9 @@ class freeRadius extends baseModule {
 						$profiles[getAbstractDN($this->attributes['radiusProfileDn'][0])] = $this->attributes['radiusProfileDn'][0];
 					}
 				}
-				$profileSelect = new htmlTableExtendedSelect('radiusProfileDn', $profiles, $profile, _('Profile'), 'radiusProfileDn');
+				$profileSelect = new htmlResponsiveSelect('radiusProfileDn', $profiles, $profile, _('Profile'), 'radiusProfileDn');
 				$profileSelect->setHasDescriptiveElements(true);
-				$return->addElement($profileSelect, true);
+				$return->add($profileSelect, 12);
 			}
 			// enabled
 			if (!$this->isBooleanConfigOptionSet('freeRadius_hideDialupAccess')) {
@@ -400,18 +400,17 @@ class freeRadius extends baseModule {
 					}
 				}
 				$enabledOptions = array('-' => '', _('Yes') => 'true', _('No') => 'false');
-				$enabledSelect = new htmlTableExtendedSelect('dialupAccess', $enabledOptions, $enabled, _('Enabled'), 'dialupAccess');
+				$enabledSelect = new htmlResponsiveSelect('dialupAccess', $enabledOptions, $enabled, _('Enabled'), 'dialupAccess');
 				$enabledSelect->setHasDescriptiveElements(true);
-				$return->addElement($enabledSelect, true);
+				$return->add($enabledSelect, 12);
 			}
 			// button to remove extension
-			$return->addElement(new htmlSpacer(null, '10px'), true);
+			$return->addVerticalSpacer('2rem');
 			$remButton = new htmlButton('remObjectClass', _('Remove FreeRadius extension'));
-			$remButton->colspan = 3;
-			$return->addElement($remButton);
+			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
-			$return->addElement(new htmlButton('addObjectClass', _('Add FreeRadius extension')));
+			$return->add(new htmlButton('addObjectClass', _('Add FreeRadius extension')), 12);
 		}
 		return $return;
 	}
@@ -503,7 +502,7 @@ class freeRadius extends baseModule {
 	* @return htmlElement meta HTML code
 	*/
 	function display_html_expiration() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		$attr = 'radiusExpiration';
 		$text = _('Expiration date');
 		$help = "radiusExpiration";
@@ -534,26 +533,40 @@ class freeRadius extends baseModule {
 		for ( $i=1; $i<=31; $i++ ) {
 			$dayList[] = str_pad($i, 2, '0', STR_PAD_LEFT);
 		}
-		for ( $i=2003; $i<=2050; $i++ ) $yearList[] = $i;
-		$return->addElement(new htmlOutputText($text));
-		$return->addElement(new htmlSelect('expire_day', $dayList, array($day)));
+		for ( $i=2003; $i<=2050; $i++ ) {
+			$yearList[] = $i;
+		}
+		$return->addLabel(new htmlOutputText($text));
+		$dateGroup = new htmlGroup();
+		$daySelect = new htmlSelect('expire_day', $dayList, array($day));
+		$daySelect->setWidth('3rem');
+		$dateGroup->addElement($daySelect);
 		$monthSelect = new htmlSelect('expire_mon', freeRadius::$monthList, array($month));
 		$monthSelect->setHasDescriptiveElements(true);
-		$return->addElement($monthSelect);
-		$return->addElement(new htmlSelect('expire_yea', $yearList, array($year)));
-		$return->addElement(new htmlSpacer('10px', null));
-		$return->addElement(new htmlSelect('expire_hour', $hourList, array($hour)));
-		$return->addElement(new htmlSelect('expire_minute', $minuteList, array($minute)));
-		$return->addElement(new htmlHelpLink($help), true);
-		$return->addElement(new htmlSpacer(null, '10px'), true);
-		$buttons = new htmlTable();
+		$monthSelect->setWidth('3rem');
+		$dateGroup->addElement($monthSelect);
+		$yearSelect = new htmlSelect('expire_yea', $yearList, array($year));
+		$yearSelect->setWidth('5rem');
+		$dateGroup->addElement($yearSelect);
+		$dateGroup->addElement(new htmlSpacer('10px', null));
+		$hourSelect = new htmlSelect('expire_hour', $hourList, array($hour));
+		$hourSelect->setWidth('3rem');
+		$dateGroup->addElement($hourSelect);
+		$minuteSelect = new htmlSelect('expire_minute', $minuteList, array($minute));
+		$minuteSelect->setWidth('3rem');
+		$dateGroup->addElement($minuteSelect);
+		$dateGroup->addElement(new htmlHelpLink($help));
+		$return->addField($dateGroup);
+		$return->addVerticalSpacer('2rem');
+		$buttons = new htmlGroup();
 		$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'change' . $attr, _('Change')));
+		$buttons->addElement(new htmlSpacer('0.5rem', null));
 		if (isset($this->attributes[$attr][0])) {
 			$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'del' . $attr, _('Remove')));
+			$buttons->addElement(new htmlSpacer('0.5rem', null));
 		}
 		$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back' . $attr, _('Cancel')));
-		$buttons->colspan = 6;
-		$return->addElement($buttons);
+		$return->add($buttons, 12);
 		return $return;
 	}
 
