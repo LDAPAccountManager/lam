@@ -112,6 +112,10 @@ input.listPageInput {
 	text-align: center;
 }
 
+input.max-width-10 {
+	max-width: 10rem;
+}
+
 select {
 	background:#F5F5F5 none repeat-x scroll 50% 50%;
 	border:1px solid #AAAAAA;
