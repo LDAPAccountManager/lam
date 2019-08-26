@@ -1582,9 +1582,10 @@ abstract class baseModule {
 	 * @param string[] $selectedSecond selected options of second select
 	 * @param string $namePrefix prefix for select field and button names
 	 * @param bool $rightToLeftText sets the text direction in select to right to left
+	 * @param bool $showFilter displays a live filter
 	 */
 	protected function addDoubleSelectionArea(&$container, $labelFirst, $labelSecond, $optionsFirst, $selectedFirst,
-			$optionsSecond, $selectedSecond, $namePrefix, $rightToLeftText = false) {
+			$optionsSecond, $selectedSecond, $namePrefix, $rightToLeftText = false, $showFilter = false) {
 		// first select
 		$firstRow = new htmlResponsiveRow();
 		$firstRow->add(new htmlOutputText($labelFirst), 12);
@@ -1593,6 +1594,14 @@ abstract class baseModule {
 		$firstSelect->setMultiSelect(true);
 		$firstSelect->setRightToLeftTextDirection($rightToLeftText);
 		$firstRow->add($firstSelect, 12);
+		if ($showFilter) {
+			$firstFilterGroup = new htmlGroup();
+			$firstFilterGroup->addElement(new htmlOutputText(_('Filter')));
+			$firstFilterInput = new htmlInputField($namePrefix . '_filterFirst');
+			$firstFilterInput->filterSelectBox($namePrefix . '_1');
+			$firstFilterGroup->addElement($firstFilterInput);
+			$firstRow->add($firstFilterGroup, 12);
+		}
 		$container->add($firstRow, 12, 5);
 		// buttons
 		$buttonRow = new htmlResponsiveRow();
@@ -1611,6 +1620,14 @@ abstract class baseModule {
 		$secondSelect->setMultiSelect(true);
 		$secondSelect->setRightToLeftTextDirection($rightToLeftText);
 		$secondRow->add($secondSelect, 12);
+		if ($showFilter) {
+			$secondFilterGroup = new htmlGroup();
+			$secondFilterGroup->addElement(new htmlOutputText(_('Filter')));
+			$secondFilterInput = new htmlInputField($namePrefix . '_filterSecond');
+			$secondFilterInput->filterSelectBox($namePrefix . '_2');
+			$secondFilterGroup->addElement($secondFilterInput);
+			$secondRow->add($secondFilterGroup, 12);
+		}
 		$container->add($secondRow, 12, 5);
 	}
 
