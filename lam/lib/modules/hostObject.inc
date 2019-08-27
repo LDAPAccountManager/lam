@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2018  Roland Gruber
+  Copyright (C) 2011 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -139,16 +139,15 @@ class hostObject extends baseModule {
 		if (isset($_POST['addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'hostObject';
 		}
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		if (in_array('hostObject', $this->attributes['objectClass'])) {
 			$this->addMultiValueInputTextField($return, 'host', _('Host'));
-			$return->addElement(new htmlSpacer(null, '10px'), true);
+			$return->addVerticalSpacer('2rem');
 			$remButton = new htmlButton('remObjectClass', _('Remove host extension'));
-			$remButton->colspan = 4;
-			$return->addElement($remButton);
+			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
-			$return->addElement(new htmlButton('addObjectClass', _('Add host extension')));
+			$return->add(new htmlButton('addObjectClass', _('Add host extension')), 12);
 		}
 		return $return;
 	}
