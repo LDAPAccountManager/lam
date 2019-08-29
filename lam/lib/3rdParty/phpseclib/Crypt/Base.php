@@ -77,6 +77,10 @@ abstract class Base
      */
     const MODE_CFB = 3;
     /**
+     * Encrypt / decrypt using the Cipher Feedback mode (8bit)
+     */
+    const MODE_CFB8 = 38;
+    /**
      * Encrypt / decrypt using the Output Feedback mode.
      *
      * @link http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation#Output_feedback_.28OFB.29
@@ -479,6 +483,7 @@ abstract class Base
                 break;
             case self::MODE_CTR:
             case self::MODE_CFB:
+            case self::MODE_CFB8:
             case self::MODE_OFB:
             case self::MODE_STREAM:
                 $this->mode = $mode;
@@ -492,8 +497,8 @@ abstract class Base
         $this->_setEngine();
 
         // Determining whether inline crypting can be used by the cipher
-        if ($this->use_inline_crypt !== false && function_exists('create_function')) {
-            $this->use_inline_crypt = true;
+        if ($this->use_inline_crypt !== false) {
+            $this->use_inline_crypt = version_compare(PHP_VERSION, '5.3.0') >= 0 || function_exists('create_function');
         }
     }
 
@@ -644,10 +649,10 @@ abstract class Base
                     case !function_exists('hash_algos'):
                     case !in_array($hash, hash_algos()):
                         $i = 1;
+                        $hmac = new Hash();
+                        $hmac->setHash($hash);
+                        $hmac->setKey($password);
                         while (strlen($key) < $dkLen) {
-                            $hmac = new Hash();
-                            $hmac->setHash($hash);
-                            $hmac->setKey($password);
                             $f = $u = $hmac->hash($salt . pack('N', $i++));
                             for ($j = 2; $j <= $count; ++$j) {
                                 $u = $hmac->hash($u);
@@ -702,7 +707,7 @@ abstract class Base
                 case self::MODE_STREAM:
                     return openssl_encrypt($plaintext, $this->cipher_name_openssl, $this->key, $this->openssl_options);
                 case self::MODE_ECB:
-                    $result = openssl_encrypt($plaintext, $this->cipher_name_openssl, $this->key, $this->openssl_options);
+                    $result = @openssl_encrypt($plaintext, $this->cipher_name_openssl, $this->key, $this->openssl_options);
                     return !defined('OPENSSL_RAW_DATA') ? substr($result, 0, -$this->block_size) : $result;
                 case self::MODE_CBC:
                     $result = openssl_encrypt($plaintext, $this->cipher_name_openssl, $this->key, $this->openssl_options, $this->encryptIV);
@@ -762,6 +767,16 @@ abstract class Base
                         $iv = substr($ciphertext, -$this->block_size);
                     }
 
+                    return $ciphertext;
+                case self::MODE_CFB8:
+                    $ciphertext = openssl_encrypt($plaintext, $this->cipher_name_openssl, $this->key, $this->openssl_options, $this->encryptIV);
+                    if ($this->continuousBuffer) {
+                        if (($len = strlen($ciphertext)) >= $this->block_size) {
+                            $this->encryptIV = substr($ciphertext, -$this->block_size);
+                        } else {
+                            $this->encryptIV = substr($this->encryptIV, $len - $this->block_size) . substr($ciphertext, -$len);
+                        }
+                    }
                     return $ciphertext;
                 case self::MODE_OFB:
                     return $this->_openssl_ofb_process($plaintext, $this->encryptIV, $this->enbuffer);
@@ -942,6 +957,24 @@ abstract class Base
                     $pos = $len;
                 }
                 break;
+            case self::MODE_CFB8:
+                $ciphertext = '';
+                $len = strlen($plaintext);
+                $iv = $this->encryptIV;
+
+                for ($i = 0; $i < $len; ++$i) {
+                    $ciphertext .= ($c = $plaintext[$i] ^ $this->_encryptBlock($iv));
+                    $iv = substr($iv, 1) . $c;
+                }
+
+                if ($this->continuousBuffer) {
+                    if ($len >= $block_size) {
+                        $this->encryptIV = substr($ciphertext, -$block_size);
+                    } else {
+                        $this->encryptIV = substr($this->encryptIV, $len - $block_size) . substr($ciphertext, -$len);
+                    }
+                }
+                break;
             case self::MODE_OFB:
                 $xor = $this->encryptIV;
                 if (strlen($buffer['xor'])) {
@@ -1007,14 +1040,14 @@ abstract class Base
                     break;
                 case self::MODE_ECB:
                     if (!defined('OPENSSL_RAW_DATA')) {
-                        $ciphertext.= openssl_encrypt('', $this->cipher_name_openssl_ecb, $this->key, true);
+                        $ciphertext.= @openssl_encrypt('', $this->cipher_name_openssl_ecb, $this->key, true);
                     }
                     $plaintext = openssl_decrypt($ciphertext, $this->cipher_name_openssl, $this->key, $this->openssl_options);
                     break;
                 case self::MODE_CBC:
                     if (!defined('OPENSSL_RAW_DATA')) {
                         $padding = str_repeat(chr($this->block_size), $this->block_size) ^ substr($ciphertext, -$this->block_size);
-                        $ciphertext.= substr(openssl_encrypt($padding, $this->cipher_name_openssl_ecb, $this->key, true), 0, $this->block_size);
+                        $ciphertext.= substr(@openssl_encrypt($padding, $this->cipher_name_openssl_ecb, $this->key, true), 0, $this->block_size);
                         $offset = 2 * $this->block_size;
                     } else {
                         $offset = $this->block_size;
@@ -1070,6 +1103,16 @@ abstract class Base
                     } elseif ($len) {
                         $plaintext.= openssl_decrypt($ciphertext, $this->cipher_name_openssl, $this->key, $this->openssl_options, $iv);
                         $iv = substr($ciphertext, -$this->block_size);
+                    }
+                    break;
+                case self::MODE_CFB8:
+                    $plaintext = openssl_decrypt($ciphertext, $this->cipher_name_openssl, $this->key, $this->openssl_options, $this->decryptIV);
+                    if ($this->continuousBuffer) {
+                        if (($len = strlen($ciphertext)) >= $this->block_size) {
+                            $this->decryptIV = substr($ciphertext, -$this->block_size);
+                        } else {
+                            $this->decryptIV = substr($this->decryptIV, $len - $this->block_size) . substr($ciphertext, -$len);
+                        }
                     }
                     break;
                 case self::MODE_OFB:
@@ -1235,6 +1278,24 @@ abstract class Base
                     $pos = $len;
                 }
                 break;
+            case self::MODE_CFB8:
+                $plaintext = '';
+                $len = strlen($ciphertext);
+                $iv = $this->decryptIV;
+
+                for ($i = 0; $i < $len; ++$i) {
+                    $plaintext .= $ciphertext[$i] ^ $this->_encryptBlock($iv);
+                    $iv = substr($iv, 1) . $ciphertext[$i];
+                }
+
+                if ($this->continuousBuffer) {
+                    if ($len >= $block_size) {
+                        $this->decryptIV = substr($ciphertext, -$block_size);
+                    } else {
+                        $this->decryptIV = substr($this->decryptIV, $len - $block_size) . substr($ciphertext, -$len);
+                    }
+                }
+                break;
             case self::MODE_OFB:
                 $xor = $this->decryptIV;
                 if (strlen($buffer['xor'])) {
@@ -1297,7 +1358,7 @@ abstract class Base
                 for ($i = 0; $i < strlen($plaintext); $i+=$block_size) {
                     $block = substr($plaintext, $i, $block_size);
                     if (strlen($block) > strlen($buffer['ciphertext'])) {
-                        $result = openssl_encrypt($xor, $this->cipher_name_openssl_ecb, $key, $this->openssl_options);
+                        $result = @openssl_encrypt($xor, $this->cipher_name_openssl_ecb, $key, $this->openssl_options);
                         $result = !defined('OPENSSL_RAW_DATA') ? substr($result, 0, -$this->block_size) : $result;
                         $buffer['ciphertext'].= $result;
                     }
@@ -1308,7 +1369,7 @@ abstract class Base
             } else {
                 for ($i = 0; $i < strlen($plaintext); $i+=$block_size) {
                     $block = substr($plaintext, $i, $block_size);
-                    $otp = openssl_encrypt($xor, $this->cipher_name_openssl_ecb, $key, $this->openssl_options);
+                    $otp = @openssl_encrypt($xor, $this->cipher_name_openssl_ecb, $key, $this->openssl_options);
                     $otp = !defined('OPENSSL_RAW_DATA') ? substr($otp, 0, -$this->block_size) : $otp;
                     $this->_increment_str($xor);
                     $ciphertext.= $block ^ $otp;
@@ -1352,7 +1413,7 @@ abstract class Base
         }
         if ($this->continuousBuffer) {
             if (!defined('OPENSSL_RAW_DATA')) {
-                $encryptIV.= openssl_encrypt('', $this->cipher_name_openssl_ecb, $key, $this->openssl_options);
+                $encryptIV.= @openssl_encrypt('', $this->cipher_name_openssl_ecb, $key, $this->openssl_options);
             }
             $encryptIV = openssl_decrypt($encryptIV, $this->cipher_name_openssl_ecb, $key, $this->openssl_options);
             if ($overflow) {
@@ -1435,6 +1496,8 @@ abstract class Base
                 return 'ctr';
             case self::MODE_CFB:
                 return 'cfb';
+            case self::MODE_CFB8:
+                return 'cfb8';
             case self::MODE_OFB:
                 return 'ofb';
         }
@@ -1788,6 +1851,7 @@ abstract class Base
                 self::MODE_ECB    => MCRYPT_MODE_ECB,
                 self::MODE_CBC    => MCRYPT_MODE_CBC,
                 self::MODE_CFB    => 'ncfb',
+                self::MODE_CFB8   => MCRYPT_MODE_CFB,
                 self::MODE_OFB    => MCRYPT_MODE_NOFB,
                 self::MODE_STREAM => MCRYPT_MODE_STREAM,
             );
@@ -2362,6 +2426,52 @@ abstract class Base
                     return $_plaintext;
                     ';
                 break;
+            case self::MODE_CFB8:
+                $encrypt = $init_encrypt . '
+                    $_ciphertext = "";
+                    $_len = strlen($_text);
+                    $_iv = $self->encryptIV;
+
+                    for ($_i = 0; $_i < $_len; ++$_i) {
+                        $in = $_iv;
+                        '.$encrypt_block.'
+                        $_ciphertext .= ($_c = $_text[$_i] ^ $in);
+                        $_iv = substr($_iv, 1) . $_c;
+                    }
+
+                    if ($self->continuousBuffer) {
+                        if ($_len >= '.$block_size.') {
+                            $self->encryptIV = substr($_ciphertext, -'.$block_size.');
+                        } else {
+                            $self->encryptIV = substr($self->encryptIV, $_len - '.$block_size.') . substr($_ciphertext, -$_len);
+                        }
+                    }
+
+                    return $_ciphertext;
+                    ';
+                $decrypt = $init_encrypt . '
+                    $_plaintext = "";
+                    $_len = strlen($_text);
+                    $_iv = $self->decryptIV;
+
+                    for ($_i = 0; $_i < $_len; ++$_i) {
+                        $in = $_iv;
+                        '.$encrypt_block.'
+                        $_plaintext .= $_text[$_i] ^ $in;
+                        $_iv = substr($_iv, 1) . $_text[$_i];
+                    }
+
+                    if ($self->continuousBuffer) {
+                        if ($_len >= '.$block_size.') {
+                            $self->decryptIV = substr($_text, -'.$block_size.');
+                        } else {
+                            $self->decryptIV = substr($self->decryptIV, $_len - '.$block_size.') . substr($_text, -$_len);
+                        }
+                    }
+
+                    return $_plaintext;
+                    ';
+                break;
             case self::MODE_OFB:
                 $encrypt = $init_encrypt . '
                     $_ciphertext = "";
@@ -2492,6 +2602,11 @@ abstract class Base
         }
 
         // Create the $inline function and return its name as string. Ready to run!
+        if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
+            eval('$func = function ($_action, &$self, $_text) { ' . $init_crypt . 'if ($_action == "encrypt") { ' . $encrypt . ' } else { ' . $decrypt . ' } };');
+            return $func;
+        }
+
         return create_function('$_action, &$self, $_text', $init_crypt . 'if ($_action == "encrypt") { ' . $encrypt . ' } else { ' . $decrypt . ' }');
     }
 
@@ -2548,6 +2663,46 @@ abstract class Base
                     $result .= $t ^ $hash;
                 }
                 return $result . pack('H*', sha1($hash));
+        }
+    }
+
+    /**
+     * Convert float to int
+     *
+     * On ARM CPUs converting floats to ints doesn't always work
+     *
+     * @access private
+     * @param string $x
+     * @return int
+     */
+    function safe_intval($x)
+    {
+        switch (true) {
+            case is_int($x):
+            // PHP 5.3, per http://php.net/releases/5_3_0.php, introduced "more consistent float rounding"
+            case (php_uname('m') & "\xDF\xDF\xDF") != 'ARM':
+                return $x;
+        }
+        return (fmod($x, 0x80000000) & 0x7FFFFFFF) |
+            ((fmod(floor($x / 0x80000000), 2) & 1) << 31);
+    }
+
+    /**
+     * eval()'able string for in-line float to int
+     *
+     * @access private
+     * @return string
+     */
+    function safe_intval_inline()
+    {
+        switch (true) {
+            case defined('PHP_INT_SIZE') && PHP_INT_SIZE == 8:
+            case (php_uname('m') & "\xDF\xDF\xDF") != 'ARM':
+                return '%s';
+                break;
+            default:
+                $safeint = '(is_int($temp = %s) ? $temp : (fmod($temp, 0x80000000) & 0x7FFFFFFF) | ';
+                return $safeint . '((fmod(floor($temp / 0x80000000), 2) & 1) << 31))';
         }
     }
 }

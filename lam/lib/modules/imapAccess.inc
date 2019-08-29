@@ -281,21 +281,20 @@ class imapAccess extends baseModule {
 	 * @return array HTML meta data
 	 */
 	function display_html_password() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		if($this->moduleSettings['ImapAccess_ImapAdminPasswordSelect'][0] == "lam_user_pass"){
 			$message =  $this->messages['managemailbox'][6];
 			$messageElement = new htmlStatusMessage($message[0], $message[1]);
-			$messageElement->colspan = 3;
-			$return->addElement($messageElement);
-			$return->addElement(new htmlSpacer(null, '10px'), true);
+			$return->add($messageElement, 12);
+			$return->addVerticalSpacer('1rem');
 		}
-		$passwordInput = new htmlTableExtendedInputField(_("Password of IMAP admin user"), 'ImapAdminPassword', '', 'ImapAdminPassword_Sess');
+		$passwordInput = new htmlResponsiveInputField(_("Password of IMAP admin user"), 'ImapAdminPassword', '', 'ImapAdminPassword_Sess');
 		$passwordInput->setIsPassword(true);
 		$passwordInput->setRequired(true);
 		$passwordInput->setOnKeyPress('SubmitForm(\'enterPasswordButton\', event);');
-		$return->addElement($passwordInput, true);
-		$return->addElement(new htmlSpacer(null, '10px'), true);
-		$return->addElement(new htmlButton('enterPasswordButton', _('Ok')));
+		$return->add($passwordInput, 12);
+		$return->addVerticalSpacer('2rem');
+		$return->add(new htmlButton('enterPasswordButton', _('Ok')), 12, 12, 12, 'text-center');
 		return $return;
 	}
 
