@@ -117,21 +117,9 @@ class Remote {
 		}
 		$password = $_SESSION['ldap']->getPassword();
 		$keyPath = $_SESSION['config']->getScriptSSHKey();
+		$keyPassword = $_SESSION['config']->getScriptSSHKeyPassword();
 		if (!empty($keyPath)) {
-			// use key authentication
-			if (!file_exists($keyPath) || !is_readable($keyPath)) {
-				throw new LAMException(sprintf(_("Unable to read %s."), htmlspecialchars($keyPath)));
-			}
-			$key = file_get_contents($keyPath);
-			$rsa = new RSA();
-			$keyPassword = $_SESSION['config']->getScriptSSHKeyPassword();
-			if (!empty($keyPassword)) {
-				$rsa->setPassword($keyPassword);
-			}
-			if (!$rsa->loadKey($key)) {
-				throw new LAMException(sprintf(_("Unable to load key %s."), htmlspecialchars($keyPath)));
-			}
-			$password = $rsa;
+			$password = $this->loadKey($keyPath, $keyPassword);
 		}
 		$login = @$handle->login($username, $password);
 		if (!$login) {
@@ -158,6 +146,30 @@ class Remote {
 		require_once($prefix . 'Math/BigInteger.php');
 		require_once($prefix . 'System/SSH/Agent.php');
 		require_once($prefix . 'Net/SSH2.php');
+	}
+
+	/**
+	 * Loads the key
+	 *
+	 * @param string $keyPath file name
+	 * @param string $keyPassword password
+	 * @throws LAMException error loading key
+	 * @return \phpseclib\Crypt\RSA key object
+	 */
+	public function loadKey($keyPath, $keyPassword) {
+		// use key authentication
+		if (!file_exists($keyPath) || !is_readable($keyPath)) {
+			throw new LAMException(sprintf(_("Unable to read %s."), htmlspecialchars($keyPath)));
+		}
+		$key = file_get_contents($keyPath);
+		$rsa = new RSA();
+		if (!empty($keyPassword)) {
+			$rsa->setPassword($keyPassword);
+		}
+		if (!$rsa->loadKey($key)) {
+			throw new LAMException(sprintf(_("Unable to load key %s."), htmlspecialchars($keyPath)));
+		}
+		return $rsa;
 	}
 
 }

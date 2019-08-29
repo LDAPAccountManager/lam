@@ -22,7 +22,7 @@ use \htmlGroup;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2018  Roland Gruber
+  Copyright (C) 2003 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -659,15 +659,33 @@ function checkInput() {
 	$chmodOwner = 0;
 	$chmodGroup = 0;
 	$chmodOther = 0;
-	if (isset($_POST['chmod_owr']) && ($_POST['chmod_owr'] == 'on')) $chmodOwner += 4;
-	if (isset($_POST['chmod_oww']) && ($_POST['chmod_oww'] == 'on')) $chmodOwner += 2;
-	if (isset($_POST['chmod_owe']) && ($_POST['chmod_owe'] == 'on')) $chmodOwner += 1;
-	if (isset($_POST['chmod_grr']) && ($_POST['chmod_grr'] == 'on')) $chmodGroup += 4;
-	if (isset($_POST['chmod_grw']) && ($_POST['chmod_grw'] == 'on')) $chmodGroup += 2;
-	if (isset($_POST['chmod_gre']) && ($_POST['chmod_gre'] == 'on')) $chmodGroup += 1;
-	if (isset($_POST['chmod_otr']) && ($_POST['chmod_otr'] == 'on')) $chmodOther += 4;
-	if (isset($_POST['chmod_otw']) && ($_POST['chmod_otw'] == 'on')) $chmodOther += 2;
-	if (isset($_POST['chmod_ote']) && ($_POST['chmod_ote'] == 'on')) $chmodOther += 1;
+	if (isset($_POST['chmod_owr']) && ($_POST['chmod_owr'] == 'on')) {
+		$chmodOwner += 4;
+	}
+	if (isset($_POST['chmod_oww']) && ($_POST['chmod_oww'] == 'on')) {
+		$chmodOwner += 2;
+	}
+	if (isset($_POST['chmod_owe']) && ($_POST['chmod_owe'] == 'on')) {
+		$chmodOwner += 1;
+	}
+	if (isset($_POST['chmod_grr']) && ($_POST['chmod_grr'] == 'on')) {
+		$chmodGroup += 4;
+	}
+	if (isset($_POST['chmod_grw']) && ($_POST['chmod_grw'] == 'on')) {
+		$chmodGroup += 2;
+	}
+	if (isset($_POST['chmod_gre']) && ($_POST['chmod_gre'] == 'on')) {
+		$chmodGroup += 1;
+	}
+	if (isset($_POST['chmod_otr']) && ($_POST['chmod_otr'] == 'on')) {
+		$chmodOther += 4;
+	}
+	if (isset($_POST['chmod_otw']) && ($_POST['chmod_otw'] == 'on')) {
+		$chmodOther += 2;
+	}
+	if (isset($_POST['chmod_ote']) && ($_POST['chmod_ote'] == 'on')) {
+		$chmodOther += 1;
+	}
 	$chmod = $chmodOwner . $chmodGroup . $chmodOther;
 	if (!$conf->set_scriptrights($chmod)) {
 		$errors[] = array("ERROR", _("Script rights are invalid!"));
@@ -675,6 +693,16 @@ function checkInput() {
 	$conf->setScriptUserName($_POST['scriptuser']);
 	$conf->setScriptSSHKey($_POST['scriptkey']);
 	$conf->setScriptSSHKeyPassword($_POST['scriptkeypassword']);
+	if (!empty($_POST['scriptkey'])) {
+		include_once '../../lib/remote.inc';
+		$remote = new \LAM\REMOTE\Remote();
+		try {
+			$remote->loadKey($conf->getScriptSSHKey(), $conf->getScriptSSHKeyPassword());
+		}
+		catch (\LAMException $e) {
+			$errors[] = array('ERROR', _('SSH key file'), $e->getTitle());
+		}
+	}
 	// tool settings
 	$tools = getTools();
 	$toolSettings = array();
