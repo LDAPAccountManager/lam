@@ -215,13 +215,13 @@ class imapAccess extends baseModule {
 	 * @return array HTML meta data
 	 */
 	function display_html_attributes() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		if (!checkIfWriteAccessIsAllowed($this->get_scope())) {
 			return $return;
 		}
 		$msg = $this->extractUserAndEmail();
 		if ($msg != null) {
-			$return->addElement($msg);
+			$return->add($msg, 12);
 			return $return;
 		}
 		$prefix = $this->getMailboxPrefix();
@@ -232,8 +232,8 @@ class imapAccess extends baseModule {
 			return $this->display_html_password();
 		}
 
-		$return->addElement(new htmlOutputText(_('Email address')));
-		$return->addElement(new htmlOutputText($this->email), true);
+		$return->addLabel(new htmlOutputText(_('Email address')));
+		$return->addField(new htmlOutputText($this->email));
 
 		$imap_server_address = $this->getServerAddress();
 		$imap_admin_user = $this->getAdminUser();
@@ -243,33 +243,31 @@ class imapAccess extends baseModule {
 			return $this->display_html_password();
 		}
 
-		$return->addElement(new htmlOutputText(_('Mailbox')));
-		$return->addElement(new htmlOutputText($prefix . $this->getSep() . $this->user));
-		$return->addElement(new htmlHelpLink('MailAddress'), true);
-		$return->addElement(new htmlSpacer(null, '10px'), true);
+		$return->addLabel(new htmlOutputText(_('Mailbox')));
+		$mailboxGroup = new htmlGroup();
+		$mailboxGroup->addElement(new htmlOutputText($prefix . $this->getSep() . $this->user));
+		$mailboxGroup->addElement(new htmlHelpLink('MailAddress'), true);
+		$return->addField($mailboxGroup);
+		$return->addVerticalSpacer('2rem');
 
 		$list = imap_list($mbox, "{" . $imap_server_address . "}", $prefix . $this->getSep() . $this->user);
 		if (is_array($list) && sizeof($list) == 1) {
 			$this->renderQuotasForMailbox($return, $mbox, $prefix . $this->getSep() . $this->user);
-			$mailboxMessage = new htmlOutputText(_("Mailbox already exists on IMAP server."));
-			$mailboxMessage->colspan = 3;
-			$return->addElement($mailboxMessage, true);
-			$return->addElement(new htmlSpacer(null, '10px'), true);
-			$return->addElement(new htmlButton('deleteMailbox', _('Delete mailbox')));
+			$return->addVerticalSpacer('2rem');
+			$return->add(new htmlButton('deleteMailbox', _('Delete mailbox')), 12, 12, 12, 'text-center');
 		}
 		else {
 			$mailboxMessage = new htmlOutputText(_("Mailbox does not exist on IMAP server."));
-			$mailboxMessage->colspan = 3;
-			$return->addElement($mailboxMessage, true);
-			$return->addElement(new htmlSpacer(null, '10px'), true);
-			$createButton = new htmlButton('createMailbox', _('Create mailbox'));
-			$message = '';
+			$return->add($mailboxMessage, 12, 12, 12, 'text-center');
+			$return->addVerticalSpacer('2rem');
 			if ($this->isWrongDomain($email_domain)) {
-				$createButton->setIsEnabled(false);
-				$message = '<< ' . $this->messages['managemailbox'][4][1];
+				$return->add(new htmlStatusMessage('INFO', $this->messages['managemailbox'][4][1]), 12);
+				$return->addVerticalSpacer('1rem');
 			}
-			$return->addElement($createButton);
-			$return->addElement(new htmlOutputText($message));
+			else {
+				$createButton = new htmlButton('createMailbox', _('Create mailbox'));
+				$return->add($createButton, 12, 12, 12, 'text-center');
+			}
 		}
 		imap_close($mbox);
 		return $return;
@@ -301,12 +299,12 @@ class imapAccess extends baseModule {
 	/**
 	 * Display the mailbox quota.
 	 *
-	 * @param htmlTable $htmlTable structure that contained information to be displayed
+	 * @param htmlTable $container structure that contained information to be displayed
 	 * @param stream $mbox stream to open IMAP session
 	 * @param String $username user name to connect to IMAP server
-	 * @return htmlTable table with added information about user quotas or controls to add quota
+	 * @return htmlResponsiveRow table with added information about user quotas or controls to add quota
 	 */
-	function renderQuotasForMailbox($htmlTable, $mbox, $username) {
+	function renderQuotasForMailbox($container, $mbox, $username) {
 		if (($this->profileQuotaLimit != null) && ($this->profileQuotaLimit != '')) {
 			@imap_set_quota($mbox, $username, $this->profileQuotaLimit);
 			$this->profileQuotaLimit = null;
@@ -316,24 +314,24 @@ class imapAccess extends baseModule {
 		if (is_array($quota_values) && (sizeof($quota_values) > 0)) {
 			if (isset($quota_values['STORAGE']) && is_array($quota_values['STORAGE'])) {
 				$quotaLimit = $quota_values['STORAGE']['limit'];
-				$htmlTable->addElement(new htmlOutputText(_("Current usage (kB)")));
-				$htmlTable->addElement(new htmlOutputText($quota_values['STORAGE']['usage']), true);
-				$quotaLimitInput = new htmlTableExtendedInputField(_("Quota limit (kB)"), 'ImapUserQuotaLimit', $quotaLimit, 'ImapUserQuotaLimit');
-				$htmlTable->addElement($quotaLimitInput, false);
-				$htmlTable->addElement(new htmlSpacer('10px', null), false);
-				$htmlTable->addElement(new htmlButton('updateQuota', _('Update quota')), true);
-				$htmlTable->addElement(new htmlSpacer(null, '10px'), true);
+				$container->addLabel(new htmlOutputText(_("Current usage (kB)")));
+				$container->addField(new htmlOutputText($quota_values['STORAGE']['usage']), true);
+				$quotaLimitInput = new htmlResponsiveInputField(_("Quota limit (kB)"), 'ImapUserQuotaLimit', $quotaLimit, 'ImapUserQuotaLimit');
+				$container->add($quotaLimitInput, 12);
+				$container->addVerticalSpacer('2rem');
+				$container->add(new htmlButton('updateQuota', _('Update quota')), 12, 12, 12, 'text-center');
+				$container->addVerticalSpacer('1rem');
 			}
 		}
 		else {
 			$quotaLimit = "";
-			$quotaLimitInput = new htmlTableExtendedInputField(_("Quota limit (kB)"), 'ImapUserQuotaLimit', $quotaLimit, 'ImapUserQuotaLimit');
-			$htmlTable->addElement($quotaLimitInput, false);
-			$htmlTable->addElement(new htmlSpacer('10px', null), false);
-			$htmlTable->addElement(new htmlButton('updateQuota', _('Update quota')), true);
-			$htmlTable->addElement(new htmlSpacer(null, '10px'), true);
+			$quotaLimitInput = new htmlResponsiveInputField(_("Quota limit (kB)"), 'ImapUserQuotaLimit', $quotaLimit, 'ImapUserQuotaLimit');
+			$container->add($quotaLimitInput, 12);
+			$container->addVerticalSpacer('2rem');
+			$container->add(new htmlButton('updateQuota', _('Update quota')), 12, 12, 12, 'text-center');
+			$container->addVerticalSpacer('1rem');
 		}
-		return $htmlTable;
+		return $container;
 	}
 
 	/**
