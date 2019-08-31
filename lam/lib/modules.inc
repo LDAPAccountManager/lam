@@ -866,7 +866,6 @@ class accountContainer {
 		$oldPage = $this->current_page;
 		$oldSubpage = $this->subpage;
 		$result = array();
-		$stopProcessing = false; // when set to true, no module options are displayed
 		$errorsOccured = false;
 		$typeObject = $this->type->getBaseType();
 		$profileLoaded = $this->loadProfileIfRequested();
@@ -954,7 +953,6 @@ class accountContainer {
 					}
 					if (!$saveOk) {
 						$result = $saveMessages;
-						$stopProcessing = true;
 					}
 					else {
 						$this->printSuccessPage($saveMessages);
@@ -1007,7 +1005,7 @@ class accountContainer {
 		$this->titleBarTitle = $typeObject->getTitleBarTitle($this);
 		$this->titleBarSubtitle = $typeObject->getTitleBarSubtitle($this);
 		// prints a module content page
-		$this->printModuleContent($result, $stopProcessing);
+		$this->printModuleContent($result);
 		if (!$errorsOccured && ($oldPage == $this->current_page) && ($oldSubpage == $this->subpage)
 			&& isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
 			// scroll to last position
@@ -1025,9 +1023,8 @@ class accountContainer {
 	 * Prints the content part provided by the current module.
 	 *
 	 * @param array $result list of messages
-	 * @param boolean $stopProcessing true if page should end after displaying the messages
 	 */
-	private function printModuleContent($result, $stopProcessing) {
+	private function printModuleContent($result) {
 		$tabindex = 1;
 		$this->printPageHeader();
 		$this->printPasswordPromt();
@@ -1035,9 +1032,6 @@ class accountContainer {
 		if (is_array($result)) {
 			for ($i=0; $i<sizeof($result); $i++) {
 				call_user_func_array("StatusMessage", $result[$i]);
-			}
-			if ($stopProcessing) {
-				return;
 			}
 		}
 		echo '<div id="passwordMessageArea"></div>';
@@ -1799,7 +1793,7 @@ class accountContainer {
 	*
 	* @return array list of status messages
 	*/
-	function save_account() {
+	private function save_account() {
 		if (!checkIfWriteAccessIsAllowed($this->type->getId())) {
 			die();
 		}
