@@ -831,7 +831,7 @@ class accountContainer {
 	 * @param string $name class name (e.g. posixAccount)
 	 * @return baseModule account module
 	 */
-	function getAccountModule($name) {
+	public function getAccountModule($name) {
 		if (isset($this->module[$name])) {
 			return $this->module[$name];
 		}
@@ -845,7 +845,7 @@ class accountContainer {
 	 *
 	 * @return baseModule[] modules
 	 */
-	function getAccountModules() {
+	public function getAccountModules() {
 		return $this->module;
 	}
 
@@ -854,7 +854,7 @@ class accountContainer {
 	*
 	* @return ConfiguredType account type
 	*/
-	function get_type() {
+	public function get_type() {
 		return $this->type;
 	}
 
@@ -862,7 +862,7 @@ class accountContainer {
 	* This function is called when the user clicks on any button on the account pages.
 	* It prints the HTML code of each account page.
 	*/
-	function continue_main() {
+	public function continue_main() {
 		$oldPage = $this->current_page;
 		$oldSubpage = $this->subpage;
 		$result = array();
@@ -874,6 +874,11 @@ class accountContainer {
 		}
 		if (isset($_POST['accountContainerReset'])) {
 			$result = $this->load_account($this->dn_orig);
+		}
+		elseif (isset($_POST['accountContainerDelete'])) {
+			metaRefresh("../lists/deletelink.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($this->dn_orig) . "'");
+			unset($_SESSION[$this->base]);
+			exit();
 		}
 		elseif (!$profileLoaded) {
 			// change dn suffix
@@ -1303,6 +1308,12 @@ class accountContainer {
 				 . _('Cancel') . '\', \'' . _('Set random password') . '\', \'../misc/ajax.php?function=passwordChange&editKey=' . htmlspecialchars($this->base) . '\',\''
 				 . getSecurityTokenName() . '\',\'' . getSecurityTokenValue() . '\');');
 			$leftButtonGroup->addElement($passwordButton);
+		}
+		if (!$this->isNewAccount) {
+			$leftButtonGroup->addElement(new htmlSpacer('15px', null));
+			$deleteButton = new htmlButton('accountContainerDelete', _('Delete'));
+			$deleteButton->setIconClass('deleteButton');
+			$leftButtonGroup->addElement($deleteButton);
 		}
 		$row->add($leftButtonGroup, 12, 7);
 
