@@ -5479,6 +5479,10 @@ OK (10 msec)</programlisting>
     <para>Attribute name: The values of this attribute will be used to build
     the selection list.</para>
 
+    <para>Display attributes: List of attributes to show as label for the
+    options in select box. Attribute wildcards are surrounded by "$", e.g.
+    "$cn$" will be replaced by "cn" attribute. Default is "$dn$".</para>
+
     <para>Presentation:</para>
 
     <screenshot>

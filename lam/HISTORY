@@ -5,6 +5,7 @@ September 2019 6.9
    -> user name attribute for privacyIDEA can be specified
   - LAM Pro:
    -> New self service settings for login and main page footer
+   -> Custom fields: custom labels for LDAP search select list
   - Fixed bugs:
    -> Configuration issue with Unix user/host module (206)
 
