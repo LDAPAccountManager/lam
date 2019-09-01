@@ -1176,10 +1176,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 	 */
 	function display_html_attributes() {
 		$this->initCache();
-		$equalWidthElements = array();
-		$container = new htmlTable();
+		$container = new htmlResponsiveRow();
 		$fieldContainer = new htmlTable();
-		$container->addElement($fieldContainer);
+		$fieldTabletColumns = $this->isBooleanConfigOptionSet('inetOrgPerson_hidejpegPhoto') ? 12 : 6;
+		$container->add($fieldContainer, 12, $fieldTabletColumns);
 		// uid
 		if (!$this->isUnixActive() && !$this->isBooleanConfigOptionSet('inetOrgPerson_hideUID')) {
 			if ($this->isAdminReadOnly('uid')) {
@@ -1187,7 +1187,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			else {
 				$this->addSimpleInputTextField($fieldContainer, 'uid', _('User name'));
-				$equalWidthElements[] = 'uid';
 			}
 		}
 		// first name
@@ -1196,7 +1195,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		else {
 			$this->addSimpleInputTextField($fieldContainer, 'givenName', _('First name'));
-			$equalWidthElements[] = 'givenName';
 		}
 		// last name
 		if ($this->isAdminReadOnly('sn')) {
@@ -1204,7 +1202,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		else {
 			$this->addSimpleInputTextField($fieldContainer, 'sn', _('Last name'), true);
-			$equalWidthElements[] = 'sn';
 		}
 		// initials
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
@@ -1213,7 +1210,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			else {
 				$this->addSimpleInputTextField($fieldContainer, 'initials', _('Initials'));
-				$equalWidthElements[] = 'initials';
 			}
 		}
 		// common name
@@ -1223,7 +1219,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			else {
 				$this->addMultiValueInputTextField($fieldContainer, 'cn', _('Common name'), true);
-				$equalWidthElements[] = 'cn';
 			}
 		}
 		// description
@@ -1232,7 +1227,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'description', _('Description'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'description', _('Description'), false, null, false, null, null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'description', _('Description'));
 			}
 		}
 
@@ -1250,7 +1245,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'street', _('Street'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'street', _('Street'), false, null, false, null, null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'street', _('Street'));
 			}
 		}
 		// post office box
@@ -1259,7 +1254,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'postOfficeBox', _('Post office box'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'postOfficeBox', _('Post office box'), false, null, false, null, null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'postOfficeBox', _('Post office box'));
 			}
 		}
 		// postal code
@@ -1268,7 +1263,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'postalCode', _('Postal code'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'postalCode', _('Postal code'), false, null, false, null, null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'postalCode', _('Postal code'));
 			}
 		}
 		// location
@@ -1277,7 +1272,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'l', _('Location'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'l', _('Location'), false, null, false, null, null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'l', _('Location'));
 			}
 		}
 		// state
@@ -1286,7 +1281,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'st', _('State'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'st', _('State'), false, null, false, null, null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'st', _('State'));
 			}
 		}
 		// postal address
@@ -1314,7 +1309,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 				else {
 					$addressContainer->addElement(new htmlInputTextarea('postalAddress' . $i, $postalAddresses[$i], 30, 3));
-					$equalWidthElements[] = 'postalAddress' . $i;
 					if ($i < (sizeof($postalAddresses) - 1)) {
 						$addressContainer->addElement(new htmlOutputText('<br>', false));
 					}
@@ -1358,7 +1352,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 				else {
 					$registeredAddressContainer->addElement(new htmlInputTextarea('registeredAddress' . $i, $registeredAddresses[$i], 30, 3));
-					$equalWidthElements[] = 'registeredAddress' . $i;
 					if ($i < (sizeof($registeredAddresses) - 1)) {
 						$registeredAddressContainer->addElement(new htmlOutputText('<br>', false));
 					}
@@ -1383,7 +1376,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'physicalDeliveryOfficeName', _('Office name'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'physicalDeliveryOfficeName', _('Office name'), false, null, false, null, null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'physicalDeliveryOfficeName', _('Office name'));
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRoomNumber')) {
@@ -1392,7 +1385,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			else {
 				$this->addSimpleInputTextField($fieldContainer, 'roomNumber', _('Room number'));
-				$equalWidthElements[] = 'roomNumber';
 			}
 		}
 
@@ -1407,7 +1399,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'telephoneNumber', _('Telephone number'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'telephoneNumber', _('Telephone number'), false, null, false, null, null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'telephoneNumber', _('Telephone number'));
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideHomeTelephoneNumber')) {
@@ -1415,7 +1407,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'homePhone', _('Home telephone number'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'homePhone', _('Home telephone number'), false, null, false, null, null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'homePhone', _('Home telephone number'));
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideMobileNumber')) {
@@ -1423,7 +1415,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'mobile', _('Mobile number'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'mobile', _('Mobile number'), false, null, false, null, null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'mobile', _('Mobile number'));
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber')) {
@@ -1431,7 +1423,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'facsimileTelephoneNumber', _('Fax number'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'facsimileTelephoneNumber', _('Fax number'), false, null, false, null, null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'facsimileTelephoneNumber', _('Fax number'));
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePager', true)) {
@@ -1439,7 +1431,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'pager', _('Pager'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'pager', _('Pager'), false, null, false, null, null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'pager', _('Pager'));
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
@@ -1447,7 +1439,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'mail', _('Email address'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'mail', _('Email address'), false, null, false, null, null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'mail', _('Email address'));
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLabeledURI')) {
@@ -1455,7 +1447,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'labeledURI', _('Web site'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'labeledURI', _('Web site'), false, null, false, null, null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'labeledURI', _('Web site'));
 			}
 		}
 
@@ -1471,7 +1463,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'title', _('Job title'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'title', _('Job title'), false, null, false, array_slice($this->titleCache, 0, 300), null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'title', _('Job title'), false, null, false, array_slice($this->titleCache, 0, 300));
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideCarLicense')) {
@@ -1480,7 +1472,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			else {
 				$this->addSimpleInputTextField($fieldContainer, 'carLicense', _('Car license'));
-				$equalWidthElements[] = 'carLicense';
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeNumber')) {
@@ -1489,7 +1480,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			else {
 				$this->addSimpleInputTextField($fieldContainer, 'employeeNumber', _('Employee number'));
-				$equalWidthElements[] = 'employeeNumber';
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
@@ -1498,7 +1488,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			else {
 				$this->addSimpleInputTextField($fieldContainer, 'employeeType', _('Employee type'), false, null, false, array_slice($this->employeeTypeCache, 0, 300));
-				$equalWidthElements[] = 'employeeType';
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
@@ -1506,7 +1495,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'businessCategory', _('Business category'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'businessCategory', _('Business category'), false, null, false, array_slice($this->businessCategoryCache, 0, 300), null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'businessCategory', _('Business category'), false, null, false, array_slice($this->businessCategoryCache, 0, 300));
 			}
 		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
@@ -1514,7 +1503,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'departmentNumber', _('Department'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'departmentNumber', _('Department'), false, null, false, array_slice($this->departmentCache, 0, 300), null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'departmentNumber', _('Department'), false, null, false, array_slice($this->departmentCache, 0, 300));
 			}
 		}
 		// organisational unit
@@ -1523,7 +1512,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'ou', _('Organisational unit'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'ou', _('Organisational unit'), false, null, false, array_slice($this->ouCache, 0, 300), null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'ou', _('Organisational unit'), false, null, false, array_slice($this->ouCache, 0, 300));
 			}
 		}
 		// organisation
@@ -1532,7 +1521,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$this->addSimpleReadOnlyField($fieldContainer, 'o', _('Organisation'));
 			}
 			else {
-				$this->addMultiValueInputTextField($fieldContainer, 'o', _('Organisation'), false, null, false, array_slice($this->oCache, 0, 300), null, $equalWidthElements);
+				$this->addMultiValueInputTextField($fieldContainer, 'o', _('Organisation'), false, null, false, array_slice($this->oCache, 0, 300));
 			}
 		}
 		// user certificates
@@ -1624,10 +1613,8 @@ class inetOrgPerson extends baseModule implements passwordService {
 					$imageContainer->addElement(new htmlButton('delPhoto', _('Delete photo')));
 				}
 			}
-			$container->addElement(new htmlSpacer('50px', null));
-			$container->addElement($imageContainer, false);
+			$container->add($imageContainer, 12, 6);
 		}
-		$container->addElement(new htmlEqualWidth($equalWidthElements));
 		return $container;
 	}
 
@@ -1715,19 +1702,17 @@ class inetOrgPerson extends baseModule implements passwordService {
 	* @return array meta HTML code
 	*/
 	public function display_html_photo() {
-		$container = new htmlTable();
+		$container = new htmlResponsiveRow();
 		if (empty($this->attributes['jpegPhoto'][0])) {
-			$container->addElement(new htmlSubTitle(_('Upload image')), true);
+			$container->add(new htmlSubTitle(_('Upload image')), 12);
 			$label = _('Photo file');
-			$container->addElement(new htmlTableExtendedInputFileUpload('photoFile', $label, 'photoUpload'), true);
-			$container->addVerticalSpace('1rem');
-			$buttonContainer = new htmlTable();
-			$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'photo', 'upload', _('Upload')));
-			$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
-			$container->addElement($buttonContainer);
+			$container->add(new htmlResponsiveInputFileUpload('photoFile', $label, 'photoUpload'), 12);
+			$container->addVerticalSpacer('1rem');
+			$container->addLabel(new htmlAccountPageButton(get_class($this), 'photo', 'upload', _('Upload')));
+			$container->addField(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
 		}
 		else {
-			$container->addElement(new htmlSubTitle(_('Crop image')), true);
+			$container->add(new htmlSubTitle(_('Crop image')), 12);
 			$jpeg_filename = 'jpg' . getRandomNumber() . '.jpg';
 			$outjpeg = @fopen(dirname(__FILE__) . '/../../tmp/' . $jpeg_filename, "wb");
 			fwrite($outjpeg, $this->attributes['jpegPhoto'][0]);
@@ -1736,11 +1721,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$img = new htmlImage($photoFile);
 			$img->setCSSClasses(array('photo'));
 			$img->enableCropping();
-			$container->addElement($img, true);
-			$container->addVerticalSpace('1rem');
-			$buttonContainer = new htmlTable();
-			$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'crop', _('Done')));
-			$container->addElement($buttonContainer, true);
+			$container->add($img, 12);
+			$container->addVerticalSpacer('1rem');
+			$doneButton = new htmlAccountPageButton(get_class($this), 'attributes', 'crop', _('Done'));
+			$container->add($doneButton, 12);
 		}
 		return $container;
 	}
@@ -1751,7 +1735,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 	* @return htmlElement HTML meta data
 	*/
 	function display_html_manager() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		if (!isset($this->attributes['manager'])) {
 			$this->attributes['manager'] = array();
 		}
@@ -1771,18 +1755,19 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 			$size = 20;
-			if (sizeof($options) < 20) $size = sizeof($options);
+			if (sizeof($options) < 20) {
+				$size = sizeof($options);
+			}
 			$managerSelect = new htmlSelect('manager', $options, array(), $size);
 			$managerSelect->setHasDescriptiveElements(true);
 			$managerSelect->setMultiSelect(true);
 			$managerSelect->setRightToLeftTextDirection(true);
 			$managerSelect->setSortElements(false);
 			$managerSelect->setTransformSingleSelect(false);
-			$return->addElement($managerSelect, true);
-			$buttonTable = new htmlTable();
-			$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'manager', 'addManagers', _('Add')));
-			$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'manager', 'cancel', _('Cancel')));
-			$return->addElement($buttonTable);
+			$return->add($managerSelect, 12);
+			$return->addVerticalSpacer('1rem');
+			$return->addLabel(new htmlAccountPageButton(get_class($this), 'manager', 'addManagers', _('Add')));
+			$return->addField(new htmlAccountPageButton(get_class($this), 'manager', 'cancel', _('Cancel')));
 			return $return;
 		}
 		// show existing managers
@@ -1807,17 +1792,16 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$managerSelect->setRightToLeftTextDirection(true);
 			$managerSelect->setSortElements(false);
 			$managerSelect->setTransformSingleSelect(false);
-			$return->addElement($managerSelect, true);
+			$return->add($managerSelect, 12);
+			$return->addVerticalSpacer('0.5rem');
 			$removeButton = new htmlAccountPageButton(get_class($this), 'manager', 'remove', _('Remove selected entries'));
-			$removeButton->colspan = 3;
-			$return->addElement($removeButton, true);
-			$return->addElement(new htmlOutputText('&nbsp;', false), true);
+			$return->add($removeButton, 12, 12, 12, 'text-center');
+			$return->addVerticalSpacer('1rem');
+			$return->add(new htmlHorizontalLine(), 12);
 		}
-		$return->addElement(new htmlOutputText('&nbsp;', false), true);
-		$buttonTable = new htmlTable();
-		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'manager', 'select', _('Add entries')));
-		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'managerBack', _('Back')));
-		$return->addElement($buttonTable);
+		$return->addVerticalSpacer('1rem');
+		$return->addLabel(new htmlAccountPageButton(get_class($this), 'manager', 'select', _('Add entries')));
+		$return->addField(new htmlAccountPageButton(get_class($this), 'attributes', 'managerBack', _('Back')));
 		return $return;
 	}
 
@@ -1856,7 +1840,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 	* @return array meta HTML code
 	*/
 	function display_html_userCertificate() {
-		$container = new htmlTable();
+		$container = new htmlResponsiveRow();
 		if (isset($this->attributes['userCertificate;binary'])) {
 			$table = new htmlTable();
 			$table->colspan = 10;
@@ -1893,20 +1877,16 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 				$table->addNewLine();
 			}
-			$container->addElement($table, true);
-			$container->addElement(new htmlSpacer(null, '20px'), true);
+			$container->add($table, 12);
+			$container->addVerticalSpacer('2rem');
 		}
-		$newGroup = new htmlGroup();
-		$newGroup->addElement(new htmlOutputText(_('New user certificate')));
-		$newGroup->addElement(new htmlSpacer('1px', null));
-		$newGroup->addElement(new htmlInputFileUpload('userCertificateUpload'));
-		$newGroup->addElement(new htmlSpacer('1px', null));
+		$container->add(new htmlResponsiveInputFileUpload('userCertificateUpload', _('New user certificate')), 12, 6);
+
 		$uploadButton = new htmlAccountPageButton(get_class($this), 'userCertificate', 'submit', _('Upload'));
 		$uploadButton->setIconClass('upButton');
-		$newGroup->addElement($uploadButton);
-		$container->addElement($newGroup, true);
-		$container->addElement(new htmlSpacer(null, '10px'), true);
-		$container->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
+		$container->add($uploadButton, 12, 6);
+		$container->addVerticalSpacer('2rem');
+		$container->add(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')), 12);
 		return $container;
 	}
 

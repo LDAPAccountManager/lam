@@ -78,11 +78,11 @@ class inetLocalMailRecipient extends baseModule {
 				"Headline" => _("Routing address"), 'attr' => 'mailRoutingAddress',
 				"Text" => _("This is the target email address for the user's mails.")
 			),
-			'localAdr' => array(
+			'mailLocalAddress' => array(
 				"Headline" => _("Local address"), 'attr' => 'mailLocalAddress',
 				"Text" => _("This is one of the users public email addresses.")
 			),
-			'localAdrList' => array(
+			'mailLocalAddressList' => array(
 				"Headline" => _("Local address list"), 'attr' => 'mailLocalAddress',
 				"Text" => _("This is a comma separated list of the users public email addresses.")
 			),
@@ -94,7 +94,7 @@ class inetLocalMailRecipient extends baseModule {
 		$profileContainer = new htmlResponsiveRow();
 		$profileContainer->add(new htmlResponsiveInputCheckbox('inetLocalMailRecipient_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
 		$profileContainer->add(new htmlResponsiveInputField(_('Routing address'), 'inetLocalMailRecipient_mailRoutingAddress', null, 'mailRoutingAddress'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Local address'), 'inetLocalMailRecipient_mailLocalAddress', null, 'localAdr'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Local address'), 'inetLocalMailRecipient_mailLocalAddress', null, 'mailLocalAddress'), 12);
 		$profileContainer->add(new htmlResponsiveInputField(_('Mail server'), 'inetLocalMailRecipient_host', null, 'mailHost'), 12);
 		$return['profile_options'] = $profileContainer;
 		// profile checks
@@ -117,9 +117,9 @@ class inetLocalMailRecipient extends baseModule {
 				'example' => _('smiller@otherdomain.org')
 			),
 			array(
-				'name' => 'inetLocalMailRecipient_localAdr',
+				'name' => 'inetLocalMailRecipient_mailLocalAddress',
 				'description' => _('Local address list'),
-				'help' => 'localAdrList',
+				'help' => 'mailLocalAddressList',
 				'example' => _('smiller@yourdomain.org')
 			),
 			array(
@@ -132,7 +132,7 @@ class inetLocalMailRecipient extends baseModule {
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'routingAdr' => _('Routing address'),
-			'localAdr' => _('Local address list'),
+			'mailLocalAddress' => _('Local address list'),
 			'host' => _('Mail server')
 		);
 		// self service
@@ -149,8 +149,8 @@ class inetLocalMailRecipient extends baseModule {
 	function load_Messages() {
 		$this->messages['mailRoutingAddress'][0] = array('ERROR', 'Routing address is invalid!');  // third array value is set dynamically
 		$this->messages['mailRoutingAddress'][1] = array('ERROR', _('Account %s:') . ' inetLocalMailRecipient_routingAdr', 'Routing address is invalid!');
-		$this->messages['localAdr'][0] = array('ERROR', 'Local address is invalid!');  // third array value is set dynamically
-		$this->messages['localAdr'][1] = array('ERROR', _('Account %s:') . ' inetLocalMailRecipient_localAdr', 'Local address is invalid!');
+		$this->messages['mailLocalAddress'][0] = array('ERROR', 'Local address is invalid!');  // third array value is set dynamically
+		$this->messages['mailLocalAddress'][1] = array('ERROR', _('Account %s:') . ' inetLocalMailRecipient_mailLocalAddress', 'Local address is invalid!');
 		$this->messages['mailHost'][0] = array('ERROR', 'Mail server is invalid!');  // third array value is set dynamically
 		$this->messages['mailHost'][1] = array('ERROR', _('Account %s:') . ' inetLocalMailRecipient_server', 'Mail server is invalid!');
 	}
@@ -177,43 +177,21 @@ class inetLocalMailRecipient extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		if (in_array('inetLocalMailRecipient', $this->attributes['objectClass'])) {
 			// mail routing address
 			$this->addSimpleInputTextField($return, 'mailRoutingAddress', _('Routing address'));
 			// mail server
 			$this->addSimpleInputTextField($return, 'mailHost', _('Mail server'));
 			// list current local addresses
-			$localAdresses = array();
-			if (isset($this->attributes['mailLocalAddress'])) $localAdresses = $this->attributes['mailLocalAddress'];
-			for ($i = 0; $i < sizeof($localAdresses); $i++) {
-				if ($i == 0) {
-					$return->addElement(new htmlOutputText(_('Local address')));
-				}
-				else {
-					$return->addElement(new htmlOutputText(''));
-				}
-				$return->addElement(new htmlInputField('localAdr' . $i, $localAdresses[$i]));
-				$return->addElement(new htmlButton('delAdr' . $i, 'del.png', true));
-				if ($i == 0) {
-					$return->addElement(new htmlHelpLink('localAdr'));
-				}
-				$return->addNewLine();
-			}
-			// input box for new local addresses
-			$return->addElement(new htmlOutputText(_('New local address')));
-			$return->addElement(new htmlInputField('localAdr', ''));
-			$return->addElement(new htmlButton('addAdr', 'add.png', true));
-			$return->addElement(new htmlHelpLink('localAdr'));
-			$return->addElement(new htmlHiddenInput('adr_number', sizeof($localAdresses)));
+			$this->addMultiValueInputTextField($return, 'mailLocalAddress', _('Local address'));
 
-			$return->addElement(new htmlSpacer(null, '10px'), true);
+			$return->addVerticalSpacer('2rem');
 			$deleteButton = new htmlButton('remObjectClass', _('Remove mail routing extension'));
-			$deleteButton->colspan = 3;
-			$return->addElement($deleteButton);
+			$return->add($deleteButton, 12, 12, 12, 'text-center');
 		}
 		else {
-			$return->addElement(new htmlButton('addObjectClass', _('Add mail routing extension')));
+			$return->add(new htmlButton('addObjectClass', _('Add mail routing extension')), 12);
 		}
 		return $return;
 	}
@@ -242,7 +220,7 @@ class inetLocalMailRecipient extends baseModule {
 			return array();
 		}
 		$errors = array();
-		$this->getAccountContainer()->replaceWildcardsInPOST(array('localAdr', 'mailRoutingAddress'));
+		$this->getAccountContainer()->replaceWildcardsInPOST(array('mailLocalAddress', 'mailRoutingAddress'));
 		$this->attributes['mailRoutingAddress'] = array();
 		$this->attributes['mailLocalAddress'] = array();
 		$this->attributes['mailHost'] = array();
@@ -270,39 +248,7 @@ class inetLocalMailRecipient extends baseModule {
 					$errors[] = $message;
 			}
 		}
-		// check old local addresses
-		if (isset($_POST['adr_number'])) {
-			for ($i = 0; $i < $_POST['adr_number']; $i++) {
-				if (isset($_POST['delAdr' . $i])) continue;
-				if (isset($_POST['localAdr' . $i]) && ($_POST['localAdr' . $i] != "")) {
-					// check if address has correct format
-					if (!get_preg($_POST['localAdr' . $i], 'mailLocalAddress')) {
-						$message = $this->messages['localAdr'][0];
-						$message[] = $_POST['localAdr' . $i];
-						$errors[] = $message;
-					}
-					$this->attributes['mailLocalAddress'][] = $_POST['localAdr' . $i];
-				}
-			}
-		}
-		// check new local address
-		if (isset($_POST['localAdr']) && ($_POST['localAdr'] != "")) {
-			// check if address has correct format
-			if (get_preg($_POST['localAdr'], 'mailLocalAddress')) {
-				// check if new address is not already in database
-				$data = searchLDAPByAttribute('mailLocalAddress', $_POST['localAdr'], 'inetLocalMailRecipient', array('dn'), array($this->get_scope()));
-				if (sizeof($data) > 0) {
-					$errors[] = array('WARN', _('This mail address is already in use:') . " " . $_POST['localAdr'], $data[0]['dn']);
-				}
-				$this->attributes['mailLocalAddress'][] = $_POST['localAdr'];
-			}
-			else {
-					$message = $this->messages['localAdr'][0];
-					$message[] = $_POST['localAdr'];
-					$errors[] = $message;
-			}
-		}
-		$this->attributes['mailLocalAddress'] = array_unique($this->attributes['mailLocalAddress']);
+		$this->processMultiValueInputTextField('mailLocalAddress', $errors, 'mailLocalAddress');
 		return $errors;
 	}
 
@@ -334,9 +280,11 @@ class inetLocalMailRecipient extends baseModule {
 		$messages = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
-			if (!in_array("inetLocalMailRecipient", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "inetLocalMailRecipient";
+			if (!in_array("inetLocalMailRecipient", $partialAccounts[$i]['objectClass'])) {
+				$partialAccounts[$i]['objectClass'][] = "inetLocalMailRecipient";
+			}
 			// add local addresses
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetLocalMailRecipient_localAdr', 'mailLocalAddress', 'mailLocalAddress', $this->messages['localAdr'][1], $messages, '/,[ ]*/');
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetLocalMailRecipient_mailLocalAddress', 'mailLocalAddress', 'mailLocalAddress', $this->messages['mailLocalAddress'][1], $messages, '/,[ ]*/');
 			// add routing address
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetLocalMailRecipient_routingAdr', 'mailRoutingAddress',
 				'email', $this->messages['mailRoutingAddress'][1], $messages);
@@ -354,7 +302,7 @@ class inetLocalMailRecipient extends baseModule {
 	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
 		$this->addSimplePDFField($return, 'routingAdr', _('Routing address'), 'mailRoutingAddress');
-		$this->addSimplePDFField($return, 'localAdr', _('Local address list'), 'mailLocalAddress');
+		$this->addSimplePDFField($return, 'mailLocalAddress', _('Local address list'), 'mailLocalAddress');
 		$this->addSimplePDFField($return, 'host', _('Mail server'), 'mailHost');
 		return $return;
 	}
