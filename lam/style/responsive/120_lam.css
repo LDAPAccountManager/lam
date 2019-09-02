@@ -74,6 +74,10 @@ table.padding5 td {
 	max-width: none;
 }
 
+.module-content-row>.row {
+	max-width: 80rem;
+}
+
 select.auto-width {
 	width: auto;
 }

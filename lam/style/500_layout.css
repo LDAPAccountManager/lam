@@ -163,6 +163,11 @@ textarea {
 	margin-top: 0px;
 }
 
+.noMarginSides {
+	margin-right: 0px;
+	margin-left: 0px;
+}
+
 .padding0 {
 	padding: 0em !important;
 }
@@ -267,6 +272,10 @@ table.collapse {
 
 .text-center {
 	text-align: center;
+}
+
+.div-center {
+	margin: 0 auto;
 }
 
 .bold {

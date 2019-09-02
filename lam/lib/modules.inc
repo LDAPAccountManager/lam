@@ -1080,12 +1080,12 @@ class accountContainer {
 		parseHtml(null, $titleBarDiv, array(), false, $tabindex, $this->type->getScope());
 
 		echo '<div id="lamVerticalTabs" class="ui-tabs ui-widget ui-widget-content ui-corner-bottom ui-helper-clearfix">';
-		echo '<table>';
+		echo '<table class="fullwidth">';
 			echo '<tr><td style="vertical-align: top;">';
 			// tab menu
 			$this->printModuleTabs();
-			echo '</td><td style="vertical-align: top;">';
-			echo "<div class=\"ui-tabs-panel ui-widget-content ui-corner-bottom\">\n";
+			echo '</td><td style="vertical-align: top;" width="100%">';
+			echo "<div class=\"ui-tabs-panel ui-widget-content ui-corner-bottom fullwidth module-content-row\">\n";
 			// content area
 			// display html-code from modules
 			$return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage));
