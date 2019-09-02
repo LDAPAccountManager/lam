@@ -1395,6 +1395,8 @@ abstract class baseModule {
 					$container->addLabel($labelTextOut);
 				}
 			}
+			$help = new htmlHelpLink($attrName);
+			$help->alignment = htmlElement::ALIGN_TOP;
 			$subContainer = new htmlTable();
 			$subContainer->alignment = htmlElement::ALIGN_TOP;
 			for ($i = 0; $i < sizeof($values); $i++) {
@@ -1429,28 +1431,30 @@ abstract class baseModule {
 					$htmlIDs[] = $attrName . '_' . $i;
 				}
 				if (!empty($values[$i])) {
-					$subContainer->addElement(new htmlButton('del_' . $attrName . '_' . $i, 'del.png', true));
+					$delButton = new htmlButton('del_' . $attrName . '_' . $i, 'del.png', true);
+					$delButton->setCSSClasses(array('noMarginSides'));
+					$subContainer->addElement($delButton);
 				}
 				if ($i == 0) {
-					$subContainer->addElement(new htmlButton('add_' . $attrName, 'add.png', true));
+					$addButton = new htmlButton('add_' . $attrName, 'add.png', true);
+					$addButton->setCSSClasses(array('noMarginSides'));
+					$subContainer->addElement($addButton);
+					if ($container instanceof htmlResponsiveRow) {
+						$subContainer->addElement($help);
+					}
 				}
 				$subContainer->addNewLine();
 			}
-			$help = new htmlHelpLink($attrName);
-			$help->alignment = htmlElement::ALIGN_TOP;
 			if ($container instanceof htmlTable) {
 				$container->addElement($subContainer);
 				$container->addElement($help, true);
 			}
 			else {
-				$subContainerWithHelp = new htmlTable();
-				$subContainerWithHelp->addElement($subContainer);
-				$subContainerWithHelp->addElement($help, true);
 				if ($label !== null) {
-					$container->addField($subContainerWithHelp);
+					$container->addField($subContainer);
 				}
 				else {
-					$container->add($subContainerWithHelp, 12);
+					$container->add($subContainer, 12);
 				}
 			}
 	}
