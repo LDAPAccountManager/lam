@@ -1177,7 +1177,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 	function display_html_attributes() {
 		$this->initCache();
 		$container = new htmlResponsiveRow();
-		$fieldContainer = new htmlTable();
+		$fieldContainer = new htmlResponsiveRow();
 		$fieldTabletColumns = $this->isBooleanConfigOptionSet('inetOrgPerson_hidejpegPhoto') ? 12 : 6;
 		$container->add($fieldContainer, 12, $fieldTabletColumns);
 		// uid
@@ -1236,7 +1236,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideState') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress')
 				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideRoomNumber')
 				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideRegisteredAddress')) {
-			$fieldContainer->addElement(new htmlSubTitle(_('Address')), true);
+			$fieldContainer->add(new htmlSubTitle(_('Address')), 12);
 		}
 
 		// street
@@ -1297,7 +1297,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			$addressLabel = new htmlOutputText(_('Postal address'));
 			$addressLabel->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($addressLabel);
+			$fieldContainer->addLabel($addressLabel);
 			$addressContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($postalAddresses); $i++) {
 				if ($this->isAdminReadOnly('postalAddress')) {
@@ -1314,18 +1314,12 @@ class inetOrgPerson extends baseModule implements passwordService {
 					}
 					else {
 						$addressContainer->addElement(new htmlButton('addPostalAddress', 'add.png', true));
+						$addressHelp = new htmlHelpLink('postalAddress');
+						$addressContainer->addElement($addressHelp);
 					}
 				}
 			}
-			$fieldContainer->addElement($addressContainer);
-			if ($this->isAdminReadOnly('postalAddress')) {
-				$fieldContainer->addNewLine();
-			}
-			else {
-				$addressHelp = new htmlHelpLink('postalAddress');
-				$addressHelp->alignment = htmlElement::ALIGN_TOP;
-				$fieldContainer->addElement($addressHelp, true);
-			}
+			$fieldContainer->addField($addressContainer);
 		}
 		// registered address
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRegisteredAddress')) {
@@ -1340,7 +1334,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 			$registeredAddressLabel = new htmlOutputText(_('Registered address'));
 			$registeredAddressLabel->alignment = htmlElement::ALIGN_TOP;
-			$fieldContainer->addElement($registeredAddressLabel);
+			$fieldContainer->addLabel($registeredAddressLabel);
 			$registeredAddressContainer = new htmlGroup();
 			for ($i = 0; $i < sizeof($registeredAddresses); $i++) {
 				if ($this->isAdminReadOnly('registeredAddress')) {
@@ -1357,18 +1351,12 @@ class inetOrgPerson extends baseModule implements passwordService {
 					}
 					else {
 						$registeredAddressContainer->addElement(new htmlButton('addRegisteredAddress', 'add.png', true));
+						$registeredAddressHelp = new htmlHelpLink('registeredAddress');
+						$registeredAddressContainer->addElement($registeredAddressHelp);
 					}
 				}
 			}
-			$fieldContainer->addElement($registeredAddressContainer);
-			if ($this->isAdminReadOnly('registeredAddress')) {
-				$fieldContainer->addNewLine();
-			}
-			else {
-				$registeredAddressHelp = new htmlHelpLink('registeredAddress');
-				$registeredAddressHelp->alignment = htmlElement::ALIGN_TOP;
-				$fieldContainer->addElement($registeredAddressHelp, true);
-			}
+			$fieldContainer->addField($registeredAddressContainer);
 		}
 		// office name
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName')) {
@@ -1391,7 +1379,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideHomeTelephoneNumber')
 				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideMobileNumber') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber')
 				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideLabeledURI')) {
-			$fieldContainer->addElement(new htmlSubTitle(_('Contact data')), true);
+			$fieldContainer->add(new htmlSubTitle(_('Contact data')), 12);
 		}
 
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
@@ -1455,7 +1443,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')
 				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments') || !$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')
 				|| !$this->isBooleanConfigOptionSet('inetOrgPerson_hideuserCertificate')) {
-			$fieldContainer->addElement(new htmlSubTitle(_('Work details')), true);
+			$fieldContainer->add(new htmlSubTitle(_('Work details')), 12);
 		}
 
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
@@ -1526,7 +1514,8 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		// user certificates
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideuserCertificate')) {
-			$fieldContainer->addElement(new htmlOutputText(_('User certificates')));
+			$fieldContainer->addVerticalSpacer('0.5rem');
+			$fieldContainer->addLabel(new htmlOutputText(_('User certificates')));
 			$userCertificateGroup = new htmlGroup();
 			$userCertificateCount = 0;
 			if (isset($this->attributes['userCertificate;binary'])) {
@@ -1536,24 +1525,19 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$userCertificateGroup->addElement(new htmlSpacer('10px', null));
 			if (!$this->isAdminReadOnly('manager')) {
 				$userCertificateGroup->addElement(new htmlAccountPageButton(get_class($this), 'userCertificate', 'manage', _('Manage')));
+				$userCertificateGroup->addElement(new htmlHelpLink('userCertificate'));
 			}
-			$fieldContainer->addElement($userCertificateGroup);
-			if ($this->isAdminReadOnly('manager')) {
-				$fieldContainer->addNewLine();
-			}
-			else {
-				$fieldContainer->addElement(new htmlHelpLink('userCertificate'), true);
-			}
+			$fieldContainer->addField($userCertificateGroup);
 		}
 		// manager
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')) {
-			$fieldContainer->addElement(new htmlOutputText(_('Manager')));
-			if ($this->isAdminReadOnly('manager')) {
-				$fieldContainer->addNewLine();
-			}
-			else {
-				$fieldContainer->addElement(new htmlAccountPageButton(get_class($this), 'manager', 'change', _("Change")));
-				$fieldContainer->addElement(new htmlHelpLink('manager'), true);
+			$fieldContainer->addVerticalSpacer('0.5rem');
+			$fieldContainer->addLabel(new htmlOutputText(_('Manager')));
+			if (!$this->isAdminReadOnly('manager')) {
+				$managerButtonGroup = new htmlGroup();
+				$managerButtonGroup->addElement(new htmlAccountPageButton(get_class($this), 'manager', 'change', _("Change")));
+				$managerButtonGroup->addElement(new htmlHelpLink('manager'));
+				$fieldContainer->addField($managerButtonGroup);
 			}
 			if (isset($this->attributes['manager'][0])) {
 				$managerList = array();
@@ -1569,13 +1553,13 @@ class inetOrgPerson extends baseModule implements passwordService {
 					$manager->alignment = htmlElement::ALIGN_RIGHT;
 					$managers->addElement($manager, true);
 				}
-				$fieldContainer->addElement(new htmlOutputText(''));
-				$fieldContainer->addElement($managers, true);
+				$fieldContainer->addLabel(new htmlOutputText('&nbsp;', false));
+				$fieldContainer->addField($managers);
 			}
 		}
 		// password buttons
 		if (!$this->isUnixActive() && checkIfWriteAccessIsAllowed($this->get_scope()) && isset($this->attributes['userPassword'][0]) && !$this->isAdminReadOnly('userPassword')) {
-			$fieldContainer->addElement(new htmlSubTitle(_('Password')), true);
+			$fieldContainer->add(new htmlSubTitle(_('Password')), 12);
 			$pwdContainer = new htmlTable();
 			if (pwd_is_enabled($this->attributes['userPassword'][0])) {
 				$pwdContainer->addElement(new htmlButton('lockPassword', _('Lock password')));
@@ -1584,12 +1568,12 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$pwdContainer->addElement(new htmlButton('unlockPassword', _('Unlock password')));
 			}
 			$pwdContainer->addElement(new htmlButton('removePassword', _('Remove password')));
-			$pwdContainer->colspan = 2;
 			$fieldContainer->addElement($pwdContainer);
 		}
 		// photo
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidejpegPhoto')) {
 			$imageContainer = new htmlTable();
+			$imageContainer->setCSSClasses(array('div-center'));
 			$imageContainer->alignment = htmlElement::ALIGN_TOP;
 			$photoFile = '../../graphics/userDefault.png';
 			$noPhoto = true;
