@@ -1398,6 +1398,7 @@ abstract class baseModule {
 			$help = new htmlHelpLink($attrName);
 			$help->alignment = htmlElement::ALIGN_TOP;
 			$subContainer = new htmlTable();
+			$subContainer->setCSSClasses(array('fullwidth'));
 			$subContainer->alignment = htmlElement::ALIGN_TOP;
 			for ($i = 0; $i < sizeof($values); $i++) {
 				if (!$isTextArea) {
