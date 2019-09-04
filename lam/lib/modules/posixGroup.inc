@@ -521,7 +521,7 @@ class posixGroup extends baseModule implements passwordService {
 			'filter' => array(
 				"Headline" => _("Filter"),
 				"Text" => _("Here you can enter a filter value. Only entries which contain the filter text will be shown.")
-					. ' ' . _('The filter can be any regular expression, e.g. ".*" = any character, "^" = line start, "$" = line end.')
+					. ' ' . _('The filter can be any regular expression, e.g. ".*" = any characters, "^" = line start, "$" = line end.')
 			),
 			'hidememberUid' => array(
 				"Headline" => _('Disable membership management'), 'attr' => 'memberUid',
