@@ -2049,7 +2049,7 @@ abstract class baseModule {
 			return $this->meta['selfServiceSettings'];
 		}
 		else {
-			return array();
+			return null;
 		}
 	}
 
