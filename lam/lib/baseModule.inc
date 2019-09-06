@@ -1337,12 +1337,12 @@ abstract class baseModule {
 	/**
 	 * Adds a simple read-only field to the given container.
 	 *
-	 * @param htmlTable $container parent container
+	 * @param htmlTable|htmlResponsiveRow $container parent container
 	 * @param String $attrName attribute name
 	 * @param String $label field label
 	 */
 	protected function addSimpleReadOnlyField(&$container, $attrName, $label) {
-		$val = '';
+		$val = '&nbsp;';
 		if (!empty($this->attributes[$attrName][0])) {
 			$values = $this->attributes[$attrName];
 			array_map('htmlspecialchars', $values);
@@ -1352,8 +1352,14 @@ abstract class baseModule {
 		if (!empty($this->attributes[$attrName]) && (sizeof($this->attributes[$attrName]) > 1)) {
 			$labelBox->alignment = htmlElement::ALIGN_TOP;
 		}
-		$container->addElement($labelBox);
-		$container->addElement(new htmlOutputText($val, false), true);
+		if ($container instanceof htmlTable) {
+			$container->addElement($labelBox);
+			$container->addElement(new htmlOutputText($val, false), true);
+		}
+		else {
+			$container->addLabel($labelBox);
+			$container->addField(new htmlOutputText($val, false));
+		}
 	}
 
 	/**

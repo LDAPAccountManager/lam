@@ -137,28 +137,27 @@ class ldapPublicKey extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		if (in_array('ldapPublicKey', $this->attributes['objectClass'])) {
 			$this->addMultiValueInputTextField($return, 'sshPublicKey', _('SSH public key'), false, '16384', false, null, '50');
 			// file upload
-			$return->addElement(new htmlSpacer(null, '20px'), true);
-			$return->addElement(new htmlOutputText(_('Upload file')));
+			$return->addVerticalSpacer('2rem');
+			$return->addLabel(new htmlOutputText(_('Upload file')));
 			$uploadGroup = new htmlGroup();
 			$uploadGroup->addElement(new htmlInputFileUpload('sshPublicKeyFile'));
 			$uploadGroup->addElement(new htmlSpacer('1px', null));
 			$uploadGroup->addElement(new htmlButton('sshPublicKeyFileSubmit', _('Upload')));
 			$uploadGroup->addElement(new htmlSpacer('5px', null));
 			$uploadGroup->addElement(new htmlHelpLink('upload'));
-			$return->addElement($uploadGroup, true);
+			$return->addField($uploadGroup);
 
-			$return->addElement(new htmlSpacer(null, '30px'), true);
+			$return->addVerticalSpacer('2rem');
 
 			$remButton = new htmlButton('remObjectClass', _('Remove SSH public key extension'));
-			$remButton->colspan = 3;
-			$return->addElement($remButton);
+			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
-			$return->addElement(new htmlButton('addObjectClass', _('Add SSH public key extension')));
+			$return->add(new htmlButton('addObjectClass', _('Add SSH public key extension')), 12);
 		}
 		return $return;
 	}
