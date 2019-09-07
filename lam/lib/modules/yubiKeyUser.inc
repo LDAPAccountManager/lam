@@ -136,27 +136,25 @@ class yubiKeyUser extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		$objectClass = $this->getObjectClassName();
 		$attributeName = $this->getAttributeName();
 		if (empty($attributeName)) {
 			$message = new htmlStatusMessage('ERROR', _('Invalid configuration detected. Please edit your server profile (module settings) and fill all required fields.'));
-			$return->addElement($message, true);
+			$return->add($message, 12);
 			return $return;
 		}
 		if (empty($objectClass) || in_array($objectClass, $this->attributes['objectClass'])) {
 			$htmlIds = array();
 			$this->addMultiValueInputTextField($return, $attributeName, _('YubiKey ids'), false, '12', false, null, null, $htmlIds, 'lam-prevent-enter');
 			if (!empty($objectClass)) {
-				$return->addElement(new htmlSpacer(null, '30px'), true);
-
+				$return->addVerticalSpacer('2rem');
 				$remButton = new htmlButton('remObjectClass', _('Remove YubiKey extension'));
-				$remButton->colspan = 3;
-				$return->addElement($remButton);
+				$return->add($remButton, 12, 12 ,12, 'text-center');
 			}
 		}
 		else {
-			$return->addElement(new htmlButton('addObjectClass', _('Add YubiKey extension')));
+			$return->add(new htmlButton('addObjectClass', _('Add YubiKey extension')), 12);
 		}
 		return $return;
 	}
