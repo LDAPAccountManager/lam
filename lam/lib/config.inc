@@ -75,12 +75,24 @@ function setlanguage() {
 			break;
 		}
 	}
-	putenv("LANG=" . $code);  // e.g. LANG=de_DE
-	setlocale(LC_ALL, $code);  // set LC_ALL
+	putenv("LANG=$code");  // e.g. LANG=de_DE
+	putenv("LC_ALL=$code");
+	putenv("LC_LANG=$code");
+	putenv("LC_LANGUAGE=$code");
+	$setLocaleResult = setlocale(LC_ALL, $code);  // set LC_ALL
+	if ($setLocaleResult === false) {
+		logNewMessage(LOG_WARNING, "Unable to set locale, check if 'locale -a' returns $code");
+	}
 	$locdir = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/locale";  // set path to translations
 	bindtextdomain("messages", $locdir);
-	bind_textdomain_codeset("messages", $encoding);
-	textdomain("messages");
+	$bindTextResult = bind_textdomain_codeset("messages", $encoding);
+	if (!is_string($bindTextResult)) {
+		logNewMessage(LOG_WARNING, "Unable to bind text domain, check if 'locale -a' returns $code");
+	}
+	$textDomainResult = textdomain("messages");
+	if (!is_string($textDomainResult)) {
+		logNewMessage(LOG_WARNING, "Unable to set text domain, check if 'locale -a' returns $code");
+	}
 	header("Content-type: text/html; charset=" . $encoding, true);
 }
 
