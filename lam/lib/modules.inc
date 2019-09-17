@@ -1291,12 +1291,14 @@ class accountContainer {
 		// save button
 		$saveButton = new htmlButton('accountContainerSaveAccount', _('Save'));
 		$saveButton->setIconClass('saveButton');
+		$saveButton->setCSSClasses(array('fullwidth-mobile-only'));
 		$leftButtonGroup->addElement($saveButton);
 		$leftButtonGroup->addElement(new htmlSpacer('1px', null));
 		// reset button
 		if (!$this->isNewAccount) {
 			$resetButton = new htmlButton('accountContainerReset', _('Reset changes'));
 			$resetButton->setIconClass('undoButton');
+			$resetButton->setCSSClasses(array('fullwidth-mobile-only'));
 			$leftButtonGroup->addElement($resetButton);
 		}
 		// set password button
@@ -1304,6 +1306,7 @@ class accountContainer {
 			$leftButtonGroup->addElement(new htmlSpacer('15px', null));
 			$passwordButton = new htmlButton('accountContainerPassword', _('Set password'));
 			$passwordButton->setIconClass('passwordButton');
+			$passwordButton->setCSSClasses(array('fullwidth-mobile-only'));
 			$passwordButton->setOnClick('passwordShowChangeDialog(\'' . _('Set password') . '\', \'' . _('Ok') . '\', \''
 				 . _('Cancel') . '\', \'' . _('Set random password') . '\', \'../misc/ajax.php?function=passwordChange&editKey=' . htmlspecialchars($this->base) . '\',\''
 				 . getSecurityTokenName() . '\',\'' . getSecurityTokenValue() . '\');');
@@ -1313,6 +1316,7 @@ class accountContainer {
 			$leftButtonGroup->addElement(new htmlSpacer('15px', null));
 			$deleteButton = new htmlButton('accountContainerDelete', _('Delete'));
 			$deleteButton->setIconClass('deleteButton');
+			$deleteButton->setCSSClasses(array('fullwidth-mobile-only'));
 			$leftButtonGroup->addElement($deleteButton);
 		}
 		$row->add($leftButtonGroup, 12, 7);

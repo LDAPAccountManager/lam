@@ -1504,7 +1504,7 @@ abstract class baseModule {
 	 * There must be a help entry with the attribute name as ID.
 	 * A new line will also be added after this entry so multiple calls will show the fields one below the other.
 	 *
-	 * @param htmlTable $container parent container
+	 * @param htmlResponsiveRow $container parent container
 	 * @param String $attrName attribute name
 	 * @param String $label label name
 	 * @param array $options options for the selects
@@ -1526,9 +1526,8 @@ abstract class baseModule {
 			$values = array_values($values);
 			if ($label !== null) {
 				$labelTextOut = new htmlOutputText($label);
-				$labelTextOut->alignment = htmlElement::ALIGN_TOP;
 				$labelTextOut->setMarkAsRequired($required);
-				$container->addElement($labelTextOut);
+				$container->addLabel($labelTextOut);
 			}
 			$subContainer = new htmlTable();
 			$subContainer->alignment = htmlElement::ALIGN_TOP;
@@ -1544,13 +1543,11 @@ abstract class baseModule {
 				}
 				if ($i == 0) {
 					$subContainer->addElement(new htmlButton('add_' . $attrName, 'add.png', true));
+					$subContainer->addElement(new htmlHelpLink($attrName));
 				}
 				$subContainer->addNewLine();
 			}
-			$container->addElement($subContainer);
-			$help = new htmlHelpLink($attrName);
-			$help->alignment = htmlElement::ALIGN_TOP;
-			$container->addElement($help, true);
+			$container->addField($subContainer);
 	}
 
 	/**

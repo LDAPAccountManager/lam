@@ -1,9 +1,8 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2015  Roland Gruber
+  Copyright (C) 2013 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -136,34 +135,37 @@ class pykotaBillingCode extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$container = new htmlTable();
+		$container = new htmlResponsiveRow();
 		// pykotaBillingCode
 		$this->addSimpleInputTextField($container, 'pykotaBillingCode', _('Billing code'), true);
 		// balance
-		$container->addElement(new htmlOutputText(_('Balance')));
+		$container->addLabel(new htmlOutputText(_('Balance')));
 		$pykotaBalance = '';
 		if (isset($this->attributes['pykotaBalance'][0])) {
 			$pykotaBalance = $this->attributes['pykotaBalance'][0];
 		}
-		$container->addElement(new htmlOutputText($pykotaBalance));
-		$container->addElement(new htmlHelpLink('pykotaBalance'), true);
+		$balanceGroup = new htmlGroup();
+		$balanceGroup->addElement(new htmlOutputText($pykotaBalance));
+		$balanceGroup->addElement(new htmlHelpLink('pykotaBalance'));
+		$container->addField($balanceGroup);
 		// page count
-		$container->addElement(new htmlOutputText(_('Page count')));
+		$container->addLabel(new htmlOutputText(_('Page count')));
 		$pykotaPageCounter = '';
 		if (isset($this->attributes['pykotaPageCounter'][0])) {
 			$pykotaPageCounter = $this->attributes['pykotaPageCounter'][0];
 		}
-		$container->addElement(new htmlOutputText($pykotaPageCounter));
-		$container->addElement(new htmlHelpLink('pykotaPageCounter'), true);
+		$pageCounterGroup = new htmlGroup();
+		$pageCounterGroup->addElement(new htmlOutputText($pykotaPageCounter));
+		$pageCounterGroup->addElement(new htmlHelpLink('pykotaPageCounter'));
+		$container->addField($pageCounterGroup);
 		// description
 		$this->addSimpleInputTextField($container, 'description', _('Description'), false, null, true);
 		// reset
-		$container->addElement(new htmlSpacer(null, '20px'), true);
-		$container->addElement(new htmlOutputText(''));
-		$container->addElement(new htmlButton('resetCounters', _('Reset')));
-		$container->addElement(new htmlHelpLink('reset'), true);
-		// same width
-		$container->addElement(new htmlEqualWidth(array('pykotaBillingCode', 'description')));
+		$container->addVerticalSpacer('2rem');
+		$resetGroup = new htmlGroup();
+		$resetGroup->addElement(new htmlButton('resetCounters', _('Reset')));
+		$resetGroup->addElement(new htmlHelpLink('reset'));
+		$container->add($resetGroup, 12, 12, 12, 'text-center');
 		return $container;
 	}
 

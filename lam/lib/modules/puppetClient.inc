@@ -5,7 +5,7 @@ use \LAM\PDF\PDFTableRow;
 /*
 
   This code is not yet part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2012 - 2018  Roland Gruber
+  Copyright (C) 2012 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -232,9 +232,9 @@ class puppetClient extends baseModule {
 		if (isset($_POST['form_subpage_puppetClient_attributes_addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'puppetClient';
 		}
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		if (!in_array('puppetClient', $this->attributes['objectClass'])) {
-			$return->addElement(new htmlAccountPageButton('puppetClient', 'attributes', 'addObjectClass', _('Add Puppet extension')));
+			$return->add(new htmlAccountPageButton('puppetClient', 'attributes', 'addObjectClass', _('Add Puppet extension')), 12);
 			return $return;
 		}
 		$this->initCache();
@@ -251,8 +251,7 @@ class puppetClient extends baseModule {
 			$environments[] = '';
 		}
 		$environmentLabel = new htmlOutputText(_('Environment'));
-		$environmentLabel->alignment = htmlElement::ALIGN_TOP;
-		$return->addElement($environmentLabel);
+		$return->addLabel($environmentLabel);
 		$environmentContainer = new htmlGroup();
 		for ($i = 0; $i < sizeof($environments); $i++) {
 			$environmentField = new htmlInputField('environment' . $i, $environments[$i]);
@@ -263,12 +262,10 @@ class puppetClient extends baseModule {
 			}
 			else {
 				$environmentContainer->addElement(new htmlButton('addEnvironment', 'add.png', true));
+				$environmentContainer->addElement(new htmlHelpLink('environment'));
 			}
 		}
-		$return->addElement($environmentContainer);
-		$environmentHelp = new htmlHelpLink('environment');
-		$environmentHelp->alignment = htmlElement::ALIGN_TOP;
-		$return->addElement($environmentHelp, true);
+		$return->addField($environmentContainer);
 		// parent node
 		$possibleParentNodes = $this->getPossibleParentNodes();
 		array_unshift($possibleParentNodes, '-');
@@ -276,7 +273,7 @@ class puppetClient extends baseModule {
 		if (isset($this->attributes['parentnode'][0])) {
 			$parentnode = $this->attributes['parentnode'][0];
 		}
-		$return->addElement(new htmlTableExtendedSelect('parentnode', $possibleParentNodes, array($parentnode), _('Parent node'), 'parentnode'), true);
+		$return->add(new htmlResponsiveSelect('parentnode', $possibleParentNodes, array($parentnode), _('Parent node'), 'parentnode'), 12);
 		// classes
 		if (empty($this->moduleSettings['puppetClient_enforceClasses'][0])) {
 			$this->addMultiValueInputTextField($return, 'puppetclass', _('Classes'), false, null, false, $this->classCache);
@@ -287,10 +284,9 @@ class puppetClient extends baseModule {
 		// variables
 		$this->addMultiValueInputTextField($return, 'puppetvar', _('Variables'), false, null, false, $this->variablesCache);
 
-		$return->addElement(new htmlSpacer(null, '10px'),true);
+		$return->addVerticalSpacer('2rem');
 		$remButton = new htmlAccountPageButton('puppetClient', 'attributes', 'remObjectClass', _('Remove Puppet extension'));
-		$remButton->colspan = 4;
-		$return->addElement($remButton);
+		$return->add($remButton, 12, 12, 12, 'text-center');
 		return $return;
 	}
 
