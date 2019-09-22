@@ -1367,7 +1367,7 @@ class accountContainer {
 		include '../../lib/adminHeader.inc';
 		echo '<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#inputForm").validationEngine();
+					jQuery("#inputForm").validationEngine({promptPosition: "topLeft", addFailureCssClassToField: "lam-input-error", autoHidePrompt: true, autoHideDelay: 5000});
 				});
 			</script>';
 		echo "<form id=\"inputForm\" enctype=\"multipart/form-data\" action=\"edit.php?editKey=" . htmlspecialchars($this->base) . "\" method=\"post\" onSubmit=\"saveScrollPosition('inputForm')\" autocomplete=\"off\">\n";

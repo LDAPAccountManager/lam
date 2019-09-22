@@ -21,7 +21,7 @@ use LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2018  Roland Gruber
+  Copyright (C) 2018 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -99,7 +99,7 @@ if (!empty($_GET['tab']) && ($_GET['tab'] === 'export')) {
 	jQuery("#tabs").tabs({
         active: <?php echo $activeTab; ?>
     });
-	jQuery(".inputForm").validationEngine();
+	jQuery(".inputForm").validationEngine({promptPosition: "topLeft", addFailureCssClassToField: "lam-input-error", autoHidePrompt: true, autoHideDelay: 5000});
   });
 </script>
 
