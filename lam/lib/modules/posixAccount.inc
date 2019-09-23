@@ -1548,7 +1548,7 @@ class posixAccount extends baseModule implements passwordService {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		$this->checkForInvalidConfiguration($return);
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		$typeId = $this->getAccountContainer()->get_type()->getId();
@@ -1560,7 +1560,7 @@ class posixAccount extends baseModule implements passwordService {
 				$groups[$groupList[$i][1]] = $groupList[$i][0];
 			}
 			if (count($groups)==0) {
-				$return->addElement(new htmlStatusMessage("ERROR", _('No Unix groups found in LDAP! Please create one first.')));
+				$return->add(new htmlStatusMessage("ERROR", _('No Unix groups found in LDAP! Please create one first.')), 12);
 				return $return;
 			}
 			$shelllist = $this->getShells(); // list of all valid shells
@@ -1580,8 +1580,7 @@ class posixAccount extends baseModule implements passwordService {
 						$msg = new htmlStatusMessage($this->messages['uid'][5][0],
 								$this->messages['uid'][5][1], $this->messages['uid'][5][2],
 								array(htmlspecialchars($users[$firstSuggestion])));
-						$msg->colspan = 10;
-						$return->addElement($msg, true);
+						$return->add($msg, 12);
 					}
 				}
 				elseif ($this->getAccountContainer()->getAccountModule('windowsUser') != null) {
@@ -1621,87 +1620,100 @@ class posixAccount extends baseModule implements passwordService {
 			}
 
 			$userName = '';
-			if (isset($this->attributes['uid'][0])) $userName = $this->attributes['uid'][0];
+			if (isset($this->attributes['uid'][0])) {
+				$userName = $this->attributes['uid'][0];
+			}
 			$uidLabel = _("User name");
 			if ($this->get_scope() == 'host') {
 				$uidLabel = _("Host name");
 			}
-			$uidInput = new htmlTableExtendedInputField($uidLabel, 'uid', $userName, 'uid');
+			$uidInput = new htmlResponsiveInputField($uidLabel, 'uid', $userName, 'uid');
 			$uidInput->setRequired(true);
 			$uidInput->setFieldMaxLength(100);
-			$return->addElement($uidInput, true);
+			$return->add($uidInput, 12);
 			if ($this->manageCn($modules)) {
 				$this->addMultiValueInputTextField($return, 'cn', _("Common name"));
 			}
 			$uidNumber = '';
-			if (isset($this->attributes['uidNumber'][0])) $uidNumber = $this->attributes['uidNumber'][0];
-			$uidNumberInput = new htmlTableExtendedInputField(_('UID number'), 'uidNumber', $uidNumber, 'uidNumber');
+			if (isset($this->attributes['uidNumber'][0])) {
+				$uidNumber = $this->attributes['uidNumber'][0];
+			}
+			$uidNumberInput = new htmlResponsiveInputField(_('UID number'), 'uidNumber', $uidNumber, 'uidNumber');
 			$uidNumberInput->setFieldMaxLength(20);
 			$uidNumberInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-			$return->addElement($uidNumberInput, true);
+			$return->add($uidNumberInput, 12);
 			if (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegecos')) {
 				$gecos = '';
-				if (isset($this->attributes['gecos'][0])) $gecos = $this->attributes['gecos'][0];
-				$return->addElement(new htmlTableExtendedInputField(_('Gecos'), 'gecos', $gecos, 'gecos'), true);
+				if (isset($this->attributes['gecos'][0])) {
+					$gecos = $this->attributes['gecos'][0];
+				}
+				$return->add(new htmlResponsiveInputField(_('Gecos'), 'gecos', $gecos, 'gecos'), 12);
 			}
 			$primaryGroup = array();
 			if (isset($this->attributes['gidNumber'][0])) {
 				$primaryGroup[] = $this->attributes['gidNumber'][0];
 			}
-			$gidNumberSelect = new htmlTableExtendedSelect('gidNumber', $groups, $primaryGroup, _('Primary group'), 'gidNumber');
+			$gidNumberSelect = new htmlResponsiveSelect('gidNumber', $groups, $primaryGroup, _('Primary group'), 'gidNumber');
 			$gidNumberSelect->setHasDescriptiveElements(true);
-			$return->addElement($gidNumberSelect, true);
+			$return->add($gidNumberSelect, 12);
 
 			if ($this->get_scope()=='user') {
 				// additional groups
 				if (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegon') || !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hideposixGroups')) {
-					$return->addElement(new htmlOutputText(_('Additional groups')));
-					$return->addElement(new htmlAccountPageButton(get_class($this), 'group', 'open', _('Edit groups')));
-					$return->addElement(new htmlHelpLink('addgroup'), true);
+					$return->addLabel(new htmlOutputText(_('Additional groups')));
+					$additionalGroups = new htmlGroup();
+					$additionalGroups->addElement(new htmlAccountPageButton(get_class($this), 'group', 'open', _('Edit groups')));
+					$additionalGroups->addElement(new htmlHelpLink('addgroup'));
+					$return->addField($additionalGroups);
 				}
 				// home directory
 				$homeDir = isset($this->attributes[$homeDirAttr][0]) ? $this->attributes[$homeDirAttr][0] : '';
-				$homedirInput = new htmlTableExtendedInputField(_('Home directory'), 'homeDirectory', $homeDir, 'homeDirectory');
+				$homedirInput = new htmlResponsiveInputField(_('Home directory'), 'homeDirectory', $homeDir, 'homeDirectory');
 				$homedirInput->setRequired(true);
-				$return->addElement($homedirInput, true);
+				$return->add($homedirInput, 12);
 				if (($_SESSION['config']->get_scriptPath() != null) && ($_SESSION['config']->get_scriptPath() != '')) {
 					if ($this->getAccountContainer()->isNewAccount) {
 						// get list of lamdaemon servers
 						$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
 						for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
 							$temp = explode(":", $lamdaemonServers[$i]);
-							if (isset($temp[1])) $lamdaemonServers[$i] = $temp[1];
-							else $lamdaemonServers[$i] = $temp[0];
+							if (isset($temp[1])) {
+								$lamdaemonServers[$i] = $temp[1];
+							}
+							else {
+								$lamdaemonServers[$i] = $temp[0];
+							}
 						}
 						$homeDirLabel = new htmlOutputText(_('Create home directory'));
-						$homeDirLabel->alignment = htmlElement::ALIGN_TOP;
-						$return->addElement($homeDirLabel);
+						$return->addLabel($homeDirLabel);
 						$homeServerContainer = new htmlTable();
 						for ($h = 0; $h < sizeof($lamdaemonServers); $h++) {
-							$homeServerContainer->addElement(new htmlTableExtendedInputCheckbox('createhomedir_' . $h, in_array($lamdaemonServers[$h], $this->lamdaemonServers), $lamdaemonServers[$h], null, false), true);
+							$homeServerContainer->addElement(new htmlTableExtendedInputCheckbox('createhomedir_' . $h, in_array($lamdaemonServers[$h], $this->lamdaemonServers), $lamdaemonServers[$h], null, false));
+							if ($h === 0) {
+								$homeDirHelp = new htmlHelpLink('createhomedir');
+								$homeServerContainer->addElement($homeDirHelp);
+							}
+							$homeServerContainer->addNewLine();
 						}
-						$return->addElement($homeServerContainer);
-						$homeDirHelp = new htmlHelpLink('createhomedir');
-						$homeDirHelp->alignment = htmlElement::ALIGN_TOP;
-						$return->addElement($homeDirHelp, true);
+						$return->addField($homeServerContainer);
 					}
 					else {
-						$return->addElement(new htmlOutputText(''));
-						$return->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'open', _('Check home directories')), true);
+						$return->addLabel(new htmlOutputText('&nbsp;', false));
+						$return->addField(new htmlAccountPageButton(get_class($this), 'homedir', 'open', _('Check home directories')));
 					}
 				}
 				$selectedShell = array();
 				if (isset($this->attributes['loginShell'][0])) {
 					$selectedShell = array($this->attributes['loginShell'][0]);
 				}
-				$return->addElement(new htmlTableExtendedSelect('loginShell', $shelllist, $selectedShell, _('Login shell'), 'loginShell'), true);
+				$return->add(new htmlResponsiveSelect('loginShell', $shelllist, $selectedShell, _('Login shell'), 'loginShell'), 12);
 			}
 			// password buttons
 			if (checkIfWriteAccessIsAllowed($this->get_scope())
 					&& isset($this->attributes[$this->getPasswordAttrName($modules)][0])
 					&& $this->isPasswordManaged()) {
-				$return->addElement(new htmlOutputText(_('Password')));
-				$pwdContainer = new htmlTable();
+				$return->addLabel(new htmlOutputText(_('Password')));
+				$pwdContainer = new htmlGroup();
 				if (pwd_is_enabled($this->attributes[$this->getPasswordAttrName($modules)][0])) {
 					$pwdContainer->addElement(new htmlButton('lockPassword', _('Lock password')));
 				}
@@ -1709,20 +1721,18 @@ class posixAccount extends baseModule implements passwordService {
 					$pwdContainer->addElement(new htmlButton('unlockPassword', _('Unlock password')));
 				}
 				$pwdContainer->addElement(new htmlButton('removePassword', _('Remove password')));
-				$pwdContainer->colspan = 2;
-				$return->addElement($pwdContainer, true);
+				$return->addField($pwdContainer);
 			}
 			// remove button
 			if ($this->isOptional($modules) && !$this->skipObjectClass()) {
-				$return->addElement(new htmlSpacer(null, '20px'), true);
+				$return->addVerticalSpacer('2rem');
 				$remButton = new htmlButton('remObjectClass', _('Remove Unix extension'));
-				$remButton->colspan = 5;
-				$return->addElement($remButton, true);
+				$return->add($remButton, 12, 12, 12, 'text-center');
 			}
 		}
 		else {
 			// add button
-			$return->addElement(new htmlButton('addObjectClass', _('Add Unix extension')));
+			$return->add(new htmlButton('addObjectClass', _('Add Unix extension')), 12);
 		}
 		return $return;
 	}
@@ -1730,9 +1740,9 @@ class posixAccount extends baseModule implements passwordService {
 	/**
 	 * Checks if the configuration is valid and prints an error if not.
 	 *
-	 * @param htmlTable $content content area
+	 * @param htmlResponsiveRow $content content area
 	 */
-	private function checkForInvalidConfiguration(htmlTable $content) {
+	private function checkForInvalidConfiguration(htmlResponsiveRow $content) {
 		$typeId = $this->getAccountContainer()->get_type()->getId();
 		if ($this->get_scope() == 'user') {
 			$generatorOption = 'posixAccount_' . $typeId . '_uidGeneratorUsers';
@@ -1742,8 +1752,7 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		if (empty($this->moduleSettings[$generatorOption])) {
 			$message = new htmlStatusMessage('ERROR', _('Invalid configuration detected. Please edit your server profile (module settings) and fill all required fields.'));
-			$message->colspan = 5;
-			$content->addElement($message, true);
+			$content->add($message, 12);
 		}
 	}
 
@@ -1771,7 +1780,7 @@ class posixAccount extends baseModule implements passwordService {
 	* @return htmlElement meta HTML code
 	*/
 	function display_html_group() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		$typeId = $this->getAccountContainer()->get_type()->getId();
 		$showUnix = !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hideposixGroups');
@@ -1820,8 +1829,8 @@ class posixAccount extends baseModule implements passwordService {
 				$unixContainer->addElement($addSelect, true);
 			}
 
-			$return->addElement($unixContainer, true);
-			$return->addVerticalSpace('3rem');
+			$return->add($unixContainer, 12);
+			$return->addVerticalSpacer('3rem');
 		}
 
 		$showGon = self::areGroupOfNamesActive() && !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegon');
@@ -1871,8 +1880,8 @@ class posixAccount extends baseModule implements passwordService {
 			$addGonSelect->setRightToLeftTextDirection(true);
 			$gonContainer->addElement($addGonSelect);
 			$gonContainer->addNewLine();
-			$return->addElement($gonContainer, true);
-			$return->addVerticalSpace('3rem');
+			$return->add($gonContainer, 12);
+			$return->addVerticalSpacer('3rem');
 		}
 
 		$showGonSync = $showGon && !$autoSyncGon;
@@ -1880,11 +1889,9 @@ class posixAccount extends baseModule implements passwordService {
 		$moduleList = $this->getAccountContainer()->get_type()->getModules();
 		$showWindowsSync = $this->isWindows($moduleList);
 		if ($showUnixSync && ($showGonSync || $showWindowsSync)) {
-			$return->addElement(new htmlSubTitle(_('Sync groups')), true);
-			$syncOptionTable = new htmlTable();
-			$syncOptionTable->addElement(new htmlTableExtendedInputCheckbox('syncDeleteGroups', true, _('Delete non-matching entries')), true);
-			$return->addElement($syncOptionTable, true);
-			$return->addVerticalSpace('1rem');
+			$return->add(new htmlSubTitle(_('Sync groups')), 12);
+			$return->add(new htmlResponsiveInputCheckbox('syncDeleteGroups', true, _('Delete non-matching entries')), 12);
+			$return->addVerticalSpacer('1rem');
 			if ($showGonSync) {
 				$syncButtons = new htmlGroup();
 				$u2gonButton = new htmlAccountPageButton(get_class($this), 'group', 'syncU2GON', _('Sync Unix to group of names'));
@@ -1894,7 +1901,7 @@ class posixAccount extends baseModule implements passwordService {
 				$gon2uButton = new htmlAccountPageButton(get_class($this), 'group', 'syncGON2U', _('Sync group of names to Unix'));
 				$gon2uButton->setIconClass('groupButton');
 				$syncButtons->addElement($gon2uButton);
-				$return->addElement($syncButtons);
+				$return->add($syncButtons, 12, 12, 12, 'text-center');
 				if ($showWindowsSync) {
 					$syncButtons->addElement(new htmlSpacer('2rem', null));
 				}
@@ -1904,14 +1911,13 @@ class posixAccount extends baseModule implements passwordService {
 				$gon2uButton = new htmlAccountPageButton(get_class($this), 'group', 'syncWin2U', _('Sync Windows to Unix'));
 				$gon2uButton->setIconClass('sambaButton');
 				$syncButtons->addElement($gon2uButton);
-				$return->addElement($syncButtons);
+				$return->add($syncButtons, 12, 12, 12, 'text-center');
 			}
-			$return->addNewLine();
-			$return->addVerticalSpace('3rem');
 		}
 
+		$return->addVerticalSpacer('2rem');
 		$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
-		$return->addElement($backButton);
+		$return->add($backButton, 12);
 		return $return;
 	}
 
@@ -1923,13 +1929,10 @@ class posixAccount extends baseModule implements passwordService {
 	function display_html_homedir() {
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		$homeDirAttr = $this->getHomedirAttrName($modules);
-		$return = new htmlTable();
-		$return->addElement(new htmlOutputText(_('Home directory')));
-		$return->addElement(new htmlSpacer('5px', null));
-		$return->addElement(new htmlOutputText($this->attributes[$homeDirAttr][0]), true);
-		$return->addElement(new htmlSpacer(null, '10px'), true);
-		$homeServerContainer = new htmlTable();
-		$homeServerContainer->colspan = 5;
+		$return = new htmlResponsiveRow();
+		$return->addLabel(new htmlOutputText(_('Home directory')));
+		$return->addField(new htmlOutputText($this->attributes[$homeDirAttr][0]));
+		$return->addVerticalSpacer('2rem');
 		// get list of lamdaemon servers
 		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
 		for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
@@ -1955,18 +1958,20 @@ class posixAccount extends baseModule implements passwordService {
 			if (!empty($result)) {
 				$returnValue = trim($result);
 				if ($returnValue == 'ok') {
-					$homeServerContainer->addElement(new htmlOutputText($label));
-					$homeServerContainer->addElement(new htmlSpacer('5px', null));
-					$homeServerContainer->addElement(new htmlImage('../../graphics/pass.png', 16, 16));
-					$homeServerContainer->addElement(new htmlSpacer('5px', null));
-					$homeServerContainer->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'delete_' . $i, _('Delete')));
+					$return->addLabel(new htmlOutputText($label));
+					$okGroup = new htmlGroup();
+					$okGroup->addElement(new htmlImage('../../graphics/pass.png', 16, 16));
+					$okGroup->addElement(new htmlSpacer('5px', null));
+					$okGroup->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'delete_' . $i, _('Delete')));
+					$return->addField($okGroup);
 				}
 				elseif ($returnValue == 'missing') {
-					$homeServerContainer->addElement(new htmlOutputText($label));
-					$homeServerContainer->addElement(new htmlSpacer('5px', null));
-					$homeServerContainer->addElement(new htmlImage('../../graphics/fail.png', 16, 16));
-					$homeServerContainer->addElement(new htmlSpacer('5px', null));
-					$homeServerContainer->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'create_' . $i, _('Create')));
+					$return->addLabel(new htmlOutputText($label));
+					$failGroup = new htmlGroup();
+					$failGroup->addElement(new htmlImage('../../graphics/fail.png', 16, 16));
+					$failGroup->addElement(new htmlSpacer('5px', null));
+					$failGroup->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'create_' . $i, _('Create')));
+					$return->addField($failGroup);
 				}
 				elseif (trim($returnValue) != '') {
 					$messageParams = explode(",", $returnValue);
@@ -1979,15 +1984,12 @@ class posixAccount extends baseModule implements passwordService {
 					else {
 						$message = new htmlStatusMessage('WARN', htmlspecialchars($messageParams[0]));
 					}
-					$message->colspan = 5;
-					$homeServerContainer->addElement($message, true);
+					$return->add($message, 12);
 				}
-				$homeServerContainer->addNewLine();
 			}
 		}
-		$return->addElement($homeServerContainer, true);
-		$return->addElement(new htmlSpacer(null, '10px'), true);
-		$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
+		$return->addVerticalSpacer('2rem');
+		$return->add(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')), 12, 12, 12, 'text-center');
 		return $return;
 	}
 

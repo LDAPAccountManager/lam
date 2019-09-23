@@ -273,13 +273,27 @@ class shadowAccount extends baseModule implements passwordService {
 	function process_attributes() {
 		if (isset($_POST['form_subpage_shadowAccount_attributes_remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(array('shadowAccount'), $this->attributes['objectClass']);
-			if (isset($this->attributes['shadowMin'])) unset($this->attributes['shadowMin']);
-			if (isset($this->attributes['shadowMax'])) unset($this->attributes['shadowMax']);
-			if (isset($this->attributes['shadowWarning'])) unset($this->attributes['shadowWarning']);
-			if (isset($this->attributes['shadowInactive'])) unset($this->attributes['shadowInactive']);
-			if (isset($this->attributes['shadowLastChange'])) unset($this->attributes['shadowLastChange']);
-			if (isset($this->attributes['shadowExpire'])) unset($this->attributes['shadowExpire']);
-			if (isset($this->attributes['shadowFlag'])) unset($this->attributes['shadowFlag']);
+			if (isset($this->attributes['shadowMin'])) {
+				unset($this->attributes['shadowMin']);
+			}
+			if (isset($this->attributes['shadowMax'])) {
+				unset($this->attributes['shadowMax']);
+			}
+			if (isset($this->attributes['shadowWarning'])) {
+				unset($this->attributes['shadowWarning']);
+			}
+			if (isset($this->attributes['shadowInactive'])) {
+				unset($this->attributes['shadowInactive']);
+			}
+			if (isset($this->attributes['shadowLastChange'])) {
+				unset($this->attributes['shadowLastChange']);
+			}
+			if (isset($this->attributes['shadowExpire'])) {
+				unset($this->attributes['shadowExpire']);
+			}
+			if (isset($this->attributes['shadowFlag'])) {
+				unset($this->attributes['shadowFlag']);
+			}
 			return array();
 		}
 		if (!in_array('shadowAccount', $this->attributes['objectClass'])) {
@@ -291,11 +305,21 @@ class shadowAccount extends baseModule implements passwordService {
 		$this->attributes['shadowMax'][0] = $_POST['shadowMax'];
 		$this->attributes['shadowWarning'][0] = $_POST['shadowWarning'];
 		$this->attributes['shadowInactive'][0] = $_POST['shadowInactive'];
-		if ( !get_preg($this->attributes['shadowMin'][0], 'digit'))  $errors[] = $this->messages['shadowMin'][0];
-		if ( !get_preg($this->attributes['shadowMax'][0], 'digit')) $errors[] = $this->messages['shadowMax'][0];
-		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0]) $errors[] = $this->messages['shadow_cmp'][0];
-		if ( !get_preg($this->attributes['shadowInactive'][0], 'digit2')) $errors[] = $this->messages['inactive'][0];
-		if ( !get_preg($this->attributes['shadowWarning'][0], 'digit')) $errors[] = $this->messages['shadowWarning'][0];
+		if ( !get_preg($this->attributes['shadowMin'][0], 'digit'))  {
+			$errors[] = $this->messages['shadowMin'][0];
+		}
+		if ( !get_preg($this->attributes['shadowMax'][0], 'digit')) {
+			$errors[] = $this->messages['shadowMax'][0];
+		}
+		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0]) {
+			$errors[] = $this->messages['shadow_cmp'][0];
+		}
+		if ( !get_preg($this->attributes['shadowInactive'][0], 'digit2')) {
+			$errors[] = $this->messages['inactive'][0];
+		}
+		if ( !get_preg($this->attributes['shadowWarning'][0], 'digit')) {
+			$errors[] = $this->messages['shadowWarning'][0];
+		}
 		if (isset($_POST['form_subpage_shadowAccount_attributes_expirePassword']) && isset($this->attributes['shadowMax'][0]) && ($this->attributes['shadowMax'][0] != 0)) {
 			$this->attributes['shadowLastChange'][0] = intval(time()/3600/24) - $this->attributes['shadowMax'][0] - 1;
 		}
@@ -311,41 +335,19 @@ class shadowAccount extends baseModule implements passwordService {
 		if (isset($_POST['form_subpage_shadowAccount_attributes_addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'shadowAccount';
 		}
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		if (in_array('shadowAccount', $this->attributes['objectClass'])) {
-			$shWarning = '';
-			if (isset($this->attributes['shadowWarning'][0])) {
-				$shWarning = $this->attributes['shadowWarning'][0];
-			}
-			$pwdWarnInput = new htmlTableExtendedInputField(_('Password warning'), 'shadowWarning', $shWarning, 'shadowWarning');
-			$pwdWarnInput->setFieldMaxLength(4);
-			$pwdWarnInput->setFieldSize(5);
+			$pwdWarnInput = $this->addSimpleInputTextField($return, 'shadowWarning', _('Password warning'));
 			$pwdWarnInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-			$return->addElement($pwdWarnInput, true);
 
-			$shPwdExpiration = '';
-			if (isset($this->attributes['shadowInactive'][0])) $shPwdExpiration = $this->attributes['shadowInactive'][0];
-			$pwdExpInput = new htmlTableExtendedInputField(_('Password expiration'), 'shadowInactive', $shPwdExpiration, 'shadowInactive');
-			$pwdExpInput->setFieldMaxLength(4);
-			$pwdExpInput->setFieldSize(5);
+			$pwdExpInput = $this->addSimpleInputTextField($return, 'shadowInactive', _('Password expiration'));
 			$pwdExpInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-			$return->addElement($pwdExpInput, true);
 
-			$shMinAge = '';
-			if (isset($this->attributes['shadowMin'][0])) $shMinAge = $this->attributes['shadowMin'][0];
-			$minAgeInput = new htmlTableExtendedInputField(_('Minimum password age'), 'shadowMin', $shMinAge, 'shadowMin');
-			$minAgeInput->setFieldMaxLength(5);
-			$minAgeInput->setFieldSize(5);
+			$minAgeInput = $this->addSimpleInputTextField($return, 'shadowMin', _('Minimum password age'));
 			$minAgeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-			$return->addElement($minAgeInput, true);
 
-			$shMaxAge = '';
-			if (isset($this->attributes['shadowMax'][0])) $shMaxAge = $this->attributes['shadowMax'][0];
-			$maxAgeInput = new htmlTableExtendedInputField(_('Maximum password age'), 'shadowMax', $shMaxAge, 'shadowMax');
-			$maxAgeInput->setFieldMaxLength(5);
-			$maxAgeInput->setFieldSize(5);
+			$maxAgeInput = $this->addSimpleInputTextField($return, 'shadowMax', _('Maximum password age'));
 			$maxAgeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-			$return->addElement($maxAgeInput, true);
 
 			$expirationDate = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 			if (isset($this->attributes['shadowExpire'][0])) {
@@ -353,36 +355,35 @@ class shadowAccount extends baseModule implements passwordService {
 				$date = new DateTime('@' . $shAccExpirationDate*3600*24, new DateTimeZone('UTC'));
 				$expirationDate = $date->format('d.m.Y');
 			}
-			$return->addElement(new htmlOutputText(_('Account expiration date')));
-			$expireTable = new htmlTable();
+			$return->addLabel(new htmlOutputText(_('Account expiration date')));
+			$expireTable = new htmlGroup();
 			$expireTable->addElement(new htmlOutputText($expirationDate, false));
 			$expireTable->addElement(new htmlAccountPageButton('shadowAccount', 'expire', 'open', 'edit.png', true, _('Change')));
-			$return->addElement($expireTable);
-			$return->addElement(new htmlHelpLink('shadowExpire'), true);
+			$expireTable->addElement(new htmlHelpLink('shadowExpire'), true);
+			$return->addField($expireTable);
 
-				$pwdChangeDate = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-				if (isset($this->attributes['shadowLastChange'][0])) {
-					$shPwdChangeDate = $this->attributes['shadowLastChange'][0];
-					$date = new DateTime('@' . $shPwdChangeDate*3600*24, new DateTimeZone('UTC'));
-					$pwdChangeDate = $date->format('d.m.Y');
-				}
-				$return->addElement(new htmlOutputText(_('Last password change')));
-				$pwdChangeTable = new htmlTable();
-				$pwdChangeTable->addElement(new htmlOutputText($pwdChangeDate, false));
-				$pwdChangeTable->addElement(new htmlAccountPageButton('shadowAccount', 'pwdChange', 'open', 'edit.png', true, _('Change')));
-				if (isset($this->attributes['shadowMax'][0]) && ($this->attributes['shadowMax'][0] != '')) {
-					$pwdChangeTable->addElement(new htmlAccountPageButton('shadowAccount', 'attributes', 'expirePassword', _('Force password change')));
-				}
-				$return->addElement($pwdChangeTable);
-				$return->addElement(new htmlHelpLink('shadowLastChange'), true);
+			$pwdChangeDate = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+			if (isset($this->attributes['shadowLastChange'][0])) {
+				$shPwdChangeDate = $this->attributes['shadowLastChange'][0];
+				$date = new DateTime('@' . $shPwdChangeDate*3600*24, new DateTimeZone('UTC'));
+				$pwdChangeDate = $date->format('d.m.Y');
+			}
+			$return->addLabel(new htmlOutputText(_('Last password change')));
+			$pwdChangeTable = new htmlGroup();
+			$pwdChangeTable->addElement(new htmlOutputText($pwdChangeDate, false));
+			$pwdChangeTable->addElement(new htmlAccountPageButton('shadowAccount', 'pwdChange', 'open', 'edit.png', true, _('Change')));
+			if (isset($this->attributes['shadowMax'][0]) && ($this->attributes['shadowMax'][0] != '')) {
+				$pwdChangeTable->addElement(new htmlAccountPageButton('shadowAccount', 'attributes', 'expirePassword', _('Force password change')));
+			}
+			$pwdChangeTable->addElement(new htmlHelpLink('shadowLastChange'), true);
+			$return->addField($pwdChangeTable);
 
-			$return->addElement(new htmlOutputText(''), true);
+			$return->addVerticalSpacer('2rem');
 			$remButton = new htmlAccountPageButton('shadowAccount', 'attributes', 'remObjectClass', _('Remove Shadow account extension'));
-			$remButton->colspan = 4;
-			$return->addElement($remButton);
+			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
-			$return->addElement(new htmlAccountPageButton('shadowAccount', 'attributes', 'addObjectClass', _('Add Shadow account extension')));
+			$return->add(new htmlAccountPageButton('shadowAccount', 'attributes', 'addObjectClass', _('Add Shadow account extension')), 12);
 		}
 		return $return;
 	}
@@ -454,46 +455,59 @@ class shadowAccount extends baseModule implements passwordService {
 	* @return array meta HTML code
 	*/
 	function display_html_expire() {
-		$return = new htmlTable();
-		$shAccExpirationDate = time()/(3600*24) + 365;
+		$return = new htmlResponsiveRow();
+		$shAccExpirationDate = time() / (3600 * 24) + 365;
 		if (isset($this->attributes['shadowExpire'][0])) {
 			$shAccExpirationDate = $this->attributes['shadowExpire'][0];
 		}
 		$date = new DateTime('@' . $shAccExpirationDate*3600*24, new DateTimeZone('UTC'));
-		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
-		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
-		for ( $i=2003; $i<=2050; $i++ ) $year[] = $i;
-		$return->addElement(new htmlOutputText(_('Account expiration date')));
-		$expTable = new htmlTable();
-		$expTable->addElement(new htmlSelect('shadowExpire_day', $mday, array($date->format('j'))));
-		$expTable->addElement(new htmlSelect('shadowExpire_mon', $mon, array($date->format('n'))));
-		$expTable->addElement(new htmlSelect('shadowExpire_yea', $year, array($date->format('Y'))));
-		$return->addElement($expTable);
-		$return->addElement(new htmlHelpLink('shadowExpire'), true);
+		for ( $i=1; $i<=31; $i++ ) {
+			$mday[] = $i;
+		}
+		for ( $i=1; $i<=12; $i++ ) {
+			$mon[] = $i;
+		}
+		for ( $i=2003; $i<=2050; $i++ ) {
+			$year[] = $i;
+		}
+		$return->addLabel(new htmlOutputText(_('Account expiration date')));
+		$expTable = new htmlGroup();
+		$daySelect = new htmlSelect('shadowExpire_day', $mday, array($date->format('j')));
+		$daySelect->setWidth('3rem');
+		$expTable->addElement($daySelect);
+		$monthSelect = new htmlSelect('shadowExpire_mon', $mon, array($date->format('n')));
+		$monthSelect->setWidth('3rem');
+		$expTable->addElement($monthSelect);
+		$yearSelect = new htmlSelect('shadowExpire_yea', $year, array($date->format('Y')));
+		$yearSelect->setWidth('5rem');
+		$expTable->addElement($yearSelect);
+		$expTable->addElement(new htmlHelpLink('shadowExpire'), true);
+		$return->addField($expTable);
 		if ($this->getAccountContainer()->getAccountModule('sambaSamAccount') != null) {
-			$return->addElement(new htmlTableExtendedInputCheckbox('syncSamba', false, _('Set also for Samba 3')), true);
+			$return->add(new htmlResponsiveInputCheckbox('syncSamba', false, _('Set also for Samba 3')), 12);
 		}
 		if ($this->getAccountContainer()->getAccountModule('windowsUser') != null) {
-			$return->addElement(new htmlTableExtendedInputCheckbox('syncWindows', false, _('Set also for Windows')), true);
+			$return->add(new htmlResponsiveInputCheckbox('syncWindows', false, _('Set also for Windows')), 12);
 		}
 		if ($this->getAccountContainer()->getAccountModule('heimdalKerberos') != null) {
-			$return->addElement(new htmlTableExtendedInputCheckbox('syncHeimdal', false, _('Set also for Kerberos')), true);
+			$return->add(new htmlResponsiveInputCheckbox('syncHeimdal', false, _('Set also for Kerberos')), 12);
 		}
 		if ($this->getAccountContainer()->getAccountModule('mitKerberos') != null) {
-			$return->addElement(new htmlTableExtendedInputCheckbox('syncMIT', false, _('Set also for Kerberos')), true);
+			$return->add(new htmlResponsiveInputCheckbox('syncMIT', false, _('Set also for Kerberos')), 12);
 		}
 		if ($this->getAccountContainer()->getAccountModule('mitKerberosStructural') != null) {
-			$return->addElement(new htmlTableExtendedInputCheckbox('syncMITStructural', false, _('Set also for Kerberos')), true);
+			$return->add(new htmlResponsiveInputCheckbox('syncMITStructural', false, _('Set also for Kerberos')), 12);
 		}
-		$return->addElement(new htmlSpacer(null, '10px'), true);
-		$buttonTable = new htmlTable();
+		$return->addVerticalSpacer('2rem');
+		$buttonTable = new htmlGroup();
 		$buttonTable->addElement(new htmlAccountPageButton('shadowAccount', 'attributes', 'change', _('Change')));
 		if (isset($this->attributes['shadowExpire'][0])) {
+			$buttonTable->addElement(new htmlSpacer('0.5rem', null));
 			$buttonTable->addElement(new htmlAccountPageButton('shadowAccount', 'attributes', 'del', _('Remove')));
 		}
+		$buttonTable->addElement(new htmlSpacer('0.5rem', null));
 		$buttonTable->addElement(new htmlAccountPageButton('shadowAccount', 'attributes', 'back', _('Cancel')));
-		$buttonTable->colspan=3;
-		$return->addElement($buttonTable);
+		$return->add($buttonTable, 12, 12, 12, 'text-center');
 		return $return;
 	}
 
@@ -522,31 +536,44 @@ class shadowAccount extends baseModule implements passwordService {
 	* @return array meta HTML code
 	*/
 	function display_html_pwdChange() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		$shLastChange = time()/(3600*24);
 		if (isset($this->attributes['shadowLastChange'][0])) {
 			$shLastChange = $this->attributes['shadowLastChange'][0];
 		}
 		$date = new DateTime('@' . $shLastChange*3600*24, new DateTimeZone('UTC'));
-		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
-		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
-		for ( $i=2003; $i<=2050; $i++ ) $year[] = $i;
-		$return->addElement(new htmlOutputText(_('Last password change')));
-		$table = new htmlTable();
-		$table->addElement(new htmlSelect('shadowLastChange_day', $mday, array($date->format('j'))));
-		$table->addElement(new htmlSelect('shadowLastChange_mon', $mon, array($date->format('n'))));
-		$table->addElement(new htmlSelect('shadowLastChange_yea', $year, array($date->format('Y'))));
-		$return->addElement($table);
-		$return->addElement(new htmlHelpLink('shadowLastChange'), true);
-		$return->addElement(new htmlSpacer(null, '10px'), true);
-		$buttonTable = new htmlTable();
+		for ( $i=1; $i<=31; $i++ ) {
+			$mday[] = $i;
+		}
+		for ( $i=1; $i<=12; $i++ ) {
+			$mon[] = $i;
+		}
+		for ( $i=2003; $i<=2050; $i++ ) {
+			$year[] = $i;
+		}
+		$return->addLabel(new htmlOutputText(_('Last password change')));
+		$table = new htmlGroup();
+		$daySelect = new htmlSelect('shadowLastChange_day', $mday, array($date->format('j')));
+		$daySelect->setWidth('3rem');
+		$table->addElement($daySelect);
+		$monthSelect = new htmlSelect('shadowLastChange_mon', $mon, array($date->format('n')));
+		$monthSelect->setWidth('3rem');
+		$table->addElement($monthSelect);
+		$yearSelect = new htmlSelect('shadowLastChange_yea', $year, array($date->format('Y')));
+		$yearSelect->setWidth('5rem');
+		$table->addElement($yearSelect);
+		$table->addElement(new htmlHelpLink('shadowLastChange'), true);
+		$return->addField($table);
+		$return->addVerticalSpacer('2rem');
+		$buttonTable = new htmlGroup();
 		$buttonTable->addElement(new htmlAccountPageButton('shadowAccount', 'attributes', 'changePwdChange', _('Change')));
 		if (isset($this->attributes['shadowLastChange'][0])) {
+			$buttonTable->addElement(new htmlSpacer('0.5rem', null));
 			$buttonTable->addElement(new htmlAccountPageButton('shadowAccount', 'attributes', 'delPwdChange', _('Remove')));
 		}
+		$buttonTable->addElement(new htmlSpacer('0.5rem', null));
 		$buttonTable->addElement(new htmlAccountPageButton('shadowAccount', 'attributes', 'back', _('Cancel')));
-		$buttonTable->colspan = 3;
-		$return->addElement($buttonTable);
+		$return->add($buttonTable, 12, 12, 12, 'text-center');
 		return $return;
 	}
 
