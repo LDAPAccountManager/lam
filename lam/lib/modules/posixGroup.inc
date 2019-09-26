@@ -307,6 +307,7 @@ class posixGroup extends baseModule implements passwordService {
 		if (isset($this->attributes['memberUid'])) {
 			$remUsers = $this->attributes['memberUid'];
 		}
+		usort($remUsers, 'compareDN');
 		$remUsersDescriptive = array();
 		foreach ($remUsers as $user) {
 			if (isset($userAndGIDs[$user])) {

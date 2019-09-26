@@ -440,11 +440,13 @@ class asteriskExtension extends baseModule {
                 $users_dn[getAbstractDN($dn)] = $dn;
             }
         }
+        uasort($users_dn, 'compareDN');
         if (isset($this->extensionOwners)) {
             $memberList = $this->extensionOwners;
         } else {
             $memberList = array();
         }
+        usort($memberList, 'compareDN');
         $members = array();
         for ($i = 0; $i < sizeof($memberList); $i++) {
             $members[getAbstractDN($memberList[$i])] = $memberList[$i];

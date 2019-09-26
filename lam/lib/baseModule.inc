@@ -1573,6 +1573,7 @@ abstract class baseModule {
 
 	/**
 	 * Adds an area with two multi-select fields with buttons to move items from right to left and vice-versa.
+	 * The options of the selects must be presorted.
 	 * <br>Names:
 	 * <ul>
 	 * <li>First select: $namePrefix_1
@@ -1601,6 +1602,7 @@ abstract class baseModule {
 		$firstSelect->setHasDescriptiveElements(true);
 		$firstSelect->setMultiSelect(true);
 		$firstSelect->setRightToLeftTextDirection($rightToLeftText);
+		$firstSelect->setSortElements(false);
 		$firstRow->add($firstSelect, 12);
 		if ($showFilter) {
 			$firstFilterGroup = new htmlGroup();
@@ -1627,6 +1629,7 @@ abstract class baseModule {
 		$secondSelect->setHasDescriptiveElements(true);
 		$secondSelect->setMultiSelect(true);
 		$secondSelect->setRightToLeftTextDirection($rightToLeftText);
+		$secondSelect->setSortElements(false);
 		$secondRow->add($secondSelect, 12);
 		if ($showFilter) {
 			$secondFilterGroup = new htmlGroup();
