@@ -292,7 +292,7 @@ class windowsGroup extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
-		$container = new htmlTable();
+		$container = new htmlResponsiveRow();
 		$this->addSimpleInputTextField($container, 'cn', _('Group name'), true);
 		$this->addSimpleInputTextField($container, 'description', _('Description'), false);
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemail')) {
@@ -331,58 +331,58 @@ class windowsGroup extends baseModule {
 				unset($scopeList[$flippedScopes[windowsGroup::SCOPE_GLOBAL]]);
 			}
 		}
-		$groupScopeSelect = new htmlTableExtendedSelect('groupScope', $scopeList, array($groupScope), _('Group scope'), 'groupScope');
+		$groupScopeSelect = new htmlResponsiveSelect('groupScope', $scopeList, array($groupScope), _('Group scope'), 'groupScope');
 		$groupScopeSelect->setHasDescriptiveElements(true);
-		$container->addElement($groupScopeSelect, true);
-		$groupTypeSelect = new htmlTableExtendedSelect('groupType', $this->groupTypes, array($groupType), _('Group type'), 'groupType');
+		$container->add($groupScopeSelect, 12);
+		$groupTypeSelect = new htmlResponsiveSelect('groupType', $this->groupTypes, array($groupType), _('Group type'), 'groupType');
 		$groupTypeSelect->setHasDescriptiveElements(true);
-		$container->addElement($groupTypeSelect, true);
+		$container->add($groupTypeSelect, 12);
 		// notes
-		$info = '';
-		if (isset($this->attributes['info'][0])) {
-			$info = $this->attributes['info'][0];
-		}
-		$container->addElement(new htmlTableExtendedInputTextarea('info', $info, 30, 5, _('Notes'), 'info'), true);
+		$this->addSimpleInputTextField($container, 'info', _('Notes'), false, null, true);
 		// managed by
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemanagedBy')) {
-			$container->addElement(new htmlOutputText(_('Managed by')));
+			$container->addLabel(new htmlOutputText(_('Managed by')));
 			$managedBy = '-';
 			if (isset($this->attributes['managedBy'][0])) {
 				$managedBy = $this->attributes['managedBy'][0];
 			}
-			$container->addElement(new htmlOutputText(getAbstractDN($managedBy)));
-			$container->addElement(new htmlHelpLink('managedBy'), true);
-			$container->addElement(new htmlOutputText(''));
+			$managedByGroup = new htmlGroup();
+			$managedByGroup->addElement(new htmlOutputText(getAbstractDN($managedBy)));
+			$managedByGroup->addElement(new htmlSpacer('0.5rem', null));
+			$managedByGroup->addElement(new htmlHelpLink('managedBy'), true);
+			$container->addField($managedByGroup);
 			$managedByButtons = new htmlGroup();
 			$managedByButtons->addElement(new htmlAccountPageButton(get_class($this), 'managedBy', 'edit', _('Change')));
 			if (isset($this->attributes['managedBy'][0])) {
 				$managedByButtons->addElement(new htmlSpacer('5px', null));
 				$managedByButtons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'removeManagedBy', _('Remove')));
 			}
-			$container->addElement($managedByButtons, true);
+			$container->addLabel(new htmlOutputText('&nbsp;', false));
+			$container->addField($managedByButtons);
 		}
 		// NIS
 		if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30Name', true) || !$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30NisDomain', true)) {
-			$container->addElement(new htmlSubTitle(_('NIS')), true);
+			$container->add(new htmlSubTitle(_('NIS')), 12);
 			if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30Name', true)) {
 				$this->addSimpleInputTextField($container, 'msSFU30Name', _('NIS name'));
 			}
 			if (!$this->isBooleanConfigOptionSet('windowsGroup_hidemsSFU30NisDomain', true)) {
 				$this->addSimpleInputTextField($container, 'msSFU30NisDomain', _('NIS domain'));
 			}
-			$container->addVerticalSpace('20px');
+			$container->addVerticalSpacer('2rem');
 		}
 		// group members
-		$container->addElement(new htmlSpacer(null, '10px'), true);
-		$container->addElement(new htmlOutputText(_("Group members")));
+		$container->addVerticalSpacer('1rem');
+		$container->addLabel(new htmlOutputText(_("Group members")));
 		$memberButtons = new htmlGroup();
 		$memberButtons->addElement(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Edit')));
 		if (!empty($this->attributes['member'])) {
-			$memberButtons->addElement(new htmlSpacer('10px', null));
+			$memberButtons->addElement(new htmlSpacer('0.5rem', null));
 			$memberButtons->addElement(new htmlAccountPageButton(get_class($this), 'effectiveMembers', 'open', _('Show effective members')));
 		}
-		$container->addElement($memberButtons);
-		$container->addElement(new htmlHelpLink('member'), true);
+		$memberButtons->addElement(new htmlSpacer('0.5rem', null));
+		$memberButtons->addElement(new htmlHelpLink('member'));
+		$container->addField($memberButtons);
 		$memberList = array();
 		if (isset($this->attributes['member'])) {
 			for ($i = 0; $i < sizeof($this->attributes['member']); $i++) {
@@ -392,19 +392,22 @@ class windowsGroup extends baseModule {
 		}
 		$members = new htmlTable();
 		$members->alignment = htmlElement::ALIGN_RIGHT;
-		$members->colspan = 3;
+		$members->setCSSClasses(array('fullwidth'));
 		for ($i = 0; $i < sizeof($memberList); $i++) {
 			$member = new htmlOutputText(getAbstractDN($memberList[$i]));
 			$member->alignment = htmlElement::ALIGN_RIGHT;
 			$members->addElement($member, true);
 		}
-		$container->addElement(new htmlOutputText(''));
-		$container->addElement($members, true);
+		$container->addLabel(new htmlOutputText('&nbsp;', false));
+		$container->addField($members);
 		// member of
-		$container->addVerticalSpace('10px');
-		$container->addElement(new htmlOutputText(_("Member of")));
-		$container->addElement(new htmlAccountPageButton(get_class($this), 'memberof', 'open', _('Edit')));
-		$container->addElement(new htmlHelpLink('memberOf'), true);
+		$container->addVerticalSpacer('2rem');
+		$container->addLabel(new htmlOutputText(_("Member of")));
+		$memberOfGroup = new htmlGroup();
+		$memberOfGroup->addElement(new htmlAccountPageButton(get_class($this), 'memberof', 'open', _('Edit')));
+		$memberOfGroup->addElement(new htmlSpacer('0.5rem', null));
+		$memberOfGroup->addElement(new htmlHelpLink('memberOf'), true);
+		$container->addField($memberOfGroup);
 		$memberList = array();
 		if (isset($this->attributes['memberOf'])) {
 			for ($i = 0; $i < sizeof($this->attributes['memberOf']); $i++) {
@@ -413,17 +416,16 @@ class windowsGroup extends baseModule {
 			usort($memberList, 'compareDN');
 		}
 		$memberOf = new htmlTable();
+		$memberOf->setCSSClasses(array('fullwidth'));
 		$memberOf->alignment = htmlElement::ALIGN_RIGHT;
-		$memberOf->colspan = 3;
 		for ($i = 0; $i < sizeof($memberList); $i++) {
 			$member = new htmlOutputText(getAbstractDN($memberList[$i]));
 			$member->alignment = htmlElement::ALIGN_RIGHT;
 			$memberOf->addElement($member, true);
 		}
-		$container->addElement(new htmlOutputText(''));
-		$container->addElement($memberOf, true);
+		$container->addLabel(new htmlOutputText('&nbsp;', false));
+		$container->addField($memberOf);
 
-		$container->addElement(new htmlEqualWidth(array('groupType', 'groupScope')));
 		return $container;
 	}
 
@@ -499,18 +501,11 @@ class windowsGroup extends baseModule {
 	* @return htmlElement meta HTML code
 	*/
 	function display_html_memberof() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
+		$return->add(new htmlSubTitle(_("Groups")), 12);
 		$groups = $this->findGroups();
 		// sort by DN
 		usort($groups, 'compareDN');
-
-		$groupContainer = new htmlTable();
-		$groupContainer->alignment = htmlElement::ALIGN_TOP;
-		$groupContainer->addElement(new htmlSubTitle(_("Groups")), true);
-		$groupContainer->addElement(new htmlOutputText(_("Selected groups")));
-		$groupContainer->addElement(new htmlOutputText(''));
-		$groupContainer->addElement(new htmlOutputText(_("Available groups")));
-		$groupContainer->addNewLine();
 
 		$selectedGroups = array();
 		if (empty($this->attributes['memberOf'])) {
@@ -530,34 +525,13 @@ class windowsGroup extends baseModule {
 			}
 		}
 
-		$remGroupSelect = new htmlSelect('removegroups', $selectedGroups, null, 15);
-		$remGroupSelect->setMultiSelect(true);
-		$remGroupSelect->setTransformSingleSelect(false);
-		$remGroupSelect->setHasDescriptiveElements(true);
-		$remGroupSelect->setRightToLeftTextDirection(true);
-		$remGroupSelect->setSortElements(false);
-		$groupContainer->addElement($remGroupSelect);
-		$buttonGroupContainer = new htmlTable();
-		$buttonGroupContainer->addElement(new htmlButton('addgroups_button', 'back.gif', true), true);
-		$buttonGroupContainer->addElement(new htmlButton('removegroups_button', 'forward.gif', true), true);
-		$groupContainer->addElement($buttonGroupContainer);
-		$addGroupSelect = new htmlSelect('addgroups', $availableGroups, null, 15);
-		$addGroupSelect->setMultiSelect(true);
-		$addGroupSelect->setHasDescriptiveElements(true);
-		$addGroupSelect->setTransformSingleSelect(false);
-		$addGroupSelect->setRightToLeftTextDirection(true);
-		$addGroupSelect->setSortElements(false);
-		$groupContainer->addElement($addGroupSelect);
-		$groupContainer->addNewLine();
-		$return->addElement($groupContainer);
-		$return->addNewLine();
+		$this->addDoubleSelectionArea($return, _("Selected groups"), _("Available groups"), $selectedGroups,
+				null, $availableGroups, null, 'memberof', false, true);
 
-		$backGroup = new htmlGroup();
-		$backGroup->colspan = 10;
-		$backGroup->addElement(new htmlSpacer(null, '10px'), true);
+		$return->addVerticalSpacer('2rem');
 		$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
-		$backGroup->addElement($backButton);
-		$return->addElement($backGroup);
+		$return->add($backButton, 12);
+
 		return $return;
 	}
 
@@ -568,12 +542,12 @@ class windowsGroup extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_memberof() {
-		if (isset($_POST['addgroups']) && isset($_POST['addgroups_button'])) { // Add groups to list
+		if (isset($_POST['memberof_2']) && isset($_POST['memberof_left'])) { // Add groups to list
 			// add new group
-			$this->attributes['memberOf'] = @array_merge($this->attributes['memberOf'], $_POST['addgroups']);
+			$this->attributes['memberOf'] = @array_merge($this->attributes['memberOf'], $_POST['memberof_2']);
 		}
-		elseif (isset($_POST['removegroups']) && isset($_POST['removegroups_button'])) { // remove groups from list
-			$this->attributes['memberOf'] = array_delete($_POST['removegroups'], $this->attributes['memberOf']);
+		elseif (isset($_POST['memberof_1']) && isset($_POST['memberof_right'])) { // remove groups from list
+			$this->attributes['memberOf'] = array_delete($_POST['memberof_1'], $this->attributes['memberOf']);
 		}
 		return array();
 	}
@@ -584,7 +558,7 @@ class windowsGroup extends baseModule {
 	* @return htmlElement HTML meta data
 	*/
 	function display_html_managedBy() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		// show possible managers
 		$options = array();
 		$filter = get_ldap_filter('user');
@@ -609,11 +583,13 @@ class windowsGroup extends baseModule {
 		$membersSelect->setRightToLeftTextDirection(true);
 		$membersSelect->setSortElements(false);
 		$membersSelect->setTransformSingleSelect(false);
-		$return->addElement($membersSelect, true);
-		$buttonTable = new htmlTable();
+		$return->add($membersSelect, 12);
+		$return->addVerticalSpacer('2rem');
+		$buttonTable = new htmlGroup();
 		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'set', _('Change')));
+		$buttonTable->addElement(new htmlSpacer('0.5rem', null));
 		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'cancel', _('Cancel')));
-		$return->addElement($buttonTable);
+		$return->add($buttonTable, 12);
 		return $return;
 	}
 
@@ -637,7 +613,7 @@ class windowsGroup extends baseModule {
 	* @return htmlElement HTML meta data
 	*/
 	function display_html_user() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		$typeManager = new TypeManager();
 		// show list of possible new members
 		if (isset($_POST['form_subpage_' . get_class($this) . '_user_select']) && isset($_POST['type'])) {
@@ -648,7 +624,8 @@ class windowsGroup extends baseModule {
 			$filter->setFieldSize('5em');
 			$filter->filterSelectBox('members');
 			$filterGroup->addElement($filter);
-			$return->addElement($filterGroup, true);
+			$return->add($filterGroup, 12);
+			$return->addVerticalSpacer('1rem');
 
 			$options = array();
 			$filter = get_ldap_filter($type->getId());
@@ -664,19 +641,21 @@ class windowsGroup extends baseModule {
 				}
 			}
 			$size = 20;
-			if (sizeof($options) < 20) $size = sizeof($options);
+			if (sizeof($options) < 20) {
+				$size = sizeof($options);
+			}
 			$membersSelect = new htmlSelect('members', $options, array(), $size);
 			$membersSelect->setHasDescriptiveElements(true);
 			$membersSelect->setMultiSelect(true);
 			$membersSelect->setRightToLeftTextDirection(true);
 			$membersSelect->setSortElements(false);
 			$membersSelect->setTransformSingleSelect(false);
-			$return->addElement($membersSelect, true);
-			$return->addVerticalSpace('10px');
-			$buttonTable = new htmlTable();
+			$return->add($membersSelect, 12);
+			$return->addVerticalSpacer('2rem');
+			$buttonTable = new htmlGroup();
 			$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'user', 'addMembers', _('Add')));
 			$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'user', 'cancel', _('Cancel')));
-			$return->addElement($buttonTable);
+			$return->add($buttonTable, 12);
 			return $return;
 		}
 		// show existing members
@@ -701,11 +680,13 @@ class windowsGroup extends baseModule {
 			$membersSelect->setRightToLeftTextDirection(true);
 			$membersSelect->setSortElements(false);
 			$membersSelect->setTransformSingleSelect(false);
-			$return->addElement($membersSelect, true);
+			$return->add($membersSelect, 12);
+			$return->addVerticalSpacer('0.5rem');
 			$removeButton = new htmlAccountPageButton(get_class($this), 'user', 'remove', _('Remove selected entries'));
-			$removeButton->colspan = 3;
-			$return->addElement($removeButton, true);
-			$return->addElement(new htmlOutputText('&nbsp;', false), true);
+			$return->add($removeButton, 12);
+			$return->addVerticalSpacer('2rem');
+			$return->add(new htmlHorizontalLine(), 12);
+			$return->addVerticalSpacer('2rem');
 		}
 		$types = $typeManager->getConfiguredTypes();
 		$options = array();
@@ -716,15 +697,14 @@ class windowsGroup extends baseModule {
 				$optionsSelected[] = $type->getId();
 			}
 		}
-		$typeTable = new htmlTable();
-		$typeTable->addElement(new htmlOutputText(_('Add entries of this type:') . ' '));
+		$return->addLabel(new htmlOutputText(_('Add entries of this type:')));
 		$typeSelect = new htmlSelect('type', $options, $optionsSelected);
 		$typeSelect->setHasDescriptiveElements(true);
-		$typeTable->addElement($typeSelect);
-		$typeTable->addElement(new htmlAccountPageButton(get_class($this), 'user', 'select', _('Ok')));
-		$return->addElement($typeTable, true);
-		$return->addElement(new htmlOutputText('&nbsp;', false), true);
-		$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'membersBack', _('Back')));
+		$return->addField($typeSelect);
+		$return->addLabel(new htmlOutputText('&nbsp;', false));
+		$return->addField(new htmlAccountPageButton(get_class($this), 'user', 'select', _('Ok')));
+		$return->addVerticalSpacer('2rem');
+		$return->add(new htmlAccountPageButton(get_class($this), 'attributes', 'membersBack', _('Back')), 12);
 		return $return;
 	}
 
@@ -768,7 +748,7 @@ class windowsGroup extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_effectiveMembers() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		$effectiveMembers = $this->getEffectiveMembers();
 		$entryTable = new htmlTable();
 		// sort by DN, align right
@@ -779,9 +759,9 @@ class windowsGroup extends baseModule {
 			$entry->alignment = htmlElement::ALIGN_RIGHT;
 			$entryTable->addElement($entry, true);
 		}
-		$return->addElement($entryTable, true);
-		$return->addVerticalSpace('10px');
-		$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'membersEffectiveBack', _('Back')));
+		$return->add($entryTable, 12);
+		$return->addVerticalSpacer('2rem');
+		$return->add(new htmlAccountPageButton(get_class($this), 'attributes', 'membersEffectiveBack', _('Back')), 12);
 		return $return;
 	}
 
@@ -803,7 +783,9 @@ class windowsGroup extends baseModule {
 		$errors = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
-			if (!in_array('group', $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = 'group';
+			if (!in_array('group', $partialAccounts[$i]['objectClass'])) {
+				$partialAccounts[$i]['objectClass'][] = 'group';
+			}
 			// cn + sAMAccountName
 			if ($rawAccounts[$i][$ids['windowsGroup_name']] != "") {
 				if (get_preg($rawAccounts[$i][$ids['windowsGroup_name']], 'groupname')) {
@@ -1034,7 +1016,6 @@ class windowsGroup extends baseModule {
 		}
 		$toAdd = array_values(array_diff($this->attributes['memberOf'], $this->orig['memberOf']));
 		$toRem = array_values(array_diff($this->orig['memberOf'], $this->attributes['memberOf']));
-		$toUpdate = array_values(array_intersect($this->attributes['memberOf'], $this->orig['memberOf']));
 		// add groups
 		for ($i = 0; $i < sizeof($toAdd); $i++) {
 			if (in_array($toAdd[$i], $groups)) {

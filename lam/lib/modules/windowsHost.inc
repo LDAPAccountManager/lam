@@ -1,9 +1,8 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2015  Roland Gruber
+  Copyright (C) 2013 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -138,26 +137,29 @@ class windowsHost extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	public function display_html_attributes() {
-		$container = new htmlTable();
+		$container = new htmlResponsiveRow();
 		$this->addSimpleInputTextField($container, 'cn', _('Host name'), true);
 		$this->addSimpleInputTextField($container, 'description', _('Description'), false);
 		$this->addSimpleInputTextField($container, 'location', _('Location'), false);
 		// managed by
-		$container->addElement(new htmlOutputText(_('Managed by')));
+		$container->addLabel(new htmlOutputText(_('Managed by')));
 		$managedBy = '-';
 		if (isset($this->attributes['managedBy'][0])) {
 			$managedBy = $this->attributes['managedBy'][0];
 		}
-		$container->addElement(new htmlOutputText(getAbstractDN($managedBy)));
-		$container->addElement(new htmlHelpLink('managedBy'), true);
-		$container->addElement(new htmlOutputText(''));
+		$managedByGroup = new htmlGroup();
+		$managedByGroup->addElement(new htmlOutputText(getAbstractDN($managedBy)));
+		$managedByGroup->addElement(new htmlSpacer('0.5rem', null));
+		$managedByGroup->addElement(new htmlHelpLink('managedBy'), true);
+		$container->addField($managedByGroup);
+		$container->addLabel(new htmlOutputText('&nbsp;', false));
 		$managedByButtons = new htmlGroup();
 		$managedByButtons->addElement(new htmlAccountPageButton(get_class($this), 'managedBy', 'edit', _('Change')));
 		if (isset($this->attributes['managedBy'][0])) {
 			$managedByButtons->addElement(new htmlSpacer('5px', null));
 			$managedByButtons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'removeManagedBy', _('Remove')));
 		}
-		$container->addElement($managedByButtons, true);
+		$container->addField($managedByButtons);
 		return $container;
 	}
 
@@ -195,7 +197,7 @@ class windowsHost extends baseModule {
 	* @return htmlElement HTML meta data
 	*/
 	function display_html_managedBy() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		// show possible managers
 		$options = array();
 		$filter = get_ldap_filter('user');
@@ -220,11 +222,12 @@ class windowsHost extends baseModule {
 		$membersSelect->setRightToLeftTextDirection(true);
 		$membersSelect->setSortElements(false);
 		$membersSelect->setTransformSingleSelect(false);
-		$return->addElement($membersSelect, true);
+		$return->add($membersSelect, 12);
+		$return->addVerticalSpacer('2rem');
 		$buttonTable = new htmlTable();
 		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'set', _('Change')));
 		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'cancel', _('Cancel')));
-		$return->addElement($buttonTable);
+		$return->add($buttonTable, 12);
 		return $return;
 	}
 

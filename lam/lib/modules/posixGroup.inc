@@ -195,7 +195,7 @@ class posixGroup extends baseModule implements passwordService {
 	 * @see baseModule::get_metaData()
 	 */
 	function display_html_attributes() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		$typeId = $this->getAccountContainer()->get_type()->getId();
 		if ($this->autoAddObjectClasses || (isset($this->attributes['objectClass']) && in_array('posixGroup', $this->attributes['objectClass']))) {
@@ -205,60 +205,43 @@ class posixGroup extends baseModule implements passwordService {
 			}
 			// group name
 			if ($this->manageCnAndDescription($modules)) {
-				$cn = '';
-				if (isset($this->attributes['cn'][0])) {
-					$cn = $this->attributes['cn'][0];
-				}
-				$cnInput = new htmlTableExtendedInputField(_("Group name"), 'cn', $cn, 'cn');
-				$cnInput->setRequired(true);
-				$cnInput->setFieldMaxLength(100);
-				$return->addElement($cnInput, true);
+				$this->addSimpleInputTextField($return, 'cn', _("Group name"), true);
 			}
 			// GID number
-			$gidNumber = '';
-			if (isset($this->attributes['gidNumber'][0])) {
-				$gidNumber = $this->attributes['gidNumber'][0];
-			}
-			$gidNumberInput = new htmlTableExtendedInputField(_('GID number'), 'gidNumber', $gidNumber, 'gidNumber');
-			$gidNumberInput->setFieldMaxLength(20);
+			$gidNumberInput = $this->addSimpleInputTextField($return, 'gidNumber', _('GID number'));
 			$gidNumberInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-			$return->addElement($gidNumberInput, true);
 			// description
-			$description = '';
-			if (isset($this->attributes['description'][0])) {
-				$description = $this->attributes['description'][0];
-			}
 			if ($this->manageCnAndDescription($modules)) {
-				$return->addElement(new htmlTableExtendedInputField(_('Description'), 'description', $description, 'description'), true);
+				$this->addSimpleInputTextField($return, 'description', _('Description'));
 			}
 			// password buttons
 			if (checkIfWriteAccessIsAllowed($this->get_scope()) && isset($this->attributes[$this->passwordAttrName][0])) {
-				$return->addElement(new htmlOutputText(_('Password')));
-				$pwdContainer = new htmlTable();
+				$return->addLabel(new htmlOutputText(_('Password')));
+				$pwdContainer = new htmlGroup();
 				if (pwd_is_enabled($this->attributes[$this->passwordAttrName][0])) {
 					$pwdContainer->addElement(new htmlButton('lockPassword', _('Lock password')));
 				}
 				else {
 					$pwdContainer->addElement(new htmlButton('unlockPassword', _('Unlock password')));
 				}
+				$pwdContainer->addElement(new htmlSpacer('0.5rem', null));
 				$pwdContainer->addElement(new htmlButton('removePassword', _('Remove password')));
-				$pwdContainer->colspan = 2;
-				$return->addElement($pwdContainer, true);
+				$return->addField($pwdContainer);
 			}
 			if (isset($this->orig['gidNumber'][0]) && $this->attributes['gidNumber'][0]!=$this->orig['gidNumber'][0]) {
-				$return->addElement(new htmlTableExtendedInputCheckbox('changegids', $this->changegids, _('Change GID number of users and hosts'), 'changegids'), true);
+				$return->add(new htmlResponsiveInputCheckbox('changegids', $this->changegids, _('Change GID number of users and hosts'), 'changegids'), 12);
 			}
 			// group members
 			if (!$this->isBooleanConfigOptionSet('posixGroup_' . $typeId . '_hidememberUid')) {
-				$return->addElement(new htmlOutputText(_("Group members")));
+				$return->addVerticalSpacer('0.5rem');
+				$return->addLabel(new htmlOutputText(_("Group members")));
+				$membersGroup = new htmlGroup();
 				if (!$this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
-					$return->addElement(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Edit members')));
+					$membersGroup->addElement(new htmlAccountPageButton(get_class($this), 'user', 'open', _('Edit members')));
 				}
-				else {
-					$return->addElement(new htmlOutputText(''));
-				}
-				$return->addElement(new htmlHelpLink('members'), true);
-				$return->addElement(new htmlOutputText(''));
+				$membersGroup->addElement(new htmlHelpLink('members'));
+				$return->addField($membersGroup);
+				$return->addLabel(new htmlOutputText('&nbsp;', false));
 				$users = $this->getUsers();
 				$members = array();
 				if (isset($this->attributes['memberUid'][0])) {
@@ -274,19 +257,18 @@ class posixGroup extends baseModule implements passwordService {
 				$members = array_unique($members);
 				natcasesort($members);
 				$members = array_map('htmlspecialchars', $members);
-				$return->addElement(new htmlOutputText(implode('<br>', $members), false), true);
+				$return->addField(new htmlOutputText(implode('<br>', $members), false));
 			}
 			// remove button
 			if (!$this->autoAddObjectClasses) {
-				$return->addElement(new htmlSpacer(null, '20px'), true);
+				$return->addVerticalSpacer('2rem');
 				$remButton = new htmlButton('remObjectClass', _('Remove Unix extension'));
-				$remButton->colspan = 5;
-				$return->addElement($remButton);
+				$return->add($remButton, 12, 12, 12, 'text-center');
 			}
 		}
 		else {
 			// add button
-			$return->addElement(new htmlButton('addObjectClass', _('Add Unix extension')));
+			$return->add(new htmlButton('addObjectClass', _('Add Unix extension')), 12);
 		}
 		return $return;
 	}
@@ -298,7 +280,7 @@ class posixGroup extends baseModule implements passwordService {
 	* @return array meta HTML output
 	*/
 	function display_html_user() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		if (!isset($this->attributes['memberUid'])) {
 			$this->attributes['memberUid'] = array();
 		}
@@ -319,12 +301,7 @@ class posixGroup extends baseModule implements passwordService {
 				}
 			}
 		}
-		$return->addElement(new htmlSubTitle(_("Group members")), true);
-
-		$return->addElement(new htmlOutputText(_("Selected users")));
-		$return->addElement(new htmlOutputText(''));
-		$return->addElement(new htmlOutputText(_("Available users")));
-		$return->addNewLine();
+		$return->add(new htmlSubTitle(_("Group members")), 12);
 
 		$remUsers = array();
 		if (isset($this->attributes['memberUid'])) {
@@ -339,32 +316,9 @@ class posixGroup extends baseModule implements passwordService {
 				$remUsersDescriptive[$user] = $user;
 			}
 		}
-		$remSelect = new htmlSelect('removeusers', $remUsersDescriptive, null, 15);
-		$remSelect->setMultiSelect(true);
-		$remSelect->setTransformSingleSelect(false);
-		$remSelect->setHasDescriptiveElements(true);
-		$return->addElement($remSelect);
-		$buttonContainer = new htmlTable();
-		$buttonContainer->addElement(new htmlButton('addusers_button', 'back.gif', true), true);
-		$buttonContainer->addElement(new htmlButton('removeusers_button', 'forward.gif', true), true);
-		$buttonContainer->addElement(new htmlHelpLink('members'));
-		$return->addElement($buttonContainer);
-		$addSelect = new htmlSelect('addusers', $users, null, 15);
-		$addSelect->setMultiSelect(true);
-		$addSelect->setTransformSingleSelect(false);
-		$addSelect->setHasDescriptiveElements(true);
-		$addSelect->enableDynamicScrolling();
-		$return->addElement($addSelect);
-		$return->addNewLine();
-		$return->addElement(new htmlOutputText(''));
-		$return->addElement(new htmlOutputText(''));
-		$filterContainer = new htmlGroup();
-		$filterInput = new htmlInputField('newFilter', null, 10);
-		$filterInput->filterSelectBox('addusers');
-		$filterContainer->addElement(new htmlOutputText(_('Filter')));
-		$filterContainer->addElement($filterInput);
-		$filterContainer->addElement(new htmlHelpLink('filter'));
-		$return->addElement($filterContainer, true);
+
+		$this->addDoubleSelectionArea($return, _("Selected users"), _("Available users"), $remUsersDescriptive, null,
+				$users, null, 'members');
 
 		// sync from group of names
 		$gon = $this->getAccountContainer()->getAccountModule('groupOfNames');
@@ -372,32 +326,26 @@ class posixGroup extends baseModule implements passwordService {
 			$gon = $this->getAccountContainer()->getAccountModule('groupOfUniqueNames');
 		}
 		if ($gon != null) {
-			$return->addElement(new htmlSpacer(null, '20px'), true);
-			$syncGroup = new htmlTable();
-			$syncGroup->colspan = 5;
+			$return->addVerticalSpacer('2rem');
 			$syncButton = new htmlButton('syncGON', sprintf(_('Sync from %s'), $gon->get_alias()));
 			$syncButton->setIconClass('refreshButton');
-			$syncGroup->addElement($syncButton);
-			$syncGroup->addSpace('2rem');
-			$syncGroup->addElement(new htmlTableExtendedInputCheckbox('syncGON_delete', true, _('Delete non-matching entries'), null, false));
-			$return->addElement($syncGroup, true);
+			$return->add($syncButton, 12, 12, 12, 'text-center');
+			$return->addVerticalSpacer('1rem');
+			$return->add(new htmlResponsiveInputCheckbox('syncGON_delete', true, _('Delete non-matching entries'), null, false), 12);
 		}
 		$windows = $this->getAccountContainer()->getAccountModule('windowsGroup');
 		if ($windows != null) {
-			$return->addElement(new htmlSpacer(null, '20px'), true);
-			$syncGroup = new htmlTable();
-			$syncGroup->colspan = 5;
+			$return->addVerticalSpacer('2rem');
 			$syncButton = new htmlButton('syncWindows', sprintf(_('Sync from %s'), $windows->get_alias()));
 			$syncButton->setIconClass('refreshButton');
-			$syncGroup->addElement($syncButton);
-			$syncGroup->addSpace('2rem');
-			$syncGroup->addElement(new htmlTableExtendedInputCheckbox('syncWindows_delete', true, _('Delete non-matching entries'), null, false));
-			$return->addElement($syncGroup, true);
+			$return->add($syncButton, 12, 12, 12, 'text-center');
+			$return->addVerticalSpacer('1rem');
+			$return->add(new htmlResponsiveInputCheckbox('syncWindows_delete', true, _('Delete non-matching entries'), null, false), 12);
 		}
 
 		// back button
-		$return->addElement(new htmlSpacer(null, '20px'), true);
-		$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')), true);
+		$return->addVerticalSpacer('2rem');
+		$return->add(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')), 12);
 
 		return $return;
 	}
@@ -998,13 +946,12 @@ class posixGroup extends baseModule implements passwordService {
 		if (!isset($this->attributes['memberUid'])) {
 			$this->attributes['memberUid'] = array();
 		}
-		// add users
-		if (isset($_POST['addusers']) && isset($_POST['addusers_button'])) { // Add users to list
-			$this->attributes['memberUid'] = @array_merge($this->attributes['memberUid'], $_POST['addusers']);
+		if (isset($_POST['members_2']) && isset($_POST['members_left'])) { // Add groups to list
+			// add new group
+			$this->attributes['memberUid'] = @array_merge($this->attributes['memberUid'], $_POST['members_2']);
 		}
-		// remove users
-		elseif (isset($_POST['removeusers']) && isset($_POST['removeusers_button'])) { // remove users from list
-			$this->attributes['memberUid'] = array_delete($_POST['removeusers'], $this->attributes['memberUid']);
+		elseif (isset($_POST['members_1']) && isset($_POST['members_right'])) { // remove groups from list
+			$this->attributes['memberUid'] = array_delete($_POST['members_1'], $this->attributes['memberUid']);
 		}
 		// sync users
 		elseif (isset($_POST['syncGON'])) {
