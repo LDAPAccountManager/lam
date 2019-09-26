@@ -88,7 +88,7 @@ if (!class_exists('XMLWriter')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no XMLWriter support!", "Please active XMLWriter for PHP.");
 }
 // imagick/GD
-if (!extension_loaded('imagick') && !function_exists('getimagesize')) {
+if (!extension_loaded('imagick') && !extension_loaded('gd')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no imagick or GD support.", "Please install the imagick or GD extension for PHP.");
 }
 // check if PHP has JSON support
