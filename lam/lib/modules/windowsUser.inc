@@ -1090,12 +1090,11 @@ class windowsUser extends baseModule implements passwordService {
 	 */
 	public function display_html_attributes() {
 		$this->initCache();
-		$containerLeft = new htmlTable();
-		$containerLeft->alignment = htmlElement::ALIGN_TOP;
+		$containerLeft = new htmlResponsiveRow();
 		if ($this->getAccountContainer()->isNewAccount && !isset($this->attributes['userAccountControl'][0])) {
 			$this->attributes['userAccountControl'][0] = windowsUser::DEFAULT_ACCOUNT_CONTROL;
 		}
-		$containerLeft->addElement(new htmlSubTitle(_('General')), true);
+		$containerLeft->add(new htmlSubTitle(_('General')), 12);
 		// user name
 		$userPrincipalName = '';
 		$userPrincipalNameDomain = '';
@@ -1113,12 +1112,12 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		$userPrincipalNameLabel = new htmlOutputText(_('User name'));
 		$userPrincipalNameLabel->setMarkAsRequired(true);
-		$containerLeft->addElement($userPrincipalNameLabel);
+		$containerLeft->addLabel($userPrincipalNameLabel);
 		$userPrincipalNameGroup = new htmlGroup();
 		$userPrincipalNameGroup->addElement(new htmlInputField('userPrincipalName', $userPrincipalName, '15'));
 		$userPrincipalNameGroup->addElement(new htmlSelect('userPrincipalNameDomain', $domains, array($userPrincipalNameDomain)));
-		$containerLeft->addElement($userPrincipalNameGroup);
-		$containerLeft->addElement(new htmlHelpLink('userPrincipalName'), true);
+		$userPrincipalNameGroup->addElement(new htmlHelpLink('userPrincipalName'));
+		$containerLeft->addField($userPrincipalNameGroup);
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidesAMAccountName', true)) {
 			$this->addSimpleInputTextField($containerLeft, 'sAMAccountName', _('User name (pre W2K)'));
 		}
@@ -1129,7 +1128,7 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addSimpleInputTextField($containerLeft, 'initials', _('Initials'));
 		$this->addSimpleInputTextField($containerLeft, 'description', _('Description'));
 		// address area
-		$containerLeft->addElement(new htmlSubTitle(_('Address')), true);
+		$containerLeft->add(new htmlSubTitle(_('Address')), 12);
 		$this->addSimpleInputTextField($containerLeft, 'streetAddress', _('Street'), false, 20, true);
 		$this->addSimpleInputTextField($containerLeft, 'postOfficeBox', _('Post office box'));
 		$this->addSimpleInputTextField($containerLeft, 'postalCode', _('Postal code'));
@@ -1137,7 +1136,7 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addSimpleInputTextField($containerLeft, 'st', _('State'));
 		$this->addSimpleInputTextField($containerLeft, 'physicalDeliveryOfficeName', _('Office name'));
 		// contact data area
-		$containerLeft->addElement(new htmlSubTitle(_('Contact data')), true);
+		$containerLeft->add(new htmlSubTitle(_('Contact data')), 12);
 		$this->addSimpleInputTextField($containerLeft, 'mail', _('Email address'));
 		$this->addMultiValueInputTextField($containerLeft, 'otherMailbox', _('Email alias'));
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideproxyAddresses', true)) {
@@ -1164,7 +1163,7 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addMultiValueInputTextField($containerLeft, 'url', _('Other web sites'));
 		// work details area
 		if ($this->manageWorkDetails()) {
-			$containerLeft->addElement(new htmlSubTitle(_('Work details')), true);
+			$containerLeft->add(new htmlSubTitle(_('Work details')), 12);
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)) {
 				$this->addSimpleInputTextField($containerLeft, 'title', _('Job title'), false, null, false, array_slice($this->titleCache, 0, 300));
 			}
@@ -1196,55 +1195,63 @@ class windowsUser extends baseModule implements passwordService {
 				$this->addMultiValueInputTextField($containerLeft, 'o', _('Organisation'), false, null, false, array_slice($this->oCache, 0, 300));
 			}
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidemanager', true)) {
-				$containerLeft->addElement(new htmlOutputText(_('Manager')));
+				$containerLeft->addLabel(new htmlOutputText(_('Manager')));
 				$managerGroup = new htmlGroup();
 				$managerVal = (empty($this->attributes['manager'][0])) ? '-' : getAbstractDN($this->attributes['manager'][0]);
 				$managerGroup->addElement(new htmlOutputText($managerVal));
-				$managerGroup->addElement(new htmlSpacer('5px', null));
+				$managerGroup->addElement(new htmlSpacer('0.5rem', null));
 				$managerGroup->addElement(new htmlAccountPageButton(get_class($this), 'manager', 'change', _("Change")));
-				$containerLeft->addElement($managerGroup);
-				$containerLeft->addElement(new htmlHelpLink('manager'), true);
+				$managerGroup->addElement(new htmlSpacer('0.5rem', null));
+				$managerGroup->addElement(new htmlHelpLink('manager'), true);
+				$containerLeft->addField($managerGroup);
 			}
 		}
 		// account area
-		$containerLeft->addElement(new htmlSubTitle(_('Account')), true);
+		$containerLeft->add(new htmlSubTitle(_('Account')), 12);
 		// password change required
 		$pwdMustChange = false;
 		if (isset($this->attributes['pwdLastSet'][0]) && ($this->attributes['pwdLastSet'][0] === '0')) {
 			$pwdMustChange = true;
 		}
-		$containerLeft->addElement(new htmlTableExtendedInputCheckbox('forcePasswordChangeOption', $pwdMustChange, _("User must change password"), 'pwdMustChange'), true);
+		$containerLeft->add(new htmlResponsiveInputCheckbox('forcePasswordChangeOption', $pwdMustChange, _("User must change password"), 'pwdMustChange'), 12);
 		// deactivated
 		$deactivated = windowsUser::isDeactivated($this->attributes);
-		$containerLeft->addElement(new htmlTableExtendedInputCheckbox('deactivated', $deactivated, _("Account is deactivated"), 'deactivated'), true);
+		$containerLeft->add(new htmlResponsiveInputCheckbox('deactivated', $deactivated, _("Account is deactivated"), 'deactivated'), 12);
 		// password does not expire
 		$noExpire = windowsUser::isNeverExpiring($this->attributes);
-		$containerLeft->addElement(new htmlTableExtendedInputCheckbox('noExpire', $noExpire, _("Password does not expire"), 'noExpire'), true);
+		$containerLeft->add(new htmlResponsiveInputCheckbox('noExpire', $noExpire, _("Password does not expire"), 'noExpire'), 12);
 		// require smartcard
 		$requireCard = windowsUser::isSmartCardRequired($this->attributes);
-		$containerLeft->addElement(new htmlTableExtendedInputCheckbox('requireCard', $requireCard, _("Require smartcard"), 'requireCard'), true);
+		$containerLeft->add(new htmlResponsiveInputCheckbox('requireCard', $requireCard, _("Require smartcard"), 'requireCard'), 12);
 		// account expiration
-		$containerLeft->addElement(new htmlOutputText(_('Account expiration date')));
+		$containerLeft->addLabel(new htmlOutputText(_('Account expiration date')));
 		$accountExpiresGroup = new htmlGroup();
 		$accountExpiresGroup->addElement(new htmlOutputText($this->formatAccountExpires()));
-		$accountExpiresGroup->addElement(new htmlSpacer('5px', null));
+		$accountExpiresGroup->addElement(new htmlSpacer('0.5rem', null));
 		$accountExpiresGroup->addElement(new htmlAccountPageButton(get_class($this), 'accountExpires', 'edit', _('Change')));
-		$containerLeft->addElement($accountExpiresGroup);
-		$containerLeft->addElement(new htmlHelpLink('accountExpires'), true);
+		$accountExpiresGroup->addElement(new htmlSpacer('0.5rem', null));
+		$accountExpiresGroup->addElement(new htmlHelpLink('accountExpires'), true);
+		$containerLeft->addField($accountExpiresGroup);
 		// last password change
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepwdLastSet')) {
-			$containerLeft->addElement(new htmlOutputText(_('Last password change')));
-			$containerLeft->addElement(new htmlOutputText($this->formatPwdLastSet()));
-			$containerLeft->addElement(new htmlHelpLink('pwdLastSet'), true);
+			$containerLeft->addLabel(new htmlOutputText(_('Last password change')));
+			$pwdLastSetGroup = new htmlGroup();
+			$pwdLastSetGroup->addElement(new htmlOutputText($this->formatPwdLastSet()));
+			$pwdLastSetGroup->addElement(new htmlSpacer('0.5rem', null));
+			$pwdLastSetGroup->addElement(new htmlHelpLink('pwdLastSet'));
+			$containerLeft->addField($pwdLastSetGroup);
 		}
 		// last login
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidelastLogonTimestamp')) {
-			$containerLeft->addElement(new htmlOutputText(_('Last login')));
-			$containerLeft->addElement(new htmlOutputText($this->formatLastLogonTimestamp()));
-			$containerLeft->addElement(new htmlHelpLink('lastLogonTimestamp'), true);
+			$containerLeft->addLabel(new htmlOutputText(_('Last login')));
+			$lastLogonTimestampGroup = new htmlGroup();
+			$lastLogonTimestampGroup->addElement(new htmlOutputText($this->formatLastLogonTimestamp()));
+			$lastLogonTimestampGroup->addElement(new htmlSpacer('0.5rem', null));
+			$lastLogonTimestampGroup->addElement(new htmlHelpLink('lastLogonTimestamp'));
+			$containerLeft->addField($lastLogonTimestampGroup);
 		}
 		// user profile area
-		$containerLeft->addElement(new htmlSubTitle(_('User profile')), true);
+		$containerLeft->add(new htmlSubTitle(_('User profile')), 12);
 		// profile path
 		$this->addSimpleInputTextField($containerLeft, 'profilePath', _('Profile path'));
 		// logon script
@@ -1260,13 +1267,13 @@ class windowsUser extends baseModule implements passwordService {
 		else {
 			$selected = array('-');
 		}
-		$containerLeft->addElement(new htmlTableExtendedSelect('homeDrive', $drives, $selected, _('Home drive'), 'homeDrive'), true);
+		$containerLeft->add(new htmlResponsiveSelect('homeDrive', $drives, $selected, _('Home drive'), 'homeDrive'), 12);
 		// home directory
 		$this->addSimpleInputTextField($containerLeft, 'homeDirectory', _('Home directory'));
 
 		// NIS attributes
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30Name', true) || !$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
-			$containerLeft->addElement(new htmlSubTitle(_('NIS')), true);
+			$containerLeft->add(new htmlSubTitle(_('NIS')), 12);
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30Name', true)) {
 				$this->addSimpleInputTextField($containerLeft, 'msSFU30Name', _('NIS name'));
 			}
@@ -1275,14 +1282,9 @@ class windowsUser extends baseModule implements passwordService {
 			}
 		}
 
-		$containerLeft->addElement(new htmlEqualWidth(array('streetAddress', 'cn')), true);
-
-		$containerRight = new htmlTable();
-		$containerRight->alignment = htmlElement::ALIGN_TOP;
+		$containerRight = new htmlResponsiveRow();
 		// photo
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidejpegPhoto', true)) {
-			$imageContainer = new htmlTable();
-			$imageContainer->alignment = htmlElement::ALIGN_TOP;
 			$photoFile = '../../graphics/userDefault.png';
 			$noPhoto = true;
 			if (isset($this->attributes['jpegPhoto'][0])) {
@@ -1296,20 +1298,20 @@ class windowsUser extends baseModule implements passwordService {
 			$img = new htmlImage($photoFile);
 			$img->setCSSClasses(array('photo'));
 			$img->enableLightbox();
-			$imageContainer->addElement($img, true);
+			$containerRight->add($img, 12);
+			$containerRight->addVerticalSpacer('0.5rem');
 			if ($noPhoto) {
-				$imageContainer->addElement(new htmlAccountPageButton(get_class($this), 'photo', 'open', _('Add photo')));
+				$containerRight->add(new htmlAccountPageButton(get_class($this), 'photo', 'open', _('Add photo')), 12);
 			}
 			else {
-				$imageContainer->addElement(new htmlButton('delPhoto', _('Delete photo')));
+				$containerRight->add(new htmlButton('delPhoto', _('Delete photo')), 12);
 			}
-			$containerRight->addElement($imageContainer, true);
-			$containerRight->addElement(new htmlSpacer(null, '20px'), true);
+			$containerRight->addVerticalSpacer('2rem');
 		}
 		// groups
-		$containerRight->addElement(new htmlSubTitle(_('Groups')), true);
-		$containerRight->addElement(new htmlAccountPageButton(get_class($this), 'group', 'edit', _('Edit groups')), true);
-		$containerRight->addElement(new htmlSpacer(null, '10px'), true);
+		$containerRight->add(new htmlSubTitle(_('Groups')), 12);
+		$containerRight->add(new htmlAccountPageButton(get_class($this), 'group', 'edit', _('Edit groups')), 12);
+		$containerRight->addVerticalSpacer('1rem');
 		$groupsList = new htmlGroup();
 		$groupCNs = array();
 		for ($i = 0; $i < sizeof($this->groupList); $i++) {
@@ -1320,12 +1322,12 @@ class windowsUser extends baseModule implements passwordService {
 			$groupsList->addElement(new htmlOutputText($cn));
 			$groupsList->addElement(new htmlOutputText('<br>', false));
 		}
-		$containerRight->addElement($groupsList);
+		$containerRight->add($groupsList, 12);
 
-		$container = new htmlTable();
-		$container->addElement($containerLeft);
-		$container->addElement(new htmlSpacer('40px', null));
-		$container->addElement($containerRight);
+		$container = new htmlResponsiveRow();
+		$container->add($containerLeft, 12, 7);
+		$container->add(new htmlSpacer('1rem', null), 0, 1);
+		$container->add($containerRight, 12, 4);
 		return $container;
 	}
 
