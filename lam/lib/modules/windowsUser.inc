@@ -1637,7 +1637,7 @@ class windowsUser extends baseModule implements passwordService {
 	* @return htmlElement meta HTML code
 	*/
 	function display_html_accountExpires() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		$attr = 'accountExpires';
 		$text = _('Account expiration date');
 		$help = "accountExpires";
@@ -1654,32 +1654,41 @@ class windowsUser extends baseModule implements passwordService {
 		for ( $i=2003; $i<=2050; $i++ ) {
 			$year[] = $i;
 		}
-		$return->addElement(new htmlOutputText($text));
-		$return->addElement(new htmlSelect('expire_day', $mday, array($datetime->format('d'))));
-		$return->addElement(new htmlSelect('expire_mon', $mon, array($datetime->format('m'))));
-		$return->addElement(new htmlSelect('expire_yea', $year, array($datetime->format('Y'))));
-		$return->addElement(new htmlHelpLink($help), true);
+		$return->addLabel(new htmlOutputText($text));
+		$dateGroup = new htmlGroup();
+		$daySelect = new htmlSelect('expire_day', $mday, array($datetime->format('d')));
+		$daySelect->setWidth('3rem');
+		$dateGroup->addElement($daySelect);
+		$monthSelect = new htmlSelect('expire_mon', $mon, array($datetime->format('m')));
+		$monthSelect->setWidth('3rem');
+		$dateGroup->addElement($monthSelect);
+		$yearSelect = new htmlSelect('expire_yea', $year, array($datetime->format('Y')));
+		$yearSelect->setWidth('5rem');
+		$dateGroup->addElement($yearSelect);
+		$dateGroup->addElement(new htmlHelpLink($help), true);
+		$return->addField($dateGroup);
 		if ($this->getAccountContainer()->getAccountModule('shadowAccount') != null) {
-			$return->addElement(new htmlTableExtendedInputCheckbox('syncShadow', false, _('Set also for Shadow')), true);
+			$return->add(new htmlResponsiveInputCheckbox('syncShadow', false, _('Set also for Shadow')), 12);
 		}
 		if ($this->getAccountContainer()->getAccountModule('heimdalKerberos') != null) {
-			$return->addElement(new htmlTableExtendedInputCheckbox('syncHeimdal', false, _('Set also for Kerberos')), true);
+			$return->add(new htmlResponsiveInputCheckbox('syncHeimdal', false, _('Set also for Kerberos')), 12);
 		}
 		if ($this->getAccountContainer()->getAccountModule('mitKerberos') != null) {
-			$return->addElement(new htmlTableExtendedInputCheckbox('syncMIT', false, _('Set also for Kerberos')), true);
+			$return->add(new htmlResponsiveInputCheckbox('syncMIT', false, _('Set also for Kerberos')), 12);
 		}
 		if ($this->getAccountContainer()->getAccountModule('mitKerberosStructural') != null) {
-			$return->addElement(new htmlTableExtendedInputCheckbox('syncMITStructural', false, _('Set also for Kerberos')), true);
+			$return->add(new htmlResponsiveInputCheckbox('syncMITStructural', false, _('Set also for Kerberos')), 12);
 		}
-		$return->addElement(new htmlSpacer(null, '10px'), true);
-		$buttons = new htmlTable();
+		$return->addVerticalSpacer('2rem');
+		$buttons = new htmlGroup();
 		$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'change' . $attr, _('Change')));
 		if (isset($this->attributes[$attr][0])) {
+			$buttons->addElement(new htmlSpacer('0.5rem', null));
 			$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'del' . $attr, _('Remove')));
 		}
+		$buttons->addElement(new htmlSpacer('0.5rem', null));
 		$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back' . $attr, _('Cancel')));
-		$buttons->colspan = 6;
-		$return->addElement($buttons);
+		$return->add($buttons, 12, 12, 12, 'text-center');
 		return $return;
 	}
 
@@ -1759,18 +1768,11 @@ class windowsUser extends baseModule implements passwordService {
 	* @return htmlElement meta HTML code
 	*/
 	public function display_html_group() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
+		$return->add(new htmlSubTitle(_("Groups")), 12);
 		$groups = $this->findGroups();
 		// sort by DN
 		usort($groups, 'compareDN');
-
-		$groupContainer = new htmlTable();
-		$groupContainer->alignment = htmlElement::ALIGN_TOP;
-		$groupContainer->addElement(new htmlSubTitle(_("Groups")), true);
-		$groupContainer->addElement(new htmlOutputText(_("Selected groups")));
-		$groupContainer->addElement(new htmlOutputText(''));
-		$groupContainer->addElement(new htmlOutputText(_("Available groups")));
-		$groupContainer->addNewLine();
 
 		$selectedGroups = array();
 		// sort by DN
@@ -1787,27 +1789,8 @@ class windowsUser extends baseModule implements passwordService {
 			}
 		}
 
-		$remGroupSelect = new htmlSelect('removegroups', $selectedGroups, null, 15);
-		$remGroupSelect->setMultiSelect(true);
-		$remGroupSelect->setTransformSingleSelect(false);
-		$remGroupSelect->setHasDescriptiveElements(true);
-		$remGroupSelect->setRightToLeftTextDirection(true);
-		$remGroupSelect->setSortElements(false);
-		$groupContainer->addElement($remGroupSelect);
-		$buttonGroupContainer = new htmlTable();
-		$buttonGroupContainer->addElement(new htmlButton('addgroups_button', 'back.gif', true), true);
-		$buttonGroupContainer->addElement(new htmlButton('removegroups_button', 'forward.gif', true), true);
-		$groupContainer->addElement($buttonGroupContainer);
-		$addGroupSelect = new htmlSelect('addgroups', $availableGroups, null, 15);
-		$addGroupSelect->setMultiSelect(true);
-		$addGroupSelect->setHasDescriptiveElements(true);
-		$addGroupSelect->setTransformSingleSelect(false);
-		$addGroupSelect->setRightToLeftTextDirection(true);
-		$addGroupSelect->setSortElements(false);
-		$groupContainer->addElement($addGroupSelect);
-		$groupContainer->addNewLine();
-		$return->addElement($groupContainer);
-		$return->addNewLine();
+		$this->addDoubleSelectionArea($return, _("Selected groups"), _("Available groups"),
+				$selectedGroups, null, $availableGroups, null, 'groups', true, true);
 
 		// sync options
 		$typeManager = new TypeManager();
@@ -1829,11 +1812,9 @@ class windowsUser extends baseModule implements passwordService {
 		}
 		$syncActive = $syncActive && !$this->isBooleanConfigOptionSet('windowsUser_syncGroups');
 		if ($syncActive) {
-			$return->addElement(new htmlSubTitle(_('Sync groups')), true);
-			$syncOptionTable = new htmlTable();
-			$syncOptionTable->addElement(new htmlTableExtendedInputCheckbox('syncDeleteGroups', true, _('Delete non-matching entries')), true);
-			$return->addElement($syncOptionTable, true);
-			$return->addVerticalSpace('1rem');
+			$return->add(new htmlSubTitle(_('Sync groups')), 12);
+			$return->add(new htmlResponsiveInputCheckbox('syncDeleteGroups', true, _('Delete non-matching entries')), 12);
+			$return->addVerticalSpacer('2rem');
 			$syncButtons = new htmlGroup();
 			$u2wButton = new htmlAccountPageButton(get_class($this), 'group', 'syncU2W', _('Sync Unix to Windows'));
 			$u2wButton->setIconClass('unixButton');
@@ -1845,16 +1826,12 @@ class windowsUser extends baseModule implements passwordService {
 				$syncButtons->addElement($g2wButton);
 				$syncButtons->addElement(new htmlSpacer('2rem', null));
 			}
-			$return->addElement($syncButtons, true);
-			$return->addElement(new htmlSpacer(null, '2rem'), true);
+			$return->add($syncButtons, 12, 12, 12, 'text-center');
+			$return->addVerticalSpacer('2rem');
 		}
 
-		$backGroup = new htmlGroup();
-		$backGroup->colspan = 10;
-		$backGroup->addElement(new htmlSpacer(null, '10px'), true);
 		$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
-		$backGroup->addElement($backButton);
-		$return->addElement($backGroup);
+		$return->add($backButton, 12);
 		return $return;
 	}
 
@@ -1865,12 +1842,12 @@ class windowsUser extends baseModule implements passwordService {
 	* @return array list of info/error messages
 	*/
 	public function process_group() {
-		if (isset($_POST['addgroups']) && isset($_POST['addgroups_button'])) { // Add groups to list
+		if (isset($_POST['groups_2']) && isset($_POST['groups_left'])) { // Add groups to list
 			// add new group
-			$this->groupList = @array_merge($this->groupList, $_POST['addgroups']);
+			$this->groupList = @array_merge($this->groupList, $_POST['groups_2']);
 		}
-		elseif (isset($_POST['removegroups']) && isset($_POST['removegroups_button'])) { // remove groups from list
-			$this->groupList = array_delete($_POST['removegroups'], $this->groupList);
+		elseif (isset($_POST['groups_1']) && isset($_POST['groups_right'])) { // remove groups from list
+			$this->groupList = array_delete($_POST['groups_1'], $this->groupList);
 		}
 		// sync Unix to Windows
 		if (isset($_POST['form_subpage_windowsUser_group_syncU2W'])) {
@@ -1990,19 +1967,17 @@ class windowsUser extends baseModule implements passwordService {
 	* @return array meta HTML code
 	*/
 	public function display_html_photo() {
-		$container = new htmlTable();
+		$container = new htmlResponsiveRow();
 		if (empty($this->attributes['jpegPhoto'][0])) {
-			$container->addElement(new htmlSubTitle(_('Upload image')), true);
+			$container->add(new htmlSubTitle(_('Upload image')), 12);
 			$label = _('Photo file');
-			$container->addElement(new htmlTableExtendedInputFileUpload('photoFile', $label, 'photoUpload'), true);
-			$container->addVerticalSpace('1rem');
-			$buttonContainer = new htmlTable();
-			$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'photo', 'upload', _('Upload')));
-			$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
-			$container->addElement($buttonContainer);
+			$container->add(new htmlResponsiveInputFileUpload('photoFile', $label, 'photoUpload'), 12);
+			$container->addVerticalSpacer('2rem');
+			$container->addLabel(new htmlAccountPageButton(get_class($this), 'photo', 'upload', _('Upload')));
+			$container->addField(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
 		}
 		else {
-			$container->addElement(new htmlSubTitle(_('Crop image')), true);
+			$container->add(new htmlSubTitle(_('Crop image')), 12);
 			$jpeg_filename = 'jpg' . getRandomNumber() . '.jpg';
 			$outjpeg = @fopen(dirname(__FILE__) . '/../../tmp/' . $jpeg_filename, "wb");
 			fwrite($outjpeg, $this->attributes['jpegPhoto'][0]);
@@ -2011,11 +1986,9 @@ class windowsUser extends baseModule implements passwordService {
 			$img = new htmlImage($photoFile);
 			$img->setCSSClasses(array('photo'));
 			$img->enableCropping();
-			$container->addElement($img, true);
-			$container->addVerticalSpace('1rem');
-			$buttonContainer = new htmlTable();
-			$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'crop', _('Done')));
-			$container->addElement($buttonContainer, true);
+			$container->add($img, 12);
+			$container->addVerticalSpacer('2rem');
+			$container->add(new htmlAccountPageButton(get_class($this), 'attributes', 'crop', _('Done')), 12);
 		}
 		return $container;
 	}
@@ -2097,7 +2070,7 @@ class windowsUser extends baseModule implements passwordService {
 	* @return htmlElement HTML meta data
 	*/
 	function display_html_manager() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		if (!isset($this->attributes['manager'])) {
 			$this->attributes['manager'] = array();
 		}
@@ -2117,23 +2090,20 @@ class windowsUser extends baseModule implements passwordService {
 		if (!empty($this->attributes['manager'][0])) {
 			$selectedManager[] = $this->attributes['manager'][0];
 		}
-		$size = 20;
-		if (sizeof($options) < 20) {
-			$size = sizeof($options);
-		}
-		$managerSelect = new htmlSelect('manager', $options, $selectedManager, $size);
+		$managerSelect = new htmlSelect('manager', $options, $selectedManager);
 		$managerSelect->setHasDescriptiveElements(true);
 		$managerSelect->setRightToLeftTextDirection(true);
 		$managerSelect->setSortElements(false);
 		$managerSelect->setTransformSingleSelect(false);
-		$return->addElement($managerSelect, true);
-		$buttonTable = new htmlTable();
+		$return->add($managerSelect, 12);
+		$return->addVerticalSpacer('2rem');
+		$buttonTable = new htmlGroup();
 		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'setManager', _('Change')));
-		$buttonTable->addSpace('5px');
+		$buttonTable->addElement(new htmlSpacer('0.5rem', null));
 		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'removeManager', _('Remove')));
-		$buttonTable->addSpace('20px');
+		$buttonTable->addElement(new htmlSpacer('2rem', null));
 		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'cancelManager', _('Cancel')));
-		$return->addElement($buttonTable);
+		$return->add($buttonTable, 12);
 		return $return;
 	}
 
