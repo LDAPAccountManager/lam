@@ -2009,6 +2009,7 @@ class accountContainer {
 					if (!$success) {
 						logNewMessage(LOG_ERR, 'Unable to modify attributes of DN: ' . $DNs[$i] . ' (' . ldap_error($_SESSION['ldap']->server()) . '). '
 							. getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
+						logNewMessage(LOG_DEBUG, print_r($attributes[$DNs[$i]]['modify'], true));
 						$errors[] = array('ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $DNs[$i]), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
 						$stopprocessing = true;
 					}

@@ -815,7 +815,7 @@ class posixAccount extends baseModule implements passwordService {
 			$toAdd = array_values(array_diff($this->gonList, $this->gonList_orig));
 			$toRem = array_values(array_diff($this->gonList_orig, $this->gonList));
 			// update groups if DN changed
-			if (isset($accountContainer->dn_orig) && ($accountContainer->dn_orig != $accountContainer->finalDN)) {
+			if (isset($accountContainer->dn_orig) && (strtolower($accountContainer->dn_orig) != strtolower($accountContainer->finalDN))) {
 				// update owner/member/uniqueMember attributes
 				$searchAttrs = array('member', 'uniquemember', 'owner');
 				foreach ($searchAttrs as $searchAttr) {
@@ -831,10 +831,12 @@ class posixAccount extends baseModule implements passwordService {
 							}
 						}
 						if ($found) {
-							$success = @ldap_mod_replace($_SESSION['ldap']->server(), $ownerGroups[$i]['dn'], array($searchAttr => $newOwners));
+							$attributesToModify = array($searchAttr => $newOwners);
+							$success = @ldap_mod_replace($_SESSION['ldap']->server(), $ownerGroups[$i]['dn'], $attributesToModify);
 							if (!$success) {
 								$ldapError = getDefaultLDAPErrorString($_SESSION['ldap']->server());
 								logNewMessage(LOG_ERR, 'Unable to modify attributes of DN: ' . $ownerGroups[$i]['dn'] . ' (' . $ldapError . ').');
+								logNewMessage(LOG_DEBUG, print_r($attributesToModify, true));
 								$messages[] = array('ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $ownerGroups[$i]['dn']), $ldapError);
 							}
 						}
