@@ -71,7 +71,7 @@ table.padding5 td {
 }
 
 .maxrow {
-	max-width: none;
+	max-width: none !important;
 }
 
 .module-content-row>.row {

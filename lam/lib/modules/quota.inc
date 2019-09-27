@@ -453,12 +453,13 @@ class quota extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
+		$return->setCSSClasses(array('maxrow'));
 		try {
 			$this->initQuotas();
 		}
 		catch (LAMException $e) {
-			$return->addElement(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()));
+			$return->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
 			return $return;
 		}
 		if (!is_array($this->quota)) {
@@ -481,55 +482,47 @@ class quota extends baseModule {
 			if (isset($serverDescriptions[$server])) {
 				$title = $serverDescriptions[$server] . " (" . $server . ")";
 			}
-			$return->addElement(new htmlSubTitle($title), true);
-			$return->addElement(new htmlOutputText('&nbsp;' . _('Mountpoint') . '&nbsp;', false));
-			$return->addElement(new htmlOutputText('&nbsp;' . _('Used blocks') . '&nbsp;', false));
-			$return->addElement(new htmlOutputText('&nbsp;' . _('Soft block limit') . '&nbsp;', false));
-			$return->addElement(new htmlOutputText('&nbsp;' . _('Hard block limit') . '&nbsp;', false));
-			$return->addElement(new htmlOutputText('&nbsp;' . _('Grace block period') . '&nbsp;', false));
-			$return->addElement(new htmlOutputText('&nbsp;' . _('Used inodes') . '&nbsp;', false));
-			$return->addElement(new htmlOutputText('&nbsp;' . _('Soft inode limit') . '&nbsp;', false));
-			$return->addElement(new htmlOutputText('&nbsp;' . _('Hard inode limit') . '&nbsp;', false));
-			$return->addElement(new htmlOutputText('&nbsp;' . _('Grace inode period') . '&nbsp;', false));
-			$return->addNewLine();
-			$return->addElement(new htmlHelpLink('Mountpoint'));
-			$return->addElement(new htmlHelpLink('UsedBlocks'));
-			$return->addElement(new htmlHelpLink('SoftBlockLimit'));
-			$return->addElement(new htmlHelpLink('HardBlockLimit'));
-			$return->addElement(new htmlHelpLink('GraceBlockPeriod'));
-			$return->addElement(new htmlHelpLink('UsedInodes'));
-			$return->addElement(new htmlHelpLink('SoftInodeLimit'));
-			$return->addElement(new htmlHelpLink('HardInodeLimit'));
-			$return->addElement(new htmlHelpLink('GraceInodePeriod'));
-			$return->addNewLine();
+			$return->add(new htmlSubTitle($title), 12);
+
+			$titles = array(
+				_('Mountpoint'), _('Used blocks'), _('Soft block limit'), _('Hard block limit'), _('Grace block period'),
+				_('Used inodes'), _('Soft inode limit'), _('Hard inode limit'), _('Grace inode period')
+			);
+			$data = array(
+				array(
+					new htmlHelpLink('Mountpoint'), new htmlHelpLink('UsedBlocks'), new htmlHelpLink('SoftBlockLimit'),
+					new htmlHelpLink('HardBlockLimit'), new htmlHelpLink('GraceBlockPeriod'), new htmlHelpLink('UsedInodes'),
+					new htmlHelpLink('SoftInodeLimit'), new htmlHelpLink('HardInodeLimit'), new htmlHelpLink('GraceInodePeriod')
+				)
+			);
 
 			$i=0;
 			// loop for every mointpoint with enabled quotas
 			while (isset($this->quota[$server][$i][0])) {
-				$return->addElement(new htmlOutputText($this->quota[$server][$i][0]));
-				$return->addElement(new htmlOutputText($this->quota[$server][$i][1]));
+				$dataRow = array();
+				$dataRow[] = new htmlOutputText($this->quota[$server][$i][0]);
+				$dataRow[] = new htmlOutputText($this->quota[$server][$i][1]);
 				$sbLimitInput = new htmlInputField($i . '_2_' . $id, $this->quota[$server][$i][2]);
-				$sbLimitInput->setFieldSize(12);
 				$sbLimitInput->setFieldMaxLength(20);
-				$return->addElement($sbLimitInput);
+				$dataRow[] = $sbLimitInput;
 				$hbLimit = new htmlInputField($i . '_3_' . $id, $this->quota[$server][$i][3]);
-				$hbLimit->setFieldSize(12);
 				$hbLimit->setFieldMaxLength(20);
-				$return->addElement($hbLimit);
-				$return->addElement(new htmlOutputText($this->quota[$server][$i][4]));
-				$return->addElement(new htmlOutputText($this->quota[$server][$i][5]));
+				$dataRow[] = $hbLimit;
+				$dataRow[] = new htmlOutputText($this->quota[$server][$i][4]);
+				$dataRow[] = new htmlOutputText($this->quota[$server][$i][5]);
 				$siLimit = new htmlInputField($i . '_6_' . $id, $this->quota[$server][$i][6]);
 				$siLimit->setFieldMaxLength(20);
-				$siLimit->setFieldSize(12);
-				$return->addElement($siLimit);
+				$dataRow[] = $siLimit;
 				$hiLimit = new htmlInputField($i . '_7_' . $id, $this->quota[$server][$i][7]);
 				$hiLimit->setFieldMaxLength(20);
-				$hiLimit->setFieldSize(12);
-				$return->addElement($hiLimit);
-				$return->addElement(new htmlOutputText($this->quota[$server][$i][8]));
-				$return->addNewLine();
+				$dataRow[] = $hiLimit;
+				$dataRow[] = new htmlOutputText($this->quota[$server][$i][8]);
+				$data[] = $dataRow;
 				$i++;
 			}
+			$table = new htmlResponsiveTable($titles, $data);
+			$table->setWidths(array('20%', '5%', '10%', '10%', '5%', '5%', '10%', '10%', '5%'));
+			$return->add($table, 12);
 		}
 		return $return;
 	}
