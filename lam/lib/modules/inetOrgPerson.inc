@@ -1560,15 +1560,16 @@ class inetOrgPerson extends baseModule implements passwordService {
 		// password buttons
 		if (!$this->isUnixActive() && checkIfWriteAccessIsAllowed($this->get_scope()) && isset($this->attributes['userPassword'][0]) && !$this->isAdminReadOnly('userPassword')) {
 			$fieldContainer->add(new htmlSubTitle(_('Password')), 12);
-			$pwdContainer = new htmlTable();
+			$pwdContainer = new htmlGroup();
 			if (pwd_is_enabled($this->attributes['userPassword'][0])) {
 				$pwdContainer->addElement(new htmlButton('lockPassword', _('Lock password')));
 			}
 			else {
 				$pwdContainer->addElement(new htmlButton('unlockPassword', _('Unlock password')));
 			}
+			$pwdContainer->addElement(new htmlSpacer('0.5rem', null));
 			$pwdContainer->addElement(new htmlButton('removePassword', _('Remove password')));
-			$fieldContainer->addElement($pwdContainer);
+			$fieldContainer->add($pwdContainer, 12, 12, 12, 'text-center');
 		}
 		// photo
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidejpegPhoto')) {
