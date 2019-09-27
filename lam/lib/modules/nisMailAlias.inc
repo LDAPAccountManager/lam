@@ -153,15 +153,16 @@ class nisMailAlias extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		// alias name
 		$alias = '';
 		if (isset($this->attributes['cn'][0])) {
 			$alias = $this->attributes['cn'][0];
 		}
-		$nameInput = new htmlTableExtendedInputField(_('Alias name'), 'cn', $alias, 'alias');
+		$nameInput = new htmlResponsiveInputField(_('Alias name'), 'cn', $alias, 'alias');
 		$nameInput->setRequired(true);
-		$return->addElement($nameInput, true);
+		$nameInput->setCSSClasses(array('maxwidth20'));
+		$return->add($nameInput, 12);
 		// list current recipients
 		$mailList = $this->getMailList();
 		$userList = $this->getUserList();
@@ -177,45 +178,50 @@ class nisMailAlias extends baseModule {
 			if ($recipientCount < nisMailAlias::DISPLAY_LIMIT) {
 				for ($i = 0; $i < $recipientCount; $i++) {
 					if (($i == 0) && ($recipientCount == 1)) {
-						$return->addElement(new htmlOutputText(_('Recipient')));
+						$return->addLabel(new htmlOutputText(_('Recipient')));
 					}
 					elseif (($i == 0) && ($recipientCount > 1)) {
-						$return->addElement(new htmlOutputText(_('Recipients')));
+						$return->addLabel(new htmlOutputText(_('Recipients')));
 					}
 					else {
-						$return->addElement(new htmlOutputText(''));
+						$return->addLabel(new htmlOutputText('&nbsp;', false));
 					}
 					$mailField = new htmlInputField('rfc822MailMember' . $i, $this->attributes['rfc822MailMember'][$i]);
 					if (sizeof($autoList) > 0) {
 						$mailField->enableAutocompletion($autoList);
 					}
-					$return->addElement($mailField);
-					$return->addElement(new htmlAccountPageButton(get_class($this), 'selectMail', 'recipient' . $i, 'mailAlias.png', true, _('Select mail')));
-					$return->addElement(new htmlAccountPageButton(get_class($this), 'selectUser', 'recipient' . $i, 'user.png', true, _('Select user')));
-					$return->addElement(new htmlButton('delRec' . $i, 'del.png', true));
-					$return->addElement(new htmlHelpLink('recipient'), true);
+					$mailField->setCSSClasses(array('maxwidth20'));
+					$mailGroup = new htmlGroup();
+					$mailGroup->addElement($mailField);
+					$mailGroup->addElement(new htmlAccountPageButton(get_class($this), 'selectMail', 'recipient' . $i, 'mailAlias.png', true, _('Select mail')));
+					$mailGroup->addElement(new htmlAccountPageButton(get_class($this), 'selectUser', 'recipient' . $i, 'user.png', true, _('Select user')));
+					$mailGroup->addElement(new htmlButton('delRec' . $i, 'del.png', true));
+					$mailGroup->addElement(new htmlHelpLink('recipient'));
+					$return->addField($mailGroup);
 				}
 			}
 			else {
 				$memberText = implode("\r\n", $this->attributes['rfc822MailMember']);
-				$return->addElement(new htmlTableExtendedInputTextarea('rfc822MailMember', $memberText, 50, 30, _('Recipients'), 'recipient'), true);
-				$return->addElement(new htmlEqualWidth(array('cn', 'rfc822MailMember')), true);
+				$return->add(new htmlResponsiveInputTextarea('rfc822MailMember', $memberText, 50, 30, _('Recipients'), 'recipient'), 12);
 			}
 		}
 		if ($recipientCount < nisMailAlias::DISPLAY_LIMIT) {
 			// input box for new recipient
-			$return->addElement(new htmlOutputText(_('New recipient')));
+			$return->addLabel(new htmlOutputText(_('New recipient')));
 			$newMailField = new htmlInputField('rfc822MailMember');
 			$newMailField->setOnKeyPress('SubmitForm(\'addRec\', event);');
 			if (sizeof($autoList) > 0) {
 				$newMailField->enableAutocompletion($autoList);
 			}
-			$return->addElement($newMailField);
-			$return->addElement(new htmlAccountPageButton(get_class($this), 'selectMail', 'recipient' . 'New', 'mailAlias.png', true, _('Select mail')));
-			$return->addElement(new htmlAccountPageButton(get_class($this), 'selectUser', 'recipient' . 'New', 'user.png', true, _('Select user')));
-			$return->addElement(new htmlButton('addRec', 'add.png', true));
-			$return->addElement(new htmlHelpLink('recipient'));
-			$return->addElement(new htmlHiddenInput('rec_number', $recipientCount));
+			$newMailField->setCSSClasses(array('maxwidth20'));
+			$newGroup = new htmlGroup();
+			$newGroup->addElement($newMailField);
+			$newGroup->addElement(new htmlAccountPageButton(get_class($this), 'selectMail', 'recipient' . 'New', 'mailAlias.png', true, _('Select mail')));
+			$newGroup->addElement(new htmlAccountPageButton(get_class($this), 'selectUser', 'recipient' . 'New', 'user.png', true, _('Select user')));
+			$newGroup->addElement(new htmlButton('addRec', 'add.png', true));
+			$newGroup->addElement(new htmlHelpLink('recipient'));
+			$newGroup->addElement(new htmlHiddenInput('rec_number', $recipientCount));
+			$return->addField($newGroup);
 		}
 		return $return;
 	}
@@ -348,13 +354,9 @@ class nisMailAlias extends baseModule {
 			$suffix = 'User';
 			$label = _('User');
 		}
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		$postKeys = array_keys($_POST);
 		$position = 'New';
-		$filter = '';
-		if (isset($_POST['dofilter'])) {
-			$filter = $_POST['filter'];
-		}
 		for ($i = 0; $i < sizeof($postKeys); $i++) {
 			if 	(strpos($postKeys[$i], 'form_subpage_' . get_class($this) . '_select' . $suffix . '_recipient') === 0) {
 				$position = substr($postKeys[$i], strlen('form_subpage_' . get_class($this) . '_select' . $suffix . '_recipient'));
@@ -364,27 +366,28 @@ class nisMailAlias extends baseModule {
 		// load list with all mail addresses
 		$count = sizeof($options);
 		for ($i = 0; $i < $count; $i++) {
-			if (!get_preg($options[$i], $regex) || (!empty($filter) && !preg_match('/' . str_replace('*', '.*', $filter) . '/ui', $options[$i]))) {
+			if (!get_preg($options[$i], $regex)) {
 				unset($options[$i]);
 			}
 		}
 		$options = array_values($options);
-		$return->addElement(new htmlOutputText(_('Filter')));
-		$return->addElement(new htmlInputField('filter', $filter));
-		$return->addElement(new htmlButton('dofilter', _('Ok')));
-		$return->addElement(new htmlHelpLink('filter'), true);
-		$return->addElement(new htmlOutputText($label));
+		$return->addLabel(new htmlOutputText(_('Filter')));
+		$filterGroup = new htmlGroup();
+		$filterInput = new htmlInputField('filter', null);
+		$filterInput->setCSSClasses(array('maxwidth10'));
+		$filterInput->filterSelectBox('selectBox');
+		$filterGroup->addElement($filterInput);
+		$filterGroup->addElement(new htmlHelpLink('filter'));
+		$return->addField($filterGroup);
+		$return->addLabel(new htmlOutputText($label));
 		$mailSelect = new htmlSelect('selectBox', $options, array(), 15);
 		$mailSelect->setMultiSelect($position === 'New');
 		$mailSelect->colspan = 5;
-		$return->addElement($mailSelect, true);
-		$return->addElement(new htmlSpacer(null, '10px'), true);
-		$buttonContainer = new htmlTable();
-		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'select', _('Ok')));
-		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Cancel')));
-		$buttonContainer->colspan = 4;
-		$return->addElement($buttonContainer, true);
-		$return->addElement(new htmlHiddenInput('position', $position));
+		$return->addField($mailSelect);
+		$return->addVerticalSpacer('2rem');
+		$return->addLabel(new htmlAccountPageButton(get_class($this), 'attributes', 'select', _('Ok')));
+		$return->addField(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Cancel')));
+		$return->add(new htmlHiddenInput('position', $position), 12);
 		return $return;
 	}
 

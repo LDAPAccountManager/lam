@@ -48,6 +48,14 @@
 	width: auto;
 }
 
+input.maxwidth10 {
+	max-width: 10rem;
+}
+
+input.maxwidth20 {
+	max-width: 20rem;
+}
+
 img.max16 {
 	max-width: 16px;
 }
