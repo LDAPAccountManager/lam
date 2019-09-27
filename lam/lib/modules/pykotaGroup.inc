@@ -182,7 +182,7 @@ class pykotaGroup extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$container = new htmlTable();
+		$container = new htmlResponsiveRow();
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		if ($this->isStructural() || (isset($this->attributes['objectClass']) && in_array('pykotaGroup', $this->attributes['objectClass']))) {
 			// cn
@@ -196,25 +196,24 @@ class pykotaGroup extends baseModule {
 			if (!empty($this->attributes['pykotaLimitBy'][0])) {
 				$limitOption = $this->attributes['pykotaLimitBy'][0];
 			}
-			$limitSelect = new htmlTableExtendedSelect('pykotaLimitBy', $this->limitOptions, array($limitOption), _('Limit type'), 'pykotaLimitBy');
+			$limitSelect = new htmlResponsiveSelect('pykotaLimitBy', $this->limitOptions, array($limitOption), _('Limit type'), 'pykotaLimitBy');
 			$limitSelect->setHasDescriptiveElements(true);
 			$limitSelect->setSortElements(false);
-			$container->addElement($limitSelect, true);
+			$container->add($limitSelect, 12);
 			// description
 			if ($this->isUnixOrGonInactive($modules)) {
 				$this->addMultiValueInputTextField($container, 'description', _('Description'), false, null, true);
 			}
 			// remove button
 			if (!$this->isStructural()) {
-				$container->addElement(new htmlSpacer(null, '20px'), true);
+				$container->addVerticalSpacer('2rem');
 				$remButton = new htmlButton('remObjectClass', _('Remove PyKota extension'));
-				$remButton->colspan = 5;
-				$container->addElement($remButton);
+				$container->add($remButton, 12, 12, 12, 'text-center');
 			}
 		}
 		else {
 			// add button
-			$container->addElement(new htmlButton('addObjectClass', _('Add PyKota extension')));
+			$container->add(new htmlButton('addObjectClass', _('Add PyKota extension')), 12);
 		}
 		return $container;
 	}
