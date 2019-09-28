@@ -296,7 +296,7 @@ class pykotaUser extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$container = new htmlTable();
+		$container = new htmlResponsiveRow();
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		if ($this->isStructural() || (isset($this->attributes['objectClass']) && in_array('pykotaAccount', $this->attributes['objectClass']))) {
 			// uid
@@ -315,8 +315,7 @@ class pykotaUser extends baseModule {
 						$page = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->get_alias();
 					}
 					$msg = new htmlStatusMessage('INFO', sprintf(_("Please enter an user name on this page: %s"), $page));
-					$msg->colspan = 5;
-					$container->addElement($msg, true);
+					$container->add($msg, 12);
 				}
 			}
 			// pykotaUserName
@@ -326,42 +325,31 @@ class pykotaUser extends baseModule {
 			if (isset($this->attributes['pykotaBalance'][0])) {
 				$pykotaBalance = $this->attributes['pykotaBalance'][0];
 			}
-			$container->addElement(new htmlOutputText(_('Balance')));
-			$container->addElement(new htmlOutputText($pykotaBalance));
-			$container->addElement(new htmlHelpLink('pykotaBalance'), true);
-			// new payment and balance history
-			$container->addElement(new htmlOutputText(_('Payment')));
-			$newPaymentGroup = new htmlGroup();
-			$newPaymentAmount = new htmlInputField('pykotaBalanceAdd', '', '5em');
-			$newPaymentAmount->setTitle(_('Amount'));
-			$newPaymentGroup->addElement($newPaymentAmount);
-			$newPaymentComment = new htmlInputField('pykotaBalanceComment', '', '20em');
-			$newPaymentComment->setTitle(_('Comment'));
-			$newPaymentGroup->addElement($newPaymentComment);
-			$newPaymentBtn = new htmlButton('addPayment', _('Add'));
-			$newPaymentBtn->setIconClass('createButton');
-			$newPaymentGroup->addElement($newPaymentBtn);
-			$container->addElement($newPaymentGroup);
-			$container->addElement(new htmlHelpLink('pykotaPaymentsAdd'), true);
-			$container->addElement(new htmlOutputText(''));
+			$container->addLabel(new htmlOutputText(_('Balance')));
+			$balanceGroup = new htmlGroup();
+			$balanceGroup->addElement(new htmlOutputText($pykotaBalance));
+			$balanceGroup->addElement(new htmlSpacer('0.5rem', null));
+			$balanceGroup->addElement(new htmlHelpLink('pykotaBalance'));
+			$container->addField($balanceGroup);
+			$container->addLabel(new htmlOutputText('&nbsp;', false));
 			$historyGroup = new htmlGroup();
 			$historyGroup->addElement(new htmlAccountPageButton(get_class($this), 'payments', 'open', _('Payment history')));
 			if (!$this->getAccountContainer()->isNewAccount && !empty($this->moduleSettings['pykotaUser_jobSuffix'][0])) {
 				$historyGroup->addElement(new htmlSpacer('5px', null));
 				$historyGroup->addElement(new htmlAccountPageButton(get_class($this), 'jobs', 'open', _('Job history')));
 			}
-			$container->addElement($historyGroup);
-			$container->addElement(new htmlHelpLink('pykotaPayments'), true);
-			$container->addElement(new htmlSpacer(null, '10px'), true);
+			$historyGroup->addElement(new htmlSpacer('5px', null));
+			$historyGroup->addElement(new htmlHelpLink('pykotaPayments'), true);
+			$container->addField($historyGroup);
 			// limit by
 			$limitOption = 'quota';
 			if (!empty($this->attributes['pykotaLimitBy'][0])) {
 				$limitOption = $this->attributes['pykotaLimitBy'][0];
 			}
-			$limitSelect = new htmlTableExtendedSelect('pykotaLimitBy', $this->limitOptions, array($limitOption), _('Limit type'), 'pykotaLimitBy');
+			$limitSelect = new htmlResponsiveSelect('pykotaLimitBy', $this->limitOptions, array($limitOption), _('Limit type'), 'pykotaLimitBy');
 			$limitSelect->setHasDescriptiveElements(true);
 			$limitSelect->setSortElements(false);
-			$container->addElement($limitSelect, true);
+			$container->add($limitSelect, 12);
 			// overcharge factor
 			$this->addSimpleInputTextField($container, 'pykotaOverCharge', _('Overcharge factor'));
 			// cn
@@ -376,17 +364,29 @@ class pykotaUser extends baseModule {
 			if ($this->manageDescription($modules)) {
 				$this->addMultiValueInputTextField($container, 'description', _('Description'), false, null, true);
 			}
+			// new payment
+			$container->add(new htmlSubTitle(_('Payment')), 12);
+			$newPaymentAmount = new htmlResponsiveInputField(_('Amount'), 'pykotaBalanceAdd', '', '5em');
+			$container->add($newPaymentAmount, 12);
+			$newPaymentComment = new htmlResponsiveInputField(_('Comment'), 'pykotaBalanceComment', '', '20em');
+			$container->add($newPaymentComment, 12);
+			$newPaymentBtn = new htmlButton('addPayment', _('Add'));
+			$newPaymentBtn->setIconClass('createButton');
+			$newPaymentGroup = new htmlGroup();
+			$newPaymentGroup->addElement($newPaymentBtn);
+			$newPaymentGroup->addElement(new htmlSpacer('0.5rem', null));
+			$newPaymentGroup->addElement(new htmlHelpLink('pykotaPaymentsAdd'));
+			$container->add($newPaymentGroup, 12, 12, 12, 'text-center');
 			// remove button
 			if (!$this->isStructural()) {
-				$container->addElement(new htmlSpacer(null, '20px'), true);
+				$container->addVerticalSpacer('2rem');
 				$remButton = new htmlButton('remObjectClass', _('Remove PyKota extension'));
-				$remButton->colspan = 5;
-				$container->addElement($remButton);
+				$container->add($remButton, 12, 12, 12, 'text-center');
 			}
 		}
 		else {
 			// add button
-			$container->addElement(new htmlButton('addObjectClass', _('Add PyKota extension')));
+			$container->add(new htmlButton('addObjectClass', _('Add PyKota extension')), 12);
 		}
 		return $container;
 	}
@@ -542,48 +542,44 @@ class pykotaUser extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_payments() {
-		$container = new htmlTable();
+		$container = new htmlResponsiveRow();
+		$container->setCSSClasses(array('maxrow'));
 		// total paid
 		$total = '';
 		if (!empty($this->attributes['pykotaLifeTimePaid'][0])) {
 			$total = $this->attributes['pykotaLifeTimePaid'][0];
 		}
-		$container->addElement(new htmlOutputText(_('Total paid')));
-		$container->addElement(new htmlOutputText($total));
-		$container->addElement(new htmlHelpLink('pykotaLifeTimePaid'), true);
+		$container->addLabel(new htmlOutputText(_('Total paid')));
+		$totalPaidGroup = new htmlGroup();
+		$totalPaidGroup->addElement(new htmlOutputText($total));
+		$totalPaidGroup->addElement(new htmlSpacer('0.5rem', null));
+		$totalPaidGroup->addElement(new htmlHelpLink('pykotaLifeTimePaid'));
+		$container->addField($totalPaidGroup, 12);
 		// payment/job history
 		if (!empty($this->attributes['pykotaPayments'][0])) {
-			$container->addElement(new htmlSubTitle(_('Payment history')), true);
-			$spacer = new htmlSpacer('10px', null);
-			$historyTable = new htmlTable();
-			$historyTable->colspan = 5;
-			$historyTable->addElement(new htmlOutputText(_('Date')), false, true);
-			$historyTable->addElement($spacer);
-			$historyTable->addElement(new htmlOutputText(_('Amount')), false, true);
-			$historyTable->addElement($spacer);
-			$historyTable->addElement(new htmlOutputText(_('Comment')), true, true);
+			$container->add(new htmlSubTitle(_('Payment history')), 12);
+			$labels = array(_('Date'), _('Amount'), _('Comment'));
+			$data = array();
 			rsort($this->attributes['pykotaPayments']);
 			foreach ($this->attributes['pykotaPayments'] as $payment) {
 				$parts = explode(' # ', $payment);
-				$historyTable->addElement(new htmlOutputText($parts[0]));
-				$historyTable->addElement($spacer);
-				$amount = new htmlOutputText($parts[1]);
-				$amount->alignment = htmlElement::ALIGN_RIGHT;
-				$historyTable->addElement($amount);
-				$historyTable->addElement($spacer);
-				if (!empty($parts[2])) {
-					$historyTable->addElement(new htmlOutputText(base64_decode($parts[2])));
-				}
-				$historyTable->addNewLine();
+				$comment = empty($parts[2]) ? '' : base64_decode($parts[2]);
+				$commentField = new htmlOutputText($comment);
+				$amountFied = new htmlOutputText($parts[1]);
+				$data[] = array(
+					new htmlOutputText($parts[0]),
+					$amountFied,
+					$commentField
+				);
 			}
-			$container->addElement($historyTable, true);
+			$historyTable = new htmlResponsiveTable($labels, $data);
+			$historyTable->setWidths(array('20%', '15%', '65%'));
+			$container->add($historyTable, 12);
 		}
 		// back button
-		$container->addElement(new htmlSpacer(null, '20px'), true);
+		$container->addVerticalSpacer('2rem');
 		$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
-		$backButton->colspan = 5;
-		$backButton->alignment = htmlElement::ALIGN_LEFT;
-		$container->addElement($backButton, true);
+		$container->add($backButton, 12);
 		return $container;
 	}
 
@@ -603,44 +599,30 @@ class pykotaUser extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_jobs() {
-		$container = new htmlTable();
+		$container = new htmlResponsiveRow();
+		$container->setCSSClasses(array('maxrow'));
 		// jobs
 		$jobs = $this->getJobs($this->getCurrentUserName(), $this->moduleSettings['pykotaUser_jobSuffix'][0]);
-		$spacer = new htmlSpacer('10px', null);
-		// header
-		$container->addElement(new htmlOutputText(_('Date')), false, true);
-		$container->addElement($spacer);
-		$container->addElement(new htmlOutputText(_('Printer')), false, true);
-		$container->addElement($spacer);
-		$container->addElement(new htmlOutputText(_('Price')), false, true);
-		$container->addElement($spacer);
-		$container->addElement(new htmlOutputText(_('Size')), false, true);
-		$container->addElement($spacer);
-		$title = new htmlOutputText(_('Title'));
-		$title->alignment = htmlElement::ALIGN_LEFT;
-		$container->addElement($title, true, true);
-		// jobs
+		$titles = array(
+			_('Date'), _('Printer'), _('Price'), _('Size'), _('Title')
+		);
+		$data = array();
 		foreach ($jobs as $job) {
-			$container->addElement(new htmlOutputText(formatLDAPTimestamp($job['createtimestamp'][0])));
-			$container->addElement($spacer);
-			$container->addElement(new htmlOutputText($job['pykotaprintername'][0]));
-			$container->addElement($spacer);
-			$price = new htmlOutputText($job['pykotajobprice'][0]);
-			$price->alignment = htmlElement::ALIGN_RIGHT;
-			$container->addElement($price);
-			$container->addElement($spacer);
-			$size = new htmlOutputText($job['pykotajobsize'][0]);
-			$size->alignment = htmlElement::ALIGN_RIGHT;
-			$container->addElement($size);
-			$container->addElement($spacer);
-			$container->addElement(new htmlOutputText($job['pykotatitle'][0]), true);
+			$data[] = array(
+				new htmlOutputText(formatLDAPTimestamp($job['createtimestamp'][0])),
+				new htmlOutputText($job['pykotaprintername'][0]),
+				new htmlOutputText($job['pykotajobprice'][0]),
+				new htmlOutputText($job['pykotajobsize'][0]),
+				new htmlOutputText($job['pykotatitle'][0])
+			);
 		}
+		$table = new htmlResponsiveTable($titles, $data);
+		$table->setWidths(array('20%', '20%', '15%', '15%', '30%'));
+		$container->add($table, 12);
 		// back button
-		$container->addElement(new htmlSpacer(null, '20px'), true);
+		$container->addVerticalSpacer('2rem');
 		$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
-		$backButton->colspan = 5;
-		$backButton->alignment = htmlElement::ALIGN_LEFT;
-		$container->addElement($backButton, true);
+		$container->add($backButton, 12);
 		return $container;
 	}
 

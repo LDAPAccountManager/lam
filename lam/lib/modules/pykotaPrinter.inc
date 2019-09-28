@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2018  Roland Gruber
+  Copyright (C) 2013 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -225,7 +225,7 @@ class pykotaPrinter extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$container = new htmlTable();
+		$container = new htmlResponsiveRow();
 		// cn
 		$this->addSimpleInputTextField($container, 'cn', _('Printer name'), true);
 		// job size
@@ -239,10 +239,9 @@ class pykotaPrinter extends baseModule {
 		if (!empty($this->attributes['pykotaPassThrough'][0])) {
 			$pykotaPassThroughOption = $this->attributes['pykotaPassThrough'][0];
 		}
-		$pykotaPassThroughSelect = new htmlTableExtendedSelect('pykotaPassThrough', $this->passThroughOptions, array($pykotaPassThroughOption), _('Passthrough'), 'pykotaPassThrough');
+		$pykotaPassThroughSelect = new htmlResponsiveSelect('pykotaPassThrough', $this->passThroughOptions, array($pykotaPassThroughOption), _('Passthrough'), 'pykotaPassThrough');
 		$pykotaPassThroughSelect->setHasDescriptiveElements(true);
-		$container->addElement($pykotaPassThroughSelect);
-		$container->addElement(new htmlSpacer('150px', null), true); // layout fix if many parent groups exist
+		$container->add($pykotaPassThroughSelect, 12);
 		// description
 		$this->addMultiValueInputTextField($container, 'description', _('Description'), false, null, true);
 		// printer groups
@@ -254,21 +253,19 @@ class pykotaPrinter extends baseModule {
 				$parentPrinters[] = $this->printerCache[$groupDN]['cn'];
 			}
 			if (sizeof($parentPrinters) > 0) {
-				$container->addElement(new htmlOutputText(_('Printer groups')));
+				$container->addLabel(new htmlOutputText(_('Printer groups')));
 				$parentPrinterText = new htmlOutputText(implode(', ', $parentPrinters));
-				$parentPrinterText->colspan = 5;
-				$container->addElement($parentPrinterText, true);
+				$container->addField($parentPrinterText, true);
 			}
 		}
 		// printer members
 		$memberLabel = new htmlOutputText(_('Group members'));
-		$memberLabel->alignment = htmlElement::ALIGN_TOP;
-		$container->addElement($memberLabel);
+		$container->addLabel($memberLabel);
 		$addMemberButton = new htmlAccountPageButton(get_class($this), 'members', 'open', 'add.png', true);
 		$addMemberButton->setTitle(_('Add'));
-		$addMemberButton->alignment = htmlElement::ALIGN_TOP;
+		$memberHelp = new htmlHelpLink('uniqueMember');
+		$memberTable = new htmlTable();
 		if (!empty($this->attributes['uniqueMember'][0])) {
-			$memberTable = new htmlTable();
 			$memberTable->alignment = htmlElement::ALIGN_TOP;
 			for ($i = 0; $i < sizeof($this->attributes['uniqueMember']); $i++) {
 				$member = $this->attributes['uniqueMember'][$i];
@@ -281,17 +278,16 @@ class pykotaPrinter extends baseModule {
 				$memberTable->addElement($delButton);
 				if ($i == (sizeof($this->attributes['uniqueMember']) - 1)) {
 					$memberTable->addElement($addMemberButton);
+					$memberTable->addElement($memberHelp);
 				}
 				$memberTable->addNewLine();
 			}
-			$container->addElement($memberTable);
 		}
 		else {
-			$container->addElement($addMemberButton);
+			$memberTable->addElement($addMemberButton);
+			$memberTable->addElement($memberHelp);
 		}
-		$memberHelp = new htmlHelpLink('uniqueMember');
-		$memberHelp->alignment = htmlElement::ALIGN_TOP;
-		$container->addElement($memberHelp, true);
+		$container->addField($memberTable);
 		return $container;
 	}
 
@@ -382,13 +378,7 @@ class pykotaPrinter extends baseModule {
 	* @return htmlElement HTML meta data
 	*/
 	function display_html_members() {
-		$return = new htmlTable();
-		$userFilter = '';
-		$userFilterRegex = '';
-		if (isset($_POST['newFilter'])) {
-			$userFilter = $_POST['newFilter'];
-			$userFilterRegex = '/' . str_replace(array('*', '(', ')'), array('.*', '\(', '\)'), $_POST['newFilter']) . '/ui';
-		}
+		$return = new htmlResponsiveRow();
 		$options = array();
 		$this->loadPrinterNameCache();
 		foreach ($this->printerCache as $dn => $attrs) {
@@ -397,10 +387,6 @@ class pykotaPrinter extends baseModule {
 			}
 			else {
 				$label = $attrs['cn'];
-			}
-			// skip filtered printers
-			if (!empty($userFilter) && !preg_match($userFilterRegex, $label)) {
-				continue;
 			}
 			// skip own entry
 			if (!$this->getAccountContainer()->isNewAccount && ($this->getAccountContainer()->dn_orig == $dn)) {
@@ -413,22 +399,28 @@ class pykotaPrinter extends baseModule {
 			$options[$label] = $dn;
 		}
 		$size = 20;
-		if (sizeof($options) < 20) $size = sizeof($options);
+		if (sizeof($options) < 20) {
+			$size = sizeof($options);
+		}
 		$membersSelect = new htmlSelect('members', $options, array(), $size);
 		$membersSelect->setHasDescriptiveElements(true);
 		$membersSelect->setMultiSelect(true);
 		$membersSelect->setTransformSingleSelect(false);
-		$return->addElement($membersSelect, true);
+		$return->add($membersSelect, 12);
 		$filterGroup = new htmlGroup();
-		$filterGroup->addElement(new htmlInputField('newFilter', $userFilter));
-		$filterGroup->addElement(new htmlButton('setFilter', _('Filter')));
+		$filterGroup->addElement(new htmlOutputText(_('Filter')));
+		$filterInput = new htmlInputField('newFilter', null);
+		$filterInput->setCSSClasses(array('maxwidth20'));
+		$filterInput->filterSelectBox('members');
+		$filterGroup->addElement($filterInput);
 		$filterGroup->addElement(new htmlHelpLink('filter'));
-		$return->addElement($filterGroup, true);
-		$return->addElement(new htmlSpacer(null, '10px'), true);
-		$buttonTable = new htmlTable();
+		$return->add($filterGroup, 12);
+		$return->addVerticalSpacer('2rem');
+		$buttonTable = new htmlGroup();
 		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'addMembers', _('Add')));
+		$buttonTable->addElement(new htmlSpacer('0.5rem', null));
 		$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'cancel', _('Cancel')));
-		$return->addElement($buttonTable);
+		$return->add($buttonTable, 12);
 		return $return;
 	}
 
