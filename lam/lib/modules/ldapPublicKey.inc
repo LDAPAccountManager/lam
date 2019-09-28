@@ -119,7 +119,6 @@ class ldapPublicKey extends baseModule {
 		$return['selfServiceFieldSettings'] = array(
 			'sshPublicKey' => _('SSH public keys'),
 		);
-		$return['selfServiceReadOnlyFields'] = array('sshPublicKey');
 		return $return;
 	}
 
