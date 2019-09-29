@@ -136,8 +136,14 @@ cd ..
 
 # Debian
 cp -r lam-packaging/debian Debian/ldap-account-manager-$VERSION/
+cp -ar Debian Debian-Upload
 cd Debian/ldap-account-manager-$VERSION
 debuild
+cd ..
+rm -r ldap-account-manager-$VERSION
+cd ..
+cd Debian-Upload/ldap-account-manager-$VERSION
+debuild -S
 cd ..
 rm -r ldap-account-manager-$VERSION
 cd ..
