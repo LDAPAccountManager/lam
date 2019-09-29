@@ -28,7 +28,7 @@
 FROM debian:stretch
 MAINTAINER Roland Gruber <post@rolandgruber.de>
 
-ARG LAM_RELEASE=6.8
+ARG LAM_RELEASE=6.9
 
 # update OS
 RUN apt-get update \
