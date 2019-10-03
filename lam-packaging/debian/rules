@@ -43,12 +43,13 @@ install:
 	install -D --mode=755 lib/*.sh debian/ldap-account-manager/usr/share/ldap-account-manager/lib
 	cp -r lib/modules debian/ldap-account-manager/usr/share/ldap-account-manager/lib/
 	cp -r lib/types debian/ldap-account-manager/usr/share/ldap-account-manager/lib/
-	cp -r lib/tools debian/ldap-account-manager/usr/share/ldap-account-manager/lib/
+	cp -r lib/tools debian/ldap-account-manager/usr/share/ldap-account-manager/lib/	
 
 	# 3rd party libs are linked
 	install -d --mode=755 debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty
 	cp -r lib/3rdParty/yubico debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/
 	cp -r lib/3rdParty/tcpdf debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/
+	cp -r lib/3rdParty/duo debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty/
 
 	cp -r locale debian/ldap-account-manager/usr/share/ldap-account-manager/
 	install -D --mode=644 sess/.htaccess debian/ldap-account-manager/var/lib/ldap-account-manager/sess/.htaccess
