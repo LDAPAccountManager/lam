@@ -43,7 +43,7 @@ install:
 	install -D --mode=755 lib/*.sh debian/ldap-account-manager/usr/share/ldap-account-manager/lib
 	cp -r lib/modules debian/ldap-account-manager/usr/share/ldap-account-manager/lib/
 	cp -r lib/types debian/ldap-account-manager/usr/share/ldap-account-manager/lib/
-	cp -r lib/tools debian/ldap-account-manager/usr/share/ldap-account-manager/lib/	
+	cp -r lib/tools debian/ldap-account-manager/usr/share/ldap-account-manager/lib/
 
 	# 3rd party libs are linked
 	install -d --mode=755 debian/ldap-account-manager/usr/share/ldap-account-manager/lib/3rdParty
