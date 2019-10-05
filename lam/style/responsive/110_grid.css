@@ -1,7 +1,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2018  Roland Gruber
+  Copyright (C) 2018 - 2019  Roland Gruber
   Based on Foundation Grid: https://foundation.zurb.com/sites/docs/v/5.5.3/components/grid.html
   License: MIT License
 
@@ -20,7 +20,10 @@ html, body {
 	box-sizing: border-box;
 }
 
-html,
+html {
+	font-size: 100%;
+}
+
 body {
 	font-size: 100%;
 }

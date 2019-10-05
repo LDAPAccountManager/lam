@@ -276,7 +276,7 @@ function passwordHandleInput(random, ajaxURL, tokenName, tokenValue) {
 	var data = {jsonInput: pwdJSON};
 	data[tokenName] = tokenValue;
 	// make AJAX call
-	jQuery.post(ajaxURL, data, function(data) {passwordHandleReply(data);}, 'json');
+	jQuery.post(ajaxURL, data, function(dataReturned) {passwordHandleReply(dataReturned);}, 'json');
 }
 
 /**
@@ -554,7 +554,7 @@ function checkPasswordStrength(fieldID, ajaxURL, tokenName, tokenValue) {
 			var data = {jsonInput: pwdJSON};
 			data[tokenName] = tokenValue;
 			// make AJAX call
-			jQuery.post(ajaxURL + "&function=passwordStrengthCheck", data, function(data) {checkPasswordStrengthHandleReply(data, fieldID);}, 'json');
+			jQuery.post(ajaxURL + "&function=passwordStrengthCheck", data, function(dataReturned) {checkPasswordStrengthHandleReply(dataReturned, fieldID);}, 'json');
 		};
 	jQuery(field).keyup(check);
 }

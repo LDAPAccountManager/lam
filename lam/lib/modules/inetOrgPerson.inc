@@ -3918,7 +3918,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 			_('Photo') => 'inetOrgPerson_readOnly_jpegPhoto', _('Password') => 'inetOrgPerson_readOnly_userPassword'
 		);
 		if (isset($_SESSION['conf_config'])) {
-			$confActiveUnixUserModules = $_SESSION['conf_config']->get_AccountModules('user');
 			$readOnlyOptions[_('User name')] = 'inetOrgPerson_readOnly_uid';
 			$readOnlyOptions[_('Common name')] = 'inetOrgPerson_readOnly_cn';
 		}

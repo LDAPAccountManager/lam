@@ -22,7 +22,7 @@ use \htmlResponsiveTable;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2018  Roland Gruber
+  Copyright (C) 2013 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -61,7 +61,9 @@ startSecureSession();
 enforceUserIsLoggedIn();
 
 // die if no write access
-if (!checkIfWriteAccessIsAllowed()) die();
+if (!checkIfWriteAccessIsAllowed()) {
+	die();
+}
 
 checkIfToolIsActive('toolMultiEdit');
 
@@ -499,12 +501,10 @@ function multiEditLdapErrorHandler($errno, $errstr, $errfile, $errline) {
 		case E_USER_ERROR:
 			logNewMessage(LOG_ERR, 'Error occured: ' . $errstr . " ($errfile: $errline)");
 			$_REQUEST['multiEdit_error'] = true;
-		;
 		break;
 			case E_USER_WARNING:
 			logNewMessage(LOG_WARNING, 'Error occured: ' . $errstr . " ($errfile: $errline)");
 			$_REQUEST['multiEdit_error'] = true;
-		;
 		break;
 	}
 }

@@ -789,7 +789,8 @@ class asteriskAccount extends baseModule implements passwordService {
 				$errors[] = $this->messages['AstAccountCallerID'][1];
 			}
 			// check for duplicate caller ID
-			else if (!isset($this->orig['AstAccountCallerID'][0]) || (($this->orig['AstAccountCallerID'][0] != $this->attributes['AstAccountCallerID'][0]))) {
+			else if (!isset($this->orig['AstAccountCallerID'][0])
+					|| ($this->orig['AstAccountCallerID'][0] != $this->attributes['AstAccountCallerID'][0])) {
 				$entries = searchLDAPByAttribute('AstAccountCallerID', $this->attributes['AstAccountCallerID'][0], 'AsteriskSIPUser', array('dn'), array('user'));
 				if (sizeof($entries) > 0) {
 					$errors[] = $this->messages['AstAccountCallerID'][2];

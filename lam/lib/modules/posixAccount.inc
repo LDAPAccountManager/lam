@@ -3508,20 +3508,6 @@ class posixAccount extends baseModule implements passwordService {
 	}
 
 	/**
-	 * Returns the group DN of the given group.
-	 *
-	 * @param String $groupname group name
-	 * @return String DN
-	 */
-	private function getGroupDN($groupname) {
-		$results = searchLDAPByAttribute('cn', $groupname, 'posixGroup', array('dn'), array('group'));
-		if ((sizeof($results) > 0) && isset($results[0]['dn'][0])) {
-			return $results[0]['dn'];
-		}
-		return null;
-	}
-
-	/**
 	 * Finds all existing LDAP groups.
 	 *
 	 * @return array groups array(array(gidnumber, cn), array(gidnumber, cn), ...)

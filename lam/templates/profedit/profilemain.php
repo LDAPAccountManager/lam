@@ -19,7 +19,7 @@ use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2018  Roland Gruber
+  Copyright (C) 2003 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -277,7 +277,7 @@ foreach ($profileClasses as $profileClass) {
 	echo "<div id=\"importDialog_$typeId\" class=\"hidden\">\n";
 	echo "<form id=\"importDialogForm_$typeId\" method=\"post\" action=\"profilemain.php\">\n";
 
-	$containerProfiles = new htmlResponsiveRow();;
+	$containerProfiles = new htmlResponsiveRow();
 	$containerProfiles->add(new htmlOutputText(_('Profiles')), 12);
 
 	$select = new htmlSelect('importProfiles', $importOptions, array(), count($importOptions, 1) < 15 ? count($importOptions, 1) : 15);
