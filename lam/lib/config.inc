@@ -662,7 +662,9 @@ class LAMConfig {
 			while (!feof($file)) {
 				$line = fgets($file, 1000000);
 				$line = trim($line);  // remove spaces at the beginning and end
-				if (($line == "")||($line[0] == "#")) continue; // ignore comments and empty lines
+				if (($line == "")||($line[0] == "#")) {
+					continue; // ignore comments and empty lines
+				}
 				// search keywords
 				$parts = explode(': ', $line);
 				$keyword = $parts[0];
@@ -769,7 +771,9 @@ class LAMConfig {
 			$count = sizeof($file_array);
 			for ($i = 0; $i < $count; $i++) {
 				$line = trim($file_array[$i]);
-				if (($line == "")||($line[0] == "#")) continue; // ignore comments and empty lines
+				if (($line == "")||($line[0] == "#")) {
+					continue; // ignore comments and empty lines
+				}
 				// search for keywords
 				for ($k = 0; $k < sizeof($this->settings); $k++) {
 					$keyword = $this->settings[$k];
@@ -833,55 +837,147 @@ class LAMConfig {
 				}
 			}
 			// check if we have to add new entries (e.g. if user upgraded LAM and has an old config file)
-			if (!in_array("ServerURL", $saved)) array_push($file_array, "\n\n# server address (e.g. ldap://localhost:389 or ldaps://localhost:636)\n" . "ServerURL: " . $this->ServerURL . "\n");
-			if (!in_array("serverDisplayName", $saved)) array_push($file_array, "\n\nserverDisplayName: " . $this->serverDisplayName . "\n");
-			if (!in_array("useTLS", $saved)) array_push($file_array, "\n\n# enable TLS encryption\n" . "useTLS: " . $this->useTLS . "\n");
-			if (!in_array("followReferrals", $saved)) array_push($file_array, "\n\n# follow referrals\n" . "followReferrals: " . $this->followReferrals . "\n");
-			if (!in_array("pagedResults", $saved)) array_push($file_array, "\n\n# paged results\n" . "pagedResults: " . $this->pagedResults . "\n");
-			if (!in_array("referentialIntegrityOverlay", $saved)) array_push($file_array, "\n" . "referentialIntegrityOverlay: " . $this->referentialIntegrityOverlay . "\n");
-			if (!in_array("Passwd", $saved)) array_push($file_array, "\n\n# password to change these preferences via webfrontend\n" . "Passwd: " . $this->Passwd . "\n");
-			if (!in_array("Admins", $saved)) array_push($file_array, "\n\n# list of users who are allowed to use LDAP Account Manager\n" .
-								"# names have to be seperated by semicolons\n" .
-								"# e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org\n" . "Admins: " . $this->Admins . "\n");
-			if (!in_array("treesuffix", $saved)) array_push($file_array, "\n\n# suffix of tree view\n" .
-								"# e.g. dc=yourdomain,dc=org\n" . "treesuffix: " . $this->treesuffix . "\n");
-			if (!in_array("defaultLanguage", $saved)) array_push($file_array, "\n\n# default language (a line from config/language)\n" . "defaultLanguage: " . $this->defaultLanguage . "\n");
-			if (!in_array("timeZone", $saved)) array_push($file_array, "\n\n# time zone\n" . "timeZone: " . $this->timeZone . "\n");
-			if (!in_array("scriptPath", $saved)) array_push($file_array, "\n\n# Path to external Script\n" . "scriptPath: " . $this->scriptPath . "\n");
-			if (!in_array("scriptServer", $saved)) array_push($file_array, "\n\n# Servers of external script\n" . "scriptServer: " . $this->scriptServer . "\n");
-			if (!in_array("scriptRights", $saved)) array_push($file_array, "\n\n# Access rights for home directories\n" . "scriptRights: " . $this->scriptRights . "\n");
-			if (!in_array("scriptUserName", $saved)) array_push($file_array, "\n" . "scriptUserName: " . $this->scriptUserName . "\n");
-			if (!in_array("scriptSSHKey", $saved)) array_push($file_array, "\n" . "scriptSSHKey: " . $this->scriptSSHKey . "\n");
-			if (!in_array("scriptSSHKeyPassword", $saved)) array_push($file_array, "\n" . "scriptSSHKeyPassword: " . $this->scriptSSHKeyPassword . "\n");
-			if (!in_array("cachetimeout", $saved)) array_push($file_array, "\n\n# Number of minutes LAM caches LDAP searches.\n" . "cacheTimeout: " . $this->cachetimeout . "\n");
-			if (!in_array("searchLimit", $saved)) array_push($file_array, "\n\n# LDAP search limit.\n" . "searchLimit: " . $this->searchLimit . "\n");
-			if (!in_array("activeTypes", $saved)) array_push($file_array, "\n\n# List of active account types.\n" . "activeTypes: " . $this->activeTypes . "\n");
-			if (!in_array("accessLevel", $saved)) array_push($file_array, "\n\n# Access level for this profile.\n" . "accessLevel: " . $this->accessLevel . "\n");
-			if (!in_array("loginMethod", $saved)) array_push($file_array, "\n\n# Login method.\n" . "loginMethod: " . $this->loginMethod . "\n");
-			if (!in_array("loginSearchSuffix", $saved)) array_push($file_array, "\n\n# Search suffix for LAM login.\n" . "loginSearchSuffix: " . $this->loginSearchSuffix . "\n");
-			if (!in_array("loginSearchFilter", $saved)) array_push($file_array, "\n\n# Search filter for LAM login.\n" . "loginSearchFilter: " . $this->loginSearchFilter . "\n");
-			if (!in_array("loginSearchDN", $saved)) array_push($file_array, "\n\n# Bind DN for login search.\n" . "loginSearchDN: " . $this->loginSearchDN . "\n");
-			if (!in_array("loginSearchPassword", $saved)) array_push($file_array, "\n\n# Bind password for login search.\n" . "loginSearchPassword: " . $this->loginSearchPassword . "\n");
-			if (!in_array("httpAuthentication", $saved)) array_push($file_array, "\n\n# HTTP authentication for LAM login.\n" . "httpAuthentication: " . $this->httpAuthentication . "\n");
-			if (!in_array("lamProMailFrom", $saved)) array_push($file_array, "\n\n# Password mail from\n" . "lamProMailFrom: " . $this->lamProMailFrom . "\n");
-			if (!in_array("lamProMailReplyTo", $saved)) array_push($file_array, "\n\n# Password mail reply-to\n" . "lamProMailReplyTo: " . $this->lamProMailReplyTo . "\n");
-			if (!in_array("lamProMailSubject", $saved)) array_push($file_array, "\n\n# Password mail subject\n" . "lamProMailSubject: " . $this->lamProMailSubject . "\n");
-			if (!in_array("lamProMailIsHTML", $saved)) array_push($file_array, "\n\n# Password mail is HTML\n" . "lamProMailIsHTML: " . $this->lamProMailIsHTML . "\n");
-			if (!in_array("lamProMailAllowAlternateAddress", $saved)) array_push($file_array, "\n\n# Allow alternate address\n" . "lamProMailAllowAlternateAddress: " . $this->lamProMailAllowAlternateAddress . "\n");
-			if (!in_array("lamProMailText", $saved)) array_push($file_array, "\n\n# Password mail text\n" . "lamProMailText: " . $this->lamProMailText . "\n");
-			if (!in_array("jobsBindPassword", $saved)) array_push($file_array, "\n" . "jobsBindPassword: " . $this->jobsBindPassword . "\n");
-			if (!in_array("jobsBindUser", $saved)) array_push($file_array, "\n" . "jobsBindUser: " . $this->jobsBindUser . "\n");
-			if (!in_array("jobsDatabase", $saved)) array_push($file_array, "\n" . "jobsDatabase: " . $this->jobsDatabase . "\n");
-			if (!in_array("jobsDBHost", $saved)) array_push($file_array, "\n" . "jobsDBHost: " . $this->jobsDBHost . "\n");
-			if (!in_array("jobsDBPort", $saved)) array_push($file_array, "\n" . "jobsDBPort: " . $this->jobsDBPort . "\n");
-			if (!in_array("jobsDBUser", $saved)) array_push($file_array, "\n" . "jobsDBUser: " . $this->jobsDBUser . "\n");
-			if (!in_array("jobsDBPassword", $saved)) array_push($file_array, "\n" . "jobsDBPassword: " . $this->jobsDBPassword . "\n");
-			if (!in_array("jobsDBName", $saved)) array_push($file_array, "\n" . "jobsDBName: " . $this->jobsDBName . "\n");
-			if (!in_array("jobToken", $saved)) array_push($file_array, "\n" . "jobToken: " . $this->getJobToken() . "\n");
-			if (!in_array("pwdResetAllowSpecificPassword", $saved)) array_push($file_array, "\n" . "pwdResetAllowSpecificPassword: " . $this->pwdResetAllowSpecificPassword . "\n");
-			if (!in_array("pwdResetAllowScreenPassword", $saved)) array_push($file_array, "\n" . "pwdResetAllowScreenPassword: " . $this->pwdResetAllowScreenPassword . "\n");
-			if (!in_array("pwdResetForcePasswordChange", $saved)) array_push($file_array, "\n" . "pwdResetForcePasswordChange: " . $this->pwdResetForcePasswordChange . "\n");
-			if (!in_array("pwdResetDefaultPasswordOutput", $saved)) array_push($file_array, "\n" . "pwdResetDefaultPasswordOutput: " . $this->pwdResetDefaultPasswordOutput . "\n");
+			if (!in_array("ServerURL", $saved)) {
+				array_push($file_array, "\n\n# server address (e.g. ldap://localhost:389 or ldaps://localhost:636)\n" . "ServerURL: " . $this->ServerURL . "\n");
+			}
+			if (!in_array("serverDisplayName", $saved)) {
+				array_push($file_array, "\n\nserverDisplayName: " . $this->serverDisplayName . "\n");
+			}
+			if (!in_array("useTLS", $saved)) {
+				array_push($file_array, "\n\n# enable TLS encryption\n" . "useTLS: " . $this->useTLS . "\n");
+			}
+			if (!in_array("followReferrals", $saved)) {
+				array_push($file_array, "\n\n# follow referrals\n" . "followReferrals: " . $this->followReferrals . "\n");
+			}
+			if (!in_array("pagedResults", $saved)) {
+				array_push($file_array, "\n\n# paged results\n" . "pagedResults: " . $this->pagedResults . "\n");
+			}
+			if (!in_array("referentialIntegrityOverlay", $saved)) {
+				array_push($file_array, "\n" . "referentialIntegrityOverlay: " . $this->referentialIntegrityOverlay . "\n");
+			}
+			if (!in_array("Passwd", $saved)) {
+				array_push($file_array, "\n\n# password to change these preferences via webfrontend\n" . "Passwd: " . $this->Passwd . "\n");
+			}
+			if (!in_array("Admins", $saved)) {
+				array_push($file_array, "\n\n# list of users who are allowed to use LDAP Account Manager\n" .
+					"# names have to be seperated by semicolons\n" .
+					"# e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org\n" . "Admins: " . $this->Admins . "\n");
+			}
+			if (!in_array("treesuffix", $saved)) {
+				array_push($file_array, "\n\n# suffix of tree view\n" .
+					"# e.g. dc=yourdomain,dc=org\n" . "treesuffix: " . $this->treesuffix . "\n");
+			}
+			if (!in_array("defaultLanguage", $saved)) {
+				array_push($file_array, "\n\n# default language (a line from config/language)\n" . "defaultLanguage: " . $this->defaultLanguage . "\n");
+			}
+			if (!in_array("timeZone", $saved)) {
+				array_push($file_array, "\n\n# time zone\n" . "timeZone: " . $this->timeZone . "\n");
+			}
+			if (!in_array("scriptPath", $saved)) {
+				array_push($file_array, "\n\n# Path to external Script\n" . "scriptPath: " . $this->scriptPath . "\n");
+			}
+			if (!in_array("scriptServer", $saved)) {
+				array_push($file_array, "\n\n# Servers of external script\n" . "scriptServer: " . $this->scriptServer . "\n");
+			}
+			if (!in_array("scriptRights", $saved)) {
+				array_push($file_array, "\n\n# Access rights for home directories\n" . "scriptRights: " . $this->scriptRights . "\n");
+			}
+			if (!in_array("scriptUserName", $saved)) {
+				array_push($file_array, "\n" . "scriptUserName: " . $this->scriptUserName . "\n");
+			}
+			if (!in_array("scriptSSHKey", $saved)) {
+				array_push($file_array, "\n" . "scriptSSHKey: " . $this->scriptSSHKey . "\n");
+			}
+			if (!in_array("scriptSSHKeyPassword", $saved)) {
+				array_push($file_array, "\n" . "scriptSSHKeyPassword: " . $this->scriptSSHKeyPassword . "\n");
+			}
+			if (!in_array("cachetimeout", $saved)) {
+				array_push($file_array, "\n\n# Number of minutes LAM caches LDAP searches.\n" . "cacheTimeout: " . $this->cachetimeout . "\n");
+			}
+			if (!in_array("searchLimit", $saved)) {
+				array_push($file_array, "\n\n# LDAP search limit.\n" . "searchLimit: " . $this->searchLimit . "\n");
+			}
+			if (!in_array("activeTypes", $saved)) {
+				array_push($file_array, "\n\n# List of active account types.\n" . "activeTypes: " . $this->activeTypes . "\n");
+			}
+			if (!in_array("accessLevel", $saved)) {
+				array_push($file_array, "\n\n# Access level for this profile.\n" . "accessLevel: " . $this->accessLevel . "\n");
+			}
+			if (!in_array("loginMethod", $saved)) {
+				array_push($file_array, "\n\n# Login method.\n" . "loginMethod: " . $this->loginMethod . "\n");
+			}
+			if (!in_array("loginSearchSuffix", $saved)) {
+				array_push($file_array, "\n\n# Search suffix for LAM login.\n" . "loginSearchSuffix: " . $this->loginSearchSuffix . "\n");
+			}
+			if (!in_array("loginSearchFilter", $saved)) {
+				array_push($file_array, "\n\n# Search filter for LAM login.\n" . "loginSearchFilter: " . $this->loginSearchFilter . "\n");
+			}
+			if (!in_array("loginSearchDN", $saved)) {
+				array_push($file_array, "\n\n# Bind DN for login search.\n" . "loginSearchDN: " . $this->loginSearchDN . "\n");
+			}
+			if (!in_array("loginSearchPassword", $saved)) {
+				array_push($file_array, "\n\n# Bind password for login search.\n" . "loginSearchPassword: " . $this->loginSearchPassword . "\n");
+			}
+			if (!in_array("httpAuthentication", $saved)) {
+				array_push($file_array, "\n\n# HTTP authentication for LAM login.\n" . "httpAuthentication: " . $this->httpAuthentication . "\n");
+			}
+			if (!in_array("lamProMailFrom", $saved)) {
+				array_push($file_array, "\n\n# Password mail from\n" . "lamProMailFrom: " . $this->lamProMailFrom . "\n");
+			}
+			if (!in_array("lamProMailReplyTo", $saved)) {
+				array_push($file_array, "\n\n# Password mail reply-to\n" . "lamProMailReplyTo: " . $this->lamProMailReplyTo . "\n");
+			}
+			if (!in_array("lamProMailSubject", $saved)) {
+				array_push($file_array, "\n\n# Password mail subject\n" . "lamProMailSubject: " . $this->lamProMailSubject . "\n");
+			}
+			if (!in_array("lamProMailIsHTML", $saved)) {
+				array_push($file_array, "\n\n# Password mail is HTML\n" . "lamProMailIsHTML: " . $this->lamProMailIsHTML . "\n");
+			}
+			if (!in_array("lamProMailAllowAlternateAddress", $saved)) {
+				array_push($file_array, "\n\n# Allow alternate address\n" . "lamProMailAllowAlternateAddress: " . $this->lamProMailAllowAlternateAddress . "\n");
+			}
+			if (!in_array("lamProMailText", $saved)) {
+				array_push($file_array, "\n\n# Password mail text\n" . "lamProMailText: " . $this->lamProMailText . "\n");
+			}
+			if (!in_array("jobsBindPassword", $saved)) {
+				array_push($file_array, "\n" . "jobsBindPassword: " . $this->jobsBindPassword . "\n");
+			}
+			if (!in_array("jobsBindUser", $saved)) {
+				array_push($file_array, "\n" . "jobsBindUser: " . $this->jobsBindUser . "\n");
+			}
+			if (!in_array("jobsDatabase", $saved)) {
+				array_push($file_array, "\n" . "jobsDatabase: " . $this->jobsDatabase . "\n");
+			}
+			if (!in_array("jobsDBHost", $saved)) {
+				array_push($file_array, "\n" . "jobsDBHost: " . $this->jobsDBHost . "\n");
+			}
+			if (!in_array("jobsDBPort", $saved)) {
+				array_push($file_array, "\n" . "jobsDBPort: " . $this->jobsDBPort . "\n");
+			}
+			if (!in_array("jobsDBUser", $saved)) {
+				array_push($file_array, "\n" . "jobsDBUser: " . $this->jobsDBUser . "\n");
+			}
+			if (!in_array("jobsDBPassword", $saved)) {
+				array_push($file_array, "\n" . "jobsDBPassword: " . $this->jobsDBPassword . "\n");
+			}
+			if (!in_array("jobsDBName", $saved)) {
+				array_push($file_array, "\n" . "jobsDBName: " . $this->jobsDBName . "\n");
+			}
+			if (!in_array("jobToken", $saved)) {
+				array_push($file_array, "\n" . "jobToken: " . $this->getJobToken() . "\n");
+			}
+			if (!in_array("pwdResetAllowSpecificPassword", $saved)) {
+				array_push($file_array, "\n" . "pwdResetAllowSpecificPassword: " . $this->pwdResetAllowSpecificPassword . "\n");
+			}
+			if (!in_array("pwdResetAllowScreenPassword", $saved)) {
+				array_push($file_array, "\n" . "pwdResetAllowScreenPassword: " . $this->pwdResetAllowScreenPassword . "\n");
+			}
+			if (!in_array("pwdResetForcePasswordChange", $saved)) {
+				array_push($file_array, "\n" . "pwdResetForcePasswordChange: " . $this->pwdResetForcePasswordChange . "\n");
+			}
+			if (!in_array("pwdResetDefaultPasswordOutput", $saved)) {
+				array_push($file_array, "\n" . "pwdResetDefaultPasswordOutput: " . $this->pwdResetDefaultPasswordOutput . "\n");
+			}
 			if (!in_array("twoFactorAuthentication", $saved)) {
 				array_push($file_array, "\n" . "twoFactorAuthentication: " . $this->twoFactorAuthentication . "\n");
 			}
@@ -2507,30 +2603,74 @@ class LAMCfgMain {
 			}
 		}
 		// check if we have to add new entries (e.g. if user upgraded LAM and has an old config file)
-		if (!in_array("password", $saved)) array_push($file_array, "\n\n# password to add/delete/rename configuration profiles\n" . "password: " . $this->password);
-		if (!in_array("default", $saved)) array_push($file_array, "\n\n# default profile, without \".conf\"\n" . "default: " . $this->default);
-		if (!in_array("sessionTimeout", $saved)) array_push($file_array, "\n\n# session timeout in minutes\n" . "sessionTimeout: " . $this->sessionTimeout);
-		if (!in_array("logLevel", $saved)) array_push($file_array, "\n\n# log level\n" . "logLevel: " . $this->logLevel);
-		if (!in_array("logDestination", $saved)) array_push($file_array, "\n\n# log destination\n" . "logDestination: " . $this->logDestination);
-		if (!in_array("allowedHosts", $saved)) array_push($file_array, "\n\n# list of hosts which may access LAM\n" . "allowedHosts: " . $this->allowedHosts);
-		if (!in_array("allowedHostsSelfService", $saved)) array_push($file_array, "\n\n# list of hosts which may access LAM Pro self service\n" . "allowedHostsSelfService: " . $this->allowedHostsSelfService);
-		if (!in_array("encryptSession", $saved)) array_push($file_array, "\n\n# encrypt session data\n" . "encryptSession: " . $this->encryptSession);
-		if (!in_array("passwordMinLength", $saved)) array_push($file_array, "\n\n# Password: minimum password length\n" . "passwordMinLength: " . $this->passwordMinLength);
-		if (!in_array("passwordMinUpper", $saved)) array_push($file_array, "\n\n# Password: minimum uppercase characters\n" . "passwordMinUpper: " . $this->passwordMinUpper);
-		if (!in_array("passwordMinLower", $saved)) array_push($file_array, "\n\n# Password: minimum lowercase characters\n" . "passwordMinLower: " . $this->passwordMinLower);
-		if (!in_array("passwordMinNumeric", $saved)) array_push($file_array, "\n\n# Password: minimum numeric characters\n" . "passwordMinNumeric: " . $this->passwordMinNumeric);
-		if (!in_array("passwordMinSymbol", $saved)) array_push($file_array, "\n\n# Password: minimum symbolic characters\n" . "passwordMinSymbol: " . $this->passwordMinSymbol);
-		if (!in_array("passwordMinClasses", $saved)) array_push($file_array, "\n\n# Password: minimum character classes (0-4)\n" . "passwordMinClasses: " . $this->passwordMinClasses);
-		if (!in_array("checkedRulesCount", $saved)) array_push($file_array, "\n\n# Password: checked rules\n" . "checkedRulesCount: " . $this->checkedRulesCount);
-		if (!in_array("passwordMustNotContain3Chars", $saved)) array_push($file_array, "\n\n# Password: must not contain part of user name\n" . "passwordMustNotContain3Chars: " . $this->passwordMustNotContain3Chars);
-		if (!in_array("passwordMustNotContainUser", $saved)) array_push($file_array, "\n\n# Password: must not contain user name\n" . "passwordMustNotContainUser: " . $this->passwordMustNotContainUser);
-		if (!in_array("externalPwdCheckUrl", $saved)) array_push($file_array, "\n\n" . "externalPwdCheckUrl: " . $this->externalPwdCheckUrl);
-		if (!in_array("mailEOL", $saved)) array_push($file_array, "\n\n# Email format (default/unix)\n" . "mailEOL: " . $this->mailEOL);
-		if (!in_array("errorReporting", $saved)) array_push($file_array, "\n\n# PHP error reporting (default/system)\n" . "errorReporting: " . $this->errorReporting);
-		if (!in_array("license", $saved)) array_push($file_array, "\n\n# License\n" . "license: " . $this->license);
+		if (!in_array("password", $saved)) {
+			array_push($file_array, "\n\n# password to add/delete/rename configuration profiles\n" . "password: " . $this->password);
+		}
+		if (!in_array("default", $saved)) {
+			array_push($file_array, "\n\n# default profile, without \".conf\"\n" . "default: " . $this->default);
+		}
+		if (!in_array("sessionTimeout", $saved)) {
+			array_push($file_array, "\n\n# session timeout in minutes\n" . "sessionTimeout: " . $this->sessionTimeout);
+		}
+		if (!in_array("logLevel", $saved)) {
+			array_push($file_array, "\n\n# log level\n" . "logLevel: " . $this->logLevel);
+		}
+		if (!in_array("logDestination", $saved)) {
+			array_push($file_array, "\n\n# log destination\n" . "logDestination: " . $this->logDestination);
+		}
+		if (!in_array("allowedHosts", $saved)) {
+			array_push($file_array, "\n\n# list of hosts which may access LAM\n" . "allowedHosts: " . $this->allowedHosts);
+		}
+		if (!in_array("allowedHostsSelfService", $saved)) {
+			array_push($file_array, "\n\n# list of hosts which may access LAM Pro self service\n" . "allowedHostsSelfService: " . $this->allowedHostsSelfService);
+		}
+		if (!in_array("encryptSession", $saved)) {
+			array_push($file_array, "\n\n# encrypt session data\n" . "encryptSession: " . $this->encryptSession);
+		}
+		if (!in_array("passwordMinLength", $saved)) {
+			array_push($file_array, "\n\n# Password: minimum password length\n" . "passwordMinLength: " . $this->passwordMinLength);
+		}
+		if (!in_array("passwordMinUpper", $saved)) {
+			array_push($file_array, "\n\n# Password: minimum uppercase characters\n" . "passwordMinUpper: " . $this->passwordMinUpper);
+		}
+		if (!in_array("passwordMinLower", $saved)) {
+			array_push($file_array, "\n\n# Password: minimum lowercase characters\n" . "passwordMinLower: " . $this->passwordMinLower);
+		}
+		if (!in_array("passwordMinNumeric", $saved)) {
+			array_push($file_array, "\n\n# Password: minimum numeric characters\n" . "passwordMinNumeric: " . $this->passwordMinNumeric);
+		}
+		if (!in_array("passwordMinSymbol", $saved)) {
+			array_push($file_array, "\n\n# Password: minimum symbolic characters\n" . "passwordMinSymbol: " . $this->passwordMinSymbol);
+		}
+		if (!in_array("passwordMinClasses", $saved)) {
+			array_push($file_array, "\n\n# Password: minimum character classes (0-4)\n" . "passwordMinClasses: " . $this->passwordMinClasses);
+		}
+		if (!in_array("checkedRulesCount", $saved)) {
+			array_push($file_array, "\n\n# Password: checked rules\n" . "checkedRulesCount: " . $this->checkedRulesCount);
+		}
+		if (!in_array("passwordMustNotContain3Chars", $saved)) {
+			array_push($file_array, "\n\n# Password: must not contain part of user name\n" . "passwordMustNotContain3Chars: " . $this->passwordMustNotContain3Chars);
+		}
+		if (!in_array("passwordMustNotContainUser", $saved)) {
+			array_push($file_array, "\n\n# Password: must not contain user name\n" . "passwordMustNotContainUser: " . $this->passwordMustNotContainUser);
+		}
+		if (!in_array("externalPwdCheckUrl", $saved)) {
+			array_push($file_array, "\n\n" . "externalPwdCheckUrl: " . $this->externalPwdCheckUrl);
+		}
+		if (!in_array("mailEOL", $saved)) {
+			array_push($file_array, "\n\n# Email format (default/unix)\n" . "mailEOL: " . $this->mailEOL);
+		}
+		if (!in_array("errorReporting", $saved)) {
+			array_push($file_array, "\n\n# PHP error reporting (default/system)\n" . "errorReporting: " . $this->errorReporting);
+		}
+		if (!in_array("license", $saved)) {
+			array_push($file_array, "\n\n# License\n" . "license: " . $this->license);
+		}
 		$file = @fopen($this->conffile, "w");
 		if ($file) {
-			for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
+			for ($i = 0; $i < sizeof($file_array); $i++) {
+				fputs($file, $file_array[$i]);
+			}
 			fclose($file);
 		}
 		else {
