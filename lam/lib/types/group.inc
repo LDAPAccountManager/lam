@@ -226,8 +226,6 @@ class group extends baseType {
  */
 class lamGroupList extends lamList {
 
-	/** Controls if include primary group members into group memebers */
-	private $use_primary = false;
 	/** Primary group members hash */
 	private $primary_hash = array();
 	/** Controls if primary group members needs refresh */
@@ -309,7 +307,9 @@ class lamGroupList extends lamList {
 					(sizeof($this->primary_hash[$gid]) > 0));
 			}
 			if (!$use_primary) {
-				if (!isset($entry[$attribute]) || !is_array($entry[$attribute]) || (sizeof($entry[$attribute]) < 1)) return;
+				if (!isset($entry[$attribute]) || !is_array($entry[$attribute]) || (sizeof($entry[$attribute]) < 1)) {
+					return;
+				}
 				// sort array
 				sort($entry[$attribute]);
 			}

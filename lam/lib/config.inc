@@ -1381,8 +1381,12 @@ class LAMConfig {
 	* @return boolean true if $value has correct format
 	*/
 	public function set_defaultLanguage($value) {
-		if (is_string($value)) $this->defaultLanguage = $value;
-		else return false;
+		if (is_string($value)) {
+			$this->defaultLanguage = $value;
+		}
+		else {
+			return false;
+		}
 		return true;
 	}
 
@@ -1425,9 +1429,15 @@ class LAMConfig {
 	* @return boolean true if $value has correct format
 	*/
 	public function set_scriptPath($value) {
-		if (!$value) $this->scriptPath = ""; // optional parameter
-		elseif (is_string($value) && preg_match("/^\\/([a-z0-9_-])+(\\/([a-z0-9_\\.-])+)+$/i", $value)) $this->scriptPath = $value;
-		else return false;
+		if (!$value) {
+			$this->scriptPath = ""; // optional parameter
+		}
+		elseif (is_string($value) && preg_match("/^\\/([a-z0-9_-])+(\\/([a-z0-9_\\.-])+)+$/i", $value)) {
+			$this->scriptPath = $value;
+		}
+		else {
+			return false;
+		}
 		return true;
 	}
 
@@ -1502,7 +1512,9 @@ class LAMConfig {
 	 * @return string rights
 	 */
 	public function get_scriptRights() {
-		if (!isset($this->scriptRights)) return '755';
+		if (!isset($this->scriptRights)) {
+			return '755';
+		}
 		return $this->scriptRights;
 	}
 
@@ -1583,8 +1595,12 @@ class LAMConfig {
 	* @return integer cache time
 	*/
 	public function get_cacheTimeout() {
-		if (isset($this->cachetimeout)) return $this->cachetimeout;
-		else return 5;
+		if (isset($this->cachetimeout)) {
+			return $this->cachetimeout;
+		}
+		else {
+			return 5;
+		}
 	}
 
 	/**
@@ -1606,7 +1622,9 @@ class LAMConfig {
 		if (is_numeric($value) && ($value > -1)) {
 			$this->cachetimeout = $value;
 		}
-		else return false;
+		else {
+			return false;
+		}
 		return true;
 	}
 
@@ -1663,15 +1681,21 @@ class LAMConfig {
 	* @return boolean true if $modules has correct format
 	*/
 	public function set_AccountModules($modules, $scope) {
-		if (! is_array($modules)) return false;
+		if (!is_array($modules)) {
+			return false;
+		}
 		// check module names
 		$available = getAvailableModules($scope);
 		for ($i = 0; $i < sizeof($modules); $i++) {
 			if (! in_array($modules[$i], $available)) return false;
 		}
 		// check depends/conflicts
-		if (check_module_conflicts($modules, getModulesDependencies($scope)) != false) return false;
-		if (check_module_depends($modules, getModulesDependencies($scope)) != false) return false;
+		if (check_module_conflicts($modules, getModulesDependencies($scope))) {
+			return false;
+		}
+		if (check_module_depends($modules, getModulesDependencies($scope))) {
+			return false;
+		}
 		$this->typeSettings["modules_" . $scope] = implode(",", $modules);
 		return true;
 	}
@@ -1683,7 +1707,9 @@ class LAMConfig {
 	* @return boolean true if $settings has correct format
 	*/
 	public function set_moduleSettings($settings) {
-		if (!is_array($settings)) return false;
+		if (!is_array($settings)) {
+			return false;
+		}
 		$this->moduleSettings = $settings;
 		return true;
 	}
@@ -1703,8 +1729,12 @@ class LAMConfig {
 	* @return array list of types
 	*/
 	public function get_ActiveTypes() {
-		if (($this->activeTypes == '') || !isset($this->activeTypes)) return array();
-		else return explode(",", $this->activeTypes);
+		if (($this->activeTypes == '') || !isset($this->activeTypes)) {
+			return array();
+		}
+		else {
+			return explode(",", $this->activeTypes);
+		}
 	}
 
 	/**
@@ -1723,7 +1753,9 @@ class LAMConfig {
 	* @return boolean true if $settings has correct format
 	*/
 	public function set_typeSettings($settings) {
-		if (!is_array($settings)) return false;
+		if (!is_array($settings)) {
+			return false;
+		}
 		$this->typeSettings = $settings;
 		return true;
 	}
@@ -1753,7 +1785,9 @@ class LAMConfig {
 	 * @return boolean true if ok
 	 */
 	public function setToolSettings($toolSettings) {
-		if (!is_array($toolSettings)) return false;
+		if (!is_array($toolSettings)) {
+			return false;
+		}
 		$this->toolSettings = $toolSettings;
 		return true;
 	}
@@ -2553,11 +2587,15 @@ class LAMCfgMain {
 	private function reload() {
 		if (is_file($this->conffile) == True) {
 			$file = @fopen($this->conffile, "r");
-			if (!$file) return false; // abort if file is not readable
+			if (!$file) {
+				return false; // abort if file is not readable
+			}
 			while (!feof($file)) {
 				$line = fgets($file, 1024);
 				$line = trim($line);  // remove spaces at the beginning and end
-				if (($line == "")||($line[0] == "#")) continue; // ignore comments
+				if (($line == "")||($line[0] == "#")) {
+					continue; // ignore comments
+				}
 				// search keywords
 				for ($i = 0; $i < sizeof($this->settings); $i++) {
 					$keyword = $this->settings[$i];
@@ -2577,7 +2615,7 @@ class LAMCfgMain {
 	* Saves preferences to config file config.cfg
 	*/
 	public function save() {
-		if (is_file($this->conffile) == True) {
+		if (is_file($this->conffile)) {
 			$file = fopen($this->conffile, "r");
 			$file_array = array();
 			// read config file
@@ -2589,7 +2627,9 @@ class LAMCfgMain {
 			$saved = array();
 			for ($i = 0; $i < sizeof($file_array); $i++) {
 				$line = trim($file_array[$i]);
-				if (($line == "")||($line[0] == "#")) continue; // ignore comments and empty lines
+				if (($line == "")||($line[0] == "#")) {
+					continue; // ignore comments and empty lines
+				}
 				// search keywords
 				for ($k = 0; $k < sizeof($this->settings); $k++) {
 					$keyword = $this->settings[$k];

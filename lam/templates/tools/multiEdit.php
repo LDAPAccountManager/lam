@@ -497,15 +497,13 @@ function dryRun() {
  * @param int $errline error line
  */
 function multiEditLdapErrorHandler($errno, $errstr, $errfile, $errline) {
-	switch ($errno) {
-		case E_USER_ERROR:
-			logNewMessage(LOG_ERR, 'Error occured: ' . $errstr . " ($errfile: $errline)");
-			$_REQUEST['multiEdit_error'] = true;
-		break;
-			case E_USER_WARNING:
-			logNewMessage(LOG_WARNING, 'Error occured: ' . $errstr . " ($errfile: $errline)");
-			$_REQUEST['multiEdit_error'] = true;
-		break;
+	if ($errno === E_USER_ERROR) {
+		logNewMessage(LOG_ERR, 'Error occured: ' . $errstr . " ($errfile: $errline)");
+		$_REQUEST['multiEdit_error'] = true;
+	}
+	elseif ($errno === E_USER_WARNING) {
+		logNewMessage(LOG_WARNING, 'Error occured: ' . $errstr . " ($errfile: $errline)");
+		$_REQUEST['multiEdit_error'] = true;
 	}
 }
 

@@ -383,7 +383,7 @@ class asteriskExtension extends baseModule {
      * @param String $on key
      * @param String $order order (SORT_ASC or SORT_DESC)
      */
-    function array_sort($array, $on, $order='SORT_ASC') {
+    private function array_sort($array, $on, $order='SORT_ASC') {
         $new_array = array();
         $sortable_array = array();
 
@@ -399,16 +399,12 @@ class asteriskExtension extends baseModule {
                     $sortable_array[$k] = $v;
                 }
             }
-
-            switch ($order) {
-                case 'SORT_ASC':
-                    asort($sortable_array);
-                    break;
-                case 'SORT_DESC':
-                    arsort($sortable_array);
-                    break;
-            }
-
+			if ($order === 'SORT_ASC') {
+				asort($sortable_array);
+			}
+			else {
+				arsort($sortable_array);
+			}
             foreach ($sortable_array as $k => $v) {
                 $new_array[] = $array[$k];
             }
