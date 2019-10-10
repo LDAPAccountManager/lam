@@ -9,7 +9,7 @@ use \htmlSubTitle;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2018  Roland Gruber
+  Copyright (C) 2009 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -121,8 +121,8 @@ printConfigurationPageTabs(ConfigurationPageTab::MODULE_SETTINGS);
 
 ?>
 <input type="text" name="hiddenPreventAutocomplete" autocomplete="false" class="hidden" value="">
-<input type="password" name="hiddenPreventAutocompletePwd1" autocomplete="false" class="hidden" value="">
-<input type="password" name="hiddenPreventAutocompletePwd2" autocomplete="false" class="hidden" value="">
+<input type="password" name="hiddenPreventAutocompletePwd1" autocomplete="false" class="hidden" value="123">
+<input type="password" name="hiddenPreventAutocompletePwd2" autocomplete="false" class="hidden" value="321">
 <?php
 
 

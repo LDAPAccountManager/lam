@@ -448,6 +448,8 @@ class htmlInputField extends htmlElement {
 	protected $isPassword = false;
 	/** check password strength */
 	protected $checkPasswordStrength = false;
+	/** disables browser autofilling of password fields */
+	protected $disableAutoFill = false;
 	/** enabled or disabled */
 	protected $isEnabled = true;
 	/** indicates that the value should be saved in obfuscated form */
@@ -591,11 +593,16 @@ class htmlInputField extends htmlElement {
 		if (!empty($this->title)) {
 			$title = ' title="' . $this->title . '"';
 		}
+		$autoCompleteVal = '';
+		if ($this->disableAutoFill) {
+			$autoCompleteVal = ' autocomplete="new-password"';
+		}
 		if ($this->showDnSelection) {
 			echo '<span class="nowrap">';
 		}
 		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength
-			. $min . $max . $size . $fieldTabIndex . $onKeyPress . $onKeyUp . $title . $disabled . '>';
+			. $min . $max . $size . $fieldTabIndex . $onKeyPress . $onKeyUp . $title . $disabled
+			. $autoCompleteVal . '>';
 		if ($this->showDnSelection) {
 			echo '<img class="align-middle" src="../../graphics/view.png"
 					   width="16" height="16" title="' . _('Choose entry') . '"
@@ -706,10 +713,12 @@ class htmlInputField extends htmlElement {
 	 *
 	 * @param boolean $isPassword password field
 	 * @param boolean $checkStrength check if matches password policy (default: false)
+	 * @param boolean $disableAutoFill prevent autofilling by browser
 	 */
-	public function setIsPassword($isPassword, $checkStrength = false) {
+	public function setIsPassword($isPassword, $checkStrength = false, $disableAutoFill = false) {
 		$this->isPassword = $isPassword;
 		$this->checkPasswordStrength = $checkStrength;
+		$this->disableAutoFill = $disableAutoFill;
 	}
 
 	/**

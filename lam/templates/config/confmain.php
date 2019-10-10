@@ -177,8 +177,8 @@ printConfigurationPageTabs(ConfigurationPageTab::GENERAL);
 
 ?>
 <input type="text" name="hiddenPreventAutocomplete" autocomplete="false" class="hidden" value="">
-<input type="password" name="hiddenPreventAutocompletePwd1" autocomplete="false" class="hidden" value="">
-<input type="password" name="hiddenPreventAutocompletePwd2" autocomplete="false" class="hidden" value="">
+<input type="password" name="hiddenPreventAutocompletePwd1" autocomplete="false" class="hidden" value="123">
+<input type="password" name="hiddenPreventAutocompletePwd2" autocomplete="false" class="hidden" value="321">
 <?php
 
 $row = new htmlResponsiveRow();
@@ -503,9 +503,9 @@ if (extension_loaded('curl')) {
 // new password
 $row->add(new htmlSubTitle(_("Profile password"), '../../graphics/keyBig.png', null, true), 12);
 $password1 = new htmlResponsiveInputField(_("New password"), 'passwd1', null, '212');
-$password1->setIsPassword(true);
+$password1->setIsPassword(true, false, true);
 $password2 = new htmlResponsiveInputField(_("Reenter password"), 'passwd2');
-$password2->setIsPassword(true);
+$password2->setIsPassword(true, false, true);
 $password2->setSameValueFieldID('passwd1');
 $row->add($password1, 12);
 $row->add($password2, 12);

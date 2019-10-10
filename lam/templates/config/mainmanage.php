@@ -479,10 +479,10 @@ $row->addVerticalSpacer('3rem');
 // change master password
 $row->add(new htmlSubTitle(_("Change master password")), 12);
 $pwd1 = new htmlResponsiveInputField(_("New master password"), 'masterpassword', '', '235');
-$pwd1->setIsPassword(true);
+$pwd1->setIsPassword(true, false, true);
 $row->add($pwd1, 12);
 $pwd2 = new htmlResponsiveInputField(_("Reenter password"), 'masterpassword2', '');
-$pwd2->setIsPassword(true);
+$pwd2->setIsPassword(true, false, true);
 $pwd2->setSameValueFieldID('masterpassword');
 $row->add($pwd2, 12);
 $row->addVerticalSpacer('3rem');
