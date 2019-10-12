@@ -1,3 +1,7 @@
+December 2019 7.0
+  - Fixed bugs:
+   -> Missing CSS for Duo
+
 29.09.2019 6.9
   - Group account types can show member+owner count in list view
   - 2-factor authentication:
