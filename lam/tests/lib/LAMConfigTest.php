@@ -279,10 +279,32 @@ class LAMConfigTest extends PHPUnit_Framework_TestCase {
 	public function testscriptServers() {
 		$this->assertFalse($this->lAMConfig->set_scriptServers(';;..'));
 		$val = 'server;server';
-		$this->lAMConfig->set_scriptServers($val);
+		$this->assertTrue($this->lAMConfig->set_scriptServers($val));
 		$this->assertEquals($val, $this->lAMConfig->get_scriptServers());
 		$this->doSave();
 		$this->assertEquals($val, $this->lAMConfig->get_scriptServers());
+	}
+
+	/**
+	 * Tests LAMConfig->getConfiguredScriptServers().
+	 */
+	public function testGetConfiguredScriptServers() {
+		$val = 'server1;server2:label2;server3:label3:/prefix';
+		$this->assertTrue($this->lAMConfig->set_scriptServers($val));
+		$servers = $this->lAMConfig->getConfiguredScriptServers();
+		$this->assertEquals(3, sizeof($servers));
+		$this->doSave();
+		$servers = $this->lAMConfig->getConfiguredScriptServers();
+		$this->assertEquals(3, sizeof($servers));
+		$this->assertEquals('server1', $servers[0]->getServer());
+		$this->assertEquals('server2', $servers[1]->getServer());
+		$this->assertEquals('server3', $servers[2]->getServer());
+		$this->assertEquals('server1', $servers[0]->getLabel());
+		$this->assertEquals('label2', $servers[1]->getLabel());
+		$this->assertEquals('label3', $servers[2]->getLabel());
+		$this->assertEquals('', $servers[0]->getHomeDirPrefix());
+		$this->assertEquals('', $servers[1]->getHomeDirPrefix());
+		$this->assertEquals('/prefix', $servers[2]->getHomeDirPrefix());
 	}
 
 	/**
