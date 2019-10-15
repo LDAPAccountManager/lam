@@ -1370,7 +1370,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			elseif ($hr >= 24*7) {
 				$hr = $hr - 24*7;
 			}
-			$checkbox = new htmlInputCheckbox('lh_' . $hr, $hour[$hr] ? true : false);
+			$checkbox = new htmlInputCheckbox('lh_' . $hr, $hour[$hr]);
 			$checkbox->alignment = htmlTable::ALIGN_CENTER;
 			$boxes[$i % 24][floor($i/24)] = $checkbox;
 		}

@@ -2585,7 +2585,7 @@ class LAMCfgMain {
 	* @return boolean true if file was readable
 	*/
 	private function reload() {
-		if (is_file($this->conffile) == True) {
+		if (is_file($this->conffile)) {
 			$file = @fopen($this->conffile, "r");
 			if (!$file) {
 				return false; // abort if file is not readable

@@ -329,7 +329,7 @@ function checkInput() {
 		}
 		// check dependencies
 		$depends = check_module_depends($selected, getModulesDependencies($scope));
-		if ($depends != false) {
+		if ($depends !== false) {
 			for ($i = 0; $i < sizeof($depends); $i++) {
 				$errors[] = array('ERROR', $type->getAlias(), _("Unsolved dependency:") . ' ' .
 					$depends[$i][0] . " (" . $depends[$i][1] . ")");
@@ -337,7 +337,7 @@ function checkInput() {
 		}
 		// check conflicts
 		$conflicts = check_module_conflicts($selected, getModulesDependencies($scope));
-		if ($conflicts != false) {
+		if ($conflicts !== false) {
 			for ($i = 0; $i < sizeof($conflicts); $i++) {
 				$errors[] = array('ERROR', $type->getAlias(), _("Conflicting module:") . ' ' .
 					$conflicts[$i][0] . " (" . $conflicts[$i][1] . ")");
