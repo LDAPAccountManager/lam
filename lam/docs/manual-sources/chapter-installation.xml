@@ -332,6 +332,20 @@
 
       <para><ulink
       url="https://hub.docker.com/r/ldapaccountmanager/lampro">https://hub.docker.com/r/ldapaccountmanager/lampro</ulink></para>
+
+      <para><emphasis role="bold">Configuration files</emphasis></para>
+
+      <para>All configuration files are stored in:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>/etc/ldap-account-manager</para>
+        </listitem>
+
+        <listitem>
+          <para>/var/lib/ldap-account-manager</para>
+        </listitem>
+      </itemizedlist>
     </section>
 
     <section>
