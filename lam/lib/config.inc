@@ -1,5 +1,6 @@
 <?php
 use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
+use \LAM\REMOTE\RemoteServerConfiguration;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -1451,6 +1452,30 @@ class LAMConfig {
 	}
 
 	/**
+	 * Returns the list of configureed servers.
+	 *
+	 * @return RemoteServerConfiguration[] servers
+	 */
+	public function getConfiguredScriptServers() {
+		$servers = array();
+		if (empty($this->scriptServer)) {
+			return $servers;
+		}
+		$serverChunks = explode(';', $this->scriptServer);
+		foreach ($serverChunks as $serverChunk) {
+			if (empty($serverChunk)) {
+				continue;
+			}
+			$serverSettings = explode(':', $serverChunk);
+			$serverName = $serverSettings[0];
+			$serverLabel = isset($serverSettings[1]) ? $serverSettings[1] : null;
+			$serverHomedirPrefix = isset($serverSettings[2]) ? $serverSettings[2] : null;
+			$servers[] = new RemoteServerConfiguration($serverName, $serverLabel, $serverHomedirPrefix);
+		}
+		return $servers;
+	}
+
+	/**
 	* Sets the servers of the external script
 	*
 	* @param string $value new script servers
@@ -1470,21 +1495,25 @@ class LAMConfig {
 				// Explode name and IP, if a name exists
 				if (preg_match("/:/", $arr_value)) {
 					$arr_value_explode = explode(":", $arr_value);
-					$ip = $arr_value_explode[1];
 					$servername = $arr_value_explode[0];
+					$label = $arr_value_explode[1];
+					$homedirPrefix = isset($arr_value_explode[2]) ? $arr_value_explode[2] : '';
 				}
 				else {
-			 		$ip = $arr_value;
-					$servername = "";
+					$servername = $arr_value;
+					$label = '';
+					$homedirPrefix = '';
 				}
-				if (isset($ip) && is_string($ip) && preg_match("/^[a-z0-9-]+(\\.[a-z0-9-]+)*(,[0-9]+)?$/i", $ip)) {
-					// Check if the IP has a server name
-					if (!empty($servername)) {
-						$valid_ips[] = $servername.":".$ip;
+				if (isset($servername) && is_string($servername) && preg_match("/^[a-z0-9-]+(\\.[a-z0-9-]+)*(,[0-9]+)?$/i", $servername)) {
+					$serverData = array($servername);
+					if (!empty($label)) {
+						$serverData[] = $label;
 					}
-					else {
-						$valid_ips[] = $ip;
+					if (!empty($homedirPrefix)) {
+						$serverData[] = $homedirPrefix;
 					}
+					$serverChunk = implode(':', $serverData);
+					$valid_ips[] = $serverChunk;
 				}
 				else {
 					// wrong format
@@ -1492,7 +1521,7 @@ class LAMConfig {
 				}
 			}
 			// Check that the array is not empty
-			if ($array_string > 0) {
+			if (!empty($array_string)) {
 				$this->scriptServer = implode(";", $valid_ips);
 				return true;
 			}

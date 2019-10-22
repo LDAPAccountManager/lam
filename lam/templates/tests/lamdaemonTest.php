@@ -15,7 +15,7 @@ use \htmlResponsiveRow;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2018  Roland Gruber
+  Copyright (C) 2006 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -51,7 +51,9 @@ startSecureSession();
 enforceUserIsLoggedIn();
 
 // die if no write access
-if (!checkIfWriteAccessIsAllowed()) die();
+if (!checkIfWriteAccessIsAllowed()) {
+	die();
+}
 
 checkIfToolIsActive('toolTests');
 
@@ -64,33 +66,31 @@ echo "<form action=\"lamdaemonTest.php\" method=\"post\">\n";
 $container = new htmlResponsiveRow();
 $container->add(new htmlTitle(_("Lamdaemon test")), 12);
 
-$servers = explode(";", $_SESSION['config']->get_scriptServers());
+$servers = $_SESSION['config']->getConfiguredScriptServers();
 $serverIDs = array();
 $serverTitles = array();
-for ($i = 0; $i < sizeof($servers); $i++) {
-	$serverParts = explode(":", $servers[$i]);
-	$serverName = $serverParts[0];
-	$title = $serverName;
-	if (isset($serverParts[1])) {
-		$title = $serverParts[1] . " (" . $serverName . ")";
+foreach ($servers as $server) {
+	$serverName = $server->getServer();
+	$label = $server->getLabel();
+	if ($label !== $serverName) {
+		$label = $label . " (" . $serverName . ")";
 	}
 	$serverIDs[] = $serverName;
-	$serverTitles[$serverName] = $title;
+	$serverTitles[$serverName] = $label;
 }
 
 if (isset($_POST['runTest'])) {
 	lamRunTestSuite($_POST['server'], $serverTitles[$_POST['server']] , isset($_POST['checkQuotas']), $container);
 }
-else if ((sizeof($servers) > 0) && isset($servers[0]) && ($servers[0] != '')) {
+elseif (!empty($servers)) {
 	$serverOptions = array();
-	for ($i = 0; $i < sizeof($servers); $i++) {
-		$servers[$i] = explode(":", $servers[$i]);
-		$serverName = $servers[$i][0];
-		$title = $serverName;
-		if (isset($servers[$i][1])) {
-			$title = $servers[$i][1] . " (" . $serverName . ")";
+	foreach ($servers as $server) {
+		$serverName = $server->getServer();
+		$label = $server->getLabel();
+		if ($label !== $serverName) {
+			$label = $label . " (" . $serverName . ")";
 		}
-		$serverOptions[$title] = $serverName;
+		$serverOptions[$label] = $serverName;
 	}
 	$serverSelect = new htmlResponsiveSelect('server', $serverOptions, array(), _("Server"));
 	$serverSelect->setHasDescriptiveElements(true);
@@ -245,7 +245,6 @@ function lamRunTestSuite($serverName, $serverTitle, $testQuota, $container) {
 	if (!$stopTest) {
 		$container->add(new htmlOutputText(_("SSH connection")), 10, 4);
 		flush();
-		$sshOk = false;
 		try {
 			$remote->connect($serverName);
 			$container->add(new htmlImage($okImage), 2);

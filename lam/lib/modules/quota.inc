@@ -183,10 +183,9 @@ class quota extends baseModule {
 			}
 		}
 		// get list of lamdaemon servers
-		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
-		for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
-			$temp = explode(":", $lamdaemonServers[$s]);
-			$server = $temp[0];
+		$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
+		foreach ($lamdaemonServers as $lamdaemonServer) {
+			$server = $lamdaemonServer->getServer();
 			// get quotas
 			$remote = new \LAM\REMOTE\Remote();
 			$remote->connect($server);
@@ -277,14 +276,6 @@ class quota extends baseModule {
 			$id = $this->getCn();
 		}
 		// get list of lamdaemon servers
-		$serverDescriptions = array();
-		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
-		for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
-			$temp = explode(":", $lamdaemonServers[$s]);
-			if (isset($temp[1])) {
-				$serverDescriptions[$temp[0]] = $temp[1];
-			}
-		}
 		$servers = array_keys($this->quota);
 		for ($q = 0; $q < sizeof($servers); $q++) {
 			$server = $servers[$q];
@@ -366,14 +357,6 @@ class quota extends baseModule {
 			$id = $this->getCn();
 		}
 		// get list of lamdaemon servers
-		$serverDescriptions = array();
-		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
-		for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
-			$temp = explode(":", $lamdaemonServers[$s]);
-			if (isset($temp[1])) {
-				$serverDescriptions[$temp[0]] = $temp[1];
-			}
-		}
 		$servers = array_keys($this->quota);
 		for ($q = 0; $q < sizeof($servers); $q++) {
 			$server = $servers[$q];
@@ -403,14 +386,6 @@ class quota extends baseModule {
 		}
 		$errors = array();
 		// get list of lamdaemon servers
-		$serverDescriptions = array();
-		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
-		for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
-			$temp = explode(":", $lamdaemonServers[$s]);
-			if (isset($temp[1])) {
-				$serverDescriptions[$temp[0]] = $temp[1];
-			}
-		}
 		$servers = array_keys($this->quota);
 		for ($q = 0; $q < sizeof($servers); $q++) {
 			$server = $servers[$q];
@@ -467,19 +442,17 @@ class quota extends baseModule {
 		}
 		// get list of lamdaemon servers
 		$serverDescriptions = array();
-		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+		$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
 		for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
-			$temp = explode(":", $lamdaemonServers[$s]);
-			if (isset($temp[1])) {
-				$serverDescriptions[$temp[0]] = $temp[1];
-			}
+			$lamdaemonServer = $lamdaemonServers[$s];
+			$serverDescriptions[$lamdaemonServer->getServer()] = $lamdaemonServer->getLabel();
 		}
 		$servers = array_keys($this->quota);
 		for ($q = 0; $q < sizeof($servers); $q++) {
 			$server = $servers[$q];
 			$id = $this->replaceSpecialChars($server);
 			$title = $server;
-			if (isset($serverDescriptions[$server])) {
+			if ($serverDescriptions[$server] != $server) {
 				$title = $serverDescriptions[$server] . " (" . $server . ")";
 			}
 			$return->add(new htmlSubTitle($title), 12);
@@ -544,15 +517,14 @@ class quota extends baseModule {
 		$return = new htmlResponsiveRow();
 		$optionsAvailable = false;
 		// get list of lamdaemon servers
-		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+		$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
 		try {
-			for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
-				$temp = explode(":", $lamdaemonServers[$s]);
-				$server = $temp[0];
+			foreach ($lamdaemonServers as $lamdaemonServer) {
+				$server = $lamdaemonServer->getServer();
 				$id = $this->replaceSpecialChars($server);
-				$description = $temp[0];
-				if (isset($temp[1])) {
-					$description = $temp[1] . ' (' . $temp[0] . ')';
+				$description = $lamdaemonServer->getLabel();
+				if ($description != $server) {
+					$description = $description . ' (' . $server . ')';
 				}
 				// Get quotas
 				$remote = new \LAM\REMOTE\Remote();
@@ -614,10 +586,9 @@ class quota extends baseModule {
 	function check_profileOptions($options, $typeId) {
 		$return = array();
 		// get list of lamdaemon servers
-		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
-		for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
-			$temp = explode(":", $lamdaemonServers[$s]);
-			$server = $temp[0];
+		$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
+		foreach ($lamdaemonServers as $lamdaemonServer) {
+			$server = $lamdaemonServer->getServer();
 			$id = $this->replaceSpecialChars($server);
 			// Get quotas
 			$remote = new \LAM\REMOTE\Remote();
@@ -717,13 +688,12 @@ class quota extends baseModule {
 		if (sizeof($this->quota) > 0) {
 			$pdfTable = new PDFTable();
 			// get list of lamdaemon servers
-			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
-			for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
-				$temp = explode(":", $lamdaemonServers[$s]);
-				$server = $temp[0];
-				$description = $server;
-				if (isset($temp[1])) {
-					$description = $temp[1] . " (" . $server . ")";
+			$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
+			foreach ($lamdaemonServers as $lamdaemonServer) {
+				$server = $lamdaemonServer->getServer();
+				$description = $lamdaemonServer->getLabel();
+				if ($description != $server) {
+					$description = $description . " (" . $server . ")";
 				}
 				if (!isset($this->quota[$server]) || (sizeof($this->quota[$server]) < 1)) {
 					continue;
@@ -778,10 +748,9 @@ class quota extends baseModule {
 		$return = array();
 		if (sizeof($this->quota) > 0) {
 			// get list of lamdaemon servers
-			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
-			for ($s = 0; $s < sizeof($lamdaemonServers); $s++) {
-				$temp = explode(":", $lamdaemonServers[$s]);
-				$server = $temp[0];
+			$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
+			foreach ($lamdaemonServers as $lamdaemonServer) {
+				$server = $lamdaemonServer->getServer();
 				// Get quotas
 				$remote = new \LAM\REMOTE\Remote();
 				$remote->connect($server);

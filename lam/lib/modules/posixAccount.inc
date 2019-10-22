@@ -199,6 +199,11 @@ class posixAccount extends baseModule implements passwordService {
 		$return['upload_preDepends'] = array('inetOrgPerson');
 		// user specific upload options
 		if (($this->get_scope() == 'user') && isLoggedIn()) {
+			$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
+			$lamdaemonOptions = array();
+			foreach ($lamdaemonServers as $lamdaemonServer) {
+				$lamdaemonOptions[] = $lamdaemonServer->getServer();
+			}
 			$return['upload_columns'] = array(
 			array(
 				'name' => 'posixAccount_userName',
@@ -239,7 +244,7 @@ class posixAccount extends baseModule implements passwordService {
 				'description' => _('Create home directory'),
 				'help' => 'createhomedir',
 				'example' => 'localhost',
-				'values' => $_SESSION['config']->get_scriptServers()
+				'values' => implode(', ', $lamdaemonOptions)
 			),
 			array(
 				'name' => 'posixAccount_shell',
@@ -702,18 +707,14 @@ class posixAccount extends baseModule implements passwordService {
 		$messages = array_merge($messages, $this->setExopPassword($this->moduleSettings));
 		// create home directories if needed
 		$homeDirAttr = $this->getHomedirAttrName($modules);
+		$lamdaemonServerList = $_SESSION['config']->getConfiguredScriptServers();
+		$lamdaemonServerNames = array();
+		foreach ($lamdaemonServerList as $lamdaemonServer) {
+			$lamdaemonServerNames[] = $lamdaemonServer->getServer();
+		}
 		if (sizeof($this->lamdaemonServers) > 0) {
-			$server = null;
-			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
-			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
-				$temp = explode(":", $lamdaemonServers[$i]);
-				$server = $temp[0];
-				if (isset($temp[1])) {
-					if (!in_array($temp[1], $this->lamdaemonServers)) {
-						continue;
-					}
-				}
-				elseif (!in_array($temp[0], $this->lamdaemonServers)) {
+			foreach ($lamdaemonServerNames as $server) {
+				if (!in_array($server, $this->lamdaemonServers)) {
 					continue;
 				}
 				$remote = new \LAM\REMOTE\Remote();
@@ -746,13 +747,7 @@ class posixAccount extends baseModule implements passwordService {
 		// move home directory if needed
 		if (!empty($this->orig[$homeDirAttr][0]) && !empty($this->attributes[$homeDirAttr][0])
 			&& ($this->orig[$homeDirAttr][0] != $this->attributes[$homeDirAttr][0])) {
-			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
-			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
-				if (empty($lamdaemonServers[$i])) {
-					continue;
-				}
-				$temp = explode(":", $lamdaemonServers[$i]);
-				$server = $temp[0];
+			foreach ($lamdaemonServerNames as $server) {
 				$remote = new \LAM\REMOTE\Remote();
 				$remote->connect($server);
 				$result = $remote->execute(
@@ -779,13 +774,7 @@ class posixAccount extends baseModule implements passwordService {
 		// set new group on homedirectory
 		if (!empty($this->orig[$homeDirAttr][0]) && !empty($this->attributes[$homeDirAttr][0])
 			&& ($this->orig['gidNumber'][0] != $this->attributes['gidNumber'][0])) {
-			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
-			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
-				if (empty($lamdaemonServers[$i])) {
-					continue;
-				}
-				$temp = explode(":", $lamdaemonServers[$i]);
-				$server = $temp[0];
+			foreach ($lamdaemonServerNames as $server) {
 				$remote = new \LAM\REMOTE\Remote();
 				$remote->connect($server);
 				$result = $remote->execute(
@@ -941,16 +930,12 @@ class posixAccount extends baseModule implements passwordService {
 			$modules = $this->getAccountContainer()->get_type()->getModules();
 			$homeDirAttr = $this->getHomedirAttrName($modules);
 			// get list of lamdaemon servers
-			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
-			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
-				$temp = explode(":", $lamdaemonServers[$i]);
-				$lamdaemonServers[$i] = $temp[0];
-			}
+			$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
 			// try to delete directory on all servers
-			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
+			foreach ($lamdaemonServers as $lamdaemonServer) {
 				$remote = new \LAM\REMOTE\Remote();
 				try {
-					$remote->connect($lamdaemonServers[$i]);
+					$remote->connect($lamdaemonServer->getServer());
 					$result = $remote->execute(
 						implode(
 							self::$SPLIT_DELIMITER,
@@ -1036,7 +1021,9 @@ class posixAccount extends baseModule implements passwordService {
 			$this->attributes['loginShell'][0] = $_POST['loginShell'];
 		}
 		if (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegecos')) {
-			if (isset($_POST['gecos'])) $this->attributes['gecos'][0] = $_POST['gecos'];
+			if (isset($_POST['gecos'])) {
+				$this->attributes['gecos'][0] = $_POST['gecos'];
+			}
 		}
 		if (isset($this->orig['uid'][0]) && ($this->orig['uid'][0] != '') && (trim($_POST['uid']) != $this->attributes['uid'][0])) {
 			$errors[] = $this->messages['uid'][0];
@@ -1067,16 +1054,11 @@ class posixAccount extends baseModule implements passwordService {
 			$errors[] = $errorMessage;
 		}
 		// get list of DNS names or IPs
-		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
-		for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
-			$temp = explode(":", $lamdaemonServers[$i]);
-			if (isset($temp[1])) $lamdaemonServers[$i] = $temp[1];
-			else $lamdaemonServers[$i] = $temp[0];
-		}
+		$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
 		$this->lamdaemonServers = array();
 		for ($h = 0; $h < sizeof($lamdaemonServers); $h++) {
 			if (isset($_POST['createhomedir_' . $h]) && ($_POST['createhomedir_' . $h] = 'on')) {
-				$this->lamdaemonServers[] = $lamdaemonServers[$h];
+				$this->lamdaemonServers[] = $lamdaemonServers[$h]->getServer();
 			}
 		}
 		if (isset($_POST['homeDirectory'])) {
@@ -1483,12 +1465,11 @@ class posixAccount extends baseModule implements passwordService {
 	function process_homedir() {
 		$return = array();
 		// get list of lamdaemon servers
-		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+		$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		$homeDirAttr = $this->getHomedirAttrName($modules);
 		for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
-			$temp = explode(":", $lamdaemonServers[$i]);
-			$server = $temp[0];
+			$server = $lamdaemonServers[$i]->getServer();
 			if (isset($_POST['form_subpage_' . get_class($this) . '_homedir_create_' . $i])) {
 				$remote = new \LAM\REMOTE\Remote();
 				$remote->connect($server);
@@ -1676,21 +1657,12 @@ class posixAccount extends baseModule implements passwordService {
 				if (($_SESSION['config']->get_scriptPath() != null) && ($_SESSION['config']->get_scriptPath() != '')) {
 					if ($this->getAccountContainer()->isNewAccount) {
 						// get list of lamdaemon servers
-						$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
-						for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
-							$temp = explode(":", $lamdaemonServers[$i]);
-							if (isset($temp[1])) {
-								$lamdaemonServers[$i] = $temp[1];
-							}
-							else {
-								$lamdaemonServers[$i] = $temp[0];
-							}
-						}
+						$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
 						$homeDirLabel = new htmlOutputText(_('Create home directory'));
 						$return->addLabel($homeDirLabel);
 						$homeServerContainer = new htmlTable();
 						for ($h = 0; $h < sizeof($lamdaemonServers); $h++) {
-							$homeServerContainer->addElement(new htmlTableExtendedInputCheckbox('createhomedir_' . $h, in_array($lamdaemonServers[$h], $this->lamdaemonServers), $lamdaemonServers[$h], null, false));
+							$homeServerContainer->addElement(new htmlTableExtendedInputCheckbox('createhomedir_' . $h, in_array($lamdaemonServers[$h], $this->lamdaemonServers), $lamdaemonServers[$h]->getLabel(), null, false));
 							if ($h === 0) {
 								$homeDirHelp = new htmlHelpLink('createhomedir');
 								$homeServerContainer->addElement($homeDirHelp);
@@ -1936,14 +1908,10 @@ class posixAccount extends baseModule implements passwordService {
 		$return->addField(new htmlOutputText($this->attributes[$homeDirAttr][0]));
 		$return->addVerticalSpacer('2rem');
 		// get list of lamdaemon servers
-		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+		$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
 		for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
-			$temp = explode(":", $lamdaemonServers[$i]);
-			$server = $temp[0];
-			$label = $temp[0];
-			if (isset($temp[1])) {
-				$label = $temp[1];
-			}
+			$server = $lamdaemonServers[$i]->getServer();
+			$label = $lamdaemonServers[$i]->getLabel();
 			$remote = new \LAM\REMOTE\Remote();
 			$remote->connect($server);
 			$result = $remote->execute(
@@ -2036,14 +2004,11 @@ class posixAccount extends baseModule implements passwordService {
 			// lamdaemon settings
 			if ($_SESSION['config']->get_scriptPath() != null) {
 				$return->add(new htmlSubTitle(_('Create home directory')), 12);
-				$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
-				for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
-					$temp = explode(":", $lamdaemonServers[$i]);
-					if (isset($temp[1])) $lamdaemonServers[$i] = $temp[1];
-					else $lamdaemonServers[$i] = $temp[0];
-				}
+				$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
 				for ($h = 0; $h < sizeof($lamdaemonServers); $h++) {
-					$return->add(new htmlResponsiveInputCheckbox('posixAccount_createHomedir_' . $h, in_array($lamdaemonServers[$h], $this->lamdaemonServers), $lamdaemonServers[$h], 'createhomedir', false), 12);
+					$server = $lamdaemonServers[$h]->getServer();
+					$label = $lamdaemonServers[$h]->getLabel();
+					$return->add(new htmlResponsiveInputCheckbox('posixAccount_createHomedir_' . $h, in_array($server, $this->lamdaemonServers), $label, 'createhomedir', false), 12);
 				}
 			}
 		}
@@ -2090,16 +2055,11 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		// lamdaemon
 		if (($this->get_scope() == 'user') && $this->getAccountContainer()->isNewAccount) {
-			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
-			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
-				$temp = explode(":", $lamdaemonServers[$i]);
-				if (isset($temp[1])) $lamdaemonServers[$i] = $temp[1];
-				else $lamdaemonServers[$i] = $temp[0];
-			}
+			$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
 			$this->lamdaemonServers = array();
 			for ($h = 0; $h < sizeof($lamdaemonServers); $h++) {
 				if (isset($profile['posixAccount_createHomedir_' . $h][0]) && ($profile['posixAccount_createHomedir_' . $h][0] == 'true')) {
-					$this->lamdaemonServers[] = $lamdaemonServers[$h];
+					$this->lamdaemonServers[] = $lamdaemonServers[$h]->getServer();
 				}
 			}
 		}
