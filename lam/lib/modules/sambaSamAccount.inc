@@ -1545,10 +1545,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$remoteServers = $_SESSION['config']->getConfiguredScriptServers();
 		for ($i = 0; $i < sizeof($remoteServers); $i++) {
 			$remoteServer = $remoteServers[$i];
-			$server = $remoteServer->getServer();
 			$label = $remoteServer->getLabel();
 			$remote = new \LAM\REMOTE\Remote();
-			$remote->connect($server);
+			$remote->connect($remoteServer);
 			$result = $remote->execute(
 				implode(
 					self::$SPLIT_DELIMITER,
@@ -1617,10 +1616,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$remoteServers = $_SESSION['config']->getConfiguredScriptServers();
 		for ($i = 0; $i < sizeof($remoteServers); $i++) {
 			$remoteServer = $remoteServers[$i];
-			$server = $remoteServer->getServer();
 			if (isset($_POST['form_subpage_' . get_class($this) . '_homedir_create_' . $i])) {
 				$remote = new \LAM\REMOTE\Remote();
-				$remote->connect($server);
+				$remote->connect($remoteServer);
 				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
@@ -1645,7 +1643,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			}
 			elseif (isset($_POST['form_subpage_' . get_class($this) . '_homedir_delete_' . $i])) {
 				$remote = new \LAM\REMOTE\Remote();
-				$remote->connect($server);
+				$remote->connect($remoteServer);
 				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,

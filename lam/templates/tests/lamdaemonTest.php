@@ -178,6 +178,7 @@ function testRemoteCommand($command, $stopTest, $remote, $testText, $container) 
  * @param htmlResponsiveRow $container container for HTML output
  */
 function lamRunTestSuite($serverName, $serverTitle, $testQuota, $container) {
+	$remoteServer = $_SESSION['config']->getScriptServerByName($serverName);
 	$SPLIT_DELIMITER = "###x##y##x###";
 	$LAMDAEMON_PROTOCOL_VERSION = '5';
 	$okImage = "../../graphics/pass.png";
@@ -246,7 +247,7 @@ function lamRunTestSuite($serverName, $serverTitle, $testQuota, $container) {
 		$container->add(new htmlOutputText(_("SSH connection")), 10, 4);
 		flush();
 		try {
-			$remote->connect($serverName);
+			$remote->connect($remoteServer);
 			$container->add(new htmlImage($okImage), 2);
 			$container->add(new htmlOutputText(_("SSH connection established.")), 12, 6);
 		}
