@@ -1178,8 +1178,8 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$this->initCache();
 		$container = new htmlResponsiveRow();
 		$fieldContainer = new htmlResponsiveRow();
-		$fieldTabletColumns = $this->isBooleanConfigOptionSet('inetOrgPerson_hidejpegPhoto') ? 12 : 6;
-		$container->add($fieldContainer, 12, $fieldTabletColumns);
+		$fieldTabletColumns = $this->isBooleanConfigOptionSet('inetOrgPerson_hidejpegPhoto') ? 12 : 8;
+		$container->add($fieldContainer, 12, 12, $fieldTabletColumns);
 		// uid
 		if (!$this->isUnixActive() && !$this->isBooleanConfigOptionSet('inetOrgPerson_hideUID')) {
 			if ($this->isAdminReadOnly('uid')) {
@@ -1598,7 +1598,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 					$imageContainer->addElement(new htmlButton('delPhoto', _('Delete photo')));
 				}
 			}
-			$container->add($imageContainer, 12, 6);
+			$container->add($imageContainer, 12, 12, 4);
 		}
 		return $container;
 	}
