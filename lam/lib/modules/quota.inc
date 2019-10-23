@@ -174,11 +174,15 @@ class quota extends baseModule {
 		$userName = '+';
 		if (($this->getAccountContainer() != null) && !$this->getAccountContainer()->isNewAccount) {
 			if ($this->get_scope() == 'user') {
-				if (!isset($this->attributes['uid'][0])) return;
+				if (!isset($this->attributes['uid'][0])) {
+					return;
+				}
 				$userName = $this->attributes['uid'][0];
 			}
 			else if ($this->get_scope() == 'group') {
-				if (!isset($this->attributes['cn'][0])) return;
+				if (!isset($this->attributes['cn'][0])) {
+					return;
+				}
 				$userName = $this->attributes['cn'][0];
 			}
 		}
@@ -188,7 +192,7 @@ class quota extends baseModule {
 			$server = $lamdaemonServer->getServer();
 			// get quotas
 			$remote = new \LAM\REMOTE\Remote();
-			$remote->connect($server);
+			$remote->connect($lamdaemonServer);
 			$quotas = $remote->execute(implode(quota::$SPLIT_DELIMITER, array($userName, "quota", "get", $this->get_scope())));
 			$remote->disconnect();
 			if (empty($quotas)) {
@@ -289,7 +293,8 @@ class quota extends baseModule {
 				$quotastring .= ',' . $this->getQuotaNumber($this->quota[$server][$i][7]) . ':';
 			}
 			$remote = new \LAM\REMOTE\Remote();
-			$remote->connect($server);
+			$remoteServer = $_SESSION['config']->getScriptServerByName($server);
+			$remote->connect($remoteServer);
 			$remote->execute(implode(quota::$SPLIT_DELIMITER, array($id, "quota", "set", $this->get_scope(), "$quotastring\n")));
 			$remote->disconnect();
 		}
@@ -367,7 +372,8 @@ class quota extends baseModule {
 				$i++;
 				}
 			$remote = new \LAM\REMOTE\Remote();
-			$remote->connect($server);
+			$remoteServer = $_SESSION['config']->getScriptServerByName($server);
+			$remote->connect($remoteServer);
 			$remote->execute(implode(quota::$SPLIT_DELIMITER, array($id, "quota", "set", $this->get_scope(), "$quotastring\n")));
 			$remote->disconnect();
 		}
@@ -528,7 +534,7 @@ class quota extends baseModule {
 				}
 				// Get quotas
 				$remote = new \LAM\REMOTE\Remote();
-				$remote->connect($server);
+				$remote->connect($lamdaemonServer);
 				$quotas = $remote->execute(implode(quota::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope())));
 				$remote->disconnect();
 				if (empty($quotas)) {
@@ -592,7 +598,7 @@ class quota extends baseModule {
 			$id = $this->replaceSpecialChars($server);
 			// Get quotas
 			$remote = new \LAM\REMOTE\Remote();
-			$remote->connect($server);
+			$remote->connect($lamdaemonServer);
 			$quotas = $remote->execute(implode(quota::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope())));
 			$remote->disconnect();
 			$dirs = explode(":", $quotas);
@@ -753,7 +759,7 @@ class quota extends baseModule {
 				$server = $lamdaemonServer->getServer();
 				// Get quotas
 				$remote = new \LAM\REMOTE\Remote();
-				$remote->connect($server);
+				$remote->connect($lamdaemonServer);
 				$quotas = $remote->execute(implode(quota::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope())));
 				$remote->disconnect();
 				$dirs = explode(":", $quotas);
@@ -883,7 +889,8 @@ class quota extends baseModule {
 				$quotaString = implode(quota::$SPLIT_DELIMITER, array($name, "quota", "set", $this->get_scope(), $dir . ',' .
 					implode(',', $temp['accounts'][$name][$mountPoints[$m]]) . "\n"));
 				$remote = new \LAM\REMOTE\Remote();
-				$remote->connect($server);
+				$remoteServer = $_SESSION['config']->getScriptServerByName($server);
+				$remote->connect($remoteServer);
 				$result = $remote->execute($quotaString);
 				$remote->disconnect();
 				if (!empty($result)) {
