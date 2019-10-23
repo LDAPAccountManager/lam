@@ -1370,7 +1370,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			elseif ($hr >= 24*7) {
 				$hr = $hr - 24*7;
 			}
-			$checkbox = new htmlInputCheckbox('lh_' . $hr, $hour[$hr] ? true : false);
+			$checkbox = new htmlInputCheckbox('lh_' . $hr, $hour[$hr]);
 			$checkbox->alignment = htmlTable::ALIGN_CENTER;
 			$boxes[$i % 24][floor($i/24)] = $checkbox;
 		}
@@ -1542,14 +1542,11 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$homeServerContainer = new htmlTable();
 		$homeServerContainer->colspan = 5;
 		// get list of remote servers
-		$remoteServers = explode(";", $_SESSION['config']->get_scriptServers());
+		$remoteServers = $_SESSION['config']->getConfiguredScriptServers();
 		for ($i = 0; $i < sizeof($remoteServers); $i++) {
-			$temp = explode(":", $remoteServers[$i]);
-			$server = $temp[0];
-			$label = $temp[0];
-			if (isset($temp[1])) {
-				$label = $temp[1];
-			}
+			$remoteServer = $remoteServers[$i];
+			$server = $remoteServer->getServer();
+			$label = $remoteServer->getLabel();
 			$remote = new \LAM\REMOTE\Remote();
 			$remote->connect($server);
 			$result = $remote->execute(
@@ -1617,10 +1614,10 @@ class sambaSamAccount extends baseModule implements passwordService {
 			return;
 		}
 		// get list of remote servers
-		$remoteServers = explode(";", $_SESSION['config']->get_scriptServers());
+		$remoteServers = $_SESSION['config']->getConfiguredScriptServers();
 		for ($i = 0; $i < sizeof($remoteServers); $i++) {
-			$temp = explode(":", $remoteServers[$i]);
-			$server = $temp[0];
+			$remoteServer = $remoteServers[$i];
+			$server = $remoteServer->getServer();
 			if (isset($_POST['form_subpage_' . get_class($this) . '_homedir_create_' . $i])) {
 				$remote = new \LAM\REMOTE\Remote();
 				$remote->connect($server);
@@ -1640,10 +1637,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 				// remote command results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
-					if (is_array($singleresult)) {
-						if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
-							$return[] = $singleresult;
-						}
+					if (is_array($singleresult)
+							&& (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO'))) {
+						$return[] = $singleresult;
 					}
 				}
 			}
@@ -1665,10 +1661,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 				// remote command results
 				if (!empty($result)) {
 					$singleresult = explode(",", $result);
-					if (is_array($singleresult)) {
-						if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO')) {
-							$return[] = $singleresult;
-						}
+					if (is_array($singleresult)
+							&& (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN') || ($singleresult[0] == 'INFO'))) {
+						$return[] = $singleresult;
 					}
 				}
 			}

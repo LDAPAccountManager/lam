@@ -261,7 +261,7 @@ class sambaMungedDial
     }
 
     $ctxField="";
-    if($this->old_behavior==true) {
+    if($this->old_behavior) {
   	  $ctxField= substr(base64_decode($munge), (strlen(SAMBA_MUNGEDDIAL_FILEHEADER_OLD)) / 2);
     } else {
   	  $ctxField= substr(base64_decode($munge), (strlen(SAMBA_MUNGEDDIAL_FILEHEADER)+4) / 2);
@@ -445,7 +445,7 @@ class sambaMungedDial
   */
   function getShadow ()
   {
-    if($this->old_behavior==true) {
+    if($this->old_behavior) {
       $result= substr($this->ctx['CtxCfgFlags1'], 1, 1);
     } else {
     	$result= substr($this->ctx['CtxShadow'], 1, 1);
@@ -457,7 +457,7 @@ class sambaMungedDial
   function setShadow ($checked, $value)
   {
   	if ($checked) {
-      if($this->old_behavior==true) {
+      if($this->old_behavior) {
         // We need to reset the old setting
        	$this->ctx['CtxCfgFlags1'][1]= sprintf('%1X', $value);
       }

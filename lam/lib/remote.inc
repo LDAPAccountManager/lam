@@ -174,4 +174,63 @@ class Remote {
 
 }
 
+/**
+ * Server configuration.
+ *
+ * @author Roland Gruber
+ */
+class RemoteServerConfiguration {
+
+	private $server;
+	private $label;
+	private $homeDirPrefix;
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $server server DNS name
+	 * @param string $label label for GUI
+	 * @param string $homeDirPrefix prefix for home directories
+	 */
+	public function __construct($server, $label, $homeDirPrefix) {
+		$this->server = $server;
+		$this->label = $label;
+		if (empty($label)) {
+			$this->label = $server;
+		}
+		$this->homeDirPrefix = $homeDirPrefix;
+		if (empty($homeDirPrefix)) {
+			$this->homeDirPrefix = '';
+		}
+	}
+
+	/**
+	 * Returns the server's DNS name.
+	 *
+	 * @return string server name
+	 */
+	public function getServer() {
+		return $this->server;
+	}
+
+	/**
+	 * Returns a descriptive label.
+	 *
+	 * @return string label
+	 */
+	public function getLabel() {
+		return $this->label;
+	}
+
+	/**
+	 * Returns the prefix for user home directories.
+	 *
+	 * @return string prefix for user home directories
+	 */
+	public function getHomeDirPrefix() {
+		return $this->homeDirPrefix;
+	}
+
+}
+
 ?>

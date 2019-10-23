@@ -28,7 +28,7 @@ window.lam = window.lam || {};
  */
 function list_click(box) {
 	var cbox = document.getElementsByName(box)[0];
-	if (cbox.checked == true) {
+	if (cbox.checked) {
 		cbox.checked = false;
 	}
 	else {
@@ -383,8 +383,10 @@ function equalWidth(elementIDs) {
 		// no action if invalid width value (e.g. because of hidden tab)
 		return;
 	}
-	for (var i = 0; i < elementIDs.length; ++i) {
-		jQuery(elementIDs[i]).css({'width': maxWidth - (jQuery(elementIDs[i]).outerWidth() - jQuery(elementIDs[i]).width())});
+	for (var elementId = 0; elementId < elementIDs.length; ++elementId) {
+		jQuery(elementIDs[elementId]).css({
+			'width': maxWidth - (jQuery(elementIDs[elementId]).outerWidth() - jQuery(elementIDs[elementId]).width())
+		});
 	}
 }
 
@@ -400,8 +402,10 @@ function equalHeight(elementIDs) {
 			max = jQuery(elementIDs[i]).height();
 		}
 	}
-	for (var i = 0; i < elementIDs.length; ++i) {
-		jQuery(elementIDs[i]).css({'height': max - (jQuery(elementIDs[i]).outerHeight() - jQuery(elementIDs[i]).height())});
+	for (var elementId = 0; elementId < elementIDs.length; ++elementId) {
+		jQuery(elementIDs[elementId]).css({
+			'height': max - (jQuery(elementIDs[elementId]).outerHeight() - jQuery(elementIDs[elementId]).height())
+		});
 	}
 }
 
@@ -567,7 +571,7 @@ function checkPasswordStrength(fieldID, ajaxURL, tokenName, tokenValue) {
  */
 function checkPasswordStrengthHandleReply(data, fieldID) {
 	var field = jQuery('#' + fieldID);
-	if (data.result == true) {
+	if (data.result === true) {
 		field.removeClass('markFail');
 		field.addClass('markOk');
 		field.prop('title', '');
@@ -601,11 +605,11 @@ function updateModulePositions(id, oldPos, newPos) {
 		positions[newPos] = save;
 	}
 	if (newPos < oldPos) {
-		var save = positions[oldPos];
-		for (var i = oldPos; i > newPos; i--) {
-			positions[i] = positions[i - 1];
+		var oldPosition = positions[oldPos];
+		for (var position = oldPos; position > newPos; position--) {
+			positions[position] = positions[position - 1];
 		}
-		positions[newPos] = save;
+		positions[newPos] = oldPosition;
 	}
 	jQuery('#' + id).val(positions.join(','));
 }
