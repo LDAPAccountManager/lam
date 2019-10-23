@@ -65,16 +65,20 @@ class Remote {
 	/**
 	 * Connects to the given SSH server.
 	 *
-	 * @param String $server server name (e.g. localhost or localhost,1234)
+	 * @param RemoteServerConfiguration $server server (e.g. localhost or localhost,1234)
 	 */
 	public function connect($server) {
-		$serverNameParts = explode(",", $server);
+		if ($server === null) {
+			logNewMessage(LOG_ERR, 'No server provided for lamdaemon');
+			throw new LAMException(_("Unable to connect to remote server!"));
+		}
+		$serverNameParts = explode(",", $server->getServer());
 		$handle = false;
 		if (sizeof($serverNameParts) > 1) {
 			$handle = @new SSH2($serverNameParts[0], $serverNameParts[1]);
 		}
 		else {
-			$handle = @new SSH2($server);
+			$handle = @new SSH2($serverNameParts[0]);
 		}
 		if (!$handle) {
 			throw new LAMException(_("Unable to connect to remote server!"));

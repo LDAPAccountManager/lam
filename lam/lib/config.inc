@@ -1476,6 +1476,22 @@ class LAMConfig {
 	}
 
 	/**
+	 * Returns the script server object for the given name.
+	 *
+	 * @param string $serverName server name
+	 * @return RemoteServerConfiguration server
+	 */
+	public function getScriptServerByName($serverName) {
+		$serverList = $this->getConfiguredScriptServers();
+		foreach ($serverList as $server) {
+			if ($serverName === $server->getServer()) {
+				return $server;
+			}
+		}
+		return null;
+	}
+
+	/**
 	* Sets the servers of the external script
 	*
 	* @param string $value new script servers

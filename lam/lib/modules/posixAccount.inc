@@ -708,17 +708,13 @@ class posixAccount extends baseModule implements passwordService {
 		// create home directories if needed
 		$homeDirAttr = $this->getHomedirAttrName($modules);
 		$lamdaemonServerList = $_SESSION['config']->getConfiguredScriptServers();
-		$lamdaemonServerNames = array();
-		foreach ($lamdaemonServerList as $lamdaemonServer) {
-			$lamdaemonServerNames[] = $lamdaemonServer->getServer();
-		}
 		if (sizeof($this->lamdaemonServers) > 0) {
-			foreach ($lamdaemonServerNames as $server) {
-				if (!in_array($server, $this->lamdaemonServers)) {
+			foreach ($lamdaemonServerList as $lamdaemonServer) {
+				if (!in_array($lamdaemonServer->getServer(), $this->lamdaemonServers)) {
 					continue;
 				}
 				$remote = new \LAM\REMOTE\Remote();
-				$remote->connect($server);
+				$remote->connect($lamdaemonServer);
 				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
@@ -747,9 +743,9 @@ class posixAccount extends baseModule implements passwordService {
 		// move home directory if needed
 		if (!empty($this->orig[$homeDirAttr][0]) && !empty($this->attributes[$homeDirAttr][0])
 			&& ($this->orig[$homeDirAttr][0] != $this->attributes[$homeDirAttr][0])) {
-			foreach ($lamdaemonServerNames as $server) {
+			foreach ($lamdaemonServerList as $lamdaemonServer) {
 				$remote = new \LAM\REMOTE\Remote();
-				$remote->connect($server);
+				$remote->connect($lamdaemonServer);
 				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
@@ -774,9 +770,9 @@ class posixAccount extends baseModule implements passwordService {
 		// set new group on homedirectory
 		if (!empty($this->orig[$homeDirAttr][0]) && !empty($this->attributes[$homeDirAttr][0])
 			&& ($this->orig['gidNumber'][0] != $this->attributes['gidNumber'][0])) {
-			foreach ($lamdaemonServerNames as $server) {
+			foreach ($lamdaemonServerList as $lamdaemonServer) {
 				$remote = new \LAM\REMOTE\Remote();
-				$remote->connect($server);
+				$remote->connect($lamdaemonServer);
 				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
@@ -784,7 +780,7 @@ class posixAccount extends baseModule implements passwordService {
 							$this->attributes['uid'][0],
 							"home",
 							"chgrp",
-							$this->orig[$homeDirAttr][0],
+							$this->attributes[$homeDirAttr][0],
 							$this->attributes['uidNumber'][0],
 							$this->attributes['gidNumber'][0])
 						));
@@ -935,7 +931,7 @@ class posixAccount extends baseModule implements passwordService {
 			foreach ($lamdaemonServers as $lamdaemonServer) {
 				$remote = new \LAM\REMOTE\Remote();
 				try {
-					$remote->connect($lamdaemonServer->getServer());
+					$remote->connect($lamdaemonServer);
 					$result = $remote->execute(
 						implode(
 							self::$SPLIT_DELIMITER,
@@ -1469,10 +1465,9 @@ class posixAccount extends baseModule implements passwordService {
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		$homeDirAttr = $this->getHomedirAttrName($modules);
 		for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
-			$server = $lamdaemonServers[$i]->getServer();
 			if (isset($_POST['form_subpage_' . get_class($this) . '_homedir_create_' . $i])) {
 				$remote = new \LAM\REMOTE\Remote();
-				$remote->connect($server);
+				$remote->connect($lamdaemonServers[$i]);
 				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
@@ -1498,7 +1493,7 @@ class posixAccount extends baseModule implements passwordService {
 			}
 			elseif (isset($_POST['form_subpage_' . get_class($this) . '_homedir_delete_' . $i])) {
 				$remote = new \LAM\REMOTE\Remote();
-				$remote->connect($server);
+				$remote->connect($lamdaemonServers[$i]);
 				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
@@ -1910,10 +1905,9 @@ class posixAccount extends baseModule implements passwordService {
 		// get list of lamdaemon servers
 		$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
 		for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
-			$server = $lamdaemonServers[$i]->getServer();
 			$label = $lamdaemonServers[$i]->getLabel();
 			$remote = new \LAM\REMOTE\Remote();
-			$remote->connect($server);
+			$remote->connect($lamdaemonServers[$i]);
 			$result = $remote->execute(
 				implode(
 					self::$SPLIT_DELIMITER,
@@ -2887,7 +2881,8 @@ class posixAccount extends baseModule implements passwordService {
 			$pos = $temp['createHomes'][$temp['counter'] - sizeof($temp['groups'])];
 			try {
 				$remote = new \LAM\REMOTE\Remote();
-				$remote->connect($data[$pos][$ids['posixAccount_createHomeDir']]);
+				$remoteServer = $_SESSION['config']->getScriptServerByName($data[$pos][$ids['posixAccount_createHomeDir']]);
+				$remote->connect($remoteServer);
 				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
