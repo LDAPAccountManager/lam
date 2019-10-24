@@ -410,14 +410,6 @@ class lamList {
 		$table->setOnClickEvents($onClickEvents);
 		$table->setOnDoubleClickEvents($onDoubleClickEvents);
 		$columnCount = sizeof($titles);
-		if ((100 / $columnCount) > 12) {
-			$widths = array('12%');
-			for ($i = 1; $i < ($columnCount - 1); $i++) {
-				$widths[] = floor((100 - 12) / ($columnCount - 1)) . '%';
-			}
-			$widths[] = ceil((100 - 12) / ($columnCount - 1)) . '%';
-			$table->setWidths($widths);
-		}
 
 		parseHtml(null, $table, array(), false, $this->tabindex, $scope);
 	}
@@ -475,7 +467,7 @@ class lamList {
 			$actionElement->addElement($clearFilterButton);
 		}
 
-		$filterElements = array(new htmlDiv(null, $actionElement, array('nowrap')));
+		$filterElements = array(new htmlDiv(null, $actionElement, array('lam-listtools')));
 		$clearFilter = isset($_POST['clear_filter']);
 		foreach ($this->attrArray as $attributeName) {
 			$attributeName = strtolower($attributeName);
@@ -504,6 +496,7 @@ class lamList {
 		$filterInput = new htmlInputField('filter' . $attrName, $value, null);
 		$filterInput->setCSSClasses(array($this->type->getScope() . '-bright'));
 		$filterInput->setOnKeyPress("SubmitForm('apply_filter', event);");
+		$filterInput->setFieldSize(null);
 		return $filterInput;
 	}
 
@@ -547,7 +540,7 @@ class lamList {
 			$onClickEvents[$rowNumber] = "list_click('" . $rowID . "');";
 			$onDoubleClickEvents[$rowNumber] = "top.location.href='../account/edit.php?type=" . $this->type->getId() . "&amp;DN=" . rawurlencode($info[$index]['dn']) . "';";
 			$this->addToolLinks($info[$index], $rowID, $actionElement);
-			$row[] = new htmlDiv(null, $actionElement, array('nowrap'));
+			$row[] = new htmlDiv(null, $actionElement, array('lam-listtools'));
 			foreach ($this->attrArray as $attributeName) {
 				$attributeName = strtolower($attributeName);
 				$row[] = $this->getTableCellContent($info[$index], $attributeName);

@@ -249,6 +249,16 @@ table.accountlist {
   border-style:solid;
 }
 
+table.accountlist input[type='text'] {
+	width: 99%;
+	min-width: 10rem;
+}
+
+.lam-listtools {
+	white-space: nowrap;
+	width: 125px;
+}
+
 table.collapse {
 	border-collapse:collapse;
 }

@@ -92,7 +92,6 @@ select.auto-width {
 
 table.responsive-table {
 	margin-top: 1rem;
-	table-layout: fixed;
 	width: 100%;
 	border-collapse: collapse;
 }
@@ -103,6 +102,7 @@ table.responsive-table th {
 	padding-top: 0.5rem;
 	padding-right: 0.3rem;
 	padding-left: 0.3rem;
+	white-space: nowrap;
 }
 
 table.responsive-table td {
@@ -152,6 +152,7 @@ table.responsive-table td {
 		content: attr(data-label);
 		float: left;
 		font-weight: bold;
+		margin-right: 5px;
 	}
 
 	table.responsive-table td:last-child {
