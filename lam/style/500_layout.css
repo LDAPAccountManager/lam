@@ -251,7 +251,7 @@ table.accountlist {
 
 table.accountlist input[type='text'] {
 	width: 99%;
-	min-width: 10rem;
+	min-width: 7rem;
 }
 
 .lam-listtools {
