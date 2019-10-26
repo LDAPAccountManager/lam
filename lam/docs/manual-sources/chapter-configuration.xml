@@ -489,6 +489,30 @@
         is located. The default rights for new home directories can be set,
         too.</para>
 
+        <para><emphasis role="bold">Note:</emphasis> This requires lamdaemon
+        to be installed on the remote server. This comes as separate package
+        for DEB/RPM. See <link linkend="a_lamdaemon">here</link>.</para>
+
+        <para>Script server format:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>"server": "server" is the DNS name of your script
+            server</para>
+          </listitem>
+
+          <listitem>
+            <para>"server:NAME": NAME is the display name of this
+            server</para>
+          </listitem>
+
+          <listitem>
+            <para>"server:NAME:/prefix": /prefix is the directory prefix for
+            all operations. E.g. creating a home directory "/home/user" would
+            create "/prefix/home/user" then.</para>
+          </listitem>
+        </itemizedlist>
+
         <para>You can provide a fixed user name. If you leave the field empty
         then LAM will use your current account (the account you used to login
         to LAM).</para>

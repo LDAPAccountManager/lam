@@ -120,7 +120,7 @@ $helpArray = array (
 				"218" => array ("Headline" => _("Script servers"),
 					"Text" => _("This is a list of the servers where the lamdaemon scripts are stored. LDAP Account Manager will make a SSH connection to the servers with the user name and password provided at login. Multiple servers are separated by semicolons. You can append a descriptive name after a colon.") . "<br>"
 						. _("If your server runs on another port then add a comma and the port number after the server.") . "<br><br>"
-						. _("Example") . ": <b>127.0.0.1:LOCAL;192.168.0.2,12345:Servername;192.168.0.5</b>"),
+						. _("Examples") . ": <br><b>my.server.name<br>127.0.0.1:LOCAL;192.168.0.2,12345:Servername<br>my.server.name:SERVER:/prefix</b>"),
 				"219" => array ("Headline" => _("Rights for the home directory"),
 					"Text" => _("This defines the rights for the home directories which are created by lamdaemon.")),
 				"220" => array ("Headline" => _("Login method"),

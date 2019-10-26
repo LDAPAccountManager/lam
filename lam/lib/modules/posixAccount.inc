@@ -722,7 +722,7 @@ class posixAccount extends baseModule implements passwordService {
 							$this->attributes['uid'][0],
 							"home",
 							"add",
-							$this->attributes[$homeDirAttr][0],
+							$lamdaemonServer->getHomeDirPrefix() . $this->attributes[$homeDirAttr][0],
 							"0".$_SESSION['config']->get_scriptRights(),
 							$this->attributes['uidNumber'][0],
 							$this->attributes['gidNumber'][0])
@@ -753,9 +753,9 @@ class posixAccount extends baseModule implements passwordService {
 							$this->attributes['uid'][0],
 							"home",
 							"move",
-							$this->orig[$homeDirAttr][0],
+							$lamdaemonServer->getHomeDirPrefix() . $this->orig[$homeDirAttr][0],
 							$this->attributes['uidNumber'][0],
-							$this->attributes[$homeDirAttr][0])
+							$lamdaemonServer->getHomeDirPrefix() . $this->attributes[$homeDirAttr][0])
 						));
 				$remote->disconnect();
 				// lamdaemon results
@@ -780,7 +780,7 @@ class posixAccount extends baseModule implements passwordService {
 							$this->attributes['uid'][0],
 							"home",
 							"chgrp",
-							$this->attributes[$homeDirAttr][0],
+							$lamdaemonServer->getHomeDirPrefix() . $this->attributes[$homeDirAttr][0],
 							$this->attributes['uidNumber'][0],
 							$this->attributes['gidNumber'][0])
 						));
@@ -939,7 +939,7 @@ class posixAccount extends baseModule implements passwordService {
 								$this->attributes['uid'][0],
 								"home",
 								"rem",
-								$this->attributes[$homeDirAttr][0],
+								$lamdaemonServer->getHomeDirPrefix() . $this->attributes[$homeDirAttr][0],
 								$this->attributes['uidNumber'][0]
 							)
 						));
@@ -1475,7 +1475,7 @@ class posixAccount extends baseModule implements passwordService {
 							$this->attributes['uid'][0],
 							"home",
 							"add",
-							$this->attributes[$homeDirAttr][0],
+							$lamdaemonServers[$i]->getHomeDirPrefix() . $this->attributes[$homeDirAttr][0],
 							"0".$_SESSION['config']->get_scriptRights(),
 							$this->attributes['uidNumber'][0],
 							$this->attributes['gidNumber'][0])
@@ -1501,7 +1501,7 @@ class posixAccount extends baseModule implements passwordService {
 							$this->attributes['uid'][0],
 							"home",
 							"rem",
-							$this->attributes[$homeDirAttr][0],
+							$lamdaemonServers[$i]->getHomeDirPrefix() . $this->attributes[$homeDirAttr][0],
 							$this->attributes['uidNumber'][0]
 						)
 					));
@@ -1657,7 +1657,7 @@ class posixAccount extends baseModule implements passwordService {
 						$return->addLabel($homeDirLabel);
 						$homeServerContainer = new htmlTable();
 						for ($h = 0; $h < sizeof($lamdaemonServers); $h++) {
-							$homeServerContainer->addElement(new htmlTableExtendedInputCheckbox('createhomedir_' . $h, in_array($lamdaemonServers[$h], $this->lamdaemonServers), $lamdaemonServers[$h]->getLabel(), null, false));
+							$homeServerContainer->addElement(new htmlTableExtendedInputCheckbox('createhomedir_' . $h, in_array($lamdaemonServers[$h]->getServer(), $this->lamdaemonServers), $lamdaemonServers[$h]->getLabel(), null, false));
 							if ($h === 0) {
 								$homeDirHelp = new htmlHelpLink('createhomedir');
 								$homeServerContainer->addElement($homeDirHelp);
@@ -1915,7 +1915,7 @@ class posixAccount extends baseModule implements passwordService {
 						$this->attributes['uid'][0],
 						"home",
 						"check",
-						$this->attributes[$homeDirAttr][0])
+						$lamdaemonServers[$i]->getHomeDirPrefix() . $this->attributes[$homeDirAttr][0])
 					));
 			$remote->disconnect();
 			// lamdaemon results
@@ -2890,7 +2890,7 @@ class posixAccount extends baseModule implements passwordService {
 							$data[$pos][$ids['posixAccount_userName']],
 							"home",
 							"add",
-							$accounts[$pos][$homeDirAttr],
+							$remoteServer->getHomeDirPrefix() . $accounts[$pos][$homeDirAttr],
 							"0".$_SESSION['config']->get_scriptRights(),
 							$accounts[$pos]['uidNumber'],
 							$accounts[$pos]['gidNumber'],

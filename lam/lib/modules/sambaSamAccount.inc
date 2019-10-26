@@ -1555,7 +1555,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 						$this->attributes['uid'][0],
 						"home",
 						"check",
-						$this->attributes['sambaProfilePath'][0])
+						$remoteServer->getHomeDirPrefix() . $this->attributes['sambaProfilePath'][0])
 					));
 			$remote->disconnect();
 			// remote command results
@@ -1626,7 +1626,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 							$this->attributes['uid'][0],
 							"directory",
 							"add",
-							$this->attributes['sambaProfilePath'][0],
+							$remoteServer->getHomeDirPrefix() . $this->attributes['sambaProfilePath'][0],
 							"0".$_SESSION['config']->get_scriptRights(),
 							$uidNumber,
 							$gidNumber)
@@ -1651,7 +1651,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 							$this->attributes['uid'][0],
 							"home",
 							"rem",
-							$this->attributes['sambaProfilePath'][0],
+							$remoteServer->getHomeDirPrefix() . $this->attributes['sambaProfilePath'][0],
 							$uidNumber
 						)
 				));
