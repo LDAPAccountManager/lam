@@ -1,4 +1,5 @@
 December 2019 7.0
+  - Lamdaemon can be configured with directory prefix for homedirs
   - Fixed bugs:
    -> Missing CSS for Duo
 

@@ -70,7 +70,9 @@ lam_start_session();
 setlanguage();
 
 // get password
-if (isset($_POST['passwd'])) $passwd = $_POST['passwd'];
+if (isset($_POST['passwd'])) {
+	$passwd = $_POST['passwd'];
+}
 
 // check if password was entered
 // if not: load login page
@@ -91,7 +93,9 @@ $conf = &$_SESSION['conf_config'];
 if ((!isset($_SESSION['conf_isAuthenticated']) || !($_SESSION['conf_isAuthenticated'] === $conf->getName())) && !$conf->check_Passwd($passwd)) {
 	$sessionKeys = array_keys($_SESSION);
 	for ($i = 0; $i < sizeof($sessionKeys); $i++) {
-		if (substr($sessionKeys[$i], 0, 5) == "conf_") unset($_SESSION[$sessionKeys[$i]]);
+		if (substr($sessionKeys[$i], 0, 5) == "conf_") {
+			unset($_SESSION[$sessionKeys[$i]]);
+		}
 	}
 	$_SESSION['conf_message'] = new htmlStatusMessage('ERROR', _("The password is invalid! Please try again."));
 	/** go back to login if password is invalid */
