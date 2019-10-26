@@ -421,7 +421,7 @@ class lamList {
 	 */
 	private function getSortingElements() {
 		$filter = $this->getFilterAsTextForURL();
-		$sortElements = array(new htmlOutputText(_('Sort sequence')));
+		$sortElements = array(new htmlSpan(new htmlOutputText(_('Sort sequence')), array('nowrap')));
 		foreach ($this->attrArray as $attributeName) {
 			$link = "list.php?type=" . $this->type->getId() . "&".
 				"sort=" . strtolower($attributeName) . $filter . "&norefresh=y";
