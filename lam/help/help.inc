@@ -247,6 +247,8 @@ $helpArray = array (
 					"Text" => _("Here you can export account profiles to other server profiles (overwrite existing). You may also export a profile to the global templates. In this case it will always be copied to all server profiles that do not yet have a profile with this name.")),
 				// 400 - 499
 				// account pages
+				"400" => array ("Headline" => _("DN suffix") . '/' . _("RDN identifier"),
+					"Text" => _("The account will be saved under this LDAP suffix.") . '<br><br>' . _("This is the identifier for the relative DN value. It must be one of the given allowed LDAP attributes (e.g. user accounts usually use \"uid\" while groups use \"cn\").")),
 				"401" => array ("Headline" => _("Load profile"),
 					"Text" => _("Here you can load an account profile to set default settings for your account. The \"default\" profile is automatically loaded for new accounts.")),
 				"403" => array ("Headline" => _("Create PDF file"),
