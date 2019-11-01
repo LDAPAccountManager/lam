@@ -1,9 +1,8 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2015  Roland Gruber
+  Copyright (C) 2005 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -73,11 +72,11 @@ class sambaDomain extends baseModule {
 			'sambaMinPwdAge', 'sambaMaxPwdAge', 'sambaLockoutDuration', 'sambaLockoutObservationWindow');
 		// help Entries
 		$return['help'] = array(
-			'domainName' => array(
+			'sambaDomainName' => array(
 				"Headline" => _("Domain name"), 'attr' => 'sambaDomainName',
 				"Text" => _("The name of your Windows domain or workgroup.")
 			),
-			'domainSID' => array(
+			'sambaSID' => array(
 				"Headline" => _("Domain SID"), 'attr' => 'sambaSID',
 				"Text" => _("The SID of your Samba server. Get it with \"net getlocalsid\".")
 			),
@@ -142,14 +141,14 @@ class sambaDomain extends baseModule {
 			array(
 				'name' => 'sambaDomain_domainName',
 				'description' => _('Domain name'),
-				'help' => 'domainName',
+				'help' => 'sambaDomainName',
 				'example' => _('Workgroup'),
 				'required' => true
 			),
 			array(
 				'name' => 'sambaDomain_domainSID',
 				'description' => _('Domain SID'),
-				'help' => 'domainSID',
+				'help' => 'sambaSID',
 				'example' => 'S-1-1-22-123-123-123',
 				'required' => true
 			),
@@ -231,39 +230,33 @@ class sambaDomain extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		// domain name
-		$domainName = '';
-		if (isset($this->attributes['sambaDomainName'][0])) {
-			$domainName = $this->attributes['sambaDomainName'][0];
-		}
 		if ($this->getAccountContainer()->isNewAccount) {
-			$domainNameInput = new htmlTableExtendedInputField(_('Domain name'), 'domainName', $domainName, 'domainName');
-			$domainNameInput->setRequired(true);
-			$return->addElement($domainNameInput, true);
+			$this->addSimpleInputTextField($return, 'sambaDomainName', _('Domain name'), true);
 		}
 		else {
-			$return->addElement(new htmlOutputText(_('Domain name')));
-			$return->addElement(new htmlOutputText($domainName));
-			$return->addElement(new htmlHelpLink('domainName'), true);
+			$return->addLabel(new htmlOutputText(_('Domain name')));
+			$domainNameGroup = new htmlGroup();
+			$domainName = $this->attributes['sambaDomainName'][0];
+			$domainNameGroup->addElement(new htmlOutputText($domainName));
+			$domainNameGroup->addElement(new htmlHelpLink('sambaDomainName'));
+			$return->addField($domainNameGroup);
 		}
 		// domain SID
-		$domainSID = '';
-		if (isset($this->attributes['sambaSID'][0])) {
-			$domainSID = $this->attributes['sambaSID'][0];
-		}
 		if ($this->getAccountContainer()->isNewAccount) {
-			$domainSIDInput = new htmlTableExtendedInputField(_('Domain SID'), 'domainSID', $domainSID, 'domainSID');
-			$domainSIDInput->setRequired(true);
-			$return->addElement($domainSIDInput, true);
+			$this->addSimpleInputTextField($return, 'sambaSID', _('Domain SID'), true);
 		}
 		else {
-			$return->addElement(new htmlOutputText(_('Domain SID')));
-			$return->addElement(new htmlOutputText($domainSID));
-			$return->addElement(new htmlHelpLink('domainSID'), true);
+			$return->addLabel(new htmlOutputText(_('Domain SID')));
+			$domainSidGroup = new htmlGroup();
+			$domainSID = $this->attributes['sambaSID'][0];
+			$domainSidGroup->addElement(new htmlOutputText($domainSID));
+			$domainSidGroup->addElement(new htmlHelpLink('sambaSID'));
+			$return->addField($domainSidGroup);
 		}
 
-		$return->addElement(new htmlSubTitle(_("Password policy")), true);
+		$return->add(new htmlSubTitle(_("Password policy")), 12);
 
 		/* group policies */
 
@@ -272,84 +265,84 @@ class sambaDomain extends baseModule {
 		if (isset($this->attributes['sambaMinPwdLength'][0])) {
 			$sambaMinPwdLength = $this->attributes['sambaMinPwdLength'][0];
 		}
-		$return->addElement(new htmlTableExtendedSelect('minPwdLength', array('-', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15),
-			array($sambaMinPwdLength), _('Minimal password length'), 'minPwdLength'), true);
+		$return->add(new htmlResponsiveSelect('minPwdLength', array('-', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15),
+			array($sambaMinPwdLength), _('Minimal password length'), 'minPwdLength'), 12);
 		// password history length
 		$sambaPwdHistoryLength = '-';
 		if (isset($this->attributes['sambaPwdHistoryLength'][0])) {
 			$sambaPwdHistoryLength = $this->attributes['sambaPwdHistoryLength'][0];
 		}
-		$return->addElement(new htmlTableExtendedSelect('pwdHistLength', array('-', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15),
-			array($sambaPwdHistoryLength), _('Password history length'), 'pwdHistLength'), true);
+		$return->add(new htmlResponsiveSelect('pwdHistLength', array('-', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15),
+			array($sambaPwdHistoryLength), _('Password history length'), 'pwdHistLength'), 12);
 		// logon to change password
 		$sambaLogonToChgPwd = '-';
 		if (isset($this->attributes['sambaLogonToChgPwd'][0])) {
 			$sambaLogonToChgPwd = $this->attributes['sambaLogonToChgPwd'][0];
 		}
-		$logonPwdChangeSelect = new htmlTableExtendedSelect('logonToChgPwd', array('-' => '-', _('Off') => '0', _('On') => '2'),
+		$logonPwdChangeSelect = new htmlResponsiveSelect('logonToChgPwd', array('-' => '-', _('Off') => '0', _('On') => '2'),
 			array($sambaLogonToChgPwd), _('Logon for password change'), 'logonToChgPwd');
 		$logonPwdChangeSelect->setHasDescriptiveElements(true);
-		$return->addElement($logonPwdChangeSelect, true);
+		$return->add($logonPwdChangeSelect, 12);
 		// force logoff
 		$sambaForceLogoff = '-';
 		if (isset($this->attributes['sambaForceLogoff'][0])) {
 			$sambaForceLogoff = $this->attributes['sambaForceLogoff'][0];
 		}
-		$forceLogoffSelect = new htmlTableExtendedSelect('forceLogoff', array('-' => '-', _('Off') => '-1', _('On') => '0'),
+		$forceLogoffSelect = new htmlResponsiveSelect('forceLogoff', array('-' => '-', _('Off') => '-1', _('On') => '0'),
 			array($sambaForceLogoff), _('Disconnect users outside logon hours'), 'forceLogoff');
 		$forceLogoffSelect->setHasDescriptiveElements(true);
-		$return->addElement($forceLogoffSelect, true);
+		$return->add($forceLogoffSelect, 12);
 		// do not allow machine password change
 		$sambaRefuseMachinePwdChange = '-';
 		if (isset($this->attributes['sambaRefuseMachinePwdChange'][0])) {
 			$sambaRefuseMachinePwdChange = $this->attributes['sambaRefuseMachinePwdChange'][0];
 		}
-		$refuseMachPwdChange = new htmlTableExtendedSelect('refuseMachinePwdChange', array('-' => '-', _('Off') => '0', _('On') => '1'),
+		$refuseMachPwdChange = new htmlResponsiveSelect('refuseMachinePwdChange', array('-' => '-', _('Off') => '0', _('On') => '1'),
 			array($sambaRefuseMachinePwdChange), _('Allow machine password changes'), 'refuseMachinePwdChange');
 		$refuseMachPwdChange->setHasDescriptiveElements(true);
-		$return->addElement($refuseMachPwdChange, true);
+		$return->add($refuseMachPwdChange, 12);
 		// Lockout users after bad logon attempts
 		$sambaLockoutThreshold = '';
 		if (isset($this->attributes['sambaLockoutThreshold'][0])) {
 			$sambaLockoutThreshold = $this->attributes['sambaLockoutThreshold'][0];
 		}
-		$sambaLockoutThresholdInput = new htmlTableExtendedInputField(_('Lockout users after bad logon attempts'), 'lockoutThreshold', $sambaLockoutThreshold, 'lockoutThreshold');
+		$sambaLockoutThresholdInput = new htmlResponsiveInputField(_('Lockout users after bad logon attempts'), 'lockoutThreshold', $sambaLockoutThreshold, 'lockoutThreshold');
 		$sambaLockoutThresholdInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-		$return->addElement($sambaLockoutThresholdInput, true);
+		$return->add($sambaLockoutThresholdInput, 12);
 		// Minimum password age
 		$sambaMinPwdAge = '';
 		if (isset($this->attributes['sambaMinPwdAge'][0])) {
 			$sambaMinPwdAge = $this->attributes['sambaMinPwdAge'][0];
 		}
-		$sambaMinPwdAgeInput = new htmlTableExtendedInputField(_('Minimum password age'), 'minPwdAge', $sambaMinPwdAge, 'minPwdAge');
+		$sambaMinPwdAgeInput = new htmlResponsiveInputField(_('Minimum password age'), 'minPwdAge', $sambaMinPwdAge, 'minPwdAge');
 		$sambaMinPwdAgeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-		$return->addElement($sambaMinPwdAgeInput, true);
+		$return->add($sambaMinPwdAgeInput, 12);
 		// Maximum password age
 		$sambaMaxPwdAge = '';
 		if (isset($this->attributes['sambaMaxPwdAge'][0])) {
 			$sambaMaxPwdAge = $this->attributes['sambaMaxPwdAge'][0];
 		}
-		$sambaMaxPwdAgeInput = new htmlTableExtendedInputField(_('Maximum password age'), 'maxPwdAge', $sambaMaxPwdAge, 'maxPwdAge');
+		$sambaMaxPwdAgeInput = new htmlResponsiveInputField(_('Maximum password age'), 'maxPwdAge', $sambaMaxPwdAge, 'maxPwdAge');
 		$sambaMaxPwdAgeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC_WITH_NEGATIVE);
-		$return->addElement($sambaMaxPwdAgeInput, true);
+		$return->add($sambaMaxPwdAgeInput, 12);
 		// Lockout duration
 		$sambaLockoutDuration = '';
 		if (isset($this->attributes['sambaLockoutDuration'][0])) {
 			$sambaLockoutDuration = $this->attributes['sambaLockoutDuration'][0];
 		}
-		$sambaLockoutDurationInput = new htmlTableExtendedInputField(_('Lockout duration'), 'lockoutDuration', $sambaLockoutDuration, 'lockoutDuration');
+		$sambaLockoutDurationInput = new htmlResponsiveInputField(_('Lockout duration'), 'lockoutDuration', $sambaLockoutDuration, 'lockoutDuration');
 		$sambaLockoutDurationInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-		$return->addElement($sambaLockoutDurationInput, true);
+		$return->add($sambaLockoutDurationInput, 12);
 		// Reset time after lockout
 		$sambaLockoutObservationWindow = '';
 		if (isset($this->attributes['sambaLockoutObservationWindow'][0])) {
 			$sambaLockoutObservationWindow = $this->attributes['sambaLockoutObservationWindow'][0];
 		}
-		$sambaLockoutObservationWindowInput = new htmlTableExtendedInputField(_('Reset time after lockout'), 'lockoutObservationWindow', $sambaLockoutObservationWindow, 'lockoutObservationWindow');
+		$sambaLockoutObservationWindowInput = new htmlResponsiveInputField(_('Reset time after lockout'), 'lockoutObservationWindow', $sambaLockoutObservationWindow, 'lockoutObservationWindow');
 		$sambaLockoutObservationWindowInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-		$return->addElement($sambaLockoutObservationWindowInput, true);
+		$return->add($sambaLockoutObservationWindowInput, 12);
 
-		$return->addElement(new htmlSubTitle(_('RID settings')), true);
+		$return->add(new htmlSubTitle(_('RID settings')), 12);
 
 		/* RID settings */
 
@@ -358,37 +351,41 @@ class sambaDomain extends baseModule {
 		if (isset($this->attributes['sambaNextRid'][0])) {
 			$nextRID = $this->attributes['sambaNextRid'][0];
 		}
-		$nextRIDInput = new htmlTableExtendedInputField(_('Next RID'), 'nextRID', $nextRID, 'nextRID');
+		$nextRIDInput = new htmlResponsiveInputField(_('Next RID'), 'nextRID', $nextRID, 'nextRID');
 		$nextRIDInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-		$return->addElement($nextRIDInput, true);
+		$return->add($nextRIDInput, 12);
 		// next user RID
 		$nextUserRID = '';
 		if (isset($this->attributes['sambaNextUserRid'][0])) {
 			$nextUserRID = $this->attributes['sambaNextUserRid'][0];
 		}
-		$nextUserRIDInput = new htmlTableExtendedInputField(_('Next user RID'), 'nextUserRID', $nextUserRID, 'nextUserRID');
+		$nextUserRIDInput = new htmlResponsiveInputField(_('Next user RID'), 'nextUserRID', $nextUserRID, 'nextUserRID');
 		$nextUserRIDInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-		$return->addElement($nextUserRIDInput, true);
+		$return->add($nextUserRIDInput, 12);
 		// next group RID
 		$nextGroupRID = '';
 		if (isset($this->attributes['sambaNextGroupRid'][0])) {
 			$nextGroupRID = $this->attributes['sambaNextGroupRid'][0];
 		}
-		$nextGroupRIDInput = new htmlTableExtendedInputField(_('Next group RID'), 'nextGroupRID', $nextGroupRID, 'nextGroupRID');
+		$nextGroupRIDInput = new htmlResponsiveInputField(_('Next group RID'), 'nextGroupRID', $nextGroupRID, 'nextGroupRID');
 		$nextGroupRIDInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-		$return->addElement($nextGroupRIDInput, true);
+		$return->add($nextGroupRIDInput, 12);
 		// RID base
-		if (!isset($this->attributes['sambaAlgorithmicRidBase'][0])) $this->attributes['sambaAlgorithmicRidBase'][0] = 1000;
+		if (!isset($this->attributes['sambaAlgorithmicRidBase'][0])) {
+			$this->attributes['sambaAlgorithmicRidBase'][0] = 1000;
+		}
 		if ($this->getAccountContainer()->isNewAccount) {
-			$ridBaseInput = new htmlTableExtendedInputField(_('RID base'), 'RIDbase', $this->attributes['sambaAlgorithmicRidBase'][0], 'RIDbase');
+			$ridBaseInput = new htmlResponsiveInputField(_('RID base'), 'RIDbase', $this->attributes['sambaAlgorithmicRidBase'][0], 'RIDbase');
 			$ridBaseInput->setRequired(true);
 			$ridBaseInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-			$return->addElement($ridBaseInput, true);
+			$return->add($ridBaseInput, 12);
 		}
 		else {
-			$return->addElement(new htmlOutputText(_('RID base')));
-			$return->addElement(new htmlOutputText($this->attributes['sambaAlgorithmicRidBase'][0]));
-			$return->addElement(new htmlHelpLink('RIDbase'), true);
+			$return->addLabel(new htmlOutputText(_('RID base')));
+			$ridBaseGroup = new htmlGroup();
+			$ridBaseGroup->addElement(new htmlOutputText($this->attributes['sambaAlgorithmicRidBase'][0]));
+			$ridBaseGroup->addElement(new htmlHelpLink('RIDbase'));
+			$return->addField($ridBaseGroup);
 		}
 		return $return;
 	}
@@ -403,12 +400,12 @@ class sambaDomain extends baseModule {
 		$errors = array();
 		if ($this->getAccountContainer()->isNewAccount) {
 			// domain SID
-			$this->attributes['sambaSID'][0] = $_POST['domainSID'];
-			if (!get_preg($_POST['domainSID'], 'domainSID')) {
+			$this->attributes['sambaSID'][0] = $_POST['sambaSID'];
+			if (!get_preg($_POST['sambaSID'], 'domainSID')) {
 				$errors[] = $this->messages['domainSID'][0];
 			}
 			else {
-				$this->attributes['sambaSID'][0] = $_POST['domainSID'];
+				$this->attributes['sambaSID'][0] = $_POST['sambaSID'];
 			}
 			// RID base
 			if (!get_preg($_POST['RIDbase'], 'digit') && !($_POST['RIDbase'] == '')) {
@@ -418,11 +415,11 @@ class sambaDomain extends baseModule {
 				$this->attributes['sambaAlgorithmicRidBase'][0] = $_POST['RIDbase'];
 			}
 			// domain name
-			if (!get_preg($_POST['domainName'], 'domainname') && !($_POST['domainName'] == '')) {
+			if (!get_preg($_POST['sambaDomainName'], 'domainname') && !($_POST['sambaDomainName'] == '')) {
 				$errors[] = $this->messages['domainName'][0];
 			}
 			else {
-				$this->attributes['sambaDomainName'][0] = $_POST['domainName'];
+				$this->attributes['sambaDomainName'][0] = $_POST['sambaDomainName'];
 			}
 		}
 		// next RID

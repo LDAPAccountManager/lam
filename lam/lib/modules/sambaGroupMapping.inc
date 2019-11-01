@@ -4,7 +4,7 @@ use \LAM\TYPES\TypeManager;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2007 - 2018  Roland Gruber
+                2007 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -309,7 +309,7 @@ class sambaGroupMapping extends baseModule {
 		if (isset($_POST['addObjectClass'])) {
 			$this->attributes['objectClass'][] = 'sambaGroupMapping';
 		}
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		if (in_array('sambaGroupMapping', $this->attributes['objectClass'])) {
 			$sambaDomains = $this->getDomains();
 			if (sizeof($sambaDomains) == 0) {
@@ -330,42 +330,48 @@ class sambaGroupMapping extends baseModule {
 			}
 			// display name
 			$displayName = '';
-			if (isset($this->attributes['displayName'][0])) $displayName = $this->attributes['displayName'][0];
-			$displayNameInput = new htmlTableExtendedInputField(_('Display name'), 'displayName', $displayName, 'displayName');
+			if (isset($this->attributes['displayName'][0])) {
+				$displayName = $this->attributes['displayName'][0];
+			}
+			$displayNameInput = new htmlResponsiveInputField(_('Display name'), 'displayName', $displayName, 'displayName');
 			$displayNameInput->setFieldMaxLength(50);
-			$return->addElement($displayNameInput, true);
+			$return->add($displayNameInput, 12);
 			// Windows group
 			$options = array($this->getCn());
 			$selected = array($this->getCn());
 			$names = array_keys($this->rids);
-			$wrid=false;
 			for ($i=0; $i<count($names); $i++) {
 				if (isset($this->attributes['sambaSID'][0]) && ($this->attributes['sambaSID'][0]==$SID."-".$this->rids[$names[$i]])) {
 					$selected = array($names[$i]);
-					$wrid=true;
 				}
 				$options[] = $names[$i];
 			}
-			$return->addElement(new htmlTableExtendedSelect('sambaSID', $options, $selected, _('Windows group'), 'sambaSID'), true);
+			$return->add(new htmlResponsiveSelect('sambaSID', $options, $selected, _('Windows group'), 'sambaSID'), 12);
 			// group type
 			$names = array_keys($this->sambaGroupTypes);
 			$selected = array( _('Domain group') );
 			for ($i=0; $i<count($names); $i++) {
-				if (!isset($this->attributes['sambaGroupType'][0])) break;
-				if ($this->attributes['sambaGroupType'][0]==$this->sambaGroupTypes[$names[$i]]) $selected = array( $names[$i] );
+				if (!isset($this->attributes['sambaGroupType'][0])) {
+					break;
+				}
+				if ($this->attributes['sambaGroupType'][0]==$this->sambaGroupTypes[$names[$i]]) {
+					$selected = array( $names[$i] );
+				}
 			}
-			$return->addElement(new htmlTableExtendedSelect('sambaGroupType', $names, $selected, _('Group type'), 'type'), true);
+			$return->add(new htmlResponsiveSelect('sambaGroupType', $names, $selected, _('Group type'), 'type'), 12);
 			// domain
 			$selectedDomain = array();
-			if (isset($sel_domain)) $selectedDomain = array($sel_domain);
-			$return->addElement(new htmlTableExtendedSelect('sambaDomainName', $sambaDomainNames, $selectedDomain, _('Domain'), 'sambaDomainName'), true);
+			if (isset($sel_domain)) {
+				$selectedDomain = array($sel_domain);
+			}
+			$return->add(new htmlResponsiveSelect('sambaDomainName', $sambaDomainNames, $selectedDomain, _('Domain'), 'sambaDomainName'), 12);
 			// local group members
 			$memberLabel = new htmlOutputText(_('Local members'));
-			$memberLabel->alignment = htmlElement::ALIGN_TOP;
-			$return->addElement($memberLabel);
+			$return->addLabel($memberLabel);
 			$addMemberButton = new htmlAccountPageButton(get_class($this), 'members', 'open', 'add.png', true);
 			$addMemberButton->setTitle(_('Add'));
 			$addMemberButton->alignment = htmlElement::ALIGN_TOP;
+			$memberHelp = new htmlHelpLink('sambaSIDList');
 			if (!empty($this->attributes['sambaSIDList'][0])) {
 				$this->loadSIDCache();
 				$memberTable = new htmlTable();
@@ -381,26 +387,26 @@ class sambaGroupMapping extends baseModule {
 					$memberTable->addElement($delButton);
 					if ($i == (sizeof($this->attributes['sambaSIDList']) - 1)) {
 						$memberTable->addElement($addMemberButton);
+						$memberTable->addElement($memberHelp);
 					}
 					$memberTable->addNewLine();
 				}
-				$return->addElement($memberTable);
+				$return->addField($memberTable);
 			}
 			else {
-				$return->addElement($addMemberButton);
+				$memberGroup = new htmlGroup();
+				$memberGroup->addElement($addMemberButton);
+				$memberGroup->addElement($memberHelp);
+				$return->addField($memberGroup);
 			}
-			$memberHelp = new htmlHelpLink('sambaSIDList');
-			$memberHelp->alignment = htmlElement::ALIGN_TOP;
-			$return->addElement($memberHelp, true);
 
-			$return->addElement(new htmlSpacer(null, '10px'), true);
+			$return->addVerticalSpacer('2rem');
 
 			$remButton = new htmlButton('remObjectClass', _('Remove Samba 3 extension'));
-			$remButton->colspan = 3;
-			$return->addElement($remButton);
+			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
-			$return->addElement(new htmlButton('addObjectClass', _('Add Samba 3 extension')));
+			$return->add(new htmlButton('addObjectClass', _('Add Samba 3 extension')), 12);
 		}
 		return $return;
 	}
@@ -411,18 +417,12 @@ class sambaGroupMapping extends baseModule {
 	* @return htmlElement HTML meta data
 	*/
 	function display_html_members() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		$typeManager = new TypeManager();
 		// show list of possible new members
 		if ((isset($_POST['form_subpage_' . get_class($this) . '_members_select']) || isset($_POST['setFilter'])) && isset($_POST['type'])) {
 			$type = $typeManager->getConfiguredType($_POST['type']);
 			$this->loadSIDCache();
-			$userFilter = '';
-			$userFilterRegex = '';
-			if (isset($_POST['newFilter'])) {
-				$userFilter = $_POST['newFilter'];
-				$userFilterRegex = '/' . str_replace(array('*', '(', ')'), array('.*', '\(', '\)'), $_POST['newFilter']) . '/ui';
-			}
 			$options = array();
 			$filter = get_ldap_filter($type->getId());
 			$entries = searchLDAP($type->getSuffix(), $filter, array('dn', 'cn', 'uid', 'sambaSID'));
@@ -440,32 +440,30 @@ class sambaGroupMapping extends baseModule {
 				else {
 					$label = $sid;
 				}
-				// check filter
-				if (!empty($userFilter) && !preg_match($userFilterRegex, $label)) {
-					continue;
-				}
 				if (empty($this->attributes['sambaSIDList'][0]) || !in_array($sid, $this->attributes['sambaSIDList'])) {
 					$options[$label] = $sid;
 				}
 			}
 			$size = 20;
-			if (sizeof($options) < 20) $size = sizeof($options);
+			if (sizeof($options) < 20) {
+				$size = sizeof($options);
+			}
 			$membersSelect = new htmlSelect('members', $options, array(), $size);
 			$membersSelect->setHasDescriptiveElements(true);
 			$membersSelect->setMultiSelect(true);
 			$membersSelect->setTransformSingleSelect(false);
-			$return->addElement($membersSelect, true);
+			$return->add($membersSelect, 12);
+			$return->addVerticalSpacer('0.5rem');
 			$filterGroup = new htmlGroup();
-			$filterGroup->addElement(new htmlInputField('newFilter', $userFilter));
-			$filterGroup->addElement(new htmlButton('setFilter', _('Filter')));
-			$filterGroup->addElement(new htmlHelpLink('filter'));
+			$filterInput = new htmlInputField('newFilter');
+			$filterInput->filterSelectBox('members');
+			$filterGroup->addElement(new htmlOutputText(_('Filter')));
+			$filterGroup->addElement($filterInput);
 			$filterGroup->addElement(new htmlHiddenInput('type', $type->getId()));
-			$return->addElement($filterGroup, true);
-			$return->addElement(new htmlSpacer(null, '10px'), true);
-			$buttonTable = new htmlTable();
-			$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'addMembers', _('Add')));
-			$buttonTable->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'cancel', _('Cancel')));
-			$return->addElement($buttonTable);
+			$return->add($filterGroup, 12);
+			$return->addVerticalSpacer('2rem');
+			$return->addLabel(new htmlAccountPageButton(get_class($this), 'attributes', 'addMembers', _('Add')));
+			$return->addField(new htmlAccountPageButton(get_class($this), 'attributes', 'cancel', _('Cancel')));
 			return $return;
 		}
 		$types = $typeManager->getConfiguredTypesForScopes(array('user', 'group', 'host'));
@@ -477,15 +475,14 @@ class sambaGroupMapping extends baseModule {
 				$optionsSelected[] = $type->getId();
 			}
 		}
-		$typeTable = new htmlTable();
-		$typeTable->addElement(new htmlOutputText(_('Add entries of this type:') . ' '));
+		$return->addLabel(new htmlOutputText(_('Add entries of this type:')));
 		$typeSelect = new htmlSelect('type', $options, $optionsSelected);
 		$typeSelect->setHasDescriptiveElements(true);
-		$typeTable->addElement($typeSelect);
-		$typeTable->addElement(new htmlAccountPageButton(get_class($this), 'members', 'select', _('Ok')));
-		$return->addElement($typeTable, true);
-		$return->addElement(new htmlOutputText('&nbsp;', false), true);
-		$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'membersBack', _('Back')));
+		$return->addField($typeSelect);
+		$return->addLabel(new htmlOutputText('&nbsp;', false));
+		$return->addField(new htmlAccountPageButton(get_class($this), 'members', 'select', _('Ok')));
+		$return->addVerticalSpacer('2rem');
+		$return->add(new htmlAccountPageButton(get_class($this), 'attributes', 'membersBack', _('Back')), 12, 12, 12, 'text-center');
 		return $return;
 	}
 
