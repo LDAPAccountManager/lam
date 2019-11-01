@@ -856,18 +856,20 @@ class sambaSamAccount extends baseModule implements passwordService {
 	function process_sambaUserWorkstations() {
 		// Load attributes
 		if ($this->get_scope()=='user') {
-			if (isset($_POST['availableSambaUserWorkstations']) && isset($_POST['sambaUserWorkstations_add'])) { // Add workstations to list
+			if (isset($_POST['workstations_2']) && isset($_POST['workstations_left'])) { // Add workstations to list
 				$workstations = array();
 				if (isset($this->attributes['sambaUserWorkstations'][0])) {
 					$temp = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
 					$workstations = explode (',', $temp);
 					for ($i=0; $i<count($workstations); $i++) {
-						if ($workstations[$i]=='') unset($workstations[$i]);
+						if ($workstations[$i]=='') {
+							unset($workstations[$i]);
+						}
 					}
 					$workstations = array_values($workstations);
 				}
 				// Add new // Add workstations
-				$workstations = array_merge($workstations, $_POST['availableSambaUserWorkstations']);
+				$workstations = array_merge($workstations, $_POST['workstations_2']);
 				// remove doubles
 				$workstations = array_flip($workstations);
 				$workstations = array_unique($workstations);
@@ -880,16 +882,18 @@ class sambaSamAccount extends baseModule implements passwordService {
 					$this->attributes['sambaUserWorkstations'][0] = $this->attributes['sambaUserWorkstations'][0] . "," . $workstations[$i];
 					}
 				}
-			elseif (isset($_POST['sambaUserWorkstations']) && isset($_POST['sambaUserWorkstations_remove'])) { // remove // Add workstations from list
+			elseif (isset($_POST['workstations_1']) && isset($_POST['workstations_right'])) { // remove // Add workstations from list
 				// Put all workstations in array
 				$temp = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
 				$workstations = explode (',', $temp);
 				for ($i=0; $i<count($workstations); $i++) {
-					if ($workstations[$i]=='') unset($workstations[$i]);
+					if ($workstations[$i]=='') {
+						unset($workstations[$i]);
+					}
 				}
 				$workstations = array_values($workstations);
 				// Remove unwanted workstations from array
-				$workstations = array_delete($_POST['sambaUserWorkstations'], $workstations);
+				$workstations = array_delete($_POST['workstations_1'], $workstations);
 				// Recreate workstation string
 				unset($this->attributes['sambaUserWorkstations'][0]);
 				if (sizeof($workstations) > 0) {
@@ -1283,14 +1287,16 @@ class sambaSamAccount extends baseModule implements passwordService {
 	* @return htmlElement meta HTML code
 	*/
 	function display_html_sambaUserWorkstations() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		if ($this->get_scope()=='user') {
 			// Get list of all hosts.
 			$userWorkstations = array();
 			$availableUserWorkstations = array();
 
 			$result = $this->getHostList();
-			foreach ($result as $host) $availableUserWorkstations[] = str_replace("$", '', $host);
+			foreach ($result as $host) {
+				$availableUserWorkstations[] = str_replace("$", '', $host);
+			}
 			sort($availableUserWorkstations, SORT_STRING);
 			if (isset($this->attributes['sambaUserWorkstations'][0])) {
 				$wsAttr = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
@@ -1298,29 +1304,22 @@ class sambaSamAccount extends baseModule implements passwordService {
 			}
 			$availableUserWorkstations = array_delete($userWorkstations, $availableUserWorkstations);
 
-			$return->addElement(new htmlSubTitle(_("Allowed workstations")), true);
-			$return->addElement(new htmlOutputText(_("Allowed workstations")));
-			$return->addElement(new htmlOutputText(''));
-			$return->addElement(new htmlOutputText(_("Available workstations")));
-			$return->addNewLine();
-			$wsSelect = new htmlSelect('sambaUserWorkstations', $userWorkstations, array(), 15);
-			$wsSelect->setMultiSelect(true);
-			$return->addElement($wsSelect);
-			$buttonContainer = new htmlTable();
-			$buttonContainer->addElement(new htmlButton('sambaUserWorkstations_add', 'back.gif', true), true);
-			$buttonContainer->addElement(new htmlButton('sambaUserWorkstations_remove', 'forward.gif', true), true);
-			$buttonContainer->addElement(new htmlHelpLink('userWorkstations'));
-			$return->addElement($buttonContainer);
-			$wsAvailSelect = new htmlSelect('availableSambaUserWorkstations', $availableUserWorkstations, array(), 15);
-			$wsAvailSelect->setMultiSelect(true);
-			$return->addElement($wsAvailSelect);
-			$return->addNewLine();
+			$return->add(new htmlSubTitle(_("Allowed workstations")), 12);
 
-			$return->addElement(new htmlSpacer(null, '10px'), true);
+			$userWorkstationsOptions = array();
+			foreach ($userWorkstations as $userWorkstation) {
+				$userWorkstationsOptions[$userWorkstation] = $userWorkstation;
+			}
+			$availableUserWorkstationsOptions = array();
+			foreach ($availableUserWorkstations as $availableUserWorkstation) {
+				$availableUserWorkstationsOptions[$availableUserWorkstation] = $availableUserWorkstation;
+			}
+			$this->addDoubleSelectionArea($return, _("Allowed workstations"), _("Available workstations"), $userWorkstationsOptions, array(), $availableUserWorkstationsOptions, array(), 'workstations', false, true);
+
+			$return->addVerticalSpacer('2rem');
 
 			$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
-			$backButton->colspan = 3;
-			$return->addElement($backButton);
+			$return->add($backButton, 12);
 			}
 		return $return;
 	}
@@ -1331,10 +1330,11 @@ class sambaSamAccount extends baseModule implements passwordService {
 	* @return htmlElement meta HTML code
 	*/
 	function display_html_logonHours() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		$timeZone = getTimeZoneOffsetHours();
-		$days = array(1 => _('Monday'), 2 => _('Tuesday'), 3 => _('Wednesday'), 4 => _('Thursday'),
-			5 => _('Friday'), 6 => _('Saturday'), 0 => _('Sunday'));
+		$titles = array(_('Time'), _('Sunday'), _('Monday'), _('Tuesday'), _('Wednesday'), _('Thursday'),
+			_('Friday'), _('Saturday'));
+		$data = array();
 		if (!isset($this->attributes['sambaLogonHours'][0]) || ($this->attributes['sambaLogonHours'][0] == '')) {
 			$this->attributes['sambaLogonHours'][0] = 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
 		}
@@ -1355,11 +1355,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 			$hour[$i] = substr($logonHours, $i, 1);
 		}
 		// display input
-		$return->addElement(new htmlOutputText(_('Time')));
-		for ($i = 0; $i < sizeof($days); $i++) {
-			$return->addElement(new htmlOutputText('&nbsp;' . $days[$i] . '&nbsp;', false));
-		}
-		$return->addNewLine();
 		$boxes = array();
 		// dynamically place boxes depending on time zone
 		for ($i = 0; $i < 24*7; $i++) {
@@ -1371,7 +1366,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 				$hr = $hr - 24*7;
 			}
 			$checkbox = new htmlInputCheckbox('lh_' . $hr, $hour[$hr]);
-			$checkbox->alignment = htmlTable::ALIGN_CENTER;
 			$boxes[$i % 24][floor($i/24)] = $checkbox;
 		}
 		for ($h = 0; $h < 24; $h++) {
@@ -1379,19 +1373,18 @@ class sambaSamAccount extends baseModule implements passwordService {
 			if ($h < 10) {
 				$hour = '0' . $h;
 			}
-			$return->addElement(new htmlOutputText("$hour:00 - $hour:59"));
+			$row = array();
+			$row[] = new htmlOutputText("$hour:00 - $hour:59");
 			for ($d = 0; $d < 7; $d++) {
-				$return->addElement($boxes[$h][$d]);
+				$row[] = $boxes[$h][$d];
 			}
-			$return->addNewLine();
+			$data[] = $row;
 		}
+		$return->add(new htmlResponsiveTable($titles, $data), 12);
 
-		$return->addElement(new htmlSpacer(null, '10px'), true);
-		$buttonContainer = new htmlTable();
-		$buttonContainer->colspan = 5;
-		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'submit', _('Ok')));
-		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'abort', _('Cancel')));
-		$return->addElement($buttonContainer);
+		$return->addVerticalSpacer('2rem');
+		$return->addLabel(new htmlAccountPageButton(get_class($this), 'attributes', 'submit', _('Ok')));
+		$return->addField(new htmlAccountPageButton(get_class($this), 'attributes', 'abort', _('Cancel')));
 		return $return;
 	}
 
