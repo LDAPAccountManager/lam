@@ -732,11 +732,21 @@ class sambaSamAccount extends baseModule implements passwordService {
 		else {
 			$this->nopwd = false;
 		}
-		if (isset($_POST['sambaAcctFlagsS'])) $flag .= "S";
-		if (isset($_POST['sambaAcctFlagsH'])) $flag .= "H";
-		if (isset($_POST['sambaAcctFlagsW'])) $flag .= "W";
-		if (isset($_POST['sambaAcctFlagsU'])) $flag .= "U";
-		if (isset($_POST['sambaAcctFlagsL'])) $flag .= "L";
+		if (isset($_POST['sambaAcctFlagsS'])) {
+			$flag .= "S";
+		}
+		if (isset($_POST['sambaAcctFlagsH'])) {
+			$flag .= "H";
+		}
+		if (isset($_POST['sambaAcctFlagsW'])) {
+			$flag .= "W";
+		}
+		if (isset($_POST['sambaAcctFlagsU'])) {
+			$flag .= "U";
+		}
+		if (isset($_POST['sambaAcctFlagsL'])) {
+			$flag .= "L";
+		}
 		// Expand string to fixed length
 		$flag = str_pad($flag, 12);
 		// End character
@@ -772,20 +782,28 @@ class sambaSamAccount extends baseModule implements passwordService {
 				$this->attributes['sambaHomePath'][0] = $_POST['sambaHomePath'];
 				$this->attributes['sambaHomePath'][0] = str_replace('$user', $attrs['uid'][0], $this->attributes['sambaHomePath'][0]);
 				$this->attributes['sambaHomePath'][0] = str_replace('$group', $unixGroupName, $this->attributes['sambaHomePath'][0]);
-				if ($this->attributes['sambaHomePath'][0] != $_POST['sambaHomePath']) $errors[] = $this->messages['homePath'][1];
+				if ($this->attributes['sambaHomePath'][0] != $_POST['sambaHomePath']) {
+					$errors[] = $this->messages['homePath'][1];
+				}
 				if ( (!$this->attributes['sambaHomePath'][0]=='') && (!get_preg($this->attributes['sambaHomePath'][0], 'UNC'))) {
 					$errors[] = $this->messages['homePath'][0];
 				}
 			}
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomeDrive')) {
-				if ($_POST['sambaHomeDrive'] == "-") $this->attributes['sambaHomeDrive'][0] = '';
-				else $this->attributes['sambaHomeDrive'][0] = $_POST['sambaHomeDrive'];
+				if ($_POST['sambaHomeDrive'] == "-") {
+					$this->attributes['sambaHomeDrive'][0] = '';
+				}
+				else {
+					$this->attributes['sambaHomeDrive'][0] = $_POST['sambaHomeDrive'];
+				}
 			}
 			if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonScript')) {
 				$this->attributes['sambaLogonScript'][0] = $_POST['sambaLogonScript'];
 				$this->attributes['sambaLogonScript'][0] = str_replace('$user', $attrs['uid'][0], $this->attributes['sambaLogonScript'][0]);
 				$this->attributes['sambaLogonScript'][0] = str_replace('$group', $unixGroupName, $this->attributes['sambaLogonScript'][0]);
-				if ($this->attributes['sambaLogonScript'][0] != $_POST['sambaLogonScript']) $errors[] = $this->messages['logonScript'][1];
+				if ($this->attributes['sambaLogonScript'][0] != $_POST['sambaLogonScript']) {
+					$errors[] = $this->messages['logonScript'][1];
+				}
 				if ( (!$this->attributes['sambaLogonScript'][0]=='') && (!get_preg($this->attributes['sambaLogonScript'][0], 'logonscript'))) {
 					$errors[] = $this->messages['logonScript'][0];
 				}
@@ -794,7 +812,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 				$this->attributes['sambaProfilePath'][0] = $_POST['sambaProfilePath'];
 				$this->attributes['sambaProfilePath'][0] = str_replace('$user', $attrs['uid'][0], $this->attributes['sambaProfilePath'][0]);
 				$this->attributes['sambaProfilePath'][0] = str_replace('$group', $unixGroupName, $this->attributes['sambaProfilePath'][0]);
-				if ($this->attributes['sambaProfilePath'][0] != $_POST['sambaProfilePath']) $errors[] = $this->messages['profilePath'][1];
+				if ($this->attributes['sambaProfilePath'][0] != $_POST['sambaProfilePath']) {
+					$errors[] = $this->messages['profilePath'][1];
+				}
 				if (!($this->attributes['sambaProfilePath'][0] == '') &&
 					!(get_preg($this->attributes['sambaProfilePath'][0], 'UNC') xor get_preg($this->attributes['sambaProfilePath'][0], 'homeDirectory'))) {
 						$errors[] = $this->messages['profilePath'][0];
@@ -914,7 +934,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 	* @return array list of info/error messages
 	*/
 	function process_logonHours() {
-		if (isset($_POST['form_subpage_sambaSamAccount_attributes_abort'])) return array();
+		if (isset($_POST['form_subpage_sambaSamAccount_attributes_abort'])) {
+			return array();
+		}
 		// set new logon hours
 		$logonHours = '';
 		for ($i = 0; $i < 24*7; $i++) {
@@ -949,13 +971,17 @@ class sambaSamAccount extends baseModule implements passwordService {
 				$buttonName = $postKeys[$i];
 			}
 		}
-		if (($buttonName == '') || (strpos($buttonName, '_back') !== false)) return array();
+		if (($buttonName == '') || (strpos($buttonName, '_back') !== false)) {
+			return array();
+		}
 		// get attribute name
 		$attr = '';
 		if (strpos($buttonName, 'sambaKickoffTime') !== false) {
 			$attr = 'sambaKickoffTime';
 		}
-		if ($attr == '') return array();
+		if ($attr == '') {
+			return array();
+		}
 		// determine action
 		if (strpos($buttonName, '_change') !== false) {
 			// set new time
@@ -1009,7 +1035,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 	* @return array list of info/error messages
 	*/
 	function process_terminalServer() {
-		if (isset($_POST['form_subpage_sambaSamAccount_attributes_abort'])) return array();
+		if (isset($_POST['form_subpage_sambaSamAccount_attributes_abort'])) {
+			return array();
+		}
 		$mDial = new sambaMungedDial();
 		if (isset($this->attributes['sambaMungedDial'][0])) {
 			$mDial->load($this->attributes['sambaMungedDial'][0]);
@@ -1144,11 +1172,15 @@ class sambaSamAccount extends baseModule implements passwordService {
 				// home drive
 				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomeDrive')) {
 					$drives = array('-');
-					for ($i=90; $i>67; $i--) $drives[] = chr($i).':';
+					for ($i=90; $i>67; $i--) {
+						$drives[] = chr($i).':';
+					}
 					if (isset($this->attributes['sambaHomeDrive'][0])) {
 						$selected = array ($this->attributes['sambaHomeDrive'][0]);
 					}
-					else $selected = array('-');
+					else {
+						$selected = array('-');
+					}
 					$return->addElement(new htmlTableExtendedSelect('sambaHomeDrive', $drives, $selected, _('Home drive'), 'homeDrive'), true);
 				}
 				// home path
@@ -1222,7 +1254,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 						$selected = array('-');
 					}
 				}
-				else $selected[] = "-";
+				else {
+					$selected[] = "-";
+				}
 				$return->addElement(new htmlTableExtendedSelect('sambaSID', $options, $selected, _('Special user'), 'specialUser'), true);
 			}
 			// domain
@@ -1320,7 +1354,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 
 			$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
 			$return->add($backButton, 12);
-			}
+		}
 		return $return;
 	}
 
@@ -1403,9 +1437,15 @@ class sambaSamAccount extends baseModule implements passwordService {
 			$time = $this->attributes[$attr][0];
 		}
 		$date = new DateTime('@' . $time, new DateTimeZone('UTC'));
-		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
-		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
-		for ( $i=2003; $i<=2050; $i++ ) $year[] = $i;
+		for ( $i=1; $i<=31; $i++ ) {
+			$mday[] = $i;
+		}
+		for ( $i=1; $i<=12; $i++ ) {
+			$mon[] = $i;
+		}
+		for ( $i=2003; $i<=2050; $i++ ) {
+			$year[] = $i;
+		}
 		$return->addElement(new htmlOutputText($text));
 		$return->addElement(new htmlSelect('expire_day', $mday, array($date->format('j'))));
 		$return->addElement(new htmlSelect('expire_mon', $mon, array($date->format('n'))));
@@ -1452,7 +1492,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$return->addElement(new htmlTableExtendedInputField(_('Home directory'), 'tsHomeDir', $mDial->ctx['CtxWFHomeDir'], 'tsHomeDir'), true);
 		// home drive
 		$drives = array();
-		for ($i=90; $i>67; $i--) $drives[] = chr($i).':';
+		for ($i=90; $i>67; $i--) {
+			$drives[] = chr($i).':';
+		}
 		$selTsDrive = array();
 		if (isset($mDial->ctx['CtxWFHomeDirDrive'])) {
 			$selTsDrive = array($mDial->ctx['CtxWFHomeDirDrive']);
