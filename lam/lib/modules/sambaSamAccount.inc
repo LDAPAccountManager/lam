@@ -1428,7 +1428,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 	* @return htmlElement meta HTML code
 	*/
 	function display_html_time() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		$attr = 'sambaKickoffTime';
 		$text = _('Account expiration date');
 		$help = "expireDate";
@@ -1446,32 +1446,41 @@ class sambaSamAccount extends baseModule implements passwordService {
 		for ( $i=2003; $i<=2050; $i++ ) {
 			$year[] = $i;
 		}
-		$return->addElement(new htmlOutputText($text));
-		$return->addElement(new htmlSelect('expire_day', $mday, array($date->format('j'))));
-		$return->addElement(new htmlSelect('expire_mon', $mon, array($date->format('n'))));
-		$return->addElement(new htmlSelect('expire_yea', $year, array($date->format('Y'))));
-		$return->addElement(new htmlHelpLink($help), true);
+		$return->addLabel(new htmlOutputText($text));
+		$dateGroup = new htmlGroup();
+		$daySelect = new htmlSelect('expire_day', $mday, array($date->format('j')));
+		$daySelect->setWidth('3rem');
+		$dateGroup->addElement($daySelect);
+		$monthSelect = new htmlSelect('expire_mon', $mon, array($date->format('n')));
+		$monthSelect->setWidth('3rem');
+		$dateGroup->addElement($monthSelect);
+		$yearSelect = new htmlSelect('expire_yea', $year, array($date->format('Y')));
+		$yearSelect->setWidth('5rem');
+		$dateGroup->addElement($yearSelect);
+		$dateGroup->addElement(new htmlHelpLink($help));
+		$return->addField($dateGroup);
 		if ($this->getAccountContainer()->getAccountModule('shadowAccount') != null) {
-			$return->addElement(new htmlTableExtendedInputCheckbox('syncShadow', false, _('Set also for Shadow')), true);
+			$return->add(new htmlResponsiveInputCheckbox('syncShadow', false, _('Set also for Shadow')), 12);
 		}
 		if ($this->getAccountContainer()->getAccountModule('heimdalKerberos') != null) {
-			$return->addElement(new htmlTableExtendedInputCheckbox('syncHeimdal', false, _('Set also for Kerberos')), true);
+			$return->add(new htmlResponsiveInputCheckbox('syncHeimdal', false, _('Set also for Kerberos')), 12);
 		}
 		if ($this->getAccountContainer()->getAccountModule('mitKerberos') != null) {
-			$return->addElement(new htmlTableExtendedInputCheckbox('syncMIT', false, _('Set also for Kerberos')), true);
+			$return->add(new htmlResponsiveInputCheckbox('syncMIT', false, _('Set also for Kerberos')), 12);
 		}
 		if ($this->getAccountContainer()->getAccountModule('mitKerberosStructural') != null) {
-			$return->addElement(new htmlTableExtendedInputCheckbox('syncMITStructural', false, _('Set also for Kerberos')), true);
+			$return->add(new htmlResponsiveInputCheckbox('syncMITStructural', false, _('Set also for Kerberos')), 12);
 		}
-		$return->addElement(new htmlSpacer(null, '10px'), true);
-		$buttons = new htmlTable();
+		$return->addVerticalSpacer('2rem');
+		$buttons = new htmlGroup();
 		$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'change' . $attr, _('Change')));
+		$buttons->addElement(new htmlSpacer('0.5rem', null));
 		if (isset($this->attributes[$attr][0])) {
 			$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'del' . $attr, _('Remove')));
+			$buttons->addElement(new htmlSpacer('0.5rem', null));
 		}
 		$buttons->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back' . $attr, _('Cancel')));
-		$buttons->colspan = 6;
-		$return->addElement($buttons);
+		$return->add($buttons, 12, 12, 12, 'text-center');
 		return $return;
 	}
 
@@ -1481,15 +1490,15 @@ class sambaSamAccount extends baseModule implements passwordService {
 	* @return htmlElement meta HTML code
 	*/
 	function display_html_terminalServer() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		$mDial = new sambaMungedDial();
 		if (isset($this->attributes['sambaMungedDial'][0])) {
 			$mDial->load($this->attributes['sambaMungedDial'][0]);
 		}
 		// terminal server login
-		$return->addElement(new htmlTableExtendedInputCheckbox('tsAllowLogin', $mDial->getTsLogin(), _('Allow terminal server login'), 'tsAllowLogin'), true);
+		$return->add(new htmlResponsiveInputCheckbox('tsAllowLogin', $mDial->getTsLogin(), _('Allow terminal server login'), 'tsAllowLogin'), 12);
 		// home directory
-		$return->addElement(new htmlTableExtendedInputField(_('Home directory'), 'tsHomeDir', $mDial->ctx['CtxWFHomeDir'], 'tsHomeDir'), true);
+		$return->add(new htmlResponsiveInputField(_('Home directory'), 'tsHomeDir', $mDial->ctx['CtxWFHomeDir'], 'tsHomeDir'), 12);
 		// home drive
 		$drives = array();
 		for ($i=90; $i>67; $i--) {
@@ -1499,33 +1508,33 @@ class sambaSamAccount extends baseModule implements passwordService {
 		if (isset($mDial->ctx['CtxWFHomeDirDrive'])) {
 			$selTsDrive = array($mDial->ctx['CtxWFHomeDirDrive']);
 		}
-		$return->addElement(new htmlTableExtendedSelect('tsHomeDrive', $drives, $selTsDrive, _('Home drive'), 'homeDrive'), true);
+		$return->add(new htmlResponsiveSelect('tsHomeDrive', $drives, $selTsDrive, _('Home drive'), 'homeDrive'), 12);
 		// profile path
-		$return->addElement(new htmlTableExtendedInputField(_('Profile path'), 'tsProfilePath', $mDial->ctx['CtxWFProfilePath'], 'tsProfilePath'), true);
+		$return->add(new htmlResponsiveInputField(_('Profile path'), 'tsProfilePath', $mDial->ctx['CtxWFProfilePath'], 'tsProfilePath'), 12);
 		// use startup program and working dir from client
-		$return->addElement(new htmlTableExtendedInputCheckbox('tsInherit', $mDial->getInheritMode(), _('Inherit client startup configuration'), 'tsInherit'), true);
+		$return->add(new htmlResponsiveInputCheckbox('tsInherit', $mDial->getInheritMode(), _('Inherit client startup configuration'), 'tsInherit'), 12);
 		// startup program
-		$return->addElement(new htmlTableExtendedInputField(_('Initial program'), 'tsInitialProgram', $mDial->ctx['CtxInitialProgram'], 'tsInitialProgram'), true);
+		$return->add(new htmlResponsiveInputField(_('Initial program'), 'tsInitialProgram', $mDial->ctx['CtxInitialProgram'], 'tsInitialProgram'), 12);
 		// working dir
-		$return->addElement(new htmlTableExtendedInputField(_('Working directory'), 'tsWorkDirectory', $mDial->ctx['CtxWorkDirectory'], 'tsWorkDirectory'), true);
+		$return->add(new htmlResponsiveInputField(_('Working directory'), 'tsWorkDirectory', $mDial->ctx['CtxWorkDirectory'], 'tsWorkDirectory'), 12);
 		// connection time limit
-		$tsConnectionLimit = new htmlTableExtendedInputField(_('Connection time limit'), 'tsConnectionLimit', $mDial->ctx['CtxMaxConnectionTime'], 'tsTimeLimit');
+		$tsConnectionLimit = new htmlResponsiveInputField(_('Connection time limit'), 'tsConnectionLimit', $mDial->ctx['CtxMaxConnectionTime'], 'tsTimeLimit');
 		$tsConnectionLimit->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-		$return->addElement($tsConnectionLimit, true);
+		$return->add($tsConnectionLimit, 12);
 		// disconnection time limit
-		$tsDisconnectionLimit = new htmlTableExtendedInputField(_('Disconnection time limit'), 'tsDisconnectionLimit', $mDial->ctx['CtxMaxDisconnectionTime'], 'tsTimeLimit');
+		$tsDisconnectionLimit = new htmlResponsiveInputField(_('Disconnection time limit'), 'tsDisconnectionLimit', $mDial->ctx['CtxMaxDisconnectionTime'], 'tsTimeLimit');
 		$tsDisconnectionLimit->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-		$return->addElement($tsDisconnectionLimit, true);
+		$return->add($tsDisconnectionLimit, 12);
 		// idle time limit
-		$tsIdleLimit = new htmlTableExtendedInputField(_('Idle time limit'), 'tsIdleLimit', $mDial->ctx['CtxMaxIdleTime'], 'tsTimeLimit');
+		$tsIdleLimit = new htmlResponsiveInputField(_('Idle time limit'), 'tsIdleLimit', $mDial->ctx['CtxMaxIdleTime'], 'tsTimeLimit');
 		$tsIdleLimit->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-		$return->addElement($tsIdleLimit, true);
+		$return->add($tsIdleLimit, 12);
 		// connect client drives
-		$return->addElement(new htmlTableExtendedInputCheckbox('tsConnectDrives', $mDial->getConnectClientDrives(), _('Connect client drives'), 'tsConnectDrives'), true);
+		$return->add(new htmlResponsiveInputCheckbox('tsConnectDrives', $mDial->getConnectClientDrives(), _('Connect client drives'), 'tsConnectDrives'), 12);
 		// connect client printers
-		$return->addElement(new htmlTableExtendedInputCheckbox('tsConnectPrinters', $mDial->getConnectClientPrinters(), _('Connect client printers'), 'tsConnectPrinters'), true);
+		$return->add(new htmlResponsiveInputCheckbox('tsConnectPrinters', $mDial->getConnectClientPrinters(), _('Connect client printers'), 'tsConnectPrinters'), 12);
 		// client printer is default
-		$return->addElement(new htmlTableExtendedInputCheckbox('tsClientPrinterDefault', $mDial->getDefaultPrinter(), _('Client printer is default'), 'tsClientPrinterDefault'), true);
+		$return->add(new htmlResponsiveInputCheckbox('tsClientPrinterDefault', $mDial->getDefaultPrinter(), _('Client printer is default'), 'tsClientPrinterDefault'), 12);
 		// shadowing
 		$shadowOptions = array(
 			_("disabled") => "0",
@@ -1534,32 +1543,29 @@ class sambaSamAccount extends baseModule implements passwordService {
 			_("input off, notify on") => "3",
 			_("input off, notify off") => "4");
 		$selShadow = array($mDial->getShadow());
-		$shadowSelect = new htmlTableExtendedSelect('tsShadowing', $shadowOptions, $selShadow, _('Shadowing'), 'tsShadowing');
+		$shadowSelect = new htmlResponsiveSelect('tsShadowing', $shadowOptions, $selShadow, _('Shadowing'), 'tsShadowing');
 		$shadowSelect->setHasDescriptiveElements(true);
-		$return->addElement($shadowSelect, true);
+		$return->add($shadowSelect, 12);
 		// broken connection
 		$brokenConnOptions = array(
 			_("disconnect") => "0",
 			_("reset") => "1");
 		$selbrokenConn = array($mDial->getBrokenConn());
-		$brokenConnSelect = new htmlTableExtendedSelect('tsBrokenConn', $brokenConnOptions, $selbrokenConn, _('On broken or timed out connection'), 'tsBrokenConn');
+		$brokenConnSelect = new htmlResponsiveSelect('tsBrokenConn', $brokenConnOptions, $selbrokenConn, _('On broken or timed out connection'), 'tsBrokenConn');
 		$brokenConnSelect->setHasDescriptiveElements(true);
-		$return->addElement($brokenConnSelect, true);
+		$return->add($brokenConnSelect, 12);
 		// reconnect
 		$reconnectOptions = array(
 			_("from any client") => "0",
 			_("from previous client only") => "1");
 		$selReconnect = array($mDial->getReConn());
-		$reconnectSelect = new htmlTableExtendedSelect('tsReconnect', $reconnectOptions, $selReconnect, _('Reconnect if disconnected'), 'tsReconnect');
+		$reconnectSelect = new htmlResponsiveSelect('tsReconnect', $reconnectOptions, $selReconnect, _('Reconnect if disconnected'), 'tsReconnect');
 		$reconnectSelect->setHasDescriptiveElements(true);
-		$return->addElement($reconnectSelect, true);
+		$return->add($reconnectSelect, 12);
 		// buttons
-		$return->addElement(new htmlSpacer(null, '10px'), true);
-		$buttonContainer = new htmlTable();
-		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'submit', _('Ok')));
-		$buttonContainer->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'abort', _('Cancel')));
-		$buttonContainer->colspan = 3;
-		$return->addElement($buttonContainer);
+		$return->addVerticalSpacer('2rem');
+		$return->addLabel(new htmlAccountPageButton(get_class($this), 'attributes', 'submit', _('Ok')));
+		$return->addField(new htmlAccountPageButton(get_class($this), 'attributes', 'abort', _('Cancel')));
 		return $return;
 	}
 
@@ -1569,13 +1575,10 @@ class sambaSamAccount extends baseModule implements passwordService {
 	* @return htmlElement meta HTML code
 	*/
 	function display_html_profilePath() {
-		$return = new htmlTable();
-		$return->addElement(new htmlOutputText(_('Profile path')));
-		$return->addElement(new htmlSpacer('5px', null));
-		$return->addElement(new htmlOutputText($this->attributes['sambaProfilePath'][0]), true);
-		$return->addElement(new htmlSpacer(null, '10px'), true);
-		$homeServerContainer = new htmlTable();
-		$homeServerContainer->colspan = 5;
+		$return = new htmlResponsiveRow();
+		$return->addLabel(new htmlOutputText(_('Profile path')));
+		$return->addField(new htmlOutputText($this->attributes['sambaProfilePath'][0]));
+		$return->addVerticalSpacer('2rem');
 		// get list of remote servers
 		$remoteServers = $_SESSION['config']->getConfiguredScriptServers();
 		for ($i = 0; $i < sizeof($remoteServers); $i++) {
@@ -1597,18 +1600,20 @@ class sambaSamAccount extends baseModule implements passwordService {
 			if (!empty($result)) {
 				$returnValue = trim($result);
 				if ($returnValue == 'ok') {
-					$homeServerContainer->addElement(new htmlOutputText($label));
-					$homeServerContainer->addElement(new htmlSpacer('5px', null));
-					$homeServerContainer->addElement(new htmlImage('../../graphics/pass.png', 16, 16));
-					$homeServerContainer->addElement(new htmlSpacer('5px', null));
-					$homeServerContainer->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'delete_' . $i, _('Delete')));
+					$return->addLabel(new htmlOutputText($label));
+					$editGroup = new htmlGroup();
+					$editGroup->addElement(new htmlImage('../../graphics/pass.png', 16, 16));
+					$editGroup->addElement(new htmlSpacer('0.5rem', null));
+					$editGroup->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'delete_' . $i, _('Delete')));
+					$return->addField($editGroup);
 				}
 				elseif ($returnValue == 'missing') {
-					$homeServerContainer->addElement(new htmlOutputText($label));
-					$homeServerContainer->addElement(new htmlSpacer('5px', null));
-					$homeServerContainer->addElement(new htmlImage('../../graphics/fail.png', 16, 16));
-					$homeServerContainer->addElement(new htmlSpacer('5px', null));
-					$homeServerContainer->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'create_' . $i, _('Create')));
+					$return->addLabel(new htmlOutputText($label));
+					$editGroup = new htmlGroup();
+					$editGroup->addElement(new htmlImage('../../graphics/fail.png', 16, 16));
+					$editGroup->addElement(new htmlSpacer('0.5rem', null));
+					$editGroup->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'create_' . $i, _('Create')));
+					$return->addField($editGroup);
 				}
 				elseif (trim($returnValue) != '') {
 					$messageParams = explode(",", $returnValue);
@@ -1621,15 +1626,12 @@ class sambaSamAccount extends baseModule implements passwordService {
 					else {
 						$message = new htmlStatusMessage('WARN', htmlspecialchars($messageParams[0]));
 					}
-					$message->colspan = 5;
-					$homeServerContainer->addElement($message, true);
+					$return->add($message, 12);
 				}
-				$homeServerContainer->addNewLine();
 			}
 		}
-		$return->addElement($homeServerContainer, true);
-		$return->addElement(new htmlSpacer(null, '10px'), true);
-		$return->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
+		$return->addVerticalSpacer('2rem');
+		$return->add(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')), 12, 12, 12, 'text-center');
 		return $return;
 	}
 
