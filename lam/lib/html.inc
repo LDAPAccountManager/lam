@@ -4549,6 +4549,8 @@ class htmlResponsiveSelect extends htmlSelect {
 	private $helpModule = null;
 	/** render HTML of parent class */
 	private $renderParentHtml = false;
+	/** short label */
+	private $shortLabel = false;
 
 	/**
 	 * Constructor.
@@ -4591,7 +4593,8 @@ class htmlResponsiveSelect extends htmlSelect {
 			$helpLinkLabel->setCSSClasses(array('hide-on-tablet', 'margin-left5'));
 			$labelGroup->addElement($helpLinkLabel);
 		}
-		$row->add($labelGroup, 12, 6, 6, 'responsiveLabel');
+		$tabletDesktopLabelColumns = $this->shortLabel ? 4 : 6;
+		$row->add($labelGroup, 12, $tabletDesktopLabelColumns, $tabletDesktopLabelColumns, 'responsiveLabel');
 		// input field
 		$fieldGroup = new htmlGroup();
 		$fieldGroup->addElement($this);
@@ -4600,7 +4603,8 @@ class htmlResponsiveSelect extends htmlSelect {
 			$helpLink->setCSSClasses(array('hide-on-mobile'));
 			$fieldGroup->addElement($helpLink);
 		}
-		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');
+		$tabletDesktopFieldColumns = $this->shortLabel ? 8 : 6;
+		$row->add($fieldGroup, 12, $tabletDesktopFieldColumns, $tabletDesktopFieldColumns, 'responsiveField nowrap');
 		return $row->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 	}
 
@@ -4610,6 +4614,13 @@ class htmlResponsiveSelect extends htmlSelect {
 	 */
 	protected function getShowHideSelector() {
 		return '.row';
+	}
+
+	/**
+	 * Use a short label (4 columns instead of 6) for tablet/desktop.
+	 */
+	public function setShortLabel() {
+		$this->shortLabel = true;
 	}
 
 }

@@ -84,6 +84,7 @@ table.padding5 td {
 
 .module-content-row>.row {
 	max-width: 80rem;
+	display: inline-block;
 }
 
 select.auto-width {

@@ -1069,11 +1069,13 @@ class accountContainer {
 		$suffixSelect = new htmlResponsiveSelect('accountContainerSuffix', $suffixList, $selectedSuffix, _('Suffix'));
 		$suffixSelect->setHasDescriptiveElements(true);
 		$suffixSelect->setRightToLeftTextDirection(true);
-		$titleBarSuffixRdn->add($suffixSelect, 12, 12, 8);
+		$suffixSelect->setShortLabel();
+		$titleBarSuffixRdn->add($suffixSelect, 12, 12, 7);
 		// RDN selection
 		$rdnlist = getRDNAttributes($this->type->getId());
 		$rdnSelect = new htmlResponsiveSelect('accountContainerRDN', $rdnlist, array($this->rdn), _('RDN identifier'), '400');
-		$titleBarSuffixRdn->add($rdnSelect, 12, 12, 4);
+		$rdnSelect->setShortLabel();
+		$titleBarSuffixRdn->add($rdnSelect, 12, 12, 5);
 		$titleBarContainer->add($titleBarSuffixRdn, 12);
 
 		$titleBarDiv = new htmlDiv(null, $titleBarContainer, array('titleBar', 'ui-corner-top'));

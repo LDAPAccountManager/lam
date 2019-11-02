@@ -1068,12 +1068,12 @@ class sambaSamAccount extends baseModule implements passwordService {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		if ($this->isExtensionEnabled()) {
 			if ($this->get_scope() == "host") {
 				$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 				if (substr($attrs['uid'][0], -1, 1) != '$') {
-					$return->addElement(new htmlStatusMessage("ERROR", _('Host name must end with $!'), _('Please check your settings on the Unix page!')), true);
+					$return->add(new htmlStatusMessage("ERROR", _('Host name must end with $!'), _('Please check your settings on the Unix page!')), 12);
 				}
 			}
 			$personalAttributes = array();
@@ -1083,7 +1083,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 			// Get Domain SID from user SID
 			$sambaDomains = $this->getDomains();
 			if (sizeof($sambaDomains) == 0) {
-				$return->addElement(new htmlStatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.')), true);
+				$return->add(new htmlStatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.')), 12);
 				return $return;
 			}
 			if (isset($this->attributes['sambaSID'][0]) && $this->attributes['sambaSID'][0] != '') {
@@ -1118,24 +1118,24 @@ class sambaSamAccount extends baseModule implements passwordService {
 					$displayName = $personalAttributes['sn'][0];
 				}
 			}
-			$return->addElement(new htmlTableExtendedInputField(_('Display name'), 'displayName', $displayName, 'displayName'), true);
+			$return->add(new htmlResponsiveInputField(_('Display name'), 'displayName', $displayName, 'displayName'), 12);
 			if ($this->get_scope()=='user') {
 				// user account
-				$return->addElement(new htmlHiddenInput('sambaAcctFlagsU', 'true'), true);
+				$return->add(new htmlHiddenInput('sambaAcctFlagsU', 'true'), 12);
 				// no password
-				$return->addElement(new htmlTableExtendedInputCheckbox('sambaAcctFlagsN', $this->nopwd, _('Use no password'), 'noPassword'), true);
+				$return->add(new htmlResponsiveInputCheckbox('sambaAcctFlagsN', $this->nopwd, _('Use no password'), 'noPassword'), 12);
 				// no password expiry
-				$return->addElement(new htmlTableExtendedInputCheckbox('sambaAcctFlagsX', $this->noexpire, _('Password does not expire'), 'noExpire'), true);
+				$return->add(new htmlResponsiveInputCheckbox('sambaAcctFlagsX', $this->noexpire, _('Password does not expire'), 'noExpire'), 12);
 				// account deactivated
-				$return->addElement(new htmlTableExtendedInputCheckbox('sambaAcctFlagsD', $this->deactivated, _('Account is deactivated'), 'deactivated'), true);
+				$return->add(new htmlResponsiveInputCheckbox('sambaAcctFlagsD', $this->deactivated, _('Account is deactivated'), 'deactivated'), 12);
 				// account locked
 				$locked = false;
 				if (isset($this->attributes['sambaAcctFlags'][0]) && (strpos($this->attributes['sambaAcctFlags'][0], "L") !== false)) {
 					$locked = true;
 				}
-				$return->addElement(new htmlTableExtendedInputCheckbox('sambaAcctFlagsL', $locked, _('Account is locked'), 'locked'), true);
+				$return->add(new htmlResponsiveInputCheckbox('sambaAcctFlagsL', $locked, _('Account is locked'), 'locked'), 12);
 				// password change at next login
-				$return->addElement(new htmlTableExtendedInputCheckbox('forcePasswordChangeOption', $this->expirePassword, _('Password change at next login'), 'passwordIsExpired'), true);
+				$return->add(new htmlResponsiveInputCheckbox('forcePasswordChangeOption', $this->expirePassword, _('Password change at next login'), 'passwordIsExpired'), 12);
 				// last password change
 				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideSambaPwdLastSet')) {
 					$sambaPwdLastSet = '';
@@ -1144,31 +1144,36 @@ class sambaSamAccount extends baseModule implements passwordService {
 						$time->setTimezone(getTimeZone());
 						$sambaPwdLastSet = $time->format('d.m.Y H:i');
 					}
-					$return->addElement(new htmlOutputText(_('Last password change')));
-					$return->addElement(new htmlOutputText($sambaPwdLastSet));
-					$return->addElement(new htmlHelpLink('sambaPwdLastSet'), true);
+					$return->addLabel(new htmlOutputText(_('Last password change')));
+					$sambaPwdLastSetGroup = new htmlGroup();
+					$sambaPwdLastSetGroup->addElement(new htmlOutputText($sambaPwdLastSet));
+					$sambaPwdLastSetGroup->addElement(new htmlHelpLink('sambaPwdLastSet'));
+					$return->addField($sambaPwdLastSetGroup);
 				}
 				// password can be changed
-				$return->addElement(new htmlOutputText(_('User can change password')));
-				$tempTable = new htmlTable();
-				$tempTable->addElement(new htmlOutputText($this->getPasswordCanChangeTime($sambaDomains, $sel_domain), false));
-				$return->addElement($tempTable);
-				$return->addElement(new htmlHelpLink('pwdCanChange'), true);
+				$return->addLabel(new htmlOutputText(_('User can change password')));
+				$pwdCanChangeGroup = new htmlGroup();
+				$pwdCanChangeGroup->addElement(new htmlOutputText($this->getPasswordCanChangeTime($sambaDomains, $sel_domain), false));
+				$pwdCanChangeGroup->addElement(new htmlSpacer('0.5rem', null));
+				$pwdCanChangeGroup->addElement(new htmlHelpLink('pwdCanChange'));
+				$return->addField($pwdCanChangeGroup);
 				// password must be changed
-				$return->addElement(new htmlOutputText(_('User must change password')));
-				$tempTable = new htmlTable();
-				$tempTable->addElement(new htmlOutputText($this->getPasswordMustChangeTime($sambaDomains, $sel_domain), false));
-				$return->addElement($tempTable);
-				$return->addElement(new htmlHelpLink('pwdMustChange'), true);
+				$return->addLabel(new htmlOutputText(_('User must change password')));
+				$pwdMustChangeGroup = new htmlGroup();
+				$pwdMustChangeGroup->addElement(new htmlOutputText($this->getPasswordMustChangeTime($sambaDomains, $sel_domain), false));
+				$pwdMustChangeGroup->addElement(new htmlSpacer('0.5rem', null));
+				$pwdMustChangeGroup->addElement(new htmlHelpLink('pwdMustChange'));
+				$return->addField($pwdMustChangeGroup);
 				// account expiration time
 				$dateValue = $this->formatAccountExpirationDate();
-				$return->addElement(new htmlOutputText(_('Account expiration date')));
-				$tempTable = new htmlTable();
-				$tempTable->addElement(new htmlOutputText($dateValue, false));
-				$tempTable->addSpace('5px');
-				$tempTable->addElement(new htmlAccountPageButton(get_class($this), 'time', 'sambaKickoffTime', _('Change')));
-				$return->addElement($tempTable);
-				$return->addElement(new htmlHelpLink('expireDate'), true);
+				$return->addLabel(new htmlOutputText(_('Account expiration date')));
+				$expireDateGroup = new htmlGroup();
+				$expireDateGroup->addElement(new htmlOutputText($dateValue, false));
+				$expireDateGroup->addElement(new htmlSpacer('0.5rem', null));
+				$expireDateGroup->addElement(new htmlAccountPageButton(get_class($this), 'time', 'sambaKickoffTime', _('Change')));
+				$expireDateGroup->addElement(new htmlSpacer('0.5rem', null));
+				$expireDateGroup->addElement(new htmlHelpLink('expireDate'), true);
+				$return->addField($expireDateGroup);
 				// home drive
 				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomeDrive')) {
 					$drives = array('-');
@@ -1181,7 +1186,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 					else {
 						$selected = array('-');
 					}
-					$return->addElement(new htmlTableExtendedSelect('sambaHomeDrive', $drives, $selected, _('Home drive'), 'homeDrive'), true);
+					$return->add(new htmlResponsiveSelect('sambaHomeDrive', $drives, $selected, _('Home drive'), 'homeDrive'), 12);
 				}
 				// home path
 				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomePath')) {
@@ -1189,14 +1194,15 @@ class sambaSamAccount extends baseModule implements passwordService {
 					if (isset($this->attributes['sambaHomePath'][0])) {
 						$sambaHomePath = $this->attributes['sambaHomePath'][0];
 					}
-					$return->addElement(new htmlTableExtendedInputField(_('Home path'), 'sambaHomePath', $sambaHomePath, 'homePath'), true);
+					$return->add(new htmlResponsiveInputField(_('Home path'), 'sambaHomePath', $sambaHomePath, 'homePath'), 12);
 				}
+				// profile path
 				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideProfilePath')) {
 					$sambaProfilePath = '';
 					if (isset($this->attributes['sambaProfilePath'][0])) {
 						$sambaProfilePath = $this->attributes['sambaProfilePath'][0];
 					}
-					$return->addElement(new htmlOutputText(_('Profile path')));
+					$return->addLabel(new htmlOutputText(_('Profile path')));
 					$sambaProfilePathGroup = new htmlGroup();
 					$sambaProfilePathGroup->addElement(new htmlInputField('sambaProfilePath', $sambaProfilePath));
 					if (($_SESSION['config']->get_scriptPath() != null) && ($_SESSION['config']->get_scriptPath() != '')) {
@@ -1206,8 +1212,8 @@ class sambaSamAccount extends baseModule implements passwordService {
 							$sambaProfilePathGroup->addElement($sambaProfilePathButton);
 						}
 					}
-					$return->addElement($sambaProfilePathGroup);
-					$return->addElement(new htmlHelpLink('profilePath'), true);
+					$sambaProfilePathGroup->addElement(new htmlHelpLink('profilePath'));
+					$return->addField($sambaProfilePathGroup);
 				}
 				// logon script
 				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonScript')) {
@@ -1215,12 +1221,15 @@ class sambaSamAccount extends baseModule implements passwordService {
 					if (isset($this->attributes['sambaLogonScript'][0])) {
 						$sambaLogonScript = $this->attributes['sambaLogonScript'][0];
 					}
-					$return->addElement(new htmlTableExtendedInputField(_('Logon script'), 'sambaLogonScript', $sambaLogonScript, 'scriptPath'), true);
+					$return->add(new htmlResponsiveInputField(_('Logon script'), 'sambaLogonScript', $sambaLogonScript, 'scriptPath'), 12);
 				}
 				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideWorkstations')) {
-					$return->addElement(new htmlOutputText(_('Samba workstations')));
-					$return->addElement(new htmlAccountPageButton(get_class($this), 'sambaUserWorkstations', 'open', _('Edit workstations')));
-					$return->addElement(new htmlHelpLink('userWorkstations'), true);
+					$return->addLabel(new htmlOutputText(_('Samba workstations')));
+					$userWorkstationsGroup = new htmlGroup();
+					$userWorkstationsGroup->addElement(new htmlAccountPageButton(get_class($this), 'sambaUserWorkstations', 'open', _('Edit workstations')));
+					$userWorkstationsGroup->addElement(new htmlSpacer('0.5rem', null));
+					$userWorkstationsGroup->addElement(new htmlHelpLink('userWorkstations'));
+					$return->addField($userWorkstationsGroup);
 				}
 				// Windows group
 				$names = array_keys($this->groupRids);
@@ -1239,7 +1248,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 				if (!$wrid) {
 					$selected[] = $this->getGroupName($attrs['gidNumber'][0]);
 				}
-				$return->addElement(new htmlTableExtendedSelect('sambaPrimaryGroupSID', $options, $selected, _('Windows group'), 'group'), true);
+				$return->add(new htmlResponsiveSelect('sambaPrimaryGroupSID', $options, $selected, _('Windows group'), 'group'), 12);
 				// display if group SID should be mapped to a well known SID
 				$options = array_keys($this->userRids);
 				$options[] = '-';
@@ -1257,41 +1266,49 @@ class sambaSamAccount extends baseModule implements passwordService {
 				else {
 					$selected[] = "-";
 				}
-				$return->addElement(new htmlTableExtendedSelect('sambaSID', $options, $selected, _('Special user'), 'specialUser'), true);
+				$return->add(new htmlResponsiveSelect('sambaSID', $options, $selected, _('Special user'), 'specialUser'), 12);
 			}
 			// domain
-			$return->addElement(new htmlTableExtendedSelect('sambaDomainName', $sambaDomainNames, $sel_domain, _('Domain'), 'domain'), true);
+			$return->add(new htmlResponsiveSelect('sambaDomainName', $sambaDomainNames, $sel_domain, _('Domain'), 'domain'), 12);
 			// logon hours and terminal server options
 			if ($this->get_scope()=='user') {
 				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideLogonHours')) {
-					$return->addElement(new htmlOutputText(_('Logon hours')));
-					$return->addElement(new htmlAccountPageButton(get_class($this), 'logonHours', 'open', _('Edit')));
-					$return->addElement(new htmlHelpLink('logonHours'), true);
+					$return->addLabel(new htmlOutputText(_('Logon hours')));
+					$logonHoursGroup = new htmlGroup();
+					$logonHoursGroup->addElement(new htmlAccountPageButton(get_class($this), 'logonHours', 'open', _('Edit')));
+					$logonHoursGroup->addElement(new htmlSpacer('0.5rem', null));
+					$logonHoursGroup->addElement(new htmlHelpLink('logonHours'));
+					$return->addField($logonHoursGroup);
 				}
 				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideTerminalServer')) {
-					$return->addElement(new htmlOutputText(_('Terminal server options')));
-					$return->addElement(new htmlAccountPageButton(get_class($this), 'terminalServer', 'open', _('Edit')));
-					$return->addElement(new htmlHelpLink('terminalServer'), true);
+					$return->addLabel(new htmlOutputText(_('Terminal server options')));
+					$terminalServerGroup = new htmlGroup();
+					$terminalServerGroup->addElement(new htmlAccountPageButton(get_class($this), 'terminalServer', 'open', _('Edit')));
+					$terminalServerGroup->addElement(new htmlSpacer('0.5rem', null));
+					$terminalServerGroup->addElement(new htmlHelpLink('terminalServer'));
+					$return->addField($terminalServerGroup);
 				}
 			}
 			// reset host password
 			if ($this->get_scope()=='host') {
 				// host account
-				$return->addElement(new htmlHiddenInput('sambaAcctFlagsW', 'true'), true);
+				$return->add(new htmlHiddenInput('sambaAcctFlagsW', 'true'), 12);
 				// password reset
-				$return->addElement(new htmlOutputText(_('Reset password')));
-				$return->addElement(new htmlButton('ResetSambaPassword', _('Reset')));
-				$return->addElement(new htmlHelpLink('resetPassword'), true);
+				$return->addLabel(new htmlOutputText(_('Reset password')));
+				$resetPasswordGroup = new htmlGroup();
+				$resetPasswordGroup->addElement(new htmlButton('ResetSambaPassword', _('Reset')));
+				$resetPasswordGroup->addElement(new htmlSpacer('0.5rem', null));
+				$resetPasswordGroup->addElement(new htmlHelpLink('resetPassword'));
+				$return->addField($resetPasswordGroup);
 			}
 
-			$return->addElement(new htmlSpacer(null, '10px'), true);
+			$return->addVerticalSpacer('2rem');
 
 			$remButton = new htmlButton('remObjectClass', _('Remove Samba 3 extension'));
-			$remButton->colspan = 3;
-			$return->addElement($remButton);
+			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
-			$return->addElement(new htmlButton('addObjectClass', _('Add Samba 3 extension')));
+			$return->add(new htmlButton('addObjectClass', _('Add Samba 3 extension')), 12);
 		}
 		return $return;
 	}
