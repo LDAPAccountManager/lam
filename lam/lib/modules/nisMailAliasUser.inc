@@ -126,9 +126,9 @@ class nisMailAliasUser extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		if (!$this->isMailAliasTypeActive()) {
-			$return->addElement(new htmlStatusMessage('ERROR', _('Please activate the mail aliases type for this server profile.')));
+			$return->add(new htmlStatusMessage('ERROR', _('Please activate the mail aliases type for this server profile.')), 12);
 			return $return;
 		}
 		$aliases = $this->getMailAliasList();
@@ -136,8 +136,7 @@ class nisMailAliasUser extends baseModule {
 		$userName = $this->getUserName();
 		$mails = $this->getMailAddresses();
 		if (!$this->isBooleanConfigOptionSet('nisMailAliasUser_hideUserAliases') && ($userName != null)) {
-			$return->addElement(new htmlSubTitle(_('Aliases for user name')), true);
-			$userTable = new htmlTable();
+			$return->add(new htmlSubTitle(_('Aliases for user name')), 12);
 			for ($i = 0; $i < $count; $i++) {
 				if (empty($aliases[$i]['rfc822mailmember'])) {
 					continue;
@@ -147,7 +146,7 @@ class nisMailAliasUser extends baseModule {
 				if (in_array($userName, $members)
 						&& (!isset($this->recipientsToDelete[$dn]) || !in_array($userName, $this->recipientsToDelete[$dn]))
 						&& !in_array($dn, $this->aliasesToDelete)) {
-					$userTable->addElement(new htmlOutputText($aliases[$i]['cn'][0]));
+					$return->addLabel(new htmlOutputText($aliases[$i]['cn'][0]));
 					$buttonGroup = new htmlGroup();
 					$remButton = new htmlButton('rem_' . $i, 'del.png', true);
 					$remButton->setTitle(_('Remove user from alias entry.'));
@@ -155,24 +154,20 @@ class nisMailAliasUser extends baseModule {
 					$delButton = new htmlButton('del_' . $i, 'trash.png', true);
 					$delButton->setTitle(sprintf(_('Delete whole alias entry which includes %s recipients.'), sizeof($members)));
 					$buttonGroup->addElement($delButton);
-					$userTable->addElement($buttonGroup, true);
+					$return->addField($buttonGroup);
 				}
 			}
-			$userTable->addVerticalSpace('5px');
+			$return->addVerticalSpacer('1rem');
 			$addButton = new htmlAccountPageButton(get_class($this), 'add', 'user', _('Add'));
 			$addButton->setIconClass('createButton');
-			$addButton->colspan = 5;
-			$userTable->addElement($addButton, true);
-			$return->addElement($userTable, true);
+			$return->add($addButton, 12, 12, 12, 'text-center');
 		}
 		if (!$this->isBooleanConfigOptionSet('nisMailAliasUser_hideUserAliases') && !empty($mails)) {
-			$return->addElement(new htmlSubTitle(_('Aliases for email')), true);
-			$mailTable = new htmlTable();
+			$return->add(new htmlSubTitle(_('Aliases for email')), 12);
 			for ($m = 0; $m < sizeof($mails); $m++) {
 				if (sizeof($mails) > 1) {
 					$label = new htmlOutputText($mails[$m]);
-					$label->colspan = 5;
-					$mailTable->addElement($label, true);
+					$return->add($label, 12);
 				}
 				for ($i = 0; $i < $count; $i++) {
 					if (empty($aliases[$i]['rfc822mailmember'])) {
@@ -183,8 +178,7 @@ class nisMailAliasUser extends baseModule {
 					if (in_array($mails[$m], $members)
 							&& (!isset($this->recipientsToDelete[$dn]) || !in_array($mails[$m], $this->recipientsToDelete[$dn]))
 							&& !in_array($dn, $this->aliasesToDelete)) {
-						$mailTable->addSpace('5px');
-						$mailTable->addElement(new htmlOutputText($aliases[$i]['cn'][0]));
+						$return->addLabel(new htmlOutputText($aliases[$i]['cn'][0]));
 						$buttonGroup = new htmlGroup();
 						$remButton = new htmlButton('remMail_' . $i . '_' . $m, 'del.png', true);
 						$remButton->setTitle(_('Remove user from alias entry.'));
@@ -192,19 +186,17 @@ class nisMailAliasUser extends baseModule {
 						$delButton = new htmlButton('delMail_' . $i . '_' . $m, 'trash.png', true);
 						$delButton->setTitle(sprintf(_('Delete whole alias entry which includes %s recipients.'), sizeof($members)));
 						$buttonGroup->addElement($delButton);
-						$mailTable->addElement($buttonGroup, true);
+						$return->addField($buttonGroup);
 					}
 				}
-				$mailTable->addVerticalSpace('5px');
+				$return->addVerticalSpacer('1rem');
 				$addButton = new htmlAccountPageButton(get_class($this), 'add', 'mail' . $m, _('Add'));
 				$addButton->setIconClass('createButton');
-				$addButton->colspan = 5;
-				$mailTable->addElement($addButton, true);
+				$return->add($addButton, 12, 12, 12, 'text-center');
 				if ((sizeof($mails) > 1) && ($m < (sizeof($mails) - 1))) {
-					$mailTable->addVerticalSpace('20px');
+					$return->addVerticalSpacer('2rem');
 				}
 			}
-			$return->addElement($mailTable, true);
 		}
 		return $return;
 	}
@@ -329,7 +321,7 @@ class nisMailAliasUser extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_add() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		$aliases = $this->getMailAliasList();
 		$userName = $this->getUserName();
 		$mails = $this->getMailAddresses();
@@ -349,11 +341,11 @@ class nisMailAliasUser extends baseModule {
 				}
 			}
 		}
-		$return->addElement(new htmlOutputText(_('Recipient')));
-		$return->addElement(new htmlOutputText($recipient), true);
-		$return->addElement(new htmlHiddenInput('recipient', $recipient), true);
+		$return->addLabel(new htmlOutputText(_('Recipient')));
+		$return->addField(new htmlOutputText($recipient));
+		$return->add(new htmlHiddenInput('recipient', $recipient), 12);
 		// new mail alias
-		$return->addElement(new htmlSubTitle(_('Create new alias')), true);
+		$return->add(new htmlSubTitle(_('Create new alias')), 12);
 		$typeManager = new \LAM\TYPES\TypeManager();
 		$mailAliasTypes = $typeManager->getConfiguredTypesForScope('mailAlias');
 		$ous = array();
@@ -362,22 +354,21 @@ class nisMailAliasUser extends baseModule {
 		}
 		$ous = array_unique($ous);
 		usort($ous, 'compareDN');
-		$suffixSelect = new htmlTableExtendedSelect('new_ou', $ous, array(), _('Suffix'), 'suffix');
+		$suffixSelect = new htmlResponsiveSelect('new_ou', $ous, array(), _('Suffix'), 'suffix');
 		$suffixSelect->setRightToLeftTextDirection(true);
 		$suffixSelect->setSortElements(false);
-        $return->addElement($suffixSelect, true);
+        $return->add($suffixSelect, 12);
         $newAliasCn = empty($_POST['new_cn']) ? '' : $_POST['new_cn'];
-        $return->addElement(new htmlTableExtendedInputField(_('Alias name'), 'new_cn', $newAliasCn, 'newAlias'), true);
-		$return->addVerticalSpace('5px');
+        $return->add(new htmlResponsiveInputField(_('Alias name'), 'new_cn', $newAliasCn, 'newAlias'), 12);
+		$return->addVerticalSpacer('1rem');
 		$addButton = new htmlAccountPageButton(get_class($this), 'attributes', 'create', _('Create'));
 		$addButton->setIconClass('createButton');
-		$addButton->colspan = 5;
-		$return->addElement($addButton, true);
+		$return->add($addButton, 12, 12, 12, 'text-center');
 
-		$return->addVerticalSpace('20px');
+		$return->addVerticalSpacer('2rem');
 
 		// add to existing alias
-		$return->addElement(new htmlSubTitle(_('Add to existing alias')), true);
+		$return->add(new htmlSubTitle(_('Add to existing alias')), 12);
 		$aliasesToAdd = array();
 		foreach ($aliases as $index => $attrs) {
 			if (!empty($attrs['rfc822mailmember']) && in_array($recipient, $attrs['rfc822mailmember'])) {
@@ -385,17 +376,19 @@ class nisMailAliasUser extends baseModule {
 			}
 			$aliasesToAdd[$attrs['cn'][0]] = $index;
 		}
-		$aliasSelect = new htmlTableExtendedSelect('ex_cn', $aliasesToAdd, array(), _('Alias names'), 'aliasNames', 20);
+		$aliasSelect = new htmlResponsiveSelect('ex_cn', $aliasesToAdd, array(), _('Alias names'), 'aliasNames', 20);
 		$aliasSelect->setHasDescriptiveElements(true);
 		$aliasSelect->setMultiSelect(true);
-		$return->addElement($aliasSelect, true);
-		$return->addVerticalSpace('5px');
+		$return->add($aliasSelect, 12);
+		$return->addVerticalSpacer('1rem');
 		$addButton = new htmlAccountPageButton(get_class($this), 'attributes', 'recipient', _('Add'));
 		$addButton->setIconClass('createButton');
-		$addButton->colspan = 5;
-		$return->addElement($addButton, true);
+		$return->add($addButton, 12, 12, 12, 'text-center');
 
-        $return->addElement(new htmlEqualWidth(array('new_ou', 'new_cn', 'ex_cn')));
+		$return->addVerticalSpacer('2rem');
+		$cancelButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Cancel'));
+		$cancelButton->setIconClass('cancelButton');
+		$return->add($cancelButton, 12);
 		return $return;
 	}
 
