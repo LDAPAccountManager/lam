@@ -3,7 +3,6 @@ use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2009 - 2019  Roland Gruber
@@ -228,8 +227,7 @@ class nisnetgroup extends baseModule {
 		$userLabel->colspan = 2;
 		$memberTable->addElement($userLabel);
 		$memberTable->addElement(new htmlOutputText(_('Domain')));
-		$memberTable->addElement(new htmlSpacer('5px', null));
-		$memberTable->addElement(new htmlHelpLink('members'), true);
+		$memberTable->addElement(new htmlSpacer('5px', null), true);
 		if (isset($this->attributes['nisNetgroupTriple']) && (sizeof($this->attributes['nisNetgroupTriple']) > 0)) {
 			for ($i = 0; $i < sizeof($this->attributes['nisNetgroupTriple']); $i++) {
 				$triple = substr($this->attributes['nisNetgroupTriple'][$i], 1, strlen($this->attributes['nisNetgroupTriple'][$i]) - 2);
@@ -296,9 +294,9 @@ class nisnetgroup extends baseModule {
 		$memberTable->addElement($addButton);
 		$memberTable->colspan = 2;
 
-		$membersLabel = new htmlOutputText(_('Members'));
-		$membersLabel->alignment = htmlElement::ALIGN_TOP;
-		$return->addElement($membersLabel);
+		$membersLabel = new htmlSubTitle(_('Members'));
+		$membersLabel->setHelpId('members');
+		$return->addElement($membersLabel, true);
 		$return->addElement($memberTable);
 		return $return;
 	}
