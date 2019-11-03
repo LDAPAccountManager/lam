@@ -188,21 +188,21 @@ class nisnetgroup extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		// user name
 		$groupName = '';
 		if (isset($this->attributes['cn'][0])) {
 			$groupName = $this->attributes['cn'][0];
 		}
-		$nameInput = new htmlTableExtendedInputField(_("Group name"), 'cn', $groupName, 'cn');
+		$nameInput = new htmlResponsiveInputField(_("Group name"), 'cn', $groupName, 'cn');
 		$nameInput->setRequired(true);
 		$nameInput->setFieldMaxLength(20);
-		$return->addElement($nameInput, true);
+		$return->add($nameInput, 12);
 		$description = '';
 		if (isset($this->attributes['description'][0])) {
 			$description = $this->attributes['description'][0];
 		}
-		$return->addElement(new htmlTableExtendedInputField(_('Description'), 'description', $description, 'description'), true);
+		$return->add(new htmlResponsiveInputField(_('Description'), 'description', $description, 'description'), 12);
 		$subgroupsContainer = new htmlTable();
 		if (isset($this->attributes['memberNisNetgroup']) && is_array($this->attributes['memberNisNetgroup'])) {
 			$membergroups = $this->attributes['memberNisNetgroup'];
@@ -211,13 +211,14 @@ class nisnetgroup extends baseModule {
 				$subgroupsContainer->addElement(new htmlOutputText(implode(', ', $parts)), true);
 			}
 		}
-		$subgroupsContainer->addElement(new htmlAccountPageButton(get_class($this), 'group', 'open', _('Edit subgroups')));
+		$subGroupsButtonGroup = new htmlGroup();
+		$subGroupsButtonGroup->addElement(new htmlAccountPageButton(get_class($this), 'group', 'open', _('Edit subgroups')));
+		$subGroupsButtonGroup->addElement(new htmlHelpLink('memberNisNetgroup'));
+		$subgroupsContainer->addElement($subGroupsButtonGroup);
 		$subgroupsLabel = new htmlOutputText(_('Subgroups'));
-		$subgroupsLabel->alignment = htmlElement::ALIGN_TOP;
-		$return->addElement($subgroupsLabel);
-		$return->addElement($subgroupsContainer);
-		$return->addElement(new htmlHelpLink('memberNisNetgroup'), true);
-		$return->addElement(new htmlSpacer(null, '10px'), true);
+		$return->addLabel($subgroupsLabel);
+		$return->addField($subgroupsContainer);
+		$return->addLabel(new htmlOutputText('&nbsp;', false));
 		// members
 		$memberTable = new htmlTable();
 		$hostLabel = new htmlOutputText(_('Host'));
@@ -296,8 +297,8 @@ class nisnetgroup extends baseModule {
 
 		$membersLabel = new htmlSubTitle(_('Members'));
 		$membersLabel->setHelpId('members');
-		$return->addElement($membersLabel, true);
-		$return->addElement($memberTable);
+		$return->add($membersLabel, 12);
+		$return->add($memberTable, 12);
 		return $return;
 	}
 
