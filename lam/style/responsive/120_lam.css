@@ -48,6 +48,10 @@
 	width: auto;
 }
 
+input.auto-width {
+	width: auto;
+}
+
 input.maxwidth10 {
 	max-width: 10rem;
 }

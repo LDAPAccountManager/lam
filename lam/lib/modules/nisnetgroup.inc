@@ -220,15 +220,11 @@ class nisnetgroup extends baseModule {
 		$return->addField($subgroupsContainer);
 		$return->addLabel(new htmlOutputText('&nbsp;', false));
 		// members
-		$memberTable = new htmlTable();
-		$hostLabel = new htmlOutputText(_('Host'));
-		$hostLabel->colspan = 2;
-		$memberTable->addElement($hostLabel);
-		$userLabel = new htmlOutputText(_('User'));
-		$userLabel->colspan = 2;
-		$memberTable->addElement($userLabel);
-		$memberTable->addElement(new htmlOutputText(_('Domain')));
-		$memberTable->addElement(new htmlSpacer('5px', null), true);
+		$membersLabel = new htmlSubTitle(_('Members'));
+		$membersLabel->setHelpId('members');
+		$return->add($membersLabel, 12);
+		$titles = array(_('Host'), _('User'), _('Domain'), '');
+		$data = array();
 		if (isset($this->attributes['nisNetgroupTriple']) && (sizeof($this->attributes['nisNetgroupTriple']) > 0)) {
 			for ($i = 0; $i < sizeof($this->attributes['nisNetgroupTriple']); $i++) {
 				$triple = substr($this->attributes['nisNetgroupTriple'][$i], 1, strlen($this->attributes['nisNetgroupTriple'][$i]) - 2);
@@ -239,29 +235,35 @@ class nisnetgroup extends baseModule {
 				if (isset($_POST['form_subpage_nisnetgroup_attributes_select']) && ($_POST['type'] == 'user') && ($_POST['position'] == strval($i))) {
 					$triple[1] = $_POST['selectBox'];
 				}
+				$dataRow = array();
+				$hostGroup = new htmlGroup();
 				$hostField = new htmlInputField('host_' . $i, $triple[0]);
-				$hostField->setFieldSize(20);
-				$memberTable->addElement($hostField);
+				$hostField->setCSSClasses(array('auto-width'));
+				$hostField->setFieldSize(null);
+				$hostGroup->addElement($hostField);
 				$hostButton = new htmlAccountPageButton(get_class($this), 'select', 'host' . $i, 'host.png', true);
 				$hostButton->setTitle(_('Select host'));
-				$memberTable->addElement($hostButton);
+				$hostGroup->addElement($hostButton);
+				$dataRow[] = $hostGroup;
+				$userGroup = new htmlGroup();
 				$userField = new htmlInputField('user_' . $i, $triple[1]);
-				$userField->setFieldSize(20);
-				$memberTable->addElement($userField);
+				$userField->setCSSClasses(array('auto-width'));
+				$userField->setFieldSize(null);
+				$userGroup->addElement($userField);
 				$userButton = new htmlAccountPageButton(get_class($this), 'select', 'user' . $i, 'user.png', true);
 				$userButton->setTitle(_('Select user'));
-				$memberTable->addElement($userButton);
+				$userGroup->addElement($userButton);
+				$dataRow[] = $userGroup;
 				$domainField = new htmlInputField('domain_' . $i, $triple[2]);
-				$domainField->setFieldSize(20);
-				$memberTable->addElement($domainField);
-				$memberTable->addElement(new htmlSpacer('5px', null));
+				$domainField->setFieldSize(null);
+				$dataRow[] = $domainField;
 				$delButton = new htmlButton('del_' . $i, 'del.png', true);
 				$delButton->setTitle(_('Delete'));
-				$memberTable->addElement($delButton);
-				$memberTable->addNewLine();
+				$dataRow[] = $delButton;
+				$data[] = $dataRow;
 			}
 		}
-		$memberTable->addElement(new htmlSpacer(null, '10px'), true);
+		$dataRowNew = array();
 		$hostNew = '';
 		$userNew = '';
 		$domainNew = '';
@@ -274,30 +276,33 @@ class nisnetgroup extends baseModule {
 		if (isset($_POST['domain_new'])) {
 			$domainNew = $_POST['domain_new'];
 		}
+		$hostNewGroup = new htmlGroup();
 		$hostField = new htmlInputField('host_new', $hostNew);
-		$hostField->setFieldSize(20);
-		$memberTable->addElement($hostField);
+		$hostField->setCSSClasses(array('auto-width'));
+		$hostField->setFieldSize(null);
+		$hostNewGroup->addElement($hostField);
 		$hostButton = new htmlAccountPageButton(get_class($this), 'select', 'hostNew', 'host.png', true);
 		$hostButton->setTitle(_('Select host'));
-		$memberTable->addElement($hostButton);
+		$hostNewGroup->addElement($hostButton);
+		$dataRowNew[] = $hostNewGroup;
+		$userNewGroup = new htmlGroup();
 		$userField = new htmlInputField('user_new', $userNew);
-		$userField->setFieldSize(20);
-		$memberTable->addElement($userField);
+		$userField->setCSSClasses(array('auto-width'));
+		$userField->setFieldSize(null);
+		$userNewGroup->addElement($userField);
 		$userButton = new htmlAccountPageButton(get_class($this), 'select', 'userNew', 'user.png', true);
 		$userButton->setTitle(_('Select user'));
-		$memberTable->addElement($userButton);
+		$userNewGroup->addElement($userButton);
+		$dataRowNew[] = $userNewGroup;
 		$domainField = new htmlInputField('domain_new', $domainNew);
-		$domainField->setFieldSize(20);
-		$memberTable->addElement($domainField);
-		$memberTable->addElement(new htmlSpacer('5px', null));
+		$domainField->setFieldSize(null);
+		$dataRowNew[] = $domainField;
 		$addButton = new htmlButton('add_new', 'add.png', true);
 		$addButton->setTitle(_('Add'));
-		$memberTable->addElement($addButton);
-		$memberTable->colspan = 2;
+		$dataRowNew[] = $addButton;
+		$data[] = $dataRowNew;
 
-		$membersLabel = new htmlSubTitle(_('Members'));
-		$membersLabel->setHelpId('members');
-		$return->add($membersLabel, 12);
+		$memberTable = new htmlResponsiveTable($titles, $data);
 		$return->add($memberTable, 12);
 		return $return;
 	}
