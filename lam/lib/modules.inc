@@ -1314,6 +1314,7 @@ class accountContainer {
 				 . getSecurityTokenName() . '\',\'' . getSecurityTokenValue() . '\');');
 			$leftButtonGroup->addElement($passwordButton);
 		}
+		// delete button
 		if (!$this->isNewAccount) {
 			$leftButtonGroup->addElement(new htmlSpacer('15px', null));
 			$deleteButton = new htmlButton('accountContainerDelete', _('Delete'));
@@ -1321,7 +1322,13 @@ class accountContainer {
 			$deleteButton->setCSSClasses(array('fullwidth-mobile-only'));
 			$leftButtonGroup->addElement($deleteButton);
 		}
-		$row->add($leftButtonGroup, 12, 7);
+		// back to list button
+		$leftButtonGroup->addElement(new htmlSpacer('15px', null));
+		$backToListButton = new htmlButton('accountContainerBackToList', $this->type->getBaseType()->LABEL_BACK_TO_ACCOUNT_LIST);
+		$backToListButton->setIconClass('backButton');
+		$backToListButton->setCSSClasses(array('fullwidth-mobile-only'));
+		$leftButtonGroup->addElement($backToListButton);
+		$row->add($leftButtonGroup, 12, 9);
 
 		$rightGroup = new htmlGroup();
 		// profile selection
@@ -1340,7 +1347,7 @@ class accountContainer {
 			$rightGroup->addElement(new htmlSpacer('1px', null));
 			$rightGroup->addElement(new htmlHelpLink('401'));
 		}
-		$row->add($rightGroup, 12, 5, 5, 'text-right');
+		$row->add($rightGroup, 12, 3, 3, 'text-right');
 
 		parseHtml(null, $row, array(), false, $tabindex, $this->type->getScope());
 	}

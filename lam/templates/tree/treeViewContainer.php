@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2018  Roland Gruber
+  Copyright (C) 2010 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ enforceUserIsLoggedIn();
 setlanguage();
 
 include __DIR__ . '/../../lib/adminHeader.inc';
+\LAM\HEADER\printTypeTabs('../..');
 
 ?>
 <div id="tabcontent" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
