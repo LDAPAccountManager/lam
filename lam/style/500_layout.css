@@ -226,8 +226,9 @@ textarea {
 
 table.lamHeader {
   background-image: url(lam-images/headerLine.png);
-  padding: 0px 0px 0.5rem 0px;
+  padding: 0px;
   height: 35px;
+  margin-bottom: 0.5rem;
 }
 
 table.lamTop {

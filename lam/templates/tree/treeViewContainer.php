@@ -40,7 +40,6 @@ enforceUserIsLoggedIn();
 setlanguage();
 
 include __DIR__ . '/../../lib/adminHeader.inc';
-\LAM\HEADER\printTypeTabs('../..');
 
 ?>
 <div id="tabcontent" class="ui-tabs-panel ui-widget-content ui-corner-bottom">

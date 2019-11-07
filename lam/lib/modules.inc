@@ -1051,10 +1051,9 @@ class accountContainer {
 		$titleBarContainer = new htmlResponsiveRow();
 		$titleBarContainer->setCSSClasses(array('maxrow'));
 		$titleBarTitleText = new htmlOutputText($this->titleBarTitle, false);
-		$titleBarContainer->add(new htmlDiv(null, $titleBarTitleText, array('titleBarTitle', 'text-left')), 12);
-		$titleBarContainer->addVerticalSpacer('0.5rem');
+		$titleBarContainer->add(new htmlDiv(null, $titleBarTitleText, array('titleBarTitle', 'text-left')), 12, 12, 4);
 		$titleBarSubtitleText = new htmlOutputText($this->titleBarSubtitle, false);
-		$titleBarContainer->add(new htmlDiv(null, $titleBarSubtitleText, array('titleBarSubtitle', 'text-left')), 12);
+		$titleBarContainer->add(new htmlDiv(null, $titleBarSubtitleText, array('titleBarSubtitle', 'responsiveLabel')), 12, 12, 8);
 		$titleBarSuffixRdn = new htmlResponsiveRow();
 		$titleBarSuffixRdn->add(new htmlHorizontalLine(), 12);
 		// suffix
@@ -1322,12 +1321,6 @@ class accountContainer {
 			$deleteButton->setCSSClasses(array('fullwidth-mobile-only'));
 			$leftButtonGroup->addElement($deleteButton);
 		}
-		// back to list button
-		$leftButtonGroup->addElement(new htmlSpacer('15px', null));
-		$backToListButton = new htmlButton('accountContainerBackToList', $this->type->getBaseType()->LABEL_BACK_TO_ACCOUNT_LIST);
-		$backToListButton->setIconClass('backButton');
-		$backToListButton->setCSSClasses(array('fullwidth-mobile-only'));
-		$leftButtonGroup->addElement($backToListButton);
 		$row->add($leftButtonGroup, 12, 9);
 
 		$rightGroup = new htmlGroup();

@@ -195,6 +195,7 @@ jQuery(document).ready(function() {
 
 
 <?php
+printTypeTabs($headerPrefix);
 
 function printTypeTabs($headerPrefix) {
 	echo '<div class="ui-tabs ui-corner-all ui-widget ui-widget-content">';

@@ -912,7 +912,6 @@ class lamList {
 	 */
 	private function printHeader() {
 		include 'adminHeader.inc';
-		\LAM\HEADER\printTypeTabs('../..');
 		$this->printHeaderContent();
 	}
 
