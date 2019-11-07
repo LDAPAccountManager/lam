@@ -587,7 +587,7 @@ tr.account {
 }
 
 #lamVerticalTabs .ui-tabs-panel {
-	padding: 1em;
+	padding: 0em 1em 1em 1em;
 	float: left;
 }
 
