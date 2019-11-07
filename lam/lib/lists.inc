@@ -196,19 +196,15 @@ class lamList {
 		if (sizeof($this->entries) > 0) {
 			// buttons
 			$this->listPrintButtons(false);
-			echo "<br>\n";
 			// navigation bar
 			$this->listDrawNavigationBar(sizeof($this->entries));
-			echo "<br>\n";
 			$this->printAccountTable($this->entries);
 		}
 		else {
 			// buttons
 			$this->listPrintButtons(true);
-			echo "<br>\n";
 			// navigation bar
 			$this->listDrawNavigationBar(sizeof($this->entries));
-			echo "<br>\n";
 			$accounts = array();
 			$this->printAccountTable($accounts);
 			echo "</table><br>\n";
@@ -854,7 +850,7 @@ class lamList {
 	 */
 	protected function listPrintButtons($createOnly) {
 		$row = new htmlResponsiveRow();
-		$row->setCSSClasses(array('maxrow'));
+		$row->setCSSClasses(array('maxrow lam-list-buttons'));
 		$left = new htmlGroup();
 		// button part
 		if (checkIfWriteAccessIsAllowed($this->type->getId())) {

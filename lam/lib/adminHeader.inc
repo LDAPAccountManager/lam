@@ -193,7 +193,6 @@ jQuery(document).ready(function() {
 });
 </script>
 
-<br>
 <div class="ui-tabs ui-corner-all ui-widget ui-widget-content">
 <ul class="ui-tabs-nav ui-corner-all ui-helper-reset ui-helper-clearfix ui-widget-header">
 	<?php

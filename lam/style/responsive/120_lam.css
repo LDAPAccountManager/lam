@@ -103,8 +103,8 @@ table.responsive-table {
 
 table.responsive-table th {
 	text-align: left;
-	padding-bottom: 0.5rem;
-	padding-top: 0.5rem;
+	padding-bottom: 0.4rem;
+	padding-top: 0.4rem;
 	padding-right: 0.3rem;
 	padding-left: 0.3rem;
 	white-space: nowrap;
@@ -113,8 +113,8 @@ table.responsive-table th {
 table.responsive-table td {
 	overflow: hidden;
 	vertical-align: top;
-	padding-bottom: 0.5rem;
-	padding-top: 0.5rem;
+	padding-bottom: 0.3rem;
+	padding-top: 0.3rem;
 	padding-right: 0.3rem;
 	padding-left: 0.3rem;
 	word-break: break-all;

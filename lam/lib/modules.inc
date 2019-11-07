@@ -1042,7 +1042,7 @@ class accountContainer {
 		echo '<div id="passwordMessageArea"></div>';
 		echo "<table class=\"".$this->type->getScope()."-bright\" border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
 		if (checkIfWriteAccessIsAllowed($this->type->getId())) {
-			echo "<tr class=\"" . $this->type->getScope() . "-bright\"><td style=\"padding: 15px 15px 0px 15px;\">\n";
+			echo "<tr class=\"" . $this->type->getScope() . "-bright\"><td style=\"padding: 5px 0px 0px 0px;\">\n";
 			$this->printCommonControls($tabindex);
 			echo "</td></tr>\n";
 		}
