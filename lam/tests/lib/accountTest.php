@@ -135,4 +135,13 @@ class AccountTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('cn=test\\2C user,ou=People,o=test,c=de', convertCommaEscaping('cn=test\\, user,ou=People,o=test,c=de'));
 	}
 
+	/**
+	 * Tests getAbstractDN().
+	 */
+	function testGetAbstractDN() {
+		$this->assertEquals('test > test > de', getAbstractDN('cn=test,o=test,c=de'));
+		$this->assertEquals('test,user > test > de', getAbstractDN('cn=test\\,user,o=test,c=de'));
+		$this->assertEquals('test,user > test > de', getAbstractDN('cn=test\\2Cuser,o=test,c=de'));
+	}
+
 }

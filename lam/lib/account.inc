@@ -1053,6 +1053,7 @@ function getAbstractDN($dn) {
 	if ($dn == '') {
 		return '';
 	}
+	$dn = str_replace('\\,', '\\2C', $dn);
 	$parts = explode(',', $dn);
 	for ($i = 0; $i < sizeof($parts); $i++) {
 		$subparts = explode('=', $parts[$i]);
@@ -1060,7 +1061,8 @@ function getAbstractDN($dn) {
 			$parts[$i] = $subparts[1];
 		}
 	}
-	return implode(' > ', $parts);
+	$abstractDn = implode(' > ', $parts);
+	return str_replace(array('\\2C', '\\,'), array(',', ','), $abstractDn);
 }
 
 /**
