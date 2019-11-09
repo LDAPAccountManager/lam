@@ -1,7 +1,7 @@
 <?php
 /*
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2018  Roland Gruber
+ Copyright (C) 2018 - 2019  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -126,6 +126,13 @@ class AccountTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('http://base/test.php', getCallingURL('http://base'));
 		$_SERVER['HTTP_REFERER'] = null;
 		$this->assertEquals('http://base/test.php', getCallingURL('http://base'));
+	}
+
+	/**
+	 * Tests convertCommaEscaping().
+	 */
+	function testConvertCommaEscaping() {
+		$this->assertEquals('cn=test\\2C user,ou=People,o=test,c=de', convertCommaEscaping('cn=test\\, user,ou=People,o=test,c=de'));
 	}
 
 }

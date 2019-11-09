@@ -1937,9 +1937,9 @@ class accountContainer {
 		}
 		// Set to true if an real error has happened
 		$stopprocessing = false;
-		if (strtolower($this->finalDN) != strtolower($this->dn_orig)) {
+		if (strtolower($this->finalDN) != convertCommaEscaping(strtolower($this->dn_orig))) {
 			// move existing DN
-			if ($this->dn_orig!='') {
+			if ($this->dn_orig != '') {
 				$removeOldRDN = false;
 				if (isset($attributes[$this->finalDN]['modify'])) {
 					$attributes[$this->finalDN]['modify'] = array_change_key_case($attributes[$this->finalDN]['modify'], CASE_LOWER);

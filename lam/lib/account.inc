@@ -693,6 +693,19 @@ function escapeRDN($rdn) {
 }
 
 /**
+ * Converts the comma escaping from Windows to OpenLDAP style.
+ *
+ * @param string $dn DN
+ * @return string DN
+ */
+function convertCommaEscaping($dn) {
+	return str_replace(
+		array('\\,'),
+		array('\\2C'),
+		$dn);
+}
+
+/**
  * Connects to an LDAP server using the given URL.
  *
  * @param string $serverURL URL
@@ -1213,6 +1226,7 @@ function extractDNSuffix($dn) {
 	if ($dn == null) {
 		return null;
 	}
+	$dn = convertCommaEscaping($dn);
 	return substr($dn, strpos($dn, ',')+1);
 }
 
