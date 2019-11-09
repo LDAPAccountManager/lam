@@ -1,5 +1,6 @@
 December 2019 7.0
   - Lamdaemon can be configured with directory prefix for homedirs
+  - Account list filters match on substrings instead of whole value
   - Fixed bugs:
    -> Missing CSS for Duo
 

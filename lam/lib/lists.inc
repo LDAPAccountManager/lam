@@ -1080,7 +1080,14 @@ class lamList {
 			if (!$this->isAttributeFilteredByServer($attr)) {
 				continue;
 			}
-			$text .= '(' . $attr . '=' . $filter . ')';
+			$filterExpression = $filter;
+			if (strpos($filter, '*') !== 0) {
+				$filterExpression = '*' . $filterExpression;
+			}
+			if (strrpos($filter, '*') !== (strlen($filter) - 1)) {
+				$filterExpression = $filterExpression . '*';
+			}
+			$text .= '(' . $attr . '=' . $filterExpression . ')';
 		}
 		return $text;
 	}
@@ -1113,7 +1120,7 @@ class lamList {
 					continue;
 				}
 				$regex = str_replace(array('*'), array('.*'), $filterValue);
-				$regex = '/^' . $regex . '$/i';
+				$regex = '/' . $regex . '/i';
 				if (!$this->isFilterMatching($data, $filterAttribute, $regex)) {
 					$toFilter[] = $index;
 				}
