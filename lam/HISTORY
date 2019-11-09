@@ -3,6 +3,7 @@ December 2019 7.0
   - Account list filters match on substrings instead of whole value
   - Fixed bugs:
    -> Missing CSS for Duo
+   -> Editing of DNs with comma on Windows (210)
 
 29.09.2019 6.9
   - Group account types can show member+owner count in list view
