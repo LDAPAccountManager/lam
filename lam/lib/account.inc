@@ -673,7 +673,6 @@ function get_preg($argument, $regexp) {
  * @return String escaped DN
  */
 function escapeDN($dn) {
-	$dn = preg_replace('/[ ]*,[ ]*/', ',', $dn);
 	return str_replace(
 		array(')',    '(',    ' ',    '*'),
 		array('\\29', '\\28', '\\20', '\\2a'),
@@ -691,6 +690,19 @@ function escapeRDN($rdn) {
 		array(','),
 		array('\\2C'),
 		$rdn);
+}
+
+/**
+ * Converts the comma escaping from Windows to OpenLDAP style.
+ *
+ * @param string $dn DN
+ * @return string DN
+ */
+function convertCommaEscaping($dn) {
+	return str_replace(
+		array('\\,'),
+		array('\\2C'),
+		$dn);
 }
 
 /**
@@ -1041,6 +1053,7 @@ function getAbstractDN($dn) {
 	if ($dn == '') {
 		return '';
 	}
+	$dn = str_replace('\\,', '\\2C', $dn);
 	$parts = explode(',', $dn);
 	for ($i = 0; $i < sizeof($parts); $i++) {
 		$subparts = explode('=', $parts[$i]);
@@ -1048,7 +1061,8 @@ function getAbstractDN($dn) {
 			$parts[$i] = $subparts[1];
 		}
 	}
-	return implode(' > ', $parts);
+	$abstractDn = implode(' > ', $parts);
+	return str_replace(array('\\2C', '\\,'), array(',', ','), $abstractDn);
 }
 
 /**
@@ -1214,6 +1228,7 @@ function extractDNSuffix($dn) {
 	if ($dn == null) {
 		return null;
 	}
+	$dn = convertCommaEscaping($dn);
 	return substr($dn, strpos($dn, ',')+1);
 }
 

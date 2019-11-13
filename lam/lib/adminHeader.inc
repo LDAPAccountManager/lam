@@ -193,16 +193,13 @@ jQuery(document).ready(function() {
 });
 </script>
 
-<div class="ui-tabs ui-corner-all ui-widget ui-widget-content">
-<ul class="ui-tabs-nav ui-corner-all ui-helper-reset ui-helper-clearfix ui-widget-header">
-	<?php
-		printTypeTabs($headerPrefix);
-	?>
-</ul>
 
 <?php
+printTypeTabs($headerPrefix);
 
 function printTypeTabs($headerPrefix) {
+	echo '<div class="ui-tabs ui-corner-all ui-widget ui-widget-content">';
+	echo '<ul class="ui-tabs-nav ui-corner-all ui-helper-reset ui-helper-clearfix ui-widget-header">';
 	$typeManager = new \LAM\TYPES\TypeManager();
 	$types = $typeManager->getConfiguredTypes();
 	foreach ($types as $type) {
@@ -217,5 +214,6 @@ function printTypeTabs($headerPrefix) {
 		echo $link;
 		echo "</li>\n";
 	}
+	echo '</ul>';
 }
 

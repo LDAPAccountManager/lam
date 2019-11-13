@@ -1051,10 +1051,9 @@ class accountContainer {
 		$titleBarContainer = new htmlResponsiveRow();
 		$titleBarContainer->setCSSClasses(array('maxrow'));
 		$titleBarTitleText = new htmlOutputText($this->titleBarTitle, false);
-		$titleBarContainer->add(new htmlDiv(null, $titleBarTitleText, array('titleBarTitle', 'text-left')), 12);
-		$titleBarContainer->addVerticalSpacer('0.5rem');
+		$titleBarContainer->add(new htmlDiv(null, $titleBarTitleText, array('titleBarTitle', 'text-left')), 12, 12, 4);
 		$titleBarSubtitleText = new htmlOutputText($this->titleBarSubtitle, false);
-		$titleBarContainer->add(new htmlDiv(null, $titleBarSubtitleText, array('titleBarSubtitle', 'text-left')), 12);
+		$titleBarContainer->add(new htmlDiv(null, $titleBarSubtitleText, array('titleBarSubtitle', 'responsiveLabel')), 12, 12, 8);
 		$titleBarSuffixRdn = new htmlResponsiveRow();
 		$titleBarSuffixRdn->add(new htmlHorizontalLine(), 12);
 		// suffix
@@ -1314,6 +1313,7 @@ class accountContainer {
 				 . getSecurityTokenName() . '\',\'' . getSecurityTokenValue() . '\');');
 			$leftButtonGroup->addElement($passwordButton);
 		}
+		// delete button
 		if (!$this->isNewAccount) {
 			$leftButtonGroup->addElement(new htmlSpacer('15px', null));
 			$deleteButton = new htmlButton('accountContainerDelete', _('Delete'));
@@ -1321,7 +1321,7 @@ class accountContainer {
 			$deleteButton->setCSSClasses(array('fullwidth-mobile-only'));
 			$leftButtonGroup->addElement($deleteButton);
 		}
-		$row->add($leftButtonGroup, 12, 7);
+		$row->add($leftButtonGroup, 12, 9);
 
 		$rightGroup = new htmlGroup();
 		// profile selection
@@ -1340,7 +1340,7 @@ class accountContainer {
 			$rightGroup->addElement(new htmlSpacer('1px', null));
 			$rightGroup->addElement(new htmlHelpLink('401'));
 		}
-		$row->add($rightGroup, 12, 5, 5, 'text-right');
+		$row->add($rightGroup, 12, 3, 3, 'text-right');
 
 		parseHtml(null, $row, array(), false, $tabindex, $this->type->getScope());
 	}
@@ -1937,9 +1937,9 @@ class accountContainer {
 		}
 		// Set to true if an real error has happened
 		$stopprocessing = false;
-		if (strtolower($this->finalDN) != strtolower($this->dn_orig)) {
+		if (strtolower($this->finalDN) != convertCommaEscaping(strtolower($this->dn_orig))) {
 			// move existing DN
-			if ($this->dn_orig!='') {
+			if ($this->dn_orig != '') {
 				$removeOldRDN = false;
 				if (isset($attributes[$this->finalDN]['modify'])) {
 					$attributes[$this->finalDN]['modify'] = array_change_key_case($attributes[$this->finalDN]['modify'], CASE_LOWER);

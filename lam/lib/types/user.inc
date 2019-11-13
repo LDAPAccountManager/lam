@@ -128,6 +128,7 @@ class user extends baseType {
 	 * @return String title text
 	 */
 	public function getTitleBarTitle($container) {
+		$title = $this->buildAccountStatusIcon($container);
 		// get attributes
 		$personalAttributes = null;
 		if ($container->getAccountModule('inetOrgPerson') != null) {
@@ -158,37 +159,37 @@ class user extends baseType {
 		// check if first and last name can be shown
 		if (($personalAttributes != null) && isset($personalAttributes['sn'][0]) && !empty($personalAttributes['sn'][0])
 				&& isset($personalAttributes['givenName'][0]) && !empty($personalAttributes['givenName'][0])) {
-			return htmlspecialchars($personalAttributes['givenName'][0] . ' ' . $personalAttributes['sn'][0]);
+			return $title . htmlspecialchars($personalAttributes['givenName'][0] . ' ' . $personalAttributes['sn'][0]);
 		}
 		// check if a display name is set
 		if (($sambaAttributes != null) && isset($sambaAttributes['displayName'][0]) && !empty($sambaAttributes['displayName'][0])) {
-			return htmlspecialchars($sambaAttributes['displayName'][0]);
+			return $title . htmlspecialchars($sambaAttributes['displayName'][0]);
 		}
 		// check if a common name is set
 		if (($personalAttributes != null) && isset($personalAttributes['cn'][0]) && !empty($personalAttributes['cn'][0])) {
-			return htmlspecialchars($personalAttributes['cn'][0]);
+			return $title . htmlspecialchars($personalAttributes['cn'][0]);
 		}
 		if (($unixAttributes != null) && isset($unixAttributes['cn'][0]) && !empty($unixAttributes['cn'][0])) {
-			return htmlspecialchars($unixAttributes['cn'][0]);
+			return $title . htmlspecialchars($unixAttributes['cn'][0]);
 		}
 		// check if a user name is set
 		if (($unixAttributes != null) && isset($unixAttributes['uid'][0]) && !empty($unixAttributes['uid'][0])) {
-			return htmlspecialchars($unixAttributes['uid'][0]);
+			return $title . htmlspecialchars($unixAttributes['uid'][0]);
 		}
 		if (($personalAttributes != null) && isset($personalAttributes['uid'][0]) && !empty($personalAttributes['uid'][0])) {
-			return htmlspecialchars($personalAttributes['uid'][0]);
+			return $title . htmlspecialchars($personalAttributes['uid'][0]);
 		}
 		if (($accountAttributes != null) && isset($accountAttributes['uid'][0]) && !empty($accountAttributes['uid'][0])) {
-			return htmlspecialchars($accountAttributes['uid'][0]);
+			return $title . htmlspecialchars($accountAttributes['uid'][0]);
 		}
 		if (($mitKerberosAttributes != null) && isset($mitKerberosAttributes['krbPrincipalName'][0]) && !empty($mitKerberosAttributes['krbPrincipalName'][0])) {
-			return htmlspecialchars($mitKerberosAttributes['krbPrincipalName'][0]);
+			return $title . htmlspecialchars($mitKerberosAttributes['krbPrincipalName'][0]);
 		}
 		if ($container->isNewAccount) {
-			return _("New user");
+			return $title . _("New user");
 		}
 		// fall back to default
-		return parent::getTitleBarTitle($container);
+		return $title . parent::getTitleBarTitle($container);
 	}
 
 	/**
@@ -206,10 +207,10 @@ class user extends baseType {
 			$personalAttributes = $container->getAccountModule('windowsUser')->getAttributes();
 		}
 		if ($personalAttributes == null) {
-			return $this->buildAccountStatusIcon($container);
+			return '';
 		}
-		$subtitle = $this->buildAccountStatusIcon($container);
-		$spacer = ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
+		$subtitle = '';
+		$spacer = ' &nbsp;&nbsp;&nbsp; ';
 		// check if an email address can be shown
 		if (isset($personalAttributes['mail'][0]) && !empty($personalAttributes['mail'][0])) {
 			$subtitle .= '<a href="mailto:' . htmlspecialchars($personalAttributes['mail'][0]) . '">' . htmlspecialchars($personalAttributes['mail'][0]) . '</a>' . $spacer;
