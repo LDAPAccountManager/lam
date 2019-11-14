@@ -112,9 +112,9 @@ table.responsive-table th {
 
 table.responsive-table td {
 	overflow: hidden;
-	vertical-align: top;
-	padding-bottom: 0.3rem;
-	padding-top: 0.3rem;
+	vertical-align: middle;
+	padding-bottom: 0.1rem;
+	padding-top: 0.1rem;
 	padding-right: 0.3rem;
 	padding-left: 0.3rem;
 	word-break: break-all;

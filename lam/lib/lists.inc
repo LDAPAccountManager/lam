@@ -424,17 +424,17 @@ class lamList {
 			$buttons = new htmlGroup();
 			if (strtolower($attributeName) == $this->sortColumn) {
 				if ($this->sortDirection < 0) {
-					$buttons->addElement(new htmlLink(null, $link . '&sortdirection=1', '../../graphics/downarrows.png'));
-					$buttons->addElement(new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/uparrows-black.png'));
-				}
-				else {
 					$buttons->addElement(new htmlLink(null, $link . '&sortdirection=1', '../../graphics/downarrows-black.png'));
 					$buttons->addElement(new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/uparrows.png'));
 				}
+				else {
+					$buttons->addElement(new htmlLink(null, $link . '&sortdirection=1', '../../graphics/downarrows.png'));
+					$buttons->addElement(new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/uparrows-black.png'));
+				}
 			}
 			else {
-				$buttons->addElement(new htmlLink(null, $link . '&sortdirection=1', '../../graphics/downarrows.png'));
-				$buttons->addElement(new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/uparrows.png'));
+				$buttons->addElement(new htmlLink(null, $link . '&sortdirection=1', '../../graphics/downarrows-black.png'));
+				$buttons->addElement(new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/uparrows-black.png'));
 			}
 			$sortElements[] = $buttons;
 		}
@@ -836,6 +836,7 @@ class lamList {
 			$suffixSelect->setRightToLeftTextDirection(true);
 			$suffixSelect->setSortElements(false);
 			$suffixSelect->setHasDescriptiveElements(true);
+			$suffixSelect->setCSSClasses(array('margin5', 'lam-listouselection-height'));
 			$group->addElement($suffixSelect);
 			$group->addElement(new htmlSpacer('5px', null));
 		}
@@ -883,11 +884,13 @@ class lamList {
 		$right->add($this->listShowOUSelection(), 12, 12, 10);
 		$rightButtonGroup = new htmlGroup();
 		$refreshButton = new htmlButton('refresh', 'refresh.png', true);
+		$refreshButton->setCSSClasses(array('margin5 lam-listouselection-height'));
 		$refreshButton->setTitle(_("Refresh"));
 		$rightButtonGroup->addElement($refreshButton);
 		$settingsLink = new htmlLink('', '#', '../../graphics/tools.png');
 		$settingsLink->setOnClick('listShowSettingsDialog(\'' . _('Change list settings') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\');');
 		$settingsLink->setTitle(_('Change settings'));
+		$settingsLink->setCSSClasses(array('margin5 lam-listouselection-height'));
 		$rightButtonGroup->addElement($settingsLink);
 		$right->add($rightButtonGroup, 12, 12, 2);
 

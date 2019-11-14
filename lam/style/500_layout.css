@@ -264,6 +264,10 @@ table.accountlist input[type='text'] {
 	padding-bottom: 0.5rem;
 }
 
+.lam-listouselection-height {
+	height: 27px;
+}
+
 table.collapse {
 	border-collapse:collapse;
 }
