@@ -86,7 +86,7 @@ class yubiKeyUser extends baseModule {
 		$return['help'] = array(
 			$attributeName => array(
 				"Headline" => _("YubiKey ids"), 'attr' => $attributeName,
-				"Text" => _("Please enter your YubiKey ids.")
+				"Text" => _("The YubiKey id are the first 12 letters of the key output. Simlply touch your YubiKey in an empty field to set it.")
 			),
 			'keyList' => array(
 				"Headline" => _("YubiKey ids"), 'attr' => $attributeName,
@@ -99,6 +99,10 @@ class yubiKeyUser extends baseModule {
 			'attributeName' => array(
 				"Headline" => _("Attribute name"),
 				"Text" => _("Please enter the attribute name that should be used for YubiKey (e.g. 'yubiKeyId').")
+			),
+			'whereToFind' => array(
+				"Headline" => _("YubiKey ids"),
+				"Text" => _("The YubiKey id are the first 12 letters of the key output. Simlply touch your YubiKey in an empty field to set it.")
 			),
 		);
 		// upload fields
@@ -279,15 +283,13 @@ class yubiKeyUser extends baseModule {
 				$keyIds = $attributes[$attributeName];
 			}
 			$_SESSION[self::SESS_KEY_LIST] = $keyIds;
-			$keyTable = new htmlTable();
-			// JavaScript functions
-			$keyTable->addElement($this->getSelfServiceKeysJSBlock(), true);
-			// input fields
-			$keyTable->addElement(new htmlDiv('yubiKeyIdDiv', $this->getSelfServiceKeys()), true);
-			$keyLabel = new htmlOutputText($this->getSelfServiceLabel('yubiKeyId', _('YubiKey ids')));
 			$row = new htmlResponsiveRow();
+			// JavaScript functions
+			$row->add($this->getSelfServiceKeysJSBlock(), 0);
+			// input fields
+			$keyLabel = new htmlOutputText($this->getSelfServiceLabel('yubiKeyId', _('YubiKey ids')));
 			$row->addLabel($keyLabel);
-			$row->addField($keyTable);
+			$row->addField(new htmlDiv('yubiKeyIdDiv', $this->getSelfServiceKeys()));
 			$return['yubiKeyId'] = $row;
 		}
 		return $return;
@@ -313,21 +315,17 @@ class yubiKeyUser extends baseModule {
 				$delLink->setTitle(_('Delete'));
 				$delLink->setOnClick('yubiKeyIdDeleteKey(' . $i . ', ' . sizeof($keys) . ');return false;');
 				$group->addElement($delLink);
-				if ($i == (sizeof($keys) - 1)) {
-					$addLink = new htmlLink('', '#', '../../graphics/add.png');
-					$addLink->setTitle(_('Add'));
-					$addLink->setOnClick('yubiKeyIdAddKey(' . sizeof($keys) . ');return false;');
-					$group->addElement($addLink);
-				}
 				$content->add($group, 12, 12, 12, 'nowrap');
 			}
 		}
-		else {
-			$addLink = new htmlLink('', '#', '../../graphics/add.png');
-			$addLink->setTitle(_('Add'));
-			$addLink->setOnClick('yubiKeyIdAddKey(' . sizeof($keys) . ');return false;');
-			$content->add($addLink, 12);
-		}
+		$addGroup = new htmlGroup();
+		$addLink = new htmlLink(_('Add'), '#', '../../graphics/add.png', true);
+		$addLink->setTitle(_('Add'));
+		$addLink->setOnClick('yubiKeyIdAddKey(' . sizeof($keys) . ');return false;');
+		$addGroup->addElement($addLink);
+		$addGroup->addElement(new htmlSpacer('0.5rem', null));
+		$addGroup->addElement(new htmlHelpLink('whereToFind', 'yubiKeyUser'));
+		$content->add($addGroup, 12);
 		return $content;
 	}
 
