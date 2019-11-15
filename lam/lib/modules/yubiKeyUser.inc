@@ -269,7 +269,7 @@ class yubiKeyUser extends baseModule {
 		}
 		$attributes = array_change_key_case($attributes, CASE_LOWER);
 		$objectClass = strtolower($this->getObjectClassName());
-		if (!in_array_ignore_case($objectClass, $attributes['objectclass'])) {
+		if (!empty($objectClass) && !in_array_ignore_case($objectClass, $attributes['objectclass'])) {
 			return $return;
 		}
 		if (in_array('yubiKeyId', $fields)) {
@@ -307,6 +307,7 @@ class yubiKeyUser extends baseModule {
 				$group = new htmlGroup();
 				$keyInput = new htmlInputField('yubiKeyId_' . $i, $keys[$i]);
 				$keyInput->setFieldMaxLength(12);
+				$keyInput->setCSSClasses(array('lam-prevent-enter'));
 				$group->addElement($keyInput);
 				$delLink = new htmlLink('', '#', '../../graphics/del.png');
 				$delLink->setTitle(_('Delete'));
