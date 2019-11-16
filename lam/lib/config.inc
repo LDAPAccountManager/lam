@@ -2368,7 +2368,7 @@ class LAMConfig {
 	 * @return string authentication URL
 	 */
 	public function getTwoFactorAuthenticationURL() {
-		return $this->twoFactorAuthenticationURL;
+		return implode("\r\n", explode(LAMConfig::LINE_SEPARATOR, $this->twoFactorAuthenticationURL));
 	}
 
 	/**
@@ -2377,7 +2377,7 @@ class LAMConfig {
 	 * @param string $twoFactorAuthenticationURL authentication URL
 	 */
 	public function setTwoFactorAuthenticationURL($twoFactorAuthenticationURL) {
-		$this->twoFactorAuthenticationURL = $twoFactorAuthenticationURL;
+		$this->twoFactorAuthenticationURL = implode(LAMConfig::LINE_SEPARATOR, explode("\r\n", $twoFactorAuthenticationURL));
 	}
 
 	/**
