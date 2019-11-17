@@ -3,8 +3,8 @@ namespace LAM\LIB\TWO_FACTOR;
 use \selfServiceProfile;
 use \LAMConfig;
 use \htmlScript;
-use \htmlInputField;
 use \htmlIframe;
+use \htmlImage;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -465,6 +465,76 @@ class DuoProvider extends BaseProvider {
 }
 
 /**
+ * Provider for Webauthn.
+ */
+class WebauthnProvider extends BaseProvider {
+
+	/**
+	 * Constructor.
+	 *
+	 * @param TwoFactorConfiguration $config configuration
+	 */
+	public function __construct(&$config) {
+		$this->config = $config;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::getSerials()
+	 */
+	public function getSerials($user, $password) {
+		return array('WEBAUTHN');
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::isShowSubmitButton()
+	 */
+	public function isShowSubmitButton() {
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::hasCustomInputForm()
+	 */
+	public function hasCustomInputForm() {
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\BaseProvider::addCustomInput()
+	 */
+	public function addCustomInput(&$row, $userDn) {
+		$pathPrefix = $this->config->isSelfService ? '../' : '';
+		$row->add(new htmlImage($pathPrefix . '../graphics/webauthn.svg'), 12);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::verify2ndFactor()
+	 */
+	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
+		logNewMessage(LOG_DEBUG, 'PrivacyIDEAProvider: Checking 2nd factor for ' . $user);
+		$loginAttribute = $this->getLoginAttributeValue($user);
+		$response = $_POST['sig_response'];
+		include_once(__DIR__ . "/3rdParty/duo/Web.php");
+		$result = \Duo\Web::verifyResponse(
+				$this->config->twoFactorAuthenticationClientId,
+				$this->config->twoFactorAuthenticationSecretKey,
+				$this->getAKey(),
+				$response);
+		if ($result === $loginAttribute) {
+			return true;
+		}
+		logNewMessage(LOG_ERR, 'DUO authentication failed');
+		return false;
+	}
+
+}
+
+/**
  * Returns the correct 2 factor provider.
  */
 class TwoFactorProviderService {
@@ -477,6 +547,8 @@ class TwoFactorProviderService {
 	const TWO_FACTOR_YUBICO = 'yubico';
 	/** 2factor authentication via DUO */
 	const TWO_FACTOR_DUO = 'duo';
+	/** 2factor authentication via webauthn */
+	const TWO_FACTOR_WEBAUTHN = 'webauthn';
 
 	private $config;
 
