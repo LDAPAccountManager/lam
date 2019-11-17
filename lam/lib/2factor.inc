@@ -593,6 +593,9 @@ class TwoFactorProviderService {
 		elseif ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_DUO) {
 			return new DuoProvider($this->config);
 		}
+		elseif ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_WEBAUTHN) {
+			return new WebauthnProvider($this->config);
+		}
 		throw new \Exception('Invalid provider: ' . $this->config->twoFactorAuthentication);
 	}
 

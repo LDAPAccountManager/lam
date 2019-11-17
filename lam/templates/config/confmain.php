@@ -466,6 +466,8 @@ if (extension_loaded('curl')) {
 			'privacyIDEA' => TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA,
 			'YubiKey' => TwoFactorProviderService::TWO_FACTOR_YUBICO,
 			'Duo' => TwoFactorProviderService::TWO_FACTOR_DUO,
+			'Webauthn' => TwoFactorProviderService::TWO_FACTOR_DUO,
+			'Webauthn' => TwoFactorProviderService::TWO_FACTOR_WEBAUTHN,
 	);
 	$twoFactorSelect = new htmlResponsiveSelect('twoFactor', $twoFactorOptions, array($conf->getTwoFactorAuthentication()), _('Provider'), '514');
 	$twoFactorSelect->setHasDescriptiveElements(true);
@@ -474,7 +476,9 @@ if (extension_loaded('curl')) {
 				'twoFactorOptional', 'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute'),
 			TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA => array('twoFactorURLs', 'twoFactorClientId', 'twoFactorSecretKey'),
 			TwoFactorProviderService::TWO_FACTOR_YUBICO => array('twoFactorURL', 'twoFactorAttribute'),
-			TwoFactorProviderService::TWO_FACTOR_DUO => array('twoFactorURLs', 'twoFactorOptional', 'twoFactorInsecure'),
+			TwoFactorProviderService::TWO_FACTOR_DUO => array('twoFactorURLs', 'twoFactorOptional', 'twoFactorInsecure', 'twoFactorLabel'),
+			TwoFactorProviderService::TWO_FACTOR_WEBAUTHN => array('twoFactorURL', 'twoFactorURLs', 'twoFactorInsecure', 'twoFactorLabel',
+				'twoFactorOptional', 'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute'),
 	));
 	$twoFactorSelect->setTableRowsToShow(array(
 			TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA => array('twoFactorURL', 'twoFactorInsecure', 'twoFactorLabel',
