@@ -5,6 +5,7 @@ use \LAMConfig;
 use \htmlScript;
 use \htmlIframe;
 use \htmlImage;
+use \LAMException;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -356,13 +357,22 @@ class YubicoProvider extends BaseProvider {
 		if (!$serialMatched) {
 			throw new \Exception(_('YubiKey id does not match allowed list of key ids.'));
 		}
-		$url = $this->config->twoFactorAuthenticationURL;
+		$urls = $this->config->twoFactorAuthenticationURL;
+		shuffle($urls);
 		$httpsverify = !$this->config->twoFactorAuthenticationInsecure;
 		$clientId = $this->config->twoFactorAuthenticationClientId;
 		$secretKey = $this->config->twoFactorAuthenticationSecretKey;
-		$auth = new \Auth_Yubico($clientId, $secretKey, $url, $httpsverify);
-		$auth->verify($twoFactorInput);
-		return true;
+		foreach ($urls as $url) {
+			try {
+				$auth = new \Auth_Yubico($clientId, $secretKey, $url, $httpsverify);
+				$auth->verify($twoFactorInput);
+				return true;
+			}
+			catch (LAMException $e) {
+				logNewMessage(LOG_DEBUG, 'Unable to verify 2FA: ' . $e->getMessage());
+			}
+		}
+		return false;
 	}
 
 }
@@ -597,7 +607,12 @@ class TwoFactorProviderService {
 		$tfConfig->isSelfService = true;
 		$tfConfig->twoFactorAuthentication = $profile->twoFactorAuthentication;
 		$tfConfig->twoFactorAuthenticationInsecure = $profile->twoFactorAuthenticationInsecure;
-		$tfConfig->twoFactorAuthenticationURL = $profile->twoFactorAuthenticationURL;
+		if ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO) {
+			$tfConfig->twoFactorAuthenticationURL = explode("\r\n", $profile->twoFactorAuthenticationURL);
+		}
+		else {
+			$tfConfig->twoFactorAuthenticationURL = $profile->twoFactorAuthenticationURL;
+		}
 		$tfConfig->twoFactorAuthenticationClientId = $profile->twoFactorAuthenticationClientId;
 		$tfConfig->twoFactorAuthenticationSecretKey = $profile->twoFactorAuthenticationSecretKey;
 		if ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO) {
@@ -631,7 +646,12 @@ class TwoFactorProviderService {
 		$tfConfig->isSelfService = false;
 		$tfConfig->twoFactorAuthentication = $conf->getTwoFactorAuthentication();
 		$tfConfig->twoFactorAuthenticationInsecure = $conf->getTwoFactorAuthenticationInsecure();
-		$tfConfig->twoFactorAuthenticationURL = $conf->getTwoFactorAuthenticationURL();
+		if ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO) {
+			$tfConfig->twoFactorAuthenticationURL = explode("\r\n", $conf->getTwoFactorAuthenticationURL());
+		}
+		else {
+			$tfConfig->twoFactorAuthenticationURL = $conf->getTwoFactorAuthenticationURL();
+		}
 		$tfConfig->twoFactorAuthenticationClientId = $conf->getTwoFactorAuthenticationClientId();
 		$tfConfig->twoFactorAuthenticationSecretKey = $conf->getTwoFactorAuthenticationSecretKey();
 		if ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO) {
@@ -670,7 +690,7 @@ class TwoFactorConfiguration {
 	public $twoFactorAuthentication = null;
 
 	/**
-	 * @var service URL
+	 * @var string|array service URL(s)
 	 */
 	public $twoFactorAuthenticationURL = null;
 

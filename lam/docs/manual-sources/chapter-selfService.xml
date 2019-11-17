@@ -331,7 +331,7 @@
           </listitem>
         </itemizedlist>
 
-        <para>privacyIDEA:</para>
+        <para><emphasis role="bold">privacyIDEA</emphasis></para>
 
         <itemizedlist>
           <listitem>
@@ -358,16 +358,21 @@
           </listitem>
         </itemizedlist>
 
-        <para>YubiKey:</para>
+        <para><emphasis role="bold">YubiKey</emphasis></para>
 
         <itemizedlist>
           <listitem>
-            <para>Base URL: please enter the URL of your YubiKey verfication
-            server. For YubiKey cloud this is
-            "https://api.yubico.com/wsapi/2.0/verify". If you run a custom
-            verification API such as yubiserver then enter its URL (e.g.
+            <para>Base URLs: please enter the URL(s) of your YubiKey
+            verification server(s). If you run a custom verification API such
+            as yubiserver then enter its URL (e.g.
             http://www.example.com:8000/wsapi/2.0/verify). The URL needs to
-            end with "/wsapi/2.0/verify".</para>
+            end with "/wsapi/2.0/verify". For YubiKey cloud these are
+            "https://api.yubico.com/wsapi/2.0/verify",
+            "https://api2.yubico.com/wsapi/2.0/verify",
+            "https://api3.yubico.com/wsapi/2.0/verify",
+            "https://api4.yubico.com/wsapi/2.0/verify" and
+            "https://api5.yubico.com/wsapi/2.0/verify". Enter one URL per
+            line.</para>
           </listitem>
 
           <listitem>
@@ -394,7 +399,7 @@
           </listitem>
         </itemizedlist>
 
-        <para>Duo:</para>
+        <para><emphasis role="bold">Duo</emphasis></para>
 
         <para>This requires to register a new "Web SDK" application in your
         Duo admin panel.</para>

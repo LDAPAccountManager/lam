@@ -301,6 +301,8 @@ $helpArray = array (
 					"Text" => _('You can enable 2-factor authentication here (e.g. via mobile device).')),
 				"515" => array ("Headline" => _('Base URL'),
 					"Text" => _('URL of external 2-factor authentication service.')),
+				"515a" => array ("Headline" => _('Base URLs'),
+					"Text" => _('URLs of external 2-factor authentication service. Enter one per line.')),
 				"516" => array ("Headline" => _('Disable certificate check'),
 					"Text" => _('This will disable the check of the SSL certificates for the 2-factor authentication service. Not recommended for production usage.')),
 				"517" => array ("Headline" => _('Label'),
