@@ -1,6 +1,7 @@
 December 2019 7.0
   - Lamdaemon can be configured with directory prefix for homedirs
   - Account list filters match on substrings instead of whole value
+  - YubiKey: support to configure multiple verification servers
   - Fixed bugs:
    -> Missing CSS for Duo
    -> Editing of DNs with comma on Windows (210)
