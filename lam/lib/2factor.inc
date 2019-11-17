@@ -534,7 +534,12 @@ class TwoFactorProviderService {
 		$tfConfig->isSelfService = true;
 		$tfConfig->twoFactorAuthentication = $profile->twoFactorAuthentication;
 		$tfConfig->twoFactorAuthenticationInsecure = $profile->twoFactorAuthenticationInsecure;
-		$tfConfig->twoFactorAuthenticationURL = $profile->twoFactorAuthenticationURL;
+		if ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO) {
+			$tfConfig->twoFactorAuthenticationURL = explode("\r\n", $profile->twoFactorAuthenticationURL);
+		}
+		else {
+			$tfConfig->twoFactorAuthenticationURL = $profile->twoFactorAuthenticationURL;
+		}
 		$tfConfig->twoFactorAuthenticationClientId = $profile->twoFactorAuthenticationClientId;
 		$tfConfig->twoFactorAuthenticationSecretKey = $profile->twoFactorAuthenticationSecretKey;
 		if ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO) {
