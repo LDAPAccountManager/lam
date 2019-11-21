@@ -1356,6 +1356,52 @@ window.lam.selfservice.addMultiValue = function(fieldNamePrefix, addButton) {
 	jQuery(addButton).remove();
 };
 
+window.lam.webauthn = window.lam.webauthn || {};
+
+/**
+ * Starts the webauthn process.
+ *
+ * @param prefix path prefix for Ajax endpoint
+ */
+window.lam.webauthn.start = function(prefix) {
+	jQuery(document).ready(
+		function() {
+			window.lam.webauthn.run(prefix);
+		}
+	);
+}
+
+/**
+ * Checks if the user is registered and starts login/registration.
+ *
+ * @param prefix path prefix for Ajax endpoint
+ */
+window.lam.webauthn.run = function(prefix) {
+	var token = jQuery('#sec_token').val();
+	// check for webauthn support
+	if (!navigator.credentials || (typeof(PublicKeyCredential) === "undefined")) {
+		jQuery('.webauthn-error').show();
+		return;
+	}
+
+	var data = {
+			action: 'status',
+			sec_token: token
+	};
+	jQuery.ajax({
+		url: prefix + 'misc/ajax.php?function=webauthn',
+		method: 'POST',
+		data: data
+	})
+	.done(function(jsonData) {
+		console.log(jsonData);
+	})
+	.fail(function() {
+		console.log('Webauthn failed');
+	});
+}
+
+
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();
 	window.lam.form.autoTrim();

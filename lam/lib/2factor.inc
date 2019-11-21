@@ -5,6 +5,10 @@ use \LAMConfig;
 use \htmlScript;
 use \htmlIframe;
 use \htmlImage;
+use \htmlButton;
+use \htmlJavaScript;
+use \htmlStatusMessage;
+use \htmlDiv;
 use \LAMException;
 
 /*
@@ -519,6 +523,16 @@ class WebauthnProvider extends BaseProvider {
 	public function addCustomInput(&$row, $userDn) {
 		$pathPrefix = $this->config->isSelfService ? '../' : '';
 		$row->add(new htmlImage($pathPrefix . '../graphics/webauthn.svg'), 12);
+		$row->addVerticalSpacer('1rem');
+		$registerButton = new htmlButton('register_webauthn', _('Register new key'));
+		$registerButton->setCSSClasses(array('fullwidth hidden'));
+		$row->add($registerButton, 12);
+		$loginButton = new htmlButton('login_webauthn', _('Login'));
+		$loginButton->setCSSClasses(array('fullwidth hidden'));
+		$row->add($loginButton, 12);
+		$errorMessage = new htmlStatusMessage('ERROR', '', _('This service requires a browser with webauthn support.'));
+		$row->add(new htmlDiv(null, $errorMessage, array('hidden webauthn-error')), 12);
+		$row->add(new htmlJavaScript('window.lam.webauthn.start(\'' . $pathPrefix . '\');'), 0);
 	}
 
 	/**
