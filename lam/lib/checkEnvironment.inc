@@ -36,7 +36,7 @@ include_once(__DIR__ . "/../lib/status.inc");
 include_once(__DIR__ . "/../lib/config.inc");
 
 // check if PHP >= 5.6.0
-if (version_compare(phpversion(), '5.6.0') < 0) {
+if (version_compare(phpversion(), '7.0.0') < 0) {
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
 	echo "<html>\n<head>\n";
 	echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n";
@@ -46,7 +46,7 @@ if (version_compare(phpversion(), '5.6.0') < 0) {
 	echo "<link rel=\"icon\" href=\"../graphics/logo136.png\">\n";
 	echo "<title>LDAP Account Manager</title>\n";
 	echo "</head><body>\n";
-	StatusMessage("ERROR", "LAM needs a PHP 5 version which is greater or equal than 5.6.0.", "Please upgrade your PHP installation. The found version is " . phpversion());
+	StatusMessage("ERROR", "LAM needs a PHP 5 version which is greater or equal than 7.0.0.", "Please upgrade your PHP installation. The found version is " . phpversion());
 	echo "<br><br>";
 	echo "</body></html>";
 	exit();
