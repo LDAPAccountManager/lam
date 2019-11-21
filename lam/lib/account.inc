@@ -1637,8 +1637,8 @@ function enforceUserIsLoggedIn($check2ndFactor = true) {
 		die();
 	}
 	if ($check2ndFactor && isset($_SESSION['2factorRequired'])) {
-		die();
 		logNewMessage(LOG_WARNING, 'Detected unauthorized access to page that requires login (2nd factor not provided): ' . $_SERVER["SCRIPT_FILENAME"]);
+		die();
 	}
 }
 
