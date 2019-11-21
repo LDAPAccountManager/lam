@@ -1991,6 +1991,10 @@ class posixAccount extends baseModule implements passwordService {
 				$gonSelect->setTransformSingleSelect(false);
 				$return->add($gonSelect, 12);
 			}
+			// common name
+			if ($this->manageCn($modules)) {
+				$return->add(new htmlResponsiveInputField(_('Common name'), 'posixAccount_cn', '', 'cn'), 12);
+			}
 			// home directory
 			$return->add(new htmlResponsiveInputField(_('Home directory'), 'posixAccount_homeDirectory', '/home/$user', 'homeDirectory'), 12);
 			// login shell
@@ -2026,6 +2030,10 @@ class posixAccount extends baseModule implements passwordService {
 		parent::load_profile($profile);
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		$typeId = $this->getAccountContainer()->get_type()->getId();
+		// cn
+		if ($this->manageCn($modules) && !empty($profile['posixAccount_cn'][0])) {
+			$this->attributes['cn'][0] = $profile['posixAccount_cn'][0];
+		}
 		// home directory
 		$homeDirAttr = $this->getHomedirAttrName($modules);
 		if (!empty($profile['posixAccount_homeDirectory'][0])) {
