@@ -63,7 +63,7 @@
 
   <itemizedlist>
     <listitem>
-      <para>PHP (&gt;= 5.6.0)</para>
+      <para>PHP (&gt;= 7.0.0)</para>
     </listitem>
 
     <listitem>
