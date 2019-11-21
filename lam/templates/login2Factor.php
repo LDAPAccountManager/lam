@@ -190,7 +190,9 @@ echo $config->getTwoFactorAuthenticationCaption();
 
 	<script type="text/javascript">
 		myElement = document.getElementsByName('2factor')[0];
-		myElement.focus();
+		if (myElement) {
+			myElement.focus();
+		}
 	</script>
 </body>
 </html>

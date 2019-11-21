@@ -1386,6 +1386,7 @@ window.lam.webauthn.run = function(prefix) {
 
 	var data = {
 			action: 'status',
+			jsonInput: '',
 			sec_token: token
 	};
 	jQuery.ajax({

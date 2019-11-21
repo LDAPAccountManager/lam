@@ -101,6 +101,11 @@ class Ajax {
 			$this->checkPasswordStrength($jsonInput);
 			die();
 		}
+		if ($function === 'webauthn') {
+			enforceUserIsLoggedIn(false);
+			$this->manageWebauthn();
+			die();
+		}
 		enforceUserIsLoggedIn();
 		if ($function == 'passwordChange') {
 			$this->managePasswordChange($jsonInput);
@@ -175,6 +180,13 @@ class Ajax {
 		$password = $input['password'];
 		$result = checkPasswordStrength($password, null, null);
 		echo json_encode(array("result" => $result));
+	}
+
+	/**
+	 * Manages webauthn requests.
+	 */
+	private function manageWebauthn() {
+		$userDN = $_SESSION['ldap']->getUserName();
 	}
 
 	/**

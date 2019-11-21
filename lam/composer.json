@@ -1,0 +1,8 @@
+{
+  "config": {
+    "vendor-dir": "lib/3rdParty/composer"
+  },
+  "require" : {
+    "web-auth/webauthn-lib" : "2.1.7"
+  }
+}
