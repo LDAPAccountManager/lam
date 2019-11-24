@@ -1396,12 +1396,42 @@ window.lam.webauthn.run = function(prefix) {
 	})
 	.done(function(jsonData) {
 		console.log(jsonData);
+		if (jsonData.action === 'register') {
+			window.lam.webauthn.register(jsonData.registration);
+		}
 	})
 	.fail(function() {
 		console.log('Webauthn failed');
 	});
 }
 
+/**
+ * Performs a webauthn registration.
+ *
+ * @param publicKey registration object
+ */
+window.lam.webauthn.register = function(publicKey) {
+	console.log(publicKey);
+	publicKey.challenge = Uint8Array.from(window.atob(publicKey.challenge), c=>c.charCodeAt(0));
+	publicKey.user.id = Uint8Array.from(window.atob(publicKey.user.id), c=>c.charCodeAt(0));
+	navigator.credentials.create({publicKey})
+		.then(function (data) {
+			console.log(data);
+			let publicKeyCredential = {
+				id: data.id,
+				type: data.type,
+				rawId: btoa(String.fromCharCode(new Uint8Array(data.rawId))),
+				response: {
+					clientDataJSON: btoa(String.fromCharCode((new Uint8Array(data.response.clientDataJSON)))),
+					attestationObject: btoa(String.fromCharCode((new Uint8Array(data.response.attestationObject))))
+				}
+			};
+			console.log(publicKeyCredential);
+			//window.location = '/request_post?data='+btoa(JSON.stringify(publicKeyCredential));
+		}, function (error) {
+			console.log(error);
+		});
+}
 
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();

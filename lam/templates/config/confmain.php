@@ -466,9 +466,10 @@ if (extension_loaded('curl')) {
 			'privacyIDEA' => TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA,
 			'YubiKey' => TwoFactorProviderService::TWO_FACTOR_YUBICO,
 			'Duo' => TwoFactorProviderService::TWO_FACTOR_DUO,
-			'Webauthn' => TwoFactorProviderService::TWO_FACTOR_DUO,
-			'Webauthn' => TwoFactorProviderService::TWO_FACTOR_WEBAUTHN,
 	);
+    if (version_compare(phpversion(), '7.2.0') >= 0) {
+        $twoFactorOptions['Webauthn'] = TwoFactorProviderService::TWO_FACTOR_WEBAUTHN;
+    }
 	$twoFactorSelect = new htmlResponsiveSelect('twoFactor', $twoFactorOptions, array($conf->getTwoFactorAuthentication()), _('Provider'), '514');
 	$twoFactorSelect->setHasDescriptiveElements(true);
 	$twoFactorSelect->setTableRowsToHide(array(

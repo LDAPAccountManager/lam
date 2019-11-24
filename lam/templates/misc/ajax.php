@@ -7,6 +7,9 @@ use \htmlResponsiveRow;
 use \htmlLink;
 use \htmlOutputText;
 use \htmlButton;
+use function LAM\LOGIN\WEBAUTHN\getRegistrationObject;
+use function LAM\LOGIN\WEBAUTHN\isRegistered;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -71,7 +74,7 @@ class Ajax {
 		$this->setHeader();
 		// check token
 		validateSecurityToken();
-
+		$isSelfService = isset($_GET['selfservice']);
 		if (isset($_GET['module']) && isset($_GET['scope']) && in_array($_GET['module'], getAvailableModules($_GET['scope']))) {
 			enforceUserIsLoggedIn();
 			if (isset($_GET['useContainer']) && ($_GET['useContainer'] == '1')) {
@@ -103,7 +106,7 @@ class Ajax {
 		}
 		if ($function === 'webauthn') {
 			enforceUserIsLoggedIn(false);
-			$this->manageWebauthn();
+			$this->manageWebauthn($isSelfService);
 			die();
 		}
 		enforceUserIsLoggedIn();
@@ -184,9 +187,25 @@ class Ajax {
 
 	/**
 	 * Manages webauthn requests.
+	 *
+	 * @param bool $isSelfService request is from self service
 	 */
-	private function manageWebauthn() {
+	private function manageWebauthn($isSelfService) {
+		include_once __DIR__ . '/../../lib/3rdParty/composer/autoload.php';
+		include_once __DIR__ . '/../../lib/webauthn.inc';
 		$userDN = $_SESSION['ldap']->getUserName();
+		$isRegistered = isRegistered($userDN);
+		if (!$isRegistered) {
+			$registrationObject = getRegistrationObject($userDN);
+			echo json_encode(
+				array(
+					'action' => 'register',
+					'registration' => $registrationObject
+				),
+				JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+			);
+			die();
+		}
 	}
 
 	/**

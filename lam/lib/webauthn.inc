@@ -1,5 +1,15 @@
 <?php
+
 namespace LAM\LOGIN\WEBAUTHN;
+
+use \Cose\Algorithms;
+use \Webauthn\PublicKeyCredentialCreationOptions;
+use \Webauthn\PublicKeyCredentialRpEntity;
+use \Webauthn\PublicKeyCredentialParameters;
+use \Webauthn\PublicKeyCredentialUserEntity;
+use \Webauthn\AuthenticationExtensions\AuthenticationExtensionsClientInputs;
+use \Webauthn\AuthenticatorSelectionCriteria;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -22,10 +32,10 @@ namespace LAM\LOGIN\WEBAUTHN;
 */
 
 /**
-* Manages webauthn requests.
-*
-* @author Roland Gruber
-*/
+ * Manages webauthn requests.
+ *
+ * @author Roland Gruber
+ */
 
 /**
  * Returns if the given DN is registered for webauthn.
@@ -40,10 +50,66 @@ function isRegistered($dn) {
 /**
  * Returns a challenge for a new token.
  *
- * @return string challenge
+ * @param string $dn DN
+ * @return PublicKeyCredentialCreationOptions challenge
  */
-function getChallenge() {
-
+function getRegistrationObject($dn) {
+	$rpEntity = createRpEntry();
+	$userEntity = getUserEntity($dn);
+	$challenge = generateRandomPassword(32);
+	$credentialParameters = getCredentialParameters();
+	$timeout = 20000;
+	$registrationObject = new PublicKeyCredentialCreationOptions(
+		$rpEntity,
+		$userEntity,
+		$challenge,
+		$credentialParameters,
+		$timeout,
+		array(),
+		new AuthenticatorSelectionCriteria(),
+		PublicKeyCredentialCreationOptions::ATTESTATION_CONVEYANCE_PREFERENCE_NONE,
+		new AuthenticationExtensionsClientInputs());
+	logNewMessage(LOG_DEBUG, json_encode($registrationObject));
+	return $registrationObject;
 }
 
+/**
+ * Returns the part that identifies the server and application.
+ *
+ * @return PublicKeyCredentialRpEntity relying party entry
+ */
+function createRpEntry() {
+	return new PublicKeyCredentialRpEntity(
+		'LDAP Account Manager', //Name
+		null, // TODO check if domain is required
+		null // TODO icon
+	);
+}
+
+/**
+ * Returns the user entity for the registration.
+ *
+ * @param $dn DN
+ * @return PublicKeyCredentialUserEntity user entity
+ */
+function getUserEntity($dn) {
+	return new PublicKeyCredentialUserEntity(
+		$dn,
+		$dn,
+		extractRDNValue($dn),
+		null
+	);
+}
+
+/**
+ * Returns the supported credential algorithms.
+ *
+ * @return array algorithms
+ */
+function getCredentialParameters() {
+	return array(
+		new PublicKeyCredentialParameters('public-key', Algorithms::COSE_ALGORITHM_ES256),
+		new PublicKeyCredentialParameters('public-key', Algorithms::COSE_ALGORITHM_RS256),
+	);
+}
 
