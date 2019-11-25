@@ -51,10 +51,11 @@ function isRegistered($dn) {
  * Returns a challenge for a new token.
  *
  * @param string $dn DN
+ * @param bool $isSelfService is executed in self service
  * @return PublicKeyCredentialCreationOptions challenge
  */
-function getRegistrationObject($dn) {
-	$rpEntity = createRpEntry();
+function getRegistrationObject($dn, $isSelfService) {
+	$rpEntity = createRpEntry($isSelfService);
 	$userEntity = getUserEntity($dn);
 	$challenge = generateRandomPassword(32);
 	$credentialParameters = getCredentialParameters();
@@ -76,13 +77,19 @@ function getRegistrationObject($dn) {
 /**
  * Returns the part that identifies the server and application.
  *
+ * @param bool $isSelfService is executed in self service
  * @return PublicKeyCredentialRpEntity relying party entry
  */
-function createRpEntry() {
+function createRpEntry($isSelfService) {
+	$pathPrefix = $isSelfService ? '../' : '';
+	$icon = $pathPrefix . '../graphics/logo136.png';
+	if (!$isSelfService) {
+		$domain = $_SESSION['config']->getTwoFactorAuthenticationDomain();
+	}
 	return new PublicKeyCredentialRpEntity(
 		'LDAP Account Manager', //Name
-		null, // TODO check if domain is required
-		null // TODO icon
+		$domain,
+		$icon
 	);
 }
 

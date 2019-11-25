@@ -329,6 +329,8 @@ $helpArray = array (
 					"Text" => _('This text is displayed as footer on the self service main page.')),
 				"528" => array ("Headline" => _('User name attribute'),
 					"Text" => _('The attribute (e.g. "uid") that contains the user name for the 2-factor service.')),
+				"529" => array ("Headline" => _('Domain'),
+					"Text" => _('Please enter the webauthn domain. This is the public domain of the webserver (e.g. "example.com"). Do not include protocol or port.')),
 				"550" => array ("Headline" => _("From address"),
 					"Text" => _("This email address will be set as sender address of all password mails. If empty the system default (php.ini) will be used.")),
 				"551" => array ("Headline" => _("Subject"),

@@ -566,6 +566,17 @@ class LAMConfigTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Tests LAMConfig->getTwoFactorAuthenticationDomain() and LAMConfig->setTwoFactorAuthenticationDomain()
+	 */
+	public function testTwoFactorAuthenticationDomain() {
+		$val = 'test.com';
+		$this->lAMConfig->setTwoFactorAuthenticationDomain($val);
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationDomain());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationDomain());
+	}
+
+	/**
 	 * Tests LAMConfig->getTwoFactorAuthenticationInsecure() and LAMConfig->setTwoFactorAuthenticationInsecure()
 	 */
 	public function testTwoFactorAuthenticationInsecure() {

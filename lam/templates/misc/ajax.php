@@ -196,7 +196,7 @@ class Ajax {
 		$userDN = $_SESSION['ldap']->getUserName();
 		$isRegistered = isRegistered($userDN);
 		if (!$isRegistered) {
-			$registrationObject = getRegistrationObject($userDN);
+			$registrationObject = getRegistrationObject($userDN, $isSelfService);
 			echo json_encode(
 				array(
 					'action' => 'register',
