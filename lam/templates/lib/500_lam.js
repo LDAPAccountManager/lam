@@ -1424,8 +1424,10 @@ window.lam.webauthn.register = function(publicKey) {
 					attestationObject: window.lam.webauthn.arrayToBase64String(new Uint8Array(data.response.attestationObject))
 				}
 			};
-			console.log(publicKeyCredential);
-			//window.location = '/request_post?data='+btoa(JSON.stringify(publicKeyCredential));
+			let form = jQuery("#2faform");
+			let response = btoa(JSON.stringify(publicKeyCredential));
+			form.append('<input type="hidden" name="sig_response" value="' + response + '"/>');
+			form.submit();
 		}, function (error) {
 			console.log(error);
 		});

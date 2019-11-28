@@ -132,7 +132,7 @@ printJsIncludes('..');
 
 	<br><br>
 
-	<form enctype="multipart/form-data" action="login2Factor.php" method="post" autocomplete="off">
+	<form id="2faform" enctype="multipart/form-data" action="login2Factor.php" method="post" autocomplete="off">
 <?php
 echo $config->getTwoFactorAuthenticationCaption();
 

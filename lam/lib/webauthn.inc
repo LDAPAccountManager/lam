@@ -2,13 +2,34 @@
 
 namespace LAM\LOGIN\WEBAUTHN;
 
+use CBOR\Decoder;
+use CBOR\OtherObject\OtherObjectManager;
+use CBOR\Tag\TagObjectManager;
+use Cose\Algorithm\Manager;
+use Cose\Algorithm\Signature\ECDSA\ES256;
+use Cose\Algorithm\Signature\ECDSA\ES384;
+use Cose\Algorithm\Signature\ECDSA\ES512;
+use Cose\Algorithm\Signature\EdDSA\EdDSA;
+use Cose\Algorithm\Signature\RSA\RS1;
+use Cose\Algorithm\Signature\RSA\RS256;
+use Cose\Algorithm\Signature\RSA\RS384;
+use Cose\Algorithm\Signature\RSA\RS512;
 use \Cose\Algorithms;
+use http\Client;
+use Webauthn\AttestationStatement\AndroidKeyAttestationStatementSupport;
+use Webauthn\AttestationStatement\AndroidSafetyNetAttestationStatementSupport;
+use Webauthn\AttestationStatement\AttestationStatementSupportManager;
+use Webauthn\AttestationStatement\FidoU2FAttestationStatementSupport;
+use Webauthn\AttestationStatement\NoneAttestationStatementSupport;
+use Webauthn\AttestationStatement\PackedAttestationStatementSupport;
+use Webauthn\AttestationStatement\TPMAttestationStatementSupport;
 use \Webauthn\PublicKeyCredentialCreationOptions;
 use \Webauthn\PublicKeyCredentialRpEntity;
 use \Webauthn\PublicKeyCredentialParameters;
 use \Webauthn\PublicKeyCredentialUserEntity;
 use \Webauthn\AuthenticationExtensions\AuthenticationExtensionsClientInputs;
 use \Webauthn\AuthenticatorSelectionCriteria;
+use Webauthn\TokenBinding\IgnoreTokenBindingHandler;
 
 /*
 
@@ -52,7 +73,7 @@ function isRegistered($dn) {
  *
  * @param string $dn DN
  * @param bool $isSelfService is executed in self service
- * @return PublicKeyCredentialCreationOptions challenge
+ * @return PublicKeyCredentialCreationOptions registration object
  */
 function getRegistrationObject($dn, $isSelfService) {
 	$rpEntity = createRpEntry($isSelfService);
@@ -120,3 +141,51 @@ function getCredentialParameters() {
 	);
 }
 
+/**
+ * Verifies the registration and stores it in the database.
+ *
+ * @param PublicKeyCredentialCreationOptions $registration registration object
+ * @param $clientResponse client response
+ * @return bool true if response is valid and registration succeeded
+ */
+function storeNewRegistration($registration, $clientResponse) {
+	$decoder = getCborDecoder();
+	$tokenBindingHandler = new IgnoreTokenBindingHandler();
+	$attestationSupportManager = getAttestationSupportManager($decoder);
+	return false;
+}
+
+/**
+ * Returns a CBOR decoder.
+ *
+ * @return Decoder decoder
+ */
+function getCborDecoder() {
+	return new Decoder(new TagObjectManager(), new OtherObjectManager());
+}
+
+/**
+ * Creates the attestation support manager.
+ *
+ * @param Decoder $decoder decoder
+ * @return AttestationStatementSupportManager manager
+ */
+function getAttestationSupportManager($decoder) {
+	$manager = new AttestationStatementSupportManager();
+	$manager->add(new NoneAttestationStatementSupport());
+	$manager->add(new FidoU2FAttestationStatementSupport());
+	$manager->add(new AndroidSafetyNetAttestationStatementSupport(new Client() /*TODO*/));
+	$manager->add(new AndroidKeyAttestationStatementSupport($decoder));
+	$manager->add(new TPMAttestationStatementSupport());
+	$coseManager = new Manager();
+	$coseManager->add(new ES256());
+	$coseManager->add(new ES384());
+	$coseManager->add(new ES512());
+	$coseManager->add(new EdDSA());
+	$coseManager->add(new RS1());
+	$coseManager->add(new RS256());
+	$coseManager->add(new RS384);
+	$coseManager->add(new RS512());
+	$manager->add(new PackedAttestationStatementSupport($decoder, $coseManager));
+	return $manager;
+}

@@ -10,6 +10,7 @@ use \htmlJavaScript;
 use \htmlStatusMessage;
 use \htmlDiv;
 use \LAMException;
+use function LAM\LOGIN\WEBAUTHN\storeNewRegistration;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -460,7 +461,7 @@ class DuoProvider extends BaseProvider {
 	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::verify2ndFactor()
 	 */
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
-		logNewMessage(LOG_DEBUG, 'PrivacyIDEAProvider: Checking 2nd factor for ' . $user);
+		logNewMessage(LOG_DEBUG, 'DuoProvider: Checking 2nd factor for ' . $user);
 		$loginAttribute = $this->getLoginAttributeValue($user);
 		$response = $_POST['sig_response'];
 		include_once(__DIR__ . "/3rdParty/duo/Web.php");
@@ -540,19 +541,15 @@ class WebauthnProvider extends BaseProvider {
 	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::verify2ndFactor()
 	 */
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
-		logNewMessage(LOG_DEBUG, 'PrivacyIDEAProvider: Checking 2nd factor for ' . $user);
-		$loginAttribute = $this->getLoginAttributeValue($user);
+		logNewMessage(LOG_DEBUG, 'WebauthnProvider: Checking 2nd factor for ' . $user);
 		$response = $_POST['sig_response'];
-		include_once(__DIR__ . "/3rdParty/duo/Web.php");
-		$result = \Duo\Web::verifyResponse(
-				$this->config->twoFactorAuthenticationClientId,
-				$this->config->twoFactorAuthenticationSecretKey,
-				$this->getAKey(),
-				$response);
-		if ($result === $loginAttribute) {
+		include_once __DIR__ . '/3rdParty/composer/autoload.php';
+		include_once __DIR__ . '/webauthn.inc';
+		$registrationObject = $_SESSION['webauthn_registration'];
+		if (storeNewRegistration($registrationObject, $response)) {
 			return true;
 		}
-		logNewMessage(LOG_ERR, 'DUO authentication failed');
+		logNewMessage(LOG_ERR, 'Webauthn authentication failed');
 		return false;
 	}
 

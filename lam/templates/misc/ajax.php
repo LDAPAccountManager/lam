@@ -197,6 +197,7 @@ class Ajax {
 		$isRegistered = isRegistered($userDN);
 		if (!$isRegistered) {
 			$registrationObject = getRegistrationObject($userDN, $isSelfService);
+			$_SESSION['webauthn_registration'] = $registrationObject;
 			echo json_encode(
 				array(
 					'action' => 'register',
