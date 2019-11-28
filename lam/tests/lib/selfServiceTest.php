@@ -1,4 +1,5 @@
 <?php
+use PHPUnit\Framework\TestCase;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -28,7 +29,7 @@ require_once 'lam/lib/selfService.inc';
  * @author Roland Gruber
  *
  */
-class selfServiceProfileTest extends PHPUnit_Framework_TestCase {
+class selfServiceProfileTest extends TestCase {
 
 	public function testBaseUrl() {
 		$profile = new selfServiceProfile();

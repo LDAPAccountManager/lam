@@ -1,7 +1,8 @@
 <?php
+use PHPUnit\Framework\TestCase;
 /*
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2017  Roland Gruber
+ Copyright (C) 2017 - 2019  Roland Gruber
  */
 
 if (is_readable('lam/lib/modules/customFields.inc')) {
@@ -16,7 +17,7 @@ if (is_readable('lam/lib/modules/customFields.inc')) {
 	 * @author Roland Gruber
 	 *
 	 */
-	class customFieldsConstantEntryTest extends PHPUnit_Framework_TestCase {
+	class customFieldsConstantEntryTest extends TestCase {
 
 		public function testReplaceWildcardsSpaces() {
 			$originalMiddle = '123((uid))456';

@@ -1,4 +1,5 @@
 <?php
+use PHPUnit\Framework\TestCase;
 /*
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
  Copyright (C) 2018 - 2019  Roland Gruber
@@ -27,7 +28,7 @@ include_once __DIR__ . '/../../lib/security.inc';
  *
  * @author Roland Gruber
  */
-class AccountTest extends PHPUnit_Framework_TestCase {
+class AccountTest extends TestCase {
 
 	/**
 	 * Tests unformatShortFormatToSeconds() without characters.

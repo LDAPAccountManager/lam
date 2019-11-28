@@ -1,8 +1,9 @@
 <?php
+use PHPUnit\Framework\TestCase;
 /*
 
 This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-Copyright (C) 2018  Roland Gruber
+Copyright (C) 2018 - 2019  Roland Gruber
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,7 +29,7 @@ include 'lam/templates/3rdParty/pla/lib/functions.php';
  *
  * @author Roland Gruber
  */
-class PlaFunctionsTest extends PHPUnit_Framework_TestCase {
+class PlaFunctionsTest extends TestCase {
 
 	public function test_masort() {
 		$data = array(

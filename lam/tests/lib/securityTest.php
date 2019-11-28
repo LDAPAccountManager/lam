@@ -1,6 +1,6 @@
 <?php
+use PHPUnit\Framework\TestCase;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2014 - 2016  Roland Gruber
@@ -32,7 +32,7 @@ include_once 'lam/lib/security.inc';
  * @author Roland Gruber
  *
  */
-class SecurityTest extends PHPUnit_Framework_TestCase {
+class SecurityTest extends TestCase {
 
 	private $cfg = null;
 

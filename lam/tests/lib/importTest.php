@@ -7,6 +7,7 @@ use LAM\TOOLS\IMPORT_EXPORT\RenameEntryTask;
 use LAM\TOOLS\IMPORT_EXPORT\DeleteEntryTask;
 use LAM\TOOLS\IMPORT_EXPORT\DeleteAttributesTask;
 use LAM\TOOLS\IMPORT_EXPORT\ReplaceAttributesTask;
+use PHPUnit\Framework\TestCase;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -35,7 +36,7 @@ require_once 'lam/lib/import.inc';
  *
  * @author Roland Gruber
  */
-class ImporterTest extends PHPUnit_Framework_TestCase {
+class ImporterTest extends TestCase {
 
 	/**
 	 * No LDIF at all.
@@ -45,7 +46,7 @@ class ImporterTest extends PHPUnit_Framework_TestCase {
 			"this is no LDIF"
 		);
 
-		$this->setExpectedException(LAMException::class, 'this is no LDIF');
+		$this->expectException(LAMException::class, 'this is no LDIF');
 
 		$importer = new Importer();
 		$importer->getTasks($lines);
@@ -59,7 +60,7 @@ class ImporterTest extends PHPUnit_Framework_TestCase {
 			"version: 3"
 		);
 
-		$this->setExpectedException(LAMException::class, 'version: 3');
+		$this->expectException(LAMException::class, 'version: 3');
 
 		$importer = new Importer();
 		$importer->getTasks($lines);
@@ -75,7 +76,7 @@ class ImporterTest extends PHPUnit_Framework_TestCase {
 			"version: 1"
 		);
 
-		$this->setExpectedException(LAMException::class);
+		$this->expectException(LAMException::class);
 
 		$importer = new Importer();
 		$importer->getTasks($lines);
@@ -90,7 +91,7 @@ class ImporterTest extends PHPUnit_Framework_TestCase {
 			"some: data"
 		);
 
-		$this->setExpectedException(LAMException::class);
+		$this->expectException(LAMException::class);
 
 		$importer = new Importer();
 		$importer->getTasks($lines);
@@ -106,7 +107,7 @@ class ImporterTest extends PHPUnit_Framework_TestCase {
 			"dn: uid=test,dc=example,dc=com"
 		);
 
-		$this->setExpectedException(LAMException::class, 'dn: uid=test,dc=example,dc=com');
+		$this->expectException(LAMException::class, 'dn: uid=test,dc=example,dc=com');
 
 		$importer = new Importer();
 		$importer->getTasks($lines);
@@ -141,7 +142,7 @@ class ImporterTest extends PHPUnit_Framework_TestCase {
 			"uid: test",
 		);
 
-		$this->setExpectedException(LAMException::class, 'uid=test,dc=example,dc=com - changeType: invalid');
+		$this->expectException(LAMException::class, 'uid=test,dc=example,dc=com - changeType: invalid');
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
@@ -178,7 +179,7 @@ class ImporterTest extends PHPUnit_Framework_TestCase {
 			"uid: test",
 		);
 
-		$this->setExpectedException(LAMException::class, 'uid=test,dc=example,dc=com');
+		$this->expectException(LAMException::class, 'uid=test,dc=example,dc=com');
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
@@ -197,7 +198,7 @@ class ImporterTest extends PHPUnit_Framework_TestCase {
 			"deleteoldrdn: x",
 		);
 
-		$this->setExpectedException(LAMException::class, 'uid=test,dc=example,dc=com');
+		$this->expectException(LAMException::class, 'uid=test,dc=example,dc=com');
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
@@ -235,7 +236,7 @@ class ImporterTest extends PHPUnit_Framework_TestCase {
 			"uid: test",
 		);
 
-		$this->setExpectedException(LAMException::class, 'uid=test,dc=example,dc=com');
+		$this->expectException(LAMException::class, 'uid=test,dc=example,dc=com');
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
@@ -271,7 +272,7 @@ class ImporterTest extends PHPUnit_Framework_TestCase {
 			"invalid: test",
 		);
 
-		$this->setExpectedException(LAMException::class, 'uid=test,dc=example,dc=com');
+		$this->expectException(LAMException::class, 'uid=test,dc=example,dc=com');
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
@@ -291,7 +292,7 @@ class ImporterTest extends PHPUnit_Framework_TestCase {
 			"invalid: uid2"
 		);
 
-		$this->setExpectedException(LAMException::class, 'uid=test,dc=example,dc=com');
+		$this->expectException(LAMException::class, 'uid=test,dc=example,dc=com');
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
