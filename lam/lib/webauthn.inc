@@ -15,6 +15,9 @@ use Cose\Algorithm\Signature\RSA\RS256;
 use Cose\Algorithm\Signature\RSA\RS384;
 use Cose\Algorithm\Signature\RSA\RS512;
 use \Cose\Algorithms;
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
+use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Webauthn\AttestationStatement\AndroidKeyAttestationStatementSupport;
 use Webauthn\AttestationStatement\AttestationObjectLoader;
@@ -63,6 +66,8 @@ use Webauthn\TokenBinding\IgnoreTokenBindingHandler;
  *
  * @author Roland Gruber
  */
+
+include_once __DIR__ . '/3rdParty/composer/autoload.php';
 
 /**
  * Returns if the given DN is registered for webauthn.
@@ -165,7 +170,6 @@ function storeNewRegistration($registration, $clientResponse) {
 	$responseValidator = new AuthenticatorAttestationResponseValidator(
 		$attestationSupportManager, $repository, $tokenBindingHandler, $extensionOutputCheckerHandler);
 	try {
-		logNewMessage(LOG_ERR, 'RESPONSE: ' . $clientResponse);
 		$publicKeyCredential = $publicKeyCredentialLoader->load($clientResponse);
 		$authenticatorAttestationResponse = $publicKeyCredential->getResponse();
 		if (!$authenticatorAttestationResponse instanceof AuthenticatorAttestationResponse) {
@@ -173,7 +177,11 @@ function storeNewRegistration($registration, $clientResponse) {
 			return false;
 		}
 		$symfonyRequest = Request::createFromGlobals();
-		$responseValidator->check($authenticatorAttestationResponse, $registration, $symfonyRequest);
+		$psr17Factory = new Psr17Factory();
+		$psrFactory = new PsrHttpFactory($psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory);
+		$psr7Request = $psrFactory->createRequest($symfonyRequest);
+		$publicKeyCredentialSource = $responseValidator->check($authenticatorAttestationResponse, $registration, $psr7Request);
+		$repository->saveCredentialSource($publicKeyCredentialSource);
 		return true;
 	}
 	catch (\Throwable $exception) {

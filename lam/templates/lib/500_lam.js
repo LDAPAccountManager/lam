@@ -1395,7 +1395,6 @@ window.lam.webauthn.run = function(prefix) {
 		data: data
 	})
 	.done(function(jsonData) {
-		console.log(jsonData);
 		if (jsonData.action === 'register') {
 			window.lam.webauthn.register(jsonData.registration);
 		}

@@ -10,6 +10,7 @@ use \htmlJavaScript;
 use \htmlStatusMessage;
 use \htmlDiv;
 use \LAMException;
+use Webauthn\PublicKeyCredentialCreationOptions;
 use function LAM\LOGIN\WEBAUTHN\storeNewRegistration;
 
 /*
@@ -543,9 +544,8 @@ class WebauthnProvider extends BaseProvider {
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
 		logNewMessage(LOG_DEBUG, 'WebauthnProvider: Checking 2nd factor for ' . $user);
 		$response = base64_decode($_POST['sig_response']);
-		include_once __DIR__ . '/3rdParty/composer/autoload.php';
 		include_once __DIR__ . '/webauthn.inc';
-		$registrationObject = $_SESSION['webauthn_registration'];
+		$registrationObject = PublicKeyCredentialCreationOptions::createFromString($_SESSION['webauthn_registration']);
 		if (storeNewRegistration($registrationObject, $response)) {
 			return true;
 		}

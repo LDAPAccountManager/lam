@@ -191,13 +191,12 @@ class Ajax {
 	 * @param bool $isSelfService request is from self service
 	 */
 	private function manageWebauthn($isSelfService) {
-		include_once __DIR__ . '/../../lib/3rdParty/composer/autoload.php';
 		include_once __DIR__ . '/../../lib/webauthn.inc';
 		$userDN = $_SESSION['ldap']->getUserName();
 		$isRegistered = isRegistered($userDN);
 		if (!$isRegistered) {
 			$registrationObject = getRegistrationObject($userDN, $isSelfService);
-			$_SESSION['webauthn_registration'] = $registrationObject;
+			$_SESSION['webauthn_registration'] = json_encode($registrationObject);
 			echo json_encode(
 				array(
 					'action' => 'register',
