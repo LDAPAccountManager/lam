@@ -542,7 +542,7 @@ class WebauthnProvider extends BaseProvider {
 	 */
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
 		logNewMessage(LOG_DEBUG, 'WebauthnProvider: Checking 2nd factor for ' . $user);
-		$response = $_POST['sig_response'];
+		$response = base64_decode($_POST['sig_response']);
 		include_once __DIR__ . '/3rdParty/composer/autoload.php';
 		include_once __DIR__ . '/webauthn.inc';
 		$registrationObject = $_SESSION['webauthn_registration'];

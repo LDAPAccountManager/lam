@@ -1418,7 +1418,7 @@ window.lam.webauthn.register = function(publicKey) {
 			let publicKeyCredential = {
 				id: data.id,
 				type: data.type,
-				rawId: btoa(String.fromCharCode(new Uint8Array(data.rawId))),
+				rawId: window.lam.webauthn.arrayToBase64String(new Uint8Array(data.rawId)),
 				response: {
 					clientDataJSON: window.lam.webauthn.arrayToBase64String(new Uint8Array(data.response.clientDataJSON)),
 					attestationObject: window.lam.webauthn.arrayToBase64String(new Uint8Array(data.response.attestationObject))

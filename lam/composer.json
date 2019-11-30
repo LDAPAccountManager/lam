@@ -3,6 +3,7 @@
     "vendor-dir": "lib/3rdParty/composer"
   },
   "require" : {
-    "web-auth/webauthn-lib" : "2.1.7"
+    "web-auth/webauthn-lib" : "2.1.7",
+    "symfony/http-foundation" : "5.0.0"
   }
 }

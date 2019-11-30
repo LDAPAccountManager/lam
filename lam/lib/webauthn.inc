@@ -15,17 +15,23 @@ use Cose\Algorithm\Signature\RSA\RS256;
 use Cose\Algorithm\Signature\RSA\RS384;
 use Cose\Algorithm\Signature\RSA\RS512;
 use \Cose\Algorithms;
-use http\Client;
+use Symfony\Component\HttpFoundation\Request;
 use Webauthn\AttestationStatement\AndroidKeyAttestationStatementSupport;
-use Webauthn\AttestationStatement\AndroidSafetyNetAttestationStatementSupport;
+use Webauthn\AttestationStatement\AttestationObjectLoader;
 use Webauthn\AttestationStatement\AttestationStatementSupportManager;
 use Webauthn\AttestationStatement\FidoU2FAttestationStatementSupport;
 use Webauthn\AttestationStatement\NoneAttestationStatementSupport;
 use Webauthn\AttestationStatement\PackedAttestationStatementSupport;
 use Webauthn\AttestationStatement\TPMAttestationStatementSupport;
+use Webauthn\AuthenticationExtensions\ExtensionOutputCheckerHandler;
+use Webauthn\AuthenticatorAttestationResponse;
+use Webauthn\AuthenticatorAttestationResponseValidator;
 use \Webauthn\PublicKeyCredentialCreationOptions;
+use Webauthn\PublicKeyCredentialLoader;
 use \Webauthn\PublicKeyCredentialRpEntity;
 use \Webauthn\PublicKeyCredentialParameters;
+use Webauthn\PublicKeyCredentialSource;
+use Webauthn\PublicKeyCredentialSourceRepository;
 use \Webauthn\PublicKeyCredentialUserEntity;
 use \Webauthn\AuthenticationExtensions\AuthenticationExtensionsClientInputs;
 use \Webauthn\AuthenticatorSelectionCriteria;
@@ -145,13 +151,34 @@ function getCredentialParameters() {
  * Verifies the registration and stores it in the database.
  *
  * @param PublicKeyCredentialCreationOptions $registration registration object
- * @param $clientResponse client response
+ * @param string $clientResponse client response
  * @return bool true if response is valid and registration succeeded
  */
 function storeNewRegistration($registration, $clientResponse) {
 	$decoder = getCborDecoder();
 	$tokenBindingHandler = new IgnoreTokenBindingHandler();
 	$attestationSupportManager = getAttestationSupportManager($decoder);
+	$attestationObjectLoader = getAttestationObjectLoader($attestationSupportManager, $decoder);
+	$publicKeyCredentialLoader = getPublicKeyCredentialLoader($attestationObjectLoader, $decoder);
+	$extensionOutputCheckerHandler = getExtensionOutputChecker();
+	$repository = new PublicKeyCredentialSourceRepositorySQLite();
+	$responseValidator = new AuthenticatorAttestationResponseValidator(
+		$attestationSupportManager, $repository, $tokenBindingHandler, $extensionOutputCheckerHandler);
+	try {
+		logNewMessage(LOG_ERR, 'RESPONSE: ' . $clientResponse);
+		$publicKeyCredential = $publicKeyCredentialLoader->load($clientResponse);
+		$authenticatorAttestationResponse = $publicKeyCredential->getResponse();
+		if (!$authenticatorAttestationResponse instanceof AuthenticatorAttestationResponse) {
+			logNewMessage(LOG_ERR, 'Invalid webauthn response: ' . $clientResponse);
+			return false;
+		}
+		$symfonyRequest = Request::createFromGlobals();
+		$responseValidator->check($authenticatorAttestationResponse, $registration, $symfonyRequest);
+		return true;
+	}
+	catch (\Throwable $exception) {
+		logNewMessage(LOG_ERR, 'Webauthn validation failed: ' . $exception->getMessage() . $exception->getTraceAsString());
+	}
 	return false;
 }
 
@@ -174,7 +201,6 @@ function getAttestationSupportManager($decoder) {
 	$manager = new AttestationStatementSupportManager();
 	$manager->add(new NoneAttestationStatementSupport());
 	$manager->add(new FidoU2FAttestationStatementSupport());
-	$manager->add(new AndroidSafetyNetAttestationStatementSupport(new Client() /*TODO*/));
 	$manager->add(new AndroidKeyAttestationStatementSupport($decoder));
 	$manager->add(new TPMAttestationStatementSupport());
 	$coseManager = new Manager();
@@ -189,3 +215,80 @@ function getAttestationSupportManager($decoder) {
 	$manager->add(new PackedAttestationStatementSupport($decoder, $coseManager));
 	return $manager;
 }
+
+/**
+ * Returns the attestation object loader.
+ *
+ * @param AttestationStatementSupportManager $manager support manager
+ * @param Decoder $decoder decoder
+ * @return AttestationObjectLoader attestation object loader
+ */
+function getAttestationObjectLoader($manager, $decoder) {
+	return new AttestationObjectLoader($manager, $decoder);
+}
+
+/**
+ * Creates the public key credential loader.
+ *
+ * @param AttestationObjectLoader $attestationObjectLoader attestation object loader
+ * @param Decoder $decoder decoder
+ * @return PublicKeyCredentialLoader public key credential loader
+ */
+function getPublicKeyCredentialLoader($attestationObjectLoader, $decoder) {
+	return new PublicKeyCredentialLoader($attestationObjectLoader, $decoder);
+}
+
+/**
+ * Returns the extension output checker handler.
+ * No extensions are checked at this time.
+ *
+ * @return ExtensionOutputCheckerHandler handler
+ */
+function getExtensionOutputChecker() {
+	return new ExtensionOutputCheckerHandler();
+}
+
+/**
+ * Stores the public key credentials in the SQLite database.
+ *
+ * @package LAM\LOGIN\WEBAUTHN
+ */
+class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSourceRepository {
+
+	/**
+	 * Finds the public key for the given credential id.
+	 *
+	 * @param string $publicKeyCredentialId credential id
+	 * @return PublicKeyCredentialSource|null credential source
+	 */
+	public function findOneByCredentialId(string $publicKeyCredentialId): ?PublicKeyCredentialSource {
+		// TODO: Implement findOneByCredentialId() method.
+		logNewMessage(LOG_WARNING, 'FIND ONE: ' . $publicKeyCredentialId);
+		return null;
+	}
+
+	/**
+	 * Finds all credential entries for the given user.
+	 *
+	 * @param PublicKeyCredentialUserEntity $publicKeyCredentialUserEntity credential user entity
+	 * @return PublicKeyCredentialSource[] credential sources
+	 */
+	public function findAllForUserEntity(PublicKeyCredentialUserEntity $publicKeyCredentialUserEntity): array {
+		// TODO: Implement findAllForUserEntity() method.
+		logNewMessage(LOG_WARNING, 'FIND ALL: ' . json_encode($publicKeyCredentialUserEntity));
+		return array();
+	}
+
+	/**
+	 * Saves the given credential in the database.
+	 *
+	 * @param PublicKeyCredentialSource $publicKeyCredentialSource credential
+	 */
+	public function saveCredentialSource(PublicKeyCredentialSource $publicKeyCredentialSource): void {
+		// TODO: Implement saveCredentialSource() method.
+		logNewMessage(LOG_WARNING, 'SAVE: ' . json_encode($publicKeyCredentialSource));
+	}
+
+}
+
+
