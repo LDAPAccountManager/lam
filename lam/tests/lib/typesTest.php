@@ -33,7 +33,7 @@ class ListAttributeTest extends TestCase {
 
 	private $type;
 
-	public function setUp() {
+	protected function setUp(): void {
 		$this->type = $this->getMockBuilder('ConfiguredType')->setMethods(array('getBaseType'))->getMock();
 		$scope = new user($this->type);
 		$this->type->method('getBaseType')->willReturn($scope);

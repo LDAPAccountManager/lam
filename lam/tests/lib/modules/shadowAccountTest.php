@@ -133,7 +133,7 @@ if (is_readable('lam/lib/passwordExpirationJob.inc')) {
 		private $options = array();
 		private $resultLog = null;
 
-		public function setUp() {
+		public function setUp(): void {
 			$this->job = $this->getMockBuilder('ShadowAccountPasswordNotifyJob')
 				->setMethods(array('getDBLastPwdChangeTime', 'setDBLastPwdChangeTime', 'sendMail', 'findUsers', 'getConfigPrefix'))
 				->getMock();

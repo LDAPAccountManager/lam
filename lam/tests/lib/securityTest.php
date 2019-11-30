@@ -36,7 +36,7 @@ class SecurityTest extends TestCase {
 
 	private $cfg = null;
 
-	protected function setUp() {
+	protected function setUp(): void {
 		testCreateDefaultConfig ();
 		$this->cfg = &$_SESSION ['cfgMain'];
 		$this->resetPasswordRules();
@@ -45,7 +45,7 @@ class SecurityTest extends TestCase {
 	/**
 	 * Cleans up the environment after running a test.
 	 */
-	protected function tearDown() {
+	protected function tearDown(): void {
 		testDeleteDefaultConfig();
 		parent::tearDown();
 	}

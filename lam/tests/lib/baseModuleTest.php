@@ -29,7 +29,7 @@ include_once __DIR__ . '/../../lib/baseModule.inc';
  */
 class BaseModuleTest extends TestCase {
 
-	function setup() {
+	protected function setup(): void {
 		$_SESSION['language'] = 'en_GB.utf8:UTF-8:English (Great Britain)';
 	}
 

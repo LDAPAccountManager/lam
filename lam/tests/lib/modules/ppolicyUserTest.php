@@ -47,7 +47,7 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 		private $options = array();
 		private $resultLog = null;
 
-		public function setUp() {
+		protected function setUp(): void {
 			$this->job = $this->getMockBuilder('PPolicyPasswordNotifyJob')
 				->setMethods(array('getDBLastPwdChangeTime', 'setDBLastPwdChangeTime', 'sendMail',
 						'findUsers', 'getConfigPrefix', 'getPolicyOptions'))
