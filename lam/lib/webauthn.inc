@@ -16,7 +16,7 @@ use Cose\Algorithm\Signature\RSA\RS384;
 use Cose\Algorithm\Signature\RSA\RS512;
 use \Cose\Algorithms;
 use Nyholm\Psr7\Factory\Psr17Factory;
-use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
+use PDO;
 use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Webauthn\AttestationStatement\AndroidKeyAttestationStatementSupport;
@@ -30,6 +30,7 @@ use Webauthn\AuthenticationExtensions\ExtensionOutputCheckerHandler;
 use Webauthn\AuthenticatorAttestationResponse;
 use Webauthn\AuthenticatorAttestationResponseValidator;
 use \Webauthn\PublicKeyCredentialCreationOptions;
+use Webauthn\PublicKeyCredentialDescriptor;
 use Webauthn\PublicKeyCredentialLoader;
 use \Webauthn\PublicKeyCredentialRpEntity;
 use \Webauthn\PublicKeyCredentialParameters;
@@ -91,6 +92,7 @@ function getRegistrationObject($dn, $isSelfService) {
 	$userEntity = getUserEntity($dn);
 	$challenge = generateRandomPassword(32);
 	$credentialParameters = getCredentialParameters();
+	$excludedKeys = getExcludedKeys($userEntity);
 	$timeout = 20000;
 	$registrationObject = new PublicKeyCredentialCreationOptions(
 		$rpEntity,
@@ -98,7 +100,7 @@ function getRegistrationObject($dn, $isSelfService) {
 		$challenge,
 		$credentialParameters,
 		$timeout,
-		array(),
+		$excludedKeys,
 		new AuthenticatorSelectionCriteria(),
 		PublicKeyCredentialCreationOptions::ATTESTATION_CONVEYANCE_PREFERENCE_NONE,
 		new AuthenticationExtensionsClientInputs());
@@ -150,6 +152,22 @@ function getCredentialParameters() {
 		new PublicKeyCredentialParameters('public-key', Algorithms::COSE_ALGORITHM_ES256),
 		new PublicKeyCredentialParameters('public-key', Algorithms::COSE_ALGORITHM_RS256),
 	);
+}
+
+/**
+ * Returns a list of all credential ids that are already registered.
+ *
+ * @param PublicKeyCredentialUserEntity $user user data
+ * @return PublicKeyCredentialDescriptor[] credential ids
+ */
+function getExcludedKeys($user) {
+	$keys = array();
+	$repository = new PublicKeyCredentialSourceRepositorySQLite();
+	$credentialSources = $repository->findAllForUserEntity($user);
+	foreach ($credentialSources as $credentialSource) {
+		$keys[] = new PublicKeyCredentialDescriptor(PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY, $credentialSource->getPublicKeyCredentialId());
+	}
+	return $keys;
 }
 
 /**
@@ -263,6 +281,8 @@ function getExtensionOutputChecker() {
  */
 class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSourceRepository {
 
+	const TABLE_NAME = 'lam_webauthn';
+
 	/**
 	 * Finds the public key for the given credential id.
 	 *
@@ -270,8 +290,19 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 	 * @return PublicKeyCredentialSource|null credential source
 	 */
 	public function findOneByCredentialId(string $publicKeyCredentialId): ?PublicKeyCredentialSource {
-		// TODO: Implement findOneByCredentialId() method.
-		logNewMessage(LOG_WARNING, 'FIND ONE: ' . $publicKeyCredentialId);
+		try {
+			$pdo = $this->getPDO();
+			$statement = $pdo->prepare('select * from ' . self::TABLE_NAME . ' where credentialId = :credentialid');
+			$statement->execute(array(':credentialid' => base64_encode($publicKeyCredentialId)));
+			$results = $statement->fetchAll();
+			if (!empty($results)) {
+				$jsonArray = json_decode($results[0]['credentialSource'], true);
+				return PublicKeyCredentialSource::createFromArray($jsonArray);
+			}
+		}
+		catch (\PDOException $e) {
+			logNewMessage(LOG_ERR, 'Webauthn database error: ' . $e->getMessage());
+		}
 		return null;
 	}
 
@@ -282,9 +313,21 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 	 * @return PublicKeyCredentialSource[] credential sources
 	 */
 	public function findAllForUserEntity(PublicKeyCredentialUserEntity $publicKeyCredentialUserEntity): array {
-		// TODO: Implement findAllForUserEntity() method.
-		logNewMessage(LOG_WARNING, 'FIND ALL: ' . json_encode($publicKeyCredentialUserEntity));
-		return array();
+		$credentials = array();
+		try {
+			$pdo = $this->getPDO();
+			$statement = $pdo->prepare('select * from ' . self::TABLE_NAME . ' where userId = :userid');
+			$statement->execute(array(':userid' => $publicKeyCredentialUserEntity->getId()));
+			$results = $statement->fetchAll();
+			foreach ($results as $result) {
+				$jsonArray = json_decode($results[0]['credentialSource'], true);
+				$credentials[] = PublicKeyCredentialSource::createFromArray($jsonArray);
+			}
+		}
+		catch (\PDOException $e) {
+			logNewMessage(LOG_ERR, 'Webauthn database error: ' . $e->getMessage());
+		}
+		return $credentials;
 	}
 
 	/**
@@ -293,8 +336,83 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 	 * @param PublicKeyCredentialSource $publicKeyCredentialSource credential
 	 */
 	public function saveCredentialSource(PublicKeyCredentialSource $publicKeyCredentialSource): void {
-		// TODO: Implement saveCredentialSource() method.
-		logNewMessage(LOG_WARNING, 'SAVE: ' . json_encode($publicKeyCredentialSource));
+		$json = json_encode($publicKeyCredentialSource);
+		$credentialId = base64_encode($publicKeyCredentialSource->getPublicKeyCredentialId());
+		$userId = $publicKeyCredentialSource->getUserHandle();
+		$registrationTime = time();
+		$pdo = $this->getPDO();
+		$statement = $pdo->prepare('insert into ' . self::TABLE_NAME . ' (userId, credentialId, credentialSource, registrationTime) VALUES (?, ?, ?, ?)');
+		$statement->execute(array(
+			$userId,
+			$credentialId,
+			$json,
+			$registrationTime
+		));
+		logNewMessage(LOG_DEBUG, 'Stored new credential for ' . $userId);
+	}
+
+	/**
+	 * Returns the database URL.
+	 *
+	 * @return string the PDO URL
+	 */
+	protected function getPdoUrl() {
+		$fileName = dirname(__FILE__) . '/../config/__lam.webauthn.sqlite';
+		if (!file_exists($fileName)) {
+			$handle = fopen($fileName, 'w');
+			fclose($handle);
+			chmod($fileName, 0600);
+		}
+		return 'sqlite:' . $fileName;
+	}
+
+	/**
+	 * Returns the PDO.
+	 *
+	 * @return PDO PDO
+	 */
+	protected function getPDO() {
+		$pdo = new PDO($this->getPdoUrl(), null, null, array(
+			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+		));
+		// initial schema
+		if (!$this->tableExists($pdo, self::TABLE_NAME)) {
+			$this->createInitialSchema($pdo);
+		}
+		return $pdo;
+	}
+
+	/**
+	 * Checks if the given table name exists.
+	 *
+	 * @param PDO $pdo PDO object
+	 * @param String $tableName table name to check
+	 * @return boolean table exists
+	 */
+	protected function tableExists(&$pdo, $tableName) {
+		try {
+			$result = $pdo->query("SELECT 1 FROM $tableName LIMIT 1");
+			return ($result === false) ? false : true;
+		} catch (\PDOException $e) {
+			return false;
+		}
+	}
+
+	/**
+	 * Creates the initial schema.
+	 *
+	 * @param PDO $pdo PDO object
+	 */
+	protected function createInitialSchema($pdo) {
+		logNewMessage(LOG_DEBUG, 'Creating database table ' . self::TABLE_NAME);
+		$sql = 'create table ' . self::TABLE_NAME . '('
+			. 'userId TEXT NOT NULL,'
+			. 'credentialId TEXT NOT NULL,'
+			. 'credentialSource TEXT NOT NULL,'
+			. 'registrationTime VARCHAR(11) NOT NULL,'
+			. 'PRIMARY KEY(userId,credentialId)'
+			. ');';
+		$pdo->exec($sql);
 	}
 
 }

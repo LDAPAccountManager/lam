@@ -3,3 +3,4 @@ config.cfg
 /serverCerts.pem
 /pdf/
 /profiles/
+*.sqlite

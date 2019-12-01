@@ -1412,6 +1412,16 @@ window.lam.webauthn.run = function(prefix) {
 window.lam.webauthn.register = function(publicKey) {
 	publicKey.challenge = Uint8Array.from(window.atob(publicKey.challenge), c=>c.charCodeAt(0));
 	publicKey.user.id = Uint8Array.from(window.atob(publicKey.user.id), c=>c.charCodeAt(0));
+	publicKey.rp.icon = window.location.href.substring(0, window.location.href.lastIndexOf("/")) + publicKey.rp.icon;
+	if (publicKey.excludeCredentials) {
+		for (var i = 0; i < publicKey.excludeCredentials.length; i++) {
+			let idOrig = publicKey.excludeCredentials[i]['id'];
+			idOrig = idOrig.replace(/-/g, "+").replace(/_/g, "/");
+			let idOrigDecoded = atob(idOrig);
+			let idArray = Uint8Array.from(idOrigDecoded, c => c.charCodeAt(0))
+			publicKey.excludeCredentials[i]['id'] = idArray;
+		}
+	}
 	navigator.credentials.create({publicKey})
 		.then(function (data) {
 			let publicKeyCredential = {
@@ -1428,7 +1438,8 @@ window.lam.webauthn.register = function(publicKey) {
 			form.append('<input type="hidden" name="sig_response" value="' + response + '"/>');
 			form.submit();
 		}, function (error) {
-			console.log(error);
+			console.log(error.message);
+			jQuery('#btn_logout').click();
 		});
 }
 

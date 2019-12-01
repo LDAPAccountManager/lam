@@ -523,6 +523,19 @@ class WebauthnProvider extends BaseProvider {
 	 * @see \LAM\LIB\TWO_FACTOR\BaseProvider::addCustomInput()
 	 */
 	public function addCustomInput(&$row, $userDn) {
+		if (version_compare(phpversion(), '7.2.0') < 0) {
+			$row->add(new htmlStatusMessage('ERROR', 'Webauthn requires PHP 7.2.'), 12);
+			return;
+		}
+		if (!extension_loaded('PDO')) {
+			$row->add(new htmlStatusMessage('ERROR', 'Webauthn requires the PDO extension for PHP.'), 12);
+			return;
+		}
+		$pdoDrivers = \PDO::getAvailableDrivers();
+		if (!in_array('sqlite', $pdoDrivers)) {
+			$row->add(new htmlStatusMessage('ERROR', 'Webauthn requires the sqlite PDO driver for PHP.'), 12);
+			return;
+		}
 		$pathPrefix = $this->config->isSelfService ? '../' : '';
 		$row->add(new htmlImage($pathPrefix . '../graphics/webauthn.svg'), 12);
 		$row->addVerticalSpacer('1rem');
