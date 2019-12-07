@@ -545,7 +545,7 @@ class WebauthnProvider extends BaseProvider {
 		$loginButton = new htmlButton('login_webauthn', _('Login'));
 		$loginButton->setCSSClasses(array('fullwidth hidden'));
 		$row->add($loginButton, 12);
-		$errorMessage = new htmlStatusMessage('ERROR', '', _('This service requires a browser with webauthn support.'));
+		$errorMessage = new htmlStatusMessage('ERROR', '', _('This service requires a browser with "WebAuthn" support.'));
 		$row->add(new htmlDiv(null, $errorMessage, array('hidden webauthn-error')), 12);
 		$row->add(new htmlJavaScript('window.lam.webauthn.start(\'' . $pathPrefix . '\');'), 0);
 	}
