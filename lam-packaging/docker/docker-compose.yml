@@ -16,7 +16,6 @@ services:
     environment:
       - LAM_PASSWORD=${LAM_PASSWORD}
       - LAM_LANG=en_US
-      - LAM_TIMEZONE=Europe/Berlin
       - LDAP_SERVER=${LDAP_SERVER}
       - LDAP_DOMAIN=${LDAP_DOMAIN}
       - LDAP_BASE_DN=${LDAP_BASE_DN}
