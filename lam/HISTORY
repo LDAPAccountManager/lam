@@ -2,6 +2,8 @@ December 2019 7.0
   - Lamdaemon can be configured with directory prefix for homedirs
   - Account list filters match on substrings instead of whole value
   - YubiKey: support to configure multiple verification servers
+  - Deactivated non-maintained translations: Catalan, Czech, Hungarian, Polish and Turkish
+    Contact us if you would like to take over. Translators get LAM Pro for free (commercial use included).
   - Fixed bugs:
    -> Missing CSS for Duo
    -> Editing of DNs with comma on Windows (210)
