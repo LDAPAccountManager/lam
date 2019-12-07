@@ -86,7 +86,7 @@ class yubiKeyUser extends baseModule {
 		$return['help'] = array(
 			$attributeName => array(
 				"Headline" => _("YubiKey ids"), 'attr' => $attributeName,
-				"Text" => _("The YubiKey id are the first 12 letters of the key output. Simlply touch your YubiKey in an empty field to set it.")
+				"Text" => _("The YubiKey id are the first 12 letters of the key output. Simply touch your YubiKey in an empty field to set it.")
 			),
 			'keyList' => array(
 				"Headline" => _("YubiKey ids"), 'attr' => $attributeName,
@@ -102,7 +102,7 @@ class yubiKeyUser extends baseModule {
 			),
 			'whereToFind' => array(
 				"Headline" => _("YubiKey ids"),
-				"Text" => _("The YubiKey id are the first 12 letters of the key output. Simlply touch your YubiKey in an empty field to set it.")
+				"Text" => _("The YubiKey id are the first 12 letters of the key output. Simply touch your YubiKey in an empty field to set it.")
 			),
 		);
 		// upload fields
