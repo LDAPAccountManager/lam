@@ -4,6 +4,7 @@ December 2019 7.0
   - YubiKey: support to configure multiple verification servers
   - Deactivated non-maintained translations: Catalan, Czech, Hungarian, Polish and Turkish
     Contact us if you would like to take over. Translators get LAM Pro for free (commercial use included).
+  - Docker updates
   - Fixed bugs:
    -> Missing CSS for Duo
    -> Editing of DNs with comma on Windows (210)

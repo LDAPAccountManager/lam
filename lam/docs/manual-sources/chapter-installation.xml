@@ -318,6 +318,10 @@
 
       <para>You can run LAM inside Docker.</para>
 
+      <para>Possible environment variables are documented in the <ulink
+      url="https://github.com/LDAPAccountManager/lam/blob/develop/lam-packaging/docker/.env">sample
+      .env</ulink> file.</para>
+
       <para>See here:</para>
 
       <para><ulink
