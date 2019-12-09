@@ -23,12 +23,13 @@
 #
 #  Then access LAM at http://localhost:8080/
 #  You can change the port 8080 if needed.
+#  See possible environment variables here: https://github.com/LDAPAccountManager/lam/blob/develop/lam-packaging/docker/.env
 #
 
 FROM debian:buster-slim
 LABEL maintainer="Roland Gruber <post@rolandgruber.de>"
 
-ARG LAM_RELEASE=6.9
+ARG LAM_RELEASE=7.0.RC1
 
 ENV \
     DEBIAN_FRONTEND=noninteractive \
