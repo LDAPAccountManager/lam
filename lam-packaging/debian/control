@@ -2,7 +2,7 @@ Source: ldap-account-manager
 Maintainer: Roland Gruber <post@rolandgruber.de>
 Section: web
 Priority: optional
-Standards-Version: 4.4.0
+Standards-Version: 4.4.1
 Build-Depends: debhelper (>= 9), po-debconf, cleancss, node-uglify
 Homepage: https://www.ldap-account-manager.org/
 
@@ -20,7 +20,7 @@ Suggests: ldap-server, php5-mcrypt | php-mcrypt, ldap-account-manager-lamdaemon,
 Description: webfrontend for managing accounts in an LDAP directory
  LDAP Account Manager (LAM) runs on an existing webserver.
  It manages user, group and host accounts. Currently LAM
- supports these account types: Samba 3/4, Unix, Kolab 2/3,
+ supports these account types: Samba 3/4, Unix, Kolab,
  address book entries, NIS mail aliases and MAC addresses.
  There is an integrated LDAP browser to allow access to the
  raw LDAP attributes. You can use templates

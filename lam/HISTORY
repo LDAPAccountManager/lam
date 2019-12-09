@@ -3,9 +3,13 @@ December 2019 7.0
   - Lamdaemon can be configured with directory prefix for homedirs
   - Account list filters match on substrings instead of whole value
   - YubiKey: support to configure multiple verification servers
+  - Deactivated non-maintained translations: Catalan, Czech, Hungarian, Polish and Turkish
+    Contact us if you would like to take over. Translators get LAM Pro for free (commercial use included).
+  - Docker updates
   - Fixed bugs:
    -> Missing CSS for Duo
    -> Editing of DNs with comma on Windows (210)
+
 
 29.09.2019 6.9
   - Group account types can show member+owner count in list view

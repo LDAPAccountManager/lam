@@ -23,34 +23,62 @@
 #
 #  Then access LAM at http://localhost:8080/
 #  You can change the port 8080 if needed.
+#  See possible environment variables here: https://github.com/LDAPAccountManager/lam/blob/develop/lam-packaging/docker/.env
 #
 
-FROM debian:stretch
-MAINTAINER Roland Gruber <post@rolandgruber.de>
+FROM debian:buster-slim
+LABEL maintainer="Roland Gruber <post@rolandgruber.de>"
 
-ARG LAM_RELEASE=6.9
+ARG LAM_RELEASE=7.0.RC1
 
-# update OS
-RUN apt-get update \
- && apt-get upgrade -y
+ENV \
+    DEBIAN_FRONTEND=noninteractive \
+    DEBUG=''
 
-# install requirements
-RUN apt-get install -y wget apache2 libapache2-mod-php php php-ldap php-zip php-xml php-curl php-gd php-imagick php-mcrypt php-tcpdf php-phpseclib fonts-dejavu php-monolog
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y \
+        apache2 \
+        ca-certificates \
+        dumb-init \
+        fonts-dejavu \
+        libapache2-mod-php \
+        php \
+        php-curl \
+        php-gd \
+        php-imagick \
+        php-ldap \
+        php-monolog \
+        php-phpseclib \
+        php-xml \
+        php-zip \
+        wget \
+    && \
+    rm /etc/apache2/sites-enabled/*default* && \
+    rm -rf /var/cache/apt /var/lib/apt/lists/*
 
 # install LAM
-RUN wget http://prdownloads.sourceforge.net/lam/ldap-account-manager_${LAM_RELEASE}-1_all.deb?download -O /tmp/ldap-account-manager_${LAM_RELEASE}-1_all.deb \
- && dpkg -i /tmp/ldap-account-manager_${LAM_RELEASE}-1_all.deb
+RUN wget http://prdownloads.sourceforge.net/lam/ldap-account-manager_${LAM_RELEASE}-1_all.deb?download \
+    -O /tmp/ldap-account-manager_${LAM_RELEASE}-1_all.deb && \
+    dpkg -i /tmp/ldap-account-manager_${LAM_RELEASE}-1_all.deb && \
+    rm -f /tmp/ldap-account-manager_${LAM_RELEASE}-1_all.deb
 
-# cleanup
-RUN apt-get autoremove -y && apt-get clean all \
- && rm -f /tmp/ldap-account-manager_${LAM_RELEASE}-1_all.deb \
- && rm /etc/apache2/sites-enabled/*default*
+# redirect Apache logging
+RUN sed -e 's,^ErrorLog.*,ErrorLog "|/bin/cat",' -i /etc/apache2/apache2.conf
+# because there is no logging set in the lam vhost logging goes to other_vhost_access.log
+RUN ln -sf /dev/stdout /var/log/apache2/other_vhosts_access.log
 
 # add redirect for /
 RUN a2enmod rewrite
 RUN echo "RewriteEngine on" >> /etc/apache2/conf-enabled/laminit.conf \
  && echo "RewriteRule   ^/$  /lam/ [R,L]" >> /etc/apache2/conf-enabled/laminit.conf
 
-# start Apache when container starts
-ENTRYPOINT service apache2 start && sleep infinity
+COPY start.sh /usr/local/bin/start.sh
 
+WORKDIR /var/lib/ldap-account-manager/config
+
+# start Apache when container starts
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+CMD [ "/usr/local/bin/start.sh" ]
+
+HEALTHCHECK --interval=1m --timeout=10s \
+    CMD wget -qO- http://localhost/lam/ | grep -q '<title>LDAP Account Manager</title>'

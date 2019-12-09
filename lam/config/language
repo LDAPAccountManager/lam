@@ -6,10 +6,10 @@
 # the second is the character encoding and the third the language name.
 
 # Catalan
-ca_ES.utf8:UTF-8:Català (Catalunya)
+# ca_ES.utf8:UTF-8:Català (Catalunya)
 
 # Czech
-cs_CZ.utf8:UTF-8:Čeština (Česko)
+# cs_CZ.utf8:UTF-8:Čeština (Česko)
 
 # German
 de_DE.utf8:UTF-8:Deutsch (Deutschland)
@@ -30,13 +30,13 @@ fr_FR.utf8:UTF-8:Français (France)
 it_IT.utf8:UTF-8:Italiano (Italia)
 
 # Hungarian
-hu_HU.utf8:UTF-8:Magyar (Magyarország)
+# hu_HU.utf8:UTF-8:Magyar (Magyarország)
 
 # Dutch
 nl_NL.utf8:UTF-8:Nederlands (Nederland)
 
 # Polish
-pl_PL.utf8:UTF-8:Polski (Polska)
+# pl_PL.utf8:UTF-8:Polski (Polska)
 
 # Portuguese
 pt_BR.utf8:UTF-8:Português (Brasil)
@@ -48,7 +48,7 @@ ru_RU.utf8:UTF-8:Русский (Россия)
 sk_SK.utf8:UTF-8:Slovenčina (Slovensko)
 
 # Turkish
-tr_TR.utf8:UTF-8:Türkçe (Türkiye)
+# tr_TR.utf8:UTF-8:Türkçe (Türkiye)
 
 # Ukrainian
 uk_UA.utf8:UTF-8:Українська (Україна)
