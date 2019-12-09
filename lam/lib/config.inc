@@ -2480,7 +2480,7 @@ class LAMConfig {
 	 * @return bool 2nd factor is optional
 	 */
 	public function getTwoFactorAuthenticationOptional() {
-		return $this->twoFactorAuthenticationOptional;
+		return boolval($this->twoFactorAuthenticationOptional);
 	}
 
 	/**

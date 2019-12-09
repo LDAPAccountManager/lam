@@ -1377,6 +1377,12 @@ window.lam.webauthn.start = function(prefix) {
  * @param prefix path prefix for Ajax endpoint
  */
 window.lam.webauthn.run = function(prefix) {
+	jQuery('#btn_skip_webauthn').click(function () {
+		let form = jQuery("#2faform");
+		form.append('<input type="hidden" name="sig_response" value="skip"/>');
+		form.submit();
+		return;
+	});
 	var token = jQuery('#sec_token').val();
 	// check for webauthn support
 	if (!navigator.credentials || (typeof(PublicKeyCredential) === "undefined")) {

@@ -11,6 +11,7 @@ use \htmlStatusMessage;
 use \htmlDiv;
 use \LAMException;
 use Webauthn\PublicKeyCredentialCreationOptions;
+use function LAM\LOGIN\WEBAUTHN\hasTokensRegistered;
 use function LAM\LOGIN\WEBAUTHN\storeNewRegistration;
 
 /*
@@ -547,6 +548,15 @@ class WebauthnProvider extends BaseProvider {
 		$row->add($loginButton, 12);
 		$errorMessage = new htmlStatusMessage('ERROR', '', _('This service requires a browser with "WebAuthn" support.'));
 		$row->add(new htmlDiv(null, $errorMessage, array('hidden webauthn-error')), 12);
+		if ($this->config->twoFactorAuthenticationOptional === true) {
+			include_once __DIR__ . '/webauthn.inc';
+			$hasTokens = hasTokensRegistered($userDn);
+			if (!$hasTokens) {
+				$skipButton = new htmlButton('skip_webauthn', _('Skip'));
+				$skipButton->setCSSClasses(array('fullwidth'));
+				$row->add($skipButton, 12);
+			}
+		}
 		$row->add(new htmlJavaScript('window.lam.webauthn.start(\'' . $pathPrefix . '\');'), 0);
 	}
 
@@ -556,8 +566,12 @@ class WebauthnProvider extends BaseProvider {
 	 */
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
 		logNewMessage(LOG_DEBUG, 'WebauthnProvider: Checking 2nd factor for ' . $user);
-		$response = base64_decode($_POST['sig_response']);
 		include_once __DIR__ . '/webauthn.inc';
+		logNewMessage(LOG_ERR, $user);
+		if ($this->config->twoFactorAuthenticationOptional && !hasTokensRegistered($user) && ($_POST['sig_response'] === 'skip')) {
+			return true;
+		}
+		$response = base64_decode($_POST['sig_response']);
 		$registrationObject = PublicKeyCredentialCreationOptions::createFromString($_SESSION['webauthn_registration']);
 		if (storeNewRegistration($registrationObject, $response)) {
 			return true;
@@ -634,6 +648,7 @@ class TwoFactorProviderService {
 		$tfConfig->isSelfService = true;
 		$tfConfig->twoFactorAuthentication = $profile->twoFactorAuthentication;
 		$tfConfig->twoFactorAuthenticationInsecure = $profile->twoFactorAuthenticationInsecure;
+		$tfConfig->twoFactorAuthenticationOptional = $profile->twoFactorAuthenticationOptional;
 		if ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO) {
 			$tfConfig->twoFactorAuthenticationURL = explode("\r\n", $profile->twoFactorAuthenticationURL);
 		}
@@ -673,6 +688,7 @@ class TwoFactorProviderService {
 		$tfConfig->isSelfService = false;
 		$tfConfig->twoFactorAuthentication = $conf->getTwoFactorAuthentication();
 		$tfConfig->twoFactorAuthenticationInsecure = $conf->getTwoFactorAuthenticationInsecure();
+		$tfConfig->twoFactorAuthenticationOptional = $conf->getTwoFactorAuthenticationOptional();
 		if ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO) {
 			$tfConfig->twoFactorAuthenticationURL = explode("\r\n", $conf->getTwoFactorAuthenticationURL());
 		}
@@ -740,5 +756,10 @@ class TwoFactorConfiguration {
 	 * @var LDAP attribute name that stores the token serials
 	 */
 	public $twoFactorAuthenticationSerialAttributeName = null;
+
+	/**
+	 * @var bool 2FA is optional
+	 */
+	public $twoFactorAuthenticationOptional = false;
 
 }

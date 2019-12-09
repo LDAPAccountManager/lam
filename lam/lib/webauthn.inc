@@ -275,6 +275,19 @@ function getExtensionOutputChecker() {
 }
 
 /**
+ * Returns if there are any tokens registered for the given DN.
+ *
+ * @param string $dn user DN
+ * @return bool at least one token is registered
+ */
+function hasTokensRegistered($dn) {
+	$repository = new PublicKeyCredentialSourceRepositorySQLite();
+	$userEntity = getUserEntity($dn);
+	$tokens = $repository->findAllForUserEntity($userEntity);
+	return !empty($tokens);
+}
+
+/**
  * Stores the public key credentials in the SQLite database.
  *
  * @package LAM\LOGIN\WEBAUTHN

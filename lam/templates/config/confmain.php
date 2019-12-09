@@ -479,7 +479,7 @@ if (extension_loaded('curl')) {
 		TwoFactorProviderService::TWO_FACTOR_YUBICO => array('twoFactorURL', 'twoFactorAttribute', 'twoFactorDomain'),
 		TwoFactorProviderService::TWO_FACTOR_DUO => array('twoFactorURLs', 'twoFactorOptional', 'twoFactorInsecure', 'twoFactorLabel', 'twoFactorDomain'),
 		TwoFactorProviderService::TWO_FACTOR_WEBAUTHN => array('twoFactorURL', 'twoFactorURLs', 'twoFactorInsecure', 'twoFactorLabel',
-			'twoFactorOptional', 'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute'),
+			'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute'),
 	));
 	$twoFactorSelect->setTableRowsToShow(array(
 		TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA => array('twoFactorURL', 'twoFactorInsecure', 'twoFactorLabel',
@@ -488,7 +488,7 @@ if (extension_loaded('curl')) {
 			'twoFactorOptional', 'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey'),
 		TwoFactorProviderService::TWO_FACTOR_DUO => array('twoFactorURL', 'twoFactorLabel',
 			'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute'),
-		TwoFactorProviderService::TWO_FACTOR_WEBAUTHN => array('twoFactorDomain')
+		TwoFactorProviderService::TWO_FACTOR_WEBAUTHN => array('twoFactorDomain', 'twoFactorOptional')
 	));
 	$row->add($twoFactorSelect, 12);
 	$twoFactorAttribute = new htmlResponsiveInputField(_("User name attribute"), 'twoFactorAttribute', $conf->getTwoFactorAuthenticationAttribute(), '528');
