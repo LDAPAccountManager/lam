@@ -45,6 +45,10 @@ printHeaderContents(_("Configuration overview"), '../..');
 ?>
 	</head>
 	<body class="admin">
+        <?php
+            // include all JavaScript files
+            printJsIncludes('../..');
+        ?>
 		<table class="lamTop ui-corner-all">
 			<tr>
 				<td align="left">
