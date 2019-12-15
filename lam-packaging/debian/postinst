@@ -36,12 +36,15 @@ files=`ls -a *.jpg`
 for file in $files; do
 	cp $file /var/lib/ldap-account-manager/config/templates/pdf/logos/$file
 done
-if [ ! -h /usr/share/ldap-account-manager/config ]; then\
-  ln -s /var/lib/ldap-account-manager/config /usr/share/ldap-account-manager/config; fi
-if [ ! -h /usr/share/ldap-account-manager/sess ]; then\
-  ln -s /var/lib/ldap-account-manager/sess /usr/share/ldap-account-manager/sess; fi
-if [ ! -h /usr/share/ldap-account-manager/tmp ]; then\
-  ln -s /var/lib/ldap-account-manager/tmp /usr/share/ldap-account-manager/tmp; fi
+if [ ! -h /usr/share/ldap-account-manager/config ]; then
+  ln -s /var/lib/ldap-account-manager/config /usr/share/ldap-account-manager/config
+fi
+if [ ! -h /usr/share/ldap-account-manager/sess ]; then
+  ln -s /var/lib/ldap-account-manager/sess /usr/share/ldap-account-manager/sess
+fi
+if [ ! -h /usr/share/ldap-account-manager/tmp ]; then
+  ln -s /var/lib/ldap-account-manager/tmp /usr/share/ldap-account-manager/tmp
+fi
 chown www-data /etc/ldap-account-manager/config.cfg
 chmod 600 /etc/ldap-account-manager/config.cfg
 chown www-data /var/lib/ldap-account-manager/sess
@@ -55,9 +58,9 @@ set +e
 ls -l /var/lib/ldap-account-manager/config/*.conf &> /dev/null
 set -e
 cfgFilesExist=$?
-if [ $cfgFilesExist != 0 ]; then
-  cp /var/lib/ldap-account-manager/config/unix.conf.sample /var/lib/ldap-account-manager/config/lam.conf;
-	chown www-data /var/lib/ldap-account-manager/config/lam.conf;
+if [ $cfgFilesExist -ne 0 ]; then
+  cp /var/lib/ldap-account-manager/config/unix.conf.sample /var/lib/ldap-account-manager/config/lam.conf
+	chown www-data /var/lib/ldap-account-manager/config/lam.conf
 fi
 chmod 600 /var/lib/ldap-account-manager/config/*.conf
 if [ "$1" = "configure" ]; then
