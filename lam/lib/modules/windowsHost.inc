@@ -66,7 +66,9 @@ class windowsHost extends baseModule {
 		// managed object classes
 		$return['objectClasses'] = array('computer', 'securityPrincipal');
 		// managed attributes
-		$return['attributes'] = array('cn', 'description', 'location', 'sAMAccountName', 'managedBy', 'operatingSystem', 'operatingSystemVersion', 'dNSHostName');
+		$return['attributes'] = array('cn', 'description', 'location', 'sAMAccountName', 'managedBy',
+			'operatingSystem', 'operatingSystemVersion', 'dNSHostName', 'pwdLastSet', 'lastLogonTimestamp',
+			'logonCount');
 		// help Entries
 		$return['help'] = array(
 			'cn' => array(
@@ -84,6 +86,18 @@ class windowsHost extends baseModule {
 			'managedBy' => array(
 				"Headline" => _('Managed by'), 'attr' => 'managedBy',
 				"Text" => _('The host is managed by this contact person.')
+			),
+			'pwdLastSet' => array(
+				"Headline" => _('Last password change'), 'attr' => 'pwdLastSet',
+				"Text" => _('Time of user\'s last password change.')
+			),
+			'lastLogonTimestamp' => array(
+				"Headline" => _('Last login'), 'attr' => 'lastLogonTimestamp',
+				"Text" => _('Time of user\'s last login.')
+			),
+			'logonCount' => array(
+				"Headline" => _('Logon count'), 'attr' => 'logonCount',
+				"Text" => _('This is the number of logins using this account.')
 			),
 		);
 		// upload fields
@@ -141,6 +155,33 @@ class windowsHost extends baseModule {
 		$this->addSimpleInputTextField($container, 'cn', _('Host name'), true);
 		$this->addSimpleInputTextField($container, 'description', _('Description'), false);
 		$this->addSimpleInputTextField($container, 'location', _('Location'), false);
+		// last password change
+		if (!empty($this->attributes['pwdLastSet'])) {
+			$container->addLabel(new htmlOutputText(_('Last password change')));
+			$pwdLastSetGroup = new htmlGroup();
+			$pwdLastSetGroup->addElement(new htmlOutputText($this->formatFileTime($this->attributes['pwdLastSet'][0])));
+			$pwdLastSetGroup->addElement(new htmlSpacer('0.5rem', null));
+			$pwdLastSetGroup->addElement(new htmlHelpLink('pwdLastSet'));
+			$container->addField($pwdLastSetGroup);
+		}
+		// last login
+		if (!empty($this->attributes['lastLogonTimestamp'])) {
+			$container->addLabel(new htmlOutputText(_('Last login')));
+			$lastLogonTimestampGroup = new htmlGroup();
+			$lastLogonTimestampGroup->addElement(new htmlOutputText($this->formatFileTime($this->attributes['lastLogonTimestamp'][0])));
+			$lastLogonTimestampGroup->addElement(new htmlSpacer('0.5rem', null));
+			$lastLogonTimestampGroup->addElement(new htmlHelpLink('lastLogonTimestamp'));
+			$container->addField($lastLogonTimestampGroup);
+		}
+		// logon count
+		if (!empty($this->attributes['logonCount'])) {
+			$container->addLabel(new htmlOutputText(_('Logon count')));
+			$logonCountGroup = new htmlGroup();
+			$logonCountGroup->addElement(new htmlOutputText($this->attributes['logonCount'][0]));
+			$logonCountGroup->addElement(new htmlSpacer('0.5rem', null));
+			$logonCountGroup->addElement(new htmlHelpLink('logonCount'));
+			$container->addField($logonCountGroup);
+		}
 		// managed by
 		$container->addLabel(new htmlOutputText(_('Managed by')));
 		$managedBy = '-';
@@ -294,6 +335,23 @@ class windowsHost extends baseModule {
 			$this->addPDFKeyValue($return, 'managedBy', _('Managed by'), $managedBy);
 		}
 		return $return;
+	}
+
+	/**
+	 * Formats a value in file time (100 ns since 1601-01-01).
+	 *
+	 * @param integer $value time value
+	 * @return String formatted value
+	 */
+	private function formatFileTime($value) {
+		if (empty($value) || ($value == '-1')) {
+			return '';
+		}
+		$seconds = substr($value, 0, -7);
+		$time = new DateTime('1601-01-01', new DateTimeZone('UTC'));
+		$time->add(new DateInterval('PT' . $seconds . 'S'));
+		$time->setTimezone(getTimeZone());
+		return $time->format('Y-m-d H:i:s');
 	}
 
 }
