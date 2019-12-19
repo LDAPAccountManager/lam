@@ -8,6 +8,7 @@ use \htmlImage;
 use \htmlButton;
 use \htmlJavaScript;
 use \htmlStatusMessage;
+use \htmlOutputText;
 use \htmlDiv;
 use \LAMException;
 use Webauthn\PublicKeyCredentialCreationOptions;
@@ -557,6 +558,10 @@ class WebauthnProvider extends BaseProvider {
 				$row->add($skipButton, 12);
 			}
 		}
+		$errorMessageDiv = new htmlDiv('generic-webauthn-error', new htmlOutputText(''));
+		$errorMessageDiv->addDataAttribute('button', _('Ok'));
+		$errorMessageDiv->addDataAttribute('title', _('Webauthn failed'));
+		$row->add($errorMessageDiv, 12);
 		$row->add(new htmlJavaScript('window.lam.webauthn.start(\'' . $pathPrefix . '\');'), 0);
 	}
 
@@ -567,7 +572,6 @@ class WebauthnProvider extends BaseProvider {
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
 		logNewMessage(LOG_DEBUG, 'WebauthnProvider: Checking 2nd factor for ' . $user);
 		include_once __DIR__ . '/webauthn.inc';
-		logNewMessage(LOG_ERR, $user);
 		if ($this->config->twoFactorAuthenticationOptional && !hasTokensRegistered($user) && ($_POST['sig_response'] === 'skip')) {
 			return true;
 		}

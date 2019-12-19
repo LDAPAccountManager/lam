@@ -3626,7 +3626,7 @@ class htmlDiv extends htmlElement {
 		if (($this->cssClasses != null) && (sizeof($this->cssClasses) > 0)) {
 			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
-		echo '<div' . $idValue . $classesValue . '>';
+		echo '<div' . $idValue . $classesValue . $this->getDataAttributesAsString() . '>';
 		if ($this->content != null) {
 			$return = $this->content->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		}

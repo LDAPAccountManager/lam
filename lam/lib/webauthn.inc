@@ -40,6 +40,7 @@ use \Webauthn\PublicKeyCredentialUserEntity;
 use \Webauthn\AuthenticationExtensions\AuthenticationExtensionsClientInputs;
 use \Webauthn\AuthenticatorSelectionCriteria;
 use Webauthn\TokenBinding\IgnoreTokenBindingHandler;
+use \LAMException;
 
 /*
 
@@ -104,7 +105,7 @@ function getRegistrationObject($dn, $isSelfService) {
 		new AuthenticatorSelectionCriteria(),
 		PublicKeyCredentialCreationOptions::ATTESTATION_CONVEYANCE_PREFERENCE_NONE,
 		new AuthenticationExtensionsClientInputs());
-	logNewMessage(LOG_DEBUG, json_encode($registrationObject));
+	logNewMessage(LOG_DEBUG, 'Webauthn registration: ' . json_encode($registrationObject));
 	return $registrationObject;
 }
 

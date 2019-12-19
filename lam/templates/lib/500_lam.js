@@ -841,9 +841,14 @@ window.lam.form.autoTrim = function() {
 
 window.lam.dialog = window.lam.dialog || {};
 
-window.lam.dialog.showMessage = function(title, okText, divId) {
+window.lam.dialog.showMessage = function(title, okText, divId, callbackFunction) {
     var buttonList = {};
-    buttonList[okText] = function() { jQuery(this).dialog("close"); };
+    buttonList[okText] = function() {
+    	jQuery(this).dialog("close");
+    	if (callbackFunction) {
+    		callbackFunction();
+		}
+    };
     jQuery('#' + divId).dialog({
 		modal: true,
 		title: title,
@@ -1445,7 +1450,16 @@ window.lam.webauthn.register = function(publicKey) {
 			form.submit();
 		}, function (error) {
 			console.log(error.message);
-			jQuery('#btn_logout').click();
+			let errorDiv = jQuery('#generic-webauthn-error');
+			let buttonLabel = errorDiv.data('button');
+			let dialogTitle = errorDiv.data('title');
+			errorDiv.text(error.message);
+			window.lam.dialog.showMessage(dialogTitle,
+				buttonLabel,
+				'generic-webauthn-error',
+				function () {
+					jQuery('#btn_logout').click();
+				});
 		});
 }
 
