@@ -281,7 +281,7 @@ class WebauthnManager {
 	 *
 	 * @return ExtensionOutputCheckerHandler handler
 	 */
-	function getExtensionOutputChecker() {
+	private function getExtensionOutputChecker() {
 		return new ExtensionOutputCheckerHandler();
 	}
 
