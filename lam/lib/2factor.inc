@@ -1,5 +1,6 @@
 <?php
 namespace LAM\LIB\TWO_FACTOR;
+use LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use \selfServiceProfile;
 use \LAMConfig;
 use \htmlScript;
@@ -551,7 +552,8 @@ class WebauthnProvider extends BaseProvider {
 		$row->add(new htmlDiv(null, $errorMessage, array('hidden webauthn-error')), 12);
 		if ($this->config->twoFactorAuthenticationOptional === true) {
 			include_once __DIR__ . '/webauthn.inc';
-			$hasTokens = hasTokensRegistered($userDn);
+			$webauthnManager = new WebauthnManager();
+			$hasTokens = $webauthnManager->isRegistered($userDn);
 			if (!$hasTokens) {
 				$skipButton = new htmlButton('skip_webauthn', _('Skip'));
 				$skipButton->setCSSClasses(array('fullwidth'));
@@ -572,7 +574,8 @@ class WebauthnProvider extends BaseProvider {
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
 		logNewMessage(LOG_DEBUG, 'WebauthnProvider: Checking 2nd factor for ' . $user);
 		include_once __DIR__ . '/webauthn.inc';
-		if ($this->config->twoFactorAuthenticationOptional && !hasTokensRegistered($user) && ($_POST['sig_response'] === 'skip')) {
+		$webauthnManager = new WebauthnManager();
+		if ($this->config->twoFactorAuthenticationOptional && !$webauthnManager->isRegistered($user) && ($_POST['sig_response'] === 'skip')) {
 			return true;
 		}
 		$response = base64_decode($_POST['sig_response']);

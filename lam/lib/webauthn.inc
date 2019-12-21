@@ -72,103 +72,124 @@ use \LAMException;
 include_once __DIR__ . '/3rdParty/composer/autoload.php';
 
 /**
- * Returns if the given DN is registered for webauthn.
+ * Manages Webauthn registrations and authentications.
  *
- * @param string $dn DN
- * @return boolean is registered
+ * @package LAM\LOGIN\WEBAUTHN
  */
-function isRegistered($dn) {
-	return false;
-}
+class WebauthnManager {
 
-/**
- * Returns a challenge for a new token.
- *
- * @param string $dn DN
- * @param bool $isSelfService is executed in self service
- * @return PublicKeyCredentialCreationOptions registration object
- */
-function getRegistrationObject($dn, $isSelfService) {
-	$rpEntity = createRpEntry($isSelfService);
-	$userEntity = getUserEntity($dn);
-	$challenge = generateRandomPassword(32);
-	$credentialParameters = getCredentialParameters();
-	$excludedKeys = getExcludedKeys($userEntity);
-	$timeout = 20000;
-	$registrationObject = new PublicKeyCredentialCreationOptions(
-		$rpEntity,
-		$userEntity,
-		$challenge,
-		$credentialParameters,
-		$timeout,
-		$excludedKeys,
-		new AuthenticatorSelectionCriteria(),
-		PublicKeyCredentialCreationOptions::ATTESTATION_CONVEYANCE_PREFERENCE_NONE,
-		new AuthenticationExtensionsClientInputs());
-	logNewMessage(LOG_DEBUG, 'Webauthn registration: ' . json_encode($registrationObject));
-	return $registrationObject;
-}
-
-/**
- * Returns the part that identifies the server and application.
- *
- * @param bool $isSelfService is executed in self service
- * @return PublicKeyCredentialRpEntity relying party entry
- */
-function createRpEntry($isSelfService) {
-	$pathPrefix = $isSelfService ? '../' : '';
-	$icon = $pathPrefix . '../graphics/logo136.png';
-	if (!$isSelfService) {
-		$domain = $_SESSION['config']->getTwoFactorAuthenticationDomain();
+	/**
+	 * Returns if the given DN is registered for webauthn.
+	 *
+	 * @param string $dn DN
+	 * @return boolean is registered
+	 */
+	public function isRegistered($dn) {
+		$database = $this->getDatabase();
+		$userEntity = $this->getUserEntity($dn);
+		$results = $database->findAllForUserEntity($userEntity);
+		return !empty($results);
 	}
-	return new PublicKeyCredentialRpEntity(
-		'LDAP Account Manager', //Name
-		$domain,
-		$icon
-	);
-}
 
-/**
- * Returns the user entity for the registration.
- *
- * @param $dn DN
- * @return PublicKeyCredentialUserEntity user entity
- */
-function getUserEntity($dn) {
-	return new PublicKeyCredentialUserEntity(
-		$dn,
-		$dn,
-		extractRDNValue($dn),
-		null
-	);
-}
-
-/**
- * Returns the supported credential algorithms.
- *
- * @return array algorithms
- */
-function getCredentialParameters() {
-	return array(
-		new PublicKeyCredentialParameters('public-key', Algorithms::COSE_ALGORITHM_ES256),
-		new PublicKeyCredentialParameters('public-key', Algorithms::COSE_ALGORITHM_RS256),
-	);
-}
-
-/**
- * Returns a list of all credential ids that are already registered.
- *
- * @param PublicKeyCredentialUserEntity $user user data
- * @return PublicKeyCredentialDescriptor[] credential ids
- */
-function getExcludedKeys($user) {
-	$keys = array();
-	$repository = new PublicKeyCredentialSourceRepositorySQLite();
-	$credentialSources = $repository->findAllForUserEntity($user);
-	foreach ($credentialSources as $credentialSource) {
-		$keys[] = new PublicKeyCredentialDescriptor(PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY, $credentialSource->getPublicKeyCredentialId());
+	/**
+	 * Returns a challenge for a new token.
+	 *
+	 * @param string $dn DN
+	 * @param bool $isSelfService is executed in self service
+	 * @return PublicKeyCredentialCreationOptions registration object
+	 */
+	public function getRegistrationObject($dn, $isSelfService) {
+		$rpEntity = $this->createRpEntry($isSelfService);
+		$userEntity = $this->getUserEntity($dn);
+		$challenge = generateRandomPassword(32);
+		$credentialParameters = $this->getCredentialParameters();
+		$excludedKeys = $this->getExcludedKeys($userEntity);
+		$timeout = 20000;
+		$registrationObject = new PublicKeyCredentialCreationOptions(
+			$rpEntity,
+			$userEntity,
+			$challenge,
+			$credentialParameters,
+			$timeout,
+			$excludedKeys,
+			new AuthenticatorSelectionCriteria(),
+			PublicKeyCredentialCreationOptions::ATTESTATION_CONVEYANCE_PREFERENCE_NONE,
+			new AuthenticationExtensionsClientInputs());
+		logNewMessage(LOG_DEBUG, 'Webauthn registration: ' . json_encode($registrationObject));
+		return $registrationObject;
 	}
-	return $keys;
+
+	/**
+	 * Returns the user entity for the registration.
+	 *
+	 * @param $dn DN
+	 * @return PublicKeyCredentialUserEntity user entity
+	 */
+	private function getUserEntity($dn) {
+		return new PublicKeyCredentialUserEntity(
+			$dn,
+			$dn,
+			extractRDNValue($dn),
+			null
+		);
+	}
+
+	/**
+	 * Returns the part that identifies the server and application.
+	 *
+	 * @param bool $isSelfService is executed in self service
+	 * @return PublicKeyCredentialRpEntity relying party entry
+	 */
+	private function createRpEntry($isSelfService) {
+		$pathPrefix = $isSelfService ? '../' : '';
+		$icon = $pathPrefix . '../graphics/logo136.png';
+		if (!$isSelfService) {
+			$domain = $_SESSION['config']->getTwoFactorAuthenticationDomain();
+		}
+		return new PublicKeyCredentialRpEntity(
+			'LDAP Account Manager', //Name
+			$domain,
+			$icon
+		);
+	}
+
+	/**
+	 * Returns the supported credential algorithms.
+	 *
+	 * @return array algorithms
+	 */
+	private function getCredentialParameters() {
+		return array(
+			new PublicKeyCredentialParameters('public-key', Algorithms::COSE_ALGORITHM_ES256),
+			new PublicKeyCredentialParameters('public-key', Algorithms::COSE_ALGORITHM_RS256),
+		);
+	}
+
+	/**
+	 * Returns a list of all credential ids that are already registered.
+	 *
+	 * @param PublicKeyCredentialUserEntity $user user data
+	 * @return PublicKeyCredentialDescriptor[] credential ids
+	 */
+	private function getExcludedKeys($user) {
+		$keys = array();
+		$repository = $this->getDatabase();
+		$credentialSources = $repository->findAllForUserEntity($user);
+		foreach ($credentialSources as $credentialSource) {
+			$keys[] = new PublicKeyCredentialDescriptor(PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY, $credentialSource->getPublicKeyCredentialId());
+		}
+		return $keys;
+	}
+
+	/**
+	 * Returns the webauthn database.
+	 *
+	 * @return PublicKeyCredentialSourceRepositorySQLite database
+	 */
+	public function getDatabase() {
+		return new PublicKeyCredentialSourceRepositorySQLite();
+	}
+
 }
 
 /**
@@ -273,19 +294,6 @@ function getPublicKeyCredentialLoader($attestationObjectLoader, $decoder) {
  */
 function getExtensionOutputChecker() {
 	return new ExtensionOutputCheckerHandler();
-}
-
-/**
- * Returns if there are any tokens registered for the given DN.
- *
- * @param string $dn user DN
- * @return bool at least one token is registered
- */
-function hasTokensRegistered($dn) {
-	$repository = new PublicKeyCredentialSourceRepositorySQLite();
-	$userEntity = getUserEntity($dn);
-	$tokens = $repository->findAllForUserEntity($userEntity);
-	return !empty($tokens);
 }
 
 /**

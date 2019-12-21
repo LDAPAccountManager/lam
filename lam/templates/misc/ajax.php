@@ -7,8 +7,7 @@ use \htmlResponsiveRow;
 use \htmlLink;
 use \htmlOutputText;
 use \htmlButton;
-use function LAM\LOGIN\WEBAUTHN\getRegistrationObject;
-use function LAM\LOGIN\WEBAUTHN\isRegistered;
+use LAM\LOGIN\WEBAUTHN\WebauthnManager;
 
 /*
 
@@ -193,9 +192,10 @@ class Ajax {
 	private function manageWebauthn($isSelfService) {
 		include_once __DIR__ . '/../../lib/webauthn.inc';
 		$userDN = $_SESSION['ldap']->getUserName();
-		$isRegistered = isRegistered($userDN);
+		$webauthnManager = new WebauthnManager();
+		$isRegistered = $webauthnManager->isRegistered($userDN);
 		if (!$isRegistered) {
-			$registrationObject = getRegistrationObject($userDN, $isSelfService);
+			$registrationObject = $webauthnManager->getRegistrationObject($userDN, $isSelfService);
 			$_SESSION['webauthn_registration'] = json_encode($registrationObject);
 			echo json_encode(
 				array(
