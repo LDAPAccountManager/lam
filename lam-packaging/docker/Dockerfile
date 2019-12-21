@@ -29,7 +29,7 @@
 FROM debian:buster-slim
 LABEL maintainer="Roland Gruber <post@rolandgruber.de>"
 
-ARG LAM_RELEASE=7.0.RC1
+ARG LAM_RELEASE=7.0
 
 ENV \
     DEBIAN_FRONTEND=noninteractive \

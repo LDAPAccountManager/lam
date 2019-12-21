@@ -4,7 +4,7 @@ services:
     build:
       context: .
       args:
-       - LAM_RELEASE=7.0.RC1
+       - LAM_RELEASE=7.0
     image: ldapaccountmanager/lam:latest
     restart: unless-stopped
     ports:
