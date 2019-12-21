@@ -120,6 +120,44 @@ class WebauthnManager {
 	}
 
 	/**
+	 * Verifies the registration and stores it in the database.
+	 *
+	 * @param PublicKeyCredentialCreationOptions $registration registration object
+	 * @param string $clientResponse client response
+	 * @return bool true if response is valid and registration succeeded
+	 */
+	public function storeNewRegistration($registration, $clientResponse) {
+		$decoder = $this->getCborDecoder();
+		$tokenBindingHandler = new IgnoreTokenBindingHandler();
+		$attestationSupportManager = $this->getAttestationSupportManager($decoder);
+		$attestationObjectLoader = $this->getAttestationObjectLoader($attestationSupportManager, $decoder);
+		$publicKeyCredentialLoader = $this->getPublicKeyCredentialLoader($attestationObjectLoader, $decoder);
+		$extensionOutputCheckerHandler = $this->getExtensionOutputChecker();
+		$repository = new PublicKeyCredentialSourceRepositorySQLite();
+		$responseValidator = new AuthenticatorAttestationResponseValidator(
+			$attestationSupportManager, $repository, $tokenBindingHandler, $extensionOutputCheckerHandler);
+		try {
+			$publicKeyCredential = $publicKeyCredentialLoader->load($clientResponse);
+			$authenticatorAttestationResponse = $publicKeyCredential->getResponse();
+			if (!$authenticatorAttestationResponse instanceof AuthenticatorAttestationResponse) {
+				logNewMessage(LOG_ERR, 'Invalid webauthn response: ' . $clientResponse);
+				return false;
+			}
+			$symfonyRequest = Request::createFromGlobals();
+			$psr17Factory = new Psr17Factory();
+			$psrFactory = new PsrHttpFactory($psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory);
+			$psr7Request = $psrFactory->createRequest($symfonyRequest);
+			$publicKeyCredentialSource = $responseValidator->check($authenticatorAttestationResponse, $registration, $psr7Request);
+			$repository->saveCredentialSource($publicKeyCredentialSource);
+			return true;
+		}
+		catch (\Throwable $exception) {
+			logNewMessage(LOG_ERR, 'Webauthn validation failed: ' . $exception->getMessage() . $exception->getTraceAsString());
+		}
+		return false;
+	}
+
+	/**
 	 * Returns the user entity for the registration.
 	 *
 	 * @param $dn DN
@@ -182,6 +220,72 @@ class WebauthnManager {
 	}
 
 	/**
+	 * Returns a CBOR decoder.
+	 *
+	 * @return Decoder decoder
+	 */
+	private function getCborDecoder() {
+		return new Decoder(new TagObjectManager(), new OtherObjectManager());
+	}
+
+	/**
+	 * Creates the attestation support manager.
+	 *
+	 * @param Decoder $decoder decoder
+	 * @return AttestationStatementSupportManager manager
+	 */
+	private function getAttestationSupportManager($decoder) {
+		$manager = new AttestationStatementSupportManager();
+		$manager->add(new NoneAttestationStatementSupport());
+		$manager->add(new FidoU2FAttestationStatementSupport());
+		$manager->add(new AndroidKeyAttestationStatementSupport($decoder));
+		$manager->add(new TPMAttestationStatementSupport());
+		$coseManager = new Manager();
+		$coseManager->add(new ES256());
+		$coseManager->add(new ES384());
+		$coseManager->add(new ES512());
+		$coseManager->add(new EdDSA());
+		$coseManager->add(new RS1());
+		$coseManager->add(new RS256());
+		$coseManager->add(new RS384);
+		$coseManager->add(new RS512());
+		$manager->add(new PackedAttestationStatementSupport($decoder, $coseManager));
+		return $manager;
+	}
+
+	/**
+	 * Returns the attestation object loader.
+	 *
+	 * @param AttestationStatementSupportManager $manager support manager
+	 * @param Decoder $decoder decoder
+	 * @return AttestationObjectLoader attestation object loader
+	 */
+	private function getAttestationObjectLoader($manager, $decoder) {
+		return new AttestationObjectLoader($manager, $decoder);
+	}
+
+	/**
+	 * Creates the public key credential loader.
+	 *
+	 * @param AttestationObjectLoader $attestationObjectLoader attestation object loader
+	 * @param Decoder $decoder decoder
+	 * @return PublicKeyCredentialLoader public key credential loader
+	 */
+	private function getPublicKeyCredentialLoader($attestationObjectLoader, $decoder) {
+		return new PublicKeyCredentialLoader($attestationObjectLoader, $decoder);
+	}
+
+	/**
+	 * Returns the extension output checker handler.
+	 * No extensions are checked at this time.
+	 *
+	 * @return ExtensionOutputCheckerHandler handler
+	 */
+	function getExtensionOutputChecker() {
+		return new ExtensionOutputCheckerHandler();
+	}
+
+	/**
 	 * Returns the webauthn database.
 	 *
 	 * @return PublicKeyCredentialSourceRepositorySQLite database
@@ -190,110 +294,6 @@ class WebauthnManager {
 		return new PublicKeyCredentialSourceRepositorySQLite();
 	}
 
-}
-
-/**
- * Verifies the registration and stores it in the database.
- *
- * @param PublicKeyCredentialCreationOptions $registration registration object
- * @param string $clientResponse client response
- * @return bool true if response is valid and registration succeeded
- */
-function storeNewRegistration($registration, $clientResponse) {
-	$decoder = getCborDecoder();
-	$tokenBindingHandler = new IgnoreTokenBindingHandler();
-	$attestationSupportManager = getAttestationSupportManager($decoder);
-	$attestationObjectLoader = getAttestationObjectLoader($attestationSupportManager, $decoder);
-	$publicKeyCredentialLoader = getPublicKeyCredentialLoader($attestationObjectLoader, $decoder);
-	$extensionOutputCheckerHandler = getExtensionOutputChecker();
-	$repository = new PublicKeyCredentialSourceRepositorySQLite();
-	$responseValidator = new AuthenticatorAttestationResponseValidator(
-		$attestationSupportManager, $repository, $tokenBindingHandler, $extensionOutputCheckerHandler);
-	try {
-		$publicKeyCredential = $publicKeyCredentialLoader->load($clientResponse);
-		$authenticatorAttestationResponse = $publicKeyCredential->getResponse();
-		if (!$authenticatorAttestationResponse instanceof AuthenticatorAttestationResponse) {
-			logNewMessage(LOG_ERR, 'Invalid webauthn response: ' . $clientResponse);
-			return false;
-		}
-		$symfonyRequest = Request::createFromGlobals();
-		$psr17Factory = new Psr17Factory();
-		$psrFactory = new PsrHttpFactory($psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory);
-		$psr7Request = $psrFactory->createRequest($symfonyRequest);
-		$publicKeyCredentialSource = $responseValidator->check($authenticatorAttestationResponse, $registration, $psr7Request);
-		$repository->saveCredentialSource($publicKeyCredentialSource);
-		return true;
-	}
-	catch (\Throwable $exception) {
-		logNewMessage(LOG_ERR, 'Webauthn validation failed: ' . $exception->getMessage() . $exception->getTraceAsString());
-	}
-	return false;
-}
-
-/**
- * Returns a CBOR decoder.
- *
- * @return Decoder decoder
- */
-function getCborDecoder() {
-	return new Decoder(new TagObjectManager(), new OtherObjectManager());
-}
-
-/**
- * Creates the attestation support manager.
- *
- * @param Decoder $decoder decoder
- * @return AttestationStatementSupportManager manager
- */
-function getAttestationSupportManager($decoder) {
-	$manager = new AttestationStatementSupportManager();
-	$manager->add(new NoneAttestationStatementSupport());
-	$manager->add(new FidoU2FAttestationStatementSupport());
-	$manager->add(new AndroidKeyAttestationStatementSupport($decoder));
-	$manager->add(new TPMAttestationStatementSupport());
-	$coseManager = new Manager();
-	$coseManager->add(new ES256());
-	$coseManager->add(new ES384());
-	$coseManager->add(new ES512());
-	$coseManager->add(new EdDSA());
-	$coseManager->add(new RS1());
-	$coseManager->add(new RS256());
-	$coseManager->add(new RS384);
-	$coseManager->add(new RS512());
-	$manager->add(new PackedAttestationStatementSupport($decoder, $coseManager));
-	return $manager;
-}
-
-/**
- * Returns the attestation object loader.
- *
- * @param AttestationStatementSupportManager $manager support manager
- * @param Decoder $decoder decoder
- * @return AttestationObjectLoader attestation object loader
- */
-function getAttestationObjectLoader($manager, $decoder) {
-	return new AttestationObjectLoader($manager, $decoder);
-}
-
-/**
- * Creates the public key credential loader.
- *
- * @param AttestationObjectLoader $attestationObjectLoader attestation object loader
- * @param Decoder $decoder decoder
- * @return PublicKeyCredentialLoader public key credential loader
- */
-function getPublicKeyCredentialLoader($attestationObjectLoader, $decoder) {
-	return new PublicKeyCredentialLoader($attestationObjectLoader, $decoder);
-}
-
-/**
- * Returns the extension output checker handler.
- * No extensions are checked at this time.
- *
- * @return ExtensionOutputCheckerHandler handler
- */
-function getExtensionOutputChecker() {
-	return new ExtensionOutputCheckerHandler();
 }
 
 /**

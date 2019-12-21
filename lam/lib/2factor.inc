@@ -13,8 +13,6 @@ use \htmlOutputText;
 use \htmlDiv;
 use \LAMException;
 use Webauthn\PublicKeyCredentialCreationOptions;
-use function LAM\LOGIN\WEBAUTHN\hasTokensRegistered;
-use function LAM\LOGIN\WEBAUTHN\storeNewRegistration;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -580,7 +578,7 @@ class WebauthnProvider extends BaseProvider {
 		}
 		$response = base64_decode($_POST['sig_response']);
 		$registrationObject = PublicKeyCredentialCreationOptions::createFromString($_SESSION['webauthn_registration']);
-		if (storeNewRegistration($registrationObject, $response)) {
+		if ($webauthnManager->storeNewRegistration($registrationObject, $response)) {
 			return true;
 		}
 		logNewMessage(LOG_ERR, 'Webauthn authentication failed');
