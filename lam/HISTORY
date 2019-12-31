@@ -1,8 +1,12 @@
-December 2019 7.0
+March 2020 7.1
   - PHP 7 required
+
+
+21.12.2019 7.0
   - Lamdaemon can be configured with directory prefix for homedirs
   - Account list filters match on substrings instead of whole value
   - YubiKey: support to configure multiple verification servers
+  - Windows hosts: added last password change and last login
   - Deactivated non-maintained translations: Catalan, Czech, Hungarian, Polish and Turkish
     Contact us if you would like to take over. Translators get LAM Pro for free (commercial use included).
   - Docker updates
