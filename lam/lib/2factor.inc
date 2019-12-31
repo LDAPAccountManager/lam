@@ -573,13 +573,26 @@ class WebauthnProvider extends BaseProvider {
 		logNewMessage(LOG_DEBUG, 'WebauthnProvider: Checking 2nd factor for ' . $user);
 		include_once __DIR__ . '/webauthn.inc';
 		$webauthnManager = new WebauthnManager();
-		if ($this->config->twoFactorAuthenticationOptional && !$webauthnManager->isRegistered($user) && ($_POST['sig_response'] === 'skip')) {
-			return true;
+		if (!empty($_SESSION['ldap'])) {
+			$userDn = $_SESSION['ldap']->getUserName();
 		}
-		$response = base64_decode($_POST['sig_response']);
-		$registrationObject = PublicKeyCredentialCreationOptions::createFromString($_SESSION['webauthn_registration']);
-		if ($webauthnManager->storeNewRegistration($registrationObject, $response)) {
-			return true;
+		else {
+			$userDn = $_SESSION['selfService_clientDN'];
+		}
+		$hasTokens = $webauthnManager->isRegistered($userDn);
+		if (!$hasTokens) {
+			if ($this->config->twoFactorAuthenticationOptional && !$webauthnManager->isRegistered($user) && ($_POST['sig_response'] === 'skip')) {
+				logNewMessage(LOG_DEBUG, 'Skipped 2FA for ' . $user . ' as no devices are registered and 2FA is optional.');
+				return true;
+			}
+			$response = base64_decode($_POST['sig_response']);
+			$registrationObject = PublicKeyCredentialCreationOptions::createFromString($_SESSION['webauthn_registration']);
+			return $webauthnManager->storeNewRegistration($registrationObject, $response);
+		}
+		else {
+			logNewMessage(LOG_DEBUG, 'Checking webauthn response of ' . $userDn);
+			$response = base64_decode($_POST['sig_response']);
+			return $webauthnManager->isValidAuthentication($response, $userDn);
 		}
 		logNewMessage(LOG_ERR, 'Webauthn authentication failed');
 		return false;

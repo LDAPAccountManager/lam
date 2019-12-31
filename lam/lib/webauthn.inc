@@ -19,6 +19,7 @@ use Nyholm\Psr7\Factory\Psr17Factory;
 use PDO;
 use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
 use Symfony\Component\HttpFoundation\Request;
+use Throwable;
 use Webauthn\AttestationStatement\AndroidKeyAttestationStatementSupport;
 use Webauthn\AttestationStatement\AttestationObjectLoader;
 use Webauthn\AttestationStatement\AttestationStatementSupportManager;
@@ -27,11 +28,14 @@ use Webauthn\AttestationStatement\NoneAttestationStatementSupport;
 use Webauthn\AttestationStatement\PackedAttestationStatementSupport;
 use Webauthn\AttestationStatement\TPMAttestationStatementSupport;
 use Webauthn\AuthenticationExtensions\ExtensionOutputCheckerHandler;
+use Webauthn\AuthenticatorAssertionResponse;
+use Webauthn\AuthenticatorAssertionResponseValidator;
 use Webauthn\AuthenticatorAttestationResponse;
 use Webauthn\AuthenticatorAttestationResponseValidator;
 use \Webauthn\PublicKeyCredentialCreationOptions;
 use Webauthn\PublicKeyCredentialDescriptor;
 use Webauthn\PublicKeyCredentialLoader;
+use Webauthn\PublicKeyCredentialRequestOptions;
 use \Webauthn\PublicKeyCredentialRpEntity;
 use \Webauthn\PublicKeyCredentialParameters;
 use Webauthn\PublicKeyCredentialSource;
@@ -101,10 +105,10 @@ class WebauthnManager {
 	public function getRegistrationObject($dn, $isSelfService) {
 		$rpEntity = $this->createRpEntry($isSelfService);
 		$userEntity = $this->getUserEntity($dn);
-		$challenge = generateRandomPassword(32);
+		$challenge = $this->createChallenge();
 		$credentialParameters = $this->getCredentialParameters();
 		$excludedKeys = $this->getExcludedKeys($userEntity);
-		$timeout = 20000;
+		$timeout = $this->getTimeout();
 		$registrationObject = new PublicKeyCredentialCreationOptions(
 			$rpEntity,
 			$userEntity,
@@ -240,6 +244,17 @@ class WebauthnManager {
 		$manager->add(new FidoU2FAttestationStatementSupport());
 		$manager->add(new AndroidKeyAttestationStatementSupport($decoder));
 		$manager->add(new TPMAttestationStatementSupport());
+		$coseManager = $this->getAlgorithmManager();
+		$manager->add(new PackedAttestationStatementSupport($decoder, $coseManager));
+		return $manager;
+	}
+
+	/**
+	 * Returns the COSE algorithm manager.
+	 *
+	 * @return Manager algorithm manager
+	 */
+	private function getAlgorithmManager() {
 		$coseManager = new Manager();
 		$coseManager->add(new ES256());
 		$coseManager->add(new ES384());
@@ -249,8 +264,7 @@ class WebauthnManager {
 		$coseManager->add(new RS256());
 		$coseManager->add(new RS384);
 		$coseManager->add(new RS512());
-		$manager->add(new PackedAttestationStatementSupport($decoder, $coseManager));
-		return $manager;
+		return $coseManager;
 	}
 
 	/**
@@ -292,6 +306,104 @@ class WebauthnManager {
 	 */
 	public function getDatabase() {
 		return new PublicKeyCredentialSourceRepositorySQLite();
+	}
+
+	/**
+	 * Returns the timeout for user operations.
+	 *
+	 * @return int timeout in ms
+	 */
+	private function getTimeout() {
+		return 120000;
+	}
+
+	/**
+	 * Creates a new challenge.
+	 *
+	 * @return String challenge
+	 */
+	private function createChallenge() {
+		return generateRandomPassword(32);
+	}
+
+	/**
+	 * Returns the authentication object for a registered user.
+	 *
+	 * @param $userDN user DN
+	 * @param bool $isSelfService self service
+	 * @return PublicKeyCredentialRequestOptions authentication object
+	 */
+	public function getAuthenticationObject($userDN, bool $isSelfService) {
+		$timeout = $this->getTimeout();
+		$challenge = $this->createChallenge();
+		$database = $this->getDatabase();
+		$userEntity = $this->getUserEntity($userDN);
+		$publicKeyCredentialSources = $database->findAllForUserEntity($userEntity);
+		$publicKeyDescriptors = array();
+		foreach ($publicKeyCredentialSources as $publicKeyCredentialSource) {
+			$publicKeyDescriptors[] = $publicKeyCredentialSource->getPublicKeyCredentialDescriptor();
+		}
+		$userVerification = PublicKeyCredentialRequestOptions::USER_VERIFICATION_REQUIREMENT_DISCOURAGED;
+		$extensions = new AuthenticationExtensionsClientInputs();
+		$relyingParty = $this->createRpEntry($isSelfService);
+		return new PublicKeyCredentialRequestOptions(
+			$challenge,
+			$timeout,
+			$relyingParty->getId(),
+			$publicKeyDescriptors,
+			$userVerification,
+			$extensions
+		);
+	}
+
+	/**
+	 * Checks if the provided authentication is valid.
+	 *
+	 * @param string $response authentication response
+	 * @param string $userDn user DN
+	 * @return bool true if all is ok
+	 */
+	public function isValidAuthentication(string $response, string $userDn) {
+		$database = $this->getDatabase();
+		$decoder = $this->getCborDecoder();
+		$tokenBindingHandler = new IgnoreTokenBindingHandler();
+		$extensionOutputCheckerHandler = $this->getExtensionOutputChecker();
+		$algorithmManager = $this->getAlgorithmManager();
+		$responseValidator = new AuthenticatorAssertionResponseValidator(
+			$database,
+			$decoder,
+			$tokenBindingHandler,
+			$extensionOutputCheckerHandler,
+			$algorithmManager
+		);
+		$attestationSupportManager = $this->getAttestationSupportManager($decoder);
+		$attestationObjectLoader = $this->getAttestationObjectLoader($attestationSupportManager, $decoder);
+		$publicKeyCredentialLoader = $this->getPublicKeyCredentialLoader($attestationObjectLoader, $decoder);
+		$publicKeyCredential = $publicKeyCredentialLoader->load($response);
+		$authenticatorAssertionResponse = $publicKeyCredential->getResponse();
+		if (!$authenticatorAssertionResponse instanceof AuthenticatorAssertionResponse) {
+			logNewMessage(LOG_ERR, 'Invalid authenticator assertion response');
+			return false;
+		}
+		try {
+			$symfonyRequest = Request::createFromGlobals();
+			$psr17Factory = new Psr17Factory();
+			$psrFactory = new PsrHttpFactory($psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory);
+			$psr7Request = $psrFactory->createRequest($symfonyRequest);
+			$publicKeyCredentialRequestOptions = PublicKeyCredentialRequestOptions::createFromString($_SESSION['webauthn_authentication']);
+			$responseValidator->check(
+				$publicKeyCredential->getRawId(),
+				$publicKeyCredential->getResponse(),
+				$publicKeyCredentialRequestOptions,
+				$psr7Request,
+				$userDn
+			);
+			return true;
+		}
+		catch (Throwable $e) {
+			logNewMessage(LOG_ERR, 'Error validating webauthn authentication: ' . $e->getMessage());
+		}
+		return false;
 	}
 
 }
@@ -361,16 +473,39 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 		$json = json_encode($publicKeyCredentialSource);
 		$credentialId = base64_encode($publicKeyCredentialSource->getPublicKeyCredentialId());
 		$userId = $publicKeyCredentialSource->getUserHandle();
-		$registrationTime = time();
+		$currentTime = time();
 		$pdo = $this->getPDO();
-		$statement = $pdo->prepare('insert into ' . self::TABLE_NAME . ' (userId, credentialId, credentialSource, registrationTime) VALUES (?, ?, ?, ?)');
+		$statement = $pdo->prepare('select * from ' . self::TABLE_NAME . ' where userId = :userId and credentialId = :credentialId');
 		$statement->execute(array(
-			$userId,
-			$credentialId,
-			$json,
-			$registrationTime
+			':userId' => $userId,
+			':credentialId' => $credentialId
 		));
-		logNewMessage(LOG_DEBUG, 'Stored new credential for ' . $userId);
+		$results = $statement->fetchAll();
+		if (empty($results)) {
+			$statement = $pdo->prepare('insert into ' . self::TABLE_NAME . ' (userId, credentialId, credentialSource, registrationTime, lastUseTime) VALUES (?, ?, ?, ?, ?)');
+			$statement->execute(array(
+				$userId,
+				$credentialId,
+				$json,
+				$currentTime,
+				$currentTime
+			));
+			logNewMessage(LOG_DEBUG, 'Stored new credential for ' . $userId);
+		}
+		else {
+			$statement = $pdo->prepare(
+				'update ' . self::TABLE_NAME .
+				' set credentialSource = :credentialSource, lastUseTime = :lastUseTime' .
+				' WHERE userId = :userId AND credentialId = :credentialId'
+			);
+			$statement->execute(array(
+				':credentialSource' => $json,
+				':lastUseTime' => $currentTime,
+				':userId' => $userId,
+				':credentialId' => $credentialId
+			));
+			logNewMessage(LOG_DEBUG, 'Stored updated credential for ' . $userId);
+		}
 	}
 
 	/**
@@ -432,6 +567,7 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 			. 'credentialId TEXT NOT NULL,'
 			. 'credentialSource TEXT NOT NULL,'
 			. 'registrationTime VARCHAR(11) NOT NULL,'
+			. 'lastUseTime VARCHAR(11) NOT NULL,'
 			. 'PRIMARY KEY(userId,credentialId)'
 			. ');';
 		$pdo->exec($sql);

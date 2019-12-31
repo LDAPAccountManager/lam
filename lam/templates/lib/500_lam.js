@@ -1409,6 +1409,9 @@ window.lam.webauthn.run = function(prefix) {
 		if (jsonData.action === 'register') {
 			window.lam.webauthn.register(jsonData.registration);
 		}
+		else if (jsonData.action === 'authenticate') {
+			window.lam.webauthn.authenticate(jsonData.authentication);
+		}
 	})
 	.fail(function() {
 		console.log('Webauthn failed');
@@ -1425,7 +1428,7 @@ window.lam.webauthn.register = function(publicKey) {
 	publicKey.user.id = Uint8Array.from(window.atob(publicKey.user.id), c=>c.charCodeAt(0));
 	publicKey.rp.icon = window.location.href.substring(0, window.location.href.lastIndexOf("/")) + publicKey.rp.icon;
 	if (publicKey.excludeCredentials) {
-		for (var i = 0; i < publicKey.excludeCredentials.length; i++) {
+		for (let i = 0; i < publicKey.excludeCredentials.length; i++) {
 			let idOrig = publicKey.excludeCredentials[i]['id'];
 			idOrig = idOrig.replace(/-/g, "+").replace(/_/g, "/");
 			let idOrigDecoded = atob(idOrig);
@@ -1449,6 +1452,52 @@ window.lam.webauthn.register = function(publicKey) {
 			form.append('<input type="hidden" name="sig_response" value="' + response + '"/>');
 			form.submit();
 		}, function (error) {
+			console.log(error.message);
+			let errorDiv = jQuery('#generic-webauthn-error');
+			let buttonLabel = errorDiv.data('button');
+			let dialogTitle = errorDiv.data('title');
+			errorDiv.text(error.message);
+			window.lam.dialog.showMessage(dialogTitle,
+				buttonLabel,
+				'generic-webauthn-error',
+				function () {
+					jQuery('#btn_logout').click();
+			});
+		});
+}
+
+/**
+ * Performs a webauthn authentication.
+ *
+ * @param publicKey authentication object
+ */
+window.lam.webauthn.authenticate = function(publicKey) {
+	publicKey.challenge = Uint8Array.from(window.atob(publicKey.challenge), c => c.charCodeAt(0));
+	for (let i = 0; i < publicKey.allowCredentials.length; i++) {
+		let idOrig = publicKey.allowCredentials[i]['id'];
+		idOrig = idOrig.replace(/-/g, "+").replace(/_/g, "/");
+		let idOrigDecoded = atob(idOrig);
+		let idArray = Uint8Array.from(idOrigDecoded, c => c.charCodeAt(0))
+		publicKey.allowCredentials[i]['id'] = idArray;
+	}
+	navigator.credentials.get({publicKey})
+		.then(data => {
+			let publicKeyCredential = {
+				id: data.id,
+				type: data.type,
+				rawId: window.lam.webauthn.arrayToBase64String(new Uint8Array(data.rawId)),
+				response: {
+					authenticatorData: window.lam.webauthn.arrayToBase64String(new Uint8Array(data.response.authenticatorData)),
+					clientDataJSON: window.lam.webauthn.arrayToBase64String(new Uint8Array(data.response.clientDataJSON)),
+					signature: window.lam.webauthn.arrayToBase64String(new Uint8Array(data.response.signature)),
+					userHandle: data.response.userHandle ? window.lam.webauthn.arrayToBase64String(new Uint8Array(data.response.userHandle)) : null
+				}
+			};
+			let form = jQuery("#2faform");
+			let response = btoa(JSON.stringify(publicKeyCredential));
+			form.append('<input type="hidden" name="sig_response" value="' + response + '"/>');
+			form.submit();
+		}, error => {
 			console.log(error.message);
 			let errorDiv = jQuery('#generic-webauthn-error');
 			let buttonLabel = errorDiv.data('button');

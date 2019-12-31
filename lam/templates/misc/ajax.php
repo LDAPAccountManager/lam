@@ -204,8 +204,19 @@ class Ajax {
 				),
 				JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
 			);
-			die();
 		}
+		else {
+			$authenticationObject = $webauthnManager->getAuthenticationObject($userDN, $isSelfService);
+			$_SESSION['webauthn_authentication'] = json_encode($authenticationObject);
+			echo json_encode(
+				array(
+					'action' => 'authenticate',
+					'authentication' => $authenticationObject
+				),
+				JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+			);
+		}
+		die();
 	}
 
 	/**
