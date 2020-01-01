@@ -594,8 +594,6 @@ class WebauthnProvider extends BaseProvider {
 			$response = base64_decode($_POST['sig_response']);
 			return $webauthnManager->isValidAuthentication($response, $userDn);
 		}
-		logNewMessage(LOG_ERR, 'Webauthn authentication failed');
-		return false;
 	}
 
 }

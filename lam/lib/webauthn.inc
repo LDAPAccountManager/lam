@@ -454,7 +454,7 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 			$statement->execute(array(':userid' => $publicKeyCredentialUserEntity->getId()));
 			$results = $statement->fetchAll();
 			foreach ($results as $result) {
-				$jsonArray = json_decode($results[0]['credentialSource'], true);
+				$jsonArray = json_decode($result['credentialSource'], true);
 				$credentials[] = PublicKeyCredentialSource::createFromArray($jsonArray);
 			}
 		}
@@ -549,7 +549,7 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 	protected function tableExists(&$pdo, $tableName) {
 		try {
 			$result = $pdo->query("SELECT 1 FROM $tableName LIMIT 1");
-			return ($result === false) ? false : true;
+			return ($result !== false);
 		} catch (\PDOException $e) {
 			return false;
 		}
