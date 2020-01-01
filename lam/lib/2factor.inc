@@ -491,7 +491,7 @@ class WebauthnProvider extends BaseProvider {
 	 *
 	 * @param TwoFactorConfiguration $config configuration
 	 */
-	public function __construct(&$config) {
+	public function __construct($config) {
 		$this->config = $config;
 	}
 
@@ -550,7 +550,7 @@ class WebauthnProvider extends BaseProvider {
 		$row->add(new htmlDiv(null, $errorMessage, array('hidden webauthn-error')), 12);
 		if ($this->config->twoFactorAuthenticationOptional === true) {
 			include_once __DIR__ . '/webauthn.inc';
-			$webauthnManager = new WebauthnManager();
+			$webauthnManager = $this->getWebauthnManager();
 			$hasTokens = $webauthnManager->isRegistered($userDn);
 			if (!$hasTokens) {
 				$skipButton = new htmlButton('skip_webauthn', _('Skip'));
@@ -566,13 +566,22 @@ class WebauthnProvider extends BaseProvider {
 	}
 
 	/**
+	 * Returns the webauthn manager.
+	 *
+	 * @return WebauthnManager manager
+	 */
+	public function getWebauthnManager() {
+		return new WebauthnManager();
+	}
+
+	/**
 	 * {@inheritDoc}
 	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::verify2ndFactor()
 	 */
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
 		logNewMessage(LOG_DEBUG, 'WebauthnProvider: Checking 2nd factor for ' . $user);
 		include_once __DIR__ . '/webauthn.inc';
-		$webauthnManager = new WebauthnManager();
+		$webauthnManager = $this->getWebauthnManager();
 		if (!empty($_SESSION['ldap'])) {
 			$userDn = $_SESSION['ldap']->getUserName();
 		}
