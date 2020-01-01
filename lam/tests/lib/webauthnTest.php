@@ -1,15 +1,16 @@
 <?php
-use PHPUnit\Framework\TestCase;
-use \LAM\LOGIN\WEBAUTHN\PublicKeyCredentialSourceRepositorySQLite;
-use Webauthn\PublicKeyCredentialDescriptor;
+namespace LAM\LOGIN\WEBAUTHN;
+
+use \PHPUnit\Framework\TestCase;
+use \Webauthn\PublicKeyCredentialDescriptor;
 use \Webauthn\PublicKeyCredentialUserEntity;
 use \Webauthn\PublicKeyCredentialSource;
-use Webauthn\TrustPath\CertificateTrustPath;
+use \Webauthn\TrustPath\CertificateTrustPath;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2019  Roland Gruber
+  Copyright (C) 2019 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -27,8 +28,87 @@ use Webauthn\TrustPath\CertificateTrustPath;
 
 */
 
-require_once 'lam/lib/modules.inc';
-require_once 'lam/lib/webauthn.inc';
+require_once __DIR__ . '/../../lib/modules.inc';
+require_once __DIR__ . '/../../lib/webauthn.inc';
+
+/**
+ * Checks the webauthn functionality.
+ *
+ * @author Roland Gruber
+ */
+class WebauthnManagerTest extends TestCase {
+
+	/**
+	 * @var \PHPUnit_Framework_MockObject_MockObject|PublicKeyCredentialSourceRepositorySQLite
+	 */
+	private $database;
+	/**
+	 * @var \PHPUnit_Framework_MockObject_MockObject|WebauthnManager
+	 */
+	private $manager;
+
+	protected function setup(): void {
+		$this->database = $this
+			->getMockBuilder(PublicKeyCredentialSourceRepositorySQLite::class)
+			->setMethods(array('findOneByCredentialId', 'findAllForUserEntity', 'saveCredentialSource'))
+			->getMock();
+		$this->database->method('findOneByCredentialId')->willReturn(null);
+		$this->database->method('findAllForUserEntity')->willReturn(array());
+		$this->database->method('saveCredentialSource')->willReturn(true);
+
+		$this->manager = $this
+			->getMockBuilder(WebauthnManager::class)
+			->setMethods(array('getDatabase'))
+			->getMock();
+		$this->manager->method('getDatabase')->willReturn($this->database);
+
+		$cfgMain = new \LAMCfgMain();
+		$cfgMain->passwordMinLength = 3;
+		$logFile = tmpfile();
+		$logFilePath = stream_get_meta_data($logFile)['uri'];
+		$cfgMain->logDestination = $logFilePath;
+		$_SESSION['cfgMain'] = $cfgMain;
+
+		$file = tmpfile();
+		$filePath = stream_get_meta_data($file)['uri'];
+		$config = new \LAMConfig($filePath);
+		$config->setTwoFactorAuthenticationDomain('domain');
+		$_SESSION['config'] = $config;
+	}
+
+	public function test_getAuthenticationObject() {
+		$authenticationObj = $this->manager->getAuthenticationObject('userDN', false);
+		$this->assertEquals(40, sizeof($authenticationObj->getChallenge()));
+		$this->assertEquals('domain', $authenticationObj->getRpId());
+	}
+
+	public function test_getRegistrationObject() {
+		$registrationObject = $this->manager->getRegistrationObject('userDn', false);
+		$this->assertEquals(40, sizeof($registrationObject->getChallenge()));
+		$this->assertEquals('domain', $registrationObject->getRp()->getId());
+	}
+
+	public function test_isRegistered() {
+		$this->database->method('findAllForUserEntity')->willReturn(array());
+		$isRegistered = $this->manager->isRegistered('userDN');
+		$this->assertFalse($isRegistered);
+		$this->database->method('findAllForUserEntity')->willReturn(array(
+			new PublicKeyCredentialSource(
+				"id1",
+				PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY,
+				array(),
+				"atype",
+				new CertificateTrustPath(array('x5c' => 'test')),
+				\Ramsey\Uuid\Uuid::uuid1(),
+				"p1",
+				"uh1",
+				1)
+		));
+		$isRegistered = $this->manager->isRegistered('userDN');
+		$this->assertTrue($isRegistered);
+	}
+
+}
 
 /**
  * Checks the webauthn database functionality.
@@ -38,7 +118,7 @@ require_once 'lam/lib/webauthn.inc';
 class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 
 	/**
-	 * @var PublicKeyCredentialSourceRepositorySQLite
+	 * @var \PHPUnit_Framework_MockObject_MockObject|PublicKeyCredentialSourceRepositorySQLite
 	 */
 	private $database;
 
