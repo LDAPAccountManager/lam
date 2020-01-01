@@ -3,7 +3,6 @@ namespace LAM\LOGIN\WEBAUTHN;
 
 use \PHPUnit\Framework\TestCase;
 use \Webauthn\PublicKeyCredentialDescriptor;
-use \Webauthn\PublicKeyCredentialUserEntity;
 use \Webauthn\PublicKeyCredentialSource;
 use \Webauthn\TrustPath\CertificateTrustPath;
 
@@ -109,95 +108,3 @@ class WebauthnManagerTest extends TestCase {
 	}
 
 }
-
-/**
- * Checks the webauthn database functionality.
- *
- * @author Roland Gruber
- */
-class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
-
-	/**
-	 * @var \PHPUnit_Framework_MockObject_MockObject|PublicKeyCredentialSourceRepositorySQLite
-	 */
-	private $database;
-
-	protected function setUp(): void {
-		$this->database = $this
-			->getMockBuilder(PublicKeyCredentialSourceRepositorySQLite::class)
-			->setMethods(array('getPdoUrl'))
-			->getMock();
-		$file = tmpfile();
-		$filePath = stream_get_meta_data($file)['uri'];
-		$this->database->method('getPdoUrl')->willReturn('sqlite:' . $filePath);
-	}
-
-	/**
-	 * Empty DB test
-	 */
-	public function test_findOneByCredentialId_emptyDb() {
-		$result = $this->database->findOneByCredentialId("test");
-		$this->assertNull($result);
-	}
-
-	/**
-	 * Empty DB test
-	 */
-	public function test_findAllForUserEntity_emptyDb() {
-		$entity = new PublicKeyCredentialUserEntity("cn=test,dc=example", "cn=test,dc=example", "test", null);
-
-		$result = $this->database->findAllForUserEntity($entity);
-		$this->assertEmpty($result);
-	}
-
-	/**
-	 * Save multiple credentials and read them.
-	 */
-	public function test_saveCredentialSource() {
-		$source1 = new PublicKeyCredentialSource(
-			"id1",
-			PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY,
-			array(),
-			"atype",
-			new CertificateTrustPath(array('x5c' => 'test')),
-			\Ramsey\Uuid\Uuid::uuid1(),
-			"p1",
-			"uh1",
-			1);
-		$this->database->saveCredentialSource($source1);
-		$source2 = new PublicKeyCredentialSource(
-			"id2",
-			PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY,
-			array(),
-			"atype",
-			new CertificateTrustPath(array('x5c' => 'test')),
-			\Ramsey\Uuid\Uuid::uuid1(),
-			"p2",
-			"uh1",
-			1);
-		$this->database->saveCredentialSource($source2);
-		$source3 = new PublicKeyCredentialSource(
-			"id3",
-			PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY,
-			array(),
-			"atype",
-			new CertificateTrustPath(array('x5c' => 'test')),
-			\Ramsey\Uuid\Uuid::uuid1(),
-			"p3",
-			"uh2",
-			1);
-		$this->database->saveCredentialSource($source3);
-
-		$this->assertNotNull($this->database->findOneByCredentialId("id1"));
-		$this->assertNotNull($this->database->findOneByCredentialId("id2"));
-		$this->assertNotNull($this->database->findOneByCredentialId("id3"));
-		$this->assertEquals(2, sizeof(
-			$this->database->findAllForUserEntity(new PublicKeyCredentialUserEntity("uh1", "uh1", "uh1", null))
-		));
-		$this->assertEquals(1, sizeof(
-			$this->database->findAllForUserEntity(new PublicKeyCredentialUserEntity("uh2", "uh2", "uh2", null))
-		));
-	}
-
-}
-
