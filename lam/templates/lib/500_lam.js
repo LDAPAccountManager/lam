@@ -1544,7 +1544,7 @@ window.lam.webauthn.searchDevices = function(event) {
 	}
 	const resultDiv = jQuery('#webauthn_results');
 	const tokenValue = resultDiv.data('sec_token_value');
-	const searchData = jQuery('#webauthn_userDN').val();
+	const searchData = jQuery('#webauthn_searchTerm').val();
 	const data = {
 		action: 'search',
 		jsonInput: '',
@@ -1590,7 +1590,6 @@ window.lam.webauthn.removeDevice = function(event) {
 	const credential = element.data('credential');
 	const resultDiv = jQuery('#webauthn_results');
 	const tokenValue = resultDiv.data('sec_token_value');
-	const searchData = jQuery('#webauthn_userDN').val();
 	const data = {
 		action: 'delete',
 		jsonInput: '',

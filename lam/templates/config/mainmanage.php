@@ -473,7 +473,7 @@ printHeaderContents(_("Edit general settings"), '../..');
 		$database = new \LAM\LOGIN\WEBAUTHN\PublicKeyCredentialSourceRepositorySQLite();
 		if ($database->hasRegisteredCredentials()) {
 			$row->add(new htmlSubTitle(_('Webauthn devices')), 12);
-			$row->add(new htmlResponsiveInputField(_('User DN'), 'webauthn_userDN', null, '252'), 12);
+			$row->add(new htmlResponsiveInputField(_('User DN'), 'webauthn_searchTerm', null, '252'), 12);
 			$row->addVerticalSpacer('0.5rem');
 			$row->add(new htmlButton('webauthn_search', _('Search')), 12, 12, 12, 'text-center');
 			$resultDiv = new htmlDiv('webauthn_results', new htmlOutputText(''), array('lam-webauthn-results'));
