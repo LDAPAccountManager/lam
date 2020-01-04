@@ -260,6 +260,29 @@
     </section>
 
     <section>
+      <title>Webauthn devices</title>
+
+      <para>Here you can delete any webauthn device registrations. This
+      section is only shown if at least one device is registered.</para>
+
+      <para>Enter a part of the user's DN in the input box and perform a
+      search. LAM will show users and devices that match the search. You can
+      then delete a device registration. If the user has no more registered
+      devices then LAM will ask for registration on next login.</para>
+
+      <para>Note: You cannot add any device here. This can only be done by the
+      user during login or self service.</para>
+
+      <para><screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configGeneral8.png"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot></para>
+    </section>
+
+    <section>
       <title>Change master password</title>
 
       <para>If you would like to change the master configuration password then
