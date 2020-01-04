@@ -1522,6 +1522,96 @@ window.lam.webauthn.arrayToBase64String = function(input) {
 	return btoa(String.fromCharCode(...input));
 }
 
+/**
+ * Sets up the device management on the main configuration page.
+ */
+window.lam.webauthn.setupDeviceManagement = function() {
+	const searchButton = jQuery('#btn_webauthn_search');
+	if (searchButton) {
+		searchButton.click(window.lam.webauthn.searchDevices);
+	}
+}
+
+/**
+ * Searches for devices via Ajax call.
+ *
+ * @param event button click event
+ * @returns {boolean} false
+ */
+window.lam.webauthn.searchDevices = function(event) {
+	if (event !== null) {
+		event.preventDefault();
+	}
+	const resultDiv = jQuery('#webauthn_results');
+	const tokenValue = resultDiv.data('sec_token_value');
+	const searchData = jQuery('#webauthn_userDN').val();
+	const data = {
+		action: 'search',
+		jsonInput: '',
+		sec_token: tokenValue,
+		searchTerm: searchData
+	};
+	jQuery.ajax({
+		url: '../misc/ajax.php?function=webauthnDevices',
+		method: 'POST',
+		data: data
+	})
+	.done(function(jsonData) {
+		resultDiv.html(jsonData.content);
+		window.lam.webauthn.addDeviceActionListeners();
+	})
+	.fail(function() {
+		console.log('Webauthn search failed');
+	});
+	return false;
+}
+
+/**
+ * Adds listeners to the device action buttons.
+ */
+window.lam.webauthn.addDeviceActionListeners = function() {
+	const inputs = jQuery('.webauthn-delete');
+	inputs.each(function() {
+		jQuery(this).click(function(event) {
+			window.lam.webauthn.removeDevice(event);
+		});
+	});
+}
+
+/**
+ * Removes a webauthn device.
+ *
+ * @param element button
+ */
+window.lam.webauthn.removeDevice = function(event) {
+	event.preventDefault();
+	const element = jQuery(event.target);
+	const dn = element.data('dn');
+	const credential = element.data('credential');
+	const resultDiv = jQuery('#webauthn_results');
+	const tokenValue = resultDiv.data('sec_token_value');
+	const searchData = jQuery('#webauthn_userDN').val();
+	const data = {
+		action: 'delete',
+		jsonInput: '',
+		sec_token: tokenValue,
+		dn: dn,
+		credentialId: credential
+	};
+	jQuery.ajax({
+		url: '../misc/ajax.php?function=webauthnDevices',
+		method: 'POST',
+		data: data
+	})
+	.done(function(jsonData) {
+		resultDiv.html(jsonData.content);
+	})
+	.fail(function() {
+		console.log('Webauthn device deletion failed');
+	});
+	return false;
+}
+
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();
 	window.lam.form.autoTrim();
@@ -1533,6 +1623,7 @@ jQuery(document).ready(function() {
 	window.lam.html.activateLightboxes();
 	window.lam.html.preventEnter();
 	window.lam.dynamicSelect.activate();
+	window.lam.webauthn.setupDeviceManagement();
 });
 
 /**

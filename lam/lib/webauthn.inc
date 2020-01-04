@@ -524,6 +524,62 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 	}
 
 	/**
+	 * Returns if there are any credentials in the database.
+	 *
+	 * @return bool at least one credential in the database
+	 */
+	public function hasRegisteredCredentials() {
+		$pdo = $this->getPDO();
+		$statement = $pdo->prepare('select count(*) from ' . self::TABLE_NAME);
+		$statement->execute();
+		$results = $statement->fetchAll();
+		return ($results[0][0] > 0);
+	}
+
+	/**
+	 * Performs a full-text search on the user names and returns all devices found.
+	 *
+	 * @param string $searchTerm search term for user field
+	 * @return array list of devices array('dn' => ..., 'credentialId' => ..., 'lastUseTime' => ..., 'registrationTime' => ...)
+	 */
+	public function searchDevices(string $searchTerm) {
+		$pdo = $this->getPDO();
+		$statement = $pdo->prepare('select * from ' . self::TABLE_NAME . ' where userId like :searchTerm');
+		$statement->execute(array(
+			':searchTerm' => '%' . $searchTerm . '%'
+		));
+		$results = $statement->fetchAll();
+		$devices = array();
+		foreach ($results as $result) {
+			$devices[] = array(
+				'dn' => $result['userId'],
+				'credentialId' => $result['credentialId'],
+				'lastUseTime' => $result['lastUseTime'],
+				'registrationTime' => $result['registrationTime']
+			);
+		}
+		return $devices;
+	}
+
+	/**
+	 * Deletes a single device from the database.
+	 *
+	 * @param string $dn user DN
+	 * @param string $credentialId credential id
+	 * @return bool deletion was ok
+	 */
+	public function deleteDevice(string $dn, string $credentialId) {
+		logNewMessage(LOG_NOTICE, 'Delete webauthn device ' . $credentialId . ' of ' . $dn);
+		$pdo = $this->getPDO();
+		$statement = $pdo->prepare('delete from ' . self::TABLE_NAME . ' where userId = :userId and credentialId = :credentialId');
+		$result = $statement->execute(array(
+			':userId' => $dn,
+			':credentialId' => $credentialId
+		));
+		return $statement->rowCount() > 0;
+	}
+
+	/**
 	 * Returns the PDO.
 	 *
 	 * @return PDO PDO

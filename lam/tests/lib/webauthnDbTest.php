@@ -120,5 +120,53 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 		));
 	}
 
+	public function test_hasRegisteredCredentials() {
+		$this->assertFalse($this->database->hasRegisteredCredentials());
+		$source1 = new PublicKeyCredentialSource(
+			"id1",
+			PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY,
+			array(),
+			"atype",
+			new CertificateTrustPath(array('x5c' => 'test')),
+			\Ramsey\Uuid\Uuid::uuid1(),
+			"p1",
+			"uh1",
+			1);
+		$this->database->saveCredentialSource($source1);
+		$this->assertTrue($this->database->hasRegisteredCredentials());
+	}
+
+	public function test_searchDevices() {
+		$source1 = new PublicKeyCredentialSource(
+			"id1",
+			PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY,
+			array(),
+			"atype",
+			new CertificateTrustPath(array('x5c' => 'test')),
+			\Ramsey\Uuid\Uuid::uuid1(),
+			"p1",
+			"uh1",
+			1);
+		$this->database->saveCredentialSource($source1);
+		$this->assertNotEmpty($this->database->searchDevices('h1'));
+		$this->assertEmpty($this->database->searchDevices('h2'));
+	}
+
+	public function test_deleteDevice() {
+		$source1 = new PublicKeyCredentialSource(
+			"id1",
+			PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY,
+			array(),
+			"atype",
+			new CertificateTrustPath(array('x5c' => 'test')),
+			\Ramsey\Uuid\Uuid::uuid1(),
+			"p1",
+			"uh1",
+			1);
+		$this->database->saveCredentialSource($source1);
+		$this->assertTrue($this->database->deleteDevice('uh1', base64_encode('id1')));
+		$this->assertFalse($this->database->deleteDevice('uh1', base64_encode('id2')));
+	}
+
 }
 

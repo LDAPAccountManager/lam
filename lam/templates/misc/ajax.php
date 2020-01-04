@@ -1,5 +1,7 @@
 <?php
 namespace LAM\AJAX;
+use htmlResponsiveTable;
+use htmlStatusMessage;
 use \LAM\TOOLS\IMPORT_EXPORT\Importer;
 use \LAM\TOOLS\IMPORT_EXPORT\Exporter;
 use \LAM\TYPES\TypeManager;
@@ -7,7 +9,8 @@ use \htmlResponsiveRow;
 use \htmlLink;
 use \htmlOutputText;
 use \htmlButton;
-use LAM\LOGIN\WEBAUTHN\WebauthnManager;
+use \LAM\LOGIN\WEBAUTHN\WebauthnManager;
+use \LAMCfgMain;
 
 /*
 
@@ -106,6 +109,11 @@ class Ajax {
 		if ($function === 'webauthn') {
 			enforceUserIsLoggedIn(false);
 			$this->manageWebauthn($isSelfService);
+			die();
+		}
+		if ($function === 'webauthnDevices') {
+			$this->enforceUserIsLoggedInToMainConfiguration();
+			$this->manageWebauthnDevices();
 			die();
 		}
 		enforceUserIsLoggedIn();
@@ -217,6 +225,102 @@ class Ajax {
 			);
 		}
 		die();
+	}
+
+	/**
+	 * Webauthn device management.
+	 */
+	private function manageWebauthnDevices() {
+		$action = $_POST['action'];
+		if ($action === 'search') {
+			$searchTerm = $_POST['searchTerm'];
+			if (!empty($searchTerm)) {
+				$this->manageWebauthnDevicesSearch($searchTerm);
+			}
+		}
+		elseif ($action === 'delete') {
+			$dn = $_POST['dn'];
+			$credentialId = $_POST['credentialId'];
+			if (!empty($dn) && !empty($credentialId)) {
+				$this->manageWebauthnDevicesDelete($dn, $credentialId);
+			}
+		}
+	}
+
+	/**
+	 * Searches for webauthn devices and prints the results as html.
+	 *
+	 * @param string $searchTerm search term
+	 */
+	private function manageWebauthnDevicesSearch($searchTerm) {
+		include_once __DIR__ . '/../../lib/webauthn.inc';
+		$database = new \LAM\LOGIN\WEBAUTHN\PublicKeyCredentialSourceRepositorySQLite();
+		$results = $database->searchDevices($searchTerm);
+		$row = new htmlResponsiveRow();
+		$row->addVerticalSpacer('0.5rem');
+		if (empty($results)) {
+			$row->add(new htmlStatusMessage('INFO', _('No devices found.')), 12);
+		}
+		else {
+			$titles = array(
+				_('User'),
+				_('Registration'),
+				_('Last use'),
+				_('Delete')
+			);
+			$data = array();
+			$id = 0;
+			foreach ($results as $result) {
+				$delButton = new htmlButton('deleteDevice' . $id, 'delete.png', true);
+				$delButton->addDataAttribute('credential', $result['credentialId']);
+				$delButton->addDataAttribute('dn', $result['dn']);
+				$delButton->setCSSClasses(array('webauthn-delete'));
+				$data[] = array(
+					new htmlOutputText($result['dn']),
+					new htmlOutputText(date('Y-m-d H:i:s', $result['registrationTime'])),
+					new htmlOutputText(date('Y-m-d H:i:s', $result['lastUseTime'])),
+					$delButton
+				);
+				$id++;
+			}
+			$table = new htmlResponsiveTable($titles, $data);
+			$row->add($table, 12);
+		}
+		$row->addVerticalSpacer('2rem');
+		$tabindex = 10000;
+		ob_start();
+		$row->generateHTML('none', array(), array(), false, $tabindex, null);
+		$content = ob_get_contents();
+		ob_end_clean();
+		echo json_encode(array('content' => $content));
+	}
+
+	/**
+	 * Deletes a webauthn device.
+	 *
+	 * @param string $dn user DN
+	 * @param string $credentialId base64 encoded credential id
+	 */
+	private function manageWebauthnDevicesDelete($dn, $credentialId) {
+		include_once __DIR__ . '/../../lib/webauthn.inc';
+		$database = new \LAM\LOGIN\WEBAUTHN\PublicKeyCredentialSourceRepositorySQLite();
+		$success = $database->deleteDevice($dn, $credentialId);
+		if ($success) {
+			$message = new htmlStatusMessage('INFO', _('The device was deleted.'));
+		}
+		else {
+			$message = new htmlStatusMessage('ERROR', _('The device was not found.'));
+		}
+		$row = new htmlResponsiveRow();
+		$row->addVerticalSpacer('0.5rem');
+		$row->add($message, 12);
+		$row->addVerticalSpacer('2rem');
+		ob_start();
+		$tabindex = 50000;
+		$row->generateHTML('none', array(), array(), true, $tabindex, null);
+		$content = ob_get_contents();
+		ob_end_clean();
+		echo json_encode(array('content' => $content));
 	}
 
 	/**
@@ -339,6 +443,23 @@ class Ajax {
 		}
 		usort($dnList, 'compareDN');
 		return $dnList;
+	}
+
+	/**
+	 * Checks if the user entered the configuration master password.
+	 * Dies if password is not set.
+	 */
+	private function enforceUserIsLoggedInToMainConfiguration() {
+		if (!isset($_SESSION['cfgMain'])) {
+			$cfg = new LAMCfgMain();
+		}
+		else {
+			$cfg = $_SESSION['cfgMain'];
+		}
+		if (isset($_SESSION["mainconf_password"]) && ($cfg->checkPassword($_SESSION["mainconf_password"]))) {
+			return;
+		}
+		die();
 	}
 
 }

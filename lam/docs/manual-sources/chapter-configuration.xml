@@ -655,6 +655,11 @@
           <listitem>
             <para><ulink url="https://duo.com/">Duo</ulink></para>
           </listitem>
+
+          <listitem>
+            <para><ulink
+            url="https://webauthn.io/">Webauthn/FIDO2</ulink></para>
+          </listitem>
         </itemizedlist>
 
         <para>Configuration options:</para>
@@ -749,6 +754,27 @@
 
           <listitem>
             <para>Secret key: please enter your secret key.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para><emphasis role="bold">Webauthn/FIDO2</emphasis></para>
+
+        <para>Users will be asked to register a device during login if no
+        device is setup.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Domain: Please enter the WebAuthn domain. This is the public
+            domain of the web server (e.g. "example.com"). Do not include
+            protocol or port. Browsers will reject authentication if the
+            domain does not match the web server domain.</para>
+          </listitem>
+
+          <listitem>
+            <para>Optional: By default LAM will enforce to use a 2FA device
+            and reject users that do not setup one. You can set this check to
+            optional. But if a user has setup a device then this will always
+            be required.</para>
           </listitem>
         </itemizedlist>
 

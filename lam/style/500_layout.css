@@ -547,6 +547,9 @@ input.markOk {
 	text-decoration: line-through;
 }
 
+div.lam-webauthn-results {
+	max-height: 10rem;
+}
 
 /**
  * table style for delete.php
