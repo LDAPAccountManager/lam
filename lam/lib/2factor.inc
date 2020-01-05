@@ -1,6 +1,7 @@
 <?php
 namespace LAM\LIB\TWO_FACTOR;
-use LAM\LOGIN\WEBAUTHN\WebauthnManager;
+use \htmlResponsiveRow;
+use \LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use \selfServiceProfile;
 use \LAMConfig;
 use \htmlScript;
@@ -12,7 +13,7 @@ use \htmlStatusMessage;
 use \htmlOutputText;
 use \htmlDiv;
 use \LAMException;
-use Webauthn\PublicKeyCredentialCreationOptions;
+use \Webauthn\PublicKeyCredentialCreationOptions;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -537,6 +538,16 @@ class WebauthnProvider extends BaseProvider {
 			$row->add(new htmlStatusMessage('ERROR', 'Webauthn requires the sqlite PDO driver for PHP.'), 12);
 			return;
 		}
+		include_once __DIR__ . '/webauthn.inc';
+		$webauthnManager = $this->getWebauthnManager();
+		$hasTokens = $webauthnManager->isRegistered($userDn);
+		if ($hasTokens) {
+			$row->add(new htmlStatusMessage('INFO', _('Please authenticate with your security device.')), 12);
+		}
+		else {
+			$row->add(new htmlStatusMessage('INFO', _('Please register a security device.')), 12);
+		}
+		$row->addVerticalSpacer('2rem');
 		$pathPrefix = $this->config->isSelfService ? '../' : '';
 		$row->add(new htmlImage($pathPrefix . '../graphics/webauthn.svg'), 12);
 		$row->addVerticalSpacer('1rem');
@@ -549,9 +560,6 @@ class WebauthnProvider extends BaseProvider {
 		$errorMessage = new htmlStatusMessage('ERROR', '', _('This service requires a browser with "WebAuthn" support.'));
 		$row->add(new htmlDiv(null, $errorMessage, array('hidden webauthn-error')), 12);
 		if ($this->config->twoFactorAuthenticationOptional === true) {
-			include_once __DIR__ . '/webauthn.inc';
-			$webauthnManager = $this->getWebauthnManager();
-			$hasTokens = $webauthnManager->isRegistered($userDn);
 			if (!$hasTokens) {
 				$skipButton = new htmlButton('skip_webauthn', _('Skip'));
 				$skipButton->setCSSClasses(array('fullwidth'));

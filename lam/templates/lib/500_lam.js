@@ -1586,6 +1586,34 @@ window.lam.webauthn.addDeviceActionListeners = function() {
 window.lam.webauthn.removeDevice = function(event) {
 	event.preventDefault();
 	const element = jQuery(event.target);
+	const dialogTitle = element.data('dialogtitle');
+	const okText = element.data('oktext');
+	const cancelText = element.data('canceltext');
+	let buttonList = {};
+	buttonList[okText] = function() {
+		jQuery('#webauthnDeleteConfirm').dialog('close');
+		window.lam.webauthn.sendRemoveDeviceRequest(element);
+	};
+	buttonList[cancelText] = function() {
+		jQuery(this).dialog("close");
+	};
+	jQuery('#webauthnDeleteConfirm').dialog({
+		modal: true,
+		title: dialogTitle,
+		dialogClass: 'defaultBackground',
+		buttons: buttonList,
+		width: 'auto'
+	});
+
+	return false;
+}
+
+/**
+ * Sends the remove request to server.
+ *
+ * @param element button element
+ */
+window.lam.webauthn.sendRemoveDeviceRequest = function(element) {
 	const dn = element.data('dn');
 	const credential = element.data('credential');
 	const resultDiv = jQuery('#webauthn_results');
@@ -1602,13 +1630,12 @@ window.lam.webauthn.removeDevice = function(event) {
 		method: 'POST',
 		data: data
 	})
-	.done(function(jsonData) {
-		resultDiv.html(jsonData.content);
-	})
-	.fail(function() {
-		console.log('Webauthn device deletion failed');
-	});
-	return false;
+		.done(function(jsonData) {
+			resultDiv.html(jsonData.content);
+		})
+		.fail(function() {
+			console.log('Webauthn device deletion failed');
+		});
 }
 
 jQuery(document).ready(function() {

@@ -274,6 +274,9 @@ class Ajax {
 				$delButton = new htmlButton('deleteDevice' . $id, 'delete.png', true);
 				$delButton->addDataAttribute('credential', $result['credentialId']);
 				$delButton->addDataAttribute('dn', $result['dn']);
+				$delButton->addDataAttribute('dialogtitle', _('Remove device'));
+				$delButton->addDataAttribute('oktext', _('Ok'));
+				$delButton->addDataAttribute('canceltext', _('Cancel'));
 				$delButton->setCSSClasses(array('webauthn-delete'));
 				$data[] = array(
 					new htmlOutputText($result['dn']),

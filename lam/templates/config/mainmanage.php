@@ -480,6 +480,8 @@ printHeaderContents(_("Edit general settings"), '../..');
 			addSecurityTokenToSession(false);
 			$resultDiv->addDataAttribute('sec_token_value', getSecurityTokenValue());
 			$row->add($resultDiv, 12);
+			$confirmationDiv = new htmlDiv('webauthnDeleteConfirm', new htmlOutputText(_('Do you really want to remove this device?')), array('hidden'));
+			$row->add($confirmationDiv, 12);
 		}
 	}
 
