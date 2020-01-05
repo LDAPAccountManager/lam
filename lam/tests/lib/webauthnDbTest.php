@@ -148,8 +148,9 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 			"uh1",
 			1);
 		$this->database->saveCredentialSource($source1);
-		$this->assertNotEmpty($this->database->searchDevices('h1'));
-		$this->assertEmpty($this->database->searchDevices('h2'));
+		$this->assertNotEmpty($this->database->searchDevices('uh1'));
+		$this->assertNotEmpty($this->database->searchDevices('%h1%'));
+		$this->assertEmpty($this->database->searchDevices('uh2'));
 	}
 
 	public function test_deleteDevice() {

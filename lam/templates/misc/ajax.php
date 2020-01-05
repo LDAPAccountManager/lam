@@ -15,7 +15,7 @@ use \LAMCfgMain;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2019  Roland Gruber
+  Copyright (C) 2011 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -159,6 +159,9 @@ class Ajax {
 			ob_end_clean();
 			echo $jsonOut;
 		}
+		elseif ($function === 'webauthnOwnDevices') {
+			$this->manageWebauthnOwnDevices();
+		}
 	}
 
 	/**
@@ -255,7 +258,7 @@ class Ajax {
 	private function manageWebauthnDevicesSearch($searchTerm) {
 		include_once __DIR__ . '/../../lib/webauthn.inc';
 		$database = new \LAM\LOGIN\WEBAUTHN\PublicKeyCredentialSourceRepositorySQLite();
-		$results = $database->searchDevices($searchTerm);
+		$results = $database->searchDevices('%' . $searchTerm . '%');
 		$row = new htmlResponsiveRow();
 		$row->addVerticalSpacer('0.5rem');
 		if (empty($results)) {
@@ -324,6 +327,23 @@ class Ajax {
 		$content = ob_get_contents();
 		ob_end_clean();
 		echo json_encode(array('content' => $content));
+	}
+
+	/**
+	 * Manages requests to setup user's own webauthn devices.
+	 */
+	private function manageWebauthnOwnDevices() {
+		$action = $_POST['action'];
+		$dn = $_POST['dn'];
+		$sessionDn = $_SESSION['ldap']->getUserName();
+		if ($sessionDn !== $dn) {
+			logNewMessage(LOG_ERR, 'Webauthn delete canceled, DN does not match.');
+			die();
+		}
+		if ($action === 'delete') {
+			$credentialId = $_POST['credentialId'];
+			$this->manageWebauthnDevicesDelete($dn, $credentialId);
+		}
 	}
 
 	/**

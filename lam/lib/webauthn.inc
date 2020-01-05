@@ -49,7 +49,7 @@ use \LAMException;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2019  Roland Gruber
+  Copyright (C) 2019 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -546,7 +546,7 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 		$pdo = $this->getPDO();
 		$statement = $pdo->prepare('select * from ' . self::TABLE_NAME . ' where userId like :searchTerm');
 		$statement->execute(array(
-			':searchTerm' => '%' . $searchTerm . '%'
+			':searchTerm' => $searchTerm
 		));
 		$results = $statement->fetchAll();
 		$devices = array();

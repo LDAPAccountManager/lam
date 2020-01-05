@@ -1,7 +1,7 @@
 /**
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2019  Roland Gruber
+  Copyright (C) 2003 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1581,18 +1581,41 @@ window.lam.webauthn.addDeviceActionListeners = function() {
 /**
  * Removes a webauthn device.
  *
- * @param element button
+ * @param event click event
  */
 window.lam.webauthn.removeDevice = function(event) {
 	event.preventDefault();
 	const element = jQuery(event.target);
+	window.lam.webauthn.removeDeviceDialog(element, 'webauthnDevices');
+	return false;
+}
+
+/**
+ * Removes a user's own webauthn device.
+ *
+ * @param event click event
+ */
+window.lam.webauthn.removeOwnDevice = function(event) {
+	event.preventDefault();
+	const element = jQuery(event.target);
+	window.lam.webauthn.removeDeviceDialog(element, 'webauthnOwnDevices');
+	return false;
+}
+
+/**
+ * Opens the remove device diaog.
+ *
+ * @param element delete button
+ * @param action action for request (delete|deleteOwn)
+ */
+window.lam.webauthn.removeDeviceDialog = function(element, action) {
 	const dialogTitle = element.data('dialogtitle');
 	const okText = element.data('oktext');
 	const cancelText = element.data('canceltext');
 	let buttonList = {};
 	buttonList[okText] = function() {
 		jQuery('#webauthnDeleteConfirm').dialog('close');
-		window.lam.webauthn.sendRemoveDeviceRequest(element);
+		window.lam.webauthn.sendRemoveDeviceRequest(element, action);
 	};
 	buttonList[cancelText] = function() {
 		jQuery(this).dialog("close");
@@ -1604,16 +1627,15 @@ window.lam.webauthn.removeDevice = function(event) {
 		buttons: buttonList,
 		width: 'auto'
 	});
-
-	return false;
 }
 
 /**
  * Sends the remove request to server.
  *
  * @param element button element
+ * @param action action (delete|deleteOwn)
  */
-window.lam.webauthn.sendRemoveDeviceRequest = function(element) {
+window.lam.webauthn.sendRemoveDeviceRequest = function(element, action) {
 	const dn = element.data('dn');
 	const credential = element.data('credential');
 	const resultDiv = jQuery('#webauthn_results');
@@ -1626,7 +1648,7 @@ window.lam.webauthn.sendRemoveDeviceRequest = function(element) {
 		credentialId: credential
 	};
 	jQuery.ajax({
-		url: '../misc/ajax.php?function=webauthnDevices',
+		url: '../misc/ajax.php?function=' + action,
 		method: 'POST',
 		data: data
 	})
