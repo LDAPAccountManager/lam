@@ -544,7 +544,7 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 	 */
 	public function searchDevices(string $searchTerm) {
 		$pdo = $this->getPDO();
-		$statement = $pdo->prepare('select * from ' . self::TABLE_NAME . ' where userId like :searchTerm');
+		$statement = $pdo->prepare('select * from ' . self::TABLE_NAME . ' where userId like :searchTerm order by userId,registrationTime');
 		$statement->execute(array(
 			':searchTerm' => $searchTerm
 		));

@@ -841,6 +841,14 @@ window.lam.form.autoTrim = function() {
 
 window.lam.dialog = window.lam.dialog || {};
 
+/**
+ * Shows a dialog message.
+ *
+ * @param title dialog title
+ * @param okText ok button text
+ * @param divId DIV id with dialog content
+ * @param callbackFunction callback function (optional)
+ */
 window.lam.dialog.showMessage = function(title, okText, divId, callbackFunction) {
     var buttonList = {};
     buttonList[okText] = function() {
@@ -1388,14 +1396,14 @@ window.lam.webauthn.run = function(prefix) {
 		form.submit();
 		return;
 	});
-	var token = jQuery('#sec_token').val();
+	const token = jQuery('#sec_token').val();
 	// check for webauthn support
 	if (!navigator.credentials || (typeof(PublicKeyCredential) === "undefined")) {
 		jQuery('.webauthn-error').show();
 		return;
 	}
 
-	var data = {
+	const data = {
 			action: 'status',
 			jsonInput: '',
 			sec_token: token
@@ -1407,7 +1415,25 @@ window.lam.webauthn.run = function(prefix) {
 	})
 	.done(function(jsonData) {
 		if (jsonData.action === 'register') {
-			window.lam.webauthn.register(jsonData.registration);
+			const successCallback = function (publicKeyCredential) {
+				const form = jQuery("#2faform");
+				const response = btoa(JSON.stringify(publicKeyCredential));
+				form.append('<input type="hidden" name="sig_response" value="' + response + '"/>');
+				form.submit();
+			};
+			const errorCallback = function(error) {
+				let errorDiv = jQuery('#generic-webauthn-error');
+				let buttonLabel = errorDiv.data('button');
+				let dialogTitle = errorDiv.data('title');
+				errorDiv.text(error.message);
+				window.lam.dialog.showMessage(dialogTitle,
+					buttonLabel,
+					'generic-webauthn-error',
+					function () {
+						jQuery('#btn_logout').click();
+				});
+			};
+			window.lam.webauthn.register(jsonData.registration, successCallback, errorCallback);
 		}
 		else if (jsonData.action === 'authenticate') {
 			window.lam.webauthn.authenticate(jsonData.authentication);
@@ -1422,23 +1448,27 @@ window.lam.webauthn.run = function(prefix) {
  * Performs a webauthn registration.
  *
  * @param publicKey registration object
+ * @param successCallback callback function in case of all went fine
+ * @param errorCallback callback function in case of an error
  */
-window.lam.webauthn.register = function(publicKey) {
-	publicKey.challenge = Uint8Array.from(window.atob(publicKey.challenge), c=>c.charCodeAt(0));
-	publicKey.user.id = Uint8Array.from(window.atob(publicKey.user.id), c=>c.charCodeAt(0));
-	publicKey.rp.icon = window.location.href.substring(0, window.location.href.lastIndexOf("/")) + publicKey.rp.icon;
-	if (publicKey.excludeCredentials) {
-		for (let i = 0; i < publicKey.excludeCredentials.length; i++) {
-			let idOrig = publicKey.excludeCredentials[i]['id'];
-			idOrig = idOrig.replace(/-/g, "+").replace(/_/g, "/");
-			let idOrigDecoded = atob(idOrig);
-			let idArray = Uint8Array.from(idOrigDecoded, c => c.charCodeAt(0))
-			publicKey.excludeCredentials[i]['id'] = idArray;
+window.lam.webauthn.register = function(publicKey, successCallback, errorCallback) {
+	if (!(publicKey.challenge instanceof Uint8Array)) {
+		publicKey.challenge = Uint8Array.from(window.atob(publicKey.challenge), c=>c.charCodeAt(0));
+		publicKey.user.id = Uint8Array.from(window.atob(publicKey.user.id), c=>c.charCodeAt(0));
+		publicKey.rp.icon = window.location.href.substring(0, window.location.href.lastIndexOf("/")) + publicKey.rp.icon;
+		if (publicKey.excludeCredentials) {
+			for (let i = 0; i < publicKey.excludeCredentials.length; i++) {
+				let idOrig = publicKey.excludeCredentials[i]['id'];
+				idOrig = idOrig.replace(/-/g, "+").replace(/_/g, "/");
+				let idOrigDecoded = atob(idOrig);
+				let idArray = Uint8Array.from(idOrigDecoded, c => c.charCodeAt(0))
+				publicKey.excludeCredentials[i]['id'] = idArray;
+			}
 		}
 	}
 	navigator.credentials.create({publicKey})
 		.then(function (data) {
-			let publicKeyCredential = {
+			const publicKeyCredential = {
 				id: data.id,
 				type: data.type,
 				rawId: window.lam.webauthn.arrayToBase64String(new Uint8Array(data.rawId)),
@@ -1447,22 +1477,10 @@ window.lam.webauthn.register = function(publicKey) {
 					attestationObject: window.lam.webauthn.arrayToBase64String(new Uint8Array(data.response.attestationObject))
 				}
 			};
-			let form = jQuery("#2faform");
-			let response = btoa(JSON.stringify(publicKeyCredential));
-			form.append('<input type="hidden" name="sig_response" value="' + response + '"/>');
-			form.submit();
+			successCallback(publicKeyCredential);
 		}, function (error) {
 			console.log(error.message);
-			let errorDiv = jQuery('#generic-webauthn-error');
-			let buttonLabel = errorDiv.data('button');
-			let dialogTitle = errorDiv.data('title');
-			errorDiv.text(error.message);
-			window.lam.dialog.showMessage(dialogTitle,
-				buttonLabel,
-				'generic-webauthn-error',
-				function () {
-					jQuery('#btn_logout').click();
-			});
+			errorCallback(error);
 		});
 }
 
@@ -1598,7 +1616,16 @@ window.lam.webauthn.removeDevice = function(event) {
 window.lam.webauthn.removeOwnDevice = function(event) {
 	event.preventDefault();
 	const element = jQuery(event.target);
-	window.lam.webauthn.removeDeviceDialog(element, 'webauthnOwnDevices');
+	const successCallback = function () {
+		const form = jQuery("#webauthnform");
+		jQuery('<input>').attr({
+			type: 'hidden',
+			name: 'removed',
+			value: 'true'
+		}).appendTo(form);
+		form.submit();
+	};
+	window.lam.webauthn.removeDeviceDialog(element, 'webauthnOwnDevices', successCallback);
 	return false;
 }
 
@@ -1607,15 +1634,16 @@ window.lam.webauthn.removeOwnDevice = function(event) {
  *
  * @param element delete button
  * @param action action for request (delete|deleteOwn)
+ * @param successCallback callback if all was fine (optional)
  */
-window.lam.webauthn.removeDeviceDialog = function(element, action) {
+window.lam.webauthn.removeDeviceDialog = function(element, action, successCallback) {
 	const dialogTitle = element.data('dialogtitle');
 	const okText = element.data('oktext');
 	const cancelText = element.data('canceltext');
 	let buttonList = {};
 	buttonList[okText] = function() {
 		jQuery('#webauthnDeleteConfirm').dialog('close');
-		window.lam.webauthn.sendRemoveDeviceRequest(element, action);
+		window.lam.webauthn.sendRemoveDeviceRequest(element, action, successCallback);
 	};
 	buttonList[cancelText] = function() {
 		jQuery(this).dialog("close");
@@ -1634,8 +1662,9 @@ window.lam.webauthn.removeDeviceDialog = function(element, action) {
  *
  * @param element button element
  * @param action action (delete|deleteOwn)
+ * @param successCallback callback if all was fine (optional)
  */
-window.lam.webauthn.sendRemoveDeviceRequest = function(element, action) {
+window.lam.webauthn.sendRemoveDeviceRequest = function(element, action, successCallback) {
 	const dn = element.data('dn');
 	const credential = element.data('credential');
 	const resultDiv = jQuery('#webauthn_results');
@@ -1653,11 +1682,49 @@ window.lam.webauthn.sendRemoveDeviceRequest = function(element, action) {
 		data: data
 	})
 		.done(function(jsonData) {
-			resultDiv.html(jsonData.content);
+			if (successCallback) {
+				successCallback();
+			}
+			else {
+				resultDiv.html(jsonData.content);
+			}
 		})
 		.fail(function() {
 			console.log('Webauthn device deletion failed');
 		});
+}
+
+/**
+ * Registers a user's own webauthn device.
+ *
+ * @param event click event
+ */
+window.lam.webauthn.registerOwnDevice = function(event) {
+	event.preventDefault();
+	const element = jQuery(event.target);
+	const dn = element.data('dn');
+	const tokenValue = element.data('sec_token_value');
+	const tokenName = element.data('sec_token_name');
+	const publicKey = element.data('publickey');
+	const successCallback = function (publicKeyCredential) {
+		const form = jQuery("#webauthnform");
+		const response = btoa(JSON.stringify(publicKeyCredential));
+		const registrationData = jQuery('#registrationData');
+		registrationData.val(response);
+		form.submit();
+	};
+	const errorCallback = function (error) {
+		let errorDiv = jQuery('#generic-webauthn-error');
+		let buttonLabel = errorDiv.data('button');
+		let dialogTitle = errorDiv.data('title');
+		errorDiv.text(error.message);
+		window.lam.dialog.showMessage(dialogTitle,
+			buttonLabel,
+			'generic-webauthn-error'
+		);
+	};
+	window.lam.webauthn.register(publicKey, successCallback, errorCallback);
+	return false;
 }
 
 jQuery(document).ready(function() {

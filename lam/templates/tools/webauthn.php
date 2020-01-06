@@ -1,14 +1,18 @@
 <?php
 namespace LAM\TOOLS\WEBAUTHN;
 use \htmlButton;
-use htmlDiv;
-use htmlGroup;
+use \htmlDiv;
+use \htmlGroup;
+use htmlHiddenInput;
 use \htmlOutputText;
 use \htmlResponsiveRow;
 use \htmlResponsiveTable;
+use \htmlSpacer;
 use \htmlStatusMessage;
 use \htmlTitle;
 use \LAM\LOGIN\WEBAUTHN\PublicKeyCredentialSourceRepositorySQLite;
+use LAM\LOGIN\WEBAUTHN\WebauthnManager;
+use Webauthn\PublicKeyCredentialCreationOptions;
 
 /*
 
@@ -48,6 +52,7 @@ include_once __DIR__ . '/../../lib/webauthn.inc';
 // start session
 startSecureSession();
 enforceUserIsLoggedIn();
+validateSecurityToken();
 
 checkIfToolIsActive('toolWebauthn');
 
@@ -55,22 +60,43 @@ setlanguage();
 
 include __DIR__ . '/../../lib/adminHeader.inc';
 echo '<div class="user-bright smallPaddingContent">';
-echo "<form action=\"webauthn.php\" method=\"post\">\n";
+echo "<form id='webauthnform' action=\"webauthn.php\" method=\"post\">\n";
 $tabindex = 1;
 $container = new htmlResponsiveRow();
 
 $container->add(new htmlTitle(_("Webauthn devices")), 12);
 
+$webauthnManager = new WebauthnManager();
+
 $userDn = $_SESSION['ldap']->getUserName();
 $database = new PublicKeyCredentialSourceRepositorySQLite();
-$results = $database->searchDevices($userDn);
+showRemoveMessage($container);
+addNewDevice($container, $webauthnManager);
 $container->addVerticalSpacer('0.5rem');
+$container->add(new htmlHiddenInput('registrationData', ''), 12);
+$errorMessageDiv = new htmlDiv('generic-webauthn-error', new htmlOutputText(''));
+$errorMessageDiv->addDataAttribute('button', _('Ok'));
+$errorMessageDiv->addDataAttribute('title', _('Webauthn failed'));
+$container->add($errorMessageDiv, 12);
 $buttonGroup = new htmlGroup();
+$registerButton = new htmlButton('register', _('Register new device'));
+$registerButton->addDataAttribute('dn', $userDn);
+$registerButton->addDataAttribute('sec_token_value', getSecurityTokenValue());
+$registerButton->addDataAttribute('sec_token_name', getSecurityTokenName());
+$registration = $webauthnManager->getRegistrationObject($userDn, false);
+$registrationJson = json_encode($registration);
+$_SESSION['webauthn_registration'] = $registrationJson;
+$registerButton->addDataAttribute('publickey', $registrationJson);
+$registerButton->setIconClass('createButton');
+$registerButton->setOnClick('window.lam.webauthn.registerOwnDevice(event);');
+$buttonGroup->addElement($registerButton);
+$buttonGroup->addElement(new htmlSpacer('1rem', null));
 $reloadButton = new htmlButton('reload', _('Reload'));
 $reloadButton->setIconClass('refreshButton');
 $buttonGroup->addElement($reloadButton);
 $container->add($buttonGroup, 12);
 $container->addVerticalSpacer('2rem');
+$results = $database->searchDevices($userDn);
 if (empty($results)) {
 	$container->add(new htmlStatusMessage('INFO', _('No devices found.')), 12);
 }
@@ -107,6 +133,7 @@ $container->addVerticalSpacer('2rem');
 $confirmationDiv = new htmlDiv('webauthnDeleteConfirm', new htmlOutputText(_('Do you really want to remove this device?')), array('hidden'));
 $container->add($confirmationDiv, 12);
 
+addSecurityTokenToMetaHTML($container);
 
 parseHtml(null, $container, array(), false, $tabindex, 'user');
 
@@ -114,4 +141,34 @@ echo '</form>';
 echo '</div>';
 include __DIR__ . '/../../lib/adminFooter.inc';
 
-?>
+/**
+ * Checks if a new device should be registered and adds it.
+ *
+ * @param htmlResponsiveRow $container row
+ * @param WebauthnManager $webauthnManager webauthn manager
+ */
+function addNewDevice($container, $webauthnManager) {
+	if (empty($_POST['registrationData'])) {
+		return;
+	}
+	$registrationData = base64_decode($_POST['registrationData']);
+	$registrationObject = PublicKeyCredentialCreationOptions::createFromString($_SESSION['webauthn_registration']);
+	$success = $webauthnManager->storeNewRegistration($registrationObject, $registrationData);
+	if ($success) {
+		$container->add(new htmlStatusMessage('INFO', _('The device was registered.')), 12);
+	}
+	else {
+		$container->add(new htmlStatusMessage('ERROR', _('The device failed to register.')), 12);
+	}
+}
+
+/**
+ * Shows the message if a device was removed.
+ *
+ * @param htmlResponsiveRow $container row
+ */
+function showRemoveMessage($container) {
+	if (!empty($_POST['removed']) && ($_POST['removed'] === 'true')) {
+		$container->add(new htmlStatusMessage('INFO', _('The device was deleted.')), 12);
+	}
+}

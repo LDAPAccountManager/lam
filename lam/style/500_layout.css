@@ -548,7 +548,9 @@ input.markOk {
 }
 
 div.lam-webauthn-results {
-	max-height: 10rem;
+	max-height: 20rem;
+	overflow: auto;
+	padding: 1rem;
 }
 
 /**

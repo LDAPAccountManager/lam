@@ -342,7 +342,7 @@ class Ajax {
 		}
 		if ($action === 'delete') {
 			$credentialId = $_POST['credentialId'];
-			$this->manageWebauthnDevicesDelete($dn, $credentialId);
+			$this->manageWebauthnDevicesDelete($sessionDn, $credentialId);
 		}
 	}
 
