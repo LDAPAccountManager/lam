@@ -271,7 +271,8 @@
       devices then LAM will ask for registration on next login.</para>
 
       <para>Note: You cannot add any device here. This can only be done by the
-      user during login or self service.</para>
+      user during login, <link linkend="tool_webauthn">webauthn tool</link> or
+      self service.</para>
 
       <para><screenshot>
           <mediaobject>

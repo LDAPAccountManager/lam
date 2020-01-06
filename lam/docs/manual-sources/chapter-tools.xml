@@ -421,6 +421,20 @@
   </section>
 
   <section>
+    <title id="tool_webauthn">Webauthn devices</title>
+
+    <para>Here you can manage your webauthn/FIDO2 devices.</para>
+
+    <para>You can register additional security devices and remove old ones. If
+    no more device is registered then LAM will ask you for registration on
+    next login.</para>
+
+    <screenshot>
+      <graphic fileref="images/tool_webauthn1.png"/>
+    </screenshot>
+  </section>
+
+  <section>
     <title>Tests</title>
 
     <para>This allows you to check if your LDAP schema is compatible with LAM
