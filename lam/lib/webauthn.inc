@@ -185,7 +185,10 @@ class WebauthnManager {
 	private function createRpEntry($isSelfService) {
 		$pathPrefix = $isSelfService ? '../' : '';
 		$icon = $pathPrefix . '../graphics/logo136.png';
-		if (!$isSelfService) {
+		if ($isSelfService) {
+			$domain = $_SESSION['selfServiceProfile']->twoFactorAuthenticationDomain;
+		}
+		else {
 			$domain = $_SESSION['config']->getTwoFactorAuthenticationDomain();
 		}
 		return new PublicKeyCredentialRpEntity(

@@ -202,7 +202,12 @@ class Ajax {
 	 */
 	private function manageWebauthn($isSelfService) {
 		include_once __DIR__ . '/../../lib/webauthn.inc';
-		$userDN = $_SESSION['ldap']->getUserName();
+		if ($isSelfService) {
+			$userDN = lamDecrypt($_SESSION['selfService_clientDN'], 'SelfService');
+		}
+		else {
+			$userDN = $_SESSION['ldap']->getUserName();
+		}
 		$webauthnManager = new WebauthnManager();
 		$isRegistered = $webauthnManager->isRegistered($userDN);
 		if (!$isRegistered) {

@@ -1375,11 +1375,12 @@ window.lam.webauthn = window.lam.webauthn || {};
  * Starts the webauthn process.
  *
  * @param prefix path prefix for Ajax endpoint
+ * @param isSelfService runs as part of self service
  */
-window.lam.webauthn.start = function(prefix) {
+window.lam.webauthn.start = function(prefix, isSelfService) {
 	jQuery(document).ready(
 		function() {
-			window.lam.webauthn.run(prefix);
+			window.lam.webauthn.run(prefix, isSelfService);
 		}
 	);
 }
@@ -1388,8 +1389,9 @@ window.lam.webauthn.start = function(prefix) {
  * Checks if the user is registered and starts login/registration.
  *
  * @param prefix path prefix for Ajax endpoint
+ * @param isSelfService runs as part of self service
  */
-window.lam.webauthn.run = function(prefix) {
+window.lam.webauthn.run = function(prefix, isSelfService) {
 	jQuery('#btn_skip_webauthn').click(function () {
 		let form = jQuery("#2faform");
 		form.append('<input type="hidden" name="sig_response" value="skip"/>');
@@ -1408,8 +1410,9 @@ window.lam.webauthn.run = function(prefix) {
 			jsonInput: '',
 			sec_token: token
 	};
+	const extraParam = isSelfService ? '&selfservice=true' : '';
 	jQuery.ajax({
-		url: prefix + 'misc/ajax.php?function=webauthn',
+		url: prefix + 'misc/ajax.php?function=webauthn' + extraParam,
 		method: 'POST',
 		data: data
 	})

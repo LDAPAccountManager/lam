@@ -17,7 +17,7 @@ use \Webauthn\PublicKeyCredentialCreationOptions;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2019  Roland Gruber
+  Copyright (C) 2017 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -549,6 +549,7 @@ class WebauthnProvider extends BaseProvider {
 		}
 		$row->addVerticalSpacer('2rem');
 		$pathPrefix = $this->config->isSelfService ? '../' : '';
+		$selfServiceParam = $this->config->isSelfService ? 'true' : 'false';
 		$row->add(new htmlImage($pathPrefix . '../graphics/webauthn.svg'), 12);
 		$row->addVerticalSpacer('1rem');
 		$registerButton = new htmlButton('register_webauthn', _('Register new key'));
@@ -570,7 +571,7 @@ class WebauthnProvider extends BaseProvider {
 		$errorMessageDiv->addDataAttribute('button', _('Ok'));
 		$errorMessageDiv->addDataAttribute('title', _('Webauthn failed'));
 		$row->add($errorMessageDiv, 12);
-		$row->add(new htmlJavaScript('window.lam.webauthn.start(\'' . $pathPrefix . '\');'), 0);
+		$row->add(new htmlJavaScript('window.lam.webauthn.start(\'' . $pathPrefix . '\', ' . $selfServiceParam . ');'), 0);
 	}
 
 	/**
@@ -594,7 +595,7 @@ class WebauthnProvider extends BaseProvider {
 			$userDn = $_SESSION['ldap']->getUserName();
 		}
 		else {
-			$userDn = $_SESSION['selfService_clientDN'];
+			$userDn = lamDecrypt($_SESSION['selfService_clientDN'], 'SelfService');
 		}
 		$hasTokens = $webauthnManager->isRegistered($userDn);
 		if (!$hasTokens) {
