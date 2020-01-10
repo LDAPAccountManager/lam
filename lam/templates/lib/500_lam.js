@@ -1615,10 +1615,11 @@ window.lam.webauthn.removeDevice = function(event) {
  * Removes a user's own webauthn device.
  *
  * @param event click event
+ * @param isSelfService run in self service or admin context
  */
-window.lam.webauthn.removeOwnDevice = function(event) {
+window.lam.webauthn.removeOwnDevice = function(event, isSelfService) {
 	event.preventDefault();
-	const element = jQuery(event.target);
+	const element = jQuery(event.currentTarget);
 	const successCallback = function () {
 		const form = jQuery("#webauthnform");
 		jQuery('<input>').attr({
@@ -1628,7 +1629,11 @@ window.lam.webauthn.removeOwnDevice = function(event) {
 		}).appendTo(form);
 		form.submit();
 	};
-	window.lam.webauthn.removeDeviceDialog(element, 'webauthnOwnDevices', successCallback);
+	let action = 'webauthnOwnDevices';
+	if (isSelfService) {
+		action = action + '&selfservice=true&module=webauthn&scope=user';
+	}
+	window.lam.webauthn.removeDeviceDialog(element, action, successCallback);
 	return false;
 }
 

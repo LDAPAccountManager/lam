@@ -92,6 +92,7 @@ class Ajax {
 				$module = new $_GET['module']($_GET['scope']);
 				$module->handleAjaxRequest();
 			}
+			die();
 		}
 		if (!isset($_GET['function'])) {
 			die();

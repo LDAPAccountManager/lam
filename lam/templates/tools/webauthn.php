@@ -115,7 +115,7 @@ else {
 		$delButton->addDataAttribute('dialogtitle', _('Remove device'));
 		$delButton->addDataAttribute('oktext', _('Ok'));
 		$delButton->addDataAttribute('canceltext', _('Cancel'));
-		$delButton->setOnClick('window.lam.webauthn.removeOwnDevice(event);');
+		$delButton->setOnClick('window.lam.webauthn.removeOwnDevice(event, false);');
 		$data[] = array(
 			new htmlOutputText(date('Y-m-d H:i:s', $result['registrationTime'])),
 			new htmlOutputText(date('Y-m-d H:i:s', $result['lastUseTime'])),
