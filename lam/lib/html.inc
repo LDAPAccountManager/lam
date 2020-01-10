@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2019  Roland Gruber
+  Copyright (C) 2010 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -3392,7 +3392,7 @@ class htmlLink extends htmlElement {
 		if (sizeof($this->cssClasses) > 0) {
 			$classAttr = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
-		echo '<a href="' . $this->target . '"' . $idAttr . $classAttr . $title . $targetWindow . $onClick . '>' . $image . $text . '</a>';
+		echo '<a href="' . $this->target . '"' . $idAttr . $classAttr . $title . $targetWindow . $onClick . $this->getDataAttributesAsString() . '>' . $image . $text . '</a>';
 		if ($this->showAsButton) {
 			echo '<script type="text/javascript">';
 			echo ' jQuery(document).ready(function() {';
