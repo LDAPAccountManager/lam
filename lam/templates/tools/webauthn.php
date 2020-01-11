@@ -88,7 +88,7 @@ $registrationJson = json_encode($registration);
 $_SESSION['webauthn_registration'] = $registrationJson;
 $registerButton->addDataAttribute('publickey', $registrationJson);
 $registerButton->setIconClass('createButton');
-$registerButton->setOnClick('window.lam.webauthn.registerOwnDevice(event);');
+$registerButton->setOnClick('window.lam.webauthn.registerOwnDevice(event, false);');
 $buttonGroup->addElement($registerButton);
 $buttonGroup->addElement(new htmlSpacer('1rem', null));
 $reloadButton = new htmlButton('reload', _('Reload'));

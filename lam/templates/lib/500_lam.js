@@ -1620,15 +1620,18 @@ window.lam.webauthn.removeDevice = function(event) {
 window.lam.webauthn.removeOwnDevice = function(event, isSelfService) {
 	event.preventDefault();
 	const element = jQuery(event.currentTarget);
-	const successCallback = function () {
-		const form = jQuery("#webauthnform");
-		jQuery('<input>').attr({
-			type: 'hidden',
-			name: 'removed',
-			value: 'true'
-		}).appendTo(form);
-		form.submit();
-	};
+	let successCallback = null;
+	if (!isSelfService) {
+		successCallback = function () {
+			const form = jQuery("#webauthnform");
+			jQuery('<input>').attr({
+				type: 'hidden',
+				name: 'removed',
+				value: 'true'
+			}).appendTo(form);
+			form.submit();
+		};
+	}
 	let action = 'webauthnOwnDevices';
 	if (isSelfService) {
 		action = action + '&selfservice=true&module=webauthn&scope=user';
@@ -1706,21 +1709,44 @@ window.lam.webauthn.sendRemoveDeviceRequest = function(element, action, successC
  * Registers a user's own webauthn device.
  *
  * @param event click event
+ * @param isSelfService runs in self service context
  */
-window.lam.webauthn.registerOwnDevice = function(event) {
+window.lam.webauthn.registerOwnDevice = function(event, isSelfService) {
 	event.preventDefault();
 	const element = jQuery(event.target);
 	const dn = element.data('dn');
 	const tokenValue = element.data('sec_token_value');
-	const tokenName = element.data('sec_token_name');
 	const publicKey = element.data('publickey');
-	const successCallback = function (publicKeyCredential) {
+	let successCallback = function (publicKeyCredential) {
 		const form = jQuery("#webauthnform");
 		const response = btoa(JSON.stringify(publicKeyCredential));
 		const registrationData = jQuery('#registrationData');
 		registrationData.val(response);
 		form.submit();
 	};
+	if (isSelfService) {
+		successCallback = function (publicKeyCredential) {
+			const data = {
+				action: 'register',
+				jsonInput: '',
+				sec_token: tokenValue,
+				dn: dn,
+				credential: btoa(JSON.stringify(publicKeyCredential))
+			};
+			jQuery.ajax({
+				url: '../misc/ajax.php?selfservice=true&module=webauthn&scope=user',
+				method: 'POST',
+				data: data
+			})
+			.done(function(jsonData) {
+				const resultDiv = jQuery('#webauthn_results');
+				resultDiv.html(jsonData.content);
+			})
+			.fail(function() {
+				console.log('Webauthn device registration failed');
+			});
+		};
+	}
 	const errorCallback = function (error) {
 		let errorDiv = jQuery('#generic-webauthn-error');
 		let buttonLabel = errorDiv.data('button');

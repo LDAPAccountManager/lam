@@ -100,14 +100,15 @@ class WebauthnManager {
 	 *
 	 * @param string $dn DN
 	 * @param bool $isSelfService is executed in self service
+	 * @param array $extraExcludedKeys credentialIds that should be added to excluded keys
 	 * @return PublicKeyCredentialCreationOptions registration object
 	 */
-	public function getRegistrationObject($dn, $isSelfService) {
+	public function getRegistrationObject($dn, $isSelfService, $extraExcludedKeys = array()) {
 		$rpEntity = $this->createRpEntry($isSelfService);
 		$userEntity = $this->getUserEntity($dn);
 		$challenge = $this->createChallenge();
 		$credentialParameters = $this->getCredentialParameters();
-		$excludedKeys = $this->getExcludedKeys($userEntity);
+		$excludedKeys = $this->getExcludedKeys($userEntity, $extraExcludedKeys);
 		$timeout = $this->getTimeout();
 		$registrationObject = new PublicKeyCredentialCreationOptions(
 			$rpEntity,
@@ -159,6 +160,18 @@ class WebauthnManager {
 			logNewMessage(LOG_ERR, 'Webauthn validation failed: ' . $exception->getMessage() . $exception->getTraceAsString());
 		}
 		return false;
+	}
+
+	/**
+	 * Returns a public key credential loader.
+	 *
+	 * @return PublicKeyCredentialLoader public key credential loader
+	 */
+	public function createPublicKeyCredentialLoader() {
+		$decoder = $this->getCborDecoder();
+		$attestationSupportManager = $this->getAttestationSupportManager($decoder);
+		$attestationObjectLoader = $this->getAttestationObjectLoader($attestationSupportManager, $decoder);
+		return $this->getPublicKeyCredentialLoader($attestationObjectLoader, $decoder);
 	}
 
 	/**
@@ -214,14 +227,18 @@ class WebauthnManager {
 	 * Returns a list of all credential ids that are already registered.
 	 *
 	 * @param PublicKeyCredentialUserEntity $user user data
+	 * @param array $extraExcludedKeys credentialIds that should be added to excluded keys
 	 * @return PublicKeyCredentialDescriptor[] credential ids
 	 */
-	private function getExcludedKeys($user) {
+	private function getExcludedKeys($user, $extraExcludedKeys = array()) {
 		$keys = array();
 		$repository = $this->getDatabase();
 		$credentialSources = $repository->findAllForUserEntity($user);
 		foreach ($credentialSources as $credentialSource) {
 			$keys[] = new PublicKeyCredentialDescriptor(PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY, $credentialSource->getPublicKeyCredentialId());
+		}
+		foreach ($extraExcludedKeys as $extraExcludedKey) {
+			$keys[] = new PublicKeyCredentialDescriptor(PublicKeyCredentialDescriptor::CREDENTIAL_TYPE_PUBLIC_KEY, $extraExcludedKey);
 		}
 		return $keys;
 	}
