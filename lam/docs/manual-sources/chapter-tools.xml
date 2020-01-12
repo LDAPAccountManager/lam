@@ -423,6 +423,9 @@
   <section>
     <title id="tool_webauthn">Webauthn devices</title>
 
+    <para>See the <link linkend="a_webauthn">Webauthn/FIDO2 appendix</link>
+    for an overview about Webauthn/FIDO2 in LAM.</para>
+
     <para>Here you can manage your webauthn/FIDO2 devices.</para>
 
     <para>You can register additional security devices and remove old ones. If

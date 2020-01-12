@@ -259,8 +259,11 @@
       </screenshot>
     </section>
 
-    <section>
-      <title>Webauthn devices</title>
+    <section id="confmain_webauthn">
+      <title>Webauthn/FIDO2 devices</title>
+
+      <para>See the <link linkend="a_webauthn">Webauthn/FIDO2 appendix</link>
+      for an overview about Webauthn/FIDO2 in LAM.</para>
 
       <para>Here you can delete any webauthn device registrations. This
       section is only shown if at least one device is registered.</para>
@@ -655,7 +658,8 @@
           </mediaobject>
         </screenshot>
 
-        <para><emphasis role="bold">2-factor authentication</emphasis></para>
+        <para id="conf_serverprofile_2fa"><emphasis role="bold">2-factor
+        authentication</emphasis></para>
 
         <para>LAM supports 2-factor authentication for your users. This means
         the user will not only authenticate by user+password but also with
@@ -782,6 +786,9 @@
         </itemizedlist>
 
         <para><emphasis role="bold">Webauthn/FIDO2</emphasis></para>
+
+        <para>See the <link linkend="a_webauthn">Webauthn/FIDO2
+        appendix</link> for an overview about Webauthn/FIDO2 in LAM.</para>
 
         <para>Users will be asked to register a device during login if no
         device is setup.</para>

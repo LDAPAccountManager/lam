@@ -445,4 +445,51 @@ semodule -i httpdlocal.pp</programlisting>
 </programlisting>
     </section>
   </section>
+
+  <section id="a_webauthn">
+    <title>Webauthn/FIDO2</title>
+
+    <para>LAM allows to secure logins via <ulink
+    url="https://en.wikipedia.org/wiki/WebAuthn">Webauthn/FIDO2</ulink>. This
+    means your users login with their LDAP password and an additional hardware
+    token (e.g. Yubico Security Key, Windows Hello and many more).</para>
+
+    <para>Webauthn/FIDO2 is a very strong 2-factor-authentication method as it
+    also checks the website domain. This prevents attacks via web
+    proxies.</para>
+
+    <para>To use this feature you need to activate the 2-factor authentication
+    in LAM.</para>
+
+    <para><emphasis role="bold">LAM admin interface</emphasis></para>
+
+    <para>Please activate Webauthn/FIDO2 in your <link
+    linkend="conf_serverprofile_2fa">LAM server profile</link>. Then users
+    will be asked to authenticate via Webauthn/FIDO2 on each login.</para>
+
+    <para>If no device is registered for a user then LAM will ask for this
+    during login. Afterwards, users can manage their devices with the <link
+    linkend="tool_webauthn">Webauthn tool</link>.</para>
+
+    <para><emphasis role="bold">LAM Self Service</emphasis></para>
+
+    <para>Please activate Webauthn/FIDO2 in your <link
+    linkend="selfservice_2fa">LAM self service profile</link>. Then users will
+    be asked to authenticate via Webauthn/FIDO2 on each login.</para>
+
+    <para>If no device is registered for a user then LAM will ask for this
+    during login. Afterwards, users can manage their devices with the <link
+    linkend="selfservice_fields">Webauthn field</link>.</para>
+
+    <para><emphasis role="bold">Global device management</emphasis></para>
+
+    <para>This is for cases where one of your users has no more access to his
+    device and cannot login anymore. In this case you can delete his device(s)
+    in the <link linkend="confmain_webauthn">LAM main
+    configuration</link>.</para>
+
+    <para>Note that devices can only be deleted. Registration of devices can
+    only be done by the user during login or on the management pages listed
+    above.</para>
+  </section>
 </appendix>

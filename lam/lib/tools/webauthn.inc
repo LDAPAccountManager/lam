@@ -43,7 +43,7 @@ class toolWebauthn implements \LAMTool {
 	 * @return string name
 	 */
 	 function getName() {
-	 	return "Webauthn";
+	 	return _('Webauthn devices');
 	 }
 
 	/**

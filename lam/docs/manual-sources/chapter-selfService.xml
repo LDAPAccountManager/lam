@@ -304,7 +304,7 @@
 
       <para/>
 
-      <section>
+      <section id="selfservice_2fa">
         <title>2-factor authentication</title>
 
         <para>LAM supports 2-factor authentication for your users. This means
@@ -328,6 +328,11 @@
 
           <listitem>
             <para><ulink url="https://duo.com/">Duo</ulink></para>
+          </listitem>
+
+          <listitem>
+            <para><ulink
+            url="https://en.wikipedia.org/wiki/WebAuthn">Webauthn/FIDO2</ulink></para>
           </listitem>
         </itemizedlist>
 
@@ -424,6 +429,30 @@
           </listitem>
         </itemizedlist>
 
+        <para><emphasis role="bold">Webauthn/FIDO2</emphasis></para>
+
+        <para>See the <link linkend="a_webauthn">Webauthn/FIDO2
+        appendix</link> for an overview about Webauthn/FIDO2 in LAM.</para>
+
+        <para>Users will be asked to register a device during login if no
+        device is setup.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Domain: Please enter the WebAuthn domain. This is the public
+            domain of the web server (e.g. "example.com"). Do not include
+            protocol or port. Browsers will reject authentication if the
+            domain does not match the web server domain.</para>
+          </listitem>
+
+          <listitem>
+            <para>Optional: By default LAM will enforce to use a 2FA device
+            and reject users that do not setup one. You can set this check to
+            optional. But if a user has setup a device then this will always
+            be required.</para>
+          </listitem>
+        </itemizedlist>
+
         <screenshot>
           <mediaobject>
             <imageobject>
@@ -495,7 +524,8 @@
         </mediaobject>
       </screenshot>
 
-      <para><emphasis role="bold">Possible input fields</emphasis></para>
+      <para id="selfservice_fields"><emphasis role="bold">Possible input
+      fields</emphasis></para>
 
       <para>This is a list of input fields you may add to the self service
       page.</para>
@@ -983,6 +1013,19 @@
 
               <entry>This is a hidden field. It will update the Unix password
               each time the Windows password is changed.</entry>
+            </row>
+
+            <row>
+              <entry><inlinemediaobject>
+                  <imageobject>
+                    <imagedata fileref="images/webauthn.png"/>
+                  </imageobject>
+                </inlinemediaobject>Webauthn</entry>
+
+              <entry>Webauthn devices</entry>
+
+              <entry>Allows the user to manage his webauthn/FIDO2 security
+              keys.</entry>
             </row>
 
             <row>
