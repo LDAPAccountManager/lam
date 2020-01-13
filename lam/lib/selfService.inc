@@ -3,7 +3,7 @@ use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2019  Roland Gruber
+  Copyright (C) 2006 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -452,6 +452,7 @@ class selfServiceProfile {
 	public $twoFactorAuthenticationClientId = '';
 	public $twoFactorAuthenticationSecretKey = '';
 	public $twoFactorAuthenticationAttribute = 'uid';
+	public $twoFactorAuthenticationDomain = '';
 
 	/** provider for captcha (-/google) */
 	public $captchaProvider = '-';
@@ -512,6 +513,7 @@ class selfServiceProfile {
 		$this->twoFactorAuthenticationClientId = '';
 		$this->twoFactorAuthenticationSecretKey = '';
 		$this->twoFactorAuthenticationAttribute = 'uid';
+		$this->twoFactorAuthenticationDomain = '';
 		$this->captchaProvider = '-';
 		$this->reCaptchaSiteKey = '';
 		$this->reCaptchaSecretKey = '';

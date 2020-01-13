@@ -1,0 +1,50 @@
+{
+    "name": "spomky-labs/cbor-php",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["CBOR", "Concise Binary Object Representation", "RFC7049"],
+    "description": "CBOR Encoder/Decoder for PHP",
+    "authors": [
+        {
+            "name": "Florent Morselli",
+            "homepage": "https://github.com/Spomky"
+        },{
+            "name": "All contributors",
+            "homepage": "https://github.com/Spomky-Labs/cbor-php/contributors"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "CBOR\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CBOR\\Test\\": "tests/"
+        }
+    },
+    "require": {
+        "php": "^7.1|^8.0",
+        "spomky-labs/base64url": "^1.0|^2.0",
+        "ext-gmp": "*",
+        "beberlei/assert": "^3.2"
+    },
+    "require-dev": {
+        "php-coveralls/php-coveralls": "^2.0",
+        "phpstan/phpstan": "^0.11",
+        "phpstan/phpstan-beberlei-assert": "^0.11.0",
+        "phpstan/phpstan-deprecation-rules": "^0.11",
+        "phpstan/phpstan-phpunit": "^0.11",
+        "phpstan/phpstan-strict-rules": "^0.11",
+        "phpunit/phpunit": "^7.5|^8.0",
+        "rector/rector": "^0.5"
+    },
+    "suggest": {
+        "ext-bcmath": "BCMath extension needed to handle the Big Float and Decimal Fraction Tags"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}

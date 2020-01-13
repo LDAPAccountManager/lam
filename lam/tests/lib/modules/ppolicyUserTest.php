@@ -1,8 +1,9 @@
 <?php
+use PHPUnit\Framework\TestCase;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2016 - 2018  Roland Gruber
+ Copyright (C) 2016 - 2019  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -33,7 +34,7 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 	 * @author Roland Gruber
 	 *
 	 */
-	class PPolicyUserPasswordNotifyJobTest extends PHPUnit_Framework_TestCase {
+	class PPolicyUserPasswordNotifyJobTest extends TestCase {
 
 		private $job;
 
@@ -46,7 +47,7 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 		private $options = array();
 		private $resultLog = null;
 
-		public function setUp() {
+		protected function setUp(): void {
 			$this->job = $this->getMockBuilder('PPolicyPasswordNotifyJob')
 				->setMethods(array('getDBLastPwdChangeTime', 'setDBLastPwdChangeTime', 'sendMail',
 						'findUsers', 'getConfigPrefix', 'getPolicyOptions'))

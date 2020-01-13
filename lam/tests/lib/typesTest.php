@@ -1,9 +1,9 @@
 <?php
+use PHPUnit\Framework\TestCase;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2016 - 2017  Roland Gruber
+  Copyright (C) 2016 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -29,11 +29,11 @@ require_once 'lam/lib/types.inc';
  * @author Roland Gruber
  *
  */
-class ListAttributeTest extends PHPUnit_Framework_TestCase {
+class ListAttributeTest extends TestCase {
 
 	private $type;
 
-	public function setUp() {
+	protected function setUp(): void {
 		$this->type = $this->getMockBuilder('ConfiguredType')->setMethods(array('getBaseType'))->getMock();
 		$scope = new user($this->type);
 		$this->type->method('getBaseType')->willReturn($scope);

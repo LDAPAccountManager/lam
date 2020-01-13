@@ -132,7 +132,7 @@ printJsIncludes('..');
 
 	<br><br>
 
-	<form enctype="multipart/form-data" action="login2Factor.php" method="post" autocomplete="off">
+	<form id="2faform" enctype="multipart/form-data" action="login2Factor.php" method="post" autocomplete="off">
 <?php
 echo $config->getTwoFactorAuthenticationCaption();
 
@@ -190,7 +190,9 @@ echo $config->getTwoFactorAuthenticationCaption();
 
 	<script type="text/javascript">
 		myElement = document.getElementsByName('2factor')[0];
-		myElement.focus();
+		if (myElement) {
+			myElement.focus();
+		}
 	</script>
 </body>
 </html>

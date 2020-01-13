@@ -179,6 +179,7 @@ A:
   information, contact: tavmjong @ free . fr.
 
 B:
+   MIT License
 
    Permission is hereby granted, free of charge, to any person obtaining
    a copy of this software and associated documentation files (the
@@ -200,6 +201,7 @@ B:
    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 C:
+   New BSD License
 
    Redistribution and use in source and binary forms, with or without modification,
    are permitted provided that the following conditions are met:
@@ -391,6 +393,7 @@ D:
    Library.
 
 E:
+  Duo
 
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions
@@ -415,10 +418,73 @@ E:
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
   THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+F:
+  3-Clause BSD License
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+  1. Redistributions of source code must retain the above copyright
+     notice, this list of conditions and the following disclaimer.
+  2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
+  3. Neither the name of the copyright holder nor the names of its
+     contributors may be used to endorse or promote products derived from
+     this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+  IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+  PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+  CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+  EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+G:
+  2-Clause BSD License
+
+  Redistribution and use in source and binary forms, with or without modification,
+  are permitted provided that the following conditions are met:
+
+  1. Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
+
+  2. Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation and/or
+     other materials provided with the distribution.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  POSSIBILITY OF SUCH DAMAGE.
+
 
 Programs and licenses with other licenses and/or authors than the
 main license and authors:
 
+lib/3rdParty/composer/beberlei              G  2013  Benjamin Eberlei
+lib/3rdParty/composer/composer              B        Nils Adermann, Jordi Boggiano
+lib/3rdParty/composer/fgrosse               B  2015  Friedrich Große
+lib/3rdParty/composer/nyholm                B  2016  Tobias Nyholm
+lib/3rdParty/composer/paragonie             B  2015  Paragon Initiative Enterprises
+lib/3rdParty/composer/php-http              B  2015  PHP HTTP Team
+lib/3rdParty/composer/psr                   B  2018  PHP Framework Interoperability Group
+lib/3rdParty/composer/ramsey                B  2018  Ben Ramsey
+lib/3rdParty/composer/spomky-labs           B  2018  Spomky-Labs
+lib/3rdParty/composer/symfony               B  2019  Fabien Potencier
+lib/3rdParty/composer/web-auth              B  2018  Spomky-Labs
 lib/3rdParty/tcpdf                          D  2018  Nicola Asuni - Tecnick.com LTD
 lib/3rdParty/tcpdf/fonts/DejaVu*.ttf        A        Public Domain, Bitstream, Inc., Tavmjong Bah
 lib/3rdParty/tcpdf/fonts/DejaVu*.z          A        Public Domain, Bitstream, Inc., Tavmjong Bah
@@ -438,6 +504,7 @@ templates/lib/extra/cropperjs               B  2018  Chen Fengyuan
 style/600_cropper*.css                      B  2018  Chen Fengyuan
 templates/lib/extra/duo/*.js                E  2019  Duo Security
 lib/3rdParty/duo/*.php                      E  2019  Duo Security
+graphics/webauthn.svg                       F  2017  Duo Security, Inc.
 templates/lib/600_jquery.magnific-popup.js  B  2016  Dmitry Semenov
 style/610_magnific-popup.css                B  2016  Dmitry Semenov
 style/responsive/105_normalize.css          B        Nicolas Gallagher and Jonathan Neal

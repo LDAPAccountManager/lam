@@ -1,4 +1,5 @@
 <?php
+use PHPUnit\Framework\TestCase;
 /*
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
  Copyright (C) 2019  Roland Gruber
@@ -26,9 +27,9 @@ include_once __DIR__ . '/../../lib/baseModule.inc';
  *
  * @author Roland Gruber
  */
-class BaseModuleTest extends PHPUnit_Framework_TestCase {
+class BaseModuleTest extends TestCase {
 
-	function setup() {
+	protected function setup(): void {
 		$_SESSION['language'] = 'en_GB.utf8:UTF-8:English (Great Britain)';
 	}
 

@@ -607,6 +607,7 @@ class LAMConfig {
 	private $twoFactorAuthenticationURL = 'https://localhost';
 	private $twoFactorAuthenticationClientId = null;
 	private $twoFactorAuthenticationSecretKey = null;
+	private $twoFactorAuthenticationDomain = null;
 	private $twoFactorAuthenticationInsecure = false;
 	private $twoFactorAuthenticationLabel = null;
 	private $twoFactorAuthenticationOptional = false;
@@ -625,7 +626,7 @@ class LAMConfig {
 		'scriptUserName', 'scriptSSHKey', 'scriptSSHKeyPassword', 'twoFactorAuthentication', 'twoFactorAuthenticationURL',
 		'twoFactorAuthenticationInsecure', 'twoFactorAuthenticationLabel', 'twoFactorAuthenticationOptional',
 		'twoFactorAuthenticationCaption', 'twoFactorAuthenticationClientId', 'twoFactorAuthenticationSecretKey',
-		'twoFactorAuthenticationAttribute', 'referentialIntegrityOverlay'
+		'twoFactorAuthenticationDomain', 'twoFactorAuthenticationAttribute', 'referentialIntegrityOverlay'
 	);
 
 
@@ -990,6 +991,9 @@ class LAMConfig {
 			}
 			if (!in_array("twoFactorAuthenticationSecretKey", $saved)) {
 				array_push($file_array, "\n" . "twoFactorAuthenticationSecretKey: " . $this->twoFactorAuthenticationSecretKey . "\n");
+			}
+			if (!in_array("twoFactorAuthenticationDomain", $saved)) {
+				array_push($file_array, "\n" . "twoFactorAuthenticationDomain: " . $this->twoFactorAuthenticationDomain . "\n");
 			}
 			if (!in_array("twoFactorAuthenticationInsecure", $saved)) {
 				array_push($file_array, "\n" . "twoFactorAuthenticationInsecure: " . $this->twoFactorAuthenticationInsecure . "\n");
@@ -2417,6 +2421,24 @@ class LAMConfig {
 	}
 
 	/**
+	 * Sets the domain.
+	 *
+	 * @param string $domain domain
+	 */
+	public function setTwoFactorAuthenticationDomain($domain) {
+		$this->twoFactorAuthenticationDomain = $domain;
+	}
+
+	/**
+	 * Returns the domain.
+	 *
+	 * @return string domain
+	 */
+	public function getTwoFactorAuthenticationDomain() {
+		return $this->twoFactorAuthenticationDomain;
+	}
+
+	/**
 	 * Returns if SSL certificate verification is turned off.
 	 *
 	 * @return bool SSL certificate verification is turned off
@@ -2458,7 +2480,7 @@ class LAMConfig {
 	 * @return bool 2nd factor is optional
 	 */
 	public function getTwoFactorAuthenticationOptional() {
-		return $this->twoFactorAuthenticationOptional;
+		return boolval($this->twoFactorAuthenticationOptional);
 	}
 
 	/**

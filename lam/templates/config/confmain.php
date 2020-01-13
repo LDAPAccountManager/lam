@@ -467,22 +467,28 @@ if (extension_loaded('curl')) {
 			'YubiKey' => TwoFactorProviderService::TWO_FACTOR_YUBICO,
 			'Duo' => TwoFactorProviderService::TWO_FACTOR_DUO,
 	);
+    if (version_compare(phpversion(), '7.2.0') >= 0) {
+        $twoFactorOptions['Webauthn'] = TwoFactorProviderService::TWO_FACTOR_WEBAUTHN;
+    }
 	$twoFactorSelect = new htmlResponsiveSelect('twoFactor', $twoFactorOptions, array($conf->getTwoFactorAuthentication()), _('Provider'), '514');
 	$twoFactorSelect->setHasDescriptiveElements(true);
 	$twoFactorSelect->setTableRowsToHide(array(
-			TwoFactorProviderService::TWO_FACTOR_NONE => array('twoFactorURL', 'twoFactorURLs', 'twoFactorInsecure', 'twoFactorLabel',
-				'twoFactorOptional', 'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute'),
-			TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA => array('twoFactorURLs', 'twoFactorClientId', 'twoFactorSecretKey'),
-			TwoFactorProviderService::TWO_FACTOR_YUBICO => array('twoFactorURL', 'twoFactorAttribute'),
-			TwoFactorProviderService::TWO_FACTOR_DUO => array('twoFactorURLs', 'twoFactorOptional', 'twoFactorInsecure'),
+		TwoFactorProviderService::TWO_FACTOR_NONE => array('twoFactorURL', 'twoFactorURLs', 'twoFactorInsecure', 'twoFactorLabel',
+			'twoFactorOptional', 'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute', 'twoFactorDomain'),
+		TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA => array('twoFactorURLs', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorDomain'),
+		TwoFactorProviderService::TWO_FACTOR_YUBICO => array('twoFactorURL', 'twoFactorAttribute', 'twoFactorDomain'),
+		TwoFactorProviderService::TWO_FACTOR_DUO => array('twoFactorURLs', 'twoFactorOptional', 'twoFactorInsecure', 'twoFactorLabel', 'twoFactorDomain'),
+		TwoFactorProviderService::TWO_FACTOR_WEBAUTHN => array('twoFactorURL', 'twoFactorURLs', 'twoFactorInsecure', 'twoFactorLabel',
+			'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute'),
 	));
 	$twoFactorSelect->setTableRowsToShow(array(
-			TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA => array('twoFactorURL', 'twoFactorInsecure', 'twoFactorLabel',
-				'twoFactorOptional', 'twoFactorCaption', 'twoFactorAttribute'),
-			TwoFactorProviderService::TWO_FACTOR_YUBICO => array('twoFactorURLs', 'twoFactorInsecure', 'twoFactorLabel',
-				'twoFactorOptional', 'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey'),
-			TwoFactorProviderService::TWO_FACTOR_DUO => array('twoFactorURL', 'twoFactorLabel',
-				'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute'),
+		TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA => array('twoFactorURL', 'twoFactorInsecure', 'twoFactorLabel',
+			'twoFactorOptional', 'twoFactorCaption', 'twoFactorAttribute'),
+		TwoFactorProviderService::TWO_FACTOR_YUBICO => array('twoFactorURLs', 'twoFactorInsecure', 'twoFactorLabel',
+			'twoFactorOptional', 'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey'),
+		TwoFactorProviderService::TWO_FACTOR_DUO => array('twoFactorURL', 'twoFactorLabel',
+			'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute'),
+		TwoFactorProviderService::TWO_FACTOR_WEBAUTHN => array('twoFactorDomain', 'twoFactorOptional')
 	));
 	$row->add($twoFactorSelect, 12);
 	$twoFactorAttribute = new htmlResponsiveInputField(_("User name attribute"), 'twoFactorAttribute', $conf->getTwoFactorAuthenticationAttribute(), '528');
@@ -495,8 +501,10 @@ if (extension_loaded('curl')) {
 	$row->add($twoFactorUrl, 12);
 	$twoFactorClientId = new htmlResponsiveInputField(_("Client id"), 'twoFactorClientId', $conf->getTwoFactorAuthenticationClientId(), '524');
 	$row->add($twoFactorClientId, 12);
-	$twoFactorSecretKey = new htmlResponsiveInputField(_("Secret key"), 'twoFactorSecretKey', $conf->getTwoFactorAuthenticationSecretKey(), '525');
+	$twoFactorSecretKey = new htmlResponsiveInputField(_("Secret key"), 'twoFactorSecretKey', $conf->getTwoFactorAuthenticationSecretKey(), '528');
 	$row->add($twoFactorSecretKey, 12);
+	$twoFactorDomain = new htmlResponsiveInputField(_("Domain"), 'twoFactorDomain', $conf->getTwoFactorAuthenticationDomain(), '529');
+	$row->add($twoFactorDomain, 12);
 	$twoFactorLabel = new htmlResponsiveInputField(_("Label"), 'twoFactorLabel', $conf->getTwoFactorAuthenticationLabel(), '517');
 	$row->add($twoFactorLabel, 12);
 	$row->add(new htmlResponsiveInputCheckbox('twoFactorOptional', $conf->getTwoFactorAuthenticationOptional(), _('Optional'), '519'), 12);
@@ -736,6 +744,7 @@ function checkInput() {
 		}
 		$conf->setTwoFactorAuthenticationClientId($_POST['twoFactorClientId']);
 		$conf->setTwoFactorAuthenticationSecretKey($_POST['twoFactorSecretKey']);
+		$conf->setTwoFactorAuthenticationDomain($_POST['twoFactorDomain']);
 		$conf->setTwoFactorAuthenticationInsecure(isset($_POST['twoFactorInsecure']) && ($_POST['twoFactorInsecure'] == 'on'));
 		$conf->setTwoFactorAuthenticationLabel($_POST['twoFactorLabel']);
 		$conf->setTwoFactorAuthenticationOptional(isset($_POST['twoFactorOptional']) && ($_POST['twoFactorOptional'] == 'on'));

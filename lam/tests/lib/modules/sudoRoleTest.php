@@ -1,9 +1,9 @@
 <?php
+use PHPUnit\Framework\TestCase;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2014 - 2016  Roland Gruber
+  Copyright (C) 2014 - 2019  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ if (is_readable('lam/lib/modules/sudoRole.inc')) {
 	 * @author Roland Gruber
 	 *
 	 */
-	class SudoRoleTest extends PHPUnit_Framework_TestCase {
+	class SudoRoleTest extends TestCase {
 
 		public function testIsValidDate() {
 			$valid = array('22.10.2014', '05.01.2013', '1.3.2014', '10.5.2014', '4.12.2015',

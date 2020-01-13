@@ -1,9 +1,9 @@
 <?php
+use PHPUnit\Framework\TestCase;
 /*
- $Id$
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2016  Roland Gruber
+ Copyright (C) 2016 - 2019  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ include_once 'lam/lib/modules/sambaSamAccount.inc';
  * @author Roland Gruber
  *
  */
-class SambaSamAccountTest extends PHPUnit_Framework_TestCase {
+class SambaSamAccountTest extends TestCase {
 
 	public function testValidateHistoryEntry() {
 		$this->assertFalse(sambaSamAccount::validateHistoryEntry("password", ""));

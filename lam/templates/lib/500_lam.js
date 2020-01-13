@@ -1,7 +1,7 @@
 /**
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2019  Roland Gruber
+  Copyright (C) 2003 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -841,9 +841,22 @@ window.lam.form.autoTrim = function() {
 
 window.lam.dialog = window.lam.dialog || {};
 
-window.lam.dialog.showMessage = function(title, okText, divId) {
+/**
+ * Shows a dialog message.
+ *
+ * @param title dialog title
+ * @param okText ok button text
+ * @param divId DIV id with dialog content
+ * @param callbackFunction callback function (optional)
+ */
+window.lam.dialog.showMessage = function(title, okText, divId, callbackFunction) {
     var buttonList = {};
-    buttonList[okText] = function() { jQuery(this).dialog("close"); };
+    buttonList[okText] = function() {
+    	jQuery(this).dialog("close");
+    	if (callbackFunction) {
+    		callbackFunction();
+		}
+    };
     jQuery('#' + divId).dialog({
 		modal: true,
 		title: title,
@@ -1356,6 +1369,408 @@ window.lam.selfservice.addMultiValue = function(fieldNamePrefix, addButton) {
 	jQuery(addButton).remove();
 };
 
+window.lam.webauthn = window.lam.webauthn || {};
+
+/**
+ * Starts the webauthn process.
+ *
+ * @param prefix path prefix for Ajax endpoint
+ * @param isSelfService runs as part of self service
+ */
+window.lam.webauthn.start = function(prefix, isSelfService) {
+	jQuery(document).ready(
+		function() {
+			window.lam.webauthn.run(prefix, isSelfService);
+		}
+	);
+}
+
+/**
+ * Checks if the user is registered and starts login/registration.
+ *
+ * @param prefix path prefix for Ajax endpoint
+ * @param isSelfService runs as part of self service
+ */
+window.lam.webauthn.run = function(prefix, isSelfService) {
+	jQuery('#btn_skip_webauthn').click(function () {
+		let form = jQuery("#2faform");
+		form.append('<input type="hidden" name="sig_response" value="skip"/>');
+		form.submit();
+		return;
+	});
+	const token = jQuery('#sec_token').val();
+	// check for webauthn support
+	if (!navigator.credentials || (typeof(PublicKeyCredential) === "undefined")) {
+		jQuery('.webauthn-error').show();
+		return;
+	}
+
+	const data = {
+			action: 'status',
+			jsonInput: '',
+			sec_token: token
+	};
+	const extraParam = isSelfService ? '&selfservice=true' : '';
+	jQuery.ajax({
+		url: prefix + 'misc/ajax.php?function=webauthn' + extraParam,
+		method: 'POST',
+		data: data
+	})
+	.done(function(jsonData) {
+		if (jsonData.action === 'register') {
+			const successCallback = function (publicKeyCredential) {
+				const form = jQuery("#2faform");
+				const response = btoa(JSON.stringify(publicKeyCredential));
+				form.append('<input type="hidden" name="sig_response" value="' + response + '"/>');
+				form.submit();
+			};
+			const errorCallback = function(error) {
+				let errorDiv = jQuery('#generic-webauthn-error');
+				let buttonLabel = errorDiv.data('button');
+				let dialogTitle = errorDiv.data('title');
+				errorDiv.text(error.message);
+				window.lam.dialog.showMessage(dialogTitle,
+					buttonLabel,
+					'generic-webauthn-error',
+					function () {
+						jQuery('#btn_logout').click();
+				});
+			};
+			window.lam.webauthn.register(jsonData.registration, successCallback, errorCallback);
+		}
+		else if (jsonData.action === 'authenticate') {
+			window.lam.webauthn.authenticate(jsonData.authentication);
+		}
+	})
+	.fail(function() {
+		console.log('Webauthn failed');
+	});
+}
+
+/**
+ * Performs a webauthn registration.
+ *
+ * @param publicKey registration object
+ * @param successCallback callback function in case of all went fine
+ * @param errorCallback callback function in case of an error
+ */
+window.lam.webauthn.register = function(publicKey, successCallback, errorCallback) {
+	if (!(publicKey.challenge instanceof Uint8Array)) {
+		publicKey.challenge = Uint8Array.from(window.atob(publicKey.challenge), c=>c.charCodeAt(0));
+		publicKey.user.id = Uint8Array.from(window.atob(publicKey.user.id), c=>c.charCodeAt(0));
+		publicKey.rp.icon = window.location.href.substring(0, window.location.href.lastIndexOf("/")) + publicKey.rp.icon;
+		if (publicKey.excludeCredentials) {
+			for (let i = 0; i < publicKey.excludeCredentials.length; i++) {
+				let idOrig = publicKey.excludeCredentials[i]['id'];
+				idOrig = idOrig.replace(/-/g, "+").replace(/_/g, "/");
+				let idOrigDecoded = atob(idOrig);
+				let idArray = Uint8Array.from(idOrigDecoded, c => c.charCodeAt(0))
+				publicKey.excludeCredentials[i]['id'] = idArray;
+			}
+		}
+	}
+	navigator.credentials.create({publicKey})
+		.then(function (data) {
+			const publicKeyCredential = {
+				id: data.id,
+				type: data.type,
+				rawId: window.lam.webauthn.arrayToBase64String(new Uint8Array(data.rawId)),
+				response: {
+					clientDataJSON: window.lam.webauthn.arrayToBase64String(new Uint8Array(data.response.clientDataJSON)),
+					attestationObject: window.lam.webauthn.arrayToBase64String(new Uint8Array(data.response.attestationObject))
+				}
+			};
+			successCallback(publicKeyCredential);
+		}, function (error) {
+			console.log(error.message);
+			errorCallback(error);
+		});
+}
+
+/**
+ * Performs a webauthn authentication.
+ *
+ * @param publicKey authentication object
+ */
+window.lam.webauthn.authenticate = function(publicKey) {
+	publicKey.challenge = Uint8Array.from(window.atob(publicKey.challenge), c => c.charCodeAt(0));
+	for (let i = 0; i < publicKey.allowCredentials.length; i++) {
+		let idOrig = publicKey.allowCredentials[i]['id'];
+		idOrig = idOrig.replace(/-/g, "+").replace(/_/g, "/");
+		let idOrigDecoded = atob(idOrig);
+		let idArray = Uint8Array.from(idOrigDecoded, c => c.charCodeAt(0))
+		publicKey.allowCredentials[i]['id'] = idArray;
+	}
+	navigator.credentials.get({publicKey})
+		.then(data => {
+			let publicKeyCredential = {
+				id: data.id,
+				type: data.type,
+				rawId: window.lam.webauthn.arrayToBase64String(new Uint8Array(data.rawId)),
+				response: {
+					authenticatorData: window.lam.webauthn.arrayToBase64String(new Uint8Array(data.response.authenticatorData)),
+					clientDataJSON: window.lam.webauthn.arrayToBase64String(new Uint8Array(data.response.clientDataJSON)),
+					signature: window.lam.webauthn.arrayToBase64String(new Uint8Array(data.response.signature)),
+					userHandle: data.response.userHandle ? window.lam.webauthn.arrayToBase64String(new Uint8Array(data.response.userHandle)) : null
+				}
+			};
+			let form = jQuery("#2faform");
+			let response = btoa(JSON.stringify(publicKeyCredential));
+			form.append('<input type="hidden" name="sig_response" value="' + response + '"/>');
+			form.submit();
+		}, error => {
+			console.log(error.message);
+			let errorDiv = jQuery('#generic-webauthn-error');
+			let buttonLabel = errorDiv.data('button');
+			let dialogTitle = errorDiv.data('title');
+			errorDiv.text(error.message);
+			window.lam.dialog.showMessage(dialogTitle,
+				buttonLabel,
+				'generic-webauthn-error',
+				function () {
+					jQuery('#btn_logout').click();
+				});
+		});
+}
+
+/**
+ * Converts an array to a base64 string.
+ *
+ * @param input array
+ * @returns base64 string
+ */
+window.lam.webauthn.arrayToBase64String = function(input) {
+	return btoa(String.fromCharCode(...input));
+}
+
+/**
+ * Sets up the device management on the main configuration page.
+ */
+window.lam.webauthn.setupDeviceManagement = function() {
+	const searchButton = jQuery('#btn_webauthn_search');
+	if (searchButton) {
+		searchButton.click(window.lam.webauthn.searchDevices);
+	}
+	const searchInput = jQuery('#webauthn_searchTerm');
+	if (searchInput) {
+		searchInput.keydown(function (event) {
+			if (event.keyCode == 13) {
+				event.preventDefault();
+				searchButton.click();
+				return false;
+			}
+		});
+	}
+}
+
+/**
+ * Searches for devices via Ajax call.
+ *
+ * @param event button click event
+ * @returns {boolean} false
+ */
+window.lam.webauthn.searchDevices = function(event) {
+	if (event !== null) {
+		event.preventDefault();
+	}
+	const resultDiv = jQuery('#webauthn_results');
+	const tokenValue = resultDiv.data('sec_token_value');
+	const searchData = jQuery('#webauthn_searchTerm').val();
+	const data = {
+		action: 'search',
+		jsonInput: '',
+		sec_token: tokenValue,
+		searchTerm: searchData
+	};
+	jQuery.ajax({
+		url: '../misc/ajax.php?function=webauthnDevices',
+		method: 'POST',
+		data: data
+	})
+	.done(function(jsonData) {
+		resultDiv.html(jsonData.content);
+		window.lam.webauthn.addDeviceActionListeners();
+	})
+	.fail(function() {
+		console.log('Webauthn search failed');
+	});
+	return false;
+}
+
+/**
+ * Adds listeners to the device action buttons.
+ */
+window.lam.webauthn.addDeviceActionListeners = function() {
+	const inputs = jQuery('.webauthn-delete');
+	inputs.each(function() {
+		jQuery(this).click(function(event) {
+			window.lam.webauthn.removeDevice(event);
+		});
+	});
+}
+
+/**
+ * Removes a webauthn device.
+ *
+ * @param event click event
+ */
+window.lam.webauthn.removeDevice = function(event) {
+	event.preventDefault();
+	const element = jQuery(event.target);
+	window.lam.webauthn.removeDeviceDialog(element, 'webauthnDevices');
+	return false;
+}
+
+/**
+ * Removes a user's own webauthn device.
+ *
+ * @param event click event
+ * @param isSelfService run in self service or admin context
+ */
+window.lam.webauthn.removeOwnDevice = function(event, isSelfService) {
+	event.preventDefault();
+	const element = jQuery(event.currentTarget);
+	let successCallback = null;
+	if (!isSelfService) {
+		successCallback = function () {
+			const form = jQuery("#webauthnform");
+			jQuery('<input>').attr({
+				type: 'hidden',
+				name: 'removed',
+				value: 'true'
+			}).appendTo(form);
+			form.submit();
+		};
+	}
+	let action = 'webauthnOwnDevices';
+	if (isSelfService) {
+		action = action + '&selfservice=true&module=webauthn&scope=user';
+	}
+	window.lam.webauthn.removeDeviceDialog(element, action, successCallback);
+	return false;
+}
+
+/**
+ * Opens the remove device diaog.
+ *
+ * @param element delete button
+ * @param action action for request (delete|deleteOwn)
+ * @param successCallback callback if all was fine (optional)
+ */
+window.lam.webauthn.removeDeviceDialog = function(element, action, successCallback) {
+	const dialogTitle = element.data('dialogtitle');
+	const okText = element.data('oktext');
+	const cancelText = element.data('canceltext');
+	let buttonList = {};
+	buttonList[okText] = function() {
+		jQuery('#webauthnDeleteConfirm').dialog('close');
+		window.lam.webauthn.sendRemoveDeviceRequest(element, action, successCallback);
+	};
+	buttonList[cancelText] = function() {
+		jQuery(this).dialog("close");
+	};
+	jQuery('#webauthnDeleteConfirm').dialog({
+		modal: true,
+		title: dialogTitle,
+		dialogClass: 'defaultBackground',
+		buttons: buttonList,
+		width: 'auto'
+	});
+}
+
+/**
+ * Sends the remove request to server.
+ *
+ * @param element button element
+ * @param action action (delete|deleteOwn)
+ * @param successCallback callback if all was fine (optional)
+ */
+window.lam.webauthn.sendRemoveDeviceRequest = function(element, action, successCallback) {
+	const dn = element.data('dn');
+	const credential = element.data('credential');
+	const resultDiv = jQuery('#webauthn_results');
+	const tokenValue = resultDiv.data('sec_token_value');
+	const data = {
+		action: 'delete',
+		jsonInput: '',
+		sec_token: tokenValue,
+		dn: dn,
+		credentialId: credential
+	};
+	jQuery.ajax({
+		url: '../misc/ajax.php?function=' + action,
+		method: 'POST',
+		data: data
+	})
+		.done(function(jsonData) {
+			if (successCallback) {
+				successCallback();
+			}
+			else {
+				resultDiv.html(jsonData.content);
+			}
+		})
+		.fail(function() {
+			console.log('Webauthn device deletion failed');
+		});
+}
+
+/**
+ * Registers a user's own webauthn device.
+ *
+ * @param event click event
+ * @param isSelfService runs in self service context
+ */
+window.lam.webauthn.registerOwnDevice = function(event, isSelfService) {
+	event.preventDefault();
+	const element = jQuery(event.target);
+	const dn = element.data('dn');
+	const tokenValue = element.data('sec_token_value');
+	const publicKey = element.data('publickey');
+	let successCallback = function (publicKeyCredential) {
+		const form = jQuery("#webauthnform");
+		const response = btoa(JSON.stringify(publicKeyCredential));
+		const registrationData = jQuery('#registrationData');
+		registrationData.val(response);
+		form.submit();
+	};
+	if (isSelfService) {
+		successCallback = function (publicKeyCredential) {
+			const data = {
+				action: 'register',
+				jsonInput: '',
+				sec_token: tokenValue,
+				dn: dn,
+				credential: btoa(JSON.stringify(publicKeyCredential))
+			};
+			jQuery.ajax({
+				url: '../misc/ajax.php?selfservice=true&module=webauthn&scope=user',
+				method: 'POST',
+				data: data
+			})
+			.done(function(jsonData) {
+				const resultDiv = jQuery('#webauthn_results');
+				resultDiv.html(jsonData.content);
+			})
+			.fail(function() {
+				console.log('Webauthn device registration failed');
+			});
+		};
+	}
+	const errorCallback = function (error) {
+		let errorDiv = jQuery('#generic-webauthn-error');
+		let buttonLabel = errorDiv.data('button');
+		let dialogTitle = errorDiv.data('title');
+		errorDiv.text(error.message);
+		window.lam.dialog.showMessage(dialogTitle,
+			buttonLabel,
+			'generic-webauthn-error'
+		);
+	};
+	window.lam.webauthn.register(publicKey, successCallback, errorCallback);
+	return false;
+}
+
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();
 	window.lam.form.autoTrim();
@@ -1367,6 +1782,7 @@ jQuery(document).ready(function() {
 	window.lam.html.activateLightboxes();
 	window.lam.html.preventEnter();
 	window.lam.dynamicSelect.activate();
+	window.lam.webauthn.setupDeviceManagement();
 });
 
 /**

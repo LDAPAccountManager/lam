@@ -1,7 +1,8 @@
 <?php
+use PHPUnit\Framework\TestCase;
 /*
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2018  Roland Gruber
+ Copyright (C) 2018 - 2019  Roland Gruber
  */
 
 if (is_readable('lam/lib/modules/bindDLZ.inc')) {
@@ -15,7 +16,7 @@ if (is_readable('lam/lib/modules/bindDLZ.inc')) {
 	 *
 	 * @author Roland Gruber
 	 */
-	class bindDLZTest extends PHPUnit_Framework_TestCase {
+	class bindDLZTest extends TestCase {
 
 		public function testIncreaseSerial() {
 			$this->assertEquals('1', bindDLZ::increaseSerial(''));

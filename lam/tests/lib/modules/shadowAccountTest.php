@@ -1,8 +1,9 @@
 <?php
+use PHPUnit\Framework\TestCase;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2016 - 2018  Roland Gruber
+ Copyright (C) 2016 - 2019  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -32,7 +33,7 @@
 	 *
 	 * @author Roland Gruber
 	 */
-	class ShadowAccountTest extends PHPUnit_Framework_TestCase {
+	class ShadowAccountTest extends TestCase {
 
 		public function test_isAccountExpired_noAttr() {
 			$attrs = array('objectClass' => array('shadowAccount'));
@@ -122,7 +123,7 @@ if (is_readable('lam/lib/passwordExpirationJob.inc')) {
 	 * @author Roland Gruber
 	 *
 	 */
-	class ShadowAccountPasswordNotifyJobTest extends PHPUnit_Framework_TestCase {
+	class ShadowAccountPasswordNotifyJobTest extends TestCase {
 
 		private $job;
 
@@ -132,7 +133,7 @@ if (is_readable('lam/lib/passwordExpirationJob.inc')) {
 		private $options = array();
 		private $resultLog = null;
 
-		public function setUp() {
+		public function setUp(): void {
 			$this->job = $this->getMockBuilder('ShadowAccountPasswordNotifyJob')
 				->setMethods(array('getDBLastPwdChangeTime', 'setDBLastPwdChangeTime', 'sendMail', 'findUsers', 'getConfigPrefix'))
 				->getMock();

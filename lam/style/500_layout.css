@@ -547,6 +547,11 @@ input.markOk {
 	text-decoration: line-through;
 }
 
+div.lam-webauthn-results {
+	max-height: 20rem;
+	overflow: auto;
+	padding: 1rem;
+}
 
 /**
  * table style for delete.php

@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2019  Roland Gruber
+  Copyright (C) 2010 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1098,10 +1098,10 @@ class htmlButton extends htmlElement {
 		}
 		$id = ' id="btn_' . preg_replace('/[^a-zA-Z0-9_-]/', '', $this->name) . '"';
 		if ($this->isImageButton) {
-			echo '<input type="submit" ' . $id . ' value=" "' . $name . $onClick . $fieldTabIndex . $style . $class . $title . $disabled . '>';
+			echo '<input type="submit" ' . $id . ' value=" "' . $name . $onClick . $fieldTabIndex . $style . $class . $title . $disabled . $this->getDataAttributesAsString() . '>';
 		}
 		else {
-			echo '<button' . $id . $name . $fieldTabIndex . $type . $onClick . $style . $class . $title . $disabled . '>' . $this->value . '</button>';
+			echo '<button' . $id . $name . $fieldTabIndex . $type . $onClick . $style . $class . $title . $disabled . $this->getDataAttributesAsString() . '>' . $this->value . '</button>';
 			// text buttons get JQuery style
 			$icon = '';
 			if ($this->iconClass != null) {
@@ -3392,7 +3392,7 @@ class htmlLink extends htmlElement {
 		if (sizeof($this->cssClasses) > 0) {
 			$classAttr = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
-		echo '<a href="' . $this->target . '"' . $idAttr . $classAttr . $title . $targetWindow . $onClick . '>' . $image . $text . '</a>';
+		echo '<a href="' . $this->target . '"' . $idAttr . $classAttr . $title . $targetWindow . $onClick . $this->getDataAttributesAsString() . '>' . $image . $text . '</a>';
 		if ($this->showAsButton) {
 			echo '<script type="text/javascript">';
 			echo ' jQuery(document).ready(function() {';
@@ -3626,7 +3626,7 @@ class htmlDiv extends htmlElement {
 		if (($this->cssClasses != null) && (sizeof($this->cssClasses) > 0)) {
 			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
-		echo '<div' . $idValue . $classesValue . '>';
+		echo '<div' . $idValue . $classesValue . $this->getDataAttributesAsString() . '>';
 		if ($this->content != null) {
 			$return = $this->content->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		}

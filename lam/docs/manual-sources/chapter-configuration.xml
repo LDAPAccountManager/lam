@@ -259,6 +259,33 @@
       </screenshot>
     </section>
 
+    <section id="confmain_webauthn">
+      <title>Webauthn/FIDO2 devices</title>
+
+      <para>See the <link linkend="a_webauthn">Webauthn/FIDO2 appendix</link>
+      for an overview about Webauthn/FIDO2 in LAM.</para>
+
+      <para>Here you can delete any webauthn device registrations. This
+      section is only shown if at least one device is registered.</para>
+
+      <para>Enter a part of the user's DN in the input box and perform a
+      search. LAM will show users and devices that match the search. You can
+      then delete a device registration. If the user has no more registered
+      devices then LAM will ask for registration on next login.</para>
+
+      <para>Note: You cannot add any device here. This can only be done by the
+      user during login, <link linkend="tool_webauthn">webauthn tool</link> or
+      self service.</para>
+
+      <para><screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/configGeneral8.png"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot></para>
+    </section>
+
     <section>
       <title>Change master password</title>
 
@@ -631,7 +658,8 @@
           </mediaobject>
         </screenshot>
 
-        <para><emphasis role="bold">2-factor authentication</emphasis></para>
+        <para id="conf_serverprofile_2fa"><emphasis role="bold">2-factor
+        authentication</emphasis></para>
 
         <para>LAM supports 2-factor authentication for your users. This means
         the user will not only authenticate by user+password but also with
@@ -654,6 +682,11 @@
 
           <listitem>
             <para><ulink url="https://duo.com/">Duo</ulink></para>
+          </listitem>
+
+          <listitem>
+            <para><ulink
+            url="https://webauthn.io/">Webauthn/FIDO2</ulink></para>
           </listitem>
         </itemizedlist>
 
@@ -749,6 +782,30 @@
 
           <listitem>
             <para>Secret key: please enter your secret key.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para><emphasis role="bold">Webauthn/FIDO2</emphasis></para>
+
+        <para>See the <link linkend="a_webauthn">Webauthn/FIDO2
+        appendix</link> for an overview about Webauthn/FIDO2 in LAM.</para>
+
+        <para>Users will be asked to register a device during login if no
+        device is setup.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Domain: Please enter the WebAuthn domain. This is the public
+            domain of the web server (e.g. "example.com"). Do not include
+            protocol or port. Browsers will reject authentication if the
+            domain does not match the web server domain.</para>
+          </listitem>
+
+          <listitem>
+            <para>Optional: By default LAM will enforce to use a 2FA device
+            and reject users that do not setup one. You can set this check to
+            optional. But if a user has setup a device then this will always
+            be required.</para>
           </listitem>
         </itemizedlist>
 

@@ -4,6 +4,7 @@ use LAM\PDF\PDFEntrySection;
 use LAM\PDF\PDFStructureReader;
 use LAM\PDF\PDFStructure;
 use LAM\PDF\PDFStructureWriter;
+use PHPUnit\Framework\TestCase;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -33,7 +34,7 @@ include_once 'lam/lib/pdfstruct.inc';
  * @author Roland Gruber
  *
  */
-class ReadStructureTest extends PHPUnit_Framework_TestCase {
+class ReadStructureTest extends TestCase {
 
 	/**
 	 * Reads the sample structure.

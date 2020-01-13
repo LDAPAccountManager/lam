@@ -1,5 +1,7 @@
 <?php
 namespace LAM\AJAX;
+use htmlResponsiveTable;
+use htmlStatusMessage;
 use \LAM\TOOLS\IMPORT_EXPORT\Importer;
 use \LAM\TOOLS\IMPORT_EXPORT\Exporter;
 use \LAM\TYPES\TypeManager;
@@ -7,10 +9,13 @@ use \htmlResponsiveRow;
 use \htmlLink;
 use \htmlOutputText;
 use \htmlButton;
+use \LAM\LOGIN\WEBAUTHN\WebauthnManager;
+use \LAMCfgMain;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2019  Roland Gruber
+  Copyright (C) 2011 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -71,7 +76,7 @@ class Ajax {
 		$this->setHeader();
 		// check token
 		validateSecurityToken();
-
+		$isSelfService = isset($_GET['selfservice']);
 		if (isset($_GET['module']) && isset($_GET['scope']) && in_array($_GET['module'], getAvailableModules($_GET['scope']))) {
 			enforceUserIsLoggedIn();
 			if (isset($_GET['useContainer']) && ($_GET['useContainer'] == '1')) {
@@ -87,6 +92,7 @@ class Ajax {
 				$module = new $_GET['module']($_GET['scope']);
 				$module->handleAjaxRequest();
 			}
+			die();
 		}
 		if (!isset($_GET['function'])) {
 			die();
@@ -99,6 +105,16 @@ class Ajax {
 		$jsonInput = $_POST['jsonInput'];
 		if ($function == 'passwordStrengthCheck') {
 			$this->checkPasswordStrength($jsonInput);
+			die();
+		}
+		if ($function === 'webauthn') {
+			enforceUserIsLoggedIn(false);
+			$this->manageWebauthn($isSelfService);
+			die();
+		}
+		if ($function === 'webauthnDevices') {
+			$this->enforceUserIsLoggedInToMainConfiguration();
+			$this->manageWebauthnDevices();
 			die();
 		}
 		enforceUserIsLoggedIn();
@@ -144,6 +160,9 @@ class Ajax {
 			ob_end_clean();
 			echo $jsonOut;
 		}
+		elseif ($function === 'webauthnOwnDevices') {
+			$this->manageWebauthnOwnDevices();
+		}
 	}
 
 	/**
@@ -175,6 +194,162 @@ class Ajax {
 		$password = $input['password'];
 		$result = checkPasswordStrength($password, null, null);
 		echo json_encode(array("result" => $result));
+	}
+
+	/**
+	 * Manages webauthn requests.
+	 *
+	 * @param bool $isSelfService request is from self service
+	 */
+	private function manageWebauthn($isSelfService) {
+		include_once __DIR__ . '/../../lib/webauthn.inc';
+		if ($isSelfService) {
+			$userDN = lamDecrypt($_SESSION['selfService_clientDN'], 'SelfService');
+		}
+		else {
+			$userDN = $_SESSION['ldap']->getUserName();
+		}
+		$webauthnManager = new WebauthnManager();
+		$isRegistered = $webauthnManager->isRegistered($userDN);
+		if (!$isRegistered) {
+			$registrationObject = $webauthnManager->getRegistrationObject($userDN, $isSelfService);
+			$_SESSION['webauthn_registration'] = json_encode($registrationObject);
+			echo json_encode(
+				array(
+					'action' => 'register',
+					'registration' => $registrationObject
+				),
+				JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+			);
+		}
+		else {
+			$authenticationObject = $webauthnManager->getAuthenticationObject($userDN, $isSelfService);
+			$_SESSION['webauthn_authentication'] = json_encode($authenticationObject);
+			echo json_encode(
+				array(
+					'action' => 'authenticate',
+					'authentication' => $authenticationObject
+				),
+				JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+			);
+		}
+		die();
+	}
+
+	/**
+	 * Webauthn device management.
+	 */
+	private function manageWebauthnDevices() {
+		$action = $_POST['action'];
+		if ($action === 'search') {
+			$searchTerm = $_POST['searchTerm'];
+			if (!empty($searchTerm)) {
+				$this->manageWebauthnDevicesSearch($searchTerm);
+			}
+		}
+		elseif ($action === 'delete') {
+			$dn = $_POST['dn'];
+			$credentialId = $_POST['credentialId'];
+			if (!empty($dn) && !empty($credentialId)) {
+				$this->manageWebauthnDevicesDelete($dn, $credentialId);
+			}
+		}
+	}
+
+	/**
+	 * Searches for webauthn devices and prints the results as html.
+	 *
+	 * @param string $searchTerm search term
+	 */
+	private function manageWebauthnDevicesSearch($searchTerm) {
+		include_once __DIR__ . '/../../lib/webauthn.inc';
+		$database = new \LAM\LOGIN\WEBAUTHN\PublicKeyCredentialSourceRepositorySQLite();
+		$results = $database->searchDevices('%' . $searchTerm . '%');
+		$row = new htmlResponsiveRow();
+		$row->addVerticalSpacer('0.5rem');
+		if (empty($results)) {
+			$row->add(new htmlStatusMessage('INFO', _('No devices found.')), 12);
+		}
+		else {
+			$titles = array(
+				_('User'),
+				_('Registration'),
+				_('Last use'),
+				_('Delete')
+			);
+			$data = array();
+			$id = 0;
+			foreach ($results as $result) {
+				$delButton = new htmlButton('deleteDevice' . $id, 'delete.png', true);
+				$delButton->addDataAttribute('credential', $result['credentialId']);
+				$delButton->addDataAttribute('dn', $result['dn']);
+				$delButton->addDataAttribute('dialogtitle', _('Remove device'));
+				$delButton->addDataAttribute('oktext', _('Ok'));
+				$delButton->addDataAttribute('canceltext', _('Cancel'));
+				$delButton->setCSSClasses(array('webauthn-delete'));
+				$data[] = array(
+					new htmlOutputText($result['dn']),
+					new htmlOutputText(date('Y-m-d H:i:s', $result['registrationTime'])),
+					new htmlOutputText(date('Y-m-d H:i:s', $result['lastUseTime'])),
+					$delButton
+				);
+				$id++;
+			}
+			$table = new htmlResponsiveTable($titles, $data);
+			$row->add($table, 12);
+		}
+		$row->addVerticalSpacer('2rem');
+		$tabindex = 10000;
+		ob_start();
+		$row->generateHTML('none', array(), array(), false, $tabindex, null);
+		$content = ob_get_contents();
+		ob_end_clean();
+		echo json_encode(array('content' => $content));
+	}
+
+	/**
+	 * Deletes a webauthn device.
+	 *
+	 * @param string $dn user DN
+	 * @param string $credentialId base64 encoded credential id
+	 */
+	private function manageWebauthnDevicesDelete($dn, $credentialId) {
+		include_once __DIR__ . '/../../lib/webauthn.inc';
+		$database = new \LAM\LOGIN\WEBAUTHN\PublicKeyCredentialSourceRepositorySQLite();
+		$success = $database->deleteDevice($dn, $credentialId);
+		if ($success) {
+			$message = new htmlStatusMessage('INFO', _('The device was deleted.'));
+		}
+		else {
+			$message = new htmlStatusMessage('ERROR', _('The device was not found.'));
+		}
+		$row = new htmlResponsiveRow();
+		$row->addVerticalSpacer('0.5rem');
+		$row->add($message, 12);
+		$row->addVerticalSpacer('2rem');
+		ob_start();
+		$tabindex = 50000;
+		$row->generateHTML('none', array(), array(), true, $tabindex, null);
+		$content = ob_get_contents();
+		ob_end_clean();
+		echo json_encode(array('content' => $content));
+	}
+
+	/**
+	 * Manages requests to setup user's own webauthn devices.
+	 */
+	private function manageWebauthnOwnDevices() {
+		$action = $_POST['action'];
+		$dn = $_POST['dn'];
+		$sessionDn = $_SESSION['ldap']->getUserName();
+		if ($sessionDn !== $dn) {
+			logNewMessage(LOG_ERR, 'Webauthn delete canceled, DN does not match.');
+			die();
+		}
+		if ($action === 'delete') {
+			$credentialId = $_POST['credentialId'];
+			$this->manageWebauthnDevicesDelete($sessionDn, $credentialId);
+		}
 	}
 
 	/**
@@ -297,6 +472,23 @@ class Ajax {
 		}
 		usort($dnList, 'compareDN');
 		return $dnList;
+	}
+
+	/**
+	 * Checks if the user entered the configuration master password.
+	 * Dies if password is not set.
+	 */
+	private function enforceUserIsLoggedInToMainConfiguration() {
+		if (!isset($_SESSION['cfgMain'])) {
+			$cfg = new LAMCfgMain();
+		}
+		else {
+			$cfg = $_SESSION['cfgMain'];
+		}
+		if (isset($_SESSION["mainconf_password"]) && ($cfg->checkPassword($_SESSION["mainconf_password"]))) {
+			return;
+		}
+		die();
 	}
 
 }

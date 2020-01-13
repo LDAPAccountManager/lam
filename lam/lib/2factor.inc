@@ -1,14 +1,23 @@
 <?php
 namespace LAM\LIB\TWO_FACTOR;
+use \htmlResponsiveRow;
+use \LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use \selfServiceProfile;
 use \LAMConfig;
 use \htmlScript;
 use \htmlIframe;
+use \htmlImage;
+use \htmlButton;
+use \htmlJavaScript;
+use \htmlStatusMessage;
+use \htmlOutputText;
+use \htmlDiv;
 use \LAMException;
+use \Webauthn\PublicKeyCredentialCreationOptions;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2019  Roland Gruber
+  Copyright (C) 2017 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -455,7 +464,7 @@ class DuoProvider extends BaseProvider {
 	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::verify2ndFactor()
 	 */
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
-		logNewMessage(LOG_DEBUG, 'PrivacyIDEAProvider: Checking 2nd factor for ' . $user);
+		logNewMessage(LOG_DEBUG, 'DuoProvider: Checking 2nd factor for ' . $user);
 		$loginAttribute = $this->getLoginAttributeValue($user);
 		$response = $_POST['sig_response'];
 		include_once(__DIR__ . "/3rdParty/duo/Web.php");
@@ -474,6 +483,140 @@ class DuoProvider extends BaseProvider {
 }
 
 /**
+ * Provider for Webauthn.
+ */
+class WebauthnProvider extends BaseProvider {
+
+	/**
+	 * Constructor.
+	 *
+	 * @param TwoFactorConfiguration $config configuration
+	 */
+	public function __construct($config) {
+		$this->config = $config;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::getSerials()
+	 */
+	public function getSerials($user, $password) {
+		return array('WEBAUTHN');
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::isShowSubmitButton()
+	 */
+	public function isShowSubmitButton() {
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::hasCustomInputForm()
+	 */
+	public function hasCustomInputForm() {
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\BaseProvider::addCustomInput()
+	 */
+	public function addCustomInput(&$row, $userDn) {
+		if (version_compare(phpversion(), '7.2.0') < 0) {
+			$row->add(new htmlStatusMessage('ERROR', 'Webauthn requires PHP 7.2.'), 12);
+			return;
+		}
+		if (!extension_loaded('PDO')) {
+			$row->add(new htmlStatusMessage('ERROR', 'Webauthn requires the PDO extension for PHP.'), 12);
+			return;
+		}
+		$pdoDrivers = \PDO::getAvailableDrivers();
+		if (!in_array('sqlite', $pdoDrivers)) {
+			$row->add(new htmlStatusMessage('ERROR', 'Webauthn requires the sqlite PDO driver for PHP.'), 12);
+			return;
+		}
+		include_once __DIR__ . '/webauthn.inc';
+		$webauthnManager = $this->getWebauthnManager();
+		$hasTokens = $webauthnManager->isRegistered($userDn);
+		if ($hasTokens) {
+			$row->add(new htmlStatusMessage('INFO', _('Please authenticate with your security device.')), 12);
+		}
+		else {
+			$row->add(new htmlStatusMessage('INFO', _('Please register a security device.')), 12);
+		}
+		$row->addVerticalSpacer('2rem');
+		$pathPrefix = $this->config->isSelfService ? '../' : '';
+		$selfServiceParam = $this->config->isSelfService ? 'true' : 'false';
+		$row->add(new htmlImage($pathPrefix . '../graphics/webauthn.svg'), 12);
+		$row->addVerticalSpacer('1rem');
+		$registerButton = new htmlButton('register_webauthn', _('Register new key'));
+		$registerButton->setCSSClasses(array('fullwidth hidden'));
+		$row->add($registerButton, 12);
+		$loginButton = new htmlButton('login_webauthn', _('Login'));
+		$loginButton->setCSSClasses(array('fullwidth hidden'));
+		$row->add($loginButton, 12);
+		$errorMessage = new htmlStatusMessage('ERROR', '', _('This service requires a browser with "WebAuthn" support.'));
+		$row->add(new htmlDiv(null, $errorMessage, array('hidden webauthn-error')), 12);
+		if ($this->config->twoFactorAuthenticationOptional === true) {
+			if (!$hasTokens) {
+				$skipButton = new htmlButton('skip_webauthn', _('Skip'));
+				$skipButton->setCSSClasses(array('fullwidth'));
+				$row->add($skipButton, 12);
+			}
+		}
+		$errorMessageDiv = new htmlDiv('generic-webauthn-error', new htmlOutputText(''));
+		$errorMessageDiv->addDataAttribute('button', _('Ok'));
+		$errorMessageDiv->addDataAttribute('title', _('Webauthn failed'));
+		$row->add($errorMessageDiv, 12);
+		$row->add(new htmlJavaScript('window.lam.webauthn.start(\'' . $pathPrefix . '\', ' . $selfServiceParam . ');'), 0);
+	}
+
+	/**
+	 * Returns the webauthn manager.
+	 *
+	 * @return WebauthnManager manager
+	 */
+	public function getWebauthnManager() {
+		return new WebauthnManager();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::verify2ndFactor()
+	 */
+	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
+		logNewMessage(LOG_DEBUG, 'WebauthnProvider: Checking 2nd factor for ' . $user);
+		include_once __DIR__ . '/webauthn.inc';
+		$webauthnManager = $this->getWebauthnManager();
+		if (!empty($_SESSION['ldap'])) {
+			$userDn = $_SESSION['ldap']->getUserName();
+		}
+		else {
+			$userDn = lamDecrypt($_SESSION['selfService_clientDN'], 'SelfService');
+		}
+		$hasTokens = $webauthnManager->isRegistered($userDn);
+		if (!$hasTokens) {
+			if ($this->config->twoFactorAuthenticationOptional && !$webauthnManager->isRegistered($user) && ($_POST['sig_response'] === 'skip')) {
+				logNewMessage(LOG_DEBUG, 'Skipped 2FA for ' . $user . ' as no devices are registered and 2FA is optional.');
+				return true;
+			}
+			$response = base64_decode($_POST['sig_response']);
+			$registrationObject = PublicKeyCredentialCreationOptions::createFromString($_SESSION['webauthn_registration']);
+			return $webauthnManager->storeNewRegistration($registrationObject, $response);
+		}
+		else {
+			logNewMessage(LOG_DEBUG, 'Checking webauthn response of ' . $userDn);
+			$response = base64_decode($_POST['sig_response']);
+			return $webauthnManager->isValidAuthentication($response, $userDn);
+		}
+	}
+
+}
+
+/**
  * Returns the correct 2 factor provider.
  */
 class TwoFactorProviderService {
@@ -486,6 +629,8 @@ class TwoFactorProviderService {
 	const TWO_FACTOR_YUBICO = 'yubico';
 	/** 2factor authentication via DUO */
 	const TWO_FACTOR_DUO = 'duo';
+	/** 2factor authentication via webauthn */
+	const TWO_FACTOR_WEBAUTHN = 'webauthn';
 
 	private $config;
 
@@ -520,6 +665,9 @@ class TwoFactorProviderService {
 		elseif ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_DUO) {
 			return new DuoProvider($this->config);
 		}
+		elseif ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_WEBAUTHN) {
+			return new WebauthnProvider($this->config);
+		}
 		throw new \Exception('Invalid provider: ' . $this->config->twoFactorAuthentication);
 	}
 
@@ -534,6 +682,7 @@ class TwoFactorProviderService {
 		$tfConfig->isSelfService = true;
 		$tfConfig->twoFactorAuthentication = $profile->twoFactorAuthentication;
 		$tfConfig->twoFactorAuthenticationInsecure = $profile->twoFactorAuthenticationInsecure;
+		$tfConfig->twoFactorAuthenticationOptional = $profile->twoFactorAuthenticationOptional;
 		if ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO) {
 			$tfConfig->twoFactorAuthenticationURL = explode("\r\n", $profile->twoFactorAuthenticationURL);
 		}
@@ -573,6 +722,7 @@ class TwoFactorProviderService {
 		$tfConfig->isSelfService = false;
 		$tfConfig->twoFactorAuthentication = $conf->getTwoFactorAuthentication();
 		$tfConfig->twoFactorAuthenticationInsecure = $conf->getTwoFactorAuthenticationInsecure();
+		$tfConfig->twoFactorAuthenticationOptional = $conf->getTwoFactorAuthenticationOptional();
 		if ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO) {
 			$tfConfig->twoFactorAuthenticationURL = explode("\r\n", $conf->getTwoFactorAuthenticationURL());
 		}
@@ -640,5 +790,10 @@ class TwoFactorConfiguration {
 	 * @var LDAP attribute name that stores the token serials
 	 */
 	public $twoFactorAuthenticationSerialAttributeName = null;
+
+	/**
+	 * @var bool 2FA is optional
+	 */
+	public $twoFactorAuthenticationOptional = false;
 
 }

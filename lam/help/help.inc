@@ -179,6 +179,8 @@ $helpArray = array (
 					"Text" => _("Here you can input simple filter expressions (e.g. 'value' or 'v*'). The filter is case-insensitive.")),
 				"251" => array ("Headline" => _("Remote server"),
 					"Text" => _("Please enter the syslog remote server in format \"server:port\".")),
+				"252" => array ("Headline" => _("User DN"),
+					"Text" => _("Please enter a part of the user's DN to search for registered devices.")),
 				"260" => array ("Headline" => _("Additional LDAP filter"),
 					"Text" => _('Use this to enter an additional LDAP filter (e.g. "(cn!=admin)") to reduce the number of visible elements for this account type.')
 						. ' ' . _('You can use the wildcard @@LOGIN_DN@@ which will be substituted with the DN of the user who is currently logged in to LAM.')
@@ -329,6 +331,8 @@ $helpArray = array (
 					"Text" => _('This text is displayed as footer on the self service main page.')),
 				"528" => array ("Headline" => _('User name attribute'),
 					"Text" => _('The attribute (e.g. "uid") that contains the user name for the 2-factor service.')),
+				"529" => array ("Headline" => _('Domain'),
+					"Text" => _('Please enter the WebAuthn domain. This is the public domain of the webserver (e.g. "example.com"). Do not include protocol or port.')),
 				"550" => array ("Headline" => _("From address"),
 					"Text" => _("This email address will be set as sender address of all password mails. If empty the system default (php.ini) will be used.")),
 				"551" => array ("Headline" => _("Subject"),

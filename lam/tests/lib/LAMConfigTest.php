@@ -1,6 +1,6 @@
 <?php
+use PHPUnit\Framework\TestCase;
 /*
- $Id$
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
  Copyright (C) 2016 - 2019  Roland Gruber
@@ -28,7 +28,7 @@ include_once 'lam/tests/utils/configuration.inc';
  *
  * @author Roland Gruber
  */
-class LAMConfigTest extends PHPUnit_Framework_TestCase {
+class LAMConfigTest extends TestCase {
 
 	/**
 	 *
@@ -41,7 +41,7 @@ class LAMConfigTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Prepares the environment before running a test.
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		parent::setUp();
 		testCreateDefaultConfig();
 		$profiles = getConfigProfiles();
@@ -57,7 +57,7 @@ class LAMConfigTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Cleans up the environment after running a test.
 	 */
-	protected function tearDown() {
+	protected function tearDown(): void {
 		$this->lAMConfig = null;
 		deleteConfigProfile(LAMConfigTest::FILE_NAME);
 		$profiles = getConfigProfiles();
@@ -563,6 +563,17 @@ class LAMConfigTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationSecretKey());
 		$this->doSave();
 		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationSecretKey());
+	}
+
+	/**
+	 * Tests LAMConfig->getTwoFactorAuthenticationDomain() and LAMConfig->setTwoFactorAuthenticationDomain()
+	 */
+	public function testTwoFactorAuthenticationDomain() {
+		$val = 'test.com';
+		$this->lAMConfig->setTwoFactorAuthenticationDomain($val);
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationDomain());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationDomain());
 	}
 
 	/**

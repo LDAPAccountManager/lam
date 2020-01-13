@@ -51,6 +51,7 @@ RUN apt-get update && \
         php-phpseclib \
         php-xml \
         php-zip \
+        php-imap \
         wget \
     && \
     rm /etc/apache2/sites-enabled/*default* && \
