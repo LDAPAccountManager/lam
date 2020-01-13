@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2019  Roland Gruber
+  Copyright (C) 2010 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -41,12 +41,9 @@ if (version_compare(phpversion(), '7.0.0') < 0) {
 	echo "<html>\n<head>\n";
 	echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n";
 	echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/500_layout.css\">\n";
-	echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../graphics/favicon.ico\">\n";
-	echo "<link rel=\"icon\" href=\"../graphics/logo136.png\">\n";
-	echo "<title>LDAP Account Manager</title>\n";
+	printHeaderContents('LDAP Account Manager', '..');
 	echo "</head><body>\n";
-	StatusMessage("ERROR", "LAM needs a PHP 5 version which is greater or equal than 7.0.0.", "Please upgrade your PHP installation. The found version is " . phpversion());
+	StatusMessage("ERROR", "LAM needs a PHP version which is greater or equal than 7.0.0.", "Please upgrade your PHP installation. The found version is " . phpversion());
 	echo "<br><br>";
 	echo "</body></html>";
 	exit();
@@ -134,10 +131,7 @@ if (sizeof($criticalErrors) > 0) {
 	echo "<html>\n<head>\n";
 	echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n";
 	echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/500_layout.css\">\n";
-	echo "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"../graphics/favicon.ico\">\n";
-	echo "<link rel=\"icon\" href=\"../graphics/logo136.png\">\n";
-	echo "<title>LDAP Account Manager</title>\n";
+	printHeaderContents('LDAP Account Manager', '..');
 	echo "</head><body>\n";
 	for ($i = 0; $i < sizeof($criticalErrors); $i++) {
 		call_user_func_array("StatusMessage", $criticalErrors[$i]);
