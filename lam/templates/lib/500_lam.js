@@ -1551,6 +1551,16 @@ window.lam.webauthn.setupDeviceManagement = function() {
 	if (searchButton) {
 		searchButton.click(window.lam.webauthn.searchDevices);
 	}
+	const searchInput = jQuery('#webauthn_searchTerm');
+	if (searchInput) {
+		searchInput.keydown(function (event) {
+			if (event.keyCode == 13) {
+				event.preventDefault();
+				searchButton.click();
+				return false;
+			}
+		});
+	}
 }
 
 /**
