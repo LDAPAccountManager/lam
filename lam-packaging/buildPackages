@@ -51,14 +51,14 @@ function minifyCSS {
 }
 
 echo "Getting files..."
-git clone -b $REPO_BRANCH --single-branch git@github.com:LDAPAccountManager/lam.git github
+git clone --depth 1 -b $REPO_BRANCH --single-branch git@github.com:LDAPAccountManager/lam.git github
 cd github
 mv lam ../
 mv lam-packaging ../
 cd ..
 rm -rf github
 
-git clone -b $REPO_BRANCH --single-branch git@gitlab.com:LDAPAccountManager/lamPro.git lamPro
+git clone --depth 1 -b $REPO_BRANCH --single-branch git@gitlab.com:LDAPAccountManager/lamPro.git lamPro
 cd lamPro
 rm -rf .git
 rm -rf docker
