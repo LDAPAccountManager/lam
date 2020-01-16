@@ -1550,7 +1550,7 @@ window.lam.webauthn.authenticate = function(publicKey) {
  * @returns base64 string
  */
 window.lam.webauthn.arrayToBase64String = function(input) {
-	return btoa(String.fromCharCode(...input));
+	return btoa(String.fromCharCode.apply(null, input));
 }
 
 /**
