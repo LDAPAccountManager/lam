@@ -1479,7 +1479,7 @@ window.lam.webauthn.register = function(publicKey, successCallback, errorCallbac
 			}
 		}
 	}
-	navigator.credentials.create({publicKey})
+	navigator.credentials.create({publicKey: publicKey})
 		.then(function (data) {
 			var publicKeyCredential = {
 				id: data.id,
@@ -1511,7 +1511,7 @@ window.lam.webauthn.authenticate = function(publicKey) {
 		var idArray = Uint8Array.from(idOrigDecoded, window.lam.webauthn.charAt)
 		publicKey.allowCredentials[i]['id'] = idArray;
 	}
-	navigator.credentials.get({publicKey})
+	navigator.credentials.get({publicKey: publicKey})
 		.then(function(data) {
 			var publicKeyCredential = {
 				id: data.id,
