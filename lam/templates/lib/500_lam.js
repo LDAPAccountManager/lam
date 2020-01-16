@@ -1372,6 +1372,16 @@ window.lam.selfservice.addMultiValue = function(fieldNamePrefix, addButton) {
 window.lam.webauthn = window.lam.webauthn || {};
 
 /**
+ * Returns the first unicode character.
+ *
+ * @param c char
+ * @returns {number} character
+ */
+window.lam.webauthn.charAt = function (c) {
+	return c.charCodeAt(0);
+}
+
+/**
  * Starts the webauthn process.
  *
  * @param prefix path prefix for Ajax endpoint
@@ -1456,15 +1466,15 @@ window.lam.webauthn.run = function(prefix, isSelfService) {
  */
 window.lam.webauthn.register = function(publicKey, successCallback, errorCallback) {
 	if (!(publicKey.challenge instanceof Uint8Array)) {
-		publicKey.challenge = Uint8Array.from(window.atob(publicKey.challenge), c=>c.charCodeAt(0));
-		publicKey.user.id = Uint8Array.from(window.atob(publicKey.user.id), c=>c.charCodeAt(0));
+		publicKey.challenge = Uint8Array.from(window.atob(publicKey.challenge), window.lam.webauthn.charAt);
+		publicKey.user.id = Uint8Array.from(window.atob(publicKey.user.id), window.lam.webauthn.charAt);
 		publicKey.rp.icon = window.location.href.substring(0, window.location.href.lastIndexOf("/")) + publicKey.rp.icon;
 		if (publicKey.excludeCredentials) {
 			for (var i = 0; i < publicKey.excludeCredentials.length; i++) {
 				var idOrig = publicKey.excludeCredentials[i]['id'];
 				idOrig = idOrig.replace(/-/g, "+").replace(/_/g, "/");
 				var idOrigDecoded = atob(idOrig);
-				var idArray = Uint8Array.from(idOrigDecoded, c => c.charCodeAt(0))
+				var idArray = Uint8Array.from(idOrigDecoded, window.lam.webauthn.charAt)
 				publicKey.excludeCredentials[i]['id'] = idArray;
 			}
 		}
@@ -1493,16 +1503,16 @@ window.lam.webauthn.register = function(publicKey, successCallback, errorCallbac
  * @param publicKey authentication object
  */
 window.lam.webauthn.authenticate = function(publicKey) {
-	publicKey.challenge = Uint8Array.from(window.atob(publicKey.challenge), c => c.charCodeAt(0));
+	publicKey.challenge = Uint8Array.from(window.atob(publicKey.challenge), window.lam.webauthn.charAt);
 	for (var i = 0; i < publicKey.allowCredentials.length; i++) {
 		var idOrig = publicKey.allowCredentials[i]['id'];
 		idOrig = idOrig.replace(/-/g, "+").replace(/_/g, "/");
 		var idOrigDecoded = atob(idOrig);
-		var idArray = Uint8Array.from(idOrigDecoded, c => c.charCodeAt(0))
+		var idArray = Uint8Array.from(idOrigDecoded, window.lam.webauthn.charAt)
 		publicKey.allowCredentials[i]['id'] = idArray;
 	}
 	navigator.credentials.get({publicKey})
-		.then(data => {
+		.then(function(data) {
 			var publicKeyCredential = {
 				id: data.id,
 				type: data.type,
@@ -1518,7 +1528,7 @@ window.lam.webauthn.authenticate = function(publicKey) {
 			var response = btoa(JSON.stringify(publicKeyCredential));
 			form.append('<input type="hidden" name="sig_response" value="' + response + '"/>');
 			form.submit();
-		}, error => {
+		}, function(error) {
 			console.log(error.message);
 			var errorDiv = jQuery('#generic-webauthn-error');
 			var buttonLabel = errorDiv.data('button');
