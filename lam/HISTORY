@@ -1,6 +1,7 @@
 March 2020 7.1
   - PHP 7 required
   - Webauthn/FIDO2 support for 2-factor-authentication (requires PHP 7.2)
+  - Personal: support display name (hidden by default in server profile)
 
 
 21.12.2019 7.0

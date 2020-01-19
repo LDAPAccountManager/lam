@@ -6,7 +6,7 @@ use LAM\PDF\PDFImage;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2019  Roland Gruber
+                2005 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -163,12 +163,12 @@ class inetOrgPerson extends baseModule implements passwordService {
 			'location' => _('Location'), 'state' => _('State'), 'officeName' => _('Office name'), 'businessCategory' => _('Business category'),
 			'departmentNumber' => _('Department'), 'initials' => _('Initials'), 'title' => _('Job title'), 'labeledURI' => _('Web site'),
 			'userCertificate' => _('User certificates'), 'o' => _('Organisation'), 'ou' => _('Organisational unit'), 'description' => _('Description'),
-			'uid' => _('User name'));
+			'uid' => _('User name'), 'displayName' => _('Display name'));
 		// possible self service read-only fields
 		$return['selfServiceReadOnlyFields'] = array('firstName', 'lastName', 'mail', 'telephoneNumber', 'mobile', 'faxNumber', 'pager', 'street',
 			'postalAddress', 'registeredAddress', 'postalCode', 'postOfficeBox', 'jpegPhoto', 'homePhone', 'roomNumber', 'carLicense',
 			'location', 'state', 'officeName', 'businessCategory', 'departmentNumber', 'initials', 'title', 'labeledURI', 'userCertificate',
-			'o', 'ou', 'description', 'uid');
+			'o', 'ou', 'description', 'uid', 'displayName');
 		// profile checks and mappings
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
 			$return['profile_mappings']['inetOrgPerson_initials'] = 'initials';
@@ -681,6 +681,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 				"Headline" => _("Common name"), 'attr' => 'cn',
 				"Text" => _("This is the natural name of the user. If empty, the first and last name is used.")
 			),
+			'displayName' => array (
+				"Headline" => _("Display name"), 'attr' => 'displayName',
+				"Text" => _("This is the user's preferred name to be used when displaying entries.")
+			),
 			'uid' => array(
 				"Headline" => _("User name"), 'attr' => 'uid',
 				"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, @.-_.")
@@ -806,6 +810,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$attrs = parent::getManagedAttributes($typeId);
 		if (!$this->isUnixActive()) {
 			$attrs[] = 'cn';
+		}
+		if (!$this->isSamba3Active()) {
+			$attrs[] = 'displayName';
 		}
 		return $attrs;
 	}
@@ -1017,6 +1024,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 		}
+		if (!$this->isSamba3Active() && !$this->isBooleanConfigOptionSet('inetOrgPerson_hidedisplayName', true)) {
+			$this->attributes['displayName'][0] = $_POST['displayName'];
+		}
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber') && !$this->isAdminReadOnly('telephoneNumber')) {
 			$this->processMultiValueInputTextField('telephoneNumber', $errors, 'telephone');
 		}
@@ -1220,6 +1230,10 @@ class inetOrgPerson extends baseModule implements passwordService {
 			else {
 				$this->addMultiValueInputTextField($fieldContainer, 'cn', _('Common name'), true);
 			}
+		}
+		// display name
+		if (!$this->isSamba3Active() && !$this->isBooleanConfigOptionSet('inetOrgPerson_hidedisplayName', true)) {
+			$this->addSimpleInputTextField($fieldContainer, 'displayName', _('Display name'));
 		}
 		// description
 		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription')) {
@@ -1934,6 +1948,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$fields['cn'] = _('Common name');
 			$fields['userPassword'] = _('Password');
 		}
+		if (!$this->isSamba3Active($modules)) {
+			if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidedisplayName', true)) {
+				$fields['displayName'] = _('Display name');
+			}
+		}
 		return $fields;
 	}
 
@@ -1976,6 +1995,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$this->addSimplePDFField($return, 'initials', _('Initials'));
 		$this->addSimplePDFField($return, 'labeledURI', _('Web site'));
 		$this->addSimplePDFField($return, 'departmentNumber', _('Department'));
+		$this->addSimplePDFField($return, 'displayName', _('Display name'));
 		if (isset($this->clearTextPassword)) {
 			$this->addPDFKeyValue($return, 'userPassword', _('Password'), $this->clearTextPassword);
 		}
@@ -2193,6 +2213,14 @@ class inetOrgPerson extends baseModule implements passwordService {
 				'example' => _('secret'),
 			);
 		}
+		if (!$this->isSamba3Active() && !$this->isBooleanConfigOptionSet('inetOrgPerson_hidedisplayName', true)) {
+			$return[] = array(
+				'name' => 'inetOrgPerson_displayName',
+				'description' => _('Display name'),
+				'help' => 'displayName',
+				'example' => _('Steve Miller'),
+			);
+		}
 		return $return;
 	}
 
@@ -2255,6 +2283,8 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (isset($ids['inetOrgPerson_initials']) && ($rawAccounts[$i][$ids['inetOrgPerson_initials']] != "")) {
 				$partialAccounts[$i]['initials'] = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['inetOrgPerson_initials']]);
 			}
+			// display name
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_displayName', 'displayName');
 			// description
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'inetOrgPerson_description', 'description');
 			// title
@@ -2540,7 +2570,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('firstName', $fields)) {
 			$firstName = '';
-			if (isset($attributes['givenName'][0])) $firstName = $attributes['givenName'][0];
+			if (isset($attributes['givenName'][0])) {
+				$firstName = $attributes['givenName'][0];
+			}
 			$firstNameField = new htmlInputField('inetOrgPerson_firstName', $firstName);
 			if (in_array('firstName', $readOnlyFields)) {
 				$firstNameField = new htmlOutputText($firstName);
@@ -2551,7 +2583,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('lastName', $fields)) {
 			$lastName = '';
-			if (isset($attributes['sn'][0])) $lastName = $attributes['sn'][0];
+			if (isset($attributes['sn'][0])) {
+				$lastName = $attributes['sn'][0];
+			}
 			$lastNameField = new htmlInputField('inetOrgPerson_lastName', $lastName);
 			if (in_array('lastName', $readOnlyFields)) {
 				$lastNameField = new htmlOutputText($lastName);
@@ -2562,7 +2596,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('mail', $fields)) {
 			$mail = '';
-			if (isset($attributes['mail'][0])) $mail = $attributes['mail'][0];
+			if (isset($attributes['mail'][0])) {
+				$mail = $attributes['mail'][0];
+			}
 			$mailField = new htmlInputField('inetOrgPerson_mail', $mail);
 			if (in_array('mail', $readOnlyFields)) {
 				$mailField = new htmlOutputText($mail);
@@ -2573,7 +2609,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('labeledURI', $fields)) {
 			$labeledURI = '';
-			if (isset($attributes['labeledURI'][0])) $labeledURI = implode('; ', $attributes['labeledURI']);
+			if (isset($attributes['labeledURI'][0])) {
+				$labeledURI = implode('; ', $attributes['labeledURI']);
+			}
 			$labeledURIField = new htmlInputField('inetOrgPerson_labeledURI', $labeledURI);
 			if (in_array('labeledURI', $readOnlyFields)) {
 				$labeledURIField = new htmlOutputText($labeledURI);
@@ -2584,7 +2622,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('telephoneNumber', $fields)) {
 			$telephoneNumber = '';
-			if (isset($attributes['telephoneNumber'][0])) $telephoneNumber = $attributes['telephoneNumber'][0];
+			if (isset($attributes['telephoneNumber'][0])) {
+				$telephoneNumber = $attributes['telephoneNumber'][0];
+			}
 			$telephoneNumberField = new htmlInputField('inetOrgPerson_telephoneNumber', $telephoneNumber);
 			if (in_array('telephoneNumber', $readOnlyFields)) {
 				$telephoneNumberField = new htmlOutputText($telephoneNumber);
@@ -2595,7 +2635,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('homePhone', $fields)) {
 			$homePhone = '';
-			if (isset($attributes['homePhone'][0])) $homePhone = $attributes['homePhone'][0];
+			if (isset($attributes['homePhone'][0])) {
+				$homePhone = $attributes['homePhone'][0];
+			}
 			$homePhoneField = new htmlInputField('inetOrgPerson_homePhone', $homePhone);
 			if (in_array('homePhone', $readOnlyFields)) {
 				$homePhoneField = new htmlOutputText($homePhone);
@@ -2606,7 +2648,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('mobile', $fields)) {
 			$mobile = '';
-			if (isset($attributes['mobile'][0])) $mobile = $attributes['mobile'][0];
+			if (isset($attributes['mobile'][0])) {
+				$mobile = $attributes['mobile'][0];
+			}
 			$mobileField = new htmlInputField('inetOrgPerson_mobile', $mobile);
 			if (in_array('mobile', $readOnlyFields)) {
 				$mobileField = new htmlOutputText($mobile);
@@ -2617,7 +2661,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('faxNumber', $fields)) {
 			$faxNumber = '';
-			if (isset($attributes['facsimileTelephoneNumber'][0])) $faxNumber = $attributes['facsimileTelephoneNumber'][0];
+			if (isset($attributes['facsimileTelephoneNumber'][0])) {
+				$faxNumber = $attributes['facsimileTelephoneNumber'][0];
+			}
 			$faxNumberField = new htmlInputField('inetOrgPerson_faxNumber', $faxNumber);
 			if (in_array('faxNumber', $readOnlyFields)) {
 				$faxNumberField = new htmlOutputText($faxNumber);
@@ -2628,7 +2674,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('pager', $fields)) {
 			$pager = '';
-			if (isset($attributes['pager'][0])) $pager = $attributes['pager'][0];
+			if (isset($attributes['pager'][0])) {
+				$pager = $attributes['pager'][0];
+			}
 			$pagerField = new htmlInputField('inetOrgPerson_pager', $pager);
 			if (in_array('pager', $readOnlyFields)) {
 				$pagerField = new htmlOutputText($pager);
@@ -2639,7 +2687,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('street', $fields)) {
 			$street = '';
-			if (isset($attributes['street'][0])) $street = $attributes['street'][0];
+			if (isset($attributes['street'][0])) {
+				$street = $attributes['street'][0];
+			}
 			$streetField = new htmlInputField('inetOrgPerson_street', $street);
 			if (in_array('street', $readOnlyFields)) {
 				$streetField = new htmlOutputText($street);
@@ -2650,7 +2700,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('postalAddress', $fields)) {
 			$postalAddress = '';
-			if (isset($attributes['postalAddress'][0])) $postalAddress = $attributes['postalAddress'][0];
+			if (isset($attributes['postalAddress'][0])) {
+				$postalAddress = $attributes['postalAddress'][0];
+			}
 			$postalAddressField = new htmlInputField('inetOrgPerson_postalAddress', $postalAddress);
 			if (in_array('postalAddress', $readOnlyFields)) {
 				$postalAddressField = new htmlOutputText($postalAddress);
@@ -2661,7 +2713,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('registeredAddress', $fields)) {
 			$registeredAddress = '';
-			if (isset($attributes['registeredAddress'][0])) $registeredAddress = $attributes['registeredAddress'][0];
+			if (isset($attributes['registeredAddress'][0])) {
+				$registeredAddress = $attributes['registeredAddress'][0];
+			}
 			$registeredAddressField = new htmlInputField('inetOrgPerson_registeredAddress', $registeredAddress);
 			if (in_array('registeredAddress', $readOnlyFields)) {
 				$registeredAddressField = new htmlOutputText($registeredAddress);
@@ -2672,7 +2726,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('postalCode', $fields)) {
 			$postalCode = '';
-			if (isset($attributes['postalCode'][0])) $postalCode = $attributes['postalCode'][0];
+			if (isset($attributes['postalCode'][0])) {
+				$postalCode = $attributes['postalCode'][0];
+			}
 			$postalCodeField = new htmlInputField('inetOrgPerson_postalCode', $postalCode);
 			if (in_array('postalCode', $readOnlyFields)) {
 				$postalCodeField = new htmlOutputText($postalCode);
@@ -2683,7 +2739,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('postOfficeBox', $fields)) {
 			$postOfficeBox = '';
-			if (isset($attributes['postOfficeBox'][0])) $postOfficeBox = $attributes['postOfficeBox'][0];
+			if (isset($attributes['postOfficeBox'][0])) {
+				$postOfficeBox = $attributes['postOfficeBox'][0];
+			}
 			$postOfficeBoxField = new htmlInputField('inetOrgPerson_postOfficeBox', $postOfficeBox);
 			if (in_array('postOfficeBox', $readOnlyFields)) {
 				$postOfficeBoxField = new htmlOutputText($postOfficeBox);
@@ -2694,7 +2752,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('roomNumber', $fields)) {
 			$roomNumber = '';
-			if (isset($attributes['roomNumber'][0])) $roomNumber = $attributes['roomNumber'][0];
+			if (isset($attributes['roomNumber'][0])) {
+				$roomNumber = $attributes['roomNumber'][0];
+			}
 			$roomNumberField = new htmlInputField('inetOrgPerson_roomNumber', $roomNumber);
 			if (in_array('roomNumber', $readOnlyFields)) {
 				$roomNumberField = new htmlOutputText($roomNumber);
@@ -2705,7 +2765,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('location', $fields)) {
 			$l = '';
-			if (isset($attributes['l'][0])) $l = $attributes['l'][0];
+			if (isset($attributes['l'][0])) {
+				$l = $attributes['l'][0];
+			}
 			$lField = new htmlInputField('inetOrgPerson_location', $l);
 			if (in_array('location', $readOnlyFields)) {
 				$lField = new htmlOutputText($l);
@@ -2716,7 +2778,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('state', $fields)) {
 			$st = '';
-			if (isset($attributes['st'][0])) $st = $attributes['st'][0];
+			if (isset($attributes['st'][0])) {
+				$st = $attributes['st'][0];
+			}
 			$stField = new htmlInputField('inetOrgPerson_state', $st);
 			if (in_array('state', $readOnlyFields)) {
 				$stField = new htmlOutputText($st);
@@ -2727,7 +2791,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('carLicense', $fields)) {
 			$carLicense = '';
-			if (isset($attributes['carLicense'][0])) $carLicense = $attributes['carLicense'][0];
+			if (isset($attributes['carLicense'][0])) {
+				$carLicense = $attributes['carLicense'][0];
+			}
 			$carLicenseField = new htmlInputField('inetOrgPerson_carLicense', $carLicense);
 			if (in_array('carLicense', $readOnlyFields)) {
 				$carLicenseField = new htmlOutputText($carLicense);
@@ -2738,7 +2804,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('officeName', $fields)) {
 			$physicalDeliveryOfficeName = '';
-			if (isset($attributes['physicalDeliveryOfficeName'][0])) $physicalDeliveryOfficeName = $attributes['physicalDeliveryOfficeName'][0];
+			if (isset($attributes['physicalDeliveryOfficeName'][0])) {
+				$physicalDeliveryOfficeName = $attributes['physicalDeliveryOfficeName'][0];
+			}
 			$physicalDeliveryOfficeNameField = new htmlInputField('inetOrgPerson_officeName', $physicalDeliveryOfficeName);
 			if (in_array('officeName', $readOnlyFields)) {
 				$physicalDeliveryOfficeNameField = new htmlOutputText($physicalDeliveryOfficeName);
@@ -2749,7 +2817,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('businessCategory', $fields)) {
 			$businessCategory = '';
-			if (isset($attributes['businessCategory'][0])) $businessCategory = $attributes['businessCategory'][0];
+			if (isset($attributes['businessCategory'][0])) {
+				$businessCategory = $attributes['businessCategory'][0];
+			}
 			$businessCategoryField = new htmlInputField('inetOrgPerson_businessCategory', $businessCategory);
 			if (in_array('businessCategory', $readOnlyFields)) {
 				$businessCategoryField = new htmlOutputText($businessCategory);
@@ -2775,7 +2845,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('departmentNumber', $fields)) {
 			$departmentNumber = '';
-			if (isset($attributes['departmentNumber'][0])) $departmentNumber = implode('; ', $attributes['departmentNumber']);
+			if (isset($attributes['departmentNumber'][0])) {
+				$departmentNumber = implode('; ', $attributes['departmentNumber']);
+			}
 			$departmentNumberField = new htmlInputField('inetOrgPerson_departmentNumber', $departmentNumber);
 			if (in_array('departmentNumber', $readOnlyFields)) {
 				$departmentNumberField = new htmlOutputText($departmentNumber);
@@ -2786,7 +2858,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('initials', $fields)) {
 			$initials = '';
-			if (isset($attributes['initials'][0])) $initials = implode('; ', $attributes['initials']);
+			if (isset($attributes['initials'][0])) {
+				$initials = implode('; ', $attributes['initials']);
+			}
 			$initialsField = new htmlInputField('inetOrgPerson_initials', $initials);
 			if (in_array('initials', $readOnlyFields)) {
 				$initialsField = new htmlOutputText($initials);
@@ -2797,7 +2871,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		if (in_array('title', $fields)) {
 			$title = '';
-			if (isset($attributes['title'][0])) $title = $attributes['title'][0];
+			if (isset($attributes['title'][0])) {
+				$title = $attributes['title'][0];
+			}
 			$titleField = new htmlInputField('inetOrgPerson_title', $title);
 			if (in_array('title', $readOnlyFields)) {
 				$titleField = new htmlOutputText($title);
@@ -2835,7 +2911,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		// o
 		if (in_array('o', $fields)) {
 			$o = '';
-			if (isset($attributes['o'][0])) $o = $attributes['o'][0];
+			if (isset($attributes['o'][0])) {
+				$o = $attributes['o'][0];
+			}
 			if (in_array('o', $readOnlyFields)) {
 				$oField = new htmlOutputText(getAbstractDN($o));
 			}
@@ -2871,7 +2949,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		// ou
 		if (in_array('ou', $fields)) {
 			$ou = '';
-			if (isset($attributes['ou'][0])) $ou = $attributes['ou'][0];
+			if (isset($attributes['ou'][0])) {
+				$ou = $attributes['ou'][0];
+			}
 			if (in_array('ou', $readOnlyFields)) {
 				$ouField = new htmlOutputText(getAbstractDN($ou));
 			}
@@ -2907,7 +2987,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		// description
 		if (in_array('description', $fields)) {
 			$description = '';
-			if (isset($attributes['description'][0])) $description = $attributes['description'][0];
+			if (isset($attributes['description'][0])) {
+				$description = $attributes['description'][0];
+			}
 			$descriptionField = new htmlInputField('inetOrgPerson_description', $description);
 			if (in_array('description', $readOnlyFields)) {
 				$descriptionField = new htmlOutputText($description);
@@ -2919,13 +3001,28 @@ class inetOrgPerson extends baseModule implements passwordService {
 		// uid
 		if (in_array('uid', $fields)) {
 			$uid = '';
-			if (isset($attributes['uid'][0])) $uid = $attributes['uid'][0];
+			if (isset($attributes['uid'][0])) {
+				$uid = $attributes['uid'][0];
+			}
 			$uidField = new htmlInputField('inetOrgPerson_uid', $uid);
 			if (in_array('uid', $readOnlyFields)) {
 				$uidField = new htmlOutputText($uid);
 			}
 			$return['uid'] = new htmlResponsiveRow(
 				new htmlOutputText($this->getSelfServiceLabel('uid', _('User name'))), $uidField
+			);
+		}
+		if (in_array('displayName', $fields)) {
+			$displayName = '';
+			if (isset($attributes['displayName'][0])) {
+				$displayName = $attributes['displayName'][0];
+			}
+			$displayNameField = new htmlInputField('inetOrgPerson_displayName', $displayName);
+			if (in_array('displayName', $readOnlyFields)) {
+				$displayNameField = new htmlOutputText($displayName);
+			}
+			$return['displayName'] = new htmlResponsiveRow(
+				new htmlOutputText($this->getSelfServiceLabel('displayName', _('Display name'))), $displayNameField
 			);
 		}
 		return $return;
@@ -3174,17 +3271,27 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (in_array('firstName', $fields) && !in_array('firstName', $readOnlyFields)) {
 			$attributeNames[] = 'givenName';
 			if (isset($_POST['inetOrgPerson_firstName']) && ($_POST['inetOrgPerson_firstName'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_firstName'], 'realname')) $return['messages'][] = $this->messages['givenName'][0];
-				else $attributesNew['givenName'][0] = $_POST['inetOrgPerson_firstName'];
+				if (!get_preg($_POST['inetOrgPerson_firstName'], 'realname')) {
+					$return['messages'][] = $this->messages['givenName'][0];
+				}
+				else {
+					$attributesNew['givenName'][0] = $_POST['inetOrgPerson_firstName'];
+				}
 			}
-			elseif (isset($attributes['givenName'])) unset($attributesNew['givenName']);
+			elseif (isset($attributes['givenName'])) {
+				unset($attributesNew['givenName']);
+			}
 		}
 		// last name
 		if (in_array('lastName', $fields) && !in_array('lastName', $readOnlyFields)) {
 			$attributeNames[] = 'sn';
 			if (isset($_POST['inetOrgPerson_lastName']) && ($_POST['inetOrgPerson_lastName'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_lastName'], 'realname')) $return['messages'][] = $this->messages['lastname'][0];
-				else $attributesNew['sn'][0] = $_POST['inetOrgPerson_lastName'];
+				if (!get_preg($_POST['inetOrgPerson_lastName'], 'realname')) {
+					$return['messages'][] = $this->messages['lastname'][0];
+				}
+				else {
+					$attributesNew['sn'][0] = $_POST['inetOrgPerson_lastName'];
+				}
 			}
 			else {
 				// last name is required attribute
@@ -3195,10 +3302,16 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (in_array('mail', $fields) && !in_array('mail', $readOnlyFields)) {
 			$attributeNames[] = 'mail';
 			if (isset($_POST['inetOrgPerson_mail']) && ($_POST['inetOrgPerson_mail'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_mail'], 'email')) $return['messages'][] = $this->messages['email'][0];
-				else $attributesNew['mail'][0] = $_POST['inetOrgPerson_mail'];
+				if (!get_preg($_POST['inetOrgPerson_mail'], 'email')) {
+					$return['messages'][] = $this->messages['email'][0];
+				}
+				else {
+					$attributesNew['mail'][0] = $_POST['inetOrgPerson_mail'];
+				}
 			}
-			elseif (isset($attributes['mail'])) unset($attributesNew['mail']);
+			elseif (isset($attributes['mail'])) {
+				unset($attributesNew['mail']);
+			}
 		}
 		// labeledURI
 		if (in_array('labeledURI', $fields) && !in_array('labeledURI', $readOnlyFields)) {
@@ -3206,88 +3319,144 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (isset($_POST['inetOrgPerson_labeledURI']) && ($_POST['inetOrgPerson_labeledURI'] != '')) {
 				$attributesNew['labeledURI'] = preg_split('/;[ ]*/', $_POST['inetOrgPerson_labeledURI']);
 			}
-			elseif (isset($attributes['labeledURI'])) unset($attributesNew['labeledURI']);
+			elseif (isset($attributes['labeledURI'])) {
+				unset($attributesNew['labeledURI']);
+			}
 		}
 		// telephone number
 		if (in_array('telephoneNumber', $fields) && !in_array('telephoneNumber', $readOnlyFields)) {
 			$attributeNames[] = 'telephoneNumber';
 			if (isset($_POST['inetOrgPerson_telephoneNumber']) && ($_POST['inetOrgPerson_telephoneNumber'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_telephoneNumber'], 'telephone')) $return['messages'][] = $this->messages['telephoneNumber'][0];
-				else $attributesNew['telephoneNumber'][0] = $_POST['inetOrgPerson_telephoneNumber'];
+				if (!get_preg($_POST['inetOrgPerson_telephoneNumber'], 'telephone')) {
+					$return['messages'][] = $this->messages['telephoneNumber'][0];
+				}
+				else {
+					$attributesNew['telephoneNumber'][0] = $_POST['inetOrgPerson_telephoneNumber'];
+				}
 			}
-			elseif (isset($attributes['telephoneNumber'])) unset($attributesNew['telephoneNumber']);
+			elseif (isset($attributes['telephoneNumber'])) {
+				unset($attributesNew['telephoneNumber']);
+			}
 		}
 		// home telephone number
 		if (in_array('homePhone', $fields) && !in_array('homePhone', $readOnlyFields)) {
 			$attributeNames[] = 'homePhone';
 			if (isset($_POST['inetOrgPerson_homePhone']) && ($_POST['inetOrgPerson_homePhone'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_homePhone'], 'telephone')) $return['messages'][] = $this->messages['homePhone'][0];
-				else $attributesNew['homePhone'][0] = $_POST['inetOrgPerson_homePhone'];
+				if (!get_preg($_POST['inetOrgPerson_homePhone'], 'telephone')) {
+					$return['messages'][] = $this->messages['homePhone'][0];
+				}
+				else {
+					$attributesNew['homePhone'][0] = $_POST['inetOrgPerson_homePhone'];
+				}
 			}
-			elseif (isset($attributes['homePhone'])) unset($attributesNew['homePhone']);
+			elseif (isset($attributes['homePhone'])) {
+				unset($attributesNew['homePhone']);
+			}
 		}
 		// fax number
 		if (in_array('faxNumber', $fields) && !in_array('faxNumber', $readOnlyFields)) {
 			$attributeNames[] = 'facsimileTelephoneNumber';
 			if (isset($_POST['inetOrgPerson_faxNumber']) && ($_POST['inetOrgPerson_faxNumber'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_faxNumber'], 'telephone')) $return['messages'][] = $this->messages['facsimileNumber'][0];
-				else $attributesNew['facsimileTelephoneNumber'][0] = $_POST['inetOrgPerson_faxNumber'];
+				if (!get_preg($_POST['inetOrgPerson_faxNumber'], 'telephone')) {
+					$return['messages'][] = $this->messages['facsimileNumber'][0];
+				}
+				else {
+					$attributesNew['facsimileTelephoneNumber'][0] = $_POST['inetOrgPerson_faxNumber'];
+				}
 			}
-			elseif (isset($attributes['facsimileTelephoneNumber'])) $attributesNew['facsimileTelephoneNumber'] = array();
+			elseif (isset($attributes['facsimileTelephoneNumber'])) {
+				$attributesNew['facsimileTelephoneNumber'] = array();
+			}
 		}
 		// mobile telephone number
 		if (in_array('mobile', $fields) && !in_array('mobile', $readOnlyFields)) {
 			$attributeNames[] = 'mobile';
 			if (isset($_POST['inetOrgPerson_mobile']) && ($_POST['inetOrgPerson_mobile'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_mobile'], 'telephone')) $return['messages'][] = $this->messages['mobileTelephone'][0];
-				else $attributesNew['mobile'][0] = $_POST['inetOrgPerson_mobile'];
+				if (!get_preg($_POST['inetOrgPerson_mobile'], 'telephone')) {
+					$return['messages'][] = $this->messages['mobileTelephone'][0];
+				}
+				else {
+					$attributesNew['mobile'][0] = $_POST['inetOrgPerson_mobile'];
+				}
 			}
-			elseif (isset($attributes['mobile'])) unset($attributesNew['mobile']);
+			elseif (isset($attributes['mobile'])) {
+				unset($attributesNew['mobile']);
+			}
 		}
 		// pager
 		if (in_array('pager', $fields) && !in_array('pager', $readOnlyFields)) {
 			$attributeNames[] = 'pager';
 			if (isset($_POST['inetOrgPerson_pager']) && ($_POST['inetOrgPerson_pager'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_pager'], 'telephone')) $return['messages'][] = $this->messages['pager'][0];
-				else $attributesNew['pager'][0] = $_POST['inetOrgPerson_pager'];
+				if (!get_preg($_POST['inetOrgPerson_pager'], 'telephone')) {
+					$return['messages'][] = $this->messages['pager'][0];
+				}
+				else {
+					$attributesNew['pager'][0] = $_POST['inetOrgPerson_pager'];
+				}
 			}
-			elseif (isset($attributes['pager'])) unset($attributesNew['pager']);
+			elseif (isset($attributes['pager'])) {
+				unset($attributesNew['pager']);
+			}
 		}
 		// street
 		if (in_array('street', $fields) && !in_array('street', $readOnlyFields)) {
 			$attributeNames[] = 'street';
 			if (isset($_POST['inetOrgPerson_street']) && ($_POST['inetOrgPerson_street'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_street'], 'street')) $return['messages'][] = $this->messages['street'][0];
-				else $attributesNew['street'][0] = $_POST['inetOrgPerson_street'];
+				if (!get_preg($_POST['inetOrgPerson_street'], 'street')) {
+					$return['messages'][] = $this->messages['street'][0];
+				}
+				else {
+					$attributesNew['street'][0] = $_POST['inetOrgPerson_street'];
+				}
 			}
-			elseif (isset($attributes['street'])) unset($attributesNew['street']);
+			elseif (isset($attributes['street'])) {
+				unset($attributesNew['street']);
+			}
 		}
 		// postal address
 		if (in_array('postalAddress', $fields) && !in_array('postalAddress', $readOnlyFields)) {
 			$attributeNames[] = 'postalAddress';
 			if (isset($_POST['inetOrgPerson_postalAddress']) && ($_POST['inetOrgPerson_postalAddress'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_postalAddress'], 'postalAddress')) $return['messages'][] = $this->messages['postalAddress'][0];
-				else $attributesNew['postalAddress'][0] = $_POST['inetOrgPerson_postalAddress'];
+				if (!get_preg($_POST['inetOrgPerson_postalAddress'], 'postalAddress')) {
+					$return['messages'][] = $this->messages['postalAddress'][0];
+				}
+				else {
+					$attributesNew['postalAddress'][0] = $_POST['inetOrgPerson_postalAddress'];
+				}
 			}
-			elseif (isset($attributes['postalAddress'])) $attributesNew['postalAddress'] = array();
+			elseif (isset($attributes['postalAddress'])) {
+				$attributesNew['postalAddress'] = array();
+			}
 		}
 		// registered address
 		if (in_array('registeredAddress', $fields) && !in_array('registeredAddress', $readOnlyFields)) {
 			$attributeNames[] = 'registeredAddress';
 			if (isset($_POST['inetOrgPerson_registeredAddress']) && ($_POST['inetOrgPerson_registeredAddress'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_registeredAddress'], 'postalAddress')) $return['messages'][] = $this->messages['registeredAddress'][0];
-				else $attributesNew['registeredAddress'][0] = $_POST['inetOrgPerson_registeredAddress'];
+				if (!get_preg($_POST['inetOrgPerson_registeredAddress'], 'postalAddress')) {
+					$return['messages'][] = $this->messages['registeredAddress'][0];
+				}
+				else {
+					$attributesNew['registeredAddress'][0] = $_POST['inetOrgPerson_registeredAddress'];
+				}
 			}
-			elseif (isset($attributes['registeredAddress'])) $attributesNew['registeredAddress'] = array();
+			elseif (isset($attributes['registeredAddress'])) {
+				$attributesNew['registeredAddress'] = array();
+			}
 		}
 		// postal code
 		if (in_array('postalCode', $fields) && !in_array('postalCode', $readOnlyFields)) {
 			$attributeNames[] = 'postalCode';
 			if (isset($_POST['inetOrgPerson_postalCode']) && ($_POST['inetOrgPerson_postalCode'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_postalCode'], 'postalCode')) $return['messages'][] = $this->messages['postalCode'][0];
-				else $attributesNew['postalCode'][0] = $_POST['inetOrgPerson_postalCode'];
+				if (!get_preg($_POST['inetOrgPerson_postalCode'], 'postalCode')) {
+					$return['messages'][] = $this->messages['postalCode'][0];
+				}
+				else {
+					$attributesNew['postalCode'][0] = $_POST['inetOrgPerson_postalCode'];
+				}
 			}
-			elseif (isset($attributes['postalCode'])) unset($attributesNew['postalCode']);
+			elseif (isset($attributes['postalCode'])) {
+				unset($attributesNew['postalCode']);
+			}
 		}
 		// post office box
 		if (in_array('postOfficeBox', $fields) && !in_array('postOfficeBox', $readOnlyFields)) {
@@ -3295,7 +3464,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (isset($_POST['inetOrgPerson_postOfficeBox']) && ($_POST['inetOrgPerson_postOfficeBox'] != '')) {
 				$attributesNew['postOfficeBox'][0] = $_POST['inetOrgPerson_postOfficeBox'];
 			}
-			elseif (isset($attributes['postOfficeBox'])) unset($attributesNew['postOfficeBox']);
+			elseif (isset($attributes['postOfficeBox'])) {
+				unset($attributesNew['postOfficeBox']);
+			}
 		}
 		// room number
 		if (in_array('roomNumber', $fields) && !in_array('roomNumber', $readOnlyFields)) {
@@ -3303,7 +3474,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (isset($_POST['inetOrgPerson_roomNumber']) && ($_POST['inetOrgPerson_roomNumber'] != '')) {
 				$attributesNew['roomNumber'][0] = $_POST['inetOrgPerson_roomNumber'];
 			}
-			elseif (isset($attributes['roomNumber'])) unset($attributesNew['roomNumber']);
+			elseif (isset($attributes['roomNumber'])) {
+				unset($attributesNew['roomNumber']);
+			}
 		}
 		// l
 		if (in_array('location', $fields) && !in_array('location', $readOnlyFields)) {
@@ -3311,7 +3484,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (isset($_POST['inetOrgPerson_location']) && ($_POST['inetOrgPerson_location'] != '')) {
 				$attributesNew['l'][0] = $_POST['inetOrgPerson_location'];
 			}
-			elseif (isset($attributes['l'])) unset($attributesNew['l']);
+			elseif (isset($attributes['l'])) {
+				unset($attributesNew['l']);
+			}
 		}
 		// st
 		if (in_array('state', $fields) && !in_array('state', $readOnlyFields)) {
@@ -3319,7 +3494,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (isset($_POST['inetOrgPerson_state']) && ($_POST['inetOrgPerson_state'] != '')) {
 				$attributesNew['st'][0] = $_POST['inetOrgPerson_state'];
 			}
-			elseif (isset($attributes['st'])) unset($attributesNew['st']);
+			elseif (isset($attributes['st'])) {
+				unset($attributesNew['st']);
+			}
 		}
 		// car license
 		if (in_array('carLicense', $fields) && !in_array('carLicense', $readOnlyFields)) {
@@ -3327,7 +3504,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (isset($_POST['inetOrgPerson_carLicense']) && ($_POST['inetOrgPerson_carLicense'] != '')) {
 				$attributesNew['carLicense'][0] = $_POST['inetOrgPerson_carLicense'];
 			}
-			elseif (isset($attributes['carLicense'])) unset($attributesNew['carLicense']);
+			elseif (isset($attributes['carLicense'])) {
+				unset($attributesNew['carLicense']);
+			}
 		}
 		// office name
 		if (in_array('officeName', $fields) && !in_array('officeName', $readOnlyFields)) {
@@ -3335,7 +3514,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (isset($_POST['inetOrgPerson_officeName']) && ($_POST['inetOrgPerson_officeName'] != '')) {
 				$attributesNew['physicalDeliveryOfficeName'][0] = $_POST['inetOrgPerson_officeName'];
 			}
-			elseif (isset($attributes['physicalDeliveryOfficeName'])) unset($attributesNew['physicalDeliveryOfficeName']);
+			elseif (isset($attributes['physicalDeliveryOfficeName'])) {
+				unset($attributesNew['physicalDeliveryOfficeName']);
+			}
 		}
 		// business category
 		if (in_array('businessCategory', $fields) && !in_array('businessCategory', $readOnlyFields)) {
@@ -3348,7 +3529,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 					$attributesNew['businessCategory'][0] = $_POST['inetOrgPerson_businessCategory'];
 				}
 			}
-			elseif (isset($attributes['businessCategory'])) unset($attributesNew['businessCategory']);
+			elseif (isset($attributes['businessCategory'])) {
+				unset($attributesNew['businessCategory']);
+			}
 		}
 		// photo
 		if (in_array('jpegPhoto', $fields) && !in_array('jpegPhoto', $readOnlyFields)) {
@@ -3394,7 +3577,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (isset($_POST['inetOrgPerson_departmentNumber']) && ($_POST['inetOrgPerson_departmentNumber'] != '')) {
 				$attributesNew['departmentNumber'] = preg_split('/;[ ]*/', $_POST['inetOrgPerson_departmentNumber']);
 			}
-			elseif (isset($attributes['departmentNumber'])) unset($attributesNew['departmentNumber']);
+			elseif (isset($attributes['departmentNumber'])) {
+				unset($attributesNew['departmentNumber']);
+			}
 		}
 		// initials
 		if (in_array('initials', $fields) && !in_array('initials', $readOnlyFields)) {
@@ -3402,16 +3587,24 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (isset($_POST['inetOrgPerson_initials']) && ($_POST['inetOrgPerson_initials'] != '')) {
 				$attributesNew['initials'] = preg_split('/;[ ]*/', $_POST['inetOrgPerson_initials']);
 			}
-			elseif (isset($attributes['initials'])) unset($attributesNew['initials']);
+			elseif (isset($attributes['initials'])) {
+				unset($attributesNew['initials']);
+			}
 		}
 		// title
 		if (in_array('title', $fields) && !in_array('title', $readOnlyFields)) {
 			$attributeNames[] = 'title';
 			if (isset($_POST['inetOrgPerson_title']) && ($_POST['inetOrgPerson_title'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_title'], 'title')) $return['messages'][] = $this->messages['title'][0];
-				else $attributesNew['title'][0] = $_POST['inetOrgPerson_title'];
+				if (!get_preg($_POST['inetOrgPerson_title'], 'title')) {
+					$return['messages'][] = $this->messages['title'][0];
+				}
+				else {
+					$attributesNew['title'][0] = $_POST['inetOrgPerson_title'];
+				}
 			}
-			elseif (isset($attributes['title'])) unset($attributesNew['title']);
+			elseif (isset($attributes['title'])) {
+				unset($attributesNew['title']);
+			}
 		}
 		// user certificates
 		if (in_array('userCertificate', $fields)) {
@@ -3434,7 +3627,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (!empty($_POST['inetOrgPerson_description'])) {
 				$attributesNew['description'][0] = $_POST['inetOrgPerson_description'];
 			}
-			elseif (isset($attributes['description'])) unset($attributesNew['description']);
+			elseif (isset($attributes['description'])) {
+				unset($attributesNew['description']);
+			}
 		}
 		// ou
 		if (in_array('ou', $fields) && !in_array('ou', $readOnlyFields)) {
@@ -3442,7 +3637,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (!empty($_POST['inetOrgPerson_ou'])) {
 				$attributesNew['ou'][0] = $_POST['inetOrgPerson_ou'];
 			}
-			elseif (isset($attributes['ou'])) unset($attributesNew['ou']);
+			elseif (isset($attributes['ou'])) {
+				unset($attributesNew['ou']);
+			}
 		}
 		// o
 		if (in_array('o', $fields) && !in_array('o', $readOnlyFields)) {
@@ -3450,16 +3647,34 @@ class inetOrgPerson extends baseModule implements passwordService {
 			if (!empty($_POST['inetOrgPerson_o'])) {
 				$attributesNew['o'][0] = $_POST['inetOrgPerson_o'];
 			}
-			elseif (isset($attributes['o'])) unset($attributesNew['o']);
+			elseif (isset($attributes['o'])) {
+				unset($attributesNew['o']);
+			}
 		}
 		// uid
 		if (in_array('uid', $fields) && !in_array('uid', $readOnlyFields)) {
 			$attributeNames[] = 'uid';
 			if (isset($_POST['inetOrgPerson_uid']) && ($_POST['inetOrgPerson_uid'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_uid'], 'username')) $return['messages'][] = $this->messages['uid'][0];
-				else $attributesNew['uid'][0] = $_POST['inetOrgPerson_uid'];
+				if (!get_preg($_POST['inetOrgPerson_uid'], 'username')) {
+					$return['messages'][] = $this->messages['uid'][0];
+				}
+				else {
+					$attributesNew['uid'][0] = $_POST['inetOrgPerson_uid'];
+				}
 			}
-			elseif (isset($attributes['uid'])) unset($attributesNew['uid']);
+			elseif (isset($attributes['uid'])) {
+				unset($attributesNew['uid']);
+			}
+		}
+		// display name
+		if (in_array('displayName', $fields) && !in_array('displayName', $readOnlyFields)) {
+			$attributeNames[] = 'displayName';
+			if (!empty($_POST['inetOrgPerson_displayName'])) {
+				$attributesNew['displayName'][0] = $_POST['inetOrgPerson_displayName'];
+			}
+			elseif (isset($attributes['displayName'])) {
+				unset($attributesNew['displayName']);
+			}
 		}
 		// find differences
 		for ($i = 0; $i < sizeof($attributeNames); $i++) {
@@ -3886,9 +4101,12 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$configContainer->add(new htmlResponsiveInputCheckbox('inetOrgPerson_hideuserCertificate', false, _('User certificates'), null, true), 12, 4);
 		$configContainer->add(new htmlResponsiveInputCheckbox('inetOrgPerson_hidejpegPhoto', false, _('Photo'), null, true), 12, 4);
 		if (isset($_SESSION['conf_config'])) {
-			$confActiveUnixUserModules = $_SESSION['conf_config']->get_AccountModules('user');
+			$confActiveUserModules = $_SESSION['conf_config']->get_AccountModules('user');
+			if (!in_array('sambaSamAccount', $confActiveUserModules)) {
+				$configContainer->add(new htmlResponsiveInputCheckbox('inetOrgPerson_hidedisplayName', true, _('Display name'), null, true), 12, 4);
+			}
 			// option to hide uid
-			if (!in_array('posixAccount', $confActiveUnixUserModules)) {
+			if (!in_array('posixAccount', $confActiveUserModules)) {
 				$configContainer->add(new htmlResponsiveInputCheckbox('inetOrgPerson_hideUID', false, _('User name'), null, true), 12, 4);
 			}
 			else {
@@ -3967,6 +4185,23 @@ class inetOrgPerson extends baseModule implements passwordService {
 		}
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		return in_array('posixAccount', $modules);
+	}
+
+	/**
+	 * Returns if the Samba 3 module is also active.
+	 *
+	 * @param string[] $modules active account mdules
+	 * @return boolean Samba 3 is active
+	 */
+	private function isSamba3Active($modules = null) {
+		if (!empty($modules)) {
+			return in_array('sambaSamAccount', $modules);
+		}
+		if ($this->getAccountContainer() == null) {
+			return false;
+		}
+		$modules = $this->getAccountContainer()->get_type()->getModules();
+		return in_array('sambaSamAccount', $modules);
 	}
 
 	/**
