@@ -717,7 +717,8 @@ function connectToLDAP($serverURL, $startTLS) {
 	}
 	if (defined('LDAP_OPT_X_TLS_CACERTFILE')) {
 		$cfgMain = new LAMCfgMain();
-		if (!empty($cfgMain->getSSLCaCertificates())) {
+		$certificates = $cfgMain->getSSLCaCertificates();
+		if (!empty($certificates)) {
 			ldap_set_option($server, LDAP_OPT_X_TLS_CACERTFILE, $cfgMain->getSSLCaCertPath());
 		}
 	}
