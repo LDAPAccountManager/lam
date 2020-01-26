@@ -5,7 +5,7 @@ use LAM\ImageUtils\ImageManipulationFactory;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2004  Michael Duergner
-                2003 - 2019  Roland Gruber
+                2003 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -121,7 +121,10 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 			}
 			elseif ($section instanceof PDFEntrySection) {
 				// section headline
-				if($section->isAttributeTitle()) {
+				if ($section->isAttributeTitle()) {
+					if (empty($entries[$section->getPdfKey()][0])) {
+						continue;
+					}
 					$section_headline = getSectionHeadline($entries[$section->getPdfKey()][0]);
 				}
 				else {
