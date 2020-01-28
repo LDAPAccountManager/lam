@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2009 - 2019  Roland Gruber
+                2009 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1279,7 +1279,8 @@ function sendPasswordMail($pwd, $user, $recipient = null) {
 		$found = preg_match('/\@\@[^\@]+\@\@/', $body, $results);
 	}
 	$headerLines = createEMailHeaders($mailFrom, ($mailIsHTML == 'true'), $mailReplyTo);
-	$success = sendEMail($mailTo, $subject, $body, $headerLines);
+	$returnPath = empty($mailReplyTo) ? $mailFrom : $mailReplyTo;
+	$success = sendEMail($mailTo, $subject, $body, $headerLines, $returnPath);
 	if ($success) {
 		logNewMessage(LOG_DEBUG, 'Sent password mail to ' . $mailTo);
 		return array(
@@ -1360,14 +1361,42 @@ function base64EncodeForEMail($value) {
  * @param String $subject email subject
  * @param String $text mail body (with \r\n EOL)
  * @param String $headers header lines (with \r\n EOL)
+ * @param string $returnPath email to be used for return path
  */
-function sendEMail($to, $subject, $text, $headers) {
+function sendEMail($to, $subject, $text, $headers, $returnPath) {
 	if (!empty($_SESSION['cfgMain']->mailEOL) && ($_SESSION['cfgMain']->mailEOL === 'unix')) {
 		$text = str_replace("\r\n", "\n", $text);
 		$headers = str_replace("\r\n", "\n", $headers);
 	}
 	logNewMessage(LOG_DEBUG, "Send mail to $to\n" . $text);
-	return mail($to, base64EncodeForEMail($subject), $text, $headers);
+	$additionalParams = null;
+	if (isCommandlineSafeEmailAddress($returnPath)) {
+		$additionalParams = '-f' . $returnPath;
+	}
+	return mail($to, base64EncodeForEMail($subject), $text, $headers, $additionalParams);
+}
+
+/**
+ * Checks if an email address is safe for use on commandline
+ *
+ * @param $address email address
+ * @return bool is safe
+ */
+function isCommandlineSafeEmailAddress($address) {
+	$cmdEscaped = escapeshellcmd($address);
+	$argEscaped = escapeshellarg($address);
+	if (($address !== $cmdEscaped) || ("'$address'" !== $argEscaped)) {
+		return false;
+	}
+	$addressLength = strlen($address);
+	$allowedSpecialChars = array('@', '_', '-', '.');
+	for ($i = 0; $i < $addressLength; $i++) {
+		$char = $address[$i];
+		if (!ctype_alnum($char) && !in_array($char, $allowedSpecialChars)) {
+			return false;
+		}
+	}
+	return true;
 }
 
 /**

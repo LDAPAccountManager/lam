@@ -2,7 +2,7 @@
 use PHPUnit\Framework\TestCase;
 /*
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2018 - 2019  Roland Gruber
+ Copyright (C) 2018 - 2020  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -143,6 +143,16 @@ class AccountTest extends TestCase {
 		$this->assertEquals('test > test > de', getAbstractDN('cn=test,o=test,c=de'));
 		$this->assertEquals('test,user > test > de', getAbstractDN('cn=test\\,user,o=test,c=de'));
 		$this->assertEquals('test,user > test > de', getAbstractDN('cn=test\\2Cuser,o=test,c=de'));
+	}
+
+	/**
+	 * Tests isCommandlineSafeEmailAddress().
+	 */
+	function testIsCommandlineSafeEmailAddress() {
+		$this->assertTrue(isCommandlineSafeEmailAddress(''));
+		$this->assertTrue(isCommandlineSafeEmailAddress('test@example.com'));
+		$this->assertTrue(isCommandlineSafeEmailAddress('test-123_abc@example.com'));
+		$this->assertFalse(isCommandlineSafeEmailAddress('test+abc@example.com'));
 	}
 
 }
