@@ -45,3 +45,5 @@
 /nPosixUser.inc
 /bindDLZXfr.inc
 /webauthn.inc
+/windowsLDSGroup.inc
+/windowsLDSUser.inc

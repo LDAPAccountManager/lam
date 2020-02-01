@@ -910,7 +910,7 @@
                   <imageobject>
                     <imagedata fileref="images/schema_samba.png"/>
                   </imageobject>
-                </inlinemediaobject> Windows</entry>
+                </inlinemediaobject> Windows (AD, AD LDS, Samba 4)</entry>
 
               <entry>Password</entry>
 

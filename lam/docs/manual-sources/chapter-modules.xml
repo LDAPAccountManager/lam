@@ -1350,6 +1350,146 @@
     </section>
 
     <section>
+      <title>AD LDS (formerly ADAM) (LAM Pro)</title>
+
+      <para>Please activate the account type "Users" in your LAM server
+      profile and then add the user module "AD LDS
+      (windowsLDSUser)(*)".</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_windowsUser4.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>The default list attributes are for Unix and not suitable for AD
+      LDS (blank lines in account table). Please use
+      "#cn;#givenName;#sn;#mail" or select your own attributes to display in
+      the account list.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_adLds1.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>On tab "Module settings" you can specify the possible Windows
+      domain names.</para>
+
+      <para>You can also set maximum values for user photos in advanced
+      options.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata contentwidth="1172" fileref="images/mod_adLds3.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Now you can manage your AD LDS users and e.g. assign groups. You
+      might want to set the default domain name in the <link
+      linkend="a_accountProfile">profile editor</link>.</para>
+
+      <para><emphasis role="bold">Attention:</emphasis></para>
+
+      <para>Password changes require a secure connection via ldaps://. Check
+      your LAM server profile if password changes are refused by the
+      server.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_adLds4a.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_adLds4b.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis role="bold">Wildcards</emphasis></para>
+
+      <para>This module provides the following wildcards (others may be
+      provided by other modules):</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>$firstname: First name</para>
+        </listitem>
+
+        <listitem>
+          <para>$lastname: Last name</para>
+        </listitem>
+
+        <listitem>
+          <para>$user: User name</para>
+        </listitem>
+
+        <listitem>
+          <para>$commonname: Common name</para>
+        </listitem>
+
+        <listitem>
+          <para>$email: Email address</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>You can use them in the following input fields on user edit
+      screen:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Common name</para>
+        </listitem>
+
+        <listitem>
+          <para>Display name</para>
+        </listitem>
+
+        <listitem>
+          <para>Email</para>
+        </listitem>
+
+        <listitem>
+          <para>Email alias</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Use this when some of your data always follows the same schema.
+      E.g. using "$firstname $lastname" in common name field can be used like
+      this to get "Demo User". You can set the wildcards in profile editor so
+      they are automatically applied for new users.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_adLds5a.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para/>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_adLds5b.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
       <title>Filesystem quota (lamdaemon)</title>
 
       <para>You can manage file system quotas with LAM. This requires to setup
@@ -2575,6 +2715,52 @@ AuthorizedKeysCommandUser root</literallayout>
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/mod_windowsGroup2.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>AD LDS (formerly ADAM) (LAM Pro)</title>
+
+      <para>LAM can manage your AD LDS groups. Please enable the account type
+      "Groups" in your LAM server profile and then add the group module "AD
+      LDS (windowsLDSGroup)(*)".</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_windowsGroup3.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>The default list attributes are for Unix and not suitable for AD
+      LDS (blank lines in account table). Please use
+      "#cn;#member;#description" or select your own attributes to display in
+      the account list.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_adLds2.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para/>
+
+      <para>Now you can edit your groups inside LAM. You can manage the group
+      name, description and its type. Of course, you can also set the group
+      members.</para>
+
+      <para>With "Show effective members" you can show a list of all members
+      of this group including members of subgroups and their subgroups.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/mod_adLds6.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
