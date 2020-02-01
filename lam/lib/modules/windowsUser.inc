@@ -3022,9 +3022,6 @@ class windowsUser extends baseModule implements passwordService {
 	 * @param array $attributes LDAP attributes
 	 */
 	private function setSelfServicePassword(&$return, $attributes) {
-		if (!function_exists('ldap_modify_batch')) {
-			return $this->setSelfServicePasswordCMD($return, $attributes);
-		}
 		$newPasswordVal = self::pwdAttributeValue($_POST['windowsUser_unicodePwd']);
 		$oldPassword = lamDecrypt($_SESSION['selfService_clientPassword'], 'SelfService');
 		$oldPasswordVal = self::pwdAttributeValue($oldPassword);
@@ -3045,80 +3042,6 @@ class windowsUser extends baseModule implements passwordService {
 		$returnCode = ldap_errno($_SESSION['ldapHandle']);
 		if ($returnCode != 0) {
 			$outputMessages = htmlspecialchars(getExtendedLDAPErrorMessage($_SESSION['ldapHandle']));
-			// Active Directory message translations
-			if ((strpos($outputMessages, 'DSID-03190F80') !== false) && (strpos($outputMessages, 'unicodePwd') !== false)) {
-				$outputMessages = _('Your password does not meet the password strength qualifications. Please retry with another one.') . '<br><br>' . $outputMessages;
-			}
-			logNewMessage(LOG_ERR, 'Changing user password failed: ' . $outputMessages);
-			$return['messages'][] = array('ERROR', _('Unable to change password.'), $outputMessages);
-		}
-		else {
-			// update session password for next page load
-			$_SESSION['selfService_clientPasswordNew'] = $_POST['windowsUser_unicodePwd'];
-		}
-	}
-
-	/**
-	 * Sets the user password in self service.
-	 * Since the change requires the old password we need to run ldapmodify for this task.
-	 *
-	 * Enter description here ...
-	 * @param array $return return value for checkSelfServiceOptions() (used to add message if any)
-	 * @param array $attributes LDAP attributes
-	 */
-	private function setSelfServicePasswordCMD(&$return, $attributes) {
-		$newPasswordVal = self::pwdAttributeValue($_POST['windowsUser_unicodePwd']);
-		$oldPassword = lamDecrypt($_SESSION['selfService_clientPassword'], 'SelfService');
-		$oldPasswordVal = self::pwdAttributeValue($oldPassword);
-		$dn = $attributes['dn'];
-		$ldif = "dn: " . $dn . "\n";
-		$ldif .= "changetype: modify\n";
-		$ldif .= "delete: unicodePwd\n";
-		$ldif .= "unicodePwd:: " . base64_encode($oldPasswordVal) . "\n";
-		$ldif .= "-\n";
-		$ldif .= "add: unicodePwd\n";
-		$ldif .= "unicodePwd:: " . base64_encode($newPasswordVal) . "\n";
-		$ldif .= "-\n";
-
-		$serverURL = $_SESSION['selfServiceProfile']->serverURL;
-		$tls = '';
-		if ($_SESSION['selfServiceProfile']->useTLS) {
-			$tls = ' -ZZ ';
-		}
-		$cmd = "/usr/bin/ldapmodify -H " . $serverURL . $tls . " -D " . escapeshellarg($dn) . " -x -w " . escapeshellarg($oldPassword);
-
-		$descriptorspec = array(
-			0 => array("pipe", "r"), // stdin
-			1 => array("pipe", "w"), // stout
-			2 => array("pipe", "w") // sterr
-		);
-		$process = proc_open($cmd, $descriptorspec, $pipes);
-		if (is_resource($process)) {
-			fwrite($pipes[0], $ldif);
-		}
-		else {
-			logNewMessage(LOG_ERR, 'Unable to change password of ' . $dn . '. Calling /usr/bin/ldapmodify failed.');
-			$return['messages'][] = array('ERROR', _('Unable to change password.'));
-			return;
-		}
-		fclose($pipes[0]);
-		$outputMessages = '';
-		while (!feof($pipes[1])) {
-			$output = fgets($pipes[1], 1024);
-			if ($output != '') {
-				$outputMessages .= $output;
-			}
-		}
-		while (!feof($pipes[2])) {
-			$output = fgets($pipes[2], 1024);
-			if ($output != '') {
-				$outputMessages .= $output;
-			}
-		}
-		fclose($pipes[1]);
-		$returnCode = proc_close($process);
-		if ($returnCode != 0) {
-			$outputMessages = htmlspecialchars($outputMessages);
 			// Active Directory message translations
 			if ((strpos($outputMessages, 'DSID-03190F80') !== false) && (strpos($outputMessages, 'unicodePwd') !== false)) {
 				$outputMessages = _('Your password does not meet the password strength qualifications. Please retry with another one.') . '<br><br>' . $outputMessages;
