@@ -4,7 +4,7 @@ use LAM\TYPES\ConfiguredType;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2019  Roland Gruber
+  Copyright (C) 2003 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -233,7 +233,7 @@ class lamList {
 					$foundFilter = $_POST["filter" . strtolower($this->attrArray[$i])];
 				}
 				if (isset($foundFilter) && ($foundFilter != '')) {
-					if (preg_match('/^([\p{L}\p{N} _\\*\\$\\.:@-])+$/iu', $foundFilter)) { // \p{L} matches any Unicode letter
+					if (preg_match('/^[\\^]?([\p{L}\p{N} _\\*\\$\\.:@-])+[\\$]?$/iu', $foundFilter)) { // \p{L} matches any Unicode letter
 						$this->filters[strtolower($this->attrArray[$i])] = $foundFilter;
 					}
 					else {
@@ -1084,10 +1084,16 @@ class lamList {
 				continue;
 			}
 			$filterExpression = $filter;
-			if (strpos($filter, '*') !== 0) {
+			if (strpos($filter, '^') === 0) {
+			    $filterExpression = substr($filterExpression, 1);
+            }
+			elseif (strpos($filter, '*') !== 0) {
 				$filterExpression = '*' . $filterExpression;
 			}
-			if (strrpos($filter, '*') !== (strlen($filter) - 1)) {
+			if (strrpos($filter, '$') === (strlen($filter) - 1)) {
+			    $filterExpression = substr($filterExpression, 0, -1);
+            }
+			elseif (strrpos($filter, '*') !== (strlen($filter) - 1)) {
 				$filterExpression = $filterExpression . '*';
 			}
 			$text .= '(' . $attr . '=' . $filterExpression . ')';
