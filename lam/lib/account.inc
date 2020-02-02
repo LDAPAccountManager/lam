@@ -1370,7 +1370,7 @@ function sendEMail($to, $subject, $text, $headers, $returnPath) {
 	}
 	logNewMessage(LOG_DEBUG, "Send mail to $to\n" . $text);
 	$additionalParams = null;
-	if (isCommandlineSafeEmailAddress($returnPath)) {
+	if (!empty($returnPath) && isCommandlineSafeEmailAddress($returnPath)) {
 		$additionalParams = '-f' . $returnPath;
 	}
 	return mail($to, base64EncodeForEMail($subject), $text, $headers, $additionalParams);
