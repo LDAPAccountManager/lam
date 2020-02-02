@@ -3,7 +3,7 @@ LAM - Readme
 ============
 
   LDAP Account Manager (LAM) manages user, group and host accounts in an LDAP
-  directory. LAM runs on any webserver with PHP5 support and connects to your
+  directory. LAM runs on any webserver with PHP7 support and connects to your
   LDAP server unencrypted or via SSL/TLS.
   Currently LAM supports these account types: Samba 3/4, Unix, Kolab,
   address book entries, NIS mail aliases and MAC addresses. There is a tree
@@ -12,7 +12,7 @@ LAM - Readme
 
   https://www.ldap-account-manager.org/
 
-    Copyright (C) 2003 - 2019 Roland Gruber <post@rolandgruber.de>
+    Copyright (C) 2003 - 2020 Roland Gruber <post@rolandgruber.de>
 
   Installation and documentation:
     Please see the LAM manual in docs/manual/index.html.
