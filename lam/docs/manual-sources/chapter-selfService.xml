@@ -1482,7 +1482,9 @@
       url="http://perldoc.perl.org/perlre.html">here</ulink>. Validation is
       optional, you can leave these options blank.</para>
 
-      <para><emphasis role="bold">Example:</emphasis></para>
+      <para><emphasis role="bold">Examples:</emphasis></para>
+
+      <para>Unix account:</para>
 
       <para>optional::givenName::First name::/^[[:alnum:] ]+$/u::Please enter
       a valid first name.</para>
@@ -1496,6 +1498,20 @@
 
       <para>If you use the object class "inetOrgPerson" and do not provide the
       "cn" attribute then LAM will set it to the user name value.</para>
+
+      <literallayout>
+</literallayout>
+
+      <para>Active Directory/Samba4:</para>
+
+      <para>required::cn::Common Name::/^[[:alnum:] ]+$/u::Enter common
+      name.</para>
+
+      <para>constant::userPrincipalName::@@uid@@@samba4.test</para>
+
+      <para>constant::sAMAccountName::@@uid@@</para>
+
+      <para>constant::userAccountControl::512</para>
 
       <literallayout>
 </literallayout>

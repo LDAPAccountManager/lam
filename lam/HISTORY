@@ -5,6 +5,7 @@ March 2020 7.1
   - LAM Pro:
    -> PPolicy: support for password check module
    -> Windows AD LDS support (users and groups)
+   -> User self registration: support Active Directory/Samba4
 
 21.12.2019 7.0
   - Lamdaemon can be configured with directory prefix for homedirs
