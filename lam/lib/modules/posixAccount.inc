@@ -6,7 +6,7 @@ use LAM\TYPES\ConfiguredType;
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-    Copyright (C) 2005 - 2019  Roland Gruber
+    Copyright (C) 2005 - 2020  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -2107,7 +2107,9 @@ class posixAccount extends baseModule implements passwordService {
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		$homeDirAttr = $this->getHomedirAttrName($modules);
 		$return = array();
-		$this->addPDFKeyValue($return, 'primaryGroup', _('Primary group'), $this->getGroupName($this->attributes['gidNumber'][0]));
+		if (isset($this->attributes['gidNumber'][0])) {
+			$this->addPDFKeyValue($return, 'primaryGroup', _('Primary group'), $this->getGroupName($this->attributes['gidNumber'][0]));
+		}
 		$this->addPDFKeyValue($return, 'additionalGroups', _('Additional groups'), implode(", ", $additionalGroups));
 		$this->addSimplePDFField($return, 'uid', $uidLabel);
 		$this->addSimplePDFField($return, 'cn', _('Common name'));
