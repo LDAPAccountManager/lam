@@ -5,7 +5,7 @@ use LAM\ImageUtils\ImageManipulationFactory;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2019  Roland Gruber
+  Copyright (C) 2013 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -51,6 +51,8 @@ class windowsUser extends baseModule implements passwordService {
 	private $groupList_orig = array();
 	/** cache for groups */
 	private $groupCache = null;
+	/** host cache to reduce LDAP queries */
+	private $cachedHostList = null;
 	/** option for forcing password change, used in postModifyActions */
 	private $pwdLastSet = null;
 	/** clear text password */
@@ -117,7 +119,7 @@ class windowsUser extends baseModule implements passwordService {
 			'pwdLastSet', 'otherMailbox', 'homeDirectory', 'homeDrive', 'msSFU30Name', 'msSFU30NisDomain', 'pwdLastSet',
 			'lastLogonTimestamp', 'accountExpires', 'jpegPhoto', 'title', 'carLicense', 'employeeNumber', 'employeeType',
 			'businessCategory', 'department', 'departmentNumber', 'ou', 'o', 'manager', 'facsimileTelephoneNumber', 'company',
-			'pager', 'otherPager', 'mobile', 'otherMobile', 'proxyAddresses', 'lockoutTime'
+			'pager', 'otherPager', 'mobile', 'otherMobile', 'proxyAddresses', 'lockoutTime', 'userWorkstations'
 		);
 		// help Entries
 		$return['help'] = array(
@@ -401,6 +403,14 @@ class windowsUser extends baseModule implements passwordService {
 			'excludeFromGroupSync' => array (
 				"Headline" => _('Exclude from group sync'),
 				"Text" => _('Enter one group per line that should be ignored when syncing groups.')
+			),
+			"userWorkstations" => array(
+				"Headline" => _("Workstations"), 'attr' => 'userWorkstations',
+				"Text" => _("List of workstations the user is allowed to login. Empty means every workstation.")
+			),
+			"workstations" => array(
+				"Headline" => _("Workstations"), 'attr' => 'userWorkstations',
+				"Text" => _("Comma separated list of workstations the user is allowed to login. Empty means every workstation."). ' '. _("Can be left empty.")
 			),
 		);
 		// upload fields
@@ -756,6 +766,14 @@ class windowsUser extends baseModule implements passwordService {
 				'example' => _('uid=smiller,ou=People,dc=company,dc=com'),
 			);
 		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideWorkstations')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_workstations',
+				'description' => _('Workstations'),
+				'help' => 'workstations',
+				'example' => 'PC01,PC02,PC03'
+			);
+		}
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
 		$profileContainer->add(new htmlResponsiveInputField(_('Common name'), 'windowsUser_cn', null, 'cn'), 12);
@@ -805,6 +823,9 @@ class windowsUser extends baseModule implements passwordService {
 			'windowsUser_company' => 'company',
 			'windowsUser_homeDrive' => 'homeDrive'
 		);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideWorkstations')) {
+			$return['profile_mappings']['windowsUser_userWorkstations'] = 'userWorkstations';
+		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
 			$return['profile_mappings']['windowsUser_msSFU30NisDomain'] = 'msSFU30NisDomain';
 		}
@@ -867,6 +888,9 @@ class windowsUser extends baseModule implements passwordService {
 			'homeDirectory' => _('Home directory'),
 			'accountExpires' => _('Account expiration date'),
 		);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideWorkstations')) {
+			$return['PDF_fields']['userWorkstations'] = _('Workstations');
+		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideproxyAddresses', true)) {
 			$return['PDF_fields']['proxyAddresses'] = _('Proxy-Addresses');
 		}
@@ -1043,6 +1067,8 @@ class windowsUser extends baseModule implements passwordService {
 		$this->messages['file'][1] = array('ERROR', _('Please upload a .jpg/.jpeg file.'));
 		$this->messages['file'][2] = array('ERROR', _('Unable to process this file.'));
 		$this->messages['file'][3] = array('ERROR', _('File is too large. Maximum allowed size is %s kB.'));
+		$this->messages['workstations'][0] = array('ERROR', _('Workstations'), _('Please enter a comma separated list of host names!'));
+		$this->messages['workstations'][1] = array('ERROR', _('Account %s:') . ' windowsUser_workstations', _('Please enter a comma separated list of host names!'));
 	}
 
 	/**
@@ -1249,6 +1275,14 @@ class windowsUser extends baseModule implements passwordService {
 			$lastLogonTimestampGroup->addElement(new htmlSpacer('0.5rem', null));
 			$lastLogonTimestampGroup->addElement(new htmlHelpLink('lastLogonTimestamp'));
 			$containerLeft->addField($lastLogonTimestampGroup);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideWorkstations')) {
+			$containerLeft->addLabel(new htmlOutputText(_('Workstations')));
+			$userWorkstationsGroup = new htmlGroup();
+			$userWorkstationsGroup->addElement(new htmlAccountPageButton(get_class($this), 'userWorkstations', 'open', _('Edit workstations')));
+			$userWorkstationsGroup->addElement(new htmlSpacer('0.5rem', null));
+			$userWorkstationsGroup->addElement(new htmlHelpLink('userWorkstations'));
+			$containerLeft->addField($userWorkstationsGroup);
 		}
 		// user profile area
 		$containerLeft->add(new htmlSubTitle(_('User profile')), 12);
@@ -2129,6 +2163,123 @@ class windowsUser extends baseModule implements passwordService {
 	}
 
 	/**
+	 * This function will create the HTML page to edit the allowed workstations.
+	 *
+	 * @return htmlElement meta HTML code
+	 */
+	function display_html_userWorkstations() {
+		$return = new htmlResponsiveRow();
+		if ($this->get_scope()=='user') {
+			// Get list of all hosts.
+			$userWorkstations = array();
+			$availableUserWorkstations = array();
+
+			$result = $this->getHostList();
+			foreach ($result as $host) {
+				$availableUserWorkstations[] = str_replace("$", '', $host);
+			}
+			sort($availableUserWorkstations, SORT_STRING);
+			if (isset($this->attributes['userWorkstations'][0])) {
+				$wsAttr = str_replace(' ', '', $this->attributes['userWorkstations'][0]);
+				$userWorkstations = explode (',', $wsAttr);
+			}
+			$availableUserWorkstations = array_delete($userWorkstations, $availableUserWorkstations);
+
+			$return->add(new htmlSubTitle(_("Allowed workstations")), 12);
+
+			$userWorkstationsOptions = array();
+			foreach ($userWorkstations as $userWorkstation) {
+				$userWorkstationsOptions[$userWorkstation] = $userWorkstation;
+			}
+			$availableUserWorkstationsOptions = array();
+			foreach ($availableUserWorkstations as $availableUserWorkstation) {
+				$availableUserWorkstationsOptions[$availableUserWorkstation] = $availableUserWorkstation;
+			}
+			$this->addDoubleSelectionArea($return, _("Allowed workstations"), _("Available workstations"), $userWorkstationsOptions, array(), $availableUserWorkstationsOptions, array(), 'workstations', false, true);
+
+			$return->addVerticalSpacer('2rem');
+
+			$backButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back'));
+			$return->add($backButton, 12);
+		}
+		return $return;
+	}
+
+	/**
+	 * Processes user input of the workstation page.
+	 * It checks if all input values are correct and updates the associated LDAP attributes.
+	 *
+	 * @return array list of info/error messages
+	 */
+	function process_userWorkstations() {
+		// Load attributes
+		if (isset($_POST['workstations_2']) && isset($_POST['workstations_left'])) { // Add workstations to list
+			$workstations = array();
+			if (isset($this->attributes['userWorkstations'][0])) {
+				$temp = str_replace(' ', '', $this->attributes['userWorkstations'][0]);
+				$workstations = explode (',', $temp);
+				for ($i=0; $i<count($workstations); $i++) {
+					if ($workstations[$i]=='') {
+						unset($workstations[$i]);
+					}
+				}
+				$workstations = array_values($workstations);
+			}
+			// Add new // Add workstations
+			$workstations = array_merge($workstations, $_POST['workstations_2']);
+			// remove doubles
+			$workstations = array_flip($workstations);
+			$workstations = array_unique($workstations);
+			$workstations = array_flip($workstations);
+			// sort workstations
+			sort($workstations);
+			// Recreate workstation string
+			$this->attributes['userWorkstations'][0] = $workstations[0];
+			for ($i=1; $i<count($workstations); $i++) {
+				$this->attributes['userWorkstations'][0] = $this->attributes['userWorkstations'][0] . "," . $workstations[$i];
+			}
+		}
+		elseif (isset($_POST['workstations_1']) && isset($_POST['workstations_right'])) { // remove // Add workstations from list
+			// Put all workstations in array
+			$temp = str_replace(' ', '', $this->attributes['userWorkstations'][0]);
+			$workstations = explode (',', $temp);
+			for ($i=0; $i<count($workstations); $i++) {
+				if ($workstations[$i]=='') {
+					unset($workstations[$i]);
+				}
+			}
+			$workstations = array_values($workstations);
+			// Remove unwanted workstations from array
+			$workstations = array_delete($_POST['workstations_1'], $workstations);
+			// Recreate workstation string
+			unset($this->attributes['userWorkstations'][0]);
+			if (sizeof($workstations) > 0) {
+				$this->attributes['userWorkstations'][0] = $workstations[0];
+				for ($i=1; $i<count($workstations); $i++) {
+					$this->attributes['userWorkstations'][0] = $this->attributes['userWorkstations'][0] . "," . $workstations[$i];
+				}
+			}
+		}
+		return array();
+	}
+
+	/**
+	 * Returns a list of existing hosts.
+	 *
+	 * @return array host names
+	 */
+	private function getHostList() {
+		if ($this->cachedHostList != null) {
+			return $this->cachedHostList;
+		}
+		$this->cachedHostList = searchLDAPByAttribute('cn', '*', 'computer', array('cn'), array('host'));
+		for ($i = 0; $i < sizeof($this->cachedHostList); $i++) {
+			$this->cachedHostList[$i] = $this->cachedHostList[$i]['cn'][0];
+		}
+		return $this->cachedHostList;
+	}
+
+	/**
 	 * Runs the postmodify actions.
 	 *
 	 * @see baseModule::postModifyActions()
@@ -2474,6 +2625,9 @@ class windowsUser extends baseModule implements passwordService {
 					$errors[] = $errMsg;
 				}
 			}
+			// workstations
+			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_workstations', 'userWorkstations',
+				'workstations', $this->messages['workstations'][1], $errors);
 			// groups
 			if (isset($ids['windowsUser_groups']) && ($rawAccounts[$i][$ids['windowsUser_groups']] != "")) {
 				$valueList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['windowsUser_groups']]);
@@ -2720,6 +2874,7 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addSimplePDFField($return, 'ou', _('Organisational unit'));
 		$this->addSimplePDFField($return, 'o', _('Organisation'));
 		$this->addSimplePDFField($return, 'manager', _('Manager'));
+		$this->addSimplePDFField($return, 'userWorkstations', _('Workstations'));
 		$deactivated = _('no');
 		if ($this->isDeactivated($this->attributes)) {
 			$deactivated = _('yes');
@@ -2793,6 +2948,10 @@ class windowsUser extends baseModule implements passwordService {
 		// force password change
 		$passwordChangeCheckbox = new htmlResponsiveInputCheckbox('windowsUser_pwdMustChange', true, _('Password change at next login'), 'pwdMustChange');
 		$return->add($passwordChangeCheckbox, 12);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideWorkstations')) {
+			// allowed workstations
+			$return->add(new htmlResponsiveInputField(_('Workstations'), 'windowsUser_userWorkstations', '', 'workstations'), 12);
+		}
 		return $return;
 	}
 
@@ -3532,6 +3691,7 @@ class windowsUser extends baseModule implements passwordService {
 		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidemsSFU30NisDomain', true, _('NIS domain'), null, true), 12, 4);
 		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidepwdLastSet', false, _('Last password change'), null, true), 12, 4);
 		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidelastLogonTimestamp', false, _('Last login'), null, true), 12, 4);
+		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hideWorkstations', false, _('Workstations'), null, true), 12, 4);
 		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidejpegPhoto', true, _('Photo'), null, true), 12, 4);
 		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidetitle', true, _('Job title'), null, true), 12, 4);
 		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidecarLicense', true, _('Car license'), null, true), 12, 4);
