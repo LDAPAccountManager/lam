@@ -438,8 +438,8 @@ class htmlInputField extends htmlElement {
 	protected $fieldValue;
 	/** field size (default 30) */
 	protected $fieldSize = 30;
-	/** field max length (default 255) */
-	protected $fieldMaxLength = 255;
+	/** field max length (default 1000) */
+	protected $fieldMaxLength = 1000;
 	/** on keypress event */
 	protected $onKeyPress = null;
 	/** on keyupp event */
