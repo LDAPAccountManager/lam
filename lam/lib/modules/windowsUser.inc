@@ -778,6 +778,12 @@ class windowsUser extends baseModule implements passwordService {
 		$profileContainer = new htmlResponsiveRow();
 		$profileContainer->add(new htmlResponsiveInputField(_('Common name'), 'windowsUser_cn', null, 'cn'), 12);
 		$profileContainer->add(new htmlResponsiveInputField(_('Display name'), 'windowsUser_displayName', null, 'displayName'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Street'), 'windowsUser_streetAddress', null, 'streetAddress'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Post office box'), 'windowsUser_postOfficeBox', null, 'postOfficeBox'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Postal code'), 'windowsUser_postalCode', null, 'postalCode'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Location'), 'windowsUser_l', null, 'l'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('State'), 'windowsUser_st', null, 'st'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Office name'), 'windowsUser_physicalDeliveryOfficeName', null, 'physicalDeliveryOfficeName'), 12);
 		$profileContainer->add(new htmlResponsiveInputField(_('Email address'), 'windowsUser_mail', null, 'mail'), 12);
 		$profileContainer->add(new htmlResponsiveInputField(_('Email alias'), 'windowsUser_otherMailbox', null, 'otherMailboxList'), 12);
 		$profileContainer->add(new htmlResponsiveInputField(_('Logon script'), 'windowsUser_scriptPath', null, 'scriptPath'), 12);
@@ -816,12 +822,18 @@ class windowsUser extends baseModule implements passwordService {
 		$return['profile_mappings'] = array(
 			'windowsUser_displayName' => 'displayName',
 			'windowsUser_cn' => 'cn',
+			'windowsUser_streetAddress' => 'streetAddress',
+			'windowsUser_postOfficeBox' => 'postOfficeBox',
+			'windowsUser_postalCode' => 'postalCode',
+			'windowsUser_l' => 'l',
+			'windowsUser_st' => 'st',
+			'windowsUser_physicalDeliveryOfficeName' => 'physicalDeliveryOfficeName',
 			'windowsUser_mail' => 'mail',
 			'windowsUser_scriptPath' => 'scriptPath',
 			'windowsUser_profilePath' => 'profilePath',
 			'windowsUser_homeDirectory' => 'homeDirectory',
 			'windowsUser_company' => 'company',
-			'windowsUser_homeDrive' => 'homeDrive'
+			'windowsUser_homeDrive' => 'homeDrive',
 		);
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideWorkstations')) {
 			$return['profile_mappings']['windowsUser_userWorkstations'] = 'userWorkstations';
