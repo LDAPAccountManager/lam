@@ -1,0 +1,46 @@
+# Danish translations for Horde_ListHeaders package.
+# Copyright (C) 2014 Horde LLC (http://www.horde.org/)
+# This file is distributed under the same license as the Horde_ListHeaders package.
+# Erling Preben Hansen <erling@eph.dk>, 2013-2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Horde_ListHeaders\n"
+"Report-Msgid-Bugs-To: dev@lists.horde.org\n"
+"POT-Creation-Date: 2013-10-17 17:50-0600\n"
+"PO-Revision-Date: 2014-03-20 21:07+0100\n"
+"Last-Translator: Erling Preben Hansen <erling@eph.dk>\n"
+"Language-Team: i18n@lists.horde.org\n"
+"Language: da\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: lib/Horde/ListHeaders.php:40
+msgid "List-Archive"
+msgstr "Liste-Arkivet"
+
+#: lib/Horde/ListHeaders.php:35
+msgid "List-Help"
+msgstr "Liste-Hjælp"
+
+#: lib/Horde/ListHeaders.php:42
+msgid "List-Id"
+msgstr "Liste-Id"
+
+#: lib/Horde/ListHeaders.php:38
+msgid "List-Owner"
+msgstr "Liste-Ejer"
+
+#: lib/Horde/ListHeaders.php:39
+msgid "List-Post"
+msgstr "Liste-Post"
+
+#: lib/Horde/ListHeaders.php:37
+msgid "List-Subscribe"
+msgstr "Liste-Abonnér"
+
+#: lib/Horde/ListHeaders.php:36
+msgid "List-Unsubscribe"
+msgstr "Liste-Afabonnér"
