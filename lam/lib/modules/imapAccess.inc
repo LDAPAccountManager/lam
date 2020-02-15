@@ -228,18 +228,18 @@ class imapAccess extends baseModule {
 		$prefix = $this->getMailboxPrefix();
 
 		$email_domain = substr(strstr($this->email, '@'), 1);
-		$imap_admin_password = $this->getAdminPassword(); // check for password for fall back mechanism
-		if (!isset($_SESSION['imapAdmPass']) && !isset($imap_admin_password)) {
+		$password = $this->getAdminPassword(); // check for password for fall back mechanism
+		if (!isset($_SESSION['imapAdmPass']) && !isset($password)) {
 			return $this->display_html_password();
 		}
 
 		$return->addLabel(new htmlOutputText(_('Email address')));
 		$return->addField(new htmlOutputText($this->email));
 
-		$imap_admin_user = $this->getAdminUser();
-		$imap_admin_password = $this->getAdminPassword();
+		$user = $this->getAdminUser();
+		$password = $this->getAdminPassword();
 		try {
-			$client = $this->connect($imap_admin_user, $imap_admin_password);
+			$client = $this->connect($user, $password);
 		}
 		catch (LAMException $e) {
 			return $this->display_html_password(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()));
@@ -885,28 +885,26 @@ class imapAccess extends baseModule {
 			$limit = $data['limit'];
 			$email_domain = $data['email'];
 			ob_start();
-			$imap_server_address = $this->getServerAddress();
-			$imap_admin_user = $this->getAdminUser();
-			$imap_admin_password = $this->getAdminPassword();
-			$imapConnection = 0;//default state is false
-			if ($imap_admin_password) {
-				$imapConnection = @imap_open("{" . $imap_server_address . "}", $imap_admin_user, $imap_admin_password, OP_HALFOPEN, 1);
+			$imapUser = $this->getAdminUser();
+			$imapPassword = $this->getAdminPassword();
+			try {
+				$client = $this->connect($imapUser, $imapPassword);
 				$prefix = $this->getMailboxPrefix();
-				$list = imap_list($imapConnection, "{" . $imap_server_address . "}", $prefix . $this->getSep() . $uid);
+				$list = $client->listMailboxes($prefix . $this->getSep() . $uid);
 				if (empty($list)) {
-					$createErrors = $this->createMailbox($imapConnection, $uid, $email_domain);
+					$createErrors = $this->createMailbox($client, $uid, $email_domain);
 					$errors = array_merge($errors, $createErrors);
 					if (empty($createErrors)) {
-						$quotaErrors = $this->setQuota($imapConnection, $uid, $email_domain, $limit);
+						$quotaErrors = $this->setQuota($client, $uid, $email_domain, $limit);
 						$errors = array_merge($errors, $quotaErrors);
 					}
 				}
+				$client->logout();
 			}
-			if ($imapConnection) {
-				imap_close($imapConnection);
-			}
-			else {
-				$errors[] = $this->messages['managemailbox'][5];
+			catch (Exception $e) {
+				$message = $this->messages['managemailbox'][5];
+				$message[] = $e->getMessage();
+				$errors[] = $message;
 			}
 			ob_end_clean();
 			$temp['counter']++;
