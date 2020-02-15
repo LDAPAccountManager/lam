@@ -354,14 +354,14 @@ class imapAccess extends baseModule {
 		}
 		$prefix = $this->getMailboxPrefix();
 
-		$user = $this->getAdminUser();
+		$adminUser = $this->getAdminUser();
 		if (isset($_POST['ImapAdminPassword']) && isset($_POST['enterPasswordButton'])) {
 			$errors = $this->doLogin();
 		}
-		$password = $this->getAdminPassword();
+		$adminPassword = $this->getAdminPassword();
 
 		try {
-			$client = $this->connect($user, $password);
+			$client = $this->connect($adminUser, $adminPassword);
 			$this->extractUserAndEmail();
 			$email_domain = substr(strstr($this->email, '@'), 1);
 
@@ -372,7 +372,7 @@ class imapAccess extends baseModule {
 				else {
 					$root = $prefix . $this->getSep() . $this->user;
 					try {
-						$client->setACL($root, $user, array('rights' => 'c', 'action' => 'add'));
+						$client->setACL($root, $adminUser, array('rights' => 'c', 'action' => 'add'));
 						$client->deleteMailbox($root);
 					}
 					catch (Exception $e) {
