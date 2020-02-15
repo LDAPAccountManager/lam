@@ -211,11 +211,9 @@ class imapAccess extends baseModule {
 	}
 
 	/**
-	 * Returns the HTML meta data for the main account page.
-	 *
-	 * @return array HTML meta data
+	 * @inheritDoc
 	 */
-	function display_html_attributes() {
+	public function display_html_attributes() {
 		$return = new htmlResponsiveRow();
 		if (!checkIfWriteAccessIsAllowed($this->get_scope())) {
 			return $return;
@@ -248,7 +246,7 @@ class imapAccess extends baseModule {
 		$return->addLabel(new htmlOutputText(_('Mailbox')));
 		$mailboxGroup = new htmlGroup();
 		$mailboxGroup->addElement(new htmlOutputText($prefix . $this->getSep() . $this->user));
-		$mailboxGroup->addElement(new htmlHelpLink('MailAddress'), true);
+		$mailboxGroup->addElement(new htmlHelpLink('MailAddress'));
 		$return->addField($mailboxGroup);
 		$return->addVerticalSpacer('2rem');
 
@@ -279,7 +277,7 @@ class imapAccess extends baseModule {
 	 * Returns the HTML meta data for the password page.
 	 *
 	 * @param htmlStatusMessage|null $message status message
-	 * @return array HTML meta data
+	 * @return htmlResponsiveRow HTML meta data
 	 */
 	function display_html_password($message = null) {
 		$return = new htmlResponsiveRow();
@@ -925,5 +923,3 @@ class imapAccess extends baseModule {
 	}
 
 }
-
-?>
