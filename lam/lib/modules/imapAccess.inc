@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2010 - 2011  Pavel Pozdniak
-                2010 - 2019  Roland Gruber
+                2010 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -163,6 +163,7 @@ class imapAccess extends baseModule {
 		$this->messages['managemailbox'][7] = array('ERROR', _('Cannot update quota.'));
 		$this->messages['managemailbox'][8] = array('ERROR', _('Wrong quota format. Quota must be numeric.'));
 		$this->messages['managemailbox'][9] = array('ERROR', _('Account %s:') . ' imapAccess_quota', _('Wrong quota format. Quota must be numeric.'));
+		$this->messages['managemailbox'][10] = array('ERROR', _('Cannot read quota.'));
 		$this->messages['createMailbox'][0] = array('ERROR', _('Account %s:') . ' imapAccess_createMailbox', _('This value can only be "true" or "false".'));
 	}
 
@@ -210,11 +211,9 @@ class imapAccess extends baseModule {
 	}
 
 	/**
-	 * Returns the HTML meta data for the main account page.
-	 *
-	 * @return array HTML meta data
+	 * @inheritDoc
 	 */
-	function display_html_attributes() {
+	public function display_html_attributes() {
 		$return = new htmlResponsiveRow();
 		if (!checkIfWriteAccessIsAllowed($this->get_scope())) {
 			return $return;
@@ -227,32 +226,33 @@ class imapAccess extends baseModule {
 		$prefix = $this->getMailboxPrefix();
 
 		$email_domain = substr(strstr($this->email, '@'), 1);
-		$imap_admin_password = $this->getAdminPassword(); // check for password for fall back mechanism
-		if (!isset($_SESSION['imapAdmPass']) && !isset($imap_admin_password)) {
+		$adminPassword = $this->getAdminPassword(); // check for password for fall back mechanism
+		if (!isset($_SESSION['imapAdmPass']) && !isset($adminPassword)) {
 			return $this->display_html_password();
 		}
 
 		$return->addLabel(new htmlOutputText(_('Email address')));
 		$return->addField(new htmlOutputText($this->email));
 
-		$imap_server_address = $this->getServerAddress();
-		$imap_admin_user = $this->getAdminUser();
-		$imap_admin_password = $this->getAdminPassword();
-		$mbox = @imap_open("{" . $imap_server_address . "}", $imap_admin_user, $imap_admin_password, OP_HALFOPEN, 1);
-		if (!$mbox) {
-			return $this->display_html_password();
+		$adminUser = $this->getAdminUser();
+		$adminPassword = $this->getAdminPassword();
+		try {
+			$client = $this->connect($adminUser, $adminPassword);
+		}
+		catch (LAMException $e) {
+			return $this->display_html_password(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()));
 		}
 
 		$return->addLabel(new htmlOutputText(_('Mailbox')));
 		$mailboxGroup = new htmlGroup();
 		$mailboxGroup->addElement(new htmlOutputText($prefix . $this->getSep() . $this->user));
-		$mailboxGroup->addElement(new htmlHelpLink('MailAddress'), true);
+		$mailboxGroup->addElement(new htmlHelpLink('MailAddress'));
 		$return->addField($mailboxGroup);
 		$return->addVerticalSpacer('2rem');
 
-		$list = imap_list($mbox, "{" . $imap_server_address . "}", $prefix . $this->getSep() . $this->user);
+		$list = $client->listMailboxes($prefix . $this->getSep() . $this->user, Horde_Imap_Client::MBOX_ALL);
 		if (is_array($list) && sizeof($list) == 1) {
-			$this->renderQuotasForMailbox($return, $mbox, $prefix . $this->getSep() . $this->user);
+			$this->renderQuotasForMailbox($return, $client, $prefix . $this->getSep() . $this->user);
 			$return->addVerticalSpacer('2rem');
 			$return->add(new htmlButton('deleteMailbox', _('Delete mailbox')), 12, 12, 12, 'text-center');
 		}
@@ -269,21 +269,20 @@ class imapAccess extends baseModule {
 				$return->add($createButton, 12, 12, 12, 'text-center');
 			}
 		}
-		imap_close($mbox);
+		$client->logout();
 		return $return;
 	}
 
 	/**
 	 * Returns the HTML meta data for the password page.
 	 *
-	 * @return array HTML meta data
+	 * @param htmlStatusMessage|null $message status message
+	 * @return htmlResponsiveRow HTML meta data
 	 */
-	function display_html_password() {
+	function display_html_password($message = null) {
 		$return = new htmlResponsiveRow();
-		if($this->moduleSettings['ImapAccess_ImapAdminPasswordSelect'][0] == "lam_user_pass"){
-			$message =  $this->messages['managemailbox'][6];
-			$messageElement = new htmlStatusMessage($message[0], $message[1]);
-			$return->add($messageElement, 12);
+		if ($message !== null) {
+			$return->add($message, 12);
 			$return->addVerticalSpacer('1rem');
 		}
 		$passwordInput = new htmlResponsiveInputField(_("Password of IMAP admin user"), 'ImapAdminPassword', '', 'ImapAdminPassword_Sess');
@@ -299,23 +298,36 @@ class imapAccess extends baseModule {
 	/**
 	 * Display the mailbox quota.
 	 *
-	 * @param htmlTable $container structure that contained information to be displayed
-	 * @param stream $mbox stream to open IMAP session
+	 * @param htmlResponsiveRow $container structure that contained information to be displayed
+	 * @param Horde_Imap_Client_Socket $client IMAP client
 	 * @param String $username user name to connect to IMAP server
 	 * @return htmlResponsiveRow table with added information about user quotas or controls to add quota
 	 */
-	function renderQuotasForMailbox($container, $mbox, $username) {
+	function renderQuotasForMailbox($container, $client, $username) {
 		if (($this->profileQuotaLimit != null) && ($this->profileQuotaLimit != '')) {
-			@imap_set_quota($mbox, $username, $this->profileQuotaLimit);
+			$client->setQuota($username, array('storage' => $this->profileQuotaLimit));
 			$this->profileQuotaLimit = null;
 		}
-		$quota_values = @imap_get_quota($mbox, $username);
-		imap_errors();
-		if (is_array($quota_values) && (sizeof($quota_values) > 0)) {
-			if (isset($quota_values['STORAGE']) && is_array($quota_values['STORAGE'])) {
-				$quotaLimit = $quota_values['STORAGE']['limit'];
-				$container->addLabel(new htmlOutputText(_("Current usage (kB)")));
-				$container->addField(new htmlOutputText($quota_values['STORAGE']['usage']), true);
+		try {
+			$quotaRoot = $client->getQuotaRoot($username);
+			$quota_values = array();
+			if (!empty($quotaRoot)) {
+				$quota_values = $client->getQuota($username);
+			}
+			if (!empty($quota_values)) {
+				if (isset($quota_values['storage']) && is_array($quota_values['storage'])) {
+					$quotaLimit = $quota_values['storage']['limit'];
+					$container->addLabel(new htmlOutputText(_("Current usage (kB)")));
+					$container->addField(new htmlOutputText($quota_values['storage']['usage']), true);
+					$quotaLimitInput = new htmlResponsiveInputField(_("Quota limit (kB)"), 'ImapUserQuotaLimit', $quotaLimit, 'ImapUserQuotaLimit');
+					$container->add($quotaLimitInput, 12);
+					$container->addVerticalSpacer('2rem');
+					$container->add(new htmlButton('updateQuota', _('Update quota')), 12, 12, 12, 'text-center');
+					$container->addVerticalSpacer('1rem');
+				}
+			}
+			else {
+				$quotaLimit = "";
 				$quotaLimitInput = new htmlResponsiveInputField(_("Quota limit (kB)"), 'ImapUserQuotaLimit', $quotaLimit, 'ImapUserQuotaLimit');
 				$container->add($quotaLimitInput, 12);
 				$container->addVerticalSpacer('2rem');
@@ -323,13 +335,8 @@ class imapAccess extends baseModule {
 				$container->addVerticalSpacer('1rem');
 			}
 		}
-		else {
-			$quotaLimit = "";
-			$quotaLimitInput = new htmlResponsiveInputField(_("Quota limit (kB)"), 'ImapUserQuotaLimit', $quotaLimit, 'ImapUserQuotaLimit');
-			$container->add($quotaLimitInput, 12);
-			$container->addVerticalSpacer('2rem');
-			$container->add(new htmlButton('updateQuota', _('Update quota')), 12, 12, 12, 'text-center');
-			$container->addVerticalSpacer('1rem');
+		catch (Exception $e) {
+			$container->add(new htmlStatusMessage('ERROR', $this->messages['managemailbox'][10][1], $e->getMessage()), 12);
 		}
 		return $container;
 	}
@@ -347,19 +354,14 @@ class imapAccess extends baseModule {
 		}
 		$prefix = $this->getMailboxPrefix();
 
-		$imap_server_address = $this->getServerAddress();
-		$imap_admin_user = $this->getAdminUser();
-
+		$adminUser = $this->getAdminUser();
 		if (isset($_POST['ImapAdminPassword']) && isset($_POST['enterPasswordButton'])) {
 			$errors = $this->doLogin();
 		}
+		$adminPassword = $this->getAdminPassword();
 
-		$imap_admin_password = $this->getAdminPassword();
-		$imapConnection = 0;//default state is false
-		if ($imap_admin_password) {
-			$imapConnection = @imap_open("{" . $imap_server_address . "}", $imap_admin_user, $imap_admin_password, OP_HALFOPEN, 1);
-		}
-		if ($imapConnection) {
+		try {
+			$client = $this->connect($adminUser, $adminPassword);
 			$this->extractUserAndEmail();
 			$email_domain = substr(strstr($this->email, '@'), 1);
 
@@ -368,27 +370,32 @@ class imapAccess extends baseModule {
 					$errors[] = $this->messages['managemailbox'][4];
 				}
 				else {
-					if (!imap_setacl($imapConnection, $prefix . $this->getSep() . $this->user, $imap_admin_user, "c")) {
-						$errors[] = $this->messages['managemailbox'][0];
+					$root = $prefix . $this->getSep() . $this->user;
+					try {
+						$client->setACL($root, $adminUser, array('rights' => 'c', 'action' => 'add'));
+						$client->deleteMailbox($root);
 					}
-
-					$delete_mailbox_arg = "{" . $imap_server_address . "}" . $prefix . $this->getSep() . $this->user;
-					if (!@imap_deletemailbox($imapConnection, $delete_mailbox_arg)) {
-						$errors[] = $this->messages['managemailbox'][1];
+					catch (Exception $e) {
+						$message = $this->messages['managemailbox'][1];
+						$message[] = $e->getMessage();
+						$errors[] = $message;
 					}
 				}
 			}
 
 			if (isset($_POST['createMailbox'])) {
-				$createMessages = $this->createMailbox($imapConnection, $this->user, $email_domain);
+				$createMessages = $this->createMailbox($client, $this->user, $email_domain);
 				$errors = array_merge($errors, $createMessages);
 			}
 			if (isset($_POST['updateQuota'])) {
 				$quota = $_POST['ImapUserQuotaLimit'];
-				$quotaMessages = $this->setQuota($imapConnection, $this->user, $email_domain, $quota);
+				$quotaMessages = $this->setQuota($client, $this->user, $email_domain, $quota);
 				$errors = array_merge($errors, $quotaMessages);
 			}
-			imap_close($imapConnection);
+			$client->logout();
+		}
+		catch (LAMException $e) {
+			return array(array('ERROR', $e->getTitle(), $e->getMessage()));
 		}
 		// Return error-messages
 		return $errors;
@@ -397,44 +404,40 @@ class imapAccess extends baseModule {
 	/**
 	 * Creates the mailbox for a user.
 	 *
-	 * @param handle $imapConnection IMAP connection
+	 * @param Horde_Imap_Client_Socket $client IMAP client
 	 * @param string $userName user name
 	 * @param string $email_domain email domain
 	 * @return array error messages
 	 */
-	private function createMailbox($imapConnection, $userName, $email_domain) {
+	private function createMailbox($client, $userName, $email_domain) {
 		$errors = array();
-		$imap_server_address = $this->getServerAddress();
 		$prefix = $this->getMailboxPrefix();
 		if ($this->isWrongDomain($email_domain)) {
 			$errors[] = $this->messages['managemailbox'][4];
 		}
 		else {
-			$create_mailbox_arg = "{" . $imap_server_address . "}" . $prefix . $this->getSep() . $userName;
-			logNewMessage(LOG_DEBUG, 'Creating mailbox: ' . $create_mailbox_arg);
-			if (imap_createmailbox($imapConnection, imap_utf7_encode($create_mailbox_arg))) {
+			$root = $prefix . $this->getSep() . $userName;
+			logNewMessage(LOG_DEBUG, 'Creating mailbox: ' . $root);
+			try {
+				$client->createMailbox($root);
 				logNewMessage(LOG_DEBUG, 'Mailbox created');
-				$list = imap_list($imapConnection, "{" . $imap_server_address . "}", $prefix . $this->getSep() . $userName);
-				if (!is_array($list) || (sizeof($list) != 1)) {
+				$list = $client->listMailboxes($root, Horde_Imap_Client::MBOX_ALL);
+				if (empty($list)) {
 					$errors[] = $this->messages['managemailbox'][3];
+					return $errors;
 				}
 				// create initial folders
 				foreach ($this->getInitialFolders() as $folder) {
-					$folderCommand = $create_mailbox_arg . $this->getSep() . $folder;
-					logNewMessage(LOG_DEBUG, 'Creating folder: ' . $folderCommand);
-					$created = imap_createmailbox($imapConnection, imap_utf7_encode($folderCommand));
-					if (!$created) {
-						$error = $this->messages['managemailbox'][2];
-						$error[] = htmlspecialchars($folder);
-						$errors[] = $error;
-					}
-					else {
-						logNewMessage(LOG_DEBUG, 'Folder created');
-					}
+					$fullFolderName = $root . $this->getSep() . $folder;
+					logNewMessage(LOG_DEBUG, 'Creating folder: ' . $fullFolderName);
+					$client->createMailbox($fullFolderName);
+					logNewMessage(LOG_DEBUG, 'Folder created: ' . $fullFolderName);
 				}
 			}
-			else {
-				$errors[] = $this->messages['managemailbox'][2];
+			catch (Exception $e) {
+				$message = $this->messages['managemailbox'][2];
+				$message[] = $e->getMessage();
+				$errors[] = $message;
 			}
 		}
 		return $errors;
@@ -443,33 +446,38 @@ class imapAccess extends baseModule {
 	/**
 	 * Sets the mailbox quota for a user.
 	 *
-	 * @param handle $imapConnection IMAP connection
+	 * @param Horde_Imap_Client_Socket $client IMAP client
 	 * @param string $userName user name
 	 * @param string $email_domain email domain
 	 * @param string $quota mailbox quota
 	 * @return array error messages
 	 */
-	private function setQuota($imapConnection, $userName, $email_domain, $quota) {
+	private function setQuota($client, $userName, $email_domain, $quota) {
 		$prefix = $this->getMailboxPrefix();
 		$errors = array();
+		$root = $prefix . $this->getSep() . $userName;
 		if ($this->isWrongDomain($email_domain)) {
 			$errors[] = $this->messages['managemailbox'][4];
 		}
 		else {
 			if ($quota == '') {
-/* deactivated because -1 is not accepted, no possibility to remove quota
- *				if (!imap_set_quota($mbox, $prefix . $this->getSep() . $email_username, -1)) {
+				try {
+					$client->setQuota($root, array('storage' => '-1'));
+				}
+				catch (Exception $e) {
 					$message = $this->messages['managemailbox'][7];
-					$message[] = imap_last_error();
+					$message[] = $e->getMessage();
 					$errors[] = $message;
-				}*/
+				}
 			}
-			elseif (get_preg($quota, 'digit')){
-				$root = $prefix . $this->getSep() . $userName;
+			elseif (get_preg($quota, 'digit')) {
 				logNewMessage(LOG_DEBUG, 'Setting quota ' . $quota . ' for ' . $root);
-				if (!imap_set_quota($imapConnection, $root, $quota)) {
+				try {
+					$client->setQuota($root, array('storage' => $quota));
+				}
+				catch (Exception $e) {
 					$message = $this->messages['managemailbox'][7];
-					$message[] = imap_last_error();
+					$message[] = $e->getMessage();
 					$errors[] = $message;
 				}
 			}
@@ -606,18 +614,18 @@ class imapAccess extends baseModule {
 	 */
 	private function getAdminPassword() {
 		//perform admin password
-		$imap_admin_password = null; //default value is null, it can be changed during the work
+		$password = null; //default value is null, it can be changed during the work
 		if (isset($_SESSION['imapAdmPass'])) {
-			$imap_admin_password = lamDecrypt($_SESSION['imapAdmPass']);
+			$password = lamDecrypt($_SESSION['imapAdmPass']);
 		}
 		elseif (isset($this->moduleSettings['ImapAccess_ImapAdminPasswordSelect'][0]) && ($this->moduleSettings['ImapAccess_ImapAdminPasswordSelect'][0] == "lam_user_pass")) {
-			$imap_admin_password = $_SESSION['ldap']->getPassword();
+			$password = $_SESSION['ldap']->getPassword();
 		}
 		elseif (!empty($this->moduleSettings['ImapAccess_ImapAdminPasswordSelect'][0]) && ($this->moduleSettings['ImapAccess_ImapAdminPasswordSelect'][0] == "config")
 			&& !empty($this->moduleSettings['ImapAccess_ImapAdminPassword'][0])) {
-			$imap_admin_password = deobfuscateText($this->moduleSettings['ImapAccess_ImapAdminPassword'][0]);
+			$password = deobfuscateText($this->moduleSettings['ImapAccess_ImapAdminPassword'][0]);
 		}
-		return $imap_admin_password;
+		return $password;
 	}
 
 	/**
@@ -627,18 +635,17 @@ class imapAccess extends baseModule {
      */
 	function doLogin() {
 		$errors = array();
-		$imap_server_address = $this->getServerAddress();
-		$imap_admin_user = $this->getAdminUser();
+		$adminUser = $this->getAdminUser();
 		if (isset($_POST['ImapAdminPassword']) && $_POST['ImapAdminPassword'] != "") {
-			$imap_admin_password = $_POST['ImapAdminPassword'];
-			$mbox = @imap_open("{" . $imap_server_address . "}", $imap_admin_user, $imap_admin_password, OP_HALFOPEN, 1);
-			if ($mbox) {
+			$adminPassword = $_POST['ImapAdminPassword'];
+			try {
+				$client = $this->connect($adminUser, $adminPassword);
 				$_SESSION['imapAdmPass'] = lamEncrypt($_POST['ImapAdminPassword']);
-				@imap_close($mbox);
+				$client->logout();
 			}
-			else {
+			catch (LAMException $e) {
 				$error = $this->messages['managemailbox'][5];
-				$error[] = imap_last_error();
+				$error[] = $e->getMessage();
 				$errors[] = $error;
 			}
 		}
@@ -646,32 +653,52 @@ class imapAccess extends baseModule {
 	}
 
 	/**
-	 * This function returns the IMAP server address including encryption options.
+	 * Connects to the IMAP server.
 	 *
-	 * @return String server address
+	 * @param string $user user name
+	 * @param string $password password
+	 * @return Horde_Imap_Client_Socket IMAP client
 	 */
-	function getServerAddress() {
-		$imap_encryption_protocol = $this->moduleSettings['ImapAccess_ImapServerEncriptionProtocol'][0];
+	private function connect($user, $password) {
+		include_once __DIR__ . '/../3rdParty/composer/autoload.php';
+		$encryptionType = $this->moduleSettings['ImapAccess_ImapServerEncriptionProtocol'][0];
 		if (strrpos($this->moduleSettings['ImapAccess_ImapServerAddress'][0], ":")) {
-			$imap_port_number = substr(strstr($this->moduleSettings['ImapAccess_ImapServerAddress'][0], ':'), 1);
-			$imap_server_name = array_shift(explode(':', $this->moduleSettings['ImapAccess_ImapServerAddress'][0], 2));
+			$port = substr(strstr($this->moduleSettings['ImapAccess_ImapServerAddress'][0], ':'), 1);
+			$serverName = array_shift(explode(':', $this->moduleSettings['ImapAccess_ImapServerAddress'][0], 2));
 		}
 		else {
-			$imap_server_name = $this->moduleSettings['ImapAccess_ImapServerAddress'][0];
-			if (strcmp($imap_encryption_protocol, "TLS") == 0) {
-				$imap_port_number = 143;
+			$serverName = $this->moduleSettings['ImapAccess_ImapServerAddress'][0];
+			if ($encryptionType === "TLS") {
+				$port = 143;
 			}
 			else {
-				$imap_port_number = 993;
+				$port = 993;
 			}
 		}
+		$context = array(
+			'ssl' => array(
+				'cafile' => __DIR__ . '/../../serverCerts.pem'
+			)
+		);
 		if (isset($this->moduleSettings['ImapAccess_ImapValidateServerCert'][0]) && ($this->moduleSettings['ImapAccess_ImapValidateServerCert'][0] == 'novalidate-cert')) {
-			$validate_opt = "novalidate-cert";
+			$context['ssl']['verify_peer'] = false;
+			$context['ssl']['verify_peer_name'] = false;
 		}
-		else {
-			$validate_opt = "validate-cert";
+		try {
+			$client = new Horde_Imap_Client_Socket(array(
+				'username' => $user,
+				'password' => $password,
+				'hostspec' => $serverName,
+				'port' => $port,
+				'secure' => strtolower($encryptionType),
+				'context' => $context
+			));
+			$client->login();
+			return $client;
 		}
-		return $imap_server_name . ":" . $imap_port_number . "/" . $imap_encryption_protocol . "/" . $validate_opt;
+		catch (Exception $e) {
+			throw new LAMException(_('Unable to connect to IMAP server.'), $e->getMessage(), $e);
+		}
 	}
 
 	/**
@@ -856,28 +883,26 @@ class imapAccess extends baseModule {
 			$limit = $data['limit'];
 			$email_domain = $data['email'];
 			ob_start();
-			$imap_server_address = $this->getServerAddress();
-			$imap_admin_user = $this->getAdminUser();
-			$imap_admin_password = $this->getAdminPassword();
-			$imapConnection = 0;//default state is false
-			if ($imap_admin_password) {
-				$imapConnection = @imap_open("{" . $imap_server_address . "}", $imap_admin_user, $imap_admin_password, OP_HALFOPEN, 1);
+			$imapUser = $this->getAdminUser();
+			$imapPassword = $this->getAdminPassword();
+			try {
+				$client = $this->connect($imapUser, $imapPassword);
 				$prefix = $this->getMailboxPrefix();
-				$list = imap_list($imapConnection, "{" . $imap_server_address . "}", $prefix . $this->getSep() . $uid);
+				$list = $client->listMailboxes($prefix . $this->getSep() . $uid);
 				if (empty($list)) {
-					$createErrors = $this->createMailbox($imapConnection, $uid, $email_domain);
+					$createErrors = $this->createMailbox($client, $uid, $email_domain);
 					$errors = array_merge($errors, $createErrors);
 					if (empty($createErrors)) {
-						$quotaErrors = $this->setQuota($imapConnection, $uid, $email_domain, $limit);
+						$quotaErrors = $this->setQuota($client, $uid, $email_domain, $limit);
 						$errors = array_merge($errors, $quotaErrors);
 					}
 				}
+				$client->logout();
 			}
-			if ($imapConnection) {
-				imap_close($imapConnection);
-			}
-			else {
-				$errors[] = $this->messages['managemailbox'][5];
+			catch (Exception $e) {
+				$message = $this->messages['managemailbox'][5];
+				$message[] = $e->getMessage();
+				$errors[] = $message;
 			}
 			ob_end_clean();
 			$temp['counter']++;
@@ -898,5 +923,3 @@ class imapAccess extends baseModule {
 	}
 
 }
-
-?>
