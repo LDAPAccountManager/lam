@@ -1,6 +1,7 @@
 March 2020 7.1
   - PHP 7 required
   - Webauthn/FIDO2 support for 2-factor-authentication (requires PHP 7.2)
+  - IMAP: changed library to support latest TLS versions
   - Personal: support display name (hidden by default in server profile)
   - Windows users: support allowed workstations
   - LAM Pro:
