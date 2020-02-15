@@ -226,18 +226,18 @@ class imapAccess extends baseModule {
 		$prefix = $this->getMailboxPrefix();
 
 		$email_domain = substr(strstr($this->email, '@'), 1);
-		$password = $this->getAdminPassword(); // check for password for fall back mechanism
-		if (!isset($_SESSION['imapAdmPass']) && !isset($password)) {
+		$adminPassword = $this->getAdminPassword(); // check for password for fall back mechanism
+		if (!isset($_SESSION['imapAdmPass']) && !isset($adminPassword)) {
 			return $this->display_html_password();
 		}
 
 		$return->addLabel(new htmlOutputText(_('Email address')));
 		$return->addField(new htmlOutputText($this->email));
 
-		$user = $this->getAdminUser();
-		$password = $this->getAdminPassword();
+		$adminUser = $this->getAdminUser();
+		$adminPassword = $this->getAdminPassword();
 		try {
-			$client = $this->connect($user, $password);
+			$client = $this->connect($adminUser, $adminPassword);
 		}
 		catch (LAMException $e) {
 			return $this->display_html_password(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()));
@@ -635,11 +635,11 @@ class imapAccess extends baseModule {
      */
 	function doLogin() {
 		$errors = array();
-		$user = $this->getAdminUser();
+		$adminUser = $this->getAdminUser();
 		if (isset($_POST['ImapAdminPassword']) && $_POST['ImapAdminPassword'] != "") {
-			$password = $_POST['ImapAdminPassword'];
+			$adminPassword = $_POST['ImapAdminPassword'];
 			try {
-				$client = $this->connect($user, $password);
+				$client = $this->connect($adminUser, $adminPassword);
 				$_SESSION['imapAdmPass'] = lamEncrypt($_POST['ImapAdminPassword']);
 				$client->logout();
 			}
