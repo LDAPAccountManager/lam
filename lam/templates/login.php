@@ -18,7 +18,7 @@ use \htmlDiv;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2019  Roland Gruber
+                2005 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -167,7 +167,7 @@ $_SESSION['header'] .= "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<me
 $manifestUrl = str_replace('/templates/login.php', '', getCallingURL());
 $manifestUrl = preg_replace('/http(s)?:\\/\\/([^\\/])+/', '', $manifestUrl);
 $manifestUrl = preg_replace('/\\?.*/', '', $manifestUrl);
-$_SESSION['header'] .= '<link rel="manifest" href="' . $manifestUrl . '/templates/manifest.php">';
+$_SESSION['header'] .= '<link rel="manifest" href="' . $manifestUrl . '/templates/manifest.php" crossorigin="use-credentials">';
 
 /**
 * Displays the login window.
