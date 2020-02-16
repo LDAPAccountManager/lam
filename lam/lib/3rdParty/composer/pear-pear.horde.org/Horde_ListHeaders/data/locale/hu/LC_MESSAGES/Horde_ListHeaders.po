@@ -1,0 +1,45 @@
+# Hungarian translations for Horde_ListHeaders package.
+# Copyright (C) 2014 Horde LLC (http://www.horde.org/)
+# This file is distributed under the same license as the Horde_ListHeaders package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Horde_ListHeaders \n"
+"Report-Msgid-Bugs-To: dev@lists.horde.org\n"
+"POT-Creation-Date: 2014-05-21 15:36+0200\n"
+"PO-Revision-Date: 2014-07-14 11:35+0200\n"
+"Last-Translator: Andras Galos <galosa@netinform.hu>\n"
+"Language-Team: i18n@lists.horde.org\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: lib/Horde/ListHeaders.php:40
+msgid "Archive"
+msgstr "Archív"
+
+#: lib/Horde/ListHeaders.php:35
+msgid "Help"
+msgstr "Segítség"
+
+#: lib/Horde/ListHeaders.php:42
+msgid "Identification"
+msgstr "Azonosítás"
+
+#: lib/Horde/ListHeaders.php:38
+msgid "Owner"
+msgstr "Tulajdonos"
+
+#: lib/Horde/ListHeaders.php:39
+msgid "Post"
+msgstr "Küldés"
+
+#: lib/Horde/ListHeaders.php:37
+msgid "Subscribe"
+msgstr "Használatba vétel (subscribe)"
+
+#: lib/Horde/ListHeaders.php:36
+msgid "Unsubscribe"
+msgstr "A használatba vétel megszüntetése (unsubscribe)"

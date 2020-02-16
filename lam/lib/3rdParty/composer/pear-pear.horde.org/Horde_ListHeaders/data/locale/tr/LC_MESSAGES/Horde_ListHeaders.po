@@ -1,0 +1,47 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Horde LLC (http://www.horde.org/)
+# This file is distributed under the same license as the Horde_ListHeaders package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Horde_ListHeaders\n"
+"Report-Msgid-Bugs-To: dev@lists.horde.org\n"
+"POT-Creation-Date: 2017-06-09 16:07+0300\n"
+"PO-Revision-Date: 2017-06-09 16:19+0300\n"
+"Language-Team: İTÜ BİDB <sistemdestek@itu.edu.tr>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.12\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: tr\n"
+
+#: lib/Horde/ListHeaders.php:38
+msgid "Archive"
+msgstr "Arşiv"
+
+#: lib/Horde/ListHeaders.php:33
+msgid "Help"
+msgstr "Yardım"
+
+#: lib/Horde/ListHeaders.php:40
+msgid "Identification"
+msgstr "Kimlik"
+
+#: lib/Horde/ListHeaders.php:36
+msgid "Owner"
+msgstr "Sahip"
+
+#: lib/Horde/ListHeaders.php:37
+msgid "Post"
+msgstr "İleti"
+
+#: lib/Horde/ListHeaders.php:35
+msgid "Subscribe"
+msgstr "Üye Ol"
+
+#: lib/Horde/ListHeaders.php:34
+msgid "Unsubscribe"
+msgstr "Üyelikten Çık"
