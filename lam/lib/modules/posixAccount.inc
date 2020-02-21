@@ -573,7 +573,7 @@ class posixAccount extends baseModule implements passwordService {
 			$types = array('gon', 'group');
 			$gonList = array();
 			foreach ($types as $type) {
-				$gonFilter = '(|(&(objectClass=groupOfNames)(member=' . $this->getAccountContainer()->dn_orig . '))(&(objectClass=groupOfMembers)(member=' . $this->getAccountContainer()->dn_orig . '))(&(objectClass=groupOfUniqueNames)(uniqueMember=' . $this->getAccountContainer()->dn_orig . ')))';
+				$gonFilter = '(|(&(objectClass=groupOfNames)(member=' . ldap_escape($this->getAccountContainer()->dn_orig) . '))(&(objectClass=groupOfMembers)(member=' . $this->getAccountContainer()->dn_orig . '))(&(objectClass=groupOfUniqueNames)(uniqueMember=' . $this->getAccountContainer()->dn_orig . ')))';
 				if (!empty($typeSettings['filter_' . $type])) {
 					$typeFilter = $typeSettings['filter_' . $type];
 					if (strpos($typeFilter, '(') !== 0) {
