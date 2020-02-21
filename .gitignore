@@ -5,3 +5,4 @@
 /vendor/
 /composer.lock
 /code-coverage/
+/.phpunit.result.cache

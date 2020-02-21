@@ -80,7 +80,7 @@ class WebauthnProviderTest extends TestCase {
 		$row->generateHTML(null, array(), array(), false, $tabindex, 'none');
 		$html = ob_get_contents();
 		ob_end_clean();
-		$this->assertContains('skip_webauthn', $html);
+		$this->assertStringContainsString('skip_webauthn', $html);
 	}
 
 }

@@ -53,7 +53,6 @@ class WebauthnManagerTest extends TestCase {
 			->getMock();
 		$this->database->method('findOneByCredentialId')->willReturn(null);
 		$this->database->method('findAllForUserEntity')->willReturn(array());
-		$this->database->method('saveCredentialSource')->willReturn(true);
 
 		$this->manager = $this
 			->getMockBuilder(WebauthnManager::class)
