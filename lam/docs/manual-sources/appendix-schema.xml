@@ -107,6 +107,24 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
+                <imagedata fileref="images/schema_samba.png"/>
+              </imageobject>
+            </inlinemediaobject></entry>
+
+          <entry>AD LDS</entry>
+
+          <entry>user, group</entry>
+
+          <entry/>
+
+          <entry>AD LDS built-in</entry>
+
+          <entry/>
+        </row>
+
+        <row>
+          <entry><inlinemediaobject>
+              <imageobject>
                 <imagedata fileref="images/schema_kolab.png"/>
               </imageobject>
             </inlinemediaobject></entry>
