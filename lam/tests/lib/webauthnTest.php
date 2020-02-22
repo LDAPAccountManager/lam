@@ -49,14 +49,15 @@ class WebauthnManagerTest extends TestCase {
 	protected function setup(): void {
 		$this->database = $this
 			->getMockBuilder(PublicKeyCredentialSourceRepositorySQLite::class)
-			->setMethods(array('findOneByCredentialId', 'findAllForUserEntity', 'saveCredentialSource'))
+			->onlyMethods(array('findOneByCredentialId', 'findAllForUserEntity', 'saveCredentialSource'))
 			->getMock();
 		$this->database->method('findOneByCredentialId')->willReturn(null);
 		$this->database->method('findAllForUserEntity')->willReturn(array());
+		$this->database->method('saveCredentialSource')->willReturn(null);
 
 		$this->manager = $this
 			->getMockBuilder(WebauthnManager::class)
-			->setMethods(array('getDatabase'))
+			->onlyMethods(array('getDatabase'))
 			->getMock();
 		$this->manager->method('getDatabase')->willReturn($this->database);
 
