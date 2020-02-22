@@ -4,7 +4,7 @@ use \LAM\REMOTE\RemoteServerConfiguration;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2019  Roland Gruber
+  Copyright (C) 2003 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -2635,7 +2635,7 @@ class LAMCfgMain {
 	* Loads preferences from config file
 	*/
 	function __construct() {
-		$this->conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/config.cfg";
+		$this->conffile = __DIR__ . "/../config/config.cfg";
 		// set default values
 		$this->sessionTimeout = 30;
 		$this->logLevel = LOG_NOTICE;
