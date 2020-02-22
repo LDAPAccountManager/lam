@@ -3,7 +3,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2017 - 2019  Roland Gruber
+ Copyright (C) 2017 - 2020  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -75,7 +75,6 @@ use PHPUnit\Framework\TestCase;
 			$timeDiff = $time->diff($timeBase);
 			$days = $timeDiff->format('%a');
 			$seconds = $days * 24 * 3600 - ($time->getOffset());
-			echo $seconds . ' ';
 			return $seconds . '0000000';
 		}
 
