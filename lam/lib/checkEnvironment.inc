@@ -89,8 +89,12 @@ if (!extension_loaded('imagick') && !extension_loaded('gd')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no imagick or GD support.", "Please install the imagick or GD extension for PHP.");
 }
 // check if PHP has JSON support
-if (! function_exists('json_encode')) {
+if (!function_exists('json_encode')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no JSON support!", "Please install the JSON extension for PHP.");
+}
+// check if PHP has GMP support
+if (!extension_loaded('gmp')) {
+	$criticalErrors[] = array("ERROR", "Your PHP has no GMP support!", "Please install the GMP extension for PHP.");
 }
 // check file permissions
 $writableDirs = array('sess', 'tmp');

@@ -53,6 +53,7 @@ RUN apt-get update && \
         php-xml \
         php-zip \
         php-imap \
+        php-gmp \
         wget \
     && \
     rm /etc/apache2/sites-enabled/*default* && \
