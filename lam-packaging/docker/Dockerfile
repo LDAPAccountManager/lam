@@ -2,7 +2,7 @@
 #  Docker image for LDAP Account Manager
 
 #  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-#  Copyright (C) 2019  Roland Gruber
+#  Copyright (C) 2019 - 2020  Roland Gruber
 
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 FROM debian:buster-slim
 LABEL maintainer="Roland Gruber <post@rolandgruber.de>"
 
-ARG LAM_RELEASE=7.0
+ARG LAM_RELEASE=7.1.RC1
 EXPOSE 80
 
 ENV \
