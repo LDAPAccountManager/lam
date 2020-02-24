@@ -233,7 +233,7 @@ class Exporter {
 	}
 
 	/**
-	 * Escapes a CSV value and adds quotes arround it.
+	 * Escapes a CSV value and adds quotes around it.
 	 *
 	 * @param string $value CSV value
 	 * @return string escaped and quoted value

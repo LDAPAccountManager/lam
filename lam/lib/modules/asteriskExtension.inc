@@ -564,7 +564,7 @@ class asteriskExtension extends baseModule {
             if (isset($_POST['add_rule'])) {
                 $this->addRuleFlag = true;
             }
-            //process fileds that are individual for each row
+            //process fields that are individual for each row
             $extrow_errors = $this->processExtensionRows($extensionName, $extensionContext);
 
             if (isset($extrow_errors) && count($extrow_errors) > 0) {
@@ -643,7 +643,7 @@ class asteriskExtension extends baseModule {
     }
 
     /**
-     * Fills the fileds of a single extension row.
+     * Fills the fields of a single extension row.
      * In Asterisk it would only be an extension name,a priority,an application, but LDAP spicific
      * add to processing context field.
      *

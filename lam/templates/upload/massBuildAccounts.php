@@ -54,7 +54,7 @@ checkIfToolIsActive('toolFileUpload');
 // die if no write access
 if (!checkIfWriteAccessIsAllowed()) die();
 
-// Redirect to startpage if user is not loged in
+// Redirect to startpage if user is not logged in
 if (!isLoggedIn()) {
 	metaRefresh("../login.php");
 	exit;
@@ -116,7 +116,7 @@ $container = new htmlResponsiveRow();
 
 $selectedModules = explode(',', $_POST['selectedModules']);
 if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
-	// check if input file is well formated
+	// check if input file is well formatted
 	$data = array();  // input values without first row
 	$ids = array();  // <column name> => <column number for $data>
 	// get input fields from modules

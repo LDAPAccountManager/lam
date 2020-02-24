@@ -154,7 +154,7 @@ $helpArray = array (
 				"238" => array ("Headline" => _("Session timeout"),
 					"Text" => _("This is the time (in minutes) of inactivity after which a user is automatically logged off.")),
 				"239" => array ("Headline" => _("Log level"),
-					"Text" => _("Please select your prefered log level. Messages with a lower level will not be logged.")),
+					"Text" => _("Please select your preferred log level. Messages with a lower level will not be logged.")),
 				"240" => array ("Headline" => _("Log destination"),
 					"Text" => _("Here you can select where LAM should save its log messages. System logging will go to Syslog on Unix systems and event log on Windows. You can also select an extra file.")),
 				"241" => array ("Headline" => _("Allowed hosts"),

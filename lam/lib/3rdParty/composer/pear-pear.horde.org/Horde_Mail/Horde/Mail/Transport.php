@@ -80,7 +80,7 @@ abstract class Horde_Mail_Transport
     /**
      * Send a message.
      *
-     * @param mixed $recipients  Either a comma-seperated list of recipients
+     * @param mixed $recipients  Either a comma-separated list of recipients
      *                           (RFC822 compliant), or an array of
      *                           recipients, each RFC822 valid. This may
      *                           contain recipients not specified in the

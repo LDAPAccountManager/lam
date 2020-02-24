@@ -343,7 +343,7 @@ class posixAccount extends baseModule implements passwordService {
 			),
 			'uidNumber' => array(
 				"Headline" => _("UID number"), 'attr' => 'uidNumber',
-				"Text" => _("If empty UID number will be generated automaticly.")
+				"Text" => _("If empty UID number will be generated automatically.")
 			),
 			'group_upload' => array(
 				"Headline" => _("Primary group"),
@@ -3402,7 +3402,7 @@ class posixAccount extends baseModule implements passwordService {
 	 * @param $modules list of modules for which the password should be changed
 	 * @param boolean $forcePasswordChange force the user to change his password at next login
 	 * @return array list of error messages if any as parameter array for StatusMessage
-	 *               e.g. return arrray(array('ERROR', 'Password change failed.'))
+	 *               e.g. return array(array('ERROR', 'Password change failed.'))
 	 * @see passwordService::passwordChangeRequested
 	 */
 	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {

@@ -313,7 +313,7 @@ March 2020 7.1
   - LAM Pro:
    -> Password self reset and user self registration support to set a header text
    -> Sudo roles: support latest schema
-   -> Bind DLZ: automatic PTR management (disabled by default) and better formating of e.g. TTL values
+   -> Bind DLZ: automatic PTR management (disabled by default) and better formatting of e.g. TTL values
 
 
 18.03.2014 4.5
@@ -505,7 +505,7 @@ March 2020 7.1
    -> support to read user name from uid attribute
    -> added quota management
   - Personal: added additional options for account profiles
-  - Mail aliases: sort receipients (RFE 3170336)
+  - Mail aliases: sort recipients (RFE 3170336)
   - Asterisk: support all attributes (can be disabled in configuration)
   - Samba 3/Shadow: allow to sync expiration date (RFE 3147751)
   - LAM Pro:
@@ -632,7 +632,7 @@ March 2020 7.1
 21.01.2009 2.5.0
   - LAM Pro:
    -> supports rfc2307bis schema for Unix groups (RFE 2111694)
-   -> added alias manangement (object classes alias + uidObject) (RFE 1912779)
+   -> added alias management (object classes alias + uidObject) (RFE 1912779)
   - Shadow: module is now optional when creating new accounts
   - Kolab:
    -> account extension is now optional
@@ -958,7 +958,7 @@ March 2020 7.1
    -> dynamic configuration options (based on modules)
   - all pages in UTF-8
   - added developer documentation
-  - PHPDoc formated comments
+  - PHPDoc formatted comments
   - new plugin for managing MAC addresses (RFE 926017)
   - new plugin for managing NIS mail aliases (RFE 1050036)
   - new plugin for managing mail routing with inetLocalMailRecipient (RFE 1092137)
@@ -1020,7 +1020,7 @@ March 2020 7.1
       if magic_quotes_gpc in php.ini is was set to "Off", several pages did not work
       some smaller bugs in mass upload
       Samba hash values for hosts were not correct
-      Unix passwords could be disabled but not reenabled
+      Unix passwords could be disabled but not re-enabled
       fixed problem with eval() in status.inc (894433)
 
 
@@ -1043,7 +1043,7 @@ March 2020 7.1
   - better error handling at login
   - support spaces in DNs
   - PDF text for users
-  - create missing OUs recursivly
+  - create missing OUs recursively
   - fixed bugs:
       SMD5 passwords were wrong
       primaryGroupSID wrong if SID has no relation to Algorithmic RID Base

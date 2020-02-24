@@ -46,7 +46,7 @@ class quota extends baseModule {
 	/** prefix for lamdaemon results */
 	private static $QUOTA_PREFIX = 'QUOTA_ENTRY ';
 
-	/** this functin fills the error message array with messages
+	/** this function fills the error message array with messages
 	**/
 	function load_Messages() {
 		// error messages for input checks

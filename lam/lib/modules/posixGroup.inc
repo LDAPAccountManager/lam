@@ -416,7 +416,7 @@ class posixGroup extends baseModule implements passwordService {
 		$return['help'] = array(
 			'gidNumber'	=> array(
 				"Headline" => _("GID number"), 'attr' => 'gidNumber',
-				"Text" => _("If empty GID number will be generated automaticly depending on your configuration settings.")
+				"Text" => _("If empty GID number will be generated automatically depending on your configuration settings.")
 			),
 			'description' => array(
 				"Headline" => _("Description"), 'attr' => 'description',
@@ -682,7 +682,7 @@ class posixGroup extends baseModule implements passwordService {
 
 
 	/**
-	* This functin will be called when the module will be loaded
+	* This function will be called when the module will be loaded
 	*
 	* @param String $base the name of the {@link accountContainer} object ($_SESSION[$base])
 	*/
@@ -1271,7 +1271,7 @@ class posixGroup extends baseModule implements passwordService {
 	 * @param $modules list of modules for which the password should be changed
 	 * @param boolean $forcePasswordChange force the user to change his password at next login
 	 * @return array list of error messages if any as parameter array for StatusMessage
-	 *               e.g. return arrray(array('ERROR', 'Password change failed.'))
+	 *               e.g. return array(array('ERROR', 'Password change failed.'))
 	 * @see passwordService::passwordChangeRequested
 	 */
 	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {

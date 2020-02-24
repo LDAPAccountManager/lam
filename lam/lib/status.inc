@@ -31,7 +31,7 @@
  * This function prints a short status message. It can be used to print INFO,
  * WARN and ERROR messages at the moment.
  *
- * The headline and text may be formated with special tags:
+ * The headline and text may be formatted with special tags:
  * <br>
  * <br><b>{bold}, {endbold}:</b> All text between these tags is printed bold.
  * <br><b>{color=#123456}, {endcolor}:</b> All text between these tags is printed in the given color.

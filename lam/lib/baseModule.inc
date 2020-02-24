@@ -566,7 +566,7 @@ abstract class baseModule {
 				switch ($check['type']) {
 					// check by regular expression (from account.inc)
 					case "ext_preg":
-						// ignore empty fileds
+						// ignore empty fields
 						if (!empty($options[$identifier][0])
 								&& !get_preg($options[$identifier][0], $check['regex'])) {
 							$errors[] = $check['error_message'];
@@ -574,7 +574,7 @@ abstract class baseModule {
 					break;
 					// check by regular expression (case insensitive)
 					case 'regex_i':
-						// ignore empty fileds
+						// ignore empty fields
 						if (!empty($options[$identifier][0])
 								&& !preg_match('/' . $check['regex'] . '/i', $options[$identifier][0])) {
 							$errors[] = $check['error_message'];
@@ -582,7 +582,7 @@ abstract class baseModule {
 						break;
 					// check by regular expression (case sensitive)
 					case 'regex':
-						// ignore empty fileds
+						// ignore empty fields
 						if (!empty($options[$identifier][0])
 								&& !preg_match('/' . $check['regex'] . '/', $options[$identifier][0])) {
 							$errors[] = $check['error_message'];
@@ -715,7 +715,7 @@ abstract class baseModule {
 					switch ($this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['type']) {
 						// check by regular expression (from account.inc)
 						case "ext_preg":
-							// ignore empty fileds
+							// ignore empty fields
 							if ($options[$identifiers[$i]][0] == '') {
 								break;
 							}
@@ -725,7 +725,7 @@ abstract class baseModule {
 							break;
 						// check by regular expression (case insensitive)
 						case "regex_i":
-							// ignore empty fileds
+							// ignore empty fields
 							if ($options[$identifiers[$i]][0] == '') {
 								break;
 							}
@@ -735,7 +735,7 @@ abstract class baseModule {
 							break;
 						// check by regular expression (case sensitive)
 						case "regex":
-							// ignore empty fileds
+							// ignore empty fields
 							if ($options[$identifiers[$i]][0] == '') {
 								break;
 							}
@@ -1022,9 +1022,9 @@ abstract class baseModule {
 	 * The result is an hashtable with the following keys:<br>
 	 * <ul>
 	 * <li><b>Headline (required)</b><br>
-	 * The headline of this help entry. Can consist of any alpha-numeric characters. No HTML/CSS elements are allowed.</li>
+	 * The headline of this help entry. Can consist of any alphanumeric characters. No HTML/CSS elements are allowed.</li>
 	 * <li><b>Text (required)</b><br>
-	 * The text of the help entry which may contain any alpha-numeric characters.</li>
+	 * The text of the help entry which may contain any alphanumeric characters.</li>
 	 * <li><b>SeeAlso (optional)</b><br>
 	 * A reference to anonther related web site. It must be an array containing a field called "text" with the link text
 	 * that should be displayed and a field called "link" which is the link target.</li>
@@ -2227,7 +2227,7 @@ abstract class baseModule {
 	}
 
 	/**
-	 * Returns a list of wildcards that can be replaced in input fileds.
+	 * Returns a list of wildcards that can be replaced in input fields.
 	 * E.g. "$firstname" is replaced with "givenName" attribute value.
 	 *
 	 * @return array replacements as wildcard => value

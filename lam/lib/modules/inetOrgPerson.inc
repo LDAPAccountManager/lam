@@ -707,11 +707,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 			),
 			'businessCategory' => array(
 				"Headline" => _("Business category"), 'attr' => 'businessCategory',
-				"Text" => _("Business category (e.g. Administration, IT-Services, Manangement, ...)")
+				"Text" => _("Business category (e.g. Administration, IT-Services, Management, ...)")
 			),
 			'businessCategoryList' => array(
 				"Headline" => _("Business category"), 'attr' => 'businessCategory',
-				"Text" => _("Business category (e.g. Administration, IT-Services, Manangement, ...)") . '. ' . _("Multiple values are separated by semicolon.")
+				"Text" => _("Business category (e.g. Administration, IT-Services, Management, ...)") . '. ' . _("Multiple values are separated by semicolon.")
 			),
 			'l' => array(
 				"Headline" => _("Location"), 'attr' => 'l',
@@ -3916,7 +3916,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 	 * @param $modules list of modules for which the password should be changed
 	 * @param boolean $forcePasswordChange force the user to change his password at next login
 	 * @return array list of error messages if any as parameter array for StatusMessage
-	 *               e.g. return arrray(array('ERROR', 'Password change failed.'))
+	 *               e.g. return array(array('ERROR', 'Password change failed.'))
 	 * @see passwordService::passwordChangeRequested
 	 */
 	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {

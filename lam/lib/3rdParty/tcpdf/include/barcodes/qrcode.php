@@ -1686,7 +1686,7 @@ class QRcode {
 	/**
 	 * Append data to an input object.
 	 * The data is copied and appended to the input object.
-	 * @param $items (arrray) input items
+	 * @param $items (array) input items
 	 * @param $mode (int) encoding mode.
 	 * @param $size (int) size of data (byte).
 	 * @param $data (array) array of input data.

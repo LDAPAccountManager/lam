@@ -48,7 +48,7 @@ include_once(__DIR__ . '/../../lib/modules.inc');
 startSecureSession();
 enforceUserIsLoggedIn();
 
-// Redirect to startpage if user is not loged in
+// Redirect to startpage if user is not logged in
 if (!isLoggedIn()) {
 	metaRefresh("../login.php");
 	exit;

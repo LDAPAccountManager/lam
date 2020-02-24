@@ -516,7 +516,7 @@ printHeaderContents(_("Edit general settings"), '../..');
 	 * Formats an LDAP time string (e.g. from createTimestamp).
 	 *
 	 * @param String $time LDAP time value
-	 * @return String formated time
+	 * @return String formatted time
 	 */
 	function formatSSLTimestamp($time) {
 		if (!empty($time)) {

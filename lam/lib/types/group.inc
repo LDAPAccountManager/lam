@@ -280,7 +280,7 @@ class lamGroupList extends lamList {
 	 */
 	function listGetParams() {
 		parent::listGetParams();
-		// generate list primary group memebers
+		// generate list primary group members
 		// after parent::listGetParams is $this->refresh set to correct value
 		if ($this->include_primary && !$this->refresh && ($this->refresh_primary || (sizeof($this->primary_hash) == 0))) {
 			$this->groupRefreshPrimary();
@@ -294,7 +294,7 @@ class lamGroupList extends lamList {
 	protected function getTableCellContent(&$entry, &$attribute) {
 		$countAttributes = array('memberuid_count', 'member_count', 'uniqueMember_count', 'owner_count', 'roleOccupant_count');
 		if ($attribute == "memberuid") {
-			// $gid is used for linking primary group memebers
+			// $gid is used for linking primary group members
 			$gid = -1;
 			$use_primary = false;
 			if ($this->include_primary == "on") {

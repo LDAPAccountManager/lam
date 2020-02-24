@@ -2556,7 +2556,7 @@ class htmlInputTextarea extends htmlElement {
 	private $rowCount;
 	/** enabled or disabled */
 	private $isEnabled = true;
-	/** specifies if LAM should display this field whith a WYSIWYG editor */
+	/** specifies if LAM should display this field with a WYSIWYG editor */
 	protected $richEdit = false;
 
 	/**
@@ -2618,7 +2618,7 @@ class htmlInputTextarea extends htmlElement {
 	}
 
 	/**
-	 * Specifies if the textarea should be displayed whith a WYSIWYG editor.
+	 * Specifies if the textarea should be displayed with a WYSIWYG editor.
 	 * <br>This requires that the page which displays the textarea also includes the ckeditor JS.
 	 * <br>Rich editing is disabled by default.
 	 *
@@ -3451,7 +3451,7 @@ class htmlLink extends htmlElement {
 }
 
 /**
- * Generates a link arround a htmlElement.
+ * Generates a link around a htmlElement.
  *
  * @package metaHTML
  */

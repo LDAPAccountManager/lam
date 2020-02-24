@@ -61,7 +61,7 @@ if (!checkIfWriteAccessIsAllowed()) {
 	die();
 }
 
-// Redirect to startpage if user is not loged in
+// Redirect to startpage if user is not logged in
 if (!isLoggedIn()) {
 	metaRefresh("login.php");
 	exit;

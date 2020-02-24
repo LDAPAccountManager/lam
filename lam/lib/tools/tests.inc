@@ -91,10 +91,10 @@ class toolTests implements \LAMTool {
 	}
 
 	/**
-	 * Returns the prefered position of this tool on the tools page.
+	 * Returns the preferred position of this tool on the tools page.
 	 * The position may be between 0 and 1000. 0 is the top position.
 	 *
-	 * @return int prefered position
+	 * @return int preferred position
 	 */
 	function getPosition() {
 		return 1000;

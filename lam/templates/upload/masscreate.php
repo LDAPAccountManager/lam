@@ -71,7 +71,7 @@ if (!checkIfWriteAccessIsAllowed()) die();
 
 checkIfToolIsActive('toolFileUpload');
 
-// Redirect to startpage if user is not loged in
+// Redirect to startpage if user is not logged in
 if (!isLoggedIn()) {
 	metaRefresh("../login.php");
 	exit;
@@ -272,7 +272,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 	$row->add(new htmlTitle(_("File upload")), 12);
 
 	// instructions
-	$row->add(new htmlOutputText(_("Please provide a CSV formated file with your account data. The cells in the first row must be filled with the column identifiers. The following rows represent one account for each row.")), 12);
+	$row->add(new htmlOutputText(_("Please provide a CSV formatted file with your account data. The cells in the first row must be filled with the column identifiers. The following rows represent one account for each row.")), 12);
 	$row->add(new htmlOutputText(_("Check your input carefully. LAM will only do some basic checks on the upload data.")), 12);
 	$row->addVerticalSpacer('1rem');
 	$row->add(new htmlOutputText(_("Hint: Format all cells as text in your spreadsheet program and turn off auto correction.")), 12);

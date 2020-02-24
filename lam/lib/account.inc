@@ -216,7 +216,7 @@ function getSupportedHashTypes() {
 }
 
 /**
-* Calculates a password salt of the given legth.
+* Calculates a password salt of the given length.
 *
 * @param int $len salt length
 * @return String the salt string
@@ -356,11 +356,12 @@ function generateRandomPassword($length = 12) {
 }
 
 /**
- * Checks if the given password mathes the crypto hash.
+ * Checks if the given password matches the crypto hash.
  *
  * @param String type hash type (must be one of getSupportedHashTypes())
- * @param unknown_type $hash password hash value
- * @param unknown_type $password plain text password to check
+ * @param string $hash password hash value
+ * @param string $password plain text password to check
+ * @return bool hash matches
  * @see getSupportedHashTypes()
  */
 function checkPasswordHash($type, $hash, $password) {
@@ -1115,7 +1116,7 @@ function compareDN(&$a, &$b) {
  * Formats an LDAP time string (e.g. from createTimestamp).
  *
  * @param String $time LDAP time value
- * @return String formated time
+ * @return String formatted time
  */
 function formatLDAPTimestamp($time) {
 	$dateTime = parseLDAPTimestamp($time);
@@ -1577,7 +1578,7 @@ function getFormattedTime($format) {
  * E.g. 70 seconds will return 1m10s.
  *
  * @param int $numSeconds number of seconds
- * @return String formated number
+ * @return String formatted number
  */
 function formatSecondsToShortFormat($numSeconds) {
 	if (empty($numSeconds)) {

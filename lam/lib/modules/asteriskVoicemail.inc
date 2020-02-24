@@ -480,7 +480,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 * @param $modules list of modules for which the password should be changed
 	 * @param boolean $forcePasswordChange force the user to change his password at next login
 	 * @return array list of error messages if any as parameter array for StatusMessage
-	 *			   e.g. return arrray(array('ERROR', 'Password change failed.'))
+	 *			   e.g. return array(array('ERROR', 'Password change failed.'))
 	 * @see passwordService::passwordChangeRequested
 	 */
 	public function passwordChangeRequested($password, $modules, $forcePasswordChange) {

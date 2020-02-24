@@ -567,7 +567,7 @@ class sambaGroupMapping extends baseModule {
 		}
 	}
 
-	/** this functin fills the error message array with messages
+	/** this function fills the error message array with messages
 	**/
 	function load_Messages() {
 		$this->messages['sambaSID'][0] = array('ERROR', _('There can be only one group of this type.'));  // third parameter must be set dynamically

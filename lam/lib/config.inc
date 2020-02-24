@@ -862,7 +862,7 @@ class LAMConfig {
 			}
 			if (!in_array("Admins", $saved)) {
 				array_push($file_array, "\n\n# list of users who are allowed to use LDAP Account Manager\n" .
-					"# names have to be seperated by semicolons\n" .
+					"# names have to be separated by semicolons\n" .
 					"# e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org\n" . "Admins: " . $this->Admins . "\n");
 			}
 			if (!in_array("treesuffix", $saved)) {
@@ -1234,7 +1234,7 @@ class LAMConfig {
 	}
 
 	/**
-	* Returns all admin users seperated by semicolons
+	* Returns all admin users separated by semicolons
 	*
 	* @return string the admin string
 	*/
@@ -1245,7 +1245,7 @@ class LAMConfig {
 	/**
 	* Sets the admin string
 	*
-	* @param string $value new admin string that contains all admin users seperated by semicolons
+	* @param string $value new admin string that contains all admin users separated by semicolons
 	* @return boolean true if $value has correct format
 	*/
 	public function set_Adminstring($value) {

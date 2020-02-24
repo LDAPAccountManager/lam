@@ -601,7 +601,7 @@ class lamList {
 	 * @return htmlElement content
 	 */
 	protected function getTableCellContent(&$entry, &$attribute) {
-		// print all attribute entries seperated by "; "
+		// print all attribute entries separated by "; "
 		if (isset($entry[$attribute]) && sizeof($entry[$attribute]) > 0) {
 			if (is_array($entry[$attribute])) {
 				if (($attribute == 'entryexpiretimestamp') && !empty($entry[$attribute][0])) {
