@@ -107,7 +107,7 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 		// Get PDF entries for the current account
 		$entries = $account->get_pdfEntries($pdfKeys, $account_type->getId());
 
-		// Now create the PDF file acording to the structure with the submitted values
+		// Now create the PDF file according to the structure with the submitted values
 		foreach ($structure->getSections() as $section) {
 			if ($section instanceof PDFTextSection) {
 				$pdf->setFont($font, "", LAMPDF_FONT_SIZE);

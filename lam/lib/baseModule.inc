@@ -7,7 +7,7 @@ use LAM\PDF\PDFImage;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2018  Roland Gruber
+  Copyright (C) 2003 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -880,7 +880,7 @@ abstract class baseModule {
 	*
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
-	* This funtion returns an array which contains subarrays which represent an upload column.
+	* This function returns an array which contains subarrays which represent an upload column.
 	* <b>Syntax of column arrays:</b>
 	* <br>
 	* <br> array(

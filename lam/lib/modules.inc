@@ -4,7 +4,7 @@ use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2019  Roland Gruber
+  Copyright (C) 2003 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -223,7 +223,7 @@ function getModulesDependencies($scope) {
 *
 * @param array $selected selected module names
 * @param array $deps module dependencies
-* @return mixed false if no misssing dependency was found,
+* @return mixed false if no missing dependency was found,
 * otherwise an array of array(selected module, depending module) if missing dependencies were found
 */
 function check_module_depends($selected, $deps) {
@@ -850,7 +850,7 @@ class accountContainer {
 	}
 
 	/**
-	* Returns the accout type of this object (e.g. user, group, host).
+	* Returns the account type of this object (e.g. user, group, host).
 	*
 	* @return ConfiguredType account type
 	*/
@@ -1211,7 +1211,7 @@ class accountContainer {
 				$return['messages'] .= StatusMessage('ERROR', _('Passwords are different!'), '', array(), true);
 				$return['errorsOccured'] = 'true';
 			}
-			// check passsword stregth
+			// check passsword strength
 			$pwdPolicyResult = checkPasswordStrength($password1, null, null);
 			if ($pwdPolicyResult !== true) {
 				$return['messages'] .= StatusMessage('ERROR', $pwdPolicyResult, '', array(), true);

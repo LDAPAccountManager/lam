@@ -40,7 +40,7 @@ $Id$
 */
 class smbHash {
 
-# Contants used in lanlam hash calculations
+# Constants used in lanlam hash calculations
 # Ported from SAMBA/source/libsmb/smbdes.c:perm1[56]
 private $perm1 = array(57, 49, 41, 33, 25, 17,  9,
               1, 58, 50, 42, 34, 26, 18,

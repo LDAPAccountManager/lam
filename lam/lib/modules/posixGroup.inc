@@ -6,7 +6,7 @@ use LAM\TYPES\ConfiguredType;
 
 This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 Copyright (C) 2003 - 2006  Tilo Lutz
-              2007 - 2019  Roland Gruber
+              2007 - 2020  Roland Gruber
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -822,7 +822,7 @@ class posixGroup extends baseModule implements passwordService {
 		if (isset($_POST['changegids'])) $this->changegids=true;
 		else $this->changegids=false;
 		if (!isset($this->attributes['gidNumber'][0]) || ($this->attributes['gidNumber'][0] != $_POST['gidNumber'])) {
-			// Check if GID is valid. If none value was entered, the next useable value will be inserted
+			// Check if GID is valid. If none value was entered, the next usable value will be inserted
 			// load min and max GID number
 			$minID = intval($this->moduleSettings['posixGroup_' . $typeId . '_minGID'][0]);
 			$maxID = intval($this->moduleSettings['posixGroup_' . $typeId . '_maxGID'][0]);

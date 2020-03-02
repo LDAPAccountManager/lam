@@ -1086,7 +1086,7 @@ class posixAccount extends baseModule implements passwordService {
 			}
 		}
 		$this->attributes['uid'][0] = trim($_POST['uid']);
-		// Check if UID is valid. If none value was entered, the next useable value will be inserted
+		// Check if UID is valid. If none value was entered, the next usable value will be inserted
 		// load min and may uidNumber
 		if ($this->get_scope()=='user') {
 			$minID = intval($this->moduleSettings['posixAccount_' . $typeId . '_minUID'][0]);

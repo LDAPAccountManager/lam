@@ -264,7 +264,7 @@ function deleteConfigProfile($name) {
 /**
 * Returns the version number of this LAM installation.
 * Format: <major version>.<minor version>.<patch level>
-* <br> Major/minor version are always numbers, patch level may contain letters for inofficial releases only (e.g. 0.5.alpha1).
+* <br> Major/minor version are always numbers, patch level may contain letters for unofficial releases only (e.g. 0.5.alpha1).
 *
 * @return string version number
 */

@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2011  Roland Gruber
+  Copyright (C) 2009 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ function getTools() {
 
 /**
  * Represents a tool.
- * LAM will scan lib/tools/*.inc for classes which implement this interface. This alows to
+ * LAM will scan lib/tools/*.inc for classes which implement this interface. This allows to
  * dynamically plugin additional tools. There will be an entry on the tools page inside LAM
  * for each found class (if it matches the security level).
  * A LAMTool only specifies name, description and location of a tool. The tool functionality

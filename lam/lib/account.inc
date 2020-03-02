@@ -1346,7 +1346,7 @@ function encodeMailAddress($address) {
 }
 
 /**
- * Returns a base64 encoded string of the given values in a fomat that is used in emails.
+ * Returns a base64 encoded string of the given values in a format that is used in emails.
  *
  * @param String $value value to encode
  * @return String base64 encoded value

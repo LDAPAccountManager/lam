@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2019  Roland Gruber
+  Copyright (C) 2006 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ function lam_start_session() {
 
 /**
  * Starts a session and checks the environment.
- * The script is stopped if one of the checks fail (timeout redirection may be overriden).
+ * The script is stopped if one of the checks fail (timeout redirection may be overridden).
  *
  * @param boolean $redirectToLogin redirect user to login page (default: true)
  * @param boolean $initSecureData init verification data like session ID and client IP (default: false)

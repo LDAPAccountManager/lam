@@ -782,7 +782,7 @@ class htmlInputField extends htmlElement {
 	 * Enables autocompletion for this input field.
 	 *
 	 * @param array $values list of values to suggest
-	 * @param int $minLength autocompletion starts after this number of caracters entered (default 1; 0 means immediate start)
+	 * @param int $minLength autocompletion starts after this number of characters entered (default 1; 0 means immediate start)
 	 * @param boolean $multiValue allow multiple autocompletion values in the same fields (default: false)
 	 * @param String $multiSeparator separator expression if multiple autocompletion values are allowed (default ",\s*")
 	 * @param String $multiSeparator separator for two values (default ", ")
@@ -1424,7 +1424,7 @@ class htmlSelect extends htmlElement {
 	}
 
 	/**
-	 * Specifies if the elemets should be sorted (default: sort).
+	 * Specifies if the elements should be sorted (default: sort).
 	 *
 	 * @param boolean $sortElements sort elements
 	 */
@@ -3465,7 +3465,7 @@ class htmlContentLink extends htmlLink {
 	 *
 	 * @param htmlElement $content content to link
 	 * @param String $target link target
-	 * @param boolean $highlightOnHover higlight content on hover
+	 * @param boolean $highlightOnHover highlight content on hover
 	 */
 	function __construct($content, $target) {
 		$this->content = $content;

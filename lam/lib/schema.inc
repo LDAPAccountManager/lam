@@ -1354,7 +1354,7 @@ function _get_schema_dn($dn, $debug=false )
 function _get_raw_schema($schema_to_fetch, $dn='' )
 {
 
-	// Swith to true to enable verbose output of schema fetching progress
+	// Switch to true to enable verbose output of schema fetching progress
 	$debug = false;
 
 	$ds = $_SESSION['ldap']->server();
