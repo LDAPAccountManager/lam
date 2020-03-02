@@ -15,7 +15,7 @@ use \htmlResponsiveRow;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2019  Roland Gruber
+  Copyright (C) 2006 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -125,7 +125,7 @@ include '../../lib/adminFooter.inc';
  * @param Remote $remote SSH connection
  * @param string $testText describing text
  * @param htmlResponsiveRow $container container for HTML output
- * @return boolean true, if errors occured
+ * @return boolean true, if errors occurred
  */
 function testRemoteCommand($command, $stopTest, $remote, $testText, $container) {
 	$okImage = "../../graphics/pass.png";

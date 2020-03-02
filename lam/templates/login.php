@@ -106,7 +106,7 @@ if(isset($_COOKIE["lam_default_profile"]) && in_array($_COOKIE["lam_default_prof
 // Reload loginpage after a profile change
 if(isset($_GET['useProfile']) && in_array($_GET['useProfile'], $profiles)) {
 	logNewMessage(LOG_DEBUG, "Change server profile to " . $_GET['useProfile']);
-	$_SESSION['config'] = new LAMConfig($_GET['useProfile']); // Recreate the config object with the submited
+	$_SESSION['config'] = new LAMConfig($_GET['useProfile']); // Recreate the config object with the submitted
 }
 // Load login page
 elseif (!empty($default_Profile) && in_array($default_Profile, $profiles)) {
@@ -556,7 +556,7 @@ if(isset($_POST['checklogin'])) {
 		$searchLDAP->close();
 	}
 	// try to connect to LDAP
-	$result = $_SESSION['ldap']->connect($username, $password); // Connect to LDAP server for verifing username/password
+	$result = $_SESSION['ldap']->connect($username, $password); // Connect to LDAP server for verifying username/password
 	if($result === 0) {// Username/password correct. Do some configuration and load main frame.
 		$_SESSION['loggedIn'] = true;
 		// set security settings for session

@@ -24,7 +24,7 @@ use LAM\PDF\PDFImage;
 */
 
 /**
-* Manages the atrributes of object class inetOrgPerson.
+* Manages the attributes of object class inetOrgPerson.
 *
 * @package modules
 * @author Tilo Lutz

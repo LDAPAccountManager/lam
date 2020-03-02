@@ -3670,7 +3670,7 @@ class posixAccount extends baseModule implements passwordService {
 
 	/**
 	 * Returns a suggestion for the user name.
-	 * By deafult this wil be the first character of the first name plus the last name.
+	 * By default this wil be the first character of the first name plus the last name.
 	 *
 	 * @param array $attrs LDAP attributes
 	 * @param string $typeId type id (e.g. user)

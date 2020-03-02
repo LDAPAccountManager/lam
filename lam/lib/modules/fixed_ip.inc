@@ -173,7 +173,7 @@ class fixed_ip extends baseModule {
 	/**
 	 *
 	 * Check, if a mac address is invalid
-	 * @param mac adress
+	 * @param mac address
 	 *
 	 * @return true, if mac is invalid
 	 **/

@@ -351,7 +351,7 @@ if (isset($_POST['delete'])) {
 * Returns the number of child entries of a DN.
 *
 * @param string $dn DN of parent
-* @return integer number of childs
+* @return integer number of children
 */
 function getChildCount($dn) {
 	$entries = searchLDAP(escapeDN($dn), 'objectClass=*', array('dn'));

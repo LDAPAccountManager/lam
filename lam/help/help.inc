@@ -5,7 +5,7 @@ use \LAM\TYPES\TypeManager;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006 Michael Duergner
-                2003 - 2019 Roland Gruber
+                2003 - 2020 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -73,7 +73,7 @@ $helpArray = array (
 						":</b><br><br>" .
 						_("When using ldaps:// or TLS be sure to use exactly the same IP/domain name as in your certificate!")),
 				"202" => array ("Headline" => _("LDAP suffix"),
-					"Text" => _("This is the suffix of the LDAP tree from where to search for LDAP entries. Only entries in this subtree will be displayed in the account list. When creating a new accont this will be the DN where it is saved.") .
+					"Text" => _("This is the suffix of the LDAP tree from where to search for LDAP entries. Only entries in this subtree will be displayed in the account list. When creating a new account this will be the DN where it is saved.") .
 						"<br><br><b>".
 						_("Example").
 						":</b><br><br>".
@@ -369,7 +369,7 @@ $helpArray = array (
 				"751" => array ("Headline" => _('Base DN'),
 					"Text" => _('The export will read entries of this DN.')),
 				"752" => array ("Headline" => _('Search filter'),
-					"Text" => _('Please enter an LDAP filter to specifiy the exported entries.')),
+					"Text" => _('Please enter an LDAP filter to specify the exported entries.')),
 				"753" => array ("Headline" => _('Attributes'),
 					"Text" => _('Please enter a comma separated list of attributes to export. Using "*" will export all attributes.')),
 				"754" => array ("Headline" => _('Include system attributes'),

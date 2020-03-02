@@ -6,7 +6,7 @@ use \LAM\PDF\PDFTableRow;
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2009 - 2012  Pavel Pozdniak
-                2009 - 2019  Roland Gruber
+                2009 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -299,7 +299,7 @@ class asteriskExtension extends baseModule {
             //LOAD context from already entities that  already exists
             $accountContext = $entries[0]['astcontext'][0];
         }  elseif (isset($this->attributes['AstContext'][0])) {
-            //LOAD context from attributes, this is treak to deal with profile
+            //LOAD context from attributes, this is to deal with profile
             $accountContext = $this->attributes['AstContext'][0];
 	}
         $accountContextInput = new htmlResponsiveInputField(_("Account context"), 'AstContext', $accountContext, 'AstContext');
@@ -372,7 +372,7 @@ class asteriskExtension extends baseModule {
             $applicationData = $extensLine['astapplicationdata'][0];
         }
         $renderContainer->add(new htmlResponsiveInputField(_("Application data"), "AstApplicationData_" . $placeInList, $applicationData, 'AstApplicationData'), 12);
-        //delimeter
+        //delimiter
         $renderContainer->addVerticalSpacer('0.5rem');
     }
 
@@ -644,7 +644,7 @@ class asteriskExtension extends baseModule {
 
     /**
      * Fills the fields of a single extension row.
-     * In Asterisk it would only be an extension name,a priority,an application, but LDAP spicific
+     * In Asterisk it would only be an extension name,a priority,an application, but LDAP specific
      * add to processing context field.
      *
      * @param array $extRow - hash array to store single extension properties;
@@ -680,7 +680,7 @@ class asteriskExtension extends baseModule {
             $extRow['astapplicationdata'][0] = $_POST['AstApplicationData_' . $entryCounter];
         }
 
-        //Fille the member filed
+        //Fill the member filed
         $extRow['member'] = $this->extensionOwners;
         if ((!isset($extRow['member']) || count($extRow['member']) == 0)
         		&& !isset($_POST['form_subpage_' . get_class($this) . '_user_open'])) {
@@ -706,7 +706,7 @@ class asteriskExtension extends baseModule {
     }
 
     /**
-     * Search by extension name and retun true if fields with this extension name exists
+     * Search by extension name and return true if fields with this extension name exists
      * and false otherwise.
      * Equal extension names are allowed in different OUs.
      *
@@ -817,7 +817,7 @@ class asteriskExtension extends baseModule {
      */
     function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts, $selectedModules, &$type) {
         $messages = array();
-        //hash to strore extension_name => priority. For new extensoin priority will be 1
+        //hash to store extension_name => priority. For new extension priority will be 1
         $extensionNamePriorityMap = array();
         for ($i = 0; $i < sizeof($rawAccounts); $i++) {
             // add object class
