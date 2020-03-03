@@ -5,7 +5,7 @@ use \LAMException;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2018 - 2019  Roland Gruber
+ Copyright (C) 2018 - 2020  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -421,7 +421,7 @@ interface ImporterTask {
 	/**
 	 * Runs the task.
 	 *
-	 * @return string HTML output or LAMException if error occured
+	 * @return string HTML output or LAMException if error occurred
 	 */
 	public function run();
 

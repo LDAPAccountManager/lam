@@ -2,10 +2,9 @@
 use LAM\TYPES\ConfiguredType;
 
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2017  Roland Gruber
+  Copyright (C) 2005 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -177,7 +176,7 @@ class baseType {
 	* Checks input values of config settings.
 	* <br>
 	* If the input data is invalid the return value is an array that contains subarrays to build StatusMessages ('message type', 'message head', 'message text').
-	* <br>If no errors occured the function returns an empty array.
+	* <br>If no errors occurred the function returns an empty array.
 	*
 	* @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
 	* @return array list of error messages

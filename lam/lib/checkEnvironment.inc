@@ -35,7 +35,7 @@ include_once(__DIR__ . "/../lib/status.inc");
 /** config */
 include_once(__DIR__ . "/../lib/config.inc");
 
-// check if PHP >= 5.6.0
+// check if PHP >= 7
 if (version_compare(phpversion(), '7.0.0') < 0) {
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
 	echo "<html>\n<head>\n";
@@ -129,7 +129,7 @@ $mainConfig = new LAMCfgMain();
 if (!$mainConfig->isConfigFileExisting() && !$mainConfig->installSampleConfig()) {
 	$criticalErrors[] = array("ERROR", "The main config file (config.cfg) does not exist.", "Please see the manual for installation instructions.");
 }
-// stop login if critical errors occured
+// stop login if critical errors occurred
 if (sizeof($criticalErrors) > 0) {
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
 	echo "<html>\n<head>\n";

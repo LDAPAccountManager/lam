@@ -402,7 +402,7 @@ function checkPasswordStrength($password, $userName, $otherUserAttrs) {
 	if (strlen($password) < $cfg->passwordMinLength) {
 		return sprintf(_('The password is too short. You have to enter at least %s characters.'), $cfg->passwordMinLength);
 	}
-	// get number of characers per character class
+	// get number of characters per character class
 	$lower = 0;
 	$upper = 0;
 	$numeric = 0;

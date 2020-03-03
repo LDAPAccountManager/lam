@@ -544,7 +544,7 @@ abstract class baseModule {
 	* $options is an hash array (option name => value) that contains the user input.
 	* The option values are all arrays containing one or more elements.<br>
 	* If the input data is invalid the return value is an array that contains arrays
-	* to build StatusMessages (message type, message head, message text). If no errors occured
+	* to build StatusMessages (message type, message head, message text). If no errors occurred
 	* the function returns an empty array.
 	*
 	* @param array $options a hash array (name => value) containing the user input
@@ -688,7 +688,7 @@ abstract class baseModule {
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
 	* If the input data is invalid the return value is an array that contains subarrays to build StatusMessages ('message type', 'message head', 'message text').
-	* <br>If no errors occured the function returns an empty array.
+	* <br>If no errors occurred the function returns an empty array.
 	*
 	* @param array $typeIds list of account type ids which are used
 	* @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
@@ -908,7 +908,7 @@ abstract class baseModule {
 	}
 
 	/**
-	* Returns a list of module names which must be processed in building the account befor this module.
+	* Returns a list of module names which must be processed in building the account before this module.
 	*
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
@@ -930,7 +930,7 @@ abstract class baseModule {
 	*
 	* Calling this method does not require the existence of an enclosing {@link accountContainer}.<br>
 	* <br>
-	* Returns an array which contains subarrays to generate StatusMessages if any errors occured.
+	* Returns an array which contains subarrays to generate StatusMessages if any errors occurred.
 	*
 	* @param array $rawAccounts the user input data, contains one subarray for each account.
 	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
@@ -2066,7 +2066,7 @@ abstract class baseModule {
 	 * <br>
 	 * If the input data is invalid the return value is an array that contains arrays
 	 * to build StatusMessages (message type, message head, message text). If no errors
-	 * occured the function returns an empty array.
+	 * occurred the function returns an empty array.
 	 *
 	 * @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
 	 * @param selfServiceProfile $profile self service profile
@@ -2084,7 +2084,7 @@ abstract class baseModule {
 	 *
 	 * @param boolean $newAccount is new account or existing one
 	 * @param array $attributes LDAP attributes of this entry
-	 * @return boolean true, if no problems occured
+	 * @return boolean true, if no problems occurred
 	 */
 	public function preModifySelfService($newAccount, $attributes) {
 		return true;
@@ -2095,7 +2095,7 @@ abstract class baseModule {
 	 *
 	 * @param boolean $newAccount is new account or existing one
 	 * @param array $attributes LDAP attributes of this entry
-	 * @return boolean true, if no problems occured
+	 * @return boolean true, if no problems occurred
 	 */
 	public function postModifySelfService($newAccount, $attributes) {
 		return true;
@@ -2163,7 +2163,7 @@ abstract class baseModule {
 
 	/**
 	 * Returns the path to the module icon.
-	 * The path must be releative to graphics (e.g. key.png) or an URL (/icons/icon.png or http://server/icon.png).
+	 * The path must be relative to graphics (e.g. key.png) or an URL (/icons/icon.png or http://server/icon.png).
 	 * You can also set $this->meta['icon']. The preferred size is 32x32px.
 	 *
 	 * @return unknown
