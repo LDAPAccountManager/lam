@@ -158,7 +158,7 @@ class imapAccess extends baseModule {
 		$this->messages['managemailbox'][2] = array('ERROR', _('Unable to create mailbox on IMAP server.'));
 		$this->messages['managemailbox'][3] = array('ERROR', _('Unable to locate mailbox on IMAP.'));
 		$this->messages['managemailbox'][4] = array('ERROR', _('Your IMAP domains and email address domain do not match.'));
-		$this->messages['managemailbox'][5] = array('ERROR', _('Invalid password for IMAP admin or other problem occured.'));
+		$this->messages['managemailbox'][5] = array('ERROR', _('Invalid password for IMAP admin or other problem occurred.'));
 		$this->messages['managemailbox'][6] = array('WARN', _('Your LAM login password was not accepted by the IMAP server.'));
 		$this->messages['managemailbox'][7] = array('ERROR', _('Cannot update quota.'));
 		$this->messages['managemailbox'][8] = array('ERROR', _('Wrong quota format. Quota must be numeric.'));
