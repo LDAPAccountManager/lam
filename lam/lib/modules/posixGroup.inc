@@ -853,7 +853,7 @@ class posixGroup extends baseModule implements passwordService {
 							else unset($this->attributes['gidNumber'][0]);
 						}
 					}
-					// $uids is allways an array but not if no entries were found
+					// $uids is always an array but not if no entries were found
 					if (is_array($gids)) {
 						// id-number is in use and account is a new account
 						if ((in_array($this->attributes['gidNumber'][0], $gids)) && $this->orig['gidNumber'][0]=='') {

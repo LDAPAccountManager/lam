@@ -1208,7 +1208,7 @@ class posixAccount extends baseModule implements passwordService {
 	}
 
 	/**
-	* Checks if an attribute contains only ASCII charaters and replaces invalid characters.
+	* Checks if an attribute contains only ASCII characters and replaces invalid characters.
 	*
 	* @param string $attribute attribute value
 	* @return string attribute value with replaced non-ASCII characters
@@ -3670,7 +3670,7 @@ class posixAccount extends baseModule implements passwordService {
 
 	/**
 	 * Returns a suggestion for the user name.
-	 * By default this wil be the first character of the first name plus the last name.
+	 * By default this will be the first character of the first name plus the last name.
 	 *
 	 * @param array $attrs LDAP attributes
 	 * @param string $typeId type id (e.g. user)

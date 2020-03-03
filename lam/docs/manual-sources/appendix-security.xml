@@ -34,7 +34,7 @@
   <section>
     <title>Use of SSL</title>
 
-    <para>The data which is transfered between you and LAM is very sensitive.
+    <para>The data which is transferred between you and LAM is very sensitive.
     Please always use SSL encrypted connections between LAM and your browser
     to protect yourself against network sniffers.</para>
   </section>

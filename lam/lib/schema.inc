@@ -1,10 +1,9 @@
 <?php
 namespace LAM\SCHEMA;
 /*
-$Id$
 
   Copyright (C) 2004 David Smith
-  modified to fit for LDAP Account Manager 2005 - 2018 Roland Gruber
+  modified to fit for LDAP Account Manager 2005 - 2020 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -809,7 +808,7 @@ class AttributeType extends SchemaItem
 	/**
 	 * Gets this attribute's syntax OID. Differs from getSyntaxString() in that this
      * function only returns the actual OID with any length specification removed.
-     * Ie, if the syntax string is "1.2.3.4{16}", this function only retruns
+     * Ie, if the syntax string is "1.2.3.4{16}", this function only returns
 	 * "1.2.3.4".
      * @return string The syntax OID string.
 	 */
@@ -1330,7 +1329,7 @@ function _get_schema_dn($dn, $debug=false )
 
 /**
  * Fetches the raw schema array for the subschemaSubentry of the server. Note,
- * this function has grown many hairs to accomodate more LDAP servers. It is
+ * this function has grown many hairs to accommodate more LDAP servers. It is
  * needfully complicated as it now supports many popular LDAP servers that
  * don't necessarily expose their schema "the right way".
  *
@@ -1338,7 +1337,7 @@ function _get_schema_dn($dn, $debug=false )
  *		fetch. Five valid values: 'objectclasses', 'attributetypes',
  *		'ldapsyntaxes', 'matchingruleuse', or 'matchingrules'.
  *		Case insensitive.
- * @param $dn (optional) This paremeter is the DN of the entry whose schema you
+ * @param $dn (optional) This parameter is the DN of the entry whose schema you
  * 		would like to fetch. Entries have the option of specifying
  * 		their own subschemaSubentry that points to the DN of the system
  * 		schema entry which applies to this attribute. If unspecified,
@@ -1744,7 +1743,7 @@ function add_aliases_to_attrs( &$attrs )
 /**
  * Adds inherited values to each attributeType specified by the SUP directive.
  * Supports infinite levels of inheritance.
- * Bug 856832: require a second paramter that has all attributes indexed by OID
+ * Bug 856832: require a second parameter that has all attributes indexed by OID
  */
 function add_sup_to_attrs( &$attrs, &$attrs_oid )
 {
@@ -1947,7 +1946,7 @@ function get_schema_syntaxes($dn=null, $use_cache=true )
 
 /**
  * Returns true if the schema for $schema_type has been cached and
- * is availble. $schema_type may be one of (lowercase) the following:
+ * is available. $schema_type may be one of (lowercase) the following:
  *      objectclasses
  *      attributetypes
  *      ldapsyntaxes

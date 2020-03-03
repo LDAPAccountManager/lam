@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008        Thomas Manninger
-                2008 - 2019 Roland Gruber
+                2008 - 2020 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
 */
 
 /**
- * This function checks if the given IP address ist valid.
+ * This function checks if the given IP address is valid.
  *
  * @param string IP to check
  * @param check Subnet

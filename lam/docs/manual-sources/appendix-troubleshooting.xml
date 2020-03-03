@@ -85,7 +85,7 @@
 
       <para>If there are any object classes or attributes missing you will get
       a notice. See <link linkend="a_schema">LDAP schema files</link> for a
-      list of used schemas. You may also want to deactive unused modules in
+      list of used schemas. You may also want to deactivate unused modules in
       your LAM server profile (tab "Modules").</para>
 
       <screenshot>

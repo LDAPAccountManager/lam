@@ -292,7 +292,7 @@
 
       <para><emphasis role="bold">LAM runtime environment:</emphasis></para>
 
-      <para>LAM runs on PHP. Therefore, it is independant of CPU architecture
+      <para>LAM runs on PHP. Therefore, it is independent of CPU architecture
       and operating system (OS). You can run LAM on any OS which supports
       Apache, Nginx or other PHP compatible web servers.</para>
 

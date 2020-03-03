@@ -331,7 +331,7 @@ attributetype ( 2.16.840.1.113719.1.203.4.55
 attributetype ( 2.16.840.1.113719.1.203.4.56
 	NAME 'dhcpComments' 
 	EQUALITY caseIgnoreIA5Match 
-	DESC 'Generic attribute that allows coments  within any DHCP object' 
+	DESC 'Generic attribute that allows comments  within any DHCP object'
 	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 SINGLE-VALUE )
 
 # Classes

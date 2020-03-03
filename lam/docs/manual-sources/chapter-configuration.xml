@@ -207,7 +207,7 @@
 
       <itemizedlist>
         <listitem>
-          <para>File: all messages will be writen to the given file. LAM will
+          <para>File: all messages will be written to the given file. LAM will
           create it if not yet existing.</para>
         </listitem>
 

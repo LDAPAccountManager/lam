@@ -1807,7 +1807,7 @@
       <para><emphasis role="bold">Setup password changing</emphasis></para>
 
       <para>LAM Pro cannot generate the password hashes itself because Heimdal
-      uses a propietary format for them. Therefore, LAM Pro needs to call e.g.
+      uses a proprietary format for them. Therefore, LAM Pro needs to call e.g.
       kadmin to set the password.</para>
 
       <para>The wildcards @@password@@ and @@principal@@ are replaced with
@@ -1856,7 +1856,7 @@
       <para><emphasis role="bold">Setup password changing</emphasis></para>
 
       <para>LAM Pro cannot generate the password hashes itself because MIT
-      uses a propietary format for them. Therefore, LAM Pro needs to call
+      uses a proprietary format for them. Therefore, LAM Pro needs to call
       kadmin/kadmin.local to set the password.</para>
 
       <para>LAM will add "-q 'cpw -pw PASSWORD PRINCIPAL'" to the command to
@@ -1870,9 +1870,9 @@
       password change.</para>
 
       <para>Please note that kadmin/kadmin.local often returns a successful
-      command even if errors occured (e.g. password policy violations). You
+      command even if errors occurred (e.g. password policy violations). You
       need to test this before and if affected then write a wrapper script
-      arround kadmin that returns non-zero return codes for errors.</para>
+      around kadmin that returns non-zero return codes for errors.</para>
 
       <para>Example commands:</para>
 
@@ -1956,7 +1956,7 @@
         </mediaobject>
       </screenshot>
 
-      <para>You can add the user to existing alias entries or create completly
+      <para>You can add the user to existing alias entries or create completely
       new ones.</para>
 
       <screenshot>
@@ -4737,7 +4737,7 @@ Run slapindex to rebuild the index.
       please skip the "@" entry in the CSV file below. LAM creates this entry
       with sample data.</para>
 
-      <para>In this example we assume that the following zone extry
+      <para>In this example we assume that the following zone entry
       exists:</para>
 
       <literallayout>dn: dlzZoneName=example.com,ou=bind,dc=example,dc=com
@@ -5360,7 +5360,7 @@ OK (10 msec)</programlisting>
     <para>LAM will display a default icon and "Custom fields" as label if you
     do not enter any values.</para>
 
-    <para>You may also specify how LAM displays cutom fields when there are
+    <para>You may also specify how LAM displays custom fields when there are
     multiple field groups. The default is accordion view where you can switch
     field groups by clicking on the title. You may also deactivate this mode.
     Then all field groups are displayed one below the other.</para>
@@ -5375,7 +5375,7 @@ OK (10 msec)</programlisting>
 
     <para><emphasis role="bold">Defining groups:</emphasis></para>
 
-    <para>All input fields are devided into groups. A group may contain one or
+    <para>All input fields are divided into groups. A group may contain one or
     more object classes and allows you to add/remove a certain set of input
     fields.</para>
 
@@ -5724,7 +5724,7 @@ OK (10 msec)</programlisting>
       </listitem>
 
       <listitem>
-        <para>§attribute|;§; attribute values separted by ";" (you can set
+        <para>§attribute|;§; attribute values separated by ";" (you can set
         other separators if you want)</para>
       </listitem>
     </itemizedlist>
@@ -5974,7 +5974,7 @@ OK (10 msec)</programlisting>
     <para>You can switch LAM's logging to debug mode if you are unsure which
     attributes with which values are available.</para>
 
-    <para>The following special wildcards are available for automatical
+    <para>The following special wildcards are available for automatic
     scripts:</para>
 
     <itemizedlist>

@@ -192,7 +192,7 @@
 
     <para>This will run the actions against your LDAP directory. You will see
     which accounts are edited in the progress area and also if any errors
-    occured.</para>
+    occurred.</para>
 
     <screenshot>
       <mediaobject>
