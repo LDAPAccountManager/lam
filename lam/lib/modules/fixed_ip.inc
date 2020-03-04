@@ -6,7 +6,7 @@ use \LAM\PDF\PDFTableRow;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2008 - 2019  Roland Gruber
+                2008 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -129,7 +129,7 @@ class fixed_ip extends baseModule {
 	 *  This function fills the error message array with messages.
 	 */
 	public function load_Messages() {
-		$this->messages['errors'][0] = array('ERROR', _('One or more errors occured. The invalid fields are marked.'), '');
+		$this->messages['errors'][0] = array('ERROR', _('One or more errors occurred. The invalid fields are marked.'), '');
 	}
 
 	/**
@@ -147,12 +147,12 @@ class fixed_ip extends baseModule {
 	}
 
 	/**
-	 * Checks if IPs are not overlaped.
+	 * Checks if IPs are not overlapped.
 	 *
 	 * @param ip IP address
-	 * @return not overlaped
+	 * @return bool not overlapped
 	 **/
-	public function isNotOverlapedIp($ip) {
+	private function isNotOverlappedIp($ip) {
 		if (in_array($ip, $this->overlapd)) {
 		    return false;
 		}
@@ -162,11 +162,9 @@ class fixed_ip extends baseModule {
 	}
 
 	/**
-	 *
-	 * Reset the overlapd_range() function
-	 *
+	 * Reset the overlapped_range() function
 	 **/
-	 public function reset_overlapd_ip() {
+	 private function reset_overlapped_ip() {
 	    $this->overlapd = array();
 	 }
 
@@ -292,7 +290,7 @@ class fixed_ip extends baseModule {
 		}
 		$this->processed = true;
 
-		$this->reset_overlapd_ip();
+		$this->reset_overlapped_ip();
 
 		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]!="") {
 
@@ -330,7 +328,7 @@ class fixed_ip extends baseModule {
 					$_POST['ip_'.$id] = trim($_POST['ip_'.$id]);
 				}
 				if ((!empty($_POST['ip_'.$id]) && !(check_ip($_POST['ip_'.$id])))
-						|| (!empty($_POST['ip_'.$id]) && !$this->isNotOverlapedIp($_POST['ip_'.$id]))) {
+						|| (!empty($_POST['ip_'.$id]) && !$this->isNotOverlappedIp($_POST['ip_'.$id]))) {
 					$error = true;
 					$this->fixed_ip[$id]['ip'] = $_POST['ip_'.$id];
 				}
@@ -421,7 +419,7 @@ class fixed_ip extends baseModule {
 		$titles = array(_('IP address'), _('PC name'), _('MAC address'), _('Description'), _('Active'), ' ');
 		$data = array();
        	// Reset oberlaped ips
-		$this->reset_overlapd_ip();
+		$this->reset_overlapped_ip();
 
 		// If $ranges is not a array, then create one:
 		if (!is_array($this->fixed_ip)) {
@@ -459,7 +457,7 @@ class fixed_ip extends baseModule {
 			    $messages[] = new htmlStatusMessage('ERROR', _("Invalid MAC address."), htmlspecialchars($this->fixed_ip[$id]['mac']));
 			}
 
-			// descripton
+			// description
 			if ($this->processed && !get_preg($this->fixed_ip[$id]['description'], 'ascii')) {
 			    $messages[] = new htmlStatusMessage('ERROR', _("Invalid description."), htmlspecialchars($this->fixed_ip[$id]['description']));
 			}
@@ -474,7 +472,7 @@ class fixed_ip extends baseModule {
 													$this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask'))) {
 				    $messages[] = new htmlStatusMessage('ERROR', _("The IP address does not match the subnet."), htmlspecialchars($this->fixed_ip[$id]['ip']));
 				}
-				elseif (!$this->isNotOverlapedIp($this->fixed_ip[$id]['ip'])) {
+				elseif (!$this->isNotOverlappedIp($this->fixed_ip[$id]['ip'])) {
 				    $messages[] = new htmlStatusMessage('ERROR', _("The IP address is already in use."), htmlspecialchars($this->fixed_ip[$id]['ip']));
 				}
 			}
@@ -703,7 +701,7 @@ class fixed_ip extends baseModule {
 			if (!is_array($this->fixed_ip)) {
 			    $this->fixed_ip = array();
 			}
-		    // Which entrys are new:
+		    // Which entries are new:
 		    foreach($this->fixed_ip AS $id => $arr) {
 		        $in_arr = false;
 		        foreach($this->orig_ips AS $idB => $arr) {

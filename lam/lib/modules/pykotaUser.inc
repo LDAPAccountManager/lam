@@ -6,7 +6,7 @@ use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2019  Roland Gruber
+  Copyright (C) 2013 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1022,7 +1022,7 @@ class pykotaUser extends baseModule {
 	 * <br>
 	 * If the input data is invalid the return value is an array that contains arrays
 	 * to build StatusMessages (message type, message head, message text). If no errors
-	 * occured the function returns an empty array.
+	 * occurred the function returns an empty array.
 	 *
 	 * @param array $options hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
 	 * @param selfServiceProfile $profile self service profile

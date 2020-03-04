@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2008 - 2019  Roland Gruber
+                2008 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -372,7 +372,7 @@ class ddns extends baseModule {
 		else {
 			// Account edit
 			if (!$this->check_if_ddns_is_enable()) {
-				$return->add(new htmlOutputText(_("DDNS ist not activated. You can activate it in the DHCP settings (DDNS).")), 12);
+				$return->add(new htmlOutputText(_("DDNS is not activated. You can activate it in the DHCP settings (DDNS).")), 12);
 			}
 			else {
 				// DNS server
