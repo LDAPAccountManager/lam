@@ -13,3 +13,6 @@ script:
   - phpunit
   - ls -l code-coverage/*
   - sonar-scanner
+  - pip install codespell
+  - cd lam
+  - ./codespell.sh
