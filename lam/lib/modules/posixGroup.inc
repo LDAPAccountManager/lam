@@ -301,13 +301,14 @@ class posixGroup extends baseModule implements passwordService {
 				}
 			}
 		}
+		natcasesort($users);
 		$return->add(new htmlSubTitle(_("Group members")), 12);
 
 		$remUsers = array();
 		if (isset($this->attributes['memberUid'])) {
 			$remUsers = $this->attributes['memberUid'];
 		}
-		usort($remUsers, 'compareDN');
+		natcasesort($remUsers);
 		$remUsersDescriptive = array();
 		foreach ($remUsers as $user) {
 			if (isset($userAndGIDs[$user])) {
@@ -319,7 +320,7 @@ class posixGroup extends baseModule implements passwordService {
 		}
 
 		$this->addDoubleSelectionArea($return, _("Selected users"), _("Available users"), $remUsersDescriptive, null,
-				$users, null, 'members');
+				$users, null, 'members', false, true);
 
 		// sync from group of names
 		$gon = $this->getAccountContainer()->getAccountModule('groupOfNames');
