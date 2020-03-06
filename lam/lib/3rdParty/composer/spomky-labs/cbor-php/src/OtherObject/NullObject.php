@@ -32,7 +32,7 @@ final class NullObject extends Base
         return new self();
     }
 
-    public function getNormalizedData(bool $ignoreTags = false)
+    public function getNormalizedData(bool $ignoreTags = false): void
     {
     }
 }
