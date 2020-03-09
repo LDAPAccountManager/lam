@@ -638,6 +638,9 @@ function get_preg($argument, $regexp) {
 		case 'quotaNumber':
 					$pregexpr = '/^[[:digit:]]+[KMGTkmgt]?$/';
 					break;
+		case 'hostAndPort':
+			$pregexpr = '/^[[:alnum:]\\._-]+:[[:digit:]]+$/';
+			break;
 	}
 	if (($pregexpr != '') && preg_match($pregexpr, $argument)) {
 		/* Bug in php preg_match doesn't work correct with utf8 */

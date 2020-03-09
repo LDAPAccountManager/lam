@@ -2620,6 +2620,15 @@ class LAMCfgMain {
 	/** license data */
 	private $license = '';
 
+	/** mail server (server:port) */
+	public $mailServer = '';
+
+	/** mail server user */
+	public $mailUser = '';
+
+	/** mail server password */
+	public $mailPassword = '';
+
 	/** list of data fields to save in config file */
 	private $settings = array("password", "default", "sessionTimeout",
 		"logLevel", "logDestination", "allowedHosts", "passwordMinLength",
@@ -2628,14 +2637,21 @@ class LAMCfgMain {
 		'passwordMustNotContainUser', 'passwordMustNotContain3Chars',
 		'externalPwdCheckUrl',
 		"mailEOL", 'errorReporting', 'encryptSession', 'allowedHostsSelfService',
-		'license'
+		'license', 'mailServer', 'mailUser', 'mailPassword'
 	);
 
 	/**
 	* Loads preferences from config file
+	*
+	* @param string $fileName file path for config file
 	*/
-	function __construct() {
-		$this->conffile = __DIR__ . "/../config/config.cfg";
+	function __construct($fileName = null) {
+		if ($fileName === null) {
+			$this->conffile = __DIR__ . "/../config/config.cfg";
+		}
+		else {
+			$this->conffile = $fileName;
+		}
 		// set default values
 		$this->sessionTimeout = 30;
 		$this->logLevel = LOG_NOTICE;
@@ -2772,6 +2788,15 @@ class LAMCfgMain {
 		}
 		if (!in_array("license", $saved)) {
 			array_push($file_array, "\n\n# License\n" . "license: " . $this->license);
+		}
+		if (!in_array("mailServer", $saved)) {
+			array_push($file_array, "\n" . "mailServer: " . $this->mailServer);
+		}
+		if (!in_array("mailUser", $saved)) {
+			array_push($file_array, "\n" . "mailUser: " . $this->mailUser);
+		}
+		if (!in_array("mailPassword", $saved)) {
+			array_push($file_array, "\n" . "mailPassword: " . $this->mailPassword);
 		}
 		$file = @fopen($this->conffile, "w");
 		if ($file) {
