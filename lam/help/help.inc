@@ -161,8 +161,6 @@ $helpArray = array (
 					"Text" => _("This is a list of IP addresses from hosts who may access LAM. You can use \"*\" as wildcard (e.g. 192.168.0.*).")),
 				"242" => array ("Headline" => _("Password policy"),
 					"Text" => _("Here you can specify minimum requirements for passwords. The character classes are: lowercase, uppercase, numeric and symbols.")),
-				"243" => array ("Headline" => _('Email format'),
-					"Text" => _('Please change this setting only if you experience problems in receiving emails from LAM. This defines the line ending of emails.')),
 				"244" => array ("Headline" => _('PHP error reporting'),
 					"Text" => _('Defines if the PHP error reporting setting from php.ini is used or the setting preferred by LAM ("E_ALL & ~E_NOTICE"). If you do not develop LAM modules please use the default. This will prevent displaying messages that are useful only for developers.')),
 				"245" => array ("Headline" => _('Encrypt session'),

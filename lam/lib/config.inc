@@ -2611,9 +2611,6 @@ class LAMCfgMain {
 	/** SSL certificate should be deleted on save() */
 	private $delSSLCaCert = false;
 
-	/** EOL for emails (default/unix) */
-	public $mailEOL = 'default';
-
 	/** error reporting */
 	public $errorReporting = self::ERROR_REPORTING_DEFAULT;
 
@@ -2636,7 +2633,7 @@ class LAMCfgMain {
 		"passwordMinClasses", "passwordMinSymbol", 'checkedRulesCount',
 		'passwordMustNotContainUser', 'passwordMustNotContain3Chars',
 		'externalPwdCheckUrl',
-		"mailEOL", 'errorReporting', 'encryptSession', 'allowedHostsSelfService',
+		'errorReporting', 'encryptSession', 'allowedHostsSelfService',
 		'license', 'mailServer', 'mailUser', 'mailPassword'
 	);
 
@@ -2779,9 +2776,6 @@ class LAMCfgMain {
 		}
 		if (!in_array("externalPwdCheckUrl", $saved)) {
 			array_push($file_array, "\n\n" . "externalPwdCheckUrl: " . $this->externalPwdCheckUrl);
-		}
-		if (!in_array("mailEOL", $saved)) {
-			array_push($file_array, "\n\n# Email format (default/unix)\n" . "mailEOL: " . $this->mailEOL);
 		}
 		if (!in_array("errorReporting", $saved)) {
 			array_push($file_array, "\n\n# PHP error reporting (default/system)\n" . "errorReporting: " . $this->errorReporting);

@@ -245,7 +245,6 @@ if (isset($_POST['submitFormData'])) {
 	}
 	// mail EOL
 	if (isLAMProVersion()) {
-		$cfg->mailEOL = $_POST['mailEOL'];
 		$cfg->mailUser = $_POST['mailUser'];
 		$cfg->mailPassword = $_POST['mailPassword'];
 		$cfg->mailServer = $_POST['mailServer'];
@@ -468,13 +467,6 @@ printHeaderContents(_("Edit general settings"), '../..');
 		$mailPassword = new htmlResponsiveInputField(_("Password"), 'mailPassword', $cfg->mailPassword, '255');
 		$mailPassword->setIsPassword(true);
 		$row->add($mailPassword, 12);
-		$mailEOLOptions = array(
-			_('Default (\r\n)') => 'default',
-			_('Non-standard (\n)') => 'unix'
-		);
-		$mailEOLSelect = new htmlResponsiveSelect('mailEOL', $mailEOLOptions, array($cfg->mailEOL), _('Email format'), '243');
-		$mailEOLSelect->setHasDescriptiveElements(true);
-		$row->add($mailEOLSelect, 12);
 	}
 	$row->addVerticalSpacer('3rem');
 

@@ -28,7 +28,7 @@ include_once __DIR__ . '/../../lib/config.inc';
  *
  * @author Roland Gruber
  */
-class LAMConfigTest extends TestCase {
+class LAMCfgMainTest extends TestCase {
 
 	private $conf;
 	private $file;
@@ -59,7 +59,6 @@ class LAMConfigTest extends TestCase {
 	 * Mail related settings
 	 */
 	public function testMail() {
-		$this->conf->mailEOL = 'unix123';
 		$this->conf->mailServer = 'server:123';
 		$this->conf->mailPassword = 'pwd123';
 		$this->conf->mailUser = 'user123';
@@ -67,7 +66,6 @@ class LAMConfigTest extends TestCase {
 		$this->conf->save();
 		$this->conf = new LAMCfgMain($this->file);
 
-		$this->assertEquals('unix123', $this->conf->mailEOL);
 		$this->assertEquals('server:123', $this->conf->mailServer);
 		$this->assertEquals('pwd123', $this->conf->mailPassword);
 		$this->assertEquals('user123', $this->conf->mailUser);

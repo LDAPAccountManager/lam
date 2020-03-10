@@ -1282,9 +1282,7 @@ function sendPasswordMail($pwd, $user, $recipient = null) {
 		$body = str_replace('@@' . $attr . '@@', $value, $body);
 		$found = preg_match('/\@\@[^\@]+\@\@/', $body, $results);
 	}
-	$headerLines = createEMailHeaders($mailFrom, ($mailIsHTML == 'true'), $mailReplyTo);
-	$returnPath = empty($mailReplyTo) ? $mailFrom : $mailReplyTo;
-	$success = sendEMail($mailTo, $subject, $body, $headerLines, $returnPath);
+	$success = sendEMail($mailTo, $subject, $body, $mailFrom, ($mailIsHTML == 'true'), $mailReplyTo);
 	if ($success) {
 		logNewMessage(LOG_DEBUG, 'Sent password mail to ' . $mailTo);
 		return array(
@@ -1310,7 +1308,7 @@ function sendPasswordMail($pwd, $user, $recipient = null) {
  * @return String header lines
  */
 function createEMailHeaders($from, $isHTML, $replyTo = null, $cc = null, $bcc = null) {
-	$headerLines = "X-Mailer: LDAP Account Manager\r\n";
+	$headerLines = "";
 	if (!empty($from)) {
 		$headerLines .= 'From: ' . encodeMailAddress($from) . "\r\n";
 	}
@@ -1334,50 +1332,65 @@ function createEMailHeaders($from, $isHTML, $replyTo = null, $cc = null, $bcc = 
 }
 
 /**
- * Encodes the email address for the header part of an email.
- *
- * @param String $address email address
- * @return String encoded mail address
- */
-function encodeMailAddress($address) {
-	$matches = array();
-	// if the email contains a name part then base64 encode it
-	if (preg_match('/^(.*)<(.*)>$/', $address, $matches)) {
-		return base64EncodeForEMail($matches[1]) . ' <' . $matches[2] . '>';
-	}
-	return $address;
-}
-
-/**
- * Returns a base64 encoded string of the given values in a format that is used in emails.
- *
- * @param String $value value to encode
- * @return String base64 encoded value
- */
-function base64EncodeForEMail($value) {
-	return '=?UTF-8?B?' . base64_encode($value) . '?=';
-}
-
-/**
  * Sends out an email.
  *
  * @param String $to TO address
  * @param String $subject email subject
  * @param String $text mail body (with \r\n EOL)
- * @param String $headers header lines (with \r\n EOL)
- * @param string $returnPath email to be used for return path
+ * @param String $from FROM address
+ * @param bool $isHTML HTML format
+ * @param String $replyTo REPLY-TO address (optional)
+ * @param String $cc CC address (optional)
+ * @param String $bcc BCC address (optional)
  */
-function sendEMail($to, $subject, $text, $headers, $returnPath) {
-	if (!empty($_SESSION['cfgMain']->mailEOL) && ($_SESSION['cfgMain']->mailEOL === 'unix')) {
-		$text = str_replace("\r\n", "\n", $text);
-		$headers = str_replace("\r\n", "\n", $headers);
-	}
+function sendEMail($to, $subject, $text, $from, $isHTML, $replyTo = null, $cc = null, $bcc = null) {
+	include_once __DIR__ . '/3rdParty/composer/autoload.php';
+	$returnPath = ($replyTo === null) ? $from : $replyTo;
+	$returnPathParsed = PHPMailer\PHPMailer\PHPMailer::parseAddresses($returnPath);
 	logNewMessage(LOG_DEBUG, "Send mail to $to\n" . $text);
-	$additionalParams = null;
-	if (!empty($returnPath) && isCommandlineSafeEmailAddress($returnPath)) {
-		$additionalParams = '-f' . $returnPath;
+	$mailer = new PHPMailer\PHPMailer\PHPMailer(true);
+	try {
+		$cfgMain = $_SESSION['cfgMain'];
+		if (!empty($cfgMain->mailServer)) {
+			$mailer->isSMTP();
+			$serverParts = explode(':', $cfgMain->mailServer);
+			$mailer->Host = $serverParts[0];
+			$mailer->Port = $serverParts[1];
+			if (!empty($cfgMain->mailUser)) {
+				$mailer->SMTPAuth = true;
+				$mailer->Username = $cfgMain->mailUser;
+				$mailer->Password = $cfgMain->mailPassword;
+				$mailer->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+			}
+		}
+		$mailer->CharSet = PHPMailer\PHPMailer\PHPMailer::CHARSET_UTF8;
+		$mailer->addAddress($to);
+		$mailer->Subject = $subject;
+		$mailer->Body = $text;
+		$mailer->Sender = $returnPathParsed[0]['address'];
+		$fromParsed = PHPMailer\PHPMailer\PHPMailer::parseAddresses($from);
+		$mailer->setFrom($fromParsed[0]['address'], $fromParsed[0]['name']);
+		$mailer->isHTML($isHTML);
+		if (!empty($replyTo)) {
+			$replyToParsed = PHPMailer\PHPMailer\PHPMailer::parseAddresses($replyTo);
+			$mailer->addReplyTo($replyToParsed[0]['address'], $replyToParsed[0]['name']);
+		}
+		if (!empty($cc)) {
+			$ccParsed = PHPMailer\PHPMailer\PHPMailer::parseAddresses($cc);
+			$mailer->addCC($ccParsed[0]['address'], $ccParsed[0]['name']);
+		}
+		if (!empty($bcc)) {
+			$bccParsed = PHPMailer\PHPMailer\PHPMailer::parseAddresses($bcc);
+			$mailer->addBCC($bccParsed[0]['address'], $bccParsed[0]['name']);
+		}
+		$mailer->XMailer = 'LDAP Account Manager';
+		$mailer->send();
+		return true;
 	}
-	return mail($to, base64EncodeForEMail($subject), $text, $headers, $additionalParams);
+	catch (Exception $e) {
+		logNewMessage(LOG_ERR, 'Mail sending failed: ' . $e->getMessage());
+		return false;
+	}
 }
 
 /**
