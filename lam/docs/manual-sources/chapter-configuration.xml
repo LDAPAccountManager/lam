@@ -247,7 +247,8 @@
       <para>SMTP setup:</para>
 
       <para>Mail server: enter name + port separated by ":". E.g. "server:25"
-      will use "server" on port 25.</para>
+      will use "server" on port 25. Please note that your mail server
+      <emphasis role="bold">must</emphasis> support TLS encryption.</para>
 
       <para>User name: enter the user name if your SMTP server requires
       authentication</para>

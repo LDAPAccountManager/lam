@@ -382,7 +382,7 @@ $helpArray = array (
 				// jobs
 				'800' => array(
 					"Headline" => _('From address'),
-					"Text" => _('This email address will be set as sender address of all mails. If empty the system default (php.ini) will be used.')
+					"Text" => _('This email address will be set as sender address of all mails.')
 				),
 				'801' => array(
 					"Headline" => _('Reply-to address'),

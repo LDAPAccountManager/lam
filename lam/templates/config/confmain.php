@@ -22,7 +22,7 @@ use \htmlGroup;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2019  Roland Gruber
+  Copyright (C) 2003 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -614,6 +614,9 @@ function checkInput() {
 		if (!$conf->setLamProMailFrom($_POST['pwdResetMail_from'])) {
 			$errors[] = array("ERROR", _("From address for password mails is invalid."), htmlspecialchars($_POST['pwdResetMail_from']));
 		}
+		if (!empty($_POST['pwdResetMail_subject']) && empty($_POST['pwdResetMail_from'])) {
+			$errors[] = array("ERROR", _("From address for password mails is invalid."), htmlspecialchars($_POST['pwdResetMail_from']));
+        }
 		if (!$conf->setLamProMailReplyTo($_POST['pwdResetMail_replyTo'])) {
 			$errors[] = array("ERROR", _("Reply-to address for password mails is invalid."), htmlspecialchars($_POST['pwdResetMail_replyTo']));
 		}
