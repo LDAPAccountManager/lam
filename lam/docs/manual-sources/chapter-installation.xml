@@ -614,6 +614,14 @@
       intermediate release.</para>
 
       <section>
+        <title>7.1 -&gt; 7.2</title>
+
+        <para>LAM Pro: All emails need a specified FROM address. This affects
+        password email, self registration, password self reset and cron
+        emails.</para>
+      </section>
+
+      <section>
         <title>6.7 -&gt; 7.1</title>
 
         <para>No actions required.</para>
