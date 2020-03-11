@@ -4,6 +4,7 @@ March 2020 7.1
   - IMAP: changed library to support latest TLS versions
   - Personal: support display name (hidden by default in server profile)
   - Windows users: support allowed workstations, more profile options
+  - Reactivated Polish translation
   - LAM Pro:
    -> PPolicy: support for password check module
    -> Windows AD LDS support (users and groups)
