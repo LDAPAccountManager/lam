@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2020-03-10 22:23+0100\n"
+"PO-Revision-Date: 2020-03-13 10:35+0100\n"
 "Last-Translator: Cezar Cichocki <cezar@cs.net.pl>\n"
 "Language-Team: Polski <pl@li.org>\n"
 "Language: pl\n"
@@ -2785,7 +2785,7 @@ msgstr "Typowe przykłady to \"@givenname@%sn%\" lub \"%givenname%.%sn%\"."
 #: ../lib/modules/inetOrgPerson.inc:2174 ../lib/modules/inetOrgPerson.inc:3922
 #: ../lib/modules/asteriskExtension.inc:119
 msgid "Common name"
-msgstr "Common name"
+msgstr "Nazwa wyświetlana"
 
 #: ../lib/modules/windowsUser.inc:988 ../lib/modules/windowsUser.inc:989
 msgid "Common name already exists."
@@ -2804,7 +2804,7 @@ msgstr "Nazwa firmy"
 
 #: ../lib/env.inc:243
 msgid "Company Licence"
-msgstr "Licencja Firmowa"
+msgstr "Licencja firmowa"
 
 #: ../templates/tools/serverInfo.php:307 ../templates/tools/serverInfo.php:359
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1065
@@ -2923,7 +2923,7 @@ msgstr "Adres kontaktowy dla tej strefy (np. „root.domena.com”)."
 
 #: ../lib/modules/windowsUser.inc:1139 ../lib/modules/inetOrgPerson.inc:1382
 msgid "Contact data"
-msgstr "Contact data"
+msgstr "Dane kontaktowe"
 
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:683
 #: ../templates/3rdParty/pla/lib/TemplateRender.php:1174
@@ -3301,7 +3301,7 @@ msgstr "Administracja DHCP"
 #: ../lib/types/dhcp.inc:173
 #, php-format
 msgid "DHCP count: %s"
-msgstr "licznik DHCP: %s"
+msgstr "Liczba wpisów DHCP: %s"
 
 #: ../lib/types/dhcp.inc:176 ../lib/modules/dhcp_settings.inc:125
 msgid "DHCP settings"
@@ -4189,7 +4189,7 @@ msgstr "Wyświetlaj wiele grup jako accordion"
 #: ../lib/modules/sambaGroupMapping.inc:336
 #: ../lib/modules/sambaGroupMapping.inc:513 ../help/help.inc:200
 msgid "Display name"
-msgstr "Wyświetlana nazwa"
+msgstr "Nazwa wyświetlana"
 
 #: ../templates/lists/changePassword.php:316
 #: ../templates/config/confmain.php:344
@@ -4689,7 +4689,7 @@ msgstr "Numer pracownika"
 #: ../lib/modules/inetOrgPerson.inc:1971 ../lib/modules/inetOrgPerson.inc:2058
 #: ../lib/modules/inetOrgPerson.inc:3877 ../lib/modules/inetOrgPerson.inc:3913
 msgid "Employee type"
-msgstr "Typy pracownikół"
+msgstr "Rodzaj pracownika"
 
 #: ../lib/modules/windowsUser.inc:315 ../lib/modules/inetOrgPerson.inc:587
 msgid "Employee type: Contractor, Employee, Intern, Temp, External, ..."
@@ -6359,7 +6359,7 @@ msgstr "Wybierz serwer domowy dla użytkownika."
 #: ../lib/modules/inetOrgPerson.inc:1959 ../lib/modules/inetOrgPerson.inc:2604
 #: ../lib/modules/inetOrgPerson.inc:3870 ../lib/modules/inetOrgPerson.inc:3909
 msgid "Home telephone number"
-msgstr "Telefon domowy"
+msgstr "Telefon prywatny"
 
 #: ../lib/modules/posixAccount.inc:90 ../lib/modules/posixAccount.inc:92
 #: ../lib/modules/courierMailAccount.inc:213
@@ -7811,7 +7811,7 @@ msgstr "Last qualify milliseconds"
 #: ../lib/modules/dhcp_settings.inc:232 ../lib/modules/dhcp_settings.inc:265
 #: ../lib/modules/dhcp_settings.inc:590 ../lib/modules/dhcp_settings.inc:709
 msgid "Lease time"
-msgstr "Czas wynajmu"
+msgstr "Czas dzierżawy"
 
 #: ../templates/config/mainmanage.php:312
 #: ../templates/config/mainmanage.php:313 ../help/help.inc:232
@@ -8550,7 +8550,7 @@ msgstr "Maksymalna wielkość zadania"
 #: ../lib/modules/dhcp_settings.inc:233 ../lib/modules/dhcp_settings.inc:271
 #: ../lib/modules/dhcp_settings.inc:594 ../lib/modules/dhcp_settings.inc:710
 msgid "Maximum lease time"
-msgstr "Maksymalny czas wypożyczenia"
+msgstr "Maksymalny czas dzierżawy"
 
 #: ../templates/schema/schema.php:349
 msgid "Maximum length"
@@ -9699,7 +9699,7 @@ msgstr "Niestandardowy (\\n)"
 #: ../templates/config/confmain.php:465
 #: ../templates/selfService/adminMain.php:487 ../lib/modules/qmailUser.inc:58
 msgid "None"
-msgstr "Żaden"
+msgstr "Brak"
 
 #: ../lib/modules/sudoRole.inc:132 ../lib/modules/sudoRole.inc:194
 #: ../lib/modules/sudoRole.inc:221 ../lib/modules/sudoRole.inc:280
@@ -9894,7 +9894,7 @@ msgstr "Wyłączony"
 #: ../lib/modules/inetOrgPerson.inc:2747 ../lib/modules/inetOrgPerson.inc:3867
 #: ../lib/modules/inetOrgPerson.inc:3908
 msgid "Office name"
-msgstr "Nazwa biura"
+msgstr "Nazwa działu"
 
 #: ../templates/misc/ajax.php:273 ../templates/misc/ajax.php:303
 #: ../templates/lists/changePassword.php:340
@@ -10459,7 +10459,8 @@ msgstr "Hasło nie wygasa"
 #: ../lib/modules/shadowAccount.inc:216 ../lib/modules/shadowAccount.inc:343
 #: ../lib/modules/shadowAccount.inc:600
 msgid "Password expiration"
-msgstr "Wygaśnięcie hasła"
+msgstr ""
+"Liczba dni po wygaśnięciu hasła przez które użytkownik może się zalogować"
 
 #: ../lib/modules/shadowAccount.inc:60 ../lib/modules/shadowAccount.inc:61
 msgid "Password expiration must be are natural number or -1."
@@ -10550,7 +10551,7 @@ msgstr "Polityki haseł (ppolicy)"
 #: ../lib/modules/ppolicy.inc:61 ../lib/modules/sambaDomain.inc:259
 #: ../help/help.inc:162
 msgid "Password policy"
-msgstr "Polityka hasła"
+msgstr "Polityka haseł"
 
 #: ../lib/types/ppolicyType.inc:84 ../lib/modules/ppolicy.inc:95
 #: ../lib/modules/ppolicy.inc:145 ../lib/modules/ppolicy.inc:232
@@ -10589,7 +10590,7 @@ msgstr "Hasło do odblokowania pliku klucza SSH."
 #: ../lib/modules/shadowAccount.inc:210 ../lib/modules/shadowAccount.inc:340
 #: ../lib/modules/shadowAccount.inc:599
 msgid "Password warning"
-msgstr "Ostrzeżenie o wygaśnięciu hasła"
+msgstr "Liczba dni wyświetlania ostrzeżenia przed wygaśnięciem hasła"
 
 #: ../lib/modules/shadowAccount.inc:62 ../lib/modules/shadowAccount.inc:63
 msgid "Password warning must be are natural number."
@@ -10707,7 +10708,7 @@ msgstr "Zezwól"
 
 #: ../lib/modules/inetOrgPerson.inc:134
 msgid "Personal"
-msgstr "Osobisty"
+msgstr "Dane osobowe"
 
 #: ../lib/selfService.inc:492
 msgid "Personal data"
@@ -13182,7 +13183,7 @@ msgstr "Reset"
 
 #: ../lib/modules.inc:1300
 msgid "Reset changes"
-msgstr "Zresetuj zmiany"
+msgstr "Anuluj zmiany"
 
 #: ../lib/modules/sambaSamAccount.inc:266
 #: ../lib/modules/sambaSamAccount.inc:1297
@@ -13892,12 +13893,12 @@ msgstr "Informacje o serwerze"
 
 #: ../templates/config/confmain.php:282
 msgid "Server list"
-msgstr "Server list"
+msgstr "Lista serwerów"
 
 #: ../templates/login.php:435 ../lib/configPages.inc:68
 #: ../lib/modules/imapAccess.inc:521
 msgid "Server profile"
-msgstr "Server profile"
+msgstr "Profil serwera"
 
 #: ../templates/config/confmain.php:190
 #: ../templates/selfService/adminMain.php:418
@@ -14229,7 +14230,7 @@ msgstr "Niestety ten numer pomocy ({bold}%s{endbold}) jest niedostępny."
 
 #: ../lib/lists.inc:420
 msgid "Sort sequence"
-msgstr "Sekwencja sortowania"
+msgstr "Sortuj"
 
 #: ../templates/tools/importexport.php:154
 msgid "Source"
@@ -14535,7 +14536,7 @@ msgstr "Czas rozpoczęcia"
 #: ../lib/modules/inetOrgPerson.inc:2725 ../lib/modules/inetOrgPerson.inc:3864
 #: ../lib/modules/inetOrgPerson.inc:3906
 msgid "State"
-msgstr "Stan"
+msgstr "Województwo"
 
 #: ../templates/pdfedit/pdfpage.php:361 ../templates/pdfedit/pdfpage.php:362
 #: ../templates/pdfedit/pdfpage.php:436
@@ -17681,7 +17682,7 @@ msgstr ""
 #: ../lib/modules/kopanoContact.inc:463 ../lib/modules/kopanoContact.inc:575
 #: ../lib/modules/kopanoContact.inc:586
 msgid "UID number"
-msgstr "Numer UID"
+msgstr "UID"
 
 #: ../lib/modules/posixAccount.inc:98
 #, php-format
@@ -18926,7 +18927,7 @@ msgstr "Nazwa domeny systemu Windows dla grupy."
 
 #: ../lib/modules/windowsUser.inc:1166 ../lib/modules/inetOrgPerson.inc:1446
 msgid "Work details"
-msgstr "Szczegóły zadania"
+msgstr "Dodatkowe informacje o pracowniku"
 
 #: ../lib/modules/sambaDomain.inc:145
 msgid "Workgroup"
