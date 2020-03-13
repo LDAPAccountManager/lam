@@ -5,7 +5,7 @@ use \LAM\PDF\PDFTableRow;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2019  Roland Gruber
+  Copyright (C) 2005 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -571,8 +571,6 @@ class ldapPublicKey extends baseModule {
 	 * Handles an AJAX file upload and prints the JSON result.
 	 */
 	private function ajaxUpload() {
-		$x = $_GET;
-		$y = $_FILES;
 		$result = array('success' => true);
 		if (!isset($_FILES['qqfile']) || ($_FILES['qqfile']['size'] < 10)) {
 			$result = array('error' => _('No file received.'));

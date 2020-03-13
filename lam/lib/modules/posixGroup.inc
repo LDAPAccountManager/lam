@@ -1076,7 +1076,6 @@ class posixGroup extends baseModule implements passwordService {
 			return array();
 		}
 		// auto sync group members
-		$typeId = $this->getAccountContainer()->get_type()->getId();
 		if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
 			$this->syncGon();
 		}

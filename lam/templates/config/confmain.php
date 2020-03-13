@@ -22,7 +22,7 @@ use \htmlGroup;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2019  Roland Gruber
+  Copyright (C) 2003 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -556,7 +556,6 @@ parseHtml(null, $buttonContainer, array(), false, $tabindex, 'user');
  */
 function checkInput() {
 	$conf = &$_SESSION['conf_config'];
-	$types = $conf->get_ActiveTypes();
 
 	// check new preferences
 	$errors = array();

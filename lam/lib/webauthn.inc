@@ -592,7 +592,7 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 		logNewMessage(LOG_NOTICE, 'Delete webauthn device ' . $credentialId . ' of ' . $dn);
 		$pdo = $this->getPDO();
 		$statement = $pdo->prepare('delete from ' . self::TABLE_NAME . ' where userId = :userId and credentialId = :credentialId');
-		$result = $statement->execute(array(
+		$statement->execute(array(
 			':userId' => $dn,
 			':credentialId' => $credentialId
 		));

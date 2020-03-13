@@ -405,7 +405,6 @@ class lamList {
 		$table->setCSSClasses(array($scope . '-border accountlist'));
 		$table->setOnClickEvents($onClickEvents);
 		$table->setOnDoubleClickEvents($onDoubleClickEvents);
-		$columnCount = sizeof($titles);
 
 		parseHtml(null, $table, array(), false, $this->tabindex, $scope);
 	}
