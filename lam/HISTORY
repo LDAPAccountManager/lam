@@ -3,12 +3,13 @@ June 2020 7.2
    -> EMail sending can be done via SMTP without local mail server
 
 
-March 2020 7.1
+17.03.2020 7.1
   - PHP 7 required
   - Webauthn/FIDO2 support for 2-factor-authentication (requires PHP 7.2)
   - IMAP: changed library to support latest TLS versions
   - Personal: support display name (hidden by default in server profile)
   - Windows users: support allowed workstations, more profile options
+  - Reactivated Polish translation
   - LAM Pro:
    -> PPolicy: support for password check module
    -> Windows AD LDS support (users and groups)

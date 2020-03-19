@@ -556,7 +556,6 @@ parseHtml(null, $buttonContainer, array(), false, $tabindex, 'user');
  */
 function checkInput() {
 	$conf = &$_SESSION['conf_config'];
-	$types = $conf->get_ActiveTypes();
 
 	// check new preferences
 	$errors = array();

@@ -483,7 +483,6 @@ class posixAccount extends baseModule implements passwordService {
 	function init($base) {
 		// make optional if needed
 		$modules = $_SESSION[$base]->get_type()->getModules();
-		$typeId = $_SESSION[$base]->get_type()->getId();
 		$this->autoAddObjectClasses = !$this->isOptional($modules) && !$this->skipObjectClass();
 		// call parent init
 		parent::init($base);
@@ -2029,7 +2028,6 @@ class posixAccount extends baseModule implements passwordService {
 		// profile mappings in meta data
 		parent::load_profile($profile);
 		$modules = $this->getAccountContainer()->get_type()->getModules();
-		$typeId = $this->getAccountContainer()->get_type()->getId();
 		// cn
 		if ($this->manageCn($modules) && !empty($profile['posixAccount_cn'][0])) {
 			$this->attributes['cn'][0] = $profile['posixAccount_cn'][0];
@@ -2469,7 +2467,7 @@ class posixAccount extends baseModule implements passwordService {
 		if (self::areGroupOfNamesActive()) {
 			$gons = $this->findGroupOfNames();
 			$gonList = array();
-			foreach ($gons as $dn => $attr) {
+			foreach ($gons as $attr) {
 				$gonList[] = $attr['cn'][0];
 			}
 		}

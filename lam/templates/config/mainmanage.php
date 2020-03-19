@@ -300,7 +300,7 @@ printHeaderContents(_("Edit general settings"), '../..');
 
 	// check if config file is writable
 	if (!$cfg->isWritable()) {
-		$row->add(new htmlStatusMessage('WARN', 'The config file is not writable.', 'Your changes cannot be saved until you make the file writable for the webserver user.'), 12);
+		$row->add(new htmlStatusMessage('WARN', _('The config file is not writable.'), _('Your changes cannot be saved until you make the file writable for the webserver user.')), 12);
 	}
 
 	// license
