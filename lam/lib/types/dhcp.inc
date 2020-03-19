@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2009 - 2018  Roland Gruber
+                2009 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -189,7 +189,7 @@ class lamDHCPList extends lamList {
 			$entries = searchLDAP($data['dn'], 'objectClass=dhcpHost', array('dhcpstatements', 'dhcphwaddress', 'cn'));
 			if (sizeof($entries) > 0) {
 				foreach ($entries as $entry) {
-					foreach ($entry as $attrName => $attrValues) {
+					foreach ($entry as $attrValues) {
 						if (!is_array($attrValues)) {
 							continue;
 						}
@@ -294,7 +294,7 @@ class lamDHCPList extends lamList {
             	$table = new htmlTable();
             	$table->setCSSClasses(array('nowrap'));
                 $ranges = array();
-				foreach($entry['dhcprange'] AS $id => $value) {
+				foreach($entry['dhcprange'] AS $value) {
 					if (!empty($value) && !is_numeric($value)) {
 						$ex = explode(" ", $value);
 						$row = new htmlTableRow(
@@ -327,7 +327,7 @@ class lamDHCPList extends lamList {
 					}
 				}
 				uksort($ranges, 'strnatcasecmp');
-				foreach ($ranges as $text => $row) {
+				foreach ($ranges as $row) {
 					$table->addElement($row);
 				}
 				return $table;

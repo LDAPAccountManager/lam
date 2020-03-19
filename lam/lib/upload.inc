@@ -3,7 +3,6 @@ namespace LAM\UPLOAD;
 use ZipArchive;
 use accountContainer;
 /*
- $Id$
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
  Copyright (C) 2016 - 2020  Roland Gruber
@@ -309,7 +308,6 @@ class Uploader {
 				}
 			}
 			// load account
-			$typeManager = new \LAM\TYPES\TypeManager();
 			$_SESSION['mass_pdfAccount'] = new accountContainer($this->type, 'mass_pdfAccount');
 			$pdfErrors = $_SESSION['mass_pdfAccount']->load_account($dn, $infoAttributes);
 			if (sizeof($pdfErrors) > 0) {
