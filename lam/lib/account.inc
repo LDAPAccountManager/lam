@@ -1400,12 +1400,12 @@ class moduleCache {
 	 * @param String $scope module scope (e.g. user)
 	 */
 	public static function getModule($name, $scope) {
-		if (isset(moduleCache::$cache[$name . ':' . $scope])) {
-			return moduleCache::$cache[$name . ':' . $scope];
+		if (isset(self::$cache[$name . ':' . $scope])) {
+			return self::$cache[$name . ':' . $scope];
 		}
 		else {
-			moduleCache::$cache[$name . ':' . $scope] = new $name($scope);
-			return moduleCache::$cache[$name . ':' . $scope];
+			self::$cache[$name . ':' . $scope] = new $name($scope);
+			return self::$cache[$name . ':' . $scope];
 		}
 	}
 

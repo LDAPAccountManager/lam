@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2019  Roland Gruber
+  Copyright (C) 2011 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -509,7 +509,7 @@ class freeRadius extends baseModule {
 		$date = new DateTime('@' . (time() + 3600*24*365), new DateTimeZone('UTC'));
 		$year = $date->format('Y');
 		$month = $date->format('m');
-		$month = freeRadius::$monthList[$month];
+		$month = self::$monthList[$month];
 		$day = $date->format('d');
 		$hour = '00';
 		$minute = '00';
@@ -541,7 +541,7 @@ class freeRadius extends baseModule {
 		$daySelect = new htmlSelect('expire_day', $dayList, array($day));
 		$daySelect->setWidth('3rem');
 		$dateGroup->addElement($daySelect);
-		$monthSelect = new htmlSelect('expire_mon', freeRadius::$monthList, array($month));
+		$monthSelect = new htmlSelect('expire_mon', self::$monthList, array($month));
 		$monthSelect->setHasDescriptiveElements(true);
 		$monthSelect->setWidth('3rem');
 		$dateGroup->addElement($monthSelect);
@@ -649,7 +649,7 @@ class freeRadius extends baseModule {
 				if (preg_match('/^[0-9]{1,2}.[0-9]{1,2}.[0-9]{4} [0-9]{1,2}:[0-9]{1,2}$/', $rawAccounts[$i][$ids['freeRadius_radiusExpiration']])) {
 					$dateParts = explode(' ', $rawAccounts[$i][$ids['freeRadius_radiusExpiration']]);
 					$dateParts1 = explode('.', $dateParts[0]);
-					$radiusExpiration = str_pad($dateParts1[0], 2, '0', STR_PAD_LEFT) . ' ' . freeRadius::$monthList[str_pad($dateParts1[1], 2, '0', STR_PAD_LEFT)] . ' ' . $dateParts1[2];
+					$radiusExpiration = str_pad($dateParts1[0], 2, '0', STR_PAD_LEFT) . ' ' . self::$monthList[str_pad($dateParts1[1], 2, '0', STR_PAD_LEFT)] . ' ' . $dateParts1[2];
 					$dateParts2 = explode(':', $dateParts[1]);
 					$radiusExpiration .= ' ' . str_pad($dateParts2[0], 2, '0', STR_PAD_LEFT) . ':' . str_pad($dateParts2[1], 2, '0', STR_PAD_LEFT);
 					$partialAccounts[$i]['radiusExpiration'] = $radiusExpiration;
@@ -750,7 +750,7 @@ class freeRadius extends baseModule {
 		if (is_null($date) || ($date == '')) {
 			return $date;
 		}
-		foreach (freeRadius::$monthList as $replace => $search) {
+		foreach (self::$monthList as $replace => $search) {
 			$date = str_replace($search, $replace, $date);
 		}
 		$dateParts = explode(' ', $date);
