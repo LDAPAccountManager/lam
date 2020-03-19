@@ -15,7 +15,6 @@
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="appendix-schema.xml"/>
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="appendix-security.xml"/>
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="appendix-ldapConfig.xml"/>
-<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="appendix-email.xml"/>
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="appendix-lamdaemon.xml"/>
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="appendix-selfResetSchema.xml"/>
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="appendix-design.xml"/>

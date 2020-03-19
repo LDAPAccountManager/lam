@@ -1195,8 +1195,7 @@
       The mail can include the new password by using the special wildcard
       "@@newPassword@@". Additionally, you may want to insert other wildcards
       that are replaced by the corresponding LDAP attributes. E.g. "@@uid@@"
-      will be replaced by the user name. Please see <link
-      linkend="mailEOL">email format option</link> in case of broken mails.
+      will be replaced by the user name.
       See <link linkend="mailSetup">here</link> for setting up your SMTP
       server.</para>
 
@@ -1576,9 +1575,6 @@
       valid for 24 hours. When he clicks on this link then the account will be
       created in the self service user suffix. The DN will look like this:
       <emphasis>uid=&lt;user name&gt;,...</emphasis></para>
-
-      <para>Please see <link linkend="mailEOL">email format option</link> in
-      case of broken mails.</para>
     </section>
 
     <section>

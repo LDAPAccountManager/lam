@@ -354,7 +354,7 @@ if (isLAMProVersion()) {
 	// mail settings
 	$row->add(new htmlSubTitle(_("Password mail settings"), '../../graphics/mailBig.png', null, true), 12);
 
-	$pwdMailFrom = new htmlResponsiveInputField(_('From address'), 'pwdResetMail_from', $conf->getLamProMailFrom(), '550');
+	$pwdMailFrom = new htmlResponsiveInputField(_('From address'), 'pwdResetMail_from', $conf->getLamProMailFrom(), '550', true);
 	$row->add($pwdMailFrom, 12);
 
 	$pwdMailReplyTo = new htmlResponsiveInputField(_('Reply-to address'), 'pwdResetMail_replyTo', $conf->getLamProMailReplyTo(), '554');
@@ -613,6 +613,9 @@ function checkInput() {
 		if (!$conf->setLamProMailFrom($_POST['pwdResetMail_from'])) {
 			$errors[] = array("ERROR", _("From address for password mails is invalid."), htmlspecialchars($_POST['pwdResetMail_from']));
 		}
+		if (!empty($_POST['pwdResetMail_subject']) && empty($_POST['pwdResetMail_from'])) {
+			$errors[] = array("ERROR", _("From address for password mails is invalid."), htmlspecialchars($_POST['pwdResetMail_from']));
+        }
 		if (!$conf->setLamProMailReplyTo($_POST['pwdResetMail_replyTo'])) {
 			$errors[] = array("ERROR", _("Reply-to address for password mails is invalid."), htmlspecialchars($_POST['pwdResetMail_replyTo']));
 		}

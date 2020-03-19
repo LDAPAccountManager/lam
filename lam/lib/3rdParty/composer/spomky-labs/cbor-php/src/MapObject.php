@@ -35,7 +35,7 @@ final class MapObject extends AbstractCBORObject implements \Countable, \Iterato
     public function __construct(array $data = [])
     {
         list($additionalInformation, $length) = LengthCalculator::getLengthOfArray($data);
-        array_map(function ($item) {
+        array_map(static function ($item): void {
             if (!$item instanceof MapItem) {
                 throw new InvalidArgumentException('The list must contain only MapItem objects.');
             }

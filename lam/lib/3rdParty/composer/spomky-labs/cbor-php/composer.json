@@ -31,13 +31,14 @@
     },
     "require-dev": {
         "php-coveralls/php-coveralls": "^2.0",
-        "phpstan/phpstan": "^0.11",
-        "phpstan/phpstan-beberlei-assert": "^0.11.0",
-        "phpstan/phpstan-deprecation-rules": "^0.11",
-        "phpstan/phpstan-phpunit": "^0.11",
-        "phpstan/phpstan-strict-rules": "^0.11",
+        "phpstan/phpstan": "^0.12",
+        "phpstan/phpstan-beberlei-assert": "^0.12",
+        "phpstan/phpstan-deprecation-rules": "^0.12",
+        "phpstan/phpstan-phpunit": "^0.12",
+        "phpstan/phpstan-strict-rules": "^0.12",
         "phpunit/phpunit": "^7.5|^8.0",
-        "rector/rector": "^0.5"
+        "rector/rector": "^0.5|^0.6",
+        "symfony/var-dumper": "^4.3|^5.0"
     },
     "suggest": {
         "ext-bcmath": "BCMath extension needed to handle the Big Float and Decimal Fraction Tags"

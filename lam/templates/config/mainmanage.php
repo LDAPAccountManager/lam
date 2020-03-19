@@ -245,7 +245,12 @@ if (isset($_POST['submitFormData'])) {
 	}
 	// mail EOL
 	if (isLAMProVersion()) {
-		$cfg->mailEOL = $_POST['mailEOL'];
+		$cfg->mailUser = $_POST['mailUser'];
+		$cfg->mailPassword = $_POST['mailPassword'];
+		$cfg->mailServer = $_POST['mailServer'];
+		if (!empty($cfg->mailServer) && !get_preg($cfg->mailServer, 'hostAndPort')) {
+            $errors[] = _('Please enter the mail server with host name and port.');
+        }
 	}
 	$cfg->errorReporting = $_POST['errorReporting'];
 	// save settings
@@ -452,16 +457,16 @@ printHeaderContents(_("Edit general settings"), '../..');
 	$errorLogSelect->setHasDescriptiveElements(true);
 	$row->add($errorLogSelect, 12);
 
-	// additional options
+	// mail options
 	if (isLAMProVersion()) {
-		$row->add(new htmlSubTitle(_('Additional options')), 12);
-		$mailEOLOptions = array(
-			_('Default (\r\n)') => 'default',
-			_('Non-standard (\n)') => 'unix'
-		);
-		$mailEOLSelect = new htmlResponsiveSelect('mailEOL', $mailEOLOptions, array($cfg->mailEOL), _('Email format'), '243');
-		$mailEOLSelect->setHasDescriptiveElements(true);
-		$row->add($mailEOLSelect, 12);
+		$row->add(new htmlSubTitle(_('Mail options')), 12);
+		$mailServer = new htmlResponsiveInputField(_("Mail server"), 'mailServer', $cfg->mailServer, '253');
+		$row->add($mailServer, 12);
+		$mailUser = new htmlResponsiveInputField(_("User name"), 'mailUser', $cfg->mailUser, '254');
+		$row->add($mailUser, 12);
+		$mailPassword = new htmlResponsiveInputField(_("Password"), 'mailPassword', $cfg->mailPassword, '255');
+		$mailPassword->setIsPassword(true);
+		$row->add($mailPassword, 12);
 	}
 	$row->addVerticalSpacer('3rem');
 

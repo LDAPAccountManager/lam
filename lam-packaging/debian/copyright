@@ -960,6 +960,7 @@ lib/3rdParty/composer/pear-pear.horde.org/Horde_Text_Flowed          H
 lib/3rdParty/composer/pear-pear.horde.org/Horde_Translation          H
 lib/3rdParty/composer/pear-pear.horde.org/Horde_Util                 H
 lib/3rdParty/composer/php-http                                       B  2015  PHP HTTP Team
+lib/3rdParty/composer/phpmailer                                      H
 lib/3rdParty/composer/psr                                            B  2018  PHP Framework Interoperability Group
 lib/3rdParty/composer/ramsey                                         B  2018  Ben Ramsey
 lib/3rdParty/composer/spomky-labs                                    B  2018  Spomky-Labs

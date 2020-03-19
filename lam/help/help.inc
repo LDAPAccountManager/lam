@@ -161,8 +161,6 @@ $helpArray = array (
 					"Text" => _("This is a list of IP addresses from hosts who may access LAM. You can use \"*\" as wildcard (e.g. 192.168.0.*).")),
 				"242" => array ("Headline" => _("Password policy"),
 					"Text" => _("Here you can specify minimum requirements for passwords. The character classes are: lowercase, uppercase, numeric and symbols.")),
-				"243" => array ("Headline" => _('Email format'),
-					"Text" => _('Please change this setting only if you experience problems in receiving emails from LAM. This defines the line ending of emails.')),
 				"244" => array ("Headline" => _('PHP error reporting'),
 					"Text" => _('Defines if the PHP error reporting setting from php.ini is used or the setting preferred by LAM ("E_ALL & ~E_NOTICE"). If you do not develop LAM modules please use the default. This will prevent displaying messages that are useful only for developers.')),
 				"245" => array ("Headline" => _('Encrypt session'),
@@ -181,6 +179,12 @@ $helpArray = array (
 					"Text" => _("Please enter the syslog remote server in format \"server:port\".")),
 				"252" => array ("Headline" => _("User DN"),
 					"Text" => _("Please enter a part of the user's DN to search for registered devices.")),
+				"253" => array ("Headline" => _("Mail server"),
+					"Text" => _("Please enter the server name and port of your SMTP server (e.g. localhost:25). If this setting is left empty then LAM will try to use a locally installed mail server. The server must support TLS.")),
+				"254" => array ("Headline" => _("User name"),
+					"Text" => _("SMTP user name")),
+				"255" => array ("Headline" => _("Password"),
+					"Text" => _("SMTP password")),
 				"260" => array ("Headline" => _("Additional LDAP filter"),
 					"Text" => _('Use this to enter an additional LDAP filter (e.g. "(cn!=admin)") to reduce the number of visible elements for this account type.')
 						. ' ' . _('You can use the wildcard @@LOGIN_DN@@ which will be substituted with the DN of the user who is currently logged in to LAM.')
@@ -378,7 +382,7 @@ $helpArray = array (
 				// jobs
 				'800' => array(
 					"Headline" => _('From address'),
-					"Text" => _('This email address will be set as sender address of all mails. If empty the system default (php.ini) will be used.')
+					"Text" => _('This email address will be set as sender address of all mails.')
 				),
 				'801' => array(
 					"Headline" => _('Reply-to address'),

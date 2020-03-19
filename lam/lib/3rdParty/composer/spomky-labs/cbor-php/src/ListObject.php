@@ -35,7 +35,7 @@ class ListObject extends AbstractCBORObject implements \Countable, \IteratorAggr
     public function __construct(array $data = [])
     {
         list($additionalInformation, $length) = LengthCalculator::getLengthOfArray($data);
-        array_map(function ($item) {
+        array_map(static function ($item): void {
             if (!$item instanceof CBORObject) {
                 throw new InvalidArgumentException('The list must contain only CBORObject objects.');
             }
