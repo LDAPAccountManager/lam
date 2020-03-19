@@ -432,17 +432,12 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		if (!empty($_POST['dns'])) {
 			$_POST['dns'] = trim($_POST['dns']);
 			$ex = explode(",", $_POST['dns']);
-			$dns = "";
 			$is_first=true;
 			$invalid = false;
 			foreach($ex AS $string) {
 				if ($is_first) {
-					$dns .= $string;
 					$is_first=false;
 			    }
-				else {
-			    	$dns .= ",$string";
-				}
 
 	            if (!check_ip($string)) {
 			        $invalid = true;

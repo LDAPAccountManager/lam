@@ -5,7 +5,7 @@ use \LAM\PDF\PDFTableRow;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2018  Roland Gruber
+  Copyright (C) 2004 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -668,7 +668,6 @@ class kolabUser extends baseModule {
 			}
 			uksort($delegates, 'compareDN');
 			$_SESSION['kolabUser_kolabDelegate'] = $kolabDelegate;
-			$delegateFields = array();
 			$delegateContainer = new htmlTable();
 			for ($i = 0; $i < sizeof($kolabDelegate); $i++) {
 				$delegateContainer->addElement(new htmlOutputText($kolabDelegate[$i]));

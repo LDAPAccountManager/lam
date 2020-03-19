@@ -1657,7 +1657,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 	private function uploadPhoto() {
 		$messages = array();
 		if ($_FILES['photoFile'] && ($_FILES['photoFile']['size'] > 0)) {
-			$name = $_FILES['photoFile']['name'];
 			$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
 			$data = fread($handle, 100000000);
 			if (!empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]) && (strlen($data) > (1024 * $this->moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]))) {

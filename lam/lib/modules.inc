@@ -1543,7 +1543,7 @@ class accountContainer {
 		foreach ($attr_names as $i => $name) {
 			// find deleted attributes
 			if (isset($orig[$name]) && is_array($orig[$name])) {
-				foreach ($orig[$name] as $j => $value) {
+				foreach ($orig[$name] as $value) {
 					if (is_array($attributes[$name])) {
 						if (!in_array($value, $attributes[$name], true)
 								&& ($value !== null)
@@ -1558,7 +1558,7 @@ class accountContainer {
 			}
 			// find new attributes
 			if (isset($attributes[$name]) && is_array($attributes[$name])) {
-				foreach ($attributes[$name] as $j => $value) {
+				foreach ($attributes[$name] as $value) {
 					if (isset($orig[$name]) && is_array($orig[$name])) {
 						if (!in_array($value, $orig[$name], true)
 								&& ($value !== null)
@@ -1572,7 +1572,7 @@ class accountContainer {
 			}
 			// find unchanged attributes
 			if (isset($orig[$name]) && is_array($orig[$name]) && is_array($attributes[$name])) {
-				foreach ($attributes[$name] as $j => $value) {
+				foreach ($attributes[$name] as $value) {
 					if (($value !== null) && ($value !== '') && in_array($value, $orig[$name], true)) {
 						$notchanged[$name][] = $value;
 					}
