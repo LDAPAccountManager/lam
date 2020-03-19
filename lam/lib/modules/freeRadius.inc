@@ -835,8 +835,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		protected function findUsers($jobID, $options) {
 			// read users
 			$attrs = array('radiusExpiration');
-			$userResults = searchLDAPByFilter('(radiusExpiration=*)', $attrs, array('user'));
-			return $userResults;
+			return searchLDAPByFilter('(radiusExpiration=*)', $attrs, array('user'));
 		}
 
 		/**
@@ -902,8 +901,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			$sysattrs = array('radiusExpiration', 'mail');
 			$attrs = $this->getAttrWildcards($jobID, $options);
 			$attrs = array_values(array_unique(array_merge($attrs, $sysattrs)));
-			$userResults = searchLDAPByFilter('(&(radiusExpiration=*)(mail=*))', $attrs, array('user'));
-			return $userResults;
+			return searchLDAPByFilter('(&(radiusExpiration=*)(mail=*))', $attrs, array('user'));
 		}
 
 		/**

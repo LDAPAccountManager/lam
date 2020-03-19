@@ -3718,8 +3718,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$imageManipulator->thumbnail($maxWidth, $maxHeight);
 		}
 		$imageManipulator->convertToJpeg();
-		$data = $imageManipulator->getImageData();
-		return $data;
+		return $imageManipulator->getImageData();
 	}
 
 	/**

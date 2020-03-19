@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-  Copyright (C) 2007 - 2019  Roland Gruber
+  Copyright (C) 2007 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -887,8 +887,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			$sysattrs = array('mail', 'shadowLastChange', 'shadowWarning', 'shadowMax', 'userPassword');
 			$attrs = $this->getAttrWildcards($jobID, $options);
 			$attrs = array_values(array_unique(array_merge($attrs, $sysattrs)));
-			$userResults = searchLDAPByFilter('(&(shadowLastChange=*)(shadowMax=*)(mail=*))', $attrs, array('user'));
-			return $userResults;
+			return searchLDAPByFilter('(&(shadowLastChange=*)(shadowMax=*)(mail=*))', $attrs, array('user'));
 		}
 
 		/**
@@ -1091,8 +1090,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		protected function findUsers($jobID, $options) {
 			// read users
 			$attrs = array('shadowExpire');
-			$userResults = searchLDAPByFilter('(shadowExpire=*)', $attrs, array('user'));
-			return $userResults;
+			return searchLDAPByFilter('(shadowExpire=*)', $attrs, array('user'));
 		}
 
 		/**

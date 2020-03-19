@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2019  Roland Gruber
+                2005 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -177,10 +177,7 @@ class account extends baseModule {
 		if (!$this->getAccountContainer()->isNewAccount && !in_array('account', $this->getAccountContainer()->attributes_orig['objectClass'])) {
 			return array();
 		}
-		// Get easy attributes
-		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
-		// Return attributes
-		return $return;
+		return $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 	}
 
 	/**

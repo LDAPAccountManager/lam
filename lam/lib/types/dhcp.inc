@@ -312,7 +312,7 @@ class lamDHCPList extends lamList {
 					if (empty($pool['dhcprange'])) {
 						continue;
 					}
-					foreach($pool['dhcprange'] AS $id => $value) {
+					foreach($pool['dhcprange'] AS $value) {
 						if (!empty($value) && !is_numeric($value)) {
 							$ex = explode(" ", $value);
 							$row = new htmlTableRow(

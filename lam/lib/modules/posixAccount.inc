@@ -3715,8 +3715,7 @@ class posixAccount extends baseModule implements passwordService {
 	 */
 	private function cleanSuggestionPart($part) {
 		$result = str_replace(array_keys($this->umlautReplacements), array_values($this->umlautReplacements), strtolower($part));
-		$result = str_replace(array(' ', '_', '-'), array('', '', ''), $result);
-		return $result;
+		return str_replace(array(' ', '_', '-'), array('', '', ''), $result);
 	}
 
 	/**

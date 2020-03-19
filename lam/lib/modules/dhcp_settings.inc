@@ -375,8 +375,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				$this->attributes['objectClass'] = array_delete(array("dhcpSubnet"), $this->attributes['objectClass']);
 			}
 		}
-		$return = parent::save_attributes();
-		return $return;
+		return parent::save_attributes();
 	}
 
 	/**

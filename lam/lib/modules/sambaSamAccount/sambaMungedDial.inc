@@ -316,9 +316,7 @@ class sambaMungedDial
 	  		$this->ctx[$value]= 0;
 	  	}
   	}
-	  $result= base64_encode($this->encode_munged($this->ctx));
-	  
-    return $result;
+  	return base64_encode($this->encode_munged($this->ctx));
   }
 
   /** Returns array of flags, which can be set on-demand with activated java-script */

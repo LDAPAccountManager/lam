@@ -2031,8 +2031,7 @@ abstract class baseModule {
 	 * @return array messages and attributes (array('messages' => array(), 'add' => array('mail' => array('test@test.com')), 'del' => array(), 'mod' => array(), 'info' => array()))
 	 */
 	public function checkSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
-		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
-		return $return;
+		return array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array(), 'info' => array());
 	}
 
 	/**
