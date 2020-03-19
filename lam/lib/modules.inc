@@ -1779,10 +1779,8 @@ class accountContainer {
 		// pass profile to each module
 		$modules = array_keys($this->module);
 		foreach ($modules as $module) $this->module[$module]->load_profile($profile);
-		if (isset($profile['ldap_rdn'][0])) {
-			if (in_array($profile['ldap_rdn'][0], getRDNAttributes($this->type->getId()))) {
-				$this->rdn = $profile['ldap_rdn'][0];
-			}
+		if (isset($profile['ldap_rdn'][0]) && in_array($profile['ldap_rdn'][0], getRDNAttributes($this->type->getId()))) {
+			$this->rdn = $profile['ldap_rdn'][0];
 		}
 		if (isset($profile['ldap_suffix'][0]) && ($profile['ldap_suffix'][0] != '-')) {
 			$this->dnSuffix = $profile['ldap_suffix'][0];

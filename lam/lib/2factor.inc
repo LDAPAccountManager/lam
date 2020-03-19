@@ -560,12 +560,10 @@ class WebauthnProvider extends BaseProvider {
 		$row->add($loginButton, 12);
 		$errorMessage = new htmlStatusMessage('ERROR', '', _('This service requires a browser with "WebAuthn" support.'));
 		$row->add(new htmlDiv(null, $errorMessage, array('hidden webauthn-error')), 12);
-		if ($this->config->twoFactorAuthenticationOptional === true) {
-			if (!$hasTokens) {
-				$skipButton = new htmlButton('skip_webauthn', _('Skip'));
-				$skipButton->setCSSClasses(array('fullwidth'));
-				$row->add($skipButton, 12);
-			}
+		if (($this->config->twoFactorAuthenticationOptional === true) && !$hasTokens) {
+			$skipButton = new htmlButton('skip_webauthn', _('Skip'));
+			$skipButton->setCSSClasses(array('fullwidth'));
+			$row->add($skipButton, 12);
 		}
 		$errorMessageDiv = new htmlDiv('generic-webauthn-error', new htmlOutputText(''));
 		$errorMessageDiv->addDataAttribute('button', _('Ok'));

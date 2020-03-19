@@ -370,10 +370,10 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	*/
 	public function save_attributes() {
 		// remove dhcpSubnet object class if only the DHCP settings were changed
-		if ($this->isRootNode()) {
-			if (!in_array_ignore_case("dhcpSubnet", $this->orig['objectClass']) && in_array_ignore_case("dhcpSubnet", $this->attributes['objectClass'])) {
-				$this->attributes['objectClass'] = array_delete(array("dhcpSubnet"), $this->attributes['objectClass']);
-			}
+		if ($this->isRootNode()
+			&& !in_array_ignore_case("dhcpSubnet", $this->orig['objectClass'])
+			&& in_array_ignore_case("dhcpSubnet", $this->attributes['objectClass'])) {
+			$this->attributes['objectClass'] = array_delete(array("dhcpSubnet"), $this->attributes['objectClass']);
 		}
 		return parent::save_attributes();
 	}
@@ -386,10 +386,10 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	*/
 	public function process_attributes() {
 		// check if DHCP main settings and valid DHCP entry
-		if ($this->isRootNode()) {
-			if (!in_array_ignore_case('dhcpService', $this->attributes['objectClass']) && !in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
-				return array();
-			}
+		if ($this->isRootNode()
+			&& !in_array_ignore_case('dhcpService', $this->attributes['objectClass'])
+			&& !in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
+			return array();
 		}
 		$errors = array();
 
@@ -420,10 +420,8 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 
 		// Check domainname:
 		if (!empty($_POST['domainname'])) $_POST['domainname'] = trim($_POST['domainname']);
-		if (!empty($_POST['domainname'])) {
-			if (!preg_match("/^[A-Za-z0-9\\._-]*$/", $_POST['domainname'])) {
-			    $errors[] = $this->messages['domainname'][2];
-			}
+		if (!empty($_POST['domainname']) && !preg_match("/^[A-Za-z0-9\\._-]*$/", $_POST['domainname'])) {
+		    $errors[] = $this->messages['domainname'][2];
 		}
 		$this->setDHCPOption('domain-name', '"' . $_POST['domainname'] . '"');
 
@@ -562,11 +560,11 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	public function display_html_attributes() {
 		$return = new htmlResponsiveRow();
 		// check if DHCP main settings and valid DHCP entry
-		if ($this->isRootNode()) {
-			if (!in_array_ignore_case('dhcpService', $this->attributes['objectClass']) && !in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
-				$return->add(new htmlStatusMessage('ERROR', _('Please set your LDAP suffix to an LDAP entry with object class "dhcpService" or "dhcpServer".')), 12);
-				return $return;
-			}
+		if ($this->isRootNode()
+			&& !in_array_ignore_case('dhcpService', $this->attributes['objectClass'])
+			&& !in_array_ignore_case('dhcpServer', $this->attributes['objectClass'])) {
+			$return->add(new htmlStatusMessage('ERROR', _('Please set your LDAP suffix to an LDAP entry with object class "dhcpService" or "dhcpServer".')), 12);
+			return $return;
 		}
 		// Subnet name
 		if (!$this->isRootNode()) {

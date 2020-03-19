@@ -281,10 +281,8 @@ class ddns extends baseModule {
 		$this->setIgnoreClientUpdates(($client_insert == 'on'));
 
 		$this->setUpdateKey($key_path);
-		if (!empty($key_path)) {
-			if (str_replace("\"","",$_POST['key_path']) != $key_path) {
-				$errors[] = $this->messages['key_path'][1];
-			}
+		if (!empty($key_path) && (str_replace("\"","",$_POST['key_path']) != $key_path)) {
+			$errors[] = $this->messages['key_path'][1];
 		}
 
 		return $errors;
@@ -301,10 +299,8 @@ class ddns extends baseModule {
 		$zone_reverse = trim($_POST['zone_reverse']);
 
 		// ip correct???
-		if (!empty($ip)) {
-			if (!check_ip($ip)) {
-				$errors[] = $this->messages['ip'][0];
-			}
+		if (!empty($ip) && !check_ip($ip)) {
+			$errors[] = $this->messages['ip'][0];
 		}
 
 		for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {

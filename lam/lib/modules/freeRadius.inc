@@ -711,14 +711,14 @@ class freeRadius extends baseModule {
 	function check_profileOptions($options, $typeId) {
 		$messages = parent::check_profileOptions($options, $typeId);
 		// group names
-		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusGroupName')) {
-			if (isset($options['freeRadius_radiusGroupName'][0]) && ($options['freeRadius_radiusGroupName'][0] != '')) {
-				$list = preg_split('/;[ ]*/', $options['freeRadius_radiusGroupName'][0]);
-				for ($i = 0; $i < sizeof($list); $i++) {
-					if (!get_preg($list[$i], 'groupname')) {
-						$messages[] = $this->messages['radiusGroupName'][0];
-						break;
-					}
+		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusGroupName')
+			&& isset($options['freeRadius_radiusGroupName'][0])
+			&& ($options['freeRadius_radiusGroupName'][0] != '')) {
+			$list = preg_split('/;[ ]*/', $options['freeRadius_radiusGroupName'][0]);
+			for ($i = 0; $i < sizeof($list); $i++) {
+				if (!get_preg($list[$i], 'groupname')) {
+					$messages[] = $this->messages['radiusGroupName'][0];
+					break;
 				}
 			}
 		}
@@ -733,11 +733,11 @@ class freeRadius extends baseModule {
 	function load_profile($profile) {
 		// profile mappings in meta data
 		parent::load_profile($profile);
-		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusGroupName')) {
-			// group names
-			if (isset($profile['freeRadius_radiusGroupName'][0]) && $profile['freeRadius_radiusGroupName'][0] != '') {
-				$this->attributes['radiusGroupName'] = preg_split('/;[ ]*/', $profile['freeRadius_radiusGroupName'][0]);
-			}
+		// group names
+		if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusGroupName')
+			&& isset($profile['freeRadius_radiusGroupName'][0])
+			&& ($profile['freeRadius_radiusGroupName'][0] != '')) {
+			$this->attributes['radiusGroupName'] = preg_split('/;[ ]*/', $profile['freeRadius_radiusGroupName'][0]);
 		}
 	}
 

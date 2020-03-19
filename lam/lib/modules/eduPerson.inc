@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2019  Roland Gruber
+  Copyright (C) 2009 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -398,10 +398,8 @@ class eduPerson extends baseModule {
 		$this->attributes['eduPersonScopedAffiliation'] = array_values(array_unique($this->attributes['eduPersonScopedAffiliation']));
 		// principal name
 		$this->attributes['eduPersonPrincipalName'][0] = $_POST['eduPersonPrincipalName'];
-		if ($_POST['eduPersonPrincipalName'] != '') {
-			if (!preg_match('/^[0-9a-z_\\.@-]+$/i', $_POST['eduPersonPrincipalName'])) {
-				$errors[] = $this->messages['eduPersonPrincipalName'][0];
-			}
+		if (($_POST['eduPersonPrincipalName'] != '') && !preg_match('/^[0-9a-z_\\.@-]+$/i', $_POST['eduPersonPrincipalName'])) {
+			$errors[] = $this->messages['eduPersonPrincipalName'][0];
 		}
 		// affiliations
 		$this->attributes['eduPersonAffiliation'] = array();
@@ -422,17 +420,13 @@ class eduPerson extends baseModule {
 		$this->processMultiValueInputTextField('eduPersonEntitlement', $errors);
 		// org DN
 		$this->attributes['eduPersonOrgDN'][0] = $_POST['eduPersonOrgDN'];
-		if ($_POST['eduPersonOrgDN'] != '') {
-			if (!get_preg($_POST['eduPersonOrgDN'], 'dn')) {
-				$errors[] = $this->messages['eduPersonOrgDN'][0];
-			}
+		if (($_POST['eduPersonOrgDN'] != '') && !get_preg($_POST['eduPersonOrgDN'], 'dn')) {
+			$errors[] = $this->messages['eduPersonOrgDN'][0];
 		}
 		// primary OU
 		$this->attributes['eduPersonPrimaryOrgUnitDN'][0] = $_POST['eduPersonPrimaryOrgUnitDN'];
-		if ($_POST['eduPersonPrimaryOrgUnitDN'] != '') {
-			if (!get_preg($_POST['eduPersonPrimaryOrgUnitDN'], 'dn')) {
-				$errors[] = $this->messages['eduPersonPrimaryOrgUnitDN'][0];
-			}
+		if (($_POST['eduPersonPrimaryOrgUnitDN'] != '') && !get_preg($_POST['eduPersonPrimaryOrgUnitDN'], 'dn')) {
+			$errors[] = $this->messages['eduPersonPrimaryOrgUnitDN'][0];
 		}
 		// OUs
 		$this->processMultiValueInputTextField('eduPersonOrgUnitDN', $errors, 'dn');
@@ -449,10 +443,10 @@ class eduPerson extends baseModule {
 	function load_profile($profile) {
 		parent::load_profile($profile);
 		// add extension
-		if (isset($profile['eduPerson_addExt'][0]) && ($profile['eduPerson_addExt'][0] == "true")) {
-			if (!in_array('eduPerson', $this->attributes['objectClass'])) {
-				$this->attributes['objectClass'][] = 'eduPerson';
-			}
+		if (isset($profile['eduPerson_addExt'][0])
+			&& ($profile['eduPerson_addExt'][0] == "true")
+			&& !in_array('eduPerson', $this->attributes['objectClass'])) {
+			$this->attributes['objectClass'][] = 'eduPerson';
 		}
 	}
 
