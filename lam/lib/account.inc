@@ -1298,40 +1298,6 @@ function sendPasswordMail($pwd, $user, $recipient = null) {
 }
 
 /**
- * Generates the email header text for the given parameters.
- *
- * @param String $from FROM address
- * @param boolean $isHTML mail is formatted as HTML or plain text
- * @param String $replyTo reply-to address (optional)
- * @param String $cc CC address
- * @param String $bcc BCC address
- * @return String header lines
- */
-function createEMailHeaders($from, $isHTML, $replyTo = null, $cc = null, $bcc = null) {
-	$headerLines = "";
-	if (!empty($from)) {
-		$headerLines .= 'From: ' . encodeMailAddress($from) . "\r\n";
-	}
-	if (!empty($replyTo)) {
-		$headerLines .= 'Reply-To: ' . encodeMailAddress($replyTo) . "\r\n";
-	}
-	if (!empty($cc)) {
-		$headerLines .= 'Cc: ' . encodeMailAddress($cc) . "\r\n";
-	}
-	if (!empty($bcc)) {
-		$headerLines .= 'Bcc: ' . encodeMailAddress($bcc) . "\r\n";
-	}
-	$headerLines .= "MIME-Version: 1.0\r\n";
-	if ($isHTML) {
-		$headerLines .= "Content-type: text/html; charset=UTF-8\r\n";
-	}
-	else {
-		$headerLines .= "Content-type: text/plain; charset=UTF-8\r\n";
-	}
-	return $headerLines;
-}
-
-/**
  * Sends out an email.
  *
  * @param String $to TO address

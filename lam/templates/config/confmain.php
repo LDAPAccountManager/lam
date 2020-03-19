@@ -354,7 +354,7 @@ if (isLAMProVersion()) {
 	// mail settings
 	$row->add(new htmlSubTitle(_("Password mail settings"), '../../graphics/mailBig.png', null, true), 12);
 
-	$pwdMailFrom = new htmlResponsiveInputField(_('From address'), 'pwdResetMail_from', $conf->getLamProMailFrom(), '550');
+	$pwdMailFrom = new htmlResponsiveInputField(_('From address'), 'pwdResetMail_from', $conf->getLamProMailFrom(), '550', true);
 	$row->add($pwdMailFrom, 12);
 
 	$pwdMailReplyTo = new htmlResponsiveInputField(_('Reply-to address'), 'pwdResetMail_replyTo', $conf->getLamProMailReplyTo(), '554');
