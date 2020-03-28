@@ -2548,6 +2548,15 @@ class LAMCfgMain {
 	/** PHP error reporting setting as E_ALL | E_STRICT */
 	const ERROR_REPORTING_ALL = 'all';
 
+	/** send license warnings via email */
+	const LICENSE_WARNING_EMAIL = 'email';
+	/** display license warnings on screen */
+	const LICENSE_WARNING_SCREEN = 'screen';
+	/** send license warnings via email + display on screen */
+	const LICENSE_WARNING_ALL = 'all';
+	/** no license warning */
+	const LICENSE_WARNING_NONE = 'none';
+
 	/** Default profile */
 	public $default;
 
@@ -2617,6 +2626,18 @@ class LAMCfgMain {
 	/** license data */
 	private $license = '';
 
+	/** license warning email from address */
+	public $licenseEmailFrom = '';
+
+	/** license warning email TO addresses (comma separated) */
+	public $licenseEmailTo = '';
+
+	/** license warning email was last sent for this expiration date */
+	public $licenseEmailDateSent = '';
+
+	/** type of license warning (email/screen/both/none) */
+	public $licenseWarningType = '';
+
 	/** mail server (server:port) */
 	public $mailServer = '';
 
@@ -2634,7 +2655,8 @@ class LAMCfgMain {
 		'passwordMustNotContainUser', 'passwordMustNotContain3Chars',
 		'externalPwdCheckUrl',
 		'errorReporting', 'encryptSession', 'allowedHostsSelfService',
-		'license', 'mailServer', 'mailUser', 'mailPassword'
+		'license', 'licenseEmailFrom', 'licenseEmailTo', 'licenseWarningType', 'licenseEmailDateSent',
+		'mailServer', 'mailUser', 'mailPassword'
 	);
 
 	/**
@@ -2782,6 +2804,18 @@ class LAMCfgMain {
 		}
 		if (!in_array("license", $saved)) {
 			array_push($file_array, "\n\n# License\n" . "license: " . $this->license);
+		}
+		if (!in_array("licenseEmailFrom", $saved)) {
+			array_push($file_array, "\n" . "licenseEmailFrom: " . $this->licenseEmailFrom);
+		}
+		if (!in_array("licenseEmailTo", $saved)) {
+			array_push($file_array, "\n" . "licenseEmailTo: " . $this->licenseEmailTo);
+		}
+		if (!in_array("licenseEmailDateSent", $saved)) {
+			array_push($file_array, "\n" . "licenseEmailDateSent: " . $this->licenseEmailDateSent);
+		}
+		if (!in_array("licenseWarningType", $saved)) {
+			array_push($file_array, "\n" . "licenseWarningType: " . $this->licenseWarningType);
 		}
 		if (!in_array("mailServer", $saved)) {
 			array_push($file_array, "\n" . "mailServer: " . $this->mailServer);
@@ -3094,10 +3128,22 @@ class LAMCfgMain {
 	/**
 	 * Sets the license key as multiple lines.
 	 *
-	 * @param String $license license
+	 * @param String[] $licenseLines license lines
 	 */
 	public function setLicenseLines($licenseLines) {
 		$this->license = implode(LAMConfig::LINE_SEPARATOR, $licenseLines);
+	}
+
+	/**
+	 * Returns the license warning type (screen/email/both/none).
+	 *
+	 * @return string warning type
+	 */
+	public function getLicenseWarningType() {
+		if (empty($this->licenseWarningType)) {
+			return self::LICENSE_WARNING_SCREEN;
+		}
+		return $this->licenseWarningType;
 	}
 
 }

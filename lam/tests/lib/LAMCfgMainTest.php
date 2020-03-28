@@ -71,4 +71,25 @@ class LAMCfgMainTest extends TestCase {
 		$this->assertEquals('user123', $this->conf->mailUser);
 	}
 
+	/**
+	 * License related settings.
+	 */
+	public function testLicense() {
+		$this->assertEquals(LAMCfgMain::LICENSE_WARNING_SCREEN, $this->conf->getLicenseWarningType());
+		$this->conf->licenseEmailTo = 'TO';
+		$this->conf->licenseEmailFrom = 'FROM';
+		$this->conf->licenseEmailDateSent = 'date';
+		$this->conf->licenseWarningType = LAMCfgMain::LICENSE_WARNING_ALL;
+		$this->conf->setLicenseLines(array('123', '456'));
+
+		$this->conf->save();
+		$this->conf = new LAMCfgMain($this->file);
+
+		$this->assertEquals('TO', $this->conf->licenseEmailTo);
+		$this->assertEquals('FROM', $this->conf->licenseEmailFrom);
+		$this->assertEquals('date', $this->conf->licenseEmailDateSent);
+		$this->assertEquals(LAMCfgMain::LICENSE_WARNING_ALL, $this->conf->licenseWarningType);
+		$this->assertEquals(array('123', '456'), $this->conf->getLicenseLines());
+	}
+
 }
