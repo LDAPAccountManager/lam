@@ -206,6 +206,10 @@ class quota extends baseModule {
 				}
 				$allQuotas[$i] = substr($allQuotas[$i], strlen(self::$QUOTA_PREFIX));
 				$singleQuota = explode(",", $allQuotas[$i]);
+				$singleQuota[2] = $this->addBlockUnits($singleQuota[2]);
+				$singleQuota[3] = $this->addBlockUnits($singleQuota[3]);
+				$singleQuota[6] = $this->addInodeUnits($singleQuota[6]);
+				$singleQuota[7] = $this->addInodeUnits($singleQuota[7]);
 				$this->quota[$server][$i] = $singleQuota;
 				if ($this->quota[$server][$i][4] < time()) {
 					$this->quota[$server][$i][4] = '';
@@ -220,6 +224,56 @@ class quota extends baseModule {
 					$this->quota[$server][$i][8] = strval(intval(($this->quota[$server][$i][8] - time())/3600)) .' '. _('hours');
 				}
 			}
+		}
+	}
+
+	/**
+	 * Adds units (M/G/T) for block numbers.
+	 *
+	 * @param int $value raw value
+	 */
+	private function addBlockUnits($value) {
+		$mebibytes = 1024;
+		$gibibytes = 1024 * $mebibytes;
+		$tebibytes = 1024 * $gibibytes;
+		if (empty($value) || !get_preg($value, 'digit') || ($value < $mebibytes)) {
+			return $value;
+		}
+		if (($value >= $tebibytes) && (($value % $tebibytes) === 0)) {
+			return ($value / $tebibytes) . 'T';
+		}
+		if (($value >= $gibibytes) && (($value % $gibibytes) === 0)) {
+			return ($value / $gibibytes) . 'G';
+		}
+		if (($value >= $mebibytes) && (($value % $mebibytes) === 0)) {
+			return ($value / $mebibytes) . 'M';
+		}
+	}
+
+	/**
+	 * Adds units (m/g/t) for inode numbers.
+	 *
+	 * @param int $value raw value
+	 */
+	private function addInodeUnits($value) {
+		$kilo = 1000;
+		$million = 1000 * $kilo;
+		$billion = 1000 * $million;
+		$trillion = 1000 * $billion;
+		if (empty($value) || !get_preg($value, 'digit') || ($value < $million)) {
+			return $value;
+		}
+		if (($value >= $trillion) && (($value % $trillion) === 0)) {
+			return ($value / $trillion) . 't';
+		}
+		if (($value >= $billion) && (($value % $billion) === 0)) {
+			return ($value / $billion) . 'g';
+		}
+		if (($value >= $million) && (($value % $million) === 0)) {
+			return ($value / $million) . 'm';
+		}
+		if (($value >= $kilo) && (($value % $kilo) === 0)) {
+			return ($value / $kilo) . 'k';
 		}
 	}
 
@@ -295,7 +349,10 @@ class quota extends baseModule {
 			$remote = new \LAM\REMOTE\Remote();
 			$remoteServer = $_SESSION['config']->getScriptServerByName($server);
 			$remote->connect($remoteServer);
-			$remote->execute(implode(self::$SPLIT_DELIMITER, array($id, "quota", "set", $this->get_scope(), "$quotastring\n")));
+			$output = $remote->execute(implode(self::$SPLIT_DELIMITER, array($id, "quota", "set", $this->get_scope(), "$quotastring\n")));
+			if (strpos($output, 'ERROR,') === 0) {
+				$messages[] = array('ERROR', $server, _('Unable to set quota.'));
+			}
 			$remote->disconnect();
 		}
 		return $messages;
