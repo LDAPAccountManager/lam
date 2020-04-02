@@ -3146,6 +3146,26 @@ class LAMCfgMain {
 		return $this->licenseWarningType;
 	}
 
+	/**
+	 * Returns if the license warning should be shown on screen.
+	 *
+	 * @return bool show on screen
+	 */
+	public function showLicenseWarningOnScreen() {
+		$type = $this->getLicenseWarningType();
+		return ($type === self::LICENSE_WARNING_ALL) || ($type === self::LICENSE_WARNING_SCREEN);
+	}
+
+	/**
+	 * Returns if the license warning should be sent via email.
+	 *
+	 * @return bool send via email
+	 */
+	public function sendLicenseWarningByEmail() {
+		$type = $this->getLicenseWarningType();
+		return ($type === self::LICENSE_WARNING_ALL) || ($type === self::LICENSE_WARNING_EMAIL);
+	}
+
 }
 
 ?>

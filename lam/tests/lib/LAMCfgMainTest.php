@@ -92,4 +92,29 @@ class LAMCfgMainTest extends TestCase {
 		$this->assertEquals(array('123', '456'), $this->conf->getLicenseLines());
 	}
 
+	/**
+	 * License warning type related settings.
+	 */
+	public function testLicenseWarningTypes() {
+		$this->conf->licenseWarningType = LAMCfgMain::LICENSE_WARNING_ALL;
+
+		$this->assertTrue($this->conf->sendLicenseWarningByEmail());
+		$this->assertTrue($this->conf->showLicenseWarningOnScreen());
+
+		$this->conf->licenseWarningType = LAMCfgMain::LICENSE_WARNING_EMAIL;
+
+		$this->assertTrue($this->conf->sendLicenseWarningByEmail());
+		$this->assertFalse($this->conf->showLicenseWarningOnScreen());
+
+		$this->conf->licenseWarningType = LAMCfgMain::LICENSE_WARNING_SCREEN;
+
+		$this->assertFalse($this->conf->sendLicenseWarningByEmail());
+		$this->assertTrue($this->conf->showLicenseWarningOnScreen());
+
+		$this->conf->licenseWarningType = LAMCfgMain::LICENSE_WARNING_NONE;
+
+		$this->assertFalse($this->conf->sendLicenseWarningByEmail());
+		$this->assertFalse($this->conf->showLicenseWarningOnScreen());
+	}
+
 }
