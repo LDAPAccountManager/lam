@@ -2629,7 +2629,7 @@ class LAMCfgMain {
 	/** license warning email from address */
 	public $licenseEmailFrom = '';
 
-	/** license warning email TO addresses (comma separated) */
+	/** license warning email TO address */
 	public $licenseEmailTo = '';
 
 	/** license warning email was last sent for this expiration date */
