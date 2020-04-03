@@ -453,8 +453,18 @@ function display_LoginPage($licenseValidator, $error_message) {
 		<br><br>
 		<?PHP
 			if (isLAMProVersion() && $licenseValidator->isExpiringSoon()) {
-				$licenseMessage = sprintf(_('Your licence expires on %s. You need to purchase a new licence to be able to use LAM Pro after this date.'), $licenseValidator->getLicense()->getExpirationDate()->format('Y-m-d'));
-				StatusMessage('WARN', $licenseMessage);
+				$expirationDate = $licenseValidator->getLicense()->getExpirationDate()->format('Y-m-d');
+				$expirationTimeStamp = $licenseValidator->getLicense()->getExpirationDate()->getTimestamp();
+				if ($cfgMain->showLicenseWarningOnScreen()) {
+					$licenseMessage = sprintf(_('Your licence expires on %s. You need to purchase a new licence to be able to use LAM Pro after this date.'), $expirationDate);
+					StatusMessage('WARN', $licenseMessage);
+				}
+				if ($cfgMain->sendLicenseWarningByEmail() && !$cfgMain->wasLicenseWarningSent($expirationTimeStamp)) {
+				    $cfgMain->licenseEmailDateSent = $expirationTimeStamp;
+				    $cfgMain->save();
+					$mailer = new \LAM\ENV\LicenseWarningMailer($cfgMain);
+					$mailer->sendMail($expirationDate);
+				}
 			}
 		?>
 		<br><br>

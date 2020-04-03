@@ -1,6 +1,7 @@
 June 2020 7.2
   - LAM Pro:
    -> EMail sending can be done via SMTP without local mail server
+   -> License expiration warning can be sent via email or disabled
 
 
 17.03.2020 7.1

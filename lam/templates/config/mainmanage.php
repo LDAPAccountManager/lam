@@ -106,6 +106,17 @@ if (isset($_POST['submitFormData'])) {
 		$licenseLines = explode("\n", $_POST['license']);
 		$licenseLines = array_map('trim', $licenseLines);
 		$cfg->setLicenseLines($licenseLines);
+		$cfg->licenseWarningType = $_POST['licenseWarningType'];
+		$cfg->licenseEmailFrom = $_POST['licenseEmailFrom'];
+		$cfg->licenseEmailTo = $_POST['licenseEmailTo'];
+		if ((($cfg->licenseWarningType === LAMCfgMain::LICENSE_WARNING_EMAIL) || ($cfg->licenseWarningType === LAMCfgMain::LICENSE_WARNING_ALL))
+            && !get_preg($cfg->licenseEmailFrom, 'email')) {
+		    $errors[] = _('License') . ': ' . _('From address') . ' - ' . _('Please enter a valid email address!');
+        }
+		if ((($cfg->licenseWarningType === LAMCfgMain::LICENSE_WARNING_EMAIL) || ($cfg->licenseWarningType === LAMCfgMain::LICENSE_WARNING_ALL))
+			&& !get_preg($cfg->licenseEmailTo, 'email')) {
+			$errors[] = _('License') . ': ' . _('TO address') . ' - ' . _('Please enter a valid email address!');
+		}
 	}
 	// set session timeout
 	$cfg->sessionTimeout = $_POST['sessionTimeout'];
@@ -307,6 +318,30 @@ printHeaderContents(_("Edit general settings"), '../..');
 	if (isLAMProVersion()) {
 		$row->add(new htmlSubTitle(_('Licence')), 12);
 		$row->add(new htmlResponsiveInputTextarea('license', implode("\n", $cfg->getLicenseLines()), null, 10, _('Licence'), '287'), 12);
+		$warningOptions = array(
+	        _('Screen') => LAMCfgMain::LICENSE_WARNING_SCREEN,
+			_('Email') => LAMCfgMain::LICENSE_WARNING_EMAIL,
+			_('Both') => LAMCfgMain::LICENSE_WARNING_ALL,
+			_('None') => LAMCfgMain::LICENSE_WARNING_NONE,
+        );
+		$warningTypeSelect = new htmlResponsiveSelect('licenseWarningType', $warningOptions, array($cfg->getLicenseWarningType()), _('Expiration warning'), '288');
+		$warningTypeSelect->setHasDescriptiveElements(true);
+		$warningTypeSelect->setSortElements(false);
+		$warningTypeSelect->setTableRowsToHide(array(
+			LAMCfgMain::LICENSE_WARNING_SCREEN => array('licenseEmailFrom', 'licenseEmailTo'),
+			LAMCfgMain::LICENSE_WARNING_NONE => array('licenseEmailFrom', 'licenseEmailTo'),
+        ));
+		$warningTypeSelect->setTableRowsToShow(array(
+			LAMCfgMain::LICENSE_WARNING_EMAIL => array('licenseEmailFrom', 'licenseEmailTo'),
+			LAMCfgMain::LICENSE_WARNING_ALL => array('licenseEmailFrom', 'licenseEmailTo'),
+		));
+		$row->add($warningTypeSelect, 12);
+		$licenseFrom = new htmlResponsiveInputField(_('From address'), 'licenseEmailFrom', $cfg->licenseEmailFrom, '289');
+		$licenseFrom->setRequired(true);
+		$row->add($licenseFrom, 12);
+		$licenseTo = new htmlResponsiveInputField(_('TO address'), 'licenseEmailTo', $cfg->licenseEmailTo, '290');
+		$licenseTo->setRequired(true);
+		$row->add($licenseTo, 12);
 
 		$row->add(new htmlSpacer(null, '1rem'), true);
 	}

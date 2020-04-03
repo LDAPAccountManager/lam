@@ -60,6 +60,10 @@
       <para>When you entered the license key then the license details can be
       seen on LAM configuration overview page.</para>
 
+      <para>By default, LAM Pro will show a warning message on the login page
+      3 weeks before expiration. You can disable this here and/or send out an
+      email instead.</para>
+
       <screenshot>
         <mediaobject>
           <imageobject>
