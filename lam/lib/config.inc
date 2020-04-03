@@ -3166,6 +3166,18 @@ class LAMCfgMain {
 		return ($type === self::LICENSE_WARNING_ALL) || ($type === self::LICENSE_WARNING_EMAIL);
 	}
 
+	/**
+	 * Returns if the license warning was already sent.
+	 *
+	 * @param int $timeStamp time stamp
+	 */
+	public function wasLicenseWarningSent($timeStamp) {
+		if (empty($this->licenseEmailDateSent)) {
+			return false;
+		}
+		return $timeStamp == $this->licenseEmailDateSent;
+	}
+
 }
 
 ?>
