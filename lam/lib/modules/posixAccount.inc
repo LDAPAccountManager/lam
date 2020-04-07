@@ -1076,7 +1076,7 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		$this->attributes['uidNumber'][0] = trim($_POST['uidNumber']);
 		$this->attributes['gidNumber'][0] = $_POST['gidNumber'];
-		if ($this->get_scope()=='user') {
+		if ($this->get_scope() == 'user') {
 			if (($this->attributes['uid'][0] != $_POST['uid']) && !get_preg($_POST['uid'], '!upper')) {
 				$errors[] = $this->messages['uid'][1];
 			}
@@ -1202,8 +1202,55 @@ class posixAccount extends baseModule implements passwordService {
 				$this->attributes[$this->getPasswordAttrName($modules)][0] = pwd_hash('x', true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 			}
 		}
+		if (isset($_POST['posixAccount_createGroup'])
+			&& !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hideCreateGroup')
+			&& ($this->get_scope() == 'user')
+			&& $this->getAccountContainer()->isNewAccount && get_preg($this->attributes['uid'][0], 'username')) {
+			$groupType = $this->getPosixGroupType();
+			$sessionKey = 'TMP' . getRandomNumber();
+			$accountContainerTmp = new accountContainer($groupType, $sessionKey);
+			$_SESSION[$sessionKey] = &$accountContainerTmp;
+			$accountContainerTmp->new_account();
+			$posixGroupModule = $accountContainerTmp->getAccountModule('posixGroup');
+			$nextGid = $posixGroupModule->getNextGIDs(1, $errors, $groupType);
+			if ($nextGid !== null) {
+				$newGroupName = $this->attributes['uid'][0];
+				$dnNewGroup = 'cn=' . $newGroupName . ',' . $groupType->getSuffix();
+				$attributesNewGroup = array(
+					'cn' => array($newGroupName),
+					'gidNumber' => $nextGid[0],
+					'objectClass' => array('posixGroup'),
+				);
+				$newGroupSuccess = @ldap_add(getLDAPServerHandle(), $dnNewGroup, $attributesNewGroup);
+				if ($newGroupSuccess) {
+					$errors[] = array('INFO', _('Created new group.'), htmlspecialchars($newGroupName));
+					$this->attributes['gidNumber'][0] = $nextGid[0];
+					$this->groupCache = null;
+				}
+				else {
+					$errors[] = array('ERROR', _('Unable to create new group.'), getDefaultLDAPErrorString(getLDAPServerHandle()));
+				}
+			}
+		}
 		// Return error-messages
 		return $errors;
+	}
+
+	/**
+	 * Returns the first found group type that contains posixGroup.
+	 *
+	 * @return ConfiguredType|null type
+	 */
+	private function getPosixGroupType() {
+		$typeManager = new TypeManager();
+		$groupTypes = $typeManager->getConfiguredTypesForScope('group');
+		foreach ($groupTypes as $groupType) {
+			$modules = $groupType->getModules();
+			if (in_array('posixGroup', $modules)) {
+				return $groupType;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -1634,7 +1681,16 @@ class posixAccount extends baseModule implements passwordService {
 			$gidNumberSelect->setHasDescriptiveElements(true);
 			$return->add($gidNumberSelect, 12);
 
-			if ($this->get_scope()=='user') {
+			if ($this->get_scope() == 'user') {
+				// new Unix group with same name
+				$posixGroupType = $this->getPosixGroupType();
+				if ($this->getAccountContainer()->isNewAccount
+					&& !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hideCreateGroup')
+					&& ($posixGroupType !== null)
+					&& (!isset($this->attributes['uid'][0]) || !isset($groups[$this->attributes['uid'][0]]))) {
+					$return->addLabel(new htmlOutputText('&nbsp;', false));
+					$return->addField(new htmlButton('posixAccount_createGroup', _('Create group with same name')));
+				}
 				// additional groups
 				if (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegon') || !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hideposixGroups')) {
 					$return->addLabel(new htmlOutputText(_('Additional groups')));
@@ -2215,18 +2271,18 @@ class posixAccount extends baseModule implements passwordService {
 				$hiddenOptionsContainerHead = new htmlGroup();
 				$hiddenOptionsContainerHead->addElement(new htmlOutputText(_('Hidden options')));
 				$hiddenOptionsContainerHead->addElement(new htmlHelpLink('hiddenOptions'));
-				$configUserContainer->addLabel($hiddenOptionsContainerHead, 12);
-				$configUserContainer->addField(new htmlOutputText(''));
+				$configUserContainer->add($hiddenOptionsContainerHead, 12);
 				$configUserContainer->addVerticalSpacer('0.5rem');
-				$configUserContainer->add(new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_hidegecos', false, _('Gecos'), null, false), 12);
-				$configUserContainer->add(new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_hidepassword', false, _('Password'), null, false), 12);
+				$configUserContainer->add(new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_hidegecos', false, _('Gecos'), null, true), 12, 4, 4);
+				$configUserContainer->add(new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_hidepassword', false, _('Password'), null, true), 12, 4, 4);
 				$confActiveGONModules = array_merge($_SESSION['conf_config']->get_AccountModules('group'), $_SESSION['conf_config']->get_AccountModules('gon'));
 				if (in_array('groupOfNames', $confActiveGONModules) || in_array('groupOfMembers', $confActiveGONModules) || in_array('groupOfUniqueNames', $confActiveGONModules)) {
-					$configUserContainer->add(new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_hidegon', false, _('Groups of names'), null, false), 12);
-					$configUserContainer->add(new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_hideposixGroups', false, _('Unix groups'), null, false), 12);
-					$syncGroupsCheckbox = new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_syncGroups', false, _('Sync groups'), null, false);
+					$configUserContainer->add(new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_hidegon', false, _('Groups of names'), null, true), 12, 4, 4);
+					$configUserContainer->add(new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_hideCreateGroup', false, _('Create group with same name'), null, true), 12, 4, 4);
+					$configUserContainer->add(new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_hideposixGroups', false, _('Unix groups'), null, true), 12, 4, 4);
+					$syncGroupsCheckbox = new htmlResponsiveInputCheckbox('posixAccount_' . $typeId . '_syncGroups', false, _('Sync groups'), null, true);
 					$syncGroupsCheckbox->setTableRowsToHide(array('posixAccount_' . $typeId . '_syncGroupsExclusions'));
-					$configUserContainer->add($syncGroupsCheckbox, 12);
+					$configUserContainer->add($syncGroupsCheckbox, 12, 4, 4);
 					$configUserContainer->add(new htmlResponsiveInputTextarea('posixAccount_' . $typeId . '_syncGroupsExclusions', '', 20, 4, _('Exclude from group sync'), 'excludeFromGroupSync'), 12);
 				}
 			}

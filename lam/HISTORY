@@ -1,4 +1,5 @@
 June 2020 7.2
+  - Unix: allow to create group with same name during user creation
   - LAM Pro:
    -> EMail sending can be done via SMTP without local mail server
    -> License expiration warning can be sent via email or disabled

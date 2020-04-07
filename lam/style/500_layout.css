@@ -107,6 +107,10 @@ legend {
 color:black;
 }
 
+button {
+	margin: 0.2rem;
+}
+
 input.listPageInput {
 	width: 3em;
 	text-align: center;
