@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
 
  */
 
-include_once __DIR__ . '/../../../lib/persistence.inc';
+include_once __DIR__ . '/../../lib/persistence.inc';
 
 /**
  * ConfigDataExporter test case.

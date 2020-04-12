@@ -155,4 +155,18 @@ class LAMCfgMainTest extends TestCase {
 		$this->assertEquals('mailserver', $this->conf->mailServer);
 	}
 
+	/**
+	 * Tests the import with invalid data.
+	 */
+	public function testImportData_invalid() {
+		$importData = array();
+		$importData['passwordMinLower'] = 3;
+		$importData['sessionTimeout'] = 240;
+		$importData['logLevel'] = LOG_ERR;
+		$importData['mailServer'] = new LAMLanguage('de_de', 'UTF-8', 'DE');
+
+		$this->expectException(LAMException::class);
+		$this->conf->importData($importData);
+	}
+
 }

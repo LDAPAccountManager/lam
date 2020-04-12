@@ -2701,6 +2701,9 @@ class LAMCfgMain {
 	 */
 	public function importData($data) {
 		foreach ($data as $dataKey => $dataValue) {
+			if (!(is_array($dataValue) || is_string($dataValue) || is_int($dataValue) || is_bool($dataValue))) {
+				throw new LAMException('Invalid import data type for ' . htmlspecialchars($dataKey) . ': ' . gettype($dataValue));
+			}
 			$this->$dataKey = $dataValue;
 		}
 	}
