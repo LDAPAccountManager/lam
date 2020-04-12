@@ -146,6 +146,7 @@ class LAMCfgMainTest extends TestCase {
 		$importData['sessionTimeout'] = 240;
 		$importData['logLevel'] = LOG_ERR;
 		$importData['mailServer'] = 'mailserver';
+		$importData['IGNORE_ME'] = 'ignore';
 
 		$this->conf->importData($importData);
 
