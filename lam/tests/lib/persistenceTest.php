@@ -37,7 +37,7 @@ class ConfigDataExporterTest extends TestCase {
 			'confMainKey2' => 4,
 			'confMainKey3' => '',
 		);
-		$expectedJson = json_encode(array('mainconfig' => $mainData));
+		$expectedJson = json_encode(array('mainConfig' => $mainData));
 
 		$exporter = $this->getMockBuilder('\LAM\PERSISTENCE\ConfigDataExporter')
 			->setMethods(array('_getMainConfigData'))

@@ -146,6 +146,7 @@ class LAMCfgMainTest extends TestCase {
 		$importData['sessionTimeout'] = 240;
 		$importData['logLevel'] = LOG_ERR;
 		$importData['mailServer'] = 'mailserver';
+		$importData['allowedHosts'] = null;
 		$importData['IGNORE_ME'] = 'ignore';
 
 		$this->conf->importData($importData);
@@ -154,6 +155,7 @@ class LAMCfgMainTest extends TestCase {
 		$this->assertEquals(240, $this->conf->sessionTimeout);
 		$this->assertEquals(LOG_ERR, $this->conf->logLevel);
 		$this->assertEquals('mailserver', $this->conf->mailServer);
+		$this->assertNull($this->conf->allowedHosts);
 	}
 
 	/**

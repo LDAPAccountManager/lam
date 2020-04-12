@@ -1,13 +1,18 @@
 <?php
 namespace LAM\CONFIG;
 use htmlButton;
+use htmlInputFileUpload;
+use htmlLink;
 use htmlOutputText;
+use htmlResponsiveInputCheckbox;
 use htmlResponsiveInputField;
 use htmlResponsiveRow;
 use htmlStatusMessage;
 use htmlSubTitle;
 use LAM\PERSISTENCE\ConfigDataExporter;
+use LAM\PERSISTENCE\ConfigDataImporter;
 use LAMCfgMain;
+use LAMException;
 
 /*
 
@@ -86,7 +91,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
             </td>
         </tr>
     </table>
-    <form action="confImportExport.php" method="post" autocomplete="off">
+    <form action="confImportExport.php" method="post" autocomplete="off" enctype="multipart/form-data">
     <br><br>
     <?php
 
@@ -120,6 +125,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
         }
 		$pwdInput = new htmlResponsiveInputField(_("Master password"), 'password', '', '236');
 		$pwdInput->setIsPassword(true);
+		$pwdInput->setCSSClasses(array('lam-initial-focus'));
 		$loginContent->add($pwdInput, 12);
 		$loginContent->addLabel(new htmlOutputText('&nbsp;', false));
 		$loginContent->addField(new htmlButton('submitLogin', _("Ok")));
@@ -127,7 +133,20 @@ printHeaderContents(_("Import and export configuration"), '../..');
 		$content->add($loginContent, 12);
 
 		parseHtml(null, $content, array(), false, $tabindex, null);
+		renderBackLink();
 	}
+
+    /**
+     * Renders the link back to login page.
+     */
+	function renderBackLink() {
+		$tabindex = 0;
+		$content = new htmlResponsiveRow();
+        $content->addVerticalSpacer('2rem');
+        $content->add(new htmlLink(_('Back to login'), '../login.php', '../../graphics/undo.png'), 12);
+		$content->addVerticalSpacer('1rem');
+		parseHtml(null, $content, array(), false, $tabindex, null);
+    }
 
     /**
      * Checks the login password.
@@ -158,8 +177,73 @@ printHeaderContents(_("Import and export configuration"), '../..');
 	    $content->add(new htmlButton('exportConfig', _('Export')), 12);
 
 	    $content->add(new htmlSubTitle(_('Import')), 12);
+	    renderImportPart($content);
 
 	    parseHtml(null, $content, array(), false, $tabindex, null);
+	    renderBackLink();
+    }
+
+    /**
+     * Renders the import area.
+     *
+     * @param htmlResponsiveRow $content content where to add import part
+     */
+    function renderImportPart($content) {
+        $fileContent = null;
+        $validUpload = false;
+        $importSteps = array();
+        if (isset($_POST['importConfig'])) {
+	        $handle = fopen($_FILES['import-file']['tmp_name'], "r");
+	        $data = fread($handle, 100000000);
+	        fclose($handle);
+	        try {
+	            $importer = new ConfigDataImporter();
+		        $importSteps = $importer->getPossibleImportSteps($data);
+		        $tmpFile = __DIR__ . '/../../tmp/internal/import_' . getRandomNumber() . '.tmp';
+		        $file = @fopen($tmpFile, "w");
+		        if ($file) {
+			        fputs($file, $data);
+			        fclose($file);
+			        chmod($tmpFile, 0600);
+		        }
+		        $_SESSION['configImportFile'] = $tmpFile;
+	            $validUpload = true;
+            }
+            catch (LAMException $e) {
+                $content->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
+            }
+        }
+        if (!isset($_POST['importConfigConfirm']) && !$validUpload) {
+	        $content->add(new htmlInputFileUpload('import-file'), 12);
+	        $content->add(new htmlButton('importConfig', _('Submit')), 12);
+        }
+        elseif (isset($_POST['importConfig'])) {
+            $content->add(new htmlOutputText(_('Import steps')), 12);
+            foreach ($importSteps as $importStep) {
+                $content->add(new htmlResponsiveInputCheckbox('step_' . $importStep->getKey(), true, $importStep->getLabel()), 12);
+            }
+	        $content->add(new htmlButton('importConfigConfirm', _('Import')), 12);
+	        $content->add(new htmlButton('importCancel', _('Cancel')), 12);
+        }
+        elseif (isset($_POST['importConfigConfirm'])) {
+			$handle = fopen($_SESSION['configImportFile'], "r");
+	        $data = fread($handle, 100000000);
+	        fclose($handle);
+	        try {
+		        $importer = new ConfigDataImporter();
+		        $importSteps = $importer->getPossibleImportSteps($data);
+		        foreach ($importSteps as $importStep) {
+			        $importStep->setActive(isset($_POST['step_' . $importStep->getKey()]));
+		        }
+		        $importer->runImport($importSteps);
+		        unlink($_SESSION['configImportFile']);
+		        $content->add(new htmlStatusMessage('INFO', _('Configuration import ended successful.')), 12);
+	        }
+	        catch (LAMException $e) {
+		        $content->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
+		        $content->add(new htmlButton('importCancel', _('Cancel')), 12);
+	        }
+        }
     }
 
 	?>
