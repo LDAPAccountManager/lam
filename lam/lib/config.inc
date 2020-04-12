@@ -2682,6 +2682,30 @@ class LAMCfgMain {
 	}
 
 	/**
+	 * Exports the configuration data.
+	 *
+	 * @return array config data
+	 */
+	public function exportData() {
+		$data = array();
+		foreach ($this->settings as $setting) {
+			$data[$setting] = $this->$setting;
+		}
+		return $data;
+	}
+
+	/**
+	 * Imports configuration data.
+	 *
+	 * @param array $data config data
+	 */
+	public function importData($data) {
+		foreach ($data as $dataKey => $dataValue) {
+			$this->$dataKey = $dataValue;
+		}
+	}
+
+	/**
 	* Reloads preferences from config file config.cfg
 	*
 	* @return boolean true if file was readable
