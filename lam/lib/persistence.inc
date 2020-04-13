@@ -42,19 +42,50 @@ class ConfigDataExporter {
 	 * Exports LAM's configuration data in JSON format.
 	 */
 	public function exportAsJson() {
+		$mainCfg = $this->_getMainConfiguration();
 		$jsonData = array();
-		$jsonData['mainConfig'] = $this->_getMainConfigData();
+		$jsonData['mainConfig'] = $this->_getMainConfigData($mainCfg);
+		$jsonData['certificates'] = $this->_getCertificates($mainCfg);
+		/**
+		 * TODO
+		 *
+		 * webauthn
+		 * server profiles
+		 * server profile job database
+		 * account profiles
+		 * PDF profiles
+		 * self service profiles
+		 */
 		return json_encode($jsonData);
+	}
+
+	/**
+	 * Returns the main configuration.
+	 *
+	 * @return LAMCfgMain main config
+	 */
+	public function _getMainConfiguration() {
+		return new LAMCfgMain();
 	}
 
 	/**
 	 * Internal function to read master configuration.
 	 *
+	 * @param LAMCfgMain $mainCfg main config
 	 * @return array data
 	 */
-	public function _getMainConfigData() {
-		$mainCfg = new LAMCfgMain();
+	public function _getMainConfigData($mainCfg) {
 		return $mainCfg->exportData();
+	}
+
+	/**
+	 * Returns the certificate file content.
+	 *
+	 * @param LAMCfgMain $mainCfg main config
+	 * @return array data
+	 */
+	public function _getCertificates($mainCfg) {
+		return $mainCfg->exportCertificates();
 	}
 
 }
@@ -82,6 +113,9 @@ class ConfigDataImporter {
 				case 'mainConfig':
 					$steps[] = new ImporterStep(_('General settings'), 'mainConfig', $value);
 					break;
+				case 'certificates':
+					$steps[] = new ImporterStep(_('SSL certificates'), 'certificates', $value);
+					break;
 				default:
 					logNewMessage(LOG_WARNING, 'Unknown import type: ' . $key);
 			}
@@ -96,7 +130,7 @@ class ConfigDataImporter {
 	 * Runs the actual import.
 	 *
 	 * @param ImporterStep[] $steps import steps
-	 * @throws LAMException if error occured
+	 * @throws LAMException if error occurred
 	 */
 	public function runImport($steps) {
 		foreach ($steps as $step) {
@@ -106,14 +140,38 @@ class ConfigDataImporter {
 			$key = $step->getKey();
 			switch ($key) {
 				case 'mainConfig':
-					$cfgMain = new LAMCfgMain();
-					$cfgMain->importData($step->getValue());
-					$cfgMain->save();
+					$this->importMainConfig($step->getValue());
+					break;
+				case 'certificates':
+					$this->importCertificates($step->getValue());
 					break;
 				default:
 					logNewMessage(LOG_WARNING, 'Unknown import type: ' . $key);
 			}
 		}
+	}
+
+	/**
+	 * Imports the main configuration.
+	 *
+	 * @param array $data main config data
+	 * @throws LAMException error during import
+	 */
+	private function importMainConfig($data) {
+		$cfgMain = new LAMCfgMain();
+		$cfgMain->importData($data);
+		$cfgMain->save();
+	}
+
+	/**
+	 * Imports the SSL certificates.
+	 *
+	 * @param null|string $data file content
+	 * @throws LAMException error during import
+	 */
+	private function importCertificates($data) {
+		$cfgMain = new LAMCfgMain();
+		$cfgMain->importCertificates($data);
 	}
 
 }

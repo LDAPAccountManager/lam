@@ -1,6 +1,7 @@
 <?php
 namespace LAM\CONFIG;
 use htmlButton;
+use htmlGroup;
 use htmlInputFileUpload;
 use htmlLink;
 use htmlOutputText;
@@ -222,8 +223,10 @@ printHeaderContents(_("Import and export configuration"), '../..');
             foreach ($importSteps as $importStep) {
                 $content->add(new htmlResponsiveInputCheckbox('step_' . $importStep->getKey(), true, $importStep->getLabel()), 12);
             }
-	        $content->add(new htmlButton('importConfigConfirm', _('Import')), 12);
-	        $content->add(new htmlButton('importCancel', _('Cancel')), 12);
+            $buttonGroup = new htmlGroup();
+	        $buttonGroup->addElement(new htmlButton('importConfigConfirm', _('Import')));
+	        $buttonGroup->addElement(new htmlButton('importCancel', _('Cancel')));
+	        $content->add($buttonGroup, 12);
         }
         elseif (isset($_POST['importConfigConfirm'])) {
 			$handle = fopen($_SESSION['configImportFile'], "r");

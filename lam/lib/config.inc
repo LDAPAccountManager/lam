@@ -2698,6 +2698,7 @@ class LAMCfgMain {
 	 * Imports configuration data.
 	 *
 	 * @param array $data config data
+	 * @throws LAMException import error
 	 */
 	public function importData($data) {
 		foreach ($data as $dataKey => $dataValue) {
@@ -2709,6 +2710,51 @@ class LAMCfgMain {
 				throw new LAMException('Invalid import data type for ' . htmlspecialchars($dataKey) . ': ' . gettype($dataValue));
 			}
 			$this->$dataKey = $dataValue;
+		}
+	}
+
+	/**
+	 * Returns the content of the server certificates file
+	 *
+	 * @return null|string certificates
+	 */
+	public function exportCertificates() {
+		$fileName = $this->getSSLCaCertPath();
+		if ($fileName === null) {
+			return null;
+		}
+		$content = null;
+		$handle = @fopen($fileName, "r");
+		if ($handle) {
+			$content = fread($handle, 10000000);
+			fclose($handle);
+		}
+		return $content;
+	}
+
+	/**
+	 * Imports the server certificates.
+	 *
+	 * @param null|string $certsContent certificates
+	 * @throws LAMException write to file failed
+	 */
+	public function importCertificates($certsContent) {
+		$fileName = $this->getSSLCaCertPath();
+		if (empty($certsContent)) {
+			if ($fileName !== null) {
+				unlink($fileName);
+			}
+			return;
+		}
+		$fileName = $this->getInternalSSLCaCertFileName();
+		$handle = @fopen($fileName, "wb");
+		if ($handle) {
+			fputs($handle, $certsContent);
+			fclose($handle);
+			@chmod($fileName, 0600);
+		}
+		else {
+			throw new LAMException(printf(_('Unable to write file %s.'), $fileName));
 		}
 	}
 
