@@ -3644,6 +3644,8 @@ class htmlSpan extends htmlElement {
 
 	/** htmlElement that generates inner content */
 	private $content = null;
+	/** onclick handler */
+	private $onclick = null;
 
 	/**
 	 * Constructor.
@@ -3674,13 +3676,27 @@ class htmlSpan extends htmlElement {
 		if (($this->cssClasses != null) && (sizeof($this->cssClasses) > 0)) {
 			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
-		echo '<span' . $classesValue . '>';
+		$onclickHandler = '';
+		if (!empty($this->onclick)) {
+			$onclickHandler = ' onclick="' . $this->onclick . '"';
+		}
+		echo '<span' . $classesValue . $onclickHandler . '>';
 		if ($this->content != null) {
 			$return = $this->content->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		}
 		echo '</span>';
 		return $return;
 	}
+
+	/**
+	 * Sets the onclick event.
+	 *
+	 * @param string $event event handler code
+	 */
+	public function setOnclick($event) {
+		$this->onclick = $event;
+	}
+
 }
 
 /**
@@ -4715,6 +4731,8 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 	private $renderParentHtml = false;
 	/** long label */
 	private $longLabel = false;
+	/** label after checkbox */
+	private $labelAfterCheckbox = false;
 
 	/**
 	 * Constructor.
@@ -4751,14 +4769,23 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 		$row = new htmlResponsiveRow();
 		$tabletColumnsLabel = 6;
 		$tabletColumnsBox = 6;
+		$mobileColumnsLabel = 10;
+		$mobileColumnsBox = 2;
 		if ($this->longLabel) {
 			$tabletColumnsLabel = 10;
 			$tabletColumnsBox = 2;
 		}
+		if ($this->labelAfterCheckbox) {
+			$tmp = $mobileColumnsLabel;
+			$mobileColumnsLabel = $mobileColumnsLabel;
+			$mobileColumnsBox = $mobileColumnsLabel;
+			$tmp = $tabletColumnsLabel;
+			$tabletColumnsLabel = $tabletColumnsBox;
+			$tabletColumnsBox = $tabletColumnsLabel;
+		}
 		// label text
-		$labelGroup = new htmlGroup();
-		$labelGroup->addElement(new htmlOutputText($this->label));
-		$row->add($labelGroup, 10, $tabletColumnsLabel, $tabletColumnsLabel, 'responsiveLabel');
+		$text = new htmlSpan(new htmlOutputText($this->label));
+		$text->setOnclick('jQuery(\'#' . $this->name . '\').prop(\'checked\',!jQuery(\'#' . $this->name . '\').prop(\'checked\')); jQuery(\'#' . $this->name . '\').change();');
 		// input field
 		$fieldGroup = new htmlGroup();
 		$fieldGroup->addElement($this);
@@ -4767,7 +4794,14 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 			$helpLink->setCSSClasses(array('margin-left5 align-unset-img'));
 			$fieldGroup->addElement($helpLink);
 		}
-		$row->add($fieldGroup, 2, $tabletColumnsBox, $tabletColumnsBox, 'responsiveField nowrap');
+		if ($this->labelAfterCheckbox) {
+			$row->add($fieldGroup, $mobileColumnsBox, $tabletColumnsBox, $tabletColumnsBox, 'responsiveLabel nowrap');
+			$row->add($text, $mobileColumnsLabel, $tabletColumnsLabel, $tabletColumnsLabel, 'responsiveField');
+		}
+		else {
+			$row->add($text, $mobileColumnsLabel, $tabletColumnsLabel, $tabletColumnsLabel, 'responsiveLabel');
+			$row->add($fieldGroup, $mobileColumnsBox, $tabletColumnsBox, $tabletColumnsBox, 'responsiveField nowrap');
+		}
 		return $row->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 	}
 
@@ -4777,6 +4811,15 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 	 */
 	protected function getShowHideSelector() {
 		return '.row';
+	}
+
+	/**
+	 * Sets if the label should be shown after the checkbox instead before it.
+	 *
+	 * @param bool $labelAfterCheckbox show label after box
+	 */
+	public function setLabelAfterCheckbox($labelAfterCheckbox = true) {
+		$this->labelAfterCheckbox = $labelAfterCheckbox;
 	}
 
 }
