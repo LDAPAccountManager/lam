@@ -650,6 +650,58 @@ class LAMConfig {
 	}
 
 	/**
+	 * Returns the server profile data.
+	 *
+	 * @return array data
+	 */
+	public function exportData() {
+		$data = array();
+		$settingsToIgnore = array('modules', 'types', 'tools', 'jobs');
+		foreach ($this->settings as $setting) {
+			if (in_array($setting, $settingsToIgnore)) {
+				continue;
+			}
+			$data[$setting] = $this->$setting;
+		}
+		$data['typeSettings'] = $this->typeSettings;
+		$data['moduleSettings'] = $this->moduleSettings;
+		$data['toolSettings'] = $this->toolSettings;
+		$data['jobSettings'] = $this->jobSettings;
+		return $data;
+	}
+
+	/**
+	 * Imports server profile data.
+	 *
+	 * @param array $data config data
+	 * @throws LAMException import error
+	 */
+	public function importData($data) {
+		$settingsToIgnore = array('modules', 'types', 'tools', 'jobs');
+		foreach ($data as $dataKey => $dataValue) {
+			if (in_array($dataKey, $settingsToIgnore)) {
+				continue;
+			}
+			if (!in_array($dataKey, $this->settings)) {
+				logNewMessage(LOG_WARNING, 'Ignored setting during import: ' . $dataKey);
+				continue;
+			}
+			if (!(($dataValue === null) || is_array($dataValue) || is_string($dataValue) || is_int($dataValue) || is_bool($dataValue))) {
+				throw new LAMException('Invalid import data type for ' . htmlspecialchars($dataKey) . ': ' . gettype($dataValue));
+			}
+			$this->$dataKey = $dataValue;
+		}
+		$typeSettingsData = !empty($data['typeSettings']) && is_array($data['typeSettings']) ? $data['typeSettings'] : array();
+		$this->typeSettings = $typeSettingsData;
+		$moduleSettingsData = !empty($data['moduleSettings']) && is_array($data['moduleSettings']) ? $data['moduleSettings'] : array();
+		$this->moduleSettings = $moduleSettingsData;
+		$toolSettingsData = !empty($data['toolSettings']) && is_array($data['toolSettings']) ? $data['toolSettings'] : array();
+		$this->toolSettings = $toolSettingsData;
+		$jobSettingsData = !empty($data['jobSettings']) && is_array($data['jobSettings']) ? $data['jobSettings'] : array();
+		$this->jobSettings = $jobSettingsData;
+	}
+
+	/**
 	* Reloads preferences from config file
 	*
 	* @return boolean true if file was readable

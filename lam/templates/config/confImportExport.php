@@ -221,7 +221,21 @@ printHeaderContents(_("Import and export configuration"), '../..');
         elseif (isset($_POST['importConfig'])) {
             $content->add(new htmlOutputText(_('Import steps')), 12);
             foreach ($importSteps as $importStep) {
-                $content->add(new htmlResponsiveInputCheckbox('step_' . $importStep->getKey(), true, $importStep->getLabel()), 12);
+                $stepKey = 'step_' . $importStep->getKey();
+                $stepCheckbox = new htmlResponsiveInputCheckbox($stepKey, true, $importStep->getLabel());
+                $stepCheckbox->setLabelAfterCheckbox();
+                $subStepIds = array();
+                $content->add($stepCheckbox, 12);
+	            $content->addVerticalSpacer('0.3rem');
+                foreach ($importStep->getSubSteps() as $subStep) {
+                    $subStepKey = 'step_' . $subStep->getKey();
+                    $subStepIds[] = $subStepKey;
+	                $subStepCheckbox = new htmlResponsiveInputCheckbox($subStepKey, true, ' - ' . $subStep->getLabel());
+	                $subStepCheckbox->setLabelAfterCheckbox();
+	                $content->add($subStepCheckbox, 12);
+                }
+                $stepCheckbox->setTableRowsToShow($subStepIds);
+                $content->addVerticalSpacer('1rem');
             }
             $buttonGroup = new htmlGroup();
 	        $buttonGroup->addElement(new htmlButton('importConfigConfirm', _('Import')));

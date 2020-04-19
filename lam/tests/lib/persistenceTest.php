@@ -37,16 +37,22 @@ class ConfigDataExporterTest extends TestCase {
 			'confMainKey2' => 4,
 			'confMainKey3' => '',
 		);
+		$profileData = array(
+			'profile1' => array('ServerURL' => 'myserver'),
+			'profile2' => array('ServerURL' => 'myserver2'),
+		);
 		$expectedJson = json_encode(array(
 			'mainConfig' => $mainData,
-			'certificates' => 'certs'
+			'certificates' => 'certs',
+			'serverProfiles' => $profileData,
 		));
 
 		$exporter = $this->getMockBuilder('\LAM\PERSISTENCE\ConfigDataExporter')
-			->setMethods(array('_getMainConfigData', '_getCertificates'))
+			->setMethods(array('_getMainConfigData', '_getCertificates', '_getServerProfiles'))
 			->getMock();
 		$exporter->method('_getMainConfigData')->willReturn($mainData);
 		$exporter->method('_getCertificates')->willReturn('certs');
+		$exporter->method('_getServerProfiles')->willReturn($profileData);
 
 		$json = $exporter->exportAsJson();
 

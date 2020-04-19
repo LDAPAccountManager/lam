@@ -1,6 +1,7 @@
 <?php
 namespace LAM\PERSISTENCE;
 use LAMCfgMain;
+use LAMConfig;
 use LAMException;
 
 /*
@@ -46,15 +47,16 @@ class ConfigDataExporter {
 		$jsonData = array();
 		$jsonData['mainConfig'] = $this->_getMainConfigData($mainCfg);
 		$jsonData['certificates'] = $this->_getCertificates($mainCfg);
+		$jsonData['serverProfiles'] = $this->_getServerProfiles();
 		/**
 		 * TODO
 		 *
-		 * webauthn
 		 * server profiles
 		 * server profile job database
 		 * account profiles
 		 * PDF profiles
 		 * self service profiles
+		 * webauthn
 		 */
 		return json_encode($jsonData);
 	}
@@ -88,6 +90,21 @@ class ConfigDataExporter {
 		return $mainCfg->exportCertificates();
 	}
 
+	/**
+	 * Returns the content of the server profiles.
+	 *
+	 * @return array $data
+	 */
+	public function _getServerProfiles() {
+		$data = array();
+		$profileNames = getConfigProfiles();
+		foreach ($profileNames as $profileName) {
+			$serverProfile = new LAMConfig($profileName);
+			$data[$profileName] = $serverProfile->exportData();
+		}
+		return $data;
+	}
+
 }
 
 /**
@@ -103,7 +120,7 @@ class ConfigDataImporter {
 	 * @throws LAMException if invalid format
 	 */
 	public function getPossibleImportSteps($json) {
-		$data = json_decode($json);
+		$data = json_decode($json, true);
 		if ($data === null) {
 			throw new LAMException(_('Unable to read import file.'));
 		}
@@ -115,6 +132,13 @@ class ConfigDataImporter {
 					break;
 				case 'certificates':
 					$steps[] = new ImporterStep(_('SSL certificates'), 'certificates', $value);
+					break;
+				case 'serverProfiles':
+					$mainStep = new ImporterStep(_('Server profiles'), 'serverProfiles', $value);
+					foreach ($value as $profileName => $profileData) {
+						$mainStep->addSubStep(new ImporterStep($profileName, 'serverProfile_' . $profileName, $profileData));
+					}
+					$steps[] = $mainStep;
 					break;
 				default:
 					logNewMessage(LOG_WARNING, 'Unknown import type: ' . $key);
@@ -185,6 +209,7 @@ class ImporterStep {
 	private $key;
 	private $value;
 	private $active = false;
+	private $subSteps = array();
 
 	/**
 	 * Constructor.
@@ -196,7 +221,7 @@ class ImporterStep {
 	public function __construct($label, $key, &$value) {
 		$this->label = $label;
 		$this->key = $key;
-		$this->value = $value;
+		$this->value = &$value;
 	}
 
 	/**
@@ -242,6 +267,24 @@ class ImporterStep {
 	 */
 	public function getValue() {
 		return $this->value;
+	}
+
+	/**
+	 * Adds a sub-step.
+	 *
+	 * @param ImporterStep $subStep sub-step
+	 */
+	public function addSubStep($subStep) {
+		$this->subSteps[] = $subStep;
+	}
+
+	/**
+	 * Returns the sub-steps.
+	 *
+	 * @return ImporterStep[] sub-steps
+	 */
+	public function getSubSteps() {
+		return $this->subSteps;
 	}
 
 }
