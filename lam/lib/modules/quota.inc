@@ -599,6 +599,9 @@ class quota extends baseModule {
 				}
 				$dirs = explode(":", $quotas);
 				array_pop($dirs); // remove empty element at the end
+				if (empty($dirs)) {
+					continue;
+				}
 				for ($i = 0; $i < sizeof($dirs); $i++) {
 					if (strpos($dirs[$i], self::$QUOTA_PREFIX) !== 0) {
 						unset($dirs[$i]);
