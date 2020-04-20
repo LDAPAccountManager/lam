@@ -666,41 +666,37 @@ class quota extends baseModule {
 			if (empty($dirs)) {
 				continue;
 			}
-			for ($i = 0; $i < sizeof($dirs); $i++) {
-				if (strpos($dirs[$i], self::$QUOTA_PREFIX) !== 0) {
-					unset($dirs[$i]);
-					$i--;
+			$quotaDirs = array();
+			foreach ($dirs as $dirString) {
+				if (strpos($dirString, self::$QUOTA_PREFIX) !== 0) {
 					continue;
 				}
-				$dirs[$i] = substr($dirs[$i], strlen(self::$QUOTA_PREFIX));
-				$dirs[$i] = explode(",", $dirs[$i]);
-				$dirs[$i] = $dirs[$i][0];
+				$dirData = explode(",", substr($dirString, strlen(self::$QUOTA_PREFIX)));
+				$quotaDirs[] = $dirData[0];
 			}
-			$dirs = array_values($dirs);
-			for ($i = 0; $i < sizeof($dirs); $i++) {
-				if (!empty($options["quota_softblock_" . $id . "_" . $dirs[$i]][0]) && !get_preg($options["quota_softblock_" . $id . "_" . $dirs[$i]][0], 'quotaNumber')) {
+			foreach ($quotaDirs as $dirName) {
+				if (!empty($options["quota_softblock_" . $id . "_" . $dirName][0]) && !get_preg($options["quota_softblock_" . $id . "_" . $dirName][0], 'quotaNumber')) {
 					$return[] = $this->messages['softblock'][0];
 				}
-				if (!empty($options["quota_hardblock_" . $id . "_" . $dirs[$i]][0]) && !get_preg($options["quota_hardblock_" . $id . "_" . $dirs[$i]][0], 'quotaNumber')) {
+				if (!empty($options["quota_hardblock_" . $id . "_" . $dirName][0]) && !get_preg($options["quota_hardblock_" . $id . "_" . $dirName][0], 'quotaNumber')) {
 					$return[] = $this->messages['hardblock'][0];
 				}
-				if (!empty($options["quota_softinode_" . $id . "_" . $dirs[$i]][0]) && !get_preg($options["quota_softinode_" . $id . "_" . $dirs[$i]][0], 'quotaNumber')) {
+				if (!empty($options["quota_softinode_" . $id . "_" . $dirName][0]) && !get_preg($options["quota_softinode_" . $id . "_" . $dirName][0], 'quotaNumber')) {
 					$return[] = $this->messages['softinode'][0];
 				}
-				if (!empty($options["quota_hardinode_" . $id . "_" . $dirs[$i]][0]) && !get_preg($options["quota_hardinode_" . $id . "_" . $dirs[$i]][0], 'quotaNumber')) {
+				if (!empty($options["quota_hardinode_" . $id . "_" . $dirName][0]) && !get_preg($options["quota_hardinode_" . $id . "_" . $dirName][0], 'quotaNumber')) {
 					$return[] = $this->messages['hardinode'][0];
 				}
-				if (!empty($options["quota_softblock_" . $id . "_" . $dirs[$i]][0])
-					&& !empty($options["quota_hardblock_" . $id . "_" . $dirs[$i]][0])
-					&& ($this->getQuotaNumber($options["quota_softblock_" . $id . "_" . $dirs[$i]][0]) > $this->getQuotaNumber($options["quota_hardblock_" . $id . "_" . $dirs[$i]][0]))) {
+				if (!empty($options["quota_softblock_" . $id . "_" . $dirName][0])
+					&& !empty($options["quota_hardblock_" . $id . "_" . $dirName][0])
+					&& ($this->getQuotaNumber($options["quota_softblock_" . $id . "_" . $dirName][0]) > $this->getQuotaNumber($options["quota_hardblock_" . $id . "_" . $dirName][0]))) {
 					$return[] = $this->messages['block_cmp'][0];
 				}
-				if (!empty($options["quota_softinode_" . $id . "_" . $dirs[$i]][0])
-					&& !empty($options["quota_hardinode_" . $id . "_" . $dirs[$i]][0])
-					&& ($this->getQuotaNumber($options["quota_softinode_" . $id . "_" . $dirs[$i]][0]) > $this->getQuotaNumber($options["quota_hardinode_" . $id . "_" . $dirs[$i]][0]))) {
+				if (!empty($options["quota_softinode_" . $id . "_" . $dirName][0])
+					&& !empty($options["quota_hardinode_" . $id . "_" . $dirName][0])
+					&& ($this->getQuotaNumber($options["quota_softinode_" . $id . "_" . $dirName][0]) > $this->getQuotaNumber($options["quota_hardinode_" . $id . "_" . $dirName][0]))) {
 					$return[] = $this->messages['inode_cmp'][0];
 				}
-				$i++;
 			}
 		}
 		return $return;
