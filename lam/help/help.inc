@@ -238,9 +238,9 @@ $helpArray = array (
 				'287' => array ("Headline" => _('Licence'),
 					"Text" => _('Please enter your licence key.')),
 				'288' => array ("Headline" => _('Expiration warning'),
-					"Text" => _('Please select how to be warned before your license expires.')),
+					"Text" => _('Please select how to be warned before your licence expires.')),
 				'289' => array ("Headline" => _('From address'),
-					"Text" => _('This email address will be set as sender address of all mails.')),
+					"Text" => _('This email address will be set as sender address of the mails.')),
 				'290' => array ("Headline" => _('TO address'),
 					"Text" => _('This email address will be set as TO address for the mails.')),
 				// 300 - 399
@@ -388,7 +388,7 @@ $helpArray = array (
 				// jobs
 				'800' => array(
 					"Headline" => _('From address'),
-					"Text" => _('This email address will be set as sender address of all mails.')
+					"Text" => _('This email address will be set as sender address of the mails.')
 				),
 				'801' => array(
 					"Headline" => _('Reply-to address'),

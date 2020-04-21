@@ -111,11 +111,11 @@ if (isset($_POST['submitFormData'])) {
 		$cfg->licenseEmailTo = $_POST['licenseEmailTo'];
 		if ((($cfg->licenseWarningType === LAMCfgMain::LICENSE_WARNING_EMAIL) || ($cfg->licenseWarningType === LAMCfgMain::LICENSE_WARNING_ALL))
             && !get_preg($cfg->licenseEmailFrom, 'email')) {
-		    $errors[] = _('License') . ': ' . _('From address') . ' - ' . _('Please enter a valid email address!');
+		    $errors[] = _('Licence') . ': ' . _('From address') . ' - ' . _('Please enter a valid email address!');
         }
 		if ((($cfg->licenseWarningType === LAMCfgMain::LICENSE_WARNING_EMAIL) || ($cfg->licenseWarningType === LAMCfgMain::LICENSE_WARNING_ALL))
 			&& !get_preg($cfg->licenseEmailTo, 'email')) {
-			$errors[] = _('License') . ': ' . _('TO address') . ' - ' . _('Please enter a valid email address!');
+			$errors[] = _('Licence') . ': ' . _('TO address') . ' - ' . _('Please enter a valid email address!');
 		}
 	}
 	// set session timeout
