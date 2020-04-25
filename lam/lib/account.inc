@@ -756,7 +756,7 @@ function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes
 	$filter = '';
 	$filterParts = array();
 	if ($name != null) {
-		$filterParts[] = '(' . $name . '=' . ldap_escape($value) . ')';
+		$filterParts[] = '(' . $name . '=' . ldap_escape($value, '*', LDAP_ESCAPE_FILTER) . ')';
 	}
 	if ($objectClass != null) {
 		$filterParts[] = '(objectClass=' . $objectClass . ')';

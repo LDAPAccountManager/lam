@@ -287,6 +287,11 @@ table.collapse {
 
 .rightToLeftText {
 	text-align: right;
+	text-align-last: right;
+}
+
+.rightToLeftText option {
+	direction: rtl;
 }
 
 .text-left {

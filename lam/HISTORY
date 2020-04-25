@@ -3,6 +3,9 @@ June 2020 7.2
   - LAM Pro:
    -> EMail sending can be done via SMTP without local mail server
    -> License expiration warning can be sent via email or disabled
+  - Fixed bugs:
+   -> Captcha don't show anymore in Self Service login page (213)
+   -> Unix memberships cannot be changed. This issue can also affect other membership relations.
 
 
 17.03.2020 7.1
