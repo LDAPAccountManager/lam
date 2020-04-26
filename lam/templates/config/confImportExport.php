@@ -251,6 +251,9 @@ printHeaderContents(_("Import and export configuration"), '../..');
 		        $importSteps = $importer->getPossibleImportSteps($data);
 		        foreach ($importSteps as $importStep) {
 			        $importStep->setActive(isset($_POST['step_' . $importStep->getKey()]));
+			        foreach ($importStep->getSubSteps() as $subStep) {
+				        $subStep->setActive(isset($_POST['step_' . $subStep->getKey()]));
+                    }
 		        }
 		        $importer->runImport($importSteps);
 		        unlink($_SESSION['configImportFile']);

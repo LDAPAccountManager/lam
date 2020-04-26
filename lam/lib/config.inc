@@ -667,6 +667,17 @@ class LAMConfig {
 		$data['moduleSettings'] = $this->moduleSettings;
 		$data['toolSettings'] = $this->toolSettings;
 		$data['jobSettings'] = $this->jobSettings;
+		if ($this->jobsDatabase === 'SQLite') {
+			$dbFileName = __DIR__ . '/../config/' . $this->getName() . '.sqlite';
+			if (is_file($dbFileName) && is_readable($dbFileName)) {
+				$file = @fopen($dbFileName, "r");
+				if ($file) {
+					$dbData = fread($file, 100000000);
+					fclose($file);
+					$data['jobSQLite'] = base64_encode($dbData);
+				}
+			}
+		}
 		return $data;
 	}
 
@@ -699,6 +710,14 @@ class LAMConfig {
 		$this->toolSettings = $toolSettingsData;
 		$jobSettingsData = !empty($data['jobSettings']) && is_array($data['jobSettings']) ? $data['jobSettings'] : array();
 		$this->jobSettings = $jobSettingsData;
+		if (!empty($data['jobSQLite'])) {
+			$dbFileName = __DIR__ . '/../config/' . $this->getName() . '.sqlite';
+			$file = @fopen($dbFileName, "wb");
+			if ($file) {
+				fputs($file, base64_decode($data['jobSQLite']));
+				fclose($file);
+			}
+		}
 	}
 
 	/**
@@ -811,6 +830,10 @@ class LAMConfig {
 	/** Saves preferences to config file */
 	public function save() {
 		$conffile = $this->getPath();
+		if (!file_exists($conffile)) {
+			$newFile = fopen($conffile, 'wb');
+			fclose($newFile);
+		}
 		if (is_file($conffile) && is_readable($conffile)) {
 			$file = fopen($conffile, "r");
 			$file_array = array();

@@ -169,6 +169,9 @@ class ConfigDataImporter {
 				case 'certificates':
 					$this->importCertificates($step->getValue());
 					break;
+				case 'serverProfiles':
+					$this->importServerProfiles($step);
+					break;
 				default:
 					logNewMessage(LOG_WARNING, 'Unknown import type: ' . $key);
 			}
@@ -198,6 +201,25 @@ class ConfigDataImporter {
 		$cfgMain->importCertificates($data);
 	}
 
+	/**
+	 * Imports the server profiles.
+	 *
+	 * @param ImporterStep $step step
+	 * @throws LAMException error during import
+	 */
+	private function importServerProfiles($step) {
+		foreach ($step->getSubSteps() as $profileStep) {
+			if (!$profileStep->isActive()) {
+				continue;
+			}
+			$data = $profileStep->getValue();
+			$profileName = str_replace('serverProfile_', '', $profileStep->getKey());
+			$serverProfile = new LAMConfig($profileName);
+			$serverProfile->importData($data);
+			$serverProfile->save();
+		}
+	}
+
 }
 
 /**
@@ -218,10 +240,10 @@ class ImporterStep {
 	 * @param string $key key
 	 * @param array $value value
 	 */
-	public function __construct($label, $key, &$value) {
+	public function __construct($label, $key, $value) {
 		$this->label = $label;
 		$this->key = $key;
-		$this->value = &$value;
+		$this->value = $value;
 	}
 
 	/**
