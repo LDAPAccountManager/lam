@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2020-03-13 10:35+0100\n"
+"PO-Revision-Date: 2020-04-25 22:39+0200\n"
 "Last-Translator: Cezar Cichocki <cezar@cs.net.pl>\n"
 "Language-Team: Polski <pl@li.org>\n"
 "Language: pl\n"
@@ -10459,8 +10459,7 @@ msgstr "Hasło nie wygasa"
 #: ../lib/modules/shadowAccount.inc:216 ../lib/modules/shadowAccount.inc:343
 #: ../lib/modules/shadowAccount.inc:600
 msgid "Password expiration"
-msgstr ""
-"Liczba dni po wygaśnięciu hasła przez które użytkownik może się zalogować"
+msgstr "Data wygaśnięcia hasła"
 
 #: ../lib/modules/shadowAccount.inc:60 ../lib/modules/shadowAccount.inc:61
 msgid "Password expiration must be are natural number or -1."
