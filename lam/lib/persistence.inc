@@ -208,6 +208,7 @@ class ConfigDataImporter {
 	 * @throws LAMException error during import
 	 */
 	private function importServerProfiles($step) {
+		$failedProfiles = array();
 		foreach ($step->getSubSteps() as $profileStep) {
 			if (!$profileStep->isActive()) {
 				continue;
@@ -216,7 +217,13 @@ class ConfigDataImporter {
 			$profileName = str_replace('serverProfile_', '', $profileStep->getKey());
 			$serverProfile = new LAMConfig($profileName);
 			$serverProfile->importData($data);
-			$serverProfile->save();
+			$result = $serverProfile->save();
+			if ($result === LAMConfig::SAVE_FAIL) {
+				$failedProfiles[] = $profileName;
+			}
+		}
+		if (!empty($failedProfiles)) {
+			throw new LAMException(_('Unable to save server profile.'), implode(', ', $failedProfiles));
 		}
 	}
 

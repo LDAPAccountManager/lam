@@ -261,7 +261,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
 	        }
 	        catch (LAMException $e) {
 		        $content->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
-		        $content->add(new htmlButton('importCancel', _('Cancel')), 12);
+		        $content->add(new htmlButton('importCancel', _('Back')), 12);
 	        }
         }
     }
