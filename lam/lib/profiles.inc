@@ -5,7 +5,7 @@ use \LAMException;
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2018  Roland Gruber
+  Copyright (C) 2003 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -80,20 +80,21 @@ function profileExists($name, $typeId) {
 }
 
 /**
-* Loads an profile of the given account type
-*
-* @param string $profile name of the profile (without .<scope> extension)
-* @param string $typeId account type
-* @return array hash array (attribute => value)
-*/
-function loadAccountProfile($profile, $typeId) {
+ * Loads an profile of the given account type
+ *
+ * @param string $profile name of the profile (without .<scope> extension)
+ * @param string $typeId account type
+ * @param string $serverProfileName server profile name
+ * @return array hash array (attribute => value)
+ */
+function loadAccountProfile($profile, $typeId, $serverProfileName) {
 	$typeManager = new \LAM\TYPES\TypeManager();
 	$type = $typeManager->getConfiguredType($typeId);
 	if (!isValidProfileName($profile) || !preg_match("/^[a-z0-9_]+$/i", $typeId) || ($type == null)) {
 		return false;
 	}
 	$settings = array();
-	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/"  . $_SESSION['config']->getName() . '/' . $profile . "." . $typeId;
+	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/"  . $serverProfileName . '/' . $profile . "." . $typeId;
 	if (is_file($file)) {
 		$file = @fopen($file, "r");
 		if ($file) {
@@ -133,9 +134,10 @@ function loadAccountProfile($profile, $typeId) {
 * @param array $attributes hash array (attribute => value)
 * @param string $profile name of the account profile (without .<scope> extension)
 * @param string $typeId account type
+ * @param string $serverProfileName server profile name
 * @return boolean true, if saving succeeded
 */
-function saveAccountProfile($attributes, $profile, $typeId) {
+function saveAccountProfile($attributes, $profile, $typeId, $serverProfileName) {
 	if (!isLoggedIn()) return false;
 	// check profile name and type id
 	$typeManager = new \LAM\TYPES\TypeManager();
@@ -146,7 +148,7 @@ function saveAccountProfile($attributes, $profile, $typeId) {
 	if (!is_array($attributes)) {
 		return false;
 	}
-	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/" . $_SESSION['config']->getName() . '/' . $profile . "." . $typeId;
+	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/" . $serverProfileName . '/' . $profile . "." . $typeId;
 	$file = @fopen($path, "w");
 	if ($file) {
   	// write attributes
