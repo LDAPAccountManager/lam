@@ -3,6 +3,9 @@ namespace LAM\PERSISTENCE;
 use LAMCfgMain;
 use LAMConfig;
 use LAMException;
+use function LAM\PROFILES\getAccountProfiles;
+use function LAM\PROFILES\loadAccountProfile;
+use function LAM\PROFILES\saveAccountProfile;
 
 /*
 
@@ -33,6 +36,7 @@ use LAMException;
  */
 
 include_once __DIR__ . '/config.inc';
+include_once __DIR__ . '/profiles.inc';
 
 /**
  * Exporter for LAM's configuration data.
@@ -47,12 +51,16 @@ class ConfigDataExporter {
 		$jsonData = array();
 		$jsonData['mainConfig'] = $this->_getMainConfigData($mainCfg);
 		$jsonData['certificates'] = $this->_getCertificates($mainCfg);
-		$jsonData['serverProfiles'] = $this->_getServerProfiles();
+		$serverProfileNames = getConfigProfiles();
+		$serverProfiles = array();
+		foreach ($serverProfileNames as $serverProfileName) {
+			$serverProfiles[$serverProfileName] = new \LAMConfig($serverProfileName);
+		}
+		$jsonData['serverProfiles'] = $this->_getServerProfiles($serverProfiles);
+		$jsonData['accountProfiles'] = $this->_getAccountProfiles($serverProfiles);
 		/**
 		 * TODO
 		 *
-		 * server profiles
-		 * server profile job database
 		 * account profiles
 		 * PDF profiles
 		 * self service profiles
@@ -93,14 +101,33 @@ class ConfigDataExporter {
 	/**
 	 * Returns the content of the server profiles.
 	 *
+	 * @param array $serverProfiles list of server profiles (name => object)
 	 * @return array $data
 	 */
-	public function _getServerProfiles() {
+	public function _getServerProfiles($serverProfiles) {
 		$data = array();
-		$profileNames = getConfigProfiles();
-		foreach ($profileNames as $profileName) {
-			$serverProfile = new LAMConfig($profileName);
+		foreach ($serverProfiles as $profileName => $serverProfile) {
 			$data[$profileName] = $serverProfile->exportData();
+		}
+		return $data;
+	}
+
+	/**
+	 * Returns the content of the account profiles.
+	 *
+	 * @param array $serverProfiles list of server profiles (name => object)
+	 * @return array $data
+	 */
+	public function _getAccountProfiles($serverProfiles) {
+		$data = array();
+		foreach ($serverProfiles as $profileName => $serverProfile) {
+			foreach ($serverProfile->get_ActiveTypes() as $typeId) {
+				$accountProfileNames = getAccountProfiles($typeId, $profileName);
+				foreach ($accountProfileNames as $accountProfileName) {
+					$accountProfile = loadAccountProfile($accountProfileName, $typeId, $profileName);
+					$data[$profileName][$typeId][$accountProfileName] = $accountProfile;
+				}
+			}
 		}
 		return $data;
 	}
@@ -140,6 +167,13 @@ class ConfigDataImporter {
 					}
 					$steps[] = $mainStep;
 					break;
+				case 'accountProfiles':
+					$mainStep = new ImporterStep(_('Account profiles'), 'accountProfiles', $value);
+					foreach ($value as $profileName => $profileData) {
+						$mainStep->addSubStep(new ImporterStep($profileName, 'accountProfile_' . $profileName, $profileData));
+					}
+					$steps[] = $mainStep;
+					break;
 				default:
 					logNewMessage(LOG_WARNING, 'Unknown import type: ' . $key);
 			}
@@ -171,6 +205,9 @@ class ConfigDataImporter {
 					break;
 				case 'serverProfiles':
 					$this->importServerProfiles($step);
+					break;
+				case 'accountProfiles':
+					$this->importAccountProfiles($step);
 					break;
 				default:
 					logNewMessage(LOG_WARNING, 'Unknown import type: ' . $key);
@@ -224,6 +261,35 @@ class ConfigDataImporter {
 		}
 		if (!empty($failedProfiles)) {
 			throw new LAMException(_('Unable to save server profile.'), implode(', ', $failedProfiles));
+		}
+	}
+
+	/**
+	 * Imports the account profiles.
+	 *
+	 * @param ImporterStep $step step
+	 * @throws LAMException error during import
+	 */
+	private function importAccountProfiles($step) {
+		$failedProfiles = array();
+		foreach ($step->getSubSteps() as $profileStep) {
+			if (!$profileStep->isActive()) {
+				continue;
+			}
+			$data = $profileStep->getValue();
+			$serverProfileName = str_replace('accountProfile_', '', $profileStep->getKey());
+			$serverProfile = new LAMConfig($serverProfileName);
+			foreach ($data as $typeId => $accountProfiles) {
+				foreach ($accountProfiles as $accountProfileName => $accountProfileData) {
+					$result = saveAccountProfile($accountProfileData, $accountProfileName, $typeId, $serverProfile);
+					if (!$result) {
+						$failedProfiles[] = $serverProfileName . ':' . $typeId . ':' . $accountProfileName;
+					}
+				}
+			}
+		}
+		if (!empty($failedProfiles)) {
+			throw new LAMException(_('Unable to save account profile.'), implode(', ', $failedProfiles));
 		}
 	}
 

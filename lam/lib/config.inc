@@ -688,7 +688,8 @@ class LAMConfig {
 	 * @throws LAMException import error
 	 */
 	public function importData($data) {
-		$settingsToIgnore = array('modules', 'types', 'tools', 'jobs');
+		$settingsToIgnore = array('modules', 'types', 'tools', 'jobs', 'typeSettings',
+			'moduleSettings', 'toolSettings', 'jobSettings', 'jobSQLite');
 		foreach ($data as $dataKey => $dataValue) {
 			if (in_array($dataKey, $settingsToIgnore)) {
 				continue;
@@ -1850,7 +1851,7 @@ class LAMConfig {
 	/**
 	* Returns a list of active account types.
 	*
-	* @return array list of types
+	* @return string[] list of types
 	*/
 	public function get_ActiveTypes() {
 		if (($this->activeTypes == '') || !isset($this->activeTypes)) {
@@ -1864,7 +1865,7 @@ class LAMConfig {
 	/**
 	* Sets the list of active types.
 	*
-	* @param array list of types
+	* @param string[] list of types
 	*/
 	public function set_ActiveTypes($types) {
 		$this->activeTypes = implode(",", $types);

@@ -88,9 +88,8 @@ function profileExists($name, $typeId) {
  * @return array hash array (attribute => value)
  */
 function loadAccountProfile($profile, $typeId, $serverProfileName) {
-	$typeManager = new \LAM\TYPES\TypeManager();
-	$type = $typeManager->getConfiguredType($typeId);
-	if (!isValidProfileName($profile) || !preg_match("/^[a-z0-9_]+$/i", $typeId) || ($type == null)) {
+	if (!isValidProfileName($profile) || !preg_match("/^[a-z0-9_]+$/i", $typeId)) {
+		logNewMessage(LOG_NOTICE, "Invalid account profile name: $serverProfileName:$profile:$typeId");
 		return false;
 	}
 	$settings = array();
@@ -134,21 +133,22 @@ function loadAccountProfile($profile, $typeId, $serverProfileName) {
 * @param array $attributes hash array (attribute => value)
 * @param string $profile name of the account profile (without .<scope> extension)
 * @param string $typeId account type
- * @param string $serverProfileName server profile name
+ * @param \LAMConfig $serverProfile server profile
 * @return boolean true, if saving succeeded
 */
-function saveAccountProfile($attributes, $profile, $typeId, $serverProfileName) {
-	if (!isLoggedIn()) return false;
+function saveAccountProfile($attributes, $profile, $typeId, $serverProfile) {
 	// check profile name and type id
-	$typeManager = new \LAM\TYPES\TypeManager();
+	$typeManager = new \LAM\TYPES\TypeManager($serverProfile);
 	$type = $typeManager->getConfiguredType($typeId);
 	if (!isValidProfileName($profile) || !preg_match("/^[a-z0-9_]+$/i", $typeId) || ($type == null)) {
+		logNewMessage(LOG_NOTICE, 'Invalid account profile name', $profile . ':' . $typeId);
 		return false;
 	}
 	if (!is_array($attributes)) {
+		logNewMessage(LOG_NOTICE, 'Invalid account profile data');
 		return false;
 	}
-	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/" . $serverProfileName . '/' . $profile . "." . $typeId;
+	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/" . $serverProfile->getName() . '/' . $profile . "." . $typeId;
 	$file = @fopen($path, "w");
 	if ($file) {
   	// write attributes
@@ -166,6 +166,7 @@ function saveAccountProfile($attributes, $profile, $typeId, $serverProfileName) 
 		fclose($file);
 	}
 	else {
+		logNewMessage(LOG_NOTICE, 'Unable to open account profile file: ' . $path);
 		return false;
 	}
 	return true;

@@ -127,7 +127,7 @@ if (isset($_POST['save'])) {
 	$errors = checkProfileOptions($_POST['accounttype'], $options);
 	if (sizeof($errors) == 0) {  // input data is valid, save profile
 		// save profile
-		if (\LAM\PROFILES\saveAccountProfile($options, $_POST['profname'], $_POST['accounttype'], $_SESSION['config']->getName())) {
+		if (\LAM\PROFILES\saveAccountProfile($options, $_POST['profname'], $_POST['accounttype'], $_SESSION['config'])) {
 			metaRefresh('profilemain.php?savedSuccessfully=' . $_POST['profname']);
 			exit();
 		}

@@ -211,7 +211,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
 	            $validUpload = true;
             }
             catch (LAMException $e) {
-                $content->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
+                $content->add(new htmlStatusMessage('ERROR', htmlspecialchars($e->getTitle()), htmlspecialchars($e->getMessage())), 12);
             }
         }
         if (!isset($_POST['importConfigConfirm']) && !$validUpload) {
@@ -260,7 +260,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
 		        $content->add(new htmlStatusMessage('INFO', _('Configuration import ended successful.')), 12);
 	        }
 	        catch (LAMException $e) {
-		        $content->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
+		        $content->add(new htmlStatusMessage('ERROR', htmlspecialchars($e->getTitle()), htmlspecialchars($e->getMessage())), 12);
 		        $content->add(new htmlButton('importCancel', _('Back')), 12);
 	        }
         }
