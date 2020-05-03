@@ -294,7 +294,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 	$pdfCheckbox = new htmlResponsiveInputCheckbox('createPDF', $createPDF, _('Create PDF files'));
 	$pdfCheckbox->setTableRowsToShow(array('pdfStructure', 'pdf_font'));
 	$row->add($pdfCheckbox, 12);
-	$pdfStructures = \LAM\PDF\getPDFStructures($type->getId());
+	$pdfStructures = \LAM\PDF\getPDFStructures($type->getId(), $_SESSION['config']->getName());
 	$pdfSelected = array();
 	if (isset($_POST['pdfStructure'])) {
 		$pdfSelected = array($_POST['pdfStructure']);

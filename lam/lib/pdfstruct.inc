@@ -44,17 +44,14 @@ include_once(__DIR__ . "/ldap.inc");
  * @param string $typeId the account type
  * @param string $profile server profile name
  *
- * @return array All available PDF structure definitions for the submitted account
+ * @return string[] All available PDF structure definitions for the submitted account
  * scope. Each entry is a string being the filename that may be passed to the
  * createModulePDF() function as second argument.
  */
-function getPDFStructures($typeId, $profile = null) {
+function getPDFStructures($typeId, $profile) {
 	$return = array();
 	if (!preg_match('/[a-zA-Z]+/', $typeId)) {
 		return null;
-	}
-	if (!isset($profile)) {
-		$profile = $_SESSION['config']->getName();
 	}
 	$path = dirname(__FILE__) . '/../config/pdf/' . $profile;
 	if(is_dir($path)) {
@@ -75,14 +72,14 @@ function getPDFStructures($typeId, $profile = null) {
  *
  * @param string $typeId account type
  * @param string $name Name of definition to delete
- *
+ * @param string $serverProfileName server profile name
  * @return boolean True if file was deleted or false if a problem occurred.
  */
-function deletePDFStructure($typeId, $name) {
+function deletePDFStructure($typeId, $name, $serverProfileName) {
 	if (!isValidPDFStructureName($name) || !preg_match('/[a-zA-Z]+/',$typeId)) {
 		return false;
 	}
-	$file = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/' . $name . '.' . $typeId . '.xml';
+	$file = dirname(__FILE__) . '/../config/pdf/' . $serverProfileName . '/' . $name . '.' . $typeId . '.xml';
 	if(is_file($file) && is_writable($file)) {
 		return unlink($file);
 	}
@@ -95,11 +92,12 @@ function deletePDFStructure($typeId, $name) {
 /**
  * This function returns an array with all aviliable logo images.
  *
+ * @param string $serverProfileName server profile name
  * @return array list of logo files
  */
-function getAvailableLogos() {
+function getAvailableLogos($serverProfileName) {
 	$return = array();
-	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/logos/';
+	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $serverProfileName . '/logos/';
 	$dirHandle = opendir($dirPath);
 	while($file = readdir($dirHandle)) {
 		if(!is_dir($file) && $file != '.' && $file != '..' && preg_match('/\\.(jpg|png)$/i',$file)) {
@@ -165,13 +163,14 @@ function copyStructureToTemplates($sourceType, $sourceName) {
  *
  * @param String $file full path of temporary file
  * @param String $name file name
+ * @param string $serverProfileName server profile name
  * @return StatusMessage status message to display
  */
-function uploadPDFLogo($file, $name) {
+function uploadPDFLogo($file, $name, $serverProfileName) {
 	if (!preg_match('/[a-zA-Z0-9_-]+\\.(png)|(jpg)/i', $name)) {
 		return new htmlStatusMessage('ERROR', _('Unable to upload logo file.'), _('The file name must end with ".png" or ".jpg".'));
 	}
-	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/logos/';
+	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $serverProfileName . '/logos/';
 	$success = copy($file, $dirPath . '/' . $name);
 	if ($success) {
 		return new htmlStatusMessage('INFO', _('Uploaded logo file.'), $name);
@@ -185,12 +184,13 @@ function uploadPDFLogo($file, $name) {
  * Deletes a PDF logo file.
  *
  * @param String $name file name
+ * @param string $serverProfileName server profile name
  * @return StatusMessage status message to display
  */
-function deletePDFLogo($name) {
+function deletePDFLogo($name, $serverProfileName) {
 	// check if valid file
 	$found = false;
-	$logos = getAvailableLogos();
+	$logos = getAvailableLogos($serverProfileName);
 	foreach ($logos as $logo) {
 		if ($logo['filename'] === $name) {
 			$found = true;
@@ -205,7 +205,7 @@ function deletePDFLogo($name) {
 	$activeTypes = $typeManager->getConfiguredTypes();
 	$reader = new PDFStructureReader();
 	foreach ($activeTypes as $type) {
-		$structures = getPDFStructures($type->getId());
+		$structures = getPDFStructures($type->getId(), $serverProfileName);
 		foreach ($structures as $structure) {
 			try {
 				$data = $reader->read($type->getId(), $structure);
@@ -220,7 +220,7 @@ function deletePDFLogo($name) {
 		}
 	}
 	// delete file
-	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/logos/';
+	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $serverProfileName . '/logos/';
 	$success = @unlink($dirPath . '/' . $name);
 	if ($success) {
 		return new htmlStatusMessage('INFO', _('Logo file deleted.'), $name);

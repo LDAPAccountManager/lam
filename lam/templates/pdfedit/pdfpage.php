@@ -22,7 +22,7 @@ use LAM\PDF\PDFStructureWriter;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2007 - 2019  Roland Gruber
+                2007 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -218,7 +218,7 @@ else if (isset($_POST['pdfname'])) {
 // headline
 $headline = $_SESSION['currentPDFStructure']->getTitle();
 // logo
-$logoFiles = \LAM\PDF\getAvailableLogos();
+$logoFiles = \LAM\PDF\getAvailableLogos($_SESSION['config']->getName());
 $logos = array(_('No logo') => 'none');
 foreach($logoFiles as $logoFile) {
 	$logos[$logoFile['filename'] . ' (' . $logoFile['infos'][0] . ' x ' . $logoFile['infos'][1] . ")"] = $logoFile['filename'];
