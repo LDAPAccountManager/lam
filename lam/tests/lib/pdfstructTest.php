@@ -31,12 +31,12 @@ use PHPUnit\Framework\TestCase;
 include_once __DIR__ . '/../../lib/pdfstruct.inc';
 
 /**
- * Reads a sample PDF structure.
+ * Tests classes in pdfstruct.inc.
  *
  * @author Roland Gruber
  *
  */
-class ReadStructureTest extends TestCase {
+class PdfStructTest extends TestCase {
 
 	/**
 	 * Reads the sample structure.
@@ -114,14 +114,10 @@ class ReadStructureTest extends TestCase {
 		$this->assertEquals($originalXML, $xml);
 	}
 
-}
-
-/**
- * Tests PDFTextSection
- */
-class PDFTextSectionTest extends TestCase {
-
-	public function testExport() {
+	/**
+	 * Tests PDFTextSection
+	 */
+	public function testExportPDFTextSection() {
 		$section = new PDFTextSection('sometext');
 
 		$data = $section->export();
@@ -129,14 +125,10 @@ class PDFTextSectionTest extends TestCase {
 		$this->assertEquals('sometext', $data);
 	}
 
-}
-
-/**
- * Tests PDFEntrySection
- */
-class PDFEntrySectionTest extends TestCase {
-
-	public function testExport() {
+	/**
+	 * Tests PDFEntrySection
+	 */
+	public function testExportPDFEntrySection() {
 		$section = new PDFEntrySection('mytitle');
 		$section->setEntries(array(new PDFSectionEntry('key1'), new PDFSectionEntry('key2')));
 
@@ -150,14 +142,10 @@ class PDFEntrySectionTest extends TestCase {
 		$this->assertEquals($expected, $data);
 	}
 
-}
-
-/**
- * Tests PDFStructure
- */
-class PDFStructureTest extends TestCase {
-
-	public function testExport() {
+	/**
+	 * Tests PDFStructure
+	 */
+	public function testExportPDFStructure() {
 		$structure = new PDFStructure();
 		$structure->setFoldingMarks(PDFStructure::FOLDING_STANDARD);
 		$structure->setLogo('somelogo');
