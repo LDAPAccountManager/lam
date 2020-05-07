@@ -4775,14 +4775,6 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 			$tabletColumnsLabel = 10;
 			$tabletColumnsBox = 2;
 		}
-		if ($this->labelAfterCheckbox) {
-			$tmp = $mobileColumnsLabel;
-			$mobileColumnsLabel = $mobileColumnsLabel;
-			$mobileColumnsBox = $mobileColumnsLabel;
-			$tmp = $tabletColumnsLabel;
-			$tabletColumnsLabel = $tabletColumnsBox;
-			$tabletColumnsBox = $tabletColumnsLabel;
-		}
 		// label text
 		$text = new htmlSpan(new htmlOutputText($this->label));
 		$text->setOnclick('jQuery(\'#' . $this->name . '\').prop(\'checked\',!jQuery(\'#' . $this->name . '\').prop(\'checked\')); jQuery(\'#' . $this->name . '\').change();');
