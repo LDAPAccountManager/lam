@@ -135,7 +135,7 @@ if (!empty($_POST['form_submit'])) {
 // main pdf structure page
 $saveErrors = array();
 if(isset($_GET['submit'])) {
-	$writer = new PDFStructureWriter();
+	$writer = new PDFStructureWriter($_SESSION['config']->getName());
 	try {
 		$writer->write($type->getId(), $_POST['pdfname'], $_SESSION['currentPDFStructure']);
 		unset($_SESSION['currentPDFStructure']);

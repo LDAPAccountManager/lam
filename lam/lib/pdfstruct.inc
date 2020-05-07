@@ -422,6 +422,17 @@ class PDFStructureReader {
  */
 class PDFStructureWriter {
 
+	private $serverProfileName;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param $serverProfileName server profile name
+	 */
+	public function __construct($serverProfileName) {
+		$this->serverProfileName = $serverProfileName;
+	}
+
 	/**
 	 * Writes the PDF structure to disk.
 	 *
@@ -447,10 +458,10 @@ class PDFStructureWriter {
 			throw new \LAMException(_('PDF structure name not valid'),
 					_('The name for that PDF-structure you submitted is not valid. A valid name must consist of the following characters: \'a-z\',\'A-Z\',\'0-9\',\'_\',\'-\'.'));
 		}
-		if(!is_writable(dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName())) {
+		if(!is_writable(dirname(__FILE__) . '/../config/pdf/' . $this->serverProfileName)) {
 			throw new \LAMException(_('Could not save PDF structure, access denied.'));
 		}
-		return dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/' . $name . '.' . $typeId . '.xml';
+		return dirname(__FILE__) . '/../config/pdf/' . $this->serverProfileName . '/' . $name . '.' . $typeId . '.xml';
 	}
 
 	/**

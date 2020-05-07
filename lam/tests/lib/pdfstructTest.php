@@ -106,7 +106,7 @@ class ReadStructureTest extends TestCase {
 		$reader->method('getFileName')->willReturn($file);
 		$structure = $reader->read('type', 'name');
 		// create writer and get output XML
-		$writer = new PDFStructureWriter();
+		$writer = new PDFStructureWriter('test');
 		$xml = $writer->getXML($structure);
 		// compare
 		$this->assertEquals($originalXML, $xml);
