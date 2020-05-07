@@ -543,6 +543,28 @@ class PDFStructure {
 	private $sections = array();
 
 	/**
+	 * Returns an array representation of the structure.
+	 *
+	 * @return array export data
+	 */
+	public function export() {
+		$data = array();
+		$data['title'] = $this->title;
+		$data['foldingMarks'] = $this->foldingMarks;
+		$data['logo'] = $this->logo;
+		$data['sections'] = array();
+		foreach($this->sections as $section) {
+			$type = ($section instanceof PDFTextSection) ? 'text' : 'entry';
+			$sectionData = $section->export();
+			$data['sections'][] = array(
+				'type' => $type,
+				'data' => $sectionData
+			);
+		}
+		return $data;
+	}
+
+	/**
 	 * Returns the logo file path.
 	 *
 	 * @return string logo
@@ -635,6 +657,15 @@ class PDFTextSection {
 	}
 
 	/**
+	 * Exports the section.
+	 *
+	 * @return string text
+	 */
+	public function export() {
+		return $this->getText();
+	}
+
+	/**
 	 * Returns the text.
 	 *
 	 * @return string text
@@ -662,6 +693,21 @@ class PDFEntrySection {
 	 */
 	public function __construct($title) {
 		$this->title = $title;
+	}
+
+	/**
+	 * Exports the section.
+	 *
+	 * @return array export data
+	 */
+	public function export() {
+		$data = array();
+		$data['title'] = $this->title;
+		$data['entries'] = array();
+		foreach($this->getEntries() as $entry) {
+			$data['entries'][] = $entry->getKey();
+		}
+		return $data;
 	}
 
 	/**

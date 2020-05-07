@@ -1,4 +1,6 @@
 <?php
+
+use LAM\PDF\PDFSectionEntry;
 use LAM\PDF\PDFTextSection;
 use LAM\PDF\PDFEntrySection;
 use LAM\PDF\PDFStructureReader;
@@ -26,7 +28,7 @@ use PHPUnit\Framework\TestCase;
 
 */
 
-include_once 'lam/lib/pdfstruct.inc';
+include_once __DIR__ . '/../../lib/pdfstruct.inc';
 
 /**
  * Reads a sample PDF structure.
@@ -110,6 +112,85 @@ class ReadStructureTest extends TestCase {
 		$xml = $writer->getXML($structure);
 		// compare
 		$this->assertEquals($originalXML, $xml);
+	}
+
+}
+
+/**
+ * Tests PDFTextSection
+ */
+class PDFTextSectionTest extends TestCase {
+
+	public function testExport() {
+		$section = new PDFTextSection('sometext');
+
+		$data = $section->export();
+
+		$this->assertEquals('sometext', $data);
+	}
+
+}
+
+/**
+ * Tests PDFEntrySection
+ */
+class PDFEntrySectionTest extends TestCase {
+
+	public function testExport() {
+		$section = new PDFEntrySection('mytitle');
+		$section->setEntries(array(new PDFSectionEntry('key1'), new PDFSectionEntry('key2')));
+
+		$data = $section->export();
+
+		$expected = array(
+			'title' => 'mytitle',
+			'entries' => array('key1', 'key2')
+		);
+
+		$this->assertEquals($expected, $data);
+	}
+
+}
+
+/**
+ * Tests PDFStructure
+ */
+class PDFStructureTest extends TestCase {
+
+	public function testExport() {
+		$structure = new PDFStructure();
+		$structure->setFoldingMarks(PDFStructure::FOLDING_STANDARD);
+		$structure->setLogo('somelogo');
+		$structure->setTitle('mytitle');
+		$entrySection = new PDFEntrySection('sometitle');
+		$entrySection->setEntries(array(new PDFSectionEntry('key1')));
+		$structure->setSections(array(
+			new PDFTextSection('sometext'),
+			$entrySection
+		));
+
+		$data = $structure->export();
+
+		$expected = array(
+			'title' => 'mytitle',
+			'foldingMarks' => PDFStructure::FOLDING_STANDARD,
+			'logo' => 'somelogo',
+			'sections' => array(
+				array(
+					'type' => 'text',
+					'data' => 'sometext'
+				),
+				array(
+					'type' => 'entry',
+					'data' => array(
+						'title' => 'sometitle',
+						'entries' => array('key1')
+					)
+				)
+			)
+		);
+
+		$this->assertEquals($expected, $data);
 	}
 
 }
