@@ -203,7 +203,7 @@ function deletePDFLogo($name, $serverProfileName) {
 	// check if still in use
 	$typeManager = new \LAM\TYPES\TypeManager();
 	$activeTypes = $typeManager->getConfiguredTypes();
-	$reader = new PDFStructureReader();
+	$reader = new PDFStructureReader($serverProfileName);
 	foreach ($activeTypes as $type) {
 		$structures = getPDFStructures($type->getId(), $serverProfileName);
 		foreach ($structures as $structure) {
@@ -301,6 +301,17 @@ function installPDFTemplates() {
  */
 class PDFStructureReader {
 
+	private $serverProfileName;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param $serverProfileName server profile name
+	 */
+	public function __construct($serverProfileName) {
+		$this->serverProfileName = $serverProfileName;
+	}
+
 	/**
 	 * Reads a PDF structure.
 	 *
@@ -324,7 +335,7 @@ class PDFStructureReader {
 	 * @return string file name
 	 */
 	protected function getFileName($typeId, $name) {
-		return dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/' . $name . '.' . $typeId . '.xml';
+		return dirname(__FILE__) . '/../config/pdf/' . $this->serverProfileName . '/' . $name . '.' . $typeId . '.xml';
 	}
 
 	/**

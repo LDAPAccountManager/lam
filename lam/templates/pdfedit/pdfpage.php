@@ -105,7 +105,7 @@ if(isset($_GET['abort'])) {
 // Load PDF structure from file if it is not defined in session
 if(!isset($_SESSION['currentPDFStructure'])) {
 	// Load structure file to be edit
-	$reader = new PDFStructureReader();
+	$reader = new PDFStructureReader($_SESSION['config']->getName());
 	try {
 		if(isset($_GET['edit'])) {
 			$_SESSION['currentPDFStructure'] = $reader->read($type->getId(), $_GET['edit']);

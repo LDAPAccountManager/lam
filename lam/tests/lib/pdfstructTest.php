@@ -41,6 +41,7 @@ class ReadStructureTest extends TestCase {
 	 */
 	public function testRead() {
 		$reader = $this->getMockBuilder('\LAM\PDF\PDFStructureReader')
+			->setConstructorArgs(array('test'))
 			->setMethods(array('getFileName'))
 			->getMock();
 		$reader->method('getFileName')->willReturn($this->getTestFileName('test.xml'));
@@ -99,6 +100,7 @@ class ReadStructureTest extends TestCase {
 		fclose($fileHandle);
 		// read structure
 		$reader = $this->getMockBuilder('\LAM\PDF\PDFStructureReader')
+		->setConstructorArgs(array('test'))
 		->setMethods(array('getFileName'))
 		->getMock();
 		$reader->method('getFileName')->willReturn($file);
