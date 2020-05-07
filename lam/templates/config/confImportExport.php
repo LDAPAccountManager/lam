@@ -103,13 +103,11 @@ printHeaderContents(_("Import and export configuration"), '../..');
     }
 
     // check login
-    if (isset($_POST['submitLogin'])) {
-	    if (!checkLogin($cfg)) {
-		    exit();
-	    }
+    if (isset($_POST['submitLogin']) && !checkLogin($cfg)) {
+	    exit();
     }
 
-    displayImportExport($cfg);
+    displayImportExport();
 
     /**
      * Shows the login dialog for the configuration master password.
@@ -167,10 +165,8 @@ printHeaderContents(_("Import and export configuration"), '../..');
 
     /**
      * Displays the import/export functions.
-     *
-     * @param LAMCfgMain $cfg main config
      */
-    function displayImportExport($cfg) {
+    function displayImportExport() {
 	    $tabindex = 0;
 	    $content = new htmlResponsiveRow();
 
@@ -190,7 +186,6 @@ printHeaderContents(_("Import and export configuration"), '../..');
      * @param htmlResponsiveRow $content content where to add import part
      */
     function renderImportPart($content) {
-        $fileContent = null;
         $validUpload = false;
         $importSteps = array();
         if (isset($_POST['importConfig'])) {
