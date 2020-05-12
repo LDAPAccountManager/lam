@@ -181,6 +181,65 @@ class PdfStructTest extends TestCase {
 		$this->assertEquals($expected, $data);
 	}
 
+	/**
+	 * Tests import in PDFEntrySection.
+	 */
+	public function testImportPDFEntrySection() {
+		$data = array(
+			'title' => 'mytitle',
+			'entries' => array('e1', 'e2')
+		);
+
+		$section = new PDFEntrySection(null);
+		$section->import($data);
+
+		$this->assertEquals('mytitle', $section->getTitle());
+		$entries = $section->getEntries();
+		$this->assertEquals(2, sizeof($entries));
+		$this->assertEquals('e1', ($entries[0]->getKey()));
+		$this->assertEquals('e2', ($entries[1]->getKey()));
+	}
+
+	/**
+	 * Tests the import in PDFStructure.
+	 */
+	public function testImportPDFStructure() {
+		$data = array(
+			'title' => 'mytitle',
+			'foldingMarks' => PDFStructure::FOLDING_STANDARD,
+			'logo' => 'logo',
+			'sections' => array(
+				array(
+					'type' => 'text',
+					'data' => 'textvalue'
+				),
+				array(
+					'type' => 'entry',
+					'data' => array(
+						'title' => 'etitle',
+						'entries' => array('e1', 'e2')
+					)
+				),
+			)
+		);
+
+		$structure = new PDFStructure();
+		$structure->import($data);
+
+		$this->assertEquals('mytitle', $structure->getTitle());
+		$this->assertEquals(PDFStructure::FOLDING_STANDARD, $structure->getFoldingMarks());
+		$this->assertEquals('logo', $structure->getLogo());
+		$sections = $structure->getSections();
+		$this->assertEquals(2, sizeof($sections));
+		$this->assertTrue($sections[0] instanceof PDFTextSection);
+		$this->assertEquals('textvalue', $sections[0]->getText());
+		$this->assertTrue($sections[1] instanceof PDFEntrySection);
+		$entries = $sections[1]->getEntries();
+		$this->assertEquals(2, sizeof($entries));
+		$this->assertEquals('e1', $entries[0]->getKey());
+		$this->assertEquals('e2', $entries[1]->getKey());
+	}
+
 }
 
 ?>

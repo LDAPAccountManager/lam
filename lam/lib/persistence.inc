@@ -1,8 +1,11 @@
 <?php
 namespace LAM\PERSISTENCE;
+use LAM\PDF\PDFStructureReader;
 use LAMCfgMain;
 use LAMConfig;
 use LAMException;
+use function LAM\PDF\getAvailableLogos;
+use function LAM\PDF\getPDFStructures;
 use function LAM\PROFILES\getAccountProfiles;
 use function LAM\PROFILES\loadAccountProfile;
 use function LAM\PROFILES\saveAccountProfile;
@@ -58,10 +61,10 @@ class ConfigDataExporter {
 		}
 		$jsonData['serverProfiles'] = $this->_getServerProfiles($serverProfiles);
 		$jsonData['accountProfiles'] = $this->_getAccountProfiles($serverProfiles);
+		$jsonData['pdfProfiles'] = $this->_getPdfProfiles($serverProfiles);
 		/**
 		 * TODO
 		 *
-		 * account profiles
 		 * PDF profiles
 		 * self service profiles
 		 * webauthn
@@ -132,6 +135,36 @@ class ConfigDataExporter {
 		return $data;
 	}
 
+	/**
+	 * Returns the content of the PDF profiles.
+	 *
+	 * @param array $serverProfiles list of server profiles (name => object)
+	 * @return array $data
+	 */
+	public function _getPdfProfiles($serverProfiles) {
+		$data = array();
+		foreach ($serverProfiles as $profileName => $serverProfile) {
+			foreach ($serverProfile->get_ActiveTypes() as $typeId) {
+				$pdfProfileNames = getPDFStructures($typeId, $profileName);
+				$reader = new PDFStructureReader($profileName);
+				foreach ($pdfProfileNames as $pdfProfileName) {
+					$pdfStructure = $reader->read($typeId, $pdfProfileName);
+					$data[$profileName]['structures'][$typeId][$pdfProfileName] = $pdfStructure->export();
+				}
+			}
+			$logoData = getAvailableLogos($profileName);
+			foreach ($logoData as $logo) {
+				$logoFileName = $logo['filename'];
+				$logoPath = __DIR__ . '/../config/pdf/' . $profileName . '/logos/' . $logoFileName;
+				$handle = fopen($logoPath, 'r');
+				$logoBinary = fread($handle, 100000000);
+				fclose($handle);
+				$data[$profileName]['logos'][$logoFileName] = base64_encode($logoBinary);
+			}
+		}
+		return $data;
+	}
+
 }
 
 /**
@@ -174,6 +207,7 @@ class ConfigDataImporter {
 					}
 					$steps[] = $mainStep;
 					break;
+					// TODO PDF structures
 				default:
 					logNewMessage(LOG_WARNING, 'Unknown import type: ' . $key);
 			}

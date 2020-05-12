@@ -93,7 +93,7 @@ function deletePDFStructure($typeId, $name, $serverProfileName) {
  * This function returns an array with all aviliable logo images.
  *
  * @param string $serverProfileName server profile name
- * @return array list of logo files
+ * @return array list of logo files (array('filename' => PATH, 'infos' => array(width, height)))
  */
 function getAvailableLogos($serverProfileName) {
 	$return = array();
@@ -565,6 +565,35 @@ class PDFStructure {
 	}
 
 	/**
+	 * Imports an array representation of the structure.
+	 *
+	 * @param array $data import data
+	 */
+	public function import($data) {
+		if (isset($data['title'])) {
+			$this->title = $data['title'];
+		}
+		if (isset($data['foldingMarks'])) {
+			$this->foldingMarks = $data['foldingMarks'];
+		}
+		if (isset($data['logo'])) {
+			$this->logo = $data['logo'];
+		}
+		if (isset($data['sections'])) {
+			foreach($data['sections'] as $section) {
+				if ($section['type'] === 'text') {
+					$this->sections[] = new PDFTextSection($section['data']);
+				}
+				else {
+					$entrySection = new PDFEntrySection(null);
+					$entrySection->import($section['data']);
+					$this->sections[] = $entrySection;
+				}
+			}
+		}
+	}
+
+	/**
 	 * Returns the logo file path.
 	 *
 	 * @return string logo
@@ -708,6 +737,22 @@ class PDFEntrySection {
 			$data['entries'][] = $entry->getKey();
 		}
 		return $data;
+	}
+
+	/**
+	 * Imports the section.
+	 *
+	 * @param array $data import data
+	 */
+	public function import($data) {
+		if (isset($data['title'])) {
+			$this->title = $data['title'];
+		}
+		if ($data['entries']) {
+			foreach($data['entries'] as $entry) {
+				$this->entries[] = new PDFSectionEntry($entry);
+			}
+		}
 	}
 
 	/**
