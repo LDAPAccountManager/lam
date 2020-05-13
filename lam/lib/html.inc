@@ -4777,6 +4777,7 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 		}
 		// label text
 		$text = new htmlSpan(new htmlOutputText($this->label));
+		$text->setCSSClasses($this->cssClasses);
 		$text->setOnclick('jQuery(\'#' . $this->name . '\').prop(\'checked\',!jQuery(\'#' . $this->name . '\').prop(\'checked\')); jQuery(\'#' . $this->name . '\').change();');
 		// input field
 		$fieldGroup = new htmlGroup();

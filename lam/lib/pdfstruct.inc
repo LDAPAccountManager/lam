@@ -118,7 +118,7 @@ function getAvailableLogos($serverProfileName) {
  * @param \LAM\TYPES\ConfiguredType $sourceType source type
  * @param string $sourceStructureName structure name
  * @param \LAM\TYPES\ConfiguredType $targetType target type
- * @throws Exception
+ * @throws LAMException error during copy
  */
 function copyStructure($sourceType, $sourceStructureName, $targetType) {
 	if (!isValidPDFStructureName($sourceStructureName)) {
@@ -427,7 +427,7 @@ class PDFStructureWriter {
 	/**
 	 * Constructor.
 	 *
-	 * @param $serverProfileName server profile name
+	 * @param string $serverProfileName server profile name
 	 */
 	public function __construct($serverProfileName) {
 		$this->serverProfileName = $serverProfileName;
@@ -439,6 +439,7 @@ class PDFStructureWriter {
 	 * @param string $typeId type ID
 	 * @param string $name structure name
 	 * @param PDFStructure $structure structure
+	 * @throws LAMException error during write
 	 */
 	public function write($typeId, $name, $structure) {
 		$fileName = $this->getFileName($typeId, $name);
@@ -452,6 +453,7 @@ class PDFStructureWriter {
 	 * @param string $typeId type ID
 	 * @param string $name structure name
 	 * @return string file name
+	 * @throws LAMException file not valid or not writable
 	 */
 	protected function getFileName($typeId, $name) {
 		if (!isValidPDFStructureName($name) || !preg_match('/[a-zA-Z]+/', $typeId)) {
@@ -510,6 +512,7 @@ class PDFStructureWriter {
 	 *
 	 * @param string $xml XML
 	 * @param string $file file name
+	 * @throws LAMException error during write
 	 */
 	protected function writeXML($xml, $file) {
 		$handle = @fopen($file,'w');
@@ -713,7 +716,7 @@ class PDFTextSection {
 class PDFEntrySection {
 
 	private $title;
-	private $entries;
+	private $entries = array();
 
 	/**
 	 * Constructor

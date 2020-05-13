@@ -1,11 +1,14 @@
 <?php
 namespace LAM\PERSISTENCE;
+use LAM\PDF\PDFStructure;
 use LAM\PDF\PDFStructureReader;
+use LAM\PDF\PDFStructureWriter;
 use LAMCfgMain;
 use LAMConfig;
 use LAMException;
 use function LAM\PDF\getAvailableLogos;
 use function LAM\PDF\getPDFStructures;
+use function LAM\PDF\uploadPDFLogo;
 use function LAM\PROFILES\getAccountProfiles;
 use function LAM\PROFILES\loadAccountProfile;
 use function LAM\PROFILES\saveAccountProfile;
@@ -65,7 +68,7 @@ class ConfigDataExporter {
 		/**
 		 * TODO
 		 *
-		 * PDF profiles
+		 * pdf/account templates /config/templates
 		 * self service profiles
 		 * webauthn
 		 */
@@ -207,7 +210,13 @@ class ConfigDataImporter {
 					}
 					$steps[] = $mainStep;
 					break;
-					// TODO PDF structures
+				case 'pdfProfiles':
+					$mainStep = new ImporterStep(_('PDF structures'), 'pdfProfiles', $value);
+					foreach ($value as $profileName => $profileData) {
+						$mainStep->addSubStep(new ImporterStep($profileName, 'pdfProfile_' . $profileName, $profileData));
+					}
+					$steps[] = $mainStep;
+					break;
 				default:
 					logNewMessage(LOG_WARNING, 'Unknown import type: ' . $key);
 			}
@@ -242,6 +251,9 @@ class ConfigDataImporter {
 					break;
 				case 'accountProfiles':
 					$this->importAccountProfiles($step);
+					break;
+				case 'pdfProfiles':
+					$this->importPdfProfiles($step);
 					break;
 				default:
 					logNewMessage(LOG_WARNING, 'Unknown import type: ' . $key);
@@ -324,6 +336,53 @@ class ConfigDataImporter {
 		}
 		if (!empty($failedProfiles)) {
 			throw new LAMException(_('Unable to save account profile.'), implode(', ', $failedProfiles));
+		}
+	}
+
+	/**
+	 * Imports the PDF profiles.
+	 *
+	 * @param ImporterStep $step step
+	 * @throws LAMException error during import
+	 */
+	private function importPdfProfiles($step) {
+		$failedProfiles = array();
+		foreach ($step->getSubSteps() as $profileStep) {
+			if (!$profileStep->isActive()) {
+				continue;
+			}
+			$data = $profileStep->getValue();
+			$serverProfileName = str_replace('pdfProfile_', '', $profileStep->getKey());
+			if (isset($data['structures'])) {
+				$writer = new PDFStructureWriter($serverProfileName);
+				foreach ($data['structures'] as $typeId => $pdfProfiles) {
+					foreach ($pdfProfiles as $pdfProfileName => $pdfProfileData) {
+						$structure = new PDFStructure();
+						$structure->import($pdfProfileData);
+						try {
+							$writer->write($typeId, $pdfProfileName, $structure);
+						}
+						catch (LAMException $e) {
+							logNewMessage('ERROR', $e->getMessage());
+							$failedProfiles[] = $serverProfileName . ':' . $typeId . ':' . $pdfProfileName;
+						}
+					}
+				}
+			}
+			if (isset($data['logos'])) {
+				foreach ($data['logos'] as $logoFileName => $logoData) {
+					$tempFilePath = tempnam("/tmp", "lam");
+					$tempFile = fopen($tempFilePath, "w");
+					$logoBinary = base64_decode($logoData);
+					fwrite($tempFile, $logoBinary);
+					fclose($tempFile);
+					uploadPDFLogo($tempFilePath, $logoFileName, $serverProfileName);
+					unlink($tempFilePath);
+				}
+			}
+		}
+		if (!empty($failedProfiles)) {
+			throw new LAMException(_('Could not save PDF structure, access denied.'), implode(', ', $failedProfiles));
 		}
 	}
 

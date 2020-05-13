@@ -189,10 +189,13 @@ printHeaderContents(_("Import and export configuration"), '../..');
         $validUpload = false;
         $importSteps = array();
         if (isset($_POST['importConfig'])) {
-	        $handle = fopen($_FILES['import-file']['tmp_name'], "r");
-	        $data = fread($handle, 100000000);
-	        fclose($handle);
 	        try {
+	            if (empty($_FILES['import-file']['tmp_name'])) {
+	                throw new LAMException('The file you uploaded is too large. Please check php.ini, upload_max_size setting');
+                }
+		        $handle = fopen($_FILES['import-file']['tmp_name'], "r");
+		        $data = fread($handle, 100000000);
+		        fclose($handle);
 	            $importer = new ConfigDataImporter();
 		        $importSteps = $importer->getPossibleImportSteps($data);
 		        $tmpFile = __DIR__ . '/../../tmp/internal/import_' . getRandomNumber() . '.tmp';
@@ -219,13 +222,14 @@ printHeaderContents(_("Import and export configuration"), '../..');
                 $stepKey = 'step_' . $importStep->getKey();
                 $stepCheckbox = new htmlResponsiveInputCheckbox($stepKey, true, $importStep->getLabel());
                 $stepCheckbox->setLabelAfterCheckbox();
+                $stepCheckbox->setCSSClasses(array('bold'));
                 $subStepIds = array();
                 $content->add($stepCheckbox, 12);
 	            $content->addVerticalSpacer('0.3rem');
                 foreach ($importStep->getSubSteps() as $subStep) {
                     $subStepKey = 'step_' . $subStep->getKey();
                     $subStepIds[] = $subStepKey;
-	                $subStepCheckbox = new htmlResponsiveInputCheckbox($subStepKey, true, ' - ' . $subStep->getLabel());
+	                $subStepCheckbox = new htmlResponsiveInputCheckbox($subStepKey, true, $subStep->getLabel());
 	                $subStepCheckbox->setLabelAfterCheckbox();
 	                $content->add($subStepCheckbox, 12);
                 }
