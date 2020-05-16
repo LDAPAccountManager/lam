@@ -92,10 +92,25 @@ function loadAccountProfile($profile, $typeId, $serverProfileName) {
 		logNewMessage(LOG_NOTICE, "Invalid account profile name: $serverProfileName:$profile:$typeId");
 		return false;
 	}
-	$settings = array();
 	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/"  . $serverProfileName . '/' . $profile . "." . $typeId;
-	if (is_file($file)) {
-		$file = @fopen($file, "r");
+	try {
+		return readAccountProfileFile($file);
+	} catch (LAMException $e) {
+		StatusMessage('ERROR', $e->getTitle(), $e->getMessage());
+	}
+}
+
+/**
+ * Reads an account profile from the given file name.
+ *
+ * @param string $fileName file name
+ * @return array hash array (attribute => value)
+ * @throws LAMException error reading file
+ */
+function readAccountProfileFile($fileName) {
+	$settings = array();
+	if (is_file($fileName)) {
+		$file = @fopen($fileName, "r");
 		if ($file) {
 			while (!feof($file)) {
 				$line = fgets($file, 1024);
@@ -114,15 +129,16 @@ function loadAccountProfile($profile, $typeId, $serverProfileName) {
 				}
 			}
 			fclose($file);
+			return $settings;
 		}
 		else {
-			StatusMessage("ERROR", "", _("Unable to load profile!") . " " . $file);
+			throw new LAMException(_("Unable to load profile!"), $fileName);
 		}
 	}
 	else {
-		StatusMessage("ERROR", "", _("Unable to load profile!") . " " . $file);
+		throw new LAMException(_("Unable to load profile!"), $fileName);
 	}
-	return $settings;
+	return array();
 }
 
 /**
@@ -254,7 +270,34 @@ function copyAccountProfileToTemplates($sourceType, $sourceProfileName) {
  * Installs template profiles to the current server profile.
  */
 function installProfileTemplates() {
-	$templatePath = dirname(__FILE__) . '/../config/templates/profiles';
+	$allTemplates = getProfileTemplateNames();
+	$basePath = dirname(__FILE__) . '/../config/profiles/' . $_SESSION['config']->getName();
+	if (!file_exists($basePath)) {
+		mkdir($basePath, 0700, true);
+	}
+	$typeManager = new \LAM\TYPES\TypeManager();
+	foreach ($typeManager->getConfiguredTypes() as $type) {
+		if (empty($allTemplates[$type->getScope()])) {
+			continue;
+		}
+		foreach ($allTemplates[$type->getScope()] as $templateName) {
+			$path = $basePath . '/' . $templateName . '.' . $type->getId();
+			if (!is_file($path)) {
+				$template = getProfileTemplateFileName($type->getScope(), $templateName);
+				logNewMessage(LOG_DEBUG, 'Copy template ' . $template . ' to ' . $path);
+				@copy($template, $path);
+			}
+		}
+	}
+}
+
+/**
+ * Returns a list of all global profile templates.
+ *
+ * @return array names (array('user' => array('default', 'extra')))
+ */
+function getProfileTemplateNames() {
+	$templatePath = __DIR__ . '/../config/templates/profiles';
 	$templateDir = @dir($templatePath);
 	$allTemplates = array();
 	if ($templateDir) {
@@ -269,24 +312,17 @@ function installProfileTemplates() {
 			$entry = $templateDir->read();
 		}
 	}
-	$basePath = dirname(__FILE__) . '/../config/profiles/' . $_SESSION['config']->getName();
-	if (!file_exists($basePath)) {
-		mkdir($basePath, 0700, true);
-	}
-	$typeManager = new \LAM\TYPES\TypeManager();
-	foreach ($typeManager->getConfiguredTypes() as $type) {
-		if (empty($allTemplates[$type->getScope()])) {
-			continue;
-		}
-		foreach ($allTemplates[$type->getScope()] as $templateName) {
-			$path = $basePath . '/' . $templateName . '.' . $type->getId();
-			if (!is_file($path)) {
-				$template = $templatePath . '/' . $templateName . '.' . $type->getScope();
-				logNewMessage(LOG_DEBUG, 'Copy template ' . $template . ' to ' . $path);
-				@copy($template, $path);
-			}
-		}
-	}
+	return $allTemplates;
 }
 
-?>
+/**
+ * Returns the file name of a global template.
+ *
+ * @param string $scope e.g. user
+ * @param string $name profile name
+ * @return string file name
+ */
+function getProfileTemplateFileName($scope, $name) {
+	return __DIR__ . '/../config/templates/profiles' . '/' . $name . '.' . $scope;
+}
+
