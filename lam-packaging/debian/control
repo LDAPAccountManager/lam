@@ -17,6 +17,7 @@ Depends: php (>= 7), php-ldap,
  apache2 (>= 2.4.0) | httpd, fonts-dejavu, debconf (>= 0.2.26) | debconf-2.0, ${misc:Depends}
 Recommends: php-opcache
 Suggests: ldap-server, php-mcrypt, ldap-account-manager-lamdaemon, perl
+Conflicts: libapache2-mod-php5, php5, php5-fpm
 Description: webfrontend for managing accounts in an LDAP directory
  LDAP Account Manager (LAM) runs on an existing webserver.
  It manages user, group and host accounts. Currently LAM

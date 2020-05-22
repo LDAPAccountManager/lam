@@ -1,4 +1,4 @@
-June 2020 7.2
+01.05.2020 7.2
   - Unix: allow to create group with same name during user creation
   - LAM Pro:
    -> EMail sending can be done via SMTP without local mail server
@@ -6,6 +6,7 @@ June 2020 7.2
   - Fixed bugs:
    -> Captcha don't show anymore in Self Service login page (213)
    -> Unix memberships cannot be changed. This issue can also affect other membership relations.
+   -> Missing locales on Docker image
 
 
 17.03.2020 7.1

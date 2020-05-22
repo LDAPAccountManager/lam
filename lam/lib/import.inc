@@ -63,11 +63,12 @@ class Importer {
 		$entries = array();
 		$currentEntry = array();
 		foreach ($lines as $line) {
-			if (substr(trim($line), 0, 1) === '#') {
+			$trimmedLine = trim($line);
+			if (substr($trimmedLine, 0, 1) === '#') {
 				// skip comments
 				continue;
 			}
-			if (empty(trim($line))) {
+			if (empty($trimmedLine)) {
 				// end of entry
 				if (!empty($currentEntry)) {
 					$entries[] = $currentEntry;

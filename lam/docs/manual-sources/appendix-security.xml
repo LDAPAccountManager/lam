@@ -257,7 +257,7 @@ semodule -i httpdlocal.pp</programlisting>
 
         <listitem>
           <para>directory contents must be accessible by browser but directory
-          itself needs not to be browseable</para>
+          itself needs not to be browsable</para>
         </listitem>
       </itemizedlist>
     </section>

@@ -29,7 +29,7 @@
 FROM debian:buster-slim
 LABEL maintainer="Roland Gruber <post@rolandgruber.de>"
 
-ARG LAM_RELEASE=7.2.RC1
+ARG LAM_RELEASE=7.2
 EXPOSE 80
 
 ENV \
@@ -37,7 +37,32 @@ ENV \
     DEBUG=''
 
 RUN apt-get update && \
-    apt-get install --no-install-recommends -y \
+    apt-get upgrade -y
+
+# install locales
+RUN apt-get install -y locales
+RUN sed -i 's/^# *\(ca_ES.UTF-8\)/\1/' /etc/locale.gen && \
+        sed -i 's/^# *\(cz_CZ.UTF-8\)/\1/' /etc/locale.gen && \
+        sed -i 's/^# *\(de_DE.UTF-8\)/\1/' /etc/locale.gen && \
+        sed -i 's/^# *\(en_GB.UTF-8\)/\1/' /etc/locale.gen && \
+        sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen && \
+        sed -i 's/^# *\(es_ES.UTF-8\)/\1/' /etc/locale.gen && \
+        sed -i 's/^# *\(fr_FR.UTF-8\)/\1/' /etc/locale.gen && \
+        sed -i 's/^# *\(it_IT.UTF-8\)/\1/' /etc/locale.gen && \
+        sed -i 's/^# *\(hu_HU.UTF-8\)/\1/' /etc/locale.gen && \
+        sed -i 's/^# *\(nl_NL.UTF-8\)/\1/' /etc/locale.gen && \
+        sed -i 's/^# *\(pl_PL.UTF-8\)/\1/' /etc/locale.gen && \
+        sed -i 's/^# *\(pt_BR.UTF-8\)/\1/' /etc/locale.gen && \
+        sed -i 's/^# *\(ru_RU.UTF-8\)/\1/' /etc/locale.gen && \
+        sed -i 's/^# *\(sk_SK.UTF-8\)/\1/' /etc/locale.gen && \
+        sed -i 's/^# *\(tr_TR.UTF-8\)/\1/' /etc/locale.gen && \
+        sed -i 's/^# *\(uk_UA.UTF-8\)/\1/' /etc/locale.gen && \
+        sed -i 's/^# *\(ja_JP.UTF-8\)/\1/' /etc/locale.gen && \
+        sed -i 's/^# *\(zh_TW.UTF-8\)/\1/' /etc/locale.gen && \
+        sed -i 's/^# *\(zh_CN.UTF-8\)/\1/' /etc/locale.gen && \
+        locale-gen
+
+RUN apt-get install --no-install-recommends -y \
         apache2 \
         ca-certificates \
         dumb-init \

@@ -110,7 +110,7 @@ class user extends baseType {
 				'ou' => _('Organisational unit'),
 				'proxyAddresses' => _('Proxy-Addresses'),
 				'sambakickofftime' => _('Account expiration date'),
-				'shadowexpire' => _('Password expiration'),
+				'shadowexpire' => _('Account expiration date'),
 				"sn" => _("Last name"),
 				'streetAddress' => _('Street'),
 				'telephoneNumber' => _('Telephone number'),
