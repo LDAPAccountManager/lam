@@ -10,7 +10,10 @@ use function LAM\PDF\getAvailableLogos;
 use function LAM\PDF\getPDFStructures;
 use function LAM\PDF\uploadPDFLogo;
 use function LAM\PROFILES\getAccountProfiles;
+use function LAM\PROFILES\getProfileTemplateNames;
+use function LAM\PROFILES\installTemplateAccountProfile;
 use function LAM\PROFILES\loadAccountProfile;
+use function LAM\PROFILES\loadTemplateAccountProfile;
 use function LAM\PROFILES\saveAccountProfile;
 
 /*
@@ -51,6 +54,7 @@ class ConfigDataExporter {
 
 	/**
 	 * Exports LAM's configuration data in JSON format.
+	 * @throws LAMException error during export
 	 */
 	public function exportAsJson() {
 		$mainCfg = $this->_getMainConfiguration();
@@ -64,6 +68,7 @@ class ConfigDataExporter {
 		}
 		$jsonData['serverProfiles'] = $this->_getServerProfiles($serverProfiles);
 		$jsonData['accountProfiles'] = $this->_getAccountProfiles($serverProfiles);
+		$jsonData['accountProfileTemplates'] = $this->_getAccountProfileTemplates($serverProfiles);
 		$jsonData['pdfProfiles'] = $this->_getPdfProfiles($serverProfiles);
 		/**
 		 * TODO
@@ -71,6 +76,7 @@ class ConfigDataExporter {
 		 * pdf/account templates /config/templates
 		 * self service profiles
 		 * webauthn
+		 * cron job runs
 		 */
 		return json_encode($jsonData);
 	}
@@ -133,6 +139,25 @@ class ConfigDataExporter {
 					$accountProfile = loadAccountProfile($accountProfileName, $typeId, $profileName);
 					$data[$profileName][$typeId][$accountProfileName] = $accountProfile;
 				}
+			}
+		}
+		return $data;
+	}
+
+	/**
+	 * Returns the content of the account profile templates.
+	 *
+	 * @param array $serverProfiles list of server profiles (name => object)
+	 * @return array $data
+	 * @throws LAMException error reading template
+	 */
+	public function _getAccountProfileTemplates($serverProfiles) {
+		$data = array();
+		$accountProfileTemplateNames = getProfileTemplateNames();
+		foreach ($accountProfileTemplateNames as $scope => $templateNames) {
+			foreach ($templateNames as $templateName) {
+				$accountProfileTemplate = loadTemplateAccountProfile($templateName, $scope);
+				$data[$scope][$templateName] = $accountProfileTemplate;
 			}
 		}
 		return $data;
@@ -210,6 +235,9 @@ class ConfigDataImporter {
 					}
 					$steps[] = $mainStep;
 					break;
+				case 'accountProfileTemplates':
+					$steps[] = new ImporterStep(_('Account profiles') . ' - ' . _('Global templates'), 'accountProfileTemplates', $value);
+					break;
 				case 'pdfProfiles':
 					$mainStep = new ImporterStep(_('PDF structures'), 'pdfProfiles', $value);
 					foreach ($value as $profileName => $profileData) {
@@ -251,6 +279,9 @@ class ConfigDataImporter {
 					break;
 				case 'accountProfiles':
 					$this->importAccountProfiles($step);
+					break;
+				case 'accountProfileTemplates':
+					$this->importAccountProfileTemplates($step);
 					break;
 				case 'pdfProfiles':
 					$this->importPdfProfiles($step);
@@ -336,6 +367,21 @@ class ConfigDataImporter {
 		}
 		if (!empty($failedProfiles)) {
 			throw new LAMException(_('Unable to save account profile.'), implode(', ', $failedProfiles));
+		}
+	}
+
+	/**
+	 * Imports the account profile templates.
+	 *
+	 * @param ImporterStep $step step
+	 * @throws LAMException error during import
+	 */
+	private function importAccountProfileTemplates($step) {
+		$data = $step->getValue();
+		foreach ($data as $typeId => $accountProfileTemplates) {
+			foreach ($accountProfileTemplates as $accountProfileTemplateName => $accountProfileData) {
+				installTemplateAccountProfile($typeId, $accountProfileTemplateName, $accountProfileData);
+			}
 		}
 	}
 

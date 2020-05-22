@@ -1,8 +1,8 @@
 <?php
 namespace LAM\PROFILES;
+use LAM\TYPES\TypeManager;
 use \LAMException;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2020  Roland Gruber
@@ -46,7 +46,6 @@ function getAccountProfiles($typeId, $profile = null) {
 	$dir = @dir(dirname(__FILE__) . "/../config/profiles/" . $profile);
 
 	$ret = array();
-	$pos = 0;
 	if ($dir) {
 		$entry = $dir->read();
 		while ($entry){
@@ -90,7 +89,7 @@ function profileExists($name, $typeId) {
 function loadAccountProfile($profile, $typeId, $serverProfileName) {
 	if (!isValidProfileName($profile) || !preg_match("/^[a-z0-9_]+$/i", $typeId)) {
 		logNewMessage(LOG_NOTICE, "Invalid account profile name: $serverProfileName:$profile:$typeId");
-		return false;
+		return array();
 	}
 	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/"  . $serverProfileName . '/' . $profile . "." . $typeId;
 	try {
@@ -98,6 +97,7 @@ function loadAccountProfile($profile, $typeId, $serverProfileName) {
 	} catch (LAMException $e) {
 		StatusMessage('ERROR', $e->getTitle(), $e->getMessage());
 	}
+	return array();
 }
 
 /**
@@ -118,7 +118,6 @@ function readAccountProfileFile($fileName) {
 					continue; // ignore comments
 				}
 				// search keywords
-				$parts = array();
 				$parts = explode(": ", $line);
 				if (sizeof($parts) == 2) {
 					$option = $parts[0];
@@ -138,7 +137,6 @@ function readAccountProfileFile($fileName) {
 	else {
 		throw new LAMException(_("Unable to load profile!"), $fileName);
 	}
-	return array();
 }
 
 /**
@@ -154,10 +152,10 @@ function readAccountProfileFile($fileName) {
 */
 function saveAccountProfile($attributes, $profile, $typeId, $serverProfile) {
 	// check profile name and type id
-	$typeManager = new \LAM\TYPES\TypeManager($serverProfile);
+	$typeManager = new TypeManager($serverProfile);
 	$type = $typeManager->getConfiguredType($typeId);
 	if (!isValidProfileName($profile) || !preg_match("/^[a-z0-9_]+$/i", $typeId) || ($type == null)) {
-		logNewMessage(LOG_NOTICE, 'Invalid account profile name', $profile . ':' . $typeId);
+		logNewMessage(LOG_NOTICE, 'Invalid account profile name: ' . $profile . ':' . $typeId);
 		return false;
 	}
 	if (!is_array($attributes)) {
@@ -165,13 +163,24 @@ function saveAccountProfile($attributes, $profile, $typeId, $serverProfile) {
 		return false;
 	}
 	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/" . $serverProfile->getName() . '/' . $profile . "." . $typeId;
-	$file = @fopen($path, "w");
+	return writeProfileDataToFile($path, $attributes);
+}
+
+/**
+ * Writes the profile data to the given file.
+ *
+ * @param string $fileName file name
+ * @param array $data profile data
+ * @return bool writing was ok
+ */
+function writeProfileDataToFile($fileName, $data) {
+	$file = @fopen($fileName, "w");
 	if ($file) {
-  	// write attributes
-		$keys = array_keys($attributes);
+		// write attributes
+		$keys = array_keys($data);
 		for ($i = 0; $i < sizeof($keys); $i++) {
-			if (isset($attributes[$keys[$i]])) {
-				$line = $keys[$i] . ": " . implode("+::+", $attributes[$keys[$i]]) . "\n";
+			if (isset($data[$keys[$i]])) {
+				$line = $keys[$i] . ": " . implode("+::+", $data[$keys[$i]]) . "\n";
 			}
 			else {
 				$line = $keys[$i] . ": \n";
@@ -182,7 +191,7 @@ function saveAccountProfile($attributes, $profile, $typeId, $serverProfile) {
 		fclose($file);
 	}
 	else {
-		logNewMessage(LOG_NOTICE, 'Unable to open account profile file: ' . $path);
+		logNewMessage(LOG_NOTICE, 'Unable to open account profile file: ' . $fileName);
 		return false;
 	}
 	return true;
@@ -199,7 +208,7 @@ function delAccountProfile($file, $typeId) {
 	if (!isLoggedIn()) {
 		return false;
 	}
-	$typeManager = new \LAM\TYPES\TypeManager();
+	$typeManager = new TypeManager();
 	$type = $typeManager->getConfiguredType($typeId);
 	if (!isValidProfileName($file) || !preg_match("/^[a-z0-9_]+$/i", $typeId) || ($type == null)) {
 		return false;
@@ -226,7 +235,7 @@ function isValidProfileName($name) {
  * @param \LAM\TYPES\ConfiguredType $sourceType source type
  * @param string $sourceProfileName profile name
  * @param \LAM\TYPES\ConfiguredType $targetType target type
- * @throws Exception
+ * @throws LAMException error during copy
  */
 function copyAccountProfile($sourceType, $sourceProfileName, $targetType) {
 	if (!isValidProfileName($sourceProfileName)) {
@@ -249,7 +258,7 @@ function copyAccountProfile($sourceType, $sourceProfileName, $targetType) {
  *
  * @param \LAM\TYPES\ConfiguredType $sourceType source type
  * @param string $sourceProfileName profile name
- * @throws Exception
+ * @throws LAMException error during copy
  */
 function copyAccountProfileToTemplates($sourceType, $sourceProfileName) {
 	if (!isValidProfileName($sourceProfileName)) {
@@ -275,7 +284,7 @@ function installProfileTemplates() {
 	if (!file_exists($basePath)) {
 		mkdir($basePath, 0700, true);
 	}
-	$typeManager = new \LAM\TYPES\TypeManager();
+	$typeManager = new TypeManager();
 	foreach ($typeManager->getConfiguredTypes() as $type) {
 		if (empty($allTemplates[$type->getScope()])) {
 			continue;
@@ -324,5 +333,42 @@ function getProfileTemplateNames() {
  */
 function getProfileTemplateFileName($scope, $name) {
 	return __DIR__ . '/../config/templates/profiles' . '/' . $name . '.' . $scope;
+}
+
+/**
+ * Loads a template profile of the given account scope.
+ *
+ * @param string $profile name of the profile (without .<scope> extension)
+ * @param string $scope account type
+ * @return array hash array (attribute => value)
+ * @throws LAMException error reading profile template
+ */
+function loadTemplateAccountProfile($profile, $scope) {
+	if (!isValidProfileName($profile) || !preg_match("/^[a-z0-9_]+$/i", $scope)) {
+		logNewMessage(LOG_NOTICE, "Invalid account profile name: $profile:$scope");
+		return array();
+	}
+	$fileName = getProfileTemplateFileName($scope, $profile);
+	return readAccountProfileFile($fileName);
+}
+
+/**
+ * Installs a single template from the given data.
+ *
+ * @param string $scope account type (e.g. user)
+ * @param string $name template name
+ * @param array $data profile data
+ * @throws LAMException error saving file
+ */
+function installTemplateAccountProfile($scope, $name, $data) {
+	if (!isValidProfileName($name) || !preg_match("/^[a-z0-9_]+$/i", $scope)) {
+		logNewMessage(LOG_NOTICE, "Invalid account profile name: $name:$scope");
+		return;
+	}
+	$fileName = getProfileTemplateFileName($scope, $name);
+	$success = writeProfileDataToFile($fileName, $data);
+	if (!$success) {
+		throw new LAMException('Unable to write account profile template: ' . $fileName);
+	}
 }
 

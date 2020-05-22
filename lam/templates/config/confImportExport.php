@@ -69,7 +69,12 @@ if (isset($_POST['exportConfig']) && $cfg->checkPassword($_SESSION["mainconf_pas
 		header('Content-Type: application/json; charset=utf-8');
 		header('Content-disposition: attachment; filename=lam-config.json');
 	}
-	echo $exporter->exportAsJson();
+	try {
+		echo $exporter->exportAsJson();
+    }
+	catch (LAMException $e) {
+	    logNewMessage('ERROR', $e->getTitle() . ' ' . $e->getMessage());
+    }
 	exit;
 }
 
