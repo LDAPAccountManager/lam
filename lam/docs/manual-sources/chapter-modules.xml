@@ -2283,7 +2283,7 @@ AuthorizedKeysCommandUser root</literallayout>
       security reasons.</para>
 
       <para>The user name can either be a fixed name (e.g. "admin") or it can
-      be generated with LDAP attributes of the LAM admn user. E.g. $uid$ will
+      be generated with LDAP attributes of the LAM admin user. E.g. $uid$ will
       be transformed to "myUser" if you login with
       "uid=myUser,ou=people,dc=example,dc=com".</para>
 
@@ -5840,7 +5840,7 @@ OK (10 msec)</programlisting>
     <para>LAM Pro allows you to execute scripts whenever an account is
     created, modified or deleted. This can be useful to automate processes
     which needed manual work afterwards (e.g. sending your user a welcome mail
-    or register a mailbox). Additionally, you can specify manual scipts that
+    or register a mailbox). Additionally, you can specify manual scripts that
     can be executed from within LAM Pro.</para>
 
     <para>To activate this feature please add the "Custom scripts" module to

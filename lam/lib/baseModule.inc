@@ -1026,7 +1026,7 @@ abstract class baseModule {
 	 * <li><b>Text (required)</b><br>
 	 * The text of the help entry which may contain any alphanumeric characters.</li>
 	 * <li><b>SeeAlso (optional)</b><br>
-	 * A reference to anonther related web site. It must be an array containing a field called "text" with the link text
+	 * A reference to another related web site. It must be an array containing a field called "text" with the link text
 	 * that should be displayed and a field called "link" which is the link target.</li>
 	 * </ul>
 	 * <br>
