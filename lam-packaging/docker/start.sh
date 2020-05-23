@@ -32,8 +32,10 @@ if [ "$LAM_SKIP_PRECONFIGURE" != "true" ]; then
   LDAP_SERVER="${LDAP_SERVER:-ldap://ldap:389}"
   LDAP_DOMAIN="${LDAP_DOMAIN:-my-domain.com}"
   LDAP_BASE_DN="${LDAP_BASE_DN:-dc=${LDAP_DOMAIN//\./,dc=}}"
+  LDAP_USER_DN="${LDAP_USER_DN:-dc=${LDAP_DOMAIN//\./,dc=}}"
+  LDAP_GROUP_DN="${LDAP_GROUP_DN:-dc=${LDAP_DOMAIN//\./,dc=}}"
   LDAP_ADMIN_USER="${LDAP_USER:-cn=admin,${LDAP_BASE_DN}}"
-
+  
   sed -i -f- /etc/ldap-account-manager/config.cfg <<- EOF
     s|^password:.*|password: ${LAM_PASSWORD_SSHA}|;
 EOF
@@ -45,8 +47,8 @@ EOF
     s|^Passwd:.*|Passwd: ${LAM_PASSWORD_SSHA}|;
     s|^treesuffix:.*|treesuffix: ${LDAP_BASE_DN}|;
     s|^defaultLanguage:.*|defaultLanguage: ${LAM_LANG}.utf8|;
-    s|^.*suffix_user:.*|types: suffix_user: ${LDAP_BASE_DN}|;
-    s|^.*suffix_group:.*|types: suffix_group: ${LDAP_BASE_DN}|;
+    s|^.*suffix_user:.*|types: suffix_user: ${LDAP_USER_DN}|;
+    s|^.*suffix_group:.*|types: suffix_group: ${LDAP_GROUP_DN}|;
 EOF
 
 fi
