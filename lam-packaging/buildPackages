@@ -71,6 +71,7 @@ export VERSION=`./getVersion`
 rm -r lam/po
 rm -r lam/tests
 rm lam/lib/3rdParty/tcpdf/fonts/*.ttf
+rm -r lam/templates/lib/extra/ckeditor/plugins/*/dev
 find . -name .svnignore -exec rm {} \;
 find . -name .gitignore -exec rm {} \;
 mv lam ldap-account-manager-$VERSION
