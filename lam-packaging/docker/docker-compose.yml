@@ -3,9 +3,7 @@ services:
   ldap-account-manager:
     build:
       context: .
-      args:
-       - LAM_RELEASE=7.2
-    image: ldapaccountmanager/lam:latest
+    image: ldapaccountmanager/lam:7.2
     restart: unless-stopped
     ports:
       - "8080:80"
