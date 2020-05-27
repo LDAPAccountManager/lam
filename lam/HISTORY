@@ -1,3 +1,6 @@
+September 2020
+  - PHP 7.4 compatibility
+
 01.05.2020 7.2
   - Unix: allow to create group with same name during user creation
   - LAM Pro:
