@@ -966,9 +966,8 @@ lib/3rdParty/composer/ramsey                                         B  2018  Be
 lib/3rdParty/composer/spomky-labs                                    B  2018  Spomky-Labs
 lib/3rdParty/composer/symfony                                        B  2019  Fabien Potencier
 lib/3rdParty/composer/web-auth                                       B  2018  Spomky-Labs
-lib/3rdParty/tcpdf                                                   D  2018  Nicola Asuni - Tecnick.com LTD
-lib/3rdParty/tcpdf/fonts/DejaVu*.ttf                                 A        Public Domain, Bitstream, Inc., Tavmjong Bah
-lib/3rdParty/tcpdf/fonts/DejaVu*.z                                   A        Public Domain, Bitstream, Inc., Tavmjong Bah
+lib/3rdParty/tcpdf                                                   D  2020  Nicola Asuni - Tecnick.com LTD
+lib/3rdParty/tcpdf/fonts/dejavu*.z                                   A        Public Domain, Bitstream, Inc., Tavmjong Bah
 lib/3rdParty/phpseclib                                               B  2019  TerraFrost and other contributors
 lib/3rdParty/Monolog                                                 B  2011  Jordi Boggiano
 lib/3rdParty/Psr                                                     B  2012  PHP Framework Interoperability Group
