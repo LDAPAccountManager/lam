@@ -34,6 +34,11 @@ use \LAM\ImageUtils\ImageManipulationFactory;
 /** LAM configuration */
 include_once(__DIR__ . "/config.inc");
 
+/**
+ * Use as server profile name to manage global templates.
+ */
+const GLOBAL_PROFILE = '__GLOBAL__';
+
 /** LDAP object */
 include_once(__DIR__ . "/ldap.inc");
 
@@ -164,11 +169,14 @@ function copyStructureToTemplates($sourceType, $sourceName) {
  * @param String $file full path of temporary file
  * @param String $name file name
  * @param string $serverProfileName server profile name
- * @return StatusMessage status message to display
+ * @return htmlStatusMessage status message to display
  */
 function uploadPDFLogo($file, $name, $serverProfileName) {
 	if (!preg_match('/[a-zA-Z0-9_-]+\\.(png)|(jpg)/i', $name)) {
 		return new htmlStatusMessage('ERROR', _('Unable to upload logo file.'), _('The file name must end with ".png" or ".jpg".'));
+	}
+	if ($serverProfileName === GLOBAL_PROFILE) {
+		$serverProfileName = '../templates/pdf';
 	}
 	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $serverProfileName . '/logos/';
 	$success = copy($file, $dirPath . '/' . $name);
@@ -242,21 +250,8 @@ function isValidPDFStructureName($name) {
  * Installs template structures to the current server profile.
  */
 function installPDFTemplates() {
-	$templatePath = dirname(__FILE__) . '/../config/templates/pdf';
-	$templateDir = @dir($templatePath);
-	$allTemplates = array();
-	if ($templateDir) {
-		$entry = $templateDir->read();
-		while ($entry){
-			$parts = explode('.', $entry);
-			if ((strlen($entry) > 3) && (sizeof($parts) == 3)) {
-				$name = $parts[0];
-				$scope = $parts[1];
-				$allTemplates[$scope][] = $name;
-			}
-			$entry = $templateDir->read();
-		}
-	}
+	$templatePath = __DIR__ . '/../config/templates/pdf';
+	$allTemplates = getPdfTemplateNames();
 	$basePath = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName();
 	if (!file_exists($basePath)) {
 		mkdir($basePath, 0700, true);
@@ -278,20 +273,75 @@ function installPDFTemplates() {
 	if (!file_exists($basePath . '/logos')) {
 		mkdir($basePath . '/logos');
 	}
-	$templatePath = dirname(__FILE__) . '/../config/templates/pdf/logos';
+	$logos = getPdfTemplateLogoNames();
+	foreach ($logos as $logo) {
+		$path = $basePath . '/logos/' . $logo;
+		$template = $templatePath . '/logos/' . $logo;
+		if (!is_file($path)) {
+			logNewMessage(LOG_DEBUG, 'Copy template ' . $template . ' to ' . $path);
+			@copy($template, $path);
+		}
+	}
+}
+
+/**
+ * Returns all PDF template names.
+ *
+ * @return array names (array('user' => array('default')))
+ */
+function getPdfTemplateNames() {
+	$templatePath = __DIR__ . '/../config/templates/pdf';
 	$templateDir = @dir($templatePath);
+	$allTemplates = array();
 	if ($templateDir) {
 		$entry = $templateDir->read();
 		while ($entry){
-			$path = $basePath . '/logos/' . $entry;
-			if ((strpos($entry, '.') !== 0) && !is_file($path)) {
-				$template = $templatePath . '/' . $entry;
-				logNewMessage(LOG_DEBUG, 'Copy template ' . $template . ' to ' . $path);
-				@copy($template, $path);
+			$parts = explode('.', $entry);
+			if ((strlen($entry) > 3) && (sizeof($parts) == 3)) {
+				$name = $parts[0];
+				$scope = $parts[1];
+				$allTemplates[$scope][] = $name;
 			}
 			$entry = $templateDir->read();
 		}
 	}
+	return $allTemplates;
+}
+
+/**
+ * Returns all PDF template logo names.
+ *
+ * @return array names (array('user' => array('default.png')))
+ */
+function getPdfTemplateLogoNames() {
+	$templatePath = __DIR__ . '/../config/templates/pdf/logos';
+	$templateDir = @dir($templatePath);
+	$logos = array();
+	if ($templateDir) {
+		$entry = $templateDir->read();
+		while ($entry){
+			if ((strpos($entry, '.') !== 0) && is_file($templatePath . '/' . $entry)) {
+				$logos[] = $entry;
+			}
+			$entry = $templateDir->read();
+		}
+	}
+	return $logos;
+}
+
+/**
+ * Returns the binary data of the PDF template logo.
+ *
+ * @param string $name file name (without path)
+ * @return string binary
+ */
+function getPdfTemplateLogoBinary($name) {
+	$templatePath = __DIR__ . '/../config/templates/pdf/logos';
+	$fileName = $templatePath . '/' . $name;
+	$handle = fopen($fileName, 'r');
+	$logoBinary = fread($handle, 100000000);
+	fclose($handle);
+	return $logoBinary;
 }
 
 /**
@@ -309,7 +359,12 @@ class PDFStructureReader {
 	 * @param $serverProfileName server profile name
 	 */
 	public function __construct($serverProfileName) {
-		$this->serverProfileName = $serverProfileName;
+		if ($serverProfileName === GLOBAL_PROFILE) {
+			$this->serverProfileName = '../templates/pdf';
+		}
+		else {
+			$this->serverProfileName = $serverProfileName;
+		}
 	}
 
 	/**
@@ -345,6 +400,7 @@ class PDFStructureReader {
 	 * @return PDFStructure structure
 	 */
 	private function readPDFFile($file) {
+		logNewMessage(LOG_DEBUG, $file);
 		$xml = new \XMLReader();
 		$xml->open($file);
 		$structure = new PDFStructure();
@@ -430,7 +486,12 @@ class PDFStructureWriter {
 	 * @param string $serverProfileName server profile name
 	 */
 	public function __construct($serverProfileName) {
-		$this->serverProfileName = $serverProfileName;
+		if ($serverProfileName === GLOBAL_PROFILE) {
+			$this->serverProfileName = '../templates/pdf';
+		}
+		else {
+			$this->serverProfileName = $serverProfileName;
+		}
 	}
 
 	/**
@@ -460,10 +521,11 @@ class PDFStructureWriter {
 			throw new \LAMException(_('PDF structure name not valid'),
 					_('The name for that PDF-structure you submitted is not valid. A valid name must consist of the following characters: \'a-z\',\'A-Z\',\'0-9\',\'_\',\'-\'.'));
 		}
-		if(!is_writable(dirname(__FILE__) . '/../config/pdf/' . $this->serverProfileName)) {
-			throw new \LAMException(_('Could not save PDF structure, access denied.'));
+		$baseDir = __DIR__ . '/../config/pdf/' . $this->serverProfileName;
+		if(!is_writable($baseDir)) {
+			throw new \LAMException(_('Could not save PDF structure, access denied to ' . $baseDir . '.'));
 		}
-		return dirname(__FILE__) . '/../config/pdf/' . $this->serverProfileName . '/' . $name . '.' . $typeId . '.xml';
+		return $baseDir . '/' . $name . '.' . $typeId . '.xml';
 	}
 
 	/**

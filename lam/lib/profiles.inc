@@ -114,7 +114,7 @@ function readAccountProfileFile($fileName) {
 		if ($file) {
 			while (!feof($file)) {
 				$line = fgets($file, 1024);
-				if (($line == "\n")||($line[0] == "#")) {
+				if (($line == '') || ($line == "\n") || ($line[0] == "#")) {
 					continue; // ignore comments
 				}
 				// search keywords

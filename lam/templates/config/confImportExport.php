@@ -262,6 +262,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
 		        $importer->runImport($importSteps);
 		        unlink($_SESSION['configImportFile']);
 		        $content->add(new htmlStatusMessage('INFO', _('Configuration import ended successful.')), 12);
+		        $content->add(new htmlButton('importNew', _('New import')), 12);
 	        }
 	        catch (LAMException $e) {
 		        $content->add(new htmlStatusMessage('ERROR', htmlspecialchars($e->getTitle()), htmlspecialchars($e->getMessage())), 12);

@@ -3082,6 +3082,15 @@ class htmlStatusMessage extends htmlElement {
 		return array();
 	}
 
+	/**
+	 * Returns the message type.
+	 *
+	 * @return String type
+	 */
+	public function getType() {
+		return $this->type;
+	}
+
 }
 
 /**

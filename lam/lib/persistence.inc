@@ -8,6 +8,9 @@ use LAMConfig;
 use LAMException;
 use function LAM\PDF\getAvailableLogos;
 use function LAM\PDF\getPDFStructures;
+use function LAM\PDF\getPdfTemplateLogoBinary;
+use function LAM\PDF\getPdfTemplateLogoNames;
+use function LAM\PDF\getPdfTemplateNames;
 use function LAM\PDF\uploadPDFLogo;
 use function LAM\PROFILES\getAccountProfiles;
 use function LAM\PROFILES\getProfileTemplateNames;
@@ -68,8 +71,9 @@ class ConfigDataExporter {
 		}
 		$jsonData['serverProfiles'] = $this->_getServerProfiles($serverProfiles);
 		$jsonData['accountProfiles'] = $this->_getAccountProfiles($serverProfiles);
-		$jsonData['accountProfileTemplates'] = $this->_getAccountProfileTemplates($serverProfiles);
+		$jsonData['accountProfileTemplates'] = $this->_getAccountProfileTemplates();
 		$jsonData['pdfProfiles'] = $this->_getPdfProfiles($serverProfiles);
+		$jsonData['pdfProfileTemplates'] = $this->_getPdfProfileTemplates();
 		/**
 		 * TODO
 		 *
@@ -147,11 +151,10 @@ class ConfigDataExporter {
 	/**
 	 * Returns the content of the account profile templates.
 	 *
-	 * @param array $serverProfiles list of server profiles (name => object)
 	 * @return array $data
 	 * @throws LAMException error reading template
 	 */
-	public function _getAccountProfileTemplates($serverProfiles) {
+	public function _getAccountProfileTemplates() {
 		$data = array();
 		$accountProfileTemplateNames = getProfileTemplateNames();
 		foreach ($accountProfileTemplateNames as $scope => $templateNames) {
@@ -189,6 +192,29 @@ class ConfigDataExporter {
 				fclose($handle);
 				$data[$profileName]['logos'][$logoFileName] = base64_encode($logoBinary);
 			}
+		}
+		return $data;
+	}
+
+	/**
+	 * Returns the content of the account profile templates.
+	 *
+	 * @return array $data
+	 * @throws LAMException error reading template
+	 */
+	public function _getPdfProfileTemplates() {
+		$data = array();
+		$pdfTemplateNames = getPdfTemplateNames();
+		$reader = new PDFStructureReader(\LAM\PDF\GLOBAL_PROFILE);
+		foreach ($pdfTemplateNames as $scope => $templateNames) {
+			foreach ($templateNames as $templateName) {
+				$pdfStructure = $reader->read($scope, $templateName);
+				$data['structures'][$scope][$templateName] = $pdfStructure->export();
+			}
+		}
+		$logoNames = getPdfTemplateLogoNames();
+		foreach ($logoNames as $logoName) {
+			$data['logos'][$logoName] = base64_encode(getPdfTemplateLogoBinary($logoName));
 		}
 		return $data;
 	}
@@ -245,6 +271,9 @@ class ConfigDataImporter {
 					}
 					$steps[] = $mainStep;
 					break;
+				case 'pdfProfileTemplates':
+					$steps[] = new ImporterStep(_('PDF structures') . ' - ' . _('Global templates'), 'pdfProfileTemplates', $value);
+					break;
 				default:
 					logNewMessage(LOG_WARNING, 'Unknown import type: ' . $key);
 			}
@@ -285,6 +314,9 @@ class ConfigDataImporter {
 					break;
 				case 'pdfProfiles':
 					$this->importPdfProfiles($step);
+					break;
+				case 'pdfProfileTemplates':
+					$this->importPdfProfileTemplates($step);
 					break;
 				default:
 					logNewMessage(LOG_WARNING, 'Unknown import type: ' . $key);
@@ -409,7 +441,7 @@ class ConfigDataImporter {
 							$writer->write($typeId, $pdfProfileName, $structure);
 						}
 						catch (LAMException $e) {
-							logNewMessage('ERROR', $e->getMessage());
+							logNewMessage(LOG_ERR, $e->getTitle() . ' ' . $e->getMessage());
 							$failedProfiles[] = $serverProfileName . ':' . $typeId . ':' . $pdfProfileName;
 						}
 					}
@@ -429,6 +461,54 @@ class ConfigDataImporter {
 		}
 		if (!empty($failedProfiles)) {
 			throw new LAMException(_('Could not save PDF structure, access denied.'), implode(', ', $failedProfiles));
+		}
+	}
+
+	/**
+	 * Imports the PDF profile templates.
+	 *
+	 * @param ImporterStep $step step
+	 * @throws LAMException error during import
+	 */
+	private function importPdfProfileTemplates($step) {
+		$failedNames = array();
+		$data = $step->getValue();
+		if (isset($data['structures'])) {
+			$writer = new PDFStructureWriter(\LAM\PDF\GLOBAL_PROFILE);
+			foreach ($data['structures'] as $typeId => $pdfProfiles) {
+				foreach ($pdfProfiles as $pdfProfileName => $pdfProfileData) {
+					$structure = new PDFStructure();
+					$structure->import($pdfProfileData);
+					try {
+						$writer->write($typeId, $pdfProfileName, $structure);
+					}
+					catch (LAMException $e) {
+						$failedNames[] = $typeId . ':' . $pdfProfileName;
+						logNewMessage(LOG_ERR, $e->getTitle() . ' ' . $e->getMessage());
+					}
+				}
+			}
+		}
+		$failedLogos = array();
+		if (isset($data['logos'])) {
+			foreach ($data['logos'] as $logoFileName => $logoData) {
+				$tempFilePath = tempnam("/tmp", "lam");
+				$tempFile = fopen($tempFilePath, "w");
+				$logoBinary = base64_decode($logoData);
+				fwrite($tempFile, $logoBinary);
+				fclose($tempFile);
+				$message = uploadPDFLogo($tempFilePath, $logoFileName, \LAM\PDF\GLOBAL_PROFILE);
+				unlink($tempFilePath);
+				if ($message->getType() === 'ERROR') {
+					$failedLogos[] = $logoFileName;
+				}
+			}
+		}
+		if (!empty($failedNames)) {
+			throw new LAMException(_('Could not save PDF structure, access denied.'), implode(', ', $failedNames));
+		}
+		if (!empty($failedLogos)) {
+			throw new LAMException(_('Unable to upload logo file.'), implode(', ', $failedLogos));
 		}
 	}
 
