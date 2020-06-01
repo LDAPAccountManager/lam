@@ -6,6 +6,7 @@ use LAM\PDF\PDFStructureWriter;
 use LAMCfgMain;
 use LAMConfig;
 use LAMException;
+use selfServiceProfile;
 use function LAM\PDF\getAvailableLogos;
 use function LAM\PDF\getPDFStructures;
 use function LAM\PDF\getPdfTemplateLogoBinary;
@@ -74,10 +75,10 @@ class ConfigDataExporter {
 		$jsonData['accountProfileTemplates'] = $this->_getAccountProfileTemplates();
 		$jsonData['pdfProfiles'] = $this->_getPdfProfiles($serverProfiles);
 		$jsonData['pdfProfileTemplates'] = $this->_getPdfProfileTemplates();
+		$jsonData['selfServiceProfiles'] = $this->_getSelfServiceProfiles();
 		/**
 		 * TODO
 		 *
-		 * self service profiles
 		 * webauthn
 		 * cron job runs
 		 */
@@ -218,6 +219,26 @@ class ConfigDataExporter {
 		return $data;
 	}
 
+	/**
+	 * Returns the content of the self service profiles.
+	 *
+	 * @return array data
+	 */
+	public function _getSelfServiceProfiles() {
+		$data = array();
+		$profileTypes = getSelfServiceProfiles();
+		foreach ($profileTypes as $profileType => $profileNames) {
+			foreach ($profileNames as $profileName) {
+				$profile = loadSelfServiceProfile($profileName, $profileType);
+				if ($profile === false) {
+					continue;
+				}
+				$data[$profileType][$profileName] = $profile->export();
+			}
+		}
+		return $data;
+	}
+
 }
 
 /**
@@ -273,6 +294,9 @@ class ConfigDataImporter {
 				case 'pdfProfileTemplates':
 					$steps[] = new ImporterStep(_('PDF structures') . ' - ' . _('Global templates'), 'pdfProfileTemplates', $value);
 					break;
+				case 'selfServiceProfiles':
+					$steps[] = new ImporterStep(_('Self service profiles'), 'selfServiceProfiles', $value);
+					break;
 				default:
 					logNewMessage(LOG_WARNING, 'Unknown import type: ' . $key);
 			}
@@ -316,6 +340,9 @@ class ConfigDataImporter {
 					break;
 				case 'pdfProfileTemplates':
 					$this->importPdfProfileTemplates($step);
+					break;
+				case 'selfServiceProfiles':
+					$this->importSelfServiceProfiles($step);
 					break;
 				default:
 					logNewMessage(LOG_WARNING, 'Unknown import type: ' . $key);
@@ -508,6 +535,29 @@ class ConfigDataImporter {
 		}
 		if (!empty($failedLogos)) {
 			throw new LAMException(_('Unable to upload logo file.'), implode(', ', $failedLogos));
+		}
+	}
+
+	/**
+	 * Imports the self service profiles.
+	 *
+	 * @param ImporterStep $step importer step
+	 * @throws LAMException error saving profiles
+	 */
+	private function importSelfServiceProfiles($step) {
+		$failedNames = array();
+		$data = $step->getValue();
+		foreach ($data as $typeId => $profileData) {
+			foreach ($profileData as $profileName => $currentProfileData) {
+				$profile = selfServiceProfile::import($currentProfileData);
+				$result = saveSelfServiceProfile($profileName, $typeId, $profile);
+				if (!$result) {
+					$failedNames[] = $profileName;
+				}
+			}
+		}
+		if (!empty($failedNames)) {
+			throw new LAMException(_('Unable to save profile!'), implode(', ', $failedNames));
 		}
 	}
 

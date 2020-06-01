@@ -170,7 +170,7 @@ function checkSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOn
 /**
 * Returns a list of all available self service profiles (without .conf)
 *
-* @return array profile names (array(<account type> => array(<profile1>, <profile2>, ...)))
+* @return array profile names (array('account type' => array('profile1', 'profile2')))
 */
 function getSelfServiceProfiles() {
 	$types = LAM\TYPES\getTypes();
@@ -201,7 +201,7 @@ function getSelfServiceProfiles() {
 *
 * @param string $name profile name
 * @param string $scope account type
-* @return selfServiceProfile true if file was readable
+* @return false|selfServiceProfile profile or false if file was not readable
 */
 function loadSelfServiceProfile($name, $scope) {
 	if (!preg_match("/^[0-9a-z _-]+$/i", $name) || !preg_match("/^[0-9a-z _-]+$/i", $scope)) {
