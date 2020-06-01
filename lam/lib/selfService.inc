@@ -213,7 +213,13 @@ function loadSelfServiceProfile($name, $scope) {
 		$file = @fopen($file, "r");
 		if ($file) {
 			$data = fread($file, 10000000);
-			$profile = unserialize($data);
+			$profileData = @json_decode($data, true);
+			if ($profileData === null) {
+				$profile = unserialize($data);
+			}
+			else {
+				$profile = selfServiceProfile::import($profileData);
+			}
 			fclose($file);
 		}
 		else {
@@ -249,7 +255,7 @@ function saveSelfServiceProfile($name, $scope, $profile) {
 	$file = @fopen($path, "w");
 	if ($file) {
 	  	// write settings to file
-		fputs($file, serialize($profile));
+		fputs($file, json_encode($profile->export()));
 		// close file
 		fclose($file);
 	}
@@ -519,6 +525,32 @@ class selfServiceProfile {
 		$this->reCaptchaSecretKey = '';
 		$this->captchaOnLogin = false;
 		$this->baseUrl = '';
+	}
+
+	/**
+	 * Converts the export data back to a self service profile.
+	 *
+	 * @param array $data export data
+	 * @return selfServiceProfile profile
+	 */
+	public static function import($data) {
+		$profile = new selfServiceProfile();
+		$vars = get_class_vars(selfServiceProfile::class);
+		foreach ($data as $key => $value) {
+			if (in_array($key, $vars)) {
+				$profile->$key = $value;
+			}
+		}
+		return $profile;
+	}
+
+	/**
+	 * Returns a representation of the self service profile.
+	 *
+	 * @return array self service profile data
+	 */
+	public function export() {
+		return json_decode(json_encode($this), true);
 	}
 
 	/**

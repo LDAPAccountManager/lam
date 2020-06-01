@@ -77,7 +77,6 @@ class ConfigDataExporter {
 		/**
 		 * TODO
 		 *
-		 * pdf/account templates /config/templates
 		 * self service profiles
 		 * webauthn
 		 * cron job runs

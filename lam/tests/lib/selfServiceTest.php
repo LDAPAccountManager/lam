@@ -3,7 +3,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2019  Roland Gruber
+  Copyright (C) 2019 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 
 */
 
-require_once 'lam/lib/selfService.inc';
+require_once __DIR__ . '/../../lib/selfService.inc';
 
 /**
  * Checks selfServiceProfile.
@@ -41,6 +41,23 @@ class selfServiceProfileTest extends TestCase {
 		$this->assertEquals('https://test.com', $profile->getBaseUrl());
 		$profile->setBaseUrl('https://test.com');
 		$this->assertEquals('https://test.com', $profile->getBaseUrl());
+	}
+
+	public function testImportExport() {
+		$profile = new selfServiceProfile();
+		$moduleSettings = array('x1' => 'y1', 'x2' => 'y2');
+		$profile->moduleSettings = $moduleSettings;
+		$profile->baseColor = 'green';
+		$profile->language = 'de_DE@UTF8';
+		$profile->pageHeader = 'header';
+
+		$export = $profile->export();
+		$importedProfile = selfServiceProfile::import($export);
+
+		$this->assertEquals($moduleSettings, $importedProfile->moduleSettings);
+		$this->assertEquals('green', $importedProfile->baseColor);
+		$this->assertEquals('de_DE@UTF8', $importedProfile->language);
+		$this->assertEquals('header', $importedProfile->pageHeader);
 	}
 
 }
