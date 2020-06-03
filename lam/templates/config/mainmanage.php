@@ -512,7 +512,7 @@ printHeaderContents(_("Edit general settings"), '../..');
 		include_once __DIR__ . '/../../lib/webauthn.inc';
 		$database = new \LAM\LOGIN\WEBAUTHN\PublicKeyCredentialSourceRepositorySQLite();
 		if ($database->hasRegisteredCredentials()) {
-			$row->add(new htmlSubTitle(_('Webauthn devices')), 12);
+			$row->add(new htmlSubTitle(_('WebAuthn devices')), 12);
 			$webauthnSearchField = new htmlResponsiveInputField(_('User DN'), 'webauthn_searchTerm', null, '252');
 			$row->add($webauthnSearchField, 12);
 			$row->addVerticalSpacer('0.5rem');

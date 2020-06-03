@@ -526,16 +526,16 @@ class WebauthnProvider extends BaseProvider {
 	 */
 	public function addCustomInput(&$row, $userDn) {
 		if (version_compare(phpversion(), '7.2.0') < 0) {
-			$row->add(new htmlStatusMessage('ERROR', 'Webauthn requires PHP 7.2.'), 12);
+			$row->add(new htmlStatusMessage('ERROR', 'WebAuthn requires PHP 7.2.'), 12);
 			return;
 		}
 		if (!extension_loaded('PDO')) {
-			$row->add(new htmlStatusMessage('ERROR', 'Webauthn requires the PDO extension for PHP.'), 12);
+			$row->add(new htmlStatusMessage('ERROR', 'WebAuthn requires the PDO extension for PHP.'), 12);
 			return;
 		}
 		$pdoDrivers = \PDO::getAvailableDrivers();
 		if (!in_array('sqlite', $pdoDrivers)) {
-			$row->add(new htmlStatusMessage('ERROR', 'Webauthn requires the sqlite PDO driver for PHP.'), 12);
+			$row->add(new htmlStatusMessage('ERROR', 'WebAuthn requires the sqlite PDO driver for PHP.'), 12);
 			return;
 		}
 		include_once __DIR__ . '/webauthn.inc';
@@ -567,7 +567,7 @@ class WebauthnProvider extends BaseProvider {
 		}
 		$errorMessageDiv = new htmlDiv('generic-webauthn-error', new htmlOutputText(''));
 		$errorMessageDiv->addDataAttribute('button', _('Ok'));
-		$errorMessageDiv->addDataAttribute('title', _('Webauthn failed'));
+		$errorMessageDiv->addDataAttribute('title', _('WebAuthn failed'));
 		$row->add($errorMessageDiv, 12);
 		$row->add(new htmlJavaScript('window.lam.webauthn.start(\'' . $pathPrefix . '\', ' . $selfServiceParam . ');'), 0);
 	}
