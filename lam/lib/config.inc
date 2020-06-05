@@ -128,7 +128,7 @@ function checkChmod($right, $target, $chmod) {
 	}
 
 	// Cut the number from the chmod:
-	$chmod_num = $chmod{$chmod_num};
+	$chmod_num = $chmod[$chmod_num];
 
 	// Now check, if the chmod_num can be right with the $right
 	// What numbers allow "read"

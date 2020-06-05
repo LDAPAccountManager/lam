@@ -227,7 +227,7 @@ function generateSalt($len) {
 	$salt = '';
 	for ($i = 0; $i < $len; $i++) {
 		$pos = abs(getRandomNumber() % strlen($chars));
-		$salt .= $chars{$pos};
+		$salt .= $chars[$pos];
 	}
 	return $salt;
 }
