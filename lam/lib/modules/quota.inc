@@ -232,7 +232,7 @@ class quota extends baseModule {
 	 *
 	 * @param int $value raw value
 	 */
-	private function addBlockUnits($value) {
+	public function addBlockUnits($value) {
 		$mebibytes = 1024;
 		$gibibytes = 1024 * $mebibytes;
 		$tebibytes = 1024 * $gibibytes;
@@ -248,6 +248,7 @@ class quota extends baseModule {
 		if (($value >= $mebibytes) && (($value % $mebibytes) === 0)) {
 			return ($value / $mebibytes) . 'M';
 		}
+		return $value;
 	}
 
 	/**
@@ -255,12 +256,12 @@ class quota extends baseModule {
 	 *
 	 * @param int $value raw value
 	 */
-	private function addInodeUnits($value) {
+	public function addInodeUnits($value) {
 		$kilo = 1000;
 		$million = 1000 * $kilo;
 		$billion = 1000 * $million;
 		$trillion = 1000 * $billion;
-		if (empty($value) || !get_preg($value, 'digit') || ($value < $million)) {
+		if (empty($value) || !get_preg($value, 'digit')) {
 			return $value;
 		}
 		if (($value >= $trillion) && (($value % $trillion) === 0)) {
@@ -275,6 +276,7 @@ class quota extends baseModule {
 		if (($value >= $kilo) && (($value % $kilo) === 0)) {
 			return ($value / $kilo) . 'k';
 		}
+		return $value;
 	}
 
 	/**
