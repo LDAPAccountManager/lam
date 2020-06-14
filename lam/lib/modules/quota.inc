@@ -206,8 +206,10 @@ class quota extends baseModule {
 				}
 				$allQuotas[$i] = substr($allQuotas[$i], strlen(self::$QUOTA_PREFIX));
 				$singleQuota = explode(",", $allQuotas[$i]);
+				$singleQuota[1] = $this->formatBlockUsage($singleQuota[1]);
 				$singleQuota[2] = $this->addBlockUnits($singleQuota[2]);
 				$singleQuota[3] = $this->addBlockUnits($singleQuota[3]);
+				$singleQuota[5] = $this->formatInodeUsage($singleQuota[5]);
 				$singleQuota[6] = $this->addInodeUnits($singleQuota[6]);
 				$singleQuota[7] = $this->addInodeUnits($singleQuota[7]);
 				$this->quota[$server][$i] = $singleQuota;
@@ -231,6 +233,7 @@ class quota extends baseModule {
 	 * Adds units (M/G/T) for block numbers.
 	 *
 	 * @param int $value raw value
+	 * @return string value with unit
 	 */
 	public function addBlockUnits($value) {
 		$mebibytes = 1024;
@@ -252,9 +255,34 @@ class quota extends baseModule {
 	}
 
 	/**
+	 * Formats block usage.
+	 *
+	 * @param int $value raw value
+	 */
+	public function formatBlockUsage($value) {
+		$mebibytes = 1024;
+		$gibibytes = 1024 * $mebibytes;
+		$tebibytes = 1024 * $gibibytes;
+		if (empty($value) || !get_preg($value, 'digit') || ($value < $mebibytes)) {
+			return $value;
+		}
+		if ($value >= $tebibytes) {
+			return round($value / $tebibytes, 3) . 'T';
+		}
+		if ($value >= $gibibytes) {
+			return round($value / $gibibytes, 3) . 'G';
+		}
+		if ($value >= $mebibytes) {
+			return round($value / $mebibytes, 3) . 'M';
+		}
+		return $value;
+	}
+
+	/**
 	 * Adds units (m/g/t) for inode numbers.
 	 *
 	 * @param int $value raw value
+	 * @return string value with unit
 	 */
 	public function addInodeUnits($value) {
 		$kilo = 1000;
@@ -275,6 +303,35 @@ class quota extends baseModule {
 		}
 		if (($value >= $kilo) && (($value % $kilo) === 0)) {
 			return ($value / $kilo) . 'k';
+		}
+		return $value;
+	}
+
+	/**
+	 * Formats the inode usage.
+	 *
+	 * @param int $value raw value
+	 * @return string value with unit
+	 */
+	public function formatInodeUsage($value) {
+		$kilo = 1000;
+		$million = 1000 * $kilo;
+		$billion = 1000 * $million;
+		$trillion = 1000 * $billion;
+		if (empty($value) || !get_preg($value, 'digit')) {
+			return $value;
+		}
+		if ($value >= $trillion) {
+			return round($value / $trillion, 3) . 't';
+		}
+		if ($value >= $billion) {
+			return round($value / $billion, 3) . 'g';
+		}
+		if ($value >= $million) {
+			return round($value / $million, 3) . 'm';
+		}
+		if ($value >= $kilo) {
+			return round($value / $kilo, 3) . 'k';
 		}
 		return $value;
 	}
