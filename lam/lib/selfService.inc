@@ -201,7 +201,7 @@ function getSelfServiceProfiles() {
 *
 * @param string $name profile name
 * @param string $scope account type
-* @return selfServiceProfile true if file was readable
+* @return selfServiceProfile|false profile if file was readable, false otherwise
 */
 function loadSelfServiceProfile($name, $scope) {
 	if (!preg_match("/^[0-9a-z _-]+$/i", $name) || !preg_match("/^[0-9a-z _-]+$/i", $scope)) {
