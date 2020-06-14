@@ -23,6 +23,11 @@
 set -eu # unset variables are errors & non-zero return values exit the whole script
 [ "$DEBUG" ] && set -x
 
+if [ "$LAM_DISABLE_TLS_CHECK" == "true" ]; then
+  ln -s /etc/ldap/ldap.conf /etc/ldap.conf
+  echo "TLS_REQCERT never" >> /etc/ldap/ldap.conf
+fi
+
 LAM_SKIP_PRECONFIGURE="${LAM_SKIP_PRECONFIGURE:-false}"
 if [ "$LAM_SKIP_PRECONFIGURE" != "true" ]; then
 
@@ -32,8 +37,10 @@ if [ "$LAM_SKIP_PRECONFIGURE" != "true" ]; then
   LDAP_SERVER="${LDAP_SERVER:-ldap://ldap:389}"
   LDAP_DOMAIN="${LDAP_DOMAIN:-my-domain.com}"
   LDAP_BASE_DN="${LDAP_BASE_DN:-dc=${LDAP_DOMAIN//\./,dc=}}"
+  LDAP_USERS_DN="${LDAP_USERS_DN:-${LDAP_BASE_DN}}"
+  LDAP_GROUPS_DN="${LDAP_GROUPS_DN:-${LDAP_BASE_DN}}"
   LDAP_ADMIN_USER="${LDAP_USER:-cn=admin,${LDAP_BASE_DN}}"
-
+  
   sed -i -f- /etc/ldap-account-manager/config.cfg <<- EOF
     s|^password:.*|password: ${LAM_PASSWORD_SSHA}|;
 EOF
@@ -45,8 +52,8 @@ EOF
     s|^Passwd:.*|Passwd: ${LAM_PASSWORD_SSHA}|;
     s|^treesuffix:.*|treesuffix: ${LDAP_BASE_DN}|;
     s|^defaultLanguage:.*|defaultLanguage: ${LAM_LANG}.utf8|;
-    s|^.*suffix_user:.*|types: suffix_user: ${LDAP_BASE_DN}|;
-    s|^.*suffix_group:.*|types: suffix_group: ${LDAP_BASE_DN}|;
+    s|^.*suffix_user:.*|types: suffix_user: ${LDAP_USERS_DN}|;
+    s|^.*suffix_group:.*|types: suffix_group: ${LDAP_GROUPS_DN}|;
 EOF
 
 fi

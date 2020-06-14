@@ -327,6 +327,9 @@ class posixGroup extends baseModule implements passwordService {
 		if ($gon == null) {
 			$gon = $this->getAccountContainer()->getAccountModule('groupOfUniqueNames');
 		}
+                if ($gon == null) {
+                        $gon = $this->getAccountContainer()->getAccountModule('groupOfMembers');
+                }
 		if ($gon != null) {
 			$return->addVerticalSpacer('2rem');
 			$syncButton = new htmlButton('syncGON', sprintf(_('Sync from %s'), $gon->get_alias()));
@@ -514,7 +517,7 @@ class posixGroup extends baseModule implements passwordService {
 			$this->addAccountSpecificConfigOptions($configContainer, $typeId);
 			$configContainer->addVerticalSpacer('2rem');
 		}
-		$gonModules = array('groupOfNames', 'groupOfUniqueNames');
+		$gonModules = array('groupOfNames', 'groupOfUniqueNames', 'groupOfMembers');
 		$gonFound = false;
 		foreach ($gonModules as $gonModule) {
 			if (!empty($allScopes[$gonModule])) {
@@ -978,6 +981,9 @@ class posixGroup extends baseModule implements passwordService {
 		if ($gon == null) {
 			$gon = $this->getAccountContainer()->getAccountModule('groupOfUniqueNames');
 		}
+                if ($gon == null) {
+                        $gon = $this->getAccountContainer()->getAccountModule('groupOfMembers');
+                }
 		if ($gon == null) {
 			return;
 		}

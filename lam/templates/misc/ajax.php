@@ -343,7 +343,7 @@ class Ajax {
 		$dn = $_POST['dn'];
 		$sessionDn = $_SESSION['ldap']->getUserName();
 		if ($sessionDn !== $dn) {
-			logNewMessage(LOG_ERR, 'Webauthn delete canceled, DN does not match.');
+			logNewMessage(LOG_ERR, 'WebAuthn delete canceled, DN does not match.');
 			die();
 		}
 		if ($action === 'delete') {

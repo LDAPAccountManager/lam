@@ -1453,7 +1453,7 @@ window.lam.webauthn.run = function(prefix, isSelfService) {
 		}
 	})
 	.fail(function() {
-		console.log('Webauthn failed');
+		console.log('WebAuthn failed');
 	});
 }
 
@@ -1602,7 +1602,7 @@ window.lam.webauthn.searchDevices = function(event) {
 		window.lam.webauthn.addDeviceActionListeners();
 	})
 	.fail(function() {
-		console.log('Webauthn search failed');
+		console.log('WebAuthn search failed');
 	});
 	return false;
 }
@@ -1721,7 +1721,7 @@ window.lam.webauthn.sendRemoveDeviceRequest = function(element, action, successC
 			}
 		})
 		.fail(function() {
-			console.log('Webauthn device deletion failed');
+			console.log('WebAuthn device deletion failed');
 		});
 }
 
@@ -1763,7 +1763,7 @@ window.lam.webauthn.registerOwnDevice = function(event, isSelfService) {
 				resultDiv.html(jsonData.content);
 			})
 			.fail(function() {
-				console.log('Webauthn device registration failed');
+				console.log('WebAuthn device registration failed');
 			});
 		};
 	}
