@@ -1817,6 +1817,7 @@ class windowsUser extends baseModule implements passwordService {
 	*/
 	public function display_html_group() {
 		$return = new htmlResponsiveRow();
+		$return->setCSSClasses(array('maxrow'));
 		$return->add(new htmlSubTitle(_("Groups")), 12);
 		$groups = $this->findGroups();
 		// sort by DN
