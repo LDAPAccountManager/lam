@@ -1006,12 +1006,12 @@ class posixGroup extends baseModule implements passwordService {
 		}
 		$added = array_delete($oldValues, $this->attributes['memberUid']);
 		if (!empty($added)) {
-			$return[] = array('INFO', _('Added users'), htmlspecialchars(implode($added, ', ')));
+			$return[] = array('INFO', _('Added users'), htmlspecialchars(implode(', ', $added)));
 		}
 		if ($delete) {
 			$deleted = array_delete($this->attributes['memberUid'], $oldValues);
 			if (!empty($deleted)) {
-				$return[] = array('INFO', _('Removed users'), htmlspecialchars(implode($deleted, ', ')));
+				$return[] = array('INFO', _('Removed users'), htmlspecialchars(implode(', ', $deleted)));
 			}
 		}
 		return $return;
@@ -1049,12 +1049,12 @@ class posixGroup extends baseModule implements passwordService {
 		}
 		$added = array_delete($oldValues, $this->attributes['memberUid']);
 		if (!empty($added)) {
-			$return[] = array('INFO', _('Added users'), htmlspecialchars(implode($added, ', ')));
+			$return[] = array('INFO', _('Added users'), htmlspecialchars(implode(', ', $added)));
 		}
 		if ($delete) {
 			$deleted = array_delete($this->attributes['memberUid'], $oldValues);
 			if (!empty($deleted)) {
-				$return[] = array('INFO', _('Removed users'), htmlspecialchars(implode($deleted, ', ')));
+				$return[] = array('INFO', _('Removed users'), htmlspecialchars(implode(', ', $deleted)));
 			}
 		}
 		return $return;
