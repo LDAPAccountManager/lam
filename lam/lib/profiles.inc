@@ -2,10 +2,9 @@
 namespace LAM\PROFILES;
 use \LAMException;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2018  Roland Gruber
+  Copyright (C) 2003 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -99,7 +98,7 @@ function loadAccountProfile($profile, $typeId) {
 		if ($file) {
 			while (!feof($file)) {
 				$line = fgets($file, 1024);
-				if (($line == "\n")||($line[0] == "#")) {
+				if (($line === false) || ($line == "\n") || ($line[0] == "#")) {
 					continue; // ignore comments
 				}
 				// search keywords
