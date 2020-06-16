@@ -56,10 +56,10 @@ class QuotaTest extends TestCase {
 		$this->assertEquals('123G', $quota->formatBlockUsage(1024*1024*123));
 		$this->assertEquals('123M', $quota->formatBlockUsage(1024*123));
 		$this->assertEquals('123', $quota->formatBlockUsage(123));
-		$this->assertEquals('1.001M', $quota->formatBlockUsage(1025));
-		$this->assertEquals('4.883T', $quota->formatBlockUsage(1024*1024*5000));
-		$this->assertEquals('4.883G', $quota->formatBlockUsage(1024*5000));
-		$this->assertEquals('4.883M', $quota->formatBlockUsage(5000));
+		$this->assertEquals('1M', $quota->formatBlockUsage(1025));
+		$this->assertEquals('4.88T', $quota->formatBlockUsage(1024*1024*5000));
+		$this->assertEquals('4.88G', $quota->formatBlockUsage(1024*5000));
+		$this->assertEquals('4.88M', $quota->formatBlockUsage(5000));
 	}
 
 	public function testAddInodeUnits() {
@@ -85,11 +85,11 @@ class QuotaTest extends TestCase {
 		$this->assertEquals('123m', $quota->formatInodeUsage(1000*1000*123));
 		$this->assertEquals('123k', $quota->formatInodeUsage(1000*123));
 		$this->assertEquals('123', $quota->formatInodeUsage(123));
-		$this->assertEquals('1.025k', $quota->formatInodeUsage(1025));
-		$this->assertEquals('5.001t', $quota->formatInodeUsage(1000*1000*1000*5001));
-		$this->assertEquals('5.001g', $quota->formatInodeUsage(1000*1000*5001));
-		$this->assertEquals('5.001m', $quota->formatInodeUsage(1000*5001));
-		$this->assertEquals('5.001k', $quota->formatInodeUsage(5001));
+		$this->assertEquals('1.03k', $quota->formatInodeUsage(1025));
+		$this->assertEquals('5t', $quota->formatInodeUsage(1000*1000*1000*5001));
+		$this->assertEquals('5g', $quota->formatInodeUsage(1000*1000*5001));
+		$this->assertEquals('5m', $quota->formatInodeUsage(1000*5001));
+		$this->assertEquals('5k', $quota->formatInodeUsage(5001));
 	}
 
 }
