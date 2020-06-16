@@ -631,7 +631,7 @@ class posixAccount extends baseModule implements passwordService {
 			// Remove primary group from additional groups
 			if (!isset($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0])
 				|| ($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0] != 'true')) {
-				for ($i=0; $i<count($this->groups); $i++) {
+				for ($i = 0; $i < count($this->groups); $i++) {
 					if ($this->groups[$i] == $this->getGroupName($this->attributes['gidNumber'][0])) {
 						unset($this->groups[$i]);
 					}
@@ -639,8 +639,21 @@ class posixAccount extends baseModule implements passwordService {
 			}
 			else {
 				// add user as memberuid in primary group
-				if (!in_array($this->getGroupName($this->attributes['gidNumber'][0]), $this->groups)) {
-					$this->groups[] = $this->getGroupName($this->attributes['gidNumber'][0]);
+				$primaryGroupName = $this->getGroupName($this->attributes['gidNumber'][0]);
+				if (!in_array($primaryGroupName, $this->groups)) {
+					$this->groups[] = $primaryGroupName;
+				}
+				// add user as member in group of names if auto-sync is activated
+				if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
+					$allGons = $this->findGroupOfNames();
+					foreach ($allGons as $gonDn => $gonData) {
+						if (in_array_ignore_case('posixGroup', $gonData['objectclass'])) {
+							$gonCn =  $gonData['cn'][0];
+							if (($gonCn === $primaryGroupName) && !in_array($gonDn, $this->gonList)) {
+								$this->gonList[] = $gonDn;
+							}
+						}
+					}
 				}
 			}
 
@@ -1034,6 +1047,21 @@ class posixAccount extends baseModule implements passwordService {
 				if (!empty($oldGroupName) && !empty($newGroupName)) {
 					$this->groups = array_delete(array($oldGroupName), $this->groups);
 					$this->groups[] = $newGroupName;
+					// sync group of names if needed
+					if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
+						$allGons = $this->findGroupOfNames();
+						foreach ($allGons as $gonDn => $gonData) {
+							if (in_array_ignore_case('posixGroup', $gonData['objectclass'])) {
+								$gonCn =  $gonData['cn'][0];
+								if (($gonCn === $newGroupName) && !in_array($gonDn, $this->gonList)) {
+									$this->gonList[] = $gonDn;
+								}
+								if (($gonCn === $oldGroupName) && in_array($gonDn, $this->gonList)) {
+									$this->gonList = array_delete(array($gonDn), $this->gonList);
+								}
+							}
+						}
+					}
 				}
 			}
 		}
