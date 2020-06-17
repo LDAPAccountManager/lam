@@ -10,7 +10,7 @@ use \htmlSubTitle;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2019  Roland Gruber
+  Copyright (C) 2003 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -127,7 +127,7 @@ if (isset($_POST['save'])) {
 	$errors = checkProfileOptions($_POST['accounttype'], $options);
 	if (sizeof($errors) == 0) {  // input data is valid, save profile
 		// save profile
-		if (\LAM\PROFILES\saveAccountProfile($options, $_POST['profname'], $_POST['accounttype'])) {
+		if (\LAM\PROFILES\saveAccountProfile($options, $_POST['profname'], $_POST['accounttype'], $_SESSION['config'])) {
 			metaRefresh('profilemain.php?savedSuccessfully=' . $_POST['profname']);
 			exit();
 		}
@@ -168,7 +168,7 @@ if (isset($_POST['save'])) {
 	}
 }
 elseif (isset($_GET['edit'])) {
-	$old_options = \LAM\PROFILES\loadAccountProfile($_GET['edit'], $type->getId());
+	$old_options = \LAM\PROFILES\loadAccountProfile($_GET['edit'], $type->getId(), $_SESSION['config']->getName());
 }
 
 // display formular

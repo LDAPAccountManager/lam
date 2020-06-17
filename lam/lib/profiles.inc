@@ -1,5 +1,6 @@
 <?php
 namespace LAM\PROFILES;
+use LAM\TYPES\TypeManager;
 use \LAMException;
 /*
 
@@ -45,7 +46,6 @@ function getAccountProfiles($typeId, $profile = null) {
 	$dir = @dir(dirname(__FILE__) . "/../config/profiles/" . $profile);
 
 	$ret = array();
-	$pos = 0;
 	if ($dir) {
 		$entry = $dir->read();
 		while ($entry){
@@ -79,30 +79,45 @@ function profileExists($name, $typeId) {
 }
 
 /**
-* Loads an profile of the given account type
-*
-* @param string $profile name of the profile (without .<scope> extension)
-* @param string $typeId account type
-* @return array hash array (attribute => value)
-*/
-function loadAccountProfile($profile, $typeId) {
-	$typeManager = new \LAM\TYPES\TypeManager();
-	$type = $typeManager->getConfiguredType($typeId);
-	if (!isValidProfileName($profile) || !preg_match("/^[a-z0-9_]+$/i", $typeId) || ($type == null)) {
-		return false;
+ * Loads an profile of the given account type
+ *
+ * @param string $profile name of the profile (without .<scope> extension)
+ * @param string $typeId account type
+ * @param string $serverProfileName server profile name
+ * @return array hash array (attribute => value)
+ */
+function loadAccountProfile($profile, $typeId, $serverProfileName) {
+	if (!isValidProfileName($profile) || !preg_match("/^[a-z0-9_]+$/i", $typeId)) {
+		logNewMessage(LOG_NOTICE, "Invalid account profile name: $serverProfileName:$profile:$typeId");
+		return array();
 	}
+	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/"  . $serverProfileName . '/' . $profile . "." . $typeId;
+	try {
+		return readAccountProfileFile($file);
+	} catch (LAMException $e) {
+		StatusMessage('ERROR', $e->getTitle(), $e->getMessage());
+	}
+	return array();
+}
+
+/**
+ * Reads an account profile from the given file name.
+ *
+ * @param string $fileName file name
+ * @return array hash array (attribute => value)
+ * @throws LAMException error reading file
+ */
+function readAccountProfileFile($fileName) {
 	$settings = array();
-	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/"  . $_SESSION['config']->getName() . '/' . $profile . "." . $typeId;
-	if (is_file($file)) {
-		$file = @fopen($file, "r");
+	if (is_file($fileName)) {
+		$file = @fopen($fileName, "r");
 		if ($file) {
 			while (!feof($file)) {
 				$line = fgets($file, 1024);
-				if (($line === false) || ($line == "\n") || ($line[0] == "#")) {
+				if (($line === false) || ($line == '') || ($line == "\n") || ($line[0] == "#")) {
 					continue; // ignore comments
 				}
 				// search keywords
-				$parts = array();
 				$parts = explode(": ", $line);
 				if (sizeof($parts) == 2) {
 					$option = $parts[0];
@@ -113,15 +128,15 @@ function loadAccountProfile($profile, $typeId) {
 				}
 			}
 			fclose($file);
+			return $settings;
 		}
 		else {
-			StatusMessage("ERROR", "", _("Unable to load profile!") . " " . $file);
+			throw new LAMException(_("Unable to load profile!"), $fileName);
 		}
 	}
 	else {
-		StatusMessage("ERROR", "", _("Unable to load profile!") . " " . $file);
+		throw new LAMException(_("Unable to load profile!"), $fileName);
 	}
-	return $settings;
 }
 
 /**
@@ -132,27 +147,40 @@ function loadAccountProfile($profile, $typeId) {
 * @param array $attributes hash array (attribute => value)
 * @param string $profile name of the account profile (without .<scope> extension)
 * @param string $typeId account type
+ * @param \LAMConfig $serverProfile server profile
 * @return boolean true, if saving succeeded
 */
-function saveAccountProfile($attributes, $profile, $typeId) {
-	if (!isLoggedIn()) return false;
+function saveAccountProfile($attributes, $profile, $typeId, $serverProfile) {
 	// check profile name and type id
-	$typeManager = new \LAM\TYPES\TypeManager();
+	$typeManager = new TypeManager($serverProfile);
 	$type = $typeManager->getConfiguredType($typeId);
 	if (!isValidProfileName($profile) || !preg_match("/^[a-z0-9_]+$/i", $typeId) || ($type == null)) {
+		logNewMessage(LOG_NOTICE, 'Invalid account profile name: ' . $profile . ':' . $typeId);
 		return false;
 	}
 	if (!is_array($attributes)) {
+		logNewMessage(LOG_NOTICE, 'Invalid account profile data');
 		return false;
 	}
-	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/" . $_SESSION['config']->getName() . '/' . $profile . "." . $typeId;
-	$file = @fopen($path, "w");
+	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/" . $serverProfile->getName() . '/' . $profile . "." . $typeId;
+	return writeProfileDataToFile($path, $attributes);
+}
+
+/**
+ * Writes the profile data to the given file.
+ *
+ * @param string $fileName file name
+ * @param array $data profile data
+ * @return bool writing was ok
+ */
+function writeProfileDataToFile($fileName, $data) {
+	$file = @fopen($fileName, "w");
 	if ($file) {
-  	// write attributes
-		$keys = array_keys($attributes);
+		// write attributes
+		$keys = array_keys($data);
 		for ($i = 0; $i < sizeof($keys); $i++) {
-			if (isset($attributes[$keys[$i]])) {
-				$line = $keys[$i] . ": " . implode("+::+", $attributes[$keys[$i]]) . "\n";
+			if (isset($data[$keys[$i]])) {
+				$line = $keys[$i] . ": " . implode("+::+", $data[$keys[$i]]) . "\n";
 			}
 			else {
 				$line = $keys[$i] . ": \n";
@@ -163,6 +191,7 @@ function saveAccountProfile($attributes, $profile, $typeId) {
 		fclose($file);
 	}
 	else {
+		logNewMessage(LOG_NOTICE, 'Unable to open account profile file: ' . $fileName);
 		return false;
 	}
 	return true;
@@ -179,7 +208,7 @@ function delAccountProfile($file, $typeId) {
 	if (!isLoggedIn()) {
 		return false;
 	}
-	$typeManager = new \LAM\TYPES\TypeManager();
+	$typeManager = new TypeManager();
 	$type = $typeManager->getConfiguredType($typeId);
 	if (!isValidProfileName($file) || !preg_match("/^[a-z0-9_]+$/i", $typeId) || ($type == null)) {
 		return false;
@@ -206,7 +235,7 @@ function isValidProfileName($name) {
  * @param \LAM\TYPES\ConfiguredType $sourceType source type
  * @param string $sourceProfileName profile name
  * @param \LAM\TYPES\ConfiguredType $targetType target type
- * @throws Exception
+ * @throws LAMException error during copy
  */
 function copyAccountProfile($sourceType, $sourceProfileName, $targetType) {
 	if (!isValidProfileName($sourceProfileName)) {
@@ -229,7 +258,7 @@ function copyAccountProfile($sourceType, $sourceProfileName, $targetType) {
  *
  * @param \LAM\TYPES\ConfiguredType $sourceType source type
  * @param string $sourceProfileName profile name
- * @throws Exception
+ * @throws LAMException error during copy
  */
 function copyAccountProfileToTemplates($sourceType, $sourceProfileName) {
 	if (!isValidProfileName($sourceProfileName)) {
@@ -250,7 +279,34 @@ function copyAccountProfileToTemplates($sourceType, $sourceProfileName) {
  * Installs template profiles to the current server profile.
  */
 function installProfileTemplates() {
-	$templatePath = dirname(__FILE__) . '/../config/templates/profiles';
+	$allTemplates = getProfileTemplateNames();
+	$basePath = dirname(__FILE__) . '/../config/profiles/' . $_SESSION['config']->getName();
+	if (!file_exists($basePath)) {
+		mkdir($basePath, 0700, true);
+	}
+	$typeManager = new TypeManager();
+	foreach ($typeManager->getConfiguredTypes() as $type) {
+		if (empty($allTemplates[$type->getScope()])) {
+			continue;
+		}
+		foreach ($allTemplates[$type->getScope()] as $templateName) {
+			$path = $basePath . '/' . $templateName . '.' . $type->getId();
+			if (!is_file($path)) {
+				$template = getProfileTemplateFileName($type->getScope(), $templateName);
+				logNewMessage(LOG_DEBUG, 'Copy template ' . $template . ' to ' . $path);
+				@copy($template, $path);
+			}
+		}
+	}
+}
+
+/**
+ * Returns a list of all global profile templates.
+ *
+ * @return array names (array('user' => array('default', 'extra')))
+ */
+function getProfileTemplateNames() {
+	$templatePath = __DIR__ . '/../config/templates/profiles';
 	$templateDir = @dir($templatePath);
 	$allTemplates = array();
 	if ($templateDir) {
@@ -265,24 +321,54 @@ function installProfileTemplates() {
 			$entry = $templateDir->read();
 		}
 	}
-	$basePath = dirname(__FILE__) . '/../config/profiles/' . $_SESSION['config']->getName();
-	if (!file_exists($basePath)) {
-		mkdir($basePath, 0700, true);
+	return $allTemplates;
+}
+
+/**
+ * Returns the file name of a global template.
+ *
+ * @param string $scope e.g. user
+ * @param string $name profile name
+ * @return string file name
+ */
+function getProfileTemplateFileName($scope, $name) {
+	return __DIR__ . '/../config/templates/profiles' . '/' . $name . '.' . $scope;
+}
+
+/**
+ * Loads a template profile of the given account scope.
+ *
+ * @param string $profile name of the profile (without .<scope> extension)
+ * @param string $scope account type
+ * @return array hash array (attribute => value)
+ * @throws LAMException error reading profile template
+ */
+function loadTemplateAccountProfile($profile, $scope) {
+	if (!isValidProfileName($profile) || !preg_match("/^[a-z0-9_]+$/i", $scope)) {
+		logNewMessage(LOG_NOTICE, "Invalid account profile name: $profile:$scope");
+		return array();
 	}
-	$typeManager = new \LAM\TYPES\TypeManager();
-	foreach ($typeManager->getConfiguredTypes() as $type) {
-		if (empty($allTemplates[$type->getScope()])) {
-			continue;
-		}
-		foreach ($allTemplates[$type->getScope()] as $templateName) {
-			$path = $basePath . '/' . $templateName . '.' . $type->getId();
-			if (!is_file($path)) {
-				$template = $templatePath . '/' . $templateName . '.' . $type->getScope();
-				logNewMessage(LOG_DEBUG, 'Copy template ' . $template . ' to ' . $path);
-				@copy($template, $path);
-			}
-		}
+	$fileName = getProfileTemplateFileName($scope, $profile);
+	return readAccountProfileFile($fileName);
+}
+
+/**
+ * Installs a single template from the given data.
+ *
+ * @param string $scope account type (e.g. user)
+ * @param string $name template name
+ * @param array $data profile data
+ * @throws LAMException error saving file
+ */
+function installTemplateAccountProfile($scope, $name, $data) {
+	if (!isValidProfileName($name) || !preg_match("/^[a-z0-9_]+$/i", $scope)) {
+		logNewMessage(LOG_NOTICE, "Invalid account profile name: $name:$scope");
+		return;
+	}
+	$fileName = getProfileTemplateFileName($scope, $name);
+	$success = writeProfileDataToFile($fileName, $data);
+	if (!$success) {
+		throw new LAMException('Unable to write account profile template: ' . $fileName);
 	}
 }
 
-?>

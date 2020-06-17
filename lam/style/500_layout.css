@@ -86,6 +86,10 @@ a img {
 	border: 0px;
 }
 
+a.img-padding1 img {
+	padding: 1rem;
+}
+
 a.classicBold {
 	color: blue;
 	text-decoration: none;
@@ -462,6 +466,10 @@ table.collapse {
 	display: none;
 }
 
+.display-as-block {
+	display: block;
+}
+
 .nowrap {
 	white-space: nowrap;
 }
@@ -489,7 +497,7 @@ div.smallScroll {
 }
 
 .fullwidth {
-	width: 100%;
+	width: 100%!important;
 }
 
 .halfwidth {

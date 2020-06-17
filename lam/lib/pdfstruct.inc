@@ -34,6 +34,11 @@ use \LAM\ImageUtils\ImageManipulationFactory;
 /** LAM configuration */
 include_once(__DIR__ . "/config.inc");
 
+/**
+ * Use as server profile name to manage global templates.
+ */
+const GLOBAL_PROFILE = '__GLOBAL__';
+
 /** LDAP object */
 include_once(__DIR__ . "/ldap.inc");
 
@@ -44,17 +49,14 @@ include_once(__DIR__ . "/ldap.inc");
  * @param string $typeId the account type
  * @param string $profile server profile name
  *
- * @return array All available PDF structure definitions for the submitted account
+ * @return string[] All available PDF structure definitions for the submitted account
  * scope. Each entry is a string being the filename that may be passed to the
  * createModulePDF() function as second argument.
  */
-function getPDFStructures($typeId, $profile = null) {
+function getPDFStructures($typeId, $profile) {
 	$return = array();
 	if (!preg_match('/[a-zA-Z]+/', $typeId)) {
 		return null;
-	}
-	if (!isset($profile)) {
-		$profile = $_SESSION['config']->getName();
 	}
 	$path = dirname(__FILE__) . '/../config/pdf/' . $profile;
 	if(is_dir($path)) {
@@ -75,14 +77,14 @@ function getPDFStructures($typeId, $profile = null) {
  *
  * @param string $typeId account type
  * @param string $name Name of definition to delete
- *
+ * @param string $serverProfileName server profile name
  * @return boolean True if file was deleted or false if a problem occurred.
  */
-function deletePDFStructure($typeId, $name) {
+function deletePDFStructure($typeId, $name, $serverProfileName) {
 	if (!isValidPDFStructureName($name) || !preg_match('/[a-zA-Z]+/',$typeId)) {
 		return false;
 	}
-	$file = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/' . $name . '.' . $typeId . '.xml';
+	$file = dirname(__FILE__) . '/../config/pdf/' . $serverProfileName . '/' . $name . '.' . $typeId . '.xml';
 	if(is_file($file) && is_writable($file)) {
 		return unlink($file);
 	}
@@ -95,11 +97,12 @@ function deletePDFStructure($typeId, $name) {
 /**
  * This function returns an array with all aviliable logo images.
  *
- * @return array list of logo files
+ * @param string $serverProfileName server profile name
+ * @return array list of logo files (array('filename' => PATH, 'infos' => array(width, height)))
  */
-function getAvailableLogos() {
+function getAvailableLogos($serverProfileName) {
 	$return = array();
-	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/logos/';
+	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $serverProfileName . '/logos/';
 	$dirHandle = opendir($dirPath);
 	while($file = readdir($dirHandle)) {
 		if(!is_dir($file) && $file != '.' && $file != '..' && preg_match('/\\.(jpg|png)$/i',$file)) {
@@ -120,7 +123,7 @@ function getAvailableLogos() {
  * @param \LAM\TYPES\ConfiguredType $sourceType source type
  * @param string $sourceStructureName structure name
  * @param \LAM\TYPES\ConfiguredType $targetType target type
- * @throws Exception
+ * @throws LAMException error during copy
  */
 function copyStructure($sourceType, $sourceStructureName, $targetType) {
 	if (!isValidPDFStructureName($sourceStructureName)) {
@@ -165,13 +168,17 @@ function copyStructureToTemplates($sourceType, $sourceName) {
  *
  * @param String $file full path of temporary file
  * @param String $name file name
- * @return StatusMessage status message to display
+ * @param string $serverProfileName server profile name
+ * @return htmlStatusMessage status message to display
  */
-function uploadPDFLogo($file, $name) {
+function uploadPDFLogo($file, $name, $serverProfileName) {
 	if (!preg_match('/[a-zA-Z0-9_-]+\\.(png)|(jpg)/i', $name)) {
 		return new htmlStatusMessage('ERROR', _('Unable to upload logo file.'), _('The file name must end with ".png" or ".jpg".'));
 	}
-	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/logos/';
+	if ($serverProfileName === GLOBAL_PROFILE) {
+		$serverProfileName = '../templates/pdf';
+	}
+	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $serverProfileName . '/logos/';
 	$success = copy($file, $dirPath . '/' . $name);
 	if ($success) {
 		return new htmlStatusMessage('INFO', _('Uploaded logo file.'), $name);
@@ -185,12 +192,13 @@ function uploadPDFLogo($file, $name) {
  * Deletes a PDF logo file.
  *
  * @param String $name file name
+ * @param string $serverProfileName server profile name
  * @return StatusMessage status message to display
  */
-function deletePDFLogo($name) {
+function deletePDFLogo($name, $serverProfileName) {
 	// check if valid file
 	$found = false;
-	$logos = getAvailableLogos();
+	$logos = getAvailableLogos($serverProfileName);
 	foreach ($logos as $logo) {
 		if ($logo['filename'] === $name) {
 			$found = true;
@@ -203,9 +211,9 @@ function deletePDFLogo($name) {
 	// check if still in use
 	$typeManager = new \LAM\TYPES\TypeManager();
 	$activeTypes = $typeManager->getConfiguredTypes();
-	$reader = new PDFStructureReader();
+	$reader = new PDFStructureReader($serverProfileName);
 	foreach ($activeTypes as $type) {
-		$structures = getPDFStructures($type->getId());
+		$structures = getPDFStructures($type->getId(), $serverProfileName);
 		foreach ($structures as $structure) {
 			try {
 				$data = $reader->read($type->getId(), $structure);
@@ -220,7 +228,7 @@ function deletePDFLogo($name) {
 		}
 	}
 	// delete file
-	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/logos/';
+	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $serverProfileName . '/logos/';
 	$success = @unlink($dirPath . '/' . $name);
 	if ($success) {
 		return new htmlStatusMessage('INFO', _('Logo file deleted.'), $name);
@@ -242,21 +250,8 @@ function isValidPDFStructureName($name) {
  * Installs template structures to the current server profile.
  */
 function installPDFTemplates() {
-	$templatePath = dirname(__FILE__) . '/../config/templates/pdf';
-	$templateDir = @dir($templatePath);
-	$allTemplates = array();
-	if ($templateDir) {
-		$entry = $templateDir->read();
-		while ($entry){
-			$parts = explode('.', $entry);
-			if ((strlen($entry) > 3) && (sizeof($parts) == 3)) {
-				$name = $parts[0];
-				$scope = $parts[1];
-				$allTemplates[$scope][] = $name;
-			}
-			$entry = $templateDir->read();
-		}
-	}
+	$templatePath = __DIR__ . '/../config/templates/pdf';
+	$allTemplates = getPdfTemplateNames();
 	$basePath = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName();
 	if (!file_exists($basePath)) {
 		mkdir($basePath, 0700, true);
@@ -278,20 +273,75 @@ function installPDFTemplates() {
 	if (!file_exists($basePath . '/logos')) {
 		mkdir($basePath . '/logos');
 	}
-	$templatePath = dirname(__FILE__) . '/../config/templates/pdf/logos';
+	$logos = getPdfTemplateLogoNames();
+	foreach ($logos as $logo) {
+		$path = $basePath . '/logos/' . $logo;
+		$template = $templatePath . '/logos/' . $logo;
+		if (!is_file($path)) {
+			logNewMessage(LOG_DEBUG, 'Copy template ' . $template . ' to ' . $path);
+			@copy($template, $path);
+		}
+	}
+}
+
+/**
+ * Returns all PDF template names.
+ *
+ * @return array names (array('user' => array('default')))
+ */
+function getPdfTemplateNames() {
+	$templatePath = __DIR__ . '/../config/templates/pdf';
 	$templateDir = @dir($templatePath);
+	$allTemplates = array();
 	if ($templateDir) {
 		$entry = $templateDir->read();
 		while ($entry){
-			$path = $basePath . '/logos/' . $entry;
-			if ((strpos($entry, '.') !== 0) && !is_file($path)) {
-				$template = $templatePath . '/' . $entry;
-				logNewMessage(LOG_DEBUG, 'Copy template ' . $template . ' to ' . $path);
-				@copy($template, $path);
+			$parts = explode('.', $entry);
+			if ((strlen($entry) > 3) && (sizeof($parts) == 3)) {
+				$name = $parts[0];
+				$scope = $parts[1];
+				$allTemplates[$scope][] = $name;
 			}
 			$entry = $templateDir->read();
 		}
 	}
+	return $allTemplates;
+}
+
+/**
+ * Returns all PDF template logo names.
+ *
+ * @return array names (array('user' => array('default.png')))
+ */
+function getPdfTemplateLogoNames() {
+	$templatePath = __DIR__ . '/../config/templates/pdf/logos';
+	$templateDir = @dir($templatePath);
+	$logos = array();
+	if ($templateDir) {
+		$entry = $templateDir->read();
+		while ($entry){
+			if ((strpos($entry, '.') !== 0) && is_file($templatePath . '/' . $entry)) {
+				$logos[] = $entry;
+			}
+			$entry = $templateDir->read();
+		}
+	}
+	return $logos;
+}
+
+/**
+ * Returns the binary data of the PDF template logo.
+ *
+ * @param string $name file name (without path)
+ * @return string binary
+ */
+function getPdfTemplateLogoBinary($name) {
+	$templatePath = __DIR__ . '/../config/templates/pdf/logos';
+	$fileName = $templatePath . '/' . $name;
+	$handle = fopen($fileName, 'r');
+	$logoBinary = fread($handle, 100000000);
+	fclose($handle);
+	return $logoBinary;
 }
 
 /**
@@ -300,6 +350,22 @@ function installPDFTemplates() {
  * @author Roland Gruber
  */
 class PDFStructureReader {
+
+	private $serverProfileName;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param $serverProfileName server profile name
+	 */
+	public function __construct($serverProfileName) {
+		if ($serverProfileName === GLOBAL_PROFILE) {
+			$this->serverProfileName = '../templates/pdf';
+		}
+		else {
+			$this->serverProfileName = $serverProfileName;
+		}
+	}
 
 	/**
 	 * Reads a PDF structure.
@@ -324,7 +390,7 @@ class PDFStructureReader {
 	 * @return string file name
 	 */
 	protected function getFileName($typeId, $name) {
-		return dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/' . $name . '.' . $typeId . '.xml';
+		return dirname(__FILE__) . '/../config/pdf/' . $this->serverProfileName . '/' . $name . '.' . $typeId . '.xml';
 	}
 
 	/**
@@ -334,6 +400,7 @@ class PDFStructureReader {
 	 * @return PDFStructure structure
 	 */
 	private function readPDFFile($file) {
+		logNewMessage(LOG_DEBUG, $file);
 		$xml = new \XMLReader();
 		$xml->open($file);
 		$structure = new PDFStructure();
@@ -411,12 +478,29 @@ class PDFStructureReader {
  */
 class PDFStructureWriter {
 
+	private $serverProfileName;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param string $serverProfileName server profile name
+	 */
+	public function __construct($serverProfileName) {
+		if ($serverProfileName === GLOBAL_PROFILE) {
+			$this->serverProfileName = '../templates/pdf';
+		}
+		else {
+			$this->serverProfileName = $serverProfileName;
+		}
+	}
+
 	/**
 	 * Writes the PDF structure to disk.
 	 *
 	 * @param string $typeId type ID
 	 * @param string $name structure name
 	 * @param PDFStructure $structure structure
+	 * @throws LAMException error during write
 	 */
 	public function write($typeId, $name, $structure) {
 		$fileName = $this->getFileName($typeId, $name);
@@ -430,16 +514,18 @@ class PDFStructureWriter {
 	 * @param string $typeId type ID
 	 * @param string $name structure name
 	 * @return string file name
+	 * @throws LAMException file not valid or not writable
 	 */
 	protected function getFileName($typeId, $name) {
 		if (!isValidPDFStructureName($name) || !preg_match('/[a-zA-Z]+/', $typeId)) {
 			throw new \LAMException(_('PDF structure name not valid'),
 					_('The name for that PDF-structure you submitted is not valid. A valid name must consist of the following characters: \'a-z\',\'A-Z\',\'0-9\',\'_\',\'-\'.'));
 		}
-		if(!is_writable(dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName())) {
-			throw new \LAMException(_('Could not save PDF structure, access denied.'));
+		$baseDir = __DIR__ . '/../config/pdf/' . $this->serverProfileName;
+		if(!is_writable($baseDir)) {
+			throw new \LAMException(_('Could not save PDF structure, access denied to ' . $baseDir . '.'));
 		}
-		return dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName() . '/' . $name . '.' . $typeId . '.xml';
+		return $baseDir . '/' . $name . '.' . $typeId . '.xml';
 	}
 
 	/**
@@ -488,6 +574,7 @@ class PDFStructureWriter {
 	 *
 	 * @param string $xml XML
 	 * @param string $file file name
+	 * @throws LAMException error during write
 	 */
 	protected function writeXML($xml, $file) {
 		$handle = @fopen($file,'w');
@@ -519,6 +606,57 @@ class PDFStructure {
 	private $foldingMarks = 'no';
 
 	private $sections = array();
+
+	/**
+	 * Returns an array representation of the structure.
+	 *
+	 * @return array export data
+	 */
+	public function export() {
+		$data = array();
+		$data['title'] = $this->title;
+		$data['foldingMarks'] = $this->foldingMarks;
+		$data['logo'] = $this->logo;
+		$data['sections'] = array();
+		foreach($this->sections as $section) {
+			$type = ($section instanceof PDFTextSection) ? 'text' : 'entry';
+			$sectionData = $section->export();
+			$data['sections'][] = array(
+				'type' => $type,
+				'data' => $sectionData
+			);
+		}
+		return $data;
+	}
+
+	/**
+	 * Imports an array representation of the structure.
+	 *
+	 * @param array $data import data
+	 */
+	public function import($data) {
+		if (isset($data['title'])) {
+			$this->title = $data['title'];
+		}
+		if (isset($data['foldingMarks'])) {
+			$this->foldingMarks = $data['foldingMarks'];
+		}
+		if (isset($data['logo'])) {
+			$this->logo = $data['logo'];
+		}
+		if (isset($data['sections'])) {
+			foreach($data['sections'] as $section) {
+				if ($section['type'] === 'text') {
+					$this->sections[] = new PDFTextSection($section['data']);
+				}
+				else {
+					$entrySection = new PDFEntrySection(null);
+					$entrySection->import($section['data']);
+					$this->sections[] = $entrySection;
+				}
+			}
+		}
+	}
 
 	/**
 	 * Returns the logo file path.
@@ -613,6 +751,15 @@ class PDFTextSection {
 	}
 
 	/**
+	 * Exports the section.
+	 *
+	 * @return string text
+	 */
+	public function export() {
+		return $this->getText();
+	}
+
+	/**
 	 * Returns the text.
 	 *
 	 * @return string text
@@ -631,7 +778,7 @@ class PDFTextSection {
 class PDFEntrySection {
 
 	private $title;
-	private $entries;
+	private $entries = array();
 
 	/**
 	 * Constructor
@@ -640,6 +787,37 @@ class PDFEntrySection {
 	 */
 	public function __construct($title) {
 		$this->title = $title;
+	}
+
+	/**
+	 * Exports the section.
+	 *
+	 * @return array export data
+	 */
+	public function export() {
+		$data = array();
+		$data['title'] = $this->title;
+		$data['entries'] = array();
+		foreach($this->getEntries() as $entry) {
+			$data['entries'][] = $entry->getKey();
+		}
+		return $data;
+	}
+
+	/**
+	 * Imports the section.
+	 *
+	 * @param array $data import data
+	 */
+	public function import($data) {
+		if (isset($data['title'])) {
+			$this->title = $data['title'];
+		}
+		if ($data['entries']) {
+			foreach($data['entries'] as $entry) {
+				$this->entries[] = new PDFSectionEntry($entry);
+			}
+		}
 	}
 
 	/**

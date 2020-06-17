@@ -1753,6 +1753,16 @@ function getLAMVersionText() {
 }
 
 /**
+ * Returns if the given release is a developer version.
+ *
+ * @param string version
+ * @return bool is developer version
+ */
+function isDeveloperVersion($version) {
+	return strpos($version, 'DEV') !== false;
+}
+
+/**
  * LAM exception with title and message.
  *
  * @author Roland Gruber

@@ -24,7 +24,7 @@ include_once __DIR__ . '/../../lib/account.inc';
 include_once __DIR__ . '/../../lib/security.inc';
 
 /**
- * LAMConfig test case.
+ * account.inc test cases.
  *
  * @author Roland Gruber
  */
@@ -153,6 +153,15 @@ class AccountTest extends TestCase {
 		$this->assertTrue(isCommandlineSafeEmailAddress('test@example.com'));
 		$this->assertTrue(isCommandlineSafeEmailAddress('test-123_abc@example.com'));
 		$this->assertFalse(isCommandlineSafeEmailAddress('test+abc@example.com'));
+	}
+
+	/**
+	 * Tests isDeveloperVersion()
+	 */
+	function testIsDeveloperVersion() {
+		$this->assertFalse(isDeveloperVersion('0.4.1'));
+		$this->assertFalse(isDeveloperVersion('3.2.RC1'));
+		$this->assertTrue(isDeveloperVersion('4.5.DEV'));
 	}
 
 }

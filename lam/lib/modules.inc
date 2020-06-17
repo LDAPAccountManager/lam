@@ -1454,7 +1454,7 @@ class accountContainer {
 	 */
 	private function loadProfileIfRequested() {
 		if (isset($_POST['accountContainerLoadProfile']) && isset($_POST['accountContainerSelectLoadProfile'])) {
-			$profile = \LAM\PROFILES\loadAccountProfile($_POST['accountContainerSelectLoadProfile'], $this->type->getId());
+			$profile = \LAM\PROFILES\loadAccountProfile($_POST['accountContainerSelectLoadProfile'], $this->type->getId(), $_SESSION['config']->getName());
 			$this->lastLoadedProfile = $_POST['accountContainerSelectLoadProfile'];
 			// pass profile to each module
 			$modules = array_keys($this->module);
@@ -1775,7 +1775,7 @@ class accountContainer {
 				$this->lastLoadedProfile = $cookieProfileName;
 			}
 		}
-		$profile = \LAM\PROFILES\loadAccountProfile($profileName, $this->type->getId());
+		$profile = \LAM\PROFILES\loadAccountProfile($profileName, $this->type->getId(), $_SESSION['config']->getName());
 		// pass profile to each module
 		$modules = array_keys($this->module);
 		foreach ($modules as $module) $this->module[$module]->load_profile($profile);

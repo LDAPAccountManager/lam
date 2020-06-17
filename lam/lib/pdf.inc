@@ -61,7 +61,7 @@ include_once('pdfstruct.inc');
 function createModulePDF($accounts, $pdf_structure, $font, $returnAsString = false) {
 	$account_type = $accounts[0]->get_type();
 	// Get PDF structure from xml file
-	$reader = new PDFStructureReader();
+	$reader = new PDFStructureReader($_SESSION['config']->getName());
 	$structure = $reader->read($account_type->getId(), $pdf_structure);
 	// get list of PDF keys
 	$pdfKeys = array();

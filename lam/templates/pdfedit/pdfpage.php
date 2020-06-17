@@ -22,7 +22,7 @@ use LAM\PDF\PDFStructureWriter;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2007 - 2019  Roland Gruber
+                2007 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -105,7 +105,7 @@ if(isset($_GET['abort'])) {
 // Load PDF structure from file if it is not defined in session
 if(!isset($_SESSION['currentPDFStructure'])) {
 	// Load structure file to be edit
-	$reader = new PDFStructureReader();
+	$reader = new PDFStructureReader($_SESSION['config']->getName());
 	try {
 		if(isset($_GET['edit'])) {
 			$_SESSION['currentPDFStructure'] = $reader->read($type->getId(), $_GET['edit']);
@@ -135,7 +135,7 @@ if (!empty($_POST['form_submit'])) {
 // main pdf structure page
 $saveErrors = array();
 if(isset($_GET['submit'])) {
-	$writer = new PDFStructureWriter();
+	$writer = new PDFStructureWriter($_SESSION['config']->getName());
 	try {
 		$writer->write($type->getId(), $_POST['pdfname'], $_SESSION['currentPDFStructure']);
 		unset($_SESSION['currentPDFStructure']);
@@ -218,7 +218,7 @@ else if (isset($_POST['pdfname'])) {
 // headline
 $headline = $_SESSION['currentPDFStructure']->getTitle();
 // logo
-$logoFiles = \LAM\PDF\getAvailableLogos();
+$logoFiles = \LAM\PDF\getAvailableLogos($_SESSION['config']->getName());
 $logos = array(_('No logo') => 'none');
 foreach($logoFiles as $logoFile) {
 	$logos[$logoFile['filename'] . ' (' . $logoFile['infos'][0] . ' x ' . $logoFile['infos'][1] . ")"] = $logoFile['filename'];

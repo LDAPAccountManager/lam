@@ -1,4 +1,6 @@
 <?php
+
+use LAM\PDF\PDFSectionEntry;
 use LAM\PDF\PDFTextSection;
 use LAM\PDF\PDFEntrySection;
 use LAM\PDF\PDFStructureReader;
@@ -26,21 +28,22 @@ use PHPUnit\Framework\TestCase;
 
 */
 
-include_once 'lam/lib/pdfstruct.inc';
+include_once __DIR__ . '/../../lib/pdfstruct.inc';
 
 /**
- * Reads a sample PDF structure.
+ * Tests classes in pdfstruct.inc.
  *
  * @author Roland Gruber
  *
  */
-class ReadStructureTest extends TestCase {
+class PdfStructTest extends TestCase {
 
 	/**
 	 * Reads the sample structure.
 	 */
 	public function testRead() {
 		$reader = $this->getMockBuilder('\LAM\PDF\PDFStructureReader')
+			->setConstructorArgs(array('test'))
 			->setMethods(array('getFileName'))
 			->getMock();
 		$reader->method('getFileName')->willReturn($this->getTestFileName('test.xml'));
@@ -99,15 +102,142 @@ class ReadStructureTest extends TestCase {
 		fclose($fileHandle);
 		// read structure
 		$reader = $this->getMockBuilder('\LAM\PDF\PDFStructureReader')
+		->setConstructorArgs(array('test'))
 		->setMethods(array('getFileName'))
 		->getMock();
 		$reader->method('getFileName')->willReturn($file);
 		$structure = $reader->read('type', 'name');
 		// create writer and get output XML
-		$writer = new PDFStructureWriter();
+		$writer = new PDFStructureWriter('test');
 		$xml = $writer->getXML($structure);
 		// compare
 		$this->assertEquals($originalXML, $xml);
+	}
+
+	/**
+	 * Tests PDFTextSection
+	 */
+	public function testExportPDFTextSection() {
+		$section = new PDFTextSection('sometext');
+
+		$data = $section->export();
+
+		$this->assertEquals('sometext', $data);
+	}
+
+	/**
+	 * Tests PDFEntrySection
+	 */
+	public function testExportPDFEntrySection() {
+		$section = new PDFEntrySection('mytitle');
+		$section->setEntries(array(new PDFSectionEntry('key1'), new PDFSectionEntry('key2')));
+
+		$data = $section->export();
+
+		$expected = array(
+			'title' => 'mytitle',
+			'entries' => array('key1', 'key2')
+		);
+
+		$this->assertEquals($expected, $data);
+	}
+
+	/**
+	 * Tests PDFStructure
+	 */
+	public function testExportPDFStructure() {
+		$structure = new PDFStructure();
+		$structure->setFoldingMarks(PDFStructure::FOLDING_STANDARD);
+		$structure->setLogo('somelogo');
+		$structure->setTitle('mytitle');
+		$entrySection = new PDFEntrySection('sometitle');
+		$entrySection->setEntries(array(new PDFSectionEntry('key1')));
+		$structure->setSections(array(
+			new PDFTextSection('sometext'),
+			$entrySection
+		));
+
+		$data = $structure->export();
+
+		$expected = array(
+			'title' => 'mytitle',
+			'foldingMarks' => PDFStructure::FOLDING_STANDARD,
+			'logo' => 'somelogo',
+			'sections' => array(
+				array(
+					'type' => 'text',
+					'data' => 'sometext'
+				),
+				array(
+					'type' => 'entry',
+					'data' => array(
+						'title' => 'sometitle',
+						'entries' => array('key1')
+					)
+				)
+			)
+		);
+
+		$this->assertEquals($expected, $data);
+	}
+
+	/**
+	 * Tests import in PDFEntrySection.
+	 */
+	public function testImportPDFEntrySection() {
+		$data = array(
+			'title' => 'mytitle',
+			'entries' => array('e1', 'e2')
+		);
+
+		$section = new PDFEntrySection(null);
+		$section->import($data);
+
+		$this->assertEquals('mytitle', $section->getTitle());
+		$entries = $section->getEntries();
+		$this->assertEquals(2, sizeof($entries));
+		$this->assertEquals('e1', ($entries[0]->getKey()));
+		$this->assertEquals('e2', ($entries[1]->getKey()));
+	}
+
+	/**
+	 * Tests the import in PDFStructure.
+	 */
+	public function testImportPDFStructure() {
+		$data = array(
+			'title' => 'mytitle',
+			'foldingMarks' => PDFStructure::FOLDING_STANDARD,
+			'logo' => 'logo',
+			'sections' => array(
+				array(
+					'type' => 'text',
+					'data' => 'textvalue'
+				),
+				array(
+					'type' => 'entry',
+					'data' => array(
+						'title' => 'etitle',
+						'entries' => array('e1', 'e2')
+					)
+				),
+			)
+		);
+
+		$structure = new PDFStructure();
+		$structure->import($data);
+
+		$this->assertEquals('mytitle', $structure->getTitle());
+		$this->assertEquals(PDFStructure::FOLDING_STANDARD, $structure->getFoldingMarks());
+		$this->assertEquals('logo', $structure->getLogo());
+		$sections = $structure->getSections();
+		$this->assertEquals(2, sizeof($sections));
+		$this->assertTrue($sections[0] instanceof PDFTextSection);
+		$this->assertEquals('textvalue', $sections[0]->getText());
+		$this->assertTrue($sections[1] instanceof PDFEntrySection);
+		$entries = $sections[1]->getEntries();
+		$this->assertEquals(2, sizeof($entries));
+		$this->assertEquals('e1', $entries[0]->getKey());
+		$this->assertEquals('e2', $entries[1]->getKey());
 	}
 
 }

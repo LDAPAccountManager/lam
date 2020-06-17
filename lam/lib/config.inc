@@ -650,6 +650,78 @@ class LAMConfig {
 	}
 
 	/**
+	 * Returns the server profile data.
+	 *
+	 * @return array data
+	 */
+	public function exportData() {
+		$data = array();
+		$settingsToIgnore = array('modules', 'types', 'tools', 'jobs');
+		foreach ($this->settings as $setting) {
+			if (in_array($setting, $settingsToIgnore)) {
+				continue;
+			}
+			$data[$setting] = $this->$setting;
+		}
+		$data['typeSettings'] = $this->typeSettings;
+		$data['moduleSettings'] = $this->moduleSettings;
+		$data['toolSettings'] = $this->toolSettings;
+		$data['jobSettings'] = $this->jobSettings;
+		if ($this->jobsDatabase === 'SQLite') {
+			$dbFileName = __DIR__ . '/../config/' . $this->getName() . '.sqlite';
+			if (is_file($dbFileName) && is_readable($dbFileName)) {
+				$file = @fopen($dbFileName, "r");
+				if ($file) {
+					$dbData = fread($file, 100000000);
+					fclose($file);
+					$data['jobSQLite'] = base64_encode($dbData);
+				}
+			}
+		}
+		return $data;
+	}
+
+	/**
+	 * Imports server profile data.
+	 *
+	 * @param array $data config data
+	 * @throws LAMException import error
+	 */
+	public function importData($data) {
+		$settingsToIgnore = array('modules', 'types', 'tools', 'jobs', 'typeSettings',
+			'moduleSettings', 'toolSettings', 'jobSettings', 'jobSQLite');
+		foreach ($data as $dataKey => $dataValue) {
+			if (in_array($dataKey, $settingsToIgnore)) {
+				continue;
+			}
+			if (!in_array($dataKey, $this->settings)) {
+				logNewMessage(LOG_WARNING, 'Ignored setting during import: ' . $dataKey);
+				continue;
+			}
+			if (!(($dataValue === null) || is_array($dataValue) || is_string($dataValue) || is_int($dataValue) || is_bool($dataValue))) {
+				throw new LAMException('Invalid import data type for ' . htmlspecialchars($dataKey) . ': ' . gettype($dataValue));
+			}
+			$this->$dataKey = $dataValue;
+		}
+		$typeSettingsData = !empty($data['typeSettings']) && is_array($data['typeSettings']) ? $data['typeSettings'] : array();
+		$this->typeSettings = $typeSettingsData;
+		$moduleSettingsData = !empty($data['moduleSettings']) && is_array($data['moduleSettings']) ? $data['moduleSettings'] : array();
+		$this->moduleSettings = $moduleSettingsData;
+		$toolSettingsData = !empty($data['toolSettings']) && is_array($data['toolSettings']) ? $data['toolSettings'] : array();
+		$this->toolSettings = $toolSettingsData;
+		$jobSettingsData = !empty($data['jobSettings']) && is_array($data['jobSettings']) ? $data['jobSettings'] : array();
+		$this->jobSettings = $jobSettingsData;
+		if (!empty($data['jobSQLite'])) {
+			$dbFileName = __DIR__ . '/../config/' . $this->getName() . '.sqlite';
+			$file = @fopen($dbFileName, "wb");
+			if ($file) {
+				fputs($file, base64_decode($data['jobSQLite']));
+				fclose($file);
+			}
+		}
+	}
+
+	/**
 	* Reloads preferences from config file
 	*
 	* @return boolean true if file was readable
@@ -759,6 +831,10 @@ class LAMConfig {
 	/** Saves preferences to config file */
 	public function save() {
 		$conffile = $this->getPath();
+		if (!file_exists($conffile)) {
+			$newFile = fopen($conffile, 'wb');
+			fclose($newFile);
+		}
 		if (is_file($conffile) && is_readable($conffile)) {
 			$file = fopen($conffile, "r");
 			$file_array = array();
@@ -1775,7 +1851,7 @@ class LAMConfig {
 	/**
 	* Returns a list of active account types.
 	*
-	* @return array list of types
+	* @return string[] list of types
 	*/
 	public function get_ActiveTypes() {
 		if (($this->activeTypes == '') || !isset($this->activeTypes)) {
@@ -1789,7 +1865,7 @@ class LAMConfig {
 	/**
 	* Sets the list of active types.
 	*
-	* @param array list of types
+	* @param string[] list of types
 	*/
 	public function set_ActiveTypes($types) {
 		$this->activeTypes = implode(",", $types);
@@ -2679,6 +2755,83 @@ class LAMCfgMain {
 		$this->allowedHostsSelfService = '';
 		$this->encryptSession = 'true';
 		$this->reload();
+	}
+
+	/**
+	 * Exports the configuration data.
+	 *
+	 * @return array config data
+	 */
+	public function exportData() {
+		$data = array();
+		foreach ($this->settings as $setting) {
+			$data[$setting] = $this->$setting;
+		}
+		return $data;
+	}
+
+	/**
+	 * Imports configuration data.
+	 *
+	 * @param array $data config data
+	 * @throws LAMException import error
+	 */
+	public function importData($data) {
+		foreach ($data as $dataKey => $dataValue) {
+			if (!in_array($dataKey, $this->settings)) {
+				logNewMessage(LOG_WARNING, 'Ignored setting during import: ' . $dataKey);
+				continue;
+			}
+			if (!(($dataValue === null) || is_array($dataValue) || is_string($dataValue) || is_int($dataValue) || is_bool($dataValue))) {
+				throw new LAMException('Invalid import data type for ' . htmlspecialchars($dataKey) . ': ' . gettype($dataValue));
+			}
+			$this->$dataKey = $dataValue;
+		}
+	}
+
+	/**
+	 * Returns the content of the server certificates file
+	 *
+	 * @return null|string certificates
+	 */
+	public function exportCertificates() {
+		$fileName = $this->getSSLCaCertPath();
+		if ($fileName === null) {
+			return null;
+		}
+		$content = null;
+		$handle = @fopen($fileName, "r");
+		if ($handle) {
+			$content = fread($handle, 10000000);
+			fclose($handle);
+		}
+		return $content;
+	}
+
+	/**
+	 * Imports the server certificates.
+	 *
+	 * @param null|string $certsContent certificates
+	 * @throws LAMException write to file failed
+	 */
+	public function importCertificates($certsContent) {
+		$fileName = $this->getSSLCaCertPath();
+		if (empty($certsContent)) {
+			if ($fileName !== null) {
+				unlink($fileName);
+			}
+			return;
+		}
+		$fileName = $this->getInternalSSLCaCertFileName();
+		$handle = @fopen($fileName, "wb");
+		if ($handle) {
+			fputs($handle, $certsContent);
+			fclose($handle);
+			@chmod($fileName, 0600);
+		}
+		else {
+			throw new LAMException(printf(_('Unable to write file %s.'), $fileName));
+		}
 	}
 
 	/**

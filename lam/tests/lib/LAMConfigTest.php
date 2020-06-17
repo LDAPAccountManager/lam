@@ -3,7 +3,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2016 - 2019  Roland Gruber
+ Copyright (C) 2016 - 2020  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 
  */
 
-include_once 'lam/tests/utils/configuration.inc';
+include_once __DIR__ . '/../utils/configuration.inc';
 
 /**
  * LAMConfig test case.
@@ -856,6 +856,63 @@ class LAMConfigTest extends TestCase {
 		$this->doSave();
 		$this->assertEquals($sizeModSettings, sizeof($this->lAMConfig->get_moduleSettings()));
 		$this->assertEquals($sizeTypeSettings, sizeof($this->lAMConfig->get_typeSettings()));
+	}
+
+	/**
+	 * Tests the export.
+	 */
+	public function testExportData() {
+		$this->lAMConfig->set_defaultLanguage('lang');
+		$this->lAMConfig->set_ServerURL('myserver');
+		$this->lAMConfig->set_typeSettings(array('typetest' => '1'));
+		$this->lAMConfig->set_moduleSettings(array('modtest' => '1'));
+		$this->lAMConfig->setToolSettings(array('tooltest' => '1'));
+		$this->lAMConfig->setJobSettings(array('jobtest' => '1'));
+
+		$data = $this->lAMConfig->exportData();
+
+		$this->assertEquals('lang', $data['defaultLanguage']);
+		$this->assertEquals('myserver', $data['ServerURL']);
+		$this->assertEquals(array('typetest' => '1'), $data['typeSettings']);
+		$this->assertEquals(array('modtest' => '1'), $data['moduleSettings']);
+		$this->assertEquals(array('tooltest' => '1'), $data['toolSettings']);
+		$this->assertEquals(array('jobtest' => '1'), $data['jobSettings']);
+	}
+
+	/**
+	 * Tests the import.
+	 */
+	public function testImportData() {
+		$importData = array();
+		$importData['ServerURL'] = 'testserver';
+		$importData['defaultLanguage'] = 'de_DE.utf8';
+		$importData['typeSettings'] = array('typetest' => 'value');
+		$importData['toolSettings'] = array('tooltest' => 'value');
+		$importData['moduleSettings'] = array('modtest' => 'value');
+		$importData['jobSettings'] = array('jobtest' => 'value');
+		$importData['IGNORE_ME'] = 'ignore';
+
+		$this->lAMConfig->importData($importData);
+
+		$this->assertEquals('testserver', $this->lAMConfig->get_ServerURL());
+		$this->assertEquals('de_DE.utf8', $this->lAMConfig->get_defaultLanguage());
+		$this->assertEquals(array('typetest' => 'value'), $this->lAMConfig->get_typeSettings());
+		$this->assertEquals(array('tooltest' => 'value'), $this->lAMConfig->getToolSettings());
+		$this->assertEquals(array('modtest' => 'value'), $this->lAMConfig->get_moduleSettings());
+		$this->assertEquals(array('jobtest' => 'value'), $this->lAMConfig->getJobSettings());
+	}
+
+	/**
+	 * Tests the import with invalid data.
+	 */
+	public function testImportData_invalid() {
+		$importData = array();
+		$importData['ServerURL'] = 'testserver';
+		$importData['typeSettings'] = array('typetest' => 'value');
+		$importData['defaultLanguage'] = new LAMLanguage('de_de', 'UTF-8', 'DE');
+
+		$this->expectException(LAMException::class);
+		$this->lAMConfig->importData($importData);
 	}
 
 	/**

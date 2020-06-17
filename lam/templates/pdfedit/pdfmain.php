@@ -21,7 +21,7 @@ use \LAM\TYPES\TypeManager;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2018  Roland Gruber
+                2005 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -107,7 +107,7 @@ $container->add(new htmlTitle(_('PDF editor')), 12);
 if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
 	$typeToDelete = $typeManager->getConfiguredType($_POST['profileDeleteType']);
 	// delete structure
-	if (\LAM\PDF\deletePDFStructure($_POST['profileDeleteType'], $_POST['profileDeleteName'])) {
+	if (\LAM\PDF\deletePDFStructure($_POST['profileDeleteType'], $_POST['profileDeleteName'], $_SESSION['config']->getName())) {
 		$message = new htmlStatusMessage('INFO', _('Deleted PDF structure.'), $typeToDelete->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
 		$container->add($message, 12);
 	}
@@ -173,13 +173,13 @@ if (!empty($_POST['export'])) {
 if (isset($_POST['uploadLogo']) && !empty($_FILES['logoUpload']) && !empty($_FILES['logoUpload']['size'])) {
 	$file = $_FILES['logoUpload']['tmp_name'];
 	$filename = $_FILES['logoUpload']['name'];
-	$container->add(\LAM\PDF\uploadPDFLogo($file, $filename), 12);
+	$container->add(\LAM\PDF\uploadPDFLogo($file, $filename, $_SESSION['config']->getName()), 12);
 }
 
 // delete logo file
 if (isset($_POST['delLogo'])) {
 	$toDel = $_POST['logo'];
-	$container->add(\LAM\PDF\deletePDFLogo($toDel), 12);
+	$container->add(\LAM\PDF\deletePDFLogo($toDel, $_SESSION['config']->getName()), 12);
 }
 
 // get list of account types
@@ -192,7 +192,7 @@ foreach ($sortedTypes as $typeId => $title) {
 		'scope' => $type->getScope(),
 		'title' => $title,
 		'icon' => $type->getIcon(),
-		'templates' => \LAM\PDF\getPDFStructures($type->getId()));
+		'templates' => \LAM\PDF\getPDFStructures($type->getId(), $_SESSION['config']->getName()));
 	$availableTypes[$title] = $type->getId();
 }
 // check if a template should be edited
@@ -275,7 +275,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 		// manage logos
 		$container->addVerticalSpacer('4rem');
 		$container->add(new htmlSubTitle(_('Manage logos')), 12);
-		$logos = \LAM\PDF\getAvailableLogos();
+		$logos = \LAM\PDF\getAvailableLogos($_SESSION['config']->getName());
 		$logoOptions = array();
 		foreach ($logos as $logo) {
 			$file = $logo['filename'];

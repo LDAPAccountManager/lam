@@ -1,8 +1,11 @@
 <?php
+namespace LAM\CONFIG;
+use htmlLink;
+use htmlResponsiveRow;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2019  Roland Gruber
+  Copyright (C) 2003 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -42,6 +45,9 @@ setlanguage();
 
 echo $_SESSION['header'];
 printHeaderContents(_("Configuration overview"), '../..');
+$tabindex = 0;
+$content = new htmlResponsiveRow();
+
 ?>
 	</head>
 	<body class="admin">
@@ -59,69 +65,45 @@ printHeaderContents(_("Configuration overview"), '../..');
 			</tr>
 		</table>
 		<br><br>
-		<TABLE border="0" width="100%" class="ui-corner-all roundedShadowBox">
-		<?php
-			if (isLAMProVersion()) {
-				echo "<tr><td rowspan=4 width=20>&nbsp;</td><td></td><td></td></tr>\n";
-			}
-			else {
-				echo "<tr><td rowspan=3 width=20>&nbsp;</td><td></td><td></td></tr>\n";
-			}
-		?>
-		<TR>
-			<TD width="60" height="70">
-			<a href="mainlogin.php">
-				<IMG height="32" width="32" alt="general settings" src="../../graphics/bigTools.png">
-			</a>
-			</TD>
-			<TD>
-			<a href="mainlogin.php">
-				<?php echo _("Edit general settings") ?>
-			</a>
-			</TD>
-		</TR>
-		<TR>
-			<TD height="70">
-			<a href="conflogin.php" target="_self">
-				<IMG height="32" width="32" alt="server settings" src="../../graphics/profiles.png">
-			</a>
-			</TD>
-			<TD>
-			<a href="conflogin.php" target="_self">
-				<?php echo _("Edit server profiles"); ?>
-			</a>
-			</TD>
-		</TR>
-		<?php
-		if (isLAMProVersion()) {
-			echo "<TR>\n";
-				echo "<TD height=\"70\">\n";
-				echo "<a href=\"../selfService/adminLogin.php\" target=\"_self\">\n";
-					echo "<IMG height=\"32\" width=\"32\" alt=\"self service\" src=\"../../graphics/bigPeople.png\">\n";
-				echo "</a>\n";
-				echo "</TD>\n";
-				echo "<TD>\n";
-				echo "<a href=\"../selfService/adminLogin.php\" target=\"_self\">\n";
-					echo _("Edit self service");
-				echo "</a>\n";
-				echo "</TD>\n";
-			echo "</TR>\n";
-		}
-		?>
-		</TABLE>
-		<p><br></p>
+
+        <?php
+        $topContent = new htmlResponsiveRow();
+        $topContent->setCSSClasses(array('maxrow fullwidth roundedShadowBox spacing5'));
+        $mainCfgLink = new htmlLink(_("Edit general settings"), 'mainlogin.php', '../../graphics/bigTools.png');
+        $mainCfgLink->setCSSClasses(array('img-padding1 display-as-block'));
+        $topContent->add($mainCfgLink, 12);
+        $cfgLink = new htmlLink(_("Edit server profiles"), 'conflogin.php', '../../graphics/profiles.png');
+        $cfgLink->setCSSClasses(array('img-padding1 display-as-block'));
+        $topContent->add($cfgLink, 12);
+        if (isLAMProVersion()) {
+        	$selfServiceLink = new htmlLink(_("Edit self service"), '../selfService/adminLogin.php', '../../graphics/bigPeople.png');
+        	$selfServiceLink->setCSSClasses(array('img-padding1 display-as-block'));
+	        $topContent->add($selfServiceLink, 12);
+        }
+        if (isDeveloperVersion(LAMVersion())) {
+	        $topContent->addVerticalSpacer('1rem');
+	        $importExportLink = new htmlLink(_("Import and export configuration"), 'confImportExport.php', '../../graphics/confImportExport.png');
+	        $importExportLink->setCSSClasses(array('img-padding1 display-as-block'));
+	        $topContent->add($importExportLink, 12);
+        }
+        $content->add($topContent, 12);
+        $content->addVerticalSpacer('4rem');
+        ?>
 
 		<?php
 		if (isLAMProVersion()) {
 			include_once(__DIR__ . "/../../lib/env.inc");
 			$printer = new \LAM\ENV\LAMLicenseInfoPrinter();
-			$printer->printLicenseInfo();
-			echo "<br><br>";
+			$content->add($printer->getLicenseInfo(), 12);
+			$content->addVerticalSpacer('2rem');
 		}
-		?>
 
-		<p>&nbsp;<a href="../login.php"><IMG alt="back" src="../../graphics/undo.png">&nbsp;<?php echo _("Back to login") ?></a></p>
-		<p><br><br></p>
+		$content->add(new htmlLink(_("Back to login"), '../login.php', '../../graphics/undo.png'), 12);
+		$content->addVerticalSpacer('2rem');
+
+		parseHtml('none', $content, array(), true, $tabindex, 'none');
+
+		?>
 
 	</body>
 </html>

@@ -120,4 +120,56 @@ class LAMCfgMainTest extends TestCase {
 		$this->assertFalse($this->conf->showLicenseWarningOnScreen());
 	}
 
+	/**
+	 * Tests the export.
+	 */
+	public function testExportData() {
+		$this->conf->passwordMinLower = 3;
+		$this->conf->sessionTimeout = 240;
+		$this->conf->logLevel = LOG_ERR;
+		$this->conf->mailServer = 'mailserver';
+
+		$data = $this->conf->exportData();
+
+		$this->assertEquals(3, $data['passwordMinLower']);
+		$this->assertEquals(240, $data['sessionTimeout']);
+		$this->assertEquals(LOG_ERR, $data['logLevel']);
+		$this->assertEquals('mailserver', $data['mailServer']);
+	}
+
+	/**
+	 * Tests the import.
+	 */
+	public function testImportData() {
+		$importData = array();
+		$importData['passwordMinLower'] = 3;
+		$importData['sessionTimeout'] = 240;
+		$importData['logLevel'] = LOG_ERR;
+		$importData['mailServer'] = 'mailserver';
+		$importData['allowedHosts'] = null;
+		$importData['IGNORE_ME'] = 'ignore';
+
+		$this->conf->importData($importData);
+
+		$this->assertEquals(3, $this->conf->passwordMinLower);
+		$this->assertEquals(240, $this->conf->sessionTimeout);
+		$this->assertEquals(LOG_ERR, $this->conf->logLevel);
+		$this->assertEquals('mailserver', $this->conf->mailServer);
+		$this->assertNull($this->conf->allowedHosts);
+	}
+
+	/**
+	 * Tests the import with invalid data.
+	 */
+	public function testImportData_invalid() {
+		$importData = array();
+		$importData['passwordMinLower'] = 3;
+		$importData['sessionTimeout'] = 240;
+		$importData['logLevel'] = LOG_ERR;
+		$importData['mailServer'] = new LAMLanguage('de_de', 'UTF-8', 'DE');
+
+		$this->expectException(LAMException::class);
+		$this->conf->importData($importData);
+	}
+
 }
