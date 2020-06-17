@@ -1487,8 +1487,9 @@ function getDefaultLDAPErrorString($server) {
 		logNewMessage(LOG_DEBUG, 'Password change failed because of ' . $extError);
 		$extError = _('Your password does not meet the password strength qualifications. Please retry with another one.');
 	}
-	$message = _('LDAP error, server says:') . ' ' . ldap_error($server);
-	if (!empty($extError)) {
+	$genericErrorMessage = ldap_error($server);
+	$message = _('LDAP error, server says:') . ' ' . $genericErrorMessage;
+	if (!empty($extError) && ($genericErrorMessage != $extError)) {
 		$message .= ' - ' . $extError;
 	}
 	return $message;

@@ -11,6 +11,7 @@ use \htmlGroup;
 use \htmlInputCheckbox;
 use \htmlButton;
 use \htmlStatusMessage;
+use LAMException;
 use \Ldap;
 use \htmlResponsiveRow;
 use \htmlDiv;
@@ -170,12 +171,13 @@ $manifestUrl = preg_replace('/\\?.*/', '', $manifestUrl);
 $_SESSION['header'] .= '<link rel="manifest" href="' . $manifestUrl . '/templates/manifest.php" crossorigin="use-credentials">';
 
 /**
-* Displays the login window.
-*
-* @param \LAM\ENV\LAMLicenseValidator $licenseValidator license validator
-* @param string $error_message error message to display
-*/
-function display_LoginPage($licenseValidator, $error_message) {
+ * Displays the login window.
+ *
+ * @param \LAM\ENV\LAMLicenseValidator $licenseValidator license validator
+ * @param string $error_message error message to display
+ * @param string $errorDetails error details
+ */
+function display_LoginPage($licenseValidator, $error_message, $errorDetails = null) {
 	$config_object = $_SESSION['config'];
 	$cfgMain = $_SESSION["cfgMain"];
 	logNewMessage(LOG_DEBUG, "Display login page");
@@ -405,7 +407,7 @@ function display_LoginPage($licenseValidator, $error_message) {
 							// error message
 							if(!empty($error_message)) {
 								$row->add(new \htmlSpacer(null, '5px'), 12);
-								$message = new htmlStatusMessage('ERROR', $error_message);
+								$message = new htmlStatusMessage('ERROR', $error_message, $errorDetails);
 								$message->colspan = 3;
 								$row->add($message, 12);
 							}
@@ -506,7 +508,7 @@ if(isset($_POST['checklogin'])) {
 	// search user in LDAP if needed
 	if ($_SESSION['config']->getLoginMethod() == LAMConfig::LOGIN_SEARCH) {
 		$searchFilter = $_SESSION['config']->getLoginSearchFilter();
-		$searchFilter = str_replace('%USER%', $username ,$searchFilter);
+		$searchFilter = str_replace('%USER%', $username, $searchFilter);
 		$searchDN = '';
 		$searchPassword = '';
 		$configLoginSearchDn = $_SESSION['config']->getLoginSearchDN();
@@ -517,57 +519,58 @@ if(isset($_POST['checklogin'])) {
 		$searchSuccess = true;
 		$searchError = '';
 		$searchLDAP = new Ldap($_SESSION['config']);
-		$searchLDAPResult = $searchLDAP->connect($searchDN, $searchPassword, true);
-		if (! ($searchLDAPResult == 0)) {
-			$searchSuccess = false;
-			$searchError = _('Cannot connect to specified LDAP server. Please try again.') . ' ' . getDefaultLDAPErrorString($searchLDAP->server());
-		}
-		else {
-			$searchResult = ldap_search($searchLDAP->server(), $_SESSION['config']->getLoginSearchSuffix(), $searchFilter, array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
-			if ($searchResult) {
-				$searchInfo = ldap_get_entries($searchLDAP->server(), $searchResult);
-				if ($searchInfo) {
-					cleanLDAPResult($searchInfo);
-					if (sizeof($searchInfo) == 0) {
-						$searchSuccess = false;
-						$searchError = _('Wrong password/user name combination. Please try again.');
-					}
-					elseif (sizeof($searchInfo) > 1) {
-						$searchSuccess = false;
-						$searchError = _('The given user name matches multiple LDAP entries.');
-					}
-					else {
-						$username = $searchInfo[0]['dn'];
-					}
-				}
-				else {
-					$searchSuccess = false;
-					$searchError = _('Unable to find the user name in LDAP.');
-					if (ldap_errno($searchLDAP->server()) != 0) {
-						$searchError .= ' ' . getDefaultLDAPErrorString($searchLDAP->server());
-					}
-				}
+		try {
+			$searchLDAP->connect($searchDN, $searchPassword, true);
+            $searchResult = ldap_search($searchLDAP->server(), $_SESSION['config']->getLoginSearchSuffix(), $searchFilter, array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
+            if ($searchResult) {
+                $searchInfo = ldap_get_entries($searchLDAP->server(), $searchResult);
+                if ($searchInfo) {
+                    cleanLDAPResult($searchInfo);
+                    if (sizeof($searchInfo) == 0) {
+                        $searchSuccess = false;
+                        $searchError = _('Wrong password/user name combination. Please try again.');
+                    }
+                    elseif (sizeof($searchInfo) > 1) {
+                        $searchSuccess = false;
+                        $searchError = _('The given user name matches multiple LDAP entries.');
+                    }
+                    else {
+                        $username = $searchInfo[0]['dn'];
+                    }
+                }
+                else {
+                    $searchSuccess = false;
+                    $searchError = _('Unable to find the user name in LDAP.');
+                    if (ldap_errno($searchLDAP->server()) != 0) {
+                        $searchError .= ' ' . getDefaultLDAPErrorString($searchLDAP->server());
+                    }
+                }
+            }
+            else {
+                $searchSuccess = false;
+                $searchError = _('Unable to find the user name in LDAP.');
+                if (ldap_errno($searchLDAP->server()) != 0) {
+                    $searchError .= ' ' . getDefaultLDAPErrorString($searchLDAP->server());
+                }
+            }
+			if (!$searchSuccess) {
+				$error_message = $searchError;
+				logNewMessage(LOG_ERR, 'User ' . $username . ' (' . $clientSource . ') failed to log in. ' . $searchError . '');
+				$searchLDAP->close();
+				display_LoginPage($licenseValidator, $error_message);
+				exit();
 			}
-			else {
-				$searchSuccess = false;
-				$searchError = _('Unable to find the user name in LDAP.');
-				if (ldap_errno($searchLDAP->server()) != 0) {
-					$searchError .= ' ' . getDefaultLDAPErrorString($searchLDAP->server());
-				}
-			}
-		}
-		if (!$searchSuccess) {
-			$error_message = $searchError;
-			logNewMessage(LOG_ERR, 'User ' . $username . ' (' . $clientSource . ') failed to log in. ' . $searchError . '');
 			$searchLDAP->close();
-			display_LoginPage($licenseValidator, $error_message);
-			exit();
 		}
-		$searchLDAP->close();
+        catch (LAMException $e) {
+	        $searchLDAP->close();
+	        display_LoginPage($licenseValidator, $e->getTitle(), $e->getMessage());
+	        exit();
+        }
 	}
 	// try to connect to LDAP
-	$result = $_SESSION['ldap']->connect($username, $password); // Connect to LDAP server for verifying username/password
-	if($result === 0) {// Username/password correct. Do some configuration and load main frame.
+    try {
+	    $_SESSION['ldap']->connect($username, $password); // Connect to LDAP server for verifying username/password
 		$_SESSION['loggedIn'] = true;
 		// set security settings for session
 		$_SESSION['sec_session_id'] = session_id();
@@ -586,26 +589,10 @@ if(isset($_POST['checklogin'])) {
 		}
 		die();
 	}
-	else {
-		if (($result === False)
-				|| ($result == 81)) {
-			// connection failed
-			$error_message = _("Cannot connect to specified LDAP server. Please try again.");
-			logNewMessage(LOG_ERR, 'User ' . $username . ' (' . $clientSource . ') failed to log in (LDAP error: ' . ldap_err2str($result) . ').');
-		}
-		elseif ($result == 49) {
-			// user name/password invalid. Return to login page.
-			$error_message = _("Wrong password/user name combination. Please try again.");
-			logNewMessage(LOG_ERR, 'User ' . $username . ' (' . $clientSource . ') failed to log in (wrong password).');
-		}
-		else {
-			// other errors
-			$error_message = _("LDAP error, server says:") .  "\n<br>($result) " . ldap_err2str($result);
-			logNewMessage(LOG_ERR, 'User ' . $username . ' (' . $clientSource . ') failed to log in (LDAP error: ' . ldap_err2str($result) . ').');
-		}
-		display_LoginPage($licenseValidator, $error_message);
+	catch (LAMException $e) {
+		display_LoginPage($licenseValidator, $e->getTitle(), $e->getMessage());
 		exit();
-	}
+    }
 }
 
 //displays the login window
