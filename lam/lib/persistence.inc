@@ -80,7 +80,6 @@ class ConfigDataExporter {
 		 * TODO
 		 *
 		 * webauthn
-		 * cron job runs
 		 */
 		return json_encode($jsonData);
 	}

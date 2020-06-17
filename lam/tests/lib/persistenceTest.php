@@ -62,6 +62,14 @@ class ConfigDataExporterTest extends TestCase {
 				'group' => array('default' => array('key' => 'value')),
 			)),
 		);
+		$pdfTemplateData = array(
+			'user' => array('default' => array('key' => 'value')),
+			'group' => array('default' => array('key' => 'value')),
+		);
+		$selfServiceData = array(
+			'profile1' => array('key' => 'value'),
+			'profile2' => array('key' => 'value'),
+		);
 		$expectedJson = json_encode(array(
 			'mainConfig' => $mainData,
 			'certificates' => 'certs',
@@ -69,11 +77,14 @@ class ConfigDataExporterTest extends TestCase {
 			'accountProfiles' => $accountProfileData,
 			'accountProfileTemplates' => $accountProfileTemplateData,
 			'pdfProfiles' => $pdfData,
+			'pdfProfileTemplates' => $pdfTemplateData,
+			'selfServiceProfiles' => $selfServiceData,
 		));
 
 		$exporter = $this->getMockBuilder('\LAM\PERSISTENCE\ConfigDataExporter')
 			->setMethods(array('_getMainConfigData', '_getCertificates', '_getServerProfiles',
-				'_getAccountProfiles', '_getAccountProfileTemplates', '_getPdfProfiles'))
+				'_getAccountProfiles', '_getAccountProfileTemplates', '_getPdfProfiles',
+				'_getPdfProfileTemplates', '_getSelfServiceProfiles'))
 			->getMock();
 		$exporter->method('_getMainConfigData')->willReturn($mainData);
 		$exporter->method('_getCertificates')->willReturn('certs');
@@ -81,6 +92,8 @@ class ConfigDataExporterTest extends TestCase {
 		$exporter->method('_getAccountProfiles')->willReturn($accountProfileData);
 		$exporter->method('_getAccountProfileTemplates')->willReturn($accountProfileTemplateData);
 		$exporter->method('_getPdfProfiles')->willReturn($pdfData);
+		$exporter->method('_getPdfProfileTemplates')->willReturn($pdfTemplateData);
+		$exporter->method('_getSelfServiceProfiles')->willReturn($selfServiceData);
 
 		$json = $exporter->exportAsJson();
 
