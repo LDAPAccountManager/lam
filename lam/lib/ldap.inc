@@ -67,19 +67,19 @@ class Ldap{
 	}
 
 	/**
-	* Connects to the server using the given username and password
-	*
-	* @param string $user user name
-	* @param string $passwd password
-	* @param boolean $allowAnonymous specifies if anonymous binds are allowed
-	* @return mixed if connect succeeds the 0 is returned, else false or error number
-	*/
+	 * Connects to the server using the given username and password
+	 *
+	 * @param string $user user name
+	 * @param string $passwd password
+	 * @param boolean $allowAnonymous specifies if anonymous binds are allowed
+	 * @throws LAMException unable to connect
+	 */
 	public function connect($user, $passwd, $allowAnonymous=false) {
 		// close any prior connection
 		@$this->close();
 		// do not allow anonymous bind
 		if (!$allowAnonymous && ((!$user)||($user == "")||(!$passwd))) {
-			return false;
+			throw new LAMException(_("Cannot connect to specified LDAP server. Please try again."));
 		}
 		// save password und username encrypted
 		$this->encrypt_login($user, $passwd);
@@ -94,17 +94,29 @@ class Ldap{
 			if ($bind) {
 				$return = ldap_errno($this->server);
 				$this->is_connected = true;
-				// return success number
-				return $return;
+				return;
 			}
 			// return error number
+			$errorNumber = ldap_errno($this->server);
+			$clientSource = empty($_SERVER['REMOTE_ADDR']) ? '' : $_SERVER['REMOTE_ADDR'];
+			if (($errorNumber === False)
+				|| ($errorNumber == 81)) {
+				// connection failed
+				logNewMessage(LOG_ERR, 'User ' . $user . ' (' . $clientSource . ') failed to log in (LDAP error: ' . getDefaultLDAPErrorString($this->server) . ').');
+				throw new LAMException(_("Cannot connect to specified LDAP server. Please try again."));
+			}
+			elseif ($errorNumber == 49) {
+				// user name/password invalid. Return to login page.
+				logNewMessage(LOG_ERR, 'User ' . $user . ' (' . $clientSource . ') failed to log in (wrong password). ' . getDefaultLDAPErrorString($this->server));
+				throw new LAMException(_("Wrong password/user name combination. Please try again."), getDefaultLDAPErrorString($this->server));
+			}
 			else {
-				return ldap_errno($this->server);
+				// other errors
+				logNewMessage(LOG_ERR, 'User ' . $user . ' (' . $clientSource . ') failed to log in (LDAP error: ' . getDefaultLDAPErrorString($this->server) . ').');
+				throw new LAMException(_("LDAP error, server says:"),  "($errorNumber) " . getDefaultLDAPErrorString($this->server));
 			}
 		}
-		else {
-			return false;
-		}
+		throw new LAMException(_("Cannot connect to specified LDAP server. Please try again."));
 	}
 
 	/** Closes connection to server */
@@ -121,8 +133,13 @@ class Ldap{
 	*/
 	public function server() {
 		if (!$this->is_connected) {
-			$this->connect($this->getUserName(), $this->getPassword());
-			$this->is_connected = true;
+			try {
+				$this->connect($this->getUserName(), $this->getPassword());
+				$this->is_connected = true;
+			}
+			catch (LAMException $e) {
+				logNewMessage(LOG_ERR, $e->getTitle() . ' ' . $e->getMessage());
+			}
 		}
 		return $this->server;
 	}

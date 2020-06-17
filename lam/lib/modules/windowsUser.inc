@@ -45,6 +45,11 @@ class windowsUser extends baseModule implements passwordService {
 	/** account is disabled */
 	const AC_ACCOUNT_DISABLED = 0x00000002;
 
+	/** display groups as dn */
+	const DISPLAY_GROUPS_DN = 'DN';
+	/** display groups as cn */
+	const DISPLAY_GROUPS_CN = 'CN';
+
 	/** current group list */
 	private $groupList = array();
 	/** original group list */
@@ -411,6 +416,10 @@ class windowsUser extends baseModule implements passwordService {
 			"workstations" => array(
 				"Headline" => _("Workstations"), 'attr' => 'userWorkstations',
 				"Text" => _("Comma separated list of workstations the user is allowed to login. Empty means every workstation."). ' '. _("Can be left empty.")
+			),
+			'displayGroups' => array(
+				"Headline" => _('Display format'),
+				"Text" => _('Specifies how groups are displayed.')
 			),
 		);
 		// upload fields
@@ -1359,22 +1368,60 @@ class windowsUser extends baseModule implements passwordService {
 		$containerRight->add(new htmlAccountPageButton(get_class($this), 'group', 'edit', _('Edit groups')), 12);
 		$containerRight->addVerticalSpacer('1rem');
 		$groupsList = new htmlGroup();
-		$groupCNs = array();
-		for ($i = 0; $i < sizeof($this->groupList); $i++) {
-			$groupCNs[] = extractRDNValue($this->groupList[$i]);
+		$groupNames = array();
+		if ($this->groupDisplayContainsDn()) {
+			usort($this->groupList, 'compareDN');
 		}
-		natcasesort($groupCNs);
-		foreach ($groupCNs as $cn) {
+		foreach ($this->groupList as $groupDn) {
+			$groupCn = extractRDNValue($groupDn);
+			$groupNames[] = $this->formatGroupName($groupCn, $groupDn);
+		}
+		if (!$this->groupDisplayContainsDn()) {
+			natcasesort($groupNames);
+		}
+		foreach ($groupNames as $cn) {
 			$groupsList->addElement(new htmlOutputText($cn));
 			$groupsList->addElement(new htmlOutputText('<br>', false));
 		}
-		$containerRight->add($groupsList, 12);
+		$groupsListClass = $this->groupDisplayContainsDn() ? 'rightToLeftText' : '';
+		$groupsListDiv = new htmlDiv(null, $groupsList, array($groupsListClass));
+		$containerRight->add($groupsListDiv, 12);
 
 		$container = new htmlResponsiveRow();
-		$container->add($containerLeft, 12, 7);
-		$container->add(new htmlSpacer('1rem', null), 0, 1);
-		$container->add($containerRight, 12, 4);
+		$container->add($containerLeft, 12, 12, 7);
+		$container->add(new htmlSpacer('1rem', null), 0, 0, 1);
+		$container->add($containerRight, 12, 12, 4);
 		return $container;
+	}
+
+	/**
+	 * Formats a group name for the display.
+	 *
+	 * @param string $cn common name
+	 * @param string $dn DN
+	 * @return string formatted name
+	 */
+	private function formatGroupName($cn, $dn) {
+		$mode = empty($this->moduleSettings['windowsUser_displayGroups'][0]) ? 'dn' : $this->moduleSettings['windowsUser_displayGroups'][0];
+		switch ($mode) {
+			case self::DISPLAY_GROUPS_CN:
+				return $cn;
+				break;
+			case self::DISPLAY_GROUPS_DN:
+			default:
+				return getAbstractDN($dn);
+				break;
+		}
+	}
+
+	/**
+	 * Returns if the group display name contains the DN.
+	 *
+	 * @return bool contains DN.
+	 */
+	private function groupDisplayContainsDn() {
+		$mode = empty($this->moduleSettings['windowsUser_displayGroups'][0]) ? 'dn' : $this->moduleSettings['windowsUser_displayGroups'][0];
+		return ($mode == self::DISPLAY_GROUPS_DN);
 	}
 
 	/**
@@ -1820,26 +1867,45 @@ class windowsUser extends baseModule implements passwordService {
 		$return->setCSSClasses(array('maxrow'));
 		$return->add(new htmlSubTitle(_("Groups")), 12);
 		$groups = $this->findGroups();
+		$groupDisplayContainsDn = $this->groupDisplayContainsDn();
 		// sort by DN
-		usort($groups, 'compareDN');
+		if ($groupDisplayContainsDn) {
+			usort($groups, 'compareDN');
+		}
 
 		$selectedGroups = array();
 		// sort by DN
-		usort($this->groupList, 'compareDN');
+		if ($groupDisplayContainsDn) {
+			usort($this->groupList, 'compareDN');
+		}
 		for ($i = 0; $i < sizeof($this->groupList); $i++) {
 			if (in_array($this->groupList[$i], $groups)) {
-				$selectedGroups[getAbstractDN($this->groupList[$i])] = $this->groupList[$i];
+				$groupDn = $this->groupList[$i];
+				$groupCn = extractRDNValue($groupDn);
+				$displayName = $this->formatGroupName($groupCn, $groupDn);
+				$selectedGroups[$displayName] = $groupDn;
 			}
 		}
 		$availableGroups = array();
 		foreach ($groups as $dn) {
 			if (!in_array($dn, $this->groupList)) {
-				$availableGroups[getAbstractDN($dn)] = $dn;
+				$groupCn = extractRDNValue($dn);
+				$displayName = $this->formatGroupName($groupCn, $dn);
+				$availableGroups[$displayName] = $dn;
 			}
 		}
 
+		if (!$groupDisplayContainsDn) {
+			$selectedGroups = array_flip($selectedGroups);
+			natcasesort($selectedGroups);
+			$selectedGroups = array_flip($selectedGroups);
+			$availableGroups = array_flip($availableGroups);
+			natcasesort($availableGroups);
+			$availableGroups = array_flip($availableGroups);
+		}
+
 		$this->addDoubleSelectionArea($return, _("Selected groups"), _("Available groups"),
-				$selectedGroups, null, $availableGroups, null, 'groups', true, true);
+				$selectedGroups, null, $availableGroups, null, 'groups', $groupDisplayContainsDn, true);
 
 		// sync options
 		$typeManager = new TypeManager();
@@ -3689,6 +3755,13 @@ class windowsUser extends baseModule implements passwordService {
 		// configuration options
 		$configContainer = new htmlResponsiveRow();
 		$configContainer->add(new htmlResponsiveInputTextarea('windowsUser_domains', '', 30, 3, _('Domains'), 'domains'), 12);
+		$displayOptions = array(
+			'dn' => self::DISPLAY_GROUPS_DN,
+			'cn' => self::DISPLAY_GROUPS_CN,
+		);
+		$groupDisplaySelect = new htmlResponsiveSelect('windowsUser_displayGroups', $displayOptions, array(), _('Display format'), 'displayGroups');
+		$groupDisplaySelect->setHasDescriptiveElements(true);
+		$configContainer->add($groupDisplaySelect, 12);
 		$configHiddenGroup = new htmlGroup();
 		$configHiddenGroup->addElement(new htmlOutputText(_('Hidden options')));
 		$configHiddenGroup->addElement(new htmlHelpLink('hiddenOptions'));

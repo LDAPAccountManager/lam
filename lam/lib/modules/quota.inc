@@ -267,13 +267,13 @@ class quota extends baseModule {
 			return $value;
 		}
 		if ($value >= $tebibytes) {
-			return round($value / $tebibytes, 3) . 'T';
+			return round($value / $tebibytes, 2) . 'T';
 		}
 		if ($value >= $gibibytes) {
-			return round($value / $gibibytes, 3) . 'G';
+			return round($value / $gibibytes, 2) . 'G';
 		}
 		if ($value >= $mebibytes) {
-			return round($value / $mebibytes, 3) . 'M';
+			return round($value / $mebibytes, 2) . 'M';
 		}
 		return $value;
 	}
@@ -322,16 +322,16 @@ class quota extends baseModule {
 			return $value;
 		}
 		if ($value >= $trillion) {
-			return round($value / $trillion, 3) . 't';
+			return round($value / $trillion, 2) . 't';
 		}
 		if ($value >= $billion) {
-			return round($value / $billion, 3) . 'g';
+			return round($value / $billion, 2) . 'g';
 		}
 		if ($value >= $million) {
-			return round($value / $million, 3) . 'm';
+			return round($value / $million, 2) . 'm';
 		}
 		if ($value >= $kilo) {
-			return round($value / $kilo, 3) . 'k';
+			return round($value / $kilo, 2) . 'k';
 		}
 		return $value;
 	}
