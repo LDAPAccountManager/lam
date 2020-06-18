@@ -100,9 +100,9 @@ function setlanguage() {
 /**
  * Checks whether a specific flag in the rights string is set.
  *
- * @param $right read,write or execute
- * @param $target owner,group or other
- * @param $chmod the chmod rights
+ * @param string $right read, write or execute
+ * @param string $target owner, group or other
+ * @param string $chmod the chmod rights
  *
  * @return true, if the chmod $right for $target were set
  */
@@ -467,6 +467,9 @@ class LAMConfig {
 	/** overlay for referential integrity is activated */
 	private $referentialIntegrityOverlay = 'false';
 
+	/** hide password prompt for expired passwords */
+	private $hidePasswordPromptForExpiredPasswords = 'false';
+
 	/** Array of string: users with admin rights */
 	private $Admins;
 
@@ -626,7 +629,8 @@ class LAMConfig {
 		'scriptUserName', 'scriptSSHKey', 'scriptSSHKeyPassword', 'twoFactorAuthentication', 'twoFactorAuthenticationURL',
 		'twoFactorAuthenticationInsecure', 'twoFactorAuthenticationLabel', 'twoFactorAuthenticationOptional',
 		'twoFactorAuthenticationCaption', 'twoFactorAuthenticationClientId', 'twoFactorAuthenticationSecretKey',
-		'twoFactorAuthenticationDomain', 'twoFactorAuthenticationAttribute', 'referentialIntegrityOverlay'
+		'twoFactorAuthenticationDomain', 'twoFactorAuthenticationAttribute', 'referentialIntegrityOverlay',
+		'hidePasswordPromptForExpiredPasswords'
 	);
 
 
@@ -933,6 +937,9 @@ class LAMConfig {
 			if (!in_array("referentialIntegrityOverlay", $saved)) {
 				array_push($file_array, "\n" . "referentialIntegrityOverlay: " . $this->referentialIntegrityOverlay . "\n");
 			}
+			if (!in_array("hidePasswordPromptForExpiredPasswords", $saved)) {
+				array_push($file_array, "\n" . "hidePasswordPromptForExpiredPasswords: " . $this->hidePasswordPromptForExpiredPasswords . "\n");
+			}
 			if (!in_array("Passwd", $saved)) {
 				array_push($file_array, "\n\n# password to change these preferences via webfrontend\n" . "Passwd: " . $this->Passwd . "\n");
 			}
@@ -1176,9 +1183,11 @@ class LAMConfig {
 	* @return boolean true if $value has correct format
 	*/
 	public function set_ServerURL($value) {
-		if (is_string($value)) $this->ServerURL = $value;
-		else return false;
-		return true;
+		if (is_string($value)) {
+			$this->ServerURL = $value;
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -1209,9 +1218,11 @@ class LAMConfig {
 	* @return boolean true if $value has correct format
 	*/
 	public function setServerDisplayName($value) {
-		if (is_string($value)) $this->serverDisplayName = $value;
-		else return false;
-		return true;
+		if (is_string($value)) {
+			$this->serverDisplayName = $value;
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -1301,6 +1312,33 @@ class LAMConfig {
 	}
 
 	/**
+	 * Hide password prompt for expired passwords.
+	 *
+	 * @return String true or false
+	 */
+	public function getHidePasswordPromptForExpiredPasswords() {
+		return $this->hidePasswordPromptForExpiredPasswords;
+	}
+
+	/**
+	 * Sets if password prompt for expired passwords is hidden.
+	 *
+	 * @param String $hidePasswordPromptForExpiredPasswords true or false
+	 */
+	public function setHidePasswordPromptForExpiredPasswords($hidePasswordPromptForExpiredPasswords) {
+		$this->hidePasswordPromptForExpiredPasswords = $hidePasswordPromptForExpiredPasswords;
+	}
+
+	/**
+	 * Hide password prompt for expired passwords.
+	 *
+	 * @return bool is hidden
+	 */
+	public function isHidePasswordPromptForExpiredPasswords() {
+		return $this->hidePasswordPromptForExpiredPasswords === 'true';
+	}
+
+	/**
 	* Returns an array of string with all admin names
 	*
 	* @return array the admin names
@@ -1326,11 +1364,11 @@ class LAMConfig {
 	*/
 	public function set_Adminstring($value) {
 		if (is_string($value) &&
-		preg_match("/^[^;]+(;[^;]+)*$/", $value)) {
+			preg_match("/^[^;]+(;[^;]+)*$/", $value)) {
 			$this->Admins = $value;
+			return true;
 		}
-		else return false;
-		return true;
+		return false;
 	}
 
 	/**
@@ -1406,7 +1444,9 @@ class LAMConfig {
 	* @return boolean true if $value has correct format
 	*/
 	public function set_Suffix($scope, $value) {
-		if (!$value) $value = "";
+		if (!$value) {
+			$value = "";
+		}
 		elseif (!is_string($value)) {
 			return false;
 		}
@@ -1771,9 +1811,9 @@ class LAMConfig {
 	public function set_searchLimit($value) {
 		if (is_numeric($value) && ($value > -1)) {
 			$this->searchLimit = $value;
+			return true;
 		}
-		else return false;
-		return true;
+		return false;
 	}
 
 	/**

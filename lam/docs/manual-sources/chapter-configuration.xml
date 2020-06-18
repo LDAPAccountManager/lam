@@ -503,6 +503,9 @@
           </listitem>
         </itemizedlist>
 
+        <para>Hide password prompt for expired password: Hides the password
+        prompt when a user with expired password logs into LAM.</para>
+
         <literallayout>
 </literallayout>
 

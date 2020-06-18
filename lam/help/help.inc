@@ -243,6 +243,8 @@ $helpArray = array (
 					"Text" => _('This email address will be set as sender address of the mails.')),
 				'290' => array ("Headline" => _('TO address'),
 					"Text" => _('This email address will be set as TO address for the mails.')),
+				"291" => array ("Headline" => _('Hide password prompt for expired password'),
+					"Text" => _('Hides the password prompt when a user with expired password logs into LAM.')),
 				// 300 - 399
 				// profile editor, file upload
 				"301" => array ("Headline" => _("RDN identifier"),

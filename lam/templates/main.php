@@ -1,10 +1,12 @@
 <?php
 namespace LAM\INIT;
+
+use locking389ds;
+
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2017  Roland Gruber
+  Copyright (C) 2003 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -43,8 +45,24 @@ setlanguage();
 \LAM\PROFILES\installProfileTemplates();
 \LAM\PDF\installPDFTemplates();
 
-// check if all suffixes in conf-file exist
 $conf = $_SESSION['config'];
+
+// check if user password is not expired
+if ((version_compare(phpversion(), '7.2.0') >= 0) && !$conf->isHidePasswordPromptForExpiredPasswords()) {
+	$userDn = $_SESSION['ldap']->getUserName();
+	$userData = ldapGetDN($userDn, array('*', '+', 'pwdReset', 'passwordExpirationTime'));
+	$ldapErrorCode = ldap_errno($_SESSION['ldap']->server());
+	if ($ldapErrorCode != 32) {
+		$pwdResetMarker = (!empty($userData['pwdreset'][0]) && ($userData['pwdreset'][0] == 'TRUE'));
+		$pwdExpiration = (!empty($userData)) && locking389ds::isPasswordExpired($userData);
+		if (($userData === null) || $pwdResetMarker || $pwdExpiration) {
+			metaRefresh("changePassword.php");
+			exit();
+		}
+	}
+}
+
+// check if all suffixes in conf-file exist
 $new_suffs = array();
 // get list of active types
 $typeManager = new \LAM\TYPES\TypeManager();
@@ -64,20 +82,17 @@ foreach ($types as $type) {
 // display page to add suffixes, if needed
 if ((sizeof($new_suffs) > 0) && checkIfWriteAccessIsAllowed()) {
 	metaRefresh("initsuff.php?suffs='" . implode(";", $new_suffs));
+	exit();
 }
-else {
-	if (sizeof($types) > 0) {
-		foreach ($types as $type) {
-			if ($type->isHidden()) {
-				continue;
-			}
-			metaRefresh("lists/list.php?type=" . $type->getId());
-			break;
+
+if (sizeof($types) > 0) {
+	foreach ($types as $type) {
+		if ($type->isHidden()) {
+			continue;
 		}
-	}
-	else {
-		metaRefresh("tree/treeViewContainer.php");
+		metaRefresh("lists/list.php?type=" . $type->getId());
+		exit();
 	}
 }
 
-?>
+metaRefresh("tree/treeViewContainer.php");

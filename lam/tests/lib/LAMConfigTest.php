@@ -168,6 +168,20 @@ class LAMConfigTest extends TestCase {
 	}
 
 	/**
+	 * Tests LAMConfig->getHidePasswordPromptForExpiredPasswords() and LAMConfig->setHidePasswordPromptForExpiredPasswords()
+	 */
+	public function testHidePasswordPromptForExpiredPasswords() {
+		$this->assertFalse($this->lAMConfig->isHidePasswordPromptForExpiredPasswords());
+		$val = 'true';
+		$this->lAMConfig->setHidePasswordPromptForExpiredPasswords($val);
+		$this->assertEquals($val, $this->lAMConfig->getHidePasswordPromptForExpiredPasswords());
+		$this->assertTrue($this->lAMConfig->isHidePasswordPromptForExpiredPasswords());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getHidePasswordPromptForExpiredPasswords());
+		$this->assertTrue($this->lAMConfig->isHidePasswordPromptForExpiredPasswords());
+	}
+
+	/**
 	 * Tests LAMConfig->get_Admins()
 	 */
 	public function testGet_Admins() {
