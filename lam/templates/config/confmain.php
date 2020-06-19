@@ -460,7 +460,7 @@ $searchPasswordInput = new htmlResponsiveInputField(_("Bind password"), 'loginSe
 $searchPasswordInput->setIsPassword(true);
 $row->add($searchPasswordInput, 12);
 // HTTP authentication
-$row->add(new htmlResponsiveInputCheckbox('httpAuthentication', ($conf->getHttpAuthentication() == 'true'), _('HTTP authentication'), '223', true), 12);
+$row->add(new htmlResponsiveInputCheckbox('httpAuthentication', ($conf->getHttpAuthentication() == 'true'), _('HTTP authentication'), '223'), 12);
 $row->addVerticalSpacer('1rem');
 
 // 2factor authentication
