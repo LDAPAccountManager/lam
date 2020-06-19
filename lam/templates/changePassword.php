@@ -82,7 +82,7 @@ if (isset($_POST['changePassword'])) {
 	$additionalAttrs = array();
 	$rdnAttr = extractRDNAttribute($userDn);
 	$userName = null;
-	if (($rdnAttr === 'uid') || ($rdnAttr === 'uid')) {
+	if ($rdnAttr === 'uid') {
 		$userName = extractRDNValue($userDn);
 	}
 	$pwdPolicyResult = checkPasswordStrength($password1, $userName, $additionalAttrs);
