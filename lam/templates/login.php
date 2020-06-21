@@ -170,6 +170,8 @@ $manifestUrl = preg_replace('/http(s)?:\\/\\/([^\\/])+/', '', $manifestUrl);
 $manifestUrl = preg_replace('/\\?.*/', '', $manifestUrl);
 $_SESSION['header'] .= '<link rel="manifest" href="' . $manifestUrl . '/templates/manifest.php" crossorigin="use-credentials">';
 
+setlanguage(); // setting correct language
+
 /**
  * Displays the login window.
  *
@@ -191,8 +193,6 @@ function display_LoginPage($licenseValidator, $error_message, $errorDetails = nu
 	}
 
 	$profiles = getConfigProfiles();
-
-	setlanguage(); // setting correct language
 
 	echo $_SESSION["header"];
 	printHeaderContents('LDAP Account Manager', '..');
@@ -590,6 +590,7 @@ if(isset($_POST['checklogin'])) {
 		die();
 	}
 	catch (LAMException $e) {
+		
 		display_LoginPage($licenseValidator, $e->getTitle(), $e->getMessage());
 		exit();
     }
