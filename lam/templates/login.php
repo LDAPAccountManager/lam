@@ -178,8 +178,9 @@ setlanguage(); // setting correct language
  * @param \LAM\ENV\LAMLicenseValidator $licenseValidator license validator
  * @param string $error_message error message to display
  * @param string $errorDetails error details
+ * @param string $extraMessage extra message that is shown as info
  */
-function display_LoginPage($licenseValidator, $error_message, $errorDetails = null) {
+function display_LoginPage($licenseValidator, $error_message, $errorDetails = null, $extraMessage = null) {
 	$config_object = $_SESSION['config'];
 	$cfgMain = $_SESSION["cfgMain"];
 	logNewMessage(LOG_DEBUG, "Display login page");
@@ -405,11 +406,14 @@ function display_LoginPage($licenseValidator, $error_message, $errorDetails = nu
 							$row->add(new htmlSpacer(null, '20px'), 12);
 							$row->add(new htmlButton('checklogin', _("Login")), 12);
 							// error message
-							if(!empty($error_message)) {
+							if (!empty($error_message)) {
 								$row->add(new \htmlSpacer(null, '5px'), 12);
 								$message = new htmlStatusMessage('ERROR', $error_message, $errorDetails);
-								$message->colspan = 3;
 								$row->add($message, 12);
+							}
+							if (!empty($extraMessage)) {
+								$extraMessage = new htmlStatusMessage('INFO', $extraMessage);
+								$row->add($extraMessage, 12);
 							}
 
 							parseHtml(null, $row, array(), false, $tabindex, 'user');
@@ -590,10 +594,30 @@ if(isset($_POST['checklogin'])) {
 		die();
 	}
 	catch (LAMException $e) {
-		
-		display_LoginPage($licenseValidator, $e->getTitle(), $e->getMessage());
+		$extraMessage = null;
+		if (($searchLDAP !== null) && ($e->getLdapErrorCode() == 49)) {
+			$extraMessage = getExtraInvalidCredentialsMessage($searchLDAP, $username);
+		}
+		display_LoginPage($licenseValidator, $e->getTitle(), $e->getMessage(), $extraMessage);
 		exit();
     }
+}
+
+/**
+ * Tries to get additional information why invalid credentials was returned. E.g. account is locked.
+ * 
+ * @param Ldap $ldap LDAP object to connect for getting extra data
+ * @param string $username failed DN
+ * @return string extra message
+ */
+function getExtraInvalidCredentialsMessage($ldap, $username) {
+	$extraMessage = null;
+	$userData = ldapGetDN($username, array('dn', 'pwdaccountlockedtime'), $ldap->server());
+	if (!empty($userData['pwdaccountlockedtime'][0])) {
+		$extraMessage = _('Account is locked');
+	}
+	$ldap->close();
+	return $extraMessage;
 }
 
 //displays the login window

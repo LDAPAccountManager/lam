@@ -1770,6 +1770,8 @@ function isDeveloperVersion($version) {
 class LAMException extends Exception {
 
 	private $title;
+	
+	private $ldapErrorCode;
 
 	/**
 	 * Constructor.
@@ -1777,10 +1779,12 @@ class LAMException extends Exception {
 	 * @param string $title title
 	 * @param string $message message (optional)
 	 * @param Exception $cause (optional)
+	 * @param int $ldapErrorCode original LDAP error code
 	 */
-	public function __construct($title, $message = null, $cause = null) {
+	public function __construct($title, $message = null, $cause = null, $ldapErrorCode = null) {
 		parent::__construct($message, null, $cause);
 		$this->title = $title;
+		$this->ldapErrorCode = $ldapErrorCode;
 	}
 
 	/**
@@ -1790,6 +1794,15 @@ class LAMException extends Exception {
 	 */
 	public function getTitle() {
 		return $this->title;
+	}
+
+	/**
+	 * Returns the original LDAP error code.
+	 *
+	 * @return int error code
+	 */
+	public function getLdapErrorCode() {
+		return $this->ldapErrorCode;
 	}
 
 }

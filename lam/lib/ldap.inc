@@ -92,7 +92,6 @@ class Ldap{
 			ldap_set_option($this->server,LDAP_OPT_REFERRALS, $followReferrals);
 			$bind = @ldap_bind($this->server, $user, $passwd);
 			if ($bind) {
-				$return = ldap_errno($this->server);
 				$this->is_connected = true;
 				return;
 			}
@@ -103,17 +102,17 @@ class Ldap{
 				|| ($errorNumber == 81)) {
 				// connection failed
 				logNewMessage(LOG_ERR, 'User ' . $user . ' (' . $clientSource . ') failed to log in (LDAP error: ' . getDefaultLDAPErrorString($this->server) . ').');
-				throw new LAMException(_("Cannot connect to specified LDAP server. Please try again."));
+				throw new LAMException(_("Cannot connect to specified LDAP server. Please try again."), null, null, $errorNumber);
 			}
 			elseif ($errorNumber == 49) {
 				// user name/password invalid. Return to login page.
 				logNewMessage(LOG_ERR, 'User ' . $user . ' (' . $clientSource . ') failed to log in (wrong password). ' . getDefaultLDAPErrorString($this->server));
-				throw new LAMException(_("Wrong password/user name combination. Please try again."), getDefaultLDAPErrorString($this->server));
+				throw new LAMException(_("Wrong password/user name combination. Please try again."), getDefaultLDAPErrorString($this->server), null, $errorNumber);
 			}
 			else {
 				// other errors
 				logNewMessage(LOG_ERR, 'User ' . $user . ' (' . $clientSource . ') failed to log in (LDAP error: ' . getDefaultLDAPErrorString($this->server) . ').');
-				throw new LAMException(_("LDAP error, server says:"),  "($errorNumber) " . getDefaultLDAPErrorString($this->server));
+				throw new LAMException(_("LDAP error, server says:"),  "($errorNumber) " . getDefaultLDAPErrorString($this->server), null, $errorNumber);
 			}
 		}
 		throw new LAMException(_("Cannot connect to specified LDAP server. Please try again."));
@@ -122,6 +121,7 @@ class Ldap{
 	/** Closes connection to server */
 	public function close() {
 		if ($this->server != null) {
+			$this->is_connected = false;
 			@ldap_close($this->server);
 		}
 	}
