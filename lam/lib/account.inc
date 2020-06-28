@@ -1487,6 +1487,18 @@ function getDefaultLDAPErrorString($server) {
 		logNewMessage(LOG_DEBUG, 'Password change failed because of ' . $extError);
 		$extError = _('Your password does not meet the password strength qualifications. Please retry with another one.');
 	}
+	elseif ((strpos($extError, 'DSID') !== false) && (strpos($extError, 'data 773,') !== false)) {
+		logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
+		$extError = _('Password change required');
+	}
+	elseif ((strpos($extError, 'DSID') !== false) && (strpos($extError, 'data 533,') !== false)) {
+		logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
+		$extError = _('Account is deactivated');
+	}
+	elseif ((strpos($extError, 'DSID') !== false) && (strpos($extError, 'data 701,') !== false)) {
+		logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
+		$extError = _('Account is expired');
+	}
 	$genericErrorMessage = ldap_error($server);
 	$message = _('LDAP error, server says:') . ' ' . $genericErrorMessage;
 	if (!empty($extError) && ($genericErrorMessage != $extError)) {
