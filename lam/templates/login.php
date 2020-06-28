@@ -1,5 +1,6 @@
 <?php
 namespace LAM\LOGIN;
+use DateTime;
 use LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 use \LAMConfig;
 use \LAMCfgMain;
@@ -598,6 +599,7 @@ if(isset($_POST['checklogin'])) {
 		$extraMessage = null;
 		if (($searchLDAP !== null) && ($e->getLdapErrorCode() == 49)) {
 			$extraMessage = getExtraInvalidCredentialsMessage($searchLDAP, $username);
+			$searchLDAP->close();
 		}
 		display_LoginPage($licenseValidator, $e->getTitle(), $e->getMessage(), $extraMessage);
 		exit();
@@ -612,13 +614,26 @@ if(isset($_POST['checklogin'])) {
  * @return string extra message
  */
 function getExtraInvalidCredentialsMessage($ldap, $username) {
-	$extraMessage = null;
-	$userData = ldapGetDN($username, array('dn', 'pwdaccountlockedtime'), $ldap->server());
+    $attributes = array('dn', 'pwdaccountlockedtime', 'krbprincipalexpiration',
+        'krbpasswordexpiration', 'passwordexpirationtime');
+	$userData = ldapGetDN($username, $attributes, $ldap->server());
+	$now = new DateTime('now', getTimeZone());
 	if (!empty($userData['pwdaccountlockedtime'][0])) {
-		$extraMessage = _('Account is locked');
+		return _('Account is locked');
 	}
-	$ldap->close();
-	return $extraMessage;
+	if (!empty($userData['krbprincipalexpiration'][0])) {
+		$kerberosExpirationDate = parseLDAPTimestamp($userData['krbprincipalexpiration'][0]);
+		if ($now >= $kerberosExpirationDate) {
+			return _('Kerberos account is expired');
+		}
+	}
+	if (!empty($userData['krbpasswordexpiration'][0])) {
+		$kerberosExpirationDate = parseLDAPTimestamp($userData['krbpasswordexpiration'][0]);
+		if ($now >= $kerberosExpirationDate) {
+			return _('Kerberos password is expired');
+		}
+	}
+	return null;
 }
 
 //displays the login window
