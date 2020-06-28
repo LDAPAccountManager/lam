@@ -1483,21 +1483,35 @@ function getExtendedLDAPErrorMessage($server) {
 function getDefaultLDAPErrorString($server) {
 	$extError = htmlspecialchars(getExtendedLDAPErrorMessage($server));
 	// Active Directory message translations
-	if ((strpos($extError, 'DSID-031A120C') !== false) && (strpos($extError, '5003') !== false)) {
-		logNewMessage(LOG_DEBUG, 'Password change failed because of ' . $extError);
-		$extError = _('Your password does not meet the password strength qualifications. Please retry with another one.');
-	}
-	elseif ((strpos($extError, 'DSID') !== false) && (strpos($extError, 'data 773,') !== false)) {
-		logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
-		$extError = _('Password change required');
-	}
-	elseif ((strpos($extError, 'DSID') !== false) && (strpos($extError, 'data 533,') !== false)) {
-		logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
-		$extError = _('Account is deactivated');
-	}
-	elseif ((strpos($extError, 'DSID') !== false) && (strpos($extError, 'data 701,') !== false)) {
-		logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
-		$extError = _('Account is expired');
+	if (strpos($extError, 'DSID') !== false) {
+		if (strpos($extError, '5003') !== false) {
+			logNewMessage(LOG_DEBUG, 'Password change failed because of ' . $extError);
+			$extError = _('Your password does not meet the password strength qualifications. Please retry with another one.');
+		}
+		elseif (strpos($extError, 'data 530,') !== false) {
+			logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
+			$extError = _('Logon not permitted at this time');
+		}
+		elseif (strpos($extError, 'data 532,') !== false) {
+			logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
+			$extError = _('Password is expired');
+		}
+		elseif (strpos($extError, 'data 533,') !== false) {
+			logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
+			$extError = _('Account is deactivated');
+		}
+		elseif (strpos($extError, 'data 701,') !== false) {
+			logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
+			$extError = _('Account is expired');
+		}
+		elseif (strpos($extError, 'data 773,') !== false) {
+			logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
+			$extError = _('Password change required');
+		}
+		elseif (strpos($extError, 'data 775,') !== false) {
+			logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
+			$extError = _('Account is locked');
+		}
 	}
 	$genericErrorMessage = ldap_error($server);
 	$message = _('LDAP error, server says:') . ' ' . $genericErrorMessage;
