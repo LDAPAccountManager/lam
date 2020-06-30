@@ -1522,6 +1522,36 @@ function getDefaultLDAPErrorString($server) {
 }
 
 /**
+ * Tries to get additional information why invalid credentials was returned. E.g. account is locked.
+ *
+ * @param handle $ldap LDAP object to connect for getting extra data
+ * @param string $userDn failed DN
+ * @return string extra message
+ */
+function getExtraInvalidCredentialsMessage($ldap, $userDn) {
+	$attributes = array('dn', 'pwdaccountlockedtime', 'krbprincipalexpiration',
+		'krbpasswordexpiration', 'passwordexpirationtime');
+	$userData = ldapGetDN($userDn, $attributes, $ldap);
+	$now = new DateTime('now', getTimeZone());
+	if (!empty($userData['pwdaccountlockedtime'][0])) {
+		return _('Account is locked');
+	}
+	if (!empty($userData['krbprincipalexpiration'][0])) {
+		$kerberosExpirationDate = parseLDAPTimestamp($userData['krbprincipalexpiration'][0]);
+		if ($now >= $kerberosExpirationDate) {
+			return _('Kerberos account is expired');
+		}
+	}
+	if (!empty($userData['krbpasswordexpiration'][0])) {
+		$kerberosExpirationDate = parseLDAPTimestamp($userData['krbpasswordexpiration'][0]);
+		if ($now >= $kerberosExpirationDate) {
+			return _('Kerberos password is expired');
+		}
+	}
+	return null;
+}
+
+/**
  * Returns the URL under which the page was loaded.
  * This includes any GET parameters set.
  *
