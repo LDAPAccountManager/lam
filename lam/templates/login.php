@@ -406,16 +406,6 @@ function display_LoginPage($licenseValidator, $error_message, $errorDetails = nu
 							// login button
 							$row->add(new htmlSpacer(null, '20px'), 12);
 							$row->add(new htmlButton('checklogin', _("Login")), 12);
-							// error message
-							if (!empty($error_message)) {
-								$row->add(new \htmlSpacer(null, '5px'), 12);
-								$message = new htmlStatusMessage('ERROR', $error_message, $errorDetails);
-								$row->add($message, 12);
-							}
-							if (!empty($extraMessage)) {
-								$extraMessage = new htmlStatusMessage('INFO', $extraMessage);
-								$row->add($extraMessage, 12);
-							}
 
 							parseHtml(null, $row, array(), false, $tabindex, 'user');
 						?>
@@ -426,6 +416,20 @@ function display_LoginPage($licenseValidator, $error_message, $errorDetails = nu
 			</tr>
 			<tr>
 				<td colspan="2" style="border-style:none;">
+                    <?php
+                    $row = new htmlResponsiveRow();
+                    // error message
+                    if (!empty($error_message)) {
+	                    $row->add(new \htmlSpacer(null, '5px'), 12);
+	                    $message = new htmlStatusMessage('ERROR', $error_message, $errorDetails);
+	                    $row->add($message, 12);
+                    }
+                    if (!empty($extraMessage)) {
+	                    $extraMessage = new htmlStatusMessage('INFO', $extraMessage);
+	                    $row->add($extraMessage, 12);
+                    }
+                    parseHtml(null, $row, array(), false, $tabindex, 'user');
+                    ?>
 					<hr class="margin20">
 				</td>
 			</tr>
