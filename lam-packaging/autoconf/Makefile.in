@@ -72,7 +72,7 @@ install-lam:
 	LIST4="`(cd $(srcdir)/$(LIST3) ; ls -d *)`" ; \
 	(cd $(srcdir)/$(LIST3) ; $(TAR) cf - .) | \
 		(cd $(DESTDIR)$(sysconfdir) ; $(TAR) xf -) ; \
-	$(LN_S) $(sysconfdir) ${LIST3} ; \
+	[ -e ${LIST3} ] || $(LN_S) $(sysconfdir) ${LIST3} ; \
 	(cd $(srcdir) ; $(TAR) cf - $(LIST1)) | $(TAR) xf - ; \
 	[ -d $(DESTDIR)$(prefix)/docs ]  ||  \
 		$(MKDIR) -p $(DESTDIR)$(prefix)/docs  ||  exit 1 ; \
