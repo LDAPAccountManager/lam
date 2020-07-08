@@ -650,6 +650,53 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 		$pdo->exec($sql);
 	}
 
+	/**
+	 * Exports all entries.
+	 *
+	 * @return array data
+	 */
+	public function export() {
+		$pdo = $this->getPDO();
+		$statement = $pdo->prepare('select * from ' . self::TABLE_NAME);
+		$statement->execute();
+		$dbData = $statement->fetchAll();
+		$data = array();
+		foreach ($dbData as $dbRow) {
+			$data[] = array(
+				'userId' => $dbRow['userId'],
+				'credentialId' => $dbRow['credentialId'],
+				'credentialSource' => $dbRow['credentialSource'],
+				'registrationTime' => $dbRow['registrationTime'],
+				'lastUseTime' => $dbRow['lastUseTime'],
+			);
+		}
+		return $data;
+	}
+
+	/**
+	 * Imports entries from export data.
+	 *
+	 * @param array $data export data
+	 */
+	public function import($data) {
+		$pdo = $this->getPDO();
+		$statement = $pdo->prepare('delete from ' . self::TABLE_NAME);
+		$statement->execute();
+		if (empty($data)) {
+			return;
+		}
+		foreach ($data as $dbRow) {
+			$statement = $pdo->prepare('insert into ' . self::TABLE_NAME . ' (userId, credentialId, credentialSource, registrationTime, lastUseTime) VALUES (?, ?, ?, ?, ?)');
+			$statement->execute(array(
+				$dbRow['userId'],
+				$dbRow['credentialId'],
+				$dbRow['credentialSource'],
+				$dbRow['registrationTime'],
+				$dbRow['lastUseTime']
+			));
+		}
+	}
+
 }
 
 
