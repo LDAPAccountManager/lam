@@ -80,12 +80,10 @@ $content = new htmlResponsiveRow();
         	$selfServiceLink->setCSSClasses(array('img-padding1 display-as-block'));
 	        $topContent->add($selfServiceLink, 12);
         }
-        if (isDeveloperVersion(LAMVersion())) {
-	        $topContent->addVerticalSpacer('1rem');
-	        $importExportLink = new htmlLink(_("Import and export configuration"), 'confImportExport.php', '../../graphics/confImportExport.png');
-	        $importExportLink->setCSSClasses(array('img-padding1 display-as-block'));
-	        $topContent->add($importExportLink, 12);
-        }
+        $topContent->addVerticalSpacer('1rem');
+        $importExportLink = new htmlLink(_("Import and export configuration"), 'confImportExport.php', '../../graphics/confImportExport.png');
+        $importExportLink->setCSSClasses(array('img-padding1 display-as-block'));
+        $topContent->add($importExportLink, 12);
         $content->add($topContent, 12);
         $content->addVerticalSpacer('4rem');
         ?>
