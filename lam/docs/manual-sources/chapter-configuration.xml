@@ -2211,4 +2211,50 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
       </section>
     </section>
   </section>
+
+  <section>
+    <title>Self Service (LAM Pro)</title>
+
+    <para>See <link linkend="a_selfService">Self Service
+    chapter</link>.</para>
+  </section>
+
+  <section>
+    <title>Import and export configuration</title>
+
+    <para>Here you can export and import LAM's whole configuration. You can
+    use this to backup the configuration or migrate from one server to
+    another.</para>
+
+    <para>You will need to login with the configuration master password to use
+    this feature.</para>
+
+    <screenshot>
+      <graphic fileref="images/confImportExport1.png"/>
+    </screenshot>
+
+    <para><emphasis role="bold">Export</emphasis></para>
+
+    <para>This will dump the whole configuration to one big single file. It is
+    not possible to dump only parts of the configuration. During import you
+    can select what exactly to import.</para>
+
+    <para><emphasis role="bold">Import</emphasis></para>
+
+    <para>Please select the import file first and submit. LAM will then
+    present you possible import data. You can select what to import using the
+    checkboxes.</para>
+
+    <para>Please note that LAM will not delete e.g. server profiles that are
+    not in the import file.</para>
+
+    <para>Example: You have profile1+profile2 in your LAM installation and
+    profile2+profile3 in your import file. When you select to import all
+    server profiles then profile1 stays untouched, profile2 will be
+    overwritten and profile3 will be added.</para>
+
+    <screenshot>
+      <graphic fileref="images/confImportExport2.png"/>
+    </screenshot>
+  </section>
 </chapter>

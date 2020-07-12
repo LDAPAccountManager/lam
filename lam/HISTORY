@@ -1,5 +1,6 @@
 September 2020
   - PHP 7.4 compatibility
+  - Configuration export and import
   - Show password prompt when a user with expired password logs into LAM admin interface (requires PHP 7.2)
   - Better error messages on login when account is expired/deactivated/...
   - Windows users: group display format can be configured (cn/dn)
