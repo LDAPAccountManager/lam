@@ -802,6 +802,16 @@ function searchLDAPByFilter($filter, $attributes, $scopes, $attrsOnly = false) {
 	$typeManager = new \LAM\TYPES\TypeManager();
 	$types = $typeManager->getConfiguredTypesForScopes($scopes);
 	foreach ($types as $type) {
+		$additionalFilter = $type->getAdditionalLdapFilter();
+		if (!empty($additionalFilter)) {
+			if (strpos($additionalFilter, '(') !== 0) {
+				$additionalFilter = '(' . $additionalFilter . ')';
+			}
+			if (strpos($filter, '(') !== 0) {
+				$filter = '(' . $filter . ')';
+			}
+			$filter = '(&' . $additionalFilter . $filter . ')';
+		}
 		// search LDAP
 		$entries = searchLDAPPaged($_SESSION['ldap']->server(), escapeDN($type->getSuffix()),
 					$filter, $attributes, $readAttributesOnly, $_SESSION['config']->get_searchLimit());
