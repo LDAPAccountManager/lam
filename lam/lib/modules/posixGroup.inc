@@ -1330,13 +1330,6 @@ class posixGroup extends baseModule implements passwordService {
 			if ($this->isWindows()) {
 				$filter = '(&(objectClass=user)(gidNumber=*))';
 			}
-			$typeFilter = $type->getAdditionalLdapFilter();
-			if (!empty($typeFilter)) {
-				if (strpos($typeFilter, '(') !== 0) {
-					$typeFilter = '(' . $typeFilter . ')';
-				}
-				$filter = '(&' . $filter . $typeFilter . ')';
-			}
 			$result = searchLDAPByFilter($filter, array('uid', 'gidNumber', 'cn'), array('user'));
 			$resultCount = sizeof($result);
 			for ($i = 0; $i < $resultCount; $i++) {
