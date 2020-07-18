@@ -70,6 +70,7 @@ class ConfigDataExporterTest extends TestCase {
 			'profile1' => array('key' => 'value'),
 			'profile2' => array('key' => 'value'),
 		);
+		$webauthn = array();
 		$expectedJson = json_encode(array(
 			'mainConfig' => $mainData,
 			'certificates' => 'certs',
@@ -79,6 +80,7 @@ class ConfigDataExporterTest extends TestCase {
 			'pdfProfiles' => $pdfData,
 			'pdfProfileTemplates' => $pdfTemplateData,
 			'selfServiceProfiles' => $selfServiceData,
+			'webauthn' => $webauthn
 		));
 
 		$exporter = $this->getMockBuilder('\LAM\PERSISTENCE\ConfigDataExporter')
@@ -94,6 +96,7 @@ class ConfigDataExporterTest extends TestCase {
 		$exporter->method('_getPdfProfiles')->willReturn($pdfData);
 		$exporter->method('_getPdfProfileTemplates')->willReturn($pdfTemplateData);
 		$exporter->method('_getSelfServiceProfiles')->willReturn($selfServiceData);
+		$exporter->method('_getWebauthn')->willReturn($webauthn);
 
 		$json = $exporter->exportAsJson();
 
