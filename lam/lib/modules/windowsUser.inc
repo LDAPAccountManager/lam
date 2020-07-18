@@ -3915,7 +3915,8 @@ class windowsUser extends baseModule implements passwordService {
 		return array(
 			new WindowsPasswordNotifyJob(),
 			new WindowsAccountExpirationCleanupJob(),
-			new WindowsAccountExpirationNotifyJob()
+			new WindowsAccountExpirationNotifyJob(),
+			new WindowsManagedGroupsNotifyJob()
 		);
 	}
 
@@ -4143,6 +4144,299 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			if ($success) {
 				$this->setDBLastPwdChangeTime($jobID, $pdo, $dn, $user['pwdlastset'][0]);
 			}
+		}
+
+	}
+
+	/**
+	 * Job to notify users about their managed groups.
+	 *
+	 * @package jobs
+	 */
+	class WindowsManagedGroupsNotifyJob extends \LAM\JOB\PasswordExpirationJob {
+
+		const MANAGED_GROUPS = 'LAM_MANAGED_GROUPS';
+		const PERIOD_MONTHLY = 'MONTHLY';
+		const PERIOD_QUARTERLY = 'QUARTERLY';
+		const PERIOD_HALF_YEARLY = 'HALF_YEARLY';
+		const PERIOD_YEARLY = 'YEARLY';
+
+		/**
+		 * Returns the alias name of the job.
+		 *
+		 * @return String name
+		 */
+		public function getAlias() {
+			return _('Windows') . ': ' . _('Notify users about their managed groups');
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function getDescription() {
+			return _('This will send each user a summary of the managed groups and their members.');
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function getConfigOptions($jobID) {
+			$prefix = $this->getConfigPrefix();
+			$container = new htmlResponsiveRow();
+			$container->add(new htmlResponsiveInputField(_('From address'), $prefix . '_mailFrom' . $jobID, null, '800', true), 12);
+			$container->add(new htmlResponsiveInputField(_('Reply-to address'), $prefix . '_mailReplyTo' . $jobID, null, '801'), 12);
+			$container->add(new htmlResponsiveInputField(_('CC address'), $prefix . '_mailCC' . $jobID, null, '805'), 12);
+			$container->add(new htmlResponsiveInputField(_('BCC address'), $prefix . '_mailBCC' . $jobID, null, '806'), 12);
+			$container->add(new htmlResponsiveInputField(_('Subject'), $prefix . '_mailSubject' . $jobID, null, '802'), 12);
+			$container->add(new htmlResponsiveInputCheckbox($prefix . '_mailIsHTML' . $jobID, false, _('HTML format'), '553'), 12);
+			$container->add(new htmlResponsiveInputTextarea($prefix . '_mailtext' . $jobID, '', 50, 4, _('Text'), '810'), 12);
+			$periodOptions = array(
+				_('Monthly') => self::PERIOD_MONTHLY,
+				_('Quarterly') => self::PERIOD_QUARTERLY,
+				_('Half-yearly') => self::PERIOD_HALF_YEARLY,
+				_('Yearly') => self::PERIOD_YEARLY,
+			);
+			$periodSelect = new htmlResponsiveSelect($prefix . '_period' . $jobID, $periodOptions, array(), _('Period'), '811');
+			$periodSelect->setHasDescriptiveElements(true);
+			$periodSelect->setSortElements(false);
+			$container->add($periodSelect, 12);
+			return $container;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function checkConfigOptions($jobID, $options) {
+			$prefix = $this->getConfigPrefix();
+			$errors = array();
+			// from address
+			if (empty($options[$prefix . '_mailFrom' . $jobID][0])
+				|| !(get_preg($options[$prefix . '_mailFrom' . $jobID][0], 'email')
+					|| get_preg($options[$prefix . '_mailFrom' . $jobID][0], 'emailWithName'))) {
+				$errors[] = array('ERROR', _('Please enter a valid email address!'), _('From address'));
+			}
+			// reply-to
+			if (!empty($options[$prefix . '_mailReplyTo' . $jobID][0])
+				&& !get_preg($options[$prefix . '_mailReplyTo' . $jobID][0], 'email')
+				&& !get_preg($options[$prefix . '_mailReplyTo' . $jobID][0], 'emailWithName')) {
+				$errors[] = array('ERROR', _('Please enter a valid email address!'), _('Reply-to address'));
+			}
+			// CC address
+			if (!empty($options[$prefix . '_mailCC' . $jobID][0])
+				&& !get_preg($options[$prefix . '_mailCC' . $jobID][0], 'email')
+				&& !get_preg($options[$prefix . '_mailCC' . $jobID][0], 'emailWithName')) {
+				$errors[] = array('ERROR', _('Please enter a valid email address!'), _('CC address'));
+			}
+			// BCC address
+			if (!empty($options[$prefix . '_mailBCC' . $jobID][0])
+				&& !get_preg($options[$prefix . '_mailBCC' . $jobID][0], 'email')
+				&& !get_preg($options[$prefix . '_mailBCC' . $jobID][0], 'emailWithName')) {
+				$errors[] = array('ERROR', _('Please enter a valid email address!'), _('BCC address'));
+			}
+			// text
+			$mailText = implode('', $options[$prefix . '_mailtext' . $jobID]);
+			if (empty($mailText)) {
+				$errors[] = array('ERROR', _('Please set a email text.'));
+			}
+			if (strpos($mailText, '@@' . self::MANAGED_GROUPS . '@@') === false) {
+				$errors[] = array('ERROR', _('Please add the wildcard for the list of managed groups.'), '@@' . self::MANAGED_GROUPS . '@@');
+			}
+			return $errors;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		protected function getPolicyOptions() {
+			return array();
+		}
+
+		/**
+		 * Searches for users in LDAP.
+		 *
+		 * @param String $jobID unique job identifier
+		 * @param array $options config options (name => value)
+		 * @return array list of user attributes
+		 */
+		protected function findUsers($jobID, $options) {
+			// read users
+			$sysAttrs = array('managedObjects', 'mail');
+			$attrs = $this->getAttrWildcards($jobID, $options);
+			$attrs = array_values(array_unique(array_merge($attrs, $sysAttrs)));
+			$users = searchLDAPByFilter('(&(mail=*)(managedObjects=*))', $attrs, array('user'));
+			$groups = searchLDAPByFilter('(managedBy=*)', array('cn', 'member'), array('group'));
+			$groupByDn = array();
+			foreach ($groups as $group) {
+				$groupByDn[$group['dn']] = $group;
+			}
+			$groups = null;
+			foreach ($users as $index => $user) {
+				$managedObjectDns = $user['managedobjects'];
+				$managedGroups = array();
+				foreach ($managedObjectDns as $managedObjectDn) {
+					if (array_key_exists($managedObjectDn, $groupByDn)) {
+						$managedGroups[] = $groupByDn[$managedObjectDn];
+					}
+				}
+				$users[$index][strtolower(self::MANAGED_GROUPS)] = $managedGroups;
+			}
+			return $users;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function execute($jobID, $options, &$pdo, $isDryRun, &$resultLog) {
+			$this->jobResultLog = &$resultLog;
+			$this->jobResultLog->logDebug("Configuration options:");
+			foreach ($options as $key => $value) {
+				if (strpos($key, $jobID) === false) {
+					continue;
+				}
+				$this->jobResultLog->logDebug($key . ': ' . implode(', ', $value));
+			}
+			$now = new DateTime(null, getTimeZone());
+			$baseDate = $this->getBaseDate($now);
+			$monthInterval = $this->getMonthInterval($options, $jobID);
+			if (!$this->shouldRun($pdo, $options, $jobID, $baseDate, $monthInterval)) {
+				$this->jobResultLog->logDebug('No run needed yet');
+				return;
+			}
+			$userResults = $this->findUsers($jobID, $options);
+			$this->jobResultLog->logDebug("Found " . sizeof($userResults) . " users to send an email.");
+			$isHTML = (!empty($options[$this->getConfigPrefix() . '_mailIsHTML' . $jobID][0]) && ($options[$this->getConfigPrefix() . '_mailIsHTML' . $jobID][0] == 'true'));
+			foreach ($userResults as $user) {
+				if (empty($user[strtolower(self::MANAGED_GROUPS)])) {
+					continue;
+				}
+				$user[strtolower(self::MANAGED_GROUPS)][0] = $this->formatGroups($user[strtolower(self::MANAGED_GROUPS)], $isHTML);
+				if ($isDryRun) {
+					// no action for dry run
+					$this->jobResultLog->logInfo("Managed groups text for " . $user['dn'] . ":\n" . $user[strtolower(self::MANAGED_GROUPS)][0]);
+					$this->jobResultLog->logInfo('Not sending email to ' . $user['dn'] . ' because of dry run.');
+					continue;
+				}
+				// send email
+				$this->sendMail($options, $jobID, $user, null);
+			}
+			if (!$isDryRun) {
+				$this->setDBLastPwdChangeTime($jobID, $pdo, $jobID, self::getLastEffectiveExecutionDate($baseDate, $monthInterval, $this->jobResultLog)->format('Y-m-d'));
+			}
+		}
+
+		/**
+		 * Returns if the job should run.
+		 *
+		 * @param $pdo PDO
+		 * @param $options job options
+		 * @param $jobId job id
+		 * @param DateTime $baseDate base date
+		 * @param int $monthInterval month interval
+		 * @return bool should run
+		 */
+		private function shouldRun(&$pdo, $options, $jobId, $baseDate, $monthInterval) {
+			$dbLastChange = $this->getDBLastPwdChangeTime($jobId, $pdo, $jobId);
+			if (empty($dbLastChange)) {
+				return true;
+			}
+			$this->jobResultLog->logDebug('Base date: ' . $baseDate->format('Y-m-d'));
+			$effectiveDate = self::getLastEffectiveExecutionDate($baseDate, $monthInterval, $this->jobResultLog);
+			$dbLastChangeDate = DateTime::createFromFormat('Y-m-d', $dbLastChange, getTimeZone());
+			$this->jobResultLog->logDebug('Last run date: ' . $dbLastChangeDate->format('Y-m-d'));
+			return $effectiveDate > $dbLastChangeDate;
+		}
+
+		/**
+		 * Returns the month interval.
+		 *
+		 * @param arry $options config options
+		 * @param $jobId job id
+		 * @return int interval
+		 */
+		private function getMonthInterval($options, $jobId) {
+			$monthInterval = 12;
+			switch ($options[$this->getConfigPrefix() . '_period' . $jobId][0]) {
+				case self::PERIOD_HALF_YEARLY:
+					$monthInterval = 6;
+					break;
+				case self::PERIOD_QUARTERLY:
+					$monthInterval = 3;
+					break;
+				case self::PERIOD_MONTHLY:
+					$monthInterval = 1;
+					break;
+			}
+			return $monthInterval;
+		}
+
+		/**
+		 * Returns the base date (first of month) for the current date.
+		 *
+		 * @param DateTime $currentDate current date
+		 * @return DateTime base date
+		 */
+		private function getBaseDate($currentDate) {
+			$baseDateText = $currentDate->format('Y-m-') . '1';
+			return DateTime::createFromFormat('Y-m-d', $baseDateText, getTimeZone());
+		}
+
+		/**
+		 * Returns the last effective execution date.
+		 *
+		 * @param DateTime $baseDate base date
+		 * @param int $monthInterval number of months in interval
+		 * @param \LAM\JOB\JobResultLog $resultLog result log
+		 */
+		public static function getLastEffectiveExecutionDate($baseDate, $monthInterval, $resultLog) {
+			$month = $baseDate->format('m');
+			$monthIndex = $month - 1;
+			while (($monthIndex % $monthInterval) !== 0) {
+				$monthIndex--;
+			}
+			$month = $monthIndex + 1;
+			$effectiveDateString = $baseDate->format('Y-') . $month . '-1';
+			$effectiveDate = DateTime::createFromFormat('Y-m-d', $effectiveDateString, getTimeZone());
+			$resultLog->logDebug("Effective date: " . $effectiveDate->format('Y-m-d'));
+			return $effectiveDate;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
+			// not used
+		}
+
+		/**
+		 * Formats the managed groups.
+		 *
+		 * @param $managedGroups managed groups
+		 * @param bool $isHTML HTML email
+		 * @return string formatted text
+		 */
+		private function formatGroups($managedGroups, bool $isHTML) {
+			$text = '';
+			foreach ($managedGroups as $managedGroup) {
+				if ($isHTML) {
+					$text .= '<br><b>' . $managedGroup['cn'][0] . '</b><br>';
+				}
+				else {
+					$text .= "\r\n" . $managedGroup['cn'][0] . "\r\n\r\n";
+				}
+				if (empty($managedGroup['member'])) {
+					continue;
+				}
+				foreach ($managedGroup['member'] as $member) {
+					$member = getAbstractDN($member);
+					if ($isHTML) {
+						$text .= '&nbsp;&nbsp;' . $member . '<br>';
+					}
+					else {
+						$text .= "  " . $member . "\r\n";
+					}
+				}
+			}
+			return $text;
 		}
 
 	}

@@ -430,6 +430,16 @@ $helpArray = array (
 					"Headline" => _('Target DN'),
 					"Text" => _('The expired accounts will be moved to this DN.')
 				),
+				'810' => array(
+					"Headline" => _('Text'),
+					"Text" => _('The mail text of all mails.') .
+						_('You can use wildcards for LDAP attributes in the form @@attribute@@ (e.g. @@uid@@ for the user name).')
+						. ' ' . _('The managed groups need to be added with @@LAM_MANAGED_GROUPS@@.')
+				),
+				'811' => array(
+					"Headline" => _('Period'),
+					"Text" => _('This defines how often the email is sent (e.g. each month).')
+				),
 );
 
 /* This is a sample help entry. Just copy this line an modify the values between the [] brackets.

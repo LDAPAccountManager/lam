@@ -21,9 +21,9 @@ use PHPUnit\Framework\TestCase;
 
  */
 
-	include_once 'lam/lib/baseModule.inc';
-	include_once 'lam/lib/modules.inc';
-	include_once 'lam/lib/modules/windowsUser.inc';
+	include_once __DIR__ . '/../../../lib/baseModule.inc';
+	include_once __DIR__ . '/../../../lib/modules.inc';
+	include_once __DIR__ . '/../../../lib/modules/windowsUser.inc';
 
 	/**
 	 * Checks the windowsUser class.
@@ -76,6 +76,33 @@ use PHPUnit\Framework\TestCase;
 			$days = $timeDiff->format('%a');
 			$seconds = $days * 24 * 3600 - ($time->getOffset());
 			return $seconds . '0000000';
+		}
+
+		public function testWindowsManagedGroupsNotifyJob_getLastEffectiveExecutionDate() {
+			if (!interface_exists('\LAM\JOB\Job', false)) {
+				return;
+			}
+			$resultLog = new \LAM\JOB\JobResultLog();
+			$baseDate = DateTime::createFromFormat('Y-m-d', '2020-08-21', getTimeZone());
+			$this->assertEquals('2020-01-01', WindowsManagedGroupsNotifyJob::getLastEffectiveExecutionDate($baseDate, 12, $resultLog)->format('Y-m-d'));
+			$this->assertEquals('2020-07-01', WindowsManagedGroupsNotifyJob::getLastEffectiveExecutionDate($baseDate, 6, $resultLog)->format('Y-m-d'));
+			$this->assertEquals('2020-07-01', WindowsManagedGroupsNotifyJob::getLastEffectiveExecutionDate($baseDate, 3, $resultLog)->format('Y-m-d'));
+			$this->assertEquals('2020-08-01', WindowsManagedGroupsNotifyJob::getLastEffectiveExecutionDate($baseDate, 1, $resultLog)->format('Y-m-d'));
+			$baseDate = DateTime::createFromFormat('Y-m-d', '2020-12-31', getTimeZone());
+			$this->assertEquals('2020-01-01', WindowsManagedGroupsNotifyJob::getLastEffectiveExecutionDate($baseDate, 12, $resultLog)->format('Y-m-d'));
+			$this->assertEquals('2020-07-01', WindowsManagedGroupsNotifyJob::getLastEffectiveExecutionDate($baseDate, 6, $resultLog)->format('Y-m-d'));
+			$this->assertEquals('2020-10-01', WindowsManagedGroupsNotifyJob::getLastEffectiveExecutionDate($baseDate, 3, $resultLog)->format('Y-m-d'));
+			$this->assertEquals('2020-12-01', WindowsManagedGroupsNotifyJob::getLastEffectiveExecutionDate($baseDate, 1, $resultLog)->format('Y-m-d'));
+			$baseDate = DateTime::createFromFormat('Y-m-d', '2020-01-01', getTimeZone());
+			$this->assertEquals('2020-01-01', WindowsManagedGroupsNotifyJob::getLastEffectiveExecutionDate($baseDate, 12, $resultLog)->format('Y-m-d'));
+			$this->assertEquals('2020-01-01', WindowsManagedGroupsNotifyJob::getLastEffectiveExecutionDate($baseDate, 6, $resultLog)->format('Y-m-d'));
+			$this->assertEquals('2020-01-01', WindowsManagedGroupsNotifyJob::getLastEffectiveExecutionDate($baseDate, 3, $resultLog)->format('Y-m-d'));
+			$this->assertEquals('2020-01-01', WindowsManagedGroupsNotifyJob::getLastEffectiveExecutionDate($baseDate, 1, $resultLog)->format('Y-m-d'));
+			$baseDate = DateTime::createFromFormat('Y-m-d', '2020-06-05', getTimeZone());
+			$this->assertEquals('2020-01-01', WindowsManagedGroupsNotifyJob::getLastEffectiveExecutionDate($baseDate, 12, $resultLog)->format('Y-m-d'));
+			$this->assertEquals('2020-01-01', WindowsManagedGroupsNotifyJob::getLastEffectiveExecutionDate($baseDate, 6, $resultLog)->format('Y-m-d'));
+			$this->assertEquals('2020-04-01', WindowsManagedGroupsNotifyJob::getLastEffectiveExecutionDate($baseDate, 3, $resultLog)->format('Y-m-d'));
+			$this->assertEquals('2020-06-01', WindowsManagedGroupsNotifyJob::getLastEffectiveExecutionDate($baseDate, 1, $resultLog)->format('Y-m-d'));
 		}
 
 	}

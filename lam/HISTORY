@@ -4,6 +4,8 @@ September 2020
   - Show password prompt when a user with expired password logs into LAM admin interface (requires PHP 7.2)
   - Better error messages on login when account is expired/deactivated/...
   - Windows users: group display format can be configured (cn/dn)
+  - LAM Pro:
+   -> Windows: new cron job to send users a summary of their managed groups
 
 01.05.2020 7.2
   - Unix: allow to create group with same name during user creation

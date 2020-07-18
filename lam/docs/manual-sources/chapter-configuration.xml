@@ -1142,6 +1142,11 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
           </listitem>
 
           <listitem>
+            <para><link linkend="job_windows_notify_groups">Windows: Notify
+            users about their managed groups</link></para>
+          </listitem>
+
+          <listitem>
             <para><link linkend="job_freeradius_move_expired">FreeRadius:
             Delete or move expired accounts</link></para>
           </listitem>
@@ -1827,6 +1832,95 @@ mysql&gt; GRANT ALL PRIVILEGES ON lam_cron.* TO 'lam_cron'@'localhost';
               </tbody>
             </tgroup>
           </table>
+        </section>
+
+        <section id="job_windows_notify_groups">
+          <title>Windows: Notify users about their managed groups</title>
+
+          <para>This will send your users an email with the groups they
+          manage. This also includes a list of users in these groups. The
+          users and groups are searched using the user+group account types
+          that are specified in server profile.</para>
+
+          <para>You need to activate the Windows module for users to be able
+          to add this job. The job can be added multiple times.</para>
+
+          <screenshot>
+            <graphic fileref="images/jobs_windowsNotifyGroups.png"/>
+          </screenshot>
+
+          <para><table>
+              <title>Options</title>
+
+              <tgroup cols="2">
+                <tbody>
+                  <row>
+                    <entry><emphasis role="bold">Option</emphasis></entry>
+
+                    <entry><emphasis
+                    role="bold">Description</emphasis></entry>
+                  </row>
+
+                  <row>
+                    <entry>From address</entry>
+
+                    <entry>The email address to set as FROM.</entry>
+                  </row>
+
+                  <row>
+                    <entry>Reply-to address</entry>
+
+                    <entry>Optional Reply-to address for email.</entry>
+                  </row>
+
+                  <row>
+                    <entry>CC address</entry>
+
+                    <entry>Optional CC mail address.</entry>
+                  </row>
+
+                  <row>
+                    <entry>BCC address</entry>
+
+                    <entry>Optional BCC mail address.</entry>
+                  </row>
+
+                  <row>
+                    <entry>Subject</entry>
+
+                    <entry>The email subject line. Supports wildcards, see
+                    below.</entry>
+                  </row>
+
+                  <row>
+                    <entry>HTML format</entry>
+
+                    <entry>Send email as HTML instead of plain text.</entry>
+                  </row>
+
+                  <row>
+                    <entry>Text</entry>
+
+                    <entry>The email body text. Supports wildcards, see
+                    below.</entry>
+                  </row>
+
+                  <row>
+                    <entry>Period</entry>
+
+                    <entry>Defines how often the mail is sent (e.g.
+                    quarterly).</entry>
+                  </row>
+                </tbody>
+              </tgroup>
+            </table>Wildcards:</para>
+
+          <para>You can enter LDAP attributes as wildcards in the form
+          @@ATTRIBUTE_NAME@@. E.g. to add the user's common name use "@@cn@@".
+          For the common name it would be "@@cn@@".</para>
+
+          <para>Use the wildcard "@@LAM_MANAGED_GROUPS@@" to insert the group
+          listing. This wildcard is mandatory.</para>
         </section>
 
         <section id="job_freeradius_move_expired">
