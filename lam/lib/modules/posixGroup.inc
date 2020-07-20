@@ -201,7 +201,7 @@ class posixGroup extends baseModule implements passwordService {
 		if ($this->autoAddObjectClasses || (isset($this->attributes['objectClass']) && in_array('posixGroup', $this->attributes['objectClass']))) {
 			// auto sync group members
 			if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
-				$this->syncGon();
+				$this->syncGon(true);
 			}
 			// group name
 			if ($this->manageCnAndDescription($modules)) {
@@ -972,10 +972,11 @@ class posixGroup extends baseModule implements passwordService {
 	/**
 	 * Syncs with group of names members.
 	 *
+	 * @param bool $forceDelete force deletion of members
 	 * @return array list of status messages
 	 */
-	protected function syncGon() {
-		$delete = isset($_POST['syncGON_delete']) && ($_POST['syncGON_delete'] == 'on');
+	protected function syncGon($forceDelete = false) {
+		$delete = $forceDelete || (isset($_POST['syncGON_delete']) && ($_POST['syncGON_delete'] == 'on'));
 		$return = array();
 		$gon = $this->getAccountContainer()->getAccountModule('groupOfNames');
 		if ($gon == null) {
@@ -1083,7 +1084,7 @@ class posixGroup extends baseModule implements passwordService {
 		}
 		// auto sync group members
 		if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
-			$this->syncGon();
+			$this->syncGon(true);
 		}
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		// Change gids of users and hosts?
