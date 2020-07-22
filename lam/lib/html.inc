@@ -4973,5 +4973,68 @@ class htmlResponsiveTable extends htmlElement {
 
 }
 
+/**
+ * Renders a canvas.
+ *
+ * @author Roland Gruber
+ */
+class htmlCanvas extends htmlElement {
+
+	private $id;
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $id html id
+	 */
+	public function __construct($id) {
+		$this->id = $id;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$classesValue = '';
+		if (!empty($this->cssClasses)) {
+			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
+		}
+		echo '<canvas id="' . $this->id . '" ' . $classesValue . '>';
+		echo '</canvas>';
+		return array();
+	}
+}
+
+/**
+ * Renders a video.
+ *
+ * @author Roland Gruber
+ */
+class htmlVideo extends htmlElement {
+
+	private $id;
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $id html id
+	 */
+	public function __construct($id) {
+		$this->id = $id;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$classesValue = '';
+		if (!empty($this->cssClasses)) {
+			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
+		}
+		echo '<video id="' . $this->id . '" ' . $classesValue . '>';
+		echo '</video>';
+		return array();
+	}
+}
 
 ?>

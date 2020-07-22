@@ -934,6 +934,51 @@ window.lam.tools.setInitialFocus = function() {
 	jQuery('.lam-initial-focus').focus();
 };
 
+/**
+ * Initializes the webcam capture.
+ */
+window.lam.tools.initWebcamCapture = function() {
+	var contentDiv = jQuery('#lam_webcam_div');
+	if (contentDiv.length === 0) {
+		return;
+	}
+	if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+		navigator.mediaDevices.enumerateDevices()
+			.then(function(mediaDevices) {
+				mediaDevices.forEach(mediaDevice => {
+					if (mediaDevice.kind === 'videoinput') {
+						contentDiv.show();
+					}
+				});
+			});
+	}
+};
+
+/**
+ * Starts the webcam capture.
+ */
+window.lam.tools.startWebcamCapture = function(event) {
+	event.preventDefault();
+	var canvas = document.getElementById('lam-webcam-canvas');
+	var video = document.getElementById('lam-webcam-videofor');
+	navigator.mediaDevices.getUserMedia({
+			video: {
+				facingMode: 'user',
+				width: { min: 1024, ideal: 1280, max: 1920 },
+				height: { min: 576, ideal: 720, max: 1080 }
+			},
+			audio: false
+		})
+		.then(function(stream) {
+			video.srcObject = stream;
+			video.play();
+		})
+		.catch(function(err) {
+			console.log("An error occurred: " + err);
+		});
+	return false;
+}
+
 window.lam.tools.schema = window.lam.tools.schema || {};
 
 /**
@@ -1788,6 +1833,7 @@ jQuery(document).ready(function() {
 	window.lam.tools.addSavedSelectListener();
 	window.lam.tools.activateTab();
 	window.lam.tools.setInitialFocus();
+	window.lam.tools.initWebcamCapture();
 	window.lam.tools.schema.select();
 	window.lam.html.activateLightboxes();
 	window.lam.html.preventEnter();

@@ -1704,9 +1704,26 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$container->add(new htmlSubTitle(_('Upload image')), 12);
 			$label = _('Photo file');
 			$container->add(new htmlResponsiveInputFileUpload('photoFile', $label, 'photoUpload'), 12);
+			$container->addVerticalSpacer('0.5rem');
+			$container->addLabel(new htmlOutputText('&nbsp;', false));
+			$container->addField(new htmlAccountPageButton(get_class($this), 'photo', 'upload', _('Upload')));
 			$container->addVerticalSpacer('1rem');
-			$container->addLabel(new htmlAccountPageButton(get_class($this), 'photo', 'upload', _('Upload')));
-			$container->addField(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
+			$webcamContent = new htmlResponsiveRow();
+			$webcamContent->add(new htmlSubTitle(_('Get from webcam')), 12);
+			$webcamContent->addLabel(new htmlOutputText(_('Image')));
+			$webcamContent->addField(new htmlVideo('lam-webcam-video'));
+			$webcamContent->addLabel(new htmlOutputText('&nbsp;', false));
+			$webcamButtonGroup = new htmlGroup();
+			$captureButton = new htmlButton('lam-webcam-capture', _('Capture'));
+			$captureButton->setOnClick('window.lam.tools.startWebcamCapture(event);');
+			$webcamButtonGroup->addElement($captureButton);
+			$webcamButtonGroup->addElement(new htmlAccountPageButton(get_class($this), 'photo', 'upload', _('Upload')));
+			$webcamButtonGroup->addElement(new htmlCanvas('lam-webcam-canvas'));
+			$webcamContent->addField($webcamButtonGroup);
+			$webcamDiv = new htmlDiv('lam_webcam_div', $webcamContent, array('hidden'));
+			$container->add($webcamDiv, 12);
+			$container->addVerticalSpacer('1rem');
+			$container->add(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')), 12);
 		}
 		else {
 			$container->add(new htmlSubTitle(_('Crop image')), 12);
