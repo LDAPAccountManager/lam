@@ -1629,7 +1629,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if ($this->isAdminReadOnly('jpegPhoto')) {
 			return array();
 		}
-		if (isset($_POST['form_subpage_' . get_class($this) . '_photo_upload'])) {
+		if (isset($_POST['form_subpage_' . get_class($this) . '_photo_upload']) || isset($_POST['webcamData'])) {
 			return $this->uploadPhoto();
 		}
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_crop'])) {
@@ -1656,7 +1656,11 @@ class inetOrgPerson extends baseModule implements passwordService {
 	 */
 	private function uploadPhoto() {
 		$messages = array();
-		if ($_FILES['photoFile'] && ($_FILES['photoFile']['size'] > 0)) {
+		if ((empty($_FILES['photoFile']) || ($_FILES['photoFile']['size'] <= 0)) && empty($_POST['webcamData'])) {
+			$messages[] = $this->messages['file'][0];
+			return $messages;
+		}
+		if (!empty($_FILES['photoFile']['tmp_name'])) {
 			$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
 			$data = fread($handle, 100000000);
 			if (!empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]) && (strlen($data) > (1024 * $this->moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]))) {
@@ -1666,30 +1670,32 @@ class inetOrgPerson extends baseModule implements passwordService {
 				return array($errMsg);
 			}
 			fclose($handle);
-			// convert to JPG
-			try {
-				include_once dirname(__FILE__) . '/../imageutils.inc';
-				$imageManipulator = ImageManipulationFactory::getImageManipulator($data);
-				// resize if maximum values specified
-				if (!empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0]) || !empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0])) {
-					$maxWidth = empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0]) ? $imageManipulator->getWidth() : $this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0];
-					$maxHeight = empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0]) ? $imageManipulator->getHeight() : $this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0];
-					$imageManipulator->thumbnail($maxWidth, $maxHeight);
-				}
-				$imageManipulator->convertToJpeg();
-				$data = $imageManipulator->getImageData();
-			}
-			catch (Exception $e) {
-				$msg =  $this->messages['file'][2];
-				$msg[] = htmlspecialchars($e->getMessage());
-				$messages[] = $msg;
-				return $messages;
-			}
-			$this->attributes['jpegPhoto'][0] = $data;
 		}
-		else {
-			$messages[] = $this->messages['file'][0];
+		elseif (isset($_POST['webcamData'])) {
+			$data = $_POST['webcamData'];
+			$data = str_replace('data:image/png;base64,', '', $data);
+			$data = base64_decode($data);
 		}
+		// convert to JPG
+		try {
+			include_once dirname(__FILE__) . '/../imageutils.inc';
+			$imageManipulator = ImageManipulationFactory::getImageManipulator($data);
+			// resize if maximum values specified
+			if (!empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0]) || !empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0])) {
+				$maxWidth = empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0]) ? $imageManipulator->getWidth() : $this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0];
+				$maxHeight = empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0]) ? $imageManipulator->getHeight() : $this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0];
+				$imageManipulator->thumbnail($maxWidth, $maxHeight);
+			}
+			$imageManipulator->convertToJpeg();
+			$data = $imageManipulator->getImageData();
+		}
+		catch (Exception $e) {
+			$msg =  $this->messages['file'][2];
+			$msg[] = htmlspecialchars($e->getMessage());
+			$messages[] = $msg;
+			return $messages;
+		}
+		$this->attributes['jpegPhoto'][0] = $data;
 		return $messages;
 	}
 
@@ -1710,16 +1716,23 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$container->addVerticalSpacer('1rem');
 			$webcamContent = new htmlResponsiveRow();
 			$webcamContent->add(new htmlSubTitle(_('Get from webcam')), 12);
-			$webcamContent->addLabel(new htmlOutputText(_('Image')));
-			$webcamContent->addField(new htmlVideo('lam-webcam-video'));
-			$webcamContent->addLabel(new htmlOutputText('&nbsp;', false));
-			$webcamButtonGroup = new htmlGroup();
-			$captureButton = new htmlButton('lam-webcam-capture', _('Capture'));
+			$errorMessage = new htmlStatusMessage('ERROR', '');
+			$errorMessage->setCSSClasses(array('hidden', 'lam-webcam-message'));
+			$webcamContent->add($errorMessage, 12);
+			$captureButton = new htmlButton('lam-webcam-capture', _('Start capture'));
 			$captureButton->setOnClick('window.lam.tools.startWebcamCapture(event);');
-			$webcamButtonGroup->addElement($captureButton);
-			$webcamButtonGroup->addElement(new htmlAccountPageButton(get_class($this), 'photo', 'upload', _('Upload')));
-			$webcamButtonGroup->addElement(new htmlCanvas('lam-webcam-canvas'));
-			$webcamContent->addField($webcamButtonGroup);
+			$webcamContent->add($captureButton, 12, 12, 12, 'text-center');
+			$video = new htmlVideo('lam-webcam-video');
+			$video->setCSSClasses(array('hidden'));
+			$webcamContent->add($video, 12, 12, 12, 'text-center');
+			$webcamContent->addVerticalSpacer('0.5rem');
+			$webcamUploadButton = new htmlButton('uploadWebcam', _('Upload'));
+			$webcamUploadButton->setCSSClasses(array('btn-lam-webcam-upload', 'hidden'));
+			$webcamUploadButton->setOnClick('window.lam.tools.startWebcamUpload();');
+			$webcamContent->add($webcamUploadButton, 12, 12, 12, 'text-center');
+			$canvas = new htmlCanvas('lam-webcam-canvas');
+			$canvas->setCSSClasses(array('hidden'));
+			$webcamContent->add($canvas, 12);
 			$webcamDiv = new htmlDiv('lam_webcam_div', $webcamContent, array('hidden'));
 			$container->add($webcamDiv, 12);
 			$container->addVerticalSpacer('1rem');

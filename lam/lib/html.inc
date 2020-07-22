@@ -3078,7 +3078,13 @@ class htmlStatusMessage extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	public function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		if (!empty($this->cssClasses)) {
+			echo '<div class="' . implode(' ', $this->cssClasses) . '">';
+		}
 		StatusMessage($this->type, $this->title, $this->text, $this->params);
+		if (!empty($this->cssClasses)) {
+			echo '</div>';
+		}
 		return array();
 	}
 

@@ -959,8 +959,9 @@ window.lam.tools.initWebcamCapture = function() {
  */
 window.lam.tools.startWebcamCapture = function(event) {
 	event.preventDefault();
-	var canvas = document.getElementById('lam-webcam-canvas');
-	var video = document.getElementById('lam-webcam-videofor');
+	var video = document.getElementById('lam-webcam-video');
+	var msg = jQuery('.lam-webcam-message');
+	msg.hide();
 	navigator.mediaDevices.getUserMedia({
 			video: {
 				facingMode: 'user',
@@ -972,11 +973,43 @@ window.lam.tools.startWebcamCapture = function(event) {
 		.then(function(stream) {
 			video.srcObject = stream;
 			video.play();
+			window.lam.tools.webcamStream = stream;
+			jQuery('#btn_lam-webcam-capture').hide();
+			jQuery('.btn-lam-webcam-upload').show();
+			jQuery('#lam-webcam-video').show();
 		})
 		.catch(function(err) {
-			console.log("An error occurred: " + err);
+			msg.find('.statusTitle').text(err);
+			msg.show();
 		});
 	return false;
+}
+
+/**
+ * Starts the webcam upload.
+ */
+window.lam.tools.startWebcamUpload = function() {
+	var canvas = document.getElementById('lam-webcam-canvas');
+	var video = document.getElementById('lam-webcam-video');
+	var form = jQuery('#lam-webcam-canvas').closest('form');
+	canvas.setAttribute('width', video.videoWidth);
+	canvas.setAttribute('height', video.videoHeight);
+	var context = canvas.getContext('2d');
+	context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+	var canvasData = canvas.toDataURL("image/png");
+	var canvasDataInput = jQuery("<input></input>");
+	canvasDataInput.attr('name', 'webcamData');
+	canvasDataInput.attr('type', 'hidden');
+	canvasDataInput.attr('value', canvasData);
+	video.pause();
+	window.lam.tools.webcamStream.getTracks().forEach(function(track) {
+		track.stop();
+	});
+	form.append(canvasDataInput);
+	jQuery(canvas).remove();
+	jQuery(video).remove();
+	form.submit();
+	return true;
 }
 
 window.lam.tools.schema = window.lam.tools.schema || {};
