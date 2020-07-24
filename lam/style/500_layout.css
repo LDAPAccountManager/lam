@@ -314,11 +314,6 @@ table.collapse {
 	font-weight: bold;
 }
 
-#lam-webcam-video {
-	max-width: 200px;
-	max-height: 200px;
-}
-
 /** buttons */
 .saveButton {
 	background-image: url(../graphics/save.png) !important;
