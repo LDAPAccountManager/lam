@@ -1663,13 +1663,13 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if (!empty($_FILES['photoFile']['tmp_name'])) {
 			$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
 			$data = fread($handle, 100000000);
+			fclose($handle);
 			if (!empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]) && (strlen($data) > (1024 * $this->moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]))) {
 				$errMsg = $this->messages['file'][3];
 				$errMsg[] = null;
 				$errMsg[] = array($this->moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]);
 				return array($errMsg);
 			}
-			fclose($handle);
 		}
 		elseif (isset($_POST['webcamData'])) {
 			$data = $_POST['webcamData'];
