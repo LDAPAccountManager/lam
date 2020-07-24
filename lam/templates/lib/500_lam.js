@@ -934,6 +934,144 @@ window.lam.tools.setInitialFocus = function() {
 	jQuery('.lam-initial-focus').focus();
 };
 
+window.lam.tools.webcam = window.lam.tools.webcam || {};
+
+/**
+ * Initializes the webcam capture.
+ */
+window.lam.tools.webcam.init = function() {
+	var contentDiv = jQuery('#lam_webcam_div');
+	if (contentDiv.length === 0) {
+		return;
+	}
+	if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+		navigator.mediaDevices.enumerateDevices()
+			.then(function(mediaDevices) {
+				mediaDevices.forEach(mediaDevice => {
+					if (mediaDevice.kind === 'videoinput') {
+						contentDiv.show();
+					}
+				});
+			});
+	}
+};
+
+/**
+ * Starts the webcam capture.
+ */
+window.lam.tools.webcam.capture = function(event) {
+	event.preventDefault();
+	var video = document.getElementById('lam-webcam-video');
+	var msg = jQuery('.lam-webcam-message');
+	msg.hide();
+	navigator.mediaDevices.getUserMedia({
+			video: {
+				facingMode: 'user',
+				width: { min: 1024, ideal: 1280, max: 1920 },
+				height: { min: 576, ideal: 720, max: 1080 }
+			},
+			audio: false
+		})
+		.then(function(stream) {
+			video.srcObject = stream;
+			video.play();
+			window.lam.tools.webcamStream = stream;
+			jQuery('#btn_lam-webcam-capture').hide();
+			jQuery('.btn-lam-webcam-upload').show();
+			jQuery('#lam-webcam-video').show();
+		})
+		.catch(function(err) {
+			msg.find('.statusTitle').text(err);
+			msg.show();
+		});
+	return false;
+}
+
+/**
+ * Starts the webcam upload.
+ */
+window.lam.tools.webcam.upload = function() {
+	var form = jQuery('#lam-webcam-canvas').closest('form');
+	canvasData = window.lam.tools.webcam.prepareData();
+	var canvasDataInput = jQuery("<input></input>");
+	canvasDataInput.attr('name', 'webcamData');
+	canvasDataInput.attr('id', 'webcamData');
+	canvasDataInput.attr('type', 'hidden');
+	canvasDataInput.attr('value', canvasData);
+	form.append(canvasDataInput);
+	form.submit();
+	return true;
+}
+
+/**
+ * Starts the webcam upload.
+ *
+ * @param event click event
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ * @param moduleName module name
+ * @param scope account type
+ * @param uploadErrorMessage error message if upload fails
+ * @param contentId id of content to replace
+ */
+window.lam.tools.webcam.uploadSelfService = function(event, tokenName, tokenValue, moduleName, scope, uploadErrorMessage, contentId) {
+	event.preventDefault();
+	var msg = jQuery('.lam-webcam-message');
+	canvasData = window.lam.tools.webcam.prepareData();
+	var data = {
+		webcamData: canvasData
+	};
+	data[tokenName] = tokenValue;
+	jQuery.ajax({
+		url: '../misc/ajax.php?selfservice=1&action=ajaxPhotoUpload'
+			+ '&module=' + moduleName + '&scope=' + scope,
+		method: 'POST',
+		data: data
+	})
+	.done(function(jsonData) {
+		if (jsonData.success) {
+			if (jsonData.html) {
+				jQuery('#' + contentId).html(jsonData.html);
+				window.lam.tools.webcam.init();
+			}
+			return false;
+		}
+		else if (jsonData.error) {
+			msg.find('.statusTitle').text(jsonData.error);
+			msg.show();
+		}
+	})
+	.fail(function() {
+		msg.find('.statusTitle').text(errorMessage);
+		msg.show();
+	});
+	jQuery('#btn_lam-webcam-capture').show();
+	jQuery('.btn-lam-webcam-upload').hide();
+	return false;
+}
+
+/**
+ * Starts the webcam upload.
+ *
+ * @return webcam data as string
+ */
+window.lam.tools.webcam.prepareData = function() {
+	var canvas = document.getElementById('lam-webcam-canvas');
+	var video = document.getElementById('lam-webcam-video');
+	canvas.setAttribute('width', video.videoWidth);
+	canvas.setAttribute('height', video.videoHeight);
+	var context = canvas.getContext('2d');
+	context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+	var canvasData = canvas.toDataURL("image/png");
+	video.pause();
+	window.lam.tools.webcamStream.getTracks().forEach(function(track) {
+		track.stop();
+	});
+	jQuery(canvas).hide();
+	jQuery(video).hide();
+	return canvasData;
+}
+
 window.lam.tools.schema = window.lam.tools.schema || {};
 
 /**
@@ -1788,6 +1926,7 @@ jQuery(document).ready(function() {
 	window.lam.tools.addSavedSelectListener();
 	window.lam.tools.activateTab();
 	window.lam.tools.setInitialFocus();
+	window.lam.tools.webcam.init();
 	window.lam.tools.schema.select();
 	window.lam.html.activateLightboxes();
 	window.lam.html.preventEnter();

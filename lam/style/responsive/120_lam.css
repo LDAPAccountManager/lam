@@ -193,6 +193,11 @@ table.responsive-table td {
 		padding: 5px 5px 5px 5px;
 	}
 
+	#lam-webcam-video {
+		max-width: 200px;
+		max-height: 200px;
+	}
+
 }
 
 /* tablet */
@@ -220,6 +225,11 @@ table.responsive-table td {
 
 	.titleBar {
 		padding: 5px 20px 5px 20px;
+	}
+
+	#lam-webcam-video {
+		max-width: 300px;
+		max-height: 300px;
 	}
 
 }
@@ -253,6 +263,11 @@ table.responsive-table td {
 
 	.titleBar {
 		padding: 5px 20px 5px 20px;
+	}
+
+	#lam-webcam-video {
+		max-width: 400px;
+		max-height: 400px;
 	}
 
 }

@@ -3078,7 +3078,13 @@ class htmlStatusMessage extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	public function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		if (!empty($this->cssClasses)) {
+			echo '<div class="' . implode(' ', $this->cssClasses) . '">';
+		}
 		StatusMessage($this->type, $this->title, $this->text, $this->params);
+		if (!empty($this->cssClasses)) {
+			echo '</div>';
+		}
 		return array();
 	}
 
@@ -3344,6 +3350,8 @@ class htmlLink extends htmlElement {
 	private $onClick = null;
 	/** show as button */
 	private $showAsButton = false;
+	/** link id */
+	private $id;
 
 	/**
 	 * Constructor.
@@ -3393,8 +3401,8 @@ class htmlLink extends htmlElement {
 			$onClick = ' onclick="' . $this->onClick . '"';
 		}
 		$idAttr = '';
-		if ($this->showAsButton) {
-			$id = 'a_' . preg_replace('/[^a-zA-Z0-9_]+/', '_', $this->target);
+		if ($this->showAsButton || !empty($this->id)) {
+			$id = !empty($this->id) ? $this->id : 'a_' . preg_replace('/[^a-zA-Z0-9_]+/', '_', $this->target);
 			$idAttr = ' id="' . $id . '"';
 		}
 		$classAttr = '';
@@ -3455,6 +3463,15 @@ class htmlLink extends htmlElement {
 	 */
 	public function setOnClick($event) {
 		$this->onClick = htmlspecialchars($event);
+	}
+
+	/**
+	 * Sets the element id.
+	 *
+	 * @param string $id unique id
+	 */
+	public function setId($id) {
+		$this->id = $id;
 	}
 
 }
@@ -4973,5 +4990,68 @@ class htmlResponsiveTable extends htmlElement {
 
 }
 
+/**
+ * Renders a canvas.
+ *
+ * @author Roland Gruber
+ */
+class htmlCanvas extends htmlElement {
+
+	private $id;
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $id html id
+	 */
+	public function __construct($id) {
+		$this->id = $id;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$classesValue = '';
+		if (!empty($this->cssClasses)) {
+			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
+		}
+		echo '<canvas id="' . $this->id . '" ' . $classesValue . '>';
+		echo '</canvas>';
+		return array();
+	}
+}
+
+/**
+ * Renders a video.
+ *
+ * @author Roland Gruber
+ */
+class htmlVideo extends htmlElement {
+
+	private $id;
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $id html id
+	 */
+	public function __construct($id) {
+		$this->id = $id;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$classesValue = '';
+		if (!empty($this->cssClasses)) {
+			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
+		}
+		echo '<video id="' . $this->id . '" ' . $classesValue . '>';
+		echo '</video>';
+		return array();
+	}
+}
 
 ?>

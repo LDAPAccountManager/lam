@@ -86,7 +86,7 @@ class ConfigDataExporterTest extends TestCase {
 		$exporter = $this->getMockBuilder('\LAM\PERSISTENCE\ConfigDataExporter')
 			->setMethods(array('_getMainConfigData', '_getCertificates', '_getServerProfiles',
 				'_getAccountProfiles', '_getAccountProfileTemplates', '_getPdfProfiles',
-				'_getPdfProfileTemplates', '_getSelfServiceProfiles'))
+				'_getPdfProfileTemplates', '_getSelfServiceProfiles', '_getWebauthn'))
 			->getMock();
 		$exporter->method('_getMainConfigData')->willReturn($mainData);
 		$exporter->method('_getCertificates')->willReturn('certs');
