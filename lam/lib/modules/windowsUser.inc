@@ -4379,7 +4379,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		/**
 		 * Returns the month interval.
 		 *
-		 * @param arry $options config options
+		 * @param array $options config options
 		 * @param $jobId job id
 		 * @return int interval
 		 */
