@@ -1069,6 +1069,10 @@ function getAbstractDN($dn) {
 		return '';
 	}
 	$dn = str_replace('\\,', '\\2C', $dn);
+	if (!empty($_SESSION['config']) && !empty($_SESSION['config']->getHideDnPart())) {
+		$partToCut = ',' . $_SESSION['config']->getHideDnPart();
+		$dn = str_replace($partToCut, '', $dn);
+	}
 	$parts = explode(',', $dn);
 	for ($i = 0; $i < sizeof($parts); $i++) {
 		$subparts = explode('=', $parts[$i]);

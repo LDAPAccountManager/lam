@@ -1,6 +1,7 @@
 September 2020
   - PHP 7.4 compatibility
   - Configuration export and import
+  - Server profiles support to specify a part of the DN to hide
   - Show password prompt when a user with expired password logs into LAM admin interface (requires PHP 7.2)
   - Better error messages on login when account is expired/deactivated/...
   - Personal/Windows: photo can be uploaded via webcam

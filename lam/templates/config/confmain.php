@@ -208,6 +208,9 @@ $searchLimitOptions = array(
 $limitSelect = new htmlResponsiveSelect('searchLimit', $searchLimitOptions, array($conf->get_searchLimit()), _("LDAP search limit"), '222');
 $limitSelect->setHasDescriptiveElements(true);
 $row->add($limitSelect, 12);
+// DN part to hide
+$urlInput = new htmlResponsiveInputField(_("DN part to hide"), 'hideDnPart', $conf->getHideDnPart(), '292');
+$row->add($urlInput, 12);
 
 // access level is only visible in Pro version
 if (isLAMProVersion()) {
@@ -602,6 +605,7 @@ function checkInput() {
 			$errors[] = array("ERROR", _("Cache timeout is invalid!"));
 		}*/
 	$conf->set_searchLimit($_POST['searchLimit']);
+	$conf->setHideDnPart($_POST['hideDnPart']);
 	if (isLAMProVersion()) {
 		$conf->setAccessLevel($_POST['accessLevel']);
 		if (isset($_POST['pwdResetAllowSpecificPassword']) && ($_POST['pwdResetAllowSpecificPassword'] == 'on')) {

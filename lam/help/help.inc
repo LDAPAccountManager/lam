@@ -245,6 +245,8 @@ $helpArray = array (
 					"Text" => _('This email address will be set as TO address for the mails.')),
 				"291" => array ("Headline" => _('Hide password prompt for expired password'),
 					"Text" => _('Hides the password prompt when a user with expired password logs into LAM.')),
+				"292" => array ("Headline" => _('DN part to hide'),
+					"Text" => _('Hides the given part of the DN when displaying a DN. E.g. if you set this to "dc=example,dc=com" then "ou=department,dc=example,dc=com" will be displayed as "ou=department". Use this if you have very long DNs.')),
 				// 300 - 399
 				// profile editor, file upload
 				"301" => array ("Headline" => _("RDN identifier"),
