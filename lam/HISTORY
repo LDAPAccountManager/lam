@@ -3,7 +3,7 @@ September 2020
   - Configuration export and import
   - Show password prompt when a user with expired password logs into LAM admin interface (requires PHP 7.2)
   - Better error messages on login when account is expired/deactivated/...
-  - Personal: photo can be uploaded via webcam
+  - Personal/Windows: photo can be uploaded via webcam
   - Windows users: group display format can be configured (cn/dn)
   - LAM Pro:
    -> Windows: new cron job to send users a summary of their managed groups
