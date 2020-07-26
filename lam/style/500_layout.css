@@ -294,6 +294,14 @@ table.collapse {
 	direction: rtl;
 }
 
+.rightToLeftText option:after {
+	content: "\200E‎";
+}
+
+.rightToLeftText option:before {
+	content: "\200E‎";
+}
+
 .text-left {
 	text-align: left;
 }
