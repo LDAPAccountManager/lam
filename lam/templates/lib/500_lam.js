@@ -992,7 +992,7 @@ window.lam.tools.webcam.capture = function(event) {
  */
 window.lam.tools.webcam.upload = function() {
 	var form = jQuery('#lam-webcam-canvas').closest('form');
-	canvasData = window.lam.tools.webcam.prepareData();
+	var canvasData = window.lam.tools.webcam.prepareData();
 	var canvasDataInput = jQuery("<input></input>");
 	canvasDataInput.attr('name', 'webcamData');
 	canvasDataInput.attr('id', 'webcamData');
@@ -1017,7 +1017,7 @@ window.lam.tools.webcam.upload = function() {
 window.lam.tools.webcam.uploadSelfService = function(event, tokenName, tokenValue, moduleName, scope, uploadErrorMessage, contentId) {
 	event.preventDefault();
 	var msg = jQuery('.lam-webcam-message');
-	canvasData = window.lam.tools.webcam.prepareData();
+	var canvasData = window.lam.tools.webcam.prepareData();
 	var data = {
 		webcamData: canvasData
 	};
@@ -1211,7 +1211,7 @@ window.lam.html = window.lam.html || {};
 window.lam.html.showDnSelection = function(fieldId, title, okText, cancelText, tokenName, tokenValue) {
 	var field = jQuery('#' + fieldId);
 	var fieldDiv = jQuery('#dlg_' + fieldId);
-	if (!fieldDiv.length > 0) {
+	if (fieldDiv.length == 0) {
 		jQuery('body').append(jQuery('<div class="hidden" id="dlg_' + fieldId + '"></div>'));
 	}
 	var dnValue = field.val();
