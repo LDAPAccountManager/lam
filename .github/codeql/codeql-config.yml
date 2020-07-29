@@ -5,5 +5,7 @@ queries:
 
 paths-ignore:
   - '**/3rdParty/**/*.*'
+  - '**/lib/extra/**/*.*'
+  - '**/lib/*jquery*.js'
 paths:
   - lam
