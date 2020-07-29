@@ -1,0 +1,9 @@
+name: "LAM CodeQL config"
+
+queries:
+  - uses: security-and-quality
+
+paths-ignore:
+  - '**/3rdParty/**/*.*'
+paths:
+  - lam
