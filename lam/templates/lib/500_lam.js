@@ -947,11 +947,12 @@ window.lam.tools.webcam.init = function() {
 	if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
 		navigator.mediaDevices.enumerateDevices()
 			.then(function(mediaDevices) {
-				mediaDevices.forEach(mediaDevice => {
+				for (var i = 0; i < mediaDevices.length; i++) {
+					var mediaDevice = mediaDevices[i];
 					if (mediaDevice.kind === 'videoinput') {
 						contentDiv.show();
 					}
-				});
+				};
 			});
 	}
 };
@@ -1064,9 +1065,10 @@ window.lam.tools.webcam.prepareData = function() {
 	context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
 	var canvasData = canvas.toDataURL("image/png");
 	video.pause();
-	window.lam.tools.webcamStream.getTracks().forEach(function(track) {
-		track.stop();
-	});
+	var tracks = window.lam.tools.webcamStream.getTracks();
+	for (var i = 0; i < tracks.length; i++) {
+		tracks[i].stop();
+	}
 	jQuery(canvas).hide();
 	jQuery(video).hide();
 	return canvasData;
