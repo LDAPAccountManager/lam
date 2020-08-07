@@ -606,7 +606,7 @@ class WebauthnProvider extends BaseProvider {
 			return $webauthnManager->storeNewRegistration($registrationObject, $response);
 		}
 		else {
-			logNewMessage(LOG_DEBUG, 'Checking webauthn response of ' . $userDn);
+			logNewMessage(LOG_DEBUG, 'Checking WebAuthn response of ' . $userDn);
 			$response = base64_decode($_POST['sig_response']);
 			return $webauthnManager->isValidAuthentication($response, $userDn);
 		}

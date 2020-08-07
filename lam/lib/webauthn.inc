@@ -121,7 +121,7 @@ class WebauthnManager {
 			$authenticatorSelectionCriteria,
 			PublicKeyCredentialCreationOptions::ATTESTATION_CONVEYANCE_PREFERENCE_NONE,
 			new AuthenticationExtensionsClientInputs());
-		logNewMessage(LOG_DEBUG, 'Webauthn registration: ' . json_encode($registrationObject));
+		logNewMessage(LOG_DEBUG, 'WebAuthn registration: ' . json_encode($registrationObject));
 		return $registrationObject;
 	}
 
@@ -158,7 +158,7 @@ class WebauthnManager {
 			return true;
 		}
 		catch (\Throwable $exception) {
-			logNewMessage(LOG_ERR, 'Webauthn validation failed: ' . $exception->getMessage() . $exception->getTraceAsString());
+			logNewMessage(LOG_ERR, 'WebAuthn validation failed: ' . $exception->getMessage() . $exception->getTraceAsString());
 		}
 		return false;
 	}
@@ -456,7 +456,7 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 			}
 		}
 		catch (\PDOException $e) {
-			logNewMessage(LOG_ERR, 'Webauthn database error: ' . $e->getMessage());
+			logNewMessage(LOG_ERR, 'WebAuthn database error: ' . $e->getMessage());
 		}
 		return null;
 	}
@@ -480,7 +480,7 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 			}
 		}
 		catch (\PDOException $e) {
-			logNewMessage(LOG_ERR, 'Webauthn database error: ' . $e->getMessage());
+			logNewMessage(LOG_ERR, 'WebAuthn database error: ' . $e->getMessage());
 		}
 		return $credentials;
 	}

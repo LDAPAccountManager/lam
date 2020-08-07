@@ -1508,7 +1508,7 @@ function getDefaultLDAPErrorString($server) {
 		}
 		elseif (strpos($extError, 'data 532,') !== false) {
 			logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
-			$extError = _('Password is expired');
+			$extError = _('Password expired');
 		}
 		elseif (strpos($extError, 'data 533,') !== false) {
 			logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);

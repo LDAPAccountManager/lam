@@ -523,7 +523,7 @@ class PDFStructureWriter {
 		}
 		$baseDir = __DIR__ . '/../config/pdf/' . $this->serverProfileName;
 		if(!is_writable($baseDir)) {
-			throw new \LAMException(_('Could not save PDF structure, access denied to ' . $baseDir . '.'));
+			throw new \LAMException(sprintf(_('Could not save PDF structure, access denied to %s.'), $baseDir));
 		}
 		return $baseDir . '/' . $name . '.' . $typeId . '.xml';
 	}
