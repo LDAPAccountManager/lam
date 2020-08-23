@@ -755,7 +755,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			),
 			'pwdHash' => array(
 				"Headline" => _("Password hash type"),
-				"Text" => _("LAM supports CRYPT, CRYPT-SHA512, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")
+				"Text" => _("LAM supports a large number of possibilities to generate the hash value of passwords. CRYPT-SHA512 and SSHA are the most common. We do not recommend to use plain text passwords unless passwords are hashed server-side.")
 						. ' ' . _('K5KEY is only needed if you use Kerberos with smbk5pwd.')
 			),
 			'ou' => array(
@@ -4125,7 +4125,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 			if (!$unixModuleFound) {
-				$optionsSelected = array('SSHA');
+				$optionsSelected = array('CRYPT-SHA512');
 				$hashOption = new htmlResponsiveSelect('posixAccount_pwdHash', getSupportedHashTypes(), $optionsSelected, _("Password hash type"), 'pwdHash');
 				$configContainer->add($hashOption, 12);
 			}
