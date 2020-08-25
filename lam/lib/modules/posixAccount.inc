@@ -338,7 +338,7 @@ class posixAccount extends baseModule implements passwordService {
 			),
 			'pwdHash' => array(
 				"Headline" => _("Password hash type"),
-				"Text" => _("LAM supports CRYPT, CRYPT-SHA512, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")
+				"Text" => _("LAM supports a large number of possibilities to generate the hash value of passwords. CRYPT-SHA512 and SSHA are the most common. We do not recommend to use plain text passwords unless passwords are hashed server-side.")
 						. ' ' . _('K5KEY is only needed if you use Kerberos with smbk5pwd.')
 			),
 			'uidNumber' => array(
@@ -2380,7 +2380,7 @@ class posixAccount extends baseModule implements passwordService {
 		$configOptionsContainer = new htmlResponsiveRow();
 		$configOptionsContainer->add(new htmlSubTitle(_('Options')), 12);
 		$configOptionsContainer->add(new htmlResponsiveSelect('posixAccount_pwdHash', getSupportedHashTypes(),
-				array('SSHA'), _("Password hash type"), 'pwdHash'), 12);
+				array('CRYPT-SHA512'), _("Password hash type"), 'pwdHash'), 12);
 		$configOptionsContainer->add(new htmlResponsiveInputTextarea('posixAccount_shells', implode("\r\n", $this->getShells()), 30, 4, _('Login shells'), 'loginShells'), 12);
 		$configOptionsContainer->add(new htmlResponsiveInputCheckbox('posixAccount_primaryGroupAsSecondary', false, _('Set primary group as memberUid'), 'primaryGroupAsSecondary'), 12);
 		if ($isWindows) {

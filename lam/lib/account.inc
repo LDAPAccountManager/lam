@@ -173,6 +173,19 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 		case 'CRYPT-SHA512':
 			$hash = "{CRYPT}" . crypt($password, '$6$' . generateSalt(16));
 			break;
+		case 'PBKDF2-SHA512':
+			$iterations = 200000;
+			if (function_exists('openssl_pbkdf2')) {
+				$salt = openssl_random_pseudo_bytes(16);
+				$hashBinary = openssl_pbkdf2($password, $salt, 64, $iterations, 'sha512');
+				$hash = "{PBKDF2-SHA512}${iterations}" . '$' . base64_encode($salt) . '$' . base64_encode($hashBinary);
+			}
+			else {
+				$salt = generateSalt(16);
+				$hashBinary = hex2bin(hash_pbkdf2('sha512', $password, $salt, $iterations));
+				$hash = "{PBKDF2-SHA512}${iterations}" . '$' . base64_encode($salt) . '$' . base64_encode($hashBinary);
+			}
+			break;
 		case 'MD5':
 			$hash = "{MD5}" . base64_encode(hex2bin(md5($password)));
 			break;
@@ -211,6 +224,9 @@ function getSupportedHashTypes() {
 	$hashes = array('CRYPT', 'CRYPT-SHA512', 'SHA', 'SSHA', 'MD5', 'SMD5', 'PLAIN', 'SASL', 'K5KEY');
 	if (version_compare(phpversion(), '7.2.0') >= 0) {
 		$hashes[] = 'LDAP_EXOP';
+	}
+	if (function_exists('openssl_pbkdf2') || function_exists('hash_pbkdf2')) {
+		$hashes[] = 'PBKDF2-SHA512';
 	}
 	return $hashes;
 }

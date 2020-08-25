@@ -6,6 +6,7 @@ September 2020
   - Better error messages on login when account is expired/deactivated/...
   - Personal/Windows: photo can be uploaded via webcam
   - Windows users: group display format can be configured (cn/dn)
+  - Support PBKDF2-SHA512 password hashes
   - LAM Pro:
    -> Windows: new cron job to send users a summary of their managed groups
   - Fixed bugs:
