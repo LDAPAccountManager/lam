@@ -1,8 +1,6 @@
 <?php
 namespace LAM\INIT;
 
-use locking389ds;
-
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -54,7 +52,7 @@ if ((version_compare(phpversion(), '7.2.0') >= 0) && !$conf->isHidePasswordPromp
 	$ldapErrorCode = ldap_errno($_SESSION['ldap']->server());
 	if ($ldapErrorCode != 32) {
 		$pwdResetMarker = (!empty($userData['pwdreset'][0]) && ($userData['pwdreset'][0] == 'TRUE'));
-		$pwdExpiration = (!empty($userData)) && locking389ds::isPasswordExpired($userData);
+		$pwdExpiration = (!empty($userData)) && class_exists('\locking389ds') && \locking389ds::isPasswordExpired($userData);
 		if (($userData === null) || $pwdResetMarker || $pwdExpiration) {
 			metaRefresh("changePassword.php");
 			exit();
