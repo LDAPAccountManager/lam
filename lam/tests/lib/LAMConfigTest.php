@@ -646,6 +646,17 @@ class LAMConfigTest extends TestCase {
 	}
 
 	/**
+	 * Tests LAMConfig->getHideDnPart() and LAMConfig->setHideDnPart()
+	 */
+	public function testHideDnPart() {
+		$val = 'dc=example,dc=com';
+		$this->lAMConfig->setHideDnPart($val);
+		$this->assertEquals($val, $this->lAMConfig->getHideDnPart());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getHideDnPart());
+	}
+
+	/**
 	 * Tests LAMConfig->getLamProMailFrom() and LAMConfig->setLamProMailFrom()
 	 */
 	public function testLamProMailFrom() {

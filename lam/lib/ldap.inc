@@ -112,7 +112,7 @@ class Ldap{
 			else {
 				// other errors
 				logNewMessage(LOG_ERR, 'User ' . $user . ' (' . $clientSource . ') failed to log in (LDAP error: ' . getDefaultLDAPErrorString($this->server) . ').');
-				throw new LAMException(_("LDAP error, server says:"),  "($errorNumber) " . getDefaultLDAPErrorString($this->server), null, $errorNumber);
+				throw new LAMException(_("Cannot connect to specified LDAP server. Please try again."),  "($errorNumber) " . getDefaultLDAPErrorString($this->server), null, $errorNumber);
 			}
 		}
 		throw new LAMException(_("Cannot connect to specified LDAP server. Please try again."));

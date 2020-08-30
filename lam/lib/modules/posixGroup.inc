@@ -201,7 +201,7 @@ class posixGroup extends baseModule implements passwordService {
 		if ($this->autoAddObjectClasses || (isset($this->attributes['objectClass']) && in_array('posixGroup', $this->attributes['objectClass']))) {
 			// auto sync group members
 			if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
-				$this->syncGon();
+				$this->syncGon(true);
 			}
 			// group name
 			if ($this->manageCnAndDescription($modules)) {
@@ -444,7 +444,7 @@ class posixGroup extends baseModule implements passwordService {
 			),
 			'pwdHash' => array(
 				"Headline" => _("Password hash type"),
-				"Text" => _("LAM supports CRYPT, CRYPT-SHA512, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")
+				"Text" => _("LAM supports a large number of possibilities to generate the hash value of passwords. CRYPT-SHA512 and SSHA are the most common. We do not recommend to use plain text passwords unless passwords are hashed server-side.")
 			),
 			'cn' => array(
 				"Headline" => _("Group name"), 'attr' => 'cn',
@@ -536,7 +536,7 @@ class posixGroup extends baseModule implements passwordService {
 		}
 		// display password hash option only if posixAccount module is not used
 		if (!isset($allScopes['posixAccount'])) {
-			$configContainer->add(new htmlResponsiveSelect('posixAccount_pwdHash', getSupportedHashTypes(), array('SSHA'), _("Password hash type"), 'pwdHash'), 12);
+			$configContainer->add(new htmlResponsiveSelect('posixAccount_pwdHash', getSupportedHashTypes(), array('CRYPT-SHA512'), _("Password hash type"), 'pwdHash'), 12);
 		}
 		return $configContainer;
 	}
@@ -972,10 +972,11 @@ class posixGroup extends baseModule implements passwordService {
 	/**
 	 * Syncs with group of names members.
 	 *
+	 * @param bool $forceDelete force deletion of members
 	 * @return array list of status messages
 	 */
-	protected function syncGon() {
-		$delete = isset($_POST['syncGON_delete']) && ($_POST['syncGON_delete'] == 'on');
+	protected function syncGon($forceDelete = false) {
+		$delete = $forceDelete || (isset($_POST['syncGON_delete']) && ($_POST['syncGON_delete'] == 'on'));
 		$return = array();
 		$gon = $this->getAccountContainer()->getAccountModule('groupOfNames');
 		if ($gon == null) {
@@ -1083,7 +1084,7 @@ class posixGroup extends baseModule implements passwordService {
 		}
 		// auto sync group members
 		if ($this->isBooleanConfigOptionSet('posixGroup_autoSyncGon')) {
-			$this->syncGon();
+			$this->syncGon(true);
 		}
 		$return = $this->getAccountContainer()->save_module_attributes($this->attributes, $this->orig);
 		// Change gids of users and hosts?
@@ -1329,13 +1330,6 @@ class posixGroup extends baseModule implements passwordService {
 			$filter = '(&(objectClass=posixAccount)(gidNumber=*))';
 			if ($this->isWindows()) {
 				$filter = '(&(objectClass=user)(gidNumber=*))';
-			}
-			$typeFilter = $type->getAdditionalLdapFilter();
-			if (!empty($typeFilter)) {
-				if (strpos($typeFilter, '(') !== 0) {
-					$typeFilter = '(' . $typeFilter . ')';
-				}
-				$filter = '(&' . $filter . $typeFilter . ')';
 			}
 			$result = searchLDAPByFilter($filter, array('uid', 'gidNumber', 'cn'), array('user'));
 			$resultCount = sizeof($result);

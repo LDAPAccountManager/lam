@@ -1166,6 +1166,35 @@
         </mediaobject>
       </screenshot>
 
+      <para>Identification method, used LDAP attributes:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Email: mail</para>
+        </listitem>
+
+        <listitem>
+          <para>Employee number: employeeNumber</para>
+        </listitem>
+
+        <listitem>
+          <para>Self service login attribute: same as configured on first tab
+          of self service profile</para>
+        </listitem>
+
+        <listitem>
+          <para>User name: uid</para>
+        </listitem>
+
+        <listitem>
+          <para>User name and email address: uid and mail</para>
+        </listitem>
+
+        <listitem>
+          <para>User name or email address: uid and mail</para>
+        </listitem>
+      </itemizedlist>
+
       <para>You can now configure the minimum answer length for password reset
       answers. This is checked when you allow you users to specify their
       answers via the self service. Additionally, you can specify the text of
@@ -1195,9 +1224,8 @@
       The mail can include the new password by using the special wildcard
       "@@newPassword@@". Additionally, you may want to insert other wildcards
       that are replaced by the corresponding LDAP attributes. E.g. "@@uid@@"
-      will be replaced by the user name.
-      See <link linkend="mailSetup">here</link> for setting up your SMTP
-      server.</para>
+      will be replaced by the user name. See <link
+      linkend="mailSetup">here</link> for setting up your SMTP server.</para>
 
       <literallayout> </literallayout>
 

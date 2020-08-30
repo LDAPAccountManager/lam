@@ -121,7 +121,7 @@ class WebauthnManager {
 			$authenticatorSelectionCriteria,
 			PublicKeyCredentialCreationOptions::ATTESTATION_CONVEYANCE_PREFERENCE_NONE,
 			new AuthenticationExtensionsClientInputs());
-		logNewMessage(LOG_DEBUG, 'Webauthn registration: ' . json_encode($registrationObject));
+		logNewMessage(LOG_DEBUG, 'WebAuthn registration: ' . json_encode($registrationObject));
 		return $registrationObject;
 	}
 
@@ -158,7 +158,7 @@ class WebauthnManager {
 			return true;
 		}
 		catch (\Throwable $exception) {
-			logNewMessage(LOG_ERR, 'Webauthn validation failed: ' . $exception->getMessage() . $exception->getTraceAsString());
+			logNewMessage(LOG_ERR, 'WebAuthn validation failed: ' . $exception->getMessage() . $exception->getTraceAsString());
 		}
 		return false;
 	}
@@ -456,7 +456,7 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 			}
 		}
 		catch (\PDOException $e) {
-			logNewMessage(LOG_ERR, 'Webauthn database error: ' . $e->getMessage());
+			logNewMessage(LOG_ERR, 'WebAuthn database error: ' . $e->getMessage());
 		}
 		return null;
 	}
@@ -480,7 +480,7 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 			}
 		}
 		catch (\PDOException $e) {
-			logNewMessage(LOG_ERR, 'Webauthn database error: ' . $e->getMessage());
+			logNewMessage(LOG_ERR, 'WebAuthn database error: ' . $e->getMessage());
 		}
 		return $credentials;
 	}
@@ -648,6 +648,53 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 			. 'PRIMARY KEY(userId,credentialId)'
 			. ');';
 		$pdo->exec($sql);
+	}
+
+	/**
+	 * Exports all entries.
+	 *
+	 * @return array data
+	 */
+	public function export() {
+		$pdo = $this->getPDO();
+		$statement = $pdo->prepare('select * from ' . self::TABLE_NAME);
+		$statement->execute();
+		$dbData = $statement->fetchAll();
+		$data = array();
+		foreach ($dbData as $dbRow) {
+			$data[] = array(
+				'userId' => $dbRow['userId'],
+				'credentialId' => $dbRow['credentialId'],
+				'credentialSource' => $dbRow['credentialSource'],
+				'registrationTime' => $dbRow['registrationTime'],
+				'lastUseTime' => $dbRow['lastUseTime'],
+			);
+		}
+		return $data;
+	}
+
+	/**
+	 * Imports entries from export data.
+	 *
+	 * @param array $data export data
+	 */
+	public function import($data) {
+		$pdo = $this->getPDO();
+		$statement = $pdo->prepare('delete from ' . self::TABLE_NAME);
+		$statement->execute();
+		if (empty($data)) {
+			return;
+		}
+		foreach ($data as $dbRow) {
+			$statement = $pdo->prepare('insert into ' . self::TABLE_NAME . ' (userId, credentialId, credentialSource, registrationTime, lastUseTime) VALUES (?, ?, ?, ?, ?)');
+			$statement->execute(array(
+				$dbRow['userId'],
+				$dbRow['credentialId'],
+				$dbRow['credentialSource'],
+				$dbRow['registrationTime'],
+				$dbRow['lastUseTime']
+			));
+		}
 	}
 
 }

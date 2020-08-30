@@ -173,6 +173,19 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 		case 'CRYPT-SHA512':
 			$hash = "{CRYPT}" . crypt($password, '$6$' . generateSalt(16));
 			break;
+		case 'PBKDF2-SHA512':
+			$iterations = 200000;
+			if (function_exists('openssl_pbkdf2')) {
+				$salt = openssl_random_pseudo_bytes(16);
+				$hashBinary = openssl_pbkdf2($password, $salt, 64, $iterations, 'sha512');
+				$hash = "{PBKDF2-SHA512}${iterations}" . '$' . base64_encode($salt) . '$' . base64_encode($hashBinary);
+			}
+			else {
+				$salt = generateSalt(16);
+				$hashBinary = hex2bin(hash_pbkdf2('sha512', $password, $salt, $iterations));
+				$hash = "{PBKDF2-SHA512}${iterations}" . '$' . base64_encode($salt) . '$' . base64_encode($hashBinary);
+			}
+			break;
 		case 'MD5':
 			$hash = "{MD5}" . base64_encode(hex2bin(md5($password)));
 			break;
@@ -211,6 +224,9 @@ function getSupportedHashTypes() {
 	$hashes = array('CRYPT', 'CRYPT-SHA512', 'SHA', 'SSHA', 'MD5', 'SMD5', 'PLAIN', 'SASL', 'K5KEY');
 	if (version_compare(phpversion(), '7.2.0') >= 0) {
 		$hashes[] = 'LDAP_EXOP';
+	}
+	if (function_exists('openssl_pbkdf2') || function_exists('hash_pbkdf2')) {
+		$hashes[] = 'PBKDF2-SHA512';
 	}
 	return $hashes;
 }
@@ -802,6 +818,16 @@ function searchLDAPByFilter($filter, $attributes, $scopes, $attrsOnly = false) {
 	$typeManager = new \LAM\TYPES\TypeManager();
 	$types = $typeManager->getConfiguredTypesForScopes($scopes);
 	foreach ($types as $type) {
+		$additionalFilter = $type->getAdditionalLdapFilter();
+		if (!empty($additionalFilter)) {
+			if (strpos($additionalFilter, '(') !== 0) {
+				$additionalFilter = '(' . $additionalFilter . ')';
+			}
+			if (strpos($filter, '(') !== 0) {
+				$filter = '(' . $filter . ')';
+			}
+			$filter = '(&' . $additionalFilter . $filter . ')';
+		}
 		// search LDAP
 		$entries = searchLDAPPaged($_SESSION['ldap']->server(), escapeDN($type->getSuffix()),
 					$filter, $attributes, $readAttributesOnly, $_SESSION['config']->get_searchLimit());
@@ -1059,6 +1085,10 @@ function getAbstractDN($dn) {
 		return '';
 	}
 	$dn = str_replace('\\,', '\\2C', $dn);
+	if (!empty($_SESSION['config']) && !empty($_SESSION['config']->getHideDnPart())) {
+		$partToCut = ',' . $_SESSION['config']->getHideDnPart();
+		$dn = str_replace($partToCut, '', $dn);
+	}
 	$parts = explode(',', $dn);
 	for ($i = 0; $i < sizeof($parts); $i++) {
 		$subparts = explode('=', $parts[$i]);
@@ -1483,9 +1513,35 @@ function getExtendedLDAPErrorMessage($server) {
 function getDefaultLDAPErrorString($server) {
 	$extError = htmlspecialchars(getExtendedLDAPErrorMessage($server));
 	// Active Directory message translations
-	if ((strpos($extError, 'DSID-031A120C') !== false) && (strpos($extError, '5003') !== false)) {
-		logNewMessage(LOG_DEBUG, 'Password change failed because of ' . $extError);
-		$extError = _('Your password does not meet the password strength qualifications. Please retry with another one.');
+	if (strpos($extError, 'DSID') !== false) {
+		if (strpos($extError, '5003') !== false) {
+			logNewMessage(LOG_DEBUG, 'Password change failed because of ' . $extError);
+			$extError = _('Your password does not meet the password strength qualifications. Please retry with another one.');
+		}
+		elseif (strpos($extError, 'data 530,') !== false) {
+			logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
+			$extError = _('Logon not permitted at this time');
+		}
+		elseif (strpos($extError, 'data 532,') !== false) {
+			logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
+			$extError = _('Password expired');
+		}
+		elseif (strpos($extError, 'data 533,') !== false) {
+			logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
+			$extError = _('Account is deactivated');
+		}
+		elseif (strpos($extError, 'data 701,') !== false) {
+			logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
+			$extError = _('Account is expired');
+		}
+		elseif (strpos($extError, 'data 773,') !== false) {
+			logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
+			$extError = _('Password change required');
+		}
+		elseif (strpos($extError, 'data 775,') !== false) {
+			logNewMessage(LOG_DEBUG, 'Login failed because of ' . $extError);
+			$extError = _('Account is locked');
+		}
 	}
 	$genericErrorMessage = ldap_error($server);
 	$message = _('LDAP error, server says:') . ' ' . $genericErrorMessage;
@@ -1493,6 +1549,36 @@ function getDefaultLDAPErrorString($server) {
 		$message .= ' - ' . $extError;
 	}
 	return $message;
+}
+
+/**
+ * Tries to get additional information why invalid credentials was returned. E.g. account is locked.
+ *
+ * @param handle $ldap LDAP object to connect for getting extra data
+ * @param string $userDn failed DN
+ * @return string extra message
+ */
+function getExtraInvalidCredentialsMessage($ldap, $userDn) {
+	$attributes = array('dn', 'pwdaccountlockedtime', 'krbprincipalexpiration',
+		'krbpasswordexpiration', 'passwordexpirationtime');
+	$userData = ldapGetDN($userDn, $attributes, $ldap);
+	$now = new DateTime('now', getTimeZone());
+	if (!empty($userData['pwdaccountlockedtime'][0])) {
+		return _('Account is locked');
+	}
+	if (!empty($userData['krbprincipalexpiration'][0])) {
+		$kerberosExpirationDate = parseLDAPTimestamp($userData['krbprincipalexpiration'][0]);
+		if ($now >= $kerberosExpirationDate) {
+			return _('Kerberos account is expired');
+		}
+	}
+	if (!empty($userData['krbpasswordexpiration'][0])) {
+		$kerberosExpirationDate = parseLDAPTimestamp($userData['krbpasswordexpiration'][0]);
+		if ($now >= $kerberosExpirationDate) {
+			return _('Kerberos password is expired');
+		}
+	}
+	return null;
 }
 
 /**

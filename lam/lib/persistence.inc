@@ -1,5 +1,6 @@
 <?php
 namespace LAM\PERSISTENCE;
+use LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use LAM\PDF\PDFStructure;
 use LAM\PDF\PDFStructureReader;
 use LAM\PDF\PDFStructureWriter;
@@ -76,11 +77,7 @@ class ConfigDataExporter {
 		$jsonData['pdfProfiles'] = $this->_getPdfProfiles($serverProfiles);
 		$jsonData['pdfProfileTemplates'] = $this->_getPdfProfileTemplates();
 		$jsonData['selfServiceProfiles'] = $this->_getSelfServiceProfiles();
-		/**
-		 * TODO
-		 *
-		 * webauthn
-		 */
+		$jsonData['webauthn'] = $this->_getWebauthn();
 		return json_encode($jsonData);
 	}
 
@@ -238,6 +235,24 @@ class ConfigDataExporter {
 		return $data;
 	}
 
+	/**
+	 * Returns the content of the webauthn database.
+	 *
+	 * @return array data
+	 */
+	public function _getWebauthn() {
+		$data = array();
+		if ((version_compare(phpversion(), '7.2.0') >= 0)
+			&& extension_loaded('PDO')
+			&& in_array('sqlite', \PDO::getAvailableDrivers())) {
+			include_once __DIR__ . '/webauthn.inc';
+			$webauthnManager = new WebauthnManager();
+			$webauthnDatabase = $webauthnManager->getDatabase();
+			$data = $webauthnDatabase->export();
+		}
+		return $data;
+	}
+
 }
 
 /**
@@ -296,6 +311,13 @@ class ConfigDataImporter {
 				case 'selfServiceProfiles':
 					$steps[] = new ImporterStep(_('Self service profiles'), 'selfServiceProfiles', $value);
 					break;
+				case 'webauthn':
+					if ((version_compare(phpversion(), '7.2.0') >= 0)
+						&& extension_loaded('PDO')
+						&& in_array('sqlite', \PDO::getAvailableDrivers())) {
+						$steps[] = new ImporterStep(_('WebAuthn devices'), 'webauthn', $value);
+					}
+					break;
 				default:
 					logNewMessage(LOG_WARNING, 'Unknown import type: ' . $key);
 			}
@@ -342,6 +364,9 @@ class ConfigDataImporter {
 					break;
 				case 'selfServiceProfiles':
 					$this->importSelfServiceProfiles($step);
+					break;
+				case 'webauthn':
+					$this->importWebauthn($step);
 					break;
 				default:
 					logNewMessage(LOG_WARNING, 'Unknown import type: ' . $key);
@@ -558,6 +583,21 @@ class ConfigDataImporter {
 		if (!empty($failedNames)) {
 			throw new LAMException(_('Unable to save profile!'), implode(', ', $failedNames));
 		}
+	}
+
+	/**
+	 * Imports the webauthn data.
+	 *
+	 * @param ImporterStep $step importer step
+	 * @throws LAMException error saving profiles
+	 */
+	private function importWebauthn($step) {
+		$failedNames = array();
+		$data = $step->getValue();
+		include_once __DIR__ . '/webauthn.inc';
+		$webauthnManager = new WebauthnManager();
+		$webauthnDatabase = $webauthnManager->getDatabase();
+		$webauthnDatabase->import($data);
 	}
 
 }

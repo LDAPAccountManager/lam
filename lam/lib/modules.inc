@@ -1069,6 +1069,7 @@ class accountContainer {
 		$suffixSelect->setHasDescriptiveElements(true);
 		$suffixSelect->setRightToLeftTextDirection(true);
 		$suffixSelect->setShortLabel();
+		$suffixSelect->setSortElements(false);
 		$titleBarSuffixRdn->add($suffixSelect, 12, 12, 7);
 		// RDN selection
 		$rdnlist = getRDNAttributes($this->type->getId());

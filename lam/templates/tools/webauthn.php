@@ -64,7 +64,7 @@ echo "<form id='webauthnform' action=\"webauthn.php\" method=\"post\">\n";
 $tabindex = 1;
 $container = new htmlResponsiveRow();
 
-$container->add(new htmlTitle(_("Webauthn devices")), 12);
+$container->add(new htmlTitle(_("WebAuthn devices")), 12);
 
 $webauthnManager = new WebauthnManager();
 
@@ -76,7 +76,7 @@ $container->addVerticalSpacer('0.5rem');
 $container->add(new htmlHiddenInput('registrationData', ''), 12);
 $errorMessageDiv = new htmlDiv('generic-webauthn-error', new htmlOutputText(''));
 $errorMessageDiv->addDataAttribute('button', _('Ok'));
-$errorMessageDiv->addDataAttribute('title', _('Webauthn failed'));
+$errorMessageDiv->addDataAttribute('title', _('WebAuthn failed'));
 $container->add($errorMessageDiv, 12);
 $buttonGroup = new htmlGroup();
 $registerButton = new htmlButton('register', _('Register new device'));

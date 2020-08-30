@@ -755,7 +755,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			),
 			'pwdHash' => array(
 				"Headline" => _("Password hash type"),
-				"Text" => _("LAM supports CRYPT, CRYPT-SHA512, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")
+				"Text" => _("LAM supports a large number of possibilities to generate the hash value of passwords. CRYPT-SHA512 and SSHA are the most common. We do not recommend to use plain text passwords unless passwords are hashed server-side.")
 						. ' ' . _('K5KEY is only needed if you use Kerberos with smbk5pwd.')
 			),
 			'ou' => array(
@@ -1629,7 +1629,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if ($this->isAdminReadOnly('jpegPhoto')) {
 			return array();
 		}
-		if (isset($_POST['form_subpage_' . get_class($this) . '_photo_upload'])) {
+		if (isset($_POST['form_subpage_' . get_class($this) . '_photo_upload']) || isset($_POST['webcamData'])) {
 			return $this->uploadPhoto();
 		}
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_crop'])) {
@@ -1656,40 +1656,46 @@ class inetOrgPerson extends baseModule implements passwordService {
 	 */
 	private function uploadPhoto() {
 		$messages = array();
-		if ($_FILES['photoFile'] && ($_FILES['photoFile']['size'] > 0)) {
+		if ((empty($_FILES['photoFile']) || ($_FILES['photoFile']['size'] <= 0)) && empty($_POST['webcamData'])) {
+			$messages[] = $this->messages['file'][0];
+			return $messages;
+		}
+		if (!empty($_FILES['photoFile']['tmp_name'])) {
 			$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
 			$data = fread($handle, 100000000);
+			fclose($handle);
 			if (!empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]) && (strlen($data) > (1024 * $this->moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]))) {
 				$errMsg = $this->messages['file'][3];
 				$errMsg[] = null;
 				$errMsg[] = array($this->moduleSettings['inetOrgPerson_jpegPhoto_maxSize'][0]);
 				return array($errMsg);
 			}
-			fclose($handle);
-			// convert to JPG
-			try {
-				include_once dirname(__FILE__) . '/../imageutils.inc';
-				$imageManipulator = ImageManipulationFactory::getImageManipulator($data);
-				// resize if maximum values specified
-				if (!empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0]) || !empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0])) {
-					$maxWidth = empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0]) ? $imageManipulator->getWidth() : $this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0];
-					$maxHeight = empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0]) ? $imageManipulator->getHeight() : $this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0];
-					$imageManipulator->thumbnail($maxWidth, $maxHeight);
-				}
-				$imageManipulator->convertToJpeg();
-				$data = $imageManipulator->getImageData();
-			}
-			catch (Exception $e) {
-				$msg =  $this->messages['file'][2];
-				$msg[] = htmlspecialchars($e->getMessage());
-				$messages[] = $msg;
-				return $messages;
-			}
-			$this->attributes['jpegPhoto'][0] = $data;
 		}
-		else {
-			$messages[] = $this->messages['file'][0];
+		elseif (isset($_POST['webcamData'])) {
+			$data = $_POST['webcamData'];
+			$data = str_replace('data:image/png;base64,', '', $data);
+			$data = base64_decode($data);
 		}
+		// convert to JPG
+		try {
+			include_once dirname(__FILE__) . '/../imageutils.inc';
+			$imageManipulator = ImageManipulationFactory::getImageManipulator($data);
+			// resize if maximum values specified
+			if (!empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0]) || !empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0])) {
+				$maxWidth = empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0]) ? $imageManipulator->getWidth() : $this->moduleSettings['inetOrgPerson_jpegPhoto_maxWidth'][0];
+				$maxHeight = empty($this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0]) ? $imageManipulator->getHeight() : $this->moduleSettings['inetOrgPerson_jpegPhoto_maxHeight'][0];
+				$imageManipulator->thumbnail($maxWidth, $maxHeight);
+			}
+			$imageManipulator->convertToJpeg();
+			$data = $imageManipulator->getImageData();
+		}
+		catch (Exception $e) {
+			$msg =  $this->messages['file'][2];
+			$msg[] = htmlspecialchars($e->getMessage());
+			$messages[] = $msg;
+			return $messages;
+		}
+		$this->attributes['jpegPhoto'][0] = $data;
 		return $messages;
 	}
 
@@ -1704,9 +1710,33 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$container->add(new htmlSubTitle(_('Upload image')), 12);
 			$label = _('Photo file');
 			$container->add(new htmlResponsiveInputFileUpload('photoFile', $label, 'photoUpload'), 12);
+			$container->addVerticalSpacer('0.5rem');
+			$container->addLabel(new htmlOutputText('&nbsp;', false));
+			$container->addField(new htmlAccountPageButton(get_class($this), 'photo', 'upload', _('Upload')));
 			$container->addVerticalSpacer('1rem');
-			$container->addLabel(new htmlAccountPageButton(get_class($this), 'photo', 'upload', _('Upload')));
-			$container->addField(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')));
+			$webcamContent = new htmlResponsiveRow();
+			$webcamContent->add(new htmlSubTitle(_('Use webcam')), 12);
+			$errorMessage = new htmlStatusMessage('ERROR', '');
+			$errorMessage->setCSSClasses(array('hidden', 'lam-webcam-message'));
+			$webcamContent->add($errorMessage, 12);
+			$captureButton = new htmlButton('lam-webcam-capture', _('Start capture'));
+			$captureButton->setOnClick('window.lam.tools.webcam.capture(event);');
+			$webcamContent->add($captureButton, 12, 12, 12, 'text-center');
+			$video = new htmlVideo('lam-webcam-video');
+			$video->setCSSClasses(array('hidden'));
+			$webcamContent->add($video, 12, 12, 12, 'text-center');
+			$webcamContent->addVerticalSpacer('0.5rem');
+			$webcamUploadButton = new htmlButton('uploadWebcam', _('Upload'));
+			$webcamUploadButton->setCSSClasses(array('btn-lam-webcam-upload', 'hidden'));
+			$webcamUploadButton->setOnClick('window.lam.tools.webcam.upload();');
+			$webcamContent->add($webcamUploadButton, 12, 12, 12, 'text-center');
+			$canvas = new htmlCanvas('lam-webcam-canvas');
+			$canvas->setCSSClasses(array('hidden'));
+			$webcamContent->add($canvas, 12);
+			$webcamDiv = new htmlDiv('lam_webcam_div', $webcamContent, array('hidden'));
+			$container->add($webcamDiv, 12);
+			$container->addVerticalSpacer('1rem');
+			$container->add(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')), 12);
 		}
 		else {
 			$container->add(new htmlSubTitle(_('Crop image')), 12);
@@ -3062,6 +3092,33 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$uploadStatus = new htmlDiv('inetOrgPersonPhotoUploadStatus', new htmlOutputText(''));
 		$uploadStatus->setCSSClasses(array('qq-upload-list'));
 		$row->add($uploadStatus, 12);
+		// webcam button
+		$webcamContent = new htmlResponsiveRow();
+		$webcamContent->addVerticalSpacer('0.5rem');
+		$errorMessage = new htmlStatusMessage('ERROR', '');
+		$errorMessage->setCSSClasses(array('hidden', 'lam-webcam-message'));
+		$webcamContent->add($errorMessage, 12);
+		$webcamContent->addVerticalSpacer('0.5rem');
+		$captureButton = new htmlLink(_('Use webcam'), '#', '../../graphics/webcam.png', true);
+		$captureButton->setId('btn_lam-webcam-capture');
+		$captureButton->setOnClick('window.lam.tools.webcam.capture(event);');
+		$webcamContent->add($captureButton, 12, 12, 12);
+		$video = new htmlVideo('lam-webcam-video');
+		$video->setCSSClasses(array('hidden'));
+		$webcamContent->add($video, 12, 12, 12, 'text-center');
+		$webcamContent->addVerticalSpacer('1rem');
+		$webcamUploadButton = new htmlLink(_('Upload'), '#', '../../graphics/up.gif', true);
+		$webcamUploadButton->setId('btn-lam-webcam-upload');
+		$webcamUploadButton->setCSSClasses(array('btn-lam-webcam-upload', 'hidden'));
+		$webcamUploadButton->setOnClick('window.lam.tools.webcam.uploadSelfService(event, "' . getSecurityTokenName()
+			.  '", "' . getSecurityTokenValue() . '", "inetOrgPerson", "user", "' . _('File upload failed!') . '", "inetOrgPersonPhotoUploadContent");');
+		$webcamContent->add($webcamUploadButton, 12, 12, 12);
+		$canvas = new htmlCanvas('lam-webcam-canvas');
+		$canvas->setCSSClasses(array('hidden'));
+		$webcamContent->add($canvas, 12);
+		$webcamDiv = new htmlDiv('lam_webcam_div', $webcamContent, array('hidden'));
+		$webcamContent->addVerticalSpacer('1rem');
+		$row->add($webcamDiv, 12);
 		return $row;
 	}
 
@@ -3095,6 +3152,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 							if (data.success) {
 								if (data.html) {
 									jQuery(\'#inetOrgPersonPhotoUploadContent\').html(data.html);
+									window.lam.tools.webcam.init();
 								}
 							}
 							else {
@@ -3119,6 +3177,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			function inetOrgPersonDeletePhotoHandleReply(data) {
 				if (data.errorsOccured == "false") {
 					jQuery(\'#inetOrgPersonPhotoUploadContent\').html(data.html);
+					window.lam.tools.webcam.init();
 				}
 				else {
 					alert(data.errormessage);
@@ -3790,13 +3849,20 @@ class inetOrgPerson extends baseModule implements passwordService {
 	 */
 	private function ajaxUploadPhoto() {
 		$result = array('success' => true);
-		if (!isset($_FILES['qqfile']) || ($_FILES['qqfile']['size'] < 100)) {
+		if ((!isset($_FILES['qqfile']) || ($_FILES['qqfile']['size'] < 100)) && empty($_POST['webcamData'])) {
 			$result = array('error' => _('No file received.'));
 		}
 		else {
-			$handle = fopen($_FILES['qqfile']['tmp_name'], "r");
-			$data = fread($handle, 100000000);
-			fclose($handle);
+			if (empty($_POST['webcamData'])) {
+				$handle = fopen($_FILES['qqfile']['tmp_name'], "r");
+				$data = fread($handle, 100000000);
+				fclose($handle);
+			}
+			else {
+				$data = $_POST['webcamData'];
+				$data = str_replace('data:image/png;base64,', '', $data);
+				$data = base64_decode($data);
+			}
 			try {
 				include_once dirname(__FILE__) . '/../imageutils.inc';
 				$imageManipulator = ImageManipulationFactory::getImageManipulator($data);
@@ -4059,7 +4125,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				}
 			}
 			if (!$unixModuleFound) {
-				$optionsSelected = array('SSHA');
+				$optionsSelected = array('CRYPT-SHA512');
 				$hashOption = new htmlResponsiveSelect('posixAccount_pwdHash', getSupportedHashTypes(), $optionsSelected, _("Password hash type"), 'pwdHash');
 				$configContainer->add($hashOption, 12);
 			}

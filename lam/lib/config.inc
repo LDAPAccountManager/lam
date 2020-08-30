@@ -617,6 +617,8 @@ class LAMConfig {
 	private $twoFactorAuthenticationCaption = '';
 	private $twoFactorAuthenticationAttribute = '';
 
+	private $hideDnPart = '';
+
 	/** List of all settings in config file */
 	private $settings = array("ServerURL", "useTLS", "followReferrals", 'pagedResults', "Passwd", "Admins", "treesuffix",
 		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", "cachetimeout", 'serverDisplayName',
@@ -630,7 +632,7 @@ class LAMConfig {
 		'twoFactorAuthenticationInsecure', 'twoFactorAuthenticationLabel', 'twoFactorAuthenticationOptional',
 		'twoFactorAuthenticationCaption', 'twoFactorAuthenticationClientId', 'twoFactorAuthenticationSecretKey',
 		'twoFactorAuthenticationDomain', 'twoFactorAuthenticationAttribute', 'referentialIntegrityOverlay',
-		'hidePasswordPromptForExpiredPasswords'
+		'hidePasswordPromptForExpiredPasswords', 'hideDnPart'
 	);
 
 
@@ -1092,6 +1094,9 @@ class LAMConfig {
 			}
 			if (!in_array("twoFactorAuthenticationAttribute", $saved)) {
 				array_push($file_array, "\n" . "twoFactorAuthenticationAttribute: " . $this->twoFactorAuthenticationAttribute . "\n");
+			}
+			if (!in_array("hideDnPart", $saved)) {
+				array_push($file_array, "\n" . "hideDnPart: " . $this->hideDnPart . "\n");
 			}
 			// check if all module settings were added
 			$m_settings = array_keys($this->moduleSettings);
@@ -2645,6 +2650,24 @@ class LAMConfig {
 	 */
 	public function setTwoFactorAuthenticationAttribute($twoFactorAuthenticationAttribute) {
 		$this->twoFactorAuthenticationAttribute = $twoFactorAuthenticationAttribute;
+	}
+
+	/**
+	 * Returns the DN part to hide.
+	 *
+	 * @return string DN part
+	 */
+	public function getHideDnPart() {
+		return $this->hideDnPart;
+	}
+
+	/**
+	 * Sets the DN part to hide.
+	 *
+	 * @param string $hideDnPart DN part
+	 */
+	public function setHideDnPart($hideDnPart) {
+		$this->hideDnPart = $hideDnPart;
 	}
 
 }

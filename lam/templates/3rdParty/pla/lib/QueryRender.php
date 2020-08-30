@@ -210,76 +210,73 @@ class QueryRender extends PageRender {
 			echo '<br/>';
 			echo '<br/>';
 
-			switch(get_request('format','REQUEST',false,$_SESSION[APPCONFIG]->getValue('search','display'))) {
-				case 'list':
-					foreach ($results as $dndetails) {
-						$dndetails = array_change_key_case($dndetails);
+			$format = get_request('format','REQUEST',false,$_SESSION[APPCONFIG]->getValue('search','display'));
+			if ($format === 'list') {
+				foreach ($results as $dndetails) {
+					$dndetails = array_change_key_case($dndetails);
 
-						# Temporarily set our DN, for rendering that leverages our DN (eg: JpegPhoto)
-						$this->template->setDN($dndetails['dn']);
+					# Temporarily set our DN, for rendering that leverages our DN (eg: JpegPhoto)
+					$this->template->setDN($dndetails['dn']);
 
-						echo '<table class="result" border="0">';
+					echo '<table class="result" border="0">';
 
-						echo '<tr class="list_title">';
-						printf('<td class="icon"><img src="%s/%s" alt="icon" /></td>',IMGDIR,get_icon($server->getIndex(),$dndetails['dn']));
+					echo '<tr class="list_title">';
+					printf('<td class="icon"><img src="%s/%s" alt="icon" /></td>', IMGDIR, get_icon($server->getIndex(), $dndetails['dn']));
 
-						printf('<td colspan="2"><a href="cmd.php?cmd=template_engine&amp;server_id=%s&amp;dn=%s">%s</a></td>',
-							$server->getIndex(),$this->template->getDNEncode(),htmlspecialchars(get_rdn($dndetails['dn'])));
+					printf('<td colspan="2"><a href="cmd.php?cmd=template_engine&amp;server_id=%s&amp;dn=%s">%s</a></td>',
+						$server->getIndex(), $this->template->getDNEncode(), htmlspecialchars(get_rdn($dndetails['dn'])));
+					echo '</tr>';
+
+					printf('<tr class="list_item"><td class="blank">&nbsp;</td><td class="heading">dn</td><td class="value">%s</td></tr>',
+						htmlspecialchars(dn_unescape($dndetails['dn'])));
+
+					# Iterate over each attribute for this entry
+					foreach (explode(',', $ado) as $attr) {
+						# Ignore DN, we've already displayed it.
+						if ($attr == 'dn')
+							continue;
+
+						if (!isset($dndetails[$attr]))
+							continue;
+
+						# Set our object with our values
+						$afattrs[$attr]->clearValue();
+
+						if (is_array($dndetails[$attr]))
+							$afattrs[$attr]->initValue($dndetails[$attr]);
+						else
+							$afattrs[$attr]->initValue(array($dndetails[$attr]));
+
+						echo '<tr class="list_item">';
+						echo '<td class="blank">&nbsp;</td>';
+
+						echo '<td class="heading">';
+						$this->draw('Name', $afattrs[$attr]);
+						echo '</td>';
+
+						echo '<td>';
+						$this->draw('CurrentValues', $afattrs[$attr]);
+						echo '</td>';
 						echo '</tr>';
-
-						printf('<tr class="list_item"><td class="blank">&nbsp;</td><td class="heading">dn</td><td class="value">%s</td></tr>',
-							htmlspecialchars(dn_unescape($dndetails['dn'])));
-
-						# Iterate over each attribute for this entry
-						foreach (explode(',',$ado) as $attr) {
-							# Ignore DN, we've already displayed it.
-							if ($attr == 'dn')
-								continue;
-
-							if (! isset($dndetails[$attr]))
-								continue;
-
-							# Set our object with our values
-							$afattrs[$attr]->clearValue();
-
-							if (is_array($dndetails[$attr]))
-								$afattrs[$attr]->initValue($dndetails[$attr]);
-							else
-								$afattrs[$attr]->initValue(array($dndetails[$attr]));
-
-							echo '<tr class="list_item">';
-							echo '<td class="blank">&nbsp;</td>';
-
-							echo '<td class="heading">';
-							$this->draw('Name',$afattrs[$attr]);
-							echo '</td>';
-
-							echo '<td>';
-							$this->draw('CurrentValues',$afattrs[$attr]);
-							echo '</td>';
-							echo '</tr>';
-						}
-
-						echo '</table>';
-						echo '<br/>';
 					}
 
-					break;
-
+					echo '</table>';
+					echo '<br/>';
+				}
+			}
+			else {
 				# Display the results.
-				case 'table':
-					if (! $results) {
-						echo _('Search returned no results');
+				if (!$results) {
+					echo _('Search returned no results');
+				}
+				else {
 
-						continue;
-					}
-
-					printf('<form action="cmd.php" method="post" id="massform_%s">',$counter);
+					printf('<form action="cmd.php" method="post" id="massform_%s">', $counter);
 					echo '<div>';
-					printf('<input type="hidden" name="server_id" value="%s" />',$server->getIndex());
+					printf('<input type="hidden" name="server_id" value="%s" />', $server->getIndex());
 
 					foreach ($this->template->resultsdata[$base]['attrs'] as $attr)
-						printf('<input type="hidden" name="attrs[]" value="%s" />',$attr);
+						printf('<input type="hidden" name="attrs[]" value="%s" />', $attr);
 
 					echo '</div>';
 
@@ -290,9 +287,9 @@ class QueryRender extends PageRender {
 					echo '<td>&nbsp;</td>';
 					echo '<td>&nbsp;</td>';
 
-					foreach (explode(',',$ado) as $attr) {
+					foreach (explode(',', $ado) as $attr) {
 						echo '<td>';
-						$this->draw('Name',$afattrs[$attr]);
+						$this->draw('Name', $afattrs[$attr]);
 						echo '</td>';
 					}
 
@@ -308,21 +305,21 @@ class QueryRender extends PageRender {
 						$this->template->setDN($dndetails['dn']);
 
 						printf('<tr class="%s" id="tr_ma_%s" onclick="var cb=document.getElementById(\'ma_%s\'); cb.checked=!cb.checked;">',
-							$j%2 ? 'even' : 'odd',$j,$j);
+							$j % 2 ? 'even' : 'odd', $j, $j);
 
 						# Is mass action enabled.
-						if ($_SESSION[APPCONFIG]->getValue('mass','enabled'))
-							printf('<td><input type="checkbox" id="ma_%s" name="dn[]" value="%s" onclick="this.checked=!this.checked;" /></td>',$j,$dndetails['dn']);
+						if ($_SESSION[APPCONFIG]->getValue('mass', 'enabled'))
+							printf('<td><input type="checkbox" id="ma_%s" name="dn[]" value="%s" onclick="this.checked=!this.checked;" /></td>', $j, $dndetails['dn']);
 
-						$href = sprintf('cmd=template_engine&server_id=%s&dn=%s',$server->getIndex(),$this->template->getDNEncode());
+						$href = sprintf('cmd=template_engine&server_id=%s&dn=%s', $server->getIndex(), $this->template->getDNEncode());
 						printf('<td class="icon"><a href="cmd.php?%s"><img src="%s/%s" alt="icon" /></a></td>',
 							htmlspecialchars($href),
-							IMGDIR,get_icon($server->getIndex(),$dndetails['dn']));
+							IMGDIR, get_icon($server->getIndex(), $dndetails['dn']));
 
 						# We'll clone our attribute factory attributes, since we need to add the values to them for rendering.
-						foreach (explode(',',$ado) as $attr) {
+						foreach (explode(',', $ado) as $attr) {
 							# If the entry is blank, we'll draw an empty box and continue.
-							if (! isset($dndetails[$attr])) {
+							if (!isset($dndetails[$attr])) {
 								echo '<td>&nbsp;</td>';
 								continue;
 							}
@@ -330,10 +327,10 @@ class QueryRender extends PageRender {
 							# Special case for DNs
 							if ($attr == 'dn') {
 								$dn_display = strlen($dndetails['dn']) > 40
-									? sprintf('<acronym title="%s">%s...</acronym>',htmlspecialchars($dndetails['dn']),htmlspecialchars(substr($dndetails['dn'],0,40)))
+									? sprintf('<acronym title="%s">%s...</acronym>', htmlspecialchars($dndetails['dn']), htmlspecialchars(substr($dndetails['dn'], 0, 40)))
 									: htmlspecialchars($dndetails['dn']);
 
-								printf('<td><a href="cmd.php?%s">%s</a></td>',htmlspecialchars($href),$dn_display);
+								printf('<td><a href="cmd.php?%s">%s</a></td>', htmlspecialchars($href), $dn_display);
 								continue;
 							}
 
@@ -345,7 +342,7 @@ class QueryRender extends PageRender {
 								$afattrs[$attr]->initValue(array($dndetails[$attr]));
 
 							echo '<td>';
-							$this->draw('CurrentValues',$afattrs[$attr]);
+							$this->draw('CurrentValues', $afattrs[$attr]);
 							echo '</td>';
 						}
 
@@ -353,10 +350,10 @@ class QueryRender extends PageRender {
 					}
 
 					# Is mass action enabled.
-					if ($_SESSION[APPCONFIG]->getValue('mass','enabled')) {
-						printf('<tr class="%s">',++$j%2 ? 'odd' : 'even');
-						printf('<td><input type="checkbox" name="allbox" value="1" onclick="CheckAll(1,\'massform_\',%s);" /></td>',$counter);
-						printf('<td colspan="%s">',2+count(explode(',',$ado)));
+					if ($_SESSION[APPCONFIG]->getValue('mass', 'enabled')) {
+						printf('<tr class="%s">', ++$j % 2 ? 'odd' : 'even');
+						printf('<td><input type="checkbox" name="allbox" value="1" onclick="CheckAll(1,\'massform_\',%s);" /></td>', $counter);
+						printf('<td colspan="%s">', 2 + count(explode(',', $ado)));
 
 						foreach ($mass_actions as $display => $action) {
 							echo '<button type="submit" name="cmd" value="' . $action . '">' . $display . '</button>&nbsp;&nbsp;';
@@ -370,11 +367,7 @@ class QueryRender extends PageRender {
 					echo '</table>';
 					echo '</form>';
 					echo "\n\n";
-
-					break;
-
-				default:
-					printf('Have ID [%s], run this query for page [%s]',$this->template_id,$this->page);
+				}
 			}
 
 			echo '</td></tr>';

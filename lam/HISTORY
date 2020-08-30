@@ -1,7 +1,16 @@
 September 2020
   - PHP 7.4 compatibility
+  - Configuration export and import
+  - Server profiles support to specify a part of the DN to hide
   - Show password prompt when a user with expired password logs into LAM admin interface (requires PHP 7.2)
+  - Better error messages on login when account is expired/deactivated/...
+  - Personal/Windows: photo can be uploaded via webcam
   - Windows users: group display format can be configured (cn/dn)
+  - Support PBKDF2-SHA512 password hashes
+  - LAM Pro:
+   -> Windows: new cron job to send users a summary of their managed groups
+  - Fixed bugs:
+   -> Unix groups: memberUid was not deleted correctly when forced sync with group of names is active
 
 01.05.2020 7.2
   - Unix: allow to create group with same name during user creation
