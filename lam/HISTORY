@@ -1,4 +1,4 @@
-September 2020
+06.09.2020 7.3
   - PHP 7.4 compatibility
   - Configuration export and import
   - Server profiles support to specify a part of the DN to hide
@@ -11,6 +11,7 @@ September 2020
    -> Windows: new cron job to send users a summary of their managed groups
   - Fixed bugs:
    -> Unix groups: memberUid was not deleted correctly when forced sync with group of names is active
+
 
 01.05.2020 7.2
   - Unix: allow to create group with same name during user creation
