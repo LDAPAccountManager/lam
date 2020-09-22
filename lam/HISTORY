@@ -1,4 +1,4 @@
-06.09.2020 7.3
+22.09.2020 7.3
   - PHP 7.4 compatibility
   - Configuration export and import
   - Server profiles support to specify a part of the DN to hide
