@@ -1383,9 +1383,15 @@ class LAMConfig {
 	 * @return boolean true, if matches
 	 */
 	public function check_Passwd($password) {
-		if (substr($this->Passwd, 0, 6) == "{SSHA}") {
-			// check hashed password
-			$value = substr($this->Passwd, 6);
+		if (strpos($this->Passwd, "{SSHA}") === 0) {
+			$value = substr($this->Passwd, strlen("{SSHA}"));
+			$parts = explode(" ", $value);
+			$salt = base64_decode($parts[1]);
+			$hash = "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt))) . " " . base64_encode($salt);
+			return ($hash === $this->Passwd);
+		}
+		elseif (strpos($this->Passwd, "{CRYPT-SHA512}") === 0) {
+			$value = substr($this->Passwd, strlen("{CRYPT-SHA512}"));
 			$parts = explode(" ", $value);
 			$salt = base64_decode($parts[1]);
 			return ($this->hashPassword($password, $salt) === $this->Passwd);
@@ -1404,10 +1410,7 @@ class LAMConfig {
 	*/
 	public function set_Passwd($value) {
 		if (is_string($value)) {
-			$rand = getRandomNumber();
-			$salt0 = substr(pack("h*", md5($rand)), 0, 8);
-			$salt = substr(pack("H*", sha1($salt0 . $value)), 0, 4);
-			$this->Passwd = $this->hashPassword($value, $salt);
+			$this->Passwd = $this->hashPassword($value, generateSalt(16));
 			return true;
 		}
 		else {
@@ -1423,7 +1426,7 @@ class LAMConfig {
 	 * @return String hash value
 	 */
 	private function hashPassword($password, $salt) {
-		return "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt))) . " " . base64_encode($salt);
+		return "{CRYPT-SHA512}" . crypt($password, '$6$' . $salt) . " " . base64_encode($salt);
 	}
 
 	/**
@@ -3081,10 +3084,7 @@ class LAMCfgMain {
 	 * @param String $password new password
 	 */
 	public function setPassword($password) {
-		$rand = getRandomNumber();
-		$salt0 = substr(pack("h*", md5($rand)), 0, 8);
-		$salt = substr(pack("H*", sha1($salt0 . $password)), 0, 4);
-		$this->password = $this->hashPassword($password, $salt);
+		$this->password = $this->hashPassword($password, generateSalt(16));
 	}
 
 	/**
@@ -3094,9 +3094,15 @@ class LAMCfgMain {
 	 * @return boolean true, if password matches
 	 */
 	public function checkPassword($password) {
-		if (substr($this->password, 0, 6) == "{SSHA}") {
-			// check hashed password
-			$value = substr($this->password, 6);
+		if (strpos($this->password, "{SSHA}") === 0) {
+			$value = substr($this->password, strlen("{SSHA}"));
+			$parts = explode(" ", $value);
+			$salt = base64_decode($parts[1]);
+			$hash = "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt))) . " " . base64_encode($salt);
+			return ($hash === $this->password);
+		}
+		elseif (strpos($this->password, "{CRYPT-SHA512}") === 0) {
+			$value = substr($this->password, strlen("{CRYPT-SHA512}"));
 			$parts = explode(" ", $value);
 			$salt = base64_decode($parts[1]);
 			return ($this->hashPassword($password, $salt) === $this->password);
@@ -3115,7 +3121,7 @@ class LAMCfgMain {
 	 * @return String hash value
 	 */
 	private function hashPassword($password, $salt) {
-		return "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt))) . " " . base64_encode($salt);
+		return "{CRYPT-SHA512}" . crypt($password, '$6$' . $salt) . " " . base64_encode($salt);
 	}
 
 	/**
