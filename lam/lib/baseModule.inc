@@ -1363,6 +1363,29 @@ abstract class baseModule {
 	}
 
 	/**
+	 * Validates a text field.
+	 * If validation is used then there must exist a message named [{attribute name}][0] (e.g. $this->messages['street'][0]).
+	 *
+	 * @param String $attrName attribute name
+	 * @param array $errors errors array where to put validation errors
+	 * @param bool $required value required
+	 * @param String $validationID validation ID for function get_preg() (default: null, null means no validation)
+	 */
+	protected function processSimpleTextInput($attrName, &$errors, $required = false, $validationID = null) {
+		if ((!isset($_POST[$attrName]) || ($_POST[$attrName] === '')) && isset($this->attributes[$attrName][0])) {
+			unset($this->attributes[$attrName][0]);
+			return;
+		}
+		$this->attributes[$attrName][0] = $_POST[$attrName];
+		if ($required && (!isset($_POST[$attrName]) || ($_POST[$attrName] === ''))) {
+			$errors[] = $this->messages[$attrName][0];
+		}
+		elseif (($validationID !== null) && !get_preg($_POST[$attrName], $validationID)) {
+			$errors[] = $this->messages[$attrName][0];
+		}
+	}
+
+	/**
 	 * Adds a text input field that may contain multiple values to the given htmlTable.
 	 * The field name will be the same as the attribute name plus a counting number (e.g. street_0).
 	 * The last field will be followed by a button to add a new value. This is named add_{attribute name} (e.g. add_street).

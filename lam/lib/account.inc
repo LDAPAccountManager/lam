@@ -1653,6 +1653,9 @@ function formatSecondsToShortFormat($numSeconds) {
 	if (empty($numSeconds)) {
 		return '';
 	}
+	if (!is_numeric($numSeconds)) {
+		return $numSeconds;
+	}
 	$seconds = $numSeconds % 60;
 	$seconds = ($seconds == 0) ? '' : $seconds . 's';
 	$minutes = floor(($numSeconds % 3600) / 60);

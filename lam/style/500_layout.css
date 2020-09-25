@@ -2,7 +2,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003  Leonhard Walchshaeusl
-  Copyright (C) 2005 - 2019  Roland Gruber
+  Copyright (C) 2005 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more detaexils.
+  GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
@@ -800,6 +800,10 @@ div.confModList {
 .ppolicyType-border { border-color:#af8800; }
 .ppolicyType-bright { background:#fff3c8 !important; }
 .ppolicyType-dark { background-color:#ffe27f !important; }
+
+.mitKerberosPolicyType-border { border-color:#af8800; }
+.mitKerberosPolicyType-bright { background:#fff3c8 !important; }
+.mitKerberosPolicyType-dark { background-color:#ffe27f !important; }
 
 .smbDomain-border { border-color:#1d993e; }
 .smbDomain-bright { background:#c9ddd2 !important; }
