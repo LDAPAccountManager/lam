@@ -6,9 +6,9 @@ php:
   - '7.3'
 
 before_install:
-  - nvm install 6.10
+  - nvm install 12
 
-install
+install:
   - npm install
 
 cache:
