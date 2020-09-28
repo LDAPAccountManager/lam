@@ -5,6 +5,12 @@ addons:
 php:
   - '7.3'
 
+before_install:
+  - nvm install 6.10
+
+install
+  - npm install
+
 cache:
   directories:
     - '$HOME/.sonar/cache'
