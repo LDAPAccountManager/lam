@@ -1,0 +1,13 @@
+<pdf filename="printLogo.jpg" headline="Kerberos Policy" foldingmarks="no">
+	<section name="_mitKerberosPolicy_cn">
+		<entry name="mitKerberosPolicy_krbMinPwdLife"/>
+		<entry name="mitKerberosPolicy_krbMaxPwdLife"/>
+		<entry name="mitKerberosPolicy_krbPwdMinLength"/>
+		<entry name="mitKerberosPolicy_krbPwdHistoryLength"/>
+		<entry name="mitKerberosPolicy_krbPwdMaxFailure"/>
+		<entry name="mitKerberosPolicy_krbPwdLockoutDuration"/>
+		<entry name="mitKerberosPolicy_krbPwdFailureCountInterval"/>
+		<entry name="mitKerberosPolicy_krbPwdMinDiffChars"/>
+		<entry name="mitKerberosPolicy_krbPwdAllowedKeysalts"/>
+	</section>
+</pdf>

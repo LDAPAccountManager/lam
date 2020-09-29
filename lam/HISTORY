@@ -1,3 +1,7 @@
+December 2020 7.4
+  - MIT Kerberos policies support
+
+
 22.09.2020 7.3
   - PHP 7.4 compatibility
   - Configuration export and import

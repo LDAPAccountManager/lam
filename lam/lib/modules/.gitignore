@@ -47,3 +47,4 @@
 /webauthn.inc
 /windowsLDSGroup.inc
 /windowsLDSUser.inc
+/mitKerberosPolicy.inc

@@ -1,0 +1,12 @@
+profname: default
+ldap_suffix: -
+ldap_rdn: cn
+mitKerberosPolicykrbMinPwdLife: 
+mitKerberosPolicykrbMaxPwdLife: 
+mitKerberosPolicykrbPwdMinLength: 1
+mitKerberosPolicykrbPwdHistoryLength: 1
+mitKerberosPolicykrbPwdMaxFailure: 0
+mitKerberosPolicykrbPwdLockoutDuration: 
+mitKerberosPolicykrbPwdFailureCountInterval: 
+mitKerberosPolicykrbPwdMinDiffChars: 1
+mitKerberosPolicykrbPwdAllowedKeysalts: 
