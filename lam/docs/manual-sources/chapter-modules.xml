@@ -1807,8 +1807,8 @@
       <para><emphasis role="bold">Setup password changing</emphasis></para>
 
       <para>LAM Pro cannot generate the password hashes itself because Heimdal
-      uses a proprietary format for them. Therefore, LAM Pro needs to call e.g.
-      kadmin to set the password.</para>
+      uses a proprietary format for them. Therefore, LAM Pro needs to call
+      e.g. kadmin to set the password.</para>
 
       <para>The wildcards @@password@@ and @@principal@@ are replaced with
       password and principal name. Please use keytab authentication for this
@@ -1956,8 +1956,8 @@
         </mediaobject>
       </screenshot>
 
-      <para>You can add the user to existing alias entries or create completely
-      new ones.</para>
+      <para>You can add the user to existing alias entries or create
+      completely new ones.</para>
 
       <screenshot>
         <mediaobject>
@@ -5105,6 +5105,43 @@ OK (10 msec)</programlisting>
     configuration and activate the <ulink
     url="http://linux.die.net/man/5/slapo-ppolicy">ppolicy</ulink> overlay
     module in slapd.conf to use this feature.</para>
+  </section>
+
+  <section>
+    <title>MIT Kerberos policies (LAM Pro)</title>
+
+    <para>Please add the account type "MIT Kerberos policies" on tab "Account
+    types" in your server profile and setup the LDAP suffix where printers are
+    stored.</para>
+
+    <screenshot>
+      <graphic fileref="images/mod_mitKerberosPolicy1.png"/>
+    </screenshot>
+
+    <literallayout>
+</literallayout>
+
+    <screenshot>
+      <graphic fileref="images/mod_mitKerberosPolicy2.png"/>
+    </screenshot>
+
+    <para>Then add the "Password policy (mitKerberosPolicy)" module on tab
+    "Account modules".</para>
+
+    <screenshot>
+      <graphic fileref="images/mod_mitKerberosPolicy3.png"/>
+    </screenshot>
+
+    <literallayout>
+
+</literallayout>
+
+    <para>Now login to LAM and you will see the MIT Kerberos policies tab.
+    Here you can manage the different policies.</para>
+
+    <screenshot>
+      <graphic fileref="images/mod_mitKerberosPolicy4.png"/>
+    </screenshot>
   </section>
 
   <section>
