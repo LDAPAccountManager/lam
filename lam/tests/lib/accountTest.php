@@ -51,6 +51,7 @@ class AccountTest extends TestCase {
 		$this->assertEquals(172815, unformatShortFormatToSeconds('2d15s'));
 		$this->assertEquals(173700, unformatShortFormatToSeconds('2d15m'));
 		$this->assertEquals(1209615, unformatShortFormatToSeconds('2w15s'));
+		$this->assertEquals(95817615, unformatShortFormatToSeconds('3y2w15s'));
 	}
 
 	/**
@@ -81,6 +82,7 @@ class AccountTest extends TestCase {
 		$this->assertEquals('2d15s', formatSecondsToShortFormat(172815));
 		$this->assertEquals('2d15m', formatSecondsToShortFormat(173700));
 		$this->assertEquals('2w15s', formatSecondsToShortFormat(1209615));
+		$this->assertEquals('3y2w15s', formatSecondsToShortFormat(95817615));
 	}
 
 	/**

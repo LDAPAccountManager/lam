@@ -1656,6 +1656,12 @@ function formatSecondsToShortFormat($numSeconds) {
 	if (!is_numeric($numSeconds)) {
 		return $numSeconds;
 	}
+	$years = '';
+	if ($numSeconds >= 31536000) {
+		$years = floor($numSeconds / 31536000);
+		$numSeconds = $numSeconds - ($years * 31536000);
+		$years .= 'y';
+	}
 	$seconds = $numSeconds % 60;
 	$seconds = ($seconds == 0) ? '' : $seconds . 's';
 	$minutes = floor(($numSeconds % 3600) / 60);
@@ -1666,7 +1672,7 @@ function formatSecondsToShortFormat($numSeconds) {
 	$days = ($days == 0) ? '' : $days . 'd';
 	$weeks = floor($numSeconds / 604800);
 	$weeks = ($weeks == 0) ? '' : $weeks . 'w';
-	return $weeks . $days . $hours . $minutes . $seconds;
+	return $years . $weeks . $days . $hours . $minutes . $seconds;
 }
 
 /**
@@ -1680,22 +1686,25 @@ function unformatShortFormatToSeconds($text) {
 		return $text;
 	}
 	$matches = array();
-	if (preg_match('/^(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?$/', $text, $matches)) {
+	if (preg_match('/^(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?$/', $text, $matches)) {
 		$newValue = 0;
 		if (!empty($matches[2])) {
-			$newValue += $matches[2] * 604800;
+			$newValue += $matches[2] * 31536000;
 		}
 		if (!empty($matches[4])) {
-			$newValue += $matches[4] * 86400;
+			$newValue += $matches[4] * 604800;
 		}
 		if (!empty($matches[6])) {
-			$newValue += $matches[6] * 3600;
+			$newValue += $matches[6] * 86400;
 		}
 		if (!empty($matches[8])) {
-			$newValue += $matches[8] * 60;
+			$newValue += $matches[8] * 3600;
 		}
 		if (!empty($matches[10])) {
-			$newValue += $matches[10];
+			$newValue += $matches[10] * 60;
+		}
+		if (!empty($matches[12])) {
+			$newValue += $matches[12];
 		}
 		return $newValue;
 	}
