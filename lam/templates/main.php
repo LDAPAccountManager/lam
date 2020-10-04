@@ -50,7 +50,7 @@ if ((version_compare(phpversion(), '7.2.0') >= 0) && !$conf->isHidePasswordPromp
 	$userDn = $_SESSION['ldap']->getUserName();
 	$userData = ldapGetDN($userDn, array('*', '+', 'pwdReset', 'passwordExpirationTime'));
 	$ldapErrorCode = ldap_errno($_SESSION['ldap']->server());
-	if ($ldapErrorCode != 32) {
+	if (($ldapErrorCode != 32) && ($ldapErrorCode != 50)) {
 		$pwdResetMarker = (!empty($userData['pwdreset'][0]) && ($userData['pwdreset'][0] == 'TRUE'));
 		$pwdExpiration = (!empty($userData)) && class_exists('\locking389ds') && \locking389ds::isPasswordExpired($userData);
 		if (($userData === null) || $pwdResetMarker || $pwdExpiration) {
