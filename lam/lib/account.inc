@@ -30,6 +30,8 @@
 * @package lib
 */
 
+use LAM\PLUGINS\EXTRA_INVALID_CREDENTIALS\ExtraInvalidCredentials;
+
 
 /**
 * This function will return all values from $array without values of $values.
@@ -1559,26 +1561,9 @@ function getDefaultLDAPErrorString($server) {
  * @return string extra message
  */
 function getExtraInvalidCredentialsMessage($ldap, $userDn) {
-	$attributes = array('dn', 'pwdaccountlockedtime', 'krbprincipalexpiration',
-		'krbpasswordexpiration', 'passwordexpirationtime');
-	$userData = ldapGetDN($userDn, $attributes, $ldap);
-	$now = new DateTime('now', getTimeZone());
-	if (!empty($userData['pwdaccountlockedtime'][0])) {
-		return _('Account is locked');
-	}
-	if (!empty($userData['krbprincipalexpiration'][0])) {
-		$kerberosExpirationDate = parseLDAPTimestamp($userData['krbprincipalexpiration'][0]);
-		if ($now >= $kerberosExpirationDate) {
-			return _('Kerberos account is expired');
-		}
-	}
-	if (!empty($userData['krbpasswordexpiration'][0])) {
-		$kerberosExpirationDate = parseLDAPTimestamp($userData['krbpasswordexpiration'][0]);
-		if ($now >= $kerberosExpirationDate) {
-			return _('Kerberos password is expired');
-		}
-	}
-	return null;
+	include_once __DIR__ . '/plugins/extendedInvalidCredentials/ExtraInvalidCredentials.inc';
+	$extraInvalidCredentials = new ExtraInvalidCredentials();
+	return $extraInvalidCredentials->getExtraMessage($ldap, $userDn);
 }
 
 /**
