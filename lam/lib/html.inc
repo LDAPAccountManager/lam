@@ -2977,7 +2977,7 @@ class htmlSpacer extends htmlElement {
 	 * @param String $width width (e.g. 10px)
 	 * @param String $height height (e.g. 10px)
 	 */
-	function __construct($width, $height) {
+	function __construct($width, $height = null) {
 		$this->width = htmlspecialchars($width);
 		$this->height = htmlspecialchars($height);
 	}
