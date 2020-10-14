@@ -2,6 +2,7 @@
 namespace LAM\PLUGINS\EXTRA_INVALID_CREDENTIALS;
 
 use DateTime;
+use mitKerberos;
 
 /*
 
@@ -36,25 +37,32 @@ class MitKerberosExtraInvalidCredentialsProvider implements ExtraInvalidCredenti
 	 * @inheritDoc
 	 */
 	public function getAttributeNamesToRead(): array {
-		return array('krbprincipalexpiration', 'krbpasswordexpiration');
+		return array('krbprincipalexpiration', 'krbpasswordexpiration', 'krbloginfailedcount',
+			'krbpwdpolicyreference', 'krblastfailedauth');
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function getExtraMessage(array $attributes) {
+	public function getExtraMessage(array $attributes, $ldap) {
 		$now = new DateTime('now', getTimeZone());
+		// account is expired
 		if (!empty($attributes['krbprincipalexpiration'][0])) {
 			$kerberosExpirationDate = parseLDAPTimestamp($attributes['krbprincipalexpiration'][0]);
 			if ($now >= $kerberosExpirationDate) {
 				return _('Kerberos account is expired');
 			}
 		}
+		// password expired
 		if (!empty($attributes['krbpasswordexpiration'][0])) {
 			$kerberosExpirationDate = parseLDAPTimestamp($attributes['krbpasswordexpiration'][0]);
 			if ($now >= $kerberosExpirationDate) {
 				return _('Kerberos password is expired');
 			}
+		}
+		// account is locked
+		if (mitKerberos::getLockedByFailedLoginsUnlockTime($attributes, $ldap) !== null) {
+			return _('Kerberos account is locked');
 		}
 		return null;
 	}

@@ -47,7 +47,7 @@ class ExtraInvalidCredentials {
 		$providers = $this->findProviders();
 		$attributes = $this->getAttributeNames($providers);
 		$userData = $this->getLdapData($userDn, $attributes, $ldap);
-		return $this->getMessageFromProviders($providers, $userData);
+		return $this->getMessageFromProviders($providers, $userData, $ldap);
 	}
 
 	/**
@@ -109,11 +109,12 @@ class ExtraInvalidCredentials {
 	 *
 	 * @param ExtraInvalidCredentialsProvider[] $providers providers
 	 * @param array $userData LDAP data
+	 * @param handle $ldap LDAP handle
 	 * @return null|string extra message
 	 */
-	protected function getMessageFromProviders(array $providers, array $userData) {
+	protected function getMessageFromProviders(array $providers, array $userData, $ldap) {
 		foreach ($providers as $provider) {
-			$message = $provider->getExtraMessage($userData);
+			$message = $provider->getExtraMessage($userData, $ldap);
 			if ($message !== null) {
 				return $message;
 			}
@@ -141,9 +142,10 @@ interface ExtraInvalidCredentialsProvider {
 	 * Returns an extra message if any.
 	 *
 	 * @param array $attributes LDAP attributes
+	 * @param handle $ldap LDAP handle
 	 * @return null|string message
 	 */
-	public function getExtraMessage(array $attributes);
+	public function getExtraMessage(array $attributes, $ldap);
 
 }
 

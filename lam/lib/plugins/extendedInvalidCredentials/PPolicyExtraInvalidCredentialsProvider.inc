@@ -40,7 +40,7 @@ class PPolicyExtraInvalidCredentialsProvider implements ExtraInvalidCredentialsP
 	/**
 	 * @inheritDoc
 	 */
-	public function getExtraMessage(array $attributes) {
+	public function getExtraMessage(array $attributes, $ldap) {
 		if (!empty($attributes['pwdaccountlockedtime'][0])) {
 			return _('Account is locked');
 		}
