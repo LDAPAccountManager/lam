@@ -56,7 +56,7 @@ class ExtraInvalidCredentials {
 	protected function includeFiles() {
 		$pluginDir = dir(__DIR__);
 		while ($entry = $pluginDir->read()) {
-			if (($entry === '.') || ($entry === '..') || ($entry === basename(__FILE__))) {
+			if ((strpos($entry, '.') === 0) || ($entry === basename(__FILE__))) {
 				continue;
 			}
 			include_once(__DIR__ . '/' . $entry);
