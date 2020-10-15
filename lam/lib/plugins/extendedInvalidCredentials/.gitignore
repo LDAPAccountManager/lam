@@ -1,1 +1,3 @@
 /Custom*.inc
+/MitKerberosExtraInvalidCredentialsProvider.inc
+/PPolicyExtraInvalidCredentialsProvider.inc
