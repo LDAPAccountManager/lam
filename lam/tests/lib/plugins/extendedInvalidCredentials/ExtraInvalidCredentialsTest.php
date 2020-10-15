@@ -29,6 +29,8 @@ use PHPUnit\Framework\TestCase;
 require_once __DIR__ . '/../../../../lib/modules.inc';
 require_once __DIR__ . '/../../../../lib/plugins/extendedInvalidCredentials/ExtraInvalidCredentials.inc';
 
+if (file_exists(__DIR__ . '/../../../../lib/plugins/extendedInvalidCredentials/PPolicyExtraInvalidCredentialsProvider.inc')) {
+
 /**
  * Checks the ExtraInvalidCredentials functionality.
  *
@@ -103,6 +105,8 @@ class ExtraInvalidCredentialsTest extends TestCase {
 
 		$this->assertNotNull($extraInvalidCredentials->getExtraMessage(null, 'testDn'));
 	}
+
+}
 
 }
 
