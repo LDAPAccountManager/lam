@@ -1,5 +1,7 @@
 December 2020 7.4
-  - MIT Kerberos policies support
+  - LAM Pro:
+   -> MIT Kerberos policies support
+   -> User self registration: added admin approval option and info mail for user after creation
 
 
 22.09.2020 7.3
