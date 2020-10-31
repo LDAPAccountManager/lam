@@ -1332,7 +1332,7 @@ function sendPasswordMail($pwd, $user, $recipient = null) {
 /**
  * Sends out an email.
  *
- * @param String $to TO address
+ * @param String|array $to TO address
  * @param String $subject email subject
  * @param String $text mail body (with \r\n EOL)
  * @param String $from FROM address
@@ -1345,7 +1345,7 @@ function sendEMail($to, $subject, $text, $from, $isHTML, $replyTo = null, $cc = 
 	include_once __DIR__ . '/3rdParty/composer/autoload.php';
 	$returnPath = ($replyTo === null) ? $from : $replyTo;
 	$returnPathParsed = PHPMailer\PHPMailer\PHPMailer::parseAddresses($returnPath);
-	logNewMessage(LOG_DEBUG, "Send mail to $to\n" . $text);
+	logNewMessage(LOG_DEBUG, "Send mail to " . print_r($to, true) . "\n" . $text);
 	$mailer = new PHPMailer\PHPMailer\PHPMailer(true);
 	try {
 		$cfgMain = $_SESSION['cfgMain'];
@@ -1362,7 +1362,14 @@ function sendEMail($to, $subject, $text, $from, $isHTML, $replyTo = null, $cc = 
 			}
 		}
 		$mailer->CharSet = PHPMailer\PHPMailer\PHPMailer::CHARSET_UTF8;
-		$mailer->addAddress($to);
+		if (is_array($to)) {
+			foreach ($to as $toAddress) {
+				$mailer->addAddress($toAddress);
+			}
+		}
+		else {
+			$mailer->addAddress($to);
+		}
 		$mailer->Subject = $subject;
 		$mailer->Body = $text;
 		$mailer->Sender = $returnPathParsed[0]['address'];

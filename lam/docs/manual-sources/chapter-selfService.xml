@@ -1550,6 +1550,19 @@
       <literallayout>
 </literallayout>
 
+      <para><emphasis role="bold">Approval</emphasis></para>
+
+      <para>You can send the account request to an administrator for approval.
+      The email will include links for approval/reject. Please use the
+      wildcards @@approveLink@@ and @@rejectLink@@ for this.</para>
+
+      <para>If the request was rejected then no email will be sent to the
+      user.</para>
+
+      <screenshot>
+        <graphic fileref="images/accountRegistration5.png"/>
+      </screenshot>
+
       <para><emphasis role="bold">Captcha support</emphasis></para>
 
       <para>LAM Pro can optionally display a captcha to verify that
