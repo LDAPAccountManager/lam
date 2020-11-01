@@ -765,6 +765,7 @@ function checkInput() {
 		else {
 			$conf->setTwoFactorAuthenticationURL($_POST['twoFactorURL']);
 		}
+		$conf->setTwoFactorAuthenticationAttribute($_POST['twoFactorAttribute']);
 		$conf->setTwoFactorAuthenticationClientId($_POST['twoFactorClientId']);
 		$conf->setTwoFactorAuthenticationSecretKey($_POST['twoFactorSecretKey']);
 		$conf->setTwoFactorAuthenticationDomain($_POST['twoFactorDomain']);
