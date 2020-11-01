@@ -1,5 +1,6 @@
 <?php
 namespace LAM\LIB\TWO_FACTOR;
+use htmlLinkCss;
 use \htmlResponsiveRow;
 use \LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use \selfServiceProfile;
@@ -483,6 +484,96 @@ class DuoProvider extends BaseProvider {
 }
 
 /**
+ * Provider for Okta.
+ */
+class OktaProvider extends BaseProvider {
+
+	/**
+	 * Constructor.
+	 *
+	 * @param TwoFactorConfiguration $config configuration
+	 */
+	public function __construct(&$config) {
+		$this->config = $config;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::getSerials()
+	 */
+	public function getSerials($user, $password) {
+		return array('OKTA');
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::isShowSubmitButton()
+	 */
+	public function isShowSubmitButton() {
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::hasCustomInputForm()
+	 */
+	public function hasCustomInputForm() {
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\BaseProvider::addCustomInput()
+	 */
+	public function addCustomInput(&$row, $userDn) {
+		$loginAttribute = $this->getLoginAttributeValue($userDn);
+		$content = new htmlResponsiveRow();
+		$content->add(new htmlDiv('lam-okta-container', new htmlOutputText('')), 12);
+		$content->add(new htmlScript('https://global.oktacdn.com/okta-signin-widget/4.5.2/js/okta-sign-in.min.js'), 12);
+		$content->add(new htmlLinkCss('https://global.oktacdn.com/okta-signin-widget/4.5.2/css/okta-sign-in.min.css'), 12);
+		$jsBlock = '
+			var interval = setInterval(function() {
+			    if ((typeof OktaSignIn === \'function\')) {
+			        clearInterval(interval);
+					var signIn = new OktaSignIn({
+					    el: \'#lam-okta-container\',
+					    logo: \'../graphics/logo_192x192.png\',
+					    baseUrl: \'' . $this->config->twoFactorAuthenticationURL . '\'
+					});
+					signIn.showSignInToGetTokens({
+						clientId: \'' . $this->config->twoFactorAuthenticationClientId . '\'
+						});
+			    }
+			  }, 200);
+		';
+		$content->add(new htmlJavaScript($jsBlock), 12);
+		$row->add($content, 12);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::verify2ndFactor()
+	 */
+	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
+		logNewMessage(LOG_DEBUG, 'DuoProvider: Checking 2nd factor for ' . $user);
+		$loginAttribute = $this->getLoginAttributeValue($user);
+		$response = $_POST['sig_response'];
+		include_once(__DIR__ . "/3rdParty/duo/Web.php");
+		$result = \Duo\Web::verifyResponse(
+			$this->config->twoFactorAuthenticationClientId,
+			$this->config->twoFactorAuthenticationSecretKey,
+			$this->getAKey(),
+			$response);
+		if ($result === $loginAttribute) {
+			return true;
+		}
+		logNewMessage(LOG_ERR, 'DUO authentication failed');
+		return false;
+	}
+
+}
+
+/**
  * Provider for Webauthn.
  */
 class WebauthnProvider extends BaseProvider {
@@ -629,6 +720,8 @@ class TwoFactorProviderService {
 	const TWO_FACTOR_DUO = 'duo';
 	/** 2factor authentication via webauthn */
 	const TWO_FACTOR_WEBAUTHN = 'webauthn';
+	/** 2factor authentication via Okta */
+	const TWO_FACTOR_OKTA = 'okta';
 
 	private $config;
 
@@ -665,6 +758,9 @@ class TwoFactorProviderService {
 		}
 		elseif ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_WEBAUTHN) {
 			return new WebauthnProvider($this->config);
+		}
+		elseif ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OKTA) {
+			return new OktaProvider($this->config);
 		}
 		throw new \Exception('Invalid provider: ' . $this->config->twoFactorAuthentication);
 	}

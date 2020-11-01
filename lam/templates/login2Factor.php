@@ -11,7 +11,7 @@ use \htmlButton;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2019  Roland Gruber
+  Copyright (C) 2017 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -84,7 +84,7 @@ if (isset($_POST['logout'])) {
 	exit();
 }
 
-if (isset($_POST['submit']) || isset($_POST['sig_response'])) {
+if (isset($_POST['submit']) || isset($_POST['sig_response']) || isset($_POST['code'])) {
 	$twoFactorInput = isset($_POST['2factor']) ? $_POST['2factor'] : null;
 	$serial = isset($_POST['serial']) ? $_POST['serial'] : null;
 	if (!$provider->hasCustomInputForm() && (empty($twoFactorInput) || !in_array($serial, $serials))) {

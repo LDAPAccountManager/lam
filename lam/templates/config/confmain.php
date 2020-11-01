@@ -474,6 +474,7 @@ if (extension_loaded('curl')) {
 			'privacyIDEA' => TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA,
 			'YubiKey' => TwoFactorProviderService::TWO_FACTOR_YUBICO,
 			'Duo' => TwoFactorProviderService::TWO_FACTOR_DUO,
+    		'Okta' => TwoFactorProviderService::TWO_FACTOR_OKTA,
 	);
     if (version_compare(phpversion(), '7.2.0') >= 0) {
         $twoFactorOptions['Webauthn'] = TwoFactorProviderService::TWO_FACTOR_WEBAUTHN;
@@ -486,6 +487,7 @@ if (extension_loaded('curl')) {
 		TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA => array('twoFactorURLs', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorDomain'),
 		TwoFactorProviderService::TWO_FACTOR_YUBICO => array('twoFactorURL', 'twoFactorAttribute', 'twoFactorDomain'),
 		TwoFactorProviderService::TWO_FACTOR_DUO => array('twoFactorURLs', 'twoFactorOptional', 'twoFactorInsecure', 'twoFactorLabel', 'twoFactorDomain'),
+		TwoFactorProviderService::TWO_FACTOR_OKTA => array('twoFactorURLs', 'twoFactorOptional', 'twoFactorInsecure', 'twoFactorLabel', 'twoFactorDomain'),
 		TwoFactorProviderService::TWO_FACTOR_WEBAUTHN => array('twoFactorURL', 'twoFactorURLs', 'twoFactorInsecure', 'twoFactorLabel',
 			'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute'),
 	));
@@ -495,6 +497,8 @@ if (extension_loaded('curl')) {
 		TwoFactorProviderService::TWO_FACTOR_YUBICO => array('twoFactorURLs', 'twoFactorInsecure', 'twoFactorLabel',
 			'twoFactorOptional', 'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey'),
 		TwoFactorProviderService::TWO_FACTOR_DUO => array('twoFactorURL', 'twoFactorLabel',
+			'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute'),
+		TwoFactorProviderService::TWO_FACTOR_OKTA => array('twoFactorURL', 'twoFactorLabel',
 			'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute'),
 		TwoFactorProviderService::TWO_FACTOR_WEBAUTHN => array('twoFactorDomain', 'twoFactorOptional')
 	));
