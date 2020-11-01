@@ -78,7 +78,7 @@ interface TwoFactorProvider {
 	 * Adds the custom input fields to the form.
 	 *
 	 * @param htmlResponsiveRow $row row where to add the input fields
-	 * @param string user DN
+	 * @param string $userDn user DN
 	 */
 	public function addCustomInput(&$row, $userDn);
 
@@ -495,6 +495,9 @@ class OktaProvider extends BaseProvider {
 	 */
 	public function __construct(&$config) {
 		$this->config = $config;
+		if (empty($this->config->twoFactorAuthenticationSerialAttributeName)) {
+			$this->config->twoFactorAuthenticationSerialAttributeName = 'mail';
+		}
 	}
 
 	/**
@@ -523,10 +526,14 @@ class OktaProvider extends BaseProvider {
 
 	/**
 	 * {@inheritDoc}
+	 * @throws LAMException error building custom input
 	 * @see \LAM\LIB\TWO_FACTOR\BaseProvider::addCustomInput()
 	 */
 	public function addCustomInput(&$row, $userDn) {
 		$loginAttribute = $this->getLoginAttributeValue($userDn);
+		if (empty($loginAttribute)) {
+			throw new LAMException('Unable to read login attribute from ' . $userDn);
+		}
 		$content = new htmlResponsiveRow();
 		$content->add(new htmlDiv('lam-okta-container', new htmlOutputText('')), 12);
 		$content->add(new htmlScript('https://global.oktacdn.com/okta-signin-widget/4.5.2/js/okta-sign-in.min.js'), 12);
@@ -538,6 +545,7 @@ class OktaProvider extends BaseProvider {
 					var signIn = new OktaSignIn({
 					    el: \'#lam-okta-container\',
 					    logo: \'../graphics/logo_192x192.png\',
+					    username: \'' . $loginAttribute . '\',
 					    baseUrl: \'' . $this->config->twoFactorAuthenticationURL . '\'
 					});
 					signIn.showSignInToGetTokens({
@@ -795,7 +803,8 @@ class TwoFactorProviderService {
 			}
 		}
 		if (($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA)
-				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_DUO)) {
+				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_DUO)
+				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OKTA)) {
 			$attrName = $profile->twoFactorAuthenticationAttribute;
 			if (empty($attrName)) {
 				$attrName = 'uid';
@@ -835,7 +844,8 @@ class TwoFactorProviderService {
 			}
 		}
 		if (($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA)
-				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_DUO)) {
+				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_DUO)
+				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OKTA)) {
 			$tfConfig->twoFactorAuthenticationSerialAttributeName = strtolower($conf->getTwoFactorAuthenticationAttribute());
 		}
 		return $tfConfig;

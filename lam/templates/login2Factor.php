@@ -1,5 +1,6 @@
 <?php
 namespace LAM\LOGIN;
+use htmlStatusMessage;
 use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 use \htmlResponsiveRow;
 use \htmlGroup;
@@ -8,6 +9,8 @@ use \htmlSpacer;
 use \htmlSelect;
 use \htmlInputField;
 use \htmlButton;
+use LAMException;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -88,7 +91,7 @@ if (isset($_POST['submit']) || isset($_POST['sig_response']) || isset($_POST['co
 	$twoFactorInput = isset($_POST['2factor']) ? $_POST['2factor'] : null;
 	$serial = isset($_POST['serial']) ? $_POST['serial'] : null;
 	if (!$provider->hasCustomInputForm() && (empty($twoFactorInput) || !in_array($serial, $serials))) {
-		$errorMessage = _(sprintf('Please enter "%s".', $twoFactorLabel));
+		$errorMessage = sprintf(_('Please enter "%s".'), $twoFactorLabel);
 	}
 	else {
 		$twoFactorValid = false;
@@ -104,7 +107,7 @@ if (isset($_POST['submit']) || isset($_POST['sig_response']) || isset($_POST['co
 			die();
 		}
 		else {
-			$errorMessage = _(sprintf('Verification failed.', $twoFactorLabel));
+			$errorMessage = _('Verification failed.');
 		}
 	}
 }
@@ -162,7 +165,13 @@ echo $config->getTwoFactorAuthenticationCaption();
 		$row->add($twoFactorInput, 12);
 	}
 	else {
-		$provider->addCustomInput($row, $user);
+	    try {
+		    $provider->addCustomInput($row, $user);
+	    }
+	    catch (LAMException $e) {
+	        logNewMessage(LOG_ERR, 'Error rendering 2FA form. ' . $e->getTitle());
+	        $row->add(new htmlStatusMessage('ERROR', _('Unable to start 2-factor verification.')), 12);
+        }
 	}
 
 	// buttons
