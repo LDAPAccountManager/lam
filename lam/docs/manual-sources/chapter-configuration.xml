@@ -700,6 +700,10 @@
             <para><ulink
             url="https://webauthn.io/">Webauthn/FIDO2</ulink></para>
           </listitem>
+
+          <listitem>
+            <para><ulink url="https://www.okta.com/">Okta</ulink></para>
+          </listitem>
         </itemizedlist>
 
         <para>Configuration options:</para>
@@ -818,6 +822,37 @@
             and reject users that do not setup one. You can set this check to
             optional. But if a user has setup a device then this will always
             be required.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para><emphasis role="bold">Okta</emphasis></para>
+
+        <para>This requires to register a new application of type "Web". You
+        will need to configure LAM's 2-factor URLs as "Login redirect URIs" in
+        the new application. They are
+        "https://YOURDOMAIN/lam/templates/login2Factor.php" for admin
+        interface and "" for self service.</para>
+
+        <para>On "Sign On" tab you need to add a rule that prompts for the
+        factor.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>User name attribute: please enter the LDAP attribute name
+            that contains the user ID (e.g. "mail").</para>
+          </listitem>
+
+          <listitem>
+            <para>Base URL: please enter the URL of your Okta domain (e.g.
+            https://mydomain.okta.com)</para>
+          </listitem>
+
+          <listitem>
+            <para>Client id: please enter your application client id.</para>
+          </listitem>
+
+          <listitem>
+            <para>Secret key: please enter your application secret key.</para>
           </listitem>
         </itemizedlist>
 

@@ -1,4 +1,5 @@
 December 2020 7.4
+  - 2-factor authentication: support for Okta
   - LAM Pro:
    -> MIT Kerberos policies support
    -> User self registration: added admin approval option and info mail for user after creation
