@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname(dirname(dirname($vendorDir)));
 
 return array(
+    'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
     'HordeImapClientBaseTables' => $vendorDir . '/pear-pear.horde.org/Horde_Imap_Client/data/migration/1_horde_imap_client_base_tables.php',
     'HordeImapClientChangeColumnName' => $vendorDir . '/pear-pear.horde.org/Horde_Imap_Client/data/migration/2_horde_imap_client_change_column_name.php',
     'Horde\\Socket\\Client' => $vendorDir . '/pear-pear.horde.org/Horde_Socket_Client/Horde/Socket/Client.php',
@@ -236,4 +237,7 @@ return array(
     'Horde_Translation_Handler_Gettext' => $vendorDir . '/pear-pear.horde.org/Horde_Translation/Horde/Translation/Handler/Gettext.php',
     'Horde_Util' => $vendorDir . '/pear-pear.horde.org/Horde_Util/Horde/Util.php',
     'Horde_Variables' => $vendorDir . '/pear-pear.horde.org/Horde_Util/Horde/Variables.php',
+    'Stringable' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
+    'UnhandledMatchError' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
+    'ValueError' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
 );

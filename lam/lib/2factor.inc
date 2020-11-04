@@ -1,5 +1,6 @@
 <?php
 namespace LAM\LIB\TWO_FACTOR;
+use Exception;
 use htmlLinkCss;
 use \htmlResponsiveRow;
 use \LAM\LOGIN\WEBAUTHN\WebauthnManager;
@@ -546,11 +547,29 @@ class OktaProvider extends BaseProvider {
 					    el: \'#lam-okta-container\',
 					    logo: \'../graphics/logo_192x192.png\',
 					    username: \'' . $loginAttribute . '\',
-					    baseUrl: \'' . $this->config->twoFactorAuthenticationURL . '\'
+					    baseUrl: \'' . $this->config->twoFactorAuthenticationURL . '\',
+					    authParams: {
+							responseType: \'code\'
+					    }
 					});
-					signIn.showSignInToGetTokens({
-						clientId: \'' . $this->config->twoFactorAuthenticationClientId . '\'
+			        if (window.location.href.indexOf("code=") > 0) {
+			            var codeVerifier = signIn.authClient.options.storageUtil.getPKCEStorage().getStorage().codeVerifier;
+			            form = jQuery("<form/>", {
+							action: window.location.href,
+							method: "POST"
 						});
+						form.append(jQuery("<input/>", {
+							type: "hidden",
+							name: "codeVerifier",
+							value: codeVerifier
+						}));
+						form.appendTo("body").submit();
+			        }
+			        else {
+						signIn.showSignInToGetTokens({
+							clientId: \'' . $this->config->twoFactorAuthenticationClientId . '\'
+						});
+					}
 			    }
 			  }, 200);
 		';
@@ -563,20 +582,81 @@ class OktaProvider extends BaseProvider {
 	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::verify2ndFactor()
 	 */
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
-		logNewMessage(LOG_DEBUG, 'DuoProvider: Checking 2nd factor for ' . $user);
+		logNewMessage(LOG_DEBUG, 'OktaProvider: Checking 2nd factor for ' . $user);
 		$loginAttribute = $this->getLoginAttributeValue($user);
-		$response = $_POST['sig_response'];
-		include_once(__DIR__ . "/3rdParty/duo/Web.php");
-		$result = \Duo\Web::verifyResponse(
-			$this->config->twoFactorAuthenticationClientId,
-			$this->config->twoFactorAuthenticationSecretKey,
-			$this->getAKey(),
-			$response);
-		if ($result === $loginAttribute) {
+		$code = $_GET['code'];
+		$codeVerifier = $_POST['codeVerifier'];
+		if (empty($code) || empty($codeVerifier)) {
+			logNewMessage(LOG_DEBUG, 'No code provided for 2FA verification.');
+			return false;
+		}
+		$accessCode = $this->getAccessCode($code, $codeVerifier);
+		if (empty($accessCode)) {
+			logNewMessage(LOG_DEBUG, 'No access code readable for Okta 2FA verification.');
+			return false;
+		}
+		include_once __DIR__ . '/3rdParty/composer/autoload.php';
+		$jwtVerifier = (new \Okta\JwtVerifier\JwtVerifierBuilder())
+			->setDiscovery(new \Okta\JwtVerifier\Discovery\Oauth)
+			->setAdaptor(new \Okta\JwtVerifier\Adaptors\FirebasePhpJwt)
+			->setAudience('api://default')
+			->setClientId($this->config->twoFactorAuthenticationClientId)
+			->setIssuer($this->config->twoFactorAuthenticationURL . '/oauth2/default')
+			->build();
+		try {
+			$jwt = $jwtVerifier->verify($accessCode);
+			$claims = $jwt->getClaims();
+			logNewMessage(LOG_DEBUG, print_r($claims, true));
+			$loginAttribute = $this->getLoginAttributeValue($user);
+			if ($loginAttribute !== $claims['sub']) {
+				logNewMessage(LOG_ERR, 'User name ' . $loginAttribute . ' does not match claim sub: ' . $claims['sub']);
+				return false;
+			}
 			return true;
 		}
-		logNewMessage(LOG_ERR, 'DUO authentication failed');
+		catch (Exception $e) {
+			logNewMessage(LOG_ERR, 'Unable to validate JWT - ' . $e->getMessage());
+		}
 		return false;
+	}
+
+	/**
+	 * Reads the access code using code.
+	 *
+	 * @param string $code code parameter from request
+	 * @param string $codeVerifier code verifier
+	 * @return string|null access token
+	 */
+	private function getAccessCode($code, $codeVerifier) {
+		$curl = curl_init();
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		$url = $this->config->twoFactorAuthenticationURL . '/oauth2/default/v1/token';
+		curl_setopt($curl, CURLOPT_URL, $url);
+		curl_setopt($curl, CURLOPT_POST, true);
+		$callingUrl = getCallingURL();
+		$callingUrl = substr($callingUrl, 0, strpos($callingUrl, '?'));
+		$callingUrlEncoded = urlencode($callingUrl);
+		$postFields = 'grant_type=authorization_code&code=' . $code . '&code_verifier=' . $codeVerifier . '&redirect_uri=' . $callingUrlEncoded;
+		curl_setopt($curl, CURLOPT_POSTFIELDS, $postFields);
+		curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+			'accept: application/json',
+			'content-type: application/x-www-form-urlencoded',
+			'authorization: Basic ' . base64_encode($this->config->twoFactorAuthenticationClientId . ':' . $this->config->twoFactorAuthenticationSecretKey)
+		));
+		$results = curl_exec($curl);
+		$returnCode = curl_errno($curl);
+		logNewMessage(LOG_DEBUG, 'Okta responded with ' . $returnCode . ': ' . $results);
+		curl_close($curl);
+		if ($returnCode !== 0) {
+			logNewMessage(LOG_ERR, 'Error calling Okta ' . $url
+				. '. ' . $returnCode);
+			return null;
+		}
+		$jsonData = json_decode($results, true);
+		if (empty($jsonData['access_token'])) {
+			return null;
+		}
+		return $jsonData['access_token'];
 	}
 
 }

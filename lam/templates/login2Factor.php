@@ -87,7 +87,7 @@ if (isset($_POST['logout'])) {
 	exit();
 }
 
-if (isset($_POST['submit']) || isset($_POST['sig_response']) || isset($_POST['code'])) {
+if (isset($_POST['submit']) || isset($_POST['sig_response']) || isset($_POST['codeVerifier'])) {
 	$twoFactorInput = isset($_POST['2factor']) ? $_POST['2factor'] : null;
 	$serial = isset($_POST['serial']) ? $_POST['serial'] : null;
 	if (!$provider->hasCustomInputForm() && (empty($twoFactorInput) || !in_array($serial, $serials))) {

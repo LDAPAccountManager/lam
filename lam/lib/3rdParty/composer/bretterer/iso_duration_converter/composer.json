@@ -1,0 +1,22 @@
+{
+    "name": "bretterer/iso_duration_converter",
+    "description": "Easily convert ISO_8601 Duration time format to seconds and convert seconds to ISO-8601 Duration",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Brian Retterer",
+            "email": "bretterer@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Bretterer\\IsoDurationConverter\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/TestCase.php"
+        ]
+    },
+    "require": {}
+}
