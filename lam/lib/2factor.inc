@@ -489,6 +489,8 @@ class DuoProvider extends BaseProvider {
  */
 class OktaProvider extends BaseProvider {
 
+	private $verificationFailed = false;
+
 	/**
 	 * Constructor.
 	 *
@@ -536,6 +538,9 @@ class OktaProvider extends BaseProvider {
 			throw new LAMException('Unable to read login attribute from ' . $userDn);
 		}
 		$content = new htmlResponsiveRow();
+		if ($this->verificationFailed) {
+			return $content;
+		}
 		$content->add(new htmlDiv('lam-okta-container', new htmlOutputText('')), 12);
 		$content->add(new htmlScript('https://global.oktacdn.com/okta-signin-widget/4.5.2/js/okta-sign-in.min.js'), 12);
 		$content->add(new htmlLinkCss('https://global.oktacdn.com/okta-signin-widget/4.5.2/css/okta-sign-in.min.css'), 12);
@@ -582,6 +587,7 @@ class OktaProvider extends BaseProvider {
 	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::verify2ndFactor()
 	 */
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
+		$this->verificationFailed = true;
 		logNewMessage(LOG_DEBUG, 'OktaProvider: Checking 2nd factor for ' . $user);
 		$loginAttribute = $this->getLoginAttributeValue($user);
 		$code = $_GET['code'];
@@ -612,6 +618,7 @@ class OktaProvider extends BaseProvider {
 				logNewMessage(LOG_ERR, 'User name ' . $loginAttribute . ' does not match claim sub: ' . $claims['sub']);
 				return false;
 			}
+			$this->verificationFailed = false;
 			return true;
 		}
 		catch (Exception $e) {
@@ -634,9 +641,16 @@ class OktaProvider extends BaseProvider {
 		curl_setopt($curl, CURLOPT_URL, $url);
 		curl_setopt($curl, CURLOPT_POST, true);
 		$callingUrl = getCallingURL();
-		$callingUrl = substr($callingUrl, 0, strpos($callingUrl, '?'));
+		if ($this->config->isSelfService) {
+			$callingUrl = preg_replace('/&code=[^&]+/', '', $callingUrl);
+			$callingUrl = preg_replace('/&state=[^&]+/', '', $callingUrl);
+		}
+		else {
+			$callingUrl = substr($callingUrl, 0, strpos($callingUrl, '?'));
+		}
 		$callingUrlEncoded = urlencode($callingUrl);
 		$postFields = 'grant_type=authorization_code&code=' . $code . '&code_verifier=' . $codeVerifier . '&redirect_uri=' . $callingUrlEncoded;
+		logNewMessage(LOG_DEBUG, 'Get Okta access code with ' . $postFields);
 		curl_setopt($curl, CURLOPT_POSTFIELDS, $postFields);
 		curl_setopt($curl, CURLOPT_HTTPHEADER, array(
 			'accept: application/json',
