@@ -541,24 +541,20 @@ class OktaProvider extends BaseProvider {
 		if ($this->verificationFailed) {
 			return $content;
 		}
-		$content->add(new htmlDiv('lam-okta-container', new htmlOutputText('')), 12);
-		$content->add(new htmlScript('https://global.oktacdn.com/okta-signin-widget/4.5.2/js/okta-sign-in.min.js'), 12);
-		$content->add(new htmlLinkCss('https://global.oktacdn.com/okta-signin-widget/4.5.2/css/okta-sign-in.min.css'), 12);
+		$pathPrefix = $this->config->isSelfService ? '../' : '';
+		$row->add(new htmlImage($pathPrefix . '../graphics/okta.png'), 12);
+		$content->add(new htmlScript('https://global.oktacdn.com/okta-auth-js/4.1.1/okta-auth-js.min.js'), 12);
 		$jsBlock = '
 			var interval = setInterval(function() {
-			    if ((typeof OktaSignIn === \'function\')) {
+			    if ((typeof OktaAuth === \'function\')) {
 			        clearInterval(interval);
-					var signIn = new OktaSignIn({
-					    el: \'#lam-okta-container\',
-					    logo: \'../graphics/logo_192x192.png\',
-					    username: \'' . $loginAttribute . '\',
-					    baseUrl: \'' . $this->config->twoFactorAuthenticationURL . '\',
-					    authParams: {
-							responseType: \'code\'
-					    }
+					var signIn = new OktaAuth({
+					    clientId: \'' . $this->config->twoFactorAuthenticationClientId . '\',
+					    issuer: \'' . $this->config->twoFactorAuthenticationURL . '/oauth2/default\',
+					    redirectUri: window.location
 					});
 			        if (window.location.href.indexOf("code=") > 0) {
-			            var codeVerifier = signIn.authClient.options.storageUtil.getPKCEStorage().getStorage().codeVerifier;
+			            var codeVerifier = signIn.options.storageUtil.getPKCEStorage().getStorage().codeVerifier;
 			            form = jQuery("<form/>", {
 							action: window.location.href,
 							method: "POST"
@@ -571,9 +567,7 @@ class OktaProvider extends BaseProvider {
 						form.appendTo("body").submit();
 			        }
 			        else {
-						signIn.showSignInToGetTokens({
-							clientId: \'' . $this->config->twoFactorAuthenticationClientId . '\'
-						});
+						signIn.signInWithRedirect();
 					}
 			    }
 			  }, 200);
