@@ -679,6 +679,10 @@
         because the token is generated on a physically separated device
         (typically mobile phone).</para>
 
+        <screenshot>
+          <graphic fileref="images/configProfiles11.png"/>
+        </screenshot>
+
         <para>The token is validated by a second application. LAM currently
         supports:</para>
 
@@ -699,6 +703,10 @@
           <listitem>
             <para><ulink
             url="https://webauthn.io/">Webauthn/FIDO2</ulink></para>
+          </listitem>
+
+          <listitem>
+            <para><ulink url="https://www.okta.com/">Okta</ulink></para>
           </listitem>
         </itemizedlist>
 
@@ -821,10 +829,48 @@
           </listitem>
         </itemizedlist>
 
+        <para><emphasis role="bold">Okta</emphasis></para>
+
+        <para>This requires to register a new application of type
+        "Web".</para>
+
+        <para>There, you will need to configure LAM's 2-factor URLs as "Login
+        redirect URIs" in the new application. They are
+        "https://YOURDOMAIN/lam/templates/login2Factor.php" for admin
+        interface and
+        "https://YOURDOMAIN/lam/templates/selfService/selfService2Factor.php?scope=user&amp;name=YOUR_PROFILE"
+        for self service. You will get an error message during login with the
+        URL to configure in case it was wrong.</para>
+
+        <para>On "Sign On" tab you need to add a rule that prompts for the
+        factor.</para>
+
+        <para>LAM options:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>User name attribute: please enter the LDAP attribute name
+            that contains the user ID (e.g. "mail").</para>
+          </listitem>
+
+          <listitem>
+            <para>Base URL: please enter the URL of your Okta domain (e.g.
+            https://mydomain.okta.com)</para>
+          </listitem>
+
+          <listitem>
+            <para>Client id: please enter your application client id.</para>
+          </listitem>
+
+          <listitem>
+            <para>Secret key: please enter your application secret key.</para>
+          </listitem>
+        </itemizedlist>
+
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/configProfiles11.png"/>
+              <imagedata fileref="images/okta1.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>

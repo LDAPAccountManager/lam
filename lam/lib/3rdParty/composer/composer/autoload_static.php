@@ -8,7 +8,13 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
+        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
+        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
+        '9c67151ae59aff4788964ce8eb2a0f43' => __DIR__ . '/..' . '/clue/stream-filter/src/functions_include.php',
         'a4ecaeafb8cfb009ad0e052c90355e98' => __DIR__ . '/..' . '/beberlei/assert/lib/Assert/functions.php',
+        '8cff32064859f4559445b89279f3199c' => __DIR__ . '/..' . '/php-http/message/src/filters.php',
+        '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
         'f598d06aa772fa33d905e87be6398fb1' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/bootstrap.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -23,10 +29,14 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         ),
         'S' => 
         array (
+            'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Php72\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Intl\\Idn\\' => 26,
             'Symfony\\Polyfill\\Ctype\\' => 23,
+            'Symfony\\Contracts\\Translation\\' => 30,
+            'Symfony\\Component\\Translation\\' => 30,
+            'Symfony\\Component\\OptionsResolver\\' => 34,
             'Symfony\\Component\\Mime\\' => 23,
             'Symfony\\Component\\HttpFoundation\\' => 33,
             'Symfony\\Bridge\\PsrHttpMessage\\' => 30,
@@ -41,25 +51,42 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
             'Psr\\Http\\Client\\' => 16,
             'PHPMailer\\PHPMailer\\' => 20,
         ),
+        'O' => 
+        array (
+            'Okta\\JwtVerifier\\' => 17,
+        ),
         'N' => 
         array (
             'Nyholm\\Psr7\\' => 12,
         ),
         'H' => 
         array (
+            'Http\\Promise\\' => 13,
             'Http\\Message\\' => 13,
+            'Http\\Discovery\\' => 15,
+            'Http\\Client\\Curl\\' => 17,
+            'Http\\Client\\Common\\' => 19,
+            'Http\\Client\\' => 12,
+        ),
+        'G' => 
+        array (
+            'GuzzleHttp\\Psr7\\' => 16,
         ),
         'F' => 
         array (
+            'Firebase\\JWT\\' => 13,
             'FG\\' => 3,
         ),
         'C' => 
         array (
             'Cose\\' => 5,
+            'Clue\\StreamFilter\\' => 18,
+            'Carbon\\' => 7,
             'CBOR\\' => 5,
         ),
         'B' => 
         array (
+            'Bretterer\\IsoDurationConverter\\' => 31,
             'Base64Url\\' => 10,
         ),
         'A' => 
@@ -77,6 +104,10 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         array (
             0 => __DIR__ . '/..' . '/web-auth/webauthn-lib/src',
         ),
+        'Symfony\\Polyfill\\Php80\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
+        ),
         'Symfony\\Polyfill\\Php72\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php72',
@@ -92,6 +123,18 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         'Symfony\\Polyfill\\Ctype\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
+        ),
+        'Symfony\\Contracts\\Translation\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/translation-contracts',
+        ),
+        'Symfony\\Component\\Translation\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/translation',
+        ),
+        'Symfony\\Component\\OptionsResolver\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/options-resolver',
         ),
         'Symfony\\Component\\Mime\\' => 
         array (
@@ -122,13 +165,46 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
+        'Okta\\JwtVerifier\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/okta/jwt-verifier/src',
+        ),
         'Nyholm\\Psr7\\' => 
         array (
             0 => __DIR__ . '/..' . '/nyholm/psr7/src',
         ),
+        'Http\\Promise\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-http/promise/src',
+        ),
         'Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/php-http/message-factory/src',
+            0 => __DIR__ . '/..' . '/php-http/message/src',
+            1 => __DIR__ . '/..' . '/php-http/message-factory/src',
+        ),
+        'Http\\Discovery\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-http/discovery/src',
+        ),
+        'Http\\Client\\Curl\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-http/curl-client/src',
+        ),
+        'Http\\Client\\Common\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-http/client-common/src',
+        ),
+        'Http\\Client\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-http/httplug/src',
+        ),
+        'GuzzleHttp\\Psr7\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
+        ),
+        'Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
         ),
         'FG\\' => 
         array (
@@ -138,9 +214,21 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         array (
             0 => __DIR__ . '/..' . '/web-auth/cose-lib/src',
         ),
+        'Clue\\StreamFilter\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/clue/stream-filter/src',
+        ),
+        'Carbon\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon',
+        ),
         'CBOR\\' => 
         array (
             0 => __DIR__ . '/..' . '/spomky-labs/cbor-php/src',
+        ),
+        'Bretterer\\IsoDurationConverter\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/bretterer/iso_duration_converter/src',
         ),
         'Base64Url\\' => 
         array (
@@ -153,6 +241,7 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
     );
 
     public static $classMap = array (
+        'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'HordeImapClientBaseTables' => __DIR__ . '/..' . '/pear-pear.horde.org/Horde_Imap_Client/data/migration/1_horde_imap_client_base_tables.php',
         'HordeImapClientChangeColumnName' => __DIR__ . '/..' . '/pear-pear.horde.org/Horde_Imap_Client/data/migration/2_horde_imap_client_change_column_name.php',
         'Horde\\Socket\\Client' => __DIR__ . '/..' . '/pear-pear.horde.org/Horde_Socket_Client/Horde/Socket/Client.php',
@@ -383,6 +472,9 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         'Horde_Translation_Handler_Gettext' => __DIR__ . '/..' . '/pear-pear.horde.org/Horde_Translation/Horde/Translation/Handler/Gettext.php',
         'Horde_Util' => __DIR__ . '/..' . '/pear-pear.horde.org/Horde_Util/Horde/Util.php',
         'Horde_Variables' => __DIR__ . '/..' . '/pear-pear.horde.org/Horde_Util/Horde/Variables.php',
+        'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
+        'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
+        'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

@@ -3851,6 +3851,44 @@ class htmlScript extends htmlElement {
 }
 
 /**
+ * Creates a link element to integrate external CSS files.
+ *
+ * @package metaHTML
+ */
+class htmlLinkCss extends htmlElement {
+
+	/** src value */
+	private $src = null;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param String $src script path
+	 */
+	function __construct($src) {
+		$this->src = $src;
+	}
+
+	/**
+	 * Prints the HTML code for this element.
+	 *
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$return = array();
+		echo '<link href="' . $this->src . '" type="text/css" rel="stylesheet"/>';
+		return $return;
+	}
+
+}
+
+/**
  * Sets all given elements to the same width.
  *
  * @package metaHTML
