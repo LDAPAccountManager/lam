@@ -120,9 +120,6 @@ else {
 		$saveButton->addDataAttribute('credential', $credentialId);
 		$saveButton->addDataAttribute('dn', $result['dn']);
 		$saveButton->addDataAttribute('nameelement', 'deviceName_' . $id);
-		$saveButton->addDataAttribute('dialogtitle', _('Save'));
-		$saveButton->addDataAttribute('oktext', _('Ok'));
-		$saveButton->addDataAttribute('canceltext', _('Cancel'));
 		$saveButton->setOnClick('window.lam.webauthn.updateOwnDeviceName(event, false);');
 		$nameField = new htmlInputField('deviceName_' . $id, $result['name']);
 		$nameFieldClasses = array('maxwidth20');

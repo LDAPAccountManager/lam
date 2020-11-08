@@ -1890,13 +1890,21 @@ window.lam.webauthn.updateOwnDeviceName = function(event, isSelfService) {
 		credentialId: credential
 	};
 	var action = 'webauthnOwnDevices';
+	if (isSelfService) {
+		action = action + '&selfservice=true&module=webauthn&scope=user';
+	}
 	jQuery.ajax({
 		url: '../misc/ajax.php?function=' + action,
 		method: 'POST',
 		data: data
 	})
 	.done(function(jsonData) {
-		window.location.href = 'webauthn.php?updated=' + credential;
+		if (isSelfService) {
+			nameElement.addClass('markPass');
+		}
+		else {
+			window.location.href = 'webauthn.php?updated=' + credential;
+		}
 	})
 	.fail(function() {
 		console.log('WebAuthn device name change failed');
