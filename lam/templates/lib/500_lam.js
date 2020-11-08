@@ -1903,7 +1903,7 @@ window.lam.webauthn.updateOwnDeviceName = function(event, isSelfService) {
 			nameElement.addClass('markPass');
 		}
 		else {
-			window.location.href = 'webauthn.php?updated=' + credential;
+			window.location.href = 'webauthn.php?updated=' + encodeURIComponent(credential);
 		}
 	})
 	.fail(function() {
