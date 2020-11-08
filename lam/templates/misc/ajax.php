@@ -336,11 +336,32 @@ class Ajax {
 	}
 
 	/**
+	 * Updates a webauthn device name.
+	 *
+	 * @param string $dn user DN
+	 * @param string $credentialId base64 encoded credential id
+	 * @param string $name name
+	 */
+	private function manageWebauthnDevicesUpdateName($dn, $credentialId, $name) {
+		include_once __DIR__ . '/../../lib/webauthn.inc';
+		$database = new \LAM\LOGIN\WEBAUTHN\PublicKeyCredentialSourceRepositorySQLite();
+		$success = $database->updateDeviceName($dn, $credentialId, $name);
+		if ($success) {
+			logNewMessage(LOG_DEBUG, 'Changed name of ' . $dn . ' ' . $credentialId . ' to ' . $name);
+		}
+		else {
+			logNewMessage(LOG_ERR, 'Unable to change name of ' . $dn . ' ' . $credentialId . ' to ' . $name);
+		}
+		echo json_encode(array());
+	}
+
+	/**
 	 * Manages requests to setup user's own webauthn devices.
 	 */
 	private function manageWebauthnOwnDevices() {
 		$action = $_POST['action'];
 		$dn = $_POST['dn'];
+		$name = $_POST['name'];
 		$sessionDn = $_SESSION['ldap']->getUserName();
 		if ($sessionDn !== $dn) {
 			logNewMessage(LOG_ERR, 'WebAuthn delete canceled, DN does not match.');
@@ -349,6 +370,10 @@ class Ajax {
 		if ($action === 'delete') {
 			$credentialId = $_POST['credentialId'];
 			$this->manageWebauthnDevicesDelete($sessionDn, $credentialId);
+		}
+		elseif ($action === 'setName') {
+			$credentialId = $_POST['credentialId'];
+			$this->manageWebauthnDevicesUpdateName($sessionDn, $credentialId, $name);
 		}
 	}
 

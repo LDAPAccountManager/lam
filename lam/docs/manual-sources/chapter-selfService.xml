@@ -336,7 +336,7 @@
 
           <listitem>
             <para><ulink
-            url="https://en.wikipedia.org/wiki/WebAuthn">Webauthn/FIDO2</ulink></para>
+            url="https://en.wikipedia.org/wiki/WebAuthn">WebAuthn/FIDO2</ulink></para>
           </listitem>
         </itemizedlist>
 
@@ -433,10 +433,10 @@
           </listitem>
         </itemizedlist>
 
-        <para><emphasis role="bold">Webauthn/FIDO2</emphasis></para>
+        <para><emphasis role="bold">WebAuthn/FIDO2</emphasis></para>
 
-        <para>See the <link linkend="a_webauthn">Webauthn/FIDO2
-        appendix</link> for an overview about Webauthn/FIDO2 in LAM.</para>
+        <para>See the <link linkend="a_webauthn">WebAuthn/FIDO2
+        appendix</link> for an overview about WebAuthn/FIDO2 in LAM.</para>
 
         <para>Users will be asked to register a device during login if no
         device is setup.</para>
@@ -1062,9 +1062,9 @@
                   <imageobject>
                     <imagedata fileref="images/webauthn.png"/>
                   </imageobject>
-                </inlinemediaobject>Webauthn</entry>
+                </inlinemediaobject>WebAuthn</entry>
 
-              <entry>Webauthn devices</entry>
+              <entry>WebAuthn devices</entry>
 
               <entry>Allows the user to manage his webauthn/FIDO2 security
               keys.</entry>

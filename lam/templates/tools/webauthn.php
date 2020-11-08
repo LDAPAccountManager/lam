@@ -4,6 +4,7 @@ use \htmlButton;
 use \htmlDiv;
 use \htmlGroup;
 use htmlHiddenInput;
+use htmlInputField;
 use \htmlOutputText;
 use \htmlResponsiveRow;
 use \htmlResponsiveTable;
@@ -90,10 +91,6 @@ $registerButton->addDataAttribute('publickey', $registrationJson);
 $registerButton->setIconClass('createButton');
 $registerButton->setOnClick('window.lam.webauthn.registerOwnDevice(event, false);');
 $buttonGroup->addElement($registerButton);
-$buttonGroup->addElement(new htmlSpacer('1rem', null));
-$reloadButton = new htmlButton('reload', _('Reload'));
-$reloadButton->setIconClass('refreshButton');
-$buttonGroup->addElement($reloadButton);
 $container->add($buttonGroup, 12);
 $container->addVerticalSpacer('2rem');
 $results = $database->searchDevices($userDn);
@@ -102,6 +99,8 @@ if (empty($results)) {
 }
 else {
 	$titles = array(
+		_('Name'),
+		_('Save'),
 		_('Registration'),
 		_('Last use'),
 		_('Delete')
@@ -109,14 +108,28 @@ else {
 	$data = array();
 	$id = 0;
 	foreach ($results as $result) {
+		$credentialId = $result['credentialId'];
 		$delButton = new htmlButton('deleteDevice' . $id, 'delete.png', true);
-		$delButton->addDataAttribute('credential', $result['credentialId']);
+		$delButton->addDataAttribute('credential', $credentialId);
 		$delButton->addDataAttribute('dn', $result['dn']);
 		$delButton->addDataAttribute('dialogtitle', _('Remove device'));
 		$delButton->addDataAttribute('oktext', _('Ok'));
 		$delButton->addDataAttribute('canceltext', _('Cancel'));
 		$delButton->setOnClick('window.lam.webauthn.removeOwnDevice(event, false);');
+		$saveButton = new htmlButton('saveDevice' . $id, 'save.png', true);
+		$saveButton->addDataAttribute('credential', $credentialId);
+		$saveButton->addDataAttribute('dn', $result['dn']);
+		$saveButton->addDataAttribute('nameelement', 'deviceName_' . $id);
+		$saveButton->setOnClick('window.lam.webauthn.updateOwnDeviceName(event, false);');
+		$nameField = new htmlInputField('deviceName_' . $id, $result['name']);
+		$nameFieldClasses = array('maxwidth20');
+		if (!empty($_GET['updated']) && ($_GET['updated'] === $credentialId)) {
+			$nameFieldClasses[] = 'markPass';
+		}
+		$nameField->setCSSClasses($nameFieldClasses);
 		$data[] = array(
+			$nameField,
+			$saveButton,
 			new htmlOutputText(date('Y-m-d H:i:s', $result['registrationTime'])),
 			new htmlOutputText(date('Y-m-d H:i:s', $result['lastUseTime'])),
 			$delButton

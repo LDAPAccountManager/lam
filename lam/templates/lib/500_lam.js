@@ -1866,6 +1866,53 @@ window.lam.webauthn.sendRemoveDeviceRequest = function(element, action, successC
 }
 
 /**
+ * Updates a device name.
+ *
+ * @param event click event
+ * @param isSelfService run in self service or admin context
+ */
+window.lam.webauthn.updateOwnDeviceName = function(event, isSelfService) {
+	event.preventDefault();
+	var element = jQuery(event.currentTarget);
+	var dn = element.data('dn');
+	var nameElementId = element.data('nameelement');
+	var nameElement = jQuery('#' + nameElementId);
+	var name = nameElement.val();
+	var credential = element.data('credential');
+	var resultDiv = jQuery('#webauthn_results');
+	var tokenValue = resultDiv.data('sec_token_value');
+	var data = {
+		action: 'setName',
+		name: name,
+		jsonInput: '',
+		sec_token: tokenValue,
+		dn: dn,
+		credentialId: credential
+	};
+	var action = 'webauthnOwnDevices';
+	if (isSelfService) {
+		action = action + '&selfservice=true&module=webauthn&scope=user';
+	}
+	jQuery.ajax({
+		url: '../misc/ajax.php?function=' + action,
+		method: 'POST',
+		data: data
+	})
+	.done(function(jsonData) {
+		if (isSelfService) {
+			nameElement.addClass('markPass');
+		}
+		else {
+			window.location.href = 'webauthn.php?updated=' + encodeURIComponent(credential);
+		}
+	})
+	.fail(function() {
+		console.log('WebAuthn device name change failed');
+	});
+	return false;
+}
+
+/**
  * Registers a user's own webauthn device.
  *
  * @param event click event

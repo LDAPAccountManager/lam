@@ -447,14 +447,14 @@ semodule -i httpdlocal.pp</programlisting>
   </section>
 
   <section id="a_webauthn">
-    <title>Webauthn/FIDO2</title>
+    <title>WebAuthn/FIDO2</title>
 
     <para>LAM allows to secure logins via <ulink
-    url="https://en.wikipedia.org/wiki/WebAuthn">Webauthn/FIDO2</ulink>. This
+    url="https://en.wikipedia.org/wiki/WebAuthn">WebAuthn/FIDO2</ulink>. This
     means your users login with their LDAP password and an additional hardware
     token (e.g. Yubico Security Key, Windows Hello and many more).</para>
 
-    <para>Webauthn/FIDO2 is a very strong 2-factor-authentication method as it
+    <para>WebAuthn/FIDO2 is a very strong 2-factor-authentication method as it
     also checks the website domain. This prevents attacks via web
     proxies.</para>
 
@@ -463,23 +463,23 @@ semodule -i httpdlocal.pp</programlisting>
 
     <para><emphasis role="bold">LAM admin interface</emphasis></para>
 
-    <para>Please activate Webauthn/FIDO2 in your <link
+    <para>Please activate WebAuthn/FIDO2 in your <link
     linkend="conf_serverprofile_2fa">LAM server profile</link>. Then users
-    will be asked to authenticate via Webauthn/FIDO2 on each login.</para>
+    will be asked to authenticate via WebAuthn/FIDO2 on each login.</para>
 
     <para>If no device is registered for a user then LAM will ask for this
     during login. Afterwards, users can manage their devices with the <link
-    linkend="tool_webauthn">Webauthn tool</link>.</para>
+    linkend="tool_webauthn">WebAuthn tool</link>.</para>
 
     <para><emphasis role="bold">LAM Self Service</emphasis></para>
 
-    <para>Please activate Webauthn/FIDO2 in your <link
+    <para>Please activate WebAuthn/FIDO2 in your <link
     linkend="selfservice_2fa">LAM self service profile</link>. Then users will
-    be asked to authenticate via Webauthn/FIDO2 on each login.</para>
+    be asked to authenticate via WebAuthn/FIDO2 on each login.</para>
 
     <para>If no device is registered for a user then LAM will ask for this
     during login. Afterwards, users can manage their devices with the <link
-    linkend="selfservice_fields">Webauthn field</link>.</para>
+    linkend="selfservice_fields">WebAuthn field</link>.</para>
 
     <para><emphasis role="bold">Global device management</emphasis></para>
 
