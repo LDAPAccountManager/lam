@@ -1,5 +1,7 @@
 December 2020 7.4
-  - 2-factor authentication: support for Okta
+  - 2-factor authentication:
+   -> Support for Okta
+   -> WebAuthn devices can be named in Self Service and WebAuthn tool
   - LAM Pro:
    -> MIT Kerberos policies support
    -> User self registration: added admin approval option and info mail for user after creation

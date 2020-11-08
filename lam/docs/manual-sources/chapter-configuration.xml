@@ -269,10 +269,10 @@
     </section>
 
     <section id="confmain_webauthn">
-      <title>Webauthn/FIDO2 devices</title>
+      <title>WebAuthn/FIDO2 devices</title>
 
-      <para>See the <link linkend="a_webauthn">Webauthn/FIDO2 appendix</link>
-      for an overview about Webauthn/FIDO2 in LAM.</para>
+      <para>See the <link linkend="a_webauthn">WebAuthn/FIDO2 appendix</link>
+      for an overview about WebAuthn/FIDO2 in LAM.</para>
 
       <para>Here you can delete any webauthn device registrations. This
       section is only shown if at least one device is registered.</para>
@@ -702,7 +702,7 @@
 
           <listitem>
             <para><ulink
-            url="https://webauthn.io/">Webauthn/FIDO2</ulink></para>
+            url="https://webauthn.io/">WebAuthn/FIDO2</ulink></para>
           </listitem>
 
           <listitem>
@@ -805,10 +805,10 @@
           </listitem>
         </itemizedlist>
 
-        <para><emphasis role="bold">Webauthn/FIDO2</emphasis></para>
+        <para><emphasis role="bold">WebAuthn/FIDO2</emphasis></para>
 
-        <para>See the <link linkend="a_webauthn">Webauthn/FIDO2
-        appendix</link> for an overview about Webauthn/FIDO2 in LAM.</para>
+        <para>See the <link linkend="a_webauthn">WebAuthn/FIDO2
+        appendix</link> for an overview about WebAuthn/FIDO2 in LAM.</para>
 
         <para>Users will be asked to register a device during login if no
         device is setup.</para>
