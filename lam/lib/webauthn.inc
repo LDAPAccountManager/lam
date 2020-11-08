@@ -576,7 +576,8 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 				'dn' => $result['userId'],
 				'credentialId' => $result['credentialId'],
 				'lastUseTime' => $result['lastUseTime'],
-				'registrationTime' => $result['registrationTime']
+				'registrationTime' => $result['registrationTime'],
+				'name' => $result['name']
 			);
 		}
 		return $devices;
@@ -601,6 +602,25 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 	}
 
 	/**
+	 * Updates the device name.
+	 *
+	 * @param string $dn user DN
+	 * @param string $credentialId credential id
+	 * @param string $name new name
+	 * @return bool success
+	 */
+	public function updateDeviceName(string $dn, string $credentialId, $name) {
+		$pdo = $this->getPDO();
+		$statement = $pdo->prepare('update ' . self::TABLE_NAME . ' set name = :name where userId = :userId and credentialId = :credentialId');
+		$statement->execute(array(
+			':userId' => $dn,
+			':credentialId' => $credentialId,
+			':name' => $name
+		));
+		return $statement->rowCount() > 0;
+	}
+
+	/**
 	 * Returns the PDO.
 	 *
 	 * @return PDO PDO
@@ -613,6 +633,7 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 		if (!$this->tableExists($pdo, self::TABLE_NAME)) {
 			$this->createInitialSchema($pdo);
 		}
+		$this->addNameColumn($pdo);
 		return $pdo;
 	}
 
@@ -651,6 +672,24 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 	}
 
 	/**
+	 * Adds the name column if not existing.
+	 *
+	 * @param PDO $pdo PDO
+	 */
+	private function addNameColumn(PDO $pdo) {
+		try {
+			$statement = $pdo->query("select * from pragma_table_info('lam_webauthn') where name = 'name';");
+			$results = $statement->fetchAll();
+			if (empty($results)) {
+				$sql = 'alter table lam_webauthn add column name VARCHAR(255);';
+				$pdo->exec($sql);
+			}
+		} catch (\PDOException $e) {
+			logNewMessage(LOG_ERR, 'Unable to add name column to table: ' . $e->getMessage());
+		}
+	}
+
+	/**
 	 * Exports all entries.
 	 *
 	 * @return array data
@@ -668,6 +707,7 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 				'credentialSource' => $dbRow['credentialSource'],
 				'registrationTime' => $dbRow['registrationTime'],
 				'lastUseTime' => $dbRow['lastUseTime'],
+				'name' => $dbRow['name'],
 			);
 		}
 		return $data;
@@ -692,7 +732,8 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 				$dbRow['credentialId'],
 				$dbRow['credentialSource'],
 				$dbRow['registrationTime'],
-				$dbRow['lastUseTime']
+				$dbRow['lastUseTime'],
+				$dbRow['name']
 			));
 		}
 	}
