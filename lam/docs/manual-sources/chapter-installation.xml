@@ -331,11 +331,8 @@
 
       <para>LAM Pro:</para>
 
-      <para>Please request access at support providing your Docker Hub user
-      ID.</para>
-
-      <para><ulink
-      url="https://hub.docker.com/r/ldapaccountmanager/lampro">https://hub.docker.com/r/ldapaccountmanager/lampro</ulink></para>
+      <para>Please request access at support providing your Gitlab (<ulink
+      url="https://gitlab.com">https://gitlab.com</ulink>) user ID.</para>
 
       <para><emphasis role="bold">Configuration files</emphasis></para>
 
