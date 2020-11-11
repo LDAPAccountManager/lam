@@ -329,6 +329,13 @@
 
       <para/>
 
+      <literallayout>docker login registry.gitlab.com
+docker pull registry.gitlab.com/ldapaccountmanager/lampro
+docker run -p 8080:80 -it -d registry.gitlab.com/ldapaccountmanager/lampro:stable
+</literallayout>
+
+      <para/>
+
       <para>LAM Pro:</para>
 
       <para>Please request access at support providing your Gitlab (<ulink
