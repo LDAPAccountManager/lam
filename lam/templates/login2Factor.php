@@ -170,7 +170,7 @@ echo $config->getTwoFactorAuthenticationCaption();
 	    }
 	    catch (LAMException $e) {
 	        logNewMessage(LOG_ERR, 'Error rendering 2FA form. ' . $e->getTitle());
-	        $row->add(new htmlStatusMessage('ERROR', _('Unable to start 2-factor verification.')), 12);
+	        $row->add(new htmlStatusMessage('ERROR', _('Unable to start 2-factor authentication.')), 12);
         }
 	}
 
