@@ -618,7 +618,7 @@ docker run -p 8080:80 -it -d registry.gitlab.com/ldapaccountmanager/lampro:stabl
       intermediate release.</para>
 
       <section>
-        <title>7.2 -&gt; 7.3</title>
+        <title>7.2 -&gt; 7.4</title>
 
         <para>No actions required.</para>
       </section>
