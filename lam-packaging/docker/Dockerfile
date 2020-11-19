@@ -29,7 +29,7 @@
 FROM debian:buster-slim
 LABEL maintainer="Roland Gruber <post@rolandgruber.de>"
 
-ARG LAM_RELEASE=7.3
+ARG LAM_RELEASE=7.4.RC1
 EXPOSE 80
 
 ENV \
