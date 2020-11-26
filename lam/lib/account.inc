@@ -1389,8 +1389,11 @@ function sendEMail($to, $subject, $text, $from, $isHTML, $replyTo = null, $cc = 
 			$mailer->addBCC($bccParsed[0]['address'], $bccParsed[0]['name']);
 		}
 		$mailer->XMailer = 'LDAP Account Manager';
-		$mailer->send();
-		return true;
+		$mailSentOk = $mailer->send();
+		if (!$mailSentOk) {
+			logNewMessage(LOG_ERR, 'Mail sending failed: ' . $mailer->ErrorInfo);
+		}
+		return $mailSentOk;
 	}
 	catch (Exception $e) {
 		logNewMessage(LOG_ERR, 'Mail sending failed: ' . $e->getMessage());
