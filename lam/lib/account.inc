@@ -234,7 +234,7 @@ function getSupportedHashTypes() {
 		$hashes[] = 'PBKDF2-SHA512';
 	}
 	if (version_compare(PHP_VERSION, '7.3.0') >= 0) {
-		$hashes[] = 'ARGON2ID'
+		$hashes[] = 'ARGON2ID';
 	}
 	return $hashes;
 }
