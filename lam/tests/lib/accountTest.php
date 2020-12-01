@@ -167,10 +167,10 @@ class AccountTest extends TestCase {
 	}
 
 	/**
-	 * Tests ARGON2ID
+	 * Tests ARGON2I
 	 */
 	function testPwdHash() {
-		$type = 'ARGON2ID';
+		$type = 'ARGON2I';
 		$hash = pwd_hash('test-password', true, $type);
 		$hash = explode('}', $hash)[1];
 		$this->assertFalse(checkPasswordHash($type, $hash, 'wrong-password'));

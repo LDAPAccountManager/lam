@@ -204,8 +204,8 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 		case 'K5KEY':
 			$hash = '{K5KEY}';
 			break;
-		case 'ARGON2ID':
-			$hash = "{ARGON2ID}" . base64_encode(password_hash($password, PASSWORD_ARGON2ID));
+		case 'ARGON2I':
+			$hash = "{ARGON2}" . password_hash($password, PASSWORD_ARGON2I);
 			break;
 		case 'SSHA':
 		default: // use SSHA if the setting is invalid
@@ -233,8 +233,8 @@ function getSupportedHashTypes() {
 	if (function_exists('openssl_pbkdf2') || function_exists('hash_pbkdf2')) {
 		$hashes[] = 'PBKDF2-SHA512';
 	}
-	if (version_compare(PHP_VERSION, '7.3.0') >= 0) {
-		$hashes[] = 'ARGON2ID';
+	if (version_compare(PHP_VERSION, '7.4.0') >= 0) {
+		$hashes[] = 'ARGON2I';
 	}
 	return $hashes;
 }
@@ -425,8 +425,8 @@ function checkPasswordHash($type, $hash, $password) {
 			}
 			return false;
 			break;
-		case 'ARGON2ID':
-			return password_verify($password, base64_decode($hash));
+		case 'ARGON2I':
+			return password_verify($password, $hash);
 			break;
 		default:
 			return false;
