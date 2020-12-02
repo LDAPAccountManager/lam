@@ -205,7 +205,8 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 			$hash = '{K5KEY}';
 			break;
 		case 'ARGON2ID':
-			$hash = "{ARGON2}" . password_hash($password, PASSWORD_ARGON2ID);
+			$threads = max(4, PASSWORD_ARGON2_DEFAULT_THREADS);
+			$hash = "{ARGON2}" . password_hash($password, PASSWORD_ARGON2ID, array('threads' => $threads));
 			break;
 		case 'SSHA':
 		default: // use SSHA if the setting is invalid
