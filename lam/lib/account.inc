@@ -205,7 +205,7 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 			$hash = '{K5KEY}';
 			break;
 		case 'ARGON2ID':
-			$hash = "{ARGON2ID}" . base64_encode(password_hash($password, PASSWORD_ARGON2ID));
+			$hash = "{ARGON2}" . password_hash($password, PASSWORD_ARGON2ID);
 			break;
 		case 'SSHA':
 		default: // use SSHA if the setting is invalid
@@ -426,7 +426,7 @@ function checkPasswordHash($type, $hash, $password) {
 			return false;
 			break;
 		case 'ARGON2ID':
-			return password_verify($password, base64_decode($hash));
+			return password_verify($password, $hash);
 			break;
 		default:
 			return false;
