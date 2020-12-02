@@ -1936,7 +1936,8 @@ function password_types() {
 		'md5'=>'md5',
 		'sha'=>'sha',
 		'smd5'=>'smd5',
-		'ssha'=>'ssha'
+		'ssha'=>'ssha',
+		'argon2'=>'argon2'
 	);
 }
 
@@ -1984,6 +1985,11 @@ function pla_password_hash($password_clear,$enc_type) {
 			mt_srand((double)microtime()*1000000);
 			$salt = bin2hex(mhash_keygen_s2k(MHASH_SHA1,$password_clear,substr(pack('h*',md5(mt_rand())),0,8),16));
 			$new_value = "{CRYPT}" . crypt($password_clear, '$6$' . $salt);
+			break;
+
+		case 'argon2':
+			$threads = max(4, PASSWORD_ARGON2_DEFAULT_THREADS);
+			$new_value = "{ARGON2}" . password_hash($password_clear, PASSWORD_ARGON2ID, array('threads' => $threads));
 			break;
 
 		case 'clear':
@@ -2075,6 +2081,14 @@ function password_check($cryptedpassword,$plainpassword,$attribute='userpassword
 		# SHA crypted passwords
 		case 'sha':
 			if (strcasecmp(pla_password_hash($plainpassword,'sha'),'{SHA}'.$cryptedpassword) == 0)
+				return true;
+			else
+				return false;
+
+			break;
+
+		case 'argon2':
+			if (password_verify($plainpassword,$cryptedpassword))
 				return true;
 			else
 				return false;
