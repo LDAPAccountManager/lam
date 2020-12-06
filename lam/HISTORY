@@ -1,3 +1,7 @@
+March 2021 7.5
+  - PHP 7.2 required
+
+
 06.12.2020 7.4
   - Argond2id support for password hashes (requires PHP 7.3) (#113)
   - 2-factor authentication:
