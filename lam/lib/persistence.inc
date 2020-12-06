@@ -242,8 +242,7 @@ class ConfigDataExporter {
 	 */
 	public function _getWebauthn() {
 		$data = array();
-		if ((version_compare(phpversion(), '7.2.0') >= 0)
-			&& extension_loaded('PDO')
+		if (extension_loaded('PDO')
 			&& in_array('sqlite', \PDO::getAvailableDrivers())) {
 			include_once __DIR__ . '/webauthn.inc';
 			$webauthnManager = new WebauthnManager();
@@ -312,8 +311,7 @@ class ConfigDataImporter {
 					$steps[] = new ImporterStep(_('Self service profiles'), 'selfServiceProfiles', $value);
 					break;
 				case 'webauthn':
-					if ((version_compare(phpversion(), '7.2.0') >= 0)
-						&& extension_loaded('PDO')
+					if (extension_loaded('PDO')
 						&& in_array('sqlite', \PDO::getAvailableDrivers())) {
 						$steps[] = new ImporterStep(_('WebAuthn devices'), 'webauthn', $value);
 					}

@@ -46,7 +46,7 @@ setlanguage();
 $conf = $_SESSION['config'];
 
 // check if user password is not expired
-if ((version_compare(phpversion(), '7.2.0') >= 0) && !$conf->isHidePasswordPromptForExpiredPasswords()) {
+if (!$conf->isHidePasswordPromptForExpiredPasswords()) {
 	$userDn = $_SESSION['ldap']->getUserName();
 	$userData = ldapGetDN($userDn, array('*', '+', 'pwdReset', 'passwordExpirationTime'));
 	$ldapErrorCode = ldap_errno($_SESSION['ldap']->server());

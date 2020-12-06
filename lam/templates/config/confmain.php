@@ -238,10 +238,8 @@ $advancedOptionsContent->add(new htmlResponsiveInputCheckbox('pagedResults', $pa
 $referentialIntegrity = ($conf->isReferentialIntegrityOverlayActive());
 $advancedOptionsContent->add(new htmlResponsiveInputCheckbox('referentialIntegrityOverlay', $referentialIntegrity , _('Referential integrity overlay'), '269'), 12);
 // hide password prompt for expired passwords
-if (version_compare(phpversion(), '7.2.0') >= 0) {
-	$hidePasswordPromptForExpiredPasswords = ($conf->isHidePasswordPromptForExpiredPasswords());
-	$advancedOptionsContent->add(new htmlResponsiveInputCheckbox('hidePasswordPromptForExpiredPasswords', $hidePasswordPromptForExpiredPasswords, _('Hide password prompt for expired password'), '291'), 12);
-}
+$hidePasswordPromptForExpiredPasswords = ($conf->isHidePasswordPromptForExpiredPasswords());
+$advancedOptionsContent->add(new htmlResponsiveInputCheckbox('hidePasswordPromptForExpiredPasswords', $hidePasswordPromptForExpiredPasswords, _('Hide password prompt for expired password'), '291'), 12);
 
 // build advanced options box
 $advancedOptions = new htmlAccordion('advancedOptions_server', array(_('Advanced options') => $advancedOptionsContent), false);
@@ -475,10 +473,8 @@ if (extension_loaded('curl')) {
 			'YubiKey' => TwoFactorProviderService::TWO_FACTOR_YUBICO,
 			'Duo' => TwoFactorProviderService::TWO_FACTOR_DUO,
     		'Okta' => TwoFactorProviderService::TWO_FACTOR_OKTA,
+            'WebAuthn' => TwoFactorProviderService::TWO_FACTOR_WEBAUTHN
 	);
-    if (version_compare(phpversion(), '7.2.0') >= 0) {
-        $twoFactorOptions['Webauthn'] = TwoFactorProviderService::TWO_FACTOR_WEBAUTHN;
-    }
 	$twoFactorSelect = new htmlResponsiveSelect('twoFactor', $twoFactorOptions, array($conf->getTwoFactorAuthentication()), _('Provider'), '514');
 	$twoFactorSelect->setHasDescriptiveElements(true);
 	$twoFactorSelect->setTableRowsToHide(array(
@@ -597,13 +593,11 @@ function checkInput() {
 	else {
 		$conf->setReferentialIntegrityOverlay('false');
 	}
-    if (version_compare(phpversion(), '7.2.0') >= 0) {
-	    if (isset($_POST['hidePasswordPromptForExpiredPasswords']) && ($_POST['hidePasswordPromptForExpiredPasswords'] == 'on')) {
-		    $conf->setHidePasswordPromptForExpiredPasswords('true');
-	    }
-	    else {
-		    $conf->setHidePasswordPromptForExpiredPasswords('false');
-	    }
+    if (isset($_POST['hidePasswordPromptForExpiredPasswords']) && ($_POST['hidePasswordPromptForExpiredPasswords'] == 'on')) {
+        $conf->setHidePasswordPromptForExpiredPasswords('true');
+    }
+    else {
+        $conf->setHidePasswordPromptForExpiredPasswords('false');
     }
 	/*	if (!$conf->set_cacheTimeout($_POST['cachetimeout'])) {
 			$errors[] = array("ERROR", _("Cache timeout is invalid!"));

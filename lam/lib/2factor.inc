@@ -712,10 +712,6 @@ class WebauthnProvider extends BaseProvider {
 	 * @see \LAM\LIB\TWO_FACTOR\BaseProvider::addCustomInput()
 	 */
 	public function addCustomInput(&$row, $userDn) {
-		if (version_compare(phpversion(), '7.2.0') < 0) {
-			$row->add(new htmlStatusMessage('ERROR', 'WebAuthn requires PHP 7.2.'), 12);
-			return;
-		}
 		if (!extension_loaded('PDO')) {
 			$row->add(new htmlStatusMessage('ERROR', 'WebAuthn requires the PDO extension for PHP.'), 12);
 			return;

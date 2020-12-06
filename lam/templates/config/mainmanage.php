@@ -506,8 +506,7 @@ printHeaderContents(_("Edit general settings"), '../..');
 	$row->addVerticalSpacer('3rem');
 
 	// webauthn management
-	if ((version_compare(phpversion(), '7.2.0') >= 0)
-		&& extension_loaded('PDO')
+	if (extension_loaded('PDO')
 		&& in_array('sqlite', \PDO::getAvailableDrivers())) {
 		include_once __DIR__ . '/../../lib/webauthn.inc';
 		$database = new \LAM\LOGIN\WEBAUTHN\PublicKeyCredentialSourceRepositorySQLite();
