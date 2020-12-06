@@ -15,7 +15,7 @@
       <itemizedlist>
         <listitem>
           <para>Apache/Nginx webserver (SSL recommended) with PHP module (PHP
-          (&gt;= 7.0.0) with ldap, gettext, xml, openssl and optional
+          (&gt;= 7.2.0) with ldap, gettext, xml, openssl and optional
           OpenSSL)</para>
         </listitem>
 
@@ -44,8 +44,7 @@
               </listitem>
 
               <listitem>
-                <para>Internet Explorer 11 <emphasis
-                role="bold">(compatibility mode turned off)</emphasis></para>
+                <para>Edge (max. 2 years old)</para>
               </listitem>
 
               <listitem>
@@ -362,7 +361,7 @@ docker run -p 8080:80 -it -d registry.gitlab.com/ldapaccountmanager/lampro:stabl
       <section>
         <title>PHP</title>
 
-        <para>LAM runs with PHP5 (&gt;= 5.2.4). Needed changes in your
+        <para>LAM runs with PHP 7 (&gt;= 7.2.0). Needed changes in your
         php.ini:</para>
 
         <para>memory_limit = 64M</para>
