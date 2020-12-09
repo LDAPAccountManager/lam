@@ -1453,8 +1453,9 @@
 
       <para>Each line represents one LDAP attribute. The settings are
       separated by "::". The first setting specifies the field type. The
-      second setting is the LDAP attribute name. Depending on the field type
-      you can enter additional options:</para>
+      second setting is the LDAP attribute name (add ";binary" to attribute
+      names for file upload). Depending on the field type you can enter
+      additional options:</para>
 
       <table>
         <title/>
@@ -1481,7 +1482,7 @@
 
               <entry>optional</entry>
 
-              <entry>e.g. "givenName"</entry>
+              <entry>e.g. "givenName" or "jpegPhoto;binary"</entry>
 
               <entry>Label that is displayed on page</entry>
 
@@ -1499,7 +1500,7 @@
 
               <entry>required</entry>
 
-              <entry>e.g. "sn"</entry>
+              <entry>e.g. "sn" or "jpegPhoto;binary"</entry>
 
               <entry>Label that is displayed on page</entry>
 

@@ -4460,6 +4460,8 @@ class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
 	private $helpModule = null;
 	/** render HTML of parent class */
 	private $renderParentHtml = false;
+	/** required */
+	private $required = false;
 
 	/**
 	 * Constructor.
@@ -4467,8 +4469,9 @@ class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
 	 * @param String $name unique name
 	 * @param String $label descriptive label
 	 * @param String $helpID help ID
+	 * @param string $required required field
 	 */
-	function __construct($name, $label, $helpID = null) {
+	function __construct($name, $label, $helpID = null, $required = false) {
 		parent::__construct($name);
 		$this->label = htmlspecialchars($label);
 		if (is_string($helpID)) {
@@ -4478,6 +4481,7 @@ class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
 			$this->helpID = $helpID[0];
 			$this->helpModule = $helpID[1];
 		}
+		$this->required = $required;
 	}
 
 	/**
@@ -4501,6 +4505,11 @@ class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
 		// label text
 		$labelGroup = new htmlGroup();
 		$labelGroup->addElement(new htmlOutputText($this->label));
+		if ($this->required) {
+			$graphicsPath = "../../graphics";
+			if (is_dir("../graphics")) $graphicsPath = "../graphics";
+			$labelGroup->addElement(new htmlImage($graphicsPath . '/required.png', 16, 16, _('required'), _('required')));
+		}
 		if (!empty($this->helpID)) {
 			$helpLinkLabel = new htmlHelpLink($this->helpID, $this->helpModule);
 			$helpLinkLabel->setCSSClasses(array('hide-on-tablet', 'margin-left5'));
@@ -4517,6 +4526,15 @@ class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
 		}
 		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');
 		return $row->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+	}
+
+	/**
+	 * Sets the field required.
+	 *
+	 * @param bool $required field is required (default: true)
+	 */
+	public function setRequired($required = true) {
+		$this->required = $required;
 	}
 
 }
