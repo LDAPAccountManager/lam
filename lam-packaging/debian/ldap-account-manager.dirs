@@ -2,7 +2,6 @@ usr/share/ldap-account-manager
 usr/share/ldap-account-manager/graphics
 usr/share/ldap-account-manager/help
 usr/share/ldap-account-manager/lib
-usr/share/ldap-account-manager/lib/font
 usr/share/ldap-account-manager/lib/modules
 usr/share/ldap-account-manager/lib/tools
 usr/share/ldap-account-manager/locale
@@ -30,7 +29,6 @@ usr/share/ldap-account-manager/templates/profedit
 usr/share/ldap-account-manager/templates/schema
 usr/share/ldap-account-manager/templates/tree
 usr/share/ldap-account-manager/templates/tree/templates
-usr/share/ldap-account-manager/templates/tree/templates/creation
 etc/ldap-account-manager
 var/lib/ldap-account-manager
 var/lib/ldap-account-manager/config
