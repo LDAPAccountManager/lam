@@ -88,5 +88,3 @@ binary: binary-indep
 .PHONY: build clean binary-indep binary install configure
 
 binary-arch:
-
-

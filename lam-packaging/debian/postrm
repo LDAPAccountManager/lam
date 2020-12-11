@@ -43,8 +43,6 @@ if [ -f /usr/share/debconf/confmodule ]; then
 				server=${server%,}
 				if [ `which invoke-rc.d` ]; then
 					invoke-rc.d $server reload
-				elif [ `which service` ]; then
-					service $server reload
 				fi
 		done
 	fi

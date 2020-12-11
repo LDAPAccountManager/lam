@@ -72,8 +72,13 @@ rm -r lam/po
 rm -r lam/tests
 rm -f lam/lib/3rdParty/tcpdf/fonts/*.ttf
 rm -r lam/templates/lib/extra/ckeditor/plugins/*/dev
+rm lam/composer*
 find . -name .svnignore -exec rm {} \;
 find . -name .gitignore -exec rm {} \;
+find lam/lib/3rdParty -name LICENSE -exec rm {} \;
+find lam/lib/3rdParty -name README.md -exec rm {} \;
+find lam/lib/3rdParty -name CHANGELOG.md -exec rm {} \;
+find lam/lib/3rdParty -name CHANGELOG.txt -exec rm {} \;
 mv lam ldap-account-manager-$VERSION
 
 # create LAM manual
