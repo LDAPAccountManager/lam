@@ -83,10 +83,10 @@ binary-indep: build install
 	chmod 700 debian/ldap-account-manager/var/lib/ldap-account-manager/config
 	chown -R www-data debian/ldap-account-manager/var/lib/ldap-account-manager/config
 	chmod 700 debian/ldap-account-manager/etc/ldap-account-manager/tmp
-	chown www-data debian/ldap-account-manager/etc/ldap-account-manager/tmp
-	chown www-data debian/ldap-account-manager/etc/ldap-account-manager/tmp/internal
-	chmod 700 debian/ldap-account-manager/etc/ldap-account-manager/sess
-	chown www-data debian/ldap-account-manager/etc/ldap-account-manager/sess
+	chown www-data debian/ldap-account-manager/var/lib/ldap-account-manager/tmp
+	chown www-data debian/ldap-account-manager/var/lib/ldap-account-manager/tmp/internal
+	chmod 700 debian/ldap-account-manager/var/lib/ldap-account-manager/sess
+	chown www-data debian/ldap-account-manager/var/lib/ldap-account-manager/sess
 	dh_installdebconf
 	dh_installdeb
 	dh_gencontrol
