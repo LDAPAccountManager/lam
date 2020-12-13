@@ -76,7 +76,7 @@ binary-indep: build install
 	dh_link /usr/share/doc/ldap-account-manager/docs /usr/share/ldap-account-manager/docs
 	install -D --mode=644 debian/lam.apache.conf debian/ldap-account-manager/etc/ldap-account-manager/apache.conf
 	install -D --mode=644 debian/lam.nginx.conf debian/ldap-account-manager/etc/ldap-account-manager/nginx.conf
-	install -D --mode=600 config/config.cfg.sample debian/ldap-account-manager/etc/ldap-account-manager/config.cfg
+	install -D --mode=644 config/config.cfg.sample debian/ldap-account-manager/etc/ldap-account-manager/config.cfg
 	chown www-data debian/ldap-account-manager/etc/ldap-account-manager/config.cfg
 	dh_link /etc/ldap-account-manager/config.cfg /var/lib/ldap-account-manager/config/config.cfg
 	chown www-data debian/ldap-account-manager/etc/ldap-account-manager/config.cfg

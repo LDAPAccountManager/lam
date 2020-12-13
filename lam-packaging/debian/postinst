@@ -51,6 +51,7 @@ fi
 chmod 700 /var/lib/ldap-account-manager/config
 chmod 700 /var/lib/ldap-account-manager/tmp
 chmod 700 /var/lib/ldap-account-manager/sess
+chmod 600 /etc/ldap-account-manager/config.cfg
 set +e
 ls -l /var/lib/ldap-account-manager/config/*.conf &> /dev/null
 cfgFilesExist=$?
