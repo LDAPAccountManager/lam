@@ -5,7 +5,7 @@ Priority: optional
 Standards-Version: 4.5.0
 Build-Depends: debhelper (>= 12), debhelper-compat (= 12), po-debconf, cleancss, node-uglify
 Homepage: https://www.ldap-account-manager.org/
-Rules-Requires-Root: no
+Rules-Requires-Root: binary-targets
 
 Package: ldap-account-manager
 Architecture: all
