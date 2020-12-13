@@ -89,6 +89,7 @@ binary-indep: build install
 	chown www-data debian/ldap-account-manager/var/lib/ldap-account-manager/sess
 	dh_installdebconf
 	dh_installdeb
+	dh_lintian
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
