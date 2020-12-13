@@ -48,6 +48,9 @@ fi
 if [ ! -h /usr/share/ldap-account-manager/tmp ]; then
   ln -s /var/lib/ldap-account-manager/tmp /usr/share/ldap-account-manager/tmp
 fi
+chmod 700 /var/lib/ldap-account-manager/config
+chmod 700 /var/lib/ldap-account-manager/tmp
+chmod 700 /var/lib/ldap-account-manager/sess
 set +e
 ls -l /var/lib/ldap-account-manager/config/*.conf &> /dev/null
 cfgFilesExist=$?
