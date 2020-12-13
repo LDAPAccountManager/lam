@@ -22,6 +22,7 @@ files=`ls -a default.*`
 for file in $files; do
 	if [ ! -f /var/lib/ldap-account-manager/config/templates/profiles/$file ]; then
 		cp $file /var/lib/ldap-account-manager/config/templates/profiles/$file
+		chown www-data /var/lib/ldap-account-manager/config/templates/profiles/$file
 	fi
 done
 cd /usr/share/ldap-account-manager/config-samples/pdf
@@ -29,12 +30,14 @@ files=`ls -a default.*`
 for file in $files; do
 	if [ ! -f /var/lib/ldap-account-manager/config/templates/pdf/$file ]; then
 		cp $file /var/lib/ldap-account-manager/config/templates/pdf/$file
+		chown www-data /var/lib/ldap-account-manager/config/templates/pdf/$file
 	fi
 done
 cd /usr/share/ldap-account-manager/config-samples/pdf/logos
 files=`ls -a *.jpg`
 for file in $files; do
 	cp $file /var/lib/ldap-account-manager/config/templates/pdf/logos/$file
+	chown www-data /var/lib/ldap-account-manager/config/templates/pdf/logos/$file
 done
 if [ ! -h /usr/share/ldap-account-manager/config ]; then
   ln -s /var/lib/ldap-account-manager/config /usr/share/ldap-account-manager/config
@@ -52,7 +55,6 @@ chmod 700 /var/lib/ldap-account-manager/sess
 chown www-data /var/lib/ldap-account-manager/tmp
 chown www-data /var/lib/ldap-account-manager/tmp/internal
 chmod 700 /var/lib/ldap-account-manager/tmp
-chown -R www-data /var/lib/ldap-account-manager/config
 chmod 700 /var/lib/ldap-account-manager/config
 set +e
 ls -l /var/lib/ldap-account-manager/config/*.conf &> /dev/null
