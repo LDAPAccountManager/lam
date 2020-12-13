@@ -1,4 +1,4 @@
-ldap-account-manager: non-standard-dir-perm var/lib/ldap-account-manager/config
-ldap-account-manager: non-standard-dir-perm var/lib/ldap-account-manager/sess
-ldap-account-manager: non-standard-dir-perm var/lib/ldap-account-manager/tmp
-ldap-account-manager: non-standard-file-perm etc/ldap-account-manager/config.cfg
+ldap-account-manager: non-standard-dir-perm var/lib/ldap-account-manager/config/ 0700 != 0755
+ldap-account-manager: non-standard-dir-perm var/lib/ldap-account-manager/sess/ 0700 != 0755
+ldap-account-manager: non-standard-dir-perm var/lib/ldap-account-manager/tmp/ 0700 != 0755
+ldap-account-manager: non-standard-file-perm etc/ldap-account-manager/config.cfg 0600 != 0644
