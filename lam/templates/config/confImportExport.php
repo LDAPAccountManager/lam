@@ -92,8 +92,25 @@ printHeaderContents(_("Import and export configuration"), '../..');
         <tr>
             <td align="left">
                 <a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">
-				    <?php echo getLAMVersionText(); ?>
+                    <span class="hide-on-tablet">&nbsp;</span>
+                    <span class="hide-on-mobile">
+                        <?php echo getLAMVersionText(); ?>
+                    </span>
                 </a>
+            </td>
+            <td align="right">
+		        <?php
+		        if (is_dir(__DIR__ . '/../../docs/manual')) {
+                ?>
+                    <a target="_blank" href="../../docs/manual/index.html"><img class="align-middle" width="16" height="16" alt="help" src="../../graphics/help.png">
+                        <span class="hide-on-tablet">&nbsp;</span>
+                        <span class="hide-on-mobile">
+                            <?php echo _("Help") ?>&nbsp;
+                        </span>
+                    </a>
+                <?php
+		        }
+		        ?>
             </td>
         </tr>
     </table>

@@ -62,6 +62,20 @@ $content = new htmlResponsiveRow();
 						<?php echo getLAMVersionText(); ?>
 					</a>
 				</td>
+                <td align="right">
+					<?php
+					if (is_dir(__DIR__ . '/../../docs/manual')) {
+						?>
+                        <a target="_blank" href="../../docs/manual/index.html"><img class="align-middle" width="16" height="16" alt="help" src="../../graphics/help.png">
+                            <span class="hide-on-tablet">&nbsp;</span>
+                            <span class="hide-on-mobile">
+                            <?php echo _("Help") ?>&nbsp;&nbsp;&nbsp;&nbsp;
+                            </span>
+                        </a>
+						<?php
+					}
+					?>
+                </td>
 			</tr>
 		</table>
 		<br><br>

@@ -16,7 +16,7 @@ use \htmlLink;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2019  Roland Gruber
+  Copyright (C) 2003 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -168,6 +168,20 @@ printHeaderContents(_("Profile management"), '../..');
 						<?php echo getLAMVersionText(); ?>
 					</a>
 				</td>
+                <td align="right">
+					<?php
+					if (is_dir(__DIR__ . '/../../docs/manual')) {
+						?>
+                        <a target="_blank" href="../../docs/manual/index.html"><img class="align-middle" width="16" height="16" alt="help" src="../../graphics/help.png">
+                            <span class="hide-on-tablet">&nbsp;</span>
+                            <span class="hide-on-mobile">
+                            <?php echo _("Help") ?>&nbsp;&nbsp;&nbsp;&nbsp;
+                            </span>
+                        </a>
+						<?php
+					}
+					?>
+                </td>
 			</tr>
 		</table>
 

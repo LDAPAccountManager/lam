@@ -223,20 +223,35 @@ function display_LoginPage($licenseValidator, $error_message, $errorDetails = nu
 
 		<table border=0 width="100%" class="lamHeader ui-corner-all">
 			<tr>
-				<td align="left" height="30" width="34%">
+				<td align="left" height="30">
 					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">
-					<?php
-						echo getLAMVersionText();
-					?>
+                        <span class="hide-on-tablet">&nbsp;</span>
+                        <span class="hide-on-mobile">
+                            <?php echo getLAMVersionText(); ?>
+                        </span>
 					</a>
-				</td>
-				<td align="center" height=30 width="34%">
 					<span class="hide-for-small">
 						<a href="http://www.ldap-account-manager.org/lamcms/lamPro"> <?php if (!isLAMProVersion()) { echo _("Want more features? Get LAM Pro!");} ?> </a>
 					</span>
 				</td>
-				<td align="right" height=30 width="34%">
-					<a class="margin-right5" href="./config/index.php"><IMG alt="configuration" src="../graphics/tools.png">&nbsp;<span class="hide-for-small"><?php echo _("LAM configuration") ?></span></a>
+				<td align="right" height="30">
+					<a class="margin-right5" href="./config/index.php">
+                        <IMG alt="configuration" src="../graphics/tools.png">&nbsp;<span class="hide-for-small"><?php echo _("LAM configuration") ?></span>
+                    </a>
+                    <?php
+                    if (is_dir(__DIR__ . '/../docs/manual')) {
+                    ?>
+                        <span class="hide-on-mobile">&nbsp;&nbsp;</span>
+                        <a target="_blank" href="../docs/manual/index.html">
+                            <img class="align-middle" width="16" height="16" alt="help" src="../graphics/help.png">
+                            <span class="hide-on-tablet">&nbsp;</span>
+                            <span class="hide-on-mobile">
+                                <?php echo _("Help") ?>&nbsp;
+                            </span>
+                        </a>
+                    <?php
+                    }
+                    ?>
 				</td>
 			</tr>
 		</table>

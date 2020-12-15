@@ -2,7 +2,7 @@
 namespace LAM\CONFIG;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2019  Roland Gruber
+  Copyright (C) 2017 - 2020  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -61,12 +61,29 @@ function printConfigurationPageHeaderBar($conf) {
 			<tr>
 				<td align="left" height="30">
 					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">
-						<?php echo getLAMVersionText(); ?>
+                        <span class="hide-on-tablet">&nbsp;</span>
+                        <span class="hide-on-mobile">
+						    <?php echo getLAMVersionText(); ?>
+                        </span>
 					</a>
 				</td>
 				<td align="right">
-					<?php echo _('Server profile') . ': ' . $conf->getName(); ?>
-					&nbsp;&nbsp;
+					<?php
+                        if (is_dir(__DIR__ . '/../docs/manual')) {
+                    ?>
+                        <a target="_blank" href="../../docs/manual/index.html"><img class="align-middle" width="16" height="16" alt="help" src="../../graphics/help.png">
+                            <span class="hide-on-tablet">&nbsp;</span>
+                            <span class="hide-on-mobile">
+                            <?php echo _("Help") ?>&nbsp;&nbsp;&nbsp;&nbsp;
+                            </span>
+                        </a>
+                    <?php
+                        }
+					?>
+                        <span class="hide-on-mobile">
+                            <?php echo _('Server profile') . ': '; ?>
+                        </span>
+    					 <?php echo $conf->getName(); ?>&nbsp;
 				</td>
 			</tr>
 		</table>
