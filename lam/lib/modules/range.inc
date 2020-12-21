@@ -316,7 +316,7 @@ class range extends baseModule {
 		}
 		$subnet = $this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0];
 		$mask = $this->getAccountContainer()->getAccountModule('dhcp_settings')->getDHCPOption('subnet-mask');
-	    $errorOccured = false;
+	    $errorOccurred = false;
 	    $this->reset_overlapped_range();
 		if ($this->getAccountContainer()->getAccountModule('dhcp_settings')->attributes['cn'][0]!="") {
 
@@ -337,39 +337,39 @@ class range extends baseModule {
 					// Check range_start:
 					$_POST['range_start_'.$id] = trim($_POST['range_start_'.$id]);
 			        if (!check_ip($_POST['range_start_'.$id])) {
-			        	$errorOccured = true;
+			        	$errorOccurred = true;
 			        }
 		            $this->ranges[$id]['range_start'] = $_POST['range_start_'.$id];
 
 					// Check end:
 					$_POST['range_end_'.$id] = trim($_POST['range_end_'.$id]);
 			        if (!check_ip($_POST['range_end_'.$id])) {
-			        	$errorOccured = true;
+			        	$errorOccurred = true;
 			        }
 		            $this->ranges[$id]['range_end'] = $_POST['range_end_'.$id];
 
 			        // Check if ip overlapped:
 			        if(!$this->isNotOverlappedRange($_POST['range_start_'.$id],$_POST['range_end_'.$id])) {
-			            $errorOccured = true;
+			            $errorOccurred = true;
 			        }
 
 					// Check if Subnet and range first are valid:
 					if (!range::check_subnet_range($_POST['range_start_'.$id], $subnet, $mask)) {
-					    $errorOccured = true;
+					    $errorOccurred = true;
 					}
 
 					// Check if Subnet and range last are valid:
 					if (!range::check_subnet_range($_POST['range_end_'.$id], $subnet, $mask)) {
-					    $errorOccured = true;
+					    $errorOccurred = true;
 					}
 
 			        // Check if Range is valid
 			        if (!$this->check_range($_POST['range_start_'.$id],$_POST['range_end_'.$id])) {
-			            $errorOccured = true;
+			            $errorOccurred = true;
 			        }
 
 			        // Check, if range_start and range_end are ok!
-			        if (!$errorOccured) {
+			        if (!$errorOccurred) {
 			            $this->attributes['dhcpRange'][$id] = $_POST['range_start_'.$id]." ".$_POST['range_end_'.$id];
 			        }
 			        else {
@@ -382,7 +382,7 @@ class range extends baseModule {
 		// Add new Range
 		if(isset($_POST['add_range'])) {
 			// Check, if there where no errors:
-			if ($errorOccured) {
+			if ($errorOccurred) {
 			    $errors[] = $this->messages['add_range'][0];
 			}
 			else
@@ -438,7 +438,7 @@ class range extends baseModule {
 								|| !range::check_subnet_range($from, $subnet, $mask)
 								|| !range::check_subnet_range($to, $subnet, $mask)
 								|| !$this->check_range($from, $to)) {
-							$errorOccured = true;
+							$errorOccurred = true;
 						}
 					}
 				}
@@ -463,7 +463,7 @@ class range extends baseModule {
 		}
 
 		// Check if there was a error:
-		if ($errorOccured) {
+		if ($errorOccurred) {
 		    $errors[] = $this->messages['range_errors'][0];
 		}
 

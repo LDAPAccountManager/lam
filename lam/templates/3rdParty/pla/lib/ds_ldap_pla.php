@@ -586,7 +586,7 @@ class ldap_pla extends myldap {
 	}
 
 	/**
-	 * Check if the session timeout has occured for this LDAP server.
+	 * Check if the session timeout has occurred for this LDAP server.
 	 */
 	public function isSessionValid() {
 		# If inactiveTime() returns a value, we need to check that it has not expired.

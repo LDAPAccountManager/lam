@@ -3175,7 +3175,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 
 			function inetOrgPersonDeletePhotoHandleReply(data) {
-				if (data.errorsOccured == "false") {
+				if (data.errorsOccurred == "false") {
 					jQuery(\'#inetOrgPersonPhotoUploadContent\').html(data.html);
 					window.lam.tools.webcam.init();
 				}
@@ -3259,7 +3259,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			}
 
 			function inetOrgPersonDeleteCertificateHandleReply(data) {
-				if (data.errorsOccured == "false") {
+				if (data.errorsOccurred == "false") {
 					jQuery(\'#userCertificateDiv\').html(data.html);
 				}
 				else {
@@ -3904,7 +3904,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$content = ob_get_contents();
 		ob_end_clean();
 		return array(
-			'errorsOccured' => 'false',
+			'errorsOccurred' => 'false',
 			'html' => $content,
 		);
 	}
@@ -3932,7 +3932,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$content = ob_get_contents();
 		ob_end_clean();
 		return array(
-			'errorsOccured' => 'false',
+			'errorsOccurred' => 'false',
 			'html' => $content,
 		);
 	}
@@ -3946,7 +3946,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 		if ($message == null) {
 			$message = _('Invalid request');
 		}
-		return array('errorsOccured' => 'true', 'errormessage' => $message);
+		return array('errorsOccurred' => 'true', 'errormessage' => $message);
 	}
 
 	/**

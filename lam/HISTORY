@@ -1071,7 +1071,7 @@ March 2021 7.5
   - new login layout
   - added Hungarian and Japanese translations
   - fixed bugs:
-      Samba paswords were sometimes empty for new users (892272)
+      Samba passwords were sometimes empty for new users (892272)
       links in list views may not work with web servers other than Apache
 
 

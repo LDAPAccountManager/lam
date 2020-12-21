@@ -285,7 +285,7 @@ function passwordHandleInput(random, ajaxURL, tokenName, tokenValue) {
  * @param data JSON reply
  */
 function passwordHandleReply(data) {
-	if (data.errorsOccured == "false") {
+	if (data.errorsOccurred == "false") {
 		jQuery('#passwordDialogMessageArea').html("");
 		jQuery('#passwordDialog').dialog("close");
 		jQuery('#passwordMessageArea').html(data.messages);
@@ -1400,7 +1400,7 @@ window.lam.dynamicSelect.onScroll = function(selectField, event, maxOptions, num
 /**
  * Loads the next bunch of options at the end.
  *
- * @param selectField selct field
+ * @param selectField select field
  * @param maxOptions maximum options to show
  * @param numberOfOptionsToLoad number of options to add
  */
@@ -1431,7 +1431,7 @@ window.lam.dynamicSelect.loadNextOptions = function(selectField, maxOptions, num
 /**
  * Loads the next bunch of options at the beginning.
  *
- * @param selectField selct field
+ * @param selectField select field
  * @param maxOptions maximum options to show
  * @param numberOfOptionsToLoad number of options to add
  */

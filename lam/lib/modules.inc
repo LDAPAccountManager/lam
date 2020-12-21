@@ -866,7 +866,7 @@ class accountContainer {
 		$oldPage = $this->current_page;
 		$oldSubpage = $this->subpage;
 		$result = array();
-		$errorsOccured = false;
+		$errorsOccurred = false;
 		$typeObject = $this->type->getBaseType();
 		$profileLoaded = $this->loadProfileIfRequested();
 		if ($this->subpage == '') {
@@ -924,7 +924,7 @@ class accountContainer {
 				if (is_array($result)) {  // messages were returned, check for errors
 					for ($i = 0; $i < sizeof($result); $i++) {
 						if ($result[$i][0] == 'ERROR') {
-							$errorsOccured = true;
+							$errorsOccurred = true;
 							break;
 						}
 					}
@@ -934,7 +934,7 @@ class accountContainer {
 			// run type post actions
 			$typeObject->runEditPagePostAction($this);
 			// save account
-			if (!$errorsOccured && isset($_POST['accountContainerSaveAccount'])) {
+			if (!$errorsOccurred && isset($_POST['accountContainerSaveAccount'])) {
 				// check if all modules are complete
 				$modules = array_keys($this->module);
 				$incompleteModules = array();
@@ -970,12 +970,12 @@ class accountContainer {
 		if (is_array($result)) {  // messages were returned, check for errors
 			for ($i = 0; $i < sizeof($result); $i++) {
 				if ($result[$i][0] == 'ERROR') {
-					$errorsOccured = true;
+					$errorsOccurred = true;
 					break;
 				}
 			}
 		}
-		if (!$errorsOccured) {
+		if (!$errorsOccurred) {
 			// go to subpage of current module
 			$postKeys = array_keys($_POST);
 			for ($p = 0; $p < sizeof($postKeys); $p++) {
@@ -1011,7 +1011,7 @@ class accountContainer {
 		$this->titleBarSubtitle = $typeObject->getTitleBarSubtitle($this);
 		// prints a module content page
 		$this->printModuleContent($result);
-		if (!$errorsOccured && ($oldPage == $this->current_page) && ($oldSubpage == $this->subpage)
+		if (!$errorsOccurred && ($oldPage == $this->current_page) && ($oldSubpage == $this->subpage)
 			&& isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
 			// scroll to last position
 			echo '<script type="text/javascript">
@@ -1200,7 +1200,7 @@ class accountContainer {
 		}
 		$return = array(
 			'messages' => '',
-			'errorsOccured' => 'false'
+			'errorsOccurred' => 'false'
 		);
 		if ($random == 'true') {
 			$password1 = generateRandomPassword();
@@ -1210,13 +1210,13 @@ class accountContainer {
 			// check if passwords match
 			if ($password1 != $password2) {
 				$return['messages'] .= StatusMessage('ERROR', _('Passwords are different!'), '', array(), true);
-				$return['errorsOccured'] = 'true';
+				$return['errorsOccurred'] = 'true';
 			}
 			// check passsword strength
 			$pwdPolicyResult = checkPasswordStrength($password1, null, null);
 			if ($pwdPolicyResult !== true) {
 				$return['messages'] .= StatusMessage('ERROR', $pwdPolicyResult, '', array(), true);
-				$return['errorsOccured'] = 'true';
+				$return['errorsOccurred'] = 'true';
 			}
 		}
 		$forcePasswordChange = false;
@@ -1228,14 +1228,14 @@ class accountContainer {
 			$sendMail = true;
 		}
 		$return['forcePasswordChange'] = $forcePasswordChange;
-		if ($return['errorsOccured'] == 'false') {
+		if ($return['errorsOccurred'] == 'false') {
 			// set new password
 			foreach ($this->module as $module) {
 				if ($module instanceof passwordService) {
 					$messages = $module->passwordChangeRequested($password1, $modules, $forcePasswordChange);
 					for ($m = 0; $m < sizeof($messages); $m++) {
 						if ($messages[$m][0] == 'ERROR') {
-							$return['errorsOccured'] = 'true';
+							$return['errorsOccurred'] = 'true';
 						}
 						if (sizeof($messages[$m]) == 2) {
 							$return['messages'] .= StatusMessage($messages[$m][0], $messages[$m][1], '', array(), true);
@@ -1255,12 +1255,12 @@ class accountContainer {
 			if (($_SESSION['config']->getLamProMailAllowAlternateAddress() != 'false') && !empty($input['sendMailAlternateAddress'])) {
 				if (!get_preg($input['sendMailAlternateAddress'], 'email')) {
 					$return['messages'] .= StatusMessage('ERROR', _('Alternate recipient'), _('Please enter a valid email address!'), array(), true);
-					$return['errorsOccured'] = 'true';
+					$return['errorsOccurred'] = 'true';
 				}
 				$this->sendPasswordViaMailAlternateAddress = $input['sendMailAlternateAddress'];
 			}
 		}
-		if ($return['errorsOccured'] == 'false') {
+		if ($return['errorsOccurred'] == 'false') {
 			$return['messages'] .= StatusMessage('INFO', _('The new password will be stored in the directory after you save this account.'), '', array(), true);
 		}
 		return $return;

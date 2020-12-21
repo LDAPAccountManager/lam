@@ -802,7 +802,7 @@ function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes
 		$entries = searchLDAPPaged($_SESSION['ldap']->server(), escapeDN($type->getSuffix()),
 					$filter, $attributes, 0, $_SESSION['config']->get_searchLimit());
 		if (ldap_errno($_SESSION['ldap']->server()) == 4) {
-			logNewMessage(LOG_WARNING, 'LDAP size limit exeeded. Please increase the limit on your server.');
+			logNewMessage(LOG_WARNING, 'LDAP size limit exceeded. Please increase the limit on your server.');
 		}
 		$return = array_merge($return, $entries);
 	}
@@ -841,7 +841,7 @@ function searchLDAPByFilter($filter, $attributes, $scopes, $attrsOnly = false) {
 		$entries = searchLDAPPaged($_SESSION['ldap']->server(), escapeDN($type->getSuffix()),
 					$filter, $attributes, $readAttributesOnly, $_SESSION['config']->get_searchLimit());
 		if (ldap_errno($_SESSION['ldap']->server()) == 4) {
-			logNewMessage(LOG_WARNING, 'LDAP size limit exeeded. Please increase the limit on your server.');
+			logNewMessage(LOG_WARNING, 'LDAP size limit exceeded. Please increase the limit on your server.');
 		}
 		$return = array_merge($return, $entries);
 	}
@@ -864,7 +864,7 @@ function searchLDAP($suffix, $filter, $attributes) {
 	$return = searchLDAPPaged(getLDAPServerHandle(), escapeDN($suffix), $filter, $attributes,
 				0, $limit);
 	if (ldap_errno(getLDAPServerHandle()) == 4) {
-		logNewMessage(LOG_WARNING, 'LDAP size limit exeeded. Please increase the limit on your server.');
+		logNewMessage(LOG_WARNING, 'LDAP size limit exceeded. Please increase the limit on your server.');
 	}
 	return $return;
 }

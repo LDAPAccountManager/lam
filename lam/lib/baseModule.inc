@@ -1160,7 +1160,7 @@ abstract class baseModule {
 	* <br><b>"notchanged"</b> are attributes which stay unchanged
 	* <br><b>"info"</b> values with informational value (e.g. to be used later by pre/postModify actions)
 	* <br>
-	* <br>This builds the required comands from $this-attributes and $this->orig.
+	* <br>This builds the required commands from $this-attributes and $this->orig.
 	*
 	* @return array list of modifications
 	*/
@@ -1606,7 +1606,7 @@ abstract class baseModule {
 	 * </ul>
 	 *
 	 * @param htmlResponsiveRow $container row
-	 * @param string $labelFirst label of first selct
+	 * @param string $labelFirst label of first select
 	 * @param string $labelSecond label of second select
 	 * @param string[] $optionsFirst options of first select ('label' => 'value')
 	 * @param string[] $selectedFirst selected options of first select

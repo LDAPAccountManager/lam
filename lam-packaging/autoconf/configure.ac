@@ -47,7 +47,7 @@ AC_PATH_PROG(MKDIR, mkdir)
 AC_PATH_PROG(RM, rm)
 AC_PATH_PROG(TAR, tar)
 
-# Find a sutable copy command
+# Find a suitable copy command
 AC_PATH_PROG(COPY, copy)
 AC_PATH_PROG(CP, cp)
 if test x$COPY = x ; then

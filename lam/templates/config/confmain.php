@@ -423,7 +423,7 @@ $row->add($toolSettingsContent, 12);
 
 $row->addVerticalSpacer('2rem');
 
-// security setings
+// security settings
 $row->add(new htmlSubTitle(_("Security settings"), '../../graphics/security.png', null, true), 12);
 // login method
 $loginOptions = array(

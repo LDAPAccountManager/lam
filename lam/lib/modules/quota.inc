@@ -1048,7 +1048,7 @@ class quota extends baseModule {
 	* <br><b>"notchanged"</b> are attributes which stay unchanged
 	* <br><b>"info"</b> values with informational value (e.g. to be used later by pre/postModify actions)
 	* <br>
-	* <br>This builds the required comands from $this-attributes and $this->orig.
+	* <br>This builds the required commands from $this-attributes and $this->orig.
 	*
 	* @return array list of modifications
 	*/

@@ -351,7 +351,7 @@ class yubiKeyUser extends baseModule {
 			}
 
 			function yubiKeyIdDeleteKeyHandleReply(data) {
-				if (data.errorsOccured == "false") {
+				if (data.errorsOccurred == "false") {
 					jQuery(\'#yubiKeyIdDiv\').html(data.html);
 				}
 				else {
@@ -374,7 +374,7 @@ class yubiKeyUser extends baseModule {
 			}
 
 			function yubiKeyIdAddKeyHandleReply(data) {
-				if (data.errorsOccured == "false") {
+				if (data.errorsOccurred == "false") {
 					jQuery(\'#yubiKeyIdDiv\').html(data.html);
 				}
 				else {
@@ -484,7 +484,7 @@ class yubiKeyUser extends baseModule {
 				$content = ob_get_contents();
 				ob_end_clean();
 				$jsonReturn = array(
-					'errorsOccured' => 'false',
+					'errorsOccurred' => 'false',
 					'html' => $content,
 				);
 			}
@@ -515,7 +515,7 @@ class yubiKeyUser extends baseModule {
 		$content = ob_get_contents();
 		ob_end_clean();
 		return array(
-			'errorsOccured' => 'false',
+			'errorsOccurred' => 'false',
 			'html' => $content,
 		);
 	}
@@ -529,7 +529,7 @@ class yubiKeyUser extends baseModule {
 		if ($message == null) {
 			$message = _('Invalid request');
 		}
-		return array('errorsOccured' => 'true', 'errormessage' => $message);
+		return array('errorsOccurred' => 'true', 'errormessage' => $message);
 	}
 
 	/**

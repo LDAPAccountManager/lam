@@ -134,7 +134,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
     /**
      * Shows the login dialog for the configuration master password.
      *
-     * @param htmlStatusMessage $message message to show if any error occured
+     * @param htmlStatusMessage $message message to show if any error occurred
      */
 	function showLoginDialog($message = null) {
     	$tabindex = 0;

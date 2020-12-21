@@ -8,7 +8,7 @@
 ServerURL: ldap://localhost:389
 
 # list of users who are allowed to use LDAP Account Manager
-# names have to be seperated by semicolons
+# names have to be separated by semicolons
 # e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org
 Admins: cn=Manager,dc=my-domain,dc=com
 

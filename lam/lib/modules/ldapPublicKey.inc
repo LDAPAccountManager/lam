@@ -396,7 +396,7 @@ class ldapPublicKey extends baseModule {
 			}
 
 			function ldapPublicKeyDeleteKeyHandleReply(data) {
-				if (data.errorsOccured == "false") {
+				if (data.errorsOccurred == "false") {
 					jQuery(\'#sshPublicKeyDiv\').html(data.html);
 				}
 				else {
@@ -419,7 +419,7 @@ class ldapPublicKey extends baseModule {
 			}
 
 			function ldapPublicKeyAddKeyHandleReply(data) {
-				if (data.errorsOccured == "false") {
+				if (data.errorsOccurred == "false") {
 					jQuery(\'#sshPublicKeyDiv\').html(data.html);
 				}
 				else {
@@ -559,7 +559,7 @@ class ldapPublicKey extends baseModule {
 				$content = ob_get_contents();
 				ob_end_clean();
 				$jsonReturn = array(
-					'errorsOccured' => 'false',
+					'errorsOccurred' => 'false',
 					'html' => $content,
 				);
 			}
@@ -634,7 +634,7 @@ class ldapPublicKey extends baseModule {
 		$content = ob_get_contents();
 		ob_end_clean();
 		return array(
-			'errorsOccured' => 'false',
+			'errorsOccurred' => 'false',
 			'html' => $content,
 		);
 	}
@@ -648,7 +648,7 @@ class ldapPublicKey extends baseModule {
 		if ($message == null) {
 			$message = _('Invalid request');
 		}
-		return array('errorsOccured' => 'true', 'errormessage' => $message);
+		return array('errorsOccurred' => 'true', 'errormessage' => $message);
 	}
 
 }
