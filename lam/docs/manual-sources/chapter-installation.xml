@@ -321,12 +321,17 @@
       url="https://github.com/LDAPAccountManager/lam/blob/develop/lam-packaging/docker/.env">sample
       .env</ulink> file.</para>
 
-      <para>See here:</para>
+      <para>LAM repository:</para>
 
       <para><ulink
       url="https://hub.docker.com/r/ldapaccountmanager/lam">https://hub.docker.com/r/ldapaccountmanager/lam</ulink></para>
 
-      <para/>
+      <para>LAM Pro repository:</para>
+
+      <para>See LAM repository for usage examples.</para>
+
+      <para>Please request access at support providing your Gitlab (<ulink
+      url="https://gitlab.com">https://gitlab.com</ulink>) user ID.</para>
 
       <literallayout>docker login registry.gitlab.com
 docker pull registry.gitlab.com/ldapaccountmanager/lampro
@@ -334,11 +339,6 @@ docker run -p 8080:80 -it -d registry.gitlab.com/ldapaccountmanager/lampro:stabl
 </literallayout>
 
       <para/>
-
-      <para>LAM Pro:</para>
-
-      <para>Please request access at support providing your Gitlab (<ulink
-      url="https://gitlab.com">https://gitlab.com</ulink>) user ID.</para>
 
       <para><emphasis role="bold">Configuration files</emphasis></para>
 
