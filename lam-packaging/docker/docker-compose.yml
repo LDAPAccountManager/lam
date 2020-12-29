@@ -19,6 +19,7 @@ services:
       - LDAP_BASE_DN=${LDAP_BASE_DN}
       - ADMIN_USER=cn=admin,${LDAP_BASE_DN}
       - DEBUG=true
+    hostname: ldap-account-manager
   ldap:
     image: osixia/openldap:latest
     restart: unless-stopped
@@ -29,10 +30,17 @@ services:
       - LDAP_ADMIN_PASSWORD=${LDAP_ADMIN_PASSWORD}
       - LDAP_READONLY_USER=true
       - LDAP_READONLY_USER_PASSWORD=${LDAP_READONLY_USER_PASSWORD}
+      - LDAP_TLS_CRT_FILENAME=ldap.crt
+      - LDAP_TLS_KEY_FILENAME=ldap.key
+      - LDAP_TLS_CA_CRT_FILENAME=ca.crt
+      - LDAP_TLS_VERIFY_CLIENT=never
+
     command: "--loglevel info --copy-service"
     volumes:
       - ldap:/var/lib/ldap
       - slapd:/etc/ldap/slapd.d
+      - ./certificates:/container/service/slapd/assets/certs
+    hostname: ldap
 
 volumes:
   lametc:
@@ -40,3 +48,4 @@ volumes:
   lamsession:
   ldap:
   slapd:
+
