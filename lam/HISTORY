@@ -2,6 +2,7 @@ March 2021 7.5
   - PHP 7.2 required
   - LAM Pro:
    -> Self registration: support binary attributes (e.g. for jpegPhoto)
+   -> Self registration: support custom mail attributes and from constant value (149)
 
 
 06.12.2020 7.4
