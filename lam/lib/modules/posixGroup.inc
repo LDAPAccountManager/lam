@@ -456,7 +456,7 @@ class posixGroup extends baseModule implements passwordService {
 			),
 			'gidCheckSuffix' => array (
 				"Headline" => _("Suffix for GID/group name check"),
-				"Text" => _("LAM checks if the entered group name and GID are unique. Here you can enter the LDAP suffix that is used to search for duplicates. By default the account type suffix is used. You only need to change this if you use multiple server profiles with different OUs but need unique group names or GIDs.")
+				"Text" => _("LAM checks if the entered group name and GID are unique. Here you can enter the LDAP suffix that is used to search for duplicates. By default, the account type suffix is used. You only need to change this if you use multiple server profiles with different OUs but need unique group names or GIDs.")
 			),
 			'gidGenerator' => array (
 				"Headline" => _("GID generator"),

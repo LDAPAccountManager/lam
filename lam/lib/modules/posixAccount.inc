@@ -375,7 +375,7 @@ class posixAccount extends baseModule implements passwordService {
 			),
 			'uidCheckSuffix' => array (
 				"Headline" => _("Suffix for UID/user name check"),
-				"Text" => _("LAM checks if the entered user name and UID are unique. Here you can enter the LDAP suffix that is used to search for duplicates. By default the account type suffix is used. You only need to change this if you use multiple server profiles with different OUs but need unique user names or UIDs.")
+				"Text" => _("LAM checks if the entered user name and UID are unique. Here you can enter the LDAP suffix that is used to search for duplicates. By default, the account type suffix is used. You only need to change this if you use multiple server profiles with different OUs but need unique user names or UIDs.")
 			),
 			'loginShells' => array(
 				"Headline" => _("Login shells"),

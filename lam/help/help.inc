@@ -188,7 +188,7 @@ $helpArray = array (
 				"260" => array ("Headline" => _("Additional LDAP filter"),
 					"Text" => _('Use this to enter an additional LDAP filter (e.g. "(cn!=admin)") to reduce the number of visible elements for this account type.')
 						. ' ' . _('You can use the wildcard @@LOGIN_DN@@ which will be substituted with the DN of the user who is currently logged in to LAM.')
-						. ' ' . _('By default LAM will show all accounts that match the selected account modules.')),
+						. ' ' . _('By default, LAM will show all accounts that match the selected account modules.')),
 				"261" => array ("Headline" => _("Hidden"),
 					"Text" => _('Hidden account types will not show up in LAM. This is useful if you want to display e.g. only groups but still need to manage their members.')),
 				"262" => array ("Headline" => _("No new entries"),
@@ -312,7 +312,7 @@ $helpArray = array (
 				"512" => array ("Headline" => _("Additional LDAP filter"),
 					"Text" => _('Use this to enter an additional LDAP filter (e.g. "(objectClass=passwordSelfReset)") to reduce the number of accounts who may use self service.')),
 				"513" => array ("Headline" => _('Use for all operations'),
-					"Text" => _('By default all modifications are done as the user that authenticated in self service. If active then LAM will use the connection user for all LDAP modifications and searches.')),
+					"Text" => _('By default, all modifications are done as the user that authenticated in self service. If active then LAM will use the connection user for all LDAP modifications and searches.')),
 				"514" => array ("Headline" => _('2-factor authentication'),
 					"Text" => _('You can enable 2-factor authentication here (e.g. via mobile device).')),
 				"515" => array ("Headline" => _('Base URL'),
