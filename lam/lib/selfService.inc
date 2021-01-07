@@ -223,11 +223,11 @@ function loadSelfServiceProfile($name, $scope) {
 			fclose($file);
 		}
 		else {
-			StatusMessage("ERROR", "", _("Unable to load profile!") . " " . $file);
+			StatusMessage("ERROR", "", _("Unable to load profile!") . " " . $name);
 		}
 	}
 	else {
-		StatusMessage("ERROR", "", _("Unable to load profile!") . " " . $file);
+		StatusMessage("ERROR", "", _("Unable to load profile!") . " " . $name);
 	}
 	return $profile;
 }
