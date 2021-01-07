@@ -7,3 +7,5 @@
 /code-coverage/
 /.phpunit.result.cache
 /lam/lib/3rdParty/composer/bin/
+/lam/ast.dump
+/lam/.phpdoc
