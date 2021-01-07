@@ -4,7 +4,7 @@ use \LAM\REMOTE\RemoteServerConfiguration;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2020  Roland Gruber
+  Copyright (C) 2003 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -64,6 +64,7 @@ function setSSLCaCert() {
 */
 function setlanguage() {
 	$code = 'en_GB.utf8';
+	$fallbackCode = 'en_GB.UTF-8';
 	$encoding = 'UTF-8';
 	if (!isset($_SESSION['language'])) {
 		$_SESSION['language'] = "en_GB.utf8";
@@ -72,6 +73,7 @@ function setlanguage() {
 	foreach ($possibleLanguages as $lang) {
 		if ($lang->code == $_SESSION['language']) {
 			$code = $lang->code;
+			$fallbackCode = str_replace('utf8', 'UTF-8', $code);
 			$encoding = $lang->encoding;
 			break;
 		}
@@ -80,7 +82,7 @@ function setlanguage() {
 	putenv("LC_ALL=$code");
 	putenv("LC_LANG=$code");
 	putenv("LC_LANGUAGE=$code");
-	$setLocaleResult = setlocale(LC_ALL, $code);  // set LC_ALL
+	$setLocaleResult = setlocale(LC_ALL, array($code, $fallbackCode));  // set LC_ALL
 	if ($setLocaleResult === false) {
 		logNewMessage(LOG_WARNING, "Unable to set locale, check if 'locale -a' returns $code");
 	}
