@@ -2,4 +2,4 @@
 
 rm -rf docs/phpdoc
 mkdir docs/phpdoc
-phpdoc -d ./ -t docs/phpdoc --title "LDAP Account Manager" --template clean --defaultpackagename main -e php,inc --ignore lib/en*,lib/env.inc,lib/3rdParty*,templates/3rdParty*
+/usr/bin/phpdoc -d ./ -t docs/phpdoc --template=default --title "LDAP Account Manager" --defaultpackagename main --extensions=php --extensions=inc --ignore=config --ignore=tmp --ignore=sess --ignore=lib/env.inc --ignore=lib/3rdParty --ignore=templates/3rdParty --ignore=tests
