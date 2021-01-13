@@ -23,11 +23,12 @@ use \htmlResponsiveInputCheckbox;
 use \htmlResponsiveInputField;
 use \htmlDiv;
 use \htmlHiddenInput;
+use PDO;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2020  Roland Gruber
+  Copyright (C) 2003 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -327,6 +328,45 @@ printHeaderContents(_("Edit general settings"), '../..');
 	if (!$cfg->isWritable()) {
 		$row->add(new htmlStatusMessage('WARN', _('The config file is not writable.'), _('Your changes cannot be saved until you make the file writable for the webserver user.')), 12);
 	}
+
+	// database
+	if (extension_loaded('PDO')) {
+		$row->add(new htmlSubTitle(_('Configuration storage')), 12);
+		$storageProviders = array(
+			_('Local file system') => LAMCfgMain::DATABASE_FILE_SYSTEM
+		);
+		if (in_array('mysql', PDO::getAvailableDrivers())) {
+			$storageProviders['MySQL'] = LAMCfgMain::DATABASE_MYSQL;
+		}
+		$storageProviderSelect = new htmlResponsiveSelect('configDatabaseType', $storageProviders, array($cfg->configDatabaseType), _('Database type'), '293');
+		$storageProviderSelect->setHasDescriptiveElements(true);
+		$dbRowsToShow = array(
+		    LAMCfgMain::DATABASE_FILE_SYSTEM => array(),
+            LAMCfgMain::DATABASE_MYSQL => array('configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser', 'configDatabasePassword')
+        );
+		$storageProviderSelect->setTableRowsToShow($dbRowsToShow);
+		$dbRowsToHide = array(
+			LAMCfgMain::DATABASE_FILE_SYSTEM => array('configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser', 'configDatabasePassword'),
+			LAMCfgMain::DATABASE_MYSQL => array()
+        );
+		$storageProviderSelect->setTableRowsToHide($dbRowsToHide);
+		$row->add($storageProviderSelect, 12);
+		$dbHost = new htmlResponsiveInputField(_('Database host'), 'configDatabaseServer', $cfg->configDatabaseServer, '273');
+		$dbHost->setRequired(true);
+		$row->add($dbHost, 12);
+		$dbPort = new htmlResponsiveInputField(_('Database port'), 'configDatabasePort', $cfg->configDatabasePort, '274');
+		$row->add($dbPort, 12);
+		$dbName = new htmlResponsiveInputField(_('Database name'), 'configDatabaseName', $cfg->configDatabaseName, '276');
+		$dbName->setRequired(true);
+		$row->add($dbName, 12);
+		$dbUser = new htmlResponsiveInputField(_('Database user'), 'configDatabaseUser', $cfg->configDatabaseUser, '275');
+		$dbUser->setRequired(true);
+		$row->add($dbUser, 12);
+		$dbPassword = new htmlResponsiveInputField(_('Database password'), 'configDatabasePassword', deobfuscateText($cfg->configDatabasePassword), '275');
+		$dbPassword->setRequired(true);
+		$dbPassword->setIsPassword(true);
+		$row->add($dbPassword, 12);
+    }
 
 	// license
 	if (isLAMProVersion()) {

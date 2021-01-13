@@ -247,6 +247,8 @@ $helpArray = array (
 					"Text" => _('Hides the password prompt when a user with expired password logs into LAM.')),
 				"292" => array ("Headline" => _('DN part to hide'),
 					"Text" => _('Hides the given part of the DN when displaying a DN. E.g. if you set this to "dc=example,dc=com" then "ou=department,dc=example,dc=com" will be displayed as "ou=department". Use this if you have very long DNs.')),
+				"293" => array ("Headline" => _('Database type'),
+					"Text" => _('Please select the type of database to use for all configuration data. Please install PHP MySQL PDO extension for MySQL support.')),
 				// 300 - 399
 				// profile editor, file upload
 				"301" => array ("Headline" => _("RDN identifier"),

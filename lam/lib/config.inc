@@ -2701,6 +2701,11 @@ class LAMCfgMain {
 	/** no license warning */
 	const LICENSE_WARNING_NONE = 'none';
 
+	/** store configuration on local file system */
+	const DATABASE_FILE_SYSTEM = 'files';
+	/** store configuration in MySQL database */
+	const DATABASE_MYSQL = 'mysql';
+
 	/** Default profile */
 	public $default;
 
@@ -2791,6 +2796,24 @@ class LAMCfgMain {
 	/** mail server password */
 	public $mailPassword = '';
 
+	/** database type */
+	public $configDatabaseType = self::DATABASE_FILE_SYSTEM;
+
+	/** database server name */
+	public $configDatabaseServer = '';
+
+	/** database port */
+	public $configDatabasePort = '';
+
+	/** database name */
+	public $configDatabaseName = '';
+
+	/** database user */
+	public $configDatabaseUser = '';
+
+	/** database password */
+	public $configDatabasePassword = '';
+
 	/** list of data fields to save in config file */
 	private $settings = array("password", "default", "sessionTimeout",
 		"logLevel", "logDestination", "allowedHosts", "passwordMinLength",
@@ -2800,7 +2823,8 @@ class LAMCfgMain {
 		'externalPwdCheckUrl',
 		'errorReporting', 'encryptSession', 'allowedHostsSelfService',
 		'license', 'licenseEmailFrom', 'licenseEmailTo', 'licenseWarningType', 'licenseEmailDateSent',
-		'mailServer', 'mailUser', 'mailPassword'
+		'mailServer', 'mailUser', 'mailPassword', 'configDatabaseType', 'configDatabaseServer',
+		'configDatabasePort', 'configDatabaseName', 'configDatabaseUser', 'configDatabasePassword'
 	);
 
 	/**
@@ -3047,6 +3071,25 @@ class LAMCfgMain {
 		if (!in_array("mailPassword", $saved)) {
 			array_push($file_array, "\n" . "mailPassword: " . $this->mailPassword);
 		}
+		if (!in_array("configDatabaseType", $saved)) {
+			array_push($file_array, "\n" . "configDatabaseType: " . $this->configDatabaseType);
+		}
+		if (!in_array("configDatabaseServer", $saved)) {
+			array_push($file_array, "\n" . "configDatabaseServer: " . $this->configDatabaseServer);
+		}
+		if (!in_array("configDatabasePort", $saved)) {
+			array_push($file_array, "\n" . "configDatabasePort: " . $this->configDatabasePort);
+		}
+		if (!in_array("configDatabaseName", $saved)) {
+			array_push($file_array, "\n" . "configDatabaseName: " . $this->configDatabaseName);
+		}
+		if (!in_array("configDatabaseUser", $saved)) {
+			array_push($file_array, "\n" . "configDatabaseUser: " . $this->configDatabaseUser);
+		}
+		if (!in_array("configDatabasePassword", $saved)) {
+			array_push($file_array, "\n" . "configDatabasePassword: " . $this->configDatabasePassword);
+		}
+
 		$file = @fopen($this->conffile, "w");
 		if ($file) {
 			for ($i = 0; $i < sizeof($file_array); $i++) {
