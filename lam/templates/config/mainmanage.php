@@ -92,6 +92,27 @@ $errors = array();
 $messages = array();
 // check if submit button was pressed
 if (isset($_POST['submitFormData'])) {
+    // set database
+    $cfg->configDatabaseType = $_POST['configDatabaseType'];
+	$cfg->configDatabaseServer = $_POST['configDatabaseServer'];
+	$cfg->configDatabasePort = $_POST['configDatabasePort'];
+	$cfg->configDatabaseName = $_POST['configDatabaseName'];
+	$cfg->configDatabaseUser = $_POST['configDatabaseUser'];
+	$cfg->configDatabasePassword = $_POST['configDatabasePassword'];
+	if ($cfg->configDatabaseType === LAMCfgMain::DATABASE_MYSQL) {
+		if (empty($cfg->configDatabaseServer) || !get_preg($cfg->configDatabaseServer, 'hostname')) {
+			$errors[] = _('Please enter a valid database host name.');
+		}
+		if (empty($cfg->configDatabaseName)) {
+			$errors[] = _('Please enter a valid database name.');
+		}
+		if (empty($cfg->configDatabaseUser)) {
+			$errors[] = _('Please enter a valid database user.');
+		}
+		if (empty($cfg->configDatabasePassword)) {
+			$errors[] = _('Please enter a valid database password.');
+		}
+    }
 	// set master password
 	if (isset($_POST['masterpassword']) && ($_POST['masterpassword'] != "")) {
 		if ($_POST['masterpassword'] && $_POST['masterpassword2'] && ($_POST['masterpassword'] == $_POST['masterpassword2'])) {

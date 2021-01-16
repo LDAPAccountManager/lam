@@ -7,6 +7,8 @@ use LAM\PDF\PDFStructureWriter;
 use LAMCfgMain;
 use LAMConfig;
 use LAMException;
+use PDO;
+use PDOException;
 use selfServiceProfile;
 use function LAM\PDF\getAvailableLogos;
 use function LAM\PDF\getPDFStructures;
@@ -24,7 +26,7 @@ use function LAM\PROFILES\saveAccountProfile;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2020  Roland Gruber
+  Copyright (C) 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -685,6 +687,61 @@ class ImporterStep {
 	 */
 	public function getSubSteps() {
 		return $this->subSteps;
+	}
+
+}
+
+/**
+ * Manages the configuration persistence.
+ *
+ * @package LAM\PERSISTENCE
+ */
+class ConfigurationDatabase {
+
+	private $cfgMain;
+
+	/**
+	 * Constructor
+	 *
+	 * @param LAMCfgMain $cfgMain main configuration
+	 */
+	public function __construct(LAMCfgMain $cfgMain) {
+		$this->cfgMain = $cfgMain;
+	}
+
+	/**
+	 * Checks if the database connection is ok.
+	 *
+	 * @throws PDOException error opening connection to database
+	 */
+	public function checkConnection() {
+		if ($this->cfgMain->configDatabaseType === LAMCfgMain::DATABASE_FILE_SYSTEM) {
+			return;
+		}
+		$pdo = $this->getPdo();
+		// TODO init and upgrade DB
+	}
+
+	/**
+	 * Returns the PDO to read and write data.
+	 *
+	 * @return PDO PDO
+	 * @throws PDOException error opening connection to database
+	 */
+	public function getPdo() : PDO {
+		$url = $this->getPdoUrl();
+		return new PDO($url, $this->cfgMain->configDatabaseUser, $this->cfgMain->configDatabasePassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+	}
+
+	/**
+	 * Builds the PDO URL.
+	 *
+	 * @return string PDO URL
+	 */
+	private function getPdoUrl() : string {
+		$portConf = empty($this->cfgMain->configDatabasePort) ? '' : ';port=' . $this->cfgMain->configDatabasePort;
+		return 'mysql:host=' . $this->cfgMain->configDatabaseServer . $portConf . ';dbname=' . $this->cfgMain->configDatabaseName;
+
 	}
 
 }

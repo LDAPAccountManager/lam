@@ -186,7 +186,7 @@ function display_LoginPage($licenseValidator, $error_message, $errorDetails = nu
 	$cfgMain = $_SESSION["cfgMain"];
 	logNewMessage(LOG_DEBUG, "Display login page");
 	// generate 256 bit key and initialization vector for user/passwd-encryption
-	if(function_exists('openssl_random_pseudo_bytes') && ($cfgMain->encryptSession == 'true')) {
+	if (function_exists('openssl_random_pseudo_bytes') && ($cfgMain->encryptSession == 'true')) {
 		$key = openssl_random_pseudo_bytes(32);
 		$iv = openssl_random_pseudo_bytes(16);
 		// save both in cookie
@@ -220,46 +220,8 @@ function display_LoginPage($licenseValidator, $error_message, $errorDetails = nu
 	if (isLAMProVersion() && $licenseValidator->isEvaluationLicense()) {
 		StatusMessage('INFO', _('Evaluation Licence'));
 	}
-	?>
+	displayLoginHeader();
 
-		<table border=0 width="100%" class="lamHeader ui-corner-all">
-			<tr>
-				<td align="left" height="30">
-					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">
-                        <span class="hide-on-tablet">&nbsp;</span>
-                        <span class="hide-on-mobile">
-                            <?php echo getLAMVersionText(); ?>
-                        </span>
-					</a>
-					<span class="hide-for-small">
-						<a href="http://www.ldap-account-manager.org/lamcms/lamPro"> <?php if (!isLAMProVersion()) { echo _("Want more features? Get LAM Pro!");} ?> </a>
-					</span>
-				</td>
-				<td align="right" height="30">
-					<a class="margin-right5" href="./config/index.php">
-                        <IMG alt="configuration" src="../graphics/tools.png">&nbsp;<span class="hide-for-small"><?php echo _("LAM configuration") ?></span>
-                    </a>
-                    <?php
-                    if (is_dir(__DIR__ . '/../docs/manual')) {
-                    ?>
-                        <span class="hide-on-mobile">&nbsp;&nbsp;</span>
-                        <a target="_blank" href="../docs/manual/index.html">
-                            <img class="align-middle" width="16" height="16" alt="help" src="../graphics/help.png">
-                            <span class="hide-on-tablet">&nbsp;</span>
-                            <span class="hide-on-mobile">
-                                <?php echo _("Help") ?>&nbsp;
-                            </span>
-                        </a>
-                    <?php
-                    }
-                    ?>
-				</td>
-			</tr>
-		</table>
-
-		<br>
-
-		<?php
 		if (!empty($config_object)) {
 			// check extensions
 			$extList = getRequiredExtensions();
@@ -497,6 +459,50 @@ function display_LoginPage($licenseValidator, $error_message, $errorDetails = nu
 	</body>
 </html>
 <?php
+}
+
+/**
+ * Displays the header on the login page.
+ */
+function displayLoginHeader() : void {
+    ?>
+		<table border=0 width="100%" class="lamHeader ui-corner-all">
+			<tr>
+				<td align="left" height="30">
+					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">
+                        <span class="hide-on-tablet">&nbsp;</span>
+                        <span class="hide-on-mobile">
+                            <?php echo getLAMVersionText(); ?>
+                        </span>
+					</a>
+					<span class="hide-for-small">
+						<a href="http://www.ldap-account-manager.org/lamcms/lamPro"> <?php if (!isLAMProVersion()) { echo _("Want more features? Get LAM Pro!");} ?> </a>
+					</span>
+				</td>
+				<td align="right" height="30">
+					<a class="margin-right5" href="./config/index.php">
+                        <IMG alt="configuration" src="../graphics/tools.png">&nbsp;<span class="hide-for-small"><?php echo _("LAM configuration") ?></span>
+                    </a>
+                    <?php
+                    if (is_dir(__DIR__ . '/../docs/manual')) {
+                    ?>
+                        <span class="hide-on-mobile">&nbsp;&nbsp;</span>
+                        <a target="_blank" href="../docs/manual/index.html">
+                            <img class="align-middle" width="16" height="16" alt="help" src="../graphics/help.png">
+                            <span class="hide-on-tablet">&nbsp;</span>
+                            <span class="hide-on-mobile">
+                                <?php echo _("Help") ?>&nbsp;
+                            </span>
+                        </a>
+                    <?php
+                    }
+                    ?>
+				</td>
+			</tr>
+		</table>
+
+		<br>
+    <?php
 }
 
 // checking if the submitted username/password is correct.

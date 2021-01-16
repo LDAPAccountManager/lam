@@ -1,8 +1,14 @@
 <?php
+namespace LAM\ENVIRONMENT_CHECK;
+use Exception;
+use LAM\PERSISTENCE\ConfigurationDatabase;
+use LAMCfgMain;
+use function LAM\LOGIN\displayLoginHeader;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2020  Roland Gruber
+  Copyright (C) 2010 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -34,6 +40,9 @@ include_once(__DIR__ . "/../lib/status.inc");
 
 /** config */
 include_once(__DIR__ . "/../lib/config.inc");
+
+/** persistence */
+include_once(__DIR__ . "/../lib/persistence.inc");
 
 // check if PHP >= 7.2
 if (version_compare(phpversion(), '7.2.0') < 0) {
@@ -131,22 +140,37 @@ $mainConfig = new LAMCfgMain();
 if (!$mainConfig->isConfigFileExisting() && !$mainConfig->installSampleConfig()) {
 	$criticalErrors[] = array("ERROR", "The main config file (config.cfg) does not exist.", "Please see the manual for installation instructions.");
 }
-// stop login if critical errors occurred
-if (sizeof($criticalErrors) > 0) {
+$mainConfig = new LAMCfgMain();
+$configurationErrors = array();
+try {
+	$configurationDatabase = new ConfigurationDatabase($mainConfig);
+	$configurationDatabase->checkConnection();
+}
+catch (Exception $e) {
+	logNewMessage(LOG_ERR, 'Unable to connect to configuration database: ' . $e->getMessage());
+	$configurationErrors[] = array('ERROR', _('Unable to connect to configuration database.'));
+}
+// stop login if errors occurred
+if (!empty($criticalErrors) || !empty($configurationErrors)) {
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
 	echo "<html>\n<head>\n";
 	echo "<meta name=\"robots\" content=\"noindex, nofollow\">\n";
 	echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n";
-	echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
+	echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n";
+	echo "<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
 	printHeaderContents('LDAP Account Manager', '..');
-	echo "</head><body>\n";
-	for ($i = 0; $i < sizeof($criticalErrors); $i++) {
-		call_user_func_array("StatusMessage", $criticalErrors[$i]);
+	echo "</head><body class=\"admin\">\n";
+	if (empty($criticalErrors)) {
+		displayLoginHeader();
+	}
+	foreach ($criticalErrors as $criticalError) {
+		call_user_func_array("StatusMessage", $criticalError);
+		echo "<br><br>";
+	}
+	foreach ($configurationErrors as $configurationError) {
+		call_user_func_array("StatusMessage", $configurationError);
 		echo "<br><br>";
 	}
 	echo "</body></html>";
 	exit();
 }
-
-
-?>
