@@ -6,7 +6,7 @@ use LAM\TYPES\ConfiguredType;
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-    Copyright (C) 2005 - 2020  Roland Gruber
+    Copyright (C) 2005 - 2021  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by

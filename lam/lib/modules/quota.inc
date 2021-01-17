@@ -6,7 +6,7 @@ use \LAM\PDF\PDFTableRow;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2007 - 2020  Roland Gruber
+                2007 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -192,7 +192,13 @@ class quota extends baseModule {
 			$server = $lamdaemonServer->getServer();
 			// get quotas
 			$remote = new \LAM\REMOTE\Remote();
-			$remote->connect($lamdaemonServer);
+			try {
+				$remote->connect($lamdaemonServer);
+			}
+			catch (LAMException $e) {
+				logNewMessage(LOG_ERR, $e->getMessage() . ' ' . $e->getTitle());
+				continue;
+			}
 			$quotas = $remote->execute(implode(self::$SPLIT_DELIMITER, array($userName, "quota", "get", $this->get_scope())));
 			$remote->disconnect();
 			if (empty($quotas)) {
@@ -407,7 +413,13 @@ class quota extends baseModule {
 			}
 			$remote = new \LAM\REMOTE\Remote();
 			$remoteServer = $_SESSION['config']->getScriptServerByName($server);
-			$remote->connect($remoteServer);
+			try {
+				$remote->connect($remoteServer);
+			}
+			catch (LAMException $e) {
+				$messages[] = array('ERROR', $e->getTitle(), $e->getMessage());
+				continue;
+			}
 			$output = $remote->execute(implode(self::$SPLIT_DELIMITER, array($id, "quota", "set", $this->get_scope(), "$quotastring\n")));
 			if (strpos($output, 'ERROR,') === 0) {
 				$messages[] = array('ERROR', $server, _('Unable to set quota.'));
@@ -477,6 +489,7 @@ class quota extends baseModule {
 		if ($this->get_scope()=='group') {
 			$id = $this->getCn();
 		}
+		$messages = array();
 		// get list of lamdaemon servers
 		$servers = array_keys($this->quota);
 		for ($q = 0; $q < sizeof($servers); $q++) {
@@ -489,11 +502,17 @@ class quota extends baseModule {
 				}
 			$remote = new \LAM\REMOTE\Remote();
 			$remoteServer = $_SESSION['config']->getScriptServerByName($server);
-			$remote->connect($remoteServer);
+			try {
+				$remote->connect($remoteServer);
+			}
+			catch (LAMException $e) {
+				$messages[] = array('ERROR', $e->getTitle(), $e->getMessage());
+				continue;
+			}
 			$remote->execute(implode(self::$SPLIT_DELIMITER, array($id, "quota", "set", $this->get_scope(), "$quotastring\n")));
 			$remote->disconnect();
 		}
-		return array();
+		return $messages;
 	}
 
 	/**
@@ -717,7 +736,13 @@ class quota extends baseModule {
 			$id = $this->replaceSpecialChars($server);
 			// Get quotas
 			$remote = new \LAM\REMOTE\Remote();
-			$remote->connect($lamdaemonServer);
+			try {
+				$remote->connect($lamdaemonServer);
+			}
+			catch (LAMException $e) {
+				$return[] = array('ERROR', $e->getTitle(), $e->getMessage());
+				continue;
+			}
 			$quotas = $remote->execute(implode(self::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope())));
 			$remote->disconnect();
 			$dirs = explode(":", $quotas);
@@ -881,7 +906,13 @@ class quota extends baseModule {
 				$server = $lamdaemonServer->getServer();
 				// Get quotas
 				$remote = new \LAM\REMOTE\Remote();
-				$remote->connect($lamdaemonServer);
+				try {
+					$remote->connect($lamdaemonServer);
+				}
+				catch (LAMException $e) {
+					logNewMessage(LOG_ERR, $e->getTitle(), $e->getMessage());
+					continue;
+				}
 				$quotas = $remote->execute(implode(self::$SPLIT_DELIMITER, array("+", "quota", "get", $this->get_scope())));
 				$remote->disconnect();
 				$dirs = explode(":", $quotas);
@@ -1012,7 +1043,13 @@ class quota extends baseModule {
 					implode(',', $temp['accounts'][$name][$mountPoints[$m]]) . "\n"));
 				$remote = new \LAM\REMOTE\Remote();
 				$remoteServer = $_SESSION['config']->getScriptServerByName($server);
-				$remote->connect($remoteServer);
+				try {
+					$remote->connect($remoteServer);
+				}
+				catch (LAMException $e) {
+					$errors[] = array('ERROR', $e->getTitle(), $e->getMessage());
+					continue;
+				}
 				$result = $remote->execute($quotaString);
 				$remote->disconnect();
 				if (!empty($result)) {

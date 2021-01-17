@@ -4,7 +4,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2019  Roland Gruber
+                2005 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1602,7 +1602,13 @@ class sambaSamAccount extends baseModule implements passwordService {
 			$remoteServer = $remoteServers[$i];
 			$label = $remoteServer->getLabel();
 			$remote = new \LAM\REMOTE\Remote();
-			$remote->connect($remoteServer);
+			try {
+				$remote->connect($remoteServer);
+			}
+			catch (LAMException $e) {
+				$return->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
+				continue;
+			}
 			$result = $remote->execute(
 				implode(
 					self::$SPLIT_DELIMITER,
@@ -1672,7 +1678,13 @@ class sambaSamAccount extends baseModule implements passwordService {
 			$remoteServer = $remoteServers[$i];
 			if (isset($_POST['form_subpage_' . get_class($this) . '_homedir_create_' . $i])) {
 				$remote = new \LAM\REMOTE\Remote();
-				$remote->connect($remoteServer);
+				try {
+					$remote->connect($remoteServer);
+				}
+				catch (LAMException $e) {
+					$return[] = array('ERROR', $e->getTitle(), $e->getMessage());
+					continue;
+				}
 				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
@@ -1697,7 +1709,13 @@ class sambaSamAccount extends baseModule implements passwordService {
 			}
 			elseif (isset($_POST['form_subpage_' . get_class($this) . '_homedir_delete_' . $i])) {
 				$remote = new \LAM\REMOTE\Remote();
-				$remote->connect($remoteServer);
+				try {
+					$remote->connect($remoteServer);
+				}
+				catch (LAMException $e) {
+					$return[] = array('ERROR', $e->getTitle(), $e->getMessage());
+					continue;
+				}
 				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
