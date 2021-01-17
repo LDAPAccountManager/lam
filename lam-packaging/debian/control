@@ -14,7 +14,7 @@ Depends: php (>= 7), php-ldap,
  php-json, php-curl,
  php-zip, php-xml, php-gmp,
  libapache2-mod-php | libapache2-mod-fcgid | php-fpm,
- php-phpseclib (>= 2.0), php-monolog,
+ php-monolog,
  apache2 (>= 2.4.0) | httpd, fonts-dejavu, debconf (>= 0.2.26) | debconf-2.0, ${misc:Depends}
 Recommends: php-opcache
 Suggests: ldap-server, php-mcrypt, ldap-account-manager-lamdaemon, perl

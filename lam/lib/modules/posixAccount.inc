@@ -726,7 +726,13 @@ class posixAccount extends baseModule implements passwordService {
 					continue;
 				}
 				$remote = new \LAM\REMOTE\Remote();
-				$remote->connect($lamdaemonServer);
+				try {
+					$remote->connect($lamdaemonServer);
+				}
+				catch (LAMException $e) {
+					$messages[] = array('ERROR', $e->getTitle(), $e->getMessage());
+					continue;
+				}
 				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
@@ -757,7 +763,13 @@ class posixAccount extends baseModule implements passwordService {
 			&& ($this->orig[$homeDirAttr][0] != $this->attributes[$homeDirAttr][0])) {
 			foreach ($lamdaemonServerList as $lamdaemonServer) {
 				$remote = new \LAM\REMOTE\Remote();
-				$remote->connect($lamdaemonServer);
+				try {
+					$remote->connect($lamdaemonServer);
+				}
+				catch (LAMException $e) {
+					$messages[] = array('ERROR', $e->getTitle(), $e->getMessage());
+					continue;
+				}
 				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
@@ -784,7 +796,13 @@ class posixAccount extends baseModule implements passwordService {
 			&& ($this->orig['gidNumber'][0] != $this->attributes['gidNumber'][0])) {
 			foreach ($lamdaemonServerList as $lamdaemonServer) {
 				$remote = new \LAM\REMOTE\Remote();
-				$remote->connect($lamdaemonServer);
+				try {
+					$remote->connect($lamdaemonServer);
+				}
+				catch (LAMException $e) {
+					$messages[] = array('ERROR', $e->getTitle(), $e->getMessage());
+					continue;
+				}
 				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
@@ -1541,7 +1559,13 @@ class posixAccount extends baseModule implements passwordService {
 		for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
 			if (isset($_POST['form_subpage_' . get_class($this) . '_homedir_create_' . $i])) {
 				$remote = new \LAM\REMOTE\Remote();
-				$remote->connect($lamdaemonServers[$i]);
+				try {
+					$remote->connect($lamdaemonServers[$i]);
+				}
+				catch (LAMException $e) {
+					$return[] = array('ERROR', $e->getTitle(), $e->getMessage());
+					continue;
+				}
 				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
@@ -1567,7 +1591,13 @@ class posixAccount extends baseModule implements passwordService {
 			}
 			elseif (isset($_POST['form_subpage_' . get_class($this) . '_homedir_delete_' . $i])) {
 				$remote = new \LAM\REMOTE\Remote();
-				$remote->connect($lamdaemonServers[$i]);
+				try {
+					$remote->connect($lamdaemonServers[$i]);
+				}
+				catch (LAMException $e) {
+					$return[] = array('ERROR', $e->getTitle(), $e->getMessage());
+					continue;
+				}
 				$result = $remote->execute(
 					implode(
 						self::$SPLIT_DELIMITER,
@@ -1990,7 +2020,13 @@ class posixAccount extends baseModule implements passwordService {
 		for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
 			$label = $lamdaemonServers[$i]->getLabel();
 			$remote = new \LAM\REMOTE\Remote();
-			$remote->connect($lamdaemonServers[$i]);
+			try {
+				$remote->connect($lamdaemonServers[$i]);
+			}
+			catch (LAMException $e) {
+				$return->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
+				continue;
+			}
 			$result = $remote->execute(
 				implode(
 					self::$SPLIT_DELIMITER,

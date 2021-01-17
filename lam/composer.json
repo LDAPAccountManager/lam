@@ -16,6 +16,8 @@
     "phpmailer/phpmailer": "~6.1",
     "okta/jwt-verifier": "^1.0",
     "firebase/php-jwt": "^5.2",
-    "guzzlehttp/psr7": "^1.7"
+    "guzzlehttp/psr7": "^1.7",
+    "paragonie/random_compat": "^2.0",
+    "phpseclib/phpseclib": "^3.0"
   }
 }
