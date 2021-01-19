@@ -1,7 +1,7 @@
 /**
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2020  Roland Gruber
+  Copyright (C) 2003 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1548,19 +1548,19 @@ window.lam.webauthn.run = function(prefix, isSelfService) {
 		form.submit();
 		return;
 	});
-	const token = jQuery('#sec_token').val();
+	var token = jQuery('#sec_token').val();
 	// check for webauthn support
 	if (!navigator.credentials || (typeof(PublicKeyCredential) === "undefined")) {
 		jQuery('.webauthn-error').show();
 		return;
 	}
 
-	const data = {
+	var data = {
 			action: 'status',
 			jsonInput: '',
 			sec_token: token
 	};
-	const extraParam = isSelfService ? '&selfservice=true' : '';
+	var extraParam = isSelfService ? '&selfservice=true' : '';
 	jQuery.ajax({
 		url: prefix + 'misc/ajax.php?function=webauthn' + extraParam,
 		method: 'POST',
@@ -1568,13 +1568,13 @@ window.lam.webauthn.run = function(prefix, isSelfService) {
 	})
 	.done(function(jsonData) {
 		if (jsonData.action === 'register') {
-			const successCallback = function (publicKeyCredential) {
-				const form = jQuery("#2faform");
-				const response = btoa(JSON.stringify(publicKeyCredential));
+			var successCallback = function (publicKeyCredential) {
+				var form = jQuery("#2faform");
+				var response = btoa(JSON.stringify(publicKeyCredential));
 				form.append('<input type="hidden" name="sig_response" value="' + response + '"/>');
 				form.submit();
 			};
-			const errorCallback = function(error) {
+			var errorCallback = function(error) {
 				var errorDiv = jQuery('#generic-webauthn-error');
 				var buttonLabel = errorDiv.data('button');
 				var dialogTitle = errorDiv.data('title');
