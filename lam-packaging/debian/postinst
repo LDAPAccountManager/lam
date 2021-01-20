@@ -10,7 +10,7 @@ fi
 db_version 2.0 || [ $? -lt 30 ]
 
 # 3rd party libs
-phpThirdPartyLibs='phpseclib Monolog Psr'
+phpThirdPartyLibs='Monolog Psr'
 for phpThirdPartyLib in $phpThirdPartyLibs; do
 	if [ ! -L /usr/share/ldap-account-manager/lib/3rdParty/${phpThirdPartyLib} ] ; then
 		ln -s /usr/share/php/${phpThirdPartyLib} /usr/share/ldap-account-manager/lib/3rdParty/${phpThirdPartyLib}

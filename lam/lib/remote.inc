@@ -1,12 +1,14 @@
 <?php
 namespace LAM\REMOTE;
 use \LAMException;
-use \phpseclib\Net\SSH2;
-use \phpseclib\Crypt\RSA;
+use \phpseclib3\Net\SSH2;
+use \phpseclib3\Crypt\PublicKeyLoader;
+use \phpseclib3\Exception\NoKeyLoadedException;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2019  Roland Gruber
+  Copyright (C) 2017 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -32,6 +34,8 @@ use \phpseclib\Crypt\RSA;
 * @package modules
 */
 
+include_once __DIR__ . '/3rdParty/composer/autoload.php';
+
 /**
  * Runs remote commands.
  *
@@ -41,13 +45,6 @@ class Remote {
 
 	/** SSH2 server handle */
 	private $server = null;
-
-	/**
-	 * Constructor, include SSH library.
-	 */
-	public function __construct() {
-		$this->includeSshLibrary();
-	}
 
 	/**
 	* Sends commands to remote script.
@@ -66,6 +63,7 @@ class Remote {
 	 * Connects to the given SSH server.
 	 *
 	 * @param RemoteServerConfiguration $server server (e.g. localhost or localhost,1234)
+	 * @throws LAMException error connecting to remote server
 	 */
 	public function connect($server) {
 		if ($server === null) {
@@ -102,6 +100,7 @@ class Remote {
 	 *
 	 * @param SSH2 $handle SSH handle
 	 * @throws Exception login failed
+	 * @throws LAMException error on login
 	 */
 	private function loginSSH($handle) {
 		$username = $_SESSION['config']->getScriptUserName();
@@ -127,29 +126,15 @@ class Remote {
 		}
 		$login = @$handle->login($username, $password);
 		if (!$login) {
-			throw new LAMException(_("Unable to login to remote server!"));
+			$errors = $handle->getErrors();
+			if (!empty($errors)) {
+				$errors = implode(' ', $errors);
+			}
+			else {
+				$errors = null;
+			}
+			throw new LAMException(_("Unable to login to remote server!"), $errors);
 		}
-	}
-
-	/**
-	 * Include the SSH files.
-	 */
-	private function includeSshLibrary() {
-		$prefix = dirname(__FILE__) . '/3rdParty/phpseclib/';
-		require_once($prefix . 'Crypt/Base.php');
-		require_once($prefix . 'Crypt/Blowfish.php');
-		require_once($prefix . 'Crypt/Hash.php');
-		require_once($prefix . 'Crypt/Random.php');
-		require_once($prefix . 'Crypt/RC4.php');
-		require_once($prefix . 'Crypt/Rijndael.php');
-		require_once($prefix . 'Crypt/AES.php');
-		require_once($prefix . 'Crypt/RSA.php');
-		require_once($prefix . 'Crypt/DES.php');
-		require_once($prefix . 'Crypt/TripleDES.php');
-		require_once($prefix . 'Crypt/Twofish.php');
-		require_once($prefix . 'Math/BigInteger.php');
-		require_once($prefix . 'System/SSH/Agent.php');
-		require_once($prefix . 'Net/SSH2.php');
 	}
 
 	/**
@@ -158,22 +143,26 @@ class Remote {
 	 * @param string $keyPath file name
 	 * @param string $keyPassword password
 	 * @throws LAMException error loading key
-	 * @return \phpseclib\Crypt\RSA key object
+	 * @return \phpseclib3\Crypt\Common\AsymmetricKey key object
 	 */
 	public function loadKey($keyPath, $keyPassword) {
 		// use key authentication
 		if (!file_exists($keyPath) || !is_readable($keyPath)) {
 			throw new LAMException(sprintf(_("Unable to read %s."), htmlspecialchars($keyPath)));
 		}
-		$key = file_get_contents($keyPath);
-		$rsa = new RSA();
-		if (!empty($keyPassword)) {
-			$rsa->setPassword($keyPassword);
+		$keyData = file_get_contents($keyPath);
+		try {
+			if (empty($keyPassword)) {
+				return PublicKeyLoader::load($keyData);
+			}
+			else {
+				return PublicKeyLoader::load($keyData, $keyPassword);
+			}
 		}
-		if (!$rsa->loadKey($key)) {
+		catch (NoKeyLoadedException $e) {
+			logNewMessage(LOG_ERR, 'Unable to load key %s: %s', $keyPath, $e->getMessage());
 			throw new LAMException(sprintf(_("Unable to load key %s."), htmlspecialchars($keyPath)));
 		}
-		return $rsa;
 	}
 
 }

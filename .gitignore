@@ -9,3 +9,5 @@
 /lam/lib/3rdParty/composer/bin/
 /lam/ast.dump
 /lam/.phpdoc
+/.idea
+*~
