@@ -1,5 +1,6 @@
 <?php
 use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
+use LAM\PERSISTENCE\ConfigurationDatabase;
 use \LAM\REMOTE\RemoteServerConfiguration;
 /*
 
@@ -39,6 +40,8 @@ include_once "modules.inc";
 include_once "types.inc";
 /** 2-factor */
 include_once '2factor.inc';
+/** persistence */
+include_once 'persistence.inc';
 
 /**
  * Sets the environment variables for custom SSL CA certificates.
@@ -2827,6 +2830,12 @@ class LAMCfgMain {
 		'configDatabasePort', 'configDatabaseName', 'configDatabaseUser', 'configDatabasePassword'
 	);
 
+	/** persistence settings are always stored on local file system */
+	private $persistenceSettings = array(
+		'configDatabaseType', 'configDatabaseServer',
+		'configDatabasePort', 'configDatabaseName', 'configDatabaseUser', 'configDatabasePassword'
+	);
+
 	/**
 	* Loads preferences from config file
 	*
@@ -2854,9 +2863,12 @@ class LAMCfgMain {
 	 *
 	 * @return array config data
 	 */
-	public function exportData() {
+	public function exportData($skipPersistenceSettings = false): array {
 		$data = array();
 		foreach ($this->settings as $setting) {
+			if ($skipPersistenceSettings && in_array($setting, $this->persistenceSettings)) {
+				continue;
+			}
 			$data[$setting] = $this->$setting;
 		}
 		return $data;
@@ -2959,146 +2971,15 @@ class LAMCfgMain {
 	}
 
 	/**
-	* Saves preferences to config file config.cfg
-	*/
+	 * Saves the configuration to the persistence layer.
+	 */
 	public function save() {
-		if (is_file($this->conffile)) {
-			$file = fopen($this->conffile, "r");
-			$file_array = array();
-			// read config file
-			while (!feof($file)) {
-				array_push($file_array, fgets($file, 1024));
-			}
-			fclose($file);
-			// generate new configuration file
-			$saved = array();
-			for ($i = 0; $i < sizeof($file_array); $i++) {
-				$line = trim($file_array[$i]);
-				if (($line == "")||($line[0] == "#")) {
-					continue; // ignore comments and empty lines
-				}
-				// search keywords
-				for ($k = 0; $k < sizeof($this->settings); $k++) {
-					$keyword = $this->settings[$k];
-					$keylen = strlen($keyword);
-					if (strtolower(substr($line, 0, $keylen + 1)) == strtolower($keyword . ":")) {
-						$file_array[$i] = $keyword . ": " . $this->$keyword . "\n";
-						$saved[] = $keyword;	// mark keyword as saved
-						break;
-					}
-				}
-			}
-		}
-		// check if we have to add new entries (e.g. if user upgraded LAM and has an old config file)
-		if (!in_array("password", $saved)) {
-			array_push($file_array, "\n\n# password to add/delete/rename configuration profiles\n" . "password: " . $this->password);
-		}
-		if (!in_array("default", $saved)) {
-			array_push($file_array, "\n\n# default profile, without \".conf\"\n" . "default: " . $this->default);
-		}
-		if (!in_array("sessionTimeout", $saved)) {
-			array_push($file_array, "\n\n# session timeout in minutes\n" . "sessionTimeout: " . $this->sessionTimeout);
-		}
-		if (!in_array("logLevel", $saved)) {
-			array_push($file_array, "\n\n# log level\n" . "logLevel: " . $this->logLevel);
-		}
-		if (!in_array("logDestination", $saved)) {
-			array_push($file_array, "\n\n# log destination\n" . "logDestination: " . $this->logDestination);
-		}
-		if (!in_array("allowedHosts", $saved)) {
-			array_push($file_array, "\n\n# list of hosts which may access LAM\n" . "allowedHosts: " . $this->allowedHosts);
-		}
-		if (!in_array("allowedHostsSelfService", $saved)) {
-			array_push($file_array, "\n\n# list of hosts which may access LAM Pro self service\n" . "allowedHostsSelfService: " . $this->allowedHostsSelfService);
-		}
-		if (!in_array("encryptSession", $saved)) {
-			array_push($file_array, "\n\n# encrypt session data\n" . "encryptSession: " . $this->encryptSession);
-		}
-		if (!in_array("passwordMinLength", $saved)) {
-			array_push($file_array, "\n\n# Password: minimum password length\n" . "passwordMinLength: " . $this->passwordMinLength);
-		}
-		if (!in_array("passwordMinUpper", $saved)) {
-			array_push($file_array, "\n\n# Password: minimum uppercase characters\n" . "passwordMinUpper: " . $this->passwordMinUpper);
-		}
-		if (!in_array("passwordMinLower", $saved)) {
-			array_push($file_array, "\n\n# Password: minimum lowercase characters\n" . "passwordMinLower: " . $this->passwordMinLower);
-		}
-		if (!in_array("passwordMinNumeric", $saved)) {
-			array_push($file_array, "\n\n# Password: minimum numeric characters\n" . "passwordMinNumeric: " . $this->passwordMinNumeric);
-		}
-		if (!in_array("passwordMinSymbol", $saved)) {
-			array_push($file_array, "\n\n# Password: minimum symbolic characters\n" . "passwordMinSymbol: " . $this->passwordMinSymbol);
-		}
-		if (!in_array("passwordMinClasses", $saved)) {
-			array_push($file_array, "\n\n# Password: minimum character classes (0-4)\n" . "passwordMinClasses: " . $this->passwordMinClasses);
-		}
-		if (!in_array("checkedRulesCount", $saved)) {
-			array_push($file_array, "\n\n# Password: checked rules\n" . "checkedRulesCount: " . $this->checkedRulesCount);
-		}
-		if (!in_array("passwordMustNotContain3Chars", $saved)) {
-			array_push($file_array, "\n\n# Password: must not contain part of user name\n" . "passwordMustNotContain3Chars: " . $this->passwordMustNotContain3Chars);
-		}
-		if (!in_array("passwordMustNotContainUser", $saved)) {
-			array_push($file_array, "\n\n# Password: must not contain user name\n" . "passwordMustNotContainUser: " . $this->passwordMustNotContainUser);
-		}
-		if (!in_array("externalPwdCheckUrl", $saved)) {
-			array_push($file_array, "\n\n" . "externalPwdCheckUrl: " . $this->externalPwdCheckUrl);
-		}
-		if (!in_array("errorReporting", $saved)) {
-			array_push($file_array, "\n\n# PHP error reporting (default/system)\n" . "errorReporting: " . $this->errorReporting);
-		}
-		if (!in_array("license", $saved)) {
-			array_push($file_array, "\n\n# License\n" . "license: " . $this->license);
-		}
-		if (!in_array("licenseEmailFrom", $saved)) {
-			array_push($file_array, "\n" . "licenseEmailFrom: " . $this->licenseEmailFrom);
-		}
-		if (!in_array("licenseEmailTo", $saved)) {
-			array_push($file_array, "\n" . "licenseEmailTo: " . $this->licenseEmailTo);
-		}
-		if (!in_array("licenseEmailDateSent", $saved)) {
-			array_push($file_array, "\n" . "licenseEmailDateSent: " . $this->licenseEmailDateSent);
-		}
-		if (!in_array("licenseWarningType", $saved)) {
-			array_push($file_array, "\n" . "licenseWarningType: " . $this->licenseWarningType);
-		}
-		if (!in_array("mailServer", $saved)) {
-			array_push($file_array, "\n" . "mailServer: " . $this->mailServer);
-		}
-		if (!in_array("mailUser", $saved)) {
-			array_push($file_array, "\n" . "mailUser: " . $this->mailUser);
-		}
-		if (!in_array("mailPassword", $saved)) {
-			array_push($file_array, "\n" . "mailPassword: " . $this->mailPassword);
-		}
-		if (!in_array("configDatabaseType", $saved)) {
-			array_push($file_array, "\n" . "configDatabaseType: " . $this->configDatabaseType);
-		}
-		if (!in_array("configDatabaseServer", $saved)) {
-			array_push($file_array, "\n" . "configDatabaseServer: " . $this->configDatabaseServer);
-		}
-		if (!in_array("configDatabasePort", $saved)) {
-			array_push($file_array, "\n" . "configDatabasePort: " . $this->configDatabasePort);
-		}
-		if (!in_array("configDatabaseName", $saved)) {
-			array_push($file_array, "\n" . "configDatabaseName: " . $this->configDatabaseName);
-		}
-		if (!in_array("configDatabaseUser", $saved)) {
-			array_push($file_array, "\n" . "configDatabaseUser: " . $this->configDatabaseUser);
-		}
-		if (!in_array("configDatabasePassword", $saved)) {
-			array_push($file_array, "\n" . "configDatabasePassword: " . $this->configDatabasePassword);
-		}
-
-		$file = @fopen($this->conffile, "w");
-		if ($file) {
-			for ($i = 0; $i < sizeof($file_array); $i++) {
-				fputs($file, $file_array[$i]);
-			}
-			fclose($file);
+		if ($this->configDatabaseType === self::DATABASE_MYSQL) {
+			$this->saveLocal(true);
+			$this->saveDb();
 		}
 		else {
-			StatusMessage("ERROR", "", _("Cannot open config file!") . " (" . $this->conffile . ")");
+			$this->saveLocal(false);
 		}
 		// store SSL certificate
 		if ($this->uploadedSSLCaCert != null) {
@@ -3120,6 +3001,179 @@ class LAMCfgMain {
 			if (!$result) {
 				StatusMessage("ERROR", _("Cannot write certificate file. Please check the permissions of config/serverCerts.pem."));
 			}
+		}
+	}
+
+	/**
+	 * Saves the config data to the database.
+	 */
+	private function saveDb() : void {
+		$configDb = new ConfigurationDatabase($this);
+		$pdo = $configDb->getPdo();
+		$json = json_encode($this->exportData(true));
+		$nameKey = 'config';
+		$pdo->beginTransaction();
+		// remove existing data
+		$sql = 'delete from ' . ConfigurationDatabase::TABLE_MAIN_CONFIG . ' where name = "' . $nameKey . '";';
+		$pdo->exec($sql);
+		// new data
+		$stmt = $pdo->prepare('insert into ' . ConfigurationDatabase::TABLE_MAIN_CONFIG . ' (name, value) VALUES (?, ?)');
+		$stmt->execute(array($nameKey, $json));
+		$pdo->commit();
+	}
+
+	/**
+	 * Saves preferences to config file config.cfg
+	 *
+	 * @param bool $persistenceOnly store only persistence related data
+	 */
+	public function saveLocal(bool $persistenceOnly) : void {
+		if (is_file($this->conffile)) {
+			$file = fopen($this->conffile, "r");
+			$file_array = array();
+			// read config file
+			while (!feof($file)) {
+				$configLine = fgets($file, 1024);
+				if (($configLine === "") || ($configLine === "\n") || ($configLine[0] == "#")) {
+					continue; // ignore comments and empty lines
+				}
+				array_push($file_array, $configLine);
+			}
+			fclose($file);
+			// generate new configuration file
+			$saved = array();
+			for ($i = 0; $i < sizeof($file_array); $i++) {
+				$line = trim($file_array[$i]);
+				if (($line == "")||($line[0] == "#")) {
+					continue; // ignore comments and empty lines
+				}
+				// search keywords
+				for ($k = 0; $k < sizeof($this->settings); $k++) {
+					$keyword = $this->settings[$k];
+					if ($persistenceOnly && !in_array($keyword, $this->persistenceSettings)) {
+						continue;
+					}
+					$keylen = strlen($keyword);
+					if (strtolower(substr($line, 0, $keylen + 1)) == strtolower($keyword . ":")) {
+						$file_array[$i] = $keyword . ": " . $this->$keyword . "\n";
+						$saved[] = $keyword;	// mark keyword as saved
+						break;
+					}
+				}
+			}
+		}
+		if (!$persistenceOnly) {
+			// check if we have to add new entries (e.g. if user upgraded LAM and has an old config file)
+			if (!in_array("password", $saved)) {
+				array_push($file_array, "password: " . $this->password . "\n");
+			}
+			if (!in_array("default", $saved)) {
+				array_push($file_array, "default: " . $this->default . "\n");
+			}
+			if (!in_array("sessionTimeout", $saved)) {
+				array_push($file_array, "sessionTimeout: " . $this->sessionTimeout . "\n");
+			}
+			if (!in_array("logLevel", $saved)) {
+				array_push($file_array, "logLevel: " . $this->logLevel . "\n");
+			}
+			if (!in_array("logDestination", $saved)) {
+				array_push($file_array, "logDestination: " . $this->logDestination . "\n");
+			}
+			if (!in_array("allowedHosts", $saved)) {
+				array_push($file_array, "allowedHosts: " . $this->allowedHosts . "\n");
+			}
+			if (!in_array("allowedHostsSelfService", $saved)) {
+				array_push($file_array, "allowedHostsSelfService: " . $this->allowedHostsSelfService . "\n");
+			}
+			if (!in_array("encryptSession", $saved)) {
+				array_push($file_array, "encryptSession: " . $this->encryptSession . "\n");
+			}
+			if (!in_array("passwordMinLength", $saved)) {
+				array_push($file_array, "passwordMinLength: " . $this->passwordMinLength . "\n");
+			}
+			if (!in_array("passwordMinUpper", $saved)) {
+				array_push($file_array, "passwordMinUpper: " . $this->passwordMinUpper . "\n");
+			}
+			if (!in_array("passwordMinLower", $saved)) {
+				array_push($file_array, "passwordMinLower: " . $this->passwordMinLower . "\n");
+			}
+			if (!in_array("passwordMinNumeric", $saved)) {
+				array_push($file_array, "passwordMinNumeric: " . $this->passwordMinNumeric . "\n");
+			}
+			if (!in_array("passwordMinSymbol", $saved)) {
+				array_push($file_array, "passwordMinSymbol: " . $this->passwordMinSymbol . "\n");
+			}
+			if (!in_array("passwordMinClasses", $saved)) {
+				array_push($file_array, "passwordMinClasses: " . $this->passwordMinClasses . "\n");
+			}
+			if (!in_array("checkedRulesCount", $saved)) {
+				array_push($file_array, "checkedRulesCount: " . $this->checkedRulesCount . "\n");
+			}
+			if (!in_array("passwordMustNotContain3Chars", $saved)) {
+				array_push($file_array, "passwordMustNotContain3Chars: " . $this->passwordMustNotContain3Chars . "\n");
+			}
+			if (!in_array("passwordMustNotContainUser", $saved)) {
+				array_push($file_array, "passwordMustNotContainUser: " . $this->passwordMustNotContainUser . "\n");
+			}
+			if (!in_array("externalPwdCheckUrl", $saved)) {
+				array_push($file_array, "externalPwdCheckUrl: " . $this->externalPwdCheckUrl . "\n");
+			}
+			if (!in_array("errorReporting", $saved)) {
+				array_push($file_array, "errorReporting: " . $this->errorReporting . "\n");
+			}
+			if (!in_array("license", $saved)) {
+				array_push($file_array, "license: " . $this->license . "\n");
+			}
+			if (!in_array("licenseEmailFrom", $saved)) {
+				array_push($file_array, "licenseEmailFrom: " . $this->licenseEmailFrom . "\n");
+			}
+			if (!in_array("licenseEmailTo", $saved)) {
+				array_push($file_array, "licenseEmailTo: " . $this->licenseEmailTo . "\n");
+			}
+			if (!in_array("licenseEmailDateSent", $saved)) {
+				array_push($file_array, "licenseEmailDateSent: " . $this->licenseEmailDateSent . "\n");
+			}
+			if (!in_array("licenseWarningType", $saved)) {
+				array_push($file_array, "licenseWarningType: " . $this->licenseWarningType . "\n");
+			}
+			if (!in_array("mailServer", $saved)) {
+				array_push($file_array, "mailServer: " . $this->mailServer . "\n");
+			}
+			if (!in_array("mailUser", $saved)) {
+				array_push($file_array, "mailUser: " . $this->mailUser . "\n");
+			}
+			if (!in_array("mailPassword", $saved)) {
+				array_push($file_array, "mailPassword: " . $this->mailPassword . "\n");
+			}
+		}
+		if (!in_array("configDatabaseType", $saved)) {
+			array_push($file_array, "configDatabaseType: " . $this->configDatabaseType . "\n");
+		}
+		if (!in_array("configDatabaseServer", $saved)) {
+			array_push($file_array, "configDatabaseServer: " . $this->configDatabaseServer . "\n");
+		}
+		if (!in_array("configDatabasePort", $saved)) {
+			array_push($file_array, "configDatabasePort: " . $this->configDatabasePort . "\n");
+		}
+		if (!in_array("configDatabaseName", $saved)) {
+			array_push($file_array, "configDatabaseName: " . $this->configDatabaseName . "\n");
+		}
+		if (!in_array("configDatabaseUser", $saved)) {
+			array_push($file_array, "configDatabaseUser: " . $this->configDatabaseUser . "\n");
+		}
+		if (!in_array("configDatabasePassword", $saved)) {
+			array_push($file_array, "configDatabasePassword: " . $this->configDatabasePassword . "\n");
+		}
+
+		$file = @fopen($this->conffile, "w");
+		if ($file) {
+			for ($i = 0; $i < sizeof($file_array); $i++) {
+				fputs($file, $file_array[$i]);
+			}
+			fclose($file);
+		}
+		else {
+			StatusMessage("ERROR", "", _("Cannot open config file!") . " (" . $this->conffile . ")");
 		}
 	}
 

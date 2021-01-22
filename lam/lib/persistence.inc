@@ -26,7 +26,7 @@ use function LAM\PROFILES\saveAccountProfile;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2021  Roland Gruber
+  Copyright (C) 2020 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -698,6 +698,15 @@ class ImporterStep {
  */
 class ConfigurationDatabase {
 
+	/** table for schema versions */
+	const TABLE_SCHEMA_VERSIONS = 'schema_versions';
+	/** row name for system schema version */
+	const ROW_VERSION_SYSTEM = 'system';
+	/** table for main configuration */
+	const TABLE_MAIN_CONFIG = 'main_configuration';
+	/** row name for main config schema version */
+	const ROW_VERSION_MAIN_CONFIG = 'main_configuration';
+
 	private $cfgMain;
 
 	/**
@@ -719,7 +728,7 @@ class ConfigurationDatabase {
 			return;
 		}
 		$pdo = $this->getPdo();
-		// TODO init and upgrade DB
+		$this->updateSchema($pdo);
 	}
 
 	/**
@@ -741,7 +750,61 @@ class ConfigurationDatabase {
 	private function getPdoUrl() : string {
 		$portConf = empty($this->cfgMain->configDatabasePort) ? '' : ';port=' . $this->cfgMain->configDatabasePort;
 		return 'mysql:host=' . $this->cfgMain->configDatabaseServer . $portConf . ';dbname=' . $this->cfgMain->configDatabaseName;
+	}
 
+	/**
+	 * Updates the schema to latest version.
+	 *
+	 * @param PDO $pdo PDO
+	 */
+	private function updateSchema(PDO $pdo) {
+		// initial system schema
+		if (!$this->tableExists($pdo, self::TABLE_SCHEMA_VERSIONS)) {
+			$this->createInitialSchema($pdo);
+		}
+
+	}
+
+	/**
+	 * Checks if the given table name exists.
+	 *
+	 * @param PDO $pdo PDO
+	 * @param string $tableName table name
+	 * @return bool table exists
+	 */
+	private function tableExists(PDO $pdo, string $tableName): bool {
+		try {
+			$result = $pdo->query("SELECT 1 FROM $tableName LIMIT 1");
+			return ($result === false) ? false : true;
+		} catch (PDOException $e) {
+			return false;
+		}
+	}
+
+	/**
+	 * Creates the initial schema.
+	 *
+	 * @param PDO $pdo PDO
+	 */
+	private function createInitialSchema(PDO $pdo): void {
+		logNewMessage(LOG_NOTICE, 'Create initial config database...');
+		// schema versions
+		$sql = 'create table ' . self::TABLE_SCHEMA_VERSIONS . '('
+			. 'name VARCHAR(250) PRIMARY KEY,'
+			. 'version INT(3) NOT NULL'
+			. ');';
+		$pdo->exec($sql);
+		$sql = 'insert into ' . self::TABLE_SCHEMA_VERSIONS . ' (name, version) VALUES ("' . self::ROW_VERSION_SYSTEM . '", 1);';
+		$pdo->exec($sql);
+		// main configuration
+		$sql = 'create table ' . self::TABLE_MAIN_CONFIG . '('
+			. 'name VARCHAR(250) PRIMARY KEY,'
+			. 'value LONGTEXT NOT NULL'
+			. ');';
+		$pdo->exec($sql);
+		$sql = 'insert into ' . self::TABLE_SCHEMA_VERSIONS . ' (name, version) VALUES ("' . self::ROW_VERSION_MAIN_CONFIG . '", 1);';
+		$pdo->exec($sql);
+		logNewMessage(LOG_NOTICE, 'Created initial config database.');
 	}
 
 }
