@@ -11,6 +11,7 @@ use \htmlImage;
 use \htmlSubTitle;
 use \Exception;
 use \htmlResponsiveRow;
+use LAMException;
 
 /*
 
@@ -250,6 +251,11 @@ function lamRunTestSuite($serverName, $serverTitle, $testQuota, $container) {
 			$remote->connect($remoteServer);
 			$container->add(new htmlImage($okImage), 2);
 			$container->add(new htmlOutputText(_("SSH connection established.")), 12, 6);
+		}
+		catch (LAMException $e) {
+			$container->add(new htmlImage($failImage), 2);
+			$container->add(new htmlOutputText($e->getTitle() . ' ' . $e->getMessage()), 12, 6);
+			$stopTest = true;
 		}
 		catch (Exception $e) {
 			$container->add(new htmlImage($failImage), 2);
