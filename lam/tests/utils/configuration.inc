@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2014 - 2016  Roland Gruber
+  Copyright (C) 2014 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -30,12 +30,12 @@ function testCreateDefaultConfig() {
 	$cfgMain = new LAMCfgMain();
 	$cfgMain->logDestination = 'NONE';
 	$_SESSION['cfgMain'] = $cfgMain;
-	$cfgPath = dirname(__FILE__) . '/../../config/phpunit.conf';
+	$cfgPath = dirname(__FILE__) . '/../../config/d_LAMConfigTest.conf';
 	if (file_exists($cfgPath)) {
 		unlink($cfgPath);
 	}
 	touch($cfgPath);
-	$config = new LAMConfig('phpunit');
+	$config = new LAMConfig('d_LAMConfigTest');
 	$_SESSION['config'] = $config;
 	$_SESSION['language'] = 'en_GB.utf8:UTF-8:English (Great Britain)';
 }

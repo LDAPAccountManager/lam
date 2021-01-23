@@ -1,6 +1,8 @@
 <?php
 namespace LAM\LOGIN\WEBAUTHN;
 
+use LAMCfgMain;
+use LAMConfig;
 use \PHPUnit\Framework\TestCase;
 use \Webauthn\PublicKeyCredentialDescriptor;
 use \Webauthn\PublicKeyCredentialSource;
@@ -38,7 +40,7 @@ require_once __DIR__ . '/../../lib/webauthn.inc';
 class WebauthnManagerTest extends TestCase {
 
 	/**
-	 * @var \PHPUnit_Framework_MockObject_MockObject|PublicKeyCredentialSourceRepositorySQLiteNoSave
+	 * @var \PHPUnit_Framework_MockObject_MockObject|PublicKeyCredentialSourceRepositorySQLite
 	 */
 	private $database;
 	/**
@@ -48,11 +50,13 @@ class WebauthnManagerTest extends TestCase {
 
 	protected function setup(): void {
 		$this->database = $this
-			->getMockBuilder(PublicKeyCredentialSourceRepositorySQLiteNoSave::class)
-			->onlyMethods(array('findOneByCredentialId', 'findAllForUserEntity', 'saveCredentialSource'))
+			->getMockBuilder(PublicKeyCredentialSourceRepositorySQLite::class)
+			->onlyMethods(array('getPdoUrl', 'findOneByCredentialId', 'findAllForUserEntity'))
 			->getMock();
+		$file = tmpfile();
+		$filePath = stream_get_meta_data($file)['uri'];
+		$this->database->method('getPdoUrl')->willReturn('sqlite:' . $filePath);
 		$this->database->method('findOneByCredentialId')->willReturn(null);
-		$this->database->method('findAllForUserEntity')->willReturn(array());
 
 		$this->manager = $this
 			->getMockBuilder(WebauthnManager::class)
@@ -60,36 +64,40 @@ class WebauthnManagerTest extends TestCase {
 			->getMock();
 		$this->manager->method('getDatabase')->willReturn($this->database);
 
-		$cfgMain = new \LAMCfgMain();
+		$cfgMain = new LAMCfgMain();
 		$cfgMain->passwordMinLength = 3;
 		$logFile = tmpfile();
 		$logFilePath = stream_get_meta_data($logFile)['uri'];
 		$cfgMain->logDestination = $logFilePath;
 		$_SESSION['cfgMain'] = $cfgMain;
 
-		$file = tmpfile();
-		$filePath = stream_get_meta_data($file)['uri'];
-		$config = new \LAMConfig($filePath);
+		$config = new LAMConfig('d_LAMConfigTest');
 		$config->setTwoFactorAuthenticationDomain('domain');
 		$_SESSION['config'] = $config;
 	}
 
 	public function test_getAuthenticationObject() {
+		$this->database->method('findAllForUserEntity')->willReturn(array());
+
 		$authenticationObj = $this->manager->getAuthenticationObject('userDN', false);
-		$this->assertEquals(40, sizeof($authenticationObj->getChallenge()));
+		$this->assertEquals(32, strlen($authenticationObj->getChallenge()));
 		$this->assertEquals('domain', $authenticationObj->getRpId());
 	}
 
 	public function test_getRegistrationObject() {
 		$registrationObject = $this->manager->getRegistrationObject('userDn', false);
-		$this->assertEquals(40, sizeof($registrationObject->getChallenge()));
+		$this->assertEquals(32, strlen($registrationObject->getChallenge()));
 		$this->assertEquals('domain', $registrationObject->getRp()->getId());
 	}
 
-	public function test_isRegistered() {
+	public function test_isRegistered_notRegistered() {
 		$this->database->method('findAllForUserEntity')->willReturn(array());
+
 		$isRegistered = $this->manager->isRegistered('userDN');
 		$this->assertFalse($isRegistered);
+	}
+
+	public function test_isRegistered_registered() {
 		$this->database->method('findAllForUserEntity')->willReturn(array(
 			new PublicKeyCredentialSource(
 				"id1",
@@ -102,25 +110,9 @@ class WebauthnManagerTest extends TestCase {
 				"uh1",
 				1)
 		));
+
 		$isRegistered = $this->manager->isRegistered('userDN');
 		$this->assertTrue($isRegistered);
-	}
-
-}
-
-/**
- * Test class to deactivate saving.
- *
- * @package LAM\LOGIN\WEBAUTHN
- */
-class PublicKeyCredentialSourceRepositorySQLiteNoSave extends PublicKeyCredentialSourceRepositorySQLite {
-
-	/**
-	 * No saving
-	 *
-	 * @param PublicKeyCredentialSource $publicKeyCredentialSource source
-	 */
-	public function saveCredentialSource(PublicKeyCredentialSource $publicKeyCredentialSource): void {
 	}
 
 }
