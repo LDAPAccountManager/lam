@@ -3,7 +3,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2016 - 2020  Roland Gruber
+ Copyright (C) 2016 - 2021  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ class LAMConfigTest extends TestCase {
 	 */
 	private $lAMConfig;
 
-	const FILE_NAME = 'LAMConfigTest';
+	const FILE_NAME = 'd_LAMConfigTest';
 
 	/**
 	 * Prepares the environment before running a test.
