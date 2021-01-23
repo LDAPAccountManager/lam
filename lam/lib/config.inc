@@ -32,6 +32,8 @@ use \LAM\REMOTE\RemoteServerConfiguration;
 * @author Thomas Manninger
 */
 
+/** persistence */
+include_once 'persistence.inc';
 /** Used to print messages. */
 include_once "status.inc";
 /** Used to get module information. */
@@ -40,8 +42,6 @@ include_once "modules.inc";
 include_once "types.inc";
 /** 2-factor */
 include_once '2factor.inc';
-/** persistence */
-include_once 'persistence.inc';
 
 /**
  * Sets the environment variables for custom SSL CA certificates.
@@ -2967,6 +2967,43 @@ class LAMCfgMain {
 			}
 			fclose($file);
 		}
+		if ($this->configDatabaseType === self::DATABASE_MYSQL) {
+			return $this->loadFromDb();
+		}
+		return true;
+	}
+
+	/**
+	 * Loads the settings from the database.
+	 * Persistence settings are ignored as they must be on local file system.
+	 *
+	 * @return bool true when ok
+	 */
+	private function loadFromDb() : bool {
+		$configDb = new ConfigurationDatabase($this);
+		$pdo = $configDb->getPdo();
+		try {
+			$result = $pdo->query("SELECT value FROM " . ConfigurationDatabase::TABLE_MAIN_CONFIG . ' WHERE name=\'config\'');
+			if ($result === false) {
+				return false;
+			}
+			$data = $result->fetchAll();
+			$jsonData = json_decode($data[0]['value'], true);
+			foreach ($this->persistenceSettings as $persistenceSetting) {
+				if (isset($jsonData[$persistenceSetting])) {
+					unset($jsonData[$persistenceSetting]);
+				}
+			}
+			$this->importData($jsonData);
+		}
+		catch (PDOException $e) {
+			logNewMessage(LOG_ERR, 'Unable to read main config: ' . $e->getMessage());
+			return false;
+		}
+		catch (LAMException $e) {
+			logNewMessage(LOG_ERR, 'Unable to import main config: ' . $e->getMessage());
+			return false;
+		}
 		return true;
 	}
 
@@ -3500,5 +3537,3 @@ class LAMCfgMain {
 	}
 
 }
-
-?>
