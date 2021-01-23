@@ -9,7 +9,7 @@ use \Webauthn\TrustPath\CertificateTrustPath;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2019 - 2020  Roland Gruber
+  Copyright (C) 2019 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ require_once __DIR__ . '/../../lib/webauthn.inc';
 class WebauthnManagerTest extends TestCase {
 
 	/**
-	 * @var \PHPUnit_Framework_MockObject_MockObject|PublicKeyCredentialSourceRepositorySQLite
+	 * @var \PHPUnit_Framework_MockObject_MockObject|PublicKeyCredentialSourceRepositorySQLiteNoSave
 	 */
 	private $database;
 	/**
@@ -48,12 +48,11 @@ class WebauthnManagerTest extends TestCase {
 
 	protected function setup(): void {
 		$this->database = $this
-			->getMockBuilder(PublicKeyCredentialSourceRepositorySQLite::class)
+			->getMockBuilder(PublicKeyCredentialSourceRepositorySQLiteNoSave::class)
 			->onlyMethods(array('findOneByCredentialId', 'findAllForUserEntity', 'saveCredentialSource'))
 			->getMock();
 		$this->database->method('findOneByCredentialId')->willReturn(null);
 		$this->database->method('findAllForUserEntity')->willReturn(array());
-		$this->database->method('saveCredentialSource')->willReturn(null);
 
 		$this->manager = $this
 			->getMockBuilder(WebauthnManager::class)
@@ -105,6 +104,23 @@ class WebauthnManagerTest extends TestCase {
 		));
 		$isRegistered = $this->manager->isRegistered('userDN');
 		$this->assertTrue($isRegistered);
+	}
+
+}
+
+/**
+ * Test class to deactivate saving.
+ *
+ * @package LAM\LOGIN\WEBAUTHN
+ */
+class PublicKeyCredentialSourceRepositorySQLiteNoSave extends PublicKeyCredentialSourceRepositorySQLite {
+
+	/**
+	 * No saving
+	 *
+	 * @param PublicKeyCredentialSource $publicKeyCredentialSource source
+	 */
+	public function saveCredentialSource(PublicKeyCredentialSource $publicKeyCredentialSource): void {
 	}
 
 }
