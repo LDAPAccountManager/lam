@@ -1,31 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit>
-	<testsuites>
-		<testsuite name="AllTests">
-			<directory>lam/tests</directory>
-		</testsuite>
-	</testsuites>
-	<php>
-		<includePath>lam</includePath>
-	</php>
-	<logging>
-		<log type="coverage-html" target="code-coverage/report.html"/>
-		<log type="coverage-clover" target="code-coverage/clover.xml"/>
-		<log type="junit" target="code-coverage/junit.xml"/>
-	</logging>
-	<filter>
-	  <whitelist processUncoveredFilesFromWhitelist="true">
-	    <directory suffix=".inc">lam/lib</directory>
-	    <exclude>
-	      <directory>lam/tests</directory>
-	      <directory>lam/lib/3rdParty</directory>
-	      <directory>lam/templates/3rdParty</directory>
-	      <file>lam/lib/adminHeader.inc</file>
-	      <file>lam/lib/adminFooter.inc</file>
-	      <file>lam/lib/cron.inc</file>
-	      <file>lam/lib/security.inc</file>
-	      <file>lam/lib/checkEnvironment.inc</file>
-	    </exclude>
-	  </whitelist>
-	</filter>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage processUncoveredFiles="true">
+    <include>
+      <directory suffix=".inc">lam/lib</directory>
+    </include>
+    <exclude>
+      <directory>lam/tests</directory>
+      <directory>lam/lib/3rdParty</directory>
+      <directory>lam/templates/3rdParty</directory>
+      <file>lam/lib/adminHeader.inc</file>
+      <file>lam/lib/adminFooter.inc</file>
+      <file>lam/lib/cron.inc</file>
+      <file>lam/lib/security.inc</file>
+      <file>lam/lib/checkEnvironment.inc</file>
+    </exclude>
+    <report>
+      <clover outputFile="code-coverage/clover.xml"/>
+      <html outputDirectory="code-coverage/report.html"/>
+    </report>
+  </coverage>
+  <testsuites>
+    <testsuite name="AllTests">
+      <directory>lam/tests</directory>
+    </testsuite>
+  </testsuites>
+  <php>
+    <includePath>lam</includePath>
+  </php>
+  <logging>
+    <junit outputFile="code-coverage/junit.xml"/>
+  </logging>
 </phpunit>
