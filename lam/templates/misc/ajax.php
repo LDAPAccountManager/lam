@@ -15,7 +15,7 @@ use \LAMCfgMain;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2020  Roland Gruber
+  Copyright (C) 2011 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -361,7 +361,6 @@ class Ajax {
 	private function manageWebauthnOwnDevices() {
 		$action = $_POST['action'];
 		$dn = $_POST['dn'];
-		$name = $_POST['name'];
 		$sessionDn = $_SESSION['ldap']->getUserName();
 		if ($sessionDn !== $dn) {
 			logNewMessage(LOG_ERR, 'WebAuthn delete canceled, DN does not match.');
@@ -373,6 +372,7 @@ class Ajax {
 		}
 		elseif ($action === 'setName') {
 			$credentialId = $_POST['credentialId'];
+			$name = $_POST['name'];
 			$this->manageWebauthnDevicesUpdateName($sessionDn, $credentialId, $name);
 		}
 	}
