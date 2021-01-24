@@ -719,12 +719,21 @@ class ConfigurationDatabase {
 	}
 
 	/**
+	 * Returns if a remote database is to be used.
+	 *
+	 * @return bool use remote database
+	 */
+	public function useRemoteDb() : bool {
+		return (!empty($this->cfgMain->configDatabaseType) && ($this->cfgMain->configDatabaseType === LAMCfgMain::DATABASE_MYSQL));
+	}
+
+	/**
 	 * Checks if the database connection is ok.
 	 *
 	 * @throws PDOException error opening connection to database
 	 */
 	public function checkConnection() {
-		if ($this->cfgMain->configDatabaseType === LAMCfgMain::DATABASE_FILE_SYSTEM) {
+		if (!$this->useRemoteDb()) {
 			return;
 		}
 		$pdo = $this->getPdo();

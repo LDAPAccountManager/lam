@@ -1,6 +1,7 @@
 <?php
 namespace LAM\CONFIG;
 
+use LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use \LAMCfgMain;
 use \htmlTable;
 use \htmlTitle;
@@ -584,7 +585,8 @@ printHeaderContents(_("Edit general settings"), '../..');
 	if (extension_loaded('PDO')
 		&& in_array('sqlite', \PDO::getAvailableDrivers())) {
 		include_once __DIR__ . '/../../lib/webauthn.inc';
-		$database = new \LAM\LOGIN\WEBAUTHN\PublicKeyCredentialSourceRepositorySQLite();
+		$webAuthnManager = new WebauthnManager();
+		$database = $webAuthnManager->getDatabase();
 		if ($database->hasRegisteredCredentials()) {
 			$row->add(new htmlSubTitle(_('WebAuthn devices')), 12);
 			$webauthnSearchField = new htmlResponsiveInputField(_('User DN'), 'webauthn_searchTerm', null, '252');

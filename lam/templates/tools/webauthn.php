@@ -11,14 +11,13 @@ use \htmlResponsiveTable;
 use \htmlSpacer;
 use \htmlStatusMessage;
 use \htmlTitle;
-use \LAM\LOGIN\WEBAUTHN\PublicKeyCredentialSourceRepositorySQLite;
 use LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use Webauthn\PublicKeyCredentialCreationOptions;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2020  Roland Gruber
+  Copyright (C) 2020 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -70,7 +69,7 @@ $container->add(new htmlTitle(_("WebAuthn devices")), 12);
 $webauthnManager = new WebauthnManager();
 
 $userDn = $_SESSION['ldap']->getUserName();
-$database = new PublicKeyCredentialSourceRepositorySQLite();
+$database = $webauthnManager->getDatabase();
 showRemoveMessage($container);
 addNewDevice($container, $webauthnManager);
 $container->addVerticalSpacer('0.5rem');
