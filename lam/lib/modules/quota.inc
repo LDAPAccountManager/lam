@@ -435,7 +435,7 @@ class quota extends baseModule {
 	 * @param string $quotaInput quota value (might contain e.g. "K" for KB)
 	 * @return int quota number
 	 */
-	private function getQuotaNumber($quotaInput) {
+	public function getQuotaNumber($quotaInput) {
 		if (empty($quotaInput) || (strlen($quotaInput) < 2)) {
 			return $quotaInput;
 		}
@@ -449,7 +449,7 @@ class quota extends baseModule {
 			return 1024 * 1024 * substr($quotaInput, 0, -1);
 		}
 		if (substr($quotaInput, -1, 1) === 'T') {
-			return 1024 * 1024 * 1024 * 1024 * substr($quotaInput, 0, -1);
+			return 1024 * 1024 * 1024 * substr($quotaInput, 0, -1);
 		}
 		if (substr($quotaInput, -1, 1) === 'k') {
 			return 1000 * substr($quotaInput, 0, -1);
