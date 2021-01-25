@@ -34,14 +34,19 @@ use \phpseclib3\Exception\NoKeyLoadedException;
 * @package modules
 */
 
-include_once __DIR__ . '/3rdParty/composer/autoload.php';
-
 /**
  * Runs remote commands.
  *
  * @author Roland Gruber
  */
 class Remote {
+
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		include_once __DIR__ . '/3rdParty/composer/autoload.php';
+	}
 
 	/** SSH2 server handle */
 	private $server = null;
@@ -225,5 +230,3 @@ class RemoteServerConfiguration {
 	}
 
 }
-
-?>
