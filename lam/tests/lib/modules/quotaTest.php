@@ -3,7 +3,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2020  Roland Gruber
+ Copyright (C) 2020 - 2021  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ class QuotaTest extends TestCase {
 		$quota = new quota('user');
 		
 		$this->assertEquals('123T', $quota->addBlockUnits(1024*1024*1024*123));
+		$this->assertEquals('1T', $quota->addBlockUnits(1024*1024*1024));
 		$this->assertEquals('123G', $quota->addBlockUnits(1024*1024*123));
 		$this->assertEquals('123M', $quota->addBlockUnits(1024*123));
 		$this->assertEquals('123', $quota->addBlockUnits(123));
@@ -90,6 +91,20 @@ class QuotaTest extends TestCase {
 		$this->assertEquals('5g', $quota->formatInodeUsage(1000*1000*5001));
 		$this->assertEquals('5m', $quota->formatInodeUsage(1000*5001));
 		$this->assertEquals('5k', $quota->formatInodeUsage(5001));
+	}
+
+	public function testGetQuotaNumber() {
+		$quota = new quota('user');
+
+		$this->assertEquals(1024*1024*1024*1024, $quota->getQuotaNumber('1024T'));
+		$this->assertEquals(1024*1024*1024, $quota->getQuotaNumber('1T'));
+		$this->assertEquals(1024*1024*123, $quota->getQuotaNumber('123G'));
+		$this->assertEquals(1024*123, $quota->getQuotaNumber('123M'));
+		$this->assertEquals(1024, $quota->getQuotaNumber('1M'));
+		$this->assertEquals(1000*1000*1000*1000*123, $quota->getQuotaNumber('123t'));
+		$this->assertEquals(1000*1000*1000*123, $quota->getQuotaNumber('123g'));
+		$this->assertEquals(1000*1000*123, $quota->getQuotaNumber('123m'));
+		$this->assertEquals(1000*123, $quota->getQuotaNumber('123k'));
 	}
 
 }
