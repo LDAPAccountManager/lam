@@ -4,7 +4,7 @@ namespace LAM\PLUGINS\EXTRA_INVALID_CREDENTIALS;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2020  Roland Gruber
+  Copyright (C) 2020 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -101,7 +101,11 @@ class ExtraInvalidCredentials {
 	 * @return array|null attribute values
 	 */
 	protected function getLdapData(string $userDn, array $attributes, $ldap) {
-		return ldapGetDN($userDn, $attributes, $ldap);
+		$data = ldapGetDN($userDn, $attributes, $ldap);
+		if ($data === null) {
+			$data = array();
+		}
+		return $data;
 	}
 
 	/**
