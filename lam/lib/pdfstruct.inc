@@ -7,7 +7,7 @@ use \LAM\ImageUtils\ImageManipulationFactory;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2011 - 2020  Roland Gruber
+                2011 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -104,8 +104,12 @@ function getAvailableLogos($serverProfileName) {
 	$return = array();
 	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $serverProfileName . '/logos/';
 	$dirHandle = opendir($dirPath);
-	while($file = readdir($dirHandle)) {
-		if(!is_dir($file) && $file != '.' && $file != '..' && preg_match('/\\.(jpg|png)$/i',$file)) {
+	if ($dirHandle === false) {
+		logNewMessage(LOG_WARNING, 'Unable to read ' . $dirPath);
+		return $return;
+	}
+	while ($file = readdir($dirHandle)) {
+		if (!is_dir($file) && $file != '.' && $file != '..' && preg_match('/\\.(jpg|png)$/i',$file)) {
 			include_once dirname(__FILE__) . '/imageutils.inc';
 			$imageManipulator = ImageManipulationFactory::getImageManipulatorFromFile($dirPath . $file);
 			$infos = array($imageManipulator->getWidth(), $imageManipulator->getHeight());

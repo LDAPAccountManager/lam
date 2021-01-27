@@ -15,6 +15,8 @@ use Cose\Algorithm\Signature\RSA\RS256;
 use Cose\Algorithm\Signature\RSA\RS384;
 use Cose\Algorithm\Signature\RSA\RS512;
 use \Cose\Algorithms;
+use LAM\PERSISTENCE\ConfigurationDatabase;
+use LAMCfgMain;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PDO;
 use PDOException;
@@ -50,7 +52,7 @@ use \LAMException;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2019 - 2020  Roland Gruber
+  Copyright (C) 2019 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -327,6 +329,10 @@ class WebauthnManager {
 	 * @return PublicKeyCredentialSourceRepositoryBase database
 	 */
 	public function getDatabase() {
+		$configDatabase = new ConfigurationDatabase(new LAMCfgMain());
+		if ($configDatabase->useRemoteDb()) {
+			return new PublicKeyCredentialSourceRepositoryMySql($configDatabase->getPdo());
+		}
 		return new PublicKeyCredentialSourceRepositorySQLite();
 	}
 
@@ -565,12 +571,13 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 		$results = $statement->fetchAll();
 		$devices = array();
 		foreach ($results as $result) {
+			$name = !empty($result['name']) ? $result['name'] : '';
 			$devices[] = array(
 				'dn' => $result['userId'],
 				'credentialId' => $result['credentialId'],
 				'lastUseTime' => $result['lastUseTime'],
 				'registrationTime' => $result['registrationTime'],
-				'name' => $result['name']
+				'name' => $name
 			);
 		}
 		return $devices;
@@ -727,7 +734,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 			return;
 		}
 		foreach ($data as $dbRow) {
-			$statement = $pdo->prepare('insert into ' . $this->getTableName() . ' (userId, credentialId, credentialSource, registrationTime, lastUseTime) VALUES (?, ?, ?, ?, ?)');
+			$statement = $pdo->prepare('insert into ' . $this->getTableName() . ' (userId, credentialId, credentialSource, registrationTime, lastUseTime, name) VALUES (?, ?, ?, ?, ?, ?)');
 			$statement->execute(array(
 				$dbRow['userId'],
 				$dbRow['credentialId'],
@@ -787,7 +794,7 @@ class PublicKeyCredentialSourceRepositorySQLite extends PublicKeyCredentialSourc
  *
  * @package LAM\LOGIN\WEBAUTHN
  */
-class PublicKeyCredentialSourceRepositoryExternalPdo extends PublicKeyCredentialSourceRepositoryBase {
+class PublicKeyCredentialSourceRepositoryMySql extends PublicKeyCredentialSourceRepositoryBase {
 
 	/** @var PDO */
 	private $pdo;
@@ -814,6 +821,37 @@ class PublicKeyCredentialSourceRepositoryExternalPdo extends PublicKeyCredential
 	 */
 	protected function getTableName() : string {
 		return 'webauthn';
+	}
+
+	/**
+	 * Creates the initial schema.
+	 *
+	 * @param PDO $pdo PDO object
+	 */
+	public function createInitialSchema(PDO $pdo) {
+		logNewMessage(LOG_DEBUG, 'Creating database table ' . $this->getTableName());
+		$sql = 'create table ' . $this->getTableName() . '('
+			  // 350 because primary key length is max 3072 bytes and each character can have 4 bytes
+			. 'userId VARCHAR(350) NOT NULL,'
+			. 'credentialId VARCHAR(350) NOT NULL,'
+			. 'credentialSource TEXT NOT NULL,'
+			. 'registrationTime VARCHAR(11) NOT NULL,'
+			. 'lastUseTime VARCHAR(11) NOT NULL,'
+			. 'name VARCHAR(255),'
+			. 'PRIMARY KEY(userId,credentialId)'
+			. ');';
+		$pdo->exec($sql);
+		$sql = 'insert into ' . ConfigurationDatabase::TABLE_SCHEMA_VERSIONS . ' (name, version) VALUES ("webauthn", 1);';
+		$pdo->exec($sql);
+	}
+
+	/**
+	 * Adds the name column if not existing.
+	 *
+	 * @param PDO $pdo PDO
+	 */
+	protected function addNameColumn(PDO $pdo) {
+		// added via initial schema
 	}
 
 }

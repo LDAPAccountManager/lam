@@ -99,7 +99,7 @@ class ConfigDataExporter {
 	 * @return array data
 	 */
 	public function _getMainConfigData($mainCfg) {
-		return $mainCfg->exportData();
+		return $mainCfg->exportData(true);
 	}
 
 	/**
