@@ -1,9 +1,14 @@
 <?php
+namespace LAM\ACCOUNT;
+use accountContainer;
+use DateTime;
+use LAM\TYPES\TypeManager;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2019  Roland Gruber
+                2005 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -62,7 +67,7 @@ if (isset($_GET['editKey'])) {
 	$sessionKey = htmlspecialchars($_GET['editKey']);
 }
 else {
-	$sessionKey = $sessionAccountPrefix . (new \DateTime(null, getTimeZone()))->getTimestamp() . getRandomNumber();
+	$sessionKey = $sessionAccountPrefix . (new DateTime(null, getTimeZone()))->getTimestamp() . getRandomNumber();
 }
 
 // cleanup account containers in session
@@ -82,7 +87,7 @@ foreach ($_SESSION as $key => $value) {
 	}
 }
 
-$typeManager = new LAM\TYPES\TypeManager();
+$typeManager = new TypeManager();
 //load account
 if (isset($_GET['DN'])) {
 	$type = $typeManager->getConfiguredType($_GET['type']);
@@ -134,4 +139,3 @@ elseif (empty($_POST)) {
 // show account page
 $_SESSION[$sessionKey]->continue_main();
 
-?>
