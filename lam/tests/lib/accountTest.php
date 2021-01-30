@@ -2,7 +2,7 @@
 use PHPUnit\Framework\TestCase;
 /*
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2018 - 2020  Roland Gruber
+ Copyright (C) 2018 - 2021  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -175,6 +175,23 @@ class AccountTest extends TestCase {
 		$hash = explode('}', $hash)[1];
 		$this->assertFalse(checkPasswordHash($type, $hash, 'wrong-password'));
 		$this->assertTrue(checkPasswordHash($type, $hash, 'test-password'));
+	}
+
+	function testGetNumberOfCharacterClasses() {
+		$this->assertEquals(0, getNumberOfCharacterClasses(null));
+		$this->assertEquals(1, getNumberOfCharacterClasses('0'));
+		$this->assertEquals(1, getNumberOfCharacterClasses('3'));
+		$this->assertEquals(1, getNumberOfCharacterClasses('345'));
+		$this->assertEquals(1, getNumberOfCharacterClasses('a'));
+		$this->assertEquals(1, getNumberOfCharacterClasses('abc'));
+		$this->assertEquals(1, getNumberOfCharacterClasses('A'));
+		$this->assertEquals(1, getNumberOfCharacterClasses('ABC'));
+		$this->assertEquals(1, getNumberOfCharacterClasses('.'));
+		$this->assertEquals(1, getNumberOfCharacterClasses('.-,'));
+		$this->assertEquals(2, getNumberOfCharacterClasses('aA'));
+		$this->assertEquals(3, getNumberOfCharacterClasses('aA0'));
+		$this->assertEquals(4, getNumberOfCharacterClasses('a0A.'));
+		$this->assertEquals(4, getNumberOfCharacterClasses('a-0AB.a3'));
 	}
 
 }
