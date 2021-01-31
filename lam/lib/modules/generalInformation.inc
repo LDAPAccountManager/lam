@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2019  Roland Gruber
+  Copyright (C) 2011 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -130,7 +130,12 @@ class generalInformation extends baseModule {
 		return array();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+		// no action for this module
+	}
+
 }
 
-
-?>

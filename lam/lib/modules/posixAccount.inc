@@ -554,7 +554,24 @@ class posixAccount extends baseModule implements passwordService {
 		if (!isset($attr['uid'][0])) {
 			return;
 		}
-		$groupFilter = '(&(objectClass=posixGroup)(memberUid=' . $attr['uid'][0] . '))';
+		$this->groups = $this->getUnixGroupMemberships($attr['uid'][0]);
+		$this->groups_orig = $this->groups;
+		// get additional group of names memberships
+		if (self::areGroupOfNamesActive()) {
+			$this->gonList_orig = $this->getGoNMemberships($this->getAccountContainer()->dn_orig);
+			$this->gonList = $this->gonList_orig;
+		}
+	}
+
+	/**
+	 * Returns the list of group names for the given user id.
+	 *
+	 * @param string $uid UID
+	 * @return string[] group names
+	 */
+	private function getUnixGroupMemberships(string $uid): array {
+		$groups = array();
+		$groupFilter = '(&(objectClass=posixGroup)(memberUid=' . $uid . '))';
 		if (!empty($typeSettings['filter_group'])) {
 			$typeFilter = $typeSettings['filter_group'];
 			if (strpos($typeFilter, '(') !== 0) {
@@ -564,31 +581,50 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		$groupList = searchLDAPByFilter($groupFilter, array('cn'), array('group'));
 		for ($i = 0; $i < sizeof($groupList); $i++) {
-			$this->groups[] = $groupList[$i]['cn'][0];
+			$groups[] = $groupList[$i]['cn'][0];
 		}
-		$this->groups_orig = $this->groups;
-		// get additional group of names memberships
-		if (self::areGroupOfNamesActive()) {
-			$types = array('gon', 'group');
-			$gonList = array();
-			foreach ($types as $type) {
-				$gonFilter = '(|(&(objectClass=groupOfNames)(member=' . ldap_escape($this->getAccountContainer()->dn_orig) . '))(&(objectClass=groupOfMembers)(member=' . $this->getAccountContainer()->dn_orig . '))(&(objectClass=groupOfUniqueNames)(uniqueMember=' . $this->getAccountContainer()->dn_orig . ')))';
-				if (!empty($typeSettings['filter_' . $type])) {
-					$typeFilter = $typeSettings['filter_' . $type];
-					if (strpos($typeFilter, '(') !== 0) {
-						$typeFilter = '(' . $typeFilter . ')';
-					}
-					$gonFilter = '(&' . $gonFilter . $typeFilter . ')';
+		return $groups;
+	}
+
+	/**
+	 * Returns the list of group of names for the given user id.
+	 *
+	 * @param string $dn DN
+	 * @return string[] group of names
+	 */
+	private function getGoNMemberships(string $dn): array {
+		$userGoNs = array();
+		$types = array('gon', 'group');
+		$gonList = array();
+		foreach ($types as $type) {
+			$gonFilter = '(|(&(objectClass=groupOfNames)(member=' . ldap_escape($dn) . '))(&(objectClass=groupOfMembers)(member=' . ldap_escape($dn) . '))(&(objectClass=groupOfUniqueNames)(uniqueMember=' . ldap_escape($dn) . ')))';
+			if (!empty($typeSettings['filter_' . $type])) {
+				$typeFilter = $typeSettings['filter_' . $type];
+				if (strpos($typeFilter, '(') !== 0) {
+					$typeFilter = '(' . $typeFilter . ')';
 				}
-				$gonListPart = searchLDAPByFilter($gonFilter, array('dn'), array($type));
-				$gonList = array_merge($gonList, $gonListPart);
+				$gonFilter = '(&' . $gonFilter . $typeFilter . ')';
 			}
-			$this->gonList_orig = array();
-			for ($i = 0; $i < sizeof($gonList); $i++) {
-				$this->gonList_orig[] = $gonList[$i]['dn'];
-			}
-			$this->gonList_orig = array_values(array_unique($this->gonList_orig));
-			$this->gonList = $this->gonList_orig;
+			$gonListPart = searchLDAPByFilter($gonFilter, array('dn'), array($type));
+			$gonList = array_merge($gonList, $gonListPart);
+		}
+		for ($i = 0; $i < sizeof($gonList); $i++) {
+			$userGoNs[] = $gonList[$i]['dn'];
+		}
+		$userGoNs = array_values(array_unique($userGoNs));
+		return $userGoNs;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
+		if (!empty($ldapAttributes['uid'][0])) {
+			$this->groups = $this->getUnixGroupMemberships($ldapAttributes['uid'][0]);
+		}
+		if (self::areGroupOfNamesActive()) {
+			$this->gonList = $this->getGoNMemberships($ldapAttributes['dn']);
 		}
 	}
 

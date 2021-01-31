@@ -4,7 +4,7 @@ use LAM\TYPES\ConfiguredType;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2020  Roland Gruber
+  Copyright (C) 2003 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -563,6 +563,13 @@ class lamList {
 			$deleteLink = new htmlLink('', "deletelink.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/delete.png');
 			$deleteLink->setTitle(_("Delete"));
 			$element->addElement($deleteLink);
+			$toolCount++;
+		}
+		// copy link
+		if (checkIfWriteAccessIsAllowed($this->type->getId()) && checkIfNewEntriesAreAllowed($this->type->getId())) {
+			$copyLink = new htmlLink('', "../account/edit.php?type=" . $this->type->getId() . "&copyDn='" . rawurlencode($account['dn']) . "'", '../../graphics/copy.png');
+			$copyLink->setTitle(_("Copy"));
+			$element->addElement($copyLink);
 			$toolCount++;
 		}
 		// PDF button
