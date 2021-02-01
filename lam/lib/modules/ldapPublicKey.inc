@@ -5,7 +5,7 @@ use \LAM\PDF\PDFTableRow;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2020  Roland Gruber
+  Copyright (C) 2005 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -36,6 +36,11 @@ use \LAM\PDF\PDFTableRow;
 * @package modules
 */
 class ldapPublicKey extends baseModule {
+
+	/**
+	 * These attributes will be ignored by default if a new account is copied from an existing one.
+	 */
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('sshPublicKey');
 
 	/** session variable for existing keys in self service */
 	const SESS_KEY_LIST = 'ldapPublicKey_keyList';
@@ -128,6 +133,14 @@ class ldapPublicKey extends baseModule {
 	function load_Messages() {
 		$this->messages['file'][0] = array('ERROR', _('No file selected.'));
 		$this->messages['file'][1] = array('ERROR', _('The uploaded file seems to be no valid public key.'));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
+		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
 
 	/**
