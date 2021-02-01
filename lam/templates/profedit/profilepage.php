@@ -10,7 +10,7 @@ use \htmlSubTitle;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2020  Roland Gruber
+  Copyright (C) 2003 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -187,7 +187,9 @@ $container->add(new htmlTitle(_("Profile editor")), 12);
 
 // general options
 $container->add(new htmlSubTitle(_("General settings"), '../../graphics/logo32.png', null, true), 12);
-$container->add(new htmlResponsiveInputField(_("Profile name") . '*', 'profname', $profName, '360'), 12);
+$profileNameField = new htmlResponsiveInputField(_("Profile name"), 'profname', $profName, '360', true);
+$profileNameField->setTransient(true);
+$container->add($profileNameField, 12);
 $container->addVerticalSpacer('1rem');
 // suffix box
 // get root suffix

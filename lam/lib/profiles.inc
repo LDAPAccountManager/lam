@@ -5,7 +5,7 @@ use \LAMException;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2020  Roland Gruber
+  Copyright (C) 2003 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -121,6 +121,9 @@ function readAccountProfileFile($fileName) {
 				$parts = explode(": ", $line);
 				if (sizeof($parts) == 2) {
 					$option = $parts[0];
+					if ($option === 'profname') {
+						continue;
+					}
 					$value = $parts[1];
 					// remove line ends
 					$value = chop($value);
