@@ -3,7 +3,7 @@ use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2019  Roland Gruber
+  Copyright (C) 2013 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -33,6 +33,11 @@ use \LAM\TYPES\TypeManager;
 * @package modules
 */
 class pykotaGroup extends baseModule {
+
+	/**
+	 * These attributes will be ignored by default if a new account is copied from an existing one.
+	 */
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('pykotaGroupName');
 
 	/** cache for cn attribute */
 	private $cnCache = null;
@@ -174,6 +179,14 @@ class pykotaGroup extends baseModule {
 		$this->messages['pykotaGroupName'][2] = array('ERROR', _('PyKota group name'), _('Group name already exists!'));
 		$this->messages['pykotaGroupName'][3] = array('ERROR', _('Account %s:') . ' pykotaGroup_pykotaGroupName', _('Group name already exists!'));
 		$this->messages['pykotaLimitBy'][0] = array('ERROR', _('Account %s:') . ' pykotaGroup_pykotaLimitBy', _('Please enter a valid limit type.'));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
+		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
 
 	/**

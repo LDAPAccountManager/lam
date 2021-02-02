@@ -556,12 +556,14 @@ class lamList {
 		// edit link
 		$editLink = new htmlLink('', "../account/edit.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/edit.png');
 		$editLink->setTitle(_("Edit"));
+		$editLink->setCSSClasses(array('margin2'));
 		$element->addElement($editLink);
 		$toolCount++;
 		// delete link
 		if (checkIfWriteAccessIsAllowed($this->type->getId()) && checkIfDeleteEntriesIsAllowed($this->type->getId())) {
 			$deleteLink = new htmlLink('', "deletelink.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/delete.png');
 			$deleteLink->setTitle(_("Delete"));
+			$deleteLink->setCSSClasses(array('margin2'));
 			$element->addElement($deleteLink);
 			$toolCount++;
 		}
@@ -569,12 +571,14 @@ class lamList {
 		if (checkIfWriteAccessIsAllowed($this->type->getId()) && checkIfNewEntriesAreAllowed($this->type->getId())) {
 			$copyLink = new htmlLink('', "../account/edit.php?type=" . $this->type->getId() . "&copyDn='" . rawurlencode($account['dn']) . "'", '../../graphics/copy.png');
 			$copyLink->setTitle(_("Copy"));
+			$copyLink->setCSSClasses(array('margin2'));
 			$element->addElement($copyLink);
 			$toolCount++;
 		}
 		// PDF button
 		$pdfButton = new htmlButton("createPDF_" . $id, 'pdf.png', true);
 		$pdfButton->setTitle(_('Create PDF file'));
+		$pdfButton->setCSSClasses(array('margin2'));
 		$element->addElement($pdfButton);
 		$toolCount++;
 		// additional tools
@@ -582,6 +586,7 @@ class lamList {
 		for ($i = 0; $i < sizeof($tools); $i++) {
 			$toolLink = new htmlLink('', $tools[$i]->getLinkTarget() . "?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/' . $tools[$i]->getImage());
 			$toolLink->setTitle($tools[$i]->getName());
+			$toolLink->setCSSClasses(array('margin2'));
 			$element->addElement($toolLink);
 			$toolCount++;
 		}
