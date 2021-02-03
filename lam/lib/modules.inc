@@ -4,7 +4,7 @@ use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2020  Roland Gruber
+  Copyright (C) 2003 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -776,7 +776,10 @@ class accountContainer {
 	*/
 	private $type;
 
-	/** This is an array with all module objects */
+	/** This is an array with all module objects
+	 *
+	 *  @var baseModule[] modules
+	 */
 	private $module;
 
 	/** DN suffix of the account */
@@ -1791,6 +1794,20 @@ class accountContainer {
 		$this->titleBarTitle = $typeObject->getTitleBarTitle($this);
 		$this->titleBarSubtitle = $typeObject->getTitleBarSubtitle($this);
 		return 0;
+	}
+
+	/**
+	 * Copies the data from the given account to this one.
+	 *
+	 * @param string $copyDn DN to copy from
+	 */
+	public function copyFromExistingAccount(string $copyDn) : void {
+		$copyData = ldapGetDN($copyDn, array('*', '+'));
+		$modules = $_SESSION['config']->get_AccountModules($this->type->getId());
+		$copyData = $this->fixLDAPAttributes($copyData, $modules);
+		foreach ($this->module as $accountModule) {
+			$accountModule->loadAttributesFromAccountCopy($copyData);
+		}
 	}
 
 	/**

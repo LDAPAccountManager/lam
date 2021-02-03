@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2010         Pavel Pozdnyak
-                2010 - 2019  Roland Gruber
+                2010 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -37,6 +37,12 @@
  * @package modules
  */
 class asteriskVoicemail extends baseModule implements passwordService {
+
+	/**
+	 * These attributes will be ignored by default if a new account is copied from an existing one.
+	 */
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('AstVoicemailMailbox', 'AstVoicemailPassword',
+		'AstVoicemailEmail', 'AstVoicemailPager', 'AstVoicemailFullname');
 
 	/**
 	 * Creates a new asteriskVoicemail object.
@@ -225,6 +231,14 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		$this->messages['AstVoicemailContext'][0] = array('ERROR', _('The voicemail context name is invalid.'));
 		$this->messages['AstVoicemailContext'][1] = array('ERROR', _('Account %s:') . ' asteriskVoicemail_AstVoicemailContext', _('The voicemail context name is invalid.'));
 		$this->messages['AstVoicemailPassword'][0] = array('INFO', _('Please set the voicemail password with "Set password" before saving.'));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
+		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
 
 	/**

@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2020  Roland Gruber
+  Copyright (C) 2006 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -464,19 +464,7 @@ function checkPasswordStrength($password, $userName, $otherUserAttrs) {
 		$rulesMatched++;
 	}
 	// check classes
-	$classes = 0;
-	if ($lower > 0) {
-		$classes++;
-	}
-	if ($upper > 0) {
-		$classes++;
-	}
-	if ($numeric > 0) {
-		$classes++;
-	}
-	if ($symbols > 0) {
-		$classes++;
-	}
+	$classes = getNumberOfCharacterClasses($password);
 	if (($cfg->checkedRulesCount == -1) && ($classes < $cfg->passwordMinClasses)) {
 		return sprintf(_('The password is too weak. You have to enter at least %s different character classes (upper/lower case, numbers and symbols).'), $cfg->passwordMinClasses);
 	}

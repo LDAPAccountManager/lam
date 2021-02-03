@@ -6,7 +6,7 @@ use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2019  Roland Gruber
+  Copyright (C) 2013 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -36,6 +36,11 @@ use \LAM\TYPES\TypeManager;
 * @package modules
 */
 class windowsGroup extends baseModule {
+
+	/**
+	 * These attributes will be ignored by default if a new account is copied from an existing one.
+	 */
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('sAMAccountName', 'msSFU30Name', 'msSFU30NisDomain');
 
 	/** possible group types (e.g. distribution) */
 	private $groupTypes;
@@ -284,6 +289,14 @@ class windowsGroup extends baseModule {
 		$this->messages['groupType'][0] = array('ERROR', _('Account %s:') . ' windowsGroup_groupType', _('Please enter a valid group type.'));
 		$this->messages['msSFU30Name'][0] = array('ERROR', _('NIS name'), _('NIS name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['msSFU30Name'][1] = array('ERROR', _('Account %s:') . ' windowsGroup_msSFU30Name', _('NIS name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
+		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
 
 	/**

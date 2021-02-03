@@ -33,6 +33,11 @@
 */
 class pykotaPrinter extends baseModule {
 
+	/**
+	 * These attributes will be ignored by default if a new account is copied from an existing one.
+	 */
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('pykotaPrinterName');
+
 	/** cache for existing printers (array(dn => array(cn => ..., description => ...))) */
 	private $printerCache = null;
 	/** printer group cache */
@@ -217,6 +222,14 @@ class pykotaPrinter extends baseModule {
 		$this->messages['pykotaPricePerPage'][1] = array('ERROR', _('Account %s:') . ' pykotaPrinter_pykotaPricePerPage', _('Please enter a valid number (e.g. "1.5").'));
 		$this->messages['pykotaPassThrough'][0] = array('ERROR', _('Account %s:') . ' pykotaPrinter_pykotaPassThrough', _('Please enter "Yes" or "No".'));
 		$this->messages['uniqueMember'][0] = array('ERROR', _('Account %s:') . ' pykotaPrinter_uniqueMember', _('Unable to find a printer with name "%s".'));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
+		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
 
 	/**

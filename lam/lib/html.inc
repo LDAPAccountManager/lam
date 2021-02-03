@@ -662,7 +662,7 @@ class htmlInputField extends htmlElement {
 			';
 		}
 		if ($this->checkPasswordStrength) {
-			$query = '?noselfservice=1';
+			$query = '?admin=1';
 			if (isSelfService()) {
 				$query = '?selfservice=1';
 			}

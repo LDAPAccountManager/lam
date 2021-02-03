@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2009 - 2020  Roland Gruber
+                2009 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -430,6 +430,32 @@ function checkPasswordHash($type, $hash, $password) {
 			return false;
 	}
 	return false;
+}
+
+/**
+ * Returns the number of character classes in a password.
+ *
+ * @param string $password password
+ * @return int number of classes
+ */
+function getNumberOfCharacterClasses($password) : int {
+	if (($password === null) || ($password === '')) {
+		return 0;
+	}
+	$classesCount = 0;
+	if (preg_match("/[a-z]/", $password)) {
+		$classesCount++;
+	}
+	if (preg_match("/[A-Z]/", $password)) {
+		$classesCount++;
+	}
+	if (preg_match("/[0-9]/", $password)) {
+		$classesCount++;
+	}
+	if (preg_match("/[^a-z0-9]/i", $password)) {
+		$classesCount++;
+	}
+	return $classesCount;
 }
 
 /**
