@@ -66,7 +66,7 @@ abstract class baseModule {
 		'cn', 'userPassword', 'sn', 'givenName', 'initials', 'telephoneNumber',
 		'homePhone', 'mobile', 'facsimileTelephoneNumber', 'pager', 'mail',
 		'employeeNumber', 'userCertificate;binary', 'userCertificate',
-		'homeDirectory', 'unixHomeDirectory');
+		'homeDirectory', 'unixHomeDirectory', 'jpegPhoto');
 
 	/** includes all meta data provided by the sub class */
 	protected $meta;

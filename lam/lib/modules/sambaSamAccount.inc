@@ -41,6 +41,14 @@ include_once('sambaSamAccount/sambaMungedDial.inc');
 */
 class sambaSamAccount extends baseModule implements passwordService {
 
+	/**
+	 * These attributes will be ignored by default if a new account is copied from an existing one.
+	 */
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('sambaSID', 'sambaLMPassword', 'sambaNTPassword',
+		'sambaPwdLastSet', 'sambaPwdLastSet', 'displayName', 'sambaHomePath', 'sambaProfilePath',
+		'sambaPasswordHistory', 'sambaPwdCanChange', 'sambaPwdMustChange', 'sambaKickoffTime',
+		'sambaLogonTime', 'sambaLogoffTime');
+
 	// Variables
 	/** use no password? */
 	private $nopwd;
@@ -556,6 +564,14 @@ class sambaSamAccount extends baseModule implements passwordService {
 			);
 		}
 		return $return;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
+		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
 
 	/**

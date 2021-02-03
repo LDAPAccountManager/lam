@@ -5,7 +5,7 @@ use \LAM\PDF\PDFTableRow;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2018 - 2019  Roland Gruber
+  Copyright (C) 2018 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -132,6 +132,14 @@ class yubiKeyUser extends baseModule {
 	protected function load_Messages() {
 		$this->messages['yubiKeyId'][0] = array('ERROR', _('Please enter a valid key id.'));
 		$this->messages['yubiKeyId'][1] = array('ERROR', _('Account %s:') . ' yubiKeyUser_yubiKeyId', _('Please enter a valid key id.'));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, array($this->getAttributeName()));
+		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
 
 	/**
