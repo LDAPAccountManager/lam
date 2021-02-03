@@ -3,7 +3,7 @@ use \LAM\TYPES\TypeManager;
 /*
  * This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
  * Copyright (C) 2017 Lars Althof
- *               2017 - 2019 Roland Gruber
+ *               2017 - 2021 Roland Gruber
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,11 @@ use \LAM\TYPES\TypeManager;
  * @author Roland Gruber
  */
 class courierMailAccount extends baseModule {
+
+	/**
+	 * These attributes will be ignored by default if a new account is copied from an existing one.
+	 */
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('mailbox');
 
 	/**
 	* Creates a new courierMailAccount object.
@@ -213,6 +218,14 @@ class courierMailAccount extends baseModule {
 		$this->messages['homeDirectory'][0] = array('ERROR', _('Homedirectory contains invalid characters.')); // third array value is set dynamically
 		$this->messages['homeDirectory'][1] = array('ERROR', _('Account %s:') . ' courierMailAccount_homeDirectory', _('Homedirectory contains invalid characters.'));
 		$this->messages['boolean'][0] = array('ERROR', _('Account %s:') . ' courierMailAccount_%s', _('This value can only be "true" or "false".'));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
+		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
 
 	/**

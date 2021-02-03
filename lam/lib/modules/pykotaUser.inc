@@ -6,7 +6,7 @@ use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2020  Roland Gruber
+  Copyright (C) 2013 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -36,6 +36,12 @@ use \LAM\TYPES\TypeManager;
 * @package modules
 */
 class pykotaUser extends baseModule {
+
+	/**
+	 * These attributes will be ignored by default if a new account is copied from an existing one.
+	 */
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('pykotaUserName', 'pykotaBalance', 'pykotaLifeTimePaid',
+		'pykotaPayments');
 
 	/** cache for uid attribute */
 	private $uidCache = null;
@@ -288,6 +294,14 @@ class pykotaUser extends baseModule {
 		$this->messages['pykotaOverCharge'][1] = array('ERROR', _('Account %s:') . ' pykotaUser_pykotaOverCharge', _('Please enter a valid number (e.g. "1.5").'));
 		$this->messages['pykotaPayments'][0] = array('ERROR', _('Payment'), _('Please enter a valid number (e.g. "1.5").'));
 		$this->messages['jobSuffix'][0] = array('ERROR', _('Job suffix'), _('Please enter a valid job suffix.'));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
+		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
 
 	/**
@@ -694,7 +708,7 @@ class pykotaUser extends baseModule {
 				$this->attributes['objectClass'][] = 'pykotaAccountBalance';
 			}
 		}
-		if (!empty($profile['pykotaUser_pykotaBalance']) && empty($this->attributes['pykotaBalance'][0])) {
+		if (isset($profile['pykotaUser_pykotaBalance'][0]) && ($profile['pykotaUser_pykotaBalance'][0] !== '') && empty($this->attributes['pykotaBalance'][0])) {
 			$amount = $profile['pykotaUser_pykotaBalance'][0];
 			if (strpos($amount, '.') === false) {
 				$amount .= '.0';

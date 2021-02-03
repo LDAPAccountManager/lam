@@ -6,7 +6,7 @@ use \LAM\PDF\PDFTableRow;
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2009 - 2012  Pavel Pozdniak
-                2009 - 2020  Roland Gruber
+                2009 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -40,6 +40,11 @@ use \LAM\PDF\PDFTableRow;
  * @package modules
  */
 class asteriskExtension extends baseModule {
+
+    /**
+     * These attributes will be ignored by default if a new account is copied from an existing one.
+     */
+    const ATTRIBUTES_TO_IGNORE_ON_COPY = array('AstExtension');
 
     /** if true then only Asterisk accounts are shown as possible owners */
     private $filterOwnerForAsteriskAccounts = true;
@@ -193,6 +198,14 @@ class asteriskExtension extends baseModule {
         $this->messages['AstExtensionAstPriority'][0] = array('ERROR', _('This pair of extension name and priority already exists.'));
         $this->messages['member'][0] = array('ERROR', _('Please add at least one extension owner.'));
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+        $attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
+        parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
     }
 
     /**

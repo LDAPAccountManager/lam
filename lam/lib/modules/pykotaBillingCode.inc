@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2020  Roland Gruber
+  Copyright (C) 2013 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -32,6 +32,11 @@
 * @package modules
 */
 class pykotaBillingCode extends baseModule {
+
+	/**
+	 * These attributes will be ignored by default if a new account is copied from an existing one.
+	 */
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('pykotaBalance', 'pykotaPageCounter', 'pykotaBillingCode');
 
 	/** cache for existing codes (array(dn1 => pykotaBillingCode1, dn2 => pykotaBillingCode2)) */
 	private $codeCache = null;
@@ -127,6 +132,14 @@ class pykotaBillingCode extends baseModule {
 		$this->messages['pykotaBillingCode'][1] = array('ERROR', _('Account %s:') . ' pykotaBillingCode_cn', _('Billing code contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['pykotaBillingCode'][2] = array('ERROR', _('Billing code'), _('Billing code already exists!'));
 		$this->messages['pykotaBillingCode'][3] = array('ERROR', _('Account %s:') . ' pykotaBillingCode_cn', _('Billing code already exists!'));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
+		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
 
 	/**

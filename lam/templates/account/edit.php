@@ -89,29 +89,22 @@ foreach ($_SESSION as $key => $value) {
 
 $typeManager = new TypeManager();
 //load account
-if (isset($_GET['DN'])) {
+
+if (!empty($_GET['DN'])) {
 	$type = $typeManager->getConfiguredType($_GET['type']);
-	$DN = str_replace("\\'", '', $_GET['DN']);
+	$dn = cleanDn($_GET['DN']);
 	if ($type->isHidden()) {
 		logNewMessage(LOG_ERR, 'User tried to access hidden account type: ' . $type->getId());
 		die();
 	}
-	if ($_GET['DN'] == $DN) {
-		if (substr($DN, 0, 1) === "'") {
-			$DN = substr($DN, 1);
-		}
-		if (substr($DN, -1, 1) === "'") {
-			$DN = substr($DN, 0, -1);
-		}
-	}
 	$suffix = strtolower($type->getSuffix());
-	$DNlower = strtolower($DN);
+	$DNlower = strtolower($dn);
 	if (strpos($DNlower, $suffix) !== (strlen($DNlower) - strlen($suffix))) {
 		logNewMessage(LOG_ERR, 'User tried to access entry of type ' . $type->getId() . ' outside suffix ' . $suffix);
 		die();
 	}
 	$_SESSION[$sessionKey] = new accountContainer($type, $sessionKey);
-	$result = $_SESSION[$sessionKey]->load_account($DN);
+	$result = $_SESSION[$sessionKey]->load_account($dn);
 	if (sizeof($result) > 0) {
 		include __DIR__ . '/../../lib/adminHeader.inc';
 		foreach ($result as $message) {
@@ -134,8 +127,36 @@ elseif (empty($_POST)) {
 	}
 	$_SESSION[$sessionKey] = new accountContainer($type, $sessionKey);
 	$_SESSION[$sessionKey]->new_account();
+	if (!empty($_GET['copyDn'])) {
+		$copyDn = cleanDn($_GET['copyDn']);
+		$copyDnLower = strtolower($copyDn);
+		$suffix = strtolower($type->getSuffix());
+		if (strpos($copyDnLower, $suffix) !== (strlen($copyDnLower) - strlen($suffix))) {
+			logNewMessage(LOG_ERR, 'User tried to access entry of type ' . $type->getId() . ' outside suffix ' . $suffix);
+			die();
+		}
+		$_SESSION[$sessionKey]->copyFromExistingAccount($copyDn);
+	}
 }
 
 // show account page
 $_SESSION[$sessionKey]->continue_main();
 
+/**
+ * Cleans the given DN from GET.
+ *
+ * @param string $dn DN
+ * @return string cleaned DN
+ */
+function cleanDn(string $dn) : string {
+	$cleanDn = str_replace("\\'", '', $dn);
+	if ($dn == $cleanDn) {
+		if (substr($cleanDn, 0, 1) === "'") {
+			$cleanDn = substr($cleanDn, 1);
+		}
+		if (substr($cleanDn, -1, 1) === "'") {
+			$cleanDn = substr($cleanDn, 0, -1);
+		}
+	}
+	return $cleanDn;
+}

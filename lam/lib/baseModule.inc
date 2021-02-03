@@ -7,7 +7,7 @@ use LAM\PDF\PDFImage;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2020  Roland Gruber
+  Copyright (C) 2003 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -58,6 +58,15 @@ include_once('pdf.inc');
 * @author Roland Gruber
 */
 abstract class baseModule {
+
+	/**
+	 * These attributes will be ignored by default if a new account is copied from an existing one.
+	 */
+	const ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT = array('uid', 'uidNumber', 'gid', 'gidNumber',
+		'cn', 'userPassword', 'sn', 'givenName', 'initials', 'telephoneNumber',
+		'homePhone', 'mobile', 'facsimileTelephoneNumber', 'pager', 'mail',
+		'employeeNumber', 'userCertificate;binary', 'userCertificate',
+		'homeDirectory', 'unixHomeDirectory', 'jpegPhoto');
 
 	/** includes all meta data provided by the sub class */
 	protected $meta;
@@ -183,6 +192,37 @@ abstract class baseModule {
 			if (isset($attributes[$attributeNames[$i]])) {
 				$this->attributes[$attributeNames[$i]] = $attributes[$attributeNames[$i]];
 				$this->orig[$attributeNames[$i]] = $attributes[$attributeNames[$i]];
+			}
+		}
+	}
+
+	/**
+	 * Loads the LDAP data from an account to copy.
+	 *
+	 * @param array $ldapAttributes LDAP attributes of copy
+	 * @param array $attributesToIgnore list of attributes to ignore during load (defaults to self::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT)
+	 */
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+		if (empty($attributesToIgnore)) {
+			$attributesToIgnore = self::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT;
+		}
+		$typeId = $this->getAccountContainer()->get_type()->getId();
+		$validAttributeNames = array_merge($this->getManagedAttributes($typeId), $this->getManagedHiddenAttributes($typeId));
+		foreach ($ldapAttributes as $ldapAttribute => $values) {
+			if (in_array_ignore_case($ldapAttribute, $attributesToIgnore)) {
+				continue;
+			}
+			if (!in_array($ldapAttribute, $validAttributeNames)) {
+				continue;
+			}
+			$this->attributes[$ldapAttribute] = $values;
+		}
+		$objectClassesToCopy = $ldapAttributes['objectClass'];
+		$validObjectClasses = $this->getManagedObjectClasses($typeId);
+		foreach ($validObjectClasses as $validObjectClass) {
+			if (in_array_ignore_case($validObjectClass, $objectClassesToCopy) &&
+				(empty($this->attributes['objectClass']) || !in_array_ignore_case($validObjectClass, $this->attributes['objectClass']))) {
+				$this->attributes['objectClass'][] = $validObjectClass;
 			}
 		}
 	}

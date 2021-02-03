@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2019  Roland Gruber
+  Copyright (C) 2004 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -32,6 +32,11 @@
 * @package modules
 */
 class ieee802device extends baseModule {
+
+	/**
+	 * These attributes will be ignored by default if a new account is copied from an existing one.
+	 */
+	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('macAddress');
 
 	/**
 	* Returns true if this module can manage accounts of the current type, otherwise false.
@@ -93,6 +98,14 @@ class ieee802device extends baseModule {
 	function load_Messages() {
 		$this->messages['macAddress'][0] = array('ERROR', 'MAC address is invalid!');  // third array value is set dynamically
 		$this->messages['macAddress'][1] = array('ERROR', _('Account %s:') . ' ieee802Device_mac', 'MAC address is invalid!');
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
+		$attributesToIgnore = array_merge(baseModule::ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT, self::ATTRIBUTES_TO_IGNORE_ON_COPY);
+		parent::loadAttributesFromAccountCopy($ldapAttributes, $attributesToIgnore);
 	}
 
 	/**
