@@ -1587,11 +1587,21 @@ class LAMConfig {
 	 * @return RemoteServerConfiguration[] servers
 	 */
 	public function getConfiguredScriptServers() {
+		return LAMConfig::parseConfiguredScriptServers($this->scriptServer);
+	}
+
+	/**
+	 * Parses the configured server config.
+	 *
+	 * @param string $value configured value
+	 * @return RemoteServerConfiguration[] configurations
+	 */
+	public static function parseConfiguredScriptServers($value) : array {
 		$servers = array();
-		if (empty($this->scriptServer)) {
+		if (empty($value)) {
 			return $servers;
 		}
-		$serverChunks = explode(';', $this->scriptServer);
+		$serverChunks = explode(';', $value);
 		foreach ($serverChunks as $serverChunk) {
 			if (empty($serverChunk)) {
 				continue;
@@ -1628,9 +1638,23 @@ class LAMConfig {
 	* @return boolean true if $value has correct format
 	*/
 	public function set_scriptServers($value) {
+		$parsedValue = LAMConfig::parseScriptServerValue($value);
+		if ($parsedValue === false) {
+			return false;
+		}
+		$this->scriptServer = $parsedValue;
+		return true;
+	}
+
+	/**
+	 * Parses the script server value from input field.
+	 *
+	 * @param $value input field value
+	 * @return string|false value to store in configuration
+	 */
+	public static function parseScriptServerValue($value) {
 		if (!$value) {
-			$this->scriptServer = ""; // optional parameter
-			return true;
+			return ""; // optional parameter
 		}
 		// Explode the value to an array
 		$array_string = explode(";", $value);
@@ -1668,8 +1692,7 @@ class LAMConfig {
 			}
 			// Check that the array is not empty
 			if (!empty($array_string)) {
-				$this->scriptServer = implode(";", $valid_ips);
-				return true;
+				return implode(";", $valid_ips);
 			}
 			else {
 				// The array is empty, there was no valid IP
