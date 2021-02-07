@@ -643,22 +643,30 @@ window.lam.filterSelect.activate = function (filterInput, select, event) {
 window.lam.filterSelect.filterStandard = function(inputField, selectField) {
 	// if values were not yet saved, save them
 	if (!selectField.data('options')) {
-		var options = [];
+		var options = {};
 		selectField.find('option').each(function() {
-			options.push({value: $(this).val(), text: $(this).text()});
+			options[$(this).val()] = {selected: this.selected, text: $(this).text()};
 		});
 		selectField.data('options', options);
 	}
+	// save selected values
+	var storedOptions = selectField.data('options');
+	selectField.find('option').each(function() {
+		storedOptions[$(this).val()].selected = this.selected;
+	});
+	selectField.data('options', storedOptions);
 	// get matching values
-	var list = selectField.empty().scrollTop(0).data('options');
+	selectField.empty().scrollTop(0);
 	var search = jQuery.trim(inputField.val());
 	var regex = new RegExp(search,'gi');
-	jQuery.each(list, function(i) {
-		var option = list[i];
+	jQuery.each(storedOptions, function(index, option) {
 		if(option.text.match(regex) !== null) {
-			selectField.append(
-					jQuery('<option>').text(option.text).val(option.value)
-			);
+			var newOption = jQuery('<option>');
+			newOption.text(option.text).val(index);
+			if (option.selected) {
+				newOption.attr('selected', 'selected')
+			}
+			selectField.append(newOption);
 		}
 	});
 }
