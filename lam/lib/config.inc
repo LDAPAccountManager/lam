@@ -1587,16 +1587,21 @@ class LAMConfig {
 	 * @return RemoteServerConfiguration[] servers
 	 */
 	public function getConfiguredScriptServers() {
-		return LAMConfig::parseConfiguredScriptServers($this->scriptServer);
+		return LAMConfig::parseConfiguredScriptServers($this->scriptServer, $this->get_scriptPath(),
+			$this->getScriptUserName(), $this->getScriptSSHKey(), $this->getScriptSSHKeyPassword());
 	}
 
 	/**
 	 * Parses the configured server config.
 	 *
 	 * @param string $value configured value
+	 * @param string $scriptPath script path
+	 * @param string $userName user name
+	 * @param string $sshKey SSH key path
+	 * @param string $sshKeyPassword SSH key password
 	 * @return RemoteServerConfiguration[] configurations
 	 */
-	public static function parseConfiguredScriptServers($value) : array {
+	public static function parseConfiguredScriptServers($value, $scriptPath, $userName, $sshKey, $sshKeyPassword) : array {
 		$servers = array();
 		if (empty($value)) {
 			return $servers;
@@ -1610,7 +1615,7 @@ class LAMConfig {
 			$serverName = $serverSettings[0];
 			$serverLabel = isset($serverSettings[1]) ? $serverSettings[1] : null;
 			$serverHomedirPrefix = isset($serverSettings[2]) ? $serverSettings[2] : null;
-			$servers[] = new RemoteServerConfiguration($serverName, $serverLabel, $serverHomedirPrefix);
+			$servers[] = new RemoteServerConfiguration($serverName, $serverLabel, $serverHomedirPrefix, $scriptPath, $userName, $sshKey, $sshKeyPassword);
 		}
 		return $servers;
 	}
