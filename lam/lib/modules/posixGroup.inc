@@ -1336,9 +1336,9 @@ class posixGroup extends baseModule implements passwordService {
 		$this->cachedUserToGIDList = array();
 		$typeManager = new TypeManager();
 		foreach ($typeManager->getConfiguredTypesForScope('user') as $type) {
-			$filter = '(&(objectClass=posixAccount)(gidNumber=*))';
+			$filter = '(&(objectClass=posixAccount)(gidNumber=*)(uid=*))';
 			if ($this->isWindows()) {
-				$filter = '(&(objectClass=user)(gidNumber=*))';
+				$filter = '(&(objectClass=user)(gidNumber=*)(uid=*))';
 			}
 			$result = searchLDAPByFilter($filter, array('uid', 'gidNumber', 'cn'), array('user'));
 			$resultCount = sizeof($result);
