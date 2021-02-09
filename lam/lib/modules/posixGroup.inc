@@ -6,7 +6,7 @@ use LAM\TYPES\ConfiguredType;
 
 This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 Copyright (C) 2003 - 2006  Tilo Lutz
-              2007 - 2020  Roland Gruber
+              2007 - 2021  Roland Gruber
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -823,13 +823,14 @@ class posixGroup extends baseModule implements passwordService {
 		if (isset($_POST['removePassword'])) {
 			unset($this->attributes[$this->passwordAttrName]);
 		}
-		if (isset($_POST['changegids'])) $this->changegids=true;
-		else $this->changegids=false;
+		if (isset($_POST['changegids'])) {
+			$this->changegids = true;
+		}
+		else {
+			$this->changegids = false;
+		}
 		if (!isset($this->attributes['gidNumber'][0]) || ($this->attributes['gidNumber'][0] != $_POST['gidNumber'])) {
 			// Check if GID is valid. If none value was entered, the next usable value will be inserted
-			// load min and max GID number
-			$minID = intval($this->moduleSettings['posixGroup_' . $typeId . '_minGID'][0]);
-			$maxID = intval($this->moduleSettings['posixGroup_' . $typeId . '_maxGID'][0]);
 			$this->attributes['gidNumber'][0] = $_POST['gidNumber'];
 			if ($this->attributes['gidNumber'][0] == '') {
 				// No id-number given, find free GID
@@ -842,8 +843,10 @@ class posixGroup extends baseModule implements passwordService {
 						$errors[] = $this->messages['gidNumber'][3];
 					}
 				}
-				else $this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
-				// old account -> return id-number which has been used
+				else {
+					// old account -> return id-number which has been used
+					$this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
+				}
 			}
 			else {
 				$gids = $this->getGIDs($this->getAccountContainer()->get_type());
@@ -851,10 +854,16 @@ class posixGroup extends baseModule implements passwordService {
 				if ($this->getAccountContainer()->isNewAccount || !isset($this->orig['gidNumber'][0]) || ($this->orig['gidNumber'][0] != $this->attributes['gidNumber'][0])) {
 					// check range
 					if ($this->moduleSettings['posixGroup_' . $typeId . '_gidGenerator'][0] == 'range') {
+						$minID = intval($this->moduleSettings['posixGroup_' . $typeId . '_minGID'][0]);
+						$maxID = intval($this->moduleSettings['posixGroup_' . $typeId . '_maxGID'][0]);
 						if (($this->attributes['gidNumber'][0] < $minID) || ($this->attributes['gidNumber'][0] > $maxID) || !is_numeric($this->attributes['gidNumber'][0])) {
 							$errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
-							if (isset($this->orig['gidNumber'][0])) $this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
-							else unset($this->attributes['gidNumber'][0]);
+							if (isset($this->orig['gidNumber'][0])) {
+								$this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
+							}
+							else {
+								unset($this->attributes['gidNumber'][0]);
+							}
 						}
 					}
 					// $uids is always an array but not if no entries were found
