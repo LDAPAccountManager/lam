@@ -1,4 +1,7 @@
 <?php
+
+use LAM\REMOTE\Remote;
+use LAM\REMOTE\RemoteServerConfiguration;
 use \LAM\TYPES\TypeManager;
 use function LAM\TYPES\getScopeFromTypeId;
 use LAM\TYPES\ConfiguredType;
@@ -769,18 +772,9 @@ class posixAccount extends baseModule implements passwordService {
 					$messages[] = array('ERROR', $e->getTitle(), $e->getMessage());
 					continue;
 				}
-				$result = $remote->execute(
-					implode(
-						self::$SPLIT_DELIMITER,
-						array(
-							$this->attributes['uid'][0],
-							"home",
-							"add",
-							$lamdaemonServer->getHomeDirPrefix() . $this->attributes[$homeDirAttr][0],
-							"0".$_SESSION['config']->get_scriptRights(),
-							$this->attributes['uidNumber'][0],
-							$this->attributes['gidNumber'][0])
-						));
+				$result = self::createHomeDirectory($remote, $lamdaemonServer, $this->attributes['uid'][0],
+					$this->attributes[$homeDirAttr][0], $this->attributes['uidNumber'][0],
+					$this->attributes['gidNumber'][0], $_SESSION['config']->get_scriptRights());
 				$remote->disconnect();
 				// lamdaemon results
 				if (!empty($result)) {
@@ -930,6 +924,37 @@ class posixAccount extends baseModule implements passwordService {
 			}
 		}
 		return $messages;
+	}
+
+	/**
+	 * Creates a user home directory.
+	 *
+	 * @param Remote $remote remote connection
+	 * @param RemoteServerConfiguration $config remote configuration
+	 * @param string $userName user name
+	 * @param string $path home directory path
+	 * @param string $uidNumber uid number
+	 * @param string $gidNumber gid number
+	 * @param string $rights rights (e.g. 750)
+	 * @return string output
+	 */
+	public static function createHomeDirectory(Remote $remote, RemoteServerConfiguration $config, string $userName,
+	                                           string $path, string $uidNumber, string $gidNumber, string $rights) {
+		if (strpos($rights, '0') !== 0) {
+			$rights = '0' . $rights;
+		}
+		return $remote->execute(
+			implode(
+				self::$SPLIT_DELIMITER,
+				array(
+					$userName,
+					"home",
+					"add",
+					$config->getHomeDirPrefix() . $path,
+					$rights,
+					$uidNumber,
+					$gidNumber)
+		));
 	}
 
 	/**
@@ -1602,18 +1627,9 @@ class posixAccount extends baseModule implements passwordService {
 					$return[] = array('ERROR', $e->getTitle(), $e->getMessage());
 					continue;
 				}
-				$result = $remote->execute(
-					implode(
-						self::$SPLIT_DELIMITER,
-						array(
-							$this->attributes['uid'][0],
-							"home",
-							"add",
-							$lamdaemonServers[$i]->getHomeDirPrefix() . $this->attributes[$homeDirAttr][0],
-							"0".$_SESSION['config']->get_scriptRights(),
-							$this->attributes['uidNumber'][0],
-							$this->attributes['gidNumber'][0])
-					));
+				$result = self::createHomeDirectory($remote, $lamdaemonServers[$i], $this->attributes['uid'][0],
+					$this->attributes[$homeDirAttr][0], $this->attributes['uidNumber'][0],
+					$this->attributes['gidNumber'][0], $_SESSION['config']->get_scriptRights());
 				$remote->disconnect();
 				// lamdaemon results
 				if (!empty($result)) {
@@ -3047,19 +3063,9 @@ class posixAccount extends baseModule implements passwordService {
 				$remote = new \LAM\REMOTE\Remote();
 				$remoteServer = $_SESSION['config']->getScriptServerByName($data[$pos][$ids['posixAccount_createHomeDir']]);
 				$remote->connect($remoteServer);
-				$result = $remote->execute(
-					implode(
-						self::$SPLIT_DELIMITER,
-						array(
-							$data[$pos][$ids['posixAccount_userName']],
-							"home",
-							"add",
-							$remoteServer->getHomeDirPrefix() . $accounts[$pos][$homeDirAttr],
-							"0".$_SESSION['config']->get_scriptRights(),
-							$accounts[$pos]['uidNumber'],
-							$accounts[$pos]['gidNumber'],
-						)
-					));
+				$result = self::createHomeDirectory($remote, $remoteServer, $data[$pos][$ids['posixAccount_userName']],
+					$accounts[$pos][$homeDirAttr], $accounts[$pos]['uidNumber'], $accounts[$pos]['gidNumber'],
+					$_SESSION['config']->get_scriptRights());
 				$remote->disconnect();
 				$errors = array();
 				if (!empty($result)) {
