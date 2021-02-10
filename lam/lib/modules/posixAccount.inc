@@ -354,11 +354,11 @@ class posixAccount extends baseModule implements passwordService {
 				"Text" => _("Here you can enter a list of additional group memberships. The group names are separated by commas.")
 			),
 			'homeDirectory_upload' => array(
-				"Headline" => _("Home directory"),
+				"Headline" => _("Home directory"), 'attr' => 'homeDirectory',
 				"Text" => _("Please enter the path to the user's home directory.")
 			),
 			'homeDirectory' => array(
-					"Headline" => _("Home directory"),
+					"Headline" => _("Home directory"), 'attr' => 'homeDirectory',
 					"Text" => _("Please enter the path to the user's home directory.")
 			),
 			'deletehomedir' => array(
@@ -416,7 +416,7 @@ class posixAccount extends baseModule implements passwordService {
 					"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, @.-_. If user name is already used user name will be expanded with a number. The next free number will be used.")
 				),
 				'gecos' => array(
-					"Headline" => _("Gecos"),
+					"Headline" => _("Gecos"), 'attr' => 'gecos',
 					"Text" => _("User description. If left empty first and last name will be used.")
 				),
 				'gidNumber' => array(
@@ -424,7 +424,7 @@ class posixAccount extends baseModule implements passwordService {
 					"Text" => _("The primary group the user should be member of.")
 				),
 				'userPassword' => array(
-					"Headline" => _("Password"),
+					"Headline" => _("Password"), 'attr' => 'userPassword',
 					"Text" => _("Please enter the password which you want to set for this account.")
 				),
 				'userPassword_lock' => array(
@@ -432,7 +432,7 @@ class posixAccount extends baseModule implements passwordService {
 					"Text" => _("If checked account will be deactivated by putting a \"!\" before the encrypted password.")
 				),
 				'loginShell' => array(
-					"Headline" => _("Login shell"),
+					"Headline" => _("Login shell"), 'attr' => 'loginShell',
 					"Text" => _("To disable login use /bin/false.")
 				),
 				'addgroup' => array(
@@ -454,7 +454,7 @@ class posixAccount extends baseModule implements passwordService {
 					"Text" => _("Host name of the host which should be created. Valid characters are: a-z,A-Z,0-9, .-_$. Host names are always ending with $. If last character is not $ it will be added. If host name is already used host name will be expanded with a number. The next free number will be used.")
 				),
 				'gecos' => array(
-					"Headline" => _("Gecos"),
+					"Headline" => _("Gecos"), 'attr' => 'gecos',
 					"Text" => _("Host description. If left empty host name will be used.")
 				),
 				'gidNumber' => array(
@@ -462,7 +462,7 @@ class posixAccount extends baseModule implements passwordService {
 					"Text" => _("The primary group the host should be member of.")
 				),
 				'description' => array (
-					"Headline" => _("Description"),
+					"Headline" => _("Description"), 'attr' => 'description',
 					"Text" => _("Host description. If left empty host name will be used.")
 				),
 				'cn' => array (
