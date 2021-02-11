@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2020  Roland Gruber
+  Copyright (C) 2010 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -96,6 +96,10 @@ if (!function_exists('json_encode')) {
 // check if PHP has GMP support
 if (!extension_loaded('gmp')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no GMP support!", "Please install the GMP extension for PHP.");
+}
+// check if PHP has filter support
+if (!extension_loaded('filter')) {
+	$criticalErrors[] = array("ERROR", "Your PHP has no filter support!", "Please install the filter extension for PHP.");
 }
 // check file permissions
 $writableDirs = array('sess', 'tmp');
