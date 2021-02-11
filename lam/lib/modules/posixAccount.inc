@@ -940,6 +940,9 @@ class posixAccount extends baseModule implements passwordService {
 	 */
 	public static function createHomeDirectory(Remote $remote, RemoteServerConfiguration $config, string $userName,
 	                                           string $path, string $uidNumber, string $gidNumber, string $rights) {
+		if ($rights == '') {
+			$rights = '750';
+		}
 		if (strpos($rights, '0') !== 0) {
 			$rights = '0' . $rights;
 		}
