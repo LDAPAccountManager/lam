@@ -538,6 +538,49 @@
 
         <para/>
       </section>
+
+      <section id="selfservice_lamdaemon">
+        <title>Lamdaemon</title>
+
+        <para>This section is only required if you want to display file system
+        quotas or create home directories via lamdaemon. </para>
+
+        <para>Server list format options:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>"server": "server" is the DNS name of your script
+            server</para>
+          </listitem>
+
+          <listitem>
+            <para>"server:NAME": NAME is the display name of this
+            server</para>
+          </listitem>
+
+          <listitem>
+            <para>"server:NAME:/prefix": /prefix is the directory prefix for
+            all operations. E.g. creating a home directory "/home/user" would
+            create "/prefix/home/user" then.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>You need to provide a fixed user name.</para>
+
+        <para>Self service requires a SSH connection with SSH key. Please
+        generate a SSH key pair and provide the location to the <emphasis
+        role="bold">private</emphasis> key file. If the key is protected by a
+        password you can also specify it here.</para>
+
+        <para>In case you want to create home directories during user self
+        registration please provide the rights for it (e.g. 750).</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/selfServiceLamdaemon.png"/>
+          </imageobject>
+        </mediaobject>
+      </section>
     </section>
 
     <section>
@@ -884,6 +927,20 @@
               <entry>Mail routing address (read-only)</entry>
 
               <entry/>
+            </row>
+
+            <row>
+              <entry><inlinemediaobject>
+                  <imageobject>
+                    <imagedata fileref="images/schema_quota.png"/>
+                  </imageobject>
+                </inlinemediaobject> Quota</entry>
+
+              <entry>Quota (read-only)</entry>
+
+              <entry>Displays the user's system quote. Requires <link
+              linkend="selfservice_lamdaemon">lamdaemon
+              configuration</link>.</entry>
             </row>
 
             <row>
@@ -1591,6 +1648,15 @@
       created to manage all his attributes.</para>
 
       <literallayout>
+</literallayout>
+
+      <para><emphasis>Create home directory:</emphasis> This will create the
+      home directory via <link
+      linkend="selfservice_lamdaemon">lamdaemon</link>. The user must have the
+      following attributes: uid, uidNumber, gidNumber, homeDirectory</para>
+
+      <literallayout>
+
 </literallayout>
 
       <para><emphasis role="bold">Approval</emphasis></para>
