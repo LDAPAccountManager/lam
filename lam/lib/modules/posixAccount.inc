@@ -1,4 +1,7 @@
 <?php
+
+use LAM\REMOTE\Remote;
+use LAM\REMOTE\RemoteServerConfiguration;
 use \LAM\TYPES\TypeManager;
 use function LAM\TYPES\getScopeFromTypeId;
 use LAM\TYPES\ConfiguredType;
@@ -354,11 +357,11 @@ class posixAccount extends baseModule implements passwordService {
 				"Text" => _("Here you can enter a list of additional group memberships. The group names are separated by commas.")
 			),
 			'homeDirectory_upload' => array(
-				"Headline" => _("Home directory"),
+				"Headline" => _("Home directory"), 'attr' => 'homeDirectory',
 				"Text" => _("Please enter the path to the user's home directory.")
 			),
 			'homeDirectory' => array(
-					"Headline" => _("Home directory"),
+					"Headline" => _("Home directory"), 'attr' => 'homeDirectory',
 					"Text" => _("Please enter the path to the user's home directory.")
 			),
 			'deletehomedir' => array(
@@ -416,7 +419,7 @@ class posixAccount extends baseModule implements passwordService {
 					"Text" => _("User name of the user who should be created. Valid characters are: a-z,A-Z,0-9, @.-_. If user name is already used user name will be expanded with a number. The next free number will be used.")
 				),
 				'gecos' => array(
-					"Headline" => _("Gecos"),
+					"Headline" => _("Gecos"), 'attr' => 'gecos',
 					"Text" => _("User description. If left empty first and last name will be used.")
 				),
 				'gidNumber' => array(
@@ -424,7 +427,7 @@ class posixAccount extends baseModule implements passwordService {
 					"Text" => _("The primary group the user should be member of.")
 				),
 				'userPassword' => array(
-					"Headline" => _("Password"),
+					"Headline" => _("Password"), 'attr' => 'userPassword',
 					"Text" => _("Please enter the password which you want to set for this account.")
 				),
 				'userPassword_lock' => array(
@@ -432,7 +435,7 @@ class posixAccount extends baseModule implements passwordService {
 					"Text" => _("If checked account will be deactivated by putting a \"!\" before the encrypted password.")
 				),
 				'loginShell' => array(
-					"Headline" => _("Login shell"),
+					"Headline" => _("Login shell"), 'attr' => 'loginShell',
 					"Text" => _("To disable login use /bin/false.")
 				),
 				'addgroup' => array(
@@ -454,7 +457,7 @@ class posixAccount extends baseModule implements passwordService {
 					"Text" => _("Host name of the host which should be created. Valid characters are: a-z,A-Z,0-9, .-_$. Host names are always ending with $. If last character is not $ it will be added. If host name is already used host name will be expanded with a number. The next free number will be used.")
 				),
 				'gecos' => array(
-					"Headline" => _("Gecos"),
+					"Headline" => _("Gecos"), 'attr' => 'gecos',
 					"Text" => _("Host description. If left empty host name will be used.")
 				),
 				'gidNumber' => array(
@@ -462,7 +465,7 @@ class posixAccount extends baseModule implements passwordService {
 					"Text" => _("The primary group the host should be member of.")
 				),
 				'description' => array (
-					"Headline" => _("Description"),
+					"Headline" => _("Description"), 'attr' => 'description',
 					"Text" => _("Host description. If left empty host name will be used.")
 				),
 				'cn' => array (
@@ -769,18 +772,9 @@ class posixAccount extends baseModule implements passwordService {
 					$messages[] = array('ERROR', $e->getTitle(), $e->getMessage());
 					continue;
 				}
-				$result = $remote->execute(
-					implode(
-						self::$SPLIT_DELIMITER,
-						array(
-							$this->attributes['uid'][0],
-							"home",
-							"add",
-							$lamdaemonServer->getHomeDirPrefix() . $this->attributes[$homeDirAttr][0],
-							"0".$_SESSION['config']->get_scriptRights(),
-							$this->attributes['uidNumber'][0],
-							$this->attributes['gidNumber'][0])
-						));
+				$result = self::createHomeDirectory($remote, $lamdaemonServer, $this->attributes['uid'][0],
+					$this->attributes[$homeDirAttr][0], $this->attributes['uidNumber'][0],
+					$this->attributes['gidNumber'][0], $_SESSION['config']->get_scriptRights());
 				$remote->disconnect();
 				// lamdaemon results
 				if (!empty($result)) {
@@ -930,6 +924,40 @@ class posixAccount extends baseModule implements passwordService {
 			}
 		}
 		return $messages;
+	}
+
+	/**
+	 * Creates a user home directory.
+	 *
+	 * @param Remote $remote remote connection
+	 * @param RemoteServerConfiguration $config remote configuration
+	 * @param string $userName user name
+	 * @param string $path home directory path
+	 * @param string $uidNumber uid number
+	 * @param string $gidNumber gid number
+	 * @param string $rights rights (e.g. 750)
+	 * @return string output
+	 */
+	public static function createHomeDirectory(Remote $remote, RemoteServerConfiguration $config, string $userName,
+	                                           string $path, string $uidNumber, string $gidNumber, string $rights) {
+		if ($rights == '') {
+			$rights = '750';
+		}
+		if (strpos($rights, '0') !== 0) {
+			$rights = '0' . $rights;
+		}
+		return $remote->execute(
+			implode(
+				self::$SPLIT_DELIMITER,
+				array(
+					$userName,
+					"home",
+					"add",
+					$config->getHomeDirPrefix() . $path,
+					$rights,
+					$uidNumber,
+					$gidNumber)
+		));
 	}
 
 	/**
@@ -1602,18 +1630,9 @@ class posixAccount extends baseModule implements passwordService {
 					$return[] = array('ERROR', $e->getTitle(), $e->getMessage());
 					continue;
 				}
-				$result = $remote->execute(
-					implode(
-						self::$SPLIT_DELIMITER,
-						array(
-							$this->attributes['uid'][0],
-							"home",
-							"add",
-							$lamdaemonServers[$i]->getHomeDirPrefix() . $this->attributes[$homeDirAttr][0],
-							"0".$_SESSION['config']->get_scriptRights(),
-							$this->attributes['uidNumber'][0],
-							$this->attributes['gidNumber'][0])
-					));
+				$result = self::createHomeDirectory($remote, $lamdaemonServers[$i], $this->attributes['uid'][0],
+					$this->attributes[$homeDirAttr][0], $this->attributes['uidNumber'][0],
+					$this->attributes['gidNumber'][0], $_SESSION['config']->get_scriptRights());
 				$remote->disconnect();
 				// lamdaemon results
 				if (!empty($result)) {
@@ -3047,19 +3066,9 @@ class posixAccount extends baseModule implements passwordService {
 				$remote = new \LAM\REMOTE\Remote();
 				$remoteServer = $_SESSION['config']->getScriptServerByName($data[$pos][$ids['posixAccount_createHomeDir']]);
 				$remote->connect($remoteServer);
-				$result = $remote->execute(
-					implode(
-						self::$SPLIT_DELIMITER,
-						array(
-							$data[$pos][$ids['posixAccount_userName']],
-							"home",
-							"add",
-							$remoteServer->getHomeDirPrefix() . $accounts[$pos][$homeDirAttr],
-							"0".$_SESSION['config']->get_scriptRights(),
-							$accounts[$pos]['uidNumber'],
-							$accounts[$pos]['gidNumber'],
-						)
-					));
+				$result = self::createHomeDirectory($remote, $remoteServer, $data[$pos][$ids['posixAccount_userName']],
+					$accounts[$pos][$homeDirAttr], $accounts[$pos]['uidNumber'], $accounts[$pos]['gidNumber'],
+					$_SESSION['config']->get_scriptRights());
 				$remote->disconnect();
 				$errors = array();
 				if (!empty($result)) {

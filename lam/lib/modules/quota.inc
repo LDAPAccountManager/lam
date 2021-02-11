@@ -2,6 +2,8 @@
 use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
+use LAM\REMOTE\RemoteServerConfiguration;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -158,6 +160,8 @@ class quota extends baseModule {
 				"Text" => _("Please enter the quota settings for this mount point. The syntax is: {soft block limit},{hard block limit},{soft inode limit},{hard inode limit}")
 			)
 		);
+		// self service field settings
+		$return['selfServiceFieldSettings'] = array('quota' => _('Quota (read-only)'));
 		return $return;
 	}
 
@@ -166,28 +170,35 @@ class quota extends baseModule {
 
 	/**
 	 * Initializes the quota values.
+	 *
+	 * @param string $userName user/group name
+	 * @param RemoteServerConfiguration[] $lamdaemonServers server configurations
 	 */
-	function initQuotas() {
+	function initQuotas($userName = null, $lamdaemonServers = null) {
 		if (isset($this->quota)) {
 			return;
 		}
-		$userName = '+';
-		if (($this->getAccountContainer() != null) && !$this->getAccountContainer()->isNewAccount) {
-			if ($this->get_scope() == 'user') {
-				if (!isset($this->attributes['uid'][0])) {
-					return;
+		if ($userName === null) {
+			$userName = '+';
+			if (($this->getAccountContainer() != null) && !$this->getAccountContainer()->isNewAccount) {
+				if ($this->get_scope() == 'user') {
+					if (!isset($this->attributes['uid'][0])) {
+						return;
+					}
+					$userName = $this->attributes['uid'][0];
 				}
-				$userName = $this->attributes['uid'][0];
-			}
-			else if ($this->get_scope() == 'group') {
-				if (!isset($this->attributes['cn'][0])) {
-					return;
+				else if ($this->get_scope() == 'group') {
+					if (!isset($this->attributes['cn'][0])) {
+						return;
+					}
+					$userName = $this->attributes['cn'][0];
 				}
-				$userName = $this->attributes['cn'][0];
 			}
 		}
 		// get list of lamdaemon servers
-		$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
+		if ($lamdaemonServers === null) {
+			$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
+		}
 		foreach ($lamdaemonServers as $lamdaemonServer) {
 			$server = $lamdaemonServer->getServer();
 			// get quotas
@@ -1094,6 +1105,58 @@ class quota extends baseModule {
 		return $this->getAccountContainer()->save_module_attributes(array(), array());
 	}
 
-}
+	/**
+	 * {@inheritDoc}
+	 */
+	function getSelfServiceOptions($fields, $attributes, $passwordChangeOnly, $readOnlyFields) {
+		$return = array();
+		if ($passwordChangeOnly) {
+			return $return; // no fields as long no LDAP content can be read
+		}
+		if (in_array('quota', $fields) && !empty($attributes['uid'][0])) {
+			$profile = $this->selfServiceSettings;
+			$lamdaemonServers = LAMConfig::parseConfiguredScriptServers($profile->scriptServer, $profile->scriptPath,
+				$profile->scriptUserName, $profile->scriptSSHKey, deobfuscateText($profile->scriptSSHKeyPassword));
+			$this->initQuotas($attributes['uid'][0], $lamdaemonServers);
+			$serverDescriptions = array();
+			foreach ($lamdaemonServers as $lamdaemonServer) {
+				$serverDescriptions[$lamdaemonServer->getServer()] = $lamdaemonServer->getLabel();
+			}
+			$quotaRow = new htmlResponsiveRow();
+			foreach ($this->quota as $server => $quotaDatas) {
+				$title = $server;
+				if ($serverDescriptions[$server] != $server) {
+					$title = $serverDescriptions[$server] . " (" . $server . ")";
+				}
+				$quotaRow->add(new htmlSubTitle($title), 12);
 
-?>
+				$titles = array(
+					_('Mountpoint'), _('Used blocks'), _('Soft block limit'), _('Hard block limit'),
+					_('Used inodes'), _('Soft inode limit'), _('Hard inode limit')
+				);
+				$data = array();
+				// loop for every mointpoint with enabled quotas
+				foreach ($quotaDatas as $quotaData) {
+					$dataRow = array();
+					$mountPoint = new htmlOutputText($quotaData[0]);
+					$mountPoint->setNoWrap(true);
+					$dataRow[] = $mountPoint;
+					$dataRow[] = new htmlOutputText($quotaData[1]);
+					$dataRow[] = new htmlOutputText($quotaData[2]);
+					$dataRow[] = new htmlOutputText($quotaData[3]);
+					$dataRow[] = new htmlOutputText($quotaData[5]);
+					$dataRow[] = new htmlOutputText($quotaData[6]);
+					$dataRow[] = new htmlOutputText($quotaData[7]);
+					$data[] = $dataRow;
+				}
+				$table = new htmlResponsiveTable($titles, $data);
+				$table->setCSSClasses(array('responsive-table-wrap-th'));
+				$table->setWidths(array('20%', '5%', '10%', '10%', '5%', '5%', '10%', '10%', '5%'));
+				$quotaRow->add($table, 12);
+			}
+			$return['quota'] = $quotaRow;
+		}
+		return $return;
+	}
+
+}

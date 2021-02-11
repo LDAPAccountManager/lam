@@ -3,7 +3,7 @@ use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2020  Roland Gruber
+  Copyright (C) 2006 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -471,6 +471,42 @@ class selfServiceProfile {
 
 	/** base URL for the website (e.g. https://example.com) for link generation */
 	private $baseUrl = '';
+
+	/**
+	 * Path to external lamdaemon script on server where it is executed
+	 *
+	 * This is used for managing quota and home directories.
+	 * optional setting, may not be defined
+	 */
+	public $scriptPath;
+
+	/**
+	 * The rights for the home directory
+	 */
+	public $scriptRights = '750';
+
+	/**
+	 * Servers where lamdaemon script is executed
+	 *
+	 * This is used for managing quota and home directories.
+	 * optional setting, may not be defined
+	 */
+	public $scriptServer;
+
+	/**
+	 * user name for lamdaemon
+	 */
+	public $scriptUserName;
+
+	/**
+	 * File name of SSH key for lamdaemon.
+	 */
+	public $scriptSSHKey;
+
+	/**
+	 * Password for lamdaemon SSH key.
+	 */
+	public $scriptSSHKeyPassword;
 
 	/**
 	 * Constructor
