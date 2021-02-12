@@ -1318,7 +1318,7 @@ class accountContainer {
 			$leftButtonGroup->addElement($passwordButton);
 		}
 		// delete button
-		if (!$this->isNewAccount) {
+		if (!$this->isNewAccount && checkIfDeleteEntriesIsAllowed($this->get_type()->getId())) {
 			$leftButtonGroup->addElement(new htmlSpacer('15px', null));
 			$deleteButton = new htmlButton('accountContainerDelete', _('Delete'));
 			$deleteButton->setIconClass('deleteButton');
