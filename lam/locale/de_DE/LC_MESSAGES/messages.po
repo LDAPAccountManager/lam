@@ -19295,7 +19295,7 @@ msgstr "Wird für den Registrierungskontext verwendet."
 
 #: ../lib/modules/quota.inc:135 ../lib/modules/quota.inc:584
 msgid "Used inodes"
-msgstr "benutzte Inodes"
+msgstr "Benutzte Inodes"
 
 #: ../lib/modules/quota.inc:136
 msgid "Used inodes (files)"

@@ -41,6 +41,9 @@ use \phpseclib3\Exception\NoKeyLoadedException;
  */
 class Remote {
 
+	/** @var RemoteServerConfiguration */
+	private $serverConfig;
+
 	/**
 	 * Constructor
 	 */
@@ -61,7 +64,7 @@ class Remote {
 		if ($this->server == null) {
 			return array();
 		}
-		return $this->server->exec("sudo " . $_SESSION['config']->get_scriptPath() . ' ' . escapeshellarg($command));
+		return $this->server->exec("sudo " . $this->serverConfig->getScriptPath() . ' ' . escapeshellarg($command));
 	}
 
 	/**
@@ -75,7 +78,8 @@ class Remote {
 			logNewMessage(LOG_ERR, 'No server provided for lamdaemon');
 			throw new LAMException(_("Unable to connect to remote server!"));
 		}
-		$serverNameParts = explode(",", $server->getServer());
+		$this->serverConfig = $server;
+		$serverNameParts = explode(",", $this->serverConfig->getServer());
 		$handle = false;
 		if (sizeof($serverNameParts) > 1) {
 			$handle = @new SSH2($serverNameParts[0], $serverNameParts[1]);
@@ -108,10 +112,10 @@ class Remote {
 	 * @throws LAMException error on login
 	 */
 	private function loginSSH($handle) {
-		$username = $_SESSION['config']->getScriptUserName();
-		$ldapUser = $_SESSION['ldap']->getUserName();
+		$username = $this->serverConfig->getUserName();
 		if (empty($username)) {
 			// get user name from current LAM user
+			$ldapUser = $_SESSION['ldap']->getUserName();
 			$sr = @ldap_read($_SESSION['ldap']->server(), $ldapUser, "objectClass=posixAccount", array('uid'), 0, 0, 0, LDAP_DEREF_NEVER);
 			if ($sr) {
 				$entry = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
@@ -123,11 +127,13 @@ class Remote {
 				throw new LAMException(sprintf(_("Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"), getAbstractDN($ldapUser)));
 			}
 		}
-		$password = $_SESSION['ldap']->getPassword();
-		$keyPath = $_SESSION['config']->getScriptSSHKey();
-		$keyPassword = $_SESSION['config']->getScriptSSHKeyPassword();
+		$keyPath = $this->serverConfig->getSshKey();
+		$keyPassword = $this->serverConfig->getSshKeyPassword();
 		if (!empty($keyPath)) {
 			$password = $this->loadKey($keyPath, $keyPassword);
+		}
+		else {
+			$password = $_SESSION['ldap']->getPassword();
 		}
 		$login = @$handle->login($username, $password);
 		if (!$login) {
@@ -182,6 +188,10 @@ class RemoteServerConfiguration {
 	private $server;
 	private $label;
 	private $homeDirPrefix;
+	private $scriptPath;
+	private $userName;
+	private $sshKey;
+	private $sshKeyPassword;
 
 	/**
 	 * Constructor
@@ -189,8 +199,12 @@ class RemoteServerConfiguration {
 	 * @param string $server server DNS name
 	 * @param string $label label for GUI
 	 * @param string $homeDirPrefix prefix for home directories
+	 * @param string $scriptPath script path
+	 * @param string $userName user name
+	 * @param string $sshKey SSH key path
+	 * @param string $sshKeyPassword SSH key password
 	 */
-	public function __construct($server, $label, $homeDirPrefix) {
+	public function __construct($server, $label, $homeDirPrefix, $scriptPath, $userName, $sshKey, $sshKeyPassword) {
 		$this->server = $server;
 		$this->label = $label;
 		if (empty($label)) {
@@ -200,6 +214,10 @@ class RemoteServerConfiguration {
 		if (empty($homeDirPrefix)) {
 			$this->homeDirPrefix = '';
 		}
+		$this->scriptPath = $scriptPath;
+		$this->userName = $userName;
+		$this->sshKey = $sshKey;
+		$this->sshKeyPassword = $sshKeyPassword;
 	}
 
 	/**
@@ -227,6 +245,42 @@ class RemoteServerConfiguration {
 	 */
 	public function getHomeDirPrefix() {
 		return $this->homeDirPrefix;
+	}
+
+	/**
+	 * Returns the script path.
+	 *
+	 * @return string script path
+	 */
+	public function getScriptPath() {
+		return $this->scriptPath;
+	}
+
+	/**
+	 * Returns the user name to connect.
+	 *
+	 * @return string user name
+	 */
+	public function getUserName() {
+		return $this->userName;
+	}
+
+	/**
+	 * Returns the path to the SSH key.
+	 *
+	 * @return string path
+	 */
+	public function getSshKey() {
+		return $this->sshKey;
+	}
+
+	/**
+	 * Returns the SSH key password.
+	 *
+	 * @return string password
+	 */
+	public function getSshKeyPassword() {
+		return $this->sshKeyPassword;
 	}
 
 }

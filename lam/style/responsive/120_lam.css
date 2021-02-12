@@ -110,6 +110,10 @@ table.responsive-table th {
 	white-space: nowrap;
 }
 
+table.responsive-table-wrap-th th {
+	white-space: normal;
+}
+
 table.responsive-table td {
 	overflow: hidden;
 	vertical-align: middle;

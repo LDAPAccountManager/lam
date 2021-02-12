@@ -564,9 +564,7 @@
             <para>SSH key (recommended): Please generate a SSH key pair and
             provide the location to the <emphasis
             role="bold">private</emphasis> key file. If the key is protected
-            by a password you can also specify it here. Please note that only
-            RSA keys (with "-----BEGIN RSA PRIVATE KEY-----" at the beginning
-            of the file) are supported.</para>
+            by a password you can also specify it here.</para>
           </listitem>
 
           <listitem>

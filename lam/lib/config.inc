@@ -1590,11 +1590,26 @@ class LAMConfig {
 	 * @return RemoteServerConfiguration[] servers
 	 */
 	public function getConfiguredScriptServers() {
+		return LAMConfig::parseConfiguredScriptServers($this->scriptServer, $this->get_scriptPath(),
+			$this->getScriptUserName(), $this->getScriptSSHKey(), $this->getScriptSSHKeyPassword());
+	}
+
+	/**
+	 * Parses the configured server config.
+	 *
+	 * @param string $value configured value
+	 * @param string $scriptPath script path
+	 * @param string $userName user name
+	 * @param string $sshKey SSH key path
+	 * @param string $sshKeyPassword SSH key password
+	 * @return RemoteServerConfiguration[] configurations
+	 */
+	public static function parseConfiguredScriptServers($value, $scriptPath, $userName, $sshKey, $sshKeyPassword) : array {
 		$servers = array();
-		if (empty($this->scriptServer)) {
+		if (empty($value)) {
 			return $servers;
 		}
-		$serverChunks = explode(';', $this->scriptServer);
+		$serverChunks = explode(';', $value);
 		foreach ($serverChunks as $serverChunk) {
 			if (empty($serverChunk)) {
 				continue;
@@ -1603,7 +1618,7 @@ class LAMConfig {
 			$serverName = $serverSettings[0];
 			$serverLabel = isset($serverSettings[1]) ? $serverSettings[1] : null;
 			$serverHomedirPrefix = isset($serverSettings[2]) ? $serverSettings[2] : null;
-			$servers[] = new RemoteServerConfiguration($serverName, $serverLabel, $serverHomedirPrefix);
+			$servers[] = new RemoteServerConfiguration($serverName, $serverLabel, $serverHomedirPrefix, $scriptPath, $userName, $sshKey, $sshKeyPassword);
 		}
 		return $servers;
 	}
@@ -1631,9 +1646,23 @@ class LAMConfig {
 	* @return boolean true if $value has correct format
 	*/
 	public function set_scriptServers($value) {
+		$parsedValue = LAMConfig::parseScriptServerValue($value);
+		if ($parsedValue === false) {
+			return false;
+		}
+		$this->scriptServer = $parsedValue;
+		return true;
+	}
+
+	/**
+	 * Parses the script server value from input field.
+	 *
+	 * @param $value input field value
+	 * @return string|false value to store in configuration
+	 */
+	public static function parseScriptServerValue($value) {
 		if (!$value) {
-			$this->scriptServer = ""; // optional parameter
-			return true;
+			return ""; // optional parameter
 		}
 		// Explode the value to an array
 		$array_string = explode(";", $value);
@@ -1671,8 +1700,7 @@ class LAMConfig {
 			}
 			// Check that the array is not empty
 			if (!empty($array_string)) {
-				$this->scriptServer = implode(";", $valid_ips);
-				return true;
+				return implode(";", $valid_ips);
 			}
 			else {
 				// The array is empty, there was no valid IP
