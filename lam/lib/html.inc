@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2020  Roland Gruber
+  Copyright (C) 2010 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1307,7 +1307,7 @@ class htmlSelect extends htmlElement {
 			$onchange = ' onchange="' . $onchange . '"';
 		}
 		// hide select boxes that contain less than 2 elements
-		if ((sizeof($this->elements) < 2) && !$this->multiSelect && $this->transformSingleSelect) {
+		if ((sizeof($this->elements) < 2) && !$this->multiSelect && !$this->containsOptgroups && $this->transformSingleSelect) {
 			echo '<div class="hidden">';
 		}
 		// print select box
@@ -1329,7 +1329,7 @@ class htmlSelect extends htmlElement {
 		}
 		echo "</select>\n";
 		// if select box has only one element then show it as text
-		if ((sizeof($this->elements) < 2) && !$this->multiSelect && $this->transformSingleSelect) {
+		if ((sizeof($this->elements) < 2) && !$this->multiSelect && !$this->containsOptgroups && $this->transformSingleSelect) {
 			echo '</div>';
 			if (sizeof($this->elements) == 1) {
 				echo '&nbsp;';
