@@ -9,6 +9,7 @@ use LAMConfig;
 use LAMException;
 use PDO;
 use PDOException;
+use SelfServicePersistence;
 use selfServiceProfile;
 use function LAM\PDF\getAvailableLogos;
 use function LAM\PDF\getPDFStructures;
@@ -224,7 +225,8 @@ class ConfigDataExporter {
 	 */
 	public function _getSelfServiceProfiles() {
 		$data = array();
-		$profileTypes = getSelfServiceProfiles();
+		$selfServicePersistence = new SelfServicePersistence();
+		$profileTypes = $selfServicePersistence->getProfiles();
 		foreach ($profileTypes as $profileType => $profileNames) {
 			foreach ($profileNames as $profileName) {
 				$profile = loadSelfServiceProfile($profileName, $profileType);
@@ -574,8 +576,11 @@ class ConfigDataImporter {
 		foreach ($data as $typeId => $profileData) {
 			foreach ($profileData as $profileName => $currentProfileData) {
 				$profile = selfServiceProfile::import($currentProfileData);
-				$result = saveSelfServiceProfile($profileName, $typeId, $profile);
-				if (!$result) {
+				$selfServicePersistence = new SelfServicePersistence();
+				try {
+					$selfServicePersistence->save($profileName, $typeId, $profile);
+				}
+				catch (LAMException $e) {
 					$failedNames[] = $profileName;
 				}
 			}
@@ -592,7 +597,6 @@ class ConfigDataImporter {
 	 * @throws LAMException error saving profiles
 	 */
 	private function importWebauthn($step) {
-		$failedNames = array();
 		$data = $step->getValue();
 		include_once __DIR__ . '/webauthn.inc';
 		$webauthnManager = new WebauthnManager();

@@ -1,5 +1,7 @@
 <?php
 use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
+use LAM\PERSISTENCE\ConfigurationDatabase;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -168,35 +170,6 @@ function checkSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOn
 
 
 /**
-* Returns a list of all available self service profiles (without .conf)
-*
-* @return array profile names (array('account type' => array('profile1', 'profile2')))
-*/
-function getSelfServiceProfiles() {
-	$types = LAM\TYPES\getTypes();
-	$dir = dir(substr(__FILE__, 0, strlen(__FILE__) - 20) . "/config/selfService");
-	$ret = array();
-	if ($dir === false) {
-		logNewMessage(LOG_ERR, 'Unable to read self service profiles');
-		return $ret;
-	}
-	while ($entry = $dir->read()){
-		$ext = substr($entry, strrpos($entry, '.') + 1);
-		$name = substr($entry, 0, strrpos($entry, '.'));
-		// check if extension is right, add to profile list
-		if (in_array($ext, $types)) {
-			$ret[$ext][] = $name;
-		}
-	}
-	ksort($ret);
-	foreach ($ret as $key => $value) {
-		sort($ret[$key]);
-	}
-	return $ret;
-}
-
-
-/**
 * Loads all settings of a self service profile.
 *
 * @param string $name profile name
@@ -230,55 +203,6 @@ function loadSelfServiceProfile($name, $scope) {
 		StatusMessage("ERROR", "", _("Unable to load profile!") . " " . $name);
 	}
 	return $profile;
-}
-
-
-/**
-* Saves a self service profile.
-*
-* File is created, if needed
-*
-* @param string $name name of the account profile
-* @param string $scope account type
-* @param selfServiceProfile $profile self service profile
-* @return boolean true, if saving succeeded
-*/
-function saveSelfServiceProfile($name, $scope, $profile) {
-	// check profile name
-	if (!preg_match("/^[0-9a-z _-]+$/i", $scope) || !preg_match("/^[0-9a-z _-]+$/i", $name)) {
-		return false;
-	}
-	if (!get_class($profile) === 'selfServiceProfile') {
-		return false;
-	}
-	$path = substr(__FILE__, 0, strlen(__FILE__) - 20) . "/config/selfService/" . $name . "." . $scope;
-	$file = @fopen($path, "w");
-	if ($file) {
-	  	// write settings to file
-		fputs($file, json_encode($profile->export()));
-		// close file
-		fclose($file);
-	}
-	else {
-		return false;
-	}
-	return true;
-}
-
-/**
-* Checks if a service profile is writable.
-*
-* @param string $name profile name
-* @param string $scope account type
-* @return boolean true if file is writable
-*/
-function isSelfServiceProfileWritable($name, $scope) {
-	// check profile name
-	if (!preg_match("/^[0-9a-z _-]+$/i", $scope) || !preg_match("/^[0-9a-z _-]+$/i", $name)) {
-		return false;
-	}
-	$path = substr(__FILE__, 0, strlen(__FILE__) - 20) . "/config/selfService/" . $name . "." . $scope;
-	return is_writable($path);
 }
 
 /**
@@ -358,6 +282,190 @@ function bindLdapUser($handle, $profile, $userDn, $password) {
 	return @ldap_bind($handle, $userDn, $password);
 }
 
+/**
+ * Manages reading and writing self service profiles.
+ */
+class SelfServicePersistence {
+
+	/**
+	 * @var SelfServicePersistenceStrategy
+	 */
+	private $strategy;
+
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		$configDb = new ConfigurationDatabase(new LAMCfgMain());
+		$this->strategy = new SelfServicePersistenceStrategyFileSystem();
+	}
+
+	/**
+	 * Returns a list of available self service profiles.
+	 *
+	 * @return array profile names (array('account type' => array('profile1', 'profile2')))
+	 */
+	public function getProfiles() : array {
+		$profiles = $this->strategy->getProfiles();
+		ksort($profiles);
+		foreach ($profiles as $key => $value) {
+			sort($profiles[$key]);
+		}
+		return $profiles;
+	}
+
+	/**
+	 * Returns if the profile with given name can be written.
+	 *
+	 * @param string $name profile name
+	 * @param string $scope user/group/host
+	 * @return bool can be written
+	 */
+	public function canWrite(string $name, string $scope) : bool {
+		return $this->strategy->canWrite($name, $scope);
+	}
+
+	/**
+	 * Loads the given self service profile.
+	 *
+	 * @param string $name profile name
+	 * @param string $scope user/group/host
+	 * @return selfServiceProfile profile
+	 * @throws LAMException error during loading
+	 */
+	public function load(string $name, string $scope) : selfServiceProfile {
+		return $this->strategy->load($name, $scope);
+	}
+
+	/**
+	 * Stores the given profile.
+	 *
+	 * @param string $name profile name
+	 * @param string $scope user/group/host
+	 * @param selfServiceProfile $profile profile
+	 * @throws LAMException error during saving
+	 */
+	public function save(string $name, string $scope, selfServiceProfile $profile) : void {
+		$this->strategy->save($name, $scope, $profile);
+	}
+
+}
+
+/**
+ * Interface for self service profile persistence.
+ */
+interface SelfServicePersistenceStrategy {
+
+	/**
+	 * Returns a list of available self service profiles.
+	 *
+	 * @return array profile names (array('account type' => array('profile1', 'profile2')))
+	 */
+	public function getProfiles() : array;
+
+	/**
+	 * Returns if the profile with given name can be written.
+	 *
+	 * @param string $name profile name
+	 * @param string $scope user/group/host
+	 * @return bool can be written
+	 */
+	public function canWrite(string $name, string $scope) : bool;
+
+	/**
+	 * Loads the given self service profile.
+	 *
+	 * @param string $name profile name
+	 * @param string $scope user/group/host
+	 * @return selfServiceProfile profile
+	 * @throws LAMException error during loading
+	 */
+	public function load(string $name, string $scope) : selfServiceProfile;
+
+	/**
+	 * Stores the given profile.
+	 *
+	 * @param string $name profile name
+	 * @param string $scope user/group/host
+	 * @param selfServiceProfile $profile profile
+	 * @throws LAMException error during saving
+	 */
+	public function save(string $name, string $scope, selfServiceProfile $profile) : void;
+
+}
+
+/**
+ * Uses local file system for storing self service profiles.
+ */
+class SelfServicePersistenceStrategyFileSystem implements SelfServicePersistenceStrategy {
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getProfiles(): array {
+		$types = LAM\TYPES\getTypes();
+		$dir = dir(__DIR__ . "/../config/selfService");
+		$ret = array();
+		if ($dir === false) {
+			logNewMessage(LOG_ERR, 'Unable to read self service profiles');
+			return $ret;
+		}
+		while ($entry = $dir->read()){
+			$ext = substr($entry, strrpos($entry, '.') + 1);
+			$name = substr($entry, 0, strrpos($entry, '.'));
+			// check if extension is right, add to profile list
+			if (in_array($ext, $types)) {
+				$ret[$ext][] = $name;
+			}
+		}
+		return $ret;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function canWrite(string $name, string $scope): bool {
+		// check profile name
+		if (!preg_match("/^[0-9a-z _-]+$/i", $scope) || !preg_match("/^[0-9a-z _-]+$/i", $name)) {
+			return false;
+		}
+		$path = __DIR__ . "/../config/selfService/" . $name . "." . $scope;
+		return is_writable($path);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function load(string $name, string $scope): selfServiceProfile {
+		// TODO: Implement load() method.
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function save(string $name, string $scope, selfServiceProfile $profile): void {
+		// check profile name
+		if (!preg_match("/^[0-9a-z _-]+$/i", $scope) || !preg_match("/^[0-9a-z _-]+$/i", $name)) {
+			throw new LAMException(_("Profile name is invalid!"));
+		}
+		if (!get_class($profile) === 'selfServiceProfile') {
+			throw new LAMException('Invalid data');
+		}
+		$path = substr(__FILE__, 0, strlen(__FILE__) - 20) . "/config/selfService/" . $name . "." . $scope;
+		$file = @fopen($path, "w");
+		if ($file) {
+			// write settings to file
+			fputs($file, json_encode($profile->export()));
+			// close file
+			fclose($file);
+			@chmod($path, 0600);
+		}
+		else {
+			throw new LAMException(_("Unable to save profile!"));
+		}
+	}
+
+}
 
 /**
  * Includes all settings of a self service profile.
@@ -618,5 +726,3 @@ class selfServiceProfile {
 	}
 
 }
-
-?>
