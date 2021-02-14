@@ -49,7 +49,6 @@ function isLAMProVersion() {
 	return is_dir($dir);
 }
 
-
 /**
  * Returns a list of possible search attributes for the self service.
  *
@@ -67,7 +66,6 @@ function getSelfServiceSearchAttributes($scope) {
 	$return = array_unique($return);
 	return array_values($return);
 }
-
 
 /**
  * Returns the field settings for the self service.
@@ -87,7 +85,6 @@ function getSelfServiceFieldSettings($scope) {
 	}
 	return $return;
 }
-
 
 /**
  * Returns meta HTML code for each self service field.
@@ -121,7 +118,6 @@ function getSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly
 	}
 	return $return;
 }
-
 
 /**
  * Checks if all input values are correct and returns the LDAP commands which should be executed.
@@ -166,43 +162,6 @@ function checkSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOn
 		}
 	}
 	return $return;
-}
-
-
-/**
-* Loads all settings of a self service profile.
-*
-* @param string $name profile name
-* @param string $scope account type
-* @return false|selfServiceProfile profile or false if file was not readable
-*/
-function loadSelfServiceProfile($name, $scope) {
-	if (!preg_match("/^[0-9a-z _-]+$/i", $name) || !preg_match("/^[0-9a-z _-]+$/i", $scope)) {
-		return false;
-	}
-	$profile = new selfServiceProfile();
-	$file = substr(__FILE__, 0, strlen(__FILE__) - 20) . "/config/selfService/" . $name . "." . $scope;
-	if (is_file($file) === True) {
-		$file = @fopen($file, "r");
-		if ($file) {
-			$data = fread($file, 10000000);
-			$profileData = @json_decode($data, true);
-			if ($profileData === null) {
-				$profile = unserialize($data);
-			}
-			else {
-				$profile = selfServiceProfile::import($profileData);
-			}
-			fclose($file);
-		}
-		else {
-			StatusMessage("ERROR", "", _("Unable to load profile!") . " " . $name);
-		}
-	}
-	else {
-		StatusMessage("ERROR", "", _("Unable to load profile!") . " " . $name);
-	}
-	return $profile;
 }
 
 /**
@@ -437,7 +396,32 @@ class SelfServicePersistenceStrategyFileSystem implements SelfServicePersistence
 	 * @inheritDoc
 	 */
 	public function load(string $name, string $scope): selfServiceProfile {
-		// TODO: Implement load() method.
+		if (!preg_match("/^[0-9a-z _-]+$/i", $name) || !preg_match("/^[0-9a-z _-]+$/i", $scope)) {
+			throw new LAMException(_("Profile name is invalid!"));
+		}
+		$profile = new selfServiceProfile();
+		$file = __DIR__ . "/../config/selfService/" . $name . "." . $scope;
+		if (is_file($file) === True) {
+			$file = @fopen($file, "r");
+			if ($file) {
+				$data = fread($file, 10000000);
+				$profileData = @json_decode($data, true);
+				if ($profileData === null) {
+					$profile = unserialize($data);
+				}
+				else {
+					$profile = selfServiceProfile::import($profileData);
+				}
+				fclose($file);
+			}
+			else {
+				throw new LAMException(_("Unable to load profile!"), $name);
+			}
+		}
+		else {
+			throw new LAMException(_("Unable to load profile!"), $name);
+		}
+		return $profile;
 	}
 
 	/**
@@ -451,7 +435,7 @@ class SelfServicePersistenceStrategyFileSystem implements SelfServicePersistence
 		if (!get_class($profile) === 'selfServiceProfile') {
 			throw new LAMException('Invalid data');
 		}
-		$path = substr(__FILE__, 0, strlen(__FILE__) - 20) . "/config/selfService/" . $name . "." . $scope;
+		$path = __DIR__ . "/../config/selfService/" . $name . "." . $scope;
 		$file = @fopen($path, "w");
 		if ($file) {
 			// write settings to file

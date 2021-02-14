@@ -227,10 +227,14 @@ class ConfigDataExporter {
 		$data = array();
 		$selfServicePersistence = new SelfServicePersistence();
 		$profileTypes = $selfServicePersistence->getProfiles();
+		$selfServicePersistence = new SelfServicePersistence();
 		foreach ($profileTypes as $profileType => $profileNames) {
 			foreach ($profileNames as $profileName) {
-				$profile = loadSelfServiceProfile($profileName, $profileType);
-				if ($profile === false) {
+				try {
+					$profile = $selfServicePersistence->load($profileName, $profileType);
+				}
+				catch (LAMException $e) {
+					logNewMessage(LOG_ERR, $e->getTitle() . ' ' . $profileName);
 					continue;
 				}
 				$data[$profileType][$profileName] = $profile->export();
