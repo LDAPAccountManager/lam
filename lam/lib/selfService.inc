@@ -1,6 +1,7 @@
 <?php
 use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 use LAM\PERSISTENCE\ConfigurationDatabase;
+use function LAM\PERSISTENCE\dbTableExists;
 
 /*
 
@@ -256,7 +257,12 @@ class SelfServicePersistence {
 	 */
 	public function __construct() {
 		$configDb = new ConfigurationDatabase(new LAMCfgMain());
-		$this->strategy = new SelfServicePersistenceStrategyFileSystem();
+		if ($configDb->useRemoteDb()) {
+			$this->strategy = new SelfServicePersistenceStrategyPdo($configDb->getPdo());
+		}
+		else {
+			$this->strategy = new SelfServicePersistenceStrategyFileSystem();
+		}
 	}
 
 	/**
@@ -446,6 +452,109 @@ class SelfServicePersistenceStrategyFileSystem implements SelfServicePersistence
 		}
 		else {
 			throw new LAMException(_("Unable to save profile!"));
+		}
+	}
+
+}
+
+/**
+ * Uses PDO for storing self service profiles.
+ */
+class SelfServicePersistenceStrategyPdo implements SelfServicePersistenceStrategy {
+
+	/**
+	 * @var PDO
+	 */
+	private $pdo;
+
+	const TABLE_NAME = 'self_service_profiles';
+
+	/**
+	 * Constructor
+	 *
+	 * @param PDO $pdo PDO
+	 */
+	public function __construct(PDO $pdo) {
+		$this->pdo = $pdo;
+		$this->checkSchema();
+	}
+
+	/**
+	 * Checks if the schema has latest version.
+	 */
+	private function checkSchema() : void {
+		if (!dbTableExists($this->pdo, self::TABLE_NAME)) {
+			$this->createInitialSchema();
+		}
+	}
+
+	/**
+	 * Creates the initial schema.
+	 */
+	public function createInitialSchema() : void {
+		logNewMessage(LOG_DEBUG, 'Creating database table ' . self::TABLE_NAME);
+		$sql = 'create table ' . self::TABLE_NAME . '('
+			. 'scope VARCHAR(100) NOT NULL,'
+			. 'name VARCHAR(300) NOT NULL,'
+			. 'data TEXT NOT NULL,'
+			. 'PRIMARY KEY(scope,name)'
+			. ');';
+		$this->pdo->exec($sql);
+		$sql = 'insert into ' . ConfigurationDatabase::TABLE_SCHEMA_VERSIONS . ' (name, version) VALUES ("self_service", 1);';
+		$this->pdo->exec($sql);
+	}
+
+	/**
+	 * @inheritDocm
+	 */
+	public function getProfiles(): array {
+		$statement = $this->pdo->prepare("SELECT scope, name FROM " . self::TABLE_NAME);
+		$statement->execute();
+		$results = $statement->fetchAll();
+		$profiles = array();
+		foreach ($results as $result) {
+			$profiles[$result['scope']][] = $result['name'];
+		}
+		return $profiles;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function canWrite(string $name, string $scope): bool {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function load(string $name, string $scope): selfServiceProfile {
+		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME . " WHERE scope = ? AND name = ?");
+		$statement->execute(array($scope, $name));
+		$results = $statement->fetchAll();
+		if (empty($results)) {
+			logNewMessage(LOG_ERR, 'Self service profile not found');
+			throw new LAMException(_("Unable to load profile!"), $name);
+		}
+		$data = json_decode($results[0]['data'], true);
+		return selfServiceProfile::import($data);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function save(string $name, string $scope, selfServiceProfile $profile): void {
+		$data = json_encode($profile->export());
+		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME . " WHERE scope = ? AND name = ?");
+		$statement->execute(array($scope, $name));
+		$results = $statement->fetchAll();
+		if (empty($results)) {
+			$statement = $this->pdo->prepare("INSERT INTO " . self::TABLE_NAME . " (scope, name, data) VALUES (?, ?, ?)");
+			$statement->execute(array($scope, $name, $data));
+		}
+		else {
+			$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME . " SET data = ? WHERE scope = ? AND name = ?");
+			$statement->execute(array($data, $scope, $name));
 		}
 	}
 
