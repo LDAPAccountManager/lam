@@ -776,26 +776,10 @@ class ConfigurationDatabase {
 	 */
 	private function updateSchema(PDO $pdo) {
 		// initial system schema
-		if (!$this->tableExists($pdo, self::TABLE_SCHEMA_VERSIONS)) {
+		if (!dbTableExists($pdo, self::TABLE_SCHEMA_VERSIONS)) {
 			$this->createInitialSchema($pdo);
 		}
 
-	}
-
-	/**
-	 * Checks if the given table name exists.
-	 *
-	 * @param PDO $pdo PDO
-	 * @param string $tableName table name
-	 * @return bool table exists
-	 */
-	private function tableExists(PDO $pdo, string $tableName): bool {
-		try {
-			$result = $pdo->query("SELECT 1 FROM $tableName LIMIT 1");
-			return ($result === false) ? false : true;
-		} catch (PDOException $e) {
-			return false;
-		}
 	}
 
 	/**
@@ -824,4 +808,20 @@ class ConfigurationDatabase {
 		logNewMessage(LOG_NOTICE, 'Created initial config database.');
 	}
 
+}
+
+/**
+ * Returns if the given table name exists
+ *
+ * @param PDO $pdo PDO
+ * @param string $tableName table name
+ * @return bool true if existing
+ */
+function dbTableExists(PDO $pdo, string $tableName) : bool {
+	try {
+		$result = $pdo->exec("SELECT 1 FROM $tableName LIMIT 1");
+		return ($result === false) ? false : true;
+	} catch (PDOException $e) {
+		return false;
+	}
 }

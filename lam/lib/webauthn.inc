@@ -48,6 +48,7 @@ use \Webauthn\AuthenticationExtensions\AuthenticationExtensionsClientInputs;
 use \Webauthn\AuthenticatorSelectionCriteria;
 use Webauthn\TokenBinding\IgnoreTokenBindingHandler;
 use \LAMException;
+use function LAM\PERSISTENCE\dbTableExists;
 
 /*
 
@@ -628,22 +629,6 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 	protected abstract function getPDO(): PDO;
 
 	/**
-	 * Checks if the given table name exists.
-	 *
-	 * @param PDO $pdo PDO object
-	 * @param String $tableName table name to check
-	 * @return boolean table exists
-	 */
-	protected function tableExists(&$pdo, $tableName) {
-		try {
-			$result = $pdo->query("SELECT 1 FROM $tableName LIMIT 1");
-			return ($result !== false);
-		} catch (\PDOException $e) {
-			return false;
-		}
-	}
-
-	/**
 	 * Checks if the schema needs to be updated.
 	 */
 	public function checkSchema() :void {
@@ -655,7 +640,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 			return;
 		}
 		// initial schema
-		if (!$this->tableExists($pdo, $this->getTableName())) {
+		if (!dbTableExists($pdo, $this->getTableName())) {
 			$this->createInitialSchema($pdo);
 		}
 		$this->addNameColumn($pdo);
