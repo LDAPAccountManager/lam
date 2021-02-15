@@ -819,7 +819,7 @@ class ConfigurationDatabase {
  */
 function dbTableExists(PDO $pdo, string $tableName) : bool {
 	try {
-		$result = $pdo->exec("SELECT 1 FROM $tableName LIMIT 1");
+		$result = $pdo->query("SELECT 1 FROM $tableName LIMIT 1");
 		return ($result === false) ? false : true;
 	} catch (PDOException $e) {
 		return false;
