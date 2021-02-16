@@ -203,18 +203,6 @@ if ($_SESSION[APPCONFIG]->getValue('session','timelimit') && ! @ini_get('safe_mo
 
 setlanguage();
 
-/**
- * Strip slashes from GET, POST, and COOKIE variables if this
- * PHP install is configured to automatically addslashes()
- */
-if (@get_magic_quotes_gpc() && (! isset($slashes_stripped) || ! $slashes_stripped)) {
-	array_stripslashes($_REQUEST);
-	array_stripslashes($_GET);
-	array_stripslashes($_POST);
-	array_stripslashes($_COOKIE);
-	$slashes_stripped = true;
-}
-
 # Create our application repository variable.
 $app['server'] = $_SESSION[APPCONFIG]->getServer(get_request('server_id','REQUEST'));
 

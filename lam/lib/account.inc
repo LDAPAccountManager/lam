@@ -1142,7 +1142,7 @@ function getAbstractDN($dn) {
 * @param string $b second argument to compare
 * @return integer 0 if equal, 1 if $a is greater, -1 if $b is greater
 */
-function compareDN(&$a, &$b) {
+function compareDN($a, $b) {
 	// split DNs
 	$array_a = explode(",", strtolower($a));
 	$array_b = explode(",", strtolower($b));
@@ -1162,15 +1162,7 @@ function compareDN(&$a, &$b) {
 		// compare parts
 		if ($part_a == $part_b) { // part is identical
 			if ($i == ($len - 1)) {
-				if ($len_a > $len_b) {
-					return 1;
-				}
-				elseif ($len_a < $len_b) {
-					return -1;
-				}
-				else {
-					return 0; // DNs are identical
-				}
+				return $len_a <=> $len_b;
 			}
 		}
 		else {
