@@ -935,10 +935,16 @@ function searchLDAPPaged($server, $dn, $filter, $attributes, $attrsOnly, $limit)
 	}
 	$pageSize = 999;
 	$cookie = '';
+	$controls = array(
+		array(
+			'oid' => LDAP_CONTROL_PAGEDRESULTS,
+			'size' => $pageSize,
+			'cookie' => $cookie)
+	);
 	$return = array();
 	do {
-		@ldap_control_paged_result($server, $pageSize, true, $cookie);
-		$sr  = @ldap_search($server, $dn, $filter, $attributes, $attrsOnly, $limit, 0, LDAP_DEREF_NEVER);
+		$sr  = @ldap_search($server, $dn, $filter, $attributes, $attrsOnly, $limit,
+			0, LDAP_DEREF_NEVER, $controls);
 		if (!$sr) {
 			break;
 		}
@@ -947,8 +953,8 @@ function searchLDAPPaged($server, $dn, $filter, $attributes, $attrsOnly, $limit)
 			break;
 		}
 		$return = array_merge($return, $entries);
-		@ldap_control_paged_result_response($server, $sr, $cookie);
-	} while($cookie !== null && $cookie != '');
+	}
+	while ($cookie !== null && $cookie != '');
 	cleanLDAPResult($return);
 	return $return;
 }
