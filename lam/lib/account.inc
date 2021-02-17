@@ -227,12 +227,9 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
  * @return array hash types
  */
 function getSupportedHashTypes() {
-	$hashes = array('CRYPT', 'CRYPT-SHA512', 'SHA', 'SSHA', 'MD5', 'SMD5', 'PLAIN', 'SASL', 'K5KEY', 'LDAP_EXOP');
+	$hashes = array('CRYPT', 'CRYPT-SHA512', 'SHA', 'SSHA', 'MD5', 'SMD5', 'PLAIN', 'SASL', 'K5KEY', 'LDAP_EXOP', 'ARGON2ID');
 	if (function_exists('openssl_pbkdf2') || function_exists('hash_pbkdf2')) {
 		$hashes[] = 'PBKDF2-SHA512';
-	}
-	if (version_compare(PHP_VERSION, '7.3.0') >= 0) {
-		$hashes[] = 'ARGON2ID';
 	}
 	return $hashes;
 }
