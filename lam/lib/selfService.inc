@@ -774,7 +774,7 @@ class selfServiceProfile {
 		$profile = new selfServiceProfile();
 		$vars = get_class_vars(selfServiceProfile::class);
 		foreach ($data as $key => $value) {
-			if (in_array($key, $vars)) {
+			if (array_key_exists($key, $vars)) {
 				$profile->$key = $value;
 			}
 		}
