@@ -1557,7 +1557,9 @@ abstract class baseModule {
 		if (isset($_POST['add_' . $attrName])) {
 			$this->attributes[$attrName][] = '';
 		}
-		$this->attributes[$attrName] = array_values(array_unique($this->attributes[$attrName]));
+		if (!empty($this->attributes[$attrName])) {
+			$this->attributes[$attrName] = array_values(array_unique($this->attributes[$attrName]));
+		}
 	}
 
 	/**

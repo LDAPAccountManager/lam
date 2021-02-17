@@ -227,12 +227,9 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
  * @return array hash types
  */
 function getSupportedHashTypes() {
-	$hashes = array('CRYPT', 'CRYPT-SHA512', 'SHA', 'SSHA', 'MD5', 'SMD5', 'PLAIN', 'SASL', 'K5KEY', 'LDAP_EXOP');
+	$hashes = array('CRYPT', 'CRYPT-SHA512', 'SHA', 'SSHA', 'MD5', 'SMD5', 'PLAIN', 'SASL', 'K5KEY', 'LDAP_EXOP', 'ARGON2ID');
 	if (function_exists('openssl_pbkdf2') || function_exists('hash_pbkdf2')) {
 		$hashes[] = 'PBKDF2-SHA512';
-	}
-	if (version_compare(PHP_VERSION, '7.3.0') >= 0) {
-		$hashes[] = 'ARGON2ID';
 	}
 	return $hashes;
 }
@@ -938,10 +935,16 @@ function searchLDAPPaged($server, $dn, $filter, $attributes, $attrsOnly, $limit)
 	}
 	$pageSize = 999;
 	$cookie = '';
+	$controls = array(
+		array(
+			'oid' => LDAP_CONTROL_PAGEDRESULTS,
+			'size' => $pageSize,
+			'cookie' => $cookie)
+	);
 	$return = array();
 	do {
-		@ldap_control_paged_result($server, $pageSize, true, $cookie);
-		$sr  = @ldap_search($server, $dn, $filter, $attributes, $attrsOnly, $limit, 0, LDAP_DEREF_NEVER);
+		$sr  = @ldap_search($server, $dn, $filter, $attributes, $attrsOnly, $limit,
+			0, LDAP_DEREF_NEVER, $controls);
 		if (!$sr) {
 			break;
 		}
@@ -950,8 +953,8 @@ function searchLDAPPaged($server, $dn, $filter, $attributes, $attrsOnly, $limit)
 			break;
 		}
 		$return = array_merge($return, $entries);
-		@ldap_control_paged_result_response($server, $sr, $cookie);
-	} while($cookie !== null && $cookie != '');
+	}
+	while ($cookie !== null && $cookie != '');
 	cleanLDAPResult($return);
 	return $return;
 }
@@ -1142,7 +1145,7 @@ function getAbstractDN($dn) {
 * @param string $b second argument to compare
 * @return integer 0 if equal, 1 if $a is greater, -1 if $b is greater
 */
-function compareDN(&$a, &$b) {
+function compareDN($a, $b) {
 	// split DNs
 	$array_a = explode(",", strtolower($a));
 	$array_b = explode(",", strtolower($b));
@@ -1162,15 +1165,7 @@ function compareDN(&$a, &$b) {
 		// compare parts
 		if ($part_a == $part_b) { // part is identical
 			if ($i == ($len - 1)) {
-				if ($len_a > $len_b) {
-					return 1;
-				}
-				elseif ($len_a < $len_b) {
-					return -1;
-				}
-				else {
-					return 0; // DNs are identical
-				}
+				return $len_a <=> $len_b;
 			}
 		}
 		else {

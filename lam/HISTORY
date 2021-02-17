@@ -1,5 +1,6 @@
 March 2021 7.5
-  - PHP 7.2 required
+  - PHP 7.3 required
+  - PHP 8.0 compatibility (except tree view)
   - Support copying LDAP entries from account list
   - LAM Pro:
    -> Self registration: support binary attributes (e.g. for jpegPhoto)

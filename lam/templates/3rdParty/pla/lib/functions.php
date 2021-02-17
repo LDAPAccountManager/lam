@@ -796,7 +796,7 @@ function get_cached_item($index,$item,$subitem='null') {
  *
  * Returns true on success of false on failure.
  */
-function set_cached_item($index,$item,$subitem='null',$data) {
+function set_cached_item($index,$item,$subitem='null',$data=null) {
 	# Check config to make sure session-based caching is enabled.
 	if ($_SESSION[APPCONFIG]->getValue('cache',$item)) {
 		global $CACHE;
@@ -1839,7 +1839,7 @@ function ldap_error_msg($msg,$errnum) {
  * @param array Specifies optional image and CSS style attributes for the table tag. Supported keys are
  *                fixed_width, fixed_height, img_opts.
  */
-function draw_jpeg_photo($server,$dn,$attr_name='jpegphoto',$index,$draw_delete_buttons=false,$options=array()) {
+function draw_jpeg_photo($server,$dn,$attr_name='jpegphoto',$index=0,$draw_delete_buttons=false,$options=array()) {
 	$fixed = array();
 	$fixed['width'] = isset($options['fixed_width']) ? $options['fixed_width'] : false;
 	$fixed['height'] = isset($options['fixed_height']) ? $options['fixed_height'] : false;
