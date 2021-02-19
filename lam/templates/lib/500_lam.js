@@ -409,8 +409,10 @@ function equalHeight(elementIDs) {
 	}
 }
 
+window.lam.profilePdfEditor = window.lam.profilePdfEditor || {};
+
 /**
- * Shows the dialog to change the list settings.
+ * Shows the dialog to import/export account/PDF profiles.
  *
  * @param title dialog title
  * @param okText text for Ok button
@@ -418,7 +420,7 @@ function equalHeight(elementIDs) {
  * @param typeId account type
  * @param selectFieldName name of select box with profile name
  */
-function showDistributionDialog(title, okText, cancelText, typeId, type, selectFieldName) {
+window.lam.profilePdfEditor.showDistributionDialog = function(title, okText, cancelText, typeId, type, selectFieldName) {
 	// show dialog
 	var buttonList = {};
 	var dialogId = '';

@@ -356,6 +356,25 @@ function loadTemplateAccountProfile($profile, $scope) {
 }
 
 /**
+ * Deletes an account profile.
+ *
+ * @param string $profile name of the profile (without .<scope> extension)
+ * @param string $scope account type
+ * @throws LAMException error deleting template
+ */
+function deleteTemplateAccountProfile(string $profile, string $scope) {
+	if (!isValidProfileName($profile) || !preg_match("/^[a-z0-9_]+$/i", $scope) || ($profile == 'default')) {
+		logNewMessage(LOG_NOTICE, "Invalid account profile name: $profile:$scope");
+		throw new LAMException(_("Unable to delete profile!"));
+	}
+	$fileName = getProfileTemplateFileName($scope, $profile);
+	$deleted = @unlink($fileName);
+	if (!$deleted) {
+		throw new LAMException(_("Unable to delete profile!"));
+	}
+}
+
+/**
  * Installs a single template from the given data.
  *
  * @param string $scope account type (e.g. user)

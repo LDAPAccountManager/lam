@@ -1,5 +1,9 @@
 <?php
 namespace LAM\TOOLS\PROFILE_EDITOR;
+use htmlDiv;
+use htmlForm;
+use htmlResponsiveInputField;
+use htmlResponsiveSelect;
 use \htmlTitle;
 use \htmlStatusMessage;
 use \LAMCfgMain;
@@ -16,10 +20,14 @@ use \htmlInputField;
 use \htmlResponsiveRow;
 use \htmlGroup;
 use \LAM\TYPES\TypeManager;
+use LAMException;
+use function LAM\PROFILES\deleteTemplateAccountProfile;
+use function LAM\PROFILES\getProfileTemplateNames;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2019  Roland Gruber
+  Copyright (C) 2003 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -88,6 +96,25 @@ if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
 	else {
 		$message = new htmlStatusMessage('ERROR', _('Unable to delete profile!'), $type->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
 		$container->add($message, 12);
+	}
+}
+
+// delete global template TODO testing
+if (isset($_POST['deleteGlobalTemplate']) && !empty($_POST['globalTemplatesDelete'])) {
+	$cfg = new LAMCfgMain();
+	if (empty($_POST['globalTemplateDeletePassword']) || !$cfg->checkPassword($_POST['globalTemplateDeletePassword'])) {
+		$container->add(new htmlStatusMessage('ERROR', _('Master password is wrong!')), 12);
+	}
+	else {
+		$selectedOptions = explode(':', $_POST['globalTemplatesDelete']);
+		$selectedScope = $selectedOptions[0];
+		$selectedName = $selectedOptions[1];
+		try {
+			deleteTemplateAccountProfile($selectedName, $selectedScope);
+			$container->add(new htmlStatusMessage('INFO', _('Deleted profile.'), $selectedName), 12);
+		} catch (LAMException $e) {
+			$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
+		}
 	}
 }
 
@@ -231,14 +258,14 @@ foreach ($profileClasses as $profileClass) {
 	if (count($configProfiles) > 1) {
 		$importLink = new htmlLink(null, '#', '../../graphics/import.png');
 		$importLink->setTitle(_('Import profiles'));
-		$importLink->setOnClick("showDistributionDialog('" . _("Import profiles") . "', '" .
+		$importLink->setOnClick("window.lam.profilePdfEditor.showDistributionDialog('" . _("Import profiles") . "', '" .
 								_('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', 'import'); return false;");
 		$importLink->setCSSClasses(array('margin3'));
 		$buttonGroup->addElement($importLink);
 	}
 	$exportLink = new htmlLink(null, '#', '../../graphics/export.png');
 	$exportLink->setTitle(_('Export profile'));
-	$exportLink->setOnClick("showDistributionDialog('" . _("Export profile") . "', '" .
+	$exportLink->setOnClick("window.lam.profilePdfEditor.showDistributionDialog('" . _("Export profile") . "', '" .
 							_('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', 'export', '" . 'profile_' . $profileClass['typeId'] . "'); return false;");
 	$exportLink->setCSSClasses(array('margin3'));
 	$buttonGroup->addElement($exportLink);
@@ -247,11 +274,54 @@ foreach ($profileClasses as $profileClass) {
 }
 $container->addVerticalSpacer('1rem');
 
+// delete global templates
+$globalTemplates = getProfileTemplateNames();
+$globalDeletableTemplates = array();
+foreach ($globalTemplates as $typeId => $availableTemplates) {
+	if (empty($availableTemplates)) {
+		continue;
+	}
+	foreach ($availableTemplates as $availableTemplate) {
+		if ($availableTemplate !== 'default') {
+			$globalDeletableTemplates[$typeId][$availableTemplate] = $typeId . ':' . $availableTemplate;
+		}
+	}
+}
+
 // generate content
 $tabindex = 1;
 parseHtml(null, $container, array(), false, $tabindex, 'user');
 
 echo "</form>\n";
+if (!empty($globalDeletableTemplates)) {
+	$container = new htmlResponsiveRow();
+	$container->add(new htmlSubTitle(_('Gobal templates')), 12);
+	$globalTemplatesSelect = new htmlResponsiveSelect('globalTemplatesDelete', $globalDeletableTemplates, array(), _('Delete'));
+	$globalTemplatesSelect->setContainsOptgroups(true);
+	$globalTemplatesSelect->setHasDescriptiveElements(true);
+	$container->add($globalTemplatesSelect, 12);
+	$globalTemplateDeleteDialogPassword = new htmlResponsiveInputField(_("Master password"), 'globalTemplateDeletePassword', null, '236');
+	$globalTemplateDeleteDialogPassword->setIsPassword(true);
+	$globalTemplateDeleteDialogPassword->setRequired(true);
+	$container->add($globalTemplateDeleteDialogPassword, 12);
+	$container->addVerticalSpacer('1rem');
+	$globalTemplateDeleteButton = new htmlButton('deleteGlobalProfileButton', _('Delete'));
+	$globalTemplateDeleteButton->setIconClass('deleteButton');
+	$globalTemplateDeleteButton->setOnClick("showConfirmationDialog('" . _("Delete") . "', '" .
+		_('Ok') . "', '" . _('Cancel') . "', 'globalTemplateDeleteDialog', 'deleteGlobalTemplatesForm', undefined); return false;");
+	$container->addLabel(new htmlOutputText('&nbsp;', false));
+	$container->addField($globalTemplateDeleteButton, 12);
+	addSecurityTokenToMetaHTML($container);
+	$globalTemplateDeleteDialogContent = new htmlResponsiveRow();
+	$globalTemplateDeleteDialogContent->add(new htmlOutputText(_('Do you really want to delete this profile?')), 12);
+	$globalTemplateDeleteDialogContent->add(new htmlHiddenInput('deleteGlobalTemplate', 'true'), 12);
+	$globalTemplateDeleteDialogDiv = new htmlDiv('globalTemplateDeleteDialog', $globalTemplateDeleteDialogContent, array('hidden'));
+	$container->add($globalTemplateDeleteDialogDiv, 12);
+	$container->addVerticalSpacer('1rem');
+	$globalTemplateDeleteForm = new htmlForm('deleteGlobalTemplatesForm', 'profilemain.php', $container);
+	parseHtml(null, $globalTemplateDeleteForm, array(), false, $tabindex, 'user');
+}
+
 echo "</div>\n";
 
 foreach ($profileClasses as $profileClass) {

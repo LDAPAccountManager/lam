@@ -21,7 +21,7 @@ use \LAM\TYPES\TypeManager;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2020  Roland Gruber
+                2005 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -254,7 +254,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 			if (count($configProfiles) > 1) {
 				$importLink = new htmlLink(null, '#', '../../graphics/import.png');
 				$importLink->setTitle(_('Import PDF structures'));
-				$importLink->setOnClick("showDistributionDialog('" . _("Import PDF structures") . "', '" .
+				$importLink->setOnClick("window.lam.profilePdfEditor.showDistributionDialog('" . _("Import PDF structures") . "', '" .
 										_('Ok') . "', '" . _('Cancel') . "', '" . $templateClass['typeId'] .
 										"', 'import'); return false;");
 				$importLink->setCSSClasses(array('margin3'));
@@ -262,7 +262,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 			}
 			$exportLink = new htmlLink(null, '#', '../../graphics/export.png');
 			$exportLink->setTitle(_('Export PDF structure'));
-			$exportLink->setOnClick("showDistributionDialog('" . _("Export PDF structure") . "', '" .
+			$exportLink->setOnClick("window.lam.profilePdfEditor.showDistributionDialog('" . _("Export PDF structure") . "', '" .
 									_('Ok') . "', '" . _('Cancel') . "', '" . $templateClass['typeId'] .
 									"', 'export', '" . 'template_' . $templateClass['typeId'] . "', '" .
 									$_SESSION['config']->getName() . "'); return false;");
