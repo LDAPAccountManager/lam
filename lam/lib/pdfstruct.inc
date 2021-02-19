@@ -158,8 +158,8 @@ function copyStructureToTemplates($sourceType, $sourceName) {
 	}
 	$sourceConfig = $sourceType->getTypeManager()->getConfig()->getName();
 	$sourceTypeId = $sourceType->getId();
-	$basePath = dirname(__FILE__) . '/../config/pdf/';
-	$templatePath = dirname(__FILE__) . '/../config/templates/pdf/';
+	$basePath = __DIR__ . '/../config/pdf/';
+	$templatePath = __DIR__ . '/../config/templates/pdf/';
 	$src = $basePath . $sourceConfig . '/' . $sourceName . '.' . $sourceTypeId . '.xml';
 	$dst = $templatePath . $sourceName . '.' . $sourceType->getScope() . '.xml';
 	if (!@copy($src, $dst)) {
@@ -310,6 +310,25 @@ function getPdfTemplateNames() {
 		}
 	}
 	return $allTemplates;
+}
+
+/**
+ * Deletes a PDF structure template.
+ *
+ * @param string $profile name of the profile (without .<scope> extension)
+ * @param string $scope account type
+ * @throws LAMException error deleting template
+ */
+function deleteTemplateStructure(string $profile, string $scope) {
+	if (!isValidPDFStructureName($profile) || !preg_match("/^[a-z0-9_]+$/i", $scope) || ($profile == 'default')) {
+		logNewMessage(LOG_NOTICE, "Invalid PDF profile name: $profile:$scope");
+		throw new LAMException(_("Unable to delete PDF structure!"));
+	}
+	$fileName = __DIR__ . '/../config/templates/pdf/' . $profile . '.' . $scope . '.xml';
+	$deleted = @unlink($fileName);
+	if (!$deleted) {
+		throw new LAMException(_("Unable to delete PDF structure!"));
+	}
 }
 
 /**

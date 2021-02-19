@@ -99,7 +99,7 @@ if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
 	}
 }
 
-// delete global template TODO testing
+// delete global template
 if (isset($_POST['deleteGlobalTemplate']) && !empty($_POST['globalTemplatesDelete'])) {
 	$cfg = new LAMCfgMain();
 	if (empty($_POST['globalTemplateDeletePassword']) || !$cfg->checkPassword($_POST['globalTemplateDeletePassword'])) {
@@ -274,6 +274,12 @@ foreach ($profileClasses as $profileClass) {
 }
 $container->addVerticalSpacer('1rem');
 
+// generate content
+$tabindex = 1;
+parseHtml(null, $container, array(), false, $tabindex, 'user');
+
+echo "</form>\n";
+
 // delete global templates
 $globalTemplates = getProfileTemplateNames();
 $globalDeletableTemplates = array();
@@ -288,11 +294,6 @@ foreach ($globalTemplates as $typeId => $availableTemplates) {
 	}
 }
 
-// generate content
-$tabindex = 1;
-parseHtml(null, $container, array(), false, $tabindex, 'user');
-
-echo "</form>\n";
 if (!empty($globalDeletableTemplates)) {
 	$container = new htmlResponsiveRow();
 	$container->add(new htmlSubTitle(_('Gobal templates')), 12);
