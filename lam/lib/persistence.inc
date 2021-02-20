@@ -11,6 +11,7 @@ use PDO;
 use PDOException;
 use SelfServicePersistence;
 use selfServiceProfile;
+use ServerProfilePersistenceManager;
 use function LAM\PDF\getAvailableLogos;
 use function LAM\PDF\getPDFStructures;
 use function LAM\PDF\getPdfTemplateLogoBinary;
@@ -69,7 +70,8 @@ class ConfigDataExporter {
 		$jsonData = array();
 		$jsonData['mainConfig'] = $this->_getMainConfigData($mainCfg);
 		$jsonData['certificates'] = $this->_getCertificates($mainCfg);
-		$serverProfileNames = getConfigProfiles();
+		$serverProfilesPersistenceManager = new ServerProfilePersistenceManager();
+		$serverProfileNames = $serverProfilesPersistenceManager->getProfiles();
 		$serverProfiles = array();
 		foreach ($serverProfileNames as $serverProfileName) {
 			$serverProfiles[$serverProfileName] = new \LAMConfig($serverProfileName);

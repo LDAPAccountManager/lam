@@ -13,10 +13,13 @@ use \htmlOutputText;
 use \htmlHiddenInput;
 use \htmlDiv;
 use \htmlLink;
+use LAMException;
+use ServerProfilePersistenceManager;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2020  Roland Gruber
+  Copyright (C) 2003 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -58,7 +61,14 @@ setlanguage();
 
 
 $cfg = new LAMCfgMain();
-$files = getConfigProfiles();
+$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
+$files = array();
+try {
+	$files = $serverProfilePersistenceManager->getProfiles();
+}
+catch (LAMException $e) {
+	logNewMessage(LOG_ERR, 'Unable to read server profiles: ' . $e->getTitle());
+}
 
 // check if submit button was pressed
 if (isset($_POST['action'])) {
@@ -88,7 +98,7 @@ if (isset($_POST['action'])) {
 	}
 	// rename profile
 	elseif ($_POST['action'] == "rename") {
-		if (preg_match("/^[a-z0-9_-]+$/i", $_POST['oldfilename']) && preg_match("/^[a-z0-9_-]+$/i", $_POST['renfilename']) && !in_array($_POST['renfilename'], getConfigProfiles())) {
+		if (preg_match("/^[a-z0-9_-]+$/i", $_POST['oldfilename']) && preg_match("/^[a-z0-9_-]+$/i", $_POST['renfilename']) && !in_array($_POST['renfilename'], $files)) {
 			if (rename("../../config/" . $_POST['oldfilename'] . ".conf", "../../config/" . $_POST['renfilename'] . ".conf")) {
 			    // rename pdf and profiles folder
 			    rename("../../config/profiles/" . $_POST['oldfilename'], "../../config/profiles/" . $_POST['renfilename']);
@@ -106,9 +116,15 @@ if (isset($_POST['action'])) {
 				$cfg->save();
 			}
 			// reread profile list
-			$files = getConfigProfiles();
+			try {
+				$files = $serverProfilePersistenceManager->getProfiles();
+			} catch (LAMException $e) {
+				logNewMessage(LOG_ERR, 'Unable to read server profiles: ' . $e->getTitle());
+			}
 		}
-		else $error = _("Profile name is invalid!");
+		else {
+		    $error = _("Profile name is invalid!");
+		}
 	}
 	// delete profile
 	elseif ($_POST['action'] == "delete") {
@@ -124,9 +140,15 @@ if (isset($_POST['action'])) {
 				}
 			}
 			// reread profile list
-			$files = getConfigProfiles();
+			try {
+				$files = $serverProfilePersistenceManager->getProfiles();
+			} catch (LAMException $e) {
+				logNewMessage(LOG_ERR, 'Unable to read server profiles: ' . $e->getTitle());
+			}
 		}
-		else $error = _("Unable to delete profile!");
+		else {
+		    $error = _("Unable to delete profile!");
+		}
 	}
 	// set new profile password
 	elseif ($_POST['action'] == "setpass") {
@@ -138,9 +160,13 @@ if (isset($_POST['action'])) {
 				$config = null;
 				$msg = _("New password set successfully.");
 			}
-			else $error = _("Profile passwords are different or empty!");
+			else {
+			    $error = _("Profile passwords are different or empty!");
+			}
 		}
-		else $error = _("Profile name is invalid!");
+		else {
+		    $error = _("Profile name is invalid!");
+		}
 	}
 	// set default profile
 	elseif ($_POST['action'] == "setdefault") {
@@ -151,7 +177,9 @@ if (isset($_POST['action'])) {
 			$configMain = null;
 			$msg = _("New default profile set successfully.");
 		}
-		else $error = _("Profile name is invalid!");
+		else {
+		    $error = _("Profile name is invalid!");
+		}
 	}
 }
 

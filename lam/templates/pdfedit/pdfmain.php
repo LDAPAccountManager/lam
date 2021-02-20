@@ -22,6 +22,7 @@ use \htmlResponsiveRow;
 use \htmlGroup;
 use \LAM\TYPES\TypeManager;
 use LAMException;
+use ServerProfilePersistenceManager;
 use function LAM\PDF\deleteTemplateStructure;
 use function LAM\PDF\getPdfTemplateNames;
 
@@ -144,7 +145,13 @@ if (isset($_POST['deleteGlobalTemplate']) && !empty($_POST['globalTemplatesDelet
 	}
 }
 
-$configProfiles = getConfigProfiles();
+$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
+$configProfiles = array();
+try {
+	$configProfiles = $serverProfilePersistenceManager->getProfiles();
+} catch (LAMException $e) {
+	logNewMessage(LOG_ERR, 'Unable to read server profiles: ' . $e->getTitle());
+}
 $serverProfiles = array();
 foreach ($configProfiles as $profileName) {
 	$serverProfiles[$profileName] = new \LAMConfig($profileName);

@@ -3,7 +3,7 @@ namespace LAM\HEADER;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2018 - 2019  Roland Gruber
+  Copyright (C) 2018 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,6 +20,9 @@ namespace LAM\HEADER;
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
+
+use LAMException;
+use ServerProfilePersistenceManager;
 
 /**
 * Head part of page which includes links to lists etc.
@@ -108,10 +111,16 @@ foreach ($toSort as $key => $value) {
 			<?php
 				echo '&nbsp;&nbsp;<small title="' . $userData . '">';
 				$serverProfileLabel = $_SESSION['config']->getName() . ' - ';
-				$serverProfileNames = getConfigProfiles();
-				if (sizeof($serverProfileNames) < 2) {
-					$serverProfileLabel = '';
-				}
+				$serverProfilesPersistenceManager = new ServerProfilePersistenceManager();
+                try {
+                    $serverProfileNames = $serverProfilesPersistenceManager->getProfiles();
+	                if (sizeof($serverProfileNames) < 2) {
+		                $serverProfileLabel = '';
+	                }
+                }
+                catch (LAMException $e) {
+                    logNewMessage(LOG_ERR, 'Unable to read server profiles: ' . $e->getTitle());
+                }
 				echo '(' . $serverProfileLabel . $userName . ')';
 				echo '</small>';
 			?>

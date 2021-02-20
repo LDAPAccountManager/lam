@@ -10,9 +10,12 @@ use \htmlDiv;
 use \htmlResponsiveSelect;
 use \htmlResponsiveInputField;
 use \htmlHorizontalLine;
+use LAMException;
+use ServerProfilePersistenceManager;
+
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2020  Roland Gruber
+  Copyright (C) 2003 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -67,7 +70,14 @@ for ($i = 0; $i < sizeof($sessionKeys); $i++) {
 
 echo $_SESSION['header'];
 
-$files = getConfigProfiles();
+$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
+$files = array();
+try {
+	$files = $serverProfilePersistenceManager->getProfiles();
+}
+catch (LAMException $e) {
+	logNewMessage(LOG_ERR, 'Unable to read server profiles: ' . $e->getTitle());
+}
 printHeaderContents(_("Login"), '../..');
 
 if (sizeof($files) < 1) {

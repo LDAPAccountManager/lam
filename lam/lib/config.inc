@@ -151,29 +151,6 @@ function checkChmod($right, $target, $chmod) {
 }
 
 /**
-* Returns an array of string with all available configuration profiles (without .conf)
-*
-* @return array profile names
-*/
-function getConfigProfiles() {
-	$dirName = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config";
-	$dir = dir($dirName);
-	$ret = array();
-	$pos = 0;
-	while ($entry = $dir->read()){
-		$ext = substr($entry, strlen($entry)-5, 5);
-		$name = substr($entry, 0, strlen($entry)-5);
-		// check if extension is right, add to profile list
-		if (($ext == ".conf") && is_readable($dirName . '/' . $entry)) {
-			$ret[$pos] = $name;
-			$pos ++;
-		}
-	}
-	sort($ret);
-	return $ret;
-}
-
-/**
 * Returns an array of string with all available configuration templates (without .conf.sample)
 *
 * @return array template names
@@ -204,7 +181,9 @@ function getConfigTemplates() {
  * @return mixed Boolean TRUE if creation was ok, error message if not
  */
 function createConfigProfile($name, $password, $template) {
-	if (!preg_match("/^[a-z0-9_-]+$/i", $name) || !preg_match("/^[a-z0-9\\._-]+$/i", $template) || in_array($name, getConfigProfiles())) {
+	// TODO replace check $serverProfilePersistenceManager->getProfiles() with call to class function
+	$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
+	if (!preg_match("/^[a-z0-9_-]+$/i", $name) || !preg_match("/^[a-z0-9\\._-]+$/i", $template) || in_array($name, $serverProfilePersistenceManager->getProfiles())) {
 		return _("Profile name is invalid!");
 	}
 	$dir = dirname(dirname(__FILE__)) . "/config/";
@@ -422,6 +401,152 @@ class LAMLanguage {
 		$this->description = $description;
 	}
 
+}
+
+/**
+ * Manages the persistence of server profiles.
+ */
+class ServerProfilePersistenceManager {
+
+	/**
+	 * @var ServerProfilePersistenceStrategy
+	 */
+	private $strategy;
+
+	public function __construct() {
+		// TODO
+		$this->strategy = new ServerProfilePersistenceStrategyFiles();
+	}
+
+	/**
+	 * Returns a lis of available server profiles.
+	 *
+	 * @return string[] list of server profile names
+	 * @throws LAMException error listing profiles
+	 */
+	public function getProfiles() : array {
+		return $this->strategy->getProfiles();
+	}
+
+	/**
+	 * Loads the given server profile
+	 *
+	 * @param string $name profile name
+	 * @return LAMConfig profile
+	 * @throws LAMException error loading profile
+	 */
+	public function loadProfile(string $name) : LAMConfig {
+		return $this->strategy->loadProfile($name);
+	}
+
+	/**
+	 * Saves a server profile.
+	 *
+	 * @param LAMConfig $profile profile
+	 * @param $name profile name
+	 * @throws LAMException error saving profile
+	 */
+	public function saveProfile(LAMConfig $profile, $name) : void {
+		$this->strategy->saveProfile($profile, $name);
+	}
+
+	/**
+	 * Deletes a server profile.
+	 *
+	 * @param string $name profile name
+	 * @throws LAMException error deleting profile
+	 */
+	public function deleteProfile(string $name) : void {
+		$this->strategy->deleteProfile($name);
+	}
+
+}
+
+/**
+ * Interface to store server profiles.
+ */
+interface ServerProfilePersistenceStrategy {
+
+	/**
+	 * Returns a lis of available server profiles.
+	 *
+	 * @return string[] list of server profile names
+	 * @throws LAMException error listing profiles
+	 */
+	public function getProfiles() : array;
+
+	/**
+	 * Loads the given server profile
+	 *
+	 * @param string $name profile name
+	 * @return LAMConfig profile
+	 * @throws LAMException error loading profile
+	 */
+	public function loadProfile(string $name) : LAMConfig;
+
+	/**
+	 * Saves a server profile.
+	 *
+	 * @param LAMConfig $profile profile
+	 * @param $name profile name
+	 * @throws LAMException error saving profile
+	 */
+	public function saveProfile(LAMConfig $profile, $name) : void;
+
+	/**
+	 * Deletes a server profile.
+	 *
+	 * @param string $name profile name
+	 * @throws LAMException error deleting profile
+	 */
+	public function deleteProfile(string $name) : void;
+
+}
+
+/**
+ * Uses local file system to store server profiles.
+ */
+class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceStrategy {
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getProfiles(): array {
+		$dirName = __DIR__ . "/../config";
+		$dir = dir($dirName);
+		$ret = array();
+		while ($entry = $dir->read()){
+			$ext = substr($entry, strlen($entry) - 5, 5);
+			$name = substr($entry, 0, strlen($entry) - 5);
+			// check if extension is right, add to profile list
+			if (($ext == ".conf") && is_readable($dirName . '/' . $entry)) {
+				$ret[] = $name;
+			}
+		}
+		sort($ret);
+		return $ret;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function loadProfile(string $name): LAMConfig {
+		// TODO: Implement loadProfile() method.
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function saveProfile(LAMConfig $profile, $name): void {
+		// TODO: Implement saveProfile() method.
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function deleteProfile(string $name): void {
+		// TODO: Implement deleteProfile() method.
+	}
 }
 
 /**
@@ -650,11 +775,6 @@ class LAMConfig {
 		if (empty($file) || !preg_match("/^[a-z0-9_-]+$/i", $file)) {
 			logNewMessage(LOG_ERR, 'Invalid config file name: ' . $file);
 			die();
-		}
-		// load first profile if none is given
-		if (!is_string($file)) {
-			$profiles = getConfigProfiles();
-			$file = $profiles[0];
 		}
 		$this->file = $file;
 		$this->reload();

@@ -30,37 +30,42 @@ include_once __DIR__ . '/../utils/configuration.inc';
  */
 class LAMConfigTest extends TestCase {
 
+	const FILE_NAME = 'd_LAMConfigTest';
+
 	/**
 	 *
 	 * @var LAMConfig
 	 */
 	private $lAMConfig;
 
-	const FILE_NAME = 'd_LAMConfigTest';
+	private $serverProfilePersistenceManager;
 
 	/**
 	 * Prepares the environment before running a test.
+	 * @throws LAMException error occurred
 	 */
 	protected function setUp(): void {
 		parent::setUp();
+		$this->serverProfilePersistenceManager = new ServerProfilePersistenceManager();
 		testCreateDefaultConfig();
-		$profiles = getConfigProfiles();
+		$profiles = $this->serverProfilePersistenceManager->getProfiles();
 		if (in_array(LAMConfigTest::FILE_NAME, $profiles)) {
 			deleteConfigProfile(LAMConfigTest::FILE_NAME);
 		}
 		createConfigProfile(LAMConfigTest::FILE_NAME, LAMConfigTest::FILE_NAME, 'unix.conf.sample');
 		$this->lAMConfig = new LAMConfig(LAMConfigTest::FILE_NAME);
-		$profiles = getConfigProfiles();
+		$profiles = $this->serverProfilePersistenceManager->getProfiles();
 		$this->assertTrue(in_array(LAMConfigTest::FILE_NAME, $profiles));
 	}
 
 	/**
 	 * Cleans up the environment after running a test.
+	 * @throws LAMException error occurred
 	 */
 	protected function tearDown(): void {
 		$this->lAMConfig = null;
 		deleteConfigProfile(LAMConfigTest::FILE_NAME);
-		$profiles = getConfigProfiles();
+		$profiles = $this->serverProfilePersistenceManager->getProfiles();
 		$this->assertTrue(!in_array(LAMConfigTest::FILE_NAME, $profiles));
 		testDeleteDefaultConfig();
 		parent::tearDown();

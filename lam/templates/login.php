@@ -15,11 +15,13 @@ use LAMException;
 use \Ldap;
 use \htmlResponsiveRow;
 use \htmlDiv;
+use ServerProfilePersistenceManager;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2020  Roland Gruber
+                2005 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -78,7 +80,13 @@ session_destroy();
 lam_start_session();
 session_regenerate_id(true);
 
-$profiles = getConfigProfiles();
+$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
+$profiles = array();
+try {
+	$profiles = $serverProfilePersistenceManager->getProfiles();
+} catch (LAMException $e) {
+	logNewMessage(LOG_ERR, 'Unable to read server profiles: ' . $e->getTitle());
+}
 
 // save last selected login profile
 if (isset($_GET['useProfile'])) {
@@ -180,6 +188,7 @@ setlanguage(); // setting correct language
  * @param string $error_message error message to display
  * @param string $errorDetails error details
  * @param string $extraMessage extra message that is shown as info
+ * @throws LAMException error rendering login page
  */
 function display_LoginPage($licenseValidator, $error_message, $errorDetails = null, $extraMessage = null) {
 	$config_object = $_SESSION['config'];
@@ -194,7 +203,8 @@ function display_LoginPage($licenseValidator, $error_message, $errorDetails = nu
 		setcookie("IV", base64_encode($iv), 0, "/", null, null, true);
 	}
 
-	$profiles = getConfigProfiles();
+	$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
+	$profiles = $serverProfilePersistenceManager->getProfiles();
 
 	echo $_SESSION["header"];
 	printHeaderContents('LDAP Account Manager', '..');
@@ -632,5 +642,8 @@ if(isset($_POST['checklogin'])) {
 }
 
 //displays the login window
-display_LoginPage($licenseValidator, $error_message);
-?>
+try {
+	display_LoginPage($licenseValidator, $error_message);
+} catch (LAMException $e) {
+    logNewMessage(LOG_ERR, 'Unable to render login page: ' . $e->getTitle());
+}
