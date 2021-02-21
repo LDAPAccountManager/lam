@@ -50,7 +50,7 @@ class LAMConfigTest extends TestCase {
 		testCreateDefaultConfig();
 		$profiles = $this->serverProfilePersistenceManager->getProfiles();
 		if (in_array(LAMConfigTest::FILE_NAME, $profiles)) {
-			deleteConfigProfile(LAMConfigTest::FILE_NAME);
+			$this->serverProfilePersistenceManager->deleteProfile(LAMConfigTest::FILE_NAME);
 		}
 		createConfigProfile(LAMConfigTest::FILE_NAME, LAMConfigTest::FILE_NAME, 'unix.conf.sample');
 		$this->lAMConfig = new LAMConfig(LAMConfigTest::FILE_NAME);
@@ -64,7 +64,7 @@ class LAMConfigTest extends TestCase {
 	 */
 	protected function tearDown(): void {
 		$this->lAMConfig = null;
-		deleteConfigProfile(LAMConfigTest::FILE_NAME);
+		$this->serverProfilePersistenceManager->deleteProfile(LAMConfigTest::FILE_NAME);
 		$profiles = $this->serverProfilePersistenceManager->getProfiles();
 		$this->assertTrue(!in_array(LAMConfigTest::FILE_NAME, $profiles));
 		testDeleteDefaultConfig();

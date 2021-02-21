@@ -109,7 +109,9 @@ if (isset($_POST['action'])) {
 				}
 				$msg = _("Renamed profile.");
 			}
-			else $error = _("Could not rename file!");
+			else {
+			    $error = _("Could not rename file!");
+			}
 			// update default profile setting if needed
 			if ($cfg->default == $_POST['oldfilename']) {
 				$cfg->default = $_POST['renfilename'];
@@ -128,27 +130,24 @@ if (isset($_POST['action'])) {
 	}
 	// delete profile
 	elseif ($_POST['action'] == "delete") {
-		if (deleteConfigProfile($_POST['delfilename']) == null) {
-			$msg = _("Profile deleted.");
-			// update default profile setting if needed
-			if ($cfg->default == $_POST['delfilename']) {
-				$filesNew = array_delete(array($_POST['delfilename']), $files);
-				if (sizeof($filesNew) > 0) {
-					sort($filesNew);
-					$cfg->default = $filesNew[0];
-					$cfg->save();
-				}
-			}
-			// reread profile list
-			try {
-				$files = $serverProfilePersistenceManager->getProfiles();
-			} catch (LAMException $e) {
-				logNewMessage(LOG_ERR, 'Unable to read server profiles: ' . $e->getTitle());
-			}
-		}
-		else {
-		    $error = _("Unable to delete profile!");
-		}
+        try {
+            $serverProfilePersistenceManager->deleteProfile($_POST['delfilename']);
+	        // update default profile setting if needed
+	        if ($cfg->default == $_POST['delfilename']) {
+		        $filesNew = array_delete(array($_POST['delfilename']), $files);
+		        if (sizeof($filesNew) > 0) {
+			        sort($filesNew);
+			        $cfg->default = $filesNew[0];
+			        $cfg->save();
+		        }
+	        }
+	        // reread profile list
+            $files = $serverProfilePersistenceManager->getProfiles();
+	        $msg = _("Profile deleted.");
+        } catch (LAMException $e) {
+            $error = _("Unable to delete profile!");
+            logNewMessage(LOG_ERR, 'Unable to delete server profile: ' . $e->getTitle());
+        }
 	}
 	// set new profile password
 	elseif ($_POST['action'] == "setpass") {

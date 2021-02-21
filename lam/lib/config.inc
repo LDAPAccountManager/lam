@@ -209,43 +209,6 @@ function createConfigProfile($name, $password, $template) {
 }
 
 /**
- * Deletes the given server profile.
- *
- * @param String $name profile name
- * @return String null if success or error message if failed
- */
-function deleteConfigProfile($name) {
-	if (!preg_match("/^[a-z0-9_-]+$/i", $name)) {
-		return _("Unable to delete profile!");
-	}
-	$dir = dirname(dirname(__FILE__)) . "/config/";
-	// delete account profiles and PDF structures
-	$subDirs = array($dir . 'pdf/' . $name . '/logos', $dir . 'pdf/' . $name, $dir . 'profiles/' . $name);
-	for ($i = 0; $i < sizeof($subDirs); $i++) {
-		if (is_dir($subDirs[$i])) {
-			$dirHandle = @opendir($subDirs[$i]);
-			while (false !== ($path = readdir($dirHandle))) {
-				if (($path != '.')  && ($path != '..') && !@unlink($subDirs[$i] . '/' . $path)) {
-					logNewMessage(LOG_ERR, 'Unable to delete ' . $subDirs[$i] . '/' . $path);
-					return _("Unable to delete profile!");
-				}
-			}
-			@closedir($dirHandle);
-			if (!@rmdir($subDirs[$i])) {
-				logNewMessage(LOG_ERR, 'Unable to delete ' . $subDirs[$i]);
-				return _("Unable to delete profile!");
-			}
-		}
-	}
-	// delete config file
-	$confFile = $dir . $name . ".conf";
-	if (!@unlink($confFile)) {
-		logNewMessage(LOG_ERR, 'Unable to delete ' . $confFile);
-		return _("Unable to delete profile!");
-	}
-}
-
-/**
 * Returns the version number of this LAM installation.
 * Format: <major version>.<minor version>.<patch level>
 * <br> Major/minor version are always numbers, patch level may contain letters for unofficial releases only (e.g. 0.5.alpha1).
@@ -414,7 +377,7 @@ class ServerProfilePersistenceManager {
 	private $strategy;
 
 	public function __construct() {
-		// TODO
+		// TODO DB
 		$this->strategy = new ServerProfilePersistenceStrategyFiles();
 	}
 
@@ -488,10 +451,19 @@ interface ServerProfilePersistenceStrategy {
 	 * Saves a server profile.
 	 *
 	 * @param LAMConfig $profile profile
-	 * @param $name profile name
+	 * @param string $name profile name
 	 * @throws LAMException error saving profile
 	 */
-	public function saveProfile(LAMConfig $profile, $name) : void;
+	public function saveProfile(LAMConfig $profile, string $name) : void;
+
+	/**
+	 * Creates a new server profile using a template.
+	 *
+	 * @param string $name profile name
+	 * @param string $templateName template name
+	 * @param string $password new profile password
+	 */
+	public function createProfileFromTemplate(string $name, string $templateName, string $password) : void;
 
 	/**
 	 * Deletes a server profile.
@@ -537,7 +509,7 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 	/**
 	 * @inheritDoc
 	 */
-	public function saveProfile(LAMConfig $profile, $name): void {
+	public function saveProfile(LAMConfig $profile, string $name): void {
 		// TODO: Implement saveProfile() method.
 	}
 
@@ -545,8 +517,43 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 	 * @inheritDoc
 	 */
 	public function deleteProfile(string $name): void {
-		// TODO: Implement deleteProfile() method.
+		if (!preg_match("/^[a-z0-9_-]+$/i", $name)) {
+			throw new LAMException(_("Unable to delete profile!"));
+		}
+		$dir = __DIR__ . "/../config/";
+		// delete account profiles and PDF structures
+		$subDirs = array($dir . 'pdf/' . $name . '/logos', $dir . 'pdf/' . $name, $dir . 'profiles/' . $name);
+		for ($i = 0; $i < sizeof($subDirs); $i++) {
+			if (is_dir($subDirs[$i])) {
+				$dirHandle = @opendir($subDirs[$i]);
+				while (false !== ($path = readdir($dirHandle))) {
+					if (($path != '.')  && ($path != '..') && !@unlink($subDirs[$i] . '/' . $path)) {
+						logNewMessage(LOG_ERR, 'Unable to delete ' . $subDirs[$i] . '/' . $path);
+						throw new LAMException(_("Unable to delete profile!"));
+					}
+				}
+				@closedir($dirHandle);
+				if (!@rmdir($subDirs[$i])) {
+					logNewMessage(LOG_ERR, 'Unable to delete ' . $subDirs[$i]);
+					throw new LAMException(_("Unable to delete profile!"));
+				}
+			}
+		}
+		// delete config file
+		$confFile = $dir . $name . ".conf";
+		if (!@unlink($confFile)) {
+			logNewMessage(LOG_ERR, 'Unable to delete ' . $confFile);
+			throw new LAMException(_("Unable to delete profile!"));
+		}
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function createProfileFromTemplate(string $name, string $templateName, string $password): void {
+		// TODO: Implement createProfileFromTemplate() method.
+	}
+
 }
 
 /**

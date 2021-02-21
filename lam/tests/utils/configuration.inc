@@ -41,7 +41,10 @@ function testCreateDefaultConfig() {
 }
 
 function testDeleteDefaultConfig() {
-	deleteConfigProfile('phpunit');
+	$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
+	try {
+		$serverProfilePersistenceManager->deleteProfile('phpunit');
+	} catch (LAMException $e) {
+		logNewMessage(LOG_ERR, $e->getTitle());
+	}
 }
-
-?>
