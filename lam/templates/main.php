@@ -40,8 +40,8 @@ enforceUserIsLoggedIn();
 
 setlanguage();
 
-\LAM\PROFILES\installProfileTemplates();
-\LAM\PDF\installPDFTemplates();
+\LAM\PROFILES\installProfileTemplates($_SESSION['config']->getName());
+\LAM\PDF\installPDFTemplates($_SESSION['config']->getName());
 
 $conf = $_SESSION['config'];
 

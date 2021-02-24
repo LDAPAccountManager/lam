@@ -103,6 +103,10 @@ function deletePDFStructure($typeId, $name, $serverProfileName) {
 function getAvailableLogos($serverProfileName) {
 	$return = array();
 	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $serverProfileName . '/logos/';
+	if (!is_dir($dirPath)) {
+		logNewMessage(LOG_WARNING, 'Unable to read ' . $dirPath);
+		return $return;
+	}
 	$dirHandle = opendir($dirPath);
 	if ($dirHandle === false) {
 		logNewMessage(LOG_WARNING, 'Unable to read ' . $dirPath);
@@ -252,11 +256,13 @@ function isValidPDFStructureName($name) {
 
 /**
  * Installs template structures to the current server profile.
+ *
+ * @param string $confName server profile name
  */
-function installPDFTemplates() {
+function installPDFTemplates(string $confName) {
 	$templatePath = __DIR__ . '/../config/templates/pdf';
 	$allTemplates = getPdfTemplateNames();
-	$basePath = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName();
+	$basePath = dirname(__FILE__) . '/../config/pdf/' . $confName;
 	if (!file_exists($basePath)) {
 		mkdir($basePath, 0700, true);
 	}

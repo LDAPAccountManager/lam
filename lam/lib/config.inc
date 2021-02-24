@@ -151,64 +151,6 @@ function checkChmod($right, $target, $chmod) {
 }
 
 /**
-* Returns an array of string with all available configuration templates (without .conf.sample)
-*
-* @return array template names
-*/
-function getConfigTemplates() {
-	$dir = dir(dirname(__FILE__) . "/../config");
-	$ret = array();
-	$pos = 0;
-	while ($entry = $dir->read()){
-		$ext = substr($entry, strlen($entry)-12, 12);
-		$name = substr($entry, 0, strlen($entry) - 12);
-		// check if extension is right, add to profile list
-		if ($ext == ".conf.sample") {
-			$ret[$pos] = $name;
-			$pos ++;
-		}
-	}
-	sort($ret);
-	return $ret;
-}
-
-/**
- * Creates a new server profile.
- *
- * @param String $name profile name
- * @param String $password profile password
- * @param String $template name of template file
- * @return mixed Boolean TRUE if creation was ok, error message if not
- */
-function createConfigProfile($name, $password, $template) {
-	// TODO replace check $serverProfilePersistenceManager->getProfiles() with call to class function
-	$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
-	if (!preg_match("/^[a-z0-9_-]+$/i", $name) || !preg_match("/^[a-z0-9\\._-]+$/i", $template) || in_array($name, $serverProfilePersistenceManager->getProfiles())) {
-		return _("Profile name is invalid!");
-	}
-	$dir = dirname(dirname(__FILE__)) . "/config/";
-	// check if template exists
-	if (!is_file($dir . $template)) {
-		return "The file config/$template was not found. Please restore it.";
-	}
-	// create new profile file
-	$path = $dir . $name . ".conf";
-	@copy($dir . $template, $path);
-	@chmod ($path, 0600);
-	$file = is_file($path);
-	if ($file) {
-		// load as config and write new password
-		$conf = new LAMConfig($name);
-		$conf->set_Passwd($password);
-		$conf->save();
-	}
-	else {
-		return _("Unable to create new profile!");
-	}
-	return true;
-}
-
-/**
 * Returns the version number of this LAM installation.
 * Format: <major version>.<minor version>.<patch level>
 * <br> Major/minor version are always numbers, patch level may contain letters for unofficial releases only (e.g. 0.5.alpha1).
@@ -399,7 +341,9 @@ class ServerProfilePersistenceManager {
 	 * @throws LAMException error loading profile
 	 */
 	public function loadProfile(string $name) : LAMConfig {
-		return $this->strategy->loadProfile($name);
+		$config = $this->strategy->loadProfile($name);
+		$config->setName($name);
+		return $config;
 	}
 
 	/**
@@ -414,6 +358,76 @@ class ServerProfilePersistenceManager {
 	}
 
 	/**
+	 * Returns an array of string with all available configuration templates (without .sample.conf)
+	 *
+	 * @return array template names
+	 */
+	function getConfigTemplates() : array {
+		$dir = dir(__DIR__ . "/../config");
+		$ret = array();
+		$pos = 0;
+		while ($entry = $dir->read()){
+			$ext = substr($entry, strlen($entry)-12, 12);
+			$name = substr($entry, 0, strlen($entry) - 12);
+			// check if extension is right, add to profile list
+			if ($ext == ".sample.conf") {
+				$ret[$pos] = $name;
+				$pos ++;
+			}
+		}
+		sort($ret);
+		return $ret;
+	}
+
+	/**
+	 * Creates a new server profile using a template/existing profile.
+	 *
+	 * @param string $name profile name
+	 * @param string $templateName template name
+	 * @param string $password new profile password
+	 * @throws LAMException error saving profile
+	 */
+	public function createProfileFromTemplate(string $name, string $templateName, string $password) : void {
+		if (!preg_match("/^[a-z0-9_-]+$/i", $name) || !preg_match("/^[a-z0-9\\._-]+$/i", $templateName) || in_array($name, $this->getProfiles())) {
+			throw new LAMException(_("Profile name is invalid!"));
+		}
+		$existingTemplateNames = $this->getConfigTemplates();
+		if (strpos($templateName, '.sample') !== false) {
+			$templateNameShort = str_replace('.sample', '', $templateName);
+			if (!in_array($templateNameShort, $existingTemplateNames)) {
+				throw new LAMException(_("Profile name is invalid!"));
+			}
+			// built-in templates are loaded via file system
+			$filesStrategy = new ServerProfilePersistenceStrategyFiles();
+			$config = $filesStrategy->loadProfile($templateName);
+		}
+		else {
+			$config = $this->loadProfile($templateName);
+		}
+		$config->set_Passwd($password);
+		$this->saveProfile($config, $name);
+		\LAM\PDF\installPDFTemplates($name);
+		\LAM\PROFILES\installProfileTemplates($name);
+	}
+
+	/**
+	 * Renames an existing server profile.
+	 *
+	 * @param string $oldName old profile name
+	 * @param string $newName new profile name
+	 * @throws LAMException error during rename
+	 */
+	public function renameProfile(string $oldName, string $newName) : void {
+		$this->strategy->renameProfile($oldName, $newName);
+		// update default profile setting if needed
+		$mainConfig = new LAMCfgMain();
+		if ($mainConfig->default == $oldName) {
+			$mainConfig->default = $newName;
+			$mainConfig->save();
+		}
+	}
+
+	/**
 	 * Deletes a server profile.
 	 *
 	 * @param string $name profile name
@@ -421,6 +435,16 @@ class ServerProfilePersistenceManager {
 	 */
 	public function deleteProfile(string $name) : void {
 		$this->strategy->deleteProfile($name);
+	}
+
+	/**
+	 * Returns if the configuration is writable.
+	 *
+	 * @param string $name profile name
+	 * @return bool is writable
+	 */
+	public function isWritable(string $name) : bool {
+		return $this->strategy->isWritable($name);
 	}
 
 }
@@ -457,13 +481,13 @@ interface ServerProfilePersistenceStrategy {
 	public function saveProfile(LAMConfig $profile, string $name) : void;
 
 	/**
-	 * Creates a new server profile using a template.
+	 * Renames an existing server profile.
 	 *
-	 * @param string $name profile name
-	 * @param string $templateName template name
-	 * @param string $password new profile password
+	 * @param string $oldName old profile name
+	 * @param string $newName new profile name
+	 * @throws LAMException error saving profile
 	 */
-	public function createProfileFromTemplate(string $name, string $templateName, string $password) : void;
+	public function renameProfile(string $oldName, string $newName) : void;
 
 	/**
 	 * Deletes a server profile.
@@ -472,6 +496,14 @@ interface ServerProfilePersistenceStrategy {
 	 * @throws LAMException error deleting profile
 	 */
 	public function deleteProfile(string $name) : void;
+
+	/**
+	 * Returns if the configuration is writable.
+	 *
+	 * @param string $name profile name
+	 * @return bool is writable
+	 */
+	public function isWritable(string $name) : bool;
 
 }
 
@@ -487,11 +519,11 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 		$dirName = __DIR__ . "/../config";
 		$dir = dir($dirName);
 		$ret = array();
-		while ($entry = $dir->read()){
+		while ($entry = $dir->read()) {
 			$ext = substr($entry, strlen($entry) - 5, 5);
 			$name = substr($entry, 0, strlen($entry) - 5);
 			// check if extension is right, add to profile list
-			if (($ext == ".conf") && is_readable($dirName . '/' . $entry)) {
+			if (($ext == ".conf") && (strpos($name, '.sample') === false) && is_readable($dirName . '/' . $entry)) {
 				$ret[] = $name;
 			}
 		}
@@ -503,14 +535,209 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 	 * @inheritDoc
 	 */
 	public function loadProfile(string $name): LAMConfig {
-		// TODO: Implement loadProfile() method.
+		$config = new LAMConfig();
+		$reflectionConfig = new ReflectionObject($config);
+		$confFilePath = $this->getPath($name);
+		if (!is_file($confFilePath)) {
+			throw new LAMException(_('Unable to read file.'));
+		}
+		$file = @fopen($confFilePath, "r");
+		if (!$file) {
+			throw new LAMException(_('Unable to read file.'));
+		}
+		$moduleSettings = array();
+		$typeSettings = array();
+		$toolSettings = array();
+		$jobSettings = array();
+		while (!feof($file)) {
+			$line = fgets($file, 1000000);
+			$line = trim($line);  // remove spaces at the beginning and end
+			if (($line == "")||($line[0] == "#")) {
+				continue; // ignore comments and empty lines
+			}
+			// search keywords
+			$parts = explode(': ', $line);
+			$keyword = $parts[0];
+			$startIndex = strlen($keyword) + 2;
+			if (sizeof($parts) == 1) {
+				// empty global settings
+				try {
+					$property = $reflectionConfig->getProperty($keyword);
+					$property->setAccessible(true);
+					$property->setValue($config, '');
+				} catch (ReflectionException $e) {
+					// ignore
+				}
+			}
+			elseif ((sizeof($parts) > 1) && !in_array($keyword, array('modules', 'types', 'tools', 'jobs'))) {
+				// global setting with value
+				try {
+					$property = $reflectionConfig->getProperty($keyword);
+					$property->setAccessible(true);
+					$property->setValue($config, substr($line, $startIndex));
+				} catch (ReflectionException $e) {
+					// ignore
+				}
+			}
+			else {
+				$subKeyword = $parts[1];
+				$startIndex = $startIndex + strlen($subKeyword) + 2;
+				$option = substr($line, $startIndex);
+				if (empty($option)) {
+					continue;
+				}
+				// module settings
+				if ($keyword == 'modules') {
+					$moduleSettings[$subKeyword] = explode(LAMConfig::LINE_SEPARATOR, $option);
+				}
+				// type settings
+				if ($keyword == 'types') {
+					$typeSettings[$subKeyword] = $option;
+				}
+				// tool settings
+				if ($keyword == 'tools') {
+					$toolSettings[$subKeyword] = $option;
+				}
+				// job settings
+				if ($keyword == 'jobs') {
+					$jobSettings[$subKeyword] = explode(LAMConfig::LINE_SEPARATOR, $option);
+				}
+			}
+		}
+		fclose($file);
+		$config->set_moduleSettings($moduleSettings);
+		$config->set_typeSettings($typeSettings);
+		$config->setToolSettings($toolSettings);
+		$config->setJobSettings($jobSettings);
+		$config->removeInvalidTypes();
+		$config->removeInvalidModules();
+		return $config;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function saveProfile(LAMConfig $profile, string $name): void {
-		// TODO: Implement saveProfile() method.
+		$confFile = $this->getPath($name);
+		if (!file_exists($confFile)) {
+			$newFile = fopen($confFile, 'wb');
+			fclose($newFile);
+		}
+		if (is_file($confFile) && is_readable($confFile)) {
+			$file_array = array();
+			$file_array[] = "\n" . "ServerURL: " . $profile->get_ServerURL() . "\n";
+			$file_array[] = "\n" . "serverDisplayName: " . $profile->getServerDisplayName() . "\n";
+			$file_array[] = "\n" . "useTLS: " . $profile->getUseTLS() . "\n";
+			$file_array[] = "\n" . "followReferrals: " . $profile->getFollowReferrals() . "\n";
+			$file_array[] = "\n" . "pagedResults: " . $profile->getPagedResults() . "\n";
+			$file_array[] = "\n" . "referentialIntegrityOverlay: " . $profile->getReferentialIntegrityOverlay() . "\n";
+			$file_array[] = "\n" . "hidePasswordPromptForExpiredPasswords: " . $profile->getHidePasswordPromptForExpiredPasswords() . "\n";
+			$file_array[] = "\n" . "Passwd: " . $profile->getPasswd() . "\n";
+			$file_array[] = "\n" . "Admins: " . $profile->get_Adminstring() . "\n";
+			$file_array[] = "\n" . "treesuffix: " . $profile->get_Suffix('tree') . "\n";
+			$file_array[] = "\n" . "defaultLanguage: " . $profile->get_defaultLanguage() . "\n";
+			$file_array[] = "\n" . "timeZone: " . $profile->getTimeZone() . "\n";
+			$file_array[] = "\n" . "scriptPath: " . $profile->get_scriptPath() . "\n";
+			$file_array[] = "\n" . "scriptServer: " . $profile->get_scriptServers() . "\n";
+			$file_array[] = "\n" . "scriptRights: " . $profile->get_scriptRights() . "\n";
+			$file_array[] = "\n" . "scriptUserName: " . $profile->getScriptUserName() . "\n";
+			$file_array[] = "\n" . "scriptSSHKey: " . $profile->getScriptSSHKey() . "\n";
+			$file_array[] = "\n" . "scriptSSHKeyPassword: " . $profile->getScriptSSHKeyPassword() . "\n";
+			$file_array[] = "\n" . "searchLimit: " . $profile->get_searchLimit() . "\n";
+			$file_array[] = "\n" . "activeTypes: " . $profile->getActiveTypesString() . "\n";
+			$file_array[] = "\n" . "accessLevel: " . $profile->getAccessLevel() . "\n";
+			$file_array[] = "\n" . "loginMethod: " . $profile->getLoginMethod() . "\n";
+			$file_array[] = "\n" . "loginSearchSuffix: " . $profile->getLoginSearchSuffix() . "\n";
+			$file_array[] = "\n" . "loginSearchFilter: " . $profile->getLoginSearchFilter() . "\n";
+			$file_array[] = "\n" . "loginSearchDN: " . $profile->getLoginSearchDN() . "\n";
+			$file_array[] = "\n" . "loginSearchPassword: " . $profile->getLoginSearchPassword() . "\n";
+			$file_array[] = "\n" . "httpAuthentication: " . $profile->getHttpAuthentication() . "\n";
+			$file_array[] = "\n" . "lamProMailFrom: " . $profile->getLamProMailFrom() . "\n";
+			$file_array[] = "\n" . "lamProMailReplyTo: " . $profile->getLamProMailReplyTo() . "\n";
+			$file_array[] = "\n" . "lamProMailSubject: " . $profile->getLamProMailSubject() . "\n";
+			$file_array[] = "\n" . "lamProMailIsHTML: " . $profile->getLamProMailIsHTML() . "\n";
+			$file_array[] = "\n" . "lamProMailAllowAlternateAddress: " . $profile->getLamProMailAllowAlternateAddress() . "\n";
+			$file_array[] = "\n" . "lamProMailText: " . $profile->getLamProMailText() . "\n";
+			$file_array[] = "\n" . "jobsBindPassword: " . $profile->getJobsBindPassword() . "\n";
+			$file_array[] = "\n" . "jobsBindUser: " . $profile->getJobsBindUser() . "\n";
+			$file_array[] = "\n" . "jobsDatabase: " . $profile->getJobsDatabase() . "\n";
+			$file_array[] = "\n" . "jobsDBHost: " . $profile->getJobsDBHost() . "\n";
+			$file_array[] = "\n" . "jobsDBPort: " . $profile->getJobsDBPort() . "\n";
+			$file_array[] = "\n" . "jobsDBUser: " . $profile->getJobsDBUser() . "\n";
+			$file_array[] = "\n" . "jobsDBPassword: " . $profile->getJobsDBPassword() . "\n";
+			$file_array[] = "\n" . "jobsDBName: " . $profile->getJobsDBName() . "\n";
+			$file_array[] = "\n" . "jobToken: " . $profile->getJobToken() . "\n";
+			$file_array[] = "\n" . "pwdResetAllowSpecificPassword: " . $profile->getPwdResetAllowSpecificPassword() . "\n";
+			$file_array[] = "\n" . "pwdResetAllowScreenPassword: " . $profile->getPwdResetAllowScreenPassword() . "\n";
+			$file_array[] = "\n" . "pwdResetForcePasswordChange: " . $profile->getPwdResetForcePasswordChange() . "\n";
+			$file_array[] = "\n" . "pwdResetDefaultPasswordOutput: " . $profile->getPwdResetDefaultPasswordOutput() . "\n";
+			$file_array[] = "\n" . "twoFactorAuthentication: " . $profile->getTwoFactorAuthentication() . "\n";
+			$file_array[] = "\n" . "twoFactorAuthenticationURL: " . $profile->getTwoFactorAuthenticationURL() . "\n";
+			$file_array[] = "\n" . "twoFactorAuthenticationClientId: " . $profile->getTwoFactorAuthenticationClientId() . "\n";
+			$file_array[] = "\n" . "twoFactorAuthenticationSecretKey: " . $profile->getTwoFactorAuthenticationSecretKey() . "\n";
+			$file_array[] = "\n" . "twoFactorAuthenticationDomain: " . $profile->getTwoFactorAuthenticationDomain() . "\n";
+			$file_array[] = "\n" . "twoFactorAuthenticationInsecure: " . $profile->getTwoFactorAuthenticationInsecure() . "\n";
+			$file_array[] = "\n" . "twoFactorAuthenticationLabel: " . $profile->getTwoFactorAuthenticationLabel() . "\n";
+			$file_array[] = "\n" . "twoFactorAuthenticationOptional: " . $profile->getTwoFactorAuthenticationOptional() . "\n";
+			$file_array[] = "\n" . "twoFactorAuthenticationCaption: " . $profile->getTwoFactorAuthenticationCaption() . "\n";
+			$file_array[] = "\n" . "twoFactorAuthenticationAttribute: " . $profile->getTwoFactorAuthenticationAttribute() . "\n";
+			$file_array[] = "\n" . "hideDnPart: " . $profile->getHideDnPart() . "\n";
+			// module settings
+			$moduleSettings = $profile->get_moduleSettings();
+			foreach ($moduleSettings as $moduleSettingKey => $moduleSettingValue) {
+				$file_array[] = "modules: " . $moduleSettingKey . ": " . implode(LAMConfig::LINE_SEPARATOR, $moduleSettingValue) . "\n";
+			}
+			// type settings
+			$typeSettings = $profile->get_typeSettings();
+			foreach ($typeSettings as $typeSettingKey => $typeSettingValue) {
+				$file_array[] = "types: " . $typeSettingKey . ": " . $typeSettingValue . "\n";
+			}
+			// tool settings
+			$toolSettings = $profile->getToolSettings();
+			foreach ($toolSettings as $toolSettingKey => $toolSettingValue) {
+				$file_array[] = "tools: " . $toolSettingKey . ": " . $toolSettingValue . "\n";
+			}
+			// job settings
+			$jobSettings = $profile->getJobSettings();
+			foreach ($jobSettings as $jobSettingKey => $jobSettingValue) {
+				$file_array[] = "jobs: " . $jobSettingKey . ": " . implode(LAMConfig::LINE_SEPARATOR, $jobSettingValue) . "\n";
+			}
+			$file = @fopen($confFile, "w");
+			if ($file) {
+				foreach ($file_array as $line) {
+					fputs($file, $line);
+				}
+				fclose($file);
+				@chmod($confFile, 0600);
+			}
+			else {
+				throw new LAMException(_('Unable to save server profile.'), $name);
+			}
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function renameProfile(string $oldName, string $newName): void {
+		$existingProfileNames = $this->getProfiles();
+		if (!preg_match("/^[a-z0-9_-]+$/i", $oldName)
+			|| !preg_match("/^[a-z0-9_-]+$/i", $newName)
+			|| in_array($newName, $existingProfileNames)) {
+			throw new LAMException(_("Profile name is invalid!"));
+		}
+		if (rename("../../config/" . $oldName . ".conf", "../../config/" . $newName . ".conf")) {
+			// rename pdf and profiles folder
+			rename("../../config/profiles/" . $oldName, "../../config/profiles/" . $newName);
+			rename("../../config/pdf/" . $oldName, "../../config/pdf/" . $newName);
+			// rename sqlite database if any
+			if (file_exists("../../config/" . $oldName . ".sqlite")) {
+				rename("../../config/" . $oldName . ".sqlite", "../../config/" . $newName . ".sqlite");
+			}
+		}
+		else {
+			throw new LAMException(_("Could not rename file!"));
+		}
 	}
 
 	/**
@@ -550,8 +777,18 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 	/**
 	 * @inheritDoc
 	 */
-	public function createProfileFromTemplate(string $name, string $templateName, string $password): void {
-		// TODO: Implement createProfileFromTemplate() method.
+	public function isWritable(string $name): bool {
+		return is_writeable($this->getPath($name));
+	}
+
+	/**
+	 * Returns the path to the config file.
+	 *
+	 * @param string $name profile name
+	 * @return string path on filesystem
+	 */
+	private function getPath(string $name) : string {
+		return __DIR__ . "/../config/" . $name . ".conf";
 	}
 
 }
@@ -567,10 +804,6 @@ class LAMConfig {
 	const ACCESS_ALL = 100;
 	const ACCESS_PASSWORD_CHANGE = 20;
 	const ACCESS_READ_ONLY = 0;
-
-	/* return codes for saving configuration file */
-	const SAVE_OK = 0;
-	const SAVE_FAIL = 1;
 
 	/* login method: predefined list or LDAP search */
 	const LOGIN_LIST = 'list';
@@ -666,9 +899,6 @@ class LAMConfig {
 	 */
 	private $scriptSSHKeyPassword;
 
-	/** LDAP cache timeout */
-	private $cachetimeout;
-
 	/** LDAP search limit */
 	private $searchLimit = 0;
 
@@ -676,7 +906,7 @@ class LAMConfig {
 	private $activeTypes = "";
 
 	/** Name of configuration file */
-	private $file;
+	private $name;
 
 	/** access level */
 	private $accessLevel = LAMconfig::ACCESS_ALL;
@@ -758,7 +988,7 @@ class LAMConfig {
 
 	/** List of all settings in config file */
 	private $settings = array("ServerURL", "useTLS", "followReferrals", 'pagedResults', "Passwd", "Admins", "treesuffix",
-		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", "cachetimeout", 'serverDisplayName',
+		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", 'serverDisplayName',
 		"modules", "activeTypes", "types", "tools", "accessLevel", 'loginMethod', 'loginSearchSuffix',
 		'loginSearchFilter', 'searchLimit', 'lamProMailFrom', 'lamProMailReplyTo', 'lamProMailSubject',
 		'lamProMailText', 'lamProMailIsHTML', 'lamProMailAllowAlternateAddress', 'httpAuthentication', 'loginSearchDN',
@@ -771,21 +1001,6 @@ class LAMConfig {
 		'twoFactorAuthenticationDomain', 'twoFactorAuthenticationAttribute', 'referentialIntegrityOverlay',
 		'hidePasswordPromptForExpiredPasswords', 'hideDnPart'
 	);
-
-
-	/**
-	* Loads preferences from config file
-	*
-	* @param String $file file name without ".conf" (e.g. lam)
-	*/
-	function __construct($file) {
-		if (empty($file) || !preg_match("/^[a-z0-9_-]+$/i", $file)) {
-			logNewMessage(LOG_ERR, 'Invalid config file name: ' . $file);
-			die();
-		}
-		$this->file = $file;
-		$this->reload();
-	}
 
 	/**
 	 * Returns the server profile data.
@@ -860,74 +1075,9 @@ class LAMConfig {
 	}
 
 	/**
-	* Reloads preferences from config file
-	*
-	* @return boolean true if file was readable
-	*/
-	private function reload() {
-		$conffile = $this->getPath();
-		if (is_file($conffile)) {
-			$file = @fopen($conffile, "r");
-			if (!$file) {
-				return false; // abort if file is not readable
-			}
-			while (!feof($file)) {
-				$line = fgets($file, 1000000);
-				$line = trim($line);  // remove spaces at the beginning and end
-				if (($line == "")||($line[0] == "#")) {
-					continue; // ignore comments and empty lines
-				}
-				// search keywords
-				$parts = explode(': ', $line);
-				$keyword = $parts[0];
-				if (!in_array($keyword, $this->settings)) {
-					continue;
-				}
-				$startIndex = strlen($keyword) + 2;
-				if (sizeof($parts) == 1) {
-					// empty global settings
-					$this->$keyword = '';
-				}
-				elseif ((sizeof($parts) > 1) && !in_array($keyword, array('modules', 'types', 'tools', 'jobs'))) {
-					// global setting with value
-					$this->$keyword = substr($line, $startIndex);
-				}
-				else {
-					$subKeyword = $parts[1];
-					$startIndex = $startIndex + strlen($subKeyword) + 2;
-					$option = substr($line, $startIndex);
-					if (empty($option)) {
-						continue;
-					}
-					// module settings
-					if ($keyword == 'modules') {
-						$this->moduleSettings[$subKeyword] = explode(LAMConfig::LINE_SEPARATOR, $option);
-					}
-					// type settings
-					if ($keyword == 'types') {
-						$this->typeSettings[$subKeyword] = $option;
-					}
-					// tool settings
-					if ($keyword == 'tools') {
-						$this->toolSettings[$subKeyword] = $option;
-					}
-					// job settings
-					if ($keyword == 'jobs') {
-						$this->jobSettings[$subKeyword] = explode(LAMConfig::LINE_SEPARATOR, $option);
-					}
-				}
-			}
-			fclose($file);
-		}
-		$this->removeInvalidTypes();
-		$this->removeInvalidModules();
-		return true;
-	}
-
-	/**
 	 * Removes any non-existing types from the configuration.
 	 */
-	private function removeInvalidTypes() {
+	public function removeInvalidTypes() {
 		$allTypes = LAM\TYPES\getTypes();
 		$activeTypes = $this->get_ActiveTypes();
 		for ($i = 0; $i < sizeof($activeTypes); $i++) {
@@ -942,7 +1092,7 @@ class LAMConfig {
 	/**
 	 * Removes any non-existing modules from the configuration.
 	 */
-	private function removeInvalidModules() {
+	public function removeInvalidModules() {
 		$types = $this->get_ActiveTypes();
 		$availableByScope = array();
 		foreach ($types as $type) {
@@ -966,340 +1116,22 @@ class LAMConfig {
 		}
 	}
 
-	/** Saves preferences to config file */
-	public function save() {
-		$conffile = $this->getPath();
-		if (!file_exists($conffile)) {
-			$newFile = fopen($conffile, 'wb');
-			fclose($newFile);
-		}
-		if (is_file($conffile) && is_readable($conffile)) {
-			$file = fopen($conffile, "r");
-			$file_array = array();
-			// read config file
-			while (!feof($file)) {
-				array_push($file_array, fgets($file, 1000000));
-			}
-			fclose($file);
-			// generate new configuration file
-			$saved = array();	// includes all settings which have been saved
-			$mod_saved = array();	// includes all module settings which have been saved
-			$count = sizeof($file_array);
-			for ($i = 0; $i < $count; $i++) {
-				$line = trim($file_array[$i]);
-				if (($line == "")||($line[0] == "#")) {
-					continue; // ignore comments and empty lines
-				}
-				// search for keywords
-				for ($k = 0; $k < sizeof($this->settings); $k++) {
-					$keyword = $this->settings[$k];
-					$keylen = strlen($keyword);
-					if (strtolower(substr($line, 0, $keylen + 1)) == strtolower($keyword . ":")) {
-						// module settings
-						if (strtolower(substr($line, 0, $keylen + 2)) == "modules: ") {
-							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
-							$pos = strpos($option, ":");
-							$name = substr($option, 0, $pos);
-							if (!isset($this->moduleSettings[$name])) {
-								unset($file_array[$i]);
-								continue;
-							}
-							$file_array[$i] = "modules: " . $name . ": " . implode(LAMConfig::LINE_SEPARATOR, $this->moduleSettings[$name]) . "\n";
-							$mod_saved[] = $name;	// mark keyword as saved
-						}
-						// type settings
-						elseif (strtolower(substr($line, 0, $keylen + 2)) == "types: ") {
-							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
-							$pos = strpos($option, ":");
-							$name = substr($option, 0, $pos);
-							if (!isset($this->typeSettings[$name])) {
-								unset($file_array[$i]);
-								continue;
-							}
-							$file_array[$i] = "types: " . $name . ": " . $this->typeSettings[$name] . "\n";
-							$mod_saved[] = $name;	// mark keyword as saved
-						}
-						// tool settings
-						elseif (strtolower(substr($line, 0, $keylen + 2)) == "tools: ") {
-							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
-							$pos = strpos($option, ":");
-							$name = substr($option, 0, $pos);
-							if (!isset($this->toolSettings[$name])) {
-								unset($file_array[$i]);
-								continue;
-							}
-							$file_array[$i] = "tools: " . $name . ": " . $this->toolSettings[$name] . "\n";
-							$mod_saved[] = $name;	// mark keyword as saved
-						}
-						// job settings
-						elseif (strtolower(substr($line, 0, $keylen + 2)) == "jobs: ") {
-							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
-							$pos = strpos($option, ":");
-							$name = substr($option, 0, $pos);
-							if (!isset($this->jobSettings[$name])) {
-								unset($file_array[$i]);
-								continue;
-							}
-							$file_array[$i] = "jobs: " . $name . ": " . implode(LAMConfig::LINE_SEPARATOR, $this->jobSettings[$name]) . "\n";
-							$mod_saved[] = $name;	// mark keyword as saved
-						}
-						// general settings
-						else {
-							$file_array[$i] = $keyword . ": " . $this->$keyword . "\n";
-							$saved[] = $keyword;	// mark keyword as saved
-						}
-						break;
-					}
-				}
-			}
-			// check if we have to add new entries (e.g. if user upgraded LAM and has an old config file)
-			if (!in_array("ServerURL", $saved)) {
-				array_push($file_array, "\n\n# server address (e.g. ldap://localhost:389 or ldaps://localhost:636)\n" . "ServerURL: " . $this->ServerURL . "\n");
-			}
-			if (!in_array("serverDisplayName", $saved)) {
-				array_push($file_array, "\n\nserverDisplayName: " . $this->serverDisplayName . "\n");
-			}
-			if (!in_array("useTLS", $saved)) {
-				array_push($file_array, "\n\n# enable TLS encryption\n" . "useTLS: " . $this->useTLS . "\n");
-			}
-			if (!in_array("followReferrals", $saved)) {
-				array_push($file_array, "\n\n# follow referrals\n" . "followReferrals: " . $this->followReferrals . "\n");
-			}
-			if (!in_array("pagedResults", $saved)) {
-				array_push($file_array, "\n\n# paged results\n" . "pagedResults: " . $this->pagedResults . "\n");
-			}
-			if (!in_array("referentialIntegrityOverlay", $saved)) {
-				array_push($file_array, "\n" . "referentialIntegrityOverlay: " . $this->referentialIntegrityOverlay . "\n");
-			}
-			if (!in_array("hidePasswordPromptForExpiredPasswords", $saved)) {
-				array_push($file_array, "\n" . "hidePasswordPromptForExpiredPasswords: " . $this->hidePasswordPromptForExpiredPasswords . "\n");
-			}
-			if (!in_array("Passwd", $saved)) {
-				array_push($file_array, "\n\n# password to change these preferences via webfrontend\n" . "Passwd: " . $this->Passwd . "\n");
-			}
-			if (!in_array("Admins", $saved)) {
-				array_push($file_array, "\n\n# list of users who are allowed to use LDAP Account Manager\n" .
-					"# names have to be separated by semicolons\n" .
-					"# e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org\n" . "Admins: " . $this->Admins . "\n");
-			}
-			if (!in_array("treesuffix", $saved)) {
-				array_push($file_array, "\n\n# suffix of tree view\n" .
-					"# e.g. dc=yourdomain,dc=org\n" . "treesuffix: " . $this->treesuffix . "\n");
-			}
-			if (!in_array("defaultLanguage", $saved)) {
-				array_push($file_array, "\n\n# default language (a line from config/language)\n" . "defaultLanguage: " . $this->defaultLanguage . "\n");
-			}
-			if (!in_array("timeZone", $saved)) {
-				array_push($file_array, "\n\n# time zone\n" . "timeZone: " . $this->timeZone . "\n");
-			}
-			if (!in_array("scriptPath", $saved)) {
-				array_push($file_array, "\n\n# Path to external Script\n" . "scriptPath: " . $this->scriptPath . "\n");
-			}
-			if (!in_array("scriptServer", $saved)) {
-				array_push($file_array, "\n\n# Servers of external script\n" . "scriptServer: " . $this->scriptServer . "\n");
-			}
-			if (!in_array("scriptRights", $saved)) {
-				array_push($file_array, "\n\n# Access rights for home directories\n" . "scriptRights: " . $this->scriptRights . "\n");
-			}
-			if (!in_array("scriptUserName", $saved)) {
-				array_push($file_array, "\n" . "scriptUserName: " . $this->scriptUserName . "\n");
-			}
-			if (!in_array("scriptSSHKey", $saved)) {
-				array_push($file_array, "\n" . "scriptSSHKey: " . $this->scriptSSHKey . "\n");
-			}
-			if (!in_array("scriptSSHKeyPassword", $saved)) {
-				array_push($file_array, "\n" . "scriptSSHKeyPassword: " . $this->scriptSSHKeyPassword . "\n");
-			}
-			if (!in_array("cachetimeout", $saved)) {
-				array_push($file_array, "\n\n# Number of minutes LAM caches LDAP searches.\n" . "cacheTimeout: " . $this->cachetimeout . "\n");
-			}
-			if (!in_array("searchLimit", $saved)) {
-				array_push($file_array, "\n\n# LDAP search limit.\n" . "searchLimit: " . $this->searchLimit . "\n");
-			}
-			if (!in_array("activeTypes", $saved)) {
-				array_push($file_array, "\n\n# List of active account types.\n" . "activeTypes: " . $this->activeTypes . "\n");
-			}
-			if (!in_array("accessLevel", $saved)) {
-				array_push($file_array, "\n\n# Access level for this profile.\n" . "accessLevel: " . $this->accessLevel . "\n");
-			}
-			if (!in_array("loginMethod", $saved)) {
-				array_push($file_array, "\n\n# Login method.\n" . "loginMethod: " . $this->loginMethod . "\n");
-			}
-			if (!in_array("loginSearchSuffix", $saved)) {
-				array_push($file_array, "\n\n# Search suffix for LAM login.\n" . "loginSearchSuffix: " . $this->loginSearchSuffix . "\n");
-			}
-			if (!in_array("loginSearchFilter", $saved)) {
-				array_push($file_array, "\n\n# Search filter for LAM login.\n" . "loginSearchFilter: " . $this->loginSearchFilter . "\n");
-			}
-			if (!in_array("loginSearchDN", $saved)) {
-				array_push($file_array, "\n\n# Bind DN for login search.\n" . "loginSearchDN: " . $this->loginSearchDN . "\n");
-			}
-			if (!in_array("loginSearchPassword", $saved)) {
-				array_push($file_array, "\n\n# Bind password for login search.\n" . "loginSearchPassword: " . $this->loginSearchPassword . "\n");
-			}
-			if (!in_array("httpAuthentication", $saved)) {
-				array_push($file_array, "\n\n# HTTP authentication for LAM login.\n" . "httpAuthentication: " . $this->httpAuthentication . "\n");
-			}
-			if (!in_array("lamProMailFrom", $saved)) {
-				array_push($file_array, "\n\n# Password mail from\n" . "lamProMailFrom: " . $this->lamProMailFrom . "\n");
-			}
-			if (!in_array("lamProMailReplyTo", $saved)) {
-				array_push($file_array, "\n\n# Password mail reply-to\n" . "lamProMailReplyTo: " . $this->lamProMailReplyTo . "\n");
-			}
-			if (!in_array("lamProMailSubject", $saved)) {
-				array_push($file_array, "\n\n# Password mail subject\n" . "lamProMailSubject: " . $this->lamProMailSubject . "\n");
-			}
-			if (!in_array("lamProMailIsHTML", $saved)) {
-				array_push($file_array, "\n\n# Password mail is HTML\n" . "lamProMailIsHTML: " . $this->lamProMailIsHTML . "\n");
-			}
-			if (!in_array("lamProMailAllowAlternateAddress", $saved)) {
-				array_push($file_array, "\n\n# Allow alternate address\n" . "lamProMailAllowAlternateAddress: " . $this->lamProMailAllowAlternateAddress . "\n");
-			}
-			if (!in_array("lamProMailText", $saved)) {
-				array_push($file_array, "\n\n# Password mail text\n" . "lamProMailText: " . $this->lamProMailText . "\n");
-			}
-			if (!in_array("jobsBindPassword", $saved)) {
-				array_push($file_array, "\n" . "jobsBindPassword: " . $this->jobsBindPassword . "\n");
-			}
-			if (!in_array("jobsBindUser", $saved)) {
-				array_push($file_array, "\n" . "jobsBindUser: " . $this->jobsBindUser . "\n");
-			}
-			if (!in_array("jobsDatabase", $saved)) {
-				array_push($file_array, "\n" . "jobsDatabase: " . $this->jobsDatabase . "\n");
-			}
-			if (!in_array("jobsDBHost", $saved)) {
-				array_push($file_array, "\n" . "jobsDBHost: " . $this->jobsDBHost . "\n");
-			}
-			if (!in_array("jobsDBPort", $saved)) {
-				array_push($file_array, "\n" . "jobsDBPort: " . $this->jobsDBPort . "\n");
-			}
-			if (!in_array("jobsDBUser", $saved)) {
-				array_push($file_array, "\n" . "jobsDBUser: " . $this->jobsDBUser . "\n");
-			}
-			if (!in_array("jobsDBPassword", $saved)) {
-				array_push($file_array, "\n" . "jobsDBPassword: " . $this->jobsDBPassword . "\n");
-			}
-			if (!in_array("jobsDBName", $saved)) {
-				array_push($file_array, "\n" . "jobsDBName: " . $this->jobsDBName . "\n");
-			}
-			if (!in_array("jobToken", $saved)) {
-				array_push($file_array, "\n" . "jobToken: " . $this->getJobToken() . "\n");
-			}
-			if (!in_array("pwdResetAllowSpecificPassword", $saved)) {
-				array_push($file_array, "\n" . "pwdResetAllowSpecificPassword: " . $this->pwdResetAllowSpecificPassword . "\n");
-			}
-			if (!in_array("pwdResetAllowScreenPassword", $saved)) {
-				array_push($file_array, "\n" . "pwdResetAllowScreenPassword: " . $this->pwdResetAllowScreenPassword . "\n");
-			}
-			if (!in_array("pwdResetForcePasswordChange", $saved)) {
-				array_push($file_array, "\n" . "pwdResetForcePasswordChange: " . $this->pwdResetForcePasswordChange . "\n");
-			}
-			if (!in_array("pwdResetDefaultPasswordOutput", $saved)) {
-				array_push($file_array, "\n" . "pwdResetDefaultPasswordOutput: " . $this->pwdResetDefaultPasswordOutput . "\n");
-			}
-			if (!in_array("twoFactorAuthentication", $saved)) {
-				array_push($file_array, "\n" . "twoFactorAuthentication: " . $this->twoFactorAuthentication . "\n");
-			}
-			if (!in_array("twoFactorAuthenticationURL", $saved)) {
-				array_push($file_array, "\n" . "twoFactorAuthenticationURL: " . $this->twoFactorAuthenticationURL . "\n");
-			}
-			if (!in_array("twoFactorAuthenticationClientId", $saved)) {
-				array_push($file_array, "\n" . "twoFactorAuthenticationClientId: " . $this->twoFactorAuthenticationClientId . "\n");
-			}
-			if (!in_array("twoFactorAuthenticationSecretKey", $saved)) {
-				array_push($file_array, "\n" . "twoFactorAuthenticationSecretKey: " . $this->twoFactorAuthenticationSecretKey . "\n");
-			}
-			if (!in_array("twoFactorAuthenticationDomain", $saved)) {
-				array_push($file_array, "\n" . "twoFactorAuthenticationDomain: " . $this->twoFactorAuthenticationDomain . "\n");
-			}
-			if (!in_array("twoFactorAuthenticationInsecure", $saved)) {
-				array_push($file_array, "\n" . "twoFactorAuthenticationInsecure: " . $this->twoFactorAuthenticationInsecure . "\n");
-			}
-			if (!in_array("twoFactorAuthenticationLabel", $saved)) {
-				array_push($file_array, "\n" . "twoFactorAuthenticationLabel: " . $this->twoFactorAuthenticationLabel . "\n");
-			}
-			if (!in_array("twoFactorAuthenticationOptional", $saved)) {
-				array_push($file_array, "\n" . "twoFactorAuthenticationOptional: " . $this->twoFactorAuthenticationOptional . "\n");
-			}
-			if (!in_array("twoFactorAuthenticationCaption", $saved)) {
-				array_push($file_array, "\n" . "twoFactorAuthenticationCaption: " . $this->twoFactorAuthenticationCaption . "\n");
-			}
-			if (!in_array("twoFactorAuthenticationAttribute", $saved)) {
-				array_push($file_array, "\n" . "twoFactorAuthenticationAttribute: " . $this->twoFactorAuthenticationAttribute . "\n");
-			}
-			if (!in_array("hideDnPart", $saved)) {
-				array_push($file_array, "\n" . "hideDnPart: " . $this->hideDnPart . "\n");
-			}
-			// check if all module settings were added
-			$m_settings = array_keys($this->moduleSettings);
-			for ($i = 0; $i < sizeof($m_settings); $i++) {
-				if (!in_array($m_settings[$i], $mod_saved)) {
-					array_push($file_array, "modules: " . $m_settings[$i] . ": " . implode(LAMConfig::LINE_SEPARATOR, $this->moduleSettings[$m_settings[$i]]) . "\n");
-				}
-			}
-			// check if all type settings were added
-			$t_settings = array_keys($this->typeSettings);
-			for ($i = 0; $i < sizeof($t_settings); $i++) {
-				if (!in_array($t_settings[$i], $mod_saved)) {
-					array_push($file_array, "types: " . $t_settings[$i] . ": " . $this->typeSettings[$t_settings[$i]] . "\n");
-				}
-			}
-			// check if all tool settings were added
-			$tool_settings = array_keys($this->toolSettings);
-			for ($i = 0; $i < sizeof($tool_settings); $i++) {
-				if (!in_array($tool_settings[$i], $mod_saved)) {
-					array_push($file_array, "tools: " . $tool_settings[$i] . ": " . $this->toolSettings[$tool_settings[$i]] . "\n");
-				}
-			}
-			// check if all job settings were added
-			$jobSettings = array_keys($this->jobSettings);
-			for ($i = 0; $i < sizeof($jobSettings); $i++) {
-				if (!in_array($jobSettings[$i], $mod_saved)) {
-					array_push($file_array, "jobs: " . $jobSettings[$i] . ": " . implode(LAMConfig::LINE_SEPARATOR, $this->jobSettings[$jobSettings[$i]]) . "\n");
-				}
-			}
-			$file = @fopen($conffile, "w");
-			$saveResult = LAMConfig::SAVE_OK;
-			if ($file) {
-				foreach ($file_array as $line) {
-					fputs($file, $line);
-				}
-				fclose($file);
-				@chmod($conffile, 0600);
-			}
-			else {
-				$saveResult = LAMConfig::SAVE_FAIL;
-			}
-			return $saveResult;
-		}
-		return LAMConfig::SAVE_FAIL;
-	}
-
 	/**
 	 * Returns the name of the config file
 	 *
-	 * @return String name
+	 * @return string name
 	 */
-	public function getName() {
-		return $this->file;
+	public function getName() : string {
+		return $this->name;
 	}
 
 	/**
-	 * Returns if the file can be written on the filesystem.
+	 * Sets the name of the config file
 	 *
-	 * @return boolean true if file is writable
+	 * @param string $name name
 	 */
-	public function isWritable() {
-		return is_writeable($this->getPath());
-	}
-
-	/**
-	 * Returns the path to the config file.
-	 *
-	 * @return string path on filesystem
-	 */
-	public function getPath() {
-		return substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/" . $this->file . ".conf";
+	public function setName(string $name) : void {
+		$this->name = $name;
 	}
 
 	// functions to read/write preferences
@@ -1548,6 +1380,15 @@ class LAMConfig {
 		else {
 			return false;
 		}
+	}
+
+	/**
+	 * Returns the password hash.
+	 *
+	 * @return string password hash
+	 */
+	public function getPasswd() {
+		return $this->Passwd;
 	}
 
 	/**
@@ -1923,45 +1764,6 @@ class LAMConfig {
 	}
 
 	/**
-	* Returns the LDAP cache timeout in minutes
-	*
-	* @return integer cache time
-	*/
-	public function get_cacheTimeout() {
-		if (isset($this->cachetimeout)) {
-			return $this->cachetimeout;
-		}
-		else {
-			return 5;
-		}
-	}
-
-	/**
-	* Returns the LDAP cache timeout in seconds
-	*
-	* @return integer cache time
-	*/
-	public function get_cacheTimeoutSec() {
-		return $this->cachetimeout * 60;
-	}
-
-	/**
-	* Sets the LDAP cache timeout in minutes (0,1,2,5,10,15)
-	*
-	* @param integer $value new cache timeout
-	* @return boolean true if $value has correct format
-	*/
-	public function set_cacheTimeout($value) {
-		if (is_numeric($value) && ($value > -1)) {
-			$this->cachetimeout = $value;
-		}
-		else {
-			return false;
-		}
-		return true;
-	}
-
-	/**
 	* Returns the LDAP search limit.
 	*
 	* @return integer search limit
@@ -2068,6 +1870,15 @@ class LAMConfig {
 		else {
 			return explode(",", $this->activeTypes);
 		}
+	}
+
+	/**
+	 * Returns a list of active account types as string.
+	 *
+	 * @return string list of types
+	 */
+	public function getActiveTypesString() {
+		return $this->activeTypes;
 	}
 
 	/**
@@ -3420,7 +3231,7 @@ class LAMCfgMain {
 	 *
 	 * @return boolean writable
 	 */
-	public function isWritable() {
+	public function isWritable() : bool {
 		return is_writeable($this->conffile);
 	}
 

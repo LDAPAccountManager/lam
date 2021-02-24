@@ -280,10 +280,12 @@ function copyAccountProfileToTemplates($sourceType, $sourceProfileName) {
 
 /**
  * Installs template profiles to the current server profile.
+ *
+ * @param string $confName server profile name
  */
-function installProfileTemplates() {
+function installProfileTemplates(string $confName) {
 	$allTemplates = getProfileTemplateNames();
-	$basePath = dirname(__FILE__) . '/../config/profiles/' . $_SESSION['config']->getName();
+	$basePath = dirname(__FILE__) . '/../config/profiles/' .$confName ;
 	if (!file_exists($basePath)) {
 		mkdir($basePath, 0700, true);
 	}

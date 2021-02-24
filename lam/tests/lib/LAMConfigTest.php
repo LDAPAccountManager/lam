@@ -30,7 +30,7 @@ include_once __DIR__ . '/../utils/configuration.inc';
  */
 class LAMConfigTest extends TestCase {
 
-	const FILE_NAME = 'd_LAMConfigTest';
+	const FILE_NAME = 'd_lam_config_test';
 
 	/**
 	 *
@@ -52,8 +52,8 @@ class LAMConfigTest extends TestCase {
 		if (in_array(LAMConfigTest::FILE_NAME, $profiles)) {
 			$this->serverProfilePersistenceManager->deleteProfile(LAMConfigTest::FILE_NAME);
 		}
-		createConfigProfile(LAMConfigTest::FILE_NAME, LAMConfigTest::FILE_NAME, 'unix.conf.sample');
-		$this->lAMConfig = new LAMConfig(LAMConfigTest::FILE_NAME);
+		$this->serverProfilePersistenceManager->createProfileFromTemplate(LAMConfigTest::FILE_NAME, 'unix.sample', LAMConfigTest::FILE_NAME);
+		$this->lAMConfig = $this->serverProfilePersistenceManager->loadProfile(LAMConfigTest::FILE_NAME);
 		$profiles = $this->serverProfilePersistenceManager->getProfiles();
 		$this->assertTrue(in_array(LAMConfigTest::FILE_NAME, $profiles));
 	}
@@ -82,14 +82,8 @@ class LAMConfigTest extends TestCase {
 	 * Tests LAMConfig->isWritable()
 	 */
 	public function testIsWritable() {
-		$this->assertTrue($this->lAMConfig->isWritable());
-	}
-
-	/**
-	 * Tests LAMConfig->getPath()
-	 */
-	public function testGetPath() {
-		$this->assertEquals(dirname(dirname(dirname(__FILE__))) . '/config/' . LAMConfigTest::FILE_NAME . '.conf', $this->lAMConfig->getPath());
+		$serverProfilesPersistenceManager = new ServerProfilePersistenceManager();
+		$this->assertTrue($serverProfilesPersistenceManager->isWritable(LAMConfigTest::FILE_NAME));
 	}
 
 	/**
@@ -369,20 +363,6 @@ class LAMConfigTest extends TestCase {
 		$this->assertEquals($val, $this->lAMConfig->getScriptUserName());
 		$this->doSave();
 		$this->assertEquals($val, $this->lAMConfig->getScriptUserName());
-	}
-
-	/**
-	 * Tests LAMConfig->set_cacheTimeout(), LAMConfig->get_cacheTimeout() and LAMConfig->get_cacheTimeoutSec()
-	 */
-	public function testcacheTimeout() {
-		$this->assertFalse($this->lAMConfig->set_cacheTimeout('abc'));
-		$val = '5';
-		$this->lAMConfig->set_cacheTimeout($val);
-		$this->assertEquals($val, $this->lAMConfig->get_cacheTimeout());
-		$this->assertEquals(300, $this->lAMConfig->get_cacheTimeoutSec());
-		$this->doSave();
-		$this->assertEquals($val, $this->lAMConfig->get_cacheTimeout());
-		$this->assertEquals(300, $this->lAMConfig->get_cacheTimeoutSec());
 	}
 
 	/**
@@ -947,10 +927,12 @@ class LAMConfigTest extends TestCase {
 
 	/**
 	 * Saves the config
+	 *
+	 * @throws LAMException error saving config
 	 */
 	public function doSave() {
-		$this->lAMConfig->save();
-		$this->lAMConfig = new LAMConfig(LAMConfigTest::FILE_NAME);
+		$this->serverProfilePersistenceManager->saveProfile($this->lAMConfig, LAMConfigTest::FILE_NAME);
+		$this->lAMConfig = $this->serverProfilePersistenceManager->loadProfile(LAMConfigTest::FILE_NAME);
 	}
 
 }

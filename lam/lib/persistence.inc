@@ -74,7 +74,7 @@ class ConfigDataExporter {
 		$serverProfileNames = $serverProfilesPersistenceManager->getProfiles();
 		$serverProfiles = array();
 		foreach ($serverProfileNames as $serverProfileName) {
-			$serverProfiles[$serverProfileName] = new \LAMConfig($serverProfileName);
+			$serverProfiles[$serverProfileName] = $serverProfilesPersistenceManager->loadProfile($serverProfileName);
 		}
 		$jsonData['serverProfiles'] = $this->_getServerProfiles($serverProfiles);
 		$jsonData['accountProfiles'] = $this->_getAccountProfiles($serverProfiles);
@@ -413,16 +413,20 @@ class ConfigDataImporter {
 	 */
 	private function importServerProfiles($step) {
 		$failedProfiles = array();
+		$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
 		foreach ($step->getSubSteps() as $profileStep) {
 			if (!$profileStep->isActive()) {
 				continue;
 			}
 			$data = $profileStep->getValue();
 			$profileName = str_replace('serverProfile_', '', $profileStep->getKey());
-			$serverProfile = new LAMConfig($profileName);
-			$serverProfile->importData($data);
-			$result = $serverProfile->save();
-			if ($result === LAMConfig::SAVE_FAIL) {
+			try {
+				$serverProfile = new LAMConfig();
+				$serverProfile->importData($data);
+				$serverProfilePersistenceManager->saveProfile($serverProfile, $profileName);
+			}
+			catch (LAMException $e) {
+				logNewMessage(LOG_ERR, $e->getTitle());
 				$failedProfiles[] = $profileName;
 			}
 		}
@@ -445,7 +449,8 @@ class ConfigDataImporter {
 			}
 			$data = $profileStep->getValue();
 			$serverProfileName = str_replace('accountProfile_', '', $profileStep->getKey());
-			$serverProfile = new LAMConfig($serverProfileName);
+			$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
+			$serverProfile = $serverProfilePersistenceManager->loadProfile($serverProfileName);
 			foreach ($data as $typeId => $accountProfiles) {
 				foreach ($accountProfiles as $accountProfileName => $accountProfileData) {
 					$result = saveAccountProfile($accountProfileData, $accountProfileName, $typeId, $serverProfile);

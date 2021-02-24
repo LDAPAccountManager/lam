@@ -146,15 +146,14 @@ if (isset($_POST['deleteGlobalTemplate']) && !empty($_POST['globalTemplatesDelet
 }
 
 $serverProfilePersistenceManager = new ServerProfilePersistenceManager();
-$configProfiles = array();
+$serverProfiles = array();
 try {
 	$configProfiles = $serverProfilePersistenceManager->getProfiles();
+	foreach ($configProfiles as $profileName) {
+		$serverProfiles[$profileName] = $serverProfilePersistenceManager->loadProfile($profileName);
+	}
 } catch (LAMException $e) {
 	logNewMessage(LOG_ERR, 'Unable to read server profiles: ' . $e->getTitle());
-}
-$serverProfiles = array();
-foreach ($configProfiles as $profileName) {
-	$serverProfiles[$profileName] = new \LAMConfig($profileName);
 }
 
 // import structures

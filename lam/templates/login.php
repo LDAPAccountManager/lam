@@ -109,27 +109,30 @@ $_SESSION["cfgMain"] = $default_Config;
 setSSLCaCert();
 
 $default_Profile = $default_Config->default;
-if(isset($_COOKIE["lam_default_profile"]) && in_array($_COOKIE["lam_default_profile"], $profiles)) {
+if (isset($_COOKIE["lam_default_profile"]) && in_array($_COOKIE["lam_default_profile"], $profiles)) {
 	$default_Profile = $_COOKIE["lam_default_profile"];
-}
-// Reload loginpage after a profile change
-if(isset($_GET['useProfile']) && in_array($_GET['useProfile'], $profiles)) {
-	logNewMessage(LOG_DEBUG, "Change server profile to " . $_GET['useProfile']);
-	$_SESSION['config'] = new LAMConfig($_GET['useProfile']); // Recreate the config object with the submitted
-}
-// Load login page
-elseif (!empty($default_Profile) && in_array($default_Profile, $profiles)) {
-	$_SESSION["config"] = new LAMConfig($default_Profile); // Create new Config object
-}
-else if (sizeof($profiles) > 0) {
-	// use first profile as fallback
-	$_SESSION["config"] = new LAMConfig($profiles[0]);
-}
-else {
-	$_SESSION["config"] = null;
 }
 
 $error_message = null;
+
+try {
+    // Reload login page after a profile change
+	if (isset($_GET['useProfile']) && in_array($_GET['useProfile'], $profiles)) {
+		logNewMessage(LOG_DEBUG, "Change server profile to " . $_GET['useProfile']);
+		$_SESSION['config'] = $serverProfilePersistenceManager->loadProfile($_GET['useProfile']);
+	} // Load login page
+    elseif (!empty($default_Profile) && in_array($default_Profile, $profiles)) {
+		$_SESSION["config"] = $serverProfilePersistenceManager->loadProfile($default_Profile);
+	} // use first profile as fallback
+	else if (sizeof($profiles) > 0) {
+		$_SESSION["config"] = $serverProfilePersistenceManager->loadProfile($profiles[0]);
+	} else {
+		$_SESSION["config"] = null;
+	}
+}
+catch (LAMException $e) {
+    $error_message = $e->getTitle();
+}
 
 if (!isset($default_Config->default) || !in_array($default_Config->default, $profiles)) {
 	$error_message = _('No default profile set. Please set it in the server profile configuration.');
