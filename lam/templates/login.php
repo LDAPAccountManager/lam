@@ -66,9 +66,6 @@ if (isLAMProVersion()) {
 	$licenseValidator->validateAndRedirect('config/mainlogin.php?invalidLicense=1', 'config/mainlogin.php?invalidLicense=2');
 }
 
-/** Upgrade functions */
-include_once(__DIR__ . "/../lib/upgrade.inc");
-
 // set session save path
 if (strtolower(session_module_name()) == 'files') {
 	session_save_path(dirname(__FILE__) . '/../sess');
@@ -217,18 +214,6 @@ function display_LoginPage($licenseValidator, $error_message, $errorDetails = nu
 	<?php
 	// include all JavaScript files
 	printJsIncludes('..');
-
-	// upgrade if pdf/profiles contain single files
-	if (containsFiles('../config/profiles') || containsFiles('../config/pdf')) {
-		$result = testPermissions();
-		if (sizeof($result) > 0) {
-		    StatusMessage('ERROR', 'Unable to migrate configuration files. Please allow write access to these paths:', implode('<br>', $result));
-		}
-		else {
-			upgradeConfigToServerProfileFolders($profiles);
-			StatusMessage('INFO', 'Config file migration finished.');
-		}
-	}
 
 	if (isLAMProVersion() && $licenseValidator->isEvaluationLicense()) {
 		StatusMessage('INFO', _('Evaluation Licence'));

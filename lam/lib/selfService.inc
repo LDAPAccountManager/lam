@@ -314,6 +314,41 @@ class SelfServicePersistence {
 		$this->strategy->save($name, $scope, $profile);
 	}
 
+	/**
+	 * Deletes a self service profile.
+	 *
+	 * @param string $name profile name
+	 * @param string $scope user/group/host
+	 * @throws LAMException error deleting profile
+	 */
+	public function delete(string $name, string $scope) : void {
+		$profileList = $this->getProfiles();
+		if (!preg_match("/^[a-z]+$/i", $scope)
+			|| !preg_match("/^[a-z0-9_-]+$/i", $name)
+			|| !in_array($name, $profileList)) {
+			throw new LAMException(_("Unable to delete profile!"));
+		}
+		$this->strategy->delete($name);
+	}
+
+	/**
+	 * Renames a self service profile.
+	 *
+	 * @param string $oldName existing profile name
+	 * @param string $newName new profile name
+	 * @param string $scope user/group/host
+	 * @throws LAMException error renaming profile
+	 */
+	public function rename(string $oldName, string $newName, string $scope) : void {
+		$profileList = $this->getProfiles();
+		if (!preg_match("/^[a-z]+$/i", $scope)
+			|| !preg_match("/^[a-z0-9_-]+$/i", $newName)
+			|| !in_array($oldName, $profileList)) {
+			throw new LAMException(_("Profile name is invalid!"));
+		}
+		$this->strategy->rename($oldName, $newName, $scope);
+	}
+
 }
 
 /**
@@ -356,6 +391,25 @@ interface SelfServicePersistenceStrategy {
 	 * @throws LAMException error during saving
 	 */
 	public function save(string $name, string $scope, selfServiceProfile $profile) : void;
+
+	/**
+	 * Deletes a self service profile.
+	 *
+	 * @param string $name profile name
+	 * @param string $scope account type
+	 * @throws LAMException error renaming profile
+	 */
+	public function delete(string $name, string $scope) : void;
+
+	/**
+	 * Renames a self service profile.
+	 *
+	 * @param string $oldName existing profile name
+	 * @param string $newName new profile name
+	 * @param string $scope user/group/host
+	 * @throws LAMException error renaming profile
+	 */
+	public function rename(string $oldName, string $newName, string $scope) : void;
 
 }
 
@@ -452,6 +506,25 @@ class SelfServicePersistenceStrategyFileSystem implements SelfServicePersistence
 		}
 		else {
 			throw new LAMException(_("Unable to save profile!"));
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function delete(string $name, string $scope): void {
+		if (!unlink("../../config/selfService/" . $name . "." . $scope)) {
+			throw new LAMException(_("Unable to delete profile!"));
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function rename(string $oldName, string $newName, string $scope): void {
+		if (!@rename(__DIR__ . "/../config/selfService/" . $oldName . "." . $scope,
+			__DIR__ . "/../config/selfService/" . $newName . "." . $scope)) {
+			throw new LAMException(_("Could not rename file!"));
 		}
 	}
 
@@ -556,6 +629,22 @@ class SelfServicePersistenceStrategyPdo implements SelfServicePersistenceStrateg
 			$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME . " SET data = ? WHERE scope = ? AND name = ?");
 			$statement->execute(array($data, $scope, $name));
 		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function delete(string $name, string $scope): void {
+		$statement = $this->pdo->prepare("DELETE FROM " . self::TABLE_NAME . " WHERE scope = ? AND name = ?");
+		$statement->execute(array($scope, $name));
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function rename(string $oldName, string $newName, string $scope): void {
+		$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME . " SET name = ? WHERE scope = ? AND name = ?");
+		$statement->execute(array($newName, $scope, $oldName));
 	}
 
 }

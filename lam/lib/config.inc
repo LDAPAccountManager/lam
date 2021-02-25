@@ -2,6 +2,8 @@
 use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 use LAM\PERSISTENCE\ConfigurationDatabase;
 use \LAM\REMOTE\RemoteServerConfiguration;
+use function LAM\PERSISTENCE\dbTableExists;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -319,8 +321,13 @@ class ServerProfilePersistenceManager {
 	private $strategy;
 
 	public function __construct() {
-		// TODO DB
-		$this->strategy = new ServerProfilePersistenceStrategyFiles();
+		$configDb = new ConfigurationDatabase(new LAMCfgMain());
+		if ($configDb->useRemoteDb()) {
+			$this->strategy = new ServerProfilePersistenceStrategyPdo($configDb->getPdo());
+		}
+		else {
+			$this->strategy = new ServerProfilePersistenceStrategyFiles();
+		}
 	}
 
 	/**
@@ -791,6 +798,125 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 		return __DIR__ . "/../config/" . $name . ".conf";
 	}
 
+}
+
+/**
+ * Stores server profiles in a database.
+ */
+class ServerProfilePersistenceStrategyPdo implements ServerProfilePersistenceStrategy {
+
+	const TABLE_NAME = 'server_profiles';
+
+	/**
+	 * @var PDO
+	 */
+	private $pdo;
+
+	/**
+	 * Constructor
+	 * 
+	 * @param PDO $pdo PDO
+	 */
+	public function __construct(PDO $pdo) {
+		$this->pdo = $pdo;
+		$this->checkSchema();
+	}
+
+	/**
+	 * Checks if the schema has latest version.
+	 */
+	private function checkSchema() : void {
+		if (!dbTableExists($this->pdo, self::TABLE_NAME)) {
+			$this->createInitialSchema();
+		}
+	}
+
+	/**
+	 * Creates the initial schema.
+	 */
+	public function createInitialSchema() : void {
+		logNewMessage(LOG_DEBUG, 'Creating database table ' . self::TABLE_NAME);
+		$sql = 'create table ' . self::TABLE_NAME . '('
+			. 'name VARCHAR(300) NOT NULL,'
+			. 'data TEXT NOT NULL,'
+			. 'PRIMARY KEY(name)'
+			. ');';
+		$this->pdo->exec($sql);
+		$sql = 'insert into ' . ConfigurationDatabase::TABLE_SCHEMA_VERSIONS . ' (name, version) VALUES ("server_profiles", 1);';
+		$this->pdo->exec($sql);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getProfiles(): array {
+		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME);
+		$statement->execute();
+		$results = $statement->fetchAll();
+		$profiles = array();
+		foreach ($results as $result) {
+			$profiles[] = $result['name'];
+		}
+		return $profiles;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function loadProfile(string $name): LAMConfig {
+		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME . " WHERE name = ?");
+		$statement->execute(array($name));
+		$results = $statement->fetchAll();
+		if (empty($results)) {
+			logNewMessage(LOG_ERR, 'Server profile not found: ' . $name);
+			throw new LAMException(_("Unable to load profile!"), $name);
+		}
+		$data = json_decode($results[0]['data'], true);
+		$config = new LAMConfig();
+		$config->importData($data);
+		return $config;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function saveProfile(LAMConfig $profile, string $name): void {
+		$data = json_encode($profile->exportData());
+		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME . " WHERE name = ?");
+		$statement->execute(array($name));
+		$results = $statement->fetchAll();
+		if (empty($results)) {
+			$statement = $this->pdo->prepare("INSERT INTO " . self::TABLE_NAME . " (name, data) VALUES (?, ?)");
+			$statement->execute(array($name, $data));
+		}
+		else {
+			$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME . " SET data = ? WHERE name = ?");
+			$statement->execute(array($data, $name));
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function renameProfile(string $oldName, string $newName): void {
+		$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME . " SET name = ? WHERE name = ?");
+		$statement->execute(array($newName, $oldName));
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function deleteProfile(string $name): void {
+		$statement = $this->pdo->prepare("DELETE FROM " . self::TABLE_NAME . " WHERE name = ?");
+		$statement->execute(array($name));
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function isWritable(string $name): bool {
+		return true;
+	}
 }
 
 /**
