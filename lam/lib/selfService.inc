@@ -325,10 +325,11 @@ class SelfServicePersistence {
 		$profileList = $this->getProfiles();
 		if (!preg_match("/^[a-z]+$/i", $scope)
 			|| !preg_match("/^[a-z0-9_-]+$/i", $name)
-			|| !in_array($name, $profileList)) {
+			|| empty($profileList[$scope])
+			|| !in_array($name, $profileList[$scope])) {
 			throw new LAMException(_("Unable to delete profile!"));
 		}
-		$this->strategy->delete($name);
+		$this->strategy->delete($name, $scope);
 	}
 
 	/**
@@ -343,7 +344,8 @@ class SelfServicePersistence {
 		$profileList = $this->getProfiles();
 		if (!preg_match("/^[a-z]+$/i", $scope)
 			|| !preg_match("/^[a-z0-9_-]+$/i", $newName)
-			|| !in_array($oldName, $profileList)) {
+			|| empty($profileList[$scope])
+			|| !in_array($oldName, $profileList[$scope])) {
 			throw new LAMException(_("Profile name is invalid!"));
 		}
 		$this->strategy->rename($oldName, $newName, $scope);
