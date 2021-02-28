@@ -1,4 +1,6 @@
 <?php
+
+use LAM\PROFILES\AccountProfilePersistenceManager;
 use LAM\TYPES\ConfiguredType;
 use \LAM\TYPES\TypeManager;
 /*
@@ -1329,7 +1331,8 @@ class accountContainer {
 
 		$rightGroup = new htmlGroup();
 		// profile selection
-		$profilelist = \LAM\PROFILES\getAccountProfiles($this->type->getId());
+		$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
+		$profilelist = $accountProfilePersistenceManager->getAccountProfileNames($this->type->getId(), $_SESSION['config']->getName());
 		if (sizeof($profilelist) > 0) {
 			$profilesSelect = new htmlSelect('accountContainerSelectLoadProfile', $profilelist, array($this->lastLoadedProfile));
 			$profilesSelect->setCSSClasses(array('auto-width'));
@@ -1458,7 +1461,8 @@ class accountContainer {
 	 */
 	private function loadProfileIfRequested() {
 		if (isset($_POST['accountContainerLoadProfile']) && isset($_POST['accountContainerSelectLoadProfile'])) {
-			$profile = \LAM\PROFILES\loadAccountProfile($_POST['accountContainerSelectLoadProfile'], $this->type->getId(), $_SESSION['config']->getName());
+			$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
+			$profile = $accountProfilePersistenceManager->loadAccountProfile($this->type->getId(), $_POST['accountContainerSelectLoadProfile'], $_SESSION['config']->getName());
 			$this->lastLoadedProfile = $_POST['accountContainerSelectLoadProfile'];
 			// pass profile to each module
 			$modules = array_keys($this->module);
@@ -1772,22 +1776,30 @@ class accountContainer {
 		$this->sortModules();
 		$profileName = 'default';
 		$profileCookieKey = 'defaultProfile_' . $this->get_type()->getId();
-		if (!empty($_COOKIE[$profileCookieKey])) {
-			$cookieProfileName = $_COOKIE[$profileCookieKey];
-			if (\LAM\PROFILES\profileExists($cookieProfileName, $this->get_type()->getId())) {
-				$profileName = $cookieProfileName;
-				$this->lastLoadedProfile = $cookieProfileName;
+		try {
+			$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
+			if (!empty($_COOKIE[$profileCookieKey])) {
+				$cookieProfileName = $_COOKIE[$profileCookieKey];
+				if ($accountProfilePersistenceManager->isAccountProfileExisting($this->get_type()->getId(), $cookieProfileName)) {
+					$profileName = $cookieProfileName;
+					$this->lastLoadedProfile = $cookieProfileName;
+				}
+			}
+			$profile = $accountProfilePersistenceManager->loadAccountProfile($this->type->getId(), $profileName, $_SESSION['config']->getName());
+			// pass profile to each module
+			$modules = array_keys($this->module);
+			foreach ($modules as $module) {
+				$this->module[$module]->load_profile($profile);
+			}
+			if (isset($profile['ldap_rdn'][0]) && in_array($profile['ldap_rdn'][0], getRDNAttributes($this->type->getId()))) {
+				$this->rdn = $profile['ldap_rdn'][0];
+			}
+			if (isset($profile['ldap_suffix'][0]) && ($profile['ldap_suffix'][0] != '-')) {
+				$this->dnSuffix = $profile['ldap_suffix'][0];
 			}
 		}
-		$profile = \LAM\PROFILES\loadAccountProfile($profileName, $this->type->getId(), $_SESSION['config']->getName());
-		// pass profile to each module
-		$modules = array_keys($this->module);
-		foreach ($modules as $module) $this->module[$module]->load_profile($profile);
-		if (isset($profile['ldap_rdn'][0]) && in_array($profile['ldap_rdn'][0], getRDNAttributes($this->type->getId()))) {
-			$this->rdn = $profile['ldap_rdn'][0];
-		}
-		if (isset($profile['ldap_suffix'][0]) && ($profile['ldap_suffix'][0] != '-')) {
-			$this->dnSuffix = $profile['ldap_suffix'][0];
+		catch (LAMException $e) {
+			logNewMessage(LOG_ERR, $e->getTitle());
 		}
 		// get titles
 		$typeObject = $this->type->getBaseType();

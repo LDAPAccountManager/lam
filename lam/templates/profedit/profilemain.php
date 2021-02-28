@@ -6,6 +6,7 @@ use htmlResponsiveInputField;
 use htmlResponsiveSelect;
 use \htmlTitle;
 use \htmlStatusMessage;
+use LAM\PROFILES\AccountProfilePersistenceManager;
 use \LAMCfgMain;
 use \htmlSubTitle;
 use \htmlSpacer;
@@ -22,8 +23,6 @@ use \htmlGroup;
 use \LAM\TYPES\TypeManager;
 use LAMException;
 use ServerProfilePersistenceManager;
-use function LAM\PROFILES\deleteTemplateAccountProfile;
-use function LAM\PROFILES\getProfileTemplateNames;
 
 /*
 
@@ -83,6 +82,8 @@ $types = $typeManager->getConfiguredTypes();
 $container = new htmlResponsiveRow();
 $container->add(new htmlTitle(_("Profile editor")), 12);
 
+$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
+
 if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
 	$type = $typeManager->getConfiguredType($_POST['profileDeleteType']);
 	if ($type->isHidden()) {
@@ -90,12 +91,13 @@ if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
 		die();
 	}
 	// delete profile
-	if (\LAM\PROFILES\delAccountProfile($_POST['profileDeleteName'], $_POST['profileDeleteType'])) {
+	try {
+		$accountProfilePersistenceManager->deleteAccountProfile($_POST['profileDeleteType'], $_POST['profileDeleteName'], $_SESSION['config']->getName());
 		$message = new htmlStatusMessage('INFO', _('Deleted profile.'), $type->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
 		$container->add($message, 12);
 	}
-	else {
-		$message = new htmlStatusMessage('ERROR', _('Unable to delete profile!'), $type->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
+	catch (LAMException $e) {
+		$message = new htmlStatusMessage('ERROR', $e->getTitle(), $type->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
 		$container->add($message, 12);
 	}
 }
@@ -111,7 +113,7 @@ if (isset($_POST['deleteGlobalTemplate']) && !empty($_POST['globalTemplatesDelet
 		$selectedScope = $selectedOptions[0];
 		$selectedName = $selectedOptions[1];
 		try {
-			deleteTemplateAccountProfile($selectedName, $selectedScope);
+			$accountProfilePersistenceManager->deleteAccountProfileTemplate($selectedScope, $selectedName);
 			$container->add(new htmlStatusMessage('INFO', _('Deleted profile.'), $selectedName), 12);
 		} catch (LAMException $e) {
 			$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
@@ -179,7 +181,7 @@ foreach ($types as $type) {
 	if ($type->isHidden() || !checkIfWriteAccessIsAllowed($type->getId())) {
 		continue;
 	}
-	$profileList = \LAM\PROFILES\getAccountProfiles($type->getId());
+	$profileList = $accountProfilePersistenceManager->getAccountProfileNames($type->getId(), $_SESSION['config']->getName());
 	natcasesort($profileList);
 	$profileClassesTemp[$type->getAlias()] = array(
 		'typeId' => $type->getId(),
@@ -287,17 +289,22 @@ parseHtml(null, $container, array(), false, $tabindex, 'user');
 echo "</form>\n";
 
 // delete global templates
-$globalTemplates = getProfileTemplateNames();
 $globalDeletableTemplates = array();
-foreach ($globalTemplates as $typeId => $availableTemplates) {
-	if (empty($availableTemplates)) {
-		continue;
-	}
-	foreach ($availableTemplates as $availableTemplate) {
-		if ($availableTemplate !== 'default') {
-			$globalDeletableTemplates[$typeId][$availableTemplate] = $typeId . ':' . $availableTemplate;
+try {
+	$globalTemplates = $accountProfilePersistenceManager->getAccountProfileTemplateNames();
+	foreach ($globalTemplates as $typeId => $availableTemplates) {
+		if (empty($availableTemplates)) {
+			continue;
+		}
+		foreach ($availableTemplates as $availableTemplate) {
+			if ($availableTemplate !== 'default') {
+				$globalDeletableTemplates[$typeId][$availableTemplate] = $typeId . ':' . $availableTemplate;
+			}
 		}
 	}
+}
+catch (LAMException $e) {
+	logNewMessage(LOG_ERR, $e->getTitle());
 }
 
 if (!empty($globalDeletableTemplates)) {
@@ -340,7 +347,7 @@ foreach ($profileClasses as $profileClass) {
 		$typesImport = $typeManagerImport->getConfiguredTypesForScope($scope);
 		foreach ($typesImport as $typeImport) {
 			if (($profile != $_SESSION['config']->getName()) || ($typeImport->getId() != $typeId)) {
-				$accountProfiles = \LAM\PROFILES\getAccountProfiles($typeImport->getId(), $profile);
+				$accountProfiles = $accountProfilePersistenceManager->getAccountProfileNames($typeImport->getId(), $profile);
 				if (!empty($accountProfiles)) {
 					foreach ($accountProfiles as $accountProfile) {
 						$importOptions[$profile][$typeImport->getAlias() . ': ' . $accountProfile] = $profile . '##' . $typeImport->getId() . '##' . $accountProfile;
@@ -450,6 +457,7 @@ include __DIR__ . '/../../lib/adminFooter.inc';
  * @return \htmlStatusMessage message or null
  */
 function importProfiles($typeId, $options, &$serverProfiles, TypeManager &$typeManager) {
+	$accountProfilesPersistenceManager = new AccountProfilePersistenceManager();
 	foreach ($options as $option) {
 		$sourceConfName = $option['conf'];
 		$sourceTypeId = $option['typeId'];
@@ -459,7 +467,9 @@ function importProfiles($typeId, $options, &$serverProfiles, TypeManager &$typeM
 		$targetType = $typeManager->getConfiguredType($typeId);
 		if (($sourceType !== null) && ($targetType !== null)) {
 			try {
-				\LAM\PROFILES\copyAccountProfile($sourceType, $sourceName, $targetType);
+				$data = $accountProfilesPersistenceManager->loadAccountProfile($sourceType->getId(), $sourceName, $sourceConfName);
+				$accountProfilesPersistenceManager->writeAccountProfile($typeId, $sourceName,
+					$targetType->getTypeManager()->getConfig()->getName(), $data);
 			}
 			catch (\LAMException $e) {
 				return new \htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
@@ -484,13 +494,15 @@ function exportProfiles($typeId, $name, $options, &$serverProfiles, TypeManager 
 	if ($sourceType === null) {
 		return null;
 	}
+	$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
 	foreach ($options as $option) {
 		$targetConfName = $option['conf'];
 		if ($targetConfName == 'templates*') {
 			try {
-				\LAM\PROFILES\copyAccountProfileToTemplates($sourceType, $name);
+				$data = $accountProfilePersistenceManager->loadAccountProfile($sourceType->getId(), $name, $_SESSION['config']->getName());
+				$accountProfilePersistenceManager->writeAccountProfileTemplate($sourceType->getScope(), $name, $data);
 			}
-			catch (\LAMException $e) {
+			catch (LAMException $e) {
 				return new \htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
 			}
 		}
@@ -500,9 +512,10 @@ function exportProfiles($typeId, $name, $options, &$serverProfiles, TypeManager 
 			$targetType = $targetTypeManager->getConfiguredType($targetTypeId);
 			if ($targetType !== null) {
 				try {
-					\LAM\PROFILES\copyAccountProfile($sourceType, $name, $targetType);
+					$data = $accountProfilePersistenceManager->loadAccountProfile($sourceType->getId(), $name, $_SESSION['config']->getName());
+					$accountProfilePersistenceManager->writeAccountProfile($targetType->getId(), $name, $targetConfName, $data);
 				}
-				catch (\LAMException $e) {
+				catch (LAMException $e) {
 					return new \htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
 				}
 			}
@@ -510,5 +523,3 @@ function exportProfiles($typeId, $name, $options, &$serverProfiles, TypeManager 
 	}
 	return new \htmlStatusMessage('INFO', _('Export successful'));
 }
-
-?>

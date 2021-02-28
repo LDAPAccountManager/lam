@@ -4,6 +4,7 @@ use LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use LAM\PDF\PDFStructure;
 use LAM\PDF\PDFStructureReader;
 use LAM\PDF\PDFStructureWriter;
+use LAM\PROFILES\AccountProfilePersistenceManager;
 use LAMCfgMain;
 use LAMConfig;
 use LAMException;
@@ -18,12 +19,6 @@ use function LAM\PDF\getPdfTemplateLogoBinary;
 use function LAM\PDF\getPdfTemplateLogoNames;
 use function LAM\PDF\getPdfTemplateNames;
 use function LAM\PDF\uploadPDFLogo;
-use function LAM\PROFILES\getAccountProfiles;
-use function LAM\PROFILES\getProfileTemplateNames;
-use function LAM\PROFILES\installTemplateAccountProfile;
-use function LAM\PROFILES\loadAccountProfile;
-use function LAM\PROFILES\loadTemplateAccountProfile;
-use function LAM\PROFILES\saveAccountProfile;
 
 /*
 
@@ -133,15 +128,17 @@ class ConfigDataExporter {
 	 * Returns the content of the account profiles.
 	 *
 	 * @param array $serverProfiles list of server profiles (name => object)
-	 * @return array $data
+	 * @return array $data export data
+	 * @throws LAMException error reading profiles
 	 */
 	public function _getAccountProfiles($serverProfiles) {
 		$data = array();
+		$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
 		foreach ($serverProfiles as $profileName => $serverProfile) {
 			foreach ($serverProfile->get_ActiveTypes() as $typeId) {
-				$accountProfileNames = getAccountProfiles($typeId, $profileName);
+				$accountProfileNames = $accountProfilePersistenceManager->getAccountProfileNames($typeId, $profileName);
 				foreach ($accountProfileNames as $accountProfileName) {
-					$accountProfile = loadAccountProfile($accountProfileName, $typeId, $profileName);
+					$accountProfile = $accountProfilePersistenceManager->loadAccountProfile($typeId, $accountProfileName, $profileName);
 					$data[$profileName][$typeId][$accountProfileName] = $accountProfile;
 				}
 			}
@@ -152,15 +149,16 @@ class ConfigDataExporter {
 	/**
 	 * Returns the content of the account profile templates.
 	 *
-	 * @return array $data
+	 * @return array $data export data
 	 * @throws LAMException error reading template
 	 */
 	public function _getAccountProfileTemplates() {
 		$data = array();
-		$accountProfileTemplateNames = getProfileTemplateNames();
+		$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
+		$accountProfileTemplateNames = $accountProfilePersistenceManager->getAccountProfileTemplateNames();
 		foreach ($accountProfileTemplateNames as $scope => $templateNames) {
 			foreach ($templateNames as $templateName) {
-				$accountProfileTemplate = loadTemplateAccountProfile($templateName, $scope);
+				$accountProfileTemplate = $accountProfilePersistenceManager->loadAccountProfileTemplate($scope, $templateName);
 				$data[$scope][$templateName] = $accountProfileTemplate;
 			}
 		}
@@ -443,18 +441,19 @@ class ConfigDataImporter {
 	 */
 	private function importAccountProfiles($step) {
 		$failedProfiles = array();
+		$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
 		foreach ($step->getSubSteps() as $profileStep) {
 			if (!$profileStep->isActive()) {
 				continue;
 			}
 			$data = $profileStep->getValue();
 			$serverProfileName = str_replace('accountProfile_', '', $profileStep->getKey());
-			$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
-			$serverProfile = $serverProfilePersistenceManager->loadProfile($serverProfileName);
 			foreach ($data as $typeId => $accountProfiles) {
 				foreach ($accountProfiles as $accountProfileName => $accountProfileData) {
-					$result = saveAccountProfile($accountProfileData, $accountProfileName, $typeId, $serverProfile);
-					if (!$result) {
+					try {
+						$accountProfilePersistenceManager->writeAccountProfile($typeId, $accountProfileName, $serverProfileName, $accountProfileData);
+					}
+					catch (LAMException $e) {
 						$failedProfiles[] = $serverProfileName . ':' . $typeId . ':' . $accountProfileName;
 					}
 				}
@@ -473,9 +472,10 @@ class ConfigDataImporter {
 	 */
 	private function importAccountProfileTemplates($step) {
 		$data = $step->getValue();
-		foreach ($data as $typeId => $accountProfileTemplates) {
+		$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
+		foreach ($data as $scope => $accountProfileTemplates) {
 			foreach ($accountProfileTemplates as $accountProfileTemplateName => $accountProfileData) {
-				installTemplateAccountProfile($typeId, $accountProfileTemplateName, $accountProfileData);
+				$accountProfilePersistenceManager->writeAccountProfileTemplate($scope, $accountProfileTemplateName, $accountProfileData);
 			}
 		}
 	}

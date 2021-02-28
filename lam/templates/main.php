@@ -4,7 +4,7 @@ namespace LAM\INIT;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2020  Roland Gruber
+  Copyright (C) 2003 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,6 +21,9 @@ namespace LAM\INIT;
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
+
+use LAM\PROFILES\AccountProfilePersistenceManager;
+use LAMException;
 
 /**
 * This page redirects to the correct start page after login.
@@ -40,7 +43,12 @@ enforceUserIsLoggedIn();
 
 setlanguage();
 
-\LAM\PROFILES\installProfileTemplates($_SESSION['config']->getName());
+$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
+try {
+	$accountProfilePersistenceManager->installAccountProfileTemplates($_SESSION['config']->getName());
+} catch (LAMException $e) {
+	logNewMessage(LOG_ERR, $e->getTitle());
+}
 \LAM\PDF\installPDFTemplates($_SESSION['config']->getName());
 
 $conf = $_SESSION['config'];

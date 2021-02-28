@@ -1,6 +1,7 @@
 <?php
 use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 use LAM\PERSISTENCE\ConfigurationDatabase;
+use LAM\PROFILES\AccountProfilePersistenceManager;
 use \LAM\REMOTE\RemoteServerConfiguration;
 use function LAM\PERSISTENCE\dbTableExists;
 
@@ -413,8 +414,9 @@ class ServerProfilePersistenceManager {
 		}
 		$config->set_Passwd($password);
 		$this->saveProfile($config, $name);
+		$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
+		$accountProfilePersistenceManager->installAccountProfileTemplates($name);
 		\LAM\PDF\installPDFTemplates($name);
-		\LAM\PROFILES\installProfileTemplates($name);
 	}
 
 	/**
