@@ -174,7 +174,11 @@ if (isset($_POST['save'])) {
 	}
 }
 elseif (isset($_GET['edit'])) {
-	$old_options = $accountProfilePersistenceManager->loadAccountProfile($type->getId(), $_GET['edit'], $_SESSION['config']->getName());
+	try {
+		$old_options = $accountProfilePersistenceManager->loadAccountProfile($type->getId(), $_GET['edit'], $_SESSION['config']->getName());
+	} catch (LAMException $e) {
+	    StatusMessage('ERROR', $e->getTitle(), $e->getMessage());
+	}
 }
 
 // display formular

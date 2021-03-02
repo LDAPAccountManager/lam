@@ -1,7 +1,13 @@
 <?php
 namespace LAM\PROFILES;
+use LAM\PERSISTENCE\ConfigurationDatabase;
 use LAM\TYPES\TypeManager;
+use LAMCfgMain;
 use \LAMException;
+use PDO;
+use function LAM\PERSISTENCE\dbTableExists;
+use function PHPUnit\Framework\isEmpty;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -46,8 +52,13 @@ class AccountProfilePersistenceManager {
 	 * Constructor
 	 */
 	public function __construct() {
-		// TODO DB strategy
-		$this->strategy = new AccountProfilePersistenceStrategyFiles();
+		$configDb = new ConfigurationDatabase(new LAMCfgMain());
+		if ($configDb->useRemoteDb()) {
+			$this->strategy = new AccountProfilePersistenceStrategyPdo($configDb->getPdo());
+		}
+		else {
+			$this->strategy = new AccountProfilePersistenceStrategyFiles();
+		}
 	}
 
 	/**
@@ -550,6 +561,188 @@ class AccountProfilePersistenceStrategyFiles implements AccountProfilePersistenc
 			}
 		}
 		return $ret;
+	}
+
+}
+
+/**
+ * Manages account profiles via PDO.
+ *
+ * @package LAM\PROFILES
+ */
+class AccountProfilePersistenceStrategyPdo implements AccountProfilePersistenceStrategy {
+
+	const TABLE_NAME = 'account_profiles';
+	const TABLE_NAME_TEMPLATES = 'account_profiles_templates';
+
+	/**
+	 * @var PDO
+	 */
+	private $pdo;
+
+	/**
+	 * Constructor
+	 *
+	 * @param PDO $pdo PDO
+	 */
+	public function __construct(PDO $pdo) {
+		$this->pdo = $pdo;
+		$this->checkSchema();
+	}
+
+	/**
+	 * Checks if the schema has latest version.
+	 */
+	private function checkSchema() : void {
+		if (!dbTableExists($this->pdo, self::TABLE_NAME)) {
+			$this->createInitialSchema();
+		}
+	}
+
+	/**
+	 * Creates the initial schema.
+	 */
+	public function createInitialSchema() : void {
+		logNewMessage(LOG_DEBUG, 'Creating database table ' . self::TABLE_NAME);
+		$sql = 'create table ' . self::TABLE_NAME . '('
+			. 'position int NOT NULL,'
+			. 'confname VARCHAR(300) NOT NULL,'
+			. 'typeid VARCHAR(300) NOT NULL,'
+			. 'name VARCHAR(300) NOT NULL,'
+			. 'data TEXT NOT NULL,'
+			. 'PRIMARY KEY(position)'
+			. ');';
+		$this->pdo->exec($sql);
+		logNewMessage(LOG_DEBUG, 'Creating database table ' . self::TABLE_NAME_TEMPLATES);
+		$sql = 'create table ' . self::TABLE_NAME_TEMPLATES . '('
+			. 'scope VARCHAR(100) NOT NULL,'
+			. 'name VARCHAR(300) NOT NULL,'
+			. 'data TEXT NOT NULL,'
+			. 'PRIMARY KEY(scope,name)'
+			. ');';
+		$this->pdo->exec($sql);
+		$sql = 'insert into ' . ConfigurationDatabase::TABLE_SCHEMA_VERSIONS . ' (name, version) VALUES ("account_profiles", 1);';
+		$this->pdo->exec($sql);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getAccountProfileTemplateNames(): array {
+		$statement = $this->pdo->prepare("SELECT scope, name FROM " . self::TABLE_NAME_TEMPLATES);
+		$statement->execute();
+		$results = $statement->fetchAll();
+		$profiles = array();
+		foreach ($results as $result) {
+			$profiles[$result['scope']][] = $result['name'];
+		}
+		return $profiles;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function deleteAccountProfileTemplate(string $scope, string $name): void {
+		$statement = $this->pdo->prepare("DELETE FROM " . self::TABLE_NAME_TEMPLATES . " WHERE scope = ? AND name = ?");
+		$statement->execute(array($scope, $name));
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function loadAccountProfileTemplate(string $scope, string $name): array {
+		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME_TEMPLATES . " WHERE scope = ? AND name = ?");
+		$statement->execute(array($scope, $name));
+		$results = $statement->fetchAll();
+		if (empty($results)) {
+			logNewMessage(LOG_ERR, "Account profile template not found: $scope-$name");
+			throw new LAMException(_("Unable to load profile!"), $name);
+		}
+		return json_decode($results[0]['data'], true);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function writeAccountProfileTemplate(string $scope, string $name, array $data): void {
+		$json = json_encode($data);
+		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME_TEMPLATES . " WHERE scope = ? AND name = ?");
+		$statement->execute(array($scope, $name));
+		$results = $statement->fetchAll();
+		if (empty($results)) {
+			$statement = $this->pdo->prepare("INSERT INTO " . self::TABLE_NAME_TEMPLATES . " (scope, name, data) VALUES (?, ?, ?)");
+			$statement->execute(array($scope, $name, $json));
+		}
+		else {
+			$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME_TEMPLATES . " SET data = ? WHERE scope = ? AND name = ?");
+			$statement->execute(array($json, $scope, $name));
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function isAccountProfileExisting(string $typeId, string $name, string $confName): bool {
+		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME . " WHERE confname = ? AND typeid = ? AND name = ?");
+		$statement->execute(array($confName, $typeId, $name));
+		$results = $statement->fetchAll();
+		return !empty($results);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getAccountProfileNames(string $typeId, string $confName): array {
+		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME . " WHERE confname = ? AND typeid = ?");
+		$statement->execute(array($confName, $typeId));
+		$results = $statement->fetchAll();
+		$profiles = array();
+		foreach ($results as $result) {
+			$profiles[] = $result['name'];
+		}
+		return $profiles;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function writeAccountProfile(string $typeId, string $name, string $confName, array $data): void {
+		$json = json_encode($data);
+		$isExisting = $this->isAccountProfileExisting($typeId, $name, $confName);
+		if ($isExisting) {
+			$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME . " SET data = ? WHERE confname = ? AND typeid = ? AND name = ?");
+			$statement->execute(array($json, $confName, $typeId, $name));
+		}
+		else {
+			$positionStatement = $this->pdo->prepare("SELECT MAX(position) FROM " . self::TABLE_NAME);
+			$positionStatement->execute();
+			$positionResult = $positionStatement->fetchAll();
+			$position = $positionResult[0]['position'] + 1;
+			$statement = $this->pdo->prepare("INSERT INTO " . self::TABLE_NAME . " (position, confname, typeid, name, data) VALUES (?, ?, ?, ?, ?)");
+			$statement->execute(array($position, $confName, $typeId, $name, $json));
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function loadAccountProfile(string $typeId, string $name, string $confName): array {
+		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME . " WHERE confname = ? AND typeid = ? AND name = ?");
+		$statement->execute(array($confName, $typeId, $name));
+		$results = $statement->fetchAll();
+		if (empty($results)) {
+			logNewMessage(LOG_ERR, "Account profile not found: $typeId-$name");
+			throw new LAMException(_("Unable to load profile!"), $name);
+		}
+		return json_decode($results[0]['data'], true);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function deleteAccountProfile(string $typeId, string $name, string $confName): void {
+		$statement = $this->pdo->prepare("DELETE FROM " . self::TABLE_NAME . " WHERE confname = ? AND typeid = ? AND name = ?");
+		$statement->execute(array($confName, $typeId, $name));
 	}
 
 }
