@@ -714,7 +714,7 @@ class AccountProfilePersistenceStrategyPdo implements AccountProfilePersistenceS
 			$statement->execute(array($json, $confName, $typeId, $name));
 		}
 		else {
-			$positionStatement = $this->pdo->prepare("SELECT MAX(position) FROM " . self::TABLE_NAME);
+			$positionStatement = $this->pdo->prepare("SELECT MAX(position) AS position FROM " . self::TABLE_NAME);
 			$positionStatement->execute();
 			$positionResult = $positionStatement->fetchAll();
 			$position = $positionResult[0]['position'] + 1;
