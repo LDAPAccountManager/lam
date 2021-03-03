@@ -236,8 +236,7 @@ function deletePDFLogo($name, $serverProfileName) {
 		}
 	}
 	// delete file
-	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $serverProfileName . '/logos/';
-	$success = @unlink($dirPath . '/' . $name);
+	$success = @unlink(getPdfLogoFileName($serverProfileName, $name));
 	if ($success) {
 		return new htmlStatusMessage('INFO', _('Logo file deleted.'), $name);
 	}
@@ -285,7 +284,7 @@ function installPDFTemplates(string $confName) {
 	}
 	$logos = getPdfTemplateLogoNames();
 	foreach ($logos as $logo) {
-		$path = $basePath . '/logos/' . $logo;
+		$path = getPdfLogoFileName($confName, $logo);
 		$template = $templatePath . '/logos/' . $logo;
 		if (!is_file($path)) {
 			logNewMessage(LOG_DEBUG, 'Copy template ' . $template . ' to ' . $path);
@@ -371,6 +370,32 @@ function getPdfTemplateLogoBinary($name) {
 	$logoBinary = fread($handle, 100000000);
 	fclose($handle);
 	return $logoBinary;
+}
+
+/**
+ * Reads the binary data of a given logo.
+ *
+ * @param string $confName server profile name
+ * @param string $name logo name
+ * @return string binary data
+ */
+function getPdfLogoBinary(string $confName, string $name) : string {
+	$fileName = getPdfLogoFileName($confName, $name);
+	$handle = fopen($fileName, 'r');
+	$logoBinary = fread($handle, 100000000);
+	fclose($handle);
+	return $logoBinary;
+}
+
+/**
+ * Returns the file name of a given logo.
+ *
+ * @param string $confName server profile name
+ * @param string $name logo name
+ * @return string file name
+ */
+function getPdfLogoFileName(string $confName, string $name) : string {
+	return __DIR__ . '/../config/pdf/' . $confName . '/logos/' . $name;
 }
 
 /**

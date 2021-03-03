@@ -2,7 +2,7 @@
 namespace LAM\PDF;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2018  Roland Gruber
+  Copyright (C) 2017 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -68,8 +68,8 @@ class LAMTCPDF extends \TCPDF {
 	public function Header() {
 		$logoFile = $this->structure->getLogo();
 		if (!empty($logoFile) && ($logoFile !== 'none')) {
-			$logo = dirname(__FILE__) . "/../config/pdf/" . $_SESSION['config']->getName() . "/logos/" . $logoFile;
-			$this->Image($logo, 10, 10, '', 15, 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+			$logoBinary = '@' . getPdfLogoBinary($_SESSION['config']->getName(), $logoFile);
+			$this->Image($logoBinary, 10, 10, '', 15, 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
 		}
 		else {
 			$this->SetY(10);

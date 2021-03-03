@@ -14,6 +14,7 @@ use SelfServicePersistence;
 use selfServiceProfile;
 use ServerProfilePersistenceManager;
 use function LAM\PDF\getAvailableLogos;
+use function LAM\PDF\getPdfLogoBinary;
 use function LAM\PDF\getPDFStructures;
 use function LAM\PDF\getPdfTemplateLogoBinary;
 use function LAM\PDF\getPdfTemplateLogoNames;
@@ -184,12 +185,9 @@ class ConfigDataExporter {
 			}
 			$logoData = getAvailableLogos($profileName);
 			foreach ($logoData as $logo) {
-				$logoFileName = $logo['filename'];
-				$logoPath = __DIR__ . '/../config/pdf/' . $profileName . '/logos/' . $logoFileName;
-				$handle = fopen($logoPath, 'r');
-				$logoBinary = fread($handle, 100000000);
-				fclose($handle);
-				$data[$profileName]['logos'][$logoFileName] = base64_encode($logoBinary);
+				$logoName = $logo['filename'];
+				$logoBinary = getPdfLogoBinary($profileName, $logoName);
+				$data[$profileName]['logos'][$logoName] = base64_encode($logoBinary);
 			}
 		}
 		return $data;
