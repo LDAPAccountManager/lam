@@ -24,7 +24,10 @@ use \LAM\TYPES\TypeManager;
 use LAMException;
 use ServerProfilePersistenceManager;
 use function LAM\PDF\deleteTemplateStructure;
+use function LAM\PDF\getPdfLogoBinary;
 use function LAM\PDF\getPdfTemplateNames;
+use function LAM\PDF\savePdfLogo;
+use function LAM\PDF\savePdfTemplateLogo;
 
 /*
 
@@ -72,7 +75,9 @@ startSecureSession();
 enforceUserIsLoggedIn();
 
 // die if no write access
-if (!checkIfWriteAccessIsAllowed()) die();
+if (!checkIfWriteAccessIsAllowed()) {
+    die();
+}
 
 checkIfToolIsActive('toolPDFEditor');
 
@@ -205,14 +210,49 @@ if (!empty($_POST['export'])) {
 // upload logo file
 if (isset($_POST['uploadLogo']) && !empty($_FILES['logoUpload']) && !empty($_FILES['logoUpload']['size'])) {
 	$file = $_FILES['logoUpload']['tmp_name'];
+	$handle = fopen($file, "r");
+	$data = fread($handle, 100000000);
+	fclose($handle);
 	$filename = $_FILES['logoUpload']['name'];
-	$container->add(\LAM\PDF\uploadPDFLogo($file, $filename, $_SESSION['config']->getName()), 12);
+	try {
+		savePdfLogo($filename, $_SESSION['config']->getName(), $data);
+		$container->add(new htmlStatusMessage('INFO', _('Uploaded logo file.'), $filename), 12);
+    }
+    catch (LAMException $e) {
+	    $container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
+    }
 }
 
 // delete logo file
 if (isset($_POST['delLogo'])) {
 	$toDel = $_POST['logo'];
 	$container->add(\LAM\PDF\deletePDFLogo($toDel, $_SESSION['config']->getName()), 12);
+}
+
+// export logo
+if (!empty($_POST['exportLogoTargetProfile'])) {
+	$cfg = new LAMCfgMain();
+	if (!$cfg->checkPassword($_POST['exportLogoPassword'])) {
+		$container->add(new htmlStatusMessage('ERROR', _('Master password is wrong!')), 12);
+	}
+	else {
+		try {
+	        foreach ($_POST['exportLogoTargetProfile'] as $targetProfile) {
+	            $fileName = $_POST['exportLogoName'];
+	            $binary = getPdfLogoBinary($_SESSION['config']->getName(), $fileName);
+	            if ($targetProfile === 'templates*') {
+                    savePdfTemplateLogo($fileName, $binary);
+                }
+	            else {
+	                savePdfLogo($fileName, $targetProfile, $binary);
+                }
+            }
+			$container->add(new htmlStatusMessage('INFO', _('Exported logo file.')), 12);
+		}
+		catch (LAMException $e) {
+			$container->add(new htmlStatusMessage($e->getTitle(), $e->getMessage()), 12);
+		}
+    }
 }
 
 // get list of account types
@@ -318,21 +358,57 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 		$logoSelect = new htmlSelect('logo', $logoOptions, null);
 		$logoSelect->setHasDescriptiveElements(true);
 		$container->addLabel($logoSelect);
-		$delLogo = new htmlButton('delLogo', _('Delete'));
-		$delLogo->setIconClass('deleteButton');
-		$container->addField($delLogo);
+		$logoButtonGroup = new htmlGroup();
+		$delLogo = new htmlButton('delLogo', 'delete.png', true);
+		$delLogo->setTitle(_('Delete'));
+	    $logoButtonGroup->addElement($delLogo);
+        $exportLogoLink = new htmlLink(null, '#', '../../graphics/export.png');
+	    $exportLogoLink->setTitle(_('Export logo'));
+    	$exportLogoLink->setOnClick("window.lam.profilePdfEditor.showPdfLogoExportDialog('" . _("Export logo") . "', '" .
+            _('Ok') . "', '" . _('Cancel') . "'); return false;");
+	    $exportLogoLink->setCSSClasses(array('margin3'));
+	    $logoButtonGroup->addElement($exportLogoLink);
+    	$container->addField($logoButtonGroup);
 		$container->addVerticalSpacer('2rem');
 		$container->addLabel(new htmlInputFileUpload('logoUpload'));
 		$logoUpload = new htmlButton('uploadLogo', _('Upload'));
 		$logoUpload->setIconClass('upButton');
 		$container->addField($logoUpload);
 
-		$container->addVerticalSpacer('2rem');
+		$container->addVerticalSpacer('4rem');
 		// generate content
 		$tabindex = 1;
 		parseHtml(null, $container, array(), false, $tabindex, 'user');
 
 		echo "</form>\n";
+
+		$container = new htmlResponsiveRow();
+		// export logo form
+        $logoExportFormContent = new htmlResponsiveRow();
+        $exportOptions = array();
+        foreach ($configProfiles as $profile) {
+            if ($profile != $_SESSION['config']->getName()) {
+                $exportOptions[$profile] = $profile;
+            }
+        }
+        asort($exportOptions);
+        $exportOptions['*' . _('Global templates')] = 'templates*';
+        $logoExportConfigSelect = new htmlResponsiveSelect('exportLogoTargetProfile', $exportOptions, array(), _('Target server profile'), null, 5);
+        $logoExportConfigSelect->setHasDescriptiveElements(true);
+        $logoExportConfigSelect->setSortElements(false);
+        $logoExportConfigSelect->setMultiSelect(true);
+        $logoExportFormContent->add($logoExportConfigSelect, 12);
+        $logoExportFormContent->addVerticalSpacer('1rem');
+        $logoExportFormContent->addLabel(new htmlOutputText(''));
+        $logoExportFormContent->addField(new htmlHiddenInput('exportLogoName', null));
+        $logoExportFormPwd = new htmlResponsiveInputField(_("Master password"), 'exportLogoPassword', null, '236');
+        $logoExportFormPwd->setIsPassword(true);
+        $logoExportFormContent->add($logoExportFormPwd, 12);
+        addSecurityTokenToMetaHTML($logoExportFormContent);
+        $logoExportForm = new htmlForm('logoExportForm', 'pdfmain.php', $logoExportFormContent);
+        $logoExportDialog = new htmlDiv('logoExportDiv', $logoExportForm, array('hidden'));
+        $container->add($logoExportDialog, 12);
+    	parseHtml(null, $container, array(), false, $tabindex, 'user');
 
 		foreach ($templateClasses as $templateClass) {
 			$typeId = $templateClass['typeId'];

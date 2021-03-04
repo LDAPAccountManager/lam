@@ -450,6 +450,32 @@ window.lam.profilePdfEditor.showDistributionDialog = function(title, okText, can
 }
 
 /**
+ * Shows the dialog to export PDF logos.
+ *
+ * @param title dialog title
+ * @param okText text for Ok button
+ * @param cancelText text for Cancel button
+ */
+window.lam.profilePdfEditor.showPdfLogoExportDialog = function(title, okText, cancelText) {
+	var selectedLogo = document.getElementById('logo').value;
+	document.getElementById('exportLogoName').value = selectedLogo;
+	var buttonList = {};
+	buttonList[okText] = function() {
+		document.forms['logoExportForm'].submit();
+	};
+	buttonList[cancelText] = function() {
+		jQuery(this).dialog("close");
+	};
+	jQuery('#logoExportDiv').dialog({
+		modal: true,
+		title: title,
+		dialogClass: 'defaultBackground',
+		buttons: buttonList,
+		width: 'auto'
+	});
+}
+
+/**
  * Stores the current scroll position in the form.
  *
  * @param formName ID of form

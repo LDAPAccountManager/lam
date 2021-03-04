@@ -174,26 +174,44 @@ function copyStructureToTemplates($sourceType, $sourceName) {
 /**
  * Uploads a PDF logo file for the current server profile.
  *
- * @param String $file full path of temporary file
  * @param String $name file name
  * @param string $serverProfileName server profile name
- * @return htmlStatusMessage status message to display
+ * @param string $data binary data
+ * @throws LAMException error saving file
  */
-function uploadPDFLogo($file, $name, $serverProfileName) {
+function savePdfLogo(string $name, $serverProfileName, string $data) : void {
 	if (!preg_match('/[a-zA-Z0-9_-]+\\.(png)|(jpg)/i', $name)) {
-		return new htmlStatusMessage('ERROR', _('Unable to upload logo file.'), _('The file name must end with ".png" or ".jpg".'));
+		throw new LAMException(_('Unable to upload logo file.'), _('The file name must end with ".png" or ".jpg".'));
 	}
-	if ($serverProfileName === GLOBAL_PROFILE) {
-		$serverProfileName = '../templates/pdf';
+	$fileName = getPdfLogoFileName($serverProfileName, $name);
+	$file = @fopen($fileName, "w");
+	if (!$file) {
+		logNewMessage(LOG_ERR, 'Unable to write ' . $fileName);
+		throw new LAMException(_('Unable to upload logo file.'));
 	}
-	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $serverProfileName . '/logos/';
-	$success = copy($file, $dirPath . '/' . $name);
-	if ($success) {
-		return new htmlStatusMessage('INFO', _('Uploaded logo file.'), $name);
+	fputs($file, $data);
+	fclose($file);
+}
+
+/**
+ * Uploads a PDF logo file for the current server profile.
+ *
+ * @param String $name file name
+ * @param string $data binary data
+ * @throws LAMException error saving file
+ */
+function savePdfTemplateLogo(string $name, string $data) : void {
+	if (!preg_match('/[a-zA-Z0-9_-]+\\.(png)|(jpg)/i', $name)) {
+		throw new LAMException(_('Unable to upload logo file.'), _('The file name must end with ".png" or ".jpg".'));
 	}
-	else {
-		return new htmlStatusMessage('ERROR', _('Unable to upload logo file.'), $name);
+	$fileName = getPdfTemplateLogoFileName($name);
+	$file = @fopen($fileName, "w");
+	if (!$file) {
+		logNewMessage(LOG_ERR, 'Unable to write ' . $fileName);
+		throw new LAMException(_('Unable to upload logo file.'));
 	}
+	fputs($file, $data);
+	fclose($file);
 }
 
 /**
@@ -396,6 +414,16 @@ function getPdfLogoBinary(string $confName, string $name) : string {
  */
 function getPdfLogoFileName(string $confName, string $name) : string {
 	return __DIR__ . '/../config/pdf/' . $confName . '/logos/' . $name;
+}
+
+/**
+ * Returns the file name of a given logo.
+ *
+ * @param string $name logo name
+ * @return string file name
+ */
+function getPdfTemplateLogoFileName(string $name) : string {
+	return __DIR__ . '/../config/templates/pdf/logos/' . $name;
 }
 
 /**

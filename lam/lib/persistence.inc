@@ -19,7 +19,8 @@ use function LAM\PDF\getPDFStructures;
 use function LAM\PDF\getPdfTemplateLogoBinary;
 use function LAM\PDF\getPdfTemplateLogoNames;
 use function LAM\PDF\getPdfTemplateNames;
-use function LAM\PDF\uploadPDFLogo;
+use function LAM\PDF\savePdfLogo;
+use function LAM\PDF\savePdfTemplateLogo;
 
 /*
 
@@ -510,13 +511,8 @@ class ConfigDataImporter {
 			}
 			if (isset($data['logos'])) {
 				foreach ($data['logos'] as $logoFileName => $logoData) {
-					$tempFilePath = tempnam("/tmp", "lam");
-					$tempFile = fopen($tempFilePath, "w");
 					$logoBinary = base64_decode($logoData);
-					fwrite($tempFile, $logoBinary);
-					fclose($tempFile);
-					uploadPDFLogo($tempFilePath, $logoFileName, $serverProfileName);
-					unlink($tempFilePath);
+					savePdfLogo($logoFileName, $serverProfileName, $logoBinary);
 				}
 			}
 		}
@@ -553,14 +549,12 @@ class ConfigDataImporter {
 		$failedLogos = array();
 		if (isset($data['logos'])) {
 			foreach ($data['logos'] as $logoFileName => $logoData) {
-				$tempFilePath = tempnam("/tmp", "lam");
-				$tempFile = fopen($tempFilePath, "w");
 				$logoBinary = base64_decode($logoData);
-				fwrite($tempFile, $logoBinary);
-				fclose($tempFile);
-				$message = uploadPDFLogo($tempFilePath, $logoFileName, \LAM\PDF\GLOBAL_PROFILE);
-				unlink($tempFilePath);
-				if ($message->getType() === 'ERROR') {
+				try {
+					savePdfTemplateLogo($logoFileName, $logoBinary);
+				}
+				catch (LAMException $e) {
+					logNewMessage(LOG_ERR, $e->getTitle());
 					$failedLogos[] = $logoFileName;
 				}
 			}
