@@ -309,7 +309,9 @@ catch (LAMException $e) {
 
 if (!empty($globalDeletableTemplates)) {
 	$container = new htmlResponsiveRow();
-	$container->add(new htmlSubTitle(_('Gobal templates')), 12);
+	$globalTemplatesSubtitle = new htmlSubTitle(_('Global templates'));
+	$globalTemplatesSubtitle->setHelpId('364');
+	$container->add($globalTemplatesSubtitle, 12);
 	$globalTemplatesSelect = new htmlResponsiveSelect('globalTemplatesDelete', $globalDeletableTemplates, array(), _('Delete'));
 	$globalTemplatesSelect->setContainsOptgroups(true);
 	$globalTemplatesSelect->setHasDescriptiveElements(true);

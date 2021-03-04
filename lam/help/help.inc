@@ -5,7 +5,7 @@ use \LAM\TYPES\TypeManager;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006 Michael Duergner
-                2003 - 2020 Roland Gruber
+                2003 - 2021 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -250,7 +250,7 @@ $helpArray = array (
 				"293" => array ("Headline" => _('Database type'),
 					"Text" => _('Please select the type of database to use for all configuration data. Please install PHP MySQL PDO extension for MySQL support.')),
 				// 300 - 399
-				// profile editor, file upload
+				// profile/PDF editor, file upload
 				"301" => array ("Headline" => _("RDN identifier"),
 					"Text" => _("This is the identifier for the relative DN value. It must be one of the given allowed LDAP attributes (e.g. user accounts usually use \"uid\" while groups use \"cn\").")),
 				"302" => array ("Headline" => _("Overwrite"),
@@ -263,6 +263,10 @@ $helpArray = array (
 					"Text" => _("Here you can import account profiles from other server profiles (overwrite existing).")),
 				"363" => array ("Headline" => _("Export profile"),
 					"Text" => _("Here you can export account profiles to other server profiles (overwrite existing). You may also export a profile to the global templates. In this case it will always be copied to all server profiles that do not yet have a profile with this name.")),
+				"364" => array ("Headline" => _("Global templates"),
+					"Text" => _("Global templates will always be copied to all server profiles that do not yet have a profile with this name.")),
+				"365" => array ("Headline" => _("Global template logos"),
+					"Text" => _("Global template logos will always be copied to all server profiles that do not yet have a logo with this name.")),
 				// 400 - 499
 				// account pages
 				"400" => array ("Headline" => _("DN suffix") . '/' . _("RDN identifier"),

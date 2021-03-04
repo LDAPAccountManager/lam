@@ -553,7 +553,9 @@ foreach ($globalTemplates as $typeId => $availableTemplates) {
 
 if (!empty($globalDeletableTemplates)) {
     $container = new htmlResponsiveRow();
-    $container->add(new htmlSubTitle(_('Gobal templates')), 12);
+	$globalTemplatesSubtitle = new htmlSubTitle(_('Global templates'));
+	$globalTemplatesSubtitle->setHelpId('364');
+    $container->add($globalTemplatesSubtitle, 12);
     $globalTemplatesSelect = new htmlResponsiveSelect('globalTemplatesDelete', $globalDeletableTemplates, array(), _('Delete'));
     $globalTemplatesSelect->setContainsOptgroups(true);
     $globalTemplatesSelect->setHasDescriptiveElements(true);
@@ -584,7 +586,9 @@ if (!empty($globalDeletableTemplates)) {
 $globalPdfLogos = getPdfTemplateLogoNames();
 if (!empty($globalPdfLogos)) {
 	$container = new htmlResponsiveRow();
-	$container->add(new htmlSubTitle(_('Gobal template logos')), 12);
+	$globalLogosSubtitle = new htmlSubTitle(_('Global template logos'));
+	$globalLogosSubtitle->setHelpId('365');
+	$container->add($globalLogosSubtitle, 12);
 	$globalTemplateLogosSelect = new htmlResponsiveSelect('globalLogoDelete', $globalPdfLogos, array(), _('Delete'));
 	$container->add($globalTemplateLogosSelect, 12);
 	$globalLogoDeleteDialogPassword = new htmlResponsiveInputField(_("Master password"), 'globalLogoDeletePassword', null, '236');
