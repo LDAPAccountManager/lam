@@ -215,6 +215,23 @@ function savePdfTemplateLogo(string $name, string $data) : void {
 }
 
 /**
+ * Deletes a logo file from templates.
+ *
+ * @param string $name file name
+ * @throws LAMException error deleting file
+ */
+function deletePdfTemplateLogo(string $name) : void {
+	if (!preg_match('/[a-zA-Z0-9_-]+\\.(png)|(jpg)/i', $name)) {
+		throw new LAMException(_('Unable to upload logo file.'), _('The file name must end with ".png" or ".jpg".'));
+	}
+	$fileName = getPdfTemplateLogoFileName($name);
+	$deleted = @unlink($fileName);
+	if (!$deleted) {
+		throw new LAMException(_('Unable to delete logo file.'));
+	}
+}
+
+/**
  * Deletes a PDF logo file.
  *
  * @param String $name file name
@@ -357,7 +374,7 @@ function deleteTemplateStructure(string $profile, string $scope) {
 /**
  * Returns all PDF template logo names.
  *
- * @return array names (array('user' => array('default.png')))
+ * @return array names (array('profileName' => array('default.png')))
  */
 function getPdfTemplateLogoNames() {
 	$templatePath = __DIR__ . '/../config/templates/pdf/logos';

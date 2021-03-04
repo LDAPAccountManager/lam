@@ -23,8 +23,11 @@ use \htmlGroup;
 use \LAM\TYPES\TypeManager;
 use LAMException;
 use ServerProfilePersistenceManager;
+use function LAM\PDF\deletePDFLogo;
+use function LAM\PDF\deletePdfTemplateLogo;
 use function LAM\PDF\deleteTemplateStructure;
 use function LAM\PDF\getPdfLogoBinary;
+use function LAM\PDF\getPdfTemplateLogoNames;
 use function LAM\PDF\getPdfTemplateNames;
 use function LAM\PDF\savePdfLogo;
 use function LAM\PDF\savePdfTemplateLogo;
@@ -144,6 +147,23 @@ if (isset($_POST['deleteGlobalTemplate']) && !empty($_POST['globalTemplatesDelet
 		try {
 			deleteTemplateStructure($selectedName, $selectedScope);
 			$container->add(new htmlStatusMessage('INFO', _('Deleted profile.'), $selectedName), 12);
+		} catch (LAMException $e) {
+			$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
+		}
+	}
+}
+
+// delete global logo
+if (isset($_POST['deleteGlobalLogo']) && !empty($_POST['globalLogoDelete'])) {
+	$cfg = new LAMCfgMain();
+	if (empty($_POST['globalLogoDeletePassword']) || !$cfg->checkPassword($_POST['globalLogoDeletePassword'])) {
+		$container->add(new htmlStatusMessage('ERROR', _('Master password is wrong!')), 12);
+	}
+	else {
+		$selectedLogo = $_POST['globalLogoDelete'];
+		try {
+			deletePdfTemplateLogo($selectedLogo);
+			$container->add(new htmlStatusMessage('INFO', _('Logo file deleted.'), $selectedLogo), 12);
 		} catch (LAMException $e) {
 			$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
 		}
@@ -558,6 +578,35 @@ if (!empty($globalDeletableTemplates)) {
     $container->addVerticalSpacer('1rem');
     $globalTemplateDeleteForm = new htmlForm('deleteGlobalTemplatesForm', 'pdfmain.php', $container);
     parseHtml(null, $globalTemplateDeleteForm, array(), false, $tabindex, 'user');
+}
+
+// delete global PDF logos
+$globalPdfLogos = getPdfTemplateLogoNames();
+if (!empty($globalPdfLogos)) {
+	$container = new htmlResponsiveRow();
+	$container->add(new htmlSubTitle(_('Gobal template logos')), 12);
+	$globalTemplateLogosSelect = new htmlResponsiveSelect('globalLogoDelete', $globalPdfLogos, array(), _('Delete'));
+	$container->add($globalTemplateLogosSelect, 12);
+	$globalLogoDeleteDialogPassword = new htmlResponsiveInputField(_("Master password"), 'globalLogoDeletePassword', null, '236');
+	$globalLogoDeleteDialogPassword->setIsPassword(true);
+	$globalLogoDeleteDialogPassword->setRequired(true);
+	$container->add($globalLogoDeleteDialogPassword, 12);
+	$container->addVerticalSpacer('1rem');
+	$globalLogoDeleteButton = new htmlButton('deleteGlobalLogoButton', _('Delete'));
+	$globalLogoDeleteButton->setIconClass('deleteButton');
+	$globalLogoDeleteButton->setOnClick("showConfirmationDialog('" . _("Delete") . "', '" .
+		_('Ok') . "', '" . _('Cancel') . "', 'globalLogoDeleteDialog', 'deleteGlobalLogoForm', undefined); return false;");
+	$container->addLabel(new htmlOutputText('&nbsp;', false));
+	$container->addField($globalLogoDeleteButton, 12);
+	addSecurityTokenToMetaHTML($container);
+	$globalLogoDeleteDialogContent = new htmlResponsiveRow();
+	$globalLogoDeleteDialogContent->add(new htmlOutputText(_('Do you really want to delete this logo?')), 12);
+	$globalLogoDeleteDialogContent->add(new htmlHiddenInput('deleteGlobalLogo', 'true'), 12);
+	$globalLogoDeleteDialogDiv = new htmlDiv('globalLogoDeleteDialog', $globalLogoDeleteDialogContent, array('hidden'));
+	$container->add($globalLogoDeleteDialogDiv, 12);
+	$container->addVerticalSpacer('1rem');
+	$globalLogoDeleteForm = new htmlForm('deleteGlobalLogoForm', 'pdfmain.php', $container);
+	parseHtml(null, $globalLogoDeleteForm, array(), false, $tabindex, 'user');
 }
 
 echo "</div>\n";
