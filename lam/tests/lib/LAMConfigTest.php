@@ -78,6 +78,13 @@ class LAMConfigTest extends TestCase {
 		$this->assertEquals(LAMConfigTest::FILE_NAME, $this->lAMConfig->getName());
 	}
 
+	public function testIsValidName() {
+		$this->assertFalse(LAMConfig::isValidName(''));
+		$this->assertFalse(LAMConfig::isValidName('abc.123'));
+		$this->assertFalse(LAMConfig::isValidName('abc/123'));
+		$this->assertTrue(LAMConfig::isValidName('123-_xyAB'));
+	}
+
 	/**
 	 * Tests LAMConfig->isWritable()
 	 */

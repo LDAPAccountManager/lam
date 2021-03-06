@@ -396,7 +396,7 @@ class ServerProfilePersistenceManager {
 	 * @throws LAMException error saving profile
 	 */
 	public function createProfileFromTemplate(string $name, string $templateName, string $password) : void {
-		if (!preg_match("/^[a-z0-9_-]+$/i", $name) || !preg_match("/^[a-z0-9\\._-]+$/i", $templateName) || in_array($name, $this->getProfiles())) {
+		if (!LAMConfig::isValidName($name) || !preg_match("/^[a-z0-9\\._-]+$/i", $templateName) || in_array($name, $this->getProfiles())) {
 			throw new LAMException(_("Profile name is invalid!"));
 		}
 		$existingTemplateNames = $this->getConfigTemplates();
@@ -730,8 +730,8 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 	 */
 	public function renameProfile(string $oldName, string $newName): void {
 		$existingProfileNames = $this->getProfiles();
-		if (!preg_match("/^[a-z0-9_-]+$/i", $oldName)
-			|| !preg_match("/^[a-z0-9_-]+$/i", $newName)
+		if (!LAMConfig::isValidName($oldName)
+			|| !LAMConfig::isValidName($newName)
 			|| in_array($newName, $existingProfileNames)) {
 			throw new LAMException(_("Profile name is invalid!"));
 		}
@@ -753,7 +753,7 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 	 * @inheritDoc
 	 */
 	public function deleteProfile(string $name): void {
-		if (!preg_match("/^[a-z0-9_-]+$/i", $name)) {
+		if (!LAMConfig::isValidName($name)) {
 			throw new LAMException(_("Unable to delete profile!"));
 		}
 		$dir = __DIR__ . "/../config/";
@@ -1242,6 +1242,16 @@ class LAMConfig {
 				$this->typeSettings[$moduleVar] = implode(",", $ret);
 			}
 		}
+	}
+
+	/**
+	 * Checks if the given server profile name is valid.
+	 *
+	 * @param string $name server profile name
+	 * @return bool is valid
+	 */
+	public static function isValidName(string $name) : bool {
+		return preg_match("/^[a-z0-9_-]+$/i", $name);
 	}
 
 	/**
