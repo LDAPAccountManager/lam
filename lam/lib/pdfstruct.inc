@@ -125,7 +125,7 @@ class PdfStructurePersistenceManager {
 	 */
 	public function deletePdfTemplateLogo(string $name) : void {
 		if (!$this->isValidLogoFileName($name)) {
-			throw new LAMException(_('Unable to read logo file.'));
+			throw new LAMException(_('Unable to delete logo file.'));
 		}
 		$this->strategy->deletePdfTemplateLogo($name);
 	}
@@ -150,7 +150,7 @@ class PdfStructurePersistenceManager {
 	 * @param string $name structure name
 	 * @return boolean is valid
 	 */
-	public function isValidPDFStructureName(string $name) : bool {
+	private function isValidPDFStructureName(string $name) : bool {
 		return preg_match('/^[a-z0-9\-\_]+$/i', $name) === 1;
 	}
 
@@ -1193,5 +1193,3 @@ function getPdfFonts() {
 		_('Korean') => 'cid0kr',
 	);
 }
-
-?>
