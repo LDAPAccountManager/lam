@@ -25,13 +25,10 @@ use \LAM\TYPES\TypeManager;
 use LAMException;
 use ServerProfilePersistenceManager;
 use function LAM\PDF\deletePDFLogo;
-use function LAM\PDF\deletePdfTemplateLogo;
 use function LAM\PDF\getAvailableLogos;
 use function LAM\PDF\getPdfLogoBinary;
 use function LAM\PDF\getPDFStructures;
-use function LAM\PDF\getPdfTemplateLogoNames;
 use function LAM\PDF\savePdfLogo;
-use function LAM\PDF\savePdfTemplateLogo;
 
 /*
 
@@ -119,6 +116,8 @@ foreach ($types as $type) {
 }
 natcasesort($sortedTypes);
 
+$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
+
 $container = new htmlResponsiveRow();
 $container->add(new htmlTitle(_('PDF editor')), 12);
 
@@ -145,7 +144,6 @@ if (isset($_POST['deleteGlobalTemplate']) && !empty($_POST['globalTemplatesDelet
 		$selectedOptions = explode(':', $_POST['globalTemplatesDelete']);
 		$selectedScope = $selectedOptions[0];
 		$selectedName = $selectedOptions[1];
-		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 		try {
 			$pdfStructurePersistenceManager->deletePdfStructureTemplate($selectedScope, $selectedName);
 			$container->add(new htmlStatusMessage('INFO', _('Deleted profile.'), $selectedName), 12);
@@ -164,7 +162,7 @@ if (isset($_POST['deleteGlobalLogo']) && !empty($_POST['globalLogoDelete'])) {
 	else {
 		$selectedLogo = $_POST['globalLogoDelete'];
 		try {
-			deletePdfTemplateLogo($selectedLogo);
+		    $pdfStructurePersistenceManager->deletePdfTemplateLogo($selectedLogo);
 			$container->add(new htmlStatusMessage('INFO', _('Logo file deleted.'), $selectedLogo), 12);
 		} catch (LAMException $e) {
 			$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
@@ -263,7 +261,7 @@ if (!empty($_POST['exportLogoTargetProfile'])) {
 	            $fileName = $_POST['exportLogoName'];
 	            $binary = getPdfLogoBinary($_SESSION['config']->getName(), $fileName);
 	            if ($targetProfile === 'templates*') {
-                    savePdfTemplateLogo($fileName, $binary);
+	                $pdfStructurePersistenceManager->savePdfTemplateLogo($fileName, $binary);
                 }
 	            else {
 	                savePdfLogo($fileName, $targetProfile, $binary);
@@ -601,7 +599,6 @@ echo '<div id="deleteProfileDialog" class="hidden"><form id="deleteProfileForm" 
 echo '</form></div>';
 
 // delete global templates
-$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 $globalTemplates = $pdfStructurePersistenceManager->getPdfStructureTemplateNames();
 $globalDeletableTemplates = array();
 foreach ($globalTemplates as $typeId => $availableTemplates) {
@@ -647,7 +644,7 @@ if (!empty($globalDeletableTemplates)) {
 }
 
 // delete global PDF logos
-$globalPdfLogos = getPdfTemplateLogoNames();
+$globalPdfLogos = $pdfStructurePersistenceManager->getPdfTemplateLogoNames();
 if (!empty($globalPdfLogos)) {
 	$container = new htmlResponsiveRow();
 	$globalLogosSubtitle = new htmlSubTitle(_('Global template logos'));

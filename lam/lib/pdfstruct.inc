@@ -95,62 +95,53 @@ class PdfStructurePersistenceManager {
 	}
 
 	/**
-	 * Reads an PDF structure template.
+	 * Returns a list of template logo file names.
 	 *
-	 * @param string $scope
-	 * @param string $name
-	 * @return array
-	 * @throws LAMException error reading template
+	 * @return array logo file names
 	 */
-	public function loadPdfStructureTemplate(string $scope, string $name) : array {
-		if (!$this->isValidPdfStructureName($name) || !preg_match("/^[a-z0-9_]+$/i", $scope)) {
-			logNewMessage(LOG_NOTICE, "Invalid account profile name: $name:$scope");
-			throw new LAMException(_("Unable to load profile!"));
-		}
-		return $this->strategy->loadPdfStructureTemplate($scope, $name);
+	public function getPdfTemplateLogoNames() : array {
+		return $this->strategy->getPdfTemplateLogoNames();
 	}
 
 	/**
-	 * Writes an PDF structure template.
+	 * Returns the binary data for the given template logo.
 	 *
-	 * @param string $scope
-	 * @param string $name
-	 * @param array $data profile data
-	 * @throws LAMException error writing template
+	 * @param string $name file name
+	 * @return string binary
+	 * @throws LAMException error reading file
 	 */
-	public function writePdfStructureTemplate(string $scope, string $name, array $data) : void {
-		if (!$this->isValidPdfStructureName($name) || !preg_match("/^[a-z0-9_]+$/i", $scope)) {
-			logNewMessage(LOG_NOTICE, "Invalid account profile name: $name:$scope");
-			throw new LAMException(_('Unable to write account profile template.'));
+	public function getPdfTemplateLogoBinary(string $name) : string {
+		if (!$this->isValidLogoFileName($name)) {
+			throw new LAMException(_('Unable to read logo file.'));
 		}
-		$this->strategy->writePdfStructureTemplate($scope, $name, $data);
+		return $this->strategy->getPdfTemplateLogoBinary($name);
 	}
 
 	/**
-	 * Installs templates to the given server profile.
+	 * Deletes a logo in global templates.
 	 *
-	 * @param string $confName server profile name
-	 * @throws LAMException
+	 * @param string $name logo name
+	 * @throws LAMException error during deletion
 	 */
-	public function installPdfStructureTemplates(string $confName) {
-		if (!preg_match("/^[a-z0-9_-]+$/i", $confName)) {
-			logNewMessage(LOG_NOTICE, "Invalid server profile name: $confName");
-			throw new LAMException(_("Unable to write account profile template."));
+	public function deletePdfTemplateLogo(string $name) : void {
+		if (!$this->isValidLogoFileName($name)) {
+			throw new LAMException(_('Unable to read logo file.'));
 		}
-		$allTemplates = $this->getPdfStructureTemplateNames();
-		$typeManager = new TypeManager();
-		foreach ($typeManager->getConfiguredTypes() as $type) {
-			if (empty($allTemplates[$type->getScope()])) {
-				continue;
-			}
-			foreach ($allTemplates[$type->getScope()] as $templateName) {
-				if ($this->isPdfStructureExisting($type->getId(), $templateName, $confName)) {
-					continue;
-				}
-				$data = $this->loadPdfStructureTemplate($type->getScope(), $templateName);
-				$this->writePdfStructure($type->getId(), $templateName, $confName, $data);
-			}
+		$this->strategy->deletePdfTemplateLogo($name);
+	}
+
+	/**
+	 * Saves the template logo.
+	 *
+	 * @param string $name file name
+	 * @param string $data binary data
+	 * @throws LAMException error during save
+	 */
+	public function savePdfTemplateLogo(string $name, string $data) : void {
+		if (!$this->isValidLogoFileName($name)) {
+			throw new LAMException(_('Unable to upload logo file.'));
 		}
+		$this->strategy->savePdfTemplateLogo($name, $data);
 	}
 
 	/**
@@ -161,6 +152,16 @@ class PdfStructurePersistenceManager {
 	 */
 	public function isValidPDFStructureName(string $name) : bool {
 		return preg_match('/^[a-z0-9\-\_]+$/i', $name) === 1;
+	}
+
+	/**
+	 * Returns if the given logo file name is valid.
+	 *
+	 * @param string $fileName file name
+	 * @return bool valid
+	 */
+	private function isValidLogoFileName(string $fileName) : bool {
+		return preg_match('/[a-zA-Z0-9_-]+\\.(png)|(jpg)/i', $fileName);
 	}
 
 }
@@ -188,6 +189,39 @@ interface PdfStructurePersistenceStrategy {
 	 * @throws LAMException error deleting template
 	 */
 	public function deletePdfStructureTemplate(string $scope, string $name) : void;
+
+	/**
+	 * Returns a list of template logo file names.
+	 *
+	 * @return array logo file names
+	 */
+	public function getPdfTemplateLogoNames() : array;
+
+	/**
+	 * Returns the binary data for the given template logo.
+	 *
+	 * @param string $name file name
+	 * @return string binary
+	 * @throws LAMException error reading file
+	 */
+	public function getPdfTemplateLogoBinary(string $name) : string;
+
+	/**
+	 * Deletes a logo in global templates.
+	 *
+	 * @param string $name logo name
+	 * @throws LAMException error during deletion
+	 */
+	public function deletePdfTemplateLogo(string $name) : void;
+
+	/**
+	 * Saves the template logo.
+	 *
+	 * @param string $name file name
+	 * @param string $data binary data
+	 * @throws LAMException error during save
+	 */
+	public function savePdfTemplateLogo(string $name, string $data) : void;
 
 }
 
@@ -240,6 +274,71 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 	 */
 	private function getPdfStructureTemplateFileName(string $scope, string $name) : string {
 		return __DIR__ . '/../config/templates/pdf/' . $name . '.' . $scope . '.xml';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPdfTemplateLogoNames(): array {
+		$templatePath = __DIR__ . '/../config/templates/pdf/logos';
+		$templateDir = @dir($templatePath);
+		$logos = array();
+		if ($templateDir) {
+			$entry = $templateDir->read();
+			while ($entry){
+				if ((strpos($entry, '.') !== 0) && is_file($templatePath . '/' . $entry)) {
+					$logos[] = $entry;
+				}
+				$entry = $templateDir->read();
+			}
+		}
+		return $logos;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPdfTemplateLogoBinary(string $name): string {
+		$fileName = $this->getPdfTemplateLogoFileName($name);
+		$handle = fopen($fileName, 'r');
+		$logoBinary = fread($handle, 100000000);
+		fclose($handle);
+		return $logoBinary;
+	}
+
+	/**
+	 * Returns the file name of a given logo.
+	 *
+	 * @param string $name logo name
+	 * @return string file name
+	 */
+	private function getPdfTemplateLogoFileName(string $name) : string {
+		return __DIR__ . '/../config/templates/pdf/logos/' . $name;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function deletePdfTemplateLogo(string $name): void {
+		$fileName = $this->getPdfTemplateLogoFileName($name);
+		$deleted = @unlink($fileName);
+		if (!$deleted) {
+			throw new LAMException(_('Unable to delete logo file.'));
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function savePdfTemplateLogo(string $name, string $data): void {
+		$fileName = $this->getPdfTemplateLogoFileName($name);
+		$file = @fopen($fileName, "w");
+		if (!$file) {
+			logNewMessage(LOG_ERR, 'Unable to write ' . $fileName);
+			throw new LAMException(_('Unable to upload logo file.'));
+		}
+		fputs($file, $data);
+		fclose($file);
 	}
 
 }
@@ -396,44 +495,6 @@ function savePdfLogo(string $name, $serverProfileName, string $data) : void {
 }
 
 /**
- * Uploads a PDF logo file for the current server profile.
- *
- * @param String $name file name
- * @param string $data binary data
- * @throws LAMException error saving file
- */
-function savePdfTemplateLogo(string $name, string $data) : void {
-	if (!preg_match('/[a-zA-Z0-9_-]+\\.(png)|(jpg)/i', $name)) {
-		throw new LAMException(_('Unable to upload logo file.'), _('The file name must end with ".png" or ".jpg".'));
-	}
-	$fileName = getPdfTemplateLogoFileName($name);
-	$file = @fopen($fileName, "w");
-	if (!$file) {
-		logNewMessage(LOG_ERR, 'Unable to write ' . $fileName);
-		throw new LAMException(_('Unable to upload logo file.'));
-	}
-	fputs($file, $data);
-	fclose($file);
-}
-
-/**
- * Deletes a logo file from templates.
- *
- * @param string $name file name
- * @throws LAMException error deleting file
- */
-function deletePdfTemplateLogo(string $name) : void {
-	if (!preg_match('/[a-zA-Z0-9_-]+\\.(png)|(jpg)/i', $name)) {
-		throw new LAMException(_('Unable to upload logo file.'), _('The file name must end with ".png" or ".jpg".'));
-	}
-	$fileName = getPdfTemplateLogoFileName($name);
-	$deleted = @unlink($fileName);
-	if (!$deleted) {
-		throw new LAMException(_('Unable to delete logo file.'));
-	}
-}
-
-/**
  * Deletes a PDF logo file.
  *
  * @param String $name file name
@@ -520,7 +581,7 @@ function installPDFTemplates(string $confName) {
 	if (!file_exists($basePath . '/logos')) {
 		mkdir($basePath . '/logos');
 	}
-	$logos = getPdfTemplateLogoNames();
+	$logos = $pdfStructurePersistenceManager->getPdfTemplateLogoNames();
 	foreach ($logos as $logo) {
 		$path = getPdfLogoFileName($confName, $logo);
 		$template = $templatePath . '/logos/' . $logo;
@@ -529,42 +590,6 @@ function installPDFTemplates(string $confName) {
 			@copy($template, $path);
 		}
 	}
-}
-
-/**
- * Returns all PDF template logo names.
- *
- * @return array names (array('profileName' => array('default.png')))
- */
-function getPdfTemplateLogoNames() {
-	$templatePath = __DIR__ . '/../config/templates/pdf/logos';
-	$templateDir = @dir($templatePath);
-	$logos = array();
-	if ($templateDir) {
-		$entry = $templateDir->read();
-		while ($entry){
-			if ((strpos($entry, '.') !== 0) && is_file($templatePath . '/' . $entry)) {
-				$logos[] = $entry;
-			}
-			$entry = $templateDir->read();
-		}
-	}
-	return $logos;
-}
-
-/**
- * Returns the binary data of the PDF template logo.
- *
- * @param string $name file name (without path)
- * @return string binary
- */
-function getPdfTemplateLogoBinary($name) {
-	$templatePath = __DIR__ . '/../config/templates/pdf/logos';
-	$fileName = $templatePath . '/' . $name;
-	$handle = fopen($fileName, 'r');
-	$logoBinary = fread($handle, 100000000);
-	fclose($handle);
-	return $logoBinary;
 }
 
 /**
@@ -591,16 +616,6 @@ function getPdfLogoBinary(string $confName, string $name) : string {
  */
 function getPdfLogoFileName(string $confName, string $name) : string {
 	return __DIR__ . '/../config/pdf/' . $confName . '/logos/' . $name;
-}
-
-/**
- * Returns the file name of a given logo.
- *
- * @param string $name logo name
- * @return string file name
- */
-function getPdfTemplateLogoFileName(string $name) : string {
-	return __DIR__ . '/../config/templates/pdf/logos/' . $name;
 }
 
 /**

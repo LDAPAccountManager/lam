@@ -17,10 +17,7 @@ use ServerProfilePersistenceManager;
 use function LAM\PDF\getAvailableLogos;
 use function LAM\PDF\getPdfLogoBinary;
 use function LAM\PDF\getPDFStructures;
-use function LAM\PDF\getPdfTemplateLogoBinary;
-use function LAM\PDF\getPdfTemplateLogoNames;
 use function LAM\PDF\savePdfLogo;
-use function LAM\PDF\savePdfTemplateLogo;
 
 /*
 
@@ -211,9 +208,9 @@ class ConfigDataExporter {
 				$data['structures'][$scope][$templateName] = $pdfStructure->export();
 			}
 		}
-		$logoNames = getPdfTemplateLogoNames();
+		$logoNames = $pdfStructurePersistenceManager->getPdfTemplateLogoNames();
 		foreach ($logoNames as $logoName) {
-			$data['logos'][$logoName] = base64_encode(getPdfTemplateLogoBinary($logoName));
+			$data['logos'][$logoName] = base64_encode($pdfStructurePersistenceManager->getPdfTemplateLogoBinary($logoName));
 		}
 		return $data;
 	}
@@ -529,6 +526,7 @@ class ConfigDataImporter {
 	 * @throws LAMException error during import
 	 */
 	private function importPdfProfileTemplates($step) {
+		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 		$failedNames = array();
 		$data = $step->getValue();
 		if (isset($data['structures'])) {
@@ -552,7 +550,7 @@ class ConfigDataImporter {
 			foreach ($data['logos'] as $logoFileName => $logoData) {
 				$logoBinary = base64_decode($logoData);
 				try {
-					savePdfTemplateLogo($logoFileName, $logoBinary);
+					$pdfStructurePersistenceManager->savePdfTemplateLogo($logoFileName, $logoBinary);
 				}
 				catch (LAMException $e) {
 					logNewMessage(LOG_ERR, $e->getTitle());
