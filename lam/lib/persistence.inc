@@ -2,6 +2,7 @@
 namespace LAM\PERSISTENCE;
 use LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use LAM\PDF\PDFStructure;
+use LAM\PDF\PdfStructurePersistenceManager;
 use LAM\PDF\PDFStructureReader;
 use LAM\PDF\PDFStructureWriter;
 use LAM\PROFILES\AccountProfilePersistenceManager;
@@ -18,7 +19,6 @@ use function LAM\PDF\getPdfLogoBinary;
 use function LAM\PDF\getPDFStructures;
 use function LAM\PDF\getPdfTemplateLogoBinary;
 use function LAM\PDF\getPdfTemplateLogoNames;
-use function LAM\PDF\getPdfTemplateNames;
 use function LAM\PDF\savePdfLogo;
 use function LAM\PDF\savePdfTemplateLogo;
 
@@ -202,7 +202,8 @@ class ConfigDataExporter {
 	 */
 	public function _getPdfProfileTemplates() {
 		$data = array();
-		$pdfTemplateNames = getPdfTemplateNames();
+		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
+		$pdfTemplateNames = $pdfStructurePersistenceManager->getPdfStructureTemplateNames();
 		$reader = new PDFStructureReader(\LAM\PDF\GLOBAL_PROFILE);
 		foreach ($pdfTemplateNames as $scope => $templateNames) {
 			foreach ($templateNames as $templateName) {

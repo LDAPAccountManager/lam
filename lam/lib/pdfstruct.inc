@@ -2,6 +2,8 @@
 namespace LAM\PDF;
 
 use \htmlStatusMessage;
+use LAM\PERSISTENCE\ConfigurationDatabase;
+use LAMCfgMain;
 use \LAMException;
 use \LAM\ImageUtils\ImageManipulationFactory;
 /*
@@ -43,6 +45,206 @@ const GLOBAL_PROFILE = '__GLOBAL__';
 include_once(__DIR__ . "/ldap.inc");
 
 /**
+ * Manages the persistence of PDF structures.
+ *
+ * @package LAM\PDF
+ */
+class PdfStructurePersistenceManager {
+
+	/**
+	 * @var PdfStructurePersistenceStrategy
+	 */
+	private $strategy;
+
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		$configDb = new ConfigurationDatabase(new LAMCfgMain());
+		if ($configDb->useRemoteDb()) {
+			// TODO
+			$this->strategy = new PdfStructurePersistenceStrategyFiles();
+		} else {
+			$this->strategy = new PdfStructurePersistenceStrategyFiles();
+		}
+	}
+
+	/**
+	 * Returns the names of existing PDF structure templates.
+	 *
+	 * @return array scope => names (e.g. array('user' => array('default')))
+	 * @throws LAMException error reading templates
+	 */
+	public function getPdfStructureTemplateNames() : array {
+		return $this->strategy->getPdfStructureTemplateNames();
+	}
+
+	/**
+	 * Deletes an PDF structure template.
+	 *
+	 * @param string $scope user/group/host
+	 * @param string $name PDF structure name
+	 * @throws LAMException error deleting template
+	 */
+	public function deletePdfStructureTemplate(string $scope, string $name) : void {
+		if (!$this->isValidPdfStructureName($name) || !preg_match("/^[a-z0-9_]+$/i", $scope) || ($name == 'default')) {
+			logNewMessage(LOG_NOTICE, "Invalid account profile name: $name:$scope");
+			throw new LAMException(_("Unable to delete profile!"));
+		}
+		$this->strategy->deletePdfStructureTemplate($scope, $name);
+	}
+
+	/**
+	 * Reads an PDF structure template.
+	 *
+	 * @param string $scope
+	 * @param string $name
+	 * @return array
+	 * @throws LAMException error reading template
+	 */
+	public function loadPdfStructureTemplate(string $scope, string $name) : array {
+		if (!$this->isValidPdfStructureName($name) || !preg_match("/^[a-z0-9_]+$/i", $scope)) {
+			logNewMessage(LOG_NOTICE, "Invalid account profile name: $name:$scope");
+			throw new LAMException(_("Unable to load profile!"));
+		}
+		return $this->strategy->loadPdfStructureTemplate($scope, $name);
+	}
+
+	/**
+	 * Writes an PDF structure template.
+	 *
+	 * @param string $scope
+	 * @param string $name
+	 * @param array $data profile data
+	 * @throws LAMException error writing template
+	 */
+	public function writePdfStructureTemplate(string $scope, string $name, array $data) : void {
+		if (!$this->isValidPdfStructureName($name) || !preg_match("/^[a-z0-9_]+$/i", $scope)) {
+			logNewMessage(LOG_NOTICE, "Invalid account profile name: $name:$scope");
+			throw new LAMException(_('Unable to write account profile template.'));
+		}
+		$this->strategy->writePdfStructureTemplate($scope, $name, $data);
+	}
+
+	/**
+	 * Installs templates to the given server profile.
+	 *
+	 * @param string $confName server profile name
+	 * @throws LAMException
+	 */
+	public function installPdfStructureTemplates(string $confName) {
+		if (!preg_match("/^[a-z0-9_-]+$/i", $confName)) {
+			logNewMessage(LOG_NOTICE, "Invalid server profile name: $confName");
+			throw new LAMException(_("Unable to write account profile template."));
+		}
+		$allTemplates = $this->getPdfStructureTemplateNames();
+		$typeManager = new TypeManager();
+		foreach ($typeManager->getConfiguredTypes() as $type) {
+			if (empty($allTemplates[$type->getScope()])) {
+				continue;
+			}
+			foreach ($allTemplates[$type->getScope()] as $templateName) {
+				if ($this->isPdfStructureExisting($type->getId(), $templateName, $confName)) {
+					continue;
+				}
+				$data = $this->loadPdfStructureTemplate($type->getScope(), $templateName);
+				$this->writePdfStructure($type->getId(), $templateName, $confName, $data);
+			}
+		}
+	}
+
+	/**
+	 * Returns if the give structure name is valid.
+	 *
+	 * @param string $name structure name
+	 * @return boolean is valid
+	 */
+	public function isValidPDFStructureName(string $name) : bool {
+		return preg_match('/^[a-z0-9\-\_]+$/i', $name) === 1;
+	}
+
+}
+
+/**
+ * Interface for PDF structure persistence.
+ *
+ * @package LAM\PDF
+ */
+interface PdfStructurePersistenceStrategy {
+
+	/**
+	 * Returns the names of existing PDF structure templates.
+	 *
+	 * @return array scope => names (e.g. array('user' => array('default')))
+	 * @throws LAMException error reading templates
+	 */
+	public function getPdfStructureTemplateNames() : array;
+
+	/**
+	 * Deletes a PDF structure template,
+	 *
+	 * @param string $scope user/group/host
+	 * @param string $name template name
+	 * @throws LAMException error deleting template
+	 */
+	public function deletePdfStructureTemplate(string $scope, string $name) : void;
+
+}
+
+/**
+ * Manages PDF structures on file system.
+ *
+ * @package LAM\PDF
+ */
+class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStrategy {
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPdfStructureTemplateNames(): array {
+		$templatePath = __DIR__ . '/../config/templates/pdf';
+		$templateDir = @dir($templatePath);
+		$allTemplates = array();
+		if ($templateDir) {
+			$entry = $templateDir->read();
+			while ($entry){
+				$parts = explode('.', $entry);
+				if ((strlen($entry) > 3) && (sizeof($parts) == 3)) {
+					$name = $parts[0];
+					$scope = $parts[1];
+					$allTemplates[$scope][] = $name;
+				}
+				$entry = $templateDir->read();
+			}
+		}
+		return $allTemplates;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function deletePdfStructureTemplate(string $scope, string $name): void {
+		$fileName = $this-> getPdfStructureTemplateFileName($scope, $name);
+		$deleted = @unlink($fileName);
+		if (!$deleted) {
+			throw new LAMException(_("Unable to delete PDF structure!"));
+		}
+	}
+
+	/**
+	 * Returns the file name for a PDF structure.
+	 *
+	 * @param string $scope user/group/host
+	 * @param string $name structure name
+	 * @return string file name
+	 */
+	private function getPdfStructureTemplateFileName(string $scope, string $name) : string {
+		return __DIR__ . '/../config/templates/pdf/' . $name . '.' . $scope . '.xml';
+	}
+
+}
+
+	/**
  * This function will return all available PDF structure definitions for the submitted
  * account type.
  *
@@ -294,8 +496,9 @@ function isValidPDFStructureName($name) {
  * @param string $confName server profile name
  */
 function installPDFTemplates(string $confName) {
+	$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 	$templatePath = __DIR__ . '/../config/templates/pdf';
-	$allTemplates = getPdfTemplateNames();
+	$allTemplates = $pdfStructurePersistenceManager->getPdfStructureTemplateNames();
 	$basePath = dirname(__FILE__) . '/../config/pdf/' . $confName;
 	if (!file_exists($basePath)) {
 		mkdir($basePath, 0700, true);
@@ -325,49 +528,6 @@ function installPDFTemplates(string $confName) {
 			logNewMessage(LOG_DEBUG, 'Copy template ' . $template . ' to ' . $path);
 			@copy($template, $path);
 		}
-	}
-}
-
-/**
- * Returns all PDF template names.
- *
- * @return array names (array('user' => array('default')))
- */
-function getPdfTemplateNames() {
-	$templatePath = __DIR__ . '/../config/templates/pdf';
-	$templateDir = @dir($templatePath);
-	$allTemplates = array();
-	if ($templateDir) {
-		$entry = $templateDir->read();
-		while ($entry){
-			$parts = explode('.', $entry);
-			if ((strlen($entry) > 3) && (sizeof($parts) == 3)) {
-				$name = $parts[0];
-				$scope = $parts[1];
-				$allTemplates[$scope][] = $name;
-			}
-			$entry = $templateDir->read();
-		}
-	}
-	return $allTemplates;
-}
-
-/**
- * Deletes a PDF structure template.
- *
- * @param string $profile name of the profile (without .<scope> extension)
- * @param string $scope account type
- * @throws LAMException error deleting template
- */
-function deleteTemplateStructure(string $profile, string $scope) {
-	if (!isValidPDFStructureName($profile) || !preg_match("/^[a-z0-9_]+$/i", $scope) || ($profile == 'default')) {
-		logNewMessage(LOG_NOTICE, "Invalid PDF profile name: $profile:$scope");
-		throw new LAMException(_("Unable to delete PDF structure!"));
-	}
-	$fileName = __DIR__ . '/../config/templates/pdf/' . $profile . '.' . $scope . '.xml';
-	$deleted = @unlink($fileName);
-	if (!$deleted) {
-		throw new LAMException(_("Unable to delete PDF structure!"));
 	}
 }
 

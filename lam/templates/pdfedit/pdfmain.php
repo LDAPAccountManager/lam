@@ -6,6 +6,7 @@ use htmlResponsiveInputField;
 use htmlResponsiveSelect;
 use \htmlTitle;
 use \htmlStatusMessage;
+use LAM\PDF\PdfStructurePersistenceManager;
 use \LAMCfgMain;
 use \htmlSubTitle;
 use \htmlSelect;
@@ -25,10 +26,8 @@ use LAMException;
 use ServerProfilePersistenceManager;
 use function LAM\PDF\deletePDFLogo;
 use function LAM\PDF\deletePdfTemplateLogo;
-use function LAM\PDF\deleteTemplateStructure;
 use function LAM\PDF\getPdfLogoBinary;
 use function LAM\PDF\getPdfTemplateLogoNames;
-use function LAM\PDF\getPdfTemplateNames;
 use function LAM\PDF\savePdfLogo;
 use function LAM\PDF\savePdfTemplateLogo;
 
@@ -144,8 +143,9 @@ if (isset($_POST['deleteGlobalTemplate']) && !empty($_POST['globalTemplatesDelet
 		$selectedOptions = explode(':', $_POST['globalTemplatesDelete']);
 		$selectedScope = $selectedOptions[0];
 		$selectedName = $selectedOptions[1];
+		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 		try {
-			deleteTemplateStructure($selectedName, $selectedScope);
+			$pdfStructurePersistenceManager->deletePdfStructureTemplate($selectedScope, $selectedName);
 			$container->add(new htmlStatusMessage('INFO', _('Deleted profile.'), $selectedName), 12);
 		} catch (LAMException $e) {
 			$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
@@ -538,7 +538,8 @@ echo '<div id="deleteProfileDialog" class="hidden"><form id="deleteProfileForm" 
 echo '</form></div>';
 
 // delete global templates
-$globalTemplates = getPdfTemplateNames();
+$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
+$globalTemplates = $pdfStructurePersistenceManager->getPdfStructureTemplateNames();
 $globalDeletableTemplates = array();
 foreach ($globalTemplates as $typeId => $availableTemplates) {
     if (empty($availableTemplates)) {
