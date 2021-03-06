@@ -476,6 +476,30 @@ window.lam.profilePdfEditor.showPdfLogoExportDialog = function(title, okText, ca
 }
 
 /**
+ * Shows the dialog to import PDF logos.
+ *
+ * @param title dialog title
+ * @param okText text for Ok button
+ * @param cancelText text for Cancel button
+ */
+window.lam.profilePdfEditor.showPdfLogoImportDialog = function(title, okText, cancelText) {
+	var buttonList = {};
+	buttonList[okText] = function() {
+		document.forms['logoImportForm'].submit();
+	};
+	buttonList[cancelText] = function() {
+		jQuery(this).dialog("close");
+	};
+	jQuery('#logoImportDiv').dialog({
+		modal: true,
+		title: title,
+		dialogClass: 'defaultBackground',
+		buttons: buttonList,
+		width: 'auto'
+	});
+}
+
+/**
  * Stores the current scroll position in the form.
  *
  * @param formName ID of form

@@ -26,7 +26,9 @@ use LAMException;
 use ServerProfilePersistenceManager;
 use function LAM\PDF\deletePDFLogo;
 use function LAM\PDF\deletePdfTemplateLogo;
+use function LAM\PDF\getAvailableLogos;
 use function LAM\PDF\getPdfLogoBinary;
+use function LAM\PDF\getPDFStructures;
 use function LAM\PDF\getPdfTemplateLogoNames;
 use function LAM\PDF\savePdfLogo;
 use function LAM\PDF\savePdfTemplateLogo;
@@ -275,6 +277,32 @@ if (!empty($_POST['exportLogoTargetProfile'])) {
     }
 }
 
+// import logo
+if (!empty($_POST['importLogoSourceProfile'])) {
+	$cfg = new LAMCfgMain();
+	if (!$cfg->checkPassword($_POST['importLogoPassword'])) {
+		$container->add(new htmlStatusMessage('ERROR', _('Master password is wrong!')), 12);
+	}
+	else {
+		try {
+			foreach ($_POST['importLogoSourceProfile'] as $sourceLogo) {
+				$parts = explode('##', $sourceLogo);
+				if (sizeof($parts) !== 2) {
+				    continue;
+                }
+				$profileName = $parts[0];
+				$fileName = $parts[1];
+				$binary = getPdfLogoBinary($profileName, $fileName);
+				savePdfLogo($fileName, $_SESSION['config']->getName(), $binary);
+			}
+			$container->add(new htmlStatusMessage('INFO', _('Logo import successful.')), 12);
+		}
+		catch (LAMException $e) {
+			$container->add(new htmlStatusMessage($e->getTitle(), $e->getMessage()), 12);
+		}
+	}
+}
+
 // get list of account types
 $availableTypes = array();
 $templateClasses = array();
@@ -382,6 +410,12 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 		$delLogo = new htmlButton('delLogo', 'delete.png', true);
 		$delLogo->setTitle(_('Delete'));
 	    $logoButtonGroup->addElement($delLogo);
+        $importLogoLink = new htmlLink(null, '#', '../../graphics/import.png');
+	    $importLogoLink->setTitle(_('Import logo'));
+	    $importLogoLink->setOnClick("window.lam.profilePdfEditor.showPdfLogoImportDialog('" . _("Import logo") . "', '" .
+            _('Ok') . "', '" . _('Cancel') . "'); return false;");
+    	$importLogoLink->setCSSClasses(array('margin3'));
+        $logoButtonGroup->addElement($importLogoLink);
         $exportLogoLink = new htmlLink(null, '#', '../../graphics/export.png');
 	    $exportLogoLink->setTitle(_('Export logo'));
     	$exportLogoLink->setOnClick("window.lam.profilePdfEditor.showPdfLogoExportDialog('" . _("Export logo") . "', '" .
@@ -402,8 +436,8 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 
 		echo "</form>\n";
 
-		$container = new htmlResponsiveRow();
 		// export logo form
+    	$container = new htmlResponsiveRow();
         $logoExportFormContent = new htmlResponsiveRow();
         $exportOptions = array();
         foreach ($configProfiles as $profile) {
@@ -430,7 +464,36 @@ include __DIR__ . '/../../lib/adminHeader.inc';
         $container->add($logoExportDialog, 12);
     	parseHtml(null, $container, array(), false, $tabindex, 'user');
 
-		foreach ($templateClasses as $templateClass) {
+        // import logo form
+        $container = new htmlResponsiveRow();
+        $logoImportFormContent = new htmlResponsiveRow();
+        $importOptions = array();
+        foreach ($configProfiles as $profileName) {
+            if ($profileName != $_SESSION['config']->getName()) {
+                $availableLogos = getAvailableLogos($profileName);
+                foreach ($availableLogos as $availableLogo) {
+                    $fileName = $availableLogo['filename'];
+	                $importOptions[$profileName][$fileName] = $profileName . '##' . $fileName;
+                }
+            }
+        }
+        $logoImportConfigSelect = new htmlResponsiveSelect('importLogoSourceProfile', $importOptions, array(), _('PDF structures'), null, 5);
+        $logoImportConfigSelect->setHasDescriptiveElements(true);
+        $logoImportConfigSelect->setContainsOptgroups(true);
+        $logoImportConfigSelect->setMultiSelect(true);
+        $logoImportFormContent->add($logoImportConfigSelect, 12);
+        $logoImportFormContent->addVerticalSpacer('1rem');
+        $logoImportFormContent->addLabel(new htmlOutputText(''));
+        $logoImportFormPwd = new htmlResponsiveInputField(_("Master password"), 'importLogoPassword', null, '236');
+	    $logoImportFormPwd->setIsPassword(true);
+    	$logoImportFormContent->add($logoImportFormPwd, 12);
+        addSecurityTokenToMetaHTML($logoImportFormContent);
+        $logoImportForm = new htmlForm('logoImportForm', 'pdfmain.php', $logoImportFormContent);
+        $logoImportDialog = new htmlDiv('logoImportDiv', $logoImportForm, array('hidden'));
+        $container->add($logoImportDialog, 12);
+        parseHtml(null, $container, array(), false, $tabindex, 'user');
+
+	    foreach ($templateClasses as $templateClass) {
 			$typeId = $templateClass['typeId'];
 			$scope = $templateClass['scope'];
 			$importOptions = array();
