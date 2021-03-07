@@ -80,7 +80,7 @@ class AccountProfilePersistenceManager {
 	 * @throws LAMException error deleting template
 	 */
 	public function deleteAccountProfileTemplate(string $scope, string $name) : void {
-		if (!$this->isValidAccountProfileName($name) || !preg_match("/^[a-z0-9_]+$/i", $scope) || ($name == 'default')) {
+		if (!$this->isValidAccountProfileName($name) || !TypeManager::isValidTypeId($scope) || ($name == 'default')) {
 			logNewMessage(LOG_NOTICE, "Invalid account profile name: $name:$scope");
 			throw new LAMException(_("Unable to delete profile!"));
 		}
@@ -96,7 +96,7 @@ class AccountProfilePersistenceManager {
 	 * @throws LAMException error reading template
 	 */
 	public function loadAccountProfileTemplate(string $scope, string $name) : array {
-		if (!$this->isValidAccountProfileName($name) || !preg_match("/^[a-z0-9_]+$/i", $scope)) {
+		if (!$this->isValidAccountProfileName($name) || !TypeManager::isValidTypeId($scope)) {
 			logNewMessage(LOG_NOTICE, "Invalid account profile name: $name:$scope");
 			throw new LAMException(_("Unable to load profile!"));
 		}
@@ -112,7 +112,7 @@ class AccountProfilePersistenceManager {
 	 * @throws LAMException error writing template
 	 */
 	public function writeAccountProfileTemplate(string $scope, string $name, array $data) : void {
-		if (!$this->isValidAccountProfileName($name) || !preg_match("/^[a-z0-9_]+$/i", $scope)) {
+		if (!$this->isValidAccountProfileName($name) || !TypeManager::isValidTypeId($scope)) {
 			logNewMessage(LOG_NOTICE, "Invalid account profile name: $name:$scope");
 			throw new LAMException(_('Unable to write account profile template.'));
 		}
@@ -155,7 +155,7 @@ class AccountProfilePersistenceManager {
 	 * @throws LAMException error reading profiles
 	 */
 	public function getAccountProfileNames(string $typeId, string $confName) : array {
-		if (!preg_match("/^[a-z0-9_]+$/i", $typeId) || !LAMConfig::isValidName($confName)) {
+		if (!TypeManager::isValidTypeId($typeId) || !LAMConfig::isValidName($confName)) {
 			logNewMessage(LOG_NOTICE, "Invalid account profile name: $confName:$typeId");
 			throw new LAMException(_("Unable to read profiles."));
 		}
@@ -173,7 +173,7 @@ class AccountProfilePersistenceManager {
 	 */
 	public function writeAccountProfile(string $typeId, string $name, string $confName, array $data) : void {
 		if (!$this->isValidAccountProfileName($name)
-			|| !preg_match("/^[a-z0-9_]+$/i", $typeId)
+			|| !TypeManager::isValidTypeId($typeId)
 			|| !LAMConfig::isValidName($confName)) {
 			logNewMessage(LOG_NOTICE, "Invalid account profile name: $name:$typeId");
 			throw new LAMException(_("Unable to save profile!"));
@@ -203,7 +203,7 @@ class AccountProfilePersistenceManager {
 	 */
 	public function isAccountProfileExisting(string $typeId, string $name, string $confName) : bool {
 		if (!$this->isValidAccountProfileName($name)
-			|| !preg_match("/^[a-z0-9_]+$/i", $typeId)
+			|| !TypeManager::isValidTypeId($typeId)
 			|| !LAMConfig::isValidName($confName)) {
 			logNewMessage(LOG_NOTICE, "Invalid account profile name: $name:$typeId");
 			return false;
@@ -222,7 +222,7 @@ class AccountProfilePersistenceManager {
 	 */
 	public function loadAccountProfile(string $typeId, string $name, string $confName) : array {
 		if (!$this->isValidAccountProfileName($name)
-			|| !preg_match("/^[a-z0-9_]+$/i", $typeId)
+			|| !TypeManager::isValidTypeId($typeId)
 			|| !LAMConfig::isValidName($confName)) {
 			logNewMessage(LOG_NOTICE, "Invalid account profile name: $name:$typeId");
 			throw new LAMException(_("Unable to load profile!"));
@@ -240,7 +240,7 @@ class AccountProfilePersistenceManager {
 	 */
 	public function deleteAccountProfile(string $typeId, string $name, string $confName) : void {
 		if (!isLoggedIn() || !$this->isValidAccountProfileName($name)
-			|| !preg_match("/^[a-z0-9_]+$/i", $typeId)
+			|| !TypeManager::isValidTypeId($typeId)
 			|| !LAMConfig::isValidName($confName)) {
 			logNewMessage(LOG_NOTICE, "Invalid account profile name: $name:$typeId");
 			throw new LAMException(_('Unable to delete profile!'));

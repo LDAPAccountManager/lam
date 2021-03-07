@@ -3,6 +3,7 @@ namespace LAM\PDF;
 
 use \htmlStatusMessage;
 use LAM\PERSISTENCE\ConfigurationDatabase;
+use LAM\TYPES\TypeManager;
 use LAMCfgMain;
 use \LAMException;
 use \LAM\ImageUtils\ImageManipulationFactory;
@@ -87,7 +88,7 @@ class PdfStructurePersistenceManager {
 	 * @throws LAMException error deleting template
 	 */
 	public function deletePdfStructureTemplate(string $scope, string $name) : void {
-		if (!$this->isValidPdfStructureName($name) || !preg_match("/^[a-z0-9_]+$/i", $scope) || ($name == 'default')) {
+		if (!$this->isValidPdfStructureName($name) || !TypeManager::isValidTypeId($scope) || ($name == 'default')) {
 			logNewMessage(LOG_NOTICE, "Invalid account profile name: $name:$scope");
 			throw new LAMException(_("Unable to delete profile!"));
 		}
@@ -356,7 +357,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
  */
 function getPDFStructures($typeId, $profile) {
 	$return = array();
-	if (!preg_match('/[a-zA-Z]+/', $typeId)) {
+	if (!TypeManager::isValidTypeId($typeId)) {
 		return null;
 	}
 	$path = dirname(__FILE__) . '/../config/pdf/' . $profile;
@@ -382,7 +383,7 @@ function getPDFStructures($typeId, $profile) {
  * @return boolean True if file was deleted or false if a problem occurred.
  */
 function deletePDFStructure($typeId, $name, $serverProfileName) {
-	if (!isValidPDFStructureName($name) || !preg_match('/[a-zA-Z]+/',$typeId)) {
+	if (!isValidPDFStructureName($name) || !TypeManager::isValidTypeId($typeId)) {
 		return false;
 	}
 	$file = dirname(__FILE__) . '/../config/pdf/' . $serverProfileName . '/' . $name . '.' . $typeId . '.xml';
@@ -649,7 +650,7 @@ class PDFStructureReader {
 	 * @return PDFStructure structure
 	 */
 	public function read($typeId, $name) {
-		if (!isValidPDFStructureName($name) || !preg_match('/[a-zA-Z]+/', $typeId)) {
+		if (!isValidPDFStructureName($name) || !TypeManager::isValidTypeId($typeId)) {
 			return null;
 		}
 		$file = $this->getFileName($typeId, $name);
@@ -791,7 +792,7 @@ class PDFStructureWriter {
 	 * @throws LAMException file not valid or not writable
 	 */
 	protected function getFileName($typeId, $name) {
-		if (!isValidPDFStructureName($name) || !preg_match('/[a-zA-Z]+/', $typeId)) {
+		if (!isValidPDFStructureName($name) || !TypeManager::isValidTypeId($typeId)) {
 			throw new \LAMException(_('PDF structure name not valid'),
 					_('The name for that PDF-structure you submitted is not valid. A valid name must consist of the following characters: \'a-z\',\'A-Z\',\'0-9\',\'_\',\'-\'.'));
 		}

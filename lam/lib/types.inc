@@ -3,7 +3,7 @@ namespace LAM\TYPES;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2018  Roland Gruber
+  Copyright (C) 2005 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -398,6 +398,16 @@ class TypeManager {
 	}
 
 	/**
+	 * Checks if the given type id is valid.
+	 *
+	 * @param string $typeId type id
+	 * @return bool is valid
+	 */
+	public static function isValidTypeId(string $typeId) : bool {
+		return preg_match("/^[a-z0-9_-]+$/i", $typeId);
+	}
+
+	/**
 	 * Returns the configured type with the given id or null.
 	 *
 	 * @param string $typeId type id
@@ -515,5 +525,3 @@ class TypeManager {
 	}
 
 }
-
-?>
