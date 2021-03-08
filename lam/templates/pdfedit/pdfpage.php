@@ -13,6 +13,7 @@ use \htmlSubTitle;
 use \htmlResponsiveInputTextarea;
 use \htmlHiddenInput;
 use \htmlSpacer;
+use LAM\PDF\PdfStructurePersistenceManager;
 use LAM\PDF\PDFStructureReader;
 use LAM\PDF\PDFTextSection;
 use LAM\PDF\PDFEntrySection;
@@ -22,7 +23,7 @@ use LAM\PDF\PDFStructureWriter;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2007 - 2020  Roland Gruber
+                2007 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -101,6 +102,8 @@ if(isset($_GET['abort'])) {
 	metarefresh('pdfmain.php');
 	exit;
 }
+
+$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 
 // Load PDF structure from file if it is not defined in session
 if(!isset($_SESSION['currentPDFStructure'])) {
@@ -218,10 +221,10 @@ else if (isset($_POST['pdfname'])) {
 // headline
 $headline = $_SESSION['currentPDFStructure']->getTitle();
 // logo
-$logoFiles = \LAM\PDF\getAvailableLogos($_SESSION['config']->getName());
+$logoFiles = $pdfStructurePersistenceManager->getPdfLogos($_SESSION['config']->getName(), true);
 $logos = array(_('No logo') => 'none');
 foreach($logoFiles as $logoFile) {
-	$logos[$logoFile['filename'] . ' (' . $logoFile['infos'][0] . ' x ' . $logoFile['infos'][1] . ")"] = $logoFile['filename'];
+	$logos[$logoFile->getName() . ' (' . $logoFile->getWidth() . ' x ' . $logoFile->getHeight() . ")"] = $logoFile->getName();
 }
 $selectedLogo = array('printLogo.jpg');
 if (isset($_SESSION['currentPDFStructure'])) {

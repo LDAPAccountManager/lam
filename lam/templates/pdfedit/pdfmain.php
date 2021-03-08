@@ -24,11 +24,7 @@ use \htmlGroup;
 use \LAM\TYPES\TypeManager;
 use LAMException;
 use ServerProfilePersistenceManager;
-use function LAM\PDF\deletePDFLogo;
-use function LAM\PDF\getAvailableLogos;
-use function LAM\PDF\getPdfLogoBinary;
 use function LAM\PDF\getPDFStructures;
-use function LAM\PDF\savePdfLogo;
 
 /*
 
@@ -235,7 +231,7 @@ if (isset($_POST['uploadLogo']) && !empty($_FILES['logoUpload']) && !empty($_FIL
 	fclose($handle);
 	$filename = $_FILES['logoUpload']['name'];
 	try {
-		savePdfLogo($filename, $_SESSION['config']->getName(), $data);
+		$pdfStructurePersistenceManager->savePdfLogo($_SESSION['config']->getName(), $filename, $data);
 		$container->add(new htmlStatusMessage('INFO', _('Uploaded logo file.'), $filename), 12);
     }
     catch (LAMException $e) {
@@ -246,7 +242,13 @@ if (isset($_POST['uploadLogo']) && !empty($_FILES['logoUpload']) && !empty($_FIL
 // delete logo file
 if (isset($_POST['delLogo'])) {
 	$toDel = $_POST['logo'];
-	$container->add(\LAM\PDF\deletePDFLogo($toDel, $_SESSION['config']->getName()), 12);
+	try {
+	    $pdfStructurePersistenceManager->deletePdfLogo($_SESSION['config']->getName(), $toDel);
+		$container->add(new htmlStatusMessage('INFO', _('Logo file deleted.'), $toDel), 12);
+    }
+    catch (LAMException $e) {
+	    $container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
+    }
 }
 
 // export logo
@@ -259,12 +261,12 @@ if (!empty($_POST['exportLogoTargetProfile'])) {
 		try {
 	        foreach ($_POST['exportLogoTargetProfile'] as $targetProfile) {
 	            $fileName = $_POST['exportLogoName'];
-	            $binary = getPdfLogoBinary($_SESSION['config']->getName(), $fileName);
+	            $binary = $pdfStructurePersistenceManager->getPdfLogoBinary($_SESSION['config']->getName(), $fileName);
 	            if ($targetProfile === 'templates*') {
 	                $pdfStructurePersistenceManager->savePdfTemplateLogo($fileName, $binary);
                 }
 	            else {
-	                savePdfLogo($fileName, $targetProfile, $binary);
+	                $pdfStructurePersistenceManager->savePdfLogo($targetProfile, $fileName, $binary);
                 }
             }
 			$container->add(new htmlStatusMessage('INFO', _('Exported logo file.')), 12);
@@ -290,13 +292,13 @@ if (!empty($_POST['importLogoSourceProfile'])) {
                 }
 				$profileName = $parts[0];
 				$fileName = $parts[1];
-				$binary = getPdfLogoBinary($profileName, $fileName);
-				savePdfLogo($fileName, $_SESSION['config']->getName(), $binary);
+				$binary = $pdfStructurePersistenceManager->getPdfLogoBinary($profileName, $fileName);
+				$pdfStructurePersistenceManager->savePdfLogo($_SESSION['config']->getName(), $fileName, $binary);
 			}
 			$container->add(new htmlStatusMessage('INFO', _('Logo import successful.')), 12);
 		}
 		catch (LAMException $e) {
-			$container->add(new htmlStatusMessage($e->getTitle(), $e->getMessage()), 12);
+			$container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()), 12);
 		}
 	}
 }
@@ -394,13 +396,17 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 		// manage logos
 		$container->addVerticalSpacer('4rem');
 		$container->add(new htmlSubTitle(_('Manage logos')), 12);
-		$logos = \LAM\PDF\getAvailableLogos($_SESSION['config']->getName());
-		$logoOptions = array();
-		foreach ($logos as $logo) {
-			$file = $logo['filename'];
-			$label = $file . ' (' . $logo['infos'][0] . ' x ' . $logo['infos'][1] . ")";
-			$logoOptions[$label] = $file;
-		}
+    	$logoOptions = array();
+        try {
+            $logos = $pdfStructurePersistenceManager->getPdfLogos($_SESSION['config']->getName(), true);
+	        foreach ($logos as $logo) {
+		        $file = $logo->getName();
+		        $label = $file . ' (' . $logo->getWidth() . ' x ' . $logo->getHeight() . ")";
+		        $logoOptions[$label] = $file;
+	        }
+        } catch (LAMException $e) {
+            $container->add(new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage()));
+        }
 		$logoSelect = new htmlSelect('logo', $logoOptions, null);
 		$logoSelect->setHasDescriptiveElements(true);
 		$container->addLabel($logoSelect);
@@ -468,9 +474,9 @@ include __DIR__ . '/../../lib/adminHeader.inc';
         $importOptions = array();
         foreach ($configProfiles as $profileName) {
             if ($profileName != $_SESSION['config']->getName()) {
-                $availableLogos = getAvailableLogos($profileName);
+                $availableLogos = $pdfStructurePersistenceManager->getPdfLogos($profileName);
                 foreach ($availableLogos as $availableLogo) {
-                    $fileName = $availableLogo['filename'];
+                    $fileName = $availableLogo->getName();
 	                $importOptions[$profileName][$fileName] = $profileName . '##' . $fileName;
                 }
             }

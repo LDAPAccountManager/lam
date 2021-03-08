@@ -14,10 +14,7 @@ use PDOException;
 use SelfServicePersistence;
 use selfServiceProfile;
 use ServerProfilePersistenceManager;
-use function LAM\PDF\getAvailableLogos;
-use function LAM\PDF\getPdfLogoBinary;
 use function LAM\PDF\getPDFStructures;
-use function LAM\PDF\savePdfLogo;
 
 /*
 
@@ -169,9 +166,11 @@ class ConfigDataExporter {
 	 *
 	 * @param array $serverProfiles list of server profiles (name => object)
 	 * @return array $data
+	 * @throws LAMException error reading logo
 	 */
-	public function _getPdfProfiles($serverProfiles) {
+	public function _getPdfProfiles($serverProfiles) : array {
 		$data = array();
+		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 		foreach ($serverProfiles as $profileName => $serverProfile) {
 			foreach ($serverProfile->get_ActiveTypes() as $typeId) {
 				$pdfProfileNames = getPDFStructures($typeId, $profileName);
@@ -181,10 +180,10 @@ class ConfigDataExporter {
 					$data[$profileName]['structures'][$typeId][$pdfProfileName] = $pdfStructure->export();
 				}
 			}
-			$logoData = getAvailableLogos($profileName);
+			$logoData = $pdfStructurePersistenceManager->getPdfLogos($profileName);
 			foreach ($logoData as $logo) {
-				$logoName = $logo['filename'];
-				$logoBinary = getPdfLogoBinary($profileName, $logoName);
+				$logoName = $logo->getName();
+				$logoBinary = $pdfStructurePersistenceManager->getPdfLogoBinary($profileName, $logoName);
 				$data[$profileName]['logos'][$logoName] = base64_encode($logoBinary);
 			}
 		}
@@ -485,6 +484,7 @@ class ConfigDataImporter {
 	 */
 	private function importPdfProfiles($step) {
 		$failedProfiles = array();
+		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 		foreach ($step->getSubSteps() as $profileStep) {
 			if (!$profileStep->isActive()) {
 				continue;
@@ -510,7 +510,7 @@ class ConfigDataImporter {
 			if (isset($data['logos'])) {
 				foreach ($data['logos'] as $logoFileName => $logoData) {
 					$logoBinary = base64_decode($logoData);
-					savePdfLogo($logoFileName, $serverProfileName, $logoBinary);
+					$pdfStructurePersistenceManager->savePdfLogo($serverProfileName, $logoFileName, $logoBinary);
 				}
 			}
 		}
