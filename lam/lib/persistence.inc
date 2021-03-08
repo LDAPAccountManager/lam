@@ -173,7 +173,7 @@ class ConfigDataExporter {
 		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 		foreach ($serverProfiles as $profileName => $serverProfile) {
 			foreach ($serverProfile->get_ActiveTypes() as $typeId) {
-				$pdfProfileNames = getPDFStructures($typeId, $profileName);
+				$pdfProfileNames = $pdfStructurePersistenceManager->getPDFStructures($profileName, $typeId);
 				$reader = new PDFStructureReader($profileName);
 				foreach ($pdfProfileNames as $pdfProfileName) {
 					$pdfStructure = $reader->read($typeId, $pdfProfileName);

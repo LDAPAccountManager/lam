@@ -17,11 +17,12 @@ use \htmlResponsiveRow;
 use \htmlResponsiveSelect;
 use \htmlLabeledInputCheckbox;
 use \htmlSpacer;
+use LAM\PDF\PdfStructurePersistenceManager;
 use \moduleCache;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2020  Roland Gruber
+  Copyright (C) 2004 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -294,7 +295,8 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 	$pdfCheckbox = new htmlResponsiveInputCheckbox('createPDF', $createPDF, _('Create PDF files'));
 	$pdfCheckbox->setTableRowsToShow(array('pdfStructure', 'pdf_font'));
 	$row->add($pdfCheckbox, 12);
-	$pdfStructures = \LAM\PDF\getPDFStructures($type->getId(), $_SESSION['config']->getName());
+	$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
+	$pdfStructures = $pdfStructurePersistenceManager->getPDFStructures($_SESSION['config']->getName(), $type->getId());
 	$pdfSelected = array();
 	if (isset($_POST['pdfStructure'])) {
 		$pdfSelected = array($_POST['pdfStructure']);

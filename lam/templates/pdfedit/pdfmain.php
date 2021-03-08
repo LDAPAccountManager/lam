@@ -313,7 +313,7 @@ foreach ($sortedTypes as $typeId => $title) {
 		'scope' => $type->getScope(),
 		'title' => $title,
 		'icon' => $type->getIcon(),
-		'templates' => \LAM\PDF\getPDFStructures($type->getId(), $_SESSION['config']->getName()));
+		'templates' => $pdfStructurePersistenceManager->getPDFStructures($_SESSION['config']->getName(), $type->getId()));
 	$availableTypes[$title] = $type->getId();
 }
 // check if a template should be edited
@@ -506,7 +506,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 				$typesImport = $typeManagerImport->getConfiguredTypesForScope($scope);
 				foreach ($typesImport as $typeImport) {
 					if (($profile != $_SESSION['config']->getName()) || ($typeImport->getId() != $typeId)) {
-						$accountProfiles = \LAM\PDF\getPDFStructures($typeImport->getId(), $profile);
+						$accountProfiles = $pdfStructurePersistenceManager->getPDFStructures($profile, $typeImport->getId());
 						if (!empty($accountProfiles)) {
 							foreach ($accountProfiles as $accountProfile) {
 								$importOptions[$profile][$typeImport->getAlias() . ': ' . $accountProfile] = $profile . '##' . $typeImport->getId() . '##' . $accountProfile;

@@ -1,4 +1,6 @@
 <?php
+
+use LAM\PDF\PdfStructurePersistenceManager;
 use LAM\TYPES\ConfiguredType;
 
 /*
@@ -771,7 +773,8 @@ class lamList {
 			$selAccounts[] = $id;
 		}
 		// get possible PDF structures
-		$pdf_structures = \LAM\PDF\getPDFStructures($this->type->getId(), $_SESSION['config']->getName());
+		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
+		$pdf_structures = $pdfStructurePersistenceManager->getPDFStructures($_SESSION['config']->getName(), $this->type->getId());
 
 		$this->printHeader();
 

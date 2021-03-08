@@ -221,7 +221,7 @@ class PdfStructurePersistenceManager {
 		$activeTypes = $typeManager->getConfiguredTypes();
 		$reader = new PDFStructureReader($confName);
 		foreach ($activeTypes as $type) {
-			$structures = getPDFStructures($type->getId(), $confName);
+			$structures = $this->getPDFStructures($confName, $type->getId());
 			foreach ($structures as $structure) {
 				$data = $reader->read($type->getId(), $structure);
 				if ($data->getLogo() == $name) {
@@ -249,6 +249,24 @@ class PdfStructurePersistenceManager {
 			throw new LAMException(_('Unable to upload logo file.'), _('The file name must end with ".png" or ".jpg".'));
 		}
 		$this->strategy->savePdfLogo($confName, $name, $data);
+	}
+
+	/**
+	 * Returns all available PDF structure definitions for the submitted account type.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $typeId the account type
+	 *
+	 * @return string[] structure names
+	 * @throws LAMException error reading structures
+	 */
+	public function getPDFStructures(string $confName, string $typeId) : array {
+		if (!TypeManager::isValidTypeId($typeId)) {
+			throw new LAMException(_('Unable to read PDF structures.'));
+		}
+		$return = $this->strategy->getPDFStructures($confName, $typeId);
+		sort($return);
+		return $return;
 	}
 
 	/**
@@ -422,6 +440,17 @@ interface PdfStructurePersistenceStrategy {
 	 * @throws LAMException error saving logo
 	 */
 	public function savePdfLogo(string $confName, string $name, string $data) : void;
+
+	/**
+	 * Returns all available PDF structure definitions for the submitted account type.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $typeId the account type
+	 *
+	 * @return string[] structure names
+	 * @throws LAMException error reading structures
+	 */
+	public function getPDFStructures(string $confName, string $typeId) : array;
 
 }
 
@@ -609,36 +638,29 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 		fclose($file);
 	}
 
-}
-
 	/**
- * This function will return all available PDF structure definitions for the submitted
- * account type.
- *
- * @param string $typeId the account type
- * @param string $profile server profile name
- *
- * @return string[] All available PDF structure definitions for the submitted account
- * scope. Each entry is a string being the filename that may be passed to the
- * createModulePDF() function as second argument.
- */
-function getPDFStructures($typeId, $profile) {
-	$return = array();
-	if (!TypeManager::isValidTypeId($typeId)) {
-		return null;
-	}
-	$path = dirname(__FILE__) . '/../config/pdf/' . $profile;
-	if(is_dir($path)) {
-		$dirHandle = opendir($path);
-		while($file = readdir($dirHandle)) {
-			$struct_file = explode('.',$file);
-			if(!is_dir($path.$file) && ($file != '.') && ($file != '..') && (sizeof($struct_file) == 3) && ($struct_file[1] == $typeId) && ($struct_file[2] == 'xml')) {
-				array_push($return, $struct_file[0]);
+	 * @inheritDoc
+	 */
+	public function getPDFStructures(string $confName, string $typeId): array {
+		$return = array();
+		$path = __DIR__ . '/../config/pdf/' . $confName;
+		if (is_dir($path)) {
+			$dirHandle = opendir($path);
+			while($file = readdir($dirHandle)) {
+				$struct_file = explode('.', $file);
+				if(!is_dir($path . $file)
+					&& ($file != '.')
+					&& ($file != '..')
+					&& (sizeof($struct_file) === 3)
+					&& ($struct_file[1] === $typeId)
+					&& ($struct_file[2] === 'xml')) {
+					array_push($return, $struct_file[0]);
+				}
 			}
 		}
-		sort($return);
+		return $return;
 	}
- 	return $return;
+
 }
 
 /**
@@ -835,7 +857,7 @@ class PDFStructureReader {
 		@$xml->read();
 		if (!$xml->name == 'pdf') {
 			logNewMessage(LOG_ERR, 'Unknown tag name: ' . $xml->name);
-			throw new \LAMException(_('Unable to read PDF structure.'));
+			throw new LAMException(_('Unable to read PDF structure.'));
 		}
 		$structure->setLogo($xml->getAttribute('filename'));
 		$structure->setTitle($xml->getAttribute('headline'));
@@ -852,7 +874,7 @@ class PDFStructureReader {
 				$xml->read();
 				if (!$xml->name === 'text') {
 					logNewMessage(LOG_ERR, 'Unexpected tag name: ' . $xml->name);
-					throw new \LAMException(_('Unable to read PDF structure.'));
+					throw new LAMException(_('Unable to read PDF structure.'));
 				}
 			}
 			elseif ($xml->name === 'section') {
