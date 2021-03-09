@@ -270,6 +270,21 @@ class PdfStructurePersistenceManager {
 	}
 
 	/**
+	 * Deletes a PDF structure.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $typeId user/group/host
+	 * @param string $name structure name
+	 * @throws LAMException error deleting structure
+	 */
+	public function deletePdfStructure(string $confName, string $typeId, string $name) : void {
+		if (!LAMConfig::isValidName($confName) || !TypeManager::isValidTypeId($typeId) || !$this->isValidPDFStructureName($name)) {
+			throw new LAMException(_('Unable to delete PDF structure!'));
+		}
+		$this->strategy->deletePdfStructure($confName, $typeId, $name);
+	}
+
+	/**
 	 * Returns if the give structure name is valid.
 	 *
 	 * @param string $name structure name
@@ -451,6 +466,16 @@ interface PdfStructurePersistenceStrategy {
 	 * @throws LAMException error reading structures
 	 */
 	public function getPDFStructures(string $confName, string $typeId) : array;
+
+	/**
+	 * Deletes a PDF structure.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $typeId user/group/host
+	 * @param string $name structure name
+	 * @throws LAMException error deleting structure
+	 */
+	public function deletePdfStructure(string $confName, string $typeId, string $name) : void;
 
 }
 
@@ -661,26 +686,18 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 		return $return;
 	}
 
-}
-
-/**
- * Deletes XML file with PDF structure definitions.
- *
- * @param string $typeId account type
- * @param string $name Name of definition to delete
- * @param string $serverProfileName server profile name
- * @return boolean True if file was deleted or false if a problem occurred.
- */
-function deletePDFStructure($typeId, $name, $serverProfileName) {
-	if (!isValidPDFStructureName($name) || !TypeManager::isValidTypeId($typeId)) {
-		return false;
-	}
-	$file = dirname(__FILE__) . '/../config/pdf/' . $serverProfileName . '/' . $name . '.' . $typeId . '.xml';
-	if(is_file($file) && is_writable($file)) {
-		return unlink($file);
-	}
-	else {
-		return false;
+	/**
+	 * @inheritDoc
+	 */
+	public function deletePdfStructure(string $confName, string $typeId, string $name): void {
+		$fileName = dirname(__FILE__) . '/../config/pdf/' . $confName . '/' . $name . '.' . $typeId . '.xml';
+		if (!is_file($fileName) || !is_writable($fileName)) {
+			throw new LAMException(_('Unable to delete PDF structure!'));
+		}
+		$deleteOk = @unlink($fileName);
+		if (!$deleteOk) {
+			throw new LAMException(_('Unable to delete PDF structure!'));
+		}
 	}
 
 }

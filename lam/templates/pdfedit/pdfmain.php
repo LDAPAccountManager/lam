@@ -120,14 +120,15 @@ $container->add(new htmlTitle(_('PDF editor')), 12);
 if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
 	$typeToDelete = $typeManager->getConfiguredType($_POST['profileDeleteType']);
 	// delete structure
-	if (\LAM\PDF\deletePDFStructure($_POST['profileDeleteType'], $_POST['profileDeleteName'], $_SESSION['config']->getName())) {
-		$message = new htmlStatusMessage('INFO', _('Deleted PDF structure.'), $typeToDelete->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
-		$container->add($message, 12);
-	}
-	else {
-		$message = new htmlStatusMessage('ERROR', _('Unable to delete PDF structure!'), $typeToDelete->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
-		$container->add($message, 12);
-	}
+    try {
+        $pdfStructurePersistenceManager->deletePdfStructure($_SESSION['config']->getName(), $_POST['profileDeleteType'], $_POST['profileDeleteName']);
+	    $message = new htmlStatusMessage('INFO', _('Deleted PDF structure.'), $typeToDelete->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
+	    $container->add($message, 12);
+    }
+    catch (LAMException $e) {
+	    $message = new htmlStatusMessage('ERROR', _('Unable to delete PDF structure!'), $typeToDelete->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
+	    $container->add($message, 12);
+    }
 }
 
 // delete global template
