@@ -36,7 +36,7 @@ class PdfStructTest extends TestCase {
 
 	/**
 	 * Reads the sample structure.
-	 * @throws LAMException error occured
+	 * @throws LAMException error occurred
 	 */
 	public function testRead() {
 		$file = $this->getTestFileName('test.xml');
@@ -91,7 +91,7 @@ class PdfStructTest extends TestCase {
 
 	/**
 	 * Tests if the output is the same as the original PDF.
-	 * @throws LAMException error occured
+	 * @throws LAMException error occurred
 	 */
 	public function testWrite() {
 		$file = $this->getTestFileName('writer.xml');
