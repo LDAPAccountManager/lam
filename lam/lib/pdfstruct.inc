@@ -8,6 +8,8 @@ use LAMCfgMain;
 use LAMConfig;
 use \LAMException;
 use \LAM\ImageUtils\ImageManipulationFactory;
+use XMLReader;
+
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
@@ -94,6 +96,21 @@ class PdfStructurePersistenceManager {
 			throw new LAMException(_("Unable to delete profile!"));
 		}
 		$this->strategy->deletePdfStructureTemplate($scope, $name);
+	}
+
+	/**
+	 * Reads a PDF structure template.
+	 *
+	 * @param string $scope user/group/host
+	 * @param string $name structure name
+	 * @return PDFStructure PDF structure
+	 * @throws LAMException error deleting structure
+	 */
+	public function readPdfStructureTemplate(string $scope, string $name) : PDFStructure {
+		if (!TypeManager::isValidTypeId($scope) || !$this->isValidPDFStructureName($name)) {
+			throw new LAMException(_('Unable to read PDF structure.'));
+		}
+		return $this->strategy->readPdfStructureTemplate($scope, $name);
 	}
 
 	/**
@@ -219,11 +236,10 @@ class PdfStructurePersistenceManager {
 		// check if still in use
 		$typeManager = new TypeManager();
 		$activeTypes = $typeManager->getConfiguredTypes();
-		$reader = new PDFStructureReader($confName);
 		foreach ($activeTypes as $type) {
 			$structures = $this->getPDFStructures($confName, $type->getId());
 			foreach ($structures as $structure) {
-				$data = $reader->read($type->getId(), $structure);
+				$data = $this->readPdfStructure($confName, $type->getId(), $structure);
 				if ($data->getLogo() == $name) {
 					throw new LAMException(_('Unable to delete logo file.'),
 						sprintf(_('Logo is still in use by PDF structure "%s" in account type "%s".'), $structure, $type->getAlias()));
@@ -282,6 +298,22 @@ class PdfStructurePersistenceManager {
 			throw new LAMException(_('Unable to delete PDF structure!'));
 		}
 		$this->strategy->deletePdfStructure($confName, $typeId, $name);
+	}
+
+	/**
+	 * Reads a PDF structure.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $typeId user/group/host
+	 * @param string $name structure name
+	 * @return PDFStructure PDF structure
+	 * @throws LAMException error deleting structure
+	 */
+	public function readPdfStructure(string $confName, string $typeId, string $name) : PDFStructure {
+		if (!LAMConfig::isValidName($confName) || !TypeManager::isValidTypeId($typeId) || !$this->isValidPDFStructureName($name)) {
+			throw new LAMException(_('Unable to read PDF structure.'));
+		}
+		return $this->strategy->readPdfStructure($confName, $typeId, $name);
 	}
 
 	/**
@@ -386,6 +418,16 @@ interface PdfStructurePersistenceStrategy {
 	public function deletePdfStructureTemplate(string $scope, string $name) : void;
 
 	/**
+	 * Reads a PDF structure template.
+	 *
+	 * @param string $scope user/group/host
+	 * @param string $name structure name
+	 * @return PDFStructure PDF structure
+	 * @throws LAMException error deleting structure
+	 */
+	public function readPdfStructureTemplate(string $scope, string $name) : PDFStructure;
+
+	/**
 	 * Returns a list of template logo file names.
 	 *
 	 * @return array logo file names
@@ -477,6 +519,17 @@ interface PdfStructurePersistenceStrategy {
 	 */
 	public function deletePdfStructure(string $confName, string $typeId, string $name) : void;
 
+	/**
+	 * Reads a PDF structure.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $typeId user/group/host
+	 * @param string $name structure name
+	 * @return PDFStructure PDF structure
+	 * @throws LAMException error deleting structure
+	 */
+	public function readPdfStructure(string $confName, string $typeId, string $name) : PDFStructure;
+
 }
 
 /**
@@ -517,6 +570,21 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 		if (!$deleted) {
 			throw new LAMException(_("Unable to delete PDF structure!"));
 		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function readPdfStructureTemplate(string $scope, string $name): PDFStructure {
+		$fileName = $this->getPdfStructureTemplateFileName($scope, $name);
+		if (!is_file($fileName) || !is_readable($fileName)) {
+			throw new LAMException(_('Unable to read PDF structure.'));
+		}
+		$handle = fopen($fileName, 'r');
+		$xmlData = fread($handle, 100000000);
+		fclose($handle);
+		$reader = new PDFStructureReader();
+		return $reader->read($xmlData);
 	}
 
 	/**
@@ -690,7 +758,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 	 * @inheritDoc
 	 */
 	public function deletePdfStructure(string $confName, string $typeId, string $name): void {
-		$fileName = dirname(__FILE__) . '/../config/pdf/' . $confName . '/' . $name . '.' . $typeId . '.xml';
+		$fileName = $this->getPdfStructureFileName($confName, $typeId, $name);
 		if (!is_file($fileName) || !is_writable($fileName)) {
 			throw new LAMException(_('Unable to delete PDF structure!'));
 		}
@@ -698,6 +766,33 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 		if (!$deleteOk) {
 			throw new LAMException(_('Unable to delete PDF structure!'));
 		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function readPdfStructure(string $confName, string $typeId, string $name): PDFStructure {
+		$fileName = $this->getPdfStructureFileName($confName, $typeId, $name);
+		if (!is_file($fileName) || !is_readable($fileName)) {
+			throw new LAMException(_('Unable to read PDF structure.'));
+		}
+		$handle = fopen($fileName, 'r');
+		$xmlData = fread($handle, 100000000);
+		fclose($handle);
+		$reader = new PDFStructureReader();
+		return $reader->read($xmlData);
+	}
+
+	/**
+	 * Returns the file name of the structure.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $typeId user/group/host
+	 * @param string $name structure name
+	 * @return string file name
+	 */
+	private function getPdfStructureFileName(string $confName, string $typeId, string $name) : string {
+		return dirname(__FILE__) . '/../config/pdf/' . $confName . '/' . $name . '.' . $typeId . '.xml';
 	}
 
 }
@@ -817,58 +912,16 @@ function getPdfLogoFileName(string $confName, string $name) : string {
  */
 class PDFStructureReader {
 
-	private $serverProfileName;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param $serverProfileName server profile name
-	 */
-	public function __construct($serverProfileName) {
-		if ($serverProfileName === GLOBAL_PROFILE) {
-			$this->serverProfileName = '../templates/pdf';
-		}
-		else {
-			$this->serverProfileName = $serverProfileName;
-		}
-	}
-
-	/**
-	 * Reads a PDF structure.
-	 *
-	 * @param string $typeId type id
-	 * @param string $name structure name
-	 * @return PDFStructure structure
-	 */
-	public function read($typeId, $name) {
-		if (!isValidPDFStructureName($name) || !TypeManager::isValidTypeId($typeId)) {
-			return null;
-		}
-		$file = $this->getFileName($typeId, $name);
-		return $this->readPDFFile($file);
-	}
-
-	/**
-	 * Returns the file name for the given structure.
-	 *
-	 * @param string $typeId type id
-	 * @param string $name structure name
-	 * @return string file name
-	 */
-	protected function getFileName($typeId, $name) {
-		return dirname(__FILE__) . '/../config/pdf/' . $this->serverProfileName . '/' . $name . '.' . $typeId . '.xml';
-	}
-
 	/**
 	 * Reads a PDF structure file.
 	 *
-	 * @param string $file file name
+	 * @param string $data XML data
 	 * @return PDFStructure structure
+	 * @throws LAMException error reading structure
 	 */
-	private function readPDFFile($file) {
-		logNewMessage(LOG_DEBUG, $file);
-		$xml = new \XMLReader();
-		$xml->open($file);
+	public function read(string $data) : PDFStructure {
+		$xml = new XMLReader();
+		$xml->XML($data);
 		$structure = new PDFStructure();
 		// open <pdf>
 		@$xml->read();
@@ -881,8 +934,8 @@ class PDFStructureReader {
 		$structure->setFoldingMarks($xml->getAttribute('foldingmarks'));
 		$sections = array();
 		while ($xml->read()) {
-			if (($xml->nodeType === \XMLReader::SIGNIFICANT_WHITESPACE)
-					|| (($xml->name === 'pdf') && ($xml->nodeType == \XMLReader::END_ELEMENT))) {
+			if (($xml->nodeType === XMLReader::SIGNIFICANT_WHITESPACE)
+					|| (($xml->name === 'pdf') && ($xml->nodeType == XMLReader::END_ELEMENT))) {
 				continue;
 			}
 			elseif ($xml->name === 'text') {
@@ -898,8 +951,8 @@ class PDFStructureReader {
 				$sections[] = $this->readSection($xml);
 			}
 			else {
-				logNewMessage(LOG_ERR, 'Unexpected tag name: ' . $xml->name . ' in ' . $file);
-				throw new \LAMException(_('Unable to read PDF structure.'));
+				logNewMessage(LOG_ERR, 'Unexpected tag name: ' . $xml->name);
+				throw new LAMException(_('Unable to read PDF structure.'));
 			}
 		}
 		$xml->close();
@@ -910,9 +963,11 @@ class PDFStructureReader {
 	/**
 	 * Reads a single section from XML.
 	 *
-	 * @param \XMLReader $xml reader
+	 * @param XMLReader $xml reader
+	 * @return PDFEntrySection section
+	 * @throws LAMException unable to parse section
 	 */
-	private function readSection(&$xml) {
+	private function readSection(XMLReader $xml) : PDFEntrySection {
 		$section = new PDFEntrySection($xml->getAttribute('name'));
 		$entries = array();
 		while ($xml->read()) {
@@ -928,7 +983,7 @@ class PDFStructureReader {
 			}
 			elseif (!$xml->name === 'entry') {
 				logNewMessage(LOG_ERR, 'Unexpected tag name: ' . $xml->name);
-				throw new \LAMException(_('Unable to read PDF structure.'));
+				throw new LAMException(_('Unable to read PDF structure.'));
 			}
 		}
 		$section->setEntries($entries);

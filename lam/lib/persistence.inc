@@ -3,7 +3,6 @@ namespace LAM\PERSISTENCE;
 use LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use LAM\PDF\PDFStructure;
 use LAM\PDF\PdfStructurePersistenceManager;
-use LAM\PDF\PDFStructureReader;
 use LAM\PDF\PDFStructureWriter;
 use LAM\PROFILES\AccountProfilePersistenceManager;
 use LAMCfgMain;
@@ -174,9 +173,8 @@ class ConfigDataExporter {
 		foreach ($serverProfiles as $profileName => $serverProfile) {
 			foreach ($serverProfile->get_ActiveTypes() as $typeId) {
 				$pdfProfileNames = $pdfStructurePersistenceManager->getPDFStructures($profileName, $typeId);
-				$reader = new PDFStructureReader($profileName);
 				foreach ($pdfProfileNames as $pdfProfileName) {
-					$pdfStructure = $reader->read($typeId, $pdfProfileName);
+					$pdfStructure = $pdfStructurePersistenceManager->readPdfStructure($profileName, $typeId, $pdfProfileName);
 					$data[$profileName]['structures'][$typeId][$pdfProfileName] = $pdfStructure->export();
 				}
 			}
@@ -200,10 +198,9 @@ class ConfigDataExporter {
 		$data = array();
 		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 		$pdfTemplateNames = $pdfStructurePersistenceManager->getPdfStructureTemplateNames();
-		$reader = new PDFStructureReader(\LAM\PDF\GLOBAL_PROFILE);
 		foreach ($pdfTemplateNames as $scope => $templateNames) {
 			foreach ($templateNames as $templateName) {
-				$pdfStructure = $reader->read($scope, $templateName);
+				$pdfStructure = $pdfStructurePersistenceManager->readPdfStructureTemplate($scope, $templateName);
 				$data['structures'][$scope][$templateName] = $pdfStructure->export();
 			}
 		}

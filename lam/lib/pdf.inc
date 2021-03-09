@@ -5,7 +5,7 @@ use LAM\ImageUtils\ImageManipulationFactory;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2004  Michael Duergner
-                2003 - 2020  Roland Gruber
+                2003 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -61,8 +61,9 @@ include_once('pdfstruct.inc');
 function createModulePDF($accounts, $pdf_structure, $font, $returnAsString = false) {
 	$account_type = $accounts[0]->get_type();
 	// Get PDF structure from xml file
-	$reader = new PDFStructureReader($_SESSION['config']->getName());
-	$structure = $reader->read($account_type->getId(), $pdf_structure);
+	$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
+	$structure = $pdfStructurePersistenceManager->readPdfStructure($_SESSION['config']->getName(),
+		$account_type->getId(), $pdf_structure);
 	// get list of PDF keys
 	$pdfKeys = array();
 	foreach($structure->getSections() as $section) {

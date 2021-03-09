@@ -14,12 +14,13 @@ use \htmlResponsiveInputTextarea;
 use \htmlHiddenInput;
 use \htmlSpacer;
 use LAM\PDF\PdfStructurePersistenceManager;
-use LAM\PDF\PDFStructureReader;
 use LAM\PDF\PDFTextSection;
 use LAM\PDF\PDFEntrySection;
 use LAM\PDF\PDFStructure;
 use LAM\PDF\PDFSectionEntry;
 use LAM\PDF\PDFStructureWriter;
+use LAMException;
+
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
@@ -106,19 +107,20 @@ if(isset($_GET['abort'])) {
 $pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 
 // Load PDF structure from file if it is not defined in session
-if(!isset($_SESSION['currentPDFStructure'])) {
+if (!isset($_SESSION['currentPDFStructure'])) {
 	// Load structure file to be edit
-	$reader = new PDFStructureReader($_SESSION['config']->getName());
 	try {
-		if(isset($_GET['edit'])) {
-			$_SESSION['currentPDFStructure'] = $reader->read($type->getId(), $_GET['edit']);
+		if (isset($_GET['edit'])) {
+			$_SESSION['currentPDFStructure'] = $pdfStructurePersistenceManager->readPdfStructure($_SESSION['config']->getName(),
+                $type->getId(), $_GET['edit']);
 		}
 		// Load default structure file when creating a new one
 		else {
-			$_SESSION['currentPDFStructure'] = $reader->read($type->getId(), 'default');
+			$_SESSION['currentPDFStructure'] = $pdfStructurePersistenceManager->readPdfStructure($_SESSION['config']->getName(),
+                $type->getId(), 'default');
 		}
 	}
-	catch (\LAMException $e) {
+	catch (LAMException $e) {
 		metaRefresh('pdfmain.php?loadFailed=1&name=' . $_GET['edit']);
 		exit;
 	}

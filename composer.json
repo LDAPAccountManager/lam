@@ -6,6 +6,7 @@
   "require": {
     "ext-ldap": "*",
     "ext-json": "*",
-    "ext-pdo": "*"
+    "ext-pdo": "*",
+    "ext-xmlreader": "*"
   }
 }

@@ -73,7 +73,7 @@ if (isset($_POST['exportConfig']) && $cfg->checkPassword($_SESSION["mainconf_pas
 		echo $exporter->exportAsJson();
     }
 	catch (LAMException $e) {
-	    logNewMessage('ERROR', $e->getTitle() . ' ' . $e->getMessage());
+	    logNewMessage(LOG_ERR, $e->getTitle() . ' ' . $e->getMessage());
     }
 	exit;
 }
