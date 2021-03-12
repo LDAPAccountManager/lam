@@ -4,6 +4,7 @@ March 2021 7.5
   - Support copying LDAP entries from account list
   - Account/PDF profiles: management of global templates and logos
   - Group of names: allow filter by member/owner (#151)
+  - General information: link to groups (#152)
   - LAM Pro:
    -> Self registration: support binary attributes (e.g. for jpegPhoto)
    -> Self registration: support custom mail attributes and mail from constant value (149)

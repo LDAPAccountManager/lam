@@ -26,6 +26,8 @@
 * @author Roland Gruber
 */
 
+use LAM\TYPES\TypeManager;
+
 /**
 * Shows general information like the creation time of an account.
 *
@@ -108,12 +110,34 @@ class generalInformation extends baseModule {
 		}
 		// group memberships
 		if (isset($this->attributes['memberOf'][0])) {
+			$typeManager = new TypeManager();
+			$scopes = array('gon', 'group');
+			$types = $typeManager->getConfiguredTypesForScopes($scopes);
+			$suffixList = array();
+			foreach ($types as $type) {
+				$suffix = $type->getSuffix();
+				// continue if suffixes are not unique
+				if (isset($suffixList[$suffix])) {
+					continue;
+				}
+				if (!empty($suffix)) {
+					$suffixList[$suffix] = $type->getId();
+				}
+			}
 			$groupLabel = new htmlOutputText(_('Groups'));
 			$groupLabel->alignment = htmlElement::ALIGN_TOP;
 			$return->addLabel($groupLabel);
 			$groups = new htmlTable();
-			for ($i = 0; $i < sizeof($this->attributes['memberOf']); $i++) {
-				$groups->addElement(new htmlOutputText(getAbstractDN($this->attributes['memberOf'][$i])), true);
+			foreach ($this->attributes['memberOf'] as $memberOf) {
+				$groupEntry = new htmlOutputText(getAbstractDN($memberOf));
+				foreach ($suffixList as $suffix => $type) {
+					if ((stripos($memberOf, $suffix) > 0) && !isAccountTypeHidden($type)) {
+						$groupEntry = new htmlLink(getAbstractDN($memberOf), 'edit.php?type=' . $type . '&DN=\'' . $memberOf . '\'');
+						$groupEntry->setTargetWindow('_blank');
+						break;
+					}
+				}
+				$groups->addElement($groupEntry, true);
 			}
 			$return->addField($groups);
 		}
