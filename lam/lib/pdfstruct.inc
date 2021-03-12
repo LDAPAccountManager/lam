@@ -883,16 +883,6 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 }
 
 /**
- * Returns if the give structure name is valid.
- *
- * @param string $name structure name
- * @return boolean is valid
- */
-function isValidPDFStructureName($name) {
-	return preg_match('/^[a-z0-9\-\_]+$/i',$name) === 1;
-}
-
-/**
  * Installs template structures to the current server profile.
  *
  * @param string $confName server profile name
