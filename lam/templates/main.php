@@ -1,6 +1,10 @@
 <?php
 namespace LAM\INIT;
 
+use LAM\PDF\PdfStructurePersistenceManager;
+use LAM\PROFILES\AccountProfilePersistenceManager;
+use LAMException;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -22,9 +26,6 @@ namespace LAM\INIT;
 
 */
 
-use LAM\PROFILES\AccountProfilePersistenceManager;
-use LAMException;
-
 /**
 * This page redirects to the correct start page after login.
 *
@@ -44,12 +45,13 @@ enforceUserIsLoggedIn();
 setlanguage();
 
 $accountProfilePersistenceManager = new AccountProfilePersistenceManager();
+$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 try {
 	$accountProfilePersistenceManager->installAccountProfileTemplates($_SESSION['config']->getName());
+	$pdfStructurePersistenceManager->installPDFTemplates($_SESSION['config']->getName());
 } catch (LAMException $e) {
 	logNewMessage(LOG_ERR, $e->getTitle());
 }
-\LAM\PDF\installPDFTemplates($_SESSION['config']->getName());
 
 $conf = $_SESSION['config'];
 

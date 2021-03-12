@@ -6,6 +6,7 @@ use LAMCfgMain;
 use LAMConfig;
 use \LAMException;
 use PDO;
+use ServerProfilePersistenceManager;
 use function LAM\PERSISTENCE\dbTableExists;
 use function PHPUnit\Framework\isEmpty;
 
@@ -131,7 +132,9 @@ class AccountProfilePersistenceManager {
 			throw new LAMException(_("Unable to write account profile template."));
 		}
 		$allTemplates = $this->getAccountProfileTemplateNames();
-		$typeManager = new TypeManager();
+		$serverProfilesPersistenceManager = new ServerProfilePersistenceManager();
+		$config = $serverProfilesPersistenceManager->loadProfile($confName);
+		$typeManager = new TypeManager($config);
 		foreach ($typeManager->getConfiguredTypes() as $type) {
 			if (empty($allTemplates[$type->getScope()])) {
 				continue;
@@ -166,7 +169,7 @@ class AccountProfilePersistenceManager {
 	 * Writes an account profile.
 	 *
 	 * @param $typeId $scope
-	 * @param string $name
+	 * @param string $name account profile name
 	 * @param string $confName server profile name
 	 * @param array $data profile data
 	 * @throws LAMException error writing template

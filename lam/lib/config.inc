@@ -1,8 +1,10 @@
 <?php
 use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
+use LAM\PDF\PdfStructurePersistenceManager;
 use LAM\PERSISTENCE\ConfigurationDatabase;
 use LAM\PROFILES\AccountProfilePersistenceManager;
 use \LAM\REMOTE\RemoteServerConfiguration;
+use LAM\TYPES\TypeManager;
 use function LAM\PERSISTENCE\dbTableExists;
 
 /*
@@ -399,6 +401,7 @@ class ServerProfilePersistenceManager {
 		if (!LAMConfig::isValidName($name) || !preg_match("/^[a-z0-9\\._-]+$/i", $templateName) || in_array($name, $this->getProfiles())) {
 			throw new LAMException(_("Profile name is invalid!"));
 		}
+		$copyFromTemplate = true;
 		$existingTemplateNames = $this->getConfigTemplates();
 		if (strpos($templateName, '.sample') !== false) {
 			$templateNameShort = str_replace('.sample', '', $templateName);
@@ -410,13 +413,35 @@ class ServerProfilePersistenceManager {
 			$config = $filesStrategy->loadProfile($templateName);
 		}
 		else {
+			$copyFromTemplate = false;
 			$config = $this->loadProfile($templateName);
 		}
 		$config->set_Passwd($password);
 		$this->saveProfile($config, $name);
 		$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
+		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
+		if (!$copyFromTemplate) {
+			$typeManager = new TypeManager($config);
+			foreach ($typeManager->getConfiguredTypes() as $type) {
+				$profilesToCopy = $accountProfilePersistenceManager->getAccountProfileNames($type->getId(), $templateName);
+				foreach ($profilesToCopy as $profileToCopy) {
+					$profile = $accountProfilePersistenceManager->loadAccountProfile($type->getId(), $profileToCopy, $templateName);
+					$accountProfilePersistenceManager->writeAccountProfile($type->getId(), $profileToCopy, $name, $profile);
+				}
+				$structuresToCopy = $pdfStructurePersistenceManager->getPDFStructures($templateName, $type->getId());
+				foreach ($structuresToCopy as $structureToCopy) {
+					$structure = $pdfStructurePersistenceManager->readPdfStructure($templateName, $type->getId(), $structureToCopy);
+					$pdfStructurePersistenceManager->savePdfStructure($name, $type->getId(), $structureToCopy, $structure);
+				}
+				$logosToCopy = $pdfStructurePersistenceManager->getPdfLogos($templateName);
+				foreach ($logosToCopy as $logoToCopy) {
+					$binary = $pdfStructurePersistenceManager->getPdfLogoBinary($templateName, $logoToCopy->getName());
+					$pdfStructurePersistenceManager->savePdfLogo($name, $logoToCopy->getName(), $binary);
+				}
+			}
+		}
 		$accountProfilePersistenceManager->installAccountProfileTemplates($name);
-		\LAM\PDF\installPDFTemplates($name);
+		$pdfStructurePersistenceManager->installPDFTemplates($name);
 	}
 
 	/**

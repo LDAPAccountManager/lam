@@ -8,6 +8,7 @@ use LAMCfgMain;
 use LAMConfig;
 use \LAMException;
 use \LAM\ImageUtils\ImageManipulationFactory;
+use ServerProfilePersistenceManager;
 use XMLReader;
 use XMLWriter;
 
@@ -366,6 +367,42 @@ class PdfStructurePersistenceManager {
 	 */
 	private function isValidLogoFileName(string $fileName) : bool {
 		return preg_match('/[a-zA-Z0-9_-]+\\.(png)|(jpg)/i', $fileName);
+	}
+
+	/**
+	 * Installs template structures to the given server profile.
+	 *
+	 * @param string $confName server profile name
+	 * @throws LAMException error during installation
+	 */
+	public function installPDFTemplates(string $confName) {
+		if (!LAMConfig::isValidName($confName)) {
+			throw new LAMException(_("Profile name is invalid!"));
+		}
+		$serverProfilesPersistenceManager = new ServerProfilePersistenceManager();
+		$config = $serverProfilesPersistenceManager->loadProfile($confName);
+		$typeManager = new TypeManager($config);
+		$allTemplates = $this->getPdfStructureTemplateNames();
+		foreach ($typeManager->getConfiguredTypes() as $type) {
+			if (empty($allTemplates[$type->getScope()])) {
+				continue;
+			}
+			$existingStructures = $this->getPDFStructures($confName, $type->getId());
+			foreach ($allTemplates[$type->getScope()] as $templateName) {
+				if (!in_array($templateName, $existingStructures)) {
+					$structure = $this->readPdfStructureTemplate($type->getScope(), $templateName);
+					$this->savePdfStructure($confName, $type->getId(), $templateName, $structure);
+				}
+			}
+		}
+		$logos = $this->getPdfTemplateLogoNames();
+		$existingLogos = $this->getPdfLogos($confName);
+		foreach ($logos as $logo) {
+			if (!in_array($logo, $existingLogos)) {
+				$binary = $this->getPdfTemplateLogoBinary($logo);
+				$this->savePdfLogo($confName, $logo, $binary);
+			}
+		}
 	}
 
 }
@@ -750,7 +787,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 		$return = array();
 		$dirPath = __DIR__ . '/../config/pdf/' . $confName . '/logos/';
 		if (!is_dir($dirPath)) {
-			throw new LAMException(_('Unable to read logos.'));
+			mkdir($dirPath, 0700, true);
 		}
 		$dirHandle = opendir($dirPath);
 		if ($dirHandle === false) {
@@ -791,6 +828,10 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 	 */
 	public function savePdfLogo(string $confName, string $name, string $data): void {
 		$fileName = $this->getPdfLogoFileName($confName, $name);
+		$basePath = dirname($fileName);
+		if (!file_exists($basePath)) {
+			mkdir($basePath, 0700, true);
+		}
 		$file = @fopen($fileName, "w");
 		if (!$file) {
 			logNewMessage(LOG_ERR, 'Unable to write ' . $fileName);
@@ -857,6 +898,10 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 	 */
 	public function savePdfStructure(string $confName, string $typeId, string $name, PDFStructure $structure): void {
 		$fileName = $this->getPdfStructureFileName($confName, $typeId, $name);
+		$basePath = dirname($fileName);
+		if (!file_exists($basePath)) {
+			mkdir($basePath, 0700, true);
+		}
 		$writer = new PDFStructureWriter();
 		$xml = $writer->getXML($structure);
 		$file = @fopen($fileName, "w");
@@ -880,58 +925,6 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 		return dirname(__FILE__) . '/../config/pdf/' . $confName . '/' . $name . '.' . $typeId . '.xml';
 	}
 
-}
-
-/**
- * Installs template structures to the current server profile.
- *
- * @param string $confName server profile name
- */
-function installPDFTemplates(string $confName) {
-	$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
-	$templatePath = __DIR__ . '/../config/templates/pdf';
-	$allTemplates = $pdfStructurePersistenceManager->getPdfStructureTemplateNames();
-	$basePath = dirname(__FILE__) . '/../config/pdf/' . $confName;
-	if (!file_exists($basePath)) {
-		mkdir($basePath, 0700, true);
-	}
-	$typeManager = new \LAM\TYPES\TypeManager();
-	foreach ($typeManager->getConfiguredTypes() as $type) {
-		if (empty($allTemplates[$type->getScope()])) {
-			continue;
-		}
-		foreach ($allTemplates[$type->getScope()] as $templateName) {
-			$path = $basePath . '/' . $templateName . '.' . $type->getId() . '.xml';
-			if (!is_file($path)) {
-				$template = $templatePath . '/' . $templateName . '.' . $type->getScope() . '.xml';
-				logNewMessage(LOG_DEBUG, 'Copy template ' . $template . ' to ' . $path);
-				@copy($template, $path);
-			}
-		}
-	}
-	if (!file_exists($basePath . '/logos')) {
-		mkdir($basePath . '/logos');
-	}
-	$logos = $pdfStructurePersistenceManager->getPdfTemplateLogoNames();
-	foreach ($logos as $logo) {
-		$path = getPdfLogoFileName($confName, $logo);
-		$template = $templatePath . '/logos/' . $logo;
-		if (!is_file($path)) {
-			logNewMessage(LOG_DEBUG, 'Copy template ' . $template . ' to ' . $path);
-			@copy($template, $path);
-		}
-	}
-}
-
-/**
- * Returns the file name of a given logo.
- *
- * @param string $confName server profile name
- * @param string $name logo name
- * @return string file name
- */
-function getPdfLogoFileName(string $confName, string $name) : string {
-	return __DIR__ . '/../config/pdf/' . $confName . '/logos/' . $name;
 }
 
 /**
