@@ -3,7 +3,6 @@ namespace LAM\PERSISTENCE;
 use LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use LAM\PDF\PDFStructure;
 use LAM\PDF\PdfStructurePersistenceManager;
-use LAM\PDF\PDFStructureWriter;
 use LAM\PROFILES\AccountProfilePersistenceManager;
 use LAMCfgMain;
 use LAMConfig;
@@ -489,13 +488,12 @@ class ConfigDataImporter {
 			$data = $profileStep->getValue();
 			$serverProfileName = str_replace('pdfProfile_', '', $profileStep->getKey());
 			if (isset($data['structures'])) {
-				$writer = new PDFStructureWriter($serverProfileName);
 				foreach ($data['structures'] as $typeId => $pdfProfiles) {
 					foreach ($pdfProfiles as $pdfProfileName => $pdfProfileData) {
 						$structure = new PDFStructure();
 						$structure->import($pdfProfileData);
 						try {
-							$writer->write($typeId, $pdfProfileName, $structure);
+							$pdfStructurePersistenceManager->savePdfStructure($serverProfileName, $typeId, $pdfProfileName, $structure);
 						}
 						catch (LAMException $e) {
 							logNewMessage(LOG_ERR, $e->getTitle() . ' ' . $e->getMessage());
@@ -527,16 +525,15 @@ class ConfigDataImporter {
 		$failedNames = array();
 		$data = $step->getValue();
 		if (isset($data['structures'])) {
-			$writer = new PDFStructureWriter(\LAM\PDF\GLOBAL_PROFILE);
-			foreach ($data['structures'] as $typeId => $pdfProfiles) {
+			foreach ($data['structures'] as $scope => $pdfProfiles) {
 				foreach ($pdfProfiles as $pdfProfileName => $pdfProfileData) {
 					$structure = new PDFStructure();
 					$structure->import($pdfProfileData);
 					try {
-						$writer->write($typeId, $pdfProfileName, $structure);
+						$pdfStructurePersistenceManager->savePdfStructureTemplate($scope, $pdfProfileName, $structure);
 					}
 					catch (LAMException $e) {
-						$failedNames[] = $typeId . ':' . $pdfProfileName;
+						$failedNames[] = $scope . ':' . $pdfProfileName;
 						logNewMessage(LOG_ERR, $e->getTitle() . ' ' . $e->getMessage());
 					}
 				}

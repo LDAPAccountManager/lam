@@ -9,6 +9,7 @@ use LAMConfig;
 use \LAMException;
 use \LAM\ImageUtils\ImageManipulationFactory;
 use XMLReader;
+use XMLWriter;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -111,6 +112,21 @@ class PdfStructurePersistenceManager {
 			throw new LAMException(_('Unable to read PDF structure.'));
 		}
 		return $this->strategy->readPdfStructureTemplate($scope, $name);
+	}
+
+	/**
+	 * Saves the PDF structure.
+	 *
+	 * @param string $scope user/group/host
+	 * @param string $name structure name
+	 * @param PDFStructure $structure structure
+	 * @throws LAMException error saving structure
+	 */
+	public function savePdfStructureTemplate(string $scope, string $name, PDFStructure $structure) : void {
+		if (!TypeManager::isValidTypeId($scope) || !$this->isValidPDFStructureName($name)) {
+			throw new LAMException(_('PDF structure name not valid'));
+		}
+		$this->strategy->savePdfStructureTemplate($scope, $name, $structure);
 	}
 
 	/**
@@ -317,6 +333,22 @@ class PdfStructurePersistenceManager {
 	}
 
 	/**
+	 * Saves the PDF structure.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $typeId user/group/host
+	 * @param string $name structure name
+	 * @param PDFStructure $structure structure
+	 * @throws LAMException error saving structure
+	 */
+	public function savePdfStructure(string $confName, string $typeId, string $name, PDFStructure $structure) : void {
+		if (!LAMConfig::isValidName($confName) || !TypeManager::isValidTypeId($typeId) || !$this->isValidPDFStructureName($name)) {
+			throw new LAMException(_('PDF structure name not valid'));
+		}
+		$this->strategy->savePdfStructure($confName, $typeId, $name, $structure);
+	}
+
+	/**
 	 * Returns if the give structure name is valid.
 	 *
 	 * @param string $name structure name
@@ -428,6 +460,16 @@ interface PdfStructurePersistenceStrategy {
 	public function readPdfStructureTemplate(string $scope, string $name) : PDFStructure;
 
 	/**
+	 * Saves the PDF structure.
+	 *
+	 * @param string $scope user/group/host
+	 * @param string $name structure name
+	 * @param PDFStructure $structure structure
+	 * @throws LAMException error saving structure
+	 */
+	public function savePdfStructureTemplate(string $scope, string $name, PDFStructure $structure) : void;
+
+	/**
 	 * Returns a list of template logo file names.
 	 *
 	 * @return array logo file names
@@ -530,6 +572,17 @@ interface PdfStructurePersistenceStrategy {
 	 */
 	public function readPdfStructure(string $confName, string $typeId, string $name) : PDFStructure;
 
+	/**
+	 * Saves the PDF structure.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $typeId user/group/host
+	 * @param string $name structure name
+	 * @param PDFStructure $structure structure
+	 * @throws LAMException error saving structure
+	 */
+	public function savePdfStructure(string $confName, string $typeId, string $name, PDFStructure $structure) : void;
+
 }
 
 /**
@@ -585,6 +638,22 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 		fclose($handle);
 		$reader = new PDFStructureReader();
 		return $reader->read($xmlData);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function savePdfStructureTemplate(string $scope, string $name, PDFStructure $structure): void {
+		$fileName = $this->getPdfStructureTemplateFileName($scope, $name);
+		$writer = new PDFStructureWriter();
+		$xml = $writer->getXML($structure);
+		$file = @fopen($fileName, "w");
+		if (!$file) {
+			logNewMessage(LOG_ERR, 'Unable to write ' . $fileName);
+			throw new LAMException(_('Unable to save PDF structure.'));
+		}
+		fputs($file, $xml);
+		fclose($file);
 	}
 
 	/**
@@ -781,6 +850,22 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 		fclose($handle);
 		$reader = new PDFStructureReader();
 		return $reader->read($xmlData);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function savePdfStructure(string $confName, string $typeId, string $name, PDFStructure $structure): void {
+		$fileName = $this->getPdfStructureFileName($confName, $typeId, $name);
+		$writer = new PDFStructureWriter();
+		$xml = $writer->getXML($structure);
+		$file = @fopen($fileName, "w");
+		if (!$file) {
+			logNewMessage(LOG_ERR, 'Unable to write ' . $fileName);
+			throw new LAMException(_('Unable to save PDF structure.'));
+		}
+		fputs($file, $xml);
+		fclose($file);
 	}
 
 	/**
@@ -999,64 +1084,14 @@ class PDFStructureReader {
  */
 class PDFStructureWriter {
 
-	private $serverProfileName;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param string $serverProfileName server profile name
-	 */
-	public function __construct($serverProfileName) {
-		if ($serverProfileName === GLOBAL_PROFILE) {
-			$this->serverProfileName = '../templates/pdf';
-		}
-		else {
-			$this->serverProfileName = $serverProfileName;
-		}
-	}
-
-	/**
-	 * Writes the PDF structure to disk.
-	 *
-	 * @param string $typeId type ID
-	 * @param string $name structure name
-	 * @param PDFStructure $structure structure
-	 * @throws LAMException error during write
-	 */
-	public function write($typeId, $name, $structure) {
-		$fileName = $this->getFileName($typeId, $name);
-		$xml = $this->getXML($structure);
-		$this->writeXML($xml, $fileName);
-	}
-
-	/**
-	 * Writes the PDF structure to disk.
-	 *
-	 * @param string $typeId type ID
-	 * @param string $name structure name
-	 * @return string file name
-	 * @throws LAMException file not valid or not writable
-	 */
-	protected function getFileName($typeId, $name) {
-		if (!isValidPDFStructureName($name) || !TypeManager::isValidTypeId($typeId)) {
-			throw new \LAMException(_('PDF structure name not valid'),
-					_('The name for that PDF-structure you submitted is not valid. A valid name must consist of the following characters: \'a-z\',\'A-Z\',\'0-9\',\'_\',\'-\'.'));
-		}
-		$baseDir = __DIR__ . '/../config/pdf/' . $this->serverProfileName;
-		if(!is_writable($baseDir)) {
-			throw new \LAMException(sprintf(_('Could not save PDF structure, access denied to %s.'), $baseDir));
-		}
-		return $baseDir . '/' . $name . '.' . $typeId . '.xml';
-	}
-
 	/**
 	 * Returns the generated XML.
 	 *
 	 * @param PDFStructure $structure structure
 	 * @return string XML
 	 */
-	public function getXML($structure) {
-		$writer = new \XMLWriter();
+	public function getXML(PDFStructure $structure) : string {
+		$writer = new XMLWriter();
 		$writer->openMemory();
 		$writer->setIndent(true);
 		$writer->setIndentString("\t");
@@ -1088,22 +1123,6 @@ class PDFStructureWriter {
 		}
 		$writer->endElement();
 		return $writer->outputMemory();
-	}
-
-	/**
-	 * Writes the XML to the given file.
-	 *
-	 * @param string $xml XML
-	 * @param string $file file name
-	 * @throws LAMException error during write
-	 */
-	protected function writeXML($xml, $file) {
-		$handle = @fopen($file,'w');
-		if (!$handle) {
-			throw new \LAMException(_('Could not save PDF structure, access denied.'));
-		}
-		fwrite($handle, $xml);
-		fclose($handle);
 	}
 
 }

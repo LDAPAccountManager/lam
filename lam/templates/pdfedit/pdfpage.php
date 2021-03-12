@@ -18,7 +18,6 @@ use LAM\PDF\PDFTextSection;
 use LAM\PDF\PDFEntrySection;
 use LAM\PDF\PDFStructure;
 use LAM\PDF\PDFSectionEntry;
-use LAM\PDF\PDFStructureWriter;
 use LAMException;
 
 /*
@@ -140,14 +139,13 @@ if (!empty($_POST['form_submit'])) {
 // main pdf structure page
 $saveErrors = array();
 if(isset($_GET['submit'])) {
-	$writer = new PDFStructureWriter($_SESSION['config']->getName());
 	try {
-		$writer->write($type->getId(), $_POST['pdfname'], $_SESSION['currentPDFStructure']);
+	    $pdfStructurePersistenceManager->savePdfStructure($_SESSION['config']->getName(), $type->getId(), $_POST['pdfname'], $_SESSION['currentPDFStructure']);
 		unset($_SESSION['currentPDFStructure']);
 		metaRefresh('pdfmain.php?savedSuccessfully=' . $_POST['pdfname']);
 		exit;
 	}
-	catch (\LAMException $e) {
+	catch (LAMException $e) {
 		$saveErrors[] = array('ERROR', $e->getTitle(), $e->getMessage());
 	}
 }

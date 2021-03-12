@@ -103,7 +103,7 @@ class PdfStructTest extends TestCase {
 		$reader = new PDFStructureReader();
 		$structure = $reader->read($originalXML);
 		// create writer and get output XML
-		$writer = new PDFStructureWriter('test');
+		$writer = new PDFStructureWriter();
 		$xml = $writer->getXML($structure);
 		// compare
 		$this->assertEquals($originalXML, $xml);
