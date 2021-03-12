@@ -696,6 +696,7 @@ include __DIR__ . '/../../lib/adminFooter.inc';
  * @return \htmlStatusMessage message or null
  */
 function importStructures($typeId, $options, &$serverProfiles, TypeManager &$typeManager) {
+	$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 	foreach ($options as $option) {
 		$sourceConfName = $option['conf'];
 		$sourceTypeId = $option['typeId'];
@@ -705,14 +706,15 @@ function importStructures($typeId, $options, &$serverProfiles, TypeManager &$typ
 		$targetType = $typeManager->getConfiguredType($typeId);
 		if (($sourceType !== null) && ($targetType !== null)) {
 			try {
-				\LAM\PDF\copyStructure($sourceType, $sourceName, $targetType);
+			    $structure = $pdfStructurePersistenceManager->readPdfStructure($sourceConfName, $sourceTypeId, $sourceName);
+			    $pdfStructurePersistenceManager->savePdfStructure($_SESSION['config']->getName(), $sourceTypeId, $sourceName, $structure);
 			}
-			catch (\LAMException $e) {
-				return new \htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
+			catch (LAMException $e) {
+				return new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
 			}
 		}
 	}
-	return new \htmlStatusMessage('INFO', _('Import successful'));
+	return new htmlStatusMessage('INFO', _('Import successful'));
 }
 
 /**
@@ -723,21 +725,23 @@ function importStructures($typeId, $options, &$serverProfiles, TypeManager &$typ
  * @param array $options options
  * @param \LAMConfig[] $serverProfiles server profiles (name => profile object)
  * @param TypeManager $typeManager type manager
- * @return \htmlStatusMessage message or null
+ * @return htmlStatusMessage message or null
  */
 function exportStructures($typeId, $name, $options, &$serverProfiles, TypeManager &$typeManager) {
 	$sourceType = $typeManager->getConfiguredType($typeId);
 	if ($sourceType === null) {
 		return null;
 	}
+	$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 	foreach ($options as $option) {
 		$targetConfName = $option['conf'];
 		if ($targetConfName == 'templates*') {
 			try {
-				\LAM\PDF\copyStructureToTemplates($sourceType, $name);
+				$structure = $pdfStructurePersistenceManager->readPdfStructure($_SESSION['config']->getName(), $typeId, $name);
+				$pdfStructurePersistenceManager->savePdfStructureTemplate($sourceType->getScope(), $name, $structure);
 			}
-			catch (\LAMException $e) {
-				return new \htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
+			catch (LAMException $e) {
+				return new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
 			}
 		}
 		else {
@@ -746,15 +750,14 @@ function exportStructures($typeId, $name, $options, &$serverProfiles, TypeManage
 			$targetType = $targetTypeManager->getConfiguredType($targetTypeId);
 			if ($targetType !== null) {
 				try {
-					\LAM\PDF\copyStructure($sourceType, $name, $targetType);
+				    $structure = $pdfStructurePersistenceManager->readPdfStructure($_SESSION['config']->getName(), $typeId, $name);
+				    $pdfStructurePersistenceManager->savePdfStructure($targetConfName, $targetTypeId, $name, $structure);
 				}
-				catch (\LAMException $e) {
-					return new \htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
+				catch (LAMException $e) {
+					return new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
 				}
 			}
 		}
 	}
-	return new \htmlStatusMessage('INFO', _('Export successful'));
+	return new htmlStatusMessage('INFO', _('Export successful'));
 }
-
-?>

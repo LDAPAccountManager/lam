@@ -883,52 +883,6 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 }
 
 /**
- * Copies a PDF structure from the given source to target.
- *
- * @param \LAM\TYPES\ConfiguredType $sourceType source type
- * @param string $sourceStructureName structure name
- * @param \LAM\TYPES\ConfiguredType $targetType target type
- * @throws LAMException error during copy
- */
-function copyStructure($sourceType, $sourceStructureName, $targetType) {
-	if (!isValidPDFStructureName($sourceStructureName)) {
-		throw new LAMException(_('Failed to copy'));
-	}
-	$sourceConfig = $sourceType->getTypeManager()->getConfig()->getName();
-	$sourceTypeId = $sourceType->getId();
-	$targetConfig = $targetType->getTypeManager()->getConfig()->getName();
-	$targetTypeId = $targetType->getId();
-	$basePath = dirname(__FILE__) . '/../config/pdf/';
-	$src = $basePath . $sourceConfig . '/' . $sourceStructureName . '.' . $sourceTypeId . '.xml';
-	$dst = $basePath . $targetConfig . '/' . $sourceStructureName . '.' . $targetTypeId . '.xml';
-	if (!@copy($src, $dst)) {
-		throw new LAMException(_('Failed to copy'), $sourceConfig . ': ' . $sourceStructureName);
-	}
-}
-
-/**
- * Copies a PDF structure from the given source to global templates.
- *
- * @param \LAM\TYPES\ConfiguredType $sourceType source type
- * @param string $sourceName structure name
- * @throws Exception
- */
-function copyStructureToTemplates($sourceType, $sourceName) {
-	if (!isValidPDFStructureName($sourceName)) {
-		throw new LAMException(_('Failed to copy'));
-	}
-	$sourceConfig = $sourceType->getTypeManager()->getConfig()->getName();
-	$sourceTypeId = $sourceType->getId();
-	$basePath = __DIR__ . '/../config/pdf/';
-	$templatePath = __DIR__ . '/../config/templates/pdf/';
-	$src = $basePath . $sourceConfig . '/' . $sourceName . '.' . $sourceTypeId . '.xml';
-	$dst = $templatePath . $sourceName . '.' . $sourceType->getScope() . '.xml';
-	if (!@copy($src, $dst)) {
-		throw new LAMException(_('Failed to copy'), $sourceConfig . ': ' . $sourceName);
-	}
-}
-
-/**
  * Returns if the give structure name is valid.
  *
  * @param string $name structure name
