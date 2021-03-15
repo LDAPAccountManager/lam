@@ -352,7 +352,7 @@ printHeaderContents(_("Edit general settings"), '../..');
 	}
 
 	// database
-	if (extension_loaded('PDO')) {
+	if (extension_loaded('PDO') && isDeveloperVersion(LAMVersion())) {
 		$row->add(new htmlSubTitle(_('Configuration storage')), 12);
 		$storageProviders = array(
 			_('Local file system') => LAMCfgMain::DATABASE_FILE_SYSTEM
