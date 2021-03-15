@@ -1,16 +1,12 @@
 <?php
+namespace LAM\PDF;
 
-use LAM\PDF\PDFSectionEntry;
-use LAM\PDF\PDFTextSection;
-use LAM\PDF\PDFEntrySection;
-use LAM\PDF\PDFStructureReader;
-use LAM\PDF\PDFStructure;
-use LAM\PDF\PDFStructureWriter;
+use LAMException;
 use PHPUnit\Framework\TestCase;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017  Roland Gruber
+  Copyright (C) 2017 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -40,15 +36,16 @@ class PdfStructTest extends TestCase {
 
 	/**
 	 * Reads the sample structure.
+	 * @throws LAMException error occurred
 	 */
 	public function testRead() {
-		$reader = $this->getMockBuilder('\LAM\PDF\PDFStructureReader')
-			->setConstructorArgs(array('test'))
-			->setMethods(array('getFileName'))
-			->getMock();
-		$reader->method('getFileName')->willReturn($this->getTestFileName('test.xml'));
+		$file = $this->getTestFileName('test.xml');
+		$fileHandle = fopen($file, "r");
+		$originalXML = fread($fileHandle, 1000000);
+		fclose($fileHandle);
+		$reader = new PDFStructureReader();
+		$structure = $reader->read($originalXML);
 
-		$structure = $reader->read('type', 'name');
 		$this->assertEquals('printLogo.jpg', $structure->getLogo());
 		$this->assertEquals('User information', $structure->getTitle());
 		$this->assertEquals(PDFStructure::FOLDING_STANDARD, $structure->getFoldingMarks());
@@ -86,13 +83,15 @@ class PdfStructTest extends TestCase {
 	 * Returns the full path to the given file name.
 	 *
 	 * @param string $file file name
+	 * @return string file name
 	 */
-	private function getTestFileName($file) {
+	private function getTestFileName($file): string {
 		return dirname(dirname(__FILE__)) . '/resources/pdf/' . $file;
 	}
 
 	/**
 	 * Tests if the output is the same as the original PDF.
+	 * @throws LAMException error occurred
 	 */
 	public function testWrite() {
 		$file = $this->getTestFileName('writer.xml');
@@ -101,14 +100,10 @@ class PdfStructTest extends TestCase {
 		$originalXML = fread($fileHandle, 1000000);
 		fclose($fileHandle);
 		// read structure
-		$reader = $this->getMockBuilder('\LAM\PDF\PDFStructureReader')
-		->setConstructorArgs(array('test'))
-		->setMethods(array('getFileName'))
-		->getMock();
-		$reader->method('getFileName')->willReturn($file);
-		$structure = $reader->read('type', 'name');
+		$reader = new PDFStructureReader();
+		$structure = $reader->read($originalXML);
 		// create writer and get output XML
-		$writer = new PDFStructureWriter('test');
+		$writer = new PDFStructureWriter();
 		$xml = $writer->getXML($structure);
 		// compare
 		$this->assertEquals($originalXML, $xml);
@@ -241,5 +236,3 @@ class PdfStructTest extends TestCase {
 	}
 
 }
-
-?>

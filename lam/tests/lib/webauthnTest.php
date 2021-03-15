@@ -3,7 +3,10 @@ namespace LAM\LOGIN\WEBAUTHN;
 
 use LAMCfgMain;
 use LAMConfig;
+use LAMConfigTest;
+use LAMException;
 use \PHPUnit\Framework\TestCase;
+use ServerProfilePersistenceManager;
 use \Webauthn\PublicKeyCredentialDescriptor;
 use \Webauthn\PublicKeyCredentialSource;
 use \Webauthn\TrustPath\CertificateTrustPath;
@@ -48,6 +51,11 @@ class WebauthnManagerTest extends TestCase {
 	 */
 	private $manager;
 
+	/**
+	 * Setup
+	 *
+	 * @throws LAMException
+	 */
 	protected function setup(): void {
 		$this->database = $this
 			->getMockBuilder(PublicKeyCredentialSourceRepositorySQLite::class)
@@ -71,7 +79,8 @@ class WebauthnManagerTest extends TestCase {
 		$cfgMain->logDestination = $logFilePath;
 		$_SESSION['cfgMain'] = $cfgMain;
 
-		$config = new LAMConfig('d_LAMConfigTest');
+		$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
+		$config = $serverProfilePersistenceManager->loadProfile(LAMConfigTest::FILE_NAME);
 		$config->setTwoFactorAuthenticationDomain('domain');
 		$_SESSION['config'] = $config;
 	}

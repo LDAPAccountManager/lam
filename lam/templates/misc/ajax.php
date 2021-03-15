@@ -15,7 +15,7 @@ use \LAMCfgMain;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2020  Roland Gruber
+  Copyright (C) 2011 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -263,7 +263,8 @@ class Ajax {
 	 */
 	private function manageWebauthnDevicesSearch($searchTerm) {
 		include_once __DIR__ . '/../../lib/webauthn.inc';
-		$database = new \LAM\LOGIN\WEBAUTHN\PublicKeyCredentialSourceRepositorySQLite();
+		$webAuthnManager = new WebauthnManager();
+		$database = $webAuthnManager->getDatabase();
 		$results = $database->searchDevices('%' . $searchTerm . '%');
 		$row = new htmlResponsiveRow();
 		$row->addVerticalSpacer('0.5rem');
@@ -273,6 +274,7 @@ class Ajax {
 		else {
 			$titles = array(
 				_('User'),
+				_('Name'),
 				_('Registration'),
 				_('Last use'),
 				_('Delete')
@@ -287,8 +289,10 @@ class Ajax {
 				$delButton->addDataAttribute('oktext', _('Ok'));
 				$delButton->addDataAttribute('canceltext', _('Cancel'));
 				$delButton->setCSSClasses(array('webauthn-delete'));
+				$name = !empty($result['name']) ? $result['name'] : '';
 				$data[] = array(
 					new htmlOutputText($result['dn']),
+					new htmlOutputText($name),
 					new htmlOutputText(date('Y-m-d H:i:s', $result['registrationTime'])),
 					new htmlOutputText(date('Y-m-d H:i:s', $result['lastUseTime'])),
 					$delButton
@@ -315,7 +319,8 @@ class Ajax {
 	 */
 	private function manageWebauthnDevicesDelete($dn, $credentialId) {
 		include_once __DIR__ . '/../../lib/webauthn.inc';
-		$database = new \LAM\LOGIN\WEBAUTHN\PublicKeyCredentialSourceRepositorySQLite();
+		$webAuthnManager = new WebauthnManager();
+		$database = $webAuthnManager->getDatabase();
 		$success = $database->deleteDevice($dn, $credentialId);
 		if ($success) {
 			$message = new htmlStatusMessage('INFO', _('The device was deleted.'));
@@ -344,7 +349,8 @@ class Ajax {
 	 */
 	private function manageWebauthnDevicesUpdateName($dn, $credentialId, $name) {
 		include_once __DIR__ . '/../../lib/webauthn.inc';
-		$database = new \LAM\LOGIN\WEBAUTHN\PublicKeyCredentialSourceRepositorySQLite();
+		$webAuthnManager = new WebauthnManager();
+		$database = $webAuthnManager->getDatabase();
 		$success = $database->updateDeviceName($dn, $credentialId, $name);
 		if ($success) {
 			logNewMessage(LOG_DEBUG, 'Changed name of ' . $dn . ' ' . $credentialId . ' to ' . $name);
@@ -361,7 +367,6 @@ class Ajax {
 	private function manageWebauthnOwnDevices() {
 		$action = $_POST['action'];
 		$dn = $_POST['dn'];
-		$name = $_POST['name'];
 		$sessionDn = $_SESSION['ldap']->getUserName();
 		if ($sessionDn !== $dn) {
 			logNewMessage(LOG_ERR, 'WebAuthn delete canceled, DN does not match.');
@@ -373,6 +378,7 @@ class Ajax {
 		}
 		elseif ($action === 'setName') {
 			$credentialId = $_POST['credentialId'];
+			$name = $_POST['name'];
 			$this->manageWebauthnDevicesUpdateName($sessionDn, $credentialId, $name);
 		}
 	}

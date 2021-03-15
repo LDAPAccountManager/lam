@@ -15,8 +15,11 @@ use Cose\Algorithm\Signature\RSA\RS256;
 use Cose\Algorithm\Signature\RSA\RS384;
 use Cose\Algorithm\Signature\RSA\RS512;
 use \Cose\Algorithms;
+use LAM\PERSISTENCE\ConfigurationDatabase;
+use LAMCfgMain;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PDO;
+use PDOException;
 use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Throwable;
@@ -45,11 +48,12 @@ use \Webauthn\AuthenticationExtensions\AuthenticationExtensionsClientInputs;
 use \Webauthn\AuthenticatorSelectionCriteria;
 use Webauthn\TokenBinding\IgnoreTokenBindingHandler;
 use \LAMException;
+use function LAM\PERSISTENCE\dbTableExists;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2019 - 2020  Roland Gruber
+  Copyright (C) 2019 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -139,7 +143,7 @@ class WebauthnManager {
 		$attestationObjectLoader = $this->getAttestationObjectLoader($attestationSupportManager, $decoder);
 		$publicKeyCredentialLoader = $this->getPublicKeyCredentialLoader($attestationObjectLoader, $decoder);
 		$extensionOutputCheckerHandler = $this->getExtensionOutputChecker();
-		$repository = new PublicKeyCredentialSourceRepositorySQLite();
+		$repository = $this->getDatabase();
 		$responseValidator = new AuthenticatorAttestationResponseValidator(
 			$attestationSupportManager, $repository, $tokenBindingHandler, $extensionOutputCheckerHandler);
 		try {
@@ -323,9 +327,13 @@ class WebauthnManager {
 	/**
 	 * Returns the webauthn database.
 	 *
-	 * @return PublicKeyCredentialSourceRepositorySQLite database
+	 * @return PublicKeyCredentialSourceRepositoryBase database
 	 */
 	public function getDatabase() {
+		$configDatabase = new ConfigurationDatabase(new LAMCfgMain());
+		if ($configDatabase->useRemoteDb()) {
+			return new PublicKeyCredentialSourceRepositoryMySql($configDatabase->getPdo());
+		}
 		return new PublicKeyCredentialSourceRepositorySQLite();
 	}
 
@@ -434,9 +442,16 @@ class WebauthnManager {
  *
  * @package LAM\LOGIN\WEBAUTHN
  */
-class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSourceRepository {
+abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCredentialSourceRepository {
 
-	const TABLE_NAME = 'lam_webauthn';
+	/**
+	 * Returns the table name to use.
+	 *
+	 * @return string table name
+	 */
+	protected function getTableName() : string {
+		return 'lam_webauthn';
+	}
 
 	/**
 	 * Finds the public key for the given credential id.
@@ -447,7 +462,7 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 	public function findOneByCredentialId(string $publicKeyCredentialId): ?PublicKeyCredentialSource {
 		try {
 			$pdo = $this->getPDO();
-			$statement = $pdo->prepare('select * from ' . self::TABLE_NAME . ' where credentialId = :credentialid');
+			$statement = $pdo->prepare('select * from ' . $this->getTableName() . ' where credentialId = :credentialid');
 			$statement->execute(array(':credentialid' => base64_encode($publicKeyCredentialId)));
 			$results = $statement->fetchAll();
 			if (!empty($results)) {
@@ -471,7 +486,7 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 		$credentials = array();
 		try {
 			$pdo = $this->getPDO();
-			$statement = $pdo->prepare('select * from ' . self::TABLE_NAME . ' where userId = :userid');
+			$statement = $pdo->prepare('select * from ' . $this->getTableName() . ' where userId = :userid');
 			$statement->execute(array(':userid' => $publicKeyCredentialUserEntity->getId()));
 			$results = $statement->fetchAll();
 			foreach ($results as $result) {
@@ -496,14 +511,14 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 		$userId = $publicKeyCredentialSource->getUserHandle();
 		$currentTime = time();
 		$pdo = $this->getPDO();
-		$statement = $pdo->prepare('select * from ' . self::TABLE_NAME . ' where userId = :userId and credentialId = :credentialId');
+		$statement = $pdo->prepare('select * from ' . $this->getTableName() . ' where userId = :userId and credentialId = :credentialId');
 		$statement->execute(array(
 			':userId' => $userId,
 			':credentialId' => $credentialId
 		));
 		$results = $statement->fetchAll();
 		if (empty($results)) {
-			$statement = $pdo->prepare('insert into ' . self::TABLE_NAME . ' (userId, credentialId, credentialSource, registrationTime, lastUseTime) VALUES (?, ?, ?, ?, ?)');
+			$statement = $pdo->prepare('insert into ' . $this->getTableName() . ' (userId, credentialId, credentialSource, registrationTime, lastUseTime) VALUES (?, ?, ?, ?, ?)');
 			$statement->execute(array(
 				$userId,
 				$credentialId,
@@ -515,7 +530,7 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 		}
 		else {
 			$statement = $pdo->prepare(
-				'update ' . self::TABLE_NAME .
+				'update ' . $this->getTableName() .
 				' set credentialSource = :credentialSource, lastUseTime = :lastUseTime' .
 				' WHERE userId = :userId AND credentialId = :credentialId'
 			);
@@ -530,28 +545,13 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 	}
 
 	/**
-	 * Returns the database URL.
-	 *
-	 * @return string the PDO URL
-	 */
-	public function getPdoUrl() {
-		$fileName = dirname(__FILE__) . '/../config/__lam.webauthn.sqlite';
-		if (!file_exists($fileName)) {
-			$handle = fopen($fileName, 'w');
-			fclose($handle);
-			chmod($fileName, 0600);
-		}
-		return 'sqlite:' . $fileName;
-	}
-
-	/**
 	 * Returns if there are any credentials in the database.
 	 *
 	 * @return bool at least one credential in the database
 	 */
 	public function hasRegisteredCredentials() {
 		$pdo = $this->getPDO();
-		$statement = $pdo->prepare('select count(*) from ' . self::TABLE_NAME);
+		$statement = $pdo->prepare('select count(*) from ' . $this->getTableName());
 		$statement->execute();
 		$results = $statement->fetchAll();
 		return ($results[0][0] > 0);
@@ -565,19 +565,20 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 	 */
 	public function searchDevices(string $searchTerm) {
 		$pdo = $this->getPDO();
-		$statement = $pdo->prepare('select * from ' . self::TABLE_NAME . ' where userId like :searchTerm order by userId,registrationTime');
+		$statement = $pdo->prepare('select * from ' . $this->getTableName() . ' where userId like :searchTerm order by userId,registrationTime');
 		$statement->execute(array(
 			':searchTerm' => $searchTerm
 		));
 		$results = $statement->fetchAll();
 		$devices = array();
 		foreach ($results as $result) {
+			$name = !empty($result['name']) ? $result['name'] : '';
 			$devices[] = array(
 				'dn' => $result['userId'],
 				'credentialId' => $result['credentialId'],
 				'lastUseTime' => $result['lastUseTime'],
 				'registrationTime' => $result['registrationTime'],
-				'name' => $result['name']
+				'name' => $name
 			);
 		}
 		return $devices;
@@ -593,7 +594,7 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 	public function deleteDevice(string $dn, string $credentialId) {
 		logNewMessage(LOG_NOTICE, 'Delete webauthn device ' . $credentialId . ' of ' . $dn);
 		$pdo = $this->getPDO();
-		$statement = $pdo->prepare('delete from ' . self::TABLE_NAME . ' where userId = :userId and credentialId = :credentialId');
+		$statement = $pdo->prepare('delete from ' . $this->getTableName() . ' where userId = :userId and credentialId = :credentialId');
 		$statement->execute(array(
 			':userId' => $dn,
 			':credentialId' => $credentialId
@@ -611,7 +612,7 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 	 */
 	public function updateDeviceName(string $dn, string $credentialId, $name) {
 		$pdo = $this->getPDO();
-		$statement = $pdo->prepare('update ' . self::TABLE_NAME . ' set name = :name where userId = :userId and credentialId = :credentialId');
+		$statement = $pdo->prepare('update ' . $this->getTableName() . ' set name = :name where userId = :userId and credentialId = :credentialId');
 		$statement->execute(array(
 			':userId' => $dn,
 			':credentialId' => $credentialId,
@@ -625,32 +626,24 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 	 *
 	 * @return PDO PDO
 	 */
-	protected function getPDO() {
-		$pdo = new PDO($this->getPdoUrl(), null, null, array(
-			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-		));
+	protected abstract function getPDO(): PDO;
+
+	/**
+	 * Checks if the schema needs to be updated.
+	 */
+	public function checkSchema() :void {
+		try {
+			$pdo = $this->getPDO();
+		}
+		catch (PDOException $e) {
+			logNewMessage(LOG_ERR, 'Unable to connect to config database: ' . $e->getMessage());
+			return;
+		}
 		// initial schema
-		if (!$this->tableExists($pdo, self::TABLE_NAME)) {
+		if (!dbTableExists($pdo, $this->getTableName())) {
 			$this->createInitialSchema($pdo);
 		}
 		$this->addNameColumn($pdo);
-		return $pdo;
-	}
-
-	/**
-	 * Checks if the given table name exists.
-	 *
-	 * @param PDO $pdo PDO object
-	 * @param String $tableName table name to check
-	 * @return boolean table exists
-	 */
-	protected function tableExists(&$pdo, $tableName) {
-		try {
-			$result = $pdo->query("SELECT 1 FROM $tableName LIMIT 1");
-			return ($result !== false);
-		} catch (\PDOException $e) {
-			return false;
-		}
 	}
 
 	/**
@@ -658,9 +651,9 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 	 *
 	 * @param PDO $pdo PDO object
 	 */
-	protected function createInitialSchema($pdo) {
-		logNewMessage(LOG_DEBUG, 'Creating database table ' . self::TABLE_NAME);
-		$sql = 'create table ' . self::TABLE_NAME . '('
+	public function createInitialSchema(PDO $pdo) {
+		logNewMessage(LOG_DEBUG, 'Creating database table ' . $this->getTableName());
+		$sql = 'create table ' . $this->getTableName() . '('
 			. 'userId TEXT NOT NULL,'
 			. 'credentialId TEXT NOT NULL,'
 			. 'credentialSource TEXT NOT NULL,'
@@ -676,12 +669,12 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 	 *
 	 * @param PDO $pdo PDO
 	 */
-	private function addNameColumn(PDO $pdo) {
+	protected function addNameColumn(PDO $pdo) {
 		try {
-			$statement = $pdo->query("select * from pragma_table_info('lam_webauthn') where name = 'name';");
+			$statement = $pdo->query("select * from pragma_table_info('" . $this->getTableName() . "') where name = 'name';");
 			$results = $statement->fetchAll();
 			if (empty($results)) {
-				$sql = 'alter table lam_webauthn add column name VARCHAR(255);';
+				$sql = 'alter table ' . $this->getTableName() . ' add column name VARCHAR(255);';
 				$pdo->exec($sql);
 			}
 		} catch (\PDOException $e) {
@@ -696,7 +689,7 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 	 */
 	public function export() {
 		$pdo = $this->getPDO();
-		$statement = $pdo->prepare('select * from ' . self::TABLE_NAME);
+		$statement = $pdo->prepare('select * from ' . $this->getTableName());
 		$statement->execute();
 		$dbData = $statement->fetchAll();
 		$data = array();
@@ -720,13 +713,13 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 	 */
 	public function import($data) {
 		$pdo = $this->getPDO();
-		$statement = $pdo->prepare('delete from ' . self::TABLE_NAME);
+		$statement = $pdo->prepare('delete from ' . $this->getTableName());
 		$statement->execute();
 		if (empty($data)) {
 			return;
 		}
 		foreach ($data as $dbRow) {
-			$statement = $pdo->prepare('insert into ' . self::TABLE_NAME . ' (userId, credentialId, credentialSource, registrationTime, lastUseTime) VALUES (?, ?, ?, ?, ?)');
+			$statement = $pdo->prepare('insert into ' . $this->getTableName() . ' (userId, credentialId, credentialSource, registrationTime, lastUseTime, name) VALUES (?, ?, ?, ?, ?, ?)');
 			$statement->execute(array(
 				$dbRow['userId'],
 				$dbRow['credentialId'],
@@ -736,6 +729,114 @@ class PublicKeyCredentialSourceRepositorySQLite implements PublicKeyCredentialSo
 				$dbRow['name']
 			));
 		}
+	}
+
+}
+
+/**
+ *  Credential repository that uses SQLite for data access.
+ *
+ * @package LAM\LOGIN\WEBAUTHN
+ */
+class PublicKeyCredentialSourceRepositorySQLite extends PublicKeyCredentialSourceRepositoryBase {
+
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		$this->checkSchema();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getPDO(): PDO {
+		$pdo = new PDO($this->getPdoUrl(), null, null, array(
+			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+		));
+		return $pdo;
+	}
+
+	/**
+	 * Returns the database URL.
+	 *
+	 * @return string the PDO URL
+	 */
+	public function getPdoUrl(): string {
+		$fileName = dirname(__FILE__) . '/../config/__lam.webauthn.sqlite';
+		if (!file_exists($fileName)) {
+			$handle = fopen($fileName, 'w');
+			fclose($handle);
+			chmod($fileName, 0600);
+		}
+		return 'sqlite:' . $fileName;
+	}
+
+}
+
+/**
+ * Credential repository that uses a given PDO for data access.
+ *
+ * @package LAM\LOGIN\WEBAUTHN
+ */
+class PublicKeyCredentialSourceRepositoryMySql extends PublicKeyCredentialSourceRepositoryBase {
+
+	/** @var PDO */
+	private $pdo;
+
+	/**
+	 * Constructor
+	 *
+	 * @param PDO $pdo PDO
+	 */
+	public function __construct(PDO $pdo) {
+		$this->pdo = $pdo;
+		$this->checkSchema();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	protected function getPDO(): PDO {
+		return $this->pdo;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	protected function getTableName() : string {
+		return 'webauthn';
+	}
+
+	/**
+	 * Creates the initial schema.
+	 *
+	 * @param PDO $pdo PDO object
+	 */
+	public function createInitialSchema(PDO $pdo) {
+		logNewMessage(LOG_DEBUG, 'Creating database table ' . $this->getTableName());
+		$sql = 'create table ' . $this->getTableName() . '('
+			  // 350 because primary key length is max 3072 bytes and each character can have 4 bytes
+			. 'userId VARCHAR(350) NOT NULL,'
+			. 'credentialId VARCHAR(350) NOT NULL,'
+			. 'credentialSource TEXT NOT NULL,'
+			. 'registrationTime VARCHAR(11) NOT NULL,'
+			. 'lastUseTime VARCHAR(11) NOT NULL,'
+			. 'name VARCHAR(255),'
+			. 'PRIMARY KEY(userId,credentialId)'
+			. ');';
+		$pdo->exec($sql);
+		$sql = 'insert into ' . ConfigurationDatabase::TABLE_SCHEMA_VERSIONS . ' (name, version) VALUES ("webauthn", 1);';
+		$pdo->exec($sql);
+	}
+
+	/**
+	 * Adds the name column if not existing.
+	 *
+	 * @param PDO $pdo PDO
+	 */
+	protected function addNameColumn(PDO $pdo) {
+		// added via initial schema
 	}
 
 }

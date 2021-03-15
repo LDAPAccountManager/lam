@@ -3,7 +3,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2020  Roland Gruber
+ Copyright (C) 2020 - 2021  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -52,7 +52,6 @@ class LAMCfgMainTest extends TestCase {
 	 */
 	protected function tearDown(): void {
 		$this->conf = null;
-		//unlink($this->file);
 	}
 
 	/**

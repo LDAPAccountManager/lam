@@ -2,12 +2,20 @@
 namespace LAM\PDF;
 
 use \htmlStatusMessage;
+use LAM\PERSISTENCE\ConfigurationDatabase;
+use LAM\TYPES\TypeManager;
+use LAMCfgMain;
+use LAMConfig;
 use \LAMException;
 use \LAM\ImageUtils\ImageManipulationFactory;
+use ServerProfilePersistenceManager;
+use XMLReader;
+use XMLWriter;
+
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2011 - 2020  Roland Gruber
+                2011 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -43,305 +51,880 @@ const GLOBAL_PROFILE = '__GLOBAL__';
 include_once(__DIR__ . "/ldap.inc");
 
 /**
- * This function will return all available PDF structure definitions for the submitted
- * account type.
+ * Manages the persistence of PDF structures.
  *
- * @param string $typeId the account type
- * @param string $profile server profile name
- *
- * @return string[] All available PDF structure definitions for the submitted account
- * scope. Each entry is a string being the filename that may be passed to the
- * createModulePDF() function as second argument.
+ * @package LAM\PDF
  */
-function getPDFStructures($typeId, $profile) {
-	$return = array();
-	if (!preg_match('/[a-zA-Z]+/', $typeId)) {
-		return null;
+class PdfStructurePersistenceManager {
+
+	/**
+	 * @var PdfStructurePersistenceStrategy
+	 */
+	private $strategy;
+
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		$configDb = new ConfigurationDatabase(new LAMCfgMain());
+		if ($configDb->useRemoteDb()) {
+			// TODO
+			$this->strategy = new PdfStructurePersistenceStrategyFiles();
+		} else {
+			$this->strategy = new PdfStructurePersistenceStrategyFiles();
+		}
 	}
-	$path = dirname(__FILE__) . '/../config/pdf/' . $profile;
-	if(is_dir($path)) {
-		$dirHandle = opendir($path);
-		while($file = readdir($dirHandle)) {
-			$struct_file = explode('.',$file);
-			if(!is_dir($path.$file) && ($file != '.') && ($file != '..') && (sizeof($struct_file) == 3) && ($struct_file[1] == $typeId) && ($struct_file[2] == 'xml')) {
-				array_push($return, $struct_file[0]);
+
+	/**
+	 * Returns the names of existing PDF structure templates.
+	 *
+	 * @return array scope => names (e.g. array('user' => array('default')))
+	 * @throws LAMException error reading templates
+	 */
+	public function getPdfStructureTemplateNames() : array {
+		return $this->strategy->getPdfStructureTemplateNames();
+	}
+
+	/**
+	 * Deletes an PDF structure template.
+	 *
+	 * @param string $scope user/group/host
+	 * @param string $name PDF structure name
+	 * @throws LAMException error deleting template
+	 */
+	public function deletePdfStructureTemplate(string $scope, string $name) : void {
+		if (!$this->isValidPdfStructureName($name) || !TypeManager::isValidTypeId($scope) || ($name == 'default')) {
+			logNewMessage(LOG_NOTICE, "Invalid account profile name: $name:$scope");
+			throw new LAMException(_("Unable to delete profile!"));
+		}
+		$this->strategy->deletePdfStructureTemplate($scope, $name);
+	}
+
+	/**
+	 * Reads a PDF structure template.
+	 *
+	 * @param string $scope user/group/host
+	 * @param string $name structure name
+	 * @return PDFStructure PDF structure
+	 * @throws LAMException error deleting structure
+	 */
+	public function readPdfStructureTemplate(string $scope, string $name) : PDFStructure {
+		if (!TypeManager::isValidTypeId($scope) || !$this->isValidPDFStructureName($name)) {
+			throw new LAMException(_('Unable to read PDF structure.'));
+		}
+		return $this->strategy->readPdfStructureTemplate($scope, $name);
+	}
+
+	/**
+	 * Saves the PDF structure.
+	 *
+	 * @param string $scope user/group/host
+	 * @param string $name structure name
+	 * @param PDFStructure $structure structure
+	 * @throws LAMException error saving structure
+	 */
+	public function savePdfStructureTemplate(string $scope, string $name, PDFStructure $structure) : void {
+		if (!TypeManager::isValidTypeId($scope) || !$this->isValidPDFStructureName($name)) {
+			throw new LAMException(_('PDF structure name not valid'));
+		}
+		$this->strategy->savePdfStructureTemplate($scope, $name, $structure);
+	}
+
+	/**
+	 * Returns a list of template logo file names.
+	 *
+	 * @return array logo file names
+	 */
+	public function getPdfTemplateLogoNames() : array {
+		return $this->strategy->getPdfTemplateLogoNames();
+	}
+
+	/**
+	 * Returns the binary data for the given template logo.
+	 *
+	 * @param string $name file name
+	 * @return string binary
+	 * @throws LAMException error reading file
+	 */
+	public function getPdfTemplateLogoBinary(string $name) : string {
+		if (!$this->isValidLogoFileName($name)) {
+			throw new LAMException(_('Unable to read logo file.'));
+		}
+		return $this->strategy->getPdfTemplateLogoBinary($name);
+	}
+
+	/**
+	 * Deletes a logo in global templates.
+	 *
+	 * @param string $name logo name
+	 * @throws LAMException error during deletion
+	 */
+	public function deletePdfTemplateLogo(string $name) : void {
+		if (!$this->isValidLogoFileName($name)) {
+			throw new LAMException(_('Unable to delete logo file.'));
+		}
+		$this->strategy->deletePdfTemplateLogo($name);
+	}
+
+	/**
+	 * Saves the template logo.
+	 *
+	 * @param string $name file name
+	 * @param string $data binary data
+	 * @throws LAMException error during save
+	 */
+	public function savePdfTemplateLogo(string $name, string $data) : void {
+		if (!$this->isValidLogoFileName($name)) {
+			throw new LAMException(_('Unable to upload logo file.'));
+		}
+		$this->strategy->savePdfTemplateLogo($name, $data);
+	}
+
+	/**
+	 * Returns the list of available PDF logos.
+	 *
+	 * @param string $confName server profile name
+	 * @param bool $readDimensions reads the image dimensions
+	 * @return PdfLogo[] logos
+	 * @throws LAMException error reading logos
+	 */
+	public function getPdfLogos(string $confName, bool $readDimensions = false) : array {
+		if (!LAMConfig::isValidName($confName)) {
+			throw new LAMException(_('Unable to read logos.'));
+		}
+		$logoNames = $this->strategy->getPdfLogoNames($confName);
+		sort($logoNames);
+		$result = array();
+		if ($readDimensions) {
+			include_once __DIR__ . '/imageutils.inc';
+		}
+		foreach ($logoNames as $logoName) {
+			if ($readDimensions) {
+				$binary = $this->getPdfLogoBinary($confName, $logoName);
+				$imageManipulator = ImageManipulationFactory::getImageManipulator($binary);
+				$result[] = new PdfLogo($logoName, $imageManipulator->getHeight(), $imageManipulator->getWidth());
+				$imageManipulator = null;
+			}
+			else {
+				$result[] = new PdfLogo($logoName);
 			}
 		}
-		sort($return);
-	}
- 	return $return;
-}
-
-/**
- * Deletes XML file with PDF structure definitions.
- *
- * @param string $typeId account type
- * @param string $name Name of definition to delete
- * @param string $serverProfileName server profile name
- * @return boolean True if file was deleted or false if a problem occurred.
- */
-function deletePDFStructure($typeId, $name, $serverProfileName) {
-	if (!isValidPDFStructureName($name) || !preg_match('/[a-zA-Z]+/',$typeId)) {
-		return false;
-	}
-	$file = dirname(__FILE__) . '/../config/pdf/' . $serverProfileName . '/' . $name . '.' . $typeId . '.xml';
-	if(is_file($file) && is_writable($file)) {
-		return unlink($file);
-	}
-	else {
-		return false;
+		return $result;
 	}
 
-}
-
-/**
- * This function returns an array with all aviliable logo images.
- *
- * @param string $serverProfileName server profile name
- * @return array list of logo files (array('filename' => PATH, 'infos' => array(width, height)))
- */
-function getAvailableLogos($serverProfileName) {
-	$return = array();
-	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $serverProfileName . '/logos/';
-	$dirHandle = opendir($dirPath);
-	while($file = readdir($dirHandle)) {
-		if(!is_dir($file) && $file != '.' && $file != '..' && preg_match('/\\.(jpg|png)$/i',$file)) {
-			include_once dirname(__FILE__) . '/imageutils.inc';
-			$imageManipulator = ImageManipulationFactory::getImageManipulatorFromFile($dirPath . $file);
-			$infos = array($imageManipulator->getWidth(), $imageManipulator->getHeight());
-			$imageManipulator = null;
-			array_push($return, array('filename' => $file, 'infos' => $infos));
+	/**
+	 * Reads a PDF logo.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $name file name
+	 * @return string binary data
+	 * @throws LAMException error reading logo
+	 */
+	public function getPdfLogoBinary(string $confName, string $name) : string {
+		if (!LAMConfig::isValidName($confName) || !$this->isValidLogoFileName($name)) {
+			throw new LAMException(_('Unable to read logo file.'));
 		}
+		return $this->strategy->getPdfLogoBinary($confName, $name);
 	}
-	sort($return);
-	return $return;
-}
 
-/**
- * Copies a PDF structure from the given source to target.
- *
- * @param \LAM\TYPES\ConfiguredType $sourceType source type
- * @param string $sourceStructureName structure name
- * @param \LAM\TYPES\ConfiguredType $targetType target type
- * @throws LAMException error during copy
- */
-function copyStructure($sourceType, $sourceStructureName, $targetType) {
-	if (!isValidPDFStructureName($sourceStructureName)) {
-		throw new LAMException(_('Failed to copy'));
-	}
-	$sourceConfig = $sourceType->getTypeManager()->getConfig()->getName();
-	$sourceTypeId = $sourceType->getId();
-	$targetConfig = $targetType->getTypeManager()->getConfig()->getName();
-	$targetTypeId = $targetType->getId();
-	$basePath = dirname(__FILE__) . '/../config/pdf/';
-	$src = $basePath . $sourceConfig . '/' . $sourceStructureName . '.' . $sourceTypeId . '.xml';
-	$dst = $basePath . $targetConfig . '/' . $sourceStructureName . '.' . $targetTypeId . '.xml';
-	if (!@copy($src, $dst)) {
-		throw new LAMException(_('Failed to copy'), $sourceConfig . ': ' . $sourceStructureName);
-	}
-}
-
-/**
- * Copies a PDF structure from the given source to global templates.
- *
- * @param \LAM\TYPES\ConfiguredType $sourceType source type
- * @param string $sourceName structure name
- * @throws Exception
- */
-function copyStructureToTemplates($sourceType, $sourceName) {
-	if (!isValidPDFStructureName($sourceName)) {
-		throw new LAMException(_('Failed to copy'));
-	}
-	$sourceConfig = $sourceType->getTypeManager()->getConfig()->getName();
-	$sourceTypeId = $sourceType->getId();
-	$basePath = dirname(__FILE__) . '/../config/pdf/';
-	$templatePath = dirname(__FILE__) . '/../config/templates/pdf/';
-	$src = $basePath . $sourceConfig . '/' . $sourceName . '.' . $sourceTypeId . '.xml';
-	$dst = $templatePath . $sourceName . '.' . $sourceType->getScope() . '.xml';
-	if (!@copy($src, $dst)) {
-		throw new LAMException(_('Failed to copy'), $sourceConfig . ': ' . $sourceName);
-	}
-}
-
-/**
- * Uploads a PDF logo file for the current server profile.
- *
- * @param String $file full path of temporary file
- * @param String $name file name
- * @param string $serverProfileName server profile name
- * @return htmlStatusMessage status message to display
- */
-function uploadPDFLogo($file, $name, $serverProfileName) {
-	if (!preg_match('/[a-zA-Z0-9_-]+\\.(png)|(jpg)/i', $name)) {
-		return new htmlStatusMessage('ERROR', _('Unable to upload logo file.'), _('The file name must end with ".png" or ".jpg".'));
-	}
-	if ($serverProfileName === GLOBAL_PROFILE) {
-		$serverProfileName = '../templates/pdf';
-	}
-	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $serverProfileName . '/logos/';
-	$success = copy($file, $dirPath . '/' . $name);
-	if ($success) {
-		return new htmlStatusMessage('INFO', _('Uploaded logo file.'), $name);
-	}
-	else {
-		return new htmlStatusMessage('ERROR', _('Unable to upload logo file.'), $name);
-	}
-}
-
-/**
- * Deletes a PDF logo file.
- *
- * @param String $name file name
- * @param string $serverProfileName server profile name
- * @return StatusMessage status message to display
- */
-function deletePDFLogo($name, $serverProfileName) {
-	// check if valid file
-	$found = false;
-	$logos = getAvailableLogos($serverProfileName);
-	foreach ($logos as $logo) {
-		if ($logo['filename'] === $name) {
-			$found = true;
-			break;
+	/**
+	 * Deletes a PDF logo.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $name logo name
+	 * @throws LAMException error deleting logo
+	 */
+	public function deletePdfLogo(string $confName, string $name) : void {
+		if (!LAMConfig::isValidName($confName) || !$this->isValidLogoFileName($name)) {
+			throw new LAMException(_('Unable to delete logo file.'));
 		}
-	}
-	if (!$found) {
-		return new htmlStatusMessage('ERROR', _('File does not exist.'), htmlspecialchars($name));
-	}
-	// check if still in use
-	$typeManager = new \LAM\TYPES\TypeManager();
-	$activeTypes = $typeManager->getConfiguredTypes();
-	$reader = new PDFStructureReader($serverProfileName);
-	foreach ($activeTypes as $type) {
-		$structures = getPDFStructures($type->getId(), $serverProfileName);
-		foreach ($structures as $structure) {
-			try {
-				$data = $reader->read($type->getId(), $structure);
+		// check if existing
+		$found = false;
+		$logos = $this->getPdfLogos($confName);
+		foreach ($logos as $logo) {
+			if ($logo->getName() === $name) {
+				$found = true;
+				break;
+			}
+		}
+		if (!$found) {
+			throw new LAMException(_('File does not exist.'), htmlspecialchars($name));
+		}
+		// check if still in use
+		$typeManager = new TypeManager();
+		$activeTypes = $typeManager->getConfiguredTypes();
+		foreach ($activeTypes as $type) {
+			$structures = $this->getPDFStructures($confName, $type->getId());
+			foreach ($structures as $structure) {
+				$data = $this->readPdfStructure($confName, $type->getId(), $structure);
 				if ($data->getLogo() == $name) {
-					return new htmlStatusMessage('ERROR', _('Unable to delete logo file.'),
+					throw new LAMException(_('Unable to delete logo file.'),
 						sprintf(_('Logo is still in use by PDF structure "%s" in account type "%s".'), $structure, $type->getAlias()));
 				}
 			}
-			catch (LAMException $e) {
-				logNewMessage(LOG_ERR, 'Error reading PDF file ' . $e->getMessage());
+		}
+		$this->strategy->deletePdfLogo($confName, $name);
+	}
+
+	/**
+	 * Saves a PDF logo.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $name logo name
+	 * @param string $data binary
+	 * @throws LAMException error saving logo
+	 */
+	public function savePdfLogo(string $confName, string $name, string $data) : void {
+		if (!LAMConfig::isValidName($confName) || !$this->isValidLogoFileName($name)) {
+			throw new LAMException(_('Unable to upload logo file.'));
+		}
+		if (!preg_match('/[a-zA-Z0-9_-]+\\.(png)|(jpg)/i', $name)) {
+			throw new LAMException(_('Unable to upload logo file.'), _('The file name must end with ".png" or ".jpg".'));
+		}
+		$this->strategy->savePdfLogo($confName, $name, $data);
+	}
+
+	/**
+	 * Returns all available PDF structure definitions for the submitted account type.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $typeId the account type
+	 *
+	 * @return string[] structure names
+	 * @throws LAMException error reading structures
+	 */
+	public function getPDFStructures(string $confName, string $typeId) : array {
+		if (!TypeManager::isValidTypeId($typeId)) {
+			throw new LAMException(_('Unable to read PDF structures.'));
+		}
+		$return = $this->strategy->getPDFStructures($confName, $typeId);
+		sort($return);
+		return $return;
+	}
+
+	/**
+	 * Deletes a PDF structure.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $typeId user/group/host
+	 * @param string $name structure name
+	 * @throws LAMException error deleting structure
+	 */
+	public function deletePdfStructure(string $confName, string $typeId, string $name) : void {
+		if (!LAMConfig::isValidName($confName) || !TypeManager::isValidTypeId($typeId) || !$this->isValidPDFStructureName($name)) {
+			throw new LAMException(_('Unable to delete PDF structure!'));
+		}
+		$this->strategy->deletePdfStructure($confName, $typeId, $name);
+	}
+
+	/**
+	 * Reads a PDF structure.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $typeId user/group/host
+	 * @param string $name structure name
+	 * @return PDFStructure PDF structure
+	 * @throws LAMException error deleting structure
+	 */
+	public function readPdfStructure(string $confName, string $typeId, string $name) : PDFStructure {
+		if (!LAMConfig::isValidName($confName) || !TypeManager::isValidTypeId($typeId) || !$this->isValidPDFStructureName($name)) {
+			throw new LAMException(_('Unable to read PDF structure.'));
+		}
+		return $this->strategy->readPdfStructure($confName, $typeId, $name);
+	}
+
+	/**
+	 * Saves the PDF structure.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $typeId user/group/host
+	 * @param string $name structure name
+	 * @param PDFStructure $structure structure
+	 * @throws LAMException error saving structure
+	 */
+	public function savePdfStructure(string $confName, string $typeId, string $name, PDFStructure $structure) : void {
+		if (!LAMConfig::isValidName($confName) || !TypeManager::isValidTypeId($typeId) || !$this->isValidPDFStructureName($name)) {
+			throw new LAMException(_('PDF structure name not valid'));
+		}
+		$this->strategy->savePdfStructure($confName, $typeId, $name, $structure);
+	}
+
+	/**
+	 * Returns if the give structure name is valid.
+	 *
+	 * @param string $name structure name
+	 * @return boolean is valid
+	 */
+	private function isValidPDFStructureName(string $name) : bool {
+		return preg_match('/^[a-z0-9\-\_]+$/i', $name) === 1;
+	}
+
+	/**
+	 * Returns if the given logo file name is valid.
+	 *
+	 * @param string $fileName file name
+	 * @return bool valid
+	 */
+	private function isValidLogoFileName(string $fileName) : bool {
+		return preg_match('/[a-zA-Z0-9_-]+\\.(png)|(jpg)/i', $fileName);
+	}
+
+	/**
+	 * Installs template structures to the given server profile.
+	 *
+	 * @param string $confName server profile name
+	 * @throws LAMException error during installation
+	 */
+	public function installPDFTemplates(string $confName) {
+		if (!LAMConfig::isValidName($confName)) {
+			throw new LAMException(_("Profile name is invalid!"));
+		}
+		$serverProfilesPersistenceManager = new ServerProfilePersistenceManager();
+		$config = $serverProfilesPersistenceManager->loadProfile($confName);
+		$typeManager = new TypeManager($config);
+		$allTemplates = $this->getPdfStructureTemplateNames();
+		foreach ($typeManager->getConfiguredTypes() as $type) {
+			if (empty($allTemplates[$type->getScope()])) {
+				continue;
+			}
+			$existingStructures = $this->getPDFStructures($confName, $type->getId());
+			foreach ($allTemplates[$type->getScope()] as $templateName) {
+				if (!in_array($templateName, $existingStructures)) {
+					$structure = $this->readPdfStructureTemplate($type->getScope(), $templateName);
+					$this->savePdfStructure($confName, $type->getId(), $templateName, $structure);
+				}
+			}
+		}
+		$logos = $this->getPdfTemplateLogoNames();
+		$existingLogos = $this->getPdfLogos($confName);
+		foreach ($logos as $logo) {
+			if (!in_array($logo, $existingLogos)) {
+				$binary = $this->getPdfTemplateLogoBinary($logo);
+				$this->savePdfLogo($confName, $logo, $binary);
 			}
 		}
 	}
-	// delete file
-	$dirPath = dirname(__FILE__) . '/../config/pdf/' . $serverProfileName . '/logos/';
-	$success = @unlink($dirPath . '/' . $name);
-	if ($success) {
-		return new htmlStatusMessage('INFO', _('Logo file deleted.'), $name);
-	}
-	return new htmlStatusMessage('ERROR', _('Unable to delete logo file.'), $name);
+
 }
 
 /**
- * Returns if the give structure name is valid.
+ * Logo for PDF structures.
  *
- * @param string $name structure name
- * @return boolean is valid
+ * @package LAM\PDF
  */
-function isValidPDFStructureName($name) {
-	return preg_match('/^[a-z0-9\-\_]+$/i',$name) === 1;
+class PdfLogo {
+
+	private $name;
+
+	private $height;
+
+	private $width;
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $name file name
+	 * @param int $height height
+	 * @param int $width width
+	 */
+	public function __construct(string $name, int $height = 0, int $width = 0) {
+		$this->name = $name;
+		$this->height = $height;
+		$this->width = $width;
+	}
+
+	/**
+	 * Returns the file name.
+	 *
+	 * @return string file name
+	 */
+	public function getName(): string {
+		return $this->name;
+	}
+
+	/**
+	 * Returns the height.
+	 *
+	 * @return int height
+	 */
+	public function getHeight(): int {
+		return $this->height;
+	}
+
+	/**
+	 * Returns the width.
+	 *
+	 * @return int width
+	 */
+	public function getWidth(): int {
+		return $this->width;
+	}
+
 }
 
 /**
- * Installs template structures to the current server profile.
- */
-function installPDFTemplates() {
-	$templatePath = __DIR__ . '/../config/templates/pdf';
-	$allTemplates = getPdfTemplateNames();
-	$basePath = dirname(__FILE__) . '/../config/pdf/' . $_SESSION['config']->getName();
-	if (!file_exists($basePath)) {
-		mkdir($basePath, 0700, true);
-	}
-	$typeManager = new \LAM\TYPES\TypeManager();
-	foreach ($typeManager->getConfiguredTypes() as $type) {
-		if (empty($allTemplates[$type->getScope()])) {
-			continue;
-		}
-		foreach ($allTemplates[$type->getScope()] as $templateName) {
-			$path = $basePath . '/' . $templateName . '.' . $type->getId() . '.xml';
-			if (!is_file($path)) {
-				$template = $templatePath . '/' . $templateName . '.' . $type->getScope() . '.xml';
-				logNewMessage(LOG_DEBUG, 'Copy template ' . $template . ' to ' . $path);
-				@copy($template, $path);
-			}
-		}
-	}
-	if (!file_exists($basePath . '/logos')) {
-		mkdir($basePath . '/logos');
-	}
-	$logos = getPdfTemplateLogoNames();
-	foreach ($logos as $logo) {
-		$path = $basePath . '/logos/' . $logo;
-		$template = $templatePath . '/logos/' . $logo;
-		if (!is_file($path)) {
-			logNewMessage(LOG_DEBUG, 'Copy template ' . $template . ' to ' . $path);
-			@copy($template, $path);
-		}
-	}
-}
-
-/**
- * Returns all PDF template names.
+ * Interface for PDF structure persistence.
  *
- * @return array names (array('user' => array('default')))
+ * @package LAM\PDF
  */
-function getPdfTemplateNames() {
-	$templatePath = __DIR__ . '/../config/templates/pdf';
-	$templateDir = @dir($templatePath);
-	$allTemplates = array();
-	if ($templateDir) {
-		$entry = $templateDir->read();
-		while ($entry){
-			$parts = explode('.', $entry);
-			if ((strlen($entry) > 3) && (sizeof($parts) == 3)) {
-				$name = $parts[0];
-				$scope = $parts[1];
-				$allTemplates[$scope][] = $name;
-			}
+interface PdfStructurePersistenceStrategy {
+
+	/**
+	 * Returns the names of existing PDF structure templates.
+	 *
+	 * @return array scope => names (e.g. array('user' => array('default')))
+	 * @throws LAMException error reading templates
+	 */
+	public function getPdfStructureTemplateNames() : array;
+
+	/**
+	 * Deletes a PDF structure template,
+	 *
+	 * @param string $scope user/group/host
+	 * @param string $name template name
+	 * @throws LAMException error deleting template
+	 */
+	public function deletePdfStructureTemplate(string $scope, string $name) : void;
+
+	/**
+	 * Reads a PDF structure template.
+	 *
+	 * @param string $scope user/group/host
+	 * @param string $name structure name
+	 * @return PDFStructure PDF structure
+	 * @throws LAMException error deleting structure
+	 */
+	public function readPdfStructureTemplate(string $scope, string $name) : PDFStructure;
+
+	/**
+	 * Saves the PDF structure.
+	 *
+	 * @param string $scope user/group/host
+	 * @param string $name structure name
+	 * @param PDFStructure $structure structure
+	 * @throws LAMException error saving structure
+	 */
+	public function savePdfStructureTemplate(string $scope, string $name, PDFStructure $structure) : void;
+
+	/**
+	 * Returns a list of template logo file names.
+	 *
+	 * @return array logo file names
+	 */
+	public function getPdfTemplateLogoNames() : array;
+
+	/**
+	 * Returns the binary data for the given template logo.
+	 *
+	 * @param string $name file name
+	 * @return string binary
+	 * @throws LAMException error reading file
+	 */
+	public function getPdfTemplateLogoBinary(string $name) : string;
+
+	/**
+	 * Deletes a logo in global templates.
+	 *
+	 * @param string $name logo name
+	 * @throws LAMException error during deletion
+	 */
+	public function deletePdfTemplateLogo(string $name) : void;
+
+	/**
+	 * Saves the template logo.
+	 *
+	 * @param string $name file name
+	 * @param string $data binary data
+	 * @throws LAMException error during save
+	 */
+	public function savePdfTemplateLogo(string $name, string $data) : void;
+
+	/**
+	 * Returns the list of available PDF logos.
+	 *
+	 * @param string $confName server profile name
+	 * @return string[] logos
+	 * @throws LAMException error reading logos
+	 */
+	public function getPdfLogoNames(string $confName) : array;
+
+	/**
+	 * Reads a PDF logo.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $name file name
+	 * @return string binary data
+	 * @throws LAMException error reading logo
+	 */
+	public function getPdfLogoBinary(string $confName, string $name) : string;
+
+	/**
+	 * Deletes a PDF logo.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $name logo name
+	 * @throws LAMException error deleting logo
+	 */
+	public function deletePdfLogo(string $confName, string $name) : void;
+
+	/**
+	 * Saves a PDF logo.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $name logo name
+	 * @param string $data binary
+	 * @throws LAMException error saving logo
+	 */
+	public function savePdfLogo(string $confName, string $name, string $data) : void;
+
+	/**
+	 * Returns all available PDF structure definitions for the submitted account type.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $typeId the account type
+	 *
+	 * @return string[] structure names
+	 * @throws LAMException error reading structures
+	 */
+	public function getPDFStructures(string $confName, string $typeId) : array;
+
+	/**
+	 * Deletes a PDF structure.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $typeId user/group/host
+	 * @param string $name structure name
+	 * @throws LAMException error deleting structure
+	 */
+	public function deletePdfStructure(string $confName, string $typeId, string $name) : void;
+
+	/**
+	 * Reads a PDF structure.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $typeId user/group/host
+	 * @param string $name structure name
+	 * @return PDFStructure PDF structure
+	 * @throws LAMException error deleting structure
+	 */
+	public function readPdfStructure(string $confName, string $typeId, string $name) : PDFStructure;
+
+	/**
+	 * Saves the PDF structure.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $typeId user/group/host
+	 * @param string $name structure name
+	 * @param PDFStructure $structure structure
+	 * @throws LAMException error saving structure
+	 */
+	public function savePdfStructure(string $confName, string $typeId, string $name, PDFStructure $structure) : void;
+
+}
+
+/**
+ * Manages PDF structures on file system.
+ *
+ * @package LAM\PDF
+ */
+class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStrategy {
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPdfStructureTemplateNames(): array {
+		$templatePath = __DIR__ . '/../config/templates/pdf';
+		$templateDir = @dir($templatePath);
+		$allTemplates = array();
+		if ($templateDir) {
 			$entry = $templateDir->read();
-		}
-	}
-	return $allTemplates;
-}
-
-/**
- * Returns all PDF template logo names.
- *
- * @return array names (array('user' => array('default.png')))
- */
-function getPdfTemplateLogoNames() {
-	$templatePath = __DIR__ . '/../config/templates/pdf/logos';
-	$templateDir = @dir($templatePath);
-	$logos = array();
-	if ($templateDir) {
-		$entry = $templateDir->read();
-		while ($entry){
-			if ((strpos($entry, '.') !== 0) && is_file($templatePath . '/' . $entry)) {
-				$logos[] = $entry;
+			while ($entry){
+				$parts = explode('.', $entry);
+				if ((strlen($entry) > 3) && (sizeof($parts) == 3)) {
+					$name = $parts[0];
+					$scope = $parts[1];
+					$allTemplates[$scope][] = $name;
+				}
+				$entry = $templateDir->read();
 			}
-			$entry = $templateDir->read();
+		}
+		return $allTemplates;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function deletePdfStructureTemplate(string $scope, string $name): void {
+		$fileName = $this-> getPdfStructureTemplateFileName($scope, $name);
+		$deleted = @unlink($fileName);
+		if (!$deleted) {
+			throw new LAMException(_("Unable to delete PDF structure!"));
 		}
 	}
-	return $logos;
-}
 
-/**
- * Returns the binary data of the PDF template logo.
- *
- * @param string $name file name (without path)
- * @return string binary
- */
-function getPdfTemplateLogoBinary($name) {
-	$templatePath = __DIR__ . '/../config/templates/pdf/logos';
-	$fileName = $templatePath . '/' . $name;
-	$handle = fopen($fileName, 'r');
-	$logoBinary = fread($handle, 100000000);
-	fclose($handle);
-	return $logoBinary;
+	/**
+	 * @inheritDoc
+	 */
+	public function readPdfStructureTemplate(string $scope, string $name): PDFStructure {
+		$fileName = $this->getPdfStructureTemplateFileName($scope, $name);
+		if (!is_file($fileName) || !is_readable($fileName)) {
+			throw new LAMException(_('Unable to read PDF structure.'));
+		}
+		$handle = fopen($fileName, 'r');
+		$xmlData = fread($handle, 100000000);
+		fclose($handle);
+		$reader = new PDFStructureReader();
+		return $reader->read($xmlData);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function savePdfStructureTemplate(string $scope, string $name, PDFStructure $structure): void {
+		$fileName = $this->getPdfStructureTemplateFileName($scope, $name);
+		$writer = new PDFStructureWriter();
+		$xml = $writer->getXML($structure);
+		$file = @fopen($fileName, "w");
+		if (!$file) {
+			logNewMessage(LOG_ERR, 'Unable to write ' . $fileName);
+			throw new LAMException(_('Unable to save PDF structure.'));
+		}
+		fputs($file, $xml);
+		fclose($file);
+	}
+
+	/**
+	 * Returns the file name for a PDF structure.
+	 *
+	 * @param string $scope user/group/host
+	 * @param string $name structure name
+	 * @return string file name
+	 */
+	private function getPdfStructureTemplateFileName(string $scope, string $name) : string {
+		return __DIR__ . '/../config/templates/pdf/' . $name . '.' . $scope . '.xml';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPdfTemplateLogoNames(): array {
+		$templatePath = __DIR__ . '/../config/templates/pdf/logos';
+		$templateDir = @dir($templatePath);
+		$logos = array();
+		if ($templateDir) {
+			$entry = $templateDir->read();
+			while ($entry){
+				if ((strpos($entry, '.') !== 0) && is_file($templatePath . '/' . $entry)) {
+					$logos[] = $entry;
+				}
+				$entry = $templateDir->read();
+			}
+		}
+		return $logos;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPdfTemplateLogoBinary(string $name): string {
+		$fileName = $this->getPdfTemplateLogoFileName($name);
+		$handle = fopen($fileName, 'r');
+		$logoBinary = fread($handle, 100000000);
+		fclose($handle);
+		return $logoBinary;
+	}
+
+	/**
+	 * Returns the file name of a given logo.
+	 *
+	 * @param string $name logo name
+	 * @return string file name
+	 */
+	private function getPdfTemplateLogoFileName(string $name) : string {
+		return __DIR__ . '/../config/templates/pdf/logos/' . $name;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function deletePdfTemplateLogo(string $name): void {
+		$fileName = $this->getPdfTemplateLogoFileName($name);
+		$deleted = @unlink($fileName);
+		if (!$deleted) {
+			throw new LAMException(_('Unable to delete logo file.'));
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function savePdfTemplateLogo(string $name, string $data): void {
+		$fileName = $this->getPdfTemplateLogoFileName($name);
+		$file = @fopen($fileName, "w");
+		if (!$file) {
+			logNewMessage(LOG_ERR, 'Unable to write ' . $fileName);
+			throw new LAMException(_('Unable to upload logo file.'));
+		}
+		fputs($file, $data);
+		fclose($file);
+	}
+
+	/**
+	 * Returns the file name of a given logo.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $name logo name
+	 * @return string file name
+	 */
+	private function getPdfLogoFileName(string $confName, string $name) : string {
+		return __DIR__ . '/../config/pdf/' . $confName . '/logos/' . $name;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPdfLogoNames(string $confName): array {
+		$return = array();
+		$dirPath = __DIR__ . '/../config/pdf/' . $confName . '/logos/';
+		if (!is_dir($dirPath)) {
+			mkdir($dirPath, 0700, true);
+		}
+		$dirHandle = opendir($dirPath);
+		if ($dirHandle === false) {
+			throw new LAMException(_('Unable to read logos.'));
+		}
+		while ($file = readdir($dirHandle)) {
+			if (!is_dir($file) && $file != '.' && $file != '..' && preg_match('/\\.(jpg|png)$/i', $file)) {
+				$return[] = $file;
+			}
+		}
+		return $return;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPdfLogoBinary(string $confName, string $name): string {
+		$fileName = $this->getPdfLogoFileName($confName, $name);
+		$handle = fopen($fileName, 'r');
+		$logoBinary = fread($handle, 100000000);
+		fclose($handle);
+		return $logoBinary;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function deletePdfLogo(string $confName, string $name): void {
+		// delete file
+		$success = @unlink($this->getPdfLogoFileName($confName, $name));
+		if (!$success) {
+			throw new LAMException(_('Unable to delete logo file.'), $name);
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function savePdfLogo(string $confName, string $name, string $data): void {
+		$fileName = $this->getPdfLogoFileName($confName, $name);
+		$basePath = dirname($fileName);
+		if (!file_exists($basePath)) {
+			mkdir($basePath, 0700, true);
+		}
+		$file = @fopen($fileName, "w");
+		if (!$file) {
+			logNewMessage(LOG_ERR, 'Unable to write ' . $fileName);
+			throw new LAMException(_('Unable to upload logo file.'));
+		}
+		fputs($file, $data);
+		fclose($file);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPDFStructures(string $confName, string $typeId): array {
+		$return = array();
+		$path = __DIR__ . '/../config/pdf/' . $confName;
+		if (is_dir($path)) {
+			$dirHandle = opendir($path);
+			while($file = readdir($dirHandle)) {
+				$struct_file = explode('.', $file);
+				if(!is_dir($path . $file)
+					&& ($file != '.')
+					&& ($file != '..')
+					&& (sizeof($struct_file) === 3)
+					&& ($struct_file[1] === $typeId)
+					&& ($struct_file[2] === 'xml')) {
+					array_push($return, $struct_file[0]);
+				}
+			}
+		}
+		return $return;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function deletePdfStructure(string $confName, string $typeId, string $name): void {
+		$fileName = $this->getPdfStructureFileName($confName, $typeId, $name);
+		if (!is_file($fileName) || !is_writable($fileName)) {
+			throw new LAMException(_('Unable to delete PDF structure!'));
+		}
+		$deleteOk = @unlink($fileName);
+		if (!$deleteOk) {
+			throw new LAMException(_('Unable to delete PDF structure!'));
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function readPdfStructure(string $confName, string $typeId, string $name): PDFStructure {
+		$fileName = $this->getPdfStructureFileName($confName, $typeId, $name);
+		if (!is_file($fileName) || !is_readable($fileName)) {
+			throw new LAMException(_('Unable to read PDF structure.'));
+		}
+		$handle = fopen($fileName, 'r');
+		$xmlData = fread($handle, 100000000);
+		fclose($handle);
+		$reader = new PDFStructureReader();
+		return $reader->read($xmlData);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function savePdfStructure(string $confName, string $typeId, string $name, PDFStructure $structure): void {
+		$fileName = $this->getPdfStructureFileName($confName, $typeId, $name);
+		$basePath = dirname($fileName);
+		if (!file_exists($basePath)) {
+			mkdir($basePath, 0700, true);
+		}
+		$writer = new PDFStructureWriter();
+		$xml = $writer->getXML($structure);
+		$file = @fopen($fileName, "w");
+		if (!$file) {
+			logNewMessage(LOG_ERR, 'Unable to write ' . $fileName);
+			throw new LAMException(_('Unable to save PDF structure.'));
+		}
+		fputs($file, $xml);
+		fclose($file);
+	}
+
+	/**
+	 * Returns the file name of the structure.
+	 *
+	 * @param string $confName server profile name
+	 * @param string $typeId user/group/host
+	 * @param string $name structure name
+	 * @return string file name
+	 */
+	private function getPdfStructureFileName(string $confName, string $typeId, string $name) : string {
+		return dirname(__FILE__) . '/../config/pdf/' . $confName . '/' . $name . '.' . $typeId . '.xml';
+	}
+
 }
 
 /**
@@ -351,72 +934,30 @@ function getPdfTemplateLogoBinary($name) {
  */
 class PDFStructureReader {
 
-	private $serverProfileName;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param $serverProfileName server profile name
-	 */
-	public function __construct($serverProfileName) {
-		if ($serverProfileName === GLOBAL_PROFILE) {
-			$this->serverProfileName = '../templates/pdf';
-		}
-		else {
-			$this->serverProfileName = $serverProfileName;
-		}
-	}
-
-	/**
-	 * Reads a PDF structure.
-	 *
-	 * @param string $typeId type id
-	 * @param string $name structure name
-	 * @return PDFStructure structure
-	 */
-	public function read($typeId, $name) {
-		if (!isValidPDFStructureName($name) || !preg_match('/[a-zA-Z]+/', $typeId)) {
-			return null;
-		}
-		$file = $this->getFileName($typeId, $name);
-		return $this->readPDFFile($file);
-	}
-
-	/**
-	 * Returns the file name for the given structure.
-	 *
-	 * @param string $typeId type id
-	 * @param string $name structure name
-	 * @return string file name
-	 */
-	protected function getFileName($typeId, $name) {
-		return dirname(__FILE__) . '/../config/pdf/' . $this->serverProfileName . '/' . $name . '.' . $typeId . '.xml';
-	}
-
 	/**
 	 * Reads a PDF structure file.
 	 *
-	 * @param string $file file name
+	 * @param string $data XML data
 	 * @return PDFStructure structure
+	 * @throws LAMException error reading structure
 	 */
-	private function readPDFFile($file) {
-		logNewMessage(LOG_DEBUG, $file);
-		$xml = new \XMLReader();
-		$xml->open($file);
+	public function read(string $data) : PDFStructure {
+		$xml = new XMLReader();
+		$xml->XML($data);
 		$structure = new PDFStructure();
 		// open <pdf>
 		@$xml->read();
 		if (!$xml->name == 'pdf') {
 			logNewMessage(LOG_ERR, 'Unknown tag name: ' . $xml->name);
-			throw new \LAMException(_('Unable to read PDF structure.'));
+			throw new LAMException(_('Unable to read PDF structure.'));
 		}
 		$structure->setLogo($xml->getAttribute('filename'));
 		$structure->setTitle($xml->getAttribute('headline'));
 		$structure->setFoldingMarks($xml->getAttribute('foldingmarks'));
 		$sections = array();
 		while ($xml->read()) {
-			if (($xml->nodeType === \XMLReader::SIGNIFICANT_WHITESPACE)
-					|| (($xml->name === 'pdf') && ($xml->nodeType == \XMLReader::END_ELEMENT))) {
+			if (($xml->nodeType === XMLReader::SIGNIFICANT_WHITESPACE)
+					|| (($xml->name === 'pdf') && ($xml->nodeType == XMLReader::END_ELEMENT))) {
 				continue;
 			}
 			elseif ($xml->name === 'text') {
@@ -425,15 +966,15 @@ class PDFStructureReader {
 				$xml->read();
 				if (!$xml->name === 'text') {
 					logNewMessage(LOG_ERR, 'Unexpected tag name: ' . $xml->name);
-					throw new \LAMException(_('Unable to read PDF structure.'));
+					throw new LAMException(_('Unable to read PDF structure.'));
 				}
 			}
 			elseif ($xml->name === 'section') {
 				$sections[] = $this->readSection($xml);
 			}
 			else {
-				logNewMessage(LOG_ERR, 'Unexpected tag name: ' . $xml->name . ' in ' . $file);
-				throw new \LAMException(_('Unable to read PDF structure.'));
+				logNewMessage(LOG_ERR, 'Unexpected tag name: ' . $xml->name);
+				throw new LAMException(_('Unable to read PDF structure.'));
 			}
 		}
 		$xml->close();
@@ -444,9 +985,11 @@ class PDFStructureReader {
 	/**
 	 * Reads a single section from XML.
 	 *
-	 * @param \XMLReader $xml reader
+	 * @param XMLReader $xml reader
+	 * @return PDFEntrySection section
+	 * @throws LAMException unable to parse section
 	 */
-	private function readSection(&$xml) {
+	private function readSection(XMLReader $xml) : PDFEntrySection {
 		$section = new PDFEntrySection($xml->getAttribute('name'));
 		$entries = array();
 		while ($xml->read()) {
@@ -462,7 +1005,7 @@ class PDFStructureReader {
 			}
 			elseif (!$xml->name === 'entry') {
 				logNewMessage(LOG_ERR, 'Unexpected tag name: ' . $xml->name);
-				throw new \LAMException(_('Unable to read PDF structure.'));
+				throw new LAMException(_('Unable to read PDF structure.'));
 			}
 		}
 		$section->setEntries($entries);
@@ -478,64 +1021,14 @@ class PDFStructureReader {
  */
 class PDFStructureWriter {
 
-	private $serverProfileName;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param string $serverProfileName server profile name
-	 */
-	public function __construct($serverProfileName) {
-		if ($serverProfileName === GLOBAL_PROFILE) {
-			$this->serverProfileName = '../templates/pdf';
-		}
-		else {
-			$this->serverProfileName = $serverProfileName;
-		}
-	}
-
-	/**
-	 * Writes the PDF structure to disk.
-	 *
-	 * @param string $typeId type ID
-	 * @param string $name structure name
-	 * @param PDFStructure $structure structure
-	 * @throws LAMException error during write
-	 */
-	public function write($typeId, $name, $structure) {
-		$fileName = $this->getFileName($typeId, $name);
-		$xml = $this->getXML($structure);
-		$this->writeXML($xml, $fileName);
-	}
-
-	/**
-	 * Writes the PDF structure to disk.
-	 *
-	 * @param string $typeId type ID
-	 * @param string $name structure name
-	 * @return string file name
-	 * @throws LAMException file not valid or not writable
-	 */
-	protected function getFileName($typeId, $name) {
-		if (!isValidPDFStructureName($name) || !preg_match('/[a-zA-Z]+/', $typeId)) {
-			throw new \LAMException(_('PDF structure name not valid'),
-					_('The name for that PDF-structure you submitted is not valid. A valid name must consist of the following characters: \'a-z\',\'A-Z\',\'0-9\',\'_\',\'-\'.'));
-		}
-		$baseDir = __DIR__ . '/../config/pdf/' . $this->serverProfileName;
-		if(!is_writable($baseDir)) {
-			throw new \LAMException(sprintf(_('Could not save PDF structure, access denied to %s.'), $baseDir));
-		}
-		return $baseDir . '/' . $name . '.' . $typeId . '.xml';
-	}
-
 	/**
 	 * Returns the generated XML.
 	 *
 	 * @param PDFStructure $structure structure
 	 * @return string XML
 	 */
-	public function getXML($structure) {
-		$writer = new \XMLWriter();
+	public function getXML(PDFStructure $structure) : string {
+		$writer = new XMLWriter();
 		$writer->openMemory();
 		$writer->setIndent(true);
 		$writer->setIndentString("\t");
@@ -567,22 +1060,6 @@ class PDFStructureWriter {
 		}
 		$writer->endElement();
 		return $writer->outputMemory();
-	}
-
-	/**
-	 * Writes the XML to the given file.
-	 *
-	 * @param string $xml XML
-	 * @param string $file file name
-	 * @throws LAMException error during write
-	 */
-	protected function writeXML($xml, $file) {
-		$handle = @fopen($file,'w');
-		if (!$handle) {
-			throw new \LAMException(_('Could not save PDF structure, access denied.'));
-		}
-		fwrite($handle, $xml);
-		fclose($handle);
 	}
 
 }
@@ -919,5 +1396,3 @@ function getPdfFonts() {
 		_('Korean') => 'cid0kr',
 	);
 }
-
-?>

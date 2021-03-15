@@ -2,9 +2,12 @@ March 2021 7.5
   - PHP 7.3 required
   - PHP 8.0 compatibility (except tree view)
   - Support copying LDAP entries from account list
+  - Account/PDF profiles: management of global templates and logos
+  - Group of names: allow filter by member/owner (#151)
+  - General information: link to groups (#152)
   - LAM Pro:
    -> Self registration: support binary attributes (e.g. for jpegPhoto)
-   -> Self registration: support custom mail attributes and from constant value (149)
+   -> Self registration: support custom mail attributes and mail from constant value (149)
    -> MIT Kerberos: check Kerberos password policy on password change, better error handling
    -> Self Service: new field to show user's quota values
    -> Self Service: allow to create Unix home directory during registration

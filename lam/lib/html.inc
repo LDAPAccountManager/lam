@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2020  Roland Gruber
+  Copyright (C) 2010 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1307,7 +1307,7 @@ class htmlSelect extends htmlElement {
 			$onchange = ' onchange="' . $onchange . '"';
 		}
 		// hide select boxes that contain less than 2 elements
-		if ((sizeof($this->elements) < 2) && !$this->multiSelect && $this->transformSingleSelect) {
+		if ((sizeof($this->elements) < 2) && !$this->multiSelect && !$this->containsOptgroups && $this->transformSingleSelect) {
 			echo '<div class="hidden">';
 		}
 		// print select box
@@ -1329,7 +1329,7 @@ class htmlSelect extends htmlElement {
 		}
 		echo "</select>\n";
 		// if select box has only one element then show it as text
-		if ((sizeof($this->elements) < 2) && !$this->multiSelect && $this->transformSingleSelect) {
+		if ((sizeof($this->elements) < 2) && !$this->multiSelect && !$this->containsOptgroups && $this->transformSingleSelect) {
 			echo '</div>';
 			if (sizeof($this->elements) == 1) {
 				echo '&nbsp;';
@@ -5110,4 +5110,52 @@ class htmlVideo extends htmlElement {
 	}
 }
 
-?>
+/**
+ * Creates a form element for POST.
+ *
+ * @package metaHTML
+ */
+class htmlForm extends htmlElement {
+
+	/** form name */
+	private $name = null;
+	/** submit target */
+	private $action = null;
+	/** inner content */
+	private $content = null;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param string $name name
+	 * @param string $action target URL
+	 */
+	function __construct(string $name, string $action, htmlElement $content) {
+		$this->name = $name;
+		$this->action = $action;
+		$this->content = $content;
+	}
+
+	/**
+	 * Prints the HTML code for this element.
+	 *
+	 * @param string $module Name of account module
+	 * @param array $input List of meta-HTML elements
+	 * @param array $values List of values which override the defaults in $input (name => value)
+	 * @param boolean $restricted If true then no buttons will be displayed
+	 * @param integer $tabindex Start value of tabulator index for input fields
+	 * @param string $scope Account type
+	 * @return array List of input field names and their type (name => type)
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$return = array();
+		echo '<form name="' . $this->name . '" action="' . $this->action . '" method="post" enctype="multipart/form-data">';
+		if ($this->content != null) {
+			$return = $this->content->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+		}
+		echo '</form>';
+		return $return;
+	}
+
+}
+

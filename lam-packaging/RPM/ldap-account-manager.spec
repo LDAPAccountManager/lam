@@ -111,7 +111,7 @@ if [ ! -f /var/lib/%{lam_dir}/config/config.cfg ]; then
 	chmod 600 /var/lib/%{lam_dir}/config/config.cfg
 	chown %{lam_uid}:%{lam_gid} /var/lib/%{lam_dir}/config/config.cfg
 	if [ ! -f /var/lib/%{lam_dir}/config/lam.conf ]; then
-		cp /var/lib/%{lam_dir}/config/unix.conf.sample /var/lib/%{lam_dir}/config/lam.conf
+		cp /var/lib/%{lam_dir}/config/unix.sample.conf /var/lib/%{lam_dir}/config/lam.conf
 		chmod 600 /var/lib/%{lam_dir}/config/lam.conf
 		chown %{lam_uid}:%{lam_gid} /var/lib/%{lam_dir}/config/lam.conf
 	fi

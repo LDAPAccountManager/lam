@@ -37,7 +37,7 @@ class SecurityTest extends TestCase {
 	private $cfg = null;
 
 	protected function setUp(): void {
-		testCreateDefaultConfig ();
+		testCreateDefaultConfig();
 		$this->cfg = &$_SESSION ['cfgMain'];
 		$this->resetPasswordRules();
 	}

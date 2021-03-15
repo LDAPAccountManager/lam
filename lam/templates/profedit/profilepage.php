@@ -7,6 +7,9 @@ use \htmlResponsiveSelect;
 use \htmlButton;
 use \htmlHiddenInput;
 use \htmlSubTitle;
+use LAM\PROFILES\AccountProfilePersistenceManager;
+use LAMException;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -91,6 +94,8 @@ if (isset($_POST['abort'])) {
 	exit;
 }
 
+$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
+
 $errors = array();
 
 // save button was presed
@@ -127,13 +132,14 @@ if (isset($_POST['save'])) {
 	$errors = checkProfileOptions($_POST['accounttype'], $options);
 	if (sizeof($errors) == 0) {  // input data is valid, save profile
 		// save profile
-		if (\LAM\PROFILES\saveAccountProfile($options, $_POST['profname'], $_POST['accounttype'], $_SESSION['config'])) {
-			metaRefresh('profilemain.php?savedSuccessfully=' . $_POST['profname']);
-			exit();
-		}
-		else {
-			$errors[] = array("ERROR", _("Unable to save profile!"), $_POST['profname']);
-		}
+        try {
+	        $accountProfilePersistenceManager->writeAccountProfile($_POST['accounttype'], $_POST['profname'], $_SESSION['config']->getName(), $options);
+	        metaRefresh('profilemain.php?savedSuccessfully=' . $_POST['profname']);
+	        exit();
+        }
+        catch (LAMException $e) {
+	        $errors[] = array("ERROR", _("Unable to save profile!"), $_POST['profname']);
+        }
 	}
 }
 
@@ -168,7 +174,11 @@ if (isset($_POST['save'])) {
 	}
 }
 elseif (isset($_GET['edit'])) {
-	$old_options = \LAM\PROFILES\loadAccountProfile($_GET['edit'], $type->getId(), $_SESSION['config']->getName());
+	try {
+		$old_options = $accountProfilePersistenceManager->loadAccountProfile($type->getId(), $_GET['edit'], $_SESSION['config']->getName());
+	} catch (LAMException $e) {
+	    StatusMessage('ERROR', $e->getTitle(), $e->getMessage());
+	}
 }
 
 // display formular

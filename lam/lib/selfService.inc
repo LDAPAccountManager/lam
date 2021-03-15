@@ -1,5 +1,8 @@
 <?php
 use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
+use LAM\PERSISTENCE\ConfigurationDatabase;
+use function LAM\PERSISTENCE\dbTableExists;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -47,7 +50,6 @@ function isLAMProVersion() {
 	return is_dir($dir);
 }
 
-
 /**
  * Returns a list of possible search attributes for the self service.
  *
@@ -65,7 +67,6 @@ function getSelfServiceSearchAttributes($scope) {
 	$return = array_unique($return);
 	return array_values($return);
 }
-
 
 /**
  * Returns the field settings for the self service.
@@ -85,7 +86,6 @@ function getSelfServiceFieldSettings($scope) {
 	}
 	return $return;
 }
-
 
 /**
  * Returns meta HTML code for each self service field.
@@ -119,7 +119,6 @@ function getSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOnly
 	}
 	return $return;
 }
-
 
 /**
  * Checks if all input values are correct and returns the LDAP commands which should be executed.
@@ -164,121 +163,6 @@ function checkSelfServiceOptions($scope, $fields, $attributes, $passwordChangeOn
 		}
 	}
 	return $return;
-}
-
-
-/**
-* Returns a list of all available self service profiles (without .conf)
-*
-* @return array profile names (array('account type' => array('profile1', 'profile2')))
-*/
-function getSelfServiceProfiles() {
-	$types = LAM\TYPES\getTypes();
-	$dir = dir(substr(__FILE__, 0, strlen(__FILE__) - 20) . "/config/selfService");
-	$ret = array();
-	if ($dir === false) {
-		logNewMessage(LOG_ERR, 'Unable to read self service profiles');
-		return $ret;
-	}
-	while ($entry = $dir->read()){
-		$ext = substr($entry, strrpos($entry, '.') + 1);
-		$name = substr($entry, 0, strrpos($entry, '.'));
-		// check if extension is right, add to profile list
-		if (in_array($ext, $types)) {
-			$ret[$ext][] = $name;
-		}
-	}
-	ksort($ret);
-	foreach ($ret as $key => $value) {
-		sort($ret[$key]);
-	}
-	return $ret;
-}
-
-
-/**
-* Loads all settings of a self service profile.
-*
-* @param string $name profile name
-* @param string $scope account type
-* @return false|selfServiceProfile profile or false if file was not readable
-*/
-function loadSelfServiceProfile($name, $scope) {
-	if (!preg_match("/^[0-9a-z _-]+$/i", $name) || !preg_match("/^[0-9a-z _-]+$/i", $scope)) {
-		return false;
-	}
-	$profile = new selfServiceProfile();
-	$file = substr(__FILE__, 0, strlen(__FILE__) - 20) . "/config/selfService/" . $name . "." . $scope;
-	if (is_file($file) === True) {
-		$file = @fopen($file, "r");
-		if ($file) {
-			$data = fread($file, 10000000);
-			$profileData = @json_decode($data, true);
-			if ($profileData === null) {
-				$profile = unserialize($data);
-			}
-			else {
-				$profile = selfServiceProfile::import($profileData);
-			}
-			fclose($file);
-		}
-		else {
-			StatusMessage("ERROR", "", _("Unable to load profile!") . " " . $name);
-		}
-	}
-	else {
-		StatusMessage("ERROR", "", _("Unable to load profile!") . " " . $name);
-	}
-	return $profile;
-}
-
-
-/**
-* Saves a self service profile.
-*
-* File is created, if needed
-*
-* @param string $name name of the account profile
-* @param string $scope account type
-* @param selfServiceProfile $profile self service profile
-* @return boolean true, if saving succeeded
-*/
-function saveSelfServiceProfile($name, $scope, $profile) {
-	// check profile name
-	if (!preg_match("/^[0-9a-z _-]+$/i", $scope) || !preg_match("/^[0-9a-z _-]+$/i", $name)) {
-		return false;
-	}
-	if (!get_class($profile) === 'selfServiceProfile') {
-		return false;
-	}
-	$path = substr(__FILE__, 0, strlen(__FILE__) - 20) . "/config/selfService/" . $name . "." . $scope;
-	$file = @fopen($path, "w");
-	if ($file) {
-	  	// write settings to file
-		fputs($file, json_encode($profile->export()));
-		// close file
-		fclose($file);
-	}
-	else {
-		return false;
-	}
-	return true;
-}
-
-/**
-* Checks if a service profile is writable.
-*
-* @param string $name profile name
-* @param string $scope account type
-* @return boolean true if file is writable
-*/
-function isSelfServiceProfileWritable($name, $scope) {
-	// check profile name
-	if (!preg_match("/^[0-9a-z _-]+$/i", $scope) || !preg_match("/^[0-9a-z _-]+$/i", $name)) {
-		return false;
-	}
-	$path = substr(__FILE__, 0, strlen(__FILE__) - 20) . "/config/selfService/" . $name . "." . $scope;
-	return is_writable($path);
 }
 
 /**
@@ -358,6 +242,414 @@ function bindLdapUser($handle, $profile, $userDn, $password) {
 	return @ldap_bind($handle, $userDn, $password);
 }
 
+/**
+ * Manages reading and writing self service profiles.
+ */
+class SelfServicePersistence {
+
+	/**
+	 * @var SelfServicePersistenceStrategy
+	 */
+	private $strategy;
+
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		$configDb = new ConfigurationDatabase(new LAMCfgMain());
+		if ($configDb->useRemoteDb()) {
+			$this->strategy = new SelfServicePersistenceStrategyPdo($configDb->getPdo());
+		}
+		else {
+			$this->strategy = new SelfServicePersistenceStrategyFileSystem();
+		}
+	}
+
+	/**
+	 * Returns a list of available self service profiles.
+	 *
+	 * @return array profile names (array('account type' => array('profile1', 'profile2')))
+	 */
+	public function getProfiles() : array {
+		$profiles = $this->strategy->getProfiles();
+		ksort($profiles);
+		foreach ($profiles as $key => $value) {
+			sort($profiles[$key]);
+		}
+		return $profiles;
+	}
+
+	/**
+	 * Returns if the profile with given name can be written.
+	 *
+	 * @param string $name profile name
+	 * @param string $scope user/group/host
+	 * @return bool can be written
+	 */
+	public function canWrite(string $name, string $scope) : bool {
+		return $this->strategy->canWrite($name, $scope);
+	}
+
+	/**
+	 * Loads the given self service profile.
+	 *
+	 * @param string $name profile name
+	 * @param string $scope user/group/host
+	 * @return selfServiceProfile profile
+	 * @throws LAMException error during loading
+	 */
+	public function load(string $name, string $scope) : selfServiceProfile {
+		return $this->strategy->load($name, $scope);
+	}
+
+	/**
+	 * Stores the given profile.
+	 *
+	 * @param string $name profile name
+	 * @param string $scope user/group/host
+	 * @param selfServiceProfile $profile profile
+	 * @throws LAMException error during saving
+	 */
+	public function save(string $name, string $scope, selfServiceProfile $profile) : void {
+		$this->strategy->save($name, $scope, $profile);
+	}
+
+	/**
+	 * Deletes a self service profile.
+	 *
+	 * @param string $name profile name
+	 * @param string $scope user/group/host
+	 * @throws LAMException error deleting profile
+	 */
+	public function delete(string $name, string $scope) : void {
+		$profileList = $this->getProfiles();
+		if (!preg_match("/^[a-z]+$/i", $scope)
+			|| !preg_match("/^[a-z0-9_-]+$/i", $name)
+			|| empty($profileList[$scope])
+			|| !in_array($name, $profileList[$scope])) {
+			throw new LAMException(_("Unable to delete profile!"));
+		}
+		$this->strategy->delete($name, $scope);
+	}
+
+	/**
+	 * Renames a self service profile.
+	 *
+	 * @param string $oldName existing profile name
+	 * @param string $newName new profile name
+	 * @param string $scope user/group/host
+	 * @throws LAMException error renaming profile
+	 */
+	public function rename(string $oldName, string $newName, string $scope) : void {
+		$profileList = $this->getProfiles();
+		if (!preg_match("/^[a-z]+$/i", $scope)
+			|| !preg_match("/^[a-z0-9_-]+$/i", $newName)
+			|| empty($profileList[$scope])
+			|| !in_array($oldName, $profileList[$scope])) {
+			throw new LAMException(_("Profile name is invalid!"));
+		}
+		$this->strategy->rename($oldName, $newName, $scope);
+	}
+
+}
+
+/**
+ * Interface for self service profile persistence.
+ */
+interface SelfServicePersistenceStrategy {
+
+	/**
+	 * Returns a list of available self service profiles.
+	 *
+	 * @return array profile names (array('account type' => array('profile1', 'profile2')))
+	 */
+	public function getProfiles() : array;
+
+	/**
+	 * Returns if the profile with given name can be written.
+	 *
+	 * @param string $name profile name
+	 * @param string $scope user/group/host
+	 * @return bool can be written
+	 */
+	public function canWrite(string $name, string $scope) : bool;
+
+	/**
+	 * Loads the given self service profile.
+	 *
+	 * @param string $name profile name
+	 * @param string $scope user/group/host
+	 * @return selfServiceProfile profile
+	 * @throws LAMException error during loading
+	 */
+	public function load(string $name, string $scope) : selfServiceProfile;
+
+	/**
+	 * Stores the given profile.
+	 *
+	 * @param string $name profile name
+	 * @param string $scope user/group/host
+	 * @param selfServiceProfile $profile profile
+	 * @throws LAMException error during saving
+	 */
+	public function save(string $name, string $scope, selfServiceProfile $profile) : void;
+
+	/**
+	 * Deletes a self service profile.
+	 *
+	 * @param string $name profile name
+	 * @param string $scope account type
+	 * @throws LAMException error renaming profile
+	 */
+	public function delete(string $name, string $scope) : void;
+
+	/**
+	 * Renames a self service profile.
+	 *
+	 * @param string $oldName existing profile name
+	 * @param string $newName new profile name
+	 * @param string $scope user/group/host
+	 * @throws LAMException error renaming profile
+	 */
+	public function rename(string $oldName, string $newName, string $scope) : void;
+
+}
+
+/**
+ * Uses local file system for storing self service profiles.
+ */
+class SelfServicePersistenceStrategyFileSystem implements SelfServicePersistenceStrategy {
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getProfiles(): array {
+		$types = LAM\TYPES\getTypes();
+		$dir = dir(__DIR__ . "/../config/selfService");
+		$ret = array();
+		if ($dir === false) {
+			logNewMessage(LOG_ERR, 'Unable to read self service profiles');
+			return $ret;
+		}
+		while ($entry = $dir->read()){
+			$ext = substr($entry, strrpos($entry, '.') + 1);
+			$name = substr($entry, 0, strrpos($entry, '.'));
+			// check if extension is right, add to profile list
+			if (in_array($ext, $types)) {
+				$ret[$ext][] = $name;
+			}
+		}
+		return $ret;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function canWrite(string $name, string $scope): bool {
+		// check profile name
+		if (!preg_match("/^[0-9a-z _-]+$/i", $scope) || !preg_match("/^[0-9a-z _-]+$/i", $name)) {
+			return false;
+		}
+		$path = __DIR__ . "/../config/selfService/" . $name . "." . $scope;
+		return is_writable($path);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function load(string $name, string $scope): selfServiceProfile {
+		if (!preg_match("/^[0-9a-z _-]+$/i", $name) || !preg_match("/^[0-9a-z _-]+$/i", $scope)) {
+			throw new LAMException(_("Profile name is invalid!"));
+		}
+		$profile = new selfServiceProfile();
+		$file = __DIR__ . "/../config/selfService/" . $name . "." . $scope;
+		if (is_file($file) === True) {
+			$file = @fopen($file, "r");
+			if ($file) {
+				$data = fread($file, 10000000);
+				$profileData = @json_decode($data, true);
+				if ($profileData === null) {
+					$profile = unserialize($data);
+				}
+				else {
+					$profile = selfServiceProfile::import($profileData);
+				}
+				fclose($file);
+			}
+			else {
+				throw new LAMException(_("Unable to load profile!"), $name);
+			}
+		}
+		else {
+			throw new LAMException(_("Unable to load profile!"), $name);
+		}
+		return $profile;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function save(string $name, string $scope, selfServiceProfile $profile): void {
+		// check profile name
+		if (!preg_match("/^[0-9a-z _-]+$/i", $scope) || !preg_match("/^[0-9a-z _-]+$/i", $name)) {
+			throw new LAMException(_("Profile name is invalid!"));
+		}
+		if (!get_class($profile) === 'selfServiceProfile') {
+			throw new LAMException('Invalid data');
+		}
+		$path = __DIR__ . "/../config/selfService/" . $name . "." . $scope;
+		$file = @fopen($path, "w");
+		if ($file) {
+			// write settings to file
+			fputs($file, json_encode($profile->export()));
+			// close file
+			fclose($file);
+			@chmod($path, 0600);
+		}
+		else {
+			throw new LAMException(_("Unable to save profile!"));
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function delete(string $name, string $scope): void {
+		if (!unlink("../../config/selfService/" . $name . "." . $scope)) {
+			throw new LAMException(_("Unable to delete profile!"));
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function rename(string $oldName, string $newName, string $scope): void {
+		if (!@rename(__DIR__ . "/../config/selfService/" . $oldName . "." . $scope,
+			__DIR__ . "/../config/selfService/" . $newName . "." . $scope)) {
+			throw new LAMException(_("Could not rename file!"));
+		}
+	}
+
+}
+
+/**
+ * Uses PDO for storing self service profiles.
+ */
+class SelfServicePersistenceStrategyPdo implements SelfServicePersistenceStrategy {
+
+	/**
+	 * @var PDO
+	 */
+	private $pdo;
+
+	const TABLE_NAME = 'self_service_profiles';
+
+	/**
+	 * Constructor
+	 *
+	 * @param PDO $pdo PDO
+	 */
+	public function __construct(PDO $pdo) {
+		$this->pdo = $pdo;
+		$this->checkSchema();
+	}
+
+	/**
+	 * Checks if the schema has latest version.
+	 */
+	private function checkSchema() : void {
+		if (!dbTableExists($this->pdo, self::TABLE_NAME)) {
+			$this->createInitialSchema();
+		}
+	}
+
+	/**
+	 * Creates the initial schema.
+	 */
+	public function createInitialSchema() : void {
+		logNewMessage(LOG_DEBUG, 'Creating database table ' . self::TABLE_NAME);
+		$sql = 'create table ' . self::TABLE_NAME . '('
+			. 'scope VARCHAR(100) NOT NULL,'
+			. 'name VARCHAR(300) NOT NULL,'
+			. 'data TEXT NOT NULL,'
+			. 'PRIMARY KEY(scope,name)'
+			. ');';
+		$this->pdo->exec($sql);
+		$sql = 'insert into ' . ConfigurationDatabase::TABLE_SCHEMA_VERSIONS . ' (name, version) VALUES ("self_service", 1);';
+		$this->pdo->exec($sql);
+	}
+
+	/**
+	 * @inheritDocm
+	 */
+	public function getProfiles(): array {
+		$statement = $this->pdo->prepare("SELECT scope, name FROM " . self::TABLE_NAME);
+		$statement->execute();
+		$results = $statement->fetchAll();
+		$profiles = array();
+		foreach ($results as $result) {
+			$profiles[$result['scope']][] = $result['name'];
+		}
+		return $profiles;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function canWrite(string $name, string $scope): bool {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function load(string $name, string $scope): selfServiceProfile {
+		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME . " WHERE scope = ? AND name = ?");
+		$statement->execute(array($scope, $name));
+		$results = $statement->fetchAll();
+		if (empty($results)) {
+			logNewMessage(LOG_ERR, 'Self service profile not found');
+			throw new LAMException(_("Unable to load profile!"), $name);
+		}
+		$data = json_decode($results[0]['data'], true);
+		return selfServiceProfile::import($data);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function save(string $name, string $scope, selfServiceProfile $profile): void {
+		$data = json_encode($profile->export());
+		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME . " WHERE scope = ? AND name = ?");
+		$statement->execute(array($scope, $name));
+		$results = $statement->fetchAll();
+		if (empty($results)) {
+			$statement = $this->pdo->prepare("INSERT INTO " . self::TABLE_NAME . " (scope, name, data) VALUES (?, ?, ?)");
+			$statement->execute(array($scope, $name, $data));
+		}
+		else {
+			$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME . " SET data = ? WHERE scope = ? AND name = ?");
+			$statement->execute(array($data, $scope, $name));
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function delete(string $name, string $scope): void {
+		$statement = $this->pdo->prepare("DELETE FROM " . self::TABLE_NAME . " WHERE scope = ? AND name = ?");
+		$statement->execute(array($scope, $name));
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function rename(string $oldName, string $newName, string $scope): void {
+		$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME . " SET name = ? WHERE scope = ? AND name = ?");
+		$statement->execute(array($newName, $scope, $oldName));
+	}
+
+}
 
 /**
  * Includes all settings of a self service profile.
@@ -573,7 +865,7 @@ class selfServiceProfile {
 		$profile = new selfServiceProfile();
 		$vars = get_class_vars(selfServiceProfile::class);
 		foreach ($data as $key => $value) {
-			if (in_array($key, $vars)) {
+			if (array_key_exists($key, $vars)) {
 				$profile->$key = $value;
 			}
 		}
@@ -618,5 +910,3 @@ class selfServiceProfile {
 	}
 
 }
-
-?>

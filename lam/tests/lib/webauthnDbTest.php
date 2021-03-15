@@ -1,6 +1,7 @@
 <?php
 namespace LAM\LOGIN\WEBAUTHN;
 
+use PDO;
 use \PHPUnit\Framework\TestCase;
 use \Webauthn\PublicKeyCredentialDescriptor;
 use \Webauthn\PublicKeyCredentialUserEntity;
@@ -10,7 +11,7 @@ use \Webauthn\TrustPath\CertificateTrustPath;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2019 - 2020  Roland Gruber
+  Copyright (C) 2019 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -44,13 +45,7 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 	private $database;
 
 	protected function setUp(): void {
-		$this->database = $this
-			->getMockBuilder(PublicKeyCredentialSourceRepositorySQLite::class)
-			->setMethods(array('getPdoUrl'))
-			->getMock();
-		$file = tmpfile();
-		$filePath = stream_get_meta_data($file)['uri'];
-		$this->database->method('getPdoUrl')->willReturn('sqlite:' . $filePath);
+		$this->database = new PublicKeyCredentialSourceRepositorySQLiteTestDb();
 	}
 
 	/**
@@ -171,3 +166,24 @@ class PublicKeyCredentialSourceRepositorySQLiteTest extends TestCase {
 
 }
 
+class PublicKeyCredentialSourceRepositorySQLiteTestDb extends PublicKeyCredentialSourceRepositorySQLite {
+
+	private $pdo;
+
+	public function __construct() {
+		$this->pdo = new PDO($this->getPdoUrl(), null, null, array(
+			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+		));
+		parent::__construct();
+	}
+	protected function getPDO(): PDO {
+		return $this->pdo;
+	}
+
+	public function getPdoUrl(): string {
+		$file = tmpfile();
+		$filePath = stream_get_meta_data($file)['uri'];
+		return 'sqlite:' . $filePath;
+	}
+
+}

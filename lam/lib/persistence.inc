@@ -2,29 +2,22 @@
 namespace LAM\PERSISTENCE;
 use LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use LAM\PDF\PDFStructure;
-use LAM\PDF\PDFStructureReader;
-use LAM\PDF\PDFStructureWriter;
+use LAM\PDF\PdfStructurePersistenceManager;
+use LAM\PROFILES\AccountProfilePersistenceManager;
 use LAMCfgMain;
 use LAMConfig;
 use LAMException;
+use PDO;
+use PDOException;
+use SelfServicePersistence;
 use selfServiceProfile;
-use function LAM\PDF\getAvailableLogos;
+use ServerProfilePersistenceManager;
 use function LAM\PDF\getPDFStructures;
-use function LAM\PDF\getPdfTemplateLogoBinary;
-use function LAM\PDF\getPdfTemplateLogoNames;
-use function LAM\PDF\getPdfTemplateNames;
-use function LAM\PDF\uploadPDFLogo;
-use function LAM\PROFILES\getAccountProfiles;
-use function LAM\PROFILES\getProfileTemplateNames;
-use function LAM\PROFILES\installTemplateAccountProfile;
-use function LAM\PROFILES\loadAccountProfile;
-use function LAM\PROFILES\loadTemplateAccountProfile;
-use function LAM\PROFILES\saveAccountProfile;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2020  Roland Gruber
+  Copyright (C) 2020 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -66,10 +59,11 @@ class ConfigDataExporter {
 		$jsonData = array();
 		$jsonData['mainConfig'] = $this->_getMainConfigData($mainCfg);
 		$jsonData['certificates'] = $this->_getCertificates($mainCfg);
-		$serverProfileNames = getConfigProfiles();
+		$serverProfilesPersistenceManager = new ServerProfilePersistenceManager();
+		$serverProfileNames = $serverProfilesPersistenceManager->getProfiles();
 		$serverProfiles = array();
 		foreach ($serverProfileNames as $serverProfileName) {
-			$serverProfiles[$serverProfileName] = new \LAMConfig($serverProfileName);
+			$serverProfiles[$serverProfileName] = $serverProfilesPersistenceManager->loadProfile($serverProfileName);
 		}
 		$jsonData['serverProfiles'] = $this->_getServerProfiles($serverProfiles);
 		$jsonData['accountProfiles'] = $this->_getAccountProfiles($serverProfiles);
@@ -97,7 +91,7 @@ class ConfigDataExporter {
 	 * @return array data
 	 */
 	public function _getMainConfigData($mainCfg) {
-		return $mainCfg->exportData();
+		return $mainCfg->exportData(true);
 	}
 
 	/**
@@ -128,15 +122,17 @@ class ConfigDataExporter {
 	 * Returns the content of the account profiles.
 	 *
 	 * @param array $serverProfiles list of server profiles (name => object)
-	 * @return array $data
+	 * @return array $data export data
+	 * @throws LAMException error reading profiles
 	 */
 	public function _getAccountProfiles($serverProfiles) {
 		$data = array();
+		$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
 		foreach ($serverProfiles as $profileName => $serverProfile) {
 			foreach ($serverProfile->get_ActiveTypes() as $typeId) {
-				$accountProfileNames = getAccountProfiles($typeId, $profileName);
+				$accountProfileNames = $accountProfilePersistenceManager->getAccountProfileNames($typeId, $profileName);
 				foreach ($accountProfileNames as $accountProfileName) {
-					$accountProfile = loadAccountProfile($accountProfileName, $typeId, $profileName);
+					$accountProfile = $accountProfilePersistenceManager->loadAccountProfile($typeId, $accountProfileName, $profileName);
 					$data[$profileName][$typeId][$accountProfileName] = $accountProfile;
 				}
 			}
@@ -147,15 +143,16 @@ class ConfigDataExporter {
 	/**
 	 * Returns the content of the account profile templates.
 	 *
-	 * @return array $data
+	 * @return array $data export data
 	 * @throws LAMException error reading template
 	 */
 	public function _getAccountProfileTemplates() {
 		$data = array();
-		$accountProfileTemplateNames = getProfileTemplateNames();
+		$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
+		$accountProfileTemplateNames = $accountProfilePersistenceManager->getAccountProfileTemplateNames();
 		foreach ($accountProfileTemplateNames as $scope => $templateNames) {
 			foreach ($templateNames as $templateName) {
-				$accountProfileTemplate = loadTemplateAccountProfile($templateName, $scope);
+				$accountProfileTemplate = $accountProfilePersistenceManager->loadAccountProfileTemplate($scope, $templateName);
 				$data[$scope][$templateName] = $accountProfileTemplate;
 			}
 		}
@@ -167,26 +164,24 @@ class ConfigDataExporter {
 	 *
 	 * @param array $serverProfiles list of server profiles (name => object)
 	 * @return array $data
+	 * @throws LAMException error reading logo
 	 */
-	public function _getPdfProfiles($serverProfiles) {
+	public function _getPdfProfiles($serverProfiles) : array {
 		$data = array();
+		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 		foreach ($serverProfiles as $profileName => $serverProfile) {
 			foreach ($serverProfile->get_ActiveTypes() as $typeId) {
-				$pdfProfileNames = getPDFStructures($typeId, $profileName);
-				$reader = new PDFStructureReader($profileName);
+				$pdfProfileNames = $pdfStructurePersistenceManager->getPDFStructures($profileName, $typeId);
 				foreach ($pdfProfileNames as $pdfProfileName) {
-					$pdfStructure = $reader->read($typeId, $pdfProfileName);
+					$pdfStructure = $pdfStructurePersistenceManager->readPdfStructure($profileName, $typeId, $pdfProfileName);
 					$data[$profileName]['structures'][$typeId][$pdfProfileName] = $pdfStructure->export();
 				}
 			}
-			$logoData = getAvailableLogos($profileName);
+			$logoData = $pdfStructurePersistenceManager->getPdfLogos($profileName);
 			foreach ($logoData as $logo) {
-				$logoFileName = $logo['filename'];
-				$logoPath = __DIR__ . '/../config/pdf/' . $profileName . '/logos/' . $logoFileName;
-				$handle = fopen($logoPath, 'r');
-				$logoBinary = fread($handle, 100000000);
-				fclose($handle);
-				$data[$profileName]['logos'][$logoFileName] = base64_encode($logoBinary);
+				$logoName = $logo->getName();
+				$logoBinary = $pdfStructurePersistenceManager->getPdfLogoBinary($profileName, $logoName);
+				$data[$profileName]['logos'][$logoName] = base64_encode($logoBinary);
 			}
 		}
 		return $data;
@@ -200,17 +195,17 @@ class ConfigDataExporter {
 	 */
 	public function _getPdfProfileTemplates() {
 		$data = array();
-		$pdfTemplateNames = getPdfTemplateNames();
-		$reader = new PDFStructureReader(\LAM\PDF\GLOBAL_PROFILE);
+		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
+		$pdfTemplateNames = $pdfStructurePersistenceManager->getPdfStructureTemplateNames();
 		foreach ($pdfTemplateNames as $scope => $templateNames) {
 			foreach ($templateNames as $templateName) {
-				$pdfStructure = $reader->read($scope, $templateName);
+				$pdfStructure = $pdfStructurePersistenceManager->readPdfStructureTemplate($scope, $templateName);
 				$data['structures'][$scope][$templateName] = $pdfStructure->export();
 			}
 		}
-		$logoNames = getPdfTemplateLogoNames();
+		$logoNames = $pdfStructurePersistenceManager->getPdfTemplateLogoNames();
 		foreach ($logoNames as $logoName) {
-			$data['logos'][$logoName] = base64_encode(getPdfTemplateLogoBinary($logoName));
+			$data['logos'][$logoName] = base64_encode($pdfStructurePersistenceManager->getPdfTemplateLogoBinary($logoName));
 		}
 		return $data;
 	}
@@ -222,11 +217,16 @@ class ConfigDataExporter {
 	 */
 	public function _getSelfServiceProfiles() {
 		$data = array();
-		$profileTypes = getSelfServiceProfiles();
+		$selfServicePersistence = new SelfServicePersistence();
+		$profileTypes = $selfServicePersistence->getProfiles();
+		$selfServicePersistence = new SelfServicePersistence();
 		foreach ($profileTypes as $profileType => $profileNames) {
 			foreach ($profileNames as $profileName) {
-				$profile = loadSelfServiceProfile($profileName, $profileType);
-				if ($profile === false) {
+				try {
+					$profile = $selfServicePersistence->load($profileName, $profileType);
+				}
+				catch (LAMException $e) {
+					logNewMessage(LOG_ERR, $e->getTitle() . ' ' . $profileName);
 					continue;
 				}
 				$data[$profileType][$profileName] = $profile->export();
@@ -403,16 +403,20 @@ class ConfigDataImporter {
 	 */
 	private function importServerProfiles($step) {
 		$failedProfiles = array();
+		$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
 		foreach ($step->getSubSteps() as $profileStep) {
 			if (!$profileStep->isActive()) {
 				continue;
 			}
 			$data = $profileStep->getValue();
 			$profileName = str_replace('serverProfile_', '', $profileStep->getKey());
-			$serverProfile = new LAMConfig($profileName);
-			$serverProfile->importData($data);
-			$result = $serverProfile->save();
-			if ($result === LAMConfig::SAVE_FAIL) {
+			try {
+				$serverProfile = new LAMConfig();
+				$serverProfile->importData($data);
+				$serverProfilePersistenceManager->saveProfile($serverProfile, $profileName);
+			}
+			catch (LAMException $e) {
+				logNewMessage(LOG_ERR, $e->getTitle());
 				$failedProfiles[] = $profileName;
 			}
 		}
@@ -429,17 +433,19 @@ class ConfigDataImporter {
 	 */
 	private function importAccountProfiles($step) {
 		$failedProfiles = array();
+		$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
 		foreach ($step->getSubSteps() as $profileStep) {
 			if (!$profileStep->isActive()) {
 				continue;
 			}
 			$data = $profileStep->getValue();
 			$serverProfileName = str_replace('accountProfile_', '', $profileStep->getKey());
-			$serverProfile = new LAMConfig($serverProfileName);
 			foreach ($data as $typeId => $accountProfiles) {
 				foreach ($accountProfiles as $accountProfileName => $accountProfileData) {
-					$result = saveAccountProfile($accountProfileData, $accountProfileName, $typeId, $serverProfile);
-					if (!$result) {
+					try {
+						$accountProfilePersistenceManager->writeAccountProfile($typeId, $accountProfileName, $serverProfileName, $accountProfileData);
+					}
+					catch (LAMException $e) {
 						$failedProfiles[] = $serverProfileName . ':' . $typeId . ':' . $accountProfileName;
 					}
 				}
@@ -458,9 +464,10 @@ class ConfigDataImporter {
 	 */
 	private function importAccountProfileTemplates($step) {
 		$data = $step->getValue();
-		foreach ($data as $typeId => $accountProfileTemplates) {
+		$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
+		foreach ($data as $scope => $accountProfileTemplates) {
 			foreach ($accountProfileTemplates as $accountProfileTemplateName => $accountProfileData) {
-				installTemplateAccountProfile($typeId, $accountProfileTemplateName, $accountProfileData);
+				$accountProfilePersistenceManager->writeAccountProfileTemplate($scope, $accountProfileTemplateName, $accountProfileData);
 			}
 		}
 	}
@@ -473,6 +480,7 @@ class ConfigDataImporter {
 	 */
 	private function importPdfProfiles($step) {
 		$failedProfiles = array();
+		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 		foreach ($step->getSubSteps() as $profileStep) {
 			if (!$profileStep->isActive()) {
 				continue;
@@ -480,13 +488,12 @@ class ConfigDataImporter {
 			$data = $profileStep->getValue();
 			$serverProfileName = str_replace('pdfProfile_', '', $profileStep->getKey());
 			if (isset($data['structures'])) {
-				$writer = new PDFStructureWriter($serverProfileName);
 				foreach ($data['structures'] as $typeId => $pdfProfiles) {
 					foreach ($pdfProfiles as $pdfProfileName => $pdfProfileData) {
 						$structure = new PDFStructure();
 						$structure->import($pdfProfileData);
 						try {
-							$writer->write($typeId, $pdfProfileName, $structure);
+							$pdfStructurePersistenceManager->savePdfStructure($serverProfileName, $typeId, $pdfProfileName, $structure);
 						}
 						catch (LAMException $e) {
 							logNewMessage(LOG_ERR, $e->getTitle() . ' ' . $e->getMessage());
@@ -497,13 +504,8 @@ class ConfigDataImporter {
 			}
 			if (isset($data['logos'])) {
 				foreach ($data['logos'] as $logoFileName => $logoData) {
-					$tempFilePath = tempnam("/tmp", "lam");
-					$tempFile = fopen($tempFilePath, "w");
 					$logoBinary = base64_decode($logoData);
-					fwrite($tempFile, $logoBinary);
-					fclose($tempFile);
-					uploadPDFLogo($tempFilePath, $logoFileName, $serverProfileName);
-					unlink($tempFilePath);
+					$pdfStructurePersistenceManager->savePdfLogo($serverProfileName, $logoFileName, $logoBinary);
 				}
 			}
 		}
@@ -519,19 +521,19 @@ class ConfigDataImporter {
 	 * @throws LAMException error during import
 	 */
 	private function importPdfProfileTemplates($step) {
+		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 		$failedNames = array();
 		$data = $step->getValue();
 		if (isset($data['structures'])) {
-			$writer = new PDFStructureWriter(\LAM\PDF\GLOBAL_PROFILE);
-			foreach ($data['structures'] as $typeId => $pdfProfiles) {
+			foreach ($data['structures'] as $scope => $pdfProfiles) {
 				foreach ($pdfProfiles as $pdfProfileName => $pdfProfileData) {
 					$structure = new PDFStructure();
 					$structure->import($pdfProfileData);
 					try {
-						$writer->write($typeId, $pdfProfileName, $structure);
+						$pdfStructurePersistenceManager->savePdfStructureTemplate($scope, $pdfProfileName, $structure);
 					}
 					catch (LAMException $e) {
-						$failedNames[] = $typeId . ':' . $pdfProfileName;
+						$failedNames[] = $scope . ':' . $pdfProfileName;
 						logNewMessage(LOG_ERR, $e->getTitle() . ' ' . $e->getMessage());
 					}
 				}
@@ -540,14 +542,12 @@ class ConfigDataImporter {
 		$failedLogos = array();
 		if (isset($data['logos'])) {
 			foreach ($data['logos'] as $logoFileName => $logoData) {
-				$tempFilePath = tempnam("/tmp", "lam");
-				$tempFile = fopen($tempFilePath, "w");
 				$logoBinary = base64_decode($logoData);
-				fwrite($tempFile, $logoBinary);
-				fclose($tempFile);
-				$message = uploadPDFLogo($tempFilePath, $logoFileName, \LAM\PDF\GLOBAL_PROFILE);
-				unlink($tempFilePath);
-				if ($message->getType() === 'ERROR') {
+				try {
+					$pdfStructurePersistenceManager->savePdfTemplateLogo($logoFileName, $logoBinary);
+				}
+				catch (LAMException $e) {
+					logNewMessage(LOG_ERR, $e->getTitle());
 					$failedLogos[] = $logoFileName;
 				}
 			}
@@ -572,8 +572,11 @@ class ConfigDataImporter {
 		foreach ($data as $typeId => $profileData) {
 			foreach ($profileData as $profileName => $currentProfileData) {
 				$profile = selfServiceProfile::import($currentProfileData);
-				$result = saveSelfServiceProfile($profileName, $typeId, $profile);
-				if (!$result) {
+				$selfServicePersistence = new SelfServicePersistence();
+				try {
+					$selfServicePersistence->save($profileName, $typeId, $profile);
+				}
+				catch (LAMException $e) {
 					$failedNames[] = $profileName;
 				}
 			}
@@ -590,7 +593,6 @@ class ConfigDataImporter {
 	 * @throws LAMException error saving profiles
 	 */
 	private function importWebauthn($step) {
-		$failedNames = array();
 		$data = $step->getValue();
 		include_once __DIR__ . '/webauthn.inc';
 		$webauthnManager = new WebauthnManager();
@@ -687,4 +689,131 @@ class ImporterStep {
 		return $this->subSteps;
 	}
 
+}
+
+/**
+ * Manages the configuration persistence.
+ *
+ * @package LAM\PERSISTENCE
+ */
+class ConfigurationDatabase {
+
+	/** table for schema versions */
+	const TABLE_SCHEMA_VERSIONS = 'schema_versions';
+	/** row name for system schema version */
+	const ROW_VERSION_SYSTEM = 'system';
+	/** table for main configuration */
+	const TABLE_MAIN_CONFIG = 'main_configuration';
+	/** row name for main config schema version */
+	const ROW_VERSION_MAIN_CONFIG = 'main_configuration';
+
+	private $cfgMain;
+
+	/**
+	 * Constructor
+	 *
+	 * @param LAMCfgMain $cfgMain main configuration
+	 */
+	public function __construct(LAMCfgMain $cfgMain) {
+		$this->cfgMain = $cfgMain;
+	}
+
+	/**
+	 * Returns if a remote database is to be used.
+	 *
+	 * @return bool use remote database
+	 */
+	public function useRemoteDb() : bool {
+		return (!empty($this->cfgMain->configDatabaseType) && ($this->cfgMain->configDatabaseType === LAMCfgMain::DATABASE_MYSQL));
+	}
+
+	/**
+	 * Checks if the database connection is ok.
+	 *
+	 * @throws PDOException error opening connection to database
+	 */
+	public function checkConnection() {
+		if (!$this->useRemoteDb()) {
+			return;
+		}
+		$pdo = $this->getPdo();
+		$this->updateSchema($pdo);
+	}
+
+	/**
+	 * Returns the PDO to read and write data.
+	 *
+	 * @return PDO PDO
+	 * @throws PDOException error opening connection to database
+	 */
+	public function getPdo() : PDO {
+		$url = $this->getPdoUrl();
+		return new PDO($url, $this->cfgMain->configDatabaseUser, $this->cfgMain->configDatabasePassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+	}
+
+	/**
+	 * Builds the PDO URL.
+	 *
+	 * @return string PDO URL
+	 */
+	private function getPdoUrl() : string {
+		$portConf = empty($this->cfgMain->configDatabasePort) ? '' : ';port=' . $this->cfgMain->configDatabasePort;
+		return 'mysql:host=' . $this->cfgMain->configDatabaseServer . $portConf . ';dbname=' . $this->cfgMain->configDatabaseName;
+	}
+
+	/**
+	 * Updates the schema to latest version.
+	 *
+	 * @param PDO $pdo PDO
+	 */
+	private function updateSchema(PDO $pdo) {
+		// initial system schema
+		if (!dbTableExists($pdo, self::TABLE_SCHEMA_VERSIONS)) {
+			$this->createInitialSchema($pdo);
+		}
+
+	}
+
+	/**
+	 * Creates the initial schema.
+	 *
+	 * @param PDO $pdo PDO
+	 */
+	private function createInitialSchema(PDO $pdo): void {
+		logNewMessage(LOG_NOTICE, 'Create initial config database...');
+		// schema versions
+		$sql = 'create table ' . self::TABLE_SCHEMA_VERSIONS . '('
+			. 'name VARCHAR(250) PRIMARY KEY,'
+			. 'version INT(3) NOT NULL'
+			. ');';
+		$pdo->exec($sql);
+		$sql = 'insert into ' . self::TABLE_SCHEMA_VERSIONS . ' (name, version) VALUES ("' . self::ROW_VERSION_SYSTEM . '", 1);';
+		$pdo->exec($sql);
+		// main configuration
+		$sql = 'create table ' . self::TABLE_MAIN_CONFIG . '('
+			. 'name VARCHAR(250) PRIMARY KEY,'
+			. 'value LONGTEXT NOT NULL'
+			. ');';
+		$pdo->exec($sql);
+		$sql = 'insert into ' . self::TABLE_SCHEMA_VERSIONS . ' (name, version) VALUES ("' . self::ROW_VERSION_MAIN_CONFIG . '", 1);';
+		$pdo->exec($sql);
+		logNewMessage(LOG_NOTICE, 'Created initial config database.');
+	}
+
+}
+
+/**
+ * Returns if the given table name exists
+ *
+ * @param PDO $pdo PDO
+ * @param string $tableName table name
+ * @return bool true if existing
+ */
+function dbTableExists(PDO $pdo, string $tableName) : bool {
+	try {
+		$result = $pdo->query("SELECT 1 FROM $tableName LIMIT 1");
+		return ($result === false) ? false : true;
+	} catch (PDOException $e) {
+		return false;
+	}
 }

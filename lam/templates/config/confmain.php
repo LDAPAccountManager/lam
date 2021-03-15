@@ -19,10 +19,13 @@ use \htmlResponsiveSelect;
 use \htmlResponsiveInputCheckbox;
 use \htmlResponsiveInputTextarea;
 use \htmlGroup;
+use LAMException;
+use ServerProfilePersistenceManager;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2020  Roland Gruber
+  Copyright (C) 2003 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -70,6 +73,7 @@ lam_start_session();
 setlanguage();
 
 // get password
+$passwd = null;
 if (isset($_POST['passwd'])) {
 	$passwd = $_POST['passwd'];
 }
@@ -83,8 +87,16 @@ if (!isset($passwd) && !(isset($_SESSION['conf_isAuthenticated']) && isset($_SES
 	exit;
 }
 
+$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
+
 if (!isset($_SESSION['conf_config']) && isset($_POST['filename'])) {
-	$_SESSION['conf_config'] = new LAMConfig($_POST['filename']);
+	try {
+		$_SESSION['conf_config'] = $serverProfilePersistenceManager->loadProfile($_POST['filename']);
+	} catch (LAMException $e) {
+		$_SESSION['conf_message'] = new htmlStatusMessage('ERROR', $e->getTitle());
+		metaRefresh('conflogin.php');
+		exit;
+	}
 }
 $conf = &$_SESSION['conf_config'];
 
@@ -161,7 +173,7 @@ echo "<body class=\"admin\">\n";
 printJsIncludes('../..');
 printConfigurationPageHeaderBar($conf);
 
-if (!$conf->isWritable()) {
+if (!$serverProfilePersistenceManager->isWritable($_SESSION['conf_config']->getName())) {
 	StatusMessage('WARN', _('The config file is not writable.'), _('Your changes cannot be saved until you make the file writable for the webserver user.'));
 	echo "<br>";
 }
@@ -599,9 +611,6 @@ function checkInput() {
     else {
         $conf->setHidePasswordPromptForExpiredPasswords('false');
     }
-	/*	if (!$conf->set_cacheTimeout($_POST['cachetimeout'])) {
-			$errors[] = array("ERROR", _("Cache timeout is invalid!"));
-		}*/
 	$conf->set_searchLimit($_POST['searchLimit']);
 	$conf->setHideDnPart($_POST['hideDnPart']);
 	if (isLAMProVersion()) {

@@ -2,11 +2,13 @@
 namespace LAM\CONFIG;
 use \LAMConfig;
 use \htmlStatusMessage;
+use LAMException;
+use ServerProfilePersistenceManager;
+
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2018  Roland Gruber
+  Copyright (C) 2009 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -47,51 +49,32 @@ lam_start_session();
 
 setlanguage();
 
-// get password
-if (isset($_POST['passwd'])) $passwd = $_POST['passwd'];
-
 // check if password was entered
 // if not: load login page
-if (!isset($passwd) && !isset($_SESSION['conf_isAuthenticated'])) {
+if (!isset($_SESSION['conf_isAuthenticated']) || ($_SESSION['conf_config']->getName() !== $_SESSION['conf_isAuthenticated'])) {
 	$_SESSION['conf_message'] = new htmlStatusMessage('ERROR', _("No password was entered!"));
 	/** go back to login if password is empty */
 	require('conflogin.php');
 	exit;
 }
 
-if (!isset($_SESSION['conf_config']) && isset($_POST['filename'])) {
-	$_SESSION['conf_config'] = new LAMConfig($_POST['filename']);
-}
 $conf = &$_SESSION['conf_config'];
+$confName = $_SESSION['conf_isAuthenticated'];
 
-// check if password is valid
-// if not: load login page
-if ((!isset($_SESSION['conf_isAuthenticated']) || !($_SESSION['conf_isAuthenticated'] === $conf->getName())) && !$conf->check_Passwd($passwd)) {
+$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
+try {
+	$serverProfilePersistenceManager->saveProfile($conf, $confName);
+	metaRefresh('../login.php?configSaveOk=1&configSaveFile=' . $confName);
+}
+catch (LAMException $e) {
+	metaRefresh('../login.php?configSaveFailed=1&configSaveFile=' . $confName);
+}
+finally {
+	// remove settings from session
 	$sessionKeys = array_keys($_SESSION);
 	for ($i = 0; $i < sizeof($sessionKeys); $i++) {
-		if (substr($sessionKeys[$i], 0, 5) == "conf_") unset($_SESSION[$sessionKeys[$i]]);
+		if (substr($sessionKeys[$i], 0, 5) == "conf_") {
+			unset($_SESSION[$sessionKeys[$i]]);
+		}
 	}
-	$_SESSION['conf_message'] = new htmlStatusMessage('ERROR', _("The password is invalid! Please try again."));
-	/** go back to login if password is invalid */
-	require('conflogin.php');
-	exit;
 }
-$_SESSION['conf_isAuthenticated'] = $conf->getName();
-
-
-$result = $conf->save();
-
-// remove settings from session
-$sessionKeys = array_keys($_SESSION);
-for ($i = 0; $i < sizeof($sessionKeys); $i++) {
-	if (substr($sessionKeys[$i], 0, 5) == "conf_") unset($_SESSION[$sessionKeys[$i]]);
-}
-
-if ($result === LAMConfig::SAVE_OK) {
-	metaRefresh('../login.php?configSaveOk=1&configSaveFile=' . $conf->getName());
-}
-else {
-	metaRefresh('../login.php?configSaveFailed=1&configSaveFile=' . $conf->getName());
-}
-
-?>

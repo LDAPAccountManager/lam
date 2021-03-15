@@ -1,9 +1,12 @@
 <?php
+namespace LAM\TYPES;
 use PHPUnit\Framework\TestCase;
+use user;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2016 - 2019  Roland Gruber
+  Copyright (C) 2016 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -24,12 +27,12 @@ use PHPUnit\Framework\TestCase;
 require_once 'lam/lib/types.inc';
 
 /**
- * Checks ListAttribute.
+ * Checks code in types.inc.
  *
  * @author Roland Gruber
  *
  */
-class ListAttributeTest extends TestCase {
+class TypesTest extends TestCase {
 
 	private $type;
 
@@ -40,17 +43,25 @@ class ListAttributeTest extends TestCase {
 	}
 
 	public function testPreTranslated() {
-		$attr = new \LAM\TYPES\ListAttribute('#uid', $this->type);
+		$attr = new ListAttribute('#uid', $this->type);
 		$this->assertEquals('User name', $attr->getAlias());
 		$this->assertEquals('uid', $attr->getAttributeName());
 	}
 
 	public function testCustomAlias() {
-		$attr = new \LAM\TYPES\ListAttribute('uid:My translation', $this->type);
+		$attr = new ListAttribute('uid:My translation', $this->type);
 		$this->assertEquals('My translation', $attr->getAlias());
 		$this->assertEquals('uid', $attr->getAttributeName());
 	}
 
+	public function testIsValidTypeId() {
+		$this->assertTrue(TypeManager::isValidTypeId('abc'));
+		$this->assertTrue(TypeManager::isValidTypeId('abc123'));
+		$this->assertTrue(TypeManager::isValidTypeId('abc-123'));
+		$this->assertTrue(TypeManager::isValidTypeId('abc_123'));
+		$this->assertFalse(TypeManager::isValidTypeId(''));
+		$this->assertFalse(TypeManager::isValidTypeId('abc.123'));
+	}
+
 }
 
-?>

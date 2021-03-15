@@ -8,9 +8,7 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - lametc/:/etc/ldap-account-manager
       - lamconfig/:/var/lib/ldap-account-manager/config
-      - lamsession/:/var/lib/ldap-account-manager/sess
     environment:
       - LAM_PASSWORD=${LAM_PASSWORD}
       - LAM_LANG=en_US
@@ -43,9 +41,7 @@ services:
     hostname: ldap
 
 volumes:
-  lametc:
   lamconfig:
-  lamsession:
   ldap:
   slapd:
 

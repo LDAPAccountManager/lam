@@ -409,8 +409,10 @@ function equalHeight(elementIDs) {
 	}
 }
 
+window.lam.profilePdfEditor = window.lam.profilePdfEditor || {};
+
 /**
- * Shows the dialog to change the list settings.
+ * Shows the dialog to import/export account/PDF profiles.
  *
  * @param title dialog title
  * @param okText text for Ok button
@@ -418,7 +420,7 @@ function equalHeight(elementIDs) {
  * @param typeId account type
  * @param selectFieldName name of select box with profile name
  */
-function showDistributionDialog(title, okText, cancelText, typeId, type, selectFieldName) {
+window.lam.profilePdfEditor.showDistributionDialog = function(title, okText, cancelText, typeId, type, selectFieldName) {
 	// show dialog
 	var buttonList = {};
 	var dialogId = '';
@@ -445,6 +447,56 @@ function showDistributionDialog(title, okText, cancelText, typeId, type, selectF
 	} else if (type == 'import') {
 		equalWidth(new Array('#passwd_' + typeId, '#importProfiles'));
 	}
+}
+
+/**
+ * Shows the dialog to export PDF logos.
+ *
+ * @param title dialog title
+ * @param okText text for Ok button
+ * @param cancelText text for Cancel button
+ */
+window.lam.profilePdfEditor.showPdfLogoExportDialog = function(title, okText, cancelText) {
+	var selectedLogo = document.getElementById('logo').value;
+	document.getElementById('exportLogoName').value = selectedLogo;
+	var buttonList = {};
+	buttonList[okText] = function() {
+		document.forms['logoExportForm'].submit();
+	};
+	buttonList[cancelText] = function() {
+		jQuery(this).dialog("close");
+	};
+	jQuery('#logoExportDiv').dialog({
+		modal: true,
+		title: title,
+		dialogClass: 'defaultBackground',
+		buttons: buttonList,
+		width: 'auto'
+	});
+}
+
+/**
+ * Shows the dialog to import PDF logos.
+ *
+ * @param title dialog title
+ * @param okText text for Ok button
+ * @param cancelText text for Cancel button
+ */
+window.lam.profilePdfEditor.showPdfLogoImportDialog = function(title, okText, cancelText) {
+	var buttonList = {};
+	buttonList[okText] = function() {
+		document.forms['logoImportForm'].submit();
+	};
+	buttonList[cancelText] = function() {
+		jQuery(this).dialog("close");
+	};
+	jQuery('#logoImportDiv').dialog({
+		modal: true,
+		title: title,
+		dialogClass: 'defaultBackground',
+		buttons: buttonList,
+		width: 'auto'
+	});
 }
 
 /**

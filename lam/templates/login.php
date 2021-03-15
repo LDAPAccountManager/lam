@@ -15,11 +15,13 @@ use LAMException;
 use \Ldap;
 use \htmlResponsiveRow;
 use \htmlDiv;
+use ServerProfilePersistenceManager;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2020  Roland Gruber
+                2005 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -64,9 +66,6 @@ if (isLAMProVersion()) {
 	$licenseValidator->validateAndRedirect('config/mainlogin.php?invalidLicense=1', 'config/mainlogin.php?invalidLicense=2');
 }
 
-/** Upgrade functions */
-include_once(__DIR__ . "/../lib/upgrade.inc");
-
 // set session save path
 if (strtolower(session_module_name()) == 'files') {
 	session_save_path(dirname(__FILE__) . '/../sess');
@@ -78,7 +77,13 @@ session_destroy();
 lam_start_session();
 session_regenerate_id(true);
 
-$profiles = getConfigProfiles();
+$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
+$profiles = array();
+try {
+	$profiles = $serverProfilePersistenceManager->getProfiles();
+} catch (LAMException $e) {
+	logNewMessage(LOG_ERR, 'Unable to read server profiles: ' . $e->getTitle());
+}
 
 // save last selected login profile
 if (isset($_GET['useProfile'])) {
@@ -101,27 +106,30 @@ $_SESSION["cfgMain"] = $default_Config;
 setSSLCaCert();
 
 $default_Profile = $default_Config->default;
-if(isset($_COOKIE["lam_default_profile"]) && in_array($_COOKIE["lam_default_profile"], $profiles)) {
+if (isset($_COOKIE["lam_default_profile"]) && in_array($_COOKIE["lam_default_profile"], $profiles)) {
 	$default_Profile = $_COOKIE["lam_default_profile"];
-}
-// Reload loginpage after a profile change
-if(isset($_GET['useProfile']) && in_array($_GET['useProfile'], $profiles)) {
-	logNewMessage(LOG_DEBUG, "Change server profile to " . $_GET['useProfile']);
-	$_SESSION['config'] = new LAMConfig($_GET['useProfile']); // Recreate the config object with the submitted
-}
-// Load login page
-elseif (!empty($default_Profile) && in_array($default_Profile, $profiles)) {
-	$_SESSION["config"] = new LAMConfig($default_Profile); // Create new Config object
-}
-else if (sizeof($profiles) > 0) {
-	// use first profile as fallback
-	$_SESSION["config"] = new LAMConfig($profiles[0]);
-}
-else {
-	$_SESSION["config"] = null;
 }
 
 $error_message = null;
+
+try {
+    // Reload login page after a profile change
+	if (isset($_GET['useProfile']) && in_array($_GET['useProfile'], $profiles)) {
+		logNewMessage(LOG_DEBUG, "Change server profile to " . $_GET['useProfile']);
+		$_SESSION['config'] = $serverProfilePersistenceManager->loadProfile($_GET['useProfile']);
+	} // Load login page
+    elseif (!empty($default_Profile) && in_array($default_Profile, $profiles)) {
+		$_SESSION["config"] = $serverProfilePersistenceManager->loadProfile($default_Profile);
+	} // use first profile as fallback
+	else if (sizeof($profiles) > 0) {
+		$_SESSION["config"] = $serverProfilePersistenceManager->loadProfile($profiles[0]);
+	} else {
+		$_SESSION["config"] = null;
+	}
+}
+catch (LAMException $e) {
+    $error_message = $e->getTitle();
+}
 
 if (!isset($default_Config->default) || !in_array($default_Config->default, $profiles)) {
 	$error_message = _('No default profile set. Please set it in the server profile configuration.');
@@ -180,13 +188,14 @@ setlanguage(); // setting correct language
  * @param string $error_message error message to display
  * @param string $errorDetails error details
  * @param string $extraMessage extra message that is shown as info
+ * @throws LAMException error rendering login page
  */
 function display_LoginPage($licenseValidator, $error_message, $errorDetails = null, $extraMessage = null) {
 	$config_object = $_SESSION['config'];
 	$cfgMain = $_SESSION["cfgMain"];
 	logNewMessage(LOG_DEBUG, "Display login page");
 	// generate 256 bit key and initialization vector for user/passwd-encryption
-	if(function_exists('openssl_random_pseudo_bytes') && ($cfgMain->encryptSession == 'true')) {
+	if (function_exists('openssl_random_pseudo_bytes') && ($cfgMain->encryptSession == 'true')) {
 		$key = openssl_random_pseudo_bytes(32);
 		$iv = openssl_random_pseudo_bytes(16);
 		// save both in cookie
@@ -194,7 +203,8 @@ function display_LoginPage($licenseValidator, $error_message, $errorDetails = nu
 		setcookie("IV", base64_encode($iv), 0, "/", null, null, true);
 	}
 
-	$profiles = getConfigProfiles();
+	$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
+	$profiles = $serverProfilePersistenceManager->getProfiles();
 
 	echo $_SESSION["header"];
 	printHeaderContents('LDAP Account Manager', '..');
@@ -205,61 +215,11 @@ function display_LoginPage($licenseValidator, $error_message, $errorDetails = nu
 	// include all JavaScript files
 	printJsIncludes('..');
 
-	// upgrade if pdf/profiles contain single files
-	if (containsFiles('../config/profiles') || containsFiles('../config/pdf')) {
-		$result = testPermissions();
-		if (sizeof($result) > 0) {
-		    StatusMessage('ERROR', 'Unable to migrate configuration files. Please allow write access to these paths:', implode('<br>', $result));
-		}
-		else {
-			upgradeConfigToServerProfileFolders($profiles);
-			StatusMessage('INFO', 'Config file migration finished.');
-		}
-	}
-
 	if (isLAMProVersion() && $licenseValidator->isEvaluationLicense()) {
 		StatusMessage('INFO', _('Evaluation Licence'));
 	}
-	?>
+	displayLoginHeader();
 
-		<table border=0 width="100%" class="lamHeader ui-corner-all">
-			<tr>
-				<td align="left" height="30">
-					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">
-                        <span class="hide-on-tablet">&nbsp;</span>
-                        <span class="hide-on-mobile">
-                            <?php echo getLAMVersionText(); ?>
-                        </span>
-					</a>
-					<span class="hide-for-small">
-						<a href="http://www.ldap-account-manager.org/lamcms/lamPro"> <?php if (!isLAMProVersion()) { echo _("Want more features? Get LAM Pro!");} ?> </a>
-					</span>
-				</td>
-				<td align="right" height="30">
-					<a class="margin-right5" href="./config/index.php">
-                        <IMG alt="configuration" src="../graphics/tools.png">&nbsp;<span class="hide-for-small"><?php echo _("LAM configuration") ?></span>
-                    </a>
-                    <?php
-                    if (is_dir(__DIR__ . '/../docs/manual')) {
-                    ?>
-                        <span class="hide-on-mobile">&nbsp;&nbsp;</span>
-                        <a target="_blank" href="../docs/manual/index.html">
-                            <img class="align-middle" width="16" height="16" alt="help" src="../graphics/help.png">
-                            <span class="hide-on-tablet">&nbsp;</span>
-                            <span class="hide-on-mobile">
-                                <?php echo _("Help") ?>&nbsp;
-                            </span>
-                        </a>
-                    <?php
-                    }
-                    ?>
-				</td>
-			</tr>
-		</table>
-
-		<br>
-
-		<?php
 		if (!empty($config_object)) {
 			// check extensions
 			$extList = getRequiredExtensions();
@@ -499,6 +459,50 @@ function display_LoginPage($licenseValidator, $error_message, $errorDetails = nu
 <?php
 }
 
+/**
+ * Displays the header on the login page.
+ */
+function displayLoginHeader() : void {
+    ?>
+		<table border=0 width="100%" class="lamHeader ui-corner-all">
+			<tr>
+				<td align="left" height="30">
+					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">
+                        <span class="hide-on-tablet">&nbsp;</span>
+                        <span class="hide-on-mobile">
+                            <?php echo getLAMVersionText(); ?>
+                        </span>
+					</a>
+					<span class="hide-for-small">
+						<a href="http://www.ldap-account-manager.org/lamcms/lamPro"> <?php if (!isLAMProVersion()) { echo _("Want more features? Get LAM Pro!");} ?> </a>
+					</span>
+				</td>
+				<td align="right" height="30">
+					<a class="margin-right5" href="./config/index.php">
+                        <IMG alt="configuration" src="../graphics/tools.png">&nbsp;<span class="hide-for-small"><?php echo _("LAM configuration") ?></span>
+                    </a>
+                    <?php
+                    if (is_dir(__DIR__ . '/../docs/manual')) {
+                    ?>
+                        <span class="hide-on-mobile">&nbsp;&nbsp;</span>
+                        <a target="_blank" href="../docs/manual/index.html">
+                            <img class="align-middle" width="16" height="16" alt="help" src="../graphics/help.png">
+                            <span class="hide-on-tablet">&nbsp;</span>
+                            <span class="hide-on-mobile">
+                                <?php echo _("Help") ?>&nbsp;
+                            </span>
+                        </a>
+                    <?php
+                    }
+                    ?>
+				</td>
+			</tr>
+		</table>
+
+		<br>
+    <?php
+}
+
 // checking if the submitted username/password is correct.
 if(isset($_POST['checklogin'])) {
 	include_once(__DIR__ . "/../lib/ldap.inc"); // Include ldap.php which provides Ldap class
@@ -626,5 +630,8 @@ if(isset($_POST['checklogin'])) {
 }
 
 //displays the login window
-display_LoginPage($licenseValidator, $error_message);
-?>
+try {
+	display_LoginPage($licenseValidator, $error_message);
+} catch (LAMException $e) {
+    logNewMessage(LOG_ERR, 'Unable to render login page: ' . $e->getTitle());
+}

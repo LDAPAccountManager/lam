@@ -13,16 +13,17 @@ use \htmlSubTitle;
 use \htmlResponsiveInputTextarea;
 use \htmlHiddenInput;
 use \htmlSpacer;
-use LAM\PDF\PDFStructureReader;
+use LAM\PDF\PdfStructurePersistenceManager;
 use LAM\PDF\PDFTextSection;
 use LAM\PDF\PDFEntrySection;
 use LAM\PDF\PDFStructure;
 use LAM\PDF\PDFSectionEntry;
-use LAM\PDF\PDFStructureWriter;
+use LAMException;
+
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2007 - 2020  Roland Gruber
+                2007 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -102,20 +103,23 @@ if(isset($_GET['abort'])) {
 	exit;
 }
 
+$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
+
 // Load PDF structure from file if it is not defined in session
-if(!isset($_SESSION['currentPDFStructure'])) {
+if (!isset($_SESSION['currentPDFStructure'])) {
 	// Load structure file to be edit
-	$reader = new PDFStructureReader($_SESSION['config']->getName());
 	try {
-		if(isset($_GET['edit'])) {
-			$_SESSION['currentPDFStructure'] = $reader->read($type->getId(), $_GET['edit']);
+		if (isset($_GET['edit'])) {
+			$_SESSION['currentPDFStructure'] = $pdfStructurePersistenceManager->readPdfStructure($_SESSION['config']->getName(),
+                $type->getId(), $_GET['edit']);
 		}
 		// Load default structure file when creating a new one
 		else {
-			$_SESSION['currentPDFStructure'] = $reader->read($type->getId(), 'default');
+			$_SESSION['currentPDFStructure'] = $pdfStructurePersistenceManager->readPdfStructure($_SESSION['config']->getName(),
+                $type->getId(), 'default');
 		}
 	}
-	catch (\LAMException $e) {
+	catch (LAMException $e) {
 		metaRefresh('pdfmain.php?loadFailed=1&name=' . $_GET['edit']);
 		exit;
 	}
@@ -135,14 +139,13 @@ if (!empty($_POST['form_submit'])) {
 // main pdf structure page
 $saveErrors = array();
 if(isset($_GET['submit'])) {
-	$writer = new PDFStructureWriter($_SESSION['config']->getName());
 	try {
-		$writer->write($type->getId(), $_POST['pdfname'], $_SESSION['currentPDFStructure']);
+	    $pdfStructurePersistenceManager->savePdfStructure($_SESSION['config']->getName(), $type->getId(), $_POST['pdfname'], $_SESSION['currentPDFStructure']);
 		unset($_SESSION['currentPDFStructure']);
 		metaRefresh('pdfmain.php?savedSuccessfully=' . $_POST['pdfname']);
 		exit;
 	}
-	catch (\LAMException $e) {
+	catch (LAMException $e) {
 		$saveErrors[] = array('ERROR', $e->getTitle(), $e->getMessage());
 	}
 }
@@ -218,10 +221,10 @@ else if (isset($_POST['pdfname'])) {
 // headline
 $headline = $_SESSION['currentPDFStructure']->getTitle();
 // logo
-$logoFiles = \LAM\PDF\getAvailableLogos($_SESSION['config']->getName());
+$logoFiles = $pdfStructurePersistenceManager->getPdfLogos($_SESSION['config']->getName(), true);
 $logos = array(_('No logo') => 'none');
 foreach($logoFiles as $logoFile) {
-	$logos[$logoFile['filename'] . ' (' . $logoFile['infos'][0] . ' x ' . $logoFile['infos'][1] . ")"] = $logoFile['filename'];
+	$logos[$logoFile->getName() . ' (' . $logoFile->getWidth() . ' x ' . $logoFile->getHeight() . ")"] = $logoFile->getName();
 }
 $selectedLogo = array('printLogo.jpg');
 if (isset($_SESSION['currentPDFStructure'])) {

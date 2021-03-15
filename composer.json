@@ -5,6 +5,8 @@
   },
   "require": {
     "ext-ldap": "*",
-    "ext-json": "*"
+    "ext-json": "*",
+    "ext-pdo": "*",
+    "ext-xmlreader": "*"
   }
 }

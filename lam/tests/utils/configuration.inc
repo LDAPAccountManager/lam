@@ -25,23 +25,28 @@ include_once (dirname(__FILE__) . '/../../lib/config.inc');
 
 /**
  * Creates a default configuration and adds it to $_SESSION['cfgMain'] and $_SESSION['config'].
+ * @throws LAMException
  */
 function testCreateDefaultConfig() {
 	$cfgMain = new LAMCfgMain();
 	$cfgMain->logDestination = 'NONE';
 	$_SESSION['cfgMain'] = $cfgMain;
-	$cfgPath = dirname(__FILE__) . '/../../config/d_LAMConfigTest.conf';
+	$cfgPath = dirname(__FILE__) . '/../../config/' . LAMConfigTest::FILE_NAME . '.conf';
 	if (file_exists($cfgPath)) {
 		unlink($cfgPath);
 	}
 	touch($cfgPath);
-	$config = new LAMConfig('d_LAMConfigTest');
+	$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
+	$config = $serverProfilePersistenceManager->loadProfile(LAMConfigTest::FILE_NAME);
 	$_SESSION['config'] = $config;
 	$_SESSION['language'] = 'en_GB.utf8:UTF-8:English (Great Britain)';
 }
 
 function testDeleteDefaultConfig() {
-	deleteConfigProfile('phpunit');
+	$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
+	try {
+		$serverProfilePersistenceManager->deleteProfile('phpunit');
+	} catch (LAMException $e) {
+		logNewMessage(LOG_ERR, $e->getTitle());
+	}
 }
-
-?>

@@ -13,10 +13,13 @@ use \htmlOutputText;
 use \htmlHiddenInput;
 use \htmlDiv;
 use \htmlLink;
+use LAMException;
+use ServerProfilePersistenceManager;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2020  Roland Gruber
+  Copyright (C) 2003 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -58,7 +61,14 @@ setlanguage();
 
 
 $cfg = new LAMCfgMain();
-$files = getConfigProfiles();
+$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
+$files = array();
+try {
+	$files = $serverProfilePersistenceManager->getProfiles();
+}
+catch (LAMException $e) {
+	logNewMessage(LOG_ERR, 'Unable to read server profiles: ' . $e->getTitle());
+}
 
 // check if submit button was pressed
 if (isset($_POST['action'])) {
@@ -70,16 +80,15 @@ if (isset($_POST['action'])) {
 	elseif ($_POST['action'] == "add") {
 		// check profile password
 		if ($_POST['addpassword'] && $_POST['addpassword2'] && ($_POST['addpassword'] == $_POST['addpassword2'])) {
-			$result = createConfigProfile($_POST['addprofile'], $_POST['addpassword'], $_POST['addTemplate']);
-			if ($result === true) {
+			try {
+				$serverProfilePersistenceManager->createProfileFromTemplate($_POST['addprofile'], $_POST['addTemplate'], $_POST['addpassword']);
 				$_SESSION['conf_isAuthenticated'] = $_POST['addprofile'];
-				$_SESSION['conf_config'] = new LAMConfig($_POST['addprofile']);
+				$_SESSION['conf_config'] = $serverProfilePersistenceManager->loadProfile($_POST['addprofile']);
 				$_SESSION['conf_messages'][] = array('INFO', _("Created new profile."), $_POST['addprofile']);
 				metaRefresh('confmain.php');
 				exit;
-			}
-			else {
-				$error = $result;
+			} catch (LAMException $e) {
+			    $error = $e->getTitle();
 			}
 		}
 		else {
@@ -88,59 +97,58 @@ if (isset($_POST['action'])) {
 	}
 	// rename profile
 	elseif ($_POST['action'] == "rename") {
-		if (preg_match("/^[a-z0-9_-]+$/i", $_POST['oldfilename']) && preg_match("/^[a-z0-9_-]+$/i", $_POST['renfilename']) && !in_array($_POST['renfilename'], getConfigProfiles())) {
-			if (rename("../../config/" . $_POST['oldfilename'] . ".conf", "../../config/" . $_POST['renfilename'] . ".conf")) {
-			    // rename pdf and profiles folder
-			    rename("../../config/profiles/" . $_POST['oldfilename'], "../../config/profiles/" . $_POST['renfilename']);
-			    rename("../../config/pdf/" . $_POST['oldfilename'], "../../config/pdf/" . $_POST['renfilename']);
-				// rename sqlite database if any
-				if (file_exists("../../config/" . $_POST['oldfilename'] . ".sqlite")) {
-					rename("../../config/" . $_POST['oldfilename'] . ".sqlite", "../../config/" . $_POST['renfilename'] . ".sqlite");
-				}
-				$msg = _("Renamed profile.");
-			}
-			else $error = _("Could not rename file!");
-			// update default profile setting if needed
-			if ($cfg->default == $_POST['oldfilename']) {
-				$cfg->default = $_POST['renfilename'];
-				$cfg->save();
-			}
-			// reread profile list
-			$files = getConfigProfiles();
-		}
-		else $error = _("Profile name is invalid!");
+        try {
+            $serverProfilePersistenceManager->renameProfile($_POST['oldfilename'], $_POST['renfilename']);
+            // reread profile list
+            $files = $serverProfilePersistenceManager->getProfiles();
+            $msg = _("Renamed profile.");
+        } catch (LAMException $e) {
+            logNewMessage(LOG_ERR, 'Unable to read server profiles: ' . $e->getTitle());
+            $error = $e->getTitle();
+        }
 	}
 	// delete profile
 	elseif ($_POST['action'] == "delete") {
-		if (deleteConfigProfile($_POST['delfilename']) == null) {
-			$msg = _("Profile deleted.");
-			// update default profile setting if needed
-			if ($cfg->default == $_POST['delfilename']) {
-				$filesNew = array_delete(array($_POST['delfilename']), $files);
-				if (sizeof($filesNew) > 0) {
-					sort($filesNew);
-					$cfg->default = $filesNew[0];
-					$cfg->save();
-				}
-			}
-			// reread profile list
-			$files = getConfigProfiles();
-		}
-		else $error = _("Unable to delete profile!");
+        try {
+            $serverProfilePersistenceManager->deleteProfile($_POST['delfilename']);
+	        // update default profile setting if needed
+	        if ($cfg->default == $_POST['delfilename']) {
+		        $filesNew = array_delete(array($_POST['delfilename']), $files);
+		        if (sizeof($filesNew) > 0) {
+			        sort($filesNew);
+			        $cfg->default = $filesNew[0];
+			        $cfg->save();
+		        }
+	        }
+	        // reread profile list
+            $files = $serverProfilePersistenceManager->getProfiles();
+	        $msg = _("Profile deleted.");
+        } catch (LAMException $e) {
+            $error = _("Unable to delete profile!");
+            logNewMessage(LOG_ERR, 'Unable to delete server profile: ' . $e->getTitle());
+        }
 	}
 	// set new profile password
 	elseif ($_POST['action'] == "setpass") {
 		if (preg_match("/^[a-z0-9_-]+$/i", $_POST['setprofile'])) {
 			if ($_POST['setpassword'] && $_POST['setpassword2'] && ($_POST['setpassword'] == $_POST['setpassword2'])) {
-				$config = new LAMConfig($_POST['setprofile']);
-				$config->set_Passwd($_POST['setpassword']);
-				$config->save();
+				try {
+					$config = $serverProfilePersistenceManager->loadProfile($_POST['setprofile']);
+					$config->set_Passwd($_POST['setpassword']);
+					$serverProfilePersistenceManager->saveProfile($config, $_POST['setprofile']);
+					$msg = _("New password set successfully.");
+				} catch (LAMException $e) {
+				    $error = $e->getTitle();
+				}
 				$config = null;
-				$msg = _("New password set successfully.");
 			}
-			else $error = _("Profile passwords are different or empty!");
+			else {
+			    $error = _("Profile passwords are different or empty!");
+			}
 		}
-		else $error = _("Profile name is invalid!");
+		else {
+		    $error = _("Profile name is invalid!");
+		}
 	}
 	// set default profile
 	elseif ($_POST['action'] == "setdefault") {
@@ -151,7 +159,9 @@ if (isset($_POST['action'])) {
 			$configMain = null;
 			$msg = _("New default profile set successfully.");
 		}
-		else $error = _("Profile name is invalid!");
+		else {
+		    $error = _("Profile name is invalid!");
+		}
 	}
 }
 
@@ -224,17 +234,17 @@ $profileNewPwd2->setSameValueFieldID('addpassword');
 $box->add($profileNewPwd2, 12);
 $existing = array();
 foreach ($files as $file) {
-	$existing[$file] = $file . '.conf';
+	$existing[$file] = $file;
 }
 $builtIn = array();
-foreach (getConfigTemplates() as $file) {
-	$builtIn[$file] = $file . '.conf.sample';
+foreach ($serverProfilePersistenceManager->getConfigTemplates() as $file) {
+	$builtIn[$file] = $file . '.sample';
 }
 $templates = array(
 	_('Built-in templates') => $builtIn,
 	_('Existing server profiles') => $existing,
 );
-$addTemplateSelect = new htmlResponsiveSelect('addTemplate', $templates, array('unix.conf.sample'), _('Template'), '267');
+$addTemplateSelect = new htmlResponsiveSelect('addTemplate', $templates, array('unix.sample'), _('Template'), '267');
 $addTemplateSelect->setContainsOptgroups(true);
 $addTemplateSelect->setHasDescriptiveElements(true);
 $box->add($addTemplateSelect, 12);

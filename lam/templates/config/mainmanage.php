@@ -1,6 +1,7 @@
 <?php
 namespace LAM\CONFIG;
 
+use LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use \LAMCfgMain;
 use \htmlTable;
 use \htmlTitle;
@@ -23,11 +24,12 @@ use \htmlResponsiveInputCheckbox;
 use \htmlResponsiveInputField;
 use \htmlDiv;
 use \htmlHiddenInput;
+use PDO;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2020  Roland Gruber
+  Copyright (C) 2003 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -91,6 +93,27 @@ $errors = array();
 $messages = array();
 // check if submit button was pressed
 if (isset($_POST['submitFormData'])) {
+    // set database
+    $cfg->configDatabaseType = $_POST['configDatabaseType'];
+	$cfg->configDatabaseServer = $_POST['configDatabaseServer'];
+	$cfg->configDatabasePort = $_POST['configDatabasePort'];
+	$cfg->configDatabaseName = $_POST['configDatabaseName'];
+	$cfg->configDatabaseUser = $_POST['configDatabaseUser'];
+	$cfg->configDatabasePassword = $_POST['configDatabasePassword'];
+	if ($cfg->configDatabaseType === LAMCfgMain::DATABASE_MYSQL) {
+		if (empty($cfg->configDatabaseServer) || !get_preg($cfg->configDatabaseServer, 'hostname')) {
+			$errors[] = _('Please enter a valid database host name.');
+		}
+		if (empty($cfg->configDatabaseName)) {
+			$errors[] = _('Please enter a valid database name.');
+		}
+		if (empty($cfg->configDatabaseUser)) {
+			$errors[] = _('Please enter a valid database user.');
+		}
+		if (empty($cfg->configDatabasePassword)) {
+			$errors[] = _('Please enter a valid database password.');
+		}
+    }
 	// set master password
 	if (isset($_POST['masterpassword']) && ($_POST['masterpassword'] != "")) {
 		if ($_POST['masterpassword'] && $_POST['masterpassword2'] && ($_POST['masterpassword'] == $_POST['masterpassword2'])) {
@@ -328,6 +351,45 @@ printHeaderContents(_("Edit general settings"), '../..');
 		$row->add(new htmlStatusMessage('WARN', _('The config file is not writable.'), _('Your changes cannot be saved until you make the file writable for the webserver user.')), 12);
 	}
 
+	// database
+	if (extension_loaded('PDO') && isDeveloperVersion(LAMVersion())) {
+		$row->add(new htmlSubTitle(_('Configuration storage')), 12);
+		$storageProviders = array(
+			_('Local file system') => LAMCfgMain::DATABASE_FILE_SYSTEM
+		);
+		if (in_array('mysql', PDO::getAvailableDrivers())) {
+			$storageProviders['MySQL'] = LAMCfgMain::DATABASE_MYSQL;
+		}
+		$storageProviderSelect = new htmlResponsiveSelect('configDatabaseType', $storageProviders, array($cfg->configDatabaseType), _('Database type'), '293');
+		$storageProviderSelect->setHasDescriptiveElements(true);
+		$dbRowsToShow = array(
+		    LAMCfgMain::DATABASE_FILE_SYSTEM => array(),
+            LAMCfgMain::DATABASE_MYSQL => array('configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser', 'configDatabasePassword')
+        );
+		$storageProviderSelect->setTableRowsToShow($dbRowsToShow);
+		$dbRowsToHide = array(
+			LAMCfgMain::DATABASE_FILE_SYSTEM => array('configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser', 'configDatabasePassword'),
+			LAMCfgMain::DATABASE_MYSQL => array()
+        );
+		$storageProviderSelect->setTableRowsToHide($dbRowsToHide);
+		$row->add($storageProviderSelect, 12);
+		$dbHost = new htmlResponsiveInputField(_('Database host'), 'configDatabaseServer', $cfg->configDatabaseServer, '273');
+		$dbHost->setRequired(true);
+		$row->add($dbHost, 12);
+		$dbPort = new htmlResponsiveInputField(_('Database port'), 'configDatabasePort', $cfg->configDatabasePort, '274');
+		$row->add($dbPort, 12);
+		$dbName = new htmlResponsiveInputField(_('Database name'), 'configDatabaseName', $cfg->configDatabaseName, '276');
+		$dbName->setRequired(true);
+		$row->add($dbName, 12);
+		$dbUser = new htmlResponsiveInputField(_('Database user'), 'configDatabaseUser', $cfg->configDatabaseUser, '275');
+		$dbUser->setRequired(true);
+		$row->add($dbUser, 12);
+		$dbPassword = new htmlResponsiveInputField(_('Database password'), 'configDatabasePassword', deobfuscateText($cfg->configDatabasePassword), '275');
+		$dbPassword->setRequired(true);
+		$dbPassword->setIsPassword(true);
+		$row->add($dbPassword, 12);
+    }
+
 	// license
 	if (isLAMProVersion()) {
 		$row->add(new htmlSubTitle(_('Licence')), 12);
@@ -523,7 +585,8 @@ printHeaderContents(_("Edit general settings"), '../..');
 	if (extension_loaded('PDO')
 		&& in_array('sqlite', \PDO::getAvailableDrivers())) {
 		include_once __DIR__ . '/../../lib/webauthn.inc';
-		$database = new \LAM\LOGIN\WEBAUTHN\PublicKeyCredentialSourceRepositorySQLite();
+		$webAuthnManager = new WebauthnManager();
+		$database = $webAuthnManager->getDatabase();
 		if ($database->hasRegisteredCredentials()) {
 			$row->add(new htmlSubTitle(_('WebAuthn devices')), 12);
 			$webauthnSearchField = new htmlResponsiveInputField(_('User DN'), 'webauthn_searchTerm', null, '252');

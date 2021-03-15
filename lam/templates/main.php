@@ -1,10 +1,14 @@
 <?php
 namespace LAM\INIT;
 
+use LAM\PDF\PdfStructurePersistenceManager;
+use LAM\PROFILES\AccountProfilePersistenceManager;
+use LAMException;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2020  Roland Gruber
+  Copyright (C) 2003 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -40,8 +44,14 @@ enforceUserIsLoggedIn();
 
 setlanguage();
 
-\LAM\PROFILES\installProfileTemplates();
-\LAM\PDF\installPDFTemplates();
+$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
+$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
+try {
+	$accountProfilePersistenceManager->installAccountProfileTemplates($_SESSION['config']->getName());
+	$pdfStructurePersistenceManager->installPDFTemplates($_SESSION['config']->getName());
+} catch (LAMException $e) {
+	logNewMessage(LOG_ERR, $e->getTitle());
+}
 
 $conf = $_SESSION['config'];
 
