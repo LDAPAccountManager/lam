@@ -1,10 +1,10 @@
-ldap-account-manager (7.5.DEV-1) unstable; urgency=medium
+ldap-account-manager (7.5.RC1-1) unstable; urgency=medium
 
   * new upstream release
   * Fix "node-uglify is deprecated in favor of uglifyjs" by using
     uglifyjs (Closes: #979896)
 
- -- Roland Gruber <post@rolandgruber.de>  Sun, 06 Dec 2020 17:05:33 +0200
+ -- Roland Gruber <post@rolandgruber.de>  Wed, 17 Mar 2021 17:05:33 +0200
 
 ldap-account-manager (7.4-1) unstable; urgency=medium
 
