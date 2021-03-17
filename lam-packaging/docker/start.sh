@@ -30,6 +30,7 @@ fi
 
 LAM_SKIP_PRECONFIGURE="${LAM_SKIP_PRECONFIGURE:-false}"
 if [ "$LAM_SKIP_PRECONFIGURE" != "true" ]; then
+  echo "Configuring LAM"
 
   LAM_LANG="${LAM_LANG:-en_US}"
   export LAM_PASSWORD="${LAM_PASSWORD:-lam}"
@@ -45,6 +46,15 @@ if [ "$LAM_SKIP_PRECONFIGURE" != "true" ]; then
     s|^password:.*|password: ${LAM_PASSWORD_SSHA}|;
 EOF
   unset LAM_PASSWORD
+
+  set +e
+  ls -l /var/lib/ldap-account-manager/config/lam.conf
+  cfgFilesExist=$?
+  set -e
+  if [ $cfgFilesExist -ne 0 ]; then
+    cp /var/lib/ldap-account-manager/config/unix.sample.conf /var/lib/ldap-account-manager/config/lam.conf
+	  chown www-data /var/lib/ldap-account-manager/config/lam.conf
+  fi
 
   sed -i -f- /var/lib/ldap-account-manager/config/lam.conf <<- EOF
     s|^ServerURL:.*|ServerURL: ${LDAP_SERVER}|;
