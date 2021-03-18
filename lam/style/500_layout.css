@@ -234,6 +234,8 @@ textarea {
 
 table.lamHeader {
   background-image: url(lam-images/headerLine.png);
+  background-repeat: repeat-x;
+  background-size: contain;
   padding: 0px;
   height: 35px;
   margin-bottom: 0.5rem;
@@ -555,6 +557,7 @@ a.lamLogo {
 	vertical-align: middle;
 	white-space: nowrap;
 	margin-left: 5px;
+	float: left;
 }
 
 input.markFail {

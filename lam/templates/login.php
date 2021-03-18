@@ -474,6 +474,7 @@ function displayLoginHeader() : void {
                         </span>
 					</a>
 					<span class="hide-for-small">
+                        &nbsp;&nbsp;&nbsp;&nbsp;
 						<a href="http://www.ldap-account-manager.org/lamcms/lamPro"> <?php if (!isLAMProVersion()) { echo _("Want more features? Get LAM Pro!");} ?> </a>
 					</span>
 				</td>
