@@ -70,7 +70,6 @@ class PdfStructurePersistenceManager {
 	public function __construct() {
 		$configDb = new ConfigurationDatabase(new LAMCfgMain());
 		if ($configDb->useRemoteDb()) {
-			// TODO
 			$this->strategy = new PdfStructurePersistenceStrategyPdo($configDb->getPdo());
 		} else {
 			$this->strategy = new PdfStructurePersistenceStrategyFiles();
