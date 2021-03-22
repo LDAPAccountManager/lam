@@ -2,6 +2,7 @@
 
 use LAM\PDF\PdfStructurePersistenceManager;
 use LAM\TYPES\ConfiguredType;
+use function LAM\PDF\createModulePDF;
 
 /*
 
@@ -187,7 +188,9 @@ class lamList {
 			$this->listCreateSortMapping($this->entries);
 		}
 		// insert HTML fragment from listDoPost
-		echo $postFragment;
+        if ($postFragment !== null) {
+            parseHtml('', $postFragment, array(), true, $this->tabindex, $this->type->getScope());
+        }
 		// config dialog
 		$this->listPrintConfigurationPage();
 		// show form
@@ -635,7 +638,7 @@ class lamList {
 	/**
 	* Manages all POST actions (e.g. button pressed) for the account lists.
 	*
-	* @return String HTML fragment to insert into beginning of account list
+	* @return htmlElement|null HTML fragment to insert into beginning of account list
 	*/
 	protected function listDoPost() {
 		if (!empty($_POST)) {
@@ -686,59 +689,61 @@ class lamList {
 		}
 		// PDF creation Ok
 		if (isset($_POST['createPDFok'])) {
-			$pdfStruct = $_POST['pdf_structure'];
-			$pdfFont = $_POST['pdf_font'];
-			$option = $_POST['createFor'];
-			$filename = '';
-			// create for clicked account
-			if ($option == 'DN') {
-				$_SESSION["accountPDF"] = new accountContainer($this->type, "accountPDF");
-				$_SESSION["accountPDF"]->load_account(base64_decode($_POST['clickedAccount']));
-				$filename = \LAM\PDF\createModulePDF(array($_SESSION["accountPDF"]), $pdfStruct, $pdfFont);
-				unset($_SESSION["accountPDF"]);
-			}
-			// create for all selected accounts
-			elseif ($option == 'SELECTED') {
-				// search for checkboxes
-				$accounts = array_keys($_POST, "on");
-				$list = array();
-				// load accounts from LDAP
-				for ($i = 0; $i < sizeof($accounts); $i++) {
-					$_SESSION["accountPDF-$i"] = new accountContainer($this->type, "accountPDF-$i");
-					$_SESSION["accountPDF-$i"]->load_account(base64_decode($accounts[$i]));
-					$list[$i] = $_SESSION["accountPDF-$i"];
-				}
-				if (sizeof($list) > 0) {
-					$filename = \LAM\PDF\createModulePDF($list, $pdfStruct, $pdfFont);
-					for ($i = 0; $i < sizeof($accounts); $i++) {
-						unset($_SESSION["accountPDF-$i"]);
-					}
-				}
-			}
-			// create for all accounts
-			elseif ($option == 'ALL') {
-				$list = array();
-				$entriesCount = sizeof($this->entries);
-				for ($i = 0; $i < $entriesCount; $i++) {
-					$_SESSION["accountPDF-$i"] = new accountContainer($this->type, "accountPDF-$i");
-					$_SESSION["accountPDF-$i"]->load_account($this->entries[$i]['dn']);
-					$list[$i] = $_SESSION["accountPDF-$i"];
-				}
-				if (sizeof($list) > 0) {
-					$filename = \LAM\PDF\createModulePDF($list, $pdfStruct, $pdfFont);
-					for ($i = 0; $i < $entriesCount; $i++) {
-						// clean session
-						unset($_SESSION["accountPDF-$i"]);
-					}
-				}
-			}
-			elseif ($option == 'SESSION') {
-				$filename = \LAM\PDF\createModulePDF(array($_SESSION[$_POST['PDFSessionID']]), $pdfStruct, $pdfFont);
-				unset($_SESSION[$_POST['PDFSessionID']]);
-			}
-			if ($filename != '') {
-				return "<script type=\"text/javascript\">window.open('" . $filename . "', '_blank');</script>";
-			}
+		    try {
+			    $pdfStruct = $_POST['pdf_structure'];
+			    $pdfFont = $_POST['pdf_font'];
+			    $option = $_POST['createFor'];
+			    $filename = '';
+			    // create for clicked account
+			    if ($option == 'DN') {
+				    $_SESSION["accountPDF"] = new accountContainer($this->type, "accountPDF");
+				    $_SESSION["accountPDF"]->load_account(base64_decode($_POST['clickedAccount']));
+				    $filename = createModulePDF(array($_SESSION["accountPDF"]), $pdfStruct, $pdfFont);
+				    unset($_SESSION["accountPDF"]);
+			    } // create for all selected accounts
+                elseif ($option == 'SELECTED') {
+				    // search for checkboxes
+				    $accounts = array_keys($_POST, "on");
+				    $list = array();
+				    // load accounts from LDAP
+				    for ($i = 0; $i < sizeof($accounts); $i++) {
+					    $_SESSION["accountPDF-$i"] = new accountContainer($this->type, "accountPDF-$i");
+					    $_SESSION["accountPDF-$i"]->load_account(base64_decode($accounts[$i]));
+					    $list[$i] = $_SESSION["accountPDF-$i"];
+				    }
+				    if (sizeof($list) > 0) {
+					    $filename = createModulePDF($list, $pdfStruct, $pdfFont);
+					    for ($i = 0; $i < sizeof($accounts); $i++) {
+						    unset($_SESSION["accountPDF-$i"]);
+					    }
+				    }
+			    } // create for all accounts
+                elseif ($option == 'ALL') {
+				    $list = array();
+				    $entriesCount = sizeof($this->entries);
+				    for ($i = 0; $i < $entriesCount; $i++) {
+					    $_SESSION["accountPDF-$i"] = new accountContainer($this->type, "accountPDF-$i");
+					    $_SESSION["accountPDF-$i"]->load_account($this->entries[$i]['dn']);
+					    $list[$i] = $_SESSION["accountPDF-$i"];
+				    }
+				    if (sizeof($list) > 0) {
+					    $filename = createModulePDF($list, $pdfStruct, $pdfFont);
+					    for ($i = 0; $i < $entriesCount; $i++) {
+						    // clean session
+						    unset($_SESSION["accountPDF-$i"]);
+					    }
+				    }
+			    } elseif ($option == 'SESSION') {
+				    $filename = createModulePDF(array($_SESSION[$_POST['PDFSessionID']]), $pdfStruct, $pdfFont);
+				    unset($_SESSION[$_POST['PDFSessionID']]);
+			    }
+			    if ($filename != '') {
+				    return new htmlJavaScript("window.open('" . $filename . "', '_blank');");
+			    }
+		    }
+		    catch (LAMException $e) {
+		        return new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
+            }
 		}
 		// check if back from configuration page
 		if ((sizeof($this->configOptions) > 0) && isset($_POST['saveConfigOptions'])) {
@@ -752,7 +757,7 @@ class lamList {
 			// notify subclasses
 			$this->listConfigurationChanged();
 		}
-		return '';
+		return null;
 	}
 
 	/**

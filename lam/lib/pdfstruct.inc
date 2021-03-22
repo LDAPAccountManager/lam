@@ -1024,21 +1024,42 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 	 * @inheritDoc
 	 */
 	public function deletePdfStructureTemplate(string $scope, string $name): void {
-		// TODO: Implement deletePdfStructureTemplate() method.
+		$statement = $this->pdo->prepare("DELETE FROM " . self::TABLE_NAME_TEMPLATES . " WHERE scope = ? AND name = ?");
+		$statement->execute(array($scope, $name));
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function readPdfStructureTemplate(string $scope, string $name): PDFStructure {
-		// TODO: Implement readPdfStructureTemplate() method.
+		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME_TEMPLATES . ' WHERE scope = ? AND name = ?');
+		$statement->execute(array($scope, $name));
+		$results = $statement->fetchAll();
+		if (empty($results)) {
+			throw new LAMException(_('Unable to read PDF structure.'));
+		}
+		$structure = new PDFStructure();
+		$structure->import(json_decode($results[0]['data'], true));
+		return $structure;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function savePdfStructureTemplate(string $scope, string $name, PDFStructure $structure): void {
-		// TODO: Implement savePdfStructureTemplate() method.
+		$json = json_encode($structure->export());
+		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME_TEMPLATES . " WHERE scope = ? AND name = ?");
+		$statement->execute(array($scope, $name));
+		$results = $statement->fetchAll();
+		$isExisting = !empty($results);
+		if ($isExisting) {
+			$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME_TEMPLATES . " SET data = ? WHERE scope = ? AND name = ?");
+			$statement->execute(array($json, $scope, $name));
+		}
+		else {
+			$statement = $this->pdo->prepare("INSERT INTO " . self::TABLE_NAME_TEMPLATES . " (scope, name, data) VALUES (?, ?, ?)");
+			$statement->execute(array($scope, $name, $json));
+		}
 	}
 
 	/**

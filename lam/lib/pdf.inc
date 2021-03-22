@@ -1,6 +1,7 @@
 <?php
 namespace LAM\PDF;
 use LAM\ImageUtils\ImageManipulationFactory;
+use LAMException;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -57,6 +58,7 @@ include_once('pdfstruct.inc');
  * @param string $font font to use (e.g. DejaVu)
  * @param $returnAsString returns the PDF output as String value instead of writing it to a file
  * @return String PDF file name
+ * @throws LAMException error creating PDF
  */
 function createModulePDF($accounts, $pdf_structure, $font, $returnAsString = false) {
 	$account_type = $accounts[0]->get_type();
