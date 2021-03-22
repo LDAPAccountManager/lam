@@ -8,9 +8,11 @@ use LAMCfgMain;
 use LAMConfig;
 use \LAMException;
 use \LAM\ImageUtils\ImageManipulationFactory;
+use PDO;
 use ServerProfilePersistenceManager;
 use XMLReader;
 use XMLWriter;
+use function LAM\PERSISTENCE\dbTableExists;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -68,8 +70,7 @@ class PdfStructurePersistenceManager {
 	public function __construct() {
 		$configDb = new ConfigurationDatabase(new LAMCfgMain());
 		if ($configDb->useRemoteDb()) {
-			// TODO
-			$this->strategy = new PdfStructurePersistenceStrategyFiles();
+			$this->strategy = new PdfStructurePersistenceStrategyPdo($configDb->getPdo());
 		} else {
 			$this->strategy = new PdfStructurePersistenceStrategyFiles();
 		}
@@ -133,7 +134,7 @@ class PdfStructurePersistenceManager {
 	/**
 	 * Returns a list of template logo file names.
 	 *
-	 * @return array logo file names
+	 * @return string[] logo file names
 	 */
 	public function getPdfTemplateLogoNames() : array {
 		return $this->strategy->getPdfTemplateLogoNames();
@@ -509,7 +510,7 @@ interface PdfStructurePersistenceStrategy {
 	/**
 	 * Returns a list of template logo file names.
 	 *
-	 * @return array logo file names
+	 * @return string[] logo file names
 	 */
 	public function getPdfTemplateLogoNames() : array;
 
@@ -923,6 +924,307 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 	 */
 	private function getPdfStructureFileName(string $confName, string $typeId, string $name) : string {
 		return dirname(__FILE__) . '/../config/pdf/' . $confName . '/' . $name . '.' . $typeId . '.xml';
+	}
+
+}
+
+/**
+ * Manages PDF structures on file system.
+ *
+ * @package LAM\PDF
+ */
+class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrategy {
+
+	const TABLE_NAME = 'pdf_structures';
+	const TABLE_NAME_LOGOS = 'pdf_logos';
+	const TABLE_NAME_TEMPLATES = 'pdf_structures_templates';
+	const TABLE_NAME_TEMPLATES_LOGOS = 'pdf_logos_templates';
+
+	/**
+	 * @var PDO
+	 */
+	private $pdo;
+
+	/**
+	 * Constructor
+	 *
+	 * @param PDO $pdo PDO
+	 */
+	public function __construct(PDO $pdo) {
+		$this->pdo = $pdo;
+		$this->checkSchema();
+	}
+
+	/**
+	 * Checks if the schema has latest version.
+	 */
+	private function checkSchema() : void {
+		if (!dbTableExists($this->pdo, self::TABLE_NAME)) {
+			$this->createInitialSchema();
+		}
+	}
+
+	/**
+	 * Creates the initial schema.
+	 */
+	public function createInitialSchema() : void {
+		logNewMessage(LOG_DEBUG, 'Creating database table ' . self::TABLE_NAME);
+		$sql = 'create table ' . self::TABLE_NAME . '('
+			. 'position int NOT NULL,'
+			. 'confname VARCHAR(300) NOT NULL,'
+			. 'typeid VARCHAR(300) NOT NULL,'
+			. 'name VARCHAR(300) NOT NULL,'
+			. 'data TEXT NOT NULL,'
+			. 'PRIMARY KEY(position)'
+			. ');';
+		$this->pdo->exec($sql);
+		logNewMessage(LOG_DEBUG, 'Creating database table ' . self::TABLE_NAME_TEMPLATES);
+		$sql = 'create table ' . self::TABLE_NAME_TEMPLATES . '('
+			. 'scope VARCHAR(100) NOT NULL,'
+			. 'name VARCHAR(300) NOT NULL,'
+			. 'data TEXT NOT NULL,'
+			. 'PRIMARY KEY(scope,name)'
+			. ');';
+		$this->pdo->exec($sql);
+		logNewMessage(LOG_DEBUG, 'Creating database table ' . self::TABLE_NAME_LOGOS);
+		$sql = 'create table ' . self::TABLE_NAME_LOGOS . '('
+			. 'confname VARCHAR(300) NOT NULL,'
+			. 'name VARCHAR(300) NOT NULL,'
+			. 'data BLOB NOT NULL,'
+			. 'PRIMARY KEY(confname,name)'
+			. ');';
+		$this->pdo->exec($sql);
+		logNewMessage(LOG_DEBUG, 'Creating database table ' . self::TABLE_NAME_TEMPLATES_LOGOS);
+		$sql = 'create table ' . self::TABLE_NAME_TEMPLATES_LOGOS . '('
+			. 'name VARCHAR(300) NOT NULL,'
+			. 'data BLOB NOT NULL,'
+			. 'PRIMARY KEY(name)'
+			. ');';
+		$this->pdo->exec($sql);
+		$sql = 'insert into ' . ConfigurationDatabase::TABLE_SCHEMA_VERSIONS . ' (name, version) VALUES ("pdf_structures", 1);';
+		$this->pdo->exec($sql);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPdfStructureTemplateNames(): array {
+		$statement = $this->pdo->prepare("SELECT scope, name FROM " . self::TABLE_NAME_TEMPLATES);
+		$statement->execute();
+		$results = $statement->fetchAll();
+		$profiles = array();
+		foreach ($results as $result) {
+			$profiles[$result['scope']][] = $result['name'];
+		}
+		return $profiles;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function deletePdfStructureTemplate(string $scope, string $name): void {
+		$statement = $this->pdo->prepare("DELETE FROM " . self::TABLE_NAME_TEMPLATES . " WHERE scope = ? AND name = ?");
+		$statement->execute(array($scope, $name));
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function readPdfStructureTemplate(string $scope, string $name): PDFStructure {
+		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME_TEMPLATES . ' WHERE scope = ? AND name = ?');
+		$statement->execute(array($scope, $name));
+		$results = $statement->fetchAll();
+		if (empty($results)) {
+			throw new LAMException(_('Unable to read PDF structure.'));
+		}
+		$structure = new PDFStructure();
+		$structure->import(json_decode($results[0]['data'], true));
+		return $structure;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function savePdfStructureTemplate(string $scope, string $name, PDFStructure $structure): void {
+		$json = json_encode($structure->export());
+		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME_TEMPLATES . " WHERE scope = ? AND name = ?");
+		$statement->execute(array($scope, $name));
+		$results = $statement->fetchAll();
+		$isExisting = !empty($results);
+		if ($isExisting) {
+			$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME_TEMPLATES . " SET data = ? WHERE scope = ? AND name = ?");
+			$statement->execute(array($json, $scope, $name));
+		}
+		else {
+			$statement = $this->pdo->prepare("INSERT INTO " . self::TABLE_NAME_TEMPLATES . " (scope, name, data) VALUES (?, ?, ?)");
+			$statement->execute(array($scope, $name, $json));
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPdfTemplateLogoNames(): array {
+		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME_TEMPLATES_LOGOS);
+		$statement->execute();
+		$results = $statement->fetchAll();
+		$logos = array();
+		foreach ($results as $result) {
+			$logos[] = $result['name'];
+		}
+		return $logos;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPdfTemplateLogoBinary(string $name): string {
+		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME_TEMPLATES_LOGOS . ' WHERE name = ?');
+		$statement->execute(array($name));
+		$results = $statement->fetchAll();
+		if (empty($results)) {
+			throw new LAMException(_('Unable to read logo file.'));
+		}
+		return $results[0]['data'];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function deletePdfTemplateLogo(string $name): void {
+		$statement = $this->pdo->prepare("DELETE FROM " . self::TABLE_NAME_TEMPLATES_LOGOS . " WHERE name = ?");
+		$statement->execute(array($name));
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function savePdfTemplateLogo(string $name, string $data): void {
+		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME_TEMPLATES_LOGOS . " WHERE name = ?");
+		$statement->execute(array($name));
+		$results = $statement->fetchAll();
+		$isExisting = !empty($results);
+		if ($isExisting) {
+			$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME_TEMPLATES_LOGOS . " SET data = ? WHERE name = ?");
+			$statement->execute(array($data, $name));
+		}
+		else {
+			$statement = $this->pdo->prepare("INSERT INTO " . self::TABLE_NAME_TEMPLATES_LOGOS . " (name, data) VALUES (?, ?)");
+			$statement->execute(array($name, $data));
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPdfLogoNames(string $confName): array {
+		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME_LOGOS . ' WHERE confname = ?');
+		$statement->execute(array($confName));
+		$results = $statement->fetchAll();
+		$logos = array();
+		foreach ($results as $result) {
+			$logos[] = $result['name'];
+		}
+		return $logos;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPdfLogoBinary(string $confName, string $name): string {
+		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME_LOGOS . ' WHERE confname = ? AND name = ?');
+		$statement->execute(array($confName, $name));
+		$results = $statement->fetchAll();
+		if (empty($results)) {
+			throw new LAMException(_('Unable to read logo file.'));
+		}
+		return $results[0]['data'];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function deletePdfLogo(string $confName, string $name): void {
+		$statement = $this->pdo->prepare("DELETE FROM " . self::TABLE_NAME_LOGOS . " WHERE confname = ? AND name = ?");
+		$statement->execute(array($confName, $name));
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function savePdfLogo(string $confName, string $name, string $data): void {
+		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME_LOGOS . " WHERE confname = ? AND name = ?");
+		$statement->execute(array($confName, $name));
+		$results = $statement->fetchAll();
+		$isExisting = !empty($results);
+		if ($isExisting) {
+			$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME_LOGOS . " SET data = ? WHERE confname = ? AND name = ?");
+			$statement->execute(array($data, $confName, $name));
+		}
+		else {
+			$statement = $this->pdo->prepare("INSERT INTO " . self::TABLE_NAME_LOGOS . " (confname, name, data) VALUES (?, ?, ?)");
+			$statement->execute(array($confName, $name, $data));
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPDFStructures(string $confName, string $typeId): array {
+		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME . ' WHERE confname = ? AND typeid = ?');
+		$statement->execute(array($confName, $typeId));
+		$results = $statement->fetchAll();
+		$names = array();
+		foreach ($results as $result) {
+			$names[] = $result['name'];
+		}
+		return $names;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function deletePdfStructure(string $confName, string $typeId, string $name): void {
+		$statement = $this->pdo->prepare("DELETE FROM " . self::TABLE_NAME . " WHERE confname = ? AND typeid = ? AND name = ?");
+		$statement->execute(array($confName, $typeId, $name));
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function readPdfStructure(string $confName, string $typeId, string $name): PDFStructure {
+		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME . ' WHERE confname = ? AND typeid = ? AND name = ?');
+		$statement->execute(array($confName, $typeId, $name));
+		$results = $statement->fetchAll();
+		if (empty($results)) {
+			throw new LAMException(_('Unable to read PDF structure.'));
+		}
+		$structure = new PDFStructure();
+		$structure->import(json_decode($results[0]['data'], true));
+		return $structure;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function savePdfStructure(string $confName, string $typeId, string $name, PDFStructure $structure): void {
+		$json = json_encode($structure->export());
+		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME . " WHERE confname = ? AND typeid = ? AND name = ?");
+		$statement->execute(array($confName, $typeId, $name));
+		$results = $statement->fetchAll();
+		$isExisting = !empty($results);
+		if ($isExisting) {
+			$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME . " SET data = ? WHERE confname = ? AND typeid = ? AND name = ?");
+			$statement->execute(array($json, $confName, $typeId, $name));
+		}
+		else {
+			$positionStatement = $this->pdo->prepare("SELECT MAX(position) AS position FROM " . self::TABLE_NAME);
+			$positionStatement->execute();
+			$positionResult = $positionStatement->fetchAll();
+			$position = $positionResult[0]['position'] + 1;
+			$statement = $this->pdo->prepare("INSERT INTO " . self::TABLE_NAME . " (position, confname, typeid, name, data) VALUES (?, ?, ?, ?, ?)");
+			$statement->execute(array($position, $confName, $typeId, $name, $json));
+		}
 	}
 
 }

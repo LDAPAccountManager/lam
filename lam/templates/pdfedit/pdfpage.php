@@ -115,8 +115,15 @@ if (!isset($_SESSION['currentPDFStructure'])) {
 		}
 		// Load default structure file when creating a new one
 		else {
-			$_SESSION['currentPDFStructure'] = $pdfStructurePersistenceManager->readPdfStructure($_SESSION['config']->getName(),
-                $type->getId(), 'default');
+		    $structureNames = $pdfStructurePersistenceManager->getPDFStructures($_SESSION['config']->getName(),
+			    $type->getId());
+		    if (in_array('default', $structureNames)) {
+			    $_SESSION['currentPDFStructure'] = $pdfStructurePersistenceManager->readPdfStructure($_SESSION['config']->getName(),
+				    $type->getId(), 'default');
+            }
+		    else {
+			    $_SESSION['currentPDFStructure'] = new PDFStructure();
+            }
 		}
 	}
 	catch (LAMException $e) {
