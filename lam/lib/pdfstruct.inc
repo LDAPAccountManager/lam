@@ -1094,21 +1094,39 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 	 * @inheritDoc
 	 */
 	public function getPdfLogoBinary(string $confName, string $name): string {
-		// TODO: Implement getPdfLogoBinary() method.
+		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME_LOGOS . ' WHERE confname = ? AND name = ?');
+		$statement->execute(array($confName, $name));
+		$results = $statement->fetchAll();
+		if (empty($results)) {
+			throw new LAMException(_('Unable to read logo file.'));
+		}
+		return $results[0]['data'];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function deletePdfLogo(string $confName, string $name): void {
-		// TODO: Implement deletePdfLogo() method.
+		$statement = $this->pdo->prepare("DELETE FROM " . self::TABLE_NAME_LOGOS . " WHERE confname = ? AND name = ?");
+		$statement->execute(array($confName, $name));
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function savePdfLogo(string $confName, string $name, string $data): void {
-		// TODO: Implement savePdfLogo() method.
+		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME_LOGOS . " WHERE confname = ? AND name = ?");
+		$statement->execute(array($confName, $name));
+		$results = $statement->fetchAll();
+		$isExisting = !empty($results);
+		if ($isExisting) {
+			$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME_LOGOS . " SET data = ? WHERE confname = ? AND name = ?");
+			$statement->execute(array($data, $confName, $name));
+		}
+		else {
+			$statement = $this->pdo->prepare("INSERT INTO " . self::TABLE_NAME_LOGOS . " (confname, name, data) VALUES (?, ?, ?)");
+			$statement->execute(array($confName, $name, $data));
+		}
 	}
 
 	/**
