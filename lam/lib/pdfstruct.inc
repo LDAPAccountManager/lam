@@ -1059,21 +1059,39 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 	 * @inheritDoc
 	 */
 	public function getPdfTemplateLogoBinary(string $name): string {
-		// TODO: Implement getPdfTemplateLogoBinary() method.
+		$statement = $this->pdo->prepare("SELECT data FROM " . self::TABLE_NAME_TEMPLATES_LOGOS . ' WHERE name = ?');
+		$statement->execute(array($name));
+		$results = $statement->fetchAll();
+		if (empty($results)) {
+			throw new LAMException(_('Unable to read logo file.'));
+		}
+		return $results[0]['data'];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function deletePdfTemplateLogo(string $name): void {
-		// TODO: Implement deletePdfTemplateLogo() method.
+		$statement = $this->pdo->prepare("DELETE FROM " . self::TABLE_NAME_TEMPLATES_LOGOS . " WHERE name = ?");
+		$statement->execute(array($name));
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function savePdfTemplateLogo(string $name, string $data): void {
-		// TODO: Implement savePdfTemplateLogo() method.
+		$statement = $this->pdo->prepare("SELECT name FROM " . self::TABLE_NAME_TEMPLATES_LOGOS . " WHERE name = ?");
+		$statement->execute(array($name));
+		$results = $statement->fetchAll();
+		$isExisting = !empty($results);
+		if ($isExisting) {
+			$statement = $this->pdo->prepare("UPDATE " . self::TABLE_NAME_TEMPLATES_LOGOS . " SET data = ? WHERE name = ?");
+			$statement->execute(array($data, $name));
+		}
+		else {
+			$statement = $this->pdo->prepare("INSERT INTO " . self::TABLE_NAME_TEMPLATES_LOGOS . " (name, data) VALUES (?, ?)");
+			$statement->execute(array($name, $data));
+		}
 	}
 
 	/**
