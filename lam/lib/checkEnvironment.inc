@@ -53,7 +53,7 @@ if (version_compare(phpversion(), '7.3.0') < 0) {
 	echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
 	printHeaderContents('LDAP Account Manager', '..');
 	echo "</head><body>\n";
-	StatusMessage("ERROR", "LAM needs a PHP version which is greater or equal than 7.2.0.", "Please upgrade your PHP installation. The found version is " . phpversion());
+	StatusMessage("ERROR", "LAM needs a PHP version which is greater or equal than 7.3.0.", "Please upgrade your PHP installation. The found version is " . phpversion());
 	echo "<br><br>";
 	echo "</body></html>";
 	exit();
