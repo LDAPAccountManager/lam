@@ -14,11 +14,12 @@ use LAM\PERSISTENCE\ConfigDataExporter;
 use LAM\PERSISTENCE\ConfigDataImporter;
 use LAMCfgMain;
 use LAMException;
+use ZipArchive;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2020  Roland Gruber
+  Copyright (C) 2020 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -66,11 +67,23 @@ $cfg = &$_SESSION['cfgMain'];
 if (isset($_POST['exportConfig']) && $cfg->checkPassword($_SESSION["mainconf_password"])) {
 	$exporter = new ConfigDataExporter();
 	if (!headers_sent()) {
-		header('Content-Type: application/json; charset=utf-8');
-		header('Content-disposition: attachment; filename=lam-config.json');
+		header('Content-Type: application/zip; charset=utf-8');
+		header('Content-disposition: attachment; filename=lam-config.zip');
 	}
 	try {
-		echo $exporter->exportAsJson();
+		$zip = new ZipArchive();
+		$zipTmpFile = tmpfile();
+		$zipFile = stream_get_meta_data($zipTmpFile)['uri'];
+		fclose($zipTmpFile);
+		$zip->open($zipFile, ZipArchive::CREATE);
+		$json = $exporter->exportAsJson();
+		$zip->addFromString('lam-config.json', $json);
+		$zip->close();
+        $handle = fopen($zipFile, "r");
+        $contents = fread($handle, filesize($zipFile));
+        fclose($handle);
+		unlink($zipFile);
+        echo $contents;
     }
 	catch (LAMException $e) {
 	    logNewMessage(LOG_ERR, $e->getTitle() . ' ' . $e->getMessage());
@@ -215,9 +228,22 @@ printHeaderContents(_("Import and export configuration"), '../..');
 	            if (empty($_FILES['import-file']['tmp_name'])) {
 	                throw new LAMException('The file you uploaded is too large. Please check php.ini, upload_max_size setting');
                 }
-		        $handle = fopen($_FILES['import-file']['tmp_name'], "r");
-		        $data = fread($handle, 100000000);
-		        fclose($handle);
+	            $uploadFileName = $_FILES['import-file']['name'];
+	            $tmpFileName = $_FILES['import-file']['tmp_name'];
+	            if (preg_match('/\\.zip$/', $uploadFileName)) {
+                    $zip = new ZipArchive();
+                    $zip->open($tmpFileName);
+                    $data = $zip->getFromName('lam-config.json');
+                    if ($data === false) {
+	                    throw new LAMException(_('Unable to read import file.'));
+                    }
+                    $zip->close();
+                }
+	            else {
+		            $handle = fopen($tmpFileName, "r");
+		            $data = fread($handle, 100000000);
+		            fclose($handle);
+                }
 	            $importer = new ConfigDataImporter();
 		        $importSteps = $importer->getPossibleImportSteps($data);
 		        $tmpFile = __DIR__ . '/../../tmp/internal/import_' . getRandomNumber() . '.tmp';

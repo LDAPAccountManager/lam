@@ -7,6 +7,7 @@
     "ext-ldap": "*",
     "ext-json": "*",
     "ext-pdo": "*",
-    "ext-xmlreader": "*"
+    "ext-xmlreader": "*",
+    "ext-zip": "*"
   }
 }
