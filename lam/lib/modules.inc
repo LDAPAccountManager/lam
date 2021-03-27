@@ -1066,7 +1066,7 @@ class accountContainer {
 		foreach ($this->getOUs() as $suffix) {
 			$suffixList[getAbstractDN($suffix)] = $suffix;
 		}
-		if (!($this->dnSuffix == '') && !in_array($this->dnSuffix, $this->getOUs())) {
+		if (!($this->dnSuffix == '') && !in_array_ignore_case($this->dnSuffix, $this->getOUs())) {
 			$suffixList[getAbstractDN($this->dnSuffix)] = $this->dnSuffix;
 		}
 		$selectedSuffix = array($this->dnSuffix);
