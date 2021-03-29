@@ -8,6 +8,7 @@ March 2021 7.5
   - LAM Pro:
    -> Self registration: support binary attributes (e.g. for jpegPhoto)
    -> Self registration: support custom mail attributes and mail from constant value (149)
+   -> Self registration: evaluate autorange at account creation (154)
    -> MIT Kerberos: check Kerberos password policy on password change, better error handling
    -> Self Service: new field to show user's quota values
    -> Self Service: allow to create Unix home directory during registration

@@ -917,6 +917,7 @@ function getLDAPServerHandle() {
  * @param array $attributes attribute list
  * @param boolean $attrsOnly return only attribute names
  * @param int $limit size limit
+ * @return array results
  */
 function searchLDAPPaged($server, $dn, $filter, $attributes, $attrsOnly, $limit) {
 	if (empty($_SESSION['config']) || ($_SESSION['config']->getPagedResults() !== 'true')) {
