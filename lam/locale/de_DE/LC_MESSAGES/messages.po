@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2021-03-30 11:45+0100\n"
+"PO-Revision-Date: 2021-03-30 11:47+0100\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
 "Language: de\n"
@@ -18446,7 +18446,7 @@ msgstr "Dies erzeugt eine neue Organisational Unit unterhalb der markierten."
 #: ../lib/modules/posixAccount.inc:373
 msgid "This will create the user's home directory on the specified server."
 msgstr ""
-"Wenn Sie dieses Kästchen aktivieren, dann wird das Heimatverzeichnis des "
+"Damit wird das Heimatverzeichnis des "
 "Benutzers auf dem angegebenen Server erstellt."
 
 #: ../help/help.inc:387
