@@ -2962,7 +2962,8 @@ class LAMCfgMain {
 	/** persistence settings are always stored on local file system */
 	private $persistenceSettings = array(
 		'configDatabaseType', 'configDatabaseServer',
-		'configDatabasePort', 'configDatabaseName', 'configDatabaseUser', 'configDatabasePassword'
+		'configDatabasePort', 'configDatabaseName', 'configDatabaseUser',
+		'configDatabasePassword', 'license'
 	);
 
 	/**
