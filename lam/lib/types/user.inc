@@ -3,7 +3,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2019  Roland Gruber
+  Copyright (C) 2005 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -118,6 +118,8 @@ class user extends baseType {
 				"uid" => _("User name"),
 				"uidnumber" => _("UID number"),
 				'userPrincipalName' => _('User name'),
+				'accountunlocktime' => _('Locked till'),
+				'passwordexpirationtime' => _('Password expiration'),
 		));
 	}
 
@@ -787,6 +789,14 @@ class lamUserList extends lamList {
 				}
 			}
 		}
+		elseif (($attribute == 'passwordexpirationtime') && !empty($entry[$attribute][0])) {
+			$time = formatLDAPTimestamp($entry[$attribute][0]);
+			return new htmlOutputText($time);
+		}
+		elseif (($attribute == 'accountunlocktime') && !empty($entry[$attribute][0])) {
+			$time = formatLDAPTimestamp($entry[$attribute][0]);
+			return new htmlOutputText($time);
+		}
 		// account status
 		elseif ($attribute == self::ATTR_ACCOUNT_STATUS) {
 			return $this->getAccountStatus($entry);
@@ -1270,12 +1280,11 @@ class lamUserList extends lamList {
 	 * Returns if locked by accountUnlockTime.
 	 *
 	 * @param array $attrs LDAP attributes
-	 * @return boolean account is locked
+	 * @return bool account is locked
 	 */
-	public static function is389dsLocked(&$attrs) {
-		return (isset($attrs['accountunlocktime'][0]) && !empty($attrs['accountunlocktime'][0]));
+	public static function is389dsLocked(&$attrs) : bool {
+		$locking389ds = moduleCache::getModule('locking389ds', 'user');
+		return $locking389ds->isLocked($attrs);
 	}
 
 }
-
-?>
