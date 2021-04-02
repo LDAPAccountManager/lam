@@ -1,5 +1,6 @@
 <?php
 namespace LAM\PERSISTENCE;
+use LAM\DB\CronDatabase;
 use LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use LAM\PDF\PDFStructure;
 use LAM\PDF\PdfStructurePersistenceManager;
@@ -72,6 +73,7 @@ class ConfigDataExporter {
 		$jsonData['pdfProfileTemplates'] = $this->_getPdfProfileTemplates();
 		$jsonData['selfServiceProfiles'] = $this->_getSelfServiceProfiles();
 		$jsonData['webauthn'] = $this->_getWebauthn();
+		$jsonData['cronjobs'] = $this->_getCronJobData($serverProfiles);
 		return json_encode($jsonData);
 	}
 
@@ -248,6 +250,51 @@ class ConfigDataExporter {
 			$webauthnManager = new WebauthnManager();
 			$webauthnDatabase = $webauthnManager->getDatabase();
 			$data = $webauthnDatabase->export();
+		}
+		return $data;
+	}
+
+	/**
+	 * Returns the content of the cron jobs.
+	 *
+	 * @param array $serverProfiles list of server profiles (name => object)
+	 * @return array data
+	 * @throws LAMException error reading cron jobs
+	 */
+	public function _getCronJobData(array $serverProfiles) : array {
+		$data = array();
+		if (!isLAMProVersion()) {
+			return $data;
+		}
+		include_once 'database.inc';
+		foreach ($serverProfiles as $serverProfileName => $serverProfile) {
+			try {
+				$cronDatabase = new CronDatabase($serverProfile);
+				if (empty($cronDatabase->getJobs())) {
+					continue;
+				}
+				$cronDatabase->connect();
+				foreach ($cronDatabase->getJobRuns() as $jobRun) {
+					$data[$serverProfileName]['jobRuns'][] = array(
+						'runId' => $jobRun->getRunId(),
+						'name' => $jobRun->getName(),
+						'jobId' => $jobRun->getJobId(),
+						'time' => $jobRun->getTime()->format('Y-m-d H:i:s'),
+						'isOk' => $jobRun->isOk(),
+						'message' => $jobRun->getMessages()
+					);
+				}
+				$jobs = $cronDatabase->getJobs();
+				foreach ($jobs as $jobId => $job) {
+					$exportData = $job->export($cronDatabase->getPdo());
+					if (!empty($exportData)) {
+						$data[$serverProfileName]['jobData'][$jobId] = $exportData;
+					}
+				}
+			}
+			catch (LAMException $e) {
+				logNewMessage(LOG_ERR, $e->getTitle());
+			}
 		}
 		return $data;
 	}
