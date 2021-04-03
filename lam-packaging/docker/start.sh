@@ -41,9 +41,16 @@ if [ "$LAM_SKIP_PRECONFIGURE" != "true" ]; then
   LDAP_USERS_DN="${LDAP_USERS_DN:-${LDAP_BASE_DN}}"
   LDAP_GROUPS_DN="${LDAP_GROUPS_DN:-${LDAP_BASE_DN}}"
   LDAP_ADMIN_USER="${LDAP_USER:-cn=admin,${LDAP_BASE_DN}}"
-  
+
   sed -i -f- /etc/ldap-account-manager/config.cfg <<- EOF
     s|^password:.*|password: ${LAM_PASSWORD_SSHA}|;
+    s|^license:.*|license: ${LAM_LICENSE}|;
+    s|^configDatabaseType:.*|configDatabaseType: ${LAM_CONFIGURATION_DATABASE}|;
+    s|^configDatabaseServer:.*|configDatabaseServer: ${LAM_CONFIGURATION_HOST}|;
+    s|^configDatabasePort:.*|configDatabasePort: ${LAM_CONFIGURATION_PORT}|;
+    s|^configDatabaseName:.*|configDatabaseName: ${LAM_CONFIGURATION_DATABASE_NAME}|;
+    s|^configDatabaseUser:.*|configDatabaseUser: ${LAM_CONFIGURATION_USER}|;
+    s|^configDatabasePassword:.*|configDatabasePassword: ${LAM_CONFIGURATION_PASSWORD}|;
 EOF
   unset LAM_PASSWORD
 

@@ -1,5 +1,6 @@
 June 2021 7.6
   - Allow to store whole LAM configuration in MySQL database
+  - Docker: new options for configuration location and LAM Pro license
   - LAM Pro:
    -> Export/Import of cron jobs
 

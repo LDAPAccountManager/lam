@@ -10,3 +10,12 @@ logLevel: 4
 
 # log destination
 logDestination: SYSLOG
+
+configDatabaseType: files
+configDatabaseServer:
+configDatabasePort:
+configDatabaseName:
+configDatabaseUser:
+configDatabasePassword:
+
+license:
