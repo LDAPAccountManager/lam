@@ -1422,6 +1422,9 @@ function sendEMail($to, $subject, $text, $from, $isHTML, $replyTo = null, $cc = 
 		if (!$mailSentOk) {
 			logNewMessage(LOG_ERR, 'Mail sending failed: ' . $mailer->ErrorInfo);
 		}
+		else {
+			logNewMessage(LOG_DEBUG, 'Mail sent');
+		}
 		return $mailSentOk;
 	}
 	catch (Exception $e) {
