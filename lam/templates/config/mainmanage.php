@@ -93,7 +93,7 @@ $errors = array();
 $messages = array();
 // check if submit button was pressed
 if (isset($_POST['submitFormData'])) {
-    if (extension_loaded('PDO') && isDeveloperVersion(LAMVersion())) {
+    if (extension_loaded('PDO')) {
 	    // set database
 	    $cfg->configDatabaseType = $_POST['configDatabaseType'];
 	    $cfg->configDatabaseServer = $_POST['configDatabaseServer'];
@@ -354,7 +354,7 @@ printHeaderContents(_("Edit general settings"), '../..');
 	}
 
 	// database
-	if (extension_loaded('PDO') && isDeveloperVersion(LAMVersion())) {
+	if (extension_loaded('PDO')) {
 		$row->add(new htmlSubTitle(_('Configuration storage')), 12);
 		$storageProviders = array(
 			_('Local file system') => LAMCfgMain::DATABASE_FILE_SYSTEM

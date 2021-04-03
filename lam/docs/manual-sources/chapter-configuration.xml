@@ -49,6 +49,39 @@
     general settings.</para>
 
     <section>
+      <title>Configuration Database</title>
+
+      <para>This defines where LAM should store the configuration settings. By
+      default, local file system is used. If you have installed the PHP PDO
+      extension incl. MySQL then you can also select MySQL here. This will
+      then store all data (server profiles, account profiles, PDF structures,
+      ...) in the database.</para>
+
+      <para>Exceptions:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Configuration storage options</para>
+        </listitem>
+
+        <listitem>
+          <para>LAM Pro license</para>
+        </listitem>
+
+        <listitem>
+          <para>CA certificates</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>This is very useful when running LAM cloud native e.g. inside
+      Docker.</para>
+
+      <screenshot>
+        <graphic fileref="images/configGeneral9.png"/>
+      </screenshot>
+    </section>
+
+    <section>
       <title>License (LAM Pro only)</title>
 
       <para>This is only required when you run LAM Pro. Please enter the
