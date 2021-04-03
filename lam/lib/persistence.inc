@@ -73,7 +73,7 @@ class ConfigDataExporter {
 		$jsonData['pdfProfileTemplates'] = $this->_getPdfProfileTemplates();
 		$jsonData['selfServiceProfiles'] = $this->_getSelfServiceProfiles();
 		$jsonData['webauthn'] = $this->_getWebauthn();
-		$jsonData['cronjobs'] = $this->_getCronJobData($serverProfiles);
+		$jsonData['cronJobs'] = $this->_getCronJobData($serverProfiles);
 		return json_encode($jsonData);
 	}
 
@@ -286,7 +286,7 @@ class ConfigDataExporter {
 				}
 				$jobs = $cronDatabase->getJobs();
 				foreach ($jobs as $jobId => $job) {
-					$exportData = $job->export($cronDatabase->getPdo());
+					$exportData = $job->export($cronDatabase->getPdo(), $jobId);
 					if (!empty($exportData)) {
 						$data[$serverProfileName]['jobData'][$jobId] = $exportData;
 					}
@@ -359,8 +359,17 @@ class ConfigDataImporter {
 					break;
 				case 'webauthn':
 					if (extension_loaded('PDO')
-						&& in_array('sqlite', \PDO::getAvailableDrivers())) {
+						&& in_array('sqlite', PDO::getAvailableDrivers())) {
 						$steps[] = new ImporterStep(_('WebAuthn devices'), 'webauthn', $value);
+					}
+					break;
+				case 'cronJobs':
+					if (isLAMProVersion()) {
+						$mainStep = new ImporterStep(_('Cron jobs'), 'cronJobs', $value);
+						foreach ($value as $profileName => $profileData) {
+							$mainStep->addSubStep(new ImporterStep($profileName, 'cronJob_' . $profileName, $profileData));
+						}
+						$steps[] = $mainStep;
 					}
 					break;
 				default:
@@ -412,6 +421,9 @@ class ConfigDataImporter {
 					break;
 				case 'webauthn':
 					$this->importWebauthn($step);
+					break;
+				case 'cronJobs':
+					$this->importCronJobs($step);
 					break;
 				default:
 					logNewMessage(LOG_WARNING, 'Unknown import type: ' . $key);
@@ -645,6 +657,49 @@ class ConfigDataImporter {
 		$webauthnManager = new WebauthnManager();
 		$webauthnDatabase = $webauthnManager->getDatabase();
 		$webauthnDatabase->import($data);
+	}
+
+	/**
+	 * Imports the cron jobs.
+	 *
+	 * @param ImporterStep $step step
+	 * @throws LAMException error during import
+	 */
+	private function importCronJobs($step) {
+		$failedProfiles = array();
+		include_once 'database.inc';
+		$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
+		foreach ($step->getSubSteps() as $profileStep) {
+			if (!$profileStep->isActive()) {
+				continue;
+			}
+			$data = $profileStep->getValue();
+			$serverProfileName = str_replace('cronJob_', '', $profileStep->getKey());
+			$serverProfile = $serverProfilePersistenceManager->loadProfile($serverProfileName);
+			$cronDatabase = new CronDatabase($serverProfile);
+			$cronDatabase->connect();
+			if (isset($data['jobRuns'])) {
+				logNewMessage(LOG_DEBUG, 'Import ' . sizeof($data['jobRuns']) . ' cron job runs for ' . $serverProfileName);
+				$cronDatabase->clearJobRuns();
+				foreach ($data['jobRuns'] as $jobRun) {
+					$cronDatabase->importJobRun($jobRun['runId'], $jobRun['name'], $jobRun['jobId'], $jobRun['time'], $jobRun['isOk'], $jobRun['message']);
+				}
+			}
+			if (isset($data['jobData'])) {
+				$jobs = $cronDatabase->getJobs();
+				foreach ($data['jobData'] as $jobId => $jobData) {
+					if (!isset($jobs[$jobId])) {
+						continue;
+					}
+					$job = $jobs[$jobId];
+					logNewMessage(LOG_DEBUG, 'Import ' . sizeof($jobData) . ' cron data entries for ' . $job->getName() . ' - ' . $jobId);
+					$job->import($cronDatabase->getPdo(), $jobData, $jobId);
+				}
+			}
+		}
+		if (!empty($failedProfiles)) {
+			throw new LAMException(_('Could not save PDF structure, access denied.'), implode(', ', $failedProfiles));
+		}
 	}
 
 }
