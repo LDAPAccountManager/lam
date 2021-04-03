@@ -1173,17 +1173,6 @@ class LAMConfig {
 		$data['moduleSettings'] = $this->moduleSettings;
 		$data['toolSettings'] = $this->toolSettings;
 		$data['jobSettings'] = $this->jobSettings;
-		if ($this->jobsDatabase === 'SQLite') {
-			$dbFileName = __DIR__ . '/../config/' . $this->getName() . '.sqlite';
-			if (is_file($dbFileName) && is_readable($dbFileName)) {
-				$file = @fopen($dbFileName, "r");
-				if ($file) {
-					$dbData = fread($file, 100000000);
-					fclose($file);
-					$data['jobSQLite'] = base64_encode($dbData);
-				}
-			}
-		}
 		return $data;
 	}
 
@@ -1195,7 +1184,7 @@ class LAMConfig {
 	 */
 	public function importData($data) {
 		$settingsToIgnore = array('modules', 'types', 'tools', 'jobs', 'typeSettings',
-			'moduleSettings', 'toolSettings', 'jobSettings', 'jobSQLite');
+			'moduleSettings', 'toolSettings', 'jobSettings');
 		foreach ($data as $dataKey => $dataValue) {
 			if (in_array($dataKey, $settingsToIgnore)) {
 				continue;
@@ -1217,14 +1206,6 @@ class LAMConfig {
 		$this->toolSettings = $toolSettingsData;
 		$jobSettingsData = !empty($data['jobSettings']) && is_array($data['jobSettings']) ? $data['jobSettings'] : array();
 		$this->jobSettings = $jobSettingsData;
-		if (!empty($data['jobSQLite'])) {
-			$dbFileName = __DIR__ . '/../config/' . $this->getName() . '.sqlite';
-			$file = @fopen($dbFileName, "wb");
-			if ($file) {
-				fputs($file, base64_decode($data['jobSQLite']));
-				fclose($file);
-			}
-		}
 	}
 
 	/**

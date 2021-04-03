@@ -28,6 +28,14 @@ if [ "${LAM_DISABLE_TLS_CHECK:-}" == "true" ]; then
   echo "TLS_REQCERT never" >> /etc/ldap/ldap.conf
 fi
 
+sed -i -f- /etc/php/7.3/apache2/php.ini <<- EOF
+    s|^max_execution_time =.*|max_execution_time = 60|;
+    s|^post_max_size =.*|post_max_size = 100M|;
+    s|^upload_max_filesize =.*|upload_max_filesize = 100M|;
+    s|^memory_limit =.*|memory_limit = 256M|;
+EOF
+
+
 LAM_SKIP_PRECONFIGURE="${LAM_SKIP_PRECONFIGURE:-false}"
 if [ "$LAM_SKIP_PRECONFIGURE" != "true" ]; then
   echo "Configuring LAM"

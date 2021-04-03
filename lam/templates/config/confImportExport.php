@@ -226,7 +226,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
         if (isset($_POST['importConfig'])) {
 	        try {
 	            if (empty($_FILES['import-file']['tmp_name'])) {
-	                throw new LAMException('The file you uploaded is too large. Please check php.ini, upload_max_size setting');
+	                throw new LAMException(_('The file you uploaded is too large. Please check php.ini, upload_max_filesize setting.'));
                 }
 	            $uploadFileName = $_FILES['import-file']['name'];
 	            $tmpFileName = $_FILES['import-file']['tmp_name'];

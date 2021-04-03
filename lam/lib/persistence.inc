@@ -470,6 +470,7 @@ class ConfigDataImporter {
 			$profileName = str_replace('serverProfile_', '', $profileStep->getKey());
 			try {
 				$serverProfile = new LAMConfig();
+				$serverProfile->setName($profileName);
 				$serverProfile->importData($data);
 				$serverProfilePersistenceManager->saveProfile($serverProfile, $profileName);
 			}
