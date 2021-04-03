@@ -990,14 +990,14 @@ class PdfStructurePersistenceStrategyPdo implements PdfStructurePersistenceStrat
 		$sql = 'create table ' . self::TABLE_NAME_LOGOS . '('
 			. 'confname VARCHAR(300) NOT NULL,'
 			. 'name VARCHAR(300) NOT NULL,'
-			. 'data BLOB NOT NULL,'
+			. 'data LONGBLOB NOT NULL,'
 			. 'PRIMARY KEY(confname,name)'
 			. ');';
 		$this->pdo->exec($sql);
 		logNewMessage(LOG_DEBUG, 'Creating database table ' . self::TABLE_NAME_TEMPLATES_LOGOS);
 		$sql = 'create table ' . self::TABLE_NAME_TEMPLATES_LOGOS . '('
 			. 'name VARCHAR(300) NOT NULL,'
-			. 'data BLOB NOT NULL,'
+			. 'data LONGBLOB NOT NULL,'
 			. 'PRIMARY KEY(name)'
 			. ');';
 		$this->pdo->exec($sql);
