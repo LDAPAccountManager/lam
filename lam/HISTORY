@@ -1,3 +1,8 @@
+June 2021
+  - LAM Pro:
+   -> Export/Import of cron jobs
+
+
 30.03.2021 7.5
   - PHP 7.3 required
   - PHP 8.0 compatibility (except tree view)
