@@ -80,6 +80,7 @@ RUN apt-get install --no-install-recommends -y \
         php-imap \
         php-gmp \
         php-mysql \
+        php-sqlite3 \
         wget \
     && \
     rm /etc/apache2/sites-enabled/*default* && \
