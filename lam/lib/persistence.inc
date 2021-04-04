@@ -812,6 +812,11 @@ class ConfigurationDatabase {
 	private $cfgMain;
 
 	/**
+	 * @var PDO PDO
+	 */
+	private $pdo;
+
+	/**
 	 * Constructor
 	 *
 	 * @param LAMCfgMain $cfgMain main configuration
@@ -849,8 +854,12 @@ class ConfigurationDatabase {
 	 * @throws PDOException error opening connection to database
 	 */
 	public function getPdo() : PDO {
+		if ($this->pdo !== null) {
+			return $this->pdo;
+		}
 		$url = $this->getPdoUrl();
-		return new PDO($url, $this->cfgMain->configDatabaseUser, $this->cfgMain->configDatabasePassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+		$this->pdo = new PDO($url, $this->cfgMain->configDatabaseUser, $this->cfgMain->configDatabasePassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+		return $this->pdo;
 	}
 
 	/**
