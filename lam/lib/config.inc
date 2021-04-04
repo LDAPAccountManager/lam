@@ -3099,6 +3099,9 @@ class LAMCfgMain {
 				return false;
 			}
 			$data = $result->fetchAll();
+			if (empty($data)) {
+				return true;
+			}
 			$jsonData = json_decode($data[0]['value'], true);
 			foreach ($this->persistenceSettings as $persistenceSetting) {
 				if (isset($jsonData[$persistenceSetting])) {
@@ -3108,11 +3111,11 @@ class LAMCfgMain {
 			$this->importData($jsonData);
 		}
 		catch (PDOException $e) {
-			logNewMessage(LOG_ERR, 'Unable to read main config: ' . $e->getMessage());
+			syslog(LOG_ERR, 'Unable to read main config: ' . $e->getMessage());
 			return false;
 		}
 		catch (LAMException $e) {
-			logNewMessage(LOG_ERR, 'Unable to import main config: ' . $e->getMessage());
+			syslog(LOG_ERR, 'Unable to import main config: ' . $e->getMessage());
 			return false;
 		}
 		return true;

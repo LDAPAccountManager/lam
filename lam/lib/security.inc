@@ -263,6 +263,7 @@ function logNewMessage($level, $message) {
 	}
 	else {
 		$cfg = new LAMCfgMain();
+		$_SESSION['cfgMain'] = $cfg;
 	}
 	// check if logging is disabled
 	if (($cfg->logDestination == 'NONE')
