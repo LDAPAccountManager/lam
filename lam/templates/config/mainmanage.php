@@ -24,6 +24,7 @@ use \htmlResponsiveInputCheckbox;
 use \htmlResponsiveInputField;
 use \htmlDiv;
 use \htmlHiddenInput;
+use LAMException;
 use PDO;
 
 /*
@@ -588,20 +589,26 @@ printHeaderContents(_("Edit general settings"), '../..');
 		&& in_array('sqlite', \PDO::getAvailableDrivers())) {
 		include_once __DIR__ . '/../../lib/webauthn.inc';
 		$webAuthnManager = new WebauthnManager();
-		$database = $webAuthnManager->getDatabase();
-		if ($database->hasRegisteredCredentials()) {
-			$row->add(new htmlSubTitle(_('WebAuthn devices')), 12);
-			$webauthnSearchField = new htmlResponsiveInputField(_('User DN'), 'webauthn_searchTerm', null, '252');
-			$row->add($webauthnSearchField, 12);
-			$row->addVerticalSpacer('0.5rem');
-			$row->add(new htmlButton('webauthn_search', _('Search')), 12, 12, 12, 'text-center');
-			$resultDiv = new htmlDiv('webauthn_results', new htmlOutputText(''), array('lam-webauthn-results'));
-			addSecurityTokenToSession(false);
-			$resultDiv->addDataAttribute('sec_token_value', getSecurityTokenValue());
-			$row->add($resultDiv, 12);
-			$confirmationDiv = new htmlDiv('webauthnDeleteConfirm', new htmlOutputText(_('Do you really want to remove this device?')), array('hidden'));
-			$row->add($confirmationDiv, 12);
+		try {
+			$database = $webAuthnManager->getDatabase();
+			if ($database->hasRegisteredCredentials()) {
+				$row->add(new htmlSubTitle(_('WebAuthn devices')), 12);
+				$webauthnSearchField = new htmlResponsiveInputField(_('User DN'), 'webauthn_searchTerm', null, '252');
+				$row->add($webauthnSearchField, 12);
+				$row->addVerticalSpacer('0.5rem');
+				$row->add(new htmlButton('webauthn_search', _('Search')), 12, 12, 12, 'text-center');
+				$resultDiv = new htmlDiv('webauthn_results', new htmlOutputText(''), array('lam-webauthn-results'));
+				addSecurityTokenToSession(false);
+				$resultDiv->addDataAttribute('sec_token_value', getSecurityTokenValue());
+				$row->add($resultDiv, 12);
+				$confirmationDiv = new htmlDiv('webauthnDeleteConfirm', new htmlOutputText(_('Do you really want to remove this device?')), array('hidden'));
+				$row->add($confirmationDiv, 12);
+			}
 		}
+		catch (LAMException $e) {
+		    logNewMessage(LOG_ERR, 'Webauthn error: ' . $e->getTitle() . ' ' . $e->getMessage());
+		    $row->add(new htmlStatusMessage('ERROR', $e->getTitle()), 12);
+        }
 	}
 
 	// change master password

@@ -328,13 +328,19 @@ class WebauthnManager {
 	 * Returns the webauthn database.
 	 *
 	 * @return PublicKeyCredentialSourceRepositoryBase database
+	 * @throws LAMException error connecting to database
 	 */
 	public function getDatabase() {
-		$configDatabase = new ConfigurationDatabase(new LAMCfgMain());
-		if ($configDatabase->useRemoteDb()) {
-			return new PublicKeyCredentialSourceRepositoryMySql($configDatabase->getPdo());
+		try {
+			$configDatabase = new ConfigurationDatabase(new LAMCfgMain());
+			if ($configDatabase->useRemoteDb()) {
+				return new PublicKeyCredentialSourceRepositoryMySql($configDatabase->getPdo());
+			}
+			return new PublicKeyCredentialSourceRepositorySQLite();
 		}
-		return new PublicKeyCredentialSourceRepositorySQLite();
+		catch (PDOException $e) {
+			throw new LAMException(_('Unable to connect to database.'), $e->getMessage());
+		}
 	}
 
 	/**

@@ -2948,10 +2948,10 @@ class LAMCfgMain {
 	);
 
 	/**
-	* Loads preferences from config file
-	*
-	* @param string $fileName file path for config file
-	*/
+	 * Loads preferences from config file
+	 *
+	 * @param string $fileName file path for config file
+	 */
 	function __construct($fileName = null) {
 		if ($fileName === null) {
 			$this->conffile = __DIR__ . "/../config/config.cfg";
@@ -2966,7 +2966,11 @@ class LAMCfgMain {
 		$this->allowedHosts = "";
 		$this->allowedHostsSelfService = '';
 		$this->encryptSession = 'true';
-		$this->reload();
+		try {
+			$this->reload();
+		} catch (LAMException $e) {
+			syslog(LOG_ERR, 'Error loading main config: ' . $e->getTitle() . ' ' . $e->getMessage());
+		}
 	}
 
 	/**
@@ -3050,15 +3054,16 @@ class LAMCfgMain {
 	}
 
 	/**
-	* Reloads preferences from config file config.cfg
-	*
-	* @return boolean true if file was readable
-	*/
-	private function reload() {
+	 * Reloads preferences from config file config.cfg
+	 *
+	 * @throws LAMException error reading config
+	 */
+	private function reload() : void {
 		if (is_file($this->conffile)) {
 			$file = @fopen($this->conffile, "r");
 			if (!$file) {
-				return false; // abort if file is not readable
+				throw new LAMException(_('The config file is not readable.'));
+				return; // abort if file is not readable
 			}
 			while (!feof($file)) {
 				$line = fgets($file, 1024);
@@ -3079,9 +3084,8 @@ class LAMCfgMain {
 			fclose($file);
 		}
 		if ($this->configDatabaseType === self::DATABASE_MYSQL) {
-			return $this->loadFromDb();
+			$this->loadFromDb();
 		}
-		return true;
 	}
 
 	/**
@@ -3089,18 +3093,21 @@ class LAMCfgMain {
 	 * Persistence settings are ignored as they must be on local file system.
 	 *
 	 * @return bool true when ok
+	 * @throws LAMException error reading config
 	 */
-	private function loadFromDb() : bool {
+	private function loadFromDb() : void {
 		$configDb = new ConfigurationDatabase($this);
-		$pdo = $configDb->getPdo();
 		try {
+			$pdo = $configDb->getPdo();
 			$result = $pdo->query("SELECT value FROM " . ConfigurationDatabase::TABLE_MAIN_CONFIG . ' WHERE name=\'config\'');
 			if ($result === false) {
-				return false;
+				syslog(LOG_ERR, 'Main configuration table query failed.');
+				throw new LAMException(_('Unable to connect to configuration database.'));
 			}
 			$data = $result->fetchAll();
 			if (empty($data)) {
-				return true;
+				syslog(LOG_ERR, 'Main configuration table is empty.');
+				throw new LAMException(_('Unable to connect to configuration database.'));
 			}
 			$jsonData = json_decode($data[0]['value'], true);
 			foreach ($this->persistenceSettings as $persistenceSetting) {
@@ -3112,13 +3119,12 @@ class LAMCfgMain {
 		}
 		catch (PDOException $e) {
 			syslog(LOG_ERR, 'Unable to read main config: ' . $e->getMessage());
-			return false;
+			throw new LAMException(_('Unable to connect to configuration database.'));
 		}
 		catch (LAMException $e) {
 			syslog(LOG_ERR, 'Unable to import main config: ' . $e->getMessage());
-			return false;
+			throw new LAMException(_('Unable to connect to configuration database.'));
 		}
-		return true;
 	}
 
 	/**

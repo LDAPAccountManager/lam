@@ -124,14 +124,13 @@ function startSecureSession($redirectToLogin = true, $initSecureData = false) {
 /**
  * Checks if the client's IP address is on the list of allowed IPs.
  * The script is stopped if the host is not valid.
- *
  */
 function checkClientIP() {
 	if (isset($_SESSION['cfgMain'])) {
 		$cfg = $_SESSION['cfgMain'];
 	}
 	else {
-		$cfg = new LAMCfgMain();
+			$cfg = new LAMCfgMain();
 	}
 	$allowedHosts = $cfg->allowedHosts;
 	$url = getCallingURL();
@@ -248,7 +247,7 @@ function isDebugLoggingEnabled() {
  * @param string $level log level (LOG_DEBUG, LOG_NOTICE, LOG_WARNING, LOG_ERR)
  * @param string $message log message
  */
-function logNewMessage($level, $message) {
+function logNewMessage($level, $message) : void {
 	$possibleLevels = array(
 		LOG_DEBUG => 'DEBUG',
 		LOG_NOTICE => 'NOTICE',
@@ -262,8 +261,8 @@ function logNewMessage($level, $message) {
 		$cfg = $_SESSION['cfgMain'];
 	}
 	else {
-		$cfg = new LAMCfgMain();
-		$_SESSION['cfgMain'] = $cfg;
+			$cfg = new LAMCfgMain();
+			$_SESSION['cfgMain'] = $cfg;
 	}
 	// check if logging is disabled
 	if (($cfg->logDestination == 'NONE')

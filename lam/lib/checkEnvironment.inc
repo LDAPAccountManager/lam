@@ -140,13 +140,13 @@ if (!extension_loaded('zip')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no ZIP support.", "Please install the ZIP extension for PHP.");
 }
 // check for main config
-$mainConfig = new LAMCfgMain();
-if (!$mainConfig->isConfigFileExisting() && !$mainConfig->installSampleConfig()) {
-	$criticalErrors[] = array("ERROR", "The main config file (config.cfg) does not exist.", "Please see the manual for installation instructions.");
-}
-$mainConfig = new LAMCfgMain();
-$configurationErrors = array();
 try {
+	$mainConfig = new LAMCfgMain();
+	if (!$mainConfig->isConfigFileExisting() && !$mainConfig->installSampleConfig()) {
+		$criticalErrors[] = array("ERROR", "The main config file (config.cfg) does not exist.", "Please see the manual for installation instructions.");
+	}
+	$mainConfig = new LAMCfgMain();
+	$configurationErrors = array();
 	$configurationDatabase = new ConfigurationDatabase($mainConfig);
 	$configurationDatabase->checkConnection();
 }
