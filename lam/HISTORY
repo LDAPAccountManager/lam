@@ -1,6 +1,8 @@
 June 2021 7.6
   - Allow to store whole LAM configuration in MySQL database
   - Docker: new options for configuration location and LAM Pro license
+  - Wildcards in edit screen support lower-case mode (e.g. "$_firstname")
+  - Windows: more fields can be hidden
   - LAM Pro:
    -> Export/Import of cron jobs
 

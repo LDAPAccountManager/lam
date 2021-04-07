@@ -633,7 +633,8 @@
       <para><emphasis role="bold">Wildcards</emphasis></para>
 
       <para>This module provides the following wildcards (others may be
-      provided by other modules):</para>
+      provided by other modules). Add a "_" after the "$" to get the value in
+      lower-case (e.g. "$_firstname").</para>
 
       <itemizedlist>
         <listitem>
@@ -845,7 +846,8 @@
       <para><emphasis role="bold">Wildcards</emphasis></para>
 
       <para>This module provides the following wildcards (others may be
-      provided by other modules):</para>
+      provided by other modules). Add a "_" after the "$" to get the value in
+      lower-case (e.g. "$_user").</para>
 
       <itemizedlist>
         <listitem>
@@ -1268,7 +1270,8 @@
       <para><emphasis role="bold">Wildcards</emphasis></para>
 
       <para>This module provides the following wildcards (others may be
-      provided by other modules):</para>
+      provided by other modules). Add a "_" after the "$" to get the value in
+      lower-case (e.g. "$_firstname").</para>
 
       <itemizedlist>
         <listitem>
@@ -1322,6 +1325,14 @@
 
         <listitem>
           <para>Script path</para>
+        </listitem>
+
+        <listitem>
+          <para>User name</para>
+        </listitem>
+
+        <listitem>
+          <para>User name (pre W2K)</para>
         </listitem>
       </itemizedlist>
 
@@ -1420,7 +1431,8 @@
       <para><emphasis role="bold">Wildcards</emphasis></para>
 
       <para>This module provides the following wildcards (others may be
-      provided by other modules):</para>
+      provided by other modules). Add a "_" after the "$" to get the value in
+      lower-case (e.g. "$_firstname").</para>
 
       <itemizedlist>
         <listitem>
@@ -5317,7 +5329,7 @@ OK (10 msec)</programlisting>
     <title>Custom fields (LAM Pro)</title>
 
     <para>This module allows you to manage LDAP attributes that are not
-    covered by the other LAM modules (e.g. if you use custom LDAP schemas).
+    covered by the other LAM modules (e.g. if you use a custom LDAP schema).
     You can fully define how your input fields look like:</para>
 
     <itemizedlist>

@@ -794,17 +794,39 @@ class windowsUser extends baseModule implements passwordService {
 		$profileContainer = new htmlResponsiveRow();
 		$profileContainer->add(new htmlResponsiveInputField(_('Common name'), 'windowsUser_cn', null, 'cn'), 12);
 		$profileContainer->add(new htmlResponsiveInputField(_('Display name'), 'windowsUser_displayName', null, 'displayName'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Street'), 'windowsUser_streetAddress', null, 'streetAddress'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Post office box'), 'windowsUser_postOfficeBox', null, 'postOfficeBox'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Postal code'), 'windowsUser_postalCode', null, 'postalCode'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Location'), 'windowsUser_l', null, 'l'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('State'), 'windowsUser_st', null, 'st'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Office name'), 'windowsUser_physicalDeliveryOfficeName', null, 'physicalDeliveryOfficeName'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Email address'), 'windowsUser_mail', null, 'mail'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Email alias'), 'windowsUser_otherMailbox', null, 'otherMailboxList'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Logon script'), 'windowsUser_scriptPath', null, 'scriptPath'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Profile path'), 'windowsUser_profilePath', null, 'profilePath'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Home directory'), 'windowsUser_homeDirectory', null, 'homeDirectory'), 12);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidestreetAddress')) {
+			$profileContainer->add(new htmlResponsiveInputField(_('Street'), 'windowsUser_streetAddress', null, 'streetAddress'), 12);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepostOfficeBox')) {
+			$profileContainer->add(new htmlResponsiveInputField(_('Post office box'), 'windowsUser_postOfficeBox', null, 'postOfficeBox'), 12);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepostalCode')) {
+			$profileContainer->add(new htmlResponsiveInputField(_('Postal code'), 'windowsUser_postalCode', null, 'postalCode'), 12);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidel')) {
+			$profileContainer->add(new htmlResponsiveInputField(_('Location'), 'windowsUser_l', null, 'l'), 12);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidest')) {
+			$profileContainer->add(new htmlResponsiveInputField(_('State'), 'windowsUser_st', null, 'st'), 12);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidephysicalDeliveryOfficeName')) {
+			$profileContainer->add(new htmlResponsiveInputField(_('Office name'), 'windowsUser_physicalDeliveryOfficeName', null, 'physicalDeliveryOfficeName'), 12);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemail')) {
+			$profileContainer->add(new htmlResponsiveInputField(_('Email address'), 'windowsUser_mail', null, 'mail'), 12);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherMailbox')) {
+			$profileContainer->add(new htmlResponsiveInputField(_('Email alias'), 'windowsUser_otherMailbox', null, 'otherMailboxList'), 12);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidescriptPath')) {
+			$profileContainer->add(new htmlResponsiveInputField(_('Logon script'), 'windowsUser_scriptPath', null, 'scriptPath'), 12);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideprofilePath')) {
+			$profileContainer->add(new htmlResponsiveInputField(_('Profile path'), 'windowsUser_profilePath', null, 'profilePath'), 12);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidehomeDirectory')) {
+			$profileContainer->add(new htmlResponsiveInputField(_('Home directory'), 'windowsUser_homeDirectory', null, 'homeDirectory'), 12);
+		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
 			$profileContainer->add(new htmlResponsiveInputField(_('NIS domain'), 'windowsUser_msSFU30NisDomain', null, 'msSFU30NisDomain'), 12);
 		}
@@ -839,23 +861,43 @@ class windowsUser extends baseModule implements passwordService {
 			'windowsUser_displayName' => 'displayName',
 			'windowsUser_cn' => 'cn',
 			'windowsUser_streetAddress' => 'streetAddress',
-			'windowsUser_postOfficeBox' => 'postOfficeBox',
-			'windowsUser_postalCode' => 'postalCode',
-			'windowsUser_l' => 'l',
-			'windowsUser_st' => 'st',
-			'windowsUser_physicalDeliveryOfficeName' => 'physicalDeliveryOfficeName',
-			'windowsUser_mail' => 'mail',
-			'windowsUser_scriptPath' => 'scriptPath',
-			'windowsUser_profilePath' => 'profilePath',
-			'windowsUser_homeDirectory' => 'homeDirectory',
 			'windowsUser_company' => 'company',
-			'windowsUser_homeDrive' => 'homeDrive',
 		);
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideWorkstations')) {
 			$return['profile_mappings']['windowsUser_userWorkstations'] = 'userWorkstations';
 		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
 			$return['profile_mappings']['windowsUser_msSFU30NisDomain'] = 'msSFU30NisDomain';
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepostOfficeBox')) {
+			$return['profile_mappings']['windowsUser_postOfficeBox'] = 'postOfficeBox';
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepostalCode')) {
+			$return['profile_mappings']['windowsUser_postalCode'] = 'postalCode';
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidel')) {
+			$return['profile_mappings']['windowsUser_l'] = 'l';
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidest')) {
+			$return['profile_mappings']['windowsUser_st'] = 'st';
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidephysicalDeliveryOfficeName')) {
+			$return['profile_mappings']['windowsUser_physicalDeliveryOfficeName'] = 'physicalDeliveryOfficeName';
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemail')) {
+			$return['profile_mappings']['windowsUser_mail'] = 'mail';
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidescriptPath')) {
+			$return['profile_mappings']['windowsUser_scriptPath'] = 'scriptPath';
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideprofilePath')) {
+			$return['profile_mappings']['windowsUser_profilePath'] = 'profilePath';
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidehomeDirectory')) {
+			$return['profile_mappings']['windowsUser_homeDirectory'] = 'homeDirectory';
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidehomeDrive')) {
+			$return['profile_mappings']['windowsUser_homeDrive'] = 'homeDrive';
 		}
 		// profile checks
 		$return['profile_checks']['windowsUser_accountExpires'] = array(
@@ -887,35 +929,73 @@ class windowsUser extends baseModule implements passwordService {
 		$return['PDF_fields'] = array(
 			'userPrincipalName' => _('User name'),
 			'cn' => _('Common name'),
-			'description' => _('Description'),
 			'displayName' => _('Display name'),
 			'givenName' => _('First name'),
-			'initials' => _('Initials'),
-			'l' => _('Location'),
-			'mail' => _('Email address'),
-			'otherMailbox' => _('Email alias'),
-			'otherTelephone' => _('Other telephone numbers'),
-			'physicalDeliveryOfficeName' => _('Office name'),
-			'postalCode' => _('Postal code'),
-			'postOfficeBox' => _('Post office box'),
 			'sn' => _('Last name'),
-			'st' => _('State'),
-			'streetAddress' => _('Street'),
-			'telephoneNumber' => _('Telephone number'),
-			'url' => _('Other web sites'),
-			'wWWHomePage' => _('Web site'),
 			'deactivated' => _('Account is deactivated'),
 			'noExpire' => _('Password does not expire'),
-			'requireCard' => _('Require smartcard'),
-			'profilePath' => _('Profile path'),
-			'scriptPath' => _('Logon script'),
 			'pwdMustChange' => _('Password change at next login'),
 			'groups' => _('Groups'),
 			'password' => _('Password'),
-			'homeDrive' => _('Home drive'),
-			'homeDirectory' => _('Home directory'),
 			'accountExpires' => _('Account expiration date'),
 		);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideRequireSmartcard')) {
+			$return['PDF_fields']['requireCard'] = _('Require smartcard');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideprofilePath')) {
+			$return['PDF_fields']['profilePath'] = _('Profile path');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidescriptPath')) {
+			$return['PDF_fields']['scriptPath'] = _('Logon script');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidehomeDrive')) {
+			$return['PDF_fields']['homeDrive'] = _('Home drive');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidehomeDirectory')) {
+			$return['PDF_fields']['homeDirectory'] = _('Home directory');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedescription')) {
+			$return['PDF_fields']['description'] = _('Description');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideinitials')) {
+			$return['PDF_fields']['initials'] = _('Initials');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidel')) {
+			$return['PDF_fields']['l'] = _('Location');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemail')) {
+			$return['PDF_fields']['mail'] = _('Email address');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherMailbox')) {
+			$return['PDF_fields']['otherMailbox'] = _('Email alias');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherTelephone')) {
+			$return['PDF_fields']['otherTelephone'] = _('Other telephone numbers');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidephysicalDeliveryOfficeName')) {
+			$return['PDF_fields']['physicalDeliveryOfficeName'] = _('Office name');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepostalCode')) {
+			$return['PDF_fields']['postalCode'] = _('Postal code');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepostOfficeBox')) {
+			$return['PDF_fields']['postOfficeBox'] = _('Post office box');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidest')) {
+			$return['PDF_fields']['st'] = _('State');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidestreetAddress')) {
+			$return['PDF_fields']['streetAddress'] = _('Street');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidetelephoneNumber')) {
+			$return['PDF_fields']['telephoneNumber'] = _('Telephone number');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideurl')) {
+			$return['PDF_fields']['url'] = _('Other web sites');
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidewWWHomePage')) {
+			$return['PDF_fields']['wWWHomePage'] = _('Web site');
+		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideWorkstations')) {
 			$return['PDF_fields']['userWorkstations'] = _('Workstations');
 		}
@@ -1187,42 +1267,95 @@ class windowsUser extends baseModule implements passwordService {
 		$this->addSimpleInputTextField($containerLeft, 'sn', _('Last name'));
 		$this->addSimpleInputTextField($containerLeft, 'cn', _('Common name'), true);
 		$this->addSimpleInputTextField($containerLeft, 'displayName', _('Display name'));
-		$this->addSimpleInputTextField($containerLeft, 'initials', _('Initials'));
-		$this->addSimpleInputTextField($containerLeft, 'description', _('Description'));
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideinitials')) {
+			$this->addSimpleInputTextField($containerLeft, 'initials', _('Initials'));
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedescription')) {
+			$this->addSimpleInputTextField($containerLeft, 'description', _('Description'));
+		}
 		// address area
-		$containerLeft->add(new htmlSubTitle(_('Address')), 12);
-		$this->addSimpleInputTextField($containerLeft, 'streetAddress', _('Street'), false, 20, true);
-		$this->addSimpleInputTextField($containerLeft, 'postOfficeBox', _('Post office box'));
-		$this->addSimpleInputTextField($containerLeft, 'postalCode', _('Postal code'));
-		$this->addSimpleInputTextField($containerLeft, 'l', _('Location'));
-		$this->addSimpleInputTextField($containerLeft, 'st', _('State'));
-		$this->addSimpleInputTextField($containerLeft, 'physicalDeliveryOfficeName', _('Office name'));
+		$showStreetAddress = !$this->isBooleanConfigOptionSet('windowsUser_hidestreetAddress');
+		$showPostOfficeBox = !$this->isBooleanConfigOptionSet('windowsUser_hidepostOfficeBox');
+		$showPostalCode = !$this->isBooleanConfigOptionSet('windowsUser_hidepostalCode');
+		$showL = !$this->isBooleanConfigOptionSet('windowsUser_hidel');
+		$showSt = !$this->isBooleanConfigOptionSet('windowsUser_hidest');
+		$showPhysicalDeliveryOfficeName = !$this->isBooleanConfigOptionSet('windowsUser_hidephysicalDeliveryOfficeName');
+		$showAddress = $showStreetAddress || $showPostOfficeBox || $showPostalCode || $showL || $showSt || $showPhysicalDeliveryOfficeName;
+		if ($showAddress) {
+			$containerLeft->add(new htmlSubTitle(_('Address')), 12);
+		}
+		if ($showStreetAddress) {
+			$this->addSimpleInputTextField($containerLeft, 'streetAddress', _('Street'), false, 20, true);
+		}
+		if ($showPostOfficeBox) {
+			$this->addSimpleInputTextField($containerLeft, 'postOfficeBox', _('Post office box'));
+		}
+		if ($showPostalCode) {
+			$this->addSimpleInputTextField($containerLeft, 'postalCode', _('Postal code'));
+		}
+		if ($showL) {
+			$this->addSimpleInputTextField($containerLeft, 'l', _('Location'));
+		}
+		if ($showSt) {
+			$this->addSimpleInputTextField($containerLeft, 'st', _('State'));
+		}
+		if ($showPhysicalDeliveryOfficeName) {
+			$this->addSimpleInputTextField($containerLeft, 'physicalDeliveryOfficeName', _('Office name'));
+		}
 		// contact data area
-		$containerLeft->add(new htmlSubTitle(_('Contact data')), 12);
-		$this->addSimpleInputTextField($containerLeft, 'mail', _('Email address'));
-		$this->addMultiValueInputTextField($containerLeft, 'otherMailbox', _('Email alias'));
-		if (!$this->isBooleanConfigOptionSet('windowsUser_hideproxyAddresses', true)) {
+		$showMail = !$this->isBooleanConfigOptionSet('windowsUser_hidemail');
+		$showOtherMailbox = !$this->isBooleanConfigOptionSet('windowsUser_hideotherMailbox');
+		$showProxyAddresses = !$this->isBooleanConfigOptionSet('windowsUser_hideproxyAddresses', true);
+		$showTelephoneNumber = !$this->isBooleanConfigOptionSet('windowsUser_hidetelephoneNumber');
+		$showOtherTelephone = !$this->isBooleanConfigOptionSet('windowsUser_hideotherTelephone');
+		$showMobile = !$this->isBooleanConfigOptionSet('windowsUser_hidemobile');
+		$showOtherMobile = !$this->isBooleanConfigOptionSet('windowsUser_hideotherMobile', true);
+		$showPager = !$this->isBooleanConfigOptionSet('windowsUser_hidepager', true);
+		$showOtherPager = !$this->isBooleanConfigOptionSet('windowsUser_hideotherPager', true);
+		$showFacsimileTelephoneNumber = !$this->isBooleanConfigOptionSet('windowsUser_hidefacsimileTelephoneNumber');
+		$showWWWHomePage = !$this->isBooleanConfigOptionSet('windowsUser_hidewWWHomePage');
+		$showUrl = !$this->isBooleanConfigOptionSet('windowsUser_hideurl');
+		$showContactData = $showMail || $showOtherMailbox || $showProxyAddresses || $showTelephoneNumber || $showOtherTelephone || $showMobile ||
+			$showOtherMobile || $showPager || $showOtherPager || $showFacsimileTelephoneNumber || $showWWWHomePage || $showUrl;
+		if ($showContactData) {
+			$containerLeft->add(new htmlSubTitle(_('Contact data')), 12);
+		}
+		if ($showMail) {
+			$this->addSimpleInputTextField($containerLeft, 'mail', _('Email address'));
+		}
+		if ($showOtherMailbox) {
+			$this->addMultiValueInputTextField($containerLeft, 'otherMailbox', _('Email alias'));
+		}
+		if ($showProxyAddresses) {
 			$this->addMultiValueInputTextField($containerLeft, 'proxyAddresses', _('Proxy-Addresses'));
 		}
-		$this->addSimpleInputTextField($containerLeft, 'telephoneNumber', _('Telephone number'));
-		$this->addMultiValueInputTextField($containerLeft, 'otherTelephone', _('Other telephone numbers'));
-		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemobile', true)) {
+		if ($showTelephoneNumber) {
+			$this->addSimpleInputTextField($containerLeft, 'telephoneNumber', _('Telephone number'));
+		}
+		if ($showOtherTelephone) {
+			$this->addMultiValueInputTextField($containerLeft, 'otherTelephone', _('Other telephone numbers'));
+		}
+		if ($showMobile) {
 			$this->addSimpleInputTextField($containerLeft, 'mobile', _('Mobile'));
 		}
-		if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherMobile', true)) {
+		if ($showOtherMobile) {
 			$this->addMultiValueInputTextField($containerLeft, 'otherMobile', _('Other mobiles'));
 		}
-		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepager', true)) {
+		if ($showPager) {
 			$this->addSimpleInputTextField($containerLeft, 'pager', _('Pager'));
 		}
-		if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherPager', true)) {
+		if ($showOtherPager) {
 			$this->addMultiValueInputTextField($containerLeft, 'otherPager', _('Other pagers'));
 		}
-		if (!$this->isBooleanConfigOptionSet('windowsUser_hidefacsimileTelephoneNumber')) {
+		if ($showFacsimileTelephoneNumber) {
 			$this->addSimpleInputTextField($containerLeft, 'facsimileTelephoneNumber', _('Fax number'));
 		}
-		$this->addSimpleInputTextField($containerLeft, 'wWWHomePage', _('Web site'));
-		$this->addMultiValueInputTextField($containerLeft, 'url', _('Other web sites'));
+		if ($showWWWHomePage) {
+			$this->addSimpleInputTextField($containerLeft, 'wWWHomePage', _('Web site'));
+		}
+		if ($showUrl) {
+			$this->addMultiValueInputTextField($containerLeft, 'url', _('Other web sites'));
+		}
 		// work details area
 		if ($this->manageWorkDetails()) {
 			$containerLeft->add(new htmlSubTitle(_('Work details')), 12);
@@ -1283,8 +1416,10 @@ class windowsUser extends baseModule implements passwordService {
 		$noExpire = windowsUser::isNeverExpiring($this->attributes);
 		$containerLeft->add(new htmlResponsiveInputCheckbox('noExpire', $noExpire, _("Password does not expire"), 'noExpire'), 12);
 		// require smartcard
-		$requireCard = windowsUser::isSmartCardRequired($this->attributes);
-		$containerLeft->add(new htmlResponsiveInputCheckbox('requireCard', $requireCard, _("Require smartcard"), 'requireCard'), 12);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideRequireSmartcard')) {
+			$requireCard = windowsUser::isSmartCardRequired($this->attributes);
+			$containerLeft->add(new htmlResponsiveInputCheckbox('requireCard', $requireCard, _("Require smartcard"), 'requireCard'), 12);
+		}
 		// account expiration
 		$containerLeft->addLabel(new htmlOutputText(_('Account expiration date')));
 		$accountExpiresGroup = new htmlGroup();
@@ -1321,25 +1456,40 @@ class windowsUser extends baseModule implements passwordService {
 			$containerLeft->addField($userWorkstationsGroup);
 		}
 		// user profile area
-		$containerLeft->add(new htmlSubTitle(_('User profile')), 12);
+		$showProfilePath = !$this->isBooleanConfigOptionSet('windowsUser_hideprofilePath');
+		$showScriptPath = !$this->isBooleanConfigOptionSet('windowsUser_hidescriptPath');
+		$showHomeDrive = !$this->isBooleanConfigOptionSet('windowsUser_hidehomeDrive');
+		$showHomeDirectory = !$this->isBooleanConfigOptionSet('windowsUser_hidehomeDirectory');
+		$showUserProfile = $showProfilePath || $showScriptPath || $showHomeDrive || $showHomeDirectory;
+		if ($showUserProfile) {
+			$containerLeft->add(new htmlSubTitle(_('User profile')), 12);
+		}
 		// profile path
-		$this->addSimpleInputTextField($containerLeft, 'profilePath', _('Profile path'));
+		if ($showProfilePath) {
+			$this->addSimpleInputTextField($containerLeft, 'profilePath', _('Profile path'));
+		}
 		// logon script
-		$this->addSimpleInputTextField($containerLeft, 'scriptPath', _('Logon script'));
+		if ($showScriptPath) {
+			$this->addSimpleInputTextField($containerLeft, 'scriptPath', _('Logon script'));
+		}
 		// home drive
-		$drives = array('-');
-		for ($i=90; $i>67; $i--) {
-			$drives[] = chr($i) . ':';
+		if ($showHomeDrive) {
+			$drives = array('-');
+			for ($i=90; $i>67; $i--) {
+				$drives[] = chr($i) . ':';
+			}
+			if (!empty($this->attributes['homeDrive'][0])) {
+				$selected = array(strtoupper($this->attributes['homeDrive'][0]));
+			}
+			else {
+				$selected = array('-');
+			}
+			$containerLeft->add(new htmlResponsiveSelect('homeDrive', $drives, $selected, _('Home drive'), 'homeDrive'), 12);
 		}
-		if (!empty($this->attributes['homeDrive'][0])) {
-			$selected = array(strtoupper($this->attributes['homeDrive'][0]));
-		}
-		else {
-			$selected = array('-');
-		}
-		$containerLeft->add(new htmlResponsiveSelect('homeDrive', $drives, $selected, _('Home drive'), 'homeDrive'), 12);
 		// home directory
-		$this->addSimpleInputTextField($containerLeft, 'homeDirectory', _('Home directory'));
+		if ($showHomeDirectory) {
+			$this->addSimpleInputTextField($containerLeft, 'homeDirectory', _('Home directory'));
+		}
 
 		// NIS attributes
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30Name', true) || !$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
@@ -1524,7 +1674,9 @@ class windowsUser extends baseModule implements passwordService {
 			$this->attributes['sAMAccountName'][0] = $_POST['userPrincipalName'];
 		}
 		// description
-		$this->attributes['description'][0] = $_POST['description'];
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedescription')) {
+			$this->attributes['description'][0] = $_POST['description'];
+		}
 		// display name
 		$this->attributes['displayName'][0] = $_POST['displayName'];
 		if (!empty($this->attributes['displayName'][0]) && !get_preg($this->attributes['displayName'][0], 'realname')) {
@@ -1539,36 +1691,45 @@ class windowsUser extends baseModule implements passwordService {
 			$return[] = $this->messages['givenName'][0];
 		}
 		// initials
-		$this->attributes['initials'][0] = $_POST['initials'];
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideinitials')) {
+			$this->attributes['initials'][0] = $_POST['initials'];
+		}
 		// location
-		$this->attributes['l'][0] = $_POST['l'];
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidel')) {
+			$this->attributes['l'][0] = $_POST['l'];
+		}
 		// email
-		$this->attributes['mail'][0] = $_POST['mail'];
-		if (!empty($this->attributes['mail'][0]) && !get_preg($this->attributes['mail'][0], 'email')) {
-			$return[] = $this->messages['mail'][0];
-		}
-		elseif (!empty($this->attributes['mail'][0]) && $this->getAccountContainer()->isNewAccount) {
-			$existingMailAccounts = searchLDAPByAttribute('mail', $this->attributes['mail'][0], 'user', array('mail'), array('user'));
-			if (!empty($existingMailAccounts)) {
-				$msg = $this->messages['mail'][2];
-				$msg[] = array($this->attributes['mail'][0]);
-				$return[] = $msg;
-			}
-		}
-		// email aliases
-		$this->processMultiValueInputTextField('otherMailbox', $return, 'email');
-		if (!empty($this->attributes['otherMailbox'][0]) && $this->getAccountContainer()->isNewAccount) {
-			foreach ($this->attributes['otherMailbox'] as $otherMailbox) {
-				$existingMailAccounts = searchLDAPByAttribute('otherMailbox', $otherMailbox, 'user', array('otherMailbox'), array('user'));
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemail')) {
+			$this->attributes['mail'][0] = $_POST['mail'];
+			if (!empty($this->attributes['mail'][0]) && !get_preg($this->attributes['mail'][0], 'email')) {
+				$return[] = $this->messages['mail'][0];
+			} elseif (!empty($this->attributes['mail'][0]) && $this->getAccountContainer()->isNewAccount) {
+				$existingMailAccounts = searchLDAPByAttribute('mail', $this->attributes['mail'][0], 'user', array('mail'), array('user'));
 				if (!empty($existingMailAccounts)) {
-					$msg = $this->messages['otherMailbox'][2];
-					$msg[] = array($otherMailbox);
+					$msg = $this->messages['mail'][2];
+					$msg[] = array($this->attributes['mail'][0]);
 					$return[] = $msg;
 				}
 			}
 		}
+		// email aliases
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherMailbox')) {
+			$this->processMultiValueInputTextField('otherMailbox', $return, 'email');
+			if (!empty($this->attributes['otherMailbox'][0]) && $this->getAccountContainer()->isNewAccount) {
+				foreach ($this->attributes['otherMailbox'] as $otherMailbox) {
+					$existingMailAccounts = searchLDAPByAttribute('otherMailbox', $otherMailbox, 'user', array('otherMailbox'), array('user'));
+					if (!empty($existingMailAccounts)) {
+						$msg = $this->messages['otherMailbox'][2];
+						$msg[] = array($otherMailbox);
+						$return[] = $msg;
+					}
+				}
+			}
+		}
 		// other telephones
-		$this->processMultiValueInputTextField('otherTelephone', $return, 'telephone');
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherTelephone')) {
+			$this->processMultiValueInputTextField('otherTelephone', $return, 'telephone');
+		}
 		// fax number
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidefacsimileTelephoneNumber')) {
 			$this->attributes['facsimileTelephoneNumber'][0] = $_POST['facsimileTelephoneNumber'];
@@ -1577,32 +1738,48 @@ class windowsUser extends baseModule implements passwordService {
 			}
 		}
 		// office name
-		$this->attributes['physicalDeliveryOfficeName'][0] = $_POST['physicalDeliveryOfficeName'];
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidephysicalDeliveryOfficeName')) {
+			$this->attributes['physicalDeliveryOfficeName'][0] = $_POST['physicalDeliveryOfficeName'];
+		}
 		// postal code
-		$this->attributes['postalCode'][0] = $_POST['postalCode'];
-		if (!get_preg($_POST['postalCode'], 'postalCode')) {
-			$return[] = $this->messages['postalCode'][0];
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepostalCode')) {
+			$this->attributes['postalCode'][0] = $_POST['postalCode'];
+			if (!get_preg($_POST['postalCode'], 'postalCode')) {
+				$return[] = $this->messages['postalCode'][0];
+			}
 		}
 		// post office box
-		$this->attributes['postOfficeBox'][0] = $_POST['postOfficeBox'];
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepostOfficeBox')) {
+			$this->attributes['postOfficeBox'][0] = $_POST['postOfficeBox'];
+		}
 		// last name
 		$this->attributes['sn'][0] = $_POST['sn'];
 		if (!empty($this->attributes['sn'][0]) && !get_preg($_POST['sn'], 'realname')) {
 			$return[] = $this->messages['sn'][0];
 		}
 		// state
-		$this->attributes['st'][0] = $_POST['st'];
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidest')) {
+			$this->attributes['st'][0] = $_POST['st'];
+		}
 		// street
-		$this->attributes['streetAddress'][0] = $_POST['streetAddress'];
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidestreetAddress')) {
+			$this->attributes['streetAddress'][0] = $_POST['streetAddress'];
+		}
 		// telephone
-		$this->attributes['telephoneNumber'][0] = $_POST['telephoneNumber'];
-		if (!get_preg($_POST['telephoneNumber'], 'telephone')) {
-			$return[] = $this->messages['telephoneNumber'][0];
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidetelephoneNumber')) {
+			$this->attributes['telephoneNumber'][0] = $_POST['telephoneNumber'];
+			if (!get_preg($_POST['telephoneNumber'], 'telephone')) {
+				$return[] = $this->messages['telephoneNumber'][0];
+			}
 		}
 		// other web sites
-		$this->processMultiValueInputTextField('url', $return);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideurl')) {
+			$this->processMultiValueInputTextField('url', $return);
+		}
 		// web site
-		$this->attributes['wWWHomePage'][0] = $_POST['wWWHomePage'];
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidewWWHomePage')) {
+			$this->attributes['wWWHomePage'][0] = $_POST['wWWHomePage'];
+		}
 		// password must be changed
 		if (isset($_POST['forcePasswordChangeOption']) && ($_POST['forcePasswordChangeOption'] == 'on')) {
 			$this->attributes['pwdLastSet'][0] = '0';
@@ -1628,29 +1805,38 @@ class windowsUser extends baseModule implements passwordService {
 		$noExpire = isset($_POST['noExpire']) && ($_POST['noExpire'] == 'on');
 		windowsUser::setIsNeverExpiring($this->attributes, $noExpire);
 		// smartcard required
-		$requireCard = isset($_POST['requireCard']) && ($_POST['requireCard'] == 'on');
-		windowsUser::setIsSmartCardRequired($this->attributes, $requireCard);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideRequireSmartcard')) {
+			$requireCard = isset($_POST['requireCard']) && ($_POST['requireCard'] == 'on');
+			windowsUser::setIsSmartCardRequired($this->attributes, $requireCard);
+		}
 		// profile path
-		$this->attributes['profilePath'][0] = $_POST['profilePath'];
-		if (!($this->attributes['profilePath'][0] == '') && !get_preg($this->attributes['profilePath'][0], 'UNC')) {
-			$return[] = $this->messages['profilePath'][0];
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideprofilePath')) {
+			$this->attributes['profilePath'][0] = $_POST['profilePath'];
+			if (!($this->attributes['profilePath'][0] == '') && !get_preg($this->attributes['profilePath'][0], 'UNC')) {
+				$return[] = $this->messages['profilePath'][0];
+			}
 		}
 		// logon script
-		$this->attributes['scriptPath'][0] = $_POST['scriptPath'];
-		if (($this->attributes['scriptPath'][0] != '') && (!get_preg($this->attributes['scriptPath'][0], 'logonscript'))) {
-			$return[] = $this->messages['scriptPath'][0];
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidescriptPath')) {
+			$this->attributes['scriptPath'][0] = $_POST['scriptPath'];
+			if (($this->attributes['scriptPath'][0] != '') && (!get_preg($this->attributes['scriptPath'][0], 'logonscript'))) {
+				$return[] = $this->messages['scriptPath'][0];
+			}
 		}
 		// home drive
-		if ($_POST['homeDrive'] == "-") {
-			$this->attributes['homeDrive'][0] = '';
-		}
-		else {
-			$this->attributes['homeDrive'][0] = $_POST['homeDrive'];
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidehomeDrive')) {
+			if ($_POST['homeDrive'] == "-") {
+				$this->attributes['homeDrive'][0] = '';
+			} else {
+				$this->attributes['homeDrive'][0] = $_POST['homeDrive'];
+			}
 		}
 		// home directory
-		$this->attributes['homeDirectory'][0] = $_POST['homeDirectory'];
-		if (!empty($this->attributes['homeDrive'][0]) && !get_preg($this->attributes['homeDirectory'][0], 'UNC')) {
-			$return[] = $this->messages['homeDirectory'][0];
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidehomeDirectory')) {
+			$this->attributes['homeDirectory'][0] = $_POST['homeDirectory'];
+			if (!empty($this->attributes['homeDrive'][0]) && !get_preg($this->attributes['homeDirectory'][0], 'UNC')) {
+				$return[] = $this->messages['homeDirectory'][0];
+			}
 		}
 		// NIS name
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30Name', true)) {
@@ -3064,12 +3250,14 @@ class windowsUser extends baseModule implements passwordService {
 		$groupSelect->setMultiSelect(true);
 		$return->add($groupSelect, 12);
 		// home drive
-		$drives = array('-');
-		for ($i = 90; $i > 67; $i--) {
-			$drives[] = chr($i) . ':';
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidehomeDrive')) {
+			$drives = array('-');
+			for ($i = 90; $i > 67; $i--) {
+				$drives[] = chr($i) . ':';
+			}
+			$driveSelect = new htmlResponsiveSelect('windowsUser_homeDrive', $drives, array('-'), _('Home drive'), 'homeDrive');
+			$return->add($driveSelect, 12);
 		}
-		$driveSelect = new htmlResponsiveSelect('windowsUser_homeDrive', $drives, array('-'), _('Home drive'), 'homeDrive');
-		$return->add($driveSelect, 12);
 		// force password change
 		$passwordChangeCheckbox = new htmlResponsiveInputCheckbox('windowsUser_pwdMustChange', true, _('Password change at next login'), 'pwdMustChange');
 		$return->add($passwordChangeCheckbox, 12);
@@ -3837,6 +4025,25 @@ class windowsUser extends baseModule implements passwordService {
 		$hiddenOptions[_('Organisational unit')] = array('windowsUser_hideou', true);
 		$hiddenOptions[_('Organisation')] = array('windowsUser_hideo', true);
 		$hiddenOptions[_('Manager')] = array('windowsUser_hidemanager', true);
+		$hiddenOptions[_('Profile path')] = array('windowsUser_hideprofilePath', false);
+		$hiddenOptions[_('Logon script')] = array('windowsUser_hidescriptPath', false);
+		$hiddenOptions[_('Home drive')] = array('windowsUser_hidehomeDrive', false);
+		$hiddenOptions[_('Home directory')] = array('windowsUser_hidehomeDirectory', false);
+		$hiddenOptions[_('Initials')] = array('windowsUser_hideinitials', false);
+		$hiddenOptions[_('Description')] = array('windowsUser_hidedescription', false);
+		$hiddenOptions[_('Street')] = array('windowsUser_hidestreetAddress', false);
+		$hiddenOptions[_('Post office box')] = array('windowsUser_hidepostOfficeBox', false);
+		$hiddenOptions[_('Postal code')] = array('windowsUser_hidepostalCode', false);
+		$hiddenOptions[_('Location')] = array('windowsUser_hidel', false);
+		$hiddenOptions[_('State')] = array('windowsUser_hidest', false);
+		$hiddenOptions[_('Office name')] = array('windowsUser_hidephysicalDeliveryOfficeName', false);
+		$hiddenOptions[_('Email address')] = array('windowsUser_hidemail', false);
+		$hiddenOptions[_('Email alias')] = array('windowsUser_hideotherMailbox', false);
+		$hiddenOptions[_('Telephone number')] = array('windowsUser_hidetelephoneNumber', false);
+		$hiddenOptions[_('Other telephone numbers')] = array('windowsUser_hideotherTelephone', false);
+		$hiddenOptions[_('Web site')] = array('windowsUser_hidewWWHomePage', false);
+		$hiddenOptions[_('Other web sites')] = array('windowsUser_hideurl', false);
+		$hiddenOptions[_('Require smartcard')] = array('windowsUser_hideRequireSmartcard', false);
 		ksort($hiddenOptions);
 		foreach ($hiddenOptions as $hiddenOptionLabel => $hiddenOption) {
 			$configContainer->add(new htmlResponsiveInputCheckbox($hiddenOption[0], $hiddenOption[1], $hiddenOptionLabel, null, true), 12, 4);
