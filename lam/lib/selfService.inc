@@ -254,11 +254,19 @@ class SelfServicePersistence {
 
 	/**
 	 * Constructor
+	 *
+	 * @throws LAMException error connecting database
 	 */
 	public function __construct() {
 		$configDb = new ConfigurationDatabase(new LAMCfgMain());
 		if ($configDb->useRemoteDb()) {
-			$this->strategy = new SelfServicePersistenceStrategyPdo($configDb->getPdo());
+			try {
+				$this->strategy = new SelfServicePersistenceStrategyPdo($configDb->getPdo());
+			}
+			catch (PDOException $e) {
+				logNewMessage(LOG_ERR, _('Unable to connect to configuration database.'), $e->getMessage());
+				throw new LAMException(_('Unable to connect to configuration database.'));
+			}
 		}
 		else {
 			$this->strategy = new SelfServicePersistenceStrategyFileSystem();
