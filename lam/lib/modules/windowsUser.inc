@@ -1468,7 +1468,8 @@ class windowsUser extends baseModule implements passwordService {
 	public function process_attributes() {
 		$return = array();
 		$keysToReplace = array('cn', 'displayName', 'mail', 'otherMailbox',
-				'profilePath', 'scriptPath', 'homeDirectory');
+				'profilePath', 'scriptPath', 'homeDirectory', 'userPrincipalName',
+				'sAMAccountName');
 		$this->getAccountContainer()->replaceWildcardsInPOST($keysToReplace);
 		// user name
 		$userPrincipalName = $_POST['userPrincipalName'];
@@ -3811,30 +3812,35 @@ class windowsUser extends baseModule implements passwordService {
 		$configHiddenGroup->addElement(new htmlOutputText(_('Hidden options')));
 		$configHiddenGroup->addElement(new htmlHelpLink('hiddenOptions'));
 		$configContainer->add($configHiddenGroup, 12);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hideproxyAddresses', true, _('Proxy-Addresses'), null, true), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidefacsimileTelephoneNumber', false, _('Fax number'), null, true), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidemobile', true, _('Mobile'), null, true), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hideotherMobile', true, _('Other mobiles'), null, true), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidepager', true, _('Pager'), null, true), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hideotherPager', true, _('Other pagers'), null, true), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidesAMAccountName', true, _('User name (pre W2K)'), null, true), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidemsSFU30Name', true, _('NIS name'), null, true), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidemsSFU30NisDomain', true, _('NIS domain'), null, true), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidepwdLastSet', false, _('Last password change'), null, true), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidelastLogonTimestamp', false, _('Last login'), null, true), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hideWorkstations', false, _('Workstations'), null, true), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidejpegPhoto', true, _('Photo'), null, true), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidetitle', true, _('Job title'), null, true), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidecarLicense', true, _('Car license'), null, true), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hideemployeeNumber', true, _('Employee number'), null, true), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hideemployeeType', true, _('Employee type'), null, true), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidebusinessCategory', true, _('Business category'), null, true), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidecompany', true, _('Company'), null, true), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidedepartment', true, _('Department'), null, true), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidedepartmentNumber', true, _('Department number'), null, true), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hideou', true, _('Organisational unit'), null, true), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hideo', true, _('Organisation'), null, true), 12, 4);
-		$configContainer->add(new htmlResponsiveInputCheckbox('windowsUser_hidemanager', true, _('Manager'), null, true), 12, 4);
+		$hiddenOptions = array();
+		$hiddenOptions[_('Proxy-Addresses')] = array('windowsUser_hideproxyAddresses', true);
+		$hiddenOptions[_('Fax number')] = array('windowsUser_hidefacsimileTelephoneNumber', false);
+		$hiddenOptions[_('Mobile')] = array('windowsUser_hidemobile', false);
+		$hiddenOptions[_('Other mobiles')] = array('windowsUser_hideotherMobile', true);
+		$hiddenOptions[_('Pager')] = array('windowsUser_hidepager', true);
+		$hiddenOptions[_('Other pagers')] = array('windowsUser_hideotherPager', true);
+		$hiddenOptions[_('User name (pre W2K)')] = array('windowsUser_hidesAMAccountName', true);
+		$hiddenOptions[_('NIS name')] = array('windowsUser_hidemsSFU30Name', true);
+		$hiddenOptions[_('NIS domain')] = array('windowsUser_hidemsSFU30NisDomain', true);
+		$hiddenOptions[_('Last password change')] = array('windowsUser_hidepwdLastSet', false);
+		$hiddenOptions[_('Last login')] = array('windowsUser_hidelastLogonTimestamp', false);
+		$hiddenOptions[_('Workstations')] = array('windowsUser_hideWorkstations', false);
+		$hiddenOptions[_('Photo')] = array('windowsUser_hidejpegPhoto', true);
+		$hiddenOptions[_('Job title')] = array('windowsUser_hidetitle', true);
+		$hiddenOptions[_('Car license')] = array('windowsUser_hidecarLicense', true);
+		$hiddenOptions[_('Employee number')] = array('windowsUser_hideemployeeNumber', true);
+		$hiddenOptions[_('Employee type')] = array('windowsUser_hideemployeeType', true);
+		$hiddenOptions[_('Business category')] = array('windowsUser_hidebusinessCategory', true);
+		$hiddenOptions[_('Company')] = array('windowsUser_hidecompany', true);
+		$hiddenOptions[_('Department')] = array('windowsUser_hidedepartment', true);
+		$hiddenOptions[_('Department number')] = array('windowsUser_hidedepartmentNumber', true);
+		$hiddenOptions[_('Organisational unit')] = array('windowsUser_hideou', true);
+		$hiddenOptions[_('Organisation')] = array('windowsUser_hideo', true);
+		$hiddenOptions[_('Manager')] = array('windowsUser_hidemanager', true);
+		ksort($hiddenOptions);
+		foreach ($hiddenOptions as $hiddenOptionLabel => $hiddenOption) {
+			$configContainer->add(new htmlResponsiveInputCheckbox($hiddenOption[0], $hiddenOption[1], $hiddenOptionLabel, null, true), 12, 4);
+		}
 		$syncTypes = $typeManager->getConfiguredTypesForScopes(array('group', 'gon', 'user'));
 		$syncActive = false;
 		$possibleSyncModules = array('groupOfNames', 'groupOfMembers', 'groupOfUniqueNames', 'posixAccount');
