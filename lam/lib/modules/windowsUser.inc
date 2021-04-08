@@ -470,90 +470,6 @@ class windowsUser extends baseModule implements passwordService {
 				'example' => _('Steve Miller'),
 			),
 			array(
-				'name' => 'windowsUser_initials',
-				'description' => _('Initials'),
-				'help' => 'initials',
-				'example' => _('S.M.'),
-			),
-			array(
-				'name' => 'windowsUser_description',
-				'description' => _('Description'),
-				'help' => 'description',
-				'example' => _('Temp, contract till December'),
-			),
-			array(
-				'name' => 'windowsUser_streetAddress',
-				'description' => _('Street'),
-				'help' => 'streetAddress',
-				'example' => _('Mystreetname 42'),
-			),
-			array(
-				'name' => 'windowsUser_postOfficeBox',
-				'description' => _('Post office box'),
-				'help' => 'postOfficeBox',
-				'example' => _('12345'),
-			),
-			array(
-				'name' => 'windowsUser_postalCode',
-				'description' => _('Postal code'),
-				'help' => 'postalCode',
-				'example' => _('GB-12345'),
-			),
-			array(
-				'name' => 'windowsUser_l',
-				'description' => _('Location'),
-				'help' => 'l',
-				'example' => _('MyCity'),
-			),
-			array(
-				'name' => 'windowsUser_state',
-				'description' => _('State'),
-				'help' => 'st',
-				'example' => _('New York'),
-			),
-			array(
-				'name' => 'windowsUser_officeName',
-				'description' => _('Office name'),
-				'help' => 'physicalDeliveryOfficeName',
-				'example' => _('YourCompany'),
-			),
-			array(
-				'name' => 'windowsUser_mail',
-				'description' => _('Email address'),
-				'help' => 'mail',
-				'example' => _('user@company.com'),
-			),
-			array(
-				'name' => 'windowsUser_otherMailbox',
-				'description' => _('Email alias'),
-				'help' => 'otherMailboxList',
-				'example' => _('user@company.com'),
-			),
-			array(
-				'name' => 'windowsUser_telephoneNumber',
-				'description' => _('Telephone number'),
-				'help' => 'telephoneNumber',
-				'example' => _('123-124-1234'),
-			),
-			array(
-				'name' => 'windowsUser_otherTelephone',
-				'description' => _('Other telephone numbers'),
-				'help' => 'otherTelephoneList',
-				'example' => _('123-124-1234'),
-			),
-			array(
-				'name' => 'windowsUser_webSite',
-				'description' => _('Web site'),
-				'help' => 'wWWHomePage',
-				'example' => _('http://www.company.com'),
-			),
-			array(
-				'name' => 'windowsUser_otherWebSites',
-				'description' => _('Other web sites'),
-				'help' => 'urlList',
-				'example' => _('http://www.company.com'),
-			),
-			array(
 				'name' => 'windowsUser_deactivated',
 				'description' => _('Account is deactivated'),
 				'help' => 'deactivated',
@@ -576,14 +492,6 @@ class windowsUser extends baseModule implements passwordService {
 				'example' => '21-11-2030',
 			),
 			array(
-				'name' => 'windowsUser_requireCard',
-				'description' => _('Require smartcard'),
-				'help' => 'requireCard',
-				'example' => _('no'),
-				'default' => _('no'),
-				'values' => _('yes') . ', ' . _('no')
-			),
-			array(
 				'name' => 'windowsUser_pwdMustChange',
 				'description' => _('Password change at next login'),
 				'help' => 'pwdMustChange',
@@ -592,35 +500,123 @@ class windowsUser extends baseModule implements passwordService {
 				'values' => _('yes') . ', ' . _('no')
 			),
 			array(
-				'name' => 'windowsUser_profilePath',
-				'description' => _('Profile path'),
-				'help' => 'profilePath',
-				'example' => _('\\\\server\\profiles\\smiller'),
-			),
-			array(
-				'name' => 'windowsUser_scriptPath',
-				'description' => _('Logon script'),
-				'help' => 'scriptPath',
-				'example' => 'logon.bat',
-			),
-			array(
-				'name' => 'windowsUser_homeDrive',
-				'description' => _('Home drive'),
-				'help' => 'homeDrive',
-				'example' => 'K:'
-			),
-			array(
-				'name' => 'windowsUser_homeDirectory',
-				'description' => _('Home directory'),
-				'help' => 'homeDirectory',
-				'example' => _('\\\\server\\homes\\smiller')
-			),
-			array(
 				'name' => 'windowsUser_groups',
 				'description' => _('Groups'),
 				'help' => 'groupsUpload',
 			),
 		);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideinitials')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_initials',
+				'description' => _('Initials'),
+				'help' => 'initials',
+				'example' => _('S.M.'),
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedescription')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_description',
+				'description' => _('Description'),
+				'help' => 'description',
+				'example' => _('Temp, contract till December'),
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidestreetAddress')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_streetAddress',
+				'description' => _('Street'),
+				'help' => 'streetAddress',
+				'example' => _('Mystreetname 42'),
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepostOfficeBox')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_postOfficeBox',
+				'description' => _('Post office box'),
+				'help' => 'postOfficeBox',
+				'example' => _('12345'),
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepostalCode')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_postalCode',
+				'description' => _('Postal code'),
+				'help' => 'postalCode',
+				'example' => _('GB-12345'),
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidel')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_l',
+				'description' => _('Location'),
+				'help' => 'l',
+				'example' => _('MyCity'),
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidest')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_state',
+				'description' => _('State'),
+				'help' => 'st',
+				'example' => _('New York'),
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidephysicalDeliveryOfficeName')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_officeName',
+				'description' => _('Office name'),
+				'help' => 'physicalDeliveryOfficeName',
+				'example' => _('YourCompany'),
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemail')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_mail',
+				'description' => _('Email address'),
+				'help' => 'mail',
+				'example' => _('user@company.com'),
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherMailbox')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_otherMailbox',
+				'description' => _('Email alias'),
+				'help' => 'otherMailboxList',
+				'example' => _('user@company.com'),
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidetelephoneNumber')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_telephoneNumber',
+				'description' => _('Telephone number'),
+				'help' => 'telephoneNumber',
+				'example' => _('123-124-1234'),
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherTelephone')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_otherTelephone',
+				'description' => _('Other telephone numbers'),
+				'help' => 'otherTelephoneList',
+				'example' => _('123-124-1234'),
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidewWWHomePage')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_webSite',
+				'description' => _('Web site'),
+				'help' => 'wWWHomePage',
+				'example' => _('http://www.company.com'),
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideurl')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_otherWebSites',
+				'description' => _('Other web sites'),
+				'help' => 'urlList',
+				'example' => _('http://www.company.com'),
+			);
+		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideproxyAddresses', true)) {
 			$return['upload_columns'][] = array(
 				'name' => 'windowsUser_proxyAddresses',
@@ -676,7 +672,6 @@ class windowsUser extends baseModule implements passwordService {
 					'help' => 'company',
 			);
 		}
-
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidesAMAccountName', true)) {
 			$return['upload_columns'][] = array(
 				'name' => 'windowsUser_sAMAccountName',
@@ -788,6 +783,48 @@ class windowsUser extends baseModule implements passwordService {
 				'description' => _('Workstations'),
 				'help' => 'workstations',
 				'example' => 'PC01,PC02,PC03'
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideprofilePath')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_profilePath',
+				'description' => _('Profile path'),
+				'help' => 'profilePath',
+				'example' => _('\\\\server\\profiles\\smiller'),
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidescriptPath')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_scriptPath',
+				'description' => _('Logon script'),
+				'help' => 'scriptPath',
+				'example' => 'logon.bat',
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidehomeDrive')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_homeDrive',
+				'description' => _('Home drive'),
+				'help' => 'homeDrive',
+				'example' => 'K:'
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidehomeDirectory')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_homeDirectory',
+				'description' => _('Home directory'),
+				'help' => 'homeDirectory',
+				'example' => _('\\\\server\\homes\\smiller')
+			);
+		}
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hideRequireSmartcard')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_requireCard',
+				'description' => _('Require smartcard'),
+				'help' => 'requireCard',
+				'example' => _('no'),
+				'default' => _('no'),
+				'values' => _('yes') . ', ' . _('no')
 			);
 		}
 		// profile options
@@ -2779,24 +2816,40 @@ class windowsUser extends baseModule implements passwordService {
 				$partialAccounts[$i]['displayName'] = $partialAccounts[$i]['cn'];
 			}
 			// initials
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_initials', 'initials');
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hideinitials')) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_initials', 'initials');
+			}
 			// description
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_description', 'description');
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidedescription')) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_description', 'description');
+			}
 			// street
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_streetAddress', 'streetAddress');
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidestreetAddress')) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_streetAddress', 'streetAddress');
+			}
 			// post office box
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_postOfficeBox', 'postOfficeBox');
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidepostOfficeBox')) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_postOfficeBox', 'postOfficeBox');
+			}
 			// postal code
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_postalCode', 'postalCode',
-				'postalCode', $this->messages['postalCode'][1], $errors);
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidepostalCode')) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_postalCode', 'postalCode',
+					'postalCode', $this->messages['postalCode'][1], $errors);
+			}
 			// location
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_l', 'l');
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidel')) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_l', 'l');
+			}
 			// state
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_state', 'st');
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidest')) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_state', 'st');
+			}
 			// office name
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_officeName', 'physicalDeliveryOfficeName');
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidephysicalDeliveryOfficeName')) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_officeName', 'physicalDeliveryOfficeName');
+			}
 			// mail
-			if ($rawAccounts[$i][$ids['windowsUser_mail']] != "") {
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidemail') && ($rawAccounts[$i][$ids['windowsUser_mail']] != "")) {
 				if (get_preg($rawAccounts[$i][$ids['windowsUser_mail']], 'email')) {
 					$partialAccounts[$i]['mail'] = $rawAccounts[$i][$ids['windowsUser_mail']];
 					if (in_array_ignore_case($partialAccounts[$i]['mail'], $existingMails)) {
@@ -2812,7 +2865,7 @@ class windowsUser extends baseModule implements passwordService {
 				}
 			}
 			// mail aliases
-			if (isset($ids['windowsUser_otherMailbox']) && ($rawAccounts[$i][$ids['windowsUser_otherMailbox']] != "")) {
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherMailbox') && isset($ids['windowsUser_otherMailbox']) && ($rawAccounts[$i][$ids['windowsUser_otherMailbox']] != "")) {
 				$valueList = preg_split('/;[ ]*/', $rawAccounts[$i][$ids['windowsUser_otherMailbox']]);
 				$partialAccounts[$i]['otherMailbox'] = $valueList;
 				for ($x = 0; $x < sizeof($valueList); $x++) {
@@ -2830,19 +2883,27 @@ class windowsUser extends baseModule implements passwordService {
 				}
 			}
 			// telephone
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_telephoneNumber', 'telephoneNumber',
-				'telephone', $this->messages['telephoneNumber'][1], $errors);
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidetelephoneNumber')) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_telephoneNumber', 'telephoneNumber',
+					'telephone', $this->messages['telephoneNumber'][1], $errors);
+			}
 			// other telephone
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_otherTelephone', 'otherTelephone', 'telephone', $this->messages['otherTelephone'][1], $errors, '/;[ ]*/');
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hideotherTelephone')) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_otherTelephone', 'otherTelephone', 'telephone', $this->messages['otherTelephone'][1], $errors, '/;[ ]*/');
+			}
 			// fax number
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hidefacsimileTelephoneNumber')) {
 				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_facsimileTelephoneNumber', 'facsimileTelephoneNumber',
 						'telephone', $this->messages['facsimileTelephoneNumber'][1], $errors);
 			}
 			// website
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_webSite', 'wWWHomePage');
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidewWWHomePage')) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_webSite', 'wWWHomePage');
+			}
 			// other websites
-			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_otherWebSites', 'url', null, null, $errors, '/;[ ]*/');
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hideurl')) {
+				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_otherWebSites', 'url', null, null, $errors, '/;[ ]*/');
+			}
 			// user account control
 			$userAccountControlAttr['userAccountControl'][0] = windowsUser::DEFAULT_ACCOUNT_CONTROL;
 			// deactivated
@@ -2876,7 +2937,7 @@ class windowsUser extends baseModule implements passwordService {
 				}
 			}
 			// require smartcard
-			if ($rawAccounts[$i][$ids['windowsUser_requireCard']] != "") {
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hideRequireSmartcard') && ($rawAccounts[$i][$ids['windowsUser_requireCard']] != "")) {
 				if (!isset($booleanOptions[$rawAccounts[$i][$ids['windowsUser_requireCard']]])) {
 					$errors[] = array('ERROR', sprintf(_('Account %s:'), $i) . ' windowsUser_requireCard', _('Please enter either yes or no.'));
 				}
@@ -2893,7 +2954,7 @@ class windowsUser extends baseModule implements passwordService {
 				// attribute must be set in postModify
 			}
 			// profile path
-			if ($rawAccounts[$i][$ids['windowsUser_profilePath']] != "") {
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hideprofilePath') && ($rawAccounts[$i][$ids['windowsUser_profilePath']] != "")) {
 				if (get_preg($rawAccounts[$i][$ids['windowsUser_profilePath']], 'UNC')) {
 					$partialAccounts[$i]['profilePath'] = $rawAccounts[$i][$ids['windowsUser_profilePath']];
 				}
@@ -2904,7 +2965,7 @@ class windowsUser extends baseModule implements passwordService {
 				}
 			}
 			// logon script
-			if ($rawAccounts[$i][$ids['windowsUser_scriptPath']] != "") {
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidescriptPath') && ($rawAccounts[$i][$ids['windowsUser_scriptPath']] != "")) {
 				if (get_preg($rawAccounts[$i][$ids['windowsUser_scriptPath']], 'logonscript')) {
 					$partialAccounts[$i]['scriptPath'] = $rawAccounts[$i][$ids['windowsUser_scriptPath']];
 				}
@@ -2915,7 +2976,7 @@ class windowsUser extends baseModule implements passwordService {
 				}
 			}
 			// home drive
-			if (!empty($rawAccounts[$i][$ids['windowsUser_homeDrive']])) {
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidehomeDrive') && (!empty($rawAccounts[$i][$ids['windowsUser_homeDrive']]))) {
 				if (preg_match("/[d-z]:/i", $rawAccounts[$i][$ids['windowsUser_homeDrive']])) {
 					$partialAccounts[$i]['homeDrive'] = strtoupper($rawAccounts[$i][$ids['windowsUser_homeDrive']]);
 				}
@@ -2926,7 +2987,7 @@ class windowsUser extends baseModule implements passwordService {
 				}
 			}
 			// home directory
-			if ($rawAccounts[$i][$ids['windowsUser_homeDirectory']] != "") {
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidehomeDirectory') && ($rawAccounts[$i][$ids['windowsUser_homeDirectory']] != "")) {
 				if (empty($partialAccounts[$i]['homeDrive']) || get_preg($rawAccounts[$i][$ids['windowsUser_homeDirectory']], 'UNC')) {
 					$partialAccounts[$i]['homeDirectory'] = $rawAccounts[$i][$ids['windowsUser_homeDirectory']];
 				}
