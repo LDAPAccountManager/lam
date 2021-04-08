@@ -53,7 +53,7 @@ class Client implements HttpClient, HttpAsyncClient
     /**
      * cURL synchronous requests handle.
      *
-     * @var resource|null
+     * @var resource|\CurlHandle|null
      */
     private $handle;
 

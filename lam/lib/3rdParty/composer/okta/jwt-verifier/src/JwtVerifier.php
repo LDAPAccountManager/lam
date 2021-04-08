@@ -103,16 +103,55 @@ class JwtVerifier
 
         $decoded =  $this->adaptor->decode($jwt, $keys);
 
-        $this->validateClaims($decoded->getClaims());
+        $this->validateClaims($decoded->getClaims(), "access"); // This is hard coded to access token since this was the original functionality.
 
         return $decoded;
     }
 
-    private function validateClaims(array $claims)
+    public function verifyIdToken($jwt)
     {
-        $this->validateNonce($claims);
-        $this->validateAudience($claims);
-        $this->validateClientId($claims);
+
+        if($this->metaData->jwks_uri == null) {
+            throw new \DomainException("Could not access a valid JWKS_URI from the metadata.  We made a call to {$this->wellknown} endpoint, but jwks_uri was null. Please make sure you are using a custom authorization server for the jwt verifier.");
+        }
+
+        $keys = $this->adaptor->getKeys($this->metaData->jwks_uri);
+
+        $decoded =  $this->adaptor->decode($jwt, $keys);
+
+        $this->validateClaims($decoded->getClaims(), "id");
+
+        return $decoded;
+    }
+
+    public function verifyAccessToken($jwt)
+    {
+        if($this->metaData->jwks_uri == null) {
+            throw new \DomainException("Could not access a valid JWKS_URI from the metadata.  We made a call to {$this->wellknown} endpoint, but jwks_uri was null. Please make sure you are using a custom authorization server for the jwt verifier.");
+        }
+
+        $keys = $this->adaptor->getKeys($this->metaData->jwks_uri);
+
+        $decoded =  $this->adaptor->decode($jwt, $keys);
+
+        $this->validateClaims($decoded->getClaims(), "access");
+
+        return $decoded;
+    }
+
+    private function validateClaims(array $claims, string $type)
+    {
+        switch($type) {
+            case 'id':
+                $this->validateAudience($claims);
+                $this->validateNonce($claims);
+                break;
+            case 'access':
+                $this->validateAudience($claims);
+                $this->validateClientId($claims);
+                $this->validateNonce($claims);
+                break;
+        }
     }
 
     private function validateNonce($claims)

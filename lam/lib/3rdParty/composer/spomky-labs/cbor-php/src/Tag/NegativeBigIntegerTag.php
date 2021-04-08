@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2018 Spomky-Labs
+ * Copyright (c) 2018-2020 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace CBOR\Tag;
 
+use Brick\Math\BigInteger;
 use CBOR\ByteStringObject;
 use CBOR\CBORObject;
 use CBOR\TagObject as Base;
@@ -48,9 +49,9 @@ final class NegativeBigIntegerTag extends Base
         if (!$this->object instanceof ByteStringObject) {
             return $this->object->getNormalizedData($ignoreTags);
         }
-        $integer = gmp_init(bin2hex($this->object->getValue()), 16);
-        $minusOne = gmp_init('-1', 10);
+        $integer = BigInteger::fromBase(bin2hex($this->object->getValue()), 16);
+        $minusOne = BigInteger::of(-1);
 
-        return gmp_strval(gmp_sub($minusOne, $integer), 10);
+        return $minusOne->minus($integer)->toBase(10);
     }
 }

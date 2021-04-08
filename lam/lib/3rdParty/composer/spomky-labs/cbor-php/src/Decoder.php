@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2018 Spomky-Labs
+ * Copyright (c) 2018-2020 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -17,6 +17,7 @@ use CBOR\OtherObject\BreakObject;
 use CBOR\OtherObject\OtherObjectManager;
 use CBOR\Tag\TagObjectManager;
 use InvalidArgumentException;
+use function ord;
 use RuntimeException;
 
 final class Decoder
@@ -44,7 +45,7 @@ final class Decoder
 
     private function process(Stream $stream, bool $breakable = false): CBORObject
     {
-        $ib = \ord($stream->read(1));
+        $ib = ord($stream->read(1));
         $mt = $ib >> 5;
         $ai = $ib & 0b00011111;
         $val = null;
@@ -74,16 +75,16 @@ final class Decoder
             case 0b001: //1
                 return SignedIntegerObject::createObjectForValue($ai, $val);
             case 0b010: //2
-                $length = null === $val ? $ai : gmp_intval(gmp_init(bin2hex($val), 16));
+                $length = null === $val ? $ai : Utils::binToInt($val);
 
                 return new ByteStringObject($stream->read($length));
             case 0b011: //3
-                $length = null === $val ? $ai : gmp_intval(gmp_init(bin2hex($val), 16));
+                $length = null === $val ? $ai : Utils::binToInt($val);
 
                 return new TextStringObject($stream->read($length));
             case 0b100: //4
                 $object = new ListObject();
-                $nbItems = null === $val ? $ai : gmp_intval(gmp_init(bin2hex($val), 16));
+                $nbItems = null === $val ? $ai : Utils::binToInt($val);
                 for ($i = 0; $i < $nbItems; ++$i) {
                     $object->add($this->process($stream));
                 }
@@ -91,7 +92,7 @@ final class Decoder
                 return $object;
             case 0b101: //5
                 $object = new MapObject();
-                $nbItems = null === $val ? $ai : gmp_intval(gmp_init(bin2hex($val), 16));
+                $nbItems = null === $val ? $ai : Utils::binToInt($val);
                 for ($i = 0; $i < $nbItems; ++$i) {
                     $object->add($this->process($stream), $this->process($stream));
                 }

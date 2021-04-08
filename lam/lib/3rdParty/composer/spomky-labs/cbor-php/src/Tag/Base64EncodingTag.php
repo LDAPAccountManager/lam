@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2018 Spomky-Labs
+ * Copyright (c) 2018-2020 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -52,7 +52,7 @@ final class Base64EncodingTag extends Base
             return $this->object->getNormalizedData($ignoreTags);
         }
 
-        $result = \base64_decode($this->object->getNormalizedData($ignoreTags), true);
+        $result = base64_decode($this->object->getNormalizedData($ignoreTags), true);
         if (false === $result) {
             throw new InvalidArgumentException('Unable to decode the data');
         }

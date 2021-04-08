@@ -93,6 +93,7 @@ abstract class RSA extends AsymmetricKey
      * @see self::decrypt()
      */
     const ENCRYPTION_OAEP = 1;
+
     /**
      * Use PKCS#1 padding.
      *
@@ -104,6 +105,7 @@ abstract class RSA extends AsymmetricKey
      * @see self::decrypt()
      */
     const ENCRYPTION_PKCS1 = 2;
+
     /**
      * Do not use any padding
      *
@@ -130,6 +132,7 @@ abstract class RSA extends AsymmetricKey
      * @access public
      */
     const SIGNATURE_PSS = 16;
+
     /**
      * Use a relaxed version of PKCS#1 padding for signature verification
      *
@@ -139,6 +142,7 @@ abstract class RSA extends AsymmetricKey
      * @access public
      */
     const SIGNATURE_RELAXED_PKCS1 = 32;
+
     /**
      * Use PKCS#1 padding for signature verification
      *
@@ -247,6 +251,14 @@ abstract class RSA extends AsymmetricKey
     protected static $enableBlinding = true;
 
     /**
+     * OpenSSL configuration file name.
+     *
+     * @see self::createKey()
+     * @var ?string
+     */
+    protected static $configFile;
+
+    /**
      * Smallest Prime
      *
      * Per <http://cseweb.ucsd.edu/~hovav/dist/survey.pdf#page=5>, this number ought not result in primes smaller
@@ -288,6 +300,19 @@ abstract class RSA extends AsymmetricKey
     }
 
     /**
+     * Sets the OpenSSL config file path
+     *
+     * Set to the empty string to use the default config file
+     *
+     * @access public
+     * @param string $val
+     */
+    public static function setOpenSSLConfigPath($val)
+    {
+        self::$configFile = $val;
+    }
+
+    /**
      * Create a private key
      *
      * The public key can be extracted from the private key
@@ -300,17 +325,39 @@ abstract class RSA extends AsymmetricKey
     {
         self::initialize_static_variables();
 
-        static $e;
-        if (!isset($e)) {
-            $e = new BigInteger(self::$defaultExponent);
-        }
-
         $regSize = $bits >> 1; // divide by two to see how many bits P and Q would be
         if ($regSize > self::$smallestPrime) {
             $num_primes = floor($bits / self::$smallestPrime);
             $regSize = self::$smallestPrime;
         } else {
             $num_primes = 2;
+        }
+
+        if ($num_primes == 2 && $bits >= 384 && self::$defaultExponent == 65537) {
+            if (!isset(self::$engines['PHP'])) {
+                self::useBestEngine();
+            }
+
+            // OpenSSL uses 65537 as the exponent and requires RSA keys be 384 bits minimum
+            if (self::$engines['OpenSSL']) {
+                $config = [];
+                if (self::$configFile) {
+                    $config['config'] = self::$configFile;
+                }
+                $rsa = openssl_pkey_new(['private_key_bits' => $bits] + $config);
+                openssl_pkey_export($rsa, $privatekeystr, null, $config);
+
+                // clear the buffer of error strings stemming from a minimalistic openssl.cnf
+                while (openssl_error_string() !== false) {
+                }
+
+                return RSA::load($privatekeystr);
+            }
+        }
+
+        static $e;
+        if (!isset($e)) {
+            $e = new BigInteger(self::$defaultExponent);
         }
 
         $n = clone self::$one;
@@ -451,6 +498,18 @@ abstract class RSA extends AsymmetricKey
     }
 
     /**
+     * Initialize static variables
+     */
+    protected static function initialize_static_variables()
+    {
+        if (!isset(self::$configFile)) {
+            self::$configFile = dirname(__FILE__) . '/../openssl.cnf';
+        }
+
+        parent::initialize_static_variables();
+    }
+
+    /**
      * Constructor
      *
      * PublicKey and PrivateKey objects can only be created from abstract RSA class
@@ -544,6 +603,66 @@ abstract class RSA extends AsymmetricKey
                 break;
             case 'sha512/256':
                 $t = "\x30\x31\x30\x0d\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x06\x05\x00\x04\x20";
+        }
+        $t.= $h;
+        $tLen = strlen($t);
+
+        if ($emLen < $tLen + 11) {
+            throw new \LengthException('Intended encoded message length too short');
+        }
+
+        $ps = str_repeat(chr(0xFF), $emLen - $tLen - 3);
+
+        $em = "\0\1$ps\0$t";
+
+        return $em;
+    }
+
+    /**
+     * EMSA-PKCS1-V1_5-ENCODE (without NULL)
+     *
+     * Quoting https://tools.ietf.org/html/rfc8017#page-65,
+     *
+     * "The parameters field associated with id-sha1, id-sha224, id-sha256,
+     *  id-sha384, id-sha512, id-sha512/224, and id-sha512/256 should
+     *  generally be omitted, but if present, it shall have a value of type
+     *  NULL"
+     *
+     * @access private
+     * @param string $m
+     * @param int $emLen
+     * @return string
+     */
+    protected function emsa_pkcs1_v1_5_encode_without_null($m, $emLen)
+    {
+        $h = $this->hash->hash($m);
+
+        // see http://tools.ietf.org/html/rfc3447#page-43
+        switch ($this->hash->getHash()) {
+            case 'sha1':
+                $t = "\x30\x1f\x30\x07\x06\x05\x2b\x0e\x03\x02\x1a\x04\x14";
+                break;
+            case 'sha256':
+                $t = "\x30\x2f\x30\x0b\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x01\x04\x20";
+                break;
+            case 'sha384':
+                $t = "\x30\x3f\x30\x0b\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x02\x04\x30";
+                break;
+            case 'sha512':
+                $t = "\x30\x4f\x30\x0b\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x03\x04\x40";
+                break;
+            // from https://www.emc.com/collateral/white-papers/h11300-pkcs-1v2-2-rsa-cryptography-standard-wp.pdf#page=40
+            case 'sha224':
+                $t = "\x30\x2b\x30\x0b\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x04\x04\x1c";
+                break;
+            case 'sha512/224':
+                $t = "\x30\x2b\x30\x0b\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x05\x04\x1c";
+                break;
+            case 'sha512/256':
+                $t = "\x30\x2f\x30\x0b\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x06\x04\x20";
+                break;
+            default:
+                throw new UnsupportedAlgorithmException('md2 and md5 require NULLs');
         }
         $t.= $h;
         $tLen = strlen($t);
@@ -805,6 +924,11 @@ abstract class RSA extends AsymmetricKey
     /**
      * Returns the current engine being used
      *
+     * OpenSSL is only used in this class (and it's subclasses) for key generation
+     * Even then it depends on the parameters you're using. It's not used for
+     * multi-prime RSA nor is it used if the key length is outside of the range
+     * supported by OpenSSL
+     *
      * @see self::useInternalEngine()
      * @see self::useBestEngine()
      * @access public
@@ -812,7 +936,9 @@ abstract class RSA extends AsymmetricKey
      */
     public function getEngine()
     {
-        return 'PHP';
+        return self::$engines['OpenSSL'] && self::$defaultExponent == 65537 ?
+            'OpenSSL' :
+            'PHP';
     }
 
     /**

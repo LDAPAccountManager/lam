@@ -8,16 +8,14 @@
         "psr-18"
     ],
     "homepage": "http://php-http.org",
-    "authors": [
-        {
-            "name": "Михаил Красильников",
-            "email": "m.krasilnikov@yandex.ru"
-        }
-    ],
+    "authors": [{
+        "name": "Михаил Красильников",
+        "email": "m.krasilnikov@yandex.ru"
+    }],
     "prefer-stable": true,
     "minimum-stability": "dev",
     "require": {
-        "php": "^7.1",
+        "php": "^7.1 || ^8.0",
         "ext-curl": "*",
         "php-http/discovery": "^1.6",
         "php-http/httplug": "^2.0",
@@ -28,8 +26,8 @@
     },
     "require-dev": {
         "guzzlehttp/psr7": "^1.0",
-        "php-http/client-integration-tests": "^2.0",
-        "phpunit/phpunit": "^7.5",
+        "php-http/client-integration-tests": "^3.0",
+        "phpunit/phpunit": "^7.5 || ^9.4",
         "laminas/laminas-diactoros": "^2.0"
     },
     "autoload": {

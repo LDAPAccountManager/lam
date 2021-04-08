@@ -27,7 +27,9 @@
     },
     "suggest": {
         "ext-gmp": "GMP is the preferred extension for big integer calculations",
-        "php-curl": "For loading OID information from the web if they have not bee defined statically"
+        "ext-bcmath": "BCmath is the fallback extension for big integer calculations",
+        "phpseclib/bcmath_compat": "BCmath polyfill for servers where neither GMP nor BCmath is available",
+        "ext-curl": "For loading OID information from the web if they have not bee defined statically"
     },
     "autoload": {
         "psr-4": {

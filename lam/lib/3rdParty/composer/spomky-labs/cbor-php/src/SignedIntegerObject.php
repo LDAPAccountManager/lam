@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2018 Spomky-Labs
+ * Copyright (c) 2018-2020 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace CBOR;
 
+use Brick\Math\BigInteger;
+use GMP;
 use InvalidArgumentException;
 
 final class SignedIntegerObject extends AbstractCBORObject
@@ -30,6 +32,16 @@ final class SignedIntegerObject extends AbstractCBORObject
         $this->data = $data;
     }
 
+    public function __toString(): string
+    {
+        $result = parent::__toString();
+        if (null !== $this->data) {
+            $result .= $this->data;
+        }
+
+        return $result;
+    }
+
     public static function createObjectForValue(int $additionalInformation, ?string $data): self
     {
         return new self($additionalInformation, $data);
@@ -37,10 +49,20 @@ final class SignedIntegerObject extends AbstractCBORObject
 
     public static function create(int $value): self
     {
-        return self::createFromGmpValue(gmp_init($value));
+        return self::createFromString((string) $value);
     }
 
-    public static function createFromGmpValue(\GMP $value): self
+    public static function createFromString(string $value): self
+    {
+        $integer = BigInteger::of($value);
+
+        return self::createBigInteger($integer);
+    }
+
+    /**
+     * @deprecated Deprecated since v1.1 and will be removed in v2.0. Please use "create" or "createFromString" instead
+     */
+    public static function createFromGmpValue(GMP $value): self
     {
         if (gmp_cmp($value, gmp_init(0)) >= 0) {
             throw new InvalidArgumentException('The value must be a negative integer.');
@@ -84,21 +106,43 @@ final class SignedIntegerObject extends AbstractCBORObject
             return (string) (-1 - $this->additionalInformation);
         }
 
-        $result = gmp_init(bin2hex($this->data), 16);
-        $minusOne = gmp_init(-1);
-        $result = gmp_sub($minusOne, $result);
+        $result = Utils::binToBigInteger($this->data);
+        $minusOne = BigInteger::of(-1);
 
-        return gmp_strval($result, 10);
+        return $minusOne->minus($result)->toBase(10);
     }
 
-    public function __toString(): string
+    private static function createBigInteger(BigInteger $integer): self
     {
-        $result = parent::__toString();
-        if (null !== $this->data) {
-            $result .= $this->data;
+        if ($integer->isGreaterThanOrEqualTo(BigInteger::zero())) {
+            throw new InvalidArgumentException('The value must be a negative integer.');
         }
 
-        return $result;
+        $minusOne = BigInteger::of(-1);
+        $computed_value = $minusOne->minus($integer);
+
+        switch (true) {
+            case $computed_value->isLessThan(BigInteger::of(24)):
+                $ai = $computed_value->toInt();
+                $data = null;
+                break;
+            case $computed_value->isLessThan(BigInteger::fromBase('FF', 16)):
+                $ai = 24;
+                $data = self::hex2bin(str_pad($computed_value->toBase(16), 2, '0', STR_PAD_LEFT));
+                break;
+            case $computed_value->isLessThan(BigInteger::fromBase('FFFF', 16)):
+                $ai = 25;
+                $data = self::hex2bin(str_pad($computed_value->toBase(16), 4, '0', STR_PAD_LEFT));
+                break;
+            case $computed_value->isLessThan(BigInteger::fromBase('FFFFFFFF', 16)):
+                $ai = 26;
+                $data = self::hex2bin(str_pad($computed_value->toBase(16), 8, '0', STR_PAD_LEFT));
+                break;
+            default:
+                throw new InvalidArgumentException('Out of range. Please use NegativeBigIntegerTag tag with ByteStringObject object instead.');
+        }
+
+        return new self($ai, $data);
     }
 
     private static function hex2bin(string $data): string

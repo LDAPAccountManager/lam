@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2018 Spomky-Labs
+ * Copyright (c) 2018-2020 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -13,9 +13,14 @@ declare(strict_types=1);
 
 namespace CBOR;
 
+use ArrayIterator;
+use function count;
+use Countable;
 use InvalidArgumentException;
+use Iterator;
+use IteratorAggregate;
 
-final class MapObject extends AbstractCBORObject implements \Countable, \IteratorAggregate
+final class MapObject extends AbstractCBORObject implements Countable, IteratorAggregate
 {
     private const MAJOR_TYPE = 0b101;
 
@@ -46,32 +51,6 @@ final class MapObject extends AbstractCBORObject implements \Countable, \Iterato
         $this->length = $length;
     }
 
-    public function add(CBORObject $key, CBORObject $value): void
-    {
-        $this->data[] = new MapItem($key, $value);
-        list($this->additionalInformation, $this->length) = LengthCalculator::getLengthOfArray($this->data);
-    }
-
-    public function count(): int
-    {
-        return \count($this->data);
-    }
-
-    public function getIterator(): \Iterator
-    {
-        return new \ArrayIterator($this->data);
-    }
-
-    public function getNormalizedData(bool $ignoreTags = false): array
-    {
-        $result = [];
-        foreach ($this->data as $object) {
-            $result[$object->getKey()->getNormalizedData($ignoreTags)] = $object->getValue()->getNormalizedData($ignoreTags);
-        }
-
-        return $result;
-    }
-
     public function __toString(): string
     {
         $result = parent::__toString();
@@ -81,6 +60,32 @@ final class MapObject extends AbstractCBORObject implements \Countable, \Iterato
         foreach ($this->data as $object) {
             $result .= (string) $object->getKey();
             $result .= (string) $object->getValue();
+        }
+
+        return $result;
+    }
+
+    public function add(CBORObject $key, CBORObject $value): void
+    {
+        $this->data[] = new MapItem($key, $value);
+        list($this->additionalInformation, $this->length) = LengthCalculator::getLengthOfArray($this->data);
+    }
+
+    public function count(): int
+    {
+        return count($this->data);
+    }
+
+    public function getIterator(): Iterator
+    {
+        return new ArrayIterator($this->data);
+    }
+
+    public function getNormalizedData(bool $ignoreTags = false): array
+    {
+        $result = [];
+        foreach ($this->data as $object) {
+            $result[$object->getKey()->getNormalizedData($ignoreTags)] = $object->getValue()->getNormalizedData($ignoreTags);
         }
 
         return $result;

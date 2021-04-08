@@ -99,17 +99,65 @@
         "description": "Easily convert ISO_8601 Duration time format to seconds and convert seconds to ISO-8601 Duration"
     },
     {
+        "name": "brick/math",
+        "version": "0.8.17",
+        "version_normalized": "0.8.17.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/brick/math.git",
+            "reference": "e6f8e7d04346a95be89580f8c2c22d6c3fa65556"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/brick/math/zipball/e6f8e7d04346a95be89580f8c2c22d6c3fa65556",
+            "reference": "e6f8e7d04346a95be89580f8c2c22d6c3fa65556",
+            "shasum": ""
+        },
+        "require": {
+            "ext-json": "*",
+            "php": "^7.1|^8.0"
+        },
+        "require-dev": {
+            "php-coveralls/php-coveralls": "^2.2",
+            "phpunit/phpunit": "^7.5.15|^8.5",
+            "vimeo/psalm": "^3.5"
+        },
+        "time": "2020-08-18T23:41:20+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Brick\\Math\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "description": "Arbitrary-precision arithmetic library",
+        "keywords": [
+            "Arbitrary-precision",
+            "BigInteger",
+            "BigRational",
+            "arithmetic",
+            "bigdecimal",
+            "bignum",
+            "brick",
+            "math"
+        ]
+    },
+    {
         "name": "clue/stream-filter",
         "version": "v1.5.0",
         "version_normalized": "1.5.0.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/clue/php-stream-filter.git",
+            "url": "https://github.com/clue/stream-filter.git",
             "reference": "aeb7d8ea49c7963d3b581378955dbf5bc49aa320"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/clue/php-stream-filter/zipball/aeb7d8ea49c7963d3b581378955dbf5bc49aa320",
+            "url": "https://api.github.com/repos/clue/stream-filter/zipball/aeb7d8ea49c7963d3b581378955dbf5bc49aa320",
             "reference": "aeb7d8ea49c7963d3b581378955dbf5bc49aa320",
             "shasum": ""
         },
@@ -154,17 +202,17 @@
     },
     {
         "name": "fgrosse/phpasn1",
-        "version": "v2.1.1",
-        "version_normalized": "2.1.1.0",
+        "version": "v2.2.0",
+        "version_normalized": "2.2.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/fgrosse/PHPASN1.git",
-            "reference": "7ebf2a09084a7bbdb7b879c66fdf7ad80461bbe8"
+            "reference": "d1978f7abd580f3fc33561e7f71d4c12c7531fad"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/fgrosse/PHPASN1/zipball/7ebf2a09084a7bbdb7b879c66fdf7ad80461bbe8",
-            "reference": "7ebf2a09084a7bbdb7b879c66fdf7ad80461bbe8",
+            "url": "https://api.github.com/repos/fgrosse/PHPASN1/zipball/d1978f7abd580f3fc33561e7f71d4c12c7531fad",
+            "reference": "d1978f7abd580f3fc33561e7f71d4c12c7531fad",
             "shasum": ""
         },
         "require": {
@@ -175,10 +223,12 @@
             "satooshi/php-coveralls": "~2.0"
         },
         "suggest": {
+            "ext-bcmath": "BCmath is the fallback extension for big integer calculations",
+            "ext-curl": "For loading OID information from the web if they have not bee defined statically",
             "ext-gmp": "GMP is the preferred extension for big integer calculations",
-            "php-curl": "For loading OID information from the web if they have not bee defined statically"
+            "phpseclib/bcmath_compat": "BCmath polyfill for servers where neither GMP nor BCmath is available"
         },
-        "time": "2018-12-02T01:34:34+00:00",
+        "time": "2020-10-11T16:28:18+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -225,17 +275,17 @@
     },
     {
         "name": "firebase/php-jwt",
-        "version": "v5.2.0",
-        "version_normalized": "5.2.0.0",
+        "version": "v5.2.1",
+        "version_normalized": "5.2.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/firebase/php-jwt.git",
-            "reference": "feb0e820b8436873675fd3aca04f3728eb2185cb"
+            "reference": "f42c9110abe98dd6cfe9053c49bc86acc70b2d23"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/firebase/php-jwt/zipball/feb0e820b8436873675fd3aca04f3728eb2185cb",
-            "reference": "feb0e820b8436873675fd3aca04f3728eb2185cb",
+            "url": "https://api.github.com/repos/firebase/php-jwt/zipball/f42c9110abe98dd6cfe9053c49bc86acc70b2d23",
+            "reference": "f42c9110abe98dd6cfe9053c49bc86acc70b2d23",
             "shasum": ""
         },
         "require": {
@@ -244,7 +294,7 @@
         "require-dev": {
             "phpunit/phpunit": ">=4.8 <=9"
         },
-        "time": "2020-03-25T18:49:23+00:00",
+        "time": "2021-02-12T00:02:00+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -277,17 +327,17 @@
     },
     {
         "name": "guzzlehttp/psr7",
-        "version": "1.7.0",
-        "version_normalized": "1.7.0.0",
+        "version": "1.8.1",
+        "version_normalized": "1.8.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/guzzle/psr7.git",
-            "reference": "53330f47520498c0ae1f61f7e2c90f55690c06a3"
+            "reference": "35ea11d335fd638b5882ff1725228b3d35496ab1"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/guzzle/psr7/zipball/53330f47520498c0ae1f61f7e2c90f55690c06a3",
-            "reference": "53330f47520498c0ae1f61f7e2c90f55690c06a3",
+            "url": "https://api.github.com/repos/guzzle/psr7/zipball/35ea11d335fd638b5882ff1725228b3d35496ab1",
+            "reference": "35ea11d335fd638b5882ff1725228b3d35496ab1",
             "shasum": ""
         },
         "require": {
@@ -305,7 +355,7 @@
         "suggest": {
             "laminas/laminas-httphandlerrunner": "Emit PSR-7 responses"
         },
-        "time": "2020-09-30T07:37:11+00:00",
+        "time": "2021-03-21T16:25:00+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -350,17 +400,17 @@
     },
     {
         "name": "nesbot/carbon",
-        "version": "2.41.5",
-        "version_normalized": "2.41.5.0",
+        "version": "2.46.0",
+        "version_normalized": "2.46.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/briannesbitt/Carbon.git",
-            "reference": "c4a9caf97cfc53adfc219043bcecf42bc663acee"
+            "reference": "2fd2c4a77d58a4e95234c8a61c5df1f157a91bf4"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/c4a9caf97cfc53adfc219043bcecf42bc663acee",
-            "reference": "c4a9caf97cfc53adfc219043bcecf42bc663acee",
+            "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/2fd2c4a77d58a4e95234c8a61c5df1f157a91bf4",
+            "reference": "2fd2c4a77d58a4e95234c8a61c5df1f157a91bf4",
             "shasum": ""
         },
         "require": {
@@ -375,11 +425,11 @@
             "kylekatarnls/multi-tester": "^2.0",
             "phpmd/phpmd": "^2.9",
             "phpstan/extension-installer": "^1.0",
-            "phpstan/phpstan": "^0.12.35",
-            "phpunit/phpunit": "^7.5 || ^8.0",
+            "phpstan/phpstan": "^0.12.54",
+            "phpunit/phpunit": "^7.5.20 || ^8.5.14",
             "squizlabs/php_codesniffer": "^3.4"
         },
-        "time": "2020-10-23T06:02:30+00:00",
+        "time": "2021-02-24T17:30:44+00:00",
         "bin": [
             "bin/carbon"
         ],
@@ -431,21 +481,21 @@
     },
     {
         "name": "nyholm/psr7",
-        "version": "1.2.1",
-        "version_normalized": "1.2.1.0",
+        "version": "1.4.0",
+        "version_normalized": "1.4.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Nyholm/psr7.git",
-            "reference": "55ff6b76573f5b242554c9775792bd59fb52e11c"
+            "reference": "23ae1f00fbc6a886cbe3062ca682391b9cc7c37b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Nyholm/psr7/zipball/55ff6b76573f5b242554c9775792bd59fb52e11c",
-            "reference": "55ff6b76573f5b242554c9775792bd59fb52e11c",
+            "url": "https://api.github.com/repos/Nyholm/psr7/zipball/23ae1f00fbc6a886cbe3062ca682391b9cc7c37b",
+            "reference": "23ae1f00fbc6a886cbe3062ca682391b9cc7c37b",
             "shasum": ""
         },
         "require": {
-            "php": "^7.1",
+            "php": ">=7.1",
             "php-http/message-factory": "^1.0",
             "psr/http-factory": "^1.0",
             "psr/http-message": "^1.0"
@@ -455,15 +505,16 @@
             "psr/http-message-implementation": "1.0"
         },
         "require-dev": {
-            "http-interop/http-factory-tests": "dev-master",
-            "php-http/psr7-integration-tests": "dev-master",
-            "phpunit/phpunit": "^7.5"
+            "http-interop/http-factory-tests": "^0.8",
+            "php-http/psr7-integration-tests": "^1.0",
+            "phpunit/phpunit": "^7.5 || 8.5 || 9.4",
+            "symfony/error-handler": "^4.4"
         },
-        "time": "2019-09-05T13:24:16+00:00",
+        "time": "2021-02-18T15:41:32+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.0-dev"
+                "dev-master": "1.4-dev"
             }
         },
         "installation-source": "dist",
@@ -487,7 +538,7 @@
             }
         ],
         "description": "A fast PHP7 implementation of PSR-7",
-        "homepage": "http://tnyholm.se",
+        "homepage": "https://tnyholm.se",
         "keywords": [
             "psr-17",
             "psr-7"
@@ -495,17 +546,17 @@
     },
     {
         "name": "okta/jwt-verifier",
-        "version": "1.0.0",
-        "version_normalized": "1.0.0.0",
+        "version": "1.1.1",
+        "version_normalized": "1.1.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/okta/okta-jwt-verifier-php.git",
-            "reference": "ebf7a778fd6760a26cd548e3887119a7643e96ef"
+            "reference": "0f14ce19085b3ab775d1a0b7189bc27190b57be9"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/okta/okta-jwt-verifier-php/zipball/ebf7a778fd6760a26cd548e3887119a7643e96ef",
-            "reference": "ebf7a778fd6760a26cd548e3887119a7643e96ef",
+            "url": "https://api.github.com/repos/okta/okta-jwt-verifier-php/zipball/0f14ce19085b3ab775d1a0b7189bc27190b57be9",
+            "reference": "0f14ce19085b3ab775d1a0b7189bc27190b57be9",
             "shasum": ""
         },
         "require": {
@@ -527,7 +578,7 @@
             "squizlabs/php_codesniffer": "^3.5",
             "symfony/var-dumper": "^5.1"
         },
-        "time": "2020-08-21T16:17:53+00:00",
+        "time": "2021-03-04T01:11:31+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -863,11 +914,11 @@
     },
     {
         "name": "pear-pear.horde.org/Horde_Mime",
-        "version": "2.11.0",
-        "version_normalized": "2.11.0.0",
+        "version": "2.11.1",
+        "version_normalized": "2.11.1.0",
         "dist": {
             "type": "file",
-            "url": "https://pear.horde.org/get/Horde_Mime-2.11.0.tgz"
+            "url": "https://pear.horde.org/get/Horde_Mime-2.11.1.tgz"
         },
         "require": {
             "pear-pear.horde.org/horde_exception": "<3.0.0.0",
@@ -882,7 +933,7 @@
             "php": "<8.0.0.0"
         },
         "replace": {
-            "pear-horde/horde_mime": "== 2.11.0.0"
+            "pear-horde/horde_mime": "== 2.11.1.0"
         },
         "type": "pear-library",
         "installation-source": "dist",
@@ -897,7 +948,7 @@
         "license": [
             "LGPL-2.1"
         ],
-        "description": "Provides methods for dealing with Multipurpose Internet Mail Extensions (MIME) features (RFC 2045/2046/2047)."
+        "description": "A library that provides methods for dealing with Multipurpose Internet Mail Extensions (MIME) features (RFC 2045/2046/2047)."
     },
     {
         "name": "pear-pear.horde.org/Horde_Secret",
@@ -1246,22 +1297,22 @@
     },
     {
         "name": "php-http/curl-client",
-        "version": "2.1.1",
-        "version_normalized": "2.1.1.0",
+        "version": "2.2.0",
+        "version_normalized": "2.2.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/php-http/curl-client.git",
-            "reference": "f0cb9802da5c56b6553dfbef4ce5e1ee333b01de"
+            "reference": "15b11b7c2f39fe61ef6a70e0c247b4a84e845cdb"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/php-http/curl-client/zipball/f0cb9802da5c56b6553dfbef4ce5e1ee333b01de",
-            "reference": "f0cb9802da5c56b6553dfbef4ce5e1ee333b01de",
+            "url": "https://api.github.com/repos/php-http/curl-client/zipball/15b11b7c2f39fe61ef6a70e0c247b4a84e845cdb",
+            "reference": "15b11b7c2f39fe61ef6a70e0c247b4a84e845cdb",
             "shasum": ""
         },
         "require": {
             "ext-curl": "*",
-            "php": "^7.1",
+            "php": "^7.1 || ^8.0",
             "php-http/discovery": "^1.6",
             "php-http/httplug": "^2.0",
             "php-http/message": "^1.2",
@@ -1277,10 +1328,10 @@
         "require-dev": {
             "guzzlehttp/psr7": "^1.0",
             "laminas/laminas-diactoros": "^2.0",
-            "php-http/client-integration-tests": "^2.0",
-            "phpunit/phpunit": "^7.5"
+            "php-http/client-integration-tests": "^3.0",
+            "phpunit/phpunit": "^7.5 || ^9.4"
         },
-        "time": "2020-10-12T06:56:33+00:00",
+        "time": "2020-12-14T08:36:51+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1313,17 +1364,17 @@
     },
     {
         "name": "php-http/discovery",
-        "version": "1.12.0",
-        "version_normalized": "1.12.0.0",
+        "version": "1.13.0",
+        "version_normalized": "1.13.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/php-http/discovery.git",
-            "reference": "4366bf1bc39b663aa87459bd725501d2f1988b6c"
+            "reference": "788f72d64c43dc361e7fcc7464c3d947c64984a7"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/php-http/discovery/zipball/4366bf1bc39b663aa87459bd725501d2f1988b6c",
-            "reference": "4366bf1bc39b663aa87459bd725501d2f1988b6c",
+            "url": "https://api.github.com/repos/php-http/discovery/zipball/788f72d64c43dc361e7fcc7464c3d947c64984a7",
+            "reference": "788f72d64c43dc361e7fcc7464c3d947c64984a7",
             "shasum": ""
         },
         "require": {
@@ -1343,7 +1394,7 @@
             "php-http/message": "Allow to use Guzzle, Diactoros or Slim Framework factories",
             "puli/composer-plugin": "Sets up Puli which is recommended for Discovery to work. Check http://docs.php-http.org/en/latest/discovery.html for more details."
         },
-        "time": "2020-09-22T13:31:04+00:00",
+        "time": "2020-11-27T14:49:42+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1440,22 +1491,22 @@
     },
     {
         "name": "php-http/message",
-        "version": "1.9.1",
-        "version_normalized": "1.9.1.0",
+        "version": "1.11.0",
+        "version_normalized": "1.11.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/php-http/message.git",
-            "reference": "09f3f13af3a1a4273ecbf8e6b27248c002a3db29"
+            "reference": "fb0dbce7355cad4f4f6a225f537c34d013571f29"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/php-http/message/zipball/09f3f13af3a1a4273ecbf8e6b27248c002a3db29",
-            "reference": "09f3f13af3a1a4273ecbf8e6b27248c002a3db29",
+            "url": "https://api.github.com/repos/php-http/message/zipball/fb0dbce7355cad4f4f6a225f537c34d013571f29",
+            "reference": "fb0dbce7355cad4f4f6a225f537c34d013571f29",
             "shasum": ""
         },
         "require": {
-            "clue/stream-filter": "^1.4.1",
-            "php": "^7.1",
+            "clue/stream-filter": "^1.5",
+            "php": "^7.1 || ^8.0",
             "php-http/message-factory": "^1.0.2",
             "psr/http-message": "^1.0"
         },
@@ -1463,27 +1514,24 @@
             "php-http/message-factory-implementation": "1.0"
         },
         "require-dev": {
-            "akeneo/phpspec-skip-example-extension": "^1.0",
-            "coduo/phpspec-data-provider-extension": "^1.0",
-            "ergebnis/composer-normalize": "^2.1",
+            "ergebnis/composer-normalize": "^2.6",
             "ext-zlib": "*",
             "guzzlehttp/psr7": "^1.0",
-            "henrikbjorn/phpspec-code-coverage": "^1.0",
-            "phpspec/phpspec": "^2.4",
-            "slim/slim": "^3.0",
-            "zendframework/zend-diactoros": "^1.0"
+            "laminas/laminas-diactoros": "^2.0",
+            "phpspec/phpspec": "^5.1 || ^6.3",
+            "slim/slim": "^3.0"
         },
         "suggest": {
             "ext-zlib": "Used with compressor/decompressor streams",
             "guzzlehttp/psr7": "Used with Guzzle PSR-7 Factories",
-            "slim/slim": "Used with Slim Framework PSR-7 implementation",
-            "zendframework/zend-diactoros": "Used with Diactoros Factories"
+            "laminas/laminas-diactoros": "Used with Diactoros Factories",
+            "slim/slim": "Used with Slim Framework PSR-7 implementation"
         },
-        "time": "2020-10-13T06:21:08+00:00",
+        "time": "2021-02-01T08:54:58+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.8-dev"
+                "dev-master": "1.10-dev"
             }
         },
         "installation-source": "dist",
@@ -1622,38 +1670,42 @@
     },
     {
         "name": "phpmailer/phpmailer",
-        "version": "v6.1.6",
-        "version_normalized": "6.1.6.0",
+        "version": "v6.4.0",
+        "version_normalized": "6.4.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/PHPMailer/PHPMailer.git",
-            "reference": "c2796cb1cb99d7717290b48c4e6f32cb6c60b7b3"
+            "reference": "050d430203105c27c30efd1dce7aa421ad882d01"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/c2796cb1cb99d7717290b48c4e6f32cb6c60b7b3",
-            "reference": "c2796cb1cb99d7717290b48c4e6f32cb6c60b7b3",
+            "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/050d430203105c27c30efd1dce7aa421ad882d01",
+            "reference": "050d430203105c27c30efd1dce7aa421ad882d01",
             "shasum": ""
         },
         "require": {
             "ext-ctype": "*",
             "ext-filter": "*",
+            "ext-hash": "*",
             "php": ">=5.5.0"
         },
         "require-dev": {
+            "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
             "doctrine/annotations": "^1.2",
-            "friendsofphp/php-cs-fixer": "^2.2",
-            "phpunit/phpunit": "^4.8 || ^5.7"
+            "phpcompatibility/php-compatibility": "^9.3.5",
+            "roave/security-advisories": "dev-latest",
+            "squizlabs/php_codesniffer": "^3.5.6",
+            "yoast/phpunit-polyfills": "^0.2.0"
         },
         "suggest": {
-            "ext-mbstring": "Needed to send email in multibyte encoding charset",
+            "ext-mbstring": "Needed to send email in multibyte encoding charset or decode encoded addresses",
             "hayageek/oauth2-yahoo": "Needed for Yahoo XOAUTH2 authentication",
             "league/oauth2-google": "Needed for Google XOAUTH2 authentication",
             "psr/log": "For optional PSR-3 debug logging",
             "stevenmaguire/oauth2-microsoft": "Needed for Microsoft XOAUTH2 authentication",
             "symfony/polyfill-mbstring": "To support UTF-8 if the Mbstring PHP extension is not enabled (^1.2)"
         },
-        "time": "2020-05-27T12:24:03+00:00",
+        "time": "2021-03-31T20:06:42+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -1686,22 +1738,22 @@
     },
     {
         "name": "phpseclib/phpseclib",
-        "version": "3.0.3",
-        "version_normalized": "3.0.3.0",
+        "version": "3.0.7",
+        "version_normalized": "3.0.7.0",
         "source": {
             "type": "git",
             "url": "https://github.com/phpseclib/phpseclib.git",
-            "reference": "97a5a270e4a9ebfc1a7e2f462e917cbce1a8e6d9"
+            "reference": "d369510df0ebd5e1a5d0fe3d4d23c55fa87a403d"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/97a5a270e4a9ebfc1a7e2f462e917cbce1a8e6d9",
-            "reference": "97a5a270e4a9ebfc1a7e2f462e917cbce1a8e6d9",
+            "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/d369510df0ebd5e1a5d0fe3d4d23c55fa87a403d",
+            "reference": "d369510df0ebd5e1a5d0fe3d4d23c55fa87a403d",
             "shasum": ""
         },
         "require": {
             "paragonie/constant_time_encoding": "^1|^2",
-            "paragonie/random_compat": "^1.4|^2.0",
+            "paragonie/random_compat": "^1.4|^2.0|^9.99.99",
             "php": ">=5.6.1"
         },
         "require-dev": {
@@ -1715,7 +1767,7 @@
             "ext-mcrypt": "Install the Mcrypt extension in order to speed up a few other cryptographic operations.",
             "ext-openssl": "Install the OpenSSL extension in order to speed up a wide variety of cryptographic operations."
         },
-        "time": "2021-01-16T17:35:19+00:00",
+        "time": "2021-04-06T14:00:11+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -1781,24 +1833,24 @@
     },
     {
         "name": "psr/http-client",
-        "version": "1.0.0",
-        "version_normalized": "1.0.0.0",
+        "version": "1.0.1",
+        "version_normalized": "1.0.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/php-fig/http-client.git",
-            "reference": "496a823ef742b632934724bf769560c2a5c7c44e"
+            "reference": "2dfb5f6c5eff0e91e20e913f8c5452ed95b86621"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/php-fig/http-client/zipball/496a823ef742b632934724bf769560c2a5c7c44e",
-            "reference": "496a823ef742b632934724bf769560c2a5c7c44e",
+            "url": "https://api.github.com/repos/php-fig/http-client/zipball/2dfb5f6c5eff0e91e20e913f8c5452ed95b86621",
+            "reference": "2dfb5f6c5eff0e91e20e913f8c5452ed95b86621",
             "shasum": ""
         },
         "require": {
-            "php": "^7.0",
+            "php": "^7.0 || ^8.0",
             "psr/http-message": "^1.0"
         },
-        "time": "2018-10-30T23:29:13+00:00",
+        "time": "2020-06-29T06:28:15+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2069,33 +2121,32 @@
     },
     {
         "name": "spomky-labs/base64url",
-        "version": "v2.0.1",
-        "version_normalized": "2.0.1.0",
+        "version": "v2.0.4",
+        "version_normalized": "2.0.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Spomky-Labs/base64url.git",
-            "reference": "3eb46a1de803f0078962d910e3a2759224a68c61"
+            "reference": "7752ce931ec285da4ed1f4c5aa27e45e097be61d"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Spomky-Labs/base64url/zipball/3eb46a1de803f0078962d910e3a2759224a68c61",
-            "reference": "3eb46a1de803f0078962d910e3a2759224a68c61",
+            "url": "https://api.github.com/repos/Spomky-Labs/base64url/zipball/7752ce931ec285da4ed1f4c5aa27e45e097be61d",
+            "reference": "7752ce931ec285da4ed1f4c5aa27e45e097be61d",
             "shasum": ""
         },
         "require": {
-            "php": "^7.1"
+            "php": ">=7.1"
         },
         "require-dev": {
-            "php-coveralls/php-coveralls": "^2.0",
-            "phpunit/phpunit": "^7.0"
+            "phpstan/extension-installer": "^1.0",
+            "phpstan/phpstan": "^0.11|^0.12",
+            "phpstan/phpstan-beberlei-assert": "^0.11|^0.12",
+            "phpstan/phpstan-deprecation-rules": "^0.11|^0.12",
+            "phpstan/phpstan-phpunit": "^0.11|^0.12",
+            "phpstan/phpstan-strict-rules": "^0.11|^0.12"
         },
-        "time": "2018-08-16T15:44:20+00:00",
+        "time": "2020-11-03T09:10:25+00:00",
         "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "2.0.x-dev"
-            }
-        },
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
@@ -2123,23 +2174,23 @@
     },
     {
         "name": "spomky-labs/cbor-php",
-        "version": "v1.0.8",
-        "version_normalized": "1.0.8.0",
+        "version": "v1.1.1",
+        "version_normalized": "1.1.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Spomky-Labs/cbor-php.git",
-            "reference": "575a66dc406575b030e3ba541b33447842f93185"
+            "reference": "b8e51e6a13606ab1dd8a64aa295651d8ad57ccd1"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Spomky-Labs/cbor-php/zipball/575a66dc406575b030e3ba541b33447842f93185",
-            "reference": "575a66dc406575b030e3ba541b33447842f93185",
+            "url": "https://api.github.com/repos/Spomky-Labs/cbor-php/zipball/b8e51e6a13606ab1dd8a64aa295651d8ad57ccd1",
+            "reference": "b8e51e6a13606ab1dd8a64aa295651d8ad57ccd1",
             "shasum": ""
         },
         "require": {
             "beberlei/assert": "^3.2",
-            "ext-gmp": "*",
-            "php": "^7.1|^8.0",
+            "brick/math": "^0.8.15",
+            "php": ">=7.1",
             "spomky-labs/base64url": "^1.0|^2.0"
         },
         "require-dev": {
@@ -2149,20 +2200,14 @@
             "phpstan/phpstan-deprecation-rules": "^0.12",
             "phpstan/phpstan-phpunit": "^0.12",
             "phpstan/phpstan-strict-rules": "^0.12",
-            "phpunit/phpunit": "^7.5|^8.0",
-            "rector/rector": "^0.5|^0.6",
-            "symfony/var-dumper": "^4.3|^5.0"
+            "phpunit/phpunit": "^7.5|^8.0"
         },
         "suggest": {
-            "ext-bcmath": "BCMath extension needed to handle the Big Float and Decimal Fraction Tags"
+            "ext-bcmath": "GMP or BCMath extensions will drastically improve the library performance. BCMath extension needed to handle the Big Float and Decimal Fraction Tags",
+            "ext-gmp": "GMP or BCMath extensions will drastically improve the library performance"
         },
-        "time": "2020-02-18T08:37:37+00:00",
+        "time": "2020-07-12T22:25:05+00:00",
         "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.0.x-dev"
-            }
-        },
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
@@ -2301,38 +2346,42 @@
     },
     {
         "name": "symfony/mime",
-        "version": "v5.0.7",
-        "version_normalized": "5.0.7.0",
+        "version": "v5.2.6",
+        "version_normalized": "5.2.6.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/mime.git",
-            "reference": "481b7d6da88922fb1e0d86a943987722b08f3955"
+            "reference": "1b2092244374cbe48ae733673f2ca0818b37197b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/mime/zipball/481b7d6da88922fb1e0d86a943987722b08f3955",
-            "reference": "481b7d6da88922fb1e0d86a943987722b08f3955",
+            "url": "https://api.github.com/repos/symfony/mime/zipball/1b2092244374cbe48ae733673f2ca0818b37197b",
+            "reference": "1b2092244374cbe48ae733673f2ca0818b37197b",
             "shasum": ""
         },
         "require": {
-            "php": "^7.2.5",
+            "php": ">=7.2.5",
+            "symfony/deprecation-contracts": "^2.1",
             "symfony/polyfill-intl-idn": "^1.10",
-            "symfony/polyfill-mbstring": "^1.0"
+            "symfony/polyfill-mbstring": "^1.0",
+            "symfony/polyfill-php80": "^1.15"
         },
         "conflict": {
+            "egulias/email-validator": "~3.0.0",
+            "phpdocumentor/reflection-docblock": "<3.2.2",
+            "phpdocumentor/type-resolver": "<1.4.0",
             "symfony/mailer": "<4.4"
         },
         "require-dev": {
-            "egulias/email-validator": "^2.1.10",
-            "symfony/dependency-injection": "^4.4|^5.0"
+            "egulias/email-validator": "^2.1.10|^3.1",
+            "phpdocumentor/reflection-docblock": "^3.0|^4.0|^5.0",
+            "symfony/dependency-injection": "^4.4|^5.0",
+            "symfony/property-access": "^4.4|^5.1",
+            "symfony/property-info": "^4.4|^5.1",
+            "symfony/serializer": "^5.2"
         },
-        "time": "2020-03-27T16:56:45+00:00",
+        "time": "2021-03-12T13:18:39+00:00",
         "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "5.0-dev"
-            }
-        },
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
@@ -2356,7 +2405,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "A library to manipulate MIME messages",
+        "description": "Allows manipulating MIME messages",
         "homepage": "https://symfony.com",
         "keywords": [
             "mime",
@@ -2365,25 +2414,26 @@
     },
     {
         "name": "symfony/options-resolver",
-        "version": "v5.1.8",
-        "version_normalized": "5.1.8.0",
+        "version": "v5.2.4",
+        "version_normalized": "5.2.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/options-resolver.git",
-            "reference": "c6a02905e4ffc7a1498e8ee019db2b477cd1cc02"
+            "reference": "5d0f633f9bbfcf7ec642a2b5037268e61b0a62ce"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/options-resolver/zipball/c6a02905e4ffc7a1498e8ee019db2b477cd1cc02",
-            "reference": "c6a02905e4ffc7a1498e8ee019db2b477cd1cc02",
+            "url": "https://api.github.com/repos/symfony/options-resolver/zipball/5d0f633f9bbfcf7ec642a2b5037268e61b0a62ce",
+            "reference": "5d0f633f9bbfcf7ec642a2b5037268e61b0a62ce",
             "shasum": ""
         },
         "require": {
             "php": ">=7.2.5",
             "symfony/deprecation-contracts": "^2.1",
+            "symfony/polyfill-php73": "~1.0",
             "symfony/polyfill-php80": "^1.15"
         },
-        "time": "2020-10-24T12:01:57+00:00",
+        "time": "2021-01-27T12:56:27+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -2408,7 +2458,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Symfony OptionsResolver Component",
+        "description": "Provides an improved replacement for the array_replace PHP function",
         "homepage": "https://symfony.com",
         "keywords": [
             "config",
@@ -2418,30 +2468,34 @@
     },
     {
         "name": "symfony/polyfill-ctype",
-        "version": "v1.15.0",
-        "version_normalized": "1.15.0.0",
+        "version": "v1.22.1",
+        "version_normalized": "1.22.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-ctype.git",
-            "reference": "4719fa9c18b0464d399f1a63bf624b42b6fa8d14"
+            "reference": "c6c942b1ac76c82448322025e084cadc56048b4e"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/4719fa9c18b0464d399f1a63bf624b42b6fa8d14",
-            "reference": "4719fa9c18b0464d399f1a63bf624b42b6fa8d14",
+            "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/c6c942b1ac76c82448322025e084cadc56048b4e",
+            "reference": "c6c942b1ac76c82448322025e084cadc56048b4e",
             "shasum": ""
         },
         "require": {
-            "php": ">=5.3.3"
+            "php": ">=7.1"
         },
         "suggest": {
             "ext-ctype": "For best performance"
         },
-        "time": "2020-02-27T09:26:54+00:00",
+        "time": "2021-01-07T16:49:33+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.15-dev"
+                "dev-main": "1.22-dev"
+            },
+            "thanks": {
+                "name": "symfony/polyfill",
+                "url": "https://github.com/symfony/polyfill"
             }
         },
         "installation-source": "dist",
@@ -2478,32 +2532,36 @@
     },
     {
         "name": "symfony/polyfill-intl-idn",
-        "version": "v1.15.0",
-        "version_normalized": "1.15.0.0",
+        "version": "v1.22.1",
+        "version_normalized": "1.22.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-intl-idn.git",
-            "reference": "47bd6aa45beb1cd7c6a16b7d1810133b728bdfcf"
+            "reference": "2d63434d922daf7da8dd863e7907e67ee3031483"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-intl-idn/zipball/47bd6aa45beb1cd7c6a16b7d1810133b728bdfcf",
-            "reference": "47bd6aa45beb1cd7c6a16b7d1810133b728bdfcf",
+            "url": "https://api.github.com/repos/symfony/polyfill-intl-idn/zipball/2d63434d922daf7da8dd863e7907e67ee3031483",
+            "reference": "2d63434d922daf7da8dd863e7907e67ee3031483",
             "shasum": ""
         },
         "require": {
-            "php": ">=5.3.3",
-            "symfony/polyfill-mbstring": "^1.3",
+            "php": ">=7.1",
+            "symfony/polyfill-intl-normalizer": "^1.10",
             "symfony/polyfill-php72": "^1.10"
         },
         "suggest": {
             "ext-intl": "For best performance"
         },
-        "time": "2020-03-09T19:04:49+00:00",
+        "time": "2021-01-22T09:19:47+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.15-dev"
+                "dev-main": "1.22-dev"
+            },
+            "thanks": {
+                "name": "symfony/polyfill",
+                "url": "https://github.com/symfony/polyfill"
             }
         },
         "installation-source": "dist",
@@ -2525,6 +2583,10 @@
                 "email": "laurent@bassin.info"
             },
             {
+                "name": "Trevor Rowbotham",
+                "email": "trevor.rowbotham@pm.me"
+            },
+            {
                 "name": "Symfony Community",
                 "homepage": "https://symfony.com/contributors"
             }
@@ -2541,31 +2603,104 @@
         ]
     },
     {
-        "name": "symfony/polyfill-mbstring",
-        "version": "v1.15.0",
-        "version_normalized": "1.15.0.0",
+        "name": "symfony/polyfill-intl-normalizer",
+        "version": "v1.22.1",
+        "version_normalized": "1.22.1.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/symfony/polyfill-mbstring.git",
-            "reference": "81ffd3a9c6d707be22e3012b827de1c9775fc5ac"
+            "url": "https://github.com/symfony/polyfill-intl-normalizer.git",
+            "reference": "43a0283138253ed1d48d352ab6d0bdb3f809f248"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/81ffd3a9c6d707be22e3012b827de1c9775fc5ac",
-            "reference": "81ffd3a9c6d707be22e3012b827de1c9775fc5ac",
+            "url": "https://api.github.com/repos/symfony/polyfill-intl-normalizer/zipball/43a0283138253ed1d48d352ab6d0bdb3f809f248",
+            "reference": "43a0283138253ed1d48d352ab6d0bdb3f809f248",
             "shasum": ""
         },
         "require": {
-            "php": ">=5.3.3"
+            "php": ">=7.1"
+        },
+        "suggest": {
+            "ext-intl": "For best performance"
+        },
+        "time": "2021-01-22T09:19:47+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-main": "1.22-dev"
+            },
+            "thanks": {
+                "name": "symfony/polyfill",
+                "url": "https://github.com/symfony/polyfill"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Symfony\\Polyfill\\Intl\\Normalizer\\": ""
+            },
+            "files": [
+                "bootstrap.php"
+            ],
+            "classmap": [
+                "Resources/stubs"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Nicolas Grekas",
+                "email": "p@tchwork.com"
+            },
+            {
+                "name": "Symfony Community",
+                "homepage": "https://symfony.com/contributors"
+            }
+        ],
+        "description": "Symfony polyfill for intl's Normalizer class and related functions",
+        "homepage": "https://symfony.com",
+        "keywords": [
+            "compatibility",
+            "intl",
+            "normalizer",
+            "polyfill",
+            "portable",
+            "shim"
+        ]
+    },
+    {
+        "name": "symfony/polyfill-mbstring",
+        "version": "v1.22.1",
+        "version_normalized": "1.22.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/symfony/polyfill-mbstring.git",
+            "reference": "5232de97ee3b75b0360528dae24e73db49566ab1"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/5232de97ee3b75b0360528dae24e73db49566ab1",
+            "reference": "5232de97ee3b75b0360528dae24e73db49566ab1",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=7.1"
         },
         "suggest": {
             "ext-mbstring": "For best performance"
         },
-        "time": "2020-03-09T19:04:49+00:00",
+        "time": "2021-01-22T09:19:47+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.15-dev"
+                "dev-main": "1.22-dev"
+            },
+            "thanks": {
+                "name": "symfony/polyfill",
+                "url": "https://github.com/symfony/polyfill"
             }
         },
         "installation-source": "dist",
@@ -2603,27 +2738,31 @@
     },
     {
         "name": "symfony/polyfill-php72",
-        "version": "v1.15.0",
-        "version_normalized": "1.15.0.0",
+        "version": "v1.22.1",
+        "version_normalized": "1.22.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-php72.git",
-            "reference": "37b0976c78b94856543260ce09b460a7bc852747"
+            "reference": "cc6e6f9b39fe8075b3dabfbaf5b5f645ae1340c9"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-php72/zipball/37b0976c78b94856543260ce09b460a7bc852747",
-            "reference": "37b0976c78b94856543260ce09b460a7bc852747",
+            "url": "https://api.github.com/repos/symfony/polyfill-php72/zipball/cc6e6f9b39fe8075b3dabfbaf5b5f645ae1340c9",
+            "reference": "cc6e6f9b39fe8075b3dabfbaf5b5f645ae1340c9",
             "shasum": ""
         },
         "require": {
-            "php": ">=5.3.3"
+            "php": ">=7.1"
         },
-        "time": "2020-02-27T09:26:54+00:00",
+        "time": "2021-01-07T16:49:33+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.15-dev"
+                "dev-main": "1.22-dev"
+            },
+            "thanks": {
+                "name": "symfony/polyfill",
+                "url": "https://github.com/symfony/polyfill"
             }
         },
         "installation-source": "dist",
@@ -2659,28 +2798,92 @@
         ]
     },
     {
-        "name": "symfony/polyfill-php80",
-        "version": "v1.20.0",
-        "version_normalized": "1.20.0.0",
+        "name": "symfony/polyfill-php73",
+        "version": "v1.22.1",
+        "version_normalized": "1.22.1.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/symfony/polyfill-php80.git",
-            "reference": "e70aa8b064c5b72d3df2abd5ab1e90464ad009de"
+            "url": "https://github.com/symfony/polyfill-php73.git",
+            "reference": "a678b42e92f86eca04b7fa4c0f6f19d097fb69e2"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/e70aa8b064c5b72d3df2abd5ab1e90464ad009de",
-            "reference": "e70aa8b064c5b72d3df2abd5ab1e90464ad009de",
+            "url": "https://api.github.com/repos/symfony/polyfill-php73/zipball/a678b42e92f86eca04b7fa4c0f6f19d097fb69e2",
+            "reference": "a678b42e92f86eca04b7fa4c0f6f19d097fb69e2",
             "shasum": ""
         },
         "require": {
             "php": ">=7.1"
         },
-        "time": "2020-10-23T14:02:19+00:00",
+        "time": "2021-01-07T16:49:33+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-main": "1.20-dev"
+                "dev-main": "1.22-dev"
+            },
+            "thanks": {
+                "name": "symfony/polyfill",
+                "url": "https://github.com/symfony/polyfill"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Symfony\\Polyfill\\Php73\\": ""
+            },
+            "files": [
+                "bootstrap.php"
+            ],
+            "classmap": [
+                "Resources/stubs"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Nicolas Grekas",
+                "email": "p@tchwork.com"
+            },
+            {
+                "name": "Symfony Community",
+                "homepage": "https://symfony.com/contributors"
+            }
+        ],
+        "description": "Symfony polyfill backporting some PHP 7.3+ features to lower PHP versions",
+        "homepage": "https://symfony.com",
+        "keywords": [
+            "compatibility",
+            "polyfill",
+            "portable",
+            "shim"
+        ]
+    },
+    {
+        "name": "symfony/polyfill-php80",
+        "version": "v1.22.1",
+        "version_normalized": "1.22.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/symfony/polyfill-php80.git",
+            "reference": "dc3063ba22c2a1fd2f45ed856374d79114998f91"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/dc3063ba22c2a1fd2f45ed856374d79114998f91",
+            "reference": "dc3063ba22c2a1fd2f45ed856374d79114998f91",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=7.1"
+        },
+        "time": "2021-01-07T16:49:33+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-main": "1.22-dev"
             },
             "thanks": {
                 "name": "symfony/polyfill",
@@ -2795,24 +2998,24 @@
     },
     {
         "name": "symfony/translation",
-        "version": "v5.1.8",
-        "version_normalized": "5.1.8.0",
+        "version": "v5.2.6",
+        "version_normalized": "5.2.6.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/translation.git",
-            "reference": "27980838fd261e04379fa91e94e81e662fe5a1b6"
+            "reference": "2cc7f45d96db9adfcf89adf4401d9dfed509f4e1"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/translation/zipball/27980838fd261e04379fa91e94e81e662fe5a1b6",
-            "reference": "27980838fd261e04379fa91e94e81e662fe5a1b6",
+            "url": "https://api.github.com/repos/symfony/translation/zipball/2cc7f45d96db9adfcf89adf4401d9dfed509f4e1",
+            "reference": "2cc7f45d96db9adfcf89adf4401d9dfed509f4e1",
             "shasum": ""
         },
         "require": {
             "php": ">=7.2.5",
             "symfony/polyfill-mbstring": "~1.0",
             "symfony/polyfill-php80": "^1.15",
-            "symfony/translation-contracts": "^2"
+            "symfony/translation-contracts": "^2.3"
         },
         "conflict": {
             "symfony/config": "<4.4",
@@ -2822,7 +3025,7 @@
             "symfony/yaml": "<4.4"
         },
         "provide": {
-            "symfony/translation-implementation": "2.0"
+            "symfony/translation-implementation": "2.3"
         },
         "require-dev": {
             "psr/log": "~1.0",
@@ -2840,10 +3043,13 @@
             "symfony/config": "",
             "symfony/yaml": ""
         },
-        "time": "2020-10-24T12:01:57+00:00",
+        "time": "2021-03-23T19:33:48+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
+            "files": [
+                "Resources/functions.php"
+            ],
             "psr-4": {
                 "Symfony\\Component\\Translation\\": ""
             },
@@ -2865,7 +3071,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Symfony Translation Component",
+        "description": "Provides tools to internationalize your application",
         "homepage": "https://symfony.com"
     },
     {

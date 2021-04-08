@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2018 Spomky-Labs
+ * Copyright (c) 2018-2020 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace CBOR\OtherObject;
 
 use CBOR\OtherObject as Base;
+use CBOR\Utils;
+use function chr;
 use InvalidArgumentException;
 
 final class SimpleObject extends Base
@@ -34,7 +36,7 @@ final class SimpleObject extends Base
             return $this->getAdditionalInformation();
         }
 
-        return gmp_intval(gmp_init(bin2hex($this->data), 16));
+        return Utils::binToInt($this->data);
     }
 
     /**
@@ -46,7 +48,7 @@ final class SimpleObject extends Base
             case $value < 24:
                 return new self($value, null);
             case $value < 256:
-                return new self(24, \chr($value));
+                return new self(24, chr($value));
             default:
                 throw new InvalidArgumentException('The value is not a valid simple value');
         }

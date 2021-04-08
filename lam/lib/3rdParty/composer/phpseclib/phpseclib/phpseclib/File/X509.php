@@ -43,6 +43,7 @@ use phpseclib3\Exception\UnsupportedAlgorithmException;
 use phpseclib3\File\ASN1\Element;
 use phpseclib3\File\ASN1\Maps;
 use phpseclib3\Math\BigInteger;
+use phpseclib3\Crypt\PublicKeyLoader;
 
 /**
  * Pure-PHP X.509 Parser
@@ -302,6 +303,18 @@ class X509
      * @access private
      */
     private static $extensions = [];
+
+    /**
+     * @var ?array
+     * @access private
+     */
+    private $ipAddresses = null;
+
+    /**
+     * @var ?array
+     * @access private
+     */
+    private $domains = null;
 
     /**
      * Default Constructor.
@@ -2095,6 +2108,17 @@ class X509
     }
 
     /**
+     * Returns the current cert
+     *
+     * @access public
+     * @return array|bool
+     */
+    public function &getCurrentCert()
+    {
+        return $this->currentCert;
+    }
+
+    /**
      * Set public key
      *
      * Key needs to be a \phpseclib3\Crypt\RSA object
@@ -3690,14 +3714,11 @@ class X509
                     return false;
                 }
                 // If the key is private, compute identifier from its corresponding public key.
-                $key = new RSA();
-                if (!$key->load($raw)) {
-                    return false;   // Not an unencrypted RSA key.
-                }
-                if ($key->getPrivateKey() !== false) {  // If private.
+                $key = PublicKeyLoader::load($raw);
+                if ($key instanceof PrivateKey) {  // If private.
                     return $this->computeKeyIdentifier($key, $method);
                 }
-                $key = $raw;    // Is a public key.
+                $key = $raw; // Is a public key.
                 break;
             case $key instanceof X509:
                 if (isset($key->publicKey)) {

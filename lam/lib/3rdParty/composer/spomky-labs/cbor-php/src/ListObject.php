@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2018 Spomky-Labs
+ * Copyright (c) 2018-2020 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -13,9 +13,15 @@ declare(strict_types=1);
 
 namespace CBOR;
 
+use function array_key_exists;
+use ArrayIterator;
+use function count;
+use Countable;
 use InvalidArgumentException;
+use Iterator;
+use IteratorAggregate;
 
-class ListObject extends AbstractCBORObject implements \Countable, \IteratorAggregate
+class ListObject extends AbstractCBORObject implements Countable, IteratorAggregate
 {
     private const MAJOR_TYPE = 0b100;
 
@@ -46,6 +52,19 @@ class ListObject extends AbstractCBORObject implements \Countable, \IteratorAggr
         $this->length = $length;
     }
 
+    public function __toString(): string
+    {
+        $result = parent::__toString();
+        if (null !== $this->length) {
+            $result .= $this->length;
+        }
+        foreach ($this->data as $object) {
+            $result .= (string) $object;
+        }
+
+        return $result;
+    }
+
     public function add(CBORObject $object): void
     {
         $this->data[] = $object;
@@ -54,7 +73,7 @@ class ListObject extends AbstractCBORObject implements \Countable, \IteratorAggr
 
     public function get(int $index): CBORObject
     {
-        if (!\array_key_exists($index, $this->data)) {
+        if (!array_key_exists($index, $this->data)) {
             throw new InvalidArgumentException('Index not found.');
         }
 
@@ -70,24 +89,11 @@ class ListObject extends AbstractCBORObject implements \Countable, \IteratorAggr
 
     public function count(): int
     {
-        return \count($this->data);
+        return count($this->data);
     }
 
-    public function getIterator(): \Iterator
+    public function getIterator(): Iterator
     {
-        return new \ArrayIterator($this->data);
-    }
-
-    public function __toString(): string
-    {
-        $result = parent::__toString();
-        if (null !== $this->length) {
-            $result .= $this->length;
-        }
-        foreach ($this->data as $object) {
-            $result .= (string) $object;
-        }
-
-        return $result;
+        return new ArrayIterator($this->data);
     }
 }

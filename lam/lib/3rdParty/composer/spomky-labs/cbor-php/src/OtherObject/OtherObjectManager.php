@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2018 Spomky-Labs
+ * Copyright (c) 2018-2020 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace CBOR\OtherObject;
 
+use function array_key_exists;
 use CBOR\OtherObject;
 use InvalidArgumentException;
 
@@ -35,7 +36,7 @@ class OtherObjectManager
 
     public function getClassForValue(int $value): string
     {
-        return \array_key_exists($value, $this->classes) ? $this->classes[$value] : GenericObject::class;
+        return array_key_exists($value, $this->classes) ? $this->classes[$value] : GenericObject::class;
     }
 
     public function createObjectForValue(int $value, ?string $data): OtherObject

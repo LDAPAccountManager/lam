@@ -237,6 +237,8 @@ return array(
     'Horde_Translation_Handler_Gettext' => $vendorDir . '/pear-pear.horde.org/Horde_Translation/Horde/Translation/Handler/Gettext.php',
     'Horde_Util' => $vendorDir . '/pear-pear.horde.org/Horde_Util/Horde/Util.php',
     'Horde_Variables' => $vendorDir . '/pear-pear.horde.org/Horde_Util/Horde/Variables.php',
+    'JsonException' => $vendorDir . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
+    'Normalizer' => $vendorDir . '/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',
     'Stringable' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
     'UnhandledMatchError' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
     'ValueError' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',

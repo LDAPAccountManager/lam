@@ -1125,6 +1125,7 @@ main license and authors:
 
 lib/3rdParty/composer/beberlei                                       G  2013  Benjamin Eberlei
 lib/3rdParty/composer/bretterer                                      B        Brian Retterer
+lib/3rdParty/composer/brick                                          B        Benjamin Morel
 lib/3rdParty/composer/clue                                           B        2015 Christian Lück
 lib/3rdParty/composer/composer                                       B        Nils Adermann, Jordi Boggiano
 lib/3rdParty/composer/fgrosse                                        B  2015  Friedrich Große

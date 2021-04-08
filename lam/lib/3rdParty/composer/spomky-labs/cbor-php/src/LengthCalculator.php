@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2018 Spomky-Labs
+ * Copyright (c) 2018-2020 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace CBOR;
 
+use Brick\Math\BigInteger;
+use function chr;
+use function count;
 use InvalidArgumentException;
 
 final class LengthCalculator
@@ -26,7 +29,7 @@ final class LengthCalculator
 
     public static function getLengthOfArray(array $data): array
     {
-        $length = \count($data);
+        $length = count($data);
 
         return self::computeLength($length);
     }
@@ -37,13 +40,13 @@ final class LengthCalculator
             case $length < 24:
                 return [$length, null];
             case $length < 0xFF:
-                return [24, \chr($length)];
+                return [24, chr($length)];
             case $length < 0xFFFF:
-                return [25, self::hex2bin(static::fixHexLength(gmp_strval(gmp_init($length), 16)))];
+                return [25, self::hex2bin(static::fixHexLength(Utils::intToHex($length)))];
             case $length < 0xFFFFFFFF:
-                return [26, self::hex2bin(static::fixHexLength(gmp_strval(gmp_init($length), 16)))];
-            case -1 === gmp_cmp(gmp_init($length), gmp_init('FFFFFFFFFFFFFFFF', 16)):
-                return [27, self::hex2bin(static::fixHexLength(gmp_strval(gmp_init($length), 16)))];
+                return [26, self::hex2bin(static::fixHexLength(Utils::intToHex($length)))];
+            case BigInteger::of($length)->isLessThan(BigInteger::fromBase('FFFFFFFFFFFFFFFF', 16)):
+                return [27, self::hex2bin(static::fixHexLength(Utils::intToHex($length)))];
             default:
                 return [31, null];
         }

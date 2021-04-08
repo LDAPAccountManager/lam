@@ -24,10 +24,10 @@
         }
     },
     "require": {
-        "php": "^7.1|^8.0",
+        "php": ">=7.1",
         "spomky-labs/base64url": "^1.0|^2.0",
-        "ext-gmp": "*",
-        "beberlei/assert": "^3.2"
+        "beberlei/assert": "^3.2",
+        "brick/math": "^0.8.15"
     },
     "require-dev": {
         "php-coveralls/php-coveralls": "^2.0",
@@ -36,16 +36,10 @@
         "phpstan/phpstan-deprecation-rules": "^0.12",
         "phpstan/phpstan-phpunit": "^0.12",
         "phpstan/phpstan-strict-rules": "^0.12",
-        "phpunit/phpunit": "^7.5|^8.0",
-        "rector/rector": "^0.5|^0.6",
-        "symfony/var-dumper": "^4.3|^5.0"
+        "phpunit/phpunit": "^7.5|^8.0"
     },
     "suggest": {
-        "ext-bcmath": "BCMath extension needed to handle the Big Float and Decimal Fraction Tags"
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0.x-dev"
-        }
+        "ext-gmp": "GMP or BCMath extensions will drastically improve the library performance",
+        "ext-bcmath": "GMP or BCMath extensions will drastically improve the library performance. BCMath extension needed to handle the Big Float and Decimal Fraction Tags"
     }
 }

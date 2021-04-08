@@ -4,6 +4,7 @@ env:
   global:
     - COVERAGE=false
     - DEPLOY_DOCS=false
+    - XDEBUG_MODE=coverage
 
 install:
   - travis_retry composer install --prefer-dist --no-interaction --no-suggest;

@@ -5,13 +5,17 @@ declare(strict_types=1);
 namespace Nyholm\Psr7;
 
 use Psr\Http\Message\StreamInterface;
+use Symfony\Component\Debug\ErrorHandler as SymfonyLegacyErrorHandler;
+use Symfony\Component\ErrorHandler\ErrorHandler as SymfonyErrorHandler;
 
 /**
  * @author Michael Dowling and contributors to guzzlehttp/psr7
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  * @author Martijn van der Ven <martijn@vanderven.se>
+ *
+ * @final This class should never be extended. See https://github.com/Nyholm/psr7/blob/master/doc/final.md
  */
-final class Stream implements StreamInterface
+class Stream implements StreamInterface
 {
     /** @var resource|null A resource reference */
     private $stream;
@@ -25,7 +29,7 @@ final class Stream implements StreamInterface
     /** @var bool */
     private $writable;
 
-    /** @var array|mixed|void|null */
+    /** @var array|mixed|void|bool|null */
     private $uri;
 
     /** @var int|null */
@@ -56,8 +60,6 @@ final class Stream implements StreamInterface
      *
      * @param string|resource|StreamInterface $body
      *
-     * @return StreamInterface
-     *
      * @throws \InvalidArgumentException
      */
     public static function create($body = ''): StreamInterface
@@ -79,7 +81,6 @@ final class Stream implements StreamInterface
             $new->seekable = $meta['seekable'] && 0 === \fseek($new->stream, 0, \SEEK_CUR);
             $new->readable = isset(self::READ_WRITE_HASH['read'][$meta['mode']]);
             $new->writable = isset(self::READ_WRITE_HASH['write'][$meta['mode']]);
-            $new->uri = $new->getMetadata('uri');
 
             return $new;
         }
@@ -95,7 +96,10 @@ final class Stream implements StreamInterface
         $this->close();
     }
 
-    public function __toString(): string
+    /**
+     * @return string
+     */
+    public function __toString()
     {
         try {
             if ($this->isSeekable()) {
@@ -103,7 +107,20 @@ final class Stream implements StreamInterface
             }
 
             return $this->getContents();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            if (\PHP_VERSION_ID >= 70400) {
+                throw $e;
+            }
+
+            if (\is_array($errorHandler = \set_error_handler('var_dump'))) {
+                $errorHandler = $errorHandler[0] ?? null;
+            }
+            \restore_error_handler();
+
+            if ($e instanceof \Error || $errorHandler instanceof SymfonyErrorHandler || $errorHandler instanceof SymfonyLegacyErrorHandler) {
+                return \trigger_error((string) $e, \E_USER_ERROR);
+            }
+
             return '';
         }
     }
@@ -132,6 +149,15 @@ final class Stream implements StreamInterface
         return $result;
     }
 
+    private function getUri()
+    {
+        if (false !== $this->uri) {
+            $this->uri = $this->getMetadata('uri') ?? false;
+        }
+
+        return $this->uri;
+    }
+
     public function getSize(): ?int
     {
         if (null !== $this->size) {
@@ -143,8 +169,8 @@ final class Stream implements StreamInterface
         }
 
         // Clear the stat cache if the stream has a URI
-        if ($this->uri) {
-            \clearstatcache(true, $this->uri);
+        if ($uri = $this->getUri()) {
+            \clearstatcache(true, $uri);
         }
 
         $stats = \fstat($this->stream);
@@ -224,7 +250,11 @@ final class Stream implements StreamInterface
             throw new \RuntimeException('Cannot read from non-readable stream');
         }
 
-        return \fread($this->stream, $length);
+        if (false === $result = \fread($this->stream, $length)) {
+            throw new \RuntimeException('Unable to read from stream');
+        }
+
+        return $result;
     }
 
     public function getContents(): string

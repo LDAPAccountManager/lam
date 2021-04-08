@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2018 Spomky-Labs
+ * Copyright (c) 2018-2020 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -16,6 +16,7 @@ namespace CBOR\Tag;
 use CBOR\ByteStringObject;
 use CBOR\CBORObject;
 use CBOR\TagObject as Base;
+use CBOR\Utils;
 use InvalidArgumentException;
 
 final class PositiveBigIntegerTag extends Base
@@ -49,6 +50,6 @@ final class PositiveBigIntegerTag extends Base
             return $this->object->getNormalizedData($ignoreTags);
         }
 
-        return gmp_strval(gmp_init(bin2hex($this->object->getValue()), 16), 10);
+        return Utils::hexToString($this->object->getValue());
     }
 }

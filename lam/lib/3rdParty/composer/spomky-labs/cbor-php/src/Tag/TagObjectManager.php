@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2018 Spomky-Labs
+ * Copyright (c) 2018-2020 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -13,9 +13,11 @@ declare(strict_types=1);
 
 namespace CBOR\Tag;
 
+use function array_key_exists;
 use Assert\Assertion;
 use CBOR\CBORObject;
 use CBOR\TagObject;
+use CBOR\Utils;
 use InvalidArgumentException;
 
 class TagObjectManager
@@ -35,7 +37,7 @@ class TagObjectManager
 
     public function getClassForValue(int $value): string
     {
-        return \array_key_exists($value, $this->classes) ? $this->classes[$value] : GenericTag::class;
+        return array_key_exists($value, $this->classes) ? $this->classes[$value] : GenericTag::class;
     }
 
     public function createObjectForValue(int $additionalInformation, ?string $data, CBORObject $object): TagObject
@@ -43,7 +45,7 @@ class TagObjectManager
         $value = $additionalInformation;
         if ($additionalInformation >= 24) {
             Assertion::string($data, 'Invalid data');
-            $value = gmp_intval(gmp_init(bin2hex($data), 16));
+            $value = Utils::binToInt($data);
         }
         /** @var TagObject $class */
         $class = $this->getClassForValue($value);

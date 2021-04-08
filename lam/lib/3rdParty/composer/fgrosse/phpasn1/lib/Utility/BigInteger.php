@@ -53,14 +53,12 @@ abstract class BigInteger
         }
         else {
             // autodetect
-            if (extension_loaded('gmp')) {
+            if (function_exists('gmp_add')) {
                 $ret = new BigIntegerGmp();
             }
-            elseif (extension_loaded('bcmath')) {
+            elseif (function_exists('bcadd')) {
                 $ret = new BigIntegerBcmath();
-            }
-            else {
-                // TODO: potentially offer pure php implementation?
+            } else {
                 throw new \RuntimeException('Requires GMP or bcmath extension.');
             }
         }
