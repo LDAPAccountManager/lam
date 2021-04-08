@@ -2317,6 +2317,11 @@ class accountContainer {
 				$found = true;
 				$value = str_replace($searchString, $replValue, $value);
 			}
+			$searchString = '$_' . $replKey;
+			if (strpos($value, $searchString) !== false) {
+				$found = true;
+				$value = str_replace($searchString, strtolower($replValue), $value);
+			}
 		}
 		return $found;
 	}
