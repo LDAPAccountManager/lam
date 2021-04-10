@@ -73,9 +73,7 @@ class ConfigDataExporter {
 		$jsonData['pdfProfileTemplates'] = $this->_getPdfProfileTemplates();
 		$jsonData['selfServiceProfiles'] = $this->_getSelfServiceProfiles();
 		$jsonData['webauthn'] = $this->_getWebauthn();
-		if (isLAMProVersion()) {
-			$jsonData['cronJobs'] = $this->_getCronJobData($serverProfiles);
-		}
+		$jsonData['cronJobs'] = $this->_getCronJobData($serverProfiles);
 		return json_encode($jsonData);
 	}
 
@@ -265,6 +263,9 @@ class ConfigDataExporter {
 	 */
 	public function _getCronJobData(array $serverProfiles) : array {
 		$data = array();
+		if (isLAMProVersion()) {
+			return $data;
+		}
 		include_once 'database.inc';
 		foreach ($serverProfiles as $serverProfileName => $serverProfile) {
 			try {

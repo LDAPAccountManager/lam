@@ -80,13 +80,15 @@ class ConfigDataExporterTest extends TestCase {
 			'pdfProfiles' => $pdfData,
 			'pdfProfileTemplates' => $pdfTemplateData,
 			'selfServiceProfiles' => $selfServiceData,
-			'webauthn' => $webauthn
+			'webauthn' => $webauthn,
+			'cronJobs' => array()
 		));
 
 		$exporter = $this->getMockBuilder('\LAM\PERSISTENCE\ConfigDataExporter')
 			->setMethods(array('_getMainConfigData', '_getCertificates', '_getServerProfiles',
 				'_getAccountProfiles', '_getAccountProfileTemplates', '_getPdfProfiles',
-				'_getPdfProfileTemplates', '_getSelfServiceProfiles', '_getWebauthn'))
+				'_getPdfProfileTemplates', '_getSelfServiceProfiles', '_getWebauthn',
+				'_getCronJobData'))
 			->getMock();
 		$exporter->method('_getMainConfigData')->willReturn($mainData);
 		$exporter->method('_getCertificates')->willReturn('certs');
@@ -97,6 +99,7 @@ class ConfigDataExporterTest extends TestCase {
 		$exporter->method('_getPdfProfileTemplates')->willReturn($pdfTemplateData);
 		$exporter->method('_getSelfServiceProfiles')->willReturn($selfServiceData);
 		$exporter->method('_getWebauthn')->willReturn($webauthn);
+		$exporter->method('_getCronJobData')->willReturn(array());
 
 		$json = $exporter->exportAsJson();
 
