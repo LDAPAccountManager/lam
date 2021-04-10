@@ -6,6 +6,7 @@ June 2021 7.6
   - LAM Pro:
    -> Export/Import of cron jobs
    -> Mail server encryption type can be configured (TLS/SSL/none)
+   -> User self registration: support to define uid field to use constant or custom validation
 
 
 30.03.2021 7.5
