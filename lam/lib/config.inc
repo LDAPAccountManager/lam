@@ -2814,6 +2814,13 @@ class LAMCfgMain {
 	/** no license warning */
 	const LICENSE_WARNING_NONE = 'none';
 
+	/** SSL encryption for mail sending */
+	const SMTP_SSL = 'SSL';
+	/** TLS encryption for mail sending */
+	const SMTP_TLS = 'TLS';
+	/** No encryption for mail sending */
+	const SMTP_NONE = 'NONE';
+
 	/** store configuration on local file system */
 	const DATABASE_FILE_SYSTEM = 'files';
 	/** store configuration in MySQL database */
@@ -2909,6 +2916,11 @@ class LAMCfgMain {
 	/** mail server password */
 	public $mailPassword = '';
 
+	/**
+	 * @var string encryption type for SMTP connection
+	 */
+	public $mailEncryption = '';
+
 	/** database type */
 	public $configDatabaseType = self::DATABASE_FILE_SYSTEM;
 
@@ -2936,8 +2948,9 @@ class LAMCfgMain {
 		'externalPwdCheckUrl',
 		'errorReporting', 'encryptSession', 'allowedHostsSelfService',
 		'license', 'licenseEmailFrom', 'licenseEmailTo', 'licenseWarningType', 'licenseEmailDateSent',
-		'mailServer', 'mailUser', 'mailPassword', 'configDatabaseType', 'configDatabaseServer',
-		'configDatabasePort', 'configDatabaseName', 'configDatabaseUser', 'configDatabasePassword'
+		'mailServer', 'mailUser', 'mailPassword', 'mailEncryption', 'configDatabaseType',
+		'configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser',
+		'configDatabasePassword'
 	);
 
 	/** persistence settings are always stored on local file system */
@@ -3301,6 +3314,9 @@ class LAMCfgMain {
 			}
 			if (!in_array("mailPassword", $saved)) {
 				array_push($file_array, "mailPassword: " . $this->mailPassword . "\n");
+			}
+			if (!in_array("mailEncryption", $saved)) {
+				array_push($file_array, "mailEncryption: " . $this->mailEncryption . "\n");
 			}
 		}
 		if (!in_array("configDatabaseType", $saved)) {

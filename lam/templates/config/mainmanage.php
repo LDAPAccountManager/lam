@@ -284,6 +284,7 @@ if (isset($_POST['submitFormData'])) {
 	if (isLAMProVersion()) {
 		$cfg->mailUser = $_POST['mailUser'];
 		$cfg->mailPassword = $_POST['mailPassword'];
+		$cfg->mailEncryption = $_POST['mailEncryption'];
 		$cfg->mailServer = $_POST['mailServer'];
 		if (!empty($cfg->mailServer) && !get_preg($cfg->mailServer, 'hostAndPort')) {
             $errors[] = _('Please enter the mail server with host name and port.');
@@ -581,6 +582,15 @@ printHeaderContents(_("Edit general settings"), '../..');
 		$mailPassword = new htmlResponsiveInputField(_("Password"), 'mailPassword', $cfg->mailPassword, '255');
 		$mailPassword->setIsPassword(true);
 		$row->add($mailPassword, 12);
+		$mailEncryptionOptions = array(
+	        'TLS' => LAMCfgMain::SMTP_TLS,
+			'SSL' => LAMCfgMain::SMTP_SSL,
+			_('None') => LAMCfgMain::SMTP_NONE,
+        );
+		$selectedMailEncryption = empty($cfg->mailEncryption) ? LAMCfgMain::SMTP_TLS : $cfg->mailEncryption;
+		$mailEncryptionSelect = new htmlResponsiveSelect('mailEncryption', $mailEncryptionOptions, array($selectedMailEncryption), _('Encryption protocol'), '256');
+		$mailEncryptionSelect->setHasDescriptiveElements(true);
+		$row->add($mailEncryptionSelect, 12);
 	}
 	$row->addVerticalSpacer('3rem');
 

@@ -180,11 +180,13 @@ $helpArray = array (
 				"252" => array ("Headline" => _("User DN"),
 					"Text" => _("Please enter a part of the user's DN to search for registered devices.")),
 				"253" => array ("Headline" => _("Mail server"),
-					"Text" => _("Please enter the server name and port of your SMTP server (e.g. localhost:25). If this setting is left empty then LAM will try to use a locally installed mail server. The server must support TLS.")),
+					"Text" => _("Please enter the server name and port of your SMTP server (e.g. localhost:25). If this setting is left empty then LAM will try to use a locally installed mail server.")),
 				"254" => array ("Headline" => _("User name"),
 					"Text" => _("SMTP user name")),
 				"255" => array ("Headline" => _("Password"),
 					"Text" => _("SMTP password")),
+				"256" => array ("Headline" => _("Encryption protocol"),
+					"Text" => _("Please select if the connection should be encrypted via TLS, SSL or not at all.")),
 				"260" => array ("Headline" => _("Additional LDAP filter"),
 					"Text" => _('Use this to enter an additional LDAP filter (e.g. "(cn!=admin)") to reduce the number of visible elements for this account type.')
 						. ' ' . _('You can use the wildcard @@LOGIN_DN@@ which will be substituted with the DN of the user who is currently logged in to LAM.')

@@ -61,6 +61,7 @@ class LAMCfgMainTest extends TestCase {
 		$this->conf->mailServer = 'server:123';
 		$this->conf->mailPassword = 'pwd123';
 		$this->conf->mailUser = 'user123';
+		$this->conf->mailEncryption = LAMCfgMain::SMTP_SSL;
 
 		$this->conf->save();
 		$this->conf = new LAMCfgMain($this->file);
@@ -68,6 +69,7 @@ class LAMCfgMainTest extends TestCase {
 		$this->assertEquals('server:123', $this->conf->mailServer);
 		$this->assertEquals('pwd123', $this->conf->mailPassword);
 		$this->assertEquals('user123', $this->conf->mailUser);
+		$this->assertEquals(LAMCfgMain::SMTP_SSL, $this->conf->mailEncryption);
 	}
 
 	/**
