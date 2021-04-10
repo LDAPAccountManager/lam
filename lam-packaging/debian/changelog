@@ -1,6 +1,9 @@
 ldap-account-manager (7.6.DEV-1) unstable; urgency=medium
 
   * new upstream release
+  * Fix "[src:ldap-account-manager] ldap-account-manager: embedded copy
+    of normalize.css" by switching to https://github.com/csstools/normalize.css
+    (Closes: #898787)
 
  -- Roland Gruber <post@rolandgruber.de>  Sat, 03 Apr 2021 17:05:33 +0200
 
