@@ -1,9 +1,8 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2020  Roland Gruber
+  Copyright (C) 2009 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -32,16 +31,16 @@ $Id$
 /**
  * Returns the tools which are available for LAM.
  *
- * @return array list of LAMtool classes
+ * @return array list of LAMTool classes
  */
-function getTools() {
+function getTools() : array {
 	$toolsDirName = dirname(__FILE__) . '/tools';
 	$toolsDir = dir($toolsDirName);
 	$entry = $toolsDir->read();
 	// include all files in the tools directory
 	while ($entry) {
 		if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($toolsDirName . '/'.$entry)) {
-			include_once($toolsDirName . '/'.$entry);
+			include_once($toolsDirName . '/' . $entry);
 		}
 		$entry = $toolsDir->read();
 	}
@@ -74,42 +73,42 @@ interface LAMTool {
 	 * 
 	 * @return string name
 	 */
-	 function getName();
+	 function getName(): string;
 	
 	/**
 	 * returns a description text for the tool.
 	 * 
 	 * @return string description
 	 */
-	function getDescription();
+	function getDescription(): string;
 	
 	/**
 	 * Returns a link to the tool page (relative to templates/).
 	 * 
 	 * @return string link
 	 */
-	function getLink();
+	function getLink(): string;
 	
 	/** 
 	 * Returns if the tool requires write access to LDAP.
 	 * 
-	 * @return boolean true if write access is needed
+	 * @return bool true if write access is needed
 	 */
-	function getRequiresWriteAccess();
+	function getRequiresWriteAccess(): bool;
 	
 	/**
 	 * Returns if the tool requires password change rights.
 	 * 
-	 * @return boolean true if password change rights are needed
+	 * @return bool true if password change rights are needed
 	 */
-	function getRequiresPasswordChangeRights();
+	function getRequiresPasswordChangeRights(): bool;
 	
 	/**
 	 * Returns the link to the tool image (relative to graphics/)
 	 *
 	 * @return string image URL
 	 */
-	function getImageLink();
+	function getImageLink(): string;
 	
 	/**
 	 * Returns the preferred position of this tool on the tools page.
@@ -117,28 +116,28 @@ interface LAMTool {
 	 *
 	 * @return int preferred position
 	 */
-	function getPosition();
+	function getPosition(): int;
 	
 	/**
 	 * Returns a list of sub tools or an empty array.
 	 * 
-	 * @return array list of subtools (LAMTool)
+	 * @return array list of subtools (LAMSubTool)
 	 */
-	function getSubTools();
+	function getSubTools(): array;
 	
 	/**
 	 * Returns if the tool is visible in the menu.
 	 *
-	 * @return boolean visible
+	 * @return bool visible
 	 */
-	function isVisible();
+	function isVisible(): bool;
 	
 	/**
 	 * Returns if a tool may be hidden by configuration in the LAM server profile.
 	 * 
-	 * @return boolean hideable
+	 * @return bool hideable
 	 */
-	function isHideable();
+	function isHideable(): bool;
 	
 }
 
@@ -160,5 +159,3 @@ class LAMSubTool {
 	public $image;
 	
 }
-
-?>

@@ -1,7 +1,10 @@
 <?php
 namespace LAM\TOOLS\TESTS;
+use LAM\TYPES\TypeManager;
+use LAMSubTool;
+use LAMTool;
+
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2009 - 2016  Roland Gruber
@@ -34,86 +37,69 @@ $Id$
  *
  * @package tools
  */
-class toolTests implements \LAMTool {
+class toolTests implements LAMTool {
 
 	/**
-	 * Returns the name of the tool.
-	 *
-	 * @return string name
+	 * {@inheritDoc}
 	 */
-	 function getName() {
+	public function getName(): string {
 	 	return _("Tests");
 	 }
 
 	/**
-	 * returns a description text for the tool.
-	 *
-	 * @return string description
+	 * {@inheritDoc}
 	 */
-	function getDescription() {
+	public function getDescription(): string {
 		return _("Here you can test if certain LAM features work on your installation.");
 	}
 
 	/**
-	 * Returns a link to the tool page (relative to templates/).
-	 *
-	 * @return string link
+	 * {@inheritDoc}
 	 */
-	function getLink() {
+	public function getLink(): string {
 		return "tests/index.php";
 	}
 
 	/**
-	 * Returns if the tool requires write access to LDAP.
-	 *
-	 * @return boolean true if write access is needed
+	 * {@inheritDoc}
 	 */
-	function getRequiresWriteAccess() {
+	public function getRequiresWriteAccess(): bool {
 		return true;
 	}
 
 	/**
-	 * Returns if the tool requires password change rights.
-	 *
-	 * @return boolean true if password change rights are needed
+	 * {@inheritDoc}
 	 */
-	function getRequiresPasswordChangeRights() {
+	public function getRequiresPasswordChangeRights(): bool {
 		return true;
 	}
 
 	/**
-	 * Returns the link to the tool image (relative to graphics/)
-	 *
-	 * @return string image URL
+	 * {@inheritDoc}
 	 */
-	function getImageLink() {
+	public function getImageLink(): string {
 		return 'tests.png';
 	}
 
 	/**
-	 * Returns the preferred position of this tool on the tools page.
-	 * The position may be between 0 and 1000. 0 is the top position.
-	 *
-	 * @return int preferred position
+	 * {@inheritDoc}
 	 */
-	function getPosition() {
+	public function getPosition(): int {
 		return 1000;
 	}
 
 	/**
-	 * Returns a list of sub tools or an empty array.
-	 *
-	 * @return array list of subtools (LAMTool)
+	 * {@inheritDoc}
 	 */
-	function getSubTools() {
+	public function getSubTools(): array {
 		$return = array();
-		$lamdaemonTest = new \LAMSubTool();
+		$lamdaemonTest = new LAMSubTool();
 		$lamdaemonTest->name = _("Lamdaemon test");
 		$lamdaemonTest->link = 'tests/lamdaemonTest.php';
 		$lamdaemonTest->description = _("Check if quotas and homedirectories can be managed.");
 		$lamdaemonTest->image = 'lamdaemonSmall.png';
 		$return[] = $lamdaemonTest;
-		$schemaTest = new \LAMSubTool();
+		$schemaTest = new LAMSubTool();
 		$schemaTest->name = _("Schema test");
 		$schemaTest->link = 'tests/schemaTest.php';
 		$schemaTest->description = _("Check if the LDAP schema fits the requirements of the selected account modules.");
@@ -123,25 +109,19 @@ class toolTests implements \LAMTool {
 	}
 
 	/**
-	 * Returns if the tool is visible in the menu.
-	 *
-	 * @return boolean visible
+	 * {@inheritDoc}
 	 */
-	function isVisible() {
-		$typeManager = new \LAM\TYPES\TypeManager();
+	public function isVisible(): bool {
+		$typeManager = new TypeManager();
 		$types = $typeManager->getConfiguredTypes();
 		return (sizeof($types) > 0);
 	}
 
 	/**
-	 * Returns if a tool may be hidden by configuration in the LAM server profile.
-	 *
-	 * @return boolean hideable
+	 * {@inheritDoc}
 	 */
-	function isHideable() {
+	public function isHideable(): bool {
 		return true;
 	}
 
 }
-
-?>

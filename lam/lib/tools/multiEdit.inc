@@ -1,10 +1,11 @@
 <?php
 namespace LAM\TOOLS\MULTI_EDIT;
+use LAMTool;
+
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2016  Roland Gruber
+  Copyright (C) 2013 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -34,99 +35,76 @@ $Id$
  *
  * @package tools
  */
-class toolMultiEdit implements \LAMTool {
+class toolMultiEdit implements LAMTool {
 
 	/**
-	 * Returns the name of the tool.
-	 *
-	 * @return string name
+	 * {@inheritDoc}
 	 */
-	 function getName() {
+	public function getName(): string {
 	 	return _("Multi edit");
 	 }
 
 	/**
-	 * returns a description text for the tool.
-	 *
-	 * @return string description
+	 * {@inheritDoc}
 	 */
-	function getDescription() {
+	public function getDescription(): string {
 		return _("Performs modifications on multiple LDAP entries.");
 	}
 
 	/**
-	 * Returns a link to the tool page (relative to templates/).
-	 *
-	 * @return string link
+	 * {@inheritDoc}
 	 */
-	function getLink() {
+	public function getLink(): string {
 		return "tools/multiEdit.php";
 	}
 
 	/**
-	 * Returns if the tool requires write access to LDAP.
-	 *
-	 * @return boolean true if write access is needed
+	 * {@inheritDoc}
 	 */
-	function getRequiresWriteAccess() {
+	public function getRequiresWriteAccess(): bool {
 		return true;
 	}
 
 	/**
-	 * Returns if the tool requires password change rights.
-	 *
-	 * @return boolean true if password change rights are needed
+	 * {@inheritDoc}
 	 */
-	function getRequiresPasswordChangeRights() {
+	public function getRequiresPasswordChangeRights(): bool {
 		return true;
 	}
 
 	/**
-	 * Returns the link to the tool image (relative to graphics/)
-	 *
-	 * @return string image URL
+	 * {@inheritDoc}
 	 */
-	function getImageLink() {
+	public function getImageLink(): string {
 		return 'edit.png';
 	}
 
 	/**
-	 * Returns the preferred position of this tool on the tools page.
-	 * The position may be between 0 and 1000. 0 is the top position.
-	 *
-	 * @return int preferred position
+	 * {@inheritDoc}
 	 */
-	function getPosition() {
+	public function getPosition(): int {
 		return 400;
 	}
 
 	/**
-	 * Returns a list of sub tools or an empty array.
-	 *
-	 * @return array list of subtools (LAMTool)
+	 * {@inheritDoc}
 	 */
-	function getSubTools() {
+	public function getSubTools(): array {
 		return array();
 	}
 
 	/**
-	 * Returns if the tool is visible in the menu.
-	 *
-	 * @return boolean visible
+	 * {@inheritDoc}
 	 */
-	function isVisible() {
+	public function isVisible(): bool {
 		return true;
 	}
 
 	/**
-	 * Returns if a tool may be hidden by configuration in the LAM server profile.
-	 *
-	 * @return boolean hideable
+	 * {@inheritDoc}
 	 */
-	function isHideable() {
+	public function isHideable(): bool {
 		return true;
 	}
 
 }
-
-?>
