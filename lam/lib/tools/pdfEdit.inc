@@ -36,7 +36,7 @@ use LAMTool;
  *
  * @package tools
  */
-class toolPDFEditor implements LAMTool {
+class toolPDFEditor extends LAMTool {
 
 	/**
 	 * {@inheritDoc}
@@ -90,24 +90,10 @@ class toolPDFEditor implements LAMTool {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getSubTools(): array {
-		return array();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function isVisible(): bool {
 		$typeManager = new TypeManager();
 		$types = $typeManager->getConfiguredTypes();
 		return (sizeof($types) > 0);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isHideable(): bool {
-		return true;
 	}
 
 }

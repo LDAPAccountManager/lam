@@ -6,7 +6,7 @@ use LAMTool;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2016  Roland Gruber
+  Copyright (C) 2009 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ use LAMTool;
  *
  * @package tools
  */
-class toolOUEditor implements LAMTool {
+class toolOUEditor extends LAMTool {
 
 	/**
 	 * {@inheritDoc}
@@ -90,24 +90,10 @@ class toolOUEditor implements LAMTool {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getSubTools(): array {
-		return array();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function isVisible(): bool {
 		$typeManager = new TypeManager();
 		$types = $typeManager->getConfiguredTypes();
 		return (sizeof($types) > 0);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isHideable(): bool {
-		return true;
 	}
 
 }

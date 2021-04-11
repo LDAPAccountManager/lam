@@ -35,7 +35,7 @@ use LAMTool;
  *
  * @package tools
  */
-class toolMultiEdit implements LAMTool {
+class toolMultiEdit extends LAMTool {
 
 	/**
 	 * {@inheritDoc}
@@ -89,21 +89,7 @@ class toolMultiEdit implements LAMTool {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getSubTools(): array {
-		return array();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function isVisible(): bool {
-		return true;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isHideable(): bool {
 		return true;
 	}
 

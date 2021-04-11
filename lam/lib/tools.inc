@@ -48,7 +48,7 @@ function getTools() : array {
 	$classList = get_declared_classes();
 	$return = array();
 	for ($i = 0; $i < sizeof($classList); $i++) {
-		if (in_array('LAMTool', class_implements($classList[$i]))) {
+		if (in_array('LAMTool', class_parents($classList[$i]))) {
 			$return[] = $classList[$i];
 		}
 	}
@@ -66,49 +66,49 @@ function getTools() : array {
  * @author Roland Gruber
  * @package tools
  */
-interface LAMTool {
+abstract class LAMTool {
 	
 	/**
 	 * Returns the name of the tool.
 	 * 
 	 * @return string name
 	 */
-	 function getName(): string;
+	 public abstract function getName(): string;
 	
 	/**
 	 * returns a description text for the tool.
 	 * 
 	 * @return string description
 	 */
-	function getDescription(): string;
+	public abstract function getDescription(): string;
 	
 	/**
 	 * Returns a link to the tool page (relative to templates/).
 	 * 
 	 * @return string link
 	 */
-	function getLink(): string;
+	public abstract function getLink(): string;
 	
 	/** 
 	 * Returns if the tool requires write access to LDAP.
 	 * 
 	 * @return bool true if write access is needed
 	 */
-	function getRequiresWriteAccess(): bool;
+	public abstract function getRequiresWriteAccess(): bool;
 	
 	/**
 	 * Returns if the tool requires password change rights.
 	 * 
 	 * @return bool true if password change rights are needed
 	 */
-	function getRequiresPasswordChangeRights(): bool;
+	public abstract function getRequiresPasswordChangeRights(): bool;
 	
 	/**
 	 * Returns the link to the tool image (relative to graphics/)
 	 *
 	 * @return string image URL
 	 */
-	function getImageLink(): string;
+	public abstract function getImageLink(): string;
 	
 	/**
 	 * Returns the preferred position of this tool on the tools page.
@@ -116,28 +116,32 @@ interface LAMTool {
 	 *
 	 * @return int preferred position
 	 */
-	function getPosition(): int;
+	public abstract function getPosition(): int;
 	
 	/**
 	 * Returns a list of sub tools or an empty array.
 	 * 
 	 * @return array list of subtools (LAMSubTool)
 	 */
-	function getSubTools(): array;
+	public function getSubTools(): array {
+		return array();
+	}
 	
 	/**
 	 * Returns if the tool is visible in the menu.
 	 *
 	 * @return bool visible
 	 */
-	function isVisible(): bool;
+	public abstract function isVisible(): bool;
 	
 	/**
 	 * Returns if a tool may be hidden by configuration in the LAM server profile.
 	 * 
 	 * @return bool hideable
 	 */
-	function isHideable(): bool;
+	public function isHideable(): bool {
+		return true;
+	}
 	
 }
 

@@ -37,7 +37,7 @@ use LAMTool;
  *
  * @package tools
  */
-class toolTests implements LAMTool {
+class toolTests extends LAMTool {
 
 	/**
 	 * {@inheritDoc}
@@ -115,13 +115,6 @@ class toolTests implements LAMTool {
 		$typeManager = new TypeManager();
 		$types = $typeManager->getConfiguredTypes();
 		return (sizeof($types) > 0);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isHideable(): bool {
-		return true;
 	}
 
 }

@@ -36,7 +36,7 @@ use LAMTool;
  *
  * @package tools
  */
-class toolWebauthn implements LAMTool {
+class toolWebauthn extends LAMTool {
 
 	/**
 	 * {@inheritDoc}
@@ -90,22 +90,8 @@ class toolWebauthn implements LAMTool {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getSubTools(): array {
-		return array();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function isVisible(): bool {
 		return ($_SESSION['config']->getTwoFactorAuthentication() === TwoFactorProviderService::TWO_FACTOR_WEBAUTHN);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isHideable(): bool {
-		return true;
 	}
 
 }
