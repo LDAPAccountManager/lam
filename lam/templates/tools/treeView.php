@@ -44,9 +44,21 @@ checkIfToolIsActive('TreeViewTool');
 setlanguage();
 
 include __DIR__ . '/../../lib/adminHeader.inc';
-echo '<div class="user-bright smallPaddingContent">';
+echo '<div class="smallPaddingContent">';
 
+$toolSettings = $_SESSION['config']->getToolSettings();
 
+if (empty($toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG][0])) {
+	StatusMessage('ERROR', _('Please configure the tree suffix in your LAM server profile settings.'));
+}
+else {
+	showTree();
+}
 
 echo '</div>';
 include __DIR__ . '/../../lib/adminFooter.inc';
+
+function showTree() {
+	$toolSettings = $_SESSION['config']->getToolSettings();
+	echo $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG];
+}

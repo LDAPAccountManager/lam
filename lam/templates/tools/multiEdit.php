@@ -19,10 +19,12 @@ use \htmlResponsiveRow;
 use \htmlResponsiveSelect;
 use \htmlResponsiveInputField;
 use \htmlResponsiveTable;
+use LAM\TOOLS\TREEVIEW\TreeViewTool;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2020  Roland Gruber
+  Copyright (C) 2013 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -115,10 +117,11 @@ function displayStartPage() {
 		$suffixes[$type->getAlias()] = $type->getSuffix();
 		$hideRules[$type->getSuffix()] = array('otherSuffix');
 	}
-	$treeSuffix = $_SESSION['config']->get_Suffix('tree');
-	if (!empty($treeSuffix)) {
-		$suffixes[_('Tree view')] = $_SESSION['config']->get_Suffix('tree');
-		$hideRules[$_SESSION['config']->get_Suffix('tree')] = array('otherSuffix');
+	$toolSettings = $_SESSION['config']->getToolSettings();
+	if (!empty($toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG])) {
+		$treeSuffix = $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG];
+		$suffixes[_('Tree view')] = $treeSuffix;
+		$hideRules[$treeSuffix] = array('otherSuffix');
 	}
 	$suffixes = array_flip($suffixes);
 	natcasesort($suffixes);

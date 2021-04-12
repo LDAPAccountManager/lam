@@ -210,8 +210,6 @@ $tlsOptions = array(_("yes") => 'yes', _("no") => 'no');
 $tlsSelect = new htmlResponsiveSelect('useTLS', $tlsOptions, array($conf->getUseTLS()), _("Activate TLS"), '201');
 $tlsSelect->setHasDescriptiveElements(true);
 $row->add($tlsSelect, 12);
-// tree suffix
-$row->add(new htmlResponsiveInputField(_("Tree suffix"), 'sufftree', $conf->get_Suffix('tree'), '203'), 12);
 // LDAP search limit
 $searchLimitOptions = array(
 '-' => 0,		100 => 100,		500 => 500,
@@ -402,36 +400,40 @@ if (isLAMProVersion()) {
 // tool settings
 $row->add(new htmlSubTitle(_("Tool settings"), '../../graphics/bigTools.png',null, true), 12);
 $toolSettings = $conf->getToolSettings();
+$tools = getTools();
 $row->add(new htmlOutputText(_('Hidden tools')), 12);
 $row->addVerticalSpacer('0.5rem');
-$tools = getTools();
-for ($i = 0; $i < sizeof($tools); $i++) {
-	$tool = new $tools[$i]();
-	if ($tool->isHideable()) {
-		$tools[$i] = $tool;
-	}
-	else {
-		unset($tools[$i]);
-		$i--;
-		$tools = array_values($tools);
-	}
-}
-$toolSettingsContent = new htmlResponsiveRow();
-$toolsSize = sizeof($tools);
-for ($r = 0; $r < $toolsSize; $r++) {
-	$tool = $tools[$r];
+$hideableTools = 0;
+foreach ($tools as $tool) {
+	if (!$tool->isHideable()) {
+	    continue;
+    }
+	$hideableTools++;
 	$toolClass = get_class($tool);
 	$toolName = substr($toolClass, strrpos($toolClass, '\\') + 1);
 	$selected = false;
 	if (isset($toolSettings['tool_hide_' . $toolName]) && ($toolSettings['tool_hide_' . $toolName] === 'true')) {
 		$selected = true;
 	}
-	$toolSettingsContent->add(new htmlResponsiveInputCheckbox('tool_hide_' . $toolName, $selected, $tool->getName(), null, false), 12, 4);
+	$row->add(new htmlResponsiveInputCheckbox('tool_hide_' . $toolName, $selected, $tool->getName(), null, true), 12, 4);
 }
-for ($i = $toolsSize % 3; $i < 3; $i++) {
-	$toolSettingsContent->add(new htmlOutputText(''), 0, 4);
+for ($i = $hideableTools % 3; $i < 3; $i++) {
+	$row->add(new htmlOutputText(''), 0, 4);
 }
-$row->add($toolSettingsContent, 12);
+$toolConfigOptionTypes = array();
+foreach ($tools as $tool) {
+	$toolConfigContent = $tool->getConfigOptions($toolSettings);
+	if ($toolConfigContent !== null) {
+		ob_start();
+		$dummyIndex = 1;
+		$optionTypes = parseHtml(null, $tool->getConfigOptions($toolSettings), array(), true, $dummyIndex, 'user');
+		ob_end_clean();
+        $toolConfigOptionTypes = array_merge($toolConfigOptionTypes, $optionTypes);
+        $row->addVerticalSpacer('1rem');
+		$row->add($toolConfigContent, 12);
+	}
+}
+$_SESSION['confmain_toolTypes'] = $toolConfigOptionTypes;
 
 $row->addVerticalSpacer('2rem');
 
@@ -684,9 +686,6 @@ function checkInput() {
 	if (!$conf->set_Adminstring(implode(";", $adminTextNew))) {
 		$errors[] = array("ERROR", _("List of admin users is empty or invalid!"));
 	}
-	if (!$conf->set_Suffix("tree", $_POST['sufftree'])) {
-		$errors[] = array("ERROR", _("TreeSuffix is invalid!"));
-	}
 	if (!$conf->set_defaultLanguage($_POST['lang'])) {
 		$errors[] = array("ERROR", _("Language is not defined!"));
 	}
@@ -746,9 +745,12 @@ function checkInput() {
 	}
 	// tool settings
 	$tools = getTools();
-	$toolSettings = array();
-	for ($i = 0; $i < sizeof($tools); $i++) {
-	    $toolClass = $tools[$i];
+	$toolSettings = extractConfigOptionsFromPOST($_SESSION['confmain_toolTypes']);
+	foreach ($toolSettings as $key => $value) {
+	    $toolSettings[$key] = implode(LAMConfig::LINE_SEPARATOR, $value);
+    }
+	foreach ($tools as $tool) {
+	    $toolClass = get_class($tool);
 	    $toolName = substr($toolClass, strrpos($toolClass, '\\') + 1);
 		$toolConfigID = 'tool_hide_' . $toolName;
 		if ((isset($_POST[$toolConfigID])) && ($_POST[$toolConfigID] == 'on')) {
@@ -757,7 +759,12 @@ function checkInput() {
 		else {
 			$toolSettings[$toolConfigID] = 'false';
 		}
+		$toolErrors = $tool->checkConfigurationOptions($toolSettings);
+		if (!empty($toolErrors)) {
+		    $errors = array_merge($errors, $toolErrors);
+        }
 	}
+
 	$conf->setToolSettings($toolSettings);
 	// 2-factor
 	if (extension_loaded('curl')) {

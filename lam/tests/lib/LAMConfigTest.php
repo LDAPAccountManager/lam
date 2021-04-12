@@ -226,12 +226,6 @@ class LAMConfigTest extends TestCase {
 	 * Tests LAMConfig->get_Suffix() and LAMConfig->set_Suffix()
 	 */
 	public function testSuffix() {
-		$val = 'ou=test,dc=test';
-		$this->lAMConfig->set_Suffix('tree', $val);
-		$this->assertEquals($val, $this->lAMConfig->get_Suffix('tree'));
-		$this->doSave();
-		$this->assertEquals($val, $this->lAMConfig->get_Suffix('tree'));
-
 		$val = 'ou=test1,dc=test';
 		$this->lAMConfig->set_Suffix('user', $val);
 		$this->assertEquals($val, $this->lAMConfig->get_Suffix('user'));

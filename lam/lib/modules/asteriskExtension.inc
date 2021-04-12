@@ -49,8 +49,6 @@ class asteriskExtension extends baseModule {
     /** if true then only Asterisk accounts are shown as possible owners */
     private $filterOwnerForAsteriskAccounts = true;
 
-    /** if true then the tree suffix will be used to search potential owners */
-    private $searchOwnersInTreeSuffix = false;
     /** Contains all attributes information for set of accounts */
     private $extensionRows = array();
     /** Contains all original attributes information for set of accounts */
@@ -126,7 +124,7 @@ class asteriskExtension extends baseModule {
             ),
             'ownerOptions' => array(
                 "Headline" => _("Options"),
-                "Text" => _("These options change the list of potential extension owners below. You can select to show Asterisk accounts or all users. It is also possible to search the tree suffix if you have users which are not in the standard user suffix.")
+                "Text" => _("These options change the list of potential extension owners below. You can select to show Asterisk accounts or all users.")
             ),
         );
 
@@ -434,9 +432,6 @@ class asteriskExtension extends baseModule {
     	$return = new htmlResponsiveRow();
         // load list with all potential owners
         $searchScope = 'user';
-        if ($this->searchOwnersInTreeSuffix) {
-            $searchScope = 'tree';
-        }
         $searchClass = 'inetOrgPerson';
         if ($this->filterOwnerForAsteriskAccounts) {
             $searchClass = 'AsteriskSIPUser';
@@ -463,7 +458,6 @@ class asteriskExtension extends baseModule {
         // options
         $return->add(new htmlSubTitle(_("Filters")), 12);
         $return->add(new htmlResponsiveInputCheckbox('filterAsteriskUsers', $this->filterOwnerForAsteriskAccounts, _('Show only Asterisk accounts'), 'ownerOptions', false), 12);
-        $return->add(new htmlResponsiveInputCheckbox('useTreeSuffix', $this->searchOwnersInTreeSuffix, _('Search tree suffix for users'), 'ownerOptions', false), 12);
         $refreshButton = new htmlButton('changeFilter', _('Refresh'));
         $return->add($refreshButton, 12);
         $return->addVerticalSpacer('1rem');
@@ -490,12 +484,6 @@ class asteriskExtension extends baseModule {
                 $this->filterOwnerForAsteriskAccounts = ($_POST['filterAsteriskUsers'] == 'on');
             } else {
                 $this->filterOwnerForAsteriskAccounts = false;
-            }
-            // update search suffix
-            if (isset($_POST['useTreeSuffix'])) {
-                $this->searchOwnersInTreeSuffix = ($_POST['useTreeSuffix'] == 'on');
-            } else {
-                $this->searchOwnersInTreeSuffix = false;
             }
         }
         if (!isset($this->extensionOwners)) {

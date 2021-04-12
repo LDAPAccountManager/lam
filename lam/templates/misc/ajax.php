@@ -4,6 +4,7 @@ use htmlResponsiveTable;
 use htmlStatusMessage;
 use \LAM\TOOLS\IMPORT_EXPORT\Importer;
 use \LAM\TOOLS\IMPORT_EXPORT\Exporter;
+use LAM\TOOLS\TREEVIEW\TreeViewTool;
 use \LAM\TYPES\TypeManager;
 use \htmlResponsiveRow;
 use \htmlLink;
@@ -415,9 +416,10 @@ class Ajax {
 				$baseDnList[] = $suffix;
 			}
 		}
-		$treeSuffix = $_SESSION['config']->get_Suffix('tree');
+		$toolSettings = $_SESSION['config']->getToolSettings();
+		$treeSuffix = !empty($toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG]) ? $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG] : null;
 		if (!empty($treeSuffix)) {
-			$baseDnList[] = $suffix;
+			$baseDnList[] = $treeSuffix;
 		}
 		$baseDnList = array_unique($baseDnList);
 		usort($baseDnList, 'compareDN');

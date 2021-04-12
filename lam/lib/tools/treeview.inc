@@ -1,5 +1,9 @@
 <?php
 namespace LAM\TOOLS\TREEVIEW;
+use htmlOutputText;
+use htmlResponsiveInputField;
+use htmlResponsiveRow;
+use htmlElement;
 use LAMTool;
 
 /*
@@ -36,6 +40,8 @@ use LAMTool;
  * @package tools
  */
 class TreeViewTool extends LAMTool {
+
+	const TREE_SUFFIX_CONFIG = 'treeViewSuffix';
 
 	/**
 	 * {@inheritDoc}
@@ -91,6 +97,29 @@ class TreeViewTool extends LAMTool {
 	 */
 	public function isVisible(): bool {
 		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getConfigOptions(array $settings): ?htmlElement {
+		$row = new htmlResponsiveRow();
+		$row->add(new htmlOutputText(_('Tree view')), 12);
+		$suffix = !empty($settings[self::TREE_SUFFIX_CONFIG]) ? $settings[self::TREE_SUFFIX_CONFIG] : '';
+		$row->add(new htmlResponsiveInputField(_('Tree suffix'), self::TREE_SUFFIX_CONFIG, $suffix, '203'), 12);
+		$row->addVerticalSpacer('1rem');
+		return $row;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function checkConfigurationOptions(array $settings): array {
+		$errors = array();
+		if (!empty($settings[self::TREE_SUFFIX_CONFIG]) && !get_preg($settings[self::TREE_SUFFIX_CONFIG], 'dn')) {
+			$errors[] = array('ERROR', _('Tree suffix is invalid.'));
+		}
+		return $errors;
 	}
 
 }

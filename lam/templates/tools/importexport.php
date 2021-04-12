@@ -10,6 +10,7 @@ use \htmlStatusMessage;
 use \htmlDiv;
 use \htmlOutputText;
 use \htmlJavaScript;
+use LAM\TOOLS\TREEVIEW\TreeViewTool;
 use \LAMException;
 use \htmlLink;
 use \htmlResponsiveInputCheckbox;
@@ -21,7 +22,7 @@ use LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2018 - 2019  Roland Gruber
+  Copyright (C) 2018 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -322,7 +323,8 @@ function getDefaultBaseDn() {
 			$baseDn = $suffix;
 		}
 	}
-	$treeSuffix = $_SESSION['config']->get_Suffix('tree');
+	$toolSettings = $_SESSION['config']->getToolSettings();
+	$treeSuffix = empty($toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG]) ? null : $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG];
 	if (empty($baseDn) || (!empty($treeSuffix) && (strlen($treeSuffix) < strlen($baseDn)))) {
 		$baseDn = $treeSuffix;
 	}
