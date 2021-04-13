@@ -73,6 +73,23 @@ function showTree() {
 	$treeScript = new htmlJavaScript('
 		jQuery(document).ready(function() {
 			jQuery(\'#ldap_tree\').jstree({
+				"plugins": [
+					"contextmenu"
+				],
+				"contextmenu": {
+					"items": function(node) {
+						var tree = jQuery.jstree.reference("#ldap_tree");
+						return {
+							"refresh": {
+								"label": "' . _('Refresh') . '",
+								"icon": "../../graphics/refresh.png",
+								"action": function(obj) {
+									tree.refresh_node(node);
+								}
+							}
+						};
+					}
+				},
 				"core": {
 					"worker": false,
 					"strings": {

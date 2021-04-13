@@ -1146,7 +1146,17 @@ function getAbstractDN($dn) {
  * @return string unescaped DN
  */
 function unescapeLdapSpecialCharacters(string $dn): string {
-	return str_replace(array('\\2C', '\\,', '\\22', '\\2B'), array(',', ',', '"', '+'), $dn);
+	return preg_replace_callback('/\\\([0-9A-Fa-f]{2})/', 'unescapeLdapSpecialCharactersCallback', $dn);
+}
+
+/**
+ * Callback function for unescaping DN.
+ *
+ * @param array $matches HEX value that was found
+ * @return string unescaped string
+ */
+function unescapeLdapSpecialCharactersCallback(array $matches): string {
+	return chr(hexdec($matches[1]));
 }
 
 /**

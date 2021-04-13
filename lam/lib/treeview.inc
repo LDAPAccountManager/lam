@@ -72,10 +72,12 @@ class TreeView {
 			die;
 		}
 		$dn = base64_decode($_POST['dn']);
+		$toolSettings = $_SESSION['config']->getToolSettings();
+		$rootDn = $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG];
 		if ($dn === '#') {
-			return $this->getRootNodes();
+			return $this->getRootNodes($rootDn);
 		}
-		return $this->getSubNodes($dn);
+		return $this->getSubNodes($dn, $rootDn);
 	}
 
 	/**
@@ -83,13 +85,32 @@ class TreeView {
 	 *
 	 * @return string JSON data
 	 */
-	private function getRootNodes(): string {
-		$toolSettings = $_SESSION['config']->getToolSettings();
-		$rootDn = $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG];
+	private function getRootNodes(string $rootDn): string {
+		logNewMessage(LOG_DEBUG, 'Getting tree nodes for ' . $rootDn);
 		$rootData = ldapGetDN($rootDn, array('objectClass'));
 		$children = ldapListDN($rootDn, '(objectClass=*)', array('objectClass'));
 		$jsonData = $this->createNodeData($rootData, true, true, $children);
 		return json_encode($jsonData);
+	}
+
+	/**
+	 * Returns the subnodes of the given DN.
+	 *
+	 * @param string $dn DN
+	 * @param string $rootDn tree root DN
+	 * @return string JSON data
+	 */
+	private function getSubNodes(string $dn, string $rootDn): string {
+		if (substr($dn, -1 * strlen($rootDn)) !== $rootDn) {
+			logNewMessage(LOG_ERR, 'Invalid DN for tree view: ' . $dn);
+		}
+		logNewMessage(LOG_DEBUG, 'Getting tree nodes for ' . $dn);
+		$children = ldapListDN($dn, '(objectClass=*)', array('objectClass'));
+		$childNodes = array();
+		foreach ($children as $child) {
+			$childNodes[] = $this->createNodeData($child);
+		}
+		return json_encode($childNodes);
 	}
 
 	/**
@@ -105,7 +126,8 @@ class TreeView {
 		$data = array(
 			'id' => $attributes['dn'],
 			'text' => unescapeLdapSpecialCharacters($text),
-			'icon' => $this->getNodeIcon($attributes)
+			'icon' => $this->getNodeIcon($attributes),
+			'children' => true
 		);
 		if (!empty($children)) {
 			$childData = array();
@@ -216,5 +238,5 @@ class TreeView {
  * @return int result
  */
 function compareNodeByIdAsDn($a, $b): int {
-	return compareDN($a['id'], $b['id']);
+	return strnatcasecmp(extractRDN($a['id']), extractRDN($b['id']));
 }
