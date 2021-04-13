@@ -88,13 +88,13 @@ class WebauthnManagerTest extends TestCase {
 	public function test_getAuthenticationObject() {
 		$this->database->method('findAllForUserEntity')->willReturn(array());
 
-		$authenticationObj = $this->manager->getAuthenticationObject('userDN', false);
+		$authenticationObj = $this->manager->getAuthenticationObject('uid=test,o=test', false);
 		$this->assertEquals(32, strlen($authenticationObj->getChallenge()));
 		$this->assertEquals('domain', $authenticationObj->getRpId());
 	}
 
 	public function test_getRegistrationObject() {
-		$registrationObject = $this->manager->getRegistrationObject('userDn', false);
+		$registrationObject = $this->manager->getRegistrationObject('uid=test,o=test', false);
 		$this->assertEquals(32, strlen($registrationObject->getChallenge()));
 		$this->assertEquals('domain', $registrationObject->getRp()->getId());
 	}
@@ -102,7 +102,7 @@ class WebauthnManagerTest extends TestCase {
 	public function test_isRegistered_notRegistered() {
 		$this->database->method('findAllForUserEntity')->willReturn(array());
 
-		$isRegistered = $this->manager->isRegistered('userDN');
+		$isRegistered = $this->manager->isRegistered('uid=test,o=test');
 		$this->assertFalse($isRegistered);
 	}
 
@@ -120,7 +120,7 @@ class WebauthnManagerTest extends TestCase {
 				1)
 		));
 
-		$isRegistered = $this->manager->isRegistered('userDN');
+		$isRegistered = $this->manager->isRegistered('uid=test,o=test');
 		$this->assertTrue($isRegistered);
 	}
 

@@ -1136,7 +1136,17 @@ function getAbstractDN($dn) {
 		}
 	}
 	$abstractDn = implode(' > ', $parts);
-	return str_replace(array('\\2C', '\\,'), array(',', ','), $abstractDn);
+	return unescapeLdapSpecialCharacters($abstractDn);
+}
+
+/**
+ * Unescapes LDAP special characters for readability.
+ *
+ * @param string $dn escaped DN
+ * @return string unescaped DN
+ */
+function unescapeLdapSpecialCharacters(string $dn): string {
+	return str_replace(array('\\2C', '\\,', '\\22', '\\2B'), array(',', ',', '"', '+'), $dn);
 }
 
 /**
@@ -1255,10 +1265,11 @@ function isObfuscatedText($text) {
  * @return String RDN attribute name
  */
 function extractRDNAttribute($dn) {
-	if ($dn == null) {
+	$rdn = extractRDN($dn);
+	if (empty($rdn)) {
 		return null;
 	}
-	$parts = explode("=", substr($dn, 0, strpos($dn, ',')));
+	$parts = explode("=", $rdn);
 	return $parts[0];
 }
 
@@ -1269,18 +1280,29 @@ function extractRDNAttribute($dn) {
  * @return String RDN attribute value
  */
 function extractRDNValue($dn) {
+	$rdn = extractRDN($dn);
+	if (empty($rdn)) {
+		return null;
+	}
+	$parts = explode("=", $rdn);
+	return $parts[1];
+}
+
+/**
+ * Extracts the RDN part of the DN.
+ *
+ * @param string|null $dn DN
+ * @return string|null RDN part
+ */
+function extractRDN(?string $dn): ?string {
 	if (empty($dn)) {
 		return null;
 	}
-	if (strpos($dn, '=') === false) {
-		return $dn;
+	$parts = ldap_explode_dn($dn, 0);
+	if (empty($parts[0])) {
+		return null;
 	}
-	$dnWork = $dn;
-	if (strpos($dnWork, ',') !== false) {
-		$dnWork = substr($dn, 0, strpos($dnWork, ','));
-	}
-	$parts = explode("=", $dnWork);
-	return $parts[1];
+	return $parts[0];
 }
 
 /**

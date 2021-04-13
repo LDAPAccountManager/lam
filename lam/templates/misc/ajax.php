@@ -4,6 +4,7 @@ use htmlResponsiveTable;
 use htmlStatusMessage;
 use \LAM\TOOLS\IMPORT_EXPORT\Importer;
 use \LAM\TOOLS\IMPORT_EXPORT\Exporter;
+use LAM\TOOLS\TREEVIEW\TreeView;
 use LAM\TOOLS\TREEVIEW\TreeViewTool;
 use \LAM\TYPES\TypeManager;
 use \htmlResponsiveRow;
@@ -163,6 +164,14 @@ class Ajax {
 		}
 		elseif ($function === 'webauthnOwnDevices') {
 			$this->manageWebauthnOwnDevices();
+		}
+		elseif ($function === 'treeview') {
+			include_once(__DIR__ . "/../../lib/treeview.inc");
+			$treeView = new TreeView();
+			ob_start();
+			$jsonOut = $treeView->answerAjaxCall();
+			ob_end_clean();
+			echo $jsonOut;
 		}
 	}
 
@@ -525,6 +534,3 @@ class Ajax {
 	}
 
 }
-
-
-?>

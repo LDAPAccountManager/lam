@@ -1182,4 +1182,5 @@ templates/lib/600_jquery.magnific-popup.js                           B  2016  Dm
 style/610_magnific-popup.css                                         B  2016  Dmitry Semenov
 style/responsive/105_normalize.css                                   B        Nicolas Gallagher and Jonathan Neal
 style/responsive/110_grid.css                                        B
-
+templates/lib/extra/jstree/*                                         B  2014  Ivan Bozhanov
+style/jstree/*                                                       B  2014  Ivan Bozhanov

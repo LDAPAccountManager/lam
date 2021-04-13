@@ -148,6 +148,23 @@ class AccountTest extends TestCase {
 	}
 
 	/**
+	 * Tests extractRDNAttribute() and extractRDNValue().
+	 */
+	function testExtractRDN() {
+		$dn = 'test';
+		$this->assertEquals(null, extractRDNAttribute($dn));
+		$this->assertEquals(null, extractRDNValue($dn));
+		$dn = 'ou=test';
+		$this->assertEquals('ou=test', extractRDN($dn));
+		$this->assertEquals('ou', extractRDNAttribute($dn));
+		$this->assertEquals('test', extractRDNValue($dn));
+		$dn = 'ou=test,dc=company,dc=com';
+		$this->assertEquals('ou=test', extractRDN($dn));
+		$this->assertEquals('ou', extractRDNAttribute($dn));
+		$this->assertEquals('test', extractRDNValue($dn));
+	}
+
+	/**
 	 * Tests isCommandlineSafeEmailAddress().
 	 */
 	function testIsCommandlineSafeEmailAddress() {

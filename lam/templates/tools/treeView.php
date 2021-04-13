@@ -22,6 +22,11 @@ namespace LAM\TOOLS\TREEVIEW;
 
 */
 
+use htmlDiv;
+use htmlJavaScript;
+use htmlOutputText;
+use htmlResponsiveRow;
+
 /**
 * LDAP tree view.
 *
@@ -44,6 +49,8 @@ checkIfToolIsActive('TreeViewTool');
 setlanguage();
 
 include __DIR__ . '/../../lib/adminHeader.inc';
+echo '<link rel="stylesheet" href="../../style/jstree/style.css" />';
+echo '<script src="../lib/extra/jstree/jstree.js"></script>';
 echo '<div class="smallPaddingContent">';
 
 $toolSettings = $_SESSION['config']->getToolSettings();
@@ -60,5 +67,38 @@ include __DIR__ . '/../../lib/adminFooter.inc';
 
 function showTree() {
 	$toolSettings = $_SESSION['config']->getToolSettings();
-	echo $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG];
+	$rootDn = $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG];
+	$row = new htmlResponsiveRow();
+	$row->add(new htmlDiv('ldap_tree', new htmlOutputText('')), 12);
+	$treeScript = new htmlJavaScript('
+		jQuery(document).ready(function() {
+			jQuery(\'#ldap_tree\').jstree({
+				"core": {
+					"worker": false,
+					"strings": {
+						"Loading ...": "' . _('Loading') . '"
+					},
+					"data": function(node, callback) {
+						var data = {
+							jsonInput: ""
+						};
+						data["' . getSecurityTokenName() . '"] = "' . getSecurityTokenValue() . '";
+						data["dn"] = btoa(node.id),
+						jQuery.ajax({
+							url: "../misc/ajax.php?function=treeview&command=getNodes",
+							method: "POST",
+							data: data
+						})
+						.done(function(jsonData) {
+							callback.call(this, jsonData);
+						})
+					}
+				}
+			});
+		});
+	');
+	$row->add($treeScript, 12);
+
+	$tabIndex = 1;
+	parseHtml(null, $row, array(), true, $tabIndex, 'none');
 }
