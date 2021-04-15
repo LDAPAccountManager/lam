@@ -1988,6 +1988,9 @@ class htmlOutputText extends htmlElement {
 		if ($this->isPreformatted) {
 			echo "<pre $cssClasses>";
 		}
+		elseif (!empty($cssClasses)) {
+			echo "<span $cssClasses>";
+		}
 		if ($this->escapeHTML) {
 			echo htmlspecialchars($this->string);
 		}
@@ -2001,6 +2004,9 @@ class htmlOutputText extends htmlElement {
 		}
 		if ($this->isPreformatted) {
 			echo "</pre>";
+		}
+		elseif (!empty($cssClasses)) {
+			echo "</span>";
 		}
 		if ($this->isBold) {
 			echo "</b>";
