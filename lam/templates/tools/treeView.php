@@ -70,24 +70,9 @@ function showTree() {
 	$rootDn = $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG];
 	$row = new htmlResponsiveRow();
 	$row->add(new htmlDiv('ldap_tree', new htmlOutputText('')), 12);
-	$treeScript = new htmlJavaScript('
-		jQuery(document).ready(function() {
-			jQuery(\'#ldap_tree\').jstree({
-				"plugins": [
-					"contextmenu"
-				],
-				"contextmenu": {
-					"items": function(node) {
-						var tree = jQuery.jstree.reference("#ldap_tree");
-						return {
-							"refreshNode": {
-								"label": "' . _('Refresh') . '",
-								"icon": "../../graphics/refresh.png",
-								"action": function(obj) {
-									tree.refresh_node(node);
-								}
-							},
-							"deleteNode": {
+	$deleteMenu = '';
+	if (checkIfWriteAccessIsAllowed()) {
+		$deleteMenu = '"deleteNode": {
 								"label": "' . _('Delete') . '",
 								"icon": "../../graphics/del.png",
 								"action": function(obj) {
@@ -101,8 +86,40 @@ function showTree() {
 										"' . _('Ok') . '",
 										"' . _('Error') . '")
 								}
-							}
-						};
+							},';
+	}
+	$exportMenu = '';
+	if ($_SESSION['config']->isToolActive('ImportExport')) {
+		$exportMenu = '"exportNode": {
+								"label": "' . _('Export') . '",
+								"icon": "../../graphics/export.png",
+								"action": function(obj) {
+									window.location.href = "../tools/importexport.php?tab=export&dn=" + btoa(node.id);
+								}
+							},';
+	}
+	$treeScript = new htmlJavaScript('
+		jQuery(document).ready(function() {
+			jQuery(\'#ldap_tree\').jstree({
+				"plugins": [
+					"contextmenu"
+				],
+				"contextmenu": {
+					"items": function(node) {
+						var tree = jQuery.jstree.reference("#ldap_tree");
+						var menuItems = {
+							"refreshNode": {
+								"label": "' . _('Refresh') . '",
+								"icon": "../../graphics/refresh.png",
+								"action": function(obj) {
+									tree.refresh_node(node);
+								}
+							},
+							' .
+							$deleteMenu .
+							$exportMenu .
+						'};
+						return menuItems;
 					}
 				},
 				"core": {

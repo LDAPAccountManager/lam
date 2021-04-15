@@ -445,6 +445,19 @@ class LAMConfigTest extends TestCase {
 	}
 
 	/**
+	 * Checks isToolActive().
+	 */
+	public function testIsToolActive() {
+		$this->lAMConfig->setToolSettings(array(
+			'tool_hide_tool1' => 'true',
+			'tool_hide_tool2' => 'false',
+		));
+		$this->assertFalse($this->lAMConfig->isToolActive('tool1'));
+		$this->assertTrue($this->lAMConfig->isToolActive('tool2'));
+		$this->assertTrue($this->lAMConfig->isToolActive('tool3'));
+	}
+
+	/**
 	 * Tests LAMConfig->getAccessLevel() and LAMConfig->setAccessLevel()
 	 */
 	public function testAccessLevel() {

@@ -2067,6 +2067,16 @@ class LAMConfig {
 	}
 
 	/**
+	 * Checks if the given tool is activated.
+	 *
+	 * @param string $toolName tool name
+	 * @return bool is active
+	 */
+	public function isToolActive(string $toolName): bool {
+		return !isset($this->toolSettings['tool_hide_' . $toolName]) || ($this->toolSettings['tool_hide_' . $toolName] !== 'true');
+	}
+
+	/**
 	 * Returns the access level for this profile.
 	 *
 	 * @return int level

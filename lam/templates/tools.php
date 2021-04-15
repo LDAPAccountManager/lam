@@ -61,7 +61,6 @@ echo "<div class=\"user-bright smallPaddingContent\">\n";
 // print tools table
 $container = new htmlResponsiveRow();
 $container->add(new htmlTitle(_('Tools')), 12);
-$toolSettings = $_SESSION['config']->getToolSettings();
 
 foreach ($availableTools as $tool) {
 	// check access level
@@ -78,7 +77,7 @@ foreach ($availableTools as $tool) {
 	// check if hidden by config
 	$className = get_class($tool);
 	$toolName = substr($className, strrpos($className, '\\') + 1);
-	if (isset($toolSettings['tool_hide_' . $toolName]) && ($toolSettings['tool_hide_' . $toolName] == 'true')) {
+	if (!$_SESSION['config']->isToolActive($toolName)) {
 		continue;
 	}
 	// add tool

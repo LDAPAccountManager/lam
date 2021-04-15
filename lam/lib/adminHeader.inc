@@ -61,7 +61,6 @@ printJsIncludes($headerPrefix);
 
 // get tool list
 $availableTools = getTools();
-$toolSettings = $_SESSION['config']->getToolSettings();
 // sort tools
 $toSort = array();
 foreach ($availableTools as $myTool) {
@@ -78,7 +77,7 @@ foreach ($availableTools as $myTool) {
 	// check if hidden by config
     $toolClass = get_class($myTool);
 	$toolName = substr($toolClass, strrpos($toolClass, '\\') + 1);
-	if (isset($toolSettings['tool_hide_' . $toolName]) && ($toolSettings['tool_hide_' . $toolName] == 'true')) {
+	if (!$_SESSION['config']->isToolActive($toolName)) {
 		continue;
 	}
 	$toSort[$toolClass] = $myTool->getPosition();
