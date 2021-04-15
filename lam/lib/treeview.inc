@@ -54,6 +54,9 @@ class TreeView {
 			case 'getNodes':
 				return $this->getNodes();
 				break;
+			case 'deleteNode':
+				return $this->deleteNode();
+				break;
 			default:
 				logNewMessage(LOG_ERR, 'Invalid command for tree view: ' . $command);
 				die;
@@ -110,6 +113,7 @@ class TreeView {
 		foreach ($children as $child) {
 			$childNodes[] = $this->createNodeData($child);
 		}
+		$this->sortNodes($childNodes);
 		return json_encode($childNodes);
 	}
 
@@ -224,8 +228,32 @@ class TreeView {
 	 *
 	 * @param array $nodes nodes
 	 */
-	private function sortNodes(array &$nodes) {
+	private function sortNodes(array &$nodes): void {
 		usort($nodes, 'LAM\TOOLS\TREEVIEW\compareNodeByIdAsDn');
+	}
+
+	/**
+	 * Deletes a node in LDAP.
+	 */
+	private function deleteNode(): string {
+		if (empty($_POST['dn'])) {
+			logNewMessage(LOG_ERR, 'No dn for tree view.');
+			die;
+		}
+		$dn = base64_decode($_POST['dn']);
+		$toolSettings = $_SESSION['config']->getToolSettings();
+		$rootDn = $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG];
+		if (substr($dn, -1 * strlen($rootDn)) !== $rootDn) {
+			logNewMessage(LOG_ERR, 'Invalid DN for tree view: ' . $dn);
+		}
+		$errors = deleteDN($dn, true);
+		foreach ($errors as $error) {
+			logNewMessage(LOG_ERR, 'Tree view delete node failed: ' . $error[0] . ' ' . $error[1]);
+		}
+		if (!empty($errors)) {
+			return json_encode(array('errors' => $errors));
+		}
+		return json_encode(array());
 	}
 
 }

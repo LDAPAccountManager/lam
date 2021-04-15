@@ -80,11 +80,26 @@ function showTree() {
 					"items": function(node) {
 						var tree = jQuery.jstree.reference("#ldap_tree");
 						return {
-							"refresh": {
+							"refreshNode": {
 								"label": "' . _('Refresh') . '",
 								"icon": "../../graphics/refresh.png",
 								"action": function(obj) {
 									tree.refresh_node(node);
+								}
+							},
+							"deleteNode": {
+								"label": "' . _('Delete') . '",
+								"icon": "../../graphics/del.png",
+								"action": function(obj) {
+									window.lam.treeview.deleteNode("' . getSecurityTokenName() . '",
+										"' . getSecurityTokenValue() . '",
+										node,
+										tree,
+										"' . _('Delete') . '",
+										"' . _('Cancel') . '",
+										"' . _('Delete this entry') . '",
+										"' . _('Ok') . '",
+										"' . _('Error') . '")
 								}
 							}
 						};
@@ -96,25 +111,32 @@ function showTree() {
 						"Loading ...": "' . _('Loading') . '"
 					},
 					"data": function(node, callback) {
-						var data = {
-							jsonInput: ""
-						};
-						data["' . getSecurityTokenName() . '"] = "' . getSecurityTokenValue() . '";
-						data["dn"] = btoa(node.id),
-						jQuery.ajax({
-							url: "../misc/ajax.php?function=treeview&command=getNodes",
-							method: "POST",
-							data: data
-						})
-						.done(function(jsonData) {
-							callback.call(this, jsonData);
-						})
+						window.lam.treeview.getNodes("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node, callback);
 					}
 				}
 			});
 		});
 	');
 	$row->add($treeScript, 12);
+
+	$deleteDialogContent = new htmlResponsiveRow();
+	$deleteDialogContent->add(new htmlOutputText(_('Do you really want to delete this entry?')), 12);
+	$deleteDialogContent->addVerticalSpacer('0.5rem');
+	$deleteDialogEntryText = new htmlOutputText('');
+	$deleteDialogEntryText->setCSSClasses(array('treeview-delete-entry'));
+	$deleteDialogContent->add($deleteDialogEntryText, 12);
+	$deleteDialogDiv = new htmlDiv('treeview_delete_dlg', $deleteDialogContent, array('hidden'));
+	$row->add($deleteDialogDiv, 12);
+
+	$errorDialogContent = new htmlResponsiveRow();
+	$errorDialogEntryTitle = new htmlOutputText('');
+	$errorDialogEntryTitle->setCSSClasses(array('treeview-error-title'));
+	$errorDialogContent->add($errorDialogEntryTitle, 12);
+	$errorDialogEntryText = new htmlOutputText('');
+	$errorDialogEntryText->setCSSClasses(array('treeview-error-text'));
+	$errorDialogContent->add($errorDialogEntryText, 12);
+	$errorDialogDiv = new htmlDiv('treeview_error_dlg', $errorDialogContent, array('hidden'));
+	$row->add($errorDialogDiv, 12);
 
 	$tabIndex = 1;
 	parseHtml(null, $row, array(), true, $tabIndex, 'none');

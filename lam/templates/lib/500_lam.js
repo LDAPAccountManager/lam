@@ -2028,6 +2028,97 @@ window.lam.webauthn.registerOwnDevice = function(event, isSelfService) {
 	return false;
 }
 
+window.lam.treeview = window.lam.treeview || {};
+
+/**
+ * Returns the nodes in tree view.
+ *
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ * @param node tree node
+ * @param callback callback function
+ */
+window.lam.treeview.getNodes = function (tokenName, tokenValue, node, callback) {
+	var data = {
+		jsonInput: ""
+	};
+	data[tokenName] = tokenValue;
+	data["dn"] = btoa(node.id);
+	jQuery.ajax({
+		url: "../misc/ajax.php?function=treeview&command=getNodes",
+		method: "POST",
+		data: data
+	})
+	.done(function(jsonData) {
+		callback.call(this, jsonData);
+	})
+}
+
+/**
+ * Deletes a node in tree view.
+ *
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ * @param node tree node
+ * @param tree tree
+ * @param okText text for OK button
+ * @param cancelText text for cancel button
+ * @param title dialog title
+ * @param errorOxText text for OK button in error dialog
+ * @param errorTitle dialog title in case of error
+ */
+window.lam.treeview.deleteNode = function (tokenName, tokenValue, node, tree, okText, cancelText, title, errorOxText, errorTitle) {
+	var parent = node.parent;
+	var textSpan = jQuery('#treeview_delete_dlg').find('.treeview-delete-entry');
+	textSpan.text(node.text);
+	var buttonList = {};
+	buttonList[okText] = function() {
+		var data = {
+			jsonInput: ""
+		};
+		data[tokenName] = tokenValue;
+		data["dn"] = btoa(node.id);
+		jQuery.ajax({
+			url: "../misc/ajax.php?function=treeview&command=deleteNode",
+			method: "POST",
+			data: data
+		})
+		.done(function(jsonData) {
+			tree.refresh_node(parent);
+			jQuery('#treeview_delete_dlg').dialog("close");
+			if (jsonData['errors']) {
+				var errTextTitle = jsonData['errors'][0][1];
+				var textSpanErrorTitle = jQuery('#treeview_error_dlg').find('.treeview-error-title');
+				textSpanErrorTitle.text(errTextTitle);
+				var errText = jsonData['errors'][0][2];
+				var textSpanErrorText = jQuery('#treeview_error_dlg').find('.treeview-error-text');
+				textSpanErrorText.text(errText);
+				var errorButtons = {};
+				errorButtons[errorOxText] = function () {
+					jQuery(this).dialog("close");
+				};
+				jQuery('#treeview_error_dlg').dialog({
+					modal: true,
+					title: errorTitle,
+					dialogClass: 'defaultBackground',
+					buttons: errorButtons,
+					width: 'auto'
+				});
+			}
+		});
+	};
+	buttonList[cancelText] = function() {
+		jQuery(this).dialog("close");
+	};
+	jQuery('#treeview_delete_dlg').dialog({
+		modal: true,
+		title: title,
+		dialogClass: 'defaultBackground',
+		buttons: buttonList,
+		width: 'auto'
+	});
+}
+
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();
 	window.lam.form.autoTrim();
