@@ -69,7 +69,9 @@ function showTree() {
 	$toolSettings = $_SESSION['config']->getToolSettings();
 	$rootDn = $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG];
 	$row = new htmlResponsiveRow();
-	$row->add(new htmlDiv('ldap_tree', new htmlOutputText('')), 12);
+	$row->setCSSClasses(array('maxrow'));
+	$row->add(new htmlDiv('ldap_tree', new htmlOutputText(''), array('tree-view--tree')), 12, 5);
+	$row->add(new htmlDiv('ldap_actionarea', new htmlOutputText(''), array('tree-view--actionarea')), 12, 7);
 	$deleteMenu = '';
 	if (checkIfWriteAccessIsAllowed()) {
 		$deleteMenu = '"deleteNode": {
@@ -102,7 +104,8 @@ function showTree() {
 		jQuery(document).ready(function() {
 			jQuery(\'#ldap_tree\').jstree({
 				"plugins": [
-					"contextmenu"
+					"contextmenu",
+					"changed"
 				],
 				"contextmenu": {
 					"items": function(node) {
@@ -130,6 +133,12 @@ function showTree() {
 					"data": function(node, callback) {
 						window.lam.treeview.getNodes("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node, callback);
 					}
+				}
+			})
+			.on("changed.jstree", function (e, data) {
+				if (data && data.action && (data.action == "select_node")) {
+					var node = data.node;
+					window.lam.treeview.getNodeContent("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node);
 				}
 			});
 		});

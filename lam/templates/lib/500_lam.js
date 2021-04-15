@@ -2119,6 +2119,54 @@ window.lam.treeview.deleteNode = function (tokenName, tokenValue, node, tree, ok
 	});
 }
 
+/**
+ * Returns the node content in tree view action area.
+ *
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ * @param node tree node
+ */
+window.lam.treeview.getNodeContent = function (tokenName, tokenValue, node) {
+	var data = {
+		jsonInput: ""
+	};
+	data[tokenName] = tokenValue;
+	data["dn"] = btoa(node.id);
+	jQuery.ajax({
+		url: "../misc/ajax.php?function=treeview&command=getNodeContent",
+		method: "POST",
+		data: data
+	})
+	.done(function(jsonData) {
+		jQuery('#ldap_actionarea').html(jsonData.content);
+	});
+}
+
+/**
+ * Returns the internal attributes content in tree view action area.
+ *
+ * @param event event
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ * @param dn DN
+ */
+window.lam.treeview.getInternalAttributesContent = function (event, tokenName, tokenValue, dn) {
+	event.preventDefault();
+	var data = {
+		jsonInput: ""
+	};
+	data[tokenName] = tokenValue;
+	data["dn"] = dn;
+	jQuery.ajax({
+		url: "../misc/ajax.php?function=treeview&command=getInternalAttributesContent",
+		method: "POST",
+		data: data
+	})
+	.done(function(jsonData) {
+		jQuery('#actionarea-internal-attributes').html(jsonData.content);
+	});
+}
+
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();
 	window.lam.form.autoTrim();

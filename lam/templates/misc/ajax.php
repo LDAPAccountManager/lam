@@ -46,6 +46,8 @@ use \LAMCfgMain;
 include_once(__DIR__ . "/../../lib/security.inc");
 /** LDIF import */
 include_once(__DIR__ . "/../../lib/import.inc");
+/** schema for tree view */
+include_once __DIR__ . "/../../lib/schema.inc";
 
 // start session
 if (isset($_GET['selfservice'])) {

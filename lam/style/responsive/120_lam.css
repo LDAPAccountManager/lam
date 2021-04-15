@@ -202,6 +202,10 @@ table.responsive-table td {
 		max-height: 200px;
 	}
 
+	div.tree-view--tree {
+		max-height: 50vh;
+	}
+
 }
 
 /* tablet */

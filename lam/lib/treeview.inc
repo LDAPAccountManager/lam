@@ -1,5 +1,13 @@
 <?php
 namespace LAM\TOOLS\TREEVIEW;
+use htmlDiv;
+use htmlLink;
+use htmlOutputText;
+use htmlResponsiveRow;
+use htmlSubTitle;
+use htmlTitle;
+use function LAM\SCHEMA\get_schema_attributes;
+
 
 /*
 
@@ -40,6 +48,11 @@ include_once 'tools/treeview.inc';
 class TreeView {
 
 	/**
+	 * @var array schema attributes
+	 */
+	private $schemaAttributes = null;
+
+	/**
 	 * Returns the JSON to answer an AJAX request.
 	 *
 	 * @return string JSON data
@@ -50,12 +63,23 @@ class TreeView {
 			die();
 		}
 		$command = $_GET['command'];
+		if (empty($_POST['dn'])) {
+			logNewMessage(LOG_ERR, 'No dn for tree view.');
+			die;
+		}
+		$dn = base64_decode($_POST['dn']);
 		switch ($command) {
 			case 'getNodes':
-				return $this->getNodes();
+				return $this->getNodes($dn);
+				break;
+			case 'getNodeContent':
+				return $this->getNodeContent($dn);
+				break;
+			case 'getInternalAttributesContent':
+				return $this->getInternalAttributesContent($dn);
 				break;
 			case 'deleteNode':
-				return $this->deleteNode();
+				return $this->deleteNode($dn);
 				break;
 			default:
 				logNewMessage(LOG_ERR, 'Invalid command for tree view: ' . $command);
@@ -67,14 +91,10 @@ class TreeView {
 	/**
 	 * Lists LDAP nodes.
 	 *
+	 * @param string $dn DN
 	 * @return string JSON data
 	 */
-	private function getNodes(): string {
-		if (empty($_POST['dn'])) {
-			logNewMessage(LOG_ERR, 'No dn for tree view.');
-			die;
-		}
-		$dn = base64_decode($_POST['dn']);
+	private function getNodes(string $dn): string {
 		$toolSettings = $_SESSION['config']->getToolSettings();
 		$rootDn = $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG];
 		if ($dn === '#') {
@@ -104,9 +124,7 @@ class TreeView {
 	 * @return string JSON data
 	 */
 	private function getSubNodes(string $dn, string $rootDn): string {
-		if (substr($dn, -1 * strlen($rootDn)) !== $rootDn) {
-			logNewMessage(LOG_ERR, 'Invalid DN for tree view: ' . $dn);
-		}
+		$this->validateDn($dn);
 		logNewMessage(LOG_DEBUG, 'Getting tree nodes for ' . $dn);
 		$children = ldapListDN($dn, '(objectClass=*)', array('objectClass'));
 		$childNodes = array();
@@ -233,19 +251,66 @@ class TreeView {
 	}
 
 	/**
-	 * Deletes a node in LDAP.
+	 * Returns the node content with the attribute listing.
+	 *
+	 * @return string JSON
 	 */
-	private function deleteNode(): string {
-		if (empty($_POST['dn'])) {
-			logNewMessage(LOG_ERR, 'No dn for tree view.');
-			die;
+	private function getNodeContent(string $dn): string {
+		$this->validateDn($dn);
+		$row = new htmlResponsiveRow();
+		$row->add(new htmlTitle($dn), 12);
+		$internalAttributesContent = new htmlResponsiveRow();
+		$internalAttributesContent->add(new htmlSubTitle(_('Internal attributes')), 12);
+		$internalAttributesButton = new htmlLink(_('Show internal attributes'), '#', null, true);
+		$internalAttributesButton->setOnClick('window.lam.treeview.getInternalAttributesContent(event,
+			"' . getSecurityTokenName() . '",
+			"' . getSecurityTokenValue() . '",
+			"' . base64_encode($dn) . '");');
+		$internalAttributesContent->add($internalAttributesButton, 12);
+		$internalAttributesDiv = new htmlDiv('actionarea-internal-attributes', $internalAttributesContent);
+		$row->add($internalAttributesDiv, 12);
+		$tabindex = 1;
+		ob_start();
+		parseHtml(null, $row, array(), false, $tabindex, 'none');
+		$content = ob_get_contents();
+		ob_end_clean();
+		return json_encode(array('content' => $content));
+	}
+
+	/**
+	 * Returns the internal attributes.
+	 *
+	 * @param string $dn DN
+	 */
+	private function getInternalAttributesContent(string $dn) {
+		$this->validateDn($dn);
+		$row = new htmlResponsiveRow();
+		$row->add(new htmlSubTitle(_('Internal attributes')), 12);
+		$attributes = ldapGetDN($dn, array('+', 'creatorsName', 'createTimestamp', 'modifiersName',
+			'modifyTimestamp', 'hasSubordinates', 'pwdChangedTime'));
+		unset($attributes['dn']);
+		ksort($attributes);
+		foreach ($attributes as $attributeName => $values) {
+			$row->addLabel(new htmlOutputText($this->getProperAttributeName($attributeName)));
+			$row->addField(new htmlOutputText(implode(', ', $values)));
+			$row->addVerticalSpacer('0.5rem');
 		}
-		$dn = base64_decode($_POST['dn']);
-		$toolSettings = $_SESSION['config']->getToolSettings();
-		$rootDn = $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG];
-		if (substr($dn, -1 * strlen($rootDn)) !== $rootDn) {
-			logNewMessage(LOG_ERR, 'Invalid DN for tree view: ' . $dn);
-		}
+		$tabindex = 1;
+		ob_start();
+		parseHtml(null, $row, array(), false, $tabindex, 'none');
+		$content = ob_get_contents();
+		ob_end_clean();
+		return json_encode(array('content' => $content));
+	}
+
+	/**
+	 * Deletes a node in LDAP.
+	 *
+	 * @param string $dn DN
+	 * @return string JSON
+	 */
+	private function deleteNode(string $dn): string {
+		$this->validateDn($dn);
 		$errors = deleteDN($dn, true);
 		foreach ($errors as $error) {
 			logNewMessage(LOG_ERR, 'Tree view delete node failed: ' . $error[0] . ' ' . $error[1]);
@@ -254,6 +319,41 @@ class TreeView {
 			return json_encode(array('errors' => $errors));
 		}
 		return json_encode(array());
+	}
+
+	/**
+	 * Stops processing if DN is invalid.
+	 *
+	 * @param string $dn DN
+	 */
+	private function validateDn(string $dn): void {
+		$toolSettings = $_SESSION['config']->getToolSettings();
+		$rootDn = $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG];
+		if (substr($dn, -1 * strlen($rootDn)) !== $rootDn) {
+			logNewMessage(LOG_ERR, 'Invalid DN for tree view: ' . $dn);
+			die();
+		}
+	}
+
+	/**
+	 * Returns the proper spelling of the attribute name.
+	 *
+	 * @param string $attributeName attribute name in lower-case
+	 * @return string proper attribute name
+	 */
+	private function getProperAttributeName(string $attributeName): string {
+		$schemaAttributes = $this->getSchemaAttributes();
+		if (isset($schemaAttributes[$attributeName])) {
+			return $schemaAttributes[$attributeName]->getName();
+		}
+		return $attributeName;
+	}
+
+	private function getSchemaAttributes(): array {
+		if ($this->schemaAttributes === null) {
+			$this->schemaAttributes = get_schema_attributes(null);
+		}
+		return $this->schemaAttributes;
 	}
 
 }

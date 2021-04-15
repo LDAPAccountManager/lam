@@ -762,6 +762,10 @@ div.confModList {
 	font-size: 130%;
 }
 
+div.tree-view--tree {
+	overflow: auto;
+}
+
 /** colors for account types */
 
 .alias-border { border-color:#af8800; }
