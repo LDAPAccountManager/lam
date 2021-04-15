@@ -89,6 +89,7 @@ class ExtraInvalidCredentials {
 			$attributeNames = array_merge($attributeNames, $provider->getAttributeNamesToRead());
 		}
 		$attributeNames = array_unique($attributeNames);
+		logNewMessage(LOG_DEBUG, 'Extra invalid credentials - attribute names: ' . implode(', ', $attributeNames));
 		return $attributeNames;
 	}
 
@@ -102,6 +103,7 @@ class ExtraInvalidCredentials {
 	 */
 	protected function getLdapData(string $userDn, array $attributes, $ldap) {
 		$data = ldapGetDN($userDn, $attributes, $ldap);
+		logNewMessage(LOG_DEBUG, 'Extra invalid credentials - LDAP data: ' . print_r($data, true));
 		if ($data === null) {
 			$data = array();
 		}
