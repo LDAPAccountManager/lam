@@ -74,7 +74,7 @@ class TreeView {
 			logNewMessage(LOG_ERR, 'No dn for tree view.');
 			die;
 		}
-		$dn = base64_decode($_POST['dn']);
+		$dn = ($_POST['dn'] === '#') ? '#' : base64_decode($_POST['dn']);
 		switch ($command) {
 			case 'getNodes':
 				return $this->getNodes($dn);
@@ -153,7 +153,7 @@ class TreeView {
 	private function createNodeData(array $attributes, bool $open = false, $noShortenFirst = false, array $children = array()): array {
 		$text = ($noShortenFirst) ? $attributes['dn'] : extractRDN($attributes['dn']);
 		$data = array(
-			'id' => $attributes['dn'],
+			'id' => base64_encode($attributes['dn']),
 			'text' => unescapeLdapSpecialCharacters($text),
 			'icon' => $this->getNodeIcon($attributes),
 			'children' => true
@@ -452,5 +452,5 @@ class TreeView {
  * @return int result
  */
 function compareNodeByIdAsDn($a, $b): int {
-	return strnatcasecmp(extractRDN($a['id']), extractRDN($b['id']));
+	return strnatcasecmp(extractRDN(base64_decode($a['id'])), extractRDN(base64_decode($b['id'])));
 }

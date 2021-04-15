@@ -2043,7 +2043,7 @@ window.lam.treeview.getNodes = function (tokenName, tokenValue, node, callback) 
 		jsonInput: ""
 	};
 	data[tokenName] = tokenValue;
-	data["dn"] = btoa(node.id);
+	data["dn"] = node.id;
 	jQuery.ajax({
 		url: "../misc/ajax.php?function=treeview&command=getNodes",
 		method: "POST",
@@ -2077,7 +2077,7 @@ window.lam.treeview.deleteNode = function (tokenName, tokenValue, node, tree, ok
 			jsonInput: ""
 		};
 		data[tokenName] = tokenValue;
-		data["dn"] = btoa(node.id);
+		data["dn"] = node.id;
 		jQuery.ajax({
 			url: "../misc/ajax.php?function=treeview&command=deleteNode",
 			method: "POST",
@@ -2085,6 +2085,7 @@ window.lam.treeview.deleteNode = function (tokenName, tokenValue, node, tree, ok
 		})
 		.done(function(jsonData) {
 			tree.refresh_node(parent);
+			window.lam.treeview.getNodeContent(tokenName, tokenValue, tree.get_node(parent, false));
 			jQuery('#treeview_delete_dlg').dialog("close");
 			if (jsonData['errors']) {
 				var errTextTitle = jsonData['errors'][0][1];
@@ -2131,7 +2132,7 @@ window.lam.treeview.getNodeContent = function (tokenName, tokenValue, node) {
 		jsonInput: ""
 	};
 	data[tokenName] = tokenValue;
-	data["dn"] = btoa(node.id);
+	data["dn"] = node.id;
 	jQuery.ajax({
 		url: "../misc/ajax.php?function=treeview&command=getNodeContent",
 		method: "POST",

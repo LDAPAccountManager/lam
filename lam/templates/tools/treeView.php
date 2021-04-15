@@ -96,7 +96,7 @@ function showTree() {
 								"label": "' . _('Export') . '",
 								"icon": "../../graphics/export.png",
 								"action": function(obj) {
-									window.location.href = "../tools/importexport.php?tab=export&dn=" + btoa(node.id);
+									window.location.href = "../tools/importexport.php?tab=export&dn=" + node.id;
 								}
 							},';
 	}
