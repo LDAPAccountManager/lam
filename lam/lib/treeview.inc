@@ -6,7 +6,9 @@ use htmlOutputText;
 use htmlResponsiveRow;
 use htmlSubTitle;
 use htmlTitle;
+use LAM\SCHEMA\AttributeType;
 use function LAM\SCHEMA\get_schema_attributes;
+use function LAM\SCHEMA\get_schema_objectclasses;
 
 
 /*
@@ -51,6 +53,11 @@ class TreeView {
 	 * @var array schema attributes
 	 */
 	private $schemaAttributes = null;
+
+	/**
+	 * @var array schema object classes
+	 */
+	private $schemaObjectClasses = null;
 
 	/**
 	 * Returns the JSON to answer an AJAX request.
@@ -259,6 +266,20 @@ class TreeView {
 		$this->validateDn($dn);
 		$row = new htmlResponsiveRow();
 		$row->add(new htmlTitle($dn), 12);
+		$row->add(new htmlSubTitle(_('Attributes')), 12);
+		$attributes = ldapGetDN($dn, array('*'));
+		unset($attributes['dn']);
+		ksort($attributes);
+		$schemaAttributes = $this->getSchemaAttributes();
+		$objectClasses = $attributes['objectclass'];
+		foreach ($attributes as $attributeName => $values) {
+			$schemaAttribute = null;
+			if (isset($schemaAttributes[$attributeName])) {
+				$schemaAttribute = $schemaAttributes[$attributeName];
+				$attributeName = $schemaAttribute->getName();
+			}
+			$this->addAttributeContent($row, $attributeName, $values, $schemaAttribute, $objectClasses, $dn);
+		}
 		$internalAttributesContent = new htmlResponsiveRow();
 		$internalAttributesContent->add(new htmlSubTitle(_('Internal attributes')), 12);
 		$internalAttributesButton = new htmlLink(_('Show internal attributes'), '#', null, true);
@@ -278,11 +299,59 @@ class TreeView {
 	}
 
 	/**
+	 * Adds the content part for one attribute.
+	 *
+	 * @param htmlResponsiveRow $row container where to add content
+	 * @param string $attributeName attribute name
+	 * @param array $values values
+	 * @param AttributeType $schemaAttribute schema attribute
+	 * @param string[] $objectClasses object classes
+	 * @param string $dn DN
+	 */
+	private function addAttributeContent(htmlResponsiveRow $row, string $attributeName, array $values,
+	                                     ?AttributeType $schemaAttribute, array $objectClasses, string $dn): void {
+		$label = new htmlOutputText($attributeName);
+		$rdnAttribute = strtolower(extractRDNAttribute($dn));
+		$attributeNameLowerCase = strtolower($attributeName);
+		$required = ($attributeNameLowerCase === $rdnAttribute) || ($attributeNameLowerCase === 'objectclass');
+		if (($schemaAttribute !== null) && $this->isAttributeRequired($schemaAttribute, $objectClasses)) {
+			$required = true;
+		}
+		$label->setMarkAsRequired($required);
+		$row->addLabel($label);
+		$row->addField(new htmlOutputText(implode(', ', $values)));
+		$row->addVerticalSpacer('0.5rem');
+	}
+
+	/**
+	 * Returns if the attribute is required for the given list of object classes.
+	 *
+	 * @param AttributeType $schemaAttribute schema attribute
+	 * @param array $objectClasses list of object classes
+	 * @return bool is required
+	 */
+	private function isAttributeRequired(AttributeType $schemaAttribute, array $objectClasses): bool {
+		$schemaObjectClasses = $this->getSchemaObjectClasses();
+		foreach ($objectClasses as $objectClass) {
+			$objectClass = strtolower($objectClass);
+			if (!isset($schemaObjectClasses[$objectClass])) {
+				continue;
+			}
+			$requiredAttributes = $schemaObjectClasses[$objectClass]->getMustAttrNames();
+			if (in_array_ignore_case($schemaAttribute->getName(), $requiredAttributes)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Returns the internal attributes.
 	 *
 	 * @param string $dn DN
+	 * @return string JSON
 	 */
-	private function getInternalAttributesContent(string $dn) {
+	private function getInternalAttributesContent(string $dn): string {
 		$this->validateDn($dn);
 		$row = new htmlResponsiveRow();
 		$row->add(new htmlSubTitle(_('Internal attributes')), 12);
@@ -349,11 +418,28 @@ class TreeView {
 		return $attributeName;
 	}
 
+	/**
+	 * Returns the schema attributes.
+	 *
+	 * @return array attributes
+	 */
 	private function getSchemaAttributes(): array {
 		if ($this->schemaAttributes === null) {
 			$this->schemaAttributes = get_schema_attributes(null);
 		}
 		return $this->schemaAttributes;
+	}
+
+	/**
+	 * Returns the schema object classes.
+	 *
+	 * @return array object classes
+	 */
+	private function getSchemaObjectClasses(): array {
+		if ($this->schemaObjectClasses === null) {
+			$this->schemaObjectClasses = get_schema_objectclasses();
+		}
+		return $this->schemaObjectClasses;
 	}
 
 }

@@ -203,7 +203,7 @@ table.responsive-table td {
 	}
 
 	div.tree-view--tree {
-		max-height: 50vh;
+		max-height: 50vh !important;
 	}
 
 }

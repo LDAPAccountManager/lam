@@ -102,6 +102,8 @@ function showTree() {
 	}
 	$treeScript = new htmlJavaScript('
 		jQuery(document).ready(function() {
+			var maxHeight = jQuery(document).height() - jQuery("#ldap_tree").offset().top - 50;
+			jQuery("#ldap_tree").css("max-height", maxHeight);
 			jQuery(\'#ldap_tree\').jstree({
 				"plugins": [
 					"contextmenu",
@@ -116,6 +118,7 @@ function showTree() {
 								"icon": "../../graphics/refresh.png",
 								"action": function(obj) {
 									tree.refresh_node(node);
+									window.lam.treeview.getNodeContent("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node);
 								}
 							},
 							' .
