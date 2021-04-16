@@ -2627,7 +2627,8 @@ class htmlInputTextarea extends htmlElement {
 			$classList[] = 'ckeditor';
 		}
 		$classes = ' class="' . implode(' ', $classList) . '"';
-		echo '<textarea name="' . $this->name . '" id="' . $this->name . '"' . $tabindexValue . $classes . $colCount . $rowCount . $disabled . '>' . $this->value . '</textarea>';
+		echo '<textarea name="' . $this->name . '" id="' . $this->name . '"' . $tabindexValue . $classes . $colCount .
+			$rowCount . $this->getDataAttributesAsString() . $disabled . '>' . $this->value . '</textarea>';
 		return array($this->name => 'textarea');
 	}
 
