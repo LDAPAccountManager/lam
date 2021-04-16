@@ -1,9 +1,12 @@
 <?php
 namespace LAM\TOOLS\TREEVIEW;
 use htmlDiv;
+use htmlElement;
+use htmlInputField;
 use htmlLink;
 use htmlOutputText;
 use htmlResponsiveRow;
+use htmlStatusMessage;
 use htmlSubTitle;
 use htmlTitle;
 use LAM\SCHEMA\AttributeType;
@@ -84,6 +87,9 @@ class TreeView {
 				break;
 			case 'getInternalAttributesContent':
 				return $this->getInternalAttributesContent($dn);
+				break;
+			case 'saveAttributes':
+				return $this->saveAttributes($dn);
 				break;
 			case 'deleteNode':
 				return $this->deleteNode($dn);
@@ -266,6 +272,7 @@ class TreeView {
 		$this->validateDn($dn);
 		$row = new htmlResponsiveRow();
 		$row->add(new htmlTitle($dn), 12);
+		$row->add(new htmlDiv('ldap_actionarea_messages', new htmlOutputText('')), 12);
 		$row->add(new htmlSubTitle(_('Attributes')), 12);
 		$attributes = ldapGetDN($dn, array('*'));
 		unset($attributes['dn']);
@@ -280,6 +287,15 @@ class TreeView {
 			}
 			$this->addAttributeContent($row, $attributeName, $values, $schemaAttribute, $objectClasses, $dn);
 		}
+		$row->addVerticalSpacer('1rem');
+		$saveButton = new htmlLink(_('Save'), '#', null, true);
+		$saveButton->setId('savebutton');
+		$saveButton->setOnClick('window.lam.treeview.saveAttributes(event,
+			"' . getSecurityTokenName() . '",
+			"' . getSecurityTokenValue() . '",
+			"' . base64_encode($dn) . '");');
+		$row->add($saveButton, 12, 12, 12, 'text-center');
+
 		$internalAttributesContent = new htmlResponsiveRow();
 		$internalAttributesContent->add(new htmlSubTitle(_('Internal attributes')), 12);
 		$internalAttributesButton = new htmlLink(_('Show internal attributes'), '#', null, true);
@@ -287,6 +303,7 @@ class TreeView {
 			"' . getSecurityTokenName() . '",
 			"' . getSecurityTokenValue() . '",
 			"' . base64_encode($dn) . '");');
+		$internalAttributesButton->setId('internalAttributesButton');
 		$internalAttributesContent->add($internalAttributesButton, 12);
 		$internalAttributesDiv = new htmlDiv('actionarea-internal-attributes', $internalAttributesContent);
 		$row->add($internalAttributesDiv, 12);
@@ -317,10 +334,37 @@ class TreeView {
 		if (($schemaAttribute !== null) && $this->isAttributeRequired($schemaAttribute, $objectClasses)) {
 			$required = true;
 		}
+		$isMultiValue = (sizeof($values) > 1) || (($schemaAttribute !== null) && ($schemaAttribute->getIsSingleValue() !== true));
 		$label->setMarkAsRequired($required);
 		$row->addLabel($label);
-		$row->addField(new htmlOutputText(implode(', ', $values)));
+		if (($schemaAttribute !== null) && !empty($schemaAttribute->getDescription())) {
+			$label->setTitle($schemaAttribute->getDescription());
+		}
+		$row->addField($this->getAttributeContentField($attributeName, $values, $isMultiValue, $required));
 		$row->addVerticalSpacer('0.5rem');
+	}
+
+	/**
+	 * Returns the input fields for the attribute.
+	 *
+	 * @param string $attributeName attribute name
+	 * @param array $values values
+	 * @param bool $isMultiValue is multi-value
+	 * @param bool $required is required
+	 * @return htmlElement content
+	 */
+	private function getAttributeContentField(string $attributeName, array $values, bool $isMultiValue, bool $required): htmlElement {
+		if (!$isMultiValue) {
+			$inputField = new htmlInputField('lam_attr_' . $attributeName, $values[0]);
+			$inputField->addDataAttribute('value-orig', $values[0]);
+			$inputField->addDataAttribute('attr-name', $attributeName);
+			$inputField->setCSSClasses(array('single-input'));
+			if ($required) {
+				$inputField->setRequired(true);
+			}
+			return $inputField;
+		}
+		return new htmlOutputText(implode(', ', $values));
 	}
 
 	/**
@@ -370,6 +414,46 @@ class TreeView {
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(array('content' => $content));
+	}
+
+	/**
+	 * Returns the node content with the attribute listing.
+	 *
+	 * @return string JSON
+	 */
+	private function saveAttributes(string $dn): string {
+		$this->validateDn($dn);
+		$changes = json_decode($_POST['changes'], true);
+		$ldapChanges = array();
+		if (!empty($changes['single'])) {
+			foreach ($changes['single'] as $attrName => $singleChange) {
+				$newValue = $singleChange['new'];
+				if (empty($newValue)) {
+					$ldapChanges[$attrName] = array();
+				}
+				else {
+					$ldapChanges[$attrName] = array($newValue);
+				}
+			}
+		}
+		// TODO RDN change
+		// TODO multi-values
+		$message = new htmlStatusMessage('INFO', _('You made no changes'));
+		if (!empty($ldapChanges)) {
+			$saved = ldap_modify($_SESSION['ldap']->server(), $dn, $ldapChanges);
+			if ($saved) {
+				$message = new htmlStatusMessage('INFO', _('All changes were successful.'));
+			}
+			else {
+				$message = new htmlStatusMessage('ERROR', sprintf(_('Was unable to modify attributes of DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+			}
+		}
+		$tabIndex = 1;
+		ob_start();
+		parseHtml(null, $message, array(), true, $tabIndex, 'none');
+		$messageContent = ob_get_contents();
+		ob_end_clean();
+		return json_encode(array('result' => $messageContent));
 	}
 
 	/**

@@ -23,6 +23,7 @@ namespace LAM\TOOLS\TREEVIEW;
 */
 
 use htmlDiv;
+use htmlForm;
 use htmlJavaScript;
 use htmlOutputText;
 use htmlResponsiveRow;
@@ -118,7 +119,7 @@ function showTree() {
 								"icon": "../../graphics/refresh.png",
 								"action": function(obj) {
 									tree.refresh_node(node);
-									window.lam.treeview.getNodeContent("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node);
+									window.lam.treeview.getNodeContent("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node.id);
 								}
 							},
 							' .
@@ -141,7 +142,7 @@ function showTree() {
 			.on("changed.jstree", function (e, data) {
 				if (data && data.action && (data.action == "select_node")) {
 					var node = data.node;
-					window.lam.treeview.getNodeContent("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node);
+					window.lam.treeview.getNodeContent("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node.id);
 				}
 			});
 		});
@@ -167,6 +168,11 @@ function showTree() {
 	$errorDialogDiv = new htmlDiv('treeview_error_dlg', $errorDialogContent, array('hidden'));
 	$row->add($errorDialogDiv, 12);
 
+	$row->add(new htmlJavaScript('jQuery(document).ready(function() {
+					jQuery(\'form[name="actionarea"]\').validationEngine({promptPosition: "topLeft", addFailureCssClassToField: "lam-input-error", autoHidePrompt: true, autoHideDelay: 5000});
+				});'), 12);
+
 	$tabIndex = 1;
-	parseHtml(null, $row, array(), true, $tabIndex, 'none');
+	$form = new htmlForm('actionarea', 'treeView.php', $row);
+	parseHtml(null, $form, array(), true, $tabIndex, 'none');
 }

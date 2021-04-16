@@ -2085,7 +2085,8 @@ window.lam.treeview.deleteNode = function (tokenName, tokenValue, node, tree, ok
 		})
 		.done(function(jsonData) {
 			tree.refresh_node(parent);
-			window.lam.treeview.getNodeContent(tokenName, tokenValue, tree.get_node(parent, false));
+			var node = tree.get_node(parent, false);
+			window.lam.treeview.getNodeContent(tokenName, tokenValue, node.id);
 			jQuery('#treeview_delete_dlg').dialog("close");
 			if (jsonData['errors']) {
 				var errTextTitle = jsonData['errors'][0][1];
@@ -2125,14 +2126,15 @@ window.lam.treeview.deleteNode = function (tokenName, tokenValue, node, tree, ok
  *
  * @param tokenName security token name
  * @param tokenValue security token value
- * @param node tree node
+ * @param dn DN (base64 encoded)
+ * @param messages any messages that should be displayed (HTML code)
  */
-window.lam.treeview.getNodeContent = function (tokenName, tokenValue, node) {
+window.lam.treeview.getNodeContent = function (tokenName, tokenValue, dn, messages) {
 	var data = {
 		jsonInput: ""
 	};
 	data[tokenName] = tokenValue;
-	data["dn"] = node.id;
+	data["dn"] = dn;
 	jQuery.ajax({
 		url: "../misc/ajax.php?function=treeview&command=getNodeContent",
 		method: "POST",
@@ -2140,6 +2142,52 @@ window.lam.treeview.getNodeContent = function (tokenName, tokenValue, node) {
 	})
 	.done(function(jsonData) {
 		jQuery('#ldap_actionarea').html(jsonData.content);
+		if (messages) {
+			jQuery('#ldap_actionarea_messages').html(messages);
+		}
+	});
+}
+
+/**
+ * Saves the attributes in tree view action area.
+ *
+ * @param event event
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ * @param dn DN
+ */
+window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn) {
+	event.preventDefault();
+	var data = {
+		jsonInput: ""
+	};
+	data[tokenName] = tokenValue;
+	data["dn"] = dn;
+	var attributeChanges = {
+		'single': {}
+	};
+	jQuery('.single-input').each(
+		function() {
+			var input = jQuery(this);
+			var attrName = input.data('attr-name');
+			var valueOrig = input.data('value-orig');
+			var valueNew = input.val();
+			if (valueNew != valueOrig) {
+				attributeChanges.single[attrName] = {
+					old: valueOrig,
+					new: valueNew
+				};
+			}
+		}
+	);
+	data["changes"] = JSON.stringify(attributeChanges);
+	jQuery.ajax({
+		url: "../misc/ajax.php?function=treeview&command=saveAttributes",
+		method: "POST",
+		data: data
+	})
+	.done(function(jsonData) {
+		window.lam.treeview.getNodeContent(tokenName, tokenValue, dn, jsonData.result);
 	});
 }
 

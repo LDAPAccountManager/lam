@@ -602,7 +602,7 @@ class htmlInputField extends htmlElement {
 		}
 		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength
 			. $min . $max . $size . $fieldTabIndex . $onKeyPress . $onKeyUp . $title . $disabled
-			. $autoCompleteVal . '>';
+			. $this->getDataAttributesAsString() . $autoCompleteVal . '>';
 		if ($this->showDnSelection) {
 			echo '<img class="align-middle" src="../../graphics/view.png"
 					   width="16" height="16" title="' . _('Choose entry') . '"
@@ -1952,6 +1952,8 @@ class htmlOutputText extends htmlElement {
 	private $noWrap = false;
 	/** preformatted */
 	private $isPreformatted = false;
+	/** title */
+	private $title = null;
 
 	/**
 	 * Constructor.
@@ -1979,6 +1981,9 @@ class htmlOutputText extends htmlElement {
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$cssClasses = empty($this->cssClasses) ? '' : 'class="' . implode(' ', $this->cssClasses) . '"';
+		if (!empty($this->title)) {
+			echo '<span title="' . $this->title . '">';
+		}
 		if ($this->noWrap) {
 			echo "<div class=\"nowrap\">";
 		}
@@ -2013,6 +2018,9 @@ class htmlOutputText extends htmlElement {
 		}
 		if ($this->noWrap) {
 			echo "</div>";
+		}
+		if (!empty($this->title)) {
+			echo "</span>";
 		}
 		return array();
 	}
@@ -2051,6 +2059,15 @@ class htmlOutputText extends htmlElement {
 	 */
 	public function setPreformatted($preformatted = true) {
 		$this->isPreformatted = $preformatted;
+	}
+
+	/**
+	 * Sets a title for this text.
+	 *
+	 * @param string|null $title title
+	 */
+	public function setTitle(?string $title): void {
+		$this->title = $title;
 	}
 
 }
