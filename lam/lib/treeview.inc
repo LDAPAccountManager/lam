@@ -3,6 +3,7 @@ namespace LAM\TOOLS\TREEVIEW;
 use htmlDiv;
 use htmlElement;
 use htmlInputField;
+use htmlInputTextarea;
 use htmlLink;
 use htmlOutputText;
 use htmlResponsiveRow;
@@ -334,13 +335,12 @@ class TreeView {
 		if (($schemaAttribute !== null) && $this->isAttributeRequired($schemaAttribute, $objectClasses)) {
 			$required = true;
 		}
-		$isMultiValue = (sizeof($values) > 1) || (($schemaAttribute !== null) && ($schemaAttribute->getIsSingleValue() !== true));
 		$label->setMarkAsRequired($required);
 		$row->addLabel($label);
 		if (($schemaAttribute !== null) && !empty($schemaAttribute->getDescription())) {
 			$label->setTitle($schemaAttribute->getDescription());
 		}
-		$row->addField($this->getAttributeContentField($attributeName, $values, $isMultiValue, $required));
+		$row->addField($this->getAttributeContentField($attributeName, $values, $schemaAttribute, $required));
 		$row->addVerticalSpacer('0.5rem');
 	}
 
@@ -349,13 +349,19 @@ class TreeView {
 	 *
 	 * @param string $attributeName attribute name
 	 * @param array $values values
-	 * @param bool $isMultiValue is multi-value
+	 * @param AttributeType $schemaAttribute schema attribute
 	 * @param bool $required is required
 	 * @return htmlElement content
 	 */
-	private function getAttributeContentField(string $attributeName, array $values, bool $isMultiValue, bool $required): htmlElement {
+	private function getAttributeContentField(string $attributeName, array $values, ?AttributeType $schemaAttribute, bool $required): htmlElement {
+		$isMultiValue = (sizeof($values) > 1) || (($schemaAttribute !== null) && ($schemaAttribute->getIsSingleValue() !== true));
 		if (!$isMultiValue) {
-			$inputField = new htmlInputField('lam_attr_' . $attributeName, $values[0]);
+			if ($this->isMultiLineAttribute($attributeName, $schemaAttribute)) {
+				$inputField = new htmlInputTextarea('lam_attr_' . $attributeName, $values[0], 50, 5);
+			}
+			else {
+				$inputField = new htmlInputField('lam_attr_' . $attributeName, $values[0]);
+			}
 			$inputField->addDataAttribute('value-orig', $values[0]);
 			$inputField->addDataAttribute('attr-name', $attributeName);
 			$inputField->setCSSClasses(array('single-input'));
@@ -365,6 +371,28 @@ class TreeView {
 			return $inputField;
 		}
 		return new htmlOutputText(implode(', ', $values));
+	}
+
+	/**
+	 * Returns if the given attribute is multi-line.
+	 *
+	 * @param string $attributeName attribute name
+	 * @param AttributeType $schemaAttribute schema attribute
+	 */
+	private function isMultiLineAttribute(string $attributeName, ?AttributeType $schemaAttribute) {
+		$knownAttributes = array('postalAddress1', 'homePostalAddress', 'personalSignature', 'description', 'mailReplyText');
+		if (in_array_ignore_case($attributeName, $knownAttributes)) {
+			return true;
+		}
+		if ($schemaAttribute === null) {
+			return false;
+		}
+		$knownSyntaxOIDs = array(
+			// octet string syntax OID:
+			'1.3.6.1.4.1.1466.115.121.1.40',
+			// postal address syntax OID:
+			'1.3.6.1.4.1.1466.115.121.1.41');
+		return in_array($schemaAttribute->getSyntaxOID(), $knownSyntaxOIDs);
 	}
 
 	/**
@@ -438,6 +466,9 @@ class TreeView {
 		}
 		// TODO RDN change
 		// TODO multi-values
+		// TODO limit height of action area
+		// TODO scroll to top after save
+		// TODO highlight changed attributes after save
 		$message = new htmlStatusMessage('INFO', _('You made no changes'));
 		if (!empty($ldapChanges)) {
 			$saved = ldap_modify($_SESSION['ldap']->server(), $dn, $ldapChanges);

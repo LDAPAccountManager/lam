@@ -2170,7 +2170,8 @@ window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn)
 		function() {
 			var input = jQuery(this);
 			var attrName = input.data('attr-name');
-			var valueOrig = input.data('value-orig');
+			// avoid type conversion in .data()
+			var valueOrig = input.attr('data-value-orig');
 			var valueNew = input.val();
 			if (valueNew != valueOrig) {
 				attributeChanges.single[attrName] = {
