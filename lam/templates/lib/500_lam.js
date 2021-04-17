@@ -2147,6 +2147,7 @@ window.lam.treeview.getNodeContent = function (tokenName, tokenValue, dn, messag
 		if (messages) {
 			jQuery('#ldap_actionarea_messages').html(messages);
 		}
+		jQuery("#ldap_actionarea").scrollTop(0);
 	});
 }
 
@@ -2166,7 +2167,8 @@ window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn)
 	data[tokenName] = tokenValue;
 	data["dn"] = dn;
 	var attributeChanges = {
-		'single': {}
+		'single': {},
+		'multi': {}
 	};
 	var attributesToHighlight = [];
 	jQuery('.single-input').each(
@@ -2185,6 +2187,49 @@ window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn)
 			}
 		}
 	);
+	var lastAttrName = '';
+	var lastAttrValuesNew = [];
+	var lastAttrValuesOld = [];
+	var lastAttrHasChange = false;
+	jQuery('.multi-input').each(
+		function() {
+			var input = jQuery(this);
+			var attrName = input.data('attr-name');
+			if (attrName != lastAttrName) {
+				if (lastAttrHasChange) {
+					attributeChanges.multi[lastAttrName] = {
+						old: lastAttrValuesOld,
+						new: lastAttrValuesNew
+					};
+					attributesToHighlight.push(lastAttrName);
+				}
+				// reset
+				lastAttrHasChange = false;
+				lastAttrName = attrName;
+				lastAttrValuesNew = [];
+				lastAttrValuesOld = [];
+			}
+			// avoid type conversion in .data()
+			var valueOrig = input.attr('data-value-orig');
+			var valueNew = input.val();
+			if (valueOrig != '') {
+				lastAttrValuesOld.push(valueOrig);
+			}
+			if (valueNew != '') {
+				lastAttrValuesNew.push(valueNew);
+			}
+			if (valueNew != valueOrig) {
+				lastAttrHasChange = true;
+			}
+		}
+	);
+	if (lastAttrHasChange) {
+		attributeChanges.multi[lastAttrName] = {
+			old: lastAttrValuesOld,
+			new: lastAttrValuesNew
+		};
+		attributesToHighlight.push(lastAttrName);
+	}
 	data["changes"] = JSON.stringify(attributeChanges);
 	jQuery.ajax({
 		url: "../misc/ajax.php?function=treeview&command=saveAttributes",
@@ -2193,8 +2238,37 @@ window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn)
 	})
 	.done(function(jsonData) {
 		window.lam.treeview.getNodeContent(tokenName, tokenValue, dn, jsonData.result, attributesToHighlight);
-		jQuery("#ldap_actionarea").scrollTop(0);
 	});
+}
+
+/**
+ * Clears an LDAP attribute input field.
+ *
+ * @param event event
+ * @param link link object
+ */
+window.lam.treeview.clearValue = function (event, link) {
+	event.preventDefault();
+	var linkObj = jQuery(link);
+	var parentTr = linkObj.parents('tr').get(0);
+	jQuery(parentTr).find('input, textarea').val('');
+}
+
+/**
+ * Adds an LDAP attribute input field.
+ *
+ * @param event event
+ * @param link link object
+ */
+window.lam.treeview.addValue = function (event, link) {
+	event.preventDefault();
+	var linkObj = jQuery(link);
+	var parentTr = jQuery(linkObj.parents('tr').get(0));
+	var newTr = parentTr.clone();
+	var newField = newTr.find('input, textarea');
+	newField.val('');
+	newField.attr('data-value-orig', '');
+	newTr.insertAfter(parentTr);
 }
 
 /**

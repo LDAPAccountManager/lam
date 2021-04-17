@@ -9,6 +9,7 @@ use htmlOutputText;
 use htmlResponsiveRow;
 use htmlStatusMessage;
 use htmlSubTitle;
+use htmlTable;
 use htmlTitle;
 use LAM\SCHEMA\AttributeType;
 use function LAM\SCHEMA\get_schema_attributes;
@@ -360,31 +361,62 @@ class TreeView {
 	 */
 	private function getAttributeContentField(string $attributeName, array $values, ?AttributeType $schemaAttribute, bool $required): htmlElement {
 		$isMultiValue = (sizeof($values) > 1) || (($schemaAttribute !== null) && ($schemaAttribute->getIsSingleValue() !== true));
+		$isMultiLine = $this->isMultiLineAttribute($attributeName, $schemaAttribute);
 		if (!$isMultiValue) {
-			if ($this->isMultiLineAttribute($attributeName, $schemaAttribute)) {
-				$inputField = new htmlInputTextarea('lam_attr_' . $attributeName, $values[0], 50, 5);
-			}
-			else {
-				$inputField = new htmlInputField('lam_attr_' . $attributeName, $values[0]);
-			}
-			$inputField->addDataAttribute('value-orig', $values[0]);
-			$inputField->addDataAttribute('attr-name', $attributeName);
-			$inputField->setCSSClasses(array('single-input'));
-			if ($required) {
-				$inputField->setRequired(true);
-			}
-			return $inputField;
+			return $this->getAttributeInputField($attributeName, $values[0], $required, $isMultiLine, true);
 		}
-		return new htmlOutputText(implode(', ', $values));
+		$valueTable = new htmlTable();
+		$valueTable->setCSSClasses(array('fullwidth'));
+		foreach ($values as $value) {
+			$valueTable->addElement($this->getAttributeInputField($attributeName, $value, $required, $isMultiLine, false));
+			$addButton = new htmlLink(null, '#', '../../graphics/add.png');
+			$addButton->setCSSClasses(array('margin2'));
+			$addButton->setOnClick('window.lam.treeview.addValue(event, this);');
+			$valueTable->addElement($addButton);
+			$clearButton = new htmlLink(null, '#', '../../graphics/del.png');
+			$clearButton->setCSSClasses(array('margin2'));
+			$clearButton->setOnClick('window.lam.treeview.clearValue(event, this);');
+			$valueTable->addElement($clearButton);
+			$valueTable->addNewLine();
+		}
+		return $valueTable;
+	}
+
+	/**
+	 * Returns an input field for an LDAP attribute.
+	 *
+	 * @param string $attributeName attribute name
+	 * @param string $value value
+	 * @param bool $required required
+	 * @param bool $isMultiLine is multi-line attribute
+	 * @param bool $isSingleValue is single value attribute
+	 * @return htmlElement input field
+	 */
+	private function getAttributeInputField(string $attributeName, string $value, bool $required, bool $isMultiLine, bool $isSingleValue): htmlElement {
+		if ($isMultiLine) {
+			$inputField = new htmlInputTextarea('lam_attr_' . $attributeName, $value, 50, 5);
+		}
+		else {
+			$inputField = new htmlInputField('lam_attr_' . $attributeName, $value);
+		}
+		$inputField->addDataAttribute('value-orig', $value);
+		$inputField->addDataAttribute('attr-name', $attributeName);
+		$cssClass = ($isSingleValue) ? 'single-input' : 'multi-input';
+		$inputField->setCSSClasses(array($cssClass));
+		if ($required) {
+			$inputField->setRequired(true);
+		}
+		return $inputField;
 	}
 
 	/**
 	 * Returns if the given attribute is multi-line.
 	 *
 	 * @param string $attributeName attribute name
-	 * @param AttributeType $schemaAttribute schema attribute
+	 * @param AttributeType|null $schemaAttribute schema attribute
+	 * @return bool is multi-line
 	 */
-	private function isMultiLineAttribute(string $attributeName, ?AttributeType $schemaAttribute) {
+	private function isMultiLineAttribute(string $attributeName, ?AttributeType $schemaAttribute): bool {
 		$knownAttributes = array('postalAddress1', 'homePostalAddress', 'personalSignature', 'description', 'mailReplyText');
 		if (in_array_ignore_case($attributeName, $knownAttributes)) {
 			return true;
@@ -469,8 +501,13 @@ class TreeView {
 				}
 			}
 		}
+		if (!empty($changes['multi'])) {
+			foreach ($changes['multi'] as $attrName => $multiChange) {
+				$newValues = $multiChange['new'];
+				$ldapChanges[$attrName] = $newValues;
+			}
+		}
 		// TODO RDN change
-		// TODO multi-values
 		$message = new htmlStatusMessage('INFO', _('You made no changes'));
 		if (!empty($ldapChanges)) {
 			$saved = ldap_modify($_SESSION['ldap']->server(), $dn, $ldapChanges);

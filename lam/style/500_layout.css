@@ -776,6 +776,7 @@ div.tree-view--actionarea {
 }
 
 div.tree-highlight input,
+div.tree-highlight textarea,
 div.tree-highlight select {
 	border-color: #5fb762;
 }
