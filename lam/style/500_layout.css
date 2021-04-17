@@ -769,6 +769,20 @@ div.tree-view--tree {
 	overflow: auto;
 }
 
+div.tree-view--actionarea {
+	overflow-x: hidden;
+	overflow-y: auto;
+	padding: 20px;
+}
+
+div.tree-highlight > input,select {
+	border-color: #5fb762;
+}
+
+div.tree-highlight {
+	font-weight: bold;
+}
+
 /** colors for account types */
 
 .alias-border { border-color:#af8800; }

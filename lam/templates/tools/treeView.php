@@ -105,6 +105,7 @@ function showTree() {
 		jQuery(document).ready(function() {
 			var maxHeight = jQuery(document).height() - jQuery("#ldap_tree").offset().top - 50;
 			jQuery("#ldap_tree").css("max-height", maxHeight);
+			jQuery("#ldap_actionarea").css("max-height", maxHeight);
 			jQuery(\'#ldap_tree\').jstree({
 				"plugins": [
 					"contextmenu",

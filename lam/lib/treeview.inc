@@ -280,13 +280,14 @@ class TreeView {
 		ksort($attributes);
 		$schemaAttributes = $this->getSchemaAttributes();
 		$objectClasses = $attributes['objectclass'];
+		$highlighted = (empty($_POST['highlight'])) ? array() : $_POST['highlight'];
 		foreach ($attributes as $attributeName => $values) {
 			$schemaAttribute = null;
 			if (isset($schemaAttributes[$attributeName])) {
 				$schemaAttribute = $schemaAttributes[$attributeName];
 				$attributeName = $schemaAttribute->getName();
 			}
-			$this->addAttributeContent($row, $attributeName, $values, $schemaAttribute, $objectClasses, $dn);
+			$this->addAttributeContent($row, $attributeName, $values, $schemaAttribute, $objectClasses, $dn, $highlighted);
 		}
 		$row->addVerticalSpacer('1rem');
 		$saveButton = new htmlLink(_('Save'), '#', null, true);
@@ -325,9 +326,11 @@ class TreeView {
 	 * @param AttributeType $schemaAttribute schema attribute
 	 * @param string[] $objectClasses object classes
 	 * @param string $dn DN
+	 * @param array $highlighted list of highlighted attribute names
 	 */
 	private function addAttributeContent(htmlResponsiveRow $row, string $attributeName, array $values,
-	                                     ?AttributeType $schemaAttribute, array $objectClasses, string $dn): void {
+	                                    ?AttributeType $schemaAttribute, array $objectClasses, string $dn,
+										array $highlighted): void {
 		$label = new htmlOutputText($attributeName);
 		$rdnAttribute = strtolower(extractRDNAttribute($dn));
 		$attributeNameLowerCase = strtolower($attributeName);
@@ -336,11 +339,13 @@ class TreeView {
 			$required = true;
 		}
 		$label->setMarkAsRequired($required);
-		$row->addLabel($label);
+		$isHighlighted = in_array_ignore_case($attributeName, $highlighted);
+		$cssClasses = ($isHighlighted) ? 'tree-highlight' : '';
+		$row->addLabel($label, $cssClasses);
 		if (($schemaAttribute !== null) && !empty($schemaAttribute->getDescription())) {
 			$label->setTitle($schemaAttribute->getDescription());
 		}
-		$row->addField($this->getAttributeContentField($attributeName, $values, $schemaAttribute, $required));
+		$row->addField($this->getAttributeContentField($attributeName, $values, $schemaAttribute, $required), $cssClasses);
 		$row->addVerticalSpacer('0.5rem');
 	}
 
@@ -466,9 +471,6 @@ class TreeView {
 		}
 		// TODO RDN change
 		// TODO multi-values
-		// TODO limit height of action area
-		// TODO scroll to top after save
-		// TODO highlight changed attributes after save
 		$message = new htmlStatusMessage('INFO', _('You made no changes'));
 		if (!empty($ldapChanges)) {
 			$saved = ldap_modify($_SESSION['ldap']->server(), $dn, $ldapChanges);

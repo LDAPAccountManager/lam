@@ -2128,13 +2128,15 @@ window.lam.treeview.deleteNode = function (tokenName, tokenValue, node, tree, ok
  * @param tokenValue security token value
  * @param dn DN (base64 encoded)
  * @param messages any messages that should be displayed (HTML code)
+ * @param attributesToHighlight attributes to highlight
  */
-window.lam.treeview.getNodeContent = function (tokenName, tokenValue, dn, messages) {
+window.lam.treeview.getNodeContent = function (tokenName, tokenValue, dn, messages, attributesToHighlight) {
 	var data = {
 		jsonInput: ""
 	};
 	data[tokenName] = tokenValue;
 	data["dn"] = dn;
+	data["highlight"] = attributesToHighlight;
 	jQuery.ajax({
 		url: "../misc/ajax.php?function=treeview&command=getNodeContent",
 		method: "POST",
@@ -2166,6 +2168,7 @@ window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn)
 	var attributeChanges = {
 		'single': {}
 	};
+	var attributesToHighlight = [];
 	jQuery('.single-input').each(
 		function() {
 			var input = jQuery(this);
@@ -2178,6 +2181,7 @@ window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn)
 					old: valueOrig,
 					new: valueNew
 				};
+				attributesToHighlight.push(attrName);
 			}
 		}
 	);
@@ -2188,7 +2192,8 @@ window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn)
 		data: data
 	})
 	.done(function(jsonData) {
-		window.lam.treeview.getNodeContent(tokenName, tokenValue, dn, jsonData.result);
+		window.lam.treeview.getNodeContent(tokenName, tokenValue, dn, jsonData.result, attributesToHighlight);
+		jQuery("#ldap_actionarea").scrollTop(0);
 	});
 }
 
