@@ -489,20 +489,10 @@ class TreeView {
 	private function saveAttributes(string $dn): string {
 		$this->validateDn($dn);
 		$changes = json_decode($_POST['changes'], true);
+		logNewMessage(LOG_DEBUG, 'LDAP changes for ' . $dn . ': ' . print_r($changes, true));
 		$ldapChanges = array();
-		if (!empty($changes['single'])) {
-			foreach ($changes['single'] as $attrName => $singleChange) {
-				$newValue = $singleChange['new'];
-				if (empty($newValue)) {
-					$ldapChanges[$attrName] = array();
-				}
-				else {
-					$ldapChanges[$attrName] = array($newValue);
-				}
-			}
-		}
-		if (!empty($changes['multi'])) {
-			foreach ($changes['multi'] as $attrName => $multiChange) {
+		if (!empty($changes)) {
+			foreach ($changes as $attrName => $multiChange) {
 				$newValues = $multiChange['new'];
 				$ldapChanges[$attrName] = $newValues;
 			}

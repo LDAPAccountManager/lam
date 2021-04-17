@@ -2166,10 +2166,7 @@ window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn)
 	};
 	data[tokenName] = tokenValue;
 	data["dn"] = dn;
-	var attributeChanges = {
-		'single': {},
-		'multi': {}
-	};
+	var attributeChanges = {};
 	var attributesToHighlight = [];
 	jQuery('.single-input').each(
 		function() {
@@ -2179,9 +2176,9 @@ window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn)
 			var valueOrig = input.attr('data-value-orig');
 			var valueNew = input.val();
 			if (valueNew != valueOrig) {
-				attributeChanges.single[attrName] = {
-					old: valueOrig,
-					new: valueNew
+				attributeChanges[attrName] = {
+					old: [valueOrig],
+					new: [valueNew]
 				};
 				attributesToHighlight.push(attrName);
 			}
@@ -2197,7 +2194,7 @@ window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn)
 			var attrName = input.data('attr-name');
 			if (attrName != lastAttrName) {
 				if (lastAttrHasChange) {
-					attributeChanges.multi[lastAttrName] = {
+					attributeChanges[lastAttrName] = {
 						old: lastAttrValuesOld,
 						new: lastAttrValuesNew
 					};
@@ -2224,7 +2221,7 @@ window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn)
 		}
 	);
 	if (lastAttrHasChange) {
-		attributeChanges.multi[lastAttrName] = {
+		attributeChanges[lastAttrName] = {
 			old: lastAttrValuesOld,
 			new: lastAttrValuesNew
 		};
