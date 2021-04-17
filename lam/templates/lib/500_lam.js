@@ -2177,9 +2177,14 @@ window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn)
 			var valueNew = input.val();
 			if (valueNew != valueOrig) {
 				attributeChanges[attrName] = {
-					old: [valueOrig],
-					new: [valueNew]
+					old: [valueOrig]
 				};
+				if (valueNew == '') {
+					attributeChanges[attrName]["new"] = [];
+				}
+				else {
+					attributeChanges[attrName]["new"] = [valueNew];
+				}
 				attributesToHighlight.push(attrName);
 			}
 		}
