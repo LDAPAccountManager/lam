@@ -775,7 +775,8 @@ div.tree-view--actionarea {
 	padding: 20px;
 }
 
-div.tree-highlight > input,select {
+div.tree-highlight input,
+div.tree-highlight select {
 	border-color: #5fb762;
 }
 
