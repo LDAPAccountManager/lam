@@ -81,7 +81,7 @@ find lam/lib/3rdParty -name LICENSE -exec rm {} \;
 find lam/lib/3rdParty -name README.md -exec rm {} \;
 find lam/lib/3rdParty -name CHANGELOG.md -exec rm {} \;
 find lam/lib/3rdParty -name CHANGELOG.txt -exec rm {} \;
-find lam/lib/3rdParty -name .github -exec rm -r {} \;
+find lam/lib/3rdParty -name .github -exec rm -rf {} \;
 mv lam ldap-account-manager-$VERSION
 
 # create LAM manual
