@@ -2239,7 +2239,14 @@ window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn)
 		data: data
 	})
 	.done(function(jsonData) {
-		window.lam.treeview.getNodeContent(tokenName, tokenValue, dn, jsonData.result, attributesToHighlight);
+		if (jsonData['newDn']) {
+			var tree = jQuery.jstree.reference("#ldap_tree");
+			tree.refresh_node(jsonData['parent']);
+			window.lam.treeview.getNodeContent(tokenName, tokenValue, jsonData['newDn'], jsonData.result, attributesToHighlight);
+		}
+		else {
+			window.lam.treeview.getNodeContent(tokenName, tokenValue, dn, jsonData.result, attributesToHighlight);
+		}
 	});
 }
 

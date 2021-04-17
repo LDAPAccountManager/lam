@@ -1327,7 +1327,10 @@ function extractDNSuffix($dn) {
 		return null;
 	}
 	$dn = convertCommaEscaping($dn);
-	return substr($dn, strpos($dn, ',')+1);
+	$parts = ldap_explode_dn($dn, 0);
+	unset($parts['count']);
+	array_shift($parts);
+	return implode(',', $parts);
 }
 
 /**

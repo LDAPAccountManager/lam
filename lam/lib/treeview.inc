@@ -489,16 +489,44 @@ class TreeView {
 	private function saveAttributes(string $dn): string {
 		$this->validateDn($dn);
 		$changes = json_decode($_POST['changes'], true);
+		array_change_key_case($changes, CASE_LOWER);
 		logNewMessage(LOG_DEBUG, 'LDAP changes for ' . $dn . ': ' . print_r($changes, true));
 		$ldapChanges = array();
 		if (!empty($changes)) {
-			foreach ($changes as $attrName => $multiChange) {
-				$newValues = $multiChange['new'];
+			foreach ($changes as $attrName => $change) {
+				$newValues = $change['new'];
 				$ldapChanges[$attrName] = $newValues;
 			}
 		}
-		// TODO RDN change
 		$message = new htmlStatusMessage('INFO', _('You made no changes'));
+		$jsonData = array();
+		// rename DN if RDN attribute changed
+		$rdnAttribute = strtolower(extractRDNAttribute($dn));
+		$rdnValue = extractRDNValue($dn);
+		if (isset($ldapChanges[$rdnAttribute]) && isset($ldapChanges[$rdnAttribute][0]) && !in_array($rdnValue, $ldapChanges[$rdnAttribute])) {
+			$pos = 0;
+			$oldPos = array_search($rdnValue, $changes[$rdnAttribute]['old']);
+			if (($oldPos !== false) && isset($ldapChanges[$rdnAttribute][$oldPos])) {
+				$pos = $oldPos;
+			}
+			$newRdnValue = $ldapChanges[$rdnAttribute][$pos];
+			$newRdn = $rdnAttribute . '=' . $newRdnValue;
+			$parent = extractDNSuffix($dn);
+			$renameOk = ldap_rename($_SESSION['ldap']->server(), $dn, $newRdn, $parent, true);
+			$newDn = $newRdn . ',' . $parent;
+			if ($renameOk) {
+				logNewMessage(LOG_DEBUG, 'Renamed ' . $dn . ' to ' . $newDn);
+				$dn = $newDn;
+				$jsonData['newDn'] = base64_encode($newDn);
+				$jsonData['parent'] = base64_encode($parent);
+			}
+			else {
+				logNewMessage(LOG_ERR, 'Renaming ' . $dn . ' to ' . $newDn . ' failed: ' . getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
+				$message = new htmlStatusMessage('ERROR', sprintf(_('Was unable to rename DN: %s.'), $dn), getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
+				// skip other changes
+				$ldapChanges = array();
+			}
+		}
 		if (!empty($ldapChanges)) {
 			$saved = ldap_modify($_SESSION['ldap']->server(), $dn, $ldapChanges);
 			if ($saved) {
@@ -513,7 +541,8 @@ class TreeView {
 		parseHtml(null, $message, array(), true, $tabIndex, 'none');
 		$messageContent = ob_get_contents();
 		ob_end_clean();
-		return json_encode(array('result' => $messageContent));
+		$jsonData['result'] = $messageContent;
+		return json_encode($jsonData);
 	}
 
 	/**
