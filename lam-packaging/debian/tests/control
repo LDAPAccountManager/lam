@@ -1,2 +1,2 @@
 Tests: login
-Depends: wget
+Depends: @, wget
