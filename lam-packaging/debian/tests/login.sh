@@ -16,4 +16,6 @@ fi
 
 set -e
 
+rm login.php
+
 exit 0
