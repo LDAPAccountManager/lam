@@ -2,7 +2,7 @@
 
 set -e
 
-wget -q localhost/lam/templates/login.php
+wget -q http://localhost/lam/templates/login.php
 
 grep -v -i "ldap" login.php > /dev/null
 
