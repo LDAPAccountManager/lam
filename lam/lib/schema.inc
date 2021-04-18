@@ -1536,7 +1536,7 @@ function _get_raw_schema($schema_to_fetch, $dn='' )
  * @param string $dn (optional) It is easier to fetch schema if a DN is provided
  *             which defines the subschemaSubEntry attribute (all entries should).
  *
- * @return array An array of ObjectClass objects.
+ * @return ObjectClass[] An array of ObjectClass objects.
  *
  * @see ObjectClass
  * @see get_schema_objectclass

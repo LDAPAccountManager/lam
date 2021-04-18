@@ -2281,6 +2281,34 @@ window.lam.treeview.addValue = function (event, link) {
 }
 
 /**
+ * Adds the input field for a new attribute.
+ *
+ * @param event event
+ * @param select select object
+ */
+window.lam.treeview.addAttributeField = function (event, select) {
+	event.preventDefault();
+	var selectObj = jQuery(select);
+	var attributeParts = selectObj.val();
+	if (attributeParts == '') {
+		return;
+	}
+	selectObj.children('[value="' + attributeParts + '"]').remove();
+	attributeParts = attributeParts.split('__#__');
+	var attributeName = attributeParts[0];
+	var isSingleValue = attributeParts[1];
+	var isMultiline = attributeParts[2];
+	var placeHolderId = 'new-attributes-' + isSingleValue + '-' + isMultiline;
+	var newContent = jQuery(jQuery('#' + placeHolderId).children('.row').get(0)).clone();
+	jQuery(newContent.children().get(0)).text(attributeName);
+	var inputField = newContent.find('input, textarea');
+	inputField.attr('data-attr-name', attributeName);
+	inputField.attr('name', 'lam_attr_' + attributeName);
+	inputField.attr('id', 'lam_attr_' + attributeName);
+	newContent.children().insertAfter(jQuery(selectObj.parents('div').get(0)));
+}
+
+/**
  * Returns the internal attributes content in tree view action area.
  *
  * @param event event

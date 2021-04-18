@@ -7,11 +7,13 @@ use htmlInputTextarea;
 use htmlLink;
 use htmlOutputText;
 use htmlResponsiveRow;
+use htmlResponsiveSelect;
 use htmlStatusMessage;
 use htmlSubTitle;
 use htmlTable;
 use htmlTitle;
 use LAM\SCHEMA\AttributeType;
+use LAM\SCHEMA\ObjectClass;
 use function LAM\SCHEMA\get_schema_attributes;
 use function LAM\SCHEMA\get_schema_objectclasses;
 
@@ -291,7 +293,56 @@ class TreeView {
 			$this->addAttributeContent($row, $attributeName, $values, $schemaAttribute, $objectClasses, $dn, $highlighted);
 		}
 		$row->addVerticalSpacer('1rem');
-		$saveButton = new htmlLink(_('Save'), '#', null, true);
+
+		// add new attributes
+		$schemaObjectClasses = $this->getSchemaObjectClasses();
+		$possibleNewAttributes = array();
+		foreach ($attributes['objectclass'] as $objectclass) {
+			$objectclass = strtolower($objectclass);
+			if (empty($schemaObjectClasses[$objectclass])) {
+				continue;
+			}
+			$optionalAttributes = $schemaObjectClasses[$objectclass]->getMayAttrs();
+			foreach ($optionalAttributes as $optionalAttribute) {
+				$attributeName = $optionalAttribute->getName();
+				if (!isset($attributes[strtolower($attributeName)])) {
+					$schemaAttribute = $schemaAttributes[strtolower($attributeName)];
+					$single = $schemaAttribute->getIsSingleValue() ? 'single' : 'multi';
+					$multiLine = $this->isMultiLineAttribute($attributeName, $schemaAttribute) ? 'textarea' : 'input';
+					$possibleNewAttributes[$attributeName] = $attributeName . '__#__' . $single . '__#__' . $multiLine;
+				}
+			}
+		}
+		ksort($possibleNewAttributes);
+		logNewMessage(LOG_DEBUG, 'Possible new attributes for ' . $dn . ': ' . implode('; ', $possibleNewAttributes));
+		if (!empty($possibleNewAttributes)) {
+			$possibleNewAttributes = array('' => '') + $possibleNewAttributes;
+			$row->add(new htmlSubTitle(_('Add new attribute')), 12);
+			$newAttributeSelect = new htmlResponsiveSelect('newAttribute', $possibleNewAttributes, array(), _('Attribute'));
+			$newAttributeSelect->setHasDescriptiveElements(true);
+			$newAttributeSelect->setTransformSingleSelect(false);
+			$newAttributeSelect->setOnchangeEvent('window.lam.treeview.addAttributeField(event, this);');
+			$row->add($newAttributeSelect, 12);
+			$newAttributesContentSingleInput = new htmlResponsiveRow();
+			$newAttributesContentSingleInput->addLabel(new htmlOutputText('PLACEHOLDER_SINGLE_INPUT_LABEL'));
+			$newAttributesContentSingleInput->addField($this->getAttributeContentField('PLACEHOLDER_SINGLE_INPUT', array(''), false, false, false));
+			$row->add(new htmlDiv('new-attributes-single-input', $newAttributesContentSingleInput, array('hidden')), 12);
+			$newAttributesContentMultiInput = new htmlResponsiveRow();
+			$newAttributesContentMultiInput->addLabel(new htmlOutputText('PLACEHOLDER_MULTI_INPUT_LABEL'));
+			$newAttributesContentMultiInput->addField($this->getAttributeContentField('PLACEHOLDER_MULTI_INPUT', array(''), false, true, false));
+			$row->add(new htmlDiv('new-attributes-multi-input', $newAttributesContentMultiInput, array('hidden')), 12);
+			$newAttributesContentSingleTextarea = new htmlResponsiveRow();
+			$newAttributesContentSingleTextarea->addLabel(new htmlOutputText('PLACEHOLDER_SINGLE_TEXTAREA_LABEL'));
+			$newAttributesContentSingleTextarea->addField($this->getAttributeContentField('PLACEHOLDER_SINGLE_TEXTAREA', array(''), false, false, true));
+			$row->add(new htmlDiv('new-attributes-single-textarea', $newAttributesContentSingleTextarea, array('hidden')), 12);
+			$newAttributesContentMultiTextarea = new htmlResponsiveRow();
+			$newAttributesContentMultiTextarea->addLabel(new htmlOutputText('PLACEHOLDER_MULTI_TEXTAREA_LABEL'));
+			$newAttributesContentMultiTextarea->addField($this->getAttributeContentField('PLACEHOLDER_MULTI_TEXTAREA', array(''), false, true, true));
+			$row->add(new htmlDiv('new-attributes-multi-textarea', $newAttributesContentMultiTextarea, array('hidden')), 12);
+		}
+
+		$row->addVerticalSpacer('2rem');
+		$saveButton = new htmlLink(_('Save'), '#', '../../graphics/save.png', true);
 		$saveButton->setId('savebutton');
 		$saveButton->setOnClick('window.lam.treeview.saveAttributes(event,
 			"' . getSecurityTokenName() . '",
@@ -346,7 +397,9 @@ class TreeView {
 		if (($schemaAttribute !== null) && !empty($schemaAttribute->getDescription())) {
 			$label->setTitle($schemaAttribute->getDescription());
 		}
-		$row->addField($this->getAttributeContentField($attributeName, $values, $schemaAttribute, $required), $cssClasses);
+		$isMultiValue = (sizeof($values) > 1) || (($schemaAttribute !== null) && ($schemaAttribute->getIsSingleValue() !== true));
+		$isMultiLine = $this->isMultiLineAttribute($attributeName, $schemaAttribute);
+		$row->addField($this->getAttributeContentField($attributeName, $values, $required, $isMultiValue, $isMultiLine), $cssClasses);
 		$row->addVerticalSpacer('0.5rem');
 	}
 
@@ -355,13 +408,12 @@ class TreeView {
 	 *
 	 * @param string $attributeName attribute name
 	 * @param array $values values
-	 * @param AttributeType $schemaAttribute schema attribute
 	 * @param bool $required is required
+	 * @param bool $isMultiValue multi-value attribute
+	 * @param bool $isMultiLine textarea attribute
 	 * @return htmlElement content
 	 */
-	private function getAttributeContentField(string $attributeName, array $values, ?AttributeType $schemaAttribute, bool $required): htmlElement {
-		$isMultiValue = (sizeof($values) > 1) || (($schemaAttribute !== null) && ($schemaAttribute->getIsSingleValue() !== true));
-		$isMultiLine = $this->isMultiLineAttribute($attributeName, $schemaAttribute);
+	private function getAttributeContentField(string $attributeName, array $values, bool $required, bool $isMultiValue, bool $isMultiLine): htmlElement {
 		if (!$isMultiValue) {
 			return $this->getAttributeInputField($attributeName, $values[0], $required, $isMultiLine, true);
 		}
@@ -606,7 +658,7 @@ class TreeView {
 	/**
 	 * Returns the schema object classes.
 	 *
-	 * @return array object classes
+	 * @return ObjectClass[] object classes
 	 */
 	private function getSchemaObjectClasses(): array {
 		if ($this->schemaObjectClasses === null) {
