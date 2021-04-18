@@ -68,14 +68,14 @@ class TreeViewTool extends LAMTool {
 	 * {@inheritDoc}
 	 */
 	public function getRequiresWriteAccess(): bool {
-		return true;
+		return false;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public function getRequiresPasswordChangeRights(): bool {
-		return true;
+		return false;
 	}
 
 	/**

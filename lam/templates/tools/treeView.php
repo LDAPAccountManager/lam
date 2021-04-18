@@ -73,6 +73,19 @@ function showTree() {
 	$row->setCSSClasses(array('maxrow'));
 	$row->add(new htmlDiv('ldap_tree', new htmlOutputText(''), array('tree-view--tree')), 12, 5);
 	$row->add(new htmlDiv('ldap_actionarea', new htmlOutputText(''), array('tree-view--actionarea')), 12, 7);
+	$newMenu = '';
+	if (checkIfWriteAccessIsAllowed()) {
+		$newMenu = '"createNode": {
+								"label": "' . _('Create a child entry') . '",
+								"icon": "../../graphics/add.png",
+								"action": function(obj) {
+									window.lam.treeview.createNode("' . getSecurityTokenName() . '",
+										"' . getSecurityTokenValue() . '",
+										node,
+										tree)
+								}
+							},';
+	}
 	$deleteMenu = '';
 	if (checkIfWriteAccessIsAllowed()) {
 		$deleteMenu = '"deleteNode": {
@@ -114,8 +127,10 @@ function showTree() {
 				"contextmenu": {
 					"items": function(node) {
 						var tree = jQuery.jstree.reference("#ldap_tree");
-						var menuItems = {
-							"refreshNode": {
+						var menuItems = {' .
+								$newMenu .
+								$deleteMenu .
+								'"refreshNode": {
 								"label": "' . _('Refresh') . '",
 								"icon": "../../graphics/refresh.png",
 								"action": function(obj) {
@@ -124,7 +139,6 @@ function showTree() {
 								}
 							},
 							' .
-							$deleteMenu .
 							$exportMenu .
 						'};
 						return menuItems;

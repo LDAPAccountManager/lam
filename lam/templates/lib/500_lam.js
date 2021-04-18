@@ -697,7 +697,11 @@ window.lam.filterSelect.filterStandard = function(inputField, selectField) {
 	if (!selectField.data('options')) {
 		var options = {};
 		selectField.find('option').each(function() {
-			options[$(this).val()] = {selected: this.selected, text: $(this).text()};
+			options[$(this).val()] = {
+				selected: this.selected,
+				text: jQuery(this).text(),
+				cssClasses: jQuery(this).attr('class')
+			};
 		});
 		selectField.data('options', options);
 	}
@@ -716,7 +720,10 @@ window.lam.filterSelect.filterStandard = function(inputField, selectField) {
 			var newOption = jQuery('<option>');
 			newOption.text(option.text).val(index);
 			if (option.selected) {
-				newOption.attr('selected', 'selected')
+				newOption.attr('selected', 'selected');
+			}
+			if (option.cssClasses) {
+				newOption.attr('class', option.cssClasses);
 			}
 			selectField.append(newOption);
 		}
@@ -2052,6 +2059,30 @@ window.lam.treeview.getNodes = function (tokenName, tokenValue, node, callback) 
 	.done(function(jsonData) {
 		callback.call(this, jsonData);
 	})
+}
+
+/**
+ * Creates a new node in tree view.
+ *
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ * @param node tree node
+ * @param tree tree
+ */
+window.lam.treeview.createNode = function (tokenName, tokenValue, node, tree) {
+	var data = {
+		jsonInput: ""
+	};
+	data[tokenName] = tokenValue;
+	data["dn"] = node.id;
+	jQuery.ajax({
+		url: "../misc/ajax.php?function=treeview&command=createNewNode",
+		method: "POST",
+		data: data
+	})
+	.done(function(jsonData) {
+		jQuery('#ldap_actionarea').html(jsonData.content);
+	});
 }
 
 /**

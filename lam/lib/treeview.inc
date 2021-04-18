@@ -2,6 +2,7 @@
 namespace LAM\TOOLS\TREEVIEW;
 use htmlDiv;
 use htmlElement;
+use htmlGroup;
 use htmlInputField;
 use htmlInputTextarea;
 use htmlLink;
@@ -93,9 +94,15 @@ class TreeView {
 				return $this->getInternalAttributesContent($dn);
 				break;
 			case 'saveAttributes':
+				$this->ensureWriteAccess();
 				return $this->saveAttributes($dn);
 				break;
+			case 'createNewNode':
+				$this->ensureWriteAccess();
+				return $this->createNewNode($dn);
+				break;
 			case 'deleteNode':
+				$this->ensureWriteAccess();
 				return $this->deleteNode($dn);
 				break;
 			default:
@@ -341,14 +348,16 @@ class TreeView {
 			$row->add(new htmlDiv('new-attributes-multi-textarea', $newAttributesContentMultiTextarea, array('hidden')), 12);
 		}
 
-		$row->addVerticalSpacer('2rem');
-		$saveButton = new htmlLink(_('Save'), '#', '../../graphics/save.png', true);
-		$saveButton->setId('savebutton');
-		$saveButton->setOnClick('window.lam.treeview.saveAttributes(event,
+		if (checkIfWriteAccessIsAllowed()) {
+			$row->addVerticalSpacer('2rem');
+			$saveButton = new htmlLink(_('Save'), '#', '../../graphics/save.png', true);
+			$saveButton->setId('savebutton');
+			$saveButton->setOnClick('window.lam.treeview.saveAttributes(event,
 			"' . getSecurityTokenName() . '",
 			"' . getSecurityTokenValue() . '",
 			"' . base64_encode($dn) . '");');
-		$row->add($saveButton, 12, 12, 12, 'text-center');
+			$row->add($saveButton, 12, 12, 12, 'text-center');
+		}
 
 		$internalAttributesContent = new htmlResponsiveRow();
 		$internalAttributesContent->add(new htmlSubTitle(_('Internal attributes')), 12);
@@ -421,14 +430,16 @@ class TreeView {
 		$valueTable->setCSSClasses(array('fullwidth'));
 		foreach ($values as $value) {
 			$valueTable->addElement($this->getAttributeInputField($attributeName, $value, $required, $isMultiLine, false));
-			$addButton = new htmlLink(null, '#', '../../graphics/add.png');
-			$addButton->setCSSClasses(array('margin2'));
-			$addButton->setOnClick('window.lam.treeview.addValue(event, this);');
-			$valueTable->addElement($addButton);
-			$clearButton = new htmlLink(null, '#', '../../graphics/del.png');
-			$clearButton->setCSSClasses(array('margin2'));
-			$clearButton->setOnClick('window.lam.treeview.clearValue(event, this);');
-			$valueTable->addElement($clearButton);
+			if (checkIfWriteAccessIsAllowed()) {
+				$addButton = new htmlLink(null, '#', '../../graphics/add.png');
+				$addButton->setCSSClasses(array('margin2'));
+				$addButton->setOnClick('window.lam.treeview.addValue(event, this);');
+				$valueTable->addElement($addButton);
+				$clearButton = new htmlLink(null, '#', '../../graphics/del.png');
+				$clearButton->setCSSClasses(array('margin2'));
+				$clearButton->setOnClick('window.lam.treeview.clearValue(event, this);');
+				$valueTable->addElement($clearButton);
+			}
 			$valueTable->addNewLine();
 		}
 		return $valueTable;
@@ -598,6 +609,49 @@ class TreeView {
 	}
 
 	/**
+	 * Displays the content to create a new subnode.
+	 *
+	 * @param string $dn DN
+	 * @return string JSON data
+	 */
+	private function createNewNode(string $dn): string {
+		$row = new htmlResponsiveRow();
+		$row->add(new htmlTitle(_('Create a child entry')), 12);
+		$row->addLabel(new htmlOutputText(_('Parent')));
+		$row->addField(new htmlOutputText($dn));
+		$row->addVerticalSpacer('1rem');
+		$schemaObjectClasses = $this->getSchemaObjectClasses();
+		$objectClassOptions = array();
+		$selectCssClasses = array();
+		foreach ($schemaObjectClasses as $schemaObjectClass) {
+			$name = $schemaObjectClass->getName();
+			$objectClassOptions[$name] = $name;
+			if ($schemaObjectClass->getType() === 'structural') {
+				$selectCssClasses[$name] = 'bold';
+			}
+		}
+		$objectClassSelect = new htmlResponsiveSelect('objectClasses', $objectClassOptions, array(), _('Object classes'), null, 10);
+		$objectClassSelect->setHasDescriptiveElements(true);
+		$objectClassSelect->setMultiSelect(true);
+		$objectClassSelect->setOptionCssClasses($selectCssClasses);
+		$row->add($objectClassSelect, 12);
+		$row->addVerticalSpacer('0.5rem');
+		$filterGroup = new htmlGroup();
+		$filterGroup->addElement(new htmlOutputText(_('Filter') . ' '));
+		$filterInput = new htmlInputField('filter', '');
+		$filterInput->filterSelectBox('objectClasses');
+		$filterGroup->addElement($filterInput);
+		$row->addLabel(new htmlOutputText('&nbsp;', false));
+		$row->addField($filterGroup);
+		ob_start();
+		$tabIndex = 1;
+		parseHtml(null, $row, array(), false, $tabIndex, '');
+		$content = ob_get_contents();
+		ob_end_clean();
+		return json_encode(array('content' => $content));
+	}
+
+	/**
 	 * Deletes a node in LDAP.
 	 *
 	 * @param string $dn DN
@@ -665,6 +719,16 @@ class TreeView {
 			$this->schemaObjectClasses = get_schema_objectclasses();
 		}
 		return $this->schemaObjectClasses;
+	}
+
+	/**
+	 * Stops processing if no write access is allowed.
+	 */
+	private function ensureWriteAccess(): void {
+		if (!checkIfWriteAccessIsAllowed()) {
+			logNewMessage(LOG_ERR, 'Write opertion denied for tree view.');
+			die();
+		}
 	}
 
 }

@@ -1230,6 +1230,8 @@ class htmlSelect extends htmlElement {
 	protected $tableRowsToShow = array();
 	/** dynamic scrolling */
 	private $dynamicScrolling = false;
+	/** CSS classes for values */
+	private $optionCssClasses = array();
 
 	/**
 	 * Constructor.
@@ -1380,17 +1382,21 @@ class htmlSelect extends htmlElement {
 		}
 		foreach ($elements as $key => $value) {
 			$selected = '';
+			$optionClass = '';
+			if (isset($this->optionCssClasses[$value])) {
+				$optionClass = 'class="' . $this->optionCssClasses[$value] . '"';
+			}
 			if ($this->hasDescriptiveElements) {
 				if (in_array($value, $this->selectedElements) || (empty($this->selectedElements) && empty($value))) {
 					$selected = ' selected';
 				}
-				echo "<option value=\"" . htmlspecialchars($value) . "\"$selected>" . htmlspecialchars($key) . "</option>\n";
+				echo "<option value=\"" . htmlspecialchars($value) . "\"$selected $optionClass>" . htmlspecialchars($key) . "</option>\n";
 			}
 			else {
 				if (in_array($value, $this->selectedElements) || (empty($this->selectedElements) && empty($value))) {
 					$selected = ' selected';
 				}
-				echo "<option$selected>" . htmlspecialchars($value) . "</option>\n";
+				echo "<option$selected $optionClass>" . htmlspecialchars($value) . "</option>\n";
 			}
 		}
 	}
@@ -1598,6 +1604,15 @@ class htmlSelect extends htmlElement {
 		}
 		$this->addDataAttribute('dynamic-options', json_encode($elementData));
 		$this->cssClasses[] = 'lam-dynamicOptions';
+	}
+
+	/**
+	 * Sets CSS classes for option values.
+	 *
+	 * @param array $optionCssClasses array('option value' => 'CSS class(es)')
+	 */
+	public function setOptionCssClasses(array $optionCssClasses): void {
+		$this->optionCssClasses = $optionCssClasses;
 	}
 
 }
