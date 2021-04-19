@@ -4291,7 +4291,7 @@ class htmlResponsiveRow extends htmlElement {
 	 * @param int $numDesktop number of columns for desktop view (set to tablet if null)
 	 * @param String $classes CSS classes separated by space
 	 */
-	public function add($content, $numMobile, $numTablet = null, $numDesktop = null, $classes = '') {
+	public function add($content, $numMobile = 12, $numTablet = null, $numDesktop = null, $classes = '') {
 		$tabletCols = ($numTablet === null) ? $numMobile : $numTablet;
 		$desktopCols = ($numDesktop === null) ? $tabletCols : $numDesktop;
 		$this->addCell(new htmlResponsiveCell($content, $numMobile, $tabletCols, $desktopCols, $classes));
