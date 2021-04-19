@@ -1,8 +1,10 @@
 <?php
 namespace LAM\TOOLS\TREEVIEW;
+use htmlButton;
 use htmlDiv;
 use htmlElement;
 use htmlGroup;
+use htmlHiddenInput;
 use htmlInputField;
 use htmlInputTextarea;
 use htmlLink;
@@ -86,25 +88,24 @@ class TreeView {
 		switch ($command) {
 			case 'getNodes':
 				return $this->getNodes($dn);
-				break;
 			case 'getNodeContent':
+				$this->validateDn($dn);
 				return $this->getNodeContent($dn);
-				break;
 			case 'getInternalAttributesContent':
+				$this->validateDn($dn);
 				return $this->getInternalAttributesContent($dn);
-				break;
 			case 'saveAttributes':
 				$this->ensureWriteAccess();
+				$this->validateDn($dn);
 				return $this->saveAttributes($dn);
-				break;
 			case 'createNewNode':
 				$this->ensureWriteAccess();
+				$this->validateDn($dn);
 				return $this->createNewNode($dn);
-				break;
 			case 'deleteNode':
 				$this->ensureWriteAccess();
+				$this->validateDn($dn);
 				return $this->deleteNode($dn);
-				break;
 			default:
 				logNewMessage(LOG_ERR, 'Invalid command for tree view: ' . $command);
 				die;
@@ -280,7 +281,6 @@ class TreeView {
 	 * @return string JSON
 	 */
 	private function getNodeContent(string $dn): string {
-		$this->validateDn($dn);
 		$row = new htmlResponsiveRow();
 		$row->add(new htmlTitle($dn), 12);
 		$row->add(new htmlDiv('ldap_actionarea_messages', new htmlOutputText('')), 12);
@@ -524,7 +524,6 @@ class TreeView {
 	 * @return string JSON
 	 */
 	private function getInternalAttributesContent(string $dn): string {
-		$this->validateDn($dn);
 		$row = new htmlResponsiveRow();
 		$row->add(new htmlSubTitle(_('Internal attributes')), 12);
 		$attributes = ldapGetDN($dn, array('+', 'creatorsName', 'createTimestamp', 'modifiersName',
@@ -550,7 +549,6 @@ class TreeView {
 	 * @return string JSON
 	 */
 	private function saveAttributes(string $dn): string {
-		$this->validateDn($dn);
 		$changes = json_decode($_POST['changes'], true);
 		array_change_key_case($changes, CASE_LOWER);
 		logNewMessage(LOG_DEBUG, 'LDAP changes for ' . $dn . ': ' . print_r($changes, true));
@@ -615,8 +613,29 @@ class TreeView {
 	 * @return string JSON data
 	 */
 	private function createNewNode(string $dn): string {
+		$step = $_GET['step'];
+		switch ($step) {
+			case 'getObjectClasses':
+				return $this->createNewNodeGetObjectClassesStep($dn);
+			case 'checkObjectClasses':
+				return $this->createNewNodeCheckObjectClassesStep($dn);
+		}
+		logNewMessage(LOG_ERR, 'Invalid create new node step: ' . $step);
+	}
+
+	/**
+	 * Returns the content to select the object classes.
+	 *
+	 * @param string $dn DN
+	 * @param string|null $errorMessage error if any
+	 * @return string JSON data
+	 */
+	private function createNewNodeGetObjectClassesStep(string $dn, string $errorMessage = null): string {
 		$row = new htmlResponsiveRow();
-		$row->add(new htmlTitle(_('Create a child entry')), 12);
+		$row->add(new htmlTitle(_('Create a child entry')));
+		if ($errorMessage !== null) {
+			$row->add(new htmlStatusMessage('ERROR', $errorMessage));
+		}
 		$row->addLabel(new htmlOutputText(_('Parent')));
 		$row->addField(new htmlOutputText($dn));
 		$row->addVerticalSpacer('1rem');
@@ -643,6 +662,62 @@ class TreeView {
 		$filterGroup->addElement($filterInput);
 		$row->addLabel(new htmlOutputText('&nbsp;', false));
 		$row->addField($filterGroup);
+		$row->addVerticalSpacer('1rem');
+		$nextButton = new htmlButton('next', _('Next'));
+		$nextButton->setOnClick('window.lam.treeview.createNodeSelectObjectClassesStep(event, \'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\');');
+		$row->add($nextButton, 12, 12, 12, 'text-center');
+		$row->addVerticalSpacer('2rem');
+		$row->add(new htmlOutputText(_('Hint: You must choose exactly one structural object class (shown in bold above)')), 12);
+		$row->add(new htmlHiddenInput('parentDn', base64_encode($dn)), 12);
+		ob_start();
+		$tabIndex = 1;
+		parseHtml(null, $row, array(), false, $tabIndex, '');
+		$content = ob_get_contents();
+		ob_end_clean();
+		return json_encode(array('content' => $content));
+	}
+
+	/**
+	 * Returns the content to select the object classes.
+	 *
+	 * @param string $dn DN
+	 * @param string|null $errorMessage error if any
+	 * @return string JSON data
+	 */
+	private function createNewNodeCheckObjectClassesStep(string $dn, string $errorMessage = null): string {
+		$objectClasses = $_POST['objectClasses'];
+		$structuralObjectClassesCount = 0;
+		$schemaObjectClasses = $this->getSchemaObjectClasses();
+		foreach ($objectClasses as $objectClass) {
+			$objectClassLower = strtolower($objectClass);
+			if (!isset($schemaObjectClasses[$objectClassLower])) {
+				logNewMessage(LOG_ERR, 'Tree view new node, invalid object class: ' . $objectClass);
+				return $this->createNewNodeGetObjectClassesStep($dn, _('Invalid object class.'));
+			}
+			if ($schemaObjectClasses[$objectClassLower]->getType() === 'structural') {
+				$structuralObjectClassesCount++;
+			}
+		}
+		if ($structuralObjectClassesCount === 0) {
+			return $this->createNewNodeGetObjectClassesStep($dn, _('No structural object class selected.'));
+		}
+		elseif ($structuralObjectClassesCount > 1) {
+			return $this->createNewNodeGetObjectClassesStep($dn, _('Multiple structural object classes selected.'));
+		}
+		$row = new htmlResponsiveRow();
+		$row->add(new htmlTitle(_('Create a child entry')));
+		if ($errorMessage !== null) {
+			$row->add(new htmlStatusMessage('ERROR', $errorMessage));
+		}
+		$row->addLabel(new htmlOutputText(_('Parent')));
+		$row->addField(new htmlOutputText($dn));
+		$row->addVerticalSpacer('1rem');
+		// TODO attribute fields
+		$row->addVerticalSpacer('1rem');
+		$nextButton = new htmlButton('save', _('Create'));
+		$nextButton->setOnClick('window.lam.treeview.createNodeEnterAttributesStep(event, \'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\');');
+		$row->add($nextButton, 12, 12, 12, 'text-center');
+		$row->add(new htmlHiddenInput('objectClasses', implode(',', $objectClasses)));
 		ob_start();
 		$tabIndex = 1;
 		parseHtml(null, $row, array(), false, $tabIndex, '');
@@ -658,7 +733,6 @@ class TreeView {
 	 * @return string JSON
 	 */
 	private function deleteNode(string $dn): string {
-		$this->validateDn($dn);
 		$errors = deleteDN($dn, true);
 		foreach ($errors as $error) {
 			logNewMessage(LOG_ERR, 'Tree view delete node failed: ' . $error[0] . ' ' . $error[1]);
@@ -726,7 +800,7 @@ class TreeView {
 	 */
 	private function ensureWriteAccess(): void {
 		if (!checkIfWriteAccessIsAllowed()) {
-			logNewMessage(LOG_ERR, 'Write opertion denied for tree view.');
+			logNewMessage(LOG_ERR, 'Write operation denied for tree view.');
 			die();
 		}
 	}

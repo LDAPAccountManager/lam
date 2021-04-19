@@ -2076,7 +2076,32 @@ window.lam.treeview.createNode = function (tokenName, tokenValue, node, tree) {
 	data[tokenName] = tokenValue;
 	data["dn"] = node.id;
 	jQuery.ajax({
-		url: "../misc/ajax.php?function=treeview&command=createNewNode",
+		url: "../misc/ajax.php?function=treeview&command=createNewNode&step=getObjectClasses",
+		method: "POST",
+		data: data
+	})
+	.done(function(jsonData) {
+		jQuery('#ldap_actionarea').html(jsonData.content);
+	});
+}
+
+/**
+ * Selects the object classes.
+ *
+ * @param event event
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ */
+window.lam.treeview.createNodeSelectObjectClassesStep = function (event, tokenName, tokenValue) {
+	event.preventDefault();
+	var data = {
+		jsonInput: ""
+	};
+	data[tokenName] = tokenValue;
+	data["dn"] = jQuery('#parentDn').val();
+	data["objectClasses"] = jQuery('#objectClasses').val();
+	jQuery.ajax({
+		url: "../misc/ajax.php?function=treeview&command=createNewNode&step=checkObjectClasses",
 		method: "POST",
 		data: data
 	})
