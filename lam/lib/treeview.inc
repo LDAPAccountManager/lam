@@ -384,19 +384,20 @@ class TreeView {
 	 * @param htmlResponsiveRow $row container where to add content
 	 * @param string $attributeName attribute name
 	 * @param array $values values
-	 * @param AttributeType $schemaAttribute schema attribute
+	 * @param AttributeType|null $schemaAttribute schema attribute
 	 * @param string[] $objectClasses object classes
-	 * @param string $dn DN
+	 * @param string|null $dn DN
 	 * @param array $highlighted list of highlighted attribute names
 	 */
 	private function addAttributeContent(htmlResponsiveRow $row, string $attributeName, array $values,
-	                                    ?AttributeType $schemaAttribute, array $objectClasses, string $dn,
+	                                    ?AttributeType $schemaAttribute, array $objectClasses, ?string $dn,
 										array $highlighted): void {
+		$schemaObjectClasses = $this->getSchemaObjectClasses();
 		$label = new htmlOutputText($attributeName);
-		$rdnAttribute = strtolower(extractRDNAttribute($dn));
+		$rdnAttribute = ($dn !== null) ? strtolower(extractRDNAttribute($dn)) : '';
 		$attributeNameLowerCase = strtolower($attributeName);
 		$required = ($attributeNameLowerCase === $rdnAttribute) || ($attributeNameLowerCase === 'objectclass');
-		if (($schemaAttribute !== null) && $this->isAttributeRequired($schemaAttribute, $objectClasses)) {
+		if (($schemaAttribute !== null) && $this->isAttributeRequired($schemaObjectClasses, $schemaAttribute, $objectClasses)) {
 			$required = true;
 		}
 		$label->setMarkAsRequired($required);
@@ -498,20 +499,26 @@ class TreeView {
 	/**
 	 * Returns if the attribute is required for the given list of object classes.
 	 *
+	 * @param ObjectClass[] $schemaObjectClasses object class definitions
 	 * @param AttributeType $schemaAttribute schema attribute
 	 * @param array $objectClasses list of object classes
 	 * @return bool is required
 	 */
-	private function isAttributeRequired(AttributeType $schemaAttribute, array $objectClasses): bool {
-		$schemaObjectClasses = $this->getSchemaObjectClasses();
+	private function isAttributeRequired(array $schemaObjectClasses, AttributeType $schemaAttribute, array $objectClasses): bool {
 		foreach ($objectClasses as $objectClass) {
 			$objectClass = strtolower($objectClass);
 			if (!isset($schemaObjectClasses[$objectClass])) {
 				continue;
 			}
-			$requiredAttributes = $schemaObjectClasses[$objectClass]->getMustAttrNames();
+			$schemaObjectClass = $schemaObjectClasses[$objectClass];
+			$requiredAttributes = $schemaObjectClass->getMustAttrNames();
 			if (in_array_ignore_case($schemaAttribute->getName(), $requiredAttributes)) {
 				return true;
+			}
+			if (!empty($schemaObjectClass->getSupClasses())) {
+				if ($this->isAttributeRequired($schemaObjectClasses, $schemaAttribute, $schemaObjectClass->getSupClasses())) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -712,18 +719,122 @@ class TreeView {
 		$row->addLabel(new htmlOutputText(_('Parent')));
 		$row->addField(new htmlOutputText($dn));
 		$row->addVerticalSpacer('1rem');
-		// TODO attribute fields
+		$schemaAttributes = $this->getSchemaAttributes();
+		$mustAttributes = array();
+		$mayAttributes = array();
+		foreach ($objectClasses as $objectClass) {
+			$classMustAttributeNames = $this->getMustAttributeNamesRecursive($schemaObjectClasses, $objectClass);
+			foreach ($classMustAttributeNames as $classMustAttributeName) {
+				$attrNameLower = strtolower($classMustAttributeName);
+				if (!isset($schemaAttributes[$attrNameLower])) {
+					logNewMessage(LOG_ERR, 'Tree view new node, invalid attribute: ' . $classMustAttributeName);
+					return $this->createNewNodeGetObjectClassesStep($dn, _('Invalid object class.'));
+				}
+				$mustAttributes[$attrNameLower] = $schemaAttributes[$attrNameLower];
+			}
+		}
+		foreach ($objectClasses as $objectClass) {
+			$classMayAttributeNames = $this->getMayAttributeNamesRecursive($schemaObjectClasses, $objectClass);
+			foreach ($classMayAttributeNames as $classMayAttributeName) {
+				$attrNameLower = strtolower($classMayAttributeName);
+				if (!isset($schemaAttributes[$attrNameLower])) {
+					logNewMessage(LOG_ERR, 'Tree view new node, invalid attribute: ' . $classMayAttributeName);
+					return $this->createNewNodeGetObjectClassesStep($dn, _('Invalid object class.'));
+				}
+				if (array_key_exists($attrNameLower, $mustAttributes)) {
+					continue;
+				}
+				$mayAttributes[$attrNameLower] = $schemaAttributes[$attrNameLower];
+			}
+		}
+		if (isset($mustAttributes['objectclass'])) {
+			unset($mustAttributes['objectclass']);
+		}
+		ksort($mustAttributes);
+		ksort($mayAttributes);
+		$allAttributes = array_merge($mustAttributes, $mayAttributes);
+		ksort($allAttributes);
+		$rdnOptions = array();
+		foreach ($allAttributes as $attribute) {
+			$rdnOptions[] = $attribute->getName();
+		}
+		$rdnOptionsSelected = array();
+		if (isset($allAttributes['cn'])) {
+			$rdnOptionsSelected[] = $allAttributes['cn']->getName();
+		}
+		$row->add(new htmlResponsiveSelect('rdn', $rdnOptions, $rdnOptionsSelected, _('RDN identifier')));
+		if (!empty($mustAttributes)) {
+			$row->add(new htmlSubTitle(_('Required attributes')));
+		}
+		foreach ($mustAttributes as $mustAttribute) {
+			$this->addAttributeContent($row, $mustAttribute->getName(), array(''), $mustAttribute, $objectClasses, null, array());
+		}
+		if (!empty($mayAttributes)) {
+			$row->add(new htmlSubTitle(_('Optional attributes')));
+		}
+		foreach ($mayAttributes as $mayAttribute) {
+			$this->addAttributeContent($row, $mayAttribute->getName(), array(''), $mayAttribute, $objectClasses, null, array());
+		}
 		$row->addVerticalSpacer('1rem');
 		$nextButton = new htmlButton('save', _('Create'));
 		$nextButton->setOnClick('window.lam.treeview.createNodeEnterAttributesStep(event, \'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\');');
 		$row->add($nextButton, 12, 12, 12, 'text-center');
 		$row->add(new htmlHiddenInput('objectClasses', implode(',', $objectClasses)));
+		$row->add(new htmlHiddenInput('parentDn', $dn));
 		ob_start();
 		$tabIndex = 1;
 		parseHtml(null, $row, array(), false, $tabIndex, '');
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(array('content' => $content));
+	}
+
+	/**
+	 * Gets a recursive list of must attribute names.
+	 *
+	 * @param ObjectClass[] $objectClasses schema object classes
+	 * @param string $objectClass object class
+	 * @return array attribute names
+	 */
+	private function getMustAttributeNamesRecursive(array $objectClasses, string $objectClass): array {
+		$objectClassLower = strtolower($objectClass);
+		$objectClassObject = $objectClasses[$objectClassLower];
+		$attributeNames = $objectClassObject->getMustAttrNames();
+		if ($attributeNames === null) {
+			$attributeNames = array();
+		}
+		if (!empty($objectClassObject->getSupClasses())) {
+			foreach ($objectClassObject->getSupClasses() as $superClass) {
+				$attributeNames = array_merge($attributeNames, $this->getMustAttributeNamesRecursive($objectClasses, $superClass));
+			}
+		}
+		$attributeNames = array_map('strtolower', $attributeNames);
+		$attributeNames = array_unique($attributeNames);
+		return $attributeNames;
+	}
+
+	/**
+	 * Gets a recursive list of may attribute names.
+	 *
+	 * @param ObjectClass[] $objectClasses schema object classes
+	 * @param string $objectClass object class
+	 * @return array attribute names
+	 */
+	private function getMayAttributeNamesRecursive(array $objectClasses, string $objectClass): array {
+		$objectClassLower = strtolower($objectClass);
+		$objectClassObject = $objectClasses[$objectClassLower];
+		$attributeNames = $objectClassObject->getMayAttrNames();
+		if ($attributeNames === null) {
+			$attributeNames = array();
+		}
+		if (!empty($objectClassObject->getSupClasses())) {
+			foreach ($objectClassObject->getSupClasses() as $superClass) {
+				$attributeNames = array_merge($attributeNames, $this->getMayAttributeNamesRecursive($objectClasses, $superClass));
+			}
+		}
+		$attributeNames = array_map('strtolower', $attributeNames);
+		$attributeNames = array_unique($attributeNames);
+		return $attributeNames;
 	}
 
 	/**

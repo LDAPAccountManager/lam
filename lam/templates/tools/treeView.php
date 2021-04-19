@@ -125,6 +125,7 @@ function showTree() {
 					"changed"
 				],
 				"contextmenu": {
+					"select_node": false,
 					"items": function(node) {
 						var tree = jQuery.jstree.reference("#ldap_tree");
 						var menuItems = {' .

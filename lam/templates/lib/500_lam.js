@@ -2111,6 +2111,34 @@ window.lam.treeview.createNodeSelectObjectClassesStep = function (event, tokenNa
 }
 
 /**
+ * Selects the attributes.
+ *
+ * @param event event
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ */
+window.lam.treeview.createNodeEnterAttributesStep = function (event, tokenName, tokenValue) {
+	event.preventDefault();
+	var data = {
+		jsonInput: ""
+	};
+	data[tokenName] = tokenValue;
+	data["dn"] = jQuery('#parentDn').val();
+	data["rdn"] = jQuery('#rdn').val();
+	data["objectClasses"] = jQuery('#objectClasses').val();
+	var attributeChanges = window.lam.treeview.findAttributeChanges();
+	data["attributes"] = JSON.stringify(attributeChanges);
+	jQuery.ajax({
+		url: "../misc/ajax.php?function=treeview&command=createNewNode&step=checkAttributes",
+		method: "POST",
+		data: data
+	})
+		.done(function(jsonData) {
+			jQuery('#ldap_actionarea').html(jsonData.content);
+		});
+}
+
+/**
  * Deletes a node in tree view.
  *
  * @param tokenName security token name
@@ -2222,8 +2250,33 @@ window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn)
 	};
 	data[tokenName] = tokenValue;
 	data["dn"] = dn;
+	var attributeChanges = window.lam.treeview.findAttributeChanges();
+	var attributesToHighlight = Object.keys(attributeChanges);
+	data["changes"] = JSON.stringify(attributeChanges);
+	jQuery.ajax({
+		url: "../misc/ajax.php?function=treeview&command=saveAttributes",
+		method: "POST",
+		data: data
+	})
+	.done(function(jsonData) {
+		if (jsonData['newDn']) {
+			var tree = jQuery.jstree.reference("#ldap_tree");
+			tree.refresh_node(jsonData['parent']);
+			window.lam.treeview.getNodeContent(tokenName, tokenValue, jsonData['newDn'], jsonData.result, attributesToHighlight);
+		}
+		else {
+			window.lam.treeview.getNodeContent(tokenName, tokenValue, dn, jsonData.result, attributesToHighlight);
+		}
+	});
+}
+
+/**
+ * Finds the attributes that were changed by the user.
+ *
+ * @returns list of changes
+ */
+window.lam.treeview.findAttributeChanges = function () {
 	var attributeChanges = {};
-	var attributesToHighlight = [];
 	jQuery('.single-input').each(
 		function() {
 			var input = jQuery(this);
@@ -2241,7 +2294,6 @@ window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn)
 				else {
 					attributeChanges[attrName]["new"] = [valueNew];
 				}
-				attributesToHighlight.push(attrName);
 			}
 		}
 	);
@@ -2259,7 +2311,6 @@ window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn)
 						old: lastAttrValuesOld,
 						new: lastAttrValuesNew
 					};
-					attributesToHighlight.push(lastAttrName);
 				}
 				// reset
 				lastAttrHasChange = false;
@@ -2286,24 +2337,8 @@ window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn)
 			old: lastAttrValuesOld,
 			new: lastAttrValuesNew
 		};
-		attributesToHighlight.push(lastAttrName);
 	}
-	data["changes"] = JSON.stringify(attributeChanges);
-	jQuery.ajax({
-		url: "../misc/ajax.php?function=treeview&command=saveAttributes",
-		method: "POST",
-		data: data
-	})
-	.done(function(jsonData) {
-		if (jsonData['newDn']) {
-			var tree = jQuery.jstree.reference("#ldap_tree");
-			tree.refresh_node(jsonData['parent']);
-			window.lam.treeview.getNodeContent(tokenName, tokenValue, jsonData['newDn'], jsonData.result, attributesToHighlight);
-		}
-		else {
-			window.lam.treeview.getNodeContent(tokenName, tokenValue, dn, jsonData.result, attributesToHighlight);
-		}
-	});
+	return attributeChanges;
 }
 
 /**
