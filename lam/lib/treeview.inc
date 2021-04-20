@@ -278,10 +278,15 @@ class TreeView {
 	/**
 	 * Returns the node content with the attribute listing.
 	 *
+	 * @param htmlStatusMessage|null $message message to display
 	 * @return string JSON
 	 */
-	private function getNodeContent(string $dn): string {
+	private function getNodeContent(string $dn, ?htmlStatusMessage $message = null): string {
 		$row = new htmlResponsiveRow();
+		if ($message !== null) {
+			$row->add($message);
+			$row->addVerticalSpacer('1rem');
+		}
 		$row->add(new htmlTitle($dn), 12);
 		$row->add(new htmlDiv('ldap_actionarea_messages', new htmlOutputText('')), 12);
 		$row->add(new htmlSubTitle(_('Attributes')), 12);
@@ -729,6 +734,9 @@ class TreeView {
 		$row->addLabel(new htmlOutputText(_('Parent')));
 		$row->addField(new htmlOutputText($dn));
 		$row->addVerticalSpacer('1rem');
+		$row->addLabel(new htmlOutputText(_('Object classes')));
+		$row->addField(new htmlOutputText(implode(', ', $objectClasses)));
+		$row->addVerticalSpacer('1rem');
 		$schemaAttributes = $this->getSchemaAttributes();
 		$mustAttributes = array();
 		$mayAttributes = array();
@@ -876,7 +884,7 @@ class TreeView {
 		if (!$success) {
 			return $this->createNewNodeCheckObjectClassesStep($dn, getExtendedLDAPErrorMessage($_SESSION['ldap']->server()), $rdnAttribute, $attributes);
 		}
-		return $this->getNodeContent($newDn);
+		return $this->getNodeContent($newDn, new htmlStatusMessage('INFO', sprintf(_('Creation successful. DN <b>%s</b> has been created.'), htmlspecialchars($newDn))));
 	}
 
 	/**

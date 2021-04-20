@@ -2148,13 +2148,13 @@ window.lam.treeview.createNodeEnterAttributesStep = function (event, tokenName, 
 		method: "POST",
 		data: data
 	})
-		.done(function(jsonData) {
-			jQuery('#ldap_actionarea').html(jsonData.content);
-			var tree = jQuery.jstree.reference("#ldap_tree");
-			tree.refresh_node(parentDn);
-			tree.open_node(parentDn);
-			jQuery("#ldap_actionarea").scrollTop(0);
-		});
+	.done(function(jsonData) {
+		jQuery('#ldap_actionarea').html(jsonData.content);
+		var tree = jQuery.jstree.reference("#ldap_tree");
+		tree.refresh_node(parentDn);
+		tree.open_node(parentDn);
+		jQuery("#ldap_actionarea").scrollTop(0);
+	});
 }
 
 /**
@@ -2167,10 +2167,10 @@ window.lam.treeview.createNodeEnterAttributesStep = function (event, tokenName, 
  * @param okText text for OK button
  * @param cancelText text for cancel button
  * @param title dialog title
- * @param errorOxText text for OK button in error dialog
+ * @param errorOkText text for OK button in error dialog
  * @param errorTitle dialog title in case of error
  */
-window.lam.treeview.deleteNode = function (tokenName, tokenValue, node, tree, okText, cancelText, title, errorOxText, errorTitle) {
+window.lam.treeview.deleteNode = function (tokenName, tokenValue, node, tree, okText, cancelText, title, errorOkText, errorTitle) {
 	var parent = node.parent;
 	var textSpan = jQuery('#treeview_delete_dlg').find('.treeview-delete-entry');
 	textSpan.text(node.text);
@@ -2199,7 +2199,7 @@ window.lam.treeview.deleteNode = function (tokenName, tokenValue, node, tree, ok
 				var textSpanErrorText = jQuery('#treeview_error_dlg').find('.treeview-error-text');
 				textSpanErrorText.text(errText);
 				var errorButtons = {};
-				errorButtons[errorOxText] = function () {
+				errorButtons[errorOkText] = function () {
 					jQuery(this).dialog("close");
 				};
 				jQuery('#treeview_error_dlg').dialog({
