@@ -626,6 +626,8 @@ class TreeView {
 				return $this->createNewNodeGetObjectClassesStep($dn);
 			case 'checkObjectClasses':
 				return $this->createNewNodeCheckObjectClassesStep($dn);
+			case 'checkAttributes':
+				return $this->createNewNodeCheckAttributesStep($dn);
 		}
 		logNewMessage(LOG_ERR, 'Invalid create new node step: ' . $step);
 	}
@@ -689,10 +691,17 @@ class TreeView {
 	 *
 	 * @param string $dn DN
 	 * @param string|null $errorMessage error if any
+	 * @param string|null $rdnAttribute RDN attribute name
+	 * @param array|null $attributes attribute values
 	 * @return string JSON data
 	 */
-	private function createNewNodeCheckObjectClassesStep(string $dn, string $errorMessage = null): string {
-		$objectClasses = $_POST['objectClasses'];
+	private function createNewNodeCheckObjectClassesStep(string $dn, ?string $errorMessage = null, ?string $rdnAttribute = null, ?array $attributes = null): string {
+		if ($attributes === null) {
+			$objectClasses = $_POST['objectClasses'];
+		}
+		else {
+			$objectClasses = $attributes['objectClass'];
+		}
 		$structuralObjectClassesCount = 0;
 		$schemaObjectClasses = $this->getSchemaObjectClasses();
 		foreach ($objectClasses as $objectClass) {
@@ -715,6 +724,7 @@ class TreeView {
 		$row->add(new htmlTitle(_('Create a child entry')));
 		if ($errorMessage !== null) {
 			$row->add(new htmlStatusMessage('ERROR', $errorMessage));
+			$row->addVerticalSpacer('0.5rem');
 		}
 		$row->addLabel(new htmlOutputText(_('Parent')));
 		$row->addField(new htmlOutputText($dn));
@@ -759,7 +769,10 @@ class TreeView {
 			$rdnOptions[] = $attribute->getName();
 		}
 		$rdnOptionsSelected = array();
-		if (isset($allAttributes['cn'])) {
+		if ($rdnAttribute !== null) {
+			$rdnOptionsSelected[] = $rdnAttribute;
+		}
+		elseif (isset($allAttributes['cn'])) {
 			$rdnOptionsSelected[] = $allAttributes['cn']->getName();
 		}
 		$row->add(new htmlResponsiveSelect('rdn', $rdnOptions, $rdnOptionsSelected, _('RDN identifier')));
@@ -767,20 +780,22 @@ class TreeView {
 			$row->add(new htmlSubTitle(_('Required attributes')));
 		}
 		foreach ($mustAttributes as $mustAttribute) {
-			$this->addAttributeContent($row, $mustAttribute->getName(), array(''), $mustAttribute, $objectClasses, null, array());
+			$values = empty($attributes[$mustAttribute->getName()]) ? array('') : $attributes[$mustAttribute->getName()];
+			$this->addAttributeContent($row, $mustAttribute->getName(), $values, $mustAttribute, $objectClasses, null, array());
 		}
 		if (!empty($mayAttributes)) {
 			$row->add(new htmlSubTitle(_('Optional attributes')));
 		}
 		foreach ($mayAttributes as $mayAttribute) {
-			$this->addAttributeContent($row, $mayAttribute->getName(), array(''), $mayAttribute, $objectClasses, null, array());
+			$values = empty($attributes[$mayAttribute->getName()]) ? array('') : $attributes[$mayAttribute->getName()];
+			$this->addAttributeContent($row, $mayAttribute->getName(), $values, $mayAttribute, $objectClasses, null, array());
 		}
 		$row->addVerticalSpacer('1rem');
 		$nextButton = new htmlButton('save', _('Create'));
 		$nextButton->setOnClick('window.lam.treeview.createNodeEnterAttributesStep(event, \'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\');');
 		$row->add($nextButton, 12, 12, 12, 'text-center');
 		$row->add(new htmlHiddenInput('objectClasses', implode(',', $objectClasses)));
-		$row->add(new htmlHiddenInput('parentDn', $dn));
+		$row->add(new htmlHiddenInput('parentDn', base64_encode($dn)));
 		ob_start();
 		$tabIndex = 1;
 		parseHtml(null, $row, array(), false, $tabIndex, '');
@@ -835,6 +850,33 @@ class TreeView {
 		$attributeNames = array_map('strtolower', $attributeNames);
 		$attributeNames = array_unique($attributeNames);
 		return $attributeNames;
+	}
+
+	/**
+	 * Returns the content for the check attributes step of node creation.
+	 *
+	 * @param string $dn DN
+	 * @param string|null $errorMessage error if any
+	 * @return string JSON data
+	 */
+	private function createNewNodeCheckAttributesStep(string $dn, string $errorMessage = null): string {
+		$objectClasses = $_POST['objectClasses'];
+		$rdnAttribute = $_POST['rdn'];
+		$attributeChanges = json_decode($_POST['attributes'], true);
+		$attributes = array('objectClass' => explode(',', $objectClasses));
+		foreach ($attributeChanges as $attributeName => $attributeChange) {
+			$attributes[$attributeName] = $attributeChange['new'];
+		}
+		if (!isset($attributes[$rdnAttribute][0])) {
+			return $this->createNewNodeCheckObjectClassesStep($dn, _('The RDN field is empty.'), $rdnAttribute, $attributes);
+		}
+		$rdn = $rdnAttribute . '=' . $attributes[$rdnAttribute][0];
+		$newDn = $rdn . ',' . $dn;
+		$success = ldap_add($_SESSION['ldap']->server(), $newDn, $attributes);
+		if (!$success) {
+			return $this->createNewNodeCheckObjectClassesStep($dn, getExtendedLDAPErrorMessage($_SESSION['ldap']->server()), $rdnAttribute, $attributes);
+		}
+		return $this->getNodeContent($newDn);
 	}
 
 	/**

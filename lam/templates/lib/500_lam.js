@@ -2123,9 +2123,24 @@ window.lam.treeview.createNodeEnterAttributesStep = function (event, tokenName, 
 		jsonInput: ""
 	};
 	data[tokenName] = tokenValue;
-	data["dn"] = jQuery('#parentDn').val();
+	var parentDn = jQuery('#parentDn').val()
+	data["dn"] = parentDn;
 	data["rdn"] = jQuery('#rdn').val();
 	data["objectClasses"] = jQuery('#objectClasses').val();
+	// clear old values in data
+	jQuery('.single-input').each(
+		function() {
+			var input = jQuery(this);
+			input.attr('data-value-orig', '');
+		}
+	);
+	jQuery('.multi-input').each(
+		function() {
+			var input = jQuery(this);
+			input.attr('data-value-orig', '');
+		}
+	);
+	// get attribute values
 	var attributeChanges = window.lam.treeview.findAttributeChanges();
 	data["attributes"] = JSON.stringify(attributeChanges);
 	jQuery.ajax({
@@ -2135,6 +2150,10 @@ window.lam.treeview.createNodeEnterAttributesStep = function (event, tokenName, 
 	})
 		.done(function(jsonData) {
 			jQuery('#ldap_actionarea').html(jsonData.content);
+			var tree = jQuery.jstree.reference("#ldap_tree");
+			tree.refresh_node(parentDn);
+			tree.open_node(parentDn);
+			jQuery("#ldap_actionarea").scrollTop(0);
 		});
 }
 
