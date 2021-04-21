@@ -2443,6 +2443,62 @@ window.lam.treeview.getInternalAttributesContent = function (event, tokenName, t
 	});
 }
 
+/**
+ * Searches the LDAP tree.
+ *
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ * @param dn DN (base64 encoded)
+ */
+window.lam.treeview.search = function (tokenName, tokenValue, dn) {
+	var data = {
+		jsonInput: ""
+	};
+	data[tokenName] = tokenValue;
+	data["dn"] = dn;
+	jQuery.ajax({
+		url: "../misc/ajax.php?function=treeview&command=search",
+		method: "POST",
+		data: data
+	})
+	.done(function(jsonData) {
+		jQuery('#ldap_actionarea').html(jsonData.content);
+		jQuery("#ldap_actionarea").scrollTop(0);
+	});
+}
+
+/**
+ * Displays the search results.
+ *
+ * @param event event
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ * @param dn DN (base64 encoded)
+ */
+window.lam.treeview.searchResults = function (event, tokenName, tokenValue, dn) {
+	event.preventDefault();
+	var data = {
+		jsonInput: ""
+	};
+	data[tokenName] = tokenValue;
+	data["dn"] = dn;
+	data["scope"] = jQuery('#scope').val();
+	data["filter"] = jQuery('#filter').val();
+	data["attributes"] = jQuery('#attributes').val();
+	data["orderBy"] = jQuery('#orderBy').val();
+	data["limit"] = jQuery('#limit').val();
+	data["format"] = jQuery('#format').val();
+	jQuery.ajax({
+		url: "../misc/ajax.php?function=treeview&command=searchResults",
+		method: "POST",
+		data: data
+	})
+		.done(function(jsonData) {
+			jQuery('#ldap_actionarea').html(jsonData.content);
+			jQuery("#ldap_actionarea").scrollTop(0);
+		});
+}
+
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();
 	window.lam.form.autoTrim();

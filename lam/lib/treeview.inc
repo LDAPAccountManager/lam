@@ -9,6 +9,7 @@ use htmlInputField;
 use htmlInputTextarea;
 use htmlLink;
 use htmlOutputText;
+use htmlResponsiveInputField;
 use htmlResponsiveRow;
 use htmlResponsiveSelect;
 use htmlStatusMessage;
@@ -106,6 +107,12 @@ class TreeView {
 				$this->ensureWriteAccess();
 				$this->validateDn($dn);
 				return $this->deleteNode($dn);
+			case 'search':
+				$this->validateDn($dn);
+				return $this->search($dn);
+			case 'searchResults':
+				$this->validateDn($dn);
+				return $this->searchResults($dn);
 			default:
 				logNewMessage(LOG_ERR, 'Invalid command for tree view: ' . $command);
 				die;
@@ -964,6 +971,88 @@ class TreeView {
 			logNewMessage(LOG_ERR, 'Write operation denied for tree view.');
 			die();
 		}
+	}
+
+	/**
+	 * Renders the search mask.
+	 *
+	 * @param string $dn DN
+	 * @return string JSON
+	 */
+	private function search(string $dn): string {
+		$row = new htmlResponsiveRow();
+		$row->add(new htmlTitle(_('Search')));
+		$row->addLabel(new htmlOutputText(_('Base DN')));
+		$row->addField(new htmlOutputText($dn));
+		$row->addVerticalSpacer('1rem');
+		$scopeOptions = array(
+			_('Sub (entire subtree)') => 'sub',
+			_('One (one level beneath base)') => 'one',
+		);
+		$scopeSelect = new htmlResponsiveSelect('scope', $scopeOptions, array(), _('Search scope'));
+		$scopeSelect->setSortElements(false);
+		$scopeSelect->setHasDescriptiveElements(true);
+		$row->add($scopeSelect);
+		$filterInput = new htmlResponsiveInputField(_('Search filter'), 'filter', '(objectClass=*)', null, true);
+		$row->add($filterInput);
+		$row->add(new htmlResponsiveInputField(_('Attributes'), 'attributes', 'cn, givenName, sn, uid', null, true));
+		$row->add(new htmlResponsiveInputField(_('Order by'), 'orderBy', 'dn'));
+		$resultCountInput = new htmlResponsiveInputField(_('LDAP search limit'), 'limit', '50');
+		$resultCountInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$row->add($resultCountInput);
+		$displayFormat = array(
+			_('List') => 'list',
+			_('Table') => 'table'
+		);
+		$formatSelect = new htmlResponsiveSelect('format', $displayFormat, array('list'), _('Display format'));
+		$formatSelect->setHasDescriptiveElements(true);
+		$row->add($formatSelect);
+		$row->addVerticalSpacer('2rem');
+		$nextButton = new htmlButton('search', _('Search'));
+		$nextButton->setIconClass('searchButton');
+		$nextButton->setOnClick('window.lam.treeview.searchResults(event, \'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\');');
+		$row->add($nextButton, 12, 12, 12, 'text-center');
+		ob_start();
+		$tabIndex = 1;
+		parseHtml(null, $row, array(), false, $tabIndex, '');
+		$content = ob_get_contents();
+		ob_end_clean();
+		return json_encode(array('content' => $content));
+	}
+
+	/**
+	 * Renders the search results.
+	 *
+	 * @param string $dn DN
+	 * @return string JSON
+	 */
+	private function searchResults(string $dn): string {
+		$scope = $_POST['scope'];
+		if (!in_array($scope, array('sub', 'one'))) {
+			logNewMessage(LOG_ERR, 'Invalid search scope: ' . $scope);
+			die();
+		}
+		$format = $_POST['format'];
+		if (!in_array($format, array('list', 'table'))) {
+			logNewMessage(LOG_ERR, 'Invalid search format: ' . $format);
+			die();
+		}
+		$filter = empty($_POST['filter']) ? '(objectClass=*)' : $_POST['filter'];
+		$attributes = preg_split('/[ ]*,/', $_POST['attributes']);
+		$orderBy = empty($_POST['orderBy']) ? 'dn' : $_POST['orderBy'];
+		$limit = empty($_POST['limit']) ? null : $_POST['limit'];
+		$result = array();
+		switch ($scope) {
+			case 'sub':
+				$result = searchLDAP($dn, $filter, $attributes, $limit);
+				break;
+			case 'one':
+				$result = ldapListDN($dn, $filter, $attributes, null, $limit);
+				break;
+		}
+		// TODO sort
+		// TODO format
+		return json_encode(array('content' => print_r($result, true)));
 	}
 
 }

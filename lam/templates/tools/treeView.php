@@ -132,13 +132,20 @@ function showTree() {
 								$newMenu .
 								$deleteMenu .
 								'"refreshNode": {
-								"label": "' . _('Refresh') . '",
-								"icon": "../../graphics/refresh.png",
-								"action": function(obj) {
-									tree.refresh_node(node);
-									window.lam.treeview.getNodeContent("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node.id);
-								}
-							},
+									"label": "' . _('Refresh') . '",
+									"icon": "../../graphics/refresh.png",
+									"action": function(obj) {
+										tree.refresh_node(node);
+										window.lam.treeview.getNodeContent("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node.id);
+									}
+								},
+								"search": {
+									"label": "' . _('Search') . '",
+									"icon": "../../graphics/search.png",
+									"action": function(obj) {
+										window.lam.treeview.search("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node.id);
+									}
+								},
 							' .
 							$exportMenu .
 						'};
