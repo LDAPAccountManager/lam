@@ -2596,6 +2596,8 @@ class htmlInputTextarea extends htmlElement {
 	private $isEnabled = true;
 	/** specifies if LAM should display this field with a WYSIWYG editor */
 	protected $richEdit = false;
+	/** required field */
+	protected $required = false;
 
 	/**
 	 * Constructor.
@@ -2641,6 +2643,13 @@ class htmlInputTextarea extends htmlElement {
 		if ($this->richEdit) {
 			$classList[] = 'ckeditor';
 		}
+		$validators = array();
+		if ($this->required) {
+			$validators[] = 'required';
+		}
+		if (!empty($validators)) {
+			$classList[] = 'validate[' . implode(',', $validators) . ']';
+		}
 		$classes = ' class="' . implode(' ', $classList) . '"';
 		echo '<textarea name="' . $this->name . '" id="' . $this->name . '"' . $tabindexValue . $classes . $colCount .
 			$rowCount . $this->getDataAttributesAsString() . $disabled . '>' . $this->value . '</textarea>';
@@ -2667,6 +2676,15 @@ class htmlInputTextarea extends htmlElement {
 		$this->richEdit = $richEdit;
 	}
 
+	/**
+	 * Specifies if the input field is required.
+	 *
+	 * @param boolean $required required
+	 */
+	public function setRequired($required) {
+		$this->required = $required;
+	}
+
 }
 
 /**
@@ -2680,8 +2698,6 @@ class htmlTableExtendedInputTextarea extends htmlInputTextarea {
 	private $label;
 	/** help ID */
 	private $helpID;
-	/** required field */
-	private $required = false;
 
 	/**
 	 * Constructor.
@@ -2729,15 +2745,6 @@ class htmlTableExtendedInputTextarea extends htmlInputTextarea {
 			$helpLink->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		}
 		return $return;
-	}
-
-	/**
-	 * Specifies if this input field must be filled.
-	 *
-	 * @param boolean $required required or not
-	 */
-	public function setRequired($required) {
-		$this->required = $required;
 	}
 
 }
@@ -4591,8 +4598,6 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 	private $helpID;
 	/** help module */
 	private $helpModule = null;
-	/** required field */
-	private $required = false;
 	/** render HTML of parent class */
 	private $renderParentHtml = false;
 
@@ -4658,15 +4663,6 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 		}
 		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');
 		return $row->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
-	}
-
-	/**
-	 * Specifies if this input field must be filled.
-	 *
-	 * @param boolean $required required or not
-	 */
-	public function setRequired($required = true) {
-		$this->required = $required;
 	}
 
 }

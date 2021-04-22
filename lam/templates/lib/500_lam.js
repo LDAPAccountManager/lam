@@ -2493,10 +2493,29 @@ window.lam.treeview.searchResults = function (event, tokenName, tokenValue, dn) 
 		method: "POST",
 		data: data
 	})
-		.done(function(jsonData) {
-			jQuery('#ldap_actionarea').html(jsonData.content);
-			jQuery("#ldap_actionarea").scrollTop(0);
-		});
+	.done(function(jsonData) {
+		jQuery('#ldap_actionarea').html(jsonData.content);
+		jQuery("#ldap_actionarea").scrollTop(0);
+	});
+}
+
+/**
+ * Opens the given node IDs.
+ *
+ * @param tree tree object
+ * @param ids array of node IDs.
+ */
+window.lam.treeview.openInitial = function(tree, ids) {
+	if (ids.length == 0) {
+		return;
+	}
+	var firstNodeId = ids.shift();
+	tree.open_node(firstNodeId, function() {
+		window.lam.treeview.openInitial(tree, ids);
+	});
+	if (ids.length == 0) {
+		tree.select_node(firstNodeId);
+	}
 }
 
 jQuery(document).ready(function() {

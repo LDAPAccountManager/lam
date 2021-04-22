@@ -1061,7 +1061,6 @@ class TreeView {
 		if ($format === 'list') {
 			return $this->searchResultsAsList($results, $attributes, $row);
 		}
-		// TODO deep link tree view
 		return $this->searchResultsAsTable($results, $attributes, $row);
 	}
 

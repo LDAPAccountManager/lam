@@ -67,8 +67,23 @@ echo '</div>';
 include __DIR__ . '/../../lib/adminFooter.inc';
 
 function showTree() {
-	$toolSettings = $_SESSION['config']->getToolSettings();
-	$rootDn = $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG];
+	$openInitial = array();
+	if (isset($_GET['dn'])) {
+		$initialDn = base64_decode($_GET['dn']);
+		$toolSettings = $_SESSION['config']->getToolSettings();
+		$rootDn = $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG];
+		if ((strlen($initialDn) > strlen($rootDn)) && substr($initialDn, -1 * strlen($rootDn)) === $rootDn) {
+			$extraDnPart = substr($initialDn, 0, (-1 * strlen($rootDn)) - 1);
+			$dnParts = ldap_explode_dn($extraDnPart, 0);
+			unset($dnParts['count']);
+			$dnPartsCount = sizeof($dnParts);
+			for ($i = 0; $i < $dnPartsCount; $i++) {
+				$currentParts = array_slice($dnParts, $dnPartsCount - ($i + 1));
+				$openInitial[] = '"' . base64_encode(implode(',', $currentParts) . ',' . $rootDn) . '"';
+			}
+		}
+	}
+	$openInitialJsArray = '[' . implode(', ', $openInitial) . ']';
 	$row = new htmlResponsiveRow();
 	$row->setCSSClasses(array('maxrow'));
 	$row->add(new htmlDiv('ldap_tree', new htmlOutputText(''), array('tree-view--tree')), 12, 5);
@@ -167,6 +182,10 @@ function showTree() {
 					var node = data.node;
 					window.lam.treeview.getNodeContent("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node.id);
 				}
+			})
+			.on("ready.jstree", function (e, data) {
+				var tree = jQuery.jstree.reference("#ldap_tree");
+				window.lam.treeview.openInitial(tree, ' . $openInitialJsArray . ');
 			});
 		});
 	');
