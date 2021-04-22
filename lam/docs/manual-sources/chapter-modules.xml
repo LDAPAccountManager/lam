@@ -20,8 +20,7 @@
   most the of the page.</para>
 
   <para>The header part includes the links to manage all account types (e.g.
-  users and groups) and open the tree view (LDAP browser). There is also the
-  logout link and a tools entry.</para>
+  users and groups). There is also the logout link and a tools entry.</para>
 
   <para>When you login the you will see an account listing in the content
   area.</para>
@@ -5004,8 +5003,8 @@ objectclass: top
 objectclass: orclContext
 cn: OracleContext</programlisting>
 
-    <para>You can create it with LAM's tree view. Please note that "cn" must
-    be set to "OracleContext".</para>
+    <para>You can create it with LAM's tree view (tools menu). Please note
+    that "cn" must be set to "OracleContext".</para>
 
     <literallayout>
 </literallayout>
@@ -6285,29 +6284,5 @@ OK (10 msec)</programlisting>
         </imageobject>
       </mediaobject>
     </screenshot>
-  </section>
-
-  <section>
-    <title>Tree view (LDAP browser)</title>
-
-    <para>The tree view provides a raw view on your LDAP directory. This
-    feature is for people who are experienced with LDAP and need special
-    functionality which the LAM account modules not provide. E.g. if you want
-    to add a special object class to an account or edit attributes ignoring
-    LAM's syntax checks.</para>
-
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/tree1.png"/>
-        </imageobject>
-      </mediaobject>
-    </screenshot>
-
-    <para>There are also some special functions available:</para>
-
-    <para><emphasis role="bold">Show internal attributes:</emphasis> Shows
-    internal attributes of the current entry. This includes information about
-    the creator and creation time of the entry.</para>
   </section>
 </chapter>

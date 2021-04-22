@@ -74,6 +74,99 @@
     </screenshot>
   </section>
 
+  <section id="pdfEditor">
+    <title>PDF editor</title>
+
+    <para>All accounts in LAM may be exported as PDF files. You can specify
+    the page structure and displayed information by editing the PDF
+    profiles.</para>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/pdfEditor2.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para>When you export accounts to PDF then each account will get its own
+    page inside the PDF. There is a headline on each page where you can show a
+    page title. You may also add a logo to each page. To add more logos please
+    use the logo management on the PDF editor main page.</para>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/pdfEditor.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para>The main part is structured into sections of information. Each
+    section has a title. This can either be static text or the value of an
+    attribute. You may also insert a static text block as section. Sections
+    can be moved by using the arrows next to the section title.</para>
+
+    <para>Each section can contain multiple fields which usually represent
+    LDAP attributes. You can simply add new fields by selecting the field name
+    and its position. Then use the arrows to move the field inside the
+    section.</para>
+
+    <literallayout>
+    </literallayout>
+
+    <para><emphasis role="bold">Import/export:</emphasis></para>
+
+    <para>PDF structures can be exported to and imported from other server
+    profiles.</para>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/pdfEditor3.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/pdfEditor4.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para>There is a special export target called "*Global templates". All PDF
+    structures exported here will be copied to all other server profiles
+    (incl. new ones). But existing PDF structures with the same name are not
+    overwritten. So a PDF structure in global templates is treated as default
+    structure for all server profiles.</para>
+
+    <para>Use this if you would like to setup default PDF structures that are
+    valid for all server profiles.</para>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/pdfEditor5.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para><emphasis role="bold">Logo management:</emphasis></para>
+
+    <para>You can upload image files to put a custom logo on the PDF files.
+    The image file name must end with .png or .jpg.</para>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/pdfEditor6.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </section>
+
   <section id="tool_upload">
     <title>File upload</title>
 
@@ -278,96 +371,29 @@
     </screenshot>
   </section>
 
-  <section id="pdfEditor">
-    <title>PDF editor</title>
+  <section>
+    <title>Tree view</title>
 
-    <para>All accounts in LAM may be exported as PDF files. You can specify
-    the page structure and displayed information by editing the PDF
-    profiles.</para>
+    <para>The tree view provides a raw view on your LDAP directory. This
+    feature is for people who are experienced with LDAP and need special
+    functionality which the LAM account modules not provide. E.g. if you want
+    to add a special object class to an account or edit attributes ignoring
+    LAM's syntax checks.</para>
 
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/pdfEditor2.png"/>
-        </imageobject>
-      </mediaobject>
-    </screenshot>
-
-    <para>When you export accounts to PDF then each account will get its own
-    page inside the PDF. There is a headline on each page where you can show a
-    page title. You may also add a logo to each page. To add more logos please
-    use the logo management on the PDF editor main page.</para>
+    <para>To use this tool you will need to configure its suffix in your LAM
+    server profile on first tab:</para>
 
     <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/pdfEditor.png"/>
-        </imageobject>
-      </mediaobject>
+      <graphic fileref="images/tree2.png"/>
     </screenshot>
-
-    <para>The main part is structured into sections of information. Each
-    section has a title. This can either be static text or the value of an
-    attribute. You may also insert a static text block as section. Sections
-    can be moved by using the arrows next to the section title.</para>
-
-    <para>Each section can contain multiple fields which usually represent
-    LDAP attributes. You can simply add new fields by selecting the field name
-    and its position. Then use the arrows to move the field inside the
-    section.</para>
 
     <literallayout>
+
+
 </literallayout>
 
-    <para><emphasis role="bold">Import/export:</emphasis></para>
-
-    <para>PDF structures can be exported to and imported from other server
-    profiles.</para>
-
     <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/pdfEditor3.png"/>
-        </imageobject>
-      </mediaobject>
-    </screenshot>
-
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/pdfEditor4.png"/>
-        </imageobject>
-      </mediaobject>
-    </screenshot>
-
-    <para>There is a special export target called "*Global templates". All PDF
-    structures exported here will be copied to all other server profiles
-    (incl. new ones). But existing PDF structures with the same name are not
-    overwritten. So a PDF structure in global templates is treated as default
-    structure for all server profiles.</para>
-
-    <para>Use this if you would like to setup default PDF structures that are
-    valid for all server profiles.</para>
-
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/pdfEditor5.png"/>
-        </imageobject>
-      </mediaobject>
-    </screenshot>
-
-    <para><emphasis role="bold">Logo management:</emphasis></para>
-
-    <para>You can upload image files to put a custom logo on the PDF files.
-    The image file name must end with .png or .jpg.</para>
-
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/pdfEditor6.png"/>
-        </imageobject>
-      </mediaobject>
+      <graphic fileref="images/tree1.png"/>
     </screenshot>
   </section>
 
