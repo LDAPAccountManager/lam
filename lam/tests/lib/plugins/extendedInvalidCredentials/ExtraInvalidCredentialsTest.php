@@ -61,6 +61,7 @@ class ExtraInvalidCredentialsTest extends TestCase {
 			->getMock();
 		$extraInvalidCredentials->method('getLdapData')->willReturn(
 			array(
+				'dn' => 'uid=test',
 				'pwdaccountlockedtime' => array('1234')
 			)
 		);
@@ -80,6 +81,7 @@ class ExtraInvalidCredentialsTest extends TestCase {
 			->getMock();
 		$extraInvalidCredentials->method('getLdapData')->willReturn(
 			array(
+				'dn' => 'uid=test',
 				'krbpasswordexpiration' => array($time->format('YmdHis') . 'Z')
 			)
 		);
@@ -99,6 +101,7 @@ class ExtraInvalidCredentialsTest extends TestCase {
 			->getMock();
 		$extraInvalidCredentials->method('getLdapData')->willReturn(
 			array(
+				'dn' => 'uid=test',
 				'krbprincipalexpiration' => array($time->format('YmdHis') . 'Z')
 			)
 		);
