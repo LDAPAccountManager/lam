@@ -178,9 +178,6 @@ foreach ($toSort as $key => $value) {
 		<?php
 		}
 		?>
-	    <li>
-			<a href="<?php echo $headerPrefix; ?>/templates/tree/treeViewContainer.php"><img class="align-middle" height="16" width="16" alt="tree" src="<?php echo $headerPrefix; ?>/graphics/process.png"><span class="hide-on-mobile padding0">&nbsp;<?php echo _("Tree view") ?></span></a>
-		</li>
 	</ul>
 	</td>
 	</tr>
