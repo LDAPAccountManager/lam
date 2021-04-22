@@ -31,7 +31,7 @@
 /**
  * Returns the tools which are available for LAM.
  *
- * @return array list of LAMTool classes
+ * @return array list of LAMTool objects
  */
 function getTools() : array {
 	$toolsDirName = dirname(__FILE__) . '/tools';
@@ -47,9 +47,9 @@ function getTools() : array {
 	// find tools classes
 	$classList = get_declared_classes();
 	$return = array();
-	for ($i = 0; $i < sizeof($classList); $i++) {
-		if (in_array('LAMTool', class_parents($classList[$i]))) {
-			$return[] = $classList[$i];
+	foreach ($classList as $classCandidate) {
+		if (in_array('LAMTool', class_parents($classCandidate))) {
+			$return[] = new $classCandidate();
 		}
 	}
 	return $return;
@@ -141,6 +141,26 @@ abstract class LAMTool {
 	 */
 	public function isHideable(): bool {
 		return true;
+	}
+
+	/**
+	 * Returns the configuration options for this tool.
+	 *
+	 * @param array $settings current tool settings
+	 * @return htmlElement|null configuration options
+	 */
+	public function getConfigOptions(array $settings): ?htmlElement {
+		return null;
+	}
+
+	/**
+	 * Checks the configuration options.
+	 *
+	 * @param array $settings hash array (option name => value) that contains the input. The option values are all arrays containing one or more elements.
+	 * @return array list of error messages
+	 */
+	public function checkConfigurationOptions(array $settings): array {
+		return array();
 	}
 	
 }

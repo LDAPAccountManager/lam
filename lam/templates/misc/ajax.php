@@ -4,6 +4,8 @@ use htmlResponsiveTable;
 use htmlStatusMessage;
 use \LAM\TOOLS\IMPORT_EXPORT\Importer;
 use \LAM\TOOLS\IMPORT_EXPORT\Exporter;
+use LAM\TOOLS\TREEVIEW\TreeView;
+use LAM\TOOLS\TREEVIEW\TreeViewTool;
 use \LAM\TYPES\TypeManager;
 use \htmlResponsiveRow;
 use \htmlLink;
@@ -44,6 +46,8 @@ use \LAMCfgMain;
 include_once(__DIR__ . "/../../lib/security.inc");
 /** LDIF import */
 include_once(__DIR__ . "/../../lib/import.inc");
+/** schema for tree view */
+include_once __DIR__ . "/../../lib/schema.inc";
 
 // start session
 if (isset($_GET['selfservice'])) {
@@ -162,6 +166,14 @@ class Ajax {
 		}
 		elseif ($function === 'webauthnOwnDevices') {
 			$this->manageWebauthnOwnDevices();
+		}
+		elseif ($function === 'treeview') {
+			include_once(__DIR__ . "/../../lib/treeview.inc");
+			$treeView = new TreeView();
+			ob_start();
+			$jsonOut = $treeView->answerAjaxCall();
+			ob_end_clean();
+			echo $jsonOut;
 		}
 	}
 
@@ -415,9 +427,10 @@ class Ajax {
 				$baseDnList[] = $suffix;
 			}
 		}
-		$treeSuffix = $_SESSION['config']->get_Suffix('tree');
+		$toolSettings = $_SESSION['config']->getToolSettings();
+		$treeSuffix = !empty($toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG]) ? $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG] : null;
 		if (!empty($treeSuffix)) {
-			$baseDnList[] = $suffix;
+			$baseDnList[] = $treeSuffix;
 		}
 		$baseDnList = array_unique($baseDnList);
 		usort($baseDnList, 'compareDN');
@@ -523,6 +536,3 @@ class Ajax {
 	}
 
 }
-
-
-?>

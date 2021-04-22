@@ -3,7 +3,7 @@ namespace LAM\SCHEMA;
 /*
 
   Copyright (C) 2004 David Smith
-  modified to fit for LDAP Account Manager 2005 - 2020 Roland Gruber
+  modified to fit for LDAP Account Manager 2005 - 2021 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1536,7 +1536,7 @@ function _get_raw_schema($schema_to_fetch, $dn='' )
  * @param string $dn (optional) It is easier to fetch schema if a DN is provided
  *             which defines the subschemaSubEntry attribute (all entries should).
  *
- * @return array An array of ObjectClass objects.
+ * @return ObjectClass[] An array of ObjectClass objects.
  *
  * @see ObjectClass
  * @see get_schema_objectclass
@@ -1817,7 +1817,7 @@ function add_sup_to_attrs( &$attrs, &$attrs_oid )
 
 					// clone the SUP attributeType and populate those values
 					// that were set by the child attributeType
-					$attr = $sup_attr;
+					$attr = clone $sup_attr;
 					$attr->setOID( $tmp_oid );
 					$attr->setName( $tmp_name );
 					$attr->setSupAttribute( $tmp_sup);

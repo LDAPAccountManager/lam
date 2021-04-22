@@ -602,7 +602,7 @@ class htmlInputField extends htmlElement {
 		}
 		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength
 			. $min . $max . $size . $fieldTabIndex . $onKeyPress . $onKeyUp . $title . $disabled
-			. $autoCompleteVal . '>';
+			. $this->getDataAttributesAsString() . $autoCompleteVal . '>';
 		if ($this->showDnSelection) {
 			echo '<img class="align-middle" src="../../graphics/view.png"
 					   width="16" height="16" title="' . _('Choose entry') . '"
@@ -1230,6 +1230,8 @@ class htmlSelect extends htmlElement {
 	protected $tableRowsToShow = array();
 	/** dynamic scrolling */
 	private $dynamicScrolling = false;
+	/** CSS classes for values */
+	private $optionCssClasses = array();
 
 	/**
 	 * Constructor.
@@ -1380,17 +1382,21 @@ class htmlSelect extends htmlElement {
 		}
 		foreach ($elements as $key => $value) {
 			$selected = '';
+			$optionClass = '';
+			if (isset($this->optionCssClasses[$value])) {
+				$optionClass = 'class="' . $this->optionCssClasses[$value] . '"';
+			}
 			if ($this->hasDescriptiveElements) {
 				if (in_array($value, $this->selectedElements) || (empty($this->selectedElements) && empty($value))) {
 					$selected = ' selected';
 				}
-				echo "<option value=\"" . htmlspecialchars($value) . "\"$selected>" . htmlspecialchars($key) . "</option>\n";
+				echo "<option value=\"" . htmlspecialchars($value) . "\"$selected $optionClass>" . htmlspecialchars($key) . "</option>\n";
 			}
 			else {
 				if (in_array($value, $this->selectedElements) || (empty($this->selectedElements) && empty($value))) {
 					$selected = ' selected';
 				}
-				echo "<option$selected>" . htmlspecialchars($value) . "</option>\n";
+				echo "<option$selected $optionClass>" . htmlspecialchars($value) . "</option>\n";
 			}
 		}
 	}
@@ -1598,6 +1604,15 @@ class htmlSelect extends htmlElement {
 		}
 		$this->addDataAttribute('dynamic-options', json_encode($elementData));
 		$this->cssClasses[] = 'lam-dynamicOptions';
+	}
+
+	/**
+	 * Sets CSS classes for option values.
+	 *
+	 * @param array $optionCssClasses array('option value' => 'CSS class(es)')
+	 */
+	public function setOptionCssClasses(array $optionCssClasses): void {
+		$this->optionCssClasses = $optionCssClasses;
 	}
 
 }
@@ -1952,6 +1967,8 @@ class htmlOutputText extends htmlElement {
 	private $noWrap = false;
 	/** preformatted */
 	private $isPreformatted = false;
+	/** title */
+	private $title = null;
 
 	/**
 	 * Constructor.
@@ -1979,6 +1996,9 @@ class htmlOutputText extends htmlElement {
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$cssClasses = empty($this->cssClasses) ? '' : 'class="' . implode(' ', $this->cssClasses) . '"';
+		if (!empty($this->title)) {
+			echo '<span title="' . $this->title . '">';
+		}
 		if ($this->noWrap) {
 			echo "<div class=\"nowrap\">";
 		}
@@ -1987,6 +2007,9 @@ class htmlOutputText extends htmlElement {
 		}
 		if ($this->isPreformatted) {
 			echo "<pre $cssClasses>";
+		}
+		elseif (!empty($cssClasses)) {
+			echo "<span $cssClasses>";
 		}
 		if ($this->escapeHTML) {
 			echo htmlspecialchars($this->string);
@@ -2002,11 +2025,17 @@ class htmlOutputText extends htmlElement {
 		if ($this->isPreformatted) {
 			echo "</pre>";
 		}
+		elseif (!empty($cssClasses)) {
+			echo "</span>";
+		}
 		if ($this->isBold) {
 			echo "</b>";
 		}
 		if ($this->noWrap) {
 			echo "</div>";
+		}
+		if (!empty($this->title)) {
+			echo "</span>";
 		}
 		return array();
 	}
@@ -2045,6 +2074,15 @@ class htmlOutputText extends htmlElement {
 	 */
 	public function setPreformatted($preformatted = true) {
 		$this->isPreformatted = $preformatted;
+	}
+
+	/**
+	 * Sets a title for this text.
+	 *
+	 * @param string|null $title title
+	 */
+	public function setTitle(?string $title): void {
+		$this->title = $title;
 	}
 
 }
@@ -2558,6 +2596,8 @@ class htmlInputTextarea extends htmlElement {
 	private $isEnabled = true;
 	/** specifies if LAM should display this field with a WYSIWYG editor */
 	protected $richEdit = false;
+	/** required field */
+	protected $required = false;
 
 	/**
 	 * Constructor.
@@ -2603,8 +2643,16 @@ class htmlInputTextarea extends htmlElement {
 		if ($this->richEdit) {
 			$classList[] = 'ckeditor';
 		}
+		$validators = array();
+		if ($this->required) {
+			$validators[] = 'required';
+		}
+		if (!empty($validators)) {
+			$classList[] = 'validate[' . implode(',', $validators) . ']';
+		}
 		$classes = ' class="' . implode(' ', $classList) . '"';
-		echo '<textarea name="' . $this->name . '" id="' . $this->name . '"' . $tabindexValue . $classes . $colCount . $rowCount . $disabled . '>' . $this->value . '</textarea>';
+		echo '<textarea name="' . $this->name . '" id="' . $this->name . '"' . $tabindexValue . $classes . $colCount .
+			$rowCount . $this->getDataAttributesAsString() . $disabled . '>' . $this->value . '</textarea>';
 		return array($this->name => 'textarea');
 	}
 
@@ -2628,6 +2676,15 @@ class htmlInputTextarea extends htmlElement {
 		$this->richEdit = $richEdit;
 	}
 
+	/**
+	 * Specifies if the input field is required.
+	 *
+	 * @param boolean $required required
+	 */
+	public function setRequired($required) {
+		$this->required = $required;
+	}
+
 }
 
 /**
@@ -2641,8 +2698,6 @@ class htmlTableExtendedInputTextarea extends htmlInputTextarea {
 	private $label;
 	/** help ID */
 	private $helpID;
-	/** required field */
-	private $required = false;
 
 	/**
 	 * Constructor.
@@ -2690,15 +2745,6 @@ class htmlTableExtendedInputTextarea extends htmlInputTextarea {
 			$helpLink->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		}
 		return $return;
-	}
-
-	/**
-	 * Specifies if this input field must be filled.
-	 *
-	 * @param boolean $required required or not
-	 */
-	public function setRequired($required) {
-		$this->required = $required;
 	}
 
 }
@@ -4252,7 +4298,7 @@ class htmlResponsiveRow extends htmlElement {
 	 * @param int $numDesktop number of columns for desktop view (set to tablet if null)
 	 * @param String $classes CSS classes separated by space
 	 */
-	public function add($content, $numMobile, $numTablet = null, $numDesktop = null, $classes = '') {
+	public function add($content, $numMobile = 12, $numTablet = null, $numDesktop = null, $classes = '') {
 		$tabletCols = ($numTablet === null) ? $numMobile : $numTablet;
 		$desktopCols = ($numDesktop === null) ? $tabletCols : $numDesktop;
 		$this->addCell(new htmlResponsiveCell($content, $numMobile, $tabletCols, $desktopCols, $classes));
@@ -4552,8 +4598,6 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 	private $helpID;
 	/** help module */
 	private $helpModule = null;
-	/** required field */
-	private $required = false;
 	/** render HTML of parent class */
 	private $renderParentHtml = false;
 
@@ -4619,15 +4663,6 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 		}
 		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');
 		return $row->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
-	}
-
-	/**
-	 * Specifies if this input field must be filled.
-	 *
-	 * @param boolean $required required or not
-	 */
-	public function setRequired($required = true) {
-		$this->required = $required;
 	}
 
 }

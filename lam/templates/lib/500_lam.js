@@ -697,7 +697,11 @@ window.lam.filterSelect.filterStandard = function(inputField, selectField) {
 	if (!selectField.data('options')) {
 		var options = {};
 		selectField.find('option').each(function() {
-			options[$(this).val()] = {selected: this.selected, text: $(this).text()};
+			options[$(this).val()] = {
+				selected: this.selected,
+				text: jQuery(this).text(),
+				cssClasses: jQuery(this).attr('class')
+			};
 		});
 		selectField.data('options', options);
 	}
@@ -716,7 +720,10 @@ window.lam.filterSelect.filterStandard = function(inputField, selectField) {
 			var newOption = jQuery('<option>');
 			newOption.text(option.text).val(index);
 			if (option.selected) {
-				newOption.attr('selected', 'selected')
+				newOption.attr('selected', 'selected');
+			}
+			if (option.cssClasses) {
+				newOption.attr('class', option.cssClasses);
 			}
 			selectField.append(newOption);
 		}
@@ -2026,6 +2033,489 @@ window.lam.webauthn.registerOwnDevice = function(event, isSelfService) {
 	};
 	window.lam.webauthn.register(publicKey, successCallback, errorCallback);
 	return false;
+}
+
+window.lam.treeview = window.lam.treeview || {};
+
+/**
+ * Returns the nodes in tree view.
+ *
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ * @param node tree node
+ * @param callback callback function
+ */
+window.lam.treeview.getNodes = function (tokenName, tokenValue, node, callback) {
+	var data = {
+		jsonInput: ""
+	};
+	data[tokenName] = tokenValue;
+	data["dn"] = node.id;
+	jQuery.ajax({
+		url: "../misc/ajax.php?function=treeview&command=getNodes",
+		method: "POST",
+		data: data
+	})
+	.done(function(jsonData) {
+		callback.call(this, jsonData);
+	})
+}
+
+/**
+ * Creates a new node in tree view.
+ *
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ * @param node tree node
+ * @param tree tree
+ */
+window.lam.treeview.createNode = function (tokenName, tokenValue, node, tree) {
+	var data = {
+		jsonInput: ""
+	};
+	data[tokenName] = tokenValue;
+	data["dn"] = node.id;
+	jQuery.ajax({
+		url: "../misc/ajax.php?function=treeview&command=createNewNode&step=getObjectClasses",
+		method: "POST",
+		data: data
+	})
+	.done(function(jsonData) {
+		jQuery('#ldap_actionarea').html(jsonData.content);
+	});
+}
+
+/**
+ * Selects the object classes.
+ *
+ * @param event event
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ */
+window.lam.treeview.createNodeSelectObjectClassesStep = function (event, tokenName, tokenValue) {
+	event.preventDefault();
+	var data = {
+		jsonInput: ""
+	};
+	data[tokenName] = tokenValue;
+	data["dn"] = jQuery('#parentDn').val();
+	data["objectClasses"] = jQuery('#objectClasses').val();
+	jQuery.ajax({
+		url: "../misc/ajax.php?function=treeview&command=createNewNode&step=checkObjectClasses",
+		method: "POST",
+		data: data
+	})
+	.done(function(jsonData) {
+		jQuery('#ldap_actionarea').html(jsonData.content);
+	});
+}
+
+/**
+ * Selects the attributes.
+ *
+ * @param event event
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ */
+window.lam.treeview.createNodeEnterAttributesStep = function (event, tokenName, tokenValue) {
+	event.preventDefault();
+	var data = {
+		jsonInput: ""
+	};
+	data[tokenName] = tokenValue;
+	var parentDn = jQuery('#parentDn').val()
+	data["dn"] = parentDn;
+	data["rdn"] = jQuery('#rdn').val();
+	data["objectClasses"] = jQuery('#objectClasses').val();
+	// clear old values in data
+	jQuery('.single-input').each(
+		function() {
+			var input = jQuery(this);
+			input.attr('data-value-orig', '');
+		}
+	);
+	jQuery('.multi-input').each(
+		function() {
+			var input = jQuery(this);
+			input.attr('data-value-orig', '');
+		}
+	);
+	// get attribute values
+	var attributeChanges = window.lam.treeview.findAttributeChanges();
+	data["attributes"] = JSON.stringify(attributeChanges);
+	jQuery.ajax({
+		url: "../misc/ajax.php?function=treeview&command=createNewNode&step=checkAttributes",
+		method: "POST",
+		data: data
+	})
+	.done(function(jsonData) {
+		jQuery('#ldap_actionarea').html(jsonData.content);
+		var tree = jQuery.jstree.reference("#ldap_tree");
+		tree.refresh_node(parentDn);
+		tree.open_node(parentDn);
+		jQuery("#ldap_actionarea").scrollTop(0);
+	});
+}
+
+/**
+ * Deletes a node in tree view.
+ *
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ * @param node tree node
+ * @param tree tree
+ * @param okText text for OK button
+ * @param cancelText text for cancel button
+ * @param title dialog title
+ * @param errorOkText text for OK button in error dialog
+ * @param errorTitle dialog title in case of error
+ */
+window.lam.treeview.deleteNode = function (tokenName, tokenValue, node, tree, okText, cancelText, title, errorOkText, errorTitle) {
+	var parent = node.parent;
+	var textSpan = jQuery('#treeview_delete_dlg').find('.treeview-delete-entry');
+	textSpan.text(node.text);
+	var buttonList = {};
+	buttonList[okText] = function() {
+		var data = {
+			jsonInput: ""
+		};
+		data[tokenName] = tokenValue;
+		data["dn"] = node.id;
+		jQuery.ajax({
+			url: "../misc/ajax.php?function=treeview&command=deleteNode",
+			method: "POST",
+			data: data
+		})
+		.done(function(jsonData) {
+			tree.refresh_node(parent);
+			var node = tree.get_node(parent, false);
+			window.lam.treeview.getNodeContent(tokenName, tokenValue, node.id);
+			jQuery('#treeview_delete_dlg').dialog("close");
+			if (jsonData['errors']) {
+				var errTextTitle = jsonData['errors'][0][1];
+				var textSpanErrorTitle = jQuery('#treeview_error_dlg').find('.treeview-error-title');
+				textSpanErrorTitle.text(errTextTitle);
+				var errText = jsonData['errors'][0][2];
+				var textSpanErrorText = jQuery('#treeview_error_dlg').find('.treeview-error-text');
+				textSpanErrorText.text(errText);
+				var errorButtons = {};
+				errorButtons[errorOkText] = function () {
+					jQuery(this).dialog("close");
+				};
+				jQuery('#treeview_error_dlg').dialog({
+					modal: true,
+					title: errorTitle,
+					dialogClass: 'defaultBackground',
+					buttons: errorButtons,
+					width: 'auto'
+				});
+			}
+		});
+	};
+	buttonList[cancelText] = function() {
+		jQuery(this).dialog("close");
+	};
+	jQuery('#treeview_delete_dlg').dialog({
+		modal: true,
+		title: title,
+		dialogClass: 'defaultBackground',
+		buttons: buttonList,
+		width: 'auto'
+	});
+}
+
+/**
+ * Returns the node content in tree view action area.
+ *
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ * @param dn DN (base64 encoded)
+ * @param messages any messages that should be displayed (HTML code)
+ * @param attributesToHighlight attributes to highlight
+ */
+window.lam.treeview.getNodeContent = function (tokenName, tokenValue, dn, messages, attributesToHighlight) {
+	var data = {
+		jsonInput: ""
+	};
+	data[tokenName] = tokenValue;
+	data["dn"] = dn;
+	data["highlight"] = attributesToHighlight;
+	jQuery.ajax({
+		url: "../misc/ajax.php?function=treeview&command=getNodeContent",
+		method: "POST",
+		data: data
+	})
+	.done(function(jsonData) {
+		jQuery('#ldap_actionarea').html(jsonData.content);
+		if (messages) {
+			jQuery('#ldap_actionarea_messages').html(messages);
+		}
+		jQuery("#ldap_actionarea").scrollTop(0);
+	});
+}
+
+/**
+ * Saves the attributes in tree view action area.
+ *
+ * @param event event
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ * @param dn DN
+ */
+window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn) {
+	event.preventDefault();
+	var data = {
+		jsonInput: ""
+	};
+	data[tokenName] = tokenValue;
+	data["dn"] = dn;
+	var attributeChanges = window.lam.treeview.findAttributeChanges();
+	var attributesToHighlight = Object.keys(attributeChanges);
+	data["changes"] = JSON.stringify(attributeChanges);
+	jQuery.ajax({
+		url: "../misc/ajax.php?function=treeview&command=saveAttributes",
+		method: "POST",
+		data: data
+	})
+	.done(function(jsonData) {
+		if (jsonData['newDn']) {
+			var tree = jQuery.jstree.reference("#ldap_tree");
+			tree.refresh_node(jsonData['parent']);
+			window.lam.treeview.getNodeContent(tokenName, tokenValue, jsonData['newDn'], jsonData.result, attributesToHighlight);
+		}
+		else {
+			window.lam.treeview.getNodeContent(tokenName, tokenValue, dn, jsonData.result, attributesToHighlight);
+		}
+	});
+}
+
+/**
+ * Finds the attributes that were changed by the user.
+ *
+ * @returns list of changes
+ */
+window.lam.treeview.findAttributeChanges = function () {
+	var attributeChanges = {};
+	jQuery('.single-input').each(
+		function() {
+			var input = jQuery(this);
+			var attrName = input.data('attr-name');
+			// avoid type conversion in .data()
+			var valueOrig = input.attr('data-value-orig');
+			var valueNew = input.val();
+			if (valueNew != valueOrig) {
+				attributeChanges[attrName] = {
+					old: [valueOrig]
+				};
+				if (valueNew == '') {
+					attributeChanges[attrName]["new"] = [];
+				}
+				else {
+					attributeChanges[attrName]["new"] = [valueNew];
+				}
+			}
+		}
+	);
+	var lastAttrName = '';
+	var lastAttrValuesNew = [];
+	var lastAttrValuesOld = [];
+	var lastAttrHasChange = false;
+	jQuery('.multi-input').each(
+		function() {
+			var input = jQuery(this);
+			var attrName = input.data('attr-name');
+			if (attrName != lastAttrName) {
+				if (lastAttrHasChange) {
+					attributeChanges[lastAttrName] = {
+						old: lastAttrValuesOld,
+						new: lastAttrValuesNew
+					};
+				}
+				// reset
+				lastAttrHasChange = false;
+				lastAttrName = attrName;
+				lastAttrValuesNew = [];
+				lastAttrValuesOld = [];
+			}
+			// avoid type conversion in .data()
+			var valueOrig = input.attr('data-value-orig');
+			var valueNew = input.val();
+			if (valueOrig != '') {
+				lastAttrValuesOld.push(valueOrig);
+			}
+			if (valueNew != '') {
+				lastAttrValuesNew.push(valueNew);
+			}
+			if (valueNew != valueOrig) {
+				lastAttrHasChange = true;
+			}
+		}
+	);
+	if (lastAttrHasChange) {
+		attributeChanges[lastAttrName] = {
+			old: lastAttrValuesOld,
+			new: lastAttrValuesNew
+		};
+	}
+	return attributeChanges;
+}
+
+/**
+ * Clears an LDAP attribute input field.
+ *
+ * @param event event
+ * @param link link object
+ */
+window.lam.treeview.clearValue = function (event, link) {
+	event.preventDefault();
+	var linkObj = jQuery(link);
+	var parentTr = linkObj.parents('tr').get(0);
+	jQuery(parentTr).find('input, textarea').val('');
+}
+
+/**
+ * Adds an LDAP attribute input field.
+ *
+ * @param event event
+ * @param link link object
+ */
+window.lam.treeview.addValue = function (event, link) {
+	event.preventDefault();
+	var linkObj = jQuery(link);
+	var parentTr = jQuery(linkObj.parents('tr').get(0));
+	var newTr = parentTr.clone();
+	var newField = newTr.find('input, textarea');
+	newField.val('');
+	newField.attr('data-value-orig', '');
+	newTr.insertAfter(parentTr);
+}
+
+/**
+ * Adds the input field for a new attribute.
+ *
+ * @param event event
+ * @param select select object
+ */
+window.lam.treeview.addAttributeField = function (event, select) {
+	event.preventDefault();
+	var selectObj = jQuery(select);
+	var attributeParts = selectObj.val();
+	if (attributeParts == '') {
+		return;
+	}
+	selectObj.children('[value="' + attributeParts + '"]').remove();
+	attributeParts = attributeParts.split('__#__');
+	var attributeName = attributeParts[0];
+	var isSingleValue = attributeParts[1];
+	var isMultiline = attributeParts[2];
+	var placeHolderId = 'new-attributes-' + isSingleValue + '-' + isMultiline;
+	var newContent = jQuery(jQuery('#' + placeHolderId).children('.row').get(0)).clone();
+	jQuery(newContent.children().get(0)).text(attributeName);
+	var inputField = newContent.find('input, textarea');
+	inputField.attr('data-attr-name', attributeName);
+	inputField.attr('name', 'lam_attr_' + attributeName);
+	inputField.attr('id', 'lam_attr_' + attributeName);
+	newContent.children().insertAfter(jQuery(selectObj.parents('div').get(0)));
+}
+
+/**
+ * Returns the internal attributes content in tree view action area.
+ *
+ * @param event event
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ * @param dn DN
+ */
+window.lam.treeview.getInternalAttributesContent = function (event, tokenName, tokenValue, dn) {
+	event.preventDefault();
+	var data = {
+		jsonInput: ""
+	};
+	data[tokenName] = tokenValue;
+	data["dn"] = dn;
+	jQuery.ajax({
+		url: "../misc/ajax.php?function=treeview&command=getInternalAttributesContent",
+		method: "POST",
+		data: data
+	})
+	.done(function(jsonData) {
+		jQuery('#actionarea-internal-attributes').html(jsonData.content);
+	});
+}
+
+/**
+ * Searches the LDAP tree.
+ *
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ * @param dn DN (base64 encoded)
+ */
+window.lam.treeview.search = function (tokenName, tokenValue, dn) {
+	var data = {
+		jsonInput: ""
+	};
+	data[tokenName] = tokenValue;
+	data["dn"] = dn;
+	jQuery.ajax({
+		url: "../misc/ajax.php?function=treeview&command=search",
+		method: "POST",
+		data: data
+	})
+	.done(function(jsonData) {
+		jQuery('#ldap_actionarea').html(jsonData.content);
+		jQuery("#ldap_actionarea").scrollTop(0);
+	});
+}
+
+/**
+ * Displays the search results.
+ *
+ * @param event event
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ * @param dn DN (base64 encoded)
+ */
+window.lam.treeview.searchResults = function (event, tokenName, tokenValue, dn) {
+	event.preventDefault();
+	var data = {
+		jsonInput: ""
+	};
+	data[tokenName] = tokenValue;
+	data["dn"] = dn;
+	data["scope"] = jQuery('#scope').val();
+	data["filter"] = jQuery('#filter').val();
+	data["attributes"] = jQuery('#attributes').val();
+	data["orderBy"] = jQuery('#orderBy').val();
+	data["limit"] = jQuery('#limit').val();
+	data["format"] = jQuery('#format').val();
+	jQuery.ajax({
+		url: "../misc/ajax.php?function=treeview&command=searchResults",
+		method: "POST",
+		data: data
+	})
+	.done(function(jsonData) {
+		jQuery('#ldap_actionarea').html(jsonData.content);
+		jQuery("#ldap_actionarea").scrollTop(0);
+	});
+}
+
+/**
+ * Opens the given node IDs.
+ *
+ * @param tree tree object
+ * @param ids array of node IDs.
+ */
+window.lam.treeview.openInitial = function(tree, ids) {
+	if (ids.length == 0) {
+		return;
+	}
+	var firstNodeId = ids.shift();
+	tree.open_node(firstNodeId, function() {
+		window.lam.treeview.openInitial(tree, ids);
+	});
+	if (ids.length == 0) {
+		tree.select_node(firstNodeId);
+	}
 }
 
 jQuery(document).ready(function() {

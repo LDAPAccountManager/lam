@@ -564,9 +564,8 @@ function checkPwdWithExternalPasswordService($cfg, $password) {
  * @param String $tool tool class name (e.g. toolFileUpload)
  */
 function checkIfToolIsActive($tool) {
-	$toolSettings = $_SESSION['config']->getToolSettings();
 		// check if hidden by config
-	if (isset($toolSettings['tool_hide_' . $tool]) && ($toolSettings['tool_hide_' . $tool] == 'true')) {
+	if (!$_SESSION['config']->isToolActive($tool)) {
 		logNewMessage(LOG_ERR, 'Unauthorized access to tool ' . $tool . ' denied.');
 		die();
 	}

@@ -12,7 +12,7 @@ use \htmlDiv;
 use \htmlSubTitle;
 /*
 
-  Copyright (C) 2018 Roland Gruber
+  Copyright (C) 2018 - 2021 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -317,7 +317,7 @@ function displayAttributeList(htmlResponsiveRow $row) {
 		}
 		if (!empty($attribute->getSupAttribute())) {
 			$row->addLabel(new htmlOutputText(_('Inherits from')), 'bold-mobile-only');
-			$row->addField(new htmlOutputText($attribute->getSupAttribute()));
+			$row->addField(new htmlLink($attribute->getSupAttribute(), 'schema.php?display=attribute&sel=' . rawurlencode($attribute->getSupAttribute())));
 		}
 		if (!empty($attribute->getEquality())) {
 			$row->addLabel(new htmlOutputText(_('Equality')), 'bold-mobile-only');

@@ -226,12 +226,6 @@ class LAMConfigTest extends TestCase {
 	 * Tests LAMConfig->get_Suffix() and LAMConfig->set_Suffix()
 	 */
 	public function testSuffix() {
-		$val = 'ou=test,dc=test';
-		$this->lAMConfig->set_Suffix('tree', $val);
-		$this->assertEquals($val, $this->lAMConfig->get_Suffix('tree'));
-		$this->doSave();
-		$this->assertEquals($val, $this->lAMConfig->get_Suffix('tree'));
-
 		$val = 'ou=test1,dc=test';
 		$this->lAMConfig->set_Suffix('user', $val);
 		$this->assertEquals($val, $this->lAMConfig->get_Suffix('user'));
@@ -448,6 +442,19 @@ class LAMConfigTest extends TestCase {
 		$this->doSave();
 		$this->assertTrue(array_key_exists('user_123', $this->lAMConfig->getToolSettings()));
 		$this->assertTrue(array_key_exists('group_123', $this->lAMConfig->getToolSettings()));
+	}
+
+	/**
+	 * Checks isToolActive().
+	 */
+	public function testIsToolActive() {
+		$this->lAMConfig->setToolSettings(array(
+			'tool_hide_tool1' => 'true',
+			'tool_hide_tool2' => 'false',
+		));
+		$this->assertFalse($this->lAMConfig->isToolActive('tool1'));
+		$this->assertTrue($this->lAMConfig->isToolActive('tool2'));
+		$this->assertTrue($this->lAMConfig->isToolActive('tool3'));
 	}
 
 	/**

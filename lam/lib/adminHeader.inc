@@ -61,11 +61,9 @@ printJsIncludes($headerPrefix);
 
 // get tool list
 $availableTools = getTools();
-$toolSettings = $_SESSION['config']->getToolSettings();
 // sort tools
 $toSort = array();
-foreach ($availableTools as $toolClass) {
-    $myTool = new $toolClass();
+foreach ($availableTools as $myTool) {
 	if ($myTool->getRequiresWriteAccess() && !checkIfWriteAccessIsAllowed()) {
 		continue;
 	}
@@ -77,8 +75,9 @@ foreach ($availableTools as $toolClass) {
 		continue;
 	}
 	// check if hidden by config
+    $toolClass = get_class($myTool);
 	$toolName = substr($toolClass, strrpos($toolClass, '\\') + 1);
-	if (isset($toolSettings['tool_hide_' . $toolName]) && ($toolSettings['tool_hide_' . $toolName] == 'true')) {
+	if (!$_SESSION['config']->isToolActive($toolName)) {
 		continue;
 	}
 	$toSort[$toolClass] = $myTool->getPosition();
@@ -175,13 +174,6 @@ foreach ($toSort as $key => $value) {
 					}
 				?>
 			</ul>
-		</li>
-		<?php
-		}
-		if ($_SESSION['config']->get_Suffix('tree') != "") {
-		?>
-	    <li>
-			<a href="<?php echo $headerPrefix; ?>/templates/tree/treeViewContainer.php"><img class="align-middle" height="16" width="16" alt="tree" src="<?php echo $headerPrefix; ?>/graphics/process.png"><span class="hide-on-mobile padding0">&nbsp;<?php echo _("Tree view") ?></span></a>
 		</li>
 		<?php
 		}

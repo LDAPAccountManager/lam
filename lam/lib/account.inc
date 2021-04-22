@@ -877,12 +877,12 @@ function searchLDAPByFilter($filter, $attributes, $scopes, $attrsOnly = false) {
  * @param String $suffix LDAP suffix
  * @param String $filter filter
  * @param array $attributes list of attributes to return
+ * @param int $limit result limit
  * @return array list of found entries
  */
-function searchLDAP($suffix, $filter, $attributes) {
-	$limit = 0;
-	if (!empty($_SESSION['config'])) {
-		$limit = $_SESSION['config']->get_searchLimit();
+function searchLDAP($suffix, $filter, $attributes, $limit = -1) {
+	if ($limit === -1) {
+		$limit = !empty($_SESSION['config']) ? $_SESSION['config']->get_searchLimit() : 0;
 	}
 	$return = searchLDAPPaged(getLDAPServerHandle(), escapeDN($suffix), $filter, $attributes,
 				0, $limit);
@@ -992,14 +992,18 @@ function ldapGetDN($dn, $attributes = array('dn'), $handle = null) {
  * @param String $filter LDAP filter
  * @param array $attributes list of attributes to fetch
  * @param handle $handle LDAP handle (optional for admin interface pages)
+ * @param int $limit result limit
  * @return array attributes or null if not found
  */
-function ldapListDN($dn, $filter = '(objectclass=*)', $attributes = array('dn'), $handle = null) {
+function ldapListDN($dn, $filter = '(objectclass=*)', $attributes = array('dn'), $handle = null, $limit = -1) {
+	if ($limit === -1) {
+		$limit = !empty($_SESSION['config']) ? $_SESSION['config']->get_searchLimit() : 0;
+	}
 	if ($handle == null) {
 		$handle = $_SESSION['ldap']->server();
 	}
 	$return = null;
-	$sr = @ldap_list($handle, escapeDN($dn), $filter, $attributes, 0, 0, 0, LDAP_DEREF_NEVER);
+	$sr = @ldap_list($handle, escapeDN($dn), $filter, $attributes, 0, $limit, 0, LDAP_DEREF_NEVER);
 	if ($sr) {
 		$entries = ldap_get_entries($handle, $sr);
 		if ($entries) {
@@ -1136,7 +1140,27 @@ function getAbstractDN($dn) {
 		}
 	}
 	$abstractDn = implode(' > ', $parts);
-	return str_replace(array('\\2C', '\\,'), array(',', ','), $abstractDn);
+	return unescapeLdapSpecialCharacters($abstractDn);
+}
+
+/**
+ * Unescapes LDAP special characters for readability.
+ *
+ * @param string $dn escaped DN
+ * @return string unescaped DN
+ */
+function unescapeLdapSpecialCharacters(string $dn): string {
+	return preg_replace_callback('/\\\([0-9A-Fa-f]{2})/', 'unescapeLdapSpecialCharactersCallback', $dn);
+}
+
+/**
+ * Callback function for unescaping DN.
+ *
+ * @param array $matches HEX value that was found
+ * @return string unescaped string
+ */
+function unescapeLdapSpecialCharactersCallback(array $matches): string {
+	return chr(hexdec($matches[1]));
 }
 
 /**
@@ -1255,10 +1279,11 @@ function isObfuscatedText($text) {
  * @return String RDN attribute name
  */
 function extractRDNAttribute($dn) {
-	if ($dn == null) {
+	$rdn = extractRDN($dn);
+	if (empty($rdn)) {
 		return null;
 	}
-	$parts = explode("=", substr($dn, 0, strpos($dn, ',')));
+	$parts = explode("=", $rdn);
 	return $parts[0];
 }
 
@@ -1269,18 +1294,29 @@ function extractRDNAttribute($dn) {
  * @return String RDN attribute value
  */
 function extractRDNValue($dn) {
+	$rdn = extractRDN($dn);
+	if (empty($rdn)) {
+		return null;
+	}
+	$parts = explode("=", $rdn);
+	return $parts[1];
+}
+
+/**
+ * Extracts the RDN part of the DN.
+ *
+ * @param string|null $dn DN
+ * @return string|null RDN part
+ */
+function extractRDN(?string $dn): ?string {
 	if (empty($dn)) {
 		return null;
 	}
-	if (strpos($dn, '=') === false) {
-		return $dn;
+	$parts = ldap_explode_dn($dn, 0);
+	if (empty($parts[0])) {
+		return null;
 	}
-	$dnWork = $dn;
-	if (strpos($dnWork, ',') !== false) {
-		$dnWork = substr($dn, 0, strpos($dnWork, ','));
-	}
-	$parts = explode("=", $dnWork);
-	return $parts[1];
+	return $parts[0];
 }
 
 /**
@@ -1295,7 +1331,10 @@ function extractDNSuffix($dn) {
 		return null;
 	}
 	$dn = convertCommaEscaping($dn);
-	return substr($dn, strpos($dn, ',')+1);
+	$parts = ldap_explode_dn($dn, 0);
+	unset($parts['count']);
+	array_shift($parts);
+	return implode(',', $parts);
 }
 
 /**

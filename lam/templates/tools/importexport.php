@@ -10,6 +10,7 @@ use \htmlStatusMessage;
 use \htmlDiv;
 use \htmlOutputText;
 use \htmlJavaScript;
+use LAM\TOOLS\TREEVIEW\TreeViewTool;
 use \LAMException;
 use \htmlLink;
 use \htmlResponsiveInputCheckbox;
@@ -21,7 +22,7 @@ use LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2018 - 2019  Roland Gruber
+  Copyright (C) 2018 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -262,7 +263,14 @@ function printExportTabContent(&$tabindex) {
 	$container = new htmlResponsiveRow();
 	$container->add(new htmlTitle(_("Export")), 12);
 
-	$baseDnField = new htmlResponsiveInputField(_('Base DN'), 'baseDn', getDefaultBaseDn(), '751', true);
+	$baseDn = getDefaultBaseDn();
+	if (!empty($_GET['dn'])) {
+	    $preSetDn = base64_decode($_GET['dn']);
+	    if (isValidExportDn($preSetDn)) {
+	        $baseDn = $preSetDn;
+        }
+    }
+	$baseDnField = new htmlResponsiveInputField(_('Base DN'), 'baseDn', $baseDn, '751', true);
 	$baseDnField->showDnSelection();
 	$container->add($baseDnField, 12);
 
@@ -322,11 +330,38 @@ function getDefaultBaseDn() {
 			$baseDn = $suffix;
 		}
 	}
-	$treeSuffix = $_SESSION['config']->get_Suffix('tree');
-	if (empty($baseDn) || (!empty($treeSuffix) && (strlen($treeSuffix) < strlen($baseDn)))) {
-		$baseDn = $treeSuffix;
-	}
+	if ($_SESSION['config']->isToolActive('TreeViewTool')) {
+		$toolSettings = $_SESSION['config']->getToolSettings();
+		$treeSuffix = empty($toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG]) ? null : $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG];
+		if (empty($baseDn) || (!empty($treeSuffix) && (strlen($treeSuffix) < strlen($baseDn)))) {
+			$baseDn = $treeSuffix;
+		}
+    }
 	return $baseDn;
+}
+
+/**
+ * Checks if the given DN is valid for exporting.
+ *
+ * @param string $dn DN
+ * @return bool valid
+ */
+function isValidExportDn(string $dn): bool {
+	$typeManager = new TypeManager();
+	foreach ($typeManager->getConfiguredTypes() as $type) {
+		$suffix = strtolower($type->getSuffix());
+		if (substr($dn, -1 * strlen($suffix)) === $suffix) {
+			return true;
+		}
+	}
+	if ($_SESSION['config']->isToolActive('TreeViewTool')) {
+		$toolSettings = $_SESSION['config']->getToolSettings();
+		$treeSuffix = strtolower($toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG]);
+		if (substr($dn, -1 * strlen($treeSuffix)) === $treeSuffix) {
+			return true;
+		}
+	}
+    return false;
 }
 
 /**

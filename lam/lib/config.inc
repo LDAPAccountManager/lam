@@ -668,7 +668,6 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 			$file_array[] = "\n" . "hidePasswordPromptForExpiredPasswords: " . $profile->getHidePasswordPromptForExpiredPasswords() . "\n";
 			$file_array[] = "\n" . "Passwd: " . $profile->getPasswd() . "\n";
 			$file_array[] = "\n" . "Admins: " . $profile->get_Adminstring() . "\n";
-			$file_array[] = "\n" . "treesuffix: " . $profile->get_Suffix('tree') . "\n";
 			$file_array[] = "\n" . "defaultLanguage: " . $profile->get_defaultLanguage() . "\n";
 			$file_array[] = "\n" . "timeZone: " . $profile->getTimeZone() . "\n";
 			$file_array[] = "\n" . "scriptPath: " . $profile->get_scriptPath() . "\n";
@@ -999,9 +998,6 @@ class LAMConfig {
 	/** Password to edit preferences */
 	private $Passwd;
 
-	/** LDAP suffix for tree view */
-	private $treesuffix;
-
 	/** Default language */
 	private $defaultLanguage;
 	/** time zone */
@@ -1140,7 +1136,7 @@ class LAMConfig {
 	private $hideDnPart = '';
 
 	/** List of all settings in config file */
-	private $settings = array("ServerURL", "useTLS", "followReferrals", 'pagedResults', "Passwd", "Admins", "treesuffix",
+	private $settings = array("ServerURL", "useTLS", "followReferrals", 'pagedResults', "Passwd", "Admins",
 		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", 'serverDisplayName',
 		"modules", "activeTypes", "types", "tools", "accessLevel", 'loginMethod', 'loginSearchSuffix',
 		'loginSearchFilter', 'searchLimit', 'lamProMailFrom', 'lamProMailReplyTo', 'lamProMailSubject',
@@ -1553,12 +1549,7 @@ class LAMConfig {
 	* @return string the LDAP suffix
 	*/
 	public function get_Suffix($typeId) {
-		if ($typeId == "tree") {
-			return $this->treesuffix;
-		}
-		else {
-			return $this->typeSettings['suffix_' . $typeId];
-		}
+		return $this->typeSettings['suffix_' . $typeId];
 	}
 
 	/**
@@ -1575,12 +1566,7 @@ class LAMConfig {
 		elseif (!is_string($value)) {
 			return false;
 		}
-		if ($scope == "tree") {
-			$this->treesuffix = $value;
-		}
-		else {
-			$this->typeSettings['suffix_' . $scope] = $value;
-		}
+		$this->typeSettings['suffix_' . $scope] = $value;
 		return true;
 	}
 
@@ -2078,6 +2064,16 @@ class LAMConfig {
 		}
 		$this->toolSettings = $toolSettings;
 		return true;
+	}
+
+	/**
+	 * Checks if the given tool is activated.
+	 *
+	 * @param string $toolName tool name
+	 * @return bool is active
+	 */
+	public function isToolActive(string $toolName): bool {
+		return !isset($this->toolSettings['tool_hide_' . $toolName]) || ($this->toolSettings['tool_hide_' . $toolName] !== 'true');
 	}
 
 	/**

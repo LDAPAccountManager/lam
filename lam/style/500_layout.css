@@ -32,7 +32,10 @@ h1,h2,h3,h4,p,ul,ol,li,div,td,th,address,blockquote,b,i {
   font-family:Arial,Tahoma,Verdana,sans-serif;
 }
 
-h1,h2,h3 { color:black; }
+h1,h2,h3 {
+	color:black;
+	word-wrap: break-word;
+}
 
 body {
   background-color:#F5F5F5;
@@ -445,6 +448,12 @@ table.collapse {
 	background-position: 0px 0px !important;
 }
 
+.searchButton {
+	background-image: url(../graphics/search.png) !important;
+	background-size: 16px 16px;
+	background-position: 0px 0px !important;
+}
+
 .smallPadding span {
 	padding: 0.1em 0.4em !important;
 }
@@ -760,6 +769,38 @@ div.confModList {
 
 .font-big {
 	font-size: 130%;
+}
+
+div.tree-view--tree {
+	overflow: auto;
+}
+
+div.tree-view--actionarea {
+	overflow-x: hidden;
+	overflow-y: auto;
+	padding: 20px;
+}
+
+div.tree-highlight input,
+div.tree-highlight textarea,
+div.tree-highlight select {
+	border-color: #5fb762;
+}
+
+div.tree-highlight {
+	font-weight: bold;
+}
+
+table.tree-view--table {
+	border: 1px solid;
+}
+
+table.tree-view--table thead {
+	background: #E7E7E7;
+}
+
+table.tree-view--table tr:nth-child(even) {
+	background: #E7E7E7
 }
 
 /** colors for account types */

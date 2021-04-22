@@ -5,10 +5,9 @@ use \htmlTitle;
 use \htmlOutputText;
 use \htmlLink;
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2018  Roland Gruber
+  Copyright (C) 2003 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -53,23 +52,17 @@ $availableTools = getTools();
 // sort tools
 $toSort = array();
 foreach ($availableTools as $availableTool) {
-	$myTool = new $availableTool();
-	$toSort[$availableTool] = $myTool->getPosition();
+	$toSort[$availableTool->getPosition()] = $availableTool;
 }
-asort($toSort);
-$tools = array();
-foreach ($toSort as $key => $value) {
-	$tools[] = new $key();
-}
+ksort($toSort);
 
 echo "<div class=\"user-bright smallPaddingContent\">\n";
 
 // print tools table
 $container = new htmlResponsiveRow();
 $container->add(new htmlTitle(_('Tools')), 12);
-$toolSettings = $_SESSION['config']->getToolSettings();
 
-foreach ($tools as $tool) {
+foreach ($availableTools as $tool) {
 	// check access level
 	if ($tool->getRequiresWriteAccess() && !checkIfWriteAccessIsAllowed()) {
 		continue;
@@ -84,7 +77,7 @@ foreach ($tools as $tool) {
 	// check if hidden by config
 	$className = get_class($tool);
 	$toolName = substr($className, strrpos($className, '\\') + 1);
-	if (isset($toolSettings['tool_hide_' . $toolName]) && ($toolSettings['tool_hide_' . $toolName] == 'true')) {
+	if (!$_SESSION['config']->isToolActive($toolName)) {
 		continue;
 	}
 	// add tool
@@ -99,5 +92,3 @@ parseHtml(null, $container, array(), true, $tabindex, 'user');
 echo "</div>";
 
 include '../lib/adminFooter.inc';
-
-?>

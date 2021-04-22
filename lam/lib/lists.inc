@@ -888,9 +888,8 @@ class lamList {
 				$delButton->setCSSClasses(array('fullwidth-mobile-only'));
 				$left->addElement($delButton);
 			}
-			$toolSettings = $_SESSION['config']->getToolSettings();
 			if ($this->type->getBaseType()->supportsFileUpload() && checkIfNewEntriesAreAllowed($this->type->getId())
-					&& !(isset($toolSettings['tool_hide_toolFileUpload']) && ($toolSettings['tool_hide_toolFileUpload'] == 'true'))) {
+					&& $_SESSION['config']->isToolActive('toolFileUpload')) {
 				$uploadButton = new htmlButton('fileUpload', _('File upload'));
 				$uploadButton->setIconClass('upButton');
 				$uploadButton->setCSSClasses(array('fullwidth-mobile-only'));
