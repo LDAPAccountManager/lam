@@ -791,6 +791,18 @@ div.tree-highlight {
 	font-weight: bold;
 }
 
+table.tree-view--table {
+	border: 1px solid;
+}
+
+table.tree-view--table thead {
+	background: #E7E7E7;
+}
+
+table.tree-view--table tr:nth-child(even) {
+	background: #E7E7E7
+}
+
 /** colors for account types */
 
 .alias-border { border-color:#af8800; }

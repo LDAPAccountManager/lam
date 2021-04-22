@@ -880,9 +880,9 @@ function searchLDAPByFilter($filter, $attributes, $scopes, $attrsOnly = false) {
  * @param int $limit result limit
  * @return array list of found entries
  */
-function searchLDAP($suffix, $filter, $attributes, $limit = 0) {
-	if (!empty($_SESSION['config'])) {
-		$limit = $_SESSION['config']->get_searchLimit();
+function searchLDAP($suffix, $filter, $attributes, $limit = -1) {
+	if ($limit === -1) {
+		$limit = !empty($_SESSION['config']) ? $_SESSION['config']->get_searchLimit() : 0;
 	}
 	$return = searchLDAPPaged(getLDAPServerHandle(), escapeDN($suffix), $filter, $attributes,
 				0, $limit);
@@ -995,9 +995,9 @@ function ldapGetDN($dn, $attributes = array('dn'), $handle = null) {
  * @param int $limit result limit
  * @return array attributes or null if not found
  */
-function ldapListDN($dn, $filter = '(objectclass=*)', $attributes = array('dn'), $handle = null, $limit = 0) {
-	if (!empty($_SESSION['config'])) {
-		$limit = $_SESSION['config']->get_searchLimit();
+function ldapListDN($dn, $filter = '(objectclass=*)', $attributes = array('dn'), $handle = null, $limit = -1) {
+	if ($limit === -1) {
+		$limit = !empty($_SESSION['config']) ? $_SESSION['config']->get_searchLimit() : 0;
 	}
 	if ($handle == null) {
 		$handle = $_SESSION['ldap']->server();

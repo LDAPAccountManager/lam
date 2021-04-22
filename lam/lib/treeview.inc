@@ -12,6 +12,7 @@ use htmlOutputText;
 use htmlResponsiveInputField;
 use htmlResponsiveRow;
 use htmlResponsiveSelect;
+use htmlResponsiveTable;
 use htmlStatusMessage;
 use htmlSubTitle;
 use htmlTable;
@@ -1038,21 +1039,116 @@ class TreeView {
 			die();
 		}
 		$filter = empty($_POST['filter']) ? '(objectClass=*)' : $_POST['filter'];
-		$attributes = preg_split('/[ ]*,/', $_POST['attributes']);
-		$orderBy = empty($_POST['orderBy']) ? 'dn' : $_POST['orderBy'];
-		$limit = empty($_POST['limit']) ? null : $_POST['limit'];
-		$result = array();
+		$attributes = preg_split('/,[ ]*/', $_POST['attributes']);
+		$searchAttributes = $attributes;
+		if (!in_array_ignore_case('objectClass', $searchAttributes)) {
+			$searchAttributes[] = 'objectClass';
+		}
+		global $lamOrderByAttribute;
+		$lamOrderByAttribute = empty($_POST['orderBy']) ? 'dn' : strtolower($_POST['orderBy']);
+		$limit = empty($_POST['limit']) ? 0 : intval($_POST['limit']);
+		$results = array();
 		switch ($scope) {
 			case 'sub':
-				$result = searchLDAP($dn, $filter, $attributes, $limit);
+				$results = searchLDAP($dn, $filter, $searchAttributes, $limit);
 				break;
 			case 'one':
-				$result = ldapListDN($dn, $filter, $attributes, null, $limit);
+				$results = ldapListDN($dn, $filter, $searchAttributes, null, $limit);
 				break;
 		}
-		// TODO sort
-		// TODO format
-		return json_encode(array('content' => print_r($result, true)));
+		usort($results, 'LAM\TOOLS\TREEVIEW\compareByAttributes');
+		$row = $this->searchResultsHeader($dn, $filter);
+		if ($format === 'list') {
+			return $this->searchResultsAsList($results, $attributes, $row);
+		}
+		// TODO deep link tree view
+		return $this->searchResultsAsTable($results, $attributes, $row);
+	}
+
+	/**
+	 * Creates the header part of the search results.
+	 *
+	 * @param string $dn search base
+	 * @param string $filter LDAP filter
+	 * @return htmlResponsiveRow content
+	 */
+	private function searchResultsHeader(string $dn, string $filter): htmlResponsiveRow {
+		$row = new htmlResponsiveRow();
+		$row->add(new htmlTitle(_('Search Results')));
+		$row->addLabel(new htmlOutputText(_('Base DN')));
+		$row->addField(new htmlOutputText($dn));
+		$row->addVerticalSpacer('0.5rem');
+		$row->addLabel(new htmlOutputText(_('Search filter')));
+		$row->addField(new htmlOutputText($filter));
+		$row->addVerticalSpacer('2rem');
+		return $row;
+	}
+
+	/**
+	 * Returns the search results as list.
+	 *
+	 * @param array $results results
+	 * @param array $attributes attribute list to show
+	 * @param htmlResponsiveRow $row content
+	 * @return string JSON
+	 */
+	private function searchResultsAsList(array $results, array $attributes, htmlResponsiveRow $row): string {
+		foreach ($results as $result) {
+			$row->add(new htmlSubTitle(getAbstractDN($result['dn']), $this->getNodeIcon($result)));
+			$row->addLabel(new htmlOutputText('dn'));
+			$row->addField(new htmlLink($result['dn'], 'treeView.php?dn=' . base64_encode($result['dn'])));
+			$result = array_change_key_case($result, CASE_LOWER);
+			foreach ($attributes as $attribute) {
+				$attributeLower = strtolower($attribute);
+				if (!empty($result[$attributeLower])) {
+					$row->addLabel(new htmlOutputText($attribute));
+					$row->addField(new htmlOutputText(implode(', ', $result[$attributeLower])));
+				}
+			}
+			$row->addVerticalSpacer('1rem');
+		}
+		ob_start();
+		$tabIndex = 1;
+		parseHtml(null, $row, array(), false, $tabIndex, '');
+		$content = ob_get_contents();
+		ob_end_clean();
+		return json_encode(array('content' => $content));
+	}
+
+	/**
+	 * Returns the search results as table.
+	 *
+	 * @param array $results results
+	 * @param array $attributes attribute list to show
+	 * @param htmlResponsiveRow $row content
+	 * @return string JSON
+	 */
+	private function searchResultsAsTable(array $results, array $attributes, htmlResponsiveRow $row) {
+		$titles = array_merge(array('', 'dn'), $attributes);
+		$data = array();
+		foreach ($results as $result) {
+			$dataEntry = array($this->getNodeIcon($result), new htmlLink($result['dn'], 'treeView.php?dn=' . base64_encode($result['dn'])));
+			$result = array_change_key_case($result, CASE_LOWER);
+			foreach ($attributes as $attribute) {
+				$attributeLower = strtolower($attribute);
+				if (!empty($result[$attributeLower])) {
+					$dataEntry[] = new htmlOutputText(implode(', ', $result[$attributeLower]));
+				}
+				else {
+					$dataEntry[] = new htmlOutputText('');
+				}
+			}
+			$data[] = $dataEntry;
+		}
+		$table = new htmlResponsiveTable($titles, $data);
+		$table->setCSSClasses(array('tree-view--table'));
+		$row->add($table);
+		ob_start();
+		$tabIndex = 1;
+		parseHtml(null, $row, array(), false, $tabIndex, '');
+		$content = ob_get_contents();
+		ob_end_clean();
+		return json_encode(array('content' => $content));
 	}
 
 }
@@ -1066,4 +1162,34 @@ class TreeView {
  */
 function compareNodeByIdAsDn($a, $b): int {
 	return strnatcasecmp(extractRDN(base64_decode($a['id'])), extractRDN(base64_decode($b['id'])));
+}
+
+/**
+ * Compares two arrays with LDAP attributes by global $lamOrderByAttribute.
+ *
+ * @param $a first node
+ * @param $b second node
+ * @return int result
+ */
+function compareByAttributes($a, $b): int {
+	global $lamOrderByAttribute;
+	if ($lamOrderByAttribute === 'dn') {
+		return compareDN($a['dn'], $b['dn']);
+	}
+	$a = array_change_key_case($a, CASE_LOWER);
+	$b = array_change_key_case($b, CASE_LOWER);
+	if (!isset($a[$lamOrderByAttribute]) && !isset($b[$lamOrderByAttribute])) {
+		return 0;
+	}
+	if (!empty($a[$lamOrderByAttribute]) && empty($b[$lamOrderByAttribute])) {
+		return 1;
+	}
+	if (empty($a[$lamOrderByAttribute]) && !empty($b[$lamOrderByAttribute])) {
+		return -1;
+	}
+	natcasesort($a[$lamOrderByAttribute]);
+	natcasesort($b[$lamOrderByAttribute]);
+	$maxA = array_pop($a[$lamOrderByAttribute]);
+	$maxB = array_pop($b[$lamOrderByAttribute]);
+	return strnatcasecmp($maxA, $maxB);
 }
