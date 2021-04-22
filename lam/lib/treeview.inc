@@ -295,7 +295,7 @@ class TreeView {
 			$row->add($message);
 			$row->addVerticalSpacer('1rem');
 		}
-		$row->add(new htmlTitle($dn), 12);
+		$row->add(new htmlTitle(unescapeLdapSpecialCharacters($dn)), 12);
 		$row->add(new htmlDiv('ldap_actionarea_messages', new htmlOutputText('')), 12);
 		$row->add(new htmlSubTitle(_('Attributes')), 12);
 		$attributes = ldapGetDN($dn, array('*'));
@@ -591,7 +591,7 @@ class TreeView {
 				$pos = $oldPos;
 			}
 			$newRdnValue = $ldapChanges[$rdnAttribute][$pos];
-			$newRdn = $rdnAttribute . '=' . $newRdnValue;
+			$newRdn = $rdnAttribute . '=' . ldap_escape($newRdnValue);
 			$parent = extractDNSuffix($dn);
 			$renameOk = ldap_rename($_SESSION['ldap']->server(), $dn, $newRdn, $parent, true);
 			$newDn = $newRdn . ',' . $parent;
@@ -791,6 +791,9 @@ class TreeView {
 		elseif (isset($allAttributes['cn'])) {
 			$rdnOptionsSelected[] = $allAttributes['cn']->getName();
 		}
+		elseif (isset($allAttributes['ou'])) {
+			$rdnOptionsSelected[] = $allAttributes['ou']->getName();
+		}
 		$row->add(new htmlResponsiveSelect('rdn', $rdnOptions, $rdnOptionsSelected, _('RDN identifier')));
 		if (!empty($mustAttributes)) {
 			$row->add(new htmlSubTitle(_('Required attributes')));
@@ -886,7 +889,7 @@ class TreeView {
 		if (!isset($attributes[$rdnAttribute][0])) {
 			return $this->createNewNodeCheckObjectClassesStep($dn, _('The RDN field is empty.'), $rdnAttribute, $attributes);
 		}
-		$rdn = $rdnAttribute . '=' . $attributes[$rdnAttribute][0];
+		$rdn = $rdnAttribute . '=' . ldap_escape($attributes[$rdnAttribute][0]);
 		$newDn = $rdn . ',' . $dn;
 		$success = ldap_add($_SESSION['ldap']->server(), $newDn, $attributes);
 		if (!$success) {
@@ -984,7 +987,7 @@ class TreeView {
 		$row = new htmlResponsiveRow();
 		$row->add(new htmlTitle(_('Search')));
 		$row->addLabel(new htmlOutputText(_('Base DN')));
-		$row->addField(new htmlOutputText($dn));
+		$row->addField(new htmlOutputText(unescapeLdapSpecialCharacters($dn)));
 		$row->addVerticalSpacer('1rem');
 		$scopeOptions = array(
 			_('Sub (entire subtree)') => 'sub',
@@ -1075,7 +1078,7 @@ class TreeView {
 		$row = new htmlResponsiveRow();
 		$row->add(new htmlTitle(_('Search Results')));
 		$row->addLabel(new htmlOutputText(_('Base DN')));
-		$row->addField(new htmlOutputText($dn));
+		$row->addField(new htmlOutputText(unescapeLdapSpecialCharacters($dn)));
 		$row->addVerticalSpacer('0.5rem');
 		$row->addLabel(new htmlOutputText(_('Search filter')));
 		$row->addField(new htmlOutputText($filter));
@@ -1095,7 +1098,7 @@ class TreeView {
 		foreach ($results as $result) {
 			$row->add(new htmlSubTitle(getAbstractDN($result['dn']), $this->getNodeIcon($result)));
 			$row->addLabel(new htmlOutputText('dn'));
-			$row->addField(new htmlLink($result['dn'], 'treeView.php?dn=' . base64_encode($result['dn'])));
+			$row->addField(new htmlLink(unescapeLdapSpecialCharacters($result['dn']), 'treeView.php?dn=' . base64_encode($result['dn'])));
 			$result = array_change_key_case($result, CASE_LOWER);
 			foreach ($attributes as $attribute) {
 				$attributeLower = strtolower($attribute);
@@ -1126,7 +1129,7 @@ class TreeView {
 		$titles = array_merge(array('', 'dn'), $attributes);
 		$data = array();
 		foreach ($results as $result) {
-			$dataEntry = array($this->getNodeIcon($result), new htmlLink($result['dn'], 'treeView.php?dn=' . base64_encode($result['dn'])));
+			$dataEntry = array($this->getNodeIcon($result), new htmlLink(unescapeLdapSpecialCharacters($result['dn']), 'treeView.php?dn=' . base64_encode($result['dn'])));
 			$result = array_change_key_case($result, CASE_LOWER);
 			foreach ($attributes as $attribute) {
 				$attributeLower = strtolower($attribute);
