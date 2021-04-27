@@ -2357,6 +2357,21 @@ window.lam.treeview.findAttributeChanges = function () {
 			new: lastAttrValuesNew
 		};
 	}
+	jQuery('.hash-select').each(
+		function() {
+			var input = jQuery(this);
+			var attrName = input.data('attr-name');
+			if (!attributeChanges[attrName]) {
+				return;
+			}
+			if (!attributeChanges[attrName]['hash']) {
+				attributeChanges[attrName]['hash'] = [input.val()];
+			}
+			else {
+				attributeChanges[attrName]['hash'].push(input.val());
+			}
+		}
+	);
 	return attributeChanges;
 }
 

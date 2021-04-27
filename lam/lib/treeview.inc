@@ -13,6 +13,7 @@ use htmlResponsiveInputField;
 use htmlResponsiveRow;
 use htmlResponsiveSelect;
 use htmlResponsiveTable;
+use htmlSelect;
 use htmlStatusMessage;
 use htmlSubTitle;
 use htmlTable;
@@ -328,8 +329,11 @@ class TreeView {
 				if (!isset($attributes[strtolower($attributeName)])) {
 					$schemaAttribute = $schemaAttributes[strtolower($attributeName)];
 					$single = $schemaAttribute->getIsSingleValue() ? 'single' : 'multi';
-					$multiLine = $this->isMultiLineAttribute($attributeName, $schemaAttribute) ? 'textarea' : 'input';
-					$possibleNewAttributes[$attributeName] = $attributeName . '__#__' . $single . '__#__' . $multiLine;
+					$type = $this->isMultiLineAttribute($attributeName, $schemaAttribute) ? 'textarea' : 'input';
+					if (strtolower($attributeName) === 'userpassword') {
+						$type = 'password';
+					}
+					$possibleNewAttributes[$attributeName] = $attributeName . '__#__' . $single . '__#__' . $type;
 				}
 			}
 		}
@@ -359,6 +363,14 @@ class TreeView {
 			$newAttributesContentMultiTextarea->addLabel(new htmlOutputText('PLACEHOLDER_MULTI_TEXTAREA_LABEL'));
 			$newAttributesContentMultiTextarea->addField($this->getAttributeContentField('PLACEHOLDER_MULTI_TEXTAREA', array(''), false, true, true));
 			$row->add(new htmlDiv('new-attributes-multi-textarea', $newAttributesContentMultiTextarea, array('hidden')), 12);
+			$newAttributesContentSinglePassword = new htmlResponsiveRow();
+			$newAttributesContentSinglePassword->addLabel(new htmlOutputText('PLACEHOLDER_SINGLE_PASSWORD_LABEL'));
+			$newAttributesContentSinglePassword->addField($this->getAttributeContentField('userPassword', array(''), false, false, false));
+			$row->add(new htmlDiv('new-attributes-single-password', $newAttributesContentSinglePassword, array('hidden')), 12);
+			$newAttributesContentMultiPassword = new htmlResponsiveRow();
+			$newAttributesContentMultiPassword->addLabel(new htmlOutputText('PLACEHOLDER_MULTI_PASSWORD_LABEL'));
+			$newAttributesContentMultiPassword->addField($this->getAttributeContentField('userPassword', array(''), false, true, true));
+			$row->add(new htmlDiv('new-attributes-multi-password', $newAttributesContentMultiPassword, array('hidden')), 12);
 		}
 
 		if (checkIfWriteAccessIsAllowed()) {
@@ -470,6 +482,9 @@ class TreeView {
 	 * @return htmlElement input field
 	 */
 	private function getAttributeInputField(string $attributeName, string $value, bool $required, bool $isMultiLine, bool $isSingleValue): htmlElement {
+		if (strtolower($attributeName) === 'userpassword') {
+			return $this->getAttributePasswordInputField($attributeName, $value, $required, $isSingleValue);
+		}
 		if ($isMultiLine) {
 			$inputField = new htmlInputTextarea('lam_attr_' . $attributeName, $value, 50, 5);
 		}
@@ -484,6 +499,36 @@ class TreeView {
 			$inputField->setRequired(true);
 		}
 		return $inputField;
+	}
+
+	/**
+	 * Returns an input field for a password attribute.
+	 *
+	 * @param string $attributeName attribute name
+	 * @param string $value value
+	 * @param bool $required required
+	 * @param bool $isSingleValue is single value attribute
+	 * @return htmlElement input field
+	 */
+	private function getAttributePasswordInputField(string $attributeName, string $value, bool $required, bool $isSingleValue): htmlElement {
+		$inputField = new htmlInputField('lam_attr_' . $attributeName, $value);
+		$inputField->addDataAttribute('value-orig', $value);
+		$inputField->addDataAttribute('attr-name', $attributeName);
+		$cssClass = ($isSingleValue) ? 'single-input' : 'multi-input';
+		$inputField->setCSSClasses(array($cssClass));
+		if ($required) {
+			$inputField->setRequired(true);
+		}
+		$inputField->setIsPassword(true);
+		$row = new htmlResponsiveRow();
+		$row->add($inputField, 7);
+		$hashes = getSupportedHashTypes();
+		$selectedHash = array(getHashType($value));
+		$hashSelect = new htmlSelect('lam_hash_' . $attributeName, $hashes, $selectedHash);
+		$hashSelect->addDataAttribute('attr-name', $attributeName);
+		$hashSelect->setCSSClasses(array('hash-select'));
+		$row->add($hashSelect, 5);
+		return $row;
 	}
 
 	/**
@@ -576,6 +621,9 @@ class TreeView {
 		if (!empty($changes)) {
 			foreach ($changes as $attrName => $change) {
 				$newValues = $change['new'];
+				if (isset($change['hash'])) {
+					$newValues = $this->applyPasswordHash($newValues, $change['hash']);
+				}
 				$ldapChanges[$attrName] = $newValues;
 			}
 		}
@@ -624,6 +672,27 @@ class TreeView {
 		ob_end_clean();
 		$jsonData['result'] = $messageContent;
 		return json_encode($jsonData);
+	}
+
+	/**
+	 * Applies password hashing on the provided values.
+	 *
+	 * @param array $values values
+	 * @param array $hash hash types
+	 * @return array hashed values
+	 */
+	private function applyPasswordHash(array $values, array $hash): array {
+		$result = array();
+		for ($i = 0; $i < sizeof($values); $i++) {
+			$oldType = getHashType($values[$i]);
+			if (($oldType === 'PLAIN') && ($hash[$i] !== 'PLAIN')) {
+				$result[] = pwd_hash($values[$i], true, $hash[$i]);
+			}
+			else {
+				$result[] = $values[$i];
+			}
+		}
+		return $result;
 	}
 
 	/**

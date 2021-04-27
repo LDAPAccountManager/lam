@@ -222,6 +222,31 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 }
 
 /**
+ * Returns the hash type of the given password hash.
+ * This will return PLAIN if no supported hash type was found.
+ *
+ * @param string|null $hash password hash
+ * @return string type (e.g. SSHA)
+ */
+function getHashType(?string $hash): string {
+	if (empty($hash)) {
+		return 'PLAIN';
+	}
+	$matches = array();
+	if (!preg_match('/\\{([A-Z0-9-]+)\\}.+/', $hash, $matches)) {
+		return 'PLAIN';
+	}
+	$type = $matches[1];
+	if ($type === 'ARGON2') {
+		return 'ARGON2ID';
+	}
+	if (in_array($type, getSupportedHashTypes())) {
+		return $type;
+	}
+	return 'PLAIN';
+}
+
+/**
  * Returns the list of supported hash types (e.g. SSHA).
  *
  * @return array hash types

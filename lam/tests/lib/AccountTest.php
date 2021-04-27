@@ -194,6 +194,19 @@ class AccountTest extends TestCase {
 		$this->assertTrue(checkPasswordHash($type, $hash, 'test-password'));
 	}
 
+	function testGetHashType() {
+		$this->assertEquals('PLAIN', getHashType(''));
+		$this->assertEquals('PLAIN', getHashType(null));
+		$this->assertEquals('PLAIN', getHashType('abc123'));
+		$this->assertEquals('CRYPT', getHashType('{CRYPT}123'));
+		$this->assertEquals('PBKDF2-SHA512', getHashType('{PBKDF2-SHA512}123'));
+		$this->assertEquals('MD5', getHashType('{MD5}123'));
+		$this->assertEquals('SMD5', getHashType('{SMD5}123'));
+		$this->assertEquals('K5KEY', getHashType('{K5KEY}123'));
+		$this->assertEquals('ARGON2ID', getHashType('{ARGON2}123'));
+		$this->assertEquals('SSHA', getHashType('{SSHA}123'));
+	}
+
 	function testGetNumberOfCharacterClasses() {
 		$this->assertEquals(0, getNumberOfCharacterClasses(null));
 		$this->assertEquals(1, getNumberOfCharacterClasses('0'));
