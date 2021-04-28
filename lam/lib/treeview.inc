@@ -330,7 +330,7 @@ class TreeView {
 					$schemaAttribute = $schemaAttributes[strtolower($attributeName)];
 					$single = $schemaAttribute->getIsSingleValue() ? 'single' : 'multi';
 					$type = $this->isMultiLineAttribute($attributeName, $schemaAttribute) ? 'textarea' : 'input';
-					if (strtolower($attributeName) === 'userpassword') {
+					if ($this->isPasswordAttribute($attributeName)) {
 						$type = 'password';
 					}
 					$possibleNewAttributes[$attributeName] = $attributeName . '__#__' . $single . '__#__' . $type;
@@ -349,27 +349,27 @@ class TreeView {
 			$row->add($newAttributeSelect, 12);
 			$newAttributesContentSingleInput = new htmlResponsiveRow();
 			$newAttributesContentSingleInput->addLabel(new htmlOutputText('PLACEHOLDER_SINGLE_INPUT_LABEL'));
-			$newAttributesContentSingleInput->addField($this->getAttributeContentField('PLACEHOLDER_SINGLE_INPUT', array(''), false, false, false));
+			$newAttributesContentSingleInput->addField($this->getAttributeContentField('PLACEHOLDER_SINGLE_INPUT', array(''), false, false, false, null));
 			$row->add(new htmlDiv('new-attributes-single-input', $newAttributesContentSingleInput, array('hidden')), 12);
 			$newAttributesContentMultiInput = new htmlResponsiveRow();
 			$newAttributesContentMultiInput->addLabel(new htmlOutputText('PLACEHOLDER_MULTI_INPUT_LABEL'));
-			$newAttributesContentMultiInput->addField($this->getAttributeContentField('PLACEHOLDER_MULTI_INPUT', array(''), false, true, false));
+			$newAttributesContentMultiInput->addField($this->getAttributeContentField('PLACEHOLDER_MULTI_INPUT', array(''), false, true, false, null));
 			$row->add(new htmlDiv('new-attributes-multi-input', $newAttributesContentMultiInput, array('hidden')), 12);
 			$newAttributesContentSingleTextarea = new htmlResponsiveRow();
 			$newAttributesContentSingleTextarea->addLabel(new htmlOutputText('PLACEHOLDER_SINGLE_TEXTAREA_LABEL'));
-			$newAttributesContentSingleTextarea->addField($this->getAttributeContentField('PLACEHOLDER_SINGLE_TEXTAREA', array(''), false, false, true));
+			$newAttributesContentSingleTextarea->addField($this->getAttributeContentField('PLACEHOLDER_SINGLE_TEXTAREA', array(''), false, false, true, null));
 			$row->add(new htmlDiv('new-attributes-single-textarea', $newAttributesContentSingleTextarea, array('hidden')), 12);
 			$newAttributesContentMultiTextarea = new htmlResponsiveRow();
 			$newAttributesContentMultiTextarea->addLabel(new htmlOutputText('PLACEHOLDER_MULTI_TEXTAREA_LABEL'));
-			$newAttributesContentMultiTextarea->addField($this->getAttributeContentField('PLACEHOLDER_MULTI_TEXTAREA', array(''), false, true, true));
+			$newAttributesContentMultiTextarea->addField($this->getAttributeContentField('PLACEHOLDER_MULTI_TEXTAREA', array(''), false, true, true, null));
 			$row->add(new htmlDiv('new-attributes-multi-textarea', $newAttributesContentMultiTextarea, array('hidden')), 12);
 			$newAttributesContentSinglePassword = new htmlResponsiveRow();
 			$newAttributesContentSinglePassword->addLabel(new htmlOutputText('PLACEHOLDER_SINGLE_PASSWORD_LABEL'));
-			$newAttributesContentSinglePassword->addField($this->getAttributeContentField('userPassword', array(''), false, false, false));
+			$newAttributesContentSinglePassword->addField($this->getAttributeContentField('userPassword', array(''), false, false, false, null));
 			$row->add(new htmlDiv('new-attributes-single-password', $newAttributesContentSinglePassword, array('hidden')), 12);
 			$newAttributesContentMultiPassword = new htmlResponsiveRow();
 			$newAttributesContentMultiPassword->addLabel(new htmlOutputText('PLACEHOLDER_MULTI_PASSWORD_LABEL'));
-			$newAttributesContentMultiPassword->addField($this->getAttributeContentField('userPassword', array(''), false, true, true));
+			$newAttributesContentMultiPassword->addField($this->getAttributeContentField('userPassword', array(''), false, true, true, null));
 			$row->add(new htmlDiv('new-attributes-multi-password', $newAttributesContentMultiPassword, array('hidden')), 12);
 		}
 
@@ -434,7 +434,7 @@ class TreeView {
 		}
 		$isMultiValue = (sizeof($values) > 1) || (($schemaAttribute !== null) && ($schemaAttribute->getIsSingleValue() !== true));
 		$isMultiLine = $this->isMultiLineAttribute($attributeName, $schemaAttribute);
-		$row->addField($this->getAttributeContentField($attributeName, $values, $required, $isMultiValue, $isMultiLine), $cssClasses);
+		$row->addField($this->getAttributeContentField($attributeName, $values, $required, $isMultiValue, $isMultiLine, $schemaAttribute), $cssClasses);
 		$row->addVerticalSpacer('0.5rem');
 	}
 
@@ -446,16 +446,18 @@ class TreeView {
 	 * @param bool $required is required
 	 * @param bool $isMultiValue multi-value attribute
 	 * @param bool $isMultiLine textarea attribute
+	 * @param AttributeType|null $schemaAttribute schema attribute
 	 * @return htmlElement content
 	 */
-	private function getAttributeContentField(string $attributeName, array $values, bool $required, bool $isMultiValue, bool $isMultiLine): htmlElement {
+	private function getAttributeContentField(string $attributeName, array $values, bool $required, bool $isMultiValue,
+	                                          bool $isMultiLine, ?AttributeType $schemaAttribute): htmlElement {
 		if (!$isMultiValue) {
-			return $this->getAttributeInputField($attributeName, $values[0], $required, $isMultiLine, true);
+			return $this->getAttributeInputField($attributeName, $values[0], $required, $isMultiLine, true, $schemaAttribute);
 		}
 		$valueTable = new htmlTable();
 		$valueTable->setCSSClasses(array('fullwidth'));
 		foreach ($values as $value) {
-			$valueTable->addElement($this->getAttributeInputField($attributeName, $value, $required, $isMultiLine, false));
+			$valueTable->addElement($this->getAttributeInputField($attributeName, $value, $required, $isMultiLine, false, $schemaAttribute));
 			if (checkIfWriteAccessIsAllowed()) {
 				$addButton = new htmlLink(null, '#', '../../graphics/add.png');
 				$addButton->setCSSClasses(array('margin2'));
@@ -479,10 +481,12 @@ class TreeView {
 	 * @param bool $required required
 	 * @param bool $isMultiLine is multi-line attribute
 	 * @param bool $isSingleValue is single value attribute
+	 * @param AttributeType|null $schemaAttribute schema attribute
 	 * @return htmlElement input field
 	 */
-	private function getAttributeInputField(string $attributeName, string $value, bool $required, bool $isMultiLine, bool $isSingleValue): htmlElement {
-		if (strtolower($attributeName) === 'userpassword') {
+	private function getAttributeInputField(string $attributeName, string $value, bool $required, bool $isMultiLine,
+	                                        bool $isSingleValue, ?AttributeType $schemaAttribute): htmlElement {
+		if ($this->isPasswordAttribute($attributeName)) {
 			return $this->getAttributePasswordInputField($attributeName, $value, $required, $isSingleValue);
 		}
 		if ($isMultiLine) {
@@ -499,6 +503,19 @@ class TreeView {
 			$inputField->setRequired(true);
 		}
 		return $inputField;
+	}
+
+	/**
+	 * Returns if the given attribute is a (hashable) password.
+	 *
+	 * @param string $attributeName attribute name
+	 * @return bool is password
+	 */
+	private function isPasswordAttribute(string $attributeName): bool {
+		if (strtolower($attributeName) === 'userpassword') {
+			return true;
+		}
+		return false;
 	}
 
 	/**
