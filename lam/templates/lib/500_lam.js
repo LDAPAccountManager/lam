@@ -2107,6 +2107,7 @@ window.lam.treeview.createNodeSelectObjectClassesStep = function (event, tokenNa
 	})
 	.done(function(jsonData) {
 		jQuery('#ldap_actionarea').html(jsonData.content);
+		window.lam.treeview.addFileInputListeners();
 	});
 }
 
@@ -2251,7 +2252,32 @@ window.lam.treeview.getNodeContent = function (tokenName, tokenValue, dn, messag
 			jQuery('#ldap_actionarea_messages').html(messages);
 		}
 		jQuery("#ldap_actionarea").scrollTop(0);
+		window.lam.html.activateLightboxes();
+		window.lam.treeview.addFileInputListeners();
 	});
+}
+
+/**
+ * Adds a listener to each file input to write the file content to a data attribute.
+ */
+window.lam.treeview.addFileInputListeners = function () {
+	jQuery('.image-upload').each(
+		function () {
+			var input = jQuery(this);
+			input.change(function () {
+				var files = input[0].files;
+				if (!files[0]) {
+					return;
+				}
+				var reader = new FileReader();
+				reader.onload = function () {
+					var content = btoa(reader.result);
+					input.attr('data-binary', content);
+				};
+				reader.readAsBinaryString(files[0]);
+			});
+		}
+	);
 }
 
 /**
@@ -2372,6 +2398,45 @@ window.lam.treeview.findAttributeChanges = function () {
 			}
 		}
 	);
+	jQuery('.image-input').each(
+		function() {
+			var input = jQuery(this);
+			var toDelete = input.attr('data-delete');
+			if (toDelete !== 'true') {
+				return;
+			}
+			var attrName = input.attr('data-attr-name');
+			var attrIndex = input.attr('data-index');
+			if (!attrIndex) {
+				return;
+			}
+			if (!attributeChanges[attrName]) {
+				attributeChanges[attrName] = {delete: [attrIndex]};
+			}
+			else {
+				attributeChanges[attrName]['delete'].push(attrIndex);
+			}
+		}
+	);
+	jQuery('.image-upload').each(
+		function() {
+			var input = jQuery(this);
+			var content = input.attr('data-binary');
+			if (!content) {
+				return;
+			}
+			var attrName = input.attr('data-attr-name');
+			if (!attrName) {
+				return;
+			}
+			if (!attributeChanges[attrName]) {
+				attributeChanges[attrName] = {upload: content};
+			}
+			else {
+				attributeChanges[attrName]['upload'] = content;
+			}
+		}
+	);
 	return attributeChanges;
 }
 
@@ -2384,8 +2449,13 @@ window.lam.treeview.findAttributeChanges = function () {
 window.lam.treeview.clearValue = function (event, link) {
 	event.preventDefault();
 	var linkObj = jQuery(link);
-	var parentTr = linkObj.parents('tr').get(0);
-	jQuery(parentTr).find('input, textarea').val('');
+	var parentTr = jQuery(linkObj.parents('tr').get(0));
+	parentTr.find('input, textarea').val('');
+	var image = parentTr.find('.image-input');
+	if (image.length > 0) {
+		parentTr.addClass('hidden');
+		image.attr('data-delete', 'true');
+	}
 }
 
 /**
@@ -2431,6 +2501,7 @@ window.lam.treeview.addAttributeField = function (event, select) {
 	inputField.attr('name', 'lam_attr_' + attributeName);
 	inputField.attr('id', 'lam_attr_' + attributeName);
 	newContent.children().insertAfter(jQuery(selectObj.parents('div').get(0)));
+	window.lam.treeview.addFileInputListeners();
 }
 
 /**

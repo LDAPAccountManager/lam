@@ -3,9 +3,12 @@ namespace LAM\TOOLS\TREEVIEW;
 use htmlButton;
 use htmlDiv;
 use htmlElement;
+use htmlForm;
 use htmlGroup;
 use htmlHiddenInput;
+use htmlImage;
 use htmlInputField;
+use htmlInputFileUpload;
 use htmlInputTextarea;
 use htmlLink;
 use htmlOutputText;
@@ -333,6 +336,9 @@ class TreeView {
 					if ($this->isPasswordAttribute($attributeName)) {
 						$type = 'password';
 					}
+					elseif ($this->isJpegAttribute($attributeName, $schemaAttribute)) {
+						$type = 'jpeg';
+					}
 					$possibleNewAttributes[$attributeName] = $attributeName . '__#__' . $single . '__#__' . $type;
 				}
 			}
@@ -371,6 +377,14 @@ class TreeView {
 			$newAttributesContentMultiPassword->addLabel(new htmlOutputText('PLACEHOLDER_MULTI_PASSWORD_LABEL'));
 			$newAttributesContentMultiPassword->addField($this->getAttributeContentField('userPassword', array(''), false, true, true, null));
 			$row->add(new htmlDiv('new-attributes-multi-password', $newAttributesContentMultiPassword, array('hidden')), 12);
+			$newAttributesContentSingleJpeg = new htmlResponsiveRow();
+			$newAttributesContentSingleJpeg->addLabel(new htmlOutputText('PLACEHOLDER_SINGLE_JPEG_LABEL'));
+			$newAttributesContentSingleJpeg->addField($this->getAttributeContentField('jpegPhoto', array(''), false, false, false, null));
+			$row->add(new htmlDiv('new-attributes-single-jpeg', $newAttributesContentSingleJpeg, array('hidden')), 12);
+			$newAttributesContentMultiJpeg = new htmlResponsiveRow();
+			$newAttributesContentMultiJpeg->addLabel(new htmlOutputText('PLACEHOLDER_MULTI_JPEG_LABEL'));
+			$newAttributesContentMultiJpeg->addField($this->getAttributeContentField('jpegPhoto', array(''), false, true, true, null));
+			$row->add(new htmlDiv('new-attributes-multi-jpeg', $newAttributesContentMultiJpeg, array('hidden')), 12);
 		}
 
 		if (checkIfWriteAccessIsAllowed()) {
@@ -432,10 +446,21 @@ class TreeView {
 		if (($schemaAttribute !== null) && !empty($schemaAttribute->getDescription())) {
 			$label->setTitle($schemaAttribute->getDescription());
 		}
-		$isMultiValue = (sizeof($values) > 1) || (($schemaAttribute !== null) && ($schemaAttribute->getIsSingleValue() !== true));
+		$isMultiValue = $this->isMultiValueAttribute($values, $schemaAttribute);
 		$isMultiLine = $this->isMultiLineAttribute($attributeName, $schemaAttribute);
 		$row->addField($this->getAttributeContentField($attributeName, $values, $required, $isMultiValue, $isMultiLine, $schemaAttribute), $cssClasses);
 		$row->addVerticalSpacer('0.5rem');
+	}
+
+	/**
+	 * Returns if the given attribute is a multi-value one.
+	 *
+	 * @param array|null $values attribute values
+	 * @param AttributeType|null $schemaAttribute schema attribute
+	 * @return bool is multi-value
+	 */
+	private function isMultiValueAttribute(?array $values, ?AttributeType $schemaAttribute): bool {
+		return (sizeof($values) > 1) || (($schemaAttribute !== null) && ($schemaAttribute->getIsSingleValue() !== true));
 	}
 
 	/**
@@ -452,25 +477,52 @@ class TreeView {
 	private function getAttributeContentField(string $attributeName, array $values, bool $required, bool $isMultiValue,
 	                                          bool $isMultiLine, ?AttributeType $schemaAttribute): htmlElement {
 		if (!$isMultiValue) {
-			return $this->getAttributeInputField($attributeName, $values[0], $required, $isMultiLine, true, $schemaAttribute);
+			$field = $this->getAttributeInputField($attributeName, $values[0], $required, $isMultiLine, true, $schemaAttribute, 0);
+			return $this->addExtraAttributeContent($field, $attributeName, $schemaAttribute);
 		}
 		$valueTable = new htmlTable();
 		$valueTable->setCSSClasses(array('fullwidth'));
-		foreach ($values as $value) {
-			$valueTable->addElement($this->getAttributeInputField($attributeName, $value, $required, $isMultiLine, false, $schemaAttribute));
+		foreach ($values as $index => $value) {
+			$valueTable->addElement($this->getAttributeInputField($attributeName, $value, $required, $isMultiLine, false, $schemaAttribute, $index));
 			if (checkIfWriteAccessIsAllowed()) {
-				$addButton = new htmlLink(null, '#', '../../graphics/add.png');
-				$addButton->setCSSClasses(array('margin2'));
-				$addButton->setOnClick('window.lam.treeview.addValue(event, this);');
-				$valueTable->addElement($addButton);
-				$clearButton = new htmlLink(null, '#', '../../graphics/del.png');
-				$clearButton->setCSSClasses(array('margin2'));
-				$clearButton->setOnClick('window.lam.treeview.clearValue(event, this);');
-				$valueTable->addElement($clearButton);
+				if (!$this->isJpegAttribute($attributeName, $schemaAttribute)) {
+					$addButton = new htmlLink(null, '#', '../../graphics/add.png');
+					$addButton->setCSSClasses(array('margin2'));
+					$addButton->setOnClick('window.lam.treeview.addValue(event, this);');
+					$valueTable->addElement($addButton);
+				}
+				if (!$this->isJpegAttribute($attributeName, $schemaAttribute) || ($value !== '')) {
+					$clearButton = new htmlLink(null, '#', '../../graphics/del.png');
+					$clearButton->setCSSClasses(array('margin2'));
+					$clearButton->setOnClick('window.lam.treeview.clearValue(event, this);');
+					$valueTable->addElement($clearButton);
+				}
 			}
 			$valueTable->addNewLine();
 		}
-		return $valueTable;
+		return $this->addExtraAttributeContent($valueTable, $attributeName, $schemaAttribute);
+	}
+
+	/**
+	 * Adds any extry content to the element.
+	 *
+	 * @param htmlElement $element original element
+	 * @param string $attributeName attribute name
+	 * @param AttributeType|null $schemaAttribute schema attribute
+	 * @return htmlElement enhanced element
+	 */
+	private function addExtraAttributeContent(htmlElement $element, string $attributeName, ?AttributeType $schemaAttribute): htmlElement {
+		if ($this->isJpegAttribute($attributeName, $schemaAttribute)) {
+			$row = new htmlResponsiveRow();
+			$row->add($element);
+			$upload = new htmlInputFileUpload('lam_attr_' . $attributeName);
+			$upload->addDataAttribute('attr-name', $attributeName);
+			$upload->setCSSClasses(array('image-upload'));
+
+			$row->add($upload);
+			return $row;
+		}
+		return $element;
 	}
 
 	/**
@@ -482,12 +534,16 @@ class TreeView {
 	 * @param bool $isMultiLine is multi-line attribute
 	 * @param bool $isSingleValue is single value attribute
 	 * @param AttributeType|null $schemaAttribute schema attribute
+	 * @param int $index value position
 	 * @return htmlElement input field
 	 */
 	private function getAttributeInputField(string $attributeName, string $value, bool $required, bool $isMultiLine,
-	                                        bool $isSingleValue, ?AttributeType $schemaAttribute): htmlElement {
+	                                        bool $isSingleValue, ?AttributeType $schemaAttribute, int $index): htmlElement {
 		if ($this->isPasswordAttribute($attributeName)) {
 			return $this->getAttributePasswordInputField($attributeName, $value, $required, $isSingleValue);
+		}
+		if ($this->isJpegAttribute($attributeName, $schemaAttribute)) {
+			return $this->getAttributeJpegInputField($attributeName, $value, $required, $index);
 		}
 		if ($isMultiLine) {
 			$inputField = new htmlInputTextarea('lam_attr_' . $attributeName, $value, 50, 5);
@@ -513,6 +569,23 @@ class TreeView {
 	 */
 	private function isPasswordAttribute(string $attributeName): bool {
 		if (strtolower($attributeName) === 'userpassword') {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Returns if the given attribute is a JPG image.
+	 *
+	 * @param string $attributeName attribute name
+	 * @param AttributeType|null $schemaAttribute schema attribute
+	 * @return bool is password
+	 */
+	private function isJpegAttribute(string $attributeName, ?AttributeType $schemaAttribute): bool {
+		if (strtolower($attributeName) === 'jpegphoto') {
+			return true;
+		}
+		if (($schemaAttribute !== null) && ($schemaAttribute->getType() === 'JPEG')) {
 			return true;
 		}
 		return false;
@@ -546,6 +619,29 @@ class TreeView {
 		$hashSelect->setCSSClasses(array('hash-select'));
 		$row->add($hashSelect, 5);
 		return $row;
+	}
+
+	/**
+	 * Returns an input field for a JPG image attribute.
+	 *
+	 * @param string $attributeName attribute name
+	 * @param string $value value
+	 * @param bool $required required
+	 * @return htmlElement input field
+	 */
+	private function getAttributeJpegInputField(string $attributeName, string $value, bool $required, int $index): htmlElement {
+		$imgNumber = getRandomNumber();
+		$jpeg_filename = 'jpg' . $imgNumber . '.jpg';
+		$outJpeg = @fopen(__DIR__ . '/../tmp/' . $jpeg_filename, "wb");
+		fwrite($outJpeg, $value);
+		fclose ($outJpeg);
+		$photoFile = '../../tmp/' . $jpeg_filename;
+		$image = new htmlImage($photoFile);
+		$image->enableLightbox();
+		$image->setCSSClasses(array('thumbnail', 'image-input'));
+		$image->addDataAttribute('attr-name', $attributeName);
+		$image->addDataAttribute('index', $index);
+		return $image;
 	}
 
 	/**
@@ -631,17 +727,49 @@ class TreeView {
 	 * @return string JSON
 	 */
 	private function saveAttributes(string $dn): string {
+		$schemaAttributes = $this->getSchemaAttributes();
+		$attributes = ldapGetDN($dn, array('*'));
+		unset($attributes['dn']);
+		$attributes = array_change_key_case($attributes,CASE_LOWER);
 		$changes = json_decode($_POST['changes'], true);
-		array_change_key_case($changes, CASE_LOWER);
+		$changes = array_change_key_case($changes, CASE_LOWER);
 		logNewMessage(LOG_DEBUG, 'LDAP changes for ' . $dn . ': ' . print_r($changes, true));
 		$ldapChanges = array();
 		if (!empty($changes)) {
 			foreach ($changes as $attrName => $change) {
-				$newValues = $change['new'];
-				if (isset($change['hash'])) {
-					$newValues = $this->applyPasswordHash($newValues, $change['hash']);
+				if (isset($change['new'])) {
+					$newValues = $change['new'];
+					if (isset($change['hash'])) {
+						$newValues = $this->applyPasswordHash($newValues, $change['hash']);
+					}
+					$ldapChanges[$attrName] = $newValues;
 				}
-				$ldapChanges[$attrName] = $newValues;
+				if (isset($change['delete']) && isset($attributes[$attrName])) {
+					$oldValues = $attributes[$attrName];
+					$changed = false;
+					foreach ($change['delete'] as $index) {
+						if (isset($oldValues[$index])) {
+							unset($oldValues[$index]);
+							$changed = true;
+						}
+					}
+					if ($changed) {
+						$ldapChanges[$attrName] = array_values($oldValues);
+					}
+				}
+				if (!empty($change['upload'])) {
+					if (empty($ldapChanges[$attrName]) && !empty($attributes[$attrName])) {
+						$ldapChanges[$attrName] = $attributes[$attrName];
+					}
+					$oldValues = !empty($attributes[$attrName]) ? $attributes[$attrName] : array();
+					$schemaAttribute = isset($schemaAttributes[$attrName]) ? $schemaAttributes[$attrName] : null;
+					if ($this->isMultiValueAttribute($oldValues, $schemaAttribute)) {
+						$ldapChanges[$attrName][] = base64_decode($change['upload']);
+					}
+					else {
+						$ldapChanges[$attrName][0] = base64_decode($change['upload']);
+					}
+				}
 			}
 		}
 		$message = new htmlStatusMessage('INFO', _('You made no changes'));
@@ -970,7 +1098,12 @@ class TreeView {
 		$attributeChanges = json_decode($_POST['attributes'], true);
 		$attributes = array('objectClass' => explode(',', $objectClasses));
 		foreach ($attributeChanges as $attributeName => $attributeChange) {
-			$attributes[$attributeName] = $attributeChange['new'];
+			if (isset($attributeChange['new'])) {
+				$attributes[$attributeName] = $attributeChange['new'];
+			}
+			if (isset($attributeChange['upload'])) {
+				$attributes[$attributeName][] = base64_decode($attributeChange['upload']);
+			}
 		}
 		if (!isset($attributes[$rdnAttribute][0])) {
 			return $this->createNewNodeCheckObjectClassesStep($dn, _('The RDN field is empty.'), $rdnAttribute, $attributes);

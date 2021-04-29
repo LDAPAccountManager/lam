@@ -2509,7 +2509,12 @@ class htmlInputFileUpload extends htmlElement {
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
 		}
-		echo '<input type="file" id="' . $this->name . '" name="' . $this->name . '"' . $tabindexValue . $disabled . '>';
+		$classValue = '';
+		if (!empty($this->cssClasses)) {
+			$classValue = ' class="' . implode(' ', $this->cssClasses) . '"';
+		}
+		echo '<input type="file" id="' . $this->name . '" name="' . $this->name . '"' . $tabindexValue . $classValue .
+			$disabled . $this->getDataAttributesAsString() . '>';
 		return array($this->name => 'file');
 	}
 
@@ -2952,7 +2957,7 @@ class htmlImage extends htmlElement {
 		if ($this->lightbox) {
 			echo '<a href="' . $this->path . '" class="lam-lightbox">';
 		}
-		echo '<img' . $path . $width . $height . $alt . $title . $classes . $onClick . ">";
+		echo '<img' . $path . $width . $height . $alt . $title . $classes . $onClick . $this->getDataAttributesAsString() . ">";
 		if ($this->lightbox) {
 			echo '</a>';
 		}
