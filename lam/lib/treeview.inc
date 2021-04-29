@@ -1100,6 +1100,9 @@ class TreeView {
 		foreach ($attributeChanges as $attributeName => $attributeChange) {
 			if (isset($attributeChange['new'])) {
 				$attributes[$attributeName] = $attributeChange['new'];
+				if (isset($attributeChange['hash'])) {
+					$attributes[$attributeName] = $this->applyPasswordHash($attributes[$attributeName], $attributeChange['hash']);
+				}
 			}
 			if (isset($attributeChange['upload'])) {
 				$attributes[$attributeName][] = base64_decode($attributeChange['upload']);
@@ -1114,7 +1117,9 @@ class TreeView {
 		if (!$success) {
 			return $this->createNewNodeCheckObjectClassesStep($dn, getExtendedLDAPErrorMessage($_SESSION['ldap']->server()), $rdnAttribute, $attributes);
 		}
-		return $this->getNodeContent($newDn, new htmlStatusMessage('INFO', sprintf(_('Creation successful. DN <b>%s</b> has been created.'), htmlspecialchars($newDn))));
+		return $this->getNodeContent($newDn, new htmlStatusMessage('INFO',
+			sprintf(_('Creation successful. DN <b>%s</b> has been created.'),
+				htmlspecialchars(unescapeLdapSpecialCharacters($newDn)))));
 	}
 
 	/**
