@@ -347,6 +347,7 @@ function getDefaultBaseDn() {
  * @return bool valid
  */
 function isValidExportDn(string $dn): bool {
+    $dn = strtolower($dn);
 	$typeManager = new TypeManager();
 	foreach ($typeManager->getConfiguredTypes() as $type) {
 		$suffix = strtolower($type->getSuffix());
