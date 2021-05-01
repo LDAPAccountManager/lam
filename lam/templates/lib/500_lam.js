@@ -2604,6 +2604,85 @@ window.lam.treeview.openInitial = function(tree, ids) {
 	}
 }
 
+/**
+ * Copies a node in the tree.
+ *
+ * @param node node
+ * @param tree tree
+ */
+window.lam.treeview.copyNode = function(node, tree) {
+	if (!window.sessionStorage) {
+		return;
+	}
+	window.sessionStorage.setItem('LAM_COPY_PASTE_ACTION', 'COPY');
+	window.sessionStorage.setItem('LAM_COPY_PASTE_OLD_ICON', node.icon);
+	window.sessionStorage.setItem('LAM_COPY_PASTE_DN', node.id);
+	tree.set_icon(node, '../../graphics/copy.png');
+	window.lam.treeview.contextMenuPasteDisabled = false;
+}
+
+/**
+ * Cuts a node in the tree.
+ *
+ * @param node node
+ * @param tree tree
+ */
+window.lam.treeview.cutNode = function(node, tree) {
+	if (!window.sessionStorage) {
+		return;
+	}
+	window.sessionStorage.setItem('LAM_COPY_PASTE_ACTION', 'CUT');
+	window.sessionStorage.setItem('LAM_COPY_PASTE_OLD_ICON', node.icon);
+	window.sessionStorage.setItem('LAM_COPY_PASTE_DN', node.id);
+	tree.set_icon(node, '../../graphics/cut.png');
+	window.lam.treeview.contextMenuPasteDisabled = false;
+}
+
+/**
+ * Pastes a copied/cut node.
+ *
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ * @param node node
+ * @param tree tree
+ */
+window.lam.treeview.pasteNode = function (tokenName, tokenValue, node, tree) {
+	var dn = window.sessionStorage.getItem('LAM_COPY_PASTE_DN');
+	tree.deselect_all();
+	var oldIcon = window.sessionStorage.getItem('LAM_COPY_PASTE_OLD_ICON');
+	var action = window.sessionStorage.getItem('LAM_COPY_PASTE_ACTION');
+	var targetDn = node.id;
+	var data = {
+		jsonInput: ""
+	};
+	data[tokenName] = tokenValue;
+	data["dn"] = dn;
+	data["targetDn"] = targetDn;
+	data["action"] = action;
+	jQuery.ajax({
+		url: "../misc/ajax.php?function=treeview&command=paste",
+		method: "POST",
+		data: data
+	})
+	.done(function(jsonData) {
+		if (jsonData.error) {
+			jQuery('#ldap_actionarea_messages').html(jsonData.error);
+		}
+		tree.set_icon(dn, oldIcon);
+		window.sessionStorage.removeItem('LAM_COPY_PASTE_ACTION');
+		window.sessionStorage.removeItem('LAM_COPY_PASTE_OLD_ICON');
+		window.sessionStorage.removeItem('LAM_COPY_PASTE_DN');
+		tree.refresh_node(targetDn);
+		tree.open_node(targetDn);
+		tree.select_node(targetDn);
+		if (action == 'CUT') {
+			var parentDn = tree.get_parent(dn);
+			tree.refresh_node(parentDn);
+		}
+		window.lam.treeview.contextMenuPasteDisabled = true;
+	});
+}
+
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();
 	window.lam.form.autoTrim();

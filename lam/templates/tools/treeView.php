@@ -101,6 +101,44 @@ function showTree() {
 								}
 							},';
 	}
+	$copyMenu = '';
+	if (checkIfWriteAccessIsAllowed()) {
+		$copyMenu = '"copyNode": {
+								"separator_before": true,
+								"label": "' . _('Copy') . '",
+								"icon": "../../graphics/copy.png",
+								"action": function(obj) {
+									window.lam.treeview.copyNode(node,
+										tree)
+								}
+							},';
+	}
+	$cutMenu = '';
+	if (checkIfWriteAccessIsAllowed()) {
+		$cutMenu = '"cutNode": {
+								"label": "' . _('Cut') . '",
+								"icon": "../../graphics/cut.png",
+								"action": function(obj) {
+									window.lam.treeview.cutNode(node,
+										tree)
+								}
+							},';
+	}
+	$pasteMenu = '';
+	if (checkIfWriteAccessIsAllowed()) {
+		$pasteMenu = '"pasteNode": {
+								"separator_after": true,
+								"_disabled": window.lam.treeview.contextMenuPasteDisabled,
+								"label": "' . _('Paste') . '",
+								"icon": "../../graphics/paste.png",
+								"action": function(obj) {
+									window.lam.treeview.pasteNode("' . getSecurityTokenName() . '",
+										"' . getSecurityTokenValue() . '",
+										node,
+										tree)
+								}
+							},';
+	}
 	$deleteMenu = '';
 	if (checkIfWriteAccessIsAllowed()) {
 		$deleteMenu = '"deleteNode": {
@@ -129,11 +167,27 @@ function showTree() {
 								}
 							},';
 	}
+	$refreshMenu = '"refreshNode": {
+								"label": "' . _('Refresh') . '",
+								"icon": "../../graphics/refresh.png",
+								"action": function(obj) {
+									tree.refresh_node(node);
+									window.lam.treeview.getNodeContent("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node.id);
+								}
+							},';
+	$searchMenu = '"search": {
+								"label": "' . _('Search') . '",
+								"icon": "../../graphics/search.png",
+								"action": function(obj) {
+									window.lam.treeview.search("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node.id);
+								}
+							},';
 	$treeScript = new htmlJavaScript('
 		jQuery(document).ready(function() {
 			var maxHeight = jQuery(document).height() - jQuery("#ldap_tree").offset().top - 50;
 			jQuery("#ldap_tree").css("max-height", maxHeight);
 			jQuery("#ldap_actionarea").css("max-height", maxHeight);
+			window.lam.treeview.contextMenuPasteDisabled = true;
 			jQuery(\'#ldap_tree\').jstree({
 				"plugins": [
 					"contextmenu",
@@ -144,24 +198,13 @@ function showTree() {
 					"items": function(node) {
 						var tree = jQuery.jstree.reference("#ldap_tree");
 						var menuItems = {' .
-								$newMenu .
-								$deleteMenu .
-								'"refreshNode": {
-									"label": "' . _('Refresh') . '",
-									"icon": "../../graphics/refresh.png",
-									"action": function(obj) {
-										tree.refresh_node(node);
-										window.lam.treeview.getNodeContent("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node.id);
-									}
-								},
-								"search": {
-									"label": "' . _('Search') . '",
-									"icon": "../../graphics/search.png",
-									"action": function(obj) {
-										window.lam.treeview.search("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node.id);
-									}
-								},
-							' .
+							$newMenu .
+							$deleteMenu .
+							$refreshMenu .
+							$copyMenu .
+							$cutMenu .
+							$pasteMenu .
+							$searchMenu .
 							$exportMenu .
 						'};
 						return menuItems;

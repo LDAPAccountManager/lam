@@ -23,6 +23,7 @@ use htmlTable;
 use htmlTitle;
 use LAM\SCHEMA\AttributeType;
 use LAM\SCHEMA\ObjectClass;
+use LAMException;
 use function LAM\SCHEMA\get_schema_attributes;
 use function LAM\SCHEMA\get_schema_objectclasses;
 
@@ -118,6 +119,10 @@ class TreeView {
 			case 'searchResults':
 				$this->validateDn($dn);
 				return $this->searchResults($dn);
+			case 'paste':
+				$this->ensureWriteAccess();
+				$this->validateDn($dn);
+				return $this->paste($dn);
 			default:
 				logNewMessage(LOG_ERR, 'Invalid command for tree view: ' . $command);
 				die;
@@ -1375,6 +1380,51 @@ class TreeView {
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(array('content' => $content));
+	}
+
+	/**
+	 * Performs paste operations.
+	 *
+	 * @param string $dn
+	 * @return string
+	 */
+	private function paste(string $dn): string {
+		$targetDn = base64_decode($_POST['targetDn']);
+		$this->validateDn($targetDn);
+		$action = $_POST['action'];
+		if (!in_array($action, array('COPY', 'CUT'))) {
+			logNewMessage(LOG_ERR, 'Invalid tree paste action: ' . $action);
+			die();
+		}
+		try {
+			copyDnRecursive($dn, $targetDn);
+			if ($action === 'CUT') {
+				$errors = deleteDN($dn);
+				if (!empty($errors)) {
+					$row = new htmlResponsiveRow();
+					foreach ($errors as $error) {
+						$row->add(new htmlStatusMessage($error[0], $error[1], isset($error[2]) ? $error[2] : null));
+					}
+					ob_start();
+					$tabIndex = 1;
+					parseHtml(null, $row, array(), false, $tabIndex, '');
+					$content = ob_get_contents();
+					ob_end_clean();
+					return json_encode(array('error' => $content));
+				}
+			}
+		}
+		catch (LAMException $e) {
+			$message = new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
+			ob_start();
+			$tabIndex = 1;
+			parseHtml(null, $message, array(), false, $tabIndex, '');
+			$content = ob_get_contents();
+			ob_end_clean();
+			return json_encode(array('error' => $content));
+		}
+		$newDn = extractRDN($dn) . ',' . $targetDn;
+		return json_encode(array());
 	}
 
 }

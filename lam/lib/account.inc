@@ -1084,6 +1084,33 @@ function deleteDN($dn, $recursive) {
 }
 
 /**
+ * Performs a recursive copy from old DN under target DN.
+ *
+ * @param string $oldDn old DN to copy
+ * @param string $targetDn copy nodes under this DN
+ * @throws LAMException error on copy
+ */
+function copyDnRecursive(string $oldDn, string $targetDn): void {
+	$oldRdn = extractRDN($oldDn);
+	$newDn = $oldRdn . ',' . $targetDn;
+	logNewMessage(LOG_DEBUG, 'Copy DN ' . $oldDn . ' to ' . $newDn);
+	$attributes = ldapGetDN($oldDn, array('*'));
+	if (empty($attributes)) {
+		throw new LAMException(sprintf(_("Unable to read %s."), htmlspecialchars(unescapeLdapSpecialCharacters($oldDn))));
+	}
+	unset($attributes['dn']);
+	$success = ldap_add($_SESSION['ldap']->server(), $newDn, $attributes);
+	if (!$success) {
+		throw new LAMException(sprintf(_('Was unable to create DN: %s.'), htmlspecialchars(unescapeLdapSpecialCharacters($oldDn))),
+			getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
+	}
+	$children = ldapListDN($oldDn);
+	foreach ($children as $child) {
+		copyDnRecursive($child['dn'], $newDn);
+	}
+}
+
+/**
  * Returns the parameters for a StatusMessage of the last LDAP search.
  *
  * @return array parameters for StatusMessage or null if all was ok
