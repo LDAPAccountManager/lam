@@ -159,7 +159,7 @@ if (isset($_POST['submitFormData'])) {
 			}
 			// check each line
 			$ipRegex = '/^[0-9a-f\\.:\\*]+$/i';
-			if (!preg_match($ipRegex, $allowedHostsList[$i]) || (strlen($allowedHostsList[$i]) > 15)) {
+			if (!preg_match($ipRegex, $allowedHostsList[$i]) || (strlen($allowedHostsList[$i]) > 45)) {
 				$errors[] = sprintf(_("The IP address %s is invalid!"), htmlspecialchars(str_replace('%', '%%', $allowedHostsList[$i])));
 			}
 		}
