@@ -1399,7 +1399,7 @@ class TreeView {
 		try {
 			copyDnRecursive($dn, $targetDn);
 			if ($action === 'CUT') {
-				$errors = deleteDN($dn);
+				$errors = deleteDN($dn, true);
 				if (!empty($errors)) {
 					$row = new htmlResponsiveRow();
 					foreach ($errors as $error) {
