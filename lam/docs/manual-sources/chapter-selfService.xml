@@ -543,7 +543,7 @@
         <title>Lamdaemon</title>
 
         <para>This section is only required if you want to display file system
-        quotas or create home directories via lamdaemon. </para>
+        quotas or create home directories via lamdaemon.</para>
 
         <para>Server list format options:</para>
 
@@ -1461,6 +1461,42 @@
           </imageobject>
         </mediaobject>
       </screenshot>
+
+      <para><emphasis role="bold">Prefilling the input
+      fields</emphasis></para>
+
+      <para>You might want to provide personalized URLs to your users that
+      already prefill the fields in first step of password self reset. This
+      can be done by adding an additional URL parameter with the attribute
+      name in lower case.</para>
+
+      <para>LAM will not generate these URLs for you. This needs to be done by
+      the system that provides the URL to your user.</para>
+
+      <para>Examples:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>/lam/templates/selfService/selfServiceSP.php?scope=user&amp;name=myProfile&amp;page=passwordSelfReset&amp;language=en_GB.utf8<emphasis
+          role="bold">&amp;uid=yourUserId</emphasis></para>
+        </listitem>
+
+        <listitem>
+          <para>/lam/templates/selfService/selfServiceSP.php?scope=user&amp;name=myProfile&amp;page=passwordSelfReset&amp;language=en_GB.utf8<emphasis
+          role="bold">&amp;mail=yourUserId@company.com</emphasis></para>
+        </listitem>
+
+        <listitem>
+          <para>/lam/templates/selfService/selfServiceSP.php?scope=user&amp;name=myProfile&amp;page=passwordSelfReset&amp;language=en_GB.utf8<emphasis
+          role="bold">&amp;uidmail=yourUserId</emphasis> (for "user or email"
+          method)</para>
+        </listitem>
+
+        <listitem>
+          <para>/lam/templates/selfService/selfServiceSP.php?scope=user&amp;name=myProfile&amp;page=passwordSelfReset&amp;language=en_GB.utf8<emphasis
+          role="bold">&amp;customattribute=yourUserId</emphasis></para>
+        </listitem>
+      </itemizedlist>
     </section>
 
     <section>
