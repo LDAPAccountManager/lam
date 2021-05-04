@@ -170,7 +170,7 @@ class Exporter {
 			$output = $this->getLdifOutput($entries, $lineEnding);
 		}
 		else {
-			throw new LAMException('Invalid format');
+			throw new LAMException(_('Invalid format'));
 		}
 		if ($this->saveAsFile) {
 			$filename = '../../tmp/' . getRandomNumber() . time() .'.' . $this->format;
