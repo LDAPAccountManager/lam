@@ -2,7 +2,7 @@
 use PHPUnit\Framework\TestCase;
 /*
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2017 - 2019  Roland Gruber
+ Copyright (C) 2017 - 2021  Roland Gruber
  */
 
 if (is_readable('lam/lib/modules/customFields.inc')) {
@@ -17,7 +17,7 @@ if (is_readable('lam/lib/modules/customFields.inc')) {
 	 * @author Roland Gruber
 	 *
 	 */
-	class customFieldsConstantEntryTest extends TestCase {
+	class customFieldsTest extends TestCase {
 
 		public function testReplaceWildcardsSpaces() {
 			$originalMiddle = '123((uid))456';
@@ -238,8 +238,23 @@ if (is_readable('lam/lib/modules/customFields.inc')) {
 			$this->assertEquals(' MMYUSER', customFieldsConstantEntry::replaceWildcards($attributes, '((uid))!uid!!!uid!!'));
 		}
 
+		public function testIsValidDateValue() {
+			$field = new customFieldsTextEntry('user');
+			$field->setName('testattr');
+			$this->assertTrue($field->isValidDateValue(null));
+			$this->assertTrue($field->isValidDateValue(''));
+			$_POST['customFields_testattr_required'] = 'on';
+			$_POST['customFields_testattr_attribute'] = 'testattr';
+			$_POST['customFields_testattr_help'] = '';
+			$_POST['customFields_testattr_validationType'] = customFieldsTextEntry::TYPE_DATE;
+			$_POST['customFields_testattr_calendarFormat'] = 'dd.mm.yy';
+			$field->updateFieldOptionsByPostData(false);
+			$this->assertFalse($field->isValidDateValue(null));
+			$this->assertFalse($field->isValidDateValue(''));
+			$this->assertTrue($field->isValidDateValue('20.05.2021'));
+			$this->assertFalse($field->isValidDateValue('32.05.2021'));
+		}
+
 	}
 
 }
-
-?>
