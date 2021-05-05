@@ -1670,17 +1670,17 @@
     },
     {
         "name": "phpmailer/phpmailer",
-        "version": "v6.4.0",
-        "version_normalized": "6.4.0.0",
+        "version": "v6.4.1",
+        "version_normalized": "6.4.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/PHPMailer/PHPMailer.git",
-            "reference": "050d430203105c27c30efd1dce7aa421ad882d01"
+            "reference": "9256f12d8fb0cd0500f93b19e18c356906cbed3d"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/050d430203105c27c30efd1dce7aa421ad882d01",
-            "reference": "050d430203105c27c30efd1dce7aa421ad882d01",
+            "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/9256f12d8fb0cd0500f93b19e18c356906cbed3d",
+            "reference": "9256f12d8fb0cd0500f93b19e18c356906cbed3d",
             "shasum": ""
         },
         "require": {
@@ -1705,7 +1705,7 @@
             "stevenmaguire/oauth2-microsoft": "Needed for Microsoft XOAUTH2 authentication",
             "symfony/polyfill-mbstring": "To support UTF-8 if the Mbstring PHP extension is not enabled (^1.2)"
         },
-        "time": "2021-03-31T20:06:42+00:00",
+        "time": "2021-04-29T12:25:04+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -1738,17 +1738,17 @@
     },
     {
         "name": "phpseclib/phpseclib",
-        "version": "3.0.7",
-        "version_normalized": "3.0.7.0",
+        "version": "3.0.8",
+        "version_normalized": "3.0.8.0",
         "source": {
             "type": "git",
             "url": "https://github.com/phpseclib/phpseclib.git",
-            "reference": "d369510df0ebd5e1a5d0fe3d4d23c55fa87a403d"
+            "reference": "d9615a6fb970d9933866ca8b4036ec3407b020b6"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/d369510df0ebd5e1a5d0fe3d4d23c55fa87a403d",
-            "reference": "d369510df0ebd5e1a5d0fe3d4d23c55fa87a403d",
+            "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/d9615a6fb970d9933866ca8b4036ec3407b020b6",
+            "reference": "d9615a6fb970d9933866ca8b4036ec3407b020b6",
             "shasum": ""
         },
         "require": {
@@ -1767,7 +1767,7 @@
             "ext-mcrypt": "Install the Mcrypt extension in order to speed up a few other cryptographic operations.",
             "ext-openssl": "Install the OpenSSL extension in order to speed up a wide variety of cryptographic operations."
         },
-        "time": "2021-04-06T14:00:11+00:00",
+        "time": "2021-04-19T03:20:48+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
