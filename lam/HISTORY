@@ -9,6 +9,7 @@ June 2021 7.6
    -> Export/Import of cron jobs
    -> Mail server encryption type can be configured (TLS/SSL/none)
    -> User self registration: support to define uid field to use constant or custom validation
+   -> Group of names user module: allow to sync memberships from other user
 
 
 30.03.2021 7.5
