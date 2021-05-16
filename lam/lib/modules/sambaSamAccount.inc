@@ -2919,6 +2919,32 @@ class sambaSamAccount extends baseModule implements passwordService {
 		return empty($settings['sambaSamAccount_history']) || ($settings['sambaSamAccount_history'][0] != 'no');
 	}
 
-}
+	/**
+	 * @inheritDoc
+	 */
+	public function supportsPasswordQuickChangePage(): bool {
+		return true;
+	}
 
-?>
+	/**
+	 * @inheritDoc
+	 */
+	public function addPasswordQuickChangeAccountDetails(htmlResponsiveRow $row): void {
+		// TODO
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeOptions(): array {
+		// TODO: Implement getPasswordQuickChangeOptions() method.
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeChanges(string $password): array {
+		// TODO: Implement getPasswordQuickChangeChanges() method.
+	}
+
+}

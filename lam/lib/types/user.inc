@@ -808,22 +808,6 @@ class lamUserList extends lamList {
 	}
 
 	/**
-	 * Returns a list of lamListTool objects to display next to the edit/delete buttons.
-	 *
-	 * @return lamListTool[] tools
-	 */
-	protected function getAdditionalTools() {
-		if (!isLAMProVersion()) {
-			return array();
-		}
-		if (checkIfWriteAccessIsAllowed('user') || (checkIfPasswordChangeIsAllowed() && !checkIfWriteAccessIsAllowed())) {
-			$passwordTool = new lamListTool(_('Change password'), 'key.png', 'changePassword.php');
-			return array($passwordTool);
-		}
-		return array();
-	}
-
-	/**
 	 * Returns a list of possible configuration options.
 	 *
 	 * @return array list of lamListOption objects

@@ -2388,6 +2388,46 @@ interface passwordService {
 	 */
 	public function passwordChangeRequested($password, $modules, $forcePasswordChange);
 
+	/**
+	 * Specifies if the module support password quick change for the current account.
+	 *
+	 * @return bool password quick change page supported
+	 */
+	public function supportsPasswordQuickChangePage(): bool;
+
+	/**
+	 * Adds account details such as first/last name for the current account.
+	 *
+	 * @param htmlResponsiveRow $row row where to add content
+	 */
+	public function addPasswordQuickChangeAccountDetails(htmlResponsiveRow $row): void;
+
+	/**
+	 * Returns a list of password quick change options.
+	 *
+	 * @return PasswordQuickChangeOption[] options
+	 */
+	public function getPasswordQuickChangeOptions(): array;
+
+	/**
+	 * Returns a list of LDAP attribute changes to perform.
+	 *
+	 * @param string $password new password
+	 * @return array LDAP attribute values (attr_name => array(attr_value))
+	 */
+	public function getPasswordQuickChangeChanges(string $password): array;
+
 }
 
-?>
+/**
+ * Option for the password quick change page.
+ */
+class PasswordQuickChangeOption {
+
+	public $label;
+
+	public $id;
+
+	public $preSelected = true;
+
+}

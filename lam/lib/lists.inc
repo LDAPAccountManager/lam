@@ -104,6 +104,11 @@ class lamList {
 	/** defines if the server side filter changed */
 	protected $serverSideFilterChanged;
 
+	/**
+	 * @var bool
+	 */
+	private $supportsPasswordQuickChange;
+
 	/** ID for list size config option */
 	const LIST_SIZE_OPTION_NAME = "L_SIZE";
 
@@ -135,6 +140,7 @@ class lamList {
 			'deleteEntry' => _("Delete selected objects"));
 		$this->configOptions = $this->listGetAllConfigOptions();
 		$this->listReadOptionsFromCookie();
+		$this->supportsPasswordQuickChange = $this->isSupportingPasswordQuickChange();
 	}
 
 	/**
@@ -586,6 +592,15 @@ class lamList {
 		$pdfButton->setCSSClasses(array('margin2'));
 		$element->addElement($pdfButton);
 		$toolCount++;
+		// password quick change
+        if (isLAMProVersion() && $this->supportsPasswordQuickChange
+            && checkIfPasswordChangeIsAllowed() && checkIfWriteAccessIsAllowed($this->type->getId())) {
+	        $pwdChangeButton = new htmlLink('', "changePassword.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/key.png');
+	        $pwdChangeButton->setTitle(_('Change password'));
+	        $pwdChangeButton->setCSSClasses(array('margin2'));
+	        $element->addElement($pwdChangeButton);
+	        $toolCount++;
+        }
 		// additional tools
 		$tools = $this->getAdditionalTools();
 		for ($i = 0; $i < sizeof($tools); $i++) {
@@ -596,6 +611,25 @@ class lamList {
 			$toolCount++;
 		}
 	}
+
+	/**
+     * Returns if this account supports the password quick change page.
+     *
+	 * @return bool quick change supported
+	 */
+	private function isSupportingPasswordQuickChange(): bool {
+        $modules = $this->type->getModules();
+        foreach ($modules as $module) {
+            if (!class_implements($module, '\passwordService')) {
+                continue;
+            }
+	        $moduleObj = new $module($this->type->getScope());
+            if ($moduleObj->supportsPasswordQuickChangePage()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 	/**
 	 * Returns if the given attribute can be filtered.

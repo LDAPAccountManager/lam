@@ -866,6 +866,34 @@ class shadowAccount extends baseModule implements passwordService {
 		return ($time < $now);
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function supportsPasswordQuickChangePage(): bool {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function addPasswordQuickChangeAccountDetails(htmlResponsiveRow $row): void {
+		// no details
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeOptions(): array {
+		// TODO: Implement getPasswordQuickChangeOptions() method.
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeChanges(string $password): array {
+		// TODO: Implement getPasswordQuickChangeChanges() method.
+	}
+
 }
 
 if (interface_exists('\LAM\JOB\Job', false)) {
