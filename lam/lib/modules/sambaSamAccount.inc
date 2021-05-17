@@ -2930,7 +2930,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function addPasswordQuickChangeAccountDetails(htmlResponsiveRow $row): void {
-		// TODO
+		// no details
 	}
 
 	/**
@@ -2938,6 +2938,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 	 */
 	public function getPasswordQuickChangeOptions(): array {
 		// TODO: Implement getPasswordQuickChangeOptions() method.
+		return array();
 	}
 
 	/**

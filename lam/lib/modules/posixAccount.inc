@@ -4163,7 +4163,10 @@ class posixAccount extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function addPasswordQuickChangeAccountDetails(htmlResponsiveRow $row): void {
-		// TODO
+		if (!empty($this->attributes['uid'][0])) {
+			$row->addLabel(new htmlOutputText(_('User name')));
+			$row->addField(new htmlOutputText($this->attributes['uid'][0]));
+		}
 	}
 
 	/**
@@ -4171,6 +4174,7 @@ class posixAccount extends baseModule implements passwordService {
 	 */
 	public function getPasswordQuickChangeOptions(): array {
 		// TODO: Implement getPasswordQuickChangeOptions() method.
+		return array(new PasswordQuickChangeOption());
 	}
 
 	/**

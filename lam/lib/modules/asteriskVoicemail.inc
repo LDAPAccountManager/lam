@@ -565,6 +565,7 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 */
 	public function getPasswordQuickChangeOptions(): array {
 		// TODO: Implement getPasswordQuickChangeOptions() method.
+		return array();
 	}
 
 	/**

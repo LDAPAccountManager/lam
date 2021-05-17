@@ -4324,7 +4324,29 @@ class windowsUser extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function addPasswordQuickChangeAccountDetails(htmlResponsiveRow $row): void {
-		// TODO
+		if (!empty($this->attributes['userPrincipalName'][0])) {
+			$row->addLabel(new htmlOutputText(_('User name')));
+			$row->addField(new htmlOutputText($this->attributes['userPrincipalName'][0]));
+		}
+		$nameParts = array();
+		if (isset($this->attributes['givenName'][0])) {
+			$nameParts[] = $this->attributes['givenName'][0];
+		}
+		if (isset($this->attributes['sn'][0])) {
+			$nameParts[] = $this->attributes['sn'][0];
+		}
+		if (!empty($nameParts)) {
+			$row->addLabel(new htmlOutputText(_('Full name')));
+			$row->addField(new htmlOutputText(implode(' ', $nameParts)));
+		}
+		if (!empty($this->attributes['mail'][0])) {
+			$row->addLabel(new htmlOutputText(_('Email address')));
+			$row->addField(new htmlOutputText($this->attributes['mail'][0]));
+		}
+		if (!empty($this->attributes['telephoneNumber'][0])) {
+			$row->addLabel(new htmlOutputText(_('Telephone number')));
+			$row->addField(new htmlOutputText($this->attributes['telephoneNumber'][0]));
+		}
 	}
 
 	/**
@@ -4332,6 +4354,7 @@ class windowsUser extends baseModule implements passwordService {
 	 */
 	public function getPasswordQuickChangeOptions(): array {
 		// TODO: Implement getPasswordQuickChangeOptions() method.
+		return array(new PasswordQuickChangeOption());
 	}
 
 	/**
