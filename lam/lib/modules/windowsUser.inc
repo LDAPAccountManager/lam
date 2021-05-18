@@ -4353,8 +4353,12 @@ class windowsUser extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangeOptions(): array {
-		// TODO: Implement getPasswordQuickChangeOptions() method.
-		return array(new PasswordQuickChangeOption());
+		if (!in_array_ignore_case('user', $this->attributes['objectClass'])) {
+			return array();
+		}
+		return array(
+			new PasswordQuickChangeOption('syncWindows', _('Change Windows password'))
+		);
 	}
 
 	/**

@@ -30,6 +30,8 @@
 * @author Michael Duergner
 */
 
+use function LAM\ACCOUNTLIST\isPasswordChangeByDefault;
+
 /**
 * Manages the object class "shadowAccount" for users.
 *
@@ -884,8 +886,11 @@ class shadowAccount extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangeOptions(): array {
-		// TODO: Implement getPasswordQuickChangeOptions() method.
-		return array();
+		$options = array();
+		if (in_array_ignore_case('shadowAccount', $this->attributes['objectClass'])) {
+			$options[] = new PasswordQuickChangeOption('forcePasswordChangeUnix', _('Force Unix password change'), isPasswordChangeByDefault());
+		}
+		return $options;
 	}
 
 	/**

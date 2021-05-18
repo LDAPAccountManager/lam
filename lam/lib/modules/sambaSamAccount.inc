@@ -32,6 +32,9 @@
 */
 
 /** terminals server options */
+
+use function LAM\ACCOUNTLIST\isPasswordChangeByDefault;
+
 include_once('sambaSamAccount/sambaMungedDial.inc');
 
 /**
@@ -45,7 +48,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
 	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('sambaSID', 'sambaLMPassword', 'sambaNTPassword',
-		'sambaPwdLastSet', 'sambaPwdLastSet', 'displayName', 'sambaHomePath', 'sambaProfilePath',
+		'sambaPwdLastSet', 'displayName', 'sambaHomePath', 'sambaProfilePath',
 		'sambaPasswordHistory', 'sambaPwdCanChange', 'sambaPwdMustChange', 'sambaKickoffTime',
 		'sambaLogonTime', 'sambaLogoffTime');
 
@@ -2937,8 +2940,23 @@ class sambaSamAccount extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangeOptions(): array {
-		// TODO: Implement getPasswordQuickChangeOptions() method.
-		return array();
+		$options = array();
+		if ((isset($this->attributes['sambaAcctFlags'][0])
+			&& ((strpos($this->attributes['sambaAcctFlags'][0], 'L') !== false)
+				|| (strpos($this->attributes['sambaAcctFlags'][0], 'D') !== false)))) {
+			$options[] = new PasswordQuickChangeOption('unlockAccount', _('Unlock Samba account'));
+		}
+		if (in_array_ignore_case('sambaSamAccount', $this->attributes['objectClass'])) {
+			$options[] = new PasswordQuickChangeOption('syncSambaNT', _('Change Samba NT password'));
+			if (!isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) || ($this->moduleSettings['sambaSamAccount_lmHash'][0] != 'yes')) {
+				$options[] = new PasswordQuickChangeOption('syncSambaLM', _('Change Samba LM password'));
+			}
+			$options[] = new PasswordQuickChangeOption('forcePasswordChangeSamba', _('Force Samba password change'), isPasswordChangeByDefault());
+		}
+		if (isset($this->attributes['sambaPwdLastSet'][0])) {
+			$options[] = new PasswordQuickChangeOption('updateSambaTimestamps', _('Update Samba password timestamp'));
+		}
+		return $options;
 	}
 
 	/**

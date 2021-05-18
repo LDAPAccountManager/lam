@@ -1292,8 +1292,11 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangeOptions(): array {
-		// TODO: Implement getPasswordQuickChangeOptions() method.
-		return array();
+		$options = array();
+		if (in_array_ignore_case('AsteriskSIPUser', $this->attributes['objectClass'])) {
+			$options[] = new PasswordQuickChangeOption('syncAsterisk', _('Change Asterisk password'));
+		}
+		return $options;
 	}
 
 	/**

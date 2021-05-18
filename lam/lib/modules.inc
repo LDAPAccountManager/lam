@@ -2428,6 +2428,18 @@ class PasswordQuickChangeOption {
 
 	public $id;
 
-	public $preSelected = true;
+	public $preSelected;
+
+	/**
+	 * PasswordQuickChangeOption constructor.
+	 * @param string $id unique id for this option
+	 * @param string $label descriptive label
+	 * @param bool $preSelected is preselected
+	 */
+	public function __construct(string $id, string $label, bool $preSelected = true) {
+		$this->label = $label;
+		$this->id = $id;
+		$this->preSelected = $preSelected;
+	}
 
 }
