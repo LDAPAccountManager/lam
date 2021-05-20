@@ -647,9 +647,22 @@ class htmlInputField extends htmlElement {
 		}
 		// calendar
 		if ($this->showCalendar) {
+			$locale = 'en';
+			$sessionLanguage = $_SESSION['language'];
+			$sessionLanguage = str_replace('.utf8', '', $sessionLanguage);
+			if ($sessionLanguage === 'zh_TW') {
+				$locale = 'zh_tw';
+			}
+			else {
+				$sessionLanguageParts = explode('_', $sessionLanguage);
+				$locale = $sessionLanguageParts[0];
+			}
 			echo '<script type="text/javascript">
 				jQuery(function() {
-					$("#' . $this->fieldName . '").datepicker({ dateFormat: "' . $this->calendarFormat . '"});
+					$("#' . $this->fieldName . '").flatpickr({
+						dateFormat: "' . $this->calendarFormat . '",
+						locale: "' . $locale . '"
+					});
 				});
 				</script>
 			';
@@ -820,10 +833,13 @@ class htmlInputField extends htmlElement {
 	/**
 	 * Shows a calendar when the field is selected.
 	 *
-	 * @param String $format calendar format (e.g. yyyy-mm-dd)
+	 * @param String $format calendar format (e.g. Y-m-d)
 	 */
 	public function showCalendar($format) {
 		$this->showCalendar = true;
+		$format = str_replace('yy', 'Y', $format);
+		$format = str_replace('dd', 'd', $format);
+		$format = str_replace('mm', 'm', $format);
 		$this->calendarFormat = $format;
 	}
 
