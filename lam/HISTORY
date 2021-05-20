@@ -9,7 +9,9 @@ June 2021 7.6
    -> Export/Import of cron jobs
    -> Mail server encryption type can be configured (TLS/SSL/none)
    -> User self registration: support to define uid field to use constant or custom validation
-   -> Custom fields: support password change dialog in user edit view
+   -> Custom fields:
+    * Support password change dialog in user edit view
+    * Added date and email validation for text fields
    -> Password self reset: fields on first page can be prefilled by URL parameter
 
 
