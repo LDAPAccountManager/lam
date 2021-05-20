@@ -1780,7 +1780,7 @@ class accountContainer {
 			$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
 			if (!empty($_COOKIE[$profileCookieKey])) {
 				$cookieProfileName = $_COOKIE[$profileCookieKey];
-				if ($accountProfilePersistenceManager->isAccountProfileExisting($this->get_type()->getId(), $cookieProfileName)) {
+				if ($accountProfilePersistenceManager->isAccountProfileExisting($this->get_type()->getId(), $cookieProfileName, $_SESSION['config']->getName())) {
 					$profileName = $cookieProfileName;
 					$this->lastLoadedProfile = $cookieProfileName;
 				}
