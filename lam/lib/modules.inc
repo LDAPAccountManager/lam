@@ -864,6 +864,15 @@ class accountContainer {
 	}
 
 	/**
+	 * Returns the session edit key for this container.
+	 *
+	 * @return string key
+	 */
+	public function getEditKey() {
+		return $this->base;
+	}
+
+	/**
 	* This function is called when the user clicks on any button on the account pages.
 	* It prints the HTML code of each account page.
 	*/
