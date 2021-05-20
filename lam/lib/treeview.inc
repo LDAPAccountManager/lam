@@ -509,7 +509,7 @@ class TreeView {
 	}
 
 	/**
-	 * Adds any extry content to the element.
+	 * Adds any entry content to the element.
 	 *
 	 * @param htmlElement $element original element
 	 * @param string $attributeName attribute name
