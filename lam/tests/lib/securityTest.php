@@ -97,6 +97,7 @@ class SecurityTest extends TestCase {
 	public function testUser() {
 		$this->cfg->passwordMustNotContainUser = 'true';
 		$this->checkPwd(array('u', 'us', 'use', 'use1r'), array('user', '2user', 'user3'), 'user');
+		$this->checkPwd(array('u', 'us', 'use', 'use1r'), array('user', '2user', 'user3', 'test'), array('user', 'test'));
 	}
 
 	public function testUserAttributes() {
