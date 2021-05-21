@@ -4188,4 +4188,28 @@ class posixAccount extends baseModule implements passwordService {
 		// TODO: Implement getPasswordQuickChangeChanges() method.
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangePasswordStrengthUserName(): ?string {
+		if (isset($this->attributes['uid'][0])) {
+			return $this->attributes['uid'][0];
+		}
+		return null;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangePasswordStrengthAttributes(): array {
+		return array();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeIsPasswordInHistory(string $password): bool {
+		return false;
+	}
+
 }

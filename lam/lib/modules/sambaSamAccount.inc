@@ -2966,4 +2966,41 @@ class sambaSamAccount extends baseModule implements passwordService {
 		// TODO: Implement getPasswordQuickChangeChanges() method.
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangePasswordStrengthUserName(): ?string {
+		if (isset($this->attributes['uid'][0])) {
+			return $this->attributes['uid'][0];
+		}
+		return null;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangePasswordStrengthAttributes(): array {
+		return array();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeIsPasswordInHistory(string $password): bool {
+		// skip if no password was set
+		if (!isset($_POST['syncSambaLM']) && !isset($_POST['syncSambaNT'])) {
+			return false;
+		}
+		$sambaDomain = $this->getUserDomain($this->attributes);
+		if ($sambaDomain == null) {
+			return false;
+		}
+		if (!empty($sambaDomain->pwdHistoryLength)
+			&& is_numeric($sambaDomain->pwdHistoryLength)
+			&& ($sambaDomain->pwdHistoryLength > 0)) {
+			return sambaSamAccount::oldPasswordUsed($password, $this->attributes, $sambaDomain);
+		}
+		return false;
+	}
+
 }

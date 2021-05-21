@@ -2417,6 +2417,28 @@ interface passwordService {
 	 */
 	public function getPasswordQuickChangeChanges(string $password): array;
 
+	/**
+	 * Returns the user name if known to be validated for password strength.
+	 *
+	 * @return string|null user name
+	 */
+	public function getPasswordQuickChangePasswordStrengthUserName(): ?string;
+
+	/**
+	 * Returns additional attribute values to check when password strength is validated.
+	 *
+	 * @return array attribute values
+	 */
+	public function getPasswordQuickChangePasswordStrengthAttributes(): array;
+
+	/**
+	 * Returns if the password is not same as an old password from history.
+	 *
+	 * @param string $password new password
+	 * @return bool is in history
+	 */
+	public function getPasswordQuickChangeIsPasswordInHistory(string $password): bool;
+
 }
 
 /**

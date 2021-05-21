@@ -4370,4 +4370,35 @@ class inetOrgPerson extends baseModule implements passwordService {
 		// TODO: Implement getPasswordQuickChangeChanges() method.
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangePasswordStrengthUserName(): ?string {
+		if (isset($this->attributes['uid'][0])) {
+			return $this->attributes['uid'][0];
+		}
+		return null;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangePasswordStrengthAttributes(): array {
+		$values = array();
+		if (isset($this->attributes['sn'][0])) {
+			$values[] = $this->attributes['sn'][0];
+		}
+		if (isset($this->attributes['givenName'][0])) {
+			$values[] = $this->attributes['givenName'][0];
+		}
+		return $values;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeIsPasswordInHistory(string $password): bool {
+		return false;
+	}
+
 }
