@@ -4380,6 +4380,15 @@ class htmlResponsiveRow extends htmlElement {
 		$this->add(new htmlSpacer(null,	$space), 12);
 	}
 
+	/**
+	 * Returns the current number of cells.
+	 *
+	 * @return int cell count
+	 */
+	public function getCellCount(): int {
+		return sizeof($this->cells);
+	}
+
 }
 
 /**
