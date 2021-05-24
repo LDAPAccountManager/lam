@@ -1406,6 +1406,53 @@ class posixGroup extends baseModule implements passwordService {
 		return true;
 	}
 
-}
+	/**
+	 * @inheritDoc
+	 */
+	public function supportsPasswordQuickChangePage(): bool {
+		return false;
+	}
 
-?>
+	/**
+	 * @inheritDoc
+	 */
+	public function addPasswordQuickChangeAccountDetails(htmlResponsiveRow $row): void {
+		// no details
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeOptions(): array {
+		return array();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeChanges(string $password): array {
+		return array();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangePasswordStrengthUserName(): ?string {
+		return null;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangePasswordStrengthAttributes(): array {
+		return array();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeIsPasswordInHistory(string $password): bool {
+		return false;
+	}
+
+}

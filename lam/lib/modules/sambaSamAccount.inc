@@ -32,6 +32,9 @@
 */
 
 /** terminals server options */
+
+use function LAM\ACCOUNTLIST\isPasswordChangeByDefault;
+
 include_once('sambaSamAccount/sambaMungedDial.inc');
 
 /**
@@ -45,7 +48,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
 	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('sambaSID', 'sambaLMPassword', 'sambaNTPassword',
-		'sambaPwdLastSet', 'sambaPwdLastSet', 'displayName', 'sambaHomePath', 'sambaProfilePath',
+		'sambaPwdLastSet', 'displayName', 'sambaHomePath', 'sambaProfilePath',
 		'sambaPasswordHistory', 'sambaPwdCanChange', 'sambaPwdMustChange', 'sambaKickoffTime',
 		'sambaLogonTime', 'sambaLogoffTime');
 
@@ -2919,6 +2922,126 @@ class sambaSamAccount extends baseModule implements passwordService {
 		return empty($settings['sambaSamAccount_history']) || ($settings['sambaSamAccount_history'][0] != 'no');
 	}
 
-}
+	/**
+	 * @inheritDoc
+	 */
+	public function supportsPasswordQuickChangePage(): bool {
+		return true;
+	}
 
-?>
+	/**
+	 * @inheritDoc
+	 */
+	public function addPasswordQuickChangeAccountDetails(htmlResponsiveRow $row): void {
+		// no details
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeOptions(): array {
+		$options = array();
+		if ((isset($this->attributes['sambaAcctFlags'][0])
+			&& ((strpos($this->attributes['sambaAcctFlags'][0], 'L') !== false)
+				|| (strpos($this->attributes['sambaAcctFlags'][0], 'D') !== false)))) {
+			$options[] = new PasswordQuickChangeOption('unlockAccountSamba', _('Unlock Samba account'));
+		}
+		if (in_array_ignore_case('sambaSamAccount', $this->attributes['objectClass'])) {
+			$options[] = new PasswordQuickChangeOption('syncSambaNT', _('Change Samba NT password'));
+			if (!isset($this->moduleSettings['sambaSamAccount_lmHash'][0]) || ($this->moduleSettings['sambaSamAccount_lmHash'][0] != 'yes')) {
+				$options[] = new PasswordQuickChangeOption('syncSambaLM', _('Change Samba LM password'));
+			}
+			$options[] = new PasswordQuickChangeOption('forcePasswordChangeSamba', _('Force Samba password change'), isPasswordChangeByDefault());
+		}
+		if (isset($this->attributes['sambaPwdLastSet'][0])) {
+			$options[] = new PasswordQuickChangeOption('updateSambaTimestamps', _('Update Samba password timestamp'));
+		}
+		return $options;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeChanges(string $password): array {
+		$attrs = array();
+		if (isset($_POST['unlockAccountSamba']) && isset($this->attributes['sambaAcctFlags'][0])) {
+			if ((strpos($this->attributes['sambaAcctFlags'][0], 'L') !== false)
+				|| (strpos($this->attributes['sambaAcctFlags'][0], 'D') !== false)) {
+				$sambaFlags = $this->attributes['sambaAcctFlags'][0];
+				$sambaFlags = str_replace('L', ' ', $sambaFlags);
+				$sambaFlags = str_replace('D', ' ', $sambaFlags);
+				$attrs['sambaAcctFlags'][0] = $sambaFlags;
+			}
+		}
+		if (isset($_POST['syncSambaLM'])) {
+			$attrs['sambaLMPassword'][0] = lmPassword($password);
+		}
+		if (isset($_POST['syncSambaNT'])) {
+			$attrs['sambaNTPassword'][0] = ntPassword($password);
+		}
+		// update Samba password timestamps
+		if (isset($_POST['updateSambaTimestamps'])) {
+			$attrs['sambaPwdLastSet'][0] = time();
+		}
+		// password history
+		if (isset($_POST['syncSambaLM']) || isset($_POST['syncSambaNT'])) {
+			$domain = $this->getUserDomain($this->attributes);
+			if (($domain != null) && !empty($domain->pwdHistoryLength) && ($domain->pwdHistoryLength > 0)) {
+				if (!empty($this->attributes['sambaPasswordHistory'][0])) {
+					$attrs['sambaPasswordHistory'] = $this->attributes['sambaPasswordHistory'];
+				}
+				else {
+					$attrs['sambaPasswordHistory'] = array();
+				}
+				while (sizeof($attrs['sambaPasswordHistory']) > ($domain->pwdHistoryLength - 1)) {
+					array_pop($attrs['sambaPasswordHistory']);
+				}
+				array_unshift($attrs['sambaPasswordHistory'], self::createHistoryEntry($password));
+				$attrs['sambaPasswordHistory'] = array_values($attrs['sambaPasswordHistory']);
+			}
+		}
+		// force password change
+		if (isset($_POST['forcePasswordChangeSamba'])) {
+			$attrs['sambaPwdLastSet'][0] = '0';
+		}
+		return $attrs;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangePasswordStrengthUserName(): ?string {
+		if (isset($this->attributes['uid'][0])) {
+			return $this->attributes['uid'][0];
+		}
+		return null;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangePasswordStrengthAttributes(): array {
+		return array();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeIsPasswordInHistory(string $password): bool {
+		// skip if no password was set
+		if (!isset($_POST['syncSambaLM']) && !isset($_POST['syncSambaNT'])) {
+			return false;
+		}
+		$sambaDomain = $this->getUserDomain($this->attributes);
+		if ($sambaDomain == null) {
+			return false;
+		}
+		if (!empty($sambaDomain->pwdHistoryLength)
+			&& is_numeric($sambaDomain->pwdHistoryLength)
+			&& ($sambaDomain->pwdHistoryLength > 0)) {
+			return sambaSamAccount::oldPasswordUsed($password, $this->attributes, $sambaDomain);
+		}
+		return false;
+	}
+
+}

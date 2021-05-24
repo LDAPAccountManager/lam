@@ -398,7 +398,9 @@ class quota extends baseModule {
 	 */
 	public function postModifyActions($newAccount, $attributes) {
 		$messages = array();
-		if (!isset($this->quota) || !is_array($this->quota)) {
+		if (!isset($this->quota) || !is_array($this->quota)
+			|| ($this->getAccountContainer() === null)
+			|| ($this->getAccountContainer()->finalDN === null)) {
 			return $messages;
 		}
 		// determine if this is a user or group account

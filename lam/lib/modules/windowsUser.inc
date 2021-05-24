@@ -4313,6 +4313,96 @@ class windowsUser extends baseModule implements passwordService {
 		return $this->groupList;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function supportsPasswordQuickChangePage(): bool {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function addPasswordQuickChangeAccountDetails(htmlResponsiveRow $row): void {
+		if (!empty($this->attributes['userPrincipalName'][0])) {
+			$row->addLabel(new htmlOutputText(_('User name')));
+			$row->addField(new htmlOutputText($this->attributes['userPrincipalName'][0]));
+		}
+		$nameParts = array();
+		if (isset($this->attributes['givenName'][0])) {
+			$nameParts[] = $this->attributes['givenName'][0];
+		}
+		if (isset($this->attributes['sn'][0])) {
+			$nameParts[] = $this->attributes['sn'][0];
+		}
+		if (!empty($nameParts)) {
+			$row->addLabel(new htmlOutputText(_('Full name')));
+			$row->addField(new htmlOutputText(implode(' ', $nameParts)));
+		}
+		if (!empty($this->attributes['mail'][0])) {
+			$row->addLabel(new htmlOutputText(_('Email address')));
+			$row->addField(new htmlOutputText($this->attributes['mail'][0]));
+		}
+		if (!empty($this->attributes['telephoneNumber'][0])) {
+			$row->addLabel(new htmlOutputText(_('Telephone number')));
+			$row->addField(new htmlOutputText($this->attributes['telephoneNumber'][0]));
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeOptions(): array {
+		if (!in_array_ignore_case('user', $this->attributes['objectClass'])) {
+			return array();
+		}
+		return array(
+			new PasswordQuickChangeOption('syncWindows', _('Change Windows password'))
+		);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeChanges(string $password): array {
+		$attrs = array();
+		if (isset($_POST['syncWindows'])) {
+			$attrs['unicodePwd'][0] = self::pwdAttributeValue($password);
+		}
+		return $attrs;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangePasswordStrengthUserName(): ?string {
+		if (isset($this->attributes['userPrincipalName'][0])) {
+			return $this->attributes['userPrincipalName'][0];
+		}
+		return null;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangePasswordStrengthAttributes(): array {
+		$values = array();
+		if (isset($this->attributes['sn'][0])) {
+			$values[] = $this->attributes['sn'][0];
+		}
+		if (isset($this->attributes['givenName'][0])) {
+			$values[] = $this->attributes['givenName'][0];
+		}
+		return $values;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeIsPasswordInHistory(string $password): bool {
+		return false;
+	}
+
 }
 
 if (interface_exists('\LAM\JOB\Job', false)) {
@@ -4923,5 +5013,3 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 	}
 
 }
-
-?>

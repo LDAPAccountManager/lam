@@ -1274,6 +1274,61 @@ class asteriskAccount extends baseModule implements passwordService {
 		return $configContainer;
 	}
 
-}
+	/**
+	 * @inheritDoc
+	 */
+	public function supportsPasswordQuickChangePage(): bool {
+		return true;
+	}
 
-?>
+	/**
+	 * @inheritDoc
+	 */
+	public function addPasswordQuickChangeAccountDetails(htmlResponsiveRow $row): void {
+		// no details
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeOptions(): array {
+		$options = array();
+		if (in_array_ignore_case('AsteriskSIPUser', $this->attributes['objectClass'])) {
+			$options[] = new PasswordQuickChangeOption('syncAsterisk', _('Change Asterisk password'));
+		}
+		return $options;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeChanges(string $password): array {
+		$attrs = array();
+		if (isset($_POST['syncAsterisk'])) {
+			$attrs['AstAccountRealmedPassword'][0] = self::buildPasswordString($this->attributes, $this->moduleSettings, $password);
+		}
+		return $attrs;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangePasswordStrengthUserName(): ?string {
+		return null;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangePasswordStrengthAttributes(): array {
+		return array();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeIsPasswordInHistory(string $password): bool {
+		return false;
+	}
+
+}

@@ -750,7 +750,7 @@ class posixAccount extends baseModule implements passwordService {
 	public function postModifyActions($newAccount, $attributes) {
 		$messages = array();
 		$accountContainer = $this->getAccountContainer();
-		if ($accountContainer == null) {
+		if (($accountContainer == null) || empty($accountContainer->finalDN)) {
 			return $messages;
 		}
 		$modules = $accountContainer->get_type()->getModules();
@@ -4152,6 +4152,71 @@ class posixAccount extends baseModule implements passwordService {
 		return $this->gonList;
 	}
 
-}
+	/**
+	 * @inheritDoc
+	 */
+	public function supportsPasswordQuickChangePage(): bool {
+		return true;
+	}
 
-?>
+	/**
+	 * @inheritDoc
+	 */
+	public function addPasswordQuickChangeAccountDetails(htmlResponsiveRow $row): void {
+		if (!empty($this->attributes['uid'][0])) {
+			$row->addLabel(new htmlOutputText(_('User name')));
+			$row->addField(new htmlOutputText($this->attributes['uid'][0]));
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeOptions(): array {
+		if (!in_array_ignore_case('posixAccount', $this->attributes['objectClass'])) {
+			return array();
+		}
+		return array(
+			new PasswordQuickChangeOption('updateUnixPwd', _('Change Unix password'))
+		);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeChanges(string $password): array {
+		if (!in_array_ignore_case('posixAccount', $this->attributes['objectClass'])) {
+			return array();
+		}
+		$attrs = array();
+		if (isset($_POST['updateUnixPwd'])) {
+			$attrs['userPassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+		}
+		return $attrs;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangePasswordStrengthUserName(): ?string {
+		if (isset($this->attributes['uid'][0])) {
+			return $this->attributes['uid'][0];
+		}
+		return null;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangePasswordStrengthAttributes(): array {
+		return array();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeIsPasswordInHistory(string $password): bool {
+		return false;
+	}
+
+}

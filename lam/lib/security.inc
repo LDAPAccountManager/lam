@@ -385,11 +385,14 @@ function checkIfDeleteEntriesIsAllowed($scope) {
  * Checks if the password fulfills the password policies.
  *
  * @param String $password password
- * @param String $userName user name
+ * @param String|array $userNames user name(s)
  * @param array $otherUserAttrs user's first/last name
  * @return mixed true if ok, string with error message if not valid
  */
-function checkPasswordStrength($password, $userName, $otherUserAttrs) {
+function checkPasswordStrength($password, $userNames, $otherUserAttrs) {
+	if (($userNames !== null) && !is_array($userNames)) {
+		$userNames = array($userNames);
+	}
 	if ($password == null) {
 		$password = "";
 	}
@@ -479,27 +482,32 @@ function checkPasswordStrength($password, $userName, $otherUserAttrs) {
 	if (($cfg->checkedRulesCount != -1) && ($rulesMatched < $cfg->checkedRulesCount)) {
 		return sprintf(_('The password is too weak. It needs to match at least %s password complexity rules.'), $cfg->checkedRulesCount);
 	}
+	$pwdLow = strtolower($password);
 	// check user name
-	if (($cfg->passwordMustNotContainUser == 'true') && !empty($userName)) {
-		$pwdLow = strtolower($password);
-		$userLow = strtolower($userName);
-		if (strpos($pwdLow, $userLow) !== false) {
-			return _('The password is too weak. You may not use the user name as part of the password.');
+	if (($cfg->passwordMustNotContainUser == 'true') && !empty($userNames)) {
+		foreach ($userNames as $userName) {
+			$userLow = strtolower($userName);
+			if (strpos($pwdLow, $userLow) !== false) {
+				return _('The password is too weak. You may not use the user name as part of the password.');
+			}
 		}
 	}
 	// check part of user name and additional attributes
-	if (($cfg->passwordMustNotContain3Chars == 'true') && (!empty($userName) || !empty($otherUserAttrs))) {
-		$pwdLow = strtolower($password);
+	if (($cfg->passwordMustNotContain3Chars == 'true') && !empty($userNames)) {
 		// check if contains part of user name
-		if (!empty($userName) && (strlen($userName) > 2)) {
-			$userLow = strtolower($userName);
-			for ($i = 0; $i < strlen($userLow) - 3; $i++) {
-				$part = substr($userLow, 0, 3);
-				if (strpos($pwdLow, $part) !== false) {
-					return _('The password is too weak. You may not use parts of the user name for the password.');
+		foreach ($userNames as $userName) {
+			if (strlen($userName) > 2) {
+				$userLow = strtolower($userName);
+				for ($i = 0; $i < strlen($userLow) - 3; $i++) {
+					$part = substr($userLow, 0, 3);
+					if (strpos($pwdLow, $part) !== false) {
+						return _('The password is too weak. You may not use parts of the user name for the password.');
+					}
 				}
 			}
 		}
+	}
+	if (($cfg->passwordMustNotContain3Chars == 'true') && !empty($otherUserAttrs)) {
 		// check other attributes
 		foreach ($otherUserAttrs as $other) {
 			$low = strtolower($other);

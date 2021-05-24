@@ -2397,6 +2397,81 @@ interface passwordService {
 	 */
 	public function passwordChangeRequested($password, $modules, $forcePasswordChange);
 
+	/**
+	 * Specifies if the module support password quick change for the current account.
+	 *
+	 * @return bool password quick change page supported
+	 */
+	public function supportsPasswordQuickChangePage(): bool;
+
+	/**
+	 * Adds account details such as first/last name for the current account.
+	 *
+	 * @param htmlResponsiveRow $row row where to add content
+	 */
+	public function addPasswordQuickChangeAccountDetails(htmlResponsiveRow $row): void;
+
+	/**
+	 * Returns a list of password quick change options.
+	 *
+	 * @return PasswordQuickChangeOption[] options
+	 */
+	public function getPasswordQuickChangeOptions(): array;
+
+	/**
+	 * Returns a list of LDAP attribute changes to perform.
+	 *
+	 * @param string $password new password
+	 * @return array LDAP attribute values (attr_name => array(attr_value))
+	 * @throws LAMException error getting changes
+	 */
+	public function getPasswordQuickChangeChanges(string $password): array;
+
+	/**
+	 * Returns the user name if known to be validated for password strength.
+	 *
+	 * @return string|null user name
+	 */
+	public function getPasswordQuickChangePasswordStrengthUserName(): ?string;
+
+	/**
+	 * Returns additional attribute values to check when password strength is validated.
+	 *
+	 * @return array attribute values
+	 */
+	public function getPasswordQuickChangePasswordStrengthAttributes(): array;
+
+	/**
+	 * Returns if the password is not same as an old password from history.
+	 *
+	 * @param string $password new password
+	 * @return bool is in history
+	 */
+	public function getPasswordQuickChangeIsPasswordInHistory(string $password): bool;
+
 }
 
-?>
+/**
+ * Option for the password quick change page.
+ */
+class PasswordQuickChangeOption {
+
+	public $label;
+
+	public $id;
+
+	public $preSelected;
+
+	/**
+	 * PasswordQuickChangeOption constructor.
+	 * @param string $id unique id for this option
+	 * @param string $label descriptive label
+	 * @param bool $preSelected is preselected
+	 */
+	public function __construct(string $id, string $label, bool $preSelected = true) {
+		$this->label = $label;
+		$this->id = $id;
+		$this->preSelected = $preSelected;
+	}
+
+}

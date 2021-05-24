@@ -546,6 +546,61 @@ class asteriskVoicemail extends baseModule implements passwordService {
 		return $return;
 	}
 
-}
+	/**
+	 * @inheritDoc
+	 */
+	public function supportsPasswordQuickChangePage(): bool {
+		return true;
+	}
 
-?>
+	/**
+	 * @inheritDoc
+	 */
+	public function addPasswordQuickChangeAccountDetails(htmlResponsiveRow $row): void {
+		// no details
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeOptions(): array {
+		$options = array();
+		if (in_array_ignore_case('AsteriskVoiceMail', $this->attributes['objectClass'])) {
+			$options[] = new PasswordQuickChangeOption('syncAsteriskVoiceMail', _('Change Asterisk voicemail password'));
+		}
+		return $options;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeChanges(string $password): array {
+		$attrs = array();
+		if (isset($_POST['syncAsteriskVoiceMail'])) {
+			$attrs['AstVoicemailPassword'][0] = $password;
+		}
+		return $attrs;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangePasswordStrengthUserName(): ?string {
+		return null;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangePasswordStrengthAttributes(): array {
+		return array();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeIsPasswordInHistory(string $password): bool {
+		return false;
+	}
+
+}

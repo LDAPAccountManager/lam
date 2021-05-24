@@ -6,7 +6,7 @@ use LAM\PDF\PDFImage;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2020  Roland Gruber
+                2005 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -931,7 +931,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$messages = array_merge($messages, $this->setExopPassword($this->moduleSettings));
 		// add address book
 		$accountContainer = $this->getAccountContainer();
-		if ($this->isBooleanConfigOptionSet('inetOrgPerson_addAddressbook') && !empty($accountContainer)) {
+		if ($this->isBooleanConfigOptionSet('inetOrgPerson_addAddressbook')
+			&& !empty($accountContainer)
+			&& !empty($accountContainer->finalDN)) {
 			$dn = 'ou=addressbook,' . $accountContainer->finalDN;
 			$result = ldapGetDN($dn);
 			if (empty($result)) {
@@ -4312,6 +4314,103 @@ class inetOrgPerson extends baseModule implements passwordService {
 		return $replacements;
 	}
 
-}
+	/**
+	 * @inheritDoc
+	 */
+	public function supportsPasswordQuickChangePage(): bool {
+		return true;
+	}
 
-?>
+	/**
+	 * @inheritDoc
+	 */
+	public function addPasswordQuickChangeAccountDetails(htmlResponsiveRow $row): void {
+		if (!$this->isUnixActive() && !empty($this->attributes['uid'][0])) {
+			$row->addLabel(new htmlOutputText(_('User name')));
+			$row->addField(new htmlOutputText($this->attributes['uid'][0]));
+		}
+		$nameParts = array();
+		if (isset($this->attributes['givenName'][0])) {
+			$nameParts[] = $this->attributes['givenName'][0];
+		}
+		if (isset($this->attributes['sn'][0])) {
+			$nameParts[] = $this->attributes['sn'][0];
+		}
+		if (!empty($nameParts)) {
+			$row->addLabel(new htmlOutputText(_('Full name')));
+			$row->addField(new htmlOutputText(implode(' ', $nameParts)));
+		}
+		if (!empty($this->attributes['mail'][0])) {
+			$row->addLabel(new htmlOutputText(_('Email address')));
+			$row->addField(new htmlOutputText($this->attributes['mail'][0]));
+		}
+		if (!empty($this->attributes['telephoneNumber'][0])) {
+			$row->addLabel(new htmlOutputText(_('Telephone number')));
+			$row->addField(new htmlOutputText($this->attributes['telephoneNumber'][0]));
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeOptions(): array {
+		if ($this->isUnixActive() && in_array_ignore_case('posixAccount', $this->attributes['objectClass'])) {
+			return array();
+		}
+		if (!in_array_ignore_case('inetOrgPerson', $this->attributes['objectClass'])) {
+			return array();
+		}
+		return array(
+			new PasswordQuickChangeOption('updateUnixPwd', _('Change password'))
+		);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeChanges(string $password): array {
+		if ($this->isUnixActive() && in_array_ignore_case('posixAccount', $this->attributes['objectClass'])) {
+			return array();
+		}
+		if (!in_array_ignore_case('inetOrgPerson', $this->attributes['objectClass'])) {
+			return array();
+		}
+		$attrs = array();
+		if (isset($_POST['updateUnixPwd'])) {
+			$attrs['userPassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+		}
+		return $attrs;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangePasswordStrengthUserName(): ?string {
+		if (isset($this->attributes['uid'][0])) {
+			return $this->attributes['uid'][0];
+		}
+		return null;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangePasswordStrengthAttributes(): array {
+		$values = array();
+		if (isset($this->attributes['sn'][0])) {
+			$values[] = $this->attributes['sn'][0];
+		}
+		if (isset($this->attributes['givenName'][0])) {
+			$values[] = $this->attributes['givenName'][0];
+		}
+		return $values;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeIsPasswordInHistory(string $password): bool {
+		return false;
+	}
+
+}

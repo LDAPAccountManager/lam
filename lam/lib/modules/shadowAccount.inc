@@ -30,6 +30,8 @@
 * @author Michael Duergner
 */
 
+use function LAM\ACCOUNTLIST\isPasswordChangeByDefault;
+
 /**
 * Manages the object class "shadowAccount" for users.
 *
@@ -864,6 +866,71 @@ class shadowAccount extends baseModule implements passwordService {
 		}
 		$now = new DateTime(null, getTimeZone());
 		return ($time < $now);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function supportsPasswordQuickChangePage(): bool {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function addPasswordQuickChangeAccountDetails(htmlResponsiveRow $row): void {
+		// no details
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeOptions(): array {
+		$options = array();
+		if (in_array_ignore_case('shadowAccount', $this->attributes['objectClass'])) {
+			$options[] = new PasswordQuickChangeOption('forcePasswordChangeUnix', _('Force Unix password change'), isPasswordChangeByDefault());
+		}
+		return $options;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeChanges(string $password): array {
+		if (!in_array_ignore_case('shadowAccount', $this->attributes['objectClass'])) {
+			return array();
+		}
+		$attrs = array();
+		if (isset($this->attributes['shadowLastChange'][0]) && isset($_POST['updateUnixPwd'])) {
+			$attrs['shadowLastChange'][0] = intval(time()/3600/24);
+		}
+		if (isset($_POST['forcePasswordChangeUnix'])
+			&& isset($this->attributes['shadowMax'][0])
+			&& ($this->attributes['shadowMax'][0] != 0)) {
+			$attrs['shadowLastChange'][0] = intval(time()/3600/24) - $this->attributes['shadowMax'][0] - 1;
+		}
+		return $attrs;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangePasswordStrengthUserName(): ?string {
+		return null;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangePasswordStrengthAttributes(): array {
+		return array();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getPasswordQuickChangeIsPasswordInHistory(string $password): bool {
+		return false;
 	}
 
 }
