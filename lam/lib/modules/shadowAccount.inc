@@ -897,7 +897,14 @@ class shadowAccount extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangeChanges(string $password): array {
-		// TODO: Implement getPasswordQuickChangeChanges() method.
+		if (!in_array_ignore_case('shadowAccount', $this->attributes['objectClass'])) {
+			return array();
+		}
+		$attrs = array();
+		if (isset($this->attributes['shadowLastChange'][0]) && isset($_POST['updateUnixPwd'])) {
+			$attrs['shadowLastChange'][0] = intval(time()/3600/24);
+		}
+		return $attrs;
 	}
 
 	/**

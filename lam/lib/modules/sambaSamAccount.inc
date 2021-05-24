@@ -2964,6 +2964,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 	 */
 	public function getPasswordQuickChangeChanges(string $password): array {
 		// TODO: Implement getPasswordQuickChangeChanges() method.
+		return array();
 	}
 
 	/**

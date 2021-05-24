@@ -4369,7 +4369,17 @@ class inetOrgPerson extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangeChanges(string $password): array {
-		// TODO: Implement getPasswordQuickChangeChanges() method.
+		if ($this->isUnixActive() && in_array_ignore_case('posixAccount', $this->attributes['objectClass'])) {
+			return array();
+		}
+		if (!in_array_ignore_case('inetOrgPerson', $this->attributes['objectClass'])) {
+			return array();
+		}
+		$attrs = array();
+		if (isset($_POST['updateUnixPwd'])) {
+			$attrs['userPassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+		}
+		return $attrs;
 	}
 
 	/**
