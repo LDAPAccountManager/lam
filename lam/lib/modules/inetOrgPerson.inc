@@ -931,7 +931,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$messages = array_merge($messages, $this->setExopPassword($this->moduleSettings));
 		// add address book
 		$accountContainer = $this->getAccountContainer();
-		if ($this->isBooleanConfigOptionSet('inetOrgPerson_addAddressbook') && !empty($accountContainer)) {
+		if ($this->isBooleanConfigOptionSet('inetOrgPerson_addAddressbook')
+			&& !empty($accountContainer)
+			&& !empty($accountContainer->finalDN)) {
 			$dn = 'ou=addressbook,' . $accountContainer->finalDN;
 			$result = ldapGetDN($dn);
 			if (empty($result)) {

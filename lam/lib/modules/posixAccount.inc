@@ -750,7 +750,7 @@ class posixAccount extends baseModule implements passwordService {
 	public function postModifyActions($newAccount, $attributes) {
 		$messages = array();
 		$accountContainer = $this->getAccountContainer();
-		if ($accountContainer == null) {
+		if (($accountContainer == null) || empty($accountContainer->finalDN)) {
 			return $messages;
 		}
 		$modules = $accountContainer->get_type()->getModules();
