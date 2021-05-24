@@ -13,6 +13,7 @@ June 2021 7.6
    -> Custom fields:
     * Support password change dialog in user edit view
     * Added date and email validation for text fields
+    * Support password reset page for password fields
    -> Password self reset: fields on first page can be prefilled by URL parameter
 
 
