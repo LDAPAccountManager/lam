@@ -904,6 +904,11 @@ class shadowAccount extends baseModule implements passwordService {
 		if (isset($this->attributes['shadowLastChange'][0]) && isset($_POST['updateUnixPwd'])) {
 			$attrs['shadowLastChange'][0] = intval(time()/3600/24);
 		}
+		if (isset($_POST['forcePasswordChangeUnix'])
+			&& isset($this->attributes['shadowMax'][0])
+			&& ($this->attributes['shadowMax'][0] != 0)) {
+			$attrs['shadowLastChange'][0] = intval(time()/3600/24) - $this->attributes['shadowMax'][0] - 1;
+		}
 		return $attrs;
 	}
 

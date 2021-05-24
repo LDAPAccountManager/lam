@@ -2973,6 +2973,37 @@ class sambaSamAccount extends baseModule implements passwordService {
 				$attrs['sambaAcctFlags'][0] = $sambaFlags;
 			}
 		}
+		if (isset($_POST['syncSambaLM'])) {
+			$attrs['sambaLMPassword'][0] = lmPassword($password);
+		}
+		if (isset($_POST['syncSambaNT'])) {
+			$attrs['sambaNTPassword'][0] = ntPassword($password);
+		}
+		// update Samba password timestamps
+		if (isset($_POST['updateSambaTimestamps'])) {
+			$attrs['sambaPwdLastSet'][0] = time();
+		}
+		// password history
+		if (isset($_POST['syncSambaLM']) || isset($_POST['syncSambaNT'])) {
+			$domain = $this->getUserDomain($this->attributes);
+			if (($domain != null) && !empty($domain->pwdHistoryLength) && ($domain->pwdHistoryLength > 0)) {
+				if (!empty($this->attributes['sambaPasswordHistory'][0])) {
+					$attrs['sambaPasswordHistory'] = $this->attributes['sambaPasswordHistory'];
+				}
+				else {
+					$attrs['sambaPasswordHistory'] = array();
+				}
+				while (sizeof($attrs['sambaPasswordHistory']) > ($domain->pwdHistoryLength - 1)) {
+					array_pop($attrs['sambaPasswordHistory']);
+				}
+				array_unshift($attrs['sambaPasswordHistory'], self::createHistoryEntry($password));
+				$attrs['sambaPasswordHistory'] = array_values($attrs['sambaPasswordHistory']);
+			}
+		}
+		// force password change
+		if (isset($_POST['forcePasswordChangeSamba'])) {
+			$attrs['sambaPwdLastSet'][0] = '0';
+		}
 		return $attrs;
 	}
 

@@ -4318,7 +4318,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function supportsPasswordQuickChangePage(): bool {
-		return true; // TODO off for posixAccount
+		return true;
 	}
 
 	/**
