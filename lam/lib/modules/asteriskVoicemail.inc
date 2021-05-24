@@ -575,8 +575,11 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangeChanges(string $password): array {
-		// TODO: Implement getPasswordQuickChangeChanges() method.
-		return array();
+		$attrs = array();
+		if (isset($_POST['syncAsteriskVoiceMail'])) {
+			$attrs['AstVoicemailPassword'][0] = $password;
+		}
+		return $attrs;
 	}
 
 	/**

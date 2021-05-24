@@ -2944,7 +2944,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		if ((isset($this->attributes['sambaAcctFlags'][0])
 			&& ((strpos($this->attributes['sambaAcctFlags'][0], 'L') !== false)
 				|| (strpos($this->attributes['sambaAcctFlags'][0], 'D') !== false)))) {
-			$options[] = new PasswordQuickChangeOption('unlockAccount', _('Unlock Samba account'));
+			$options[] = new PasswordQuickChangeOption('unlockAccountSamba', _('Unlock Samba account'));
 		}
 		if (in_array_ignore_case('sambaSamAccount', $this->attributes['objectClass'])) {
 			$options[] = new PasswordQuickChangeOption('syncSambaNT', _('Change Samba NT password'));
@@ -2963,8 +2963,17 @@ class sambaSamAccount extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangeChanges(string $password): array {
-		// TODO: Implement getPasswordQuickChangeChanges() method.
-		return array();
+		$attrs = array();
+		if (isset($_POST['unlockAccountSamba']) && isset($this->attributes['sambaAcctFlags'][0])) {
+			if ((strpos($this->attributes['sambaAcctFlags'][0], 'L') !== false)
+				|| (strpos($this->attributes['sambaAcctFlags'][0], 'D') !== false)) {
+				$sambaFlags = $this->attributes['sambaAcctFlags'][0];
+				$sambaFlags = str_replace('L', ' ', $sambaFlags);
+				$sambaFlags = str_replace('D', ' ', $sambaFlags);
+				$attrs['sambaAcctFlags'][0] = $sambaFlags;
+			}
+		}
+		return $attrs;
 	}
 
 	/**

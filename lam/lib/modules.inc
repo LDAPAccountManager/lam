@@ -2414,6 +2414,7 @@ interface passwordService {
 	 *
 	 * @param string $password new password
 	 * @return array LDAP attribute values (attr_name => array(attr_value))
+	 * @throws LAMException error getting changes
 	 */
 	public function getPasswordQuickChangeChanges(string $password): array;
 

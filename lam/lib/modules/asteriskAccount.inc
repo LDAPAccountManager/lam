@@ -1303,8 +1303,11 @@ class asteriskAccount extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangeChanges(string $password): array {
-		// TODO: Implement getPasswordQuickChangeChanges() method.
-		return array();
+		$attrs = array();
+		if (isset($_POST['syncAsterisk'])) {
+			$attrs['AstAccountRealmedPassword'][0] = self::buildPasswordString($this->attributes, $this->moduleSettings, $password);
+		}
+		return $attrs;
 	}
 
 	/**

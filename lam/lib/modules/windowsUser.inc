@@ -4365,8 +4365,11 @@ class windowsUser extends baseModule implements passwordService {
 	 * @inheritDoc
 	 */
 	public function getPasswordQuickChangeChanges(string $password): array {
-		// TODO: Implement getPasswordQuickChangeChanges() method.
-		return array();
+		$attrs = array();
+		if (isset($_POST['syncWindows'])) {
+			$attrs['unicodePwd'][0] = self::pwdAttributeValue($password);
+		}
+		return $attrs;
 	}
 
 	/**
@@ -5010,5 +5013,3 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 	}
 
 }
-
-?>
