@@ -480,6 +480,8 @@ class htmlInputField extends htmlElement {
 	protected $calendarFormat = '';
 	/** calendar with time */
 	protected $calendarFormatWithTime = false;
+	/** calendar with seconds */
+	protected $calendarFormatWithSeconds = false;
 	/** title attribute */
 	protected $title = null;
 	/** field ID that needs to have same value (e.g. password field) */
@@ -659,7 +661,8 @@ class htmlInputField extends htmlElement {
 				$sessionLanguageParts = explode('_', $sessionLanguage);
 				$locale = $sessionLanguageParts[0];
 			}
-			$calendarWithTime = $this->calendarFormatWithTime ? "enableTime: true," : "";
+			$calendarWithTime = $this->calendarFormatWithTime ? "enableTime: true, " : "";
+			$calendarWithSeconds = $this->calendarFormatWithSeconds ? "enableSeconds: true, " : "";
 			echo '<script type="text/javascript">
 				jQuery(function() {
 					$("#' . $this->fieldName . '").flatpickr({
@@ -667,7 +670,7 @@ class htmlInputField extends htmlElement {
 						hourIncrement: 1,
 						minuteIncrement: 1,
 						time_24hr: true,
-						' . $calendarWithTime . '
+						' . $calendarWithTime . $calendarWithSeconds . '
 						locale: "' . $locale . '"
 					});
 				});
@@ -842,10 +845,12 @@ class htmlInputField extends htmlElement {
 	 *
 	 * @param String $format calendar format (e.g. Y-m-d)
 	 * @param bool $withTime activate time selection
+	 * @param bool $withSeconds show seconds
 	 */
-	public function showCalendar($format, $withTime = false) {
+	public function showCalendar($format, $withTime = false, $withSeconds = false) {
 		$this->showCalendar = true;
 		$this->calendarFormatWithTime = $withTime;
+		$this->calendarFormatWithSeconds = $withSeconds;
 		$format = str_replace('yy', 'Y', $format);
 		$format = str_replace('dd', 'd', $format);
 		$format = str_replace('mm', 'm', $format);
