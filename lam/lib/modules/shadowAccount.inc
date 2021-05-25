@@ -412,8 +412,9 @@ class shadowAccount extends baseModule implements passwordService {
 	function process_expire() {
 		$errors = array();
 		// set expiration date
-		if (isset($_POST['form_subpage_shadowAccount_attributes_change'])) {
-			$this->setExpirationDate($_POST['shadowExpire_yea'], $_POST['shadowExpire_mon'], $_POST['shadowExpire_day']);
+		if (isset($_POST['form_subpage_shadowAccount_attributes_change']) && !empty($_POST['shadowExpire'])) {
+			$date = DateTime::createFromFormat('d.m.Y', $_POST['shadowExpire'], new DateTimeZone('UTC'));
+			$this->attributes['shadowExpire'][0] = intval($date->format('U')/3600/24);
 			// sync other modules
 			if (isset($_POST['syncSamba']) && ($_POST['syncSamba'] == 'on')) {
 				$this->getAccountContainer()->getAccountModule('sambaSamAccount')->setExpirationDate(
@@ -437,7 +438,8 @@ class shadowAccount extends baseModule implements passwordService {
 			}
 		}
 		// remove expiration date
-		elseif (isset($_POST['form_subpage_shadowAccount_attributes_del'])) {
+		elseif (isset($_POST['form_subpage_shadowAccount_attributes_del'])
+			|| (empty($_POST['shadowExpire']) && isset($this->attributes['shadowExpire']))) {
 			unset($this->attributes['shadowExpire']);
 			// sync other modules
 			if (isset($_POST['syncWindows']) && ($_POST['syncWindows'] == 'on')) {
@@ -476,28 +478,9 @@ class shadowAccount extends baseModule implements passwordService {
 			$shAccExpirationDate = $this->attributes['shadowExpire'][0];
 		}
 		$date = new DateTime('@' . $shAccExpirationDate*3600*24, new DateTimeZone('UTC'));
-		for ( $i=1; $i<=31; $i++ ) {
-			$mday[] = $i;
-		}
-		for ( $i=1; $i<=12; $i++ ) {
-			$mon[] = $i;
-		}
-		for ( $i=2003; $i<=2050; $i++ ) {
-			$year[] = $i;
-		}
-		$return->addLabel(new htmlOutputText(_('Account expiration date')));
-		$expTable = new htmlGroup();
-		$daySelect = new htmlSelect('shadowExpire_day', $mday, array($date->format('j')));
-		$daySelect->setWidth('3rem');
-		$expTable->addElement($daySelect);
-		$monthSelect = new htmlSelect('shadowExpire_mon', $mon, array($date->format('n')));
-		$monthSelect->setWidth('3rem');
-		$expTable->addElement($monthSelect);
-		$yearSelect = new htmlSelect('shadowExpire_yea', $year, array($date->format('Y')));
-		$yearSelect->setWidth('5rem');
-		$expTable->addElement($yearSelect);
-		$expTable->addElement(new htmlHelpLink('shadowExpire'), true);
-		$return->addField($expTable);
+		$dateField = new htmlResponsiveInputField(_('Account expiration date'), 'shadowExpire', $date->format('d.m.Y'), 'shadowExpire');
+		$dateField->showCalendar('d.m.Y');
+		$return->add($dateField);
 		if ($this->getAccountContainer()->getAccountModule('sambaSamAccount') != null) {
 			$return->add(new htmlResponsiveInputCheckbox('syncSamba', false, _('Set also for Samba 3')), 12);
 		}
@@ -535,11 +518,13 @@ class shadowAccount extends baseModule implements passwordService {
 	function process_pwdChange() {
 		$errors = array();
 		// set last change date
-		if (isset($_POST['form_subpage_shadowAccount_attributes_changePwdChange'])) {
-			$this->setLastChangeDate($_POST['shadowLastChange_yea'], $_POST['shadowLastChange_mon'], $_POST['shadowLastChange_day']);
+		if (isset($_POST['form_subpage_shadowAccount_attributes_changePwdChange']) && !empty($_POST['shadowLastChange'])) {
+			$date = DateTime::createFromFormat('d.m.Y', $_POST['shadowLastChange'], new DateTimeZone('UTC'));
+			$this->attributes['shadowLastChange'][0] = intval($date->format('U')/3600/24);
 		}
 		// remove last change date
-		elseif (isset($_POST['form_subpage_shadowAccount_attributes_delPwdChange'])) {
+		elseif (isset($_POST['form_subpage_shadowAccount_attributes_delPwdChange'])
+			|| (empty($_POST['shadowLastChange']) && isset($this->attributes['shadowLastChange']))) {
 			unset($this->attributes['shadowLastChange']);
 		}
 		return $errors;
@@ -557,28 +542,9 @@ class shadowAccount extends baseModule implements passwordService {
 			$shLastChange = $this->attributes['shadowLastChange'][0];
 		}
 		$date = new DateTime('@' . $shLastChange*3600*24, new DateTimeZone('UTC'));
-		for ( $i=1; $i<=31; $i++ ) {
-			$mday[] = $i;
-		}
-		for ( $i=1; $i<=12; $i++ ) {
-			$mon[] = $i;
-		}
-		for ( $i=2003; $i<=2050; $i++ ) {
-			$year[] = $i;
-		}
-		$return->addLabel(new htmlOutputText(_('Last password change')));
-		$table = new htmlGroup();
-		$daySelect = new htmlSelect('shadowLastChange_day', $mday, array($date->format('j')));
-		$daySelect->setWidth('3rem');
-		$table->addElement($daySelect);
-		$monthSelect = new htmlSelect('shadowLastChange_mon', $mon, array($date->format('n')));
-		$monthSelect->setWidth('3rem');
-		$table->addElement($monthSelect);
-		$yearSelect = new htmlSelect('shadowLastChange_yea', $year, array($date->format('Y')));
-		$yearSelect->setWidth('5rem');
-		$table->addElement($yearSelect);
-		$table->addElement(new htmlHelpLink('shadowLastChange'), true);
-		$return->addField($table);
+		$dateField = new htmlResponsiveInputField(_('Last password change'), 'shadowLastChange', $date->format('d.m.Y'), 'shadowLastChange');
+		$dateField->showCalendar('d.m.Y');
+		$return->add($dateField);
 		$return->addVerticalSpacer('2rem');
 		$buttonTable = new htmlGroup();
 		$buttonTable->addElement(new htmlAccountPageButton('shadowAccount', 'attributes', 'changePwdChange', _('Change')));
