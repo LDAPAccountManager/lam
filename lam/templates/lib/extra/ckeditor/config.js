@@ -10,28 +10,26 @@ CKEDITOR.editorConfig = function( config ) {
 	config.plugins = 'dialogui,dialog,basicstyles,blockquote,notification,button,toolbar,clipboard,panel,floatpanel,menu,contextmenu,resize,elementspath'
 		+ ',enterkey,entities,popup,filetools,filebrowser,floatingspace,listblock,richcombo,format,horizontalrule,htmlwriter,wysiwygarea,image,indent'
 		+ ',indentlist,fakeobjects,link,list,magicline,maximize,pastetext,removeformat,showborders,sourcearea,specialchar,menubutton,stylescombo,tab'
-		+ ',table,tabletools,tableselection,undo,lineutils,widgetselection,widget,notificationaggregator,iframe,justify,font,panelbutton,colordialog,colorbutton,youtube';
-	config.skin = 'kama';
+		+ ',table,tabletools,tableselection,undo,lineutils,widgetselection,widget,notificationaggregator,iframe,justify,font,panelbutton,colordialog,colorbutton';
 	// %REMOVE_END%
 
-	// Define changes to default configuration here.
-	// For complete reference see:
-	// http://docs.ckeditor.com/#!/api/CKEDITOR.config
-
-	// The toolbar groups arrangement, optimized for two toolbar rows.
 	config.toolbarGroups = [
-		{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
-		{ name: 'editing',     groups: [ 'find', 'selection' ] },
-		{ name: 'links' },
-		{ name: 'insert' },
-		{ name: 'tools' },
-		{ name: 'document',	   groups: [ 'mode', 'document', 'doctools' ] },
-		{ name: 'others' },
+		{ name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
+		{ name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
+		{ name: 'editing', groups: [ 'find', 'selection', 'spellchecker', 'editing' ] },
+		{ name: 'forms', groups: [ 'forms' ] },
 		{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-		{ name: 'colors' },
-		{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
-		{ name: 'styles' }
+		{ name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi', 'paragraph' ] },
+		{ name: 'links', groups: [ 'links' ] },
+		{ name: 'insert', groups: [ 'insert' ] },
+		{ name: 'colors', groups: [ 'colors' ] },
+		{ name: 'tools', groups: [ 'tools' ] },
+		{ name: 'styles', groups: [ 'styles' ] },
+		{ name: 'others', groups: [ 'others' ] },
+		{ name: 'about', groups: [ 'about' ] }
 	];
+
+	config.removeButtons = 'About,Templates,Preview,Save,NewPage,ExportPdf,Print,PasteFromWord,PasteText,Find,Replace,SelectAll,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,CopyFormatting,RemoveFormat,BidiLtr,BidiRtl,Language,Flash,Smiley,PageBreak,ShowBlocks';
 
 	// Set the most common block elements.
 	config.format_tags = 'p;h1;h2;h3;pre';
