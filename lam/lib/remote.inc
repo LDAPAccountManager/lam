@@ -144,7 +144,7 @@ class Remote {
 			else {
 				$errors = null;
 			}
-			throw new LAMException(_("Unable to login to remote server!"), $errors);
+			throw new LAMException(_("Unable to login to lamdaemon server."), $errors);
 		}
 	}
 
