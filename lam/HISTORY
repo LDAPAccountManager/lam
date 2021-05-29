@@ -14,6 +14,7 @@ June 2021 7.6
     * Support password change dialog in user edit view
     * Added date and email validation for text fields
     * Support password reset page for password fields
+    * New field types: LDAP date, LDAP date and time
    -> Password self reset: fields on first page can be prefilled by URL parameter
 
 
