@@ -212,8 +212,8 @@ class lamDHCPList extends lamList {
 			return false;
 		}
         elseif ($filterAttribute === "dhcprange") {
-            if (isset($entry['dhcprange'])) {
-            	foreach ($entry['dhcprange'] as $range) {
+            if (isset($data['dhcprange'])) {
+            	foreach ($data['dhcprange'] as $range) {
             		if (preg_match($regex, $range)) {
             			return true;
             		}
