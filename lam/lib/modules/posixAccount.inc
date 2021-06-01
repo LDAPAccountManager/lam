@@ -552,7 +552,6 @@ class posixAccount extends baseModule implements passwordService {
 	 */
 	function load_attributes($attr) {
 		parent::load_attributes($attr);
-		$typeSettings = $_SESSION['config']->get_typeSettings();
 		// get additional group memberships
 		if (!isset($attr['uid'][0])) {
 			return;
@@ -573,6 +572,7 @@ class posixAccount extends baseModule implements passwordService {
 	 * @return string[] group names
 	 */
 	private function getUnixGroupMemberships(string $uid): array {
+		$typeSettings = $_SESSION['config']->get_typeSettings();
 		$groups = array();
 		$groupFilter = '(&(objectClass=posixGroup)(memberUid=' . $uid . '))';
 		if (!empty($typeSettings['filter_group'])) {
@@ -596,6 +596,7 @@ class posixAccount extends baseModule implements passwordService {
 	 * @return string[] group of names
 	 */
 	private function getGoNMemberships(string $dn): array {
+		$typeSettings = $_SESSION['config']->get_typeSettings();
 		$userGoNs = array();
 		$types = array('gon', 'group');
 		$gonList = array();

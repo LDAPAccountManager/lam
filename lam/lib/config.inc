@@ -3072,7 +3072,6 @@ class LAMCfgMain {
 			$file = @fopen($this->conffile, "r");
 			if (!$file) {
 				throw new LAMException(_('The config file is not readable.'));
-				return; // abort if file is not readable
 			}
 			while (!feof($file)) {
 				$line = fgets($file, 1024);
