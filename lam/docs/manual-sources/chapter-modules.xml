@@ -5354,7 +5354,7 @@ OK (10 msec)</programlisting>
 
       <listitem>
         <para>Field type: text, password, text area, checkbox, radio buttons,
-        select list, file upload</para>
+        select list, file upload, LDAP date (and time), constant</para>
       </listitem>
 
       <listitem>
@@ -5726,6 +5726,60 @@ OK (10 msec)</programlisting>
         </imageobject>
       </mediaobject>
     </screenshot>
+
+      <literallayout>
+</literallayout>
+
+    <para><emphasis role="bold">LDAP date</emphasis></para>
+
+    <para>Use this for LDAP attributes with syntax "Generalized Time"
+    (1.3.6.1.4.1.1466.115.121.1.24).</para>
+
+    <para>LAM will automatically set hour/minute/second to "0". If this is not
+    intended please use type "LDAP date and time".</para>
+
+    <screenshot>
+      <graphic fileref="images/customFields30.png"/>
+    </screenshot>
+
+    <para>Presentation:</para>
+
+    <para>LAM will display a calendar to select the date.<screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/customFields31.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot></para>
+
+      <literallayout>
+</literallayout>
+
+    <para><emphasis role="bold">LDAP date and time</emphasis></para>
+
+    <para>Use this for LDAP attributes with syntax "Generalized Time"
+    (1.3.6.1.4.1.1466.115.121.1.24).</para>
+
+    <para>LAM can convert the displayed value to the configured time zone of
+    your server/self service profile. In this case, please activate "Display
+    in local time".</para>
+
+    <para><screenshot>
+        <graphic fileref="images/customFields33.png"/>
+      </screenshot></para>
+
+    <para>Presentation:</para>
+
+    <para>LAM will display a calendar to select the date and time.<screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/customFields32.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot></para>
+
+      <literallayout>
+</literallayout>
 
     <para><emphasis role="bold">Constant value</emphasis></para>
 
