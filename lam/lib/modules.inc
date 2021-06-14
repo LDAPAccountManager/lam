@@ -1714,7 +1714,9 @@ class accountContainer {
 			$moduleObj = moduleCache::getModule($module, $this->type->getScope());
 			$objectClasses = array_merge($objectClasses, $moduleObj->getManagedObjectClasses($this->type->getId()));
 			$aliases = array_merge($aliases, $moduleObj->getLDAPAliases($this->type->getId()));
-			$ldapAttributesTemp = array_merge($ldapAttributesTemp, $moduleObj->getManagedAttributes($this->type->getId()));
+			$ldapAttributesTemp = array_merge($ldapAttributesTemp,
+				$moduleObj->getManagedAttributes($this->type->getId()),
+				$moduleObj->getManagedHiddenAttributes($this->type->getId()));
 		}
 		// build lower case attribute names
 		$ldapAttributes = array();
