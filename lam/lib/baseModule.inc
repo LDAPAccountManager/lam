@@ -1677,16 +1677,16 @@ abstract class baseModule {
 			$firstFilterGroup->addElement($firstFilterInput);
 			$firstRow->add($firstFilterGroup, 12);
 		}
-		$container->add($firstRow, 12, 5);
+		$container->add($firstRow, 12, 12, 5);
 		// buttons
 		$buttonRow = new htmlResponsiveRow();
 		$buttonRow->setCSSClasses(array('text-center'));
-		$buttonRow->add(new htmlSpacer(null, '1rem'), 0, 12);
-		$buttonRow->add(new htmlButton($namePrefix . '_left', 'back.gif', true), 0, 12);
-		$buttonRow->add(new htmlButton($namePrefix . '_left', 'up.gif', true), 6, 0);
-		$buttonRow->add(new htmlButton($namePrefix . '_right', 'forward.gif', true), 0, 12);
-		$buttonRow->add(new htmlButton($namePrefix . '_right', 'down.gif', true), 6, 0);
-		$container->add($buttonRow, 12, 2);
+		$buttonRow->add(new htmlSpacer(null, '1rem'), 0, 0, 12);
+		$buttonRow->add(new htmlButton($namePrefix . '_left', 'back.gif', true), 0, 0, 12);
+		$buttonRow->add(new htmlButton($namePrefix . '_left', 'up.gif', true), 6, 6, 0);
+		$buttonRow->add(new htmlButton($namePrefix . '_right', 'forward.gif', true), 0, 0, 12);
+		$buttonRow->add(new htmlButton($namePrefix . '_right', 'down.gif', true), 6, 6, 0);
+		$container->add($buttonRow, 12, 12, 2);
 		// second select
 		$secondRow = new htmlResponsiveRow();
 		$secondRow->add(new htmlOutputText($labelSecond), 12);
@@ -1704,7 +1704,7 @@ abstract class baseModule {
 			$secondFilterGroup->addElement($secondFilterInput);
 			$secondRow->add($secondFilterGroup, 12);
 		}
-		$container->add($secondRow, 12, 5);
+		$container->add($secondRow, 12, 12, 5);
 	}
 
 	/**
