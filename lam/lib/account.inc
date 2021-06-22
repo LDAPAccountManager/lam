@@ -1463,7 +1463,7 @@ function sendPasswordMail($pwd, $user, $recipient = null) {
  */
 function sendEMail($to, $subject, $text, $from, $isHTML, $replyTo = null, $cc = null, $bcc = null) {
 	include_once __DIR__ . '/3rdParty/composer/autoload.php';
-	$returnPath = ($replyTo === null) ? $from : $replyTo;
+	$returnPath = empty($replyTo) ? $from : $replyTo;
 	$returnPathParsed = PHPMailer\PHPMailer\PHPMailer::parseAddresses($returnPath);
 	logNewMessage(LOG_DEBUG, "Send mail to " . print_r($to, true) . "\n" . $text);
 	$mailer = new PHPMailer\PHPMailer\PHPMailer(true);
