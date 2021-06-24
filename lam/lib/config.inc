@@ -690,7 +690,7 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 			$file_array[] = "\n" . "lamProMailSubject: " . $profile->getLamProMailSubject() . "\n";
 			$file_array[] = "\n" . "lamProMailIsHTML: " . $profile->getLamProMailIsHTML() . "\n";
 			$file_array[] = "\n" . "lamProMailAllowAlternateAddress: " . $profile->getLamProMailAllowAlternateAddress() . "\n";
-			$file_array[] = "\n" . "lamProMailText: " . $profile->getLamProMailText() . "\n";
+			$file_array[] = "\n" . "lamProMailText: " . $profile->getLamProMailTextRaw() . "\n";
 			$file_array[] = "\n" . "jobsBindPassword: " . $profile->getJobsBindPassword() . "\n";
 			$file_array[] = "\n" . "jobsBindUser: " . $profile->getJobsBindUser() . "\n";
 			$file_array[] = "\n" . "jobsDatabase: " . $profile->getJobsDatabase() . "\n";
@@ -2316,6 +2316,15 @@ class LAMConfig {
 	 */
 	public function getLamProMailText() {
 		return implode("\r\n", explode(LAMConfig::LINE_SEPARATOR, $this->lamProMailText));
+	}
+
+	/**
+	 * Returns the mail body for password reset mails without formatting.
+	 *
+	 * @return String body
+	 */
+	public function getLamProMailTextRaw() {
+		return $this->lamProMailText;
 	}
 
 	/**
