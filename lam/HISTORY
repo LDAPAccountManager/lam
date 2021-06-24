@@ -17,7 +17,7 @@
     * New field types: LDAP date, LDAP date and time
    -> Password self reset: fields on first page can be prefilled by URL parameter
   - Fixed bugs:
-   -> Truncated mail text field in "LAM Pro password mail settings" 
+   -> Truncated mail text field in "LAM Pro password mail settings" and 2FA base URLs
 
 
 30.03.2021 7.5

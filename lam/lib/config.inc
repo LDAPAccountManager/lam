@@ -705,7 +705,7 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 			$file_array[] = "\n" . "pwdResetForcePasswordChange: " . $profile->getPwdResetForcePasswordChange() . "\n";
 			$file_array[] = "\n" . "pwdResetDefaultPasswordOutput: " . $profile->getPwdResetDefaultPasswordOutput() . "\n";
 			$file_array[] = "\n" . "twoFactorAuthentication: " . $profile->getTwoFactorAuthentication() . "\n";
-			$file_array[] = "\n" . "twoFactorAuthenticationURL: " . $profile->getTwoFactorAuthenticationURL() . "\n";
+			$file_array[] = "\n" . "twoFactorAuthenticationURL: " . $profile->getTwoFactorAuthenticationURLRaw() . "\n";
 			$file_array[] = "\n" . "twoFactorAuthenticationClientId: " . $profile->getTwoFactorAuthenticationClientId() . "\n";
 			$file_array[] = "\n" . "twoFactorAuthenticationSecretKey: " . $profile->getTwoFactorAuthenticationSecretKey() . "\n";
 			$file_array[] = "\n" . "twoFactorAuthenticationDomain: " . $profile->getTwoFactorAuthenticationDomain() . "\n";
@@ -2617,6 +2617,15 @@ class LAMConfig {
 	 */
 	public function getTwoFactorAuthenticationURL() {
 		return implode("\r\n", explode(LAMConfig::LINE_SEPARATOR, $this->twoFactorAuthenticationURL));
+	}
+
+	/**
+	 * Returns the authentication URL without formatting.
+	 *
+	 * @return string authentication URL
+	 */
+	public function getTwoFactorAuthenticationURLRaw() {
+		return $this->twoFactorAuthenticationURL;
 	}
 
 	/**
