@@ -1660,6 +1660,21 @@ abstract class baseModule {
 	 */
 	protected function addDoubleSelectionArea(&$container, $labelFirst, $labelSecond, $optionsFirst, $selectedFirst,
 			$optionsSecond, $selectedSecond, $namePrefix, $rightToLeftText = false, $showFilter = false) {
+		$forceTablet = false;
+		foreach ($optionsFirst as $label => $value) {
+			if (mb_strlen($label) > 75) {
+				$forceTablet = true;
+				break;
+			}
+		}
+		if (!$forceTablet) {
+			foreach ($optionsSecond as $label => $value) {
+				if (mb_strlen($label) > 75) {
+					$forceTablet = true;
+					break;
+				}
+			}
+		}
 		// first select
 		$firstRow = new htmlResponsiveRow();
 		$firstRow->add(new htmlOutputText($labelFirst), 12);
@@ -1677,16 +1692,20 @@ abstract class baseModule {
 			$firstFilterGroup->addElement($firstFilterInput);
 			$firstRow->add($firstFilterGroup, 12);
 		}
-		$container->add($firstRow, 12, 12, 5);
+		$firstContainerDesktop = ($forceTablet) ? 12 : 5;
+		$container->add($firstRow, 12, 12, $firstContainerDesktop);
 		// buttons
+		$buttonActiveDesktop = ($forceTablet) ? 0 : 12;
+		$buttonInactiveDesktop = ($forceTablet) ? 6 : 0;
 		$buttonRow = new htmlResponsiveRow();
 		$buttonRow->setCSSClasses(array('text-center'));
-		$buttonRow->add(new htmlSpacer(null, '1rem'), 0, 0, 12);
-		$buttonRow->add(new htmlButton($namePrefix . '_left', 'back.gif', true), 0, 0, 12);
-		$buttonRow->add(new htmlButton($namePrefix . '_left', 'up.gif', true), 6, 6, 0);
-		$buttonRow->add(new htmlButton($namePrefix . '_right', 'forward.gif', true), 0, 0, 12);
-		$buttonRow->add(new htmlButton($namePrefix . '_right', 'down.gif', true), 6, 6, 0);
-		$container->add($buttonRow, 12, 12, 1);
+		$buttonRow->add(new htmlSpacer(null, '1rem'), 0, 0, $buttonActiveDesktop);
+		$buttonRow->add(new htmlButton($namePrefix . '_left', 'back.gif', true), 0, 0, $buttonActiveDesktop);
+		$buttonRow->add(new htmlButton($namePrefix . '_left', 'up.gif', true), 6, 6, $buttonInactiveDesktop);
+		$buttonRow->add(new htmlButton($namePrefix . '_right', 'forward.gif', true), 0, 0, $buttonActiveDesktop);
+		$buttonRow->add(new htmlButton($namePrefix . '_right', 'down.gif', true), 6, 6, $buttonInactiveDesktop);
+		$buttonRowDesktop = ($forceTablet) ? 12 : 1;
+		$container->add($buttonRow, 12, 12, $buttonRowDesktop);
 		// second select
 		$secondRow = new htmlResponsiveRow();
 		$secondRow->add(new htmlOutputText($labelSecond), 12);
@@ -1704,7 +1723,8 @@ abstract class baseModule {
 			$secondFilterGroup->addElement($secondFilterInput);
 			$secondRow->add($secondFilterGroup, 12);
 		}
-		$container->add($secondRow, 12, 12, 6);
+		$secondContainerDesktop = ($forceTablet) ? 12 : 6;
+		$container->add($secondRow, 12, 12, $secondContainerDesktop);
 	}
 
 	/**

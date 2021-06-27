@@ -4472,7 +4472,9 @@ class htmlResponsiveInputField extends htmlInputField {
 	private $helpModule = null;
 	/** render HTML of parent class */
 	private $renderParentHtml = false;
-
+	/** short label */
+	private $shortLabel = false;
+	
 	/**
 	 * Constructor
 	 *
@@ -4512,7 +4514,9 @@ class htmlResponsiveInputField extends htmlInputField {
 		$labelGroup->addElement(new htmlOutputText($this->label));
 		if ($this->required) {
 			$graphicsPath = "../../graphics";
-			if (is_dir("../graphics")) $graphicsPath = "../graphics";
+			if (is_dir("../graphics")) {
+				$graphicsPath = "../graphics";
+			}
 			$labelGroup->addElement(new htmlImage($graphicsPath . '/required.png', 16, 16, _('required'), _('required')));
 		}
 		if (!empty($this->helpID)) {
@@ -4520,7 +4524,8 @@ class htmlResponsiveInputField extends htmlInputField {
 			$helpLinkLabel->setCSSClasses(array('hide-on-tablet', 'margin-left5'));
 			$labelGroup->addElement($helpLinkLabel);
 		}
-		$row->add($labelGroup, 12, 6, 6, 'responsiveLabel');
+		$tabletDesktopLabelColumns = $this->shortLabel ? 4 : 6;
+		$row->add($labelGroup, 12, $tabletDesktopLabelColumns, $tabletDesktopLabelColumns, 'responsiveLabel');
 		// input field
 		$fieldGroup = new htmlGroup();
 		$fieldGroup->addElement($this);
@@ -4529,8 +4534,16 @@ class htmlResponsiveInputField extends htmlInputField {
 			$helpLinkField->setCSSClasses(array('hide-on-mobile'));
 			$fieldGroup->addElement($helpLinkField);
 		}
-		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');
+		$tabletDesktopFieldColumns = $this->shortLabel ? 8 : 6;
+		$row->add($fieldGroup, 12, $tabletDesktopFieldColumns, $tabletDesktopFieldColumns, 'responsiveField nowrap');
 		return $row->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+	}
+
+	/**
+	 * Use a short label (4 columns instead of 6) for tablet/desktop.
+	 */
+	public function setShortLabel() {
+		$this->shortLabel = true;
 	}
 
 }
@@ -4552,7 +4565,7 @@ class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
 	private $renderParentHtml = false;
 	/** required */
 	private $required = false;
-
+	
 	/**
 	 * Constructor.
 	 *
@@ -4894,7 +4907,9 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 	private $longLabel = false;
 	/** label after checkbox */
 	private $labelAfterCheckbox = false;
-
+	/** short label */
+	private $shortLabel = false;
+	
 	/**
 	 * Constructor.
 	 *
@@ -4936,6 +4951,10 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 			$tabletColumnsLabel = 10;
 			$tabletColumnsBox = 2;
 		}
+		if ($this->shortLabel) {
+			$tabletColumnsLabel = 4;
+			$tabletColumnsBox = 8;
+		}
 		// label text
 		$text = new htmlSpan(new htmlOutputText($this->label));
 		$text->setCSSClasses($this->cssClasses);
@@ -4974,6 +4993,13 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 	 */
 	public function setLabelAfterCheckbox($labelAfterCheckbox = true) {
 		$this->labelAfterCheckbox = $labelAfterCheckbox;
+	}
+
+	/**
+	 * Use a short label (4 columns instead of 6) for tablet/desktop.
+	 */
+	public function setShortLabel() {
+		$this->shortLabel = true;
 	}
 
 }
