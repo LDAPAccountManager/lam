@@ -10387,7 +10387,7 @@ msgstr "Choisissez l'attribut désignant le nom d'utilisateur IMAP. Le défaut e
 
 #: ../lib/modules/passwordSelfReset.inc:668
 msgid "Please click here to continue: @@resetLink@@"
-msgstr "Veuillez cliquer sur ce lien pour continuer : @@resteLink@@"
+msgstr "Veuillez cliquer sur ce lien pour continuer : @@resetLink@@"
 
 #: ../lib/types/user.inc:349
 msgid "Please click to lock/unlock this account."
@@ -15515,7 +15515,7 @@ msgstr "Le métacaractère/joker pour le lien de d'auto-enregistrement est @@cre
 
 #: ../lib/modules/passwordSelfReset.inc:130 ../help/help.inc:330
 msgid "The wildcard for the new password is @@newPassword@@."
-msgstr "L'alias du nouveau mot de passe est @@nouveaupass@@."
+msgstr "L'alias du nouveau mot de passe est @@newPassword@@."
 
 #: ../lib/modules/passwordSelfReset.inc:140
 msgid "The wildcard for the reset link is @@resetLink@@."
