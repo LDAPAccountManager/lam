@@ -498,14 +498,17 @@ printHeaderContents(_("Edit general settings"), '../..');
 
 	// password policy
 	$row->add(new htmlSubTitle(_("Password policy")), 12);
-	$options20 = array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20);
+	$optionsPwdLength = array();
+	for ($i = 0; $i <= 50; $i++) {
+		$optionsPwdLength[] = $i;
+	}
 	$options4 = array(0, 1, 2, 3, 4);
-	$row->add(new htmlResponsiveSelect('passwordMinLength', $options20, array($cfg->passwordMinLength), _('Minimum password length'), '242'), 12);
+	$row->add(new htmlResponsiveSelect('passwordMinLength', $optionsPwdLength, array($cfg->passwordMinLength), _('Minimum password length'), '242'), 12);
 	$row->addVerticalSpacer('1rem');
-	$row->add(new htmlResponsiveSelect('passwordMinLower', $options20, array($cfg->passwordMinLower), _('Minimum lowercase characters'), '242'), 12);
-	$row->add(new htmlResponsiveSelect('passwordMinUpper', $options20, array($cfg->passwordMinUpper), _('Minimum uppercase characters'), '242'), 12);
-	$row->add(new htmlResponsiveSelect('passwordMinNumeric', $options20, array($cfg->passwordMinNumeric), _('Minimum numeric characters'), '242'), 12);
-	$row->add(new htmlResponsiveSelect('passwordMinSymbol', $options20, array($cfg->passwordMinSymbol), _('Minimum symbolic characters'), '242'), 12);
+	$row->add(new htmlResponsiveSelect('passwordMinLower', $optionsPwdLength, array($cfg->passwordMinLower), _('Minimum lowercase characters'), '242'), 12);
+	$row->add(new htmlResponsiveSelect('passwordMinUpper', $optionsPwdLength, array($cfg->passwordMinUpper), _('Minimum uppercase characters'), '242'), 12);
+	$row->add(new htmlResponsiveSelect('passwordMinNumeric', $optionsPwdLength, array($cfg->passwordMinNumeric), _('Minimum numeric characters'), '242'), 12);
+	$row->add(new htmlResponsiveSelect('passwordMinSymbol', $optionsPwdLength, array($cfg->passwordMinSymbol), _('Minimum symbolic characters'), '242'), 12);
 	$row->add(new htmlResponsiveSelect('passwordMinClasses', $options4, array($cfg->passwordMinClasses), _('Minimum character classes'), '242'), 12);
 	$row->addVerticalSpacer('1rem');
 	$rulesCountOptions = array(_('all') => '-1', '3' => '3', '4' => '4');
