@@ -12,7 +12,7 @@ Architecture: all
 Depends: php (>= 7), php-ldap,
  php-gd | php-imagick,
  php-json, php-curl,
- php-zip, php-xml, php-gmp,
+ php-zip, php-xml, php-gmp, php-mbstring,
  libapache2-mod-php | libapache2-mod-fcgid | php-fpm,
  php-monolog,
  apache2 (>= 2.4.0) | httpd, fonts-dejavu, debconf (>= 0.2.26) | debconf-2.0, ${misc:Depends}

@@ -81,6 +81,7 @@ RUN apt-get install --no-install-recommends -y \
         php-gmp \
         php-mysql \
         php-sqlite3 \
+        php-mbstring \
         wget \
     && \
     rm /etc/apache2/sites-enabled/*default* && \
