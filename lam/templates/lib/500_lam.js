@@ -2124,7 +2124,7 @@ window.lam.treeview.createNodeEnterAttributesStep = function (event, tokenName, 
 		jsonInput: ""
 	};
 	data[tokenName] = tokenValue;
-	var parentDn = jQuery('#parentDn').val()
+	var parentDn = jQuery('#parentDn').val();
 	data["dn"] = parentDn;
 	data["rdn"] = jQuery('#rdn').val();
 	data["objectClasses"] = jQuery('#objectClasses').val();
