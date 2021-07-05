@@ -89,13 +89,13 @@ if (!extension_loaded('libxml')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no Lib XML support!", "Please install the Lib XML extension for PHP.");
 }
 if (!class_exists('XMLReader')) {
-	$criticalErrors[] = array("ERROR", "Your PHP has no XMLReader support!", "Please active XMLReader for PHP.");
+	$criticalErrors[] = array("ERROR", "Your PHP has no XMLReader support!", "Please install XMLReader for PHP.");
 }
 if (!class_exists('XMLWriter')) {
-	$criticalErrors[] = array("ERROR", "Your PHP has no XMLWriter support!", "Please active XMLWriter for PHP.");
+	$criticalErrors[] = array("ERROR", "Your PHP has no XMLWriter support!", "Please install XMLWriter for PHP.");
 }
 if (!function_exists('mb_strlen')) {
-	$criticalErrors[] = array("ERROR", "Your PHP has no MB String support!", "Please active MB String for PHP (--enable-mbstring).");
+	$criticalErrors[] = array("ERROR", "Your PHP has no MB String support!", "Please install the MB String extension for PHP.");
 }
 // imagick/GD
 if (!extension_loaded('imagick') && !extension_loaded('gd')) {
