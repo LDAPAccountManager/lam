@@ -1,4 +1,4 @@
-23.06.2021 7.6
+05.07.2021 7.6
   - Allow to store whole LAM configuration in MySQL database
   - Docker: new options for configuration location and LAM Pro license
   - Full PHP 8 compatibility
