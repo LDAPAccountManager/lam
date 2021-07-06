@@ -1267,6 +1267,9 @@ class lamUserList extends lamList {
 	 * @return bool account is locked
 	 */
 	public static function is389dsLocked(&$attrs) : bool {
+		if (!class_exists('locking389ds')) {
+			return false;
+		}
 		$locking389ds = moduleCache::getModule('locking389ds', 'user');
 		return $locking389ds->isLocked($attrs);
 	}
