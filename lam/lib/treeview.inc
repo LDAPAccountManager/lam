@@ -1150,8 +1150,9 @@ class TreeView {
 	 * @param string $dn DN
 	 */
 	private function validateDn(string $dn): void {
+		$dn = strtolower($dn);
 		$toolSettings = $_SESSION['config']->getToolSettings();
-		$rootDn = $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG];
+		$rootDn = strtolower($toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG]);
 		if (substr($dn, -1 * strlen($rootDn)) !== $rootDn) {
 			logNewMessage(LOG_ERR, 'Invalid DN for tree view: ' . $dn);
 			die();
