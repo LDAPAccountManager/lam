@@ -121,7 +121,7 @@ class lamList {
 	 * @var string[]
 	 */
 	protected $serverSideFilterAttributes = array(
-		'cn', 'commonname', 'uid', 'memberuid', 'description',
+		'cn', 'commonname', 'uid', 'description',
 		'sn', 'surname', 'gn', 'givenname', 'company', 'mail'
 	);
 
