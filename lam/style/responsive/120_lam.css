@@ -240,6 +240,15 @@ table.responsive-table td {
 		max-height: 300px;
 	}
 
+	.tree-left-area {
+		border-right: 2px solid #e4e4e4;
+	}
+
+	.tree-right-area {
+		border-left: 2px solid #e4e4e4;
+		margin-left: -2px;
+	}
+
 }
 
 /* desktop */
@@ -276,6 +285,15 @@ table.responsive-table td {
 	#lam-webcam-video {
 		max-width: 400px;
 		max-height: 400px;
+	}
+
+	.tree-left-area {
+		border-right: 2px solid #e4e4e4;
+	}
+
+	.tree-right-area {
+		border-left: 2px solid #e4e4e4;
+		margin-left: -2px;
 	}
 
 }

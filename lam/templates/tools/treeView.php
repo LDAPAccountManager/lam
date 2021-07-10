@@ -86,8 +86,8 @@ function showTree() {
 	$openInitialJsArray = '[' . implode(', ', $openInitial) . ']';
 	$row = new htmlResponsiveRow();
 	$row->setCSSClasses(array('maxrow'));
-	$row->add(new htmlDiv('ldap_tree', new htmlOutputText(''), array('tree-view--tree')), 12, 5);
-	$row->add(new htmlDiv('ldap_actionarea', new htmlOutputText(''), array('tree-view--actionarea')), 12, 7);
+	$row->add(new htmlDiv('ldap_tree', new htmlOutputText(''), array('tree-view--tree')), 12, 5, 5, 'tree-left-area');
+	$row->add(new htmlDiv('ldap_actionarea', new htmlOutputText(''), array('tree-view--actionarea')), 12, 7, 7, 'tree-right-area');
 	$newMenu = '';
 	if (checkIfWriteAccessIsAllowed()) {
 		$newMenu = '"createNode": {
