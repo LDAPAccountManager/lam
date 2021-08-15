@@ -1219,7 +1219,7 @@ abstract class baseModule {
 	 * @param array $attributes LDAP attributes of this entry (added/modified attributes are provided as reference, handle modifications of $attributes with care)
 	 * @return array array which contains status messages. Each entry is an array containing the status message parameters.
 	 */
-	public function preModifyActions($newAccount, $attributes) {
+	public function preModifyActions($newAccount, &$attributes) {
 		return array();
 	}
 
