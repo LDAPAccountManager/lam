@@ -18,6 +18,7 @@
     "firebase/php-jwt": "^5.2",
     "guzzlehttp/psr7": "^1.7",
     "paragonie/random_compat": "^2.0",
-    "phpseclib/phpseclib": "^3.0"
+    "phpseclib/phpseclib": "^3.0",
+    "christian-riesen/base32": "^1.6"
   }
 }
