@@ -35,6 +35,7 @@ class AccountTest extends TestCase {
 	 */
 	function testUnformatShortFormatToSeconds_plainNumber() {
 		$this->assertEquals(15, unformatShortFormatToSeconds('15'));
+		$this->assertEquals(0, unformatShortFormatToSeconds('0'));
 	}
 
 	/**
@@ -67,6 +68,7 @@ class AccountTest extends TestCase {
 	 */
 	function testFormatSecondsToShortFormat_basic() {
 		$this->assertEquals("15s", formatSecondsToShortFormat('15'));
+		$this->assertEquals("0", formatSecondsToShortFormat('0'));
 	}
 
 	/**

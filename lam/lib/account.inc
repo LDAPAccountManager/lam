@@ -1777,6 +1777,9 @@ function getFormattedTime($format) {
  * @return String formatted number
  */
 function formatSecondsToShortFormat($numSeconds) {
+	if (($numSeconds === '0') || ($numSeconds === 0)) {
+		return '0';
+	}
 	if (empty($numSeconds)) {
 		return '';
 	}
