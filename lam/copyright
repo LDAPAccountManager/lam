@@ -13,25 +13,35 @@ time.
 * lib/jobs.inc
 * lib/passwordExpirationJob.inc
 * lib/modules/aliasEntry.inc
+* lib/modules/autoDelete.inc
 * lib/modules/automount.inc
 * lib/modules/bindDLZ.inc
+* lib/modules/bindDLZXfr.inc
 * lib/modules/customBaseType.inc
 * lib/modules/customFields.inc
 * lib/modules/customScripts.inc
 * lib/modules/device.inc
-* lib/modules/autoDelete.inc
 * lib/modules/dynamicList.inc
+* lib/modules/groupOfMembers.inc
 * lib/modules/groupOfNames.inc
 * lib/modules/groupOfNamesUser.inc
 * lib/modules/groupOfUniqueNames.inc
 * lib/modules/heimdalKerberos.inc
 * lib/modules/ipHost.inc
+* lib/modules/kopanoAddressList.inc
+* lib/modules/kopanoContact.inc
+* lib/modules/kopanoDynamicGroup.inc
+* lib/modules/kopanoGroup.inc
+* lib/modules/kopanoServer.inc
+* lib/modules/kopanoUser.inc
 * lib/modules/locking389ds.inc
 * lib/modules/mitKerberos.inc
+* lib/modules/mitKerberosPolicy.inc
 * lib/modules/mitKerberosStructural.inc
 * lib/modules/namedObject.inc
 * lib/modules/nisObject.inc
 * lib/modules/nsview.inc
+* lib/modules/openldapTotp.inc
 * lib/modules/oracleService.inc
 * lib/modules/organizationalRole*.inc
 * lib/modules/passwordSelfReset.inc
@@ -44,6 +54,9 @@ time.
 * lib/modules/selfRegistration.inc
 * lib/modules/sudoRole.inc
 * lib/modules/uidObject.inc
+* lib/modules/webauthn.inc
+* lib/modules/windowsLDSGroup.inc
+* lib/modules/windowsLDSUser.inc
 * lib/modules/zarafaAddressList.inc
 * lib/modules/zarafaContact.inc
 * lib/modules/zarafaDynamicGroup.inc
@@ -55,6 +68,9 @@ time.
 * lib/types/bind.inc
 * lib/types/customType.inc
 * lib/types/gon.inc
+* lib/types/kopanoAddressListType.inc
+* lib/types/kopanoDynamicGroupType.inc
+* lib/types/mitKerberosPolicyType.inc
 * lib/types/nisObjectType.inc
 * lib/types/nsview.inc
 * lib/types/oracleContextType.inc
@@ -1125,6 +1141,7 @@ main license and authors:
 lib/3rdParty/composer/beberlei                                       G  2013  Benjamin Eberlei
 lib/3rdParty/composer/bretterer                                      B        Brian Retterer
 lib/3rdParty/composer/brick                                          B        Benjamin Morel
+lib/3rdParty/composer/christian-riesen                               B        Christian Riesen
 lib/3rdParty/composer/clue                                           B        2015 Christian Lück
 lib/3rdParty/composer/composer                                       B        Nils Adermann, Jordi Boggiano
 lib/3rdParty/composer/fgrosse                                        B  2015  Friedrich Große
