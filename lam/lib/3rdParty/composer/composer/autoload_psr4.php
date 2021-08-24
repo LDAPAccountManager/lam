@@ -45,5 +45,6 @@ return array(
     'Brick\\Math\\' => array($vendorDir . '/brick/math/src'),
     'Bretterer\\IsoDurationConverter\\' => array($vendorDir . '/bretterer/iso_duration_converter/src'),
     'Base64Url\\' => array($vendorDir . '/spomky-labs/base64url/src'),
+    'Base32\\' => array($vendorDir . '/christian-riesen/base32/src'),
     'Assert\\' => array($vendorDir . '/beberlei/assert/lib/Assert'),
 );

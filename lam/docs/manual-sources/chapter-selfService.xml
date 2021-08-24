@@ -932,6 +932,19 @@
             <row>
               <entry><inlinemediaobject>
                   <imageobject>
+                    <imagedata fileref="images/schema_totp.png"/>
+                  </imageobject>
+                </inlinemediaobject> OpenLDAP TOTP</entry>
+
+              <entry>OpenLDAP TOTP token + serial number</entry>
+
+              <entry>See <link linkend="selfservice_totp">OpenLDAP
+              TOTP</link></entry>
+            </row>
+
+            <row>
+              <entry><inlinemediaobject>
+                  <imageobject>
                     <imagedata fileref="images/schema_quota.png"/>
                   </imageobject>
                 </inlinemediaobject> Quota</entry>
@@ -1793,7 +1806,8 @@
 
         <listitem>
           <para>Field type: text, password, text area, checkbox, radio
-          buttons, select list, file upload, LDAP date (and time), constant</para>
+          buttons, select list, file upload, LDAP date (and time),
+          constant</para>
         </listitem>
 
         <listitem>
@@ -2058,53 +2072,54 @@
       <literallayout>
 </literallayout>
 
-    <para><emphasis role="bold">LDAP date</emphasis></para>
+      <para><emphasis role="bold">LDAP date</emphasis></para>
 
-    <para>Use this for LDAP attributes with syntax "Generalized Time"
-    (1.3.6.1.4.1.1466.115.121.1.24).</para>
+      <para>Use this for LDAP attributes with syntax "Generalized Time"
+      (1.3.6.1.4.1.1466.115.121.1.24).</para>
 
-    <para>LAM will automatically set hour/minute/second to "0". If this is not
-    intended please use type "LDAP date and time".</para>
+      <para>LAM will automatically set hour/minute/second to "0". If this is
+      not intended please use type "LDAP date and time".</para>
 
-    <screenshot>
-      <graphic fileref="images/customFields30.png"/>
-    </screenshot>
+      <screenshot>
+        <graphic fileref="images/customFields30.png"/>
+      </screenshot>
 
-    <para>Presentation:</para>
+      <para>Presentation:</para>
 
-    <para>LAM will display a calendar to select the date.<screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/customFields31.png"/>
-          </imageobject>
-        </mediaobject>
-      </screenshot></para>
+      <para>LAM will display a calendar to select the date.<screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/customFields31.png"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot></para>
 
       <literallayout>
 </literallayout>
 
-    <para><emphasis role="bold">LDAP date and time</emphasis></para>
+      <para><emphasis role="bold">LDAP date and time</emphasis></para>
 
-    <para>Use this for LDAP attributes with syntax "Generalized Time"
-    (1.3.6.1.4.1.1466.115.121.1.24).</para>
+      <para>Use this for LDAP attributes with syntax "Generalized Time"
+      (1.3.6.1.4.1.1466.115.121.1.24).</para>
 
-    <para>LAM can convert the displayed value to the configured time zone of
-    your server/self service profile. In this case, please activate "Display
-    in local time".</para>
+      <para>LAM can convert the displayed value to the configured time zone of
+      your server/self service profile. In this case, please activate "Display
+      in local time".</para>
 
-    <para><screenshot>
-        <graphic fileref="images/customFields33.png"/>
-      </screenshot></para>
+      <para><screenshot>
+          <graphic fileref="images/customFields33.png"/>
+        </screenshot></para>
 
-    <para>Presentation:</para>
+      <para>Presentation:</para>
 
-    <para>LAM will display a calendar to select the date and time.<screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/customFields32.png"/>
-          </imageobject>
-        </mediaobject>
-      </screenshot></para>
+      <para>LAM will display a calendar to select the date and
+      time.<screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/customFields32.png"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot></para>
 
       <literallayout>
 </literallayout>
@@ -2263,6 +2278,28 @@
       ")"</para>
 
       <para>E.g. /^[a-z0-9\.]$/i</para>
+    </section>
+
+    <section id="selfservice_totp">
+      <title>OpenLDAP TOTP</title>
+
+      <para>This allows your users to setup OpenLDAP TOTP tokens.</para>
+
+      <para>Please note that this requires to use a bind user that is also
+      used for all operations. This user needs to be able to add/remove the
+      TOTP object classes and attributes.</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_openldapTotp3.png"/>
+      </screenshot>
+
+      <para>On page layout tab you can then add the fields for serial number
+      (optional) and the token. Users will then be able to manage their token
+      via self service.</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_openldapTotp4.png"/>
+      </screenshot>
     </section>
   </section>
 

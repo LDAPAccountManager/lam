@@ -1,3 +1,6 @@
+September 2021 7.7
+  - OpenLDAP 2FA support for TOTP
+
 05.07.2021 7.6
   - Allow to store whole LAM configuration in MySQL database
   - Docker: new options for configuration location and LAM Pro license

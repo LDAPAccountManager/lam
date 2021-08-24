@@ -101,6 +101,7 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
             'Brick\\Math\\' => 11,
             'Bretterer\\IsoDurationConverter\\' => 31,
             'Base64Url\\' => 10,
+            'Base32\\' => 7,
         ),
         'A' => 
         array (
@@ -266,6 +267,10 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         'Base64Url\\' => 
         array (
             0 => __DIR__ . '/..' . '/spomky-labs/base64url/src',
+        ),
+        'Base32\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/christian-riesen/base32/src',
         ),
         'Assert\\' => 
         array (
