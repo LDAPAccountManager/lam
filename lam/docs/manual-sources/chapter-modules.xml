@@ -2392,6 +2392,30 @@ AuthorizedKeysCommandUser root</literallayout>
         </mediaobject>
       </screenshot>
     </section>
+
+    <section>
+      <title>OpenLDAP TOTP (LAM Pro)</title>
+
+      <para>Use this module if you want to use OpenLDAP's builtin
+      2-factor-authentication with TOTP.</para>
+
+      <para>For admin interface add the OpenLDAP TOTP module:</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_openldapTotp1.png"/>
+      </screenshot>
+
+      <para>When one of your users activates TOTP then you can see the serial
+      number and TOTP params in user edit screen.</para>
+
+      <para>Please note that the token can only be setup by the user in self
+      service. Admins are not able to setup tokens. They can just delete them
+      by removing the extension.</para>
+
+      <screenshot>
+        <graphic fileref="images/mod_openldapTotp2.png"/>
+      </screenshot>
+    </section>
   </section>
 
   <section>
@@ -5727,7 +5751,7 @@ OK (10 msec)</programlisting>
       </mediaobject>
     </screenshot>
 
-      <literallayout>
+    <literallayout>
 </literallayout>
 
     <para><emphasis role="bold">LDAP date</emphasis></para>
@@ -5752,7 +5776,7 @@ OK (10 msec)</programlisting>
         </mediaobject>
       </screenshot></para>
 
-      <literallayout>
+    <literallayout>
 </literallayout>
 
     <para><emphasis role="bold">LDAP date and time</emphasis></para>
@@ -5778,7 +5802,7 @@ OK (10 msec)</programlisting>
         </mediaobject>
       </screenshot></para>
 
-      <literallayout>
+    <literallayout>
 </literallayout>
 
     <para><emphasis role="bold">Constant value</emphasis></para>
