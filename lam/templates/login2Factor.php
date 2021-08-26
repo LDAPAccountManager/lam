@@ -14,7 +14,7 @@ use LAMException;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2020  Roland Gruber
+  Copyright (C) 2017 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -92,6 +92,7 @@ if (isset($_POST['submit']) || isset($_POST['sig_response']) || isset($_POST['co
 	$serial = isset($_POST['serial']) ? $_POST['serial'] : null;
 	if (!$provider->hasCustomInputForm() && (empty($twoFactorInput) || !in_array($serial, $serials))) {
 		$errorMessage = sprintf(_('Please enter "%s".'), $twoFactorLabel);
+		header("HTTP/1.1 403 Forbidden");
 	}
 	else {
 		$twoFactorValid = false;
@@ -100,6 +101,7 @@ if (isset($_POST['submit']) || isset($_POST['sig_response']) || isset($_POST['co
 		}
 		catch (\Exception $e) {
 			logNewMessage(LOG_WARNING, '2-factor verification failed: ' . $e->getMessage());
+			header("HTTP/1.1 403 Forbidden");
 		}
 		if ($twoFactorValid) {
 			unset($_SESSION['2factorRequired']);

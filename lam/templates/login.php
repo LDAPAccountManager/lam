@@ -505,7 +505,7 @@ function displayLoginHeader() : void {
 }
 
 // checking if the submitted username/password is correct.
-if(isset($_POST['checklogin'])) {
+if (isset($_POST['checklogin'])) {
 	include_once(__DIR__ . "/../lib/ldap.inc"); // Include ldap.php which provides Ldap class
 
 	$_SESSION['ldap'] = new Ldap($_SESSION['config']); // Create new Ldap object
@@ -528,6 +528,7 @@ if(isset($_POST['checklogin'])) {
 		if($_POST['passwd'] == "") {
 			logNewMessage(LOG_DEBUG, "Empty password for login");
 			$error_message = _("Empty password submitted. Please try again.");
+			header("HTTP/1.1 403 Forbidden");
 			display_LoginPage($licenseValidator, $error_message); // Empty password submitted. Return to login page.
 			exit();
 		}
@@ -559,10 +560,12 @@ if(isset($_POST['checklogin'])) {
                     if (sizeof($searchInfo) == 0) {
                         $searchSuccess = false;
                         $searchError = _('Wrong password/user name combination. Please try again.');
+	                    header("HTTP/1.1 403 Forbidden");
                     }
                     elseif (sizeof($searchInfo) > 1) {
                         $searchSuccess = false;
                         $searchError = _('The given user name matches multiple LDAP entries.');
+	                    header("HTTP/1.1 403 Forbidden");
                     }
                     else {
                         $username = $searchInfo[0]['dn'];
@@ -571,6 +574,7 @@ if(isset($_POST['checklogin'])) {
                 else {
                     $searchSuccess = false;
                     $searchError = _('Unable to find the user name in LDAP.');
+	                header("HTTP/1.1 403 Forbidden");
                     if (ldap_errno($searchLDAP->server()) != 0) {
                         $searchError .= ' ' . getDefaultLDAPErrorString($searchLDAP->server());
                     }
@@ -579,6 +583,7 @@ if(isset($_POST['checklogin'])) {
             else {
                 $searchSuccess = false;
                 $searchError = _('Unable to find the user name in LDAP.');
+	            header("HTTP/1.1 403 Forbidden");
                 if (ldap_errno($searchLDAP->server()) != 0) {
                     $searchError .= ' ' . getDefaultLDAPErrorString($searchLDAP->server());
                 }
@@ -620,6 +625,7 @@ if(isset($_POST['checklogin'])) {
 		die();
 	}
 	catch (LAMException $e) {
+		header("HTTP/1.1 403 Forbidden");
 		$extraMessage = null;
 		if (($searchLDAP !== null) && ($e->getLdapErrorCode() == 49)) {
 			$extraMessage = getExtraInvalidCredentialsMessage($searchLDAP->server(), $username);
