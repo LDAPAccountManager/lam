@@ -583,7 +583,179 @@ class OktaProvider extends BaseProvider {
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
 		$this->verificationFailed = true;
 		logNewMessage(LOG_DEBUG, 'OktaProvider: Checking 2nd factor for ' . $user);
-		$loginAttribute = $this->getLoginAttributeValue($user);
+		$code = $_GET['code'];
+		$codeVerifier = $_POST['codeVerifier'];
+		if (empty($code) || empty($codeVerifier)) {
+			logNewMessage(LOG_DEBUG, 'No code provided for 2FA verification.');
+			return false;
+		}
+		$accessCode = $this->getAccessCode($code, $codeVerifier);
+		if (empty($accessCode)) {
+			logNewMessage(LOG_DEBUG, 'No access code readable for Okta 2FA verification.');
+			return false;
+		}
+		include_once __DIR__ . '/3rdParty/composer/autoload.php';
+		$jwtVerifier = (new \Okta\JwtVerifier\JwtVerifierBuilder())
+			->setDiscovery(new \Okta\JwtVerifier\Discovery\Oauth)
+			->setAdaptor(new \Okta\JwtVerifier\Adaptors\FirebasePhpJwt)
+			->setAudience('api://default')
+			->setClientId($this->config->twoFactorAuthenticationClientId)
+			->setIssuer($this->config->twoFactorAuthenticationURL . '/oauth2/default')
+			->build();
+		try {
+			$jwt = $jwtVerifier->verify($accessCode);
+			$claims = $jwt->getClaims();
+			logNewMessage(LOG_DEBUG, print_r($claims, true));
+			$loginAttribute = $this->getLoginAttributeValue($user);
+			if ($loginAttribute !== $claims['sub']) {
+				logNewMessage(LOG_ERR, 'User name ' . $loginAttribute . ' does not match claim sub: ' . $claims['sub']);
+				return false;
+			}
+			$this->verificationFailed = false;
+			return true;
+		}
+		catch (Exception $e) {
+			logNewMessage(LOG_ERR, 'Unable to validate JWT - ' . $e->getMessage());
+		}
+		return false;
+	}
+
+	/**
+	 * Reads the access code using code.
+	 *
+	 * @param string $code code parameter from request
+	 * @param string $codeVerifier code verifier
+	 * @return string|null access token
+	 */
+	private function getAccessCode($code, $codeVerifier) {
+		$curl = curl_init();
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		$url = $this->config->twoFactorAuthenticationURL . '/oauth2/default/v1/token';
+		curl_setopt($curl, CURLOPT_URL, $url);
+		curl_setopt($curl, CURLOPT_POST, true);
+		$callingUrl = getCallingURL();
+		if ($this->config->isSelfService) {
+			$callingUrl = preg_replace('/&code=[^&]+/', '', $callingUrl);
+			$callingUrl = preg_replace('/&state=[^&]+/', '', $callingUrl);
+		}
+		else {
+			$callingUrl = substr($callingUrl, 0, strpos($callingUrl, '?'));
+		}
+		$callingUrlEncoded = urlencode($callingUrl);
+		$postFields = 'grant_type=authorization_code&code=' . $code . '&code_verifier=' . $codeVerifier . '&redirect_uri=' . $callingUrlEncoded;
+		logNewMessage(LOG_DEBUG, 'Get Okta access code with ' . $postFields);
+		curl_setopt($curl, CURLOPT_POSTFIELDS, $postFields);
+		curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+			'accept: application/json',
+			'content-type: application/x-www-form-urlencoded',
+			'authorization: Basic ' . base64_encode($this->config->twoFactorAuthenticationClientId . ':' . $this->config->twoFactorAuthenticationSecretKey)
+		));
+		$results = curl_exec($curl);
+		$returnCode = curl_errno($curl);
+		logNewMessage(LOG_DEBUG, 'Okta responded with ' . $returnCode . ': ' . $results);
+		curl_close($curl);
+		if ($returnCode !== 0) {
+			logNewMessage(LOG_ERR, 'Error calling Okta ' . $url
+				. '. ' . $returnCode);
+			return null;
+		}
+		$jsonData = json_decode($results, true);
+		if (empty($jsonData['access_token'])) {
+			return null;
+		}
+		return $jsonData['access_token'];
+	}
+
+}
+
+/**
+ * Provider for OpenId.
+ */
+class OpenIdProvider extends BaseProvider {
+
+	private $verificationFailed = false;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param TwoFactorConfiguration $config configuration
+	 */
+	public function __construct(&$config) {
+		$this->config = $config;
+		if (empty($this->config->twoFactorAuthenticationSerialAttributeName)) {
+			$this->config->twoFactorAuthenticationSerialAttributeName = 'uid';
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::getSerials()
+	 */
+	public function getSerials($user, $password) {
+		return array('OpenID');
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::isShowSubmitButton()
+	 */
+	public function isShowSubmitButton() {
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::hasCustomInputForm()
+	 */
+	public function hasCustomInputForm() {
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @throws LAMException error building custom input
+	 * @see \LAM\LIB\TWO_FACTOR\BaseProvider::addCustomInput()
+	 */
+	public function addCustomInput(&$row, $userDn) {
+		$loginAttribute = $this->getLoginAttributeValue($userDn);
+		if (empty($loginAttribute)) {
+			throw new LAMException('Unable to read login attribute from ' . $userDn);
+		}
+		$content = new htmlResponsiveRow();
+		if ($this->verificationFailed) {
+			return $content;
+		}
+		$pathPrefix = $this->config->isSelfService ? '../' : '';
+		$row->add(new htmlImage($pathPrefix . '../graphics/openid.png'), 12);
+		$jsBlock = '
+	        if (window.location.href.indexOf("code=") > 0) {
+	            var codeVerifier = signIn.options.storageUtil.getPKCEStorage().getStorage().codeVerifier;
+	            form = jQuery("<form/>", {
+					action: window.location.href,
+					method: "POST"
+				});
+				form.append(jQuery("<input/>", {
+					type: "hidden",
+					name: "codeVerifier",
+					value: codeVerifier
+				}));
+				form.appendTo("body").submit();
+	        }
+	        else {
+				// redirect
+			}
+		';
+		$content->add(new htmlJavaScript($jsBlock), 12);
+		$row->add($content, 12);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::verify2ndFactor()
+	 */
+	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
+		$this->verificationFailed = true;
+		logNewMessage(LOG_DEBUG, 'OpenIdProvider: Checking 2nd factor for ' . $user);
 		$code = $_GET['code'];
 		$codeVerifier = $_POST['codeVerifier'];
 		if (empty($code) || empty($codeVerifier)) {
@@ -814,6 +986,8 @@ class TwoFactorProviderService {
 	const TWO_FACTOR_WEBAUTHN = 'webauthn';
 	/** 2factor authentication via Okta */
 	const TWO_FACTOR_OKTA = 'okta';
+	/** 2factor authentication via OpenId */
+	const TWO_FACTOR_OPENID = 'openid';
 
 	private $config;
 
@@ -854,6 +1028,9 @@ class TwoFactorProviderService {
 		elseif ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OKTA) {
 			return new OktaProvider($this->config);
 		}
+		elseif ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OPENID) {
+			return new OpenIdProvider($this->config);
+		}
 		throw new \Exception('Invalid provider: ' . $this->config->twoFactorAuthentication);
 	}
 
@@ -888,7 +1065,8 @@ class TwoFactorProviderService {
 		}
 		if (($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA)
 				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_DUO)
-				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OKTA)) {
+				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OKTA)
+				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OPENID)) {
 			$attrName = $profile->twoFactorAuthenticationAttribute;
 			if (empty($attrName)) {
 				$attrName = 'uid';
@@ -929,7 +1107,8 @@ class TwoFactorProviderService {
 		}
 		if (($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA)
 				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_DUO)
-				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OKTA)) {
+				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OKTA)
+				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OPENID)) {
 			$tfConfig->twoFactorAuthenticationSerialAttributeName = strtolower($conf->getTwoFactorAuthenticationAttribute());
 		}
 		return $tfConfig;

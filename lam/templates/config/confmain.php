@@ -487,6 +487,7 @@ if (extension_loaded('curl')) {
 			'YubiKey' => TwoFactorProviderService::TWO_FACTOR_YUBICO,
 			'Duo' => TwoFactorProviderService::TWO_FACTOR_DUO,
     		'Okta' => TwoFactorProviderService::TWO_FACTOR_OKTA,
+    		'OpenId' => TwoFactorProviderService::TWO_FACTOR_OPENID,
             'WebAuthn' => TwoFactorProviderService::TWO_FACTOR_WEBAUTHN
 	);
 	$twoFactorSelect = new htmlResponsiveSelect('twoFactor', $twoFactorOptions, array($conf->getTwoFactorAuthentication()), _('Provider'), '514');
@@ -498,6 +499,7 @@ if (extension_loaded('curl')) {
 		TwoFactorProviderService::TWO_FACTOR_YUBICO => array('twoFactorURL', 'twoFactorAttribute', 'twoFactorDomain'),
 		TwoFactorProviderService::TWO_FACTOR_DUO => array('twoFactorURLs', 'twoFactorOptional', 'twoFactorInsecure', 'twoFactorLabel', 'twoFactorDomain'),
 		TwoFactorProviderService::TWO_FACTOR_OKTA => array('twoFactorURLs', 'twoFactorOptional', 'twoFactorInsecure', 'twoFactorLabel', 'twoFactorDomain'),
+		TwoFactorProviderService::TWO_FACTOR_OPENID => array('twoFactorURLs', 'twoFactorOptional', 'twoFactorInsecure', 'twoFactorLabel', 'twoFactorDomain'),
 		TwoFactorProviderService::TWO_FACTOR_WEBAUTHN => array('twoFactorURL', 'twoFactorURLs', 'twoFactorInsecure', 'twoFactorLabel',
 			'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute'),
 	));
@@ -508,8 +510,10 @@ if (extension_loaded('curl')) {
 			'twoFactorOptional', 'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey'),
 		TwoFactorProviderService::TWO_FACTOR_DUO => array('twoFactorURL', 'twoFactorLabel',
 			'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute'),
-		TwoFactorProviderService::TWO_FACTOR_OKTA => array('twoFactorURL', 'twoFactorLabel',
-			'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute'),
+		TwoFactorProviderService::TWO_FACTOR_OKTA => array('twoFactorURL', 'twoFactorCaption',
+            'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute'),
+		TwoFactorProviderService::TWO_FACTOR_OPENID => array('twoFactorURL', 'twoFactorCaption',
+            'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute'),
 		TwoFactorProviderService::TWO_FACTOR_WEBAUTHN => array('twoFactorDomain', 'twoFactorOptional')
 	));
 	$row->add($twoFactorSelect, 12);
