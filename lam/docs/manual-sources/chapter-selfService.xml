@@ -503,6 +503,80 @@
           </mediaobject>
         </screenshot>
 
+        <para><emphasis role="bold">OpenID</emphasis></para>
+
+        <para>This will use an OpenID server as 2nd factor for
+        authentication.</para>
+
+        <para>LAM options:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>User name attribute: please enter the LDAP attribute name
+            that contains the user ID (e.g. "uid").</para>
+          </listitem>
+
+          <listitem>
+            <para>Base URL: please enter the URL of your OpenID client URL.
+            The URL is the one before the
+            "/.well-known/openid-configuration".</para>
+          </listitem>
+
+          <listitem>
+            <para>Client id: please enter your application client id.</para>
+          </listitem>
+
+          <listitem>
+            <para>Secret key: please enter your application secret key.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>KeyCloack example configuration:</para>
+
+        <para>Create a new client, select "openid-connect" protocol and enter
+        a client ID. Root URL can be left empty.</para>
+
+        <screenshot>
+          <graphic fileref="images/openid1.png"/>
+        </screenshot>
+
+        <para>Now choose access type "confidential" and enter the valid
+        redirect URLs. They are
+        "https://YOURDOMAIN/lam/templates/login2Factor.php" for admin
+        interface and
+        "https://YOURDOMAIN/lam/templates/selfService/selfService2Factor.php"
+        for self service. You will get an error message during login in case
+        it was wrong. Then save the configuration.</para>
+
+        <para>Next, switch to tab "Credentials" to get the client
+        secret.</para>
+
+        <screenshot>
+          <graphic fileref="images/openid2.png"/>
+        </screenshot>
+
+        <para>Example configuration values:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>User name: uid</para>
+          </listitem>
+
+          <listitem>
+            <para>Base URL: http://openidserver/auth/realms/master</para>
+          </listitem>
+
+          <listitem>
+            <para>Client id: demo</para>
+          </listitem>
+
+          <listitem>
+            <para>Secret key: 59bdf504-b76e-4138-8421-ef662b2c6c83</para>
+          </listitem>
+        </itemizedlist>
+
+        <para><emphasis role="bold">Login</emphasis></para>
+
         <para>After logging in with user + password LAM will ask for the 2nd
         factor. If the user has setup multiple factors then he can choose one
         of them.</para>
