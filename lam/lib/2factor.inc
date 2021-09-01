@@ -731,7 +731,7 @@ class OpenIdProvider extends BaseProvider {
 		$authorizationService = $this->getAuthorizationService();
 		$redirectAuthorizationUri = $authorizationService->getAuthorizationUri(
 			$client,
-//			['login_hint' => $loginAttribute]
+			['login_hint' => $loginAttribute]
 		);
 		$jsBlock = '
 			var currentLocation = window.location.href;
