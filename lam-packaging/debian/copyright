@@ -1145,6 +1145,7 @@ lib/3rdParty/composer/brick                                          B        Be
 lib/3rdParty/composer/christian-riesen                               B        Christian Riesen
 lib/3rdParty/composer/clue                                           B        2015 Christian Lück
 lib/3rdParty/composer/composer                                       B        Nils Adermann, Jordi Boggiano
+lib/3rdParty/composer/facile-it                                      B        Thomas Vargiu
 lib/3rdParty/composer/fgrosse                                        B  2015  Friedrich Große
 lib/3rdParty/composer/firebase                                       H  2011  Neuman Vong
 lib/3rdParty/composer/guzzlehttp                                     B  2015  Michael Dowling
@@ -1177,6 +1178,7 @@ lib/3rdParty/composer/ramsey                                         B  2018  Be
 lib/3rdParty/composer/spomky-labs                                    B  2018  Spomky-Labs
 lib/3rdParty/composer/symfony                                        B  2019  Fabien Potencier
 lib/3rdParty/composer/web-auth                                       B  2018  Spomky-Labs
+lib/3rdParty/composer/web-token                                      B        Florent Morselli
 lib/3rdParty/tcpdf                                                   D  2020  Nicola Asuni - Tecnick.com LTD
 lib/3rdParty/tcpdf/fonts/dejavu*.z                                   A        Public Domain, Bitstream, Inc., Tavmjong Bah
 lib/3rdParty/Monolog                                                 B  2011  Jordi Boggiano

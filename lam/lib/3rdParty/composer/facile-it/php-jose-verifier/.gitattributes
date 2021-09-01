@@ -1,0 +1,8 @@
+tests/              export-ignore
+.github/            export-ignore
+.php_cs*            export-ignore
+.scrutinizer.yml    export-ignore
+composer.lock       export-ignore
+psalm.xml           export-ignore
+psalm.xml.dist      export-ignore
+phpunit.xml.dist    export-ignore

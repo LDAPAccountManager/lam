@@ -1,0 +1,125 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Jose\Component\Encryption;
+
+use function array_key_exists;
+use function count;
+use InvalidArgumentException;
+use Jose\Component\Core\JWT;
+use Facile\JoseVerifier\Psalm\PsalmTypes;
+
+/**
+ * @psalm-import-type JWTHeaderObject from PsalmTypes
+ */
+class JWE implements JWT
+{
+    /**
+     * @param JWTHeaderObject|array<empty, empty> $sharedHeader
+     * @param JWTHeaderObject|array<empty, empty> $sharedProtectedHeader
+     * @param Recipient[] $recipients
+     */
+    public function __construct(string $ciphertext, string $iv, string $tag, ?string $aad = null, array $sharedHeader = [], array $sharedProtectedHeader = [], ?string $encodedSharedProtectedHeader = null, array $recipients = [])
+    {
+    }
+
+    public function getPayload(): ?string
+    {
+    }
+
+    public function withPayload(string $payload): self
+    {
+    }
+
+    public function countRecipients(): int
+    {
+    }
+
+    public function isEncrypted(): bool
+    {
+    }
+
+    /**
+     * @return Recipient[]
+     */
+    public function getRecipients(): array
+    {
+    }
+
+    /**
+     * Returns the recipient object at the given index.
+     *
+     * @throws InvalidArgumentException if the recipient ID does not exist
+     */
+    public function getRecipient(int $id): Recipient
+    {
+    }
+
+    public function getCiphertext(): ?string
+    {
+    }
+
+    public function getAAD(): ?string
+    {
+    }
+
+    public function getIV(): ?string
+    {
+    }
+
+    public function getTag(): ?string
+    {
+    }
+
+    public function getEncodedSharedProtectedHeader(): string
+    {
+    }
+
+    /**
+     * @return JWTHeaderObject
+     */
+    public function getSharedProtectedHeader(): array
+    {
+    }
+
+    /**
+     * @throws InvalidArgumentException if the shared protected header parameter does not exist
+     *
+     * @return null|mixed
+     */
+    public function getSharedProtectedHeaderParameter(string $key)
+    {
+    }
+
+    public function hasSharedProtectedHeaderParameter(string $key): bool
+    {
+    }
+
+    /**
+     * @return JWTHeaderObject
+     */
+    public function getSharedHeader(): array
+    {
+    }
+
+    /**
+     * @throws InvalidArgumentException if the shared header parameter does not exist
+     *
+     * @return null|mixed
+     */
+    public function getSharedHeaderParameter(string $key)
+    {
+    }
+
+    public function hasSharedHeaderParameter(string $key): bool
+    {
+    }
+
+    /**
+     * @return JWE[]
+     */
+    public function split(): array
+    {
+    }
+}

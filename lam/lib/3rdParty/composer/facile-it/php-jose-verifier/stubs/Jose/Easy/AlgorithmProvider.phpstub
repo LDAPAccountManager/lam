@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Jose\Easy;
+
+use Jose\Component\Core\Algorithm;
+use Throwable;
+
+final class AlgorithmProvider
+{
+    /**
+     * @param list<class-string<Algorithm>> $algorithmClasses
+     */
+    public function __construct(array $algorithmClasses)
+    {
+    }
+
+    /**
+     * @return list<class-string<Algorithm>>
+     */
+    public function getAlgorithmClasses(): array
+    {
+    }
+
+    /**
+     * @return list<Algorithm>
+     */
+    public function getAvailableAlgorithms(): array
+    {
+    }
+}

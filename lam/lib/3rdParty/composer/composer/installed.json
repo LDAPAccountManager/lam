@@ -258,6 +258,211 @@
         ]
     },
     {
+        "name": "facile-it/php-jose-verifier",
+        "version": "0.3.0",
+        "version_normalized": "0.3.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/facile-it/php-jose-verifier.git",
+            "reference": "b6a3d17896dec0c3e383c0ae83b7be855b8fd247"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/facile-it/php-jose-verifier/zipball/b6a3d17896dec0c3e383c0ae83b7be855b8fd247",
+            "reference": "b6a3d17896dec0c3e383c0ae83b7be855b8fd247",
+            "shasum": ""
+        },
+        "require": {
+            "ext-json": "*",
+            "php": "^7.2 || ^8.0",
+            "php-http/discovery": "^1.7",
+            "psr/http-client": "^1.0",
+            "psr/http-message": "^1.0",
+            "psr/simple-cache": "^1.0",
+            "spomky-labs/base64url": "^2.0.1",
+            "symfony/polyfill-mbstring": "^1.15",
+            "web-token/jwt-checker": "^2.2.0",
+            "web-token/jwt-core": "^2.2.0",
+            "web-token/jwt-easy": "^2.2.0",
+            "web-token/jwt-key-mgmt": "^2.2.0",
+            "web-token/jwt-signature": "^2.2.0",
+            "web-token/jwt-signature-algorithm-rsa": "^2.2.0"
+        },
+        "require-dev": {
+            "facile-it/facile-coding-standard": "^0.4.1",
+            "friendsofphp/php-cs-fixer": "^2.16.1",
+            "laminas/laminas-diactoros": "^2.2",
+            "php-http/curl-client": "^2.1",
+            "phpspec/prophecy-phpunit": "^1.1 || ^2.0",
+            "phpunit/phpunit": "^8.5.14 || ^9.3",
+            "vimeo/psalm": "^4.4.1",
+            "web-token/jwt-encryption": "^2.2.0",
+            "web-token/jwt-encryption-algorithm-aescbc": "^2.2.0",
+            "web-token/jwt-encryption-algorithm-aesgcm": "^2.2.0",
+            "web-token/jwt-encryption-algorithm-aesgcmkw": "^2.2.0",
+            "web-token/jwt-encryption-algorithm-aeskw": "^2.2.0",
+            "web-token/jwt-encryption-algorithm-dir": "^2.2.0",
+            "web-token/jwt-encryption-algorithm-ecdh-es": "^2.2.0",
+            "web-token/jwt-encryption-algorithm-experimental": "^2.2.0",
+            "web-token/jwt-encryption-algorithm-pbes2": "^2.2.0",
+            "web-token/jwt-encryption-algorithm-rsa": "^2.2.0",
+            "web-token/jwt-nested-token": "^2.2.0",
+            "web-token/jwt-signature-algorithm-ecdsa": "^2.2.0",
+            "web-token/jwt-signature-algorithm-experimental": "^2.2.0",
+            "web-token/jwt-signature-algorithm-hmac": "^2.2.0",
+            "web-token/jwt-signature-algorithm-none": "^2.2.0",
+            "web-token/jwt-util-ecc": "^2.2.0"
+        },
+        "time": "2021-05-05T11:57:42+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "files": [
+                "src/functions/derived_key.php",
+                "src/functions/jose_secret_key.php"
+            ],
+            "psr-4": {
+                "Facile\\JoseVerifier\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Thomas Vargiu",
+                "email": "thomas.vargiu@facile.it"
+            }
+        ],
+        "description": "JWT Token Verifier. A JWT verifier for access tokens, id tokens and others",
+        "keywords": [
+            "JOSE",
+            "JWE",
+            "JWK",
+            "JWKS",
+            "JWS",
+            "OpenId",
+            "access token",
+            "jwt",
+            "oauth2",
+            "token",
+            "validate",
+            "verifier"
+        ]
+    },
+    {
+        "name": "facile-it/php-openid-client",
+        "version": "0.2.0",
+        "version_normalized": "0.2.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/facile-it/php-openid-client.git",
+            "reference": "8396adf100f32d96f9d943e729eb9608a9e15504"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/facile-it/php-openid-client/zipball/8396adf100f32d96f9d943e729eb9608a9e15504",
+            "reference": "8396adf100f32d96f9d943e729eb9608a9e15504",
+            "shasum": ""
+        },
+        "require": {
+            "ext-json": "*",
+            "facile-it/php-jose-verifier": "^0.3.0",
+            "php": "^7.2 || ^8.0",
+            "php-http/discovery": "^1.6",
+            "psr/http-client": "^1.0",
+            "psr/http-client-implementation": "^1.0",
+            "psr/http-factory": "^1.0",
+            "psr/http-factory-implementation": "^1.0",
+            "psr/http-message": "^1.0",
+            "psr/http-message-implementation": "^1.0",
+            "psr/http-server-middleware": "^1.0",
+            "web-token/jwt-checker": "^2.0",
+            "web-token/jwt-core": "^2.0",
+            "web-token/jwt-easy": "^2.1",
+            "web-token/jwt-encryption": "^2.0",
+            "web-token/jwt-key-mgmt": "^2.0.7",
+            "web-token/jwt-signature": "^2.0",
+            "web-token/jwt-signature-algorithm-rsa": "^2.0"
+        },
+        "require-dev": {
+            "dflydev/fig-cookies": "^2.0",
+            "facile-it/facile-coding-standard": "^0.4.1",
+            "friendsofphp/php-cs-fixer": "^2.15",
+            "laminas/laminas-component-installer": "^2.1",
+            "laminas/laminas-config-aggregator": "^1.1",
+            "laminas/laminas-di": "^3.1",
+            "laminas/laminas-diactoros": "^2.1",
+            "laminas/laminas-servicemanager": "^3.4",
+            "php-http/cache-plugin": "^1.6",
+            "php-http/curl-client": "^2.0",
+            "php-http/guzzle7-adapter": "^0.1.0",
+            "phpspec/prophecy": "^1.10.3",
+            "phpspec/prophecy-phpunit": "^1.1 || ^2.0",
+            "phpunit/phpunit": "^8.5.14 || ^9.3",
+            "symfony/console": "^4.3 || ^5.0",
+            "vimeo/psalm": "^4.7.2",
+            "web-token/jwt-encryption-algorithm-aescbc": "^2.0",
+            "web-token/jwt-encryption-algorithm-aesgcm": "^2.0",
+            "web-token/jwt-encryption-algorithm-aesgcmkw": "^2.0",
+            "web-token/jwt-encryption-algorithm-aeskw": "^2.0",
+            "web-token/jwt-encryption-algorithm-dir": "^2.0",
+            "web-token/jwt-encryption-algorithm-ecdh-es": "^2.0",
+            "web-token/jwt-encryption-algorithm-experimental": "^2.0",
+            "web-token/jwt-encryption-algorithm-pbes2": "^2.0",
+            "web-token/jwt-encryption-algorithm-rsa": "^2.0",
+            "web-token/jwt-signature-algorithm-ecdsa": "^2.0",
+            "web-token/jwt-signature-algorithm-eddsa": "^2.0",
+            "web-token/jwt-signature-algorithm-experimental": "^2.0",
+            "web-token/jwt-signature-algorithm-hmac": "^2.0",
+            "web-token/jwt-signature-algorithm-none": "^2.0"
+        },
+        "suggest": {
+            "dflydev/fig-cookies": "To use the SessionCookieMiddleware",
+            "facile-it/php-oauth2-http-client": "To use a PSR HTTP client to interact with OAuth2/OpenID protected APIs",
+            "web-token/jwt-signature-algorithm-hmac": "To use the client_secret_jwt auth method and symmetric key signature"
+        },
+        "time": "2021-05-07T09:14:22+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "files": [
+                "src/functions/base64url_decode.php",
+                "src/functions/base64url_encode.php",
+                "src/functions/check_server_response.php",
+                "src/functions/derived_key.php",
+                "src/functions/get_endpoint_uri.php",
+                "src/functions/jose_secret_key.php",
+                "src/functions/parse_callback_params.php",
+                "src/functions/parse_metadata_response.php"
+            ],
+            "psr-4": {
+                "Facile\\OpenIDClient\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Thomas Vargiu",
+                "email": "thomas.vargiu@facile.it"
+            }
+        ],
+        "description": "OpenID (OIDC) Client",
+        "keywords": [
+            "Authentication",
+            "OpenID Connect",
+            "OpenId",
+            "identity",
+            "oauth2",
+            "oidc",
+            "token"
+        ]
+    },
+    {
         "name": "fgrosse/phpasn1",
         "version": "v2.2.0",
         "version_normalized": "2.2.0.0",
@@ -2046,6 +2251,166 @@
         ]
     },
     {
+        "name": "psr/http-server-handler",
+        "version": "1.0.1",
+        "version_normalized": "1.0.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/php-fig/http-server-handler.git",
+            "reference": "aff2f80e33b7f026ec96bb42f63242dc50ffcae7"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/php-fig/http-server-handler/zipball/aff2f80e33b7f026ec96bb42f63242dc50ffcae7",
+            "reference": "aff2f80e33b7f026ec96bb42f63242dc50ffcae7",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=7.0",
+            "psr/http-message": "^1.0"
+        },
+        "time": "2018-10-30T16:46:14+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Psr\\Http\\Server\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "PHP-FIG",
+                "homepage": "http://www.php-fig.org/"
+            }
+        ],
+        "description": "Common interface for HTTP server-side request handler",
+        "keywords": [
+            "handler",
+            "http",
+            "http-interop",
+            "psr",
+            "psr-15",
+            "psr-7",
+            "request",
+            "response",
+            "server"
+        ]
+    },
+    {
+        "name": "psr/http-server-middleware",
+        "version": "1.0.1",
+        "version_normalized": "1.0.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/php-fig/http-server-middleware.git",
+            "reference": "2296f45510945530b9dceb8bcedb5cb84d40c5f5"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/php-fig/http-server-middleware/zipball/2296f45510945530b9dceb8bcedb5cb84d40c5f5",
+            "reference": "2296f45510945530b9dceb8bcedb5cb84d40c5f5",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=7.0",
+            "psr/http-message": "^1.0",
+            "psr/http-server-handler": "^1.0"
+        },
+        "time": "2018-10-30T17:12:04+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Psr\\Http\\Server\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "PHP-FIG",
+                "homepage": "http://www.php-fig.org/"
+            }
+        ],
+        "description": "Common interface for HTTP server-side middleware",
+        "keywords": [
+            "http",
+            "http-interop",
+            "middleware",
+            "psr",
+            "psr-15",
+            "psr-7",
+            "request",
+            "response"
+        ]
+    },
+    {
+        "name": "psr/simple-cache",
+        "version": "1.0.1",
+        "version_normalized": "1.0.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/php-fig/simple-cache.git",
+            "reference": "408d5eafb83c57f6365a3ca330ff23aa4a5fa39b"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/php-fig/simple-cache/zipball/408d5eafb83c57f6365a3ca330ff23aa4a5fa39b",
+            "reference": "408d5eafb83c57f6365a3ca330ff23aa4a5fa39b",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "time": "2017-10-23T01:57:42+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Psr\\SimpleCache\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "PHP-FIG",
+                "homepage": "http://www.php-fig.org/"
+            }
+        ],
+        "description": "Common interfaces for simple caching",
+        "keywords": [
+            "cache",
+            "caching",
+            "psr",
+            "psr-16",
+            "simple-cache"
+        ]
+    },
+    {
         "name": "ralouphie/getallheaders",
         "version": "3.0.3",
         "version_normalized": "3.0.3.0",
@@ -3384,6 +3749,492 @@
             "FIDO2",
             "fido",
             "webauthn"
+        ]
+    },
+    {
+        "name": "web-token/jwt-checker",
+        "version": "v2.2.11",
+        "version_normalized": "2.2.11.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/web-token/jwt-checker.git",
+            "reference": "5f31d98155951739e2fae7455e8466ccddd08f50"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/web-token/jwt-checker/zipball/5f31d98155951739e2fae7455e8466ccddd08f50",
+            "reference": "5f31d98155951739e2fae7455e8466ccddd08f50",
+            "shasum": ""
+        },
+        "require": {
+            "web-token/jwt-core": "^2.1"
+        },
+        "time": "2021-03-17T14:55:52+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Jose\\Component\\Checker\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Florent Morselli",
+                "homepage": "https://github.com/Spomky"
+            },
+            {
+                "name": "All contributors",
+                "homepage": "https://github.com/web-token/jwt-checker/contributors"
+            }
+        ],
+        "description": "Checker component of the JWT Framework.",
+        "homepage": "https://github.com/web-token",
+        "keywords": [
+            "JOSE",
+            "JWE",
+            "JWK",
+            "JWKSet",
+            "JWS",
+            "Jot",
+            "RFC7515",
+            "RFC7516",
+            "RFC7517",
+            "RFC7518",
+            "RFC7519",
+            "RFC7520",
+            "bundle",
+            "jwa",
+            "jwt",
+            "symfony"
+        ]
+    },
+    {
+        "name": "web-token/jwt-core",
+        "version": "v2.2.11",
+        "version_normalized": "2.2.11.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/web-token/jwt-core.git",
+            "reference": "53beb6f6c1eec4fa93c1c3e5d9e5701e71fa1678"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/web-token/jwt-core/zipball/53beb6f6c1eec4fa93c1c3e5d9e5701e71fa1678",
+            "reference": "53beb6f6c1eec4fa93c1c3e5d9e5701e71fa1678",
+            "shasum": ""
+        },
+        "require": {
+            "brick/math": "^0.8.17|^0.9",
+            "ext-json": "*",
+            "ext-mbstring": "*",
+            "fgrosse/phpasn1": "^2.0",
+            "php": ">=7.2",
+            "spomky-labs/base64url": "^1.0|^2.0"
+        },
+        "conflict": {
+            "spomky-labs/jose": "*"
+        },
+        "time": "2021-03-17T14:55:52+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Jose\\Component\\Core\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Florent Morselli",
+                "homepage": "https://github.com/Spomky"
+            },
+            {
+                "name": "All contributors",
+                "homepage": "https://github.com/web-token/jwt-framework/contributors"
+            }
+        ],
+        "description": "Core component of the JWT Framework.",
+        "homepage": "https://github.com/web-token",
+        "keywords": [
+            "JOSE",
+            "JWE",
+            "JWK",
+            "JWKSet",
+            "JWS",
+            "Jot",
+            "RFC7515",
+            "RFC7516",
+            "RFC7517",
+            "RFC7518",
+            "RFC7519",
+            "RFC7520",
+            "bundle",
+            "jwa",
+            "jwt",
+            "symfony"
+        ]
+    },
+    {
+        "name": "web-token/jwt-easy",
+        "version": "v2.2.11",
+        "version_normalized": "2.2.11.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/web-token/jwt-easy.git",
+            "reference": "01db23252bb53d4fd36975b55dd58466bab1bb30"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/web-token/jwt-easy/zipball/01db23252bb53d4fd36975b55dd58466bab1bb30",
+            "reference": "01db23252bb53d4fd36975b55dd58466bab1bb30",
+            "shasum": ""
+        },
+        "require": {
+            "web-token/jwt-checker": "^2.1",
+            "web-token/jwt-encryption": "^2.1",
+            "web-token/jwt-signature": "^2.1"
+        },
+        "suggest": {
+            "web-token/jwt-encryption-algorithm-aescbc": "Adds AES-CBC based encryption algorithms",
+            "web-token/jwt-encryption-algorithm-aesgcm": "Adds AES-GCM based encryption algorithms",
+            "web-token/jwt-encryption-algorithm-aesgcmkw": "Adds AES-GCM Key Wrapping based encryption algorithms",
+            "web-token/jwt-encryption-algorithm-aeskw": "Adds AES Key Wrapping based encryption algorithms",
+            "web-token/jwt-encryption-algorithm-dir": "Adds Direct encryption algorithm",
+            "web-token/jwt-encryption-algorithm-ecdh-es": "Adds ECDH-ES based encryption algorithms",
+            "web-token/jwt-encryption-algorithm-pbes2": "Adds PBES2 based encryption algorithms",
+            "web-token/jwt-encryption-algorithm-rsa": "Adds RSA based encryption algorithms",
+            "web-token/jwt-signature-algorithm-ecdsa": "Adds ECDSA based signature algorithms",
+            "web-token/jwt-signature-algorithm-eddsa": "Adds EdDSA based signature algorithms",
+            "web-token/jwt-signature-algorithm-hmac": "Adds HMAC based signature algorithms",
+            "web-token/jwt-signature-algorithm-none": "Adds none signature algorithms",
+            "web-token/jwt-signature-algorithm-rsa": "Adds RSA based signature algorithms"
+        },
+        "time": "2021-03-17T14:55:52+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Jose\\Easy\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Florent Morselli",
+                "homepage": "https://github.com/Spomky"
+            },
+            {
+                "name": "All contributors",
+                "homepage": "https://github.com/web-token/jwt-framework/contributors"
+            }
+        ],
+        "description": "Easy toolset to use the JWT Framework.",
+        "homepage": "https://github.com/web-token",
+        "keywords": [
+            "JOSE",
+            "JWE",
+            "JWK",
+            "JWKSet",
+            "JWS",
+            "Jot",
+            "RFC7515",
+            "RFC7516",
+            "RFC7517",
+            "RFC7518",
+            "RFC7519",
+            "RFC7520",
+            "bundle",
+            "jwa",
+            "jwt",
+            "symfony"
+        ]
+    },
+    {
+        "name": "web-token/jwt-encryption",
+        "version": "v2.2.11",
+        "version_normalized": "2.2.11.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/web-token/jwt-encryption.git",
+            "reference": "3b8d67d7c5c013750703e7c27f1001544407bbb2"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/web-token/jwt-encryption/zipball/3b8d67d7c5c013750703e7c27f1001544407bbb2",
+            "reference": "3b8d67d7c5c013750703e7c27f1001544407bbb2",
+            "shasum": ""
+        },
+        "require": {
+            "web-token/jwt-core": "^2.1"
+        },
+        "suggest": {
+            "web-token/jwt-encryption-algorithm-aescbc": "AES CBC Based Content Encryption Algorithms",
+            "web-token/jwt-encryption-algorithm-aesgcm": "AES GCM Based Content Encryption Algorithms",
+            "web-token/jwt-encryption-algorithm-aesgcmkw": "AES GCM Key Wrapping Based Key Encryption Algorithms",
+            "web-token/jwt-encryption-algorithm-aeskw": "AES Key Wrapping Based Key Encryption Algorithms",
+            "web-token/jwt-encryption-algorithm-dir": "Direct Key Encryption Algorithms",
+            "web-token/jwt-encryption-algorithm-ecdh-es": "ECDH-ES Based Key Encryption Algorithms",
+            "web-token/jwt-encryption-algorithm-experimental": "Experimental Key and Signature Algorithms",
+            "web-token/jwt-encryption-algorithm-pbes2": "PBES2 Based Key Encryption Algorithms",
+            "web-token/jwt-encryption-algorithm-rsa": "RSA Based Key Encryption Algorithms"
+        },
+        "time": "2021-03-17T14:55:52+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Jose\\Component\\Encryption\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Florent Morselli",
+                "homepage": "https://github.com/Spomky"
+            },
+            {
+                "name": "All contributors",
+                "homepage": "https://github.com/web-token/jwt-encryption/contributors"
+            }
+        ],
+        "description": "Encryption component of the JWT Framework.",
+        "homepage": "https://github.com/web-token",
+        "keywords": [
+            "JOSE",
+            "JWE",
+            "JWK",
+            "JWKSet",
+            "JWS",
+            "Jot",
+            "RFC7515",
+            "RFC7516",
+            "RFC7517",
+            "RFC7518",
+            "RFC7519",
+            "RFC7520",
+            "bundle",
+            "jwa",
+            "jwt",
+            "symfony"
+        ]
+    },
+    {
+        "name": "web-token/jwt-key-mgmt",
+        "version": "v2.2.11",
+        "version_normalized": "2.2.11.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/web-token/jwt-key-mgmt.git",
+            "reference": "0b116379515700d237b4e5de86879078ccb09d8a"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/web-token/jwt-key-mgmt/zipball/0b116379515700d237b4e5de86879078ccb09d8a",
+            "reference": "0b116379515700d237b4e5de86879078ccb09d8a",
+            "shasum": ""
+        },
+        "require": {
+            "ext-openssl": "*",
+            "psr/http-client": "^1.0",
+            "psr/http-factory": "^1.0",
+            "web-token/jwt-core": "^2.0"
+        },
+        "suggest": {
+            "ext-sodium": "Sodium is required for OKP key creation, EdDSA signature algorithm and ECDH-ES key encryption with OKP keys",
+            "php-http/httplug": "To enable JKU/X5U support.",
+            "php-http/message-factory": "To enable JKU/X5U support.",
+            "web-token/jwt-util-ecc": "To use EC key analyzers."
+        },
+        "time": "2021-03-17T14:55:52+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Jose\\Component\\KeyManagement\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Florent Morselli",
+                "homepage": "https://github.com/Spomky"
+            },
+            {
+                "name": "All contributors",
+                "homepage": "https://github.com/web-token/jwt-key-mgmt/contributors"
+            }
+        ],
+        "description": "Key Management component of the JWT Framework.",
+        "homepage": "https://github.com/web-token",
+        "keywords": [
+            "JOSE",
+            "JWE",
+            "JWK",
+            "JWKSet",
+            "JWS",
+            "Jot",
+            "RFC7515",
+            "RFC7516",
+            "RFC7517",
+            "RFC7518",
+            "RFC7519",
+            "RFC7520",
+            "bundle",
+            "jwa",
+            "jwt",
+            "symfony"
+        ]
+    },
+    {
+        "name": "web-token/jwt-signature",
+        "version": "v2.2.11",
+        "version_normalized": "2.2.11.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/web-token/jwt-signature.git",
+            "reference": "015b59aaf3b6e8fb9f5bd1338845b7464c7d8103"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/web-token/jwt-signature/zipball/015b59aaf3b6e8fb9f5bd1338845b7464c7d8103",
+            "reference": "015b59aaf3b6e8fb9f5bd1338845b7464c7d8103",
+            "shasum": ""
+        },
+        "require": {
+            "web-token/jwt-core": "^2.1"
+        },
+        "suggest": {
+            "web-token/jwt-signature-algorithm-ecdsa": "ECDSA Based Signature Algorithms",
+            "web-token/jwt-signature-algorithm-eddsa": "EdDSA Based Signature Algorithms",
+            "web-token/jwt-signature-algorithm-experimental": "Experimental Signature Algorithms",
+            "web-token/jwt-signature-algorithm-hmac": "HMAC Based Signature Algorithms",
+            "web-token/jwt-signature-algorithm-none": "None Signature Algorithm",
+            "web-token/jwt-signature-algorithm-rsa": "RSA Based Signature Algorithms"
+        },
+        "time": "2021-03-01T19:55:28+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Jose\\Component\\Signature\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Florent Morselli",
+                "homepage": "https://github.com/Spomky"
+            },
+            {
+                "name": "All contributors",
+                "homepage": "https://github.com/web-token/jwt-signature/contributors"
+            }
+        ],
+        "description": "Signature component of the JWT Framework.",
+        "homepage": "https://github.com/web-token",
+        "keywords": [
+            "JOSE",
+            "JWE",
+            "JWK",
+            "JWKSet",
+            "JWS",
+            "Jot",
+            "RFC7515",
+            "RFC7516",
+            "RFC7517",
+            "RFC7518",
+            "RFC7519",
+            "RFC7520",
+            "bundle",
+            "jwa",
+            "jwt",
+            "symfony"
+        ]
+    },
+    {
+        "name": "web-token/jwt-signature-algorithm-rsa",
+        "version": "v2.2.11",
+        "version_normalized": "2.2.11.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/web-token/jwt-signature-algorithm-rsa.git",
+            "reference": "513ad90eb5ef1886ff176727a769bda4618141b0"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/web-token/jwt-signature-algorithm-rsa/zipball/513ad90eb5ef1886ff176727a769bda4618141b0",
+            "reference": "513ad90eb5ef1886ff176727a769bda4618141b0",
+            "shasum": ""
+        },
+        "require": {
+            "brick/math": "^0.8.17|^0.9",
+            "ext-openssl": "*",
+            "web-token/jwt-signature": "^2.1"
+        },
+        "suggest": {
+            "ext-bcmath": "GMP or BCMath is highly recommended to improve the library performance",
+            "ext-gmp": "GMP or BCMath is highly recommended to improve the library performance"
+        },
+        "time": "2021-01-21T19:18:03+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Jose\\Component\\Signature\\Algorithm\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Florent Morselli",
+                "homepage": "https://github.com/Spomky"
+            },
+            {
+                "name": "All contributors",
+                "homepage": "https://github.com/web-token/jwt-framework/contributors"
+            }
+        ],
+        "description": "RSA Based Signature Algorithms the JWT Framework.",
+        "homepage": "https://github.com/web-token",
+        "keywords": [
+            "JOSE",
+            "JWE",
+            "JWK",
+            "JWKSet",
+            "JWS",
+            "Jot",
+            "RFC7515",
+            "RFC7516",
+            "RFC7517",
+            "RFC7518",
+            "RFC7519",
+            "RFC7520",
+            "bundle",
+            "jwa",
+            "jwt",
+            "symfony"
         ]
     }
 ]

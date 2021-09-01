@@ -1,7 +1,6 @@
 <?php
 namespace LAM\LIB\TWO_FACTOR;
 use Exception;
-use htmlLinkCss;
 use \htmlResponsiveRow;
 use \LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use \selfServiceProfile;
@@ -727,26 +726,63 @@ class OpenIdProvider extends BaseProvider {
 		}
 		$pathPrefix = $this->config->isSelfService ? '../' : '';
 		$row->add(new htmlImage($pathPrefix . '../graphics/openid.png'), 12);
+		include_once __DIR__ . '/3rdParty/composer/autoload.php';
+		$client = $this->getOpenIdClient();
+		$authorizationService = $this->getAuthorizationService();
+		$redirectAuthorizationUri = $authorizationService->getAuthorizationUri(
+			$client,
+//			['login_hint' => $loginAttribute]
+		);
 		$jsBlock = '
+			var currentLocation = window.location.href;
+			if (currentLocation.includes("?")) {
+				currentLocation = currentLocation.substring(0, currentLocation.indexOf("?"));
+			}
+			if (currentLocation.includes("#")) {
+				currentLocation = currentLocation.substring(0, currentLocation.indexOf("#"));
+			}
 	        if (window.location.href.indexOf("code=") > 0) {
-	            var codeVerifier = signIn.options.storageUtil.getPKCEStorage().getStorage().codeVerifier;
-	            form = jQuery("<form/>", {
-					action: window.location.href,
-					method: "POST"
-				});
-				form.append(jQuery("<input/>", {
-					type: "hidden",
-					name: "codeVerifier",
-					value: codeVerifier
-				}));
-				form.appendTo("body").submit();
+	        	var targetUrl = window.location.href + "&redirect_uri=" + currentLocation;
+				window.location.href = targetUrl;
 	        }
 	        else {
-				// redirect
+				window.location.href = "' . $redirectAuthorizationUri . '&redirect_uri=" + currentLocation
 			}
 		';
 		$content->add(new htmlJavaScript($jsBlock), 12);
 		$row->add($content, 12);
+	}
+
+	/**
+	 * Returns the client object.
+	 *
+	 * @return \Facile\OpenIDClient\Client\Client client
+	 */
+	private function getOpenIdClient() : \Facile\OpenIDClient\Client\Client {
+		$issuer = (new \Facile\OpenIDClient\Issuer\IssuerBuilder())->build($this->config->twoFactorAuthenticationURL . '/.well-known/openid-configuration');
+		$meta = array(
+			'client_id' => $this->config->twoFactorAuthenticationClientId,
+			'client_secret' => $this->config->twoFactorAuthenticationSecretKey,
+			'token_endpoint_auth_method' => 'client_secret_basic',
+		);
+		if (!empty($_GET['redirect_uri'])) {
+			$meta['redirect_uri'] = $_GET['redirect_uri'];
+		}
+		$clientMetadata = \Facile\OpenIDClient\Client\Metadata\ClientMetadata::fromArray($meta);
+		$client = (new \Facile\OpenIDClient\Client\ClientBuilder())
+			->setIssuer($issuer)
+			->setClientMetadata($clientMetadata)
+			->build();
+		return $client;
+	}
+
+	/**
+	 * Returns the authorization service.
+	 *
+	 * @return \Facile\OpenIDClient\Service\AuthorizationService service
+	 */
+	private function getAuthorizationService() : \Facile\OpenIDClient\Service\AuthorizationService {
+		return (new \Facile\OpenIDClient\Service\Builder\AuthorizationServiceBuilder())->build();
 	}
 
 	/**
@@ -757,31 +793,22 @@ class OpenIdProvider extends BaseProvider {
 		$this->verificationFailed = true;
 		logNewMessage(LOG_DEBUG, 'OpenIdProvider: Checking 2nd factor for ' . $user);
 		$code = $_GET['code'];
-		$codeVerifier = $_POST['codeVerifier'];
-		if (empty($code) || empty($codeVerifier)) {
+		if (empty($code)) {
 			logNewMessage(LOG_DEBUG, 'No code provided for 2FA verification.');
 			return false;
 		}
-		$accessCode = $this->getAccessCode($code, $codeVerifier);
-		if (empty($accessCode)) {
-			logNewMessage(LOG_DEBUG, 'No access code readable for Okta 2FA verification.');
-			return false;
-		}
 		include_once __DIR__ . '/3rdParty/composer/autoload.php';
-		$jwtVerifier = (new \Okta\JwtVerifier\JwtVerifierBuilder())
-			->setDiscovery(new \Okta\JwtVerifier\Discovery\Oauth)
-			->setAdaptor(new \Okta\JwtVerifier\Adaptors\FirebasePhpJwt)
-			->setAudience('api://default')
-			->setClientId($this->config->twoFactorAuthenticationClientId)
-			->setIssuer($this->config->twoFactorAuthenticationURL . '/oauth2/default')
-			->build();
+		$client = $this->getOpenIdClient();
+		$authorizationService = $this->getAuthorizationService();
+		$serverRequest = \GuzzleHttp\Psr7\ServerRequest::fromGlobals();
 		try {
-			$jwt = $jwtVerifier->verify($accessCode);
-			$claims = $jwt->getClaims();
+			$callbackParams = $authorizationService->getCallbackParams($serverRequest, $client);
+			$tokenSet = $authorizationService->callback($client, $callbackParams, $_GET['redirect_uri']);
+			$claims = $tokenSet->claims();
 			logNewMessage(LOG_DEBUG, print_r($claims, true));
 			$loginAttribute = $this->getLoginAttributeValue($user);
-			if ($loginAttribute !== $claims['sub']) {
-				logNewMessage(LOG_ERR, 'User name ' . $loginAttribute . ' does not match claim sub: ' . $claims['sub']);
+			if ($loginAttribute !== $claims['preferred_username']) {
+				logNewMessage(LOG_ERR, 'User name ' . $loginAttribute . ' does not match claim preferred_username: ' . $claims['preferred_username']);
 				return false;
 			}
 			$this->verificationFailed = false;
@@ -791,52 +818,6 @@ class OpenIdProvider extends BaseProvider {
 			logNewMessage(LOG_ERR, 'Unable to validate JWT - ' . $e->getMessage());
 		}
 		return false;
-	}
-
-	/**
-	 * Reads the access code using code.
-	 *
-	 * @param string $code code parameter from request
-	 * @param string $codeVerifier code verifier
-	 * @return string|null access token
-	 */
-	private function getAccessCode($code, $codeVerifier) {
-		$curl = curl_init();
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		$url = $this->config->twoFactorAuthenticationURL . '/oauth2/default/v1/token';
-		curl_setopt($curl, CURLOPT_URL, $url);
-		curl_setopt($curl, CURLOPT_POST, true);
-		$callingUrl = getCallingURL();
-		if ($this->config->isSelfService) {
-			$callingUrl = preg_replace('/&code=[^&]+/', '', $callingUrl);
-			$callingUrl = preg_replace('/&state=[^&]+/', '', $callingUrl);
-		}
-		else {
-			$callingUrl = substr($callingUrl, 0, strpos($callingUrl, '?'));
-		}
-		$callingUrlEncoded = urlencode($callingUrl);
-		$postFields = 'grant_type=authorization_code&code=' . $code . '&code_verifier=' . $codeVerifier . '&redirect_uri=' . $callingUrlEncoded;
-		logNewMessage(LOG_DEBUG, 'Get Okta access code with ' . $postFields);
-		curl_setopt($curl, CURLOPT_POSTFIELDS, $postFields);
-		curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-			'accept: application/json',
-			'content-type: application/x-www-form-urlencoded',
-			'authorization: Basic ' . base64_encode($this->config->twoFactorAuthenticationClientId . ':' . $this->config->twoFactorAuthenticationSecretKey)
-		));
-		$results = curl_exec($curl);
-		$returnCode = curl_errno($curl);
-		logNewMessage(LOG_DEBUG, 'Okta responded with ' . $returnCode . ': ' . $results);
-		curl_close($curl);
-		if ($returnCode !== 0) {
-			logNewMessage(LOG_ERR, 'Error calling Okta ' . $url
-				. '. ' . $returnCode);
-			return null;
-		}
-		$jsonData = json_decode($results, true);
-		if (empty($jsonData['access_token'])) {
-			return null;
-		}
-		return $jsonData['access_token'];
 	}
 
 }
