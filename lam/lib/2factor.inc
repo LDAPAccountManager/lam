@@ -1,7 +1,6 @@
 <?php
 namespace LAM\LIB\TWO_FACTOR;
 use Exception;
-use htmlLinkCss;
 use \htmlResponsiveRow;
 use \LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use \selfServiceProfile;
@@ -583,7 +582,6 @@ class OktaProvider extends BaseProvider {
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
 		$this->verificationFailed = true;
 		logNewMessage(LOG_DEBUG, 'OktaProvider: Checking 2nd factor for ' . $user);
-		$loginAttribute = $this->getLoginAttributeValue($user);
 		$code = $_GET['code'];
 		$codeVerifier = $_POST['codeVerifier'];
 		if (empty($code) || empty($codeVerifier)) {
@@ -665,6 +663,161 @@ class OktaProvider extends BaseProvider {
 			return null;
 		}
 		return $jsonData['access_token'];
+	}
+
+}
+
+/**
+ * Provider for OpenId.
+ */
+class OpenIdProvider extends BaseProvider {
+
+	private $verificationFailed = false;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param TwoFactorConfiguration $config configuration
+	 */
+	public function __construct(&$config) {
+		$this->config = $config;
+		if (empty($this->config->twoFactorAuthenticationSerialAttributeName)) {
+			$this->config->twoFactorAuthenticationSerialAttributeName = 'uid';
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::getSerials()
+	 */
+	public function getSerials($user, $password) {
+		return array('OpenID');
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::isShowSubmitButton()
+	 */
+	public function isShowSubmitButton() {
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::hasCustomInputForm()
+	 */
+	public function hasCustomInputForm() {
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @throws LAMException error building custom input
+	 * @see \LAM\LIB\TWO_FACTOR\BaseProvider::addCustomInput()
+	 */
+	public function addCustomInput(&$row, $userDn) {
+		$loginAttribute = $this->getLoginAttributeValue($userDn);
+		if (empty($loginAttribute)) {
+			throw new LAMException('Unable to read login attribute from ' . $userDn);
+		}
+		$content = new htmlResponsiveRow();
+		if ($this->verificationFailed) {
+			return $content;
+		}
+		$pathPrefix = $this->config->isSelfService ? '../' : '';
+		$row->add(new htmlImage($pathPrefix . '../graphics/openid.png'), 12);
+		include_once __DIR__ . '/3rdParty/composer/autoload.php';
+		$client = $this->getOpenIdClient();
+		$authorizationService = $this->getAuthorizationService();
+		$redirectAuthorizationUri = $authorizationService->getAuthorizationUri(
+			$client,
+			['login_hint' => $loginAttribute]
+		);
+		$jsBlock = '
+			var currentLocation = window.location.href;
+			if (currentLocation.includes("?")) {
+				currentLocation = currentLocation.substring(0, currentLocation.indexOf("?"));
+			}
+			if (currentLocation.includes("#")) {
+				currentLocation = currentLocation.substring(0, currentLocation.indexOf("#"));
+			}
+	        if (window.location.href.indexOf("code=") > 0) {
+	        	var targetUrl = window.location.href + "&redirect_uri=" + currentLocation;
+				window.location.href = targetUrl;
+	        }
+	        else {
+				window.location.href = "' . $redirectAuthorizationUri . '&redirect_uri=" + currentLocation
+			}
+		';
+		$content->add(new htmlJavaScript($jsBlock), 12);
+		$row->add($content, 12);
+	}
+
+	/**
+	 * Returns the client object.
+	 *
+	 * @return \Facile\OpenIDClient\Client\Client client
+	 */
+	private function getOpenIdClient() : \Facile\OpenIDClient\Client\Client {
+		$issuer = (new \Facile\OpenIDClient\Issuer\IssuerBuilder())->build($this->config->twoFactorAuthenticationURL . '/.well-known/openid-configuration');
+		$meta = array(
+			'client_id' => $this->config->twoFactorAuthenticationClientId,
+			'client_secret' => $this->config->twoFactorAuthenticationSecretKey,
+			'token_endpoint_auth_method' => 'client_secret_basic',
+		);
+		if (!empty($_GET['redirect_uri'])) {
+			$meta['redirect_uri'] = $_GET['redirect_uri'];
+		}
+		$clientMetadata = \Facile\OpenIDClient\Client\Metadata\ClientMetadata::fromArray($meta);
+		$client = (new \Facile\OpenIDClient\Client\ClientBuilder())
+			->setIssuer($issuer)
+			->setClientMetadata($clientMetadata)
+			->build();
+		return $client;
+	}
+
+	/**
+	 * Returns the authorization service.
+	 *
+	 * @return \Facile\OpenIDClient\Service\AuthorizationService service
+	 */
+	private function getAuthorizationService() : \Facile\OpenIDClient\Service\AuthorizationService {
+		return (new \Facile\OpenIDClient\Service\Builder\AuthorizationServiceBuilder())->build();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \LAM\LIB\TWO_FACTOR\TwoFactorProvider::verify2ndFactor()
+	 */
+	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
+		$this->verificationFailed = true;
+		logNewMessage(LOG_DEBUG, 'OpenIdProvider: Checking 2nd factor for ' . $user);
+		$code = $_GET['code'];
+		if (empty($code)) {
+			logNewMessage(LOG_DEBUG, 'No code provided for 2FA verification.');
+			return false;
+		}
+		include_once __DIR__ . '/3rdParty/composer/autoload.php';
+		$client = $this->getOpenIdClient();
+		$authorizationService = $this->getAuthorizationService();
+		$serverRequest = \GuzzleHttp\Psr7\ServerRequest::fromGlobals();
+		try {
+			$callbackParams = $authorizationService->getCallbackParams($serverRequest, $client);
+			$tokenSet = $authorizationService->callback($client, $callbackParams, $_GET['redirect_uri']);
+			$claims = $tokenSet->claims();
+			logNewMessage(LOG_DEBUG, print_r($claims, true));
+			$loginAttribute = $this->getLoginAttributeValue($user);
+			if ($loginAttribute !== $claims['preferred_username']) {
+				logNewMessage(LOG_ERR, 'User name ' . $loginAttribute . ' does not match claim preferred_username: ' . $claims['preferred_username']);
+				return false;
+			}
+			$this->verificationFailed = false;
+			return true;
+		}
+		catch (Exception $e) {
+			logNewMessage(LOG_ERR, 'Unable to validate JWT - ' . $e->getMessage());
+		}
+		return false;
 	}
 
 }
@@ -814,6 +967,8 @@ class TwoFactorProviderService {
 	const TWO_FACTOR_WEBAUTHN = 'webauthn';
 	/** 2factor authentication via Okta */
 	const TWO_FACTOR_OKTA = 'okta';
+	/** 2factor authentication via OpenId */
+	const TWO_FACTOR_OPENID = 'openid';
 
 	private $config;
 
@@ -854,6 +1009,9 @@ class TwoFactorProviderService {
 		elseif ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OKTA) {
 			return new OktaProvider($this->config);
 		}
+		elseif ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OPENID) {
+			return new OpenIdProvider($this->config);
+		}
 		throw new \Exception('Invalid provider: ' . $this->config->twoFactorAuthentication);
 	}
 
@@ -888,7 +1046,8 @@ class TwoFactorProviderService {
 		}
 		if (($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA)
 				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_DUO)
-				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OKTA)) {
+				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OKTA)
+				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OPENID)) {
 			$attrName = $profile->twoFactorAuthenticationAttribute;
 			if (empty($attrName)) {
 				$attrName = 'uid';
@@ -929,7 +1088,8 @@ class TwoFactorProviderService {
 		}
 		if (($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA)
 				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_DUO)
-				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OKTA)) {
+				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OKTA)
+				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OPENID)) {
 			$tfConfig->twoFactorAuthenticationSerialAttributeName = strtolower($conf->getTwoFactorAuthenticationAttribute());
 		}
 		return $tfConfig;

@@ -1,0 +1,8 @@
+tests/              export-ignore
+.github/            export-ignore
+.php_cs*            export-ignore
+.phpstorm.meta.php  export-ignore
+psalm.xml           export-ignore
+composer.lock       export-ignore
+phpunit.xml.dist    export-ignore
+conformance/        export-ignore

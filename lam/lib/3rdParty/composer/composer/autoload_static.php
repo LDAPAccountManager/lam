@@ -7,22 +7,32 @@ namespace Composer\Autoload;
 class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
 {
     public static $files = array (
-        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
+        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '9c67151ae59aff4788964ce8eb2a0f43' => __DIR__ . '/..' . '/clue/stream-filter/src/functions_include.php',
-        'a4ecaeafb8cfb009ad0e052c90355e98' => __DIR__ . '/..' . '/beberlei/assert/lib/Assert/functions.php',
         '8cff32064859f4559445b89279f3199c' => __DIR__ . '/..' . '/php-http/message/src/filters.php',
         '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
+        'a4ecaeafb8cfb009ad0e052c90355e98' => __DIR__ . '/..' . '/beberlei/assert/lib/Assert/functions.php',
         'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
         '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
         'f598d06aa772fa33d905e87be6398fb1' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/bootstrap.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         'a1105708a18b76903365ca1c4aa61b02' => __DIR__ . '/..' . '/symfony/translation/Resources/functions.php',
+        'c2b3214084883d700175de676a4fc127' => __DIR__ . '/..' . '/facile-it/php-jose-verifier/src/functions/derived_key.php',
+        '16040cf78e404de30085045d3863ed51' => __DIR__ . '/..' . '/facile-it/php-jose-verifier/src/functions/jose_secret_key.php',
         'e39a8b23c42d4e1452234d762b03835a' => __DIR__ . '/..' . '/ramsey/uuid/src/functions.php',
+        'ba61337b858c088ff9f16a5fc3badbeb' => __DIR__ . '/..' . '/facile-it/php-openid-client/src/functions/base64url_decode.php',
+        'd4a8a901fd39fc07eb96403508f8f03f' => __DIR__ . '/..' . '/facile-it/php-openid-client/src/functions/base64url_encode.php',
+        'c81c91c32460d498a356b65d5a21fc4c' => __DIR__ . '/..' . '/facile-it/php-openid-client/src/functions/check_server_response.php',
+        '118f6d955fcd61e6d4454f2a1a83e1b2' => __DIR__ . '/..' . '/facile-it/php-openid-client/src/functions/derived_key.php',
+        'fbc3c3a345baaeb7f007c54508534586' => __DIR__ . '/..' . '/facile-it/php-openid-client/src/functions/get_endpoint_uri.php',
+        '7c81c910ae659a850f6ed57a459ee746' => __DIR__ . '/..' . '/facile-it/php-openid-client/src/functions/jose_secret_key.php',
+        'd351829768bdeb0b4c8778ff856e94a7' => __DIR__ . '/..' . '/facile-it/php-openid-client/src/functions/parse_callback_params.php',
+        '1ee2d97fff6268312a62b97d07c91ac5' => __DIR__ . '/..' . '/facile-it/php-openid-client/src/functions/parse_metadata_response.php',
         'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
     );
 
@@ -58,6 +68,8 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         ),
         'P' => 
         array (
+            'Psr\\SimpleCache\\' => 16,
+            'Psr\\Http\\Server\\' => 16,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Http\\Client\\' => 16,
             'ParagonIE\\ConstantTime\\' => 23,
@@ -70,6 +82,16 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         'N' => 
         array (
             'Nyholm\\Psr7\\' => 12,
+        ),
+        'J' => 
+        array (
+            'Jose\\Easy\\' => 10,
+            'Jose\\Component\\Signature\\Algorithm\\' => 35,
+            'Jose\\Component\\Signature\\' => 25,
+            'Jose\\Component\\KeyManagement\\' => 29,
+            'Jose\\Component\\Encryption\\' => 26,
+            'Jose\\Component\\Core\\' => 20,
+            'Jose\\Component\\Checker\\' => 23,
         ),
         'H' => 
         array (
@@ -87,6 +109,8 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         'F' => 
         array (
             'Firebase\\JWT\\' => 13,
+            'Facile\\OpenIDClient\\' => 20,
+            'Facile\\JoseVerifier\\' => 20,
             'FG\\' => 3,
         ),
         'C' => 
@@ -178,6 +202,15 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         array (
             0 => __DIR__ . '/..' . '/ramsey/uuid/src',
         ),
+        'Psr\\SimpleCache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/simple-cache/src',
+        ),
+        'Psr\\Http\\Server\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-server-handler/src',
+            1 => __DIR__ . '/..' . '/psr/http-server-middleware/src',
+        ),
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-factory/src',
@@ -202,6 +235,34 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         'Nyholm\\Psr7\\' => 
         array (
             0 => __DIR__ . '/..' . '/nyholm/psr7/src',
+        ),
+        'Jose\\Easy\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/web-token/jwt-easy',
+        ),
+        'Jose\\Component\\Signature\\Algorithm\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/web-token/jwt-signature-algorithm-rsa',
+        ),
+        'Jose\\Component\\Signature\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/web-token/jwt-signature',
+        ),
+        'Jose\\Component\\KeyManagement\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/web-token/jwt-key-mgmt',
+        ),
+        'Jose\\Component\\Encryption\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/web-token/jwt-encryption',
+        ),
+        'Jose\\Component\\Core\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/web-token/jwt-core',
+        ),
+        'Jose\\Component\\Checker\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/web-token/jwt-checker',
         ),
         'Http\\Promise\\' => 
         array (
@@ -235,6 +296,14 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         'Firebase\\JWT\\' => 
         array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
+        'Facile\\OpenIDClient\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/facile-it/php-openid-client/src',
+        ),
+        'Facile\\JoseVerifier\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/facile-it/php-jose-verifier/src',
         ),
         'FG\\' => 
         array (

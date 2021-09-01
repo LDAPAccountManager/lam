@@ -1,0 +1,97 @@
+{
+    "name": "facile-it/php-jose-verifier",
+    "description": "JWT Token Verifier. A JWT verifier for access tokens, id tokens and others",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Thomas Vargiu",
+            "email": "thomas.vargiu@facile.it"
+        }
+    ],
+    "minimum-stability": "stable",
+    "config": {
+        "sort-packages": true
+    },
+    "keywords": [
+        "jwt",
+        "jws",
+        "jwe",
+        "jwk",
+        "jwks",
+        "jose",
+        "oauth2",
+        "token",
+        "verifier",
+        "validate",
+        "openid",
+        "access token"
+    ],
+    "require": {
+        "php": "^7.2 || ^8.0",
+        "ext-json": "*",
+        "php-http/discovery": "^1.7",
+        "psr/http-client": "^1.0",
+        "psr/http-message": "^1.0",
+        "psr/simple-cache": "^1.0",
+        "spomky-labs/base64url": "^2.0.1",
+        "symfony/polyfill-mbstring": "^1.15",
+        "web-token/jwt-checker": "^2.2.0",
+        "web-token/jwt-core": "^2.2.0",
+        "web-token/jwt-easy": "^2.2.0",
+        "web-token/jwt-key-mgmt": "^2.2.0",
+        "web-token/jwt-signature": "^2.2.0",
+        "web-token/jwt-signature-algorithm-rsa": "^2.2.0"
+    },
+    "autoload": {
+        "files": [
+            "src/functions/derived_key.php",
+            "src/functions/jose_secret_key.php"
+        ],
+        "psr-4": {
+            "Facile\\JoseVerifier\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Facile\\JoseVerifierTest\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "facile-it/facile-coding-standard": "^0.4.1",
+        "friendsofphp/php-cs-fixer": "^2.16.1",
+        "laminas/laminas-diactoros": "^2.2",
+        "php-http/curl-client": "^2.1",
+        "phpspec/prophecy-phpunit": "^1.1 || ^2.0",
+        "phpunit/phpunit": "^8.5.14 || ^9.3",
+        "vimeo/psalm": "^4.4.1",
+        "web-token/jwt-encryption": "^2.2.0",
+        "web-token/jwt-encryption-algorithm-aescbc": "^2.2.0",
+        "web-token/jwt-encryption-algorithm-aesgcm": "^2.2.0",
+        "web-token/jwt-encryption-algorithm-aesgcmkw": "^2.2.0",
+        "web-token/jwt-encryption-algorithm-aeskw": "^2.2.0",
+        "web-token/jwt-encryption-algorithm-dir": "^2.2.0",
+        "web-token/jwt-encryption-algorithm-ecdh-es": "^2.2.0",
+        "web-token/jwt-encryption-algorithm-experimental": "^2.2.0",
+        "web-token/jwt-encryption-algorithm-pbes2": "^2.2.0",
+        "web-token/jwt-encryption-algorithm-rsa": "^2.2.0",
+        "web-token/jwt-nested-token": "^2.2.0",
+        "web-token/jwt-signature-algorithm-ecdsa": "^2.2.0",
+        "web-token/jwt-signature-algorithm-experimental": "^2.2.0",
+        "web-token/jwt-signature-algorithm-hmac": "^2.2.0",
+        "web-token/jwt-signature-algorithm-none": "^2.2.0",
+        "web-token/jwt-util-ecc": "^2.2.0"
+    },
+    "scripts": {
+        "cs-check": "php-cs-fixer fix --dry-run --diff --allow-risky=yes",
+        "cs-fix": "php-cs-fixer fix --diff --allow-risky=yes",
+        "psalm": "psalm",
+        "test": "phpunit",
+        "test-coverage": "phpunit --coverage-text",
+        "check": [
+            "@cs-check",
+            "@psalm",
+            "@test"
+        ]
+    }
+}
