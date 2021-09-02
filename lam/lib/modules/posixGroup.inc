@@ -42,7 +42,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 class posixGroup extends baseModule implements passwordService {
 
 	/** change GIDs of users and hosts? */
-	private $changegids;
+	protected $changegids;
 	/** password attribute */
 	protected $passwordAttrName = 'userPassword';
 	/** cache for existing GID numbers */
