@@ -82,7 +82,7 @@ EOF
     s|^ServerURL:.*|ServerURL: ${LDAP_SERVER}|;
     s|^Admins:.*|Admins: ${LDAP_ADMIN_USER}|;
     s|^Passwd:.*|Passwd: ${LAM_PASSWORD_SSHA}|;
-    s|^treesuffix:.*|treesuffix: ${LDAP_BASE_DN}|;
+    s|^tools: treeViewSuffix:.*|tools: treeViewSuffix: ${LDAP_BASE_DN}|;
     s|^defaultLanguage:.*|defaultLanguage: ${LAM_LANG}.utf8|;
     s|^.*suffix_user:.*|types: suffix_user: ${LDAP_USERS_DN}|;
     s|^.*suffix_group:.*|types: suffix_group: ${LDAP_GROUPS_DN}|;
