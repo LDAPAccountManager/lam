@@ -7,5 +7,6 @@ paths-ignore:
   - '**/3rdParty/**/*.*'
   - '**/lib/extra/**/*.*'
   - '**/lib/*jquery*.js'
+  - '**/lib/*flatpickr*.js'
 paths:
   - lam
