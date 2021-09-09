@@ -3536,7 +3536,9 @@ class posixAccount extends baseModule implements passwordService {
 		if ($typeId === null) {
 			$typeId = $this->getAccountContainer()->get_type()->getId();
 		}
-		return !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidepassword');
+		return !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidepassword')
+			&& (empty($this->moduleSettings['posixAccount_pwdHash'][0])
+				|| ($this->moduleSettings['posixAccount_pwdHash'][0] !== 'SASL'));
 	}
 
 	/**
@@ -4175,6 +4177,12 @@ class posixAccount extends baseModule implements passwordService {
 	 */
 	public function getPasswordQuickChangeOptions(): array {
 		if (!in_array_ignore_case('posixAccount', $this->attributes['objectClass'])) {
+			return array();
+		}
+		$typeId = $this->getAccountContainer()->get_type()->getId();
+		if ($this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidepassword')
+			|| (!empty($this->moduleSettings['posixAccount_pwdHash'][0])
+				&& ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL'))) {
 			return array();
 		}
 		return array(
