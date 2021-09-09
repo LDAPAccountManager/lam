@@ -1,5 +1,6 @@
 <?php
 namespace LAM\REMOTE;
+use Exception;
 use \LAMException;
 use \phpseclib3\Net\SSH2;
 use \phpseclib3\Crypt\PublicKeyLoader;
@@ -135,16 +136,20 @@ class Remote {
 		else {
 			$password = $_SESSION['ldap']->getPassword();
 		}
-		$login = @$handle->login($username, $password);
-		if (!$login) {
-			$errors = $handle->getErrors();
-			if (!empty($errors)) {
-				$errors = implode(' ', $errors);
+		try {
+			$login = @$handle->login($username, $password);
+			if (!$login) {
+				$errors = $handle->getErrors();
+				if (!empty($errors)) {
+					$errors = implode(' ', $errors);
+				} else {
+					$errors = null;
+				}
+				throw new LAMException(_("Unable to login to lamdaemon server."), $errors);
 			}
-			else {
-				$errors = null;
-			}
-			throw new LAMException(_("Unable to login to lamdaemon server."), $errors);
+		}
+		catch (Exception $e) {
+			throw new LAMException(_("Unable to login to lamdaemon server."), $e->getMessage());
 		}
 	}
 
