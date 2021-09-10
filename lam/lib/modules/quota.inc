@@ -592,6 +592,7 @@ class quota extends baseModule {
 			return $return;
 		}
 		if (!is_array($this->quota)) {
+			$return->add(new htmlStatusMessage('ERROR', _('Unable to read quota.')));
 			return $return;
 		}
 		// get list of lamdaemon servers
@@ -1120,43 +1121,45 @@ class quota extends baseModule {
 			$lamdaemonServers = LAMConfig::parseConfiguredScriptServers($profile->scriptServer, $profile->scriptPath,
 				$profile->scriptUserName, $profile->scriptSSHKey, deobfuscateText($profile->scriptSSHKeyPassword));
 			$this->initQuotas($attributes['uid'][0], $lamdaemonServers);
-			$serverDescriptions = array();
-			foreach ($lamdaemonServers as $lamdaemonServer) {
-				$serverDescriptions[$lamdaemonServer->getServer()] = $lamdaemonServer->getLabel();
-			}
-			$quotaRow = new htmlResponsiveRow();
-			foreach ($this->quota as $server => $quotaDatas) {
-				$title = $server;
-				if ($serverDescriptions[$server] != $server) {
-					$title = $serverDescriptions[$server] . " (" . $server . ")";
+			if (is_array($this->quota)) {
+				$serverDescriptions = array();
+				foreach ($lamdaemonServers as $lamdaemonServer) {
+					$serverDescriptions[$lamdaemonServer->getServer()] = $lamdaemonServer->getLabel();
 				}
-				$quotaRow->add(new htmlSubTitle($title), 12);
+				$quotaRow = new htmlResponsiveRow();
+				foreach ($this->quota as $server => $quotaDatas) {
+					$title = $server;
+					if ($serverDescriptions[$server] != $server) {
+						$title = $serverDescriptions[$server] . " (" . $server . ")";
+					}
+					$quotaRow->add(new htmlSubTitle($title), 12);
 
-				$titles = array(
-					_('Mountpoint'), _('Used blocks'), _('Soft block limit'), _('Hard block limit'),
-					_('Used inodes'), _('Soft inode limit'), _('Hard inode limit')
-				);
-				$data = array();
-				// loop for every mointpoint with enabled quotas
-				foreach ($quotaDatas as $quotaData) {
-					$dataRow = array();
-					$mountPoint = new htmlOutputText($quotaData[0]);
-					$mountPoint->setNoWrap(true);
-					$dataRow[] = $mountPoint;
-					$dataRow[] = new htmlOutputText($quotaData[1]);
-					$dataRow[] = new htmlOutputText($quotaData[2]);
-					$dataRow[] = new htmlOutputText($quotaData[3]);
-					$dataRow[] = new htmlOutputText($quotaData[5]);
-					$dataRow[] = new htmlOutputText($quotaData[6]);
-					$dataRow[] = new htmlOutputText($quotaData[7]);
-					$data[] = $dataRow;
+					$titles = array(
+						_('Mountpoint'), _('Used blocks'), _('Soft block limit'), _('Hard block limit'),
+						_('Used inodes'), _('Soft inode limit'), _('Hard inode limit')
+					);
+					$data = array();
+					// loop for every mointpoint with enabled quotas
+					foreach ($quotaDatas as $quotaData) {
+						$dataRow = array();
+						$mountPoint = new htmlOutputText($quotaData[0]);
+						$mountPoint->setNoWrap(true);
+						$dataRow[] = $mountPoint;
+						$dataRow[] = new htmlOutputText($quotaData[1]);
+						$dataRow[] = new htmlOutputText($quotaData[2]);
+						$dataRow[] = new htmlOutputText($quotaData[3]);
+						$dataRow[] = new htmlOutputText($quotaData[5]);
+						$dataRow[] = new htmlOutputText($quotaData[6]);
+						$dataRow[] = new htmlOutputText($quotaData[7]);
+						$data[] = $dataRow;
+					}
+					$table = new htmlResponsiveTable($titles, $data);
+					$table->setCSSClasses(array('responsive-table-wrap-th'));
+					$table->setWidths(array('20%', '5%', '10%', '10%', '5%', '5%', '10%', '10%', '5%'));
+					$quotaRow->add($table, 12);
 				}
-				$table = new htmlResponsiveTable($titles, $data);
-				$table->setCSSClasses(array('responsive-table-wrap-th'));
-				$table->setWidths(array('20%', '5%', '10%', '10%', '5%', '5%', '10%', '10%', '5%'));
-				$quotaRow->add($table, 12);
+				$return['quota'] = $quotaRow;
 			}
-			$return['quota'] = $quotaRow;
 		}
 		return $return;
 	}
