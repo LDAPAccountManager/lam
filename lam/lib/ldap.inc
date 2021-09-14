@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2020  Roland Gruber
+  Copyright (C) 2003 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -116,6 +116,18 @@ class Ldap{
 			}
 		}
 		throw new LAMException(_("Cannot connect to specified LDAP server. Please try again."));
+	}
+
+	/**
+	 * Checks if the given password is the new password to use for the current user.
+	 *
+	 * @param string $newPassword new password
+	 */
+	public function tryAndApplyNewPassword(string $newPassword): void {
+		$bind = @ldap_bind($this->server, $this->getUserName(), $newPassword);
+		if ($bind) {
+			$this->encrypt_login($this->getUserName(), $newPassword);
+		}
 	}
 
 	/** Closes connection to server */

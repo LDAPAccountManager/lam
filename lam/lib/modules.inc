@@ -2059,7 +2059,7 @@ class accountContainer {
 						// check if the password of the currently logged in user was changed
 						$lamAdmin = $_SESSION['ldap']->getUserName();
 						if ((strtolower($DNs[$i]) == strtolower($lamAdmin)) && isset($attributes[$DNs[$i]]['info']['userPasswordClearText'][0])) {
-							$_SESSION['ldap']->encrypt_login($DNs[$i], $attributes[$DNs[$i]]['info']['userPasswordClearText'][0]);
+							$_SESSION['ldap']->tryAndApplyNewPassword($attributes[$DNs[$i]]['info']['userPasswordClearText'][0]);
 						}
 					}
 				}

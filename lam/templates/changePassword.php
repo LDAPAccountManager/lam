@@ -11,7 +11,7 @@ use htmlStatusMessage;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2020  Roland Gruber
+  Copyright (C) 2020 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -94,7 +94,7 @@ if (isset($_POST['changePassword'])) {
 	// set new password
 	$modifyResult = @ldap_exop_passwd($_SESSION['ldap']->server(), $userDn, $_SESSION['ldap']->getPassword(), $password1);
 	if ($modifyResult === true) {
-		$_SESSION['ldap']->encrypt_login($userDn, $password1);
+		$_SESSION['ldap']->tryAndApplyNewPassword($password1);
 		$message = new htmlStatusMessage('INFO', _('Password changed.'));
 		printContent($message, false);
 		exit();
