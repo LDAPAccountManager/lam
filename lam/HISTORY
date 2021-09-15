@@ -1,7 +1,8 @@
 September 2021 7.7
-  - OpenLDAP 2FA support for TOTP
   - 2-factor authentication with OpenID
   - Send proper response code on failed login
+  - LAM Pro:
+   -> OpenLDAP 2FA support for TOTP
 
 05.07.2021 7.6
   - Allow to store whole LAM configuration in MySQL database
