@@ -617,6 +617,12 @@ docker run -p 8080:80 -it -d registry.gitlab.com/ldapaccountmanager/lampro:stabl
       intermediate release.</para>
 
       <section>
+        <title>7.6 -&gt; 7.7</title>
+
+        <para>No actions required.</para>
+      </section>
+
+      <section>
         <title>7.5 -&gt; 7.6</title>
 
         <para>The tree view was rewritten from scratch. It moved to the tools
