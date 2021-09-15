@@ -1304,8 +1304,7 @@ class posixAccount extends baseModule implements passwordService {
 		if ($this->get_scope() == 'user') {
 			// set SASL password for new and renamed users
 			if (!empty($this->attributes['uid'][0]) && !empty($this->moduleSettings['posixAccount_pwdHash'][0])
-					&& ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')
-					&& ($this->getAccountContainer()->isNewAccount || ($this->attributes['uid'][0] != $this->orig['uid'][0]))) {
+					&& ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')) {
 				$this->attributes[$this->getPasswordAttrName($modules)][0] = '{SASL}' . $this->attributes['uid'][0];
 			}
 			// set K5KEY password for new users
