@@ -3429,8 +3429,6 @@ class htmlLink extends htmlElement {
 	private $targetWindow = null;
 	/** onClick event */
 	private $onClick = null;
-	/** show as button */
-	private $showAsButton = false;
 	/** link id */
 	private $id;
 
@@ -3440,13 +3438,11 @@ class htmlLink extends htmlElement {
 	 * @param String $text label
 	 * @param String $target target URL
 	 * @param String $image URL of optional image
-	 * @param boolean $showAsButton shows this like as a button
 	 */
-	function __construct($text, $target, $image = null, $showAsButton = false) {
+	function __construct($text, $target, $image = null) {
 		$this->text = htmlspecialchars($text);
 		$this->target = htmlspecialchars($target);
 		$this->image = htmlspecialchars($image);
-		$this->showAsButton = $showAsButton;
 	}
 
 	/**
@@ -3482,7 +3478,7 @@ class htmlLink extends htmlElement {
 			$onClick = ' onclick="' . $this->onClick . '"';
 		}
 		$idAttr = '';
-		if ($this->showAsButton || !empty($this->id)) {
+		if (!empty($this->id)) {
 			$id = !empty($this->id) ? $this->id : 'a_' . preg_replace('/[^a-zA-Z0-9_]+/', '_', $this->target);
 			$idAttr = ' id="' . $id . '"';
 		}
@@ -3491,13 +3487,6 @@ class htmlLink extends htmlElement {
 			$classAttr = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
 		echo '<a href="' . $this->target . '"' . $idAttr . $classAttr . $title . $targetWindow . $onClick . $this->getDataAttributesAsString() . '>' . $image . $text . '</a>';
-		if ($this->showAsButton) {
-			echo '<script type="text/javascript">';
-			echo ' jQuery(document).ready(function() {';
-			echo "jQuery('#" . $id . "').button();";
-			echo '});';
-			echo '</script>';
-		}
 		return array();
 	}
 
