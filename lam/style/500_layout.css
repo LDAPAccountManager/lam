@@ -2,7 +2,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003  Leonhard Walchshaeusl
-  Copyright (C) 2005 - 2020  Roland Gruber
+  Copyright (C) 2005 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -22,6 +22,12 @@
 
 /* CSS layout for LAM */
 
+:root {
+	--lam-default-input-bg-color: #f6f6f6;
+	--lam-default-input-bg-color-hover: #ededed;
+	--lam-disabled-opacity: .35;
+}
+
 
 /**
  * global page layout
@@ -38,7 +44,7 @@ h1,h2,h3 {
 }
 
 body {
-  background-color:#F5F5F5;
+  background-color:#FFFFFF;
 }
 
 body.selfservice {
@@ -116,6 +122,20 @@ color:black;
 
 button {
 	margin: 0.2rem;
+	background: var(--lam-default-input-bg-color);
+	border: 1px solid #c5c5c5;
+}
+
+button:hover {
+	background: var(--lam-default-input-bg-color-hover);
+}
+
+button:disabled {
+	opacity: var(--lam-disabled-opacity);
+}
+
+input:disabled {
+	opacity: var(--lam-disabled-opacity);
 }
 
 input.listPageInput {
