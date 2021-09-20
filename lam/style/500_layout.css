@@ -26,6 +26,8 @@
 	--lam-default-input-bg-color: #f6f6f6;
 	--lam-default-input-bg-color-hover: #ededed;
 	--lam-disabled-opacity: .35;
+	--lam-default-border-radius: 3px;
+	--lam-small-space: 0.5rem;
 }
 
 
@@ -124,6 +126,7 @@ button {
 	margin: 0.2rem;
 	background: var(--lam-default-input-bg-color);
 	border: 1px solid #c5c5c5;
+	border-radius: var(--lam-default-border-radius);
 }
 
 button:hover {
@@ -152,10 +155,12 @@ select {
 	border:1px solid #AAAAAA;
 	color:#222222;
 	margin: 3px;
+	border-radius: var(--lam-default-border-radius);
 }
 
 input {
 	margin: 3px;
+	border-radius: var(--lam-default-border-radius);
 }
 
 textarea {
@@ -708,20 +713,25 @@ button.lam-account-type img {
  *
  */
 
+div.lam-status-message {
+	border-radius: var(--lam-default-border-radius);
+	margin: var(--lam-small-space);
+}
+
 /* Background olor for the different Status Messages */
 div.statusInfo {
-  background-color:#a8c3ff;
-  border: 1px solid blue;
+  background-color:#d9e5ff;
+  border: 1px solid #8eb1ff;
 }
 
 div.statusWarn {
-  background-color:#fff2a3;
-  border: 1px solid #f59d00;
+  background-color:#fff8ce;
+  border: 1px solid #ffcc72;
 }
 
 div.statusError {
-  background-color:#ffc4ba;
-  border: 1px solid red;
+  background-color:#ffe6e2;
+  border: 1px solid #f35b42;
 }
 
 /* H2 (MessageHeadline) font size, family, color, and some more settings for the different Status Messages */
