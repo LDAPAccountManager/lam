@@ -27,7 +27,8 @@
 	--lam-default-input-bg-color-hover: #ededed;
 	--lam-disabled-opacity: .35;
 	--lam-default-border-radius: 3px;
-	--lam-small-space: 0.5rem;
+	--lam-small-space: 0.25rem;
+	--lam-smaller-space: 0.1rem;
 }
 
 
@@ -68,18 +69,19 @@ body.lam-selfservice {
 
 /* links */
 a {
-color: #222222;
-text-decoration: none;
+  color: #222222;
+  text-decoration: none;
+  margin: var(--lam-small-space);
 }
 
 a:link {
-color: #222222;
-text-decoration: none;
+  color: #222222;
+  text-decoration: none;
 }
 
 a:visited {
-color: #222222;
-text-decoration: none;
+  color: #222222;
+  text-decoration: none;
 }
 
 a:hover {
@@ -123,7 +125,7 @@ color:black;
 }
 
 button {
-	margin: 0.2rem;
+	margin: var(--lam-small-space);
 	background: var(--lam-default-input-bg-color);
 	border: 1px solid #c5c5c5;
 	border-radius: var(--lam-default-border-radius);
@@ -154,17 +156,22 @@ select {
 	background:#F5F5F5 none repeat-x scroll 50% 50%;
 	border:1px solid #AAAAAA;
 	color:#222222;
-	margin: 3px;
+	margin: var(--lam-small-space);
 	border-radius: var(--lam-default-border-radius);
 }
 
 input {
-	margin: 3px;
+	margin: var(--lam-small-space);
 	border-radius: var(--lam-default-border-radius);
 }
 
 textarea {
-	margin: 3px;
+	margin: var(--lam-small-space);
+	border-radius: var(--lam-default-border-radius);
+}
+
+.lam-margin-smaller {
+	margin: var(--lam-smaller-space);
 }
 
 .margin2 {
@@ -261,11 +268,8 @@ textarea {
 }
 
 table.lamHeader {
-  background-image: url(lam-images/headerLine.png);
-  background-repeat: repeat-x;
-  background-size: contain;
   padding: 0px;
-  height: 35px;
+  height: 30px;
   margin-bottom: 0.5rem;
 }
 
@@ -295,7 +299,7 @@ table.accountlist input[type='text'] {
 
 .lam-listtools {
 	white-space: nowrap;
-	width: 125px;
+	width: 10rem;
 }
 
 .lam-list-buttons {
@@ -303,7 +307,7 @@ table.accountlist input[type='text'] {
 }
 
 .lam-listouselection-height {
-	height: 27px;
+	height: 2rem;
 }
 
 table.collapse {

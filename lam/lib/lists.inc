@@ -325,7 +325,6 @@ class lamList {
 						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
 				$link = new htmlLink(null, $linkHref, '../../graphics/go-first.png');
 				$link->setTitle(_('Jump to first page'));
-				$link->setCSSClasses(array('margin5'));
 				$navGroup->addElement($link);
 			}
 			if ($this->page > 11) {
@@ -333,7 +332,6 @@ class lamList {
 						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
 				$link = new htmlLink(null, $linkHref, '../../graphics/go-previous.png');
 				$link->setTitle(_('Jump 10 pages backward'));
-				$link->setCSSClasses(array('margin5'));
 				$navGroup->addElement($link);
 			}
 			$pageCount =  ceil($count / $this->maxPageEntries);
@@ -357,7 +355,6 @@ class lamList {
 					$linkHref = "list.php?type=" . $this->type->getId() . "&norefresh=true&page=" . ($i + 1) .
 					"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
 					$link = new htmlLink(($i + 1), $linkHref);
-					$link->setCSSClasses(array('margin5'));
 					$navGroup->addElement($link);
 				}
 			}
@@ -366,7 +363,6 @@ class lamList {
 						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
 				$link = new htmlLink(null, $linkHref, '../../graphics/go-next.png');
 				$link->setTitle(_('Jump 10 pages forward'));
-				$link->setCSSClasses(array('margin5'));
 				$navGroup->addElement($link);
 			}
 			if ($this->page < $pageCount) {
@@ -374,7 +370,6 @@ class lamList {
 						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
 				$link = new htmlLink(null, $linkHref, '../../graphics/go-last.png');
 				$link->setTitle(_('Jump to last page'));
-				$link->setCSSClasses(array('margin5'));
 				$navGroup->addElement($link);
 			}
 		}
@@ -567,14 +562,14 @@ class lamList {
 		// edit link
 		$editLink = new htmlLink('', "../account/edit.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/edit.png');
 		$editLink->setTitle(_("Edit"));
-		$editLink->setCSSClasses(array('margin2'));
+		$editLink->setCSSClasses(array('lam-margin-smaller'));
 		$element->addElement($editLink);
 		$toolCount++;
 		// delete link
 		if (checkIfWriteAccessIsAllowed($this->type->getId()) && checkIfDeleteEntriesIsAllowed($this->type->getId())) {
 			$deleteLink = new htmlLink('', "deletelink.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/delete.png');
 			$deleteLink->setTitle(_("Delete"));
-			$deleteLink->setCSSClasses(array('margin2'));
+			$deleteLink->setCSSClasses(array('lam-margin-smaller'));
 			$element->addElement($deleteLink);
 			$toolCount++;
 		}
@@ -582,14 +577,14 @@ class lamList {
 		if (checkIfWriteAccessIsAllowed($this->type->getId()) && checkIfNewEntriesAreAllowed($this->type->getId())) {
 			$copyLink = new htmlLink('', "../account/edit.php?type=" . $this->type->getId() . "&copyDn='" . rawurlencode($account['dn']) . "'", '../../graphics/copy.png');
 			$copyLink->setTitle(_("Copy"));
-			$copyLink->setCSSClasses(array('margin2'));
+			$copyLink->setCSSClasses(array('lam-margin-smaller'));
 			$element->addElement($copyLink);
 			$toolCount++;
 		}
 		// PDF button
 		$pdfButton = new htmlButton("createPDF_" . $id, 'pdf.png', true);
 		$pdfButton->setTitle(_('Create PDF file'));
-		$pdfButton->setCSSClasses(array('margin2'));
+		$pdfButton->setCSSClasses(array('lam-margin-smaller'));
 		$element->addElement($pdfButton);
 		$toolCount++;
 		// password quick change
@@ -597,7 +592,7 @@ class lamList {
             && checkIfPasswordChangeIsAllowed() && checkIfWriteAccessIsAllowed($this->type->getId())) {
 	        $pwdChangeButton = new htmlLink('', "changePassword.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/key.png');
 	        $pwdChangeButton->setTitle(_('Change password'));
-	        $pwdChangeButton->setCSSClasses(array('margin2'));
+	        $pwdChangeButton->setCSSClasses(array('lam-margin-smaller'));
 	        $element->addElement($pwdChangeButton);
 	        $toolCount++;
         }
@@ -606,7 +601,7 @@ class lamList {
 		for ($i = 0; $i < sizeof($tools); $i++) {
 			$toolLink = new htmlLink('', $tools[$i]->getLinkTarget() . "?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/' . $tools[$i]->getImage());
 			$toolLink->setTitle($tools[$i]->getName());
-			$toolLink->setCSSClasses(array('margin2'));
+			$toolLink->setCSSClasses(array('lam-margin-smaller'));
 			$element->addElement($toolLink);
 			$toolCount++;
 		}
@@ -889,9 +884,8 @@ class lamList {
 			$suffixSelect->setRightToLeftTextDirection(true);
 			$suffixSelect->setSortElements(false);
 			$suffixSelect->setHasDescriptiveElements(true);
-			$suffixSelect->setCSSClasses(array('margin5', 'lam-listouselection-height'));
+			$suffixSelect->setCSSClasses(array('lam-listouselection-height'));
 			$group->addElement($suffixSelect);
-			$group->addElement(new htmlSpacer('5px', null));
 		}
 		return $group;
 	}
@@ -912,21 +906,21 @@ class lamList {
 			if (checkIfNewEntriesAreAllowed($this->type->getId())) {
 				$newButton = new htmlButton('new', $this->labels['newEntry']);
 				$newButton->setIconClass('createButton');
-				$newButton->setCSSClasses(array('fullwidth-mobile-only'));
+				$newButton->setCSSClasses(array('lam-listouselection-height fullwidth-mobile-only'));
 				$left->addElement($newButton);
 			}
 			// delete button
 			if (!$createOnly && checkIfDeleteEntriesIsAllowed($this->type->getId())) {
 				$delButton = new htmlButton('del', $this->labels['deleteEntry']);
 				$delButton->setIconClass('deleteButton');
-				$delButton->setCSSClasses(array('fullwidth-mobile-only'));
+				$delButton->setCSSClasses(array('lam-listouselection-height fullwidth-mobile-only'));
 				$left->addElement($delButton);
 			}
 			if ($this->type->getBaseType()->supportsFileUpload() && checkIfNewEntriesAreAllowed($this->type->getId())
 					&& $_SESSION['config']->isToolActive('toolFileUpload')) {
 				$uploadButton = new htmlButton('fileUpload', _('File upload'));
 				$uploadButton->setIconClass('upButton');
-				$uploadButton->setCSSClasses(array('fullwidth-mobile-only'));
+				$uploadButton->setCSSClasses(array('lam-listouselection-height fullwidth-mobile-only'));
 				$left->addElement($uploadButton);
 			}
 		}
@@ -936,13 +930,13 @@ class lamList {
 		$right->add($this->listShowOUSelection(), 12, 12, 10);
 		$rightButtonGroup = new htmlGroup();
 		$refreshButton = new htmlButton('refresh', 'refresh.png', true);
-		$refreshButton->setCSSClasses(array('margin5 lam-listouselection-height'));
+		$refreshButton->setCSSClasses(array('lam-listouselection-height'));
 		$refreshButton->setTitle(_("Refresh"));
 		$rightButtonGroup->addElement($refreshButton);
 		$settingsLink = new htmlLink('', '#', '../../graphics/tools.png');
 		$settingsLink->setOnClick('listShowSettingsDialog(\'' . _('Change list settings') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\');');
 		$settingsLink->setTitle(_('Change settings'));
-		$settingsLink->setCSSClasses(array('margin5 lam-listouselection-height'));
+		$settingsLink->setCSSClasses(array('lam-listouselection-height'));
 		$rightButtonGroup->addElement($settingsLink);
 		$right->add($rightButtonGroup, 12, 12, 2);
 
