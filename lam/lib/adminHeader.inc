@@ -153,23 +153,11 @@ foreach ($toSort as $key => $value) {
 				<ul>
 				<?php
 					foreach ($tools as $tool) {
-						$subTools = $tool->getSubTools();
 						echo '<li title="' . $tool->getDescription() . '">';
 						$link = $headerPrefix . '/templates/' . $tool->getLink();
 						echo '<a href="' . $link . "\">\n";
 						echo '<img class="max16" height="16px" width="16px" alt="" src="' . $headerPrefix . '/graphics/' . $tool->getImageLink() . '"> ' . $tool->getName();
 						echo "</a>\n";
-						if (sizeof($subTools) > 0) {
-							echo "<ul>\n";
-							foreach ($subTools as $subTool) {
-								echo "<li title=\"" . $subTool->description . "\">\n";
-								echo "<a href=\"" . $headerPrefix . '/templates/' . $subTool->link . "\">\n";
-								echo '<img class="max16" width="16px" height="16px" alt="" src="' . $headerPrefix . '/graphics/' . $subTool->image . '"> ' . $subTool->name;
-								echo "</a>\n";
-								echo "</li>\n";
-							}
-							echo "</ul>\n";
-						}
 						echo "</li>\n";
 					}
 				?>
