@@ -99,16 +99,15 @@ $userName = extractRDNValue($userData);
             <div style="margin-top: 5px;" class="lam-header-left lam-menu-stay">
                 <a href="https://www.ldap-account-manager.org/" target="new_window">
                     <img class="align-middle" width="24" height="24" alt="help" src="<?php echo $headerPrefix; ?>/graphics/logo24.png">
-                    <span class="hide-on-tablet">&nbsp;</span>
+                    <span class="hide-on-tablet">&nbsp;&nbsp;<?php echo $userName?></span>
                     <span class="hide-on-mobile">
                         <?php
                             echo getLAMVersionText();
                         ?>
                     </span>
                 </a>
-                <span class="hide-on-mobile lam-margin-small">
+                <span class="hide-on-mobile lam-margin-small">&nbsp;&nbsp;
                     <?php
-                    echo '&nbsp;&nbsp;';
                     $serverProfileLabel = $_SESSION['config']->getName() . ' - ';
                     $serverProfilesPersistenceManager = new ServerProfilePersistenceManager();
                     try {
@@ -120,7 +119,7 @@ $userName = extractRDNValue($userData);
                     catch (LAMException $e) {
 	                    logNewMessage(LOG_ERR, 'Unable to read server profiles: ' . $e->getTitle());
                     }
-                    echo '(' . $serverProfileLabel . $userName . ')';
+                    echo $serverProfileLabel . $userName;
                     ?>
                 </span>
             </div>
