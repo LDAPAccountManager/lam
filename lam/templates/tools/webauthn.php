@@ -59,7 +59,7 @@ checkIfToolIsActive('toolWebauthn');
 setlanguage();
 
 include __DIR__ . '/../../lib/adminHeader.inc';
-echo '<div class="user-bright smallPaddingContent">';
+echo '<div class="smallPaddingContent">';
 echo "<form id='webauthnform' action=\"webauthn.php\" method=\"post\">\n";
 $tabindex = 1;
 $container = new htmlResponsiveRow();

@@ -218,7 +218,7 @@ foreach ($profileClasses as $profileClass) {
 }
 
 include __DIR__ . '/../../lib/adminHeader.inc';
-echo "<div class=\"user-bright smallPaddingContent\">\n";
+echo "<div class=\"smallPaddingContent\">\n";
 echo "<form name=\"profilemainForm\" action=\"profilemain.php\" method=\"post\">\n";
 echo '<input type="hidden" name="' . getSecurityTokenName() . '" value="' . getSecurityTokenValue() . '">';
 

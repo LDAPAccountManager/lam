@@ -2,7 +2,7 @@
 namespace LAM\CONFIG;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2020  Roland Gruber
+  Copyright (C) 2017 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -139,7 +139,7 @@ function printConfigurationPageTabs($active) {
 
 	// tabs
 	?>
-	<div class="ui-tabs ui-corner-all ui-widget ui-widget-content user-bright">
+	<div class="ui-tabs ui-corner-all ui-widget ui-widget-content">
 
 		<ul class="ui-tabs-nav ui-corner-all ui-helper-reset ui-helper-clearfix ui-widget-header">
 	<?php

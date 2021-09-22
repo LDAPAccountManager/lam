@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2019  Roland Gruber
+  Copyright (C) 2003 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -185,7 +185,7 @@ $newSuffixes = str_replace("'", "", $newSuffixes);
 $newSuffixes = explode(";", $newSuffixes);
 
 include __DIR__ . '/../lib/adminHeader.inc';
-	echo '<div class="user-bright smallPaddingContent">';
+	echo '<div class="smallPaddingContent">';
 	echo "<form action=\"initsuff.php\" method=\"post\">\n";
 	$container = new htmlResponsiveRow();
 	$container->add(new htmlOutputText(_("The following suffixes are missing in LDAP. LAM can create them for you.")), 12);

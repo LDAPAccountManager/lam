@@ -11,7 +11,7 @@ use function \LAM\SCHEMA\get_cached_schema;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2007 - 2018  Roland Gruber
+  Copyright (C) 2007 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -50,14 +50,16 @@ startSecureSession();
 enforceUserIsLoggedIn();
 
 // die if no write access
-if (!checkIfWriteAccessIsAllowed()) die();
+if (!checkIfWriteAccessIsAllowed()) {
+	die();
+}
 
 checkIfToolIsActive('toolTests');
 
 setlanguage();
 
 include '../../lib/adminHeader.inc';
-echo "<div class=\"user-bright smallPaddingContent\">\n";
+echo "<div class=\"smallPaddingContent\">\n";
 
 $container = new htmlResponsiveRow();
 
@@ -160,5 +162,3 @@ function getRecursiveAttributesFromObjectClass($oClass) {
 	}
 	return $attrs;
 }
-
-?>

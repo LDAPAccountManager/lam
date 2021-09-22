@@ -11,7 +11,7 @@ use \htmlStatusMessage;
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-	Copyright (C) 2007 - 2019  Roland Gruber
+	Copyright (C) 2007 - 2021  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -112,7 +112,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	$_SESSION[$sessionKey] = new \accountContainer($type, $sessionKey);
 	// Show HTML Page
 	include '../lib/adminHeader.inc';
-	echo "<div class=\"" . $type->getScope() . "-bright smallPaddingContent\">";
+	echo "<div class=\"smallPaddingContent\">";
 	echo "<br>\n";
 	echo "<form action=\"delete.php\" method=\"post\">\n";
 	$tabindex = 1;
@@ -186,7 +186,7 @@ if (isset($_POST['delete'])) {
 	// Show HTML Page
 	include __DIR__ . '/../lib/adminHeader.inc';
 	echo "<form action=\"delete.php\" method=\"post\">\n";
-	echo "<div class=\"" . $type->getScope() . "-bright smallPaddingContent\"><br>\n";
+	echo "<div class=\"smallPaddingContent\"><br>\n";
 	$container = new htmlResponsiveRow();
 	addSecurityTokenToMetaHTML($container);
 	$container->add(new htmlHiddenInput('type', $type->getId()), 12);

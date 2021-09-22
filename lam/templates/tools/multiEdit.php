@@ -98,7 +98,7 @@ else {
 function displayStartPage() {
 	// display main page
 	include __DIR__ . '/../../lib/adminHeader.inc';
-	echo '<div class="user-bright smallPaddingContent">';
+	echo '<div class="smallPaddingContent">';
 	echo "<form action=\"multiEdit.php\" method=\"post\">\n";
 	$errors = array();
 	$tabindex = 1;

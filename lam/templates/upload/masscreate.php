@@ -144,7 +144,7 @@ $divClass = 'user';
 if (isset($_REQUEST['type'])) {
 	$divClass = htmlspecialchars(\LAM\TYPES\getScopeFromTypeId($_REQUEST['type']));
 }
-echo '<div class="' . $divClass . '-bright smallPaddingContent">';
+echo '<div class="smallPaddingContent">';
 echo "<form enctype=\"multipart/form-data\" action=\"masscreate.php\" method=\"post\">\n";
 
 $tabindex = 1;
@@ -259,7 +259,7 @@ include __DIR__ . '/../../lib/adminFooter.inc';
 */
 function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 	$scope = $type->getScope();
-	echo '<div class="' . $scope . '-bright smallPaddingContent">';
+	echo '<div class="smallPaddingContent">';
 	// get input fields from modules
 	$columns = getUploadColumns($type, $selectedModules);
 	$modules = array_keys($columns);

@@ -194,7 +194,7 @@ $modules = join(',',$modules);
 // print header
 include __DIR__ . '/../../lib/adminHeader.inc';
 ?>
-	<div class="user-bright smallPaddingContent">
+	<div class="smallPaddingContent">
 <?php
 
 // print error messages if any

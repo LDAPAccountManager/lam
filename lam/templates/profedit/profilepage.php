@@ -145,7 +145,7 @@ if (isset($_POST['save'])) {
 
 // print header
 include __DIR__ . '/../../lib/adminHeader.inc';
-echo '<div class="user-bright smallPaddingContent">';
+echo '<div class="smallPaddingContent">';
 
 // print error messages if any
 if (sizeof($errors) > 0) {

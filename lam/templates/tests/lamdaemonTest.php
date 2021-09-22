@@ -16,7 +16,7 @@ use LAMException;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2020  Roland Gruber
+  Copyright (C) 2006 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -61,7 +61,7 @@ checkIfToolIsActive('toolTests');
 setlanguage();
 
 include '../../lib/adminHeader.inc';
-echo "<div class=\"user-bright smallPaddingContent\">\n";
+echo "<div class=\"smallPaddingContent\">\n";
 echo "<form action=\"lamdaemonTest.php\" method=\"post\">\n";
 
 $container = new htmlResponsiveRow();
@@ -287,5 +287,3 @@ function lamRunTestSuite($serverName, $serverTitle, $testQuota, $container) {
 	$endMessage->colspan = 5;
 	$container->add($endMessage, 12);
 }
-
-?>

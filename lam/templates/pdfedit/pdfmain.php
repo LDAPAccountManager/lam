@@ -327,7 +327,7 @@ foreach ($templateClasses as $templateClass) {
 include __DIR__ . '/../../lib/adminHeader.inc';
 
 ?>
-<div class="user-bright smallPaddingContent">
+<div class="smallPaddingContent">
 <form enctype="multipart/form-data" action="pdfmain.php" method="post" name="pdfmainForm" >
 <input type="hidden" name="<?php echo getSecurityTokenName(); ?>" value="<?php echo getSecurityTokenValue(); ?>">
 	<?php

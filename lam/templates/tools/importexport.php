@@ -105,7 +105,7 @@ if (!empty($_GET['tab']) && ($_GET['tab'] === 'export')) {
 </script>
 
 <div class="smallPaddingContent">
-	<div id="tabs" class="user-bright">
+	<div id="tabs">
 		<ul>
 			<li id="tab_import">
 				<a href="#tab-import"><img alt="import" src="../../graphics/import.png"> <?php echo _('Import') ?> </a>
