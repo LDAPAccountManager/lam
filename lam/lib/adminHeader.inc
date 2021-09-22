@@ -21,10 +21,14 @@ namespace LAM\HEADER;
 
 */
 
+use htmlContentLink;
 use htmlDiv;
 use htmlGroup;
+use htmlImage;
 use htmlLink;
+use htmlOutputText;
 use htmlResponsiveRow;
+use htmlSpan;
 use LAMException;
 use ServerProfilePersistenceManager;
 
@@ -143,6 +147,7 @@ $userName = extractRDNValue($userData);
             ?>
                 <?php
                 if (sizeof($tools) > 0) {
+                    $toolGroup = new htmlGroup();
                     $row = new htmlResponsiveRow();
 	                foreach ($tools as $tool) {
 		                $link = $headerPrefix . '/templates/' . $tool->getLink();
@@ -150,44 +155,46 @@ $userName = extractRDNValue($userData);
 	                    $row->add($toolLink, 12, 6);
 	                }
 	                $toolDiv = new htmlDiv('tool-popup', $row, array('hidden tool-popup'));
+	                $toolGroup->addElement($toolDiv);
+	                $toolLinkContent = new htmlGroup();
+	                $toolLinkImage = new htmlImage($headerPrefix . '/graphics/tools.png', '16px', '16px');
+	                $toolLinkImage->setCSSClasses(array('align-middle'));
+	                $toolLinkContent->addElement($toolLinkImage);
+	                $toolLinkSpan = new htmlSpan(new htmlOutputText('&nbsp;&nbsp;' . _('Tools'), false) , array('padding0'));
+	                $toolLinkContent->addElement($toolLinkSpan);
+	                $toolLink = new htmlContentLink($toolLinkContent, "javascript:void(0);");
+	                $toolLink->setOnClick("showSimpleDialog('" . _('Tools') . "', null, '" . _('Close') . "', null, 'tool-popup');");
+	                $toolLink->setCSSClasses(array('lam-header-right', 'lam-menu-entry'));
+	                $toolGroup->addElement($toolLink);
 
                     $tabIndex = 0;
-                    parseHtml(null, $toolDiv, array(), false, $tabIndex, null);
-                ?>
-                    <a
-                            class="lam-header-right lam-menu-entry"
-                            href="javascript:void(0);"
-                            onclick="showSimpleDialog('<?php echo _('Tools') ?>', null, '<?php echo _('Close') ?>', null, 'tool-popup');">
-                        <img class="align-middle" height="16" width="16" alt="tools" src="<?php echo $headerPrefix; ?>/graphics/tools.png">
-                        <span class="padding0">&nbsp;<?php echo _("Tools") ?></span>
-                    </a>
-                <?php
+                    parseHtml(null, $toolGroup, array(), false, $tabIndex, null);
+                }
+                $typeManager = new \LAM\TYPES\TypeManager();
+                $types = $typeManager->getConfiguredTypes();
+                if (!empty($types)) {
+                    $accountTypesGroup = new htmlGroup();
+	                $row = new htmlResponsiveRow();
+	                foreach ($types as $type) {
+		                $link = $headerPrefix . '/templates/lists/list.php?type=' . $type->getId();
+		                $accountTypeLink = new htmlLink($type->getAlias(), $link, $headerPrefix . '/graphics/' . $type->getIcon());
+		                $row->add($accountTypeLink, 12, 6);
+	                }
+	                $accountTypesDiv = new htmlDiv('account-types-popup', $row, array('hidden account-types-popup'));
+	                $accountTypesGroup->addElement($accountTypesDiv);
+                    $accountTypesLinkContent = new htmlGroup();
+                    $accountTypesLinkImage = new htmlImage($headerPrefix . '/graphics/gear.png', '16px', '16px');
+                    $accountTypesLinkImage->setCSSClasses(array('align-middle'));
+                    $accountTypesLinkContent->addElement($accountTypesLinkImage);
+                    $accountTypesLinkSpan = new htmlSpan(new htmlOutputText('&nbsp;&nbsp;' . _('Accounts'), false) , array('padding0'));
+                    $accountTypesLinkContent->addElement($accountTypesLinkSpan);
+                    $accountTypesLink = new htmlContentLink($accountTypesLinkContent, "javascript:void(0);");
+                    $accountTypesLink->setOnClick("showSimpleDialog('" . _('Accounts') . "', null, '" . _('Close') . "', null, 'account-types-popup');");
+                    $accountTypesLink->setCSSClasses(array('lam-header-right', 'lam-menu-entry'));
+                    $accountTypesGroup->addElement($accountTypesLink);
+
+	                parseHtml(null, $accountTypesGroup, array(), false, $tabIndex, null);
                 }
                 ?>
 
 </div>
-
-
-<?php
-printTypeTabs($headerPrefix);
-
-function printTypeTabs($headerPrefix) {
-    echo '<div class="ui-tabs ui-corner-all ui-widget ui-widget-content">';
-    echo '<ul class="ui-tabs-nav ui-corner-all ui-helper-reset ui-helper-clearfix ui-widget-header">';
-    $typeManager = new \LAM\TYPES\TypeManager();
-    $types = $typeManager->getConfiguredTypes();
-    foreach ($types as $type) {
-        if ($type->isHidden()) {
-            continue;
-        }
-        $link = '<a class="ui-tabs-anchor" href="' . $headerPrefix . '/templates/lists/list.php?type=' . $type->getId() .
-        '" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">' .
-        '<img height="16" width="16" alt="' . $type->getId() . '" src="' . $headerPrefix . '/graphics/' . $type->getIcon() . '">&nbsp;' .
-        $type->getAlias() . '</a>';
-        echo '<li id="tab_' . $type->getId() . '" class="ui-tabs-tab ui-corner-top ui-state-default ui-tab">';
-        echo $link;
-        echo "</li>\n";
-    }
-    echo '</ul>';
-}
-

@@ -200,8 +200,6 @@ class lamList {
 		// config dialog
 		$this->listPrintConfigurationPage();
 		// show form
-		echo "<div class=\"ui-tabs-panel ui-widget-content ui-corner-bottom\">";
-		echo "<div id=\"listTabContentArea\">\n";
 		echo "<form action=\"list.php?type=" . $this->type->getId() . "&amp;norefresh=true\" method=\"post\">\n";
 		// draw account list if accounts were found
 		if (sizeof($this->entries) > 0) {
@@ -961,6 +959,8 @@ class lamList {
 	 */
 	private function printHeader() {
 		include 'adminHeader.inc';
+		$title = new htmlTitle($this->type->getAlias());
+		parseHtml(null, $title, array(), true, $this->tabindex, null);
 		$this->printHeaderContent();
 	}
 
@@ -985,7 +985,7 @@ class lamList {
 	protected function printFooterContent() {
 		?>
 		<input type="hidden" name="<?php echo getSecurityTokenName(); ?>" value="<?php echo getSecurityTokenValue(); ?>">
-			</form></div></div>
+			</form>
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
 					jQuery('#tab_<?php echo $this->type->getId(); ?>').addClass('ui-tabs-active');
