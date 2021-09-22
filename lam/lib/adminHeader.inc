@@ -21,6 +21,10 @@ namespace LAM\HEADER;
 
 */
 
+use htmlDiv;
+use htmlGroup;
+use htmlLink;
+use htmlResponsiveRow;
 use LAMException;
 use ServerProfilePersistenceManager;
 
@@ -33,13 +37,13 @@ use ServerProfilePersistenceManager;
 
 $headerPrefix = "";
 if (is_file("login.php")) {
-	$headerPrefix = "..";
+    $headerPrefix = "..";
 }
 elseif (is_file("../../templates/login.php")) {
-	$headerPrefix = "../..";
+    $headerPrefix = "../..";
 }
 elseif (is_file("../../../templates/login.php")) {
-	$headerPrefix = "../../..";
+    $headerPrefix = "../../..";
 }
 
 /** tool definitions */
@@ -47,7 +51,7 @@ include_once(__DIR__ . "/tools.inc");
 
 $pro = '';
 if (isLAMProVersion()) {
-	$pro = ' Pro';
+    $pro = ' Pro';
 }
 
 // HTML header and title
@@ -64,145 +68,127 @@ $availableTools = getTools();
 // sort tools
 $toSort = array();
 foreach ($availableTools as $myTool) {
-	if ($myTool->getRequiresWriteAccess() && !checkIfWriteAccessIsAllowed()) {
-		continue;
-	}
-	if ($myTool->getRequiresPasswordChangeRights() && !checkIfPasswordChangeIsAllowed()) {
-		continue;
-	}
-	// check visibility
-	if (!$myTool->isVisible()) {
-		continue;
-	}
-	// check if hidden by config
+    if ($myTool->getRequiresWriteAccess() && !checkIfWriteAccessIsAllowed()) {
+        continue;
+    }
+    if ($myTool->getRequiresPasswordChangeRights() && !checkIfPasswordChangeIsAllowed()) {
+        continue;
+    }
+    // check visibility
+    if (!$myTool->isVisible()) {
+        continue;
+    }
+    // check if hidden by config
     $toolClass = get_class($myTool);
-	$toolName = substr($toolClass, strrpos($toolClass, '\\') + 1);
-	if (!$_SESSION['config']->isToolActive($toolName)) {
-		continue;
-	}
-	$toSort[$toolClass] = $myTool->getPosition();
+    $toolName = substr($toolClass, strrpos($toolClass, '\\') + 1);
+    if (!$_SESSION['config']->isToolActive($toolName)) {
+        continue;
+    }
+    $toSort[$toolClass] = $myTool->getPosition();
 }
 asort($toSort);
 $tools = array();
 foreach ($toSort as $key => $value) {
-	$tools[] = new $key();
+    $tools[] = new $key();
 }
+$userData = $_SESSION['ldap']->getUserName();
+$userName = extractRDNValue($userData);
 ?>
 
-<table border=0 width="100%" class="lamHeader ui-corner-all">
-	<tr>
-		<td align="left" height="30" class="nowrap">
-			<a class="lamLogo" href="https://www.ldap-account-manager.org/" target="new_window">
-				<span class="hide-on-tablet">&nbsp;</span>
-				<span class="hide-on-mobile">
-				<?php
-				echo getLAMVersionText();
-				?>
-				</span>
-			</a>
-		</td>
-		<td align="left" height="30" class="nowrap header-user-label">
-			<?php
-				$userData = $_SESSION['ldap']->getUserName();
-				$userName = extractRDNValue($userData);
-			?>
-			<span class="hide-on-mobile">
-			<?php
-				echo '&nbsp;&nbsp;<small title="' . $userData . '">';
-				$serverProfileLabel = $_SESSION['config']->getName() . ' - ';
-				$serverProfilesPersistenceManager = new ServerProfilePersistenceManager();
-                try {
-                    $serverProfileNames = $serverProfilesPersistenceManager->getProfiles();
-	                if (sizeof($serverProfileNames) < 2) {
-		                $serverProfileLabel = '';
+<div id="lam-topnav" class="lam-header">
+            <div style="margin-top: 5px;" class="lam-header-left lam-menu-stay">
+                <a href="https://www.ldap-account-manager.org/" target="new_window">
+                    <img class="align-middle" width="24" height="24" alt="help" src="<?php echo $headerPrefix; ?>/graphics/logo24.png">
+                    <span class="hide-on-tablet">&nbsp;</span>
+                    <span class="hide-on-mobile">
+                        <?php
+                            echo getLAMVersionText();
+                        ?>
+                    </span>
+                </a>
+                <span class="hide-on-mobile lam-margin-small">
+                    <?php
+                    echo '&nbsp;&nbsp;';
+                    $serverProfileLabel = $_SESSION['config']->getName() . ' - ';
+                    $serverProfilesPersistenceManager = new ServerProfilePersistenceManager();
+                    try {
+	                    $serverProfileNames = $serverProfilesPersistenceManager->getProfiles();
+	                    if (sizeof($serverProfileNames) < 2) {
+		                    $serverProfileLabel = '';
+	                    }
+                    }
+                    catch (LAMException $e) {
+	                    logNewMessage(LOG_ERR, 'Unable to read server profiles: ' . $e->getTitle());
+                    }
+                    echo '(' . $serverProfileLabel . $userName . ')';
+                    ?>
+                </span>
+            </div>
+            <a class="lam-header-right lam-menu-icon hide-on-tablet" href="javascript:void(0);" class="icon" onclick="window.lam.topmenu.toggle();">
+                <img class="align-middle" width="16" height="16" alt="menu" src="<?php echo $headerPrefix; ?>/graphics/menu.svg">
+                <span class="padding0">&nbsp;</span>
+            </a>
+            <a class="lam-header-right lam-menu-entry" href="<?php echo $headerPrefix; ?>/templates/logout.php" target="_top">
+                <img class="align-middle" height="16" width="16" alt="logout" src="<?php echo $headerPrefix; ?>/graphics/exit.png">
+                <span class="padding0">&nbsp;<?php echo _("Logout") ?></span>
+            </a>
+            <?php
+            if (is_dir(dirname(__FILE__) . '/../docs/manual')) {
+            ?>
+                <a class="lam-header-right lam-menu-entry" target="_blank" href="<?php echo $headerPrefix; ?>/docs/manual/index.html">
+                    <img class="align-middle" width="16" height="16" alt="help" src="<?php echo $headerPrefix; ?>/graphics/help.png">
+                    <span class="padding0">&nbsp;<?php echo _("Help") ?></span>
+                </a>
+            <?php
+            }
+            ?>
+                <?php
+                if (sizeof($tools) > 0) {
+                    $row = new htmlResponsiveRow();
+	                foreach ($tools as $tool) {
+		                $link = $headerPrefix . '/templates/' . $tool->getLink();
+	                    $toolLink = new htmlLink($tool->getName(), $link, $headerPrefix . '/graphics/' . $tool->getImageLink());
+	                    $row->add($toolLink, 12, 6);
 	                }
-                }
-                catch (LAMException $e) {
-                    logNewMessage(LOG_ERR, 'Unable to read server profiles: ' . $e->getTitle());
-                }
-				echo '(' . $serverProfileLabel . $userName . ')';
-				echo '</small>';
-			?>
-			</span>
-			<span class="hide-on-tablet">
-			<?php
-				echo '&nbsp;&nbsp;<small title="' . $userData . '">';
-				echo $userName;
-				echo '</small>';
-			?>
-			</span>
-			<?php
-				$userData = null;
-			?>
-		</td>
-	<td align="right" height=30 width="100%">
-	<ul id="dropmenu" class="dropmenu">
-		<li><a href="<?php echo $headerPrefix; ?>/templates/logout.php" target="_top"><img class="align-middle" height="16" width="16" alt="logout" src="<?php echo $headerPrefix; ?>/graphics/exit.png"><span class="hide-on-mobile padding0">&nbsp;<?php echo _("Logout") ?></span></a></li>
-		<?php
-		if (is_dir(dirname(__FILE__) . '/../docs/manual')) {
-		?>
-	    <li>
-			<a target="_blank" href="<?php echo $headerPrefix; ?>/docs/manual/index.html"><img class="align-middle" width="16" height="16" alt="help" src="<?php echo $headerPrefix; ?>/graphics/help.png"><span class="hide-on-mobile padding0">&nbsp;<?php echo _("Help") ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></a>
-		</li>
-		<?php
-		}
-		if (sizeof($tools) > 0) {
-		?>
-		<li>
-			<a href="<?php echo $headerPrefix; ?>/templates/tools.php"><img class="align-middle" height="16" width="16" alt="tools" src="<?php echo $headerPrefix; ?>/graphics/tools.png"><span class="hide-on-mobile padding0">&nbsp;<?php echo _("Tools") ?></span></a>
-				<ul>
-				<?php
-					foreach ($tools as $tool) {
-						echo '<li title="' . $tool->getDescription() . '">';
-						$link = $headerPrefix . '/templates/' . $tool->getLink();
-						echo '<a href="' . $link . "\">\n";
-						echo '<img class="max16" height="16px" width="16px" alt="" src="' . $headerPrefix . '/graphics/' . $tool->getImageLink() . '"> ' . $tool->getName();
-						echo "</a>\n";
-						echo "</li>\n";
-					}
-				?>
-			</ul>
-		</li>
-		<?php
-		}
-		?>
-	</ul>
-	</td>
-	</tr>
-</table>
+	                $toolDiv = new htmlDiv('tool-popup', $row, array('hidden tool-popup'));
 
-<script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery('#dropmenu').dropmenu({
-		effect  : 'slide',
-		nbsp    : true,
-		timeout : 350,
-		speed   : 'fast'
-	});
-});
-</script>
+                    $tabIndex = 0;
+                    parseHtml(null, $toolDiv, array(), false, $tabIndex, null);
+                ?>
+                    <a
+                            class="lam-header-right lam-menu-entry"
+                            href="javascript:void(0);"
+                            onclick="showSimpleDialog('<?php echo _('Tools') ?>', null, '<?php echo _('Close') ?>', null, 'tool-popup');">
+                        <img class="align-middle" height="16" width="16" alt="tools" src="<?php echo $headerPrefix; ?>/graphics/tools.png">
+                        <span class="padding0">&nbsp;<?php echo _("Tools") ?></span>
+                    </a>
+                <?php
+                }
+                ?>
+
+</div>
 
 
 <?php
 printTypeTabs($headerPrefix);
 
 function printTypeTabs($headerPrefix) {
-	echo '<div class="ui-tabs ui-corner-all ui-widget ui-widget-content">';
-	echo '<ul class="ui-tabs-nav ui-corner-all ui-helper-reset ui-helper-clearfix ui-widget-header">';
-	$typeManager = new \LAM\TYPES\TypeManager();
-	$types = $typeManager->getConfiguredTypes();
-	foreach ($types as $type) {
-		if ($type->isHidden()) {
-			continue;
-		}
-		$link = '<a class="ui-tabs-anchor" href="' . $headerPrefix . '/templates/lists/list.php?type=' . $type->getId() .
-		'" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">' .
-		'<img height="16" width="16" alt="' . $type->getId() . '" src="' . $headerPrefix . '/graphics/' . $type->getIcon() . '">&nbsp;' .
-		$type->getAlias() . '</a>';
-		echo '<li id="tab_' . $type->getId() . '" class="ui-tabs-tab ui-corner-top ui-state-default ui-tab">';
-		echo $link;
-		echo "</li>\n";
-	}
-	echo '</ul>';
+    echo '<div class="ui-tabs ui-corner-all ui-widget ui-widget-content">';
+    echo '<ul class="ui-tabs-nav ui-corner-all ui-helper-reset ui-helper-clearfix ui-widget-header">';
+    $typeManager = new \LAM\TYPES\TypeManager();
+    $types = $typeManager->getConfiguredTypes();
+    foreach ($types as $type) {
+        if ($type->isHidden()) {
+            continue;
+        }
+        $link = '<a class="ui-tabs-anchor" href="' . $headerPrefix . '/templates/lists/list.php?type=' . $type->getId() .
+        '" onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">' .
+        '<img height="16" width="16" alt="' . $type->getId() . '" src="' . $headerPrefix . '/graphics/' . $type->getIcon() . '">&nbsp;' .
+        $type->getAlias() . '</a>';
+        echo '<li id="tab_' . $type->getId() . '" class="ui-tabs-tab ui-corner-top ui-state-default ui-tab">';
+        echo $link;
+        echo "</li>\n";
+    }
+    echo '</ul>';
 }
 

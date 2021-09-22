@@ -1185,8 +1185,6 @@ lib/3rdParty/Psr                                                     B  2012  PH
 lib/3rdParty/yubico/Yubico.php                                       C  2015  Yubico AB
 templates/lib/*jquery*.js                                            B  2018  jQuery Foundation and other contributors
 style/120_jquery-ui*.css                                             B  2016  jQuery Foundation and other contributors
-templates/lib/*jquery-dropmenu-*.js                                  B  2010  Fred Heusschen
-style/150_jquery-dropmenu*.css                                       B  2010  Fred Heusschen
 templates/lib/*jquery-fineuploader-*.js                              B  2010  Andrew Valums
 style/150_jquery-fineuploader*.css                                   B  2010  Andrew Valums
 templates/lib/*jquery-validationEngine-*.js                          B  2010  Cedric Dugas and Olivier Refalo

@@ -2683,6 +2683,18 @@ window.lam.treeview.pasteNode = function (tokenName, tokenValue, node, tree) {
 	});
 }
 
+window.lam.topmenu = window.lam.topmenu || {};
+
+window.lam.topmenu.toggle = function() {
+	var topnav = document.getElementById('lam-topnav');
+	if (topnav.className == 'lam-header') {
+		topnav.className = 'lam-header lam-header-open';
+	}
+	else {
+		topnav.className = 'lam-header';
+	}
+}
+
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();
 	window.lam.form.autoTrim();

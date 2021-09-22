@@ -25,10 +25,14 @@
 :root {
 	--lam-default-input-bg-color: #f6f6f6;
 	--lam-default-input-bg-color-hover: #ededed;
+	--lam-dark-grey: #cacaca;
 	--lam-disabled-opacity: .35;
 	--lam-default-border-radius: 3px;
+	--lam-regular-space: 0.5rem;
 	--lam-small-space: 0.25rem;
 	--lam-smaller-space: 0.1rem;
+	--lam-large-space: 1rem;
+	--lam-larger-space: 2rem;
 }
 
 
@@ -168,6 +172,10 @@ input {
 textarea {
 	margin: var(--lam-small-space);
 	border-radius: var(--lam-default-border-radius);
+}
+
+.lam-margin-small {
+	margin: var(--lam-small-space);
 }
 
 .lam-margin-smaller {
@@ -589,13 +597,13 @@ a.lamLogo {
 	background-image: url(../graphics/logo24.png);
 	background-repeat: no-repeat;
 	background-position: left;
-	line-height: 24px;
-	display: block;
-	text-indent:32px;
 	vertical-align: middle;
 	white-space: nowrap;
 	margin-left: 5px;
-	float: left;
+}
+
+a.lamLogo span {
+	margin-left: 32px;
 }
 
 input.markFail {
