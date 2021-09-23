@@ -3,6 +3,9 @@ September 2021 7.7
   - Send proper response code on failed login
   - LAM Pro:
    -> OpenLDAP 2FA support for TOTP
+  ->Fixed bugs:
+   -> Issues with list filter if only one result is found (241)
+   -> Allow to sync empty list of groups in group of names user module (242)
 
 05.07.2021 7.6
   - Allow to store whole LAM configuration in MySQL database
