@@ -728,6 +728,10 @@ window.lam.filterSelect.filterStandard = function(inputField, selectField) {
 			selectField.append(newOption);
 		}
 	});
+	// select first entry for single-selects
+	if ((selectField[0].size === 1) && selectField[0].onchange) {
+		selectField[0].onchange();
+	}
 }
 
 /**
