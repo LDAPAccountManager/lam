@@ -6,6 +6,7 @@ September 2021 7.7
   ->Fixed bugs:
    -> Issues with list filter if only one result is found (241)
    -> Allow to sync empty list of groups in group of names user module (242)
+   -> Windows lockout duration and password maximum age computed incorrectly
 
 05.07.2021 7.6
   - Allow to store whole LAM configuration in MySQL database
