@@ -1,4 +1,4 @@
-September 2021 7.7
+30.09.2021 7.7
   - 2-factor authentication with OpenID
   - Send proper response code on failed login
   - LAM Pro:
@@ -8,6 +8,7 @@ September 2021 7.7
    -> Allow to sync empty list of groups in group of names user module (242)
    -> Windows lockout duration and password maximum age computed incorrectly
    -> Wrong status for nsAccountLock (245)
+
 
 05.07.2021 7.6
   - Allow to store whole LAM configuration in MySQL database
