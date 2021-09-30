@@ -1247,7 +1247,7 @@ class lamUserList extends lamList {
 	 * @return boolean account is deactivated
 	 */
 	public static function is389dsDeactivated(&$attrs) {
-		return (isset($attrs['nsaccountlock'][0]) && ($attrs['nsaccountlock'][0] == 'true'));
+		return (isset($attrs['nsaccountlock'][0]) && (strtolower($attrs['nsaccountlock'][0]) === 'true'));
 	}
 
 	/**
