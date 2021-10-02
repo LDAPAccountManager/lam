@@ -103,7 +103,7 @@ function printHeader(string $headerPrefix): void {
     ?>
 
     <div id="lam-topnav" class="lam-header">
-        <div style="margin-top: 5px;" class="lam-header-left lam-menu-stay">
+        <div class="lam-header-left lam-menu-stay">
             <a href="https://www.ldap-account-manager.org/" target="new_window">
                 <img class="align-middle" width="24" height="24" alt="help" src="<?php echo $headerPrefix; ?>/graphics/logo24.png">
                 <span class="hide-on-tablet">&nbsp;&nbsp;<?php echo $userName?></span>
@@ -111,7 +111,7 @@ function printHeader(string $headerPrefix): void {
                         <?php
                         echo getLAMVersionText();
                         ?>
-                    </span>
+                </span>
             </a>
             <span class="hide-on-mobile lam-margin-small">&nbsp;&nbsp;
                     <?php

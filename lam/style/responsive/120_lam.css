@@ -138,6 +138,7 @@ div.lam-header a {
 .lam-header-left {
 	float: left;
 	display: block;
+	margin-top: var(--lam-small-space);
 }
 
 .lam-header-right {
