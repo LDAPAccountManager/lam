@@ -784,7 +784,7 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 		// delete account profiles and PDF structures
 		$subDirs = array($dir . 'pdf/' . $name . '/logos', $dir . 'pdf/' . $name, $dir . 'profiles/' . $name);
 		for ($i = 0; $i < sizeof($subDirs); $i++) {
-			if (is_dir($subDirs[$i])) {
+			if (is_dir($subDirs[$i]) && is_readable($subDirs[$i])) {
 				$dirHandle = @opendir($subDirs[$i]);
 				while (false !== ($path = readdir($dirHandle))) {
 					if (($path != '.')  && ($path != '..') && !@unlink($subDirs[$i] . '/' . $path)) {

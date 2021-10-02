@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2018  Roland Gruber
+  Copyright (C) 2018 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -138,11 +138,11 @@ class ImporterTest extends TestCase {
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
-			"changeType: invalid",
+			"changetype: invalid",
 			"uid: test",
 		);
 
-		$this->expectException(LAMException::class, 'uid=test,dc=example,dc=com - changeType: invalid');
+		$this->expectException(LAMException::class, 'uid=test,dc=example,dc=com - changetype: invalid');
 
 		$importer = new Importer();
 		$tasks = $importer->getTasks($lines);
@@ -156,7 +156,7 @@ class ImporterTest extends TestCase {
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
-			"changeType: add",
+			"changetype: add",
 			"uid: test",
 		);
 
@@ -175,7 +175,7 @@ class ImporterTest extends TestCase {
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
-			"changeType: modrdn",
+			"changetype: modrdn",
 			"uid: test",
 		);
 
@@ -193,7 +193,7 @@ class ImporterTest extends TestCase {
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
-			"changeType: modrdn",
+			"changetype: modrdn",
 			"newrdn: uid1=test",
 			"deleteoldrdn: x",
 		);
@@ -212,7 +212,7 @@ class ImporterTest extends TestCase {
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
-			"changeType: modrdn",
+			"changetype: modrdn",
 			"newrdn: uid1=test",
 			"deleteoldrdn: 0",
 		);
@@ -232,7 +232,7 @@ class ImporterTest extends TestCase {
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
-			"changeType: delete",
+			"changetype: delete",
 			"uid: test",
 		);
 
@@ -250,7 +250,7 @@ class ImporterTest extends TestCase {
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
-			"changeType: delete",
+			"changetype: delete",
 		);
 
 		$importer = new Importer();
@@ -268,7 +268,7 @@ class ImporterTest extends TestCase {
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
-			"changeType: modify",
+			"changetype: modify",
 			"invalid: test",
 		);
 
@@ -286,7 +286,7 @@ class ImporterTest extends TestCase {
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
-			"changeType: modify",
+			"changetype: modify",
 			"add: uid",
 			"uid: uid1",
 			"invalid: uid2"
@@ -306,7 +306,7 @@ class ImporterTest extends TestCase {
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
-			"changeType: modify",
+			"changetype: modify",
 			"add: uid",
 			"uid: uid1",
 			"uid: uid2"
@@ -337,7 +337,7 @@ class ImporterTest extends TestCase {
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
-			"changeType: modify",
+			"changetype: modify",
 			"add: uid",
 			"uid: uid1",
 			"uid: uid2",
@@ -380,7 +380,7 @@ class ImporterTest extends TestCase {
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
-			"changeType: modify",
+			"changetype: modify",
 			"delete: uid",
 			"uid: uid1",
 			"uid: uid2"
@@ -411,7 +411,7 @@ class ImporterTest extends TestCase {
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
-			"changeType: modify",
+			"changetype: modify",
 			"delete: uid",
 		);
 
@@ -437,7 +437,7 @@ class ImporterTest extends TestCase {
 			"version: 1",
 			"",
 			"dn: uid=test,dc=example,dc=com",
-			"changeType: modify",
+			"changetype: modify",
 			"replace: uid",
 			"uid: uid1",
 			"uid: uid2",

@@ -848,7 +848,7 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 	public function getPDFStructures(string $confName, string $typeId): array {
 		$return = array();
 		$path = __DIR__ . '/../config/pdf/' . $confName;
-		if (is_dir($path)) {
+		if (is_dir($path) && is_readable($path)) {
 			$dirHandle = opendir($path);
 			while($file = readdir($dirHandle)) {
 				$struct_file = explode('.', $file);
