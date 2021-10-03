@@ -23,6 +23,7 @@
 /* CSS layout for LAM */
 
 :root {
+	--lam-default-background-color: #FFFFFF;
 	--lam-default-input-bg-color: #f6f6f6;
 	--lam-default-input-bg-color-hover: #ededed;
 	--lam-dark-grey: #cacaca;
@@ -51,7 +52,7 @@ h1,h2,h3 {
 }
 
 body {
-  background-color:#FFFFFF;
+  background-color: var(--lam-default-background-color);
 }
 
 body.selfservice {
@@ -662,10 +663,15 @@ tr.account {
 	border-bottom: 1px solid #AAAAAA !important;
 }
 
-#lamVerticalTabs .ui-tabs-nav li.ui-tabs-selected {
+#lamVerticalTabs .ui-tabs-nav li.lam-tabs-selected {
 	padding-bottom: 0;
 	padding-right: .1em;
-	border: 1px solid #c5c5c5
+	border: 1px solid #c5c5c5;
+	background-color: var(--lam-default-background-color);
+}
+
+#lamVerticalTabs .ui-tabs-nav li:hover {
+	background-color: var(--lam-default-input-bg-color-hover);
 }
 
 #lamVerticalTabs .ui-tabs-nav {
