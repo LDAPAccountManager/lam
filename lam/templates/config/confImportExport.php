@@ -101,32 +101,32 @@ printHeaderContents(_("Import and export configuration"), '../..');
         // include all JavaScript files
         printJsIncludes('../..');
     ?>
-    <table class="lamTop ui-corner-all">
-        <tr>
-            <td align="left">
-                <a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">
-                    <span class="hide-on-tablet">&nbsp;</span>
-                    <span class="hide-on-mobile">
-                        <?php echo getLAMVersionText(); ?>
+    <div id="lam-topnav" class="lam-header">
+        <div class="lam-header-left lam-menu-stay">
+            <a href="https://www.ldap-account-manager.org/" target="new_window">
+                <img class="align-middle" width="24" height="24" alt="help" src="../../graphics/logo24.png">
+                <span class="hide-on-mobile">
+                        <?php
+                        echo getLAMVersionText();
+                        ?>
                     </span>
-                </a>
-            </td>
-            <td align="right">
-		        <?php
-		        if (is_dir(__DIR__ . '/../../docs/manual')) {
-                ?>
-                    <a target="_blank" href="../../docs/manual/index.html"><img class="align-middle" width="16" height="16" alt="help" src="../../graphics/help.png">
-                        <span class="hide-on-tablet">&nbsp;</span>
-                        <span class="hide-on-mobile">
-                            <?php echo _("Help") ?>&nbsp;
-                        </span>
-                    </a>
-                <?php
-		        }
-		        ?>
-            </td>
-        </tr>
-    </table>
+            </a>
+        </div>
+	    <?php
+	    if (is_dir(dirname(__FILE__) . '/../../docs/manual')) {
+		    ?>
+            <a class="lam-header-right lam-menu-icon hide-on-tablet" href="javascript:void(0);" class="icon" onclick="window.lam.topmenu.toggle();">
+                <img class="align-middle" width="16" height="16" alt="menu" src="../../graphics/menu.svg">
+                <span class="padding0">&nbsp;</span>
+            </a>
+            <a class="lam-header-right lam-menu-entry" target="_blank" href="../../docs/manual/index.html">
+                <img class="align-middle" width="16" height="16" alt="help" src="../../graphics/help.png">
+                <span class="padding0">&nbsp;<?php echo _("Help") ?></span>
+            </a>
+		    <?php
+	    }
+	    ?>
+    </div>
     <form action="confImportExport.php" method="post" autocomplete="off" enctype="multipart/form-data">
     <br><br>
     <?php

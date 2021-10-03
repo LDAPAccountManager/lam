@@ -476,7 +476,7 @@ function displayLoginHeader() : void {
             </a>
             <span class="hide-on-mobile lam-margin-small">
                         &nbsp;&nbsp;&nbsp;&nbsp;
-						<a href="http://www.ldap-account-manager.org/lamcms/lamPro"> <?php if (!isLAMProVersion()) { echo _("Want more features? Get LAM Pro!");} ?> </a>
+			    <a href="http://www.ldap-account-manager.org/lamcms/lamPro"> <?php if (!isLAMProVersion()) { echo _("Want more features? Get LAM Pro!");} ?> </a>
 			</span>
         </div>
         <a class="lam-header-right lam-menu-icon hide-on-tablet" href="javascript:void(0);" class="icon" onclick="window.lam.topmenu.toggle();">
