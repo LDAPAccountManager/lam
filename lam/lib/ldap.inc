@@ -131,7 +131,7 @@ class Ldap{
 			$this->encrypt_login($this->getUserName(), $newPassword);
 		}
 		else {
-			logNewMessage(LOG_DEBUG, 'Keeping old password as bind failed. ' . getExtendedLDAPErrorMessage($this->server));
+			logNewMessage(LOG_DEBUG, 'Keeping old password as bind failed. ' . getDefaultLDAPErrorString($this->server));
 		}
 	}
 
