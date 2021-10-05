@@ -175,11 +175,12 @@ input.max-width-10 {
 }
 
 select {
-	background:#F5F5F5 none repeat-x scroll 50% 50%;
-	border:1px solid #AAAAAA;
-	color:#222222;
+	border: 2px solid var(--lam-border-color);
+	background: var(--lam-input-bg-color);
 	margin: var(--lam-small-space);
 	border-radius: var(--lam-default-border-radius);
+	font-size: 1em;
+	padding: .2em .2em;
 }
 
 input {

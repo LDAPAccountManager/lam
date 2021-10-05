@@ -882,7 +882,6 @@ class lamList {
 			$suffixSelect->setRightToLeftTextDirection(true);
 			$suffixSelect->setSortElements(false);
 			$suffixSelect->setHasDescriptiveElements(true);
-			$suffixSelect->setCSSClasses(array('lam-listouselection-height'));
 			$group->addElement($suffixSelect);
 		}
 		return $group;
@@ -903,22 +902,19 @@ class lamList {
 			// add button
 			if (checkIfNewEntriesAreAllowed($this->type->getId())) {
 				$newButton = new htmlButton('new', $this->labels['newEntry']);
-				$newButton->setIconClass('createButton');
-				$newButton->setCSSClasses(array('lam-listouselection-height fullwidth-mobile-only'));
+				$newButton->setCSSClasses(array('lam-primary fullwidth-mobile-only'));
 				$left->addElement($newButton);
 			}
 			// delete button
 			if (!$createOnly && checkIfDeleteEntriesIsAllowed($this->type->getId())) {
 				$delButton = new htmlButton('del', $this->labels['deleteEntry']);
-				$delButton->setIconClass('deleteButton');
-				$delButton->setCSSClasses(array('lam-listouselection-height fullwidth-mobile-only'));
+				$delButton->setCSSClasses(array('lam-danger fullwidth-mobile-only'));
 				$left->addElement($delButton);
 			}
 			if ($this->type->getBaseType()->supportsFileUpload() && checkIfNewEntriesAreAllowed($this->type->getId())
 					&& $_SESSION['config']->isToolActive('toolFileUpload')) {
 				$uploadButton = new htmlButton('fileUpload', _('File upload'));
-				$uploadButton->setIconClass('upButton');
-				$uploadButton->setCSSClasses(array('lam-listouselection-height fullwidth-mobile-only'));
+				$uploadButton->setCSSClasses(array('fullwidth-mobile-only'));
 				$left->addElement($uploadButton);
 			}
 		}
@@ -928,13 +924,11 @@ class lamList {
 		$right->add($this->listShowOUSelection(), 12, 12, 10);
 		$rightButtonGroup = new htmlGroup();
 		$refreshButton = new htmlButton('refresh', 'refresh.png', true);
-		$refreshButton->setCSSClasses(array('lam-listouselection-height'));
 		$refreshButton->setTitle(_("Refresh"));
 		$rightButtonGroup->addElement($refreshButton);
 		$settingsLink = new htmlLink('', '#', '../../graphics/tools.png');
 		$settingsLink->setOnClick('listShowSettingsDialog(\'' . _('Change list settings') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\');');
 		$settingsLink->setTitle(_('Change settings'));
-		$settingsLink->setCSSClasses(array('lam-listouselection-height'));
 		$rightButtonGroup->addElement($settingsLink);
 		$right->add($rightButtonGroup, 12, 12, 2);
 
