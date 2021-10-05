@@ -1336,6 +1336,12 @@ class accountContainer {
 			$deleteButton->setCSSClasses(array('fullwidth-mobile-only'));
 			$leftButtonGroup->addElement($deleteButton);
 		}
+		$type = $this->type->getBaseType();
+		$leftButtonGroup->addElement(new htmlSpacer('15px', null));
+		$backToListButton = new htmlButton('accountContainerBackToList', $type->LABEL_BACK_TO_ACCOUNT_LIST);
+		$backToListButton->setIconClass('backButton');
+		$backToListButton->setCSSClasses(array('fullwidth-mobile-only'));
+		$leftButtonGroup->addElement($backToListButton);
 		$row->add($leftButtonGroup, 12, 9);
 
 		$rightGroup = new htmlGroup();

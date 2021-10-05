@@ -959,8 +959,10 @@ class lamList {
 	 */
 	private function printHeader() {
 		include 'adminHeader.inc';
-		$title = new htmlTitle($this->type->getAlias());
-		parseHtml(null, $title, array(), true, $this->tabindex, null);
+		$row = new htmlResponsiveRow();
+		$row->setCSSClasses(array('maxrow'));
+		$row->add(new htmlTitle($this->type->getAlias()));
+		parseHtml(null, $row, array(), true, $this->tabindex, null);
 		$this->printHeaderContent();
 	}
 
@@ -1569,5 +1571,3 @@ class lamSelectListOption extends lamListOption {
 	}
 
 }
-
-?>
