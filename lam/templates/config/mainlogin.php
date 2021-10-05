@@ -68,7 +68,7 @@ echo $_SESSION['header'];
 printHeaderContents(_("Login"), '../..');
 ?>
 	</head>
-	<body class="admin">
+	<body>
 		<?php
 			// include all JavaScript files
 			$jsDirName = dirname(__FILE__) . '/../lib';

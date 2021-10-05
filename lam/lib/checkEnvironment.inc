@@ -166,7 +166,7 @@ if (!empty($criticalErrors) || !empty($configurationErrors)) {
 	echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n";
 	echo "<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
 	printHeaderContents('LDAP Account Manager', '..');
-	echo "</head><body class=\"admin\">\n";
+	echo "</head><body>\n";
 	if (empty($criticalErrors)) {
 		displayLoginHeader();
 	}

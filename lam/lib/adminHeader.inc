@@ -62,7 +62,7 @@ if (isLAMProVersion()) {
 echo $_SESSION['header'];
 $title = "LDAP Account Manager" . $pro . " (" . str_replace(array('ldap://', 'ldaps://'), array('', ''), $_SESSION['config']->get_ServerURL()) . ")";
 printHeaderContents($title, $headerPrefix);
-echo "</head><body class=\"admin\">\n";
+echo "</head><body>\n";
 
 // include all JavaScript files
 printJsIncludes($headerPrefix);

@@ -52,20 +52,8 @@ h1,h2,h3 {
 }
 
 body {
-  background-color: var(--lam-default-background-color);
-}
-
-body.selfservice {
-  padding: 10px;
-  background: #fffde2;
-}
-
-body.admin {
-  padding: 0px 10px 10px 10px;
-}
-
-body.lam-selfservice {
-  padding: 10px;
+	background-color: var(--lam-default-background-color);
+	padding: 0.5rem 2rem 3rem 2rem;
 }
 
 .defaultBackground {

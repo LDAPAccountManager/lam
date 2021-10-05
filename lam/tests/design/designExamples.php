@@ -34,7 +34,7 @@ include_once(__DIR__ . "/../../lib/html.inc");
 echo '<head>';
 $prefix = '../..';
 printHeaderContents("Input Elements", $prefix);
-echo "</head><body class=\"admin\">\n";
+echo "</head><body>\n";
 
 // include all JavaScript files
 printJsIncludes($prefix);

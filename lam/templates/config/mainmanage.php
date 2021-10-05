@@ -305,7 +305,7 @@ echo $_SESSION['header'];
 printHeaderContents(_("Edit general settings"), '../..');
 ?>
 </head>
-<body class="admin">
+<body>
 <div id="lam-topnav" class="lam-header">
     <div class="lam-header-left lam-menu-stay">
         <a href="https://www.ldap-account-manager.org/" target="new_window">

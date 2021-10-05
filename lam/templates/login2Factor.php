@@ -120,7 +120,7 @@ echo $_SESSION['header'];
 printHeaderContents(_("Login"), '..');
 ?>
 </head>
-<body class="admin">
+<body>
 <?php
 
 // include all JavaScript files

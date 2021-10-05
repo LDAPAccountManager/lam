@@ -96,7 +96,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
 
 ?>
 	</head>
-	<body class="admin">
+	<body>
     <?php
         // include all JavaScript files
         printJsIncludes('../..');

@@ -86,7 +86,7 @@ if (sizeof($files) < 1) {
 $tabindex = 1;
 ?>
 	</head>
-	<body class="admin">
+	<body>
 		<?php
 			printJsIncludes('../..');
 			?>

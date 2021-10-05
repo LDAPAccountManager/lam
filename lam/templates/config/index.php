@@ -50,7 +50,7 @@ $content = new htmlResponsiveRow();
 
 ?>
 	</head>
-	<body class="admin">
+	<body>
         <?php
             // include all JavaScript files
             printJsIncludes('../..');

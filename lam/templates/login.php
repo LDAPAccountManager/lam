@@ -210,7 +210,7 @@ function display_LoginPage($licenseValidator, $error_message, $errorDetails = nu
 	printHeaderContents('LDAP Account Manager', '..');
 	?>
 	</head>
-	<body class="admin">
+	<body>
 	<?php
 	// include all JavaScript files
 	printJsIncludes('..');

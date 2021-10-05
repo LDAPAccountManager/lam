@@ -106,7 +106,7 @@ $allTypes = \LAM\TYPES\getTypes();
 
 echo $_SESSION['header'];
 printHeaderContents(_("LDAP Account Manager Configuration"), '../..');
-echo "</head><body class=\"admin\">\n";
+echo "</head><body>\n";
 printJsIncludes('../..');
 printConfigurationPageHeaderBar($conf);
 

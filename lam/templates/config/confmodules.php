@@ -111,7 +111,7 @@ if (isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 
 echo $_SESSION['header'];
 printHeaderContents(_("LDAP Account Manager Configuration"), '../..');
-echo "</head><body class=\"admin\">\n";
+echo "</head><body>\n";
 // include all JavaScript files
 printJsIncludes('../..');
 printConfigurationPageHeaderBar($conf);

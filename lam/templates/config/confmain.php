@@ -168,7 +168,7 @@ $tabindex = 1;
 
 echo $_SESSION['header'];
 printHeaderContents(_("LDAP Account Manager Configuration"), '../..');
-echo "<body class=\"admin\">\n";
+echo "<body>\n";
 // include all JavaScript files
 printJsIncludes('../..');
 printConfigurationPageHeaderBar($conf);
