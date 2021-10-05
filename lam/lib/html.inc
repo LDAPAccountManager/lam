@@ -1133,13 +1133,12 @@ class htmlButton extends htmlElement {
 		else {
 			echo '<button' . $id . $name . $fieldTabIndex . $type . $onClick . $style . $class . $title . $disabled . $this->getDataAttributesAsString() . '>' . $this->value . '</button>';
 			// text buttons get JQuery style
-			$icon = '';
 			if ($this->iconClass != null) {
 				$icon = '{ icons: { primary: \'' . $this->iconClass . '\' } }';
+				echo '<script type="text/javascript">';
+				echo "jQuery('#btn_" . $this->name . "').button(" . $icon . ");";
+				echo '</script>';
 			}
-			echo '<script type="text/javascript">';
-			echo "jQuery('#btn_" . $this->name . "').button(" . $icon . ");";
-			echo '</script>';
 		}
 		return array($this->name => 'submit');
 	}

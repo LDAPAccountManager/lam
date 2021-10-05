@@ -23,12 +23,18 @@
 /* CSS layout for LAM */
 
 :root {
-	--lam-default-background-color: #FFFFFF;
-	--lam-default-input-bg-color: #f6f6f6;
-	--lam-default-input-bg-color-hover: #ededed;
-	--lam-dark-grey: #cacaca;
+	--lam-background-color-default: #FFFFFF;
+	--lam-input-bg-color: #fbfbfb;
+	--lam-input-bg-color-hover: #f6f6f6;
+	--lam-border-color: #d0d0d0;
+	--lam-border-color-primary: #2463aa;
+	--lam-background-color-primary: #e8f3ff;
+	--lam-background-color-primary-hover: #cfe6ff;
+	--lam-border-color-danger: #f55e5e;
+	--lam-background-color-danger: #ffe9e9;
+	--lam-background-color-danger-hover: #ffd6d6;
 	--lam-disabled-opacity: .35;
-	--lam-default-border-radius: 3px;
+	--lam-default-border-radius: 2px;
 	--lam-regular-space: 0.5rem;
 	--lam-small-space: 0.25rem;
 	--lam-smaller-space: 0.1rem;
@@ -43,7 +49,7 @@
  */
 
 h1,h2,h3,h4,p,ul,ol,li,div,td,th,address,blockquote,b,i {
-  font-family:Arial,Tahoma,Verdana,sans-serif;
+  font-family: Arial,Helvetica,sans-serif;
 }
 
 h1,h2,h3 {
@@ -52,7 +58,7 @@ h1,h2,h3 {
 }
 
 body {
-	background-color: var(--lam-default-background-color);
+	background-color: var(--lam-background-color-default);
 	padding: 0.5rem 2rem 3rem 2rem;
 }
 
@@ -119,17 +125,40 @@ color:black;
 
 button {
 	margin: var(--lam-small-space);
-	background: var(--lam-default-input-bg-color);
-	border: 1px solid #c5c5c5;
+	background: var(--lam-input-bg-color);
+	border: 2px solid var(--lam-border-color);
 	border-radius: var(--lam-default-border-radius);
+	padding: .3em 1em;
+	cursor: pointer;
+	vertical-align: middle;
+	text-align: center;
+	font-size: 1em;
 }
 
 button:hover {
-	background: var(--lam-default-input-bg-color-hover);
+	background: var(--lam-input-bg-color-hover);
 }
 
 button:disabled {
 	opacity: var(--lam-disabled-opacity);
+}
+
+button.lam-primary {
+	border: 2px solid var(--lam-border-color-primary);
+	background: var(--lam-background-color-primary);
+}
+
+button.lam-primary:hover {
+	background: var(--lam-background-color-primary-hover);
+}
+
+button.lam-danger {
+	border: 2px solid var(--lam-border-color-danger);
+	background: var(--lam-background-color-danger);
+}
+
+button.lam-danger:hover {
+	background: var(--lam-background-color-danger-hover);
 }
 
 input:disabled {
@@ -655,11 +684,11 @@ tr.account {
 	padding-bottom: 0;
 	padding-right: .1em;
 	border: 1px solid #c5c5c5;
-	background-color: var(--lam-default-background-color);
+	background-color: var(--lam-background-color-default);
 }
 
 #lamVerticalTabs .ui-tabs-nav li:hover {
-	background-color: var(--lam-default-input-bg-color-hover);
+	background-color: var(--lam-input-bg-color-hover);
 }
 
 #lamVerticalTabs .ui-tabs-nav {

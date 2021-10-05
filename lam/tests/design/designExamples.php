@@ -48,8 +48,18 @@ $row->add(new htmlSubTitle('Buttons'));
 $row->addLabel(new htmlOutputText('Default'));
 $row->addField(new htmlButton('name1', 'Click me'));
 
+$row->addLabel(new htmlOutputText('Primary'));
+$primaryButton = new htmlButton('name2', 'Click me');
+$primaryButton->setCSSClasses(array('lam-primary'));
+$row->addField($primaryButton);
+
+$row->addLabel(new htmlOutputText('Danger'));
+$primaryButton = new htmlButton('name3', 'Click me');
+$primaryButton->setCSSClasses(array('lam-danger'));
+$row->addField($primaryButton);
+
 $row->addLabel(new htmlOutputText('Disabled'));
-$buttonDisabled = new htmlButton('name2', 'Click me');
+$buttonDisabled = new htmlButton('name3', 'Click me');
 $buttonDisabled->setIsEnabled(false);
 $row->addField($buttonDisabled);
 

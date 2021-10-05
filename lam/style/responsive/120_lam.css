@@ -262,7 +262,7 @@ div.account-types-popup div.columns:last-child {
 		display: block;
 		float: none;
 		text-align: left;
-		border: 1px solid var(--lam-dark-grey);
+		border: 1px solid var(--lam-border-color);
 		border-width: 0px 1px 1px 1px;
 		margin: 0px;
 	}
