@@ -175,7 +175,7 @@ input.max-width-10 {
 }
 
 select {
-	border: 2px solid var(--lam-border-color);
+	border: 1px solid var(--lam-border-color);
 	background: var(--lam-input-bg-color);
 	margin: var(--lam-small-space);
 	border-radius: var(--lam-default-border-radius);
@@ -184,11 +184,13 @@ select {
 }
 
 input {
+	border-width: 1px;
 	margin: var(--lam-small-space);
 	border-radius: var(--lam-default-border-radius);
 }
 
 textarea {
+	border-width: 1px;
 	margin: var(--lam-small-space);
 	border-radius: var(--lam-default-border-radius);
 }
