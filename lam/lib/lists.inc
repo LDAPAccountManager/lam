@@ -405,8 +405,7 @@ class lamList {
 		$this->addDataElements($data, $info, $onClickEvents, $onDoubleClickEvents);
 
 		$table = new htmlResponsiveTable($titles, $data);
-		$table->setRowClasses($scope . '-dark', $scope . '-bright');
-		$table->setCSSClasses(array($scope . '-border accountlist'));
+		$table->setCSSClasses(array('accountlist'));
 		$table->setOnClickEvents($onClickEvents);
 		$table->setOnDoubleClickEvents($onDoubleClickEvents);
 

@@ -27,12 +27,16 @@
 	--lam-input-bg-color: #fbfbfb;
 	--lam-input-bg-color-hover: #f6f6f6;
 	--lam-border-color: #d0d0d0;
-	--lam-border-color-primary: #2463aa;
+	--lam-border-color-primary: #4a9fff;
 	--lam-background-color-primary: #e8f3ff;
-	--lam-background-color-primary-hover: #cfe6ff;
-	--lam-border-color-danger: #f55e5e;
+	--lam-border-color-secondary: #ffe233;
+	--lam-background-color-secondary: #fffef4;
+	--lam-border-color-danger: #ff8989;
 	--lam-background-color-danger: #ffe9e9;
-	--lam-background-color-danger-hover: #ffd6d6;
+	--lam-table-background-color-bright: #fbfbfb;
+	--lam-table-background-color-dark: #e8f3ff;
+	--lam-table-background-color-hover: #ddecfd;
+	--lam-table-border-color: #2463aa;
 	--lam-disabled-opacity: .35;
 	--lam-default-border-radius: 2px;
 	--lam-regular-space: 0.5rem;
@@ -68,24 +72,23 @@ body {
 
 /* links */
 a {
-  color: #222222;
+  color: #000080;
   text-decoration: none;
   margin: var(--lam-small-space);
 }
 
 a:link {
-  color: #222222;
+  color: #000080;
   text-decoration: none;
 }
 
 a:visited {
-  color: #222222;
+  color: #000080;
   text-decoration: none;
 }
 
 a:hover {
-	color: red;
-	text-decoration: none;
+	text-decoration: underline;
 	cursor: pointer;
 }
 
@@ -126,7 +129,7 @@ color:black;
 button {
 	margin: var(--lam-small-space);
 	background: var(--lam-input-bg-color);
-	border: 2px solid var(--lam-border-color);
+	border: 1px solid var(--lam-border-color);
 	border-radius: var(--lam-default-border-radius);
 	padding: .3em 1em;
 	cursor: pointer;
@@ -135,30 +138,27 @@ button {
 	font-size: 1em;
 }
 
-button:hover {
-	background: var(--lam-input-bg-color-hover);
-}
-
 button:disabled {
 	opacity: var(--lam-disabled-opacity);
 }
 
 button.lam-primary {
-	border: 2px solid var(--lam-border-color-primary);
+	border: 1px solid var(--lam-border-color-primary);
 	background: var(--lam-background-color-primary);
 }
 
-button.lam-primary:hover {
-	background: var(--lam-background-color-primary-hover);
+button:hover {
+	filter: brightness(0.97);
+}
+
+button.lam-secondary {
+	border: 1px solid var(--lam-border-color-secondary);
+	background: var(--lam-background-color-secondary);
 }
 
 button.lam-danger {
-	border: 2px solid var(--lam-border-color-danger);
+	border: 1px solid var(--lam-border-color-danger);
 	background: var(--lam-background-color-danger);
-}
-
-button.lam-danger:hover {
-	background: var(--lam-background-color-danger-hover);
 }
 
 input:disabled {
@@ -180,7 +180,6 @@ select {
 	margin: var(--lam-small-space);
 	border-radius: var(--lam-default-border-radius);
 	font-size: 1em;
-	padding: .2em .2em;
 }
 
 input {
@@ -193,6 +192,27 @@ textarea {
 	border-width: 1px;
 	margin: var(--lam-small-space);
 	border-radius: var(--lam-default-border-radius);
+}
+
+table.responsive-table {
+	border: 1px solid var(--lam-table-border-color);
+}
+
+table.responsive-table thead {
+	background-color: var(--lam-table-background-color-bright);
+	border: 1px solid var(--lam-table-border-color);
+}
+
+table.responsive-table tbody tr:nth-child(odd) {
+	background-color: var(--lam-table-background-color-dark);
+}
+
+table.responsive-table tbody tr:nth-child(even) {
+	background-color: var(--lam-table-background-color-bright);
+}
+
+table.responsive-table tbody tr:hover {
+	background-color: var(--lam-table-background-color-hover);
 }
 
 .lam-margin-small {
@@ -296,34 +316,27 @@ textarea {
 	vertical-align: unset;
 }
 
-table.lamHeader {
-  padding: 0px;
-  height: 30px;
-  margin-bottom: 0.5rem;
-}
-
-table.lamTop {
-  background-image: url(lam-images/headerLine.png);
-  padding: 0px;
-  height: 35px;
-  width: 100%;
-  border-width: 0px;
-}
-
-table.lamTop td {
-  padding: 1px;
-  vertical-align: "bottom";
-}
-
 /* table preferences */
-table.accountlist {
-  border-width:1px;
-  border-style:solid;
+
+table.accountlist thead {
+	border: 0px;
 }
 
 table.accountlist input[type='text'] {
 	width: 99%;
 	min-width: 7rem;
+}
+
+table.accountlist tbody tr:hover:nth-child(1) {
+	background-color: var(--lam-table-background-color-dark);
+}
+
+table.accountlist tbody tr:hover:nth-child(2) {
+	background-color: var(--lam-table-background-color-bright);
+}
+
+table.accountlist tbody tr:nth-child(2) {
+	border-bottom: 1px solid var(--lam-table-border-color);
 }
 
 .lam-listtools {
@@ -870,110 +883,3 @@ table.tree-view--table thead {
 table.tree-view--table tr:nth-child(even) {
 	background: #E7E7E7
 }
-
-/** colors for account types */
-
-.alias-border { border-color:#af8800; }
-.alias-bright { background:#fff3c8 !important; }
-.alias-dark { background-color:#ffe27f !important; }
-
-.asteriskExt-border { border-color:#af8800; }
-.asteriskExt-bright { background:#fff3c8 !important; }
-.asteriskExt-dark { background-color:#ffe27f !important; }
-
-.automountType-border { border-color:#7167bf; }
-.automountType-bright { background:#d6e3ff !important; }
-.automountType-dark { background-color:#a8c3ff !important; }
-
-.dhcp-border { border-color:#527510; }
-.dhcp-bright { background:#d4f19b !important; }
-.dhcp-dark { background-color:#9fc653 !important; }
-
-.gon-border { border-color:#7167bf; }
-.gon-bright { background:#d6e3ff !important; }
-.gon-dark { background-color:#a8c3ff !important; }
-
-.group-border { border-color:#7167bf; }
-.group-bright { background:#d6e3ff !important; }
-.group-dark { background-color:#a8c3ff !important; }
-
-.host-border { border-color:#911a1a; }
-.host-bright { background:#ffe2dd !important; }
-.host-dark { background-color:#ffc4ba !important; }
-
-.mailAlias-border { border-color:#af8800; }
-.mailAlias-bright { background:#fff3c8 !important; }
-.mailAlias-dark { background-color:#ffe27f !important; }
-
-.netgroup-border { border-color:#7167bf; }
-.netgroup-bright { background:#d6e3ff !important; }
-.netgroup-dark { background-color:#a8c3ff !important; }
-
-.nisObjectType-border { border-color:#7167bf; }
-.nisObjectType-bright { background:#d6e3ff !important; }
-.nisObjectType-dark { background-color:#a8c3ff !important; }
-
-.ppolicyType-border { border-color:#af8800; }
-.ppolicyType-bright { background:#fff3c8 !important; }
-.ppolicyType-dark { background-color:#ffe27f !important; }
-
-.mitKerberosPolicyType-border { border-color:#af8800; }
-.mitKerberosPolicyType-bright { background:#fff3c8 !important; }
-.mitKerberosPolicyType-dark { background-color:#ffe27f !important; }
-
-.smbDomain-border { border-color:#1d993e; }
-.smbDomain-bright { background:#c9ddd2 !important; }
-.smbDomain-dark { background-color:#a8ddbf !important; }
-
-.sudo-border { border-color:#9b8523; }
-.sudo-bright { background:#fffde2 !important; }
-.sudo-dark { background-color:#fff2a3 !important; }
-
-.user-border { border-color:#9b8523; }
-.user-bright { background: #fffde2 !important; }
-.user-dark { background-color:#fff2a3 !important; }
-
-.kopanoAddressListType-border { border-color:#7167bf; }
-.kopanoAddressListType-bright { background:#d6e3ff !important; }
-.kopanoAddressListType-dark { background-color:#a8c3ff !important; }
-
-.zarafaAddressListType-border { border-color:#7167bf; }
-.zarafaAddressListType-bright { background:#d6e3ff !important; }
-.zarafaAddressListType-dark { background-color:#a8c3ff !important; }
-
-.kopanoDynamicGroupType-border { border-color:#7167bf; }
-.kopanoDynamicGroupType-bright { background:#d6e3ff !important; }
-.kopanoDynamicGroupType-dark { background-color:#a8c3ff !important; }
-
-.zarafaDynamicGroupType-border { border-color:#7167bf; }
-.zarafaDynamicGroupType-bright { background:#d6e3ff !important; }
-.zarafaDynamicGroupType-dark { background-color:#a8c3ff !important; }
-
-.pykotaPrinterType-border { border-color:#911a1a; }
-.pykotaPrinterType-bright { background:#ffe2dd !important; }
-.pykotaPrinterType-dark { background-color:#ffc4ba !important; }
-
-.pykotaBillingCodeType-border { border-color:#527510; }
-.pykotaBillingCodeType-bright { background:#d4f19b !important; }
-.pykotaBillingCodeType-dark { background-color:#9fc653 !important; }
-
-.bind-border { border-color:#32768b; }
-.bind-bright { background:#b6eeff !important; }
-.bind-dark { background-color:#80e0e1 !important; }
-
-.kolabSharedFolderType-border { border-color:#32768b; }
-.kolabSharedFolderType-bright { background:#b6eeff !important; }
-.kolabSharedFolderType-dark { background-color:#80e0e1 !important; }
-
-.oracleContextType-border { border-color:#32768b; }
-.oracleContextType-bright { background:#b6eeff !important; }
-.oracleContextType-dark { background-color:#80e0e1 !important; }
-
-.nsviewType-border { border-color:#af8800; }
-.nsviewType-bright { background:#fff3c8 !important; }
-.nsviewType-dark { background-color:#ffe27f !important; }
-
-.customType-border { border-color:#b87500; }
-.customType-bright { background:#ffe3b1 !important; }
-.customType-dark { background-color:#e1b974 !important; }
-

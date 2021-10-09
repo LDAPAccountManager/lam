@@ -53,6 +53,11 @@ $primaryButton = new htmlButton('name2', 'Click me');
 $primaryButton->setCSSClasses(array('lam-primary'));
 $row->addField($primaryButton);
 
+$row->addLabel(new htmlOutputText('Secondary'));
+$primaryButton = new htmlButton('name2a', 'Click me');
+$primaryButton->setCSSClasses(array('lam-secondary'));
+$row->addField($primaryButton);
+
 $row->addLabel(new htmlOutputText('Danger'));
 $primaryButton = new htmlButton('name3', 'Click me');
 $primaryButton->setCSSClasses(array('lam-danger'));
@@ -63,6 +68,18 @@ $buttonDisabled = new htmlButton('name3', 'Click me');
 $buttonDisabled->setIsEnabled(false);
 $row->addField($buttonDisabled);
 
+$row->add(new htmlSubTitle('Table'));
+$tableTitles = array('text 1', 'text 2', 'text 3', 'text 4', 'text 5');
+$tableData = array();
+for ($rowNumber = 0; $rowNumber < 10; $rowNumber++) {
+    $tableRow = array();
+    for ($colum = 0; $colum < 5; $colum++) {
+        $tableRow[] = new htmlOutputText('value' . $colum);
+    }
+    $tableData[] = $tableRow;
+}
+$table = new htmlResponsiveTable($tableTitles, $tableData);
+$row->add($table);
 
 $row->add(new htmlSubTitle('Input fields'));
 
@@ -152,8 +169,6 @@ $row->add(new htmlSubTitle('Links'));
 
 $row->addLabel(new htmlOutputText('Link'));
 $row->addField(new htmlLink('linked text', 'designExamples.php'));
-
-// TODO delete link show as button option
 
 $row->add(new htmlSubTitle('Line'));
 
