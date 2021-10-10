@@ -1306,40 +1306,35 @@ class accountContainer {
 		$leftButtonGroup->alignment = htmlElement::ALIGN_LEFT;
 		// save button
 		$saveButton = new htmlButton('accountContainerSaveAccount', _('Save'));
-		$saveButton->setIconClass('saveButton');
-		$saveButton->setCSSClasses(array('fullwidth-mobile-only'));
+		$saveButton->setCSSClasses(array('fullwidth-mobile-only lam-primary'));
 		$leftButtonGroup->addElement($saveButton);
 		$leftButtonGroup->addElement(new htmlSpacer('1px', null));
-		// reset button
-		if (!$this->isNewAccount) {
-			$resetButton = new htmlButton('accountContainerReset', _('Reset changes'));
-			$resetButton->setIconClass('undoButton');
-			$resetButton->setCSSClasses(array('fullwidth-mobile-only'));
-			$leftButtonGroup->addElement($resetButton);
-		}
 		// set password button
 		if ($this->showSetPasswordButton()) {
 			$leftButtonGroup->addElement(new htmlSpacer('15px', null));
 			$passwordButton = new htmlButton('accountContainerPassword', _('Set password'));
-			$passwordButton->setIconClass('passwordButton');
-			$passwordButton->setCSSClasses(array('fullwidth-mobile-only'));
+			$passwordButton->setCSSClasses(array('fullwidth-mobile-only lam-secondary'));
 			$passwordButton->setOnClick('passwordShowChangeDialog(\'' . _('Set password') . '\', \'' . _('Ok') . '\', \''
-				 . _('Cancel') . '\', \'' . _('Set random password') . '\', \'../misc/ajax.php?function=passwordChange&editKey=' . htmlspecialchars($this->base) . '\',\''
-				 . getSecurityTokenName() . '\',\'' . getSecurityTokenValue() . '\');');
+				. _('Cancel') . '\', \'' . _('Set random password') . '\', \'../misc/ajax.php?function=passwordChange&editKey=' . htmlspecialchars($this->base) . '\',\''
+				. getSecurityTokenName() . '\',\'' . getSecurityTokenValue() . '\');');
 			$leftButtonGroup->addElement($passwordButton);
 		}
 		// delete button
 		if (!$this->isNewAccount && checkIfDeleteEntriesIsAllowed($this->get_type()->getId())) {
 			$leftButtonGroup->addElement(new htmlSpacer('15px', null));
 			$deleteButton = new htmlButton('accountContainerDelete', _('Delete'));
-			$deleteButton->setIconClass('deleteButton');
-			$deleteButton->setCSSClasses(array('fullwidth-mobile-only'));
+			$deleteButton->setCSSClasses(array('fullwidth-mobile-only lam-danger'));
 			$leftButtonGroup->addElement($deleteButton);
 		}
-		$type = $this->type->getBaseType();
 		$leftButtonGroup->addElement(new htmlSpacer('15px', null));
+		// reset button
+		if (!$this->isNewAccount) {
+			$resetButton = new htmlButton('accountContainerReset', _('Reset changes'));
+			$resetButton->setCSSClasses(array('fullwidth-mobile-only'));
+			$leftButtonGroup->addElement($resetButton);
+		}
+		$type = $this->type->getBaseType();
 		$backToListButton = new htmlButton('accountContainerBackToList', $type->LABEL_BACK_TO_ACCOUNT_LIST);
-		$backToListButton->setIconClass('backButton');
 		$backToListButton->setCSSClasses(array('fullwidth-mobile-only'));
 		$leftButtonGroup->addElement($backToListButton);
 		$row->add($leftButtonGroup, 12, 9);
@@ -1353,7 +1348,6 @@ class accountContainer {
 			$profilesSelect->setCSSClasses(array('auto-width'));
 			$rightGroup->addElement($profilesSelect);
 			$profileButton = new htmlButton('accountContainerLoadProfile', _('Load profile'));
-			$profileButton->setIconClass('loadProfileButton');
 			if (!$this->isNewAccount) {
 				$profileButton->setType('submit');
 				$profileButton->setOnClick('confirmOrStopProcessing(\'' . _('This may overwrite existing values with profile data. Continue?') . '\', event);');

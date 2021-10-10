@@ -904,17 +904,17 @@ class lamList {
 				$newButton->setCSSClasses(array('lam-primary fullwidth-mobile-only'));
 				$left->addElement($newButton);
 			}
+			if ($this->type->getBaseType()->supportsFileUpload() && checkIfNewEntriesAreAllowed($this->type->getId())
+					&& $_SESSION['config']->isToolActive('toolFileUpload')) {
+				$uploadButton = new htmlButton('fileUpload', _('File upload'));
+				$uploadButton->setCSSClasses(array('fullwidth-mobile-only lam-secondary'));
+				$left->addElement($uploadButton);
+			}
 			// delete button
 			if (!$createOnly && checkIfDeleteEntriesIsAllowed($this->type->getId())) {
 				$delButton = new htmlButton('del', $this->labels['deleteEntry']);
 				$delButton->setCSSClasses(array('lam-danger fullwidth-mobile-only'));
 				$left->addElement($delButton);
-			}
-			if ($this->type->getBaseType()->supportsFileUpload() && checkIfNewEntriesAreAllowed($this->type->getId())
-					&& $_SESSION['config']->isToolActive('toolFileUpload')) {
-				$uploadButton = new htmlButton('fileUpload', _('File upload'));
-				$uploadButton->setCSSClasses(array('fullwidth-mobile-only'));
-				$left->addElement($uploadButton);
 			}
 		}
 
