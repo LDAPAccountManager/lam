@@ -5,7 +5,7 @@ use \LAMException;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2018 - 2020  Roland Gruber
+ Copyright (C) 2018 - 2021  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ class Importer {
 	const TIME_LIMIT = 10;
 	const KEY = 0;
 	const VALUE = 1;
-	const CHANGETYPE = 'changeType';
+	const CHANGETYPE = 'changetype';
 
 	/**
 	 * Extracts the single entries in the file.
@@ -295,7 +295,7 @@ class Importer {
 				return new DeleteEntryTask($dn);
 			}
 			elseif ($type !== 'modify') {
-				throw new LAMException(_('Invalid data'), htmlspecialchars($dn) . ' - changeType: ' . htmlspecialchars($type));
+				throw new LAMException(_('Invalid data'), htmlspecialchars($dn) . ' - changetype: ' . htmlspecialchars($type));
 			}
 			$subtasks = array();
 			$currentLines = array();
@@ -341,7 +341,7 @@ class Importer {
 	}
 
 	/**
-	 * Returns a task for LDIF changeType entry.
+	 * Returns a task for LDIF changetype entry.
 	 *
 	 * @param string $dn DN
 	 * @param string $lines lines
@@ -772,5 +772,3 @@ class ReplaceAttributesTask implements ImporterTask {
 	}
 
 }
-
-?>

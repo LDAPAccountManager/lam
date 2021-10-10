@@ -3682,7 +3682,7 @@ class windowsUser extends baseModule implements passwordService {
 		if (empty($myAttrs['lockouttime'][0])) {
 			return false;
 		}
-		$lockoutDuration = self::getDomainLockoutDuration($attrs['dn']);
+		$lockoutDuration = self::getDomainLockoutDuration();
 		if (empty($lockoutDuration) || ($lockoutDuration > -1)) {
 			return false;
 		}
@@ -3700,28 +3700,39 @@ class windowsUser extends baseModule implements passwordService {
 
 	/**
 	 * Returns the domain lockout duration for this DN.
-	 *
-	 * @param string $dn user DN
 	 */
-	private static function getDomainLockoutDuration($dn) {
-		$lowerDn = strtolower($dn);
-		$domainRoot = substr($lowerDn, strpos($lowerDn, 'dc='));
+	private static function getDomainLockoutDuration() {
 		if (!isset($_SESSION['windowsUser_cacheDomainLockoutDuration'])) {
-			$_SESSION['windowsUser_cacheDomainLockoutDuration'] = array();
+			$lockoutValue = self::getDomainPolicyAttribute('lockoutduration');
+			if (isset($lockoutValue[0])) {
+				$lockoutValue = $lockoutValue[0];
+			}
+			else {
+				$lockoutValue = null;
+			}
+			$_SESSION['windowsUser_cacheDomainLockoutDuration'] = $lockoutValue;
 		}
-		$cache = &$_SESSION['windowsUser_cacheDomainLockoutDuration'];
-		if (isset($cache[$domainRoot])) {
-			return $cache[$domainRoot];
+		return $_SESSION['windowsUser_cacheDomainLockoutDuration'];
+	}
+
+	/**
+	 * Returns the value of a domain policy attribute.
+	 *
+	 * @param string $attributeName attribute name
+	 * @return array value
+	 */
+	public static function getDomainPolicyAttribute(string $attributeName): array {
+		$attributeName = strtolower($attributeName);
+		$rootDSE = ldapGetDN("", array('defaultnamingcontext'));
+		if (empty($rootDSE['defaultnamingcontext'][0])) {
+			return array();
 		}
-		$policyDN = 'cn=builtin,' . $domainRoot;
-		$policyAttrs = ldapGetDN($policyDN, array('lockoutduration'));
-		if (!empty($policyAttrs['lockoutduration'][0])) {
-			$cache[$domainRoot] = $policyAttrs['lockoutduration'][0];
+		$namingContext = $rootDSE['defaultnamingcontext'][0];
+		$policyOptions = ldapGetDN($namingContext, array($attributeName));
+		if (!isset($policyOptions[$attributeName])) {
+			return array();
 		}
-		else {
-			$cache[$domainRoot] = null;
-		}
-		return $cache[$domainRoot];
+		return $policyOptions[$attributeName];
 	}
 
 	/**
@@ -4438,24 +4449,16 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			foreach ($typeManager->getConfiguredTypesForScope('user') as $type) {
 				$userSuffix = $type->getSuffix();
 				if (empty($userSuffix)) {
-					logNewMessage(LOG_ERR, 'No user suffix set in server profile for ' . $type->getAlias() . '.');
+					$this->jobResultLog->logError('No user suffix set in server profile for ' . $type->getAlias() . '.');
 					continue;
 				}
-				// extract base DN from user suffix
-				$domainRoot = strtolower(substr($userSuffix, stripos($userSuffix, 'dc=')));
-				if (empty($domainRoot)) {
-					logNewMessage(LOG_ERR, "No domain root found in $userSuffix.");
+				$policyAttrs = windowsUser::getDomainPolicyAttribute('maxPwdAge');
+				if (empty($policyAttrs[0])) {
+					$this->jobResultLog->logError('No maxPwdAge found for this domain in ' . $type->getAlias() . '.');
 					continue;
 				}
-				logNewMessage(LOG_DEBUG, "Using $domainRoot as domain root");
-				$policyDN = 'cn=builtin,' . $domainRoot;
-				$policyAttrs = ldapGetDN($policyDN, array('maxPwdAge'));
-				if (empty($policyAttrs['maxpwdage'][0])) {
-					logNewMessage(LOG_ERR, 'No maxPwdAge found for this domain in ' . $type->getAlias() . '.');
-					continue;
-				}
-				$maxPwdAge[$domainRoot] = $policyAttrs['maxpwdage'][0];
-				logNewMessage(LOG_DEBUG, "Using maxPwdAge = " . $maxPwdAge[$domainRoot] . ".");
+				$maxPwdAge = $policyAttrs[0];
+				$this->jobResultLog->logDebug("Using maxPwdAge = " . $maxPwdAge . ".");
 			}
 			return array('maxpwdage' => $maxPwdAge);
 		}
@@ -4488,7 +4491,6 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		protected function checkSingleUser($jobID, $options, &$pdo, $now, $policyOptions, $user, $isDryRun) {
 			$dn = $user['dn'];
-			$domainRoot = strtolower(substr($dn, stripos($dn, 'dc=')));
 			// skip if password does not expire at all
 			if (windowsUser::isNeverExpiring($user)) {
 				$this->jobResultLog->logDebug($dn . ' does not expire.');
@@ -4512,7 +4514,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 				$this->jobResultLog->logDebug($dn . ' is deactivated.');
 				return;
 			}
-			$maxPwdAge = $policyOptions['maxpwdage'][$domainRoot];
+			$maxPwdAge = $policyOptions['maxpwdage'];
 			// calculate time when password expires
 			$lastPwdTime = windowsUser::getFileTime($user['pwdlastset'][0]);
 			$this->jobResultLog->logDebug("Last password change on " . $lastPwdTime->format('Y-m-d'));

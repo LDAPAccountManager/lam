@@ -124,9 +124,14 @@ class Ldap{
 	 * @param string $newPassword new password
 	 */
 	public function tryAndApplyNewPassword(string $newPassword): void {
+		logNewMessage(LOG_DEBUG, 'Check if new LDAP password needs to be used: ' . $this->getUserName() . ' - ' . $newPassword[0] . '...');
 		$bind = @ldap_bind($this->server, $this->getUserName(), $newPassword);
 		if ($bind) {
+			logNewMessage(LOG_DEBUG, 'Password updated');
 			$this->encrypt_login($this->getUserName(), $newPassword);
+		}
+		else {
+			logNewMessage(LOG_DEBUG, 'Keeping old password as bind failed. ' . getDefaultLDAPErrorString($this->server));
 		}
 	}
 
