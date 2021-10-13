@@ -4514,6 +4514,10 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 				$this->jobResultLog->logDebug($dn . ' is deactivated.');
 				return;
 			}
+			if (empty($policyOptions['maxpwdage'])) {
+				$this->jobResultLog->logDebug('Skipping ' . $dn . ' as maxpwdage is empty or 0.');
+				return;
+			}
 			$maxPwdAge = $policyOptions['maxpwdage'];
 			// calculate time when password expires
 			$lastPwdTime = windowsUser::getFileTime($user['pwdlastset'][0]);
