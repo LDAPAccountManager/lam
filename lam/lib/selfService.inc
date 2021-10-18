@@ -770,7 +770,7 @@ class selfServiceProfile {
 	public $captchaOnLogin = false;
 
 	/** base URL for the website (e.g. https://example.com) for link generation */
-	private $baseUrl = '';
+	public $baseUrl = '';
 
 	/**
 	 * Path to external lamdaemon script on server where it is executed
