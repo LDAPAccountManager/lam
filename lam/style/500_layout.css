@@ -35,8 +35,9 @@
 	--lam-background-color-danger: #ffe9e9;
 	--lam-table-background-color-bright: #fbfbfb;
 	--lam-table-background-color-dark: #e8f3ff;
-	--lam-table-background-color-hover: #ddecfd;
-	--lam-table-border-color: #2463aa;
+	--lam-table-background-color-hover: #3daee9;
+	--lam-table-text-color-hover: #ffffff;
+	--lam-table-border-color: #3daee9;
 	--lam-disabled-opacity: .35;
 	--lam-default-border-radius: 2px;
 	--lam-regular-space: 0.5rem;
@@ -213,6 +214,7 @@ table.responsive-table tbody tr:nth-child(even) {
 
 table.responsive-table tbody tr:hover {
 	background-color: var(--lam-table-background-color-hover);
+	color: var(--lam-table-text-color-hover);
 }
 
 .lam-margin-small {
@@ -288,20 +290,6 @@ table.responsive-table tbody tr:hover {
 
 .float-left {
 	float: left;
-}
-
-.hoverHighlight {
-	border: 1px solid transparent;
-}
-
-.hoverHighlight:hover {
-	border: 1px solid grey;
-	border-radius: 5px;
-	box-shadow: 0 0 10px #a0a0a4;
-}
-
-.black {
-	color: black;
 }
 
 .align-middle {
