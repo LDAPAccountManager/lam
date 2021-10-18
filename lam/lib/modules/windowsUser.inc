@@ -4010,7 +4010,7 @@ class windowsUser extends baseModule implements passwordService {
 	 * @return DateTime time value
 	 */
 	public static function getFileTime($value) {
-		if (empty($value)) {
+		if (empty($value) || !get_preg($value, 'digit')) {
 			return null;
 		}
 		$seconds = substr($value, 0, -7);
@@ -4514,6 +4514,10 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 				$this->jobResultLog->logDebug($dn . ' is deactivated.');
 				return;
 			}
+			if (empty($policyOptions['maxpwdage'])) {
+				$this->jobResultLog->logDebug('Skipping ' . $dn . ' as maxpwdage is empty or 0.');
+				return;
+			}
 			$maxPwdAge = $policyOptions['maxpwdage'];
 			// calculate time when password expires
 			$lastPwdTime = windowsUser::getFileTime($user['pwdlastset'][0]);
@@ -4521,7 +4525,14 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 			$numDaysToWarn = $options[$this->getConfigPrefix() . '_mailNotificationPeriod' . $jobID][0];
 			$this->jobResultLog->logDebug("Number of days before warning " . $numDaysToWarn);
 			// expiration date = pwdLastSet - maxpwdage
-			$expireTime = windowsUser::getFileTime($user['pwdlastset'][0] - $maxPwdAge);
+			$expirationValue = $user['pwdlastset'][0] - $maxPwdAge;
+			$this->jobResultLog->logDebug("PwdLastSet: ". $user['pwdlastset'][0]);
+			$this->jobResultLog->logDebug("Expiration raw value: " . $expirationValue);
+			$expireTime = windowsUser::getFileTime($expirationValue);
+			if ($expireTime === null) {
+				$this->jobResultLog->logWarning('Invalid expiration values '. $user['pwdlastset'][0] . ' - ' . $expirationValue);
+				return;
+			}
 			$this->jobResultLog->logDebug("Password expires on " . $expireTime->format('Y-m-d'));
 			// skip already expired accounts
 			if ($expireTime <= $now) {
