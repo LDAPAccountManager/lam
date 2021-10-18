@@ -27,12 +27,15 @@
 	--lam-input-bg-color: #fbfbfb;
 	--lam-input-bg-color-hover: #f6f6f6;
 	--lam-border-color: #d0d0d0;
-	--lam-border-color-primary: #4a9fff;
-	--lam-background-color-primary: #e8f3ff;
-	--lam-border-color-secondary: #ffe233;
-	--lam-background-color-secondary: #fffef4;
-	--lam-border-color-danger: #ff8989;
-	--lam-background-color-danger: #ffe9e9;
+	--lam-border-color-primary: #01689e;
+	--lam-background-color-primary: #3daee9;
+	--lam-text-color-primary: #ffffff;
+	--lam-border-color-secondary: #ffcb1d;
+	--lam-background-color-secondary: #ffe233;
+	--lam-text-color-secondary: #000000;
+	--lam-border-color-danger: #951a00;
+	--lam-background-color-danger: #e32800;
+	--lam-text-color-danger: #ffffff;
 	--lam-table-background-color-bright: #fbfbfb;
 	--lam-table-background-color-dark: #e8f3ff;
 	--lam-table-background-color-hover: #3daee9;
@@ -146,6 +149,7 @@ button:disabled {
 button.lam-primary {
 	border: 1px solid var(--lam-border-color-primary);
 	background: var(--lam-background-color-primary);
+	color: var(--lam-text-color-primary);
 }
 
 button:hover {
@@ -155,11 +159,13 @@ button:hover {
 button.lam-secondary {
 	border: 1px solid var(--lam-border-color-secondary);
 	background: var(--lam-background-color-secondary);
+	color: var(--lam-text-color-secondary);
 }
 
 button.lam-danger {
 	border: 1px solid var(--lam-border-color-danger);
 	background: var(--lam-background-color-danger);
+	color: var(--lam-text-color-danger);
 }
 
 input:disabled {
