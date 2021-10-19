@@ -24,25 +24,35 @@
 
 :root {
 	--lam-background-color-default: #FFFFFF;
+
 	--lam-input-bg-color: #fbfbfb;
 	--lam-input-bg-color-hover: #f6f6f6;
 	--lam-border-color: #d0d0d0;
 	--lam-border-color-primary: #01689e;
+
 	--lam-background-color-primary: #3daee9;
 	--lam-text-color-primary: #ffffff;
+
 	--lam-border-color-secondary: #ffcb1d;
 	--lam-background-color-secondary: #ffe233;
 	--lam-text-color-secondary: #000000;
-	--lam-border-color-danger: #951a00;
-	--lam-background-color-danger: #e32800;
-	--lam-text-color-danger: #ffffff;
+
+	--lam-border-color-danger: #a40e26;
+	--lam-background-color-danger: #fbfbfb;
+	--lam-text-color-danger: #a40e26;
+	--lam-background-color-danger-hover: #a40e26;
+	--lam-text-color-danger-hover: #ffffff;
+
 	--lam-table-background-color-bright: #fbfbfb;
 	--lam-table-background-color-dark: #e8f3ff;
 	--lam-table-background-color-hover: #3daee9;
 	--lam-table-text-color-hover: #ffffff;
 	--lam-table-border-color: #3daee9;
+
 	--lam-disabled-opacity: .35;
+
 	--lam-default-border-radius: 2px;
+
 	--lam-regular-space: 0.5rem;
 	--lam-small-space: 0.25rem;
 	--lam-smaller-space: 0.1rem;
@@ -166,6 +176,11 @@ button.lam-danger {
 	border: 1px solid var(--lam-border-color-danger);
 	background: var(--lam-background-color-danger);
 	color: var(--lam-text-color-danger);
+}
+
+button.lam-danger:hover {
+	background: var(--lam-background-color-danger-hover);
+	color: var(--lam-text-color-danger-hover);
 }
 
 input:disabled {
@@ -323,10 +338,12 @@ table.accountlist input[type='text'] {
 
 table.accountlist tbody tr:hover:nth-child(1) {
 	background-color: var(--lam-table-background-color-dark);
+	color: #000000;
 }
 
 table.accountlist tbody tr:hover:nth-child(2) {
 	background-color: var(--lam-table-background-color-bright);
+	color: #000000;
 }
 
 table.accountlist tbody tr:nth-child(2) {
