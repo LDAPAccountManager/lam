@@ -238,7 +238,9 @@ if (!empty($profileClasses)) {
 	$newProfileSelect = new htmlSelect('createProfile', $sortedTypes);
 	$newProfileSelect->setHasDescriptiveElements(true);
 	$container->addLabel($newProfileSelect);
-	$container->addField(new htmlButton('createProfileButton', _('Create')));
+	$createButton = new htmlButton('createProfileButton', _('Create'));
+	$createButton->setCSSClasses(array('lam-primary'));
+	$container->addField($createButton);
 }
 
 $container->addVerticalSpacer('1rem');
@@ -322,7 +324,7 @@ if (!empty($globalDeletableTemplates)) {
 	$container->add($globalTemplateDeleteDialogPassword, 12);
 	$container->addVerticalSpacer('1rem');
 	$globalTemplateDeleteButton = new htmlButton('deleteGlobalProfileButton', _('Delete'));
-	$globalTemplateDeleteButton->setIconClass('deleteButton');
+	$globalTemplateDeleteButton->setCSSClasses(array('lam-danger'));
 	$globalTemplateDeleteButton->setOnClick("showConfirmationDialog('" . _("Delete") . "', '" .
 		_('Ok') . "', '" . _('Cancel') . "', 'globalTemplateDeleteDialog', 'deleteGlobalTemplatesForm', undefined); return false;");
 	$container->addLabel(new htmlOutputText('&nbsp;', false));

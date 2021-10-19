@@ -290,7 +290,6 @@ include __DIR__ . '/../../lib/adminFooter.inc';
  */
 function massPrintBackButton($typeId, $selectedModules, htmlResponsiveRow &$container) {
 	$backButton = new htmlButton('submit', _('Back'));
-	$backButton->setIconClass('backButton');
 	$container->add($backButton, 12);
 	$container->add(new htmlHiddenInput('type', $typeId), 12);
 	$createPDF = 0;

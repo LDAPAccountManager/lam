@@ -1416,45 +1416,41 @@ class accountContainer {
 		}
 		echo "<div smallPaddingContent\">";
 
-		$container = new htmlTable();
+		$container = new htmlResponsiveRow();
+		$container->addVerticalSpacer('2rem');
 		// show messages
 		for ($i = 0; $i < sizeof($messages); $i++) {
 			if (sizeof($messages[$i]) == 2) {
 				$message = new htmlStatusMessage($messages[$i][0], $messages[$i][1]);
-				$message->colspan = 10;
-				$container->addElement($message, true);
+				$container->add($message);
 			}
 			else {
 				$message = new htmlStatusMessage($messages[$i][0], $messages[$i][1], $messages[$i][2]);
-				$message->colspan = 10;
-				$container->addElement($message, true);
+				$container->add($message);
 			}
 		}
 		$message = new htmlStatusMessage('INFO', _('LDAP operation successful.'), $text);
-		$message->colspan = 10;
-		$container->addElement($message, true);
-		$container->addElement(new htmlSpacer(null, '20px'), true);
+		$container->add($message);
+		$container->addVerticalSpacer('2rem');
 
 		$type = $this->type->getBaseType();
 		$buttonGroup = new htmlGroup();
 		if (checkIfNewEntriesAreAllowed($this->type->getId())) {
 			$createButton = new htmlButton('accountContainerCreateAgain', $type->LABEL_CREATE_ANOTHER_ACCOUNT);
-			$createButton->setIconClass('createButton');
+			$createButton->setCSSClasses(array('lam-primary'));
 			$buttonGroup->addElement($createButton);
 			$buttonGroup->addElement(new htmlSpacer('10px', null));
 		}
 		$pdfButton = new htmlButton('accountContainerCreatePDF', _('Create PDF file'));
-		$pdfButton->setIconClass('pdfButton');
+		$pdfButton->setCSSClasses(array('lam-secondary'));
 		$buttonGroup->addElement($pdfButton);
 		$buttonGroup->addElement(new htmlSpacer('10px', null));
 		$backToListButton = new htmlButton('accountContainerBackToList', $type->LABEL_BACK_TO_ACCOUNT_LIST);
-		$backToListButton->setIconClass('backButton');
 		$buttonGroup->addElement($backToListButton);
 		$buttonGroup->addElement(new htmlSpacer('10px', null));
 		$backToEditButton = new htmlButton('accountContainerBackToEdit', _('Edit again'));
-		$backToEditButton->setIconClass('editButton');
 		$buttonGroup->addElement($backToEditButton);
-		$container->addElement($buttonGroup, true);
+		$container->add($buttonGroup);
 
 		$tabindex = 1;
 		parseHtml(null, $container, array(), false, $tabindex, $this->type->getScope());

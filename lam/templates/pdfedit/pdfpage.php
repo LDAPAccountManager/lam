@@ -456,9 +456,8 @@ $container->add($newTextFieldContent, 12);
 // buttons
 $buttonContainer = new htmlResponsiveRow();
 $saveButton = new htmlButton('submit', _("Save"));
-$saveButton->setIconClass('saveButton');
+$saveButton->setCSSClasses(array('lam-primary'));
 $cancelButton = new htmlButton('abort', _("Cancel"));
-$cancelButton->setIconClass('cancelButton');
 $buttonGroup = new htmlGroup();
 $buttonGroup->addElement($saveButton);
 $buttonGroup->addElement($cancelButton);

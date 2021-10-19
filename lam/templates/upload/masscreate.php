@@ -232,7 +232,9 @@ foreach ($types as $type) {
 // ok button
 $row->addVerticalSpacer('3rem');
 if (!empty($types)) {
-	$row->add(new htmlButton('submit', _('Ok')), 12);
+    $okButton = new htmlButton('submit', _('Ok'));
+    $okButton->setCSSClasses(array('lam-primary'));
+	$row->add($okButton);
 }
 
 addSecurityTokenToMetaHTML($row);
@@ -314,7 +316,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 	$row->addVerticalSpacer('1rem');
 
 	$uploadButton = new htmlButton('submitfile', _('Upload file and create accounts'));
-	$uploadButton->setIconClass('upButton');
+	$uploadButton->setCSSClasses(array('lam-primary'));
 	$row->addLabel($uploadButton);
 	$row->addField(new htmlOutputText('&nbsp;', false));
 	$row->addVerticalSpacer('2rem');

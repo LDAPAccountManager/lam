@@ -347,7 +347,9 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 			$newProfileSelect = new htmlSelect('typeId', $availableTypes);
 			$newProfileSelect->setHasDescriptiveElements(true);
 			$container->addLabel($newProfileSelect);
-			$container->addField(new htmlButton('createNewTemplate', _('Create')));
+			$createButton = new htmlButton('createNewTemplate', _('Create'));
+			$createButton->setCSSClasses(array('lam-primary'));
+			$container->addField($createButton);
 			$container->addVerticalSpacer('2rem');
 		}
 
@@ -431,7 +433,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 		$container->addVerticalSpacer('2rem');
 		$container->addLabel(new htmlInputFileUpload('logoUpload'));
 		$logoUpload = new htmlButton('uploadLogo', _('Upload'));
-		$logoUpload->setIconClass('upButton');
+		$logoUpload->setCSSClasses(array('lam-secondary'));
 		$container->addField($logoUpload);
 
 		$container->addVerticalSpacer('4rem');
@@ -634,7 +636,7 @@ if (!empty($globalDeletableTemplates)) {
     $container->add($globalTemplateDeleteDialogPassword, 12);
     $container->addVerticalSpacer('1rem');
     $globalTemplateDeleteButton = new htmlButton('deleteGlobalProfileButton', _('Delete'));
-    $globalTemplateDeleteButton->setIconClass('deleteButton');
+    $globalTemplateDeleteButton->setCSSClasses(array('lam-danger'));
     $globalTemplateDeleteButton->setOnClick("showConfirmationDialog('" . _("Delete") . "', '" .
         _('Ok') . "', '" . _('Cancel') . "', 'globalTemplateDeleteDialog', 'deleteGlobalTemplatesForm', undefined); return false;");
     $container->addLabel(new htmlOutputText('&nbsp;', false));
@@ -665,7 +667,7 @@ if (!empty($globalPdfLogos)) {
 	$container->add($globalLogoDeleteDialogPassword, 12);
 	$container->addVerticalSpacer('1rem');
 	$globalLogoDeleteButton = new htmlButton('deleteGlobalLogoButton', _('Delete'));
-	$globalLogoDeleteButton->setIconClass('deleteButton');
+	$globalLogoDeleteButton->setCSSClasses(array('lam-danger'));
 	$globalLogoDeleteButton->setOnClick("showConfirmationDialog('" . _("Delete") . "', '" .
 		_('Ok') . "', '" . _('Cancel') . "', 'globalLogoDeleteDialog', 'deleteGlobalLogoForm', undefined); return false;");
 	$container->addLabel(new htmlOutputText('&nbsp;', false));
