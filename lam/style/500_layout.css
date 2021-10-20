@@ -25,8 +25,7 @@
 :root {
 	--lam-background-color-default: #FFFFFF;
 
-	--lam-input-bg-color: #fbfbfb;
-	--lam-input-bg-color-hover: #f6f6f6;
+	--lam-input-bg-color: #fcfcfc;
 	--lam-border-color: #d0d0d0;
 	--lam-border-color-primary: #01689e;
 
@@ -715,7 +714,7 @@ tr.account {
 }
 
 #lamVerticalTabs .ui-tabs-nav li:hover {
-	background-color: var(--lam-input-bg-color-hover);
+	filter: brightness(0.96);
 }
 
 #lamVerticalTabs .ui-tabs-nav {
