@@ -327,13 +327,12 @@ class posixGroup extends baseModule implements passwordService {
 		if ($gon == null) {
 			$gon = $this->getAccountContainer()->getAccountModule('groupOfUniqueNames');
 		}
-                if ($gon == null) {
-                        $gon = $this->getAccountContainer()->getAccountModule('groupOfMembers');
-                }
+        if ($gon == null) {
+	        $gon = $this->getAccountContainer()->getAccountModule('groupOfMembers');
+        }
 		if ($gon != null) {
 			$return->addVerticalSpacer('2rem');
 			$syncButton = new htmlButton('syncGON', sprintf(_('Sync from %s'), $gon->get_alias()));
-			$syncButton->setIconClass('refreshButton');
 			$return->add($syncButton, 12, 12, 12, 'text-center');
 			$return->addVerticalSpacer('1rem');
 			$return->add(new htmlResponsiveInputCheckbox('syncGON_delete', true, _('Delete non-matching entries'), null, false), 12);
@@ -342,7 +341,6 @@ class posixGroup extends baseModule implements passwordService {
 		if ($windows != null) {
 			$return->addVerticalSpacer('2rem');
 			$syncButton = new htmlButton('syncWindows', sprintf(_('Sync from %s'), $windows->get_alias()));
-			$syncButton->setIconClass('refreshButton');
 			$return->add($syncButton, 12, 12, 12, 'text-center');
 			$return->addVerticalSpacer('1rem');
 			$return->add(new htmlResponsiveInputCheckbox('syncWindows_delete', true, _('Delete non-matching entries'), null, false), 12);

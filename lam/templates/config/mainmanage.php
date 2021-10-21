@@ -466,7 +466,6 @@ printHeaderContents(_("Edit general settings"), '../..');
 	$row->addField($sslDelSaveGroup);
 	$row->addLabel(new htmlInputFileUpload('sslCaCert'));
 	$sslUploadBtn = new htmlButton('sslCaCertUpload', _('Upload'));
-	$sslUploadBtn->setIconClass('upButton');
 	$sslUploadBtn->setTitle(_('Upload CA certificate in DER/PEM format.'));
 	$row->addField($sslUploadBtn);
 	if (function_exists('stream_socket_client') && function_exists('stream_context_get_params')) {
@@ -474,7 +473,6 @@ printHeaderContents(_("Edit general settings"), '../..');
 		$serverUrlUpload = new htmlInputField('serverurl', $sslImportServerUrl);
 		$row->addLabel($serverUrlUpload);
 		$sslImportBtn = new htmlButton('sslCaCertImport', _('Import from server'));
-		$sslImportBtn->setIconClass('downButton');
 		$sslImportBtn->setTitle(_('Imports the certificate directly from your LDAP server.'));
 		$row->addField($sslImportBtn);
 	}

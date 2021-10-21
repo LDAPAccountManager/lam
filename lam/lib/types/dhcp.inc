@@ -347,8 +347,7 @@ class lamDHCPList extends lamList {
 	protected function addExtraInputElementsToTopArea(&$left, &$right) {
 		if (checkIfWriteAccessIsAllowed($this->type->getId())) {
 			$dhcpButton = new htmlButton('dhcpDefaults', $this->labels['dhcpDefaults']);
-			$dhcpButton->setIconClass('settingsButton');
-			$dhcpButton->setCSSClasses(array('fullwidth-mobile-only'));
+			$dhcpButton->setCSSClasses(array('fullwidth-mobile-only lam-secondary'));
 			$left->addElement($dhcpButton);
 		}
 	}

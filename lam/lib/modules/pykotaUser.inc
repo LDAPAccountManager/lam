@@ -385,7 +385,6 @@ class pykotaUser extends baseModule {
 			$newPaymentComment = new htmlResponsiveInputField(_('Comment'), 'pykotaBalanceComment', '', '20em');
 			$container->add($newPaymentComment, 12);
 			$newPaymentBtn = new htmlButton('addPayment', _('Add'));
-			$newPaymentBtn->setIconClass('createButton');
 			$newPaymentGroup = new htmlGroup();
 			$newPaymentGroup->addElement($newPaymentBtn);
 			$newPaymentGroup->addElement(new htmlSpacer('0.5rem', null));

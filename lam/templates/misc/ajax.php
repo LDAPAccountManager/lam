@@ -458,7 +458,7 @@ class Ajax {
 			$row->setCSSClasses(array('text-right'));
 			$buttonId = base64_encode($currentDn);
 			$buttonId = str_replace('=', '', $buttonId);
-			$button = new htmlButton($buttonId, _('Ok'));
+			$button = new htmlButton($buttonId, '');
 			$button->setIconClass('okButton');
 			$button->setOnClick('window.lam.html.selectDn(this, \'' . htmlspecialchars($fieldId) . '\')');
 			$row->add($button, 12, 3);
@@ -473,7 +473,7 @@ class Ajax {
 			$row->setCSSClasses(array('text-right'));
 			$buttonId = base64_encode('..');
 			$buttonId = str_replace('=', '', $buttonId);
-			$button = new htmlButton($buttonId, _('Up'));
+			$button = new htmlButton($buttonId, '');
 			$button->setIconClass('upButton');
 			$button->setOnClick($onclickUp);
 			$row->add($button, 12, 3);
@@ -488,7 +488,7 @@ class Ajax {
 			$row->setCSSClasses(array('text-right'));
 			$buttonId = base64_encode($dn);
 			$buttonId = str_replace('=', '', $buttonId);
-			$button = new htmlButton($buttonId, _('Ok'));
+			$button = new htmlButton($buttonId, '');
 			$button->setIconClass('okButton');
 			$button->setOnClick('window.lam.html.selectDn(this, \'' . htmlspecialchars($fieldId) . '\')');
 			$row->add($button, 12, 3);

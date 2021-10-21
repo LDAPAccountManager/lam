@@ -516,7 +516,6 @@ class fixed_ip extends baseModule {
 		if (!empty($this->hostCache)) {
 			$return->addVerticalSpacer('2rem');
 			$addHostButton = new htmlAccountPageButton(get_class($this), 'addHost', 'add', _('Add existing host'));
-			$addHostButton->setIconClass('createButton');
 			$return->add($addHostButton, 12);
 		}
 		return $return;

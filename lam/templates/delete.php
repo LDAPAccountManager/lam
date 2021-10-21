@@ -149,11 +149,10 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	$buttonContainer->addVerticalSpacer('1rem');
 	$buttonGroup = new htmlGroup();
 	$delButton = new htmlButton('delete', _('Delete'));
-	$delButton->setIconClass('deleteButton');
+	$delButton->setCSSClasses(array('lam-danger'));
 	$buttonGroup->addElement($delButton);
 	$buttonGroup->addElement(new htmlSpacer('0.5rem', null));
 	$cancelButton = new htmlButton('cancel', _('Cancel'));
-	$cancelButton->setIconClass('cancelButton');
 	$buttonGroup->addElement($cancelButton);
 	$buttonContainer->add($buttonGroup, 12);
 	$buttonContainer->addVerticalSpacer('1rem');

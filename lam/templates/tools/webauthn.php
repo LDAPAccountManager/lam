@@ -87,7 +87,7 @@ $registration = $webauthnManager->getRegistrationObject($userDn, false);
 $registrationJson = json_encode($registration);
 $_SESSION['webauthn_registration'] = $registrationJson;
 $registerButton->addDataAttribute('publickey', $registrationJson);
-$registerButton->setIconClass('createButton');
+$registerButton->setCSSClasses(array('lam-primary'));
 $registerButton->setOnClick('window.lam.webauthn.registerOwnDevice(event, false);');
 $buttonGroup->addElement($registerButton);
 $container->add($buttonGroup, 12);
