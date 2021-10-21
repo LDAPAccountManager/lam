@@ -135,14 +135,12 @@ function printHeader(string $headerPrefix): void {
             <span class="padding0"></span>
         </a>
         <a class="lam-header-right lam-menu-entry" href="<?php echo $headerPrefix; ?>/templates/logout.php" target="_top">
-            <img class="align-middle" height="16" width="16" alt="logout" src="<?php echo $headerPrefix; ?>/graphics/exit.png">
             <span class="padding0"><?php echo _("Logout") ?></span>
         </a>
 		<?php
 		if (is_dir(dirname(__FILE__) . '/../docs/manual')) {
 			?>
             <a class="lam-header-right lam-menu-entry" target="_blank" href="<?php echo $headerPrefix; ?>/docs/manual/index.html">
-                <img class="align-middle" width="16" height="16" alt="help" src="<?php echo $headerPrefix; ?>/graphics/help.png">
                 <span class="padding0"><?php echo _("Help") ?></span>
             </a>
 			<?php
@@ -159,13 +157,7 @@ function printHeader(string $headerPrefix): void {
 			}
 			$toolDiv = new htmlDiv('tool-popup', $row, array('hidden tool-popup'));
 			$toolGroup->addElement($toolDiv);
-			$toolLinkContent = new htmlGroup();
-			$toolLinkImage = new htmlImage($headerPrefix . '/graphics/tools.png', '16px', '16px');
-			$toolLinkImage->setCSSClasses(array('align-middle'));
-			$toolLinkContent->addElement($toolLinkImage);
-			$toolLinkSpan = new htmlSpan(new htmlOutputText('&nbsp;' . _('Tools'), false) , array('padding0'));
-			$toolLinkContent->addElement($toolLinkSpan);
-			$toolLink = new htmlContentLink($toolLinkContent, "javascript:void(0);");
+			$toolLink = new htmlLink(_('Tools'), "javascript:void(0);");
 			$toolLink->setOnClick("showSimpleDialog('" . _('Tools') . "', null, '" . _('Close') . "', null, 'tool-popup');");
 			$toolLink->setCSSClasses(array('lam-header-right', 'lam-menu-entry'));
 			$toolGroup->addElement($toolLink);
@@ -185,13 +177,7 @@ function printHeader(string $headerPrefix): void {
 			}
 			$accountTypesDiv = new htmlDiv('account-types-popup', $row, array('hidden account-types-popup'));
 			$accountTypesGroup->addElement($accountTypesDiv);
-			$accountTypesLinkContent = new htmlGroup();
-			$accountTypesLinkImage = new htmlImage($headerPrefix . '/graphics/gear.png', '16px', '16px');
-			$accountTypesLinkImage->setCSSClasses(array('align-middle'));
-			$accountTypesLinkContent->addElement($accountTypesLinkImage);
-			$accountTypesLinkSpan = new htmlSpan(new htmlOutputText('&nbsp;' . _('Accounts'), false) , array('padding0'));
-			$accountTypesLinkContent->addElement($accountTypesLinkSpan);
-			$accountTypesLink = new htmlContentLink($accountTypesLinkContent, "javascript:void(0);");
+			$accountTypesLink = new htmlLink(_('Accounts'), "javascript:void(0);");
 			$accountTypesLink->setOnClick("showSimpleDialog('" . _('Accounts') . "', null, '" . _('Close') . "', null, 'account-types-popup');");
 			$accountTypesLink->setCSSClasses(array('lam-header-right', 'lam-menu-entry'));
 			$accountTypesGroup->addElement($accountTypesLink);
