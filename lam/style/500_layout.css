@@ -215,24 +215,24 @@ textarea {
 	border-radius: var(--lam-default-border-radius);
 }
 
-table.responsive-table {
+table.accountlist {
 	border: 1px solid var(--lam-table-border-color);
 }
 
-table.responsive-table thead {
+table.accountlist > thead {
 	background-color: var(--lam-table-background-color-bright);
 	border: 1px solid var(--lam-table-border-color);
 }
 
-table.responsive-table tbody tr:nth-child(odd) {
+table.accountlist > tbody > tr:nth-child(odd) {
 	background-color: var(--lam-table-background-color-dark);
 }
 
-table.responsive-table tbody tr:nth-child(even) {
+table.accountlist > tbody > tr:nth-child(even) {
 	background-color: var(--lam-table-background-color-bright);
 }
 
-table.responsive-table tbody tr:hover {
+table.accountlist > tbody > tr:hover {
 	background-color: var(--lam-table-background-color-hover);
 	color: var(--lam-table-text-color-hover);
 }
@@ -335,12 +335,12 @@ table.accountlist input[type='text'] {
 	min-width: 7rem;
 }
 
-table.accountlist tbody tr:hover:nth-child(1) {
+table.accountlist > tbody > tr:hover:nth-child(1) {
 	background-color: var(--lam-table-background-color-dark);
 	color: #000000;
 }
 
-table.accountlist tbody tr:hover:nth-child(2) {
+table.accountlist > tbody > tr:hover:nth-child(2) {
 	background-color: var(--lam-table-background-color-bright);
 	color: #000000;
 }

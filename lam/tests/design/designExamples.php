@@ -33,7 +33,7 @@ include_once(__DIR__ . "/../../lib/html.inc");
 
 echo '<head>';
 $prefix = '../..';
-printHeaderContents("Input Elements", $prefix);
+printHeaderContents("Design Examples", $prefix);
 echo "</head><body>\n";
 
 // include all JavaScript files
@@ -68,7 +68,7 @@ $buttonDisabled = new htmlButton('name3', 'Click me');
 $buttonDisabled->setIsEnabled(false);
 $row->addField($buttonDisabled);
 
-$row->add(new htmlSubTitle('Table'));
+$row->add(new htmlSubTitle('Tables'));
 $tableTitles = array('text 1', 'text 2', 'text 3', 'text 4', 'text 5');
 $tableData = array();
 for ($rowNumber = 0; $rowNumber < 10; $rowNumber++) {
@@ -79,6 +79,12 @@ for ($rowNumber = 0; $rowNumber < 10; $rowNumber++) {
     $tableData[] = $tableRow;
 }
 $table = new htmlResponsiveTable($tableTitles, $tableData);
+$row->add($table);
+
+$row->addVerticalSpacer('2rem');
+$row->add(new htmlOutputText('Account list'));
+$table = new htmlResponsiveTable($tableTitles, $tableData);
+$table->setCSSClasses(array('accountlist'));
 $row->add($table);
 
 $row->add(new htmlSubTitle('Input fields'));
