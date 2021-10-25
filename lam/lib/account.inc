@@ -578,10 +578,6 @@ class samba3domain {
 * @return boolean true if matches, otherwise false
 */
 function get_preg($argument, $regexp) {
-	/* Bug in php preg_match doesn't work correct with utf8 */
-	$language = $_SESSION['language'];
-	$language2 = explode ('.', $language);
-	setlocale(LC_ALL, $language2[0]);
 	// First we check "positive" cases
 	$pregexpr = '';
 	switch ($regexp) {
@@ -716,8 +712,6 @@ function get_preg($argument, $regexp) {
 			break;
 	}
 	if (($pregexpr != '') && preg_match($pregexpr, $argument)) {
-		/* Bug in php preg_match doesn't work correct with utf8 */
-		setlocale(LC_ALL, $language);
 		return true;
 	}
 	// Now we check "negative" cases, characters which are not allowed
@@ -734,12 +728,8 @@ function get_preg($argument, $regexp) {
 			break;
 	}
 	if (($pregexpr != '') && !preg_match($pregexpr, $argument)) {
-		/* Bug in php preg_match doesn't work correct with utf8 */
-		setlocale(LC_ALL, $language);
 		return true;
 	}
-	/* Bug in php preg_match doesn't work correct with utf8 */
-	setlocale(LC_ALL, $language);
 	return false;
 }
 
