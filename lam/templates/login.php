@@ -275,7 +275,7 @@ function display_LoginPage($licenseValidator, $error_message, $errorDetails = nu
 		}
 		if (!empty($config_object)) {
 		?>
-		<br><br>
+		<br><br><br>
 		<div class="centeredTable">
 		<div class="roundedShadowBox limitWidth" style="position:relative; z-index:5;">
 		<table border="0" rules="none" bgcolor="white" class="ui-corner-all">

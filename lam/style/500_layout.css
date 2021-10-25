@@ -650,6 +650,10 @@ a.lamLogo span {
 	margin-left: 32px;
 }
 
+.lam-header {
+	box-shadow: 0px 3px 2px -2px grey;
+}
+
 input.markFail {
 	background-color: #ffc4ba;
 }
