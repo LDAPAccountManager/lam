@@ -74,8 +74,7 @@ $content = new htmlResponsiveRow();
                     <span class="padding0">&nbsp;</span>
                 </a>
                 <a class="lam-header-right lam-menu-entry" target="_blank" href="../../docs/manual/index.html">
-                    <img class="align-middle" width="16" height="16" alt="help" src="../../graphics/help.png">
-                    <span class="padding0">&nbsp;<?php echo _("Help") ?></span>
+                    <span class="padding0"><?php echo _("Help") ?></span>
                 </a>
 		        <?php
 	        }
@@ -113,7 +112,7 @@ $content = new htmlResponsiveRow();
 			$content->addVerticalSpacer('2rem');
 		}
 
-		$content->add(new htmlLink(_("Back to login"), '../login.php', '../../graphics/undo.png'), 12);
+		$content->add(new htmlLink(_("Back to login"), '../login.php'), 12);
 		$content->addVerticalSpacer('2rem');
 
 		parseHtml('none', $content, array(), true, $tabindex, 'none');

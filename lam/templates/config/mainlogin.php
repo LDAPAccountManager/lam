@@ -102,8 +102,7 @@ printHeaderContents(_("Login"), '../..');
                     <span class="padding0">&nbsp;</span>
                 </a>
                 <a class="lam-header-right lam-menu-entry" target="_blank" href="../../docs/manual/index.html">
-                    <img class="align-middle" width="16" height="16" alt="help" src="../../graphics/help.png">
-                    <span class="padding0">&nbsp;<?php echo _("Help") ?></span>
+                    <span class="padding0"><?php echo _("Help") ?></span>
                 </a>
 				<?php
 			}
@@ -175,7 +174,7 @@ printHeaderContents(_("Login"), '../..');
 		</table>
 		</td></tr>
 		<tr><td align="left">
-		<br><a href="../login.php"><IMG alt="configuration" src="../../graphics/undo.png">&nbsp;<?php echo _("Back to login"); ?> </a>
+		<br><a href="../login.php"><?php echo _("Back to login"); ?></a>
 		</td></tr>
 		</table>
 		</form>

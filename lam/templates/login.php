@@ -487,15 +487,13 @@ function displayLoginHeader() : void {
 		if (is_dir(dirname(__FILE__) . '/../docs/manual')) {
 			?>
             <a class="lam-header-right lam-menu-entry" target="_blank" href="../docs/manual/index.html">
-                <img class="align-middle" width="16" height="16" alt="help" src="../graphics/help.png">
-                <span class="padding0">&nbsp;<?php echo _("Help") ?></span>
+                <span class="padding0"><?php echo _("Help") ?></span>
             </a>
 			<?php
 		}
 		?>
         <a class="lam-header-right lam-menu-entry" href="config/index.php" target="_top">
-            <img class="align-middle" height="16" width="16" alt="logout" src="../graphics/tools.png">
-            <span class="padding0">&nbsp;<?php echo _("LAM configuration") ?></span>
+            <span class="padding0"><?php echo _("LAM configuration") ?></span>
         </a>
 
     </div>

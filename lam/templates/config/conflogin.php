@@ -109,8 +109,7 @@ $tabindex = 1;
                     <span class="padding0">&nbsp;</span>
                 </a>
                 <a class="lam-header-right lam-menu-entry" target="_blank" href="../../docs/manual/index.html">
-                    <img class="align-middle" width="16" height="16" alt="help" src="../../graphics/help.png">
-                    <span class="padding0">&nbsp;<?php echo _("Help") ?></span>
+                    <span class="padding0"><?php echo _("Help") ?></span>
                 </a>
 				<?php
 			}
@@ -157,7 +156,7 @@ $tabindex = 1;
 			$box->add(new htmlHorizontalLine(), 12);
 			$box->addVerticalSpacer('1.5rem');
 		}
-		$manageLink = new htmlLink(_("Manage server profiles"), 'profmanage.php', '../../graphics/tools.png');
+		$manageLink = new htmlLink(_("Manage server profiles"), 'profmanage.php');
 		$box->add($manageLink, 12, 12, 12, 'text-center');
 
 		$boxDiv = new htmlDiv(null, $box);
@@ -166,7 +165,7 @@ $tabindex = 1;
 
 		// back link
 		$row->addVerticalSpacer('2rem');
-		$backLink = new htmlLink(_("Back to login"), '../login.php', '../../graphics/undo.png');
+		$backLink = new htmlLink(_("Back to login"), '../login.php');
 		$row->add($backLink, 12, 12, 12, 'text-left');
 
 		parseHtml(null, new htmlDiv(null, $row, array('centeredTable')), array(), false, $tabindex, 'user');
