@@ -134,37 +134,8 @@ function printHeader(string $headerPrefix): void {
             <img class="align-middle" width="16" height="16" alt="menu" src="<?php echo $headerPrefix; ?>/graphics/menu.svg">
             <span class="padding0"></span>
         </a>
-        <a class="lam-header-right lam-menu-entry" href="<?php echo $headerPrefix; ?>/templates/logout.php" target="_top">
-            <span class="padding0"><?php echo _("Logout") ?></span>
-        </a>
+        <div class="lam-header-right lam-header-menublock">
 		<?php
-		if (is_dir(dirname(__FILE__) . '/../docs/manual')) {
-			?>
-            <a class="lam-header-right lam-menu-entry" target="_blank" href="<?php echo $headerPrefix; ?>/docs/manual/index.html">
-                <span class="padding0"><?php echo _("Help") ?></span>
-            </a>
-			<?php
-		}
-		?>
-		<?php
-		if (sizeof($tools) > 0) {
-			$toolGroup = new htmlGroup();
-			$row = new htmlResponsiveRow();
-			foreach ($tools as $tool) {
-				$link = $headerPrefix . '/templates/' . $tool->getLink();
-				$toolLink = new htmlLink($tool->getName(), $link, $headerPrefix . '/graphics/' . $tool->getImageLink());
-				$row->add($toolLink, 12, 6);
-			}
-			$toolDiv = new htmlDiv('tool-popup', $row, array('hidden tool-popup'));
-			$toolGroup->addElement($toolDiv);
-			$toolLink = new htmlLink(_('Tools'), "javascript:void(0);");
-			$toolLink->setOnClick("showSimpleDialog('" . _('Tools') . "', null, '" . _('Close') . "', null, 'tool-popup');");
-			$toolLink->setCSSClasses(array('lam-header-right', 'lam-menu-entry'));
-			$toolGroup->addElement($toolLink);
-
-			$tabIndex = 0;
-			parseHtml(null, $toolGroup, array(), false, $tabIndex, null);
-		}
 		$typeManager = new \LAM\TYPES\TypeManager();
 		$types = $typeManager->getConfiguredTypes();
 		if (!empty($types)) {
@@ -179,13 +150,42 @@ function printHeader(string $headerPrefix): void {
 			$accountTypesGroup->addElement($accountTypesDiv);
 			$accountTypesLink = new htmlLink(_('Accounts'), "javascript:void(0);");
 			$accountTypesLink->setOnClick("showSimpleDialog('" . _('Accounts') . "', null, '" . _('Close') . "', null, 'account-types-popup');");
-			$accountTypesLink->setCSSClasses(array('lam-header-right', 'lam-menu-entry'));
+			$accountTypesLink->setCSSClasses(array('lam-menu-entry'));
 			$accountTypesGroup->addElement($accountTypesLink);
 
 			parseHtml(null, $accountTypesGroup, array(), false, $tabIndex, null);
 		}
+		if (sizeof($tools) > 0) {
+			$toolGroup = new htmlGroup();
+			$row = new htmlResponsiveRow();
+			foreach ($tools as $tool) {
+				$link = $headerPrefix . '/templates/' . $tool->getLink();
+				$toolLink = new htmlLink($tool->getName(), $link, $headerPrefix . '/graphics/' . $tool->getImageLink());
+				$row->add($toolLink, 12, 6);
+			}
+			$toolDiv = new htmlDiv('tool-popup', $row, array('hidden tool-popup'));
+			$toolGroup->addElement($toolDiv);
+			$toolLink = new htmlLink(_('Tools'), "javascript:void(0);");
+			$toolLink->setOnClick("showSimpleDialog('" . _('Tools') . "', null, '" . _('Close') . "', null, 'tool-popup');");
+			$toolLink->setCSSClasses(array('lam-menu-entry'));
+			$toolGroup->addElement($toolLink);
+
+			$tabIndex = 0;
+			parseHtml(null, $toolGroup, array(), false, $tabIndex, null);
+		}
+		if (is_dir(dirname(__FILE__) . '/../docs/manual')) {
+			?>
+            <a class="lam-menu-entry" target="_blank" href="<?php echo $headerPrefix; ?>/docs/manual/index.html">
+                <span class="padding0"><?php echo _("Help") ?></span>
+            </a>
+			<?php
+		}
 		?>
 
+            <a class="lam-menu-entry" href="<?php echo $headerPrefix; ?>/templates/logout.php" target="_top">
+                <span class="padding0"><?php echo _("Logout") ?></span>
+            </a>
+        </div>
     </div>
     <?php
 }

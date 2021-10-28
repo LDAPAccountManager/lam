@@ -135,6 +135,10 @@ div.lam-header a {
 	padding: var(--lam-small-space);
 }
 
+div.lam-header-menublock {
+	padding: var(--lam-small-space);
+}
+
 .lam-header-left {
 	float: left;
 	display: block;
@@ -273,6 +277,10 @@ div.account-types-popup div.columns:last-child {
 
 	.lam-header.lam-header-open div.lam-menu-stay {
 		float: none;
+	}
+
+	.lam-header-menublock {
+		width: 100%;
 	}
 
 }
