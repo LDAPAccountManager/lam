@@ -140,25 +140,27 @@ function printHeader(string $headerPrefix): void {
 		$types = $typeManager->getConfiguredTypes();
 		if (!empty($types)) {
 			$accountTypesGroup = new htmlGroup();
-			$row = new htmlResponsiveRow();
+			$accountTypesLink = new htmlLink(_('Accounts'), "javascript:void(0);");
+			$accountTypesLink->setOnClick("window.lam.topmenu.openSubmenu(event, 'lam-navigation-types', window.lam.topmenu.subMenuCloseListenerTypes);");
+			$accountTypesLink->setCSSClasses(array('lam-menu-entry'));
+			$accountTypesGroup->addElement($accountTypesLink);
+			$accountList = new htmlGroup();
 			foreach ($types as $type) {
 				$link = $headerPrefix . '/templates/lists/list.php?type=' . $type->getId();
 				$accountTypeLink = new htmlLink($type->getAlias(), $link, $headerPrefix . '/graphics/' . $type->getIcon());
-				$row->add($accountTypeLink, 12, 6);
+				$accountTypeLink->setCSSClasses(array('lam-menu-entry'));
+				$accountList->addElement($accountTypeLink);
 			}
-			$accountTypesDiv = new htmlDiv('account-types-popup', $row, array('hidden account-types-popup'));
+			$accountTypeEntriesDiv = new htmlDiv(null, $accountList, array('lam-navigation-layer-content'));
+			$accountTypesDiv = new htmlDiv('lam-navigation-types', $accountTypeEntriesDiv, array('lam-navigation-layer zeroHeight'));
 			$accountTypesGroup->addElement($accountTypesDiv);
-			$accountTypesLink = new htmlLink(_('Accounts'), "javascript:void(0);");
-			$accountTypesLink->setOnClick("showSimpleDialog('" . _('Accounts') . "', null, '" . _('Close') . "', null, 'account-types-popup');");
-			$accountTypesLink->setCSSClasses(array('lam-menu-entry'));
-			$accountTypesGroup->addElement($accountTypesLink);
 
 			parseHtml(null, $accountTypesGroup, array(), false, $tabIndex, null);
 		}
 		if (sizeof($tools) > 0) {
 			$toolGroup = new htmlGroup();
 			$toolLink = new htmlLink(_('Tools'), "javascript:void(0);");
-			$toolLink->setOnClick("window.lam.topmenu.openSubmenu(event, 'lam-navigation-tools');");
+			$toolLink->setOnClick("window.lam.topmenu.openSubmenu(event, 'lam-navigation-tools', window.lam.topmenu.subMenuCloseListenerTools);");
 			$toolLink->setCSSClasses(array('lam-menu-entry'));
 			$toolGroup->addElement($toolLink);
 			$toolList = new htmlGroup();
