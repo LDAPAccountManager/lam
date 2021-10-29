@@ -150,12 +150,9 @@ div.lam-header-menublock {
 	display: block;
 }
 
-div.tool-popup div.columns {
-	margin-bottom: var(--lam-regular-space);
-}
-
-div.tool-popup div.columns:last-child {
-	float: left;
+div.lam-navigation-layer {
+	transition: height .3s;
+	overflow: hidden;
 }
 
 div.account-types-popup div.columns {
@@ -250,6 +247,11 @@ div.account-types-popup div.columns:last-child {
 
 	.lam-header a.lam-menu-entry {
 		display: none;
+		padding-left: 1rem;
+	}
+
+	.lam-header a.lam-menu-entry img {
+		display: none;
 	}
 
 	.lam-header.lam-header-open {
@@ -271,8 +273,8 @@ div.account-types-popup div.columns:last-child {
 		margin: 0px;
 	}
 
-	.lam-header.lam-header-open a.lam-menu-entry:last-of-type {
-		margin-bottom: var(--lam-large-space);
+	.lam-header.lam-header-open {
+		padding-bottom: var(--lam-large-space);
 	}
 
 	.lam-header.lam-header-open div.lam-menu-stay {
@@ -324,6 +326,34 @@ div.account-types-popup div.columns:last-child {
 	.tree-right-area {
 		border-left: 2px solid #e4e4e4;
 		margin-left: -2px;
+	}
+
+}
+
+/* tablet and bigger */
+@media only screen and (min-width: 40.0625em) {
+
+	div.lam-navigation-layer {
+		position: absolute;
+		width: 100vw;
+		overflow: hidden;
+		z-index: 9;
+		top: 3.1rem;
+		left: 0;
+		padding-right: 10rem;
+		padding-left: 10rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background-color: var(--lam-background-color-default);
+		box-shadow: 0px 3px 2px -2px grey;
+	}
+
+	div.lam-navigation-layer-content {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+		column-gap: 5rem;
+		max-width: 60rem;
 	}
 
 }

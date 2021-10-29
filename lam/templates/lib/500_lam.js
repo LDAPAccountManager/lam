@@ -2689,6 +2689,9 @@ window.lam.treeview.pasteNode = function (tokenName, tokenValue, node, tree) {
 
 window.lam.topmenu = window.lam.topmenu || {};
 
+/**
+ * Toggles the top navigation menu.
+ */
 window.lam.topmenu.toggle = function() {
 	var topnav = document.getElementById('lam-topnav');
 	if (topnav.className == 'lam-header') {
@@ -2696,6 +2699,32 @@ window.lam.topmenu.toggle = function() {
 	}
 	else {
 		topnav.className = 'lam-header';
+	}
+}
+
+/**
+ * Opens a submenu of the top navigation.
+ *
+ * @param event event
+ * @param layerId layer ID
+ */
+window.lam.topmenu.openSubmenu = function(event, layerId) {
+	const layer = document.getElementById(layerId);
+	if (layer.style.height && (layer.style.height !== '0px')) {
+		// no action if already open
+		return;
+	}
+	document.removeEventListener("click", window.lam.topmenu.subMenuCloseListener);
+	event.preventDefault();
+	event.stopImmediatePropagation();
+	const height = layer.getElementsByClassName('lam-navigation-layer-content')[0].offsetHeight;
+	layer.style.height = height + 'px';
+	document.addEventListener("click", window.lam.topmenu.subMenuCloseListener);
+}
+
+window.lam.topmenu.subMenuCloseListener = function (event) {
+	if (!event.target.closest('#lam-navigation-tools')) {
+		document.getElementById('lam-navigation-tools').style.height = "0px";
 	}
 }
 

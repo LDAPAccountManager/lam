@@ -157,18 +157,20 @@ function printHeader(string $headerPrefix): void {
 		}
 		if (sizeof($tools) > 0) {
 			$toolGroup = new htmlGroup();
-			$row = new htmlResponsiveRow();
+			$toolLink = new htmlLink(_('Tools'), "javascript:void(0);");
+			$toolLink->setOnClick("window.lam.topmenu.openSubmenu(event, 'lam-navigation-tools');");
+			$toolLink->setCSSClasses(array('lam-menu-entry'));
+			$toolGroup->addElement($toolLink);
+			$toolList = new htmlGroup();
 			foreach ($tools as $tool) {
 				$link = $headerPrefix . '/templates/' . $tool->getLink();
 				$toolLink = new htmlLink($tool->getName(), $link, $headerPrefix . '/graphics/' . $tool->getImageLink());
-				$row->add($toolLink, 12, 6);
+				$toolLink->setCSSClasses(array('lam-menu-entry'));
+				$toolList->addElement($toolLink);
 			}
-			$toolDiv = new htmlDiv('tool-popup', $row, array('hidden tool-popup'));
+			$toolEntriesDiv = new htmlDiv(null, $toolList, array('lam-navigation-layer-content'));
+			$toolDiv = new htmlDiv('lam-navigation-tools', $toolEntriesDiv, array('lam-navigation-layer zeroHeight'));
 			$toolGroup->addElement($toolDiv);
-			$toolLink = new htmlLink(_('Tools'), "javascript:void(0);");
-			$toolLink->setOnClick("showSimpleDialog('" . _('Tools') . "', null, '" . _('Close') . "', null, 'tool-popup');");
-			$toolLink->setCSSClasses(array('lam-menu-entry'));
-			$toolGroup->addElement($toolLink);
 
 			$tabIndex = 0;
 			parseHtml(null, $toolGroup, array(), false, $tabIndex, null);

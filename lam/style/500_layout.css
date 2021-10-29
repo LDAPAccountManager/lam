@@ -604,6 +604,10 @@ div.smallScroll {
 	width: 50%;
 }
 
+.zeroHeight {
+	height: 0px;
+}
+
 td.loginLogo {
 	background-image: url(../graphics/lam.png);
 	background-repeat:no-repeat;
