@@ -1,3 +1,8 @@
+December 2021 7.8
+  - Restyling of LAM
+  - Do not print random password if sent via email (165)
+
+
 30.09.2021 7.7
   - 2-factor authentication with OpenID
   - Send proper response code on failed login
