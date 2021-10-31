@@ -2,7 +2,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003  Leonhard Walchshaeusl
-  Copyright (C) 2005 - 2020  Roland Gruber
+  Copyright (C) 2005 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -22,6 +22,43 @@
 
 /* CSS layout for LAM */
 
+:root {
+	--lam-background-color-default: #FFFFFF;
+
+	--lam-input-bg-color: #fcfcfc;
+	--lam-border-color: #d0d0d0;
+	--lam-border-color-primary: #01689e;
+
+	--lam-background-color-primary: #3daee9;
+	--lam-text-color-primary: #ffffff;
+
+	--lam-border-color-secondary: #ffcb1d;
+	--lam-background-color-secondary: #ffe233;
+	--lam-text-color-secondary: #000000;
+
+	--lam-border-color-danger: #a40e26;
+	--lam-background-color-danger: #fbfbfb;
+	--lam-text-color-danger: #a40e26;
+	--lam-background-color-danger-hover: #a40e26;
+	--lam-text-color-danger-hover: #ffffff;
+
+	--lam-table-background-color-bright: #fbfbfb;
+	--lam-table-background-color-dark: #e8f3ff;
+	--lam-table-background-color-hover: #3daee9;
+	--lam-table-text-color-hover: #ffffff;
+	--lam-table-border-color: #3daee9;
+
+	--lam-disabled-opacity: .35;
+
+	--lam-default-border-radius: 2px;
+
+	--lam-regular-space: 0.5rem;
+	--lam-small-space: 0.25rem;
+	--lam-smaller-space: 0.1rem;
+	--lam-large-space: 1rem;
+	--lam-larger-space: 2rem;
+}
+
 
 /**
  * global page layout
@@ -29,7 +66,7 @@
  */
 
 h1,h2,h3,h4,p,ul,ol,li,div,td,th,address,blockquote,b,i {
-  font-family:Arial,Tahoma,Verdana,sans-serif;
+  font-family: Arial,Helvetica,sans-serif;
 }
 
 h1,h2,h3 {
@@ -38,20 +75,8 @@ h1,h2,h3 {
 }
 
 body {
-  background-color:#F5F5F5;
-}
-
-body.selfservice {
-  padding: 10px;
-  background: #fffde2;
-}
-
-body.admin {
-  padding: 0px 10px 10px 10px;
-}
-
-body.lam-selfservice {
-  padding: 10px;
+	background-color: var(--lam-background-color-default);
+	padding: 0.5rem 2rem 3rem 2rem;
 }
 
 .defaultBackground {
@@ -60,23 +85,23 @@ body.lam-selfservice {
 
 /* links */
 a {
-color: #222222;
-text-decoration: none;
+  color: #000080;
+  text-decoration: none;
+  margin: var(--lam-small-space);
 }
 
 a:link {
-color: #222222;
-text-decoration: none;
+  color: #000080;
+  text-decoration: none;
 }
 
 a:visited {
-color: #222222;
-text-decoration: none;
+  color: #000080;
+  text-decoration: none;
 }
 
 a:hover {
-	color: red;
-	text-decoration: none;
+	text-decoration: underline;
 	cursor: pointer;
 }
 
@@ -115,7 +140,50 @@ color:black;
 }
 
 button {
-	margin: 0.2rem;
+	margin: var(--lam-small-space);
+	background: var(--lam-input-bg-color);
+	border: 1px solid var(--lam-border-color);
+	border-radius: var(--lam-default-border-radius);
+	padding: .3em 1em;
+	cursor: pointer;
+	vertical-align: middle;
+	text-align: center;
+	font-size: 1em;
+}
+
+button:disabled {
+	opacity: var(--lam-disabled-opacity);
+}
+
+button.lam-primary {
+	border: 1px solid var(--lam-border-color-primary);
+	background: var(--lam-background-color-primary);
+	color: var(--lam-text-color-primary);
+}
+
+button:hover {
+	filter: brightness(0.96);
+}
+
+button.lam-secondary {
+	border: 1px solid var(--lam-border-color-secondary);
+	background: var(--lam-background-color-secondary);
+	color: var(--lam-text-color-secondary);
+}
+
+button.lam-danger {
+	border: 1px solid var(--lam-border-color-danger);
+	background: var(--lam-background-color-danger);
+	color: var(--lam-text-color-danger);
+}
+
+button.lam-danger:hover {
+	background: var(--lam-background-color-danger-hover);
+	color: var(--lam-text-color-danger-hover);
+}
+
+input:disabled {
+	opacity: var(--lam-disabled-opacity);
 }
 
 input.listPageInput {
@@ -128,18 +196,53 @@ input.max-width-10 {
 }
 
 select {
-	background:#F5F5F5 none repeat-x scroll 50% 50%;
-	border:1px solid #AAAAAA;
-	color:#222222;
-	margin: 3px;
+	border: 1px solid var(--lam-border-color);
+	background: var(--lam-input-bg-color);
+	margin: var(--lam-small-space);
+	border-radius: var(--lam-default-border-radius);
+	font-size: 1em;
 }
 
 input {
-	margin: 3px;
+	border-width: 1px;
+	margin: var(--lam-small-space);
+	border-radius: var(--lam-default-border-radius);
 }
 
 textarea {
-	margin: 3px;
+	border-width: 1px;
+	margin: var(--lam-small-space);
+	border-radius: var(--lam-default-border-radius);
+}
+
+table.accountlist {
+	border: 1px solid var(--lam-table-border-color);
+}
+
+table.accountlist > thead {
+	background-color: var(--lam-table-background-color-bright);
+	border: 1px solid var(--lam-table-border-color);
+}
+
+table.accountlist > tbody > tr:nth-child(odd) {
+	background-color: var(--lam-table-background-color-dark);
+}
+
+table.accountlist > tbody > tr:nth-child(even) {
+	background-color: var(--lam-table-background-color-bright);
+}
+
+table.accountlist > tbody > tr:hover {
+	background-color: var(--lam-table-background-color-hover);
+	color: var(--lam-table-text-color-hover);
+}
+
+.lam-margin-small {
+	margin: var(--lam-small-space);
+}
+
+.lam-margin-smaller {
+	margin: var(--lam-smaller-space);
 }
 
 .margin2 {
@@ -209,20 +312,6 @@ textarea {
 	float: left;
 }
 
-.hoverHighlight {
-	border: 1px solid transparent;
-}
-
-.hoverHighlight:hover {
-	border: 1px solid grey;
-	border-radius: 5px;
-	box-shadow: 0 0 10px #a0a0a4;
-}
-
-.black {
-	color: black;
-}
-
 .align-middle {
 	vertical-align: middle;
 }
@@ -235,32 +324,10 @@ textarea {
 	vertical-align: unset;
 }
 
-table.lamHeader {
-  background-image: url(lam-images/headerLine.png);
-  background-repeat: repeat-x;
-  background-size: contain;
-  padding: 0px;
-  height: 35px;
-  margin-bottom: 0.5rem;
-}
-
-table.lamTop {
-  background-image: url(lam-images/headerLine.png);
-  padding: 0px;
-  height: 35px;
-  width: 100%;
-  border-width: 0px;
-}
-
-table.lamTop td {
-  padding: 1px;
-  vertical-align: "bottom";
-}
-
 /* table preferences */
-table.accountlist {
-  border-width:1px;
-  border-style:solid;
+
+table.accountlist thead {
+	border: 0px;
 }
 
 table.accountlist input[type='text'] {
@@ -268,9 +335,23 @@ table.accountlist input[type='text'] {
 	min-width: 7rem;
 }
 
+table.accountlist > tbody > tr:hover:nth-child(1) {
+	background-color: var(--lam-table-background-color-dark);
+	color: #000000;
+}
+
+table.accountlist > tbody > tr:hover:nth-child(2) {
+	background-color: var(--lam-table-background-color-bright);
+	color: #000000;
+}
+
+table.accountlist tbody tr:nth-child(2) {
+	border-bottom: 1px solid var(--lam-table-border-color);
+}
+
 .lam-listtools {
 	white-space: nowrap;
-	width: 125px;
+	width: 10rem;
 }
 
 .lam-list-buttons {
@@ -278,7 +359,7 @@ table.accountlist input[type='text'] {
 }
 
 .lam-listouselection-height {
-	height: 27px;
+	height: 2rem;
 }
 
 table.collapse {
@@ -523,6 +604,10 @@ div.smallScroll {
 	width: 50%;
 }
 
+.zeroHeight {
+	height: 0px;
+}
+
 td.loginLogo {
 	background-image: url(../graphics/lam.png);
 	background-repeat:no-repeat;
@@ -560,13 +645,17 @@ a.lamLogo {
 	background-image: url(../graphics/logo24.png);
 	background-repeat: no-repeat;
 	background-position: left;
-	line-height: 24px;
-	display: block;
-	text-indent:32px;
 	vertical-align: middle;
 	white-space: nowrap;
 	margin-left: 5px;
-	float: left;
+}
+
+a.lamLogo span {
+	margin-left: 32px;
+}
+
+.lam-header {
+	box-shadow: 0px 3px 2px -2px grey;
 }
 
 input.markFail {
@@ -625,10 +714,15 @@ tr.account {
 	border-bottom: 1px solid #AAAAAA !important;
 }
 
-#lamVerticalTabs .ui-tabs-nav li.ui-tabs-selected {
+#lamVerticalTabs .ui-tabs-nav li.lam-tabs-selected {
 	padding-bottom: 0;
 	padding-right: .1em;
-	border: 1px solid #c5c5c5
+	border: 1px solid #c5c5c5;
+	background-color: var(--lam-background-color-default);
+}
+
+#lamVerticalTabs .ui-tabs-nav li:hover {
+	filter: brightness(0.96);
 }
 
 #lamVerticalTabs .ui-tabs-nav {
@@ -688,20 +782,25 @@ button.lam-account-type img {
  *
  */
 
+div.lam-status-message {
+	border-radius: var(--lam-default-border-radius);
+	margin: var(--lam-small-space);
+}
+
 /* Background olor for the different Status Messages */
 div.statusInfo {
-  background-color:#a8c3ff;
-  border: 1px solid blue;
+  background-color:#d9e5ff;
+  border: 1px solid #8eb1ff;
 }
 
 div.statusWarn {
-  background-color:#fff2a3;
-  border: 1px solid #f59d00;
+  background-color:#fff8ce;
+  border: 1px solid #ffcc72;
 }
 
 div.statusError {
-  background-color:#ffc4ba;
-  border: 1px solid red;
+  background-color:#ffe6e2;
+  border: 1px solid #f35b42;
 }
 
 /* H2 (MessageHeadline) font size, family, color, and some more settings for the different Status Messages */
@@ -802,110 +901,3 @@ table.tree-view--table thead {
 table.tree-view--table tr:nth-child(even) {
 	background: #E7E7E7
 }
-
-/** colors for account types */
-
-.alias-border { border-color:#af8800; }
-.alias-bright { background:#fff3c8 !important; }
-.alias-dark { background-color:#ffe27f !important; }
-
-.asteriskExt-border { border-color:#af8800; }
-.asteriskExt-bright { background:#fff3c8 !important; }
-.asteriskExt-dark { background-color:#ffe27f !important; }
-
-.automountType-border { border-color:#7167bf; }
-.automountType-bright { background:#d6e3ff !important; }
-.automountType-dark { background-color:#a8c3ff !important; }
-
-.dhcp-border { border-color:#527510; }
-.dhcp-bright { background:#d4f19b !important; }
-.dhcp-dark { background-color:#9fc653 !important; }
-
-.gon-border { border-color:#7167bf; }
-.gon-bright { background:#d6e3ff !important; }
-.gon-dark { background-color:#a8c3ff !important; }
-
-.group-border { border-color:#7167bf; }
-.group-bright { background:#d6e3ff !important; }
-.group-dark { background-color:#a8c3ff !important; }
-
-.host-border { border-color:#911a1a; }
-.host-bright { background:#ffe2dd !important; }
-.host-dark { background-color:#ffc4ba !important; }
-
-.mailAlias-border { border-color:#af8800; }
-.mailAlias-bright { background:#fff3c8 !important; }
-.mailAlias-dark { background-color:#ffe27f !important; }
-
-.netgroup-border { border-color:#7167bf; }
-.netgroup-bright { background:#d6e3ff !important; }
-.netgroup-dark { background-color:#a8c3ff !important; }
-
-.nisObjectType-border { border-color:#7167bf; }
-.nisObjectType-bright { background:#d6e3ff !important; }
-.nisObjectType-dark { background-color:#a8c3ff !important; }
-
-.ppolicyType-border { border-color:#af8800; }
-.ppolicyType-bright { background:#fff3c8 !important; }
-.ppolicyType-dark { background-color:#ffe27f !important; }
-
-.mitKerberosPolicyType-border { border-color:#af8800; }
-.mitKerberosPolicyType-bright { background:#fff3c8 !important; }
-.mitKerberosPolicyType-dark { background-color:#ffe27f !important; }
-
-.smbDomain-border { border-color:#1d993e; }
-.smbDomain-bright { background:#c9ddd2 !important; }
-.smbDomain-dark { background-color:#a8ddbf !important; }
-
-.sudo-border { border-color:#9b8523; }
-.sudo-bright { background:#fffde2 !important; }
-.sudo-dark { background-color:#fff2a3 !important; }
-
-.user-border { border-color:#9b8523; }
-.user-bright { background: #fffde2 !important; }
-.user-dark { background-color:#fff2a3 !important; }
-
-.kopanoAddressListType-border { border-color:#7167bf; }
-.kopanoAddressListType-bright { background:#d6e3ff !important; }
-.kopanoAddressListType-dark { background-color:#a8c3ff !important; }
-
-.zarafaAddressListType-border { border-color:#7167bf; }
-.zarafaAddressListType-bright { background:#d6e3ff !important; }
-.zarafaAddressListType-dark { background-color:#a8c3ff !important; }
-
-.kopanoDynamicGroupType-border { border-color:#7167bf; }
-.kopanoDynamicGroupType-bright { background:#d6e3ff !important; }
-.kopanoDynamicGroupType-dark { background-color:#a8c3ff !important; }
-
-.zarafaDynamicGroupType-border { border-color:#7167bf; }
-.zarafaDynamicGroupType-bright { background:#d6e3ff !important; }
-.zarafaDynamicGroupType-dark { background-color:#a8c3ff !important; }
-
-.pykotaPrinterType-border { border-color:#911a1a; }
-.pykotaPrinterType-bright { background:#ffe2dd !important; }
-.pykotaPrinterType-dark { background-color:#ffc4ba !important; }
-
-.pykotaBillingCodeType-border { border-color:#527510; }
-.pykotaBillingCodeType-bright { background:#d4f19b !important; }
-.pykotaBillingCodeType-dark { background-color:#9fc653 !important; }
-
-.bind-border { border-color:#32768b; }
-.bind-bright { background:#b6eeff !important; }
-.bind-dark { background-color:#80e0e1 !important; }
-
-.kolabSharedFolderType-border { border-color:#32768b; }
-.kolabSharedFolderType-bright { background:#b6eeff !important; }
-.kolabSharedFolderType-dark { background-color:#80e0e1 !important; }
-
-.oracleContextType-border { border-color:#32768b; }
-.oracleContextType-bright { background:#b6eeff !important; }
-.oracleContextType-dark { background-color:#80e0e1 !important; }
-
-.nsviewType-border { border-color:#af8800; }
-.nsviewType-bright { background:#fff3c8 !important; }
-.nsviewType-dark { background-color:#ffe27f !important; }
-
-.customType-border { border-color:#b87500; }
-.customType-bright { background:#ffe3b1 !important; }
-.customType-dark { background-color:#e1b974 !important; }
-

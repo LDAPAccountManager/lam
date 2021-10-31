@@ -67,7 +67,7 @@ function echoHTMLHead() {
 	printHeaderContents($title, '..');
 	?>
 		</head>
-		<body class="admin">
+		<body>
 	<?php
 	// include all JavaScript files
 	printJsIncludes('..');

@@ -145,7 +145,7 @@ if (isset($_POST['save'])) {
 
 // print header
 include __DIR__ . '/../../lib/adminHeader.inc';
-echo '<div class="user-bright smallPaddingContent">';
+echo '<div class="smallPaddingContent">';
 
 // print error messages if any
 if (sizeof($errors) > 0) {
@@ -252,10 +252,10 @@ foreach ($options as $moduleName => $moduleOptions) {
 // profile name and submit/abort buttons
 $buttonTable = new htmlResponsiveRow();
 $saveButton = new htmlButton('save', _('Save'));
-$saveButton->setIconClass('saveButton');
+$saveButton->setCSSClasses(array('lam-primary fullwidth-mobile-only'));
 $buttonTable->addLabel($saveButton);
 $cancelButton = new htmlButton('abort', _('Cancel'));
-$cancelButton->setIconClass('cancelButton');
+$cancelButton->setCSSClasses(array('fullwidth-mobile-only'));
 $buttonTable->addField($cancelButton);
 $buttonTable->add(new htmlHiddenInput('accounttype', $type->getId()), 0);
 

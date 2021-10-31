@@ -59,7 +59,7 @@ checkIfToolIsActive('toolWebauthn');
 setlanguage();
 
 include __DIR__ . '/../../lib/adminHeader.inc';
-echo '<div class="user-bright smallPaddingContent">';
+echo '<div class="smallPaddingContent">';
 echo "<form id='webauthnform' action=\"webauthn.php\" method=\"post\">\n";
 $tabindex = 1;
 $container = new htmlResponsiveRow();
@@ -87,7 +87,7 @@ $registration = $webauthnManager->getRegistrationObject($userDn, false);
 $registrationJson = json_encode($registration);
 $_SESSION['webauthn_registration'] = $registrationJson;
 $registerButton->addDataAttribute('publickey', $registrationJson);
-$registerButton->setIconClass('createButton');
+$registerButton->setCSSClasses(array('lam-primary'));
 $registerButton->setOnClick('window.lam.webauthn.registerOwnDevice(event, false);');
 $buttonGroup->addElement($registerButton);
 $container->add($buttonGroup, 12);

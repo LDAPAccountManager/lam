@@ -181,14 +181,6 @@
 	overflow: visible;
 }
 
-.ui-button,
-.ui-button:link,
-.ui-button:visited,
-.ui-button:hover,
-.ui-button:active {
-	text-decoration: none;
-}
-
 /* to make room for the icon, a width needs to be set here */
 .ui-button-icon-only {
 	width: 2em;
@@ -922,13 +914,7 @@ body .ui-tooltip {
 ----------------------------------*/
 .ui-state-default,
 .ui-widget-content .ui-state-default,
-.ui-widget-header .ui-state-default,
-.ui-button,
-
-/* We use html here because we need a greater specificity to make sure disabled
-works properly when clicked or hovered */
-html .ui-button.ui-state-disabled:hover,
-html .ui-button.ui-state-disabled:active {
+.ui-widget-header .ui-state-default {
 	border: 1px solid #c5c5c5;
 	background: #f6f6f6;
 	font-weight: normal;
@@ -936,11 +922,7 @@ html .ui-button.ui-state-disabled:active {
 }
 .ui-state-default a,
 .ui-state-default a:link,
-.ui-state-default a:visited,
-a.ui-button,
-a:link.ui-button,
-a:visited.ui-button,
-.ui-button {
+.ui-state-default a:visited {
 	color: #454545;
 	text-decoration: none;
 }
@@ -949,9 +931,7 @@ a:visited.ui-button,
 .ui-widget-header .ui-state-hover,
 .ui-state-focus,
 .ui-widget-content .ui-state-focus,
-.ui-widget-header .ui-state-focus,
-.ui-button:hover,
-.ui-button:focus {
+.ui-widget-header .ui-state-focus {
 	border: 1px solid #cccccc;
 	background: #ededed;
 	font-weight: normal;
@@ -964,9 +944,7 @@ a:visited.ui-button,
 .ui-state-focus a,
 .ui-state-focus a:hover,
 .ui-state-focus a:link,
-.ui-state-focus a:visited,
-a.ui-button:hover,
-a.ui-button:focus {
+.ui-state-focus a:visited {
 	color: #2b2b2b;
 	text-decoration: none;
 }
@@ -976,10 +954,7 @@ a.ui-button:focus {
 }
 .ui-state-active,
 .ui-widget-content .ui-state-active,
-.ui-widget-header .ui-state-active,
-a.ui-button:active,
-.ui-button:active,
-.ui-button.ui-state-active:hover {
+.ui-widget-header .ui-state-active {
 	border: 1px solid #003eff;
 	background: #007fff;
 	font-weight: normal;
@@ -1071,25 +1046,18 @@ a.ui-button:active,
 	background-image: url("images/ui-icons_444444_256x240.png");
 }
 .ui-state-hover .ui-icon,
-.ui-state-focus .ui-icon,
-.ui-button:hover .ui-icon,
-.ui-button:focus .ui-icon {
+.ui-state-focus .ui-icon {
 	background-image: url("images/ui-icons_555555_256x240.png");
 }
-.ui-state-active .ui-icon,
-.ui-button:active .ui-icon {
+.ui-state-active .ui-icon {
 	background-image: url("images/ui-icons_ffffff_256x240.png");
 }
-.ui-state-highlight .ui-icon,
-.ui-button .ui-state-highlight.ui-icon {
+.ui-state-highlight .ui-icon {
 	background-image: url("images/ui-icons_777620_256x240.png");
 }
 .ui-state-error .ui-icon,
 .ui-state-error-text .ui-icon {
 	background-image: url("images/ui-icons_cc0000_256x240.png");
-}
-.ui-button .ui-icon {
-	background-image: url("images/ui-icons_777777_256x240.png");
 }
 
 /* positioning */
@@ -1271,39 +1239,10 @@ a.ui-button:active,
 .ui-icon-grip-diagonal-se { background-position: -80px -224px; }
 
 
-/* Misc visuals
-----------------------------------*/
-
-/* Corner radius */
-.ui-corner-all,
-.ui-corner-top,
-.ui-corner-left,
-.ui-corner-tl {
-	border-top-left-radius: 3px;
-}
-.ui-corner-all,
-.ui-corner-top,
-.ui-corner-right,
-.ui-corner-tr {
-	border-top-right-radius: 3px;
-}
-.ui-corner-all,
-.ui-corner-bottom,
-.ui-corner-left,
-.ui-corner-bl {
-	border-bottom-left-radius: 3px;
-}
-.ui-corner-all,
-.ui-corner-bottom,
-.ui-corner-right,
-.ui-corner-br {
-	border-bottom-right-radius: 3px;
-}
-
 /* Overlays */
 .ui-widget-overlay {
 	background: #aaaaaa;
-	opacity: .003;
+	opacity: .3;
 	filter: Alpha(Opacity=.3); /* support: IE8 */
 }
 .ui-widget-shadow {

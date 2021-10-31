@@ -824,7 +824,7 @@ class selfServiceProfile {
 		$this->searchAttribute = "uid";
 		$this->additionalLDAPFilter = '';
 		$this->httpAuthentication = false;
-		$this->pageHeader = '<table border=0 width="100%" class="lamHeader ui-corner-all"><tr><td align="left" height="30"><a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">LDAP Account Manager</a></td></tr></table><br>';
+		$this->pageHeader = '<p><a href="https://www.ldap-account-manager.org/" target="new_window"><img alt="help" class="align-middle" src="../../graphics/logo24.png" style="height:24px; width:24px" /> LDAP Account Manager </a></p><p>&nbsp;</p>';
 		$this->additionalCSS = '';
 		$this->baseColor = '#fffde2';
 		$this->loginCaption = '<b>' . _("Welcome to LAM self service. Please enter your user name and password.") . '</b>';

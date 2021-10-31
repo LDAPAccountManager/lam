@@ -210,7 +210,7 @@ function display_LoginPage($licenseValidator, $error_message, $errorDetails = nu
 	printHeaderContents('LDAP Account Manager', '..');
 	?>
 	</head>
-	<body class="admin">
+	<body>
 	<?php
 	// include all JavaScript files
 	printJsIncludes('..');
@@ -275,7 +275,7 @@ function display_LoginPage($licenseValidator, $error_message, $errorDetails = nu
 		}
 		if (!empty($config_object)) {
 		?>
-		<br><br>
+		<br><br><br>
 		<div class="centeredTable">
 		<div class="roundedShadowBox limitWidth" style="position:relative; z-index:5;">
 		<table border="0" rules="none" bgcolor="white" class="ui-corner-all">
@@ -464,43 +464,42 @@ function display_LoginPage($licenseValidator, $error_message, $errorDetails = nu
  */
 function displayLoginHeader() : void {
     ?>
-		<table border=0 width="100%" class="lamHeader ui-corner-all">
-			<tr>
-				<td align="left" height="30">
-					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">
-                        <span class="hide-on-tablet">&nbsp;</span>
-                        <span class="hide-on-mobile">
-                            <?php echo getLAMVersionText(); ?>
-                        </span>
-					</a>
-					<span class="hide-for-small">
+    <div id="lam-topnav" class="lam-header">
+        <div class="lam-header-left lam-menu-stay">
+            <a href="https://www.ldap-account-manager.org/" target="new_window">
+                <img class="align-middle" width="24" height="24" alt="help" src="../graphics/logo24.png">
+                <span class="hide-on-mobile">
+                        <?php
+                        echo getLAMVersionText();
+                        ?>
+                </span>
+            </a>
+            <span class="hide-on-mobile lam-margin-small">
                         &nbsp;&nbsp;&nbsp;&nbsp;
-						<a href="http://www.ldap-account-manager.org/lamcms/lamPro"> <?php if (!isLAMProVersion()) { echo _("Want more features? Get LAM Pro!");} ?> </a>
-					</span>
-				</td>
-				<td align="right" height="30">
-					<a class="margin-right5" href="./config/index.php">
-                        <IMG alt="configuration" src="../graphics/tools.png">&nbsp;<span class="hide-for-small"><?php echo _("LAM configuration") ?></span>
-                    </a>
-                    <?php
-                    if (is_dir(__DIR__ . '/../docs/manual')) {
-                    ?>
-                        <span class="hide-on-mobile">&nbsp;&nbsp;</span>
-                        <a target="_blank" href="../docs/manual/index.html">
-                            <img class="align-middle" width="16" height="16" alt="help" src="../graphics/help.png">
-                            <span class="hide-on-tablet">&nbsp;</span>
-                            <span class="hide-on-mobile">
-                                <?php echo _("Help") ?>&nbsp;
-                            </span>
-                        </a>
-                    <?php
-                    }
-                    ?>
-				</td>
-			</tr>
-		</table>
+			    <a href="http://www.ldap-account-manager.org/lamcms/lamPro"> <?php if (!isLAMProVersion()) { echo _("Want more features? Get LAM Pro!");} ?> </a>
+			</span>
+        </div>
+        <a class="lam-header-right lam-menu-icon hide-on-tablet" href="javascript:void(0);" class="icon" onclick="window.lam.topmenu.toggle();">
+            <img class="align-middle" width="16" height="16" alt="menu" src="../graphics/menu.svg">
+            <span class="padding0"></span>
+        </a>
+        <div class="lam-header-right lam-header-menublock">
+            <a class="lam-menu-entry" href="config/index.php" target="_top">
+                <span class="padding0"><?php echo _("LAM configuration") ?></span>
+            </a>
+            <?php
+            if (is_dir(dirname(__FILE__) . '/../docs/manual')) {
+                ?>
+                <a class="lam-menu-entry" target="_blank" href="../docs/manual/index.html">
+                    <span class="padding0"><?php echo _("Help") ?></span>
+                </a>
+                <?php
+            }
+            ?>
+        </div>
 
-		<br>
+    </div>
+	<br>
     <?php
 }
 

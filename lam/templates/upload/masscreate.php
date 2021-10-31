@@ -144,7 +144,7 @@ $divClass = 'user';
 if (isset($_REQUEST['type'])) {
 	$divClass = htmlspecialchars(\LAM\TYPES\getScopeFromTypeId($_REQUEST['type']));
 }
-echo '<div class="' . $divClass . '-bright smallPaddingContent">';
+echo '<div class="smallPaddingContent">';
 echo "<form enctype=\"multipart/form-data\" action=\"masscreate.php\" method=\"post\">\n";
 
 $tabindex = 1;
@@ -232,7 +232,9 @@ foreach ($types as $type) {
 // ok button
 $row->addVerticalSpacer('3rem');
 if (!empty($types)) {
-	$row->add(new htmlButton('submit', _('Ok')), 12);
+    $okButton = new htmlButton('submit', _('Ok'));
+    $okButton->setCSSClasses(array('lam-primary'));
+	$row->add($okButton);
 }
 
 addSecurityTokenToMetaHTML($row);
@@ -259,7 +261,7 @@ include __DIR__ . '/../../lib/adminFooter.inc';
 */
 function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 	$scope = $type->getScope();
-	echo '<div class="' . $scope . '-bright smallPaddingContent">';
+	echo '<div class="smallPaddingContent">';
 	// get input fields from modules
 	$columns = getUploadColumns($type, $selectedModules);
 	$modules = array_keys($columns);
@@ -281,7 +283,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 
 	// upload elements
 	$row->addLabel(new htmlOutputText(_("Download sample CSV file")));
-	$row->addField(new htmlLink('', 'masscreate.php?getCSV=1', '../../graphics/save.png', true));
+	$row->addField(new htmlLink('', 'masscreate.php?getCSV=1', '../../graphics/save.png'));
 	$row->addVerticalSpacer('3rem');
 	$row->add(new htmlResponsiveInputFileUpload('inputfile', _("CSV file")), 12);
 	$row->add(new htmlHiddenInput('typeId', $type->getId()), 12);
@@ -314,7 +316,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 	$row->addVerticalSpacer('1rem');
 
 	$uploadButton = new htmlButton('submitfile', _('Upload file and create accounts'));
-	$uploadButton->setIconClass('upButton');
+	$uploadButton->setCSSClasses(array('lam-primary'));
 	$row->addLabel($uploadButton);
 	$row->addField(new htmlOutputText('&nbsp;', false));
 	$row->addVerticalSpacer('2rem');

@@ -524,7 +524,7 @@ class range extends baseModule {
 			// Drop range:
 			$dropButton = new htmlButton('drop_range_'.$id, _('Delete range'));
 			$dropButton->colspan = 2;
-			$dropButton->setIconClass('deleteButton');
+			$dropButton->setCSSClasses(array('lam-danger'));
 			$return->addElement($dropButton);
 			$return->addElement(new htmlHelpLink('drop_range'), true);
 
@@ -533,7 +533,6 @@ class range extends baseModule {
 
 		// add new range
 		$addButton = new htmlButton('add_range', _('New range'));
-		$addButton->setIconClass('createButton');
 		$addButton->colspan = 2;
 		$return->addElement($addButton);
 		$return->addElement(new htmlHelpLink('add_range'), true);
@@ -547,7 +546,7 @@ class range extends baseModule {
 				$nameField->setRequired(true);
 				$return->addElement($nameField);
 				$delPoolButton = new htmlButton('del_pool_' . $index, _('Delete pool'));
-				$delPoolButton->setIconClass('trashButton');
+				$delPoolButton->setCSSClasses(array('lam-danger'));
 				$return->addElement($delPoolButton, true);
 				$peer = '';
 				if (!empty($poolAttrs['dhcpstatements'])) {
@@ -599,7 +598,7 @@ class range extends baseModule {
 						// drop range
 						$dropButton = new htmlButton('drop_poolrange_' . $index . '_' . $rIndex, _('Delete range'));
 						$dropButton->colspan = 2;
-						$dropButton->setIconClass('deleteButton');
+						$dropButton->setCSSClasses(array('lam-danger'));
 						$return->addElement($dropButton);
 						$return->addElement(new htmlHelpLink('drop_range'), true);
 						$return->addElement(new htmlSpacer(null, '10px'), true);
@@ -608,7 +607,6 @@ class range extends baseModule {
 				// add new range
 				$newButton = new htmlButton('add_poolrange_' . $index, _('New range'));
 				$newButton->colspan = 2;
-				$newButton->setIconClass('createButton');
 				$return->addElement($newButton);
 				$return->addElement(new htmlHelpLink('add_range'), true);
 				$return->addVerticalSpace('20px');
@@ -618,7 +616,6 @@ class range extends baseModule {
 
 		// add new range pool
 		$addButton = new htmlButton('add_pool', _('New pool'));
-		$addButton->setIconClass('createButton');
 		$addButton->colspan = 2;
 		$return->addElement($addButton);
 		$return->addElement(new htmlHelpLink('add_pool'), true);

@@ -98,7 +98,7 @@ else {
 function displayStartPage() {
 	// display main page
 	include __DIR__ . '/../../lib/adminHeader.inc';
-	echo '<div class="user-bright smallPaddingContent">';
+	echo '<div class="smallPaddingContent">';
 	echo "<form action=\"multiEdit.php\" method=\"post\">\n";
 	$errors = array();
 	$tabindex = 1;
@@ -188,13 +188,13 @@ function displayStartPage() {
 	$container->addVerticalSpacer('2rem');
 	$buttonGroup = new htmlGroup();
 	$buttonGroup->colspan = 3;
-	$dryRunButton = new htmlButton('dryRun', _('Dry run'));
-	$dryRunButton->setIconClass('dryRunButton');
-	$buttonGroup->addElement($dryRunButton);
-	$buttonGroup->addElement(new htmlSpacer('10px', null));
 	$applyButton = new htmlButton('applyChanges', _('Apply changes'));
-	$applyButton->setIconClass('saveButton');
+	$applyButton->setCSSClasses(array('lam-primary'));
 	$buttonGroup->addElement($applyButton);
+	$buttonGroup->addElement(new htmlSpacer('10px', null));
+	$dryRunButton = new htmlButton('dryRun', _('Dry run'));
+	$dryRunButton->setCSSClasses(array('lam-secondary'));
+	$buttonGroup->addElement($dryRunButton);
 	$container->add($buttonGroup, 12);
 	$container->addVerticalSpacer('1rem');
 

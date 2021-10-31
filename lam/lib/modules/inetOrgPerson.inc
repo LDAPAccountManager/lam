@@ -1912,7 +1912,6 @@ class inetOrgPerson extends baseModule implements passwordService {
 		$container->add(new htmlResponsiveInputFileUpload('userCertificateUpload', _('New user certificate')), 12, 6);
 
 		$uploadButton = new htmlAccountPageButton(get_class($this), 'userCertificate', 'submit', _('Upload'));
-		$uploadButton->setIconClass('upButton');
 		$container->add($uploadButton, 12, 6);
 		$container->addVerticalSpacer('2rem');
 		$container->add(new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Back')), 12);

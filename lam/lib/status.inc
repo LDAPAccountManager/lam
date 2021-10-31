@@ -52,17 +52,17 @@
 function StatusMessage($MessageTyp,$MessageHeadline,$MessageText='',$MessageVariables = array(), $returnOutput = false) {
 	/* Setting CSS-StyleSheet class depending on the $MessageTyp and rewriting $MessageTyp with a readable string. */
 	if($MessageTyp == "INFO") {
-		$class = "class=\"statusInfo ui-corner-all\"";
+		$class = "class=\"statusInfo lam-status-message\"";
 	}
 	elseif($MessageTyp == "WARN") {
-		$class = "class=\"statusWarn ui-corner-all\"";
+		$class = "class=\"statusWarn lam-status-message\"";
 	}
 	elseif($MessageTyp == "ERROR") {
-		$class = "class=\"statusError ui-corner-all\"";
+		$class = "class=\"statusError lam-status-message\"";
 	}
 	/* Set output-message, when none or false $MessageTyp is submitted. */
 	else {
-		$class = "class=\"statusError ui-corner-all\"";
+		$class = "class=\"statusError lam-status-message\"";
 		$MessageTyp = "ERROR";
 		$MessageHeadline = "Invalid/Missing Message type";
 		$MessageText = "Please report this error to the Bug-Tracker at {link=http://www.ldap-account-manager.org/}LDAP Account Manager Development Team{endlink}. Thank you.";

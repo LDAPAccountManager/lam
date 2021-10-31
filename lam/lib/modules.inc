@@ -1054,13 +1054,13 @@ class accountContainer {
 			}
 		}
 		echo '<div id="passwordMessageArea"></div>';
-		echo "<table class=\"".$this->type->getScope()."-bright\" border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
+		echo "<table border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
 		if (checkIfWriteAccessIsAllowed($this->type->getId())) {
-			echo "<tr class=\"" . $this->type->getScope() . "-bright\"><td style=\"padding: 5px 0px 0px 0px;\">\n";
+			echo "<tr><td style=\"padding: 5px 0px 0px 0px;\">\n";
 			$this->printCommonControls($tabindex);
 			echo "</td></tr>\n";
 		}
-		echo "<tr class=\"" . $this->type->getScope() . "-bright\" valign=\"top\"><td style=\"padding: 15px;\">";
+		echo "<tr valign=\"top\"><td style=\"padding: 15px;\">";
 		// print title bar
 		$titleBarContainer = new htmlResponsiveRow();
 		$titleBarContainer->setCSSClasses(array('maxrow'));
@@ -1306,36 +1306,37 @@ class accountContainer {
 		$leftButtonGroup->alignment = htmlElement::ALIGN_LEFT;
 		// save button
 		$saveButton = new htmlButton('accountContainerSaveAccount', _('Save'));
-		$saveButton->setIconClass('saveButton');
-		$saveButton->setCSSClasses(array('fullwidth-mobile-only'));
+		$saveButton->setCSSClasses(array('fullwidth-mobile-only lam-primary'));
 		$leftButtonGroup->addElement($saveButton);
 		$leftButtonGroup->addElement(new htmlSpacer('1px', null));
-		// reset button
-		if (!$this->isNewAccount) {
-			$resetButton = new htmlButton('accountContainerReset', _('Reset changes'));
-			$resetButton->setIconClass('undoButton');
-			$resetButton->setCSSClasses(array('fullwidth-mobile-only'));
-			$leftButtonGroup->addElement($resetButton);
-		}
 		// set password button
 		if ($this->showSetPasswordButton()) {
 			$leftButtonGroup->addElement(new htmlSpacer('15px', null));
 			$passwordButton = new htmlButton('accountContainerPassword', _('Set password'));
-			$passwordButton->setIconClass('passwordButton');
-			$passwordButton->setCSSClasses(array('fullwidth-mobile-only'));
+			$passwordButton->setCSSClasses(array('fullwidth-mobile-only lam-secondary'));
 			$passwordButton->setOnClick('passwordShowChangeDialog(\'' . _('Set password') . '\', \'' . _('Ok') . '\', \''
-				 . _('Cancel') . '\', \'' . _('Set random password') . '\', \'../misc/ajax.php?function=passwordChange&editKey=' . htmlspecialchars($this->base) . '\',\''
-				 . getSecurityTokenName() . '\',\'' . getSecurityTokenValue() . '\');');
+				. _('Cancel') . '\', \'' . _('Set random password') . '\', \'../misc/ajax.php?function=passwordChange&editKey=' . htmlspecialchars($this->base) . '\',\''
+				. getSecurityTokenName() . '\',\'' . getSecurityTokenValue() . '\');');
 			$leftButtonGroup->addElement($passwordButton);
 		}
 		// delete button
 		if (!$this->isNewAccount && checkIfDeleteEntriesIsAllowed($this->get_type()->getId())) {
 			$leftButtonGroup->addElement(new htmlSpacer('15px', null));
 			$deleteButton = new htmlButton('accountContainerDelete', _('Delete'));
-			$deleteButton->setIconClass('deleteButton');
-			$deleteButton->setCSSClasses(array('fullwidth-mobile-only'));
+			$deleteButton->setCSSClasses(array('fullwidth-mobile-only lam-danger'));
 			$leftButtonGroup->addElement($deleteButton);
 		}
+		$leftButtonGroup->addElement(new htmlSpacer('15px', null));
+		// reset button
+		if (!$this->isNewAccount) {
+			$resetButton = new htmlButton('accountContainerReset', _('Reset changes'));
+			$resetButton->setCSSClasses(array('fullwidth-mobile-only'));
+			$leftButtonGroup->addElement($resetButton);
+		}
+		$type = $this->type->getBaseType();
+		$backToListButton = new htmlButton('accountContainerBackToList', $type->LABEL_BACK_TO_ACCOUNT_LIST);
+		$backToListButton->setCSSClasses(array('fullwidth-mobile-only'));
+		$leftButtonGroup->addElement($backToListButton);
 		$row->add($leftButtonGroup, 12, 9);
 
 		$rightGroup = new htmlGroup();
@@ -1347,7 +1348,6 @@ class accountContainer {
 			$profilesSelect->setCSSClasses(array('auto-width'));
 			$rightGroup->addElement($profilesSelect);
 			$profileButton = new htmlButton('accountContainerLoadProfile', _('Load profile'));
-			$profileButton->setIconClass('loadProfileButton');
 			if (!$this->isNewAccount) {
 				$profileButton->setType('submit');
 				$profileButton->setOnClick('confirmOrStopProcessing(\'' . _('This may overwrite existing values with profile data. Continue?') . '\', event);');
@@ -1414,47 +1414,43 @@ class accountContainer {
 		else {
 			$text = _("Account was modified successfully.");
 		}
-		echo "<div class=\"" . $this->type->getScope() . "-bright smallPaddingContent\">";
+		echo "<div smallPaddingContent\">";
 
-		$container = new htmlTable();
+		$container = new htmlResponsiveRow();
+		$container->addVerticalSpacer('2rem');
 		// show messages
 		for ($i = 0; $i < sizeof($messages); $i++) {
 			if (sizeof($messages[$i]) == 2) {
 				$message = new htmlStatusMessage($messages[$i][0], $messages[$i][1]);
-				$message->colspan = 10;
-				$container->addElement($message, true);
+				$container->add($message);
 			}
 			else {
 				$message = new htmlStatusMessage($messages[$i][0], $messages[$i][1], $messages[$i][2]);
-				$message->colspan = 10;
-				$container->addElement($message, true);
+				$container->add($message);
 			}
 		}
 		$message = new htmlStatusMessage('INFO', _('LDAP operation successful.'), $text);
-		$message->colspan = 10;
-		$container->addElement($message, true);
-		$container->addElement(new htmlSpacer(null, '20px'), true);
+		$container->add($message);
+		$container->addVerticalSpacer('2rem');
 
 		$type = $this->type->getBaseType();
 		$buttonGroup = new htmlGroup();
 		if (checkIfNewEntriesAreAllowed($this->type->getId())) {
 			$createButton = new htmlButton('accountContainerCreateAgain', $type->LABEL_CREATE_ANOTHER_ACCOUNT);
-			$createButton->setIconClass('createButton');
+			$createButton->setCSSClasses(array('lam-primary'));
 			$buttonGroup->addElement($createButton);
 			$buttonGroup->addElement(new htmlSpacer('10px', null));
 		}
 		$pdfButton = new htmlButton('accountContainerCreatePDF', _('Create PDF file'));
-		$pdfButton->setIconClass('pdfButton');
+		$pdfButton->setCSSClasses(array('lam-secondary'));
 		$buttonGroup->addElement($pdfButton);
 		$buttonGroup->addElement(new htmlSpacer('10px', null));
 		$backToListButton = new htmlButton('accountContainerBackToList', $type->LABEL_BACK_TO_ACCOUNT_LIST);
-		$backToListButton->setIconClass('backButton');
 		$buttonGroup->addElement($backToListButton);
 		$buttonGroup->addElement(new htmlSpacer('10px', null));
 		$backToEditButton = new htmlButton('accountContainerBackToEdit', _('Edit again'));
-		$backToEditButton->setIconClass('editButton');
 		$buttonGroup->addElement($backToEditButton);
-		$container->addElement($buttonGroup, true);
+		$container->add($buttonGroup);
 
 		$tabindex = 1;
 		parseHtml(null, $container, array(), false, $tabindex, $this->type->getScope());
@@ -1508,7 +1504,7 @@ class accountContainer {
 			$buttonImage = $this->module[$this->order[$i]]->getIcon();
 			$activatedClass = '';
 			if ($this->order[$this->current_page] == $this->order[$i]) {
-				$activatedClass = ' ui-tabs-selected ui-state-active ' . $this->type->getScope() . '-bright';
+				$activatedClass = ' lam-tabs-selected';
 			}
 			// print button
 			echo '<li class="ui-state-default ui-corner-left' . $activatedClass . '">';

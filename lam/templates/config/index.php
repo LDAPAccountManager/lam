@@ -5,7 +5,7 @@ use htmlResponsiveRow;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2020  Roland Gruber
+  Copyright (C) 2003 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -50,34 +50,36 @@ $content = new htmlResponsiveRow();
 
 ?>
 	</head>
-	<body class="admin">
+	<body>
         <?php
             // include all JavaScript files
             printJsIncludes('../..');
         ?>
-		<table class="lamTop ui-corner-all">
-			<tr>
-				<td align="left">
-					<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">
-						<?php echo getLAMVersionText(); ?>
-					</a>
-				</td>
-                <td align="right">
-					<?php
-					if (is_dir(__DIR__ . '/../../docs/manual')) {
-						?>
-                        <a target="_blank" href="../../docs/manual/index.html"><img class="align-middle" width="16" height="16" alt="help" src="../../graphics/help.png">
-                            <span class="hide-on-tablet">&nbsp;</span>
-                            <span class="hide-on-mobile">
-                            <?php echo _("Help") ?>&nbsp;&nbsp;&nbsp;&nbsp;
-                            </span>
-                        </a>
-						<?php
-					}
-					?>
-                </td>
-			</tr>
-		</table>
+        <div id="lam-topnav" class="lam-header">
+            <div class="lam-header-left lam-menu-stay">
+                <a href="https://www.ldap-account-manager.org/" target="new_window">
+                    <img class="align-middle" width="24" height="24" alt="help" src="../../graphics/logo24.png">
+                    <span class="hide-on-mobile">
+                        <?php
+                        echo getLAMVersionText();
+                        ?>
+                    </span>
+                </a>
+            </div>
+	        <?php
+	        if (is_dir(dirname(__FILE__) . '/../../docs/manual')) {
+		        ?>
+                <a class="lam-header-right lam-menu-icon hide-on-tablet" href="javascript:void(0);" class="icon" onclick="window.lam.topmenu.toggle();">
+                    <img class="align-middle" width="16" height="16" alt="menu" src="../../graphics/menu.svg">
+                    <span class="padding0">&nbsp;</span>
+                </a>
+                <a class="lam-header-right lam-menu-entry" target="_blank" href="../../docs/manual/index.html">
+                    <span class="padding0"><?php echo _("Help") ?></span>
+                </a>
+		        <?php
+	        }
+	        ?>
+        </div>
 		<br><br>
 
         <?php
@@ -110,7 +112,7 @@ $content = new htmlResponsiveRow();
 			$content->addVerticalSpacer('2rem');
 		}
 
-		$content->add(new htmlLink(_("Back to login"), '../login.php', '../../graphics/undo.png'), 12);
+		$content->add(new htmlLink(_("Back to login"), '../login.php'), 12);
 		$content->addVerticalSpacer('2rem');
 
 		parseHtml('none', $content, array(), true, $tabindex, 'none');

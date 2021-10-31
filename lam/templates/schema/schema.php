@@ -10,6 +10,8 @@ use \htmlGroup;
 use \htmlSelect;
 use \htmlDiv;
 use \htmlSubTitle;
+use htmlTitle;
+
 /*
 
   Copyright (C) 2018 - 2021 Roland Gruber
@@ -57,7 +59,7 @@ checkIfToolIsActive('toolSchemaBrowser');
 setlanguage();
 
 include __DIR__ . '/../../lib/adminHeader.inc';
-echo "<div class=\"user-bright smallPaddingContent\">\n";
+echo "<div class=\"smallPaddingContent\">\n";
 
 $availableViews = array('objectClass', 'attribute', 'syntax', 'rule');
 $selectedView = 'objectClass';
@@ -68,6 +70,7 @@ if (!empty($_GET['display']) && in_array($_GET['display'], $availableViews)) {
 $tabindex = 1;
 
 $row = new htmlResponsiveRow();
+$row->add(new htmlTitle(_('Schema browser')));
 $row->addVerticalSpacer('2rem');
 $row->add(new htmlSpacer('1rem', '1px'), 0, 2);
 $row->add(new htmlLink(_('Object classes'), 'schema.php'), 12, 2, 2, 'font-big text-center');

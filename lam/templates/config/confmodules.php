@@ -111,7 +111,7 @@ if (isset($_POST['saveSettings']) || isset($_POST['editmodules'])
 
 echo $_SESSION['header'];
 printHeaderContents(_("LDAP Account Manager Configuration"), '../..');
-echo "</head><body class=\"admin\">\n";
+echo "</head><body>\n";
 // include all JavaScript files
 printJsIncludes('../..');
 printConfigurationPageHeaderBar($conf);
@@ -148,10 +148,9 @@ echo "</div></div>";
 $buttonContainer = new htmlTable();
 $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
 $saveButton = new htmlButton('saveSettings', _('Save'));
-$saveButton->setIconClass('saveButton');
+$saveButton->setCSSClasses(array('lam-primary'));
 $buttonContainer->addElement($saveButton);
 $cancelButton = new htmlButton('cancelSettings', _('Cancel'));
-$cancelButton->setIconClass('cancelButton');
 $buttonContainer->addElement($cancelButton, true);
 $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
 parseHtml(null, $buttonContainer, array(), false, $tabindex, 'user');

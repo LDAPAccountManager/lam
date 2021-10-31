@@ -14,7 +14,7 @@ use \htmlGroup;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2018  Roland Gruber
+  Copyright (C) 2003 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -119,7 +119,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 		if ($sr && $info['count'] == 0) {
 			// print header
 			include '../../lib/adminHeader.inc';
-			echo '<div class="user-bright smallPaddingContent">';
+			echo '<div class="smallPaddingContent">';
 			echo "<form action=\"ou_edit.php\" method=\"post\">\n";
 			$tabindex = 1;
 			$container = new htmlResponsiveRow();
@@ -162,7 +162,7 @@ display_main($message, $error);
 function display_main($message, $error) {
 	// display main page
 	include __DIR__ . '/../../lib/adminHeader.inc';
-	echo '<div class="user-bright smallPaddingContent">';
+	echo '<div class="smallPaddingContent">';
 	echo "<form action=\"ou_edit.php\" method=\"post\">\n";
 
 	$tabindex = 1;

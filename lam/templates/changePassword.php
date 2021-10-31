@@ -116,7 +116,7 @@ printContent($message);
  */
 function printContent($message = null, $showPasswordInputs = true) {
 	include __DIR__ . '/../lib/adminHeader.inc';
-	echo '<div class="user-bright smallPaddingContent">';
+	echo '<div class="smallPaddingContent">';
 	echo "<form action=\"changePassword.php\" method=\"post\">\n";
 	$container = new htmlResponsiveRow();
 	if ($message !== null) {

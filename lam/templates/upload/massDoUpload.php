@@ -3,7 +3,7 @@ namespace LAM\UPLOAD;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2018  Roland Gruber
+  Copyright (C) 2004 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -76,7 +76,7 @@ if (!checkIfNewEntriesAreAllowed($type->getId()) || !checkIfWriteAccessIsAllowed
 	die();
 }
 
-echo '<div id="uploadContent" class="' . $type->getScope() . '-bright smallPaddingContent">';
+echo '<div id="uploadContent" class="smallPaddingContent">';
 $tokenPrefix = '?' . getSecurityTokenName() . '=' . getSecurityTokenValue();
 ?>
 	<script type="text/javascript">

@@ -2687,6 +2687,68 @@ window.lam.treeview.pasteNode = function (tokenName, tokenValue, node, tree) {
 	});
 }
 
+window.lam.topmenu = window.lam.topmenu || {};
+
+/**
+ * Toggles the top navigation menu.
+ */
+window.lam.topmenu.toggle = function() {
+	var topnav = document.getElementById('lam-topnav');
+	if (topnav.className == 'lam-header') {
+		topnav.className = 'lam-header lam-header-open';
+	}
+	else {
+		topnav.className = 'lam-header';
+	}
+}
+
+/**
+ * Opens a submenu of the top navigation.
+ *
+ * @param event event
+ * @param layerId layer ID
+ * @param listener close listener
+ */
+window.lam.topmenu.openSubmenu = function(event, layerId, listener) {
+	const layer = document.getElementById(layerId);
+	if (layer.style.height && (layer.style.height !== '0px')) {
+		// no action if already open
+		return;
+	}
+	document.removeEventListener("click", listener);
+	event.preventDefault();
+	event.stopImmediatePropagation();
+	layers = document.getElementsByClassName('lam-navigation-layer');
+	for (let i = 0; i < layers.length; i++) {
+		layers[i].style.height = "0px";
+	}
+	const height = layer.getElementsByClassName('lam-navigation-layer-content')[0].offsetHeight;
+	layer.style.height = height + 'px';
+	document.addEventListener("click", listener);
+}
+
+/**
+ * Close listener for tools flyout.
+ *
+ * @param event event
+ */
+window.lam.topmenu.subMenuCloseListenerTools = function (event) {
+	if (!event.target.closest('#lam-navigation-tools')) {
+		document.getElementById('lam-navigation-tools').style.height = "0px";
+	}
+}
+
+/**
+ * Close listener for account types flyout.
+ *
+ * @param event event
+ */
+window.lam.topmenu.subMenuCloseListenerTypes = function (event) {
+	if (!event.target.closest('#lam-navigation-types')) {
+		document.getElementById('lam-navigation-types').style.height = "0px";
+	}
+}
+
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();
 	window.lam.form.autoTrim();

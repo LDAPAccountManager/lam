@@ -120,22 +120,25 @@ echo $_SESSION['header'];
 printHeaderContents(_("Login"), '..');
 ?>
 </head>
-<body class="admin">
+<body>
 <?php
 
 // include all JavaScript files
 printJsIncludes('..');
 ?>
 
-	<table border=0 width="100%" class="lamHeader ui-corner-all">
-		<tr>
-			<td align="left" height="30">
-				<a class="lamLogo" href="http://www.ldap-account-manager.org/" target="new_window">LDAP Account Manager</a>
-			</td>
-		<td align="right" height=20>
-		</td>
-		</tr>
-	</table>
+    <div id="lam-topnav" class="lam-header">
+        <div class="lam-header-left lam-menu-stay">
+            <a href="https://www.ldap-account-manager.org/" target="new_window">
+                <img class="align-middle" width="24" height="24" alt="help" src="../graphics/logo24.png">
+                <span class="hide-on-mobile">
+                            <?php
+                            echo getLAMVersionText();
+                            ?>
+                        </span>
+            </a>
+        </div>
+    </div>
 
 	<br><br>
 

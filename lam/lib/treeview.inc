@@ -1243,7 +1243,6 @@ class TreeView {
 		$row->add($formatSelect);
 		$row->addVerticalSpacer('2rem');
 		$nextButton = new htmlButton('search', _('Search'));
-		$nextButton->setIconClass('searchButton');
 		$nextButton->setOnClick('window.lam.treeview.searchResults(event, \'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\');');
 		$row->add($nextButton, 12, 12, 12, 'text-center');
 		ob_start();

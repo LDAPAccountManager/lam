@@ -124,6 +124,45 @@ table.responsive-table td {
 	word-break: break-all;
 }
 
+div.lam-header {
+	line-height: 2rem;
+	overflow: hidden;
+	margin: var(--lam-smaller-space);
+	margin-bottom: var(--lam-regular-space);
+}
+
+div.lam-header a {
+	padding: var(--lam-small-space);
+}
+
+div.lam-header-menublock {
+	padding: var(--lam-small-space);
+}
+
+.lam-header-left {
+	float: left;
+	display: block;
+	margin-top: var(--lam-small-space);
+}
+
+.lam-header-right {
+	float: right;
+	display: block;
+}
+
+div.lam-navigation-layer {
+	transition: height .3s;
+	overflow: hidden;
+}
+
+div.account-types-popup div.columns {
+	margin-bottom: var(--lam-regular-space);
+}
+
+div.account-types-popup div.columns:last-child {
+	float: left;
+}
+
 /* mobile */
 @media only screen and (max-width: 40.0625em) {
 
@@ -206,6 +245,46 @@ table.responsive-table td {
 		max-height: 50vh !important;
 	}
 
+	.lam-header a.lam-menu-entry {
+		display: none;
+		padding-left: 1rem;
+	}
+
+	.lam-header a.lam-menu-entry img {
+		display: none;
+	}
+
+	.lam-header.lam-header-open {
+		position: relative;
+	}
+
+	.lam-header.lam-header-open a.lam-menu-icon {
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+
+	.lam-header.lam-header-open a.lam-menu-entry {
+		display: block;
+		float: none;
+		text-align: left;
+		border: 1px solid var(--lam-border-color);
+		border-width: 0px 1px 1px 1px;
+		margin: 0px;
+	}
+
+	.lam-header.lam-header-open {
+		padding-bottom: var(--lam-large-space);
+	}
+
+	.lam-header.lam-header-open div.lam-menu-stay {
+		float: none;
+	}
+
+	.lam-header-menublock {
+		width: 100%;
+	}
+
 }
 
 /* tablet */
@@ -247,6 +326,34 @@ table.responsive-table td {
 	.tree-right-area {
 		border-left: 2px solid #e4e4e4;
 		margin-left: -2px;
+	}
+
+}
+
+/* tablet and bigger */
+@media only screen and (min-width: 40.0625em) {
+
+	div.lam-navigation-layer {
+		position: absolute;
+		width: 100vw;
+		overflow: hidden;
+		z-index: 9;
+		top: 3.1rem;
+		left: 0;
+		padding-right: 10rem;
+		padding-left: 10rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background-color: var(--lam-background-color-default);
+		box-shadow: 0px 3px 2px -2px grey;
+	}
+
+	div.lam-navigation-layer-content {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+		column-gap: 5rem;
+		max-width: 60rem;
 	}
 
 }

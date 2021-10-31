@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2018  Roland Gruber
+  Copyright (C) 2009 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -95,7 +95,7 @@ foreach ($monitorResults as $monitorResult) {
 $monitorEntries = array_change_key_case($monitorEntries, CASE_LOWER);
 
 include __DIR__ . '/../../lib/adminHeader.inc';
-echo '<div class="user-bright smallPaddingContent">';
+echo '<div class="smallPaddingContent">';
 $tabindex = 1;
 $container = new htmlResponsiveRow();
 

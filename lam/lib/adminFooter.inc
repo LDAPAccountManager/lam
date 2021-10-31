@@ -29,7 +29,6 @@ namespace LAM\FOOTER;
 */
 ?>
 
-</div>
 <br>
 </body>
 </html>

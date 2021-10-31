@@ -3,7 +3,7 @@ use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2014 - 2019  Roland Gruber
+  Copyright (C) 2014 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -159,7 +159,6 @@ class nisMailAliasUser extends baseModule {
 			}
 			$return->addVerticalSpacer('1rem');
 			$addButton = new htmlAccountPageButton(get_class($this), 'add', 'user', _('Add'));
-			$addButton->setIconClass('createButton');
 			$return->add($addButton, 12, 12, 12, 'text-center');
 		}
 		if (!$this->isBooleanConfigOptionSet('nisMailAliasUser_hideUserAliases') && !empty($mails)) {
@@ -191,7 +190,6 @@ class nisMailAliasUser extends baseModule {
 				}
 				$return->addVerticalSpacer('1rem');
 				$addButton = new htmlAccountPageButton(get_class($this), 'add', 'mail' . $m, _('Add'));
-				$addButton->setIconClass('createButton');
 				$return->add($addButton, 12, 12, 12, 'text-center');
 				if ((sizeof($mails) > 1) && ($m < (sizeof($mails) - 1))) {
 					$return->addVerticalSpacer('2rem');
@@ -362,7 +360,6 @@ class nisMailAliasUser extends baseModule {
         $return->add(new htmlResponsiveInputField(_('Alias name'), 'new_cn', $newAliasCn, 'newAlias'), 12);
 		$return->addVerticalSpacer('1rem');
 		$addButton = new htmlAccountPageButton(get_class($this), 'attributes', 'create', _('Create'));
-		$addButton->setIconClass('createButton');
 		$return->add($addButton, 12, 12, 12, 'text-center');
 
 		$return->addVerticalSpacer('2rem');
@@ -382,12 +379,10 @@ class nisMailAliasUser extends baseModule {
 		$return->add($aliasSelect, 12);
 		$return->addVerticalSpacer('1rem');
 		$addButton = new htmlAccountPageButton(get_class($this), 'attributes', 'recipient', _('Add'));
-		$addButton->setIconClass('createButton');
 		$return->add($addButton, 12, 12, 12, 'text-center');
 
 		$return->addVerticalSpacer('2rem');
 		$cancelButton = new htmlAccountPageButton(get_class($this), 'attributes', 'back', _('Cancel'));
-		$cancelButton->setIconClass('cancelButton');
 		$return->add($cancelButton, 12);
 		return $return;
 	}

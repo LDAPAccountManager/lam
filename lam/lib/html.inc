@@ -1133,13 +1133,12 @@ class htmlButton extends htmlElement {
 		else {
 			echo '<button' . $id . $name . $fieldTabIndex . $type . $onClick . $style . $class . $title . $disabled . $this->getDataAttributesAsString() . '>' . $this->value . '</button>';
 			// text buttons get JQuery style
-			$icon = '';
 			if ($this->iconClass != null) {
 				$icon = '{ icons: { primary: \'' . $this->iconClass . '\' } }';
+				echo '<script type="text/javascript">';
+				echo "jQuery('#btn_" . $this->name . "').button(" . $icon . ");";
+				echo '</script>';
 			}
-			echo '<script type="text/javascript">';
-			echo "jQuery('#btn_" . $this->name . "').button(" . $icon . ");";
-			echo '</script>';
 		}
 		return array($this->name => 'submit');
 	}
@@ -3181,71 +3180,6 @@ class htmlStatusMessage extends htmlElement {
 }
 
 /**
- * Generates a fieldset.
- *
- * @package metaHTML
- */
-class htmlFieldset extends htmlElement {
-
-	/** fieldset content */
-	private $content;
-	/** descriptive label */
-	private $label = null;
-	/** label image */
-	private $labelImage = null;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param htmlElement $content content to display inside fieldset
-	 * @param String $label label
-	 * @param String $labelImage image to put before label
-	 */
-	function __construct($content, $label = null, $labelImage = null) {
-		$this->content = $content;
-		$this->label = htmlspecialchars($label);
-		$this->labelImage = htmlspecialchars($labelImage);
-	}
-
-	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param integer $tabindex Start value of tabulator index for input fields
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
-	 */
-	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		$classes = $this->cssClasses;
-		$classes[] = 'ui-corner-all';
-		if ($scope != null) {
-			$classes[] = $scope . '-border';
-			$classes[] = $scope . '-bright';
-		}
-		$class = implode(' ', $classes);
-		echo "<fieldset class=\"$class\">\n";
-		// generate legend
-		if (($this->label != null) || ($this->labelImage != null)) {
-			echo "<legend>";
-			if ($this->labelImage != null) {
-				echo "<img align=\"middle\" src=\"" . $this->labelImage . "\" alt=\"\"> ";
-			}
-			if ($this->label != null) {
-				echo $this->label;
-			}
-			echo "</legend>\n";
-		}
-		$return = $this->content->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
-		echo "</fieldset>\n";
-		return $return;
-	}
-
-}
-
-/**
  * Generates a title line. This is used for page titles.
  *
  * @package metaHTML
@@ -3429,8 +3363,6 @@ class htmlLink extends htmlElement {
 	private $targetWindow = null;
 	/** onClick event */
 	private $onClick = null;
-	/** show as button */
-	private $showAsButton = false;
 	/** link id */
 	private $id;
 
@@ -3440,13 +3372,11 @@ class htmlLink extends htmlElement {
 	 * @param String $text label
 	 * @param String $target target URL
 	 * @param String $image URL of optional image
-	 * @param boolean $showAsButton shows this like as a button
 	 */
-	function __construct($text, $target, $image = null, $showAsButton = false) {
+	function __construct($text, $target, $image = null) {
 		$this->text = htmlspecialchars($text);
 		$this->target = htmlspecialchars($target);
 		$this->image = htmlspecialchars($image);
-		$this->showAsButton = $showAsButton;
 	}
 
 	/**
@@ -3482,7 +3412,7 @@ class htmlLink extends htmlElement {
 			$onClick = ' onclick="' . $this->onClick . '"';
 		}
 		$idAttr = '';
-		if ($this->showAsButton || !empty($this->id)) {
+		if (!empty($this->id)) {
 			$id = !empty($this->id) ? $this->id : 'a_' . preg_replace('/[^a-zA-Z0-9_]+/', '_', $this->target);
 			$idAttr = ' id="' . $id . '"';
 		}
@@ -3491,13 +3421,6 @@ class htmlLink extends htmlElement {
 			$classAttr = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
 		echo '<a href="' . $this->target . '"' . $idAttr . $classAttr . $title . $targetWindow . $onClick . $this->getDataAttributesAsString() . '>' . $image . $text . '</a>';
-		if ($this->showAsButton) {
-			echo '<script type="text/javascript">';
-			echo ' jQuery(document).ready(function() {';
-			echo "jQuery('#" . $id . "').button();";
-			echo '});';
-			echo '</script>';
-		}
 		return array();
 	}
 
