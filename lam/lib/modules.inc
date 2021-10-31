@@ -1216,9 +1216,15 @@ class accountContainer {
 			'messages' => '',
 			'errorsOccurred' => 'false'
 		);
+		$sendMail = false;
+		if (isset($input['sendMail']) && ($input['sendMail'] == 'true')) {
+			$sendMail = true;
+		}
 		if ($random == 'true') {
 			$password1 = generateRandomPassword();
-			$return['messages'] .= StatusMessage('INFO', _('The password was set to:') . ' ' . htmlspecialchars($password1), '', array(), true);
+			if (!$sendMail) {
+				$return['messages'] .= StatusMessage('INFO', _('The password was set to:') . ' ' . htmlspecialchars($password1), '', array(), true);
+			}
 		}
 		else {
 			// check if passwords match
@@ -1236,10 +1242,6 @@ class accountContainer {
 		$forcePasswordChange = false;
 		if (isset($input['forcePasswordChange']) && ($input['forcePasswordChange'] == 'true')) {
 			$forcePasswordChange = true;
-		}
-		$sendMail = false;
-		if (isset($input['sendMail']) && ($input['sendMail'] == 'true')) {
-			$sendMail = true;
 		}
 		$return['forcePasswordChange'] = $forcePasswordChange;
 		if ($return['errorsOccurred'] == 'false') {
