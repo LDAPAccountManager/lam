@@ -612,7 +612,7 @@ class lamList {
 	private function isSupportingPasswordQuickChange(): bool {
         $modules = $this->type->getModules();
         foreach ($modules as $module) {
-            if (!class_implements($module, '\passwordService')) {
+            if (!in_array('passwordService', class_implements($module))) {
                 continue;
             }
 	        $moduleObj = new $module($this->type->getScope());
