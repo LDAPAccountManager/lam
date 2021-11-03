@@ -1068,9 +1068,16 @@ class lamList {
 		if (isset($_POST['refresh'])) {
 			$this->refresh = true;
 		}
-		if ((isset($_POST['apply_filter']) || isset($_POST['clear_filter']))
-				&& $this->serverSideFilterChanged) {
-			$this->refresh = true;
+		if (isset($_POST['apply_filter']) || isset($_POST['clear_filter'])) {
+		    $noRefresh = '&norefresh=true';
+		    if ($this->serverSideFilterChanged) {
+			    $this->refresh = true;
+			    $noRefresh = '';
+		    }
+			$filter = $this->getFilterAsTextForURL();
+			metaRefresh("list.php?type=" . $this->type->getId() . "&page=1" .
+				"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter . $noRefresh);
+			exit();
 		}
 	}
 
