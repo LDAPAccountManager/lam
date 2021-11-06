@@ -1,6 +1,7 @@
 December 2021 7.8
   - Restyling of LAM
   - Do not print random password if sent via email (165)
+  - Device: allow multiple cn values
 
 
 30.09.2021 7.7

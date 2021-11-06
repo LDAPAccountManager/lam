@@ -1537,8 +1537,9 @@ abstract class baseModule {
 	 * @param String $attrName attribute name
 	 * @param array $errors errors array where to put validation errors
 	 * @param String $validationID validation ID for function get_preg() (default: null, null means no validation)
+	 * @param bool $required the field is required (default: false)
 	 */
-	protected function processMultiValueInputTextField($attrName, &$errors, $validationID = null) {
+	protected function processMultiValueInputTextField($attrName, &$errors, $validationID = null, $required = false) {
 		$counter = 0;
 		while (isset($_POST[$attrName . '_' . $counter])) {
 			$this->attributes[$attrName][$counter] = trim($_POST[$attrName . '_' . $counter]);
@@ -1559,6 +1560,9 @@ abstract class baseModule {
 		}
 		if (!empty($this->attributes[$attrName])) {
 			$this->attributes[$attrName] = array_values(array_unique($this->attributes[$attrName]));
+		}
+		if ($required && empty($this->attributes[$attrName])) {
+			$errors[] = $this->messages[$attrName][0];
 		}
 	}
 

@@ -209,7 +209,11 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 					$errors[] = array(_('Account %s:') . ' dn_rdn ' . $account[$data[$i][$ids['dn_rdn']]], _("Invalid RDN attribute!"), array($i));
 				}
 				else {
-					$account_dn = $data[$i][$ids['dn_rdn']] . "=" . escapeRDN($account[$data[$i][$ids['dn_rdn']]]) . ",";
+					$rdnValue = $account[$data[$i][$ids['dn_rdn']]];
+					if (is_array($rdnValue)) {
+						$rdnValue = $rdnValue[0];
+					}
+					$account_dn = $data[$i][$ids['dn_rdn']] . "=" . escapeRDN($rdnValue) . ",";
 					if ($data[$i][$ids['dn_suffix']] == "") $account_dn = $account_dn . $suffix;
 					else $account_dn = $account_dn . $data[$i][$ids['dn_suffix']];
 					$accounts[$i]['dn'] = $account_dn;

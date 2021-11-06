@@ -708,8 +708,8 @@ function get_preg($argument, $regexp) {
 					$pregexpr = '/^[[:digit:]]+[KMGTkmgt]?$/';
 					break;
 		case 'hostAndPort':
-			$pregexpr = '/^[[:alnum:]\\._-]+:[[:digit:]]+$/';
-			break;
+					$pregexpr = '/^[[:alnum:]\\._-]+:[[:digit:]]+$/';
+					break;
 	}
 	if (($pregexpr != '') && preg_match($pregexpr, $argument)) {
 		return true;
