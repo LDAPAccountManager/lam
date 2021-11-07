@@ -478,6 +478,18 @@ $row->add($searchPasswordInput, 12);
 $row->add(new htmlResponsiveInputCheckbox('httpAuthentication', ($conf->getHttpAuthentication() == 'true'), _('HTTP authentication'), '223'), 12);
 $row->addVerticalSpacer('1rem');
 
+// password policy override
+$row->add(new htmlSubTitle(_("Global password policy override"), '../../graphics/lock.png'));
+$optionsPwdLength = array('');
+for ($i = 1; $i <= 50; $i++) {
+	$optionsPwdLength[] = $i;
+}
+$row->add(new htmlResponsiveSelect('pwdPolicyMinLength', $optionsPwdLength, array($conf->getPwdPolicyMinLength()), _('Minimum password length'), '242'));
+$row->add(new htmlResponsiveSelect('pwdPolicyMinLowercase', $optionsPwdLength, array($conf->getpwdPolicyMinLowercase()), _('Minimum lowercase characters'), '242'));
+$row->add(new htmlResponsiveSelect('pwdPolicyMinUppercase', $optionsPwdLength, array($conf->getPwdPolicyMinUppercase()), _('Minimum uppercase characters'), '242'));
+$row->add(new htmlResponsiveSelect('pwdPolicyMinNumeric', $optionsPwdLength, array($conf->getPwdPolicyMinNumeric()), _('Minimum numeric characters'), '242'));
+$row->add(new htmlResponsiveSelect('pwdPolicyMinSymbolic', $optionsPwdLength, array($conf->getPwdPolicyMinSymbolic()), _('Minimum symbolic characters'), '242'));
+
 // 2factor authentication
 if (extension_loaded('curl')) {
 	$row->add(new htmlSubTitle(_("2-factor authentication"), '../../graphics/lock.png'), 12);
@@ -769,6 +781,12 @@ function checkInput() {
 	}
 
 	$conf->setToolSettings($toolSettings);
+	// password policy override
+    $conf->setPwdPolicyMinLength($_POST['pwdPolicyMinLength']);
+	$conf->setPwdPolicyMinLowercase($_POST['pwdPolicyMinLowercase']);
+	$conf->setPwdPolicyMinUppercase($_POST['pwdPolicyMinUppercase']);
+	$conf->setPwdPolicyMinNumeric($_POST['pwdPolicyMinNumeric']);
+	$conf->setPwdPolicyMinSymbolic($_POST['pwdPolicyMinSymbolic']);
 	// 2-factor
 	if (extension_loaded('curl')) {
 		$conf->setTwoFactorAuthentication($_POST['twoFactor']);
@@ -800,6 +818,3 @@ function checkInput() {
 
 	return $errors;
 }
-
-?>
-

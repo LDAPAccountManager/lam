@@ -715,6 +715,11 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 			$file_array[] = "\n" . "twoFactorAuthenticationCaption: " . $profile->getTwoFactorAuthenticationCaption() . "\n";
 			$file_array[] = "\n" . "twoFactorAuthenticationAttribute: " . $profile->getTwoFactorAuthenticationAttribute() . "\n";
 			$file_array[] = "\n" . "hideDnPart: " . $profile->getHideDnPart() . "\n";
+			$file_array[] = "\n" . "pwdPolicyMinLength: " . $profile->getPwdPolicyMinLength() . "\n";
+			$file_array[] = "\n" . "pwdPolicyMinLowercase: " . $profile->getPwdPolicyMinLowercase() . "\n";
+			$file_array[] = "\n" . "pwdPolicyMinUppercase: " . $profile->getPwdPolicyMinUppercase() . "\n";
+			$file_array[] = "\n" . "pwdPolicyMinNumeric: " . $profile->getPwdPolicyMinNumeric() . "\n";
+			$file_array[] = "\n" . "pwdPolicyMinSymbolic: " . $profile->getPwdPolicyMinSymbolic() . "\n";
 			// module settings
 			$moduleSettings = $profile->get_moduleSettings();
 			foreach ($moduleSettings as $moduleSettingKey => $moduleSettingValue) {
@@ -1135,6 +1140,12 @@ class LAMConfig {
 
 	private $hideDnPart = '';
 
+	private $pwdPolicyMinLength = '';
+	private $pwdPolicyMinLowercase = '';
+	private $pwdPolicyMinUppercase = '';
+	private $pwdPolicyMinNumeric = '';
+	private $pwdPolicyMinSymbolic = '';
+
 	/** List of all settings in config file */
 	private $settings = array("ServerURL", "useTLS", "followReferrals", 'pagedResults', "Passwd", "Admins",
 		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", 'serverDisplayName',
@@ -1148,7 +1159,8 @@ class LAMConfig {
 		'twoFactorAuthenticationInsecure', 'twoFactorAuthenticationLabel', 'twoFactorAuthenticationOptional',
 		'twoFactorAuthenticationCaption', 'twoFactorAuthenticationClientId', 'twoFactorAuthenticationSecretKey',
 		'twoFactorAuthenticationDomain', 'twoFactorAuthenticationAttribute', 'referentialIntegrityOverlay',
-		'hidePasswordPromptForExpiredPasswords', 'hideDnPart'
+		'hidePasswordPromptForExpiredPasswords', 'hideDnPart', 'pwdPolicyMinLength', 'pwdPolicyMinLowercase',
+		'pwdPolicyMinUppercase', 'pwdPolicyMinNumeric', 'pwdPolicyMinSymbolic'
 	);
 
 	/**
@@ -2800,6 +2812,96 @@ class LAMConfig {
 	 */
 	public function setHideDnPart($hideDnPart) {
 		$this->hideDnPart = $hideDnPart;
+	}
+
+	/**
+	 * Returns the minimum password length.
+	 *
+	 * @return string minimum length
+	 */
+	public function getPwdPolicyMinLength() {
+		return $this->pwdPolicyMinLength;
+	}
+
+	/**
+	 * Sets the minimum password length.
+	 *
+	 * @param string $pwdPolicyMinLength minimum length
+	 */
+	public function setPwdPolicyMinLength($pwdPolicyMinLength) {
+		$this->pwdPolicyMinLength = $pwdPolicyMinLength;
+	}
+
+	/**
+	 * Returns the minimum of lowercase characters.
+	 *
+	 * @return string minimum
+	 */
+	public function getpwdPolicyMinLowercase() {
+		return $this->pwdPolicyMinLowercase;
+	}
+
+	/**
+	 * Sets the minimum of lowercase characters.
+	 *
+	 * @param string $pwdPolicyMinLowercase minimum
+	 */
+	public function setPwdPolicyMinLowercase($pwdPolicyMinLowercase) {
+		$this->pwdPolicyMinLowercase = $pwdPolicyMinLowercase;
+	}
+
+	/**
+	 * Returns the minimum of uppercase characters.
+	 *
+	 * @return string minimum
+	 */
+	public function getPwdPolicyMinUppercase() {
+		return $this->pwdPolicyMinUppercase;
+	}
+
+	/**
+	 * Sets the minimum of uppercase characters.
+	 *
+	 * @param string $pwdPolicyMinUppercase minimum
+	 */
+	public function setPwdPolicyMinUppercase($pwdPolicyMinUppercase) {
+		$this->pwdPolicyMinUppercase = $pwdPolicyMinUppercase;
+	}
+
+	/**
+	 * Returns the minimum of numeric characters.
+	 *
+	 * @return string minimum
+	 */
+	public function getPwdPolicyMinNumeric() {
+		return $this->pwdPolicyMinNumeric;
+	}
+
+	/**
+	 * Sets the minimum of numeric characters.
+	 *
+	 * @param string $pwdPolicyMinNumeric minimum
+	 */
+	public function setPwdPolicyMinNumeric($pwdPolicyMinNumeric) {
+		$this->pwdPolicyMinNumeric = $pwdPolicyMinNumeric;
+	}
+
+	/**
+	 * Returns the minimum of symbolic characters.
+	 *
+	 * @return string minimum
+	 */
+	public function getPwdPolicyMinSymbolic() {
+		return $this->pwdPolicyMinSymbolic;
+	}
+
+	/**
+	 * Sets the minimum of symbolic characters.
+	 *
+	 * @param string $pwdPolicyMinSymbolic minimum
+	 */
+	public function setPwdPolicyMinSymbolic($pwdPolicyMinSymbolic) {
+		$this->pwdPolicyMinSymbolic = $pwdPolicyMinSymbolic;
 	}
 
 }

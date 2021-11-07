@@ -869,6 +869,33 @@ class LAMConfigTest extends TestCase {
 	}
 
 	/**
+	 * Tests the password policy options.
+	 */
+	public function testPwdPolicy() {
+		$pwdPolicyMinLength = '5';
+		$pwdPolicyMinLowercase = '6';
+		$pwdPolicyMinUppercase = '7';
+		$pwdPolicyMinNumeric = '8';
+		$pwdPolicyMinSymbolic = '9';
+		$this->lAMConfig->setPwdPolicyMinLength($pwdPolicyMinLength);
+		$this->lAMConfig->setPwdPolicyMinLowercase($pwdPolicyMinLowercase);
+		$this->lAMConfig->setPwdPolicyMinUppercase($pwdPolicyMinUppercase);
+		$this->lAMConfig->setPwdPolicyMinNumeric($pwdPolicyMinNumeric);
+		$this->lAMConfig->setPwdPolicyMinSymbolic($pwdPolicyMinSymbolic);
+		$this->assertEquals($pwdPolicyMinLength, $this->lAMConfig->getPwdPolicyMinLength());
+		$this->assertEquals($pwdPolicyMinLowercase, $this->lAMConfig->getpwdPolicyMinLowercase());
+		$this->assertEquals($pwdPolicyMinUppercase, $this->lAMConfig->getPwdPolicyMinUppercase());
+		$this->assertEquals($pwdPolicyMinNumeric, $this->lAMConfig->getPwdPolicyMinNumeric());
+		$this->assertEquals($pwdPolicyMinSymbolic, $this->lAMConfig->getPwdPolicyMinSymbolic());
+		$this->doSave();
+		$this->assertEquals($pwdPolicyMinLength, $this->lAMConfig->getPwdPolicyMinLength());
+		$this->assertEquals($pwdPolicyMinLowercase, $this->lAMConfig->getpwdPolicyMinLowercase());
+		$this->assertEquals($pwdPolicyMinUppercase, $this->lAMConfig->getPwdPolicyMinUppercase());
+		$this->assertEquals($pwdPolicyMinNumeric, $this->lAMConfig->getPwdPolicyMinNumeric());
+		$this->assertEquals($pwdPolicyMinSymbolic, $this->lAMConfig->getPwdPolicyMinSymbolic());
+	}
+
+	/**
 	 * Checks that number of settings stays constant over multiple saves.
 	 */
 	public function testMultiSave() {

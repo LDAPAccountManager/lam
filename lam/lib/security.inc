@@ -403,8 +403,12 @@ function checkPasswordStrength($password, $userNames, $otherUserAttrs) {
 		$cfg = new LAMCfgMain();
 	}
 	// check length
-	if (strlen($password) < $cfg->passwordMinLength) {
-		return sprintf(_('The password is too short. You have to enter at least %s characters.'), $cfg->passwordMinLength);
+	$minLength = $cfg->passwordMinLength;
+	if (isset($_SESSION['config']) && is_numeric($_SESSION['config']->getPwdPolicyMinLength())) {
+		$minLength = $_SESSION['config']->getPwdPolicyMinLength();
+	}
+	if (strlen($password) < $minLength) {
+		return sprintf(_('The password is too short. You have to enter at least %s characters.'), $minLength);
 	}
 	// get number of characters per character class
 	$lower = 0;
@@ -426,45 +430,48 @@ function checkPasswordStrength($password, $userNames, $otherUserAttrs) {
 		}
 	}
 	$rulesMatched = 0;
-	$rulesFailed = 0;
 	// check lower case
-	if (($cfg->checkedRulesCount == -1) && ($lower < $cfg->passwordMinLower)) {
-		return sprintf(_('The password is too weak. You have to enter at least %s lower case characters.'), $cfg->passwordMinLower);
+	$minLower = $cfg->passwordMinLower;
+	if (isset($_SESSION['config']) && is_numeric($_SESSION['config']->getpwdPolicyMinLowercase())) {
+		$minLower = $_SESSION['config']->getpwdPolicyMinLowercase();
 	}
-	if ($lower < $cfg->passwordMinLower) {
-		$rulesFailed++;
+	if (($cfg->checkedRulesCount == -1) && ($lower < $minLower)) {
+		return sprintf(_('The password is too weak. You have to enter at least %s lower case characters.'), $minLower);
 	}
-	else {
+	if ($lower >= $minLower) {
 		$rulesMatched++;
 	}
 	// check upper case
-	if (($cfg->checkedRulesCount == -1) && ($upper < $cfg->passwordMinUpper)) {
-		return sprintf(_('The password is too weak. You have to enter at least %s upper case characters.'), $cfg->passwordMinUpper);
+	$minUpper = $cfg->passwordMinUpper;
+	if (isset($_SESSION['config']) && is_numeric($_SESSION['config']->getPwdPolicyMinUppercase())) {
+		$minUpper = $_SESSION['config']->getPwdPolicyMinUppercase();
 	}
-	if ($upper < $cfg->passwordMinUpper) {
-		$rulesFailed++;
+	if (($cfg->checkedRulesCount == -1) && ($upper < $minUpper)) {
+		return sprintf(_('The password is too weak. You have to enter at least %s upper case characters.'), $minUpper);
 	}
-	else {
+	if ($upper >= $minUpper) {
 		$rulesMatched++;
 	}
 	// check numeric
-	if (($cfg->checkedRulesCount == -1) && ($numeric < $cfg->passwordMinNumeric)) {
-		return sprintf(_('The password is too weak. You have to enter at least %s numeric characters.'), $cfg->passwordMinNumeric);
+	$minNumeric = $cfg->passwordMinNumeric;
+	if (isset($_SESSION['config']) && is_numeric($_SESSION['config']->getPwdPolicyMinNumeric())) {
+		$minNumeric = $_SESSION['config']->getPwdPolicyMinNumeric();
 	}
-	if ($numeric < $cfg->passwordMinNumeric) {
-		$rulesFailed++;
+	if (($cfg->checkedRulesCount == -1) && ($numeric < $minNumeric)) {
+		return sprintf(_('The password is too weak. You have to enter at least %s numeric characters.'), $minNumeric);
 	}
-	else {
+	if ($numeric >= $minNumeric) {
 		$rulesMatched++;
 	}
 	// check symbols
-	if (($cfg->checkedRulesCount == -1) && ($symbols < $cfg->passwordMinSymbol)) {
-		return sprintf(_('The password is too weak. You have to enter at least %s symbolic characters.'), $cfg->passwordMinSymbol);
+	$minSymbols = $cfg->passwordMinSymbol;
+	if (isset($_SESSION['config']) && is_numeric($_SESSION['config']->getPwdPolicyMinSymbolic())) {
+		$minSymbols = $_SESSION['config']->getPwdPolicyMinSymbolic();
 	}
-	if ($symbols < $cfg->passwordMinSymbol) {
-		$rulesFailed++;
+	if (($cfg->checkedRulesCount == -1) && ($symbols < $minSymbols)) {
+		return sprintf(_('The password is too weak. You have to enter at least %s symbolic characters.'), $minSymbols);
 	}
-	else {
+	if ($symbols >= $minSymbols) {
 		$rulesMatched++;
 	}
 	// check classes
@@ -472,10 +479,7 @@ function checkPasswordStrength($password, $userNames, $otherUserAttrs) {
 	if (($cfg->checkedRulesCount == -1) && ($classes < $cfg->passwordMinClasses)) {
 		return sprintf(_('The password is too weak. You have to enter at least %s different character classes (upper/lower case, numbers and symbols).'), $cfg->passwordMinClasses);
 	}
-	if ($classes < $cfg->passwordMinClasses) {
-		$rulesFailed++;
-	}
-	else {
+	if ($classes >= $cfg->passwordMinClasses) {
 		$rulesMatched++;
 	}
 	// check rules count
@@ -808,5 +812,3 @@ function lamLogRemoteMessage($level, $message, $cfgMain) {
 			break;
 	}
 }
-
-?>

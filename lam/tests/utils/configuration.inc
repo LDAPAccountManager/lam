@@ -22,6 +22,7 @@ $Id$
 */
 
 include_once (dirname(__FILE__) . '/../../lib/config.inc');
+include_once (dirname(__FILE__) . '/../lib/LAMConfigTest.php');
 
 /**
  * Creates a default configuration and adds it to $_SESSION['cfgMain'] and $_SESSION['config'].

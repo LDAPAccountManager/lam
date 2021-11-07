@@ -36,9 +36,15 @@ class SecurityTest extends TestCase {
 
 	private $cfg = null;
 
+	/**
+	 * @var LAMConfig
+	 */
+	private $serverProfile = null;
+
 	protected function setUp(): void {
 		testCreateDefaultConfig();
-		$this->cfg = &$_SESSION ['cfgMain'];
+		$this->cfg = &$_SESSION['cfgMain'];
+		$this->serverProfile = &$_SESSION['config'];
 		$this->resetPasswordRules();
 	}
 
@@ -53,26 +59,46 @@ class SecurityTest extends TestCase {
 	public function testMinLength() {
 		$this->cfg->passwordMinLength = 5;
 		$this->checkPwd(array('55555', '666666'), array('1', '22', '333', '4444'));
+		$this->serverProfile->setPwdPolicyMinLength('7');
+		$this->checkPwd(array('7777777'), array('1', '22', '333', '4444', '55555', '666666'));
+		$this->serverProfile->setPwdPolicyMinLength('3');
+		$this->checkPwd(array('333', '4444', '55555', '666666', '7777777'), array('1', '22'));
 	}
 
 	public function testMinUpper() {
 		$this->cfg->passwordMinUpper = 3;
 		$this->checkPwd(array('55A5AA55', '6BB666BB66', 'ABC'), array ('1A', '2C2C', 'AB3', '44BB'));
+		$this->serverProfile->setPwdPolicyMinUppercase('5');
+		$this->checkPwd(array('5AA5AAA5', '6BBB66BBB6', 'ABCDE'), array ('1A', '2C2C', 'AB3', '44BB'));
+		$this->serverProfile->setPwdPolicyMinUppercase('2');
+		$this->checkPwd(array('5555A5A5', '6BBB666666', 'AB'), array ('1A', '2C22', 'A33', '444B'));
 	}
 
 	public function testMinLower() {
 		$this->cfg->passwordMinLower = 3;
 		$this->checkPwd(array('55a5aa55', '6bb666bb66', 'abc'), array ('1a', '2c2c', 'ab3', '44bbABC'));
+		$this->serverProfile->setPwdPolicyMinLowercase('5');
+		$this->checkPwd(array('5aa5aaa5', '6bbb66bb66', 'abcde'), array ('1abcd', '2c2c', 'ab3', '44bbABC'));
+		$this->serverProfile->setPwdPolicyMinLowercase('2');
+		$this->checkPwd(array('5555aa55', '6bb6666b66', 'ab'), array ('1a', '2c23', 'a13', '441bABC'));
 	}
 
 	public function testMinNumeric() {
 		$this->cfg->passwordMinNumeric = 3;
 		$this->checkPwd(array('333', '4444'), array('1', '22', '33A', '44bb'));
+		$this->serverProfile->setPwdPolicyMinNumeric('5');
+		$this->checkPwd(array('55555'), array('1', '22', '33A', '44bb', '333', '4444'));
+		$this->serverProfile->setPwdPolicyMinNumeric('2');
+		$this->checkPwd(array('22', '33A', '44bb', '333', '4444'), array('1', 'X'));
 	}
 
 	public function testMinSymbol() {
 		$this->cfg->passwordMinSymbol = 3;
 		$this->checkPwd(array('---', '++++'), array('1.', '2.2.', '3+3+A', '44bb'));
+		$this->serverProfile->setPwdPolicyMinSymbolic('5');
+		$this->checkPwd(array('---++', '++--++'), array('1.', '2.2.', '3+3+A--', '44bb'));
+		$this->serverProfile->setPwdPolicyMinSymbolic('2');
+		$this->checkPwd(array('-1-', '+x++'), array('1.', '2.', '3+3A', '44bb'));
 	}
 
 	public function testMinClasses() {
@@ -123,6 +149,11 @@ class SecurityTest extends TestCase {
 		$this->cfg->checkedRulesCount = -1;
 		$this->cfg->passwordMustNotContainUser = 'false';
 		$this->cfg->passwordMustNotContain3Chars = 'false';
+		$this->serverProfile->setPwdPolicyMinLength('');
+		$this->serverProfile->setPwdPolicyMinUppercase('');
+		$this->serverProfile->setPwdPolicyMinLowercase('');
+		$this->serverProfile->setPwdPolicyMinNumeric('');
+		$this->serverProfile->setPwdPolicyMinSymbolic('');
 	}
 
 	/**
@@ -149,5 +180,3 @@ class SecurityTest extends TestCase {
 	}
 
 }
-
-?>

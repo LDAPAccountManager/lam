@@ -1,5 +1,6 @@
 December 2021 7.8
   - Restyling of LAM
+  - Allow to override global password policy in server profile
   - Do not print random password if sent via email (165)
   - Device: allow multiple cn values
 
