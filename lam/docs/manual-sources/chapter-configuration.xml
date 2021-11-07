@@ -704,6 +704,17 @@
           </mediaobject>
         </screenshot>
 
+        <para><emphasis role="bold">Global password policy
+        override</emphasis></para>
+
+        <para>This allows you to override some password policy options of
+        LAM's global password policy (LAM main configuration). You can
+        increase and decrease the values of the global policy.</para>
+
+        <screenshot>
+          <graphic fileref="images/configProfiles14.png"/>
+        </screenshot>
+
         <para id="conf_serverprofile_2fa"><emphasis role="bold">2-factor
         authentication</emphasis></para>
 
