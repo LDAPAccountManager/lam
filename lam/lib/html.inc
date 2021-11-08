@@ -621,12 +621,12 @@ class htmlInputField extends htmlElement {
 				echo 'jQuery(function() {';
 				echo 'var availableTags' . $this->fieldName . ' = [' . implode(',', $this->autocompleteValues) . '];';
 				if (!$this->autocompleteMultiValue) {
-					echo 'jQuery( "#' . $this->fieldName . '" ).autocomplete({ source: availableTags' . $this->fieldName . ', minLength: ' . $this->autocompleteMinLength . '});';
+					echo 'jQuery("input[name=' . $this->fieldName . ']").autocomplete({ source: availableTags' . $this->fieldName . ', minLength: ' . $this->autocompleteMinLength . '});';
 				}
 				else {
 					echo 'function split' . $this->fieldName . '(val) {return val.split( /' . $this->autocompleteMultiValueSeparatorExp . '/ );}';
 					echo 'function extractLast' . $this->fieldName . '(term) {return split' . $this->fieldName . '(term).pop();}';
-					echo 'jQuery( "#' . $this->fieldName . '" ).bind("keydown", function(event) {
+					echo 'jQuery("input[name=' . $this->fieldName . ']").bind("keydown", function(event) {
 									if (event.keyCode === jQuery.ui.keyCode.TAB && jQuery(this).data("autocomplete").menu.active ) {
 										event.preventDefault();
 									}

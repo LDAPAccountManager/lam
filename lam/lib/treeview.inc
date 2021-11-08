@@ -487,8 +487,21 @@ class TreeView {
 		}
 		$valueTable = new htmlTable();
 		$valueTable->setCSSClasses(array('fullwidth'));
+		$autoCompleteValues = array();
+		if (strtolower($attributeName) === 'objectclass') {
+			$schemaObjectClasses = $this->getSchemaObjectClasses();
+			foreach ($schemaObjectClasses as $schemaObjectClass) {
+				if (!in_array_ignore_case($schemaObjectClass->getName(), $values)) {
+					$autoCompleteValues[] = $schemaObjectClass->getName();
+				}
+			}
+		}
 		foreach ($values as $index => $value) {
-			$valueTable->addElement($this->getAttributeInputField($attributeName, $value, $required, $isMultiLine, false, $schemaAttribute, $index));
+			$inputField = $this->getAttributeInputField($attributeName, $value, $required, $isMultiLine, false, $schemaAttribute, $index);
+			if (!empty($autoCompleteValues) && ($inputField instanceof htmlInputField)) {
+				$inputField->enableAutocompletion($autoCompleteValues);
+			}
+			$valueTable->addElement($inputField);
 			if (checkIfWriteAccessIsAllowed()) {
 				if (!$this->isJpegAttribute($attributeName, $schemaAttribute)) {
 					$addButton = new htmlLink(null, '#', '../../graphics/add.png');
