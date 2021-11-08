@@ -16,7 +16,7 @@ if (is_readable('lam/lib/modules/bindDLZ.inc')) {
 	 *
 	 * @author Roland Gruber
 	 */
-	class bindDLZTest extends TestCase {
+	class BindDLZTest extends TestCase {
 
 		public function testIncreaseSerial() {
 			$this->assertEquals('1', bindDLZ::increaseSerial(''));

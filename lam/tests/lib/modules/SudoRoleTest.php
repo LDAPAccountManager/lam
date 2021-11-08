@@ -81,5 +81,3 @@ if (is_readable('lam/lib/modules/sudoRole.inc')) {
 	}
 
 }
-
-?>

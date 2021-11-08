@@ -230,5 +230,3 @@ if (is_readable('lam/lib/modules/ppolicyUser.inc')) {
 	}
 
 }
-
-?>

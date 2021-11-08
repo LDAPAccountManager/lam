@@ -107,5 +107,3 @@ use PHPUnit\Framework\TestCase;
 		}
 
 	}
-
-?>

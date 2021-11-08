@@ -17,7 +17,7 @@ if (is_readable('lam/lib/modules/customFields.inc')) {
 	 * @author Roland Gruber
 	 *
 	 */
-	class customFieldsTest extends TestCase {
+	class CustomFieldsTest extends TestCase {
 
 		public function testReplaceWildcardsSpaces() {
 			$originalMiddle = '123((uid))456';

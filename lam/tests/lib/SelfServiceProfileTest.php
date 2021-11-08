@@ -29,7 +29,7 @@ require_once __DIR__ . '/../../lib/selfService.inc';
  * @author Roland Gruber
  *
  */
-class selfServiceProfileTest extends TestCase {
+class SelfServiceProfileTest extends TestCase {
 
 	public function testBaseUrl() {
 		$profile = new selfServiceProfile();
@@ -61,5 +61,3 @@ class selfServiceProfileTest extends TestCase {
 	}
 
 }
-
-?>

@@ -49,5 +49,3 @@ class SambaSamAccountTest extends TestCase {
 	}
 
 }
-
-?>

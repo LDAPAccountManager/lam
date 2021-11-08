@@ -262,5 +262,3 @@ if (is_readable('lam/lib/passwordExpirationJob.inc')) {
 	}
 
 }
-
-?>
