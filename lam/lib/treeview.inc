@@ -500,6 +500,7 @@ class TreeView {
 			$inputField = $this->getAttributeInputField($attributeName, $value, $required, $isMultiLine, false, $schemaAttribute, $index);
 			if (!empty($autoCompleteValues) && ($inputField instanceof htmlInputField)) {
 				$inputField->enableAutocompletion($autoCompleteValues);
+				$inputField->setId($attributeName . $index);
 			}
 			$valueTable->addElement($inputField);
 			if (checkIfWriteAccessIsAllowed()) {

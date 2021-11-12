@@ -2749,6 +2749,70 @@ window.lam.topmenu.subMenuCloseListenerTypes = function (event) {
 	}
 }
 
+window.lam.autocomplete = window.lam.autocomplete || {};
+
+/**
+ * Initializes the autocompletion.
+ */
+window.lam.autocomplete.init = function() {
+	const fields = document.getElementsByClassName('lam-autocomplete');
+	for (let i = 0; i < fields.length; i++) {
+		window.lam.autocomplete.activate(fields[i]);
+	}
+	const mutationObserver = new MutationObserver(function(mutations) {
+		mutations.forEach(function(mutation) {
+			if (mutation.addedNodes) {
+				mutation.addedNodes.forEach(function(node){
+					if (!node.tagName) {
+						return;
+					}
+					window.lam.autocomplete.checkNode(node);
+				});
+			}
+		});
+	});
+	mutationObserver.observe(document.documentElement, {
+		attributes: false,
+		characterData: false,
+		childList: true,
+		subtree: true,
+		attributeOldValue: false,
+		characterDataOldValue: false
+	});
+}
+
+/**
+ * Checks if autocompletion needs to be added on the given node or its subnodes.
+ *
+ * @param node node
+ */
+window.lam.autocomplete.checkNode = function(node) {
+	if (node.classList && node.classList.contains('lam-autocomplete')) {
+		window.lam.autocomplete.activate(node);
+		return;
+	}
+	if (!node.childNodes) {
+		return;
+	}
+	node.childNodes.forEach(function(child){
+		window.lam.autocomplete.checkNode(child);
+	});
+}
+
+/**
+ * Activates the autocompletion on a given field.
+ *
+ * @param field field
+ */
+window.lam.autocomplete.activate = function(field) {
+	const values = JSON.parse(atob(field.getAttribute('data-autocomplete')));
+	const minLength = field.getAttribute('data-autocomplete-minLength');
+	jQuery(field).autocomplete({
+		source: values,
+		minLength: minLength
+	});
+}
+
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();
 	window.lam.form.autoTrim();
@@ -2762,6 +2826,7 @@ jQuery(document).ready(function() {
 	window.lam.html.preventEnter();
 	window.lam.dynamicSelect.activate();
 	window.lam.webauthn.setupDeviceManagement();
+	window.lam.autocomplete.init();
 });
 
 /**

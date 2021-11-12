@@ -462,12 +462,6 @@ class htmlInputField extends htmlElement {
 	protected $validationRule = null;
 	/** enable autocomplete */
 	protected $autocomplete = false;
-	/** multiple values in one field */
-	protected $autocompleteMultiValue = false;
-	/** separator expression for multiple values in one field */
-	protected $autocompleteMultiValueSeparatorExp = null;
-	/** separator for multiple values in one field */
-	protected $autocompleteMultiValueSeparator = null;
 	/** autocompletion suggestions */
 	protected $autocompleteValues = array();
 	/** autocomplete start at this input length */
@@ -492,6 +486,8 @@ class htmlInputField extends htmlElement {
 	protected $minValue = null;
 	/** maximum value */
 	protected $maxValue = null;
+	/** id */
+	protected $id = null;
 
 	/**
 	 * Constructor
@@ -551,7 +547,9 @@ class htmlInputField extends htmlElement {
 			$max = ' max="' . $this->maxValue . '"';
 		}
 		// print input field
-		$class = '';
+		if ($this->autocomplete) {
+			$this->cssClasses[] = 'lam-autocomplete';
+		}
 		if (sizeof($validators) > 0) {
 			$class = ' class="validate[' . implode(',', $validators) . '] ' . implode(' ', $this->cssClasses) . '"';
 		}
@@ -559,7 +557,7 @@ class htmlInputField extends htmlElement {
 			$class = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
 		$name = ' name="' . $this->fieldName . '"';
-		$id = ' id="' . $this->fieldName . '"';
+		$id = ' id="' . ($this->id !== null) ? $this->id : $this->fieldName . '"';
 		$value = '';
 		if ($this->fieldValue != null) {
 			$value = ' value="' . $this->fieldValue . '"';
@@ -601,12 +599,17 @@ class htmlInputField extends htmlElement {
 		if ($this->disableAutoFill) {
 			$autoCompleteVal = ' autocomplete="new-password"';
 		}
+		$autoCompleteData = '';
+		if ($this->autocomplete) {
+			$autoCompleteData = ' data-autocomplete="' . base64_encode(json_encode($this->autocompleteValues)) . '"';
+			$autoCompleteData .= ' data-autocomplete-minLength="' . $this->autocompleteMinLength . '"';
+		}
 		if ($this->showDnSelection) {
 			echo '<span class="nowrap">';
 		}
 		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength
 			. $min . $max . $size . $fieldTabIndex . $onKeyPress . $onKeyUp . $title . $disabled
-			. $this->getDataAttributesAsString() . $autoCompleteVal . '>';
+			. $this->getDataAttributesAsString() . $autoCompleteVal . $autoCompleteData . '>';
 		if ($this->showDnSelection) {
 			echo '<img class="align-middle" src="../../graphics/view.png"
 					   width="16" height="16" title="' . _('Choose entry') . '"
@@ -614,40 +617,6 @@ class htmlInputField extends htmlElement {
 					   			, \'' . _('Ok') . '\', \'' . _('Cancel') . '\', \'' . getSecurityTokenName() . '\'
 					   			, \'' . getSecurityTokenValue() . '\');">';
 			echo '</span>';
-		}
-		// autocompletion
-		if ($this->autocomplete) {
-			echo "<script type=\"text/javascript\">\n";
-				echo 'jQuery(function() {';
-				echo 'var availableTags' . $this->fieldName . ' = [' . implode(',', $this->autocompleteValues) . '];';
-				if (!$this->autocompleteMultiValue) {
-					echo 'jQuery("input[name=' . $this->fieldName . ']").autocomplete({ source: availableTags' . $this->fieldName . ', minLength: ' . $this->autocompleteMinLength . '});';
-				}
-				else {
-					echo 'function split' . $this->fieldName . '(val) {return val.split( /' . $this->autocompleteMultiValueSeparatorExp . '/ );}';
-					echo 'function extractLast' . $this->fieldName . '(term) {return split' . $this->fieldName . '(term).pop();}';
-					echo 'jQuery("input[name=' . $this->fieldName . ']").bind("keydown", function(event) {
-									if (event.keyCode === jQuery.ui.keyCode.TAB && jQuery(this).data("autocomplete").menu.active ) {
-										event.preventDefault();
-									}
-							})';
-					echo '.autocomplete({
-						source: function(request, response) {response(jQuery.ui.autocomplete.filter(
-									availableTags' . $this->fieldName . ', extractLast' . $this->fieldName . '(request.term)));
-								},
-						minLength: ' . $this->autocompleteMinLength . ',
-						focus: function() {return false;},
-						select: function(event,ui) {
-							var terms = split' . $this->fieldName . '(this.value);
-							terms.pop();
-							terms.push(ui.item.value);
-							terms.push("");
-							this.value = terms.join("' . $this->autocompleteMultiValueSeparator . '");return false;
-						}
-						});';
-				}
-				echo '});';
-			echo "</script\n>";
 		}
 		// calendar
 		if ($this->showCalendar) {
@@ -806,20 +775,11 @@ class htmlInputField extends htmlElement {
 	 *
 	 * @param array $values list of values to suggest
 	 * @param int $minLength autocompletion starts after this number of characters entered (default 1; 0 means immediate start)
-	 * @param boolean $multiValue allow multiple autocompletion values in the same fields (default: false)
-	 * @param String $multiSeparator separator expression if multiple autocompletion values are allowed (default ",\s*")
-	 * @param String $multiSeparator separator for two values (default ", ")
 	 */
-	public function enableAutocompletion($values, $minLength = 1, $multiValue = false, $multiSeparatorExp = ',\s*', $multiSeparator = ', ') {
-		for ($i = 0; $i < sizeof($values); $i++) {
-			$values[$i] = '"' . htmlspecialchars(str_replace(array('"', "\r", "\n"), array('', '', ''), $values[$i])) . '"';
-		}
+	public function enableAutocompletion($values, $minLength = 1) {
 		$this->autocomplete = true;
 		$this->autocompleteValues = $values;
 		$this->autocompleteMinLength = $minLength;
-		$this->autocompleteMultiValue = $multiValue;
-		$this->autocompleteMultiValueSeparatorExp = $multiSeparatorExp;
-		$this->autocompleteMultiValueSeparator = $multiSeparator;
 	}
 
 	/**
@@ -904,6 +864,15 @@ class htmlInputField extends htmlElement {
 
 	public function disableAutoTrim() {
 		$this->autoTrim = false;
+	}
+
+	/**
+	 * Sets the element ID.
+	 *
+	 * @param string $id id
+	 */
+	public function setId(string $id) {
+		$this->id = $id;
 	}
 
 }
