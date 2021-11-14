@@ -131,6 +131,15 @@ abstract class htmlElement {
 	}
 
 	/**
+	 * Returns the CSS classes of this element.
+	 *
+	 * @return array $classes CSS class names
+	 */
+	public function getCSSClasses() {
+		return $this->cssClasses;
+	}
+
+	/**
 	 * Adds CSS classes to this element.
 	 *
 	 * @param array $classes CSS class names
@@ -444,6 +453,8 @@ class htmlInputField extends htmlElement {
 	protected $onKeyPress = null;
 	/** on keyupp event */
 	protected $onKeyUp = null;
+	/** oninput event */
+	protected $onInput = null;
 	/** password field */
 	protected $isPassword = false;
 	/** check password strength */
@@ -557,7 +568,8 @@ class htmlInputField extends htmlElement {
 			$class = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
 		$name = ' name="' . $this->fieldName . '"';
-		$id = ' id="' . ($this->id !== null) ? $this->id : $this->fieldName . '"';
+		$idValue = ($this->id !== null) ? $this->id : $this->fieldName;
+		$id = ' id="' . $idValue . '"';
 		$value = '';
 		if ($this->fieldValue != null) {
 			$value = ' value="' . $this->fieldValue . '"';
@@ -591,6 +603,10 @@ class htmlInputField extends htmlElement {
 		if ($this->onKeyUp != null) {
 			$onKeyUp = ' onkeyup="' . $this->onKeyUp . '"';
 		}
+		$onInput = '';
+		if ($this->onInput != null) {
+			$onInput = ' oninput="' . $this->onInput . '"';
+		}
 		$title = '';
 		if (!empty($this->title)) {
 			$title = ' title="' . $this->title . '"';
@@ -608,7 +624,7 @@ class htmlInputField extends htmlElement {
 			echo '<span class="nowrap">';
 		}
 		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength
-			. $min . $max . $size . $fieldTabIndex . $onKeyPress . $onKeyUp . $title . $disabled
+			. $min . $max . $size . $fieldTabIndex . $onKeyPress . $onKeyUp . $onInput . $title . $disabled
 			. $this->getDataAttributesAsString() . $autoCompleteVal . $autoCompleteData . '>';
 		if ($this->showDnSelection) {
 			echo '<img class="align-middle" src="../../graphics/view.png"
@@ -798,6 +814,15 @@ class htmlInputField extends htmlElement {
 	 */
 	public function setOnKeyUp($onKeyUp) {
 		$this->onKeyUp = $onKeyUp;
+	}
+
+	/**
+	 * Sets the JavaScript for the onInput event.
+	 *
+	 * @param string $onInput JavaScript code
+	 */
+	public function setOnInput(string $onInput): void {
+		$this->onInput = $onInput;
 	}
 
 	/**

@@ -2480,6 +2480,58 @@ window.lam.treeview.addValue = function (event, link) {
 }
 
 /**
+ * Updates the list of possible new attributes to add.
+ *
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ */
+window.lam.treeview.updatePossibleNewAttributes = function(tokenName, tokenValue) {
+	// cancel running request
+	if (window.lam.treeview.updatePossibleNewAttributesRequest) {
+		window.lam.treeview.updatePossibleNewAttributesRequest.abort();
+		window.lam.treeview.updatePossibleNewAttributesRequest = null;
+	}
+	const fields = document.querySelectorAll('.lam-attr-objectclass');
+	// setup listener
+	const listener = function() {
+		window.lam.treeview.updatePossibleNewAttributes(tokenName, tokenValue);
+	};
+	fields.forEach(function(field) {
+		field.removeEventListener('change', listener)
+		field.addEventListener('change', listener);
+	});
+	let objectCLasses = [];
+	fields.forEach(function(field) {
+		objectCLasses.push(field.value);
+	});
+	let data = {
+		jsonInput: "",
+		dn: 'none'
+	};
+	data[tokenName] = tokenValue;
+	data['objectClasses'] = objectCLasses;
+	window.lam.treeview.updatePossibleNewAttributesRequest = jQuery.ajax({
+		url: "../misc/ajax.php?function=treeview&command=getPossibleNewAttributes",
+		method: "POST",
+		data: data
+	})
+	.done(function(jsonData) {
+		const select = document.querySelector('#newAttribute');
+		select.innerHTML = '';
+		const data = jsonData['data'];
+		for (const attributeName in data) {
+			var option = document.createElement('option');
+			option.value = data[attributeName];
+			option.innerText = attributeName;
+			select.appendChild(option);
+		};
+		window.lam.treeview.updatePossibleNewAttributesRequest = null;
+	});
+}
+
+window.lam.treeview.updatePossibleNewAttributesRequest = null;
+
+/**
  * Adds the input field for a new attribute.
  *
  * @param event event

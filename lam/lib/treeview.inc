@@ -101,6 +101,8 @@ class TreeView {
 			case 'getInternalAttributesContent':
 				$this->validateDn($dn);
 				return $this->getInternalAttributesContent($dn);
+			case 'getPossibleNewAttributes':
+				return $this->getPossibleNewAttributeNameOptionsJson();
 			case 'saveAttributes':
 				$this->ensureWriteAccess();
 				$this->validateDn($dn);
@@ -128,6 +130,16 @@ class TreeView {
 				die;
 		}
 		return json_encode(array('123'));
+	}
+
+	/**
+	 * Returns the JSON for the possible new attributes select.
+	 */
+	private function getPossibleNewAttributeNameOptionsJson() {
+		$objectClasses = $_POST['objectClasses'];
+		$attributeNames = $this->getPossibleNewAttributeNameOptions($objectClasses, true);
+		natcasesort($attributeNames);
+		return json_encode(array('data' => $attributeNames));
 	}
 
 	/**
@@ -293,6 +305,46 @@ class TreeView {
 	}
 
 	/**
+	 * Returns the options for the drop-down to add a new attribute.
+	 *
+	 * @param array $objectClasses object classes
+	 * @param bool $includeMustAttributes include required attributes
+	 * @return array list of options
+	 */
+	private function getPossibleNewAttributeNameOptions(array $objectClasses, bool $includeMustAttributes = false): array {
+		$schemaObjectClasses = $this->getSchemaObjectClasses();
+		$schemaAttributes = $this->getSchemaAttributes();
+		$possibleNewAttributes = array();
+		foreach ($objectClasses as $objectClass) {
+			$objectClass = strtolower($objectClass);
+			if (empty($schemaObjectClasses[$objectClass])) {
+				continue;
+			}
+			$attributes = $schemaObjectClasses[$objectClass]->getMayAttrs();
+			if ($includeMustAttributes) {
+				$attributes = array_merge($attributes, $schemaObjectClasses[$objectClass]->getMustAttrs());
+			}
+			foreach ($attributes as $attribute) {
+				$attributeName = $attribute->getName();
+				if (!isset($attributes[strtolower($attributeName)])) {
+					$schemaAttribute = $schemaAttributes[strtolower($attributeName)];
+					$single = $schemaAttribute->getIsSingleValue() ? 'single' : 'multi';
+					$type = $this->isMultiLineAttribute($attributeName, $schemaAttribute) ? 'textarea' : 'input';
+					if ($this->isPasswordAttribute($attributeName)) {
+						$type = 'password';
+					}
+					elseif ($this->isJpegAttribute($attributeName, $schemaAttribute)) {
+						$type = 'jpeg';
+					}
+					$possibleNewAttributes[$attributeName] = $attributeName . '__#__' . $single . '__#__' . $type;
+				}
+			}
+		}
+		ksort($possibleNewAttributes);
+		return $possibleNewAttributes;
+	}
+
+	/**
 	 * Returns the node content with the attribute listing.
 	 *
 	 * @param htmlStatusMessage|null $message message to display
@@ -324,31 +376,7 @@ class TreeView {
 		$row->addVerticalSpacer('1rem');
 
 		// add new attributes
-		$schemaObjectClasses = $this->getSchemaObjectClasses();
-		$possibleNewAttributes = array();
-		foreach ($attributes['objectclass'] as $objectclass) {
-			$objectclass = strtolower($objectclass);
-			if (empty($schemaObjectClasses[$objectclass])) {
-				continue;
-			}
-			$optionalAttributes = $schemaObjectClasses[$objectclass]->getMayAttrs();
-			foreach ($optionalAttributes as $optionalAttribute) {
-				$attributeName = $optionalAttribute->getName();
-				if (!isset($attributes[strtolower($attributeName)])) {
-					$schemaAttribute = $schemaAttributes[strtolower($attributeName)];
-					$single = $schemaAttribute->getIsSingleValue() ? 'single' : 'multi';
-					$type = $this->isMultiLineAttribute($attributeName, $schemaAttribute) ? 'textarea' : 'input';
-					if ($this->isPasswordAttribute($attributeName)) {
-						$type = 'password';
-					}
-					elseif ($this->isJpegAttribute($attributeName, $schemaAttribute)) {
-						$type = 'jpeg';
-					}
-					$possibleNewAttributes[$attributeName] = $attributeName . '__#__' . $single . '__#__' . $type;
-				}
-			}
-		}
-		ksort($possibleNewAttributes);
+		$possibleNewAttributes = $this->getPossibleNewAttributeNameOptions($objectClasses);
 		logNewMessage(LOG_DEBUG, 'Possible new attributes for ' . $dn . ': ' . implode('; ', $possibleNewAttributes));
 		if (!empty($possibleNewAttributes)) {
 			$possibleNewAttributes = array('' => '') + $possibleNewAttributes;
@@ -488,6 +516,7 @@ class TreeView {
 		$valueTable = new htmlTable();
 		$valueTable->setCSSClasses(array('fullwidth'));
 		$autoCompleteValues = array();
+		$onInput = null;
 		if (strtolower($attributeName) === 'objectclass') {
 			$schemaObjectClasses = $this->getSchemaObjectClasses();
 			foreach ($schemaObjectClasses as $schemaObjectClass) {
@@ -495,12 +524,19 @@ class TreeView {
 					$autoCompleteValues[] = $schemaObjectClass->getName();
 				}
 			}
+			$onInput = "window.lam.treeview.updatePossibleNewAttributes('" . getSecurityTokenName() . "', '" . getSecurityTokenValue() . "');";
 		}
 		foreach ($values as $index => $value) {
 			$inputField = $this->getAttributeInputField($attributeName, $value, $required, $isMultiLine, false, $schemaAttribute, $index);
+			$cssClasses = $inputField->getCSSClasses();
+			$cssClasses[] = 'lam-attr-' . htmlspecialchars(strtolower($attributeName));
+			$inputField->setCSSClasses($cssClasses);
 			if (!empty($autoCompleteValues) && ($inputField instanceof htmlInputField)) {
 				$inputField->enableAutocompletion($autoCompleteValues);
 				$inputField->setId($attributeName . $index);
+			}
+			if ($onInput !== null) {
+				$inputField->setOnInput($onInput);
 			}
 			$valueTable->addElement($inputField);
 			if (checkIfWriteAccessIsAllowed()) {
