@@ -788,6 +788,13 @@
           </listitem>
         </itemizedlist>
 
+        <para>Please note that LAM needs to authenticate to privacyIdea with
+        the user's user name and password WITHOUT second factor. This is
+        needed to get the list of tokens that are setup for the user. You can
+        setup a separate policy (scope: authentication) for LAM inside
+        privacyIdea that has IP restriction ("Client" setting) to LAM's server
+        IP and an action "otppin" "none".</para>
+
         <para><emphasis role="bold">YubiKey</emphasis></para>
 
         <itemizedlist>
