@@ -218,7 +218,11 @@ if (sizeof($activeTypes) > 0) {
 		$container->addField($descriptionRow);
 		$container->addVerticalSpacer('0.5rem');
 		// LDAP suffix
-		$suffixInput = new htmlResponsiveInputField(_("LDAP suffix"), 'suffix_' . $activeType->getId(), $typeSettings['suffix_' . $activeType->getId()], '202');
+		$suffix = '';
+		if (!empty($typeSettings['suffix_' . $activeType->getId()])) {
+			$suffix = $typeSettings['suffix_' . $activeType->getId()];
+		}
+		$suffixInput = new htmlResponsiveInputField(_("LDAP suffix"), 'suffix_' . $activeType->getId(), $suffix, '202', true);
 		$container->add($suffixInput, 12);
 		// list attributes
 		if (isset($typeSettings['attr_' . $activeType->getId()])) {
