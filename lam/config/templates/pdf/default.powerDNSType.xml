@@ -1,0 +1,7 @@
+<pdf filename="printLogo.jpg" headline="DNS information" foldingmarks="no">
+	<section name="_powerDNS_associatedDomain">
+		<entry name="_powerDNS_aRecord" />
+		<entry name="_powerDNS_ptrRecord" />
+		<entry name="_powerDNS_mxRecord" />
+	</section>
+</pdf>
