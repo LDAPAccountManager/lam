@@ -1551,6 +1551,9 @@ abstract class baseModule {
 				if (sizeof($msg) < 3) {
 					$msg[] = htmlspecialchars($this->attributes[$attrName][$counter]);
 				}
+				else {
+					$msg[] = array(htmlspecialchars($this->attributes[$attrName][$counter]));
+				}
 				$errors[] = $msg;
 			}
 			$counter++;
