@@ -1374,6 +1374,9 @@ function extractDNSuffix($dn) {
 	}
 	$dn = convertCommaEscaping($dn);
 	$parts = ldap_explode_dn($dn, 0);
+	if ($parts === false) {
+		return null;
+	}
 	unset($parts['count']);
 	array_shift($parts);
 	return implode(',', $parts);

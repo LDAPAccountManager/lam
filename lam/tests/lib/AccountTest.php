@@ -160,10 +160,19 @@ class AccountTest extends TestCase {
 		$this->assertEquals('ou=test', extractRDN($dn));
 		$this->assertEquals('ou', extractRDNAttribute($dn));
 		$this->assertEquals('test', extractRDNValue($dn));
-		$dn = 'ou=test,dc=company,dc=com';
-		$this->assertEquals('ou=test', extractRDN($dn));
+		$dn = 'ou=tes\\, t,dc=com\\, pany,dc=com';
+		$this->assertEquals('ou=tes\\2C t', extractRDN($dn));
 		$this->assertEquals('ou', extractRDNAttribute($dn));
-		$this->assertEquals('test', extractRDNValue($dn));
+		$this->assertEquals('tes\\2C t', extractRDNValue($dn));
+	}
+
+	function testExtractDNSuffix() {
+		$dn = 'test';
+		$this->assertEquals(null, extractDNSuffix($dn));
+		$dn = 'ou=test';
+		$this->assertEquals('', extractDNSuffix($dn));
+		$dn = 'ou=tes\\, t,dc=com\\, pany,dc=com';
+		$this->assertEquals('dc=com\\2C pany,dc=com', extractDNSuffix($dn));
 	}
 
 	/**
