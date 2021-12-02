@@ -3,6 +3,8 @@ December 2021 7.8
   - Allow to override global password policy in server profile (160)
   - Do not print random password if sent via email (165)
   - Device: allow multiple cn values
+  - Fixed bugs:
+   -> PDF does not contain all group members (249)
 
 
 30.09.2021 7.7
