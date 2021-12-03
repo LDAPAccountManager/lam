@@ -213,9 +213,13 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 					if (is_array($rdnValue)) {
 						$rdnValue = $rdnValue[0];
 					}
-					$account_dn = $data[$i][$ids['dn_rdn']] . "=" . escapeRDN($rdnValue) . ",";
-					if ($data[$i][$ids['dn_suffix']] == "") $account_dn = $account_dn . $suffix;
-					else $account_dn = $account_dn . $data[$i][$ids['dn_suffix']];
+					$account_dn = $data[$i][$ids['dn_rdn']] . "=" . ldap_escape($rdnValue, '', LDAP_ESCAPE_DN) . ",";
+					if ($data[$i][$ids['dn_suffix']] == "") {
+						$account_dn = $account_dn . $suffix;
+					}
+					else {
+						$account_dn = $account_dn . $data[$i][$ids['dn_suffix']];
+					}
 					$accounts[$i]['dn'] = $account_dn;
 				}
 				// set overwrite

@@ -77,7 +77,7 @@ $new_suffs = array();
 $typeManager = new \LAM\TYPES\TypeManager();
 $types = $typeManager->getConfiguredTypes();
 foreach ($types as $type) {
-	$info = @ldap_read($_SESSION['ldap']->server(), escapeDN($type->getSuffix()), "(objectClass=*)", array('objectClass'), 0, 0, 0, LDAP_DEREF_NEVER);
+	$info = @ldap_read($_SESSION['ldap']->server(), $type->getSuffix(), "(objectClass=*)", array('objectClass'), 0, 0, 0, LDAP_DEREF_NEVER);
 	if (($info === false) && !in_array($type->getSuffix(), $new_suffs)) {
 		$new_suffs[] = $type->getSuffix();
 		continue;

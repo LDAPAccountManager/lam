@@ -255,7 +255,7 @@ class ConfiguredType {
 		$connection = $_SESSION["ldap"]->server();
 		$ret = array();
 		$filter = $this->getBaseType()->getSuffixFilter();
-		$sr = @ldap_search($connection, escapeDN($this->getSuffix()), $filter, array('dn', 'objectClass'), 0, 0, 0, LDAP_DEREF_NEVER);
+		$sr = @ldap_search($connection, $this->getSuffix(), $filter, array('dn', 'objectClass'), 0, 0, 0, LDAP_DEREF_NEVER);
 		if ($sr) {
 			$units = ldap_get_entries($connection, $sr);
 			cleanLDAPResult($units);

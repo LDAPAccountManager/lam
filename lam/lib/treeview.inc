@@ -839,7 +839,7 @@ class TreeView {
 				$pos = $oldPos;
 			}
 			$newRdnValue = $ldapChanges[$rdnAttribute][$pos];
-			$newRdn = $rdnAttribute . '=' . ldap_escape($newRdnValue);
+			$newRdn = $rdnAttribute . '=' . ldap_escape($newRdnValue, '', LDAP_ESCAPE_DN);
 			$parent = extractDNSuffix($dn);
 			$renameOk = ldap_rename($_SESSION['ldap']->server(), $dn, $newRdn, $parent, true);
 			$newDn = $newRdn . ',' . $parent;
@@ -1166,7 +1166,7 @@ class TreeView {
 		if (!isset($attributes[$rdnAttribute][0])) {
 			return $this->createNewNodeCheckObjectClassesStep($dn, _('The RDN field is empty.'), $rdnAttribute, $attributes);
 		}
-		$rdn = $rdnAttribute . '=' . ldap_escape($attributes[$rdnAttribute][0]);
+		$rdn = $rdnAttribute . '=' . ldap_escape($attributes[$rdnAttribute][0], '', LDAP_ESCAPE_DN);
 		$newDn = $rdn . ',' . $dn;
 		$success = ldap_add($_SESSION['ldap']->server(), $newDn, $attributes);
 		if (!$success) {

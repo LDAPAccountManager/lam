@@ -353,7 +353,7 @@ if (isset($_POST['delete'])) {
 * @return integer number of children
 */
 function getChildCount($dn) {
-	$entries = searchLDAP(escapeDN($dn), 'objectClass=*', array('dn'));
+	$entries = searchLDAP($dn, 'objectClass=*', array('dn'));
 	return (sizeof($entries) - 1);
 }
 

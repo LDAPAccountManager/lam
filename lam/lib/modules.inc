@@ -1643,7 +1643,7 @@ class accountContainer {
 			$modTmp = new $module($this->type->getScope());
 			$searchAttrs = array_merge($searchAttrs, $modTmp->getManagedHiddenAttributes($this->type->getId()));
 		}
-		$result = @ldap_read($_SESSION['ldap']->server(), escapeDN($dn), $filter, $searchAttrs, 0, 0, 0, LDAP_DEREF_NEVER);
+		$result = @ldap_read($_SESSION['ldap']->server(), $dn, $filter, $searchAttrs, 0, 0, 0, LDAP_DEREF_NEVER);
 		if (!$result) {
 			return array(array("ERROR", _("Unable to load LDAP entry:") . " " . htmlspecialchars($dn), getDefaultLDAPErrorString($_SESSION['ldap']->server())));
 		}
@@ -1879,28 +1879,28 @@ class accountContainer {
 		}
 		// build DN for new accounts and change it for existing ones if needed
 		if (isset($attributes[$this->dn_orig]['modify'][$this->rdn][0])) {
-			$this->finalDN = $this->rdn . '=' . escapeRDN($attributes[$this->dn_orig]['modify'][$this->rdn][0]) . ',' . $this->dnSuffix;
+			$this->finalDN = $this->rdn . '=' . ldap_escape($attributes[$this->dn_orig]['modify'][$this->rdn][0], '', LDAP_ESCAPE_DN) . ',' . $this->dnSuffix;
 			if ($this->dn_orig != $this->finalDN) {
 				$attributes[$this->finalDN] = $attributes[$this->dn_orig];
 				unset($attributes[$this->dn_orig]);
 			}
 		}
 		elseif (isset($attributes[$this->dn_orig]['add'][$this->rdn][0])) {
-			$this->finalDN = $this->rdn . '=' . escapeRDN($attributes[$this->dn_orig]['add'][$this->rdn][0]) . ',' . $this->dnSuffix;
+			$this->finalDN = $this->rdn . '=' . ldap_escape($attributes[$this->dn_orig]['add'][$this->rdn][0], '', LDAP_ESCAPE_DN) . ',' . $this->dnSuffix;
 			if ($this->dn_orig != $this->finalDN) {
 				$attributes[$this->finalDN] = $attributes[$this->dn_orig];
 				unset($attributes[$this->dn_orig]);
 			}
 		}
 		elseif (isset($attributes[$this->dn_orig]['remove'][$this->rdn][0]) && isset($attributes[$this->dn_orig]['notchanged'][$this->rdn][0])) {
-			$this->finalDN = $this->rdn . '=' . escapeRDN($attributes[$this->dn_orig]['notchanged'][$this->rdn][0]) . ',' . $this->dnSuffix;
+			$this->finalDN = $this->rdn . '=' . ldap_escape($attributes[$this->dn_orig]['notchanged'][$this->rdn][0], '', LDAP_ESCAPE_DN) . ',' . $this->dnSuffix;
 			if ($this->dn_orig != $this->finalDN) {
 				$attributes[$this->finalDN] = $attributes[$this->dn_orig];
 				unset($attributes[$this->dn_orig]);
 			}
 		}
 		elseif (!$this->isNewAccount && (($this->dnSuffix != extractDNSuffix($this->dn_orig)) || ($this->rdn != extractRDNAttribute($this->dn_orig)))) {
-			$this->finalDN = $this->rdn . '=' . escapeRDN($attributes[$this->dn_orig]['notchanged'][$this->rdn][0]) . ',' . $this->dnSuffix;
+			$this->finalDN = $this->rdn . '=' . ldap_escape($attributes[$this->dn_orig]['notchanged'][$this->rdn][0], '', LDAP_ESCAPE_DN) . ',' . $this->dnSuffix;
 			$attributes[$this->finalDN] = $attributes[$this->dn_orig];
 			unset($attributes[$this->dn_orig]);
 		}
@@ -1974,7 +1974,9 @@ class accountContainer {
 		}
 		// Set to true if an real error has happened
 		$stopprocessing = false;
-		if (strtolower($this->finalDN) != convertCommaEscaping(strtolower($this->dn_orig))) {
+		$finalDnLower = strtolower($this->finalDN);
+		$dnOrigLower = strtolower($this->dn_orig);
+		if (($finalDnLower !== $dnOrigLower) && (unescapeLdapSpecialCharacters($finalDnLower) !== unescapeLdapSpecialCharacters($dnOrigLower))) {
 			// move existing DN
 			if ($this->dn_orig != '') {
 				$removeOldRDN = false;
@@ -1984,7 +1986,8 @@ class accountContainer {
 				$rdnAttr = strtolower(extractRDNAttribute($this->finalDN));
 				if (isset($attributes[$this->finalDN]['modify'][$rdnAttr])
 						&& (sizeof($attributes[$this->finalDN]['modify'][$rdnAttr]) == 1)
-						&& ($attributes[$this->finalDN]['modify'][$rdnAttr][0] == extractRDNValue($this->finalDN))) {
+						&& (($attributes[$this->finalDN]['modify'][$rdnAttr][0] == extractRDNValue($this->finalDN))
+							|| (unescapeLdapSpecialCharacters($attributes[$this->finalDN]['modify'][$rdnAttr][0]) == unescapeLdapSpecialCharacters(extractRDNValue($this->finalDN))))) {
 					// remove old RDN if attribute is single valued
 					$removeOldRDN = true;
 					unset($attributes[$this->finalDN]['modify'][extractRDNAttribute($this->finalDN)]);
