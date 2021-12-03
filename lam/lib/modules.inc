@@ -1986,7 +1986,8 @@ class accountContainer {
 				$rdnAttr = strtolower(extractRDNAttribute($this->finalDN));
 				if (isset($attributes[$this->finalDN]['modify'][$rdnAttr])
 						&& (sizeof($attributes[$this->finalDN]['modify'][$rdnAttr]) == 1)
-						&& ($attributes[$this->finalDN]['modify'][$rdnAttr][0] == extractRDNValue($this->finalDN))) {
+						&& (($attributes[$this->finalDN]['modify'][$rdnAttr][0] == extractRDNValue($this->finalDN))
+							|| (unescapeLdapSpecialCharacters($attributes[$this->finalDN]['modify'][$rdnAttr][0]) == unescapeLdapSpecialCharacters(extractRDNValue($this->finalDN))))) {
 					// remove old RDN if attribute is single valued
 					$removeOldRDN = true;
 					unset($attributes[$this->finalDN]['modify'][extractRDNAttribute($this->finalDN)]);
