@@ -734,32 +734,6 @@ function get_preg($argument, $regexp) {
 }
 
 /**
- * Escapes any special characters in an LDAP DN.
- *
- * @param String $dn DN
- * @return String escaped DN
- */
-function escapeDN($dn) {
-	return str_replace(
-		array(')',    '(',    ' ',    '*'),
-		array('\\29', '\\28', '\\20', '\\2a'),
-		$dn
-	);
-}
-
-/**
- * Escapes special characters in RDN part.
- *
- * @param string $rdn RDN
- */
-function escapeRDN($rdn) {
-	return str_replace(
-		array(','),
-		array('\\2C'),
-		$rdn);
-}
-
-/**
  * Converts the comma escaping from Windows to OpenLDAP style.
  *
  * @param string $dn DN
@@ -837,7 +811,7 @@ function searchLDAPByAttribute($name, $value, $objectClass, $attributes, $scopes
 			continue;  // skip non-active account types
 		}
 		// search LDAP
-		$entries = searchLDAPPaged($_SESSION['ldap']->server(), escapeDN($type->getSuffix()),
+		$entries = searchLDAPPaged($_SESSION['ldap']->server(), $type->getSuffix(),
 					$filter, $attributes, 0, $_SESSION['config']->get_searchLimit());
 		if (ldap_errno($_SESSION['ldap']->server()) == 4) {
 			logNewMessage(LOG_WARNING, 'LDAP size limit exceeded. Please increase the limit on your server.');
@@ -876,7 +850,7 @@ function searchLDAPByFilter($filter, $attributes, $scopes, $attrsOnly = false) {
 			$filter = '(&' . $additionalFilter . $filter . ')';
 		}
 		// search LDAP
-		$entries = searchLDAPPaged($_SESSION['ldap']->server(), escapeDN($type->getSuffix()),
+		$entries = searchLDAPPaged($_SESSION['ldap']->server(), $type->getSuffix(),
 					$filter, $attributes, $readAttributesOnly, $_SESSION['config']->get_searchLimit());
 		if (ldap_errno($_SESSION['ldap']->server()) == 4) {
 			logNewMessage(LOG_WARNING, 'LDAP size limit exceeded. Please increase the limit on your server.');
@@ -899,7 +873,7 @@ function searchLDAP($suffix, $filter, $attributes, $limit = -1) {
 	if ($limit === -1) {
 		$limit = !empty($_SESSION['config']) ? $_SESSION['config']->get_searchLimit() : 0;
 	}
-	$return = searchLDAPPaged(getLDAPServerHandle(), escapeDN($suffix), $filter, $attributes,
+	$return = searchLDAPPaged(getLDAPServerHandle(), $suffix, $filter, $attributes,
 				0, $limit);
 	if (ldap_errno(getLDAPServerHandle()) == 4) {
 		logNewMessage(LOG_WARNING, 'LDAP size limit exceeded. Please increase the limit on your server.');
@@ -988,7 +962,7 @@ function ldapGetDN($dn, $attributes = array('dn'), $handle = null) {
 		$handle = getLDAPServerHandle();
 	}
 	$return = null;
-	$sr = @ldap_read($handle, escapeDN($dn), 'objectClass=*', $attributes, 0, 0, 0, LDAP_DEREF_NEVER);
+	$sr = @ldap_read($handle, $dn, 'objectClass=*', $attributes, 0, 0, 0, LDAP_DEREF_NEVER);
 	if ($sr) {
 		$entries = ldap_get_entries($handle, $sr);
 		if ($entries) {
@@ -1018,7 +992,7 @@ function ldapListDN($dn, $filter = '(objectclass=*)', $attributes = array('dn'),
 		$handle = $_SESSION['ldap']->server();
 	}
 	$return = null;
-	$sr = @ldap_list($handle, escapeDN($dn), $filter, $attributes, 0, $limit, 0, LDAP_DEREF_NEVER);
+	$sr = @ldap_list($handle, $dn, $filter, $attributes, 0, $limit, 0, LDAP_DEREF_NEVER);
 	if ($sr) {
 		$entries = ldap_get_entries($handle, $sr);
 		if ($entries) {
@@ -1354,11 +1328,14 @@ function extractRDN(?string $dn): ?string {
 	if (empty($dn)) {
 		return null;
 	}
+	$dn = convertCommaEscaping($dn);
 	$parts = ldap_explode_dn($dn, 0);
 	if (empty($parts[0])) {
 		return null;
 	}
-	return $parts[0];
+	$rdn = unescapeLdapSpecialCharacters($parts[0]);
+	$rdn = str_replace(',', '\\2C', $rdn);
+	return $rdn;
 }
 
 /**
@@ -1379,6 +1356,10 @@ function extractDNSuffix($dn) {
 	}
 	unset($parts['count']);
 	array_shift($parts);
+	for ($i = 0; $i < sizeof($parts); $i++) {
+		$parts[$i] = unescapeLdapSpecialCharacters($parts[$i]);
+		$parts[$i] = str_replace(',', '\\2C', $parts[$i]);
+	}
 	return implode(',', $parts);
 }
 
