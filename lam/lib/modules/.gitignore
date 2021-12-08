@@ -49,3 +49,4 @@
 /windowsLDSUser.inc
 /mitKerberosPolicy.inc
 /openldapTotp.inc
+/powerDNS.inc

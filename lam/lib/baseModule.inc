@@ -1416,11 +1416,13 @@ abstract class baseModule {
 			unset($this->attributes[$attrName][0]);
 			return;
 		}
-		$this->attributes[$attrName][0] = $_POST[$attrName];
+		$this->attributes[$attrName][0] = isset($_POST[$attrName]) ? $_POST[$attrName] : '';
 		if ($required && (!isset($_POST[$attrName]) || ($_POST[$attrName] === ''))) {
 			$errors[] = $this->messages[$attrName][0];
 		}
-		elseif (($validationID !== null) && !get_preg($_POST[$attrName], $validationID)) {
+		elseif (($validationID !== null)
+			&& (isset($_POST[$attrName]) && ($_POST[$attrName] !== ''))
+			&& !get_preg($_POST[$attrName], $validationID)) {
 			$errors[] = $this->messages[$attrName][0];
 		}
 	}
@@ -1550,6 +1552,9 @@ abstract class baseModule {
 				$msg = $this->messages[$attrName][0];
 				if (sizeof($msg) < 3) {
 					$msg[] = htmlspecialchars($this->attributes[$attrName][$counter]);
+				}
+				else {
+					$msg[] = array(htmlspecialchars($this->attributes[$attrName][$counter]));
 				}
 				$errors[] = $msg;
 			}

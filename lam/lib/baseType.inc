@@ -145,7 +145,7 @@ class baseType {
 	 * @return string LDAP filter
 	 */
 	public function getSuffixFilter() {
-		return "(|(objectClass=organizationalunit)(objectClass=country)(objectClass=organization)(objectClass=krbRealmContainer)(objectClass=container))";
+		return "(|(objectClass=organizationalunit)(objectClass=country)(objectClass=organization)(objectClass=krbRealmContainer)(objectClass=container)(dc=*))";
 	}
 
 	/**

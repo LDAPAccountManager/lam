@@ -2,7 +2,9 @@ December 2021 7.8
   - Restyling of LAM
   - Allow to override global password policy in server profile (160)
   - Do not print random password if sent via email (165)
-  - Device: allow multiple cn values
+  - LAM Pro:
+   -> PowerDNS support
+   -> Device: allow multiple cn values
   - Fixed bugs:
    -> PDF does not contain all group members (249)
 
