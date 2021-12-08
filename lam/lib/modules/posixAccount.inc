@@ -601,7 +601,7 @@ class posixAccount extends baseModule implements passwordService {
 		$types = array('gon', 'group');
 		$gonList = array();
 		foreach ($types as $type) {
-			$gonFilter = '(|(&(objectClass=groupOfNames)(member=' . ldap_escape($dn) . '))(&(objectClass=groupOfMembers)(member=' . ldap_escape($dn) . '))(&(objectClass=groupOfUniqueNames)(uniqueMember=' . ldap_escape($dn) . ')))';
+			$gonFilter = '(|(&(objectClass=groupOfNames)(member=' . ldap_escape($dn, '', LDAP_ESCAPE_FILTER) . '))(&(objectClass=groupOfMembers)(member=' . ldap_escape($dn) . '))(&(objectClass=groupOfUniqueNames)(uniqueMember=' . ldap_escape($dn) . ')))';
 			if (!empty($typeSettings['filter_' . $type])) {
 				$typeFilter = $typeSettings['filter_' . $type];
 				if (strpos($typeFilter, '(') !== 0) {

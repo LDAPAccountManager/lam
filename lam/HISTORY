@@ -5,6 +5,8 @@ December 2021 7.8
   - LAM Pro:
    -> PowerDNS support
    -> Device: allow multiple cn values
+  - Fixed bugs:
+   -> PDF does not contain all group members (249)
 
 
 30.09.2021 7.7

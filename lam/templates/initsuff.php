@@ -61,7 +61,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 		// add entries
 		foreach ($newSuffixes as $newSuffix) {
 			// check if entry is already present
-			$info = @ldap_read($_SESSION['ldap']->server(), escapeDN($newSuffix), "objectclass=*", array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
+			$info = @ldap_read($_SESSION['ldap']->server(), $newSuffix, "objectclass=*", array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
 			$res = false;
 			if ($info !== false) {
 				$res = ldap_get_entries($_SESSION['ldap']->server(), $info);
@@ -112,7 +112,7 @@ if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 						$subsuffCount = sizeof($subsuffs);
 						for ($k = $subsuffCount - 1; $k >= 0; $k--) {
 							// check if subsuffix is present
-							$info = @ldap_read($_SESSION['ldap']->server(), escapeDN($subsuffs[$k]), "objectclass=*", array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
+							$info = @ldap_read($_SESSION['ldap']->server(), $subsuffs[$k], "objectclass=*", array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
 							$res = false;
 							if ($info !== false) {
 								$res = ldap_get_entries($_SESSION['ldap']->server(), $info);
