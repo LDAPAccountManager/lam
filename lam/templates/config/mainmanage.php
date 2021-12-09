@@ -638,8 +638,10 @@ printHeaderContents(_("Edit general settings"), '../..');
 	// buttons
 	if ($cfg->isWritable()) {
 		$buttonTable = new htmlTable();
-		$buttonTable->addElement(new htmlButton('submit', _("Ok")));
-		$buttonTable->addElement(new htmlSpacer('1rem', null));
+		$saveButton = new htmlButton('submit', _("Save"));
+		$saveButton->setCSSClasses(array('lam-primary'));
+		$buttonTable->addElement($saveButton);
+		$buttonTable->addElement(new htmlSpacer('0.5rem', null));
 		$buttonTable->addElement(new htmlButton('cancel', _("Cancel")));
 		$row->add($buttonTable, 12);
 		$row->add(new htmlHiddenInput('submitFormData', '1'), 12);

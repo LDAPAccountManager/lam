@@ -161,7 +161,9 @@ printHeaderContents(_("Import and export configuration"), '../..');
 		$pwdInput->setCSSClasses(array('lam-initial-focus'));
 		$loginContent->add($pwdInput, 12);
 		$loginContent->addLabel(new htmlOutputText('&nbsp;', false));
-		$loginContent->addField(new htmlButton('submitLogin', _("Ok")));
+		$loginButton = new htmlButton('submitLogin', _("Ok"));
+		$loginButton->setCSSClasses(array('lam-primary'));
+		$loginContent->addField($loginButton);
 
 		$content->add($loginContent, 12);
 
@@ -176,7 +178,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
 		$tabindex = 0;
 		$content = new htmlResponsiveRow();
         $content->addVerticalSpacer('2rem');
-        $content->add(new htmlLink(_('Back to login'), '../login.php', '../../graphics/undo.png'), 12);
+        $content->add(new htmlLink(_('Back to login'), '../login.php'), 12);
 		$content->addVerticalSpacer('1rem');
 		parseHtml(null, $content, array(), false, $tabindex, null);
     }
@@ -205,7 +207,9 @@ printHeaderContents(_("Import and export configuration"), '../..');
 	    $content = new htmlResponsiveRow();
 
 	    $content->add(new htmlSubTitle(_('Export')), 12);
-	    $content->add(new htmlButton('exportConfig', _('Export')), 12);
+	    $exportButton = new htmlButton('exportConfig', _('Export'));
+	    $exportButton->setCSSClasses(array('lam-primary'));
+	    $content->add($exportButton);
 
 	    $content->add(new htmlSubTitle(_('Import')), 12);
 	    renderImportPart($content);
@@ -261,7 +265,9 @@ printHeaderContents(_("Import and export configuration"), '../..');
         }
         if (!isset($_POST['importConfigConfirm']) && !$validUpload) {
 	        $content->add(new htmlInputFileUpload('import-file'), 12);
-	        $content->add(new htmlButton('importConfig', _('Submit')), 12);
+	        $submitButton = new htmlButton('importConfig', _('Submit'));
+	        $submitButton->setCSSClasses(array('lam-secondary'));
+	        $content->add($submitButton);
         }
         elseif (isset($_POST['importConfig'])) {
             $content->add(new htmlOutputText(_('Import steps')), 12);
@@ -284,7 +290,9 @@ printHeaderContents(_("Import and export configuration"), '../..');
                 $content->addVerticalSpacer('1rem');
             }
             $buttonGroup = new htmlGroup();
-	        $buttonGroup->addElement(new htmlButton('importConfigConfirm', _('Import')));
+            $importButton = new htmlButton('importConfigConfirm', _('Import'));
+            $importButton->setCSSClasses(array('lam-secondary'));
+	        $buttonGroup->addElement($importButton);
 	        $buttonGroup->addElement(new htmlButton('importCancel', _('Cancel')));
 	        $content->add($buttonGroup, 12);
         }

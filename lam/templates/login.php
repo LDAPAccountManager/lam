@@ -380,7 +380,9 @@ function display_LoginPage($licenseValidator, $error_message, $errorDetails = nu
 							}
 							// login button
 							$row->add(new htmlSpacer(null, '20px'), 12);
-							$row->add(new htmlButton('checklogin', _("Login")), 12);
+							$loginButton = new htmlButton('checklogin', _("Login"));
+							$loginButton->setCSSClasses(array('lam-primary'));
+							$row->add($loginButton);
 
 							parseHtml(null, $row, array(), false, $tabindex, 'user');
 						?>

@@ -150,6 +150,7 @@ $tabindex = 1;
 			$box->add($passwordInput, 12);
 			$box->addVerticalSpacer('1rem');
 			$button = new htmlButton('submit', _("Ok"));
+			$button->setCSSClasses(array('lam-primary'));
 			$box->addLabel($button);
 			$box->add(new htmlOutputText(''), 0, 6);
 			$box->addVerticalSpacer('1.5rem');

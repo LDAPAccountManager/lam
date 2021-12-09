@@ -159,6 +159,7 @@ printHeaderContents(_("Login"), '../..');
 		// button
 		$group->addElement($spacer);
 		$okButton = new htmlButton('submit', _("Ok"));
+		$okButton->setCSSClasses(array('lam-primary'));
 		$row = new htmlResponsiveRow();
 		$row->add($okButton, 12);
 		$row->setCSSClasses(array(''));

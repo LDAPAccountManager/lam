@@ -252,6 +252,7 @@ $addTemplateSelect->setHasDescriptiveElements(true);
 $box->add($addTemplateSelect, 12);
 $box->addVerticalSpacer('0.5rem');
 $newProfileButton = new htmlButton('btnAddProfile', _('Add'));
+$newProfileButton->setCSSClasses(array('lam-primary'));
 $newProfileButton->setOnClick("jQuery('#action').val('add');showConfirmationDialog('" . _("Add profile") . "', '" .
 	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null); document.getElementById('passwd').focus();");
 $box->addLabel($newProfileButton);
@@ -264,6 +265,7 @@ $oldProfileInput = new htmlResponsiveInputField(_('New profile name'), 'renfilen
 $box->add($oldProfileInput, 12);
 $box->addVerticalSpacer('0.5rem');
 $renameProfileButton = new htmlButton('btnRenameProfile', _('Rename'));
+$renameProfileButton->setCSSClasses(array('lam-secondary'));
 $renameProfileButton->setOnClick("jQuery('#action').val('rename');showConfirmationDialog('" . _("Rename profile") . "', '" .
 	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null); document.getElementById('passwd').focus();");
 $box->addLabel($renameProfileButton);
@@ -274,6 +276,7 @@ $box->add(new htmlSubTitle(_("Delete profile")), 12);
 $box->add(new htmlResponsiveSelect('delfilename', $files, array(), _('Profile name'), '232'), 12);
 $box->addVerticalSpacer('0.5rem');
 $deleteProfileButton = new htmlButton('btnDeleteProfile', _('Delete'));
+$deleteProfileButton->setCSSClasses(array('lam-danger'));
 $deleteProfileButton->setOnClick("jQuery('#action').val('delete');showConfirmationDialog('" . _("Delete profile") . "', '" .
 	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null); document.getElementById('passwd').focus();");
 $box->addLabel($deleteProfileButton);
@@ -291,6 +294,7 @@ $profileSetPwd2->setSameValueFieldID('setpassword');
 $box->add($profileSetPwd2, 12);
 $box->addVerticalSpacer('0.5rem');
 $setPasswordProfileButton = new htmlButton('btnSetPasswordProfile', _('Set profile password'));
+$setPasswordProfileButton->setCSSClasses(array('lam-secondary'));
 $setPasswordProfileButton->setOnClick("jQuery('#action').val('setpass');showConfirmationDialog('" . _("Set profile password") . "', '" .
 		_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null); document.getElementById('passwd').focus();");
 $box->addLabel($setPasswordProfileButton, 12);
@@ -304,6 +308,7 @@ $box->add(new htmlSubTitle(_("Change default profile")), 12);
 $box->add(new htmlResponsiveSelect('defaultfilename', $files, array($defaultprofile), _('Profile name'), '234'), 12);
 $box->addVerticalSpacer('0.5rem');
 $defaultProfileButton = new htmlButton('btnDefaultProfile', _('Ok'));
+$defaultProfileButton->setCSSClasses(array('lam-secondary'));
 $defaultProfileButton->setOnClick("jQuery('#action').val('setdefault');showConfirmationDialog('" . _("Change default profile") . "', '" .
 	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null); document.getElementById('passwd').focus();");
 $box->addLabel($defaultProfileButton);
