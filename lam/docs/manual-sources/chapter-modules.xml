@@ -4806,6 +4806,108 @@ objectclass: top
   </section>
 
   <section>
+    <title>PowerDNS (LAM Pro)</title>
+
+    <para>This module allows to manage DNS entries for the PowerDNS name
+    server.</para>
+
+    <para><emphasis role="bold">Configuration</emphasis></para>
+
+    <para>First, add the PowerDNS account type to your server profile:</para>
+
+    <screenshot>
+      <graphic fileref="images/mod_powerdns1.png"/>
+    </screenshot>
+
+    <literallayout>
+
+</literallayout>
+
+    <para>Second, add the PowerDNS module to the new account type:</para>
+
+    <screenshot>
+      <graphic fileref="images/mod_powerdns2.png"/>
+    </screenshot>
+
+    <literallayout>
+
+</literallayout>
+
+    <para>Third, activate automatic generation of PTR entries if needed. This
+    is only required if you did not configure PowerDNS itself to generate PTR
+    entries dynamically.</para>
+
+    <screenshot>
+      <graphic fileref="images/mod_powerdns3.png"/>
+    </screenshot>
+
+    <literallayout>
+
+</literallayout>
+
+    <para><emphasis role="bold">Manage DNS entries</emphasis></para>
+
+    <para>Now you can manage your DNS entries inside LAM.</para>
+
+    <para>LAM supports the following record types:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>A</para>
+      </listitem>
+
+      <listitem>
+        <para>AAAA</para>
+      </listitem>
+
+      <listitem>
+        <para>CNAME</para>
+      </listitem>
+
+      <listitem>
+        <para>DNAME</para>
+      </listitem>
+
+      <listitem>
+        <para>MX</para>
+      </listitem>
+
+      <listitem>
+        <para>NS</para>
+      </listitem>
+
+      <listitem>
+        <para>PTR</para>
+      </listitem>
+
+      <listitem>
+        <para>SOA</para>
+      </listitem>
+
+      <listitem>
+        <para>SRV</para>
+      </listitem>
+
+      <listitem>
+        <para>TXT</para>
+      </listitem>
+    </itemizedlist>
+
+    <screenshot>
+      <graphic fileref="images/mod_powerdns4.png"/>
+    </screenshot>
+
+    <literallayout>
+
+
+</literallayout>
+
+    <screenshot>
+      <graphic fileref="images/mod_powerdns5.png"/>
+    </screenshot>
+  </section>
+
+  <section>
     <title>Aliases (LAM Pro)</title>
 
     <para>Some applications use the object class "alias" to link LDAP entries

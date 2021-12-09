@@ -589,6 +589,24 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
+                <imagedata fileref="images/schema_bind.png"/>
+              </imageobject>
+            </inlinemediaobject></entry>
+
+          <entry>PowerDNS</entry>
+
+          <entry>dNSDomain2, domainRelatedObject</entry>
+
+          <entry>dnsdomain2.schema</entry>
+
+          <entry>Part of OpenLDAP installation</entry>
+
+          <entry>LAM Pro only</entry>
+        </row>
+
+        <row>
+          <entry><inlinemediaobject>
+              <imageobject>
                 <imagedata fileref="images/schema_freeRadius.png"/>
               </imageobject>
             </inlinemediaobject></entry>
