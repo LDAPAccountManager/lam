@@ -69,7 +69,7 @@ if (!empty($_POST)) {
 }
 
 // show LDIF if requested
-if (isset($_GET['showldif'])) {
+if (isset($_POST['showldif'])) {
 	//download file
 	header('Content-Type: text/plain');
 	header('Content-disposition: attachment; filename=lam.ldif');
@@ -94,6 +94,9 @@ if (isset($_GET['showldif'])) {
 		echo "\n";
 	}
 	exit;
+}
+elseif (isset($_POST['upload'])) {
+	metaRefresh('massDoUpload.php');
 }
 
 include __DIR__ . '/../../lib/adminHeader.inc';
@@ -262,13 +265,16 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 				// show links for upload and LDIF export
 				$container->addVerticalSpacer('2rem');
 				$container->add(new htmlOutputText(_("LAM has checked your input and is now ready to create the accounts.")), 12);
-				$container->addVerticalSpacer('4rem');
-				$link = new htmlLink(_("Upload accounts to LDAP"), 'massDoUpload.php', '../../graphics/up.gif', true);
-				$link->setCSSClasses(array('margin3'));
-				$container->addLabel($link);
-				$link = new htmlLink(_("Show LDIF file"), 'massBuildAccounts.php?showldif=true', '../../graphics/edit.png', true);
-				$link->setCSSClasses(array('margin3'));
-				$container->addField($link);
+				$container->addVerticalSpacer('3rem');
+				$formRow = new htmlResponsiveRow();
+				$uploadButton = new htmlButton('upload', _("Upload accounts to LDAP"));
+				$uploadButton->setCSSClasses(array('lam-primary'));
+				$formRow->addLabel($uploadButton);
+				$ldifButton = new htmlButton('showldif', _("Show LDIF file"));
+				$ldifButton->setCSSClasses(array('lam-secondary'));
+				$formRow->addField($ldifButton);
+				addSecurityTokenToMetaHTML($formRow);
+				$container->add(new htmlForm('uploadform', 'massBuildAccounts.php', $formRow));
 
 				$container->addVerticalSpacer('2rem');
 				massPrintBackButton($type->getId(), $selectedModules, $container);
