@@ -1,5 +1,6 @@
 <?php
 namespace LAM\UPLOAD;
+use htmlForm;
 use \htmlStatusMessage;
 use \htmlLink;
 use \htmlOutputText;
@@ -110,7 +111,6 @@ if (!checkIfNewEntriesAreAllowed($type->getId()) || !checkIfWriteAccessIsAllowed
 	die();
 }
 
-echo '<form enctype="multipart/form-data" action="masscreate.php" method="post">';
 echo '<div class="smallPaddingContent">';
 $container = new htmlResponsiveRow();
 
@@ -139,8 +139,12 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	$columns = call_user_func_array('array_merge', $columns);
 	foreach ($columns as $column) {
 		if (isset($column['required']) && ($column['required'] === true)) {
-			if (isset($ids[$column['name']])) $checkcolumns[] = $ids[$column['name']];
-			else $errors[] = array(_("A required column is missing in your CSV file."), $column['name']);
+			if (isset($ids[$column['name']])) {
+				$checkcolumns[] = $ids[$column['name']];
+			}
+			else {
+				$errors[] = array(_("A required column is missing in your CSV file."), $column['name']);
+			}
 		}
 	}
 
@@ -265,6 +269,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 				$link = new htmlLink(_("Show LDIF file"), 'massBuildAccounts.php?showldif=true', '../../graphics/edit.png', true);
 				$link->setCSSClasses(array('margin3'));
 				$container->addField($link);
+
 				$container->addVerticalSpacer('2rem');
 				massPrintBackButton($type->getId(), $selectedModules, $container);
 			}
@@ -281,12 +286,10 @@ else {
 	massPrintBackButton($type->getId(), $selectedModules, $container);
 }
 
-addSecurityTokenToMetaHTML($container);
 $tabindex = 1;
 parseHtml(null, $container, array(), false, $tabindex, $type->getScope());
 
 echo '</div>';
-echo '</form>';
 include __DIR__ . '/../../lib/adminFooter.inc';
 
 /**
@@ -297,18 +300,19 @@ include __DIR__ . '/../../lib/adminFooter.inc';
  * @param htmlResponsiveRow $container table container
  */
 function massPrintBackButton($typeId, $selectedModules, htmlResponsiveRow &$container) {
+	$row = new htmlResponsiveRow();
 	$backButton = new htmlButton('submit', _('Back'));
-	$container->add($backButton, 12);
-	$container->add(new htmlHiddenInput('type', $typeId), 12);
+	$row->add($backButton, 12);
+	$row->add(new htmlHiddenInput('type', $typeId), 12);
 	$createPDF = 0;
 	if (isset($_POST['createPDF']) && ($_POST['createPDF'] == 'on')) {
 		$createPDF = 1;
 	}
-	$container->add(new htmlHiddenInput('createPDF', $createPDF), 12);
-	$container->add(new htmlHiddenInput('pdfStructure', $_POST['pdfStructure']), 12);
+	$row->add(new htmlHiddenInput('createPDF', $createPDF), 12);
+	$row->add(new htmlHiddenInput('pdfStructure', $_POST['pdfStructure']), 12);
 	foreach ($selectedModules as $selectedModule) {
-		$container->add(new htmlHiddenInput($typeId . '___' . $selectedModule, 'on'), 12);
+		$row->add(new htmlHiddenInput($typeId . '___' . $selectedModule, 'on'), 12);
 	}
+	addSecurityTokenToMetaHTML($row);
+	$container->add(new htmlForm('backform', 'masscreate.php', $row));
 }
-
-?>
