@@ -123,7 +123,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	$data = array();  // input values without first row
 	$ids = array();  // <column name> => <column number for $data>
 	// get input fields from modules
-	$columns = getUploadColumns($type, $selectedModules);
+	$uploadColumns = getUploadColumns($type, $selectedModules);
 	// read input file
 	$handle = fopen ($_FILES['inputfile']['tmp_name'], "r");
 	if (($head = fgetcsv($handle, 2000)) !== false ) { // head row
@@ -139,7 +139,10 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 
 	// check if all required columns are present
 	$checkcolumns = array();
-	$columns = call_user_func_array('array_merge', $columns);
+	$columns = array();
+	foreach ($uploadColumns as $uploadColumn) {
+		$columns = array_merge($columns, $uploadColumns);
+	}
 	foreach ($columns as $column) {
 		if (isset($column['required']) && ($column['required'] === true)) {
 			if (isset($ids[$column['name']])) {
