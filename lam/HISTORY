@@ -7,6 +7,7 @@ December 2021 7.8
    -> Device: allow multiple cn values
   - Fixed bugs:
    -> PDF does not contain all group members (249)
+   -> File upload issue on PHP 8 (153)
 
 
 30.09.2021 7.7
