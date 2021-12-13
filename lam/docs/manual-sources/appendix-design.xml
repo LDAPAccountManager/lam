@@ -24,42 +24,27 @@
   E.g. you can create a file called "900_myCompany.css" which will be added as
   last file.</para>
 
+  <para>In many cases it can be sufficient to overwrite some CSS variables.
+  See top of <ulink
+  url="https://github.com/LDAPAccountManager/lam/blob/develop/lam/style/500_layout.css">500_layout.css</ulink>
+  for defined variables.</para>
+
   <para>Example:</para>
 
-  <para>This will change the background color of all pages to
-  turquoise.</para>
+  <para>This will change the background color of all pages to grey.</para>
 
-  <programlisting>body {
-  background-color: #b6eeff;
+  <programlisting>:root {
+    --lam-background-color-default: #E7E7E7;
 }
 </programlisting>
 
-  <para>You can use the same way to change fonts, sizes and more.</para>
+  <para>You can use the same way to change font/button colors and more.</para>
 
-  <para>E.g. this will reduce the default font size to 80%:</para>
-
-  <programlisting>body {
-  font-size: 80%;
+  <para><emphasis role="bold">Change header bar to mark different
+  environments</emphasis><programlisting>.lam-header {
+    box-shadow: 0px 3px 2px -2px red;
 }
-
-.ui-button-text-only {
-  font-size: 100%;
-}
-
-.ui-button-text-icon-primary {
-  font-size: 100%;
-}
-</programlisting>
-
-  <para><emphasis role="bold">Custom logo</emphasis><programlisting>/* image in login box */
-td.loginLogo {
-  background-image: url(/logos/mylogo.png);
-}
-
-/* image (24x24) in header line */
-a.lamLogo {
-  background-image: url(/logos/mylogo.png);
-}</programlisting></para>
+</programlisting></para>
 
   <para><emphasis role="bold">Other images</emphasis></para>
 
