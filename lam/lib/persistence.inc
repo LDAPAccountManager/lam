@@ -263,7 +263,7 @@ class ConfigDataExporter {
 	 */
 	public function _getCronJobData(array $serverProfiles) : array {
 		$data = array();
-		if (isLAMProVersion()) {
+		if (!isLAMProVersion()) {
 			return $data;
 		}
 		include_once 'database.inc';
@@ -667,6 +667,9 @@ class ConfigDataImporter {
 	 * @throws LAMException error during import
 	 */
 	private function importCronJobs($step) {
+		if (!isLAMProVersion()) {
+			return;
+		}
 		$failedProfiles = array();
 		include_once 'database.inc';
 		$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
