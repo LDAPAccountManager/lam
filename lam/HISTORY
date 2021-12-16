@@ -8,6 +8,7 @@ December 2021 7.8
   - Fixed bugs:
    -> PDF does not contain all group members (249)
    -> File upload issue on PHP 8 (153)
+   -> Export issue on non-Pro version (155)
 
 
 30.09.2021 7.7
