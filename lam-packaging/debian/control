@@ -3,7 +3,7 @@ Maintainer: Roland Gruber <post@rolandgruber.de>
 Section: web
 Priority: optional
 Standards-Version: 4.6.0
-Build-Depends: debhelper (>= 12), debhelper-compat (= 12), po-debconf, cleancss, uglifyjs
+Build-Depends: debhelper (>= 12), debhelper-compat (= 12), po-debconf, cleancss, uglifyjs (>= 3.12)
 Homepage: https://www.ldap-account-manager.org/
 Rules-Requires-Root: binary-targets
 
