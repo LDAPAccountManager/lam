@@ -2770,7 +2770,7 @@ window.lam.topmenu.openSubmenu = function(event, layerId, listener) {
 	document.removeEventListener("click", listener);
 	event.preventDefault();
 	event.stopImmediatePropagation();
-	layers = document.getElementsByClassName('lam-navigation-layer');
+	let layers = document.getElementsByClassName('lam-navigation-layer');
 	for (let i = 0; i < layers.length; i++) {
 		layers[i].style.height = "0px";
 	}
