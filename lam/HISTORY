@@ -9,6 +9,7 @@ December 2021 7.8
    -> PDF does not contain all group members (249)
    -> File upload issue on PHP 8 (153)
    -> Export issue on non-Pro version (155)
+   -> Force password change for 389ds does not work on password quick change page (251)
 
 
 30.09.2021 7.7
