@@ -1,4 +1,4 @@
-December 2021 7.8
+28.12.2021 7.8
   - Restyling of LAM
   - Allow to override global password policy in server profile (160)
   - Do not print random password if sent via email (165)
