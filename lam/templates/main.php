@@ -104,4 +104,4 @@ if (sizeof($types) > 0) {
 	}
 }
 
-metaRefresh("tree/treeViewContainer.php");
+metaRefresh("tools/treeView.php");
