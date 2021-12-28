@@ -555,12 +555,18 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 	 *
 	 * @return bool at least one credential in the database
 	 */
-	public function hasRegisteredCredentials() {
-		$pdo = $this->getPDO();
-		$statement = $pdo->prepare('select count(*) from ' . $this->getTableName());
-		$statement->execute();
-		$results = $statement->fetchAll();
-		return ($results[0][0] > 0);
+	public function hasRegisteredCredentials(): bool {
+		try {
+			$pdo = $this->getPDO();
+			$statement = $pdo->prepare('select count(*) from ' . $this->getTableName());
+			$statement->execute();
+			$results = $statement->fetchAll();
+			return ($results[0][0] > 0);
+		}
+		catch (\PDOException $e) {
+			logNewMessage(LOG_ERR, 'WebAuthn database error: ' . $e->getMessage());
+		}
+		return false;
 	}
 
 	/**
