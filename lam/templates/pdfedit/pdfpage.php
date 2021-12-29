@@ -644,7 +644,7 @@ function moveUp(PDFStructure &$structure) {
 	foreach ($_POST as $key => $value) {
 		// move section
 		if (strpos($key, 'up_section_') === 0) {
-			$pos = substr($key, strlen('up_section_'));
+			$pos = intval(substr($key, strlen('up_section_')));
 			$sectionTmp = $sections[$pos - 1];
 			$sections[$pos - 1] = $sections[$pos];
 			$sections[$pos] = $sectionTmp;
@@ -655,7 +655,7 @@ function moveUp(PDFStructure &$structure) {
 			$parts = substr($key, strlen('up_entry_'));
 			$parts = explode('_', $parts);
 			$sectionPos = $parts[0];
-			$entryPos = $parts[1];
+			$entryPos = intval($parts[1]);
 			$entries = $sections[$sectionPos]->getEntries();
 			$entryTmp = $entries[$entryPos - 1];
 			$entries[$entryPos - 1] = $entries[$entryPos];
@@ -676,7 +676,7 @@ function moveDown(PDFStructure &$structure) {
 	foreach ($_POST as $key => $value) {
 		// move section
 		if (strpos($key, 'down_section_') === 0) {
-			$pos = substr($key, strlen('down_section_'));
+			$pos = intval(substr($key, strlen('down_section_')));
 			$sectionTmp = $sections[$pos + 1];
 			$sections[$pos + 1] = $sections[$pos];
 			$sections[$pos] = $sectionTmp;
@@ -687,7 +687,7 @@ function moveDown(PDFStructure &$structure) {
 			$parts = substr($key, strlen('down_entry_'));
 			$parts = explode('_', $parts);
 			$sectionPos = $parts[0];
-			$entryPos = $parts[1];
+			$entryPos = intval($parts[1]);
 			$entries = $sections[$sectionPos]->getEntries();
 			$entryTmp = $entries[$entryPos + 1];
 			$entries[$entryPos + 1] = $entries[$entryPos];
@@ -697,5 +697,3 @@ function moveDown(PDFStructure &$structure) {
 		}
 	}
 }
-
-?>

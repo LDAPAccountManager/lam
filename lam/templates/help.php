@@ -86,7 +86,7 @@ function echoHTMLFoot() {
 /**
  * Print help site for a specific help number.
  *
- * @param array The help entry that is to be displayed.
+ * @param array $helpEntry the help entry that is to be displayed.
  */
 function displayHelp($helpEntry) {
 	echoHTMLHead();

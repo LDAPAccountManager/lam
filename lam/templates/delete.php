@@ -94,7 +94,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	$typeId = $_GET['type'];
 	$type = $typeManager->getConfiguredType($typeId);
 	if ($type === null) {
-		logNewMessage(LOG_ERR, 'Invalid type: ' . $type->getId());
+		logNewMessage(LOG_ERR, 'Invalid type id: ' . $typeId);
 		die();
 	}
 	if (!checkIfDeleteEntriesIsAllowed($type->getId()) || !checkIfWriteAccessIsAllowed($type->getId())) {
