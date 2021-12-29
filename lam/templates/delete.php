@@ -89,6 +89,7 @@ if (isset($_POST['type']) && ($typeManager->getConfiguredType($_POST['type']) ==
 	die();
 }
 
+$tabindex = 1;
 if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	$typeId = $_GET['type'];
 	$type = $typeManager->getConfiguredType($typeId);
@@ -101,6 +102,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 		die();
 	}
 	// Create account list
+    $users = array();
 	foreach ($_SESSION['delete_dn'] as $dn) {
 		$start = strpos ($dn, "=")+1;
 		$end = strpos ($dn, ",");
@@ -115,7 +117,6 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 	echo "<div class=\"smallPaddingContent\">";
 	echo "<br>\n";
 	echo "<form action=\"delete.php\" method=\"post\">\n";
-	$tabindex = 1;
 	$container = new htmlResponsiveRow();
 	$container->add(new htmlOutputText(_("Do you really want to remove the following accounts?")), 12);
 	$container->addVerticalSpacer('2rem');
@@ -356,5 +357,3 @@ function getChildCount($dn) {
 	$entries = searchLDAP($dn, 'objectClass=*', array('dn'));
 	return (sizeof($entries) - 1);
 }
-
-?>

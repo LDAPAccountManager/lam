@@ -134,7 +134,7 @@ if(isset($_GET['module']) && !($_GET['module'] == 'main') && !($_GET['module'] =
 // help entry in help.inc
 else {
 	/* If submitted help number is not in help/help.inc print error message */
-	if (!array_key_exists($_GET['HelpNumber'],$helpArray)) {
+	if (!array_key_exists($_GET['HelpNumber'], $helpArray)) {
 		$variables = array(htmlspecialchars($_GET['HelpNumber']));
 		$errorMessage = _("Sorry this help number ({bold}%s{endbold}) is not available.");
 		echoHTMLHead();
@@ -148,5 +148,3 @@ else {
 }
 
 displayHelp($helpEntry);
-
-?>

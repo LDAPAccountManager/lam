@@ -168,12 +168,12 @@ function display_main($message, $error) {
 	$tabindex = 1;
 	$container = new htmlResponsiveRow();
 	$container->add(new htmlTitle(_("OU editor")), 12);
-	if (isset($error)) {
+	if ($error !== null) {
 		$msg = new htmlStatusMessage("ERROR", "", $error);
 		$msg->colspan = 5;
 		$container->add($msg, 12);
 	}
-	elseif (isset($message)) {
+	elseif ($message !== null) {
 		$msg = new htmlStatusMessage("INFO", "", $message);
 		$msg->colspan = 5;
 		$container->add($msg, 12);

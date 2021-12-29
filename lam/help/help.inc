@@ -479,4 +479,3 @@ $helpArray = array (
 		SeeAlso: URL to additional information (ext = FALSE, optional)
 		Link: relative URL to external help page (ext = TRUE)
 */
-?>

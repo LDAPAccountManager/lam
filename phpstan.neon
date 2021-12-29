@@ -17,3 +17,4 @@ parameters:
 		- '#Instantiated class [a-zA-Z0-9\\_-]+ not found.#'
 		- '#Caught class [a-zA-Z0-9\\_-]+ not found.#'
 		- '#Used function [a-zA-Z0-9\\_-]+ not found.#'
+		- '#Variable \$helpArray might not be defined.#'

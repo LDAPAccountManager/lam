@@ -191,7 +191,7 @@ function lamRunTestSuite($serverName, $serverTitle, $testQuota, $container) {
 
 	// check script server and path
 	$container->add(new htmlOutputText(_("Lamdaemon server and path")), 10, 4);
-	if (!isset($serverName) || (strlen($serverName) < 3)) {
+	if (strlen($serverName) < 3) {
 		$container->add(new htmlImage($failImage), 2);
 		$container->add(new htmlOutputText(_("No lamdaemon server set, please update your LAM configuration settings.")), 12, 6);
 	}
@@ -213,6 +213,7 @@ function lamRunTestSuite($serverName, $serverTitle, $testQuota, $container) {
 
 	// check Unix account of LAM admin
 	$ldapUser = $_SESSION['ldap']->getUserName();
+	$userName = '';
 	if (!$stopTest) {
 		$scriptUserName = $_SESSION['config']->getScriptUserName();
 		if (empty($scriptUserName)) {

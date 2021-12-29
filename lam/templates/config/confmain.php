@@ -263,7 +263,8 @@ $row->add(new htmlSubTitle(_("Language settings"), '../../graphics/language.png'
 // read available languages
 $possibleLanguages = getLanguages();
 $defaultLanguage = array('en_GB.utf8');
-if(!empty($possibleLanguages)) {
+if (!empty($possibleLanguages)) {
+    $languages = array();
 	foreach ($possibleLanguages as $lang) {
 		$languages[$lang->description] = $lang->code;
 		if (strpos($conf->get_defaultLanguage(), $lang->code) === 0) {

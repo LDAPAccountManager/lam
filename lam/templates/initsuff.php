@@ -51,9 +51,9 @@ if (!empty($_POST)) {
 }
 
 // check if user already pressed button
+$failedDNs = array();
 if (isset($_POST['add_suff']) || isset($_POST['cancel'])) {
 	if (isset($_POST['add_suff'])) {
-		$failedDNs = array();
 		$newSuffixes = $_POST['new_suff'];
 		$newSuffixes = str_replace("\\", "", $newSuffixes);
 		$newSuffixes = str_replace("'", "", $newSuffixes);
@@ -210,4 +210,3 @@ include __DIR__ . '/../lib/adminHeader.inc';
 	echo "</form><br>\n";
 	echo "</div>\n";
 include __DIR__ . '/../lib/adminFooter.inc';
-?>

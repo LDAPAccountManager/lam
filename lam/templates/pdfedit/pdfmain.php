@@ -169,6 +169,7 @@ if (isset($_POST['deleteGlobalLogo']) && !empty($_POST['globalLogoDelete'])) {
 
 $serverProfilePersistenceManager = new ServerProfilePersistenceManager();
 $serverProfiles = array();
+$configProfiles = array();
 try {
 	$configProfiles = $serverProfilePersistenceManager->getProfiles();
 	foreach ($configProfiles as $profileName) {

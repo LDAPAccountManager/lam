@@ -66,7 +66,9 @@ startSecureSession();
 enforceUserIsLoggedIn();
 
 // die if no write access
-if (!checkIfWriteAccessIsAllowed()) die();
+if (!checkIfWriteAccessIsAllowed()) {
+	die();
+}
 
 checkIfToolIsActive('toolProfileEditor');
 
@@ -123,6 +125,7 @@ if (isset($_POST['deleteGlobalTemplate']) && !empty($_POST['globalTemplatesDelet
 
 $serverProfilePersistenceManager = new ServerProfilePersistenceManager();
 $serverProfiles = array();
+$configProfiles = array();
 try {
 	$configProfiles = $serverProfilePersistenceManager->getProfiles();
 	foreach ($configProfiles as $profileName) {

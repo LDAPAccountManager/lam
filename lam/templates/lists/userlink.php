@@ -5,7 +5,7 @@ use \htmlStatusMessage;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2018  Roland Gruber
+  Copyright (C) 2003 - 2021  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ $user = str_replace("'", '',$user);
 // get DN of user
 $dn = search_username($user);
 
-if ($dn) {
+if ($dn !== null) {
 	// redirect to account/edit.php
 	metaRefresh("../account/edit.php?type=user&DN='" . rawurlencode($dn) . "'");
 
@@ -66,6 +66,7 @@ else {
 	$container->add(new htmlStatusMessage("ERROR", _("This user was not found!"), htmlspecialchars($user)), 12);
 	$container->addVerticalSpacer('1rem');
 	$container->add(new \htmlLink(_("Back to group list"), 'javascript:history.back()'), 12);
+	$tabindex = 1;
 	parseHtml(null, $container, array(), false, $tabindex, 'user');
 	include __DIR__ . '/../../lib/adminFooter.inc';
 }
@@ -77,12 +78,12 @@ else {
 * @param string $name user name
 * @return string DN
 */
-function search_username($name) {
+function search_username(string $name): ?string {
 	$entries = searchLDAPByAttribute('uid', $name, null, array('dn'), array('user'));
 	if (sizeof($entries) > 0 ) {
 		return $entries[0]['dn'];
 	}
-	else return "";
+	else {
+		return null;
+	}
 }
-
-?>
