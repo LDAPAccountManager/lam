@@ -106,12 +106,12 @@ include '../../lib/adminFooter.inc';
 /**
  * Checks if the object classes and attributes for this module are available.
  *
- * @param String $name module name
- * @param String $scope type (user, group, ...)
- * @param String $typeId type id
- * @return String error message or null
+ * @param string $name module name
+ * @param string $scope type (user, group, ...)
+ * @param string $typeId type id
+ * @return string error message or null
  */
-function checkSchemaForModule($name, $scope, $typeId) {
+function checkSchemaForModule($name, $scope, $typeId): ?string {
 	$module = new $name($scope);
 	$classes = $module->getManagedObjectClasses($typeId);
 	$attrs = $module->getManagedAttributes($typeId);

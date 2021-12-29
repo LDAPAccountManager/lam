@@ -305,7 +305,7 @@ function checkInput() {
 			$sorting = explode(',', $sorting);
 			$sortTmp = array();
 			foreach ($sorting as $pos) {
-				$sortTmp[] = $selected[$pos];
+				$sortTmp[] = $selected[intval($pos)];
 			}
 			$selected = $sortTmp;
 		}

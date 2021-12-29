@@ -345,11 +345,11 @@ printHeaderContents(_("Edit general settings"), '../..');
 	$row->add(new htmlTitle(_('General settings')), 12);
 
 	// print messages
-	for ($i = 0; $i < sizeof($errors); $i++) {
-		$row->add(new htmlStatusMessage("ERROR", $errors[$i]), 12);
+	foreach ($errors as $error) {
+		$row->add(new htmlStatusMessage("ERROR", $error), 12);
 	}
-	for ($i = 0; $i < sizeof($messages); $i++) {
-		$row->add(new htmlStatusMessage("INFO", $messages[$i]), 12);
+	foreach ($messages as $message) {
+		$row->add(new htmlStatusMessage("INFO", $message), 12);
 	}
 
 	// check if config file is writable

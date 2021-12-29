@@ -730,7 +730,7 @@ function importStructures($typeId, $options, &$serverProfiles, TypeManager &$typ
  * @param TypeManager $typeManager type manager
  * @return htmlStatusMessage message or null
  */
-function exportStructures($typeId, $name, $options, &$serverProfiles, TypeManager &$typeManager) {
+function exportStructures($typeId, $name, $options, &$serverProfiles, TypeManager &$typeManager): ?htmlStatusMessage {
 	$sourceType = $typeManager->getConfiguredType($typeId);
 	if ($sourceType === null) {
 		return null;

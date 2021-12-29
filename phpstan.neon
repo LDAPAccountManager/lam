@@ -1,5 +1,5 @@
 parameters:
-	level: 2
+	level: 3
 	scanDirectories:
 		- lam/lib
 		- lam/templates
@@ -20,3 +20,4 @@ parameters:
 		- '#Variable \$helpArray might not be defined.#'
 		- '#Function [a-zA-Z0-9\(\)\\_-]+ has invalid return type [a-zA-Z0-9\\_-]+.#'
 		- '#PHPDoc tag @throws with type LAMException is not subtype of Throwable#'
+		- '#Throwing object of an unknown class [a-zA-Z0-9\\_-]+.#'

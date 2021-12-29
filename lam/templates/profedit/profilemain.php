@@ -494,9 +494,9 @@ function importProfiles($typeId, $options, &$serverProfiles, TypeManager &$typeM
  * @param array $options options
  * @param \LAMConfig[] $serverProfiles server profiles (name => profile object)
  * @param TypeManager $typeManager type manager
- * @return \htmlStatusMessage message or null
+ * @return htmlStatusMessage message or null
  */
-function exportProfiles($typeId, $name, $options, &$serverProfiles, TypeManager &$typeManager) {
+function exportProfiles($typeId, $name, $options, &$serverProfiles, TypeManager &$typeManager): ?htmlStatusMessage {
 	$sourceType = $typeManager->getConfiguredType($typeId);
 	if ($sourceType === null) {
 		return null;
@@ -510,7 +510,7 @@ function exportProfiles($typeId, $name, $options, &$serverProfiles, TypeManager 
 				$accountProfilePersistenceManager->writeAccountProfileTemplate($sourceType->getScope(), $name, $data);
 			}
 			catch (LAMException $e) {
-				return new \htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
+				return new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
 			}
 		}
 		else {
@@ -523,10 +523,10 @@ function exportProfiles($typeId, $name, $options, &$serverProfiles, TypeManager 
 					$accountProfilePersistenceManager->writeAccountProfile($targetType->getId(), $name, $targetConfName, $data);
 				}
 				catch (LAMException $e) {
-					return new \htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
+					return new htmlStatusMessage('ERROR', $e->getTitle(), $e->getMessage());
 				}
 			}
 		}
 	}
-	return new \htmlStatusMessage('INFO', _('Export successful'));
+	return new htmlStatusMessage('INFO', _('Export successful'));
 }
