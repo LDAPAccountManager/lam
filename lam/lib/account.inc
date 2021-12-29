@@ -753,7 +753,7 @@ function convertCommaEscaping($dn) {
  */
 function connectToLDAP($serverURL, $startTLS) {
 	$server = ldap_connect($serverURL);
-	if (!$server) {
+	if ($server === false) {
 		return null;
 	}
 	if (defined('LDAP_OPT_X_TLS_CACERTFILE')) {
