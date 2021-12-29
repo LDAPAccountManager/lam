@@ -3690,7 +3690,7 @@ class windowsUser extends baseModule implements passwordService {
 		$lockoutTime = self::getFileTime($myAttrs['lockouttime'][0]);
 		$unlockTime = clone $lockoutTime;
 		$unlockTime->add(new DateInterval('PT' . abs($lockoutDurationSeconds) . 'S'));
-		$now = new DateTime(null, getTimeZone());
+		$now = new DateTime('now', getTimeZone());
 		if ($unlockTime > $now) {
 			$unlockTime->setTimezone(getTimeZone());
 			return $unlockTime;
@@ -4311,7 +4311,7 @@ class windowsUser extends baseModule implements passwordService {
 		$seconds = substr($value, 0, -7);
 		$time = new DateTime('1601-01-01', new DateTimeZone('UTC'));
 		$time->add(new DateInterval('PT' . $seconds . 'S'));
-		$now = new DateTime(null, getTimeZone());
+		$now = new DateTime('now', getTimeZone());
 		return ($time < $now);
 	}
 
@@ -4717,7 +4717,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 				}
 				$this->jobResultLog->logDebug($key . ': ' . implode(', ', $value));
 			}
-			$now = new DateTime(null, getTimeZone());
+			$now = new DateTime('now', getTimeZone());
 			$baseDate = $this->getBaseDate($now);
 			$monthInterval = $this->getMonthInterval($options, $jobID);
 			if (!$this->shouldRun($pdo, $options, $jobID, $baseDate, $monthInterval)) {

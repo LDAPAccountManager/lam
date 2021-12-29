@@ -2553,7 +2553,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 				$timeVal = $attributes['sambaPwdLastSet'][0] + $sambaDomain->minPwdAge;
 				$time = new DateTime('@' . $timeVal, new DateTimeZone('UTC'));
 				$time->setTimezone(getTimeZone());
-				$now = new DateTime(null, getTimeZone());
+				$now = new DateTime('now', getTimeZone());
 				if ($time > $now) {
 					$return['messages'][] = array('ERROR', _('You are not yet allowed to change your password.'));
 				}

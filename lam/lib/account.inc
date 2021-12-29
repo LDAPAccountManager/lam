@@ -1739,7 +1739,7 @@ function getTimeZone() {
  * @param unknown $format format to use (e.g. 'Y-m-d H:i:s')
  */
 function getFormattedTime($format) {
-	$time = new DateTime(null, getTimeZone());
+	$time = new DateTime('now', getTimeZone());
 	return $time->format($format);
 }
 

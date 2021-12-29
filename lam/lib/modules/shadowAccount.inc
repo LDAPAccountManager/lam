@@ -807,7 +807,7 @@ class shadowAccount extends baseModule implements passwordService {
 			return false;
 		}
 		$time = new DateTime('@' . $attrs['shadowexpire'][0] * 24 * 3600, new DateTimeZone('UTC'));
-		$now = new DateTime(null, getTimeZone());
+		$now = new DateTime('now', getTimeZone());
 		return ($time < $now);
 	}
 
@@ -830,7 +830,7 @@ class shadowAccount extends baseModule implements passwordService {
 		if (!empty($attrs['shadowinactive'][0]) && ($attrs['shadowinactive'][0] > 0)) {
 			$time = $time->add(new DateInterval('P' . $attrs['shadowinactive'][0] . 'D'));
 		}
-		$now = new DateTime(null, getTimeZone());
+		$now = new DateTime('now', getTimeZone());
 		return ($time < $now);
 	}
 

@@ -71,8 +71,6 @@ class imapAccess extends baseModule {
 		$return['objectClasses'] = array();
 		// managed attributes
 		$return['attributes'] = array();
-		// PHP extensions
-		$return['extensions'] = array('imap');
 		// icon
 		$return['icon'] = 'mailBig.png';
 		// help
@@ -664,7 +662,8 @@ class imapAccess extends baseModule {
 		$encryptionType = $this->moduleSettings['ImapAccess_ImapServerEncriptionProtocol'][0];
 		if (strrpos($this->moduleSettings['ImapAccess_ImapServerAddress'][0], ":")) {
 			$port = substr(strstr($this->moduleSettings['ImapAccess_ImapServerAddress'][0], ':'), 1);
-			$serverName = array_shift(explode(':', $this->moduleSettings['ImapAccess_ImapServerAddress'][0], 2));
+			$addressParts = explode(':', $this->moduleSettings['ImapAccess_ImapServerAddress'][0], 2);
+			$serverName = array_shift($addressParts);
 		}
 		else {
 			$serverName = $this->moduleSettings['ImapAccess_ImapServerAddress'][0];

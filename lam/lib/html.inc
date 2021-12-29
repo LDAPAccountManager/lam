@@ -444,7 +444,7 @@ class htmlInputField extends htmlElement {
 	/** unique field name */
 	protected $fieldName;
 	/** field value */
-	protected $fieldValue;
+	protected $fieldValue = '';
 	/** field size (default 30) */
 	protected $fieldSize = 30;
 	/** field max length (default 1000) */
@@ -512,8 +512,10 @@ class htmlInputField extends htmlElement {
 			$fieldValue = deobfuscateText($fieldValue);
 		}
 		$this->fieldName = htmlspecialchars($fieldName);
-		$this->fieldValue = htmlspecialchars($fieldValue);
-		if ($fieldSize != null) {
+		if ($fieldValue !== null) {
+			$this->fieldValue = htmlspecialchars($fieldValue);
+		}
+		if ($fieldSize !== null) {
 			$this->fieldSize = $fieldSize;
 		}
 	}
@@ -1143,7 +1145,9 @@ class htmlButton extends htmlElement {
 	 * @param String $title title
 	 */
 	public function setTitle($title) {
-		$this->title = htmlspecialchars($title);
+		if ($title !== null) {
+			$this->title = htmlspecialchars($title);
+		}
 	}
 
 	/**
@@ -3041,9 +3045,9 @@ class htmlImage extends htmlElement {
 class htmlSpacer extends htmlElement {
 
 	/** width of spacer in px */
-	private $width;
+	private $width = null;
 	/** height of spacer in px */
-	private $height;
+	private $height = null;
 
 	/**
 	 * Constructor.
@@ -3052,8 +3056,12 @@ class htmlSpacer extends htmlElement {
 	 * @param String $height height (e.g. 10px)
 	 */
 	function __construct($width, $height = null) {
-		$this->width = htmlspecialchars($width);
-		$this->height = htmlspecialchars($height);
+		if ($width !== null) {
+			$this->width = htmlspecialchars($width);
+		}
+		if ($height !== null) {
+			$this->height = htmlspecialchars($height);
+		}
 	}
 
 	/**
@@ -3069,11 +3077,11 @@ class htmlSpacer extends htmlElement {
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$width = '';
-		if ($this->width != null) {
+		if ($this->width !== null) {
 			$width = 'width: ' . $this->width . ';';
 		}
 		$height = '';
-		if ($this->height != null) {
+		if ($this->height !== null) {
 			$height = 'height: ' . $this->height . ';';
 		}
 		echo "<div style=\"$width $height display: inline-block;\"></div>\n";
@@ -3244,8 +3252,12 @@ class htmlSubTitle extends htmlElement {
 	 */
 	public function __construct($label, $image = null, $id = null, $largeIcon = false) {
 		$this->label = htmlspecialchars($label);
-		$this->image = htmlspecialchars($image);
-		$this->id = htmlspecialchars($id);
+		if ($image !== null) {
+			$this->image = htmlspecialchars($image);
+		}
+		if ($id !== null) {
+			$this->id = htmlspecialchars($id);
+		}
 		// the title should not end at a table cell
 		$this->colspan = 100;
 		$this->largeIcon = $largeIcon;
@@ -3368,9 +3380,15 @@ class htmlLink extends htmlElement {
 	 * @param String $image URL of optional image
 	 */
 	function __construct($text, $target, $image = null) {
-		$this->text = htmlspecialchars($text);
-		$this->target = htmlspecialchars($target);
-		$this->image = htmlspecialchars($image);
+		if ($text !== null) {
+			$this->text = htmlspecialchars($text);
+		}
+		if ($target !== null) {
+			$this->target = htmlspecialchars($target);
+		}
+		if ($image !== null) {
+			$this->image = htmlspecialchars($image);
+		}
 	}
 
 	/**
@@ -3624,7 +3642,9 @@ class htmlDiv extends htmlElement {
 	 * @param string[] $cssClasses CSS classes
 	 */
 	function __construct($id, $content, $cssClasses = null) {
-		$this->id = htmlspecialchars($id);
+		if ($id !== null) {
+			$this->id = htmlspecialchars($id);
+		}
 		$this->content = $content;
 		$this->cssClasses = $cssClasses;
 	}

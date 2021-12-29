@@ -292,7 +292,7 @@ function logNewMessage($level, $message) : void {
 				if (!empty($sysTimeZone)) {
 					$timeZone = $sysTimeZone;
 				}
-				$time = new DateTime(null, new DateTimeZone($timeZone));
+				$time = new DateTime('now', new DateTimeZone($timeZone));
 				fwrite($file, $time->format('Y-m-d H:i:s') . ': ' . $message . "\n");
 				fclose($file);
 			}

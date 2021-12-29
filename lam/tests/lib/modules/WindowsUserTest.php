@@ -65,7 +65,7 @@ use PHPUnit\Framework\TestCase;
 		 */
 		private function getTimeStamp($diff) {
 			$timeBase = new DateTime('1601-01-01', getTimeZone());
-			$time = new DateTime(null, getTimeZone());
+			$time = new DateTime('now', getTimeZone());
 			if ($diff > 0) {
 				$time->add(new DateInterval('P' . $diff . 'D'));
 			}
