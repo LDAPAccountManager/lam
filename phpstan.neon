@@ -1,0 +1,19 @@
+parameters:
+	level: 1
+	scanDirectories:
+		- lam/lib
+		- lam/templates
+	paths:
+		- lam/lib
+		- lam/templates
+	excludePaths:
+		analyseAndScan:
+			- */3rdParty/*
+	ignoreErrors:
+		- '#.* on an unknown class .*#'
+		- '#.* has invalid type .*#'
+		- '#Function [a-zA-Z0-9\\_-]+ not found.#'
+		- '#Class [a-zA-Z0-9\\_-]+ not found.#'
+		- '#Instantiated class [a-zA-Z0-9\\_-]+ not found.#'
+		- '#Caught class [a-zA-Z0-9\\_-]+ not found.#'
+		- '#Used function [a-zA-Z0-9\\_-]+ not found.#'

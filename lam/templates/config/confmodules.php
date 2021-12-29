@@ -357,9 +357,3 @@ function checkInput() {
 
 	return $errors;
 }
-
-?>
-
-
-
-

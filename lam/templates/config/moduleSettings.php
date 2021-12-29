@@ -234,9 +234,3 @@ function checkInput() {
 	$conf->set_moduleSettings($options);
 	return $errors;
 }
-
-?>
-
-
-
-
