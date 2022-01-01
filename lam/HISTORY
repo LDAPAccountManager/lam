@@ -1,3 +1,7 @@
+March 2022 7,9
+  - Docker: upgrade OS to Debian Bullseye
+
+
 28.12.2021 7.8
   - Restyling of LAM
   - Allow to override global password policy in server profile (160)
