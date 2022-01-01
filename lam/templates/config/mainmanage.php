@@ -30,7 +30,7 @@ use PDO;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2021  Roland Gruber
+  Copyright (C) 2003 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -139,9 +139,14 @@ if (isset($_POST['submitFormData'])) {
             && !get_preg($cfg->licenseEmailFrom, 'email')) {
 		    $errors[] = _('Licence') . ': ' . _('From address') . ' - ' . _('Please enter a valid email address!');
         }
-		if ((($cfg->licenseWarningType === LAMCfgMain::LICENSE_WARNING_EMAIL) || ($cfg->licenseWarningType === LAMCfgMain::LICENSE_WARNING_ALL))
-			&& !get_preg($cfg->licenseEmailTo, 'email')) {
-			$errors[] = _('Licence') . ': ' . _('TO address') . ' - ' . _('Please enter a valid email address!');
+		if (($cfg->licenseWarningType === LAMCfgMain::LICENSE_WARNING_EMAIL) || ($cfg->licenseWarningType === LAMCfgMain::LICENSE_WARNING_ALL)) {
+		    $toEmails = preg_split('/;[ ]*/', $cfg->licenseEmailTo);
+		    foreach ($toEmails as $toEmail) {
+		        if (!get_preg($toEmail, 'email')) {
+			        $errors[] = _('Licence') . ': ' . _('TO address') . ' - ' . _('Please enter a valid email address!');
+			        break;
+                }
+		    }
 		}
 	}
 	// set session timeout

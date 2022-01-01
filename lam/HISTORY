@@ -1,5 +1,7 @@
-March 2022 7,9
+March 2022 7.9
   - Docker: upgrade OS to Debian Bullseye
+  - LAM Pro:
+   -> support multiple TO addresses for license expiration email
 
 
 28.12.2021 7.8

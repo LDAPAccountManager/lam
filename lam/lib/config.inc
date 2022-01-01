@@ -10,7 +10,7 @@ use function LAM\PERSISTENCE\dbTableExists;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2021  Roland Gruber
+  Copyright (C) 2003 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -3014,7 +3014,7 @@ class LAMCfgMain {
 	/** license warning email from address */
 	public $licenseEmailFrom = '';
 
-	/** license warning email TO address */
+	/** license warning email TO address(es) separated by ";" */
 	public $licenseEmailTo = '';
 
 	/** license warning email was last sent for this expiration date */

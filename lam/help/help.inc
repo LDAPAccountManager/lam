@@ -5,7 +5,7 @@ use \LAM\TYPES\TypeManager;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006 Michael Duergner
-                2003 - 2021 Roland Gruber
+                2003 - 2022 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -246,7 +246,8 @@ $helpArray = array (
 				'289' => array ("Headline" => _('From address'),
 					"Text" => _('This email address will be set as sender address of the mails.')),
 				'290' => array ("Headline" => _('TO address'),
-					"Text" => _('This email address will be set as TO address for the mails.')),
+					"Text" => _('This email address will be set as TO address for the mails.') . ' '
+						. _("Multiple values are separated by semicolon.")),
 				"291" => array ("Headline" => _('Hide password prompt for expired password'),
 					"Text" => _('Hides the password prompt when a user with expired password logs into LAM.')),
 				"292" => array ("Headline" => _('DN part to hide'),
