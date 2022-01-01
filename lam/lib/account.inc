@@ -1869,22 +1869,7 @@ function printHeaderContents($title, $prefix) {
 	echo '<title>';
 	echo $title;
 	echo "</title>\n";
-	// include responsive CSS
-	$cssDirName = dirname(__FILE__) . '/../style/responsive';
-	$cssDir = dir($cssDirName);
-	$cssFiles = array();
-	$cssEntry = $cssDir->read();
-	while ($cssEntry !== false) {
-		if (substr($cssEntry, strlen($cssEntry) - 4, 4) == '.css') {
-			$cssFiles[] = $cssEntry;
-		}
-		$cssEntry = $cssDir->read();
-	}
-	sort($cssFiles);
-	foreach ($cssFiles as $cssEntry) {
-		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"$prefix/style/responsive/$cssEntry\">\n";
-	}
-	// include all other CSS files
+	// include CSS files
 	$cssDirName = dirname(__FILE__) . '/../style';
 	$cssDir = dir($cssDirName);
 	$cssFiles = array();
