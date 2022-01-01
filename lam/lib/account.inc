@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2009 - 2021  Roland Gruber
+                2009 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1868,7 +1868,7 @@ function printHeaderContents($title, $prefix) {
 	echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
 	echo '<title>';
 	echo $title;
-	echo '</title>';
+	echo "</title>\n";
 	// include responsive CSS
 	$cssDirName = dirname(__FILE__) . '/../style/responsive';
 	$cssDir = dir($cssDirName);
@@ -1882,7 +1882,7 @@ function printHeaderContents($title, $prefix) {
 	}
 	sort($cssFiles);
 	foreach ($cssFiles as $cssEntry) {
-		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"$prefix/style/responsive/$cssEntry\">";
+		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"$prefix/style/responsive/$cssEntry\">\n";
 	}
 	// include all other CSS files
 	$cssDirName = dirname(__FILE__) . '/../style';
@@ -1897,7 +1897,7 @@ function printHeaderContents($title, $prefix) {
 	}
 	sort($cssFiles);
 	foreach ($cssFiles as $cssEntry) {
-		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"$prefix/style/$cssEntry\">";
+		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"$prefix/style/$cssEntry\">\n";
 	}
 	echo '<link rel="shortcut icon" type="image/x-icon" href="' . $prefix . '/graphics/favicon.ico">';
 	echo '<link rel="icon" href="' . $prefix . '/graphics/logo136.png">';
