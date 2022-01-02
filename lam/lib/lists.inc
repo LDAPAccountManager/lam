@@ -573,14 +573,14 @@ class lamList {
 	private function addToolLinks($account, $id, &$element) {
 		$toolCount = 0;
 		// edit link
-		$editLink = new htmlLink('', "../account/edit.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/edit.png');
+		$editLink = new htmlLink('', "../account/edit.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/edit.svg');
 		$editLink->setTitle(_("Edit"));
 		$editLink->setCSSClasses(array('lam-margin-smaller'));
 		$element->addElement($editLink);
 		$toolCount++;
 		// delete link
 		if (checkIfWriteAccessIsAllowed($this->type->getId()) && checkIfDeleteEntriesIsAllowed($this->type->getId())) {
-			$deleteLink = new htmlLink('', "deletelink.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/delete.png');
+			$deleteLink = new htmlLink('', "deletelink.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/delete.svg');
 			$deleteLink->setTitle(_("Delete"));
 			$deleteLink->setCSSClasses(array('lam-margin-smaller'));
 			$element->addElement($deleteLink);
@@ -595,7 +595,7 @@ class lamList {
 			$toolCount++;
 		}
 		// PDF button
-		$pdfButton = new htmlButton("createPDF_" . $id, 'pdf.png', true);
+		$pdfButton = new htmlButton("createPDF_" . $id, 'pdf.svg', true);
 		$pdfButton->setTitle(_('Create PDF file'));
 		$pdfButton->setCSSClasses(array('lam-margin-smaller'));
 		$element->addElement($pdfButton);
@@ -603,7 +603,7 @@ class lamList {
 		// password quick change
         if (isLAMProVersion() && $this->supportsPasswordQuickChange
             && checkIfPasswordChangeIsAllowed() && checkIfWriteAccessIsAllowed($this->type->getId())) {
-	        $pwdChangeButton = new htmlLink('', "changePassword.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/key.png');
+	        $pwdChangeButton = new htmlLink('', "changePassword.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/key.svg');
 	        $pwdChangeButton->setTitle(_('Change password'));
 	        $pwdChangeButton->setCSSClasses(array('lam-margin-smaller'));
 	        $element->addElement($pwdChangeButton);

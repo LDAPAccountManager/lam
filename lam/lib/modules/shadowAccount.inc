@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-  Copyright (C) 2007 - 2021  Roland Gruber
+  Copyright (C) 2007 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -92,7 +92,7 @@ class shadowAccount extends baseModule implements passwordService {
 	function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'keyBig.png';
+		$return['icon'] = 'key.svg';
 		// alias name
 		$return["alias"] = _('Shadow');
 		// module dependencies

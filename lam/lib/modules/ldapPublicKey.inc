@@ -5,7 +5,7 @@ use \LAM\PDF\PDFTableRow;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2021  Roland Gruber
+  Copyright (C) 2005 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@ class ldapPublicKey extends baseModule {
 	function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'keyBig.png';
+		$return['icon'] = 'key.svg';
 		// alias name
 		$return["alias"] = _("SSH public key");
 		// module dependencies

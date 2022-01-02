@@ -337,7 +337,7 @@ $row->addVerticalSpacer('2rem');
 // LAM Pro settings
 if (isLAMProVersion()) {
 	// password reset page
-	$row->add(new htmlSubTitle(_("Password reset page settings"), '../../graphics/keyBig.png', null, true), 12);
+	$row->add(new htmlSubTitle(_("Password reset page settings"), '../../graphics/key.svg', null, true), 12);
 
 	$pwdResetAllowSpecific = true;
 	if ($conf->getPwdResetAllowSpecificPassword() == 'false') {
@@ -555,7 +555,7 @@ if (extension_loaded('curl')) {
 }
 
 // new password
-$row->add(new htmlSubTitle(_("Profile password"), '../../graphics/keyBig.png', null, true), 12);
+$row->add(new htmlSubTitle(_("Profile password"), '../../graphics/key.svg', null, true), 12);
 $password1 = new htmlResponsiveInputField(_("New password"), 'passwd1', null, '212');
 $password1->setIsPassword(true, false, true);
 $password2 = new htmlResponsiveInputField(_("Reenter password"), 'passwd2');

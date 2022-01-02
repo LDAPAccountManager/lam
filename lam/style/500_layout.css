@@ -446,11 +446,6 @@ table.collapse {
 	background-position: 0px 0px !important;
 }
 
-.passwordButton {
-	background-image: url(../graphics/key.png) !important;
-	background-position: 0px 0px !important;
-}
-
 .loadProfileButton {
 	background-image: url(../graphics/loadProfile.png) !important;
 	background-position: 0px 0px !important;
@@ -483,11 +478,6 @@ table.collapse {
 
 .backButton {
 	background-image: url(../graphics/back.gif) !important;
-	background-position: 0px 0px !important;
-}
-
-.pdfButton {
-	background-image: url(../graphics/pdf.png) !important;
 	background-position: 0px 0px !important;
 }
 
