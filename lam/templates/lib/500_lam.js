@@ -2761,6 +2761,7 @@ window.lam.topmenu.openSubmenu = function(event, layerId, listener) {
 		return;
 	}
 	document.removeEventListener("click", listener);
+	document.removeEventListener("mouseover", listener);
 	event.preventDefault();
 	event.stopImmediatePropagation();
 	let layers = document.getElementsByClassName('lam-navigation-layer');
@@ -2770,6 +2771,7 @@ window.lam.topmenu.openSubmenu = function(event, layerId, listener) {
 	const height = layer.getElementsByClassName('lam-navigation-layer-content')[0].offsetHeight;
 	layer.style.height = height + 'px';
 	document.addEventListener("click", listener);
+	document.addEventListener("mouseover", listener);
 }
 
 /**
@@ -2778,7 +2780,10 @@ window.lam.topmenu.openSubmenu = function(event, layerId, listener) {
  * @param event event
  */
 window.lam.topmenu.subMenuCloseListenerTools = function (event) {
-	if (!event.target.closest('#lam-navigation-tools')) {
+	if ((event.type == 'click') && !event.target.closest('#lam-navigation-tools')) {
+		document.getElementById('lam-navigation-tools').style.height = "0px";
+	}
+	if ((event.type == 'mouseover') && !event.target.closest('#lam-topnav')) {
 		document.getElementById('lam-navigation-tools').style.height = "0px";
 	}
 }
@@ -2789,7 +2794,10 @@ window.lam.topmenu.subMenuCloseListenerTools = function (event) {
  * @param event event
  */
 window.lam.topmenu.subMenuCloseListenerTypes = function (event) {
-	if (!event.target.closest('#lam-navigation-types')) {
+	if ((event.type == 'click') && !event.target.closest('#lam-navigation-types')) {
+		document.getElementById('lam-navigation-types').style.height = "0px";
+	}
+	if ((event.type == 'mouseover') && !event.target.closest('#lam-topnav')) {
 		document.getElementById('lam-navigation-types').style.height = "0px";
 	}
 }

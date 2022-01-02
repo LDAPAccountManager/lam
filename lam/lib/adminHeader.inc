@@ -142,6 +142,7 @@ function printHeader(string $headerPrefix): void {
 			$accountTypesGroup = new htmlGroup();
 			$accountTypesLink = new htmlLink(_('Accounts'), "javascript:void(0);");
 			$accountTypesLink->setOnClick("window.lam.topmenu.openSubmenu(event, 'lam-navigation-types', window.lam.topmenu.subMenuCloseListenerTypes);");
+			$accountTypesLink->setOnMouseOver("window.lam.topmenu.openSubmenu(event, 'lam-navigation-types', window.lam.topmenu.subMenuCloseListenerTypes);");
 			$accountTypesLink->setCSSClasses(array('lam-menu-entry'));
 			$accountTypesGroup->addElement($accountTypesLink);
 			$accountList = new htmlGroup();
@@ -161,6 +162,7 @@ function printHeader(string $headerPrefix): void {
 			$toolGroup = new htmlGroup();
 			$toolLink = new htmlLink(_('Tools'), "javascript:void(0);");
 			$toolLink->setOnClick("window.lam.topmenu.openSubmenu(event, 'lam-navigation-tools', window.lam.topmenu.subMenuCloseListenerTools);");
+			$toolLink->setOnMouseOver("window.lam.topmenu.openSubmenu(event, 'lam-navigation-tools', window.lam.topmenu.subMenuCloseListenerTools);");
 			$toolLink->setCSSClasses(array('lam-menu-entry'));
 			$toolGroup->addElement($toolLink);
 			$toolList = new htmlGroup();

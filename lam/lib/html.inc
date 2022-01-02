@@ -3369,6 +3369,8 @@ class htmlLink extends htmlElement {
 	private $targetWindow = null;
 	/** onClick event */
 	private $onClick = null;
+	/** onMouseOver event */
+	private $onMouseOver = null;
 	/** link id */
 	private $id;
 
@@ -3423,6 +3425,10 @@ class htmlLink extends htmlElement {
 		if ($this->onClick != null) {
 			$onClick = ' onclick="' . $this->onClick . '"';
 		}
+		$onMouseOver = '';
+		if ($this->onMouseOver != null) {
+			$onMouseOver = ' onmouseover="' . $this->onMouseOver . '"';
+		}
 		$idAttr = '';
 		if (!empty($this->id)) {
 			$id = !empty($this->id) ? $this->id : 'a_' . preg_replace('/[^a-zA-Z0-9_]+/', '_', $this->target);
@@ -3432,7 +3438,7 @@ class htmlLink extends htmlElement {
 		if (sizeof($this->cssClasses) > 0) {
 			$classAttr = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
-		echo '<a href="' . $this->target . '"' . $idAttr . $classAttr . $title . $targetWindow . $onClick . $this->getDataAttributesAsString() . '>' . $image . $text . '</a>';
+		echo '<a href="' . $this->target . '"' . $idAttr . $classAttr . $title . $targetWindow . $onClick . $onMouseOver . $this->getDataAttributesAsString() . '>' . $image . $text . '</a>';
 		return array();
 	}
 
@@ -3479,6 +3485,15 @@ class htmlLink extends htmlElement {
 	 */
 	public function setOnClick($event) {
 		$this->onClick = htmlspecialchars($event);
+	}
+
+	/**
+	 * Sets the onMouseOver event.
+	 *
+	 * @param String $event JavaScript code
+	 */
+	public function setOnMouseOver($event) {
+		$this->onMouseOver = htmlspecialchars($event);
 	}
 
 	/**
