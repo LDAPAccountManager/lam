@@ -2666,7 +2666,7 @@ window.lam.treeview.copyNode = function(node, tree) {
 	window.sessionStorage.setItem('LAM_COPY_PASTE_ACTION', 'COPY');
 	window.sessionStorage.setItem('LAM_COPY_PASTE_OLD_ICON', node.icon);
 	window.sessionStorage.setItem('LAM_COPY_PASTE_DN', node.id);
-	tree.set_icon(node, '../../graphics/copy.png');
+	tree.set_icon(node, '../../graphics/copy.svg');
 	window.lam.treeview.contextMenuPasteDisabled = false;
 }
 
@@ -2683,7 +2683,7 @@ window.lam.treeview.cutNode = function(node, tree) {
 	window.sessionStorage.setItem('LAM_COPY_PASTE_ACTION', 'CUT');
 	window.sessionStorage.setItem('LAM_COPY_PASTE_OLD_ICON', node.icon);
 	window.sessionStorage.setItem('LAM_COPY_PASTE_DN', node.id);
-	tree.set_icon(node, '../../graphics/cut.png');
+	tree.set_icon(node, '../../graphics/cut.svg');
 	window.lam.treeview.contextMenuPasteDisabled = false;
 }
 

@@ -106,7 +106,7 @@ function showTree() {
 		$copyMenu = '"copyNode": {
 								"separator_before": true,
 								"label": "' . _('Copy') . '",
-								"icon": "../../graphics/copy.png",
+								"icon": "../../graphics/copy.svg",
 								"action": function(obj) {
 									window.lam.treeview.copyNode(node,
 										tree)
@@ -117,7 +117,7 @@ function showTree() {
 	if (checkIfWriteAccessIsAllowed()) {
 		$cutMenu = '"cutNode": {
 								"label": "' . _('Cut') . '",
-								"icon": "../../graphics/cut.png",
+								"icon": "../../graphics/cut.svg",
 								"action": function(obj) {
 									window.lam.treeview.cutNode(node,
 										tree)
@@ -130,7 +130,7 @@ function showTree() {
 								"separator_after": true,
 								"_disabled": window.lam.treeview.contextMenuPasteDisabled,
 								"label": "' . _('Paste') . '",
-								"icon": "../../graphics/paste.png",
+								"icon": "../../graphics/paste.svg",
 								"action": function(obj) {
 									window.lam.treeview.pasteNode("' . getSecurityTokenName() . '",
 										"' . getSecurityTokenValue() . '",
@@ -169,7 +169,7 @@ function showTree() {
 	}
 	$refreshMenu = '"refreshNode": {
 								"label": "' . _('Refresh') . '",
-								"icon": "../../graphics/refresh.png",
+								"icon": "../../graphics/refresh.svg",
 								"action": function(obj) {
 									tree.refresh_node(node);
 									window.lam.treeview.getNodeContent("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node.id);

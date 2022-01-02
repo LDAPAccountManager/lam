@@ -1089,7 +1089,7 @@ class htmlButton extends htmlElement {
 		if ($this->isImageButton) {
 			$classList[] = 'smallImageButton';
 			$classList[] = 'align-middle';
-			$style = ' style="background-image: url(../../graphics/' . $this->value . '); background-color: transparent;"';
+			$style = ' style="background-image: url(../../graphics/' . $this->value . ');"';
 		}
 		// text button
 		elseif ($this->iconClass == null) {

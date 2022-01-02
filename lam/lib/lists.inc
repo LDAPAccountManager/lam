@@ -321,15 +321,17 @@ class lamList {
 			if ($this->page != 1) {
 				$linkHref = "list.php?type=" . $this->type->getId() . "&norefresh=true&page=1" .
 						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
-				$link = new htmlLink(null, $linkHref, '../../graphics/go-first.png');
+				$link = new htmlLink(null, $linkHref, '../../graphics/go-first.svg');
 				$link->setTitle(_('Jump to first page'));
+				$link->setCSSClasses(array('icon'));
 				$navGroup->addElement($link);
 			}
 			if ($this->page > 11) {
 				$linkHref = "list.php?type=" . $this->type->getId() . "&norefresh=true&page=" . ($this->page - 10) .
 						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
-				$link = new htmlLink(null, $linkHref, '../../graphics/go-previous.png');
+				$link = new htmlLink(null, $linkHref, '../../graphics/go-previous.svg');
 				$link->setTitle(_('Jump 10 pages backward'));
+				$link->setCSSClasses(array('icon'));
 				$navGroup->addElement($link);
 			}
 			$pageCount =  ceil($count / $this->maxPageEntries);
@@ -359,15 +361,17 @@ class lamList {
 			if ($this->page < ($pageCount - 10)) {
 				$linkHref = "list.php?type=" . $this->type->getId() . "&norefresh=true&page=" . ($this->page + 10) .
 						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
-				$link = new htmlLink(null, $linkHref, '../../graphics/go-next.png');
+				$link = new htmlLink(null, $linkHref, '../../graphics/go-next.svg');
 				$link->setTitle(_('Jump 10 pages forward'));
+				$link->setCSSClasses(array('icon'));
 				$navGroup->addElement($link);
 			}
 			if ($this->page < $pageCount) {
 				$linkHref = "list.php?type=" . $this->type->getId() . "&norefresh=true&page=" . $pageCount .
 						"&sort=" . $this->sortColumn . "&sortdirection=" . $this->sortDirection . $filter;
-				$link = new htmlLink(null, $linkHref, '../../graphics/go-last.png');
+				$link = new htmlLink(null, $linkHref, '../../graphics/go-last.svg');
 				$link->setTitle(_('Jump to last page'));
+				$link->setCSSClasses(array('icon'));
 				$navGroup->addElement($link);
 			}
 		}
@@ -584,7 +588,7 @@ class lamList {
 		}
 		// copy link
 		if (checkIfWriteAccessIsAllowed($this->type->getId()) && checkIfNewEntriesAreAllowed($this->type->getId())) {
-			$copyLink = new htmlLink('', "../account/edit.php?type=" . $this->type->getId() . "&copyDn='" . rawurlencode($account['dn']) . "'", '../../graphics/copy.png');
+			$copyLink = new htmlLink('', "../account/edit.php?type=" . $this->type->getId() . "&copyDn='" . rawurlencode($account['dn']) . "'", '../../graphics/copy.svg');
 			$copyLink->setTitle(_("Copy"));
 			$copyLink->setCSSClasses(array('lam-margin-smaller'));
 			$element->addElement($copyLink);
@@ -934,12 +938,13 @@ class lamList {
 		$right = new htmlResponsiveRow();
 		$right->add($this->listShowOUSelection(), 12, 12, 10);
 		$rightButtonGroup = new htmlGroup();
-		$refreshButton = new htmlButton('refresh', 'refresh.png', true);
+		$refreshButton = new htmlButton('refresh', 'refresh.svg', true);
 		$refreshButton->setTitle(_("Refresh"));
 		$rightButtonGroup->addElement($refreshButton);
-		$settingsLink = new htmlLink('', '#', '../../graphics/tools.png');
+		$settingsLink = new htmlLink('', '#', '../../graphics/configure.svg');
 		$settingsLink->setOnClick('listShowSettingsDialog(\'' . _('Change list settings') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\');');
 		$settingsLink->setTitle(_('Change settings'));
+		$settingsLink->setCSSClasses(array('icon'));
 		$rightButtonGroup->addElement($settingsLink);
 		$right->add($rightButtonGroup, 12, 12, 2);
 

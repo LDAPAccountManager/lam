@@ -57,6 +57,8 @@
 	--lam-smaller-space: 0.1rem;
 	--lam-large-space: 1rem;
 	--lam-larger-space: 2rem;
+
+	--lam-icon-size: 16px;
 }
 
 
@@ -125,8 +127,8 @@ a.classicBold {
 }
 
 a.icon img {
-	width: 16px;
-	height: 16px;
+	width: var(--lam-icon-size);
+	height: var(--lam-icon-size);
 }
 
 a.icon-active img {
@@ -463,11 +465,6 @@ table.collapse {
 	background-position: 0px 0px !important;
 }
 
-.settingsButton {
-	background-image: url(../graphics/tools.png) !important;
-	background-position: 0px 0px !important;
-}
-
 .upButton {
 	background-image: url(../graphics/up.gif) !important;
 	background-position: 0px 0px !important;
@@ -495,11 +492,6 @@ table.collapse {
 
 .trashButton {
 	background-image: url(../graphics/trash.png) !important;
-	background-position: 0px 0px !important;
-}
-
-.refreshButton {
-	background-image: url(../graphics/refresh.png) !important;
 	background-position: 0px 0px !important;
 }
 
@@ -849,10 +841,12 @@ p.statusText {
 input.smallImageButton {
   background-position: center center;
   background-repeat: no-repeat;
-  height:24px;
+  height: var(--lam-icon-size);
+  width: var(--lam-icon-size);
   border: 0px;
   background-color: transparent;
-  cursor:pointer;
+  background-size: contain;
+  cursor: pointer;
 }
 
 .lam-input-error {
