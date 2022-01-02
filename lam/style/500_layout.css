@@ -837,8 +837,8 @@ p.statusText {
 input.smallImageButton {
   background-position: center center;
   background-repeat: no-repeat;
-  height: var(--lam-icon-size);
-  width: var(--lam-icon-size);
+  height: var(--lam-icon-size) !important;
+  width: var(--lam-icon-size) !important;
   border: 0px;
   background-color: transparent;
   background-size: contain;
