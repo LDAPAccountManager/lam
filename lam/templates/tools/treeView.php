@@ -4,7 +4,7 @@ namespace LAM\TOOLS\TREEVIEW;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2021  Roland Gruber
+  Copyright (C) 2021 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -161,7 +161,7 @@ function showTree() {
 	if ($_SESSION['config']->isToolActive('ImportExport')) {
 		$exportMenu = '"exportNode": {
 								"label": "' . _('Export') . '",
-								"icon": "../../graphics/export.png",
+								"icon": "../../graphics/export.svg",
 								"action": function(obj) {
 									window.location.href = "../tools/importexport.php?tab=export&dn=" + node.id;
 								}

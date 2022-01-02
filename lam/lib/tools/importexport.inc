@@ -76,7 +76,7 @@ class ImportExport extends LAMTool {
 	 * {@inheritDoc}
 	 */
 	public function getImageLink(): string {
-		return 'importexport.png';
+		return 'export.svg';
 	}
 
 	/**

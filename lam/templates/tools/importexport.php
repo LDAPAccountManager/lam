@@ -108,10 +108,10 @@ if (!empty($_GET['tab']) && ($_GET['tab'] === 'export')) {
 	<div id="tabs">
 		<ul>
 			<li id="tab_import">
-				<a href="#tab-import"><img alt="import" src="../../graphics/import.png"> <?php echo _('Import') ?> </a>
+				<a href="#tab-import"><img alt="import" src="../../graphics/import.svg"> <?php echo _('Import') ?> </a>
 			</li>
 			<li id="tab_export">
-				<a href="#tab-export"><img alt="export" src="../../graphics/export.png"> <?php echo _('Export') ?> </a>
+				<a href="#tab-export"><img alt="export" src="../../graphics/export.svg"> <?php echo _('Export') ?> </a>
 			</li>
 		</ul>
 		<div id="tab-import">

@@ -59,6 +59,7 @@
 	--lam-larger-space: 2rem;
 
 	--lam-icon-size: 16px;
+	--lam-icon-size-big: 32px;
 }
 
 
@@ -116,10 +117,6 @@ a img {
 	border: 0px;
 }
 
-a.img-padding1 img {
-	padding: 1rem;
-}
-
 a.classicBold {
 	color: blue;
 	text-decoration: none;
@@ -129,6 +126,11 @@ a.classicBold {
 a.icon img {
 	width: var(--lam-icon-size);
 	height: var(--lam-icon-size);
+}
+
+a.icon-big img {
+	width: var(--lam-icon-size-big);
+	height: var(--lam-icon-size-big);
 }
 
 a.icon-active img {
@@ -246,6 +248,10 @@ table.accountlist > tbody > tr:nth-child(even) {
 table.accountlist > tbody > tr:hover {
 	background-color: var(--lam-table-background-color-hover);
 	color: var(--lam-table-text-color-hover);
+}
+
+.lam-margin-large {
+	margin: var(--lam-large-space);
 }
 
 .lam-margin-small {

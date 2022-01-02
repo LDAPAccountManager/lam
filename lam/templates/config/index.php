@@ -5,7 +5,7 @@ use htmlResponsiveRow;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2021  Roland Gruber
+  Copyright (C) 2003 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -85,20 +85,20 @@ $content = new htmlResponsiveRow();
         <?php
         $topContent = new htmlResponsiveRow();
         $topContent->setCSSClasses(array('maxrow fullwidth roundedShadowBox spacing5'));
-        $mainCfgLink = new htmlLink(_("Edit general settings"), 'mainlogin.php', '../../graphics/bigTools.png');
-        $mainCfgLink->setCSSClasses(array('img-padding1 display-as-block'));
+        $mainCfgLink = new htmlLink(_("Edit general settings"), 'mainlogin.php', '../../graphics/configure.svg');
+        $mainCfgLink->setCSSClasses(array('lam-margin-large display-as-block icon-big'));
         $topContent->add($mainCfgLink, 12);
         $cfgLink = new htmlLink(_("Edit server profiles"), 'conflogin.php', '../../graphics/profiles.png');
-        $cfgLink->setCSSClasses(array('img-padding1 display-as-block'));
+        $cfgLink->setCSSClasses(array('lam-margin-large display-as-block icon-big'));
         $topContent->add($cfgLink, 12);
         if (isLAMProVersion()) {
         	$selfServiceLink = new htmlLink(_("Edit self service"), '../selfService/adminLogin.php', '../../graphics/bigPeople.png');
-        	$selfServiceLink->setCSSClasses(array('img-padding1 display-as-block'));
+        	$selfServiceLink->setCSSClasses(array('lam-margin-large display-as-block icon-big'));
 	        $topContent->add($selfServiceLink, 12);
         }
         $topContent->addVerticalSpacer('1rem');
-        $importExportLink = new htmlLink(_("Import and export configuration"), 'confImportExport.php', '../../graphics/confImportExport.png');
-        $importExportLink->setCSSClasses(array('img-padding1 display-as-block'));
+        $importExportLink = new htmlLink(_("Import and export configuration"), 'confImportExport.php', '../../graphics/export.svg');
+        $importExportLink->setCSSClasses(array('lam-margin-large display-as-block icon-big'));
         $topContent->add($importExportLink, 12);
         $content->add($topContent, 12);
         $content->addVerticalSpacer('4rem');

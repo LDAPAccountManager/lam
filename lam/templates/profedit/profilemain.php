@@ -269,14 +269,14 @@ foreach ($profileClasses as $profileClass) {
 	$deleteLink->setCSSClasses(array('margin3'));
 	$buttonGroup->addElement($deleteLink);
 	if (count($configProfiles) > 1) {
-		$importLink = new htmlLink(null, '#', '../../graphics/import.png');
+		$importLink = new htmlLink(null, '#', '../../graphics/import.svg');
 		$importLink->setTitle(_('Import profiles'));
 		$importLink->setOnClick("window.lam.profilePdfEditor.showDistributionDialog('" . _("Import profiles") . "', '" .
 								_('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', 'import'); return false;");
 		$importLink->setCSSClasses(array('margin3'));
 		$buttonGroup->addElement($importLink);
 	}
-	$exportLink = new htmlLink(null, '#', '../../graphics/export.png');
+	$exportLink = new htmlLink(null, '#', '../../graphics/export.svg');
 	$exportLink->setTitle(_('Export profile'));
 	$exportLink->setOnClick("window.lam.profilePdfEditor.showDistributionDialog('" . _("Export profile") . "', '" .
 							_('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', 'export', '" . 'profile_' . $profileClass['typeId'] . "'); return false;");

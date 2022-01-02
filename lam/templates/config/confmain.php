@@ -399,7 +399,7 @@ if (isLAMProVersion()) {
 }
 
 // tool settings
-$row->add(new htmlSubTitle(_("Tool settings"), '../../graphics/bigTools.png',null, true), 12);
+$row->add(new htmlSubTitle(_("Tool settings"), '../../graphics/configure.svg',null, true), 12);
 $toolSettings = $conf->getToolSettings();
 $tools = getTools();
 $row->add(new htmlOutputText(_('Hidden tools')), 12);

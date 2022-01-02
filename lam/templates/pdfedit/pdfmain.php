@@ -377,7 +377,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 			$buttonGroup->addElement($deleteLink);
 
 			if (count($configProfiles) > 1) {
-				$importLink = new htmlLink(null, '#', '../../graphics/import.png');
+				$importLink = new htmlLink(null, '#', '../../graphics/import.svg');
 				$importLink->setTitle(_('Import PDF structures'));
 				$importLink->setOnClick("window.lam.profilePdfEditor.showDistributionDialog('" . _("Import PDF structures") . "', '" .
 										_('Ok') . "', '" . _('Cancel') . "', '" . $templateClass['typeId'] .
@@ -385,7 +385,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 				$importLink->setCSSClasses(array('margin3'));
 				$buttonGroup->addElement($importLink);
 			}
-			$exportLink = new htmlLink(null, '#', '../../graphics/export.png');
+			$exportLink = new htmlLink(null, '#', '../../graphics/export.svg');
 			$exportLink->setTitle(_('Export PDF structure'));
 			$exportLink->setOnClick("window.lam.profilePdfEditor.showDistributionDialog('" . _("Export PDF structure") . "', '" .
 									_('Ok') . "', '" . _('Cancel') . "', '" . $templateClass['typeId'] .
@@ -418,13 +418,13 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 		$delLogo = new htmlButton('delLogo', 'delete.png', true);
 		$delLogo->setTitle(_('Delete'));
 	    $logoButtonGroup->addElement($delLogo);
-        $importLogoLink = new htmlLink(null, '#', '../../graphics/import.png');
+        $importLogoLink = new htmlLink(null, '#', '../../graphics/import.svg');
 	    $importLogoLink->setTitle(_('Import logo'));
 	    $importLogoLink->setOnClick("window.lam.profilePdfEditor.showPdfLogoImportDialog('" . _("Import logo") . "', '" .
             _('Ok') . "', '" . _('Cancel') . "'); return false;");
     	$importLogoLink->setCSSClasses(array('margin3'));
         $logoButtonGroup->addElement($importLogoLink);
-        $exportLogoLink = new htmlLink(null, '#', '../../graphics/export.png');
+        $exportLogoLink = new htmlLink(null, '#', '../../graphics/export.svg');
 	    $exportLogoLink->setTitle(_('Export logo'));
     	$exportLogoLink->setOnClick("window.lam.profilePdfEditor.showPdfLogoExportDialog('" . _("Export logo") . "', '" .
             _('Ok') . "', '" . _('Cancel') . "'); return false;");
