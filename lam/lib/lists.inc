@@ -426,17 +426,29 @@ class lamList {
 			$buttons = new htmlGroup();
 			if (strtolower($attributeName) == $this->sortColumn) {
 				if ($this->sortDirection < 0) {
-					$buttons->addElement(new htmlLink(null, $link . '&sortdirection=1', '../../graphics/downarrows-black.png'));
-					$buttons->addElement(new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/uparrows.png'));
+				    $down = new htmlLink(null, $link . '&sortdirection=1', '../../graphics/pan-down.svg');
+				    $down->setCSSClasses(array('icon noMarginSides'));
+					$buttons->addElement($down);
+					$up = new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/pan-up.svg');
+					$up->setCSSClasses(array('icon icon-active noMarginSides'));
+					$buttons->addElement($up);
 				}
 				else {
-					$buttons->addElement(new htmlLink(null, $link . '&sortdirection=1', '../../graphics/downarrows.png'));
-					$buttons->addElement(new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/uparrows-black.png'));
+					$down = new htmlLink(null, $link . '&sortdirection=1', '../../graphics/pan-down.svg');
+					$down->setCSSClasses(array('icon icon-active noMarginSides'));
+					$buttons->addElement($down);
+					$up = new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/pan-up.svg');
+					$up->setCSSClasses(array('icon noMarginSides'));
+					$buttons->addElement($up);
 				}
 			}
 			else {
-				$buttons->addElement(new htmlLink(null, $link . '&sortdirection=1', '../../graphics/downarrows-black.png'));
-				$buttons->addElement(new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/uparrows-black.png'));
+				$down = new htmlLink(null, $link . '&sortdirection=1', '../../graphics/pan-down.svg');
+				$down->setCSSClasses(array('icon noMarginSides'));
+				$buttons->addElement($down);
+				$up = new htmlLink(null, $link . '&sortdirection=-1', '../../graphics/pan-up.svg');
+				$up->setCSSClasses(array('icon noMarginSides'));
+				$buttons->addElement($up);
 			}
 			$sortElements[] = $buttons;
 		}
