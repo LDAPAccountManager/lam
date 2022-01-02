@@ -335,7 +335,9 @@ div.account-types-popup div.columns:last-child {
 
 	div.lam-navigation-layer {
 		position: absolute;
-		width: 100vw;
+		width: calc(100vw - 4rem - 8px);
+		margin-left: 2rem;
+		margin-right: 2rem;
 		overflow: hidden;
 		z-index: 9;
 		top: 3.1rem;
