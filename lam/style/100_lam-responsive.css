@@ -330,6 +330,15 @@ div.account-types-popup div.columns:last-child {
 
 }
 
+/* mobile and tablet */
+@media only screen and (max-width: 64.0625em) {
+
+	.hide-on-mobile-and-tablet {
+		display: none !important;
+	}
+
+}
+
 /* tablet and bigger */
 @media only screen and (min-width: 40.0625em) {
 

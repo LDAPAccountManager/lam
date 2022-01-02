@@ -107,7 +107,7 @@ function printHeader(string $headerPrefix): void {
             <a href="https://www.ldap-account-manager.org/" target="new_window">
                 <img class="align-middle" width="24" height="24" alt="help" src="<?php echo $headerPrefix; ?>/graphics/logo24.png">
                 <span class="hide-on-tablet">&nbsp;&nbsp;<?php echo $userName?></span>
-                <span class="hide-on-mobile">
+                <span class="hide-on-mobile-and-tablet">
                         <?php
                         echo getLAMVersionText();
                         ?>
