@@ -6,7 +6,7 @@ use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2021  Roland Gruber
+  Copyright (C) 2003 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1437,20 +1437,22 @@ class accountContainer {
 
 		$type = $this->type->getBaseType();
 		$buttonGroup = new htmlGroup();
+		$backToListButton = new htmlButton('accountContainerBackToList', $type->LABEL_BACK_TO_ACCOUNT_LIST);
+		$backToListButton->setCSSClasses(array('lam-primary fullwidth-mobile-only'));
+		$buttonGroup->addElement($backToListButton);
+		$buttonGroup->addElement(new htmlSpacer('1rem', null));
 		if (checkIfNewEntriesAreAllowed($this->type->getId())) {
 			$createButton = new htmlButton('accountContainerCreateAgain', $type->LABEL_CREATE_ANOTHER_ACCOUNT);
-			$createButton->setCSSClasses(array('lam-primary'));
+			$createButton->setCSSClasses(array('lam-secondary fullwidth-mobile-only'));
 			$buttonGroup->addElement($createButton);
-			$buttonGroup->addElement(new htmlSpacer('10px', null));
+			$buttonGroup->addElement(new htmlSpacer('0.5rem', null));
 		}
 		$pdfButton = new htmlButton('accountContainerCreatePDF', _('Create PDF file'));
-		$pdfButton->setCSSClasses(array('lam-secondary'));
+		$pdfButton->setCSSClasses(array('lam-secondary fullwidth-mobile-only'));
 		$buttonGroup->addElement($pdfButton);
-		$buttonGroup->addElement(new htmlSpacer('10px', null));
-		$backToListButton = new htmlButton('accountContainerBackToList', $type->LABEL_BACK_TO_ACCOUNT_LIST);
-		$buttonGroup->addElement($backToListButton);
-		$buttonGroup->addElement(new htmlSpacer('10px', null));
+		$buttonGroup->addElement(new htmlSpacer('1rem', null));
 		$backToEditButton = new htmlButton('accountContainerBackToEdit', _('Edit again'));
+		$backToEditButton->setCSSClasses(array('fullwidth-mobile-only'));
 		$buttonGroup->addElement($backToEditButton);
 		$container->add($buttonGroup);
 
