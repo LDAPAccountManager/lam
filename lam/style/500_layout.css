@@ -700,6 +700,14 @@ tr.account {
   background-color:#FFFFEE;
 }
 
+li.lam-active-tab {
+	border: 1px solid #c5c5c5 !important;
+	background: var(--lam-background-color-default) !important;
+	margin-bottom: -1px !important;
+	padding-bottom: 1px !important;
+	border-bottom-width: 0px !important;
+}
+
 /* --- workaround for vertical tabs --- */
 
 #lamVerticalTabs {
@@ -745,6 +753,21 @@ tr.account {
 	text-align: left;
 	display:block;
 	color: #555555;
+}
+
+li.ui-tabs-active {
+	background: var(--lam-background-color-default) !important;
+	border: 1px solid var(--lam-border-color) !important;
+	border-bottom-width: 0px !important;
+}
+
+li.ui-tabs-active a {
+	color: #454545 !important;
+}
+
+h3.ui-accordion-header-active {
+	background: var(--lam-background-color-primary) !important;
+	border: 1px solid var(--lam-border-color-primary) !important;
 }
 
 button.lam-account-type {

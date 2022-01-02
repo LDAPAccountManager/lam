@@ -992,13 +992,6 @@ window.lam.tools.addSavedSelectListener = function() {
 };
 
 /**
- * Activates tabs.
- */
-window.lam.tools.activateTab = function() {
-	jQuery('.lam-active-tab').addClass('ui-tabs-active ui-state-active');
-};
-
-/**
  * Sets the focus on the initial field.
  */
 window.lam.tools.setInitialFocus = function() {
@@ -2870,7 +2863,6 @@ jQuery(document).ready(function() {
 	window.lam.form.autoTrim();
 	window.lam.account.addDefaultProfileListener();
 	window.lam.tools.addSavedSelectListener();
-	window.lam.tools.activateTab();
 	window.lam.tools.setInitialFocus();
 	window.lam.tools.webcam.init();
 	window.lam.tools.schema.select();
