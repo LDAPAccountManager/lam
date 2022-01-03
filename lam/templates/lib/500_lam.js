@@ -2770,6 +2770,7 @@ window.lam.topmenu.openSubmenu = function(event, layerId, listener) {
 	}
 	const height = layer.getElementsByClassName('lam-navigation-layer-content')[0].offsetHeight;
 	layer.style.height = height + 'px';
+	window.lam.topmenu.lastOpened = new Date().getTime();
 	document.addEventListener("click", listener);
 	document.addEventListener("mouseover", listener);
 }
@@ -2780,6 +2781,10 @@ window.lam.topmenu.openSubmenu = function(event, layerId, listener) {
  * @param event event
  */
 window.lam.topmenu.subMenuCloseListenerTools = function (event) {
+	const timeLimit = new Date().getTime() - 100;
+	if (!window.lam.topmenu.lastOpened || (timeLimit < window.lam.topmenu.lastOpened)) {
+		return;
+	}
 	if ((event.type == 'click') && !event.target.closest('#lam-navigation-tools')) {
 		document.getElementById('lam-navigation-tools').style.height = "0px";
 	}
@@ -2794,6 +2799,10 @@ window.lam.topmenu.subMenuCloseListenerTools = function (event) {
  * @param event event
  */
 window.lam.topmenu.subMenuCloseListenerTypes = function (event) {
+	const timeLimit = new Date().getTime() - 100;
+	if (!window.lam.topmenu.lastOpened || (timeLimit < window.lam.topmenu.lastOpened)) {
+		return;
+	}
 	if ((event.type == 'click') && !event.target.closest('#lam-navigation-types')) {
 		document.getElementById('lam-navigation-types').style.height = "0px";
 	}
