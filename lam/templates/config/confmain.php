@@ -199,7 +199,7 @@ printConfigurationPageTabs(ConfigurationPageTab::GENERAL);
 
 $row = new htmlResponsiveRow();
 
-$serverSettings = new htmlSubTitle(_("Server settings"), '../../graphics/profiles.png', null, true);
+$serverSettings = new htmlSubTitle(_("Server settings"), '../../graphics/world.svg', null, true);
 $row->add($serverSettings, 12);
 // server URL
 $urlInput = new htmlResponsiveInputField(_("Server address"), 'serverurl', $conf->get_ServerURL(), '201');

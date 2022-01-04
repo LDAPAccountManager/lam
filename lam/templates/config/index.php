@@ -88,11 +88,11 @@ $content = new htmlResponsiveRow();
         $mainCfgLink = new htmlLink(_("Edit general settings"), 'mainlogin.php', '../../graphics/configure.svg');
         $mainCfgLink->setCSSClasses(array('lam-margin-large display-as-block icon-big'));
         $topContent->add($mainCfgLink, 12);
-        $cfgLink = new htmlLink(_("Edit server profiles"), 'conflogin.php', '../../graphics/profiles.png');
+        $cfgLink = new htmlLink(_("Edit server profiles"), 'conflogin.php', '../../graphics/world.svg');
         $cfgLink->setCSSClasses(array('lam-margin-large display-as-block icon-big'));
         $topContent->add($cfgLink, 12);
         if (isLAMProVersion()) {
-        	$selfServiceLink = new htmlLink(_("Edit self service"), '../selfService/adminLogin.php', '../../graphics/bigPeople.png');
+        	$selfServiceLink = new htmlLink(_("Edit self service"), '../selfService/adminLogin.php', '../../graphics/people.svg');
         	$selfServiceLink->setCSSClasses(array('lam-margin-large display-as-block icon-big'));
 	        $topContent->add($selfServiceLink, 12);
         }

@@ -111,7 +111,7 @@ function printConfigurationPageTabs($active) {
 		),
 		ConfigurationPageTab::MODULES => array(
 			'id' => 'editmodules',
-			'icon' => 'modules.png',
+			'icon' => 'modules.svg',
 			'label' => _('Modules')
 		),
 		ConfigurationPageTab::MODULE_SETTINGS => array(
