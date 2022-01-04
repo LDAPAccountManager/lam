@@ -3,7 +3,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2021  Roland Gruber
+  Copyright (C) 2005 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -288,43 +288,43 @@ class user extends baseType {
 							&& (!$ppolicyAvailable || $ppolicyLocked)
 							&& (!$windowsAvailable || $windowsLocked);
 		// build tooltip
-		$icon = 'unlocked.png';
+		$icon = 'unlocked.svg';
 		if ($fullyLocked) {
-			$icon = 'lock.png';
+			$icon = 'locked.svg';
 		}
 		elseif ($partiallyLocked) {
-			$icon = 'partiallyLocked.png';
+			$icon = 'partiallyLocked.svg';
 		}
 		$statusTable = '<table border=0>';
 		// Unix
 		if ($unixAvailable) {
-			$unixIcon = 'unlocked.png';
+			$unixIcon = 'unlocked.svg';
 			if ($unixLocked) {
-				$unixIcon = 'lock.png';
+				$unixIcon = 'locked.svg';
 			}
 			$statusTable .= '<tr><td>' . _('Unix') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $unixIcon . '&quot;></td></tr>';
 		}
 		// Samba
 		if ($sambaAvailable) {
-			$sambaIcon = 'unlocked.png';
+			$sambaIcon = 'unlocked.svg';
 			if ($sambaLocked) {
-				$sambaIcon = 'lock.png';
+				$sambaIcon = 'locked.svg';
 			}
 			$statusTable .= '<tr><td>' . _('Samba 3') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $sambaIcon . '&quot;></td></tr>';
 		}
 		// PPolicy
 		if ($ppolicyAvailable) {
-			$ppolicyIcon = 'unlocked.png';
+			$ppolicyIcon = 'unlocked.svg';
 			if ($ppolicyLocked) {
-				$ppolicyIcon = 'lock.png';
+				$ppolicyIcon = 'locked.svg';
 			}
 			$statusTable .= '<tr><td>' . _('Password policy') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $ppolicyIcon . '&quot;></td></tr>';
 		}
 		// Windows
 		if ($windowsAvailable) {
-			$windowsIcon = 'unlocked.png';
+			$windowsIcon = 'unlocked.svg';
 			if ($windowsLocked) {
-				$windowsIcon = 'lock.png';
+				$windowsIcon = 'locked.svg';
 			}
 			$statusTable .= '<tr><td>' . _('Windows') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $windowsIcon . '&quot;></td></tr>';
 		}
@@ -333,17 +333,17 @@ class user extends baseType {
 		}
 		// 389ds locked
 		if ($is389dsLocked) {
-			$statusTable .= '<tr><td>' . _('Locked') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/lock.png&quot;></td></tr>';
+			$statusTable .= '<tr><td>' . _('Locked') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/locked.svg&quot;></td></tr>';
 		}
 		// 389ds deactivated
 		if ($is389dsAvailable) {
 			$text389dsActivation = $is389dsDeactivated ? _('Deactivated') : _('Active');
-			$icon389dsActivation = $is389dsDeactivated ? 'lock.png' : 'unlocked.png';
+			$icon389dsActivation = $is389dsDeactivated ? 'locked.svg' : 'unlocked.svg';
 			$statusTable .= '<tr><td>' . $text389dsActivation . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $icon389dsActivation . '&quot;></td></tr>';
 		}
 		// 389ds password expired
 		if ($is389dsPwdExpired) {
-			$statusTable .= '<tr><td>' . _('Password expired') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/lock.png&quot;></td></tr>';
+			$statusTable .= '<tr><td>' . _('Password expired') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/locked.svg&quot;></td></tr>';
 		}
 		$statusTable .= '</table>';
 		$tipContent = $statusTable;
@@ -381,10 +381,10 @@ class user extends baseType {
 		if (!empty($expiredLabels)) {
 			$expiredTip = '<table border=0>';
 			foreach ($expiredLabels as $label) {
-				$expiredTip .= '<tr><td>' . $label . '</td><td><img src=&quot;../../graphics/expired.png&quot;/></td></tr>';
+				$expiredTip .= '<tr><td>' . $label . '</td><td><img src=&quot;../../graphics/expired.svg&quot;/></td></tr>';
 			}
 			$expiredTip .= '</table>';
-			$dialogDiv .= '<img alt="expired" helptitle="' . _('Expired') . '" helpdata="' . $expiredTip . '" height=16 width=16 src="../../graphics/expired.png">&nbsp;&nbsp;&nbsp;';
+			$dialogDiv .= '<img alt="expired" helptitle="' . _('Expired') . '" helpdata="' . $expiredTip . '" height=16 width=16 src="../../graphics/expired.svg">&nbsp;&nbsp;&nbsp;';
 		}
 		return $dialogDiv;
 	}
@@ -455,31 +455,31 @@ class user extends baseType {
 			$lockContent = new htmlTable();
 
 			if ($unixAvailable && !$unixLocked) {
-				$lockContent->addElement(new htmlImage('../../graphics/tux.png'));
+				$lockContent->addElement(new htmlImage('../../graphics/tux.png', '32px', '32px'));
 				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLockUnix', true, _('Unix'), null, false), true);
 			}
 			if ($sambaAvailable && !$sambaLocked) {
-				$lockContent->addElement(new htmlImage('../../graphics/samba.png'));
+				$lockContent->addElement(new htmlImage('../../graphics/samba.png', '32px', '32px'));
 				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLockSamba', true, _('Samba 3'), null, false), true);
 			}
 			if ($ppolicyAvailable && !$ppolicyLocked) {
-				$lockContent->addElement(new htmlImage('../../graphics/security.png'));
+				$lockContent->addElement(new htmlImage('../../graphics/locked.svg', '32px', '32px'));
 				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLockPPolicy', true, _('PPolicy'), null, false), true);
 			}
 			if ($is389dsAvailable && !$is389dsDeactivated) {
-				$lockContent->addElement(new htmlImage('../../graphics/security.png'));
+				$lockContent->addElement(new htmlImage('../../graphics/locked.svg', '32px', '32px'));
 				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusDeactivate389ds', true, _('Deactivate'), null, false), true);
 			}
 			if ($windowsAvailable && !$windowsLocked) {
-				$lockContent->addElement(new htmlImage('../../graphics/samba.png'));
+				$lockContent->addElement(new htmlImage('../../graphics/samba.png', '32px', '32px'));
 				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLockWindows', true, _('Windows'), null, false), true);
 			}
 			if ($unixAvailable) {
-				$lockContent->addElement(new htmlImage('../../graphics/groupBig.png'));
+				$lockContent->addElement(new htmlImage('../../graphics/groupBig.png', '32px', '32px'));
 				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusRemoveUnixGroups', true, _('Remove from all Unix groups'), null, false), true);
 			}
 			if ($unixAvailable && posixAccount::areGroupOfNamesActive()) { // check unixAvailable because Unix module removes group memberships
-				$lockContent->addElement(new htmlImage('../../graphics/groupBig.png'));
+				$lockContent->addElement(new htmlImage('../../graphics/groupBig.png', '32px', '32px'));
 				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusRemoveGONGroups', true, _('Remove from all group of (unique) names'), null, false), true);
 			}
 
@@ -494,35 +494,35 @@ class user extends baseType {
 			$unlockContent = new htmlTable();
 
 			if ($unixAvailable && $unixLocked) {
-				$unlockContent->addElement(new htmlImage('../../graphics/tux.png'));
+				$unlockContent->addElement(new htmlImage('../../graphics/tux.png', '32px', '32px'));
 				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockUnix', true, _('Unix'), null, false), true);
 			}
 			if ($sambaAvailable && $sambaLocked) {
-				$unlockContent->addElement(new htmlImage('../../graphics/samba.png'));
+				$unlockContent->addElement(new htmlImage('../../graphics/samba.png', '32px', '32px'));
 				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockSamba', true, _('Samba 3'), null, false), true);
 			}
 			if ($ppolicyAvailable && $ppolicyLocked) {
-				$unlockContent->addElement(new htmlImage('../../graphics/security.png'));
+				$unlockContent->addElement(new htmlImage('../../graphics/locked.svg', '32px', '32px'));
 				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockPPolicy', true, _('PPolicy'), null, false), true);
 			}
 			if ($is389dsAvailable && $is389dsDeactivated) {
-				$unlockContent->addElement(new htmlImage('../../graphics/security.png'));
+				$unlockContent->addElement(new htmlImage('../../graphics/locked.svg', '32px', '32px'));
 				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusActivate389ds', true, _('Activate'), null, false), true);
 			}
 			if ($is389dsAvailable && $is389dsPwdExpired) {
-				$unlockContent->addElement(new htmlImage('../../graphics/security.png'));
+				$unlockContent->addElement(new htmlImage('../../graphics/locked.svg', '32px', '32px'));
 				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusPwdUnexpire389ds', true, _('Clear password expiration'), null, false), true);
 			}
 			if ($windowsAvailable && $windowsLocked) {
-				$unlockContent->addElement(new htmlImage('../../graphics/samba.png'));
+				$unlockContent->addElement(new htmlImage('../../graphics/samba.png', '32px', '32px'));
 				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockWindows', true, _('Windows'), null, false), true);
 			}
 			if ($windowsAvailable && $windowsPasswordLocked) {
-				$unlockContent->addElement(new htmlImage('../../graphics/samba.png'));
+				$unlockContent->addElement(new htmlImage('../../graphics/samba.png', '32px', '32px'));
 				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockWindowsPassword', true, _('Locked till') . ' ' . $windowsPasswordLockedTime->format('Y-m-d H:i:s'), null, false), true);
 			}
 			if ($is389dsLocked) {
-				$unlockContent->addElement(new htmlImage('../../graphics/security.png'));
+				$unlockContent->addElement(new htmlImage('../../graphics/locked.svg', '32px', '32px'));
 				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlock389ds', true, _('Unlock'), null, false), true);
 			}
 
@@ -1051,15 +1051,15 @@ class lamUserList extends lamList {
 		$shadowPasswordExpired = shadowAccount::isPasswordExpired($attrs);
 		$windowsExpired = windowsUser::isAccountExpired($attrs);
 		$expired = $shadowExpired || $shadowPasswordExpired || $windowsExpired;
-		$icon = 'unlocked.png';
+		$icon = 'unlocked.svg';
 		if ($expired) {
-			$icon = 'expired.png';
+			$icon = 'expired.svg';
 		}
 		elseif ($fullyLocked) {
-			$icon = 'lock.png';
+			$icon = 'locked.svg';
 		}
 		elseif ($partiallyLocked) {
-			$icon = 'partiallyLocked.png';
+			$icon = 'partiallyLocked.svg';
 		}
 		// print icon and detail tooltips
 		if ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable ||
@@ -1067,44 +1067,44 @@ class lamUserList extends lamList {
 			$tipContent = '<table border=0>';
 			// Shadow expired
 			if ($shadowExpired) {
-				$tipContent .= '<tr><td>' . _('Shadow') . ': ' . _('Account expiration') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/expired.png&quot;></td></tr>';
+				$tipContent .= '<tr><td>' . _('Shadow') . ': ' . _('Account expiration') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/expired.svg&quot;></td></tr>';
 			}
 			elseif ($shadowPasswordExpired) {
-				$tipContent .= '<tr><td>' . _('Shadow') . ': ' . _('Password expiration') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/expired.png&quot;></td></tr>';
+				$tipContent .= '<tr><td>' . _('Shadow') . ': ' . _('Password expiration') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/expired.svg&quot;></td></tr>';
 			}
 			// Unix
 			if ($unixAvailable) {
-				$unixIcon = 'unlocked.png';
+				$unixIcon = 'unlocked.svg';
 				if ($unixLocked) {
-					$unixIcon = 'lock.png';
+					$unixIcon = 'locked.svg';
 				}
 				$tipContent .= '<tr><td>' . _('Unix') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $unixIcon . '&quot;></td></tr>';
 			}
 			// Samba
 			if ($sambaAvailable) {
-				$sambaIcon = 'unlocked.png';
+				$sambaIcon = 'unlocked.svg';
 				if ($sambaLocked) {
-					$sambaIcon = 'lock.png';
+					$sambaIcon = 'locked.svg';
 				}
 				$tipContent .= '<tr><td>' . _('Samba 3') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $sambaIcon . '&quot;></td></tr>';
 			}
 			// PPolicy
 			if ($ppolicyAvailable) {
-				$ppolicyIcon = 'unlocked.png';
+				$ppolicyIcon = 'unlocked.svg';
 				if ($ppolicyLocked) {
-					$ppolicyIcon = 'lock.png';
+					$ppolicyIcon = 'locked.svg';
 				}
 				$tipContent .= '<tr><td>' . _('Password policy') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $ppolicyIcon . '&quot;></td></tr>';
 			}
 			// Windows
 			if ($windowsAvailable) {
-				$windowsIcon = 'unlocked.png';
+				$windowsIcon = 'unlocked.svg';
 				if ($windowsLocked) {
-					$windowsIcon = 'lock.png';
+					$windowsIcon = 'locked.svg';
 				}
 				$tipContent .= '<tr><td>' . _('Windows') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $windowsIcon . '&quot;></td></tr>';
 				if ($windowsExpired) {
-					$tipContent .= '<tr><td>' . _('Windows') . ': ' . _('Account expiration') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/expired.png&quot;></td></tr>';
+					$tipContent .= '<tr><td>' . _('Windows') . ': ' . _('Account expiration') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/expired.svg&quot;></td></tr>';
 				}
 			}
 			if ($windowsAvailable && $windowsPasswordLocked) {
@@ -1112,15 +1112,15 @@ class lamUserList extends lamList {
 			}
 			// 389 locked
 			if ($is389dsLocked) {
-				$tipContent .= '<tr><td>' . _('Locked') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/lock.png&quot;></td></tr>';
+				$tipContent .= '<tr><td>' . _('Locked') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/locked.svg&quot;></td></tr>';
 			}
 			// 389 deactivation
 			if ($is389dsDeactivated) {
-				$tipContent .= '<tr><td>' . _('Deactivated') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/lock.png&quot;></td></tr>';
+				$tipContent .= '<tr><td>' . _('Deactivated') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/locked.svg&quot;></td></tr>';
 			}
 			// 389 password expired
 			if ($is389dsPwdExpired) {
-				$tipContent .= '<tr><td>' . _('Password expired') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/lock.png&quot;></td></tr>';
+				$tipContent .= '<tr><td>' . _('Password expired') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/locked.svg&quot;></td></tr>';
 			}
 			$tipContent .= '</table>';
 			return new htmlOutputText('<img helptitle="' . _('Account status') . '" helpdata="' . $tipContent . '" alt="status" height=16 width=16 src="../../graphics/' . $icon . '">', false);

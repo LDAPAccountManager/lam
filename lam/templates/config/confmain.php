@@ -25,7 +25,7 @@ use ServerProfilePersistenceManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2021  Roland Gruber
+  Copyright (C) 2003 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -439,7 +439,7 @@ $_SESSION['confmain_toolTypes'] = $toolConfigOptionTypes;
 $row->addVerticalSpacer('2rem');
 
 // security settings
-$row->add(new htmlSubTitle(_("Security settings"), '../../graphics/security.png', null, true), 12);
+$row->add(new htmlSubTitle(_("Security settings"), '../../graphics/locked.svg', null, true), 12);
 // login method
 $loginOptions = array(
 	_('Fixed list') => LAMConfig::LOGIN_LIST,
@@ -480,7 +480,7 @@ $row->add(new htmlResponsiveInputCheckbox('httpAuthentication', ($conf->getHttpA
 $row->addVerticalSpacer('1rem');
 
 // password policy override
-$row->add(new htmlSubTitle(_("Global password policy override"), '../../graphics/lock.png'));
+$row->add(new htmlSubTitle(_("Global password policy override"), '../../graphics/locked.svg'));
 $optionsPwdLength = array('');
 for ($i = 1; $i <= 50; $i++) {
 	$optionsPwdLength[] = $i;
@@ -493,7 +493,7 @@ $row->add(new htmlResponsiveSelect('pwdPolicyMinSymbolic', $optionsPwdLength, ar
 
 // 2factor authentication
 if (extension_loaded('curl')) {
-	$row->add(new htmlSubTitle(_("2-factor authentication"), '../../graphics/lock.png'), 12);
+	$row->add(new htmlSubTitle(_("2-factor authentication"), '../../graphics/locked.svg'), 12);
 	$twoFactorOptions = array(
 			_('None') => TwoFactorProviderService::TWO_FACTOR_NONE,
 			'privacyIDEA' => TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA,
