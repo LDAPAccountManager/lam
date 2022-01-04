@@ -526,12 +526,6 @@ table.collapse {
 	background-position: 0px 0px !important;
 }
 
-.searchButton {
-	background-image: url(../graphics/search.png) !important;
-	background-size: 16px 16px;
-	background-position: 0px 0px !important;
-}
-
 .smallPadding span {
 	padding: 0.1em 0.4em !important;
 }

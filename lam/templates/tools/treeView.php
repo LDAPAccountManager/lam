@@ -177,7 +177,7 @@ function showTree() {
 							},';
 	$searchMenu = '"search": {
 								"label": "' . _('Search') . '",
-								"icon": "../../graphics/search.png",
+								"icon": "../../graphics/search.svg",
 								"action": function(obj) {
 									window.lam.treeview.search("' . getSecurityTokenName() . '", "' . getSecurityTokenValue() . '", node.id);
 								}
