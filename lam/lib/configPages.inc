@@ -106,7 +106,7 @@ function printConfigurationPageTabs($active) {
 		),
 		ConfigurationPageTab::TYPES => array(
 			'id' => 'edittypes',
-			'icon' => 'gear.png',
+			'icon' => 'types.svg',
 			'label' => _('Account types')
 		),
 		ConfigurationPageTab::MODULES => array(
@@ -116,14 +116,14 @@ function printConfigurationPageTabs($active) {
 		),
 		ConfigurationPageTab::MODULE_SETTINGS => array(
 			'id' => 'moduleSettings',
-			'icon' => 'moduleSettings.png',
+			'icon' => 'gears.svg',
 			'label' => _('Module settings')
 		),
 	);
 	if (isLAMProVersion()) {
 		$tabs[ConfigurationPageTab::JOBS] = array(
 			'id' => 'jobs',
-			'icon' => 'clock.png',
+			'icon' => 'clock.svg',
 			'label' => _('Jobs')
 		);
 	}
