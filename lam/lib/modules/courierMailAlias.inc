@@ -2,7 +2,7 @@
 /*
  * This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
  * Copyright (C) 2017 Lars Althof
- *               2017 - 2019 Roland Gruber
+ *               2017 - 2022 Roland Gruber
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ class courierMailAlias extends baseModule {
 	function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'courierMail.png';
+		$return['icon'] = 'mail.svg';
 		// alias name
 		$return["alias"] = _("Courier");
 		// LDAP filter

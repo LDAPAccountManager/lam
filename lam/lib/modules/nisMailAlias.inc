@@ -59,7 +59,7 @@ class nisMailAlias extends baseModule {
 	function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'mailBig.png';
+		$return['icon'] = 'mail.svg';
 		// base module
 		$return["is_base"] = true;
 		// LDAP filter
@@ -193,7 +193,7 @@ class nisMailAlias extends baseModule {
 					$mailField->setCSSClasses(array('maxwidth20'));
 					$mailGroup = new htmlGroup();
 					$mailGroup->addElement($mailField);
-					$mailGroup->addElement(new htmlAccountPageButton(get_class($this), 'selectMail', 'recipient' . $i, 'mailAlias.png', true, _('Select mail')));
+					$mailGroup->addElement(new htmlAccountPageButton(get_class($this), 'selectMail', 'recipient' . $i, 'mail.svg', true, _('Select mail')));
 					$mailGroup->addElement(new htmlAccountPageButton(get_class($this), 'selectUser', 'recipient' . $i, 'user.png', true, _('Select user')));
 					$mailGroup->addElement(new htmlButton('delRec' . $i, 'del.png', true));
 					$mailGroup->addElement(new htmlHelpLink('recipient'));
@@ -216,7 +216,7 @@ class nisMailAlias extends baseModule {
 			$newMailField->setCSSClasses(array('maxwidth20'));
 			$newGroup = new htmlGroup();
 			$newGroup->addElement($newMailField);
-			$newGroup->addElement(new htmlAccountPageButton(get_class($this), 'selectMail', 'recipient' . 'New', 'mailAlias.png', true, _('Select mail')));
+			$newGroup->addElement(new htmlAccountPageButton(get_class($this), 'selectMail', 'recipient' . 'New', 'mail.svg', true, _('Select mail')));
 			$newGroup->addElement(new htmlAccountPageButton(get_class($this), 'selectUser', 'recipient' . 'New', 'user.png', true, _('Select user')));
 			$newGroup->addElement(new htmlButton('addRec', 'add.png', true));
 			$newGroup->addElement(new htmlHelpLink('recipient'));

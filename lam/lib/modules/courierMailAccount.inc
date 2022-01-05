@@ -72,7 +72,7 @@ class courierMailAccount extends baseModule {
 	public function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'courierMail.png';
+		$return['icon'] = 'mail.svg';
 		// alias name
 		$return["alias"] = _("Courier");
 		// module dependencies

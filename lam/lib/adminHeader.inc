@@ -3,7 +3,7 @@ namespace LAM\HEADER;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2018 - 2021  Roland Gruber
+  Copyright (C) 2018 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -149,7 +149,7 @@ function printHeader(string $headerPrefix): void {
 			foreach ($types as $type) {
 				$link = $headerPrefix . '/templates/lists/list.php?type=' . $type->getId();
 				$accountTypeLink = new htmlLink($type->getAlias(), $link, $headerPrefix . '/graphics/' . $type->getIcon());
-				$accountTypeLink->setCSSClasses(array('lam-menu-entry'));
+				$accountTypeLink->setCSSClasses(array('lam-menu-entry icon'));
 				$accountList->addElement($accountTypeLink);
 			}
 			$accountTypeEntriesDiv = new htmlDiv(null, $accountList, array('lam-navigation-layer-content'));
@@ -169,7 +169,7 @@ function printHeader(string $headerPrefix): void {
 			foreach ($tools as $tool) {
 				$link = $headerPrefix . '/templates/' . $tool->getLink();
 				$toolLink = new htmlLink($tool->getName(), $link, $headerPrefix . '/graphics/' . $tool->getImageLink());
-				$toolLink->setCSSClasses(array('lam-menu-entry'));
+				$toolLink->setCSSClasses(array('lam-menu-entry icon'));
 				$toolList->addElement($toolLink);
 			}
 			$toolEntriesDiv = new htmlDiv(null, $toolList, array('lam-navigation-layer-content'));

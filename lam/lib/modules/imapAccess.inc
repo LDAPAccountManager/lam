@@ -72,7 +72,7 @@ class imapAccess extends baseModule {
 		// managed attributes
 		$return['attributes'] = array();
 		// icon
-		$return['icon'] = 'mailBig.png';
+		$return['icon'] = 'mail.svg';
 		// help
 		$return['help'] = array(
 			'ImapServerAddress' => array(

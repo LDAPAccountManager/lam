@@ -369,7 +369,7 @@ if (isLAMProVersion()) {
 	$row->addVerticalSpacer('2rem');
 
 	// mail settings
-	$row->add(new htmlSubTitle(_("Password mail settings"), '../../graphics/mailBig.png', null, true), 12);
+	$row->add(new htmlSubTitle(_("Password mail settings"), '../../graphics/mail.svg', null, true), 12);
 
 	$pwdMailFrom = new htmlResponsiveInputField(_('From address'), 'pwdResetMail_from', $conf->getLamProMailFrom(), '550', true);
 	$row->add($pwdMailFrom, 12);

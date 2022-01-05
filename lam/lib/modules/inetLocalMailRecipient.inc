@@ -68,7 +68,7 @@ class inetLocalMailRecipient extends baseModule {
 	function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'mailBig.png';
+		$return['icon'] = 'mail.svg';
 		// alias name
 		$return["alias"] = _("Mail routing");
 		// module dependencies
