@@ -92,7 +92,7 @@ function showTree() {
 	if (checkIfWriteAccessIsAllowed()) {
 		$newMenu = '"createNode": {
 								"label": "' . _('Create a child entry') . '",
-								"icon": "../../graphics/add.png",
+								"icon": "../../graphics/add.svg",
 								"action": function(obj) {
 									window.lam.treeview.createNode("' . getSecurityTokenName() . '",
 										"' . getSecurityTokenValue() . '",
@@ -143,7 +143,7 @@ function showTree() {
 	if (checkIfWriteAccessIsAllowed()) {
 		$deleteMenu = '"deleteNode": {
 								"label": "' . _('Delete') . '",
-								"icon": "../../graphics/del.png",
+								"icon": "../../graphics/del.svg",
 								"action": function(obj) {
 									window.lam.treeview.deleteNode("' . getSecurityTokenName() . '",
 										"' . getSecurityTokenValue() . '",

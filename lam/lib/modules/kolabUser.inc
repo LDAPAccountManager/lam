@@ -284,7 +284,7 @@ class kolabUser extends baseModule {
 					if (sizeof($parts) == 2) {
 						$invitationContainer->addElement(new htmlInputField('invPol1' . $i, $parts[0]));
 						$invitationContainer->addElement(new htmlSelect('invPol2' . $i, array_values($this->invitationPolicies), array($this->invitationPolicies[$parts[1]])));
-						$invitationContainer->addElement(new htmlButton('delInvPol' . $i, 'del.png', true));
+						$invitationContainer->addElement(new htmlButton('delInvPol' . $i, 'del.svg', true));
 						$invitationContainer->addElement(new htmlHelpLink('invPol'), true);
 					}
 				}
@@ -292,7 +292,7 @@ class kolabUser extends baseModule {
 			// input box for new invitation policy
 			$invitationContainer->addElement(new htmlInputField('invPol1', ''));
 			$invitationContainer->addElement(new htmlSelect('invPol2', array_values($this->invitationPolicies)));
-			$invitationContainer->addElement(new htmlButton('addInvPol', 'add.png', true));
+			$invitationContainer->addElement(new htmlButton('addInvPol', 'add.svg', true));
 			$invitationContainer->addElement(new htmlHelpLink('invPol'), true);
 			$return->addElement($invitationContainer, true);
 			// mail aliases
@@ -314,7 +314,7 @@ class kolabUser extends baseModule {
 					$delegateSelect->setSortElements(false);
 					$delegateSelect->setHasDescriptiveElements(true);
 					$delegatesContainer->addElement($delegateSelect);
-					$delegatesContainer->addElement(new htmlButton('delDelegate' . $i, 'del.png', true));
+					$delegatesContainer->addElement(new htmlButton('delDelegate' . $i, 'del.svg', true));
 					if ($i == 0) {
 						$delegatesContainer->addElement(new htmlHelpLink('delegate'));
 					}
@@ -323,7 +323,7 @@ class kolabUser extends baseModule {
 			}
 			// input box for new delegate
 			$delegatesContainer->addElement(new htmlSelect('delegate', $delegates));
-			$delegatesContainer->addElement(new htmlButton('addDelegate', 'add.png', true));
+			$delegatesContainer->addElement(new htmlButton('addDelegate', 'add.svg', true));
 			if (empty($this->attributes['kolabDelegate'])) {
 				$delegatesContainer->addElement(new htmlHelpLink('delegate'));
 			}

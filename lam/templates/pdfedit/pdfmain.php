@@ -30,7 +30,7 @@ use function LAM\PDF\getPDFStructures;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2021  Roland Gruber
+                2005 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -358,7 +358,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 		$container->add(new htmlSubTitle(_("Manage existing PDF structures")), 12);
 		foreach ($templateClasses as $templateClass) {
 			$labelGroup = new htmlGroup();
-			$labelGroup->addElement(new htmlImage('../../graphics/' . $templateClass['icon']));
+			$labelGroup->addElement(new htmlImage('../../graphics/' . $templateClass['icon'], '16px', '16px'));
 			$labelGroup->addElement(new htmlSpacer('3px', null));
 			$labelGroup->addElement(new htmlOutputText($templateClass['title']));
 			$container->add($labelGroup, 12, 4);
@@ -368,7 +368,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 			$exEditButton = new htmlButton('editTemplate_' . $templateClass['typeId'], 'edit.png', true);
 			$exEditButton->setTitle(_('Edit'));
 			$buttonGroup->addElement($exEditButton);
-			$deleteLink = new htmlLink(null, '#', '../../graphics/delete.png');
+			$deleteLink = new htmlLink(null, '#', '../../graphics/del.svg');
 			$deleteLink->setTitle(_('Delete'));
 			$deleteLink->setOnClick("profileShowDeleteDialog('" . _('Delete') . "', '" . _('Ok') . "', '" .
 										_('Cancel') . "', '" . $templateClass['typeId'] . "', '" . 'template_' .
@@ -415,7 +415,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 		$logoSelect->setHasDescriptiveElements(true);
 		$container->addLabel($logoSelect);
 		$logoButtonGroup = new htmlGroup();
-		$delLogo = new htmlButton('delLogo', 'delete.png', true);
+		$delLogo = new htmlButton('delLogo', 'del.svg', true);
 		$delLogo->setTitle(_('Delete'));
 	    $logoButtonGroup->addElement($delLogo);
         $importLogoLink = new htmlLink(null, '#', '../../graphics/import.svg');

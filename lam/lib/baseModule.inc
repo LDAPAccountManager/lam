@@ -1503,12 +1503,12 @@ abstract class baseModule {
 					$htmlIDs[] = $attrName . '_' . $i;
 				}
 				if (!empty($values[$i])) {
-					$delButton = new htmlButton('del_' . $attrName . '_' . $i, 'del.png', true);
+					$delButton = new htmlButton('del_' . $attrName . '_' . $i, 'del.svg', true);
 					$delButton->setCSSClasses(array('noMarginSides'));
 					$subContainer->addElement($delButton);
 				}
 				if ($i == 0) {
-					$addButton = new htmlButton('add_' . $attrName, 'add.png', true);
+					$addButton = new htmlButton('add_' . $attrName, 'add.svg', true);
 					$addButton->setCSSClasses(array('noMarginSides'));
 					$subContainer->addElement($addButton);
 					if ($container instanceof htmlResponsiveRow) {
@@ -1613,10 +1613,10 @@ abstract class baseModule {
 					$htmlIDs[] = $attrName . '_' . $i;
 				}
 				if (!empty($values[$i])) {
-					$subContainer->addElement(new htmlButton('del_' . $attrName . '_' . $i, 'del.png', true));
+					$subContainer->addElement(new htmlButton('del_' . $attrName . '_' . $i, 'del.svg', true));
 				}
 				if ($i == 0) {
-					$subContainer->addElement(new htmlButton('add_' . $attrName, 'add.png', true));
+					$subContainer->addElement(new htmlButton('add_' . $attrName, 'add.svg', true));
 					$subContainer->addElement(new htmlHelpLink($attrName));
 				}
 				$subContainer->addNewLine();
@@ -1851,14 +1851,14 @@ abstract class baseModule {
 				$fieldRow->add($inputField, 9);
 				if (!empty($value)) {
 					$linkGroup = new htmlGroup();
-					$delLink = new htmlLink(null, '#', '../../graphics/del.png');
+					$delLink = new htmlLink(null, '#', '../../graphics/del.svg');
 					$delLink->setOnClick('window.lam.selfservice.delMultiValue(\'' . $fieldNamePrefix . '\', this); return false;');
-					$delLink->setCSSClasses(array('del-link'));
+					$delLink->setCSSClasses(array('del-link icon'));
 					$linkGroup->addElement($delLink);
 					if ($i === (sizeof($values) - 1)) {
-						$addLink = new htmlLink(null, '#', '../../graphics/add.png');
+						$addLink = new htmlLink(null, '#', '../../graphics/add.svg');
 						$addLink->setOnClick('window.lam.selfservice.addMultiValue(\'' . $fieldNamePrefix . '\', this); return false;');
-						$addLink->setCSSClasses(array('add-link', 'margin-left5'));
+						$addLink->setCSSClasses(array('add-link icon', 'margin-left5'));
 						$linkGroup->addElement($addLink);
 					}
 					$fieldRow->add($linkGroup, 3);

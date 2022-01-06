@@ -6,7 +6,7 @@ use LAM\PDF\PDFImage;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2021  Roland Gruber
+                2005 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1329,7 +1329,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 						$addressContainer->addElement(new htmlOutputText('<br>', false));
 					}
 					else {
-						$addressContainer->addElement(new htmlButton('addPostalAddress', 'add.png', true));
+						$addressContainer->addElement(new htmlButton('addPostalAddress', 'add.svg', true));
 						$addressHelp = new htmlHelpLink('postalAddress');
 						$addressContainer->addElement($addressHelp);
 					}
@@ -1366,7 +1366,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 						$registeredAddressContainer->addElement(new htmlOutputText('<br>', false));
 					}
 					else {
-						$registeredAddressContainer->addElement(new htmlButton('addRegisteredAddress', 'add.png', true));
+						$registeredAddressContainer->addElement(new htmlButton('addRegisteredAddress', 'add.svg', true));
 						$registeredAddressHelp = new htmlHelpLink('registeredAddress');
 						$registeredAddressContainer->addElement($registeredAddressHelp);
 					}
@@ -1883,9 +1883,9 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$path = '../../tmp/' . $filename;
 				$link = new htmlLink('', $path, '../../graphics/save.png');
 				$link->setTargetWindow('_blank');
+				$link->setCSSClasses(array('icon'));
 				$table->addElement($link);
-				$deleteButton = new htmlAccountPageButton(get_class($this), 'userCertificate', 'delete_' . $i, 'delete.png', true);
-				$deleteButton->setIconClass('deleteButton');
+				$deleteButton = new htmlAccountPageButton(get_class($this), 'userCertificate', 'delete_' . $i, 'del.svg', true);
 				$table->addElement($deleteButton);
 				if (function_exists('openssl_x509_parse')) {
 					$pem = @chunk_split(@base64_encode($this->attributes['userCertificate;binary'][$i]), 64, "\n");
@@ -3081,7 +3081,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$row->add($img, 12);
 			if (!$readOnly) {
 				$row->addVerticalSpacer('0.5rem');
-				$deleteButton = new htmlLink(_('Delete'), '#', '../../graphics/delete.png', true);
+				$deleteButton = new htmlLink(_('Delete'), '#', '../../graphics/del.svg', true);
 				$deleteButton->setOnClick('inetOrgPersonDeletePhoto(); return false;');
 				$row->add($deleteButton, 12);
 			}
@@ -3229,10 +3229,12 @@ class inetOrgPerson extends baseModule implements passwordService {
 				$saveLink = new htmlLink('', $path, '../../graphics/save.png');
 				$saveLink->setTitle(_('Save'));
 				$saveLink->setTargetWindow('_blank');
+				$saveLink->setCSSClasses(array('icon'));
 				$group->addElement($saveLink);
-				$delLink = new htmlLink('', '#', '../../graphics/del.png');
+				$delLink = new htmlLink('', '#', '../../graphics/del.svg');
 				$delLink->setTitle(_('Delete'));
 				$delLink->setOnClick('inetOrgPersonDeleteCertificate(' . $i . '); return false;');
+				$delLink->setCSSClasses(array('icon'));
 				$group->addElement($delLink);
 				$certTable->add($group, 12);
 			}

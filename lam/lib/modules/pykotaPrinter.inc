@@ -274,7 +274,7 @@ class pykotaPrinter extends baseModule {
 		// printer members
 		$memberLabel = new htmlOutputText(_('Group members'));
 		$container->addLabel($memberLabel);
-		$addMemberButton = new htmlAccountPageButton(get_class($this), 'members', 'open', 'add.png', true);
+		$addMemberButton = new htmlAccountPageButton(get_class($this), 'members', 'open', 'add.svg', true);
 		$addMemberButton->setTitle(_('Add'));
 		$memberHelp = new htmlHelpLink('uniqueMember');
 		$memberTable = new htmlTable();
@@ -286,7 +286,7 @@ class pykotaPrinter extends baseModule {
 					$member = $this->printerCache[$member]['cn'];
 				}
 				$memberTable->addElement(new htmlOutputText($member));
-				$delButton = new htmlButton('uniqueMemberDel_' . $i, 'del.png', true);
+				$delButton = new htmlButton('uniqueMemberDel_' . $i, 'del.svg', true);
 				$delButton->setTitle(_('Delete'));
 				$memberTable->addElement($delButton);
 				if ($i == (sizeof($this->attributes['uniqueMember']) - 1)) {

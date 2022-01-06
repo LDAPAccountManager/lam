@@ -148,10 +148,10 @@ class nisMailAliasUser extends baseModule {
 						&& !in_array($dn, $this->aliasesToDelete)) {
 					$return->addLabel(new htmlOutputText($aliases[$i]['cn'][0]));
 					$buttonGroup = new htmlGroup();
-					$remButton = new htmlButton('rem_' . $i, 'del.png', true);
+					$remButton = new htmlButton('rem_' . $i, 'del.svg', true);
 					$remButton->setTitle(_('Remove user from alias entry.'));
 					$buttonGroup->addElement($remButton);
-					$delButton = new htmlButton('del_' . $i, 'trash.png', true);
+					$delButton = new htmlButton('del_' . $i, 'delete.svg', true);
 					$delButton->setTitle(sprintf(_('Delete whole alias entry which includes %s recipients.'), sizeof($members)));
 					$buttonGroup->addElement($delButton);
 					$return->addField($buttonGroup);
@@ -179,10 +179,10 @@ class nisMailAliasUser extends baseModule {
 							&& !in_array($dn, $this->aliasesToDelete)) {
 						$return->addLabel(new htmlOutputText($aliases[$i]['cn'][0]));
 						$buttonGroup = new htmlGroup();
-						$remButton = new htmlButton('remMail_' . $i . '_' . $m, 'del.png', true);
+						$remButton = new htmlButton('remMail_' . $i . '_' . $m, 'del.svg', true);
 						$remButton->setTitle(_('Remove user from alias entry.'));
 						$buttonGroup->addElement($remButton);
-						$delButton = new htmlButton('delMail_' . $i . '_' . $m, 'trash.png', true);
+						$delButton = new htmlButton('delMail_' . $i . '_' . $m, 'delete.svg', true);
 						$delButton->setTitle(sprintf(_('Delete whole alias entry which includes %s recipients.'), sizeof($members)));
 						$buttonGroup->addElement($delButton);
 						$return->addField($buttonGroup);

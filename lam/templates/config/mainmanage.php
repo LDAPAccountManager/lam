@@ -462,7 +462,7 @@ printHeaderContents(_("Edit general settings"), '../..');
 		$sslDownloadBtn->setTargetWindow('_blank');
 		$sslDownloadBtn->setTitle(_('Download CA certificates'));
 		$sslDelSaveGroup->addElement($sslDownloadBtn);
-		$sslDeleteBtn = new htmlButton('sslCaCertDelete', 'delete.png', true);
+		$sslDeleteBtn = new htmlButton('sslCaCertDelete', 'del.svg', true);
 		$sslDeleteBtn->setTitle(_('Delete all CA certificates'));
 		$sslDelSaveGroup->addElement($sslDeleteBtn);
 	}
@@ -489,7 +489,7 @@ printHeaderContents(_("Edit general settings"), '../..');
 			$serial = isset($sslCerts[$i]['serialNumber']) ? $sslCerts[$i]['serialNumber'] : '';
 			$validTo = isset($sslCerts[$i]['validTo_time_t']) ? $sslCerts[$i]['validTo_time_t'] : '';
 			$cn = isset($sslCerts[$i]['subject']['CN']) ? $sslCerts[$i]['subject']['CN'] : '';
-			$delBtn = new htmlButton('deleteCert_' . $i, 'delete.png', true);
+			$delBtn = new htmlButton('deleteCert_' . $i, 'del.svg', true);
 			$certsData[] = array(
 				new htmlOutputText($cn),
 				new htmlOutputText($validTo),

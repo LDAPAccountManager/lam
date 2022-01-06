@@ -27,7 +27,7 @@ use ServerProfilePersistenceManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2021  Roland Gruber
+  Copyright (C) 2003 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -253,7 +253,7 @@ $container->add(new htmlSubTitle(_('Manage existing profiles')), 12);
 
 foreach ($profileClasses as $profileClass) {
 	$labelGroup = new htmlGroup();
-	$labelGroup->addElement(new htmlImage('../../graphics/' . $profileClass['icon']));
+	$labelGroup->addElement(new htmlImage('../../graphics/' . $profileClass['icon'], '16px', '16px'));
 	$labelGroup->addElement(new htmlSpacer('3px', null));
 	$labelGroup->addElement(new htmlOutputText($profileClass['title']));
 	$container->add($labelGroup, 12, 4);
@@ -263,7 +263,7 @@ foreach ($profileClasses as $profileClass) {
 	$editButton = new htmlButton('editProfile_' . $profileClass['typeId'], 'edit.png', true);
 	$editButton->setTitle(_('Edit'));
 	$buttonGroup->addElement($editButton);
-	$deleteLink = new htmlLink(null, '#', '../../graphics/delete.png');
+	$deleteLink = new htmlLink(null, '#', '../../graphics/del.svg');
 	$deleteLink->setTitle(_('Delete'));
 	$deleteLink->setOnClick("profileShowDeleteDialog('" . _('Delete') . "', '" . _('Ok') . "', '" . _('Cancel') . "', '" . $profileClass['typeId'] . "', '" . 'profile_' . $profileClass['typeId'] . "'); return false;");
 	$deleteLink->setCSSClasses(array('margin3'));

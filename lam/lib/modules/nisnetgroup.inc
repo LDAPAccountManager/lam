@@ -257,7 +257,7 @@ class nisnetgroup extends baseModule {
 				$domainField = new htmlInputField('domain_' . $i, $triple[2]);
 				$domainField->setFieldSize(null);
 				$dataRow[] = $domainField;
-				$delButton = new htmlButton('del_' . $i, 'del.png', true);
+				$delButton = new htmlButton('del_' . $i, 'del.svg', true);
 				$delButton->setTitle(_('Delete'));
 				$dataRow[] = $delButton;
 				$data[] = $dataRow;
@@ -297,7 +297,7 @@ class nisnetgroup extends baseModule {
 		$domainField = new htmlInputField('domain_new', $domainNew);
 		$domainField->setFieldSize(null);
 		$dataRowNew[] = $domainField;
-		$addButton = new htmlButton('add_new', 'add.png', true);
+		$addButton = new htmlButton('add_new', 'add.svg', true);
 		$addButton->setTitle(_('Add'));
 		$dataRowNew[] = $addButton;
 		$data[] = $dataRowNew;

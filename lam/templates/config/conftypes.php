@@ -14,7 +14,7 @@ use \htmlResponsiveRow;
 use \htmlResponsiveInputField;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2021  Roland Gruber
+  Copyright (C) 2004 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -165,7 +165,7 @@ if (sizeof($availableScopes) > 0) {
 		$row->addField($availableLabelGroup);
 		$availableDescriptionRow = new htmlResponsiveRow();
 		$availableDescriptionRow->add(new htmlOutputText($availableScope->getDescription()), 10, 10, 10, 'responsiveField');
-		$button = new htmlButton('add_' . $availableScope->getScope(), 'add.png', true);
+		$button = new htmlButton('add_' . $availableScope->getScope(), 'add.svg', true);
 		$button->setTitle(_("Add"));
 		$button->setCSSClasses(array('size16'));
 		$availableDescriptionRow->add($button, 2, 2, 2, 'responsiveField');
@@ -209,7 +209,7 @@ if (sizeof($activeTypes) > 0) {
 			$buttons->addElement($upButton);
 		}
 		// delete button
-		$delButton = new htmlButton('rem_'. $activeType->getId(), 'del.png', true);
+		$delButton = new htmlButton('rem_'. $activeType->getId(), 'del.svg', true);
 		$delButton->setTitle(_("Remove this account type"));
 		$delButton->setCSSClasses(array('size16'));
 		$buttons->addElement($delButton);

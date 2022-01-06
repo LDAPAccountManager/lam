@@ -189,7 +189,7 @@ class nisNetGroupUser extends baseModule {
 			$return->addElement(new htmlOutputText($group['name']));
 			$return->addElement(new htmlInputField('host_' . $i, $group['host']));
 			$return->addElement(new htmlInputField('domain_' . $i, $group['domain']));
-			$delButton = new htmlButton('del_' . $i, 'del.png', true);
+			$delButton = new htmlButton('del_' . $i, 'del.svg', true);
 			$delButton->setTitle(_('Delete'));
 			$return->addElement($delButton, true);
 		}
@@ -215,7 +215,7 @@ class nisNetGroupUser extends baseModule {
 			$return->addElement($groupSelect);
 			$return->addElement(new htmlInputField('host_add'));
 			$return->addElement(new htmlInputField('domain_add'));
-			$addButton = new htmlButton('addGroup', 'add.png', true);
+			$addButton = new htmlButton('addGroup', 'add.svg', true);
 			$addButton->setTitle(_('Add'));
 			$return->addElement($addButton, true);
 		}

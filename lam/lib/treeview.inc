@@ -541,13 +541,13 @@ class TreeView {
 			$valueTable->addElement($inputField);
 			if (checkIfWriteAccessIsAllowed()) {
 				if (!$this->isJpegAttribute($attributeName, $schemaAttribute)) {
-					$addButton = new htmlLink(null, '#', '../../graphics/add.png');
+					$addButton = new htmlLink(null, '#', '../../graphics/add.svg');
 					$addButton->setCSSClasses(array('margin2'));
 					$addButton->setOnClick('window.lam.treeview.addValue(event, this);');
 					$valueTable->addElement($addButton);
 				}
 				if (!$this->isJpegAttribute($attributeName, $schemaAttribute) || ($value !== '')) {
-					$clearButton = new htmlLink(null, '#', '../../graphics/del.png');
+					$clearButton = new htmlLink(null, '#', '../../graphics/del.svg');
 					$clearButton->setCSSClasses(array('margin2'));
 					$clearButton->setOnClick('window.lam.treeview.clearValue(event, this);');
 					$valueTable->addElement($clearButton);

@@ -229,7 +229,7 @@ function config_showAccountModules($type, &$container) {
 			$availModImage->setCSSClasses(array('size16', 'margin-right5-mobile-only'));
 			$el->addElement($availModImage);
 			$el->addElement(new htmlOutputText($key));
-			$delButton = new htmlButton('del_' . $type->getId() . '_' . $value, 'del.png', true);
+			$delButton = new htmlButton('del_' . $type->getId() . '_' . $value, 'del.svg', true);
 			$delButton->alignment = htmlElement::ALIGN_RIGHT;
 			$el->addElement($delButton);
 			$listElements[] = $el;
@@ -254,7 +254,7 @@ function config_showAccountModules($type, &$container) {
 			$availModImage->setCSSClasses(array('size16', 'margin10'));
 			$availTable->addElement($availModImage);
 			$availTable->addElement(new htmlOutputText($text));
-			$addButton = new htmlButton('add_' . $type->getId() . '_' . $key, 'add.png', true);
+			$addButton = new htmlButton('add_' . $type->getId() . '_' . $key, 'add.svg', true);
 			$addButton->alignment = htmlElement::ALIGN_RIGHT;
 			$availTable->addElement($addButton, true);
 		}

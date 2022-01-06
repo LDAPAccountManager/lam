@@ -105,7 +105,7 @@ class nisNetGroupHost extends nisNetGroupUser {
 			$return->addElement(new htmlOutputText($group['name']));
 			$return->addElement(new htmlInputField('user_' . $i, $group['user']));
 			$return->addElement(new htmlInputField('domain_' . $i, $group['domain']));
-			$delButton = new htmlButton('del_' . $i, 'del.png', true);
+			$delButton = new htmlButton('del_' . $i, 'del.svg', true);
 			$delButton->setTitle(_('Delete'));
 			$return->addElement($delButton, true);
 		}
@@ -131,7 +131,7 @@ class nisNetGroupHost extends nisNetGroupUser {
 			$return->addElement($groupSelect);
 			$return->addElement(new htmlInputField('user_add'));
 			$return->addElement(new htmlInputField('domain_add'));
-			$addButton = new htmlButton('addGroup', 'add.png', true);
+			$addButton = new htmlButton('addGroup', 'add.svg', true);
 			$addButton->setTitle(_('Add'));
 			$return->addElement($addButton, true);
 		}

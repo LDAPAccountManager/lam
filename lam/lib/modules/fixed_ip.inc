@@ -486,7 +486,7 @@ class fixed_ip extends baseModule {
 			$entry[] = new htmlInputField('mac_'.$id, $this->fixed_ip[$id]['mac']);
 			$entry[] = new htmlInputField('description_'.$id, $this->fixed_ip[$id]['description']);
 			$entry[] = new htmlInputCheckbox('active_'.$id, $this->fixed_ip[$id]['active']);
-			$entry[] = new htmlButton('drop_ip_'.$id, 'del.png', true);
+			$entry[] = new htmlButton('drop_ip_'.$id, 'del.svg', true);
 			$data[] = $entry;
 		}
 		// add host
@@ -500,7 +500,7 @@ class fixed_ip extends baseModule {
 		$newEntry[] = new htmlInputField('mac_add');
 		$newEntry[] = new htmlInputField('description_add');
 		$newEntry[] = new htmlInputCheckbox('active_add', true);
-		$newEntry[] = new htmlButton('add_ip', 'add.png', true);
+		$newEntry[] = new htmlButton('add_ip', 'add.svg', true);
 		$data[] = $newEntry;
 
 		$table = new htmlResponsiveTable($titles, $data);

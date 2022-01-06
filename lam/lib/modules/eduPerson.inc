@@ -307,9 +307,9 @@ class eduPerson extends baseModule {
 					$scopedAffiliationContainer->addElement(new htmlSelect('scopedAffiliationPrefix' . $i, $this->affiliationTypes, $scopedAffiliationPrefix));
 					$scopedAffiliationContainer->addElement(new htmlOutputText('@'));
 					$scopedAffiliationContainer->addElement(new htmlInputField('scopedAffiliation' . $i, $scopedAffiliation));
-					$scopedAffiliationContainer->addElement(new htmlButton('deleduPersonScopedAffiliation' . $i, 'del.png', true));
+					$scopedAffiliationContainer->addElement(new htmlButton('deleduPersonScopedAffiliation' . $i, 'del.svg', true));
 					if ($i == (sizeof($this->attributes['eduPersonScopedAffiliation']) - 1)) {
-						$scopedAffiliationContainer->addElement(new htmlButton('addeduPersonScopedAffiliation', 'add.png', true));
+						$scopedAffiliationContainer->addElement(new htmlButton('addeduPersonScopedAffiliation', 'add.svg', true));
 					}
 					$scopedAffiliations->addElement($scopedAffiliationContainer, true);
 				}
@@ -318,7 +318,7 @@ class eduPerson extends baseModule {
 				$scopedAffiliationContainer = new htmlGroup();
 				$scopedAffiliationContainer->addElement(new htmlOutputText('-'));
 				$scopedAffiliationContainer->addElement(new htmlSpacer('10px', null));
-				$scopedAffiliationContainer->addElement(new htmlButton('addeduPersonScopedAffiliation', 'add.png'));
+				$scopedAffiliationContainer->addElement(new htmlButton('addeduPersonScopedAffiliation', 'add.svg', true));
 				$scopedAffiliationContainer->addElement(new htmlHelpLink('scopedAffiliation'), true);
 				$scopedAffiliations->addElement($scopedAffiliationContainer);
 			}
@@ -328,7 +328,7 @@ class eduPerson extends baseModule {
 			if (isset($this->attributes['eduPersonAffiliation'][0])) {
 				for ($i = 0; $i < sizeof($this->attributes['eduPersonAffiliation']); $i++) {
 					$affiliations->addElement(new htmlSelect('affiliation' . $i, $this->affiliationTypes, array($this->attributes['eduPersonAffiliation'][$i])));
-					$affiliationButton = new htmlButton('delAffiliation' . $i, 'del.png', true);
+					$affiliationButton = new htmlButton('delAffiliation' . $i, 'del.svg', true);
 					$affiliations->addElement($affiliationButton);
 					if ($i === 0) {
 						$affiliations->addElement(new htmlHelpLink('affiliation'));
@@ -341,7 +341,7 @@ class eduPerson extends baseModule {
 				$affiliations->addElement(new htmlHelpLink('affiliation'), true);
 			}
 			$affiliations->addElement(new htmlSelect('affiliation', $this->affiliationTypes));
-			$affiliations->addElement(new htmlButton('newAffiliation', 'add.png', true));
+			$affiliations->addElement(new htmlButton('newAffiliation', 'add.svg', true));
 			$affiliationLabel = new htmlOutputText(_('Affiliations'));
 			$affiliationLabel->alignment = htmlElement::ALIGN_TOP;
 			$return->addLabel($affiliationLabel);

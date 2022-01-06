@@ -359,12 +359,12 @@ class ldapPublicKey extends baseModule {
 				$keyInput = new htmlInputField('sshPublicKey_' . $i, $keys[$i]);
 				$keyInput->setFieldMaxLength(16384);
 				$group->addElement($keyInput);
-				$delLink = new htmlLink('', '#', '../../graphics/del.png');
+				$delLink = new htmlLink('', '#', '../../graphics/del.svg');
 				$delLink->setTitle(_('Delete'));
 				$delLink->setOnClick('ldapPublicKeyDeleteKey(' . $i . ', ' . sizeof($keys) . ');return false;');
 				$group->addElement($delLink);
 				if ($i == (sizeof($keys) - 1)) {
-					$addLink = new htmlLink('', '#', '../../graphics/add.png');
+					$addLink = new htmlLink('', '#', '../../graphics/add.svg');
 					$addLink->setTitle(_('Add'));
 					$addLink->setOnClick('ldapPublicKeyAddKey(' . sizeof($keys) . ');return false;');
 					$group->addElement($addLink);
@@ -373,7 +373,7 @@ class ldapPublicKey extends baseModule {
 			}
 		}
 		else {
-			$addLink = new htmlLink('', '#', '../../graphics/add.png');
+			$addLink = new htmlLink('', '#', '../../graphics/add.svg');
 			$addLink->setTitle(_('Add'));
 			$addLink->setOnClick('ldapPublicKeyAddKey(' . sizeof($keys) . ');return false;');
 			$content->add($addLink, 12);

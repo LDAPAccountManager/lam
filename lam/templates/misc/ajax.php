@@ -294,7 +294,7 @@ class Ajax {
 			$data = array();
 			$id = 0;
 			foreach ($results as $result) {
-				$delButton = new htmlButton('deleteDevice' . $id, 'delete.png', true);
+				$delButton = new htmlButton('deleteDevice' . $id, 'del.svg', true);
 				$delButton->addDataAttribute('credential', $result['credentialId']);
 				$delButton->addDataAttribute('dn', $result['dn']);
 				$delButton->addDataAttribute('dialogtitle', _('Remove device'));

@@ -149,7 +149,7 @@ class systemQuotas extends baseModule {
 				$container->addElement($spacer);
 				$hardInodeInput = new htmlInputField('hardInode_' . $i, $parts[4], 10);
 				$container->addElement($hardInodeInput);
-				$container->addElement(new htmlButton('del_' . $i, 'del.png', true), true);
+				$container->addElement(new htmlButton('del_' . $i, 'del.svg', true), true);
 			}
 		}
 		// new entry
@@ -166,7 +166,7 @@ class systemQuotas extends baseModule {
 		$container->addElement($spacer);
 		$newHardInodeInput = new htmlInputField('hardInode', 0, 10);
 		$container->addElement($newHardInodeInput);
-		$container->addElement(new htmlButton('add', 'add.png', true));
+		$container->addElement(new htmlButton('add', 'add.svg', true));
 		return $container;
 	}
 

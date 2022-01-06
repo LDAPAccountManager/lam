@@ -5,7 +5,7 @@ use \LAM\PDF\PDFTableRow;
 /*
 
   This code is not yet part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2012 - 2019  Roland Gruber
+  Copyright (C) 2012 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -261,7 +261,7 @@ class puppetClient extends baseModule {
 				$environmentContainer->addElement(new htmlOutputText('<br>', false));
 			}
 			else {
-				$environmentContainer->addElement(new htmlButton('addEnvironment', 'add.png', true));
+				$environmentContainer->addElement(new htmlButton('addEnvironment', 'add.svg', true));
 				$environmentContainer->addElement(new htmlHelpLink('environment'));
 			}
 		}

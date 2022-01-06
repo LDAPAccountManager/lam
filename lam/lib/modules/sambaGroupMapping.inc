@@ -381,7 +381,7 @@ class sambaGroupMapping extends baseModule {
 			// local group members
 			$memberLabel = new htmlOutputText(_('Local members'));
 			$return->addLabel($memberLabel);
-			$addMemberButton = new htmlAccountPageButton(get_class($this), 'members', 'open', 'add.png', true);
+			$addMemberButton = new htmlAccountPageButton(get_class($this), 'members', 'open', 'add.svg', true);
 			$addMemberButton->setTitle(_('Add'));
 			$addMemberButton->alignment = htmlElement::ALIGN_TOP;
 			$memberHelp = new htmlHelpLink('sambaSIDList');
@@ -395,7 +395,7 @@ class sambaGroupMapping extends baseModule {
 						$member = $this->sidCache[$member];
 					}
 					$memberTable->addElement(new htmlOutputText($member));
-					$delButton = new htmlButton('sambaSIDListDel_' . $i, 'del.png', true);
+					$delButton = new htmlButton('sambaSIDListDel_' . $i, 'del.svg', true);
 					$delButton->setTitle(_('Delete'));
 					$memberTable->addElement($delButton);
 					if ($i == (sizeof($this->attributes['sambaSIDList']) - 1)) {

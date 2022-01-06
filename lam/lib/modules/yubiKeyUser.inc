@@ -319,17 +319,19 @@ class yubiKeyUser extends baseModule {
 				$keyInput->setFieldMaxLength(12);
 				$keyInput->setCSSClasses(array('lam-prevent-enter'));
 				$group->addElement($keyInput);
-				$delLink = new htmlLink('', '#', '../../graphics/del.png');
+				$delLink = new htmlLink('', '#', '../../graphics/del.svg');
 				$delLink->setTitle(_('Delete'));
 				$delLink->setOnClick('yubiKeyIdDeleteKey(' . $i . ', ' . sizeof($keys) . ');return false;');
+				$delLink->setCSSClasses(array('icon'));
 				$group->addElement($delLink);
 				$content->add($group, 12, 12, 12, 'nowrap');
 			}
 		}
 		$addGroup = new htmlGroup();
-		$addLink = new htmlLink(_('Add'), '#', '../../graphics/add.png', true);
+		$addLink = new htmlLink(_('Add'), '#', '../../graphics/add.svg', true);
 		$addLink->setTitle(_('Add'));
 		$addLink->setOnClick('yubiKeyIdAddKey(' . sizeof($keys) . ');return false;');
+		$addLink->setCSSClasses(array('icon'));
 		$addGroup->addElement($addLink);
 		$addGroup->addElement(new htmlSpacer('0.5rem', null));
 		$addGroup->addElement(new htmlHelpLink('whereToFind', 'yubiKeyUser'));

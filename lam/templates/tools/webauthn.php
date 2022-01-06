@@ -108,7 +108,7 @@ else {
 	$id = 0;
 	foreach ($results as $result) {
 		$credentialId = $result['credentialId'];
-		$delButton = new htmlButton('deleteDevice' . $id, 'delete.png', true);
+		$delButton = new htmlButton('deleteDevice' . $id, 'del.svg', true);
 		$delButton->addDataAttribute('credential', $credentialId);
 		$delButton->addDataAttribute('dn', $result['dn']);
 		$delButton->addDataAttribute('dialogtitle', _('Remove device'));

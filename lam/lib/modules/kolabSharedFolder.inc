@@ -274,7 +274,7 @@ class kolabSharedFolder extends baseModule {
 				$delegateSelect->setHasDescriptiveElements(true);
 				$delegateSelect->setSortElements(false);
 				$delegatesContainer->addElement($delegateSelect);
-				$delegatesContainer->addElement(new htmlButton('delDelegate' . $i, 'del.png', true));
+				$delegatesContainer->addElement(new htmlButton('delDelegate' . $i, 'del.svg', true));
 				if ($i == 0) {
 					$delegatesContainer->addElement(new htmlHelpLink('delegate'));
 				}
@@ -283,7 +283,7 @@ class kolabSharedFolder extends baseModule {
 		}
 		// input box for new delegate
 		$delegatesContainer->addElement(new htmlSelect('delegate', $delegates));
-		$delegatesContainer->addElement(new htmlButton('addDelegate', 'add.png', true));
+		$delegatesContainer->addElement(new htmlButton('addDelegate', 'add.svg', true));
 		if (empty($this->attributes['kolabDelegate'])) {
 			$delegatesContainer->addElement(new htmlHelpLink('delegate'));
 		}

@@ -276,7 +276,7 @@ foreach ($sections as $key => $section) {
 	$linkUp->setTitle(_("Up"));
 	$linkDown = new htmlButton('down_section_' . $key, 'down.gif', true);
 	$linkDown->setTitle(_("Down"));
-	$linkRemove = new htmlButton('remove_section_' . $key, 'delete.gif', true);
+	$linkRemove = new htmlButton('remove_section_' . $key, 'del.svg', true);
 	$linkRemove->setTitle(_("Remove"));
 	$emptyBox = new htmlSpacer('19px', null);
 	// We have a new section to start
@@ -351,7 +351,7 @@ foreach ($sections as $key => $section) {
 			else {
 				$actionGroup->addElement($emptyBox);
 			}
-			$entryLinkRemove = new htmlButton('remove_entry_' . $key . '_' . $e, 'delete.gif', true);
+			$entryLinkRemove = new htmlButton('remove_entry_' . $key . '_' . $e, 'del.svg', true);
 			$entryLinkRemove->setTitle(_("Remove"));
 			$actionGroup->addElement($entryLinkRemove, true);
 			$structureContent->addField($actionGroup);
