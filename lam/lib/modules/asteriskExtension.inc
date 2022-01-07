@@ -6,7 +6,7 @@ use \LAM\PDF\PDFTableRow;
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2009 - 2012  Pavel Pozdniak
-                2009 - 2021  Roland Gruber
+                2009 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -347,7 +347,7 @@ class asteriskExtension extends baseModule {
             if ($this->addRuleFlag) {
                 $upDownButtons = new htmlTable();
                 $renderContainer->addLabel(new htmlButton("delete_rule_" . $i, _('Delete rule')), false);
-                $upDownButtons->addElement(new htmlButton('rule_up_button_' . $i, 'up.gif', true), false);
+                $upDownButtons->addElement(new htmlButton('rule_up_button_' . $i, 'up.svg', true), false);
                 $renderContainer->addField($upDownButtons, true);
             }
 
