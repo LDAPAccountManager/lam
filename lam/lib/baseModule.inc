@@ -1710,9 +1710,9 @@ abstract class baseModule {
 		$buttonRow->setCSSClasses(array('text-center'));
 		$buttonRow->add(new htmlSpacer(null, '1rem'), 0, 0, $buttonActiveDesktop);
 		$buttonRow->add(new htmlButton($namePrefix . '_left', 'back.gif', true), 0, 0, $buttonActiveDesktop);
-		$buttonRow->add(new htmlButton($namePrefix . '_left', 'up.gif', true), 6, 6, $buttonInactiveDesktop);
+		$buttonRow->add(new htmlButton($namePrefix . '_left', 'up.svg', true), 6, 6, $buttonInactiveDesktop);
 		$buttonRow->add(new htmlButton($namePrefix . '_right', 'forward.gif', true), 0, 0, $buttonActiveDesktop);
-		$buttonRow->add(new htmlButton($namePrefix . '_right', 'down.gif', true), 6, 6, $buttonInactiveDesktop);
+		$buttonRow->add(new htmlButton($namePrefix . '_right', 'down.svg', true), 6, 6, $buttonInactiveDesktop);
 		$buttonRowDesktop = ($forceTablet) ? 12 : 1;
 		$container->add($buttonRow, 12, 12, $buttonRowDesktop);
 		// second select

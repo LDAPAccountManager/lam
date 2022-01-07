@@ -327,11 +327,11 @@ class asteriskExtension extends baseModule {
 
             $upDownButtons = new htmlTable();
             if ($i > 0) {
-                $upDownButtons->addElement(new htmlButton('rule_up_button_' . $i, 'up.gif', true), false);
+                $upDownButtons->addElement(new htmlButton('rule_up_button_' . $i, 'up.svg', true), false);
             }
             if (($i < sizeof($entries) - 1) &&
                     ((sizeof($entries) > 1) || ($this->addRuleFlag) )) {
-                $upDownButtons->addElement(new htmlButton('rule_down_button_' . $i, 'down.gif', true));
+                $upDownButtons->addElement(new htmlButton('rule_down_button_' . $i, 'down.svg', true));
             }
             $renderContainer->addField($upDownButtons, true);
 

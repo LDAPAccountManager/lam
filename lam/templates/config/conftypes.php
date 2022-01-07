@@ -197,13 +197,13 @@ if (sizeof($activeTypes) > 0) {
 		$buttons = new htmlGroup();
 		// move buttons
 		if ($index > 0) {
-			$upButton = new htmlButton('moveup_'. $activeType->getId(), 'up.gif', true);
+			$upButton = new htmlButton('moveup_'. $activeType->getId(), 'up.svg', true);
 			$upButton->setTitle(_("Up"));
 			$upButton->setCSSClasses(array('size16'));
 			$buttons->addElement($upButton);
 		}
 		if ($index < (sizeof($activeTypes) - 1)) {
-			$upButton = new htmlButton('movedown_'. $activeType->getId(), 'down.gif', true);
+			$upButton = new htmlButton('movedown_'. $activeType->getId(), 'down.svg', true);
 			$upButton->setTitle(_("Down"));
 			$upButton->setCSSClasses(array('size16'));
 			$buttons->addElement($upButton);

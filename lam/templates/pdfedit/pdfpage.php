@@ -272,9 +272,9 @@ $structureContent = new htmlResponsiveRow();
 $sections = $structure->getSections();
 foreach ($sections as $key => $section) {
 	// create the up/down/remove links
-	$linkUp = new htmlButton('up_section_' . $key, 'up.gif', true);
+	$linkUp = new htmlButton('up_section_' . $key, 'up.svg', true);
 	$linkUp->setTitle(_("Up"));
-	$linkDown = new htmlButton('down_section_' . $key, 'down.gif', true);
+	$linkDown = new htmlButton('down_section_' . $key, 'down.svg', true);
 	$linkDown->setTitle(_("Down"));
 	$linkRemove = new htmlButton('remove_section_' . $key, 'del.svg', true);
 	$linkRemove->setTitle(_("Remove"));
@@ -336,7 +336,7 @@ foreach ($sections as $key => $section) {
 			$structureContent->addLabel($fieldOutput);
 			$actionGroup = new htmlGroup();
 			if ($e != 0) {
-				$entryLinkUp = new htmlButton('up_entry_' . $key . '_' . $e, 'up.gif', true);
+				$entryLinkUp = new htmlButton('up_entry_' . $key . '_' . $e, 'up.svg', true);
 				$entryLinkUp->setTitle(_("Up"));
 				$actionGroup->addElement($entryLinkUp);
 			}
@@ -344,7 +344,7 @@ foreach ($sections as $key => $section) {
 				$actionGroup->addElement($emptyBox);
 			}
 			if ($e < (sizeof($sectionEntries) - 1)) {
-				$linkDown = new htmlButton('down_entry_' . $key . '_' . $e, 'down.gif', true);
+				$linkDown = new htmlButton('down_entry_' . $key . '_' . $e, 'down.svg', true);
 				$linkDown->setTitle(_("Down"));
 				$actionGroup->addElement($linkDown);
 			}

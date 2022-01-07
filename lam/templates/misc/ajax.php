@@ -1,6 +1,7 @@
 <?php
 namespace LAM\AJAX;
 use htmlResponsiveTable;
+use htmlSpacer;
 use htmlStatusMessage;
 use \LAM\TOOLS\IMPORT_EXPORT\Importer;
 use \LAM\TOOLS\IMPORT_EXPORT\Exporter;
@@ -471,12 +472,7 @@ class Ajax {
 			$text->setOnClick($onclickUp);
 			$row->add($text, 12, 9);
 			$row->setCSSClasses(array('text-right'));
-			$buttonId = base64_encode('..');
-			$buttonId = str_replace('=', '', $buttonId);
-			$button = new htmlButton($buttonId, '');
-			$button->setIconClass('upButton');
-			$button->setOnClick($onclickUp);
-			$row->add($button, 12, 3);
+			$row->add(new htmlSpacer('16px'), 12, 3);
 			$mainRow->add($row, 12);
 		}
 		foreach ($dnList as $dn) {

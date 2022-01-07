@@ -441,11 +441,6 @@ table.collapse {
 	background-position: 0px 0px !important;
 }
 
-.undoButton {
-	background-image: url(../graphics/undo.png) !important;
-	background-position: 0px 0px !important;
-}
-
 .loadProfileButton {
 	background-image: url(../graphics/loadProfile.png) !important;
 	background-position: 0px 0px !important;
@@ -453,16 +448,6 @@ table.collapse {
 
 .editButton {
 	background-image: url(../graphics/edit.png) !important;
-	background-position: 0px 0px !important;
-}
-
-.upButton {
-	background-image: url(../graphics/up.gif) !important;
-	background-position: 0px 0px !important;
-}
-
-.downButton {
-	background-image: url(../graphics/down.gif) !important;
 	background-position: 0px 0px !important;
 }
 
