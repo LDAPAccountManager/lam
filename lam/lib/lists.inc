@@ -472,11 +472,11 @@ class lamList {
 		$actionElement->addElement($selectAll);
 		$actionElement->addElement(new htmlSpacer('1rem', null));
 		$actionElement->addElement(new htmlOutputText(_('Filter')));
-		$filterButton = new htmlButton('apply_filter', 'filter.png', true);
+		$filterButton = new htmlButton('apply_filter', 'filter.svg', true);
 		$filterButton->setTitle(_("Here you can input simple filter expressions (e.g. 'value' or 'v*'). The filter is case-insensitive."));
 		$actionElement->addElement($filterButton);
 		if (sizeof($this->filters) > 0) {
-			$clearFilterButton = new htmlButton('clear_filter', 'clearFilter.png', true);
+			$clearFilterButton = new htmlButton('clear_filter', 'del.svg', true);
 			$clearFilterButton->setTitle(_('Clear filter'));
 			$actionElement->addElement($clearFilterButton);
 		}

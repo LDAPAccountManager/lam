@@ -1956,8 +1956,8 @@ class posixAccount extends baseModule implements passwordService {
 				$remSelect->setTransformSingleSelect(false);
 				$unixContainer->addElement($remSelect);
 				$buttonContainer = new htmlTable();
-				$buttonContainer->addElement(new htmlButton('addgroups_button', 'back.gif', true), true);
-				$buttonContainer->addElement(new htmlButton('removegroups_button', 'forward.gif', true), true);
+				$buttonContainer->addElement(new htmlButton('addgroups_button', 'go-previous.svg', true), true);
+				$buttonContainer->addElement(new htmlButton('removegroups_button', 'go-next.svg', true), true);
 				$buttonContainer->addElement(new htmlHelpLink('addgroup'));
 				$unixContainer->addElement($buttonContainer);
 				$addSelect = new htmlSelect('addgroups', $groups, null, 15);
@@ -2005,8 +2005,8 @@ class posixAccount extends baseModule implements passwordService {
 			$remGonSelect->setRightToLeftTextDirection(true);
 			$gonContainer->addElement($remGonSelect);
 			$buttonGonContainer = new htmlTable();
-			$buttonGonContainer->addElement(new htmlButton('addgons_button', 'back.gif', true), true);
-			$buttonGonContainer->addElement(new htmlButton('removegons_button', 'forward.gif', true), true);
+			$buttonGonContainer->addElement(new htmlButton('addgons_button', 'go-previous.svg', true), true);
+			$buttonGonContainer->addElement(new htmlButton('removegons_button', 'go-next.svg', true), true);
 			$buttonGonContainer->addElement(new htmlHelpLink('addgroup'));
 			$gonContainer->addElement($buttonGonContainer);
 			$addGonSelect = new htmlSelect('addgons', $availableGons, null, 15);

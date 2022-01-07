@@ -431,16 +431,6 @@ table.collapse {
 	background-position: 0px 0px !important;
 }
 
-.cancelButton {
-	background-image: url(../graphics/cancel.png) !important;
-	background-position: 0px 0px !important;
-}
-
-.logoutButton {
-	background-image: url(../graphics/exit.png) !important;
-	background-position: 0px 0px !important;
-}
-
 .loadProfileButton {
 	background-image: url(../graphics/loadProfile.png) !important;
 	background-position: 0px 0px !important;
@@ -448,16 +438,6 @@ table.collapse {
 
 .editButton {
 	background-image: url(../graphics/edit.png) !important;
-	background-position: 0px 0px !important;
-}
-
-.backButton {
-	background-image: url(../graphics/back.gif) !important;
-	background-position: 0px 0px !important;
-}
-
-.testButton {
-	background-image: url(../graphics/tests.png) !important;
 	background-position: 0px 0px !important;
 }
 

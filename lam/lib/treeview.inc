@@ -269,7 +269,7 @@ class TreeView {
 			$icon = 'country.png';
 		}
 		elseif (in_array('locality', $objectClasses)) {
-			$icon = 'location.png';
+			$icon = 'location.svg';
 		}
 		elseif (in_array('posixgroup', $objectClasses) ||
 			in_array('groupofnames', $objectClasses) ||
