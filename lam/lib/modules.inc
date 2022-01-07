@@ -732,7 +732,7 @@ function printHelpLink($entry, $number, $module = '', $scope = '', $classes = ar
 	}
 	echo "<a class=\"margin2 " . implode(" ", $classes) . "\" href=\"" . $helpPath . "help.php?module=$module&amp;HelpNumber=". $number . "&amp;scope=" . $scope . $selfServiceOption . "\" ";
 		echo "target=\"help\">";
-		echo "<img helptitle=\"" . $title . "\" helpdata=\"" . $message . "\" class=\"align-middle help-icon\" src=\"../${helpPath}graphics/help.png\" alt=\"" . _('Help') . "\">";
+		echo "<img helptitle=\"" . $title . "\" helpdata=\"" . $message . "\" class=\"align-middle help-icon\" src=\"../${helpPath}graphics/help.svg\" alt=\"" . _('Help') . "\" width=\"16px\" height=\"16px\">";
 	echo "</a>";
 }
 

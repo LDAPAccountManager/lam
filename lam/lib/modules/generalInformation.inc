@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2021  Roland Gruber
+  Copyright (C) 2011 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ class generalInformation extends baseModule {
 	public function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'info.png';
+		$return['icon'] = 'info.svg';
 		// alias name
 		$return["alias"] = _("General information");
 		// module dependencies
