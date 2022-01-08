@@ -77,7 +77,7 @@ class toolOUEditor extends LAMTool {
 	 * {@inheritDoc}
 	 */
 	public function getImageLink(): string {
-		return 'ou.png';
+		return 'folder.svg';
 	}
 
 	/**

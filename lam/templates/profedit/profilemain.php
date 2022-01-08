@@ -260,7 +260,7 @@ foreach ($profileClasses as $profileClass) {
 	$select = new htmlSelect('profile_' . $profileClass['typeId'], $profileClass['profiles']);
 	$container->add($select, 12, 4);
 	$buttonGroup = new htmlGroup();
-	$editButton = new htmlButton('editProfile_' . $profileClass['typeId'], 'edit.png', true);
+	$editButton = new htmlButton('editProfile_' . $profileClass['typeId'], 'edit.svg', true);
 	$editButton->setTitle(_('Edit'));
 	$buttonGroup->addElement($editButton);
 	$deleteLink = new htmlLink(null, '#', '../../graphics/del.svg');

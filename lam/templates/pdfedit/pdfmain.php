@@ -365,7 +365,7 @@ include __DIR__ . '/../../lib/adminHeader.inc';
 			$select = new htmlSelect('template_' . $templateClass['typeId'], $templateClass['templates']);
 			$container->add($select, 12, 4);
 			$buttonGroup = new htmlGroup();
-			$exEditButton = new htmlButton('editTemplate_' . $templateClass['typeId'], 'edit.png', true);
+			$exEditButton = new htmlButton('editTemplate_' . $templateClass['typeId'], 'edit.svg', true);
 			$exEditButton->setTitle(_('Edit'));
 			$buttonGroup->addElement($exEditButton);
 			$deleteLink = new htmlLink(null, '#', '../../graphics/del.svg');

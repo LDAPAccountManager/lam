@@ -373,7 +373,7 @@ class shadowAccount extends baseModule implements passwordService {
 			$return->addLabel(new htmlOutputText(_('Account expiration date')));
 			$expireTable = new htmlGroup();
 			$expireTable->addElement(new htmlOutputText($expirationDate, false));
-			$expireTable->addElement(new htmlAccountPageButton('shadowAccount', 'expire', 'open', 'edit.png', true, _('Change')));
+			$expireTable->addElement(new htmlAccountPageButton('shadowAccount', 'expire', 'open', 'edit-document.svg', true, _('Change')));
 			$expireTable->addElement(new htmlHelpLink('shadowExpire'), true);
 			$return->addField($expireTable);
 
@@ -386,7 +386,7 @@ class shadowAccount extends baseModule implements passwordService {
 			$return->addLabel(new htmlOutputText(_('Last password change')));
 			$pwdChangeTable = new htmlGroup();
 			$pwdChangeTable->addElement(new htmlOutputText($pwdChangeDate, false));
-			$pwdChangeTable->addElement(new htmlAccountPageButton('shadowAccount', 'pwdChange', 'open', 'edit.png', true, _('Change')));
+			$pwdChangeTable->addElement(new htmlAccountPageButton('shadowAccount', 'pwdChange', 'open', 'edit-document.svg', true, _('Change')));
 			if (isset($this->attributes['shadowMax'][0]) && ($this->attributes['shadowMax'][0] != '')) {
 				$pwdChangeTable->addElement(new htmlAccountPageButton('shadowAccount', 'attributes', 'expirePassword', _('Force password change')));
 			}

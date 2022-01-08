@@ -251,7 +251,7 @@ class TreeView {
 			$icon = 'o.png';
 		}
 		elseif (in_array('organizationalunit', $objectClasses)) {
-			$icon = 'ou.png';
+			$icon = 'folder.svg';
 		}
 		elseif (in_array('dcobject', $objectClasses) ||
 			in_array('domainrelatedobject', $objectClasses) ||
@@ -290,7 +290,7 @@ class TreeView {
 			$icon = 'hard-drive.png';
 		}
 		elseif (in_array('container', $objectClasses)) {
-			$icon = 'ou.png';
+			$icon = 'folder.svg';
 		}
 		return $base . $icon;
 	}

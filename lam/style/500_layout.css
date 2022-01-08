@@ -436,11 +436,6 @@ table.collapse {
 	background-position: 0px 0px !important;
 }
 
-.editButton {
-	background-image: url(../graphics/edit.png) !important;
-	background-position: 0px 0px !important;
-}
-
 .unixButton {
 	background-image: url(../graphics/tux.png) !important;
 	background-size: 16px 16px;

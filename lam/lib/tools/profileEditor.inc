@@ -77,7 +77,7 @@ class toolProfileEditor extends LAMTool {
 	 * {@inheritDoc}
 	 */
 	public function getImageLink(): string {
-		return 'edit.png';
+		return 'edit-document.svg';
 	}
 
 	/**

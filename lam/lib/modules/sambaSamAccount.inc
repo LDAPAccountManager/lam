@@ -1226,7 +1226,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 					$sambaProfilePathGroup->addElement(new htmlInputField('sambaProfilePath', $sambaProfilePath));
 					if (($_SESSION['config']->get_scriptPath() != null) && ($_SESSION['config']->get_scriptPath() != '')) {
 						if (get_preg($sambaProfilePath, 'homeDirectory')) {
-							$sambaProfilePathButton = new htmlAccountPageButton(get_class($this), 'profilePath', 'manage', '../graphics/folder.png', true);
+							$sambaProfilePathButton = new htmlAccountPageButton(get_class($this), 'profilePath', 'manage', '../graphics/folder.svg', true);
 							$sambaProfilePathButton->setTitle(_('Manage profile directory'));
 							$sambaProfilePathGroup->addElement($sambaProfilePathButton);
 						}
