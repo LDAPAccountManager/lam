@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008        Thomas Manninger
-                2008 - 2020 Roland Gruber
+                2008 - 2022 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -126,7 +126,7 @@ class dhcp_settings extends baseModule {
 		// this is a base module
 		$return["is_base"] = true;
 		// icon
-		$return['icon'] = 'dhcpBig.png';
+		$return['icon'] = 'world-color.svg';
 		// RDN attribute
 		$return["RDN"] = array("cn" => "high");
 		// LDAP filter

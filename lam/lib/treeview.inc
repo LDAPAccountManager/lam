@@ -248,7 +248,7 @@ class TreeView {
 			$icon = 'uidSmall.png';
 		}
 		elseif (in_array('organization', $objectClasses)) {
-			$icon = 'o.png';
+			$icon = 'world-color.svg';
 		}
 		elseif (in_array('organizationalunit', $objectClasses)) {
 			$icon = 'folder.svg';
@@ -257,7 +257,7 @@ class TreeView {
 			in_array('domainrelatedobject', $objectClasses) ||
 			in_array('domain', $objectClasses) ||
 			in_array('builtindomain', $objectClasses)) {
-			$icon = 'o.png';
+			$icon = 'world-color.svg';
 		}
 		elseif (in_array('alias', $objectClasses)) {
 			$icon = 'alias.png';
@@ -266,7 +266,7 @@ class TreeView {
 			$icon = 'txt.png';
 		}
 		elseif (in_array('country', $objectClasses)) {
-			$icon = 'country.png';
+			$icon = 'world-color.svg';
 		}
 		elseif (in_array('locality', $objectClasses)) {
 			$icon = 'location.svg';
