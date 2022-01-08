@@ -1644,7 +1644,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 				if ($returnValue == 'ok') {
 					$return->addLabel(new htmlOutputText($label));
 					$editGroup = new htmlGroup();
-					$editGroup->addElement(new htmlImage('../../graphics/pass.png', 16, 16));
+					$editGroup->addElement(new htmlImage('../../graphics/pass.svg', 16, 16));
 					$editGroup->addElement(new htmlSpacer('0.5rem', null));
 					$editGroup->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'delete_' . $i, _('Delete')));
 					$return->addField($editGroup);
@@ -1652,7 +1652,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 				elseif ($returnValue == 'missing') {
 					$return->addLabel(new htmlOutputText($label));
 					$editGroup = new htmlGroup();
-					$editGroup->addElement(new htmlImage('../../graphics/fail.png', 16, 16));
+					$editGroup->addElement(new htmlImage('../../graphics/del.svg', 16, 16));
 					$editGroup->addElement(new htmlSpacer('0.5rem', null));
 					$editGroup->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'create_' . $i, _('Create')));
 					$return->addField($editGroup);

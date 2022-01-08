@@ -81,9 +81,9 @@ else {
 		for ($m = 0; $m < sizeof($modules); $m++) {
 			$error = checkSchemaForModule($modules[$m], $type->getScope(), $type->getId());
 			$message = _("No problems found.");
-			$icon = '../../graphics/pass.png';
+			$icon = '../../graphics/pass.svg';
 			if ($error != null) {
-				$icon = '../../graphics/fail.png';
+				$icon = '../../graphics/del.svg';
 				$message = $error;
 			}
 			// module name

@@ -129,8 +129,8 @@ include '../../lib/adminFooter.inc';
  * @return boolean true, if errors occurred
  */
 function testRemoteCommand($command, $stopTest, $remote, $testText, $container) {
-	$okImage = "../../graphics/pass.png";
-	$failImage = "../../graphics/fail.png";
+	$okImage = "../../graphics/pass.svg";
+	$failImage = "../../graphics/del.svg";
 	// run remote command
 	if (!$stopTest) {
 		$container->add(new htmlOutputText($testText), 10, 4);
@@ -182,8 +182,8 @@ function lamRunTestSuite($serverName, $serverTitle, $testQuota, $container) {
 	$remoteServer = $_SESSION['config']->getScriptServerByName($serverName);
 	$SPLIT_DELIMITER = "###x##y##x###";
 	$LAMDAEMON_PROTOCOL_VERSION = '5';
-	$okImage = "../../graphics/pass.png";
-	$failImage = "../../graphics/fail.png";
+	$okImage = "../../graphics/pass.svg";
+	$failImage = "../../graphics/del.svg";
 
 	$stopTest = false;
 

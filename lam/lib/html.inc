@@ -629,7 +629,7 @@ class htmlInputField extends htmlElement {
 			. $min . $max . $size . $fieldTabIndex . $onKeyPress . $onKeyUp . $onInput . $title . $disabled
 			. $this->getDataAttributesAsString() . $autoCompleteVal . $autoCompleteData . '>';
 		if ($this->showDnSelection) {
-			echo '<img class="align-middle" src="../../graphics/view.png"
+			echo '<img class="align-middle" src="../../graphics/search-color.svg"
 					   width="16" height="16" title="' . _('Choose entry') . '"
 					   onclick="window.lam.html.showDnSelection(\'' . $this->fieldName . '\', \'' . _('Choose entry') . '\'
 					   			, \'' . _('Ok') . '\', \'' . _('Cancel') . '\', \'' . getSecurityTokenName() . '\'

@@ -159,7 +159,7 @@ if (sizeof($availableScopes) > 0) {
 	$row->add(new htmlSubTitle(_("Available account types")), 12);
 	foreach ($availableScopes as $availableScope) {
 		$availableLabelGroup = new htmlGroup();
-		$availableLabelGroup->addElement(new htmlImage('../../graphics/' . $availableScope->getIcon()));
+		$availableLabelGroup->addElement(new htmlImage('../../graphics/' . $availableScope->getIcon(), '16px', '16px'));
 		$availableLabelGroup->addElement(new htmlSpacer('0.5rem', null));
 		$availableLabelGroup->addElement(new htmlOutputText($availableScope->getAlias()));
 		$row->addField($availableLabelGroup);
@@ -186,7 +186,7 @@ if (sizeof($activeTypes) > 0) {
 	foreach ($activeTypes as $activeType) {
 		// title
 		$titleGroup = new htmlGroup();
-		$titleGroup->addElement(new htmlImage('../../graphics/' . $activeType->getIcon()));
+		$titleGroup->addElement(new htmlImage('../../graphics/' . $activeType->getIcon(), '16px', '16px'));
 		$titleGroup->addElement(new htmlSpacer('0.5rem', null));
 		$titleText = new htmlOutputText($activeType->getAlias());
 		$titleText->setIsBold(true);

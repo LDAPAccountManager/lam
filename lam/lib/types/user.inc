@@ -348,7 +348,7 @@ class user extends baseType {
 		$statusTable .= '</table>';
 		$tipContent = $statusTable;
 		if ($isEditable) {
-			$tipContent .= '<br><img alt=&quot;hint&quot; src=&quot;../../graphics/light.png&quot;> ';
+			$tipContent .= '<br><img alt=&quot;hint&quot; src=&quot;../../graphics/light.svg&quot;> ';
 			$tipContent .= _('Please click to lock/unlock this account.');
 		}
 		$dialogDiv = $this->buildAccountStatusDialogDiv($unixAvailable, $unixLocked, $sambaAvailable, $sambaLocked,

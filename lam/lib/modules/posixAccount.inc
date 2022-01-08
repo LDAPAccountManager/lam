@@ -9,7 +9,7 @@ use LAM\TYPES\ConfiguredType;
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-    Copyright (C) 2005 - 2021  Roland Gruber
+    Copyright (C) 2005 - 2022  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -2098,7 +2098,7 @@ class posixAccount extends baseModule implements passwordService {
 				if ($returnValue == 'ok') {
 					$return->addLabel(new htmlOutputText($label));
 					$okGroup = new htmlGroup();
-					$okGroup->addElement(new htmlImage('../../graphics/pass.png', 16, 16));
+					$okGroup->addElement(new htmlImage('../../graphics/pass.svg', 16, 16));
 					$okGroup->addElement(new htmlSpacer('5px', null));
 					$okGroup->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'delete_' . $i, _('Delete')));
 					$return->addField($okGroup);
@@ -2106,7 +2106,7 @@ class posixAccount extends baseModule implements passwordService {
 				elseif ($returnValue == 'missing') {
 					$return->addLabel(new htmlOutputText($label));
 					$failGroup = new htmlGroup();
-					$failGroup->addElement(new htmlImage('../../graphics/fail.png', 16, 16));
+					$failGroup->addElement(new htmlImage('../../graphics/del.svg', 16, 16));
 					$failGroup->addElement(new htmlSpacer('5px', null));
 					$failGroup->addElement(new htmlAccountPageButton(get_class($this), 'homedir', 'create_' . $i, _('Create')));
 					$return->addField($failGroup);

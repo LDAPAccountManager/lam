@@ -61,7 +61,7 @@ $container->add(new htmlOutputText(_("Check if quotas and homedirectories can be
 
 $container->addVerticalSpacer('2rem');
 
-$container->add(new htmlLink(_("Schema test"), 'schemaTest.php', '../../graphics/schemaTest.png'), 12, 4);
+$container->add(new htmlLink(_("Schema test"), 'schemaTest.php', '../../graphics/search-color.svg'), 12, 4);
 $container->add(new htmlOutputText(_("Check if the LDAP schema fits the requirements of the selected account modules.")), 12, 8);
 
 $tabindex = 1;
