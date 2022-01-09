@@ -21,7 +21,7 @@ use ServerProfilePersistenceManager;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2021  Roland Gruber
+                2005 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -280,14 +280,11 @@ function display_LoginPage($licenseValidator, $error_message, $errorDetails = nu
 		<div class="roundedShadowBox limitWidth" style="position:relative; z-index:5;">
 		<table border="0" rules="none" bgcolor="white" class="ui-corner-all">
 			<tr>
-				<td class="loginLogo hide-for-small" style="border-style:none" rowspan="3">
-				</td>
 				<td style="border-style:none">
 					<form action="login.php" method="post">
 						<?php
 							$tabindex = 1;
 							$row = new htmlResponsiveRow();
-							$row->add(new htmlSpacer(null, '30px'), 0, 12, 12);
 							// user name
 							$row->addLabel(new htmlOutputText(_("User name")));
 							if ($config_object->getLoginMethod() == LAMConfig::LOGIN_LIST) {
