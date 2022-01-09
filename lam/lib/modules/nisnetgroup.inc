@@ -241,7 +241,7 @@ class nisnetgroup extends baseModule {
 				$hostField->setCSSClasses(array('auto-width'));
 				$hostField->setFieldSize(null);
 				$hostGroup->addElement($hostField);
-				$hostButton = new htmlAccountPageButton(get_class($this), 'select', 'host' . $i, 'host.png', true);
+				$hostButton = new htmlAccountPageButton(get_class($this), 'select', 'host' . $i, 'computer.svg', true);
 				$hostButton->setTitle(_('Select host'));
 				$hostGroup->addElement($hostButton);
 				$dataRow[] = $hostGroup;
@@ -281,7 +281,7 @@ class nisnetgroup extends baseModule {
 		$hostField->setCSSClasses(array('auto-width'));
 		$hostField->setFieldSize(null);
 		$hostNewGroup->addElement($hostField);
-		$hostButton = new htmlAccountPageButton(get_class($this), 'select', 'hostNew', 'host.png', true);
+		$hostButton = new htmlAccountPageButton(get_class($this), 'select', 'hostNew', 'computer.svg', true);
 		$hostButton->setTitle(_('Select host'));
 		$hostNewGroup->addElement($hostButton);
 		$dataRowNew[] = $hostNewGroup;

@@ -82,7 +82,7 @@ class TreeViewTool extends LAMTool {
 	 * {@inheritDoc}
 	 */
 	public function getImageLink(): string {
-		return 'process.png';
+		return 'tree.svg';
 	}
 
 	/**

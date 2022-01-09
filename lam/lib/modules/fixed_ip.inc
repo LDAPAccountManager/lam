@@ -86,7 +86,7 @@ class fixed_ip extends baseModule {
 		// this is a base module
 		$return["is_base"] = false;
 		// icon
-		$return['icon'] = 'computer.png';
+		$return['icon'] = 'computer.svg';
 		// RDN attribute
 		$return["RDN"] = array("cn" => "high");
 		// LDAP filter

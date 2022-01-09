@@ -278,13 +278,13 @@ class TreeView {
 			$icon = 'group.svg';
 		}
 		elseif (in_array('iphost', $objectClasses)) {
-			$icon = 'host.png';
+			$icon = 'computer-small.svg';
 		}
 		elseif (in_array('device', $objectClasses)) {
 			$icon = 'device.svg';
 		}
 		elseif (in_array('server', $objectClasses)) {
-			$icon = 'host.png';
+			$icon = 'computer-small.svg';
 		}
 		elseif (in_array('volume', $objectClasses)) {
 			$icon = 'hard-drive.svg';

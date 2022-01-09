@@ -63,7 +63,7 @@ class hostObject extends baseModule {
 	function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'computer.png';
+		$return['icon'] = 'computer.svg';
 		// alias name
 		$return["alias"] = _("Hosts");
 		// module dependencies
