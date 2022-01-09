@@ -115,7 +115,7 @@ else {
 		$delButton->addDataAttribute('oktext', _('Ok'));
 		$delButton->addDataAttribute('canceltext', _('Cancel'));
 		$delButton->setOnClick('window.lam.webauthn.removeOwnDevice(event, false);');
-		$saveButton = new htmlButton('saveDevice' . $id, 'save.png', true);
+		$saveButton = new htmlButton('saveDevice' . $id, 'save.svg', true);
 		$saveButton->addDataAttribute('credential', $credentialId);
 		$saveButton->addDataAttribute('dn', $result['dn']);
 		$saveButton->addDataAttribute('nameelement', 'deviceName_' . $id);

@@ -458,9 +458,10 @@ printHeaderContents(_("Edit general settings"), '../..');
 	$sslDelSaveGroup->addElement(new htmlSpacer('5px', null));
 	// delete+download button
 	if ($sslFileName != null) {
-		$sslDownloadBtn = new htmlLink('', '../../tmp/' . $sslFileName, '../../graphics/save.png');
+		$sslDownloadBtn = new htmlLink('', '../../tmp/' . $sslFileName, '../../graphics/save.svg');
 		$sslDownloadBtn->setTargetWindow('_blank');
 		$sslDownloadBtn->setTitle(_('Download CA certificates'));
+		$sslDownloadBtn->setCSSClasses(array('icon'));
 		$sslDelSaveGroup->addElement($sslDownloadBtn);
 		$sslDeleteBtn = new htmlButton('sslCaCertDelete', 'del.svg', true);
 		$sslDeleteBtn->setTitle(_('Delete all CA certificates'));

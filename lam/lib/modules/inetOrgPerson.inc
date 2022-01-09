@@ -1881,7 +1881,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 				fwrite($out, $this->attributes['userCertificate;binary'][$i]);
 				fclose ($out);
 				$path = '../../tmp/' . $filename;
-				$link = new htmlLink('', $path, '../../graphics/save.png');
+				$link = new htmlLink('', $path, '../../graphics/save.svg');
 				$link->setTargetWindow('_blank');
 				$link->setCSSClasses(array('icon'));
 				$table->addElement($link);
@@ -3226,7 +3226,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 						}
 					}
 				}
-				$saveLink = new htmlLink('', $path, '../../graphics/save.png');
+				$saveLink = new htmlLink('', $path, '../../graphics/save.svg');
 				$saveLink->setTitle(_('Save'));
 				$saveLink->setTargetWindow('_blank');
 				$saveLink->setCSSClasses(array('icon'));

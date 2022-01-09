@@ -426,11 +426,6 @@ table.collapse {
 }
 
 /** buttons */
-.saveButton {
-	background-image: url(../graphics/save.png) !important;
-	background-position: 0px 0px !important;
-}
-
 .loadProfileButton {
 	background-image: url(../graphics/loadProfile.png) !important;
 	background-position: 0px 0px !important;

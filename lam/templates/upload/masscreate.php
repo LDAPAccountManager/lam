@@ -283,7 +283,9 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 
 	// upload elements
 	$row->addLabel(new htmlOutputText(_("Download sample CSV file")));
-	$row->addField(new htmlLink('', 'masscreate.php?getCSV=1', '../../graphics/save.png'));
+	$saveLink = new htmlLink('', 'masscreate.php?getCSV=1', '../../graphics/save.svg');
+	$saveLink->setCSSClasses(array('icon'));
+	$row->addField($saveLink);
 	$row->addVerticalSpacer('3rem');
 	$row->add(new htmlResponsiveInputFileUpload('inputfile', _("CSV file")), 12);
 	$row->add(new htmlHiddenInput('typeId', $type->getId()), 12);
