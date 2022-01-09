@@ -426,29 +426,6 @@ table.collapse {
 }
 
 /** buttons */
-.loadProfileButton {
-	background-image: url(../graphics/loadProfile.png) !important;
-	background-position: 0px 0px !important;
-}
-
-.unixButton {
-	background-image: url(../graphics/tux.png) !important;
-	background-size: 16px 16px;
-	background-position: 0px 0px !important;
-}
-
-.groupButton {
-	background-image: url(../graphics/group.png) !important;
-	background-size: 16px 16px;
-	background-position: 0px 0px !important;
-}
-
-.sambaButton {
-	background-image: url(../graphics/samba.png) !important;
-	background-size: 16px 16px;
-	background-position: 0px 0px !important;
-}
-
 .okButton {
 	background-image: url(../graphics/pass.svg) !important;
 	background-size: 16px 16px;

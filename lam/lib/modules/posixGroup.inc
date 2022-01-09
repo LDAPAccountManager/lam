@@ -370,7 +370,7 @@ class posixGroup extends baseModule implements passwordService {
 	function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'tux.png';
+		$return['icon'] = 'tux.svg';
 		if ($this->get_scope() == "group") {
 			// this is a base module
 			$return["is_base"] = true;

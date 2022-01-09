@@ -250,7 +250,7 @@ class nisnetgroup extends baseModule {
 				$userField->setCSSClasses(array('auto-width'));
 				$userField->setFieldSize(null);
 				$userGroup->addElement($userField);
-				$userButton = new htmlAccountPageButton(get_class($this), 'select', 'user' . $i, 'user.png', true);
+				$userButton = new htmlAccountPageButton(get_class($this), 'select', 'user' . $i, 'user.svg', true);
 				$userButton->setTitle(_('Select user'));
 				$userGroup->addElement($userButton);
 				$dataRow[] = $userGroup;
@@ -290,7 +290,7 @@ class nisnetgroup extends baseModule {
 		$userField->setCSSClasses(array('auto-width'));
 		$userField->setFieldSize(null);
 		$userNewGroup->addElement($userField);
-		$userButton = new htmlAccountPageButton(get_class($this), 'select', 'userNew', 'user.png', true);
+		$userButton = new htmlAccountPageButton(get_class($this), 'select', 'userNew', 'user.svg', true);
 		$userButton->setTitle(_('Select user'));
 		$userNewGroup->addElement($userButton);
 		$dataRowNew[] = $userNewGroup;

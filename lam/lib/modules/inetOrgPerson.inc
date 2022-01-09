@@ -129,7 +129,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 	function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'uid.png';
+		$return['icon'] = 'user.svg';
 		// alias name
 		$return["alias"] = _('Personal');
 		// this is a base module
@@ -1592,7 +1592,7 @@ class inetOrgPerson extends baseModule implements passwordService {
 			$imageContainer = new htmlTable();
 			$imageContainer->setCSSClasses(array('div-center'));
 			$imageContainer->alignment = htmlElement::ALIGN_TOP;
-			$photoFile = '../../graphics/userDefault.png';
+			$photoFile = '../../graphics/user.svg';
 			$noPhoto = true;
 			if (isset($this->attributes['jpegPhoto'][0])) {
 				$jpeg_filename = 'jpg' . getRandomNumber() . '.jpg';

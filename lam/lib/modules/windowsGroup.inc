@@ -98,7 +98,7 @@ class windowsGroup extends baseModule {
 	public function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'samba.png';
+		$return['icon'] = 'samba.svg';
 		// this is a base module
 		$return["is_base"] = true;
 		// RDN attribute

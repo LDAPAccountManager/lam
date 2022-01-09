@@ -237,7 +237,7 @@ class TreeView {
 			$icon = 'nt_machine.png';
 		}
 		if (in_array('sambaaccount', $objectClasses)) {
-			$icon = 'nt_user.png';
+			$icon = 'samba.svg';
 		}
 		elseif (in_array('person', $objectClasses) ||
 			in_array('organizationalperson', $objectClasses) ||
@@ -245,7 +245,7 @@ class TreeView {
 			in_array('account', $objectClasses) ||
 			in_array('posixaccount', $objectClasses) ||
 			in_array('organizationalrole', $objectClasses)) {
-			$icon = 'uidSmall.png';
+			$icon = 'user.svg';
 		}
 		elseif (in_array('organization', $objectClasses)) {
 			$icon = 'world-color.svg';
@@ -287,7 +287,7 @@ class TreeView {
 			$icon = 'host.png';
 		}
 		elseif (in_array('volume', $objectClasses)) {
-			$icon = 'hard-drive.png';
+			$icon = 'hard-drive.svg';
 		}
 		elseif (in_array('container', $objectClasses)) {
 			$icon = 'folder.svg';

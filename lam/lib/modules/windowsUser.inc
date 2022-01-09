@@ -109,7 +109,7 @@ class windowsUser extends baseModule implements passwordService {
 	public function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'samba.png';
+		$return['icon'] = 'samba.svg';
 		// this is a base module
 		$return["is_base"] = true;
 		// PHP extensions
@@ -1542,7 +1542,7 @@ class windowsUser extends baseModule implements passwordService {
 		$containerRight = new htmlResponsiveRow();
 		// photo
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidejpegPhoto', true)) {
-			$photoFile = '../../graphics/userDefault.png';
+			$photoFile = '../../graphics/user.svg';
 			$noPhoto = true;
 			if (isset($this->attributes['jpegPhoto'][0])) {
 				$jpeg_filename = 'jpg' . getRandomNumber() . '.jpg';
@@ -2171,12 +2171,10 @@ class windowsUser extends baseModule implements passwordService {
 			$return->addVerticalSpacer('2rem');
 			$syncButtons = new htmlGroup();
 			$u2wButton = new htmlAccountPageButton(get_class($this), 'group', 'syncU2W', _('Sync Unix to Windows'));
-			$u2wButton->setIconClass('unixButton');
 			$syncButtons->addElement($u2wButton);
 			$syncButtons->addElement(new htmlSpacer('2rem', null));
 			if ($syncGonActive) {
 				$g2wButton = new htmlAccountPageButton(get_class($this), 'group', 'syncG2W', _('Sync group of names to Windows'));
-				$g2wButton->setIconClass('groupButton');
 				$syncButtons->addElement($g2wButton);
 				$syncButtons->addElement(new htmlSpacer('2rem', null));
 			}

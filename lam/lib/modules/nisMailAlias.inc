@@ -194,7 +194,7 @@ class nisMailAlias extends baseModule {
 					$mailGroup = new htmlGroup();
 					$mailGroup->addElement($mailField);
 					$mailGroup->addElement(new htmlAccountPageButton(get_class($this), 'selectMail', 'recipient' . $i, 'mail.svg', true, _('Select mail')));
-					$mailGroup->addElement(new htmlAccountPageButton(get_class($this), 'selectUser', 'recipient' . $i, 'user.png', true, _('Select user')));
+					$mailGroup->addElement(new htmlAccountPageButton(get_class($this), 'selectUser', 'recipient' . $i, 'user.svg', true, _('Select user')));
 					$mailGroup->addElement(new htmlButton('delRec' . $i, 'del.svg', true));
 					$mailGroup->addElement(new htmlHelpLink('recipient'));
 					$return->addField($mailGroup);
@@ -217,7 +217,7 @@ class nisMailAlias extends baseModule {
 			$newGroup = new htmlGroup();
 			$newGroup->addElement($newMailField);
 			$newGroup->addElement(new htmlAccountPageButton(get_class($this), 'selectMail', 'recipient' . 'New', 'mail.svg', true, _('Select mail')));
-			$newGroup->addElement(new htmlAccountPageButton(get_class($this), 'selectUser', 'recipient' . 'New', 'user.png', true, _('Select user')));
+			$newGroup->addElement(new htmlAccountPageButton(get_class($this), 'selectUser', 'recipient' . 'New', 'user.svg', true, _('Select user')));
 			$newGroup->addElement(new htmlButton('addRec', 'add.svg', true));
 			$newGroup->addElement(new htmlHelpLink('recipient'));
 			$newGroup->addElement(new htmlHiddenInput('rec_number', $recipientCount));

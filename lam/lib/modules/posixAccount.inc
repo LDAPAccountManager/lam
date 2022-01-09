@@ -144,7 +144,7 @@ class posixAccount extends baseModule implements passwordService {
 	function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'tux.png';
+		$return['icon'] = 'tux.svg';
 		// user specific data
 		if ($this->get_scope() == "user") {
 			// LDAP filter
@@ -2032,11 +2032,9 @@ class posixAccount extends baseModule implements passwordService {
 			if ($showGonSync) {
 				$syncButtons = new htmlGroup();
 				$u2gonButton = new htmlAccountPageButton(get_class($this), 'group', 'syncU2GON', _('Sync Unix to group of names'));
-				$u2gonButton->setIconClass('unixButton');
 				$syncButtons->addElement($u2gonButton);
 				$syncButtons->addElement(new htmlSpacer('2rem', null));
 				$gon2uButton = new htmlAccountPageButton(get_class($this), 'group', 'syncGON2U', _('Sync group of names to Unix'));
-				$gon2uButton->setIconClass('groupButton');
 				$syncButtons->addElement($gon2uButton);
 				$return->add($syncButtons, 12, 12, 12, 'text-center');
 				if ($showWindowsSync) {
@@ -2046,7 +2044,6 @@ class posixAccount extends baseModule implements passwordService {
 			if ($showWindowsSync) {
 				$syncButtons = new htmlGroup();
 				$gon2uButton = new htmlAccountPageButton(get_class($this), 'group', 'syncWin2U', _('Sync Windows to Unix'));
-				$gon2uButton->setIconClass('sambaButton');
 				$syncButtons->addElement($gon2uButton);
 				$return->add($syncButtons, 12, 12, 12, 'text-center');
 			}

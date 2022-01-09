@@ -152,7 +152,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 	function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'samba.png';
+		$return['icon'] = 'samba.svg';
 		// alias name
 		$return["alias"] = _('Samba 3');
 		// RDN attribute

@@ -65,6 +65,13 @@ class user extends baseType {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public function getIcon() {
+		return 'user.svg';
+	}
+
+	/**
 	* Returns the class name for the list object.
 	*
 	* @return string class name
@@ -455,11 +462,11 @@ class user extends baseType {
 			$lockContent = new htmlTable();
 
 			if ($unixAvailable && !$unixLocked) {
-				$lockContent->addElement(new htmlImage('../../graphics/tux.png', '32px', '32px'));
+				$lockContent->addElement(new htmlImage('../../graphics/tux.svg', '32px', '32px'));
 				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLockUnix', true, _('Unix'), null, false), true);
 			}
 			if ($sambaAvailable && !$sambaLocked) {
-				$lockContent->addElement(new htmlImage('../../graphics/samba.png', '32px', '32px'));
+				$lockContent->addElement(new htmlImage('../../graphics/samba.svg', '32px', '32px'));
 				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLockSamba', true, _('Samba 3'), null, false), true);
 			}
 			if ($ppolicyAvailable && !$ppolicyLocked) {
@@ -471,7 +478,7 @@ class user extends baseType {
 				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusDeactivate389ds', true, _('Deactivate'), null, false), true);
 			}
 			if ($windowsAvailable && !$windowsLocked) {
-				$lockContent->addElement(new htmlImage('../../graphics/samba.png', '32px', '32px'));
+				$lockContent->addElement(new htmlImage('../../graphics/samba.svg', '32px', '32px'));
 				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLockWindows', true, _('Windows'), null, false), true);
 			}
 			if ($unixAvailable) {
@@ -494,11 +501,11 @@ class user extends baseType {
 			$unlockContent = new htmlTable();
 
 			if ($unixAvailable && $unixLocked) {
-				$unlockContent->addElement(new htmlImage('../../graphics/tux.png', '32px', '32px'));
+				$unlockContent->addElement(new htmlImage('../../graphics/tux.svg', '32px', '32px'));
 				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockUnix', true, _('Unix'), null, false), true);
 			}
 			if ($sambaAvailable && $sambaLocked) {
-				$unlockContent->addElement(new htmlImage('../../graphics/samba.png', '32px', '32px'));
+				$unlockContent->addElement(new htmlImage('../../graphics/samba.svg', '32px', '32px'));
 				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockSamba', true, _('Samba 3'), null, false), true);
 			}
 			if ($ppolicyAvailable && $ppolicyLocked) {
@@ -514,11 +521,11 @@ class user extends baseType {
 				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusPwdUnexpire389ds', true, _('Clear password expiration'), null, false), true);
 			}
 			if ($windowsAvailable && $windowsLocked) {
-				$unlockContent->addElement(new htmlImage('../../graphics/samba.png', '32px', '32px'));
+				$unlockContent->addElement(new htmlImage('../../graphics/samba.svg', '32px', '32px'));
 				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockWindows', true, _('Windows'), null, false), true);
 			}
 			if ($windowsAvailable && $windowsPasswordLocked) {
-				$unlockContent->addElement(new htmlImage('../../graphics/samba.png', '32px', '32px'));
+				$unlockContent->addElement(new htmlImage('../../graphics/samba.svg', '32px', '32px'));
 				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockWindowsPassword', true, _('Locked till') . ' ' . $windowsPasswordLockedTime->format('Y-m-d H:i:s'), null, false), true);
 			}
 			if ($is389dsLocked) {

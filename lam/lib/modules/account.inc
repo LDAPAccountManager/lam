@@ -56,7 +56,7 @@ class account extends baseModule {
 	function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'uid.png';
+		$return['icon'] = 'user.svg';
 		// alias name
 		$return["alias"] = _('Account');
 		// this is a base module

@@ -86,7 +86,7 @@ class quota extends baseModule {
 	function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'hard-driveBig.png';
+		$return['icon'] = 'hard-drive.svg';
 		// alias name
 		$return["alias"] = _('Quota');
 		if ($this->get_scope() == 'group') {

@@ -58,7 +58,7 @@ class sambaDomain extends baseModule {
 	function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'samba.png';
+		$return['icon'] = 'samba.svg';
 		// alias name
 		$return["alias"] = _("Samba domain");
 		// this is a base module
