@@ -56,7 +56,7 @@ echo "<div class=\"smallPaddingContent\">\n";
 $container = new htmlResponsiveRow();
 $container->add(new htmlTitle(_("LAM tests")), 12);
 
-$container->add(new htmlLink(_("Lamdaemon test"), 'lamdaemonTest.php', '../../graphics/lamdaemonSmall.png'), 12, 4);
+$container->add(new htmlLink(_("Lamdaemon test"), 'lamdaemonTest.php', '../../graphics/script.svg'), 12, 4);
 $container->add(new htmlOutputText(_("Check if quotas and homedirectories can be managed.")), 12, 8);
 
 $container->addVerticalSpacer('2rem');

@@ -259,7 +259,7 @@ $row->add($advancedOptions, 12);
 $row->addVerticalSpacer('2rem');
 
 // language
-$row->add(new htmlSubTitle(_("Language settings"), '../../graphics/language.png', null, true), 12);
+$row->add(new htmlSubTitle(_("Language settings"), '../../graphics/language.svg', null, true), 12);
 // read available languages
 $possibleLanguages = getLanguages();
 $defaultLanguage = array('en_GB.utf8');
@@ -295,7 +295,7 @@ $row->add(new htmlResponsiveSelect('timeZone', $timezones, array($conf->getTimeZ
 $row->addVerticalSpacer('2rem');
 
 // lamdaemon settings
-$row->add(new htmlSubTitle(_("Lamdaemon settings"), '../../graphics/lamdaemon.png', null, true), 12);
+$row->add(new htmlSubTitle(_("Lamdaemon settings"), '../../graphics/script.svg', null, true), 12);
 $row->add(new htmlResponsiveInputField(_("Server list"), 'scriptservers', $conf->get_scriptServers(), '218'), 12);
 $row->add(new htmlResponsiveInputField(_("Path to external script"), 'scriptpath', $conf->get_scriptPath(), '210'), 12);
 

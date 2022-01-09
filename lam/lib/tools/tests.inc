@@ -97,7 +97,7 @@ class toolTests extends LAMTool {
 		$lamdaemonTest->name = _("Lamdaemon test");
 		$lamdaemonTest->link = 'tests/lamdaemonTest.php';
 		$lamdaemonTest->description = _("Check if quotas and homedirectories can be managed.");
-		$lamdaemonTest->image = 'lamdaemonSmall.png';
+		$lamdaemonTest->image = 'script.svg';
 		$return[] = $lamdaemonTest;
 		$schemaTest = new LAMSubTool();
 		$schemaTest->name = _("Schema test");
