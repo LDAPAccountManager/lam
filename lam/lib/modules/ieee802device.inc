@@ -57,7 +57,7 @@ class ieee802device extends baseModule {
 	function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'network-wired.png';
+		$return['icon'] = 'network.svg';
 		// alias name
 		$return["alias"] = _("MAC address");
 		// module dependencies

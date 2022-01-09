@@ -482,11 +482,11 @@ class user extends baseType {
 				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLockWindows', true, _('Windows'), null, false), true);
 			}
 			if ($unixAvailable) {
-				$lockContent->addElement(new htmlImage('../../graphics/groupBig.png', '32px', '32px'));
+				$lockContent->addElement(new htmlImage('../../graphics/group.svg', '32px', '32px'));
 				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusRemoveUnixGroups', true, _('Remove from all Unix groups'), null, false), true);
 			}
 			if ($unixAvailable && posixAccount::areGroupOfNamesActive()) { // check unixAvailable because Unix module removes group memberships
-				$lockContent->addElement(new htmlImage('../../graphics/groupBig.png', '32px', '32px'));
+				$lockContent->addElement(new htmlImage('../../graphics/group.svg', '32px', '32px'));
 				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusRemoveGONGroups', true, _('Remove from all group of (unique) names'), null, false), true);
 			}
 

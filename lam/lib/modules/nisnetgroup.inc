@@ -64,7 +64,7 @@ class nisnetgroup extends baseModule {
 	function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'groupBig.png';
+		$return['icon'] = 'group.svg';
 		// alias name
 		$return["alias"] = _("NIS net group");
 		// this is a base module

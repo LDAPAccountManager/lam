@@ -77,7 +77,7 @@ class toolWebauthn extends LAMTool {
 	 * {@inheritDoc}
 	 */
 	public function getImageLink(): string {
-		return 'webauthn.png';
+		return 'webauthn.svg';
 	}
 
 	/**

@@ -232,11 +232,11 @@ class TreeView {
 		$icon = 'object.png';
 		$objectClasses = array_map('strtolower', $attributes['objectclass']);
 		$rdn = extractRDNValue($attributes['dn']);
-		if (in_array('sambaaccount', $objectClasses) &&
+		if (in_array('sambasamaccount', $objectClasses) &&
 			'$' == $rdn[ strlen($rdn) - 1 ]) {
-			$icon = 'nt_machine.png';
+			$icon = 'samba.svg';
 		}
-		if (in_array('sambaaccount', $objectClasses)) {
+		if (in_array('sambasamaccount', $objectClasses)) {
 			$icon = 'samba.svg';
 		}
 		elseif (in_array('person', $objectClasses) ||
@@ -263,7 +263,7 @@ class TreeView {
 			$icon = 'alias.png';
 		}
 		elseif (in_array('document', $objectClasses)) {
-			$icon = 'txt.png';
+			$icon = 'txt.svg';
 		}
 		elseif (in_array('country', $objectClasses)) {
 			$icon = 'world-color.svg';
@@ -275,13 +275,13 @@ class TreeView {
 			in_array('groupofnames', $objectClasses) ||
 			in_array('groupofuniquenames', $objectClasses) ||
 			in_array('group', $objectClasses)) {
-			$icon = 'group.png';
+			$icon = 'group.svg';
 		}
 		elseif (in_array('iphost', $objectClasses)) {
 			$icon = 'host.png';
 		}
 		elseif (in_array('device', $objectClasses)) {
-			$icon = 'device.png';
+			$icon = 'device.svg';
 		}
 		elseif (in_array('server', $objectClasses)) {
 			$icon = 'host.png';

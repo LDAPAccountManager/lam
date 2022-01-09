@@ -66,7 +66,7 @@ class nisNetGroupUser extends baseModule {
 	public function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'groupBig.png';
+		$return['icon'] = 'group.svg';
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(array('posixAccount', 'inetOrgPerson')), 'conflicts' => array());
 		// alias name

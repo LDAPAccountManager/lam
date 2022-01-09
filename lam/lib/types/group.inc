@@ -3,7 +3,7 @@ use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2019  Roland Gruber
+  Copyright (C) 2005 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -76,6 +76,13 @@ class group extends baseType {
 	*/
 	function getDescription() {
 		return _("Group accounts (e.g. Unix and Samba)");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getIcon() {
+		return 'group.svg';
 	}
 
 	/**
