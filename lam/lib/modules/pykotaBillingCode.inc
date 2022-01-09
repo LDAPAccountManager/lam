@@ -60,7 +60,7 @@ class pykotaBillingCode extends baseModule {
 	function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'printerBig.png';
+		$return['icon'] = 'printer.svg';
 		// alias name
 		$return["alias"] = _("PyKota");
 		// this is a base module

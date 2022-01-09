@@ -147,7 +147,7 @@ class pykotaPrinterType extends baseType {
 	 * @see baseType::getIcon()
 	 */
 	public function getIcon() {
-		return 'printer.png';
+		return 'printer.svg';
 	}
 
 }
