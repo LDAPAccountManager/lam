@@ -3,7 +3,7 @@
 
   This code is not yet part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2011         J de Jong
-  				2012 - 2020  Roland Gruber
+  				2012 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ class authorizedServiceObject extends baseModule {
     function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'services.png';
+		$return['icon'] = 'gears-color.svg';
 		// alias name
 		$return["alias"] = _("Authorized Services");
 		// module dependencies
