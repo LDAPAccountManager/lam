@@ -72,7 +72,7 @@ class puppetClient extends baseModule {
     function get_metaData() {
 		$return = array();
 		// icon
-		$return['icon'] = 'puppet.png';
+		$return['icon'] = 'computer.svg';
 		// alias name
 		$return["alias"] = _("Puppet");
 		// module dependencies

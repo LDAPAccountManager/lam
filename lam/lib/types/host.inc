@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2013  Roland Gruber
+  Copyright (C) 2005 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -62,6 +62,13 @@ class host extends baseType {
 	*/
 	function getDescription() {
 		return _("Host accounts (e.g. Samba)");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getIcon() {
+		return 'computer.svg';
 	}
 
 	/**

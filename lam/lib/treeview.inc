@@ -229,7 +229,7 @@ class TreeView {
 	 */
 	private function getNodeIcon(array $attributes): string {
 		$base = '../../graphics/';
-		$icon = 'object.png';
+		$icon = 'object.svg';
 		$objectClasses = array_map('strtolower', $attributes['objectclass']);
 		$rdn = extractRDNValue($attributes['dn']);
 		if (in_array('sambasamaccount', $objectClasses) &&
