@@ -260,7 +260,7 @@ class TreeView {
 			$icon = 'world-color.svg';
 		}
 		elseif (in_array('alias', $objectClasses)) {
-			$icon = 'alias.png';
+			$icon = 'link.svg';
 		}
 		elseif (in_array('document', $objectClasses)) {
 			$icon = 'txt.svg';
