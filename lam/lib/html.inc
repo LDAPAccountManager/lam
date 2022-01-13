@@ -28,6 +28,26 @@
 */
 
 /**
+ * Returns the marker for required values.
+ *
+ * @return string HTML code for required marker
+ */
+function htmlGetRequiredMarker(): string {
+	return '<span class="lam-required" title="' . _('required') . '">*</span>';
+}
+
+/**
+ * Returns the marker for required values.
+ *
+ * @return htmlSpan HTML code for required marker
+ */
+function htmlGetRequiredMarkerElement(): htmlSpan {
+	$span = new htmlSpan(new htmlOutputText('*'), array('lam-required'));
+	$span->setTitle(_('required'));
+	return $span;
+}
+
+/**
  * Represents a HTML element.
  * This is used to build HTML code by using objects.
  *
@@ -948,9 +968,7 @@ class htmlTableExtendedInputField extends htmlInputField {
 		echo '<div class="nowrap">';
 		echo $this->label;
 		if ($this->required) {
-			$graphicsPath = "../../graphics";
-			if (is_dir("../graphics")) $graphicsPath = "../graphics";
-			echo '<img src="' . $graphicsPath . '/required.png" alt="required" width=16 height=16 title="' . _('required') . '">';
+			echo htmlGetRequiredMarker();
 		}
 		echo '</div>';
 		echo "\n</td>\n<td>\n";
@@ -2045,9 +2063,7 @@ class htmlOutputText extends htmlElement {
 			echo $this->string;
 		}
 		if ($this->markAsRequired) {
-			$graphicsPath = "../../graphics";
-			if (is_dir("../graphics")) $graphicsPath = "../graphics";
-			echo '<img src="' . $graphicsPath . '/required.png" alt="required" width=16 height=16 title="' . _('required') . '">';
+			echo htmlGetRequiredMarker();
 		}
 		if ($this->isPreformatted) {
 			echo "</pre>";
@@ -2763,9 +2779,7 @@ class htmlTableExtendedInputTextarea extends htmlInputTextarea {
 		echo '<div class="nowrap">';
 		echo $this->label;
 		if ($this->required) {
-			$graphicsPath = "../../graphics";
-			if (is_dir("../graphics")) $graphicsPath = "../graphics";
-			echo '<img src="' . $graphicsPath . '/required.png" alt="required" width=16 height=16 title="' . _('required') . '">';
+			echo htmlGetRequiredMarker();
 		}
 		echo '</div>';
 		echo "\n</td>\n<td>\n";
@@ -3705,6 +3719,8 @@ class htmlSpan extends htmlElement {
 	private $content = null;
 	/** onclick handler */
 	private $onclick = null;
+	/** title */
+	private $title = null;
 
 	/**
 	 * Constructor.
@@ -3739,7 +3755,11 @@ class htmlSpan extends htmlElement {
 		if (!empty($this->onclick)) {
 			$onclickHandler = ' onclick="' . $this->onclick . '"';
 		}
-		echo '<span' . $classesValue . $onclickHandler . '>';
+		$titleCode = '';
+		if ($this->title !== null) {
+			$titleCode = ' title="' . $this->title . '"';
+		}
+		echo '<span' . $classesValue . $titleCode . $onclickHandler . '>';
 		if ($this->content != null) {
 			$return = $this->content->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		}
@@ -3754,6 +3774,15 @@ class htmlSpan extends htmlElement {
 	 */
 	public function setOnclick($event) {
 		$this->onclick = $event;
+	}
+
+	/**
+	 * Sets the title.
+	 *
+	 * @param string|null $title title
+	 */
+	public function setTitle(?string $title): void {
+		$this->title = htmlspecialchars($title);
 	}
 
 }
@@ -4465,11 +4494,7 @@ class htmlResponsiveInputField extends htmlInputField {
 		$labelGroup = new htmlGroup();
 		$labelGroup->addElement(new htmlOutputText($this->label));
 		if ($this->required) {
-			$graphicsPath = "../../graphics";
-			if (is_dir("../graphics")) {
-				$graphicsPath = "../graphics";
-			}
-			$labelGroup->addElement(new htmlImage($graphicsPath . '/required.png', 16, 16, _('required'), _('required')));
+			$labelGroup->addElement(htmlGetRequiredMarkerElement());
 		}
 		if (!empty($this->helpID)) {
 			$helpLinkLabel = new htmlHelpLink($this->helpID, $this->helpModule);
@@ -4561,9 +4586,7 @@ class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
 		$labelGroup = new htmlGroup();
 		$labelGroup->addElement(new htmlOutputText($this->label));
 		if ($this->required) {
-			$graphicsPath = "../../graphics";
-			if (is_dir("../graphics")) $graphicsPath = "../graphics";
-			$labelGroup->addElement(new htmlImage($graphicsPath . '/required.png', 16, 16, _('required'), _('required')));
+			$labelGroup->addElement(htmlGetRequiredMarkerElement());
 		}
 		if (!empty($this->helpID)) {
 			$helpLinkLabel = new htmlHelpLink($this->helpID, $this->helpModule);
@@ -4648,9 +4671,7 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 		$labelGroup = new htmlGroup();
 		$labelGroup->addElement(new htmlOutputText($this->label));
 		if ($this->required) {
-			$graphicsPath = "../../graphics";
-			if (is_dir("../graphics")) $graphicsPath = "../graphics";
-			$labelGroup->addElement(new htmlImage($graphicsPath . '/required.png', 16, 16, _('required'), _('required')));
+			$labelGroup->addElement(htmlGetRequiredMarkerElement());
 		}
 		if (!empty($this->helpID)) {
 			$helpLinkLabel = new htmlHelpLink($this->helpID, $this->helpModule);
