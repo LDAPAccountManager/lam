@@ -10,8 +10,6 @@ fi
 
 set -e
 
-cd /daten/projekte/lam/pakete
-
 if [ "$1" = "develop" ]
 then
 	export REPO_BRANCH="develop"
@@ -238,8 +236,28 @@ cd ../Debian
 sha256sum *.deb >> ../checksums.txt
 cd ../..
 
+# create result folders
+mkdir LAM-packages
+mkdir LAM-packages/logs
+mv Debian/*.deb LAM-packages/
+mv Debian/* LAM-packages/logs/
+mv Debian-Upload LAM-packages/
+mv RPM/*.rpm LAM-packages/
+mv checksums.txt LAM-packages/
+mv *.tar.bz2 LAM-packages/
+
+mkdir LAMPro-packages
+mkdir LAMPro-packages/logs
+mv LAMPro/Debian/*.deb LAMPro-packages/
+mv LAMPro/Debian/* LAMPro-packages/logs/
+mv LAMPro/RPM/*.rpm LAMPro-packages/
+mv LAMPro/checksums.txt LAMPro-packages/
+mv LAMPro/*.tar.bz2 LAMPro-packages/
 
 # clean up
 rm -r lam-packaging
 rm getVersion
 rm -f *.log
+rm -r LAMPro
+rm -r Debian
+rm -r RPM
