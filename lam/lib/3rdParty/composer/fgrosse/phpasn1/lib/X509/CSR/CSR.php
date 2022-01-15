@@ -41,7 +41,7 @@ class CSR extends Sequence
      * @param string $signature
      * @param string $signatureAlgorithm
      */
-    public function __construct($commonName, $email, $organization, $locality, $state, $country, $organizationalUnit, $publicKey, $signature, $signatureAlgorithm = OID::SHA1_WITH_RSA_SIGNATURE)
+    public function __construct($commonName, $email, $organization, $locality, $state, $country, $organizationalUnit, $publicKey, $signature = null, $signatureAlgorithm = OID::SHA1_WITH_RSA_SIGNATURE)
     {
         $this->subject = new CertificateSubject(
             $commonName,
@@ -56,7 +56,9 @@ class CSR extends Sequence
         $this->signature = $signature;
         $this->signatureAlgorithm = $signatureAlgorithm;
 
-        $this->createCSRSequence();
+        if (isset($signature)) {
+            $this->createCSRSequence();
+        }
     }
 
     protected function createCSRSequence()
@@ -68,9 +70,29 @@ class CSR extends Sequence
 
         $certRequestInfo  = new Sequence($versionNr, $this->subject, $publicKey);
 
+        // Clear the underlying Construct
+        $this->rewind();
+        $this->children = [];
         $this->addChild($certRequestInfo);
         $this->addChild($signatureAlgorithm);
         $this->addChild($signature);
+    }
+
+    public function getSignatureSubject()
+    {
+        $versionNr            = new Integer(self::CSR_VERSION_NR);
+        $publicKey            = new PublicKey($this->publicKey);
+
+        $certRequestInfo  = new Sequence($versionNr, $this->subject, $publicKey);
+        return $certRequestInfo->getBinary();
+    }
+
+    public function setSignature($signature, $signatureAlgorithm = OID::SHA1_WITH_RSA_SIGNATURE)
+    {
+        $this->signature = $signature;
+        $this->signatureAlgorithm = $signatureAlgorithm;
+
+        $this->createCSRSequence();
     }
 
     public function __toString()

@@ -164,14 +164,14 @@ abstract class AbstractHeader implements HeaderInterface
             if ($this->tokenNeedsEncoding($token)) {
                 $encodedToken .= $token;
             } else {
-                if (\strlen($encodedToken) > 0) {
+                if ('' !== $encodedToken) {
                     $tokens[] = $encodedToken;
                     $encodedToken = '';
                 }
                 $tokens[] = $token;
             }
         }
-        if (\strlen($encodedToken)) {
+        if ('' !== $encodedToken) {
             $tokens[] = $encodedToken;
         }
 
@@ -262,7 +262,7 @@ abstract class AbstractHeader implements HeaderInterface
             // Line longer than specified maximum or token was just a new line
             if (("\r\n" === $token) ||
                 ($i > 0 && \strlen($currentLine.$token) > $this->lineLength)
-                && 0 < \strlen($currentLine)) {
+                && '' !== $currentLine) {
                 $headerLines[] = '';
                 $currentLine = &$headerLines[$lineCount++];
             }

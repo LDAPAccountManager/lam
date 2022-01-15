@@ -8,7 +8,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-$processHoursFunction = function (\Carbon\CarbonInterface $date, string $format) {
+
+use Carbon\CarbonInterface;
+
+$processHoursFunction = function (CarbonInterface $date, string $format) {
     return $format.'о'.($date->hour === 11 ? 'б' : '').'] LT';
 };
 
@@ -71,35 +74,35 @@ return [
     'a_minute' => '{1}хвилина|:count хвилина|:count хвилини|:count хвилин',
     'second' => ':count секунда|:count секунди|:count секунд',
     's' => ':countсек',
-    'a_second' => '{1}кілька секунд|:count секунда|:count секунди|:count секунд',
+    'a_second' => '{1}декілька секунд|:count секунда|:count секунди|:count секунд',
 
     'hour_ago' => ':count годину|:count години|:count годин',
     'a_hour_ago' => '{1}годину|:count годину|:count години|:count годин',
     'minute_ago' => ':count хвилину|:count хвилини|:count хвилин',
     'a_minute_ago' => '{1}хвилину|:count хвилину|:count хвилини|:count хвилин',
     'second_ago' => ':count секунду|:count секунди|:count секунд',
-    'a_second_ago' => '{1}кілька секунд|:count секунду|:count секунди|:count секунд',
+    'a_second_ago' => '{1}декілька секунд|:count секунду|:count секунди|:count секунд',
 
     'hour_from_now' => ':count годину|:count години|:count годин',
     'a_hour_from_now' => '{1}годину|:count годину|:count години|:count годин',
     'minute_from_now' => ':count хвилину|:count хвилини|:count хвилин',
     'a_minute_from_now' => '{1}хвилину|:count хвилину|:count хвилини|:count хвилин',
     'second_from_now' => ':count секунду|:count секунди|:count секунд',
-    'a_second_from_now' => '{1}кілька секунд|:count секунду|:count секунди|:count секунд',
+    'a_second_from_now' => '{1}декілька секунд|:count секунду|:count секунди|:count секунд',
 
     'hour_after' => ':count годину|:count години|:count годин',
     'a_hour_after' => '{1}годину|:count годину|:count години|:count годин',
     'minute_after' => ':count хвилину|:count хвилини|:count хвилин',
     'a_minute_after' => '{1}хвилину|:count хвилину|:count хвилини|:count хвилин',
     'second_after' => ':count секунду|:count секунди|:count секунд',
-    'a_second_after' => '{1}кілька секунд|:count секунду|:count секунди|:count секунд',
+    'a_second_after' => '{1}декілька секунд|:count секунду|:count секунди|:count секунд',
 
     'hour_before' => ':count годину|:count години|:count годин',
     'a_hour_before' => '{1}годину|:count годину|:count години|:count годин',
     'minute_before' => ':count хвилину|:count хвилини|:count хвилин',
     'a_minute_before' => '{1}хвилину|:count хвилину|:count хвилини|:count хвилин',
     'second_before' => ':count секунду|:count секунди|:count секунд',
-    'a_second_before' => '{1}кілька секунд|:count секунду|:count секунди|:count секунд',
+    'a_second_before' => '{1}декілька секунд|:count секунду|:count секунди|:count секунд',
 
     'ago' => ':time тому',
     'from_now' => 'за :time',
@@ -127,19 +130,19 @@ return [
         'LLLL' => 'dddd, D MMMM YYYY, HH:mm',
     ],
     'calendar' => [
-        'sameDay' => function (\Carbon\CarbonInterface $date) use ($processHoursFunction) {
+        'sameDay' => function (CarbonInterface $date) use ($processHoursFunction) {
             return $processHoursFunction($date, '[Сьогодні ');
         },
-        'nextDay' => function (\Carbon\CarbonInterface $date) use ($processHoursFunction) {
+        'nextDay' => function (CarbonInterface $date) use ($processHoursFunction) {
             return $processHoursFunction($date, '[Завтра ');
         },
-        'nextWeek' => function (\Carbon\CarbonInterface $date) use ($processHoursFunction) {
+        'nextWeek' => function (CarbonInterface $date) use ($processHoursFunction) {
             return $processHoursFunction($date, '[У] dddd [');
         },
-        'lastDay' => function (\Carbon\CarbonInterface $date) use ($processHoursFunction) {
+        'lastDay' => function (CarbonInterface $date) use ($processHoursFunction) {
             return $processHoursFunction($date, '[Вчора ');
         },
-        'lastWeek' => function (\Carbon\CarbonInterface $date) use ($processHoursFunction) {
+        'lastWeek' => function (CarbonInterface $date) use ($processHoursFunction) {
             switch ($date->dayOfWeek) {
                 case 0:
                 case 3:
@@ -183,17 +186,17 @@ return [
     'months_standalone' => ['січень', 'лютий', 'березень', 'квітень', 'травень', 'червень', 'липень', 'серпень', 'вересень', 'жовтень', 'листопад', 'грудень'],
     'months_short' => ['січ', 'лют', 'бер', 'кві', 'тра', 'чер', 'лип', 'сер', 'вер', 'жов', 'лис', 'гру'],
     'months_regexp' => '/(D[oD]?(\[[^\[\]]*\]|\s)+MMMM?|L{2,4}|l{2,4})/',
-    'weekdays' => function (\Carbon\CarbonInterface $date, $format, $index) {
+    'weekdays' => function (CarbonInterface $date, $format, $index) {
         static $words = [
             'nominative' => ['неділя', 'понеділок', 'вівторок', 'середа', 'четвер', 'п’ятниця', 'субота'],
             'accusative' => ['неділю', 'понеділок', 'вівторок', 'середу', 'четвер', 'п’ятницю', 'суботу'],
             'genitive' => ['неділі', 'понеділка', 'вівторка', 'середи', 'четверга', 'п’ятниці', 'суботи'],
         ];
 
-        $nounCase = preg_match('/(\[(В|в|У|у)\])\s+dddd/', $format)
+        $nounCase = preg_match('/(\[(В|в|У|у)\])\s+dddd/u', $format)
             ? 'accusative'
             : (
-                preg_match('/\[?(?:минулої|наступної)?\s*\]\s+dddd/', $format)
+                preg_match('/\[?(?:минулої|наступної)?\s*\]\s+dddd/u', $format)
                     ? 'genitive'
                     : 'nominative'
             );

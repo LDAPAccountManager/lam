@@ -131,6 +131,16 @@ class OptionsResolver implements Options
     private $parentsOptions = [];
 
     /**
+     * Whether the whole options definition is marked as array prototype.
+     */
+    private $prototype;
+
+    /**
+     * The prototype array's index that is being read.
+     */
+    private $prototypeIndex;
+
+    /**
      * Sets the default value of a given option.
      *
      * If the default value should be set based on other options, you can pass
@@ -251,10 +261,6 @@ class OptionsResolver implements Options
     }
 
     /**
-     * Sets a list of default values.
-     *
-     * @param array $defaults The default values to set
-     *
      * @return $this
      *
      * @throws AccessException If called from a lazy option or normalizer
@@ -274,9 +280,7 @@ class OptionsResolver implements Options
      * Returns true if {@link setDefault()} was called for this option.
      * An option is also considered set if it was set to null.
      *
-     * @param string $option The option name
-     *
-     * @return bool Whether a default value is set
+     * @return bool
      */
     public function hasDefault(string $option)
     {
@@ -311,9 +315,7 @@ class OptionsResolver implements Options
      *
      * An option is required if it was passed to {@link setRequired()}.
      *
-     * @param string $option The name of the option
-     *
-     * @return bool Whether the option is required
+     * @return bool
      */
     public function isRequired(string $option)
     {
@@ -323,7 +325,7 @@ class OptionsResolver implements Options
     /**
      * Returns the names of all required options.
      *
-     * @return string[] The names of the required options
+     * @return string[]
      *
      * @see isRequired()
      */
@@ -339,9 +341,7 @@ class OptionsResolver implements Options
      * to {@link setDefault()}. This option must be passed explicitly to
      * {@link resolve()}, otherwise an exception will be thrown.
      *
-     * @param string $option The name of the option
-     *
-     * @return bool Whether the option is missing
+     * @return bool
      */
     public function isMissing(string $option)
     {
@@ -351,9 +351,7 @@ class OptionsResolver implements Options
     /**
      * Returns the names of all options missing a default value.
      *
-     * @return string[] The names of the missing options
-     *
-     * @see isMissing()
+     * @return string[]
      */
     public function getMissingOptions()
     {
@@ -392,9 +390,7 @@ class OptionsResolver implements Options
      * Returns true for any option passed to {@link setDefault()},
      * {@link setRequired()} or {@link setDefined()}.
      *
-     * @param string $option The option name
-     *
-     * @return bool Whether the option is defined
+     * @return bool
      */
     public function isDefined(string $option)
     {
@@ -404,7 +400,7 @@ class OptionsResolver implements Options
     /**
      * Returns the names of all defined options.
      *
-     * @return string[] The names of the defined options
+     * @return string[]
      *
      * @see isDefined()
      */
@@ -438,6 +434,8 @@ class OptionsResolver implements Options
      * @param string          $package The name of the composer package that is triggering the deprecation
      * @param string          $version The version of the package that introduced the deprecation
      * @param string|\Closure $message The deprecation message to use
+     *
+     * @return $this
      */
     public function setDeprecated(string $option/*, string $package, string $version, $message = 'The option "%name%" is deprecated.' */): self
     {
@@ -506,9 +504,6 @@ class OptionsResolver implements Options
      *
      * The resolved option value is set to the return value of the closure.
      *
-     * @param string   $option     The option name
-     * @param \Closure $normalizer The normalizer
-     *
      * @return $this
      *
      * @throws UndefinedOptionsException If the option is undefined
@@ -549,10 +544,6 @@ class OptionsResolver implements Options
      * the option.
      *
      * The resolved option value is set to the return value of the closure.
-     *
-     * @param string   $option       The option name
-     * @param \Closure $normalizer   The normalizer
-     * @param bool     $forcePrepend If set to true, prepend instead of appending
      *
      * @return $this
      *
@@ -677,7 +668,6 @@ class OptionsResolver implements Options
      * acceptable. Additionally, fully-qualified class or interface names may
      * be passed.
      *
-     * @param string          $option       The option name
      * @param string|string[] $allowedTypes One or more accepted types
      *
      * @return $this
@@ -712,7 +702,6 @@ class OptionsResolver implements Options
      * acceptable. Additionally, fully-qualified class or interface names may
      * be passed.
      *
-     * @param string          $option       The option name
      * @param string|string[] $allowedTypes One or more accepted types
      *
      * @return $this
@@ -790,6 +779,33 @@ class OptionsResolver implements Options
     }
 
     /**
+     * Marks the whole options definition as array prototype.
+     *
+     * @return $this
+     *
+     * @throws AccessException If called from a lazy option, a normalizer or a root definition
+     */
+    public function setPrototype(bool $prototype): self
+    {
+        if ($this->locked) {
+            throw new AccessException('The prototype property cannot be set from a lazy option or normalizer.');
+        }
+
+        if (null === $this->prototype && $prototype) {
+            throw new AccessException('The prototype property cannot be set from a root definition.');
+        }
+
+        $this->prototype = $prototype;
+
+        return $this;
+    }
+
+    public function isPrototype(): bool
+    {
+        return $this->prototype ?? false;
+    }
+
+    /**
      * Removes the option with the given name.
      *
      * Undefined options are ignored.
@@ -853,9 +869,7 @@ class OptionsResolver implements Options
      *  - Options have invalid types;
      *  - Options have invalid values.
      *
-     * @param array $options A map of option names to values
-     *
-     * @return array The merged and validated options
+     * @return array
      *
      * @throws UndefinedOptionsException If an option name is undefined
      * @throws InvalidOptionsException   If an option doesn't fulfill the
@@ -916,10 +930,9 @@ class OptionsResolver implements Options
     /**
      * Returns the resolved value of an option.
      *
-     * @param string $option             The option name
-     * @param bool   $triggerDeprecation Whether to trigger the deprecation or not (true by default)
+     * @param bool $triggerDeprecation Whether to trigger the deprecation or not (true by default)
      *
-     * @return mixed The option value
+     * @return mixed
      *
      * @throws AccessException           If accessing this method outside of
      *                                   {@link resolve()}
@@ -929,6 +942,7 @@ class OptionsResolver implements Options
      * @throws OptionDefinitionException If there is a cyclic dependency between
      *                                   lazy options and/or normalizers
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($option, bool $triggerDeprecation = true)
     {
         if (!$this->locked) {
@@ -970,13 +984,29 @@ class OptionsResolver implements Options
             $this->calling[$option] = true;
             try {
                 $resolver = new self();
+                $resolver->prototype = false;
                 $resolver->parentsOptions = $this->parentsOptions;
                 $resolver->parentsOptions[] = $option;
                 foreach ($this->nested[$option] as $closure) {
                     $closure($resolver, $this);
                 }
-                $value = $resolver->resolve($value);
+
+                if ($resolver->prototype) {
+                    $values = [];
+                    foreach ($value as $index => $prototypeValue) {
+                        if (!\is_array($prototypeValue)) {
+                            throw new InvalidOptionsException(sprintf('The value of the option "%s" is expected to be of type array of array, but is of type array of "%s".', $this->formatOptions([$option]), get_debug_type($prototypeValue)));
+                        }
+
+                        $resolver->prototypeIndex = $index;
+                        $values[$index] = $resolver->resolve($prototypeValue);
+                    }
+                    $value = $values;
+                } else {
+                    $value = $resolver->resolve($value);
+                }
             } finally {
+                $resolver->prototypeIndex = null;
                 unset($this->calling[$option]);
             }
         }
@@ -1020,7 +1050,7 @@ class OptionsResolver implements Options
                 $fmtAllowedTypes = implode('" or "', $this->allowedTypes[$option]);
                 $fmtProvidedTypes = implode('|', array_keys($invalidTypes));
                 $allowedContainsArrayType = \count(array_filter($this->allowedTypes[$option], static function ($item) {
-                    return '[]' === substr($item, -2);
+                    return str_ends_with($item, '[]');
                 })) > 0;
 
                 if (\is_array($value) && $allowedContainsArrayType) {
@@ -1164,12 +1194,13 @@ class OptionsResolver implements Options
      *
      * @param string $option The option name
      *
-     * @return bool Whether the option is set
+     * @return bool
      *
      * @throws AccessException If accessing this method outside of {@link resolve()}
      *
      * @see \ArrayAccess::offsetExists()
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($option)
     {
         if (!$this->locked) {
@@ -1182,8 +1213,11 @@ class OptionsResolver implements Options
     /**
      * Not supported.
      *
+     * @return void
+     *
      * @throws AccessException
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($option, $value)
     {
         throw new AccessException('Setting options via array access is not supported. Use setDefault() instead.');
@@ -1192,8 +1226,11 @@ class OptionsResolver implements Options
     /**
      * Not supported.
      *
+     * @return void
+     *
      * @throws AccessException
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($option)
     {
         throw new AccessException('Removing options via array access is not supported. Use remove() instead.');
@@ -1204,12 +1241,13 @@ class OptionsResolver implements Options
      *
      * This may be only a subset of the defined options.
      *
-     * @return int Number of options
+     * @return int
      *
      * @throws AccessException If accessing this method outside of {@link resolve()}
      *
      * @see \Countable::count()
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         if (!$this->locked) {
@@ -1284,6 +1322,10 @@ class OptionsResolver implements Options
             $prefix = array_shift($this->parentsOptions);
             if ($this->parentsOptions) {
                 $prefix .= sprintf('[%s]', implode('][', $this->parentsOptions));
+            }
+
+            if ($this->prototype && null !== $this->prototypeIndex) {
+                $prefix .= sprintf('[%s]', $this->prototypeIndex);
             }
 
             $options = array_map(static function (string $option) use ($prefix): string {

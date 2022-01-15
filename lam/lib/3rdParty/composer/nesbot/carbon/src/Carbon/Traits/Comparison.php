@@ -8,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Carbon\Traits;
 
 use BadMethodCallException;
@@ -31,6 +32,12 @@ use InvalidArgumentException;
  */
 trait Comparison
 {
+    /** @var bool */
+    protected $endOfTime = false;
+
+    /** @var bool */
+    protected $startOfTime = false;
+
     /**
      * Determines if the instance is equal to another
      *
@@ -616,7 +623,7 @@ trait Comparison
 
         if (!isset($units[$unit])) {
             if (isset($this->$unit)) {
-                return $this->$unit === $this->resolveCarbon($date)->$unit;
+                return $this->resolveCarbon($date)->$unit === $this->$unit;
             }
 
             if ($this->localStrictModeEnabled ?? static::isStrictModeEnabled()) {
@@ -943,7 +950,7 @@ trait Comparison
         $tester = trim($tester);
 
         if (preg_match('/^\d+$/', $tester)) {
-            return $this->year === \intval($tester);
+            return $this->year === (int) $tester;
         }
 
         if (preg_match('/^\d{3,}-\d{1,2}$/', $tester)) {
@@ -958,9 +965,9 @@ trait Comparison
 
         /* @var CarbonInterface $max */
         $median = static::parse('5555-06-15 12:30:30.555555')->modify($modifier);
-        $current = $this->copy();
+        $current = $this->avoidMutation();
         /* @var CarbonInterface $other */
-        $other = $this->copy()->modify($modifier);
+        $other = $this->avoidMutation()->modify($modifier);
 
         if ($current->eq($other)) {
             return true;
@@ -995,7 +1002,7 @@ trait Comparison
         ];
 
         foreach ($units as $unit => [$minimum, $startUnit]) {
-            if ($median->$unit === $minimum) {
+            if ($minimum === $median->$unit) {
                 $current = $current->startOf($startUnit);
 
                 break;
@@ -1039,5 +1046,25 @@ trait Comparison
         $regex = preg_replace('#(?<!\\\\)((?:\\\\{2})*)/#', '$1\\/', $regex);
 
         return (bool) @preg_match('/^'.$regex.'$/', $date);
+    }
+
+    /**
+     * Returns true if the date was created using CarbonImmutable::startOfTime()
+     *
+     * @return bool
+     */
+    public function isStartOfTime(): bool
+    {
+        return $this->startOfTime ?? false;
+    }
+
+    /**
+     * Returns true if the date was created using CarbonImmutable::endOfTime()
+     *
+     * @return bool
+     */
+    public function isEndOfTime(): bool
+    {
+        return $this->endOfTime ?? false;
     }
 }

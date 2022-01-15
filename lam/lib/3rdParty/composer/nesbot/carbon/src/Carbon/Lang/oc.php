@@ -14,8 +14,10 @@
  * - Quentí
  */
 // @codeCoverageIgnoreStart
+use Symfony\Component\Translation\PluralizationRules;
+
 if (class_exists('Symfony\\Component\\Translation\\PluralizationRules')) {
-    \Symfony\Component\Translation\PluralizationRules::set(function ($number) {
+    PluralizationRules::set(function ($number) {
         return $number == 1 ? 0 : 1;
     }, 'oc');
 }
@@ -82,7 +84,7 @@ return [
     'weekdays' => ['dimenge', 'diluns', 'dimars', 'dimècres', 'dijòus', 'divendres', 'dissabte'],
     'weekdays_short' => ['dg', 'dl', 'dm', 'dc', 'dj', 'dv', 'ds'],
     'weekdays_min' => ['dg', 'dl', 'dm', 'dc', 'dj', 'dv', 'ds'],
-    'ordinal' => function ($number, $period) {
+    'ordinal' => function ($number, string $period = '') {
         $ordinal = [1 => 'èr', 2 => 'nd'][(int) $number] ?? 'en';
 
         // feminine for year, week, hour, minute, second

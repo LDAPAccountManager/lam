@@ -34,8 +34,8 @@ final class Headers
         'cc' => MailboxListHeader::class,
         'bcc' => MailboxListHeader::class,
         'message-id' => IdentificationHeader::class,
-        'in-reply-to' => IdentificationHeader::class,
-        'references' => IdentificationHeader::class,
+        'in-reply-to' => UnstructuredHeader::class, // `In-Reply-To` and `References` are less strict than RFC 2822 (3.6.4) to allow users entering the original email's ...
+        'references' => UnstructuredHeader::class, // ... `Message-ID`, even if that is no valid `msg-id`
         'return-path' => PathHeader::class,
     ];
 
@@ -75,7 +75,7 @@ final class Headers
     }
 
     /**
-     * @param (Address|string)[] $addresses
+     * @param array<Address|string> $addresses
      *
      * @return $this
      */
@@ -257,7 +257,7 @@ final class Headers
     /**
      * @internal
      */
-    public function getHeaderBody($name)
+    public function getHeaderBody(string $name)
     {
         return $this->has($name) ? $this->get($name)->getBody() : null;
     }
@@ -274,9 +274,6 @@ final class Headers
         }
     }
 
-    /**
-     * @internal
-     */
     public function getHeaderParameter(string $name, string $parameter): ?string
     {
         if (!$this->has($name)) {
@@ -294,7 +291,7 @@ final class Headers
     /**
      * @internal
      */
-    public function setHeaderParameter(string $name, string $parameter, $value): void
+    public function setHeaderParameter(string $name, string $parameter, ?string $value): void
     {
         if (!$this->has($name)) {
             throw new LogicException(sprintf('Unable to set parameter "%s" on header "%s" as the header is not defined.', $parameter, $name));

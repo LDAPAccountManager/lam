@@ -36,41 +36,49 @@ abstract class Construct extends ASNObject implements Countable, ArrayAccess, It
         return $this->children;
     }
 
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->iteratorPosition = 0;
     }
 
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->children[$this->iteratorPosition];
     }
 
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->iteratorPosition;
     }
 
+    #[\ReturnTypeWillChange]
     public function next()
     {
         $this->iteratorPosition++;
     }
 
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return isset($this->children[$this->iteratorPosition]);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return array_key_exists($offset, $this->children);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->children[$offset];
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if ($offset === null) {
@@ -80,6 +88,7 @@ abstract class Construct extends ASNObject implements Countable, ArrayAccess, It
         $this->children[$offset] = $value;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->children[$offset]);
@@ -154,6 +163,7 @@ abstract class Construct extends ASNObject implements Countable, ArrayAccess, It
      *
      * @return Construct|static
      */
+    #[\ReturnTypeWillChange]
     public static function fromBinary(&$binaryData, &$offsetIndex = 0)
     {
         $parsedObject = new static();
@@ -179,6 +189,7 @@ abstract class Construct extends ASNObject implements Countable, ArrayAccess, It
         return $parsedObject;
     }
 
+    #[\ReturnTypeWillChange]
     public function count($mode = COUNT_NORMAL)
     {
         return count($this->children, $mode);

@@ -1,3 +1,4 @@
+name: Tests
 
 # Run this workflow every time a new commit pushed to your repository
 on:
@@ -12,12 +13,11 @@ jobs:
       fail-fast: false
       matrix:
         operating-system: [ubuntu-20.04]
-        php-versions: ['7.2', '7.3', '7.4', '8.0']
+        php-versions: ['7.2', '7.3', '7.4', '8.0', '8.1']
         include:
           - operating-system: ubuntu-16.04
             php-versions: '7.1'
             COMPOSER_FLAGS: '--prefer-stable --prefer-lowest'
-            COVERAGE: 'true'
             PHPUNIT_FLAGS: '--coverage-clover build/coverage.xml'
 
     name: PHP ${{ matrix.php-versions }} - ${{ matrix.operating-system }}
@@ -71,20 +71,11 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
 
-      - name: Composer self update
-        run: composer self-update
-
       - name: Install Composer dependencies
-        run: composer update ${{ matrix.COMPOSER_FLAGS }} --prefer-source --no-interaction
+        run: composer update ${{ matrix.COMPOSER_FLAGS }} --no-interaction
 
       - name: boot test server
         run: vendor/bin/http_test_server > /dev/null 2>&1 &
 
-      - name: Apply tests
+      - name: Run tests
         run: composer test
-
-      - name: Apply coverage
-        if: ${{ matrix.COVERAGE == 'true' }}
-        run: |
-          wget https://scrutinizer-ci.com/ocular.phar
-          php ocular.phar code-coverage:upload --format=php-clover build/coverage.xml

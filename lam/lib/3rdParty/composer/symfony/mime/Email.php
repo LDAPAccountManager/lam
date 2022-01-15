@@ -266,7 +266,7 @@ class Email extends Message
      */
     public function getPriority(): int
     {
-        [$priority] = sscanf($this->getHeaders()->getHeaderBody('X-Priority'), '%[1-5]');
+        [$priority] = sscanf($this->getHeaders()->getHeaderBody('X-Priority') ?? '', '%[1-5]');
 
         return $priority ?? 3;
     }
@@ -535,6 +535,9 @@ class Email extends Message
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     private function setListAddressHeaderBody(string $name, array $addresses)
     {
         $addresses = Address::createArray($addresses);

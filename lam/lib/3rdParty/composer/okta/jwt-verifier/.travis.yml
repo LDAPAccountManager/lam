@@ -1,5 +1,7 @@
 language: php
 
+dist: bionic
+
 env:
   global:
     - COVERAGE=false
@@ -17,13 +19,10 @@ script:
   - if [ -z $TRAVIS_SECURE_ENV_VARS ]; then vendor/bin/phpunit --verbose --coverage-clover build/logs/clover.xml; fi
   - if [ ! -z $TRAVIS_SECURE_ENV_VARS ]; then vendor/bin/phpunit --verbose --testsuite=Unit --coverage-clover build/logs/clover.xml; fi
 
-after_success:
-  - if [[ $COVERAGE = 'true' ]]; then bash <(curl -s https://codecov.io/bash); fi
-
 matrix:
   include:
-    - php: 7.2
-    - php: 7.3
     - php: 7.4
       env:
         - COVERAGE=true
+    - php: 8.0
+    - php: 8.1.0 #Must have 8.1.0 instead of 8.1 (See: https://travis-ci.community/t/php-8-1-support/12439)

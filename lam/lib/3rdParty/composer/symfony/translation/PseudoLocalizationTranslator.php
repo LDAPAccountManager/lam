@@ -25,6 +25,10 @@ final class PseudoLocalizationTranslator implements TranslatorInterface
     private $expansionFactor;
     private $brackets;
     private $parseHTML;
+
+    /**
+     * @var string[]
+     */
     private $localizableHTMLAttributes;
 
     /**
@@ -82,7 +86,7 @@ final class PseudoLocalizationTranslator implements TranslatorInterface
     /**
      * {@inheritdoc}
      */
-    public function trans(string $id, array $parameters = [], string $domain = null, string $locale = null)
+    public function trans(string $id, array $parameters = [], string $domain = null, string $locale = null): string
     {
         $trans = '';
         $visibleText = '';
@@ -106,6 +110,11 @@ final class PseudoLocalizationTranslator implements TranslatorInterface
         $this->addBrackets($trans);
 
         return $trans;
+    }
+
+    public function getLocale(): string
+    {
+        return $this->translator->getLocale();
     }
 
     private function getParts(string $originalTrans): array

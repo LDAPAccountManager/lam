@@ -105,6 +105,7 @@ use LogicException;
  * @method LazyAssertion string(string|callable $message = null, string $propertyPath = null) Assert that value is a string.
  * @method LazyAssertion subclassOf(string $className, string|callable $message = null, string $propertyPath = null) Assert that value is subclass of given class-name.
  * @method LazyAssertion true(string|callable $message = null, string $propertyPath = null) Assert that the value is boolean True.
+ * @method LazyAssertion uniqueValues(string|callable $message = null, string $propertyPath = null) Assert that values in array are unique (using strict equality).
  * @method LazyAssertion url(string|callable $message = null, string $propertyPath = null) Assert that value is an URL.
  * @method LazyAssertion uuid(string|callable $message = null, string $propertyPath = null) Assert that the given string is a valid UUID.
  * @method LazyAssertion version(string $operator, string $version2, string|callable $message = null, string $propertyPath = null) Assert comparison of two versions.
@@ -128,7 +129,6 @@ class LazyAssertion
 
     /**
      * @param mixed $value
-     * @param string|null $propertyPath
      * @param string|callable|null $defaultMessage
      *
      * @return static
@@ -183,8 +183,6 @@ class LazyAssertion
     }
 
     /**
-     * @return bool
-     *
      * @throws LazyAssertionException
      */
     public function verifyNow(): bool
@@ -201,7 +199,7 @@ class LazyAssertion
      *
      * @return static
      */
-    public function setAssertClass(string $className)
+    public function setAssertClass(string $className): LazyAssertion
     {
         if (Assert::class !== $className && !\is_subclass_of($className, Assert::class)) {
             throw new LogicException($className.' is not (a subclass of) '.Assert::class);
@@ -217,7 +215,7 @@ class LazyAssertion
      *
      * @return static
      */
-    public function setExceptionClass(string $className)
+    public function setExceptionClass(string $className): LazyAssertion
     {
         if (LazyAssertionException::class !== $className && !\is_subclass_of($className, LazyAssertionException::class)) {
             throw new LogicException($className.' is not (a subclass of) '.LazyAssertionException::class);

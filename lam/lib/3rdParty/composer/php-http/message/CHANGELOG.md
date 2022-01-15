@@ -6,6 +6,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.12.0] - 2021-08-29
+
+- Added support for adjusting binary detection regex in FullHttpMessageFormatter
+
+## [1.11.2] - 2021-08-03
+
+- Support GuzzleHttp/Psr7 version 2.0 in the (deprecated) GuzzleStreamFactory.
+
+## [1.11.1] - 2021-05-24
+
+- Support GuzzleHttp/Psr7 version 2.0 in the (deprecated) GuzzleUriFactory.
+
 ## [1.11.0] - 2020-02-01
 
 - Migrated from `zendframework/zend-diactoros` to `laminas/laminas-diactoros`.

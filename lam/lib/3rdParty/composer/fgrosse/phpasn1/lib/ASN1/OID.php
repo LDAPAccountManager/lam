@@ -15,6 +15,7 @@ class OID
     const RSA_ENCRYPTION                    = '1.2.840.113549.1.1.1';
     const MD5_WITH_RSA_ENCRYPTION           = '1.2.840.113549.1.1.4';
     const SHA1_WITH_RSA_SIGNATURE           = '1.2.840.113549.1.1.5';
+    const SHA256_WITH_RSA_SIGNATURE         = '1.2.840.113549.1.1.11';
     const PKCS9_EMAIL                       = '1.2.840.113549.1.9.1';
     const PKCS9_UNSTRUCTURED_NAME           = '1.2.840.113549.1.9.2';
     const PKCS9_CONTENT_TYPE                = '1.2.840.113549.1.9.3';

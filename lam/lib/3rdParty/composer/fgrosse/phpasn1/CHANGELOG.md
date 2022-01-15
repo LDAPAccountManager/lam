@@ -1,3 +1,12 @@
+#### v2.4.0 (2021-12)
+* Drop support for PHP 7.0 [#89](https://github.com/fgrosse/PHPASN1/pull/89)
+
+#### v2.3.1 (2021-12)
+* Add `#[\ReturnTypeWillChange]` attributes for PHP 8.1 compatibility [#87](https://github.com/fgrosse/PHPASN1/pull/87)
+
+#### v2.3.0 (2021-04)
+* Allow creating an unsigned CSR and adding the signature later [#82](https://github.com/fgrosse/PHPASN1/pull/82)
+
 #### v2.2.0 (2020-08)
 * support polyfills for bcmath and gmp, and add a composer.json
   suggestion for the `phpseclib/bcmath_polyfill` for servers unable
@@ -8,8 +17,7 @@
   by wycheproof test suite
 
 #### v.2.1.0 (2018-03)
-* add support for `bcmath` extension (making `gmp` optional)<br>
-  https://github.com/fgrosse/PHPASN1/pull/68
+* add support for `bcmath` extension (making `gmp` optional) [#68](https://github.com/fgrosse/PHPASN1/pull/68)
 
 #### v.2.0.1 & v.1.5.3 (2017-12)
 * add .gitattributes file to prevent examples and tests to be installed via composer when --prefer-dist was set
@@ -35,7 +43,7 @@
 * fix a bug that would prevent you from decoding empty tagged objects [#57](https://github.com/fgrosse/PHPASN1/issues/57)
 
 #### v.1.4.1
-* improve exception messages and general error handling [#55](https://github.com/fgrosse/PHPASN1/pull/55)
+* improve exception messages and general error handling [#55](https ://github.com/fgrosse/PHPASN1/pull/55)
 
 #### v.1.4.0
 * **require PHP 5.6**

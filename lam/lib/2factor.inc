@@ -123,8 +123,10 @@ abstract class BaseProvider implements TwoFactorProvider {
 	 */
 	protected function getLoginAttributeValue($userDn) {
 		$attrName = $this->config->twoFactorAuthenticationSerialAttributeName;
-		$userData = ldapGetDN($userDn, array($attrName));
+		$handle = getLDAPServerHandle();
+		$userData = ldapGetDN($userDn, array($attrName), $handle);
 		if (empty($userData[$attrName])) {
+			logNewMessage(LOG_DEBUG, getDefaultLDAPErrorString($handle));
 			return null;
 		}
 		if (is_array($userData[$attrName])) {

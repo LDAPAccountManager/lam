@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.14.1 - 2021-09-18
+
+- [#199](https://github.com/php-http/discovery/pull/199) - Fixes message factory discovery for `laminas-diactoros ^2.7` 
+
+## 1.14.0 - 2021-06-21
+
+- Deprecate puli as it has been unmaintained for a long time and is not compatible with composer 2 https://github.com/php-http/discovery/pull/195
+
 ## 1.13.0 - 2020-11-27
 
 - Support discovering PSR-17 factories of `slim/psr7` package https://github.com/php-http/discovery/pull/192
