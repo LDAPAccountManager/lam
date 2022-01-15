@@ -12,8 +12,6 @@ LAM - Readme
 
   https://www.ldap-account-manager.org/
 
-    Copyright (C) 2003 - 2021 Roland Gruber <post@rolandgruber.de>
-
   Installation and documentation:
     Please see the LAM manual in docs/manual/index.html.
 
@@ -27,6 +25,4 @@ LAM - Readme
     LAM is published under the GNU General Public License.
     The complete list of licenses can be found in the copyright file.
 
-
-    Have fun!
-        The LAM development team
+  Copyright (C) 2003 - 2022 Roland Gruber <post@rolandgruber.de>
