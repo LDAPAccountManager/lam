@@ -3993,9 +3993,8 @@ implements Serializable, SplObserver
         $vanished = $this->vanished($this->_selected, $modseq, array(
             'ids' => $uids_ob
         ));
-        $disappear = array_diff($uids_ob->ids, $vanished->ids);
-        if (!empty($disappear)) {
-            $this->_deleteMsgs($this->_selected, $this->getIdsOb($disappear));
+        if (!empty($vanished->ids)) {
+            $this->_deleteMsgs($this->_selected, $this->getIdsOb($vanished->ids));
         }
 
         $mbox_ob->sync = true;

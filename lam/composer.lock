@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4e1fd3280b9a2281e197226f5b5306c4",
+    "content-hash": "e8ada28ae91196d00ea95a43c2412f24",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -1067,10 +1067,10 @@
         },
         {
             "name": "pear-pear.horde.org/Horde_Imap_Client",
-            "version": "2.30.1",
+            "version": "2.30.4",
             "dist": {
                 "type": "file",
-                "url": "https://pear.horde.org/get/Horde_Imap_Client-2.30.1.tgz"
+                "url": "https://pear.horde.org/get/Horde_Imap_Client-2.30.4.tgz"
             },
             "require": {
                 "ext-hash": "*",
@@ -1087,7 +1087,7 @@
                 "php": "<8.0.0.0"
             },
             "replace": {
-                "pear-horde/horde_imap_client": "== 2.30.1.0"
+                "pear-horde/horde_imap_client": "== 2.30.4.0"
             },
             "type": "pear-library",
             "autoload": {
