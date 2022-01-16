@@ -1151,6 +1151,7 @@ lib/3rdParty/composer/guzzlehttp                                     B  2015  Mi
 lib/3rdParty/composer/nesbot                                         B        Brian Nesbitt
 lib/3rdParty/composer/nyholm                                         B  2016  Tobias Nyholm
 lib/3rdParty/composer/okta                                           J        Brian Retterer
+lib/3rdParty/composer/monolog                                        B  2011  Jordi Boggiano
 lib/3rdParty/composer/paragonie                                      B  2015  Paragon Initiative Enterprises
 lib/3rdParty/composer/pear-pear.horde.org/Horde_Crypt_Blowfish       I
 lib/3rdParty/composer/pear-pear.horde.org/Horde_Exception            I
@@ -1180,8 +1181,6 @@ lib/3rdParty/composer/web-auth                                       B  2018  Sp
 lib/3rdParty/composer/web-token                                      B        Florent Morselli
 lib/3rdParty/tcpdf                                                   D  2020  Nicola Asuni - Tecnick.com LTD
 lib/3rdParty/tcpdf/fonts/dejavu*.z                                   A        Public Domain, Bitstream, Inc., Tavmjong Bah
-lib/3rdParty/Monolog                                                 B  2011  Jordi Boggiano
-lib/3rdParty/Psr                                                     B  2012  PHP Framework Interoperability Group
 lib/3rdParty/yubico/Yubico.php                                       C  2015  Yubico AB
 templates/lib/*jquery*.js                                            B  2018  jQuery Foundation and other contributors
 style/120_jquery-ui*.css                                             B  2016  jQuery Foundation and other contributors

@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2021  Roland Gruber
+  Copyright (C) 2006 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -775,19 +775,7 @@ function lamEncryptionAlgo() {
  * @param LAMCfgMain $cfgMain main configuration
  */
 function lamLogRemoteMessage($level, $message, $cfgMain) {
-	include_once __DIR__ . '/3rdParty/Psr/Log/InvalidArgumentException.php';
-	include_once __DIR__ . '/3rdParty/Psr/Log/LoggerInterface.php';
-	include_once __DIR__ . '/3rdParty/Monolog/ResettableInterface.php';
-	include_once __DIR__ . '/3rdParty/Monolog/Logger.php';
-	include_once __DIR__ . '/3rdParty/Monolog/Formatter/FormatterInterface.php';
-	include_once __DIR__ . '/3rdParty/Monolog/Formatter/NormalizerFormatter.php';
-	include_once __DIR__ . '/3rdParty/Monolog/Formatter/LineFormatter.php';
-	include_once __DIR__ . '/3rdParty/Monolog/Handler/HandlerInterface.php';
-	include_once __DIR__ . '/3rdParty/Monolog/Handler/AbstractHandler.php';
-	include_once __DIR__ . '/3rdParty/Monolog/Handler/AbstractProcessingHandler.php';
-	include_once __DIR__ . '/3rdParty/Monolog/Handler/AbstractSyslogHandler.php';
-	include_once __DIR__ . '/3rdParty/Monolog/Handler/SyslogUdp/UdpSocket.php';
-	include_once __DIR__ . '/3rdParty/Monolog/Handler/SyslogUdpHandler.php';
+	include_once __DIR__ . '/3rdParty/composer/autoload.php';
 	$remoteParts = explode(':', $cfgMain->logDestination);
 	$server = $remoteParts[1];
 	$port = intval($remoteParts[2]);
@@ -799,16 +787,16 @@ function lamLogRemoteMessage($level, $message, $cfgMain) {
 	$logger->pushHandler($syslogHandler);
 	switch ($level) {
 		case LOG_DEBUG:
-			$logger->addDebug($message);
+			$logger->debug($message);
 			break;
 		case LOG_NOTICE:
-			$logger->addNotice($message);
+			$logger->notice($message);
 			break;
 		case LOG_WARNING:
-			$logger->addWarning($message);
+			$logger->warning($message);
 			break;
 		case LOG_ERR:
-			$logger->addError($message);
+			$logger->error($message);
 			break;
 	}
 }
