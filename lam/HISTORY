@@ -2,7 +2,8 @@ March 2022 7.9
   - Docker: upgrade OS to Debian Bullseye
   - LAM Pro:
    -> support multiple TO addresses for license expiration email
-
+  - Fixed bugs:
+   -> Tree view: check session expiration
 
 28.12.2021 7.8
   - Restyling of LAM

@@ -1,7 +1,7 @@
 /**
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2021  Roland Gruber
+  Copyright (C) 2003 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -2054,6 +2054,7 @@ window.lam.treeview.getNodes = function (tokenName, tokenValue, node, callback) 
 		data: data
 	})
 	.done(function(jsonData) {
+		window.lam.treeview.checkSession(jsonData);
 		callback.call(this, jsonData);
 	})
 }
@@ -2078,6 +2079,7 @@ window.lam.treeview.createNode = function (tokenName, tokenValue, node, tree) {
 		data: data
 	})
 	.done(function(jsonData) {
+		window.lam.treeview.checkSession(jsonData);
 		jQuery('#ldap_actionarea').html(jsonData.content);
 	});
 }
@@ -2103,6 +2105,7 @@ window.lam.treeview.createNodeSelectObjectClassesStep = function (event, tokenNa
 		data: data
 	})
 	.done(function(jsonData) {
+		window.lam.treeview.checkSession(jsonData);
 		jQuery('#ldap_actionarea').html(jsonData.content);
 		window.lam.treeview.addFileInputListeners();
 	});
@@ -2147,6 +2150,7 @@ window.lam.treeview.createNodeEnterAttributesStep = function (event, tokenName, 
 		data: data
 	})
 	.done(function(jsonData) {
+		window.lam.treeview.checkSession(jsonData);
 		jQuery('#ldap_actionarea').html(jsonData.content);
 		var tree = jQuery.jstree.reference("#ldap_tree");
 		tree.refresh_node(parentDn);
@@ -2185,6 +2189,7 @@ window.lam.treeview.deleteNode = function (tokenName, tokenValue, node, tree, ok
 			data: data
 		})
 		.done(function(jsonData) {
+			window.lam.treeview.checkSession(jsonData);
 			tree.refresh_node(parent);
 			var node = tree.get_node(parent, false);
 			window.lam.treeview.getNodeContent(tokenName, tokenValue, node.id);
@@ -2244,6 +2249,7 @@ window.lam.treeview.getNodeContent = function (tokenName, tokenValue, dn, messag
 		data: data
 	})
 	.done(function(jsonData) {
+		window.lam.treeview.checkSession(jsonData);
 		jQuery('#ldap_actionarea').html(jsonData.content);
 		if (messages) {
 			jQuery('#ldap_actionarea_messages').html(messages);
@@ -2301,6 +2307,7 @@ window.lam.treeview.saveAttributes = function (event, tokenName, tokenValue, dn)
 		data: data
 	})
 	.done(function(jsonData) {
+		window.lam.treeview.checkSession(jsonData);
 		if (jsonData['newDn']) {
 			var tree = jQuery.jstree.reference("#ldap_tree");
 			tree.refresh_node(jsonData['parent']);
@@ -2509,6 +2516,7 @@ window.lam.treeview.updatePossibleNewAttributes = function(tokenName, tokenValue
 		data: data
 	})
 	.done(function(jsonData) {
+		window.lam.treeview.checkSession(jsonData);
 		const select = document.querySelector('#newAttribute');
 		select.innerHTML = '';
 		const data = jsonData['data'];
@@ -2574,6 +2582,7 @@ window.lam.treeview.getInternalAttributesContent = function (event, tokenName, t
 		data: data
 	})
 	.done(function(jsonData) {
+		window.lam.treeview.checkSession(jsonData);
 		jQuery('#actionarea-internal-attributes').html(jsonData.content);
 	});
 }
@@ -2597,6 +2606,7 @@ window.lam.treeview.search = function (tokenName, tokenValue, dn) {
 		data: data
 	})
 	.done(function(jsonData) {
+		window.lam.treeview.checkSession(jsonData);
 		jQuery('#ldap_actionarea').html(jsonData.content);
 		jQuery("#ldap_actionarea").scrollTop(0);
 	});
@@ -2629,6 +2639,7 @@ window.lam.treeview.searchResults = function (event, tokenName, tokenValue, dn) 
 		data: data
 	})
 	.done(function(jsonData) {
+		window.lam.treeview.checkSession(jsonData);
 		jQuery('#ldap_actionarea').html(jsonData.content);
 		jQuery("#ldap_actionarea").scrollTop(0);
 	});
@@ -2714,6 +2725,7 @@ window.lam.treeview.pasteNode = function (tokenName, tokenValue, node, tree) {
 		data: data
 	})
 	.done(function(jsonData) {
+		window.lam.treeview.checkSession(jsonData);
 		if (jsonData.error) {
 			jQuery('#ldap_actionarea_messages').html(jsonData.error);
 		}
@@ -2730,6 +2742,17 @@ window.lam.treeview.pasteNode = function (tokenName, tokenValue, node, tree) {
 		}
 		window.lam.treeview.contextMenuPasteDisabled = true;
 	});
+}
+
+/**
+ * Checks if the session expired and redirects to login.
+ *
+ * @param json JSON response
+ */
+window.lam.treeview.checkSession = function(json) {
+	if (json && (json.sessionExpired == 'true')) {
+		location.href = '../login.php?expired=yes';
+	}
 }
 
 window.lam.topmenu = window.lam.topmenu || {};
