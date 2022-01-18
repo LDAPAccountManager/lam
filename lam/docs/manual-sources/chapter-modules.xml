@@ -6207,6 +6207,13 @@ OK (10 msec)</programlisting>
 
     <itemizedlist>
       <listitem>
+        <para><emphasis role="bold">$INFO.debug$:</emphasis> list of all
+        possible wildcards and their values (e.g.
+        "$objectClass$:posixAccount,inetOrgPerson; $loginShell$:/bin/bash;
+        $gidNumber$:12345; $uid$:userid...")</para>
+      </listitem>
+
+      <listitem>
         <para><emphasis role="bold">$INFO.userPasswordClearText$:</emphasis>
         cleartext password when Unix/Windows password is changed (e.g. useful
         for external password synchronisation) for new/modified
