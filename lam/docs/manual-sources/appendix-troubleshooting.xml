@@ -1,263 +1,244 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
 "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
-  <appendix>
-    <title>Troubleshooting</title>
+<appendix>
+  <title>Troubleshooting</title>
+
+  <section>
+    <title>Reset configuration password</title>
+
+    <para>The password for the server profiles can be reset using the master
+    configuration password. Open LAM configuration -&gt; Edit server profiles
+    -&gt;Manage server profiles for this.</para>
+
+    <para>In case you lost your master configuration password you need to
+    manually edit the main configuration file (config.cfg) on the file
+    system.</para>
+
+    <orderedlist>
+      <listitem>
+        <para>Locate config.cfg: On DEB/RPM installations it is in
+        /usr/share/ldap-account-manager/config and for tar.bz2 in config
+        folder.</para>
+      </listitem>
+
+      <listitem>
+        <para>Locate the "password" entry in the file</para>
+      </listitem>
+
+      <listitem>
+        <para>Replace the password hash after "password: " with your new
+        clear-text password (e.g. "secret")</para>
+      </listitem>
+    </orderedlist>
+
+    <para>After the change the line should look like this:</para>
+
+    <literallayout>password: secret</literallayout>
+
+    <para>You can now login using your new password. Set the password once
+    again via GUI in main configuration settings. This will then put again a
+    hash value in the config.cfg file.</para>
+  </section>
+
+  <section>
+    <title>Functional issues</title>
+
+    <para><emphasis role="bold">Size limit</emphasis></para>
+
+    <para>You will get a message like "LDAP sizelimit exceeded, not all
+    entries are shown." when you hit the LDAP search limit.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>OpenLDAP: See the <link linkend="size_limit_exceeded">OpenLDAP
+        settings</link> to fix this.</para>
+      </listitem>
+
+      <listitem>
+        <para>389 server: set nsslapd-sizelimit in cn=config (may also be set
+        per user)</para>
+      </listitem>
+
+      <listitem>
+        <para>other LDAP servers: please see your server documentation</para>
+      </listitem>
+    </itemizedlist>
+
+    <literallayout>
+</literallayout>
+
+    <para><emphasis role="bold">Invalid syntax errors:</emphasis></para>
+
+    <para>If you get any strange errors like "Invalid syntax" or "Invalid DN
+    syntax" please check if your LDAP schema matches LAM's
+    requirements.</para>
+
+    <literallayout>
+</literallayout>
+
+    <para><emphasis role="bold">Schema test:</emphasis></para>
+
+    <para>This can be done by running "Tools" -&gt; "Tests" -&gt; "Schema
+    test" inside LAM.</para>
+
+    <para>If there are any object classes or attributes missing you will get a
+    notice. See <link linkend="a_schema">LDAP schema files</link> for a list
+    of used schemas. You may also want to deactivate unused modules in your
+    LAM server profile (tab "Modules").</para>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/schemaTest.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <para><literallayout>
+</literallayout><emphasis role="bold">LDAP Logging:</emphasis></para>
+
+    <para>If your schema is correct you can turn on LDAP logging to get more
+    detailed error messages from your LDAP server.</para>
+
+    <literallayout>
+</literallayout>
+
+    <para><emphasis role="bold">OpenLDAP logging:</emphasis></para>
+
+    <itemizedlist>
+      <listitem>
+        <para>slapd.conf: In /etc/ldap/slapd.conf turn logging on with the
+        line "loglevel 256".</para>
+      </listitem>
+
+      <listitem>
+        <para>slapd.d: In /etc/ldap/slapd.d/cn=config.ldif please change the
+        attribute "olcLogLevel" to "Stats". Please add a line "olcLogLevel:
+        Stats" if the attribute is missing.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>After changing the configuration please restart OpenLDAP. It usually
+    uses /var/log/syslog for log output.</para>
+
+    <literallayout>
+</literallayout>
+
+    <para><emphasis role="bold">PHP logging</emphasis></para>
+
+    <para>Sometimes it can help to enable PHP logging inside LAM. You can do
+    this in the <link linkend="conf_logging">logging area</link> of LAM's main
+    configuration. Set the logging option to "all" and check if there are any
+    messages printed in your browser window. Please note that not every notice
+    message is an error but it may help to find the problem.</para>
+  </section>
+
+  <section>
+    <title>Performance issues</title>
+
+    <para>LAM is tested to work with 10000 users with acceptable performance.
+    If you have a larger directory or slow hardware then here are some points
+    to increase performance.</para>
+
+    <literallayout>
+</literallayout>
+
+    <para>The first step is to check if performance problems are caused by the
+    LAM web server or the LDAP server. Please check which machine suffers from
+    high system load (CPU/memory consumption).</para>
+
+    <para>High network latency may also be a problem. For large installations
+    please make sure that LAM web server and LDAP server are located in the
+    same building/server room.</para>
+
+    <para>If you run LAM on multiple nodes (DNS load balancing/hardware load
+    balancer) then also check the <link linkend="clustering">clustering
+    section</link>.</para>
 
     <section>
-      <title>Reset configuration password</title>
+      <title>LDAP server</title>
 
-      <para>The password for the server profiles can be reset using the master
-      configuration password. Open LAM configuration -&gt; Edit server
-      profiles -&gt;Manage server profiles for this.</para>
+      <para><emphasis role="bold">Use indices</emphasis></para>
 
-      <para>In case you lost your master configuration password you need to
-      manually edit the main configuration file (config.cfg) on the file
-      system.</para>
-
-      <orderedlist>
-        <listitem>
-          <para>Locate config.cfg: On DEB/RPM installations it is in
-          /usr/share/ldap-account-manager/config and for tar.bz2 in config
-          folder.</para>
-        </listitem>
-
-        <listitem>
-          <para>Locate the "password" entry in the file</para>
-        </listitem>
-
-        <listitem>
-          <para>Replace the password hash after "password: " with your new
-          clear-text password (e.g. "secret")</para>
-        </listitem>
-      </orderedlist>
-
-      <para>After the change the line should look like this:</para>
-
-      <literallayout>password: secret</literallayout>
-
-      <para>You can now login using your new password. Set the password once
-      again via GUI in main configuration settings. This will then put again a
-      hash value in the config.cfg file.</para>
-    </section>
-
-    <section>
-      <title>Functional issues</title>
-
-      <para><emphasis role="bold">Size limit</emphasis></para>
-
-      <para>You will get a message like "LDAP sizelimit exceeded, not all
-      entries are shown." when you hit the LDAP search limit.</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>OpenLDAP: See the <link linkend="size_limit_exceeded">OpenLDAP
-          settings</link> to fix this.</para>
-        </listitem>
-
-        <listitem>
-          <para>389 server: set nsslapd-sizelimit in cn=config (may also be
-          set per user)</para>
-        </listitem>
-
-        <listitem>
-          <para>other LDAP servers: please see your server
-          documentation</para>
-        </listitem>
-      </itemizedlist>
+      <para>Depending on the queries it may help to add some more indices on
+      the LDAP server. Depending on your LDAP software it may already suggest
+      indices in its log files. See <link linkend="indices">here</link> for
+      typical OpenLDAP indices.</para>
 
       <literallayout>
 </literallayout>
 
-      <para><emphasis role="bold">Invalid syntax errors:</emphasis></para>
+      <para><emphasis role="bold">Reduce query results by splitting LDAP
+      management into multiple server profiles</emphasis></para>
 
-      <para>If you get any strange errors like "Invalid syntax" or "Invalid DN
-      syntax" please check if your LDAP schema matches LAM's
-      requirements.</para>
+      <para>If you manage a very large directory then it might already be
+      separated into multiple subtrees (e.g. by country, subsidiary, ...). Do
+      not use a single LAM server profile to manage your whole directory. Use
+      different server profiles for each separated LDAP subtree where possible
+      (e.g. one for German users and one for French ones).</para>
 
       <literallayout>
 </literallayout>
 
-      <para><emphasis role="bold">Schema test:</emphasis></para>
+      <para><emphasis role="bold">Limit query results</emphasis></para>
 
-      <para>This can be done by running "Tools" -&gt; "Tests" -&gt; "Schema
-      test" inside LAM.</para>
-
-      <para>If there are any object classes or attributes missing you will get
-      a notice. See <link linkend="a_schema">LDAP schema files</link> for a
-      list of used schemas. You may also want to deactivate unused modules in
-      your LAM server profile (tab "Modules").</para>
+      <para>LAM allows to set an <ulink url="general_settings">LDAP search
+      limit</ulink> for each server profile. This will limit the number of
+      entries returned by your LDAP server. Use with caution because it can
+      cause problems (e.g. with automatic UID generation) when LAM is not able
+      to read all entries.</para>
 
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/schemaTest.png" />
+            <imagedata fileref="images/configProfiles4.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </section>
+
+    <section>
+      <title>LAM web server</title>
+
+      <para><emphasis role="bold">Install a PHP accelerator</emphasis></para>
+
+      <para>There are tools like <ulink
+      url="http://php.net/manual/en/book.opcache.php">OpCache</ulink> (free)
+      or <ulink url="http://www.zend.com/en/products/server/">Zend
+      Server</ulink> (commercial) that provide caching of PHP pages to improve
+      performance. They will reduce the time for parsing the PHP pages and IO
+      load.</para>
+
+      <para>This is a simply way to enhance performance since OpCache is part
+      of most Linux distributions.</para>
+
+      <literallayout>
+</literallayout>
+
+      <para>OpCache statistics can be shown with <ulink
+      url="https://github.com/rlerdorf/opcache-status">opcache-status</ulink>.</para>
+
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/opcache.png"/>
           </imageobject>
         </mediaobject>
       </screenshot>
 
-      <para><literallayout>
-</literallayout><emphasis role="bold">LDAP Logging:</emphasis></para>
+      <para><emphasis role="bold">Disable session encryption</emphasis></para>
 
-      <para>If your schema is correct you can turn on LDAP logging to get more
-      detailed error messages from your LDAP server.</para>
+      <para>LAM encrypts sensitive data in your session files. You can <link
+      linkend="sessionEncryption">disable</link> it to reduce CPU load.</para>
 
-      <literallayout>
-</literallayout>
-
-      <para><emphasis role="bold">OpenLDAP logging:</emphasis></para>
-
-      <itemizedlist>
-        <listitem>
-          <para>slapd.conf: In /etc/ldap/slapd.conf turn logging on with the
-          line "loglevel 256".</para>
-        </listitem>
-
-        <listitem>
-          <para>slapd.d: In /etc/ldap/slapd.d/cn=config.ldif please change the
-          attribute "olcLogLevel" to "Stats". Please add a line "olcLogLevel:
-          Stats" if the attribute is missing.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>After changing the configuration please restart OpenLDAP. It
-      usually uses /var/log/syslog for log output.</para>
-
-      <literallayout>
-</literallayout>
-
-      <para><emphasis role="bold">PHP logging</emphasis></para>
-
-      <para>Sometimes it can help to enable PHP logging inside LAM. You can do
-      this in the <link linkend="conf_logging">logging area</link> of LAM's
-      main configuration. Set the logging option to "all" and check if there
-      are any messages printed in your browser window. Please note that not
-      every notice message is an error but it may help to find the
-      problem.</para>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/configGeneral1.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
     </section>
-
-    <section>
-      <title>Performance issues</title>
-
-      <para>LAM is tested to work with 10000 users with acceptable
-      performance. If you have a larger directory or slow hardware then here
-      are some points to increase performance.</para>
-
-      <literallayout>
-</literallayout>
-
-      <para>The first step is to check if performance problems are caused by
-      the LAM web server or the LDAP server. Please check which machine
-      suffers from high system load (CPU/memory consumption).</para>
-
-      <para>High network latency may also be a problem. For large
-      installations please make sure that LAM web server and LDAP server are
-      located in the same building/server room.</para>
-
-      <para>If you run LAM on multiple nodes (DNS load balancing/hardware load
-      balancer) then also check the <link linkend="clustering">clustering
-      section</link>.</para>
-
-      <section>
-        <title>LDAP server</title>
-
-        <para><emphasis role="bold">Use indices</emphasis></para>
-
-        <para>Depending on the queries it may help to add some more indices on
-        the LDAP server. Depending on your LDAP software it may already
-        suggest indices in its log files. See <link
-        linkend="indices">here</link> for typical OpenLDAP indices.</para>
-
-        <literallayout>
-</literallayout>
-
-        <para><emphasis role="bold">Reduce query results by splitting LDAP
-        management into multiple server profiles</emphasis></para>
-
-        <para>If you manage a very large directory then it might already be
-        separated into multiple subtrees (e.g. by country, subsidiary, ...).
-        Do not use a single LAM server profile to manage your whole directory.
-        Use different server profiles for each separated LDAP subtree where
-        possible (e.g. one for German users and one for French ones).</para>
-
-        <literallayout>
-</literallayout>
-
-        <para><emphasis role="bold">Limit query results</emphasis></para>
-
-        <para>LAM allows to set an <ulink url="general_settings">LDAP search
-        limit</ulink> for each server profile. This will limit the number of
-        entries returned by your LDAP server. Use with caution because it can
-        cause problems (e.g. with automatic UID generation) when LAM is not
-        able to read all entries.</para>
-
-        <screenshot>
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/configProfiles4.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-      </section>
-
-      <section>
-        <title>LAM web server</title>
-
-        <para><emphasis role="bold">Install a PHP
-        accelerator</emphasis></para>
-
-        <para>There are tools like <ulink
-        url="http://www.php.net/manual/en/book.apc.php">APC</ulink>/<ulink
-        url="http://php.net/manual/en/book.opcache.php">OpCache</ulink> (free)
-        or <ulink url="http://www.zend.com/en/products/server/">Zend
-        Server</ulink> (commercial) that provide caching of PHP pages to
-        improve performance. They will reduce the time for parsing the PHP
-        pages and IO load.</para>
-
-        <para>This is a simply way to enhance performance since APC/OpCache is
-        part of most Linux distributions.</para>
-
-        <para>If you use APC then make sure that it uses enough memory (e.g.
-        "apc.shm_size=128M"). You can check the memory usage with the file
-        apc.php that is shipped with APC.</para>
-
-        <screenshot>
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/apc.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-
-        <literallayout>
-</literallayout>
-
-        <para>OpCache statistics can be shown with <ulink
-        url="https://github.com/rlerdorf/opcache-status">opcache-status</ulink>.</para>
-
-        <screenshot>
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/opcache.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-
-        <para><emphasis role="bold">Disable session
-        encryption</emphasis></para>
-
-        <para>LAM encrypts sensitive data in your session files. You can <link
-        linkend="sessionEncryption">disable</link> it to reduce CPU
-        load.</para>
-
-        <screenshot>
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/configGeneral1.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-      </section>
-    </section>
-  </appendix>
- 
+  </section>
+</appendix>
