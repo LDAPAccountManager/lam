@@ -78,9 +78,13 @@ div.navfooter hr {
 	margin-top:30px;
 }
 
+div.mediaobject {
+	text-align: center;
+}
 div.mediaobject img {
 	margin-top:20px;
 	margin-bottom:20px;
+	max-width: 80%;
 }
 
 h1 { color:#253aa3; }
@@ -107,8 +111,4 @@ pre.programlisting {
 	border-width:1px;
 	border-radius:4px;
 	background-color:#f3f2f1;
-}
-
-img {
-	max-width: 100%;
 }
