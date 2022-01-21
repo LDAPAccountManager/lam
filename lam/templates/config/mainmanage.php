@@ -1,6 +1,7 @@
 <?php
 namespace LAM\CONFIG;
 
+use htmlResponsiveTable;
 use LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use \LAMCfgMain;
 use \htmlTable;
@@ -497,12 +498,12 @@ printHeaderContents(_("Edit general settings"), '../..');
 			$delBtn = new htmlButton('deleteCert_' . $i, 'del.svg', true);
 			$certsData[] = array(
 				new htmlOutputText($cn),
-				new htmlOutputText($validTo),
+				new htmlDiv(null, new htmlOutputText($validTo), array('nowrap')),
 				new htmlOutputText($serial),
 				$delBtn
 			);
 		}
-		$certsTable = new \htmlResponsiveTable($certsTitles, $certsData);
+		$certsTable = new htmlResponsiveTable($certsTitles, $certsData);
 		$row->add($certsTable, 12);
 	}
 
