@@ -489,6 +489,10 @@ printHeaderContents(_("Edit general settings"), '../..');
 		for ($i = 0; $i < sizeof($sslCerts); $i++) {
 			$serial = isset($sslCerts[$i]['serialNumber']) ? $sslCerts[$i]['serialNumber'] : '';
 			$validTo = isset($sslCerts[$i]['validTo_time_t']) ? $sslCerts[$i]['validTo_time_t'] : '';
+			if (get_preg($validTo, 'digit')) {
+			    $date = DateTime::createFromFormat('U', $validTo, new DateTimeZone('UTC'));
+			    $validTo = $date->format('Y-m-d');
+            }
 			$cn = isset($sslCerts[$i]['subject']['CN']) ? $sslCerts[$i]['subject']['CN'] : '';
 			$delBtn = new htmlButton('deleteCert_' . $i, 'del.svg', true);
 			$certsData[] = array(

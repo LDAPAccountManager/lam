@@ -1,312 +1,306 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
-"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"> 
-  <chapter>
-    <title>Big picture</title>
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+<chapter>
+  <title>Big picture</title>
 
-    <section>
-      <title>Overview</title>
+  <section>
+    <title>Overview</title>
 
-      <para>LAM has two major areas:</para>
+    <para>LAM has two major areas:</para>
 
-      <itemizedlist>
-        <listitem>
-          <para>Admin interface to manage all sorts of different LDAP entries
-          (e.g. users/groups/hosts)</para>
-        </listitem>
+    <itemizedlist>
+      <listitem>
+        <para>Admin interface to manage all sorts of different LDAP entries
+        (e.g. users/groups/hosts)</para>
+      </listitem>
 
-        <listitem>
-          <para>Self service (LAM Pro) where end users can edit their own
-          data</para>
-        </listitem>
-      </itemizedlist>
+      <listitem>
+        <para>Self service (LAM Pro) where end users can edit their own
+        data</para>
+      </listitem>
+    </itemizedlist>
 
-      <para></para>
+    <para/>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/bigPicture1.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/bigPicture1.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
 
-      <para><emphasis role="bold">Admin interface</emphasis></para>
+    <para><emphasis role="bold">Admin interface</emphasis></para>
 
-      <para>This is the main part of the application. It allows to manage a
-      large list of LDAP entries (e.g. users, groups, DNS entries, ...). This
-      part is accessed by LDAP admins and support staff.</para>
+    <para>This is the main part of the application. It allows to manage a
+    large list of LDAP entries (e.g. users, groups, DNS entries, ...). This
+    part is accessed by LDAP admins and support staff.</para>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/bigPicture2.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/bigPicture2.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
 
-      <para>Functional areas:</para>
+    <para>Functional areas:</para>
 
-      <orderedlist>
-        <listitem>
-          <para>Account tabs: These tabs allow to switsch between different
-          account types</para>
-        </listitem>
+    <orderedlist>
+      <listitem>
+        <para>Account types: Here you can switsch between different account
+        types (e.g. user/groups)</para>
+      </listitem>
 
-        <listitem>
-          <para>Tree view: Provides an LDAP browser to edit LDAP entries on
-          attribute level</para>
-        </listitem>
+      <listitem>
+        <para>Tools menu: Contains useful tools such as profile/PDF editor and
+        tree view</para>
+      </listitem>
 
-        <listitem>
-          <para>Tools menu: Contains useful tools such as profile and PDF
-          editor</para>
-        </listitem>
+      <listitem>
+        <para>Help: Link to manual</para>
+      </listitem>
 
-        <listitem>
-          <para>Help: Link to manual</para>
-        </listitem>
+      <listitem>
+        <para>Logout: Logout of the application</para>
+      </listitem>
 
-        <listitem>
-          <para>Logout: Logout of the application</para>
-        </listitem>
+      <listitem>
+        <para>List view: Lists all entries of the selected account type (e.g.
+        users)</para>
+      </listitem>
 
-        <listitem>
-          <para>List view: Lists all entries of the selected account type
-          (e.g. users)</para>
-        </listitem>
+      <listitem>
+        <para>List configuration: Configuration settings for list view (e.g.
+        number of entries per page)</para>
+      </listitem>
 
-        <listitem>
-          <para>List configuration: Configuration settings for list view (e.g.
-          number of entries per page)</para>
-        </listitem>
+      <listitem>
+        <para>Filter: Filter boxes allow to enter simple filters like
+        "a*"</para>
+      </listitem>
+    </orderedlist>
 
-        <listitem>
-          <para>Filter: Filter boxes allow to enter simple filters like
-          "a*"</para>
-        </listitem>
-      </orderedlist>
+    <para><emphasis role="bold">Self Service</emphasis></para>
 
-      <para><emphasis role="bold">Self Service</emphasis></para>
+    <para>The self service provides a simple interface for your users to edit
+    their own data (e.g. telephone number). It also supports user self
+    registration and password reset functionality.</para>
 
-      <para>The self service provides a simple interface for your users to
-      edit their own data (e.g. telephone number). It also supports user self
-      registration and password reset functionality.</para>
+    <para>You can fully customize the layout of the self service page.</para>
 
-      <para>You can fully customize the layout of the self service
-      page.</para>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/bigPicture3.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/bigPicture3.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+    <para><emphasis role="bold">Configuration</emphasis></para>
 
-      <para><emphasis role="bold">Configuration</emphasis></para>
+    <para>Configuration is done on multiple levels:</para>
 
-      <para>Configuration is done on multiple levels:</para>
+    <para><emphasis role="bold">Global</emphasis></para>
 
-      <para><emphasis role="bold">Global</emphasis></para>
+    <para>Effective for all parts of LAM (e.g. logging and password
+    policy).</para>
 
-      <para>Effective for all parts of LAM (e.g. logging and password
-      policy).</para>
+    <para>Configured via LAM admin login -&gt; LAM configuration -&gt; <link
+    linkend="generalSettings">Edit general settings</link>.</para>
 
-      <para>Configured via LAM admin login -&gt; LAM configuration -&gt; <link
-      linkend="generalSettings">Edit general settings</link>.</para>
+    <para><emphasis role="bold">Server profile</emphasis></para>
 
-      <para><emphasis role="bold">Server profile</emphasis></para>
+    <para>All settings for an LDAP connection (e.g. server name, LDAP
+    suffixes, account types/modules to activate) in admin interface. There may
+    be multiple for one LDAP server (e.g. for multiple departments, different
+    user groups, ...).</para>
 
-      <para>All settings for an LDAP connection (e.g. server name, LDAP
-      suffixes, account types/modules to activate) in admin interface. There
-      may be multiple for one LDAP server (e.g. for multiple departments,
-      different user groups, ...).</para>
+    <para>Configured via LAM admin login -&gt; LAM configuration -&gt; <link
+    linkend="serverProfiles">Edit server profile</link>.</para>
 
-      <para>Configured via LAM admin login -&gt; LAM configuration -&gt; <link
-      linkend="serverProfiles">Edit server profile</link>.</para>
+    <para><emphasis role="bold">Self service</emphasis></para>
 
-      <para><emphasis role="bold">Self service</emphasis></para>
+    <para>All settings for a self service interface (e.g. fields that can be
+    edited, password reset functionality, ...).</para>
 
-      <para>All settings for a self service interface (e.g. fields that can be
-      edited, password reset functionality, ...).</para>
+    <para>Configured via LAM admin login -&gt; LAM configuration -&gt; <link
+    linkend="a_selfService">Edit self service</link>.</para>
 
-      <para>Configured via LAM admin login -&gt; LAM configuration -&gt; <link
-      linkend="a_selfService">Edit self service</link>.</para>
+    <para><emphasis role="bold">Profiles</emphasis></para>
 
-      <para><emphasis role="bold">Profiles</emphasis></para>
+    <para><link linkend="a_accountProfile">Account profiles</link> store
+    default values for new LDAP entries.</para>
 
-      <para><link linkend="a_accountProfile">Account profiles</link> store
-      default values for new LDAP entries.</para>
+    <para><emphasis role="bold">PDF structures</emphasis></para>
 
-      <para><emphasis role="bold">PDF structures</emphasis></para>
+    <para><link linkend="pdfEditor">PDF structures</link> define the layout
+    and list of data fields to include in PDF export.</para>
+  </section>
 
-      <para><link linkend="pdfEditor">PDF structures</link> define the layout
-      and list of data fields to include in PDF export.</para>
-    </section>
+  <section>
+    <title>Glossary</title>
 
-    <section>
+    <para>Here you can find a list of common terms used in LAM.</para>
+
+    <table>
       <title>Glossary</title>
 
-      <para>Here you can find a list of common terms used in LAM.</para>
+      <tgroup cols="2">
+        <thead>
+          <row>
+            <entry align="center">Term</entry>
 
-      <table>
-        <title>Glossary</title>
+            <entry align="center">Description</entry>
+          </row>
+        </thead>
 
-        <tgroup cols="2">
-          <thead>
-            <row>
-              <entry align="center">Term</entry>
+        <tbody>
+          <row>
+            <entry>Account module</entry>
 
-              <entry align="center">Description</entry>
-            </row>
-          </thead>
+            <entry>Plugin for a specific account type (e.g. Unix plugin for
+            user type)</entry>
+          </row>
 
-          <tbody>
-            <row>
-              <entry>Account module</entry>
+          <row>
+            <entry>Account type</entry>
 
-              <entry>Plugin for a specific account type (e.g. Unix plugin for
-              user type)</entry>
-            </row>
+            <entry>Type of an LDAP entry (e.g. user/group/host)</entry>
+          </row>
 
-            <row>
-              <entry>Account type</entry>
+          <row>
+            <entry>Admin interface</entry>
 
-              <entry>Type of an LDAP entry (e.g. user/group/host)</entry>
-            </row>
+            <entry>LAM webpages for admin user (e.g. to create new
+            users)</entry>
+          </row>
 
-            <row>
-              <entry>Admin interface</entry>
+          <row>
+            <entry>Lamdaemon</entry>
 
-              <entry>LAM webpages for admin user (e.g. to create new
-              users)</entry>
-            </row>
+            <entry>Support script to manage user file system quotas and create
+            home directories</entry>
+          </row>
 
-            <row>
-              <entry>Lamdaemon</entry>
+          <row>
+            <entry>PDF editor</entry>
 
-              <entry>Support script to manage user file system quotas and
-              create home directories</entry>
-            </row>
+            <entry>Manages PDF structures</entry>
+          </row>
 
-            <row>
-              <entry>PDF editor</entry>
+          <row>
+            <entry>PDF export</entry>
 
-              <entry>Manages PDF structures</entry>
-            </row>
+            <entry>Exports an entry to PDF by using a PDF structure</entry>
+          </row>
 
-            <row>
-              <entry>PDF export</entry>
+          <row>
+            <entry>PDF structure</entry>
 
-              <entry>Exports an entry to PDF by using a PDF structure</entry>
-            </row>
+            <entry>Defines the layout and list of data fields to include in
+            PDF export</entry>
+          </row>
 
-            <row>
-              <entry>PDF structure</entry>
+          <row>
+            <entry>Profile</entry>
 
-              <entry>Defines the layout and list of data fields to include in
-              PDF export</entry>
-            </row>
+            <entry>Template for creation of LDAP entries, contains default
+            values</entry>
+          </row>
 
-            <row>
-              <entry>Profile</entry>
+          <row>
+            <entry>Profile editor</entry>
 
-              <entry>Template for creation of LDAP entries, contains default
-              values</entry>
-            </row>
+            <entry>Manages profiles for all account types</entry>
+          </row>
 
-            <row>
-              <entry>Profile editor</entry>
+          <row>
+            <entry>Self Service</entry>
 
-              <entry>Manages profiles for all account types</entry>
-            </row>
+            <entry>LAM webpages for normal users where they can edit their own
+            data</entry>
+          </row>
 
-            <row>
-              <entry>Self Service</entry>
+          <row>
+            <entry>Self service profile</entry>
 
-              <entry>LAM webpages for normal users where they can edit their
-              own data</entry>
-            </row>
+            <entry>Configuration for self service pages (multiple
+            configurations can exist)</entry>
+          </row>
 
-            <row>
-              <entry>Self service profile</entry>
+          <row>
+            <entry>Tree view</entry>
 
-              <entry>Configuration for self service pages (multiple
-              configurations can exist)</entry>
-            </row>
+            <entry>LDAP browser that allows to modify LDAP entries on
+            attribute/object class level</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+  </section>
 
-            <row>
-              <entry>Tree view</entry>
+  <section>
+    <title>Architecture</title>
 
-              <entry>LDAP browser that allows to modify LDAP entries on
-              attribute/object class level</entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </table>
-    </section>
+    <para>There are basically two groups of users for LAM:</para>
 
-    <section>
-      <title>Architecture</title>
+    <itemizedlist>
+      <listitem>
+        <para><emphasis role="bold">LDAP administrators and support
+        staff:</emphasis></para>
 
-      <para>There are basically two groups of users for LAM:</para>
+        <para>These people administer LDAP entries like user accounts, groups,
+        ...</para>
+      </listitem>
 
-      <itemizedlist>
-        <listitem>
-          <para><emphasis role="bold">LDAP administrators and support
-          staff:</emphasis></para>
+      <listitem>
+        <para><emphasis role="bold">Users:</emphasis></para>
 
-          <para>These people administer LDAP entries like user accounts,
-          groups, ...</para>
-        </listitem>
+        <para>This includes all people who need to manage their own data
+        inside the LDAP directory. E.g. these people edit their contact
+        information with LAM self service (LAM Pro).</para>
+      </listitem>
+    </itemizedlist>
 
-        <listitem>
-          <para><emphasis role="bold">Users:</emphasis></para>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/lam_architecture.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
 
-          <para>This includes all people who need to manage their own data
-          inside the LDAP directory. E.g. these people edit their contact
-          information with LAM self service (LAM Pro).</para>
-        </listitem>
-      </itemizedlist>
+    <para>Therefore, LAM is split into two separate parts, LAM for admins and
+    for users. LAM for admins allows to manage various types of LDAP entries
+    (e.g. users, groups, hosts, ...). It also contains tools like batch
+    upload, account profiles, LDAP schema viewer and an LDAP browser. LAM for
+    users focuses on end users. It provides a self service for the users to
+    edit their personal data (e.g. contact information). The LAM administrator
+    is able to specify what data may be changed by the users. The design is
+    also adaptable to your corporate design.</para>
 
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/lam_architecture.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+    <para>LAM for admins/users is accessible via HTTP(S) by all major web
+    browsers (Firefox, IE, Opera, ...).</para>
 
-      <para>Therefore, LAM is split into two separate parts, LAM for admins
-      and for users. LAM for admins allows to manage various types of LDAP
-      entries (e.g. users, groups, hosts, ...). It also contains tools like
-      batch upload, account profiles, LDAP schema viewer and an LDAP browser.
-      LAM for users focuses on end users. It provides a self service for the
-      users to edit their personal data (e.g. contact information). The LAM
-      administrator is able to specify what data may be changed by the users.
-      The design is also adaptable to your corporate design.</para>
+    <para><emphasis role="bold">LAM runtime environment:</emphasis></para>
 
-      <para>LAM for admins/users is accessible via HTTP(S) by all major web
-      browsers (Firefox, IE, Opera, ...).</para>
+    <para>LAM runs on PHP. Therefore, it is independent of CPU architecture
+    and operating system (OS). You can run LAM on any OS which supports
+    Apache, Nginx or other PHP compatible web servers.</para>
 
-      <para><emphasis role="bold">LAM runtime environment:</emphasis></para>
+    <para><emphasis role="bold">Home directory server:</emphasis></para>
 
-      <para>LAM runs on PHP. Therefore, it is independent of CPU architecture
-      and operating system (OS). You can run LAM on any OS which supports
-      Apache, Nginx or other PHP compatible web servers.</para>
+    <para>You can manage user home directories and their quotas inside LAM.
+    The home directories may reside on the server where LAM is installed or
+    any remote server. The commands for home directory management are secured
+    by SSH. LAM will use the user name and password of the logged in LAM
+    administrator for authentication.</para>
 
-      <para><emphasis role="bold">Home directory server:</emphasis></para>
+    <para><emphasis role="bold">LDAP directory:</emphasis></para>
 
-      <para>You can manage user home directories and their quotas inside LAM.
-      The home directories may reside on the server where LAM is installed or
-      any remote server. The commands for home directory management are
-      secured by SSH. LAM will use the user name and password of the logged in
-      LAM administrator for authentication.</para>
-
-      <para><emphasis role="bold">LDAP directory:</emphasis></para>
-
-      <para>LAM connects to your LDAP server via standard LDAP protocol. It
-      also supports encrypted connections with SSL and TLS.</para>
-    </section>
-  </chapter>
+    <para>LAM connects to your LDAP server via standard LDAP protocol. It also
+    supports encrypted connections with SSL and TLS.</para>
+  </section>
+</chapter>
