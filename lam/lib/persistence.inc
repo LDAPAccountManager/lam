@@ -18,7 +18,7 @@ use function LAM\PDF\getPDFStructures;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2020 - 2021  Roland Gruber
+  Copyright (C) 2020 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -355,7 +355,13 @@ class ConfigDataImporter {
 					$steps[] = new ImporterStep(_('PDF structures') . ' - ' . _('Global templates'), 'pdfProfileTemplates', $value);
 					break;
 				case 'selfServiceProfiles':
-					$steps[] = new ImporterStep(_('Self service profiles'), 'selfServiceProfiles', $value);
+					$mainStep = new ImporterStep(_('Self service profiles'), 'selfServiceProfiles', $value);
+					foreach ($value as $scope => $profiles) {
+						foreach ($profiles as $profileName => $profileData) {
+							$mainStep->addSubStep(new ImporterStep($profileName, 'selfServiceProfile_' . $scope . '__' . $profileName, $profileData));
+						}
+					}
+					$steps[] = $mainStep;
 					break;
 				case 'webauthn':
 					if (extension_loaded('PDO')
@@ -627,22 +633,28 @@ class ConfigDataImporter {
 	 * @throws LAMException error saving profiles
 	 */
 	private function importSelfServiceProfiles($step) {
-		$failedNames = array();
-		$data = $step->getValue();
-		foreach ($data as $typeId => $profileData) {
-			foreach ($profileData as $profileName => $currentProfileData) {
-				$profile = selfServiceProfile::import($currentProfileData);
-				$selfServicePersistence = new SelfServicePersistence();
-				try {
-					$selfServicePersistence->save($profileName, $typeId, $profile);
-				}
-				catch (LAMException $e) {
-					$failedNames[] = $profileName;
-				}
+		$failedProfiles = array();
+		$selfServicePersistence = new SelfServicePersistence();
+		foreach ($step->getSubSteps() as $profileStep) {
+			if (!$profileStep->isActive()) {
+				continue;
+			}
+			$data = $profileStep->getValue();
+			$profileKey = str_replace('selfServiceProfile_', '', $profileStep->getKey());
+			$profileKeyParts = explode('__', $profileKey);
+			$profileScope = $profileKeyParts[0];
+			$profileName = substr($profileKey, strlen($profileScope) + 2);
+			try {
+				$profile = selfServiceProfile::import($data);
+				$selfServicePersistence->save($profileName, $profileScope, $profile);
+			}
+			catch (LAMException $e) {
+				logNewMessage(LOG_ERR, $e->getTitle());
+				$failedProfiles[] = $profileName . '.' . $profileScope;
 			}
 		}
-		if (!empty($failedNames)) {
-			throw new LAMException(_('Unable to save profile!'), implode(', ', $failedNames));
+		if (!empty($failedProfiles)) {
+			throw new LAMException(_('Unable to save self service profile.'), implode(', ', $failedProfiles));
 		}
 	}
 
