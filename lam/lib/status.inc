@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2011 - 2019  Roland Gruber
+                2011 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -86,8 +86,11 @@ function StatusMessage($MessageTyp,$MessageHeadline,$MessageText='',$MessageVari
 			$output = $format;
 		}
 	}
-	else {
+	elseif ($MessageVariables !== null) {
 		$output = sprintf($format, $MessageVariables);
+	}
+	else {
+		$output = $format;
 	}
 	if ($returnOutput) {
 		return $output;
