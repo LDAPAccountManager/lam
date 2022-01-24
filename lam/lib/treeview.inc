@@ -955,6 +955,7 @@ class TreeView {
 		$row->addField($filterGroup);
 		$row->addVerticalSpacer('1rem');
 		$nextButton = new htmlButton('next', _('Next'));
+		$nextButton->setCSSClasses(array('lam-primary'));
 		$nextButton->setOnClick('window.lam.treeview.createNodeSelectObjectClassesStep(event, \'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\');');
 		$row->add($nextButton, 12, 12, 12, 'text-center');
 		$row->addVerticalSpacer('2rem');
@@ -1080,6 +1081,7 @@ class TreeView {
 		}
 		$row->addVerticalSpacer('1rem');
 		$nextButton = new htmlButton('save', _('Create'));
+		$nextButton->setCSSClasses(array('lam-primary'));
 		$nextButton->setOnClick('window.lam.treeview.createNodeEnterAttributesStep(event, \'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\');');
 		$row->add($nextButton, 12, 12, 12, 'text-center');
 		$row->add(new htmlHiddenInput('objectClasses', implode(',', $objectClasses)));
@@ -1293,6 +1295,7 @@ class TreeView {
 		$row->add($formatSelect);
 		$row->addVerticalSpacer('2rem');
 		$nextButton = new htmlButton('search', _('Search'));
+		$nextButton->setCSSClasses(array('lam-primary'));
 		$nextButton->setOnClick('window.lam.treeview.searchResults(event, \'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\', \'' . base64_encode($dn) . '\');');
 		$row->add($nextButton, 12, 12, 12, 'text-center');
 		ob_start();
