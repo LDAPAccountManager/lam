@@ -422,13 +422,12 @@ class TreeView {
 
 		if (checkIfWriteAccessIsAllowed()) {
 			$row->addVerticalSpacer('2rem');
-			$saveButton = new htmlLink(_('Save'), '#', '../../graphics/save.svg', true);
-			$saveButton->setId('savebutton');
-			$saveButton->setOnClick('window.lam.treeview.saveAttributes(event,
-			"' . getSecurityTokenName() . '",
-			"' . getSecurityTokenValue() . '",
-			"' . base64_encode($dn) . '");');
-			$saveButton->setCSSClasses(array('icon'));
+			$saveButton = new htmlButton('savebutton', _('Save'));
+			$saveButton->setOnClick('window.lam.treeview.saveAttributes(event, '
+				. "'" . getSecurityTokenName() . "', "
+				. "'" . getSecurityTokenValue() . "', "
+				. "'" . base64_encode($dn) . "');");
+			$saveButton->setCSSClasses(array('lam-primary'));
 			$row->add($saveButton, 12, 12, 12, 'text-center');
 		}
 
