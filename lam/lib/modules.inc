@@ -829,6 +829,11 @@ class accountContainer {
 	/** send password via mail to this alternate address */
 	private $sendPasswordViaMailAlternateAddress = null;
 
+	/**
+	 * @var array additional attributes for pre/post actions
+	 */
+	private $extraInfoAttributes = array();
+
 
 	/**
 	 * Returns the account module with the given class name
@@ -1207,10 +1212,13 @@ class accountContainer {
 	public function setNewPassword($input) {
 		$password1 = $input['password1'];
 		$password2 = $input['password2'];
-		$random = $input['random'];
-		$modules = $input['modules'];
-		for ($m = 0; $m < sizeof($modules); $m++) {
-			$modules[$m] = str_replace('password_cb_', '', $modules[$m]);
+		$random = $input['random'] === 'true';
+		$modules = array();
+		foreach ($input['modules'] as $moduleName) {
+			$moduleName = str_replace('password_cb_', '', $moduleName);
+			if (array_key_exists($moduleName, $this->module)) {
+				$modules[] = $moduleName;
+			}
 		}
 		$return = array(
 			'messages' => '',
@@ -1220,7 +1228,7 @@ class accountContainer {
 		if (isset($input['sendMail']) && ($input['sendMail'] == 'true')) {
 			$sendMail = true;
 		}
-		if ($random == 'true') {
+		if ($random) {
 			$password1 = generateRandomPassword();
 			if (!$sendMail) {
 				$return['messages'] .= StatusMessage('INFO', _('The password was set to:') . ' ' . htmlspecialchars($password1), '', array(), true);
@@ -1278,6 +1286,14 @@ class accountContainer {
 		}
 		if ($return['errorsOccurred'] == 'false') {
 			$return['messages'] .= StatusMessage('INFO', _('The new password will be stored in the directory after you save this account.'), '', array(), true);
+			$this->extraInfoAttributes['INFO.passwordUpdated'] = 'yes';
+			$this->extraInfoAttributes['INFO.forcePasswordChange'] = $forcePasswordChange ? 'yes' : 'no';
+			$this->extraInfoAttributes['INFO.passwordChangeModules'] = implode(', ', $modules);
+			$this->extraInfoAttributes['INFO.passwordChangeType'] = $random ? 'random' : 'manual';
+			$this->extraInfoAttributes['INFO.sendPasswordViaEmail'] = $sendMail ? 'yes' : 'no';
+			if (!empty($input['sendMailAlternateAddress'])) {
+				$this->extraInfoAttributes['INFO.sendPasswordAlternateAddress'] = $input['sendMailAlternateAddress'];
+			}
 		}
 		return $return;
 	}
@@ -1637,6 +1653,8 @@ class accountContainer {
 	*/
 	function load_account($dn, $infoAttributes = array()) {
 		logNewMessage(LOG_DEBUG, "Edit account " . $dn);
+		$this->extraInfoAttributes['INFO.isNewAccount'] = 'no';
+		$this->extraInfoAttributes['INFO.passwordUpdated'] = 'no';
 		$this->module = array();
 		$modules = $_SESSION['config']->get_AccountModules($this->type->getId());
 		$filter = 'objectClass=*';
@@ -1783,6 +1801,8 @@ class accountContainer {
 		$this->isNewAccount = true;
 		$this->lastLoadedProfile = 'default';
 		$this->initModules();
+		$this->extraInfoAttributes['INFO.isNewAccount'] = 'yes';
+		$this->extraInfoAttributes['INFO.passwordUpdated'] = 'no';
 		// sort module buttons
 		$this->sortModules();
 		$profileName = 'default';
@@ -1916,7 +1936,7 @@ class accountContainer {
 			}
 		}
 		// pre modify actions
-		$prePostModifyAttributes = array();
+		$prePostModifyAttributes = $this->extraInfoAttributes;
 		if (isset($attributes[$this->finalDN]) && is_array($attributes[$this->finalDN])) {
 			if (isset($attributes[$this->finalDN]['notchanged'])) {
 				$prePostModifyAttributes = array_merge($prePostModifyAttributes, $attributes[$this->finalDN]['notchanged']);
