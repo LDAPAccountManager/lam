@@ -1374,9 +1374,12 @@ function extractDNSuffix($dn) {
 function sendPasswordMail($pwd, $user, $recipient = null) {
 	$user = array_change_key_case($user, CASE_LOWER);
 	// read mail data
-	$mailTo = $user['mail'][0];
+	$mailTo = null;
 	if (!empty($recipient)) {
 		$mailTo = $recipient;
+	}
+	elseif (!empty($user['mail'][0])) {
+		$mailTo = $user['mail'][0];
 	}
 	if (empty($mailTo)) {
 		logNewMessage(LOG_ERR, 'Unable to send password mail, no TO address set.');
