@@ -6247,6 +6247,43 @@ OK (10 msec)</programlisting>
       </listitem>
 
       <listitem>
+        <para><emphasis role="bold">$INFO.isNewAccount$:</emphasis> specifies
+        if the account already exists or is newly created (yes|no)</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">$INFO.passwordUpdated$:</emphasis>
+        specifies if the user password was changed (yes|no)</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">$INFO.passwordChangeType$:</emphasis>
+        password type (manual|random)</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">$INFO.passwordChangeModules$:</emphasis>
+        module names of password change operation (e.g. "posixAccount")</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">$INFO.forcePasswordChange$:</emphasis> a
+        password change was forced (yes|no)</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">$INFO.sendPasswordViaEmail$:</emphasis>
+        send password via email (yes|no)</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis
+        role="bold">$INFO.sendPasswordAlternateAddress$:</emphasis> alternate
+        email address for password email if set (e.g.
+        "test@example.com")</para>
+      </listitem>
+
+      <listitem>
         <para><emphasis role="bold">$NEW.&lt;attribute&gt;$:</emphasis> the
         value of a new attribute (e.g. $NEW.telephoneNumber$) for modified
         accounts</para>
