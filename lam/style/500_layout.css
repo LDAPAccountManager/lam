@@ -2,7 +2,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003  Leonhard Walchshaeusl
-  Copyright (C) 2005 - 2021  Roland Gruber
+  Copyright (C) 2005 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -819,13 +819,17 @@ div.tree-highlight {
 }
 
 table.tree-view--table {
-	border: 1px solid;
+	border: 1px solid var(--lam-table-border-color);
 }
 
-table.tree-view--table thead {
-	background: #E7E7E7;
+table.tree-view--table > thead {
+	background: var(--lam-table-background-color-dark);
 }
 
-table.tree-view--table tr:nth-child(even) {
-	background: #E7E7E7
+table.tree-view--table > tbody > tr:nth-child(even) {
+	background: var(--lam-table-background-color-dark)
+}
+
+table.tree-view--table > tbody > tr:nth-child(odd) {
+	background: var(--lam-table-background-color-bright)
 }
