@@ -3,7 +3,7 @@ use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2014 - 2021  Roland Gruber
+  Copyright (C) 2014 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -161,7 +161,7 @@ class nisMailAliasUser extends baseModule {
 			$addButton = new htmlAccountPageButton(get_class($this), 'add', 'user', _('Add'));
 			$return->add($addButton, 12, 12, 12, 'text-center');
 		}
-		if (!$this->isBooleanConfigOptionSet('nisMailAliasUser_hideUserAliases') && !empty($mails)) {
+		if (!$this->isBooleanConfigOptionSet('nisMailAliasUser_hideMailAliases') && !empty($mails)) {
 			$return->add(new htmlSubTitle(_('Aliases for email')), 12);
 			for ($m = 0; $m < sizeof($mails); $m++) {
 				if (sizeof($mails) > 1) {
@@ -621,6 +621,3 @@ class nisMailAliasUser extends baseModule {
 	}
 
 }
-
-
-?>
