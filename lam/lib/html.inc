@@ -5049,7 +5049,7 @@ class htmlResponsiveTable extends htmlElement {
 			$cssClass = '';
 			$cssClasses = array();
 			if (in_array($counter, $this->highlighted)) {
-				$cssClasses[] = 'bold';
+				$cssClasses[] = 'highlighted';
 			}
 			if (!empty($this->cssEvenRow) && ($counter % 2 === 0)) {
 				$cssClasses[] = $this->cssEvenRow;

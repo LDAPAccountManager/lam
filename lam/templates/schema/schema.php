@@ -14,7 +14,7 @@ use htmlTitle;
 
 /*
 
-  Copyright (C) 2018 - 2021 Roland Gruber
+  Copyright (C) 2018 - 2022 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -122,7 +122,9 @@ function displaySyntaxList(htmlResponsiveRow &$row) {
 		}
 		$pos++;
 	}
-	$row->add(new htmlResponsiveTable($labels, $data, $highlighted), 12);
+	$table = new htmlResponsiveTable($labels, $data, $highlighted);
+	$table->setCSSClasses(array('colored--table'));
+	$row->add($table);
 }
 
 /**
@@ -171,8 +173,9 @@ function displayRuleList(htmlResponsiveRow &$row) {
 		}
 		$data[] = array($oid, $nameText, new htmlDiv(null, $attributes, array('smallScroll')));
 	}
-
-	$row->add(new htmlResponsiveTable($labels, $data), 12);
+	$table = new htmlResponsiveTable($labels, $data);
+	$table->setCSSClasses(array('colored--table'));
+	$row->add($table);
 }
 
 /**

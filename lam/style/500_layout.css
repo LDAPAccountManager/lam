@@ -228,6 +228,27 @@ textarea {
 	border-radius: var(--lam-default-border-radius);
 }
 
+table.colored--table {
+	border: 1px solid var(--lam-table-border-color);
+}
+
+table.colored--table > thead {
+	background: var(--lam-table-background-color-dark);
+}
+
+table.colored--table > tbody > tr:nth-child(even) {
+	background: var(--lam-table-background-color-dark)
+}
+
+table.colored--table > tbody > tr:nth-child(odd) {
+	background: var(--lam-table-background-color-bright)
+}
+
+table.colored--table > tbody > tr.highlighted {
+	background-color: var(--lam-table-background-color-hover);
+	color: var(--lam-table-text-color-hover);
+}
+
 table.accountlist {
 	border: 1px solid var(--lam-table-border-color);
 }
@@ -816,20 +837,4 @@ div.tree-highlight select {
 
 div.tree-highlight {
 	font-weight: bold;
-}
-
-table.tree-view--table {
-	border: 1px solid var(--lam-table-border-color);
-}
-
-table.tree-view--table > thead {
-	background: var(--lam-table-background-color-dark);
-}
-
-table.tree-view--table > tbody > tr:nth-child(even) {
-	background: var(--lam-table-background-color-dark)
-}
-
-table.tree-view--table > tbody > tr:nth-child(odd) {
-	background: var(--lam-table-background-color-bright)
 }

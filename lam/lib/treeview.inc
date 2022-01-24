@@ -31,7 +31,7 @@ use function LAM\SCHEMA\get_schema_objectclasses;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2021  Roland Gruber
+  Copyright (C) 2021 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1425,7 +1425,7 @@ class TreeView {
 			$data[] = $dataEntry;
 		}
 		$table = new htmlResponsiveTable($titles, $data);
-		$table->setCSSClasses(array('tree-view--table'));
+		$table->setCSSClasses(array('colored--table'));
 		$row->add($table);
 		ob_start();
 		$tabIndex = 1;
