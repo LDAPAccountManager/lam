@@ -252,7 +252,9 @@ class imapAccess extends baseModule {
 		if (is_array($list) && sizeof($list) == 1) {
 			$this->renderQuotasForMailbox($return, $client, $prefix . $this->getSep() . $this->user);
 			$return->addVerticalSpacer('2rem');
-			$return->add(new htmlButton('deleteMailbox', _('Delete mailbox')), 12, 12, 12, 'text-center');
+			$delButton = new htmlButton('deleteMailbox', _('Delete mailbox'));
+			$delButton->setCSSClasses(array('lam-danger'));
+			$return->add($delButton, 12, 12, 12, 'text-center');
 		}
 		else {
 			$mailboxMessage = new htmlOutputText(_("Mailbox does not exist on IMAP server."));
@@ -319,7 +321,7 @@ class imapAccess extends baseModule {
 					$container->addField(new htmlOutputText($quota_values['storage']['usage']), true);
 					$quotaLimitInput = new htmlResponsiveInputField(_("Quota limit (kB)"), 'ImapUserQuotaLimit', $quotaLimit, 'ImapUserQuotaLimit');
 					$container->add($quotaLimitInput, 12);
-					$container->addVerticalSpacer('2rem');
+					$container->addVerticalSpacer('0.5rem');
 					$container->add(new htmlButton('updateQuota', _('Update quota')), 12, 12, 12, 'text-center');
 					$container->addVerticalSpacer('1rem');
 				}
@@ -328,7 +330,7 @@ class imapAccess extends baseModule {
 				$quotaLimit = "";
 				$quotaLimitInput = new htmlResponsiveInputField(_("Quota limit (kB)"), 'ImapUserQuotaLimit', $quotaLimit, 'ImapUserQuotaLimit');
 				$container->add($quotaLimitInput, 12);
-				$container->addVerticalSpacer('2rem');
+				$container->addVerticalSpacer('0.5rem');
 				$container->add(new htmlButton('updateQuota', _('Update quota')), 12, 12, 12, 'text-center');
 				$container->addVerticalSpacer('1rem');
 			}
