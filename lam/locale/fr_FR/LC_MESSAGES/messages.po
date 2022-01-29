@@ -2733,7 +2733,7 @@ msgstr "Effacer le filtre"
 
 #: ../lib/types/user.inc:514
 msgid "Clear password expiration"
-msgstr "Efacer l'expiration du mot de passe"
+msgstr "Effacer l'expiration du mot de passe"
 
 #: ../lib/config.inc:247
 msgid "Click here if you are not directed to the next page."
