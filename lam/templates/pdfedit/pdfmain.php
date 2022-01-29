@@ -126,6 +126,7 @@ if (isset($_POST['deleteProfile']) && ($_POST['deleteProfile'] == 'true')) {
 	    $container->add($message, 12);
     }
     catch (LAMException $e) {
+        logNewMessage(LOG_ERR, $e->getTitle() . ' ' . $e->getMessage());
 	    $message = new htmlStatusMessage('ERROR', _('Unable to delete PDF structure!'), $typeToDelete->getAlias() . ': ' . htmlspecialchars($_POST['profileDeleteName']));
 	    $container->add($message, 12);
     }

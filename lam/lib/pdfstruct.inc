@@ -313,6 +313,7 @@ class PdfStructurePersistenceManager {
 	 */
 	public function deletePdfStructure(string $confName, string $typeId, string $name) : void {
 		if (!LAMConfig::isValidName($confName) || !TypeManager::isValidTypeId($typeId) || !$this->isValidPDFStructureName($name)) {
+			logNewMessage(LOG_ERR, 'Invalid data: ' . $confName . ' ' . $typeId . ' ' . $name);
 			throw new LAMException(_('Unable to delete PDF structure!'));
 		}
 		$this->strategy->deletePdfStructure($confName, $typeId, $name);
@@ -871,10 +872,12 @@ class PdfStructurePersistenceStrategyFiles implements PdfStructurePersistenceStr
 	public function deletePdfStructure(string $confName, string $typeId, string $name): void {
 		$fileName = $this->getPdfStructureFileName($confName, $typeId, $name);
 		if (!is_file($fileName) || !is_writable($fileName)) {
+			logNewMessage(LOG_ERR, 'PDF structure does not exist or is not writable: ' . $fileName);
 			throw new LAMException(_('Unable to delete PDF structure!'));
 		}
 		$deleteOk = @unlink($fileName);
 		if (!$deleteOk) {
+			logNewMessage(LOG_ERR, 'PDF structure delete failed: ' . $fileName);
 			throw new LAMException(_('Unable to delete PDF structure!'));
 		}
 	}
