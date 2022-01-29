@@ -1,5 +1,6 @@
 <?php
 
+use LAM\PDF\PdfStructurePersistenceManager;
 use LAM\PROFILES\AccountProfilePersistenceManager;
 use LAM\TYPES\ConfiguredType;
 use \LAM\TYPES\TypeManager;
@@ -1463,10 +1464,14 @@ class accountContainer {
 			$buttonGroup->addElement($createButton);
 			$buttonGroup->addElement(new htmlSpacer('0.5rem', null));
 		}
-		$pdfButton = new htmlButton('accountContainerCreatePDF', _('Create PDF file'));
-		$pdfButton->setCSSClasses(array('lam-secondary fullwidth-mobile-only'));
-		$buttonGroup->addElement($pdfButton);
-		$buttonGroup->addElement(new htmlSpacer('1rem', null));
+		$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
+		$pdfStructures = $pdfStructurePersistenceManager->getPDFStructures($_SESSION['config']->getName(), $this->type->getId());
+		if ($pdfStructures) {
+			$pdfButton = new htmlButton('accountContainerCreatePDF', _('Create PDF file'));
+			$pdfButton->setCSSClasses(array('lam-secondary fullwidth-mobile-only'));
+			$buttonGroup->addElement($pdfButton);
+			$buttonGroup->addElement(new htmlSpacer('1rem', null));
+		}
 		$backToEditButton = new htmlButton('accountContainerBackToEdit', _('Edit again'));
 		$backToEditButton->setCSSClasses(array('fullwidth-mobile-only'));
 		$buttonGroup->addElement($backToEditButton);

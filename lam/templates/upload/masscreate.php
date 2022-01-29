@@ -22,7 +22,7 @@ use \moduleCache;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2021  Roland Gruber
+  Copyright (C) 2004 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -292,29 +292,31 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 	$row->add(new htmlHiddenInput('selectedModules', implode(',', $selectedModules)), 12);
 
 	// PDF
-	$createPDF = false;
-	if (isset($_POST['createPDF']) && ($_POST['createPDF'] === '1')) {
-		$createPDF = true;
-	}
-	$pdfCheckbox = new htmlResponsiveInputCheckbox('createPDF', $createPDF, _('Create PDF files'));
-	$pdfCheckbox->setTableRowsToShow(array('pdfStructure', 'pdf_font'));
-	$row->add($pdfCheckbox, 12);
 	$pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
 	$pdfStructures = $pdfStructurePersistenceManager->getPDFStructures($_SESSION['config']->getName(), $type->getId());
-	$pdfSelected = array();
-	if (isset($_POST['pdfStructure'])) {
-		$pdfSelected = array($_POST['pdfStructure']);
+	if (!empty($pdfStructures)) {
+		$createPDF = false;
+		if (isset($_POST['createPDF']) && ($_POST['createPDF'] === '1')) {
+			$createPDF = true;
+		}
+		$pdfCheckbox = new htmlResponsiveInputCheckbox('createPDF', $createPDF, _('Create PDF files'));
+		$pdfCheckbox->setTableRowsToShow(array('pdfStructure', 'pdf_font'));
+		$row->add($pdfCheckbox);
+		$pdfSelected = array();
+		if (isset($_POST['pdfStructure'])) {
+			$pdfSelected = array($_POST['pdfStructure']);
+		}
+		else if (in_array('default', $pdfStructures)) {
+			$pdfSelected = array('default');
+		}
+		$row->add(new htmlResponsiveSelect('pdfStructure', $pdfStructures, $pdfSelected, _('PDF structure')));
+		$fonts = \LAM\PDF\getPdfFonts();
+		$fontSelection = new htmlResponsiveSelect('pdf_font', $fonts, array(), _('Font'), '411');
+		$fontSelection->setCSSClasses(array('lam-save-selection'));
+		$fontSelection->setHasDescriptiveElements(true);
+		$fontSelection->setSortElements(false);
+		$row->add($fontSelection, 12);
 	}
-	else if (in_array('default', $pdfStructures)) {
-		$pdfSelected = array('default');
-	}
-	$row->add(new htmlResponsiveSelect('pdfStructure', $pdfStructures, $pdfSelected, _('PDF structure')), 12);
-	$fonts = \LAM\PDF\getPdfFonts();
-	$fontSelection = new htmlResponsiveSelect('pdf_font', $fonts, array(), _('Font'), '411');
-	$fontSelection->setCSSClasses(array('lam-save-selection'));
-	$fontSelection->setHasDescriptiveElements(true);
-	$fontSelection->setSortElements(false);
-	$row->add($fontSelection, 12);
 	$row->addVerticalSpacer('1rem');
 
 	$uploadButton = new htmlButton('submitfile', _('Upload file and create accounts'));

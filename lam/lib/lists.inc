@@ -571,20 +571,17 @@ class lamList {
 	 * @param htmlGroup $element location where to add tools
 	 */
 	private function addToolLinks($account, $id, &$element) {
-		$toolCount = 0;
 		// edit link
 		$editLink = new htmlLink('', "../account/edit.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/edit.svg');
 		$editLink->setTitle(_("Edit"));
 		$editLink->setCSSClasses(array('lam-margin-smaller'));
 		$element->addElement($editLink);
-		$toolCount++;
 		// delete link
 		if (checkIfWriteAccessIsAllowed($this->type->getId()) && checkIfDeleteEntriesIsAllowed($this->type->getId())) {
 			$deleteLink = new htmlLink('', "deletelink.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/delete.svg');
 			$deleteLink->setTitle(_("Delete"));
 			$deleteLink->setCSSClasses(array('lam-margin-smaller'));
 			$element->addElement($deleteLink);
-			$toolCount++;
 		}
 		// copy link
 		if (checkIfWriteAccessIsAllowed($this->type->getId()) && checkIfNewEntriesAreAllowed($this->type->getId())) {
@@ -592,14 +589,16 @@ class lamList {
 			$copyLink->setTitle(_("Copy"));
 			$copyLink->setCSSClasses(array('lam-margin-smaller'));
 			$element->addElement($copyLink);
-			$toolCount++;
 		}
 		// PDF button
-		$pdfButton = new htmlButton("createPDF_" . $id, 'pdf.svg', true);
-		$pdfButton->setTitle(_('Create PDF file'));
-		$pdfButton->setCSSClasses(array('lam-margin-smaller'));
-		$element->addElement($pdfButton);
-		$toolCount++;
+        $pdfStructurePersistenceManager = new PdfStructurePersistenceManager();
+		$pdfStructures = $pdfStructurePersistenceManager->getPDFStructures($_SESSION['config']->getName(), $this->type->getId());
+        if (!empty($pdfStructures)) {
+	        $pdfButton = new htmlButton("createPDF_" . $id, 'pdf.svg', true);
+	        $pdfButton->setTitle(_('Create PDF file'));
+	        $pdfButton->setCSSClasses(array('lam-margin-smaller'));
+	        $element->addElement($pdfButton);
+        }
 		// password quick change
         if (isLAMProVersion() && $this->supportsPasswordQuickChange
             && checkIfPasswordChangeIsAllowed() && checkIfWriteAccessIsAllowed($this->type->getId())) {
@@ -607,7 +606,6 @@ class lamList {
 	        $pwdChangeButton->setTitle(_('Change password'));
 	        $pwdChangeButton->setCSSClasses(array('lam-margin-smaller'));
 	        $element->addElement($pwdChangeButton);
-	        $toolCount++;
         }
 		// additional tools
 		$tools = $this->getAdditionalTools();
@@ -616,7 +614,6 @@ class lamList {
 			$toolLink->setTitle($tools[$i]->getName());
 			$toolLink->setCSSClasses(array('lam-margin-smaller'));
 			$element->addElement($toolLink);
-			$toolCount++;
 		}
 	}
 
