@@ -166,10 +166,11 @@ class ldapPublicKey extends baseModule {
 			$return->addVerticalSpacer('2rem');
 
 			$remButton = new htmlButton('remObjectClass', _('Remove SSH public key extension'));
+			$remButton->setCSSClasses(array('lam-danger'));
 			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
-			$return->add(new htmlButton('addObjectClass', _('Add SSH public key extension')), 12);
+			$return->add(new htmlButton('addObjectClass', _('Add SSH public key extension')));
 		}
 		return $return;
 	}

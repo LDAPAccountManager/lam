@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2021  Roland Gruber
+  Copyright (C) 2004 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -201,10 +201,11 @@ class inetLocalMailRecipient extends baseModule {
 
 			$return->addVerticalSpacer('2rem');
 			$deleteButton = new htmlButton('remObjectClass', _('Remove mail routing extension'));
+			$deleteButton->setCSSClasses(array('lam-danger'));
 			$return->add($deleteButton, 12, 12, 12, 'text-center');
 		}
 		else {
-			$return->add(new htmlButton('addObjectClass', _('Add mail routing extension')), 12);
+			$return->add(new htmlButton('addObjectClass', _('Add mail routing extension')));
 		}
 		return $return;
 	}
