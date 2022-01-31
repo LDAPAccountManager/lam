@@ -429,9 +429,8 @@ class Ajax {
 				$baseDnList[] = $suffix;
 			}
 		}
-		$toolSettings = $_SESSION['config']->getToolSettings();
-		$treeSuffix = !empty($toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG]) ? $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG] : null;
-		if (!empty($treeSuffix)) {
+		$treeSuffixes = TreeViewTool::getRootDns();
+		foreach ($treeSuffixes as $treeSuffix) {
 			$baseDnList[] = $treeSuffix;
 		}
 		$baseDnList = array_unique($baseDnList);

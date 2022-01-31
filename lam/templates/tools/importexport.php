@@ -22,7 +22,7 @@ use LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2018 - 2021  Roland Gruber
+  Copyright (C) 2018 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -331,11 +331,10 @@ function getDefaultBaseDn() {
 		}
 	}
 	if ($_SESSION['config']->isToolActive('TreeViewTool')) {
-		$toolSettings = $_SESSION['config']->getToolSettings();
-		$treeSuffix = empty($toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG]) ? null : $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG];
-		if (empty($baseDn) || (!empty($treeSuffix) && (strlen($treeSuffix) < strlen($baseDn)))) {
-			$baseDn = $treeSuffix;
-		}
+		$treeSuffixes = TreeViewTool::getRootDns();
+        if (empty($baseDn) || (!empty($treeSuffixes) && (strlen($treeSuffixes[0]) < strlen($baseDn)))) {
+            $baseDn = $treeSuffixes[0];
+        }
     }
 	return $baseDn;
 }
@@ -356,11 +355,12 @@ function isValidExportDn(string $dn): bool {
 		}
 	}
 	if ($_SESSION['config']->isToolActive('TreeViewTool')) {
-		$toolSettings = $_SESSION['config']->getToolSettings();
-		$treeSuffix = strtolower($toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG]);
-		if (substr($dn, -1 * strlen($treeSuffix)) === $treeSuffix) {
-			return true;
-		}
+	    $treeSuffixes = TreeViewTool::getRootDns();
+	    foreach ($treeSuffixes as $treeSuffix) {
+		    if (substr($dn, -1 * strlen($treeSuffix)) === $treeSuffix) {
+			    return true;
+		    }
+        }
 	}
     return false;
 }
