@@ -1207,6 +1207,7 @@ class TreeView {
 		$dn = strtolower($dn);
 		$rootDns = TreeViewTool::getRootDns();
 		foreach ($rootDns as $rootDn) {
+			$rootDn = strtolower($rootDn);
 			if (substr($dn, -1 * strlen($rootDn)) === $rootDn) {
 				return;
 			}

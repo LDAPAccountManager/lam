@@ -381,7 +381,8 @@
     LAM's syntax checks.</para>
 
     <para>To use this tool you will need to configure its suffix in your LAM
-    server profile on first tab:</para>
+    server profile on first tab. You can also specify multiple suffixes
+    separated by semicolon.</para>
 
     <screenshot>
       <graphic fileref="images/tree2.png"/>
