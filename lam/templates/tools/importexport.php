@@ -357,6 +357,7 @@ function isValidExportDn(string $dn): bool {
 	if ($_SESSION['config']->isToolActive('TreeViewTool')) {
 	    $treeSuffixes = TreeViewTool::getRootDns();
 	    foreach ($treeSuffixes as $treeSuffix) {
+	        $treeSuffix = strtolower($treeSuffix);
 		    if (substr($dn, -1 * strlen($treeSuffix)) === $treeSuffix) {
 			    return true;
 		    }
