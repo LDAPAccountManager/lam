@@ -1,4 +1,5 @@
 March 2022 7.9
+  - Tree view: support multiple roots (e.g. add "cn=config")
   - Docker: upgrade OS to Debian Bullseye
   - LAM Pro:
    -> Support multiple TO addresses for license expiration email

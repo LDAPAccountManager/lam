@@ -149,12 +149,10 @@ class TreeView {
 	 * @return string JSON data
 	 */
 	private function getNodes(string $dn): string {
-		$toolSettings = $_SESSION['config']->getToolSettings();
-		$rootDn = $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG];
 		if ($dn === '#') {
-			return $this->getRootNodes($rootDn);
+			return $this->getRootNodes();
 		}
-		return $this->getSubNodes($dn, $rootDn);
+		return $this->getSubNodes($dn);
 	}
 
 	/**
@@ -162,22 +160,26 @@ class TreeView {
 	 *
 	 * @return string JSON data
 	 */
-	private function getRootNodes(string $rootDn): string {
-		logNewMessage(LOG_DEBUG, 'Getting tree nodes for ' . $rootDn);
-		$rootData = ldapGetDN($rootDn, array('objectClass'));
-		$children = ldapListDN($rootDn, '(objectClass=*)', array('objectClass'));
-		$jsonData = $this->createNodeData($rootData, true, true, $children);
-		return json_encode($jsonData);
+	private function getRootNodes(): string {
+		$rootDns = TreeViewTool::getRootDns();
+		$result = array();
+		foreach ($rootDns as $rootDn) {
+			logNewMessage(LOG_DEBUG, 'Getting tree nodes for ' . $rootDn);
+			$rootData = ldapGetDN($rootDn, array('objectClass'));
+			$children = ldapListDN($rootDn, '(objectClass=*)', array('objectClass'));
+			$nodeData = $this->createNodeData($rootData, true, true, $children);
+			$result[] = $nodeData;
+		}
+		return json_encode($result);
 	}
 
 	/**
 	 * Returns the subnodes of the given DN.
 	 *
 	 * @param string $dn DN
-	 * @param string $rootDn tree root DN
 	 * @return string JSON data
 	 */
-	private function getSubNodes(string $dn, string $rootDn): string {
+	private function getSubNodes(string $dn): string {
 		$this->validateDn($dn);
 		logNewMessage(LOG_DEBUG, 'Getting tree nodes for ' . $dn);
 		$children = ldapListDN($dn, '(objectClass=*)', array('objectClass'));
@@ -1203,12 +1205,15 @@ class TreeView {
 	 */
 	private function validateDn(string $dn): void {
 		$dn = strtolower($dn);
-		$toolSettings = $_SESSION['config']->getToolSettings();
-		$rootDn = strtolower($toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG]);
-		if (substr($dn, -1 * strlen($rootDn)) !== $rootDn) {
-			logNewMessage(LOG_ERR, 'Invalid DN for tree view: ' . $dn);
-			die();
+		$rootDns = TreeViewTool::getRootDns();
+		foreach ($rootDns as $rootDn) {
+			$rootDn = strtolower($rootDn);
+			if (substr($dn, -1 * strlen($rootDn)) === $rootDn) {
+				return;
+			}
 		}
+		logNewMessage(LOG_ERR, 'Invalid DN for tree view: ' . $dn);
+		die();
 	}
 
 	/**

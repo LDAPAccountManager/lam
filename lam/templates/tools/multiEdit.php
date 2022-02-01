@@ -24,7 +24,7 @@ use LAM\TOOLS\TREEVIEW\TreeViewTool;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2021  Roland Gruber
+  Copyright (C) 2013 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -117,11 +117,18 @@ function displayStartPage() {
 		$suffixes[$type->getAlias()] = $type->getSuffix();
 		$hideRules[$type->getSuffix()] = array('otherSuffix');
 	}
-	$toolSettings = $_SESSION['config']->getToolSettings();
-	if (!empty($toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG])) {
-		$treeSuffix = $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG];
-		$suffixes[_('Tree view')] = $treeSuffix;
-		$hideRules[$treeSuffix] = array('otherSuffix');
+	$treeSuffixes = TreeViewTool::getRootDns();
+	if (!empty($treeSuffixes)) {
+		if (sizeof($treeSuffixes) === 1) {
+			$suffixes[_('Tree view')] = $treeSuffixes[0];
+			$hideRules[$treeSuffixes[0]] = array('otherSuffix');
+		}
+		else {
+			foreach ($treeSuffixes as $treeSuffix) {
+				$suffixes[_('Tree view') . ' (' . getAbstractDN($treeSuffix) . ')'] = $treeSuffix;
+				$hideRules[$treeSuffix] = array('otherSuffix');
+			}
+		}
 	}
 	$suffixes = array_flip($suffixes);
 	natcasesort($suffixes);

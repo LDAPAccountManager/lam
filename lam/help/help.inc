@@ -79,11 +79,12 @@ $helpArray = array (
 						":</b><br><br>".
 						_("ou=People,dc=yourcompany,dc=com will read and store all accounts in this subtree.")),
 				"203" => array ("Headline" => _("Tree suffix"),
-					"Text" => _("This is the suffix for the LDAP tree viewer.") .
-						"<br><br><b>".
-						_("Example").
-						":</b><br><br>".
-						_("dc=yourcompany,dc=com")),
+					"Text" => _("This is the suffix for the LDAP tree viewer.") . ' ' . _("Multiple values are separated by semicolon.") .
+						"<br><br><b>" .
+						_("Example") .
+						":</b><br><br>" .
+						_("dc=yourcompany,dc=com") . '<br>' .
+						_('dc=yourcompany,dc=com;cn=config')),
 				"204" => array ("Headline" => _("SSL certificate"),
 					"Text" => _("This is only needed for TLS/SSL connections. By default, LAM will use the certificate authorities installed on your system. If you have a private CA in your company you can upload your CA certificates here and override the system certificates.")),
 				"205" => array ("Headline" => _("Follow referrals"),

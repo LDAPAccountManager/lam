@@ -54,9 +54,8 @@ echo '<link rel="stylesheet" href="../../style/jstree/style.css" />';
 echo '<script src="../lib/extra/jstree/jstree.js"></script>';
 echo '<div class="smallPaddingContent">';
 
-$toolSettings = $_SESSION['config']->getToolSettings();
-
-if (empty($toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG][0])) {
+$roots = TreeViewTool::getRootDns();
+if (empty($roots)) {
 	StatusMessage('ERROR', _('Please configure the tree suffix in your LAM server profile settings.'));
 }
 else {
@@ -70,16 +69,17 @@ function showTree() {
 	$openInitial = array();
 	if (isset($_GET['dn'])) {
 		$initialDn = base64_decode($_GET['dn']);
-		$toolSettings = $_SESSION['config']->getToolSettings();
-		$rootDn = $toolSettings[TreeViewTool::TREE_SUFFIX_CONFIG];
-		if ((strlen($initialDn) > strlen($rootDn)) && substr($initialDn, -1 * strlen($rootDn)) === $rootDn) {
-			$extraDnPart = substr($initialDn, 0, (-1 * strlen($rootDn)) - 1);
-			$dnParts = ldap_explode_dn($extraDnPart, 0);
-			unset($dnParts['count']);
-			$dnPartsCount = sizeof($dnParts);
-			for ($i = 0; $i < $dnPartsCount; $i++) {
-				$currentParts = array_slice($dnParts, $dnPartsCount - ($i + 1));
-				$openInitial[] = '"' . base64_encode(implode(',', $currentParts) . ',' . $rootDn) . '"';
+		$roots = TreeViewTool::getRootDns();
+		foreach ($roots as $rootDn) {
+			if ((strlen($initialDn) > strlen($rootDn)) && substr($initialDn, -1 * strlen($rootDn)) === $rootDn) {
+				$extraDnPart = substr($initialDn, 0, (-1 * strlen($rootDn)) - 1);
+				$dnParts = ldap_explode_dn($extraDnPart, 0);
+				unset($dnParts['count']);
+				$dnPartsCount = sizeof($dnParts);
+				for ($i = 0; $i < $dnPartsCount; $i++) {
+					$currentParts = array_slice($dnParts, $dnPartsCount - ($i + 1));
+					$openInitial[] = '"' . base64_encode(implode(',', $currentParts) . ',' . $rootDn) . '"';
+				}
 			}
 		}
 	}
