@@ -163,6 +163,7 @@ class authorizedServiceObject extends baseModule {
 			$this->addMultiValueInputTextField($return, 'authorizedService', _('Authorized Services'), false, null, false, $autocompleteValues);
 			$return->addVerticalSpacer('2rem');
 			$remButton = new htmlAccountPageButton('authorizedServiceObject', 'attributes', 'remObjectClass', _('Remove Authorized Service extension'));
+			$remButton->setCSSClasses(array('lam-danger'));
 			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
