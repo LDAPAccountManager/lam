@@ -198,11 +198,18 @@ class AccountTest extends TestCase {
 	 * Tests ARGON2ID
 	 */
 	function testPwdHash() {
-		$type = 'ARGON2ID';
-		$hash = pwd_hash('test-password', true, $type);
-		$hash = explode('}', $hash)[1];
-		$this->assertFalse(checkPasswordHash($type, $hash, 'wrong-password'));
-		$this->assertTrue(checkPasswordHash($type, $hash, 'test-password'));
+		$testPassword = '1234556';
+		$types = array('ARGON2ID', 'SSHA', 'SHA', 'SMD5', 'MD5', 'CRYPT', 'CRYPT-SHA512');
+		foreach ($types as $type) {
+			$hash = pwd_hash($testPassword, true, $type);
+			$type = getHashType($hash);
+			$hash = explode('}', $hash)[1];
+			$this->assertFalse(checkPasswordHash($type, $hash, $testPassword . 'X'), $type . ' ' . $hash);
+			$this->assertTrue(checkPasswordHash($type, $hash, $testPassword), $type . ' ' . $hash);
+		}
+		$hash = pwd_hash($testPassword, true, 'PLAIN');
+		$this->assertFalse(checkPasswordHash('PLAIN', $hash, $testPassword . 'X'), $type . ' ' . $hash);
+		$this->assertTrue(checkPasswordHash('PLAIN', $hash, $testPassword), $type . ' ' . $hash);
 	}
 
 	function testGetHashType() {
@@ -216,14 +223,6 @@ class AccountTest extends TestCase {
 		$this->assertEquals('K5KEY', getHashType('{K5KEY}123'));
 		$this->assertEquals('ARGON2ID', getHashType('{ARGON2}123'));
 		$this->assertEquals('SSHA', getHashType('{SSHA}123'));
-	}
-
-	function testPasswordHashMatchesPassword() {
-		$testPassword = '1234556abcdef';
-		$this->assertTrue(passwordHashMatchesPassword(pwd_hash($testPassword, true, 'PLAIN'), $testPassword));
-		$this->assertTrue(passwordHashMatchesPassword(pwd_hash($testPassword, false, 'PLAIN'), $testPassword));
-		$this->assertTrue(passwordHashMatchesPassword(pwd_hash($testPassword, true, 'MD5'), $testPassword));
-		$this->assertTrue(passwordHashMatchesPassword(pwd_hash($testPassword, false, 'MD5'), $testPassword));
 	}
 
 	function testGetNumberOfCharacterClasses() {

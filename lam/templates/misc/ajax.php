@@ -540,7 +540,8 @@ class Ajax {
 	private function checkPassword() : void {
 		$hashValue = $_POST['hashValue'];
 		$checkValue = $_POST['checkValue'];
-		$matches = passwordHashMatchesPassword($hashValue, $checkValue);
+		$hashPart = preg_replace('/^\\{([A-Z0-9-]+)\\}[!]?/', '', $hashValue);
+		$matches = checkPasswordHash(getHashType($hashValue), $hashPart, $checkValue);
 		$resultRow = new htmlResponsiveRow();
 		if ($matches) {
 			$text = new htmlOutputText(_('Password matches'));
