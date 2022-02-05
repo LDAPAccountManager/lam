@@ -3319,7 +3319,7 @@ class LAMCfgMain {
 			// read config file
 			while (!feof($file)) {
 				$configLine = fgets($file, 1024);
-				if (($configLine === "") || ($configLine === "\n") || ($configLine[0] == "#")) {
+				if (($configLine === false) || ($configLine === "") || ($configLine === "\n") || ($configLine[0] == "#")) {
 					continue; // ignore comments and empty lines
 				}
 				array_push($file_array, $configLine);

@@ -1,5 +1,12 @@
 <?php
 namespace LAM\TOOLS\TREEVIEW;
+use htmlDiv;
+use htmlForm;
+use htmlJavaScript;
+use htmlOutputText;
+use htmlResponsiveInputField;
+use htmlResponsiveRow;
+use htmlGroup;
 
 /*
 
@@ -21,12 +28,6 @@ namespace LAM\TOOLS\TREEVIEW;
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
-
-use htmlDiv;
-use htmlForm;
-use htmlJavaScript;
-use htmlOutputText;
-use htmlResponsiveRow;
 
 /**
 * LDAP tree view.
@@ -251,7 +252,16 @@ function showTree() {
 	$errorDialogEntryText->setCSSClasses(array('treeview-error-text'));
 	$errorDialogContent->add($errorDialogEntryText, 12);
 	$errorDialogDiv = new htmlDiv('treeview_error_dlg', $errorDialogContent, array('hidden'));
-	$row->add($errorDialogDiv, 12);
+	$row->add($errorDialogDiv);
+
+	$pwdCheckRow = new htmlResponsiveRow();
+	$pwdCheckInput = new htmlResponsiveInputField(_('Password'), 'lam_pwd_check');
+	$pwdCheckInput->setIsPassword(true);
+	$pwdCheckRow->add($pwdCheckInput);
+	$pwdCheckRow->addVerticalSpacer('1rem');
+	$pwdCheckRow->add(new htmlDiv('lam-pwd-check-dialog-result', new htmlGroup()));
+	$pwdCheckDiv = new htmlDiv('lam-pwd-check-dialog', $pwdCheckRow, array('hidden'));
+	$row->add($pwdCheckDiv);
 
 	$row->add(new htmlJavaScript('jQuery(document).ready(function() {
 					jQuery(\'form[name="actionarea"]\').validationEngine({promptPosition: "topLeft", addFailureCssClassToField: "lam-input-error", autoHidePrompt: true, autoHideDelay: 5000});

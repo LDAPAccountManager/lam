@@ -2755,6 +2755,54 @@ window.lam.treeview.checkSession = function(json) {
 	}
 }
 
+/**
+ * Checks if the password matches a given value.
+ *
+ * @param event event
+ * @param element element
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ * @param title dialog title
+ * @param checkText label for check button
+ * @param cancelText label for cancel button
+ */
+window.lam.treeview.checkPassword = function(event, element, tokenName, tokenValue, title,
+											 checkText, cancelText) {
+	event.preventDefault();
+	const outputDiv = document.getElementById('lam-pwd-check-dialog-result');
+	outputDiv.innerHTML = '';
+	const passwordInput = document.getElementById('lam_pwd_check');
+	passwordInput.value = '';
+	let buttonList = {};
+	buttonList[checkText] = function() {
+		const hashValue = element.closest('table').querySelector('input[type=password]').value;
+		const checkValue = passwordInput.value;
+		let data = new FormData();
+		data.append('jsonInput', '');
+		data.append(tokenName, tokenValue);
+		data.append('hashValue', hashValue);
+		data.append('checkValue', checkValue);
+		fetch("../misc/ajax.php?function=checkPassword", {
+			method: 'POST',
+			body: data
+		})
+		.then(async response => {
+			const jsonData = await response.json();
+			if (jsonData.resultHtml) {
+				outputDiv.innerHTML = jsonData.resultHtml;
+			}
+		});
+	};
+	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
+	jQuery('#lam-pwd-check-dialog').dialog({
+		modal: true,
+		title: title,
+		dialogClass: 'defaultBackground',
+		buttons: buttonList,
+		width: 'auto'
+	});
+}
+
 window.lam.topmenu = window.lam.topmenu || {};
 
 /**

@@ -167,7 +167,6 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 	if (! $password || ($password == "")) {
 		return "";
 	}
-	$hash = "";
 	switch ($hashType) {
 		case 'CRYPT':
 			$hash = "{CRYPT}" . crypt($password, generateSalt(2));
@@ -415,28 +414,29 @@ function checkPasswordHash($type, $hash, $password) {
 			$salt = substr($bin, 20);
 			$pwdHash = base64_encode(hex2bin(sha1($password . $salt)) . $salt);
 			return (strcmp($hash, $pwdHash) == 0);
-			break;
 		case 'SHA':
 			return (strcmp($hash, base64_encode(hex2bin(sha1($password)))) == 0);
-			break;
 		case 'SMD5':
 			$bin = base64_decode($hash);
 			$salt = substr($bin, 16);
 			$pwdHash = base64_encode(hex2bin(md5($password . $salt)) . $salt);
 			return (strcmp($hash, $pwdHash) == 0);
-			break;
 		case 'MD5':
 			return (strcmp($hash, base64_encode(hex2bin(md5($password)))) == 0);
-			break;
 		case 'CRYPT':
 			$parts = explode('$', $hash);
-			if (sizeof($parts) == 4) {
+			if (sizeof($parts) === 1) {
+				$salt = substr($hash, 0, 2);
+				$pwdHash = crypt($password, $salt);
+				return (strcmp($hash, $pwdHash) == 0);
+			}
+			if (sizeof($parts) === 4) {
 				$version = $parts[1];
 				$salt = $parts[2];
 				$pwdHash = crypt($password, '$' . $version . '$' . $salt);
 				return (strcmp($hash, $pwdHash) == 0);
 			}
-			elseif (sizeof($parts) == 5) {
+			elseif (sizeof($parts) === 5) {
 				$version = $parts[1];
 				$rounds = $parts[2];
 				$salt = $parts[3];
@@ -444,10 +444,10 @@ function checkPasswordHash($type, $hash, $password) {
 				return (strcmp($hash, $pwdHash) == 0);
 			}
 			return false;
-			break;
 		case 'ARGON2ID':
 			return password_verify($password, $hash);
-			break;
+		case 'PLAIN':
+			return $password === $hash;
 		default:
 			return false;
 	}

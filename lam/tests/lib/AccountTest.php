@@ -198,11 +198,18 @@ class AccountTest extends TestCase {
 	 * Tests ARGON2ID
 	 */
 	function testPwdHash() {
-		$type = 'ARGON2ID';
-		$hash = pwd_hash('test-password', true, $type);
-		$hash = explode('}', $hash)[1];
-		$this->assertFalse(checkPasswordHash($type, $hash, 'wrong-password'));
-		$this->assertTrue(checkPasswordHash($type, $hash, 'test-password'));
+		$testPassword = '1234556';
+		$types = array('ARGON2ID', 'SSHA', 'SHA', 'SMD5', 'MD5', 'CRYPT', 'CRYPT-SHA512');
+		foreach ($types as $type) {
+			$hash = pwd_hash($testPassword, true, $type);
+			$type = getHashType($hash);
+			$hash = explode('}', $hash)[1];
+			$this->assertFalse(checkPasswordHash($type, $hash, $testPassword . 'X'), $type . ' ' . $hash);
+			$this->assertTrue(checkPasswordHash($type, $hash, $testPassword), $type . ' ' . $hash);
+		}
+		$hash = pwd_hash($testPassword, true, 'PLAIN');
+		$this->assertFalse(checkPasswordHash('PLAIN', $hash, $testPassword . 'X'), $type . ' ' . $hash);
+		$this->assertTrue(checkPasswordHash('PLAIN', $hash, $testPassword), $type . ' ' . $hash);
 	}
 
 	function testGetHashType() {
