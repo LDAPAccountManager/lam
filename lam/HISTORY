@@ -1,5 +1,7 @@
 March 2022 7.9
-  - Tree view: support multiple roots (e.g. add "cn=config")
+  - Tree view:
+   -> Support multiple roots (e.g. add "cn=config")
+   -> Added function to check password hashes against a given password
   - Docker: upgrade OS to Debian Bullseye
   - LAM Pro:
    -> Support multiple TO addresses for license expiration email

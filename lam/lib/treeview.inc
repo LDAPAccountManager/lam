@@ -129,7 +129,7 @@ class TreeView {
 				logNewMessage(LOG_ERR, 'Invalid command for tree view: ' . $command);
 				die;
 		}
-		return json_encode(array('123'));
+		return json_encode(array());
 	}
 
 	/**
@@ -667,15 +667,23 @@ class TreeView {
 			$inputField->setRequired(true);
 		}
 		$inputField->setIsPassword(true);
-		$row = new htmlResponsiveRow();
-		$row->add($inputField, 7);
+		$group = new htmlGroup();
+		$table = new htmlTable();
+		$table->addElement($inputField);
 		$hashes = getSupportedHashTypes();
 		$selectedHash = array(getHashType($value));
 		$hashSelect = new htmlSelect('lam_hash_' . $attributeName, $hashes, $selectedHash);
 		$hashSelect->addDataAttribute('attr-name', $attributeName);
 		$hashSelect->setCSSClasses(array('hash-select'));
-		$row->add($hashSelect, 5);
-		return $row;
+		$table->addElement($hashSelect);
+		$checkPassword = new htmlLink(null, '#', '../../graphics/light.svg');
+		$checkPassword->setTitle(_('Check password'));
+		$checkPassword->setOnClick("window.lam.treeview.checkPassword(event, this," .
+			" '" . getSecurityTokenName() . "', '" . getSecurityTokenValue() . "'," .
+			" '" . _('Check password') . "', '" . _('Check') . "', '" . _('Cancel') . "');");
+		$table->addElement($checkPassword);
+		$group->addElement($table);
+		return $group;
 	}
 
 	/**

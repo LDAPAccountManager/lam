@@ -218,6 +218,14 @@ class AccountTest extends TestCase {
 		$this->assertEquals('SSHA', getHashType('{SSHA}123'));
 	}
 
+	function testPasswordHashMatchesPassword() {
+		$testPassword = '1234556abcdef';
+		$this->assertTrue(passwordHashMatchesPassword(pwd_hash($testPassword, true, 'PLAIN'), $testPassword));
+		$this->assertTrue(passwordHashMatchesPassword(pwd_hash($testPassword, false, 'PLAIN'), $testPassword));
+		$this->assertTrue(passwordHashMatchesPassword(pwd_hash($testPassword, true, 'MD5'), $testPassword));
+		$this->assertTrue(passwordHashMatchesPassword(pwd_hash($testPassword, false, 'MD5'), $testPassword));
+	}
+
 	function testGetNumberOfCharacterClasses() {
 		$this->assertEquals(0, getNumberOfCharacterClasses(null));
 		$this->assertEquals(1, getNumberOfCharacterClasses('0'));

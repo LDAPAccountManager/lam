@@ -177,6 +177,9 @@ class Ajax {
 			ob_end_clean();
 			echo $jsonOut;
 		}
+		elseif ($function === 'checkPassword') {
+			$this->checkPassword();
+		}
 	}
 
 	/**
@@ -529,6 +532,32 @@ class Ajax {
 			return;
 		}
 		die();
+	}
+
+	/**
+	 * Checks if the given password matches the hash value.
+	 */
+	private function checkPassword() : void {
+		$hashValue = $_POST['hashValue'];
+		$checkValue = $_POST['checkValue'];
+		$matches = passwordHashMatchesPassword($hashValue, $checkValue);
+		$resultRow = new htmlResponsiveRow();
+		if ($matches) {
+			$text = new htmlOutputText(_('Password matches'));
+			$text->setCSSClasses(array('text-center', 'display-as-block', 'text-ok'));
+		}
+		else {
+			$text = new htmlOutputText(_('Password does not match'));
+			$text->setCSSClasses(array('text-center', 'display-as-block', 'text-error'));
+		}
+		$resultRow->add($text);
+		$tabindex = 9999;
+		ob_start();
+		parseHtml(null, $resultRow, array(), false, $tabindex, 'user');
+		$out = ob_get_contents();
+		ob_end_clean();
+		$result = array('resultHtml' => $out);
+		echo json_encode($result);
 	}
 
 }

@@ -167,7 +167,6 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 	if (! $password || ($password == "")) {
 		return "";
 	}
-	$hash = "";
 	switch ($hashType) {
 		case 'CRYPT':
 			$hash = "{CRYPT}" . crypt($password, generateSalt(2));
@@ -244,6 +243,27 @@ function getHashType(?string $hash): string {
 		return $type;
 	}
 	return 'PLAIN';
+}
+
+/**
+ * Returns if the password matches the given password hash.
+ *
+ * @param string $hash hash value
+ * @param string $password password
+ * @return bool matches
+ */
+function passwordHashMatchesPassword(string $hash, string $password): bool {
+	$hashType = getHashType($hash);
+	if ($hashType === 'PLAIN') {
+		return $hash === $password;
+	}
+	$hashPart = preg_replace('/^\\{([A-Z0-9-]+)\\}[!]?/', '', $hash);
+	switch ($hashType) {
+		case 'MD5':
+			$md5Hash = base64_encode(hex2bin(md5($password)));
+			return ($md5Hash === $hashPart);
+	}
+	return false;
 }
 
 /**
