@@ -395,6 +395,7 @@ class shadowAccount extends baseModule implements passwordService {
 
 			$return->addVerticalSpacer('2rem');
 			$remButton = new htmlAccountPageButton('shadowAccount', 'attributes', 'remObjectClass', _('Remove Shadow account extension'));
+			$remButton->setCSSClasses(array('lam-danger'));
 			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {

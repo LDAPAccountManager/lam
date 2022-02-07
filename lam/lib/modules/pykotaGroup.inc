@@ -221,6 +221,7 @@ class pykotaGroup extends baseModule {
 			if (!$this->isStructural()) {
 				$container->addVerticalSpacer('2rem');
 				$remButton = new htmlButton('remObjectClass', _('Remove PyKota extension'));
+				$remButton->setCSSClasses(array('lam-danger'));
 				$container->add($remButton, 12, 12, 12, 'text-center');
 			}
 		}

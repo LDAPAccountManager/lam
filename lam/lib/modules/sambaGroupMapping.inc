@@ -416,6 +416,7 @@ class sambaGroupMapping extends baseModule {
 			$return->addVerticalSpacer('2rem');
 
 			$remButton = new htmlButton('remObjectClass', _('Remove Samba 3 extension'));
+			$remButton->setCSSClasses(array('lam-danger'));
 			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {

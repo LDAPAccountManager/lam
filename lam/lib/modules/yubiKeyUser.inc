@@ -162,6 +162,7 @@ class yubiKeyUser extends baseModule {
 			if (!empty($objectClass)) {
 				$return->addVerticalSpacer('2rem');
 				$remButton = new htmlButton('remObjectClass', _('Remove YubiKey extension'));
+				$remButton->setCSSClasses(array('lam-danger'));
 				$return->add($remButton, 12, 12 ,12, 'text-center');
 			}
 		}

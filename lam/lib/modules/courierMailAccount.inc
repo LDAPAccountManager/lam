@@ -297,6 +297,7 @@ class courierMailAccount extends baseModule {
 			// remove extension
 			$return->addVerticalSpacer('2rem');
 			$remButton = new htmlButton('remObjectClass', _('Remove Courier mail extension'));
+			$remButton->setCSSClasses(array('lam-danger'));
 			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {

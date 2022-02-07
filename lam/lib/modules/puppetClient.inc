@@ -286,6 +286,7 @@ class puppetClient extends baseModule {
 
 		$return->addVerticalSpacer('2rem');
 		$remButton = new htmlAccountPageButton('puppetClient', 'attributes', 'remObjectClass', _('Remove Puppet extension'));
+		$remButton->setCSSClasses(array('lam-danger'));
 		$return->add($remButton, 12, 12, 12, 'text-center');
 		return $return;
 	}

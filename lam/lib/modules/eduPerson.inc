@@ -361,8 +361,9 @@ class eduPerson extends baseModule {
 			$this->addMultiValueInputTextField($return, 'eduPersonAssurance', _('Assurance profiles'));
 			// remove button
 			$return->addVerticalSpacer('2rem');
-			$addButton = new htmlButton('remObjectClass', _('Remove EDU person extension'));
-			$return->add($addButton, 12, 12, 12, 'text-center');
+			$remButton = new htmlButton('remObjectClass', _('Remove EDU person extension'));
+			$remButton->setCSSClasses(array('lam-danger'));
+			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
 			$return->add(new htmlButton('addObjectClass', _('Add EDU person extension')), 12);
