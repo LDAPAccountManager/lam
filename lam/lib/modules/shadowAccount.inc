@@ -71,6 +71,7 @@ class shadowAccount extends baseModule implements passwordService {
 		$this->messages['shadow_cmp'][0] = array('ERROR', _('Maximum password age'), _('Password maximum age must be bigger than password minimum age.'));
 		$this->messages['shadow_cmp'][1] = array('ERROR',  _('Account %s:') . ' shadowAccount_min/maxAge', _('Password maximum age must be bigger as password minimum age.'));
 		$this->messages['shadow_expireDate'][0] = array('ERROR',  _('Account %s:') . ' shadowAccount_expireDate', _('The expiration date is invalid.'));
+		$this->messages['shadow_lastChange'][0] = array('ERROR',  _('Account %s:') . ' shadowAccount_lastChange', _('The last password change date is invalid.'));
 	}
 
 	/**
@@ -240,6 +241,12 @@ class shadowAccount extends baseModule implements passwordService {
 				'name' => 'shadowAccount_expireDate',
 				'description' => _('Account expiration date'),
 				'help' => 'shadowExpire',
+				'example' => '17-07-2011'
+			),
+			array(
+				'name' => 'shadowAccount_lastChange',
+				'description' => _('Last password change'),
+				'help' => 'shadowLastChange',
 				'example' => '17-07-2011'
 			)
 		);
@@ -594,8 +601,6 @@ class shadowAccount extends baseModule implements passwordService {
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("shadowAccount", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "shadowAccount";
-			// shadow last change
-			$partialAccounts[$i]['shadowLastChange'] = array(intval(time()/3600/24));
 			// password warning
 			$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'shadowAccount_warning', 'shadowWarning',
 				'digit', $this->messages['shadowWarning'][1], $messages);
@@ -628,6 +633,23 @@ class shadowAccount extends baseModule implements passwordService {
 					array_push($errMsg, array($i));
 					$messages[] = $errMsg;
 				}
+			}
+			// shadow last change
+			if ($rawAccounts[$i][$ids['shadowAccount_lastChange']] != '') {
+				if (get_preg($rawAccounts[$i][$ids['shadowAccount_lastChange']], 'date')) {
+					$parts = explode('-', $rawAccounts[$i][$ids['shadowAccount_lastChange']]);
+					$date = DateTime::createFromFormat('j.n.Y', $parts[0] . '.' . $parts[1] . '.' . $parts[2], new DateTimeZone('UTC'));
+					$partialAccounts[$i]['shadowLastChange'][] = intval($date->format('U')/3600/24);
+				}
+				else {
+					$errMsg = $this->messages['shadow_lastChange'][0];
+					array_push($errMsg, array($i));
+					$messages[] = $errMsg;
+				}
+			}
+			else {
+				$date = new DateTime('now', new DateTimeZone('UTC'));
+				$partialAccounts[$i]['shadowLastChange'][] = intval($date->format('U')/3600/24);
 			}
 		}
 		return $messages;
