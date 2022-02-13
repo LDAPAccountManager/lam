@@ -1,6 +1,8 @@
 ldap-account-manager (7.9.DEV-1) unstable; urgency=medium
 
   * new upstream release
+  * Fix "FTBFS: error: unknown option '--skip-rebase'" by checking if
+    argument is supported (Closes: #1005424)
 
  -- Roland Gruber <post@rolandgruber.de>  Fri, 14 Jan 2021 09:08:14 +0100
 

@@ -17,7 +17,12 @@ fi
 files=`ls style/*.css`
 outFile=style/100_lam.${SOURCE_DATE_EPOCH}.min.css
 if [ ! -e $outFile ]; then
-	cat $files | cleancss --skip-rebase -o ${outFile}
+  extraOptions=''
+  cleancss --help | grep -e '--skip-rebase' > /dev/null
+  if [ $? -eq 0 ]; then
+    extraOptions='--skip-rebase'
+  fi
+	cat $files | cleancss $extraOptions -o ${outFile}
 	rm $files
 	# add final new line to supress Debian warnings
 	echo "" >> $outFile
