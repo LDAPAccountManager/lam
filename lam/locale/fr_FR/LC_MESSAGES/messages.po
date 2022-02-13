@@ -735,9 +735,8 @@ msgid "Account was modified successfully."
 msgstr "Compte modifié avec succès."
 
 #: ../lib/adminHeader.inc:143
-#, fuzzy
 msgid "Accounts"
-msgstr "Compte"
+msgstr "Comptes"
 
 #: ../lib/passwordExpirationJob.inc:535 ../help/help.inc:447
 msgid "Action"
