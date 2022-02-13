@@ -99,7 +99,7 @@ RUN sed -e 's,^ErrorLog.*,ErrorLog "|/bin/cat",' -i /etc/apache2/apache2.conf
 RUN ln -sf /dev/stdout /var/log/apache2/other_vhosts_access.log
 
 # add redirect for /
-RUN a2enmod rewrite
+RUN a2enmod proxy proxy_http rewrite ssl
 RUN echo "RewriteEngine on" >> /etc/apache2/conf-enabled/laminit.conf \
  && echo "RewriteRule   ^/$  /lam/ [R,L]" >> /etc/apache2/conf-enabled/laminit.conf
 
