@@ -5,7 +5,7 @@ use \LAM\PDF\PDFTableRow;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2020  Roland Gruber
+  Copyright (C) 2004 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -322,7 +322,9 @@ class kolabUser extends baseModule {
 				}
 			}
 			// input box for new delegate
-			$delegatesContainer->addElement(new htmlSelect('delegate', $delegates));
+			$delegatesSelectNew = new htmlSelect('delegate', $delegates);
+			$delegatesSelectNew->setHasDescriptiveElements(true);
+			$delegatesContainer->addElement($delegatesSelectNew);
 			$delegatesContainer->addElement(new htmlButton('addDelegate', 'add.svg', true));
 			if (empty($this->attributes['kolabDelegate'])) {
 				$delegatesContainer->addElement(new htmlHelpLink('delegate'));
