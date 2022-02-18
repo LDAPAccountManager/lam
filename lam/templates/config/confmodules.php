@@ -15,7 +15,7 @@ use \htmlResponsiveRow;
 use \htmlGroup;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2018  Roland Gruber
+  Copyright (C) 2004 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -134,7 +134,7 @@ foreach ($types as $type) {
 }
 
 $legendContainer = new htmlGroup();
-$legendContainer->addElement(new htmlOutputText("(*) " . _("Base module")));
+$legendContainer->addElement(new htmlOutputText("* " . _("Base module")));
 $legendContainer->addElement(new \htmlSpacer('2rem', null));
 $legendContainer->addElement(new htmlHelpLink('237'));
 $container->add($legendContainer, 12);
@@ -191,7 +191,7 @@ function config_showAccountModules($type, &$container) {
 	for ($i = 0; $i < sizeof($selected); $i++) {
 		if (in_array($selected[$i], $available)) {  // selected modules must be available
 			if (is_base_module($selected[$i], $type->getScope())) {  // mark base modules
-				$selOptions[getModuleAlias($selected[$i], $type->getScope()) . " (" . $selected[$i] .  ")(*)"] = $selected[$i];
+				$selOptions[getModuleAlias($selected[$i], $type->getScope()) . " (" . $selected[$i] .  ")*"] = $selected[$i];
 			}
 			else {
 				$selOptions[getModuleAlias($selected[$i], $type->getScope()) . " (" . $selected[$i] .  ")"] = $selected[$i];
@@ -202,7 +202,7 @@ function config_showAccountModules($type, &$container) {
 	foreach ($sortedAvailable as $key => $value) {
 		if (! in_array($key, $selected)) {  // display non-selected modules
 			if (is_base_module($key, $type->getScope())) {  // mark base modules
-				$availOptions[$value . " (" . $key .  ")(*)"] = $key;
+				$availOptions[$value . " (" . $key .  ")*"] = $key;
 			}
 			else {
 				$availOptions[$value . " (" . $key .  ")"] = $key;
