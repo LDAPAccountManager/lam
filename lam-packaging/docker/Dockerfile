@@ -98,10 +98,15 @@ RUN sed -e 's,^ErrorLog.*,ErrorLog "|/bin/cat",' -i /etc/apache2/apache2.conf
 # because there is no logging set in the lam vhost logging goes to other_vhost_access.log
 RUN ln -sf /dev/stdout /var/log/apache2/other_vhosts_access.log
 
+RUN a2enmod ssl
+
 # add redirect for /
 RUN a2enmod rewrite
-RUN echo "RewriteEngine on" >> /etc/apache2/conf-enabled/laminit.conf \
- && echo "RewriteRule   ^/$  /lam/ [R,L]" >> /etc/apache2/conf-enabled/laminit.conf
+RUN echo "<VirtualHost *:80>" >> /etc/apache2/sites-available/lam.conf \
+ && echo "RewriteEngine on" >> /etc/apache2/sites-available/lam.conf \
+ && echo "RewriteRule   ^/$  /lam/ [R,L]" >> /etc/apache2/sites-available/lam.conf \
+ && echo "</VirtualHost>" >> /etc/apache2/sites-available/lam.conf
+RUN ln -s /etc/apache2/sites-available/lam.conf /etc/apache2/sites-enabled/
 
 COPY start.sh /usr/local/bin/start.sh
 
