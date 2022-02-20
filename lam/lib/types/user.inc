@@ -1031,6 +1031,12 @@ class lamUserList extends lamList {
 	 * @return htmlElement content
 	 */
 	private function getAccountStatus(&$attrs) {
+		$statusContent = new htmlGroup();
+		$statusIcon = new htmlImage('../../graphics/add.svg', 16, 16);
+		$statusIcon->setHelpData(_('Account status'), new htmlImage('../../graphics/add.svg', 16, 16));
+		$statusContent->addElement($statusIcon);
+
+		//------------------------------------------------------
 		// check status
 		$unixAvailable = self::isUnixAvailable($attrs);
 		$sambaAvailable = self::isSambaAvailable($attrs);
@@ -1130,11 +1136,12 @@ class lamUserList extends lamList {
 				$tipContent .= '<tr><td>' . _('Password expired') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/locked.svg&quot;></td></tr>';
 			}
 			$tipContent .= '</table>';
-			return new htmlOutputText('<img helptitle="' . _('Account status') . '" helpdata="' . $tipContent . '" alt="status" height=16 width=16 src="../../graphics/' . $icon . '">', false);
+			$statusContent->addElement(new htmlOutputText('<img helptitle="' . _('Account status') . '" helpdata="' . $tipContent . '" alt="status" height=16 width=16 src="../../graphics/' . $icon . '">', false));
 		}
 		else {
-			return new htmlImage('../../graphics/' . $icon, 16, 16, 'status');
+			$statusContent->addElement(new htmlImage('../../graphics/' . $icon, 16, 16, 'status'));
 		}
+		return $statusContent;
 	}
 
 	/**

@@ -2509,7 +2509,88 @@ class PasswordQuickChangeOption {
 /**
  * Provides information about the status of an LDAP account.
  */
-trait AccountStatus {
+interface AccountStatus {
+
+	/**
+	 * Returns the list of account status detail lines.
+	 *
+	 * @return AccountStatusDetails[] status details
+	 */
+	public function getAccountStatusDetails(): array;
+
+}
+
+class AccountStatusDetails {
+
+	private $details;
+	private $id;
+	private $expired = false;
+	private $partiallyExpired = false;
+	private $locked = false;
+	private $partiallyLocked = false;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param string $details details message
+	 * @param string $id ID for reference
+	 */
+	public function __construct(string $details, string $id) {
+		$this->details = $details;
+		$this->id = $id;
+	}
+
+	/**
+	 * Creates a new expired status entry.
+	 *
+	 * @param string $details details message
+	 * @param string $id ID for reference
+	 * @return AccountStatusDetails status entry
+	 */
+	public static function newExpired(string $details, string $id): AccountStatusDetails {
+		$details = new AccountStatusDetails($details, $id);
+		$details->expired = true;
+		return $details;
+	}
+
+	/**
+	 * Creates a new partially expired status entry.
+	 *
+	 * @param string $details details message
+	 * @param string $id ID for reference
+	 * @return AccountStatusDetails status entry
+	 */
+	public static function newPartiallyExpired(string $details, string $id): AccountStatusDetails {
+		$details = new AccountStatusDetails($details, $id);
+		$details->partiallyExpired = true;
+		return $details;
+	}
+
+	/**
+	 * Creates a new locked status entry.
+	 *
+	 * @param string $details details message
+	 * @param string $id ID for reference
+	 * @return AccountStatusDetails status entry
+	 */
+	public static function newLocked(string $details, string $id): AccountStatusDetails {
+		$details = new AccountStatusDetails($details, $id);
+		$details->locked = true;
+		return $details;
+	}
+
+	/**
+	 * Creates a new partially locked status entry.
+	 *
+	 * @param string $details details message
+	 * @param string $id ID for reference
+	 * @return AccountStatusDetails status entry
+	 */
+	public static function newPartiallyLocked(string $details, string $id): AccountStatusDetails {
+		$details = new AccountStatusDetails($details, $id);
+		$details->partiallyLocked = true;
+		return $details;
+	}
 
 	/**
 	 * Returns if the account/password is fully expired (e.g. login no longer possible without password change).
@@ -2548,3 +2629,4 @@ trait AccountStatus {
 	}
 
 }
+
