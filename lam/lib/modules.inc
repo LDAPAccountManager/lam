@@ -2505,3 +2505,46 @@ class PasswordQuickChangeOption {
 	}
 
 }
+
+/**
+ * Provides information about the status of an LDAP account.
+ */
+trait AccountStatus {
+
+	/**
+	 * Returns if the account/password is fully expired (e.g. login no longer possible without password change).
+	 *
+	 * @return bool is expired
+	 */
+	public function isExpired(): bool {
+		return false;
+	}
+
+	/**
+	 * Returns if the account/password is partially expired (e.g. a single application is expired).
+	 *
+	 * @return bool is expired
+	 */
+	public function isPartiallyExpired(): bool {
+		return false;
+	}
+
+	/**
+	 * Returns if the account is fully locked (login no longer possible).
+	 *
+	 * @return bool is locked
+	 */
+	public function isLocked(): bool {
+		return false;
+	}
+
+	/**
+	 * Returns if the account is partially locked (e.g. a single application is locked).
+	 *
+	 * @return bool is locked
+	 */
+	public function isPartiallyLocked(): bool {
+		return false;
+	}
+
+}
