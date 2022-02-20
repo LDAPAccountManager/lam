@@ -42,7 +42,7 @@ use LAM\TYPES\ConfiguredType;
 *
 * @package modules
 */
-class posixAccount extends baseModule implements passwordService {
+class posixAccount extends baseModule implements passwordService,AccountStatusProvider {
 
 	// Variables
 	/** delimiter for lamdaemon commands */
@@ -4223,6 +4223,13 @@ class posixAccount extends baseModule implements passwordService {
 	 */
 	public function getPasswordQuickChangeIsPasswordInHistory(string $password): bool {
 		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getAccountStatusDetails(?array $attributes): array {
+		return array(AccountStatusDetails::newLocked('test lock', 'test'));
 	}
 
 }

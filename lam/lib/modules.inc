@@ -2305,6 +2305,21 @@ class accountContainer {
 	}
 
 	/**
+	 * Returns the account status.
+	 *
+	 * @return AccountStatus status
+	 */
+	public function getAccountStatus(): AccountStatus {
+		$details = array();
+		foreach ($this->module as $name => $module) {
+			if (($module instanceof AccountStatusProvider)) {
+				$details = array_merge($details, $module->getAccountStatusDetails());
+			}
+		}
+		return new AccountStatus($details);
+	}
+
+	/**
 	 * Replaces POST data with wildcard values from modules.
 	 *
 	 * @param array $keyPrefixes POST keys as full name or prefix (e.g. "key" matches "key1")
@@ -2507,16 +2522,101 @@ class PasswordQuickChangeOption {
 }
 
 /**
- * Provides information about the status of an LDAP account.
+ * Provides module information about the status of an LDAP account.
  */
-interface AccountStatus {
+interface AccountStatusProvider {
 
 	/**
 	 * Returns the list of account status detail lines.
 	 *
+	 * @param array $attributes LDAP attributes (use account container attributes if not provided)
 	 * @return AccountStatusDetails[] status details
 	 */
-	public function getAccountStatusDetails(): array;
+	public function getAccountStatusDetails(?array $attributes): array;
+
+}
+
+/**
+ * Provides the complete information about the status of an LDAP account.
+ */
+class AccountStatus {
+
+	/** @var AccountStatusDetails[] list of details */
+	private $details;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param AccountStatusDetails[] $details details
+	 */
+	public function __construct(array $details) {
+		$this->details = $details;
+	}
+
+	/**
+	 * Returns the account details.
+	 *
+	 * @return AccountStatusDetails[] details
+	 */
+	public function getDetails(): array {
+		return $this->details;
+	}
+
+	/**
+	 * Returns if the account/password is fully expired (e.g. login no longer possible without password change).
+	 *
+	 * @return bool is expired
+	 */
+	public function isExpired(): bool {
+		foreach ($this->details as $detail) {
+			if ($detail->isExpired()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Returns if the account/password is partially expired (e.g. a single application is expired).
+	 *
+	 * @return bool is expired
+	 */
+	public function isPartiallyExpired(): bool {
+		foreach ($this->details as $detail) {
+			if ($detail->isPartiallyExpired()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Returns if the account is fully locked (login no longer possible).
+	 *
+	 * @return bool is locked
+	 */
+	public function isLocked(): bool {
+		foreach ($this->details as $detail) {
+			if ($detail->isLocked()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Returns if the account is partially locked (e.g. a single application is locked).
+	 *
+	 * @return bool is locked
+	 */
+	public function isPartiallyLocked(): bool {
+		foreach ($this->details as $detail) {
+			if ($detail->isPartiallyLocked()) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 }
 

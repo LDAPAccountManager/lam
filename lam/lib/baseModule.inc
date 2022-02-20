@@ -2330,5 +2330,3 @@ abstract class baseModule {
 	}
 
 }
-
-?>
