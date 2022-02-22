@@ -2532,7 +2532,7 @@ interface AccountStatusProvider {
 	 * @param array $attributes LDAP attributes (use account container attributes if not provided)
 	 * @return AccountStatusDetails[] status details
 	 */
-	public function getAccountStatusDetails(?array $attributes): array;
+	public function getAccountStatusDetails(?array &$attributes): array;
 
 }
 
@@ -2628,16 +2628,19 @@ class AccountStatusDetails {
 	private $partiallyExpired = false;
 	private $locked = false;
 	private $partiallyLocked = false;
+	private $icon;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param string $details details message
 	 * @param string $id ID for reference
+	 * @param string $icon icon name
 	 */
-	public function __construct(string $details, string $id) {
+	public function __construct(string $details, string $id, string $icon) {
 		$this->details = $details;
 		$this->id = $id;
+		$this->icon = $icon;
 	}
 
 	/**
@@ -2645,10 +2648,14 @@ class AccountStatusDetails {
 	 *
 	 * @param string $details details message
 	 * @param string $id ID for reference
+	 * @param string $icon icon name
 	 * @return AccountStatusDetails status entry
 	 */
-	public static function newExpired(string $details, string $id): AccountStatusDetails {
-		$details = new AccountStatusDetails($details, $id);
+	public static function newExpired(string $details, string $id, ?string $icon = null): AccountStatusDetails {
+		if ($icon === null) {
+			$icon = 'expired.svg';
+		}
+		$details = new AccountStatusDetails($details, $id, $icon);
 		$details->expired = true;
 		return $details;
 	}
@@ -2658,10 +2665,14 @@ class AccountStatusDetails {
 	 *
 	 * @param string $details details message
 	 * @param string $id ID for reference
+	 * @param string $icon icon name
 	 * @return AccountStatusDetails status entry
 	 */
-	public static function newPartiallyExpired(string $details, string $id): AccountStatusDetails {
-		$details = new AccountStatusDetails($details, $id);
+	public static function newPartiallyExpired(string $details, string $id, ?string $icon = null): AccountStatusDetails {
+		if ($icon === null) {
+			$icon = 'expired.svg';
+		}
+		$details = new AccountStatusDetails($details, $id, $icon);
 		$details->partiallyExpired = true;
 		return $details;
 	}
@@ -2671,10 +2682,14 @@ class AccountStatusDetails {
 	 *
 	 * @param string $details details message
 	 * @param string $id ID for reference
+	 * @param string $icon icon name
 	 * @return AccountStatusDetails status entry
 	 */
-	public static function newLocked(string $details, string $id): AccountStatusDetails {
-		$details = new AccountStatusDetails($details, $id);
+	public static function newLocked(string $details, string $id, ?string $icon = null): AccountStatusDetails {
+		if ($icon === null) {
+			$icon = 'locked.svg';
+		}
+		$details = new AccountStatusDetails($details, $id, $icon);
 		$details->locked = true;
 		return $details;
 	}
@@ -2684,10 +2699,14 @@ class AccountStatusDetails {
 	 *
 	 * @param string $details details message
 	 * @param string $id ID for reference
+	 * @param string $icon icon name
 	 * @return AccountStatusDetails status entry
 	 */
-	public static function newPartiallyLocked(string $details, string $id): AccountStatusDetails {
-		$details = new AccountStatusDetails($details, $id);
+	public static function newPartiallyLocked(string $details, string $id, ?string $icon = null): AccountStatusDetails {
+		if ($icon === null) {
+			$icon = 'partiallyLocked.svg';
+		}
+		$details = new AccountStatusDetails($details, $id, $icon);
 		$details->partiallyLocked = true;
 		return $details;
 	}
@@ -2698,7 +2717,7 @@ class AccountStatusDetails {
 	 * @return bool is expired
 	 */
 	public function isExpired(): bool {
-		return false;
+		return $this->expired;
 	}
 
 	/**
@@ -2707,7 +2726,7 @@ class AccountStatusDetails {
 	 * @return bool is expired
 	 */
 	public function isPartiallyExpired(): bool {
-		return false;
+		return $this->partiallyExpired;
 	}
 
 	/**
@@ -2716,7 +2735,7 @@ class AccountStatusDetails {
 	 * @return bool is locked
 	 */
 	public function isLocked(): bool {
-		return false;
+		return $this->locked;
 	}
 
 	/**
@@ -2725,7 +2744,25 @@ class AccountStatusDetails {
 	 * @return bool is locked
 	 */
 	public function isPartiallyLocked(): bool {
-		return false;
+		return $this->partiallyLocked;
+	}
+
+	/**
+	 * Returns the icon name.
+	 *
+	 * @return string icon name
+	 */
+	public function getIcon(): string {
+		return $this->icon;
+	}
+
+	/**
+	 * Returns the details.
+	 *
+	 * @return string details
+	 */
+	public function getDetails(): string {
+		return $this->details;
 	}
 
 }

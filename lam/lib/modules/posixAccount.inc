@@ -4228,8 +4228,8 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	/**
 	 * @inheritDoc
 	 */
-	public function getAccountStatusDetails(?array $attributes): array {
-		return array(AccountStatusDetails::newLocked('test lock', 'test'));
+	public function getAccountStatusDetails(?array &$attributes): array {
+		return array();
 	}
 
 }

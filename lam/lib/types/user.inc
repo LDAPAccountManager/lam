@@ -1032,8 +1032,28 @@ class lamUserList extends lamList {
 	 */
 	private function getAccountStatus(&$attrs) {
 		$statusContent = new htmlGroup();
-		$statusIcon = new htmlImage('../../graphics/add.svg', 16, 16);
-		$statusIcon->setHelpData(_('Account status'), new htmlImage('../../graphics/add.svg', 16, 16));
+		$accountStatus = $this->calculateAccountStatus($attrs);
+		$mainIcon = 'unlocked.svg';
+		if ($accountStatus->isLocked()) {
+			$mainIcon = 'locked.svg';
+		}
+		elseif ($accountStatus->isPartiallyLocked()) {
+			$mainIcon = 'partiallyLocked.svg';
+		}
+		elseif ($accountStatus->isExpired()) {
+			$mainIcon = 'expired.svg';
+		}
+		elseif ($accountStatus->isPartiallyExpired()) {
+			$mainIcon = 'expired.svg';
+		}
+		$detailsTable = new htmlTable();
+		foreach ($accountStatus->getDetails() as $detail) {
+			$detailsTable->addElement(new htmlOutputText($detail->getDetails()));
+			$detailsTable->addElement(new htmlImage('../../graphics/' . $detail->getIcon(), 16, 16));
+			$detailsTable->addNewLine();
+		}
+		$statusIcon = new htmlImage('../../graphics/' . $mainIcon, 16, 16);
+		$statusIcon->setHelpData(_('Account status'), $detailsTable);
 		$statusContent->addElement($statusIcon);
 
 		//------------------------------------------------------
@@ -1142,6 +1162,26 @@ class lamUserList extends lamList {
 			$statusContent->addElement(new htmlImage('../../graphics/' . $icon, 16, 16, 'status'));
 		}
 		return $statusContent;
+	}
+
+	/**
+	 * Returns the account status calculated from module data.
+	 *
+	 * @param array $attributes LDAP attributes
+	 * @return AccountStatus status
+	 */
+	private function calculateAccountStatus(array &$attributes): AccountStatus {
+		$modules = $_SESSION['config']->get_AccountModules($this->type->getId());
+		$details = array();
+		foreach ($modules as $module) {
+			$interfaces = class_implements($module);
+			if (!in_array('AccountStatusProvider', $interfaces)) {
+				continue;
+			}
+			$moduleObject = moduleCache::getModule($module, $this->type->getScope());
+			$details = array_merge($details, $moduleObject->getAccountStatusDetails($attributes));
+		}
+		return new AccountStatus($details);
 	}
 
 	/**

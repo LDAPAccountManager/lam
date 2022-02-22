@@ -37,12 +37,22 @@ use function LAM\ACCOUNTLIST\isPasswordChangeByDefault;
 *
 * @package modules
 */
-class shadowAccount extends baseModule implements passwordService {
+class shadowAccount extends baseModule implements passwordService,AccountStatusProvider {
 
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
 	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('shadowLastChange', 'shadowExpire');
+
+	/**
+	 * ID for expired account status.
+	 */
+	const STATUS_ACCOUNT_EXPIRED = "SHADOW_ACCOUNT_EXPIRED";
+
+	/**
+	 * ID for expired password status.
+	 */
+	const STATUS_PASSWORD_EXPIRED = "SHADOW_PASSWORD_EXPIRED";
 
 	/**
 	* Creates a new shadowAccount object.
@@ -922,6 +932,23 @@ class shadowAccount extends baseModule implements passwordService {
 		return false;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getAccountStatusDetails(?array &$attributes): array {
+		if ($attributes === null) {
+			$attributes = $this->attributes;
+		}
+		$details = array();
+		if (self::isAccountExpired($attributes)) {
+			$details[] = AccountStatusDetails::newPartiallyExpired(_('Shadow') . ': ' . _('Account expiration'), self::STATUS_ACCOUNT_EXPIRED);
+		}
+		if (self::isPasswordExpired($attributes)) {
+			$details[] = AccountStatusDetails::newPartiallyExpired(_('Shadow') . ': ' . _('Password expiration'), self::STATUS_PASSWORD_EXPIRED);
+		}
+		return $details;
+	}
+
 }
 
 if (interface_exists('\LAM\JOB\Job', false)) {
@@ -1195,5 +1222,3 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 	}
 
 }
-
-?>
