@@ -77,7 +77,7 @@ if [ "$1" = "configure" ]; then
                        fi
                        ln -s /etc/ldap-account-manager/apache.conf /etc/$server/conf-available/ldap-account-manager.conf
                    fi
-                   /usr/sbin/a2query -q -c ldap-account-manager || /usr/sbin/a2enconf -q ldap-account-manager
+                   a2query -q -c ldap-account-manager || a2enconf -q ldap-account-manager
                    restart="$restart $server"
                fi
                ;;

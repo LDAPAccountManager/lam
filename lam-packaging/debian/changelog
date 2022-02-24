@@ -3,8 +3,11 @@ ldap-account-manager (7.9.DEV-1) unstable; urgency=medium
   * new upstream release
   * Fix "FTBFS: error: unknown option '--skip-rebase'" by checking if
     argument is supported (Closes: #1005424)
+  * Fix "ldap-account-manager.postinst uses a2query without requiring
+    apache2 package" by adding sanity checks (Closes:
+    #1006232)
 
- -- Roland Gruber <post@rolandgruber.de>  Fri, 14 Jan 2021 09:08:14 +0100
+ -- Roland Gruber <post@rolandgruber.de>  Thu, 24 Feb 2021 07:08:14 +0100
 
 ldap-account-manager (7.8-1) unstable; urgency=medium
 
