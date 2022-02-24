@@ -7,7 +7,7 @@ ldap-account-manager (7.9.DEV-1) unstable; urgency=medium
     apache2 package" by adding sanity checks (Closes:
     #1006232)
 
- -- Roland Gruber <post@rolandgruber.de>  Thu, 24 Feb 2021 07:08:14 +0100
+ -- Roland Gruber <post@rolandgruber.de>  Thu, 24 Feb 2022 07:08:14 +0100
 
 ldap-account-manager (7.8-1) unstable; urgency=medium
 
