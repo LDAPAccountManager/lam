@@ -166,6 +166,9 @@ class TreeView {
 		foreach ($rootDns as $rootDn) {
 			logNewMessage(LOG_DEBUG, 'Getting tree nodes for ' . $rootDn);
 			$rootData = ldapGetDN($rootDn, array('objectClass'));
+			if ($rootData === null) {
+				continue;
+			}
 			$children = ldapListDN($rootDn, '(objectClass=*)', array('objectClass'));
 			$nodeData = $this->createNodeData($rootData, true, true, $children);
 			$result[] = $nodeData;
