@@ -1469,7 +1469,7 @@ function _get_raw_schema($schema_to_fetch, $dn='' )
 			$schema_search = @ldap_read($ds, '', '(objectClass=*)',
 				array( $schema_to_fetch ), 0, 0, 0, LDAP_DEREF_ALWAYS );
          $schema_entries = @ldap_get_entries( $ds, $schema_search );
-         if( ! isset( $schema_entries[0][$schema_to_fetch] ) )
+         if (($schema_entries === false) || !isset($schema_entries[0][$schema_to_fetch]))
             $schema_search = null;
     }
 
@@ -1481,7 +1481,7 @@ function _get_raw_schema($schema_to_fetch, $dn='' )
 			$schema_search = @ldap_list($ds, '', '(objectClass=*)',
 				array( $schema_to_fetch ), 0, 0, 0, LDAP_DEREF_ALWAYS );
          $schema_entries = @ldap_get_entries( $ds, $schema_search );
-         if( ! isset( $schema_entries[0][$schema_to_fetch] ) )
+         if(($schema_entries === false) || !isset($schema_entries[0][$schema_to_fetch]))
             $schema_search = null;
 	}
 
