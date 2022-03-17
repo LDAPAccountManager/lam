@@ -1996,5 +1996,3 @@ class LAMException extends Exception {
 	}
 
 }
-
-?>

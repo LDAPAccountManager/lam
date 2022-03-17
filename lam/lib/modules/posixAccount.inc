@@ -48,6 +48,11 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	/** delimiter for lamdaemon commands */
 	private static $SPLIT_DELIMITER = "###x##y##x###";
 
+	/**
+	 * ID for locked password status.
+	 */
+	const STATUS_PASSWORD_LOCKED = "POSIX_ACCOUNT_PASSWORD_LOCKED";
+
 	/* These two variables keep an array of groups the user is also member of. */
 	/** current group list */
 	private $groups;
@@ -3902,11 +3907,16 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	 * Returns if the Unix part of the current account is locked.
 	 *
 	 * @param string[] $modules account modules
+	 * @param ?array $attributes LDAP attribute data
 	 * @return boolean password is locked
 	 */
-	public function isLocked(&$modules) {
-		return isset($this->attributes[$this->getPasswordAttrName($modules)][0])
-			&& !pwd_is_enabled($this->attributes[$this->getPasswordAttrName($modules)][0]);
+	public function isLocked($modules, ?array $attributes = null) {
+		if ($attributes === null) {
+			$attributes = array_change_key_case($this->attributes, CASE_LOWER);
+		}
+		$passwordAttribute = strtolower($this->getPasswordAttrName($modules));
+		return isset($attributes[$passwordAttribute][0])
+			&& !pwd_is_enabled($attributes[$passwordAttribute][0]);
 	}
 
 	/**
@@ -4054,7 +4064,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	 * @param string[] $modules account modules
 	 * @return boolean is Windows
 	 */
-	private function isWindows(&$modules) {
+	private function isWindows($modules) {
 		return in_array('windowsUser', $modules);
 	}
 
@@ -4065,7 +4075,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	 * @param string[] $modules account modules
 	 * @return boolean attribute name
 	 */
-	private function getPasswordAttrName(&$modules) {
+	private function getPasswordAttrName($modules) {
 		if ($this->isWindows($modules)) {
 			return 'unixUserPassword';
 		}
@@ -4228,8 +4238,33 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	/**
 	 * @inheritDoc
 	 */
-	public function getAccountStatusDetails(?array &$attributes): array {
-		return array();
+	public function getAccountStatusDetails(ConfiguredType $type, ?array &$attributes): array {
+		if (!$this->isPasswordManaged($type->getId())) {
+			return array();
+		}
+		if ($attributes === null) {
+			$attributes = $this->attributes;
+		}
+		$details = array();
+		if (self::isLocked($type->getModules(), $attributes)) {
+			if ($this->isWindows($type->getModules())) {
+				$details[] = AccountStatusDetails::newPartiallyLocked(_('Unix'), self::STATUS_PASSWORD_LOCKED);
+			}
+			else {
+				$details[] = AccountStatusDetails::newLocked(_('Unix'), self::STATUS_PASSWORD_LOCKED);
+			}
+		}
+		return $details;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getAccountStatusRequiredAttributes(ConfiguredType $type): array {
+		if (!$this->isPasswordManaged($type->getId())) {
+			return array();
+		}
+		return array($this->getPasswordAttrName($type->getModules()));
 	}
 
 }

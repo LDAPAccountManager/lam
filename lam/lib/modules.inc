@@ -2529,10 +2529,19 @@ interface AccountStatusProvider {
 	/**
 	 * Returns the list of account status detail lines.
 	 *
+	 * @param ConfiguredType type
 	 * @param array $attributes LDAP attributes (use account container attributes if not provided)
 	 * @return AccountStatusDetails[] status details
 	 */
-	public function getAccountStatusDetails(?array &$attributes): array;
+	public function getAccountStatusDetails(ConfiguredType $type, ?array &$attributes): array;
+
+	/**
+	 * Returns the list of LDAP attributes that must be read to get the account status.
+	 *
+	 * @param ConfiguredType $type type
+	 * @return array attribute names
+	 */
+	public function getAccountStatusRequiredAttributes(ConfiguredType $type): array;
 
 }
 

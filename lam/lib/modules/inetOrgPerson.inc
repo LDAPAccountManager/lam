@@ -1,7 +1,9 @@
 <?php
+
 use \LAM\TYPES\TypeManager;
 use LAM\ImageUtils\ImageManipulationFactory;
-use LAM\PDF\PDFImage;
+use LAM\TYPES\ConfiguredType;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -37,7 +39,12 @@ use LAM\PDF\PDFImage;
 *
 * @package modules
 */
-class inetOrgPerson extends baseModule implements passwordService {
+class inetOrgPerson extends baseModule implements passwordService,AccountStatusProvider {
+
+	/**
+	 * ID for locked password status.
+	 */
+	const STATUS_PASSWORD_LOCKED = "INETORG_PERSON_PASSWORD_LOCKED";
 
 	/** clear text password */
 	private $clearTextPassword = null;
@@ -4412,6 +4419,47 @@ class inetOrgPerson extends baseModule implements passwordService {
 	 */
 	public function getPasswordQuickChangeIsPasswordInHistory(string $password): bool {
 		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getAccountStatusDetails(ConfiguredType $type, ?array &$attributes): array {
+		if ($this->isUnixActive($type->getModules())) {
+			return array();
+		}
+		if ($attributes === null) {
+			$attributes = $this->attributes;
+		}
+		$details = array();
+		if (self::isLocked($attributes)) {
+			$details[] = AccountStatusDetails::newLocked(_('Personal'), self::STATUS_PASSWORD_LOCKED);
+		}
+		return $details;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getAccountStatusRequiredAttributes(ConfiguredType $type): array {
+		if ($this->isUnixActive($type->getModules())) {
+			return array();
+		}
+		return array('userpassword');
+	}
+
+	/**
+	 * Returns if the password of the current account is locked.
+	 *
+	 * @param ?array $attributes LDAP attribute data
+	 * @return bool password is locked
+	 */
+	public function isLocked(?array $attributes = null): bool {
+		if ($attributes === null) {
+			$attributes = array_change_key_case($this->attributes, CASE_LOWER);
+		}
+		return isset($attributes['userpassword'][0])
+			&& !pwd_is_enabled($attributes['userpassword'][0]);
 	}
 
 }

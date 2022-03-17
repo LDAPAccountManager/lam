@@ -939,17 +939,21 @@ class lamUserList extends lamList {
 	protected function getAdditionalLDAPAttributesToRead() {
 		$attrs = parent::getAdditionalLDAPAttributesToRead();
 		if ($this->showAccountStatus) {
+			$modules = $_SESSION['config']->get_AccountModules($this->type->getId());
+			foreach ($modules as $module) {
+				$interfaces = class_implements($module);
+				if (!in_array('AccountStatusProvider', $interfaces)) {
+					continue;
+				}
+				$moduleObject = moduleCache::getModule($module, $this->type->getScope());
+				$attrs = array_merge($attrs, $moduleObject->getAccountStatusRequiredAttributes($this->type));
+			}
 			$attrs[] = 'pwdAccountLockedTime';
 			$attrs[] = 'sambaAcctFlags';
-			$attrs[] = 'userPassword';
 			$attrs[] = 'userAccountControl';
 			$attrs[] = 'lockoutTime';
 			$attrs[] = 'nsAccountLock';
 			$attrs[] = 'accountUnlockTime';
-			$attrs[] = 'shadowExpire';
-			$attrs[] = 'shadowLastChange';
-			$attrs[] = 'shadowMax';
-			$attrs[] = 'shadowInactive';
 			$attrs[] = 'accountExpires';
 			$attrs[] = 'passwordExpirationTime';
 			$attrs[] = 'objectClass';
@@ -1179,7 +1183,7 @@ class lamUserList extends lamList {
 				continue;
 			}
 			$moduleObject = moduleCache::getModule($module, $this->type->getScope());
-			$details = array_merge($details, $moduleObject->getAccountStatusDetails($attributes));
+			$details = array_merge($details, $moduleObject->getAccountStatusDetails($this->type, $attributes));
 		}
 		return new AccountStatus($details);
 	}

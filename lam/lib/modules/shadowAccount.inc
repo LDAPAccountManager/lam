@@ -1,4 +1,8 @@
 <?php
+
+use function LAM\ACCOUNTLIST\isPasswordChangeByDefault;
+use LAM\TYPES\ConfiguredType;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -29,8 +33,6 @@
 * @author Roland Gruber
 * @author Michael Duergner
 */
-
-use function LAM\ACCOUNTLIST\isPasswordChangeByDefault;
 
 /**
 * Manages the object class "shadowAccount" for users.
@@ -935,7 +937,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	/**
 	 * @inheritDoc
 	 */
-	public function getAccountStatusDetails(?array &$attributes): array {
+	public function getAccountStatusDetails(ConfiguredType $type, ?array &$attributes): array {
 		if ($attributes === null) {
 			$attributes = $this->attributes;
 		}
@@ -947,6 +949,13 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 			$details[] = AccountStatusDetails::newPartiallyExpired(_('Shadow') . ': ' . _('Password expiration'), self::STATUS_PASSWORD_EXPIRED);
 		}
 		return $details;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getAccountStatusRequiredAttributes(ConfiguredType $type): array {
+		return array('shadowexpire', 'shadowlastchange', 'shadowmax', 'shadowinactive');
 	}
 
 }
