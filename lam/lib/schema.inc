@@ -1549,7 +1549,7 @@ function get_schema_objectclasses($dn=null, $use_cache=true )
 
 	$raw_oclasses = _get_raw_schema('objectclasses', $dn );
 	if( ! $raw_oclasses )
-		return false;
+		return array();
 
 	// build the array of objectClasses
 	$object_classes = array();
@@ -1634,7 +1634,7 @@ function get_schema_attributes($dn = null, $use_cache=true )
 
 	$raw_attrs = _get_raw_schema('attributeTypes', $dn );
 	if( ! $raw_attrs )
-		return false;
+		return array();
 
 	// build the array of attribueTypes
 	$syntaxes = get_schema_syntaxes($dn );
