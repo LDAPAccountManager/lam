@@ -5,6 +5,7 @@ use LAM\REMOTE\RemoteServerConfiguration;
 use \LAM\TYPES\TypeManager;
 use function LAM\TYPES\getScopeFromTypeId;
 use LAM\TYPES\ConfiguredType;
+
 /*
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)

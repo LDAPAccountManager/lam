@@ -952,10 +952,7 @@ class lamUserList extends lamList {
 			$attrs[] = 'sambaAcctFlags';
 			$attrs[] = 'userAccountControl';
 			$attrs[] = 'lockoutTime';
-			$attrs[] = 'nsAccountLock';
-			$attrs[] = 'accountUnlockTime';
 			$attrs[] = 'accountExpires';
-			$attrs[] = 'passwordExpirationTime';
 			$attrs[] = 'objectClass';
 		}
 		return $attrs;
@@ -1050,14 +1047,16 @@ class lamUserList extends lamList {
 		elseif ($accountStatus->isPartiallyExpired()) {
 			$mainIcon = 'expired.svg';
 		}
-		$detailsTable = new htmlTable();
-		foreach ($accountStatus->getDetails() as $detail) {
-			$detailsTable->addElement(new htmlOutputText($detail->getDetails()));
-			$detailsTable->addElement(new htmlImage('../../graphics/' . $detail->getIcon(), 16, 16));
-			$detailsTable->addNewLine();
-		}
 		$statusIcon = new htmlImage('../../graphics/' . $mainIcon, 16, 16);
-		$statusIcon->setHelpData(_('Account status'), $detailsTable);
+		if (!empty($accountStatus->getDetails())) {
+			$detailsTable = new htmlTable();
+			foreach ($accountStatus->getDetails() as $detail) {
+				$detailsTable->addElement(new htmlOutputText($detail->getDetails()));
+				$detailsTable->addElement(new htmlImage('../../graphics/' . $detail->getIcon(), 16, 16));
+				$detailsTable->addNewLine();
+			}
+			$statusIcon->setHelpData(_('Account status'), $detailsTable);
+		}
 		$statusContent->addElement($statusIcon);
 
 		//------------------------------------------------------
