@@ -70,6 +70,7 @@ if [ "$1" = "configure" ]; then
                    rm -f /etc/$server/conf.d/ldap-account-manager
                fi
                if [ -d /etc/$server/conf-available ]; then
+                   test -x /usr/sbin/a2query && test -x /usr/sbin/a2enconf || continue
                    if [ ! -e /etc/$server/conf-available/ldap-account-manager.conf ]; then
                        if [ -h /etc/$server/conf-available/ldap-account-manager.conf ]; then
                            rm /etc/$server/conf-available/ldap-account-manager.conf

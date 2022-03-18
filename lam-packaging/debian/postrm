@@ -25,6 +25,7 @@ if [ -f /usr/share/debconf/confmodule ]; then
 				case "$server" in
 						apache2)
 								set +e
+								test -x /usr/sbin/a2query && test -x /usr/sbin/a2disconf || continue
 								a2query -q -c ldap-account-manager && a2disconf -q ldap-account-manager
 								set -e
 								rm -f /etc/$server/conf-available/ldap-account-manager.conf

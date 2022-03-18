@@ -1,4 +1,4 @@
-March 2022 7.9
+09.03.2022 7.9
   - Tree view:
    -> Support multiple roots (e.g. add "cn=config")
    -> Added function to check password hashes against a given password
