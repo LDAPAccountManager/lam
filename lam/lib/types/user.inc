@@ -948,7 +948,6 @@ class lamUserList extends lamList {
 				$moduleObject = moduleCache::getModule($module, $this->type->getScope());
 				$attrs = array_merge($attrs, $moduleObject->getAccountStatusRequiredAttributes($this->type));
 			}
-			$attrs[] = 'pwdAccountLockedTime';
 			$attrs[] = 'sambaAcctFlags';
 			$attrs[] = 'userAccountControl';
 			$attrs[] = 'lockoutTime';
