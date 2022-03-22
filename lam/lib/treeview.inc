@@ -1492,7 +1492,6 @@ class TreeView {
 			ob_end_clean();
 			return json_encode(array('error' => $content));
 		}
-		$newDn = extractRDN($dn) . ',' . $targetDn;
 		return json_encode(array());
 	}
 

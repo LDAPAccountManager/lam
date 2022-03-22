@@ -598,10 +598,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 	*/
 	function module_ready() {
 		$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
-		if ($attrs['gidNumber'][0]=='') return false;
-		if ($attrs['uidNumber'][0]=='') return false;
-		if ($attrs['uid'][0]=='') return false;
-		return true;
+		return isset($attrs['gidNumber'][0]) && isset($attrs['uidNumber'][0]) && isset($attrs['uid'][0]);
 	}
 
 	/**
