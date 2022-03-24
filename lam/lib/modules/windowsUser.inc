@@ -5,7 +5,7 @@ use LAM\ImageUtils\ImageManipulationFactory;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2021  Roland Gruber
+  Copyright (C) 2013 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -34,7 +34,22 @@ use LAM\ImageUtils\ImageManipulationFactory;
 *
 * @package modules
 */
-class windowsUser extends baseModule implements passwordService {
+class windowsUser extends baseModule implements passwordService,AccountStatusProvider {
+
+	/**
+	 * ID for locked password status.
+	 */
+	const STATUS_PASSWORD_LOCKED = "WINDOWS_PASSWORD_LOCKED";
+
+	/**
+	 * ID for locked account status.
+	 */
+	const STATUS_ACCOUNT_LOCKED = "WINDOWS_ACCOUNT_LOCKED";
+
+	/**
+	 * ID for expired account status.
+	 */
+	const STATUS_ACCOUNT_EXPIRED = "WINDOWS_ACCOUNT_EXPIRED";
 
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
@@ -3672,10 +3687,9 @@ class windowsUser extends baseModule implements passwordService {
 	 * Returns if the account is currently deactivated.
 	 *
 	 * @param array $attrs LDAP attributes
-	 * @param ConfiguredType type
-	 * @return DateTime locked till or null
+	 * @return DateTime|false false or locked till
 	 */
-	public static function getPasswordLocked($attrs, $type) {
+	public static function getPasswordLocked($attrs) {
 		$myAttrs = array_change_key_case($attrs, CASE_LOWER);
 		if (empty($myAttrs['lockouttime'][0])) {
 			return false;
@@ -3693,7 +3707,7 @@ class windowsUser extends baseModule implements passwordService {
 			$unlockTime->setTimezone(getTimeZone());
 			return $unlockTime;
 		}
-		return null;
+		return false;
 	}
 
 	/**
@@ -4410,6 +4424,34 @@ class windowsUser extends baseModule implements passwordService {
 	 */
 	public function getPasswordQuickChangeIsPasswordInHistory(string $password): bool {
 		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getAccountStatusDetails(ConfiguredType $type, ?array &$attributes): array {
+		if ($attributes === null) {
+			$attributes = $this->attributes;
+		}
+		$details = array();
+		if (self::isDeactivated($attributes)) {
+			$details[] = AccountStatusDetails::newLocked(_('Windows'), self::STATUS_ACCOUNT_LOCKED);
+		}
+		$passwordLockedTime = self::getPasswordLocked($attributes);
+		if ($passwordLockedTime !== false) {
+			$details[] = AccountStatusDetails::newLocked(_('Locked till') . ' ' . $passwordLockedTime->format('Y-m-d H:i:s'), self::STATUS_PASSWORD_LOCKED);
+		}
+		if (self::isAccountExpired($attributes)) {
+			$details[] = AccountStatusDetails::newExpired(_('Windows'), self::STATUS_ACCOUNT_EXPIRED);
+		}
+		return $details;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getAccountStatusRequiredAttributes(ConfiguredType $type): array {
+		return array('useraccountcontrol', 'lockouttime', 'accountexpires');
 	}
 
 }

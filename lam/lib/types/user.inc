@@ -281,7 +281,7 @@ class user extends baseType {
 			if (windowsUser::isDeactivated($attrs)) {
 				$windowsLocked = true;
 			}
-			$windowsPasswordLockedTime = windowsUser::getPasswordLocked($attrs, $this->getType());
+			$windowsPasswordLockedTime = windowsUser::getPasswordLocked($attrs);
 			if ($windowsPasswordLockedTime != null) {
 				$windowsPasswordLocked = true;
 			}
@@ -948,10 +948,6 @@ class lamUserList extends lamList {
 				$moduleObject = moduleCache::getModule($module, $this->type->getScope());
 				$attrs = array_merge($attrs, $moduleObject->getAccountStatusRequiredAttributes($this->type));
 			}
-			$attrs[] = 'userAccountControl';
-			$attrs[] = 'lockoutTime';
-			$attrs[] = 'accountExpires';
-			$attrs[] = 'objectClass';
 		}
 		return $attrs;
 	}
@@ -1060,112 +1056,6 @@ class lamUserList extends lamList {
 			$statusIcon->setHelpData(_('Account status'), $detailsTable);
 		}
 		$statusContent->addElement($statusIcon);
-
-		//------------------------------------------------------
-		// check status
-		$unixAvailable = self::isUnixAvailable($attrs);
-		$sambaAvailable = self::isSambaAvailable($attrs);
-		$ppolicyAvailable = $this->isPPolicyAvailable($attrs);
-		$windowsAvailable = self::isWindowsAvailable($attrs);
-		$unixLocked = self::isUnixLocked($attrs);
-		$sambaLocked = self::isSambaLocked($attrs);
-		$ppolicyLocked = self::isPPolicyLocked($attrs);
-		$windowsLocked = self::isWindowsLocked($attrs);
-		$windowsPasswordLockedTime = $this->getWindowsPasswordLockedTime($attrs);
-		$windowsPasswordLocked = ($windowsPasswordLockedTime != null);
-		$is389dsDeactivated = self::is389dsDeactivated($attrs);
-		$is389dsLocked = self::is389dsLocked($attrs);
-		$is389dsPwdExpired = self::is389dsPwdExpired($attrs);
-		$partiallyLocked = $unixLocked || $sambaLocked
-					|| $ppolicyLocked || $windowsLocked || $windowsPasswordLocked
-					|| $is389dsDeactivated || $is389dsLocked || $is389dsPwdExpired;
-		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable ||
-				$is389dsDeactivated || $is389dsLocked)
-							&& (!$unixAvailable || $unixLocked)
-							&& (!$sambaAvailable || $sambaLocked)
-							&& (!$ppolicyAvailable || $ppolicyLocked)
-							&& (!$windowsAvailable || $windowsLocked);
-		$shadowExpired = shadowAccount::isAccountExpired($attrs);
-		$shadowPasswordExpired = shadowAccount::isPasswordExpired($attrs);
-		$windowsExpired = windowsUser::isAccountExpired($attrs);
-		$expired = $shadowExpired || $shadowPasswordExpired || $windowsExpired;
-		$icon = 'unlocked.svg';
-		if ($expired) {
-			$icon = 'expired.svg';
-		}
-		elseif ($fullyLocked) {
-			$icon = 'locked.svg';
-		}
-		elseif ($partiallyLocked) {
-			$icon = 'partiallyLocked.svg';
-		}
-		// print icon and detail tooltips
-		if ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable ||
-				$is389dsDeactivated || $is389dsLocked || $is389dsPwdExpired || $expired) {
-			$tipContent = '<table border=0>';
-			// Shadow expired
-			if ($shadowExpired) {
-				$tipContent .= '<tr><td>' . _('Shadow') . ': ' . _('Account expiration') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/expired.svg&quot;></td></tr>';
-			}
-			elseif ($shadowPasswordExpired) {
-				$tipContent .= '<tr><td>' . _('Shadow') . ': ' . _('Password expiration') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/expired.svg&quot;></td></tr>';
-			}
-			// Unix
-			if ($unixAvailable) {
-				$unixIcon = 'unlocked.svg';
-				if ($unixLocked) {
-					$unixIcon = 'locked.svg';
-				}
-				$tipContent .= '<tr><td>' . _('Unix') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $unixIcon . '&quot;></td></tr>';
-			}
-			// Samba
-			if ($sambaAvailable) {
-				$sambaIcon = 'unlocked.svg';
-				if ($sambaLocked) {
-					$sambaIcon = 'locked.svg';
-				}
-				$tipContent .= '<tr><td>' . _('Samba 3') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $sambaIcon . '&quot;></td></tr>';
-			}
-			// PPolicy
-			if ($ppolicyAvailable) {
-				$ppolicyIcon = 'unlocked.svg';
-				if ($ppolicyLocked) {
-					$ppolicyIcon = 'locked.svg';
-				}
-				$tipContent .= '<tr><td>' . _('Password policy') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $ppolicyIcon . '&quot;></td></tr>';
-			}
-			// Windows
-			if ($windowsAvailable) {
-				$windowsIcon = 'unlocked.svg';
-				if ($windowsLocked) {
-					$windowsIcon = 'locked.svg';
-				}
-				$tipContent .= '<tr><td>' . _('Windows') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $windowsIcon . '&quot;></td></tr>';
-				if ($windowsExpired) {
-					$tipContent .= '<tr><td>' . _('Windows') . ': ' . _('Account expiration') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/expired.svg&quot;></td></tr>';
-				}
-			}
-			if ($windowsAvailable && $windowsPasswordLocked) {
-				$tipContent .= '<tr><td>' . _('Locked till') . '&nbsp;&nbsp;</td><td>' . $windowsPasswordLockedTime->format('Y-m-d H:i:s') . '</td></tr>';
-			}
-			// 389 locked
-			if ($is389dsLocked) {
-				$tipContent .= '<tr><td>' . _('Locked') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/locked.svg&quot;></td></tr>';
-			}
-			// 389 deactivation
-			if ($is389dsDeactivated) {
-				$tipContent .= '<tr><td>' . _('Deactivated') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/locked.svg&quot;></td></tr>';
-			}
-			// 389 password expired
-			if ($is389dsPwdExpired) {
-				$tipContent .= '<tr><td>' . _('Password expired') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/locked.svg&quot;></td></tr>';
-			}
-			$tipContent .= '</table>';
-			$statusContent->addElement(new htmlOutputText('<img helptitle="' . _('Account status') . '" helpdata="' . $tipContent . '" alt="status" height=16 width=16 src="../../graphics/' . $icon . '">', false));
-		}
-		else {
-			$statusContent->addElement(new htmlImage('../../graphics/' . $icon, 16, 16, 'status'));
-		}
 		return $statusContent;
 	}
 
@@ -1286,7 +1176,7 @@ class lamUserList extends lamList {
 	 * @return DateTime Windows password lock time or null
 	 */
 	public function getWindowsPasswordLockedTime(&$attrs) {
-		return windowsUser::getPasswordLocked($attrs, $this->type);
+		return windowsUser::getPasswordLocked($attrs);
 	}
 
 	/**
