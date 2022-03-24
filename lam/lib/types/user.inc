@@ -948,7 +948,6 @@ class lamUserList extends lamList {
 				$moduleObject = moduleCache::getModule($module, $this->type->getScope());
 				$attrs = array_merge($attrs, $moduleObject->getAccountStatusRequiredAttributes($this->type));
 			}
-			$attrs[] = 'sambaAcctFlags';
 			$attrs[] = 'userAccountControl';
 			$attrs[] = 'lockoutTime';
 			$attrs[] = 'accountExpires';
@@ -1050,8 +1049,12 @@ class lamUserList extends lamList {
 		if (!empty($accountStatus->getDetails())) {
 			$detailsTable = new htmlTable();
 			foreach ($accountStatus->getDetails() as $detail) {
-				$detailsTable->addElement(new htmlOutputText($detail->getDetails()));
-				$detailsTable->addElement(new htmlImage('../../graphics/' . $detail->getIcon(), 16, 16));
+				$label = new htmlOutputText($detail->getDetails());
+				$label->setNoWrap(true);
+				$detailsTable->addElement($label);
+				$statusDetailIcon = new htmlImage('../../graphics/' . $detail->getIcon(), '16px', '16px');
+				$statusDetailIcon->setCSSClasses(array('fixed-size-16'));
+				$detailsTable->addElement($statusDetailIcon);
 				$detailsTable->addNewLine();
 			}
 			$statusIcon->setHelpData(_('Account status'), $detailsTable);

@@ -815,6 +815,13 @@ img.help-icon {
 	min-height: 16px;
 }
 
+img.fixed-size-16 {
+	width: 16px;
+	height: 16px;
+	min-width: 16px;
+	min-height: 16px;
+}
+
 img.photo {
 	max-width: 200px;
 	max-height: 400px;
