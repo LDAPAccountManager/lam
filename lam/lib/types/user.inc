@@ -958,41 +958,16 @@ class lamUserList extends lamList {
 	private function injectAccountStatusAttribute() {
 		$entryCount = sizeof($this->ldapEntries);
 		for ($i = 0; $i < $entryCount; $i++) {
-			$unixAvailable = self::isUnixAvailable($this->ldapEntries[$i]);
-			$sambaAvailable = self::isSambaAvailable($this->ldapEntries[$i]);
-			$ppolicyAvailable = $this->isPPolicyAvailable($this->ldapEntries[$i]);
-			$windowsAvailable = self::isWindowsAvailable($this->ldapEntries[$i]);
-			$unixLocked = self::isUnixLocked($this->ldapEntries[$i]);
-			$sambaLocked = self::isSambaLocked($this->ldapEntries[$i]);
-			$ppolicyLocked = self::isPPolicyLocked($this->ldapEntries[$i]);
-			$windowsLocked = self::isWindowsLocked($this->ldapEntries[$i]);
-			$windowsPasswordLocked = ($this->getWindowsPasswordLockedTime($this->ldapEntries[$i]) != null);
-			$is389dsLocked = self::is389dsLocked($this->ldapEntries[$i]);
-			$is389dsDeactivated = self::is389dsDeactivated($this->ldapEntries[$i]);
-			$is389dsPwdExpired = self::is389dsPwdExpired($this->ldapEntries[$i]);
-			$hasLocked = ($unixAvailable && $unixLocked)
-							|| ($sambaAvailable && $sambaLocked)
-							|| ($ppolicyAvailable && $ppolicyLocked)
-							|| ($windowsAvailable && ($windowsLocked || $windowsPasswordLocked))
-							|| $is389dsDeactivated || $is389dsPwdExpired
-							|| $is389dsLocked;
-			$hasUnlocked = ($unixAvailable && !$unixLocked)
-							|| ($sambaAvailable && !$sambaLocked)
-							|| ($ppolicyAvailable && !$ppolicyLocked)
-							|| ($windowsAvailable && !$windowsLocked);
-			$shadowExpired = shadowAccount::isAccountExpired($this->ldapEntries[$i]);
-			$shadowPasswordExpired = shadowAccount::isPasswordExpired($this->ldapEntries[$i]);
-			$windowsExpired = windowsUser::isAccountExpired($this->ldapEntries[$i]);
-			$expired = $shadowExpired || $shadowPasswordExpired || $windowsExpired;
+			$accountStatus = $this->calculateAccountStatus($this->ldapEntries[$i]);
 			$status = self::FILTER_UNLOCKED;
-			if ($expired) {
-				$status = self::FILTER_EXPIRED;
+			if ($accountStatus->isLocked()) {
+				$status = self::FILTER_LOCKED;
 			}
-			elseif ($hasLocked && $hasUnlocked) {
+			elseif ($accountStatus->isPartiallyLocked()) {
 				$status = self::FILTER_SEMILOCKED;
 			}
-			elseif (!$hasUnlocked && $hasLocked) {
-				$status = self::FILTER_LOCKED;
+			elseif ($accountStatus->isPartiallyExpired() || $accountStatus->isExpired()) {
+				$status = self::FILTER_EXPIRED;
 			}
 			// add virtual attribute
 			$this->ldapEntries[$i][self::ATTR_ACCOUNT_STATUS][0] = $status;
