@@ -1660,6 +1660,7 @@ class accountContainer {
 		logNewMessage(LOG_DEBUG, "Edit account " . $dn);
 		$this->extraInfoAttributes['INFO.isNewAccount'] = 'no';
 		$this->extraInfoAttributes['INFO.passwordUpdated'] = 'no';
+		$this->extraInfoAttributes['INFO.passwordChangeType'] = 'none';
 		$this->module = array();
 		$modules = $_SESSION['config']->get_AccountModules($this->type->getId());
 		$filter = 'objectClass=*';
