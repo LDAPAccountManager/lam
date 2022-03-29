@@ -2529,8 +2529,8 @@ interface AccountStatusProvider {
 	/**
 	 * Returns the list of account status detail lines.
 	 *
-	 * @param ConfiguredType type
-	 * @param array $attributes LDAP attributes (use account container attributes if not provided)
+	 * @param ConfiguredType $type
+	 * @param array|null $attributes LDAP attributes (use account container attributes if not provided)
 	 * @return AccountStatusDetails[] status details
 	 */
 	public function getAccountStatusDetails(ConfiguredType $type, ?array &$attributes): array;
@@ -2542,6 +2542,33 @@ interface AccountStatusProvider {
 	 * @return array attribute names
 	 */
 	public function getAccountStatusRequiredAttributes(ConfiguredType $type): array;
+
+	/**
+	 * Returns a list of options how the account could be locked.
+	 *
+	 * @param ConfiguredType $type type
+	 * @param array|null $attributes LDAP attributes
+	 * @return AccountStatusDetails[] lock options
+	 */
+	public function getAccountStatusPossibleLockOptions(ConfiguredType $type, ?array &$attributes): array;
+
+	/**
+	 * Locks the account with the given lock IDs.
+	 *
+	 * @param ConfiguredType $type type
+	 * @param array|null $attributes LDAP attributes
+	 * @param array $lockIds IDs from AccountStatusDetails
+	 */
+	public function accountStatusPerformLock(ConfiguredType $type, ?array &$attributes, array $lockIds): void;
+
+	/**
+	 * Unlocks the account with the given lock IDs.
+	 *
+	 * @param ConfiguredType $type type
+	 * @param array|null $attributes LDAP attributes
+	 * @param array $lockIds IDs from AccountStatusDetails
+	 */
+	public function accountStatusPerformUnlock(ConfiguredType $type, ?array &$attributes, array $lockIds): void;
 
 }
 
@@ -2560,6 +2587,48 @@ class AccountStatus {
 	 */
 	public function __construct(array $details) {
 		$this->details = $details;
+	}
+
+	/**
+	 * Creates the account status from the given type and LDAP attributes.
+	 *
+	 * @param ConfiguredType $type type
+	 * @param array $attributes LDAP attributes
+	 * @return AccountStatus status
+	 */
+	public static function fromAttributes(ConfiguredType $type, array $attributes): AccountStatus {
+		$modules = $_SESSION['config']->get_AccountModules($type->getId());
+		$details = array();
+		foreach ($modules as $module) {
+			$interfaces = class_implements($module);
+			if (!in_array('AccountStatusProvider', $interfaces)) {
+				continue;
+			}
+			$moduleObject = moduleCache::getModule($module, $type->getScope());
+			$details = array_merge($details, $moduleObject->getAccountStatusDetails($type, $attributes));
+		}
+		return new AccountStatus($details);
+	}
+
+	/**
+	 * Creates the lockable account status from the given type and LDAP attributes.
+	 *
+	 * @param ConfiguredType $type type
+	 * @param array $attributes LDAP attributes
+	 * @return AccountStatus lockable status
+	 */
+	public static function lockableFromAttributes(ConfiguredType $type, array $attributes): AccountStatus {
+		$modules = $_SESSION['config']->get_AccountModules($type->getId());
+		$details = array();
+		foreach ($modules as $module) {
+			$interfaces = class_implements($module);
+			if (!in_array('AccountStatusProvider', $interfaces)) {
+				continue;
+			}
+			$moduleObject = moduleCache::getModule($module, $type->getScope());
+			$details = array_merge($details, $moduleObject->getAccountStatusPossibleLockOptions($type, $attributes));
+		}
+		return new AccountStatus($details);
 	}
 
 	/**
@@ -2772,6 +2841,15 @@ class AccountStatusDetails {
 	 */
 	public function getDetails(): string {
 		return $this->details;
+	}
+
+	/**
+	 * Returns the id.
+	 *
+	 * @return string id
+	 */
+	public function getId(): string {
+		return $this->id;
 	}
 
 }

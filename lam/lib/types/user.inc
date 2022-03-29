@@ -958,7 +958,7 @@ class lamUserList extends lamList {
 	private function injectAccountStatusAttribute() {
 		$entryCount = sizeof($this->ldapEntries);
 		for ($i = 0; $i < $entryCount; $i++) {
-			$accountStatus = $this->calculateAccountStatus($this->ldapEntries[$i]);
+			$accountStatus = AccountStatus::fromAttributes($this->type, $this->ldapEntries[$i]);
 			$status = self::FILTER_UNLOCKED;
 			if ($accountStatus->isLocked()) {
 				$status = self::FILTER_LOCKED;
@@ -1002,7 +1002,7 @@ class lamUserList extends lamList {
 	 */
 	private function getAccountStatus(&$attrs) {
 		$statusContent = new htmlGroup();
-		$accountStatus = $this->calculateAccountStatus($attrs);
+		$accountStatus = AccountStatus::fromAttributes($this->type, $attrs);
 		$mainIcon = 'unlocked.svg';
 		if ($accountStatus->isLocked()) {
 			$mainIcon = 'locked.svg';
@@ -1032,26 +1032,6 @@ class lamUserList extends lamList {
 		}
 		$statusContent->addElement($statusIcon);
 		return $statusContent;
-	}
-
-	/**
-	 * Returns the account status calculated from module data.
-	 *
-	 * @param array $attributes LDAP attributes
-	 * @return AccountStatus status
-	 */
-	private function calculateAccountStatus(array &$attributes): AccountStatus {
-		$modules = $_SESSION['config']->get_AccountModules($this->type->getId());
-		$details = array();
-		foreach ($modules as $module) {
-			$interfaces = class_implements($module);
-			if (!in_array('AccountStatusProvider', $interfaces)) {
-				continue;
-			}
-			$moduleObject = moduleCache::getModule($module, $this->type->getScope());
-			$details = array_merge($details, $moduleObject->getAccountStatusDetails($this->type, $attributes));
-		}
-		return new AccountStatus($details);
 	}
 
 	/**
