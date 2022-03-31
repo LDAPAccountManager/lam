@@ -156,7 +156,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		// managed attributes
 		$return['attributes'] = array('uid', 'employeeType', 'givenName', 'jpegPhoto', 'mail', 'manager', 'mobile',
 			'title', 'telephoneNumber', 'facsimileTelephoneNumber', 'street', 'postOfficeBox', 'postalCode', 'postalAddress',
-			'sn', 'userPassword', 'description', 'homePhone', 'pager', 'roomNumber', 'businessCategory', 'l', 'st',
+			'sn', 'userpassword', 'description', 'homePhone', 'pager', 'roomNumber', 'businessCategory', 'l', 'st',
 			'physicalDeliveryOfficeName', 'carLicense', 'departmentNumber', 'o', 'employeeNumber', 'initials',
 			'registeredAddress', 'labeledURI', 'ou', 'userCertificate;binary', 'INFO.userPasswordClearText');
 		// self service search attributes
@@ -908,8 +908,8 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		}
 		// password status change
 		if (!$this->isUnixActive()) {
-			$pwdOrig = empty($this->orig['userPassword'][0]) ? '' : $this->orig['userPassword'][0];
-			$pwdNew = empty($this->attributes['userPassword'][0]) ? '' : $this->attributes['userPassword'][0];
+			$pwdOrig = empty($this->orig['userpassword'][0]) ? '' : $this->orig['userpassword'][0];
+			$pwdNew = empty($this->attributes['userpassword'][0]) ? '' : $this->attributes['userpassword'][0];
 			if ((pwd_is_enabled($pwdOrig) && pwd_is_enabled($pwdNew)) || (!pwd_is_enabled($pwdOrig) && !pwd_is_enabled($pwdNew))) {
 				$return[$this->getAccountContainer()->dn_orig]['info']['userPasswordStatusChange'][0] = 'unchanged';
 			}
@@ -1160,19 +1160,19 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			}
 			if (!$this->isAdminReadOnly('userPassword')) {
 				if (isset($_POST['lockPassword'])) {
-					$this->attributes['userPassword'][0] = pwd_disable($this->attributes['userPassword'][0]);
+					$this->attributes['userpassword'][0] = pwd_disable($this->attributes['userpassword'][0]);
 				}
 				if (isset($_POST['unlockPassword'])) {
-					$this->attributes['userPassword'][0] = pwd_enable($this->attributes['userPassword'][0]);
+					$this->attributes['userpassword'][0] = pwd_enable($this->attributes['userpassword'][0]);
 				}
 				if (isset($_POST['removePassword'])) {
-					unset($this->attributes['userPassword']);
+					unset($this->attributes['userpassword']);
 				}
 				// set SASL password for new and renamed users
 				if (!empty($this->attributes['uid'][0]) && !empty($this->moduleSettings['posixAccount_pwdHash'][0])
 						&& ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')
 						&& ($this->getAccountContainer()->isNewAccount || ($this->attributes['uid'][0] != $this->orig['uid'][0]))) {
-					$this->attributes['userPassword'][0] = '{SASL}' . $this->attributes['uid'][0];
+					$this->attributes['userpassword'][0] = '{SASL}' . $this->attributes['uid'][0];
 				}
 				// set K5KEY password for new users
 				if (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'K5KEY')) {
@@ -1581,10 +1581,10 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			}
 		}
 		// password buttons
-		if (!$this->isUnixActive() && checkIfWriteAccessIsAllowed($this->get_scope()) && isset($this->attributes['userPassword'][0]) && !$this->isAdminReadOnly('userPassword')) {
+		if (!$this->isUnixActive() && checkIfWriteAccessIsAllowed($this->get_scope()) && isset($this->attributes['userpassword'][0]) && !$this->isAdminReadOnly('userPassword')) {
 			$fieldContainer->add(new htmlSubTitle(_('Password')), 12);
 			$pwdContainer = new htmlGroup();
-			if (pwd_is_enabled($this->attributes['userPassword'][0])) {
+			if (pwd_is_enabled($this->attributes['userpassword'][0])) {
 				$pwdContainer->addElement(new htmlButton('lockPassword', _('Lock password')));
 			}
 			else {
@@ -2444,16 +2444,16 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 				}
 				// set SASL password
 				elseif (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')) {
-					$partialAccounts[$i]['userPassword'] = '{SASL}' . $partialAccounts[$i]['uid'];
+					$partialAccounts[$i]['userpassword'] = '{SASL}' . $partialAccounts[$i]['uid'];
 				}
 				// set K5KEY password
 				elseif (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'K5KEY')) {
-					$partialAccounts[$i]['userPassword'] = pwd_hash('x', true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+					$partialAccounts[$i]['userpassword'] = pwd_hash('x', true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 				}
 				// set normal password
 				else {
 					if (($rawAccounts[$i][$ids['inetOrgPerson_userPassword']] != "") && (get_preg($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], 'password'))) {
-						$partialAccounts[$i]['userPassword'] = pwd_hash($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+						$partialAccounts[$i]['userpassword'] = pwd_hash($rawAccounts[$i][$ids['inetOrgPerson_userPassword']], true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 						$partialAccounts[$i]['INFO.userPasswordClearText'] = $rawAccounts[$i][$ids['inetOrgPerson_userPassword']]; // for custom scripts etc.
 					}
 					elseif ($rawAccounts[$i][$ids['inetOrgPerson_userPassword']] != "") {
@@ -4014,7 +4014,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		// set SASL password
 		if (!empty($this->attributes['uid'][0]) && !empty($this->moduleSettings['posixAccount_pwdHash'][0])
 				&& ($this->moduleSettings['posixAccount_pwdHash'][0] === 'SASL')) {
-			$this->attributes['userPassword'][0] = '{SASL}' . $this->attributes['uid'][0];
+			$this->attributes['userpassword'][0] = '{SASL}' . $this->attributes['uid'][0];
 		}
 		// delay on ldap_exop
 		elseif (!empty($this->moduleSettings['posixAccount_pwdHash'][0]) && ($this->moduleSettings['posixAccount_pwdHash'][0] === 'LDAP_EXOP')) {
@@ -4022,7 +4022,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		}
 		// set normal password
 		else {
-			$this->attributes['userPassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+			$this->attributes['userpassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 		}
 		return array();
 	}
@@ -4323,6 +4323,20 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	}
 
 	/**
+	 * Returns if the password of the current account is locked.
+	 *
+	 * @param ?array $attributes LDAP attribute data
+	 * @return bool password is locked
+	 */
+	public function isLocked(?array $attributes = null): bool {
+		if ($attributes === null) {
+			$attributes = array_change_key_case($this->attributes, CASE_LOWER);
+		}
+		return isset($attributes['userpassword'][0])
+			&& !pwd_is_enabled($attributes['userpassword'][0]);
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public function supportsPasswordQuickChangePage(): bool {
@@ -4385,7 +4399,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		}
 		$attrs = array();
 		if (isset($_POST['updateUnixPwd'])) {
-			$attrs['userPassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+			$attrs['userpassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 		}
 		return $attrs;
 	}
@@ -4449,17 +4463,50 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	}
 
 	/**
-	 * Returns if the password of the current account is locked.
-	 *
-	 * @param ?array $attributes LDAP attribute data
-	 * @return bool password is locked
+	 * @inheritDoc
 	 */
-	public function isLocked(?array $attributes = null): bool {
-		if ($attributes === null) {
-			$attributes = array_change_key_case($this->attributes, CASE_LOWER);
+	public function getAccountStatusPossibleLockOptions(ConfiguredType $type, ?array &$attributes): array {
+		if ($this->isUnixActive($type->getModules())) {
+			return array();
 		}
-		return isset($attributes['userpassword'][0])
-			&& !pwd_is_enabled($attributes['userpassword'][0]);
+		if ($attributes === null) {
+			$attributes = $this->attributes;
+		}
+		$options = array();
+		if (!self::isLocked($attributes) && isset($attributes['userpassword'][0]) && pwd_is_lockable($attributes['userpassword'][0])) {
+			$options[] = AccountStatusDetails::newLocked(_('Personal'), self::STATUS_PASSWORD_LOCKED);
+		}
+		return $options;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function accountStatusPerformLock(ConfiguredType $type, ?array &$attributes, array $lockIds): void {
+		if ($this->isUnixActive($type->getModules())) {
+			return;
+		}
+		if ($attributes === null) {
+			$attributes = &$this->attributes;
+		}
+		if (in_array(self::STATUS_PASSWORD_LOCKED, $lockIds)) {
+			$attributes['userpassword'][0] = pwd_disable($attributes['userpassword'][0]);
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function accountStatusPerformUnlock(ConfiguredType $type, ?array &$attributes, array $lockIds): void {
+		if ($this->isUnixActive($type->getModules())) {
+			return;
+		}
+		if ($attributes === null) {
+			$attributes = &$this->attributes;
+		}
+		if (in_array(self::STATUS_PASSWORD_LOCKED, $lockIds)) {
+			$attributes['userpassword'][0] = pwd_enable($attributes['userpassword'][0]);
+		}
 	}
 
 }
