@@ -3442,7 +3442,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 							if (empty($this->selfServiceSettings->moduleSettings['posixAccount_useOldPwd']) || ($this->selfServiceSettings->moduleSettings['posixAccount_useOldPwd'][0] != 'true')) {
 								// set SASL password
 								if (!empty($attributes['uid'][0]) && ($passwordHash === 'SASL')) {
-									$return['mod']['userPassword'][0] = '{SASL}' . $attributes['uid'][0];
+									$return['mod']['userpassword'][0] = '{SASL}' . $attributes['uid'][0];
 								}
 								elseif ($passwordHash === 'LDAP_EXOP') {
 									// no LDAP modify action, use ldap_exop_passwd
@@ -3450,13 +3450,13 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 								}
 								// set other password hashes
 								else {
-									$return['mod']['userPassword'][0] = pwd_hash($_POST['posixAccount_password'], true, $passwordHash);
+									$return['mod']['userpassword'][0] = pwd_hash($_POST['posixAccount_password'], true, $passwordHash);
 								}
 
 							}
 							else {
-								$return['add']['userPassword'][0] = pwd_hash($_POST['posixAccount_password'], true, $passwordHash);
-								$return['del']['userPassword'][0] = $_POST['posixAccount_passwordOld'];
+								$return['add']['userpassword'][0] = pwd_hash($_POST['posixAccount_password'], true, $passwordHash);
+								$return['del']['userpassword'][0] = $_POST['posixAccount_passwordOld'];
 							}
 							$return['info']['userPasswordClearText'][0] = $_POST['posixAccount_password'];
 							if (isset($attributes['shadowLastChange'][0])) {
@@ -4080,7 +4080,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		if ($this->isWindows($modules)) {
 			return 'unixUserPassword';
 		}
-		return 'userPassword';
+		return 'userpassword';
 	}
 
 	/**
@@ -4207,7 +4207,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		}
 		$attrs = array();
 		if (isset($_POST['updateUnixPwd'])) {
-			$attrs['userPassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+			$attrs['userpassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 		}
 		return $attrs;
 	}
@@ -4266,6 +4266,47 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			return array();
 		}
 		return array($this->getPasswordAttrName($type->getModules()));
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getAccountStatusPossibleLockOptions(ConfiguredType $type, ?array &$attributes): array {
+		if ($attributes === null) {
+			$attributes = $this->attributes;
+		}
+		$options = array();
+		$attributeName = $this->getPasswordAttrName($type->getModules());
+		if (!self::isLocked($type->getModules(), $attributes) && isset($attributes[$attributeName][0]) && pwd_is_lockable($attributes[$attributeName][0])) {
+			$options[] = AccountStatusDetails::newLocked(_('Unix'), self::STATUS_PASSWORD_LOCKED);
+		}
+		return $options;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function accountStatusPerformLock(ConfiguredType $type, ?array &$attributes, array $lockIds): void {
+		if ($attributes === null) {
+			$attributes = &$this->attributes;
+		}
+		$attributeName = $this->getPasswordAttrName($type->getModules());
+		if (in_array(self::STATUS_PASSWORD_LOCKED, $lockIds)) {
+			$attributes[$attributeName][0] = pwd_disable($attributes[$attributeName][0]);
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function accountStatusPerformUnlock(ConfiguredType $type, ?array &$attributes, array $lockIds): void {
+		if ($attributes === null) {
+			$attributes = &$this->attributes;
+		}
+		$attributeName = $this->getPasswordAttrName($type->getModules());
+		if (in_array(self::STATUS_PASSWORD_LOCKED, $lockIds)) {
+			$attributes[$attributeName][0] = pwd_enable($attributes[$attributeName][0]);
+		}
 	}
 
 }
