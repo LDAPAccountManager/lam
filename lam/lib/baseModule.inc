@@ -863,7 +863,10 @@ abstract class baseModule {
 			$attrName = $name;
 		}
 		$value = '';
-		if (isset($this->attributes[$attrName]) && (sizeof($this->attributes[$attrName]) > 0)) {
+		if (isset($this->attributes[strtolower($attrName)][0])) {
+			$attrName = strtolower($attrName);
+		}
+		if (isset($this->attributes[$attrName][0])) {
 			natcasesort($this->attributes[$attrName]);
 			$value = implode($delimiter, $this->attributes[$attrName]);
 			$value = trim($value);
