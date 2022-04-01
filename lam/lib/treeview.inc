@@ -773,7 +773,8 @@ class TreeView {
 		$row = new htmlResponsiveRow();
 		$row->add(new htmlSubTitle(_('Internal attributes')), 12);
 		$attributes = ldapGetDN($dn, array('+', 'creatorsName', 'createTimestamp', 'modifiersName',
-			'modifyTimestamp', 'hasSubordinates', 'pwdChangedTime'));
+			'modifyTimestamp', 'hasSubordinates', 'pwdChangedTime', 'passwordRetryCount', 'accountUnlockTime', 'nsAccountLock',
+			'nsRoleDN', 'passwordExpirationTime'));
 		unset($attributes['dn']);
 		ksort($attributes);
 		foreach ($attributes as $attributeName => $values) {
