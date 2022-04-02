@@ -2332,37 +2332,4 @@ abstract class baseModule {
 		return array();
 	}
 
-	/**
-	 * Returns a list of options how the account could be locked.
-	 *
-	 * @param ConfiguredType $type type
-	 * @param array|null $attributes LDAP attributes
-	 * @return AccountStatusDetails[] lock options
-	 */
-	public function getAccountStatusPossibleLockOptions(ConfiguredType $type, ?array &$attributes): array {
-		return array();
-		// TODO remove
-	}
-
-	/**
-	 * Locks the account with the given lock IDs.
-	 *
-	 * @param ConfiguredType $type type
-	 * @param array|null $attributes LDAP attributes
-	 * @param array $lockIds IDs from AccountStatusDetails
-	 */
-	public function accountStatusPerformLock(ConfiguredType $type, ?array &$attributes, array $lockIds): void {
-		// TODO remove
-	}
-
-	/**
-	 * Unlocks the account with the given lock IDs.
-	 *
-	 * @param ConfiguredType $type type
-	 * @param array|null $attributes LDAP attributes
-	 * @param array $lockIds IDs from AccountStatusDetails
-	 */
-	public function accountStatusPerformUnlock(ConfiguredType $type, ?array &$attributes, array $lockIds): void {
-		// TODO remove
-	}
 }

@@ -56,7 +56,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 */
 	const ATTRIBUTES_TO_IGNORE_ON_COPY = array('userPrincipalName', 'sAMAccountName', 'displayName',
 		'profilePath', 'scriptPath', 'pwdLastSet', 'otherMailbox', 'homeDirectory', 'msSFU30Name',
-		'pwdLastSet', 'lastLogonTimestamp', 'accountExpires', 'lockoutTime');
+		'pwdLastSet', 'lastLogonTimestamp', 'accountexpires', 'lockouttime');
 
 	/** initial account flags */
 	const DEFAULT_ACCOUNT_CONTROL = 0x00000200;
@@ -142,11 +142,11 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		// managed attributes
 		$return['attributes'] = array('userPrincipalName', 'cn', 'sAMAccountName', 'description', 'displayName', 'givenName', 'initials',
 			'l', 'mail', 'otherTelephone', 'physicalDeliveryOfficeName', 'postalCode', 'postOfficeBox', 'sn', 'st',
-			'streetAddress', 'telephoneNumber', 'url', 'wWWHomePage', 'userAccountControl', 'profilePath', 'scriptPath',
+			'streetAddress', 'telephoneNumber', 'url', 'wWWHomePage', 'useraccountcontrol', 'profilePath', 'scriptPath',
 			'pwdLastSet', 'otherMailbox', 'homeDirectory', 'homeDrive', 'msSFU30Name', 'msSFU30NisDomain', 'pwdLastSet',
-			'lastLogonTimestamp', 'accountExpires', 'jpegPhoto', 'title', 'carLicense', 'employeeNumber', 'employeeType',
+			'lastLogonTimestamp', 'accountexpires', 'jpegPhoto', 'title', 'carLicense', 'employeeNumber', 'employeeType',
 			'businessCategory', 'department', 'departmentNumber', 'ou', 'o', 'manager', 'facsimileTelephoneNumber', 'company',
-			'pager', 'otherPager', 'mobile', 'otherMobile', 'proxyAddresses', 'lockoutTime', 'userWorkstations'
+			'pager', 'otherPager', 'mobile', 'otherMobile', 'proxyAddresses', 'lockouttime', 'userWorkstations'
 		);
 		// help Entries
 		$return['help'] = array(
@@ -311,15 +311,15 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				"Headline" => _('Last login'), 'attr' => 'lastLogonTimestamp',
 				"Text" => _('Time of user\'s last login.')
 			),
-			'accountExpires' => array(
+			'accountexpires' => array(
 				"Headline" => _('Account expiration date'), 'attr' => 'accountExpires',
 				"Text" => _('This is the date when the account will expire.')
 			),
-			'accountExpiresUpload' => array(
+			'accountexpiresUpload' => array(
 				"Headline" => _('Account expiration date'), 'attr' => 'accountExpires',
 				"Text" => _('This is the date when the account will expire. Format: DD-MM-YYYY')
 			),
-			'accountExpiresProfile' => array(
+			'accountexpiresProfile' => array(
 				"Headline" => _('Account expiration'), 'attr' => 'accountExpires',
 				"Text" => _('Number of days after which the account will expire.')
 			),
@@ -503,7 +503,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			array(
 				'name' => 'windowsUser_accountExpires',
 				'description' => _('Account expiration date'),
-				'help' => 'accountExpiresUpload',
+				'help' => 'accountexpiresUpload',
 				'example' => '21-11-2030',
 			),
 			array(
@@ -882,7 +882,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidemsSFU30NisDomain', true)) {
 			$profileContainer->add(new htmlResponsiveInputField(_('NIS domain'), 'windowsUser_msSFU30NisDomain', null, 'msSFU30NisDomain'), 12);
 		}
-		$profileContainer->add(new htmlResponsiveInputField(_('Account expiration'), 'windowsUser_accountExpires', null, 'accountExpiresProfile'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Account expiration'), 'windowsUser_accountExpires', null, 'accountexpiresProfile'), 12);
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidecompany', true)) {
 			$profileContainer->add(new htmlResponsiveInputField(_('Company'), 'windowsUser_company', null, 'company'), 12);
 		}
@@ -955,7 +955,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$return['profile_checks']['windowsUser_accountExpires'] = array(
 			'type' => 'ext_preg',
 			'regex' => 'digit',
-			'error_message' => $this->messages['accountExpires'][0]);
+			'error_message' => $this->messages['accountexpires'][0]);
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidetitle', true)) {
 			$return['profile_checks']['windowsUser_title'] = array(
 				'type' => 'ext_preg',
@@ -1214,8 +1214,8 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$this->messages['homeDirectory'][1] = array('ERROR', _('Account %s:') . ' windowsUser_homeDirectory', _('Homedirectory contains invalid characters.'));
 		$this->messages['msSFU30Name'][0] = array('ERROR', _('NIS name'), _('NIS name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['msSFU30Name'][1] = array('ERROR', _('Account %s:') . ' windowsUser_msSFU30Name', _('NIS name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['accountExpires'][0] = array('ERROR', _('Account expiration'), _('Please enter a number.'));
-		$this->messages['accountExpires'][1] = array('ERROR', _('Account %s:') . ' windowsUser_accountExpires', _('Please enter a valid date in format DD-MM-YYYY.'));
+		$this->messages['accountexpires'][0] = array('ERROR', _('Account expiration'), _('Please enter a number.'));
+		$this->messages['accountexpires'][1] = array('ERROR', _('Account %s:') . ' windowsUser_accountExpires', _('Please enter a valid date in format DD-MM-YYYY.'));
 		$this->messages['title'][0] = array('ERROR', _('Job title'), _('Please enter a valid job title!'));
 		$this->messages['title'][1] = array('ERROR', _('Account %s:') . ' windowsUser_title', _('Please enter a valid job title!'));
 		$this->messages['employeeType'][0] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
@@ -1285,8 +1285,8 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	public function display_html_attributes() {
 		$this->initCache();
 		$containerLeft = new htmlResponsiveRow();
-		if ($this->getAccountContainer()->isNewAccount && !isset($this->attributes['userAccountControl'][0])) {
-			$this->attributes['userAccountControl'][0] = windowsUser::DEFAULT_ACCOUNT_CONTROL;
+		if ($this->getAccountContainer()->isNewAccount && !isset($this->attributes['useraccountcontrol'][0])) {
+			$this->attributes['useraccountcontrol'][0] = windowsUser::DEFAULT_ACCOUNT_CONTROL;
 		}
 		$containerLeft->add(new htmlSubTitle(_('General')), 12);
 		// user name
@@ -1477,9 +1477,9 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$accountExpiresGroup = new htmlGroup();
 		$accountExpiresGroup->addElement(new htmlOutputText($this->formatAccountExpires()));
 		$accountExpiresGroup->addElement(new htmlSpacer('0.5rem', null));
-		$accountExpiresGroup->addElement(new htmlAccountPageButton(get_class($this), 'accountExpires', 'edit', _('Change')));
+		$accountExpiresGroup->addElement(new htmlAccountPageButton(get_class($this), 'accountexpires', 'edit', _('Change')));
 		$accountExpiresGroup->addElement(new htmlSpacer('0.5rem', null));
-		$accountExpiresGroup->addElement(new htmlHelpLink('accountExpires'), true);
+		$accountExpiresGroup->addElement(new htmlHelpLink('accountexpires'), true);
 		$containerLeft->addField($accountExpiresGroup);
 		// last password change
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidepwdLastSet')) {
@@ -1985,11 +1985,11 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	*
 	* @return htmlElement meta HTML code
 	*/
-	function display_html_accountExpires() {
+	function display_html_accountexpires() {
 		$return = new htmlResponsiveRow();
-		$attr = 'accountExpires';
+		$attr = 'accountexpires';
 		$text = _('Account expiration date');
-		$help = "accountExpires";
+		$help = "accountexpires";
 		$datetime = new DateTime('now', getTimeZone());
 		if (!empty($this->attributes[$attr][0]) && !($this->attributes[$attr][0] == '0')) {
 			$datetime = windowsUser::getFileTime($this->attributes[$attr][0]);
@@ -2046,7 +2046,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	*
 	* @return array list of info/error messages
 	*/
-	function process_accountExpires() {
+	function process_accountexpires() {
 		$return = array();
 		// find button name
 		$buttonName = '';
@@ -2059,7 +2059,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		if (($buttonName == '') || (strpos($buttonName, '_back') !== false)) {
 			return array();
 		}
-		$attr = 'accountExpires';
+		$attr = 'accountexpires';
 		// determine action
 		if (strpos($buttonName, '_change') !== false) {
 			// set new time
@@ -2918,7 +2918,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				$this->mapSimpleUploadField($rawAccounts, $ids, $partialAccounts, $i, 'windowsUser_otherWebSites', 'url', null, null, $errors, '/;[ ]*/');
 			}
 			// user account control
-			$userAccountControlAttr['userAccountControl'][0] = windowsUser::DEFAULT_ACCOUNT_CONTROL;
+			$userAccountControlAttr['useraccountcontrol'][0] = windowsUser::DEFAULT_ACCOUNT_CONTROL;
 			// deactivated
 			if ($rawAccounts[$i][$ids['windowsUser_deactivated']] != "") {
 				if (!isset($booleanOptions[$rawAccounts[$i][$ids['windowsUser_deactivated']]])) {
@@ -2941,10 +2941,10 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			if (!empty($rawAccounts[$i][$ids['windowsUser_accountExpires']])) {
 				if (get_preg($rawAccounts[$i][$ids['windowsUser_accountExpires']], 'date')) {
 					$dateParts = explode('-', $rawAccounts[$i][$ids['windowsUser_accountExpires']]);
-					$partialAccounts[$i]['accountExpires'] = $this->buildExpirationDate($dateParts[2], $dateParts[1], $dateParts[0]);
+					$partialAccounts[$i]['accountexpires'] = $this->buildExpirationDate($dateParts[2], $dateParts[1], $dateParts[0]);
 				}
 				else {
-					$errMsg = $this->messages['accountExpires'][1];
+					$errMsg = $this->messages['accountexpires'][1];
 					array_push($errMsg, array($i));
 					$errors[] = $errMsg;
 				}
@@ -2958,7 +2958,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 					$this->setIsSmartCardRequired($userAccountControlAttr, $booleanOptions[$rawAccounts[$i][$ids['windowsUser_requireCard']]]);
 				}
 			}
-			$partialAccounts[$i]['userAccountControl'][0] = $userAccountControlAttr['userAccountControl'][0];
+			$partialAccounts[$i]['useraccountcontrol'][0] = $userAccountControlAttr['useraccountcontrol'][0];
 			// end user account control
 			// password change at next login
 			if (($rawAccounts[$i][$ids['windowsUser_pwdMustChange']] != "")
@@ -3690,8 +3690,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 * @return DateTime|false false or locked till
 	 */
 	public static function getPasswordLocked($attrs) {
-		$myAttrs = array_change_key_case($attrs, CASE_LOWER);
-		if (empty($myAttrs['lockouttime'][0])) {
+		if (empty($attrs['lockouttime'][0])) {
 			return false;
 		}
 		$lockoutDuration = self::getDomainLockoutDuration();
@@ -3699,7 +3698,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			return false;
 		}
 		$lockoutDurationSeconds = substr($lockoutDuration, 0, -7);
-		$lockoutTime = self::getFileTime($myAttrs['lockouttime'][0]);
+		$lockoutTime = self::getFileTime($attrs['lockouttime'][0]);
 		$unlockTime = clone $lockoutTime;
 		$unlockTime->add(new DateInterval('PT' . abs($lockoutDurationSeconds) . 'S'));
 		$now = new DateTime('now', getTimeZone());
@@ -3749,10 +3748,15 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 
 	/**
 	 * Unlocks the user password. This resets 'lockoutTime' to 0.
+	 *
+	 * @param array|null $attributes LDAP attributes
 	 */
-	public function unlockPassword() {
-		if (!empty($this->attributes['lockoutTime'][0])) {
-			$this->attributes['lockoutTime'][0] = '0';
+	public function unlockPassword(?array &$attributes = null) {
+		if ($attributes === null) {
+			$attributes = &$this->attributes;
+		}
+		if (!empty($attributes['lockouttime'][0])) {
+			$attributes['lockouttime'][0] = '0';
 		}
 	}
 
@@ -3787,11 +3791,10 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 * @return boolean requires a smartcard
 	 */
 	public static function isSmartCardRequired($attrs) {
-		$myAttrs = array_change_key_case($attrs, CASE_LOWER);
-		if (!isset($myAttrs['useraccountcontrol'][0])) {
+		if (!isset($attrs['useraccountcontrol'][0])) {
 			return false;
 		}
-		return intval($myAttrs['useraccountcontrol'][0]) & windowsUser::AC_SMARTCARD_REQUIRED;
+		return intval($attrs['useraccountcontrol'][0]) & windowsUser::AC_SMARTCARD_REQUIRED;
 	}
 
 	/**
@@ -3822,11 +3825,10 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 * @return boolean never expires
 	 */
 	public static function isNeverExpiring($attrs) {
-		$myAttrs = array_change_key_case($attrs, CASE_LOWER);
-		if (!isset($myAttrs['useraccountcontrol'][0])) {
+		if (!isset($attrs['useraccountcontrol'][0])) {
 			return false;
 		}
-		return intval($myAttrs['useraccountcontrol'][0]) & windowsUser::AC_PWD_NEVER_EXPIRES;
+		return intval($attrs['useraccountcontrol'][0]) & windowsUser::AC_PWD_NEVER_EXPIRES;
 	}
 
 	/**
@@ -3991,11 +3993,11 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		if ($attributes == null) {
 			$attributes = &$this->attributes;
 		}
-		if (empty($attributes['accountExpires'][0]) || ($attributes['accountExpires'][0] == '0')
-				|| ($attributes['accountExpires'][0] == '9223372036854775807')) {
+		if (empty($attributes['accountexpires'][0]) || ($attributes['accountexpires'][0] == '0')
+				|| ($attributes['accountexpires'][0] == '9223372036854775807')) {
 			return ' - ';
 		}
-		return $this->formatFileTime($attributes['accountExpires'][0]);
+		return $this->formatFileTime($attributes['accountexpires'][0]);
 	}
 
 	/**
@@ -4042,10 +4044,10 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 */
 	public function setExpirationDate($year, $month, $day) {
 		if (($year == null) && ($month == null) && ($day == null)) {
-			unset($this->attributes['accountExpires']);
+			unset($this->attributes['accountexpires']);
 			return;
 		}
-		$this->attributes['accountExpires'][0] = $this->buildExpirationDate($year, $month, $day);
+		$this->attributes['accountexpires'][0] = $this->buildExpirationDate($year, $month, $day);
 	}
 
 	/**
@@ -4435,14 +4437,14 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		}
 		$details = array();
 		if (self::isDeactivated($attributes)) {
-			$details[] = AccountStatusDetails::newLocked(_('Windows'), self::STATUS_ACCOUNT_LOCKED);
+			$details[] = AccountStatusDetails::newLocked(_('Deactivated'), self::STATUS_ACCOUNT_LOCKED);
 		}
 		$passwordLockedTime = self::getPasswordLocked($attributes);
 		if ($passwordLockedTime !== false) {
 			$details[] = AccountStatusDetails::newLocked(_('Locked till') . ' ' . $passwordLockedTime->format('Y-m-d H:i:s'), self::STATUS_PASSWORD_LOCKED);
 		}
 		if (self::isAccountExpired($attributes)) {
-			$details[] = AccountStatusDetails::newExpired(_('Windows'), self::STATUS_ACCOUNT_EXPIRED);
+			$details[] = AccountStatusDetails::newExpired(_('Account is expired'), self::STATUS_ACCOUNT_EXPIRED);
 		}
 		return $details;
 	}
@@ -4452,6 +4454,50 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 */
 	public function getAccountStatusRequiredAttributes(ConfiguredType $type): array {
 		return array('useraccountcontrol', 'lockouttime', 'accountexpires');
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getAccountStatusPossibleLockOptions(ConfiguredType $type, ?array &$attributes): array {
+		if ($attributes === null) {
+			$attributes = $this->attributes;
+		}
+		$options = array();
+		if (!self::isDeactivated($attributes)) {
+			$options[] = AccountStatusDetails::newLocked(_('Deactivated'), self::STATUS_ACCOUNT_LOCKED);
+		}
+		return $options;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function accountStatusPerformLock(ConfiguredType $type, ?array &$attributes, array $lockIds): void {
+		if ($attributes === null) {
+			$attributes = &$this->attributes;
+		}
+		if (in_array(self::STATUS_ACCOUNT_LOCKED, $lockIds)) {
+			self::setIsDeactivated(true, $attributes);
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function accountStatusPerformUnlock(ConfiguredType $type, ?array &$attributes, array $lockIds): void {
+		if ($attributes === null) {
+			$attributes = &$this->attributes;
+		}
+		if (in_array(self::STATUS_ACCOUNT_LOCKED, $lockIds)) {
+			self::setIsDeactivated(false, $attributes);
+		}
+		if (in_array(self::STATUS_ACCOUNT_EXPIRED, $lockIds)) {
+			$attributes['accountexpires'][0] = '0';
+		}
+		if (in_array(self::STATUS_PASSWORD_LOCKED, $lockIds)) {
+			self::unlockPassword($attributes);
+		}
 	}
 
 }
@@ -4512,7 +4558,7 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		protected function findUsers($jobID, $options) {
 			// read users
-			$sysattrs = array('mail', 'pwdLastSet', 'accountExpires', 'useraccountcontrol');
+			$sysattrs = array('mail', 'pwdLastSet', 'accountexpires', 'useraccountcontrol');
 			$attrs = $this->getAttrWildcards($jobID, $options);
 			$attrs = array_values(array_unique(array_merge($attrs, $sysattrs)));
 			return searchLDAPByFilter('(&(pwdLastSet=*)(mail=*))', $attrs, array('user'));
@@ -4932,10 +4978,10 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		protected function findUsers($jobID, $options) {
 			// read users
-			$sysattrs = array('mail', 'accountExpires', 'useraccountcontrol');
+			$sysattrs = array('mail', 'accountexpires', 'useraccountcontrol');
 			$attrs = $this->getAttrWildcards($jobID, $options);
 			$attrs = array_values(array_unique(array_merge($attrs, $sysattrs)));
-			return searchLDAPByFilter('(&(accountExpires=*)(!(accountExpires=0))(mail=*))', $attrs, array('user'));
+			return searchLDAPByFilter('(&(accountexpires=*)(!(accountexpires=0))(mail=*))', $attrs, array('user'));
 		}
 
 		/**
@@ -5027,8 +5073,8 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 		 */
 		protected function findUsers($jobID, $options) {
 			// read users
-			$attrs = array('accountExpires');
-			return searchLDAPByFilter('(accountExpires=*)', $attrs, array('user'));
+			$attrs = array('accountexpires');
+			return searchLDAPByFilter('(accountexpires=*)', $attrs, array('user'));
 		}
 
 		/**
