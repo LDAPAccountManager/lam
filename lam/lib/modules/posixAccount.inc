@@ -4308,6 +4308,12 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		if (in_array(self::STATUS_PASSWORD_LOCKED, $lockIds)) {
 			$attributes[$attributeName][0] = pwd_disable($attributes[$attributeName][0]);
 		}
+		if (in_array(self::STATUS_REMOVE_UNIX_GROUPS, $lockIds)) {
+			$this->removeFromUnixGroups();
+		}
+		if (in_array(self::STATUS_REMOVE_GON_GROUPS, $lockIds)) {
+			$this->removeFromGONGroups();
+		}
 	}
 
 	/**

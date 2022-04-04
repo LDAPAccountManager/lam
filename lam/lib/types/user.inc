@@ -276,13 +276,20 @@ class user extends baseType {
 			$mainIcon = 'expired.svg';
 		}
 		$statusIcon = new htmlImage('../../graphics/' . $mainIcon, 16, 16);
-		if (!empty($accountStatus->getDetails())) {
+		if (!empty($accountStatus->getDetails()) || !empty($lockableOptions)) {
 			$detailsTable = new htmlTable();
 			foreach ($accountStatus->getDetails() as $detail) {
 				$label = new htmlOutputText($detail->getDetails());
 				$label->setNoWrap(true);
 				$detailsTable->addElement($label);
 				$statusDetailIcon = new htmlImage('../../graphics/' . $detail->getIcon(), '16px', '16px');
+				$statusDetailIcon->setCSSClasses(array('fixed-size-16'));
+				$detailsTable->addElement($statusDetailIcon);
+				$detailsTable->addNewLine();
+			}
+			if (empty($accountStatus->getDetails())) {
+				$detailsTable->addElement(new htmlOutputText(_('Unlocked')));
+				$statusDetailIcon = new htmlImage('../../graphics/unlocked.svg', '16px', '16px');
 				$statusDetailIcon->setCSSClasses(array('fixed-size-16'));
 				$detailsTable->addElement($statusDetailIcon);
 				$detailsTable->addNewLine();
@@ -315,13 +322,14 @@ class user extends baseType {
 	 */
 	private function buildAccountStatusDialogDiv(AccountStatus $accountStatus, array $lockableOptions): htmlElement {
 		$hasLockOptions = !empty($lockableOptions);
+		$hasUnlockOptions = $accountStatus->isLocked() || $accountStatus->isPartiallyLocked();
 		$container = new htmlResponsiveRow();
 
 		// show radio buttons for lock/unlock
 		$radioDisabled = true;
 		$selectedRadio = 'unlock';
 		$onchange = '';
-		if ($hasLockOptions) {
+		if ($hasLockOptions && $hasUnlockOptions) {
 			$radioDisabled = false;
 			$onchange = 'if (jQuery(\'#lam_accountStatusAction0:checked\').val()) {' .
 								'jQuery(\'#lam_accountStatusDialogLockDiv\').removeClass(\'hidden\');' .
@@ -332,7 +340,7 @@ class user extends baseType {
 								'jQuery(\'#lam_accountStatusDialogUnlockDiv\').removeClass(\'hidden\');' .
 							'};';
 		}
-		if (!$accountStatus->isLocked() && !$accountStatus->isPartiallyLocked()) {
+		if (!$hasUnlockOptions) {
 			$selectedRadio = 'lock';
 		}
 		if (!$radioDisabled) {
@@ -358,13 +366,13 @@ class user extends baseType {
 			}
 
 			$lockDiv = new htmlDiv('lam_accountStatusDialogLockDiv', $lockContent);
-			if ($accountStatus->isLocked() || $accountStatus->isPartiallyLocked()) {
+			if ($hasUnlockOptions) {
 				$lockDiv->setCSSClasses(array('hidden'));
 			}
 			$container->add($lockDiv);
 		}
 		// unlocking part
-		if ($accountStatus->isPartiallyLocked() || $accountStatus->isLocked()) {
+		if ($hasUnlockOptions) {
 			$unlockContent = new htmlTable();
 			foreach ($accountStatus->getDetails() as $detail) {
 				$unlockContent->addElement(new htmlImage('../../graphics/' . $detail->getIcon(), '16px', '16px'));
@@ -391,67 +399,36 @@ class user extends baseType {
 		if (isset($_POST['lam_accountStatusResult']) && ($_POST['lam_accountStatusResult'] == 'ok')) {
 			// lock account
 			if ($_POST['lam_accountStatusAction'] == 'lock') {
-				// Unix
-				if (isset($_POST['lam_accountStatusLockUnix']) && ($_POST['lam_accountStatusLockUnix'] == 'on')) {
-					$container->getAccountModule('posixAccount')->lock($modules);
+				$lockIds = array();
+				foreach ($_POST as $key => $value) {
+					if (($value === 'on') && (strpos($key, 'lam_accountStatusLock_') === 0)) {
+						$lockIds[] = substr($key, strlen('lam_accountStatusLock_'));
+					}
 				}
-				// Samba
-				if (isset($_POST['lam_accountStatusLockSamba']) && ($_POST['lam_accountStatusLockSamba'] == 'on')) {
-					$container->getAccountModule('sambaSamAccount')->deactivate();
-				}
-				// PPolicy
-				if (isset($_POST['lam_accountStatusLockPPolicy']) && ($_POST['lam_accountStatusLockPPolicy'] == 'on')) {
-					$container->getAccountModule('ppolicyUser')->lock();
-				}
-				// 389ds
-				if (isset($_POST['lam_accountStatusDeactivate389ds']) && ($_POST['lam_accountStatusDeactivate389ds'] == 'on')) {
-					$container->getAccountModule('locking389ds')->deactivate();
-				}
-				// Windows
-				if (isset($_POST['lam_accountStatusLockWindows']) && ($_POST['lam_accountStatusLockWindows'] == 'on')) {
-					$container->getAccountModule('windowsUser')->setIsDeactivated(true);
-				}
-				// remove Unix groups
-				if (isset($_POST['lam_accountStatusRemoveUnixGroups']) && ($_POST['lam_accountStatusRemoveUnixGroups'] == 'on')) {
-					$container->getAccountModule('posixAccount')->removeFromUnixGroups();
-				}
-				// remove group of names memberships
-				if (isset($_POST['lam_accountStatusRemoveGONGroups']) && ($_POST['lam_accountStatusRemoveGONGroups'] == 'on')) {
-					$container->getAccountModule('posixAccount')->removeFromGONGroups();
+				foreach ($container->getAccountModules() as $module) {
+					$interfaces = class_implements($module);
+					if (!in_array('AccountStatusProvider', $interfaces)) {
+						continue;
+					}
+					$dummyAttributes = null;
+					$module->accountStatusPerformLock($container->get_type(), $dummyAttributes, $lockIds);
 				}
 			}
 			// unlock account
 			elseif ($_POST['lam_accountStatusAction'] == 'unlock') {
-				// Unix
-				if (isset($_POST['lam_accountStatusUnlockUnix']) && ($_POST['lam_accountStatusUnlockUnix'] == 'on')) {
-					$container->getAccountModule('posixAccount')->unlock($modules);
+				$unlockIds = array();
+				foreach ($_POST as $key => $value) {
+					if (($value === 'on') && (strpos($key, 'lam_accountStatusUnlock_') === 0)) {
+						$unlockIds[] = substr($key, strlen('lam_accountStatusUnlock_'));
+					}
 				}
-				// Samba
-				if (isset($_POST['lam_accountStatusUnlockSamba']) && ($_POST['lam_accountStatusUnlockSamba'] == 'on')) {
-					$container->getAccountModule('sambaSamAccount')->activate();
-				}
-				// PPolicy
-				if (isset($_POST['lam_accountStatusUnlockPPolicy']) && ($_POST['lam_accountStatusUnlockPPolicy'] == 'on')) {
-					$container->getAccountModule('ppolicyUser')->unlock();
-				}
-				// 389ds
-				if (isset($_POST['lam_accountStatusActivate389ds']) && ($_POST['lam_accountStatusActivate389ds'] == 'on')) {
-					$container->getAccountModule('locking389ds')->activate();
-				}
-				if (isset($_POST['lam_accountStatusPwdUnexpire389ds']) && ($_POST['lam_accountStatusPwdUnexpire389ds'] == 'on')) {
-					$container->getAccountModule('locking389ds')->clearPasswordExpiration();
-				}
-				// Windows
-				if (isset($_POST['lam_accountStatusUnlockWindows']) && ($_POST['lam_accountStatusUnlockWindows'] == 'on')) {
-					$container->getAccountModule('windowsUser')->setIsDeactivated(false);
-				}
-				// Windows password
-				if (isset($_POST['lam_accountStatusUnlockWindowsPassword']) && ($_POST['lam_accountStatusUnlockWindowsPassword'] == 'on')) {
-					$container->getAccountModule('windowsUser')->unlockPassword();
-				}
-				// 389ds unlocking
-				if (isset($_POST['lam_accountStatusUnlock389ds']) && ($_POST['lam_accountStatusUnlock389ds'] == 'on')) {
-					$container->getAccountModule('locking389ds')->unlock(false);
+				foreach ($container->getAccountModules() as $module) {
+					$interfaces = class_implements($module);
+					if (!in_array('AccountStatusProvider', $interfaces)) {
+						continue;
+					}
+					$dummyAttributes = null;
+					$module->accountStatusPerformUnlock($container->get_type(), $dummyAttributes, $unlockIds);
 				}
 			}
 		}
