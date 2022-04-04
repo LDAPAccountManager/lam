@@ -54,6 +54,16 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	 */
 	const STATUS_PASSWORD_LOCKED = "POSIX_ACCOUNT_PASSWORD_LOCKED";
 
+	/**
+	 * ID for removing Unix groups of user.
+	 */
+	const STATUS_REMOVE_UNIX_GROUPS = "POSIX_ACCOUNT_REMOVE_UNIX_GROUPS";
+
+	/**
+	 * ID for removing group of names groups of user.
+	 */
+	const STATUS_REMOVE_GON_GROUPS = "POSIX_ACCOUNT_REMOVE_GON_GROUPS";
+
 	/* These two variables keep an array of groups the user is also member of. */
 	/** current group list */
 	private $groups;
@@ -4279,6 +4289,10 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		$attributeName = $this->getPasswordAttrName($type->getModules());
 		if (!self::isLocked($type->getModules(), $attributes) && isset($attributes[$attributeName][0]) && pwd_is_lockable($attributes[$attributeName][0])) {
 			$options[] = AccountStatusDetails::newLocked(_('Unix'), self::STATUS_PASSWORD_LOCKED);
+			$options[] = AccountStatusDetails::newLocked(_('Remove from all Unix groups'), self::STATUS_REMOVE_UNIX_GROUPS);
+			if (self::areGroupOfNamesActive()) {
+				$options[] = AccountStatusDetails::newLocked(_('Remove from all group of (unique) names'), self::STATUS_REMOVE_GON_GROUPS);
+			}
 		}
 		return $options;
 	}

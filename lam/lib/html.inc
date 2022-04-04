@@ -3074,6 +3074,15 @@ class htmlImage extends htmlElement {
 		$this->helpContent = $content;
 	}
 
+	/**
+	 * Sets the onClick event code.
+	 *
+	 * @param string $code JS code
+	 */
+	public function setOnClick(string $code): void {
+		$this->onClick = $code;
+	}
+
 }
 
 /**

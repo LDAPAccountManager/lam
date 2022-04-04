@@ -137,7 +137,11 @@ class user extends baseType {
 	 * @return String title text
 	 */
 	public function getTitleBarTitle($container) {
-		$title = $this->buildAccountStatusIcon($container);
+		ob_start();
+		$tabIndex = 10000;
+		parseHtml(null, $this->buildAccountStatusIcon($container), array(), false, $tabIndex, $container->get_type()->getScope());
+		$title = ob_get_contents();
+		ob_end_clean();
 		// get attributes
 		$personalAttributes = null;
 		if ($container->getAccountModule('inetOrgPerson') != null) {
@@ -242,194 +246,82 @@ class user extends baseType {
 	 * Builds the HTML code for the icon that shows the account status (locked/unlocked).
 	 *
 	 * @param accountContainer $container account container
-	 * @return String HTML code for icon
+	 * @return htmlElement status icon
 	 */
-	private function buildAccountStatusIcon($container) {
-		$modules = $this->getType()->getModules();
-		// check if there are account parts that can be locked
-		$unixAvailable = ($container->getAccountModule('posixAccount') != null) && $container->getAccountModule('posixAccount')->isLockable($modules);
-		$sambaAvailable = (($container->getAccountModule('sambaSamAccount') != null) && $container->getAccountModule('sambaSamAccount')->isExtensionEnabled());
-		$ppolicyAvailable = ($container->getAccountModule('ppolicyUser') != null);
-		$windowsAvailable = ($container->getAccountModule('windowsUser') != null);
-		$is389dsAvailable = ($container->getAccountModule('locking389ds') != null);
-		$is389dsLocked = $is389dsAvailable && $container->getAccountModule('locking389ds')->isLocked();
-		$is389dsDeactivated = $is389dsAvailable && $container->getAccountModule('locking389ds')->isDeactivated();
-		$is389dsPwdExpired = $is389dsAvailable && locking389ds::isPasswordExpired($container->getAccountModule('locking389ds')->getAttributes());
-		if (!$unixAvailable && !$sambaAvailable && !$ppolicyAvailable && !$windowsAvailable && !$is389dsAvailable) {
-			return '';
-		}
-		$isEditable = checkIfWriteAccessIsAllowed('user') && ($unixAvailable  || $sambaAvailable || $ppolicyAvailable || $windowsAvailable || $is389dsAvailable);
-		// get locking status
-		$unixLocked = false;
-		if ($unixAvailable && $container->getAccountModule('posixAccount')->isLocked($modules)) {
-			$unixLocked = true;
-		}
-		$sambaLocked = false;
-		if ($sambaAvailable && $container->getAccountModule('sambaSamAccount')->isDeactivated()) {
-			$sambaLocked = true;
-		}
-		$ppolicyLocked = false;
-		if ($ppolicyAvailable && $container->getAccountModule('ppolicyUser')->isLocked()) {
-			$ppolicyLocked = true;
-		}
-		$windowsLocked = false;
-		$windowsPasswordLockedTime = null;
-		$windowsPasswordLocked = false;
-		if ($windowsAvailable){
-			$attrs = $container->getAccountModule('windowsUser')->getAttributes();
-			$attrs['dn'] = $container->dn_orig;
-			if (windowsUser::isDeactivated($attrs)) {
-				$windowsLocked = true;
+	private function buildAccountStatusIcon($container): htmlElement {
+		$statusContent = new htmlGroup();
+		$details = array();
+		$lockableOptions = array();
+		foreach ($container->getAccountModules() as $module) {
+			$interfaces = class_implements($module);
+			if (!in_array('AccountStatusProvider', $interfaces)) {
+				continue;
 			}
-			$windowsPasswordLockedTime = windowsUser::getPasswordLocked($attrs);
-			if ($windowsPasswordLockedTime != null) {
-				$windowsPasswordLocked = true;
+			$dummyAttributes = null;
+			$details = array_merge($details, $module->getAccountStatusDetails($container->get_type(), $dummyAttributes));
+			$lockableOptions = array_merge($lockableOptions, $module->getAccountStatusPossibleLockOptions($container->get_type(), $dummyAttributes));
+		}
+		$accountStatus = new AccountStatus($details);
+		$mainIcon = 'unlocked.svg';
+		if ($accountStatus->isLocked()) {
+			$mainIcon = 'locked.svg';
+		}
+		elseif ($accountStatus->isPartiallyLocked()) {
+			$mainIcon = 'partiallyLocked.svg';
+		}
+		elseif ($accountStatus->isExpired()) {
+			$mainIcon = 'expired.svg';
+		}
+		elseif ($accountStatus->isPartiallyExpired()) {
+			$mainIcon = 'expired.svg';
+		}
+		$statusIcon = new htmlImage('../../graphics/' . $mainIcon, 16, 16);
+		if (!empty($accountStatus->getDetails())) {
+			$detailsTable = new htmlTable();
+			foreach ($accountStatus->getDetails() as $detail) {
+				$label = new htmlOutputText($detail->getDetails());
+				$label->setNoWrap(true);
+				$detailsTable->addElement($label);
+				$statusDetailIcon = new htmlImage('../../graphics/' . $detail->getIcon(), '16px', '16px');
+				$statusDetailIcon->setCSSClasses(array('fixed-size-16'));
+				$detailsTable->addElement($statusDetailIcon);
+				$detailsTable->addNewLine();
 			}
-		}
-		$partiallyLocked = $unixLocked || $sambaLocked
-						|| $ppolicyLocked || $windowsLocked || $windowsPasswordLocked
-						|| $is389dsDeactivated || $is389dsLocked || $is389dsPwdExpired;
-		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable || $is389dsDeactivated || $is389dsLocked)
-							&& (!$unixAvailable || $unixLocked)
-							&& (!$sambaAvailable || $sambaLocked)
-							&& (!$ppolicyAvailable || $ppolicyLocked)
-							&& (!$windowsAvailable || $windowsLocked);
-		// build tooltip
-		$icon = 'unlocked.svg';
-		if ($fullyLocked) {
-			$icon = 'locked.svg';
-		}
-		elseif ($partiallyLocked) {
-			$icon = 'partiallyLocked.svg';
-		}
-		$statusTable = '<table border=0>';
-		// Unix
-		if ($unixAvailable) {
-			$unixIcon = 'unlocked.svg';
-			if ($unixLocked) {
-				$unixIcon = 'locked.svg';
-			}
-			$statusTable .= '<tr><td>' . _('Unix') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $unixIcon . '&quot;></td></tr>';
-		}
-		// Samba
-		if ($sambaAvailable) {
-			$sambaIcon = 'unlocked.svg';
-			if ($sambaLocked) {
-				$sambaIcon = 'locked.svg';
-			}
-			$statusTable .= '<tr><td>' . _('Samba 3') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $sambaIcon . '&quot;></td></tr>';
-		}
-		// PPolicy
-		if ($ppolicyAvailable) {
-			$ppolicyIcon = 'unlocked.svg';
-			if ($ppolicyLocked) {
-				$ppolicyIcon = 'locked.svg';
-			}
-			$statusTable .= '<tr><td>' . _('Password policy') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $ppolicyIcon . '&quot;></td></tr>';
-		}
-		// Windows
-		if ($windowsAvailable) {
-			$windowsIcon = 'unlocked.svg';
-			if ($windowsLocked) {
-				$windowsIcon = 'locked.svg';
-			}
-			$statusTable .= '<tr><td>' . _('Windows') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $windowsIcon . '&quot;></td></tr>';
-		}
-		if ($windowsAvailable && $windowsPasswordLocked) {
-			$statusTable .= '<tr><td>' . _('Locked till') . '&nbsp;&nbsp;</td><td>' . $windowsPasswordLockedTime->format('Y-m-d H:i:s') . '</td></tr>';
-		}
-		// 389ds locked
-		if ($is389dsLocked) {
-			$statusTable .= '<tr><td>' . _('Locked') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/locked.svg&quot;></td></tr>';
-		}
-		// 389ds deactivated
-		if ($is389dsAvailable) {
-			$text389dsActivation = $is389dsDeactivated ? _('Deactivated') : _('Active');
-			$icon389dsActivation = $is389dsDeactivated ? 'locked.svg' : 'unlocked.svg';
-			$statusTable .= '<tr><td>' . $text389dsActivation . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/' . $icon389dsActivation . '&quot;></td></tr>';
-		}
-		// 389ds password expired
-		if ($is389dsPwdExpired) {
-			$statusTable .= '<tr><td>' . _('Password expired') . '&nbsp;&nbsp;</td><td><img height=16 width=16 src=&quot;../../graphics/locked.svg&quot;></td></tr>';
-		}
-		$statusTable .= '</table>';
-		$tipContent = $statusTable;
-		if ($isEditable) {
-			$tipContent .= '<br><img alt=&quot;hint&quot; src=&quot;../../graphics/light.svg&quot;> ';
-			$tipContent .= _('Please click to lock/unlock this account.');
-		}
-		$dialogDiv = $this->buildAccountStatusDialogDiv($unixAvailable, $unixLocked, $sambaAvailable, $sambaLocked,
-				$ppolicyAvailable, $ppolicyLocked, $windowsAvailable, $windowsLocked, $windowsPasswordLockedTime,
-				$is389dsAvailable, $is389dsLocked, $is389dsDeactivated, $is389dsPwdExpired);
-		$onClick = '';
-		if ($isEditable) {
-			$onClick = 'onclick="showConfirmationDialog(\'' . _('Change account status') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\', \'lam_accountStatusDialog\', \'inputForm\', \'lam_accountStatusResult\');"';
-		}
-		$dialogDiv .= '<a href="#"><img id="lam_accountStatus" alt="status" ' . $onClick . ' helptitle="' . _('Account status') . '" helpdata="' . $tipContent . '" height=16 width=16 src="../../graphics/' . $icon . '"></a>&nbsp;&nbsp;&nbsp;';
-		// expiration status
-		$expiredLabels = array();
-		$shadowModule = $container->getAccountModule('shadowAccount');
-		if ($shadowModule != null) {
-			$shadowAttrs = $shadowModule->getAttributes();
-			if (shadowAccount::isAccountExpired($shadowAttrs)) {
-				$expiredLabels[] = _('Shadow') . ': ' . _('Account expiration');
-			}
-			elseif (shadowAccount::isPasswordExpired($shadowAttrs)) {
-				$expiredLabels[] = _('Shadow') . ': ' . _('Password expiration');
+			$detailsTable->addElement(new htmlSpacer(null, '1rem'), true);
+			$hintGroup = new htmlGroup();
+			$hintGroup->colspan = 2;
+			$hintGroup->addElement(new htmlImage('../../graphics/light.svg', '16px', '16px'));
+			$hintGroup->addElement(new htmlOutputText(_('Please click to lock/unlock this account.')));
+			$detailsTable->addElement($hintGroup);
+			$statusIcon->setHelpData(_('Account status'), $detailsTable);
+			if (checkIfWriteAccessIsAllowed($container->get_type()->getScope())) {
+				$statusIcon->setOnClick('showConfirmationDialog(\'' . _('Change account status') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\', \'lam_accountStatusDialog\', \'inputForm\', \'lam_accountStatusResult\');');
+				$statusIcon->setCSSClasses(array('clickable'));
 			}
 		}
-		$windowsModule = $container->getAccountModule('windowsUser');
-		if ($windowsModule != null) {
-			$windowsAttrs = $windowsModule->getAttributes();
-			if (windowsUser::isAccountExpired($windowsAttrs)) {
-				$expiredLabels[] = _('Windows') . ': ' . _('Account expiration');
-			}
-		}
-		if (!empty($expiredLabels)) {
-			$expiredTip = '<table border=0>';
-			foreach ($expiredLabels as $label) {
-				$expiredTip .= '<tr><td>' . $label . '</td><td><img src=&quot;../../graphics/expired.svg&quot;/></td></tr>';
-			}
-			$expiredTip .= '</table>';
-			$dialogDiv .= '<img alt="expired" helptitle="' . _('Expired') . '" helpdata="' . $expiredTip . '" height=16 width=16 src="../../graphics/expired.svg">&nbsp;&nbsp;&nbsp;';
-		}
-		return $dialogDiv;
+		$statusContent->addElement($statusIcon);
+		$statusContent->addElement(new htmlSpacer('1rem', null));
+		$dialogDiv = $this->buildAccountStatusDialogDiv($accountStatus, $lockableOptions);
+		$statusContent->addElement($dialogDiv);
+		return $statusContent;
 	}
 
 	/**
 	 * Builds the dialog to (un)lock parts of an account.
 	 *
-	 * @param boolean $unixAvailable Unix part is active
-	 * @param boolean $unixLocked Unix part is locked
-	 * @param boolean $sambaAvailable Samba part is active
-	 * @param boolean $sambaLocked Samba part is locked
-	 * @param boolean $ppolicyAvailable PPolicy part is active
-	 * @param boolean $ppolicyLocked PPolicy part is locked
-	 * @param boolean $windowsAvailable Windows part is active
-	 * @param boolean $windowsLocked Windows part is locked
-	 * @param DateTime $windowsPasswordLockedTime lock time for Windows or null
-	 * @param boolean $is389dsAvailable 389ds is available
-	 * @param boolean $is389dsLocked account is locked
-	 * @param boolean $is389dsDeactivated account is deactivated
-	 * @param boolean $is389dsPwdExpired password expired
+	 * @param AccountStatus $accountStatus account status
+	 * @param AccountStatusDetails[] $lockableOptions possible lock options
+	 * @return htmlElement dialog div
 	 */
-	private function buildAccountStatusDialogDiv($unixAvailable, $unixLocked, $sambaAvailable, $sambaLocked, $ppolicyAvailable, $ppolicyLocked, $windowsAvailable,
-			$windowsLocked, $windowsPasswordLockedTime, $is389dsAvailable, $is389dsLocked, $is389dsDeactivated, $is389dsPwdExpired) {
-		$windowsPasswordLocked = ($windowsPasswordLockedTime != null);
-		$partiallyLocked = $unixLocked || $sambaLocked || $ppolicyLocked || $windowsLocked || $windowsPasswordLocked || $is389dsLocked || $is389dsDeactivated || $is389dsPwdExpired;
-		$fullyLocked = ($unixAvailable || $sambaAvailable || $ppolicyAvailable || $windowsAvailable || $is389dsLocked || $is389dsDeactivated)
-							&& (!$unixAvailable || $unixLocked)
-							&& (!$sambaAvailable || $sambaLocked)
-							&& (!$ppolicyAvailable || $ppolicyLocked)
-							&& (!$windowsAvailable || $windowsLocked || $windowsPasswordLocked);
-
+	private function buildAccountStatusDialogDiv(AccountStatus $accountStatus, array $lockableOptions): htmlElement {
+		$hasLockOptions = !empty($lockableOptions);
 		$container = new htmlResponsiveRow();
 
 		// show radio buttons for lock/unlock
 		$radioDisabled = true;
 		$selectedRadio = 'unlock';
 		$onchange = '';
-		if ($partiallyLocked && !$fullyLocked) {
+		if ($hasLockOptions) {
 			$radioDisabled = false;
 			$onchange = 'if (jQuery(\'#lam_accountStatusAction0:checked\').val()) {' .
 								'jQuery(\'#lam_accountStatusDialogLockDiv\').removeClass(\'hidden\');' .
@@ -440,7 +332,7 @@ class user extends baseType {
 								'jQuery(\'#lam_accountStatusDialogUnlockDiv\').removeClass(\'hidden\');' .
 							'};';
 		}
-		if (!$fullyLocked && !$partiallyLocked) {
+		if (!$accountStatus->isLocked() && !$accountStatus->isPartiallyLocked()) {
 			$selectedRadio = 'lock';
 		}
 		if (!$radioDisabled) {
@@ -458,98 +350,33 @@ class user extends baseType {
 		$container->add(new htmlHiddenInput('lam_accountStatusResult', 'cancel'), 12);
 
 		// locking part
-		if (!$fullyLocked) {
+		if ($hasLockOptions) {
 			$lockContent = new htmlTable();
-
-			if ($unixAvailable && !$unixLocked) {
-				$lockContent->addElement(new htmlImage('../../graphics/tux.svg', '32px', '32px'));
-				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLockUnix', true, _('Unix'), null, false), true);
-			}
-			if ($sambaAvailable && !$sambaLocked) {
-				$lockContent->addElement(new htmlImage('../../graphics/samba.svg', '32px', '32px'));
-				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLockSamba', true, _('Samba 3'), null, false), true);
-			}
-			if ($ppolicyAvailable && !$ppolicyLocked) {
-				$lockContent->addElement(new htmlImage('../../graphics/locked.svg', '32px', '32px'));
-				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLockPPolicy', true, _('PPolicy'), null, false), true);
-			}
-			if ($is389dsAvailable && !$is389dsDeactivated) {
-				$lockContent->addElement(new htmlImage('../../graphics/locked.svg', '32px', '32px'));
-				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusDeactivate389ds', true, _('Deactivate'), null, false), true);
-			}
-			if ($windowsAvailable && !$windowsLocked) {
-				$lockContent->addElement(new htmlImage('../../graphics/samba.svg', '32px', '32px'));
-				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLockWindows', true, _('Windows'), null, false), true);
-			}
-			if ($unixAvailable) {
-				$lockContent->addElement(new htmlImage('../../graphics/group.svg', '32px', '32px'));
-				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusRemoveUnixGroups', true, _('Remove from all Unix groups'), null, false), true);
-			}
-			if ($unixAvailable && posixAccount::areGroupOfNamesActive()) { // check unixAvailable because Unix module removes group memberships
-				$lockContent->addElement(new htmlImage('../../graphics/group.svg', '32px', '32px'));
-				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusRemoveGONGroups', true, _('Remove from all group of (unique) names'), null, false), true);
+			foreach ($lockableOptions as $lockableOption) {
+				$lockContent->addElement(new htmlImage('../../graphics/' . $lockableOption->getIcon(), '16px', '16px'));
+				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLock_' . $lockableOption->getId(), true, $lockableOption->getDetails(), null, false), true);
 			}
 
 			$lockDiv = new htmlDiv('lam_accountStatusDialogLockDiv', $lockContent);
-			if ($fullyLocked || $partiallyLocked) {
+			if ($accountStatus->isLocked() || $accountStatus->isPartiallyLocked()) {
 				$lockDiv->setCSSClasses(array('hidden'));
 			}
-			$container->add($lockDiv, 12);
+			$container->add($lockDiv);
 		}
 		// unlocking part
-		if ($partiallyLocked) {
+		if ($accountStatus->isPartiallyLocked() || $accountStatus->isLocked()) {
 			$unlockContent = new htmlTable();
-
-			if ($unixAvailable && $unixLocked) {
-				$unlockContent->addElement(new htmlImage('../../graphics/tux.svg', '32px', '32px'));
-				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockUnix', true, _('Unix'), null, false), true);
+			foreach ($accountStatus->getDetails() as $detail) {
+				$unlockContent->addElement(new htmlImage('../../graphics/' . $detail->getIcon(), '16px', '16px'));
+				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlock_' . $detail->getId(), true, $detail->getDetails(), null, false), true);
 			}
-			if ($sambaAvailable && $sambaLocked) {
-				$unlockContent->addElement(new htmlImage('../../graphics/samba.svg', '32px', '32px'));
-				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockSamba', true, _('Samba 3'), null, false), true);
-			}
-			if ($ppolicyAvailable && $ppolicyLocked) {
-				$unlockContent->addElement(new htmlImage('../../graphics/locked.svg', '32px', '32px'));
-				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockPPolicy', true, _('PPolicy'), null, false), true);
-			}
-			if ($is389dsAvailable && $is389dsDeactivated) {
-				$unlockContent->addElement(new htmlImage('../../graphics/locked.svg', '32px', '32px'));
-				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusActivate389ds', true, _('Activate'), null, false), true);
-			}
-			if ($is389dsAvailable && $is389dsPwdExpired) {
-				$unlockContent->addElement(new htmlImage('../../graphics/locked.svg', '32px', '32px'));
-				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusPwdUnexpire389ds', true, _('Clear password expiration'), null, false), true);
-			}
-			if ($windowsAvailable && $windowsLocked) {
-				$unlockContent->addElement(new htmlImage('../../graphics/samba.svg', '32px', '32px'));
-				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockWindows', true, _('Windows'), null, false), true);
-			}
-			if ($windowsAvailable && $windowsPasswordLocked) {
-				$unlockContent->addElement(new htmlImage('../../graphics/samba.svg', '32px', '32px'));
-				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlockWindowsPassword', true, _('Locked till') . ' ' . $windowsPasswordLockedTime->format('Y-m-d H:i:s'), null, false), true);
-			}
-			if ($is389dsLocked) {
-				$unlockContent->addElement(new htmlImage('../../graphics/locked.svg', '32px', '32px'));
-				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlock389ds', true, _('Unlock'), null, false), true);
-			}
-
 			$unlockDiv = new htmlDiv('lam_accountStatusDialogUnlockDiv', $unlockContent);
-			if (!$fullyLocked && !$partiallyLocked) {
-				$unlockDiv->setCSSClasses(array('hidden'));
-			}
-			$container->add($unlockDiv, 12);
+			$container->add($unlockDiv);
 		}
 
 		$div = new htmlDiv('lam_accountStatusDialog', $container);
 		$div->setCSSClasses(array('hidden'));
-
-		$tabindex = 999;
-		ob_start();
-		parseHtml(null, $div, array(), false, $tabindex, 'user');
-		$output = ob_get_contents();
-		ob_clean();
-
-		return $output;
+		return $div;
 	}
 
 	/**

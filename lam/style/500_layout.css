@@ -832,6 +832,10 @@ img.thumbnail {
 	max-height: 64px;
 }
 
+img.clickable {
+	cursor: pointer;
+}
+
 div.confModList {
 	max-height: 300px;
 	overflow-y: auto;
