@@ -2559,6 +2559,7 @@ interface AccountStatusProvider {
 	 * @param ConfiguredType $type type
 	 * @param array|null $attributes LDAP attributes
 	 * @param array $lockIds IDs from AccountStatusDetails
+	 * @throws LAMException error during locking
 	 */
 	public function accountStatusPerformLock(ConfiguredType $type, ?array &$attributes, array $lockIds): void;
 
