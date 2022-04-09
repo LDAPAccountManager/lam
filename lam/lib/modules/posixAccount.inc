@@ -4292,7 +4292,9 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		$attributeName = $this->getPasswordAttrName($type->getModules());
 		if (!self::isLocked($type->getModules(), $attributes) && isset($attributes[$attributeName][0]) && pwd_is_lockable($attributes[$attributeName][0])) {
 			$options[] = AccountStatusDetails::newLocked(_('Unix'), self::STATUS_PASSWORD_LOCKED);
-			$options[] = AccountStatusDetails::newLocked(_('Remove from all Unix groups'), self::STATUS_REMOVE_UNIX_GROUPS);
+			if (isset($attributes['uid'][0])) {
+				$options[] = AccountStatusDetails::newLocked(_('Remove from all Unix groups'), self::STATUS_REMOVE_UNIX_GROUPS);
+			}
 			if (self::areGroupOfNamesActive()) {
 				$options[] = AccountStatusDetails::newLocked(_('Remove from all group of (unique) names'), self::STATUS_REMOVE_GON_GROUPS);
 			}
@@ -4313,7 +4315,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		}
 		if (in_array(self::STATUS_REMOVE_UNIX_GROUPS, $lockIds)) {
 			if ($this->attributes === null) {
-
+				$this->clearPosixGroupMemberships($attributes);
 			}
 			else {
 				$this->removeFromUnixGroups();
@@ -4349,6 +4351,29 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					logNewMessage(LOG_DEBUG, print_r($attributesToDelete, true));
 					throw new LAMException(sprintf(_('Was unable to modify attributes of DN: %s.'), $group['dn']), $ldapError);
 				}
+			}
+		}
+	}
+
+	/**
+	 * Clears the posix group memberships of the user.
+	 *
+	 * @param array $attributes LDAP attributes
+	 * @throws LAMException error during group modify
+	 */
+	private function clearPosixGroupMemberships(array $attributes): void {
+		$searchAttr = 'memberuid';
+		$uid = $attributes['uid'][0];
+		$groups = searchLDAPByAttribute($searchAttr, $uid, null, array('dn'), array('group'));
+		foreach ($groups as $group) {
+			logNewMessage(LOG_DEBUG, 'Removing ' . $uid . ' from ' . $group['dn'] . ' (' . $searchAttr . ')');
+			$attributesToDelete = array($searchAttr => array($uid));
+			$success = @ldap_mod_del($_SESSION['ldap']->server(), $group['dn'], $attributesToDelete);
+			if (!$success) {
+				$ldapError = getDefaultLDAPErrorString($_SESSION['ldap']->server());
+				logNewMessage(LOG_ERR, 'Unable to delete attributes of DN: ' . $group['dn'] . ' (' . $ldapError . ').');
+				logNewMessage(LOG_DEBUG, print_r($attributesToDelete, true));
+				throw new LAMException(sprintf(_('Was unable to modify attributes of DN: %s.'), $group['dn']), $ldapError);
 			}
 		}
 	}
