@@ -361,8 +361,9 @@ class user extends baseType {
 		if ($hasLockOptions) {
 			$lockContent = new htmlTable();
 			foreach ($lockableOptions as $lockableOption) {
+				$preSelected = $lockableOption->isLocked();
 				$lockContent->addElement(new htmlImage('../../graphics/' . $lockableOption->getIcon(), '16px', '16px'));
-				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLock_' . $lockableOption->getId(), true, $lockableOption->getDetails(), null, false), true);
+				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLock_' . $lockableOption->getId(), $preSelected, $lockableOption->getDetails(), null, false), true);
 			}
 
 			$lockDiv = new htmlDiv('lam_accountStatusDialogLockDiv', $lockContent);

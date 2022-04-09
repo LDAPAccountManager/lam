@@ -4080,6 +4080,16 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 	}
 
 	/**
+	 * Returns if the PPolicy module is active.
+	 *
+	 * @param string[] $modules account modules
+	 * @return boolean is PPolicy enabled
+	 */
+	private function hasPPolicy($modules) {
+		return in_array('ppolicyUser', $modules);
+	}
+
+	/**
 	 * Returns the password attribute.
 	 * Usually, this is userPassword. If Windows modules are active this is unixUserPassword.
 	 *
@@ -4291,12 +4301,17 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		$options = array();
 		$attributeName = $this->getPasswordAttrName($type->getModules());
 		if (!self::isLocked($type->getModules(), $attributes) && isset($attributes[$attributeName][0]) && pwd_is_lockable($attributes[$attributeName][0])) {
-			$options[] = AccountStatusDetails::newLocked(_('Unix'), self::STATUS_PASSWORD_LOCKED);
+			if ($this->hasPPolicy($type->getModules())) {
+				$options[] = AccountStatusDetails::newPartiallyLocked(_('Unix'), self::STATUS_PASSWORD_LOCKED);
+			}
+			else {
+				$options[] = AccountStatusDetails::newLocked(_('Unix'), self::STATUS_PASSWORD_LOCKED);
+			}
 			if (isset($attributes['uid'][0])) {
-				$options[] = AccountStatusDetails::newLocked(_('Remove from all Unix groups'), self::STATUS_REMOVE_UNIX_GROUPS);
+				$options[] = AccountStatusDetails::newPartiallyLocked(_('Remove from all Unix groups'), self::STATUS_REMOVE_UNIX_GROUPS);
 			}
 			if (self::areGroupOfNamesActive()) {
-				$options[] = AccountStatusDetails::newLocked(_('Remove from all group of (unique) names'), self::STATUS_REMOVE_GON_GROUPS);
+				$options[] = AccountStatusDetails::newPartiallyLocked(_('Remove from all group of (unique) names'), self::STATUS_REMOVE_GON_GROUPS);
 			}
 		}
 		return $options;
