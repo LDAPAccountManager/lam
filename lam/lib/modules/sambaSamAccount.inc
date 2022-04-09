@@ -1,10 +1,13 @@
 <?php
 
+use LAM\TYPES\ConfiguredType;
+use function LAM\ACCOUNTLIST\isPasswordChangeByDefault;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2021  Roland Gruber
+                2005 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -33,8 +36,6 @@
 
 /** terminals server options */
 
-use function LAM\ACCOUNTLIST\isPasswordChangeByDefault;
-
 include_once('sambaSamAccount/sambaMungedDial.inc');
 
 /**
@@ -42,7 +43,17 @@ include_once('sambaSamAccount/sambaMungedDial.inc');
 *
 * @package modules
 */
-class sambaSamAccount extends baseModule implements passwordService {
+class sambaSamAccount extends baseModule implements passwordService,AccountStatusProvider {
+
+	/**
+	 * ID for locked account status.
+	 */
+	const STATUS_ACCOUNT_LOCKED = "SAMBA_ACCOUNT_LOCKED";
+
+	/**
+	 * ID for locked account status.
+	 */
+	const STATUS_ACCOUNT_DEACTIVATED = "SAMBA_ACCOUNT_DEACTIVATED";
 
 	/**
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
@@ -57,8 +68,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 	private $nopwd;
 	/** password does not expire? */
 	private $noexpire;
-	/** account deactivated? */
-	private $deactivated;
 	/** array of well known group rids */
 	private $groupRids;
 	/** array of well known user rids */
@@ -165,7 +174,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$return['objectClasses'] = array('sambaSamAccount');
 		// managed attributes
 		$return['attributes'] = array('uid', 'sambaSID', 'sambaLMPassword', 'sambaNTPassword', 'sambaPwdLastSet',
-			'sambaLogonTime', 'sambaLogoffTime', 'sambaKickoffTime', 'sambaAcctFlags',
+			'sambaLogonTime', 'sambaLogoffTime', 'sambaKickoffTime', 'sambaacctflags',
 			'sambaPwdLastSet', 'displayName', 'sambaHomePath', 'sambaHomeDrive', 'sambaLogonScript', 'sambaProfilePath',
 			'sambaUserWorkstations', 'sambaPrimaryGroupSID', 'sambaDomainName', 'sambaLogonHours', 'sambaMungedDial',
 			'sambaPasswordHistory', 'sambaPwdCanChange', 'sambaPwdMustChange'); // sambaPwdCanChange/sambaPwdMustChange only for extension removal
@@ -587,7 +596,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 		parent::init($base);
 		$this->noexpire = true;
 		$this->nopwd = false;
-		$this->deactivated = false;
 	}
 
 	/**
@@ -598,10 +606,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 	*/
 	function module_ready() {
 		$attrs = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
-		if ($attrs['gidNumber'][0]=='') return false;
-		if ($attrs['uidNumber'][0]=='') return false;
-		if ($attrs['uid'][0]=='') return false;
-		return true;
+		return isset($attrs['gidNumber'][0]) && isset($attrs['uidNumber'][0]) && isset($attrs['uid'][0]);
 	}
 
 	/**
@@ -635,12 +640,10 @@ class sambaSamAccount extends baseModule implements passwordService {
 	*/
 	function load_attributes($attr) {
 		parent::load_attributes($attr);
-		if (isset($this->attributes['sambaAcctFlags'][0])) {
-			if (strpos($this->attributes['sambaAcctFlags'][0], "D")) $this->deactivated = true;
-			else $this->deactivated = false;
-			if (strpos($this->attributes['sambaAcctFlags'][0], "N")) $this->nopwd = true;
+		if (isset($this->attributes['sambaacctflags'][0])) {
+			if (strpos($this->attributes['sambaacctflags'][0], "N")) $this->nopwd = true;
 			else $this->nopwd = false;
-			if (strpos($this->attributes['sambaAcctFlags'][0], "X")) $this->noexpire = true;
+			if (strpos($this->attributes['sambaacctflags'][0], "X")) $this->noexpire = true;
 			else $this->noexpire = false;
 		}
 		if (isset($this->attributes['sambaPwdLastSet'][0]) && ($this->attributes['sambaPwdLastSet'][0] === '0')) {
@@ -732,10 +735,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$flag = "[";
 		if (isset($_POST['sambaAcctFlagsD'])) {
 			$flag .= "D";
-			$this->deactivated = true;
-		}
-		else {
-			$this->deactivated = false;
 		}
 		if (isset($_POST['sambaAcctFlagsX'])) {
 			$flag .= "X";
@@ -754,9 +753,6 @@ class sambaSamAccount extends baseModule implements passwordService {
 		if (isset($_POST['sambaAcctFlagsS'])) {
 			$flag .= "S";
 		}
-		if (isset($_POST['sambaAcctFlagsH'])) {
-			$flag .= "H";
-		}
 		if (isset($_POST['sambaAcctFlagsW'])) {
 			$flag .= "W";
 		}
@@ -770,7 +766,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 		$flag = str_pad($flag, 12);
 		// End character
 		$flag = $flag. "]";
-		$this->attributes['sambaAcctFlags'][0] = $flag;
+		$this->attributes['sambaacctflags'][0] = $flag;
 
 		// display name
 		$this->attributes['displayName'][0] = $_POST['displayName'];
@@ -863,12 +859,15 @@ class sambaSamAccount extends baseModule implements passwordService {
 			}
 			// standard RID
 			else if ($_POST['sambaSID'] == "-") {
-				$rid = substr($this->attributes['sambaSID'][0], strrpos($this->attributes['sambaSID'][0], '-') + 1, strlen($this->attributes['sambaSID'][0]));
+				$rid = '';
+				if (isset($this->attributes['sambaSID'][0])) {
+					$rid = substr($this->attributes['sambaSID'][0], strrpos($this->attributes['sambaSID'][0], '-') + 1, strlen($this->attributes['sambaSID'][0]));
+				}
 				// change only if not yet set, previously set to special SID or domain changed
 				if (!isset($this->attributes['sambaSID'][0])
 					|| in_array($rid, $this->userRids)
 					|| (strpos($this->attributes['sambaSID'][0], $SID) === false)) {
-					$this->attributes['sambaSID'][0] = $SID."-". (($attrs['uidNumber'][0]*2)+$RIDbase);
+					$this->attributes['sambaSID'][0] = $SID . "-" . (($attrs['uidNumber'][0]*2) + $RIDbase);
 				}
 			}
 		}
@@ -1146,13 +1145,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 				// no password expiry
 				$return->add(new htmlResponsiveInputCheckbox('sambaAcctFlagsX', $this->noexpire, _('Password does not expire'), 'noExpire'), 12);
 				// account deactivated
-				$return->add(new htmlResponsiveInputCheckbox('sambaAcctFlagsD', $this->deactivated, _('Account is deactivated'), 'deactivated'), 12);
+				$return->add(new htmlResponsiveInputCheckbox('sambaAcctFlagsD', $this->isDeactivated(), _('Account is deactivated'), 'deactivated'), 12);
 				// account locked
-				$locked = false;
-				if (isset($this->attributes['sambaAcctFlags'][0]) && (strpos($this->attributes['sambaAcctFlags'][0], "L") !== false)) {
-					$locked = true;
-				}
-				$return->add(new htmlResponsiveInputCheckbox('sambaAcctFlagsL', $locked, _('Account is locked'), 'locked'), 12);
+				$return->add(new htmlResponsiveInputCheckbox('sambaAcctFlagsL', $this->isLocked(), _('Account is locked'), 'locked'), 12);
 				// password change at next login
 				$return->add(new htmlResponsiveInputCheckbox('forcePasswordChangeOption', $this->expirePassword, _('Password change at next login'), 'passwordIsExpired'), 12);
 				// last password change
@@ -1881,12 +1876,12 @@ class sambaSamAccount extends baseModule implements passwordService {
 		elseif (isset($profile['sambaSamAccount_sambaAcctFlagsX'][0]) && ($profile['sambaSamAccount_sambaAcctFlagsX'][0] == "false")) {
 			$this->noexpire = false;
 		}
-		// use no password
+		// deactivation
 		if (isset($profile['sambaSamAccount_sambaAcctFlagsD'][0]) && ($profile['sambaSamAccount_sambaAcctFlagsD'][0] == "true")) {
-			$this->deactivated = true;
+			$this->deactivate($this->attributes);
 		}
 		elseif (isset($profile['sambaSamAccount_sambaAcctFlagsD'][0]) && ($profile['sambaSamAccount_sambaAcctFlagsD'][0] == "false")) {
-			$this->deactivated = false;
+			$this->activate($this->attributes);
 		}
 		if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideHomeDrive')) {
 			// home drive
@@ -2191,7 +2186,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 				$flags = str_pad($flags, 12);
 				// End character
 				$flags = $flags . "]";
-				$partialAccounts[$i]['sambaAcctFlags'] = $flags;
+				$partialAccounts[$i]['sambaacctflags'] = $flags;
 				// expiration date
 				if ($rawAccounts[$i][$ids['sambaSamAccount_expireDate']] != "") {
 					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_expireDate']], 'date')) {
@@ -2338,7 +2333,7 @@ class sambaSamAccount extends baseModule implements passwordService {
 				}
 				$partialAccounts[$i]['sambaNTPassword'] = ntPassword(substr($partialAccounts[$i]['uid'], 0, strlen($partialAccounts[$i]['uid']) - 1));
 				// flags
-				$partialAccounts[$i]['sambaAcctFlags'] = "[W          ]";
+				$partialAccounts[$i]['sambaacctflags'] = "[W          ]";
 			}
 		}
 		return $errors;
@@ -2850,33 +2845,82 @@ class sambaSamAccount extends baseModule implements passwordService {
 	}
 
 	/**
-	 * Returns if the Samba part of the current account is deactivated.
+	 * Returns if the Samba part of the current account is locked.
 	 *
+	 * @param ?array $attributes LDAP attributes
 	 * @return boolean account is locked
 	 */
-	public function isDeactivated() {
-		return $this->deactivated;
+	public function isLocked(?array $attributes = null) {
+		if ($attributes === null) {
+			$attributes = $this->attributes;
+		}
+		if (!isset($attributes['sambaacctflags'][0])) {
+			return false;
+		}
+		return strpos($attributes['sambaacctflags'][0], 'L') !== false;
+	}
+
+	/**
+	 * Returns if the Samba part of the current account is deactivated.
+	 *
+	 * @param ?array $attributes LDAP attributes
+	 * @return boolean account is deactivated
+	 */
+	public function isDeactivated(?array $attributes = null) {
+		if ($attributes === null) {
+			$attributes = $this->attributes;
+		}
+		if (!isset($attributes['sambaacctflags'][0])) {
+			return false;
+		}
+		return strpos($attributes['sambaacctflags'][0], 'D') !== false;
 	}
 
 	/**
 	 * Deactivates this account.
+	 *
+	 * @param array $attributes LDAP attributes
 	 */
-	public function deactivate() {
-		$this->deactivated = true;
-		$flags = $this->attributes['sambaAcctFlags'][0];
+	public function deactivate(array &$attributes) {
+		if (!isset($attributes['sambaacctflags'][0])) {
+			if ($this->get_scope() === 'host') {
+				$attributes['sambaacctflags'][0] = '[W          ]';
+			}
+			else {
+				$attributes['sambaacctflags'][0] = '[ XU        ]';
+			}
+		}
+		$flags = $attributes['sambaacctflags'][0];
 		if (strpos($flags, 'D') === false) {
 			$flags[strpos($flags, ' ')] = 'D';
 		}
-		$this->attributes['sambaAcctFlags'][0] = $flags;
+		$attributes['sambaacctflags'][0] = $flags;
 	}
 
 	/**
 	 * Activates this account.
+	 *
+	 * @param array $attributes LDAP attributes
 	 */
-	public function activate() {
-		$this->deactivated = false;
-		$this->attributes['sambaAcctFlags'][0] = str_replace('D', '', $this->attributes['sambaAcctFlags'][0]);
-		$this->attributes['sambaAcctFlags'][0] = str_replace(']', ' ]', $this->attributes['sambaAcctFlags'][0]);
+	public function activate(array &$attributes) {
+		if (!isset($attributes['sambaacctflags'][0])) {
+			if ($this->get_scope() === 'host') {
+				$attributes['sambaacctflags'][0] = '[W          ]';
+			}
+			else {
+				$attributes['sambaacctflags'][0] = '[ XU        ]';
+			}
+		}
+		$attributes['sambaacctflags'][0] = str_replace('D', ' ', $attributes['sambaacctflags'][0]);
+	}
+
+	/**
+	 * Unlocks this account.
+	 *
+	 * @param array $attributes LDAP attributes
+	 */
+	public function unlock(array &$attributes) {
+		$attributes['sambaacctflags'][0] = str_replace('L', ' ', $attributes['sambaacctflags'][0]);
 	}
 
 	/**
@@ -2942,9 +2986,9 @@ class sambaSamAccount extends baseModule implements passwordService {
 	 */
 	public function getPasswordQuickChangeOptions(): array {
 		$options = array();
-		if ((isset($this->attributes['sambaAcctFlags'][0])
-			&& ((strpos($this->attributes['sambaAcctFlags'][0], 'L') !== false)
-				|| (strpos($this->attributes['sambaAcctFlags'][0], 'D') !== false)))) {
+		if ((isset($this->attributes['sambaacctflags'][0])
+			&& ((strpos($this->attributes['sambaacctflags'][0], 'L') !== false)
+				|| (strpos($this->attributes['sambaacctflags'][0], 'D') !== false)))) {
 			$options[] = new PasswordQuickChangeOption('unlockAccountSamba', _('Unlock Samba account'));
 		}
 		if (in_array_ignore_case('sambaSamAccount', $this->attributes['objectClass'])) {
@@ -2965,13 +3009,13 @@ class sambaSamAccount extends baseModule implements passwordService {
 	 */
 	public function getPasswordQuickChangeChanges(string $password): array {
 		$attrs = array();
-		if (isset($_POST['unlockAccountSamba']) && isset($this->attributes['sambaAcctFlags'][0])) {
-			if ((strpos($this->attributes['sambaAcctFlags'][0], 'L') !== false)
-				|| (strpos($this->attributes['sambaAcctFlags'][0], 'D') !== false)) {
-				$sambaFlags = $this->attributes['sambaAcctFlags'][0];
+		if (isset($_POST['unlockAccountSamba']) && isset($this->attributes['sambaacctflags'][0])) {
+			if ((strpos($this->attributes['sambaacctflags'][0], 'L') !== false)
+				|| (strpos($this->attributes['sambaacctflags'][0], 'D') !== false)) {
+				$sambaFlags = $this->attributes['sambaacctflags'][0];
 				$sambaFlags = str_replace('L', ' ', $sambaFlags);
 				$sambaFlags = str_replace('D', ' ', $sambaFlags);
-				$attrs['sambaAcctFlags'][0] = $sambaFlags;
+				$attrs['sambaacctflags'][0] = $sambaFlags;
 			}
 		}
 		if (isset($_POST['syncSambaLM'])) {
@@ -3043,6 +3087,71 @@ class sambaSamAccount extends baseModule implements passwordService {
 			return sambaSamAccount::oldPasswordUsed($password, $this->attributes, $sambaDomain);
 		}
 		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getAccountStatusDetails(ConfiguredType $type, ?array &$attributes): array {
+		if ($attributes === null) {
+			$attributes = $this->attributes;
+		}
+		$details = array();
+		if (self::isDeactivated($attributes)) {
+			$details[] = AccountStatusDetails::newPartiallyLocked(_('Samba') . ': ' . _('Deactivated'), self::STATUS_ACCOUNT_DEACTIVATED);
+		}
+		if (self::isLocked($attributes)) {
+			$details[] = AccountStatusDetails::newPartiallyLocked(_('Samba') . ': ' . _('Locked'), self::STATUS_ACCOUNT_LOCKED);
+		}
+		return $details;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getAccountStatusRequiredAttributes(ConfiguredType $type): array {
+		return array('sambaacctflags');
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getAccountStatusPossibleLockOptions(ConfiguredType $type, ?array &$attributes): array {
+		if ($attributes === null) {
+			$attributes = $this->attributes;
+		}
+		$options = array();
+		if (!self::isDeactivated($attributes)) {
+			$options[] = AccountStatusDetails::newPartiallyLocked(_('Samba'), self::STATUS_ACCOUNT_DEACTIVATED);
+		}
+		return $options;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function accountStatusPerformLock(ConfiguredType $type, ?array &$attributes, array $lockIds): void {
+		if ($attributes === null) {
+			$attributes = &$this->attributes;
+		}
+		if (in_array(self::STATUS_ACCOUNT_DEACTIVATED, $lockIds)) {
+			self::deactivate($attributes);
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function accountStatusPerformUnlock(ConfiguredType $type, ?array &$attributes, array $lockIds): void {
+		if ($attributes === null) {
+			$attributes = &$this->attributes;
+		}
+		if (in_array(self::STATUS_ACCOUNT_DEACTIVATED, $lockIds)) {
+			self::activate($attributes);
+		}
+		if (in_array(self::STATUS_ACCOUNT_LOCKED, $lockIds)) {
+			self::unlock($attributes);
+		}
 	}
 
 }

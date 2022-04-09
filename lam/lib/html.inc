@@ -2939,6 +2939,10 @@ class htmlImage extends htmlElement {
 	private $crop = false;
 	/** enable lightbox */
 	private $lightbox = false;
+	/** @var string help popup title */
+	private $helpTitle = null;
+	/** @var htmlElement help popup content	*/
+	private $helpContent = null;
 
 	/**
 	 * Constructor.
@@ -2998,7 +3002,17 @@ class htmlImage extends htmlElement {
 		if ($this->lightbox) {
 			echo '<a href="' . $this->path . '" class="lam-lightbox">';
 		}
-		echo '<img' . $path . $width . $height . $alt . $title . $classes . $onClick . $this->getDataAttributesAsString() . ">";
+		$helpTitleValue = '';
+		$helpContentValue = '';
+		if ($this->helpTitle !== null) {
+			$helpTitleValue = ' helptitle="' . $this->helpTitle . '"';
+			ob_start();
+			$this->helpContent->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
+			$helpContentString = ob_get_contents();
+			ob_end_clean();
+			$helpContentValue = ' helpdata="' . htmlspecialchars($helpContentString) . '"';
+		}
+		echo '<img' . $path . $width . $height . $alt . $title . $classes . $onClick . $helpTitleValue . $helpContentValue . $this->getDataAttributesAsString() . ">";
 		if ($this->lightbox) {
 			echo '</a>';
 		}
@@ -3047,6 +3061,26 @@ class htmlImage extends htmlElement {
 	 */
 	public function enableLightbox() {
 		$this->lightbox = true;
+	}
+
+	/**
+	 * Activates the help popup on hover.
+	 *
+	 * @param string $title title
+	 * @param htmlElement $content help content
+	 */
+	public function setHelpData(string $title, htmlElement $content) {
+		$this->helpTitle = htmlspecialchars($title);
+		$this->helpContent = $content;
+	}
+
+	/**
+	 * Sets the onClick event code.
+	 *
+	 * @param string $code JS code
+	 */
+	public function setOnClick(string $code): void {
+		$this->onClick = $code;
 	}
 
 }

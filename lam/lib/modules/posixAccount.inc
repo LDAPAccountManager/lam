@@ -5,6 +5,7 @@ use LAM\REMOTE\RemoteServerConfiguration;
 use \LAM\TYPES\TypeManager;
 use function LAM\TYPES\getScopeFromTypeId;
 use LAM\TYPES\ConfiguredType;
+
 /*
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -42,11 +43,26 @@ use LAM\TYPES\ConfiguredType;
 *
 * @package modules
 */
-class posixAccount extends baseModule implements passwordService {
+class posixAccount extends baseModule implements passwordService,AccountStatusProvider {
 
 	// Variables
 	/** delimiter for lamdaemon commands */
 	private static $SPLIT_DELIMITER = "###x##y##x###";
+
+	/**
+	 * ID for locked password status.
+	 */
+	const STATUS_PASSWORD_LOCKED = "POSIX_ACCOUNT_PASSWORD_LOCKED";
+
+	/**
+	 * ID for removing Unix groups of user.
+	 */
+	const STATUS_REMOVE_UNIX_GROUPS = "POSIX_ACCOUNT_REMOVE_UNIX_GROUPS";
+
+	/**
+	 * ID for removing group of names groups of user.
+	 */
+	const STATUS_REMOVE_GON_GROUPS = "POSIX_ACCOUNT_REMOVE_GON_GROUPS";
 
 	/* These two variables keep an array of groups the user is also member of. */
 	/** current group list */
@@ -3436,7 +3452,7 @@ class posixAccount extends baseModule implements passwordService {
 							if (empty($this->selfServiceSettings->moduleSettings['posixAccount_useOldPwd']) || ($this->selfServiceSettings->moduleSettings['posixAccount_useOldPwd'][0] != 'true')) {
 								// set SASL password
 								if (!empty($attributes['uid'][0]) && ($passwordHash === 'SASL')) {
-									$return['mod']['userPassword'][0] = '{SASL}' . $attributes['uid'][0];
+									$return['mod']['userpassword'][0] = '{SASL}' . $attributes['uid'][0];
 								}
 								elseif ($passwordHash === 'LDAP_EXOP') {
 									// no LDAP modify action, use ldap_exop_passwd
@@ -3444,13 +3460,13 @@ class posixAccount extends baseModule implements passwordService {
 								}
 								// set other password hashes
 								else {
-									$return['mod']['userPassword'][0] = pwd_hash($_POST['posixAccount_password'], true, $passwordHash);
+									$return['mod']['userpassword'][0] = pwd_hash($_POST['posixAccount_password'], true, $passwordHash);
 								}
 
 							}
 							else {
-								$return['add']['userPassword'][0] = pwd_hash($_POST['posixAccount_password'], true, $passwordHash);
-								$return['del']['userPassword'][0] = $_POST['posixAccount_passwordOld'];
+								$return['add']['userpassword'][0] = pwd_hash($_POST['posixAccount_password'], true, $passwordHash);
+								$return['del']['userpassword'][0] = $_POST['posixAccount_passwordOld'];
 							}
 							$return['info']['userPasswordClearText'][0] = $_POST['posixAccount_password'];
 							if (isset($attributes['shadowLastChange'][0])) {
@@ -3902,11 +3918,16 @@ class posixAccount extends baseModule implements passwordService {
 	 * Returns if the Unix part of the current account is locked.
 	 *
 	 * @param string[] $modules account modules
+	 * @param ?array $attributes LDAP attribute data
 	 * @return boolean password is locked
 	 */
-	public function isLocked(&$modules) {
-		return isset($this->attributes[$this->getPasswordAttrName($modules)][0])
-			&& !pwd_is_enabled($this->attributes[$this->getPasswordAttrName($modules)][0]);
+	public function isLocked($modules, ?array $attributes = null) {
+		if ($attributes === null) {
+			$attributes = array_change_key_case($this->attributes, CASE_LOWER);
+		}
+		$passwordAttribute = strtolower($this->getPasswordAttrName($modules));
+		return isset($attributes[$passwordAttribute][0])
+			&& !pwd_is_enabled($attributes[$passwordAttribute][0]);
 	}
 
 	/**
@@ -4054,8 +4075,18 @@ class posixAccount extends baseModule implements passwordService {
 	 * @param string[] $modules account modules
 	 * @return boolean is Windows
 	 */
-	private function isWindows(&$modules) {
+	private function isWindows($modules) {
 		return in_array('windowsUser', $modules);
+	}
+
+	/**
+	 * Returns if the PPolicy module is active.
+	 *
+	 * @param string[] $modules account modules
+	 * @return boolean is PPolicy enabled
+	 */
+	private function hasPPolicy($modules) {
+		return in_array('ppolicyUser', $modules);
 	}
 
 	/**
@@ -4065,11 +4096,11 @@ class posixAccount extends baseModule implements passwordService {
 	 * @param string[] $modules account modules
 	 * @return boolean attribute name
 	 */
-	private function getPasswordAttrName(&$modules) {
+	private function getPasswordAttrName($modules) {
 		if ($this->isWindows($modules)) {
 			return 'unixUserPassword';
 		}
-		return 'userPassword';
+		return 'userpassword';
 	}
 
 	/**
@@ -4196,7 +4227,7 @@ class posixAccount extends baseModule implements passwordService {
 		}
 		$attrs = array();
 		if (isset($_POST['updateUnixPwd'])) {
-			$attrs['userPassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+			$attrs['userpassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 		}
 		return $attrs;
 	}
@@ -4223,6 +4254,156 @@ class posixAccount extends baseModule implements passwordService {
 	 */
 	public function getPasswordQuickChangeIsPasswordInHistory(string $password): bool {
 		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getAccountStatusDetails(ConfiguredType $type, ?array &$attributes): array {
+		if (!$this->isPasswordManaged($type->getId())) {
+			return array();
+		}
+		if ($attributes === null) {
+			$attributes = $this->attributes;
+		}
+		$details = array();
+		if (self::isLocked($type->getModules(), $attributes)) {
+			if ($this->isWindows($type->getModules())) {
+				$details[] = AccountStatusDetails::newPartiallyLocked(_('Unix'), self::STATUS_PASSWORD_LOCKED);
+			}
+			else {
+				$details[] = AccountStatusDetails::newLocked(_('Unix'), self::STATUS_PASSWORD_LOCKED);
+			}
+		}
+		return $details;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getAccountStatusRequiredAttributes(ConfiguredType $type): array {
+		if (!$this->isPasswordManaged($type->getId())) {
+			return array();
+		}
+		return array($this->getPasswordAttrName($type->getModules()), 'uid');
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getAccountStatusPossibleLockOptions(ConfiguredType $type, ?array &$attributes): array {
+		if (!$this->isPasswordManaged($type->getId())) {
+			return array();
+		}
+		if ($attributes === null) {
+			$attributes = $this->attributes;
+		}
+		$options = array();
+		$attributeName = $this->getPasswordAttrName($type->getModules());
+		if (!self::isLocked($type->getModules(), $attributes) && isset($attributes[$attributeName][0]) && pwd_is_lockable($attributes[$attributeName][0])) {
+			if ($this->hasPPolicy($type->getModules())) {
+				$options[] = AccountStatusDetails::newPartiallyLocked(_('Unix'), self::STATUS_PASSWORD_LOCKED);
+			}
+			else {
+				$options[] = AccountStatusDetails::newLocked(_('Unix'), self::STATUS_PASSWORD_LOCKED);
+			}
+			if (isset($attributes['uid'][0])) {
+				$options[] = AccountStatusDetails::newPartiallyLocked(_('Remove from all Unix groups'), self::STATUS_REMOVE_UNIX_GROUPS);
+			}
+			if (self::areGroupOfNamesActive()) {
+				$options[] = AccountStatusDetails::newPartiallyLocked(_('Remove from all group of (unique) names'), self::STATUS_REMOVE_GON_GROUPS);
+			}
+		}
+		return $options;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function accountStatusPerformLock(ConfiguredType $type, ?array &$attributes, array $lockIds): void {
+		if ($attributes === null) {
+			$attributes = &$this->attributes;
+		}
+		$attributeName = $this->getPasswordAttrName($type->getModules());
+		if (in_array(self::STATUS_PASSWORD_LOCKED, $lockIds)) {
+			$attributes[$attributeName][0] = pwd_disable($attributes[$attributeName][0]);
+		}
+		if (in_array(self::STATUS_REMOVE_UNIX_GROUPS, $lockIds)) {
+			if ($this->attributes === null) {
+				$this->clearPosixGroupMemberships($attributes);
+			}
+			else {
+				$this->removeFromUnixGroups();
+			}
+		}
+		if (in_array(self::STATUS_REMOVE_GON_GROUPS, $lockIds)) {
+			if ($this->attributes === null) {
+				$this->clearGroupOfNamesMemberships($attributes);
+			}
+			else {
+				$this->removeFromGONGroups();
+			}
+		}
+	}
+
+	/**
+	 * Clears the group of names memberships of the user.
+	 *
+	 * @param array $attributes LDAP attributes
+	 * @throws LAMException error during group modify
+	 */
+	private function clearGroupOfNamesMemberships(array $attributes): void {
+		$searchAttrs = array('member', 'uniquemember', 'owner');
+		foreach ($searchAttrs as $searchAttr) {
+			$groups = searchLDAPByAttribute($searchAttr, $attributes['dn'], null, array('dn'), array('gon', 'group'));
+			foreach ($groups as $group) {
+				logNewMessage(LOG_DEBUG, 'Removing ' . $attributes['dn'] . ' from ' . $group['dn'] . ' (' . $searchAttr . ')');
+				$attributesToDelete = array($searchAttr => array($attributes['dn']));
+				$success = @ldap_mod_del($_SESSION['ldap']->server(), $group['dn'], $attributesToDelete);
+				if (!$success) {
+					$ldapError = getDefaultLDAPErrorString($_SESSION['ldap']->server());
+					logNewMessage(LOG_ERR, 'Unable to delete attributes of DN: ' . $group['dn'] . ' (' . $ldapError . ').');
+					logNewMessage(LOG_DEBUG, print_r($attributesToDelete, true));
+					throw new LAMException(sprintf(_('Was unable to modify attributes of DN: %s.'), $group['dn']), $ldapError);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Clears the posix group memberships of the user.
+	 *
+	 * @param array $attributes LDAP attributes
+	 * @throws LAMException error during group modify
+	 */
+	private function clearPosixGroupMemberships(array $attributes): void {
+		$searchAttr = 'memberuid';
+		$uid = $attributes['uid'][0];
+		$groups = searchLDAPByAttribute($searchAttr, $uid, null, array('dn'), array('group'));
+		foreach ($groups as $group) {
+			logNewMessage(LOG_DEBUG, 'Removing ' . $uid . ' from ' . $group['dn'] . ' (' . $searchAttr . ')');
+			$attributesToDelete = array($searchAttr => array($uid));
+			$success = @ldap_mod_del($_SESSION['ldap']->server(), $group['dn'], $attributesToDelete);
+			if (!$success) {
+				$ldapError = getDefaultLDAPErrorString($_SESSION['ldap']->server());
+				logNewMessage(LOG_ERR, 'Unable to delete attributes of DN: ' . $group['dn'] . ' (' . $ldapError . ').');
+				logNewMessage(LOG_DEBUG, print_r($attributesToDelete, true));
+				throw new LAMException(sprintf(_('Was unable to modify attributes of DN: %s.'), $group['dn']), $ldapError);
+			}
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function accountStatusPerformUnlock(ConfiguredType $type, ?array &$attributes, array $lockIds): void {
+		if ($attributes === null) {
+			$attributes = &$this->attributes;
+		}
+		$attributeName = $this->getPasswordAttrName($type->getModules());
+		if (in_array(self::STATUS_PASSWORD_LOCKED, $lockIds)) {
+			$attributes[$attributeName][0] = pwd_enable($attributes[$attributeName][0]);
+		}
 	}
 
 }

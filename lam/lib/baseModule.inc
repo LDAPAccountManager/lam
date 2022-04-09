@@ -63,7 +63,7 @@ abstract class baseModule {
 	 * These attributes will be ignored by default if a new account is copied from an existing one.
 	 */
 	const ATTRIBUTES_TO_IGNORE_ON_COPY_DEFAULT = array('uid', 'uidNumber', 'gid', 'gidNumber',
-		'cn', 'userPassword', 'sn', 'givenName', 'initials', 'telephoneNumber',
+		'cn', 'userpassword', 'sn', 'givenName', 'initials', 'telephoneNumber',
 		'homePhone', 'mobile', 'facsimileTelephoneNumber', 'pager', 'mail',
 		'employeeNumber', 'userCertificate;binary', 'userCertificate',
 		'homeDirectory', 'unixHomeDirectory', 'jpegPhoto');
@@ -863,7 +863,10 @@ abstract class baseModule {
 			$attrName = $name;
 		}
 		$value = '';
-		if (isset($this->attributes[$attrName]) && (sizeof($this->attributes[$attrName]) > 0)) {
+		if (isset($this->attributes[strtolower($attrName)][0])) {
+			$attrName = strtolower($attrName);
+		}
+		if (isset($this->attributes[$attrName][0])) {
 			natcasesort($this->attributes[$attrName]);
 			$value = implode($delimiter, $this->attributes[$attrName]);
 			$value = trim($value);
@@ -2330,5 +2333,3 @@ abstract class baseModule {
 	}
 
 }
-
-?>
