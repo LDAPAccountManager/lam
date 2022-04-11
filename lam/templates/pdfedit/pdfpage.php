@@ -13,6 +13,7 @@ use \htmlSubTitle;
 use \htmlResponsiveInputTextarea;
 use \htmlHiddenInput;
 use \htmlSpacer;
+use LAM\PDF\PdfLogo;
 use LAM\PDF\PdfStructurePersistenceManager;
 use LAM\PDF\PDFTextSection;
 use LAM\PDF\PDFEntrySection;
@@ -23,7 +24,7 @@ use LAMException;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2007 - 2021  Roland Gruber
+                2007 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -132,8 +133,9 @@ if (!isset($_SESSION['currentPDFStructure'])) {
 	}
 }
 
+$logoFiles = $pdfStructurePersistenceManager->getPdfLogos($_SESSION['config']->getName(), true);
 if (!empty($_POST['form_submit'])) {
-	updateBasicSettings($_SESSION['currentPDFStructure']);
+	updateBasicSettings($_SESSION['currentPDFStructure'], $logoFiles);
 	updateSectionTitles($_SESSION['currentPDFStructure']);
 	addSection($_SESSION['currentPDFStructure']);
 	addSectionEntry($_SESSION['currentPDFStructure']);
@@ -228,7 +230,6 @@ else if (isset($_POST['pdfname'])) {
 // headline
 $headline = $_SESSION['currentPDFStructure']->getTitle();
 // logo
-$logoFiles = $pdfStructurePersistenceManager->getPdfLogos($_SESSION['config']->getName(), true);
 $logos = array(_('No logo') => 'none');
 foreach($logoFiles as $logoFile) {
 	$logos[$logoFile->getName() . ' (' . $logoFile->getWidth() . ' x ' . $logoFile->getHeight() . ")"] = $logoFile->getName();
@@ -516,16 +517,28 @@ function translateFieldIDToName($id, $scope, $availablePDFFields) {
 /**
  * Updates basic settings such as logo and head line.
  *
- * @param PDFStructure $structure
+ * @param PDFStructure $structure PDF structure
+ * @param PdfLogo[] $logoFiles logos
  */
-function updateBasicSettings(PDFStructure &$structure) {
+function updateBasicSettings(PDFStructure &$structure, array $logoFiles) {
 	// set headline
 	if (isset($_POST['headline'])) {
 		$structure->setTitle(str_replace('<', '', str_replace('>', '', $_POST['headline'])));
 	}
 	// set logo
 	if (isset($_POST['logoFile'])) {
-		$structure->setLogo($_POST['logoFile']);
+	    $fileName = $_POST['logoFile'];
+	    $found = false;
+	    foreach ($logoFiles as $logoFile) {
+	        if ($logoFile->getName() === $fileName) {
+	            $found = true;
+            }
+        }
+	    if (!$found) {
+	        logNewMessage(LOG_ERR, 'Invalid PDF logo file: ' . $fileName);
+	        return;
+        }
+		$structure->setLogo($fileName);
 	}
 	// set folding marks
 	if (isset($_POST['foldingmarks'])) {

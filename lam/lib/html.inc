@@ -558,10 +558,10 @@ class htmlInputField extends htmlElement {
 		}
 		if (isset($values[$this->fieldName])) {
 			if (isObfuscatedText($values[$this->fieldName][0])) {
-				$this->fieldValue = deobfuscateText($values[$this->fieldName][0]);
+				$this->fieldValue = htmlspecialchars(deobfuscateText($values[$this->fieldName][0]));
 			}
 			else {
-				$this->fieldValue = $values[$this->fieldName][0];
+				$this->fieldValue = htmlspecialchars($values[$this->fieldName][0]);
 			}
 		}
 		$validators = array();
@@ -2676,7 +2676,7 @@ class htmlInputTextarea extends htmlElement {
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$this->cssClasses[] = 'ui-corner-all';
 		if (isset($values[$this->name])) {
-			$this->value = implode("\r\n", $values[$this->name]);
+			$this->value = htmlspecialchars(implode("\r\n", $values[$this->name]));
 		}
 		$colCount = ($this->colCount != null) ? ' cols="' . $this->colCount . '"' : '';
 		$rowCount = ($this->rowCount != null) ? ' rows="' . $this->rowCount . '"' : '';
