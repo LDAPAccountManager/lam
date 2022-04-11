@@ -558,10 +558,10 @@ class htmlInputField extends htmlElement {
 		}
 		if (isset($values[$this->fieldName])) {
 			if (isObfuscatedText($values[$this->fieldName][0])) {
-				$this->fieldValue = deobfuscateText($values[$this->fieldName][0]);
+				$this->fieldValue = htmlspecialchars(deobfuscateText($values[$this->fieldName][0]));
 			}
 			else {
-				$this->fieldValue = $values[$this->fieldName][0];
+				$this->fieldValue = htmlspecialchars($values[$this->fieldName][0]);
 			}
 		}
 		$validators = array();
