@@ -2183,6 +2183,8 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			if ($this->manageCn($modules)) {
 				$return->add(new htmlResponsiveInputField(_('Common name'), 'posixAccount_cn', '', 'cn'), 12);
 			}
+			// gecos
+			$return->add(new htmlResponsiveInputField(_('Gecos'), 'posixAccount_gecos', '$firstname $lastname', 'gecos'), 12);
 			// home directory
 			$return->add(new htmlResponsiveInputField(_('Home directory'), 'posixAccount_homeDirectory', '/home/$user', 'homeDirectory'), 12);
 			// login shell
@@ -2225,6 +2227,10 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		$homeDirAttr = $this->getHomedirAttrName($modules);
 		if (!empty($profile['posixAccount_homeDirectory'][0])) {
 			$this->attributes[$homeDirAttr][0] = $profile['posixAccount_homeDirectory'][0];
+		}
+		// gecos
+		if (!empty($profile['posixAccount_gecos'][0])) {
+			$this->attributes['gecos'][0] = $profile['posixAccount_gecos'][0];
 		}
 		// special profile options
 		// GID
