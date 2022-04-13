@@ -436,7 +436,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				),
 				'gecos' => array(
 					"Headline" => _("Gecos"), 'attr' => 'gecos',
-					"Text" => _("User description. If left empty first and last name will be used.")
+					"Text" => _("User description.")
 				),
 				'gidNumber' => array(
 					"Headline" => _("Primary group"), 'attr' => 'gidNumber',
