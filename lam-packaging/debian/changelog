@@ -1,3 +1,10 @@
+ldap-account-manager (7.9.1-1) unstable; urgency=medium
+
+  * new upstream release
+  * Fix CVE-2022-24851
+
+ -- Roland Gruber <post@rolandgruber.de>  Wed, 09 Mar 2022 17:08:14 +0100
+
 ldap-account-manager (7.9-1) unstable; urgency=medium
 
   * new upstream release
