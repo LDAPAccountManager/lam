@@ -528,16 +528,18 @@ function updateBasicSettings(PDFStructure &$structure, array $logoFiles) {
 	// set logo
 	if (isset($_POST['logoFile'])) {
 	    $fileName = $_POST['logoFile'];
-	    $found = false;
-	    foreach ($logoFiles as $logoFile) {
-	        if ($logoFile->getName() === $fileName) {
-	            $found = true;
-            }
-        }
-	    if (!$found) {
-	        logNewMessage(LOG_ERR, 'Invalid PDF logo file: ' . $fileName);
-	        return;
-        }
+	    if ($fileName !== 'none') {
+		    $found = false;
+		    foreach ($logoFiles as $logoFile) {
+			    if ($logoFile->getName() === $fileName) {
+				    $found = true;
+			    }
+		    }
+		    if (!$found) {
+			    logNewMessage(LOG_ERR, 'Invalid PDF logo file: ' . $fileName);
+			    return;
+		    }
+	    }
 		$structure->setLogo($fileName);
 	}
 	// set folding marks
