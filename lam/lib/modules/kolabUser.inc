@@ -234,13 +234,13 @@ class kolabUser extends baseModule {
 			if ($this->getAccountContainer()->isNewAccount) {
 				if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
 					$attrsP = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
-					if (!isset($attrsP['userPassword'][0]) || ($attrsP['userPassword'][0] == '')) {
+					if (!isset($attrsP['userpassword'][0]) || ($attrsP['userpassword'][0] == '')) {
 						$message = new htmlStatusMessage('ERROR', _("Please enter a user password."));
 						$message->colspan = 5;
 						$return->addElement($message, true);
 					}
 				}
-				elseif (!isset($attrsI['userPassword'][0]) || ($attrsI['userPassword'][0] == '')) {
+				elseif (!isset($attrsI['userpassword'][0]) || ($attrsI['userpassword'][0] == '')) {
 					$message = new htmlStatusMessage('ERROR', _("Please enter a user password."));
 					$message->colspan = 5;
 					$return->addElement($message, true);
@@ -445,9 +445,9 @@ class kolabUser extends baseModule {
 			if ($this->getAccountContainer()->isNewAccount) {
 				if ($this->getAccountContainer()->getAccountModule('posixAccount') != null) {
 					$attrsP = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
-					if (!$attrsP['userPassword'][0]) return false;
+					if (!$attrsP['userpassword'][0]) return false;
 				}
-				elseif (!$attrsI['userPassword'][0]) {
+				elseif (!$attrsI['userpassword'][0]) {
 					return false;
 				}
 			}

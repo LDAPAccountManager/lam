@@ -1385,7 +1385,12 @@ function _get_raw_schema($schema_to_fetch, $dn='' )
 							LDAP_DEREF_ALWAYS );
 
         // Were we not able to fetch the schema from the $schema_dn?
-        $schema_entries = @ldap_get_entries( $ds, $schema_search );
+		if ($schema_search !== false) {
+			$schema_entries = @ldap_get_entries($ds, $schema_search);
+		}
+		else {
+			$schema_entries = array();
+		}
 		if( $schema_search === false ||
             0 == @ldap_count_entries( $ds, $schema_search ) ||
             ! isset( $schema_entries[0][$schema_to_fetch] ) ) {
@@ -1395,7 +1400,9 @@ function _get_raw_schema($schema_to_fetch, $dn='' )
                 $schema_search = @ldap_read( $ds, $schema_dn, '(objectClass=subschema)',
                         array( $schema_to_fetch ), 0, 0, 0,
                         LDAP_DEREF_ALWAYS );
-                $schema_entries = @ldap_get_entries( $ds, $schema_search );
+                if ($schema_search !== false) {
+	                $schema_entries = @ldap_get_entries($ds, $schema_search);
+                }
 
                 // Still didn't get it?
                 if( $schema_search === false ||
@@ -1425,6 +1432,9 @@ function _get_raw_schema($schema_to_fetch, $dn='' )
 		// try with the standard DN
 		$schema_search = @ldap_read($ds, 'cn=subschema', '(objectClass=*)',
 				array( $schema_to_fetch ), 0, 0, 0, LDAP_DEREF_ALWAYS );
+		if ($schema_search === false) {
+			$schema_search = null;
+		}
 	}
 
 	// cn=schema for Novell eDirectory
@@ -1433,6 +1443,9 @@ function _get_raw_schema($schema_to_fetch, $dn='' )
 		// try again, with a different schema DN
 		$schema_search = @ldap_read($ds, 'cn=schema', '(objectClass=*)',
 				array( $schema_to_fetch ), 0, 0, 0, LDAP_DEREF_ALWAYS );
+		if ($schema_search === false) {
+			$schema_search = null;
+		}
 	}
 
 	// cn=schema,cn=configuration,dc=example,dc=com for ActiveDirectory
@@ -1443,9 +1456,13 @@ function _get_raw_schema($schema_to_fetch, $dn='' )
 				$servers[ 'base' ] :
 				null;
 		if( $debug ) echo "Attempting with cn=schema,cn=configuration,$base_dn (ActiveDirectory)...\n";
-		if( $base_dn != null )
+		if( $base_dn != null ) {
 			$schema_search = @ldap_read($ds, 'cn=schema,cn=configuration,' . $base_dn, '(objectClass=*)',
-				array( $schema_to_fetch ), 0, 0, 0, LDAP_DEREF_ALWAYS );
+				array($schema_to_fetch), 0, 0, 0, LDAP_DEREF_ALWAYS);
+			if ($schema_search === false) {
+				$schema_search = null;
+			}
+		}
 	}
 
 	// cn=Schema,ou=Admin,dc=example,dc=com for SiteServer
@@ -1456,33 +1473,51 @@ function _get_raw_schema($schema_to_fetch, $dn='' )
 				$servers[ 'base' ] :
 				null;
 		if( $debug ) echo "Attempting with cn=Schema,ou=Admin,$base_dn (ActiveDirectory)...\n";
-		if( $base_dn != null )
+		if( $base_dn != null ) {
 			$schema_search = @ldap_read($ds, 'cn=Schema,ou=Admin,' . $base_dn, '(objectClass=*)',
-				array( $schema_to_fetch ), 0, 0, 0, LDAP_DEREF_ALWAYS );
+				array($schema_to_fetch), 0, 0, 0, LDAP_DEREF_ALWAYS);
+			if ($schema_search === false) {
+				$schema_search = null;
+			}
+		}
 	}
 
 	// Attempt to pull schema from Root DSE with scope "base"
 	if( $schema_search == null ) {
 		// try again, with a different schema DN
 		if( $debug ) echo "Attempting to pull schema from Root DSE with scope \"base\"...\n";
-		if( $base_dn != null )
+		if( $base_dn != null ) {
 			$schema_search = @ldap_read($ds, '', '(objectClass=*)',
-				array( $schema_to_fetch ), 0, 0, 0, LDAP_DEREF_ALWAYS );
-         $schema_entries = @ldap_get_entries( $ds, $schema_search );
-         if( ! isset( $schema_entries[0][$schema_to_fetch] ) )
-            $schema_search = null;
+				array($schema_to_fetch), 0, 0, 0, LDAP_DEREF_ALWAYS);
+			if ($schema_search === false) {
+				$schema_search = null;
+			}
+			else {
+				$schema_entries = @ldap_get_entries( $ds, $schema_search );
+				if (($schema_entries === false) || !isset($schema_entries[0][$schema_to_fetch])) {
+					$schema_search = null;
+				}
+			}
+		}
     }
 
 	// Attempt to pull schema from Root DSE with scope "one" (work-around for Isode M-Vault X.500/LDAP)
 	if( $schema_search == null ) {
 		// try again, with a different schema DN
 		if( $debug ) echo "Attempting to pull schema from Root DSE with scope \"one\"...\n";
-		if( $base_dn != null )
+		if( $base_dn != null ) {
 			$schema_search = @ldap_list($ds, '', '(objectClass=*)',
-				array( $schema_to_fetch ), 0, 0, 0, LDAP_DEREF_ALWAYS );
-         $schema_entries = @ldap_get_entries( $ds, $schema_search );
-         if( ! isset( $schema_entries[0][$schema_to_fetch] ) )
-            $schema_search = null;
+				array($schema_to_fetch), 0, 0, 0, LDAP_DEREF_ALWAYS);
+			if ($schema_search === false) {
+				$schema_search = null;
+			}
+			else {
+				$schema_entries = @ldap_get_entries( $ds, $schema_search );
+				if(($schema_entries === false) || !isset($schema_entries[0][$schema_to_fetch])) {
+					$schema_search = null;
+				}
+			}
+		}
 	}
 
 	// Shall we just give up?
@@ -1491,15 +1526,6 @@ function _get_raw_schema($schema_to_fetch, $dn='' )
         set_schema_cache_unavailable();
 		return false;
     }
-
-	// Did we get something unrecognizable?
-	if( 'resource' != gettype( $schema_search ) ) {
-		if( $debug ) echo "Returning false since schema_esarch is not of type 'resource'. Dumping schema search:\n";
-        if( $debug ) var_dump( $schema_search );
-        if( $debug ) echo "</pre>";
-        set_schema_cache_unavailable();
-		return false;
-	}
 
 	$schema = @ldap_get_entries( $ds, $schema_search );
 	if( $schema == false ) {
@@ -1549,7 +1575,7 @@ function get_schema_objectclasses($dn=null, $use_cache=true )
 
 	$raw_oclasses = _get_raw_schema('objectclasses', $dn );
 	if( ! $raw_oclasses )
-		return false;
+		return array();
 
 	// build the array of objectClasses
 	$object_classes = array();
@@ -1634,7 +1660,7 @@ function get_schema_attributes($dn = null, $use_cache=true )
 
 	$raw_attrs = _get_raw_schema('attributeTypes', $dn );
 	if( ! $raw_attrs )
-		return false;
+		return array();
 
 	// build the array of attribueTypes
 	$syntaxes = get_schema_syntaxes($dn );

@@ -6258,7 +6258,7 @@ OK (10 msec)</programlisting>
 
       <listitem>
         <para><emphasis role="bold">$INFO.passwordChangeType$:</emphasis>
-        password type (manual|random)</para>
+        password type (manual|random|none) where "none" means no password change</para>
       </listitem>
 
       <listitem>

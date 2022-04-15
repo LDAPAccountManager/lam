@@ -147,6 +147,9 @@ function printHeader(string $headerPrefix): void {
 			$accountTypesGroup->addElement($accountTypesLink);
 			$accountList = new htmlGroup();
 			foreach ($types as $type) {
+			    if ($type->isHidden()) {
+			        continue;
+			    }
 				$link = $headerPrefix . '/templates/lists/list.php?type=' . $type->getId();
 				$accountTypeLink = new htmlLink($type->getAlias(), $link, $headerPrefix . '/graphics/' . $type->getIcon());
 				$accountTypeLink->setCSSClasses(array('lam-menu-entry icon'));

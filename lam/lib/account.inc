@@ -1060,11 +1060,20 @@ function copyDnRecursive(string $oldDn, string $targetDn): void {
 	logNewMessage(LOG_DEBUG, 'Copy DN ' . $oldDn . ' to ' . $newDn);
 	$attributes = ldapGetDN($oldDn, array('*'));
 	if (empty($attributes)) {
+		logNewMessage(LOG_ERR, sprintf(_("Unable to read %s."), unescapeLdapSpecialCharacters($oldDn)));
 		throw new LAMException(sprintf(_("Unable to read %s."), htmlspecialchars(unescapeLdapSpecialCharacters($oldDn))));
 	}
 	unset($attributes['dn']);
+	$systemAttributesToSkip = array('iscriticalsystemobject', 'primarygroupid', 'samaccounttype', 'objectsid');
+	foreach ($systemAttributesToSkip as $systemAttributeToSkip) {
+		if (isset($attributes[$systemAttributeToSkip])) {
+			unset($attributes[$systemAttributeToSkip]);
+		}
+	}
 	$success = ldap_add($_SESSION['ldap']->server(), $newDn, $attributes);
 	if (!$success) {
+		logNewMessage(LOG_ERR, sprintf(_('Was unable to create DN: %s.'), unescapeLdapSpecialCharacters($oldDn)) . ' ' .
+			getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
 		throw new LAMException(sprintf(_('Was unable to create DN: %s.'), htmlspecialchars(unescapeLdapSpecialCharacters($oldDn))),
 			getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
 	}
@@ -1996,5 +2005,3 @@ class LAMException extends Exception {
 	}
 
 }
-
-?>

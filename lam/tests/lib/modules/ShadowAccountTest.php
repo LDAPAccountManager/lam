@@ -45,7 +45,7 @@ use PHPUnit\Framework\TestCase;
 			$expire = intval(time() / (24*3600)) + 10000;
 			$attrs = array(
 				'objectClass' => array('shadowAccount'),
-				'sHadoweXpirE' => array(0 => $expire)
+				'shadowexpire' => array(0 => $expire)
 			);
 
 			$this->assertFalse(shadowAccount::isAccountExpired($attrs));
@@ -55,7 +55,7 @@ use PHPUnit\Framework\TestCase;
 			$expire = intval(time() / (24*3600)) - 10000;
 			$attrs = array(
 				'objectClass' => array('shadowAccount'),
-				'sHadoweXpirE' => array(0 => $expire)
+				'shadowexpire' => array(0 => $expire)
 			);
 
 			$this->assertTrue(shadowAccount::isAccountExpired($attrs));
@@ -71,7 +71,7 @@ use PHPUnit\Framework\TestCase;
 			$change = intval(time() / (24*3600)) - 10;
 			$attrs = array(
 				'objectClass' => array('shadowAccount'),
-				'shadoWlastCHange' => array(0 => $change),
+				'shadowlastchange' => array(0 => $change),
 				'shadowmax' => array(0 => '14'),
 			);
 
@@ -82,7 +82,7 @@ use PHPUnit\Framework\TestCase;
 			$change = intval(time() / (24*3600)) - 10;
 			$attrs = array(
 				'objectClass' => array('shadowAccount'),
-				'shadoWlastCHange' => array(0 => $change),
+				'shadowlastchange' => array(0 => $change),
 				'shadowmax' => array(0 => '7'),
 			);
 
@@ -93,9 +93,9 @@ use PHPUnit\Framework\TestCase;
 			$change = intval(time() / (24*3600)) - 10;
 			$attrs = array(
 				'objectClass' => array('shadowAccount'),
-				'shadoWlastCHange' => array(0 => $change),
+				'shadowlastchange' => array(0 => $change),
 				'shadowmax' => array(0 => '7'),
-				'shaDowinactIVe' => array(0 => '14'),
+				'shadowinactive' => array(0 => '14'),
 			);
 
 			$this->assertFalse(shadowAccount::isPasswordExpired($attrs));
@@ -105,9 +105,9 @@ use PHPUnit\Framework\TestCase;
 			$change = intval(time() / (24*3600)) - 10;
 			$attrs = array(
 				'objectClass' => array('shadowAccount'),
-				'shadoWlastCHange' => array(0 => $change),
+				'shadowlastchange' => array(0 => $change),
 				'shadowmax' => array(0 => '7'),
-				'shaDowinactIVe' => array(0 => '2'),
+				'shadowinactive' => array(0 => '2'),
 			);
 
 			$this->assertTrue(shadowAccount::isPasswordExpired($attrs));

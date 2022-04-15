@@ -1660,6 +1660,7 @@ class accountContainer {
 		logNewMessage(LOG_DEBUG, "Edit account " . $dn);
 		$this->extraInfoAttributes['INFO.isNewAccount'] = 'no';
 		$this->extraInfoAttributes['INFO.passwordUpdated'] = 'no';
+		$this->extraInfoAttributes['INFO.passwordChangeType'] = 'none';
 		$this->module = array();
 		$modules = $_SESSION['config']->get_AccountModules($this->type->getId());
 		$filter = 'objectClass=*';
@@ -1932,7 +1933,7 @@ class accountContainer {
 			unset($attributes[$this->dn_orig]);
 		}
 		// remove pwdAccountLockedTime attribute change if also userPassword is changed (PPolicy will remove this attribute itself)
-		if (isset($attributes[$this->finalDN]['modify']['userPassword']) || isset($attributes[$this->finalDN]['remove']['userPassword'])) {
+		if (isset($attributes[$this->finalDN]['modify']['userpassword']) || isset($attributes[$this->finalDN]['remove']['userpassword'])) {
 			if (isset($attributes[$this->finalDN]['modify']['pwdAccountLockedTime'])) {
 				unset($attributes[$this->finalDN]['modify']['pwdAccountLockedTime']);
 			}
@@ -2305,6 +2306,21 @@ class accountContainer {
 	}
 
 	/**
+	 * Returns the account status.
+	 *
+	 * @return AccountStatus status
+	 */
+	public function getAccountStatus(): AccountStatus {
+		$details = array();
+		foreach ($this->module as $name => $module) {
+			if (($module instanceof AccountStatusProvider)) {
+				$details = array_merge($details, $module->getAccountStatusDetails());
+			}
+		}
+		return new AccountStatus($details);
+	}
+
+	/**
 	 * Replaces POST data with wildcard values from modules.
 	 *
 	 * @param array $keyPrefixes POST keys as full name or prefix (e.g. "key" matches "key1")
@@ -2505,3 +2521,338 @@ class PasswordQuickChangeOption {
 	}
 
 }
+
+/**
+ * Provides module information about the status of an LDAP account.
+ */
+interface AccountStatusProvider {
+
+	/**
+	 * Returns the list of account status detail lines.
+	 *
+	 * @param ConfiguredType $type
+	 * @param array|null $attributes LDAP attributes (use account container attributes if not provided)
+	 * @return AccountStatusDetails[] status details
+	 */
+	public function getAccountStatusDetails(ConfiguredType $type, ?array &$attributes): array;
+
+	/**
+	 * Returns the list of LDAP attributes that must be read to get the account status.
+	 *
+	 * @param ConfiguredType $type type
+	 * @return array attribute names
+	 */
+	public function getAccountStatusRequiredAttributes(ConfiguredType $type): array;
+
+	/**
+	 * Returns a list of options how the account could be locked.
+	 *
+	 * @param ConfiguredType $type type
+	 * @param array|null $attributes LDAP attributes
+	 * @return AccountStatusDetails[] lock options
+	 */
+	public function getAccountStatusPossibleLockOptions(ConfiguredType $type, ?array &$attributes): array;
+
+	/**
+	 * Locks the account with the given lock IDs.
+	 *
+	 * @param ConfiguredType $type type
+	 * @param array|null $attributes LDAP attributes
+	 * @param array $lockIds IDs from AccountStatusDetails
+	 * @throws LAMException error during locking
+	 */
+	public function accountStatusPerformLock(ConfiguredType $type, ?array &$attributes, array $lockIds): void;
+
+	/**
+	 * Unlocks the account with the given lock IDs.
+	 *
+	 * @param ConfiguredType $type type
+	 * @param array|null $attributes LDAP attributes
+	 * @param array $lockIds IDs from AccountStatusDetails
+	 */
+	public function accountStatusPerformUnlock(ConfiguredType $type, ?array &$attributes, array $lockIds): void;
+
+}
+
+/**
+ * Provides the complete information about the status of an LDAP account.
+ */
+class AccountStatus {
+
+	/** @var AccountStatusDetails[] list of details */
+	private $details;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param AccountStatusDetails[] $details details
+	 */
+	public function __construct(array $details) {
+		$this->details = $details;
+	}
+
+	/**
+	 * Creates the account status from the given type and LDAP attributes.
+	 *
+	 * @param ConfiguredType $type type
+	 * @param array $attributes LDAP attributes
+	 * @return AccountStatus status
+	 */
+	public static function fromAttributes(ConfiguredType $type, array $attributes): AccountStatus {
+		$modules = $_SESSION['config']->get_AccountModules($type->getId());
+		$details = array();
+		foreach ($modules as $module) {
+			$interfaces = class_implements($module);
+			if (!in_array('AccountStatusProvider', $interfaces)) {
+				continue;
+			}
+			$moduleObject = moduleCache::getModule($module, $type->getScope());
+			$details = array_merge($details, $moduleObject->getAccountStatusDetails($type, $attributes));
+		}
+		return new AccountStatus($details);
+	}
+
+	/**
+	 * Creates the lockable account status from the given type and LDAP attributes.
+	 *
+	 * @param ConfiguredType $type type
+	 * @param array $attributes LDAP attributes
+	 * @return AccountStatus lockable status
+	 */
+	public static function lockableFromAttributes(ConfiguredType $type, array $attributes): AccountStatus {
+		$modules = $_SESSION['config']->get_AccountModules($type->getId());
+		$details = array();
+		foreach ($modules as $module) {
+			$interfaces = class_implements($module);
+			if (!in_array('AccountStatusProvider', $interfaces)) {
+				continue;
+			}
+			$moduleObject = moduleCache::getModule($module, $type->getScope());
+			$details = array_merge($details, $moduleObject->getAccountStatusPossibleLockOptions($type, $attributes));
+		}
+		return new AccountStatus($details);
+	}
+
+	/**
+	 * Returns the account details.
+	 *
+	 * @return AccountStatusDetails[] details
+	 */
+	public function getDetails(): array {
+		return $this->details;
+	}
+
+	/**
+	 * Returns if the account/password is fully expired (e.g. login no longer possible without password change).
+	 *
+	 * @return bool is expired
+	 */
+	public function isExpired(): bool {
+		foreach ($this->details as $detail) {
+			if ($detail->isExpired()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Returns if the account/password is partially expired (e.g. a single application is expired).
+	 *
+	 * @return bool is expired
+	 */
+	public function isPartiallyExpired(): bool {
+		foreach ($this->details as $detail) {
+			if ($detail->isPartiallyExpired()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Returns if the account is fully locked (login no longer possible).
+	 *
+	 * @return bool is locked
+	 */
+	public function isLocked(): bool {
+		foreach ($this->details as $detail) {
+			if ($detail->isLocked()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Returns if the account is partially locked (e.g. a single application is locked).
+	 *
+	 * @return bool is locked
+	 */
+	public function isPartiallyLocked(): bool {
+		foreach ($this->details as $detail) {
+			if ($detail->isPartiallyLocked()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+}
+
+class AccountStatusDetails {
+
+	private $details;
+	private $id;
+	private $expired = false;
+	private $partiallyExpired = false;
+	private $locked = false;
+	private $partiallyLocked = false;
+	private $icon;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param string $details details message
+	 * @param string $id ID for reference
+	 * @param string $icon icon name
+	 */
+	public function __construct(string $details, string $id, string $icon) {
+		$this->details = $details;
+		$this->id = $id;
+		$this->icon = $icon;
+	}
+
+	/**
+	 * Creates a new expired status entry.
+	 *
+	 * @param string $details details message
+	 * @param string $id ID for reference
+	 * @param string $icon icon name
+	 * @return AccountStatusDetails status entry
+	 */
+	public static function newExpired(string $details, string $id, ?string $icon = null): AccountStatusDetails {
+		if ($icon === null) {
+			$icon = 'expired.svg';
+		}
+		$details = new AccountStatusDetails($details, $id, $icon);
+		$details->expired = true;
+		return $details;
+	}
+
+	/**
+	 * Creates a new partially expired status entry.
+	 *
+	 * @param string $details details message
+	 * @param string $id ID for reference
+	 * @param string $icon icon name
+	 * @return AccountStatusDetails status entry
+	 */
+	public static function newPartiallyExpired(string $details, string $id, ?string $icon = null): AccountStatusDetails {
+		if ($icon === null) {
+			$icon = 'expired.svg';
+		}
+		$details = new AccountStatusDetails($details, $id, $icon);
+		$details->partiallyExpired = true;
+		return $details;
+	}
+
+	/**
+	 * Creates a new locked status entry.
+	 *
+	 * @param string $details details message
+	 * @param string $id ID for reference
+	 * @param string $icon icon name
+	 * @return AccountStatusDetails status entry
+	 */
+	public static function newLocked(string $details, string $id, ?string $icon = null): AccountStatusDetails {
+		if ($icon === null) {
+			$icon = 'locked.svg';
+		}
+		$details = new AccountStatusDetails($details, $id, $icon);
+		$details->locked = true;
+		return $details;
+	}
+
+	/**
+	 * Creates a new partially locked status entry.
+	 *
+	 * @param string $details details message
+	 * @param string $id ID for reference
+	 * @param string $icon icon name
+	 * @return AccountStatusDetails status entry
+	 */
+	public static function newPartiallyLocked(string $details, string $id, ?string $icon = null): AccountStatusDetails {
+		if ($icon === null) {
+			$icon = 'partiallyLocked.svg';
+		}
+		$details = new AccountStatusDetails($details, $id, $icon);
+		$details->partiallyLocked = true;
+		return $details;
+	}
+
+	/**
+	 * Returns if the account/password is fully expired (e.g. login no longer possible without password change).
+	 *
+	 * @return bool is expired
+	 */
+	public function isExpired(): bool {
+		return $this->expired;
+	}
+
+	/**
+	 * Returns if the account/password is partially expired (e.g. a single application is expired).
+	 *
+	 * @return bool is expired
+	 */
+	public function isPartiallyExpired(): bool {
+		return $this->partiallyExpired;
+	}
+
+	/**
+	 * Returns if the account is fully locked (login no longer possible).
+	 *
+	 * @return bool is locked
+	 */
+	public function isLocked(): bool {
+		return $this->locked;
+	}
+
+	/**
+	 * Returns if the account is partially locked (e.g. a single application is locked).
+	 *
+	 * @return bool is locked
+	 */
+	public function isPartiallyLocked(): bool {
+		return $this->partiallyLocked;
+	}
+
+	/**
+	 * Returns the icon name.
+	 *
+	 * @return string icon name
+	 */
+	public function getIcon(): string {
+		return $this->icon;
+	}
+
+	/**
+	 * Returns the details.
+	 *
+	 * @return string details
+	 */
+	public function getDetails(): string {
+		return $this->details;
+	}
+
+	/**
+	 * Returns the id.
+	 *
+	 * @return string id
+	 */
+	public function getId(): string {
+		return $this->id;
+	}
+
+}
+
