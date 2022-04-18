@@ -1240,24 +1240,6 @@
             </row>
 
             <row>
-              <entry morerows="1"><inlinemediaobject>
-                  <imageobject>
-                    <imagedata fileref="images/schema_zarafa.png"/>
-                  </imageobject>
-                </inlinemediaobject> Zarafa</entry>
-
-              <entry>"Send as" privileges</entry>
-
-              <entry>Define user who may send mails as this user</entry>
-            </row>
-
-            <row>
-              <entry>Email aliases</entry>
-
-              <entry>Email aliases</entry>
-            </row>
-
-            <row>
               <entry morerows="3"><inlinemediaobject>
                   <imageobject>
                     <imagedata fileref="images/schema_pykota.png"/>

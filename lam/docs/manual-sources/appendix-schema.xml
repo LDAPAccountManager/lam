@@ -698,24 +698,6 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="images/schema_zarafa.png"/>
-              </imageobject>
-            </inlinemediaobject></entry>
-
-          <entry>Zarafa</entry>
-
-          <entry>zarafa-user, zarafa-group, zarafa-server</entry>
-
-          <entry>zarafa.schema</entry>
-
-          <entry>Part of Zarafa installation</entry>
-
-          <entry>LAM Pro only</entry>
-        </row>
-
-        <row>
-          <entry><inlinemediaobject>
-              <imageobject>
                 <imagedata fileref="images/schema_mailAlias.png"/>
               </imageobject>
             </inlinemediaobject></entry>

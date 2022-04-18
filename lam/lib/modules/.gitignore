@@ -28,12 +28,6 @@
 /selfRegistration.inc
 /sudoRole.inc
 /uidObject.inc
-/zarafaAddressList.inc
-/zarafaContact.inc
-/zarafaDynamicGroup.inc
-/zarafaGroup.inc
-/zarafaServer.inc
-/zarafaUser.inc
 /locking389ds.inc
 /kopano*.inc
 /dynamicList.inc

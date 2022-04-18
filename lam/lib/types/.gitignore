@@ -7,8 +7,6 @@
 /oracleContextType.inc
 /ppolicyType.inc
 /sudo.inc
-/zarafaAddressListType.inc
-/zarafaDynamicGroupType.inc
 /kopano*.inc
 /customType.inc
 /ngroup.inc
