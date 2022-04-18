@@ -5429,6 +5429,10 @@ OK (10 msec)</programlisting>
       </listitem>
     </itemizedlist>
 
+    <para>Profile editor: For multi-value fields you can separate multiple
+    values by semicolon in profile editor (e.g. "value1; value2"). LAM will
+    split the text when loading the profile.</para>
+
     <screenshot>
       <mediaobject>
         <imageobject>
@@ -5437,7 +5441,7 @@ OK (10 msec)</programlisting>
       </mediaobject>
     </screenshot>
 
-    <para>Presentation:</para>
+    <para> Presentation:</para>
 
     <screenshot>
       <mediaobject>
@@ -6028,7 +6032,8 @@ OK (10 msec)</programlisting>
 
       <listitem>
         <para><emphasis role="bold">$INFO.passwordChangeType$:</emphasis>
-        password type (manual|random|none) where "none" means no password change</para>
+        password type (manual|random|none) where "none" means no password
+        change</para>
       </listitem>
 
       <listitem>
