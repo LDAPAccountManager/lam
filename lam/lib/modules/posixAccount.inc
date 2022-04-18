@@ -1414,22 +1414,22 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			$this->syncGonToGroups();
 		}
 		elseif (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hideposixGroups')) {
-			if (isset($_POST['addgroups']) && isset($_POST['addgroups_button'])) { // Add groups to list
+			if (isset($_POST['groups_2']) && isset($_POST['groups_left'])) { // Add groups to list
 				// add new group
-				$this->groups = @array_merge($this->groups, $_POST['addgroups']);
+				$this->groups = @array_merge($this->groups, $_POST['groups_2']);
 			}
-			elseif (isset($_POST['removegroups']) && isset($_POST['removegroups_button'])) { // remove groups from list
-				$this->groups = array_delete($_POST['removegroups'], $this->groups);
+			elseif (isset($_POST['groups_1']) && isset($_POST['groups_right'])) { // remove groups from list
+				$this->groups = array_delete($_POST['groups_1'], $this->groups);
 			}
 		}
 		// group of names
 		if (self::areGroupOfNamesActive() && !$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegon')) {
-			if (isset($_POST['addgons']) && isset($_POST['addgons_button'])) { // Add groups to list
+			if (isset($_POST['gon_2']) && isset($_POST['gon_left'])) { // Add groups to list
 				// add new group
-				$this->gonList = @array_merge($this->gonList, $_POST['addgons']);
+				$this->gonList = @array_merge($this->gonList, $_POST['gon_2']);
 			}
-			elseif (isset($_POST['removegons']) && isset($_POST['removegons_button'])) { // remove groups from list
-				$this->gonList = array_delete($_POST['removegons'], $this->gonList);
+			elseif (isset($_POST['gon_1']) && isset($_POST['gon_right'])) { // remove groups from list
+				$this->gonList = array_delete($_POST['gon_1'], $this->gonList);
 			}
 		}
 		// sync Unix to GoN
@@ -1947,43 +1947,35 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			}
 			// remove groups the user is member of from grouplist
 			$groups = array_delete($this->groups, $groups);
-			// Remove primary group from grouplist
+			// Remove primary group from group list
 			$group = $this->getGroupName($this->attributes['gidNumber'][0]);
-			$groups = array_flip($groups);
 			unset ($groups[$group]);
-			$groups = array_flip($groups);
+			$groups = array_values($groups);
 
-			$unixContainer = new htmlTable();
-			$unixContainer->alignment = htmlElement::ALIGN_TOP;
-			$unixContainer->addElement(new htmlSubTitle(_("Unix groups")), true);
+			$unixContainer = new htmlResponsiveRow();
+			$unixContainer->add(new htmlSubTitle(_("Unix groups")));
 			if ($autoSyncGon) {
 				$this->syncGonToGroups();
 				foreach ($this->groups as $group) {
-					$unixContainer->addElement(new htmlOutputText($group), true);
+					$unixContainer->add(new htmlOutputText($group));
 				}
 			}
 			else {
-				$unixContainer->addElement(new htmlOutputText(_("Selected groups")));
-				$unixContainer->addElement(new htmlOutputText(''));
-				$unixContainer->addElement(new htmlOutputText(_("Available groups")));
-				$unixContainer->addNewLine();
-
-				$remSelect = new htmlSelect('removegroups', $this->groups, null, 15);
-				$remSelect->setMultiSelect(true);
-				$remSelect->setTransformSingleSelect(false);
-				$unixContainer->addElement($remSelect);
-				$buttonContainer = new htmlTable();
-				$buttonContainer->addElement(new htmlButton('addgroups_button', 'go-previous.svg', true), true);
-				$buttonContainer->addElement(new htmlButton('removegroups_button', 'go-next.svg', true), true);
-				$buttonContainer->addElement(new htmlHelpLink('addgroup'));
-				$unixContainer->addElement($buttonContainer);
-				$addSelect = new htmlSelect('addgroups', $groups, null, 15);
-				$addSelect->setMultiSelect(true);
-				$addSelect->setTransformSingleSelect(false);
-				$unixContainer->addElement($addSelect, true);
+				$groupsAvailable = array();
+				foreach ($groups as $group) {
+					$groupsAvailable[$group] = $group;
+				}
+				natcasesort($groupsAvailable);
+				$groupsSelected = array();
+				foreach ($this->groups as $group) {
+					$groupsSelected[$group] = $group;
+				}
+				natcasesort($groupsSelected);
+				$this->addDoubleSelectionArea($unixContainer, _("Selected groups"), _("Available groups"),
+					$groupsSelected, array(), $groupsAvailable, array(), 'groups', false, true);
 			}
 
-			$return->add($unixContainer, 12);
+			$return->add($unixContainer);
 			$return->addVerticalSpacer('3rem');
 		}
 
@@ -1991,13 +1983,8 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		if ($showGon) {
 			$gons = $this->findGroupOfNames();
 
-			$gonContainer = new htmlTable();
-			$gonContainer->alignment = htmlElement::ALIGN_TOP;
-			$gonContainer->addElement(new htmlSubTitle(_("Groups of names")), true);
-			$gonContainer->addElement(new htmlOutputText(_("Selected groups")));
-			$gonContainer->addElement(new htmlOutputText(''));
-			$gonContainer->addElement(new htmlOutputText(_("Available groups")));
-			$gonContainer->addNewLine();
+			$gonContainer = new htmlResponsiveRow();
+			$gonContainer->add(new htmlSubTitle(_("Groups of names")));
 
 			$selectedGons = array();
 			for ($i = 0; $i < sizeof($this->gonList); $i++) {
@@ -2014,27 +2001,10 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			}
 			uksort($availableGons, 'compareDN');
 
-			$remGonSelect = new htmlSelect('removegons', $selectedGons, null, 15);
-			$remGonSelect->setMultiSelect(true);
-			$remGonSelect->setTransformSingleSelect(false);
-			$remGonSelect->setHasDescriptiveElements(true);
-			$remGonSelect->setSortElements(false);
-			$remGonSelect->setRightToLeftTextDirection(true);
-			$gonContainer->addElement($remGonSelect);
-			$buttonGonContainer = new htmlTable();
-			$buttonGonContainer->addElement(new htmlButton('addgons_button', 'go-previous.svg', true), true);
-			$buttonGonContainer->addElement(new htmlButton('removegons_button', 'go-next.svg', true), true);
-			$buttonGonContainer->addElement(new htmlHelpLink('addgroup'));
-			$gonContainer->addElement($buttonGonContainer);
-			$addGonSelect = new htmlSelect('addgons', $availableGons, null, 15);
-			$addGonSelect->setMultiSelect(true);
-			$addGonSelect->setHasDescriptiveElements(true);
-			$addGonSelect->setTransformSingleSelect(false);
-			$addGonSelect->setSortElements(false);
-			$addGonSelect->setRightToLeftTextDirection(true);
-			$gonContainer->addElement($addGonSelect);
-			$gonContainer->addNewLine();
-			$return->add($gonContainer, 12);
+			$this->addDoubleSelectionArea($gonContainer, _("Selected groups"), _("Available groups"),
+				$selectedGons, array(), $availableGons, array(), 'gon', true, true);
+
+			$return->add($gonContainer);
 			$return->addVerticalSpacer('3rem');
 		}
 
