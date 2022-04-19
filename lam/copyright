@@ -1193,6 +1193,7 @@ style/600_flatpickr.css                                              B  2017  Gr
 templates/lib/extra/cropperjs                                        B  2018  Chen Fengyuan
 style/600_cropper*.css                                               B  2018  Chen Fengyuan
 templates/lib/extra/duo/*.js                                         E  2019  Duo Security
+templates/lib/extra/friendlyCaptcha                                  B
 lib/3rdParty/duo/*.php                                               E  2019  Duo Security
 graphics/webauthn.svg                                                F  2017  Duo Security, Inc.
 templates/lib/600_jquery.magnific-popup.js                           B  2016  Dmitry Semenov

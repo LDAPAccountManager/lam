@@ -25,45 +25,48 @@ use htmlScript;
 */
 
 /**
- * Google ReCaptcha provider.
+ * Friendly Captcha provider.
  *
  * @author Roland Gruber
  */
 
 /**
- * Google ReCaptcha provider.
+ * Friendly Captcha provider.
  *
  * @package LAM\PLUGINS\CAPTCHA
  */
-class GoogleReCaptcha implements CaptchaProvider {
+class FriendlyCaptcha implements CaptchaProvider {
 
 	/**
 	 * @inheritDoc
 	 */
 	public function getLabel(): string {
-		return 'Google reCAPTCHA';
+		return 'Friendly Captcha';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function getId(): string {
-		return 'google';
+		return 'friendlyCaptcha';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function getCaptchaElement(string $siteKey): htmlElement {
-		return new htmlReCAPTCHA($siteKey);
+		return new htmlFriendlyCaptcha($siteKey);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function isValid(string $secretKey, string $siteKey): bool {
-		$url = 'https://www.google.com/recaptcha/api/siteverify';
-		$vars = array('secret' => $secretKey, 'response' => $_POST['g-recaptcha-response']);
+		$url = 'https://api.friendlycaptcha.com/api/v1/siteverify';
+		$vars = array(
+			'secret' => $secretKey,
+			'solution' => $_POST['frc-captcha-solution'],
+			'sitekey' => $siteKey);
 		$options = array(
 			'http' => array(
 				'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
@@ -74,22 +77,22 @@ class GoogleReCaptcha implements CaptchaProvider {
 		$context = stream_context_create($options);
 		$result = file_get_contents($url, false, $context);
 		if ($result === FALSE) {
-			logNewMessage(LOG_ERR, 'reCAPTCHA validation failed, invalid server response.');
+			logNewMessage(LOG_ERR, 'Friendly Captcha validation failed, invalid server response.');
 			return false;
 		}
 		$responseJSON = json_decode($result);
-		logNewMessage(LOG_DEBUG, "ReCAPTCHA result: " . $result);
+		logNewMessage(LOG_DEBUG, "Friendly Captcha result: " . $result);
 		return $responseJSON->{'success'} === true;
 	}
 
 }
 
 /**
- * Creates a Google reCAPTCHA element.
+ * Creates a Friendly Captcha element.
  *
  * @package LAM\PLUGINS\CAPTCHA
  */
-class htmlReCAPTCHA extends htmlElement {
+class htmlFriendlyCaptcha extends htmlElement {
 
 	/** site key */
 	private $key = null;
@@ -115,9 +118,9 @@ class htmlReCAPTCHA extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		$script = new htmlScript('https://www.google.com/recaptcha/api.js');
+		$script = new htmlScript('../lib/extra/friendlyCaptcha/friendlyCaptcha-0.9.1.js');
 		$script->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
-		echo '<div class="g-recaptcha" data-sitekey="' . $this->key . '"></div>';
+		echo '<div class="frc-captcha" data-sitekey="' . $this->key . '"></div>';
 		return array();
 	}
 
