@@ -4203,7 +4203,13 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		}
 		$attrs = array();
 		if (isset($_POST['updateUnixPwd'])) {
-			$attrs['userpassword'][0] = pwd_hash($password, true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+			$hashType = $this->moduleSettings['posixAccount_pwdHash'][0];
+			if ($hashType === 'LDAP_EXOP') {
+				$this->clearTextPassword = $password;
+			}
+			else {
+				$attrs['userpassword'][0] = pwd_hash($password, true, $hashType);
+			}
 		}
 		return $attrs;
 	}
