@@ -103,9 +103,10 @@ interface CaptchaProvider {
 	 * Checks if the POST data contains a valid captcha result.
 	 *
 	 * @param string $secretKey secret key
+	 * @param string $siteKey site key
 	 * @return bool user solved captcha
 	 */
-	public function isValid(string $secretKey): bool;
+	public function isValid(string $secretKey, string $siteKey): bool;
 
 }
 

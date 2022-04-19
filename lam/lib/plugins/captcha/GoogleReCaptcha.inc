@@ -61,7 +61,7 @@ class GoogleReCaptcha implements CaptchaProvider {
 	/**
 	 * @inheritDoc
 	 */
-	public function isValid(string $secretKey): bool {
+	public function isValid(string $secretKey, string $siteKey): bool {
 		$url = 'https://www.google.com/recaptcha/api/siteverify';
 		$vars = array('secret' => $secretKey, 'response' => $_POST['g-recaptcha-response']);
 		$options = array(
