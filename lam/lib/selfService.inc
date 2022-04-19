@@ -760,7 +760,7 @@ class selfServiceProfile {
 	public $twoFactorAuthenticationAttribute = 'uid';
 	public $twoFactorAuthenticationDomain = '';
 
-	/** provider for captcha (-/google) */
+	/** provider for captcha (-/google/hCaptcha/friendlyCaptcha) */
 	public $captchaProvider = '-';
 	/** Google reCAPTCHA site key */
 	public $reCaptchaSiteKey = '';
