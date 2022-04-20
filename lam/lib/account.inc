@@ -451,7 +451,6 @@ function checkPasswordHash($type, $hash, $password) {
 		default:
 			return false;
 	}
-	return false;
 }
 
 /**
