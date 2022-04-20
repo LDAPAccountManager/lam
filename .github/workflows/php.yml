@@ -38,6 +38,9 @@ jobs:
     - name: CodeSpell
       run: ./codespell.sh
 
+    - name: PHPStan
+      run: ./vendor/bin/phpstan
+
     - name: SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@master
       env:
