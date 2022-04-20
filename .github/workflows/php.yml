@@ -36,7 +36,7 @@ jobs:
       run: pip install --user codespell
 
     - name: CodeSpell
-      run: ./codespell
+      run: ./codespell.sh
 
     - name: SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@master
