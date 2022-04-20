@@ -29,11 +29,14 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
-
     - name: Run test suite
       run: composer run-script test
+
+    - name: Install CodeSpell
+      run: pip install --user codespell
+
+    - name: CodeSpell
+      run: ./codespell.sh
 
     - name: SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@master

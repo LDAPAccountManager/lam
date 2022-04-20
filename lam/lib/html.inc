@@ -4258,44 +4258,6 @@ class htmlAccordion extends htmlElement {
 }
 
 /**
- * Creates a Google reCAPTCHA element.
- *
- * @package metaHTML
- */
-class htmlReCAPTCHA extends htmlElement {
-
-	/** site key */
-	private $key = null;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param String $key site key
-	 */
-	function __construct($key) {
-		$this->key = htmlspecialchars($key);
-	}
-
-	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param integer $tabindex Start value of tabulator index for input fields
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
-	 */
-	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		$script = new htmlScript('https://www.google.com/recaptcha/api.js');
-		$script->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
-		echo '<div class="g-recaptcha" data-sitekey="' . $this->key . '"></div>';
-		return array();
-	}
-}
-
-/**
  * Responsive row with 12 column layout.
  */
 class htmlResponsiveRow extends htmlElement {

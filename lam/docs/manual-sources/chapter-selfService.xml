@@ -601,15 +601,31 @@
         <title>Captcha</title>
 
         <para>LAM Pro can optionally display a captcha to verify that logins
-        are not from robots. The supported captcha provider is Google
-        reCAPTCHA. You will need the site and secret key for your domain. They
-        can be retrieved from here: <ulink
+        are not from robots. Captchas will be displayed when you tick the
+        chekbox to secure login with a captcha. The supported captcha
+        providers are:</para>
+
+        <para><emphasis role="bold">Google reCAPTCHA</emphasis></para>
+
+        <para>You will need the site and secret key for your domain. They can
+        be retrieved from here: <ulink
         url="https://www.google.com/recaptcha">https://www.google.com/recaptcha</ulink></para>
 
         <para>Please note that your web server must be able to access
         "https://www.google.com/recaptcha/api/siteverify" to verify the
-        captchas. Captchas will be displayed when you tick the chekbox to
-        secure login with a captcha.</para>
+        captchas.</para>
+
+        <para><emphasis role="bold">Friendly Captcha</emphasis></para>
+
+        <para>Please enter your site (see applications) and API key. The web
+        server must be able to contact "https://api.friendlycaptcha.com" for
+        verification.</para>
+
+        <para><emphasis role="bold">hCaptcha</emphasis></para>
+
+        <para>Please enter your site and secret key (not API key). The web
+        server must be able to contact "https://hcaptcha.com" for
+        verification.</para>
 
         <mediaobject>
           <imageobject>
@@ -1422,15 +1438,10 @@
       <para><emphasis role="bold">Captcha support</emphasis></para>
 
       <para>LAM Pro can optionally display a captcha to verify that password
-      resets are not from robots. The supported captcha provider is Google
-      reCAPTCHA. You will need the site and secret key for your domain. This
-      is setup on tab "General settings". They can be retrieved from here:
-      <ulink
-      url="https://www.google.com/recaptcha">https://www.google.com/recaptcha</ulink></para>
+      resets are not from robots. The captcha provider is configured on
+      "General settings" tab.</para>
 
-      <para>Please note that your web server must be able to access
-      "https://www.google.com/recaptcha/api/siteverify" to verify the
-      captchas. Captchas will be displayed when you tick the chekbox to use a
+      <para>Captchas will be displayed when you tick the chekbox to use a
       captcha.</para>
 
       <mediaobject>
@@ -1787,15 +1798,10 @@
       <para><emphasis role="bold">Captcha support</emphasis></para>
 
       <para>LAM Pro can optionally display a captcha to verify that
-      registrations are not from robots. The supported captcha provider is
-      Google reCAPTCHA. You will need the site and secret key for your domain.
-      This is setup on tab "General settings". They can be retrieved from
-      here: <ulink
-      url="https://www.google.com/recaptcha">https://www.google.com/recaptcha</ulink></para>
+      registrations are not from robots. The captcha provider is configured on
+      "General settings" tab.</para>
 
-      <para>Please note that your web server must be able to access
-      "https://www.google.com/recaptcha/api/siteverify" to verify the
-      captchas. Captchas will be displayed when you tick the chekbox to use a
+      <para>Captchas will be displayed when you tick the chekbox to use a
       captcha.</para>
 
       <screenshot>

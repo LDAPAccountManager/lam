@@ -73,8 +73,8 @@ $tableTitles = array('text 1', 'text 2', 'text 3', 'text 4', 'text 5');
 $tableData = array();
 for ($rowNumber = 0; $rowNumber < 10; $rowNumber++) {
     $tableRow = array();
-    for ($colum = 0; $colum < 5; $colum++) {
-        $tableRow[] = new htmlOutputText('value' . $colum);
+    for ($column = 0; $column < 5; $column++) {
+        $tableRow[] = new htmlOutputText('value' . $column);
     }
     $tableData[] = $tableRow;
 }

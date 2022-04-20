@@ -451,7 +451,6 @@ function checkPasswordHash($type, $hash, $password) {
 		default:
 			return false;
 	}
-	return false;
 }
 
 /**
@@ -1564,6 +1563,9 @@ class moduleCache {
 			return self::$cache[$name . ':' . $scope];
 		}
 		else {
+			if (!class_exists($name)) {
+				return null;
+			}
 			self::$cache[$name . ':' . $scope] = new $name($scope);
 			return self::$cache[$name . ':' . $scope];
 		}
@@ -1825,33 +1827,6 @@ function unformatShortFormatToSeconds($text) {
 		return $newValue;
 	}
 	return $text;
-}
-
-/**
- * Validates the Google reCAPTCHA input.
- *
- * @param String $secretKey secret key
- * @return boolean valid
- */
-function validateReCAPTCHA($secretKey) {
-	$url = 'https://www.google.com/recaptcha/api/siteverify';
-	$vars = array('secret' => $secretKey, 'response' => $_POST['g-recaptcha-response']);
-	$options = array(
-		'http' => array(
-			'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-			'method'  => 'POST',
-			'content' => http_build_query($vars)
-		)
-	);
-	$context = stream_context_create($options);
-	$result = file_get_contents($url, false, $context);
-	if ($result === FALSE) {
-		logNewMessage(LOG_ERR, 'reCAPTCHA validation failed, invalid server response.');
-		return false;
-	}
-	$responseJSON = json_decode($result);
-	logNewMessage(LOG_DEBUG, "ReCAPTCHA result: " . $result);
-	return $responseJSON->{'success'} === true;
 }
 
 /**
