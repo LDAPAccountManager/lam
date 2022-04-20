@@ -605,7 +605,7 @@
         chekbox to secure login with a captcha. The supported captcha
         providers are:</para>
 
-        <para>Google reCAPTCHA:</para>
+        <para><emphasis role="bold">Google reCAPTCHA</emphasis></para>
 
         <para>You will need the site and secret key for your domain. They can
         be retrieved from here: <ulink
@@ -615,13 +615,17 @@
         "https://www.google.com/recaptcha/api/siteverify" to verify the
         captchas.</para>
 
-        <para>Friendly Captcha:</para>
+        <para><emphasis role="bold">Friendly Captcha</emphasis></para>
 
-        <para>Please enter your site (see applications) and API key.</para>
+        <para>Please enter your site (see applications) and API key. The web
+        server must be able to contact "https://api.friendlycaptcha.com" for
+        verification.</para>
 
-        <para>hCaptcha:</para>
+        <para><emphasis role="bold">hCaptcha</emphasis></para>
 
-        <para>Please enter your site and secret key (not API key).</para>
+        <para>Please enter your site and secret key (not API key). The web
+        server must be able to contact "https://hcaptcha.com" for
+        verification.</para>
 
         <mediaobject>
           <imageobject>
