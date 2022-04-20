@@ -3,9 +3,16 @@ June 2022 8.0
   - Unix: added Gecos to profile editor
   - 389ds: added hints why login failed if account is locked/deactivated/expired
   - Removed Zarafa support (please switch to Kopano)
+  - LAM Pro:
+   -> New captcha providers: hCaptcha and Friendly Captcha
   - Fixed bugs:
    -> Hidden account is displayed (257)
+
+
+15.04.2022 7.9.1
+  - Fixed bugs:
    -> Security issues in PDF editor and profile editor
+
 
 09.03.2022 7.9
   - Tree view:
