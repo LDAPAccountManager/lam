@@ -605,6 +605,9 @@ class TreeView {
 		if ($this->isJpegAttribute($attributeName, $schemaAttribute)) {
 			return $this->getAttributeJpegInputField($attributeName, $value, $required, $index);
 		}
+		if (($schemaAttribute !== null) && $schemaAttribute->isBinary()) {
+			$value = base64_encode($value);
+		}
 		if ($isMultiLine) {
 			$inputField = new htmlInputTextarea('lam_attr_' . $attributeName, $value, 50, 5);
 		}
@@ -806,10 +809,14 @@ class TreeView {
 		$ldapChanges = array();
 		if (!empty($changes)) {
 			foreach ($changes as $attrName => $change) {
+				$schemaAttribute = isset($schemaAttributes[$attrName]) ? $schemaAttributes[$attrName] : null;
 				if (isset($change['new'])) {
 					$newValues = $change['new'];
 					if (isset($change['hash'])) {
 						$newValues = $this->applyPasswordHash($newValues, $change['hash']);
+					}
+					elseif (($schemaAttribute !== null) && $schemaAttribute->isBinary()) {
+						$newValues = $this->decodeBinaryAttributeValues($newValues);
 					}
 					$ldapChanges[$attrName] = $newValues;
 				}
@@ -823,6 +830,9 @@ class TreeView {
 						}
 					}
 					if ($changed) {
+						if (($schemaAttribute !== null) && $schemaAttribute->isBinary()) {
+							$oldValues = $this->decodeBinaryAttributeValues($oldValues);
+						}
 						$ldapChanges[$attrName] = array_values($oldValues);
 					}
 				}
@@ -831,7 +841,6 @@ class TreeView {
 						$ldapChanges[$attrName] = $attributes[$attrName];
 					}
 					$oldValues = !empty($attributes[$attrName]) ? $attributes[$attrName] : array();
-					$schemaAttribute = isset($schemaAttributes[$attrName]) ? $schemaAttributes[$attrName] : null;
 					if ($this->isMultiValueAttribute($oldValues, $schemaAttribute)) {
 						$ldapChanges[$attrName][] = base64_decode($change['upload']);
 					}
@@ -886,6 +895,28 @@ class TreeView {
 		ob_end_clean();
 		$jsonData['result'] = $messageContent;
 		return json_encode($jsonData);
+	}
+
+	/**
+	 * Base 64 decodes attribute values.
+	 *
+	 * @param string[] $encoded encoded data
+	 * @return string[] binary data
+	 */
+	private function decodeBinaryAttributeValues(array $encoded): array {
+		logNewMessage(LOG_DEBUG, print_r($encoded, true));
+		$binaryValues = array();
+		foreach ($encoded as $value) {
+			$decoded = base64_decode($value, true);
+			if ($decoded !== false) {
+				$binaryValues[] = $decoded;
+			}
+			else {
+				$binaryValues[] = $value;
+			}
+		}
+		logNewMessage(LOG_DEBUG, print_r($binaryValues, true));
+		return $binaryValues;
 	}
 
 	/**
@@ -1245,7 +1276,7 @@ class TreeView {
 	/**
 	 * Returns the schema attributes.
 	 *
-	 * @return array attributes
+	 * @return AttributeType[] attributes
 	 */
 	private function getSchemaAttributes(): array {
 		if ($this->schemaAttributes === null) {

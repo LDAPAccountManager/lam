@@ -982,6 +982,31 @@ class AttributeType extends SchemaItem
 	{
 		return $this->required_by_object_classes;
 	}
+
+	/**
+	 * Returns if this attribute is binary.
+	 *
+	 * @return bool is binary
+	 */
+	public function isBinary(): bool {
+		return strcasecmp($this->type,'Certificate') === 0 ||
+			strcasecmp($this->type,'Binary') === 0 ||
+			strcasecmp($this->name,'usercertificate') === 0 ||
+			strcasecmp($this->name,'usersmimecertificate') === 0 ||
+			strcasecmp($this->name,'networkaddress') === 0 ||
+			strcasecmp($this->name,'objectGUID') === 0 ||
+			strcasecmp($this->name,'objectSID') === 0 ||
+			strcasecmp($this->name,'auditingPolicy') === 0 ||
+			strcasecmp($this->name,'jpegPhoto') === 0 ||
+			strcasecmp($this->name,'krbExtraData') === 0 ||
+			strcasecmp($this->name,'krbPrincipalKey') === 0 ||
+			$this->syntax_oid === '1.3.6.1.4.1.1466.115.121.1.10' ||
+			$this->syntax_oid === '1.3.6.1.4.1.1466.115.121.1.28' ||
+			$this->syntax_oid === '1.3.6.1.4.1.1466.115.121.1.5' ||
+			$this->syntax_oid === '1.3.6.1.4.1.1466.115.121.1.8' ||
+			$this->syntax_oid === '1.3.6.1.4.1.1466.115.121.1.9';
+	}
+
 }
 
 /**
