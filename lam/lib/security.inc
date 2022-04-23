@@ -85,7 +85,7 @@ function startSecureSession($redirectToLogin = true, $initSecureData = false) {
 		ini_set('error_reporting', 'E_ALL & ~E_NOTICE');
 	}
 	elseif ($_SESSION['cfgMain']->errorReporting == LAMCfgMain::ERROR_REPORTING_ALL) {
-		ini_set('error_reporting', E_ALL | E_STRICT);
+		ini_set('error_reporting', 'E_ALL');
 		ini_set('display_errors', 'On');
 	}
 	// check session id
@@ -182,8 +182,8 @@ function logoffAndBackToLoginPage() {
 	}
 	// delete key and iv in cookie
 	if (function_exists('openssl_random_pseudo_bytes')) {
-		setcookie("Key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/", null, null, true);
-		setcookie("IV", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/", null, null, true);
+		setcookie("Key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/", '', false, true);
+		setcookie("IV", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/", '', false, true);
 	}
 	// link back to login page
 	$paths = array('./', '../', '../../', '../../../', '../../../../');

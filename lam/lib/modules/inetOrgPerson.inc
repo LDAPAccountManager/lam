@@ -3115,7 +3115,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		$video->setCSSClasses(array('hidden'));
 		$webcamContent->add($video, 12, 12, 12, 'text-center');
 		$webcamContent->addVerticalSpacer('1rem');
-		$webcamUploadButton = new htmlLink(_('Upload'), '#', '../../graphics/svg.gif', true);
+		$webcamUploadButton = new htmlLink(_('Upload'), '#', '../../graphics/upload.svg', true);
 		$webcamUploadButton->setId('btn-lam-webcam-upload');
 		$webcamUploadButton->setCSSClasses(array('btn-lam-webcam-upload', 'hidden'));
 		$webcamUploadButton->setOnClick('window.lam.tools.webcam.uploadSelfService(event, "' . getSecurityTokenName()

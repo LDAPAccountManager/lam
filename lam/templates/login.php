@@ -88,7 +88,7 @@ try {
 // save last selected login profile
 if (isset($_GET['useProfile'])) {
 	if (in_array($_GET['useProfile'], $profiles)) {
-		setcookie("lam_default_profile", $_GET['useProfile'], time() + 365*60*60*24, '/', null, null, true);
+		setcookie("lam_default_profile", $_GET['useProfile'], time() + 365*60*60*24, '/', '', false, true);
 	}
 	else {
 		unset($_GET['useProfile']);
@@ -97,7 +97,7 @@ if (isset($_GET['useProfile'])) {
 
 // save last selected language
 if (isset($_POST['language'])) {
-	setcookie('lam_last_language', htmlspecialchars($_POST['language']), time() + 365*60*60*24, '/', null, null, true);
+	setcookie('lam_last_language', htmlspecialchars($_POST['language']), time() + 365*60*60*24, '/', '', false, true);
 }
 
 // init some session variables
@@ -199,8 +199,8 @@ function display_LoginPage($licenseValidator, $error_message, $errorDetails = nu
 		$key = openssl_random_pseudo_bytes(32);
 		$iv = openssl_random_pseudo_bytes(16);
 		// save both in cookie
-		setcookie("Key", base64_encode($key), 0, "/", null, null, true);
-		setcookie("IV", base64_encode($iv), 0, "/", null, null, true);
+		setcookie("Key", base64_encode($key), 0, "/", '', false, true);
+		setcookie("IV", base64_encode($iv), 0, "/", '', false, true);
 	}
 
 	$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
@@ -518,10 +518,10 @@ if (isset($_POST['checklogin'])) {
 	}
 	else {
 		if (isset($_POST['rememberLogin']) && ($_POST['rememberLogin'] == 'on')) {
-			setcookie('lam_login_name', $_POST['username'], time() + 60*60*24*365, '/', null, null, true);
+			setcookie('lam_login_name', $_POST['username'], time() + 60*60*24*365, '/', '', false, true);
 		}
 		else if (isset($_COOKIE['lam_login_name']) && ($_SESSION['config']->getLoginMethod() == LAMConfig::LOGIN_SEARCH)) {
-			setcookie('lam_login_name', '', time() + 60*60*24*365, '/', null, null, true);
+			setcookie('lam_login_name', '', time() + 60*60*24*365, '/', '', false, true);
 		}
 		if($_POST['passwd'] == "") {
 			logNewMessage(LOG_DEBUG, "Empty password for login");
