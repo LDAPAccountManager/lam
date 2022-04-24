@@ -1083,6 +1083,22 @@ function copyDnRecursive(string $oldDn, string $targetDn): void {
 }
 
 /**
+ * Moves an LDAP entry.
+ *
+ * @param string $oldDn old DN
+ * @param string $targetDn target container DN
+ * @throws LAMException error during move
+ */
+function moveDn(string $oldDn, string $targetDn): void {
+	$deleteOldRdn = $_SESSION['ldap']->isActiveDirectory();
+	$rdn = extractRDN($oldDn);
+	$success = ldap_rename($_SESSION['ldap']->server(), $oldDn, $rdn, $targetDn, $deleteOldRdn);
+	if (!$success) {
+		throw new LAMException(sprintf(_('Was unable to rename DN: %s.'), $oldDn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));
+	}
+}
+
+/**
  * Returns the parameters for a StatusMessage of the last LDAP search.
  *
  * @return array parameters for StatusMessage or null if all was ok

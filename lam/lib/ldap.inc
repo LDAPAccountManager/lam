@@ -50,6 +50,8 @@ class Ldap{
 	private $username;
 	/** LDAP password used for bind */
 	private $password;
+	/** is Active Directory */
+	private $isActiveDirectory = null;
 
 	/**
 	* Creates a new LDAP object.
@@ -165,7 +167,7 @@ class Ldap{
 	public function __sleep() {
 		$this->close();
 		// define which attributes to save
-		return array("conf", "username", "password");
+		return array("conf", "username", "password", 'isActiveDirectory');
 	}
 
 	/** Reconnects to LDAP server when deserialized */
@@ -240,7 +242,18 @@ class Ldap{
 		$this->password="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 	}
 
+	/**
+	 * Returns if the LDAP server is an Active Directory.
+	 *
+	 * @return bool is Active Directory
+	 */
+	public function isActiveDirectory(): bool {
+		if ($this->isActiveDirectory !== null) {
+			return $this->isActiveDirectory;
+		}
+		$rootDse = ldapGetDN('', array('*'));
+		logNewMessage(LOG_DEBUG, 'Root DSE: ' . print_r($rootDse, true));
+		return isset($rootDse['domaincontrollerfunctionality']) || isset($rootDse['forestfunctionality']);
+	}
 
 }
-
-?>

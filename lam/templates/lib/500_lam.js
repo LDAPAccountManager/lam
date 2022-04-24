@@ -2728,6 +2728,7 @@ window.lam.treeview.pasteNode = function (tokenName, tokenValue, node, tree) {
 		window.lam.treeview.checkSession(jsonData);
 		if (jsonData.error) {
 			jQuery('#ldap_actionarea_messages').html(jsonData.error);
+			return;
 		}
 		tree.set_icon(dn, oldIcon);
 		window.sessionStorage.removeItem('LAM_COPY_PASTE_ACTION');

@@ -864,13 +864,15 @@ class TreeView {
 			$newRdnValue = $ldapChanges[$rdnAttribute][$pos];
 			$newRdn = $rdnAttribute . '=' . ldap_escape($newRdnValue, '', LDAP_ESCAPE_DN);
 			$parent = extractDNSuffix($dn);
-			$renameOk = ldap_rename($_SESSION['ldap']->server(), $dn, $newRdn, $parent, true);
+			$renameOk = ldap_rename($_SESSION['ldap']->server(), $dn, $newRdn, $parent, $_SESSION['ldap']->isActiveDirectory());
 			$newDn = $newRdn . ',' . $parent;
 			if ($renameOk) {
 				logNewMessage(LOG_DEBUG, 'Renamed ' . $dn . ' to ' . $newDn);
 				$dn = $newDn;
 				$jsonData['newDn'] = base64_encode($newDn);
 				$jsonData['parent'] = base64_encode($parent);
+				unset($ldapChanges[$rdnAttribute]);
+				$message = new htmlStatusMessage('INFO', _('All changes were successful.'));
 			}
 			else {
 				logNewMessage(LOG_ERR, 'Renaming ' . $dn . ' to ' . $newDn . ' failed: ' . getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
@@ -904,7 +906,6 @@ class TreeView {
 	 * @return string[] binary data
 	 */
 	private function decodeBinaryAttributeValues(array $encoded): array {
-		logNewMessage(LOG_DEBUG, print_r($encoded, true));
 		$binaryValues = array();
 		foreach ($encoded as $value) {
 			$decoded = base64_decode($value, true);
@@ -915,7 +916,6 @@ class TreeView {
 				$binaryValues[] = $value;
 			}
 		}
-		logNewMessage(LOG_DEBUG, print_r($binaryValues, true));
 		return $binaryValues;
 	}
 
@@ -1498,6 +1498,14 @@ class TreeView {
 			die();
 		}
 		try {
+			$entryAndChildren = ldapListDN($dn);
+			$childrenCount = sizeof($entryAndChildren);
+			logNewMessage(LOG_DEBUG, 'Paste operation for entry with ' . $childrenCount . ' child entries.');
+			if (($childrenCount === 0) && ($action === 'CUT')) {
+				// do LDAP move for entries without children and CUT operation
+				moveDn($dn, $targetDn);
+				return json_encode(array());
+			}
 			copyDnRecursive($dn, $targetDn);
 			if ($action === 'CUT') {
 				$errors = deleteDN($dn, true);
