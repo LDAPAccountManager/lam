@@ -2329,6 +2329,9 @@ window.lam.treeview.findAttributeChanges = function () {
 	jQuery('.single-input').each(
 		function() {
 			var input = jQuery(this);
+			if (input.is(":hidden")) {
+				return;
+			}
 			var attrName = input.data('attr-name');
 			// avoid type conversion in .data()
 			var valueOrig = input.attr('data-value-orig');
@@ -2353,6 +2356,9 @@ window.lam.treeview.findAttributeChanges = function () {
 	jQuery('.multi-input').each(
 		function() {
 			var input = jQuery(this);
+			if (input.is(":hidden")) {
+				return;
+			}
 			var attrName = input.data('attr-name');
 			if (attrName != lastAttrName) {
 				if (lastAttrHasChange) {
@@ -2549,8 +2555,8 @@ window.lam.treeview.addAttributeField = function (event, select) {
 	attributeParts = attributeParts.split('__#__');
 	var attributeName = attributeParts[0];
 	var isSingleValue = attributeParts[1];
-	var isMultiline = attributeParts[2];
-	var placeHolderId = 'new-attributes-' + isSingleValue + '-' + isMultiline;
+	var fieldType = attributeParts[2];
+	var placeHolderId = 'new-attributes-' + isSingleValue + '-' + fieldType;
 	var newContent = jQuery(jQuery('#' + placeHolderId).children('.row').get(0)).clone();
 	jQuery(newContent.children().get(0)).text(attributeName);
 	var inputField = newContent.find('input, textarea');
