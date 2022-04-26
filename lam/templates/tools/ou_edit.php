@@ -116,7 +116,7 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 		// check for sub entries
 		$sr = ldap_list($_SESSION['ldap']->server(), $_POST['deleteableOU'], "ObjectClass=*", array(""));
 		$info = ldap_get_entries($_SESSION['ldap']->server(), $sr);
-		if ($sr && $info['count'] == 0) {
+		if ($sr && ($info['count'] === 0)) {
 			// print header
 			include '../../lib/adminHeader.inc';
 			echo '<div class="smallPaddingContent">';
