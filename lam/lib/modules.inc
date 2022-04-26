@@ -2010,7 +2010,7 @@ class accountContainer {
 		if (($finalDnLower !== $dnOrigLower) && (unescapeLdapSpecialCharacters($finalDnLower) !== unescapeLdapSpecialCharacters($dnOrigLower))) {
 			// move existing DN
 			if ($this->dn_orig != '') {
-				$removeOldRDN = false;
+				$removeOldRDN = $_SESSION['ldap']->isActiveDirectory();
 				if (isset($attributes[$this->finalDN]['modify'])) {
 					$attributes[$this->finalDN]['modify'] = array_change_key_case($attributes[$this->finalDN]['modify'], CASE_LOWER);
 				}
@@ -2022,11 +2022,6 @@ class accountContainer {
 					// remove old RDN if attribute is single valued
 					$removeOldRDN = true;
 					unset($attributes[$this->finalDN]['modify'][extractRDNAttribute($this->finalDN)]);
-				}
-				if (isset($attributes[$this->finalDN]['notchanged'][$rdnAttr])
-					&& !(isset($attributes[$this->finalDN]['add'][$rdnAttr]) || isset($attributes[$this->finalDN]['modify'][$rdnAttr]) || isset($attributes[$this->finalDN]['remove'][$rdnAttr]))) {
-					// fix for AD which requires to remove RDN even if not changed
-					$removeOldRDN = true;
 				}
 				logNewMessage(LOG_DEBUG, 'Rename ' . $this->dn_orig . ' to ' . $this->finalDN);
 				$success = ldap_rename($_SESSION['ldap']->server(), $this->dn_orig, $this->getRDN($this->finalDN), $this->getParentDN($this->finalDN), $removeOldRDN);
