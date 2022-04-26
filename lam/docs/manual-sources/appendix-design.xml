@@ -38,6 +38,17 @@
 }
 </programlisting>
 
+  <para>Change LAM logo:</para>
+
+  <programlisting>div.lam-header-left img {
+    background: url("../graphics/key.svg") center no-repeat;
+    box-sizing: border-box;
+    width: 32px;
+    height: 32px;
+    padding-left: 32px;
+}
+</programlisting>
+
   <para>You can use the same way to change font/button colors and more.</para>
 
   <para><emphasis role="bold">Change header bar to mark different
