@@ -351,6 +351,7 @@ semodule -i httpdlocal.pp</programlisting>
         ProxyPass /sess https://lam.company.com/lam/sess
         ProxyPass /templates/lib https://lam.company.com/lam/templates/lib
         ProxyPass /templates/selfService https://lam.company.com/lam/templates/selfService
+        ProxyPass /templates/misc https://lam.company.com/lam/templates/misc
         ProxyPass /style https://lam.company.com/lam/style
         ProxyPass /graphics https://lam.company.com/lam/graphics
 
@@ -358,6 +359,7 @@ semodule -i httpdlocal.pp</programlisting>
         ProxyPassReverse /sess https://lam.company.com/lam/sess
         ProxyPassReverse /templates/lib https://lam.company.com/lam/templates/lib
         ProxyPassReverse /templates/selfService https://lam.company.com/lam/templates/selfService
+        ProxyPassReverse /templates/misc https://lam.company.com/lam/templates/misc
         ProxyPassReverse /style https://lam.company.com/lam/style
         ProxyPassReverse /graphics https://lam.company.com/lam/graphics
 &lt;/VirtualHost&gt;</programlisting>
