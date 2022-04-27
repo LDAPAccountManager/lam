@@ -553,9 +553,9 @@ if (isset($_POST['checklogin'])) {
             $searchResult = ldap_search($searchLDAP->server(), $_SESSION['config']->getLoginSearchSuffix(), $searchFilter, array('dn'), 0, 0, 0, LDAP_DEREF_NEVER);
             if ($searchResult) {
                 $searchInfo = ldap_get_entries($searchLDAP->server(), $searchResult);
-                if ($searchInfo) {
+                if ($searchInfo !== false) {
                     cleanLDAPResult($searchInfo);
-                    if (sizeof($searchInfo) == 0) {
+                    if (empty($searchInfo)) {
                         $searchSuccess = false;
                         $searchError = _('Wrong password/user name combination. Please try again.');
 	                    header("HTTP/1.1 403 Forbidden");
