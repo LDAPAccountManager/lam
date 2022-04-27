@@ -176,7 +176,7 @@ echo "</html>\n";
 * @param \LAM\TYPES\ConfiguredType $type account type
 * @param htmlResponsiveRow $container meta HTML container
 */
-function config_showAccountModules($type, &$container) {
+function config_showAccountModules($type, &$container): void {
 	// account modules
 	$available = getAvailableModules($type->getScope(), true);
 	$selected = $type->getModules();
@@ -275,9 +275,9 @@ function config_showAccountModules($type, &$container) {
 /**
  * Checks user input and saves the entered settings.
  *
- * @return array list of errors
+ * @return array<mixed> list of errors
  */
-function checkInput() {
+function checkInput(): array {
 	if (!isset($_POST['postAvailable'])) {
 		return array();
 	}

@@ -590,9 +590,9 @@ parseHtml(null, $buttonContainer, array(), false, $tabindex, 'user');
 /**
  * Checks user input and saves the entered settings.
  *
- * @return array list of errors
+ * @return array<mixed> list of errors
  */
-function checkInput() {
+function checkInput(): array {
 	$conf = &$_SESSION['conf_config'];
 
 	// check new preferences
@@ -680,7 +680,9 @@ function checkInput() {
 	$adminText = explode("\n", $adminText);
 	$adminTextNew = array();
 	for ($i = 0; $i < sizeof($adminText); $i++) {
-		if (trim($adminText[$i]) == "") continue;
+		if (trim($adminText[$i]) == "") {
+		    continue;
+		}
 		$adminTextNew[] = trim($adminText[$i]);
 	}
 	$conf->setLoginMethod($_POST['loginMethod']);

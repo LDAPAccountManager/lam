@@ -9,7 +9,7 @@ use \htmlSubTitle;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2019  Roland Gruber
+  Copyright (C) 2009 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -207,9 +207,9 @@ echo "</html>\n";
 /**
  * Checks user input and saves the entered settings.
  *
- * @return array list of errors
+ * @return array<mixed> list of errors
  */
-function checkInput() {
+function checkInput(): array {
 	if (!isset($_POST['postAvailable'])) {
 		return array();
 	}

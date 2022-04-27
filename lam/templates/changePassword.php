@@ -114,7 +114,7 @@ printContent($message);
  * @param htmlStatusMessage $message status message
  * @param bool $showPasswordInputs show password input fields
  */
-function printContent($message = null, $showPasswordInputs = true) {
+function printContent($message = null, $showPasswordInputs = true): void {
 	include __DIR__ . '/../lib/adminHeader.inc';
 	echo '<div class="smallPaddingContent">';
 	echo "<form action=\"changePassword.php\" method=\"post\">\n";

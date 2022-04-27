@@ -148,7 +148,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
      *
      * @param htmlStatusMessage $message message to show if any error occurred
      */
-	function showLoginDialog($message = null) {
+	function showLoginDialog($message = null): void {
     	$tabindex = 0;
 		$content = new htmlResponsiveRow();
 		$loginContent = new htmlResponsiveRow();
@@ -174,7 +174,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
     /**
      * Renders the link back to login page.
      */
-	function renderBackLink() {
+	function renderBackLink(): void {
 		$tabindex = 0;
 		$content = new htmlResponsiveRow();
         $content->addVerticalSpacer('2rem');
@@ -189,7 +189,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
      * @param LAMCfgMain $cfg main config
      * @return bool login ok
      */
-	function checkLogin($cfg) {
+	function checkLogin($cfg): bool {
         $password = $_POST['password'];
         if ($cfg->checkPassword($password)) {
 	        $_SESSION["mainconf_password"] = $password;
@@ -202,7 +202,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
     /**
      * Displays the import/export functions.
      */
-    function displayImportExport() {
+    function displayImportExport(): void {
 	    $tabindex = 0;
 	    $content = new htmlResponsiveRow();
 
@@ -223,7 +223,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
      *
      * @param htmlResponsiveRow $content content where to add import part
      */
-    function renderImportPart($content) {
+    function renderImportPart($content): void {
         $validUpload = false;
         $importSteps = array();
         if (isset($_POST['importConfig'])) {

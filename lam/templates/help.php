@@ -4,7 +4,7 @@ namespace LAM\HELP;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2008 - 2018  Roland Gruber
+                2008 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -61,7 +61,7 @@ include_once(__DIR__ . "/../help/help.inc"); // Include help/help.inc which prov
 /**
  * Print HTML header of the help page.
  */
-function echoHTMLHead() {
+function echoHTMLHead(): void {
 	echo $_SESSION['header'];
 	$title = "LDAP Account Manager Help";
 	printHeaderContents($title, '..');
@@ -76,7 +76,7 @@ function echoHTMLHead() {
 /**
  * Print HTML footer of the help page.
  */
-function echoHTMLFoot() {
+function echoHTMLFoot(): void {
 	?>
 		</body>
 	</html>
@@ -86,9 +86,9 @@ function echoHTMLFoot() {
 /**
  * Print help site for a specific help number.
  *
- * @param array $helpEntry the help entry that is to be displayed.
+ * @param array<mixed> $helpEntry the help entry that is to be displayed.
  */
-function displayHelp($helpEntry) {
+function displayHelp(array $helpEntry): void {
 	echoHTMLHead();
 	echo "<h1 class=\"help\">" . $helpEntry['Headline'] . "</h1>\n";
 	$format = "<p class=\"help\">" . $helpEntry['Text'] . "</p>\n";
@@ -114,7 +114,7 @@ if (!isset($_GET['HelpNumber'])) {
 $helpEntry = array();
 
 // module help
-if(isset($_GET['module']) && !($_GET['module'] == 'main') && !($_GET['module'] == '')) {
+if (isset($_GET['module']) && !($_GET['module'] == 'main') && !($_GET['module'] == '')) {
 	include_once(__DIR__ . "/../lib/modules.inc");
 	if (isset($_GET['scope'])) {
 		$helpEntry = getHelp($_GET['module'],$_GET['HelpNumber'],$_GET['scope']);

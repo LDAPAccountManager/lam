@@ -330,9 +330,9 @@ echo "</html>\n";
 /**
  * Checks user input and saves the entered settings.
  *
- * @return array list of errors
+ * @return array<mixed> list of errors
  */
-function checkInput() {
+function checkInput(): array {
 	if (!isset($_POST['postAvailable'])) {
 		return array();
 	}
@@ -451,9 +451,8 @@ function checkInput() {
  *
  * @param \baseType $a first type
  * @param \baseType $b second type
+ * @return int comparison result
  */
-function compareTypesByAlias($a, $b) {
+function compareTypesByAlias(\baseType $a, \baseType $b): int {
 	return strnatcasecmp($a->getAlias(), $b->getAlias());
 }
-
-?>
