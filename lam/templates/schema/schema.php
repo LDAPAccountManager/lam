@@ -294,7 +294,7 @@ function displayAttributeList(htmlResponsiveRow $row) {
 	if (isset($_GET['sel']) && (empty($_GET['sel']) || array_key_exists(strtolower($_GET['sel']), $attributes))) {
 		$selectedAttribute[0] = $_GET['sel'];
 	}
-	if (empty($selectedAttribute) && (sizeof($availableAttributes) > 0)) {
+	if (empty($selectedAttribute) && (sizeof($availableAttributes) > 1)) {
 		// select first attribute by default
 		$attributeNames = array_keys($availableAttributes);
 		$selectedAttribute[0] = $attributeNames[1];

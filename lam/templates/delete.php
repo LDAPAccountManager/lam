@@ -11,7 +11,7 @@ use \htmlStatusMessage;
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-	Copyright (C) 2007 - 2021  Roland Gruber
+	Copyright (C) 2007 - 2022  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -207,26 +207,24 @@ if (isset($_POST['delete'])) {
 		$attributes = array();
 		$errors = array();
 		// predelete actions
-		if (!$stopprocessing) {
-			foreach ($moduleNames as $singlemodule) {
-				$success = true;
-				$messages = $modules[$singlemodule]->preDeleteActions();
-				foreach ($messages as $message) {
-					$errors[] = $message;
-					if ($message[0] == 'ERROR') {
-						$success = false;
-						$allOk = false;
-					}
-					elseif ($message[0] == 'WARN') {
-						$allOk = false;
-					}
-				}
-				if (!$success) {
-					$stopprocessing = true;
-					break;
-				}
-			}
-		}
+        foreach ($moduleNames as $singlemodule) {
+            $success = true;
+            $messages = $modules[$singlemodule]->preDeleteActions();
+            foreach ($messages as $message) {
+                $errors[] = $message;
+                if ($message[0] == 'ERROR') {
+                    $success = false;
+                    $allOk = false;
+                }
+                elseif ($message[0] == 'WARN') {
+                    $allOk = false;
+                }
+            }
+            if (!$success) {
+                $stopprocessing = true;
+                break;
+            }
+        }
 		if (!$stopprocessing) {
 			// load attributes
 			foreach ($moduleNames as $singlemodule) {
@@ -260,7 +258,7 @@ if (isset($_POST['delete'])) {
 				}
 				if (!$stopprocessing) {
 					// modify attributes
-					if (isset($attributes[$dn]['modify']) && !$stopprocessing) {
+					if (isset($attributes[$dn]['modify'])) {
 						$success = ldap_mod_replace($_SESSION['ldap']->server(), $dn, $attributes[$dn]['modify']);
 						if (!$success) {
 							$errors[] = array ('ERROR', sprintf(_('Was unable to modify attributes from DN: %s.'), $dn), getDefaultLDAPErrorString($_SESSION['ldap']->server()));

@@ -156,10 +156,10 @@ display_main($message, $error);
 /**
  * Displays the main page of the OU editor
  *
- * @param String $message info message
- * @param String $error error message
+ * @param string|null $message info message
+ * @param string|null $error error message
  */
-function display_main($message, $error) {
+function display_main(?string $message, ?string $error): void {
 	// display main page
 	include __DIR__ . '/../../lib/adminHeader.inc';
 	echo '<div class="smallPaddingContent">';
