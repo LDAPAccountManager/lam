@@ -1,5 +1,5 @@
 parameters:
-	level: 4
+	level: 6
 	scanDirectories:
 		- lam/lib
 		- lam/templates
@@ -21,3 +21,4 @@ parameters:
 		- '#Function [a-zA-Z0-9\(\)\\_-]+ has invalid return type [a-zA-Z0-9\\_-]+.#'
 		- '#PHPDoc tag @throws with type LAMException is not subtype of Throwable#'
 		- '#Throwing object of an unknown class [a-zA-Z0-9\\_-]+.#'
+		- '#Parameter \#[0-9] \$[a-zA-Z_]+ of function [a-zA-Z_]+ expects [(]?callable.*#'
