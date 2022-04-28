@@ -458,12 +458,12 @@ include __DIR__ . '/../../lib/adminFooter.inc';
  * Imports the selected account profiles.
  *
  * @param string $typeId type id
- * @param array $options options
+ * @param array<mixed> $options options
  * @param \LAMConfig[] $serverProfiles server profiles (name => profile object)
  * @param TypeManager $typeManager type manager
  * @return \htmlStatusMessage message or null
  */
-function importProfiles($typeId, $options, &$serverProfiles, TypeManager &$typeManager) {
+function importProfiles($typeId, array $options, &$serverProfiles, TypeManager &$typeManager) {
 	$accountProfilesPersistenceManager = new AccountProfilePersistenceManager();
 	foreach ($options as $option) {
 		$sourceConfName = $option['conf'];
@@ -491,12 +491,12 @@ function importProfiles($typeId, $options, &$serverProfiles, TypeManager &$typeM
  *
  * @param string $typeId source type id
  * @param string $name profile name
- * @param array $options options
+ * @param array<mixed> $options options
  * @param \LAMConfig[] $serverProfiles server profiles (name => profile object)
  * @param TypeManager $typeManager type manager
  * @return htmlStatusMessage message or null
  */
-function exportProfiles($typeId, $name, $options, &$serverProfiles, TypeManager &$typeManager): ?htmlStatusMessage {
+function exportProfiles($typeId, $name, array $options, &$serverProfiles, TypeManager &$typeManager): ?htmlStatusMessage {
 	$sourceType = $typeManager->getConfiguredType($typeId);
 	if ($sourceType === null) {
 		return null;

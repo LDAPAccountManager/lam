@@ -190,7 +190,7 @@ setlanguage(); // setting correct language
  * @param string $extraMessage extra message that is shown as info
  * @throws LAMException error rendering login page
  */
-function display_LoginPage($licenseValidator, $error_message, $errorDetails = null, $extraMessage = null) {
+function display_LoginPage($licenseValidator, $error_message, $errorDetails = null, $extraMessage = null): void {
 	$config_object = $_SESSION['config'];
 	$cfgMain = $_SESSION["cfgMain"];
 	logNewMessage(LOG_DEBUG, "Display login page");

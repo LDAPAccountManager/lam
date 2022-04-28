@@ -694,7 +694,7 @@ include __DIR__ . '/../../lib/adminFooter.inc';
  * Imports the selected PDF structures.
  *
  * @param string $typeId type id
- * @param array $options options
+ * @param array<mixed> $options options
  * @param \LAMConfig[] $serverProfiles server profiles (name => profile object)
  * @param TypeManager $typeManager type manager
  * @return \htmlStatusMessage message or null
@@ -726,7 +726,7 @@ function importStructures($typeId, $options, &$serverProfiles, TypeManager &$typ
  *
  * @param string $typeId source type id
  * @param string $name profile name
- * @param array $options options
+ * @param array<mixed> $options options
  * @param \LAMConfig[] $serverProfiles server profiles (name => profile object)
  * @param TypeManager $typeManager type manager
  * @return htmlStatusMessage message or null

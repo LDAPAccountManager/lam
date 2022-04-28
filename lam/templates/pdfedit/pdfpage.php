@@ -492,10 +492,10 @@ include __DIR__ . '/../../lib/adminFooter.inc';
  *
  * @param String $id field ID
  * @param String $scope account type
- * @param array $availablePDFFields available PDF fields
+ * @param array<mixed> $availablePDFFields available PDF fields
  * @return string|null field label or null if no matching module found
  */
-function translateFieldIDToName($id, $scope, $availablePDFFields) {
+function translateFieldIDToName($id, $scope, $availablePDFFields): ?string {
 	foreach ($availablePDFFields as $module => $fields) {
 		if (!(strpos($id, $module . '_') === 0)) {
 			continue;
@@ -520,7 +520,7 @@ function translateFieldIDToName($id, $scope, $availablePDFFields) {
  * @param PDFStructure $structure PDF structure
  * @param PdfLogo[] $logoFiles logos
  */
-function updateBasicSettings(PDFStructure &$structure, array $logoFiles) {
+function updateBasicSettings(PDFStructure &$structure, array $logoFiles): void {
 	// set headline
 	if (isset($_POST['headline'])) {
 		$structure->setTitle(str_replace('<', '', str_replace('>', '', $_POST['headline'])));
@@ -553,7 +553,7 @@ function updateBasicSettings(PDFStructure &$structure, array $logoFiles) {
  *
  * @param PDFStructure $structure
  */
-function updateSectionTitles(PDFStructure &$structure) {
+function updateSectionTitles(PDFStructure &$structure): void {
 	$sections = $structure->getSections();
 	foreach ($_POST as $key => $value) {
 		if (strpos($key, 'section_') === 0) {
@@ -568,7 +568,7 @@ function updateSectionTitles(PDFStructure &$structure) {
  *
  * @param PDFStructure $structure
  */
-function addSection(PDFStructure &$structure) {
+function addSection(PDFStructure &$structure): void {
 	$sections = $structure->getSections();
 	// add a new text field
 	if(isset($_POST['add_text'])) {
@@ -607,8 +607,8 @@ function addSection(PDFStructure &$structure) {
  *
  * @param PDFStructure $structure
  */
-function addSectionEntry(PDFStructure &$structure) {
-	if(isset($_POST['add_new_field'])) {
+function addSectionEntry(PDFStructure &$structure): void {
+	if (isset($_POST['add_new_field'])) {
 		$field = new PDFSectionEntry($_POST['new_field']);
 		$sections = $structure->getSections();
 		$pos = $_POST['add_field_position'];
@@ -624,7 +624,7 @@ function addSectionEntry(PDFStructure &$structure) {
  *
  * @param PDFStructure $structure
  */
-function removeItem(PDFStructure &$structure) {
+function removeItem(PDFStructure &$structure): void {
 	$sections = $structure->getSections();
 	foreach ($_POST as $key => $value) {
 		// remove section
@@ -654,7 +654,7 @@ function removeItem(PDFStructure &$structure) {
  *
  * @param PDFStructure $structure
  */
-function moveUp(PDFStructure &$structure) {
+function moveUp(PDFStructure &$structure): void {
 	$sections = $structure->getSections();
 	foreach ($_POST as $key => $value) {
 		// move section
@@ -686,7 +686,7 @@ function moveUp(PDFStructure &$structure) {
  *
  * @param PDFStructure $structure
  */
-function moveDown(PDFStructure &$structure) {
+function moveDown(PDFStructure &$structure): void {
 	$sections = $structure->getSections();
 	foreach ($_POST as $key => $value) {
 		// move section

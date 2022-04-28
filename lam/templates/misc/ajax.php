@@ -78,7 +78,7 @@ class Ajax {
 	/**
 	 * Manages an AJAX request.
 	 */
-	public function handleRequest() {
+	public function handleRequest(): void {
 		$this->setHeader();
 		// check token
 		validateSecurityToken();
@@ -185,7 +185,7 @@ class Ajax {
 	/**
 	 * Sets JSON HTTP header.
 	 */
-	public static function setHeader() {
+	public static function setHeader(): void {
 		if (!headers_sent()) {
 			header('Content-Type: application/json; charset=utf-8');
 		}
@@ -194,9 +194,9 @@ class Ajax {
 	/**
 	 * Manages a password change request on the edit account page.
 	 *
-	 * @param array $input input parameters
+	 * @param array<mixed> $input input parameters
 	 */
-	private static function managePasswordChange($input) {
+	private static function managePasswordChange($input): void {
 		$sessionKey  = htmlspecialchars($_GET['editKey']);
 		$return = $_SESSION[$sessionKey]->setNewPassword($input);
 		echo json_encode($return);
@@ -205,9 +205,9 @@ class Ajax {
 	/**
 	 * Checks if a password is accepted by LAM's password policy.
 	 *
-	 * @param array $input input parameters
+	 * @param array<mixed> $input input parameters
 	 */
-	private function checkPasswordStrength($input) {
+	private function checkPasswordStrength($input): void {
 		$password = $input['password'];
 		$result = checkPasswordStrength($password, null, null);
 		echo json_encode(array("result" => $result));
@@ -218,7 +218,7 @@ class Ajax {
 	 *
 	 * @param bool $isSelfService request is from self service
 	 */
-	private function manageWebauthn($isSelfService) {
+	private function manageWebauthn($isSelfService): void {
 		include_once __DIR__ . '/../../lib/webauthn.inc';
 		if ($isSelfService) {
 			$userDN = lamDecrypt($_SESSION['selfService_clientDN'], 'SelfService');
@@ -256,7 +256,7 @@ class Ajax {
 	/**
 	 * Webauthn device management.
 	 */
-	private function manageWebauthnDevices() {
+	private function manageWebauthnDevices(): void {
 		$action = $_POST['action'];
 		if ($action === 'search') {
 			$searchTerm = $_POST['searchTerm'];
@@ -278,7 +278,7 @@ class Ajax {
 	 *
 	 * @param string $searchTerm search term
 	 */
-	private function manageWebauthnDevicesSearch($searchTerm) {
+	private function manageWebauthnDevicesSearch($searchTerm): void {
 		include_once __DIR__ . '/../../lib/webauthn.inc';
 		$webAuthnManager = new WebauthnManager();
 		$database = $webAuthnManager->getDatabase();
@@ -334,7 +334,7 @@ class Ajax {
 	 * @param string $dn user DN
 	 * @param string $credentialId base64 encoded credential id
 	 */
-	private function manageWebauthnDevicesDelete($dn, $credentialId) {
+	private function manageWebauthnDevicesDelete($dn, $credentialId): void {
 		include_once __DIR__ . '/../../lib/webauthn.inc';
 		$webAuthnManager = new WebauthnManager();
 		$database = $webAuthnManager->getDatabase();
@@ -364,7 +364,7 @@ class Ajax {
 	 * @param string $credentialId base64 encoded credential id
 	 * @param string $name name
 	 */
-	private function manageWebauthnDevicesUpdateName($dn, $credentialId, $name) {
+	private function manageWebauthnDevicesUpdateName($dn, $credentialId, $name): void {
 		include_once __DIR__ . '/../../lib/webauthn.inc';
 		$webAuthnManager = new WebauthnManager();
 		$database = $webAuthnManager->getDatabase();
@@ -381,7 +381,7 @@ class Ajax {
 	/**
 	 * Manages requests to setup user's own webauthn devices.
 	 */
-	private function manageWebauthnOwnDevices() {
+	private function manageWebauthnOwnDevices(): void {
 		$action = $_POST['action'];
 		$dn = $_POST['dn'];
 		$sessionDn = $_SESSION['ldap']->getUserName();
@@ -446,8 +446,9 @@ class Ajax {
 	 *
 	 * @param string[] $dnList DN list
 	 * @param string $currentDn current DN
+	 * @return string HTML code
 	 */
-	private function buildDnSelectionHtml($dnList, $currentDn) {
+	private function buildDnSelectionHtml($dnList, $currentDn): string {
 		$fieldId = trim($_POST['fieldId']);
 		$mainRow = new htmlResponsiveRow();
 		$onclickUp = 'window.lam.html.updateDnSelection(this, \''
@@ -521,7 +522,7 @@ class Ajax {
 	 * Checks if the user entered the configuration master password.
 	 * Dies if password is not set.
 	 */
-	private function enforceUserIsLoggedInToMainConfiguration() {
+	private function enforceUserIsLoggedInToMainConfiguration(): void {
 		if (!isset($_SESSION['cfgMain'])) {
 			$cfg = new LAMCfgMain();
 		}
