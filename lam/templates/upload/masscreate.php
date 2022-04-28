@@ -257,9 +257,9 @@ include __DIR__ . '/../../lib/adminFooter.inc';
 * Displays the account type specific main page of the upload.
 *
 * @param \LAM\TYPES\ConfiguredType $type account type
-* @param array $selectedModules list of selected account modules
+* @param string[] $selectedModules list of selected account modules
 */
-function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
+function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): void {
 	$scope = $type->getScope();
 	echo '<div class="smallPaddingContent">';
 	// get input fields from modules
@@ -498,5 +498,3 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, $selectedModules) {
 	include __DIR__ . '/../../lib/adminFooter.inc';
 	die;
 }
-
-?>

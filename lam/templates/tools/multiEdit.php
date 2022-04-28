@@ -95,7 +95,7 @@ else {
 /**
  * Displays the main page of the multi edit tool.
  */
-function displayStartPage() {
+function displayStartPage(): void {
 	// display main page
 	include __DIR__ . '/../../lib/adminHeader.inc';
 	echo '<div class="smallPaddingContent">';
@@ -223,7 +223,7 @@ function displayStartPage() {
  *
  * @param htmlResponsiveRow $container container
  */
-function runActions(htmlResponsiveRow &$container) {
+function runActions(htmlResponsiveRow &$container): void {
 	// LDAP suffix
 	if ($_POST['suffix'] == '-') {
 		$suffix = trim($_POST['otherSuffix']);
@@ -296,7 +296,7 @@ function runActions(htmlResponsiveRow &$container) {
 /**
  * Performs the modify operations.
  */
-function runAjaxActions() {
+function runAjaxActions(): void {
 	$jsonReturn = array(
 		'status' => STAGE_START,
 		'progress' => 0,
@@ -325,9 +325,9 @@ function runAjaxActions() {
 /**
  * Reads the LDAP entries from the directory.
  *
- * @return array status
+ * @return array<mixed> status
  */
-function readLDAPData() {
+function readLDAPData(): array {
 	$suffix = $_SESSION['multiEdit_suffix'];
 	$filter = $_SESSION['multiEdit_filter'];
 	if (empty($filter)) {
@@ -371,9 +371,9 @@ function readLDAPData() {
 /**
  * Generates the required actions based on the read LDAP data.
  *
- * @return array status
+ * @return array<mixed> status
  */
-function generateActions() {
+function generateActions(): array {
 	$actions = array();
 	foreach ($_SESSION['multiEdit_status']['entries'] as $entry) {
 		$dn = $entry['dn'];
@@ -421,9 +421,9 @@ function generateActions() {
 /**
  * Prints the dryRun output.
  *
- * @return array status
+ * @return array<mixed> status
  */
-function dryRun() {
+function dryRun(): array {
 	$pro = isLAMProVersion() ? ' Pro' : '';
 	$ldif = '# LDAP Account Manager' . $pro . ' ' . LAMVersion() . "\n\nversion: 1\n\n";
 	$log = '';
@@ -506,7 +506,7 @@ function dryRun() {
  * @param string $errfile error file
  * @param int $errline error line
  */
-function multiEditLdapErrorHandler($errno, $errstr, $errfile, $errline) {
+function multiEditLdapErrorHandler($errno, $errstr, $errfile, $errline): void {
 	if ($errno === E_USER_ERROR) {
 		logNewMessage(LOG_ERR, 'Error occurred: ' . $errstr . " ($errfile: $errline)");
 		$_REQUEST['multiEdit_error'] = true;
@@ -520,9 +520,9 @@ function multiEditLdapErrorHandler($errno, $errstr, $errfile, $errline) {
 /**
  * Runs the actual modifications.
  *
- * @return array status
+ * @return array<mixed> status
  */
-function doModify() {
+function doModify(): array {
 	set_error_handler('\LAM\TOOLS\MULTI_EDIT\multiEditLdapErrorHandler');
 	// initial action index
 	if (!isset($_SESSION['multiEdit_status']['index'])) {

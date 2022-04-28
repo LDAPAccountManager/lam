@@ -16,7 +16,7 @@ use LAMException;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2021  Roland Gruber
+  Copyright (C) 2006 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -178,7 +178,7 @@ function testRemoteCommand($command, $stopTest, $remote, $testText, $container) 
  * @param boolean $testQuota true, if Quotas should be checked
  * @param htmlResponsiveRow $container container for HTML output
  */
-function lamRunTestSuite($serverName, $serverTitle, $testQuota, $container) {
+function lamRunTestSuite($serverName, $serverTitle, $testQuota, $container): void {
 	$remoteServer = $_SESSION['config']->getScriptServerByName($serverName);
 	$SPLIT_DELIMITER = "###x##y##x###";
 	$LAMDAEMON_PROTOCOL_VERSION = '5';

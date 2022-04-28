@@ -10,7 +10,7 @@ use \htmlResponsiveRow;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2021  Roland Gruber
+  Copyright (C) 2004 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -304,11 +304,11 @@ include __DIR__ . '/../../lib/adminFooter.inc';
 /**
  * Prints a back button to the page where the user enters a file to upload.
  *
- * @param String $typeId account type (e.g. user)
- * @param array $selectedModules selected modules for upload
+ * @param string $typeId account type (e.g. user)
+ * @param string[] $selectedModules selected modules for upload
  * @param htmlResponsiveRow $container table container
  */
-function massPrintBackButton($typeId, $selectedModules, htmlResponsiveRow &$container) {
+function massPrintBackButton(string $typeId, array $selectedModules, htmlResponsiveRow &$container): void {
 	$row = new htmlResponsiveRow();
 	$backButton = new htmlButton('submit', _('Back'));
 	$row->add($backButton, 12);

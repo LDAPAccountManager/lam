@@ -11,7 +11,7 @@ use function \LAM\SCHEMA\get_cached_schema;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2007 - 2021  Roland Gruber
+  Copyright (C) 2007 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -148,9 +148,9 @@ function checkSchemaForModule($name, $scope, $typeId): ?string {
  * Returns the names of all attributes which are managed by the given object class and its parents.
  *
  * @param ObjectClass $oClass object class
- * @return array list of attribute names
+ * @return array<mixed> list of attribute names
  */
-function getRecursiveAttributesFromObjectClass($oClass) {
+function getRecursiveAttributesFromObjectClass($oClass): array {
 	$attrs = array();
 	$attrs = array_merge($attrs, $oClass->getMustAttrNames());
 	$attrs = array_merge($attrs, $oClass->getMayAttrNames());

@@ -66,7 +66,7 @@ else {
 echo '</div>';
 include __DIR__ . '/../../lib/adminFooter.inc';
 
-function showTree() {
+function showTree(): void {
 	$openInitial = array();
 	if (isset($_GET['dn'])) {
 		$initialDn = base64_decode($_GET['dn']);

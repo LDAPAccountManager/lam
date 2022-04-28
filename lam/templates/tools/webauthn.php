@@ -17,7 +17,7 @@ use Webauthn\PublicKeyCredentialCreationOptions;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2020 - 2021  Roland Gruber
+  Copyright (C) 2020 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -159,7 +159,7 @@ include __DIR__ . '/../../lib/adminFooter.inc';
  * @param htmlResponsiveRow $container row
  * @param WebauthnManager $webauthnManager webauthn manager
  */
-function addNewDevice($container, $webauthnManager) {
+function addNewDevice(htmlResponsiveRow $container, WebauthnManager $webauthnManager): void {
 	if (empty($_POST['registrationData'])) {
 		return;
 	}
@@ -179,7 +179,7 @@ function addNewDevice($container, $webauthnManager) {
  *
  * @param htmlResponsiveRow $container row
  */
-function showRemoveMessage($container) {
+function showRemoveMessage(htmlResponsiveRow $container): void {
 	if (!empty($_POST['removed']) && ($_POST['removed'] === 'true')) {
 		$container->add(new htmlStatusMessage('INFO', _('The device was deleted.')), 12);
 	}

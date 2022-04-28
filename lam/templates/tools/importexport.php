@@ -144,7 +144,7 @@ if (!empty($_GET['tab']) && ($_GET['tab'] === 'export')) {
  *
  * @param int $tabindex tabindex
  */
-function printImportTabContent(&$tabindex) {
+function printImportTabContent(&$tabindex): void {
 	echo "<form class=\"inputForm\" enctype=\"multipart/form-data\" action=\"importexport.php\" method=\"post\">\n";
 	$container = new htmlResponsiveRow();
 	$container->add(new htmlTitle(_("Import")), 12);
@@ -186,7 +186,7 @@ function printImportTabContent(&$tabindex) {
  *
  * @param int $tabindex tabindex
  */
-function printImportTabProcessing(&$tabindex) {
+function printImportTabProcessing(&$tabindex): void {
 	try {
 		checkImportData();
 	}
@@ -231,7 +231,7 @@ function printImportTabProcessing(&$tabindex) {
  *
  * @throws LAMException error message if not valid
  */
-function checkImportData() {
+function checkImportData(): void {
 	$source = $_POST['source'];
 	$ldif = '';
 	if ($source == 'text') {
@@ -258,7 +258,7 @@ function checkImportData() {
  *
  * @param int $tabindex tabindex
  */
-function printExportTabContent(&$tabindex) {
+function printExportTabContent(&$tabindex): void {
 	echo "<form class=\"inputForm\" enctype=\"multipart/form-data\" action=\"importexport.php?tab=export\" method=\"post\">\n";
 	$container = new htmlResponsiveRow();
 	$container->add(new htmlTitle(_("Export")), 12);
@@ -321,7 +321,7 @@ function printExportTabContent(&$tabindex) {
  *
  * @return string base DN
  */
-function getDefaultBaseDn() {
+function getDefaultBaseDn(): string {
 	$typeManager = new TypeManager();
 	$baseDn = '';
 	foreach ($typeManager->getConfiguredTypes() as $type) {
@@ -371,7 +371,7 @@ function isValidExportDn(string $dn): bool {
  *
  * @param int $tabindex tabindex
  */
-function printExportTabProcessing(&$tabindex) {
+function printExportTabProcessing(&$tabindex): void {
 	try {
 		checkExportData();
 	}
@@ -427,7 +427,7 @@ function printExportTabProcessing(&$tabindex) {
  *
  * @throws LAMException error message if not valid
  */
-function checkExportData() {
+function checkExportData(): void {
 	if (empty($_POST['baseDn'])) {
 		throw new LAMException(_('This field is required.'), _('Base DN'));
 	}
