@@ -2332,4 +2332,24 @@ abstract class baseModule {
 		return array();
 	}
 
+	/**
+	 * Returns a callable if there should be a custom filtering for the given attribute name.
+	 *
+	 * @param string $attributeName attribute name
+	 * @return callable|null custom function for filtering (?array $values, ?string $filterValue)
+	 */
+	public function getListFilterFunction(string $attributeName): ?callable {
+		return null;
+	}
+
+	/**
+	 * Returns a callable if there should be a custom display for the given attribute name.
+	 *
+	 * @param string $attributeName attribute name
+	 * @return callable|null custom function for rendering (array $entry, string $attribute)
+	 */
+	public function getListRenderFunction(string $attributeName): ?callable {
+		return null;
+	}
+
 }

@@ -583,13 +583,6 @@ class lamUserList extends lamList {
 			}
 			return $group;
 		}
-		// expire dates
-		elseif (($attribute == 'shadowexpire') || ($attribute == 'shadowlastchange')) {
-			if (!empty($entry[$attribute][0])) {
-				$time = new DateTime('@' . $entry[$attribute][0] * 24 * 3600, getTimeZone());
-				return new htmlOutputText($time->format('d.m.Y'));
-			}
-		}
 		elseif ($attribute == 'sambakickofftime') {
 			if (!empty($entry[$attribute][0])) {
 				if ($entry[$attribute][0] > 2147483648) {
@@ -600,14 +593,6 @@ class lamUserList extends lamList {
 					return new htmlOutputText($date->format('d.m.Y'));
 				}
 			}
-		}
-		elseif (($attribute == 'passwordexpirationtime') && !empty($entry[$attribute][0])) {
-			$time = formatLDAPTimestamp($entry[$attribute][0]);
-			return new htmlOutputText($time);
-		}
-		elseif (($attribute == 'accountunlocktime') && !empty($entry[$attribute][0])) {
-			$time = formatLDAPTimestamp($entry[$attribute][0]);
-			return new htmlOutputText($time);
 		}
 		// account status
 		elseif ($attribute == self::ATTR_ACCOUNT_STATUS) {

@@ -539,6 +539,19 @@ class lamList {
 				$this->sortMapping[$i] = $i;
 			}
 		}
+		// get custom render functions
+        $renderFunctions = array();
+        $modules = $this->type->getModules();
+		foreach ($modules as $module) {
+		    $moduleObj = moduleCache::getModule($module, $this->type->getScope());
+			foreach ($this->attrArray as $attributeName) {
+				$attributeName = strtolower($attributeName);
+				$renderFunction = $moduleObj->getListRenderFunction($attributeName);
+				if ($renderFunction !== null) {
+                    $renderFunctions[$attributeName] = $renderFunction;
+				}
+			}
+        }
 		// print account list
 		for ($i = $table_begin; $i < $table_end; $i++) {
 			$row = array();
@@ -557,7 +570,12 @@ class lamList {
 			$row[] = new htmlDiv(null, $actionElement, array('lam-listtools'));
 			foreach ($this->attrArray as $attributeName) {
 				$attributeName = strtolower($attributeName);
-				$row[] = $this->getTableCellContent($info[$index], $attributeName);
+				if ($renderFunctions[$attributeName] !== null) {
+				    $row[] = $renderFunctions[$attributeName]($info[$index], $attributeName);
+                }
+				else {
+					$row[] = $this->getTableCellContent($info[$index], $attributeName);
+				}
 			}
 			$data[] = $row;
 		}
@@ -1181,6 +1199,19 @@ class lamList {
 		foreach ($this->ldapEntries as $index => &$data) {
 			$this->entries[$index] = &$data;
 		}
+		// get custom filter functions
+		$filterFunctions = array();
+		$modules = $this->type->getModules();
+		foreach ($modules as $module) {
+			$moduleObj = moduleCache::getModule($module, $this->type->getScope());
+			foreach ($this->filters as $filterAttribute => $filterValue) {
+				$attributeName = strtolower($filterAttribute);
+				$filterFunction = $moduleObj->getListFilterFunction($attributeName);
+				if ($filterFunction !== null) {
+					$filterFunctions[$filterAttribute] = $filterFunction;
+				}
+			}
+		}
 		$toFilter = array();
 		foreach ($this->filters as $filterAttribute => $filterValue) {
 			if ($this->isAttributeFilteredByServer($filterAttribute) || ($filterValue === '')) {
@@ -1192,8 +1223,16 @@ class lamList {
 				}
 				$regex = str_replace(array('*'), array('.*'), $filterValue);
 				$regex = '/' . $regex . '/i';
-				if (!$this->isFilterMatching($data, $filterAttribute, $regex)) {
-					$toFilter[] = $index;
+				if ($filterFunctions[$filterAttribute] !== null) {
+				    $value = isset($data[$filterAttribute]) ? $data[$filterAttribute] : null;
+                    if (!$filterFunctions[$filterAttribute]($value, $filterValue)) {
+	                    $toFilter[] = $index;
+                    }
+				}
+				else {
+					if (!$this->isFilterMatching($data, $filterAttribute, $regex)) {
+						$toFilter[] = $index;
+					}
 				}
 			}
 		}

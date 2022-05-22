@@ -1003,6 +1003,41 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 		}
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getListFilterFunction(string $attributeName): ?callable {
+		if (($attributeName == 'shadowexpire') || ($attributeName == 'shadowlastchange')) {
+			return function(?array $values, ?string $filterValue): bool {
+				$regex = str_replace(array('*'), array('.*'), $filterValue);
+				$regex = '/' . $regex . '/i';
+				if (!empty($values[0])) {
+					$time = new DateTime('@' . $values[0] * 24 * 3600, getTimeZone());
+					$formattedTime = $time->format('d.m.Y');
+					return preg_match($regex, $formattedTime);
+				}
+				return false;
+			};
+		}
+		return null;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getListRenderFunction(string $attributeName): ?callable {
+		if (($attributeName == 'shadowexpire') || ($attributeName == 'shadowlastchange')) {
+			return function(array $entry, string $attribute): ?htmlElement {
+				if (!empty($entry[$attribute][0])) {
+					$time = new DateTime('@' . $entry[$attribute][0] * 24 * 3600, getTimeZone());
+					return new htmlOutputText($time->format('d.m.Y'));
+				}
+				return null;
+			};
+		}
+		return null;
+	}
+
 }
 
 if (interface_exists('\LAM\JOB\Job', false)) {
