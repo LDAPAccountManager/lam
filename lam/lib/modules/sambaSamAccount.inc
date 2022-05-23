@@ -3154,4 +3154,49 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		}
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getListFilterFunction(string $attributeName): ?callable {
+		if ($attributeName == 'sambakickofftime') {
+			return function(?array $values, ?string $filterValue): bool {
+				$regex = str_replace(array('*'), array('.*'), $filterValue);
+				$regex = '/' . $regex . '/i';
+				if (!empty($values[0])) {
+					if ($values[0] > 2147483648) {
+						$time = "∞";
+					}
+					else {
+						$date = new DateTime('@' . $values[0], new DateTimeZone('UTC'));
+						$time = $date->format('d.m.Y');
+					}
+					return preg_match($regex, $time) || ($time === $filterValue);
+				}
+				return false;
+			};
+		}
+		return null;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getListRenderFunction(string $attributeName): ?callable {
+		if ($attributeName == 'sambakickofftime') {
+			return function(array $entry, string $attribute): ?htmlElement {
+				if (!empty($entry[$attribute][0])) {
+					if ($entry[$attribute][0] > 2147483648) {
+						return new htmlOutputText("∞");
+					}
+					else {
+						$date = new DateTime('@' . $entry[$attribute][0], new DateTimeZone('UTC'));
+						return new htmlOutputText($date->format('d.m.Y'));
+					}
+				}
+				return null;
+			};
+		}
+		return null;
+	}
+
 }

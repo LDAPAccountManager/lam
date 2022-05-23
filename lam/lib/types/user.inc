@@ -583,17 +583,6 @@ class lamUserList extends lamList {
 			}
 			return $group;
 		}
-		elseif ($attribute == 'sambakickofftime') {
-			if (!empty($entry[$attribute][0])) {
-				if ($entry[$attribute][0] > 2147483648) {
-					return new htmlOutputText("∞");
-				}
-				else {
-					$date = new DateTime('@' . $entry[$attribute][0], new DateTimeZone('UTC'));
-					return new htmlOutputText($date->format('d.m.Y'));
-				}
-			}
-		}
 		// account status
 		elseif ($attribute == self::ATTR_ACCOUNT_STATUS) {
 			return $this->getAccountStatus($entry);

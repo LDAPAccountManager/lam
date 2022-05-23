@@ -242,7 +242,7 @@ class lamList {
 					$foundFilter = $_POST["filter" . strtolower($this->attrArray[$i])];
 				}
 				if (isset($foundFilter) && ($foundFilter != '')) {
-					if (preg_match('/^[\\^]?([\p{L}\p{N} _\\*\\$\\.:@-])+[\\$]?$/iu', $foundFilter)) { // \p{L} matches any Unicode letter
+					if (preg_match('/^[\\^]?([\p{L}\p{N} _\\*\\$\\.:@∞-])+[\\$]?$/iu', $foundFilter)) { // \p{L} matches any Unicode letter
 						$this->filters[strtolower($this->attrArray[$i])] = $foundFilter;
 					}
 					else {
