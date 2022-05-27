@@ -4134,8 +4134,10 @@ class htmlSortableList extends htmlElement {
 		}
 		$return = array();
 		echo '<ul style="width:' . $this->elementWidth . ';" class="sortableList" id="' . $this->id . '">';
-		foreach ($this->elements as $element) {
-			echo '<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>';
+		for ($i = 0; $i < sizeof($this->elements); $i++) {
+			$element = $this->elements[$i];
+			echo '<li class="ui-state-default" data-position-orig="' . $i . '">';
+			echo '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>';
 			if ($element instanceof htmlElement) {
 				parseHtml($module, $element, $values, $restricted, $tabindex, $scope);
 			}
@@ -4147,19 +4149,15 @@ class htmlSortableList extends htmlElement {
 		echo '</ul>';
 		$onUpdate = '';
 		if ($this->onUpdate != null) {
-			$onUpdate = '{
-				update: function(event, ui) {' . $this->onUpdate . '},
-				start:  function(event, ui) {
-				            var posOrig = ui.item.index();
-            				ui.item.data(\'posOrig\', posOrig);
-        				}
-			}';
+			$onUpdate = $this->onUpdate;
 		}
 		$scriptContent = '
-			jQuery(function() {
-				$("#' . $this->id . '").sortable(' . $onUpdate . ');
-				$("#' . $this->id . '").disableSelection();
-			});';
+			Sortable.create(
+				document.getElementById("' . $this->id . '"),
+				{
+					onUpdate: ' . $onUpdate . '
+				}
+			);';
 		$script = new htmlJavaScript($scriptContent);
 		$script->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		return $return;

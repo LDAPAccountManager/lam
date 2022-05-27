@@ -236,7 +236,7 @@ function config_showAccountModules($type, &$container): void {
 		}
 		$selSortable = new htmlSortableList($listElements, $type->getId() . '_selected', null);
 		$selSortable->alignment = htmlElement::ALIGN_TOP;
-		$selSortable->setOnUpdate('updateModulePositions(\'positions_' . $type->getId() . '\', ui.item.data(\'posOrig\'), ui.item.index());');
+		$selSortable->setOnUpdate('function() {updateModulePositions(\'positions_' . $type->getId() . '\', \'' . $type->getId() . '_selected' . '\');}');
 		$container->add($selSortable, 12, 6);
 	}
 	else {
