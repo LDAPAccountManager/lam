@@ -613,6 +613,10 @@ input.markPass {
 	margin: 0 3px 3px 3px;
 	padding: 0.4em;
 	padding-left: 1.5em;
+	border: 1px solid #c5c5c5;
+	background: #f6f6f6;
+	font-weight: normal;
+	color: #454545;
 }
 .module-list li span {
 	position: absolute;
@@ -623,6 +627,12 @@ input.markPass {
 .unstyled-list {
 	list-style-type: none;
 	padding-left: 0;
+}
+
+.tree-attribute-sorted-list li span {
+	position: absolute;
+	margin-left: -1.3em;
+	margin-top: 0.4rem;
 }
 
 .strike-through {

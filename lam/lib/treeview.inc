@@ -18,6 +18,7 @@ use htmlResponsiveRow;
 use htmlResponsiveSelect;
 use htmlResponsiveTable;
 use htmlSelect;
+use htmlSortableList;
 use htmlStatusMessage;
 use htmlSubTitle;
 use htmlTable;
@@ -563,9 +564,35 @@ class TreeView {
 			}
 			$valueListContents[] = $valueLine;
 		}
-		$valueList = new htmlList($valueListContents, 'attributeList_' . $safeAttributeName);
-		$valueList->setCSSClasses(array('nowrap unstyled-list'));
+		$listClasses = array('nowrap unstyled-list');
+		if ($this->isOrderedAttribute($values)) {
+			$valueList = new htmlSortableList($valueListContents, 'attributeList_' . $safeAttributeName);
+			$listClasses[] = 'tree-attribute-sorted-list';
+		}
+		else {
+			$valueList = new htmlList($valueListContents, 'attributeList_' . $safeAttributeName);
+		}
+		$valueList->setCSSClasses($listClasses);
 		return $this->addExtraAttributeContent($valueList, $attributeName, $schemaAttribute);
+	}
+
+	/**
+	 * Returns if the attribute has ordered values.
+	 *
+	 * @param array $values values
+	 * @return bool is ordered
+	 */
+	private function isOrderedAttribute(array $values): bool {
+		if (empty($values)) {
+			return false;
+		}
+		$regex = '/^\\{[0-9]+\\}/';
+		foreach ($values as $value) {
+			if (!preg_match($regex, $value)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
