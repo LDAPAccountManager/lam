@@ -622,6 +622,7 @@ input.markPass {
 	position: absolute;
 	margin-left: -1.3em;
 	margin-top: 0.4rem;
+	cursor: grab;
 }
 
 .unstyled-list {
@@ -886,4 +887,5 @@ div.tree-highlight {
 	position: absolute;
 	margin-left: -1.3em;
 	margin-top: 0.4rem;
+	cursor: grab;
 }
