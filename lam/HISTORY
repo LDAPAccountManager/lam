@@ -5,7 +5,7 @@ June 2022 8.0
   - 389ds: added hints why login failed if account is locked/deactivated/expired
   - Removed Zarafa support (please switch to Kopano)
   - Tree view: display binary data as base64 encoded text
-  - Tree view: better support for move operations
+  - Tree view: better support for move operations and ordered attributes
   - LAM Pro:
    -> New captcha providers: hCaptcha and Friendly Captcha
   - Fixed bugs:
