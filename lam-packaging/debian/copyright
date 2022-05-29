@@ -1197,6 +1197,7 @@ templates/lib/extra/duo/*.js                                         E  2019  Du
 lib/3rdParty/duo/*.php                                               E  2019  Duo Security
 templates/lib/extra/friendlyCaptcha                                  B
 graphics/webauthn.svg                                                F  2017  Duo Security, Inc.
+templates/lib/400_Sortable*.js                                       B        RubaXa, owenm
 templates/lib/600_jquery.magnific-popup.js                           B  2016  Dmitry Semenov
 style/610_magnific-popup.css                                         B  2016  Dmitry Semenov
 style/010_normalize.css                                              B        Nicolas Gallagher and Jonathan Neal

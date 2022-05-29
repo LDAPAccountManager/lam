@@ -4099,8 +4099,6 @@ class htmlSortableList extends htmlElement {
 	private $elements = array();
 	/** HTML ID */
 	private $id = '';
-	/** element width */
-	private $elementWidth = '';
 	/** on update event */
 	private $onUpdate = null;
 
@@ -4109,12 +4107,10 @@ class htmlSortableList extends htmlElement {
 	 *
 	 * @param array $elements list of elements as text (HTML special chars must be escaped already) or htmlElement
 	 * @param String HTML ID
-	 * @param String $elementWidth width of elements (default 250px)
 	 */
-	function __construct($elements, $id, $elementWidth='250px') {
+	function __construct($elements, $id) {
 		$this->elements = $elements;
 		$this->id = htmlspecialchars($id);
-		$this->elementWidth = $elementWidth;
 	}
 
 	/**
@@ -4133,9 +4129,15 @@ class htmlSortableList extends htmlElement {
 			return array();
 		}
 		$return = array();
-		echo '<ul style="width:' . $this->elementWidth . ';" class="sortableList" id="' . $this->id . '">';
-		foreach ($this->elements as $element) {
-			echo '<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>';
+		$classesValue = '';
+		if (!empty($this->cssClasses)) {
+			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
+		}
+		echo '<ul' . $classesValue . ' id="' . $this->id . '">';
+		for ($i = 0; $i < sizeof($this->elements); $i++) {
+			$element = $this->elements[$i];
+			echo '<li data-position-orig="' . $i . '">';
+			echo '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>';
 			if ($element instanceof htmlElement) {
 				parseHtml($module, $element, $values, $restricted, $tabindex, $scope);
 			}
@@ -4147,19 +4149,15 @@ class htmlSortableList extends htmlElement {
 		echo '</ul>';
 		$onUpdate = '';
 		if ($this->onUpdate != null) {
-			$onUpdate = '{
-				update: function(event, ui) {' . $this->onUpdate . '},
-				start:  function(event, ui) {
-				            var posOrig = ui.item.index();
-            				ui.item.data(\'posOrig\', posOrig);
-        				}
-			}';
+			$onUpdate = 'onUpdate: ' . $this->onUpdate;
 		}
 		$scriptContent = '
-			jQuery(function() {
-				$("#' . $this->id . '").sortable(' . $onUpdate . ');
-				$("#' . $this->id . '").disableSelection();
-			});';
+			Sortable.create(
+				document.getElementById("' . $this->id . '"),
+				{
+					' . $onUpdate . '
+				}
+			);';
 		$script = new htmlJavaScript($scriptContent);
 		$script->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		return $return;
@@ -5228,6 +5226,53 @@ class htmlForm extends htmlElement {
 			$return = $this->content->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		}
 		echo '</form>';
+		return $return;
+	}
+
+}
+
+/**
+ * Represents a (un)ordered list.
+ */
+class htmlList extends htmlElement {
+
+	private $elements = array();
+
+	private $isOrdered = false;
+
+	private $id = '';
+
+	/**
+	 * Constructor.
+	 *
+	 * @param array $elements elements to render
+	 * @param string|null $id HTML unique id
+	 * @param bool|null $isOrdered is an ordered list
+	 */
+	function __construct(array $elements, ?string $id = null, ?bool $isOrdered = false) {
+		$this->elements = $elements;
+		$this->id = $id;
+		$this->isOrdered = $isOrdered;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$parentTag = $this->isOrdered ? 'ol' : 'ul';
+		$idValue = empty($this->id) ? '' : ' id="' . $this->id . '"';
+		$classesValue = '';
+		if (!empty($this->cssClasses)) {
+			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
+		}
+		echo '<' . $parentTag . $idValue . $classesValue . '>';
+		$return = array();
+		foreach ($this->elements as $element) {
+			echo '<li>';
+			$return = array_merge($return, $element->generateHTML($module, $input, $values, $restricted, $tabindex, $scope));
+			echo '</li>';
+		}
+		echo '</' . $parentTag . '>';
 		return $return;
 	}
 

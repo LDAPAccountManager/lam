@@ -11,12 +11,14 @@ use htmlInputField;
 use htmlInputFileUpload;
 use htmlInputTextarea;
 use htmlLink;
+use htmlList;
 use htmlOutputText;
 use htmlResponsiveInputField;
 use htmlResponsiveRow;
 use htmlResponsiveSelect;
 use htmlResponsiveTable;
 use htmlSelect;
+use htmlSortableList;
 use htmlStatusMessage;
 use htmlSubTitle;
 use htmlTable;
@@ -518,11 +520,11 @@ class TreeView {
 			$field = $this->getAttributeInputField($attributeName, $values[0], $required, $isMultiLine, true, $schemaAttribute, 0);
 			return $this->addExtraAttributeContent($field, $attributeName, $schemaAttribute);
 		}
-		$valueTable = new htmlTable();
-		$valueTable->setCSSClasses(array('fullwidth'));
+		$valueListContents = array();
 		$autoCompleteValues = array();
 		$onInput = null;
-		if (strtolower($attributeName) === 'objectclass') {
+		$safeAttributeName = htmlspecialchars(strtolower($attributeName));
+		if ($safeAttributeName === 'objectclass') {
 			$schemaObjectClasses = $this->getSchemaObjectClasses();
 			foreach ($schemaObjectClasses as $schemaObjectClass) {
 				if (!in_array_ignore_case($schemaObjectClass->getName(), $values)) {
@@ -534,7 +536,7 @@ class TreeView {
 		foreach ($values as $index => $value) {
 			$inputField = $this->getAttributeInputField($attributeName, $value, $required, $isMultiLine, false, $schemaAttribute, $index);
 			$cssClasses = $inputField->getCSSClasses();
-			$cssClasses[] = 'lam-attr-' . htmlspecialchars(strtolower($attributeName));
+			$cssClasses[] = 'lam-attr-' . $safeAttributeName;
 			$inputField->setCSSClasses($cssClasses);
 			if (!empty($autoCompleteValues) && ($inputField instanceof htmlInputField)) {
 				$inputField->enableAutocompletion($autoCompleteValues);
@@ -543,24 +545,56 @@ class TreeView {
 			if ($onInput !== null) {
 				$inputField->setOnInput($onInput);
 			}
-			$valueTable->addElement($inputField);
+			$valueLine = new htmlTable();
+			$valueLine->setCSSClasses(array('fullwidth'));
+			$valueLine->addElement($inputField);
 			if (checkIfWriteAccessIsAllowed()) {
 				if (!$this->isJpegAttribute($attributeName, $schemaAttribute)) {
 					$addButton = new htmlLink(null, '#', '../../graphics/add.svg');
 					$addButton->setCSSClasses(array('margin2'));
 					$addButton->setOnClick('window.lam.treeview.addValue(event, this);');
-					$valueTable->addElement($addButton);
+					$valueLine->addElement($addButton);
 				}
 				if (!$this->isJpegAttribute($attributeName, $schemaAttribute) || ($value !== '')) {
 					$clearButton = new htmlLink(null, '#', '../../graphics/del.svg');
 					$clearButton->setCSSClasses(array('margin2'));
 					$clearButton->setOnClick('window.lam.treeview.clearValue(event, this);');
-					$valueTable->addElement($clearButton);
+					$valueLine->addElement($clearButton);
 				}
 			}
-			$valueTable->addNewLine();
+			$valueListContents[] = $valueLine;
 		}
-		return $this->addExtraAttributeContent($valueTable, $attributeName, $schemaAttribute);
+		$listClasses = array('nowrap unstyled-list');
+		if ($this->isOrderedAttribute($values)) {
+			$listId = 'attributeList_' . $safeAttributeName;
+			$valueList = new htmlSortableList($valueListContents, $listId);
+			$listClasses[] = 'tree-attribute-sorted-list';
+			$valueList->setOnUpdate('function() {window.lam.treeview.updateAttributePositionData(\'' . $listId . '\');}');
+		}
+		else {
+			$valueList = new htmlList($valueListContents, 'attributeList_' . $safeAttributeName);
+		}
+		$valueList->setCSSClasses($listClasses);
+		return $this->addExtraAttributeContent($valueList, $attributeName, $schemaAttribute);
+	}
+
+	/**
+	 * Returns if the attribute has ordered values.
+	 *
+	 * @param array $values values
+	 * @return bool is ordered
+	 */
+	private function isOrderedAttribute(array $values): bool {
+		if (empty($values)) {
+			return false;
+		}
+		$regex = '/^\\{[0-9]+\\}/';
+		foreach ($values as $value) {
+			if (!preg_match($regex, $value)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**

@@ -643,27 +643,18 @@ function checkPasswordStrengthHandleReply(data, fieldID) {
  * Updates the positions of a htmlSortable list in a hidden input field.
  * The positions must be separated by comma (e.g. "0,1,2,3").
  *
- * @param id HTML ID of hidden input field
- * @param oldPos old position
- * @param newPos new position
+ * @param inputId HTML ID of hidden input field
+ * @param containerId HTML ID of ul-container
  */
-function updateModulePositions(id, oldPos, newPos) {
-	var positions = jQuery('#' + id).val().split(',');
-	if (newPos > oldPos) {
-		var save = positions[oldPos];
-		for (var i = oldPos; i < newPos; i++) {
-			positions[i] = positions[i + 1];
-		}
-		positions[newPos] = save;
+function updateModulePositions(inputId, containerId) {
+	const input = document.getElementById(inputId);
+	let positions = [];
+	const container = document.getElementById(containerId);
+	const childLiElements = container.children;
+	for (let i = 0; i < childLiElements.length; i++) {
+		positions[i] = childLiElements[i].getAttribute('data-position-orig');
 	}
-	if (newPos < oldPos) {
-		var oldPosition = positions[oldPos];
-		for (var position = oldPos; position > newPos; position--) {
-			positions[position] = positions[position - 1];
-		}
-		positions[newPos] = oldPosition;
-	}
-	jQuery('#' + id).val(positions.join(','));
+	input.value = positions.join(',');
 }
 
 window.lam.filterSelect = window.lam.filterSelect || {};
@@ -2808,6 +2799,20 @@ window.lam.treeview.checkPassword = function(event, element, tokenName, tokenVal
 		buttons: buttonList,
 		width: 'auto'
 	});
+}
+
+/**
+ * Updates the positions of a sorted list of LDAP values.
+ *
+ * @param containerId HTML ID of ul-container
+ */
+window.lam.treeview.updateAttributePositionData = function(containerId) {
+	const container = document.getElementById(containerId);
+	const childLiElements = container.children;
+	for (let i = 0; i < childLiElements.length; i++) {
+		const inputField = childLiElements[i].querySelector('input');
+		inputField.value = '{' + i + '}' + inputField.value.replace(/^\{[0-9]+\}/, '');
+	}
 }
 
 window.lam.topmenu = window.lam.topmenu || {};
