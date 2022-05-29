@@ -5231,3 +5231,50 @@ class htmlForm extends htmlElement {
 
 }
 
+/**
+ * Represents a (un)ordered list.
+ */
+class htmlList extends htmlElement {
+
+	private $elements = array();
+
+	private $isOrdered = false;
+
+	private $id = '';
+
+	/**
+	 * Constructor.
+	 *
+	 * @param array $elements elements to render
+	 * @param string|null $id HTML unique id
+	 * @param bool|null $isOrdered is an ordered list
+	 */
+	function __construct(array $elements, ?string $id = null, ?bool $isOrdered = false) {
+		$this->elements = $elements;
+		$this->id = $id;
+		$this->isOrdered = $isOrdered;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
+		$parentTag = $this->isOrdered ? 'ol' : 'ul';
+		$idValue = empty($this->id) ? '' : ' id="' . $this->id . '"';
+		$classesValue = '';
+		if (!empty($this->cssClasses)) {
+			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
+		}
+		echo '<' . $parentTag . $idValue . $classesValue . '>';
+		$return = array();
+		foreach ($this->elements as $element) {
+			echo '<li>';
+			$return = array_merge($return, $element->generateHTML($module, $input, $values, $restricted, $tabindex, $scope));
+			echo '</li>';
+		}
+		echo '</' . $parentTag . '>';
+		return $return;
+	}
+
+}
+

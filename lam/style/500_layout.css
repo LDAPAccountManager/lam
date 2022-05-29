@@ -604,12 +604,25 @@ input.markPass {
 	background: white url('../graphics/pass.svg') right no-repeat;
 }
 
-.sortableList { list-style-type: none; margin: 0; padding: 0; }
-.sortableList li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; }
+.sortableList {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+.sortableList li {
+	margin: 0 3px 3px 3px;
+	padding: 0.4em;
+	padding-left: 1.5em;
+}
 .sortableList li span {
 	position: absolute;
 	margin-left: -1.3em;
 	margin-top: 0.4rem;
+}
+
+.unstyled-list {
+	list-style-type: none;
+	padding-left: 0;
 }
 
 .strike-through {

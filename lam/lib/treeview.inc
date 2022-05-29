@@ -11,6 +11,7 @@ use htmlInputField;
 use htmlInputFileUpload;
 use htmlInputTextarea;
 use htmlLink;
+use htmlList;
 use htmlOutputText;
 use htmlResponsiveInputField;
 use htmlResponsiveRow;
@@ -518,8 +519,7 @@ class TreeView {
 			$field = $this->getAttributeInputField($attributeName, $values[0], $required, $isMultiLine, true, $schemaAttribute, 0);
 			return $this->addExtraAttributeContent($field, $attributeName, $schemaAttribute);
 		}
-		$valueTable = new htmlTable();
-		$valueTable->setCSSClasses(array('fullwidth'));
+		$valueListContents = array();
 		$autoCompleteValues = array();
 		$onInput = null;
 		if (strtolower($attributeName) === 'objectclass') {
@@ -543,24 +543,28 @@ class TreeView {
 			if ($onInput !== null) {
 				$inputField->setOnInput($onInput);
 			}
-			$valueTable->addElement($inputField);
+			$valueLine = new htmlTable();
+			$valueLine->setCSSClasses(array('fullwidth'));
+			$valueLine->addElement($inputField);
 			if (checkIfWriteAccessIsAllowed()) {
 				if (!$this->isJpegAttribute($attributeName, $schemaAttribute)) {
 					$addButton = new htmlLink(null, '#', '../../graphics/add.svg');
 					$addButton->setCSSClasses(array('margin2'));
 					$addButton->setOnClick('window.lam.treeview.addValue(event, this);');
-					$valueTable->addElement($addButton);
+					$valueLine->addElement($addButton);
 				}
 				if (!$this->isJpegAttribute($attributeName, $schemaAttribute) || ($value !== '')) {
 					$clearButton = new htmlLink(null, '#', '../../graphics/del.svg');
 					$clearButton->setCSSClasses(array('margin2'));
 					$clearButton->setOnClick('window.lam.treeview.clearValue(event, this);');
-					$valueTable->addElement($clearButton);
+					$valueLine->addElement($clearButton);
 				}
 			}
-			$valueTable->addNewLine();
+			$valueListContents[] = $valueLine;
 		}
-		return $this->addExtraAttributeContent($valueTable, $attributeName, $schemaAttribute);
+		$valueList = new htmlList($valueListContents);
+		$valueList->setCSSClasses(array('nowrap unstyled-list'));
+		return $this->addExtraAttributeContent($valueList, $attributeName, $schemaAttribute);
 	}
 
 	/**
