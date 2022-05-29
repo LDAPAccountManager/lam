@@ -234,8 +234,9 @@ function config_showAccountModules($type, &$container): void {
 			$el->addElement($delButton);
 			$listElements[] = $el;
 		}
-		$selSortable = new htmlSortableList($listElements, $type->getId() . '_selected', null);
+		$selSortable = new htmlSortableList($listElements, $type->getId() . '_selected');
 		$selSortable->alignment = htmlElement::ALIGN_TOP;
+		$selSortable->setCSSClasses(array('module-list'));
 		$selSortable->setOnUpdate('function() {updateModulePositions(\'positions_' . $type->getId() . '\', \'' . $type->getId() . '_selected' . '\');}');
 		$container->add($selSortable, 12, 6);
 	}

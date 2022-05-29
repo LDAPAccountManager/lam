@@ -4099,8 +4099,6 @@ class htmlSortableList extends htmlElement {
 	private $elements = array();
 	/** HTML ID */
 	private $id = '';
-	/** element width */
-	private $elementWidth = '';
 	/** on update event */
 	private $onUpdate = null;
 
@@ -4109,12 +4107,10 @@ class htmlSortableList extends htmlElement {
 	 *
 	 * @param array $elements list of elements as text (HTML special chars must be escaped already) or htmlElement
 	 * @param String HTML ID
-	 * @param String $elementWidth width of elements (default 250px)
 	 */
-	function __construct($elements, $id, $elementWidth='250px') {
+	function __construct($elements, $id) {
 		$this->elements = $elements;
 		$this->id = htmlspecialchars($id);
-		$this->elementWidth = $elementWidth;
 	}
 
 	/**
@@ -4133,7 +4129,11 @@ class htmlSortableList extends htmlElement {
 			return array();
 		}
 		$return = array();
-		echo '<ul style="width:' . $this->elementWidth . ';" class="sortableList" id="' . $this->id . '">';
+		$classesValue = '';
+		if (!empty($this->cssClasses)) {
+			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
+		}
+		echo '<ul' . $classesValue . ' id="' . $this->id . '">';
 		for ($i = 0; $i < sizeof($this->elements); $i++) {
 			$element = $this->elements[$i];
 			echo '<li class="ui-state-default" data-position-orig="' . $i . '">';

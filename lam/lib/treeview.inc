@@ -522,7 +522,8 @@ class TreeView {
 		$valueListContents = array();
 		$autoCompleteValues = array();
 		$onInput = null;
-		if (strtolower($attributeName) === 'objectclass') {
+		$safeAttributeName = htmlspecialchars(strtolower($attributeName));
+		if ($safeAttributeName === 'objectclass') {
 			$schemaObjectClasses = $this->getSchemaObjectClasses();
 			foreach ($schemaObjectClasses as $schemaObjectClass) {
 				if (!in_array_ignore_case($schemaObjectClass->getName(), $values)) {
@@ -534,7 +535,7 @@ class TreeView {
 		foreach ($values as $index => $value) {
 			$inputField = $this->getAttributeInputField($attributeName, $value, $required, $isMultiLine, false, $schemaAttribute, $index);
 			$cssClasses = $inputField->getCSSClasses();
-			$cssClasses[] = 'lam-attr-' . htmlspecialchars(strtolower($attributeName));
+			$cssClasses[] = 'lam-attr-' . $safeAttributeName;
 			$inputField->setCSSClasses($cssClasses);
 			if (!empty($autoCompleteValues) && ($inputField instanceof htmlInputField)) {
 				$inputField->enableAutocompletion($autoCompleteValues);
@@ -562,7 +563,7 @@ class TreeView {
 			}
 			$valueListContents[] = $valueLine;
 		}
-		$valueList = new htmlList($valueListContents);
+		$valueList = new htmlList($valueListContents, 'attributeList_' . $safeAttributeName);
 		$valueList->setCSSClasses(array('nowrap unstyled-list'));
 		return $this->addExtraAttributeContent($valueList, $attributeName, $schemaAttribute);
 	}
