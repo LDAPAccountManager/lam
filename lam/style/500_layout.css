@@ -629,12 +629,6 @@ input.markPass {
 	padding-left: 0;
 }
 
-.tree-attribute-sorted-list li span {
-	position: absolute;
-	margin-left: -1.3em;
-	margin-top: 0.4rem;
-}
-
 .strike-through {
 	text-decoration: line-through;
 }
@@ -886,4 +880,10 @@ div.tree-highlight select {
 
 div.tree-highlight {
 	font-weight: bold;
+}
+
+.tree-attribute-sorted-list li span {
+	position: absolute;
+	margin-left: -1.3em;
+	margin-top: 0.4rem;
 }

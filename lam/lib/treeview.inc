@@ -566,8 +566,10 @@ class TreeView {
 		}
 		$listClasses = array('nowrap unstyled-list');
 		if ($this->isOrderedAttribute($values)) {
-			$valueList = new htmlSortableList($valueListContents, 'attributeList_' . $safeAttributeName);
+			$listId = 'attributeList_' . $safeAttributeName;
+			$valueList = new htmlSortableList($valueListContents, $listId);
 			$listClasses[] = 'tree-attribute-sorted-list';
+			$valueList->setOnUpdate('function() {window.lam.treeview.updateAttributePositionData(\'' . $listId . '\');}');
 		}
 		else {
 			$valueList = new htmlList($valueListContents, 'attributeList_' . $safeAttributeName);

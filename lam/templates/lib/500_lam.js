@@ -2801,6 +2801,20 @@ window.lam.treeview.checkPassword = function(event, element, tokenName, tokenVal
 	});
 }
 
+/**
+ * Updates the positions of a sorted list of LDAP values.
+ *
+ * @param containerId HTML ID of ul-container
+ */
+window.lam.treeview.updateAttributePositionData = function(containerId) {
+	const container = document.getElementById(containerId);
+	const childLiElements = container.children;
+	for (let i = 0; i < childLiElements.length; i++) {
+		const inputField = childLiElements[i].querySelector('input');
+		inputField.value = '{' + i + '}' + inputField.value.replace(/^\{[0-9]+\}/, '');
+	}
+}
+
 window.lam.topmenu = window.lam.topmenu || {};
 
 /**
