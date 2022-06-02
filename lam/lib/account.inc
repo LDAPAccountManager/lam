@@ -709,6 +709,9 @@ function get_preg($argument, $regexp) {
 		case 'hostAndPort':
 					$pregexpr = '/^[[:alnum:]\\._-]+:[[:digit:]]+$/';
 					break;
+		case 'ldapDateAndTime':
+					$pregexpr = '/^[0-9]{14}Z$/';
+					break;
 	}
 	if (($pregexpr != '') && preg_match($pregexpr, $argument)) {
 		return true;

@@ -8,6 +8,7 @@ June 2022 8.0
   - Tree view: better support for move operations and ordered attributes
   - LAM Pro:
    -> New captcha providers: hCaptcha and Friendly Captcha
+   -> PPolicy: allow to specify unlock value for "pwdAccountLockedTime"
   - Fixed bugs:
    -> Hidden account is displayed (257)
    -> Change of RDN failed for OpenLDAP entries
@@ -32,6 +33,7 @@ June 2022 8.0
    -> Configuration import: allow to select self service profiles to import (168)
   - Fixed bugs:
    -> Tree view: check session expiration
+
 
 28.12.2021 7.8
   - Restyling of LAM
