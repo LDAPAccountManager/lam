@@ -71,7 +71,6 @@ cp lam-packaging/getVersion ./
 export VERSION=`./getVersion`
 
 # remove files which are not in the final release
-rm -r codespell.sh
 rm -r lam/po
 rm -r lam/tests
 rm -f lam/lib/3rdParty/tcpdf/fonts/*.ttf

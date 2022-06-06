@@ -8,5 +8,6 @@ paths-ignore:
   - '**/lib/extra/**/*.*'
   - '**/lib/*jquery*.js'
   - '**/lib/*flatpickr*.js'
+  - '**/lib/*Sortable*.js'
 paths:
   - lam
