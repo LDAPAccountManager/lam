@@ -29,7 +29,7 @@
 FROM debian:bullseye-slim
 LABEL maintainer="Roland Gruber <post@rolandgruber.de>"
 
-ARG LAM_RELEASE=8.0.RC1
+ARG LAM_RELEASE=8.0
 EXPOSE 80
 
 ENV \
