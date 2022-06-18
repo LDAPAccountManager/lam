@@ -306,6 +306,9 @@ function getAvailableModules($scope, $mustSupportAdminInterface = false) {
 		if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($dirname . '/'.$entry)) {
 			$entry = substr($entry, 0, strpos($entry, '.'));
 			$temp = moduleCache::getModule($entry, $scope);
+			if ($temp === null) {
+				continue;
+			}
 			if ($mustSupportAdminInterface && !$temp->supportsAdminInterface()) {
 				continue;
 			}
@@ -399,7 +402,7 @@ function checkConfigOptions($scopes, &$options) {
 * @param string $scope account type
 * @return array help entry
 */
-function getHelp($module,$helpID,$scope='') {
+function getHelp($module, $helpID, $scope = '') {
 	global $helpArray;
 	if (!isset($module) || ($module == '') || ($module == 'main')) {
 		$helpPath = "../help/help.inc";
@@ -2854,3 +2857,72 @@ class AccountStatusDetails {
 
 }
 
+/**
+ * Validation of scope and module names.
+ */
+class ScopeAndModuleValidation {
+
+	private static $cachedModuleNames = null;
+
+	private static $cachedScopeNames = null;
+
+	const REGEX_SCOPE = "/^[a-z0-9_-]+$/i";
+	const REGEX_MODULE = "/^[a-z0-9_-]+$/i";
+
+	/**
+	 * Checks if the provided scope name is valid.
+	 *
+	 * @param string $scope scope name
+	 * @return bool is existing
+	 */
+	public static function isValidScopeName(string $scope): bool {
+		if (!preg_match(self::REGEX_SCOPE, $scope)) {
+			return false;
+		}
+		if (self::$cachedScopeNames === null) {
+			$dirname = dirname(__FILE__) . "/types";
+			$dir = dir($dirname);
+			$scopeNames = array();
+			while ($entry = $dir->read()) {
+				if ((substr($entry, strlen($entry) - 4, 4) === '.inc')
+					&& (is_file($dirname . '/'.$entry) || is_link($dirname . '/'.$entry))) {
+					$entry = substr($entry, 0, -4);
+					if (preg_match(self::REGEX_SCOPE, $entry)) {
+						$scopeNames[] = $entry;
+					}
+				}
+			}
+			self::$cachedScopeNames = $scopeNames;
+		}
+		return in_array($scope, self::$cachedScopeNames);
+	}
+
+	/**
+	 * Checks if the provided module name is valid.
+	 *
+	 * @param string $moduleName module name
+	 * @return bool is existing
+	 */
+	public static function isValidModuleName(string $moduleName): bool {
+		if (!preg_match(self::REGEX_MODULE, $moduleName)) {
+			return false;
+		}
+		if (self::$cachedModuleNames === null) {
+			$dirname = dirname(__FILE__) . "/modules";
+			$dir = dir($dirname);
+			$moduleNames = array();
+			while ($entry = $dir->read()) {
+				if ((substr($entry, strlen($entry) - 4, 4) === '.inc')
+					&& (is_file($dirname . '/' . $entry) || is_link($dirname . '/' . $entry))) {
+					$entry = substr($entry, 0, -4);
+					if (preg_match(self::REGEX_MODULE, $entry)) {
+						$moduleNames[] = $entry;
+					}
+				}
+			}
+			self::$cachedModuleNames = $moduleNames;
+		}
+		return in_array($moduleName, self::$cachedModuleNames);
+	}
+
+}
