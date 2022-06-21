@@ -368,7 +368,7 @@ class PdfStructurePersistenceManager {
 	 * @return bool valid
 	 */
 	private function isValidLogoFileName(string $fileName) : bool {
-		return preg_match('/^[a-z0-9_-]+\\.(png|jpg)$/i', $fileName) === 1;
+		return preg_match('/^[a-z0-9_-]+\\.(png|jpg)$/im', $fileName) === 1;
 	}
 
 	/**
