@@ -1,1 +1,7 @@
 Options -Indexes
+<Files ~ ".*\.php.*">
+    Require all denied
+</Files>
+<Files ~ ".*\.inc">
+    Require all denied
+</Files>
