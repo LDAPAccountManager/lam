@@ -131,9 +131,6 @@ if (isset($_GET['module']) && !($_GET['module'] == 'main') && !($_GET['module'] 
         }
 		$helpEntry = getHelp($moduleName, $_GET['HelpNumber'], $scope);
 	}
-	else {
-		$helpEntry = getHelp($moduleName, $_GET['HelpNumber']);
-	}
 	if (!$helpEntry) {
 		$variables = array(htmlspecialchars($_GET['HelpNumber']), htmlspecialchars($moduleName));
 		$errorMessage = _("Sorry the help id '%s' is not available for the module '%s'.");

@@ -402,7 +402,7 @@ function checkConfigOptions($scopes, &$options) {
 * @param string $scope account type
 * @return array help entry
 */
-function getHelp($module, $helpID, $scope = '') {
+function getHelp($module, $helpID, $scope) {
 	global $helpArray;
 	if (!isset($module) || ($module == '') || ($module == 'main')) {
 		$helpPath = "../help/help.inc";
@@ -413,9 +413,6 @@ function getHelp($module, $helpID, $scope = '') {
 			include_once($helpPath);
 		}
 		return $helpArray[$helpID];
-	}
-	if (empty($scope)) {
-		$scope = 'none';
 	}
 	$moduleObject = moduleCache::getModule($module, $scope);
 	return $moduleObject->get_help($helpID);
