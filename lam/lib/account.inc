@@ -176,16 +176,9 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 			break;
 		case 'PBKDF2-SHA512':
 			$iterations = 200000;
-			if (function_exists('openssl_pbkdf2')) {
-				$salt = openssl_random_pseudo_bytes(16);
-				$hashBinary = openssl_pbkdf2($password, $salt, 64, $iterations, 'sha512');
-				$hash = "{PBKDF2-SHA512}${iterations}" . '$' . base64_encode($salt) . '$' . base64_encode($hashBinary);
-			}
-			else {
-				$salt = generateSalt(16);
-				$hashBinary = hex2bin(hash_pbkdf2('sha512', $password, $salt, $iterations));
-				$hash = "{PBKDF2-SHA512}${iterations}" . '$' . base64_encode($salt) . '$' . base64_encode($hashBinary);
-			}
+			$salt = openssl_random_pseudo_bytes(16);
+			$hashBinary = openssl_pbkdf2($password, $salt, 64, $iterations, 'sha512');
+			$hash = "{PBKDF2-SHA512}${iterations}" . '$' . base64_encode($salt) . '$' . base64_encode($hashBinary);
 			break;
 		case 'MD5':
 			$hash = "{MD5}" . base64_encode(hex2bin(md5($password)));
@@ -251,11 +244,7 @@ function getHashType(?string $hash): string {
  * @return array hash types
  */
 function getSupportedHashTypes() {
-	$hashes = array('CRYPT', 'CRYPT-SHA512', 'SHA', 'SSHA', 'MD5', 'SMD5', 'PLAIN', 'SASL', 'K5KEY', 'LDAP_EXOP', 'ARGON2ID');
-	if (function_exists('openssl_pbkdf2') || function_exists('hash_pbkdf2')) {
-		$hashes[] = 'PBKDF2-SHA512';
-	}
-	return $hashes;
+	return array('CRYPT', 'CRYPT-SHA512', 'SHA', 'SSHA', 'MD5', 'SMD5', 'PLAIN', 'SASL', 'K5KEY', 'LDAP_EXOP', 'ARGON2ID', 'PBKDF2-SHA512');
 }
 
 /**
@@ -1602,10 +1591,7 @@ class moduleCache {
  * @return int random number
  */
 function getRandomNumber() {
-	if (function_exists('openssl_random_pseudo_bytes')) {
-		return abs(hexdec(bin2hex(openssl_random_pseudo_bytes(5))));
-	}
-	return abs(mt_rand());
+	return abs(hexdec(bin2hex(openssl_random_pseudo_bytes(5))));
 }
 
 /**

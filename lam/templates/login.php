@@ -195,13 +195,11 @@ function display_LoginPage($licenseValidator, $error_message, $errorDetails = nu
 	$cfgMain = $_SESSION["cfgMain"];
 	logNewMessage(LOG_DEBUG, "Display login page");
 	// generate 256 bit key and initialization vector for user/passwd-encryption
-	if (function_exists('openssl_random_pseudo_bytes') && ($cfgMain->encryptSession == 'true')) {
-		$key = openssl_random_pseudo_bytes(32);
-		$iv = openssl_random_pseudo_bytes(16);
-		// save both in cookie
-		setcookie("Key", base64_encode($key), 0, "/", '', false, true);
-		setcookie("IV", base64_encode($iv), 0, "/", '', false, true);
-	}
+    $key = openssl_random_pseudo_bytes(32);
+    $iv = openssl_random_pseudo_bytes(16);
+    // save both in cookie
+    setcookie("Key", base64_encode($key), 0, "/", '', false, true);
+    setcookie("IV", base64_encode($iv), 0, "/", '', false, true);
 
 	$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
 	$profiles = $serverProfilePersistenceManager->getProfiles();

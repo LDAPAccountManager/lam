@@ -29,10 +29,8 @@
 
 
 // delete key and iv in cookie
-if (function_exists('openssl_random_pseudo_bytes')) {
-	setcookie("Key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/", '', false, true);
-	setcookie("IV", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/", '', false, true);
-}
+setcookie("Key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/", '', false, true);
+setcookie("IV", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/", '', false, true);
 
 /** security functions */
 include_once(__DIR__ . "/../lib/security.inc");

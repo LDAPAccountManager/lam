@@ -198,14 +198,6 @@ if (isset($_POST['submitFormData'])) {
 		}
 		$cfg->allowedHostsSelfService = $allowedHostsSelfService;
 	}
-	// set session encryption
-	if (function_exists('openssl_random_pseudo_bytes')) {
-		$encryptSession = 'false';
-		if (isset($_POST['encryptSession']) && ($_POST['encryptSession'] == 'on')) {
-			$encryptSession = 'true';
-		}
-		$cfg->encryptSession = $encryptSession;
-	}
 	// set log level
 	$cfg->logLevel = $_POST['logLevel'];
 	// set log destination
@@ -442,10 +434,6 @@ printHeaderContents(_("Edit general settings"), '../..');
 	if (isLAMProVersion()) {
 		$row->add(new htmlResponsiveInputTextarea('allowedHostsSelfService', implode("\n", explode(",", $cfg->allowedHostsSelfService)), null, '7', _("Allowed hosts (self service)"), '241'), 12);
 	}
-	$encryptSession = ($cfg->encryptSession === 'true');
-	$encryptSessionBox = new htmlResponsiveInputCheckbox('encryptSession', $encryptSession, _('Encrypt session'), '245');
-	$encryptSessionBox->setIsEnabled(function_exists('openssl_random_pseudo_bytes'));
-	$row->add($encryptSessionBox, 12);
 	// SSL certificate
 	$row->addVerticalSpacer('1rem');
 	$row->addLabel(new htmlOutputText(_('SSL certificates')));
