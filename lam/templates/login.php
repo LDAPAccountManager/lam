@@ -537,7 +537,7 @@ if (isset($_POST['checklogin'])) {
     $searchLDAP = null;
 	if ($_SESSION['config']->getLoginMethod() == LAMConfig::LOGIN_SEARCH) {
 		$searchFilter = $_SESSION['config']->getLoginSearchFilter();
-		$searchFilter = str_replace('%USER%', $username, $searchFilter);
+		$searchFilter = str_replace('%USER%', ldap_escape($username, '', LDAP_ESCAPE_FILTER), $searchFilter);
 		$searchDN = '';
 		$searchPassword = '';
 		$configLoginSearchDn = $_SESSION['config']->getLoginSearchDN();
