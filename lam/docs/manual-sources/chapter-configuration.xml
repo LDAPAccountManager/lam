@@ -119,14 +119,6 @@
       LAM via an untrusted IP only get blank pages. There is a separate field
       for LAM Pro self service.</para>
 
-      <para id="sessionEncryption">Session encryption will encrypt sensitive
-      data like passwords in your session files. This is only available when
-      PHP <ulink
-      url="http://php.net/manual/en/book.openssl.php">OpenSSL</ulink> is
-      active. This adds extra security but also costs performance. If you
-      manage a large directory you might want to disable this and take other
-      actions to secure your LAM server.</para>
-
       <screenshot>
         <mediaobject>
           <imageobject>

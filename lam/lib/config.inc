@@ -2963,9 +2963,6 @@ class LAMCfgMain {
 	/** list of hosts which may access LAM Pro self service */
 	public $allowedHostsSelfService;
 
-	/** session encryption */
-	public $encryptSession;
-
 	/** minimum length for passwords */
 	public $passwordMinLength = 0;
 
@@ -3062,7 +3059,7 @@ class LAMCfgMain {
 		"passwordMinClasses", "passwordMinSymbol", 'checkedRulesCount',
 		'passwordMustNotContainUser', 'passwordMustNotContain3Chars',
 		'externalPwdCheckUrl',
-		'errorReporting', 'encryptSession', 'allowedHostsSelfService',
+		'errorReporting', 'allowedHostsSelfService',
 		'license', 'licenseEmailFrom', 'licenseEmailTo', 'licenseWarningType', 'licenseEmailDateSent',
 		'mailServer', 'mailUser', 'mailPassword', 'mailEncryption', 'configDatabaseType',
 		'configDatabaseServer', 'configDatabasePort', 'configDatabaseName', 'configDatabaseUser',
@@ -3094,7 +3091,6 @@ class LAMCfgMain {
 		$this->logDestination = "SYSLOG";
 		$this->allowedHosts = "";
 		$this->allowedHostsSelfService = '';
-		$this->encryptSession = 'true';
 		try {
 			$this->reload();
 		} catch (LAMException $e) {
@@ -3369,9 +3365,6 @@ class LAMCfgMain {
 			}
 			if (!in_array("allowedHostsSelfService", $saved)) {
 				array_push($file_array, "allowedHostsSelfService: " . $this->allowedHostsSelfService . "\n");
-			}
-			if (!in_array("encryptSession", $saved)) {
-				array_push($file_array, "encryptSession: " . $this->encryptSession . "\n");
 			}
 			if (!in_array("passwordMinLength", $saved)) {
 				array_push($file_array, "passwordMinLength: " . $this->passwordMinLength . "\n");

@@ -24,6 +24,8 @@ namespace LAM\HELP;
   LDAP Account Manager display help pages.
 */
 
+use ScopeAndModuleValidation;
+
 /**
  * LDAP Account Manager help page.
  *
@@ -116,15 +118,22 @@ $helpEntry = array();
 // module help
 if (isset($_GET['module']) && !($_GET['module'] == 'main') && !($_GET['module'] == '')) {
 	include_once(__DIR__ . "/../lib/modules.inc");
-	if (isset($_GET['scope'])) {
-		$helpEntry = getHelp($_GET['module'],$_GET['HelpNumber'],$_GET['scope']);
-	}
-	else {
-		$helpEntry = getHelp($_GET['module'],$_GET['HelpNumber']);
+	$moduleName = $_GET['module'];
+	if (!ScopeAndModuleValidation::isValidModuleName($moduleName)) {
+	    logNewMessage(LOG_ERR, 'Invalid module name: ' . $moduleName);
+	    die();
+    }
+	if (!empty($_GET['scope'])) {
+	    $scope = $_GET['scope'];
+	    if (!ScopeAndModuleValidation::isValidScopeName($scope)) {
+		    logNewMessage(LOG_ERR, 'Invalid scope name: ' . $scope);
+		    die();
+        }
+		$helpEntry = getHelp($moduleName, $_GET['HelpNumber'], $scope);
 	}
 	if (!$helpEntry) {
-		$variables = array(htmlspecialchars($_GET['HelpNumber']), htmlspecialchars($_GET['module']));
-		$errorMessage = _("Sorry this help id ({bold}%s{endbold}) is not available for this module ({bold}%s{endbold}).");
+		$variables = array(htmlspecialchars($_GET['HelpNumber']), htmlspecialchars($moduleName));
+		$errorMessage = _("Sorry the help id '%s' is not available for the module '%s'.");
 		echoHTMLHead();
 		statusMessage("ERROR", "", $errorMessage, $variables);
 		echoHTMLFoot();

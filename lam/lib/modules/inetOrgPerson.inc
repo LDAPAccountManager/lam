@@ -1894,21 +1894,19 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 				$table->addElement($link);
 				$deleteButton = new htmlAccountPageButton(get_class($this), 'userCertificate', 'delete_' . $i, 'del.svg', true);
 				$table->addElement($deleteButton);
-				if (function_exists('openssl_x509_parse')) {
-					$pem = @chunk_split(@base64_encode($this->attributes['userCertificate;binary'][$i]), 64, "\n");
-					if (!empty($pem)) {
-						$pem = "-----BEGIN CERTIFICATE-----\n" . $pem . "-----END CERTIFICATE-----\n";
-						$pemData = @openssl_x509_parse($pem);
-						$data = array();
-						if (isset($pemData['serialNumber'])) {
-							$data[] = $pemData['serialNumber'];
-						}
-						if (isset($pemData['name'])) {
-							$data[] = $pemData['name'];
-						}
-						if (sizeof($data) > 0) {
-							$table->addElement(new htmlOutputText(implode(': ', $data)));
-						}
+				$pem = @chunk_split(@base64_encode($this->attributes['userCertificate;binary'][$i]), 64, "\n");
+				if (!empty($pem)) {
+					$pem = "-----BEGIN CERTIFICATE-----\n" . $pem . "-----END CERTIFICATE-----\n";
+					$pemData = @openssl_x509_parse($pem);
+					$data = array();
+					if (isset($pemData['serialNumber'])) {
+						$data[] = $pemData['serialNumber'];
+					}
+					if (isset($pemData['name'])) {
+						$data[] = $pemData['name'];
+					}
+					if (sizeof($data) > 0) {
+						$table->addElement(new htmlOutputText(implode(': ', $data)));
 					}
 				}
 				$table->addNewLine();
@@ -3215,22 +3213,20 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 				fwrite($out, $userCertificates[$i]);
 				fclose ($out);
 				$path = '../../tmp/' . $filename;
-				if (function_exists('openssl_x509_parse')) {
-					$pem = @chunk_split(@base64_encode($userCertificates[$i]), 64, "\n");
-					if (!empty($pem)) {
-						$pem = "-----BEGIN CERTIFICATE-----\n" . $pem . "-----END CERTIFICATE-----\n";
-						$pemData = @openssl_x509_parse($pem);
-						$data = array();
-						if (isset($pemData['serialNumber'])) {
-							$data[] = $pemData['serialNumber'];
-						}
-						if (isset($pemData['name'])) {
-							$data[] = $pemData['name'];
-						}
-						if (sizeof($data) > 0) {
-							$group->addElement(new htmlOutputText(implode(': ', $data)));
-							$group->addElement(new htmlSpacer('5px', null));
-						}
+				$pem = @chunk_split(@base64_encode($userCertificates[$i]), 64, "\n");
+				if (!empty($pem)) {
+					$pem = "-----BEGIN CERTIFICATE-----\n" . $pem . "-----END CERTIFICATE-----\n";
+					$pemData = @openssl_x509_parse($pem);
+					$data = array();
+					if (isset($pemData['serialNumber'])) {
+						$data[] = $pemData['serialNumber'];
+					}
+					if (isset($pemData['name'])) {
+						$data[] = $pemData['name'];
+					}
+					if (sizeof($data) > 0) {
+						$group->addElement(new htmlOutputText(implode(': ', $data)));
+						$group->addElement(new htmlSpacer('5px', null));
 					}
 				}
 				$saveLink = new htmlLink('', $path, '../../graphics/save.svg');

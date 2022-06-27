@@ -3,7 +3,7 @@ namespace LAM\PWA;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2019  Roland Gruber
+  Copyright (C) 2019 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -37,10 +37,14 @@ if (!headers_sent()) {
 	header('Content-Type: application/json; charset=utf-8');
 }
 
-$baseUrl = getCallingURL();
-$baseUrl = str_replace('/templates/manifest.php', '', $baseUrl);
-$baseUrl = preg_replace('/\\?.*/', '', $baseUrl);
-$baseUrl = preg_replace('/http(s)?:\\/\\/([^\\/])+/', '', $baseUrl);
+$urlMatches = array();
+if (preg_match('/http(s)?:\\/\\/[^\\/]+(\\/.*)\/templates\/manifest.php.*/', getCallingURL(), $urlMatches)) {
+	$baseUrl = $urlMatches[2];
+}
+else {
+	logNewMessage('Unable to get base URL from ' . getCallingURL());
+	exit();
+}
 
 echo '{
   "short_name": "LAM",

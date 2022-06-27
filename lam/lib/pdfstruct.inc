@@ -17,7 +17,7 @@ use function LAM\PERSISTENCE\dbTableExists;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2011 - 2021  Roland Gruber
+                2011 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -276,10 +276,10 @@ class PdfStructurePersistenceManager {
 	 * @throws LAMException error saving logo
 	 */
 	public function savePdfLogo(string $confName, string $name, string $data) : void {
-		if (!LAMConfig::isValidName($confName) || !$this->isValidLogoFileName($name)) {
+		if (!LAMConfig::isValidName($confName)) {
 			throw new LAMException(_('Unable to upload logo file.'));
 		}
-		if (!preg_match('/[a-zA-Z0-9_-]+\\.(png)|(jpg)/i', $name)) {
+		if (!$this->isValidLogoFileName($name)) {
 			throw new LAMException(_('Unable to upload logo file.'), _('The file name must end with ".png" or ".jpg".'));
 		}
 		$this->strategy->savePdfLogo($confName, $name, $data);
@@ -358,7 +358,7 @@ class PdfStructurePersistenceManager {
 	 * @return boolean is valid
 	 */
 	private function isValidPDFStructureName(string $name) : bool {
-		return preg_match('/^[a-z0-9\-\_]+$/i', $name) === 1;
+		return preg_match('/^[a-z0-9_-]+$/i', $name) === 1;
 	}
 
 	/**
@@ -368,7 +368,7 @@ class PdfStructurePersistenceManager {
 	 * @return bool valid
 	 */
 	private function isValidLogoFileName(string $fileName) : bool {
-		return preg_match('/[a-zA-Z0-9_-]+\\.(png)|(jpg)/i', $fileName);
+		return preg_match('/^[a-z0-9_-]+\\.(png|jpg)$/im', $fileName) === 1;
 	}
 
 	/**

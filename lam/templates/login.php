@@ -174,10 +174,10 @@ $_SESSION['header'] .= "<html>\n<head>\n";
 $_SESSION['header'] .= "<meta name=\"robots\" content=\"noindex, nofollow\">\n";
 $_SESSION['header'] .= "<meta http-equiv=\"content-type\" content=\"text/html; charset=" . $encoding . "\">\n";
 $_SESSION['header'] .= "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">";
-$manifestUrl = str_replace('/templates/login.php', '', getCallingURL());
-$manifestUrl = preg_replace('/http(s)?:\\/\\/([^\\/])+/', '', $manifestUrl);
-$manifestUrl = preg_replace('/\\?.*/', '', $manifestUrl);
-$_SESSION['header'] .= '<link rel="manifest" href="' . $manifestUrl . '/templates/manifest.php" crossorigin="use-credentials">';
+$urlMatches = array();
+if (preg_match('/http(s)?:\\/\\/[^\\/]+(\\/.*)\/templates\/login.php.*/', getCallingURL(), $urlMatches)) {
+	$_SESSION['header'] .= '<link rel="manifest" href="' . $urlMatches[2] . '/templates/manifest.php" crossorigin="use-credentials">';
+}
 
 setlanguage(); // setting correct language
 
@@ -195,13 +195,11 @@ function display_LoginPage($licenseValidator, $error_message, $errorDetails = nu
 	$cfgMain = $_SESSION["cfgMain"];
 	logNewMessage(LOG_DEBUG, "Display login page");
 	// generate 256 bit key and initialization vector for user/passwd-encryption
-	if (function_exists('openssl_random_pseudo_bytes') && ($cfgMain->encryptSession == 'true')) {
-		$key = openssl_random_pseudo_bytes(32);
-		$iv = openssl_random_pseudo_bytes(16);
-		// save both in cookie
-		setcookie("Key", base64_encode($key), 0, "/", '', false, true);
-		setcookie("IV", base64_encode($iv), 0, "/", '', false, true);
-	}
+    $key = openssl_random_pseudo_bytes(32);
+    $iv = openssl_random_pseudo_bytes(16);
+    // save both in cookie
+    setcookie("Key", base64_encode($key), 0, "/", '', false, true);
+    setcookie("IV", base64_encode($iv), 0, "/", '', false, true);
 
 	$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
 	$profiles = $serverProfilePersistenceManager->getProfiles();
@@ -537,7 +535,7 @@ if (isset($_POST['checklogin'])) {
     $searchLDAP = null;
 	if ($_SESSION['config']->getLoginMethod() == LAMConfig::LOGIN_SEARCH) {
 		$searchFilter = $_SESSION['config']->getLoginSearchFilter();
-		$searchFilter = str_replace('%USER%', $username, $searchFilter);
+		$searchFilter = str_replace('%USER%', ldap_escape($username, '', LDAP_ESCAPE_FILTER), $searchFilter);
 		$searchDN = '';
 		$searchPassword = '';
 		$configLoginSearchDn = $_SESSION['config']->getLoginSearchDN();

@@ -164,8 +164,6 @@ $helpArray = array (
 					"Text" => _("Here you can specify minimum requirements for passwords. The character classes are: lowercase, uppercase, numeric and symbols.")),
 				"244" => array ("Headline" => _('PHP error reporting'),
 					"Text" => _('Defines if the PHP error reporting setting from php.ini is used or the setting preferred by LAM ("E_ALL & ~E_NOTICE"). If you do not develop LAM modules please use the default. This will prevent displaying messages that are useful only for developers.')),
-				"245" => array ("Headline" => _('Encrypt session'),
-					"Text" => _('Encrypts sensitive data like passwords in your session. This requires the PHP OpenSSL extension.')),
 				"246" => array ("Headline" => _('Number of rules that must match'),
 					"Text" => _('Specifies the number of above password rules that must be fulfilled.')),
 				"247" => array ("Headline" => _('Password must not contain user name'),
