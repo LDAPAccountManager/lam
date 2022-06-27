@@ -1,8 +1,13 @@
 ldap-account-manager (8.0-1) unstable; urgency=medium
 
   * new upstream release
+  * Unauthenticated Arbitrary Object Instantiation / Unauthenticated Remote Code Execution (GHSA-r387-grjx-qgvw, CVE-2022-31084)
+  * Incorrect Default Permissions (GHSA-q8g5-45m4-q95p, CVE-2022-31087)
+  * Incorrect Regular Expressions (GHSA-q9pc-x84w-982x, CVE-2022-31086)
+  * Unauthenticated LDAP Injection (GHSA-wxf8-9x99-6gp4, CVE-2022-31088)
+  * Reflected XSS (Internet Explorer only) (GHSA-6m3q-5c84-6h6j, CVE-2022-31085)
 
- -- Roland Gruber <post@rolandgruber.de>  Fri, 17 Jun 2022 07:46:45 +0100
+ -- Roland Gruber <post@rolandgruber.de>  Mon, 27 Jun 2022 19:46:45 +0100
 
 ldap-account-manager (7.9.1-1) unstable; urgency=medium
 
