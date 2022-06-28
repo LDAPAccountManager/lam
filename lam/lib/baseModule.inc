@@ -106,7 +106,7 @@ abstract class baseModule {
 	public function __construct($scope) {
 		$this->scope = $scope;
 		// load configuration
-		if ($this->can_manage() || ($scope == 'none')) {
+		if ($this->can_manage() || ($scope === null)) {
 			if (isset($_SESSION['config'])) {
 				$this->moduleSettings = $_SESSION['config']->get_moduleSettings();
 			}

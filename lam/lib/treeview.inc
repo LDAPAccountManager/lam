@@ -451,7 +451,7 @@ class TreeView {
 		$row->add($internalAttributesDiv, 12);
 		$tabindex = 1;
 		ob_start();
-		parseHtml(null, $row, array(), false, $tabindex, 'none');
+		parseHtml(null, $row, array(), false, $tabindex, null);
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(array('content' => $content));
@@ -818,7 +818,7 @@ class TreeView {
 		}
 		$tabindex = 1;
 		ob_start();
-		parseHtml(null, $row, array(), false, $tabindex, 'none');
+		parseHtml(null, $row, array(), false, $tabindex, null);
 		$content = ob_get_contents();
 		ob_end_clean();
 		return json_encode(array('content' => $content));
@@ -923,7 +923,7 @@ class TreeView {
 		}
 		$tabIndex = 1;
 		ob_start();
-		parseHtml(null, $message, array(), true, $tabIndex, 'none');
+		parseHtml(null, $message, array(), true, $tabIndex, null);
 		$messageContent = ob_get_contents();
 		ob_end_clean();
 		$jsonData['result'] = $messageContent;

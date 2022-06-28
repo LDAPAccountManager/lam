@@ -174,9 +174,14 @@ $_SESSION['header'] .= "<html>\n<head>\n";
 $_SESSION['header'] .= "<meta name=\"robots\" content=\"noindex, nofollow\">\n";
 $_SESSION['header'] .= "<meta http-equiv=\"content-type\" content=\"text/html; charset=" . $encoding . "\">\n";
 $_SESSION['header'] .= "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">";
-$urlMatches = array();
-if (preg_match('/http(s)?:\\/\\/[^\\/]+(\\/.*)\/templates\/login.php.*/', getCallingURL(), $urlMatches)) {
-	$_SESSION['header'] .= '<link rel="manifest" href="' . $urlMatches[2] . '/templates/manifest.php" crossorigin="use-credentials">';
+$manifestBaseUrl = getCallingURL();
+if (strpos($manifestBaseUrl, '/templates/login.php') !== false) {
+    $manifestBaseUrl = substr($manifestBaseUrl, 0, strpos($manifestBaseUrl, '/templates/login.php'));
+	$urlMatches = array();
+	if (preg_match('/^http(s)?:\\/\\/[^\\/]+(\\/.*)$/m', $manifestBaseUrl, $urlMatches)) {
+	    $manifestBaseUrl = $urlMatches[2];
+		$_SESSION['header'] .= '<link rel="manifest" href="' . $manifestBaseUrl . '/templates/manifest.php" crossorigin="use-credentials">';
+	}
 }
 
 setlanguage(); // setting correct language

@@ -1568,7 +1568,8 @@ class moduleCache {
 	 * @return null|object module object
 	 */
 	public static function getModule($name, $scope): ?object {
-		if (!ScopeAndModuleValidation::isValidModuleName($name) || !ScopeAndModuleValidation::isValidScopeName($scope)) {
+		if (!ScopeAndModuleValidation::isValidModuleName($name)
+			|| (!empty($scope) && !ScopeAndModuleValidation::isValidScopeName($scope))) {
 			return null;
 		}
 		if (isset(self::$cache[$name . ':' . $scope])) {

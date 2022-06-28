@@ -269,5 +269,5 @@ function showTree(): void {
 
 	$tabIndex = 1;
 	$form = new htmlForm('actionarea', 'treeView.php', $row);
-	parseHtml(null, $form, array(), true, $tabIndex, 'none');
+	parseHtml(null, $form, array(), true, $tabIndex, null);
 }

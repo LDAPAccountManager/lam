@@ -153,7 +153,7 @@ for ($i = 0; $i < sizeof($modules); $i++) {
 	if (empty($options[$modules[$i]])) {
 		continue;
 	}
-	$module = moduleCache::getModule($modules[$i], 'none');
+	$module = moduleCache::getModule($modules[$i], null);
 	$iconImage = $module->getIcon();
 	if ($iconImage != null) {
 		if (!(strpos($iconImage, 'http') === 0) && !(strpos($iconImage, '/') === 0)) {
@@ -161,7 +161,7 @@ for ($i = 0; $i < sizeof($modules); $i++) {
 		}
 	}
 	$row = new htmlResponsiveRow();
-	$row->add(new htmlSubTitle(getModuleAlias($modules[$i], "none"), $iconImage, null, true), 12);
+	$row->add(new htmlSubTitle(getModuleAlias($modules[$i], null), $iconImage, null, true), 12);
 	if (is_array($options[$modules[$i]])) {
 		foreach ($options[$modules[$i]] as $option) {
 			$row->add($option, 12);
@@ -170,7 +170,7 @@ for ($i = 0; $i < sizeof($modules); $i++) {
 	else {
 		$row->add($options[$modules[$i]], 12);
 	}
-	$configTypes = parseHtml($modules[$i], $row, $old_options, false, $tabindex, 'none');
+	$configTypes = parseHtml($modules[$i], $row, $old_options, false, $tabindex, null);
 	$_SESSION['conf_types'] = array_merge($configTypes, $_SESSION['conf_types']);
 	echo "<br>";
 }
@@ -187,7 +187,7 @@ $buttonContainer->addElement($saveButton);
 $cancelButton = new htmlButton('cancelSettings', _('Cancel'));
 $buttonContainer->addElement($cancelButton, true);
 $buttonContainer->addElement(new htmlSpacer(null, '10px'), true);
-parseHtml(null, $buttonContainer, array(), false, $tabindex, 'none');
+parseHtml(null, $buttonContainer, array(), false, $tabindex, null);
 
 if ((sizeof($errorsToDisplay) == 0) && isset($_POST['scrollPositionTop']) && isset($_POST['scrollPositionLeft'])) {
 	// scroll to last position

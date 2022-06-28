@@ -700,6 +700,9 @@ function setLAMHeaders() {
 * @return object encrypted string
 */
 function lamEncrypt($data, $prefix = '') {
+	if (empty($_COOKIE[$prefix . "IV"])) {
+		return $data;
+	}
 	// read key and iv from cookie
 	$iv = base64_decode($_COOKIE[$prefix . "IV"]);
 	$key = base64_decode($_COOKIE[$prefix . "Key"]);
@@ -715,6 +718,9 @@ function lamEncrypt($data, $prefix = '') {
 * @return string decrypted string
 */
 function lamDecrypt($data, $prefix='') {
+	if (empty($_COOKIE[$prefix . "IV"])) {
+		return $data;
+	}
 	// read key and iv from cookie
 	$iv = base64_decode($_COOKIE[$prefix . "IV"]);
 	$key = base64_decode($_COOKIE[$prefix . "Key"]);

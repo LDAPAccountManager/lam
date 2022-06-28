@@ -77,7 +77,7 @@ class WebauthnProviderTest extends TestCase {
 		$provider->addCustomInput($row, 'userDn');
 		$tabindex = 0;
 		ob_start();
-		$row->generateHTML(null, array(), array(), false, $tabindex, 'none');
+		$row->generateHTML(null, array(), array(), false, $tabindex, null);
 		$html = ob_get_contents();
 		ob_end_clean();
 		$this->assertStringContainsString('skip_webauthn', $html);

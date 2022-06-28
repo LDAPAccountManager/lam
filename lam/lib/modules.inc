@@ -4,6 +4,8 @@ use LAM\PDF\PdfStructurePersistenceManager;
 use LAM\PROFILES\AccountProfilePersistenceManager;
 use LAM\TYPES\ConfiguredType;
 use \LAM\TYPES\TypeManager;
+use function LAM\TYPES\getScopeFromTypeId;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -361,15 +363,14 @@ function checkProfileOptions($typeId, $options) {
 /**
 * Returns a hash array (module name => elements) of all module options for the configuration page.
 *
-* @param array $scopes hash array (module name => array(account types))
+* @param array $moduleToScopes hash array (module name => array(account types))
 * @return array configuration options
 */
-function getConfigOptions($scopes) {
+function getConfigOptions(array $moduleToScopes): array {
 	$return = array();
-	$modules = array_keys($scopes);
-	for ($i = 0; $i < sizeof($modules); $i++) {
-		$m = moduleCache::getModule($modules[$i], 'none');
-		$return[$modules[$i]] = $m->get_configOptions($scopes[$modules[$i]], $scopes);
+	foreach ($moduleToScopes as $module => $typeIds) {
+		$m = moduleCache::getModule($module, getScopeFromTypeId($typeIds[0]));
+		$return[$module] = $m->get_configOptions($typeIds, $moduleToScopes);
 	}
 	return $return;
 }
@@ -377,16 +378,15 @@ function getConfigOptions($scopes) {
 /**
 * Checks if the configuration options are valid
 *
-* @param array $scopes hash array (module name => array(account type ids))
+* @param array $moduleToTypeIds hash array (module name => array(account type ids))
 * @param array $options hash array containing all options (name => array(...))
 * @return array list of error messages
 */
-function checkConfigOptions($scopes, &$options) {
+function checkConfigOptions($moduleToTypeIds, &$options) {
 	$return = array();
-	$modules = array_keys($scopes);
-	for ($i = 0; $i < sizeof($modules); $i++) {
-		$m = moduleCache::getModule($modules[$i], 'none');
-		$errors = $m->check_configOptions($scopes[$modules[$i]], $options);
+	foreach ($moduleToTypeIds as $module => $typeIds) {
+		$m = moduleCache::getModule($module, getScopeFromTypeId($typeIds[0]));
+		$errors = $m->check_configOptions($typeIds, $options);
 		if (isset($errors) && is_array($errors)) {
 			$return = array_merge($return, $errors);
 		}
