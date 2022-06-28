@@ -42,7 +42,7 @@ if (strpos($baseUrl, '/templates/manifest.php') !== false) {
 	$baseUrl = substr($baseUrl, 0, strpos($baseUrl, '/templates/manifest.php'));
 	$urlMatches = array();
 	if (preg_match('/http(s)?:\\/\\/[^\\/]+(\\/.*)$/m', $baseUrl, $urlMatches)) {
-		$baseUrl = $urlMatches[2];
+		$baseUrl = htmlspecialchars($urlMatches[2]);
 	}
 	else {
 		logNewMessage('Unable to get base URL from ' . getCallingURL());

@@ -179,7 +179,7 @@ if (strpos($manifestBaseUrl, '/templates/login.php') !== false) {
     $manifestBaseUrl = substr($manifestBaseUrl, 0, strpos($manifestBaseUrl, '/templates/login.php'));
 	$urlMatches = array();
 	if (preg_match('/^http(s)?:\\/\\/[^\\/]+(\\/.*)$/m', $manifestBaseUrl, $urlMatches)) {
-	    $manifestBaseUrl = $urlMatches[2];
+	    $manifestBaseUrl = htmlspecialchars($urlMatches[2]);
 		$_SESSION['header'] .= '<link rel="manifest" href="' . $manifestBaseUrl . '/templates/manifest.php" crossorigin="use-credentials">';
 	}
 }
