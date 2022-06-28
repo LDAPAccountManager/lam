@@ -227,18 +227,6 @@
         </mediaobject>
       </screenshot>
 
-      <para><emphasis role="bold">Disable session encryption</emphasis></para>
-
-      <para>LAM encrypts sensitive data in your session files. You can <link
-      linkend="sessionEncryption">disable</link> it to reduce CPU load.</para>
-
-      <screenshot>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/configGeneral1.png"/>
-          </imageobject>
-        </mediaobject>
-      </screenshot>
     </section>
   </section>
 </appendix>
