@@ -1064,11 +1064,9 @@ class accountContainer {
 		}
 		echo '<div id="passwordMessageArea"></div>';
 		echo "<table border=0 width=\"100%\" style=\"border-collapse: collapse;\">\n";
-		if (checkIfWriteAccessIsAllowed($this->type->getId())) {
-			echo "<tr><td style=\"padding: 5px 0px 0px 0px;\">\n";
-			$this->printCommonControls($tabindex);
-			echo "</td></tr>\n";
-		}
+		echo "<tr><td style=\"padding: 5px 0px 0px 0px;\">\n";
+		$this->printCommonControls($tabindex);
+		echo "</td></tr>\n";
 		echo "<tr valign=\"top\"><td style=\"padding: 15px;\">";
 		// print title bar
 		$titleBarContainer = new htmlResponsiveRow();
@@ -1326,34 +1324,36 @@ class accountContainer {
 		$row->setCSSClasses(array('maxrow'));
 		$leftButtonGroup = new htmlGroup();
 		$leftButtonGroup->alignment = htmlElement::ALIGN_LEFT;
-		// save button
-		$saveButton = new htmlButton('accountContainerSaveAccount', _('Save'));
-		$saveButton->setCSSClasses(array('fullwidth-mobile-only lam-primary'));
-		$leftButtonGroup->addElement($saveButton);
-		$leftButtonGroup->addElement(new htmlSpacer('1px', null));
-		// set password button
-		if ($this->showSetPasswordButton()) {
+		if (checkIfWriteAccessIsAllowed($this->type->getId())) {
+			// save button
+			$saveButton = new htmlButton('accountContainerSaveAccount', _('Save'));
+			$saveButton->setCSSClasses(array('fullwidth-mobile-only lam-primary'));
+			$leftButtonGroup->addElement($saveButton);
+			$leftButtonGroup->addElement(new htmlSpacer('1px', null));
+			// set password button
+			if ($this->showSetPasswordButton()) {
+				$leftButtonGroup->addElement(new htmlSpacer('15px', null));
+				$passwordButton = new htmlButton('accountContainerPassword', _('Set password'));
+				$passwordButton->setCSSClasses(array('fullwidth-mobile-only lam-secondary'));
+				$passwordButton->setOnClick('passwordShowChangeDialog(\'' . _('Set password') . '\', \'' . _('Ok') . '\', \''
+					. _('Cancel') . '\', \'' . _('Set random password') . '\', \'../misc/ajax.php?function=passwordChange&editKey=' . htmlspecialchars($this->base) . '\',\''
+					. getSecurityTokenName() . '\',\'' . getSecurityTokenValue() . '\');');
+				$leftButtonGroup->addElement($passwordButton);
+			}
+			// delete button
+			if (!$this->isNewAccount && checkIfDeleteEntriesIsAllowed($this->get_type()->getId())) {
+				$leftButtonGroup->addElement(new htmlSpacer('15px', null));
+				$deleteButton = new htmlButton('accountContainerDelete', _('Delete'));
+				$deleteButton->setCSSClasses(array('fullwidth-mobile-only lam-danger'));
+				$leftButtonGroup->addElement($deleteButton);
+			}
 			$leftButtonGroup->addElement(new htmlSpacer('15px', null));
-			$passwordButton = new htmlButton('accountContainerPassword', _('Set password'));
-			$passwordButton->setCSSClasses(array('fullwidth-mobile-only lam-secondary'));
-			$passwordButton->setOnClick('passwordShowChangeDialog(\'' . _('Set password') . '\', \'' . _('Ok') . '\', \''
-				. _('Cancel') . '\', \'' . _('Set random password') . '\', \'../misc/ajax.php?function=passwordChange&editKey=' . htmlspecialchars($this->base) . '\',\''
-				. getSecurityTokenName() . '\',\'' . getSecurityTokenValue() . '\');');
-			$leftButtonGroup->addElement($passwordButton);
-		}
-		// delete button
-		if (!$this->isNewAccount && checkIfDeleteEntriesIsAllowed($this->get_type()->getId())) {
-			$leftButtonGroup->addElement(new htmlSpacer('15px', null));
-			$deleteButton = new htmlButton('accountContainerDelete', _('Delete'));
-			$deleteButton->setCSSClasses(array('fullwidth-mobile-only lam-danger'));
-			$leftButtonGroup->addElement($deleteButton);
-		}
-		$leftButtonGroup->addElement(new htmlSpacer('15px', null));
-		// reset button
-		if (!$this->isNewAccount) {
-			$resetButton = new htmlButton('accountContainerReset', _('Reset changes'));
-			$resetButton->setCSSClasses(array('fullwidth-mobile-only'));
-			$leftButtonGroup->addElement($resetButton);
+			// reset button
+			if (!$this->isNewAccount) {
+				$resetButton = new htmlButton('accountContainerReset', _('Reset changes'));
+				$resetButton->setCSSClasses(array('fullwidth-mobile-only'));
+				$leftButtonGroup->addElement($resetButton);
+			}
 		}
 		$type = $this->type->getBaseType();
 		$backToListButton = new htmlButton('accountContainerBackToList', $type->LABEL_BACK_TO_ACCOUNT_LIST);
@@ -1362,21 +1362,23 @@ class accountContainer {
 		$row->add($leftButtonGroup, 12, 9);
 
 		$rightGroup = new htmlGroup();
-		// profile selection
-		$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
-		$profilelist = $accountProfilePersistenceManager->getAccountProfileNames($this->type->getId(), $_SESSION['config']->getName());
-		if (sizeof($profilelist) > 0) {
-			$profilesSelect = new htmlSelect('accountContainerSelectLoadProfile', $profilelist, array($this->lastLoadedProfile));
-			$profilesSelect->setCSSClasses(array('auto-width'));
-			$rightGroup->addElement($profilesSelect);
-			$profileButton = new htmlButton('accountContainerLoadProfile', _('Load profile'));
-			if (!$this->isNewAccount) {
-				$profileButton->setType('submit');
-				$profileButton->setOnClick('confirmOrStopProcessing(\'' . _('This may overwrite existing values with profile data. Continue?') . '\', event);');
+		if (checkIfWriteAccessIsAllowed($this->type->getId())) {
+			// profile selection
+			$accountProfilePersistenceManager = new AccountProfilePersistenceManager();
+			$profilelist = $accountProfilePersistenceManager->getAccountProfileNames($this->type->getId(), $_SESSION['config']->getName());
+			if (sizeof($profilelist) > 0) {
+				$profilesSelect = new htmlSelect('accountContainerSelectLoadProfile', $profilelist, array($this->lastLoadedProfile));
+				$profilesSelect->setCSSClasses(array('auto-width'));
+				$rightGroup->addElement($profilesSelect);
+				$profileButton = new htmlButton('accountContainerLoadProfile', _('Load profile'));
+				if (!$this->isNewAccount) {
+					$profileButton->setType('submit');
+					$profileButton->setOnClick('confirmOrStopProcessing(\'' . _('This may overwrite existing values with profile data. Continue?') . '\', event);');
+				}
+				$rightGroup->addElement($profileButton);
+				$rightGroup->addElement(new htmlSpacer('1px', null));
+				$rightGroup->addElement(new htmlHelpLink('401'));
 			}
-			$rightGroup->addElement($profileButton);
-			$rightGroup->addElement(new htmlSpacer('1px', null));
-			$rightGroup->addElement(new htmlHelpLink('401'));
 		}
 		$row->add($rightGroup, 12, 3, 3, 'text-right');
 

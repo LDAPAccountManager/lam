@@ -618,8 +618,7 @@ class lamList {
 	        $element->addElement($pdfButton);
         }
 		// password quick change
-        if (isLAMProVersion() && $this->supportsPasswordQuickChange
-            && checkIfPasswordChangeIsAllowed() && checkIfWriteAccessIsAllowed($this->type->getId())) {
+        if (isLAMProVersion() && $this->supportsPasswordQuickChange && checkIfPasswordChangeIsAllowed()) {
 	        $pwdChangeButton = new htmlLink('', "changePassword.php?type=" . $this->type->getId() . "&DN='" . rawurlencode($account['dn']) . "'", '../../graphics/key.svg');
 	        $pwdChangeButton->setTitle(_('Change password'));
 	        $pwdChangeButton->setCSSClasses(array('lam-margin-smaller'));

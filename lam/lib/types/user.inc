@@ -813,48 +813,4 @@ class lamUserList extends lamList {
 		return $statusContent;
 	}
 
-	/**
-	 * Returns if the 389ds is activated.
-	 *
-	 * @param array $attrs LDAP attributes
-	 * @return boolean 389ds available
-	 */
-	public function is389dsAvailable(&$attrs) {
-		return in_array('locking389ds', $this->type->getModules());
-	}
-
-	/**
-	 * Returns if deactivated by nsAccountLock.
-	 *
-	 * @param array $attrs LDAP attributes
-	 * @return boolean account is deactivated
-	 */
-	public static function is389dsDeactivated(&$attrs) {
-		return (isset($attrs['nsaccountlock'][0]) && (strtolower($attrs['nsaccountlock'][0]) === 'true'));
-	}
-
-	/**
-	 * Returns if password expired.
-	 *
-	 * @param array $attrs LDAP attributes
-	 * @return boolean password is expired
-	 */
-	public static function is389dsPwdExpired(&$attrs) {
-		return (class_exists('locking389ds') && locking389ds::isPasswordExpired($attrs));
-	}
-
-	/**
-	 * Returns if locked by accountUnlockTime.
-	 *
-	 * @param array $attrs LDAP attributes
-	 * @return bool account is locked
-	 */
-	public static function is389dsLocked(&$attrs) : bool {
-		if (!class_exists('locking389ds')) {
-			return false;
-		}
-		$locking389ds = moduleCache::getModule('locking389ds', 'user');
-		return $locking389ds->isLocked($attrs);
-	}
-
 }
