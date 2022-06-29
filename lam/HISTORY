@@ -1,4 +1,4 @@
-8.0.1
+29.06.2022 8.0.1
   - Fixed bugs:
    -> Regression issues due to security fixes (e.g. module settings in server profile)
    -> Password change page not working for access level "Change passwords"
