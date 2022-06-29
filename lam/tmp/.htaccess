@@ -8,12 +8,12 @@ Options -Indexes
 <IfModule mod_php.c>
   php_admin_flag engine off
 </IfModule>
-<Files ~ "^.*\.[pP][hH][^.]*$">
+<Files ~ "\.[pP][hH][^.]*$">
   Require all denied
 </Files>
-<Files ~ ".*\.[iI][nN][cC]$">
+<Files ~ "\.[iI][nN][cC]$">
   Require all denied
 </Files>
-<Files ~ ".*\.[sS][hH][tT][mM][lL]$">
+<Files ~ "\.[sS][hH][tT][mM][lL]$">
   Require all denied
 </Files>
