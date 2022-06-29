@@ -3,10 +3,10 @@ Options -Indexes
   Options -ExecCGI
 </IfModule>
 <IfModule mod_php7.c>
-  php_admin_flag engine off
+  php_flag engine off
 </IfModule>
 <IfModule mod_php.c>
-  php_admin_flag engine off
+  php_flag engine off
 </IfModule>
 <Files ~ "\.[pP][hH][^.]*$">
   Require all denied
