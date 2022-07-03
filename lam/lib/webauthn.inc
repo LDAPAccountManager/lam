@@ -476,7 +476,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 				return PublicKeyCredentialSource::createFromArray($jsonArray);
 			}
 		}
-		catch (\PDOException $e) {
+		catch (PDOException $e) {
 			logNewMessage(LOG_ERR, 'WebAuthn database error: ' . $e->getMessage());
 		}
 		return null;
@@ -500,7 +500,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 				$credentials[] = PublicKeyCredentialSource::createFromArray($jsonArray);
 			}
 		}
-		catch (\PDOException $e) {
+		catch (PDOException $e) {
 			logNewMessage(LOG_ERR, 'WebAuthn database error: ' . $e->getMessage());
 		}
 		return $credentials;
@@ -563,7 +563,7 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 			$results = $statement->fetchAll();
 			return ($results[0][0] > 0);
 		}
-		catch (\PDOException $e) {
+		catch (PDOException $e) {
 			logNewMessage(LOG_ERR, 'WebAuthn database error: ' . $e->getMessage());
 		}
 		return false;
@@ -687,9 +687,10 @@ abstract class PublicKeyCredentialSourceRepositoryBase implements PublicKeyCrede
 			$results = $statement->fetchAll();
 			if (empty($results)) {
 				$sql = 'alter table ' . $this->getTableName() . ' add column name VARCHAR(255);';
+				logNewMessage(LOG_DEBUG, $sql);
 				$pdo->exec($sql);
 			}
-		} catch (\PDOException $e) {
+		} catch (PDOException $e) {
 			logNewMessage(LOG_ERR, 'Unable to add name column to table: ' . $e->getMessage());
 		}
 	}
