@@ -1,3 +1,7 @@
+September 2022 8.1
+  - Fixed bugs:
+   -> PHP 8.1 does not show proper error message when login failed with LDAP search method
+
 29.06.2022 8.0.1
   - Fixed bugs:
    -> Regression issues due to security fixes (e.g. module settings in server profile)

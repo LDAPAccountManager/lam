@@ -76,7 +76,7 @@ class Ldap{
 	 * @param boolean $allowAnonymous specifies if anonymous binds are allowed
 	 * @throws LAMException unable to connect
 	 */
-	public function connect($user, $passwd, $allowAnonymous=false) {
+	public function connect($user, $passwd, $allowAnonymous = false) {
 		// close any prior connection
 		@$this->close();
 		// do not allow anonymous bind
@@ -142,6 +142,7 @@ class Ldap{
 		if ($this->server != null) {
 			$this->is_connected = false;
 			@ldap_close($this->server);
+			$this->server = null;
 		}
 	}
 
