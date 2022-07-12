@@ -1195,6 +1195,12 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 */
 	function display_html_attributes() {
 		$this->initCache();
+        $keysToReplace = array('mail', 'description', 'postalAddress', 'cn',
+            'registeredAddress', 'labeledURI');
+        if ($this->isUnixActive()) {
+            $keysToReplace[] = 'uid';
+        }
+        $this->getAccountContainer()->replaceWildcardsInArray($keysToReplace, $this->attributes);
 		$container = new htmlResponsiveRow();
 		$fieldContainer = new htmlResponsiveRow();
 		$fieldTabletColumns = $this->isBooleanConfigOptionSet('inetOrgPerson_hidejpegPhoto') ? 12 : 8;

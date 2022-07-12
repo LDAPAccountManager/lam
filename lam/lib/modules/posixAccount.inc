@@ -1706,6 +1706,8 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		$modules = $this->getAccountContainer()->get_type()->getModules();
 		$typeId = $this->getAccountContainer()->get_type()->getId();
 		if (!$this->isOptional($modules) || $this->skipObjectClass() || (isset($this->attributes['objectClass']) && in_array('posixAccount', $this->attributes['objectClass']))) {
+            $keysToReplace = array('cn', 'gecos', 'homeDirectory');
+            $this->getAccountContainer()->replaceWildcardsInArray($keysToReplace, $this->attributes);
 			$homeDirAttr = $this->getHomedirAttrName($modules);
 			$groupList = $this->findGroups($modules); // list of all group names
 			$groups = array();

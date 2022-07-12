@@ -1284,6 +1284,10 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 	 */
 	public function display_html_attributes() {
 		$this->initCache();
+        $keysToReplace = array('cn', 'displayName', 'mail', 'otherMailbox',
+            'profilePath', 'scriptPath', 'homeDirectory', 'userPrincipalName',
+            'sAMAccountName');
+        $this->getAccountContainer()->replaceWildcardsInArray($keysToReplace, $this->attributes);
 		$containerLeft = new htmlResponsiveRow();
 		if ($this->getAccountContainer()->isNewAccount && !isset($this->attributes['useraccountcontrol'][0])) {
 			$this->attributes['useraccountcontrol'][0] = windowsUser::DEFAULT_ACCOUNT_CONTROL;

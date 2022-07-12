@@ -2326,18 +2326,28 @@ class accountContainer {
 	 * @param array $keyPrefixes POST keys as full name or prefix (e.g. "key" matches "key1")
 	 */
 	public function replaceWildcardsInPOST($keyPrefixes) {
-		$replacements = array();
-		foreach ($this->module as $module) {
-			$replacements = array_merge($replacements, $module->getWildCardReplacements());
-		}
-		while (true) {
-			if (!$this->replaceWildcards($replacements, $keyPrefixes, $_POST)) {
-				break;
-			}
-		}
+	    $this->replaceWildcardsInArray($keyPrefixes, $_POST);
 	}
 
-	/**
+    /**
+     * Replaces data with wildcard values from modules.
+     *
+     * @param array $keyPrefixes POST keys as full name or prefix (e.g. "key" matches "key1")
+     * @param array $data list of values that need replacement
+     */
+    public function replaceWildcardsInArray($keyPrefixes, &$data) {
+        $replacements = array();
+        foreach ($this->module as $module) {
+            $replacements = array_merge($replacements, $module->getWildCardReplacements());
+        }
+        while (true) {
+            if (!$this->replaceWildcards($replacements, $keyPrefixes, $data)) {
+                break;
+            }
+        }
+    }
+
+    /**
 	 * Replaces wildcards in an array.
 	 *
 	 * @param array $replacements replacements (key => value)
@@ -2350,7 +2360,14 @@ class accountContainer {
 		foreach ($data as $key => $value) {
 			foreach ($keyPrefixes as $keyPrefix) {
 				if (strpos($key, $keyPrefix) === 0) {
-					$found = $this->doReplace($replacements, $data[$key]) || $found;
+				    if (!is_array($value)) {
+                        $found = $this->doReplace($replacements, $data[$key]) || $found;
+                    }
+				    else {
+				        foreach ($value as $valueIndex => $valueEntry) {
+                            $found = $this->doReplace($replacements, $data[$key][$valueIndex]) || $found;
+                        }
+                    }
 				}
 			}
 		}

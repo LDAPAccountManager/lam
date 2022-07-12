@@ -252,6 +252,7 @@ class courierMailAccount extends baseModule {
 	public function display_html_attributes() {
 		$return = new htmlResponsiveRow();
 		if ($this->isExtensionEnabled()) {
+            $this->getAccountContainer()->replaceWildcardsInArray(array('homeDirectory', 'mailbox'), $this->attributes);
 			if ($this->isUnixDisabled($this->getAccountContainer()->get_type()->getModules())) {
 				// home directory
 				$this->addSimpleInputTextField($return, 'homeDirectory', _('Home directory'), true);

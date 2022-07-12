@@ -192,6 +192,7 @@ class inetLocalMailRecipient extends baseModule {
 	function display_html_attributes() {
 		$return = new htmlResponsiveRow();
 		if (in_array('inetLocalMailRecipient', $this->attributes['objectClass'])) {
+			$this->getAccountContainer()->replaceWildcardsInArray(array('mailLocalAddress', 'mailRoutingAddress'), $this->attributes);
 			// mail routing address
 			$this->addSimpleInputTextField($return, 'mailRoutingAddress', _('Routing address'));
 			// mail server
