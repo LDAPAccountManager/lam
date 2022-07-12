@@ -367,6 +367,10 @@ div.account-types-popup div.columns:last-child {
 		max-width: 60rem;
 	}
 
+	.lam-header a.lam-menu-entry:last-child {
+		margin-bottom: 2rem;
+	}
+
 }
 
 /* desktop */
