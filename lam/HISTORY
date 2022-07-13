@@ -1,4 +1,5 @@
 September 2022 8.1
+  - Allow hostObject for groups and ":" in values
   - Fixed bugs:
    -> PHP 8.1 does not show proper error message when login failed with LDAP search method
 
