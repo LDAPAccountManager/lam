@@ -3588,10 +3588,10 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				'values' => array($newPasswordVal)
 			)
 		);
-		@ldap_modify_batch($_SESSION['ldapHandle'], $dn, $operation);
-		$returnCode = ldap_errno($_SESSION['ldapHandle']);
+		@ldap_modify_batch($_SESSION['ldapHandle']->getServer(), $dn, $operation);
+		$returnCode = ldap_errno($_SESSION['ldapHandle']->getServer());
 		if ($returnCode != 0) {
-			$outputMessages = htmlspecialchars(getExtendedLDAPErrorMessage($_SESSION['ldapHandle']));
+			$outputMessages = htmlspecialchars(getExtendedLDAPErrorMessage($_SESSION['ldapHandle']->getServer()));
 			// Active Directory message translations
 			if ((strpos($outputMessages, 'DSID-03190F80') !== false) && (strpos($outputMessages, 'unicodePwd') !== false)) {
 				$outputMessages = _('Your password does not meet the password strength qualifications. Please retry with another one.') . '<br><br>' . $outputMessages;

@@ -2960,7 +2960,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			else {
 				$filter = '(|(objectClass=organizationalunit)(objectClass=country)(objectClass=organization)(objectClass=krbRealmContainer)(objectClass=container))';
 				$suffix = $_SESSION['selfServiceProfile']->LDAPSuffix;
-				$foundOs = searchLDAPPaged($_SESSION['ldapHandle'], $suffix, $filter, array('dn'), false, 0);
+				$foundOs = searchLDAPPaged($_SESSION['ldapHandle']->getServer(), $suffix, $filter, array('dn'), false, 0);
 				$oList = array();
 				foreach ($foundOs as $foundO) {
 					$oList[] = $foundO['dn'];
@@ -2998,7 +2998,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			else {
 				$filter = '(|(objectClass=organizationalunit)(objectClass=country)(objectClass=organization)(objectClass=krbRealmContainer)(objectClass=container))';
 				$suffix = $_SESSION['selfServiceProfile']->LDAPSuffix;
-				$foundOus = searchLDAPPaged($_SESSION['ldapHandle'], $suffix, $filter, array('dn'), false, 0);
+				$foundOus = searchLDAPPaged($_SESSION['ldapHandle']->getServer(), $suffix, $filter, array('dn'), false, 0);
 				$ouList = array();
 				foreach ($foundOus as $foundOu) {
 					$ouList[] = $foundOu['dn'];

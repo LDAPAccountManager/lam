@@ -3505,9 +3505,9 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			&& ($attributes['INFO.userPasswordModify'][0] === 'exop')) {
 			$password = $attributes['INFO.userPasswordClearText'][0];
 			$dn = $attributes['dn'][0];
-			$success = ldap_exop_passwd($_SESSION['ldapHandle'], $dn, null, $password);
+			$success = ldap_exop_passwd($_SESSION['ldapHandle']->getServer(), $dn, null, $password);
 			if (!$success) {
-				StatusMessage('ERROR', _('Unable to set password'), getExtendedLDAPErrorMessage($_SESSION['ldapHandle']));
+				StatusMessage('ERROR', _('Unable to set password'), getExtendedLDAPErrorMessage($_SESSION['ldapHandle']->getServer()));
 			}
 			else {
 				StatusMessage('INFO', _('Password changed.'));

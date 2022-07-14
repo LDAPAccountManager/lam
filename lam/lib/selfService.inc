@@ -918,3 +918,59 @@ class selfServiceProfile {
 	}
 
 }
+
+/**
+ * LDAP connection for self service.
+ */
+class SelfServiceLdapConnection {
+
+    private $server = null;
+
+    private $profile;
+
+    /**
+     * Constructor
+     *
+     * @param selfServiceProfile $profile profile
+     */
+    public function __construct(selfServiceProfile $profile) {
+        $this->profile = $profile;
+    }
+
+    /**
+     * Returns the LDAP handle.
+     *
+     * @return mixed LDAP handle
+     */
+    public function getServer() {
+        if ($this->server !== null) {
+            return $this->server;
+        }
+        $this->server = openSelfServiceLdapConnection($this->profile);
+        return $this->server;
+    }
+
+    /**
+     * Binds with the given credentials.
+     *
+     * @param string $userDn user DN
+     * @param string $password password
+     * @return bool bind successful
+     */
+    public function bind(string $userDn, string $password): bool {
+        return bindLdapUser($this->getServer(), $this->profile, $userDn, $password);
+    }
+
+    /**
+     * Closes connection to LDAP server before serialization
+     */
+    public function __sleep(): array {
+        if ($this->server !== null) {
+            @ldap_close($this->server);
+            $this->server = null;
+        }
+        // define which attributes to save
+        return array('profile');
+    }
+
+}

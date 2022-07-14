@@ -884,7 +884,7 @@ function getLDAPServerHandle() {
 	}
 	else {
 		// self service
-		return $_SESSION['ldapHandle'];
+		return $_SESSION['ldapHandle']->getServer();
 	}
 }
 

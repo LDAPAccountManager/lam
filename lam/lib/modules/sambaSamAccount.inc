@@ -2506,7 +2506,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	 */
 	private function doSelfServicePasswordHistoryAndMinAge($attributes, &$return) {
 		if (!empty($this->selfServiceSettings->moduleSettings['sambaSamAccount_domainSuffix'][0])) {
-			$sambaDomain = $this->getUserDomain($attributes, $_SESSION['ldapHandle'], $this->selfServiceSettings->moduleSettings['sambaSamAccount_domainSuffix'][0]);
+			$sambaDomain = $this->getUserDomain($attributes, $_SESSION['ldapHandle']->getServer(), $this->selfServiceSettings->moduleSettings['sambaSamAccount_domainSuffix'][0]);
 			if ($sambaDomain == null) {
 				return;
 			}

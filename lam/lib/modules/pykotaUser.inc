@@ -1160,8 +1160,8 @@ class pykotaUser extends baseModule {
 	 */
 	private function getJobs($user, $suffix) {
 		$attrs = array('createTimestamp', 'pykotaTitle', 'pykotaPrinterName', 'pykotaJobPrice', 'pykotaJobSize');
-		if (isset($_SESSION['ldapHandle']) && ($_SESSION['ldapHandle'] !== false)) {
-			$handle = $_SESSION['ldapHandle'];
+		if (isset($_SESSION['ldapHandle']) && ($_SESSION['ldapHandle']->getServer() !== null)) {
+			$handle = $_SESSION['ldapHandle']->getServer();
 		}
 		else {
 			$handle = $_SESSION['ldap']->server();
