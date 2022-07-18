@@ -1,5 +1,6 @@
 September 2022 8.1
   - Allow hostObject for groups and ":" in values
+  - Docker: added Let's Encrypt CA certificates
   - Fixed bugs:
    -> PHP 8.1 does not show proper error message when login failed with LDAP search method
    -> Self service issues on PHP 8.1 (181)
