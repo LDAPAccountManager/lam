@@ -201,7 +201,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			// self service configuration settings
 			$selfServiceContainer = new htmlResponsiveRow();
 			$selfServiceContainer->add(new htmlResponsiveSelect('posixAccount_pwdHash', getSupportedHashTypes(),
-				array('SSHA'), _("Password hash type"), array('pwdHash', get_class($this))), 12);
+				array('CRYPT-SHA512'), _("Password hash type"), array('pwdHash', get_class($this))), 12);
 			$selfServiceContainer->add(new htmlResponsiveInputTextarea('posixAccount_shells', implode("\r\n", $this->getShells()), 30, 4, _('Login shells'), array('loginShells', get_class($this))), 12);
 			$selfServiceContainer->add(new htmlResponsiveInputField(_('Group DN'), 'posixAccount_groupDn', '', array('groupDn', get_class($this))), 12);
 			$selfServiceContainer->add(new htmlResponsiveInputCheckbox('posixAccount_useOldPwd', false, _('Password change with old password'), array('useOldPwd', get_class($this))), 12);
@@ -3126,7 +3126,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					"ERROR",
 					_('Unable to set password'),
 					$dn . '<br>' . getDefaultLDAPErrorString($_SESSION['ldap']->server()),
-					array($temp['groups'][$temp['counter']])
+					array($temp['exop'][$temp['counter']])
 				);
 			}
 			$temp['counter']++;

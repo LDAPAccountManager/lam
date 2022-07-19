@@ -44,3 +44,4 @@
 /mitKerberosPolicy.inc
 /openldapTotp.inc
 /powerDNS.inc
+/simpleSecurityObject.inc
