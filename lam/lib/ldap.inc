@@ -224,6 +224,9 @@ class Ldap{
 	 * @return string user name
 	 */
 	public function getUserName() {
+		if ($this->username === null) {
+			return null;
+		}
 		return lamDecrypt(base64_decode($this->username));
 	}
 
@@ -233,6 +236,9 @@ class Ldap{
 	 * @return string password
 	 */
 	public function getPassword() {
+		if ($this->password === null) {
+			return null;
+		}
 		return lamDecrypt(base64_decode($this->password));
 	}
 

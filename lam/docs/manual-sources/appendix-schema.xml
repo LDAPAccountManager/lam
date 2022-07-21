@@ -661,6 +661,24 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
+                <imagedata fileref="images/schema_ssh.png"/>
+              </imageobject>
+            </inlinemediaobject></entry>
+
+          <entry>Simple Security Object</entry>
+
+          <entry>simpleSecurityObject</entry>
+
+          <entry>core.schema</entry>
+
+          <entry>Part of OpenLDAP installation</entry>
+
+          <entry>LAM Pro only</entry>
+        </row>
+
+        <row>
+          <entry><inlinemediaobject>
+              <imageobject>
                 <imagedata fileref="images/schema_sudo.png"/>
               </imageobject>
             </inlinemediaobject></entry>
