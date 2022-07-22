@@ -3,6 +3,7 @@ September 2022 8.1
   - Docker: added Let's Encrypt CA certificates
   - LAM Pro:
    -> Added support for simpleSecurityObject
+   -> Group of Names: save last selected account type for new members/owners (170)
   - Fixed bugs:
    -> PHP 8.1 does not show proper error message when login failed with LDAP search method
    -> Self service issues on PHP 8.1 (181)
