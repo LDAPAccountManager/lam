@@ -45,3 +45,4 @@
 /openldapTotp.inc
 /powerDNS.inc
 /simpleSecurityObject.inc
+/guacamole.inc
