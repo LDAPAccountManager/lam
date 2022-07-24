@@ -701,6 +701,9 @@ function get_preg($argument, $regexp) {
 		case 'ldapDateAndTime':
 					$pregexpr = '/^[0-9]{14}Z$/';
 					break;
+		case 'guacamoleProtocol':
+					$pregexpr = '/^(rdp|vnc)$/';
+					break;
 	}
 	if (($pregexpr != '') && preg_match($pregexpr, $argument)) {
 		return true;

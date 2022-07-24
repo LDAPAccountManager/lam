@@ -573,7 +573,7 @@ abstract class baseModule {
 		if (isset($this->meta['profile_options'])) {
 			return $this->meta['profile_options'];
 		}
-		return array();
+		return null;
 	}
 
 	/**
