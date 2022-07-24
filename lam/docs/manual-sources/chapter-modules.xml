@@ -6255,6 +6255,39 @@ OK (10 msec)</programlisting>
   </section>
 
   <section>
+    <title>Apache Guacamole (LAM Pro)</title>
+
+    <para>Apache Guacamole offers remote desktop connections based on
+    RDP/VNC.</para>
+
+    <para><emphasis role="bold">Configuration</emphasis></para>
+
+    <para>Please create a new group or group of names type on tab "Account
+    types".</para>
+
+    <screenshot>
+      <graphic fileref="images/mod_guacamole1.png"/>
+    </screenshot>
+
+    <para>Then add the Guacamole module on tab "Modules".</para>
+
+    <screenshot>
+      <graphic fileref="images/mod_guacamole2.png"/>
+    </screenshot>
+
+    <literallayout>
+
+</literallayout>
+
+    <para>Now you can manage the Guacamole entries with protocol and
+    parameters.</para>
+
+    <screenshot>
+      <graphic fileref="images/mod_guacamole3.png"/>
+    </screenshot>
+  </section>
+
+  <section>
     <title>Auto delete (LAM Pro)</title>
 
     <para>This module allows to mark any new entry to be marked for auto
