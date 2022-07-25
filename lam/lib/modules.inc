@@ -335,7 +335,10 @@ function getProfileOptions($typeId) {
 	$return = array();
 	for ($i = 0; $i < sizeof($mods); $i++) {
 		$module = moduleCache::getModule($mods[$i], $type->getScope());
-		$return[$mods[$i]] = $module->get_profileOptions($typeId);
+		$moduleOptions = $module->get_profileOptions($typeId);
+		if ($moduleOptions !== null) {
+			$return[$mods[$i]] = $moduleOptions;
+		}
 	}
 	return $return;
 }

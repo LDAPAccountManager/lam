@@ -752,6 +752,24 @@
         <row>
           <entry><inlinemediaobject>
               <imageobject>
+                <imagedata fileref="images/schema_guacamole.png"/>
+              </imageobject>
+            </inlinemediaobject></entry>
+
+          <entry>Apache Guacamole</entry>
+
+          <entry>guacConfigGroup</entry>
+
+          <entry>guacConfigGroup.ldif</entry>
+
+          <entry>Part of Guacamole Auth LDAP installation</entry>
+
+          <entry>LAM Pro only</entry>
+        </row>
+
+        <row>
+          <entry><inlinemediaobject>
+              <imageobject>
                 <imagedata fileref="images/schema_autoDelete.png"/>
               </imageobject>
             </inlinemediaobject></entry>

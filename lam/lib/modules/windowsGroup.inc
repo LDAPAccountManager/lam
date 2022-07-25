@@ -744,14 +744,6 @@ class windowsGroup extends baseModule {
 				$this->attributes['member'] = array_unique($this->attributes['member']);
 			}
 		}
-		// check input
-		if (!isset($_POST['form_subpage_' . get_class($this) . '_user_select'])) {
-			if (!$this->isBooleanConfigOptionSet('groupOfNames_membersOptional')) {
-				if (!isset($this->attributes['member']) || (sizeof($this->attributes['member']) < 1)) {
-					$return[] = $this->messages['member'][0];
-				}
-			}
-		}
 		return $return;
 	}
 

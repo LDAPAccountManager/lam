@@ -4291,12 +4291,21 @@ class htmlResponsiveRow extends htmlElement {
 	}
 
 	/**
-	 * Adds a responsive cell to the row.
+	 * Adds a responsive cell at the end of the row.
 	 *
 	 * @param htmlResponsiveCell $cell cell
 	 */
-	public function addCell($cell) {
+	public function addCell(htmlResponsiveCell $cell) {
 		$this->cells[] = $cell;
+	}
+
+	/**
+	 * Adds a responsive cell at the beginning of the row.
+	 *
+	 * @param htmlResponsiveCell $cell cell
+	 */
+	public function addCellAtTheBeginning(htmlResponsiveCell $cell) {
+		array_unshift($this->cells, $cell);
 	}
 
 	/**
@@ -4312,6 +4321,21 @@ class htmlResponsiveRow extends htmlElement {
 		$tabletCols = ($numTablet === null) ? $numMobile : $numTablet;
 		$desktopCols = ($numDesktop === null) ? $tabletCols : $numDesktop;
 		$this->addCell(new htmlResponsiveCell($content, $numMobile, $tabletCols, $desktopCols, $classes));
+	}
+
+	/**
+	 * Adds a cell at the beginning with the given content and column counts.
+	 *
+	 * @param htmlElement $content content inside cell
+	 * @param int $numMobile number of columns for mobile view
+	 * @param int $numTablet number of columns for tablet view (set to mobile if null)
+	 * @param int $numDesktop number of columns for desktop view (set to tablet if null)
+	 * @param String $classes CSS classes separated by space
+	 */
+	public function addAtTheBeginning($content, $numMobile = 12, $numTablet = null, $numDesktop = null, $classes = '') {
+		$tabletCols = ($numTablet === null) ? $numMobile : $numTablet;
+		$desktopCols = ($numDesktop === null) ? $tabletCols : $numDesktop;
+		$this->addCellAtTheBeginning(new htmlResponsiveCell($content, $numMobile, $tabletCols, $desktopCols, $classes));
 	}
 
 	/**
