@@ -9,6 +9,7 @@ September 2022 8.1
    -> PHP 8.1 does not show proper error message when login failed with LDAP search method
    -> Self service issues on PHP 8.1 (181)
    -> Custom Fields: switch to Custom Fields was required to save an entry (258)
+   -> Group of unique names/members shared same configuration settings with group of names
 
 29.06.2022 8.0.1
   - Fixed bugs:

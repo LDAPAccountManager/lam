@@ -617,6 +617,13 @@ docker run -p 8080:80 -it -d registry.gitlab.com/ldapaccountmanager/lampro:stabl
       intermediate release.</para>
 
       <section>
+        <title>8.0 -&gt; 8.1</title>
+
+        <para>Configuration settings in server profiles must be redone for
+        group of unique names and group of members.</para>
+      </section>
+
+      <section>
         <title>7.6 -&gt; 8.0</title>
 
         <para>No actions required.</para>
