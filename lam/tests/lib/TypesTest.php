@@ -37,9 +37,10 @@ class TypesTest extends TestCase {
 	private $type;
 
 	protected function setUp(): void {
-		$this->type = $this->getMockBuilder('ConfiguredType')->setMethods(array('getBaseType'))->getMock();
+		$this->type = $this->getMockBuilder('ConfiguredType')->setMethods(array('getBaseType', 'getListAttributeDescriptions'))->getMock();
 		$scope = new user($this->type);
 		$this->type->method('getBaseType')->willReturn($scope);
+		$this->type->method('getListAttributeDescriptions')->willReturn(array('uid' => 'User name'));
 	}
 
 	public function testPreTranslated() {
