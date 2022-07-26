@@ -1338,9 +1338,13 @@ class PDFStructureWriter {
 		$writer->setIndent(true);
 		$writer->setIndentString("\t");
 		$writer->startElement('pdf');
-		$writer->writeAttribute('filename', $structure->getLogo());
+		if ($structure->getLogo() !== null) {
+			$writer->writeAttribute('filename', $structure->getLogo());
+		}
 		$writer->writeAttribute('headline', $structure->getTitle());
-		$writer->writeAttribute('foldingmarks', $structure->getFoldingMarks());
+		if ($structure->getFoldingMarks() !== null) {
+			$writer->writeAttribute('foldingmarks', $structure->getFoldingMarks());
+		}
 		foreach ($structure->getSections() as $section) {
 			if ($section instanceof PDFTextSection) {
 				$writer->startElement('text');

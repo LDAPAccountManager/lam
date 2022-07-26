@@ -134,7 +134,9 @@ function checkClientIP() {
 	}
 	$allowedHosts = $cfg->allowedHosts;
 	$url = getCallingURL();
-	if ((strpos($url, '/selfService/selfService') !== false) || ((strpos($url, '/misc/ajax.php?') !== false) && strpos($url, 'selfservice=1') !== false)) {
+	if (($url !== null) &&
+		((strpos($url, '/selfService/selfService') !== false)
+			|| ((strpos($url, '/misc/ajax.php?') !== false) && strpos($url, 'selfservice=1') !== false))) {
 		// self service pages have separate IP list
 		$allowedHosts = $cfg->allowedHostsSelfService;
 	}
@@ -294,9 +296,6 @@ function logNewMessage($level, $message) : void {
 				fwrite($file, $time->format('Y-m-d H:i:s') . ': ' . $message . "\n");
 				fclose($file);
 			}
-		}
-		else {
-			StatusMessage('ERROR', 'Unable to write to log file!', $cfg->logDestination);
 		}
 	}
 }

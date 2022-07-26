@@ -1968,7 +1968,7 @@ class LAMException extends Exception {
 	 * @param Exception $cause (optional)
 	 * @param int $ldapErrorCode original LDAP error code
 	 */
-	public function __construct($title, $message = null, $cause = null, $ldapErrorCode = null) {
+	public function __construct($title, $message = '', $cause = null, $ldapErrorCode = null) {
 		parent::__construct($message, 0, $cause);
 		$this->title = $title;
 		$this->ldapErrorCode = $ldapErrorCode;
