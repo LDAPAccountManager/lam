@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2020  Roland Gruber
+                2005 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -287,6 +287,14 @@ class account extends baseModule {
 		return $messages;
 	}
 
-}
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(): array {
+		return array(
+			"description" => _("Description"),
+			'uid' => _("User name")
+		);
+	}
 
-?>
+}

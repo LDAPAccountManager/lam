@@ -2352,4 +2352,13 @@ abstract class baseModule {
 		return null;
 	}
 
+	/**
+	 * Returns a list of attribute descriptions for the account list.
+	 *
+	 * @return array attribute name => description label
+	 */
+	public function getListAttributeDescriptions(): array {
+		return array();
+	}
+
 }

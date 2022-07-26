@@ -1568,7 +1568,7 @@ class moduleCache {
 	 *
 	 * @param String $name module name
 	 * @param String $scope module scope (e.g. user)
-	 * @return null|object module object
+	 * @return null|baseModule module object
 	 */
 	public static function getModule($name, $scope): ?object {
 		if (!ScopeAndModuleValidation::isValidModuleName($name)

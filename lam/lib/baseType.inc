@@ -101,10 +101,12 @@ class baseType {
 	* @return array list of descriptions
 	*/
 	public function getListAttributeDescriptions() {
-		return array(
-			'entryexpiretimestamp' => _('Deletion time'),
-			"description" => _("Description"),
-		);
+		$descriptions = array();
+		foreach ($this->getType()->getModules() as $moduleName) {
+			$module = moduleCache::getModule($moduleName, $this->getScope());
+			$descriptions = array_merge($descriptions, $module->getListAttributeDescriptions());
+		}
+		return array_unique($descriptions);
 	}
 
 	/**
@@ -224,5 +226,3 @@ class baseType {
 	}
 
 }
-
-?>
