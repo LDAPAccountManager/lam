@@ -44,13 +44,13 @@ class TypesTest extends TestCase {
 	}
 
 	public function testPreTranslated() {
-		$attr = new ListAttribute('#uid', $this->type);
+		$attr = new ListAttribute('#uid');
 		$this->assertEquals('User name', $attr->getAlias(array('uid' => _('User name'))));
 		$this->assertEquals('uid', $attr->getAttributeName());
 	}
 
 	public function testCustomAlias() {
-		$attr = new ListAttribute('uid:My translation', $this->type);
+		$attr = new ListAttribute('uid:My translation');
 		$this->assertEquals('My translation', $attr->getAlias(array('uid' => _('User name'))));
 		$this->assertEquals('uid', $attr->getAttributeName());
 	}

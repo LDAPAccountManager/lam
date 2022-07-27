@@ -183,7 +183,7 @@ class ConfiguredType {
 		$attributeSpecs = explode(';', $attributeString);
 		$attributes = array();
 		foreach ($attributeSpecs as $attributeSpec) {
-			$attributes[] = new ListAttribute($attributeSpec, $this);
+			$attributes[] = new ListAttribute($attributeSpec);
 		}
 		$this->attributes = $attributes;
 		return $this->attributes;
@@ -320,17 +320,13 @@ class ListAttribute {
 
 	private $attributeSpec;
 
-	private $type;
-
 	/**
 	 * Constructor.
 	 *
 	 * @param string $attributeSpec spec of attribute (e.g. '#uid' or 'uid:User')
-	 * @param ConfiguredType $type account type (e.g. 'user')
 	 */
-	public function __construct($attributeSpec, $type) {
+	public function __construct($attributeSpec) {
 		$this->attributeSpec = $attributeSpec;
-		$this->type = $type;
 	}
 	/**
 	 * Returns the name of the LDAP attribute.
@@ -348,8 +344,8 @@ class ListAttribute {
 	/**
 	 * Returns the display value.
 	 *
-	 * @param array $predefinedDescriptions predefined descriptions
-	 * @return string $alias display value
+	 * @param array $predefinedDescriptions predefined descriptions (lower attribute name => label)
+	 * @return string display value
 	 */
 	public function getAlias(array $predefinedDescriptions): string {
 		if ($this->isPredefined()) {
