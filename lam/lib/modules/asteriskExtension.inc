@@ -972,6 +972,15 @@ class asteriskExtension extends baseModule {
         return array();
     }
 
-}
+    /**
+     * @inheritDoc
+     */
+    public function getListAttributeDescriptions(): array {
+        return array(
+            'AstContext' => _('Account context'),
+            'AstExtension' => _('Extension name'),
+			"member" => _("Owner"),
+		);
+    }
 
-?>
+}

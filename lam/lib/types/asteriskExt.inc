@@ -4,7 +4,7 @@
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2009 - 2012  Pozdnyak Pavel
-                2010 - 2018  Roland Gruber
+                2010 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -82,22 +82,6 @@ class asteriskExt extends baseType {
      */
     function getDefaultListAttributes() {
         return "#AstExtension;#AstContext;#member";
-    }
-
-    /**
-     * Returns a list of attributes which have a translated description.
-     * This is used for the head row in the list view.
-     *
-     * @return array list of descriptions
-     */
-    function getListAttributeDescriptions() {
-        return array_merge(
-			parent::getListAttributeDescriptions(),
-        	array(
-            	"astextension" => _("Extension name"),
-            	"astcontext" => _("Account context"),
-            	"member" => _("Owner"),
-        ));
     }
 
 	/**

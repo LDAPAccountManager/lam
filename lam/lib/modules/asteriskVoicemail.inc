@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2010         Pavel Pozdnyak
-                2010 - 2021  Roland Gruber
+                2010 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -602,6 +602,21 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	 */
 	public function getPasswordQuickChangeIsPasswordInHistory(string $password): bool {
 		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(): array {
+		return array(
+			'AstContext' => _('Account context'),
+			'AstVoicemailMailbox' => _('Mailbox'),
+			'AstVoicemailFullname' => _('Full name'),
+			'AstVoicemailEmail' => _('Email address'),
+			'AstVoicemailPager' => _('Pager'),
+			'AstVoicemailOptions' => _('Options'),
+			'AstVoicemailContext' => _('Voicemail context')
+		);
 	}
 
 }

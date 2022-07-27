@@ -257,6 +257,13 @@ class authorizedServiceObject extends baseModule {
 		return $configContainer;
 	}
 
-}
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(): array {
+		return array(
+			'authorizedService' => _('Authorized Services')
+		);
+	}
 
-?>
+}

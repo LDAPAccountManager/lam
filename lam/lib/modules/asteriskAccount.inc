@@ -1331,4 +1331,45 @@ class asteriskAccount extends baseModule implements passwordService {
 		return false;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(): array {
+		return array(
+			'AstAccountCallerID' => _('Caller ID'),
+			'AstAccountContext' => _('Account context'),
+			'AstAccountHost' => _('Host'),
+			'AstAccountType' => _('Account type'),
+			'AstAccountUserAgent' => _('User agent'),
+			'AstAccountAMAFlags' => _('AMA flags'),
+			'AstAccountCallGroup' => _('Call groups'),
+			'AstAccountDTMFMode' => _('DTFM flags'),
+			'AstAccountFromUser' => _('From user'),
+			'AstAccountFromDomain' => _('From domain'),
+			'AstAccountFullContact'=> _('Full contact'),
+			'AstAccountInsecure' => _('Insecure'),
+			'AstAccountMailbox' => _('Mailbox'),
+			'AstAccountNAT' => _('NAT'),
+			'AstAccountDeny' => _('Deny'),
+			'AstAccountPermit' => _('Permit'),
+			'AstAccountPickupGroup' => _('Pickup group'),
+			'AstAccountPort' => _('Port'),
+			'AstAccountQualify' => _('Qualify'),
+			'AstAccountRestrictCID' => _('Restrict caller ID'),
+			'AstAccountRTPTimeout' => _('RTP timeout'),
+			'AstAccountRTPHoldTimeout' => _('RTP hold timeout'),
+			'AstAccountDisallowedCodec' => _('Disallowed codec'),
+			'AstAccountAllowedCodec' => _('Allowed codec'),
+			'AstAccountMusicOnHold' => _('Music on hold'),
+			'AstAccountExpirationTimestamp' => _('Expiration timestamp'),
+			'AstAccountRegistrationContext' => _('Registration context'),
+			'AstAccountRegistrationExten' => _('Registration extension'),
+			'AstAccountCanCallForward' => _('Can call forward'),
+			'AstAccountIPAddress' => _('IP address'),
+			'AstAccountDefaultUser' => _('Default user'),
+			'AstAccountRegistrationServer' => _('Registration server'),
+			'AstAccountLastQualifyMilliseconds' => _('Last qualify milliseconds'),
+		);
+	}
+
 }
