@@ -2,11 +2,13 @@
 use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
+use LAM\TYPES\ConfiguredType;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2008         Thomas Manninger
-                2008 - 2020  Roland Gruber
+                2008 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -901,6 +903,13 @@ class fixed_ip extends baseModule {
 		}
 	}
 
-}
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
+		return array(
+			"fixed_ips" => _("IP address") . ' / ' . _('MAC address') . ' / ' . _("Description")
+		);
+	}
 
-?>
+}

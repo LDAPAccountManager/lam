@@ -28,6 +28,8 @@
  * @author Roland Gruber
  */
 
+use LAM\TYPES\ConfiguredType;
+
 /**
  * Enable the account for Courier Mail Service Aliases
  *
@@ -223,7 +225,7 @@ class courierMailAlias extends baseModule {
 	/**
 	 * @inheritDoc
 	 */
-	public function getListAttributeDescriptions(): array {
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
 		return array(
 			'mail' => _('Email address'),
 			'maildrop' => _('Recipient address'),

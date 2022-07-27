@@ -104,7 +104,7 @@ class baseType {
 		$descriptions = array();
 		foreach ($this->getType()->getModules() as $moduleName) {
 			$module = moduleCache::getModule($moduleName, $this->getScope());
-			$descriptions = array_merge($descriptions, $module->getListAttributeDescriptions());
+			$descriptions = array_merge($descriptions, $module->getListAttributeDescriptions($this->getType()));
 		}
 		return $descriptions;
 	}

@@ -29,6 +29,8 @@
 * @author J de Jong
 */
 
+use LAM\TYPES\ConfiguredType;
+
 /**
 * Provides Authorized Service for accounts.
 *
@@ -260,9 +262,9 @@ class authorizedServiceObject extends baseModule {
 	/**
 	 * @inheritDoc
 	 */
-	public function getListAttributeDescriptions(): array {
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
 		return array(
-			'authorizedService' => _('Authorized Services')
+			'authorizedservice' => _('Authorized Services')
 		);
 	}
 

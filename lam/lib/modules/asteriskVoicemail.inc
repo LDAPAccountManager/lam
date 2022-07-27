@@ -31,6 +31,8 @@
  * @author Roland Gruber
  */
 
+use LAM\TYPES\ConfiguredType;
+
 /**
  * Manages the Asterisk extension of user accounts.
  *
@@ -607,15 +609,15 @@ class asteriskVoicemail extends baseModule implements passwordService {
 	/**
 	 * @inheritDoc
 	 */
-	public function getListAttributeDescriptions(): array {
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
 		return array(
-			'AstContext' => _('Account context'),
-			'AstVoicemailMailbox' => _('Mailbox'),
-			'AstVoicemailFullname' => _('Full name'),
-			'AstVoicemailEmail' => _('Email address'),
-			'AstVoicemailPager' => _('Pager'),
-			'AstVoicemailOptions' => _('Options'),
-			'AstVoicemailContext' => _('Voicemail context')
+			'astcontext' => _('Account context'),
+			'astvoicemailmailbox' => _('Mailbox'),
+			'astvoicemailfullname' => _('Full name'),
+			'astvoicemailemail' => _('Email address'),
+			'astvoicemailpager' => _('Pager'),
+			'astvoicemailoptions' => _('Options'),
+			'astvoicemailcontext' => _('Voicemail context')
 		);
 	}
 

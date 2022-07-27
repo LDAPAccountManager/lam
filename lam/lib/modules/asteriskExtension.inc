@@ -2,6 +2,8 @@
 use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
+use LAM\TYPES\ConfiguredType;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
@@ -975,10 +977,10 @@ class asteriskExtension extends baseModule {
     /**
      * @inheritDoc
      */
-    public function getListAttributeDescriptions(): array {
+    public function getListAttributeDescriptions(ConfiguredType $type): array {
         return array(
-            'AstContext' => _('Account context'),
-            'AstExtension' => _('Extension name'),
+            'astcontext' => _('Account context'),
+            'astextension' => _('Extension name'),
 			"member" => _("Owner"),
 		);
     }

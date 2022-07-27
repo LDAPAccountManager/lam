@@ -31,6 +31,8 @@
 * @author Roland Gruber
 */
 
+use LAM\TYPES\ConfiguredType;
+
 /**
  * Manages the Asterisk extension of user accounts.
  *
@@ -1334,41 +1336,41 @@ class asteriskAccount extends baseModule implements passwordService {
 	/**
 	 * @inheritDoc
 	 */
-	public function getListAttributeDescriptions(): array {
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
 		return array(
-			'AstAccountCallerID' => _('Caller ID'),
-			'AstAccountContext' => _('Account context'),
-			'AstAccountHost' => _('Host'),
-			'AstAccountType' => _('Account type'),
-			'AstAccountUserAgent' => _('User agent'),
-			'AstAccountAMAFlags' => _('AMA flags'),
-			'AstAccountCallGroup' => _('Call groups'),
-			'AstAccountDTMFMode' => _('DTFM flags'),
-			'AstAccountFromUser' => _('From user'),
-			'AstAccountFromDomain' => _('From domain'),
-			'AstAccountFullContact'=> _('Full contact'),
-			'AstAccountInsecure' => _('Insecure'),
-			'AstAccountMailbox' => _('Mailbox'),
-			'AstAccountNAT' => _('NAT'),
-			'AstAccountDeny' => _('Deny'),
-			'AstAccountPermit' => _('Permit'),
-			'AstAccountPickupGroup' => _('Pickup group'),
-			'AstAccountPort' => _('Port'),
-			'AstAccountQualify' => _('Qualify'),
-			'AstAccountRestrictCID' => _('Restrict caller ID'),
-			'AstAccountRTPTimeout' => _('RTP timeout'),
-			'AstAccountRTPHoldTimeout' => _('RTP hold timeout'),
-			'AstAccountDisallowedCodec' => _('Disallowed codec'),
-			'AstAccountAllowedCodec' => _('Allowed codec'),
-			'AstAccountMusicOnHold' => _('Music on hold'),
-			'AstAccountExpirationTimestamp' => _('Expiration timestamp'),
-			'AstAccountRegistrationContext' => _('Registration context'),
-			'AstAccountRegistrationExten' => _('Registration extension'),
-			'AstAccountCanCallForward' => _('Can call forward'),
-			'AstAccountIPAddress' => _('IP address'),
-			'AstAccountDefaultUser' => _('Default user'),
-			'AstAccountRegistrationServer' => _('Registration server'),
-			'AstAccountLastQualifyMilliseconds' => _('Last qualify milliseconds'),
+			'astaccountcallerid' => _('Caller ID'),
+			'astaccountcontext' => _('Account context'),
+			'astaccounthost' => _('Host'),
+			'astaccounttype' => _('Account type'),
+			'astaccountuseragent' => _('User agent'),
+			'astaccountamaflags' => _('AMA flags'),
+			'astaccountcallgroup' => _('Call groups'),
+			'astaccountdtmfmode' => _('DTFM flags'),
+			'astaccountfromuser' => _('From user'),
+			'astaccountfromdomain' => _('From domain'),
+			'astaccountfullcontact'=> _('Full contact'),
+			'astaccountinsecure' => _('Insecure'),
+			'astaccountmailbox' => _('Mailbox'),
+			'astaccountnat' => _('NAT'),
+			'astaccountdeny' => _('Deny'),
+			'astaccountpermit' => _('Permit'),
+			'astaccountpickupgroup' => _('Pickup group'),
+			'astaccountport' => _('Port'),
+			'astaccountqualify' => _('Qualify'),
+			'astaccountrestrictcid' => _('Restrict caller ID'),
+			'astaccountrtptimeout' => _('RTP timeout'),
+			'astaccountrtpholdtimeout' => _('RTP hold timeout'),
+			'astaccountdisallowedcodec' => _('Disallowed codec'),
+			'astaccountallowedcodec' => _('Allowed codec'),
+			'astaccountmusiconhold' => _('Music on hold'),
+			'astaccountexpirationtimestamp' => _('Expiration timestamp'),
+			'astaccountregistrationcontext' => _('Registration context'),
+			'astaccountregistrationexten' => _('Registration extension'),
+			'astaccountcancallforward' => _('Can call forward'),
+			'astaccountipaddress' => _('IP address'),
+			'astaccountdefaultuser' => _('Default user'),
+			'astaccountregistrationserver' => _('Registration server'),
+			'astaccountlastqualifymilliseconds' => _('Last qualify milliseconds'),
 		);
 	}
 

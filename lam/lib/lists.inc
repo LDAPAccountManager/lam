@@ -1030,8 +1030,10 @@ class lamList {
 	protected function listGetAttributeDescriptionList() {
 		$attrs = $this->type->getAttributes();
 		$ret = array();
+		$predefinedDescriptions = $this->type->getBaseType()->getListAttributeDescriptions();
+		$predefinedDescriptions = array_change_key_case($predefinedDescriptions, CASE_LOWER);
 		foreach ($attrs as $attr) {
-			$ret[$attr->getAttributeName()] = $attr->getAlias();
+			$ret[$attr->getAttributeName()] = $attr->getAlias($predefinedDescriptions);
 		}
 		return $ret;
 	}

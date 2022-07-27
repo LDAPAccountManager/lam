@@ -30,6 +30,8 @@
 * @author Michael Duergner
 */
 
+use LAM\TYPES\ConfiguredType;
+
 /**
 * Manages the object class "account" for users and hosts.
 *
@@ -290,7 +292,7 @@ class account extends baseModule {
 	/**
 	 * @inheritDoc
 	 */
-	public function getListAttributeDescriptions(): array {
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
 		return array(
 			"description" => _("Description"),
 			'uid' => _("User name")

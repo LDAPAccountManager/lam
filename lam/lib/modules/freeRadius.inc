@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2011 - 2021  Roland Gruber
+  Copyright (C) 2011 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@
 * @package modules
 * @author Roland Gruber
 */
+
+use LAM\TYPES\ConfiguredType;
 
 /**
 * Manages FreeRadius accounts.
@@ -808,6 +810,22 @@ class freeRadius extends baseModule {
 		);
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
+		return array(
+			'radiusframedipaddress' => _('IP address'),
+			'radiusframedipnetmask' => _('Net mask'),
+			'radiusrealm' => _('Realm'),
+			'radiusgroupname' => _('Group names'),
+			'radiusexpiration' => _('Expiration date'),
+			'radiusidletimeout' => _('Idle timeout'),
+			'dialupaccess' => _('Enabled'),
+			'radiusprofiledn' => _('Profile'),
+		);
+	}
+
 }
 
 if (interface_exists('\LAM\JOB\Job', false)) {
@@ -966,6 +984,3 @@ if (interface_exists('\LAM\JOB\Job', false)) {
 	}
 
 }
-
-
-?>

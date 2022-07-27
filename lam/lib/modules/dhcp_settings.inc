@@ -37,6 +37,9 @@
  * @param check Subnet
  * @return boolean true or false
  **/
+
+use LAM\TYPES\ConfiguredType;
+
 if (!function_exists('check_ip')) {
 
 	/**
@@ -1059,6 +1062,14 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		return $this->getAccountContainer()->dn_orig == $rootSuffix;
 	}
 
-}
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
+		return array(
+			"cn" => _("Subnet"),
+			'dhcpcomments' => _('Description'),
+		);
+	}
 
-?>
+}

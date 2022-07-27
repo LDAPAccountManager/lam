@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2020  Roland Gruber
+  Copyright (C) 2009 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@
 * @package modules
 * @author Roland Gruber
 */
+
+use LAM\TYPES\ConfiguredType;
 
 /**
 * Manages the eduPerson extension for user accounts.
@@ -564,7 +566,22 @@ class eduPerson extends baseModule {
 		return $return;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
+		return array(
+			'edupersonaffiliation' => _('Affiliations'),
+			'edupersonnickname' => _('Nick names'),
+			'edupersonorgdn' => _('Organisation'),
+			'edupersonorgunitdn' => _('Organisational units'),
+			'edupersonprimaryaffiliation' => _('Primary affiliation'),
+			'edupersonprincipalname' => _('Principal name'),
+			'edupersonentitlement' => _('Entitlements'),
+			'edupersonprimaryorgunitdn' => _('Primary organisational unit'),
+			'edupersonscopedaffiliation' => _('Scoped affiliations'),
+			'edupersonassurance' => _('Assurance profiles'),
+		);
+	}
+
 }
-
-
-?>

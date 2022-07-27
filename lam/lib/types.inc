@@ -348,15 +348,14 @@ class ListAttribute {
 	/**
 	 * Returns the display value.
 	 *
+	 * @param array $predefinedDescriptions predefined descriptions
 	 * @return string $alias display value
 	 */
-	public function getAlias() {
+	public function getAlias(array $predefinedDescriptions): string {
 		if ($this->isPredefined()) {
 			$name = strtolower(substr($this->attributeSpec, 1));
-			$hash_table = $this->type->getBaseType()->getListAttributeDescriptions();
-			$hash_table = array_change_key_case($hash_table, CASE_LOWER);
-			if (isset($hash_table[$name])) {
-				return $hash_table[$name];
+			if (isset($predefinedDescriptions[$name])) {
+				return $predefinedDescriptions[$name];
 			}
 			return $name;
 		}

@@ -92,22 +92,6 @@ class dhcp extends baseType {
 	}
 
 	/**
-	* Returns a list of attributes which have a translated description.
-	* This is used for the head row in the list view.
-	*
-	* @return array list of descriptions
-	*/
-	public function getListAttributeDescriptions() {
-		return array_merge(
-			parent::getListAttributeDescriptions(),
-			array (
-				"cn" => _("Subnet"),
-				"dhcprange" => _("Ranges"),
-				"fixed_ips" => _("IP address") . ' / ' . _('MAC address') . ' / ' . _("Description")
-			));
-	}
-
-	/**
 	 * Returns the the title text for the title bar on the new/edit page.
 	 *
 	 * @param accountContainer $container account container

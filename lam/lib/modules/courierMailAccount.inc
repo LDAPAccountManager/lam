@@ -1,4 +1,6 @@
 <?php
+
+use LAM\TYPES\ConfiguredType;
 use \LAM\TYPES\TypeManager;
 /*
  * This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -593,7 +595,7 @@ class courierMailAccount extends baseModule {
 	/**
 	 * @inheritDoc
 	 */
-	public function getListAttributeDescriptions(): array {
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
 		return array(
 			'mailbox' => _('Mailbox'),
 			'mailhost' => _('Mailbox home server'),
