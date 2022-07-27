@@ -220,6 +220,16 @@ class courierMailAlias extends baseModule {
 		return $messages;
 	}
 
-}
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(): array {
+		return array(
+			'mail' => _('Email address'),
+			'maildrop' => _('Recipient address'),
+			'mailsource' => _('Mail source'),
+			'description' => _('Description')
+		);
+	}
 
-?>
+}

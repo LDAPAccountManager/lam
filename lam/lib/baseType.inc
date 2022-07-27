@@ -106,7 +106,7 @@ class baseType {
 			$module = moduleCache::getModule($moduleName, $this->getScope());
 			$descriptions = array_merge($descriptions, $module->getListAttributeDescriptions());
 		}
-		return array_unique($descriptions);
+		return $descriptions;
 	}
 
 	/**
