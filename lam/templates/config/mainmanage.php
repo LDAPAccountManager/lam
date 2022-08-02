@@ -397,7 +397,7 @@ printHeaderContents(_("Edit general settings"), '../..');
 	// license
 	if (isLAMProVersion()) {
 		$row->add(new htmlSubTitle(_('Licence')), 12);
-		$row->add(new htmlResponsiveInputTextarea('license', implode("\n", $cfg->getLicenseLines()), null, 10, _('Licence'), '287'), 12);
+		$row->add(new htmlResponsiveInputTextarea('license', implode("\n", $cfg->getLicenseLines()), '30', '10', _('Licence'), '287'), 12);
 		$warningOptions = array(
 	        _('Screen') => LAMCfgMain::LICENSE_WARNING_SCREEN,
 			_('Email') => LAMCfgMain::LICENSE_WARNING_EMAIL,
@@ -430,9 +430,9 @@ printHeaderContents(_("Edit general settings"), '../..');
 	$row->add(new htmlSubTitle(_("Security settings")), 12);
 	$options = array(5, 10, 20, 30, 60, 90, 120, 240);
 	$row->add(new htmlResponsiveSelect('sessionTimeout', $options, array($cfg->sessionTimeout), _("Session timeout"), '238'), 12);
-	$row->add(new htmlResponsiveInputTextarea('allowedHosts', implode("\n", explode(",", $cfg->allowedHosts)), null, '7', _("Allowed hosts"), '241'), 12);
+	$row->add(new htmlResponsiveInputTextarea('allowedHosts', implode("\n", explode(",", $cfg->allowedHosts)), '30', '7', _("Allowed hosts"), '241'), 12);
 	if (isLAMProVersion()) {
-		$row->add(new htmlResponsiveInputTextarea('allowedHostsSelfService', implode("\n", explode(",", $cfg->allowedHostsSelfService)), null, '7', _("Allowed hosts (self service)"), '241'), 12);
+		$row->add(new htmlResponsiveInputTextarea('allowedHostsSelfService', implode("\n", explode(",", $cfg->allowedHostsSelfService)), '30', '7', _("Allowed hosts (self service)"), '241'), 12);
 	}
 	// SSL certificate
 	$row->addVerticalSpacer('1rem');
