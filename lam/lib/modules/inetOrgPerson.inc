@@ -2002,39 +2002,92 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 */
 	function get_pdfEntries($pdfKeys, $typeId) {
 		$return = array();
-		$this->addSimplePDFField($return, 'description', _('Description'));
-		$this->addSimplePDFField($return, 'title', _('Job title'));
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDescription')) {
+			$this->addSimplePDFField($return, 'description', _('Description'));
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideJobTitle')) {
+			$this->addSimplePDFField($return, 'title', _('Job title'));
+		}
 		$this->addSimplePDFField($return, 'givenName', _('First name'));
 		$this->addSimplePDFField($return, 'sn', _('Last name'));
-		$this->addSimplePDFField($return, 'manager', _('Manager'));
-		$this->addSimplePDFField($return, 'street', _('Street'));
-		$this->addSimplePDFField($return, 'postOfficeBox', _('Post office box'));
-		$this->addSimplePDFField($return, 'postalCode', _('Postal code'));
-		if (!empty($this->attributes['postalAddress'])) {
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideManager')) {
+			$this->addSimplePDFField($return, 'manager', _('Manager'));
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideStreet')) {
+			$this->addSimplePDFField($return, 'street', _('Street'));
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostOfficeBox')) {
+			$this->addSimplePDFField($return, 'postOfficeBox', _('Post office box'));
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalCode')) {
+			$this->addSimplePDFField($return, 'postalCode', _('Postal code'));
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePostalAddress')
+			&& !empty($this->attributes['postalAddress'])) {
 			$this->addPDFKeyValue($return, 'postalAddress', _('Postal address'), str_replace('$', "\n", implode("\n\n", $this->attributes['postalAddress'])));
 		}
-		$this->addSimplePDFField($return, 'registeredAddress', _('Registered address'));
-		$this->addSimplePDFField($return, 'telephoneNumber', _('Telephone number'));
-		$this->addSimplePDFField($return, 'homePhone', _('Home telephone number'));
-		$this->addSimplePDFField($return, 'mobileTelephoneNumber', _('Mobile number'), 'mobile');
-		$this->addSimplePDFField($return, 'pager', _('Pager'));
-		$this->addSimplePDFField($return, 'mail', _('Email address'));
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRegisteredAddress')) {
+			$this->addSimplePDFField($return, 'registeredAddress', _('Registered address'));
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideTelephoneNumber')) {
+			$this->addSimplePDFField($return, 'telephoneNumber', _('Telephone number'));
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideHomeTelephoneNumber')) {
+			$this->addSimplePDFField($return, 'homePhone', _('Home telephone number'));
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideMobileNumber')) {
+			$this->addSimplePDFField($return, 'mobileTelephoneNumber', _('Mobile number'), 'mobile');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidePager', true)) {
+			$this->addSimplePDFField($return, 'pager', _('Pager'));
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEMailAddress')) {
+			$this->addSimplePDFField($return, 'mail', _('Email address'));
+		}
 		$this->addSimplePDFField($return, 'cn', _('Common name'));
-		$this->addSimplePDFField($return, 'facsimileTelephoneNumber', _('Fax number'));
-		$this->addSimplePDFField($return, 'roomNumber', _('Room number'));
-		$this->addSimplePDFField($return, 'businessCategory', _('Business category'));
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideFaxNumber')) {
+			$this->addSimplePDFField($return, 'facsimileTelephoneNumber', _('Fax number'));
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideRoomNumber')) {
+			$this->addSimplePDFField($return, 'roomNumber', _('Room number'));
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideBusinessCategory')) {
+			$this->addSimplePDFField($return, 'businessCategory', _('Business category'));
+		}
 		$this->addSimplePDFField($return, 'uid', _('User name'));
-		$this->addSimplePDFField($return, 'carLicense', _('Car license'));
-		$this->addSimplePDFField($return, 'state', _('State'), 'st');
-		$this->addSimplePDFField($return, 'officeName', _('Office name'), 'physicalDeliveryOfficeName');
-		$this->addSimplePDFField($return, 'employeeType', _('Employee type'));
-		$this->addSimplePDFField($return, 'location', _('Location'), 'l');
-		$this->addSimplePDFField($return, 'employeeNumber', _('Employee number'));
-		$this->addSimplePDFField($return, 'ou', _('Organisational unit'));
-		$this->addSimplePDFField($return, 'o', _('Organisation'));
-		$this->addSimplePDFField($return, 'initials', _('Initials'));
-		$this->addSimplePDFField($return, 'labeledURI', _('Web site'));
-		$this->addSimplePDFField($return, 'departmentNumber', _('Department'));
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideCarLicense')) {
+			$this->addSimplePDFField($return, 'carLicense', _('Car license'));
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideState')) {
+			$this->addSimplePDFField($return, 'state', _('State'), 'st');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOfficeName')) {
+			$this->addSimplePDFField($return, 'officeName', _('Office name'), 'physicalDeliveryOfficeName');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeType')) {
+			$this->addSimplePDFField($return, 'employeeType', _('Employee type'));
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLocation')) {
+			$this->addSimplePDFField($return, 'location', _('Location'), 'l');
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideEmployeeNumber')) {
+			$this->addSimplePDFField($return, 'employeeNumber', _('Employee number'));
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideOu')) {
+			$this->addSimplePDFField($return, 'ou', _('Organisational unit'));
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideO')) {
+			$this->addSimplePDFField($return, 'o', _('Organisation'));
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideInitials')) {
+			$this->addSimplePDFField($return, 'initials', _('Initials'));
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideLabeledURI')) {
+			$this->addSimplePDFField($return, 'labeledURI', _('Web site'));
+		}
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hideDepartments')) {
+			$this->addSimplePDFField($return, 'departmentNumber', _('Department'));
+		}
 		$this->addSimplePDFField($return, 'displayName', _('Display name'));
 		if (isset($this->clearTextPassword)) {
 			$this->addPDFKeyValue($return, 'userPassword', _('Password'), $this->clearTextPassword);
@@ -2042,7 +2095,9 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		else if (isset($this->attributes['INFO.userPasswordClearText'])) {
 			$this->addPDFKeyValue($return, 'userPassword', _('Password'), $this->attributes['INFO.userPasswordClearText']);
 		}
-		$this->addPDFImage($return, 'jpegPhoto');
+		if (!$this->isBooleanConfigOptionSet('inetOrgPerson_hidejpegPhoto')) {
+			$this->addPDFImage($return, 'jpegPhoto');
+		}
 		return $return;
 	}
 
