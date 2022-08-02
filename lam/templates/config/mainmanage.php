@@ -299,7 +299,9 @@ if (isset($_POST['submitFormData'])) {
 	}
 }
 
-echo $_SESSION['header'];
+if (isset($_SESSION['header'])) {
+	echo $_SESSION['header'];
+}
 printHeaderContents(_("Edit general settings"), '../..');
 ?>
 </head>
