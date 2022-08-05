@@ -26,6 +26,8 @@
 * @author Roland Gruber
 */
 
+use LAM\TYPES\ConfiguredType;
+
 /**
 * Provides mail routing for users.
 *
@@ -351,7 +353,15 @@ class inetLocalMailRecipient extends baseModule {
 		return $return;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
+		return array(
+			'mailroutingaddress' => _('Routing address'),
+			'maillocaladdress' => _('Local address list'),
+			'mailhost' => _('Mail server')
+		);
+	}
+
 }
-
-
-?>

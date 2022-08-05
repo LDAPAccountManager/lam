@@ -90,27 +90,6 @@ class host extends baseType {
 	}
 
 	/**
-	* Returns a list of attributes which have a translated description.
-	* This is used for the head row in the list view.
-	*
-	* @return array list of descriptions
-	*/
-	function getListAttributeDescriptions() {
-		return array_merge(
-			parent::getListAttributeDescriptions(),
-			array (
-				"uid" => _("Host name"),
-				"cn" => _("Common name"),
-				"rid" => _("RID (Windows UID)"),
-				"description" => _("Host description"),
-				"uidnumber" => _("UID number"),
-				"gidnumber" => _("GID number"),
-				'location' => _('Location'),
-				'serialNumber' => _('Serial number')
-			));
-	}
-
-	/**
 	 * Returns the the title text for the title bar on the new/edit page.
 	 *
 	 * @param accountContainer $container account container

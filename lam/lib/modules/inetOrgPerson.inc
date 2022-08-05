@@ -4572,4 +4572,42 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		}
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
+		return array(
+			'givenname' => _('First name'),
+			'sn' => _('Last name'),
+			'description' => _('Description'),
+			'street' => _('Street'),
+			'postofficebox' => _('Post office box'),
+			'postalcode' => _('Postal code'),
+			'l' => _('Location'),
+			'st' => _('State'),
+			'postaladdress' => _('Postal address'),
+			'registeredaddress' => _('Registered address'),
+			'officename' => _('Office name'),
+			'roomnumber' => _('Room number'),
+			'telephonenumber' => _('Telephone number'),
+			'homephone' => _('Home telephone number'),
+			'mobiletelephonenumber' => _('Mobile number'),
+			'pager' => _('Pager'),
+			'mail' => _('Email address'),
+			'labeleduri' => _('Web site'),
+			'title' => _('Job title'),
+			'carlicense' => _('Car license'),
+			'facsimiletelephonenumber' => _('Fax number'),
+			'employeetype' => _('Employee type'),
+			'businesscategory' => _('Business category'),
+			'departmentnumber' => _('Department'),
+			'manager' => _('Manager'),
+			'o' => _('Organisation'),
+			'ou' => _('Organisational unit'),
+			'employeenumber' => _('Employee number'),
+			'initials' => _('Initials'),
+			'jpegphoto' => _('Photo'),
+		);
+	}
+
 }

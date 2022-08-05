@@ -26,6 +26,8 @@
 * @author Roland Gruber
 */
 
+use LAM\TYPES\ConfiguredType;
+
 /**
 * Manages the hosts to which a user may login.
 *
@@ -214,7 +216,13 @@ class hostObject extends baseModule {
 		}
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
+		return array(
+			'host' => _('Host list')
+		);
+	}
+
 }
-
-
-?>

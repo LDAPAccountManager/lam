@@ -2,6 +2,8 @@
 use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
+use LAM\TYPES\ConfiguredType;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -665,7 +667,13 @@ class ldapPublicKey extends baseModule {
 		return array('errorsOccurred' => 'true', 'errormessage' => $message);
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
+		return array(
+			'sshpublickey' => _('SSH public keys')
+		);
+	}
+
 }
-
-
-?>
