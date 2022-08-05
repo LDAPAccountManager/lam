@@ -617,7 +617,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		$types = array('gon', 'group');
 		$gonList = array();
 		foreach ($types as $type) {
-			$gonFilter = '(|(&(objectClass=groupOfNames)(member=' . ldap_escape($dn, '', LDAP_ESCAPE_FILTER) . '))(&(objectClass=groupOfMembers)(member=' . ldap_escape($dn) . '))(&(objectClass=groupOfUniqueNames)(uniqueMember=' . ldap_escape($dn) . ')))';
+			$gonFilter = '(|(&(objectClass=groupOfNames)(member=' . ldap_escape($dn, '', LDAP_ESCAPE_FILTER) . '))(&(objectClass=groupOfMembers)(member=' . ldap_escape($dn) . '))(&(objectClass=groupOfUniqueNames)(uniquemember=' . ldap_escape($dn) . ')))';
 			if (!empty($typeSettings['filter_' . $type])) {
 				$typeFilter = $typeSettings['filter_' . $type];
 				if (strpos($typeFilter, '(') !== 0) {
@@ -910,7 +910,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				if (isset($gons[$toAdd[$i]])) {
 					$attrName = 'member';
 					if (in_array_ignore_case('groupOfUniqueNames', $gons[$toAdd[$i]]['objectclass'])) {
-						$attrName = 'uniqueMember';
+						$attrName = 'uniquemember';
 					}
 					$success = @ldap_mod_add($_SESSION['ldap']->server(), $toAdd[$i], array($attrName => array($accountContainer->finalDN)));
 					if (!$success) {
@@ -927,7 +927,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				if (isset($gons[$toRem[$i]])) {
 					$attrName = 'member';
 					if (in_array_ignore_case('groupOfUniqueNames', $gons[$toRem[$i]]['objectclass'])) {
-						$attrName = 'uniqueMember';
+						$attrName = 'uniquemember';
 					}
 					$success = @ldap_mod_del($_SESSION['ldap']->server(), $toRem[$i], array($attrName => array($accountContainer->dn_orig)));
 					if (!$success) {
@@ -1013,13 +1013,13 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		}
 		// remove from group of names
 		$dn = $this->getAccountContainer()->dn_orig;
-		$gons = searchLDAPByFilter('(|(member=' . $dn . ')(uniqueMember=' . $dn . '))', array('member', 'uniqueMember'), array('group', 'gon'));
+		$gons = searchLDAPByFilter('(|(member=' . $dn . ')(uniquemember=' . $dn . '))', array('member', 'uniquemember'), array('group', 'gon'));
 		for ($i = 0; $i < sizeof($gons); $i++) {
 			if (isset($gons[$i]['member'])) {
 				$return[$gons[$i]['dn']]['remove']['member'][] = $dn;
 			}
 			elseif (isset($gons[$i]['uniquemember'])) {
-				$return[$gons[$i]['dn']]['remove']['uniqueMember'][] = $dn;
+				$return[$gons[$i]['dn']]['remove']['uniquemember'][] = $dn;
 			}
 		}
 		return $return;
@@ -2978,7 +2978,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					$memberAttr = 'member';
 					for ($g = 0; $g < sizeof($gons); $g++) {
 						if (in_array_ignore_case('groupOfUniqueNames', $gonList[$gonMap[$gons[$g]]]['objectclass'])) {
-							$memberAttr = 'uniqueMember';
+							$memberAttr = 'uniquemember';
 						}
 						$temp['dn_gon'][$gonMap[$gons[$g]]][$memberAttr][] = $accounts[$i]['dn'];
 					}

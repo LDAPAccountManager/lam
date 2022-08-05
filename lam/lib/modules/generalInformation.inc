@@ -26,6 +26,7 @@
 * @author Roland Gruber
 */
 
+use LAM\TYPES\ConfiguredType;
 use LAM\TYPES\TypeManager;
 
 /**
@@ -60,10 +61,10 @@ class generalInformation extends baseModule {
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// managed attributes
-		$return['attributes'] = array('creatorsName', 'createTimestamp', 'modifiersName',
-			'modifyTimestamp', 'hasSubordinates', 'memberOf');
-		$return['hiddenAttributes'] = array('creatorsName', 'createTimestamp', 'modifiersName',
-			'modifyTimestamp', 'hasSubordinates');
+		$return['attributes'] = array('creatorsname', 'createtimestamp', 'modifiersname',
+			'modifytimestamp', 'hassubordinates', 'memberof');
+		$return['hiddenAttributes'] = array('creatorsname', 'createtimestamp', 'modifiersname',
+			'modifytimestamp', 'hassubordinates');
 		return $return;
 	}
 
@@ -75,33 +76,33 @@ class generalInformation extends baseModule {
 	public function display_html_attributes() {
 		$return = new htmlResponsiveRow();
 		// creation info
-		if (isset($this->attributes['creatorsName'][0])) {
+		if (isset($this->attributes['creatorsname'][0])) {
 			$return->addLabel(new htmlOutputText(_('Created by')));
-			$return->addField(new htmlOutputText(getAbstractDN($this->attributes['creatorsName'][0])));
+			$return->addField(new htmlOutputText(getAbstractDN($this->attributes['creatorsname'][0])));
 		}
-		if (isset($this->attributes['createTimestamp'][0])) {
+		if (isset($this->attributes['createtimestamp'][0])) {
 			$return->addLabel(new htmlOutputText(_('Creation time')));
-			$return->addField(new htmlOutputText(formatLDAPTimestamp($this->attributes['createTimestamp'][0])));
+			$return->addField(new htmlOutputText(formatLDAPTimestamp($this->attributes['createtimestamp'][0])));
 		}
-		if (isset($this->attributes['creatorsName'][0]) || isset($this->attributes['createTimestamp'][0])) {
+		if (isset($this->attributes['creatorsname'][0]) || isset($this->attributes['createtimestamp'][0])) {
 			$return->addVerticalSpacer('1rem');
 		}
 		// modification info
-		if (isset($this->attributes['modifiersName'][0])) {
+		if (isset($this->attributes['modifiersname'][0])) {
 			$return->addLabel(new htmlOutputText(_('Modified by')));
-			$return->addField(new htmlOutputText(getAbstractDN($this->attributes['modifiersName'][0])));
+			$return->addField(new htmlOutputText(getAbstractDN($this->attributes['modifiersname'][0])));
 		}
-		if (isset($this->attributes['modifyTimestamp'][0])) {
+		if (isset($this->attributes['modifytimestamp'][0])) {
 			$return->addLabel(new htmlOutputText(_('Modification time')));
-			$return->addField(new htmlOutputText(formatLDAPTimestamp($this->attributes['modifyTimestamp'][0])));
+			$return->addField(new htmlOutputText(formatLDAPTimestamp($this->attributes['modifytimestamp'][0])));
 		}
-		if (isset($this->attributes['modifiersName'][0]) || isset($this->attributes['modifyTimestamp'][0])) {
+		if (isset($this->attributes['modifiersname'][0]) || isset($this->attributes['modifytimestamp'][0])) {
 			$return->addVerticalSpacer('1rem');
 		}
 		// children
-		if (isset($this->attributes['hasSubordinates'][0])) {
+		if (isset($this->attributes['hassubordinates'][0])) {
 			$hasChilds = _('no');
-			if ($this->attributes['hasSubordinates'][0] == 'TRUE') {
+			if ($this->attributes['hassubordinates'][0] == 'TRUE') {
 				$hasChilds = _('yes');
 			}
 			$return->addLabel(new htmlOutputText(_('Has subentries')));
@@ -109,7 +110,7 @@ class generalInformation extends baseModule {
 			$return->addVerticalSpacer('1rem');
 		}
 		// group memberships
-		if (isset($this->attributes['memberOf'][0])) {
+		if (isset($this->attributes['memberof'][0])) {
 			$typeManager = new TypeManager();
 			$scopes = array('gon', 'group');
 			$types = $typeManager->getConfiguredTypesForScopes($scopes);
@@ -128,7 +129,7 @@ class generalInformation extends baseModule {
 			$groupLabel->alignment = htmlElement::ALIGN_TOP;
 			$return->addLabel($groupLabel);
 			$groups = new htmlTable();
-			foreach ($this->attributes['memberOf'] as $memberOf) {
+			foreach ($this->attributes['memberof'] as $memberOf) {
 				$groupEntry = new htmlOutputText(getAbstractDN($memberOf));
 				foreach ($suffixList as $suffix => $type) {
 					if ((stripos($memberOf, $suffix) > 0) && !isAccountTypeHidden($type)) {
@@ -159,6 +160,20 @@ class generalInformation extends baseModule {
 	 */
 	public function loadAttributesFromAccountCopy(array $ldapAttributes, array $attributesToIgnore = array()) : void {
 		// no action for this module
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
+		return array(
+			'creatorsname' => _('Created by'),
+			'createtimestamp' => _('Creation time'),
+			'modifiersname' => _('Modified by'),
+			'modifytimestamp' => _('Modification time'),
+			'hassubordinates' => _('Has subentries'),
+			'memberof' => _('Groups')
+		);
 	}
 
 }

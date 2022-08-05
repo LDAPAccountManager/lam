@@ -113,27 +113,13 @@ class group extends baseType {
 		$return = array_merge(
 			parent::getListAttributeDescriptions(),
 			array(
-				"cn" => _("Group name"),
+				"cn" => _("Name"),
 				"description" => _("Group description"),
 				"displayName" => _("Display name"),
 				"gidnumber" => _("GID number"),
-				"member" => _("Group member DNs"),
 				"memberuid" => _("Group members"),
-				"roleOccupant" => _("Role member DNs"),
-				"uniqueMember" => _("Group member DNs"),
 				"memberUrl" => _("Entries"),
-				'memberuid_count' => _('Member count'),
-				'member_count' => _('Member count'),
-				'uniqueMember_count' => _('Member count'),
-				'owner_count' => _('Owner count'),
-				'roleOccupant_count' => _('Member count')
 			));
-		if ($this->getType() != null) {
-			$modules = $this->getType()->getModules();
-			if (in_array('organizationalRole', $modules)) {
-				$return['cn'] = _('Role name');
-			}
-		}
 		return $return;
 	}
 
@@ -299,7 +285,7 @@ class lamGroupList extends lamList {
 	 * @see lamList::getTableCellContent()
 	 */
 	protected function getTableCellContent(&$entry, &$attribute) {
-		$countAttributes = array('memberuid_count', 'member_count', 'uniqueMember_count', 'owner_count', 'roleOccupant_count');
+		$countAttributes = array('memberuid_count', 'member_count', 'uniquemember_count', 'owner_count', 'roleoccupant_count');
 		if ($attribute == "memberuid") {
 			// $gid is used for linking primary group members
 			$gid = -1;
@@ -365,7 +351,7 @@ class lamGroupList extends lamList {
 			return new htmlOutputText(implode("; ", $linklist), false);
 		}
 		// pretty print member DNs
-		elseif (in_array_ignore_case($attribute, array('member', 'uniqueMember', 'owner', 'roleOccupant')) && !empty($entry[$attribute])) {
+		elseif (in_array_ignore_case($attribute, array('member', 'uniquemember', 'owner', 'roleOccupant')) && !empty($entry[$attribute])) {
 			$values = $entry[$attribute];
 			if (!empty($values)) {
 				usort($values, 'compareDN');
