@@ -2,10 +2,12 @@
 use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
+use LAM\TYPES\ConfiguredType;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2019  Roland Gruber
+  Copyright (C) 2009 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -646,7 +648,16 @@ class nisnetgroup extends baseModule {
 		return $this->cachedHostList;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
+		return array(
+			"cn" => _("Group name"),
+			'description' => _('Description'),
+			'membernisnetgroup' => _('Subgroups'),
+			'nisnetgrouptriple' => _('Members')
+		);
+	}
+
 }
-
-
-?>

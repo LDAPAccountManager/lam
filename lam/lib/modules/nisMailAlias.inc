@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2019  Roland Gruber
+  Copyright (C) 2004 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@
 * @package modules
 * @author Roland Gruber
 */
+
+use LAM\TYPES\ConfiguredType;
 
 /**
 * Provides NIS mail alias management.
@@ -511,7 +513,14 @@ class nisMailAlias extends baseModule {
 		return $this->cachedUserList;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
+		return array(
+			"cn" => _("Alias name"),
+			"rfc822mailmember" => _("Recipient list")
+		);
+	}
+
 }
-
-
-?>
