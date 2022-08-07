@@ -90,47 +90,6 @@ class user extends baseType {
 	}
 
 	/**
-	* Returns a list of attributes which have a translated description.
-	* This is used for the head row in the list view.
-	*
-	* @return array list of descriptions
-	*/
-	function getListAttributeDescriptions() {
-		return array_merge(
-			parent::getListAttributeDescriptions(),
-			array(
-				"cn" => _("Common name"),
-				'company' => _('Company'),
-				'departmentNumber' => _('Department'),
-				'displayName' => _('Display name'),
-				'employeeNumber' => _('Employee number'),
-				"gecos" => _("Description"),
-				"gidnumber" => _("GID number"),
-				"givenname" => _("First name"),
-				"homedirectory" => _("Home directory"),
-				"host" => _("Allowed hosts"),
-				"jpegphoto" => _('Photo'),
-				"loginshell" => _("Login shell"),
-				"mail" => _("Email"),
-				'manager' => _('Manager'),
-				'o' => _('Organisation'),
-				'ou' => _('Organisational unit'),
-				'proxyAddresses' => _('Proxy-Addresses'),
-				'sambakickofftime' => _('Account expiration date'),
-				'shadowexpire' => _('Account expiration date'),
-				"sn" => _("Last name"),
-				'streetAddress' => _('Street'),
-				'telephoneNumber' => _('Telephone number'),
-				'title' => _('Job title'),
-				"uid" => _("User name"),
-				"uidnumber" => _("UID number"),
-				'userPrincipalName' => _('User name'),
-				'accountunlocktime' => _('Locked till'),
-				'passwordexpirationtime' => _('Password expiration'),
-		));
-	}
-
-	/**
 	 * Returns the the title text for the title bar on the new/edit page.
 	 *
 	 * @param accountContainer $container account container

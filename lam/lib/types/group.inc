@@ -104,26 +104,6 @@ class group extends baseType {
 	}
 
 	/**
-	* Returns a list of attributes which have a translated description.
-	* This is used for the head row in the list view.
-	*
-	* @return array list of descriptions
-	*/
-	function getListAttributeDescriptions() {
-		$return = array_merge(
-			parent::getListAttributeDescriptions(),
-			array(
-				"cn" => _("Name"),
-				"description" => _("Group description"),
-				"displayName" => _("Display name"),
-				"gidnumber" => _("GID number"),
-				"memberuid" => _("Group members"),
-				"memberUrl" => _("Entries"),
-			));
-		return $return;
-	}
-
-	/**
 	 * Returns the the title text for the title bar on the new/edit page.
 	 *
 	 * @param accountContainer $container account container
@@ -466,6 +446,3 @@ class lamGroupList extends lamList {
 	}
 
 }
-
-
-?>

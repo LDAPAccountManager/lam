@@ -2,6 +2,8 @@
 use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
+use LAM\TYPES\ConfiguredType;
+
 /*
 
   This code is not yet part of LDAP Account Manager (http://www.ldap-account-manager.org/)
@@ -523,6 +525,16 @@ class puppetClient extends baseModule {
 		return $return;
 	}
 
-}
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
+		return array(
+			'environment' => _('Environment'),
+			'parentnode' => _('Parent node'),
+			'puppetclass' => _('Classes'),
+			'puppetvar' => _('Variables'),
+		);
+	}
 
-?>
+}

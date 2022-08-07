@@ -2,11 +2,12 @@
 use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
+use LAM\TYPES\ConfiguredType;
 use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2021  Roland Gruber
+  Copyright (C) 2013 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1197,7 +1198,18 @@ class pykotaUser extends baseModule {
 		return $configContainer;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
+		return array(
+			'pykotausername' => _('PyKota user name'),
+			'pykotalimitby' => _('Limit type'),
+			'pykotabalance' => _('Balance'),
+			'pykotaovercharge' => _('Overcharge factor'),
+			'pykotalifetimepaid' => _('Total paid'),
+			'pykotapayments' => _('Payment history'),
+		);
+	}
+
 }
-
-
-?>

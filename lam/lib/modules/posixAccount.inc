@@ -4390,4 +4390,19 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		}
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
+		return array(
+			'uid' => _('User name'),
+			'cn' => _('Common name'),
+			'gecos' => _('Gecos'),
+			'uidnumber' => _('UID number'),
+			'gidnumber' => _('GID number'),
+			'homedirectory' => _('Home directory'),
+			'loginshell' => _('Login shell'),
+		);
+	}
+
 }
