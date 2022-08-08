@@ -1,3 +1,11 @@
+ldap-account-manager (8.0.1-1.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Re-upload as source-only upload to allow testing migration
+    (Closes: #1016774)
+
+ -- Salvatore Bonaccorso <carnil@debian.org>  Sun, 07 Aug 2022 10:04:12 +0200
+
 ldap-account-manager (8.0.1-1) unstable; urgency=medium
 
   * new upstream release
