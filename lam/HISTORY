@@ -12,6 +12,7 @@ September 2022 8.1
    -> Group of unique names/members shared same configuration settings with group of names
    -> Shadow last password change not updated during self service password change
 
+
 29.06.2022 8.0.1
   - Fixed bugs:
    -> Regression issues due to security fixes (e.g. module settings in server profile)
