@@ -3447,8 +3447,8 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 								$return['del']['userpassword'][0] = $_POST['posixAccount_passwordOld'];
 							}
 							$return['info']['userPasswordClearText'][0] = $_POST['posixAccount_password'];
-							if (isset($attributes['shadowLastChange'][0])) {
-								$return['mod']['shadowLastChange'][0] = intval(time()/3600/24);
+							if (isset($attributes['shadowlastchange'][0])) {
+								$return['mod']['shadowlastchange'][0] = intval(time()/3600/24);
 							}
 							$_SESSION['selfService_clientPasswordNew'] = $_POST['posixAccount_password'];
 						}
@@ -3467,8 +3467,8 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		if (in_array('syncWindowsPassword', $fields) && !empty($_POST['windowsUser_unicodePwd'])) {
 			$password = $_POST['windowsUser_unicodePwd'];
 			$return['mod']['unixUserPassword'][0] = pwd_hash($password, true, $this->selfServiceSettings->moduleSettings['posixAccount_pwdHash'][0]);
-			if (isset($attributes['shadowLastChange'][0])) {
-				$return['mod']['shadowLastChange'][0] = intval(time()/3600/24);
+			if (isset($attributes['shadowlastchange'][0])) {
+				$return['mod']['shadowlastchange'][0] = intval(time()/3600/24);
 			}
 		}
 		// cn
