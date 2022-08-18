@@ -26,6 +26,8 @@
 * @author Roland Gruber
 */
 
+use LAM\TYPES\ConfiguredType;
+
 /**
 * Manages Samba 3 domain entries.
 *
@@ -633,7 +635,14 @@ class sambaDomain extends baseModule {
 		return $return;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
+		return array(
+			"sambasid" => _("Domain SID"),
+			"sambadomainname" => _("Domain name")
+		);
+	}
+
 }
-
-
-?>

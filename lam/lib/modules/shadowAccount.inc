@@ -1038,6 +1038,20 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 		return null;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
+		return array(
+			'shadowlastchange' => _('Last password change'),
+			'shadowwarning' => _('Password warning'),
+			'shadowinactive' => _('Password expiration'),
+			'shadowexpire' => _('Account expiration date'),
+			'shadowminage' => _('Minimum password age'),
+			'shadowmaxage' => _('Maximum password age'),
+		);
+	}
+
 }
 
 if (interface_exists('\LAM\JOB\Job', false)) {

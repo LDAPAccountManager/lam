@@ -2,11 +2,12 @@
 use \LAM\PDF\PDFTable;
 use \LAM\PDF\PDFTableCell;
 use \LAM\PDF\PDFTableRow;
+use LAM\TYPES\ConfiguredType;
 use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2021  Roland Gruber
+  Copyright (C) 2013 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1093,7 +1094,19 @@ class windowsGroup extends baseModule {
 		return $configContainer;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
+		return array(
+			'cn' => _('Group name'),
+			'description' => _('Description'),
+			'info' => _('Notes'),
+			'member' => _('Members'),
+			'memberof' => _('Member of'),
+			'grouptype' => _('Group type'),
+			'groupscope' => _('Group scope'),
+		);
+	}
+
 }
-
-
-?>

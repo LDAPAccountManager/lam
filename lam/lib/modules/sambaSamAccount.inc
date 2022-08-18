@@ -3199,4 +3199,16 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		return null;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
+		return array(
+			'displayname' => _('Display name'),
+			'sambakickofftime' => _('Account expiration date'),
+			'sambadomainname' => _('Domain'),
+			'sambaprimarygroupsid' => _('Windows group')
+		);
+	}
+
 }

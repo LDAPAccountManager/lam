@@ -1,10 +1,12 @@
 <?php
+
+use LAM\TYPES\ConfiguredType;
 use \LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2007 - 2021  Roland Gruber
+                2007 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -765,6 +767,18 @@ class sambaGroupMapping extends baseModule {
 		}
 	}
 
-}
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
+		return array(
+			'gidnumber' => _('GID number'),
+			'sambasid' => _('Windows group'),
+			'displayname' => _('Display name'),
+			'sambagrouptype' => _('Samba group type'),
+			'description' => _('Description'),
+			'sambasidlist' => _('Local members'),
+		);
+	}
 
-?>
+}

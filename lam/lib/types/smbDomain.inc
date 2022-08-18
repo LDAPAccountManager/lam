@@ -89,21 +89,6 @@ class smbDomain extends baseType {
 	}
 
 	/**
-	* Returns a list of attributes which have a translated description.
-	* This is used for the head row in the list view.
-	*
-	* @return array list of descriptions
-	*/
-	function getListAttributeDescriptions() {
-		return array_merge(
-			parent::getListAttributeDescriptions(),
-			array(
-				"sambasid" => _("Domain SID"),
-				"sambadomainname" => _("Domain name")
-		));
-	}
-
-	/**
 	 * Returns the the title text for the title bar on the new/edit page.
 	 *
 	 * @param accountContainer $container account container
@@ -181,5 +166,3 @@ class lamSmbDomainList extends lamList {
 	}
 
 }
-
-?>

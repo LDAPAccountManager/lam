@@ -4504,6 +4504,20 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		}
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getListAttributeDescriptions(ConfiguredType $type): array {
+		return array(
+			'userprincipalname' => _('User name'),
+			'cn' => _('Common name'),
+			'displayname' => _('Display name'),
+			'givenname' => _('First name'),
+			'sn' => _('Last name'),
+			'mail' => _('Email address'),
+		);
+	}
+
 }
 
 if (interface_exists('\LAM\JOB\Job', false)) {
