@@ -854,7 +854,7 @@
         </listitem>
 
         <listitem>
-          <para>$group: Groupe name (not numeric number)</para>
+          <para>$group: Group name (not numeric number)</para>
         </listitem>
       </itemizedlist>
 

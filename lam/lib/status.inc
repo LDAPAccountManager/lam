@@ -121,7 +121,7 @@ function parseMessageString($MessageString) {
  * @param string $text The text that is used to search for {bold} and {endbold} tags.
  *
  * @return string The submitted text with {bold} and {endbold} replaced with
- * the appropriate HTML tages <b> and </b>
+ * the appropriate HTML tags <b> and </b>
  */
 function boldText($text) {
 	if ($text === null) {

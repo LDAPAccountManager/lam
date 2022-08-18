@@ -3,7 +3,7 @@ namespace LAM\TYPES;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2021  Roland Gruber
+  Copyright (C) 2005 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -273,7 +273,7 @@ class ConfiguredType {
 		}
 		// add root suffix if needed
 		$found = false;
-		for ($i = 0; $i < sizeof($ret); $i++) { // search suffix case-intensitive
+		for ($i = 0; $i < sizeof($ret); $i++) { // search suffix case-insensitive
 			if (strtolower($this->getSuffix()) == strtolower($ret[$i])) {
 				$found = true;
 				break;

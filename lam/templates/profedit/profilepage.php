@@ -98,7 +98,7 @@ $accountProfilePersistenceManager = new AccountProfilePersistenceManager();
 
 $errors = array();
 
-// save button was presed
+// save button was pressed
 if (isset($_POST['save'])) {
 	// create option array to check and save
 	$options = array();
