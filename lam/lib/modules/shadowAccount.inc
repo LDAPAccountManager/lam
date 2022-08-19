@@ -1026,7 +1026,7 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 	 * @inheritDoc
 	 */
 	public function getListRenderFunction(string $attributeName): ?callable {
-		if (($attributeName == 'shadowexpire') || ($attributeName == 'shadowlastchange')) {
+		if (($attributeName === 'shadowexpire') || ($attributeName === 'shadowlastchange')) {
 			return function(array $entry, string $attribute): ?htmlElement {
 				if (!empty($entry[$attribute][0])) {
 					$time = new DateTime('@' . $entry[$attribute][0] * 24 * 3600, getTimeZone());

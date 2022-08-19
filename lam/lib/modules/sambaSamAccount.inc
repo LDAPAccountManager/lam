@@ -3182,7 +3182,7 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 	 * @inheritDoc
 	 */
 	public function getListRenderFunction(string $attributeName): ?callable {
-		if ($attributeName == 'sambakickofftime') {
+		if ($attributeName === 'sambakickofftime') {
 			return function(array $entry, string $attribute): ?htmlElement {
 				if (!empty($entry[$attribute][0])) {
 					if ($entry[$attribute][0] > 2147483648) {

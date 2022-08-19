@@ -912,4 +912,63 @@ class fixed_ip extends baseModule {
 		);
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getListRenderFunction(string $attributeName): ?callable {
+		if ($attributeName === 'fixed_ips') {
+			return function(array $entry, string $attribute): ?htmlElement {
+				// find all fixed addresses:
+				$entries = searchLDAP($entry['dn'], 'objectClass=dhcpHost', array('dhcpstatements', 'dhcphwaddress', 'cn'));
+				if (sizeof($entries) > 0) {
+					// sort by IP
+					$order = array();
+					for ($i = 0; $i < sizeof($entries); $i++) {
+						$order[$i] = '';
+						if (!empty($entries[$i]['dhcpstatements'])) {
+							$order[$i] = fixed_ip::extractIP($entries[$i]['dhcpstatements']);
+						}
+					}
+					$group = new htmlGroup();
+					natcasesort($order);
+					for ($i = 0; $i < sizeof($order); $i++) {
+						$dhcpstatements = array();
+						if (isset($entries[$i]['dhcpstatements'][0])) {
+							$dhcpstatements = $entries[$i]['dhcpstatements'];
+						}
+						$cssClasses = array('nowrap');
+						if (!fixed_ip::isActive($dhcpstatements)) {
+							$cssClasses[] = 'strike-through';
+						}
+						$dhcphwaddress = explode(" ",$entries[$i]['dhcphwaddress'][0]);
+						$ipAddress = fixed_ip::extractIP($dhcpstatements);
+						$ip = new htmlOutputText($ipAddress);
+						$ip->setCSSClasses($cssClasses);
+						$group->addElement($ip);
+						if (!empty($ipAddress)) {
+							$group->addElement(new htmlOutputText('<br>', false));
+						}
+						$macAddress = array_pop($dhcphwaddress);
+						$mac = new htmlOutputText($macAddress);
+						$mac->setCSSClasses($cssClasses);
+						$group->addElement($mac);
+						if (!empty($macAddress)) {
+							$group->addElement(new htmlOutputText('<br>', false));
+						}
+						$name = new htmlOutputText($entries[$i]['cn'][0]);
+						$name->setCSSClasses($cssClasses);
+						$group->addElement($name);
+						$group->addElement(new htmlOutputText('<br>', false));
+						if ($i < (sizeof($order) - 1)) {
+							$group->addElement(new htmlOutputText('<br>', false));
+						}
+					}
+					return $group;
+				}
+				return null;
+			};
+		}
+		return null;
+	}
+
 }

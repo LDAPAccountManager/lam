@@ -832,4 +832,58 @@ class range extends baseModule {
 		);
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getListRenderFunction(string $attributeName): ?callable {
+		if ($attributeName === 'dhcprange') {
+			return function(array $entry, string $attribute): ?htmlElement {
+				if (!empty($entry[$attribute][0])) {
+					$table = new htmlTable();
+					$table->setCSSClasses(array('nowrap'));
+					$ranges = array();
+					foreach($entry['dhcprange'] AS $value) {
+						if (!empty($value) && !is_numeric($value)) {
+							$ex = explode(" ", $value);
+							$row = new htmlTableRow(
+								array(
+									new htmlOutputText($ex[0]),
+									new htmlOutputText(' - '),
+									new htmlOutputText($ex[1])
+								)
+							);
+							$ranges[$ex[0] . ' - ' . $ex[1]] = $row;
+						}
+					}
+					$pooledRanges = searchLDAP($entry['dn'], '(objectclass=dhcpPool)', array('dhcprange'));
+					foreach ($pooledRanges as $pool) {
+						if (empty($pool['dhcprange'])) {
+							continue;
+						}
+						foreach($pool['dhcprange'] AS $value) {
+							if (!empty($value) && !is_numeric($value)) {
+								$ex = explode(" ", $value);
+								$row = new htmlTableRow(
+									array(
+										new htmlOutputText($ex[0]),
+										new htmlOutputText(' - '),
+										new htmlOutputText($ex[1])
+									)
+								);
+								$ranges[$ex[0] . ' - ' . $ex[1]] = $row;
+							}
+						}
+					}
+					uksort($ranges, 'strnatcasecmp');
+					foreach ($ranges as $row) {
+						$table->addElement($row);
+					}
+					return $table;
+				}
+				return null;
+			};
+		}
+		return null;
+	}
+
 }
