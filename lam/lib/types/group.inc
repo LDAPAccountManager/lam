@@ -265,7 +265,6 @@ class lamGroupList extends lamList {
 	 * @see lamList::getTableCellContent()
 	 */
 	protected function getTableCellContent(&$entry, &$attribute) {
-		$countAttributes = array('memberuid_count', 'member_count', 'uniquemember_count', 'owner_count', 'roleoccupant_count');
 		if ($attribute == "memberuid") {
 			// $gid is used for linking primary group members
 			$gid = -1;
@@ -329,37 +328,6 @@ class lamGroupList extends lamList {
 				}
 			}
 			return new htmlOutputText(implode("; ", $linklist), false);
-		}
-		// pretty print member DNs
-		elseif (in_array_ignore_case($attribute, array('member', 'uniquemember', 'owner', 'roleOccupant')) && !empty($entry[$attribute])) {
-			$values = $entry[$attribute];
-			if (!empty($values)) {
-				usort($values, 'compareDN');
-			}
-			$count = sizeof($values);
-			for ($i = 0; $i < $count; $i++) {
-				$replaced = false;
-				foreach ($this->suffixList as $suffix => $type) {
-					if ((stripos($values[$i], $suffix) > 0) && !isAccountTypeHidden($type)) {
-						$values[$i] = '<a href="../account/edit.php?type=' . $type . '&amp;DN=\'' . $values[$i] . '\'">' . getAbstractDN($values[$i]) . '</a>';
-						$replaced = true;
-						break;
-					}
-				}
-				if (!$replaced) {
-					$values[$i] = getAbstractDN($values[$i]);
-				}
-			}
-			return new htmlDiv(null, new htmlOutputText(implode('<br>', $values), false), array('rightToLeftText'));
-		}
-		elseif (in_array_ignore_case($attribute, $countAttributes)) {
-			$count = 0;
-			$realAttributeName = str_replace('_count', '', $attribute);
-			$values = &$entry[$realAttributeName];
-			if (!empty($values)) {
-				$count = sizeof($values);
-			}
-			return new htmlOutputText($count);
 		}
 		// print all other attributes
 		else {
