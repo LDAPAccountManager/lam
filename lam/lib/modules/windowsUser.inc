@@ -4515,6 +4515,9 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			'givenname' => _('First name'),
 			'sn' => _('Last name'),
 			'mail' => _('Email address'),
+			'accountexpires' => _('Account expiration date'),
+			'whencreated' => _('Creation date'),
+			'whenchanged' => _('Change date'),
 		);
 	}
 
@@ -4562,6 +4565,20 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 					return $image;
 				}
 				return null;
+			};
+		}
+		elseif ($attributeName === 'accountexpires') {
+			return function(array $entry, string $attribute): ?htmlElement {
+				return new htmlOutputText($this->formatAccountExpires($entry));
+			};
+		}
+		elseif (($attributeName === 'whencreated') || ($attributeName === 'whenchanged')) {
+			return function(array $entry, string $attribute): ?htmlElement {
+				$value = ' - ';
+				if (!empty($entry[$attribute][0])) {
+					$value = formatLDAPTimestamp($entry[$attribute][0]);
+				}
+				return new htmlOutputText($value);
 			};
 		}
 		return null;

@@ -1106,7 +1106,25 @@ class windowsGroup extends baseModule {
 			'memberof' => _('Member of'),
 			'grouptype' => _('Group type'),
 			'groupscope' => _('Group scope'),
+			'whencreated' => _('Creation date'),
+			'whenchanged' => _('Change date'),
 		);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getListRenderFunction(string $attributeName): ?callable {
+		if (($attributeName === 'whencreated') || ($attributeName === 'whenchanged')) {
+			return function(array $entry, string $attribute): ?htmlElement {
+				$value = ' - ';
+				if (!empty($entry[$attribute][0])) {
+					$value = formatLDAPTimestamp($entry[$attribute][0]);
+				}
+				return new htmlOutputText($value);
+			};
+		}
+		return null;
 	}
 
 }

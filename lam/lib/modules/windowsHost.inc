@@ -379,7 +379,25 @@ class windowsHost extends baseModule {
 			'description' => _('Description'),
 			'location' => _('Location'),
 			'managedby' => _('Managed by'),
+			'whencreated' => _('Creation date'),
+			'whenchanged' => _('Change date'),
 		);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getListRenderFunction(string $attributeName): ?callable {
+		if (($attributeName === 'whencreated') || ($attributeName === 'whenchanged')) {
+			return function(array $entry, string $attribute): ?htmlElement {
+				$value = ' - ';
+				if (!empty($entry[$attribute][0])) {
+					$value = formatLDAPTimestamp($entry[$attribute][0]);
+				}
+				return new htmlOutputText($value);
+			};
+		}
+		return null;
 	}
 
 }
