@@ -151,7 +151,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		$return['objectClasses'] = array('inetOrgPerson');
 		// LDAP aliases
 		$return['LDAPaliases'] = array('commonName' => 'cn', 'surname' => 'sn', 'streetAddress' => 'street',
-			'fax' => 'facsimileTelephoneNumber', 'gn' => 'givenName', 'userid' => 'uid', 'rfc822Mailbox' => 'mail',
+			'fax' => 'facsimileTelephoneNumber', 'gn' => 'givenName', 'userid' => 'uid', 'rfc822mailbox' => 'mail',
 			'mobileTelephoneNumber' => 'mobile', 'organizationName' => 'o', 'organizationalUnitName' => 'ou');
 		// managed attributes
 		$return['attributes'] = array('uid', 'employeeType', 'givenName', 'jpegPhoto', 'mail', 'manager', 'mobile',
@@ -4608,6 +4608,27 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			'initials' => _('Initials'),
 			'jpegphoto' => _('Photo'),
 		);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getListRenderFunction(string $attributeName): ?callable {
+		if (($attributeName === 'mail') || ($attributeName === 'rfc822mailbox')) {
+			return function(array $entry, string $attribute): ?htmlElement {
+				$group = new htmlGroup();
+				if (isset($entry[$attribute][0]) && ($entry[$attribute][0] != '')) {
+					for ($i = 0; $i < sizeof($entry[$attribute]); $i++) {
+						if ($i > 0) {
+							$group->addElement(new htmlOutputText(", "));
+						}
+						$group->addElement(new htmlLink($entry[$attribute][$i], "mailto:" . $entry[$attribute][$i]));
+					}
+				}
+				return $group;
+			};
+		}
+		return null;
 	}
 
 }

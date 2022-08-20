@@ -434,4 +434,25 @@ class kolabSharedFolder extends baseModule {
 		);
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function getListRenderFunction(string $attributeName): ?callable {
+		if ($attributeName === 'mail') {
+			return function(array $entry, string $attribute): ?htmlElement {
+				$group = new htmlGroup();
+				if (isset($entry[$attribute][0]) && ($entry[$attribute][0] != '')) {
+					for ($i = 0; $i < sizeof($entry[$attribute]); $i++) {
+						if ($i > 0) {
+							$group->addElement(new htmlOutputText(", "));
+						}
+						$group->addElement(new htmlLink($entry[$attribute][$i], "mailto:" . $entry[$attribute][$i]));
+					}
+				}
+				return $group;
+			};
+		}
+		return null;
+	}
+
 }

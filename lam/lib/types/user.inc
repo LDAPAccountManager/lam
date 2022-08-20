@@ -530,18 +530,6 @@ class lamUserList extends lamList {
 			$image->setCSSClasses(array('thumbnail'));
 			return $image;
 		}
-		elseif (($attribute == 'mail') || ($attribute == 'rfc822Mailbox')) {
-			$group = new htmlGroup();
-			if (isset($entry[$attribute][0]) && ($entry[$attribute][0] != '')) {
-				for ($i = 0; $i < sizeof($entry[$attribute]); $i++) {
-					if ($i > 0) {
-						$group->addElement(new htmlOutputText(", "));
-					}
-					$group->addElement(new htmlLink($entry[$attribute][$i], "mailto:" . $entry[$attribute][$i]));
-				}
-			}
-			return $group;
-		}
 		// account status
 		elseif ($attribute == self::ATTR_ACCOUNT_STATUS) {
 			return $this->getAccountStatus($entry);
