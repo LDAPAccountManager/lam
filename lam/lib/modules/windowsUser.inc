@@ -4536,6 +4536,34 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				return $group;
 			};
 		}
+		elseif ($attributeName === 'jpegphoto') {
+			return function(array $entry, string $attribute): ?htmlElement {
+				if (isset($entry[$attribute][0]) && ($entry[$attribute][0] !== '')) {
+					if (strlen($entry[$attribute][0]) < 100) {
+						// looks like we have read broken binary data, reread photo
+						$result = @ldap_read($_SESSION['ldap']->server(), $entry['dn'], $attribute . "=*", array($attribute), 0, 0, 0, LDAP_DEREF_NEVER);
+						if ($result) {
+							$tempEntry = @ldap_first_entry($_SESSION['ldap']->server(), $result);
+							if ($tempEntry) {
+								$binData = ldap_get_values_len($_SESSION['ldap']->server(), $tempEntry, $attribute);
+								$entry[$attribute] = $binData;
+							}
+						}
+					}
+					$imgNumber = getRandomNumber();
+					$jpeg_filename = 'jpg' . $imgNumber . '.jpg';
+					$outjpeg = @fopen(dirname(__FILE__) . '/../../tmp/' . $jpeg_filename, "wb");
+					fwrite($outjpeg, $entry[$attribute][0]);
+					fclose ($outjpeg);
+					$photoFile = '../../tmp/' . $jpeg_filename;
+					$image = new htmlImage($photoFile);
+					$image->enableLightbox();
+					$image->setCSSClasses(array('thumbnail'));
+					return $image;
+				}
+				return null;
+			};
+		}
 		return null;
 	}
 

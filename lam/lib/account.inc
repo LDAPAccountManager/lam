@@ -1595,7 +1595,7 @@ class moduleCache {
  * @return int random number
  */
 function getRandomNumber() {
-	return abs(hexdec(bin2hex(openssl_random_pseudo_bytes(5))));
+	return abs(hexdec(bin2hex(openssl_random_pseudo_bytes(6))));
 }
 
 /**
