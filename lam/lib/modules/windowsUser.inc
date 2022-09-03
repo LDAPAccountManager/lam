@@ -4516,7 +4516,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			'sn' => _('Last name'),
 			'mail' => _('Email address'),
 			'accountexpires' => _('Account expiration date'),
-			'whencreated' => _('Creation date'),
+			'whencreated' => _('Creation time'),
 			'whenchanged' => _('Change date'),
 		);
 	}

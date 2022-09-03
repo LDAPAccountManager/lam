@@ -1106,7 +1106,7 @@ class windowsGroup extends baseModule {
 			'memberof' => _('Member of'),
 			'grouptype' => _('Group type'),
 			'groupscope' => _('Group scope'),
-			'whencreated' => _('Creation date'),
+			'whencreated' => _('Creation time'),
 			'whenchanged' => _('Change date'),
 		);
 	}

@@ -379,7 +379,7 @@ class windowsHost extends baseModule {
 			'description' => _('Description'),
 			'location' => _('Location'),
 			'managedby' => _('Managed by'),
-			'whencreated' => _('Creation date'),
+			'whencreated' => _('Creation time'),
 			'whenchanged' => _('Change date'),
 		);
 	}
