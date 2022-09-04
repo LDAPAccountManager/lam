@@ -1,3 +1,9 @@
+ldap-account-manager (8.1.RC1-1) unstable; urgency=medium
+
+  * new upstream release
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 04 Sep 2022 18:14:11 +0100
+
 ldap-account-manager (8.0.1-1.1) unstable; urgency=medium
 
   * Non-maintainer upload.
