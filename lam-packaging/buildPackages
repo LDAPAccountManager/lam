@@ -149,7 +149,7 @@ cd ..
 # Debian
 cp -r lam-packaging/debian Debian/ldap-account-manager-$VERSION/
 cd Debian/ldap-account-manager-$VERSION
-pdebuild --debsign-k 478730308FBD512ADF09D38E7F3D136B2BCD7990
+pdebuild --auto-debsign --debsign-k 478730308FBD512ADF09D38E7F3D136B2BCD7990
 mv /var/cache/pbuilder/result/* ../
 cd ..
 rm -r ldap-account-manager-$VERSION
@@ -161,7 +161,7 @@ cp Debian/*.dsc Debian/*.orig.tar.bz2 Debian/*source.changes Debian/*.debian.tar
 cd LAMPro
 cp -r ../lam-packaging/debian Debian/ldap-account-manager-$VERSION/
 cd Debian/ldap-account-manager-$VERSION
-pdebuild --debsign-k 478730308FBD512ADF09D38E7F3D136B2BCD7990
+pdebuild --auto-debsign --debsign-k 478730308FBD512ADF09D38E7F3D136B2BCD7990
 mv /var/cache/pbuilder/result/* ../
 cd ..
 rm -r ldap-account-manager-$VERSION
