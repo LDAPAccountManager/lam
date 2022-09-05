@@ -293,7 +293,10 @@ class ConfiguredType {
 	 */
 	public function getModules() {
 		$typeSettings = $this->typeManager->getConfig()->get_typeSettings();
-		$modules = !empty($typeSettings['modules_' . $this->getId()]) ? $typeSettings['modules_' . $this->getId()] : '';
+		if (empty($typeSettings['modules_' . $this->getId()])) {
+			return array();
+		}
+		$modules = $typeSettings['modules_' . $this->getId()];
 		return explode(',', $modules);
 	}
 
