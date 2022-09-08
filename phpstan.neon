@@ -1,5 +1,5 @@
 parameters:
-	level: 6
+	level: 7
 	scanDirectories:
 		- lam/lib
 		- lam/templates

@@ -67,7 +67,7 @@ if (isLAMProVersion()) {
 }
 
 // set session save path
-if (strtolower(session_module_name()) == 'files') {
+if (isFileBasedSession()) {
 	session_save_path(dirname(__FILE__) . '/../sess');
 }
 

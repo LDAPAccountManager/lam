@@ -50,7 +50,7 @@ use ZipArchive;
 include_once('../../lib/persistence.inc');
 
 // start session
-if (strtolower(session_module_name()) == 'files') {
+if (isFileBasedSession()) {
 	session_save_path("../../sess");
 }
 lam_start_session();

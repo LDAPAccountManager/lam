@@ -65,7 +65,7 @@ include_once __DIR__ . '/../../lib/2factor.inc';
 include_once __DIR__ . '/../../lib/configPages.inc';
 
 // start session
-if (strtolower(session_module_name()) == 'files') {
+if (isFileBasedSession()) {
 	session_save_path("../../sess");
 }
 lam_start_session();
