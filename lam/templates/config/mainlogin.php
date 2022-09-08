@@ -73,17 +73,7 @@ printHeaderContents(_("Login"), '../..');
 	<body>
 		<?php
 			// include all JavaScript files
-			$jsDirName = dirname(__FILE__) . '/../lib';
-			$jsDir = dir($jsDirName);
-			$jsFiles = array();
-			while ($jsEntry = $jsDir->read()) {
-				if (substr($jsEntry, strlen($jsEntry) - 3, 3) != '.js') continue;
-				$jsFiles[] = $jsEntry;
-			}
-			sort($jsFiles);
-			foreach ($jsFiles as $jsEntry) {
-				echo "<script type=\"text/javascript\" src=\"../lib/" . $jsEntry . "\"></script>\n";
-			}
+		    printJsIncludes('../..');
 		?>
         <div id="lam-topnav" class="lam-header">
             <div class="lam-header-left lam-menu-stay">

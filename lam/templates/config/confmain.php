@@ -411,6 +411,9 @@ foreach ($tools as $tool) {
     }
 	$hideableTools++;
 	$toolClass = get_class($tool);
+	if ($toolClass === false) {
+	    continue;
+    }
 	$toolName = substr($toolClass, strrpos($toolClass, '\\') + 1);
 	$selected = false;
 	if (isset($toolSettings['tool_hide_' . $toolName]) && ($toolSettings['tool_hide_' . $toolName] === 'true')) {
@@ -769,6 +772,9 @@ function checkInput(): array {
     }
 	foreach ($tools as $tool) {
 	    $toolClass = get_class($tool);
+	    if ($toolClass === false) {
+	        continue;
+        }
 	    $toolName = substr($toolClass, strrpos($toolClass, '\\') + 1);
 		$toolConfigID = 'tool_hide_' . $toolName;
 		if ((isset($_POST[$toolConfigID])) && ($_POST[$toolConfigID] == 'on')) {
