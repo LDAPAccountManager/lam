@@ -126,13 +126,16 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	$uploadColumns = getUploadColumns($type, $selectedModules);
 	// read input file
 	$handle = fopen ($_FILES['inputfile']['tmp_name'], "r");
-	if (($head = fgetcsv($handle, 2000)) !== false ) { // head row
-		foreach ($head as $i => $headItem) {
-			$ids[$headItem] = $i;
+	if ($handle !== false) {
+		if (($head = fgetcsv($handle, 2000)) !== false ) { // head row
+			foreach ($head as $i => $headItem) {
+				$ids[$headItem] = $i;
+			}
 		}
-	}
-	while (($line = fgetcsv($handle, 2000)) !== false ) { // account rows
-		$data[] = $line;
+		while (($line = fgetcsv($handle, 2000)) !== false ) { // account rows
+			$data[] = $line;
+		}
+		fclose($handle);
 	}
 
 	$errors = array();

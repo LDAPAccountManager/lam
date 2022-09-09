@@ -28,3 +28,6 @@ parameters:
 		- '#Cannot assign new offset to array<int, string>\|string.#'
 		- '#Parameter \#1 \$result of function ldap_free_result expects LDAP\\Result, array\|LDAP\\Result given.#'
 		- '#Cannot access offset .* on array\|int.#'
+		- '#Parameter \#1 \$haystack of function strpos expects string, int\|string given.#'
+		- '#Argument of an invalid type array\|int supplied for foreach, only iterables are supported.#'
+		- '#Cannot access offset mixed on non-empty-array\|int.#'

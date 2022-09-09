@@ -75,11 +75,13 @@ function showTree(): void {
 			if ((strlen($initialDn) > strlen($rootDn)) && substr($initialDn, -1 * strlen($rootDn)) === $rootDn) {
 				$extraDnPart = substr($initialDn, 0, (-1 * strlen($rootDn)) - 1);
 				$dnParts = ldap_explode_dn($extraDnPart, 0);
-				unset($dnParts['count']);
-				$dnPartsCount = sizeof($dnParts);
-				for ($i = 0; $i < $dnPartsCount; $i++) {
-					$currentParts = array_slice($dnParts, $dnPartsCount - ($i + 1));
-					$openInitial[] = '"' . base64_encode(implode(',', $currentParts) . ',' . $rootDn) . '"';
+				if ($dnParts !== false) {
+					unset($dnParts['count']);
+					$dnPartsCount = sizeof($dnParts);
+					for ($i = 0; $i < $dnPartsCount; $i++) {
+						$currentParts = array_slice($dnParts, $dnPartsCount - ($i + 1));
+						$openInitial[] = '"' . base64_encode(implode(',', $currentParts) . ',' . $rootDn) . '"';
+					}
 				}
 			}
 		}
