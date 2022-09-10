@@ -3,12 +3,13 @@ namespace LAM\INIT;
 
 use LAM\PDF\PdfStructurePersistenceManager;
 use LAM\PROFILES\AccountProfilePersistenceManager;
+use LAM\TYPES\TypeManager;
 use LAMException;
 
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2021  Roland Gruber
+  Copyright (C) 2003 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -74,17 +75,13 @@ if (!$conf->isHidePasswordPromptForExpiredPasswords()) {
 // check if all suffixes in conf-file exist
 $new_suffs = array();
 // get list of active types
-$typeManager = new \LAM\TYPES\TypeManager();
+$typeManager = new TypeManager();
 $types = $typeManager->getConfiguredTypes();
 foreach ($types as $type) {
 	$info = @ldap_read($_SESSION['ldap']->server(), $type->getSuffix(), "(objectClass=*)", array('objectClass'), 0, 0, 0, LDAP_DEREF_NEVER);
 	if (($info === false) && !in_array($type->getSuffix(), $new_suffs)) {
 		$new_suffs[] = $type->getSuffix();
 		continue;
-	}
-	$res = ldap_get_entries($_SESSION['ldap']->server(), $info);
-	if (!$res && !in_array($type->getSuffix(), $new_suffs)) {
-		$new_suffs[] = $type->getSuffix();
 	}
 }
 

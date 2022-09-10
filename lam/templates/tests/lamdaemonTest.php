@@ -222,8 +222,8 @@ function lamRunTestSuite($serverName, $serverTitle, $testQuota, $container): voi
 			$sr = @ldap_read($_SESSION['ldap']->server(), $ldapUser, "objectClass=posixAccount", array('uid'), 0, 0, 0, LDAP_DEREF_NEVER);
 			if ($sr) {
 				$entry = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
-				$userName = $entry[0]['uid'][0];
-				if ($userName) {
+				if (($entry !== false) && isset($entry[0]['uid'][0])) {
+					$userName = $entry[0]['uid'][0];
 					$unixOk = true;
 				}
 			}

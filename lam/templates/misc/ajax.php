@@ -405,7 +405,7 @@ class Ajax {
 	 *
 	 * @return string JSON output
 	 */
-	private function dnSelection() {
+	private function dnSelection(): string {
 		$dn = trim($_POST['dn']);
 		if (empty($dn) || !get_preg($dn, 'dn')) {
 			$dnList = $this->getDefaultDns();
@@ -415,7 +415,11 @@ class Ajax {
 			$dnList = $this->getSubDns($dn);
 		}
 		$html = $this->buildDnSelectionHtml($dnList, $dn);
-		return json_encode(array('dialogData' => $html));
+		$json = json_encode(array('dialogData' => $html));
+		if ($json === false) {
+			return '';
+		}
+		return $json;
 	}
 
 	/**
@@ -499,6 +503,9 @@ class Ajax {
 		parseHtml(null, $mainRow, array(), false, $tabindex, 'user');
 		$out = ob_get_contents();
 		ob_end_clean();
+		if ($out === false) {
+			return '';
+		}
 		return $out;
 	}
 

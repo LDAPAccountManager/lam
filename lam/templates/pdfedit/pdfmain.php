@@ -230,10 +230,16 @@ if (!empty($_POST['export'])) {
 if (isset($_POST['uploadLogo']) && !empty($_FILES['logoUpload']) && !empty($_FILES['logoUpload']['size'])) {
 	$file = $_FILES['logoUpload']['tmp_name'];
 	$handle = fopen($file, "r");
-	$data = fread($handle, 100000000);
-	fclose($handle);
-	$filename = $_FILES['logoUpload']['name'];
 	try {
+		if ($handle === false) {
+			throw new LAMException(_('Unable to create temporary file.'));
+		}
+        $data = fread($handle, 100000000);
+		if ($data === false) {
+			throw new LAMException(_('Unable to create temporary file.'));
+		}
+        fclose($handle);
+        $filename = $_FILES['logoUpload']['name'];
 		$pdfStructurePersistenceManager->savePdfLogo($_SESSION['config']->getName(), $filename, $data);
 		$container->add(new htmlStatusMessage('INFO', _('Uploaded logo file.'), $filename), 12);
     }
