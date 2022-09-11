@@ -1,5 +1,5 @@
 parameters:
-	level: 8
+	level: 9
 	scanDirectories:
 		- lam/lib
 		- lam/templates
@@ -38,3 +38,13 @@ parameters:
 		- '#Parameter \#1 \$ldap of function ldap_get_entries expects LDAP\\Connection, resource given.#'
 		- '#Parameter \#1 \$string of function htmlspecialchars expects string, array\|string given.#'
 		- '#Parameter \#1 \$name of function LAM\\ACCOUNTLIST\\search_username expects string, array\|string given.#'
+		- '#Cannot access offset int\|string on mixed.#'
+		- '#Parameter \#1 \$array of function array_keys expects array, mixed given.#'
+		- '#Cannot access offset .+ on mixed.#'
+		- '#Argument of an invalid type mixed supplied for foreach, only iterables are supported.#'
+		- '#Parameter \#1 \$string of function htmlspecialchars expects string, mixed given.#'
+		- '#Parameter \#2 \$args of function call_user_func_array expects array<int\|string, mixed>, mixed given.#'
+		- '#Parameter \#2 \$user of function LAM\\ACCOUNTLIST\\setSpecifiedPassword expects array, array\|null given.#'
+		- '#Parameter \#2 \$user of function LAM\\ACCOUNTLIST\\generatePassword expects array, array\|null given.#'
+		- '#Parameter \#2 \$attributes of function LAM\\ACCOUNTLIST\\unlock expects array, array\|null given.#'
+		- '#Parameter \#2 \$attributes of function LAM\\ACCOUNTLIST\\lock expects array, array\|null given.#'

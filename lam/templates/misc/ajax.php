@@ -409,7 +409,7 @@ class Ajax {
 		$dn = trim($_POST['dn']);
 		if (empty($dn) || !get_preg($dn, 'dn')) {
 			$dnList = $this->getDefaultDns();
-			$dn = null;
+			return '';
 		}
 		else {
 			$dnList = $this->getSubDns($dn);

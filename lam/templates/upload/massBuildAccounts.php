@@ -74,6 +74,9 @@ if (isset($_POST['showldif'])) {
 	header('Content-Type: text/plain');
 	header('Content-disposition: attachment; filename=lam.ldif');
 	$accounts = unserialize(lamDecrypt($_SESSION['mass_accounts']));
+	if ($accounts === false) {
+		exit;
+	}
 	foreach ($accounts as $account) {
 		echo "DN: " . $account['dn'] . "\n";
 		unset($account['dn']);
