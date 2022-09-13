@@ -24,8 +24,9 @@ set -eu # unset variables are errors & non-zero return values exit the whole scr
 [ "$DEBUG" ] && set -x
 
 if [ "${LAM_DISABLE_TLS_CHECK:-}" == "true" ]; then
-  ln -s /etc/ldap/ldap.conf /etc/ldap.conf
-  echo "TLS_REQCERT never" >> /etc/ldap/ldap.conf
+  if ! grep -e '^TLS_REQCERT never$' /etc/ldap/ldap.conf > /dev/null; then
+    echo "TLS_REQCERT never" >> /etc/ldap/ldap.conf
+  fi
 fi
 
 sed -i -f- /etc/php/7.4/apache2/php.ini <<- EOF
