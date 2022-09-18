@@ -451,25 +451,30 @@ window.lam.profilePdfEditor = window.lam.profilePdfEditor || {};
  */
 window.lam.profilePdfEditor.showDistributionDialog = function(title, okText, cancelText, typeId, type, selectFieldName) {
 	// show dialog
-	var buttonList = {};
-	var dialogId = '';
-
+	let dialogId = '';
+	let formId = '';
 	if (type == 'export') {
 		document.getElementById('name_' + typeId).value = document.getElementById(selectFieldName).value;
 		dialogId = 'exportDialog_' + typeId;
-		buttonList[okText] = function() { document.forms["exportDialogForm_" + typeId].submit(); };
+		formId = "exportDialogForm_" + typeId;
 	} else if (type == 'import') {
 		dialogId = 'importDialog_' + typeId;
-		buttonList[okText] = function() { document.forms["importDialogForm_" + typeId].submit(); };
+		formId = "importDialogForm_" + typeId;
 	}
-	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
-
-	jQuery('#' + dialogId).dialog({
-		modal: true,
+	const dialogContent = document.getElementById(dialogId).cloneNode(true);
+	dialogContent.classList.remove('hidden');
+	dialogContent.firstElementChild.id = formId + '_dlg';
+	Swal.fire({
 		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
+		confirmButtonText: okText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		html: dialogContent.outerHTML,
 		width: 'auto'
+	}).then(result => {
+		if (result.isConfirmed) {
+			document.forms[formId + "_dlg"].submit();
+		}
 	});
 }
 

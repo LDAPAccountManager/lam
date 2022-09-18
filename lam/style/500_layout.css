@@ -928,3 +928,7 @@ div.swal2-html-container {
 .swal2-popup {
 	color: var(--lam-text-color-default);
 }
+
+.swal2-html-container form {
+	text-align: left;
+}
