@@ -455,7 +455,7 @@ window.lam.profilePdfEditor.showDistributionDialog = function(title, okText, can
 	var dialogId = '';
 
 	if (type == 'export') {
-		jQuery('#name_' + typeId).val(jQuery('#' + selectFieldName).val());
+		document.getElementById('name_' + typeId).value = document.getElementById(selectFieldName).value;
 		dialogId = 'exportDialog_' + typeId;
 		buttonList[okText] = function() { document.forms["exportDialogForm_" + typeId].submit(); };
 	} else if (type == 'import') {
@@ -471,11 +471,6 @@ window.lam.profilePdfEditor.showDistributionDialog = function(title, okText, can
 		buttons: buttonList,
 		width: 'auto'
 	});
-	if (type == 'export') {
-		equalWidth(new Array('#passwd_' + typeId, '#destServerProfiles_' + typeId));
-	} else if (type == 'import') {
-		equalWidth(new Array('#passwd_' + typeId, '#importProfiles'));
-	}
 }
 
 /**
