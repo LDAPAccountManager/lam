@@ -53,7 +53,7 @@ function listOUchanged(type, element) {
  * @param e event
  */
 function listPageNumberKeyPress(url, e) {
-	var pageNumber = jQuery('#listNavPage').val();
+	const pageNumber = document.getElementById('listNavPage').value;
 	if (e.keyCode == 13) {
 		if (e.preventDefault) {
 			e.preventDefault();
@@ -72,7 +72,23 @@ function listPageNumberKeyPress(url, e) {
  * @param cancelText text for Cancel button
  */
 function listShowSettingsDialog(title, okText, cancelText) {
-	var buttonList = {};
+	let buttonList = {};
+	const dialogContent = document.getElementById('settingsDialog').cloneNode(true);
+	dialogContent.classList.remove('hidden');
+	dialogContent.firstElementChild.id = 'settingsDialogForm_dlg';
+	Swal.fire({
+		title: title,
+		confirmButtonText: okText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		html: dialogContent.outerHTML,
+		width: '48em'
+	}).then(result => {
+		if (result.isConfirmed) {
+			document.forms["settingsDialogForm_dlg"].submit();
+		}
+	});
+	return;
 	buttonList[okText] = function() { document.forms["settingsDialogForm"].submit(); };
 	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
 	jQuery('#settingsDialog').dialog({

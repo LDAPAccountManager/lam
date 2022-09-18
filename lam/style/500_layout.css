@@ -889,3 +889,14 @@ div.tree-highlight {
 	margin-top: 0.4rem;
 	cursor: grab;
 }
+
+div.swal2-html-container {
+	overflow: hidden;
+}
+
+.swal2-styled.swal2-confirm {
+	background: var(--lam-background-color-primary);
+}
+.swal2-styled.swal2-confirm:focus {
+	box-shadow: none;
+}

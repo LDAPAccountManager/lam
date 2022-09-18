@@ -1191,6 +1191,8 @@ templates/lib/*jquery-validationEngine-*.js                          B  2010  Ce
 style/150_jquery-validationEngine*.css                               B  2010  Cedric Dugas and Olivier Refalo
 templates/lib/*flatpickr*.js                                         B  2017  Gregory Petrosyan
 style/600_flatpickr.css                                              B  2017  Gregory Petrosyan
+templates/lib/*sweetalert2*.js                                       B
+style/*sweetalert2*.css                                              B
 templates/lib/extra/cropperjs                                        B  2018  Chen Fengyuan
 style/600_cropper*.css                                               B  2018  Chen Fengyuan
 templates/lib/extra/duo/*.js                                         E  2019  Duo Security
