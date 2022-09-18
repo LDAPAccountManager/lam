@@ -1376,7 +1376,8 @@ class accountContainer {
 				$profileButton = new htmlButton('accountContainerLoadProfile', _('Load profile'));
 				if (!$this->isNewAccount) {
 					$profileButton->setType('submit');
-					$profileButton->setOnClick('confirmOrStopProcessing(\'' . _('This may overwrite existing values with profile data. Continue?') . '\', event);');
+					$profileButton->setOnClick('confirmLoadProfile(\'' . _('This may overwrite existing values with profile data. Continue?') . '\','
+						. ' \'' . _('Ok') . '\', \'' . _('Cancel') . '\', event);');
 				}
 				$rightGroup->addElement($profileButton);
 				$rightGroup->addElement(new htmlSpacer('1px', null));

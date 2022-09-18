@@ -72,7 +72,6 @@ function listPageNumberKeyPress(url, e) {
  * @param cancelText text for Cancel button
  */
 function listShowSettingsDialog(title, okText, cancelText) {
-	let buttonList = {};
 	const dialogContent = document.getElementById('settingsDialog').cloneNode(true);
 	dialogContent.classList.remove('hidden');
 	dialogContent.firstElementChild.id = 'settingsDialogForm_dlg';
@@ -175,21 +174,26 @@ function loginProfileChanged(element) {
  */
 function profileShowDeleteDialog(title, okText, cancelText, scope, selectFieldName) {
 	// get profile name
-	var profileName = jQuery('[name=' + selectFieldName + ']').val();
+	const profileName = document.getElementsByName(selectFieldName)[0].value;
 	// update text
-	jQuery('#deleteText').text(profileName);
+	document.getElementById('deleteText').textContent = profileName;
 	// update hidden input fields
-	jQuery('#profileDeleteType').val(scope);
-	jQuery('#profileDeleteName').val(profileName);
-	var buttonList = {};
-	buttonList[okText] = function() { document.forms["deleteProfileForm"].submit(); };
-	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
-	jQuery('#deleteProfileDialog').dialog({
-		modal: true,
+	document.getElementById('profileDeleteType').value = scope;
+	document.getElementById('profileDeleteName').value = profileName;
+	const dialogContent = document.getElementById('deleteProfileDialog').cloneNode(true);
+	dialogContent.classList.remove('hidden');
+	dialogContent.firstElementChild.id = 'deleteProfileDialog_dlg';
+	Swal.fire({
 		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
-		width: 'auto'
+		confirmButtonText: okText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		html: dialogContent.outerHTML,
+		width: '48em'
+	}).then(result => {
+		if (result.isConfirmed) {
+			document.forms["deleteProfileDialog_dlg"].submit();
+		}
 	});
 }
 
@@ -203,17 +207,21 @@ function profileShowDeleteDialog(title, okText, cancelText, scope, selectFieldNa
  * @param dialogDivID ID of div that contains dialog content
  */
 function showSimpleDialog(title, okText, cancelText, formID, dialogDivID) {
-	var buttonList = {};
-	if (okText) {
-		buttonList[okText] = function() { document.forms[formID].submit(); };
-	}
-	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
-	jQuery('#' + dialogDivID).dialog({
-		modal: true,
+	const dialogContent = document.getElementById(dialogDivID).cloneNode(true);
+	dialogContent.classList.remove('hidden');
+	dialogContent.firstElementChild.id = formID + '_dlg';
+	Swal.fire({
 		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
+		confirmButtonText: okText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		showConfirmButton: (okText !== null),
+		html: dialogContent.outerHTML,
 		width: 'auto'
+	}).then(result => {
+		if (result.isConfirmed) {
+			document.forms[formID + '_dlg'].submit();
+		}
 	});
 }
 
@@ -358,19 +366,34 @@ function appendDialogInputsToFormAndSubmit(dialogDiv, formName) {
  * If the user presses Cancel then the current action is stopped (event.preventDefault()).
  *
  * @param text dialog text
+ * @param okText text for OK button
+ * @param cancelText text for cancel button
  * @param e event
  */
-function confirmOrStopProcessing(text, e) {
-	if (!confirm(text)) {
-		if (e.preventDefault) {
-			e.preventDefault();
+function confirmLoadProfile(text, okText, cancelText, e) {
+	Swal.fire({
+		confirmButtonText: okText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		text: text,
+	}).then(result => {
+		if (result.isConfirmed) {
+			const form = document.forms["inputForm"];
+			let buttonValue = document.createElement("input");
+			buttonValue.type = "hidden";
+			buttonValue.name = "accountContainerLoadProfile";
+			buttonValue.value = "yes";
+			form.appendChild(buttonValue);
+			form.submit();
 		}
-		if (e.returnValue) {
-			e.returnValue = false;
-		}
-		return false;
+	});
+	if (e.preventDefault) {
+		e.preventDefault();
 	}
-	return true;
+	if (e.returnValue) {
+		e.returnValue = false;
+	}
+	return false;
 }
 
 /**
