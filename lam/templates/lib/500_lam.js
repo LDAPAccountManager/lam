@@ -88,16 +88,6 @@ function listShowSettingsDialog(title, okText, cancelText) {
 			document.forms["settingsDialogForm_dlg"].submit();
 		}
 	});
-	return;
-	buttonList[okText] = function() { document.forms["settingsDialogForm"].submit(); };
-	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
-	jQuery('#settingsDialog').dialog({
-		modal: true,
-		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
-		width: 'auto'
-	});
 }
 
 /**
