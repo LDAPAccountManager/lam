@@ -556,16 +556,7 @@ function saveScrollPosition(formName) {
  * @param cancelText text for Cancel button
  */
 function bindShowNewZoneDialog(title, okText, cancelText) {
-	var buttonList = {};
-	buttonList[okText] = function() { document.forms["newBindZoneDialogForm"].submit(); };
-	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
-	jQuery('#newBindZoneDialog').dialog({
-		modal: true,
-		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
-		width: 'auto'
-	});
+	showSimpleDialog(title, okText, cancelText, 'newBindZoneDialogForm', 'newBindZoneDialog');
 }
 
 
@@ -1885,7 +1876,7 @@ window.lam.webauthn.removeOwnDevice = function(event, isSelfService) {
 }
 
 /**
- * Opens the remove device diaog.
+ * Opens the remove device dialog.
  *
  * @param element delete button
  * @param action action for request (delete|deleteOwn)
