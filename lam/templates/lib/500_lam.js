@@ -906,18 +906,12 @@ window.lam.dialog = window.lam.dialog || {};
  * @param callbackFunction callback function (optional)
  */
 window.lam.dialog.showMessage = function(title, okText, divId, callbackFunction) {
-    var buttonList = {};
-    buttonList[okText] = function() {
-    	jQuery(this).dialog("close");
-    	if (callbackFunction) {
-    		callbackFunction();
-		}
-    };
-    jQuery('#' + divId).dialog({
-		modal: true,
+	const dialogContent = document.getElementById(divId).cloneNode(true);
+	dialogContent.classList.remove('hidden');
+	Swal.fire({
 		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
+		confirmButtonText: okText,
+		html: dialogContent.outerHTML,
 		width: 'auto'
 	});
 };
@@ -1860,20 +1854,19 @@ window.lam.webauthn.removeDeviceDialog = function(element, action, successCallba
 	var dialogTitle = element.data('dialogtitle');
 	var okText = element.data('oktext');
 	var cancelText = element.data('canceltext');
-	var buttonList = {};
-	buttonList[okText] = function() {
-		jQuery('#webauthnDeleteConfirm').dialog('close');
-		window.lam.webauthn.sendRemoveDeviceRequest(element, action, successCallback);
-	};
-	buttonList[cancelText] = function() {
-		jQuery(this).dialog("close");
-	};
-	jQuery('#webauthnDeleteConfirm').dialog({
-		modal: true,
+	const dialogContent = document.getElementById('webauthnDeleteConfirm').cloneNode(true);
+	dialogContent.classList.remove('hidden');
+	Swal.fire({
 		title: dialogTitle,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
+		confirmButtonText: okText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		html: dialogContent.outerHTML,
 		width: 'auto'
+	}).then(result => {
+		if (result.isConfirmed) {
+			window.lam.webauthn.sendRemoveDeviceRequest(element, action, successCallback);
+		}
 	});
 }
 
