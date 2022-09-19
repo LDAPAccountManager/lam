@@ -717,7 +717,7 @@ class TreeView {
 		$checkPassword->setTitle(_('Check password'));
 		$checkPassword->setOnClick("window.lam.treeview.checkPassword(event, this," .
 			" '" . getSecurityTokenName() . "', '" . getSecurityTokenValue() . "'," .
-			" '" . _('Check password') . "', '" . _('Check') . "', '" . _('Cancel') . "');");
+			" '" . _('Check password') . "', '" . _('Check') . "', '" . _('Cancel') . "', '" . _('Ok') . "');");
 		$table->addElement($checkPassword);
 		$group->addElement($table);
 		return $group;

@@ -2154,54 +2154,43 @@ window.lam.treeview.deleteNode = function (tokenName, tokenValue, node, tree, ok
 	var parent = node.parent;
 	var textSpan = jQuery('#treeview_delete_dlg').find('.treeview-delete-entry');
 	textSpan.text(node.text);
-	var buttonList = {};
-	buttonList[okText] = function() {
-		var data = {
-			jsonInput: ""
-		};
-		data[tokenName] = tokenValue;
-		data["dn"] = node.id;
-		jQuery.ajax({
-			url: "../misc/ajax.php?function=treeview&command=deleteNode",
-			method: "POST",
-			data: data
-		})
-		.done(function(jsonData) {
-			window.lam.treeview.checkSession(jsonData);
-			tree.refresh_node(parent);
-			var node = tree.get_node(parent, false);
-			window.lam.treeview.getNodeContent(tokenName, tokenValue, node.id);
-			jQuery('#treeview_delete_dlg').dialog("close");
-			if (jsonData['errors']) {
-				var errTextTitle = jsonData['errors'][0][1];
-				var textSpanErrorTitle = jQuery('#treeview_error_dlg').find('.treeview-error-title');
-				textSpanErrorTitle.text(errTextTitle);
-				var errText = jsonData['errors'][0][2];
-				var textSpanErrorText = jQuery('#treeview_error_dlg').find('.treeview-error-text');
-				textSpanErrorText.text(errText);
-				var errorButtons = {};
-				errorButtons[errorOkText] = function () {
-					jQuery(this).dialog("close");
-				};
-				jQuery('#treeview_error_dlg').dialog({
-					modal: true,
-					title: errorTitle,
-					dialogClass: 'defaultBackground',
-					buttons: errorButtons,
-					width: 'auto'
-				});
-			}
-		});
-	};
-	buttonList[cancelText] = function() {
-		jQuery(this).dialog("close");
-	};
-	jQuery('#treeview_delete_dlg').dialog({
-		modal: true,
+	const dialogContent = document.getElementById('treeview_delete_dlg').cloneNode(true);
+	dialogContent.classList.remove('hidden');
+	Swal.fire({
 		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
-		width: 'auto'
+		confirmButtonText: okText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		html: dialogContent.outerHTML,
+		width: '48em'
+	}).then(result => {
+		if (result.isConfirmed) {
+			let data = {
+				jsonInput: ""
+			};
+			data[tokenName] = tokenValue;
+			data["dn"] = node.id;
+			jQuery.ajax({
+				url: "../misc/ajax.php?function=treeview&command=deleteNode",
+				method: "POST",
+				data: data
+			})
+			.done(function(jsonData) {
+				window.lam.treeview.checkSession(jsonData);
+				tree.refresh_node(parent);
+				var node = tree.get_node(parent, false);
+				window.lam.treeview.getNodeContent(tokenName, tokenValue, node.id);
+				if (jsonData['errors']) {
+					var errTextTitle = jsonData['errors'][0][1];
+					var textSpanErrorTitle = jQuery('#treeview_error_dlg').find('.treeview-error-title');
+					textSpanErrorTitle.text(errTextTitle);
+					var errText = jsonData['errors'][0][2];
+					var textSpanErrorText = jQuery('#treeview_error_dlg').find('.treeview-error-text');
+					textSpanErrorText.text(errText);
+					showSimpleDialog(errorTitle, null, errorOkText, null, 'treeview_error_dlg');
+				}
+			});
+		}
 	});
 }
 
@@ -2750,41 +2739,44 @@ window.lam.treeview.checkSession = function(json) {
  * @param title dialog title
  * @param checkText label for check button
  * @param cancelText label for cancel button
+ * @param okText label for ok button
  */
 window.lam.treeview.checkPassword = function(event, element, tokenName, tokenValue, title,
-											 checkText, cancelText) {
+											 checkText, cancelText, okText) {
 	event.preventDefault();
 	const outputDiv = document.getElementById('lam-pwd-check-dialog-result');
 	outputDiv.innerHTML = '';
-	const passwordInput = document.getElementById('lam_pwd_check');
-	passwordInput.value = '';
-	let buttonList = {};
-	buttonList[checkText] = function() {
-		const hashValue = element.closest('table').querySelector('input[type=password]').value;
-		const checkValue = passwordInput.value;
-		let data = new FormData();
-		data.append('jsonInput', '');
-		data.append(tokenName, tokenValue);
-		data.append('hashValue', hashValue);
-		data.append('checkValue', checkValue);
-		fetch("../misc/ajax.php?function=checkPassword", {
-			method: 'POST',
-			body: data
-		})
-		.then(async response => {
-			const jsonData = await response.json();
-			if (jsonData.resultHtml) {
-				outputDiv.innerHTML = jsonData.resultHtml;
-			}
-		});
-	};
-	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
-	jQuery('#lam-pwd-check-dialog').dialog({
-		modal: true,
+	const dialogContent = document.getElementById('lam-pwd-check-dialog').cloneNode(true);
+	dialogContent.classList.remove('hidden');
+	dialogContent.querySelector('.lam_pwd_check').classList.add('lam_pwd_check_dlg');
+	Swal.fire({
 		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
-		width: 'auto'
+		confirmButtonText: checkText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		html: dialogContent.outerHTML,
+		width: '48em'
+	}).then(result => {
+		if (result.isConfirmed) {
+			const hashValue = element.closest('table').querySelector('input[type=password]').value;
+			const checkValue = document.querySelector('.lam_pwd_check_dlg').value;
+			let data = new FormData();
+			data.append('jsonInput', '');
+			data.append(tokenName, tokenValue);
+			data.append('hashValue', hashValue);
+			data.append('checkValue', checkValue);
+			fetch("../misc/ajax.php?function=checkPassword", {
+				method: 'POST',
+				body: data
+			})
+			.then(async response => {
+				const jsonData = await response.json();
+				if (jsonData.resultHtml) {
+					outputDiv.innerHTML = jsonData.resultHtml;
+					showSimpleDialog(null, null, okText, null, 'lam-pwd-check-dialog-result');
+				}
+			});
+		}
 	});
 }
 
