@@ -75,6 +75,7 @@ addNewDevice($container, $webauthnManager);
 $container->addVerticalSpacer('0.5rem');
 $container->add(new htmlHiddenInput('registrationData', ''), 12);
 $errorMessageDiv = new htmlDiv('generic-webauthn-error', new htmlOutputText(''));
+$errorMessageDiv->setCSSClasses(array('hidden'));
 $errorMessageDiv->addDataAttribute('button', _('Ok'));
 $errorMessageDiv->addDataAttribute('title', _('WebAuthn failed'));
 $container->add($errorMessageDiv, 12);
