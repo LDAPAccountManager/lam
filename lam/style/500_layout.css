@@ -893,7 +893,7 @@ div.tree-highlight {
 }
 
 div.swal2-html-container {
-	overflow: hidden;
+	overflow: visible;
 }
 
 .swal2-styled.swal2-confirm {

@@ -488,20 +488,7 @@ window.lam.profilePdfEditor.showDistributionDialog = function(title, okText, can
 window.lam.profilePdfEditor.showPdfLogoExportDialog = function(title, okText, cancelText) {
 	var selectedLogo = document.getElementById('logo').value;
 	document.getElementById('exportLogoName').value = selectedLogo;
-	var buttonList = {};
-	buttonList[okText] = function() {
-		document.forms['logoExportForm'].submit();
-	};
-	buttonList[cancelText] = function() {
-		jQuery(this).dialog("close");
-	};
-	jQuery('#logoExportDiv').dialog({
-		modal: true,
-		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
-		width: 'auto'
-	});
+	showSimpleDialog(title, okText, cancelText, 'logoExportForm', 'logoExportDiv');
 }
 
 /**
@@ -512,20 +499,7 @@ window.lam.profilePdfEditor.showPdfLogoExportDialog = function(title, okText, ca
  * @param cancelText text for Cancel button
  */
 window.lam.profilePdfEditor.showPdfLogoImportDialog = function(title, okText, cancelText) {
-	var buttonList = {};
-	buttonList[okText] = function() {
-		document.forms['logoImportForm'].submit();
-	};
-	buttonList[cancelText] = function() {
-		jQuery(this).dialog("close");
-	};
-	jQuery('#logoImportDiv').dialog({
-		modal: true,
-		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
-		width: 'auto'
-	});
+	showSimpleDialog(title, okText, cancelText, 'logoImportForm', 'logoImportDiv');
 }
 
 /**
