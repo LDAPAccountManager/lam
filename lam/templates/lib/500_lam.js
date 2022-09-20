@@ -1254,13 +1254,9 @@ window.lam.html = window.lam.html || {};
  * @param tokenValue CSRF token value
  */
 window.lam.html.showDnSelection = function(fieldId, title, okText, cancelText, tokenName, tokenValue) {
-	var field = jQuery('#' + fieldId);
-	var fieldDiv = jQuery('#dlg_' + fieldId);
-	if (fieldDiv.length == 0) {
-		jQuery('body').append(jQuery('<div class="hidden" id="dlg_' + fieldId + '"></div>'));
-	}
-	var dnValue = field.val();
-	var data = {
+	const field = document.getElementById(fieldId);
+	const dnValue = field.value;
+	let data = {
 		jsonInput: ''
 	};
 	data[tokenName] = tokenValue;
@@ -1272,17 +1268,14 @@ window.lam.html.showDnSelection = function(fieldId, title, okText, cancelText, t
 		data: data
 	})
 	.done(function(jsonData) {
-		jQuery('#dlg_' + fieldId).html(jsonData.dialogData);
-		var buttonList = {};
-		buttonList[cancelText] = function() { jQuery(this).dialog("destroy"); };
-		jQuery('#dlg_' + fieldId).dialog({
-			modal: true,
+		const dlgHtml = '<div id="dlg_' + fieldId + '">' + jsonData.dialogData + '</div>';
+		Swal.fire({
 			title: title,
-			dialogClass: 'defaultBackground',
-			buttons: buttonList,
-			width: 'auto',
-			maxHeight: 600,
-			position: {my: 'center', at: 'center', of: window}
+			cancelButtonText: cancelText,
+			showCancelButton: true,
+			showConfirmButton: false,
+			html: dlgHtml,
+			width: 'auto'
 		});
 	});
 };
@@ -1292,13 +1285,13 @@ window.lam.html.showDnSelection = function(fieldId, title, okText, cancelText, t
  *
  * @param el ok button in dialog
  * @param fieldId field id of input field
- * @returns false
+ * @returns boolean false
  */
 window.lam.html.selectDn = function(el, fieldId) {
-	var field = jQuery('#' + fieldId);
-	var dn = jQuery(el).parents('.row').data('dn');
+	let field = jQuery('#' + fieldId);
+	const dn = jQuery(el).parents('.row').data('dn');
 	field.val(dn);
-	jQuery('#dlg_' + fieldId).dialog("destroy");
+	Swal.close();
 	return false;
 }
 
@@ -1311,9 +1304,8 @@ window.lam.html.selectDn = function(el, fieldId) {
  * @param tokenValue CSRF token value
  */
 window.lam.html.updateDnSelection = function(el, fieldId, tokenName, tokenValue) {
-	var fieldDiv = jQuery('#dlg_' + fieldId);
-	var dn = jQuery(el).parents('.row').data('dn');
-	var data = {
+	const dn = jQuery(el).parents('.row').data('dn');
+	let data = {
 		jsonInput: ''
 	};
 	data[tokenName] = tokenValue;
@@ -1325,13 +1317,10 @@ window.lam.html.updateDnSelection = function(el, fieldId, tokenName, tokenValue)
 		data: data
 	})
 	.done(function(jsonData) {
-		jQuery('#dlg_' + fieldId).html(jsonData.dialogData);
-		jQuery(fieldDiv).dialog({
-		    position: {my: 'center', at: 'center', of: window}
-		});
+		document.getElementById('dlg_' + fieldId).innerHTML = jsonData.dialogData;
 	})
 	.fail(function() {
-		jQuery(fieldDiv).dialog("close");
+		Swal.close();
 	});
 }
 

@@ -467,11 +467,11 @@ class Ajax {
 			$row->setCSSClasses(array('text-right'));
 			$buttonId = base64_encode($currentDn);
 			$buttonId = str_replace('=', '', $buttonId);
-			$button = new htmlButton($buttonId, '');
-			$button->setIconClass('okButton');
+			$button = new htmlButton($buttonId, _('Ok'));
 			$button->setOnClick('window.lam.html.selectDn(this, \'' . htmlspecialchars($fieldId) . '\')');
-			$row->add($button, 12, 3);
-			$mainRow->add($row, 12);
+			$row->add($button, 12, 3, 3, 'text-left');
+			$mainRow->add($row);
+			$mainRow->addVerticalSpacer('1rem');
 			// back up
 			$row = new htmlResponsiveRow();
 			$row->addDataAttribute('dn', extractDNSuffix($currentDn));
@@ -481,7 +481,8 @@ class Ajax {
 			$row->add($text, 12, 9);
 			$row->setCSSClasses(array('text-right'));
 			$row->add(new htmlSpacer('16px'), 12, 3);
-			$mainRow->add($row, 12);
+			$mainRow->add($row);
+			$mainRow->addVerticalSpacer('2rem');
 		}
 		foreach ($dnList as $dn) {
 			$row = new htmlResponsiveRow();
@@ -492,10 +493,9 @@ class Ajax {
 			$row->setCSSClasses(array('text-right'));
 			$buttonId = base64_encode($dn);
 			$buttonId = str_replace('=', '', $buttonId);
-			$button = new htmlButton($buttonId, '');
-			$button->setIconClass('okButton');
+			$button = new htmlButton($buttonId, _('Ok'));
 			$button->setOnClick('window.lam.html.selectDn(this, \'' . htmlspecialchars($fieldId) . '\')');
-			$row->add($button, 12, 3);
+			$row->add($button, 12, 3, 3, 'text-left');
 			$mainRow->add($row, 12);
 		}
 		$tabindex = 1000;
