@@ -226,30 +226,15 @@ function showSimpleDialog(title, okText, cancelText, formID, dialogDivID) {
 }
 
 /**
- * Shows the dialog to change the password.
- *
- * @param title dialog title
- * @param okText text for Ok button
- * @param cancelText text for Cancel button
- * @param randomText text for random password
- * @param ajaxURL URL used for AJAX request
- * @param tokenName name of CSRF token
- * @param tokenValue value of CSRF token
+ * Shows a modal dialog.
  */
-function passwordShowChangeDialog(title, okText, cancelText, randomText, ajaxURL, tokenName, tokenValue) {
-	var buttonList = {};
-	buttonList[okText] = function() { passwordHandleInput("false", ajaxURL, tokenName, tokenValue); };
-	buttonList[randomText] = function() { passwordHandleInput("true", ajaxURL, tokenName, tokenValue); };
-	buttonList[cancelText] = function() {
-		jQuery('#passwordDialogMessageArea').html("");
-		jQuery(this).dialog("close");
-	};
-	jQuery('#passwordDialog').dialog({
-		modal: true,
-		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
-		width: 'auto'
+function showModal() {
+	let modal = document.querySelector(".modal");
+	modal.classList.add("show-modal");
+	window.addEventListener("click", function(event) {
+		if(event.target === modal) {
+			modal.classList.remove("show-modal");
+		}
 	});
 	// set focus on password field
 	var myElement = document.getElementsByName('newPassword1')[0];
@@ -263,8 +248,9 @@ function passwordShowChangeDialog(title, okText, cancelText, randomText, ajaxURL
  * @param ajaxURL URL used for AJAX request
  * @param tokenName name of CSRF token
  * @param tokenValue value of CSRF token
+ * @param okText text for ok button
  */
-function passwordHandleInput(random, ajaxURL, tokenName, tokenValue) {
+function passwordHandleInput(random, ajaxURL, tokenName, tokenValue, okText) {
 	// get input values
 	var modules = new Array();
 	jQuery('#passwordDialog').find(':checked').each(function() {
@@ -275,8 +261,8 @@ function passwordHandleInput(random, ajaxURL, tokenName, tokenValue) {
 	var forcePasswordChange = jQuery('input[name=lamForcePasswordChange]').prop('checked');
 	var sendMail = jQuery('input[name=lamPasswordChangeSendMail]').prop('checked');
 	var sendMailAlternateAddress = '';
-	if (jQuery('#passwordDialog').find('[name=lamPasswordChangeSendMailAddress]')) {
-		sendMailAlternateAddress = jQuery('#passwordDialog').find('[name=lamPasswordChangeSendMailAddress]').val();
+	if (jQuery('#passwordDialog').find('[name=lamPasswordChangeMailAddress]')) {
+		sendMailAlternateAddress = jQuery('#passwordDialog').find('[name=lamPasswordChangeMailAddress]').val();
 	}
 	var pwdJSON = {
 		"modules": modules,
@@ -290,26 +276,13 @@ function passwordHandleInput(random, ajaxURL, tokenName, tokenValue) {
 	var data = {jsonInput: pwdJSON};
 	data[tokenName] = tokenValue;
 	// make AJAX call
-	jQuery.post(ajaxURL, data, function(dataReturned) {passwordHandleReply(dataReturned);}, 'json');
-}
-
-/**
- * Manages the server reply to a password change request.
- *
- * @param data JSON reply
- */
-function passwordHandleReply(data) {
-	if (data.errorsOccurred == "false") {
-		jQuery('#passwordDialogMessageArea').html("");
-		jQuery('#passwordDialog').dialog("close");
-		jQuery('#passwordMessageArea').html(data.messages);
-		if (data.forcePasswordChange) {
-			jQuery('#forcePasswordChangeOption').attr('checked', 'checked');
-		}
-	}
-	else {
-		jQuery('#passwordDialogMessageArea').html(data.messages);
-	}
+	jQuery.post(ajaxURL, data, function(dataReturned) {
+		document.querySelector(".modal").classList.remove("show-modal");
+		Swal.fire({
+			confirmButtonText: okText,
+			html: dataReturned.messages
+		});
+	}, 'json');
 }
 
 /**

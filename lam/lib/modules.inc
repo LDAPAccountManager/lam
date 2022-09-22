@@ -1131,10 +1131,14 @@ class accountContainer {
 	 * Prints the input fields of the central password service.
 	 */
 	private function printPasswordPromt() {
-		echo "<div id=\"passwordDialog\" class=\"hidden\">\n";
-		echo '<div id="passwordDialogMessageArea"></div>';
+		echo "<div id=\"passwordDialogOuter\" class=\"modal\">\n";
+		echo "<div id=\"passwordDialog\" class=\"modal-content\">\n";
 		$printContainer = false;
 		$container = new htmlTable();
+		$container->setCSSClasses(array('text-left'));
+		$title = new htmlTitle(_('Set password'));
+		$title->colspan = 5;
+		$container->addElement($title, true);
 		// password fields
 		$container->addElement(new htmlOutputText(_('Password')));
 		$pwdInput1 = new htmlInputField('newPassword1');
@@ -1167,7 +1171,7 @@ class accountContainer {
 		}
 		if (isLAMProVersion() && (isset($this->attributes_orig['mail'][0]) || $this->anyModuleManagesMail())) {
 			$pwdMailCheckbox = new htmlTableExtendedInputCheckbox('lamPasswordChangeSendMail', false, _('Send via mail'));
-			$pwdMailCheckbox->setTableRowsToShow(array('lamPasswordChangeSendMailAddress'));
+			$pwdMailCheckbox->setTableRowsToShow(array('lamPasswordChangeMailAddress'));
 			$container->addElement($pwdMailCheckbox);
 			$container->addElement(new htmlHelpLink('407'), true);
 			if ($_SESSION['config']->getLamProMailAllowAlternateAddress() != 'false') {
@@ -1179,7 +1183,8 @@ class accountContainer {
 						$alternateMail = $pwdResetModule->getBackupEmail();
 					}
 				}
-				$container->addElement(new htmlTableExtendedInputField(_('Alternate recipient'), 'lamPasswordChangeSendMailAddress', $alternateMail, '410'));
+				$alternateMailInput = new htmlTableExtendedInputField(_('Alternate recipient'), 'lamPasswordChangeMailAddress', $alternateMail, '410');
+				$container->addElement($alternateMailInput);
 			}
 		}
 		$container->addElement(new htmlSpacer(null, '10px'), true);
@@ -1201,11 +1206,30 @@ class accountContainer {
 		}
 		$moduleContainer->colspan = 5;
 		$container->addElement($moduleContainer, true);
+		// buttons
+		$container->addVerticalSpace('1rem');
+		$buttonGroup = new htmlGroup();
+		$buttonGroup->colspan = 5;
+		$okButton = new htmlButton('changePwdOk', _('Ok'));
+		$okButton->setOnClick("passwordHandleInput('false', '../misc/ajax.php?function=passwordChange&editKey="
+			. htmlspecialchars($this->base) . "', '" . getSecurityTokenName() . "', '" . getSecurityTokenValue()
+			. "', '" . _('Ok') . "'); return false;");
+		$buttonGroup->addElement($okButton);
+		$randomButton = new htmlButton('changePwdRandom', _('Set random password'));
+		$randomButton->setOnClick("passwordHandleInput('true', '../misc/ajax.php?function=passwordChange&editKey="
+			. htmlspecialchars($this->base) . "', '" . getSecurityTokenName() . "', '" . getSecurityTokenValue()
+			. "', '" . _('Ok') . "'); return false;");
+		$buttonGroup->addElement($randomButton);
+		$cancelButton = new htmlButton('changePwdCancel', _('Cancel'));
+		$cancelButton->setOnClick("document.querySelector('.modal').classList.remove('show-modal'); return false;");
+		$buttonGroup->addElement($cancelButton);
+		$container->addElement($buttonGroup, true);
 		// generate HTML
 		$tabindex = 2000;
 		if ($printContainer) {
 			parseHtml(null, $container, array(), false, $tabindex, $this->type->getScope());
 		}
+		echo "</div>\n";
 		echo "</div>\n";
 	}
 
@@ -1338,9 +1362,7 @@ class accountContainer {
 				$leftButtonGroup->addElement(new htmlSpacer('15px', null));
 				$passwordButton = new htmlButton('accountContainerPassword', _('Set password'));
 				$passwordButton->setCSSClasses(array('fullwidth-mobile-only lam-secondary'));
-				$passwordButton->setOnClick('passwordShowChangeDialog(\'' . _('Set password') . '\', \'' . _('Ok') . '\', \''
-					. _('Cancel') . '\', \'' . _('Set random password') . '\', \'../misc/ajax.php?function=passwordChange&editKey=' . htmlspecialchars($this->base) . '\',\''
-					. getSecurityTokenName() . '\',\'' . getSecurityTokenValue() . '\');');
+				$passwordButton->setOnClick('showModal();');
 				$leftButtonGroup->addElement($passwordButton);
 			}
 			// delete button
