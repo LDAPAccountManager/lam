@@ -35,7 +35,3 @@ parameters:
 		- '#Cannot access offset .+ on mixed.#'
 		- '#Argument of an invalid type mixed supplied for foreach, only iterables are supported.#'
 		- '#Parameter \#2 \$args of function call_user_func_array expects array<int\|string, mixed>, mixed given.#'
-		- '#Parameter \#2 \$user of function LAM\\ACCOUNTLIST\\setSpecifiedPassword expects array, array\|null given.#'
-		- '#Parameter \#2 \$user of function LAM\\ACCOUNTLIST\\generatePassword expects array, array\|null given.#'
-		- '#Parameter \#2 \$attributes of function LAM\\ACCOUNTLIST\\unlock expects array, array\|null given.#'
-		- '#Parameter \#2 \$attributes of function LAM\\ACCOUNTLIST\\lock expects array, array\|null given.#'
