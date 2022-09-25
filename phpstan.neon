@@ -29,7 +29,6 @@ parameters:
 		- '#Cannot access offset .* on array\|int.#'
 		- '#Parameter \#1 \$haystack of function strpos expects string, int\|string given.#'
 		- '#Parameter \#1 \$ldap of function ldap_get_values_len expects LDAP\\Connection, resource given.#'
-		- '#Parameter \#2 \$result of function ldap_first_entry expects LDAP\\Result, array\|LDAP\\Result given.#'
 		- '#Parameter \#1 \$ldap of function ldap_first_entry expects LDAP\\Connection, resource given.#'
 		- '#Parameter \#1 \$ldap of function ldap_read expects array\|LDAP\\Connection, resource given.#'
 		- '#Parameter \#1 \$ldap of function ldap_get_entries expects LDAP\\Connection, resource given.#'
