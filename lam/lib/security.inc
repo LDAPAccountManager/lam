@@ -64,7 +64,7 @@ function startSecureSession($redirectToLogin = true, $initSecureData = false) {
 	if (isset($_SESSION)) {
 		unset($_SESSION);
 	}
-	if (strtolower(session_module_name()) == 'files') {
+	if (isFileBasedSession()) {
 		$sessionDir = dirname(__FILE__) . "/../sess";
 		session_save_path($sessionDir);
 		// enable garbage collection (fix for Debian based systems)
@@ -119,6 +119,15 @@ function startSecureSession($redirectToLogin = true, $initSecureData = false) {
 	}
 	setSSLCaCert();
 	return true;
+}
+
+/**
+ * Returns if the session uses files storage.
+ *
+ * @return bool file based session
+ */
+function isFileBasedSession(): bool {
+	return ((session_module_name() !== false) && (strtolower(session_module_name()) === 'files'));
 }
 
 /**

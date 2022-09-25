@@ -233,13 +233,18 @@ function printImportTabProcessing(&$tabindex): void {
  */
 function checkImportData(): void {
 	$source = $_POST['source'];
-	$ldif = '';
 	if ($source == 'text') {
 		$ldif = $_POST['text'];
 	}
 	else {
 		$handle = fopen($_FILES['file']['tmp_name'], "r");
+		if ($handle === false) {
+			throw new LAMException(_('Unable to create temporary file.'));
+		}
 		$ldif = fread($handle, 100000000);
+		if ($ldif === false) {
+			throw new LAMException(_('Unable to create temporary file.'));
+		}
 		fclose($handle);
 	}
 	if (empty($ldif)) {

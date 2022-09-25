@@ -50,7 +50,7 @@ include_once('../../lib/modules.inc');
 include_once '../../lib/configPages.inc';
 
 // start session
-if (strtolower(session_module_name()) == 'files') {
+if (isFileBasedSession()) {
 	session_save_path("../../sess");
 }
 lam_start_session();

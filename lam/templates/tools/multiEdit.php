@@ -476,16 +476,18 @@ function dryRun(): array {
 	// store LDIF
 	$filename = 'ldif' . getRandomNumber() . '.ldif';
 	$out = @fopen(dirname(__FILE__) . '/../../tmp/' . $filename, "wb");
-	fwrite($out, $ldif);
-	$container->addElement(new htmlOutputText(_('LDIF file')), true);
-	$ldifLink = new htmlLink($filename, '../../tmp/' . $filename);
-	$ldifLink->setTargetWindow('_blank');
-	$container->addElement($ldifLink, true);
-	$container->addVerticalSpace('20px');
-	$container->addElement(new htmlOutputText(_('Log output')), true);
-	$container->addElement(new htmlInputTextarea('log', $log, 100, 30), true);
-	// generate HTML
-	fclose ($out);
+	if ($out !== false) {
+		fwrite($out, $ldif);
+		$container->addElement(new htmlOutputText(_('LDIF file')), true);
+		$ldifLink = new htmlLink($filename, '../../tmp/' . $filename);
+		$ldifLink->setTargetWindow('_blank');
+		$container->addElement($ldifLink, true);
+		$container->addVerticalSpace('20px');
+		$container->addElement(new htmlOutputText(_('Log output')), true);
+		$container->addElement(new htmlInputTextarea('log', $log, 100, 30), true);
+		// generate HTML
+		fclose ($out);
+	}
 	ob_start();
 	$tabindex = 1;
 	parseHtml(null, $container, array(), true, $tabindex, 'user');
@@ -587,13 +589,16 @@ function doModify(): array {
  * Returns the HTML code for a htmlStatusMessage
  *
  * @param htmlStatusMessage $msg message
- * @return String HTML code
+ * @return string HTML code
  */
-function getMessageHTML($msg) {
+function getMessageHTML(htmlStatusMessage $msg): string {
 	$tabindex = 0;
 	ob_start();
 	parseHtml(null, $msg, array(), true, $tabindex, 'user');
 	$content = ob_get_contents();
 	ob_end_clean();
+	if ($content === false) {
+		return '';
+	}
 	return $content;
 }

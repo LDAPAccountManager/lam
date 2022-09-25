@@ -46,7 +46,7 @@ if (!empty($_GET['selfService']) && ($_GET['selfService'] === '1')) {
 	session_name('SELFSERVICE');
 }
 
-if (strtolower(session_module_name()) == 'files') {
+if (isFileBasedSession()) {
 	session_save_path("../sess");
 }
 lam_start_session();

@@ -50,7 +50,7 @@ use ZipArchive;
 include_once('../../lib/persistence.inc');
 
 // start session
-if (strtolower(session_module_name()) == 'files') {
+if (isFileBasedSession()) {
 	session_save_path("../../sess");
 }
 lam_start_session();
@@ -73,6 +73,9 @@ if (isset($_POST['exportConfig']) && $cfg->checkPassword($_SESSION["mainconf_pas
 	try {
 		$zip = new ZipArchive();
 		$zipTmpFile = tmpfile();
+		if ($zipTmpFile === false) {
+		    throw new LAMException(_('Unable to create temporary file.'));
+        }
 		$zipFile = stream_get_meta_data($zipTmpFile)['uri'];
 		fclose($zipTmpFile);
 		$zip->open($zipFile, ZipArchive::CREATE);
@@ -80,7 +83,14 @@ if (isset($_POST['exportConfig']) && $cfg->checkPassword($_SESSION["mainconf_pas
 		$zip->addFromString('lam-config.json', $json);
 		$zip->close();
         $handle = fopen($zipFile, "r");
-        $contents = fread($handle, filesize($zipFile));
+        if ($handle === false) {
+			throw new LAMException(_('Unable to create temporary file.'));
+        }
+        $fileSize = filesize($zipFile);
+		if ($fileSize === false) {
+			throw new LAMException(_('Unable to create temporary file.'));
+		}
+        $contents = fread($handle, $fileSize);
         fclose($handle);
 		unlink($zipFile);
         echo $contents;
@@ -244,7 +254,13 @@ printHeaderContents(_("Import and export configuration"), '../..');
                 }
 	            else {
 		            $handle = fopen($tmpFileName, "r");
+		            if ($handle === false) {
+						throw new LAMException(_('Unable to read import file.'));
+                    }
 		            $data = fread($handle, 100000000);
+					if ($data === false) {
+						throw new LAMException(_('Unable to read import file.'));
+					}
 		            fclose($handle);
                 }
 	            $importer = new ConfigDataImporter();
@@ -260,7 +276,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
 	            $validUpload = true;
             }
             catch (LAMException $e) {
-                $content->add(new htmlStatusMessage('ERROR', htmlspecialchars($e->getTitle()), htmlspecialchars($e->getMessage())), 12);
+                $content->add(new htmlStatusMessage('ERROR', htmlspecialchars($e->getTitle()), htmlspecialchars($e->getMessage())));
             }
         }
         if (!isset($_POST['importConfigConfirm']) && !$validUpload) {
@@ -277,14 +293,14 @@ printHeaderContents(_("Import and export configuration"), '../..');
                 $stepCheckbox->setLabelAfterCheckbox();
                 $stepCheckbox->setCSSClasses(array('bold'));
                 $subStepIds = array();
-                $content->add($stepCheckbox, 12);
+                $content->add($stepCheckbox);
 	            $content->addVerticalSpacer('0.3rem');
                 foreach ($importStep->getSubSteps() as $subStep) {
                     $subStepKey = 'step_' . $subStep->getKey();
                     $subStepIds[] = $subStepKey;
 	                $subStepCheckbox = new htmlResponsiveInputCheckbox($subStepKey, true, $subStep->getLabel());
 	                $subStepCheckbox->setLabelAfterCheckbox();
-	                $content->add($subStepCheckbox, 12);
+	                $content->add($subStepCheckbox);
                 }
                 $stepCheckbox->setTableRowsToShow($subStepIds);
                 $content->addVerticalSpacer('1rem');
@@ -294,13 +310,19 @@ printHeaderContents(_("Import and export configuration"), '../..');
             $importButton->setCSSClasses(array('lam-secondary'));
 	        $buttonGroup->addElement($importButton);
 	        $buttonGroup->addElement(new htmlButton('importCancel', _('Cancel')));
-	        $content->add($buttonGroup, 12);
+	        $content->add($buttonGroup);
         }
         elseif (isset($_POST['importConfigConfirm'])) {
-			$handle = fopen($_SESSION['configImportFile'], "r");
-	        $data = fread($handle, 100000000);
-	        fclose($handle);
 	        try {
+				$handle = fopen($_SESSION['configImportFile'], "r");
+				if ($handle === false) {
+					throw new LAMException(_('Unable to read import file.'));
+				}
+				$data = fread($handle, 100000000);
+				if ($data === false) {
+					throw new LAMException(_('Unable to read import file.'));
+				}
+				fclose($handle);
 		        $importer = new ConfigDataImporter();
 		        $importSteps = $importer->getPossibleImportSteps($data);
 		        foreach ($importSteps as $importStep) {
@@ -311,12 +333,12 @@ printHeaderContents(_("Import and export configuration"), '../..');
 		        }
 		        $importer->runImport($importSteps);
 		        unlink($_SESSION['configImportFile']);
-		        $content->add(new htmlStatusMessage('INFO', _('Configuration import ended successful.')), 12);
-		        $content->add(new htmlButton('importNew', _('New import')), 12);
+		        $content->add(new htmlStatusMessage('INFO', _('Configuration import ended successful.')));
+		        $content->add(new htmlButton('importNew', _('New import')));
 	        }
 	        catch (LAMException $e) {
-		        $content->add(new htmlStatusMessage('ERROR', htmlspecialchars($e->getTitle()), htmlspecialchars($e->getMessage())), 12);
-		        $content->add(new htmlButton('importCancel', _('Back')), 12);
+		        $content->add(new htmlStatusMessage('ERROR', htmlspecialchars($e->getTitle()), htmlspecialchars($e->getMessage())));
+		        $content->add(new htmlButton('importCancel', _('Back')));
 	        }
         }
     }

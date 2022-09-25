@@ -14,7 +14,7 @@ use \htmlGroup;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2021  Roland Gruber
+  Copyright (C) 2003 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -115,38 +115,43 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 	elseif (isset($_POST['deleteOU'])) {
 		// check for sub entries
 		$sr = ldap_list($_SESSION['ldap']->server(), $_POST['deleteableOU'], "ObjectClass=*", array(""));
-		$info = ldap_get_entries($_SESSION['ldap']->server(), $sr);
-		if ($sr && ($info['count'] === 0)) {
-			// print header
-			include '../../lib/adminHeader.inc';
-			echo '<div class="smallPaddingContent">';
-			echo "<form action=\"ou_edit.php\" method=\"post\">\n";
-			$tabindex = 1;
-			$container = new htmlResponsiveRow();
-			$label = new htmlOutputText(_("Do you really want to delete this OU?"));
-			$label->colspan = 5;
-			$container->add($label, 12);
-			$container->addVerticalSpacer('1rem');
-			$dnLabel = new htmlOutputText(getAbstractDN($_POST['deleteableOU']));
-			$dnLabel->colspan = 5;
-			$container->add($dnLabel, 12);
-			$container->addVerticalSpacer('1rem');
-			$buttonGroup = new htmlGroup();
-			$buttonGroup->addElement(new htmlButton('sure', _("Delete")));
-			$buttonGroup->addElement(new htmlSpacer('0.5rem', null));
-			$buttonGroup->addElement(new htmlButton('abort', _("Cancel")));
-			$container->add($buttonGroup, 12);
-			$container->add(new htmlHiddenInput('deleteOU', 'submit'), 12);
-			$container->add(new htmlHiddenInput('deletename', $_POST['deleteableOU']), 12);
-			addSecurityTokenToMetaHTML($container);
-			parseHtml(null, $container, array(), false, $tabindex, 'user');
-			echo "</form>";
-			echo '</div>';
-			include '../../lib/adminFooter.inc';
-			exit();
+		if ($sr === false) {
+			$error = _("OU is not empty or invalid!");
 		}
 		else {
-			$error = _("OU is not empty or invalid!");
+			$info = ldap_get_entries($_SESSION['ldap']->server(), $sr);
+			if (($info !== false) && ($info['count'] === 0)) {
+				// print header
+				include '../../lib/adminHeader.inc';
+				echo '<div class="smallPaddingContent">';
+				echo "<form action=\"ou_edit.php\" method=\"post\">\n";
+				$tabindex = 1;
+				$container = new htmlResponsiveRow();
+				$label = new htmlOutputText(_("Do you really want to delete this OU?"));
+				$label->colspan = 5;
+				$container->add($label, 12);
+				$container->addVerticalSpacer('1rem');
+				$dnLabel = new htmlOutputText(getAbstractDN($_POST['deleteableOU']));
+				$dnLabel->colspan = 5;
+				$container->add($dnLabel, 12);
+				$container->addVerticalSpacer('1rem');
+				$buttonGroup = new htmlGroup();
+				$buttonGroup->addElement(new htmlButton('sure', _("Delete")));
+				$buttonGroup->addElement(new htmlSpacer('0.5rem', null));
+				$buttonGroup->addElement(new htmlButton('abort', _("Cancel")));
+				$container->add($buttonGroup, 12);
+				$container->add(new htmlHiddenInput('deleteOU', 'submit'), 12);
+				$container->add(new htmlHiddenInput('deletename', $_POST['deleteableOU']), 12);
+				addSecurityTokenToMetaHTML($container);
+				parseHtml(null, $container, array(), false, $tabindex, 'user');
+				echo "</form>";
+				echo '</div>';
+				include '../../lib/adminFooter.inc';
+				exit();
+			}
+			else {
+				$error = _("OU is not empty or invalid!");
+			}
 		}
 	}
 }

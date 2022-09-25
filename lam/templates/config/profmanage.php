@@ -52,7 +52,7 @@ include_once('../../lib/config.inc');
 include_once('../../lib/status.inc');
 
 // start session
-if (strtolower(session_module_name()) == 'files') {
+if (isFileBasedSession()) {
 	session_save_path("../../sess");
 }
 lam_start_session();

@@ -42,7 +42,7 @@ include_once(__DIR__ . "/../../lib/config.inc");
 include_once(__DIR__ . "/../../lib/modules.inc");
 
 // start session
-if (strtolower(session_module_name()) == 'files') {
+if (isFileBasedSession()) {
 	session_save_path("../../sess");
 }
 lam_start_session();

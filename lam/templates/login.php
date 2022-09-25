@@ -1,5 +1,6 @@
 <?php
 namespace LAM\LOGIN;
+use LAM\ENV\LAMLicenseValidator;
 use LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 use \LAMConfig;
 use \LAMCfgMain;
@@ -67,7 +68,7 @@ if (isLAMProVersion()) {
 }
 
 // set session save path
-if (strtolower(session_module_name()) == 'files') {
+if (isFileBasedSession()) {
 	session_save_path(dirname(__FILE__) . '/../sess');
 }
 
@@ -189,13 +190,13 @@ setlanguage(); // setting correct language
 /**
  * Displays the login window.
  *
- * @param \LAM\ENV\LAMLicenseValidator $licenseValidator license validator
- * @param string $error_message error message to display
- * @param string $errorDetails error details
- * @param string $extraMessage extra message that is shown as info
+ * @param LAMLicenseValidator|null $licenseValidator license validator
+ * @param string|null $error_message error message to display
+ * @param string|null $errorDetails error details
+ * @param string|null $extraMessage extra message that is shown as info
  * @throws LAMException error rendering login page
  */
-function display_LoginPage($licenseValidator, $error_message, $errorDetails = null, $extraMessage = null): void {
+function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $error_message, ?string $errorDetails = null, ?string $extraMessage = null): void {
 	$config_object = $_SESSION['config'];
 	$cfgMain = $_SESSION["cfgMain"];
 	logNewMessage(LOG_DEBUG, "Display login page");

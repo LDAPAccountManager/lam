@@ -66,7 +66,7 @@ include_once('../../lib/status.inc');
 include_once('../../lib/selfService.inc');
 
 // start session
-if (strtolower(session_module_name()) == 'files') {
+if (isFileBasedSession()) {
 	session_save_path("../../sess");
 }
 lam_start_session();
@@ -142,12 +142,14 @@ if (isset($_POST['submitFormData'])) {
         }
 		if (($cfg->licenseWarningType === LAMCfgMain::LICENSE_WARNING_EMAIL) || ($cfg->licenseWarningType === LAMCfgMain::LICENSE_WARNING_ALL)) {
 		    $toEmails = preg_split('/;[ ]*/', $cfg->licenseEmailTo);
-		    foreach ($toEmails as $toEmail) {
-		        if (!get_preg($toEmail, 'email')) {
-			        $errors[] = _('Licence') . ': ' . _('TO address') . ' - ' . _('Please enter a valid email address!');
-			        break;
-                }
-		    }
+		    if ($toEmails !== false) {
+				foreach ($toEmails as $toEmail) {
+					if (!get_preg($toEmail, 'email')) {
+						$errors[] = _('Licence') . ': ' . _('TO address') . ' - ' . _('Please enter a valid email address!');
+						break;
+					}
+				}
+            }
 		}
 	}
 	// set session timeout
@@ -237,16 +239,28 @@ if (isset($_POST['submitFormData'])) {
 	if (isset($_POST['sslCaCertUpload'])) {
 		if (!isset($_FILES['sslCaCert']) || ($_FILES['sslCaCert']['size'] == 0)) {
 			$errors[] = _('No file selected.');
-		} else {
+		}
+		else {
 			$handle = fopen($_FILES['sslCaCert']['tmp_name'], "r");
-			$data = fread($handle, 10000000);
-			fclose($handle);
-			$sslReturn = $cfg->uploadSSLCaCert($data);
-			if ($sslReturn !== true) {
-				$errors[] = $sslReturn;
-			} else {
-				$messages[] = _('You might need to restart your webserver for changes to take effect.');
+			if ($handle === false) {
+				$errors[] = _('Unable to create temporary file.');
 			}
+			else {
+				$data = fread($handle, 10000000);
+				if ($data === false) {
+					$errors[] = _('Unable to create temporary file.');
+				}
+				else {
+					fclose($handle);
+					$sslReturn = $cfg->uploadSSLCaCert($data);
+					if ($sslReturn !== true) {
+						$errors[] = $sslReturn;
+					}
+					else {
+						$messages[] = _('You might need to restart your webserver for changes to take effect.');
+					}
+                }
+            }
 		}
 	}
 	if (isset($_POST['sslCaCertDelete'])) {
@@ -482,7 +496,9 @@ printHeaderContents(_("Edit general settings"), '../..');
 			$validTo = isset($sslCerts[$i]['validTo_time_t']) ? $sslCerts[$i]['validTo_time_t'] : '';
 			if (get_preg($validTo, 'digit')) {
 			    $date = DateTime::createFromFormat('U', $validTo, new DateTimeZone('UTC'));
-			    $validTo = $date->format('Y-m-d');
+			    if ($date !== false) {
+					$validTo = $date->format('Y-m-d');
+                }
             }
 			$cn = isset($sslCerts[$i]['subject']['CN']) ? $sslCerts[$i]['subject']['CN'] : '';
 			$delBtn = new htmlButton('deleteCert_' . $i, 'del.svg', true);
