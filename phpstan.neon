@@ -28,8 +28,6 @@ parameters:
 		- '#Cannot assign new offset to array<int, string>\|string.#'
 		- '#Cannot access offset .* on array\|int.#'
 		- '#Parameter \#1 \$haystack of function strpos expects string, int\|string given.#'
-		- '#Argument of an invalid type array\|int supplied for foreach, only iterables are supported.#'
-		- '#Cannot access offset mixed on non-empty-array\|int.#'
 		- '#Parameter \#1 \$ldap of function ldap_get_values_len expects LDAP\\Connection, resource given.#'
 		- '#Parameter \#2 \$result of function ldap_first_entry expects LDAP\\Result, array\|LDAP\\Result given.#'
 		- '#Parameter \#1 \$ldap of function ldap_first_entry expects LDAP\\Connection, resource given.#'

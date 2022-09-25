@@ -52,7 +52,7 @@ $dynamicSubtrees = '';
 $result = ldap_read($_SESSION['ldap']->server(), '', 'objectclass=*', array('+', '*', 'subschemasubentry'), 0, 0, 0, LDAP_DEREF_NEVER);
 if ($result) {
 	$info = ldap_get_entries($_SESSION['ldap']->server(), $result);
-	if ($info) {
+	if (is_array($info) && is_array($info[0])) {
 		$info = $info[0];
 		foreach ($info as $key => $value) {
 			if (is_array($info[$key]) && isset($info[$key]['count'])) {
