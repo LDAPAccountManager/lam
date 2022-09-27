@@ -886,6 +886,34 @@ window.lam.dialog.showMessage = function(title, okText, divId, callbackFunction)
 		confirmButtonText: okText,
 		html: dialogContent.outerHTML,
 		width: 'auto'
+	}).then(result => {
+		if (callbackFunction) {
+			callbackFunction();
+		}
+	});
+};
+
+/**
+ * Shows a dialog message.
+ *
+ * @param title dialog title
+ * @param okText ok button text
+ * @param cancelText cancel button text
+ * @param message text message
+ * @param formId form to submit when confirmed
+ */
+window.lam.dialog.confirmAndSendForm = function(title, okText, cancelText, message, formId) {
+	Swal.fire({
+		title: title,
+		confirmButtonText: okText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		text: message,
+		width: 'auto'
+	}).then(result => {
+		if (result.isConfirmed) {
+			document.forms[formId].submit();
+		}
 	});
 };
 
