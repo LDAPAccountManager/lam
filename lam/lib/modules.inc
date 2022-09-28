@@ -1131,7 +1131,7 @@ class accountContainer {
 	 * Prints the input fields of the central password service.
 	 */
 	private function printPasswordPromt() {
-		echo "<div id=\"passwordDialogOuter\" class=\"modal\">\n";
+		echo "<div id=\"passwordDialogOuter\" class=\"modal modal-pwd-options\">\n";
 		echo "<div id=\"passwordDialog\" class=\"modal-content\">\n";
 		$printContainer = false;
 		$container = new htmlTable();
@@ -1362,7 +1362,7 @@ class accountContainer {
 				$leftButtonGroup->addElement(new htmlSpacer('15px', null));
 				$passwordButton = new htmlButton('accountContainerPassword', _('Set password'));
 				$passwordButton->setCSSClasses(array('fullwidth-mobile-only lam-secondary'));
-				$passwordButton->setOnClick('window.lam.dialog.showModal();');
+				$passwordButton->setOnClick("window.lam.dialog.showModal('.modal-pwd-options');");
 				$leftButtonGroup->addElement($passwordButton);
 			}
 			// delete button

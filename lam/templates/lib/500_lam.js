@@ -933,9 +933,11 @@ window.lam.dialog.requestPasswordAndSendForm = async function (title, okText, ca
 
 /**
  * Shows a modal dialog.
+ *
+ * @param selector selector to find modal content
  */
-window.lam.dialog.showModal = function() {
-	let modal = document.querySelector(".modal");
+window.lam.dialog.showModal = function(selector) {
+	let modal = document.querySelector(selector);
 	modal.classList.add("show-modal");
 	window.addEventListener("click", function(event) {
 		if(event.target === modal) {
