@@ -328,16 +328,12 @@ if (!empty($globalDeletableTemplates)) {
 	$container->addVerticalSpacer('1rem');
 	$globalTemplateDeleteButton = new htmlButton('deleteGlobalProfileButton', _('Delete'));
 	$globalTemplateDeleteButton->setCSSClasses(array('lam-danger'));
-	$globalTemplateDeleteButton->setOnClick("showConfirmationDialog('" . _("Delete") . "', '" .
-		_('Ok') . "', '" . _('Cancel') . "', 'globalTemplateDeleteDialog', 'deleteGlobalTemplatesForm', undefined); return false;");
+	$globalTemplateDeleteButton->setOnClick("window.lam.dialog.confirmAndSendForm('" . _("Delete") . "', '" .
+		_('Ok') . "', '" . _('Cancel') . "', '" . _('Do you really want to delete this profile?') . "', 'deleteGlobalTemplatesForm'); return false;");
 	$container->addLabel(new htmlOutputText('&nbsp;', false));
 	$container->addField($globalTemplateDeleteButton, 12);
 	addSecurityTokenToMetaHTML($container);
-	$globalTemplateDeleteDialogContent = new htmlResponsiveRow();
-	$globalTemplateDeleteDialogContent->add(new htmlOutputText(_('Do you really want to delete this profile?')), 12);
-	$globalTemplateDeleteDialogContent->add(new htmlHiddenInput('deleteGlobalTemplate', 'true'), 12);
-	$globalTemplateDeleteDialogDiv = new htmlDiv('globalTemplateDeleteDialog', $globalTemplateDeleteDialogContent, array('hidden'));
-	$container->add($globalTemplateDeleteDialogDiv, 12);
+	$container->add(new htmlHiddenInput('deleteGlobalTemplate', 'true'), 12);
 	$container->addVerticalSpacer('1rem');
 	$globalTemplateDeleteForm = new htmlForm('deleteGlobalTemplatesForm', 'profilemain.php', $container);
 	parseHtml(null, $globalTemplateDeleteForm, array(), false, $tabindex, 'user');
