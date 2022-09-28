@@ -1221,7 +1221,7 @@ class accountContainer {
 			. "', '" . _('Ok') . "'); return false;");
 		$buttonGroup->addElement($randomButton);
 		$cancelButton = new htmlButton('changePwdCancel', _('Cancel'));
-		$cancelButton->setOnClick("document.querySelector('.modal').classList.remove('show-modal'); return false;");
+		$cancelButton->setOnClick("document.querySelector('.modal-pwd-options').classList.remove('show-modal'); return false;");
 		$buttonGroup->addElement($cancelButton);
 		$container->addElement($buttonGroup, true);
 		// generate HTML
