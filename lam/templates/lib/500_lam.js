@@ -198,50 +198,6 @@ function profileShowDeleteDialog(title, okText, cancelText, scope, selectFieldNa
 }
 
 /**
- * Shows a simple dialog.
- *
- * @param title dialog title
- * @param okText text for Ok button (optional, submits form)
- * @param cancelText text for Cancel button
- * @param formID form ID
- * @param dialogDivID ID of div that contains dialog content
- */
-function showSimpleDialog(title, okText, cancelText, formID, dialogDivID) {
-	const dialogContent = document.getElementById(dialogDivID).cloneNode(true);
-	dialogContent.classList.remove('hidden');
-	dialogContent.firstElementChild.id = formID + '_dlg';
-	Swal.fire({
-		title: title,
-		confirmButtonText: okText,
-		cancelButtonText: cancelText,
-		showCancelButton: true,
-		showConfirmButton: (okText !== null),
-		html: dialogContent.outerHTML,
-		width: 'auto'
-	}).then(result => {
-		if (result.isConfirmed) {
-			document.forms[formID + '_dlg'].submit();
-		}
-	});
-}
-
-/**
- * Shows a modal dialog.
- */
-function showModal() {
-	let modal = document.querySelector(".modal");
-	modal.classList.add("show-modal");
-	window.addEventListener("click", function(event) {
-		if(event.target === modal) {
-			modal.classList.remove("show-modal");
-		}
-	});
-	// set focus on password field
-	var myElement = document.getElementsByName('newPassword1')[0];
-	myElement.focus();
-}
-
-/**
  * Manages the password change when a button is pressed.
  *
  * @param random "true" if random password should be generated
@@ -461,7 +417,7 @@ window.lam.profilePdfEditor.showDistributionDialog = function(title, okText, can
 window.lam.profilePdfEditor.showPdfLogoExportDialog = function(title, okText, cancelText) {
 	var selectedLogo = document.getElementById('logo').value;
 	document.getElementById('exportLogoName').value = selectedLogo;
-	showSimpleDialog(title, okText, cancelText, 'logoExportForm', 'logoExportDiv');
+	window.lam.dialog.showSimpleDialog(title, okText, cancelText, 'logoExportForm', 'logoExportDiv');
 }
 
 /**
@@ -472,7 +428,7 @@ window.lam.profilePdfEditor.showPdfLogoExportDialog = function(title, okText, ca
  * @param cancelText text for Cancel button
  */
 window.lam.profilePdfEditor.showPdfLogoImportDialog = function(title, okText, cancelText) {
-	showSimpleDialog(title, okText, cancelText, 'logoImportForm', 'logoImportDiv');
+	window.lam.dialog.showSimpleDialog(title, okText, cancelText, 'logoImportForm', 'logoImportDiv');
 }
 
 /**
@@ -503,7 +459,7 @@ function saveScrollPosition(formName) {
  * @param cancelText text for Cancel button
  */
 function bindShowNewZoneDialog(title, okText, cancelText) {
-	showSimpleDialog(title, okText, cancelText, 'newBindZoneDialogForm', 'newBindZoneDialog');
+	window.lam.dialog.showSimpleDialog(title, okText, cancelText, 'newBindZoneDialogForm', 'newBindZoneDialog');
 }
 
 
@@ -894,6 +850,34 @@ window.lam.dialog.showMessage = function(title, okText, divId, callbackFunction)
 };
 
 /**
+ * Shows a simple dialog.
+ *
+ * @param title dialog title
+ * @param okText text for Ok button (optional, submits form)
+ * @param cancelText text for Cancel button
+ * @param formID form ID
+ * @param dialogDivID ID of div that contains dialog content
+ */
+window.lam.dialog.showSimpleDialog = function(title, okText, cancelText, formID, dialogDivID) {
+	const dialogContent = document.getElementById(dialogDivID).cloneNode(true);
+	dialogContent.classList.remove('hidden');
+	dialogContent.firstElementChild.id = formID + '_dlg';
+	Swal.fire({
+		title: title,
+		confirmButtonText: okText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		showConfirmButton: (okText !== null),
+		html: dialogContent.outerHTML,
+		width: 'auto'
+	}).then(result => {
+		if (result.isConfirmed) {
+			document.forms[formID + '_dlg'].submit();
+		}
+	});
+}
+
+/**
  * Shows a dialog message.
  *
  * @param title dialog title
@@ -946,6 +930,22 @@ window.lam.dialog.requestPasswordAndSendForm = async function (title, okText, ca
 		document.forms[formId].submit();
 	}
 };
+
+/**
+ * Shows a modal dialog.
+ */
+window.lam.dialog.showModal = function() {
+	let modal = document.querySelector(".modal");
+	modal.classList.add("show-modal");
+	window.addEventListener("click", function(event) {
+		if(event.target === modal) {
+			modal.classList.remove("show-modal");
+		}
+	});
+	// set focus on password field
+	var myElement = document.getElementsByName('newPassword1')[0];
+	myElement.focus();
+}
 
 window.lam.account = window.lam.account || {};
 
@@ -2207,7 +2207,7 @@ window.lam.treeview.deleteNode = function (tokenName, tokenValue, node, tree, ok
 					var errText = jsonData['errors'][0][2];
 					var textSpanErrorText = jQuery('#treeview_error_dlg').find('.treeview-error-text');
 					textSpanErrorText.text(errText);
-					showSimpleDialog(errorTitle, null, errorOkText, null, 'treeview_error_dlg');
+					window.lam.dialog.showSimpleDialog(errorTitle, null, errorOkText, null, 'treeview_error_dlg');
 				}
 			});
 		}
@@ -2793,7 +2793,7 @@ window.lam.treeview.checkPassword = function(event, element, tokenName, tokenVal
 				const jsonData = await response.json();
 				if (jsonData.resultHtml) {
 					outputDiv.innerHTML = jsonData.resultHtml;
-					showSimpleDialog(null, null, okText, null, 'lam-pwd-check-dialog-result');
+					window.lam.dialog.showSimpleDialog(null, null, okText, null, 'lam-pwd-check-dialog-result');
 				}
 			});
 		}

@@ -1362,7 +1362,7 @@ class accountContainer {
 				$leftButtonGroup->addElement(new htmlSpacer('15px', null));
 				$passwordButton = new htmlButton('accountContainerPassword', _('Set password'));
 				$passwordButton->setCSSClasses(array('fullwidth-mobile-only lam-secondary'));
-				$passwordButton->setOnClick('showModal();');
+				$passwordButton->setOnClick('window.lam.dialog.showModal();');
 				$leftButtonGroup->addElement($passwordButton);
 			}
 			// delete button
