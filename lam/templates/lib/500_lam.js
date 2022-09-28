@@ -917,6 +917,36 @@ window.lam.dialog.confirmAndSendForm = function(title, okText, cancelText, messa
 	});
 };
 
+/**
+ * Shows a dialog with password input. The password is added to the form when confirmed.
+ *
+ * @param title dialog title
+ * @param okText ok button text
+ * @param cancelText cancel button text
+ * @param passwordLabel password label
+ * @param passwordInputName input field name for password
+ * @param formId form to submit when confirmed
+ */
+window.lam.dialog.requestPasswordAndSendForm = async function (title, okText, cancelText, passwordLabel, passwordInputName, formId) {
+	const {value} = await Swal.fire({
+		title: title,
+		confirmButtonText: okText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		input: 'password',
+		inputLabel: passwordLabel,
+		width: 'auto'
+	});
+	if (value) {
+		let passwordTag = document.createElement('input');
+		passwordTag.name = passwordInputName;
+		passwordTag.value = value;
+		passwordTag.hidden = 'hidden';
+		document.forms[formId].appendChild(passwordTag);
+		document.forms[formId].submit();
+	}
+};
+
 window.lam.account = window.lam.account || {};
 
 /**
