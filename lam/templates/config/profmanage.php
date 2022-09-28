@@ -19,7 +19,7 @@ use ServerProfilePersistenceManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2021  Roland Gruber
+  Copyright (C) 2003 - 2022  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -226,14 +226,14 @@ $box->add(new htmlTitle(_("Profile management")), 12);
 // new profile
 $box->add(new htmlSubTitle(_("Add profile")), 12);
 $newProfileInput = new htmlResponsiveInputField(_("Profile name"), 'addprofile', null, '230');
-$box->add($newProfileInput, 12);
+$box->add($newProfileInput);
 $profileNewPwd1 = new htmlResponsiveInputField(_("Profile password"), 'addpassword');
 $profileNewPwd1->setIsPassword(true);
-$box->add($profileNewPwd1, 12);
+$box->add($profileNewPwd1);
 $profileNewPwd2 = new htmlResponsiveInputField(_("Reenter password"), 'addpassword2');
 $profileNewPwd2->setIsPassword(true);
 $profileNewPwd2->setSameValueFieldID('addpassword');
-$box->add($profileNewPwd2, 12);
+$box->add($profileNewPwd2);
 $existing = array();
 foreach ($files as $file) {
 	$existing[$file] = $file;
@@ -253,21 +253,23 @@ $box->add($addTemplateSelect, 12);
 $box->addVerticalSpacer('0.5rem');
 $newProfileButton = new htmlButton('btnAddProfile', _('Add'));
 $newProfileButton->setCSSClasses(array('lam-primary'));
-$newProfileButton->setOnClick("jQuery('#action').val('add');showConfirmationDialog('" . _("Add profile") . "', '" .
-	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null); document.getElementById('passwd').focus();");
+$newProfileButton->setOnClick("document.getElementById('action').value = 'add';"
+    . "window.lam.dialog.requestPasswordAndSendForm('" . _("Add profile") . "', '" .
+	_('Ok') . "', '" . _('Cancel') . "', '" . _('Master password') . "', 'passwd', 'profileForm');");
 $box->addLabel($newProfileButton);
 $box->add(new htmlOutputText(''), 0, 6);
 
 // rename profile
-$box->add(new htmlSubTitle(_("Rename profile")), 12);
+$box->add(new htmlSubTitle(_("Rename profile")));
 $box->add(new htmlResponsiveSelect('oldfilename', $files, array(), _('Profile name'), '231'), 12);
 $oldProfileInput = new htmlResponsiveInputField(_('New profile name'), 'renfilename');
-$box->add($oldProfileInput, 12);
+$box->add($oldProfileInput);
 $box->addVerticalSpacer('0.5rem');
 $renameProfileButton = new htmlButton('btnRenameProfile', _('Rename'));
 $renameProfileButton->setCSSClasses(array('lam-secondary'));
-$renameProfileButton->setOnClick("jQuery('#action').val('rename');showConfirmationDialog('" . _("Rename profile") . "', '" .
-	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null); document.getElementById('passwd').focus();");
+$renameProfileButton->setOnClick("document.getElementById('action').value = 'rename';" .
+    "window.lam.dialog.requestPasswordAndSendForm('" . _("Rename profile") . "', '" .
+	_('Ok') . "', '" . _('Cancel') . "', '" . _('Master password') . "', 'passwd', 'profileForm');");
 $box->addLabel($renameProfileButton);
 $box->add(new htmlOutputText(''), 0, 6);
 
@@ -277,8 +279,9 @@ $box->add(new htmlResponsiveSelect('delfilename', $files, array(), _('Profile na
 $box->addVerticalSpacer('0.5rem');
 $deleteProfileButton = new htmlButton('btnDeleteProfile', _('Delete'));
 $deleteProfileButton->setCSSClasses(array('lam-danger'));
-$deleteProfileButton->setOnClick("jQuery('#action').val('delete');showConfirmationDialog('" . _("Delete profile") . "', '" .
-	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null); document.getElementById('passwd').focus();");
+$deleteProfileButton->setOnClick("document.getElementById('action').value = 'delete';" .
+    "window.lam.dialog.requestPasswordAndSendForm('" . _("Delete profile") . "', '" .
+	_('Ok') . "', '" . _('Cancel') . "', '" . _('Master password') . "', 'passwd', 'profileForm');");
 $box->addLabel($deleteProfileButton);
 $box->add(new htmlOutputText(''), 0, 6);
 
@@ -287,47 +290,40 @@ $box->add(new htmlSubTitle(_("Set profile password")), 12);
 $box->add(new htmlResponsiveSelect('setprofile', $files, array(), _('Profile name'), '233'), 12);
 $profileSetPwd1 = new htmlResponsiveInputField(_("Profile password"), 'setpassword');
 $profileSetPwd1->setIsPassword(true);
-$box->add($profileSetPwd1, 12);
+$box->add($profileSetPwd1);
 $profileSetPwd2 = new htmlResponsiveInputField(_("Reenter password"), 'setpassword2');
 $profileSetPwd2->setIsPassword(true);
 $profileSetPwd2->setSameValueFieldID('setpassword');
-$box->add($profileSetPwd2, 12);
+$box->add($profileSetPwd2);
 $box->addVerticalSpacer('0.5rem');
 $setPasswordProfileButton = new htmlButton('btnSetPasswordProfile', _('Set profile password'));
 $setPasswordProfileButton->setCSSClasses(array('lam-secondary'));
-$setPasswordProfileButton->setOnClick("jQuery('#action').val('setpass');showConfirmationDialog('" . _("Set profile password") . "', '" .
-		_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null); document.getElementById('passwd').focus();");
+$setPasswordProfileButton->setOnClick("document.getElementById('action').value = 'setpass';" .
+    "window.lam.dialog.requestPasswordAndSendForm('" . _("Set profile password") . "', '" .
+	_('Ok') . "', '" . _('Cancel') . "', '" . _('Master password') . "', 'passwd', 'profileForm');");
 $box->addLabel($setPasswordProfileButton, 12);
 $box->add(new htmlOutputText(''), 0, 6);
 
 
 // set default profile
 $conf = new LAMCfgMain();
-$defaultprofile = $conf->default;
-$box->add(new htmlSubTitle(_("Change default profile")), 12);
-$box->add(new htmlResponsiveSelect('defaultfilename', $files, array($defaultprofile), _('Profile name'), '234'), 12);
+$defaultProfile = $conf->default;
+$box->add(new htmlSubTitle(_("Change default profile")));
+$box->add(new htmlResponsiveSelect('defaultfilename', $files, array($defaultProfile), _('Profile name'), '234'), 12);
 $box->addVerticalSpacer('0.5rem');
 $defaultProfileButton = new htmlButton('btnDefaultProfile', _('Ok'));
 $defaultProfileButton->setCSSClasses(array('lam-secondary'));
-$defaultProfileButton->setOnClick("jQuery('#action').val('setdefault');showConfirmationDialog('" . _("Change default profile") . "', '" .
-	_('Ok') . "', '" . _('Cancel') . "', 'passwordDialogDiv', 'profileForm', null); document.getElementById('passwd').focus();");
+$defaultProfileButton->setOnClick("document.getElementById('action').value = 'setdefault';" .
+    "window.lam.dialog.requestPasswordAndSendForm('" . _("Change default profile") . "', '" .
+	_('Ok') . "', '" . _('Cancel') . "', '" . _('Master password') . "', 'passwd', 'profileForm');");
 $box->addLabel($defaultProfileButton);
 $box->add(new htmlOutputText(''), 0, 6);
 
 $boxDiv = new htmlDiv(null, $box);
 $boxDiv->setCSSClasses(array('ui-corner-all', 'roundedShadowBox', 'limitWidth'));
-$row->add($boxDiv, 12);
+$row->add($boxDiv);
 
-$row->add(new htmlHiddenInput('action', 'none'), 12);
-
-// dialog
-$dialogDivContent = new htmlResponsiveRow();
-$masterPassword = new htmlResponsiveInputField(_("Master password"), 'passwd', '', '236');
-$masterPassword->setIsPassword(true);
-$dialogDivContent->add($masterPassword, 12);
-$dialogDiv = new htmlDiv('passwordDialogDiv', $dialogDivContent);
-$dialogDiv->setCSSClasses(array('hidden'));
-$row->add($dialogDiv, 12);
+$row->add(new htmlHiddenInput('action', 'none'));
 
 $row->addVerticalSpacer('2rem');
 $backLink = new htmlLink(_("Back to profile login"), 'conflogin.php');
