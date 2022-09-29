@@ -1332,11 +1332,14 @@ window.lam.html.updateDnSelection = function(el, fieldId, tokenName, tokenValue)
  * Activates the lightboxes on images.
  */
 window.lam.html.activateLightboxes = function() {
-	jQuery('.lam-lightbox').magnificPopup({
-		type:'image',
-		zoom: {
-		    enabled: true
-		}
+	document.querySelectorAll('.lam-lightbox').forEach(item => {
+		item.onclick = function() {
+			Swal.fire({
+				imageUrl: item.src,
+				confirmButtonText: item.dataset.lightboxLabelClose,
+				width: 'auto'
+			})
+		};
 	});
 };
 

@@ -2991,6 +2991,10 @@ class htmlImage extends htmlElement {
 		if ($this->crop) {
 			$this->cssClasses[] = 'cropperjsImage';
 		}
+		if ($this->lightbox) {
+			$this->cssClasses[] = 'lam-lightbox';
+			$this->addDataAttribute('lightbox-label-close', _('Close'));
+		}
 		$classes = '';
 		if (!empty($this->cssClasses)) {
 			$classes = 'class="' . implode(' ', $this->cssClasses) . '"';
@@ -2998,9 +3002,6 @@ class htmlImage extends htmlElement {
 		$onClick = '';
 		if ($this->onClick != null) {
 			$onClick = ' onclick="' . $this->onClick . '"';
-		}
-		if ($this->lightbox) {
-			echo '<a href="' . $this->path . '" class="lam-lightbox">';
 		}
 		$helpTitleValue = '';
 		$helpContentValue = '';
