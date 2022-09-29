@@ -1211,11 +1211,13 @@ class accountContainer {
 		$buttonGroup = new htmlGroup();
 		$buttonGroup->colspan = 5;
 		$okButton = new htmlButton('changePwdOk', _('Ok'));
+		$okButton->setCSSClasses(array('lam-primary'));
 		$okButton->setOnClick("passwordHandleInput('false', '../misc/ajax.php?function=passwordChange&editKey="
 			. htmlspecialchars($this->base) . "', '" . getSecurityTokenName() . "', '" . getSecurityTokenValue()
 			. "', '" . _('Ok') . "'); return false;");
 		$buttonGroup->addElement($okButton);
 		$randomButton = new htmlButton('changePwdRandom', _('Set random password'));
+		$randomButton->setCSSClasses(array('lam-secondary'));
 		$randomButton->setOnClick("passwordHandleInput('true', '../misc/ajax.php?function=passwordChange&editKey="
 			. htmlspecialchars($this->base) . "', '" . getSecurityTokenName() . "', '" . getSecurityTokenValue()
 			. "', '" . _('Ok') . "'); return false;");

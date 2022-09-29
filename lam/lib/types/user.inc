@@ -347,6 +347,7 @@ class user extends baseType {
 
 		$buttonGroup = new htmlGroup();
 		$okButton = new htmlButton('changeStatusOk', _('Ok'));
+		$okButton->setCSSClasses(array('lam-primary'));
 		$okButton->setOnClick("document.getElementById('lam_accountStatusResult').value = 'ok'; document.forms['inputForm'].submit();");
 		$buttonGroup->addElement($okButton);
 		$cancelButton = new htmlButton('changeStatusCancel', _('Cancel'));

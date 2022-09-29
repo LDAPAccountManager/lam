@@ -242,40 +242,6 @@ function passwordHandleInput(random, ajaxURL, tokenName, tokenValue, okText) {
 }
 
 /**
- * Shows a general confirmation dialog and submits a form if the user accepted.
- *
- * @param title dialog title
- * @param okText text for Ok button
- * @param cancelText text for Cancel button
- * @param dialogDiv div that contains dialog content
- * @param formName form to submit
- * @param resultField (hidden) input field whose value is set to ok/cancel when button is pressed
- */
-function showConfirmationDialog(title, okText, cancelText, dialogDiv, formName, resultField) {
-	var buttonList = {};
-	buttonList[okText] = function() {
-		jQuery('#' + dialogDiv).dialog('close');
-		if (resultField) {
-			jQuery('#' + resultField).val('ok');
-		}
-		appendDialogInputsToFormAndSubmit(dialogDiv, formName);
-	};
-	buttonList[cancelText] = function() {
-		if (resultField) {
-			jQuery('#' + resultField).val('cancel');
-		}
-		jQuery(this).dialog("close");
-	};
-	jQuery('#' + dialogDiv).dialog({
-		modal: true,
-		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
-		width: 'auto'
-	});
-}
-
-/**
  * Appends the input fields of a dialog back to the form and submits it.
  *
  * @param dialogDiv ID of dialog div
@@ -945,8 +911,13 @@ window.lam.dialog.showModal = function(selector) {
 		}
 	});
 	// set focus on password field
-	var myElement = document.getElementsByName('newPassword1')[0];
-	myElement.focus();
+	let myElement = modal.querySelector('input');
+	if (!myElement) {
+		myElement = modal.querySelector('select');
+	}
+	if (myElement) {
+		myElement.focus();
+	}
 }
 
 window.lam.account = window.lam.account || {};

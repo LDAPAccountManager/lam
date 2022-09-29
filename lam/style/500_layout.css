@@ -944,7 +944,7 @@ div.swal2-html-container {
 	visibility: hidden;
 	transform: scale(1.1);
 	transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
-	z-index: 99999;
+	z-index: 999;
 }
 .modal-content {
 	position: absolute;
@@ -952,7 +952,7 @@ div.swal2-html-container {
 	left: 50%;
 	transform: translate(-50%, -50%);
 	background-color: var(--lam-background-color-default);
-	padding: 1rem 1rem;
+	padding: 1rem 3rem 2rem 2rem;
 	border-radius: 5px;
 }
 .show-modal {
