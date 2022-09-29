@@ -26,6 +26,7 @@
 	--lam-background-color-default: #FFFFFF;
 
 	--lam-input-bg-color: #fcfcfc;
+	--lam-text-color-default: #000000;
 	--lam-border-color: #d0d0d0;
 	--lam-border-color-primary: #01689e;
 
@@ -76,13 +77,14 @@ h1,h2,h3,h4,p,ul,ol,li,div,td,th,address,blockquote,b,i {
 }
 
 h1,h2,h3 {
-	color:black;
+	color: var(--lam-text-color-default);
 	word-wrap: break-word;
 }
 
 body {
 	background-color: var(--lam-background-color-default);
 	padding: 0.5rem 2rem 3rem 2rem;
+	color: var(--lam-text-color-default);
 }
 
 .defaultBackground {
@@ -141,7 +143,7 @@ a.icon-active img {
 }
 
 fieldset {
-  border:1px solid black;
+  border:1px solid var(--lam-text-color-default);
   padding:10px;
 }
 
@@ -152,7 +154,7 @@ padding:10px;
 }
 
 legend {
-color:black;
+	color: var(--lam-text-color-default);
 }
 
 button {
@@ -481,19 +483,19 @@ table.collapse {
 
 /** titles */
 .titleText {
-	color: black;
+	color: var(--lam-text-color-default);
 	text-align: left;
 }
 
 /** subtitles */
 .subTitle {
 	margin: 20px 0px 15px 0px;
-	border-bottom: 1px dotted black;
+	border-bottom: 1px dotted var(--lam-text-color-default);
 }
 
 .subTitleText {
 	margin: 0px 0px 0px 10px;
-	color: black;
+	color: var(--lam-text-color-default);
 	text-align: left;
 }
 
@@ -510,7 +512,7 @@ table.collapse {
 }
 
 hr.dotted {
-	border-bottom: 1px dotted black;
+	border-bottom: 1px dotted var(--lam-text-color-default);
 	border-top: none;
 	border-right: none;
 	border-left: none;
@@ -888,4 +890,74 @@ div.tree-highlight {
 	margin-left: -1.3em;
 	margin-top: 0.4rem;
 	cursor: grab;
+}
+
+div.swal2-html-container {
+	overflow: visible;
+}
+
+.swal2-styled.swal2-confirm {
+	border: 1px solid var(--lam-border-color-primary);
+	border-radius: var(--lam-default-border-radius);
+	background: var(--lam-background-color-primary);
+	color: var(--lam-text-color-primary);
+}
+.swal2-styled.swal2-confirm:focus {
+	box-shadow: none;
+}
+
+.swal2-styled.swal2-cancel {
+	border: 1px solid var(--lam-border-color);
+	border-radius: var(--lam-default-border-radius);
+	background: var(--lam-input-bg-color);
+	color: var(--lam-text-color-default);
+}
+.swal2-styled.swal2-cancel:focus {
+	box-shadow: none;
+}
+
+.swal2-styled {
+	font-weight: unset;
+}
+
+.swal2-actions:not(.swal2-loading) .swal2-styled:hover {
+	filter: brightness(0.96);
+	background-image: unset;
+}
+
+.swal2-popup {
+	color: var(--lam-text-color-default);
+}
+
+.swal2-html-container form {
+	text-align: left;
+}
+
+.modal {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.4);
+	opacity: 0;
+	visibility: hidden;
+	transform: scale(1.1);
+	transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
+	z-index: 999;
+}
+.modal-content {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: var(--lam-background-color-default);
+	padding: 1rem 3rem 2rem 2rem;
+	border-radius: 5px;
+}
+.show-modal {
+	opacity: 1;
+	visibility: visible;
+	transform: scale(1.0);
+	transition: background-color 0.1s;
 }

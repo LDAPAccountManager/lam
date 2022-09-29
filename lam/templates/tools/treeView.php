@@ -259,6 +259,7 @@ function showTree(): void {
 	$pwdCheckRow = new htmlResponsiveRow();
 	$pwdCheckInput = new htmlResponsiveInputField(_('Password'), 'lam_pwd_check');
 	$pwdCheckInput->setIsPassword(true);
+	$pwdCheckInput->setCSSClasses(array('lam_pwd_check'));
 	$pwdCheckRow->add($pwdCheckInput);
 	$pwdCheckRow->addVerticalSpacer('1rem');
 	$pwdCheckRow->add(new htmlDiv('lam-pwd-check-dialog-result', new htmlGroup()));

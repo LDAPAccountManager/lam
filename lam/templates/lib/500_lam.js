@@ -53,7 +53,7 @@ function listOUchanged(type, element) {
  * @param e event
  */
 function listPageNumberKeyPress(url, e) {
-	var pageNumber = jQuery('#listNavPage').val();
+	const pageNumber = document.getElementById('listNavPage').value;
 	if (e.keyCode == 13) {
 		if (e.preventDefault) {
 			e.preventDefault();
@@ -72,15 +72,20 @@ function listPageNumberKeyPress(url, e) {
  * @param cancelText text for Cancel button
  */
 function listShowSettingsDialog(title, okText, cancelText) {
-	var buttonList = {};
-	buttonList[okText] = function() { document.forms["settingsDialogForm"].submit(); };
-	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
-	jQuery('#settingsDialog').dialog({
-		modal: true,
+	const dialogContent = document.getElementById('settingsDialog').cloneNode(true);
+	dialogContent.classList.remove('hidden');
+	dialogContent.firstElementChild.id = 'settingsDialogForm_dlg';
+	Swal.fire({
 		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
-		width: 'auto'
+		confirmButtonText: okText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		html: dialogContent.outerHTML,
+		width: '48em'
+	}).then(result => {
+		if (result.isConfirmed) {
+			document.forms["settingsDialogForm_dlg"].submit();
+		}
 	});
 }
 
@@ -169,77 +174,27 @@ function loginProfileChanged(element) {
  */
 function profileShowDeleteDialog(title, okText, cancelText, scope, selectFieldName) {
 	// get profile name
-	var profileName = jQuery('[name=' + selectFieldName + ']').val();
+	const profileName = document.getElementsByName(selectFieldName)[0].value;
 	// update text
-	jQuery('#deleteText').text(profileName);
+	document.getElementById('deleteText').textContent = profileName;
 	// update hidden input fields
-	jQuery('#profileDeleteType').val(scope);
-	jQuery('#profileDeleteName').val(profileName);
-	var buttonList = {};
-	buttonList[okText] = function() { document.forms["deleteProfileForm"].submit(); };
-	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
-	jQuery('#deleteProfileDialog').dialog({
-		modal: true,
+	document.getElementById('profileDeleteType').value = scope;
+	document.getElementById('profileDeleteName').value = profileName;
+	const dialogContent = document.getElementById('deleteProfileDialog').cloneNode(true);
+	dialogContent.classList.remove('hidden');
+	dialogContent.firstElementChild.id = 'deleteProfileDialog_dlg';
+	Swal.fire({
 		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
-		width: 'auto'
+		confirmButtonText: okText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		html: dialogContent.outerHTML,
+		width: '48em'
+	}).then(result => {
+		if (result.isConfirmed) {
+			document.forms["deleteProfileDialog_dlg"].submit();
+		}
 	});
-}
-
-/**
- * Shows a simple dialog.
- *
- * @param title dialog title
- * @param okText text for Ok button (optional, submits form)
- * @param cancelText text for Cancel button
- * @param formID form ID
- * @param dialogDivID ID of div that contains dialog content
- */
-function showSimpleDialog(title, okText, cancelText, formID, dialogDivID) {
-	var buttonList = {};
-	if (okText) {
-		buttonList[okText] = function() { document.forms[formID].submit(); };
-	}
-	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
-	jQuery('#' + dialogDivID).dialog({
-		modal: true,
-		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
-		width: 'auto'
-	});
-}
-
-/**
- * Shows the dialog to change the password.
- *
- * @param title dialog title
- * @param okText text for Ok button
- * @param cancelText text for Cancel button
- * @param randomText text for random password
- * @param ajaxURL URL used for AJAX request
- * @param tokenName name of CSRF token
- * @param tokenValue value of CSRF token
- */
-function passwordShowChangeDialog(title, okText, cancelText, randomText, ajaxURL, tokenName, tokenValue) {
-	var buttonList = {};
-	buttonList[okText] = function() { passwordHandleInput("false", ajaxURL, tokenName, tokenValue); };
-	buttonList[randomText] = function() { passwordHandleInput("true", ajaxURL, tokenName, tokenValue); };
-	buttonList[cancelText] = function() {
-		jQuery('#passwordDialogMessageArea').html("");
-		jQuery(this).dialog("close");
-	};
-	jQuery('#passwordDialog').dialog({
-		modal: true,
-		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
-		width: 'auto'
-	});
-	// set focus on password field
-	var myElement = document.getElementsByName('newPassword1')[0];
-	myElement.focus();
 }
 
 /**
@@ -249,8 +204,9 @@ function passwordShowChangeDialog(title, okText, cancelText, randomText, ajaxURL
  * @param ajaxURL URL used for AJAX request
  * @param tokenName name of CSRF token
  * @param tokenValue value of CSRF token
+ * @param okText text for ok button
  */
-function passwordHandleInput(random, ajaxURL, tokenName, tokenValue) {
+function passwordHandleInput(random, ajaxURL, tokenName, tokenValue, okText) {
 	// get input values
 	var modules = new Array();
 	jQuery('#passwordDialog').find(':checked').each(function() {
@@ -261,8 +217,8 @@ function passwordHandleInput(random, ajaxURL, tokenName, tokenValue) {
 	var forcePasswordChange = jQuery('input[name=lamForcePasswordChange]').prop('checked');
 	var sendMail = jQuery('input[name=lamPasswordChangeSendMail]').prop('checked');
 	var sendMailAlternateAddress = '';
-	if (jQuery('#passwordDialog').find('[name=lamPasswordChangeSendMailAddress]')) {
-		sendMailAlternateAddress = jQuery('#passwordDialog').find('[name=lamPasswordChangeSendMailAddress]').val();
+	if (jQuery('#passwordDialog').find('[name=lamPasswordChangeMailAddress]')) {
+		sendMailAlternateAddress = jQuery('#passwordDialog').find('[name=lamPasswordChangeMailAddress]').val();
 	}
 	var pwdJSON = {
 		"modules": modules,
@@ -276,60 +232,13 @@ function passwordHandleInput(random, ajaxURL, tokenName, tokenValue) {
 	var data = {jsonInput: pwdJSON};
 	data[tokenName] = tokenValue;
 	// make AJAX call
-	jQuery.post(ajaxURL, data, function(dataReturned) {passwordHandleReply(dataReturned);}, 'json');
-}
-
-/**
- * Manages the server reply to a password change request.
- *
- * @param data JSON reply
- */
-function passwordHandleReply(data) {
-	if (data.errorsOccurred == "false") {
-		jQuery('#passwordDialogMessageArea').html("");
-		jQuery('#passwordDialog').dialog("close");
-		jQuery('#passwordMessageArea').html(data.messages);
-		if (data.forcePasswordChange) {
-			jQuery('#forcePasswordChangeOption').attr('checked', 'checked');
-		}
-	}
-	else {
-		jQuery('#passwordDialogMessageArea').html(data.messages);
-	}
-}
-
-/**
- * Shows a general confirmation dialog and submits a form if the user accepted.
- *
- * @param title dialog title
- * @param okText text for Ok button
- * @param cancelText text for Cancel button
- * @param dialogDiv div that contains dialog content
- * @param formName form to submit
- * @param resultField (hidden) input field whose value is set to ok/cancel when button is pressed
- */
-function showConfirmationDialog(title, okText, cancelText, dialogDiv, formName, resultField) {
-	var buttonList = {};
-	buttonList[okText] = function() {
-		jQuery('#' + dialogDiv).dialog('close');
-		if (resultField) {
-			jQuery('#' + resultField).val('ok');
-		}
-		appendDialogInputsToFormAndSubmit(dialogDiv, formName);
-	};
-	buttonList[cancelText] = function() {
-		if (resultField) {
-			jQuery('#' + resultField).val('cancel');
-		}
-		jQuery(this).dialog("close");
-	};
-	jQuery('#' + dialogDiv).dialog({
-		modal: true,
-		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
-		width: 'auto'
-	});
+	jQuery.post(ajaxURL, data, function(dataReturned) {
+		document.querySelector(".modal").classList.remove("show-modal");
+		Swal.fire({
+			confirmButtonText: okText,
+			html: dataReturned.messages
+		});
+	}, 'json');
 }
 
 /**
@@ -352,19 +261,34 @@ function appendDialogInputsToFormAndSubmit(dialogDiv, formName) {
  * If the user presses Cancel then the current action is stopped (event.preventDefault()).
  *
  * @param text dialog text
+ * @param okText text for OK button
+ * @param cancelText text for cancel button
  * @param e event
  */
-function confirmOrStopProcessing(text, e) {
-	if (!confirm(text)) {
-		if (e.preventDefault) {
-			e.preventDefault();
+function confirmLoadProfile(text, okText, cancelText, e) {
+	Swal.fire({
+		confirmButtonText: okText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		text: text,
+	}).then(result => {
+		if (result.isConfirmed) {
+			const form = document.forms["inputForm"];
+			let buttonValue = document.createElement("input");
+			buttonValue.type = "hidden";
+			buttonValue.name = "accountContainerLoadProfile";
+			buttonValue.value = "yes";
+			form.appendChild(buttonValue);
+			form.submit();
 		}
-		if (e.returnValue) {
-			e.returnValue = false;
-		}
-		return false;
+	});
+	if (e.preventDefault) {
+		e.preventDefault();
 	}
-	return true;
+	if (e.returnValue) {
+		e.returnValue = false;
+	}
+	return false;
 }
 
 /**
@@ -422,31 +346,31 @@ window.lam.profilePdfEditor = window.lam.profilePdfEditor || {};
  */
 window.lam.profilePdfEditor.showDistributionDialog = function(title, okText, cancelText, typeId, type, selectFieldName) {
 	// show dialog
-	var buttonList = {};
-	var dialogId = '';
-
+	let dialogId = '';
+	let formId = '';
 	if (type == 'export') {
-		jQuery('#name_' + typeId).val(jQuery('#' + selectFieldName).val());
+		document.getElementById('name_' + typeId).value = document.getElementById(selectFieldName).value;
 		dialogId = 'exportDialog_' + typeId;
-		buttonList[okText] = function() { document.forms["exportDialogForm_" + typeId].submit(); };
+		formId = "exportDialogForm_" + typeId;
 	} else if (type == 'import') {
 		dialogId = 'importDialog_' + typeId;
-		buttonList[okText] = function() { document.forms["importDialogForm_" + typeId].submit(); };
+		formId = "importDialogForm_" + typeId;
 	}
-	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
-
-	jQuery('#' + dialogId).dialog({
-		modal: true,
+	const dialogContent = document.getElementById(dialogId).cloneNode(true);
+	dialogContent.classList.remove('hidden');
+	dialogContent.firstElementChild.id = formId + '_dlg';
+	Swal.fire({
 		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
+		confirmButtonText: okText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		html: dialogContent.outerHTML,
 		width: 'auto'
+	}).then(result => {
+		if (result.isConfirmed) {
+			document.forms[formId + "_dlg"].submit();
+		}
 	});
-	if (type == 'export') {
-		equalWidth(new Array('#passwd_' + typeId, '#destServerProfiles_' + typeId));
-	} else if (type == 'import') {
-		equalWidth(new Array('#passwd_' + typeId, '#importProfiles'));
-	}
 }
 
 /**
@@ -459,20 +383,7 @@ window.lam.profilePdfEditor.showDistributionDialog = function(title, okText, can
 window.lam.profilePdfEditor.showPdfLogoExportDialog = function(title, okText, cancelText) {
 	var selectedLogo = document.getElementById('logo').value;
 	document.getElementById('exportLogoName').value = selectedLogo;
-	var buttonList = {};
-	buttonList[okText] = function() {
-		document.forms['logoExportForm'].submit();
-	};
-	buttonList[cancelText] = function() {
-		jQuery(this).dialog("close");
-	};
-	jQuery('#logoExportDiv').dialog({
-		modal: true,
-		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
-		width: 'auto'
-	});
+	window.lam.dialog.showSimpleDialog(title, okText, cancelText, 'logoExportForm', 'logoExportDiv');
 }
 
 /**
@@ -483,20 +394,7 @@ window.lam.profilePdfEditor.showPdfLogoExportDialog = function(title, okText, ca
  * @param cancelText text for Cancel button
  */
 window.lam.profilePdfEditor.showPdfLogoImportDialog = function(title, okText, cancelText) {
-	var buttonList = {};
-	buttonList[okText] = function() {
-		document.forms['logoImportForm'].submit();
-	};
-	buttonList[cancelText] = function() {
-		jQuery(this).dialog("close");
-	};
-	jQuery('#logoImportDiv').dialog({
-		modal: true,
-		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
-		width: 'auto'
-	});
+	window.lam.dialog.showSimpleDialog(title, okText, cancelText, 'logoImportForm', 'logoImportDiv');
 }
 
 /**
@@ -527,16 +425,7 @@ function saveScrollPosition(formName) {
  * @param cancelText text for Cancel button
  */
 function bindShowNewZoneDialog(title, okText, cancelText) {
-	var buttonList = {};
-	buttonList[okText] = function() { document.forms["newBindZoneDialogForm"].submit(); };
-	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
-	jQuery('#newBindZoneDialog').dialog({
-		modal: true,
-		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
-		width: 'auto'
-	});
+	window.lam.dialog.showSimpleDialog(title, okText, cancelText, 'newBindZoneDialogForm', 'newBindZoneDialog');
 }
 
 
@@ -912,21 +801,124 @@ window.lam.dialog = window.lam.dialog || {};
  * @param callbackFunction callback function (optional)
  */
 window.lam.dialog.showMessage = function(title, okText, divId, callbackFunction) {
-    var buttonList = {};
-    buttonList[okText] = function() {
-    	jQuery(this).dialog("close");
-    	if (callbackFunction) {
-    		callbackFunction();
-		}
-    };
-    jQuery('#' + divId).dialog({
-		modal: true,
+	const dialogContent = document.getElementById(divId).cloneNode(true);
+	dialogContent.classList.remove('hidden');
+	Swal.fire({
 		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
+		confirmButtonText: okText,
+		html: dialogContent.outerHTML,
 		width: 'auto'
+	}).then(result => {
+		if (callbackFunction) {
+			callbackFunction();
+		}
 	});
 };
+
+/**
+ * Shows a simple dialog.
+ *
+ * @param title dialog title
+ * @param okText text for Ok button (optional, submits form)
+ * @param cancelText text for Cancel button
+ * @param formID form ID
+ * @param dialogDivID ID of div that contains dialog content
+ */
+window.lam.dialog.showSimpleDialog = function(title, okText, cancelText, formID, dialogDivID) {
+	const dialogContent = document.getElementById(dialogDivID).cloneNode(true);
+	dialogContent.classList.remove('hidden');
+	dialogContent.firstElementChild.id = formID + '_dlg';
+	Swal.fire({
+		title: title,
+		confirmButtonText: okText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		showConfirmButton: (okText !== null),
+		html: dialogContent.outerHTML,
+		width: 'auto'
+	}).then(result => {
+		if (result.isConfirmed) {
+			document.forms[formID + '_dlg'].submit();
+		}
+	});
+}
+
+/**
+ * Shows a dialog message.
+ *
+ * @param title dialog title
+ * @param okText ok button text
+ * @param cancelText cancel button text
+ * @param message text message
+ * @param formId form to submit when confirmed
+ */
+window.lam.dialog.confirmAndSendForm = function(title, okText, cancelText, message, formId) {
+	Swal.fire({
+		title: title,
+		confirmButtonText: okText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		text: message,
+		width: 'auto'
+	}).then(result => {
+		if (result.isConfirmed) {
+			document.forms[formId].submit();
+		}
+	});
+};
+
+/**
+ * Shows a dialog with password input. The password is added to the form when confirmed.
+ *
+ * @param title dialog title
+ * @param okText ok button text
+ * @param cancelText cancel button text
+ * @param passwordLabel password label
+ * @param passwordInputName input field name for password
+ * @param formId form to submit when confirmed
+ */
+window.lam.dialog.requestPasswordAndSendForm = async function (title, okText, cancelText, passwordLabel, passwordInputName, formId) {
+	const {value} = await Swal.fire({
+		title: title,
+		confirmButtonText: okText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		input: 'password',
+		inputLabel: passwordLabel,
+		width: 'auto'
+	});
+	if (value) {
+		let passwordTag = document.createElement('input');
+		passwordTag.name = passwordInputName;
+		passwordTag.value = value;
+		passwordTag.hidden = 'hidden';
+		document.forms[formId].appendChild(passwordTag);
+		document.forms[formId].submit();
+	}
+};
+
+/**
+ * Shows a modal dialog.
+ *
+ * @param selector selector to find modal content
+ */
+window.lam.dialog.showModal = function(selector) {
+	let modal = document.querySelector(selector);
+	modal.classList.add("show-modal");
+	window.addEventListener("click", function(event) {
+		if(event.target === modal) {
+			modal.classList.remove("show-modal");
+		}
+	});
+	// set focus on password field
+	let myElement = modal.querySelector('input');
+	if (!myElement) {
+		myElement = modal.querySelector('select');
+	}
+	if (myElement) {
+		myElement.focus();
+	}
+}
 
 window.lam.account = window.lam.account || {};
 
@@ -1266,13 +1258,9 @@ window.lam.html = window.lam.html || {};
  * @param tokenValue CSRF token value
  */
 window.lam.html.showDnSelection = function(fieldId, title, okText, cancelText, tokenName, tokenValue) {
-	var field = jQuery('#' + fieldId);
-	var fieldDiv = jQuery('#dlg_' + fieldId);
-	if (fieldDiv.length == 0) {
-		jQuery('body').append(jQuery('<div class="hidden" id="dlg_' + fieldId + '"></div>'));
-	}
-	var dnValue = field.val();
-	var data = {
+	const field = document.getElementById(fieldId);
+	const dnValue = field.value;
+	let data = {
 		jsonInput: ''
 	};
 	data[tokenName] = tokenValue;
@@ -1284,17 +1272,14 @@ window.lam.html.showDnSelection = function(fieldId, title, okText, cancelText, t
 		data: data
 	})
 	.done(function(jsonData) {
-		jQuery('#dlg_' + fieldId).html(jsonData.dialogData);
-		var buttonList = {};
-		buttonList[cancelText] = function() { jQuery(this).dialog("destroy"); };
-		jQuery('#dlg_' + fieldId).dialog({
-			modal: true,
+		const dlgHtml = '<div id="dlg_' + fieldId + '">' + jsonData.dialogData + '</div>';
+		Swal.fire({
 			title: title,
-			dialogClass: 'defaultBackground',
-			buttons: buttonList,
-			width: 'auto',
-			maxHeight: 600,
-			position: {my: 'center', at: 'center', of: window}
+			cancelButtonText: cancelText,
+			showCancelButton: true,
+			showConfirmButton: false,
+			html: dlgHtml,
+			width: 'auto'
 		});
 	});
 };
@@ -1304,13 +1289,13 @@ window.lam.html.showDnSelection = function(fieldId, title, okText, cancelText, t
  *
  * @param el ok button in dialog
  * @param fieldId field id of input field
- * @returns false
+ * @returns boolean false
  */
 window.lam.html.selectDn = function(el, fieldId) {
-	var field = jQuery('#' + fieldId);
-	var dn = jQuery(el).parents('.row').data('dn');
+	let field = jQuery('#' + fieldId);
+	const dn = jQuery(el).parents('.row').data('dn');
 	field.val(dn);
-	jQuery('#dlg_' + fieldId).dialog("destroy");
+	Swal.close();
 	return false;
 }
 
@@ -1323,9 +1308,8 @@ window.lam.html.selectDn = function(el, fieldId) {
  * @param tokenValue CSRF token value
  */
 window.lam.html.updateDnSelection = function(el, fieldId, tokenName, tokenValue) {
-	var fieldDiv = jQuery('#dlg_' + fieldId);
-	var dn = jQuery(el).parents('.row').data('dn');
-	var data = {
+	const dn = jQuery(el).parents('.row').data('dn');
+	let data = {
 		jsonInput: ''
 	};
 	data[tokenName] = tokenValue;
@@ -1337,13 +1321,10 @@ window.lam.html.updateDnSelection = function(el, fieldId, tokenName, tokenValue)
 		data: data
 	})
 	.done(function(jsonData) {
-		jQuery('#dlg_' + fieldId).html(jsonData.dialogData);
-		jQuery(fieldDiv).dialog({
-		    position: {my: 'center', at: 'center', of: window}
-		});
+		document.getElementById('dlg_' + fieldId).innerHTML = jsonData.dialogData;
 	})
 	.fail(function() {
-		jQuery(fieldDiv).dialog("close");
+		Swal.close();
 	});
 }
 
@@ -1856,7 +1837,7 @@ window.lam.webauthn.removeOwnDevice = function(event, isSelfService) {
 }
 
 /**
- * Opens the remove device diaog.
+ * Opens the remove device dialog.
  *
  * @param element delete button
  * @param action action for request (delete|deleteOwn)
@@ -1866,20 +1847,19 @@ window.lam.webauthn.removeDeviceDialog = function(element, action, successCallba
 	var dialogTitle = element.data('dialogtitle');
 	var okText = element.data('oktext');
 	var cancelText = element.data('canceltext');
-	var buttonList = {};
-	buttonList[okText] = function() {
-		jQuery('#webauthnDeleteConfirm').dialog('close');
-		window.lam.webauthn.sendRemoveDeviceRequest(element, action, successCallback);
-	};
-	buttonList[cancelText] = function() {
-		jQuery(this).dialog("close");
-	};
-	jQuery('#webauthnDeleteConfirm').dialog({
-		modal: true,
+	const dialogContent = document.getElementById('webauthnDeleteConfirm').cloneNode(true);
+	dialogContent.classList.remove('hidden');
+	Swal.fire({
 		title: dialogTitle,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
+		confirmButtonText: okText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		html: dialogContent.outerHTML,
 		width: 'auto'
+	}).then(result => {
+		if (result.isConfirmed) {
+			window.lam.webauthn.sendRemoveDeviceRequest(element, action, successCallback);
+		}
 	});
 }
 
@@ -2167,54 +2147,43 @@ window.lam.treeview.deleteNode = function (tokenName, tokenValue, node, tree, ok
 	var parent = node.parent;
 	var textSpan = jQuery('#treeview_delete_dlg').find('.treeview-delete-entry');
 	textSpan.text(node.text);
-	var buttonList = {};
-	buttonList[okText] = function() {
-		var data = {
-			jsonInput: ""
-		};
-		data[tokenName] = tokenValue;
-		data["dn"] = node.id;
-		jQuery.ajax({
-			url: "../misc/ajax.php?function=treeview&command=deleteNode",
-			method: "POST",
-			data: data
-		})
-		.done(function(jsonData) {
-			window.lam.treeview.checkSession(jsonData);
-			tree.refresh_node(parent);
-			var node = tree.get_node(parent, false);
-			window.lam.treeview.getNodeContent(tokenName, tokenValue, node.id);
-			jQuery('#treeview_delete_dlg').dialog("close");
-			if (jsonData['errors']) {
-				var errTextTitle = jsonData['errors'][0][1];
-				var textSpanErrorTitle = jQuery('#treeview_error_dlg').find('.treeview-error-title');
-				textSpanErrorTitle.text(errTextTitle);
-				var errText = jsonData['errors'][0][2];
-				var textSpanErrorText = jQuery('#treeview_error_dlg').find('.treeview-error-text');
-				textSpanErrorText.text(errText);
-				var errorButtons = {};
-				errorButtons[errorOkText] = function () {
-					jQuery(this).dialog("close");
-				};
-				jQuery('#treeview_error_dlg').dialog({
-					modal: true,
-					title: errorTitle,
-					dialogClass: 'defaultBackground',
-					buttons: errorButtons,
-					width: 'auto'
-				});
-			}
-		});
-	};
-	buttonList[cancelText] = function() {
-		jQuery(this).dialog("close");
-	};
-	jQuery('#treeview_delete_dlg').dialog({
-		modal: true,
+	const dialogContent = document.getElementById('treeview_delete_dlg').cloneNode(true);
+	dialogContent.classList.remove('hidden');
+	Swal.fire({
 		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
-		width: 'auto'
+		confirmButtonText: okText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		html: dialogContent.outerHTML,
+		width: '48em'
+	}).then(result => {
+		if (result.isConfirmed) {
+			let data = {
+				jsonInput: ""
+			};
+			data[tokenName] = tokenValue;
+			data["dn"] = node.id;
+			jQuery.ajax({
+				url: "../misc/ajax.php?function=treeview&command=deleteNode",
+				method: "POST",
+				data: data
+			})
+			.done(function(jsonData) {
+				window.lam.treeview.checkSession(jsonData);
+				tree.refresh_node(parent);
+				var node = tree.get_node(parent, false);
+				window.lam.treeview.getNodeContent(tokenName, tokenValue, node.id);
+				if (jsonData['errors']) {
+					var errTextTitle = jsonData['errors'][0][1];
+					var textSpanErrorTitle = jQuery('#treeview_error_dlg').find('.treeview-error-title');
+					textSpanErrorTitle.text(errTextTitle);
+					var errText = jsonData['errors'][0][2];
+					var textSpanErrorText = jQuery('#treeview_error_dlg').find('.treeview-error-text');
+					textSpanErrorText.text(errText);
+					window.lam.dialog.showSimpleDialog(errorTitle, null, errorOkText, null, 'treeview_error_dlg');
+				}
+			});
+		}
 	});
 }
 
@@ -2763,41 +2732,44 @@ window.lam.treeview.checkSession = function(json) {
  * @param title dialog title
  * @param checkText label for check button
  * @param cancelText label for cancel button
+ * @param okText label for ok button
  */
 window.lam.treeview.checkPassword = function(event, element, tokenName, tokenValue, title,
-											 checkText, cancelText) {
+											 checkText, cancelText, okText) {
 	event.preventDefault();
 	const outputDiv = document.getElementById('lam-pwd-check-dialog-result');
 	outputDiv.innerHTML = '';
-	const passwordInput = document.getElementById('lam_pwd_check');
-	passwordInput.value = '';
-	let buttonList = {};
-	buttonList[checkText] = function() {
-		const hashValue = element.closest('table').querySelector('input[type=password]').value;
-		const checkValue = passwordInput.value;
-		let data = new FormData();
-		data.append('jsonInput', '');
-		data.append(tokenName, tokenValue);
-		data.append('hashValue', hashValue);
-		data.append('checkValue', checkValue);
-		fetch("../misc/ajax.php?function=checkPassword", {
-			method: 'POST',
-			body: data
-		})
-		.then(async response => {
-			const jsonData = await response.json();
-			if (jsonData.resultHtml) {
-				outputDiv.innerHTML = jsonData.resultHtml;
-			}
-		});
-	};
-	buttonList[cancelText] = function() { jQuery(this).dialog("close"); };
-	jQuery('#lam-pwd-check-dialog').dialog({
-		modal: true,
+	const dialogContent = document.getElementById('lam-pwd-check-dialog').cloneNode(true);
+	dialogContent.classList.remove('hidden');
+	dialogContent.querySelector('.lam_pwd_check').classList.add('lam_pwd_check_dlg');
+	Swal.fire({
 		title: title,
-		dialogClass: 'defaultBackground',
-		buttons: buttonList,
-		width: 'auto'
+		confirmButtonText: checkText,
+		cancelButtonText: cancelText,
+		showCancelButton: true,
+		html: dialogContent.outerHTML,
+		width: '48em'
+	}).then(result => {
+		if (result.isConfirmed) {
+			const hashValue = element.closest('table').querySelector('input[type=password]').value;
+			const checkValue = document.querySelector('.lam_pwd_check_dlg').value;
+			let data = new FormData();
+			data.append('jsonInput', '');
+			data.append(tokenName, tokenValue);
+			data.append('hashValue', hashValue);
+			data.append('checkValue', checkValue);
+			fetch("../misc/ajax.php?function=checkPassword", {
+				method: 'POST',
+				body: data
+			})
+			.then(async response => {
+				const jsonData = await response.json();
+				if (jsonData.resultHtml) {
+					outputDiv.innerHTML = jsonData.resultHtml;
+					window.lam.dialog.showSimpleDialog(null, null, okText, null, 'lam-pwd-check-dialog-result');
+				}
+			});
+		}
 	});
 }
 

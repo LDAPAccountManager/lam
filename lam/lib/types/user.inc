@@ -261,7 +261,7 @@ class user extends baseType {
 			$detailsTable->addElement($hintGroup);
 			$statusIcon->setHelpData(_('Account status'), $detailsTable);
 			if (checkIfWriteAccessIsAllowed($container->get_type()->getScope())) {
-				$statusIcon->setOnClick('showConfirmationDialog(\'' . _('Change account status') . '\', \'' . _('Ok') . '\', \'' . _('Cancel') . '\', \'lam_accountStatusDialog\', \'inputForm\', \'lam_accountStatusResult\');');
+				$statusIcon->setOnClick("window.lam.dialog.showModal('.modal-account-status')");
 				$statusIcon->setCSSClasses(array('clickable'));
 			}
 		}
@@ -283,6 +283,7 @@ class user extends baseType {
 		$hasLockOptions = !empty($lockableOptions);
 		$hasUnlockOptions = $accountStatus->isLocked() || $accountStatus->isPartiallyLocked();
 		$container = new htmlResponsiveRow();
+		$container->add(new htmlTitle(_('Change account status')));
 
 		// show radio buttons for lock/unlock
 		$radioDisabled = true;
@@ -313,6 +314,7 @@ class user extends baseType {
 			$container->add($radio, 12);
 			$container->add(new htmlHiddenInput('lam_accountStatusAction', $selectedRadio), 12);
 		}
+		$container->addVerticalSpacer('1rem');
 
 		$container->add(new htmlHiddenInput('lam_accountStatusResult', 'cancel'), 12);
 
@@ -341,9 +343,22 @@ class user extends baseType {
 			$unlockDiv = new htmlDiv('lam_accountStatusDialogUnlockDiv', $unlockContent);
 			$container->add($unlockDiv);
 		}
+		$container->addVerticalSpacer('1rem');
 
-		$div = new htmlDiv('lam_accountStatusDialog', $container);
-		$div->setCSSClasses(array('hidden'));
+		$buttonGroup = new htmlGroup();
+		$okButton = new htmlButton('changeStatusOk', _('Ok'));
+		$okButton->setCSSClasses(array('lam-primary'));
+		$okButton->setOnClick("document.getElementById('lam_accountStatusResult').value = 'ok'; document.forms['inputForm'].submit();");
+		$buttonGroup->addElement($okButton);
+		$cancelButton = new htmlButton('changeStatusCancel', _('Cancel'));
+		$cancelButton->setOnClick("document.querySelector('.modal-account-status').classList.remove('show-modal'); return false;");
+		$buttonGroup->addElement($cancelButton);
+		$container->add($buttonGroup);
+
+		$innerDiv = new htmlDiv('lam_accountStatusDialogContent', $container);
+		$innerDiv->setCSSClasses(array('modal-content'));
+		$div = new htmlDiv('lam_accountStatusDialog', $innerDiv);
+		$div->setCSSClasses(array('modal modal-account-status'));
 		return $div;
 	}
 
