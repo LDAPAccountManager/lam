@@ -43,7 +43,9 @@ if [ -f /usr/share/debconf/confmodule ]; then
 		for server in $restart; do
 				server=${server%,}
 				if [ `which invoke-rc.d` ]; then
+          set +e
 					invoke-rc.d $server reload
+          set -e
 				fi
 		done
 	fi
