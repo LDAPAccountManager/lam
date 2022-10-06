@@ -1,3 +1,8 @@
+December 2022
+  - LAM Pro:
+   -> Group of (unique) names/members, Apache Guacamole: support "seeAlso" attribute (hidden by default in server profile)
+
+
 22.09.2022 8.1
   - Allow hostObject for groups and ":" in values
   - Docker: added Let's Encrypt CA certificates
