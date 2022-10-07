@@ -323,7 +323,7 @@ class sambaDomain extends baseModule {
 			$sambaLockoutThreshold = $this->attributes['sambaLockoutThreshold'][0];
 		}
 		$sambaLockoutThresholdInput = new htmlResponsiveInputField(_('Lockout users after bad logon attempts'), 'lockoutThreshold', $sambaLockoutThreshold, 'lockoutThreshold');
-		$sambaLockoutThresholdInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$sambaLockoutThresholdInput->setType('number');;
 		$return->add($sambaLockoutThresholdInput);
 		// Minimum password age
 		$sambaMinPwdAge = '';
@@ -331,7 +331,7 @@ class sambaDomain extends baseModule {
 			$sambaMinPwdAge = $this->attributes['sambaMinPwdAge'][0];
 		}
 		$sambaMinPwdAgeInput = new htmlResponsiveInputField(_('Minimum password age'), 'minPwdAge', $sambaMinPwdAge, 'minPwdAge');
-		$sambaMinPwdAgeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$sambaMinPwdAgeInput->setType('number');;
 		$return->add($sambaMinPwdAgeInput);
 		// Maximum password age
 		$sambaMaxPwdAge = '';
@@ -347,7 +347,7 @@ class sambaDomain extends baseModule {
 			$sambaLockoutDuration = $this->attributes['sambaLockoutDuration'][0];
 		}
 		$sambaLockoutDurationInput = new htmlResponsiveInputField(_('Lockout duration'), 'lockoutDuration', $sambaLockoutDuration, 'lockoutDuration');
-		$sambaLockoutDurationInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$sambaLockoutDurationInput->setType('number');
 		$return->add($sambaLockoutDurationInput);
 		// Reset time after lockout
 		$sambaLockoutObservationWindow = '';
@@ -355,7 +355,7 @@ class sambaDomain extends baseModule {
 			$sambaLockoutObservationWindow = $this->attributes['sambaLockoutObservationWindow'][0];
 		}
 		$sambaLockoutObservationWindowInput = new htmlResponsiveInputField(_('Reset time after lockout'), 'lockoutObservationWindow', $sambaLockoutObservationWindow, 'lockoutObservationWindow');
-		$sambaLockoutObservationWindowInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$sambaLockoutObservationWindowInput->setType('number');
 		$return->add($sambaLockoutObservationWindowInput);
 
 		$return->add(new htmlSubTitle(_('RID settings')));
@@ -368,7 +368,7 @@ class sambaDomain extends baseModule {
 			$nextRID = $this->attributes['sambaNextRid'][0];
 		}
 		$nextRIDInput = new htmlResponsiveInputField(_('Next RID'), 'nextRID', $nextRID, 'nextRID');
-		$nextRIDInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$nextRIDInput->setMinimumAndMaximumNumber();
 		$return->add($nextRIDInput, 12);
 		// next user RID
 		$nextUserRID = '';
@@ -376,7 +376,7 @@ class sambaDomain extends baseModule {
 			$nextUserRID = $this->attributes['sambaNextUserRid'][0];
 		}
 		$nextUserRIDInput = new htmlResponsiveInputField(_('Next user RID'), 'nextUserRID', $nextUserRID, 'nextUserRID');
-		$nextUserRIDInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$nextUserRIDInput->setMinimumAndMaximumNumber();
 		$return->add($nextUserRIDInput, 12);
 		// next group RID
 		$nextGroupRID = '';
@@ -384,7 +384,7 @@ class sambaDomain extends baseModule {
 			$nextGroupRID = $this->attributes['sambaNextGroupRid'][0];
 		}
 		$nextGroupRIDInput = new htmlResponsiveInputField(_('Next group RID'), 'nextGroupRID', $nextGroupRID, 'nextGroupRID');
-		$nextGroupRIDInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$nextGroupRIDInput->setMinimumAndMaximumNumber();
 		$return->add($nextGroupRIDInput, 12);
 		// RID base
 		if (!isset($this->attributes['sambaAlgorithmicRidBase'][0])) {
@@ -393,7 +393,7 @@ class sambaDomain extends baseModule {
 		if ($this->getAccountContainer()->isNewAccount) {
 			$ridBaseInput = new htmlResponsiveInputField(_('RID base'), 'RIDbase', $this->attributes['sambaAlgorithmicRidBase'][0], 'RIDbase');
 			$ridBaseInput->setRequired(true);
-			$ridBaseInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+			$ridBaseInput->setMinimumAndMaximumNumber();
 			$return->add($ridBaseInput, 12);
 		}
 		else {
