@@ -1363,7 +1363,7 @@ class TreeView {
 		$row->add(new htmlResponsiveInputField(_('Attributes'), 'attributes', 'cn, givenName, sn, uid', null, true));
 		$row->add(new htmlResponsiveInputField(_('Order by'), 'orderBy', 'dn'));
 		$resultCountInput = new htmlResponsiveInputField(_('LDAP search limit'), 'limit', '50');
-		$resultCountInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$resultCountInput->setMinimumAndMaximumNumber();
 		$row->add($resultCountInput);
 		$displayFormat = array(
 			_('List') => 'list',

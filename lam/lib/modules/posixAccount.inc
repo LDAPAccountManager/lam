@@ -1795,8 +1795,8 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			}
 			$uidNumberInput = new htmlResponsiveInputField(_('UID number'), 'uidNumber', $uidNumber, 'uidNumber');
 			$uidNumberInput->setFieldMaxLength(20);
-			$uidNumberInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
-			$return->add($uidNumberInput, 12);
+			$uidNumberInput->setMinimumAndMaximumNumber();
+			$return->add($uidNumberInput);
 			if (!$this->isBooleanConfigOptionSet('posixAccount_' . $typeId . '_hidegecos')) {
 				$gecos = '';
 				if (isset($this->attributes['gecos'][0])) {

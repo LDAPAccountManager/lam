@@ -803,7 +803,7 @@ class htmlInputField extends htmlElement {
 	 * @param integer $minimum minimum
 	 * @param integer $maximum maximum
 	 */
-	public function setMinimumAndMaximumNumber($minimum, $maximum = null) {
+	public function setMinimumAndMaximumNumber($minimum = 0, $maximum = null) {
 		$this->minValue = $minimum;
 		$this->maxValue = $maximum;
 	}
