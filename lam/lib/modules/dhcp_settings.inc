@@ -583,11 +583,11 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$return->add(new htmlResponsiveInputField(_('Domain name'), 'domainname', $this->getDHCPOption('domain-name'), 'domainname'), 12);
 		// lease Time
 		$leasetimeInput = new htmlResponsiveInputField(_('Lease time'), 'lease_time', $this->getDefaultLeaseTime(), 'leasetime');
-		$leasetimeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$leasetimeInput->setMinimumAndMaximumNumber();
 		$return->add($leasetimeInput, 12);
 		// max lease time
 		$max_leasetimeInput = new htmlResponsiveInputField(_('Maximum lease time'), 'max_lease_time', $this->getMaxLeaseTime(), 'max_leasetime');
-		$max_leasetimeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$max_leasetimeInput->setMinimumAndMaximumNumber();
 		$return->add($max_leasetimeInput, 12);
 		// DNS
 		$return->add(new htmlResponsiveInputField(_('DNS'), 'dns', $this->getDHCPOption('domain-name-servers'), 'dns'), 12);

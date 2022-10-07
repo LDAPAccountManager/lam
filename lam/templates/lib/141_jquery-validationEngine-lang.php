@@ -47,10 +47,6 @@ if (!headers_sent()) {
                 "required": {
                     "regex": "none",
                     "alertText": "<?php echo _('This field is required.'); ?>"
-                },
-                "numeric": {
-                    "regex": /^[0-9]+$/,
-                    "alertText": "<?php echo _('Please enter a number.') ?>"
                 }
             };
         }

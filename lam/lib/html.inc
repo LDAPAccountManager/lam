@@ -66,9 +66,6 @@ abstract class htmlElement {
 	/** align to center */
 	const ALIGN_CENTER = 4;
 
-	/** validation rule to allow only numbers ([0-9]+) */
-	const VALIDATE_NUMERIC = 'numeric';
-
 	/** alignment when inside a table */
 	public $alignment = null;
 	/** colspan if inside a table */
@@ -487,8 +484,6 @@ class htmlInputField extends htmlElement {
 	protected $transient = false;
 	/** required field */
 	protected $required = false;
-	/** validation rule */
-	protected $validationRule = null;
 	/** enable autocomplete */
 	protected $autocomplete = false;
 	/** autocompletion suggestions */
@@ -571,9 +566,6 @@ class htmlInputField extends htmlElement {
 		$validators = array();
 		if ($this->required) {
 			$validators[] = 'required';
-		}
-		if ($this->validationRule != null) {
-			$validators[] = 'custom[' . $this->validationRule . ']';
 		}
 		$min = '';
 		if ($this->minValue !== null) {
@@ -798,16 +790,6 @@ class htmlInputField extends htmlElement {
 	 */
 	public function setRequired($required) {
 		$this->required = $required;
-	}
-
-	/**
-	 * Specifies the validation rule (e.g. htmlElement::VALIDATE_NUMERIC) for this field.
-	 * This rule is checked on client side when the input field looses focus.
-	 *
-	 * @param boolean $rule rule name
-	 */
-	public function setValidationRule($rule) {
-		$this->validationRule = $rule;
 	}
 
 	/**

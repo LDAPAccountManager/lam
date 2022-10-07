@@ -257,7 +257,7 @@ class kolabUser extends baseModule {
 				$mailQuota = $this->attributes['mailQuota'][0] / 1024;
 			}
 			$mailQuotaField = new htmlTableExtendedInputField(_('Mailbox quota'), 'mailQuota', $mailQuota, 'mailQuota');
-			$mailQuotaField->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+			$mailQuotaField->setMinimumAndMaximumNumber();
 			$return->addElement($mailQuotaField, true);
 			// invitation policies
 			$return->addElement(new htmlSubTitle(_('Invitation policy')), true);

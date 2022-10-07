@@ -698,7 +698,7 @@ class asteriskAccount extends baseModule implements passwordService {
 			// port
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountPort')) {
 				$AstAccountPort = $this->addSimpleInputTextField($return, 'AstAccountPort', _("Port"));
-				$AstAccountPort->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+				$AstAccountPort->setMinimumAndMaximumNumber(1);
 			}
 			// qualify
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountQualify')) {
@@ -711,12 +711,12 @@ class asteriskAccount extends baseModule implements passwordService {
 			// RTP timeout
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountRTPTimeout')) {
 				$AstAccountRTPTimeout = $this->addSimpleInputTextField($return, 'AstAccountRTPTimeout', _("RTP timeout"));
-				$AstAccountRTPTimeout->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+				$AstAccountRTPTimeout->setMinimumAndMaximumNumber(-1);
 			}
 			// RTP hold timeout
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountRTPHoldTimeout')) {
 				$AstAccountRTPHoldTimeoutInput = $this->addSimpleInputTextField($return, 'AstAccountRTPHoldTimeout', _("RTP hold timeout"));
-				$AstAccountRTPHoldTimeoutInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+				$AstAccountRTPHoldTimeoutInput->setMinimumAndMaximumNumber(-1);
 			}
 			// disallowed codec
 			if (!$this->isBooleanConfigOptionSet('asteriskAccount_hideAstAccountDisallowedCodec')) {

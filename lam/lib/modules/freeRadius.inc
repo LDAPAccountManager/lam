@@ -372,7 +372,7 @@ class freeRadius extends baseModule {
 			// idle timeout
 			if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusIdleTimeout')) {
 				$radiusIdleTimeoutInput = $this->addSimpleInputTextField($return, 'radiusIdleTimeout', _('Idle timeout'));
-				$radiusIdleTimeoutInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+				$radiusIdleTimeoutInput->setMinimumAndMaximumNumber();
 			}
 			// expiration date
 			if (!$this->isBooleanConfigOptionSet('freeRadius_hideRadiusExpiration')) {
