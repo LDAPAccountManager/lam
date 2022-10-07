@@ -68,8 +68,6 @@ abstract class htmlElement {
 
 	/** validation rule to allow only numbers ([0-9]+) */
 	const VALIDATE_NUMERIC = 'numeric';
-	/** validation rule to allow positive/negative numbers ([-]?[0-9]+) */
-	const VALIDATE_NUMERIC_WITH_NEGATIVE = 'numericWithNegative';
 
 	/** alignment when inside a table */
 	public $alignment = null;
@@ -519,6 +517,10 @@ class htmlInputField extends htmlElement {
 	protected $maxValue = null;
 	/** id */
 	protected $id = null;
+	/** input type */
+	protected $type = 'text';
+	/** validation pattern */
+	protected $validationPattern = null;
 
 	/**
 	 * Constructor
@@ -579,6 +581,10 @@ class htmlInputField extends htmlElement {
 		if ($this->maxValue !== null) {
 			$max = ' max="' . $this->maxValue . '"';
 		}
+		$validationPattern = '';
+		if ($this->validationPattern !== null) {
+			$validationPattern = ' pattern="' . $this->validationPattern . '"';
+		}
 		// print input field
 		if ($this->autocomplete) {
 			$this->cssClasses[] = 'lam-autocomplete';
@@ -606,7 +612,7 @@ class htmlInputField extends htmlElement {
 		}
 		$fieldTabIndex = ' tabindex="' . $tabindex . '"';
 		$tabindex++;
-		$inputType = 'text';
+		$inputType = $this->type;
 		if ($this->isPassword) {
 			$inputType = 'password';
 		}
@@ -646,7 +652,8 @@ class htmlInputField extends htmlElement {
 			echo '<span class="nowrap">';
 		}
 		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength
-			. $min . $max . $size . $fieldTabIndex . $onKeyPress . $onKeyUp . $onInput . $title . $disabled
+			. $min . $max . $validationPattern . $size . $fieldTabIndex . $onKeyPress . $onKeyUp
+			. $onInput . $title . $disabled
 			. $this->getDataAttributesAsString() . $autoCompleteVal . $autoCompleteData . '>';
 		if ($this->showDnSelection) {
 			echo '<img class="align-middle" src="../../graphics/search-color.svg"
@@ -920,6 +927,24 @@ class htmlInputField extends htmlElement {
 	 */
 	public function setId(string $id) {
 		$this->id = $id;
+	}
+
+	/**
+	 * Sets the input type.
+	 *
+	 * @param string $type type (e.g. number)
+	 */
+	public function setType(string $type): void {
+		$this->type = $type;
+	}
+
+	/**
+	 * Sets the validation pattern.
+	 *
+	 * @param string $pattern pattern (e.g. "[0-9]{3}")
+	 */
+	public function setValidationPattern(string $pattern): void {
+		$this->validationPattern = $pattern;
 	}
 
 }

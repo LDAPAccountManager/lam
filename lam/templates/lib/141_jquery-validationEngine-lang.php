@@ -51,10 +51,6 @@ if (!headers_sent()) {
                 "numeric": {
                     "regex": /^[0-9]+$/,
                     "alertText": "<?php echo _('Please enter a number.') ?>"
-                },
-                "numericWithNegative": {
-                    "regex": /^[-]?[0-9]+$/,
-                    "alertText": "<?php echo _('Please enter a number.') ?>"
                 }
             };
         }
