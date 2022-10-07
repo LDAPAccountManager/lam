@@ -365,10 +365,8 @@ div.account-types-popup div.columns:last-child {
 		grid-template-columns: 1fr 1fr 1fr;
 		column-gap: 5rem;
 		max-width: 60rem;
-	}
-
-	.lam-header a.lam-menu-entry:last-child {
-		margin-bottom: 2rem;
+		padding-top: 2rem;
+		padding-bottom: 2rem;
 	}
 
 }
