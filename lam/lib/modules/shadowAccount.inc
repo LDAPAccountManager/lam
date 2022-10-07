@@ -372,16 +372,16 @@ class shadowAccount extends baseModule implements passwordService,AccountStatusP
 		$return = new htmlResponsiveRow();
 		if (in_array('shadowAccount', $this->attributes['objectClass'])) {
 			$pwdWarnInput = $this->addSimpleInputTextField($return, 'shadowwarning', _('Password warning'));
-			$pwdWarnInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+			$pwdWarnInput->setType('number');
 
 			$pwdExpInput = $this->addSimpleInputTextField($return, 'shadowinactive', _('Password expiration'));
-			$pwdExpInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+			$pwdExpInput->setType('number');
 
 			$minAgeInput = $this->addSimpleInputTextField($return, 'shadowmin', _('Minimum password age'));
-			$minAgeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+			$minAgeInput->setType('number');
 
 			$maxAgeInput = $this->addSimpleInputTextField($return, 'shadowmax', _('Maximum password age'));
-			$maxAgeInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+			$maxAgeInput->setType('number');
 
 			$expirationDate = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 			if (isset($this->attributes['shadowexpire'][0])) {

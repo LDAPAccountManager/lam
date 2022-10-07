@@ -515,6 +515,8 @@ class htmlInputField extends htmlElement {
 	protected $minValue = null;
 	/** maximum value */
 	protected $maxValue = null;
+	/** step for numeric values */
+	protected $stepValue = null;
 	/** id */
 	protected $id = null;
 	/** input type */
@@ -580,6 +582,10 @@ class htmlInputField extends htmlElement {
 		$max = '';
 		if ($this->maxValue !== null) {
 			$max = ' max="' . $this->maxValue . '"';
+		}
+		$step = '';
+		if ($this->stepValue !== null) {
+			$step = ' step="' . $this->stepValue . '"';
 		}
 		$validationPattern = '';
 		if ($this->validationPattern !== null) {
@@ -652,7 +658,7 @@ class htmlInputField extends htmlElement {
 			echo '<span class="nowrap">';
 		}
 		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength
-			. $min . $max . $validationPattern . $size . $fieldTabIndex . $onKeyPress . $onKeyUp
+			. $min . $max . $step . $validationPattern . $size . $fieldTabIndex . $onKeyPress . $onKeyUp
 			. $onInput . $title . $disabled
 			. $this->getDataAttributesAsString() . $autoCompleteVal . $autoCompleteData . '>';
 		if ($this->showDnSelection) {
@@ -809,10 +815,12 @@ class htmlInputField extends htmlElement {
 	 *
 	 * @param integer $minimum minimum
 	 * @param integer $maximum maximum
+	 * @param int $step step value
 	 */
-	public function setMinimumAndMaximumNumber($minimum = 0, $maximum = null) {
+	public function setMinimumAndMaximumNumber($minimum = 0, $maximum = null, int $step = 1) {
 		$this->minValue = $minimum;
 		$this->maxValue = $maximum;
+		$this->stepValue = $step;
 	}
 
 	/**
@@ -945,6 +953,15 @@ class htmlInputField extends htmlElement {
 	 */
 	public function setValidationPattern(string $pattern): void {
 		$this->validationPattern = $pattern;
+	}
+
+	/**
+	 * Sets the step value for number fields.
+	 *
+	 * @param int $step step value (e.g. 1)
+	 */
+	public function setStepValue(int $step): void {
+		$this->stepValue = $step;
 	}
 
 }
