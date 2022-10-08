@@ -115,7 +115,7 @@ for ($i = 0; $i < sizeof($errorsToDisplay); $i++) {
 	call_user_func_array('StatusMessage', $errorsToDisplay[$i]);
 }
 
-echo "<form id=\"inputForm\" action=\"moduleSettings.php\" method=\"post\" autocomplete=\"off\" onSubmit=\"saveScrollPosition('inputForm')\">\n";
+echo "<form id=\"inputForm\" action=\"moduleSettings.php\" method=\"post\" autocomplete=\"off\" onSubmit=\"saveScrollPosition('inputForm')\" novalidate=\"novalidate\">\n";
 
 printConfigurationPageTabs(ConfigurationPageTab::MODULE_SETTINGS);
 

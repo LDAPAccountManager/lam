@@ -563,10 +563,6 @@ class htmlInputField extends htmlElement {
 				$this->fieldValue = htmlspecialchars($values[$this->fieldName][0]);
 			}
 		}
-		$validators = array();
-		if ($this->required) {
-			$validators[] = 'required';
-		}
 		$min = '';
 		if ($this->minValue !== null) {
 			$min = ' min="' . $this->minValue . '"';
@@ -587,12 +583,11 @@ class htmlInputField extends htmlElement {
 		if ($this->autocomplete) {
 			$this->cssClasses[] = 'lam-autocomplete';
 		}
-		if (sizeof($validators) > 0) {
-			$class = ' class="validate[' . implode(',', $validators) . '] ' . implode(' ', $this->cssClasses) . '"';
+		$required = '';
+		if ($this->required) {
+			$required = ' required';
 		}
-		else {
-			$class = ' class="' . implode(' ', $this->cssClasses) . '"';
-		}
+		$class = ' class="' . implode(' ', $this->cssClasses) . '"';
 		$name = ' name="' . $this->fieldName . '"';
 		$idValue = ($this->id !== null) ? $this->id : $this->fieldName;
 		$id = ' id="' . $idValue . '"';
@@ -649,7 +644,7 @@ class htmlInputField extends htmlElement {
 		if ($this->showDnSelection) {
 			echo '<span class="nowrap">';
 		}
-		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength
+		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength . $required
 			. $min . $max . $step . $validationPattern . $size . $fieldTabIndex . $onKeyPress . $onKeyUp
 			. $onInput . $title . $disabled
 			. $this->getDataAttributesAsString() . $autoCompleteVal . $autoCompleteData . '>';
@@ -2711,20 +2706,16 @@ class htmlInputTextarea extends htmlElement {
 			$disabled = ' disabled';
 		}
 		$classList = $this->cssClasses;
-		$classes = '';
 		if ($this->richEdit) {
 			$classList[] = 'ckeditor';
 		}
-		$validators = array();
+		$required = '';
 		if ($this->required) {
-			$validators[] = 'required';
-		}
-		if (!empty($validators)) {
-			$classList[] = 'validate[' . implode(',', $validators) . ']';
+			$required = ' required';
 		}
 		$classes = ' class="' . implode(' ', $classList) . '"';
 		echo '<textarea name="' . $this->name . '" id="' . $this->name . '"' . $tabindexValue . $classes . $colCount .
-			$rowCount . $this->getDataAttributesAsString() . $disabled . '>' . $this->value . '</textarea>';
+			$rowCount . $this->getDataAttributesAsString() . $required . $disabled . '>' . $this->value . '</textarea>';
 		return array($this->name => 'textarea');
 	}
 

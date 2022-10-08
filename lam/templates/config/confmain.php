@@ -187,7 +187,7 @@ if (sizeof($errorsToDisplay) > 0) {
 }
 
 // display formular
-echo "<form enctype=\"multipart/form-data\" action=\"confmain.php\" method=\"post\" autocomplete=\"off\">\n";
+echo "<form enctype=\"multipart/form-data\" action=\"confmain.php\" method=\"post\" autocomplete=\"off\" novalidate=\"novalidate\">\n";
 
 printConfigurationPageTabs(ConfigurationPageTab::GENERAL);
 
