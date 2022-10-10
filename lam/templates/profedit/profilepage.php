@@ -256,6 +256,7 @@ $saveButton->setCSSClasses(array('lam-primary fullwidth-mobile-only'));
 $buttonTable->addLabel($saveButton);
 $cancelButton = new htmlButton('abort', _('Cancel'));
 $cancelButton->setCSSClasses(array('fullwidth-mobile-only'));
+$cancelButton->disableFormValidation();
 $buttonTable->addField($cancelButton);
 $buttonTable->add(new htmlHiddenInput('accounttype', $type->getId()), 0);
 

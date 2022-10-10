@@ -1551,15 +1551,15 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 		$return->add(new htmlResponsiveInputField(_('Working directory'), 'tsWorkDirectory', $mDial->ctx['CtxWorkDirectory'], 'tsWorkDirectory'), 12);
 		// connection time limit
 		$tsConnectionLimit = new htmlResponsiveInputField(_('Connection time limit'), 'tsConnectionLimit', $mDial->ctx['CtxMaxConnectionTime'], 'tsTimeLimit');
-		$tsConnectionLimit->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$tsConnectionLimit->setType('number');
 		$return->add($tsConnectionLimit, 12);
 		// disconnection time limit
 		$tsDisconnectionLimit = new htmlResponsiveInputField(_('Disconnection time limit'), 'tsDisconnectionLimit', $mDial->ctx['CtxMaxDisconnectionTime'], 'tsTimeLimit');
-		$tsDisconnectionLimit->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$tsDisconnectionLimit->setType('number');
 		$return->add($tsDisconnectionLimit, 12);
 		// idle time limit
 		$tsIdleLimit = new htmlResponsiveInputField(_('Idle time limit'), 'tsIdleLimit', $mDial->ctx['CtxMaxIdleTime'], 'tsTimeLimit');
-		$tsIdleLimit->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+		$tsIdleLimit->setType('number');
 		$return->add($tsIdleLimit, 12);
 		// connect client drives
 		$return->add(new htmlResponsiveInputCheckbox('tsConnectDrives', $mDial->getConnectClientDrives(), _('Connect client drives'), 'tsConnectDrives'), 12);

@@ -66,11 +66,6 @@ abstract class htmlElement {
 	/** align to center */
 	const ALIGN_CENTER = 4;
 
-	/** validation rule to allow only numbers ([0-9]+) */
-	const VALIDATE_NUMERIC = 'numeric';
-	/** validation rule to allow positive/negative numbers ([-]?[0-9]+) */
-	const VALIDATE_NUMERIC_WITH_NEGATIVE = 'numericWithNegative';
-
 	/** alignment when inside a table */
 	public $alignment = null;
 	/** colspan if inside a table */
@@ -489,8 +484,6 @@ class htmlInputField extends htmlElement {
 	protected $transient = false;
 	/** required field */
 	protected $required = false;
-	/** validation rule */
-	protected $validationRule = null;
 	/** enable autocomplete */
 	protected $autocomplete = false;
 	/** autocompletion suggestions */
@@ -517,8 +510,14 @@ class htmlInputField extends htmlElement {
 	protected $minValue = null;
 	/** maximum value */
 	protected $maxValue = null;
+	/** step for numeric values */
+	protected $stepValue = null;
 	/** id */
 	protected $id = null;
+	/** input type */
+	protected $type = 'text';
+	/** validation pattern */
+	protected $validationPattern = null;
 
 	/**
 	 * Constructor
@@ -564,13 +563,6 @@ class htmlInputField extends htmlElement {
 				$this->fieldValue = htmlspecialchars($values[$this->fieldName][0]);
 			}
 		}
-		$validators = array();
-		if ($this->required) {
-			$validators[] = 'required';
-		}
-		if ($this->validationRule != null) {
-			$validators[] = 'custom[' . $this->validationRule . ']';
-		}
 		$min = '';
 		if ($this->minValue !== null) {
 			$min = ' min="' . $this->minValue . '"';
@@ -579,16 +571,23 @@ class htmlInputField extends htmlElement {
 		if ($this->maxValue !== null) {
 			$max = ' max="' . $this->maxValue . '"';
 		}
+		$step = '';
+		if ($this->stepValue !== null) {
+			$step = ' step="' . $this->stepValue . '"';
+		}
+		$validationPattern = '';
+		if ($this->validationPattern !== null) {
+			$validationPattern = ' pattern="' . $this->validationPattern . '"';
+		}
 		// print input field
 		if ($this->autocomplete) {
 			$this->cssClasses[] = 'lam-autocomplete';
 		}
-		if (sizeof($validators) > 0) {
-			$class = ' class="validate[' . implode(',', $validators) . '] ' . implode(' ', $this->cssClasses) . '"';
+		$required = '';
+		if ($this->required) {
+			$required = ' required';
 		}
-		else {
-			$class = ' class="' . implode(' ', $this->cssClasses) . '"';
-		}
+		$class = ' class="' . implode(' ', $this->cssClasses) . '"';
 		$name = ' name="' . $this->fieldName . '"';
 		$idValue = ($this->id !== null) ? $this->id : $this->fieldName;
 		$id = ' id="' . $idValue . '"';
@@ -606,7 +605,7 @@ class htmlInputField extends htmlElement {
 		}
 		$fieldTabIndex = ' tabindex="' . $tabindex . '"';
 		$tabindex++;
-		$inputType = 'text';
+		$inputType = $this->type;
 		if ($this->isPassword) {
 			$inputType = 'password';
 		}
@@ -645,8 +644,9 @@ class htmlInputField extends htmlElement {
 		if ($this->showDnSelection) {
 			echo '<span class="nowrap">';
 		}
-		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength
-			. $min . $max . $size . $fieldTabIndex . $onKeyPress . $onKeyUp . $onInput . $title . $disabled
+		echo '<input type="' . $inputType . '"' . $class . $name . $id . $value . $maxLength . $required
+			. $min . $max . $step . $validationPattern . $size . $fieldTabIndex . $onKeyPress . $onKeyUp
+			. $onInput . $title . $disabled
 			. $this->getDataAttributesAsString() . $autoCompleteVal . $autoCompleteData . '>';
 		if ($this->showDnSelection) {
 			echo '<img class="align-middle" src="../../graphics/search-color.svg"
@@ -788,24 +788,16 @@ class htmlInputField extends htmlElement {
 	}
 
 	/**
-	 * Specifies the validation rule (e.g. htmlElement::VALIDATE_NUMERIC) for this field.
-	 * This rule is checked on client side when the input field looses focus.
-	 *
-	 * @param boolean $rule rule name
-	 */
-	public function setValidationRule($rule) {
-		$this->validationRule = $rule;
-	}
-
-	/**
 	 * Sets the field as number field with minimum and maximum values.
 	 *
 	 * @param integer $minimum minimum
 	 * @param integer $maximum maximum
+	 * @param int $step step value
 	 */
-	public function setMinimumAndMaximumNumber($minimum, $maximum = null) {
+	public function setMinimumAndMaximumNumber($minimum = 0, $maximum = null, int $step = 1) {
 		$this->minValue = $minimum;
 		$this->maxValue = $maximum;
+		$this->stepValue = $step;
 	}
 
 	/**
@@ -920,6 +912,33 @@ class htmlInputField extends htmlElement {
 	 */
 	public function setId(string $id) {
 		$this->id = $id;
+	}
+
+	/**
+	 * Sets the input type.
+	 *
+	 * @param string $type type (e.g. number)
+	 */
+	public function setType(string $type): void {
+		$this->type = $type;
+	}
+
+	/**
+	 * Sets the validation pattern.
+	 *
+	 * @param string $pattern pattern (e.g. "[0-9]{3}")
+	 */
+	public function setValidationPattern(string $pattern): void {
+		$this->validationPattern = $pattern;
+	}
+
+	/**
+	 * Sets the step value for number fields.
+	 *
+	 * @param int $step step value (e.g. 1)
+	 */
+	public function setStepValue(int $step): void {
+		$this->stepValue = $step;
 	}
 
 }
@@ -1065,6 +1084,8 @@ class htmlButton extends htmlElement {
 	private $onClick = null;
 	/** button type (default: "submit" if no onClick and "button" with onClick) */
 	private $type = null;
+	/** disable form validation */
+	private $noFormValidation = false;
 
 	/**
 	 * Constructor.
@@ -1127,6 +1148,10 @@ class htmlButton extends htmlElement {
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
 		}
+		$noFormValidation = '';
+		if ($this->noFormValidation) {
+			$noFormValidation = ' formnovalidate="formnovalidate"';
+		}
 		if ($this->type == null) {
 			$type = ' type="submit"';
 		}
@@ -1142,10 +1167,12 @@ class htmlButton extends htmlElement {
 		}
 		$id = ' id="btn_' . preg_replace('/[^a-zA-Z0-9_-]/', '', $this->name) . '"';
 		if ($this->isImageButton) {
-			echo '<input type="submit" ' . $id . ' value=" "' . $name . $onClick . $fieldTabIndex . $style . $class . $title . $disabled . $this->getDataAttributesAsString() . '>';
+			echo '<input type="submit" ' . $id . ' value=" "' . $name . $onClick . $fieldTabIndex . $style . $class
+				. $title . $disabled . $noFormValidation . $this->getDataAttributesAsString() . '>';
 		}
 		else {
-			echo '<button' . $id . $name . $fieldTabIndex . $type . $onClick . $style . $class . $title . $disabled . $this->getDataAttributesAsString() . '>' . $this->value . '</button>';
+			echo '<button' . $id . $name . $fieldTabIndex . $type . $onClick . $style . $class . $title . $disabled
+				. $noFormValidation . $this->getDataAttributesAsString() . '>' . $this->value . '</button>';
 			// text buttons get JQuery style
 			if ($this->iconClass != null) {
 				$icon = '{ icons: { primary: \'' . $this->iconClass . '\' } }';
@@ -1202,6 +1229,13 @@ class htmlButton extends htmlElement {
 	 */
 	public function setType($type) {
 		$this->type = $type;
+	}
+
+	/**
+	 * Disables form validation (e.g. for cancel buttons).
+	 */
+	public function disableFormValidation(): void {
+		$this->noFormValidation = true;
 	}
 
 }
@@ -2524,6 +2558,8 @@ class htmlInputFileUpload extends htmlElement {
 	private $name;
 	/** enabled or disabled */
 	private $isEnabled = true;
+	/** required */
+	protected $required = false;
 
 	/**
 	 * Constructor.
@@ -2552,12 +2588,16 @@ class htmlInputFileUpload extends htmlElement {
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
 		}
+		$required = '';
+		if ($this->required) {
+			$required = ' required="required"';
+		}
 		$classValue = '';
 		if (!empty($this->cssClasses)) {
 			$classValue = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
 		echo '<input type="file" id="' . $this->name . '" name="' . $this->name . '"' . $tabindexValue . $classValue .
-			$disabled . $this->getDataAttributesAsString() . '>';
+			$disabled . $required . $this->getDataAttributesAsString() . '>';
 		return array($this->name => 'file');
 	}
 
@@ -2568,6 +2608,15 @@ class htmlInputFileUpload extends htmlElement {
 	 */
 	public function setIsEnabled($isEnabled) {
 		$this->isEnabled = $isEnabled;
+	}
+
+	/**
+	 * Sets the field required.
+	 *
+	 * @param bool $required field is required (default: true)
+	 */
+	public function setRequired($required = true): void {
+		$this->required = $required;
 	}
 
 }
@@ -2687,20 +2736,16 @@ class htmlInputTextarea extends htmlElement {
 			$disabled = ' disabled';
 		}
 		$classList = $this->cssClasses;
-		$classes = '';
 		if ($this->richEdit) {
 			$classList[] = 'ckeditor';
 		}
-		$validators = array();
+		$required = '';
 		if ($this->required) {
-			$validators[] = 'required';
-		}
-		if (!empty($validators)) {
-			$classList[] = 'validate[' . implode(',', $validators) . ']';
+			$required = ' required';
 		}
 		$classes = ' class="' . implode(' ', $classList) . '"';
 		echo '<textarea name="' . $this->name . '" id="' . $this->name . '"' . $tabindexValue . $classes . $colCount .
-			$rowCount . $this->getDataAttributesAsString() . $disabled . '>' . $this->value . '</textarea>';
+			$rowCount . $this->getDataAttributesAsString() . $required . $disabled . '>' . $this->value . '</textarea>';
 		return array($this->name => 'textarea');
 	}
 
@@ -4559,9 +4604,7 @@ class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
 	private $helpModule = null;
 	/** render HTML of parent class */
 	private $renderParentHtml = false;
-	/** required */
-	private $required = false;
-	
+
 	/**
 	 * Constructor.
 	 *
@@ -4623,15 +4666,6 @@ class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
 		}
 		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');
 		return $row->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
-	}
-
-	/**
-	 * Sets the field required.
-	 *
-	 * @param bool $required field is required (default: true)
-	 */
-	public function setRequired($required = true) {
-		$this->required = $required;
 	}
 
 }

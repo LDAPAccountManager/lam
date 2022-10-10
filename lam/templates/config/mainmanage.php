@@ -347,7 +347,7 @@ printHeaderContents(_("Edit general settings"), '../..');
 </div>
 <br>
 <!-- form for adding/renaming/deleting profiles -->
-<form enctype="multipart/form-data" action="mainmanage.php" method="post">
+<form enctype="multipart/form-data" action="mainmanage.php" method="post" novalidate="novalidate">
 
 	<?php
 	// include all JavaScript files

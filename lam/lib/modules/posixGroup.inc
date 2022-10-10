@@ -209,7 +209,7 @@ class posixGroup extends baseModule implements passwordService {
 			}
 			// GID number
 			$gidNumberInput = $this->addSimpleInputTextField($return, 'gidNumber', _('GID number'));
-			$gidNumberInput->setValidationRule(htmlElement::VALIDATE_NUMERIC);
+			$gidNumberInput->setMinimumAndMaximumNumber();
 			// description
 			if ($this->manageCnAndDescription($modules)) {
 				$this->addSimpleInputTextField($return, 'description', _('Description'));

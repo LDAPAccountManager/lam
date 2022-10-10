@@ -287,7 +287,7 @@ function showMainPage(\LAM\TYPES\ConfiguredType $type, array $selectedModules): 
 	$saveLink->setCSSClasses(array('icon'));
 	$row->addField($saveLink);
 	$row->addVerticalSpacer('3rem');
-	$row->add(new htmlResponsiveInputFileUpload('inputfile', _("CSV file")), 12);
+	$row->add(new htmlResponsiveInputFileUpload('inputfile', _("CSV file"), null, true), 12);
 	$row->add(new htmlHiddenInput('typeId', $type->getId()), 12);
 	$row->add(new htmlHiddenInput('selectedModules', implode(',', $selectedModules)), 12);
 

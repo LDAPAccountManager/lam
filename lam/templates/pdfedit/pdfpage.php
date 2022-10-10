@@ -459,6 +459,7 @@ $buttonContainer = new htmlResponsiveRow();
 $saveButton = new htmlButton('submit', _("Save"));
 $saveButton->setCSSClasses(array('lam-primary'));
 $cancelButton = new htmlButton('abort', _("Cancel"));
+$cancelButton->disableFormValidation();
 $buttonGroup = new htmlGroup();
 $buttonGroup->addElement($saveButton);
 $buttonGroup->addElement($cancelButton);
