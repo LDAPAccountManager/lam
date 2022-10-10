@@ -1,4 +1,5 @@
 December 2022
+  - Usability improvements
   - LAM Pro:
    -> Group of (unique) names/members, Apache Guacamole: support "seeAlso" attribute (hidden by default in server profile)
 
