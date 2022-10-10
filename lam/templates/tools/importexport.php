@@ -100,7 +100,6 @@ if (!empty($_GET['tab']) && ($_GET['tab'] === 'export')) {
 	jQuery("#tabs").tabs({
         active: <?php echo $activeTab; ?>
     });
-	jQuery(".inputForm").validationEngine({promptPosition: "topLeft", addFailureCssClassToField: "lam-input-error", autoHidePrompt: true, autoHideDelay: 5000});
   });
 </script>
 

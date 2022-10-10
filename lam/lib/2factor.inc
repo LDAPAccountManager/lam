@@ -888,25 +888,23 @@ class WebauthnProvider extends BaseProvider {
 		$row->addVerticalSpacer('2rem');
 		$pathPrefix = $this->config->isSelfService ? '../' : '';
 		$selfServiceParam = $this->config->isSelfService ? 'true' : 'false';
-		$row->add(new htmlImage($pathPrefix . '../graphics/webauthn.svg'), 12);
+		$row->add(new htmlImage($pathPrefix . '../graphics/webauthn.svg', '50%'));
 		$row->addVerticalSpacer('1rem');
-		$registerButton = new htmlButton('register_webauthn', _('Register new key'));
-		$registerButton->setCSSClasses(array('fullwidth hidden'));
-		$row->add($registerButton, 12);
-		$loginButton = new htmlButton('login_webauthn', _('Login'));
-		$loginButton->setCSSClasses(array('fullwidth hidden'));
-		$row->add($loginButton, 12);
 		$errorMessage = new htmlStatusMessage('ERROR', '', _('This service requires a browser with "WebAuthn" support.'));
-		$row->add(new htmlDiv(null, $errorMessage, array('hidden webauthn-error')), 12);
+		$row->add(new htmlDiv(null, $errorMessage, array('hidden webauthn-error')));
 		if (($this->config->twoFactorAuthenticationOptional === true) && !$hasTokens) {
+			$registerButton = new htmlButton('register_webauthn', _('Register new key'));
+			$registerButton->setType('button');
+			$registerButton->setCSSClasses(array('fullwidth'));
+			$row->add($registerButton);
 			$skipButton = new htmlButton('skip_webauthn', _('Skip'));
 			$skipButton->setCSSClasses(array('fullwidth'));
-			$row->add($skipButton, 12);
+			$row->add($skipButton);
 		}
 		$errorMessageDiv = new htmlDiv('generic-webauthn-error', new htmlOutputText(''));
 		$errorMessageDiv->addDataAttribute('button', _('Ok'));
 		$errorMessageDiv->addDataAttribute('title', _('WebAuthn failed'));
-		$row->add($errorMessageDiv, 12);
+		$row->add($errorMessageDiv);
 		$row->add(new htmlJavaScript('window.lam.webauthn.start(\'' . $pathPrefix . '\', ' . $selfServiceParam . ');'), 0);
 	}
 

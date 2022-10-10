@@ -182,16 +182,16 @@ echo $config->getTwoFactorAuthenticationCaption();
 	}
 
 	// buttons
-	$row->add(new htmlSpacer('1em', '1em'), 12);
+	$row->add(new htmlSpacer('1em', '1em'));
 	if ($provider->isShowSubmitButton()) {
 		$submit = new htmlButton('submit', _("Submit"));
 		$submit->setCSSClasses(array('fullwidth'));
 		$row->add($submit, 12, 12, 12, 'fullwidth');
-		$row->add(new htmlSpacer('0.5em', '0.5em'), 12);
+		$row->add(new htmlSpacer('0.5em', '0.5em'));
 	}
 	$logout = new htmlButton('logout', _("Cancel"));
 	$logout->setCSSClasses(array('fullwidth'));
-	$row->add($logout, 12);
+	$row->add($logout);
 	$group->addElement($row);
 
 	$tabindex = 1;

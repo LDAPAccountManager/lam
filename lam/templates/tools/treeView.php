@@ -266,10 +266,6 @@ function showTree(): void {
 	$pwdCheckDiv = new htmlDiv('lam-pwd-check-dialog', $pwdCheckRow, array('hidden'));
 	$row->add($pwdCheckDiv);
 
-	$row->add(new htmlJavaScript('jQuery(document).ready(function() {
-					jQuery(\'form[name="actionarea"]\').validationEngine({promptPosition: "topLeft", addFailureCssClassToField: "lam-input-error", autoHidePrompt: true, autoHideDelay: 5000});
-				});'), 12);
-
 	$tabIndex = 1;
 	$form = new htmlForm('actionarea', 'treeView.php', $row);
 	parseHtml(null, $form, array(), true, $tabIndex, null);

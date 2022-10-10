@@ -1607,25 +1607,35 @@ window.lam.webauthn.run = function(prefix, isSelfService) {
 	})
 	.done(function(jsonData) {
 		if (jsonData.action === 'register') {
-			var successCallback = function (publicKeyCredential) {
-				var form = jQuery("#2faform");
-				var response = btoa(JSON.stringify(publicKeyCredential));
-				form.append('<input type="hidden" name="sig_response" value="' + response + '"/>');
-				form.submit();
-			};
-			var errorCallback = function(error) {
-				var errorDiv = jQuery('#generic-webauthn-error');
-				var buttonLabel = errorDiv.data('button');
-				var dialogTitle = errorDiv.data('title');
-				errorDiv.text(error.message);
-				window.lam.dialog.showMessage(dialogTitle,
-					buttonLabel,
-					'generic-webauthn-error',
-					function () {
-						jQuery('#btn_logout').click();
-				});
-			};
-			window.lam.webauthn.register(jsonData.registration, successCallback, errorCallback);
+			const registerFunction = function() {
+				var successCallback = function (publicKeyCredential) {
+					var form = jQuery("#2faform");
+					var response = btoa(JSON.stringify(publicKeyCredential));
+					form.append('<input type="hidden" name="sig_response" value="' + response + '"/>');
+					form.submit();
+				};
+				var errorCallback = function(error) {
+					var errorDiv = jQuery('#generic-webauthn-error');
+					var buttonLabel = errorDiv.data('button');
+					var dialogTitle = errorDiv.data('title');
+					errorDiv.text(error.message);
+					window.lam.dialog.showMessage(dialogTitle,
+						buttonLabel,
+						'generic-webauthn-error',
+						function () {
+							jQuery('#btn_logout').click();
+						});
+				};
+				window.lam.webauthn.register(jsonData.registration, successCallback, errorCallback);
+				return false;
+			}
+			let registerButton = document.getElementById('btn_register_webauthn');
+			if (!registerButton) {
+				registerFunction();
+			}
+			else {
+				registerButton.onclick = registerFunction;
+			}
 		}
 		else if (jsonData.action === 'authenticate') {
 			window.lam.webauthn.authenticate(jsonData.authentication);

@@ -263,9 +263,6 @@ $buttonTable->add(new htmlHiddenInput('accounttype', $type->getId()), 0);
 $_SESSION['profile_types'] = array_merge($_SESSION['profile_types'], parseHtml(null, $buttonTable, $old_options, false, $tabindex, $type->getScope()));
 
 ?>
-<script type="text/javascript">
-	jQuery("#profilepage").validationEngine({promptPosition: "topLeft", addFailureCssClassToField: "lam-input-error", autoHidePrompt: true, autoHideDelay: 5000});
-</script>
 </form>
 </div>
 <?php
