@@ -136,7 +136,9 @@ if (isset($_POST['createOU']) || isset($_POST['deleteOU'])) {
 				$container->add($dnLabel, 12);
 				$container->addVerticalSpacer('1rem');
 				$buttonGroup = new htmlGroup();
-				$buttonGroup->addElement(new htmlButton('sure', _("Delete")));
+				$deleteButton = new htmlButton('sure', _("Delete"));
+				$deleteButton->setCSSClasses(array('lam-danger'));
+				$buttonGroup->addElement($deleteButton);
 				$buttonGroup->addElement(new htmlSpacer('0.5rem', null));
 				$buttonGroup->addElement(new htmlButton('abort', _("Cancel")));
 				$container->add($buttonGroup, 12);

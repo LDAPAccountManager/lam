@@ -1084,6 +1084,8 @@ class htmlButton extends htmlElement {
 	private $onClick = null;
 	/** button type (default: "submit" if no onClick and "button" with onClick) */
 	private $type = null;
+	/** disable form validation */
+	private $noFormValidation = false;
 
 	/**
 	 * Constructor.
@@ -1146,6 +1148,10 @@ class htmlButton extends htmlElement {
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
 		}
+		$noFormValidation = '';
+		if ($this->noFormValidation) {
+			$noFormValidation = ' formnovalidate="formnovalidate"';
+		}
 		if ($this->type == null) {
 			$type = ' type="submit"';
 		}
@@ -1161,10 +1167,12 @@ class htmlButton extends htmlElement {
 		}
 		$id = ' id="btn_' . preg_replace('/[^a-zA-Z0-9_-]/', '', $this->name) . '"';
 		if ($this->isImageButton) {
-			echo '<input type="submit" ' . $id . ' value=" "' . $name . $onClick . $fieldTabIndex . $style . $class . $title . $disabled . $this->getDataAttributesAsString() . '>';
+			echo '<input type="submit" ' . $id . ' value=" "' . $name . $onClick . $fieldTabIndex . $style . $class
+				. $title . $disabled . $noFormValidation . $this->getDataAttributesAsString() . '>';
 		}
 		else {
-			echo '<button' . $id . $name . $fieldTabIndex . $type . $onClick . $style . $class . $title . $disabled . $this->getDataAttributesAsString() . '>' . $this->value . '</button>';
+			echo '<button' . $id . $name . $fieldTabIndex . $type . $onClick . $style . $class . $title . $disabled
+				. $noFormValidation . $this->getDataAttributesAsString() . '>' . $this->value . '</button>';
 			// text buttons get JQuery style
 			if ($this->iconClass != null) {
 				$icon = '{ icons: { primary: \'' . $this->iconClass . '\' } }';
@@ -1221,6 +1229,13 @@ class htmlButton extends htmlElement {
 	 */
 	public function setType($type) {
 		$this->type = $type;
+	}
+
+	/**
+	 * Disables form validation (e.g. for cancel buttons).
+	 */
+	public function disableFormValidation(): void {
+		$this->noFormValidation = true;
 	}
 
 }
@@ -2543,6 +2558,8 @@ class htmlInputFileUpload extends htmlElement {
 	private $name;
 	/** enabled or disabled */
 	private $isEnabled = true;
+	/** required */
+	protected $required = false;
 
 	/**
 	 * Constructor.
@@ -2571,12 +2588,16 @@ class htmlInputFileUpload extends htmlElement {
 		if (!$this->isEnabled) {
 			$disabled = ' disabled';
 		}
+		$required = '';
+		if ($this->required) {
+			$required = ' required="required"';
+		}
 		$classValue = '';
 		if (!empty($this->cssClasses)) {
 			$classValue = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
 		echo '<input type="file" id="' . $this->name . '" name="' . $this->name . '"' . $tabindexValue . $classValue .
-			$disabled . $this->getDataAttributesAsString() . '>';
+			$disabled . $required . $this->getDataAttributesAsString() . '>';
 		return array($this->name => 'file');
 	}
 
@@ -2587,6 +2608,15 @@ class htmlInputFileUpload extends htmlElement {
 	 */
 	public function setIsEnabled($isEnabled) {
 		$this->isEnabled = $isEnabled;
+	}
+
+	/**
+	 * Sets the field required.
+	 *
+	 * @param bool $required field is required (default: true)
+	 */
+	public function setRequired($required = true): void {
+		$this->required = $required;
 	}
 
 }
@@ -4574,9 +4604,7 @@ class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
 	private $helpModule = null;
 	/** render HTML of parent class */
 	private $renderParentHtml = false;
-	/** required */
-	private $required = false;
-	
+
 	/**
 	 * Constructor.
 	 *
@@ -4638,15 +4666,6 @@ class htmlResponsiveInputFileUpload extends htmlInputFileUpload {
 		}
 		$row->add($fieldGroup, 12, 6, 6, 'responsiveField nowrap');
 		return $row->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
-	}
-
-	/**
-	 * Sets the field required.
-	 *
-	 * @param bool $required field is required (default: true)
-	 */
-	public function setRequired($required = true) {
-		$this->required = $required;
 	}
 
 }
