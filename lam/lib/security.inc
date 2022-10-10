@@ -43,12 +43,24 @@ setLAMHeaders();
  * Starts a session and sets the cookie options.
  */
 function lam_start_session() {
+	$cookieOptions = lamDefaultCookieOptions();
+	$cookieOptions['lifetime'] = 0;
+	session_set_cookie_params($cookieOptions);
+	session_start();
+}
+
+function lamDefaultCookieOptions(): array {
 	$secureFlag = false;
 	if (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on') {
 		$secureFlag = true;
 	}
-	session_set_cookie_params(0, '/', null, $secureFlag, true);
-	session_start();
+	return array(
+		'path' => '/',
+		'domain' => '',
+		'secure' => $secureFlag,
+		'httponly' => true,
+		'samesite' => 'Strict'
+	);
 }
 
 /**
