@@ -804,7 +804,9 @@ class lamList {
 				$cookieValue .= $this->configOptions[$i]->getID() . "=" . $this->configOptions[$i]->getValue() . ';';
 			}
 			// save options as cookie for one year
-			setcookie("ListOptions_" . $this->type->getId(), $cookieValue, time()+60*60*24*365, "/", '', false, true);
+			$cookieOptions = lamDefaultCookieOptions();
+			$cookieOptions['expires'] = time() + (60 * 60 * 24 * 365);
+			setcookie("ListOptions_" . $this->type->getId(), $cookieValue, $cookieOptions);
 			// notify subclasses
 			$this->listConfigurationChanged();
 		}

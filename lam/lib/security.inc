@@ -204,8 +204,10 @@ function logoffAndBackToLoginPage() {
 		logNewMessage(LOG_WARNING, 'Self service session of DN ' . lamDecrypt($_SESSION['selfService_clientDN'], 'SelfService') . ' expired.');
 	}
 	// delete key and iv in cookie
-	setcookie("Key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/", '', false, true);
-	setcookie("IV", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/", '', false, true);
+	$cookieOptions = lamDefaultCookieOptions();
+	$cookieOptions['expires'] = 0;
+	setcookie("Key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", $cookieOptions);
+	setcookie("IV", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", $cookieOptions);
 	// link back to login page
 	$paths = array('./', '../', '../../', '../../../', '../../../../');
 	$page = 'login.php';

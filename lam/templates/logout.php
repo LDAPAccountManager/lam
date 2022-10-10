@@ -28,16 +28,18 @@
 */
 
 
-// delete key and iv in cookie
-setcookie("Key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/", '', false, true);
-setcookie("IV", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/", '', false, true);
-
 /** security functions */
 include_once(__DIR__ . "/../lib/security.inc");
 /** Used to display status messages */
 include_once(__DIR__ . "/../lib/status.inc");
 /** LDAP settings are deleted at logout */
 include_once(__DIR__ . "/../lib/ldap.inc");
+
+// delete key and iv in cookie
+$cookieOptions = lamDefaultCookieOptions();
+$cookieOptions['expires'] = 0;
+setcookie("Key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", $cookieOptions);
+setcookie("IV", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", $cookieOptions);
 
 // start session
 startSecureSession();

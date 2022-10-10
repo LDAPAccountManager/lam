@@ -89,7 +89,9 @@ try {
 // save last selected login profile
 if (isset($_GET['useProfile'])) {
 	if (in_array($_GET['useProfile'], $profiles)) {
-		setcookie("lam_default_profile", $_GET['useProfile'], time() + 365*60*60*24, '/', '', false, true);
+		$cookieOptions = lamDefaultCookieOptions();
+		$cookieOptions['expires'] = time() + (60 * 60 * 24 * 365);
+		setcookie("lam_default_profile", $_GET['useProfile'], $cookieOptions);
 	}
 	else {
 		unset($_GET['useProfile']);
@@ -98,7 +100,9 @@ if (isset($_GET['useProfile'])) {
 
 // save last selected language
 if (isset($_POST['language'])) {
-	setcookie('lam_last_language', htmlspecialchars($_POST['language']), time() + 365*60*60*24, '/', '', false, true);
+	$cookieOptions = lamDefaultCookieOptions();
+	$cookieOptions['expires'] = time() + (60 * 60 * 24 * 365);
+	setcookie('lam_last_language', htmlspecialchars($_POST['language']), $cookieOptions);
 }
 
 // init some session variables
@@ -204,8 +208,10 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
     $key = openssl_random_pseudo_bytes(32);
     $iv = openssl_random_pseudo_bytes(16);
     // save both in cookie
-    setcookie("Key", base64_encode($key), 0, "/", '', false, true);
-    setcookie("IV", base64_encode($iv), 0, "/", '', false, true);
+	$cookieOptions = lamDefaultCookieOptions();
+	$cookieOptions['expires'] = 0;
+    setcookie("Key", base64_encode($key), $cookieOptions);
+    setcookie("IV", base64_encode($iv), $cookieOptions);
 
 	$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
 	$profiles = $serverProfilePersistenceManager->getProfiles();
@@ -521,11 +527,13 @@ if (isset($_POST['checklogin'])) {
 		$password = $_SERVER['PHP_AUTH_PW'];
 	}
 	else {
+		$cookieOptions = lamDefaultCookieOptions();
+		$cookieOptions['expires'] = time() + (60 * 60 * 24 * 365);
 		if (isset($_POST['rememberLogin']) && ($_POST['rememberLogin'] == 'on')) {
-			setcookie('lam_login_name', $_POST['username'], time() + 60*60*24*365, '/', '', false, true);
+			setcookie('lam_login_name', $_POST['username'], $cookieOptions);
 		}
 		else if (isset($_COOKIE['lam_login_name']) && ($_SESSION['config']->getLoginMethod() == LAMConfig::LOGIN_SEARCH)) {
-			setcookie('lam_login_name', '', time() + 60*60*24*365, '/', '', false, true);
+			setcookie('lam_login_name', '', $cookieOptions);
 		}
 		if($_POST['passwd'] == "") {
 			logNewMessage(LOG_DEBUG, "Empty password for login");
