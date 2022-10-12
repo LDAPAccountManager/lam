@@ -243,7 +243,7 @@ function printTable(&$pdf, $table, $fontName) {
 }
 
 /**
- * Prints a PDFLabelValue entry.
+ * Prints an image entry.
  *
  * @param LAMTCPDF $pdf PDF
  * @param PDFImage $imageEntry entry

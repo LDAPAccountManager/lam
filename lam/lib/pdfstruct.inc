@@ -223,6 +223,7 @@ class PdfStructurePersistenceManager {
 	 */
 	public function getPdfLogoBinary(string $confName, string $name) : string {
 		if (!LAMConfig::isValidName($confName) || !$this->isValidLogoFileName($name)) {
+			logNewMessage(LOG_ERR, "Unable to read PDF logo " . $name);
 			throw new LAMException(_('Unable to read logo file.'));
 		}
 		return $this->strategy->getPdfLogoBinary($confName, $name);
