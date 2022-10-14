@@ -3154,11 +3154,13 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			$row->addVerticalSpacer('0.5rem');
 		}
 		// upload button
-		$row->add(new htmlDiv('inetOrgPersonPhotoUploadId', new htmlOutputText('')), 12);
-		$row->add(new htmlJavaScript('inetOrgPersonUploadPhoto(\'inetOrgPersonPhotoUploadId\');'), 0);
-		$uploadStatus = new htmlDiv('inetOrgPersonPhotoUploadStatus', new htmlOutputText(''));
-		$uploadStatus->setCSSClasses(array('qq-upload-list'));
-		$row->add($uploadStatus, 12);
+		$uploadButtonGroup = new htmlGroup();
+		$uploadLabel = new htmlLabel('inetOrgPersonPhoto_file', _('Upload a file'));
+		$uploadButtonGroup->addElement($uploadLabel);
+		$uploadInput = new htmlInputFileUpload('inetOrgPersonPhoto_file');
+		$uploadInput->setOnChange('inetOrgPersonUploadPhoto();');
+		$uploadButtonGroup->addElement($uploadInput);
+		$row->add(new htmlDiv('inetOrgPersonPhotoUploadId', $uploadButtonGroup, array('lam-upload-button')));
 		// webcam button
 		$webcamContent = new htmlResponsiveRow();
 		$webcamContent->addVerticalSpacer('0.5rem');
@@ -3200,34 +3202,32 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			return new htmlGroup();
 		}
 		$content = '
-				function inetOrgPersonUploadPhoto(elementID) {
-				var uploadStatus = document.getElementById(\'inetOrgPersonPhotoUploadStatus\');
+				function inetOrgPersonUploadPhoto() {
 				var params = { action: \'ajaxPhotoUpload\' };
 				params["' . getSecurityTokenName() . '"] = "' . getSecurityTokenValue() . '";
-				var uploader = new qq.FineUploader({
-					element: document.getElementById(elementID),
-					listElement: uploadStatus,
-					request: {
-						endpoint: \'../misc/ajax.php?selfservice=1&module=inetOrgPerson&scope=user'
-						 . '&' . getSecurityTokenName() . '=' . getSecurityTokenValue() . '\',
-						forceMultipart: true,
-						params: params
-					},
-					multiple: false,
-					callbacks: {
-						onComplete: function(id, fileName, data) {
-							if (data.success) {
-								if (data.html) {
-									jQuery(\'#inetOrgPersonPhotoUploadContent\').html(data.html);
-									window.lam.tools.webcam.init();
-								}
-							}
-							else {
-								alert(data.error);
+				let reader = new FileReader();
+				reader.onload = function () {
+					const content = reader.result;
+					params["file"] = btoa(content);
+					jQuery.ajax({
+						url: \'../misc/ajax.php?selfservice=1&module=inetOrgPerson&scope=user\',
+						method: \'POST\',
+						data: params
+					})
+					.done(function(data) {
+						if (data.success) {
+							if (data.html) {
+								jQuery(\'#inetOrgPersonPhotoUploadContent\').html(data.html);
+								window.lam.tools.webcam.init();
 							}
 						}
-					}
-				});
+						else if (data.error) {
+							window.lam.dialog.showInfo(data.error, "' . _('Ok') . '");
+						}
+					});
+				};
+				const fileInput = document.getElementById("inetOrgPersonPhoto_file");
+				reader.readAsBinaryString(fileInput.files[0]);
 			}
 
 			function inetOrgPersonDeletePhoto(id) {
@@ -3247,7 +3247,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 					window.lam.tools.webcam.init();
 				}
 				else {
-					alert(data.errormessage);
+					window.lam.dialog.showInfo(data.errormessage, "' . _('Ok') . '");
 				}
 			}
 
@@ -3857,7 +3857,8 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			$this->ajaxUploadCert();
 			return;
 		}
-		if (isset($_GET['action']) && ($_GET['action'] == 'ajaxPhotoUpload')) {
+		if ((isset($_POST['action']) && ($_POST['action'] == 'ajaxPhotoUpload'))
+			|| (isset($_GET['action']) && ($_GET['action'] == 'ajaxPhotoUpload'))) {
 			$this->ajaxUploadPhoto();
 			return;
 		}
@@ -3916,14 +3917,12 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 */
 	private function ajaxUploadPhoto() {
 		$result = array('success' => true);
-		if ((!isset($_FILES['qqfile']) || ($_FILES['qqfile']['size'] < 100)) && empty($_POST['webcamData'])) {
+		if ((!isset($_POST['file']) || (strlen($_POST['file']) < 100)) && empty($_POST['webcamData'])) {
 			$result = array('error' => _('No file received.'));
 		}
 		else {
 			if (empty($_POST['webcamData'])) {
-				$handle = fopen($_FILES['qqfile']['tmp_name'], "r");
-				$data = fread($handle, 100000000);
-				fclose($handle);
+				$data = base64_decode($_POST['file']);
 			}
 			else {
 				$data = $_POST['webcamData'];
