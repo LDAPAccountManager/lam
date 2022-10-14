@@ -795,6 +795,20 @@ window.lam.dialog = window.lam.dialog || {};
 /**
  * Shows a dialog message.
  *
+ * @param text dialog text
+ * @param okText ok button text
+ */
+window.lam.dialog.showInfo = function(text, okText) {
+	Swal.fire({
+		text: text,
+		confirmButtonText: okText,
+		width: 'auto'
+	});
+};
+
+/**
+ * Shows a dialog message.
+ *
  * @param title dialog title
  * @param okText ok button text
  * @param divId DIV id with dialog content

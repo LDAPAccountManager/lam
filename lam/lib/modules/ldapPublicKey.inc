@@ -334,10 +334,6 @@ class ldapPublicKey extends baseModule {
 			$keyTable->addElement($this->getSelfServiceKeysJSBlock(), true);
 			// input fields
 			$keyTable->addElement(new htmlDiv('sshPublicKeyDiv', $this->getSelfServiceKeys()), true);
-			// upload status
-			$uploadStatus = new htmlDiv('ldapPublicKey_upload_status_key', new htmlOutputText(''));
-			$uploadStatus->setCSSClasses(array('qq-upload-list'));
-			$keyTable->addElement($uploadStatus, true);
 			$keyLabel = new htmlOutputText($this->getSelfServiceLabel('sshPublicKey', _('SSH public keys')));
 			$row = new htmlResponsiveRow();
 			$row->addLabel($keyLabel);
@@ -364,7 +360,7 @@ class ldapPublicKey extends baseModule {
 				$group->addElement($keyInput);
 				$delLink = new htmlLink('', '#', '../../graphics/del.svg');
 				$delLink->setTitle(_('Delete'));
-				$delLink->setOnClick('ldapPublicKeyDeleteKey(' . $i . ', ' . sizeof($keys) . ');return false;');
+				$delLink->setOnClick('ldapPublicKeyDeleteKey(' . $i . ');return false;');
 				$group->addElement($delLink);
 				if ($i == (sizeof($keys) - 1)) {
 					$addLink = new htmlLink('', '#', '../../graphics/add.svg');
@@ -382,11 +378,13 @@ class ldapPublicKey extends baseModule {
 			$content->add($addLink, 12);
 		}
 		// upload button
-		$uploadButtons = new htmlGroup();
-		$uploadButtons->addElement(new htmlDiv('ldapPublicKeyKeyUploadId', new htmlOutputText('')), true);
-		$keyUpload = new htmlJavaScript('ldapPublicKeyUploadKey(\'ldapPublicKeyKeyUploadId\', ' . sizeof($keys) . ');');
-		$uploadButtons->addElement($keyUpload);
-		$content->add($uploadButtons, 12);
+		$uploadButtonGroup = new htmlGroup();
+		$uploadLabel = new htmlLabel('ldappublickey_file', _('Upload a file'));
+		$uploadButtonGroup->addElement($uploadLabel);
+		$uploadInput = new htmlInputFileUpload('ldappublickey_file');
+		$uploadInput->setOnChange('ldapPublicKeyUploadKeyFunction();');
+		$uploadButtonGroup->addElement($uploadInput);
+		$content->add(new htmlDiv('ldapPublicKeyKeyUploadId', $uploadButtonGroup, array('lam-upload-button')));
 		return $content;
 	}
 
@@ -396,14 +394,17 @@ class ldapPublicKey extends baseModule {
 	 * @return htmlJavaScript JS block
 	 */
 	private static function getSelfServiceKeysJSBlock() {
+		$keys = $_SESSION[self::SESS_KEY_LIST];
 		$content = '
-			function ldapPublicKeyDeleteKey(id, count) {
+			function ldapPublicKeyDeleteKey(id) {
 				var actionJSON = {
 					"action": "deleteKey",
 					"id": id
 				};
-				for (c = 0; c < count; c++) {
-					actionJSON["sshPublicKey_" + c] = jQuery(\'#sshPublicKey_\' + c).val();
+				let count = 0;
+				while (document.getElementById("sshPublicKey_" + count)) {
+					actionJSON["sshPublicKey_" + count] = document.getElementById(\'sshPublicKey_\' + count).value;
+					count++;
 				}
 				var data = {jsonInput: actionJSON};
 				data["' . getSecurityTokenName() . '"] = "' . getSecurityTokenValue() . '";
@@ -416,7 +417,7 @@ class ldapPublicKey extends baseModule {
 					jQuery(\'#sshPublicKeyDiv\').html(data.html);
 				}
 				else {
-					alert(data.errormessage);
+					window.lam.dialog.showInfo(data.errormessage, "' . _('Ok') . '");
 				}
 			}
 
@@ -439,42 +440,45 @@ class ldapPublicKey extends baseModule {
 					jQuery(\'#sshPublicKeyDiv\').html(data.html);
 				}
 				else {
-					alert(data.errormessage);
+					window.lam.dialog.showInfo(data.errormessage, "' . _('Ok') . '");
 				}
 			}
 
-			function ldapPublicKeyUploadKey(elementID, count) {
-				var uploadStatus = document.getElementById(\'ldapPublicKey_upload_status_key\');
+			const ldapPublicKeyUploadKeyFunction = function() {
 				var parameters = {
 					action: \'ajaxKeyUpload\'
 				};
-				for (c = 0; c < count; c++) {
-					parameters["sshPublicKey_" + c] = jQuery(\'#sshPublicKey_\' + c).val();
+				let count = 0;
+				while (document.getElementById("sshPublicKey_" + count)) {
+					parameters["sshPublicKey_" + count] = document.getElementById(\'sshPublicKey_\' + count).value;
+					count++;
 				}
 				parameters["' . getSecurityTokenName() . '"] = "' . getSecurityTokenValue() . '";
-				var uploader = new qq.FineUploader({
-					element: document.getElementById(elementID),
-					listElement: uploadStatus,
-					request: {
-						endpoint: \'../misc/ajax.php?selfservice=1&module=ldapPublicKey&scope=user\',
-						forceMultipart: true,
-						paramsInBody: true,
-						params: parameters
-					},
-					multiple: false,
-					callbacks: {
-						onComplete: function(id, fileName, data) {
-							if (data.success) {
-								if (data.html) {
-									jQuery(\'#sshPublicKeyDiv\').html(data.html);
-								}
-							}
-							else {
-								alert(data.error);
+				let reader = new FileReader();
+				reader.onload = function () {
+					const content = reader.result;
+					parameters["file"] = content;
+					jQuery.ajax({
+						url: \'../misc/ajax.php?selfservice=1&module=ldapPublicKey&scope=user\',
+						method: \'POST\',
+						data: parameters
+					})
+					.done(function(data) {
+						if (data.success) {
+							if (data.html) {
+								jQuery(\'#sshPublicKeyDiv\').html(data.html);
 							}
 						}
-					}
-				});
+						else if (data.error) {
+							window.lam.dialog.showInfo(data.error, "' . _('Ok') . '");
+						}
+						else if (data.errormessage) {
+							window.lam.dialog.showInfo(data.errormessage, "' . _('Ok') . '");
+						}
+					});
+				};
+				const fileInput = document.getElementById("ldappublickey_file");
+				reader.readAsBinaryString(fileInput.files[0]);
 			}
 
 			';
@@ -554,7 +558,7 @@ class ldapPublicKey extends baseModule {
 	 */
 	public function handleAjaxRequest() {
 		// AJAX uploads are non-JSON
-		if (isset($_GET['action']) && ($_GET['action'] == 'ajaxKeyUpload')) {
+		if (isset($_POST['action']) && ($_POST['action'] == 'ajaxKeyUpload')) {
 			$this->ajaxUpload();
 			return;
 		}
@@ -565,6 +569,11 @@ class ldapPublicKey extends baseModule {
 				$jsonReturn = $this->ajaxDeleteSelfServiceKey($jsonInput);
 			}
 			elseif ($jsonInput['action'] == 'addKey') {
+				foreach ($_SESSION[self::SESS_KEY_LIST] as $index => $value) {
+					if (isset($jsonInput['sshPublicKey_' . $index])) {
+						$_SESSION[self::SESS_KEY_LIST][$index] = $jsonInput['sshPublicKey_' . $index];
+					}
+				}
 				$_SESSION[self::SESS_KEY_LIST][] = '';
 				ob_start();
 				$contentElement = $this->getSelfServiceKeys();
@@ -588,18 +597,30 @@ class ldapPublicKey extends baseModule {
 	 */
 	private function ajaxUpload() {
 		$result = array('success' => true);
-		if (!isset($_FILES['qqfile']) || ($_FILES['qqfile']['size'] < 10)) {
+		if (!isset($_POST['file']) || (strlen($_POST['file']) < 10)) {
 			$result = array('error' => _('No file received.'));
 		}
 		else {
-			$handle = fopen($_FILES['qqfile']['tmp_name'], "r");
-			$data = fread($handle, 100000000);
-			fclose($handle);
+			foreach ($_SESSION[self::SESS_KEY_LIST] as $index => $value) {
+				if (isset($_POST['sshPublicKey_' . $index])) {
+					$_SESSION[self::SESS_KEY_LIST][$index] = $_POST['sshPublicKey_' . $index];
+				}
+			}
+			$data = $_POST['file'];
 			if (is_executable('/usr/bin/ssh-keygen')) {
+				$tmpFile = tmpfile();
+				$tmpFilePath = stream_get_meta_data($tmpFile)['uri'];
+				fclose($tmpFile);
+				$tmpFile = fopen($tmpFilePath, 'w+');
+				fwrite($tmpFile, $data);
+				fclose($tmpFile);
 				$out = array();
 				$retVal = 0;
-				exec('/usr/bin/ssh-keygen -l -f ' . escapeshellarg($_FILES['qqfile']['tmp_name']), $out, $retVal);
+				$command = '/usr/bin/ssh-keygen -l -f ' . escapeshellarg($tmpFilePath);
+				exec($command, $out, $retVal);
+				unlink($tmpFilePath);
 				if ($retVal !== 0) {
+					logNewMessage(LOG_NOTICE, 'Invalid SSH key: ' . print_r($out, true));
 					$result = array('error' => $this->messages['file'][1][1]);
 					echo json_encode($result);
 					return;
@@ -635,6 +656,11 @@ class ldapPublicKey extends baseModule {
 	private function ajaxDeleteSelfServiceKey($data) {
 		if (!isset($data['id'])) {
 			return self::invalidAjaxRequest();
+		}
+		foreach ($_SESSION[self::SESS_KEY_LIST] as $index => $value) {
+			if (isset($data['sshPublicKey_' . $index])) {
+				$_SESSION[self::SESS_KEY_LIST][$index] = $data['sshPublicKey_' . $index];
+			}
 		}
 		$index = $data['id'];
 		if (array_key_exists($index, $_SESSION[self::SESS_KEY_LIST])) {

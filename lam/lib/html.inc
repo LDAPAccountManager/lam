@@ -2560,6 +2560,8 @@ class htmlInputFileUpload extends htmlElement {
 	private $isEnabled = true;
 	/** required */
 	protected $required = false;
+	/** onchange event */
+	protected $onChange = '';
 
 	/**
 	 * Constructor.
@@ -2592,12 +2594,16 @@ class htmlInputFileUpload extends htmlElement {
 		if ($this->required) {
 			$required = ' required="required"';
 		}
+		$onChange = '';
+		if (!empty($this->onChange)) {
+			$onChange = ' onchange="' . $this->onChange . '"';
+		}
 		$classValue = '';
 		if (!empty($this->cssClasses)) {
 			$classValue = ' class="' . implode(' ', $this->cssClasses) . '"';
 		}
 		echo '<input type="file" id="' . $this->name . '" name="' . $this->name . '"' . $tabindexValue . $classValue .
-			$disabled . $required . $this->getDataAttributesAsString() . '>';
+			$onChange . $disabled . $required . $this->getDataAttributesAsString() . '>';
 		return array($this->name => 'file');
 	}
 
@@ -2617,6 +2623,15 @@ class htmlInputFileUpload extends htmlElement {
 	 */
 	public function setRequired($required = true): void {
 		$this->required = $required;
+	}
+
+	/**
+	 * Sets the onChange event.
+	 *
+	 * @param string $onChange onChange code
+	 */
+	public function setOnChange(string $onChange): void {
+		$this->onChange = $onChange;
 	}
 
 }
@@ -5337,3 +5352,38 @@ class htmlList extends htmlElement {
 
 }
 
+/**
+ * Represents a label.
+ */
+class htmlLabel extends htmlElement {
+
+	private $for = null;
+
+	private $text = '';
+
+	/**
+	 * Constructor.
+	 *
+	 * @param string $for target element
+	 * @param string $text label text
+	 */
+	function __construct(string $for, string $text) {
+		$this->for = htmlspecialchars($for);
+		$this->text = htmlspecialchars($text);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope): array {
+		$classesValue = '';
+		if (!empty($this->cssClasses)) {
+			$classesValue = ' class="' . implode(' ', $this->cssClasses) . '"';
+		}
+		echo '<label for="' . $this->for . '"' . $classesValue . '>';
+		echo $this->text;
+		echo '</label>';
+		return array();
+	}
+
+}

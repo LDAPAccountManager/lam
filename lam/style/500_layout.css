@@ -964,3 +964,19 @@ div.swal2-html-container {
 	transform: scale(1.0);
 	transition: background-color 0.1s;
 }
+
+.lam-upload-button > input {
+	display: none;
+}
+
+.lam-upload-button > label {
+	display: inline-block;
+	padding: .3em 1em;
+	text-align: center;
+	border-radius: var(--lam-default-border-radius);
+	cursor: pointer;
+	background-color: var(--lam-input-bg-color);
+	border: 1px solid var(--lam-border-color);
+	margin: var(--lam-small-space);
+	font-size: 1em;
+}
