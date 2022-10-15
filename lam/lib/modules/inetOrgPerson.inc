@@ -2987,20 +2987,18 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			}
 			$_SESSION[self::SESS_CERTIFICATES_LIST] = $userCertificates;
 			$certTable = new htmlResponsiveRow();
-			$certTable->add(new htmlDiv('userCertificateDiv', $this->getSelfServiceUserCertificates()), 12);
+			$certTable->add(new htmlDiv('userCertificateDiv', $this->getSelfServiceUserCertificates()));
 			// JavaScript functions
 			$certTable->add($this->getSelfServiceUserCertificatesJSBlock(), 12);
 			// upload button
-			$uploadButtons = new htmlGroup();
-			$uploadButtons->addElement(new htmlDiv('inetOrgPersonCertUploadId', new htmlOutputText('')), true);
-			$certUpload = new htmlJavaScript('inetOrgPersonUploadCert(\'inetOrgPersonCertUploadId\');');
-			$uploadButtons->addElement($certUpload);
-			$certTable->add($uploadButtons, 12);
-			// upload status
-			$uploadStatus = new htmlDiv('inetOrgPerson_upload_status_cert', new htmlOutputText(''));
-			$uploadStatus->setCSSClasses(array('qq-upload-list'));
-			$certTable->add($uploadStatus, 12);
+			$uploadButtonGroup = new htmlGroup();
+			$uploadLabel = new htmlLabel('inetOrgPersonCertificate_file', _('Upload a file'));
+			$uploadButtonGroup->addElement($uploadLabel);
+			$uploadInput = new htmlInputFileUpload('inetOrgPersonCertificate_file');
+			$uploadInput->setOnChange('inetOrgPersonUploadCert();');
+			$uploadButtonGroup->addElement($uploadInput);
 			$certLabel = new htmlOutputText($this->getSelfServiceLabel('userCertificate', _('User certificates')));
+			$certTable->add(new htmlDiv('inetOrgPersonCertUploadId', $uploadButtonGroup, array('lam-upload-button')));
 			$return['userCertificate'] = new htmlResponsiveRow($certLabel, $certTable);
 		}
 		// o
@@ -3224,6 +3222,9 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 						else if (data.error) {
 							window.lam.dialog.showInfo(data.error, "' . _('Ok') . '");
 						}
+						else if (data.errormessage) {
+							window.lam.dialog.showInfo(data.errormessage, "' . _('Ok') . '");
+						}
 					});
 				};
 				const fileInput = document.getElementById("inetOrgPersonPhoto_file");
@@ -3334,33 +3335,35 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 				}
 			}
 
-			function inetOrgPersonUploadCert(elementID) {
-				var uploadStatus = document.getElementById(\'inetOrgPerson_upload_status_cert\');
+			function inetOrgPersonUploadCert() {
 				var params = { action: \'ajaxCertUpload\' };
 				params["' . getSecurityTokenName() . '"] = "' . getSecurityTokenValue() . '";
-				var uploader = new qq.FineUploader({
-					element: document.getElementById(elementID),
-					listElement: uploadStatus,
-					request: {
-						endpoint: \'../misc/ajax.php?selfservice=1&module=inetOrgPerson&scope=user'
-						 . '&' . getSecurityTokenName() . '=' . getSecurityTokenValue() . '\',
-						forceMultipart: true,
-						params: params
-					},
-					multiple: false,
-					callbacks: {
-						onComplete: function(id, fileName, data) {
-							if (data.success) {
-								if (data.html) {
-									jQuery(\'#userCertificateDiv\').html(data.html);
-								}
-							}
-							else {
-								alert(data.error);
+				
+				let reader = new FileReader();
+				reader.onload = function () {
+					const content = reader.result;
+					params["file"] = btoa(content);
+					jQuery.ajax({
+						url: \'../misc/ajax.php?selfservice=1&module=inetOrgPerson&scope=user\',
+						method: \'POST\',
+						data: params
+					})
+					.done(function(data) {
+						if (data.success) {
+							if (data.html) {
+								jQuery(\'#userCertificateDiv\').html(data.html);
 							}
 						}
-					}
-				});
+						else if (data.error) {
+							window.lam.dialog.showInfo(data.error, "' . _('Ok') . '");
+						}
+						else if (data.errormessage) {
+							window.lam.dialog.showInfo(data.errormessage, "' . _('Ok') . '");
+						}
+					});
+				};
+				const fileInput = document.getElementById("inetOrgPersonCertificate_file");
+				reader.readAsBinaryString(fileInput.files[0]);
 			}
 
 			';
@@ -3853,7 +3856,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 */
 	public function handleAjaxRequest() {
 		// AJAX uploads are non-JSON
-		if (isset($_GET['action']) && ($_GET['action'] == 'ajaxCertUpload')) {
+		if (isset($_POST['action']) && ($_POST['action'] == 'ajaxCertUpload')) {
 			$this->ajaxUploadCert();
 			return;
 		}
@@ -3880,13 +3883,11 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 	 */
 	private function ajaxUploadCert() {
 		$result = array('success' => true);
-		if (!isset($_FILES['qqfile']) || ($_FILES['qqfile']['size'] < 100)) {
+		if (!isset($_POST['file']) || (strlen($_POST['file']) < 100)) {
 			$result = array('error' => _('No file received.'));
 		}
 		else {
-			$handle = fopen($_FILES['qqfile']['tmp_name'], "r");
-			$data = fread($handle, 100000000);
-			fclose($handle);
+			$data = base64_decode($_POST['file']);
 			if (strpos($data, '-----BEGIN CERTIFICATE-----') === 0) {
 				$pemData = str_replace("\r", '', $data);
 				$pemData = explode("\n", $pemData);
@@ -3899,6 +3900,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 				$data = base64_decode($pemData);
 			}
 			$_SESSION[inetOrgPerson::SESS_CERTIFICATES_LIST][] = $data;
+			$_SESSION[inetOrgPerson::SESS_CERTIFICATES_LIST] = array_unique($_SESSION[inetOrgPerson::SESS_CERTIFICATES_LIST]);
 			ob_start();
 			$contentElement = $this->getSelfServiceUserCertificates();
 			ob_end_clean();
