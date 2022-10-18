@@ -316,24 +316,20 @@ if (!empty($globalDeletableTemplates)) {
 	$container = new htmlResponsiveRow();
 	$globalTemplatesSubtitle = new htmlSubTitle(_('Global templates'));
 	$globalTemplatesSubtitle->setHelpId('364');
-	$container->add($globalTemplatesSubtitle, 12);
+	$container->add($globalTemplatesSubtitle);
 	$globalTemplatesSelect = new htmlResponsiveSelect('globalTemplatesDelete', $globalDeletableTemplates, array(), _('Delete'));
 	$globalTemplatesSelect->setContainsOptgroups(true);
 	$globalTemplatesSelect->setHasDescriptiveElements(true);
-	$container->add($globalTemplatesSelect, 12);
-	$globalTemplateDeleteDialogPassword = new htmlResponsiveInputField(_("Master password"), 'globalTemplateDeletePassword', null, '236');
-	$globalTemplateDeleteDialogPassword->setIsPassword(true);
-	$globalTemplateDeleteDialogPassword->setRequired(true);
-	$container->add($globalTemplateDeleteDialogPassword, 12);
+	$container->add($globalTemplatesSelect);
 	$container->addVerticalSpacer('1rem');
 	$globalTemplateDeleteButton = new htmlButton('deleteGlobalProfileButton', _('Delete'));
 	$globalTemplateDeleteButton->setCSSClasses(array('lam-danger'));
-	$globalTemplateDeleteButton->setOnClick("window.lam.dialog.confirmAndSendForm('" . _("Delete") . "', '" .
-		_('Ok') . "', '" . _('Cancel') . "', '" . _('Do you really want to delete this profile?') . "', 'deleteGlobalTemplatesForm'); return false;");
+	$globalTemplateDeleteButton->setOnClick("window.lam.dialog.requestPasswordAndSendForm('" . _('Do you really want to delete this profile?') . "', '" .
+		_('Ok') . "', '" . _('Cancel') . "', '" . _('Master password') . "', 'globalTemplateDeletePassword', 'deleteGlobalTemplatesForm'); return false;");
 	$container->addLabel(new htmlOutputText('&nbsp;', false));
-	$container->addField($globalTemplateDeleteButton, 12);
+	$container->addField($globalTemplateDeleteButton);
 	addSecurityTokenToMetaHTML($container);
-	$container->add(new htmlHiddenInput('deleteGlobalTemplate', 'true'), 12);
+	$container->add(new htmlHiddenInput('deleteGlobalTemplate', 'true'));
 	$container->addVerticalSpacer('1rem');
 	$globalTemplateDeleteForm = new htmlForm('deleteGlobalTemplatesForm', 'profilemain.php', $container);
 	parseHtml(null, $globalTemplateDeleteForm, array(), false, $tabindex, 'user');
