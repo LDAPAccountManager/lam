@@ -638,15 +638,11 @@ if (!empty($globalDeletableTemplates)) {
     $globalTemplatesSelect->setContainsOptgroups(true);
     $globalTemplatesSelect->setHasDescriptiveElements(true);
     $container->add($globalTemplatesSelect);
-    $globalTemplateDeleteDialogPassword = new htmlResponsiveInputField(_("Master password"), 'globalTemplateDeletePassword', null, '236');
-    $globalTemplateDeleteDialogPassword->setIsPassword(true);
-    $globalTemplateDeleteDialogPassword->setRequired(true);
-    $container->add($globalTemplateDeleteDialogPassword);
     $container->addVerticalSpacer('1rem');
     $globalTemplateDeleteButton = new htmlButton('deleteGlobalProfileButton', _('Delete'));
     $globalTemplateDeleteButton->setCSSClasses(array('lam-danger'));
-    $globalTemplateDeleteButton->setOnClick("window.lam.dialog.confirmAndSendForm('" . _("Delete") . "', '" .
-        _('Ok') . "', '" . _('Cancel') . "', '" . _('Do you really want to delete this profile?') . "', 'deleteGlobalTemplatesForm'); return false;");
+    $globalTemplateDeleteButton->setOnClick("window.lam.dialog.requestPasswordAndSendForm('" . _('Do you really want to delete this profile?') . "', '" .
+        _('Ok') . "', '" . _('Cancel') . "', '" . _('Master password') . "', 'globalTemplateDeletePassword', 'deleteGlobalTemplatesForm'); return false;");
     $container->addLabel(new htmlOutputText('&nbsp;', false));
     $container->addField($globalTemplateDeleteButton);
     addSecurityTokenToMetaHTML($container);
@@ -665,15 +661,11 @@ if (!empty($globalPdfLogos)) {
 	$container->add($globalLogosSubtitle);
 	$globalTemplateLogosSelect = new htmlResponsiveSelect('globalLogoDelete', $globalPdfLogos, array(), _('Delete'));
 	$container->add($globalTemplateLogosSelect);
-	$globalLogoDeleteDialogPassword = new htmlResponsiveInputField(_("Master password"), 'globalLogoDeletePassword', null, '236');
-	$globalLogoDeleteDialogPassword->setIsPassword(true);
-	$globalLogoDeleteDialogPassword->setRequired(true);
-	$container->add($globalLogoDeleteDialogPassword);
 	$container->addVerticalSpacer('1rem');
 	$globalLogoDeleteButton = new htmlButton('deleteGlobalLogoButton', _('Delete'));
 	$globalLogoDeleteButton->setCSSClasses(array('lam-danger'));
-	$globalLogoDeleteButton->setOnClick("window.lam.dialog.confirmAndSendForm('" . _("Delete") . "', '" .
-		_('Ok') . "', '" . _('Cancel') . "', '" . _('Do you really want to delete this logo?') . "', 'deleteGlobalLogoForm'); return false;");
+	$globalLogoDeleteButton->setOnClick("window.lam.dialog.requestPasswordAndSendForm('" . _('Do you really want to delete this logo?') . "', '" .
+		_('Ok') . "', '" . _('Cancel') . "', '" . _('Master password') . "', 'globalLogoDeletePassword', 'deleteGlobalLogoForm'); return false;");
 	$container->addLabel(new htmlOutputText('&nbsp;', false));
 	$container->addField($globalLogoDeleteButton);
 	addSecurityTokenToMetaHTML($container);
