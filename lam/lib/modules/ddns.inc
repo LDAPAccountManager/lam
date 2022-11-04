@@ -653,7 +653,7 @@ class ddns extends baseModule {
 			// principal name
 			if (!check_ip($rawAccounts[$i][$ids['ddns_DNSserver']])) {
 				$error = $this->messages['ip'][1];
-				array_push($error, $i);
+				array_push($error, array($i));
 				$messages[] = $error;
 			}
 			else {

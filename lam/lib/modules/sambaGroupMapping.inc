@@ -287,8 +287,7 @@ class sambaGroupMapping extends baseModule {
 			$domSID = $nameToSID[$rawAccounts[$i][$ids['sambaGroupMapping_domain']]];
 			if (!isset($domSID)) {
 				$errMsg = $this->messages['sambaSID'][1];
-				array_push($errMsg, $rawAccounts[$i][$ids['sambaGroupMapping_domain']]);
-				array_push($errMsg, $i);
+				array_push($errMsg, array($rawAccounts[$i][$ids['sambaGroupMapping_domain']], $i));
 				$errors[] = $errMsg;
 			}
 			else {
