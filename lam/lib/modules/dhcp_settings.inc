@@ -223,6 +223,10 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				'Text' => _('This is a list of domain names to be used by the client to locate not-fully-qualified domain names.')
 					. ' ' . _("Multiple values are separated by semicolon.")
 			),
+			'authoritative' => array(
+				'Headline' => _('Authoritative'), 'attr' => 'dhcpStatements',
+				'Text' => _('Authoritative servers reject requests for invalid IP addresses.')
+			),
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
@@ -239,22 +243,24 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			'description' => _('Description'),
 			'unknownClients' => _('Unknown clients'),
 			self::DOMAIN_SEARCH => _('Search domains'),
+			self::AUTHORITATIVE => _('Authoritative')
 		);
 		// profile elements
 		$profileContainer = new htmlResponsiveRow();
-		$profileContainer->add(new htmlResponsiveInputField(_('Subnet'), 'cn', null, 'subnet'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Domain name'), 'domainname', null, 'domainname'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Lease time'), 'lease_time', null, 'leasetime'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Maximum lease time'), 'max_lease_time', null, 'max_leasetime'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('DNS'), 'dns', null, 'dns'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Search domains'), self::DOMAIN_SEARCH, null, 'domain-search'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Default gateway'), self::ROUTERS, null, 'gateway'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Netbios name servers'), 'netbios', null, 'netbios'), 12);
+		$profileContainer->add(new htmlResponsiveInputField(_('Subnet'), 'cn', null, 'subnet'));
+		$profileContainer->add(new htmlResponsiveInputField(_('Domain name'), 'domainname', null, 'domainname'));
+		$profileContainer->add(new htmlResponsiveInputField(_('Lease time'), 'lease_time', null, 'leasetime'));
+		$profileContainer->add(new htmlResponsiveInputField(_('Maximum lease time'), 'max_lease_time', null, 'max_leasetime'));
+		$profileContainer->add(new htmlResponsiveInputField(_('DNS'), 'dns', null, 'dns'));
+		$profileContainer->add(new htmlResponsiveInputField(_('Search domains'), self::DOMAIN_SEARCH, null, 'domain-search'));
+		$profileContainer->add(new htmlResponsiveInputField(_('Default gateway'), self::ROUTERS, null, 'gateway'));
+		$profileContainer->add(new htmlResponsiveInputField(_('Netbios name servers'), 'netbios', null, 'netbios'));
 		$nodeList = array_flip($this->all_netbios_node_types);
 		$profileNodeSelect = new htmlResponsiveSelect('netbios_node_type', $nodeList, null, _('Netbios node type'), 'netbios_type');
 		$profileNodeSelect->setHasDescriptiveElements(true);
-		$profileContainer->add($profileNodeSelect, 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Subnet mask'), 'subnet', null, 'subnetmask'), 12);
+		$profileContainer->add($profileNodeSelect);
+		$profileContainer->add(new htmlResponsiveInputField(_('Subnet mask'), 'subnet', null, 'subnetmask'));
+		$profileContainer->add(new htmlResponsiveInputCheckbox(self::AUTHORITATIVE, false, _('Authoritative'), 'authoritative'));
 		$return['profile_options'] = $profileContainer;
 		// upload fields
 		$uploadAllowDenyOption = $this->allowDenyOptions;
@@ -333,6 +339,13 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				'example' => '255.255.255.0',
 			),
 			array(
+				'name' => 'dhcp_settings_authoritative',
+				'description' => _('Authoritative'),
+				'help' => 'authoritative',
+				'values' => 'true, false',
+				'default' => 'false'
+			),
+			array(
 				'name' => 'dhcp_settings_description',
 				'description' => _('Description'),
 				'help' => 'description',
@@ -369,6 +382,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$this->messages['domainname'][5] = array('ERROR', _('Account %s:') . ' dhcp_settings_domainName', _('The domain name includes invalid characters. Valid characters are A-Z, a-z, 0-9, ".", "_","-".'));
 		$this->messages['INFO_domain-search'][0] = array('ERROR', _('Please enter valid domain names for search domains.'));
 		$this->messages['INFO_domain-search'][1] = array('ERROR', _('Account %s:') . ' dhcp_settings_domain-search', _('Please enter valid domain names for search domains.'));
+		$this->messages['authoritative'][0] = array('ERROR', _('Account %s:') . ' dhcp_settings_authoritative', _('This value can only be "true" or "false".'));
 	}
 
 	/**
@@ -432,6 +446,8 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			}
 			$this->setUnknownClients($_POST['unknownClients']);
 		}
+
+		$this->setAuthoritative(isset($_POST['authoritative']) && ($_POST['authoritative'] === 'on'));
 
 		// Check domainname:
 		if (!empty($_POST['domainname'])) $_POST['domainname'] = trim($_POST['domainname']);
@@ -632,7 +648,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		}
 		$nodeSelect = new htmlResponsiveSelect('netbios_node_type', $nodeOptions, array($nodeType), _('Netbios node type'), 'netbios_type');
 		$nodeSelect->setHasDescriptiveElements(true);
-		$return->add($nodeSelect, 12);
+		$return->add($nodeSelect);
 
 		if (!$this->isRootNode()) {
 			// unknown clients
@@ -643,17 +659,20 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 			$unknownClientsOptions = array_flip($this->allowDenyOptions);
 			$unknownClientsSelect = new htmlResponsiveSelect('unknownClients', $unknownClientsOptions, array($unknownClients), _('Unknown clients'), 'unknownClients');
 			$unknownClientsSelect->setHasDescriptiveElements(true);
-			$return->add($unknownClientsSelect, 12);
+			$return->add($unknownClientsSelect);
 			// subnetmask
 			$subnetMaskInput = new htmlResponsiveInputField(_('Subnet mask'), 'subnet', $this->getDHCPOption(self::SUBNET_MASK), 'subnetmask');
 			$subnetMaskInput->setRequired(true);
-			$return->add($subnetMaskInput, 12);
+			$return->add($subnetMaskInput);
 		}
 
 		if (!$this->isRootNode()) {
 			// netmask
 			$return->addLabel(new htmlOutputText(_('Net mask')));
 			$return->addField(new htmlOutputText($this->attributes['dhcpNetMask'][0]));
+		}
+		if (!$this->isRootNode()) {
+			$return->add(new htmlResponsiveInputCheckbox('authoritative', $this->isAuthoritative(), _('Authoritative'), 'authoritative'));
 		}
 		return $return;
 	}
@@ -670,6 +689,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 
 		$this->setDefaultLeaseTime($profile['lease_time'][0]);
 		$this->setMaxLeaseTime($profile['max_lease_time'][0]);
+		$this->setAuthoritative(isset($profile['authoritative'][0]) && ($profile['authoritative'][0] === 'true'));
 
 		$this->setDHCPOption(self::DOMAIN_NAME, $profile['domainname'][0]);
 		$this->setDHCPOption(self::DOMAIN_NAME_SERVERS, $profile['dns'][0]);
@@ -711,6 +731,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		if (!empty($unknownClientsVal)) {
 			$unknownClients = $this->allowDenyOptions[$unknownClientsVal];
 		}
+		$authoritative = $this->isAuthoritative() ? _('Yes') : _('No');
 		$return = array();
 		$this->addPDFKeyValue($return, 'domainName', _('Domain name'), $this->getDHCPOption(self::DOMAIN_NAME));
 		$this->addPDFKeyValue($return, 'leaseTime', _('Lease time'), $this->getDefaultLeaseTime());
@@ -725,6 +746,7 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		$this->addSimplePDFField($return, 'description', _('Description'), 'dhcpComments');
 		$this->addSimplePDFField($return, 'subnet', _('Subnet'), 'cn');
 		$this->addSimplePDFField($return, 'netMask', _('Net mask'), 'dhcpNetMask');
+		$this->addPDFKeyValue($return, self::AUTHORITATIVE, _('Authoritative'), $authoritative);
 		return $return;
 	}
 
@@ -887,6 +909,43 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 	}
 
 	/**
+	 * Returns if the subnet is authoritative.
+	 *
+	 * @return bool authoritative
+	 */
+	private function isAuthoritative(): bool {
+		if (!empty($this->attributes['dhcpStatements'])) {
+			for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+				if ($this->attributes['dhcpStatements'][$i] === self::AUTHORITATIVE) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Sets if the subnet is authoritative.
+	 *
+	 * @param bool $isAuthoritative authoritative
+	 */
+	private function setAuthoritative(bool $isAuthoritative): void {
+		if (!is_array($this->attributes['dhcpStatements'])) {
+			$this->attributes['dhcpStatements'] = array();
+		}
+		for ($i = 0; $i < sizeof($this->attributes['dhcpStatements']); $i++) {
+			if ($this->attributes['dhcpStatements'][$i] === self::AUTHORITATIVE) {
+				unset($this->attributes['dhcpStatements'][$i]);
+				$this->attributes['dhcpStatements'] = array_values($this->attributes['dhcpStatements']);
+				break;
+			}
+		}
+		if ($isAuthoritative) {
+			$this->attributes['dhcpStatements'][] = self::AUTHORITATIVE;
+		}
+	}
+
+	/**
 	 * {@inheritDoc}
 	 * @see baseModule::build_uploadAccounts()
 	 */
@@ -1040,6 +1099,19 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				}
 				else {
 					$error = $this->messages['unknownClients'][0];
+					array_push($error, array($i));
+					$messages[] = $error;
+				}
+			}
+			// node type
+			if ($rawAccounts[$i][$ids['dhcp_settings_authoritative']] !== '') {
+				if (in_array($rawAccounts[$i][$ids['dhcp_settings_authoritative']], array('true', 'false'))) {
+					if ($rawAccounts[$i][$ids['dhcp_settings_authoritative']] === 'true') {
+						$partialAccounts[$i]['dhcpStatements'][] = self::AUTHORITATIVE;
+					}
+				}
+				else {
+					$error = $this->messages['authoritative'][0];
 					array_push($error, array($i));
 					$messages[] = $error;
 				}
