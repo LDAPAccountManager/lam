@@ -1,5 +1,6 @@
 December 2022
   - Usability improvements
+  - DHCP: added "authoritative" option and extra DHCP options + statements
   - LAM Pro:
    -> Group of (unique) names/members, Apache Guacamole: support "seeAlso" attribute (hidden by default in server profile)
 

@@ -227,6 +227,14 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				'Headline' => _('Authoritative'), 'attr' => 'dhcpStatements',
 				'Text' => _('Authoritative servers reject requests for invalid IP addresses.')
 			),
+			'extraStatements' => array(
+				'Headline' => _('Extra statements'), 'attr' => 'dhcpStatements',
+				'Text' => _('Please enter any additional DHCP statements.')
+			),
+			'extraOptions' => array(
+				'Headline' => _('Extra statements'), 'attr' => 'dhcpOptions',
+				'Text' => _('Please enter any additional DHCP options.')
+			),
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
@@ -542,7 +550,17 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 				$this->attributes['dhcpNetMask'][0] = $this->calculateNetMask($_POST['subnet']);
 			}
 		}
+
+		// description
 		$this->attributes['dhcpComments'][0] = $_POST['description'];
+
+		// extra statements
+		$extraStatements = isset($_POST['extraStatements']) ? explode("\r\n", $_POST['extraStatements']) : array();
+		$this->setExtraStatements($extraStatements);
+
+		// extra options
+		$extraOptions = isset($_POST['extraOptions']) ? explode("\r\n", $_POST['extraOptions']) : array();
+		$this->setExtraOptions($extraOptions);
 
 		return $errors;
 	}
@@ -674,6 +692,8 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		if (!$this->isRootNode()) {
 			$return->add(new htmlResponsiveInputCheckbox('authoritative', $this->isAuthoritative(), _('Authoritative'), 'authoritative'));
 		}
+		$return->add(new htmlResponsiveInputTextarea('extraStatements', implode("\r\n", $this->getExtraStatements()), 30, 4, _('Extra statements'), 'extraStatements'));
+		$return->add(new htmlResponsiveInputTextarea('extraOptions', implode("\r\n", $this->getExtraOptions()), 30, 4, _('Extra options'), 'extraOptions'));
 		return $return;
 	}
 
@@ -943,6 +963,98 @@ By default, the nodes are configured as H-Nodes which fits for small networks. I
 		if ($isAuthoritative) {
 			$this->attributes['dhcpStatements'][] = self::AUTHORITATIVE;
 		}
+	}
+
+	/**
+	 * Returns a list of extra DHCP statements.
+	 *
+	 * @return array statements
+	 */
+	private function getExtraStatements(): array {
+		$extraStatements = array();
+		if (!empty($this->attributes['dhcpStatements'])) {
+			foreach ($this->attributes['dhcpStatements'] as $statement) {
+				if (($statement !== self::AUTHORITATIVE)
+					&& (strpos($statement, self::DEFAULT_LEASE_TIME) !== 0)
+					&& (strpos($statement, self::MAX_LEASE_TIME) !== 0)
+					&& (strpos($statement, self::UNKNOWN_CLIENTS) !== (strlen($statement) - strlen(self::UNKNOWN_CLIENTS)))) {
+					$extraStatements[] = $statement;
+				}
+			}
+		}
+		return $extraStatements;
+	}
+
+	/**
+	 * Sets extra DHCP statements.
+	 *
+	 * @param array $statements statements
+	 */
+	private function setExtraStatements(array $statements): void {
+		if (!is_array($this->attributes['dhcpStatements'])) {
+			$this->attributes['dhcpStatements'] = array();
+		}
+		$toDelete = array();
+		foreach ($this->attributes['dhcpStatements'] as $statement) {
+			if (($statement !== self::AUTHORITATIVE)
+				&& (strpos($statement, self::DEFAULT_LEASE_TIME) !== 0)
+				&& (strpos($statement, self::MAX_LEASE_TIME) !== 0)
+				&& (strpos($statement, self::UNKNOWN_CLIENTS) !== (strlen($statement) - strlen(self::UNKNOWN_CLIENTS)))) {
+				$toDelete[] = $statement;
+			}
+		}
+		$this->attributes['dhcpStatements'] = array_delete($toDelete, $this->attributes['dhcpStatements']);
+		$this->attributes['dhcpStatements'] = array_merge($this->attributes['dhcpStatements'], $statements);
+	}
+
+	/**
+	 * Returns a list of extra DHCP options.
+	 *
+	 * @return array options
+	 */
+	private function getExtraOptions(): array {
+		$extraOptions = array();
+		if (!empty($this->attributes['dhcpOption'])) {
+			foreach ($this->attributes['dhcpOption'] as $option) {
+				if ((strpos($option, self::DOMAIN_NAME) !== 0)
+					&& (strpos($option, self::DOMAIN_NAME_SERVERS) !== 0)
+					&& (strpos($option, self::DOMAIN_SEARCH) !== 0)
+					&& (strpos($option, self::ROUTERS) !== 0)
+					&& (strpos($option, self::NETBIOS_NAME_SERVERS) !== 0)
+					&& (strpos($option, self::NETBIOS_NODE_TYPE) !== 0)
+					&& (strpos($option, self::SUBNET_MASK) !== 0)
+				) {
+					$extraOptions[] = $option;
+				}
+			}
+		}
+		return $extraOptions;
+	}
+
+	/**
+	 * Sets extra DHCP options.
+	 *
+	 * @param array $options options
+	 */
+	private function setExtraOptions(array $options): void {
+		if (!is_array($this->attributes['dhcpOption'])) {
+			$this->attributes['dhcpOption'] = array();
+		}
+		$toDelete = array();
+		foreach ($this->attributes['dhcpOption'] as $option) {
+			if ((strpos($option, self::DOMAIN_NAME) !== 0)
+				&& (strpos($option, self::DOMAIN_NAME_SERVERS) !== 0)
+				&& (strpos($option, self::DOMAIN_SEARCH) !== 0)
+				&& (strpos($option, self::ROUTERS) !== 0)
+				&& (strpos($option, self::NETBIOS_NAME_SERVERS) !== 0)
+				&& (strpos($option, self::NETBIOS_NODE_TYPE) !== 0)
+				&& (strpos($option, self::SUBNET_MASK) !== 0)
+			) {
+				$toDelete[] = $option;
+			}
+		}
+		$this->attributes['dhcpOption'] = array_delete($toDelete, $this->attributes['dhcpOption']);
+		$this->attributes['dhcpOption'] = array_merge($this->attributes['dhcpOption'], $options);
 	}
 
 	/**
