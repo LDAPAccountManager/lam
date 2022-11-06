@@ -3575,7 +3575,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$newPasswordVal = self::pwdAttributeValue($_POST['windowsUser_unicodePwd']);
 		$oldPassword = lamDecrypt($_SESSION['selfService_clientPassword'], 'SelfService');
 		$oldPasswordVal = self::pwdAttributeValue($oldPassword);
-		$dn = $attributes['dn'];
+		$dn = lamDecrypt($_SESSION['selfService_clientDN'], 'SelfService');
 		$operation = array(
 			array(
 				'attrib' => 'unicodePwd',
@@ -3602,6 +3602,10 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		else {
 			// update session password for next page load
 			$_SESSION['selfService_clientPasswordNew'] = $_POST['windowsUser_unicodePwd'];
+			if (isset($_SESSION['selfService_passwordExpired'])) {
+				unset($_SESSION['selfService_passwordExpired']);
+			}
+			$_SESSION['selfService_resetPasswordChangeOnly'] = true;
 		}
 	}
 

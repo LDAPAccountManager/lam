@@ -1697,6 +1697,25 @@ function getDefaultLDAPErrorString($server) {
 }
 
 /**
+ * Returns if the last LDAP error was due to expired password or forced password change (AD only).
+ *
+ * @param $server LDAP handle
+ * @return bool password expired
+ */
+function ldapIsPasswordExpired($server): bool {
+	$extError = htmlspecialchars(getExtendedLDAPErrorMessage($server));
+	if (strpos($extError, 'data 532,') !== false) {
+		// password expired
+		return true;
+	}
+	elseif (strpos($extError, 'data 773,') !== false) {
+		// password change required
+		return true;
+	}
+	return false;
+}
+
+/**
  * Tries to get additional information why invalid credentials was returned. E.g. account is locked.
  *
  * @param handle $ldap LDAP object to connect for getting extra data

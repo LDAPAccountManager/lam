@@ -3,6 +3,7 @@ December 2022
   - DHCP: added "authoritative" option and extra DHCP options + statements
   - LAM Pro:
    -> Group of (unique) names/members, Apache Guacamole: support "seeAlso" attribute (hidden by default in server profile)
+   -> Windows: self service: users with expired passwords or forced password change can update their password (requires bind user to be used for all operations)
 
 
 22.09.2022 8.1
