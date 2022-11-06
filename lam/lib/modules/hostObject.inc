@@ -80,6 +80,11 @@ class hostObject extends baseModule {
 				"Headline" => _("Hosts"), 'attr' => 'host',
 				"Text" => _("Here you can specify the list of host names where this account has login privileges. The wildcard \"*\" represents all hosts. You may also use \"!\" in front of a host name to deny access to a host.")
 			),
+			'hostList' => array(
+				"Headline" => _("Hosts"), 'attr' => 'host',
+				"Text" => _("Here you can specify the list of host names where this account has login privileges. The wildcard \"*\" represents all hosts. You may also use \"!\" in front of a host name to deny access to a host.")
+					. ' ' . _("Multiple values are separated by comma.")
+			),
 			'autoAdd' => array(
 				"Headline" => _("Automatically add this extension"),
 				"Text" => _("This will enable the extension automatically if this profile is loaded.")
@@ -90,7 +95,7 @@ class hostObject extends baseModule {
 			array(
 				'name' => 'hostObject_hosts',
 				'description' => _('Host list'),
-				'help' => 'host',
+				'help' => 'hostList',
 				'example' => _('pc01,pc02')
 			)
 		);
@@ -99,7 +104,8 @@ class hostObject extends baseModule {
 			'hosts' => _('Host list')
 		);
 		$profileContainer = new htmlResponsiveRow();
-		$profileContainer->add(new htmlResponsiveInputCheckbox('hostObject_addExt', false, _('Automatically add this extension'), 'autoAdd'), 12);
+		$profileContainer->add(new htmlResponsiveInputCheckbox('hostObject_addExt', false, _('Automatically add this extension'), 'autoAdd'));
+		$profileContainer->add(new htmlResponsiveInputField(_('Host'), 'hostObject_host', null, 'hostList'));
 		$return['profile_options'] = $profileContainer;
 		return $return;
 	}
@@ -150,7 +156,7 @@ class hostObject extends baseModule {
 			$return->add($remButton, 12, 12, 12, 'text-center');
 		}
 		else {
-			$return->add(new htmlButton('addObjectClass', _('Add host extension')), 12);
+			$return->add(new htmlButton('addObjectClass', _('Add host extension')));
 		}
 		return $return;
 	}
@@ -164,7 +170,9 @@ class hostObject extends baseModule {
 	function process_attributes() {
 		if (isset($_POST['remObjectClass'])) {
 			$this->attributes['objectClass'] = array_delete(array('hostObject'), $this->attributes['objectClass']);
-			if (isset($this->attributes['host'])) unset($this->attributes['host']);
+			if (isset($this->attributes['host'])) {
+				unset($this->attributes['host']);
+			}
 			return array();
 		}
 		if (!in_array('hostObject', $this->attributes['objectClass'])) {
@@ -174,6 +182,8 @@ class hostObject extends baseModule {
 		$this->processMultiValueInputTextField('host', $errors, 'hostObject');
 		return $errors;
 	}
+
+
 
 	/**
 	 * {@inheritDoc}
@@ -214,6 +224,9 @@ class hostObject extends baseModule {
 				$this->attributes['objectClass'][] = 'hostObject';
 			}
 		}
+		$hostList = preg_split('/,[ ]*/', $profile['hostObject_host'][0]);
+		$this->attributes['host'] = $hostList;
+
 	}
 
 	/**
