@@ -766,6 +766,7 @@ li.lam-tab {
 	top: 0;
 	background: var(--lam-background-color-default);
 	filter: brightness(0.96);
+	cursor: pointer;
 }
 
 li.lam-tab-active {
