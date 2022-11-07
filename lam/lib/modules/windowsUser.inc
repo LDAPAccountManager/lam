@@ -1459,12 +1459,6 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		}
 		// account area
 		$containerLeft->add(new htmlSubTitle(_('Account')), 12);
-		// password change required
-		$pwdMustChange = false;
-		if (isset($this->attributes['pwdLastSet'][0]) && ($this->attributes['pwdLastSet'][0] === '0')) {
-			$pwdMustChange = true;
-		}
-		$containerLeft->add(new htmlResponsiveInputCheckbox('forcePasswordChangeOption', $pwdMustChange, _("User must change password"), 'pwdMustChange'), 12);
 		// deactivated
 		$deactivated = windowsUser::isDeactivated($this->attributes);
 		$containerLeft->add(new htmlResponsiveInputCheckbox('deactivated', $deactivated, _("Account is deactivated"), 'deactivated'), 12);
@@ -1490,6 +1484,12 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$containerLeft->addLabel(new htmlOutputText(_('Last password change')));
 			$pwdLastSetGroup = new htmlGroup();
 			$pwdLastSetGroup->addElement(new htmlOutputText($this->formatPwdLastSet()));
+			$pwdLastSetGroup->addElement(new htmlSpacer('0.5rem', null));
+			if (isset($this->attributes['pwdLastSet'][0]) && ($this->attributes['pwdLastSet'][0] === '0')) {
+				$pwdLastSetGroup->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'releasePasswordChange', _('Clear password expiration')));
+			} else {
+				$pwdLastSetGroup->addElement(new htmlAccountPageButton(get_class($this), 'attributes', 'forcePasswordChange', _('Force password change')));
+			}
 			$pwdLastSetGroup->addElement(new htmlSpacer('0.5rem', null));
 			$pwdLastSetGroup->addElement(new htmlHelpLink('pwdLastSet'));
 			$containerLeft->addField($pwdLastSetGroup);
@@ -1837,10 +1837,10 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$this->attributes['wWWHomePage'][0] = $_POST['wWWHomePage'];
 		}
 		// password must be changed
-		if (isset($_POST['forcePasswordChangeOption']) && ($_POST['forcePasswordChangeOption'] == 'on')) {
+		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_forcePasswordChange'])) {
 			$this->attributes['pwdLastSet'][0] = '0';
 		}
-		else {
+		elseif (isset($_POST['form_subpage_' . get_class($this) . '_attributes_releasePasswordChange'])) {
 			if (isset($this->orig['pwdLastSet'][0]) && ($this->orig['pwdLastSet'][0] !== '0')) {
 				$this->attributes['pwdLastSet'][0] = $this->orig['pwdLastSet'][0];
 			}
