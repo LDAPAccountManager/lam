@@ -27,7 +27,7 @@
 
 	--lam-input-bg-color: #fcfcfc;
 	--lam-text-color-default: #000000;
-	--lam-border-color: #d0d0d0;
+	--lam-border-color: #e8e8e8;
 	--lam-border-color-primary: #01689e;
 
 	--lam-background-color-primary: #3daee9;
@@ -725,6 +725,75 @@ li.ui-tabs-active {
 
 li.ui-tabs-active a {
 	color: #454545 !important;
+}
+
+div.lam-tab-container {
+	border: 1px solid var(--lam-border-color);
+	position: relative;
+	padding: .2em;
+}
+
+ul.lam-tab-navigation {
+	margin: 0;
+	padding: .2em .2em 0;
+	background: #F1F1F1;
+	border: 1px solid var(--lam-border-color);
+}
+
+ul.lam-tab-navigation::before {
+	content: "";
+	display: table;
+	border-collapse: collapse;
+}
+
+ul.lam-tab-navigation::after {
+	clear: both;
+	content: "";
+	display: table;
+	border-collapse: collapse;
+}
+
+li.lam-tab {
+	list-style: none;
+	float: left;
+	margin: 1px .2em 0 0;
+	border: 1px solid var(--lam-border-color);
+	border-bottom-width: 0;
+	padding: 0;
+	white-space: nowrap;
+	line-height: 1.3;
+	position: relative;
+	top: 0;
+	background: var(--lam-background-color-default);
+	filter: brightness(0.96);
+}
+
+li.lam-tab-active {
+	margin-bottom: -1px;
+	padding-bottom: 1px;
+	filter: unset;
+}
+
+a.lam-tab-anchor {
+	padding: .5em 1em;
+	float: left;
+	white-space: nowrap;
+	color: var(--lam-text-color-default);
+}
+
+a.lam-tab-anchor:hover {
+	text-decoration: none;
+}
+
+div.lam-tab-content {
+	display: none;
+	border-width: 0;
+	padding: 1em 1.4em;
+	background: 0 0;
+}
+
+div.lam-tab-active {
+	display: block;
 }
 
 h3.ui-accordion-header-active {

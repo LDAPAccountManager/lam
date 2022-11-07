@@ -88,32 +88,27 @@ if (isset($_SESSION[Importer::SESSION_KEY_STOP_ON_ERROR])) {
 
 include __DIR__ . '/../../lib/adminHeader.inc';
 $tabindex = 1;
-$activeTab = 0;
+
+$tabImportClass = 'lam-tab-active';
+$tabExportClass = '';
 if (!empty($_GET['tab']) && ($_GET['tab'] === 'export')) {
-	$activeTab = 1;
+	$tabImportClass = '';
+	$tabExportClass = 'lam-tab-active';
 }
 
 ?>
 
-<script>
-  $(function() {
-	jQuery("#tabs").tabs({
-        active: <?php echo $activeTab; ?>
-    });
-  });
-</script>
-
 <div class="smallPaddingContent">
-	<div id="tabs">
-		<ul>
-			<li id="tab_import">
-				<a href="#tab-import"><img alt="import" src="../../graphics/import.svg"> <?php echo _('Import') ?> </a>
+	<div id="tabs" class="lam-tab-container">
+		<ul class="lam-tab-navigation">
+			<li id="tab_import" data-tabid="1" class="lam-tab <?php echo $tabImportClass; ?>">
+				<a class="lam-tab-anchor" href="#tab-import"><img alt="import" src="../../graphics/import.svg"> <?php echo _('Import') ?> </a>
 			</li>
-			<li id="tab_export">
-				<a href="#tab-export"><img alt="export" src="../../graphics/export.svg"> <?php echo _('Export') ?> </a>
+			<li id="tab_export" data-tabid="2" class="lam-tab <?php echo $tabExportClass; ?>">
+				<a class="lam-tab-anchor" href="#tab-export"><img alt="export" src="../../graphics/export.svg"> <?php echo _('Export') ?> </a>
 			</li>
 		</ul>
-		<div id="tab-import">
+		<div class="lam-tab-content <?php echo $tabImportClass; ?>" id="tab-import" data-tabid="1">
 			<?php
 				if (isset($_POST['submitImport'])) {
 					printImportTabProcessing($tabindex);
@@ -123,7 +118,7 @@ if (!empty($_GET['tab']) && ($_GET['tab'] === 'export')) {
 				}
 			?>
 		</div>
-		<div id="tab-export">
+		<div class="lam-tab-content <?php echo $tabExportClass; ?>" id="tab-export" data-tabid="2">
 			<?php
 				if (isset($_POST['submitExport'])) {
 					printExportTabProcessing($tabindex);
