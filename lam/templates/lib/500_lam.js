@@ -2963,7 +2963,8 @@ window.lam.tabs.init = function() {
 	const tabs = document.querySelectorAll('li.lam-tab');
 	tabs.forEach(function(element) {
 		element.onclick = function() {
-			window.lam.tabs.tabClick(element)
+			window.lam.tabs.tabClick(element);
+			return false;
 		};
 	});
 }
