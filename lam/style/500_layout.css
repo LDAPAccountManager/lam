@@ -745,6 +745,10 @@ ul.lam-tab-navigation::after {
 	border-collapse: collapse;
 }
 
+li.lam-tab:hover {
+	filter: brightness(0.94);
+}
+
 li.lam-tab {
 	list-style: none;
 	float: left;
@@ -761,12 +765,17 @@ li.lam-tab {
 	cursor: pointer;
 }
 
+li.lam-tab-active:hover {
+	filter: brightness(0.96);
+}
+
 li.lam-tab-active {
 	margin-bottom: -1px;
 	padding-bottom: 1px;
 	filter: unset;
 	cursor: default;
 }
+
 li.lam-tab-active a {
 	cursor: default;
 }
