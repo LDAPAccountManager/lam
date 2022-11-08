@@ -2962,10 +2962,12 @@ window.lam.tabs = window.lam.tabs || {};
 window.lam.tabs.init = function() {
 	const tabs = document.querySelectorAll('li.lam-tab');
 	tabs.forEach(function(element) {
-		element.onclick = function() {
-			window.lam.tabs.tabClick(element);
-			return false;
-		};
+		if (element.dataset.tabid) {
+			element.onclick = function() {
+				window.lam.tabs.tabClick(element);
+				return false;
+			};
+		}
 	});
 }
 

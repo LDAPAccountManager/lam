@@ -836,7 +836,6 @@ class lamList {
 
 		$this->printHeader();
 
-		echo "<div class=\"ui-tabs-nav " . $this->type->getScope() . "-bright\">";
 		echo "<div class=\"smallPaddingContent\">\n";
 		$refreshParam = '&amp;norefresh=true';
 		if (isset($_GET['refresh']) && ($_GET['refresh'] == 'true')) {
@@ -1009,12 +1008,6 @@ class lamList {
 		?>
 		<input type="hidden" name="<?php echo getSecurityTokenName(); ?>" value="<?php echo getSecurityTokenValue(); ?>">
 			</form>
-			<script type="text/javascript">
-				jQuery(document).ready(function() {
-					jQuery('#tab_<?php echo $this->type->getId(); ?>').addClass('ui-tabs-active');
-					jQuery('#tab_<?php echo $this->type->getId(); ?>').addClass('ui-state-active');
-				});
-			</script>
 		<?php
 	}
 

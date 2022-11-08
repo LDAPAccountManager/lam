@@ -140,28 +140,23 @@ function printConfigurationPageTabs($active) {
 
 	// tabs
 	?>
-	<div class="ui-tabs ui-corner-all ui-widget ui-widget-content">
-
-		<ul class="ui-tabs-nav ui-corner-all ui-helper-reset ui-helper-clearfix ui-widget-header">
+	<div class="lam-tab-container">
+		<ul class="lam-tab-navigation">
 	<?php
 		foreach ($tabs as $tab => $settings) {
 			$isActive = ($tab === $active);
-			$liClasses = 'ui-tabs-tab ui-corner-top ui-state-default ui-tab';
-			$hover = ' onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');"';
+			$liClasses = 'lam-tab';
 			if ($isActive) {
-				$liClasses .= ' lam-active-tab';
-				$hover = '';
+				$liClasses .= ' lam-tab-active';
 			}
-			echo '<li id="' . $settings['id'] . '" class="' . $liClasses . '"' . $hover . '>';
-				echo '<a class="ui-tabs-anchor" href="#" onclick="document.getElementsByName(\'' . $settings['id'] . '\')[0].click();"><img src="../../graphics/' . $settings['icon'] . '" alt=""> ';
+			echo '<li id="' . $settings['id'] . '" class="' . $liClasses . '">';
+				echo '<a class="lam-tab-anchor" href="#" onclick="document.getElementsByName(\'' . $settings['id'] . '\')[0].click();"><img src="../../graphics/' . $settings['icon'] . '" alt=""> ';
 					echo '<span class="hide-on-mobile">' . $settings['label'] . '</span>';
 				echo '</a>';
 			echo '</li>';
 		}
 	?>
 		</ul>
-		<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+		<div class="lam-tab-content lam-tab-active">
 	<?php
 }
-
-?>
