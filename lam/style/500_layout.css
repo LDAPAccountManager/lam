@@ -664,10 +664,6 @@ tr.account {
 
 /* --- workaround for vertical tabs --- */
 
-#lamVerticalTabs {
-	background: none;
-}
-
 #lamVerticalTabs .ui-tabs-nav li {
 	margin: 0 -1px .2em 1 !important;
 	clear: left;
@@ -707,16 +703,6 @@ tr.account {
 	text-align: left;
 	display:block;
 	color: #555555;
-}
-
-li.ui-tabs-active {
-	background: var(--lam-background-color-default) !important;
-	border: 1px solid var(--lam-border-color) !important;
-	border-bottom-width: 0px !important;
-}
-
-li.ui-tabs-active a {
-	color: #454545 !important;
 }
 
 div.lam-tab-container {
