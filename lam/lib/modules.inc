@@ -1105,13 +1105,13 @@ class accountContainer {
 		$titleBarDiv = new htmlDiv(null, $titleBarContainer, array('titleBar', 'ui-corner-top'));
 		parseHtml(null, $titleBarDiv, array(), false, $tabindex, $this->type->getScope());
 
-		echo '<div id="lamVerticalTabs" class="ui-tabs ui-widget ui-widget-content ui-corner-bottom ui-helper-clearfix">';
-		echo '<table class="fullwidth">';
-			echo '<tr><td style="vertical-align: top;">';
+		echo '<div id="lamVerticalTabs" class="lam-vertical-tab-container">';
+		echo '<table class="lam-vertical-tabs fullwidth">';
+			echo '<tr><td class="lam-vertical-tabs-navigation">';
 			// tab menu
 			$this->printModuleTabs();
 			echo '</td><td style="vertical-align: top;" width="100%">';
-			echo "<div class=\"ui-tabs-panel ui-widget-content ui-corner-bottom fullwidth module-content-row\">\n";
+			echo "<div class=\"lam-vertical-tab-content fullwidth module-content-row\">\n";
 			// content area
 			// display html-code from modules
 			$return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage));
@@ -1545,7 +1545,7 @@ class accountContainer {
 	private function printModuleTabs() {
 		// $x is used to count up tabindex
 		$x=1;
-		echo '<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">';
+		echo '<ul class="lam-vertical-tabs-navigation">';
 		// Loop for each module
 		for ($i = 0; $i < count($this->order); $i++) {
 			$buttonStatus = $this->module[$this->order[$i]]->getButtonStatus();
@@ -1557,16 +1557,16 @@ class accountContainer {
 			$buttonImage = $this->module[$this->order[$i]]->getIcon();
 			$activatedClass = '';
 			if ($this->order[$this->current_page] == $this->order[$i]) {
-				$activatedClass = ' lam-tabs-selected';
+				$activatedClass = ' lam-vertical-tabs-selected';
 			}
 			// print button
-			echo '<li class="ui-state-default ui-corner-left' . $activatedClass . '">';
-			echo "<button class=\"lam-account-type\" name=\"form_main_".$this->order[$i]."\"";
+			echo '<li class="lam-vertical-tabs ' . $activatedClass . '">';
+			echo "<button class=\"lam-account-type " . $activatedClass . "\" name=\"form_main_".$this->order[$i]."\"";
 			echo " tabindex=$x";
 			if ($buttonStatus == 'disabled') {
 				echo " disabled";
 			}
-			echo ' onmouseover="jQuery(this).addClass(\'tabs-hover\');" onmouseout="jQuery(this).removeClass(\'tabs-hover\');">';
+			echo ' >';
 			if ($buttonImage != null) {
 				if (!(strpos($buttonImage, 'http') === 0) && !(strpos($buttonImage, '/') === 0)) {
 					$buttonImage = '../../graphics/' . $buttonImage;

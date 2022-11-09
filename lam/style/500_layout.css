@@ -662,47 +662,88 @@ tr.account {
   background-color:#FFFFEE;
 }
 
-/* --- workaround for vertical tabs --- */
+div.lam-vertical-tab-container {
+	border: 1px solid var(--lam-border-color);
+	position: relative;
+	padding: .2em;
+}
 
-#lamVerticalTabs .ui-tabs-nav li {
-	margin: 0 -1px .2em 1 !important;
+table.lam-vertical-tabs {
+	border: 1px solid var(--lam-border-color);
+	border-collapse: collapse;
+}
+
+td.lam-vertical-tabs-navigation {
+	vertical-align: top;
+	padding: 0px;
+	background-color: #F8F8F8;
+}
+
+ul.lam-vertical-tabs-navigation {
+	margin: 0;
+	padding: .2em 0 0 .2em;
+}
+
+ul.lam-vertical-tabs-navigation::before {
+	content: "";
+	display: table;
+	border-collapse: collapse;
+}
+
+ul.lam-vertical-tabs-navigation::after {
+	clear: both;
+	content: "";
+	display: table;
+	border-collapse: collapse;
+}
+
+li.lam-vertical-tabs {
+	list-style: none;
 	clear: left;
 	width: 100%;
-	border-right-width: 0 !important;
-	border-bottom: 1px solid #AAAAAA !important;
-}
-
-#lamVerticalTabs .ui-tabs-nav li.lam-tabs-selected {
-	padding-bottom: 0;
-	padding-right: .1em;
-	border: 1px solid #c5c5c5;
-	background-color: var(--lam-background-color-default);
-}
-
-#lamVerticalTabs .ui-tabs-nav li:hover {
-	filter: brightness(0.96);
-}
-
-#lamVerticalTabs .ui-tabs-nav {
-	float: left;
-	padding: .2em 0em .2em .2em !IMPORTANT;
+	border: 1px solid var(--lam-border-color);
 	border-right: 0px;
+	background-color: var(--lam-input-bg-color);
+	filter: brightness(0.96);
+	margin-bottom: 0.3em;
 }
 
-#lamVerticalTabs .ui-tabs-panel {
-	padding: 0em 1em 1em 1em;
-	float: left;
+li.lam-vertical-tabs-selected {
+	padding-bottom: .1em;
+	border: 1px solid #c5c5c5;
+	border-right: 0px;
+	background-color: var(--lam-background-color-default);
+	filter: unset;
 }
 
-#lamVerticalTabs .ui-widget-header {
-	background: #CCCCCC url(images/ui-bg_highlight-soft_75_cccccc_1x150-vertical.png) repeat-y;
+li.lam-vertical-tabs:hover {
+	filter: brightness(0.94);
 }
 
-#lamVerticalTabs .ui-tabs-nav li button  {
+button.lam-account-type {
+	background-color:transparent;
+	border:0px solid;
 	width: 100%;
 	text-align: left;
 	display:block;
-	color: #555555;
+	color: var(--lam-text-color-default);
+}
+
+button.lam-vertical-tabs-selected {
+	cursor: default;
+}
+
+button.lam-account-type img {
+	width: 32px;
+	height: 32px;
+	min-width: 32px;
+	min-height: 32px;
+}
+
+div.lam-vertical-tab-content {
+	border-width: 0;
+	padding: 0em 1em 1em 1em;
+	float: left;
 }
 
 div.lam-tab-container {
@@ -792,20 +833,6 @@ h3.ui-accordion-header-active {
 	background: var(--lam-background-color-primary) !important;
 	border: 1px solid var(--lam-border-color-primary) !important;
 }
-
-button.lam-account-type {
-	background-color:transparent;
-	border:0px solid;
-}
-
-button.lam-account-type img {
-	width: 32px;
-	height: 32px;
-	min-width: 32px;
-	min-height: 32px;
-}
-
-/* --- end of workaround for vertical tabs --- */
 
 /* title bar */
 .titleBar {
