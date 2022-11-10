@@ -248,8 +248,7 @@ class imapAccess extends baseModule {
 		$return->addField($mailboxGroup);
 		$return->addVerticalSpacer('2rem');
 
-		$list = $client->listMailboxes($prefix . $this->getSep() . $this->user, Horde_Imap_Client::MBOX_ALL);
-		if (is_array($list) && sizeof($list) == 1) {
+		if ($this->isMailboxExisting($client, $prefix . $this->getSep() . $this->user)) {
 			$this->renderQuotasForMailbox($return, $client, $prefix . $this->getSep() . $this->user);
 			$return->addVerticalSpacer('2rem');
 			$delButton = new htmlButton('deleteMailbox', _('Delete mailbox'));
@@ -421,8 +420,7 @@ class imapAccess extends baseModule {
 			try {
 				$client->createMailbox($root);
 				logNewMessage(LOG_DEBUG, 'Mailbox created');
-				$list = $client->listMailboxes($root, Horde_Imap_Client::MBOX_ALL);
-				if (empty($list)) {
+				if (!$this->isMailboxExisting($client, $root)) {
 					$errors[] = $this->messages['managemailbox'][3];
 					return $errors;
 				}
@@ -889,8 +887,7 @@ class imapAccess extends baseModule {
 			try {
 				$client = $this->connect($imapUser, $imapPassword);
 				$prefix = $this->getMailboxPrefix();
-				$list = $client->listMailboxes($prefix . $this->getSep() . $uid);
-				if (empty($list)) {
+				if (!$this->isMailboxExisting($client, $prefix . $this->getSep() . $uid)) {
 					$createErrors = $this->createMailbox($client, $uid, $email_domain);
 					$errors = array_merge($errors, $createErrors);
 					if (empty($createErrors)) {
@@ -921,6 +918,18 @@ class imapAccess extends baseModule {
 				'errors' => array()
 			);
 		}
+	}
+
+	/**
+	 * Returns if the mailbox exists.
+	 *
+	 * @param $client IMAP client
+	 * @param string $path mailbox path
+	 * @return bool is existing
+	 */
+	private function isMailboxExisting($client, string $path): bool {
+		$list = $client->listMailboxes($path);
+		return is_array($list) && (sizeof($list) == 1);
 	}
 
 }
