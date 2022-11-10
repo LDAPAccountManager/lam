@@ -2,17 +2,11 @@
   "config": {
     "vendor-dir": "lib/3rdParty/composer"
   },
-  "repositories": [
-    {
-      "type": "pear",
-      "url": "https://pear.horde.org"
-    }
-  ],
   "require" : {
     "web-auth/webauthn-lib" : "2.1.7",
     "symfony/http-foundation" : "5.0.7",
     "symfony/psr-http-message-bridge" : "1.3.0",
-    "pear-pear.horde.org/Horde_Imap_Client" : "^2.30",
+    "webklex/php-imap" : "^4.1",
     "phpmailer/phpmailer": "~6.5",
     "okta/jwt-verifier": "^1.0",
     "firebase/php-jwt": "^5.2",
