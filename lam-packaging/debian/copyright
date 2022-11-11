@@ -1145,41 +1145,29 @@ lib/3rdParty/composer/brick                                          B        Be
 lib/3rdParty/composer/christian-riesen                               B        Christian Riesen
 lib/3rdParty/composer/clue                                           B        2015 Christian Lück
 lib/3rdParty/composer/composer                                       B        Nils Adermann, Jordi Boggiano
+lib/3rdParty/composer/doctrine                                       B        Doctrine Project
 lib/3rdParty/composer/facile-it                                      B        Thomas Vargiu
 lib/3rdParty/composer/fgrosse                                        B  2015  Friedrich Große
 lib/3rdParty/composer/firebase                                       H  2011  Neuman Vong
 lib/3rdParty/composer/guzzlehttp                                     B  2015  Michael Dowling
+lib/3rdParty/composer/illuminate                                     B        Taylor Otwell
 lib/3rdParty/composer/nesbot                                         B        Brian Nesbitt
 lib/3rdParty/composer/nyholm                                         B  2016  Tobias Nyholm
 lib/3rdParty/composer/okta                                           J        Brian Retterer
 lib/3rdParty/composer/monolog                                        B  2011  Jordi Boggiano
 lib/3rdParty/composer/paragonie                                      B  2015  Paragon Initiative Enterprises
-lib/3rdParty/composer/pear-pear.horde.org/Horde_Crypt_Blowfish       I
-lib/3rdParty/composer/pear-pear.horde.org/Horde_Exception            I
-lib/3rdParty/composer/pear-pear.horde.org/Horde_Idna                 G
-lib/3rdParty/composer/pear-pear.horde.org/Horde_Imap_Client          I
-lib/3rdParty/composer/pear-pear.horde.org/Horde_ListHeaders          I
-lib/3rdParty/composer/pear-pear.horde.org/Horde_Mail                 G
-lib/3rdParty/composer/pear-pear.horde.org/Horde_Mime                 I
-lib/3rdParty/composer/pear-pear.horde.org/Horde_Secret               I
-lib/3rdParty/composer/pear-pear.horde.org/Horde_Socket_Client        I
-lib/3rdParty/composer/pear-pear.horde.org/Horde_Stream               I
-lib/3rdParty/composer/pear-pear.horde.org/Horde_Stream_Filter        I
-lib/3rdParty/composer/pear-pear.horde.org/Horde_Stream_Wrapper       G
-lib/3rdParty/composer/pear-pear.horde.org/Horde_Support              G
-lib/3rdParty/composer/pear-pear.horde.org/Horde_Text_Flowed          I
-lib/3rdParty/composer/pear-pear.horde.org/Horde_Translation          I
-lib/3rdParty/composer/pear-pear.horde.org/Horde_Util                 I
 lib/3rdParty/composer/php-http                                       B  2015  PHP HTTP Team
 lib/3rdParty/composer/phpmailer                                      I
 lib/3rdParty/composer/phpseclib                                      B  2019  TerraFrost and other contributors
-lib/3rdParty/composer/psr                                            B  2018  PHP Framework Interoperability Group
+lib/3rdParty/composer/psr                                            B        PHP Framework Interoperability Group
 lib/3rdParty/composer/ralouphie                                      B  2014  Ralph Khattar
 lib/3rdParty/composer/ramsey                                         B  2018  Ben Ramsey
 lib/3rdParty/composer/spomky-labs                                    B  2018  Spomky-Labs
-lib/3rdParty/composer/symfony                                        B  2019  Fabien Potencier
+lib/3rdParty/composer/symfony                                        B  2022  Fabien Potencier
+lib/3rdParty/composer/voku                                           B  2019 Lars Moelleken
 lib/3rdParty/composer/web-auth                                       B  2018  Spomky-Labs
 lib/3rdParty/composer/web-token                                      B        Florent Morselli
+lib/3rdParty/composer/webklex                                        B  2016  Webklex
 lib/3rdParty/tcpdf                                                   D  2020  Nicola Asuni - Tecnick.com LTD
 lib/3rdParty/tcpdf/fonts/dejavu*.z                                   A        Public Domain, Bitstream, Inc., Tavmjong Bah
 lib/3rdParty/yubico/Yubico.php                                       C  2015  Yubico AB
