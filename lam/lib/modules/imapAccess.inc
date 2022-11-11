@@ -28,6 +28,8 @@
  * @author Roland Gruber
  */
 
+use Webklex\PHPIMAP\ClientManager;
+
 /**
  * Manages mailboxes on an IMAP server.
  *
@@ -36,6 +38,9 @@
  * @author Roland Gruber
  */
 class imapAccess extends baseModule {
+
+	const QUOTA_USAGE = 'usage';
+	const QUOTA_LIMIT = 'limit';
 
 	/** quota limit from profile */
 	private $profileQuotaLimit = null;
@@ -268,7 +273,7 @@ class imapAccess extends baseModule {
 				$return->add($createButton, 12, 12, 12, 'text-center');
 			}
 		}
-		$client->logout();
+		$this->doLogout($client);
 		return $return;
 	}
 
@@ -308,18 +313,14 @@ class imapAccess extends baseModule {
 			$this->profileQuotaLimit = null;
 		}
 		try {
-			$quotaRoot = $client->getQuotaRoot($username);
-			$quota_values = array();
-			if (!empty($quotaRoot)) {
-				$quota_values = $client->getQuota($username);
-			}
+			$quota_values = $this->getQuota($client, $username);
 			if (!empty($quota_values)) {
-				if (isset($quota_values['storage']) && is_array($quota_values['storage'])) {
-					$quotaLimit = $quota_values['storage']['limit'];
+				if (isset($quota_values[self::QUOTA_USAGE])) {
+					$quotaLimit = $quota_values[self::QUOTA_LIMIT];
 					$container->addLabel(new htmlOutputText(_("Current usage (kB)")));
-					$container->addField(new htmlOutputText($quota_values['storage']['usage']), true);
+					$container->addField(new htmlOutputText($quota_values[self::QUOTA_USAGE]), true);
 					$quotaLimitInput = new htmlResponsiveInputField(_("Quota limit (kB)"), 'ImapUserQuotaLimit', $quotaLimit, 'ImapUserQuotaLimit');
-					$container->add($quotaLimitInput, 12);
+					$container->add($quotaLimitInput);
 					$container->addVerticalSpacer('0.5rem');
 					$container->add(new htmlButton('updateQuota', _('Update quota')), 12, 12, 12, 'text-center');
 					$container->addVerticalSpacer('1rem');
@@ -328,14 +329,14 @@ class imapAccess extends baseModule {
 			else {
 				$quotaLimit = "";
 				$quotaLimitInput = new htmlResponsiveInputField(_("Quota limit (kB)"), 'ImapUserQuotaLimit', $quotaLimit, 'ImapUserQuotaLimit');
-				$container->add($quotaLimitInput, 12);
+				$container->add($quotaLimitInput);
 				$container->addVerticalSpacer('0.5rem');
 				$container->add(new htmlButton('updateQuota', _('Update quota')), 12, 12, 12, 'text-center');
 				$container->addVerticalSpacer('1rem');
 			}
 		}
 		catch (Exception $e) {
-			$container->add(new htmlStatusMessage('ERROR', $this->messages['managemailbox'][10][1], $e->getMessage()), 12);
+			$container->add(new htmlStatusMessage('ERROR', $this->messages['managemailbox'][10][1], $e->getMessage()));
 		}
 		return $container;
 	}
@@ -391,7 +392,7 @@ class imapAccess extends baseModule {
 				$quotaMessages = $this->setQuota($client, $this->user, $email_domain, $quota);
 				$errors = array_merge($errors, $quotaMessages);
 			}
-			$client->logout();
+			$this->doLogout($client);
 		}
 		catch (LAMException $e) {
 			return array(array('ERROR', $e->getTitle(), $e->getMessage()));
@@ -639,7 +640,7 @@ class imapAccess extends baseModule {
 			try {
 				$client = $this->connect($adminUser, $adminPassword);
 				$_SESSION['imapAdmPass'] = lamEncrypt($_POST['ImapAdminPassword']);
-				$client->logout();
+				$this->doLogout($client);
 			}
 			catch (LAMException $e) {
 				$error = $this->messages['managemailbox'][5];
@@ -651,11 +652,21 @@ class imapAccess extends baseModule {
 	}
 
 	/**
+	 * Closes the IMAP connection.
+	 *
+	 * @param $client client
+	 */
+	private function doLogout($client): void {
+		$client->disconnect();
+	}
+
+	/**
 	 * Connects to the IMAP server.
 	 *
 	 * @param string $user user name
 	 * @param string $password password
 	 * @return Horde_Imap_Client_Socket IMAP client
+	 * @throws LAMException error during connect
 	 */
 	private function connect($user, $password) {
 		include_once __DIR__ . '/../3rdParty/composer/autoload.php';
@@ -674,25 +685,20 @@ class imapAccess extends baseModule {
 				$port = 993;
 			}
 		}
-		$context = array(
-			'ssl' => array(
-				'cafile' => __DIR__ . '/../../serverCerts.pem'
-			)
-		);
-		if (isset($this->moduleSettings['ImapAccess_ImapValidateServerCert'][0]) && ($this->moduleSettings['ImapAccess_ImapValidateServerCert'][0] == 'novalidate-cert')) {
-			$context['ssl']['verify_peer'] = false;
-			$context['ssl']['verify_peer_name'] = false;
-		}
+		$validateCertificate = !isset($this->moduleSettings['ImapAccess_ImapValidateServerCert'][0]) || ($this->moduleSettings['ImapAccess_ImapValidateServerCert'][0] !== 'novalidate-cert');
 		try {
-			$client = new Horde_Imap_Client_Socket(array(
+			$cm = new ClientManager(array());
+			$options = array(
 				'username' => $user,
 				'password' => $password,
-				'hostspec' => $serverName,
+				'protocol' => 'imap',
+				'host' => $serverName,
 				'port' => $port,
-				'secure' => strtolower($encryptionType),
-				'context' => $context
-			));
-			$client->login();
+				'encryption' => strtolower($encryptionType),
+				'validate_cert' => $validateCertificate
+			);
+			$client = $cm->make($options);
+			$client->connect();
 			return $client;
 		}
 		catch (Exception $e) {
@@ -895,7 +901,7 @@ class imapAccess extends baseModule {
 						$errors = array_merge($errors, $quotaErrors);
 					}
 				}
-				$client->logout();
+				$this->doLogout($client);
 			}
 			catch (Exception $e) {
 				$message = $this->messages['managemailbox'][5];
@@ -928,8 +934,27 @@ class imapAccess extends baseModule {
 	 * @return bool is existing
 	 */
 	private function isMailboxExisting($client, string $path): bool {
-		$list = $client->listMailboxes($path);
+		$list = $client->getConnection()->folders($path);
 		return is_array($list) && (sizeof($list) == 1);
+	}
+
+	/**
+	 * Returns the quota data for the user.
+	 *
+	 * @param $client IMAP client
+	 * @param string $user user name
+	 * @return array array with keys QUOTA_USAGE and QUOTA_LIMIT
+	 */
+	private function getQuota($client, string $user): array {
+		$quota = $client->getConnection()->requestAndResponse('GETQUOTA', array($user));
+		$quota_values = array();
+		if (isset($quota[0][2][0]) && ($quota[0][2][0] === 'STORAGE')) {
+			$quota_values = array(
+				self::QUOTA_LIMIT => $quota[0][2][2],
+				self::QUOTA_USAGE => $quota[0][2][1],
+			);
+		}
+		return $quota_values;
 	}
 
 }
