@@ -691,6 +691,7 @@ class imapAccess extends baseModule {
 		}
 		$validateCertificate = !isset($this->moduleSettings['ImapAccess_ImapValidateServerCert'][0]) || ($this->moduleSettings['ImapAccess_ImapValidateServerCert'][0] !== 'novalidate-cert');
 		try {
+			$encryption = ($encryptionType === 'SSL') ? 'ssl' : 'starttls';
 			$cm = new ClientManager(array());
 			$options = array(
 				'username' => $user,
@@ -698,7 +699,7 @@ class imapAccess extends baseModule {
 				'protocol' => 'imap',
 				'host' => $serverName,
 				'port' => $port,
-				'encryption' => strtolower($encryptionType),
+				'encryption' => $encryption,
 				'validate_cert' => $validateCertificate
 			);
 			$client = $cm->make($options);
