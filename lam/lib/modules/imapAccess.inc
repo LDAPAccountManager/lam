@@ -377,8 +377,7 @@ class imapAccess extends baseModule {
 				else {
 					$root = $prefix . $this->getSep() . $this->user;
 					try {
-						$client->setACL($root, $adminUser, array('rights' => 'c', 'action' => 'add'));
-						$client->deleteMailbox($root);
+						$this->deleteMailbox($client, $root);
 					}
 					catch (Exception $e) {
 						$message = $this->messages['managemailbox'][1];
@@ -424,7 +423,7 @@ class imapAccess extends baseModule {
 			$root = $prefix . $this->getSep() . $userName;
 			logNewMessage(LOG_DEBUG, 'Creating mailbox: ' . $root);
 			try {
-				$client->createMailbox($root);
+				$client->getConnection()->createFolder($root);
 				logNewMessage(LOG_DEBUG, 'Mailbox created');
 				if (!$this->isMailboxExisting($client, $root)) {
 					$errors[] = $this->messages['managemailbox'][3];
@@ -434,7 +433,7 @@ class imapAccess extends baseModule {
 				foreach ($this->getInitialFolders() as $folder) {
 					$fullFolderName = $root . $this->getSep() . $folder;
 					logNewMessage(LOG_DEBUG, 'Creating folder: ' . $fullFolderName);
-					$client->createMailbox($fullFolderName);
+					$client->getConnection()->createFolder($fullFolderName);
 					logNewMessage(LOG_DEBUG, 'Folder created: ' . $fullFolderName);
 				}
 			}
@@ -940,7 +939,7 @@ class imapAccess extends baseModule {
 	 */
 	private function isMailboxExisting($client, string $path): bool {
 		$list = $client->getConnection()->folders($path);
-		return is_array($list) && (sizeof($list) == 1);
+		return is_array($list) && (sizeof($list) >= 1);
 	}
 
 	/**
@@ -981,6 +980,26 @@ class imapAccess extends baseModule {
 		array_shift($result);
 		$message = implode(' ', $result);
 		throw new LAMException(null, $message);
+	}
+
+	/**
+	 * Deletes a mailbox on the server.
+	 *
+	 * @param $client client
+	 * @param $user user
+	 * @throws LAMException error deleting mailbox
+	 */
+	private function deleteMailbox($client, $user): void {
+		$userEscaped = $client->getConnection()->escapeString($user);
+		$adminUser = $client->getConnection()->escapeString($this->getAdminUser());
+		$result = $client->getConnection()->requestAndResponse('SETACL', array($userEscaped, $adminUser, '+c'));
+		if (!isset($result[0][0]) || ($result[0][0] !== 'OK')) {
+			throw new LAMException(null);
+		}
+		$result = $client->getConnection()->deleteFolder($user);
+		if (!$result) {
+			throw new LAMException(null);
+		}
 	}
 
 }
