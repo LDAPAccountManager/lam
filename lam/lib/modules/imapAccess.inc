@@ -309,7 +309,12 @@ class imapAccess extends baseModule {
 	 */
 	function renderQuotasForMailbox($container, $client, $username) {
 		if (($this->profileQuotaLimit != null) && ($this->profileQuotaLimit != '')) {
-			$client->setQuota($username, array('storage' => $this->profileQuotaLimit));
+			try {
+				$this->runSetQuotaCommand($client, $username, $this->profileQuotaLimit);
+			}
+			catch (LAMException $e) {
+				logNewMessage(LOG_ERR, 'Unable to set quota for ' . $username . ': ' . $e->getMessage());
+			}
 			$this->profileQuotaLimit = null;
 		}
 		try {
@@ -461,7 +466,7 @@ class imapAccess extends baseModule {
 		else {
 			if ($quota == '') {
 				try {
-					$client->setQuota($root, array('storage' => '-1'));
+					$this->runSetQuotaCommand($client, $root, '-1');
 				}
 				catch (Exception $e) {
 					$message = $this->messages['managemailbox'][7];
@@ -472,7 +477,7 @@ class imapAccess extends baseModule {
 			elseif (get_preg($quota, 'digit')) {
 				logNewMessage(LOG_DEBUG, 'Setting quota ' . $quota . ' for ' . $root);
 				try {
-					$client->setQuota($root, array('storage' => $quota));
+					$this->runSetQuotaCommand($client, $root, $quota);
 				}
 				catch (Exception $e) {
 					$message = $this->messages['managemailbox'][7];
@@ -946,6 +951,7 @@ class imapAccess extends baseModule {
 	 * @return array array with keys QUOTA_USAGE and QUOTA_LIMIT
 	 */
 	private function getQuota($client, string $user): array {
+		$user = $client->getConnection()->escapeString($user);
 		$quota = $client->getConnection()->requestAndResponse('GETQUOTA', array($user));
 		$quota_values = array();
 		if (isset($quota[0][2][0]) && ($quota[0][2][0] === 'STORAGE')) {
@@ -955,6 +961,26 @@ class imapAccess extends baseModule {
 			);
 		}
 		return $quota_values;
+	}
+
+	/**
+	 * Sets the quota for a user.
+	 *
+	 * @param $client client
+	 * @param string $user user name
+	 * @param string $value quota value
+	 * @return bool successful
+	 * @throws LAMException error setting quota
+	 */
+	private function runSetQuotaCommand($client, string $user, string $value): void {
+		$user = $client->getConnection()->escapeString($user);
+		$result = $client->getConnection()->requestAndResponse('SETQUOTA', array($user, '(STORAGE ' . $value . ')'));
+		if (isset($result[0][0]) && ($result[0][0] === 'OK')) {
+			return;
+		}
+		array_shift($result);
+		$message = implode(' ', $result);
+		throw new LAMException(null, $message);
 	}
 
 }
