@@ -1,4 +1,5 @@
 December 2022
+  - PHP 7.4 required
   - Usability improvements
   - DHCP: added "authoritative" option and extra DHCP options + statements
   - LAM Pro:

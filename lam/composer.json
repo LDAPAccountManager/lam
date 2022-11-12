@@ -1,6 +1,9 @@
 {
   "config": {
-    "vendor-dir": "lib/3rdParty/composer"
+    "vendor-dir": "lib/3rdParty/composer",
+    "platform": {
+      "php": "7.4"
+    }
   },
   "require" : {
     "web-auth/webauthn-lib" : "2.1.7",

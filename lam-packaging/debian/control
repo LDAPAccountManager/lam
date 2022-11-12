@@ -9,7 +9,7 @@ Rules-Requires-Root: binary-targets
 
 Package: ldap-account-manager
 Architecture: all
-Depends: php (>= 7), php-ldap,
+Depends: php (>= 7.4), php-ldap,
  php-gd | php-imagick,
  php-json, php-curl,
  php-zip, php-xml, php-gmp, php-mbstring,
