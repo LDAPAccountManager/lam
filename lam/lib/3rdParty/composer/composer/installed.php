@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '267737c35e4aadf706877eeec81fa8b7f7084adb',
+    'reference' => 'a752e46290aa45814adf242b1bf48cf6dbdf269a',
     'name' => '__root__',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '267737c35e4aadf706877eeec81fa8b7f7084adb',
+      'reference' => 'a752e46290aa45814adf242b1bf48cf6dbdf269a',
     ),
     'beberlei/assert' => 
     array (
@@ -211,21 +211,21 @@
     ),
     'paragonie/constant_time_encoding' => 
     array (
-      'pretty_version' => 'v2.4.0',
-      'version' => '2.4.0.0',
+      'pretty_version' => 'v2.6.3',
+      'version' => '2.6.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'f34c2b11eb9d2c9318e13540a1dbc2a3afbd939c',
+      'reference' => '58c3f47f650c94ec05a151692652a868995d2938',
     ),
     'paragonie/random_compat' => 
     array (
-      'pretty_version' => 'v2.0.20',
-      'version' => '2.0.20.0',
+      'pretty_version' => 'v2.0.21',
+      'version' => '2.0.21.0',
       'aliases' => 
       array (
       ),
-      'reference' => '0f1f60250fccffeaf5dda91eea1c018aed1adc2a',
+      'reference' => '96c132c7f2f7bc3230723b66e89f8f150b29d5ae',
     ),
     'php-http/async-client-implementation' => 
     array (

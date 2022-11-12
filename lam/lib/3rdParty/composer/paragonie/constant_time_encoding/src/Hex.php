@@ -2,8 +2,11 @@
 declare(strict_types=1);
 namespace ParagonIE\ConstantTime;
 
+use RangeException;
+use TypeError;
+
 /**
- *  Copyright (c) 2016 - 2018 Paragon Initiative Enterprises.
+ *  Copyright (c) 2016 - 2022 Paragon Initiative Enterprises.
  *  Copyright (c) 2014 Steve "Sc00bz" Thomas (steve at tobtu dot com)
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -37,22 +40,19 @@ abstract class Hex implements EncoderInterface
      *
      * @param string $binString (raw binary)
      * @return string
-     * @throws \TypeError
+     * @throws TypeError
      */
     public static function encode(string $binString): string
     {
-        /** @var string $hex */
         $hex = '';
         $len = Binary::safeStrlen($binString);
         for ($i = 0; $i < $len; ++$i) {
             /** @var array<int, int> $chunk */
-            $chunk = \unpack('C', Binary::safeSubstr($binString, $i, 1));
-            /** @var int $c */
+            $chunk = \unpack('C', $binString[$i]);
             $c = $chunk[1] & 0xf;
-            /** @var int $b */
             $b = $chunk[1] >> 4;
 
-            $hex .= pack(
+            $hex .= \pack(
                 'CC',
                 (87 + $b + ((($b - 10) >> 8) & ~38)),
                 (87 + $c + ((($c - 10) >> 8) & ~38))
@@ -67,24 +67,20 @@ abstract class Hex implements EncoderInterface
      *
      * @param string $binString (raw binary)
      * @return string
-     * @throws \TypeError
+     * @throws TypeError
      */
     public static function encodeUpper(string $binString): string
     {
-        /** @var string $hex */
         $hex = '';
-        /** @var int $len */
         $len = Binary::safeStrlen($binString);
 
         for ($i = 0; $i < $len; ++$i) {
             /** @var array<int, int> $chunk */
-            $chunk = \unpack('C', Binary::safeSubstr($binString, $i, 2));
-            /** @var int $c */
+            $chunk = \unpack('C', $binString[$i]);
             $c = $chunk[1] & 0xf;
-            /** @var int $b */
             $b = $chunk[1] >> 4;
 
-            $hex .= pack(
+            $hex .= \pack(
                 'CC',
                 (55 + $b + ((($b - 10) >> 8) & ~6)),
                 (55 + $c + ((($c - 10) >> 8) & ~6))
@@ -100,23 +96,20 @@ abstract class Hex implements EncoderInterface
      * @param string $encodedString
      * @param bool $strictPadding
      * @return string (raw binary)
-     * @throws \RangeException
+     * @throws RangeException
      */
-    public static function decode(string $encodedString, bool $strictPadding = false): string
-    {
-        /** @var int $hex_pos */
+    public static function decode(
+        string $encodedString,
+        bool $strictPadding = false
+    ): string {
         $hex_pos = 0;
-        /** @var string $bin */
         $bin = '';
-        /** @var int $c_acc */
         $c_acc = 0;
-        /** @var int $hex_len */
         $hex_len = Binary::safeStrlen($encodedString);
-        /** @var int $state */
         $state = 0;
         if (($hex_len & 1) !== 0) {
             if ($strictPadding) {
-                throw new \RangeException(
+                throw new RangeException(
                     'Expected an even number of hexadecimal characters'
                 );
             } else {
@@ -129,23 +122,17 @@ abstract class Hex implements EncoderInterface
         $chunk = \unpack('C*', $encodedString);
         while ($hex_pos < $hex_len) {
             ++$hex_pos;
-            /** @var int $c */
             $c = $chunk[$hex_pos];
-            /** @var int $c_num */
             $c_num = $c ^ 48;
-            /** @var int $c_num0 */
             $c_num0 = ($c_num - 10) >> 8;
-            /** @var int $c_alpha */
             $c_alpha = ($c & ~32) - 55;
-            /** @var int $c_alpha0 */
             $c_alpha0 = (($c_alpha - 10) ^ ($c_alpha - 16)) >> 8;
 
             if (($c_num0 | $c_alpha0) === 0) {
-                throw new \RangeException(
+                throw new RangeException(
                     'Expected hexadecimal character'
                 );
             }
-            /** @var int $c_val */
             $c_val = ($c_num0 & $c_num) | ($c_alpha & $c_alpha0);
             if ($state === 0) {
                 $c_acc = $c_val * 16;
