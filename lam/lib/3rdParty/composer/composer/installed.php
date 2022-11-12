@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'a752e46290aa45814adf242b1bf48cf6dbdf269a',
+    'reference' => 'f4c083dec0ed5b7192a3479072eb81f76412747a',
     'name' => '__root__',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'a752e46290aa45814adf242b1bf48cf6dbdf269a',
+      'reference' => 'f4c083dec0ed5b7192a3479072eb81f76412747a',
     ),
     'beberlei/assert' => 
     array (
@@ -175,12 +175,12 @@
     ),
     'monolog/monolog' => 
     array (
-      'pretty_version' => '2.3.5',
-      'version' => '2.3.5.0',
+      'pretty_version' => '2.8.0',
+      'version' => '2.8.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'fd4380d6fc37626e2f799f29d91195040137eba9',
+      'reference' => '720488632c590286b88b80e62aa3d3d551ad4a50',
     ),
     'nesbot/carbon' => 
     array (
