@@ -30,7 +30,7 @@ class InstalledVersions
     'aliases' => 
     array (
     ),
-    'reference' => 'afba90a0f531d8ea80dd77da9065695f61ba4ad9',
+    'reference' => '3c94c43950ea7c1835a8cebec79388e6c939f4db',
     'name' => '__root__',
   ),
   'versions' => 
@@ -42,7 +42,7 @@ class InstalledVersions
       'aliases' => 
       array (
       ),
-      'reference' => 'afba90a0f531d8ea80dd77da9065695f61ba4ad9',
+      'reference' => '3c94c43950ea7c1835a8cebec79388e6c939f4db',
     ),
     'beberlei/assert' => 
     array (
@@ -328,12 +328,12 @@ class InstalledVersions
     ),
     'phpmailer/phpmailer' => 
     array (
-      'pretty_version' => 'v6.5.3',
-      'version' => '6.5.3.0',
+      'pretty_version' => 'v6.6.5',
+      'version' => '6.6.5.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'baeb7cde6b60b1286912690ab0693c7789a31e71',
+      'reference' => '8b6386d7417526d1ea4da9edb70b8352f7543627',
     ),
     'phpseclib/phpseclib' => 
     array (
