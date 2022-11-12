@@ -90,8 +90,5 @@ class Request
         $request = $this->messageFactory->createRequest($method, $this->url, $headers);
 
         return $this->httpClient->sendRequest($request);
-
     }
-
-
 }

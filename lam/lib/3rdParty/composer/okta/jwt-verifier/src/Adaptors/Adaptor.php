@@ -21,7 +21,7 @@ use Okta\JwtVerifier\Jwt;
 
 interface Adaptor
 {
-    public function getKeys($jku);
+    public function getKeys(string $jku);
     public function decode($jwt, $keys): Jwt;
     public static function isPackageAvailable();
 }

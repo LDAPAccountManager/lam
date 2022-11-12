@@ -30,7 +30,7 @@ class InstalledVersions
     'aliases' => 
     array (
     ),
-    'reference' => '3c94c43950ea7c1835a8cebec79388e6c939f4db',
+    'reference' => '87d5fed00d0937f43f84bdaf9fea022cde20f8dd',
     'name' => '__root__',
   ),
   'versions' => 
@@ -42,7 +42,7 @@ class InstalledVersions
       'aliases' => 
       array (
       ),
-      'reference' => '3c94c43950ea7c1835a8cebec79388e6c939f4db',
+      'reference' => '87d5fed00d0937f43f84bdaf9fea022cde20f8dd',
     ),
     'beberlei/assert' => 
     array (
@@ -143,6 +143,15 @@ class InstalledVersions
       ),
       'reference' => '902db15a551a4a415e732b622282e21ce1b508b4',
     ),
+    'illuminate/cache' => 
+    array (
+      'pretty_version' => 'v8.83.26',
+      'version' => '8.83.26.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '7ae5b3661413dad7264b5c69037190d766bae50f',
+    ),
     'illuminate/collections' => 
     array (
       'pretty_version' => 'v8.83.26',
@@ -217,12 +226,12 @@ class InstalledVersions
     ),
     'okta/jwt-verifier' => 
     array (
-      'pretty_version' => '1.3.0',
-      'version' => '1.3.0.0',
+      'pretty_version' => '1.4.0',
+      'version' => '1.4.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '58e55ec0743f09dea1039954bab0fa28f738aa49',
+      'reference' => '16f09cac583ab4d0e5ca53b1046dd3e6805244d7',
     ),
     'paragonie/constant_time_encoding' => 
     array (
@@ -443,6 +452,13 @@ class InstalledVersions
       array (
       ),
       'reference' => '408d5eafb83c57f6365a3ca330ff23aa4a5fa39b',
+    ),
+    'psr/simple-cache-implementation' => 
+    array (
+      'provided' => 
+      array (
+        0 => '1.0',
+      ),
     ),
     'ralouphie/getallheaders' => 
     array (

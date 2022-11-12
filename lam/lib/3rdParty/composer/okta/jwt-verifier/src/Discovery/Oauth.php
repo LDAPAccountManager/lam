@@ -34,5 +34,4 @@ class Oauth extends Discovery
     {
         return $this->wellKnownUri;
     }
-
 }

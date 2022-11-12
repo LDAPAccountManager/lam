@@ -17,9 +17,13 @@
 
 namespace Okta\JwtVerifier\Adaptors;
 
+use Carbon\Carbon;
 use Firebase\JWT\JWT as FirebaseJWT;
+use Illuminate\Cache\ArrayStore;
+use Firebase\JWT\Key;
 use Okta\JwtVerifier\Jwt;
 use Okta\JwtVerifier\Request;
+use Psr\SimpleCache\CacheInterface;
 use UnexpectedValueException;
 
 class FirebasePhpJwt implements Adaptor
@@ -36,22 +40,44 @@ class FirebasePhpJwt implements Adaptor
      */
     private $leeway;
 
-    public function __construct(Request $request = null, int $leeway = 120)
+    public function __construct(Request $request = null, int $leeway = 120, CacheInterface $cache = null)
     {
         $this->request = $request ?: new Request();
-        $this->leeway = $leeway;
+        $this->leeway = $leeway ?: 120;
+        $this->cache = $cache ?: new \Illuminate\Cache\Repository(new ArrayStore(true));
     }
 
-    public function getKeys($jku)
+    public function clearCache(string $jku)
     {
+        $cacheKey = 'keys-' . md5($jku);
+        return $this->cache->delete($cacheKey);
+    }
+
+    /**
+     * Caching the keys in accordance with best practices:
+     * https://developer.okta.com/docs/reference/api/oidc/#best-practices
+     */
+    public function getKeys(string $jku): array
+    {
+        $cacheKey = 'keys-' . md5($jku);
+
+        $cached = $this->cache->get($cacheKey);
+        if ($cached) {
+            return self::parseKeySet($cached);
+        }
+
         $keys = json_decode($this->request->setUrl($jku)->get()->getBody()->getContents());
+        $this->cache->set($cacheKey, $keys, Carbon::now()->addDay());
+
         return self::parseKeySet($keys);
     }
 
     public function decode($jwt, $keys): Jwt
     {
-        FirebaseJWT::$leeway = $this->leeway;
-        $decoded = (array)FirebaseJWT::decode($jwt, $keys, ['RS256']);
+        $keys = array_map(function ($key) {
+            return new Key($key, 'RS256');
+        }, $keys);
+        $decoded = (array)FirebaseJWT::decode($jwt, $keys);
         return (new Jwt($jwt, $decoded));
     }
 
@@ -70,22 +96,25 @@ class FirebasePhpJwt implements Adaptor
         $keys = [];
         if (is_string($source)) {
             $source = json_decode($source, true);
-        } else if (is_object($source)) {
-            if (property_exists($source, 'keys'))
+        } elseif (is_object($source)) {
+            if (property_exists($source, 'keys')) {
                 $source = (array)$source;
-            else
+            } else {
                 $source = [$source];
+            }
         }
         if (is_array($source)) {
-            if (isset($source['keys']))
+            if (isset($source['keys'])) {
                 $source = $source['keys'];
+            }
 
             foreach ($source as $k => $v) {
                 if (!is_string($k)) {
-                    if (is_array($v) && isset($v['kid']))
+                    if (is_array($v) && isset($v['kid'])) {
                         $k = $v['kid'];
-                    elseif (is_object($v) && property_exists($v, 'kid'))
+                    } elseif (is_object($v) && property_exists($v, 'kid')) {
                         $k = $v->{'kid'};
+                    }
                 }
                 try {
                     $v = self::parseKey($v);
@@ -108,18 +137,21 @@ class FirebasePhpJwt implements Adaptor
      */
     public static function parseKey($source)
     {
-        if (!is_array($source))
+        if (!is_array($source)) {
             $source = (array)$source;
+        }
         if (!empty($source) && isset($source['kty']) && isset($source['n']) && isset($source['e'])) {
             switch ($source['kty']) {
                 case 'RSA':
-                    if (array_key_exists('d', $source))
+                    if (array_key_exists('d', $source)) {
                         throw new UnexpectedValueException('Failed to parse JWK: RSA private key is not supported');
+                    }
 
                     $pem = self::createPemFromModulusAndExponent($source['n'], $source['e']);
                     $pKey = openssl_pkey_get_public($pem);
-                    if ($pKey !== false)
+                    if ($pKey !== false) {
                         return $pKey;
+                    }
                     break;
                 default:
                     //Currently only RSA is supported
@@ -181,7 +213,8 @@ class FirebasePhpJwt implements Adaptor
      * DER-encode the length
      *
      * DER supports lengths up to (2**8)**127, however, we'll only support lengths up to (2**8)**4.  See
-     * {@link http://itu.int/ITU-T/studygroups/com17/languages/X.690-0207.pdf#p=13 X.690 paragraph 8.1.3} for more information.
+     * {@link http://itu.int/ITU-T/studygroups/com17/languages/X.690-0207.pdf#p=13 X.690 paragraph 8.1.3}
+     * for more information.
      *
      * @access private
      * @param int $length

@@ -16,6 +16,7 @@ before_script:
   - mkdir -p ~/.okta
 
 script:
+  - vendor/bin/phpcs .
   - if [ -z $TRAVIS_SECURE_ENV_VARS ]; then vendor/bin/phpunit --verbose --coverage-clover build/logs/clover.xml; fi
   - if [ ! -z $TRAVIS_SECURE_ENV_VARS ]; then vendor/bin/phpunit --verbose --testsuite=Unit --coverage-clover build/logs/clover.xml; fi
 

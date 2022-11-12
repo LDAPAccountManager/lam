@@ -11,6 +11,8 @@ inside of the Bearer authentication header to let your application know who the 
 order for you to know this use is valid, you will need to know how to validate the token against Okta. This guide gives
 you an example of how to do this using Okta's JWT Validation library for PHP.
 
+**This code does not work with the default authorization server. You must be using a [custom authorization server](https://github.com/okta/okta-jwt-verifier-php/issues/57). Please check if this is the case before using this code.**
+
 ## Release status
 
 This library uses semantic versioning and follows Okta's [library version policy](https://developer.okta.com/code/library-versions/).
@@ -30,11 +32,11 @@ composer require okta/jwt-verifier
 ```
 
 This library requires a JWT library. We currently support
-[firebase/php-jwt](https://packagist.org/packages/firebase/php-jwt). You will have to install this or create
+[firebase/php-jwt](https://packagist.org/packages/firebase/php-jwt) version 5.2. You will have to install this or create
 your own adaptor.
 
 ```bash
-composer require firebase/php-jwt
+composer require firebase/php-jwt ^5.2
 ```
 
 To create your own adaptor, just implement the `Okta/JwtVerifier/Adaptors/Adaptor` in your own class.
@@ -64,6 +66,19 @@ $jwtVerifier = (new \Okta\JwtVerifier\JwtVerifierBuilder())
     ->setIssuer('https://{yourOktaDomain}.com/oauth2/default')
     ->build();
 ```
+
+### Caching
+It's strongly suggested to cache the keys to improve performance. You can pass an implementation of `\Psr\SimpleCache\CacheInterface`
+to the Adaptor constructor.
+
+For example, in laravel:
+```php
+// note: named parameters are only valid for php >= 8.0
+->setAdaptor(new \Okta\JwtVerifier\Adaptors\FirebasePhpJwt(request: null, leeway: 120, cache: app('cache')->store()))
+```
+
+If using symphony, you may need to use an adaptor:
+https://symfony.com/doc/current/components/cache/psr6_psr16_adapters.html
 
 ## Validating an Access Token
 

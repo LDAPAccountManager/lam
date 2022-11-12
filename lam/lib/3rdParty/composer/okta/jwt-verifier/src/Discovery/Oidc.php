@@ -34,5 +34,4 @@ class Oidc extends Discovery
     {
         return $this->wellKnownUri;
     }
-
 }

@@ -17,7 +17,6 @@
 
 namespace Okta\JwtVerifier\Discovery;
 
-
 abstract class DiscoveryMethod
 {
     protected $wellKnownUri;

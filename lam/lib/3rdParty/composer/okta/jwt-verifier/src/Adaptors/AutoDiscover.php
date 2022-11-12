@@ -25,8 +25,8 @@ class AutoDiscover
 
     public static function getAdaptor()
     {
-        foreach(self::$adaptors as $adaptor) {
-            if($adaptor::isPackageAvailable()) {
+        foreach (self::$adaptors as $adaptor) {
+            if ($adaptor::isPackageAvailable()) {
                 return new $adaptor();
             }
         }

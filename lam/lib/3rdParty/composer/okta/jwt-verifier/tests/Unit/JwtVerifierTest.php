@@ -16,10 +16,11 @@
  ******************************************************************************/
 
 use Okta\JwtVerifier\JwtVerifier;
-use PHPUnit\Framework\TestCase;
 
 class JwtVerifierTest extends BaseTestCase
 {
+    use \Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
     /** @test */
     public function can_get_issuer_off_object()
     {
@@ -99,6 +100,43 @@ class JwtVerifierTest extends BaseTestCase
             'Metadata was not accessed.'
         );
 
+    }
+
+    public function test_no_request_on_instantiation()
+    {
+        $fakeClient = Mockery::mock(Okta\JwtVerifier\Request::class);
+        $fakeClient->expects('setUrl->get')->never();
+
+        $verifier = new Okta\JwtVerifier\JwtVerifier('https://my.issuer.com', null, null, $fakeClient);
+    }
+
+    public function test_generated_keys_uri_correct()
+    {
+        $verifier = new Okta\JwtVerifier\JwtVerifier('https://my.issuer.com/oauth2/default');
+        ['path' => $path] = parse_url($verifier->getJwksUri());
+        $this->assertEquals('/oauth2/default/v1/keys', $path);
+    }
+
+    public function test_keys_cached()
+    {
+        $fakeRequest = Mockery::mock(\Okta\JwtVerifier\Request::class);
+        $expected    = [
+            'keys' => [[
+               'kty' => 'RSA',
+               'alg' => 'RS256',
+               'kid' => 'abc-123',
+               'use' => 'sig',
+               'e'   => 'AQAB',
+               'n'   => 'abc123'
+           ]]
+        ];
+
+        $fakeRequest->expects('setUrl->get->getBody->getContents')->andReturn(json_encode($expected))->times(1);
+        $adaptor = new \Okta\JwtVerifier\Adaptors\FirebasePhpJwt($fakeRequest);
+
+        $adaptor->getKeys('abc');
+        $adaptor->getKeys('abc');
+        $adaptor->getKeys('abc');
     }
 
 

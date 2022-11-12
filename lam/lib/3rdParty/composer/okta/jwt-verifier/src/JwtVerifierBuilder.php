@@ -107,8 +107,10 @@ class JwtVerifierBuilder
      */
     public function setLeeway(string $leeway = "PT2M"): self
     {
-        if(strstr($leeway, "P")) {
-            throw new \InvalidArgumentException("It appears that the leeway provided is not in ISO_8601 Duration Format.  Please privide a duration in the format of `PT(n)S`");
+        if (strstr($leeway, "P")) {
+            $msg = "It appears that the leeway provided is not in ISO_8601 Duration Format.";
+            $msg .= "Please privide a duration in the format of `PT(n)S`";
+            throw new \InvalidArgumentException($msg);
         }
 
         $leeway = (new DurationParser)->parse($leeway);
@@ -150,17 +152,29 @@ class JwtVerifierBuilder
      * @throws \InvalidArgumentException
      * @return void
      */
-    private function validateIssuer($issuer): void {
+    private function validateIssuer($issuer): void
+    {
         if (null === $issuer || "" == $issuer) {
-            throw new \InvalidArgumentException("Your Issuer is missing. You can find your issuer from your authorization server settings in the Okta Developer Console. Find out more information aobut Authorization Servers at https://developer.okta.com/docs/guides/customize-authz-server/overview/");
+            $msg = "Your Issuer is missing. ";
+            $msg .= "You can find your issuer from your authorization server settings in the Okta Developer Console. ";
+            $msg .= "Find out more information aobut Authorization Servers at ";
+            $msg .= "https://developer.okta.com/docs/guides/customize-authz-server/overview/";
+            throw new \InvalidArgumentException($msg);
         }
 
         if (strstr($issuer, "https://") == false) {
-            throw new \InvalidArgumentException("Your Issuer must start with https. Current value: {$issuer}. You can copy your issuer from your authorization server settings in the Okta Developer Console. Find out more information aobut Authorization Servers at https://developer.okta.com/docs/guides/customize-authz-server/overview/");
+            $msg = "Your Issuer must start with https. Current value: {$issuer}. ";
+            $msg .= "You can copy your issuer from your authorization server settings in the Okta Developer Console. ";
+            $msg .= "Find out more information aobut Authorization Servers at ";
+            $msg .= "https://developer.okta.com/docs/guides/customize-authz-server/overview/";
+            throw new \InvalidArgumentException($msg);
         }
 
         if (strstr($issuer, "{yourOktaDomain}") != false) {
-            throw new \InvalidArgumentException("Replace {yourOktaDomain} with your Okta domain. You can copy your domain from the Okta Developer Console. Follow these instructions to find it: https://bit.ly/finding-okta-domain");
+            $msg = "Replace {yourOktaDomain} with your Okta domain. ";
+            $msg .= "You can copy your domain from the Okta Developer Console. Follow these instructions to find it: ";
+            $msg .= "https://bit.ly/finding-okta-domain";
+            throw new \InvalidArgumentException($msg);
         }
     }
 
@@ -171,13 +185,20 @@ class JwtVerifierBuilder
      * @throws \InvalidArgumentException
      * @return void
      */
-    private function validateClientId($cid): void {
+    private function validateClientId($cid): void
+    {
         if (null === $cid || "" == $cid) {
-            throw new \InvalidArgumentException("Your client ID is missing. You can copy it from the Okta Developer Console in the details for the Application you created. Follow these instructions to find it: https://bit.ly/finding-okta-app-credentials");
+            $msg = "Your client ID is missing. You can copy it from the Okta Developer Console in the details for the ";
+            $msg .= "Application you created. Follow these instructions to find it: ";
+            $msg .= "https://bit.ly/finding-okta-app-credentials";
+            throw new \InvalidArgumentException($msg);
         }
 
         if (strstr($cid, "{clientId}") != false) {
-            throw new \InvalidArgumentException("Replace {clientId} with the client ID of your Application. You can copy it from the Okta Developer Console in the details for the Application you created. Follow these instructions to find it: https://bit.ly/finding-okta-app-credentials");
+            $msg = "Replace {clientId} with the client ID of your Application. You can copy it from the Okta Developer";
+            $msg .= "Console in the details for the Application you created. Follow these instructions to find it: ";
+            $msg .= "https://bit.ly/finding-okta-app-credentials";
+            throw new \InvalidArgumentException($msg);
         }
     }
 }

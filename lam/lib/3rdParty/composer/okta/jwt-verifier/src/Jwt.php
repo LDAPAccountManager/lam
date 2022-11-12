@@ -22,8 +22,7 @@ class Jwt
     public function __construct(
         string $jwt,
         array $claims
-    )
-    {
+    ) {
         $this->jwt = $jwt;
         $this->claims = $claims;
     }
@@ -41,7 +40,7 @@ class Jwt
     public function getExpirationTime($carbonInstance = true)
     {
         $ts = $this->toJson()->exp;
-        if(class_exists(\Carbon\Carbon::class) && $carbonInstance) {
+        if (class_exists(\Carbon\Carbon::class) && $carbonInstance) {
             return \Carbon\Carbon::createFromTimestampUTC($ts);
         }
 
@@ -51,7 +50,7 @@ class Jwt
     public function getIssuedAt($carbonInstance = true)
     {
         $ts = $this->toJson()->iat;
-        if(class_exists(\Carbon\Carbon::class) && $carbonInstance) {
+        if (class_exists(\Carbon\Carbon::class) && $carbonInstance) {
             return \Carbon\Carbon::createFromTimestampUTC($ts);
         }
 
@@ -60,12 +59,10 @@ class Jwt
 
     public function toJson()
     {
-        if(is_resource($this->claims)) {
+        if (is_resource($this->claims)) {
             throw new \InvalidArgumentException('Could not convert to JSON');
         }
 
         return json_decode(json_encode($this->claims));
-
     }
-
 }
