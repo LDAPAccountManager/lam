@@ -729,13 +729,14 @@ class OpenIdProvider extends BaseProvider {
 		$pathPrefix = $this->config->isSelfService ? '../' : '';
 		$row->add(new htmlImage($pathPrefix . '../graphics/openid.png'), 12);
 		include_once __DIR__ . '/3rdParty/composer/autoload.php';
-		$client = $this->getOpenIdClient();
-		$authorizationService = $this->getAuthorizationService();
-		$redirectAuthorizationUri = $authorizationService->getAuthorizationUri(
-			$client,
-			['login_hint' => $loginAttribute]
-		);
-		$jsBlock = '
+		try {
+			$client = $this->getOpenIdClient();
+			$authorizationService = $this->getAuthorizationService();
+			$redirectAuthorizationUri = $authorizationService->getAuthorizationUri(
+				$client,
+				['login_hint' => $loginAttribute]
+			);
+			$jsBlock = '
 			var currentLocation = window.location.href;
 			if (currentLocation.includes("?")) {
 				currentLocation = currentLocation.substring(0, currentLocation.indexOf("?"));
@@ -750,9 +751,13 @@ class OpenIdProvider extends BaseProvider {
 	        else {
 				window.location.href = "' . $redirectAuthorizationUri . '&redirect_uri=" + currentLocation
 			}
-		';
-		$content->add(new htmlJavaScript($jsBlock), 12);
-		$row->add($content, 12);
+			';
+			$content->add(new htmlJavaScript($jsBlock));
+		}
+		catch (Exception $e) {
+			$content->add(new htmlStatusMessage('ERROR', _('OpenID connection failed'), $e->getMessage()));
+		}
+		$row->add($content);
 	}
 
 	/**
