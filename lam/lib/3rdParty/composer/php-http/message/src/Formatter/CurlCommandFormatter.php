@@ -69,6 +69,16 @@ class CurlCommandFormatter implements Formatter
     }
 
     /**
+     * Formats a response in context of its request.
+     *
+     * @return string
+     */
+    public function formatResponseForRequest(ResponseInterface $response, RequestInterface $request)
+    {
+        return $this->formatResponse($response);
+    }
+
+    /**
      * @return string
      */
     private function getHeadersAsCommandOptions(RequestInterface $request)

@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '5e2ab4f6140e61d060f9aa1797ccacbed635e9f7',
+    'reference' => 'bdb49a6806b63102daef9c5cb2287f119dd9a8fe',
     'name' => '__root__',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '5e2ab4f6140e61d060f9aa1797ccacbed635e9f7',
+      'reference' => 'bdb49a6806b63102daef9c5cb2287f119dd9a8fe',
     ),
     'beberlei/assert' => 
     array (
@@ -58,12 +58,12 @@
     ),
     'clue/stream-filter' => 
     array (
-      'pretty_version' => 'v1.5.0',
-      'version' => '1.5.0.0',
+      'pretty_version' => 'v1.6.0',
+      'version' => '1.6.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'aeb7d8ea49c7963d3b581378955dbf5bc49aa320',
+      'reference' => 'd6169430c7731d8509da7aecd0af756a5747b78e',
     ),
     'doctrine/inflector' => 
     array (
@@ -236,12 +236,12 @@
     ),
     'php-http/client-common' => 
     array (
-      'pretty_version' => '2.5.0',
-      'version' => '2.5.0.0',
+      'pretty_version' => '2.6.0',
+      'version' => '2.6.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'd135751167d57e27c74de674d6a30cef2dc8e054',
+      'reference' => '45db684cd4e186dcdc2b9c06b22970fe123796c0',
     ),
     'php-http/client-implementation' => 
     array (
@@ -261,30 +261,30 @@
     ),
     'php-http/discovery' => 
     array (
-      'pretty_version' => '1.14.1',
-      'version' => '1.14.1.0',
+      'pretty_version' => '1.14.3',
+      'version' => '1.14.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'de90ab2b41d7d61609f504e031339776bc8c7223',
+      'reference' => '31d8ee46d0215108df16a8527c7438e96a4d7735',
     ),
     'php-http/httplug' => 
     array (
-      'pretty_version' => '2.2.0',
-      'version' => '2.2.0.0',
+      'pretty_version' => '2.3.0',
+      'version' => '2.3.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '191a0a1b41ed026b717421931f8d3bd2514ffbf9',
+      'reference' => 'f640739f80dfa1152533976e3c112477f69274eb',
     ),
     'php-http/message' => 
     array (
-      'pretty_version' => '1.12.0',
-      'version' => '1.12.0.0',
+      'pretty_version' => '1.13.0',
+      'version' => '1.13.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '39eb7548be982a81085fe5a6e2a44268cd586291',
+      'reference' => '7886e647a30a966a1a8d1dad1845b71ca8678361',
     ),
     'php-http/message-factory' => 
     array (

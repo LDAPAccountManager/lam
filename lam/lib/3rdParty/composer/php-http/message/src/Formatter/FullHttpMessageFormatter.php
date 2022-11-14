@@ -75,6 +75,16 @@ class FullHttpMessageFormatter implements Formatter
     }
 
     /**
+     * Formats a response in context of its request.
+     *
+     * @return string
+     */
+    public function formatResponseForRequest(ResponseInterface $response, RequestInterface $request)
+    {
+        return $this->formatResponse($response);
+    }
+
+    /**
      * Add the message body if the stream is seekable.
      *
      * @param string $message
