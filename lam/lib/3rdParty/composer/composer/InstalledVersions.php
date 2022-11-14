@@ -30,7 +30,7 @@ class InstalledVersions
     'aliases' => 
     array (
     ),
-    'reference' => '8e92107186b0bc8dc9daf730b919875859f30f44',
+    'reference' => '5e2ab4f6140e61d060f9aa1797ccacbed635e9f7',
     'name' => '__root__',
   ),
   'versions' => 
@@ -42,7 +42,7 @@ class InstalledVersions
       'aliases' => 
       array (
       ),
-      'reference' => '8e92107186b0bc8dc9daf730b919875859f30f44',
+      'reference' => '5e2ab4f6140e61d060f9aa1797ccacbed635e9f7',
     ),
     'beberlei/assert' => 
     array (
@@ -217,12 +217,12 @@ class InstalledVersions
     ),
     'nyholm/psr7' => 
     array (
-      'pretty_version' => '1.4.1',
-      'version' => '1.4.1.0',
+      'pretty_version' => '1.5.1',
+      'version' => '1.5.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '2212385b47153ea71b1c1b1374f8cb5e4f7892ec',
+      'reference' => 'f734364e38a876a23be4d906a2a089e1315be18a',
     ),
     'okta/jwt-verifier' => 
     array (
