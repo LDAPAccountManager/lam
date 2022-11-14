@@ -30,7 +30,7 @@ class InstalledVersions
     'aliases' => 
     array (
     ),
-    'reference' => 'f4c083dec0ed5b7192a3479072eb81f76412747a',
+    'reference' => '8e92107186b0bc8dc9daf730b919875859f30f44',
     'name' => '__root__',
   ),
   'versions' => 
@@ -42,7 +42,7 @@ class InstalledVersions
       'aliases' => 
       array (
       ),
-      'reference' => 'f4c083dec0ed5b7192a3479072eb81f76412747a',
+      'reference' => '8e92107186b0bc8dc9daf730b919875859f30f44',
     ),
     'beberlei/assert' => 
     array (
@@ -136,12 +136,12 @@ class InstalledVersions
     ),
     'guzzlehttp/psr7' => 
     array (
-      'pretty_version' => '1.8.4',
-      'version' => '1.8.4.0',
+      'pretty_version' => '1.9.0',
+      'version' => '1.9.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '902db15a551a4a415e732b622282e21ce1b508b4',
+      'reference' => 'e98e3e6d4f86621a9b75f623996e6bbdeb4b9318',
     ),
     'illuminate/cache' => 
     array (

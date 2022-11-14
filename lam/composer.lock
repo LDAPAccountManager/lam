@@ -689,16 +689,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "1.8.4",
+            "version": "1.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "902db15a551a4a415e732b622282e21ce1b508b4"
+                "reference": "e98e3e6d4f86621a9b75f623996e6bbdeb4b9318"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/902db15a551a4a415e732b622282e21ce1b508b4",
-                "reference": "902db15a551a4a415e732b622282e21ce1b508b4",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/e98e3e6d4f86621a9b75f623996e6bbdeb4b9318",
+                "reference": "e98e3e6d4f86621a9b75f623996e6bbdeb4b9318",
                 "shasum": ""
             },
             "require": {
@@ -719,7 +719,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.7-dev"
+                    "dev-master": "1.9-dev"
                 }
             },
             "autoload": {
@@ -777,6 +777,10 @@
                 "uri",
                 "url"
             ],
+            "support": {
+                "issues": "https://github.com/guzzle/psr7/issues",
+                "source": "https://github.com/guzzle/psr7/tree/1.9.0"
+            },
             "funding": [
                 {
                     "url": "https://github.com/GrahamCampbell",
@@ -791,7 +795,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-03-20T13:44:44+00:00"
+            "time": "2022-06-20T21:43:03+00:00"
         },
         {
             "name": "illuminate/cache",
