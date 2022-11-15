@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2019 Spomky-Labs
+ * Copyright (c) 2014-2021 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -21,13 +21,16 @@ use Cose\Algorithms;
 use Cose\Key\Ec2Key;
 use Cose\Key\Key;
 use Cose\Key\RsaKey;
+use function count;
 use FG\ASN1\ASNObject;
 use FG\ASN1\ExplicitlyTaggedObject;
 use FG\ASN1\Universal\OctetString;
 use FG\ASN1\Universal\Sequence;
+use function Safe\hex2bin;
+use function Safe\openssl_pkey_get_public;
+use function Safe\sprintf;
 use Webauthn\AuthenticatorData;
 use Webauthn\CertificateToolbox;
-use Webauthn\MetadataService\MetadataStatementRepository;
 use Webauthn\StringStream;
 use Webauthn\TrustPath\CertificateTrustPath;
 
@@ -38,21 +41,9 @@ final class AndroidKeyAttestationStatementSupport implements AttestationStatemen
      */
     private $decoder;
 
-    /**
-     * @var MetadataStatementRepository|null
-     */
-    private $metadataStatementRepository;
-
-    public function __construct(?Decoder $decoder = null, ?MetadataStatementRepository $metadataStatementRepository = null)
+    public function __construct()
     {
-        if (null !== $decoder) {
-            @trigger_error('The argument "$decoder" is deprecated since 2.1 and will be removed in v3.0. Set null instead', E_USER_DEPRECATED);
-        }
-        if (null === $metadataStatementRepository) {
-            @trigger_error('Setting "null" for argument "$metadataStatementRepository" is deprecated since 2.1 and will be mandatory in v3.0.', E_USER_DEPRECATED);
-        }
-        $this->decoder = $decoder ?? new Decoder(new TagObjectManager(), new OtherObjectManager());
-        $this->metadataStatementRepository = $metadataStatementRepository;
+        $this->decoder = new Decoder(new TagObjectManager(), new OtherObjectManager());
     }
 
     public function name(): string
@@ -60,6 +51,9 @@ final class AndroidKeyAttestationStatementSupport implements AttestationStatemen
         return 'android-key';
     }
 
+    /**
+     * @param mixed[] $attestation
+     */
     public function load(array $attestation): AttestationStatement
     {
         Assertion::keyExists($attestation, 'attStmt', 'Invalid attestation object');
@@ -68,7 +62,7 @@ final class AndroidKeyAttestationStatementSupport implements AttestationStatemen
         }
         $certificates = $attestation['attStmt']['x5c'];
         Assertion::isArray($certificates, 'The attestation statement value "x5c" must be a list with at least one certificate.');
-        Assertion::greaterThan(\count($certificates), 0, 'The attestation statement value "x5c" must be a list with at least one certificate.');
+        Assertion::greaterThan(count($certificates), 0, 'The attestation statement value "x5c" must be a list with at least one certificate.');
         Assertion::allString($certificates, 'The attestation statement value "x5c" must be a list with at least one certificate.');
         $certificates = CertificateToolbox::convertAllDERToPEM($certificates);
 
@@ -81,14 +75,6 @@ final class AndroidKeyAttestationStatementSupport implements AttestationStatemen
         Assertion::isInstanceOf($trustPath, CertificateTrustPath::class, 'Invalid trust path');
 
         $certificates = $trustPath->getCertificates();
-        if (null !== $this->metadataStatementRepository) {
-            $certificates = CertificateToolbox::checkAttestationMedata(
-                $attestationStatement,
-                $authenticatorData->getAttestedCredentialData()->getAaguid()->toString(),
-                $certificates,
-                $this->metadataStatementRepository
-            );
-        }
 
         //Decode leaf attestation certificate
         $leaf = $certificates[0];
@@ -103,7 +89,6 @@ final class AndroidKeyAttestationStatementSupport implements AttestationStatemen
     private function checkCertificateAndGetPublicKey(string $certificate, string $clientDataHash, AuthenticatorData $authenticatorData): void
     {
         $resource = openssl_pkey_get_public($certificate);
-        Assertion::isResource($resource, 'Unable to read the certificate');
         $details = openssl_pkey_get_details($resource);
         Assertion::isArray($details, 'Unable to read the certificate');
 
@@ -125,6 +110,7 @@ final class AndroidKeyAttestationStatementSupport implements AttestationStatemen
         $certDetails = openssl_x509_parse($certificate);
 
         //Find Android KeyStore Extension with OID “1.3.6.1.4.1.11129.2.1.17” in certificate extensions
+        Assertion::isArray($certDetails, 'The certificate is not valid');
         Assertion::keyExists($certDetails, 'extensions', 'The certificate has no extension');
         Assertion::isArray($certDetails['extensions'], 'The certificate has no extension');
         Assertion::keyExists($certDetails['extensions'], '1.3.6.1.4.1.11129.2.1.17', 'The certificate extension "1.3.6.1.4.1.11129.2.1.17" is missing');

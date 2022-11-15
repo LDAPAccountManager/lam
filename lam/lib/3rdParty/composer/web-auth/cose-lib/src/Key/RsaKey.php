@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2019 Spomky-Labs
+ * Copyright (c) 2014-2021 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -13,12 +13,15 @@ declare(strict_types=1);
 
 namespace Cose\Key;
 
+use function array_key_exists;
 use Assert\Assertion;
+use Brick\Math\BigInteger;
 use FG\ASN1\Universal\BitString;
 use FG\ASN1\Universal\Integer;
 use FG\ASN1\Universal\NullObject;
 use FG\ASN1\Universal\ObjectIdentifier;
 use FG\ASN1\Universal\Sequence;
+use InvalidArgumentException;
 
 class RsaKey extends Key
 {
@@ -161,7 +164,7 @@ class RsaKey extends Key
 
     public function isPrivate(): bool
     {
-        return \array_key_exists(self::DATA_D, $this->getData());
+        return array_key_exists(self::DATA_D, $this->getData());
     }
 
     public function asPem(): string
@@ -177,7 +180,7 @@ class RsaKey extends Key
                 new ObjectIdentifier('1.2.840.113549.1.1.1'),
                 new NullObject()
             ),
-            new BitString(\bin2hex($bitSring->getBinary()))
+            new BitString(bin2hex($bitSring->getBinary()))
         );
 
         return $this->pem('PUBLIC KEY', $der->getBinary());
@@ -185,7 +188,14 @@ class RsaKey extends Key
 
     private function fromBase64ToInteger(string $value): string
     {
-        return gmp_strval(gmp_init(current(unpack('H*', $value)), 16), 10);
+        $data = unpack('H*', $value);
+        if (false === $data) {
+            throw new InvalidArgumentException('Unable to convert to an integer');
+        }
+
+        $hex = current($data);
+
+        return BigInteger::fromBase($hex, 16)->toBase(10);
     }
 
     private function pem(string $type, string $der): string

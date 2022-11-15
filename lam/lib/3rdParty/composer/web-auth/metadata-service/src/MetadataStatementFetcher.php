@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2019 Spomky-Labs
+ * Copyright (c) 2014-2021 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -20,7 +20,12 @@ use Jose\Component\Signature\Algorithm\ES256;
 use Jose\Component\Signature\Serializer\CompactSerializer;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
+use function Safe\json_decode;
+use function Safe\sprintf;
 
+/**
+ * @deprecated This class is deprecated since v3.3 and will be removed in v4.0
+ */
 class MetadataStatementFetcher
 {
     public static function fetchTableOfContent(string $uri, ClientInterface $client, RequestFactoryInterface $requestFactory, array $additionalHeaders = []): MetadataTOCPayload
@@ -28,17 +33,18 @@ class MetadataStatementFetcher
         $content = self::fetch($uri, $client, $requestFactory, $additionalHeaders);
         $payload = self::getJwsPayload($content);
         $data = json_decode($payload, true);
-        Assertion::eq(JSON_ERROR_NONE, json_last_error(), 'Unable to decode the data');
 
         return MetadataTOCPayload::createFromArray($data);
     }
 
-    public static function fetchMetadataStatement(string $uri, bool $isBase64UrlEncoded, ClientInterface $client, RequestFactoryInterface $requestFactory, array $additionalHeaders = []): MetadataStatement
+    public static function fetchMetadataStatement(string $uri, bool $isBase64UrlEncoded, ClientInterface $client, RequestFactoryInterface $requestFactory, array $additionalHeaders = [], string $hash = '', string $hashingFunction = 'sha256'): MetadataStatement
     {
         $payload = self::fetch($uri, $client, $requestFactory, $additionalHeaders);
+        if ('' !== $hash) {
+            Assertion::true(hash_equals($hash, hash($hashingFunction, $payload, true)), 'The hash cannot be verified. The metadata statement shall be rejected');
+        }
         $json = $isBase64UrlEncoded ? Base64Url::decode($payload) : $payload;
         $data = json_decode($json, true);
-        Assertion::eq(JSON_ERROR_NONE, json_last_error(), 'Unable to decode the data');
 
         return MetadataStatement::createFromArray($data);
     }

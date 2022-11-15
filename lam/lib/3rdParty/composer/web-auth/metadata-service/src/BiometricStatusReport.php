@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2019 Spomky-Labs
+ * Copyright (c) 2014-2021 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace Webauthn\MetadataService;
 
-class BiometricStatusReport
+use JsonSerializable;
+
+class BiometricStatusReport implements JsonSerializable
 {
     /**
      * @var int
@@ -97,5 +99,20 @@ class BiometricStatusReport
         $object->certificationRequirementsVersion = $data['certificationRequirementsVersion'] ?? null;
 
         return $object;
+    }
+
+    public function jsonSerialize(): array
+    {
+        $data = [
+            'certLevel' => $this->certLevel,
+            'modality' => $this->modality,
+            'effectiveDate' => $this->effectiveDate,
+            'certificationDescriptor' => $this->certificationDescriptor,
+            'certificateNumber' => $this->certificateNumber,
+            'certificationPolicyVersion' => $this->certificationPolicyVersion,
+            'certificationRequirementsVersion' => $this->certificationRequirementsVersion,
+        ];
+
+        return array_filter($data, static function ($var): bool {return null !== $var; });
     }
 }

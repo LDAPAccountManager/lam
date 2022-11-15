@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2019 Spomky-Labs
+ * Copyright (c) 2014-2021 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -13,12 +13,15 @@ declare(strict_types=1);
 
 namespace Webauthn;
 
+use function array_key_exists;
 use ArrayIterator;
 use Assert\Assertion;
+use function count;
 use Countable;
 use Iterator;
 use IteratorAggregate;
 use JsonSerializable;
+use function Safe\json_decode;
 
 class PublicKeyCredentialDescriptorCollection implements JsonSerializable, Countable, IteratorAggregate
 {
@@ -34,7 +37,7 @@ class PublicKeyCredentialDescriptorCollection implements JsonSerializable, Count
 
     public function has(string $id): bool
     {
-        return \array_key_exists($id, $this->publicKeyCredentialDescriptors);
+        return array_key_exists($id, $this->publicKeyCredentialDescriptors);
     }
 
     public function remove(string $id): void
@@ -46,6 +49,9 @@ class PublicKeyCredentialDescriptorCollection implements JsonSerializable, Count
         unset($this->publicKeyCredentialDescriptors[$id]);
     }
 
+    /**
+     * @return Iterator<string, PublicKeyCredentialDescriptor>
+     */
     public function getIterator(): Iterator
     {
         return new ArrayIterator($this->publicKeyCredentialDescriptors);
@@ -53,23 +59,30 @@ class PublicKeyCredentialDescriptorCollection implements JsonSerializable, Count
 
     public function count(int $mode = COUNT_NORMAL): int
     {
-        return \count($this->publicKeyCredentialDescriptors, $mode);
+        return count($this->publicKeyCredentialDescriptors, $mode);
     }
 
+    /**
+     * @return array[]
+     */
     public function jsonSerialize(): array
     {
-        return array_values($this->publicKeyCredentialDescriptors);
+        return array_map(static function (PublicKeyCredentialDescriptor $object): array {
+            return $object->jsonSerialize();
+        }, $this->publicKeyCredentialDescriptors);
     }
 
     public static function createFromString(string $data): self
     {
         $data = json_decode($data, true);
-        Assertion::eq(JSON_ERROR_NONE, json_last_error(), 'Invalid data');
         Assertion::isArray($data, 'Invalid data');
 
         return self::createFromArray($data);
     }
 
+    /**
+     * @param mixed[] $json
+     */
     public static function createFromArray(array $json): self
     {
         $collection = new self();

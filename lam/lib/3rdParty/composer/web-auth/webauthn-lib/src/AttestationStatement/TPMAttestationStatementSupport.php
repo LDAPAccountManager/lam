@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2019 Spomky-Labs
+ * Copyright (c) 2014-2021 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -24,33 +24,30 @@ use Cose\Key\Ec2Key;
 use Cose\Key\Key;
 use Cose\Key\OkpKey;
 use Cose\Key\RsaKey;
-use DateTimeImmutable;
+use function count;
+use function in_array;
 use InvalidArgumentException;
+use function is_array;
 use RuntimeException;
+use Safe\DateTimeImmutable;
+use function Safe\sprintf;
+use function Safe\unpack;
 use Webauthn\AuthenticatorData;
 use Webauthn\CertificateToolbox;
-use Webauthn\MetadataService\MetadataStatementRepository;
 use Webauthn\StringStream;
 use Webauthn\TrustPath\CertificateTrustPath;
 use Webauthn\TrustPath\EcdaaKeyIdTrustPath;
 
 final class TPMAttestationStatementSupport implements AttestationStatementSupport
 {
-    /**
-     * @var MetadataStatementRepository|null
-     */
-    private $metadataStatementRepository;
-
     public function name(): string
     {
         return 'tpm';
     }
 
-    public function __construct(?MetadataStatementRepository $metadataStatementRepository = null)
-    {
-        $this->metadataStatementRepository = $metadataStatementRepository;
-    }
-
+    /**
+     * @param mixed[] $attestation
+     */
     public function load(array $attestation): AttestationStatement
     {
         Assertion::keyExists($attestation, 'attStmt', 'Invalid attestation object');
@@ -127,6 +124,9 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
         Assertion::eq($unique, $uniqueFromKey, 'Invalid pubArea.unique value');
     }
 
+    /**
+     * @return mixed[]
+     */
     private function checkCertInfo(string $data): array
     {
         $certInfo = new StringStream($data);
@@ -166,6 +166,9 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
         ];
     }
 
+    /**
+     * @return mixed[]
+     */
     private function checkPubArea(string $data): array
     {
         $pubArea = new StringStream($data);
@@ -196,6 +199,9 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
         ];
     }
 
+    /**
+     * @return mixed[]
+     */
     private function getParameters(string $type, StringStream $stream): array
     {
         switch (bin2hex($type)) {
@@ -225,18 +231,6 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
         return '00000000' === bin2hex($exponent) ? Base64Url::decode('AQAB') : $exponent;
     }
 
-    private function convertCertificatesToPem(array $certificates): array
-    {
-        foreach ($certificates as $k => $v) {
-            $tmp = '-----BEGIN CERTIFICATE-----'.PHP_EOL;
-            $tmp .= chunk_split(base64_encode($v), 64, PHP_EOL);
-            $tmp .= '-----END CERTIFICATE-----'.PHP_EOL;
-            $certificates[$k] = $tmp;
-        }
-
-        return $certificates;
-    }
-
     private function getTPMHash(string $nameAlg): string
     {
         switch (bin2hex($nameAlg)) {
@@ -259,14 +253,6 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
         Assertion::isInstanceOf($trustPath, CertificateTrustPath::class, 'Invalid trust path');
 
         $certificates = $trustPath->getCertificates();
-        if (null !== $this->metadataStatementRepository) {
-            $certificates = CertificateToolbox::checkAttestationMedata(
-                $attestationStatement,
-                $authenticatorData->getAttestedCredentialData()->getAaguid()->toString(),
-                $certificates,
-                $this->metadataStatementRepository
-            );
-        }
 
         // Check certificate CA chain and returns the Attestation Certificate
         $this->checkCertificate($certificates[0], $authenticatorData);
@@ -289,7 +275,7 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
         Assertion::false(!isset($parsed['version']) || 2 !== $parsed['version'], 'Invalid certificate version');
 
         //Check subject field is empty
-        Assertion::false(!isset($parsed['subject']) || !\is_array($parsed['subject']) || 0 !== \count($parsed['subject']), 'Invalid certificate name. The Subject should be empty');
+        Assertion::false(!isset($parsed['subject']) || !is_array($parsed['subject']) || 0 !== count($parsed['subject']), 'Invalid certificate name. The Subject should be empty');
 
         // Check period of validity
         Assertion::keyExists($parsed, 'validFrom_time_t', 'Invalid certificate start date.');
@@ -303,7 +289,7 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
         Assertion::true($endDate > new DateTimeImmutable(), 'Invalid certificate end date.');
 
         //Check extensions
-        Assertion::false(!isset($parsed['extensions']) || !\is_array($parsed['extensions']), 'Certificate extensions are missing');
+        Assertion::false(!isset($parsed['extensions']) || !is_array($parsed['extensions']), 'Certificate extensions are missing');
 
         //Check subjectAltName
         Assertion::false(!isset($parsed['extensions']['subjectAltName']), 'The "subjectAltName" is missing');
@@ -313,9 +299,7 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
         Assertion::eq($parsed['extensions']['extendedKeyUsage'], '2.23.133.8.3', 'The "extendedKeyUsage" is invalid');
 
         // id-fido-gen-ce-aaguid OID check
-        Assertion::false(\in_array('1.3.6.1.4.1.45724.1.1.4', $parsed['extensions'], true) && !hash_equals($authenticatorData->getAttestedCredentialData()->getAaguid()->getBytes(), $parsed['extensions']['1.3.6.1.4.1.45724.1.1.4']), 'The value of the "aaguid" does not match with the certificate');
-
-        // TODO: For attestationRoot in metadata.attestationRootCertificates, generate verification chain verifX5C by appending attestationRoot to the x5c. Try verifying verifX5C. If successful go to next step. If fail try next attestationRoot. If no attestationRoots left to try, fail.
+        Assertion::false(in_array('1.3.6.1.4.1.45724.1.1.4', $parsed['extensions'], true) && !hash_equals($authenticatorData->getAttestedCredentialData()->getAaguid()->getBytes(), $parsed['extensions']['1.3.6.1.4.1.45724.1.1.4']), 'The value of the "aaguid" does not match with the certificate');
     }
 
     private function processWithECDAA(): bool

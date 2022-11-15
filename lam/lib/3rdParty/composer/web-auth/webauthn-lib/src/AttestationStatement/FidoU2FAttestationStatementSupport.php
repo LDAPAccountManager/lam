@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2019 Spomky-Labs
+ * Copyright (c) 2014-2021 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -20,10 +20,11 @@ use CBOR\OtherObject\OtherObjectManager;
 use CBOR\Tag\TagObjectManager;
 use Cose\Key\Ec2Key;
 use InvalidArgumentException;
+use function Safe\openssl_pkey_get_public;
+use function Safe\sprintf;
 use Throwable;
 use Webauthn\AuthenticatorData;
 use Webauthn\CertificateToolbox;
-use Webauthn\MetadataService\MetadataStatementRepository;
 use Webauthn\StringStream;
 use Webauthn\TrustPath\CertificateTrustPath;
 
@@ -34,21 +35,9 @@ final class FidoU2FAttestationStatementSupport implements AttestationStatementSu
      */
     private $decoder;
 
-    /**
-     * @var MetadataStatementRepository|null
-     */
-    private $metadataStatementRepository;
-
-    public function __construct(?Decoder $decoder = null, ?MetadataStatementRepository $metadataStatementRepository = null)
+    public function __construct()
     {
-        if (null !== $decoder) {
-            @trigger_error('The argument "$decoder" is deprecated since 2.1 and will be removed in v3.0. Set null instead', E_USER_DEPRECATED);
-        }
-        if (null === $metadataStatementRepository) {
-            @trigger_error('Setting "null" for argument "$metadataStatementRepository" is deprecated since 2.1 and will be mandatory in v3.0.', E_USER_DEPRECATED);
-        }
-        $this->decoder = $decoder ?? new Decoder(new TagObjectManager(), new OtherObjectManager());
-        $this->metadataStatementRepository = $metadataStatementRepository;
+        $this->decoder = new Decoder(new TagObjectManager(), new OtherObjectManager());
     }
 
     public function name(): string
@@ -56,6 +45,9 @@ final class FidoU2FAttestationStatementSupport implements AttestationStatementSu
         return 'fido-u2f';
     }
 
+    /**
+     * @param mixed[] $attestation
+     */
     public function load(array $attestation): AttestationStatement
     {
         Assertion::keyExists($attestation, 'attStmt', 'Invalid attestation object');
@@ -81,14 +73,6 @@ final class FidoU2FAttestationStatementSupport implements AttestationStatementSu
             '00000000-0000-0000-0000-000000000000',
             'Invalid AAGUID for fido-u2f attestation statement. Shall be "00000000-0000-0000-0000-000000000000"'
         );
-        if (null !== $this->metadataStatementRepository) {
-            CertificateToolbox::checkAttestationMedata(
-                $attestationStatement,
-                $authenticatorData->getAttestedCredentialData()->getAaguid()->toString(),
-                [],
-                $this->metadataStatementRepository
-            );
-        }
         $trustPath = $attestationStatement->getTrustPath();
         Assertion::isInstanceOf($trustPath, CertificateTrustPath::class, 'Invalid trust path');
         $dataToVerify = "\0";
@@ -120,11 +104,11 @@ final class FidoU2FAttestationStatementSupport implements AttestationStatementSu
     {
         try {
             $resource = openssl_pkey_get_public($publicKey);
-            Assertion::isResource($resource, 'Unable to load the public key');
+            $details = openssl_pkey_get_details($resource);
         } catch (Throwable $throwable) {
             throw new InvalidArgumentException('Invalid certificate or certificate chain', 0, $throwable);
         }
-        $details = openssl_pkey_get_details($resource);
+        Assertion::isArray($details, 'Invalid certificate or certificate chain');
         Assertion::keyExists($details, 'ec', 'Invalid certificate or certificate chain');
         Assertion::keyExists($details['ec'], 'curve_name', 'Invalid certificate or certificate chain');
         Assertion::eq($details['ec']['curve_name'], 'prime256v1', 'Invalid certificate or certificate chain');

@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2019 Spomky-Labs
+ * Copyright (c) 2014-2021 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -17,6 +17,7 @@ use Assert\Assertion;
 use JsonSerializable;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
+use function Safe\base64_decode;
 
 /**
  * @see https://www.w3.org/TR/webauthn/#sec-attested-credential-data
@@ -50,6 +51,11 @@ class AttestedCredentialData implements JsonSerializable
         return $this->aaguid;
     }
 
+    public function setAaguid(UuidInterface $aaguid): void
+    {
+        $this->aaguid = $aaguid;
+    }
+
     public function getCredentialId(): string
     {
         return $this->credentialId;
@@ -60,6 +66,9 @@ class AttestedCredentialData implements JsonSerializable
         return $this->credentialPublicKey;
     }
 
+    /**
+     * @param mixed[] $json
+     */
     public static function createFromArray(array $json): self
     {
         Assertion::keyExists($json, 'aaguid', 'Invalid input. "aaguid" is missing.');
@@ -70,19 +79,25 @@ class AttestedCredentialData implements JsonSerializable
                 break;
             default: // Kept for compatibility with old format
                 $decoded = base64_decode($json['aaguid'], true);
-                Assertion::string($decoded, 'Unable to decode the data');
                 $uuid = Uuid::fromBytes($decoded);
         }
         $credentialId = base64_decode($json['credentialId'], true);
-        Assertion::string($credentialId, 'Unable to decode the data');
+
+        $credentialPublicKey = null;
+        if (isset($json['credentialPublicKey'])) {
+            $credentialPublicKey = base64_decode($json['credentialPublicKey'], true);
+        }
 
         return new self(
             $uuid,
             $credentialId,
-            isset($json['credentialPublicKey']) ? base64_decode($json['credentialPublicKey'], true) : null
+            $credentialPublicKey
         );
     }
 
+    /**
+     * @return mixed[]
+     */
     public function jsonSerialize(): array
     {
         $result = [

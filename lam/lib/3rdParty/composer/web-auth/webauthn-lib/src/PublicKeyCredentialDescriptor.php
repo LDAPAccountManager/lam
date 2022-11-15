@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2019 Spomky-Labs
+ * Copyright (c) 2014-2021 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -15,7 +15,9 @@ namespace Webauthn;
 
 use Assert\Assertion;
 use Base64Url\Base64Url;
+use function count;
 use JsonSerializable;
+use function Safe\json_decode;
 
 class PublicKeyCredentialDescriptor implements JsonSerializable
 {
@@ -72,12 +74,14 @@ class PublicKeyCredentialDescriptor implements JsonSerializable
     public static function createFromString(string $data): self
     {
         $data = json_decode($data, true);
-        Assertion::eq(JSON_ERROR_NONE, json_last_error(), 'Invalid data');
         Assertion::isArray($data, 'Invalid data');
 
         return self::createFromArray($data);
     }
 
+    /**
+     * @param mixed[] $json
+     */
     public static function createFromArray(array $json): self
     {
         Assertion::keyExists($json, 'type', 'Invalid input. "type" is missing.');
@@ -90,13 +94,16 @@ class PublicKeyCredentialDescriptor implements JsonSerializable
         );
     }
 
+    /**
+     * @return mixed[]
+     */
     public function jsonSerialize(): array
     {
         $json = [
             'type' => $this->type,
             'id' => Base64Url::encode($this->id),
         ];
-        if (0 !== \count($this->transports)) {
+        if (0 !== count($this->transports)) {
             $json['transports'] = $this->transports;
         }
 

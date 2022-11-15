@@ -30,7 +30,7 @@ class InstalledVersions
     'aliases' => 
     array (
     ),
-    'reference' => '8bb9cb317a0c0cff8e844893307900c54b0d6c8d',
+    'reference' => 'a04e299b1d47d14c0676c7b1a2f270f12a11c313',
     'name' => '__root__',
   ),
   'versions' => 
@@ -42,7 +42,7 @@ class InstalledVersions
       'aliases' => 
       array (
       ),
-      'reference' => '8bb9cb317a0c0cff8e844893307900c54b0d6c8d',
+      'reference' => 'a04e299b1d47d14c0676c7b1a2f270f12a11c313',
     ),
     'beberlei/assert' => 
     array (
@@ -196,6 +196,24 @@ class InstalledVersions
       array (
       ),
       'reference' => '1c79242468d3bbd9a0f7477df34f9647dde2a09b',
+    ),
+    'league/uri' => 
+    array (
+      'pretty_version' => '6.7.2',
+      'version' => '6.7.2.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'd3b50812dd51f3fbf176344cc2981db03d10fe06',
+    ),
+    'league/uri-interfaces' => 
+    array (
+      'pretty_version' => '2.3.0',
+      'version' => '2.3.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '00e7e2943f76d8cb50c7dfdc2f6dee356e15e383',
     ),
     'monolog/monolog' => 
     array (
@@ -602,6 +620,15 @@ class InstalledVersions
       ),
       'reference' => '7a6ff3f1959bb01aefccb463a0f2cd3d3d2fd936',
     ),
+    'symfony/process' => 
+    array (
+      'pretty_version' => 'v5.4.11',
+      'version' => '5.4.11.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '6e75fe6874cbc7e4773d049616ab450eff537bf1',
+    ),
     'symfony/psr-http-message-bridge' => 
     array (
       'pretty_version' => 'v1.3.0',
@@ -636,6 +663,15 @@ class InstalledVersions
         0 => '2.3',
       ),
     ),
+    'thecodingmachine/safe' => 
+    array (
+      'pretty_version' => 'v1.3.3',
+      'version' => '1.3.3.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'a8ab0876305a4cdaef31b2350fcb9811b5608dbc',
+    ),
     'voku/portable-ascii' => 
     array (
       'pretty_version' => '1.6.1',
@@ -647,30 +683,30 @@ class InstalledVersions
     ),
     'web-auth/cose-lib' => 
     array (
-      'pretty_version' => 'v2.1.7',
-      'version' => '2.1.7.0',
+      'pretty_version' => 'v3.3.12',
+      'version' => '3.3.12.0',
       'aliases' => 
       array (
       ),
-      'reference' => '8d1c37bac6e5db8d502b7735448d416f05fb4c70',
+      'reference' => 'efa6ec2ba4e840bc1316a493973c9916028afeeb',
     ),
     'web-auth/metadata-service' => 
     array (
-      'pretty_version' => 'v2.1.7',
-      'version' => '2.1.7.0',
+      'pretty_version' => 'v3.3.12',
+      'version' => '3.3.12.0',
       'aliases' => 
       array (
       ),
-      'reference' => '5fc754d00dfa05913260dc3781227dfa8ed7dbdd',
+      'reference' => 'ef40d2b7b68c4964247d13fab52e2fa8dbd65246',
     ),
     'web-auth/webauthn-lib' => 
     array (
-      'pretty_version' => 'v2.1.7',
-      'version' => '2.1.7.0',
+      'pretty_version' => 'v3.3.12',
+      'version' => '3.3.12.0',
       'aliases' => 
       array (
       ),
-      'reference' => '4cd346f2ef4d282296e503b7b1b3ef200347437b',
+      'reference' => '5ef9b21c8e9f8a817e524ac93290d08a9f065b33',
     ),
     'web-token/jwt-checker' => 
     array (

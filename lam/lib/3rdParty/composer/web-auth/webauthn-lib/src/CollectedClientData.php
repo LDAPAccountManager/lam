@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2019 Spomky-Labs
+ * Copyright (c) 2014-2021 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -13,9 +13,12 @@ declare(strict_types=1);
 
 namespace Webauthn;
 
+use function array_key_exists;
 use Assert\Assertion;
 use Base64Url\Base64Url;
 use InvalidArgumentException;
+use function Safe\json_decode;
+use function Safe\sprintf;
 use Webauthn\TokenBinding\TokenBinding;
 
 class CollectedClientData
@@ -26,7 +29,7 @@ class CollectedClientData
     private $rawData;
 
     /**
-     * @var array
+     * @var mixed[]
      */
     private $data;
 
@@ -46,10 +49,13 @@ class CollectedClientData
     private $origin;
 
     /**
-     * @var array|null
+     * @var mixed[]|null
      */
     private $tokenBinding;
 
+    /**
+     * @param mixed[] $data
+     */
     public function __construct(string $rawData, array $data)
     {
         $this->type = $this->findData($data, 'type');
@@ -64,7 +70,6 @@ class CollectedClientData
     {
         $rawData = Base64Url::decode($data);
         $json = json_decode($rawData, true);
-        Assertion::eq(JSON_ERROR_NONE, json_last_error(), 'Invalid collected client data');
         Assertion::isArray($json, 'Invalid collected client data');
 
         return new self($rawData, $json);
@@ -105,7 +110,7 @@ class CollectedClientData
 
     public function has(string $key): bool
     {
-        return \array_key_exists($key, $this->data);
+        return array_key_exists($key, $this->data);
     }
 
     /**
@@ -121,11 +126,13 @@ class CollectedClientData
     }
 
     /**
+     * @param mixed[] $json
+     *
      * @return mixed|null
      */
     private function findData(array $json, string $key, bool $isRequired = true, bool $isB64 = false)
     {
-        if (!\array_key_exists($key, $json)) {
+        if (!array_key_exists($key, $json)) {
             if ($isRequired) {
                 throw new InvalidArgumentException(sprintf('The key "%s" is missing', $key));
             }

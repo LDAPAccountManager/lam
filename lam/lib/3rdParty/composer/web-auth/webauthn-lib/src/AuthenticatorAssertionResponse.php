@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2019 Spomky-Labs
+ * Copyright (c) 2014-2021 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Webauthn;
 
-use Assert\Assertion;
+use function Safe\base64_decode;
 
 /**
  * @see https://www.w3.org/TR/webauthn/#authenticatorassertionresponse
@@ -59,9 +59,6 @@ class AuthenticatorAssertionResponse extends AuthenticatorResponse
             return $this->userHandle;
         }
 
-        $decoded = base64_decode($this->userHandle, true);
-        Assertion::string($decoded, 'Unable to decode the data');
-
-        return $decoded;
+        return base64_decode($this->userHandle, true);
     }
 }

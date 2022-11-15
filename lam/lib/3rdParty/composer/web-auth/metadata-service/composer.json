@@ -16,24 +16,24 @@
         }
     ],
     "require": {
-        "php": "^7.1",
+        "php": ">=7.2",
         "ext-json": "*",
+        "beberlei/assert": "^3.2",
+        "league/uri": "^6.0",
         "psr/http-client": "^1.0",
-        "psr/http-factory": "^1.0"
+        "psr/http-factory": "^1.0",
+        "psr/log": "^1.1"
+    },
+    "suggest": {
+        "psr/log-implementation": "Recommended to receive logs from the library"
     },
     "autoload": {
         "psr-4": {
             "Webauthn\\MetadataService\\": "src/"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "Webauthn\\MetadataService\\Tests\\Functional\\": "tests/functional/"
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "v2.1": "2.1.x-dev"
-        }
+    "suggest": {
+        "web-token/jwt-key-mgmt": "Mandatory for fetching Metadata Statement from distant sources",
+        "web-token/jwt-signature-algorithm-ecdsa": "Mandatory for fetching Metadata Statement from distant sources"
     }
 }

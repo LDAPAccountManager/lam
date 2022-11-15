@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2019 Spomky-Labs
+ * Copyright (c) 2014-2021 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Webauthn\AttestationStatement;
 
+use function array_key_exists;
 use Assert\Assertion;
 use CBOR\Decoder;
 use CBOR\MapObject;
@@ -22,11 +23,12 @@ use Cose\Algorithm\Manager;
 use Cose\Algorithm\Signature\Signature;
 use Cose\Algorithms;
 use Cose\Key\Key;
+use function in_array;
 use InvalidArgumentException;
+use function is_array;
 use RuntimeException;
 use Webauthn\AuthenticatorData;
 use Webauthn\CertificateToolbox;
-use Webauthn\MetadataService\MetadataStatementRepository;
 use Webauthn\StringStream;
 use Webauthn\TrustPath\CertificateTrustPath;
 use Webauthn\TrustPath\EcdaaKeyIdTrustPath;
@@ -45,22 +47,10 @@ final class PackedAttestationStatementSupport implements AttestationStatementSup
      */
     private $algorithmManager;
 
-    /**
-     * @var MetadataStatementRepository|null
-     */
-    private $metadataStatementRepository;
-
-    public function __construct(?Decoder $decoder, Manager $algorithmManager, ?MetadataStatementRepository $metadataStatementRepository = null)
+    public function __construct(Manager $algorithmManager)
     {
-        if (null !== $decoder) {
-            @trigger_error('The argument "$decoder" is deprecated since 2.1 and will be removed in v3.0. Set null instead', E_USER_DEPRECATED);
-        }
-        if (null === $metadataStatementRepository) {
-            @trigger_error('Setting "null" for argument "$metadataStatementRepository" is deprecated since 2.1 and will be mandatory in v3.0.', E_USER_DEPRECATED);
-        }
-        $this->decoder = $decoder ?? new Decoder(new TagObjectManager(), new OtherObjectManager());
+        $this->decoder = new Decoder(new TagObjectManager(), new OtherObjectManager());
         $this->algorithmManager = $algorithmManager;
-        $this->metadataStatementRepository = $metadataStatementRepository;
     }
 
     public function name(): string
@@ -68,15 +58,18 @@ final class PackedAttestationStatementSupport implements AttestationStatementSup
         return 'packed';
     }
 
+    /**
+     * @param mixed[] $attestation
+     */
     public function load(array $attestation): AttestationStatement
     {
         Assertion::keyExists($attestation['attStmt'], 'sig', 'The attestation statement value "sig" is missing.');
         Assertion::keyExists($attestation['attStmt'], 'alg', 'The attestation statement value "alg" is missing.');
         Assertion::string($attestation['attStmt']['sig'], 'The attestation statement value "sig" is missing.');
         switch (true) {
-            case \array_key_exists('x5c', $attestation['attStmt']):
+            case array_key_exists('x5c', $attestation['attStmt']):
                 return $this->loadBasicType($attestation);
-            case \array_key_exists('ecdaaKeyId', $attestation['attStmt']):
+            case array_key_exists('ecdaaKeyId', $attestation['attStmt']):
                 return $this->loadEcdaaType($attestation['attStmt']);
             default:
                 return $this->loadEmptyType($attestation);
@@ -98,6 +91,9 @@ final class PackedAttestationStatementSupport implements AttestationStatementSup
         }
     }
 
+    /**
+     * @param mixed[] $attestation
+     */
     private function loadBasicType(array $attestation): AttestationStatement
     {
         $certificates = $attestation['attStmt']['x5c'];
@@ -116,6 +112,9 @@ final class PackedAttestationStatementSupport implements AttestationStatementSup
         return AttestationStatement::createEcdaa($attestation['fmt'], $attestation['attStmt'], new EcdaaKeyIdTrustPath($attestation['ecdaaKeyId']));
     }
 
+    /**
+     * @param mixed[] $attestation
+     */
     private function loadEmptyType(array $attestation): AttestationStatement
     {
         return AttestationStatement::createSelf($attestation['fmt'], $attestation['attStmt'], new EmptyTrustPath());
@@ -133,7 +132,7 @@ final class PackedAttestationStatementSupport implements AttestationStatementSup
         Assertion::false(!isset($parsed['name']) || false === mb_strpos($parsed['name'], '/OU=Authenticator Attestation'), 'Invalid certificate name. The Subject Organization Unit must be "Authenticator Attestation"');
 
         //Check extensions
-        Assertion::false(!isset($parsed['extensions']) || !\is_array($parsed['extensions']), 'Certificate extensions are missing');
+        Assertion::false(!isset($parsed['extensions']) || !is_array($parsed['extensions']), 'Certificate extensions are missing');
 
         //Check certificate is not a CA cert
         Assertion::false(!isset($parsed['extensions']['basicConstraints']) || 'CA:FALSE' !== $parsed['extensions']['basicConstraints'], 'The Basic Constraints extension must have the CA component set to false');
@@ -142,21 +141,12 @@ final class PackedAttestationStatementSupport implements AttestationStatementSup
         Assertion::notNull($attestedCredentialData, 'No attested credential available');
 
         // id-fido-gen-ce-aaguid OID check
-        Assertion::false(\in_array('1.3.6.1.4.1.45724.1.1.4', $parsed['extensions'], true) && !hash_equals($attestedCredentialData->getAaguid()->getBytes(), $parsed['extensions']['1.3.6.1.4.1.45724.1.1.4']), 'The value of the "aaguid" does not match with the certificate');
+        Assertion::false(in_array('1.3.6.1.4.1.45724.1.1.4', $parsed['extensions'], true) && !hash_equals($attestedCredentialData->getAaguid()->getBytes(), $parsed['extensions']['1.3.6.1.4.1.45724.1.1.4']), 'The value of the "aaguid" does not match with the certificate');
     }
 
     private function processWithCertificate(string $clientDataJSONHash, AttestationStatement $attestationStatement, AuthenticatorData $authenticatorData, CertificateTrustPath $trustPath): bool
     {
         $certificates = $trustPath->getCertificates();
-
-        if (null !== $this->metadataStatementRepository) {
-            $certificates = CertificateToolbox::checkAttestationMedata(
-                $attestationStatement,
-                $authenticatorData->getAttestedCredentialData()->getAaguid()->toString(),
-                $certificates,
-                $this->metadataStatementRepository
-            );
-        }
 
         // Check leaf certificate
         $this->checkCertificate($certificates[0], $authenticatorData);

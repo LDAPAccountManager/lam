@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2019 Spomky-Labs
+ * Copyright (c) 2014-2021 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -13,12 +13,16 @@ declare(strict_types=1);
 
 namespace Webauthn\AuthenticationExtensions;
 
+use function array_key_exists;
 use ArrayIterator;
 use Assert\Assertion;
+use function count;
 use Countable;
 use Iterator;
 use IteratorAggregate;
 use JsonSerializable;
+use function Safe\json_decode;
+use function Safe\sprintf;
 
 class AuthenticationExtensionsClientOutputs implements JsonSerializable, Countable, IteratorAggregate
 {
@@ -35,12 +39,14 @@ class AuthenticationExtensionsClientOutputs implements JsonSerializable, Countab
     public static function createFromString(string $data): self
     {
         $data = json_decode($data, true);
-        Assertion::eq(JSON_ERROR_NONE, json_last_error(), 'Invalid data');
         Assertion::isArray($data, 'Invalid data');
 
         return self::createFromArray($data);
     }
 
+    /**
+     * @param mixed[] $json
+     */
     public static function createFromArray(array $json): self
     {
         $object = new self();
@@ -53,7 +59,7 @@ class AuthenticationExtensionsClientOutputs implements JsonSerializable, Countab
 
     public function has(string $key): bool
     {
-        return \array_key_exists($key, $this->extensions);
+        return array_key_exists($key, $this->extensions);
     }
 
     /**
@@ -66,11 +72,19 @@ class AuthenticationExtensionsClientOutputs implements JsonSerializable, Countab
         return $this->extensions[$key];
     }
 
+    /**
+     * @return AuthenticationExtension[]
+     */
     public function jsonSerialize(): array
     {
-        return $this->extensions;
+        return array_map(static function (AuthenticationExtension $object) {
+            return $object->jsonSerialize();
+        }, $this->extensions);
     }
 
+    /**
+     * @return Iterator<string, AuthenticationExtension>
+     */
     public function getIterator(): Iterator
     {
         return new ArrayIterator($this->extensions);
@@ -78,6 +92,6 @@ class AuthenticationExtensionsClientOutputs implements JsonSerializable, Countab
 
     public function count(int $mode = COUNT_NORMAL): int
     {
-        return \count($this->extensions, $mode);
+        return count($this->extensions, $mode);
     }
 }

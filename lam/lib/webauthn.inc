@@ -2,9 +2,6 @@
 
 namespace LAM\LOGIN\WEBAUTHN;
 
-use CBOR\Decoder;
-use CBOR\OtherObject\OtherObjectManager;
-use CBOR\Tag\TagObjectManager;
 use Cose\Algorithm\Manager;
 use Cose\Algorithm\Signature\ECDSA\ES256;
 use Cose\Algorithm\Signature\ECDSA\ES384;
@@ -137,11 +134,10 @@ class WebauthnManager {
 	 * @return bool true if response is valid and registration succeeded
 	 */
 	public function storeNewRegistration($registration, $clientResponse) {
-		$decoder = $this->getCborDecoder();
 		$tokenBindingHandler = new IgnoreTokenBindingHandler();
-		$attestationSupportManager = $this->getAttestationSupportManager($decoder);
-		$attestationObjectLoader = $this->getAttestationObjectLoader($attestationSupportManager, $decoder);
-		$publicKeyCredentialLoader = $this->getPublicKeyCredentialLoader($attestationObjectLoader, $decoder);
+		$attestationSupportManager = $this->getAttestationSupportManager();
+		$attestationObjectLoader = $this->getAttestationObjectLoader($attestationSupportManager);
+		$publicKeyCredentialLoader = $this->getPublicKeyCredentialLoader($attestationObjectLoader);
 		$extensionOutputCheckerHandler = $this->getExtensionOutputChecker();
 		$repository = $this->getDatabase();
 		$responseValidator = new AuthenticatorAttestationResponseValidator(
@@ -173,10 +169,9 @@ class WebauthnManager {
 	 * @return PublicKeyCredentialLoader public key credential loader
 	 */
 	public function createPublicKeyCredentialLoader() {
-		$decoder = $this->getCborDecoder();
-		$attestationSupportManager = $this->getAttestationSupportManager($decoder);
-		$attestationObjectLoader = $this->getAttestationObjectLoader($attestationSupportManager, $decoder);
-		return $this->getPublicKeyCredentialLoader($attestationObjectLoader, $decoder);
+		$attestationSupportManager = $this->getAttestationSupportManager();
+		$attestationObjectLoader = $this->getAttestationObjectLoader($attestationSupportManager);
+		return $this->getPublicKeyCredentialLoader($attestationObjectLoader);
 	}
 
 	/**
@@ -249,28 +244,18 @@ class WebauthnManager {
 	}
 
 	/**
-	 * Returns a CBOR decoder.
-	 *
-	 * @return Decoder decoder
-	 */
-	private function getCborDecoder() {
-		return new Decoder(new TagObjectManager(), new OtherObjectManager());
-	}
-
-	/**
 	 * Creates the attestation support manager.
 	 *
-	 * @param Decoder $decoder decoder
 	 * @return AttestationStatementSupportManager manager
 	 */
-	private function getAttestationSupportManager($decoder) {
+	private function getAttestationSupportManager() {
 		$manager = new AttestationStatementSupportManager();
 		$manager->add(new NoneAttestationStatementSupport());
 		$manager->add(new FidoU2FAttestationStatementSupport());
-		$manager->add(new AndroidKeyAttestationStatementSupport($decoder));
+		$manager->add(new AndroidKeyAttestationStatementSupport());
 		$manager->add(new TPMAttestationStatementSupport());
 		$coseManager = $this->getAlgorithmManager();
-		$manager->add(new PackedAttestationStatementSupport($decoder, $coseManager));
+		$manager->add(new PackedAttestationStatementSupport($coseManager));
 		return $manager;
 	}
 
@@ -296,22 +281,20 @@ class WebauthnManager {
 	 * Returns the attestation object loader.
 	 *
 	 * @param AttestationStatementSupportManager $manager support manager
-	 * @param Decoder $decoder decoder
 	 * @return AttestationObjectLoader attestation object loader
 	 */
-	private function getAttestationObjectLoader($manager, $decoder) {
-		return new AttestationObjectLoader($manager, $decoder);
+	private function getAttestationObjectLoader($manager) {
+		return new AttestationObjectLoader($manager);
 	}
 
 	/**
 	 * Creates the public key credential loader.
 	 *
 	 * @param AttestationObjectLoader $attestationObjectLoader attestation object loader
-	 * @param Decoder $decoder decoder
 	 * @return PublicKeyCredentialLoader public key credential loader
 	 */
-	private function getPublicKeyCredentialLoader($attestationObjectLoader, $decoder) {
-		return new PublicKeyCredentialLoader($attestationObjectLoader, $decoder);
+	private function getPublicKeyCredentialLoader($attestationObjectLoader) {
+		return new PublicKeyCredentialLoader($attestationObjectLoader);
 	}
 
 	/**
@@ -400,20 +383,18 @@ class WebauthnManager {
 	 */
 	public function isValidAuthentication(string $response, string $userDn) {
 		$database = $this->getDatabase();
-		$decoder = $this->getCborDecoder();
 		$tokenBindingHandler = new IgnoreTokenBindingHandler();
 		$extensionOutputCheckerHandler = $this->getExtensionOutputChecker();
 		$algorithmManager = $this->getAlgorithmManager();
 		$responseValidator = new AuthenticatorAssertionResponseValidator(
 			$database,
-			$decoder,
 			$tokenBindingHandler,
 			$extensionOutputCheckerHandler,
 			$algorithmManager
 		);
-		$attestationSupportManager = $this->getAttestationSupportManager($decoder);
-		$attestationObjectLoader = $this->getAttestationObjectLoader($attestationSupportManager, $decoder);
-		$publicKeyCredentialLoader = $this->getPublicKeyCredentialLoader($attestationObjectLoader, $decoder);
+		$attestationSupportManager = $this->getAttestationSupportManager();
+		$attestationObjectLoader = $this->getAttestationObjectLoader($attestationSupportManager);
+		$publicKeyCredentialLoader = $this->getPublicKeyCredentialLoader($attestationObjectLoader);
 		$publicKeyCredential = $publicKeyCredentialLoader->load($response);
 		$authenticatorAssertionResponse = $publicKeyCredential->getResponse();
 		if (!$authenticatorAssertionResponse instanceof AuthenticatorAssertionResponse) {

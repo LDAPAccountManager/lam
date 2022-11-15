@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2019 Spomky-Labs
+ * Copyright (c) 2014-2021 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Cose\Algorithm;
 
+use function array_key_exists;
 use Assert\Assertion;
 
 class Manager
@@ -26,14 +27,6 @@ class Manager
     {
         $identifier = $algorithm::identifier();
         $this->algorithms[$identifier] = $algorithm;
-    }
-
-    /**
-     * @deprecated Will be removed in v3.0. Please use all() instead
-     */
-    public function getAlgorithms(): iterable
-    {
-        yield from $this->algorithms;
     }
 
     public function list(): iterable
@@ -51,7 +44,7 @@ class Manager
 
     public function has(int $identifier): bool
     {
-        return \array_key_exists($identifier, $this->algorithms);
+        return array_key_exists($identifier, $this->algorithms);
     }
 
     public function get(int $identifier): Algorithm

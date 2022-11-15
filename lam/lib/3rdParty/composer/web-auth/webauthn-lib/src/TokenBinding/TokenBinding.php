@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2019 Spomky-Labs
+ * Copyright (c) 2014-2021 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -13,8 +13,10 @@ declare(strict_types=1);
 
 namespace Webauthn\TokenBinding;
 
+use function array_key_exists;
 use Assert\Assertion;
 use Base64Url\Base64Url;
+use function Safe\sprintf;
 
 class TokenBinding
 {
@@ -39,6 +41,9 @@ class TokenBinding
         $this->id = $id;
     }
 
+    /**
+     * @param mixed[] $json
+     */
     public static function createFormArray(array $json): self
     {
         Assertion::keyExists($json, 'status', 'The member "status" is required');
@@ -48,7 +53,7 @@ class TokenBinding
             self::getSupportedStatus(),
             sprintf('The member "status" is invalid. Supported values are: %s', implode(', ', self::getSupportedStatus()))
         );
-        $id = \array_key_exists('id', $json) ? Base64Url::decode($json['id']) : null;
+        $id = array_key_exists('id', $json) ? Base64Url::decode($json['id']) : null;
 
         return new self($status, $id);
     }

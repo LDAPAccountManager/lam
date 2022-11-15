@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2019 Spomky-Labs
+ * Copyright (c) 2014-2021 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -15,6 +15,7 @@ namespace Webauthn;
 
 use Assert\Assertion;
 use JsonSerializable;
+use function Safe\json_decode;
 
 class PublicKeyCredentialParameters implements JsonSerializable
 {
@@ -47,12 +48,14 @@ class PublicKeyCredentialParameters implements JsonSerializable
     public static function createFromString(string $data): self
     {
         $data = json_decode($data, true);
-        Assertion::eq(JSON_ERROR_NONE, json_last_error(), 'Invalid data');
         Assertion::isArray($data, 'Invalid data');
 
         return self::createFromArray($data);
     }
 
+    /**
+     * @param mixed[] $json
+     */
     public static function createFromArray(array $json): self
     {
         Assertion::keyExists($json, 'type', 'Invalid input. "type" is missing.');
@@ -66,6 +69,9 @@ class PublicKeyCredentialParameters implements JsonSerializable
         );
     }
 
+    /**
+     * @return mixed[]
+     */
     public function jsonSerialize(): array
     {
         return [

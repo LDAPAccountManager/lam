@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2019 Spomky-Labs
+ * Copyright (c) 2014-2021 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace Webauthn\MetadataService;
 
-class CodeAccuracyDescriptor
+use Assert\Assertion;
+
+class CodeAccuracyDescriptor extends AbstractDescriptor
 {
     /**
      * @var int
@@ -25,15 +27,14 @@ class CodeAccuracyDescriptor
      */
     private $minLength;
 
-    /**
-     * @var int|null
-     */
-    private $maxRetries;
-
-    /**
-     * @var int|null
-     */
-    private $blockSlowdown;
+    public function __construct(int $base, int $minLength, ?int $maxRetries = null, ?int $blockSlowdown = null)
+    {
+        Assertion::greaterOrEqualThan($base, 0, Utils::logicException('Invalid data. The value of "base" must be a positive integer'));
+        Assertion::greaterOrEqualThan($minLength, 0, Utils::logicException('Invalid data. The value of "minLength" must be a positive integer'));
+        $this->base = $base;
+        $this->minLength = $minLength;
+        parent::__construct($maxRetries, $blockSlowdown);
+    }
 
     public function getBase(): int
     {
@@ -45,24 +46,28 @@ class CodeAccuracyDescriptor
         return $this->minLength;
     }
 
-    public function getMaxRetries(): ?int
-    {
-        return $this->maxRetries;
-    }
-
-    public function getBlockSlowdown(): ?int
-    {
-        return $this->blockSlowdown;
-    }
-
     public static function createFromArray(array $data): self
     {
-        $object = new self();
-        $object->base = $data['base'] ?? null;
-        $object->minLength = $data['minLength'] ?? null;
-        $object->maxRetries = $data['maxRetries'] ?? null;
-        $object->blockSlowdown = $data['blockSlowdown'] ?? null;
+        Assertion::keyExists($data, 'base', Utils::logicException('The parameter "base" is missing'));
+        Assertion::keyExists($data, 'minLength', Utils::logicException('The parameter "minLength" is missing'));
 
-        return $object;
+        return new self(
+            $data['base'],
+            $data['minLength'],
+            $data['maxRetries'] ?? null,
+            $data['blockSlowdown'] ?? null
+        );
+    }
+
+    public function jsonSerialize(): array
+    {
+        $data = [
+            'base' => $this->base,
+            'minLength' => $this->minLength,
+            'maxRetries' => $this->getMaxRetries(),
+            'blockSlowdown' => $this->getBlockSlowdown(),
+        ];
+
+        return Utils::filterNullValues($data);
     }
 }

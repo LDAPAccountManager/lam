@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2019 Spomky-Labs
+ * Copyright (c) 2014-2021 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -15,8 +15,11 @@ namespace Webauthn\MetadataService;
 
 use Assert\Assertion;
 use InvalidArgumentException;
+use JsonSerializable;
+use function Safe\json_decode;
+use function Safe\sprintf;
 
-class MetadataStatement
+class MetadataStatement implements JsonSerializable
 {
     public const KEY_PROTECTION_SOFTWARE = 0x0001;
     public const KEY_PROTECTION_HARDWARE = 0x0002;
@@ -227,6 +230,24 @@ class MetadataStatement
      * @var ExtensionDescriptor[]
      */
     private $supportedExtensions = [];
+
+    /**
+     * @var array<int, StatusReport>
+     */
+    private $statusReports = [];
+
+    /**
+     * @var string[]
+     */
+    private $rootCertificates = [];
+
+    public static function createFromString(string $statement): self
+    {
+        $data = json_decode($statement, true);
+        Assertion::isArray($data, 'Invalid Metadata Statement');
+
+        return self::createFromArray($data);
+    }
 
     public function getLegalHeader(): ?string
     {
@@ -483,7 +504,99 @@ class MetadataStatement
                 $object->supportedExtensions[] = ExtensionDescriptor::createFromArray($supportedExtension);
             }
         }
+        $object->rootCertificates = $data['rootCertificates'] ?? [];
+        if (isset($data['statusReports'])) {
+            $reports = $data['statusReports'];
+            Assertion::isArray($reports, 'Invalid Metadata Statement');
+            foreach ($reports as $report) {
+                Assertion::isArray($report, 'Invalid Metadata Statement');
+                $object->statusReports[] = StatusReport::createFromArray($report);
+            }
+        }
 
         return $object;
+    }
+
+    public function jsonSerialize(): array
+    {
+        $data = [
+            'legalHeader' => $this->legalHeader,
+            'aaid' => $this->aaid,
+            'aaguid' => $this->aaguid,
+            'attestationCertificateKeyIdentifiers' => $this->attestationCertificateKeyIdentifiers,
+            'description' => $this->description,
+            'alternativeDescriptions' => $this->alternativeDescriptions,
+            'authenticatorVersion' => $this->authenticatorVersion,
+            'protocolFamily' => $this->protocolFamily,
+            'upv' => $this->upv,
+            'assertionScheme' => $this->assertionScheme,
+            'authenticationAlgorithm' => $this->authenticationAlgorithm,
+            'authenticationAlgorithms' => $this->authenticationAlgorithms,
+            'publicKeyAlgAndEncoding' => $this->publicKeyAlgAndEncoding,
+            'publicKeyAlgAndEncodings' => $this->publicKeyAlgAndEncodings,
+            'attestationTypes' => $this->attestationTypes,
+            'userVerificationDetails' => $this->userVerificationDetails,
+            'keyProtection' => $this->keyProtection,
+            'isKeyRestricted' => $this->isKeyRestricted,
+            'isFreshUserVerificationRequired' => $this->isFreshUserVerificationRequired,
+            'matcherProtection' => $this->matcherProtection,
+            'cryptoStrength' => $this->cryptoStrength,
+            'operatingEnv' => $this->operatingEnv,
+            'attachmentHint' => $this->attachmentHint,
+            'isSecondFactorOnly' => $this->isSecondFactorOnly,
+            'tcDisplay' => $this->tcDisplay,
+            'tcDisplayContentType' => $this->tcDisplayContentType,
+            'tcDisplayPNGCharacteristics' => array_map(static function (DisplayPNGCharacteristicsDescriptor $object): array {
+                return $object->jsonSerialize();
+            }, $this->tcDisplayPNGCharacteristics),
+            'attestationRootCertificates' => $this->attestationRootCertificates,
+            'ecdaaTrustAnchors' => array_map(static function (EcdaaTrustAnchor $object): array {
+                return $object->jsonSerialize();
+            }, $this->ecdaaTrustAnchors),
+            'icon' => $this->icon,
+            'supportedExtensions' => array_map(static function (ExtensionDescriptor $object): array {
+                return $object->jsonSerialize();
+            }, $this->supportedExtensions),
+            'rootCertificates' => $this->rootCertificates,
+            'statusReports' => $this->statusReports,
+        ];
+
+        return Utils::filterNullValues($data);
+    }
+
+    /**
+     * @return StatusReport[]
+     */
+    public function getStatusReports(): array
+    {
+        return $this->statusReports;
+    }
+
+    /**
+     * @param StatusReport[] $statusReports
+     */
+    public function setStatusReports(array $statusReports): self
+    {
+        $this->statusReports = $statusReports;
+
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getRootCertificates(): array
+    {
+        return $this->rootCertificates;
+    }
+
+    /**
+     * @param string[] $rootCertificates
+     */
+    public function setRootCertificates(array $rootCertificates): self
+    {
+        $this->rootCertificates = $rootCertificates;
+
+        return $this;
     }
 }

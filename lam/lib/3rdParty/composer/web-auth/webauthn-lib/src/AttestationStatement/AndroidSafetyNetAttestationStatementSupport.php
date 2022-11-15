@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2019 Spomky-Labs
+ * Copyright (c) 2014-2021 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -15,6 +15,7 @@ namespace Webauthn\AttestationStatement;
 
 use Assert\Assertion;
 use InvalidArgumentException;
+use Jose\Component\Core\Algorithm as AlgorithmInterface;
 use Jose\Component\Core\AlgorithmManager;
 use Jose\Component\Core\Util\JsonConverter;
 use Jose\Component\KeyManagement\JWKFactory;
@@ -26,9 +27,10 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
+use function Safe\json_decode;
+use function Safe\sprintf;
 use Webauthn\AuthenticatorData;
 use Webauthn\CertificateToolbox;
-use Webauthn\MetadataService\MetadataStatementRepository;
 use Webauthn\TrustPath\CertificateTrustPath;
 
 final class AndroidSafetyNetAttestationStatementSupport implements AttestationStatementSupport
@@ -68,26 +70,61 @@ final class AndroidSafetyNetAttestationStatementSupport implements AttestationSt
      */
     private $maxAge;
 
-    /**
-     * @var MetadataStatementRepository|null
-     */
-    private $metadataStatementRepository;
-
-    public function __construct(?ClientInterface $client = null, ?string $apiKey = null, ?RequestFactoryInterface $requestFactory = null, int $leeway = 0, int $maxAge = 60000, ?MetadataStatementRepository $metadataStatementRepository = null)
+    public function __construct(?ClientInterface $client = null, ?string $apiKey = null, ?RequestFactoryInterface $requestFactory = null, ?int $leeway = null, ?int $maxAge = null)
     {
-        foreach ([Algorithm\RS256::class] as $algorithm) {
-            if (!class_exists($algorithm)) {
-                throw new RuntimeException('The algorithms RS256 is missing. Did you forget to install the package web-token/jwt-signature-algorithm-rsa?');
-            }
+        if (!class_exists(Algorithm\RS256::class)) {
+            throw new RuntimeException('The algorithm RS256 is missing. Did you forget to install the package web-token/jwt-signature-algorithm-rsa?');
+        }
+        if (!class_exists(JWKFactory::class)) {
+            throw new RuntimeException('The class Jose\Component\KeyManagement\JWKFactory is missing. Did you forget to install the package web-token/jwt-key-mgmt?');
+        }
+        if (null !== $client) {
+            @trigger_error('The argument "client" is deprecated since version 3.3 and will be removed in 4.0. Please set `null` instead and use the method "enableApiVerification".', E_USER_DEPRECATED);
+        }
+        if (null !== $apiKey) {
+            @trigger_error('The argument "apiKey" is deprecated since version 3.3 and will be removed in 4.0. Please set `null` instead and use the method "enableApiVerification".', E_USER_DEPRECATED);
+        }
+        if (null !== $requestFactory) {
+            @trigger_error('The argument "requestFactory" is deprecated since version 3.3 and will be removed in 4.0. Please set `null` instead and use the method "enableApiVerification".', E_USER_DEPRECATED);
+        }
+        if (null !== $maxAge) {
+            @trigger_error('The argument "maxAge" is deprecated since version 3.3 and will be removed in 4.0. Please set `null` instead and use the method "setMaxAge".', E_USER_DEPRECATED);
+        }
+        if (null !== $leeway) {
+            @trigger_error('The argument "leeway" is deprecated since version 3.3 and will be removed in 4.0. Please set `null` instead and use the method "setLeeway".', E_USER_DEPRECATED);
         }
         $this->jwsSerializer = new CompactSerializer();
+        $this->initJwsVerifier();
+
+        //To be removed in 4.0
+        $this->leeway = $leeway ?? 0;
+        $this->maxAge = $maxAge ?? 60000;
         $this->apiKey = $apiKey;
         $this->client = $client;
         $this->requestFactory = $requestFactory;
-        $this->initJwsVerifier();
-        $this->leeway = $leeway;
+    }
+
+    public function enableApiVerification(ClientInterface $client, string $apiKey, RequestFactoryInterface $requestFactory): self
+    {
+        $this->apiKey = $apiKey;
+        $this->client = $client;
+        $this->requestFactory = $requestFactory;
+
+        return $this;
+    }
+
+    public function setMaxAge(int $maxAge): self
+    {
         $this->maxAge = $maxAge;
-        $this->metadataStatementRepository = $metadataStatementRepository;
+
+        return $this;
+    }
+
+    public function setLeeway(int $leeway): self
+    {
+        $this->leeway = $leeway;
+
+        return $this;
     }
 
     public function name(): string
@@ -95,6 +132,9 @@ final class AndroidSafetyNetAttestationStatementSupport implements AttestationSt
         return 'android-safetynet';
     }
 
+    /**
+     * @param mixed[] $attestation
+     */
     public function load(array $attestation): AttestationStatement
     {
         Assertion::keyExists($attestation, 'attStmt', 'Invalid attestation object');
@@ -121,16 +161,10 @@ final class AndroidSafetyNetAttestationStatementSupport implements AttestationSt
         $trustPath = $attestationStatement->getTrustPath();
         Assertion::isInstanceOf($trustPath, CertificateTrustPath::class, 'Invalid trust path');
         $certificates = $trustPath->getCertificates();
-        if (null !== $this->metadataStatementRepository) {
-            $certificates = CertificateToolbox::checkAttestationMedata(
-                $attestationStatement,
-                $authenticatorData->getAttestedCredentialData()->getAaguid()->toString(),
-                $certificates,
-                $this->metadataStatementRepository
-            );
-        }
+        $firstCertificate = current($certificates);
+        Assertion::string($firstCertificate, 'No certificate');
 
-        $parsedCertificate = openssl_x509_parse(current($certificates));
+        $parsedCertificate = openssl_x509_parse($firstCertificate);
         Assertion::isArray($parsedCertificate, 'Invalid attestation object');
         Assertion::keyExists($parsedCertificate, 'subject', 'Invalid attestation object');
         Assertion::keyExists($parsedCertificate['subject'], 'CN', 'Invalid attestation object');
@@ -188,7 +222,6 @@ final class AndroidSafetyNetAttestationStatementSupport implements AttestationSt
         $this->checkGoogleApiResponse($response);
         $responseBody = $this->getResponseBody($response);
         $responseBodyJson = json_decode($responseBody, true);
-        Assertion::eq(JSON_ERROR_NONE, json_last_error(), 'Invalid response.');
         Assertion::keyExists($responseBodyJson, 'isValidSignature', 'Invalid response.');
         Assertion::boolean($responseBodyJson['isValidSignature'], 'Invalid response.');
         Assertion::true($responseBodyJson['isValidSignature'], 'Invalid response.');
@@ -198,13 +231,13 @@ final class AndroidSafetyNetAttestationStatementSupport implements AttestationSt
     {
         $responseBody = '';
         $response->getBody()->rewind();
-        do {
+        while (true) {
             $tmp = $response->getBody()->read(1024);
             if ('' === $tmp) {
                 break;
             }
             $responseBody .= $tmp;
-        } while (true);
+        }
 
         return $responseBody;
     }
@@ -223,6 +256,11 @@ final class AndroidSafetyNetAttestationStatementSupport implements AttestationSt
         throw new InvalidArgumentException('Unrecognized response');
     }
 
+    /**
+     * @param string[] $certificates
+     *
+     * @return string[]
+     */
     private function convertCertificatesToPem(array $certificates): array
     {
         foreach ($certificates as $k => $v) {
@@ -240,9 +278,11 @@ final class AndroidSafetyNetAttestationStatementSupport implements AttestationSt
             Algorithm\ES256::class, Algorithm\ES384::class, Algorithm\ES512::class,
             Algorithm\EdDSA::class,
         ];
+        /* @var AlgorithmInterface[] $algorithms */
         $algorithms = [];
-        foreach ($algorithmClasses as $key => $algorithm) {
+        foreach ($algorithmClasses as $algorithm) {
             if (class_exists($algorithm)) {
+                /* @var AlgorithmInterface $algorithm */
                 $algorithms[] = new $algorithm();
             }
         }
