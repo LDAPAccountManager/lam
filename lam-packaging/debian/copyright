@@ -1151,6 +1151,7 @@ lib/3rdParty/composer/fgrosse                                        B  2015  Fr
 lib/3rdParty/composer/firebase                                       H  2011  Neuman Vong
 lib/3rdParty/composer/guzzlehttp                                     B  2015  Michael Dowling
 lib/3rdParty/composer/illuminate                                     B        Taylor Otwell
+lib/3rdParty/composer/league                                         B        ignace nyamagana butera
 lib/3rdParty/composer/nesbot                                         B        Brian Nesbitt
 lib/3rdParty/composer/nyholm                                         B  2016  Tobias Nyholm
 lib/3rdParty/composer/okta                                           J        Brian Retterer
@@ -1164,6 +1165,7 @@ lib/3rdParty/composer/ralouphie                                      B  2014  Ra
 lib/3rdParty/composer/ramsey                                         B  2018  Ben Ramsey
 lib/3rdParty/composer/spomky-labs                                    B  2018  Spomky-Labs
 lib/3rdParty/composer/symfony                                        B  2022  Fabien Potencier
+lib/3rdParty/composer/thecodingmachine                               B        TheCodingMachine
 lib/3rdParty/composer/voku                                           B  2019 Lars Moelleken
 lib/3rdParty/composer/web-auth                                       B  2018  Spomky-Labs
 lib/3rdParty/composer/web-token                                      B        Florent Morselli
