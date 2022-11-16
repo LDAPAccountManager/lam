@@ -2992,6 +2992,19 @@ window.lam.tabs.tabClick = function(element) {
 	});
 }
 
+window.lam.progressbar = window.lam.progressbar || {};
+
+/**
+ * Updates a progress bar.
+ *
+ * @param htmlId HTML id
+ * @param progress new progress value (0..100)
+ */
+window.lam.progressbar.setProgress = function(htmlId, progress) {
+	const bar = document.getElementById(htmlId).querySelector('.lam-progressbar-bar');
+	bar.style.width = progress + '%';
+}
+
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();
 	window.lam.form.autoTrim();

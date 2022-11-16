@@ -5387,3 +5387,43 @@ class htmlLabel extends htmlElement {
 	}
 
 }
+
+/**
+ * Represents a progress bar.
+ */
+class htmlProgressbar extends htmlElement {
+
+	private $id;
+	private $progress;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param string $id HTML id
+	 * @param int $progress initial progress
+	 */
+	function __construct(string $id = null, int $progress = 0) {
+		$this->id = htmlspecialchars($id);
+		$this->progress = htmlspecialchars($progress);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope): array {
+		$extraClasses = '';
+		if (!empty($this->cssClasses)) {
+			$extraClasses = implode(' ', $this->cssClasses);
+		}
+		$idValue = '';
+		if ($this->id !== null) {
+			$idValue = ' id="' . $this->id . '"';
+		}
+		echo '<div ' . $idValue . '" class="lam-progressbar ' . $extraClasses . '">';
+			echo '<div class="lam-progressbar-bar" style="width: ' . $this->progress . '%">';
+			echo '</div>';
+		echo '</div>';
+		return array();
+	}
+
+}

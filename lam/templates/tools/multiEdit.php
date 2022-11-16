@@ -1,5 +1,6 @@
 <?php
 namespace LAM\TOOLS\MULTI_EDIT;
+use htmlProgressbar;
 use \htmlTable;
 use \htmlTitle;
 use \htmlSelect;
@@ -263,21 +264,18 @@ function runActions(htmlResponsiveRow &$container): void {
 		jQuery(\'select\').attr(\'disabled\', true);
 		jQuery(\'button\').attr(\'disabled\', true);
 	';
-	$container->add(new htmlJavaScript($jsContent), 12);
+	$container->add(new htmlJavaScript($jsContent));
 	// progress area
-	$container->add(new htmlSubTitle(_('Progress')), 12);
-	$progressBarDiv = new htmlDiv('progressBar', '');
-	$progressBarDiv->colspan = 5;
-	$container->add($progressBarDiv, 12);
-	$progressDiv = new htmlDiv('progressArea', '');
-	$progressDiv->colspan = 5;
-	$container->add($progressDiv, 12);
+	$container->add(new htmlSubTitle(_('Progress')));
+	$container->add(new htmlProgressbar('progressBar'));
+	$progressDiv = new htmlDiv('progressArea', new htmlOutputText(''));
+	$container->add($progressDiv);
 	// JS block for AJAX status update
 	$ajaxBlock = '
 		jQuery.get(\'multiEdit.php?ajaxStatus\', null, function(data) {handleReply(data);}, \'json\');
 
 		function handleReply(data) {
-			jQuery(\'#progressBar\').progressbar({value: data.progress, max: 100});
+			window.lam.progressbar.setProgress(\'progressBar\', data.progress);
 			jQuery(\'#progressArea\').html(data.content);
 			if (data.status != "finished") {
 				jQuery.get(\'multiEdit.php?ajaxStatus\', null, function(data) {handleReply(data);}, \'json\');

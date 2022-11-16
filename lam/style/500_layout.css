@@ -1068,3 +1068,16 @@ div.swal2-html-container {
 	margin: var(--lam-small-space);
 	font-size: 1em;
 }
+
+.lam-progressbar {
+	border: 1px solid var(--lam-border-color);
+	border-radius: var(--lam-default-border-radius);
+	margin-top: var(--lam-large-space);
+	margin-bottom: var(--lam-large-space);
+}
+
+.lam-progressbar > div {
+	border-radius: var(--lam-default-border-radius);
+	background-color: var(--lam-background-color-primary);
+	height: 2rem;
+}

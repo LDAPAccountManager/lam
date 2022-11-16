@@ -189,6 +189,14 @@ $row->add(new htmlHorizontalLine());
 $row->add(new htmlSpacer(null, '5rem'));
 
 
+$row->add(new htmlSubTitle('Progress bar'));
+
+$row->add(new htmlProgressbar('progressBar', 33));
+
+
+$row->add(new htmlSpacer(null, '5rem'));
+
+
 $tabindex = 1;
 parseHtml(null, $row, array(), false, $tabindex, 'user');
 
