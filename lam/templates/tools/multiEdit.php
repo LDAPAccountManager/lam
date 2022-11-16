@@ -277,7 +277,7 @@ function runActions(htmlResponsiveRow &$container): void {
 		jQuery.get(\'multiEdit.php?ajaxStatus\', null, function(data) {handleReply(data);}, \'json\');
 
 		function handleReply(data) {
-			jQuery(\'#progressBar\').progressbar({value: data.progress, max: 120});
+			jQuery(\'#progressBar\').progressbar({value: data.progress, max: 100});
 			jQuery(\'#progressArea\').html(data.content);
 			if (data.status != "finished") {
 				jQuery.get(\'multiEdit.php?ajaxStatus\', null, function(data) {handleReply(data);}, \'json\');
@@ -354,7 +354,7 @@ function readLDAPData(): array {
 		$content = getMessageHTML($msg);
 		return array(
 			'status' => STAGE_FINISHED,
-			'progress' => 120,
+			'progress' => 100,
 			'content' => $content
 		);
 	}
@@ -495,7 +495,7 @@ function dryRun(): array {
 	ob_end_clean();
 	return array(
 		'status' => STAGE_FINISHED,
-		'progress' => 120,
+		'progress' => 100,
 		'content' => $content
 	);
 }
@@ -573,14 +573,14 @@ function doModify(): array {
 		$_SESSION['multiEdit_status']['modContent'] .= '<br><br>' . _('Finished all operations.');
 		return array(
 			'status' => STAGE_FINISHED,
-			'progress' => 120,
+			'progress' => 100,
 			'content' => $_SESSION['multiEdit_status']['modContent']
 		);
 	}
 	// return current status
 	return array(
 		'status' => STAGE_WRITING,
-		'progress' => 20 + (($_SESSION['multiEdit_status']['index'] / sizeof($_SESSION['multiEdit_status']['actions'])) * 100),
+		'progress' => 20 + (($_SESSION['multiEdit_status']['index'] / sizeof($_SESSION['multiEdit_status']['actions'])) * 80),
 		'content' => $_SESSION['multiEdit_status']['modContent']
 	);
 }
