@@ -5419,7 +5419,7 @@ class htmlProgressbar extends htmlElement {
 		if ($this->id !== null) {
 			$idValue = ' id="' . $this->id . '"';
 		}
-		echo '<div ' . $idValue . '" class="lam-progressbar ' . $extraClasses . '">';
+		echo '<div ' . $idValue . ' class="lam-progressbar ' . $extraClasses . '">';
 			echo '<div class="lam-progressbar-bar" style="width: ' . $this->progress . '%">';
 			echo '</div>';
 		echo '</div>';

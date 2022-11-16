@@ -106,7 +106,7 @@ class Uploader {
 			$this->uploadEntry($_SESSION['mass_counter']);
 			$_SESSION['mass_counter']++;
 		}
-		$accountsProgress = round(($_SESSION['mass_counter'] * 100) / sizeof($this->accounts), 2);
+		$accountsProgress = round(($_SESSION['mass_counter'] * 100) / sizeof($this->accounts));
 		$accountsFinished = ($_SESSION['mass_counter'] == sizeof($this->accounts));
 		return $this->buildUploadStatus($accountsProgress, $accountsFinished);
 	}
@@ -254,7 +254,7 @@ class Uploader {
 			$return = $this->runModulePostActions();
 		}
 		$title = _("Additional tasks for module:") . ' ' . getModuleAlias($return['module'], $this->type->getScope());
-		$progress = round($return['progress'], 2);
+		$progress = round($return['progress']);
 		$finished = isset($_SESSION['mass_postActions']['finished']);
 		return $this->buildUploadStatus(100, true, $title, $progress, $finished);
 	}
@@ -325,7 +325,7 @@ class Uploader {
 			}
 		}
 		@$pdfZip->close();
-		$progress = ($_SESSION['mass_pdf']['counter'] * 100) / sizeof($this->accounts);
+		$progress = round(($_SESSION['mass_pdf']['counter'] * 100) / sizeof($this->accounts));
 		return $this->buildUploadStatus(100, true, '', 100, true, $progress);
 	}
 

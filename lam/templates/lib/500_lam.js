@@ -689,11 +689,9 @@ window.lam.upload.printBasicStatus = function(jsonData) {
 	var htmlOut = '<div class="title">';
 	htmlOut += '<h2 class="titleText">' + jsonData.title + '</h2>';
 	htmlOut += '</div>';
-	htmlOut += '<div id="progressbarGeneral"></div>';
+	htmlOut += window.lam.progressbar.getMarkup('progressbarGeneral');
 	jQuery('#uploadContent').html(htmlOut);
-	jQuery('#progressbarGeneral').progressbar({
-		value: jsonData.accountsProgress
-	});
+	window.lam.progressbar.setProgress('progressbarGeneral', jsonData.accountsProgress);
 };
 
 /**
@@ -705,19 +703,15 @@ window.lam.upload.printPostActionStatus = function(jsonData) {
 	var htmlOut = '<div class="title">';
 	htmlOut += '<h2 class="titleText">' + jsonData.title + '</h2>';
 	htmlOut += '</div>';
-	htmlOut += '<div id="progressbarGeneral"></div>';
+	htmlOut += window.lam.progressbar.getMarkup('progressbarGeneral');
 	if (jsonData.postActionsTitle) {
 		htmlOut += '<h2>' + jsonData.postActionsTitle + '</h2>';
-		htmlOut += '<div id="progressbarPostActions"></div>';
+		htmlOut += window.lam.progressbar.getMarkup('progressbarPostActions');
 	}
 	jQuery('#uploadContent').html(htmlOut);
-	jQuery('#progressbarGeneral').progressbar({
-		value: 100
-	});
+	window.lam.progressbar.setProgress('progressbarGeneral', 100);
 	if (jsonData.postActionsTitle) {
-		jQuery('#progressbarPostActions').progressbar({
-			value: jsonData.postActionsProgress
-		});
+		window.lam.progressbar.setProgress('progressbarPostActions', jsonData.postActionsProgress);
 	}
 };
 
@@ -730,16 +724,12 @@ window.lam.upload.printPDFStatus = function(jsonData) {
 	var htmlOut = '<div class="title">';
 	htmlOut += '<h2 class="titleText">' + jsonData.title + '</h2>';
 	htmlOut += '</div>';
-	htmlOut += '<div id="progressbarGeneral"></div>';
+	htmlOut += window.lam.progressbar.getMarkup('progressbarGeneral');
 	htmlOut += '<h2>' + jsonData.titlePDF + '</h2>';
-	htmlOut += '<div id="progressbarPDF"></div>';
+	htmlOut += window.lam.progressbar.getMarkup('progressbarPDF');
 	jQuery('#uploadContent').html(htmlOut);
-	jQuery('#progressbarGeneral').progressbar({
-		value: 100
-	});
-	jQuery('#progressbarPDF').progressbar({
-		value: jsonData.pdfProgress
-	});
+	window.lam.progressbar.setProgress('progressbarGeneral', 100);
+	window.lam.progressbar.setProgress('progressbarPDF', jsonData.pdfProgress);
 };
 
 /**
@@ -3000,6 +2990,17 @@ window.lam.progressbar = window.lam.progressbar || {};
 window.lam.progressbar.setProgress = function(htmlId, progress) {
 	const bar = document.getElementById(htmlId).querySelector('.lam-progressbar-bar');
 	bar.style.width = progress + '%';
+}
+
+/**
+ * Creates the markup for a progress bar.
+ *
+ * @param htmlId HTML id
+ */
+window.lam.progressbar.getMarkup = function(htmlId) {
+	return '<div id="' + htmlId + '" class="lam-progressbar">' +
+		'<div class="lam-progressbar-bar" style="width: 0%"></div>' +
+		'</div>';
 }
 
 jQuery(document).ready(function() {
