@@ -1159,7 +1159,6 @@ window.lam.importexport = window.lam.importexport || {};
  */
 window.lam.importexport.startImport = function(tokenName, tokenValue) {
 	jQuery(document).ready(function() {
-		jQuery('#progressbarImport').progressbar();
 		var output = jQuery('#importResults');
 		var data = {
 			jsonInput: ''
@@ -1188,10 +1187,8 @@ window.lam.importexport.startImport = function(tokenName, tokenValue) {
 				jQuery('.newimport').show();
 			}
 			else {
-				jQuery('#progressbarImport').progressbar({
-					value: jsonData.progress
-				});
-				window.lam.import.startImport(tokenName, tokenValue);
+				window.lam.progressbar.setProgress('progressbarImport', jsonData.progress);
+				window.lam.importexport.startImport(tokenName, tokenValue);
 			}
 		});
 	});
@@ -1205,7 +1202,7 @@ window.lam.importexport.startImport = function(tokenName, tokenValue) {
  */
 window.lam.importexport.startExport = function(tokenName, tokenValue) {
 	jQuery(document).ready(function() {
-		jQuery('#progressbarExport').progressbar({value: 50});
+		window.lam.progressbar.setProgress('progressbarExport', 50);
 		var output = jQuery('#exportResults');
 		var data = {
 			jsonInput: ''

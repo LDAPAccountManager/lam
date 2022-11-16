@@ -1,5 +1,6 @@
 <?php
 namespace LAM\TOOLS\IMPORT_EXPORT;
+use htmlProgressbar;
 use \htmlTitle;
 use \htmlResponsiveRadio;
 use \htmlResponsiveRow;
@@ -199,7 +200,7 @@ function printImportTabProcessing(&$tabindex): void {
 	$container->add(new htmlDiv('statusImportDone', new htmlOutputText(_('Status') . ': ' . _('done')), array('hidden')), 12);
 	$container->add(new htmlDiv('statusImportFailed', new htmlOutputText(_('Status') . ': ' . _('failed')), array('hidden')), 12);
 	$container->addVerticalSpacer('1rem');
-	$container->add(new htmlDiv('progressbarImport', new htmlOutputText('')), 12);
+	$container->add(new htmlProgressbar('progressbarImport'));
 	$container->addVerticalSpacer('3rem');
 	$button = new htmlButton('submitImportCancel', _('Cancel'));
 	$container->add($button, 12, 12, 12, 'text-center');
@@ -398,7 +399,7 @@ function printExportTabProcessing(&$tabindex): void {
 	$container->add(new htmlDiv('statusExportDone', new htmlOutputText(_('Status') . ': ' . _('done')), array('hidden')), 12);
 	$container->add(new htmlDiv('statusExportFailed', new htmlOutputText(_('Status') . ': ' . _('failed')), array('hidden')), 12);
 	$container->addVerticalSpacer('1rem');
-	$container->add(new htmlDiv('progressbarExport', new htmlOutputText('')), 12);
+	$container->add(new htmlProgressbar('progressbarExport'));
 	$container->addVerticalSpacer('3rem');
 	$button = new htmlButton('submitExportCancel', _('Cancel'));
 	$container->add($button, 12, 12, 12, 'text-center');
