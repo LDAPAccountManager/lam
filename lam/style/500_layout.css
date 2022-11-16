@@ -532,10 +532,6 @@ hr.dotted {
 	border-left: none;
 }
 
-div.ui-progressbar-value {
-	background-image: url(images/pbar-ani.gif);
-}
-
 div.jobList {
 	overflow: scroll;
 	max-height: 50rem;
