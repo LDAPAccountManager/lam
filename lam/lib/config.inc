@@ -3190,7 +3190,7 @@ class LAMCfgMain {
 				throw new LAMException(_('The config file is not readable.'));
 			}
 			while (!feof($file)) {
-				$line = fgets($file, 1024);
+				$line = fgets($file, 1000000);
 				$line = trim($line);  // remove spaces at the beginning and end
 				if (($line == "")||($line[0] == "#")) {
 					continue; // ignore comments
@@ -3314,7 +3314,7 @@ class LAMCfgMain {
 			$file_array = array();
 			// read config file
 			while (!feof($file)) {
-				$configLine = fgets($file, 1024);
+				$configLine = fgets($file, 1000000);
 				if (($configLine === false) || ($configLine === "") || ($configLine === "\n") || ($configLine[0] == "#")) {
 					continue; // ignore comments and empty lines
 				}

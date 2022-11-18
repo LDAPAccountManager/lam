@@ -180,7 +180,7 @@ if (isset($_POST['submitFormData'])) {
 	if (isLAMProVersion()) {
 		if (isset($_POST['allowedHostsSelfService'])) {
 			$allowedHostsSelfService = $_POST['allowedHostsSelfService'];
-			$allowedHostsSelfServiceList = explode("\n", $allowedHostsSelfService);
+			$allowedHostsSelfServiceList = explode("\r\n", $allowedHostsSelfService);
 			for ($i = 0; $i < sizeof($allowedHostsSelfServiceList); $i++) {
 				$allowedHostsSelfServiceList[$i] = trim($allowedHostsSelfServiceList[$i]);
 				// ignore empty lines
@@ -194,6 +194,7 @@ if (isset($_POST['submitFormData'])) {
 					$errors[] = sprintf(_("The IP address %s is invalid!"), htmlspecialchars(str_replace('%', '%%', $allowedHostsSelfServiceList[$i])));
 				}
 			}
+			$allowedHostsSelfServiceList = array_unique($allowedHostsSelfServiceList);
 			$allowedHostsSelfService = implode(",", $allowedHostsSelfServiceList);
 		} else {
 			$allowedHostsSelfService = "";
