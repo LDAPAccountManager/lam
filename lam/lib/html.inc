@@ -1078,8 +1078,6 @@ class htmlButton extends htmlElement {
 	private $title = null;
 	/** enabled or disabled */
 	private $isEnabled = true;
-	/** icon class (CSS) for buttons with icon + text */
-	private $iconClass = null;
 	/** onclick event */
 	private $onClick = null;
 	/** button type (default: "submit" if no onClick and "button" with onClick) */
@@ -1130,10 +1128,6 @@ class htmlButton extends htmlElement {
 			$classList[] = 'align-middle';
 			$style = ' style="background-image: url(../../graphics/' . $this->value . ');"';
 		}
-		// text button
-		elseif ($this->iconClass == null) {
-			$classList[] = 'smallPadding';
-		}
 		// button with text and icon
 		else {
 			$classList[] = 'margin5';
@@ -1173,13 +1167,6 @@ class htmlButton extends htmlElement {
 		else {
 			echo '<button' . $id . $name . $fieldTabIndex . $type . $onClick . $style . $class . $title . $disabled
 				. $noFormValidation . $this->getDataAttributesAsString() . '>' . $this->value . '</button>';
-			// text buttons get JQuery style
-			if ($this->iconClass != null) {
-				$icon = '{ icons: { primary: \'' . $this->iconClass . '\' } }';
-				echo '<script type="text/javascript">';
-				echo "jQuery('#btn_" . $this->name . "').button(" . $icon . ");";
-				echo '</script>';
-			}
 		}
 		return array($this->name => 'submit');
 	}
@@ -1202,16 +1189,6 @@ class htmlButton extends htmlElement {
 	 */
 	public function setIsEnabled($isEnabled) {
 		$this->isEnabled = $isEnabled;
-	}
-
-	/**
-	 * Sets an additional icon for a text button.
-	 * The icon class is a CSS class that specifies the icon image (e.g. "deleteButton" in layout.css).
-	 *
-	 * @param String $iconClass icon class
-	 */
-	public function setIconClass($iconClass) {
-		$this->iconClass = htmlspecialchars($iconClass);
 	}
 
 	/**
