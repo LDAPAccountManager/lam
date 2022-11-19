@@ -580,9 +580,6 @@ class htmlInputField extends htmlElement {
 			$validationPattern = ' pattern="' . $this->validationPattern . '"';
 		}
 		// print input field
-		if ($this->autocomplete) {
-			$this->cssClasses[] = 'lam-autocomplete';
-		}
 		$required = '';
 		if ($this->required) {
 			$required = ' required';
@@ -637,9 +634,16 @@ class htmlInputField extends htmlElement {
 			$autoCompleteVal = ' autocomplete="new-password"';
 		}
 		$autoCompleteData = '';
-		if ($this->autocomplete) {
-			$autoCompleteData = ' data-autocomplete="' . base64_encode(json_encode($this->autocompleteValues)) . '"';
-			$autoCompleteData .= ' data-autocomplete-minLength="' . $this->autocompleteMinLength . '"';
+		if ($this->autocomplete && !empty($idValue)) {
+			if (($this->fieldValue !== null) && !in_array($this->fieldValue, $this->autocompleteValues)) {
+				array_unshift($this->autocompleteValues, $this->fieldValue);
+			}
+			echo '<datalist id="datalist_' . $idValue . '" autocomplete="off">';
+			foreach ($this->autocompleteValues as $autocompleteValue) {
+				echo '<option value="' . $autocompleteValue . '">';
+			}
+			echo '</datalist>';
+			$autoCompleteData = ' list="datalist_' . $idValue . '"';
 		}
 		if ($this->showDnSelection) {
 			echo '<span class="nowrap">';
