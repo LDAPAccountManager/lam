@@ -488,8 +488,6 @@ class htmlInputField extends htmlElement {
 	protected $autocomplete = false;
 	/** autocompletion suggestions */
 	protected $autocompleteValues = array();
-	/** autocomplete start at this input length */
-	protected $autocompleteMinLength = 1;
 	/** show calendar */
 	protected $showCalendar = false;
 	/** show DN selection */
@@ -808,12 +806,10 @@ class htmlInputField extends htmlElement {
 	 * Enables autocompletion for this input field.
 	 *
 	 * @param array $values list of values to suggest
-	 * @param int $minLength autocompletion starts after this number of characters entered (default 1; 0 means immediate start)
 	 */
-	public function enableAutocompletion($values, $minLength = 1) {
+	public function enableAutocompletion($values) {
 		$this->autocomplete = true;
 		$this->autocompleteValues = $values;
-		$this->autocompleteMinLength = $minLength;
 	}
 
 	/**
