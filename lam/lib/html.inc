@@ -488,8 +488,6 @@ class htmlInputField extends htmlElement {
 	protected $autocomplete = false;
 	/** autocompletion suggestions */
 	protected $autocompleteValues = array();
-	/** autocomplete start at this input length */
-	protected $autocompleteMinLength = 1;
 	/** show calendar */
 	protected $showCalendar = false;
 	/** show DN selection */
@@ -580,9 +578,6 @@ class htmlInputField extends htmlElement {
 			$validationPattern = ' pattern="' . $this->validationPattern . '"';
 		}
 		// print input field
-		if ($this->autocomplete) {
-			$this->cssClasses[] = 'lam-autocomplete';
-		}
 		$required = '';
 		if ($this->required) {
 			$required = ' required';
@@ -637,9 +632,16 @@ class htmlInputField extends htmlElement {
 			$autoCompleteVal = ' autocomplete="new-password"';
 		}
 		$autoCompleteData = '';
-		if ($this->autocomplete) {
-			$autoCompleteData = ' data-autocomplete="' . base64_encode(json_encode($this->autocompleteValues)) . '"';
-			$autoCompleteData .= ' data-autocomplete-minLength="' . $this->autocompleteMinLength . '"';
+		if ($this->autocomplete && !empty($idValue)) {
+			if (($this->fieldValue !== null) && !in_array($this->fieldValue, $this->autocompleteValues)) {
+				array_unshift($this->autocompleteValues, $this->fieldValue);
+			}
+			echo '<datalist id="datalist_' . $idValue . '" autocomplete="off">';
+			foreach ($this->autocompleteValues as $autocompleteValue) {
+				echo '<option value="' . $autocompleteValue . '">';
+			}
+			echo '</datalist>';
+			$autoCompleteData = ' list="datalist_' . $idValue . '"';
 		}
 		if ($this->showDnSelection) {
 			echo '<span class="nowrap">';
@@ -804,12 +806,10 @@ class htmlInputField extends htmlElement {
 	 * Enables autocompletion for this input field.
 	 *
 	 * @param array $values list of values to suggest
-	 * @param int $minLength autocompletion starts after this number of characters entered (default 1; 0 means immediate start)
 	 */
-	public function enableAutocompletion($values, $minLength = 1) {
+	public function enableAutocompletion($values) {
 		$this->autocomplete = true;
 		$this->autocompleteValues = $values;
-		$this->autocompleteMinLength = $minLength;
 	}
 
 	/**

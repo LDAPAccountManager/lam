@@ -1077,3 +1077,7 @@ div.swal2-html-container {
 	background-color: var(--lam-background-color-primary);
 	height: 2rem;
 }
+
+datalist {
+	display: none;
+}

@@ -94,7 +94,7 @@ $row->addField(new htmlInputField('text1', 'Some text'));
 
 $row->addLabel(new htmlOutputText('Autocomplete'));
 $autocompleteInput = new htmlInputField('text1a', 'Some text');
-$autocompleteInput->enableAutocompletion(array('Some text', 'Some text2', 'Some text3', 'Some text4'), 2);
+$autocompleteInput->enableAutocompletion(array('Some text', 'Some text2', 'Some text3', 'Some text4'));
 $row->addField($autocompleteInput);
 
 $row->addLabel(new htmlOutputText('Disabled'));
