@@ -156,7 +156,7 @@ class ldapPublicKey extends baseModule {
 			$this->addMultiValueInputTextField($return, 'sshPublicKey', _('SSH public key'), false, '16384', false, null, '50');
 			// file upload
 			$return->addVerticalSpacer('2rem');
-			$return->addLabel(new htmlOutputText(_('Upload file')));
+			$return->addLabel(new htmlOutputText(_('Upload a file')));
 			$uploadGroup = new htmlGroup();
 			$uploadGroup->addElement(new htmlInputFileUpload('sshPublicKeyFile'));
 			$uploadGroup->addElement(new htmlSpacer('1px', null));
