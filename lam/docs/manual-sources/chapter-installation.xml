@@ -361,10 +361,10 @@ docker run -p 8080:80 -it -d registry.gitlab.com/ldapaccountmanager/lampro:stabl
       <section>
         <title>PHP</title>
 
-        <para>LAM runs with PHP 7 (&gt;= 7.2.0). Needed changes in your
+        <para>LAM runs with PHP 7 (&gt;= 7.4.0). Needed changes in your
         php.ini:</para>
 
-        <para>memory_limit = 64M</para>
+        <para>memory_limit = 128M</para>
 
         <para>For large installations (&gt;10000 LDAP entries) you may need to
         increase the memory limit to 256M.</para>
@@ -615,6 +615,12 @@ docker run -p 8080:80 -it -d registry.gitlab.com/ldapaccountmanager/lampro:stabl
       <para>You need to follow all steps from your current version to the new
       version. Unless explicitly noticed there is no need to install an
       intermediate release.</para>
+
+      <section>
+        <title>8.1 -&gt; 8.2</title>
+
+        <para>No actions required.</para>
+      </section>
 
       <section>
         <title>8.0 -&gt; 8.1</title>
