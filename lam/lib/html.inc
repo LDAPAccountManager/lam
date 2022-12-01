@@ -4272,7 +4272,6 @@ class htmlAccordion extends htmlElement {
 			echo '</div>';
 			$contentIndex++;
 		}
-		echo '</div>';
 		$hiddenIndexId = $this->id . "_index";
 		echo '<input type="hidden" name="' . $hiddenIndexId . '" id="' . $hiddenIndexId . '" value="' . $active . '">';
 		return $result;
