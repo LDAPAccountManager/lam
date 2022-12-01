@@ -1081,3 +1081,51 @@ div.swal2-html-container {
 datalist {
 	display: none;
 }
+
+button.lam-accordion {
+	width: 100%;
+	text-align: left;
+	border: 1px solid var(--lam-border-color);
+	outline: none;
+	transition: 0.5s;
+	padding-right: 0.5rem;
+	margin-right: 0px;
+	margin-left: 0px;
+	margin-bottom: 0px;
+}
+
+button.lam-accordion:after {
+	content: '+';
+	float: right;
+	margin-right: var(--lam-regular-space);
+}
+
+button.lam-accordion-active {
+	background-color: var(--lam-background-color-primary);
+	border-color: var(--lam-background-color-primary);
+	color: var(--lam-text-color-primary);
+}
+
+button.lam-accordion-active:after {
+	content: '-';
+}
+
+button.lam-accordion:hover {
+	filter: brightness(0.96);
+}
+
+div.lam-accordion-content {
+	max-height: 0;
+	transition: max-height 0.2s ease-out;
+	overflow: hidden;
+	border: 0px;
+}
+
+div.lam-accordion-content-active {
+	border: 1px solid var(--lam-border-color);
+	border-top: 0px;
+}
+
+div.lam-accordion-content-inner {
+	margin: var(--lam-large-space) 3rem;
+}

@@ -4223,7 +4223,6 @@ class htmlAccordion extends htmlElement {
 	private $id = null;
 	private $elements = null;
 	private $openInitial = '1';
-	private $collapsible = false;
 
 	/**
 	 * Constructor.
@@ -4231,18 +4230,11 @@ class htmlAccordion extends htmlElement {
 	 * @param String $id HTML ID
 	 * @param array $elements list of content elements array('title' => htmlElement)
 	 * @param String $openInitial index of element that is initially opened (default: 0), set to 'false' to close all
-	 * @param boolean $collapsible specifies if all elements may be closed at the same time (default: false, true if $openInitial is false)
 	 */
-	function __construct($id, $elements, $openInitial = '0', $collapsible = false) {
+	function __construct($id, $elements, $openInitial = '0') {
 		$this->id = $id;
 		$this->elements = $elements;
 		$this->openInitial = $openInitial;
-		if (($openInitial === 'false') || ($openInitial === false)) {
-			$this->collapsible = true;
-		}
-		else {
-			$this->collapsible = $collapsible;
-		}
 	}
 
 	/**
@@ -4258,36 +4250,29 @@ class htmlAccordion extends htmlElement {
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
 		$result = array();
-		$collapsible = 'false';
-		if ($this->collapsible) {
-			$collapsible = 'true';
-		}
 		$active = 'false';
 		if ($this->openInitial !== false) {
 			$active = $this->openInitial;
 		}
-		echo '<div id="' . $this->id . '">';
+		$contentIndex = 0;
 		foreach ($this->elements as $label => $content) {
-			echo '<h3>' . $label . '</h3>';
-			echo '<div>';
+			$activeClassButton = '';
+			$activeClassContent = '';
+			if ($contentIndex === $active) {
+				$activeClassButton = 'lam-accordion-active';
+				$activeClassContent = 'lam-accordion-content-active';
+			}
+			echo '<button id="' . $this->id . '" class="lam-accordion ' . $activeClassButton . '" onclick="return false;" data-index="' . $contentIndex . '">';
+			echo $label;
+			echo '</button>';
+			echo '<div class="lam-accordion-content ' . $activeClassContent . '"><div class="lam-accordion-content-inner">';
 			$result = array_merge($result, $content->generateHTML($module, $input, $values, $restricted, $tabindex, $scope));
-			echo '</div>';
+			echo '</div></div>';
+			$contentIndex++;
 		}
 		echo '</div>';
 		$hiddenIndexId = $this->id . "_index";
 		echo '<input type="hidden" name="' . $hiddenIndexId . '" id="' . $hiddenIndexId . '" value="' . $active . '">';
-		$script = 'jQuery(function() {
-						$( "#' . $this->id . '" ).accordion({
-						collapsible: ' . $collapsible . ',
-						active: ' . $active . ',
-						activate: function( event, ui ) {
-									var newOption = jQuery("#' . $this->id . '").accordion( "option", "active" );
-									jQuery("#' . $this->id . '_index").val(newOption);
-								}
-						});
-					});';
-		$js = new htmlJavaScript($script);
-		$js->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		return $result;
 	}
 

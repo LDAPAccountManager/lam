@@ -2939,6 +2939,32 @@ window.lam.progressbar.getMarkup = function(htmlId) {
 		'</div>';
 }
 
+window.lam.accordion = window.lam.accordion || {};
+
+/**
+ * Initializes the accordions.
+ */
+window.lam.accordion.init = function() {
+	const accordionButtons = document.getElementsByClassName('lam-accordion');
+	Array.from(accordionButtons).forEach(function (button) {
+		button.addEventListener('click', function(event) {
+			event.preventDefault();
+			this.classList.toggle('lam-accordion-active');
+			const content = this.nextElementSibling;
+			if (content.style.maxHeight) {
+				content.style.maxHeight = null;
+				content.classList.remove('lam-accordion-content-active')
+			}
+			else {
+				content.style.maxHeight = content.scrollHeight + 'px';
+				content.classList.add('lam-accordion-content-active')
+			}
+			return false;
+		});
+	});
+}
+
+
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();
 	window.lam.form.autoTrim();
@@ -2952,6 +2978,7 @@ jQuery(document).ready(function() {
 	window.lam.dynamicSelect.activate();
 	window.lam.webauthn.setupDeviceManagement();
 	window.lam.tabs.init();
+	window.lam.accordion.init();
 });
 
 /**
