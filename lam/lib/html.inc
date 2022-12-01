@@ -4265,9 +4265,11 @@ class htmlAccordion extends htmlElement {
 			echo '<button id="' . $this->id . '" class="lam-accordion ' . $activeClassButton . '" onclick="return false;" data-index="' . $contentIndex . '">';
 			echo $label;
 			echo '</button>';
-			echo '<div class="lam-accordion-content ' . $activeClassContent . '"><div class="lam-accordion-content-inner">';
+			echo '<div class="lam-accordion-content ' . $activeClassContent . '">';
+			echo '<div class="lam-accordion-content-inner">';
 			$result = array_merge($result, $content->generateHTML($module, $input, $values, $restricted, $tabindex, $scope));
-			echo '</div></div>';
+			echo '</div>';
+			echo '</div>';
 			$contentIndex++;
 		}
 		echo '</div>';

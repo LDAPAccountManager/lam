@@ -4279,7 +4279,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum height (px)'), 'inetOrgPerson_jpegPhoto_maxHeight', null, 'crop'), 12);
 		$advancedOptions->add(new htmlResponsiveInputField(_('Maximum file size (kB)'), 'inetOrgPerson_jpegPhoto_maxSize'), 12);
 		$advancedOptionsAccordion = new htmlAccordion('inetOrgPersonAdvancedOptions', array(_('Advanced options') => $advancedOptions), false);
-		$configContainer->add($advancedOptionsAccordion, 12);
+		$configContainer->add($advancedOptionsAccordion);
 		return $configContainer;
 	}
 
