@@ -4254,18 +4254,19 @@ class htmlAccordion extends htmlElement {
 		if ($this->openInitial !== false) {
 			$active = $this->openInitial;
 		}
+		echo '<div class="lam-accordion-container">';
 		$contentIndex = 0;
 		foreach ($this->elements as $label => $content) {
 			$activeClassButton = '';
 			$activeClassContent = '';
-			if ($contentIndex === $active) {
-				$activeClassButton = 'lam-accordion-active';
+			if ($contentIndex == $active) {
+				$activeClassButton = 'lam-accordion-button-active';
 				$activeClassContent = 'lam-accordion-content-active';
 			}
-			echo '<button id="' . $this->id . '" class="lam-accordion ' . $activeClassButton . '" onclick="return false;" data-index="' . $contentIndex . '">';
+			echo '<button id="' . $this->id . '" class="lam-accordion-button ' . $activeClassButton . '" onclick="return false;" data-index="' . $contentIndex . '">';
 			echo $label;
 			echo '</button>';
-			echo '<div class="lam-accordion-content ' . $activeClassContent . '">';
+			echo '<div class="lam-accordion-content ' . $activeClassContent . '" data-index="' . $contentIndex . '">';
 			echo '<div class="lam-accordion-content-inner">';
 			$result = array_merge($result, $content->generateHTML($module, $input, $values, $restricted, $tabindex, $scope));
 			echo '</div>';
@@ -4274,6 +4275,7 @@ class htmlAccordion extends htmlElement {
 		}
 		$hiddenIndexId = $this->id . "_index";
 		echo '<input type="hidden" name="' . $hiddenIndexId . '" id="' . $hiddenIndexId . '" value="' . $active . '">';
+		echo '</div>';
 		return $result;
 	}
 
