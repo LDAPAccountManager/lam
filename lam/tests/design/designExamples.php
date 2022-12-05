@@ -197,6 +197,7 @@ $row->add(new htmlProgressbar('progressBar', 33));
 $row->add(new htmlSpacer(null, '5rem'));
 
 $row->add(new htmlSubTitle('Accordion'));
+
 $accordionElementsSingle = array();
 $accordionElementsSingleContent1 = new htmlResponsiveRow();
 $accordionElementsSingleContent1->add(new htmlResponsiveInputField('Input 1', 'acc1i1'));
@@ -204,6 +205,16 @@ $accordionElementsSingleContent1->add(new htmlResponsiveInputField('Input 2', 'a
 $accordionElementsSingleContent1->add(new htmlResponsiveInputTextarea('acc1i3', '', 20, 3, 'Text area'));
 $accordionElementsSingle['Accordion'] = $accordionElementsSingleContent1;
 $row->add(new htmlAccordion('acc_single', $accordionElementsSingle));
+
+$row->add(new htmlSpacer(null, '5rem'));
+
+$accordionElementsSingleClosed = array();
+$accordionElementsSingleContentClosed = new htmlResponsiveRow();
+$accordionElementsSingleContentClosed->add(new htmlResponsiveInputField('Input 1', 'acc1ai1'));
+$accordionElementsSingleContentClosed->add(new htmlResponsiveInputField('Input 2', 'acc1ai2'));
+$accordionElementsSingleContentClosed->add(new htmlResponsiveInputTextarea('acc1ai3', '', 20, 3, 'Text area'));
+$accordionElementsSingleClosed['Accordion - initially closed'] = $accordionElementsSingleContentClosed;
+$row->add(new htmlAccordion('acc_singleClosed', $accordionElementsSingleClosed, false));
 
 $row->add(new htmlSpacer(null, '5rem'));
 
