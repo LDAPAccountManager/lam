@@ -58,6 +58,11 @@
     server and "<emphasis>cn=admin,o=test,c=de</emphasis>" with your LDAP
     admin user (usually starts with cn=admin or cn=manager).</para>
 
+    <para>In some cases you might need to import directly on the OpenLDAP
+    server as root:</para>
+
+    <para>ldapadd -Y EXTERNAL -H ldapi:/// -f passwordSelfReset.ldif</para>
+
     <literallayout>
 </literallayout>
 
