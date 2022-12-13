@@ -84,6 +84,7 @@ RUN apt-get install --no-install-recommends -y \
         php-mbstring \
         wget \
         libldap-common \
+        gettext \
     && \
     rm /etc/apache2/sites-enabled/*default* && \
     rm -rf /var/cache/apt /var/lib/apt/lists/*
