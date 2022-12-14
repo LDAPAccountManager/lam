@@ -19,6 +19,51 @@
 
 */
 
+:root {
+	--lam-background-color-default: #FFFFFF;
+
+	--lam-input-bg-color: #fcfcfc;
+	--lam-text-color-default: #000000;
+	--lam-border-color: #e8e8e8;
+	--lam-border-color-primary: #01689e;
+
+	--lam-background-color-primary: #3daee9;
+	--lam-text-color-primary: #ffffff;
+
+	--lam-border-color-secondary: #ffcb1d;
+	--lam-background-color-secondary: #ffe233;
+	--lam-text-color-secondary: #000000;
+
+	--lam-border-color-danger: #a40e26;
+	--lam-background-color-danger: #fbfbfb;
+	--lam-text-color-danger: #a40e26;
+	--lam-background-color-danger-hover: #a40e26;
+	--lam-text-color-danger-hover: #ffffff;
+
+	--lam-text-color-error:  #a40e26;
+	--lam-text-color-ok: #237d0c;
+
+	--lam-table-background-color-bright: #fbfbfb;
+	--lam-table-background-color-dark: #e8f3ff;
+	--lam-table-background-color-hover: #3daee9;
+	--lam-table-text-color-hover: #ffffff;
+	--lam-table-border-color: #3daee9;
+
+	--lam-disabled-opacity: .35;
+
+	--lam-default-border-radius: 2px;
+
+	--lam-regular-space: 0.5rem;
+	--lam-small-space: 0.25rem;
+	--lam-smaller-space: 0.1rem;
+	--lam-large-space: 1rem;
+	--lam-larger-space: 2rem;
+	--lam-largest-space: 3rem;
+
+	--lam-icon-size: 16px;
+	--lam-icon-size-big: 32px;
+}
+
 /** responsive styles */
 .row {
 	margin-top: 5px;
@@ -165,6 +210,10 @@ div.account-types-popup div.columns:last-child {
 
 /* mobile */
 @media only screen and (max-width: 40.0625em) {
+
+	:root {
+		--lam-largest-space: 1rem;
+	}
 
 	.responsiveLabel {
 		text-align: left;

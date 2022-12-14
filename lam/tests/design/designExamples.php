@@ -196,6 +196,40 @@ $row->add(new htmlProgressbar('progressBar', 33));
 
 $row->add(new htmlSpacer(null, '5rem'));
 
+$row->add(new htmlSubTitle('Accordion'));
+
+$accordionElementsSingle = array();
+$accordionElementsSingleContent1 = new htmlResponsiveRow();
+$accordionElementsSingleContent1->add(new htmlResponsiveInputField('Input 1', 'acc1i1'));
+$accordionElementsSingleContent1->add(new htmlResponsiveInputField('Input 2', 'acc1i2'));
+$accordionElementsSingleContent1->add(new htmlResponsiveInputTextarea('acc1i3', '', 20, 3, 'Text area'));
+$accordionElementsSingle['Accordion'] = $accordionElementsSingleContent1;
+$row->add(new htmlAccordion('acc_single', $accordionElementsSingle));
+
+$row->add(new htmlSpacer(null, '5rem'));
+
+$accordionElementsSingleClosed = array();
+$accordionElementsSingleContentClosed = new htmlResponsiveRow();
+$accordionElementsSingleContentClosed->add(new htmlResponsiveInputField('Input 1', 'acc1ai1'));
+$accordionElementsSingleContentClosed->add(new htmlResponsiveInputField('Input 2', 'acc1ai2'));
+$accordionElementsSingleContentClosed->add(new htmlResponsiveInputTextarea('acc1ai3', '', 20, 3, 'Text area'));
+$accordionElementsSingleClosed['Accordion - initially closed'] = $accordionElementsSingleContentClosed;
+$row->add(new htmlAccordion('acc_singleClosed', $accordionElementsSingleClosed, false));
+
+$row->add(new htmlSpacer(null, '5rem'));
+
+$accordionElementsMulti = array();
+for ($i = 0; $i < 5; $i++) {
+	$accordionElementsContent = new htmlResponsiveRow();
+	$accordionElementsContent->add(new htmlResponsiveInputField('Input 1', 'acc1i1' . $i));
+	$accordionElementsContent->add(new htmlResponsiveInputField('Input 2', 'acc1i2' . $i));
+	$accordionElementsContent->add(new htmlResponsiveInputTextarea('acc1i3' . $i, '', 20, 3, 'Text area'));
+	$accordionElementsMulti['Accordion ' . $i] = $accordionElementsContent;
+}
+$row->add(new htmlAccordion('acc_multi', $accordionElementsMulti));
+
+$row->add(new htmlSpacer(null, '20rem'));
+
 
 $tabindex = 1;
 parseHtml(null, $row, array(), false, $tabindex, 'user');

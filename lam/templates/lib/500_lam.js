@@ -2939,6 +2939,65 @@ window.lam.progressbar.getMarkup = function(htmlId) {
 		'</div>';
 }
 
+window.lam.accordion = window.lam.accordion || {};
+
+/**
+ * Initializes the accordions.
+ */
+window.lam.accordion.init = function() {
+	const accordionButtons = document.getElementsByClassName('lam-accordion-button');
+	Array.from(accordionButtons).forEach(function (button) {
+		button.addEventListener('click', function(event) {
+			window.lam.accordion.onClick(event, this);
+			return false;
+		});
+	});
+	const accordionContentAreas = document.getElementsByClassName('lam-accordion-content-active');
+	Array.from(accordionContentAreas).forEach(function (contentArea) {
+		contentArea.style.maxHeight = contentArea.scrollHeight + 'px';
+	});
+}
+
+/**
+ * Onclick handler for accordion element.
+ *
+ * @param event event
+ * @param button button that was clicked
+ */
+window.lam.accordion.onClick = function(event, button) {
+	event.preventDefault();
+	// mark button active
+	button.classList.toggle('lam-accordion-button-active');
+	// open corresponding content area
+	const content = button.nextElementSibling;
+	if (content.style.maxHeight) {
+		content.style.maxHeight = null;
+		content.classList.remove('lam-accordion-content-active')
+	}
+	else {
+		content.style.maxHeight = content.scrollHeight + 'px';
+		content.classList.add('lam-accordion-content-active')
+	}
+	const indexActive = button.dataset.index;
+	const parent = button.parentElement;
+	// deactivate other buttons
+	parent.querySelectorAll('.lam-accordion-button').forEach(item => {
+		const buttonIndex = item.dataset.index;
+		if (indexActive !== buttonIndex) {
+			item.classList.remove('lam-accordion-button-active');
+		}
+	});
+	// close other content areas
+	parent.querySelectorAll('.lam-accordion-content').forEach(item => {
+		const contentIndex = item.dataset.index;
+		if (indexActive !== contentIndex) {
+			item.style.maxHeight = null;
+			item.classList.remove('lam-accordion-content-active')
+		}
+	});
+}
+
+
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();
 	window.lam.form.autoTrim();
@@ -2952,6 +3011,7 @@ jQuery(document).ready(function() {
 	window.lam.dynamicSelect.activate();
 	window.lam.webauthn.setupDeviceManagement();
 	window.lam.tabs.init();
+	window.lam.accordion.init();
 });
 
 /**
