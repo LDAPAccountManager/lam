@@ -429,24 +429,6 @@ function bindShowNewZoneDialog(title, okText, cancelText) {
 }
 
 
-// creates the tooltips for help buttons
-jQuery(document).ready(
-	function() {
-		jQuery(document).tooltip({
-			items: "[helpdata]",
-			content: function() {
-				var element = $(this);
-				var helpString = "<table><tr><th class=\"help\">";
-				helpString += element.attr("helptitle");
-				helpString += "</th></tr><td class=\"help\">";
-				helpString += element.attr("helpdata");
-				helpString += "</td></tr></table>";
-				return helpString;
-			}
-		})
-	}
-);
-
 /**
  * Checks if the given field has the same value as the reference field.
  * Field is marked red if different and green if equal.
@@ -2997,6 +2979,26 @@ window.lam.accordion.onClick = function(event, button) {
 	});
 }
 
+window.lam.tooltip = window.lam.tooltip || {};
+
+/**
+ * Creates the tooltips for help buttons.
+ */
+window.lam.tooltip.init = function() {
+	jQuery(document).tooltip({
+		items: "[helpdata]",
+		content: function() {
+			var element = $(this);
+			var helpString = "<table><tr><th class=\"help\">";
+			helpString += element.attr("helptitle");
+			helpString += "</th></tr><td class=\"help\">";
+			helpString += element.attr("helpdata");
+			helpString += "</td></tr></table>";
+			return helpString;
+		}
+	});
+}
+
 
 jQuery(document).ready(function() {
 	window.lam.gui.equalHeight();
@@ -3012,6 +3014,7 @@ jQuery(document).ready(function() {
 	window.lam.webauthn.setupDeviceManagement();
 	window.lam.tabs.init();
 	window.lam.accordion.init();
+	window.lam.tooltip.init();
 });
 
 /**
