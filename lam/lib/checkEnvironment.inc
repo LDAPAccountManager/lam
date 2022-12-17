@@ -46,7 +46,7 @@ include_once(__DIR__ . "/../lib/persistence.inc");
 
 // check if PHP >= 7.4
 if (version_compare(phpversion(), '7.4.0') < 0) {
-	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
+	echo "<!DOCTYPE html>\n\n";
 	echo "<html>\n<head>\n";
 	echo "<meta name=\"robots\" content=\"noindex, nofollow\">\n";
 	echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n";
@@ -159,7 +159,7 @@ catch (Exception $e) {
 }
 // stop login if errors occurred
 if (!empty($criticalErrors) || !empty($configurationErrors)) {
-	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
+	echo "<!DOCTYPE html>\n\n";
 	echo "<html>\n<head>\n";
 	echo "<meta name=\"robots\" content=\"noindex, nofollow\">\n";
 	echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n";

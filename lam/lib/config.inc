@@ -235,7 +235,7 @@ function metaRefresh($page) {
 		echo $_SESSION['header'];
 	}
 	else {
-		echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">';
+		echo '<!DOCTYPE html>';
 		echo "<html><head>\n";
 	}
 	echo "<meta http-equiv=\"refresh\" content=\"0; URL=" . $page . "\">\n";

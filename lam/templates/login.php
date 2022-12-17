@@ -174,7 +174,7 @@ if (isset($_POST['language'])) {
 	}
 }
 
-$_SESSION['header'] = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
+$_SESSION['header'] = "<!DOCTYPE html>\n\n";
 $_SESSION['header'] .= "<html>\n<head>\n";
 $_SESSION['header'] .= "<meta name=\"robots\" content=\"noindex, nofollow\">\n";
 $_SESSION['header'] .= "<meta http-equiv=\"content-type\" content=\"text/html; charset=" . $encoding . "\">\n";
