@@ -3357,8 +3357,10 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		// load domain
 		if (isset($profile['windowsUser_userPrincipalNameDomain'][0])) {
 			$user = empty($this->attributes['userPrincipalName'][0]) ? '' : $this->attributes['userPrincipalName'][0];
-			$user = explode('@', $user);
-			$user = $user[0] . '@' . $profile['windowsUser_userPrincipalNameDomain'][0];
+			$userParts = explode('@', $user);
+			if (!empty($profile['windowsUser_userPrincipalNameDomain'][0])) {
+				$user = $userParts[0] . '@' . $profile['windowsUser_userPrincipalNameDomain'][0];
+			}
 			$this->attributes['userPrincipalName'][0] = $user;
 		}
 		// load groups
@@ -4295,7 +4297,10 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$replacements['user'] = $_POST['userPrincipalName'];
 		}
 		elseif (!empty($this->attributes['userPrincipalName'][0])) {
-			$replacements['user'] = $this->attributes['userPrincipalName'][0];
+			$userParts = explode('@', $this->attributes['userPrincipalName'][0]);
+			if ((sizeof($userParts) === 2) && !empty($userParts[0])) {
+				$replacements['user'] = $userParts[0];
+			}
 		}
 		// cn
 		if (!empty($_POST['cn_0'])) {
