@@ -2895,6 +2895,10 @@ window.lam.tabs.tabClick = function(element) {
 			element.classList.remove('lam-tab-active');
 		}
 	});
+	const selectedTabInput = document.querySelector('#selectedTab');
+	if (selectedTabInput) {
+		selectedTabInput.value = tabId;
+	}
 }
 
 window.lam.progressbar = window.lam.progressbar || {};
