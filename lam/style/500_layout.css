@@ -1085,3 +1085,14 @@ div.lam-accordion-content-active {
 div.lam-accordion-content-inner {
 	margin: var(--lam-large-space) var(--lam-largest-space);
 }
+
+div.tippy-box {
+	color: var(--lam-text-color-default);
+	background: var(--lam-background-color-default);
+	font-size: 85%;
+	border: 2px solid #a0a0a4;
+	border-radius: var(--lam-default-border-radius);
+	box-shadow: 0px 0px 5px #666666;
+	padding: 0 var(--lam-regular-space) var(--lam-regular-space) var(--lam-regular-space);
+	max-width: 25rem;
+}

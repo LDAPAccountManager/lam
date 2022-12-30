@@ -2989,17 +2989,18 @@ window.lam.tooltip = window.lam.tooltip || {};
  * Creates the tooltips for help buttons.
  */
 window.lam.tooltip.init = function() {
-	jQuery(document).tooltip({
-		items: "[helpdata]",
-		content: function() {
-			var element = $(this);
-			var helpString = "<table><tr><th class=\"help\">";
-			helpString += element.attr("helptitle");
-			helpString += "</th></tr><td class=\"help\">";
-			helpString += element.attr("helpdata");
-			helpString += "</td></tr></table>";
-			return helpString;
-		}
+	document.querySelectorAll('[helpdata]').forEach(item => {
+		let helpString = "<div class='lam-tooltip'><h4 class=\"lam-tooltip-title\">";
+		helpString += item.attributes.helptitle.value;
+		helpString += "</h4><div class=\"lam-tooltip-content\">";
+		helpString += item.attributes.helpdata.value;
+		helpString += "</div></h4></div>";
+		tippy(item, {
+			content: helpString,
+			allowHTML: true,
+			arrow: false,
+			delay: [100, 20]
+		});
 	});
 }
 
