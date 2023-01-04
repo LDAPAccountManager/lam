@@ -341,7 +341,7 @@ class WebauthnManager {
 	 * @return String challenge
 	 */
 	private function createChallenge() {
-		return generateRandomPassword(32);
+		return generateRandomPassword(32, false);
 	}
 
 	/**

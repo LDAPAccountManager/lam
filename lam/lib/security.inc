@@ -648,11 +648,11 @@ function getLamLdapUser() {
  *
  * @param boolean $overwrite overwrite existing token
  */
-function addSecurityTokenToSession($overwrite = true) {
+function addSecurityTokenToSession($overwrite = true): void {
 	if (!empty($_SESSION[getSecurityTokenName()]) && !$overwrite) {
 		return;
 	}
-	$_SESSION[getSecurityTokenName()] = getRandomNumber();
+	$_SESSION[getSecurityTokenName()] = generateRandomPassword(40);
 }
 
 /**

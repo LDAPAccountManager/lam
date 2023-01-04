@@ -457,7 +457,7 @@ class DuoProvider extends BaseProvider {
 	 */
 	private function getAKey() {
 		if (empty($_SESSION['duo_akey'])) {
-			$_SESSION['duo_akey'] = generateRandomPassword(40);
+			$_SESSION['duo_akey'] = generateRandomPassword(40, false);
 		}
 		return $_SESSION['duo_akey'];
 	}

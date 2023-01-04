@@ -365,9 +365,10 @@ function pwd_is_enabled($hash) {
  * Generates a random password with 12 digits by default.
  *
  * @param int $length length of password (defaults to 12)
+ * @param bool $checkStrength check if password matches the policy
  * @return String password
  */
-function generateRandomPassword($length = 12) {
+function generateRandomPassword($length = 12, bool $checkStrength = true): string {
 	$list = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-_';
 	$password = '';
 	$minLength = $_SESSION['cfgMain']->passwordMinLength;
@@ -380,7 +381,7 @@ function generateRandomPassword($length = 12) {
 			$rand = abs(getRandomNumber() % 65);
 			$password .= $list[$rand];
 		}
-		if (checkPasswordStrength($password, null, null) === true) {
+		if (!$checkStrength || checkPasswordStrength($password, null, null) === true) {
 			break;
 		}
 	}
