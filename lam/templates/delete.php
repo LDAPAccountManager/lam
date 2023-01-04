@@ -109,7 +109,7 @@ if (isset($_GET['type']) && isset($_SESSION['delete_dn'])) {
 		$users[] = substr($dn, $start, $end-$start);
 	}
 
-	$sessionKey = $sessionAccountPrefix . (new \DateTime('now', getTimeZone()))->getTimestamp() . getRandomNumber();
+	$sessionKey = $sessionAccountPrefix . (new \DateTime('now', getTimeZone()))->getTimestamp() . generateRandomText();
 	//load account
 	$_SESSION[$sessionKey] = new \accountContainer($type, $sessionKey);
 	// Show HTML Page
@@ -191,7 +191,7 @@ if (isset($_POST['delete'])) {
 	addSecurityTokenToMetaHTML($container);
 	$container->add(new htmlHiddenInput('type', $type->getId()), 12);
 
-	$sessionKey = $sessionAccountPrefix . (new \DateTime('now', getTimeZone()))->getTimestamp() . getRandomNumber();
+	$sessionKey = $sessionAccountPrefix . (new \DateTime('now', getTimeZone()))->getTimestamp() . generateRandomText();
 	$_SESSION[$sessionKey] = new \accountContainer($type, $sessionKey);
 	// Delete dns
 	$allOk = true;
