@@ -6,7 +6,7 @@ use LAMException;
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2004  Michael Duergner
-                2003 - 2021  Roland Gruber
+                2003 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -168,7 +168,7 @@ function createPdf($structure, $accounts, $pdfKeys, $account_type, $font, $retur
 	$out = $pdf->Output('out.pdf', 'S');
 	if (!$returnAsString) {
 		// use timestamp and random number from ldap.inc as filename so it should be unique.
-		$filename = '../../tmp/' . getRandomNumber() . time() .'.pdf';
+		$filename = '../../tmp/' . generateRandomText() . time() .'.pdf';
 		// Save PDF
 		$handle = fopen($filename, 'w');
 		chmod($filename, 0640);
