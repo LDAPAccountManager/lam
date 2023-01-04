@@ -242,4 +242,14 @@ class AccountTest extends TestCase {
 		$this->assertEquals(4, getNumberOfCharacterClasses('a-0AB.a3'));
 	}
 
+	function testGenerateRandomPassword() {
+		global $_SESSION;
+		$_SESSION = array('cfgMain' => new LAMCfgMain());
+		$this->assertEquals(20, strlen(generateRandomPassword(20)));
+	}
+
+	function testGenerateRandomText() {
+		$this->assertEquals(20, strlen(generateRandomText(20)));
+	}
+
 }

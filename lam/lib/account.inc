@@ -389,6 +389,22 @@ function generateRandomPassword($length = 12, bool $checkStrength = true): strin
 }
 
 /**
+ * Generates a random text with 20 letters by default.
+ *
+ * @param int $length length of password (defaults to 20)
+ * @return string text
+ */
+function generateRandomText($length = 20): string {
+	$list = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	$text = '';
+	for ($i = 0; $i < $length; $i++) {
+		$rand = abs(getRandomNumber() % 62);
+		$text .= $list[$rand];
+	}
+	return $text;
+}
+
+/**
  * Checks if the given password matches the crypto hash.
  *
  * @param String type hash type (must be one of getSupportedHashTypes())

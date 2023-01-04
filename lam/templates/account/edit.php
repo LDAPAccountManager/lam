@@ -67,7 +67,7 @@ if (isset($_GET['editKey'])) {
 	$sessionKey = htmlspecialchars($_GET['editKey']);
 }
 else {
-	$sessionKey = $sessionAccountPrefix . (new DateTime('now', getTimeZone()))->getTimestamp() . getRandomNumber();
+	$sessionKey = $sessionAccountPrefix . (new DateTime('now', getTimeZone()))->getTimestamp() . generateRandomText();
 }
 
 // cleanup account containers in session
