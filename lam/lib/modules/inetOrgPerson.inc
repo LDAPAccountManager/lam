@@ -1608,7 +1608,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			$photoFile = '../../graphics/user.svg';
 			$noPhoto = true;
 			if (isset($this->attributes['jpegPhoto'][0])) {
-				$jpeg_filename = 'jpg' . getRandomNumber() . '.jpg';
+				$jpeg_filename = 'jpg_' . generateRandomText() . '.jpg';
 				$outjpeg = @fopen(dirname(__FILE__) . '/../../tmp/' . $jpeg_filename, "wb");
 				fwrite($outjpeg, $this->attributes['jpegPhoto'][0]);
 				fclose ($outjpeg);
@@ -1755,7 +1755,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		}
 		else {
 			$container->add(new htmlSubTitle(_('Crop image')), 12);
-			$jpeg_filename = 'jpg' . getRandomNumber() . '.jpg';
+			$jpeg_filename = 'jpg_' . generateRandomText() . '.jpg';
 			$outjpeg = @fopen(dirname(__FILE__) . '/../../tmp/' . $jpeg_filename, "wb");
 			fwrite($outjpeg, $this->attributes['jpegPhoto'][0]);
 			fclose ($outjpeg);
@@ -1887,7 +1887,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			$table = new htmlTable();
 			$table->colspan = 10;
 			for ($i = 0; $i < sizeof($this->attributes['userCertificate;binary']); $i++) {
-				$filename = 'userCertificate' . getRandomNumber() . '.der';
+				$filename = 'userCertificate_' . generateRandomText() . '.der';
 				$pathOut = dirname(__FILE__) . '/../../tmp/' . $filename;
 				$out = @fopen($pathOut, "wb");
 				@chmod($pathOut, 0640);
@@ -3132,7 +3132,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		$photo = $_SESSION[self::SESS_PHOTO];
 		$row = new htmlResponsiveRow();
 		if (!empty($photo)) {
-			$jpeg_filename = 'jpegPhoto' . getRandomNumber() . '.jpg';
+			$jpeg_filename = 'jpegPhoto_' . generateRandomText() . '.jpg';
 			$outjpeg = fopen(realpath('../../') . '/tmp/' . $jpeg_filename, "wb");
 			fwrite($outjpeg, $photo);
 			fclose ($outjpeg);
@@ -3270,7 +3270,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			$certTable = new htmlResponsiveRow();
 			for ($i = 0; $i < sizeof($userCertificates); $i++) {
 				$group = new htmlGroup();
-				$filename = 'userCertificate' . getRandomNumber() . '.der';
+				$filename = 'userCertificate_' . generateRandomText() . '.der';
 				$out = @fopen(dirname(__FILE__) . '/../../tmp/' . $filename, "wb");
 				fwrite($out, $userCertificates[$i]);
 				fclose ($out);
@@ -4643,8 +4643,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 							}
 						}
 					}
-					$imgNumber = getRandomNumber();
-					$jpeg_filename = 'jpg' . $imgNumber . '.jpg';
+					$jpeg_filename = 'jpg_' . generateRandomText() . '.jpg';
 					$outjpeg = @fopen(dirname(__FILE__) . '/../../tmp/' . $jpeg_filename, "wb");
 					fwrite($outjpeg, $entry[$attribute][0]);
 					fclose ($outjpeg);
