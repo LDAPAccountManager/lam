@@ -10,7 +10,7 @@ use function LAM\PERSISTENCE\dbTableExists;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2022  Roland Gruber
+  Copyright (C) 2003 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -2525,7 +2525,7 @@ class LAMConfig {
 	 */
 	public function getJobToken() {
 		if (empty($this->jobToken)) {
-			$this->jobToken = getRandomNumber();
+			$this->jobToken = generateRandomText();
 		}
 		return $this->jobToken;
 	}
@@ -3604,7 +3604,7 @@ class LAMCfgMain {
 			return null;
 		}
 		// write to temp file
-		$fileName = time() . getRandomNumber() . '.pem';
+		$fileName = time() . generateRandomText() . '.pem';
 		$path = dirname(__FILE__) . '/../tmp/' . $fileName;
 		$handle = @fopen($path, "wb");
 		@chmod($path, 0600);

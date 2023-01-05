@@ -173,7 +173,7 @@ class Exporter {
 			throw new LAMException(_('Invalid format'));
 		}
 		if ($this->saveAsFile) {
-			$filename = '../../tmp/' . getRandomNumber() . time() .'.' . $this->format;
+			$filename = '../../tmp/' . generateRandomText() . time() .'.' . $this->format;
 			$handle = fopen($filename, 'w');
 			chmod($filename, 0640);
 			fwrite($handle, $output);

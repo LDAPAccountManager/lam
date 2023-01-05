@@ -3,7 +3,7 @@
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2009 - 2022  Roland Gruber
+                2009 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -386,6 +386,22 @@ function generateRandomPassword($length = 12, bool $checkStrength = true): strin
 		}
 	}
 	return $password;
+}
+
+/**
+ * Generates a random text with 20 letters by default.
+ *
+ * @param int $length length of password (defaults to 20)
+ * @return string text
+ */
+function generateRandomText($length = 20): string {
+	$list = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	$text = '';
+	for ($i = 0; $i < $length; $i++) {
+		$rand = abs(getRandomNumber() % 62);
+		$text .= $list[$rand];
+	}
+	return $text;
 }
 
 /**

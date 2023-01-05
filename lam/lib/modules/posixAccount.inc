@@ -1333,7 +1333,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 			&& ($this->get_scope() == 'user')
 			&& $this->getAccountContainer()->isNewAccount && get_preg($this->attributes['uid'][0], 'username')) {
 			$groupType = $this->getPosixGroupType();
-			$sessionKey = 'TMP' . getRandomNumber();
+			$sessionKey = 'TMP' . generateRandomText();
 			$accountContainerTmp = new accountContainer($groupType, $sessionKey);
 			$_SESSION[$sessionKey] = &$accountContainerTmp;
 			$accountContainerTmp->new_account();

@@ -1564,7 +1564,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$photoFile = '../../graphics/user.svg';
 			$noPhoto = true;
 			if (isset($this->attributes['jpegPhoto'][0])) {
-				$jpeg_filename = 'jpg' . getRandomNumber() . '.jpg';
+				$jpeg_filename = 'jpg_' . generateRandomText() . '.jpg';
 				$outjpeg = @fopen(dirname(__FILE__) . '/../../tmp/' . $jpeg_filename, "wb");
 				fwrite($outjpeg, $this->attributes['jpegPhoto'][0]);
 				fclose ($outjpeg);
@@ -2373,7 +2373,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		}
 		else {
 			$container->add(new htmlSubTitle(_('Crop image')), 12);
-			$jpeg_filename = 'jpg' . getRandomNumber() . '.jpg';
+			$jpeg_filename = 'jpg_' . generateRandomText() . '.jpg';
 			$outjpeg = @fopen(dirname(__FILE__) . '/../../tmp/' . $jpeg_filename, "wb");
 			fwrite($outjpeg, $this->attributes['jpegPhoto'][0]);
 			fclose ($outjpeg);
@@ -2428,7 +2428,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		}
 		if (!empty($_FILES['photoFile']['tmp_name'])) {
 			$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
-			$data = fread($handle, 10000000);
+			$data = fread($handle, 100000000);
 			fclose($handle);
 			if (!empty($this->moduleSettings['windowsUser_jpegPhoto_maxSize'][0]) && (strlen($data) > (1024 * $this->moduleSettings['windowsUser_jpegPhoto_maxSize'][0]))) {
 				$errMsg = $this->messages['file'][3];
@@ -4561,8 +4561,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 							}
 						}
 					}
-					$imgNumber = getRandomNumber();
-					$jpeg_filename = 'jpg' . $imgNumber . '.jpg';
+					$jpeg_filename = 'jpg_' . generateRandomText() . '.jpg';
 					$outjpeg = @fopen(dirname(__FILE__) . '/../../tmp/' . $jpeg_filename, "wb");
 					fwrite($outjpeg, $entry[$attribute][0]);
 					fclose ($outjpeg);

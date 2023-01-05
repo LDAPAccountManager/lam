@@ -25,7 +25,7 @@ use LAM\TOOLS\TREEVIEW\TreeViewTool;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2022  Roland Gruber
+  Copyright (C) 2013 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -472,7 +472,7 @@ function dryRun(): array {
 	$container->addElement(new htmlOutputText(_('Dry run finished.')), true);
 	$container->addVerticalSpace('20px');
 	// store LDIF
-	$filename = 'ldif' . getRandomNumber() . '.ldif';
+	$filename = 'ldif_' . generateRandomText() . '.ldif';
 	$out = @fopen(dirname(__FILE__) . '/../../tmp/' . $filename, "wb");
 	if ($out !== false) {
 		fwrite($out, $ldif);

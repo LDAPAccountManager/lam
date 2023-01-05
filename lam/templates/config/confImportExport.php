@@ -265,7 +265,7 @@ printHeaderContents(_("Import and export configuration"), '../..');
                 }
 	            $importer = new ConfigDataImporter();
 		        $importSteps = $importer->getPossibleImportSteps($data);
-		        $tmpFile = __DIR__ . '/../../tmp/internal/import_' . getRandomNumber() . '.tmp';
+		        $tmpFile = __DIR__ . '/../../tmp/internal/import_' . generateRandomText() . '.tmp';
 		        $file = @fopen($tmpFile, "w");
 		        if ($file) {
 			        fputs($file, $data);
