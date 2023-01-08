@@ -549,7 +549,6 @@ class htmlInputField extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		$this->cssClasses[] = 'ui-corner-all';
 		if ($this->isAutoTrim()) {
 			$this->cssClasses[] = 'lam-autotrim';
 		}
@@ -1329,7 +1328,6 @@ class htmlSelect extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		$this->cssClasses[] = 'ui-corner-all';
 		if (isset($values[$this->name])) {
 			$this->selectedElements = $values[$this->name];
 		}
@@ -2715,7 +2713,6 @@ class htmlInputTextarea extends htmlElement {
 	 * @return array List of input field names and their type (name => type)
 	 */
 	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		$this->cssClasses[] = 'ui-corner-all';
 		if (isset($values[$this->name])) {
 			$this->value = htmlspecialchars(implode("\r\n", $values[$this->name]));
 		}

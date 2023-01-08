@@ -288,7 +288,7 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 		<br><br><br>
 		<div class="centeredTable">
 		<div class="roundedShadowBox limitWidth" style="position:relative; z-index:5;">
-		<table border="0" rules="none" bgcolor="white" class="ui-corner-all">
+		<table border="0" rules="none" bgcolor="white">
 			<tr>
 				<td style="border-style:none">
 					<form action="login.php" method="post">

@@ -161,7 +161,7 @@ $tabindex = 1;
 		$box->add($manageLink, 12, 12, 12, 'text-center');
 
 		$boxDiv = new htmlDiv(null, $box);
-		$boxDiv->setCSSClasses(array('ui-corner-all', 'roundedShadowBox', 'limitWidth', 'text-center'));
+		$boxDiv->setCSSClasses(array('roundedShadowBox', 'limitWidth', 'text-center'));
 		$row->add($boxDiv, 12);
 
 		// back link

@@ -666,7 +666,7 @@ printHeaderContents(_("Edit general settings"), '../..');
 	}
 
 	$box = new htmlDiv(null, $row);
-	$box->setCSSClasses(array('ui-corner-all', 'roundedShadowBox'));
+	$box->setCSSClasses(array('roundedShadowBox'));
 	parseHtml(null, $box, array(), false, $tabindex, 'user');
 
 

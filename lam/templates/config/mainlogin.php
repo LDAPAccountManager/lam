@@ -118,7 +118,7 @@ printHeaderContents(_("Login"), '../..');
 		<form action="mainlogin.php" method="post" autocomplete="off">
 		<table align="center">
 		<tr><td>
-		<table align="center" border="0" rules="none" bgcolor="white" class="ui-corner-all roundedShadowBox" style="padding: 20px;">
+		<table align="center" border="0" rules="none" bgcolor="white" class="roundedShadowBox" style="padding: 20px;">
 		<tr><td>
 		<?php
 		$spacer = new htmlSpacer('20px', '20px');

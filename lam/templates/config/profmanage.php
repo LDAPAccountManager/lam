@@ -320,7 +320,7 @@ $box->addLabel($defaultProfileButton);
 $box->add(new htmlOutputText(''), 0, 6);
 
 $boxDiv = new htmlDiv(null, $box);
-$boxDiv->setCSSClasses(array('ui-corner-all', 'roundedShadowBox', 'limitWidth'));
+$boxDiv->setCSSClasses(array('roundedShadowBox', 'limitWidth'));
 $row->add($boxDiv);
 
 $row->add(new htmlHiddenInput('action', 'none'));

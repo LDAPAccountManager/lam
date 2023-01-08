@@ -1100,9 +1100,9 @@ class accountContainer {
 		$rdnSelect = new htmlResponsiveSelect('accountContainerRDN', $rdnlist, array($this->rdn), _('RDN identifier'), '400');
 		$rdnSelect->setShortLabel();
 		$titleBarSuffixRdn->add($rdnSelect, 12, 12, 5);
-		$titleBarContainer->add($titleBarSuffixRdn, 12);
+		$titleBarContainer->add($titleBarSuffixRdn);
 
-		$titleBarDiv = new htmlDiv(null, $titleBarContainer, array('titleBar', 'ui-corner-top'));
+		$titleBarDiv = new htmlDiv(null, $titleBarContainer, array('titleBar'));
 		parseHtml(null, $titleBarDiv, array(), false, $tabindex, $this->type->getScope());
 
 		echo '<div id="lamVerticalTabs" class="lam-vertical-tab-container">';
