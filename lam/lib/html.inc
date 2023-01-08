@@ -4131,19 +4131,19 @@ class htmlEqualHeight extends htmlElement {
 class htmlSortableList extends htmlElement {
 
 	/** list of elements */
-	private $elements = array();
+	private $elements;
 	/** HTML ID */
-	private $id = '';
+	private $id;
 	/** on update event */
 	private $onUpdate = null;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param array $elements list of elements as text (HTML special chars must be escaped already) or htmlElement
-	 * @param String HTML ID
+	 * @param string[] $elements list of elements as text (HTML special chars must be escaped already) or htmlElement
+	 * @param string HTML ID
 	 */
-	function __construct($elements, $id) {
+	function __construct(array $elements, string $id) {
 		$this->elements = $elements;
 		$this->id = htmlspecialchars($id);
 	}
@@ -4172,7 +4172,7 @@ class htmlSortableList extends htmlElement {
 		for ($i = 0; $i < sizeof($this->elements); $i++) {
 			$element = $this->elements[$i];
 			echo '<li data-position-orig="' . $i . '">';
-			echo '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>';
+			echo '<span class="lam-sortable-list-icon"></span>';
 			if ($element instanceof htmlElement) {
 				parseHtml($module, $element, $values, $restricted, $tabindex, $scope);
 			}

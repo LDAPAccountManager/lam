@@ -1173,7 +1173,6 @@ lib/3rdParty/tcpdf                                                   D  2020  Ni
 lib/3rdParty/tcpdf/fonts/dejavu*.z                                   A        Public Domain, Bitstream, Inc., Tavmjong Bah
 lib/3rdParty/yubico/Yubico.php                                       C  2015  Yubico AB
 templates/lib/*jquery*.js                                            B  2018  jQuery Foundation and other contributors
-style/120_jquery-ui*.css                                             B  2016  jQuery Foundation and other contributors
 templates/lib/*popper*.js                                            B
 templates/lib/*tippy*.js                                             B  2021  atomiks
 templates/lib/*flatpickr*.js                                         B  2017  Gregory Petrosyan

@@ -228,6 +228,40 @@ for ($i = 0; $i < 5; $i++) {
 }
 $row->add(new htmlAccordion('acc_multi', $accordionElementsMulti));
 
+$row->add(new htmlSpacer(null, '5rem'));
+
+$row->add(new htmlSubTitle('Sortable list'));
+
+$sortableList1 = new htmlSortableList(array(
+	'text 1',
+	'text 2',
+	'text 3',
+	'text 4',
+	'text 5',
+), 'sortableList1');
+$sortableList1->setCSSClasses(array('module-list'));
+$row->add($sortableList1);
+
+$row->add(new htmlSpacer(null, '2rem'));
+
+$listElements = array();
+for ($i = 0; $i < 8; $i++) {
+	$el = new htmlTable('100%');
+	$image = new htmlImage('../../graphics/tux.svg');
+	$image->setCSSClasses(array('size16', 'margin-right5-mobile-only'));
+	$el->addElement($image);
+	$el->addElement(new htmlOutputText("Text " . $i));
+	$image2 = new htmlImage('../../graphics/del.svg');
+	$image2->setCSSClasses(array('size16', 'margin-right5-mobile-only'));
+	$image2->alignment = htmlElement::ALIGN_RIGHT;
+	$el->addElement($image2);
+	$listElements[] = $el;
+}
+$sortableList2 = new htmlSortableList($listElements, 'sortableList2');
+$sortableList2->setCSSClasses(array('module-list'));
+$row->add($sortableList2);
+
+
 $row->add(new htmlSpacer(null, '20rem'));
 
 
