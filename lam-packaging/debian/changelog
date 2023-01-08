@@ -1,3 +1,11 @@
+ldap-account-manager (8.3.RC1-1) unstable; urgency=medium
+
+  * new upstream release
+  * Fix "[INTL:pt_BR] Brazilian Portuguese debconf templates
+    translation" (Closes: #1028006)
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 08 Jan 2023 09:04:23 +0100
+
 ldap-account-manager (8.2-1) unstable; urgency=medium
 
   * new upstream release

@@ -3,7 +3,7 @@ Type: multiselect
 Choices: apache2
 Default: apache2
 _Description: Web server configuration:
- LDAP Account Manager supports any webserver that supports PHP5, but this
+ LDAP Account Manager supports any webserver that supports PHP, but this
  automatic configuration process only supports Apache2.
  If you choose to configure Apache2 then LAM can be accessed at http(s)://localhost/lam
 

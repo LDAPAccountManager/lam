@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager\n"
 "Report-Msgid-Bugs-To: ldap-account-manager@packages.debian.org\n"
-"POT-Creation-Date: 2010-06-03 12:36+0200\n"
+"POT-Creation-Date: 2023-01-08 10:46+0100\n"
 "PO-Revision-Date: 2012-03-02 12:42+0000\n"
 "Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
 "Language-Team: Danish <debian-l10n-danish@lists.debian.org>\n"
@@ -26,14 +26,14 @@ msgstr "Konfiguration af internetserver:"
 #. Description
 #: ../templates:1001
 msgid ""
-"LDAP Account Manager supports any webserver that supports PHP5, but this "
+"LDAP Account Manager supports any webserver that supports PHP, but this "
 "automatic configuration process only supports Apache2. If you choose to "
 "configure Apache2 then LAM can be accessed at http(s)://localhost/lam"
 msgstr ""
 "LDAP Account Manager understøtter alle internetservere som understøtter "
-"PHP5, men denne automatiske konfigurationsproces understøtter kun Apache2. "
-"Hvis du vælger at konfigurere Apache2, så kan LAM tilgås på "
-"http(s)://localhost/lam"
+"PHP, men denne automatiske konfigurationsproces understøtter kun Apache2. "
+"Hvis du vælger at konfigurere Apache2, så kan LAM tilgås på http(s)://"
+"localhost/lam"
 
 #. Type: string
 #. Description
@@ -49,7 +49,8 @@ msgid ""
 "http(s)://localhost/lam. You may select an alias other than \"lam\"."
 msgstr ""
 "LAM vil tilføje et alias til din httpd.conf, hvilket gør det muligt for dig "
-"at tilgå LAM på http(s)://localhost/lam. Du kan vælge et andet alias end »lam«."
+"at tilgå LAM på http(s)://localhost/lam. Du kan vælge et andet alias end "
+"»lam«."
 
 #. Type: boolean
 #. Description
@@ -61,5 +62,5 @@ msgstr "Ønsker du at genstarte dine internetservere nu?"
 #. Description
 #: ../templates:3001
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
-msgstr "Dine internetservere skal genstartes før at ændringerne træder i kraft."
-
+msgstr ""
+"Dine internetservere skal genstartes før at ændringerne træder i kraft."
