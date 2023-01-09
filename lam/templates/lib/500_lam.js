@@ -1,7 +1,7 @@
 /**
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2022  Roland Gruber
+  Copyright (C) 2003 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -118,24 +118,6 @@ function SubmitForm(id, e) {
 	}
 	window.lastKeyCode = e.keyCode;
 	return true;
-}
-
-function addResizeHandler(item, min, max) {
-	jQuery(item).click(
-		function() {
-			if (jQuery(item).hasClass('imgExpanded')) {
-				jQuery(item).animate({
-					height: min
-				});
-			}
-			else {
-				jQuery(item).animate({
-					height: max
-				});
-			}
-			jQuery(item).toggleClass('imgExpanded');
-		}
-	);
 }
 
 /**
