@@ -5,7 +5,7 @@ use LAM\ImageUtils\ImageManipulationFactory;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2022  Roland Gruber
+  Copyright (C) 2013 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -479,12 +479,6 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				'example' => _('Steve Miller'),
 			),
 			array(
-				'name' => 'windowsUser_displayName',
-				'description' => _('Display name'),
-				'help' => 'displayName',
-				'example' => _('Steve Miller'),
-			),
-			array(
 				'name' => 'windowsUser_deactivated',
 				'description' => _('Account is deactivated'),
 				'help' => 'deactivated',
@@ -520,6 +514,14 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				'help' => 'groupsUpload',
 			),
 		);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedisplayName')) {
+			$return['upload_columns'][] = array(
+				'name' => 'windowsUser_displayName',
+				'description' => _('Display name'),
+				'help' => 'displayName',
+				'example' => _('Steve Miller'),
+			);
+		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideinitials')) {
 			$return['upload_columns'][] = array(
 				'name' => 'windowsUser_initials',
@@ -845,7 +847,9 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		// profile options
 		$profileContainer = new htmlResponsiveRow();
 		$profileContainer->add(new htmlResponsiveInputField(_('Common name'), 'windowsUser_cn', null, 'cn'), 12);
-		$profileContainer->add(new htmlResponsiveInputField(_('Display name'), 'windowsUser_displayName', null, 'displayName'), 12);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedisplayName')) {
+			$profileContainer->add(new htmlResponsiveInputField(_('Display name'), 'windowsUser_displayName', null, 'displayName'), 12);
+		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidestreetAddress')) {
 			$profileContainer->add(new htmlResponsiveInputField(_('Street'), 'windowsUser_streetAddress', null, 'streetAddress'), 12);
 		}
@@ -910,11 +914,13 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$return['profile_options'] = $profileContainer;
 		// profile mappings
 		$return['profile_mappings'] = array(
-			'windowsUser_displayName' => 'displayName',
 			'windowsUser_cn' => 'cn',
 			'windowsUser_streetAddress' => 'streetAddress',
 			'windowsUser_company' => 'company',
 		);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedisplayName')) {
+			$return['profile_mappings']['windowsUser_displayName'] = 'displayName';
+		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideWorkstations')) {
 			$return['profile_mappings']['windowsUser_userWorkstations'] = 'userWorkstations';
 		}
@@ -981,7 +987,6 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$return['PDF_fields'] = array(
 			'userPrincipalName' => _('User name'),
 			'cn' => _('Common name'),
-			'displayName' => _('Display name'),
 			'givenName' => _('First name'),
 			'sn' => _('Last name'),
 			'deactivated' => _('Account is deactivated'),
@@ -991,6 +996,9 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			'password' => _('Password'),
 			'accountExpires' => _('Account expiration date'),
 		);
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedisplayName')) {
+			$return['PDF_fields']['displayName'] = _('Display name');
+		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideRequireSmartcard')) {
 			$return['PDF_fields']['requireCard'] = _('Require smartcard');
 		}
@@ -1322,7 +1330,9 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$this->addSimpleInputTextField($containerLeft, 'givenName', _('First name'));
 		$this->addSimpleInputTextField($containerLeft, 'sn', _('Last name'));
 		$this->addSimpleInputTextField($containerLeft, 'cn', _('Common name'), true);
-		$this->addSimpleInputTextField($containerLeft, 'displayName', _('Display name'));
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedisplayName')) {
+			$this->addSimpleInputTextField($containerLeft, 'displayName', _('Display name'));
+		}
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideinitials')) {
 			$this->addSimpleInputTextField($containerLeft, 'initials', _('Initials'));
 		}
@@ -1734,12 +1744,14 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$this->attributes['description'][0] = $_POST['description'];
 		}
 		// display name
-		$this->attributes['displayName'][0] = $_POST['displayName'];
-		if (!empty($this->attributes['displayName'][0]) && !get_preg($this->attributes['displayName'][0], 'realname')) {
-			$return[] = $this->messages['displayName'][0];
-		}
-		if (empty($this->attributes['displayName'][0]) && !empty($this->attributes['cn'][0])) {
-			$this->attributes['displayName'][0] = $this->attributes['cn'][0];
+		if (!$this->isBooleanConfigOptionSet('windowsUser_hidedisplayName')) {
+			$this->attributes['displayName'][0] = $_POST['displayName'];
+			if (!empty($this->attributes['displayName'][0]) && !get_preg($this->attributes['displayName'][0], 'realname')) {
+				$return[] = $this->messages['displayName'][0];
+			}
+			if (empty($this->attributes['displayName'][0]) && !empty($this->attributes['cn'][0])) {
+				$this->attributes['displayName'][0] = $this->attributes['cn'][0];
+			}
 		}
 		// first name
 		$this->attributes['givenName'][0] = $_POST['givenName'];
@@ -2826,11 +2838,12 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				$errors[] = $errMsg;
 			}
 			// display name
-			if ($rawAccounts[$i][$ids['windowsUser_displayName']] != "") {
-				$partialAccounts[$i]['displayName'] = $rawAccounts[$i][$ids['windowsUser_displayName']];
-			}
-			elseif (!empty($partialAccounts[$i]['cn'])) {
-				$partialAccounts[$i]['displayName'] = $partialAccounts[$i]['cn'];
+			if (!$this->isBooleanConfigOptionSet('windowsUser_hidedisplayName')) {
+				if ($rawAccounts[$i][$ids['windowsUser_displayName']] != "") {
+					$partialAccounts[$i]['displayName'] = $rawAccounts[$i][$ids['windowsUser_displayName']];
+				} elseif (!empty($partialAccounts[$i]['cn'])) {
+					$partialAccounts[$i]['displayName'] = $partialAccounts[$i]['cn'];
+				}
 			}
 			// initials
 			if (!$this->isBooleanConfigOptionSet('windowsUser_hideinitials')) {
@@ -4097,6 +4110,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$configHiddenGroup->addElement(new htmlHelpLink('hiddenOptions'));
 		$configContainer->add($configHiddenGroup, 12);
 		$hiddenOptions = array();
+		$hiddenOptions[_('Display name')] = array('windowsUser_hidedisplayName', false);
 		$hiddenOptions[_('Proxy-Addresses')] = array('windowsUser_hideproxyAddresses', true);
 		$hiddenOptions[_('Fax number')] = array('windowsUser_hidefacsimileTelephoneNumber', false);
 		$hiddenOptions[_('Mobile')] = array('windowsUser_hidemobile', false);
