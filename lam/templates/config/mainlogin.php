@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2022  Roland Gruber
+  Copyright (C) 2003 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ if (isset($_SESSION['cfgMain'])) {
 $cfgMain = new LAMCfgMain();
 // check if user entered a password
 if (isset($_POST['passwd'])) {
-	if (isset($_POST['passwd']) && ($cfgMain->checkPassword($_POST['passwd']))) {
+	if ($cfgMain->checkPassword($_POST['passwd'])) {
 		$_SESSION["mainconf_password"] = $_POST['passwd'];
 		metaRefresh("mainmanage.php");
 		exit();
