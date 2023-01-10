@@ -125,15 +125,23 @@ function SubmitForm(id, e) {
  */
 function list_switchAccountSelection() {
 	// set checkbox selection
-	jQuery('input.accountBoxUnchecked').prop('checked', true);
-	jQuery('input.accountBoxChecked').prop('checked', false);
+	document.querySelectorAll('input.accountBoxUnchecked').forEach(item => {
+		item.checked = true;
+	});
+	document.querySelectorAll('input.accountBoxChecked').forEach(item => {
+		item.checked = false;
+	});
 	// switch CSS class
-	var nowChecked = jQuery('.accountBoxUnchecked');
-	var nowUnchecked = jQuery('.accountBoxChecked');
-	nowChecked.addClass('accountBoxChecked');
-	nowChecked.removeClass('accountBoxUnchecked');
-	nowUnchecked.addClass('accountBoxUnchecked');
-	nowUnchecked.removeClass('accountBoxChecked');
+	const nowChecked = document.querySelectorAll('input.accountBoxUnchecked');
+	const nowUnchecked = document.querySelectorAll('input.accountBoxChecked');
+	nowChecked.forEach(item => {
+		item.classList.add('accountBoxChecked');
+		item.classList.remove('accountBoxUnchecked');
+	});
+	nowUnchecked.forEach(item => {
+		item.classList.remove('accountBoxChecked');
+		item.classList.add('accountBoxUnchecked');
+	});
 }
 
 /**
