@@ -198,19 +198,22 @@ function profileShowDeleteDialog(title, okText, cancelText, scope, selectFieldNa
  */
 function passwordHandleInput(random, ajaxURL, tokenName, tokenValue, okText) {
 	// get input values
-	var modules = new Array();
-	jQuery('#passwordDialog').find(':checked').each(function() {
-		modules.push(jQuery(this).prop('name'));
+	let modules = new Array();
+	const passwordDialog = document.getElementById('passwordDialog');
+	passwordDialog.querySelectorAll(':checked').forEach(item => {
+		modules.push(item.name);
 	});
-	var pwd1 = jQuery('#passwordDialog').find('[name=newPassword1]').val();
-	var pwd2 = jQuery('#passwordDialog').find('[name=newPassword2]').val();
-	var forcePasswordChange = jQuery('input[name=lamForcePasswordChange]').prop('checked');
-	var sendMail = jQuery('input[name=lamPasswordChangeSendMail]').prop('checked');
-	var sendMailAlternateAddress = '';
-	if (jQuery('#passwordDialog').find('[name=lamPasswordChangeMailAddress]')) {
-		sendMailAlternateAddress = jQuery('#passwordDialog').find('[name=lamPasswordChangeMailAddress]').val();
+	const pwd1 = passwordDialog.querySelector('[name=newPassword1]').value;
+	const pwd2 = passwordDialog.querySelector('[name=newPassword2]').value;
+	const forcePasswordChange = passwordDialog.querySelector('input[name=lamForcePasswordChange]').checked;
+	const sendMail = passwordDialog.querySelector('input[name=lamPasswordChangeSendMail]').checked;
+
+	let sendMailAlternateAddress = '';
+	const lamPasswordChangeMailAddress = passwordDialog.querySelector('[name=lamPasswordChangeMailAddress]');
+	if (lamPasswordChangeMailAddress) {
+		sendMailAlternateAddress = lamPasswordChangeMailAddress.value;
 	}
-	var pwdJSON = {
+	const pwdJSON = {
 		"modules": modules,
 		"password1": pwd1,
 		"password2": pwd2,
@@ -219,16 +222,22 @@ function passwordHandleInput(random, ajaxURL, tokenName, tokenValue, okText) {
 		"sendMail": sendMail,
 		"sendMailAlternateAddress": sendMailAlternateAddress
 	};
-	var data = {jsonInput: pwdJSON};
-	data[tokenName] = tokenValue;
+	let data = new FormData();
+	data.append('jsonInput', JSON.stringify(pwdJSON));
+	data.append(tokenName, tokenValue);
 	// make AJAX call
-	jQuery.post(ajaxURL, data, function(dataReturned) {
+	fetch(ajaxURL, {
+		method: 'POST',
+		body: data
+	})
+	.then(async response => {
+		const jsonData = await response.json();
 		document.querySelector(".modal").classList.remove("show-modal");
 		Swal.fire({
 			confirmButtonText: okText,
-			html: dataReturned.messages
+			html: jsonData.messages
 		});
-	}, 'json');
+	});
 }
 
 /**

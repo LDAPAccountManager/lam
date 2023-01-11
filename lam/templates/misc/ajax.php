@@ -104,13 +104,9 @@ class Ajax {
 			die();
 		}
 		$function = $_GET['function'];
-		if (!isset($_POST['jsonInput'])) {
-			die();
-		}
 
-		$jsonInput = $_POST['jsonInput'];
-		if ($function == 'passwordStrengthCheck') {
-			$this->checkPasswordStrength($jsonInput);
+		if (($function === 'passwordStrengthCheck') && isset($_POST['jsonInput'])) {
+			$this->checkPasswordStrength($_POST['jsonInput']);
 			die();
 		}
 		if ($function === 'webauthn') {
@@ -124,8 +120,8 @@ class Ajax {
 			die();
 		}
 		enforceUserIsLoggedIn();
-		if ($function == 'passwordChange') {
-			$this->managePasswordChange($jsonInput);
+		if (($function === 'passwordChange') && isset($_POST['jsonInput'])) {
+			$this->managePasswordChange(json_decode($_POST['jsonInput'], true));
 		}
 		elseif ($function === 'import') {
 			include_once('../../lib/import.inc');
