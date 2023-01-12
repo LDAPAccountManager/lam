@@ -38,6 +38,9 @@ jobs:
     - name: CodeSpell
       run: ./codespell.sh
 
+    - name: PHPStan Version
+      run: ./vendor/bin/phpstan -V
+
     - name: PHPStan
       run: ./vendor/bin/phpstan
 
