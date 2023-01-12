@@ -88,6 +88,8 @@ Heimatverzeichnisse verwaltet werden sollen.
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/usr/share/%{lam_dir}
 cp -dR * $RPM_BUILD_ROOT/usr/share/%{lam_dir}
+rm -rf $RPM_BUILD_ROOT/usr/share/%{lam_dir}/docs/devel $RPM_BUILD_ROOT/usr/share/%{lam_dir}/docs/schema
+rm -f $RPM_BUILD_ROOT/usr/share/%{lam_dir}/Makefile.in $RPM_BUILD_ROOT/usr/share/%{lam_dir}/configure $RPM_BUILD_ROOT/usr/share/%{lam_dir}/configure.ac $RPM_BUILD_ROOT/usr/share/%{lam_dir}/install.sh
 mkdir -p $RPM_BUILD_ROOT/var/lib/%{lam_dir}
 mv $RPM_BUILD_ROOT/usr/share/%{lam_dir}/config $RPM_BUILD_ROOT/var/lib/%{lam_dir}
 ln -s /var/lib/%{lam_dir}/config $RPM_BUILD_ROOT/usr/share/%{lam_dir}/config
