@@ -42,7 +42,7 @@ jobs:
       run: ./vendor/bin/phpstan -V
 
     - name: PHPStan
-      run: ./vendor/bin/phpstan
+      run: ./vendor/bin/phpstan --xdebug
 
     - name: SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@master
