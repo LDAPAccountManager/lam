@@ -22,7 +22,7 @@ use ServerProfilePersistenceManager;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Michael Duergner
-                2005 - 2022  Roland Gruber
+                2005 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -210,8 +210,12 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
     // save both in cookie
 	$cookieOptions = lamDefaultCookieOptions();
 	$cookieOptions['expires'] = 0;
-    setcookie("Key", base64_encode($key), $cookieOptions);
-    setcookie("IV", base64_encode($iv), $cookieOptions);
+	if ($key !== false) {
+		setcookie("Key", base64_encode($key), $cookieOptions);
+    }
+	if ($iv !== false) {
+		setcookie("IV", base64_encode($iv), $cookieOptions);
+    }
 
 	$serverProfilePersistenceManager = new ServerProfilePersistenceManager();
 	$profiles = $serverProfilePersistenceManager->getProfiles();

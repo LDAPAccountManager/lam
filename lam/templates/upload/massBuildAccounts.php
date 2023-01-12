@@ -131,8 +131,10 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	$handle = fopen ($_FILES['inputfile']['tmp_name'], "r");
 	if ($handle !== false) {
 		if (($head = fgetcsv($handle, 2000)) !== false ) { // head row
-			foreach ($head as $i => $headItem) {
-				$ids[$headItem] = $i;
+			if (($head !== null) && ($head !== false)) {
+				foreach ($head as $i => $headItem) {
+					$ids[$headItem] = $i;
+				}
 			}
 		}
 		while (($line = fgetcsv($handle, 2000)) !== false ) { // account rows
@@ -193,7 +195,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 			if (sizeof($values_given) != sizeof($values_unique)) {
 				$duplicates = array();
 				foreach ($values_given as $key => $value) {
-					if (!isset($values_unique[$key])) {
+					if (!isset($values_unique[$key]) && ($value !== null)) {
 						$duplicates[] = htmlspecialchars($value);
 					}
 				}
