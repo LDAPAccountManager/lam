@@ -9,7 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v2
@@ -17,7 +17,7 @@ jobs:
     - name: Setup PHP with PECL extension
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '7.4'
+        php-version: '8.1'
         extensions: ldap, xdebug, gd, json, xml, curl, zip, mbstring
 
     - name: Validate composer.json and composer.lock

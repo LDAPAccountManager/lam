@@ -131,7 +131,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	$handle = fopen ($_FILES['inputfile']['tmp_name'], "r");
 	if ($handle !== false) {
 		if (($head = fgetcsv($handle, 2000)) !== false ) { // head row
-			if (($head !== null) && ($head !== false)) {
+			if ($head !== false) {
 				foreach ($head as $i => $headItem) {
 					$ids[$headItem] = $i;
 				}
