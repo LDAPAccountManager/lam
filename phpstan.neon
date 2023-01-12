@@ -35,4 +35,3 @@ parameters:
 		- '#Argument of an invalid type mixed supplied for foreach, only iterables are supported.#'
 		- '#Parameter \#2 \$args of function call_user_func_array expects array<int\|string, mixed>, mixed given.#'
 		- '#Parameter \#1 \$input of method LAM\\AJAX\\Ajax::managePasswordChange\(\) expects array, mixed given.#'
-		- '#Strict comparison using === between array<string, class-string> and false will always evaluate to false.#'
