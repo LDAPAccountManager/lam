@@ -162,33 +162,3 @@ done
 /usr/share/%{lam_dir}
 %{httpd_confdir}
 /etc/%{lam_dir}/lam.nginx.conf
-
-%changelog
-* Sun Oct 28 2012 - Roland Gruber post@rolandgruber.de
-- Config file changes
-
-* Sun Oct 07 2012 - Roland Gruber post@rolandgruber.de
-- Apache reload instead of restart
-
-* Wed Jun 08 2011 - Roland Gruber post@rolandgruber.de
-- Install into /usr/share/ldap-account-manager
-
-* Sat Apr 09 2011 - Roland Gruber post@rolandgruber.de
-- Do not overwrite config files
-
-* Sat Nov 07 2009 - Roland Gruber post@rolandgruber.de
-- Added LAM manuals
-
-* Sat Jul 26 2008 - Roland Gruber post@rolandgruber.de
-- Added subpackage for lamdaemon
-
-* Wed Jan 11 2006 - Iain Lea iain@bricbrac.de
-- Updated for 1.0 series on Fedora Core
-
-* Mon Dec 12 2005 - Iain Lea iain@bricbrac.de
-- Updated for 0.5.x series on Fedora Core
-
-* Sun Mar 21 2004 - TiloLutz@gmx.de
-- Initial release 0.1.0 - 0.4.5
-
-
