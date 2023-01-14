@@ -189,6 +189,22 @@ semodule -i httpdlocal.pp</programlisting>
     <title>Apache configuration</title>
 
     <section>
+      <title>Security headers</title>
+
+      <para>LAM already sets several security headers by default. For
+      production machines it is recommended to run LAM with "https://"
+      enabled. In this case the HSTS header should be set, e.g. like
+      this:</para>
+
+      <programlisting>Header always set Strict-Transport-Security "max-age=31536000"</programlisting>
+
+      <para>This will enforce browsers to connect via "https://". Please note
+      that you need to make sure that your installation has a valid
+      certificate now and in the future. The configuration requires
+      mod_headers to be active.</para>
+    </section>
+
+    <section>
       <title>Sensitive directories</title>
 
       <para>LAM includes several .htaccess files to protect your configuration
@@ -373,6 +389,22 @@ semodule -i httpdlocal.pp</programlisting>
     ready-to-use configuration file.</para>
 
     <section>
+      <title>Security headers</title>
+
+      <para>LAM already sets several security headers by default. For
+      production machines it is recommended to run LAM with "https://"
+      enabled. In this case the HSTS header should be set.</para>
+
+      <para>This will enforce browsers to connect via "https://". Please note
+      that you need to make sure that your installation has a valid
+      certificate now and in the future.</para>
+
+      <para>The example configurations below already include a commented
+      example for "Strict-Transport-Security" (HSTS). You can activate it if
+      needed.</para>
+    </section>
+
+    <section>
       <title>RPM based installations</title>
 
       <para>The RPM package has dependencies on Apache. Therefore, Nginx is
@@ -390,9 +422,9 @@ semodule -i httpdlocal.pp</programlisting>
         ...
 }</programlisting>
 
-      <para>The included config file uses PHP 5. In case you run with PHP 7
-      please update the parameter "fastcgi_pass" to
-      "/var/run/php7-fpm.sock".</para>
+      <para>The included config file uses "127.0.0.1:9000" for PHP. In case
+      you run PHP with a socket please update the parameter "fastcgi_pass" to
+      e.g. "/var/run/php8-fpm.sock".</para>
     </section>
 
     <section>
@@ -409,9 +441,9 @@ semodule -i httpdlocal.pp</programlisting>
         ...
 }</programlisting>
 
-      <para>The included config file uses PHP 7.0. In case you run with PHP
-      7.1 or PHP 5 please update the parameter "fastcgi_pass" to
-      "/var/run/php/php7.1-fpm.sock".</para>
+      <para>The included config file uses PHP 7.4. In case you run with PHP 8
+      please update the parameter "fastcgi_pass" to e.g.
+      "/var/run/php/php8.1-fpm.sock".</para>
     </section>
 
     <section>
@@ -429,6 +461,8 @@ semodule -i httpdlocal.pp</programlisting>
   index index.html;
   alias /usr/share/ldap-account-manager;
   autoindex off;
+  # HSTS header to enforce https:// connections
+  # add_header Strict-Transport-Security "max-age=31536000";
 
   location ~ \.php$ {
     fastcgi_split_path_info ^(.+\.php)(/.+)$;
