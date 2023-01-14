@@ -6039,6 +6039,11 @@ OK (10 msec)</programlisting>
 
     <itemizedlist>
       <listitem>
+        <para><emphasis role="bold">$INFO.lamLoginDn$:</emphasis> the DN of
+        the user that is logged in to LAM. </para>
+      </listitem>
+
+      <listitem>
         <para><emphasis role="bold">$INFO.debug$:</emphasis> list of all
         possible wildcards and their values (e.g.
         "$objectClass$:posixAccount,inetOrgPerson; $loginShell$:/bin/bash;
