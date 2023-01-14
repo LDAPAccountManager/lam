@@ -1945,64 +1945,6 @@ class htmlRadio extends htmlElement {
 }
 
 /**
- * Radio list with descriptive label and help link.
- *
- * @package metaHTML
- */
-class htmlTableExtendedRadio extends htmlRadio {
-
-	/** descriptive label */
-	private $label;
-	/** help ID */
-	private $helpID;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param String $label descriptive label
-	 * @param String $name element name
-	 * @param array $elements list of elements array(label => value)
-	 * @param String $selectedElement value of selected element (optional, default none)
-	 * @param String $helpID help ID
-	 */
-	function __construct($label, $name, $elements, $selectedElement = null, $helpID = null) {
-		parent::__construct($name, $elements, $selectedElement);
-		$this->label = htmlspecialchars($label);
-		$this->helpID = $helpID;
-		$this->alignment = htmlElement::ALIGN_TOP;
-	}
-
-	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param integer $tabindex Start value of tabulator index for input fields
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
-	 */
-	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		if ($this->label != null) {
-			echo '<div class="nowrap">';
-			echo $this->label;
-			echo '</div>';
-			echo "\n</td>\n<td>\n";
-		}
-		$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
-		// print help link
-		if ($this->helpID != null) {
-			echo "\n</td>\n<td valign=\"top\">\n";
-			$helpLink = new htmlHelpLink($this->helpID);
-			$helpLink->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
-		}
-		return $return;
-	}
-
-}
-
-/**
  * Prints the text and escapes contained HTML code by default.
  *
  * @package metaHTML
@@ -2169,10 +2111,10 @@ class htmlInputCheckbox extends htmlElement {
 	/**
 	 * Constructor.
 	 *
-	 * @param String $name unique name
-	 * @param boolean $checked checked
+	 * @param string $name unique name
+	 * @param bool $checked checked
 	 */
-	function __construct($name, $checked) {
+	function __construct(string $name, bool $checked) {
 		$this->name = htmlspecialchars($name);
 		$this->checked = $checked;
 	}
@@ -2387,6 +2329,15 @@ class htmlInputCheckbox extends htmlElement {
 		$this->onClick = $code;
 	}
 
+	/**
+	 * Returns the checkbox name.
+	 *
+	 * @return string name
+	 */
+	protected function getName(): string {
+		return $this->name;
+	}
+
 }
 
 /**
@@ -2449,71 +2400,6 @@ class htmlTableExtendedInputCheckbox extends htmlInputCheckbox {
 		// print help link
 		if ($this->helpID != null) {
 			echo "\n</td>\n<td>\n";
-			$helpLink = new htmlHelpLink($this->helpID);
-			$helpLink->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
-		}
-		return $return;
-	}
-
-}
-
-/**
- * Checkbox with descriptive label and help link.
- *
- * @package metaHTML
- */
-class htmlLabeledInputCheckbox extends htmlInputCheckbox {
-
-	/** descriptive label */
-	private $label;
-	/** help ID */
-	private $helpID;
-	/** specifies if label is printed before the checkbox */
-	private $labelFirst;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param String $name unique name
-	 * @param boolean $checked checked
-	 * @param String $label descriptive label
-	 * @param String $helpID help ID
-	 * @param boolean $labelFirst specifies if the label is at the beginning or at the end (optional, default beginning)
-	 */
-	function __construct($name, $checked, $label, $helpID = null, $labelFirst = true) {
-		parent::__construct($name, $checked);
-		$this->label = htmlspecialchars($label);
-		$this->helpID = $helpID;
-		$this->labelFirst = $labelFirst;
-	}
-
-	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param integer $tabindex Start value of tabulator index for input fields
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
-	 */
-	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		$onClick = 'onClick="jQuery(\'#' . $this->name . '\').prop(\'checked\',!jQuery(\'#' . $this->name . '\').prop(\'checked\')); jQuery(\'#' . $this->name . '\').change();"';
-		if ($this->labelFirst) {
-			echo '<span class="nowrap" ' . $onClick . '>';
-			echo $this->label;
-			echo '</span>';
-			$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
-		}
-		else {
-			$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
-			echo '<span class="nowrap" ' . $onClick . '>';
-			echo $this->label;
-			echo '</span>';
-		}
-		// print help link
-		if ($this->helpID != null) {
 			$helpLink = new htmlHelpLink($this->helpID);
 			$helpLink->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
 		}
@@ -2607,59 +2493,6 @@ class htmlInputFileUpload extends htmlElement {
 	 */
 	public function setOnChange(string $onChange): void {
 		$this->onChange = $onChange;
-	}
-
-}
-
-/**
- * File upload with descriptive label and help link.
- *
- * @package metaHTML
- */
-class htmlTableExtendedInputFileUpload extends htmlInputFileUpload {
-
-	/** descriptive label */
-	private $label;
-	/** help ID */
-	private $helpID;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param String $name unique name
-	 * @param String $label descriptive label
-	 * @param String $helpID help ID
-	 */
-	function __construct($name, $label, $helpID = null) {
-		parent::__construct($name);
-		$this->label = htmlspecialchars($label);
-		$this->helpID = $helpID;
-	}
-
-	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param integer $tabindex Start value of tabulator index for input fields
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
-	 */
-	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		echo '<div class="nowrap">';
-		echo $this->label;
-		echo '</div>';
-		echo "\n</td>\n<td>\n";
-		$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
-		// print help link
-		if ($this->helpID != null) {
-			echo "\n</td>\n<td>\n";
-			$helpLink = new htmlHelpLink($this->helpID);
-			$helpLink->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
-		}
-		return $return;
 	}
 
 }
@@ -4959,9 +4792,8 @@ class htmlResponsiveInputCheckbox extends htmlInputCheckbox {
 			$tabletColumnsBox = 8;
 		}
 		// label text
-		$text = new htmlSpan(new htmlOutputText($this->label));
+		$text = new htmlLabel($this->getName(), $this->label);
 		$text->setCSSClasses($this->cssClasses);
-		$text->setOnclick('jQuery(\'#' . $this->name . '\').prop(\'checked\',!jQuery(\'#' . $this->name . '\').prop(\'checked\')); jQuery(\'#' . $this->name . '\').change();');
 		// input field
 		$fieldGroup = new htmlGroup();
 		$fieldGroup->addElement($this);

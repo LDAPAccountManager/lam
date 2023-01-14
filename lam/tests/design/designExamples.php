@@ -111,15 +111,13 @@ $textAreaDisabled->setIsEnabled(false);
 $row->addField($textAreaDisabled);
 
 $checkRow1 = new htmlResponsiveRow();
-$checkRow1->addLabel(new htmlOutputText('Default'));
-$checkRow1->addField(new htmlInputCheckbox('check1', true));
+$checkRow1->add(new htmlResponsiveInputCheckbox('check1', true, 'Default'));
 $row->add($checkRow1);
 
 $checkRow2 = new htmlResponsiveRow();
-$checkRow2->addLabel(new htmlOutputText('Disabled'));
-$checkboxDisabled = new htmlInputCheckbox('check2', true);
+$checkboxDisabled = new htmlResponsiveInputCheckbox('check2', true, 'Disabled');
 $checkboxDisabled->setIsEnabled(false);
-$checkRow2->addField($checkboxDisabled);
+$checkRow2->add($checkboxDisabled);
 $row->add($checkRow2);
 
 $row->addLabel(new htmlOutputText('Default'));

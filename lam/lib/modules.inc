@@ -1158,7 +1158,7 @@ class accountContainer {
 			}
 		}
 		if (!empty($forceChangeSupported)) {
-			$container->addElement(new htmlOutputText(_('Force password change')));
+			$container->addElement(new htmlLabel('lamForcePasswordChange', _('Force password change')));
 			$forcePwdGroup = new htmlGroup();
 			$forcePwdGroup->addElement(new htmlInputCheckbox('lamForcePasswordChange', false));
 			$forcePwdGroup->addElement(new htmlSpacer('1rem', null));

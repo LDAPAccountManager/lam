@@ -1,5 +1,7 @@
 <?php
 namespace LAM\UPLOAD;
+use htmlInputCheckbox;
+use htmlLabel;
 use \htmlResponsiveTable;
 use \htmlOutputText;
 use \htmlGroup;
@@ -15,7 +17,6 @@ use \htmlSubTitle;
 use \htmlHelpLink;
 use \htmlResponsiveRow;
 use \htmlResponsiveSelect;
-use \htmlLabeledInputCheckbox;
 use \htmlSpacer;
 use LAM\PDF\PdfStructurePersistenceManager;
 use \moduleCache;
@@ -200,7 +201,7 @@ foreach ($types as $type) {
 		if (isset($_POST['submit']) && !isset($_POST[$type->getId() . '___' . $moduleName])) {
 			$checked = false;
 		}
-		$checkbox = new htmlLabeledInputCheckbox($type->getId() . '___' . $moduleName, $checked, getModuleAlias($moduleName, $type->getScope()), null, false);
+		$checkbox = new htmlInputCheckbox($type->getId() . '___' . $moduleName, $checked);
 		$checkbox->setIsEnabled($enabled);
 		if ($enabled) {
 			$moduleGroup->addElement($checkbox);
@@ -212,6 +213,7 @@ foreach ($types as $type) {
 			$boxGroup->addElement(new htmlHiddenInput($type->getId() . '___' . $moduleName, 'on'));
 			$moduleGroup->addElement($boxGroup);
 		}
+		$moduleGroup->addElement(new htmlLabel($type->getId() . '___' . $moduleName, getModuleAlias($moduleName, $type->getScope())));
 		$innerRow->add($moduleGroup, 12, 6, 4);
 	}
 	$moduleCount = sizeof($modules);
