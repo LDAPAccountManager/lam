@@ -394,29 +394,29 @@ function bindShowNewZoneDialog(title, okText, cancelText) {
  * @param fieldIDReference ID of reference field
  */
 function checkFieldsHaveSameValues(fieldID, fieldIDReference) {
-	var field = jQuery('#' + fieldID);
-	var fieldRef = jQuery('#' + fieldIDReference);
-	var check =
+	const field = document.getElementById(fieldID);
+	const fieldRef = document.getElementById(fieldIDReference);
+	const check =
 		function() {
-			var value = field.val();
-			var valueRef = fieldRef.val();
+			const value = field.value;
+			const valueRef = fieldRef.value;
 			if ((value == '') && (valueRef == '')) {
-				field.removeClass('markFail');
-				field.removeClass('markOk');
+				field.classList.remove('markFail');
+				field.classList.remove('markOk');
 			}
 			else {
 				if (value == valueRef) {
-					field.removeClass('markFail');
-					field.addClass('markOk');
+					field.classList.remove('markFail');
+					field.classList.add('markOk');
 				}
 				else {
-					field.addClass('markFail');
-					field.removeClass('markOk');
+					field.classList.add('markFail');
+					field.classList.remove('markOk');
 				}
 			}
-		}
-	jQuery(field).keyup(check);
-	jQuery(fieldRef).keyup(check);
+		};
+	field.addEventListener('keyup', check);
+	fieldRef.addEventListener('keyup', check);
 }
 
 /**
@@ -428,19 +428,27 @@ function checkFieldsHaveSameValues(fieldID, fieldIDReference) {
  * @param tokenValue value of CSRF token
  */
 function checkPasswordStrength(fieldID, ajaxURL, tokenName, tokenValue) {
-	var field = jQuery('#' + fieldID);
-	var check =
+	const field = document.getElementById(fieldID);
+	const check =
 		function() {
-			var value = field.val();
-			var pwdJSON = {
+			const value = field.value;
+			const pwdJSON = {
 					"password": value
 			};
-			var data = {jsonInput: pwdJSON};
-			data[tokenName] = tokenValue;
+			let data = new FormData();
+			data.append('jsonInput', JSON.stringify(pwdJSON));
+			data.append(tokenName, tokenValue);
 			// make AJAX call
-			jQuery.post(ajaxURL + "&function=passwordStrengthCheck", data, function(dataReturned) {checkPasswordStrengthHandleReply(dataReturned, fieldID);}, 'json');
+			fetch(ajaxURL + "&function=passwordStrengthCheck", {
+				method: 'POST',
+				body: data
+			})
+			.then(async response => {
+				const jsonData = await response.json();
+				checkPasswordStrengthHandleReply(jsonData, fieldID);
+			});
 		};
-	jQuery(field).keyup(check);
+	field.addEventListener('keyup', check);
 }
 
 /**

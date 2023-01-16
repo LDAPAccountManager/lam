@@ -106,7 +106,7 @@ class Ajax {
 		$function = $_GET['function'];
 
 		if (($function === 'passwordStrengthCheck') && isset($_POST['jsonInput'])) {
-			$this->checkPasswordStrength($_POST['jsonInput']);
+			$this->checkPasswordStrength(json_decode($_POST['jsonInput'], true));
 			die();
 		}
 		if ($function === 'webauthn') {
