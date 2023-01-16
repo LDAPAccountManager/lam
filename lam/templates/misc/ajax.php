@@ -192,7 +192,7 @@ class Ajax {
 	 *
 	 * @param array<mixed> $input input parameters
 	 */
-	private static function managePasswordChange($input): void {
+	private static function managePasswordChange(array $input): void {
 		$sessionKey  = htmlspecialchars($_GET['editKey']);
 		$return = $_SESSION[$sessionKey]->setNewPassword($input);
 		echo json_encode($return);
@@ -203,7 +203,7 @@ class Ajax {
 	 *
 	 * @param array<mixed> $input input parameters
 	 */
-	private function checkPasswordStrength($input): void {
+	private function checkPasswordStrength(array $input): void {
 		$password = $input['password'];
 		$result = checkPasswordStrength($password, null, null);
 		echo json_encode(array("result" => $result));

@@ -458,20 +458,20 @@ function checkPasswordStrength(fieldID, ajaxURL, tokenName, tokenValue) {
  * @param fieldID input field ID
  */
 function checkPasswordStrengthHandleReply(data, fieldID) {
-	var field = jQuery('#' + fieldID);
+	const field = document.getElementById(fieldID);
 	if (data.result === true) {
-		field.removeClass('markFail');
-		field.addClass('markOk');
-		field.prop('title', '');
+		field.classList.remove('markFail');
+		field.classList.add('markOk');
+		field.title = '';
 	}
-	else if (field.val() == '') {
-		field.removeClass('markFail');
-		field.removeClass('markOk');
+	else if (field.value == '') {
+		field.classList.remove('markFail');
+		field.classList.remove('markOk');
 	}
 	else {
-		field.addClass('markFail');
-		field.removeClass('markOk');
-		field.prop('title', data.result);
+		field.classList.add('markFail');
+		field.classList.remove('markOk');
+		field.title = data.result;
 	}
 }
 
