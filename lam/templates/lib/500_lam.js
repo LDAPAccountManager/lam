@@ -291,29 +291,6 @@ function confirmLoadProfile(text, okText, cancelText, e) {
 }
 
 /**
- * Alines the elements with the given IDs to the same width.
- *
- * @param elementIDs IDs
- */
-function equalWidth(elementIDs) {
-	var maxWidth = 0;
-	for (var i = 0; i < elementIDs.length; ++i) {
-		if (jQuery(elementIDs[i]).width() > maxWidth) {
-			maxWidth = jQuery(elementIDs[i]).width();
-		}
-	}
-	if (maxWidth < 5) {
-		// no action if invalid width value (e.g. because of hidden tab)
-		return;
-	}
-	for (var elementId = 0; elementId < elementIDs.length; ++elementId) {
-		jQuery(elementIDs[elementId]).css({
-			'width': maxWidth - (jQuery(elementIDs[elementId]).outerWidth() - jQuery(elementIDs[elementId]).width())
-		});
-	}
-}
-
-/**
  * Alines the elements with the given IDs to the same height.
  *
  * @param elementIDs IDs
