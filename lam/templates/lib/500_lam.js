@@ -360,18 +360,18 @@ window.lam.profilePdfEditor.showPdfLogoImportDialog = function(title, okText, ca
  * @param formName ID of form
  */
 function saveScrollPosition(formName) {
-	var top = jQuery(window).scrollTop();
-	var left = jQuery(window).scrollLeft();
-	jQuery('<input>').attr({
-	    type: 'hidden',
-	    name: 'scrollPositionTop',
-	    value: top
-	}).appendTo(jQuery('#' + formName));
-	jQuery('<input>').attr({
-	    type: 'hidden',
-	    name: 'scrollPositionLeft',
-	    value: left
-	}).appendTo(jQuery('#' + formName));
+	const top = window.scrollY;
+	const left = window.scrollX;
+	let scrollPositionTop = document.createElement('input');
+	scrollPositionTop.name = 'scrollPositionTop';
+	scrollPositionTop.value = top;
+	scrollPositionTop.hidden = 'hidden';
+	document.forms[formName].appendChild(scrollPositionTop);
+	let scrollPositionLeft = document.createElement('input');
+	scrollPositionLeft.name = 'scrollPositionLeft';
+	scrollPositionLeft.value = left;
+	scrollPositionLeft.hidden = 'hidden';
+	document.forms[formName].appendChild(scrollPositionLeft);
 }
 
 /**
