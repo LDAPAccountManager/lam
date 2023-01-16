@@ -290,25 +290,6 @@ function confirmLoadProfile(text, okText, cancelText, e) {
 	return false;
 }
 
-/**
- * Alines the elements with the given IDs to the same height.
- *
- * @param elementIDs IDs
- */
-function equalHeight(elementIDs) {
-	var max = 0;
-	for (var i = 0; i < elementIDs.length; ++i) {
-		if (jQuery(elementIDs[i]).height() > max) {
-			max = jQuery(elementIDs[i]).height();
-		}
-	}
-	for (var elementId = 0; elementId < elementIDs.length; ++elementId) {
-		jQuery(elementIDs[elementId]).css({
-			'height': max - (jQuery(elementIDs[elementId]).outerHeight() - jQuery(elementIDs[elementId]).height())
-		});
-	}
-}
-
 window.lam.profilePdfEditor = window.lam.profilePdfEditor || {};
 
 /**
