@@ -3,6 +3,7 @@ March 2023 8.3
   - RPM package cleanup
   - LAM Pro:
    -> Custom scripts: new wildcard INFO.lamLoginDn for current user
+   -> PPolicy: allow password policy for groups
 
 
 13.12.2022 8.2

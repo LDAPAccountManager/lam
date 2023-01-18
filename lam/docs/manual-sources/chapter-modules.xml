@@ -1666,7 +1666,7 @@
       </screenshot>
     </section>
 
-    <section>
+    <section id="mod_passwordPolicy">
       <title>Password policy (LAM Pro)</title>
 
       <para>OpenLDAP supports the <ulink
@@ -3005,6 +3005,13 @@ AuthorizedKeysCommandUser root</literallayout>
           </imageobject>
         </mediaobject>
       </screenshot>
+    </section>
+
+    <section>
+      <title>Password policy (LAM Pro)</title>
+
+      <para>See <link linkend="mod_passwordPolicy">password policy for
+      users</link>.</para>
     </section>
   </section>
 
@@ -6040,7 +6047,7 @@ OK (10 msec)</programlisting>
     <itemizedlist>
       <listitem>
         <para><emphasis role="bold">$INFO.lamLoginDn$:</emphasis> the DN of
-        the user that is logged in to LAM. </para>
+        the user that is logged in to LAM.</para>
       </listitem>
 
       <listitem>
