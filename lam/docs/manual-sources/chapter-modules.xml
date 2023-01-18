@@ -1676,8 +1676,8 @@
       user accounts.</para>
 
       <para>Please add the account type "Password policies" to your LAM server
-      profile and activate the "Password policy" module for the user
-      type.</para>
+      profile and activate the "Password policy" module for the
+      user/group/host type.</para>
 
       <screenshot>
         <mediaobject>
@@ -3237,6 +3237,13 @@ AuthorizedKeysCommandUser root</literallayout>
         </mediaobject>
       </screenshot>
     </section>
+
+    <section>
+      <title>Password policy (LAM Pro)</title>
+
+      <para>See <link linkend="mod_passwordPolicy">password policy for
+      users</link>.</para>
+    </section>
   </section>
 
   <section>
@@ -3486,7 +3493,7 @@ AuthorizedKeysCommandUser root</literallayout>
     organizational roles.</para>
 
     <para>The simple security object module can be added to the following
-    account types: users, groups, group of names</para>
+    account types: users, groups, group of names and hosts</para>
 
     <para>Configuration:</para>
 
