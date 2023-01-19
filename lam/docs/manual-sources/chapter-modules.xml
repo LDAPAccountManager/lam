@@ -3495,6 +3495,12 @@ AuthorizedKeysCommandUser root</literallayout>
     <para>The simple security object module can be added to the following
     account types: users, groups, group of names and hosts</para>
 
+    <para><emphasis role="bold">Attention:</emphasis> simple security objects
+    require a password to be set. If you choose LDAP_EXOP as password hash
+    then no new LDAP entries can be created. The reason is that EXOP requires
+    to set the password on an already existing account (but simpleSecurityObject requires to set it in first place). So no password is set
+    at the initial account creation which will then fail.</para>
+
     <para>Configuration:</para>
 
     <para>Add the Simple Security Object module to your account type.</para>
