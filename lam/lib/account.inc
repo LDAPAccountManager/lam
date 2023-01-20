@@ -618,7 +618,7 @@ function get_preg($argument, $regexp) {
 					$pregexpr = '/^([[:alnum:] \'!~#+*%\\$\\(\\)_-])+ <([0-9a-zA-Z\'!~#+*%\\$\\/\\._-])+[@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*>$/u';
 					break;
 		case "mailLocalAddress":
-					$pregexpr = '/^([0-9a-zA-Z+\\/\\._-])+([@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*)?$/';
+					$pregexpr = '/^([0-9a-zA-Z+\\/\\._-])*([@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*)?$/';
 					break;
 		case 'kolabEmailPrefix':
 					$pregexpr = '/^([-])?([0-9a-zA-Z+\\/\\._-])*([@]([0-9a-zA-Z\\.-])*)?$/';
@@ -633,7 +633,7 @@ function get_preg($argument, $regexp) {
 		case "businessCategory":
 					$pregexpr = '/^[^\\\<>=\\$\\?]*$/';
 					break;
-		case "homeDirectory":		// Homapath, /path/......
+		case "homeDirectory":		// Home path, /path/......
 		case "filePath":
 					$pregexpr = '/^([\/]([[:alnum:]@\\$\\.\\ \\_-])+)+(\/)?$/u';
 					break;
