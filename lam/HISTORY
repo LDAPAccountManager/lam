@@ -5,6 +5,7 @@ March 2023 8.3
    -> Custom scripts: new wildcard INFO.lamLoginDn for current user
    -> PPolicy: allow password policy for groups and hosts
    -> Simple security object: allow for hosts
+   -> Apache Guacamole: added ssh, telnet and kubernetes protocols
 
 
 13.12.2022 8.2
