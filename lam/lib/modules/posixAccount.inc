@@ -1013,7 +1013,8 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		}
 		// remove from group of names
 		$dn = $this->getAccountContainer()->dn_orig;
-		$gons = searchLDAPByFilter('(|(member=' . $dn . ')(uniquemember=' . $dn . '))', array('member', 'uniquemember'), array('group', 'gon'));
+		$filter = '(&(|(member=' . $dn . ')(uniquemember=' . $dn . '))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=groupOfMembers)))';
+		$gons = searchLDAPByFilter($filter, array('member', 'uniquemember'), array('group', 'gon'));
 		for ($i = 0; $i < sizeof($gons); $i++) {
 			if (isset($gons[$i]['member'])) {
 				$return[$gons[$i]['dn']]['remove']['member'][] = $dn;
