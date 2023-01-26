@@ -14,7 +14,7 @@ use htmlTitle;
 
 /*
 
-  Copyright (C) 2018 - 2022 Roland Gruber
+  Copyright (C) 2018 - 2023 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -226,7 +226,7 @@ function displayObjectClassList(htmlResponsiveRow &$row): void {
 		if (!empty($selectedClass[0]) && ($name !== strtolower($selectedClass[0]))) {
 			continue;
 		}
-		$row->add(new htmlSubTitle($name), 12);
+		$row->add(new htmlSubTitle($objectClass->getName()), 12);
 		$row->addLabel(new htmlOutputText(_('OID')), 'bold-mobile-only');
 		$row->addField(new htmlOutputText($objectClass->getOID()));
 		if (!empty($objectClass->getDescription())) {
@@ -310,7 +310,7 @@ function displayAttributeList(htmlResponsiveRow $row): void {
 		if (!empty($selectedAttribute[0]) && ($name !== strtolower($selectedAttribute[0]))) {
 			continue;
 		}
-		$row->add(new htmlSubTitle($name), 12);
+		$row->add(new htmlSubTitle($attribute->getName()));
 		if (!empty($attribute->getDescription())) {
 			$row->addLabel(new htmlOutputText(_('Description')), 'bold-mobile-only');
 			$row->addField(new htmlOutputText($attribute->getDescription()));
