@@ -255,11 +255,11 @@ function passwordHandleInput(random, ajaxURL, tokenName, tokenValue, okText) {
  * @param formName name of form
  */
 function appendDialogInputsToFormAndSubmit(dialogDiv, formName) {
-	var inputs = jQuery('#' + dialogDiv + ' :input');
-	inputs.each(function() {
-		jQuery(this).addClass('hidden');
-		jQuery(this).appendTo(document.forms[formName]);
-    });
+	const inputFields = document.getElementById(dialogDiv).querySelectorAll('input');
+	inputFields.forEach(item => {
+		item.classList.add('hidden');
+		document.forms[formName].append(item);
+	});
 	document.forms[formName].submit();
 }
 
@@ -711,11 +711,14 @@ window.lam.form = window.lam.form || {};
  * Trims all marked input elements on form submission.
  */
 window.lam.form.autoTrim = function() {
-	jQuery('form').submit(function(e) {
-		jQuery('.lam-autotrim').each(function() {
-			this.value = String(this.value).trim();
+	for (let singleForm of document.forms) {
+		singleForm.addEventListener('submit', function() {
+			const autoTrimFields = singleForm.querySelectorAll('.lam-autotrim');
+			autoTrimFields.forEach(item => {
+				item.value = String(item.value).trim();
+			});
 		});
-	});
+	}
 };
 
 window.lam.dialog = window.lam.dialog || {};
