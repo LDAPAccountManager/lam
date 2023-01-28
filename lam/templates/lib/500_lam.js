@@ -871,14 +871,14 @@ window.lam.account = window.lam.account || {};
  * Adds a listener on the link to set default profile.
  */
 window.lam.account.addDefaultProfileListener = function() {
-	var defaultProfileLink = jQuery('#lam-make-default-profile');
+	const defaultProfileLink = document.getElementById('lam-make-default-profile');
 	if (defaultProfileLink) {
-		defaultProfileLink.click(function() {
-			var link = $(this);
-			var typeId = link.data('typeid');
-			var name = link.data('name');
-			var okText = link.data('ok');
-			var date = new Date();
+		defaultProfileLink.addEventListener('click', function() {
+			const link = $(this);
+			const typeId = link.data('typeid');
+			const name = link.data('name');
+			const okText = link.data('ok');
+			let date = new Date();
 	        date.setTime(date.getTime() + (365*24*60*60*1000));
 	        document.cookie = 'defaultProfile_' + typeId + '=' + name + '; expires=' + date.toUTCString();
 	        window.lam.dialog.showMessage(null, okText, 'lam-make-default-profile-dlg');
@@ -896,34 +896,34 @@ window.lam.tools.addSavedSelectListener = function() {
 	if (!window.localStorage) {
 		return;
 	}
-	var selects = jQuery('.lam-save-selection');
-	if (selects) {
-		selects.each(function() {
-			var select = jQuery(this);
-			var name = select.attr('name');
-			var storageKey = 'lam_selectionStore_' + name;
-			// load value from local storage
-			var storageValue = window.localStorage.getItem(storageKey);
-			if (storageValue) {
-				var option = select.find('option[text="' + storageValue + '"]');
-				if (option) {
-					select.val(storageValue);
-				}
+	const selects = document.querySelectorAll('.lam-save-selection');
+	selects.forEach(item => {
+		const name = item.name;
+		const storageKey = 'lam_selectionStore_' + name;
+		// load value from local storage
+		const storageValue = window.localStorage.getItem(storageKey);
+		if (storageValue) {
+			const option = item.querySelector('option[value="' + storageValue + '"]');
+			if (option) {
+				item.value = storageValue;
 			}
-			// add change listener
-			select.on('change', function() {
-				var selectedValue = this.value;
-				window.localStorage.setItem(storageKey, selectedValue);
-			});
+		}
+		// add change listener
+		item.addEventListener('change', function() {
+			const selectedValue = item.value;
+			window.localStorage.setItem(storageKey, selectedValue);
 		});
-	}
+	});
 };
 
 /**
  * Sets the focus on the initial field.
  */
 window.lam.tools.setInitialFocus = function() {
-	jQuery('.lam-initial-focus').focus();
+	const elementToFocus = document.querySelector('.lam-initial-focus');
+	if (elementToFocus) {
+		elementToFocus.focus();
+	}
 };
 
 window.lam.tools.webcam = window.lam.tools.webcam || {};
@@ -932,17 +932,14 @@ window.lam.tools.webcam = window.lam.tools.webcam || {};
  * Initializes the webcam capture.
  */
 window.lam.tools.webcam.init = function() {
-	var contentDiv = jQuery('#lam_webcam_div');
-	if (contentDiv.length === 0) {
-		return;
-	}
-	if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+	const contentDiv = document.getElementById('lam_webcam_div');
+	if (contentDiv && navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
 		navigator.mediaDevices.enumerateDevices()
 			.then(function(mediaDevices) {
-				for (var i = 0; i < mediaDevices.length; i++) {
-					var mediaDevice = mediaDevices[i];
+				for (let i = 0; i < mediaDevices.length; i++) {
+					const mediaDevice = mediaDevices[i];
 					if (mediaDevice.kind === 'videoinput') {
-						contentDiv.show();
+						contentDiv.classList.remove('hidden');
 					}
 				};
 			});
@@ -954,9 +951,9 @@ window.lam.tools.webcam.init = function() {
  */
 window.lam.tools.webcam.capture = function(event) {
 	event.preventDefault();
-	var video = document.getElementById('lam-webcam-video');
-	var msg = jQuery('.lam-webcam-message');
-	msg.hide();
+	const video = document.getElementById('lam-webcam-video');
+	const msg = document.querySelector('.lam-webcam-message');
+	msg.classList.add('hidden');
 	navigator.mediaDevices.getUserMedia({
 			video: {
 				facingMode: 'user',
@@ -969,13 +966,13 @@ window.lam.tools.webcam.capture = function(event) {
 			video.srcObject = stream;
 			video.play();
 			window.lam.tools.webcamStream = stream;
-			jQuery('#btn_lam-webcam-capture').hide();
-			jQuery('.btn-lam-webcam-upload').show();
-			jQuery('#lam-webcam-video').show();
+			document.getElementById('btn_lam-webcam-capture').classList.add('hidden');
+			document.querySelector('.btn-lam-webcam-upload').classList.remove('hidden');
+			document.getElementById('lam-webcam-video').classList.remove('hidden');
 		})
 		.catch(function(err) {
-			msg.find('.statusTitle').text(err);
-			msg.show();
+			msg.querySelector('.statusTitle').textContent = err.message;
+			msg.classList.remove('hidden');
 		});
 	return false;
 }
@@ -984,13 +981,13 @@ window.lam.tools.webcam.capture = function(event) {
  * Starts the webcam upload.
  */
 window.lam.tools.webcam.upload = function() {
-	var form = jQuery('#lam-webcam-canvas').closest('form');
-	var canvasData = window.lam.tools.webcam.prepareData();
-	var canvasDataInput = jQuery("<input></input>");
-	canvasDataInput.attr('name', 'webcamData');
-	canvasDataInput.attr('id', 'webcamData');
-	canvasDataInput.attr('type', 'hidden');
-	canvasDataInput.attr('value', canvasData);
+	const form = document.getElementById('lam-webcam-canvas').closest('form');
+	const canvasData = window.lam.tools.webcam.prepareData();
+	const canvasDataInput = document.createElement('input');
+	canvasDataInput.setAttribute('name', 'webcamData');
+	canvasDataInput.setAttribute('id', 'webcamData');
+	canvasDataInput.setAttribute('type', 'hidden');
+	canvasDataInput.setAttribute('value', canvasData);
 	form.append(canvasDataInput);
 	form.submit();
 	return true;
@@ -1049,20 +1046,20 @@ window.lam.tools.webcam.uploadSelfService = function(event, tokenName, tokenValu
  * @return webcam data as string
  */
 window.lam.tools.webcam.prepareData = function() {
-	var canvas = document.getElementById('lam-webcam-canvas');
-	var video = document.getElementById('lam-webcam-video');
+	const canvas = document.getElementById('lam-webcam-canvas');
+	const video = document.getElementById('lam-webcam-video');
 	canvas.setAttribute('width', video.videoWidth);
 	canvas.setAttribute('height', video.videoHeight);
-	var context = canvas.getContext('2d');
+	const context = canvas.getContext('2d');
 	context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-	var canvasData = canvas.toDataURL("image/png");
+	const canvasData = canvas.toDataURL("image/png");
 	video.pause();
-	var tracks = window.lam.tools.webcamStream.getTracks();
-	for (var i = 0; i < tracks.length; i++) {
+	const tracks = window.lam.tools.webcamStream.getTracks();
+	for (let i = 0; i < tracks.length; i++) {
 		tracks[i].stop();
 	}
-	jQuery(canvas).hide();
-	jQuery(video).hide();
+	canvas.classList.add('hidden');
+	video.classList.add('hidden');
 	return canvasData;
 }
 
