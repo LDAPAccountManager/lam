@@ -145,30 +145,63 @@ $colorDisabled = new htmlInputColorPicker('color2');
 $colorDisabled->setIsEnabled(false);
 $row->addField($colorDisabled);
 
-$row->addLabel(new htmlOutputText('Default'));
+$row->addLabel(new htmlOutputText('Default select'));
 $row->addField(new htmlSelect('select1', array(1, 2, 3), array(2)));
 
-$row->addLabel(new htmlOutputText('Disabled'));
+$row->addLabel(new htmlOutputText('Disabled select'));
 $selectDisabled = new htmlSelect('select2', array(1, 2, 3), array(2));
 $selectDisabled->setIsEnabled(false);
 $row->addField($selectDisabled);
 
-$row->addLabel(new htmlOutputText('Default'));
+$row->addLabel(new htmlOutputText('Default multiselect'));
 $multiSelect1 = new htmlSelect('select1', array("1", "2", "3"), array("1", "3"), 5);
 $multiSelect1->setMultiSelect(true);
 $row->addField($multiSelect1);
 
-$row->addLabel(new htmlOutputText('Disabled'));
+$row->addLabel(new htmlOutputText('Disabled multiselect'));
 $multiSelect2 = new htmlSelect('select2', array("1", "2", "3"), array("1", "3"), 5);
 $multiSelect2->setIsEnabled(false);
 $multiSelect2->setMultiSelect(true);
 $row->addField($multiSelect2);
 
-$row->addLabel(new htmlOutputText('Dynamic scrolling'));
+$row->add(new htmlSpacer(null, '5rem'));
+
+$row->addLabel(new htmlOutputText('Default select filter'));
+$defaultSelectElements = array();
+for ($i = 0; $i < 1000; $i++) {
+	$text = str_pad($i, 4, '0', STR_PAD_LEFT);
+	$defaultSelectElements['Text ' . $text] = $text;
+}
+$row->addField(new htmlSelect('selectWithFilter', $defaultSelectElements, array('0002')));
+$row->addLabel(new htmlOutputText('Filter'));
+$selectFilter = new htmlInputField('selectFilter');
+$selectFilter->filterSelectBox('selectWithFilter');
+$row->addField($selectFilter);
+
+$row->add(new htmlSpacer(null, '5rem'));
+
+$row->addLabel(new htmlOutputText('Default multiselect filter'));
+$defaultScrollElements = array();
+for ($i = 0; $i < 1000; $i++) {
+    $text = str_pad($i, 4, '0', STR_PAD_LEFT);
+	$defaultScrollElements['Text ' . $text] = $text;
+}
+$scrollSelect = new htmlSelect('scrollSelect', $defaultScrollElements, array("0001", "0003", "0999"), 10);
+$scrollSelect->setHasDescriptiveElements(true);
+$scrollSelect->setMultiSelect(true);
+$row->addField($scrollSelect);
+$row->addLabel(new htmlOutputText('Filter'));
+$scrollFilter = new htmlInputField('scrollSelectFilter');
+$scrollFilter->filterSelectBox('scrollSelect');
+$row->addField($scrollFilter);
+
+$row->add(new htmlSpacer(null, '5rem'));
+
+$row->addLabel(new htmlOutputText('Dynamic multiselect filter'));
 $dynamicScrollElements = array();
 for ($i = 0; $i < 100000; $i++) {
-    $text = str_pad($i, 6, '0', STR_PAD_LEFT);
-    $dynamicScrollElements['Text ' . $text] = $text;
+	$text = str_pad($i, 6, '0', STR_PAD_LEFT);
+	$dynamicScrollElements['Text ' . $text] = $text;
 }
 $multiSelect3 = new htmlSelect('dynamicSelect', $dynamicScrollElements, array("000001", "000003", "099999"), 10);
 $multiSelect3->setHasDescriptiveElements(true);

@@ -528,45 +528,79 @@ window.lam.filterSelect.activate = function (filterInput, select, event) {
  * @param selectField select field
  */
 window.lam.filterSelect.filterStandard = function(inputField, selectField) {
+	selectField.classList.add('lam-filteredOptions');
 	// if values were not yet saved, save them
-	if (!selectField.data('options')) {
-		var options = {};
-		selectField.find('option').each(function() {
-			options[$(this).val()] = {
-				selected: this.selected,
-				text: jQuery(this).text(),
-				cssClasses: jQuery(this).attr('class')
+	if (!selectField.dataset.options) {
+		let options = {};
+		selectField.querySelectorAll('option').forEach((item) => {
+			options[item.value] = {
+				selected: item.selected,
+				text: item.innerText,
+				cssClasses: item.classList
 			};
 		});
-		selectField.data('options', options);
+		selectField.dataset.options = JSON.stringify(options);
 	}
 	// save selected values
-	var storedOptions = selectField.data('options');
-	selectField.find('option').each(function() {
-		storedOptions[$(this).val()].selected = this.selected;
+	let storedOptions = JSON.parse(selectField.dataset.options);
+	selectField.querySelectorAll('option').forEach((item) => {
+		storedOptions[item.value].selected = item.selected;
 	});
-	selectField.data('options', storedOptions);
+	selectField.dataset.options = JSON.stringify(storedOptions);
 	// get matching values
-	selectField.empty().scrollTop(0);
-	var search = jQuery.trim(inputField.value);
-	var regex = new RegExp(search,'gi');
-	jQuery.each(storedOptions, function(index, option) {
-		if(option.text.match(regex) !== null) {
-			var newOption = jQuery('<option>');
-			newOption.text(option.text).val(index);
+	selectField.innerHTML = '';
+	const search = inputField.value.trim();
+	const regex = new RegExp(search,'gi');
+	let index = 0;
+	for (const value in storedOptions) {
+		const option = storedOptions[value];
+		if (option.text.match(regex) !== null) {
+			const newOption = document.createElement('option');
+			newOption.innerText = option.text;
+			newOption.value = value;
 			if (option.selected) {
-				newOption.attr('selected', 'selected');
+				newOption.selected = true;
+				if (selectField.size === 1) {
+					selectField.selectedIndex = index;
+				}
 			}
 			if (option.cssClasses) {
-				newOption.attr('class', option.cssClasses);
+				newOption.classList = option.cssClasses;
 			}
-			selectField.append(newOption);
+			selectField.appendChild(newOption);
 		}
-	});
+		index++;
+	};
 	// select first entry for single-selects
-	if ((selectField[0].size === 1) && selectField[0].onchange) {
-		selectField[0].onchange();
+	if ((selectField.size === 1) && selectField.onchange) {
+		selectField.onchange();
 	}
+}
+
+/**
+ * Adds a form listener to clear the filter on select elements.
+ */
+window.lam.filterSelect.addFormListener = function() {
+	const forms = Array.from(document.forms);
+	forms.forEach((form) => {
+		form.addEventListener('submit', function () {
+			const selectFields = form.querySelectorAll('.lam-filteredOptions');
+			selectFields.forEach((item) => {
+				const storedOptions = JSON.parse(item.dataset.options);
+				item.innerHTML = '';
+				for (const value in storedOptions) {
+					const option = storedOptions[value];
+					if (option.selected) {
+						const newOption = document.createElement('option');
+						newOption.innerText = option.text;
+						newOption.value = value;
+						newOption.selected = true;
+						item.appendChild(newOption);
+					}
+				}
+			});
+		})
+	});
 }
 
 /**
@@ -3029,6 +3063,7 @@ jQuery(document).ready(function() {
 	window.lam.tools.schema.select();
 	window.lam.html.activateLightboxes();
 	window.lam.html.preventEnter();
+	window.lam.filterSelect.addFormListener();
 	window.lam.dynamicSelect.activate();
 	window.lam.webauthn.setupDeviceManagement();
 	window.lam.tabs.init();
