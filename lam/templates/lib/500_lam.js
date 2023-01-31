@@ -1241,37 +1241,38 @@ window.lam.tools.webcam.upload = function() {
  */
 window.lam.tools.webcam.uploadSelfService = function(event, tokenName, tokenValue, moduleName, scope, uploadErrorMessage, contentId) {
 	event.preventDefault();
-	var msg = jQuery('.lam-webcam-message');
-	var canvasData = window.lam.tools.webcam.prepareData();
-	var data = {
-		webcamData: canvasData
-	};
-	data[tokenName] = tokenValue;
-	jQuery.ajax({
-		url: '../misc/ajax.php?selfservice=1&action=ajaxPhotoUpload'
-			+ '&module=' + moduleName + '&scope=' + scope,
+	const msg = document.querySelector('.lam-webcam-message');
+	const canvasData = window.lam.tools.webcam.prepareData();
+	let data = new FormData();
+	data.append('webcamData', canvasData);
+	data.append(tokenName, tokenValue);
+	const ajaxURL = '../misc/ajax.php?selfservice=1&action=ajaxPhotoUpload'
+		+ '&module=' + moduleName + '&scope=' + scope;
+	fetch(ajaxURL, {
 		method: 'POST',
-		data: data
+		body: data
 	})
-	.done(function(jsonData) {
+	.then(async response => {
+		if (response.ok === false) {
+			msg.querySelector('.statusTitle').innerText = uploadErrorMessage;
+			msg.classList.remove('hidden');
+			return;
+		}
+		const jsonData = await response.json();
 		if (jsonData.success) {
 			if (jsonData.html) {
-				jQuery('#' + contentId).html(jsonData.html);
+				document.getElementById(contentId).innerHTML = jsonData.html;
 				window.lam.tools.webcam.init();
 			}
 			return false;
 		}
 		else if (jsonData.error) {
-			msg.find('.statusTitle').text(jsonData.error);
-			msg.show();
+			msg.querySelector('.statusTitle').innerText = jsonData.error;
+			msg.classList.remove('hidden');
 		}
-	})
-	.fail(function() {
-		msg.find('.statusTitle').text(errorMessage);
-		msg.show();
 	});
-	jQuery('#btn_lam-webcam-capture').show();
-	jQuery('.btn-lam-webcam-upload').hide();
+	document.getElementById('btn_lam-webcam-capture').classList.remove('hidden');
+	document.getElementById('btn-lam-webcam-upload').classList.add('hidden');
 	return false;
 }
 
@@ -1304,10 +1305,13 @@ window.lam.tools.schema = window.lam.tools.schema || {};
  * Adds the onChange listener to schema selections.
  */
 window.lam.tools.schema.select = function() {
-	var select = jQuery('#lam-schema-select');
-	var display = select.data('display');
-	select.change(function() {
-		var value = this.value;
+	const select = document.getElementById('lam-schema-select');
+	if (!select) {
+		return;
+	}
+	const display = select.dataset.display;
+	select.addEventListener('change', function() {
+		const value = select.value;
 		document.location = 'schema.php?display=' + display + '&sel=' + value;
 	});
 };
@@ -1321,39 +1325,42 @@ window.lam.importexport = window.lam.importexport || {};
  * @param tokenValue value of CSRF token
  */
 window.lam.importexport.startImport = function(tokenName, tokenValue) {
-	jQuery(document).ready(function() {
-		var output = jQuery('#importResults');
-		var data = {
-			jsonInput: ''
-		};
-		data[tokenName] = tokenValue;
-		jQuery.ajax({
-			url: '../misc/ajax.php?function=import',
-			method: 'POST',
-			data: data
-		})
-		.done(function(jsonData){
-			if (jsonData.data && (jsonData.data != '')) {
-				output.append(jsonData.data);
-			}
-			if (jsonData.status == 'done') {
-				jQuery('#progressbarImport').hide();
-				jQuery('#btn_submitImportCancel').hide();
-				jQuery('#statusImportInprogress').hide();
-				jQuery('#statusImportDone').show();
-				jQuery('.newimport').show();
-			}
-			else if (jsonData.status == 'failed') {
-				jQuery('#btn_submitImportCancel').hide();
-				jQuery('#statusImportInprogress').hide();
-				jQuery('#statusImportFailed').show();
-				jQuery('.newimport').show();
-			}
-			else {
-				window.lam.progressbar.setProgress('progressbarImport', jsonData.progress);
-				window.lam.importexport.startImport(tokenName, tokenValue);
-			}
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', function() {
+			window.lam.importexport.startImport(tokenName, tokenValue);
 		});
+		return;
+	}
+	const output = document.getElementById('importResults');
+	let data = new FormData();
+	data.append(tokenName, tokenValue);
+	const ajaxURL = '../misc/ajax.php?function=import';
+	fetch(ajaxURL, {
+		method: 'POST',
+		body: data
+	})
+	.then(async response => {
+		const jsonData = await response.json();
+		if (jsonData.data && (jsonData.data !== '')) {
+			output.innerHTML += jsonData.data;
+		}
+		if (jsonData.status == 'done') {
+			document.getElementById('progressbarImport').classList.add('hidden');
+			document.getElementById('btn_submitImportCancel').classList.add('hidden');
+			document.getElementById('statusImportInprogress').classList.add('hidden');
+			document.getElementById('statusImportDone').classList.remove('hidden');
+			document.querySelector('.newimport').classList.remove('hidden');
+		}
+		else if (jsonData.status == 'failed') {
+			document.getElementById('btn_submitImportCancel').classList.add('hidden');
+			document.getElementById('statusImportInprogress').classList.add('hidden');
+			document.getElementById('statusImportFailed').classList.remove('hidden');
+			document.querySelector('.newimport').classList.remove('hidden');
+		}
+		else {
+			window.lam.progressbar.setProgress('progressbarImport', jsonData.progress);
+			window.lam.importexport.startImport(tokenName, tokenValue);
+		}
 	});
 };
 
