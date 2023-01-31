@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2022  Roland Gruber
+  Copyright (C) 2010 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1653,8 +1653,14 @@ class htmlSelect extends htmlElement {
 		}
 		$this->dynamicScrolling = true;
 		$elementData = array();
+		$counter = 0;
 		foreach ($this->elements as $key => $value) {
-			$elementData[] = array('label' => $key, 'value' => $value);
+			$elementData[] = array(
+				'label' => $key,
+				'value' => $value,
+				'selected' => in_array($value, $this->selectedElements),
+				'index' => $counter);
+			$counter++;
 		}
 		$this->addDataAttribute('dynamic-options', json_encode($elementData));
 		$this->cssClasses[] = 'lam-dynamicOptions';

@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2021  Roland Gruber
+  Copyright (C) 2021 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ include_once(__DIR__ . "/../../lib/account.inc");
 include_once(__DIR__ . "/../../lib/modules.inc");
 include_once(__DIR__ . "/../../lib/html.inc");
 
+echo "<!DOCTYPE html>\n";
 echo '<head>';
 $prefix = '../..';
 printHeaderContents("Design Examples", $prefix);
@@ -163,6 +164,23 @@ $multiSelect2->setIsEnabled(false);
 $multiSelect2->setMultiSelect(true);
 $row->addField($multiSelect2);
 
+$row->addLabel(new htmlOutputText('Dynamic scrolling'));
+$dynamicScrollElements = array();
+for ($i = 0; $i < 100000; $i++) {
+    $text = str_pad($i, 6, '0', STR_PAD_LEFT);
+    $dynamicScrollElements['Text ' . $text] = $text;
+}
+$multiSelect3 = new htmlSelect('dynamicSelect', $dynamicScrollElements, array("000001", "000003", "099999"), 10);
+$multiSelect3->setHasDescriptiveElements(true);
+$multiSelect3->setMultiSelect(true);
+$multiSelect3->enableDynamicScrolling();
+$row->addField($multiSelect3);
+$row->addLabel(new htmlOutputText('Filter'));
+$dynamicScrollFilter = new htmlInputField('dynamicSelectFilter');
+$dynamicScrollFilter->filterSelectBox('dynamicSelect');
+$row->addField($dynamicScrollFilter);
+
+
 
 $row->add(new htmlSubTitle('Messages'));
 
@@ -262,9 +280,10 @@ $row->add($sortableList2);
 
 $row->add(new htmlSpacer(null, '20rem'));
 
+$form = new htmlForm('formname', 'designExamples.php', $row);
 
 $tabindex = 1;
-parseHtml(null, $row, array(), false, $tabindex, 'user');
+parseHtml(null, $form, array(), false, $tabindex, 'user');
 
 ?>
 </body>
