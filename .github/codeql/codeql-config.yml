@@ -8,6 +8,9 @@ paths-ignore:
   - '**/lib/extra/**/*.*'
   - '**/lib/*jquery*.js'
   - '**/lib/*flatpickr*.js'
+  - '**/lib/*popper*.js'
   - '**/lib/*Sortable*.js'
+  - '**/lib/*sweetalert*.js'
+  - '**/lib/*tippy*.js'
 paths:
   - lam
