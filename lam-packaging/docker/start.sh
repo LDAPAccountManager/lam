@@ -21,7 +21,7 @@
 
 
 set -eu # unset variables are errors & non-zero return values exit the whole script
-[[ -n $DEBUG ]] && [[ $DEBUG -eq "true" ]] && set -x
+[[ -n "$DEBUG" ]] && [[ "$DEBUG" = "true" ]] && set -x
 
 if [ "${LAM_DISABLE_TLS_CHECK:-}" == "true" ]; then
   if ! grep -e '^TLS_REQCERT never$' /etc/ldap/ldap.conf > /dev/null; then
