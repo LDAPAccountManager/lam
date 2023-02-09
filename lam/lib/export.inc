@@ -132,6 +132,7 @@ class Exporter {
 	 * Returns the LDAP entries
 	 *
 	 * @return array[] LDAP entries
+	 * @throws LAMException error reading data
 	 */
 	private function getLDAPData() {
 		$attributes = preg_split('/,[ ]*/', $this->attributes);
@@ -143,16 +144,16 @@ class Exporter {
 		switch ($this->searchScope) {
 			case 'base':
 				return array(ldapGetDN($this->baseDn, $attributes));
-				break;
 			case 'one':
-				return ldapListDN($this->baseDn, $this->filter, $attributes);
-				break;
+				$entries = ldapListDN($this->baseDn, $this->filter, $attributes);
+				usort($entries, 'compareLDAPEntriesByDn');
+				return $entries;
 			case 'sub':
-				return searchLDAP($this->baseDn, $this->filter, $attributes);
-				break;
+				$entries = searchLDAP($this->baseDn, $this->filter, $attributes);
+				usort($entries, 'compareLDAPEntriesByDn');
+				return $entries;
 			default:
 				throw new LAMException('Invalid scope');
-				break;
 		}
 	}
 

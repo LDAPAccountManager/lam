@@ -1220,9 +1220,9 @@ function unescapeLdapSpecialCharactersCallback(array $matches): string {
 *
 * @param string $a first argument to compare
 * @param string $b second argument to compare
-* @return integer 0 if equal, 1 if $a is greater, -1 if $b is greater
+* @return int 0 if equal, 1 if $a is greater, -1 if $b is greater
 */
-function compareDN($a, $b) {
+function compareDN($a, $b): int {
 	// split DNs
 	$array_a = explode(",", strtolower($a));
 	$array_b = explode(",", strtolower($b));
@@ -1250,6 +1250,20 @@ function compareDN($a, $b) {
 		}
 	}
 	return -1;
+}
+
+/**
+ * Helper function to sort LDAP entries by DN.
+ *
+ * @param array $a first argument to compare
+ * @param array $b second argument to compare
+ * @return integer 0 if equal, 1 if $a is greater, -1 if $b is greater
+ */
+function compareLDAPEntriesByDn(array $a, array $b): int {
+	if (!isset($a['dn']) || !isset($b['dn'])) {
+		return 0;
+	}
+	return compareDN($a['dn'], $b['dn']);
 }
 
 /**
