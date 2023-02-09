@@ -348,7 +348,7 @@ printHeaderContents(_("Edit general settings"), '../..');
 </div>
 <br>
 <!-- form for adding/renaming/deleting profiles -->
-<form enctype="multipart/form-data" action="mainmanage.php" method="post" novalidate="novalidate">
+<form class="text-center" enctype="multipart/form-data" action="mainmanage.php" method="post" novalidate="novalidate">
 
 	<?php
 	// include all JavaScript files
@@ -511,6 +511,7 @@ printHeaderContents(_("Edit general settings"), '../..');
 			);
 		}
 		$certsTable = new htmlResponsiveTable($certsTitles, $certsData);
+		$certsTable->setCSSClasses(array('text-left'));
 		$row->add($certsTable, 12);
 	}
 
@@ -628,7 +629,7 @@ printHeaderContents(_("Edit general settings"), '../..');
 				$row->add($webauthnSearchField, 12);
 				$row->addVerticalSpacer('0.5rem');
 				$row->add(new htmlButton('webauthn_search', _('Search')), 12, 12, 12, 'text-center');
-				$resultDiv = new htmlDiv('webauthn_results', new htmlOutputText(''), array('lam-webauthn-results'));
+				$resultDiv = new htmlDiv('webauthn_results', new htmlOutputText(''), array('lam-webauthn-results', 'text-left'));
 				addSecurityTokenToSession(false);
 				$resultDiv->addDataAttribute('sec_token_value', getSecurityTokenValue());
 				$row->add($resultDiv, 12);
