@@ -109,7 +109,7 @@ if (isset($_POST['submit']) || isset($_POST['sig_response'])
 		try {
 			$twoFactorValid = $provider->verify2ndFactor($user, $password, $serial, $twoFactorInput);
 		}
-		catch (\Exception $e) {
+		catch (Exception $e) {
 			logNewMessage(LOG_WARNING, '2-factor verification failed: ' . $e->getMessage());
 			header("HTTP/1.1 403 Forbidden");
 		}
