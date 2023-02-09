@@ -260,14 +260,6 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 			StatusMessage("ERROR", _("Your session expired, please log in again."));
 			echo "<br>";
 		}
-		if (isset($_GET['2factor']) && ($_GET['2factor'] == 'error')) {
-			StatusMessage('ERROR', _("Unable to start 2-factor authentication."));
-			echo "<br>";
-		}
-		elseif (isset($_GET['2factor']) && ($_GET['2factor'] == 'noToken')) {
-			StatusMessage('ERROR', _("Unable to start 2-factor authentication because no tokens were found."));
-			echo "<br>";
-		}
 		if (!empty($config_object)) {
 		?>
 		<br><br><br>
