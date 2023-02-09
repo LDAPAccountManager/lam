@@ -260,16 +260,6 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 			StatusMessage("ERROR", _("Your session expired, please log in again."));
 			echo "<br>";
 		}
-		// check if main config was saved
-		if (isset($_GET['confMainSavedOk'])) {
-			StatusMessage("INFO", _("Your settings were successfully saved."));
-			echo "<br>";
-		}
-		// check if self service was saved
-		if (isset($_GET['selfserviceSaveOk'])) {
-			StatusMessage("INFO", _("Your settings were successfully saved."), htmlspecialchars($_GET['selfserviceSaveOk']));
-			echo "<br>";
-		}
 		if (isset($_GET['2factor']) && ($_GET['2factor'] == 'error')) {
 			StatusMessage('ERROR', _("Unable to start 2-factor authentication."));
 			echo "<br>";

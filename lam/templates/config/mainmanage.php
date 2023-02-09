@@ -1,6 +1,7 @@
 <?php
 namespace LAM\CONFIG;
 
+use htmlJavaScript;
 use htmlResponsiveTable;
 use LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use \LAMCfgMain;
@@ -31,7 +32,7 @@ use PDO;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2022  Roland Gruber
+  Copyright (C) 2003 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -90,6 +91,43 @@ if (isset($_POST['cancel'])) {
 	metaRefresh('../login.php');
 	exit();
 }
+
+if (isset($_SESSION['header'])) {
+	echo $_SESSION['header'];
+}
+printHeaderContents(_("Edit general settings"), '../..');
+?>
+</head>
+<body>
+<div id="lam-topnav" class="lam-header">
+    <div class="lam-header-left lam-menu-stay">
+        <a href="https://www.ldap-account-manager.org/" target="new_window">
+            <img class="align-middle" width="24" height="24" alt="help" src="../../graphics/logo24.png">
+            <span class="hide-on-mobile">
+                        <?php
+						echo getLAMVersionText();
+						?>
+                    </span>
+        </a>
+    </div>
+	<?php
+	if (is_dir(dirname(__FILE__) . '/../../docs/manual')) {
+		?>
+        <a class="lam-header-right lam-menu-icon hide-on-tablet" href="javascript:void(0);" class="icon" onclick="window.lam.topmenu.toggle();">
+            <img class="align-middle" width="16" height="16" alt="menu" src="../../graphics/menu.svg">
+            <span class="padding0">&nbsp;</span>
+        </a>
+        <a class="lam-header-right lam-menu-entry" target="_blank" href="../../docs/manual/index.html">
+            <span class="padding0"><?php echo _("Help") ?></span>
+        </a>
+		<?php
+	}
+	?>
+</div>
+<br>
+<?php
+// include all JavaScript files
+printJsIncludes('../..');
 
 $errors = array();
 $messages = array();
@@ -308,52 +346,19 @@ if (isset($_POST['submitFormData'])) {
 	if (isset($_POST['submit'])) {
 		$cfg->save();
 		if (sizeof($errors) == 0) {
-			metaRefresh('../login.php?confMainSavedOk=1');
+			$scriptTag = new htmlJavaScript('window.lam.dialog.showSuccessMessageAndRedirect("' . _("Your settings were successfully saved.") . '", "", "' . _('Ok') . '", "../login.php")');
+			$tabIndex = 0;
+			parseHtml(null, $scriptTag, array(), false, $tabIndex, null);
+			echo '</body></html>';
 			exit();
 		}
 	}
 }
 
-if (isset($_SESSION['header'])) {
-	echo $_SESSION['header'];
-}
-printHeaderContents(_("Edit general settings"), '../..');
 ?>
-</head>
-<body>
-<div id="lam-topnav" class="lam-header">
-    <div class="lam-header-left lam-menu-stay">
-        <a href="https://www.ldap-account-manager.org/" target="new_window">
-            <img class="align-middle" width="24" height="24" alt="help" src="../../graphics/logo24.png">
-            <span class="hide-on-mobile">
-                        <?php
-                        echo getLAMVersionText();
-                        ?>
-                    </span>
-        </a>
-    </div>
-	<?php
-	if (is_dir(dirname(__FILE__) . '/../../docs/manual')) {
-		?>
-        <a class="lam-header-right lam-menu-icon hide-on-tablet" href="javascript:void(0);" class="icon" onclick="window.lam.topmenu.toggle();">
-            <img class="align-middle" width="16" height="16" alt="menu" src="../../graphics/menu.svg">
-            <span class="padding0">&nbsp;</span>
-        </a>
-        <a class="lam-header-right lam-menu-entry" target="_blank" href="../../docs/manual/index.html">
-            <span class="padding0"><?php echo _("Help") ?></span>
-        </a>
-		<?php
-	}
-	?>
-</div>
-<br>
-<!-- form for adding/renaming/deleting profiles -->
 <form class="text-center" enctype="multipart/form-data" action="mainmanage.php" method="post" novalidate="novalidate">
 
 	<?php
-	// include all JavaScript files
-	printJsIncludes('../..');
-
 	$tabindex = 1;
 
 	$row = new htmlResponsiveRow();
