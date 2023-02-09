@@ -1,5 +1,7 @@
 <?php
 namespace LAM\LOGIN;
+use Exception;
+use htmlJavaScript;
 use htmlStatusMessage;
 use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 use \htmlResponsiveRow;
@@ -14,7 +16,7 @@ use LAMException;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2021  Roland Gruber
+  Copyright (C) 2017 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -50,6 +52,7 @@ setlanguage();
 $config = $_SESSION['config'];
 $password = $_SESSION['ldap']->getPassword();
 $user = $_SESSION['ldap']->getUserName();
+$tabIndex = 1;
 
 // get serials
 try {
@@ -57,26 +60,17 @@ try {
 	$provider = $service->getProvider();
 	$serials = $provider->getSerials($user, $password);
 }
-catch (\Exception $e) {
+catch (Exception $e) {
 	logNewMessage(LOG_ERR, 'Unable to get 2-factor serials for ' . $user . ' ' . $e->getMessage());
-	metaRefresh("login.php?2factor=error");
+	printHeader();
+	$scriptTag = new htmlJavaScript('window.lam.dialog.showErrorMessageAndRedirect("' . _("Unable to start 2-factor authentication.") . '", "", "' . _('Ok') . '", "login.php")');
+	parseHtml(null, $scriptTag, array(), false, $tabIndex, null);
+	printFooter();
 	die();
 }
 
 $twoFactorLabelConfig = $config->getTwoFactorAuthenticationLabel();
 $twoFactorLabel = empty($twoFactorLabelConfig) ? _('PIN+Token') : $twoFactorLabelConfig;
-
-if (sizeof($serials) == 0) {
-	if ($config->getTwoFactorAuthenticationOptional()) {
-		unset($_SESSION['2factorRequired']);
-		metaRefresh("main.php");
-		die();
-	}
-	else {
-		metaRefresh("login.php?2factor=noToken");
-		die();
-	}
-}
 
 if (isset($_POST['logout'])) {
 	// destroy session
@@ -85,6 +79,20 @@ if (isset($_POST['logout'])) {
 	// redirect to login page
 	metaRefresh("login.php");
 	exit();
+}
+
+if (empty($serials) && $config->getTwoFactorAuthenticationOptional()) {
+    unset($_SESSION['2factorRequired']);
+    metaRefresh("main.php");
+    die();
+}
+
+if (empty($serials)) {
+    printHeader();
+	$scriptTag = new htmlJavaScript('window.lam.dialog.showErrorMessageAndRedirect("' . _("Unable to start 2-factor authentication because no tokens were found.") . '", "", "' . _('Ok') . '", "login.php")');
+	parseHtml(null, $scriptTag, array(), false, $tabIndex, null);
+	printFooter();
+	die();
 }
 
 if (isset($_POST['submit']) || isset($_POST['sig_response'])
@@ -116,32 +124,43 @@ if (isset($_POST['submit']) || isset($_POST['sig_response'])
 	}
 }
 
-echo $_SESSION['header'];
-printHeaderContents(_("Login"), '..');
-?>
-</head>
-<body>
-<?php
-
-// include all JavaScript files
-printJsIncludes('..');
-?>
-
+/**
+ * Prints the page header.
+ */
+function printHeader(): void {
+	echo $_SESSION['header'];
+	printHeaderContents(_("Login"), '..');
+    echo '</head><body>';
+    // include all JavaScript files
+	printJsIncludes('..');
+	?>
     <div id="lam-topnav" class="lam-header">
         <div class="lam-header-left lam-menu-stay">
             <a href="https://www.ldap-account-manager.org/" target="new_window">
                 <img class="align-middle" width="24" height="24" alt="help" src="../graphics/logo24.png">
                 <span class="hide-on-mobile">
                             <?php
-                            echo getLAMVersionText();
-                            ?>
+							echo getLAMVersionText();
+							?>
                         </span>
             </a>
         </div>
     </div>
+    <?php
+}
 
+/**
+ * Prints the page footer.
+ */
+function printFooter(): void {
+    echo '</body></html>';
+}
+
+printHeader();
+
+
+?>
 	<br><br>
-
 	<form id="2faform" enctype="multipart/form-data" action="login2Factor.php" method="post" autocomplete="off">
 <?php
 echo $config->getTwoFactorAuthenticationCaption();
@@ -210,5 +229,6 @@ echo $config->getTwoFactorAuthenticationCaption();
 			myElement.focus();
 		}
 	</script>
-</body>
-</html>
+
+<?php
+printFooter();
