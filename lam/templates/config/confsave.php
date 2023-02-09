@@ -1,6 +1,6 @@
 <?php
 namespace LAM\CONFIG;
-use \LAMConfig;
+use htmlJavaScript;
 use \htmlStatusMessage;
 use LAMException;
 use ServerProfilePersistenceManager;
@@ -8,7 +8,7 @@ use ServerProfilePersistenceManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2009 - 2021  Roland Gruber
+  Copyright (C) 2009 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -37,9 +37,10 @@ use ServerProfilePersistenceManager;
 
 /** Access to config functions */
 include_once(__DIR__ . "/../../lib/config.inc");
-
 /** access to module settings */
 include_once(__DIR__ . "/../../lib/modules.inc");
+/** common functions */
+include_once __DIR__ . '/../../lib/configPages.inc';
 
 // start session
 if (isFileBasedSession()) {
@@ -61,13 +62,24 @@ if (!isset($_SESSION['conf_isAuthenticated']) || ($_SESSION['conf_config']->getN
 $conf = &$_SESSION['conf_config'];
 $confName = $_SESSION['conf_isAuthenticated'];
 
+echo $_SESSION['header'];
+printHeaderContents(_("LDAP Account Manager Configuration"), '../..');
+echo "<body>\n";
+// include all JavaScript files
+printJsIncludes('../..');
+printConfigurationPageHeaderBar($conf);
+
 $serverProfilePersistenceManager = new ServerProfilePersistenceManager();
 try {
 	$serverProfilePersistenceManager->saveProfile($conf, $confName);
-	metaRefresh('../login.php?configSaveOk=1&configSaveFile=' . $confName);
+	$scriptTag = new htmlJavaScript('window.lam.dialog.showSuccessMessageAndRedirect("' . _("Your settings were successfully saved.") . '", "' . htmlspecialchars($confName) . '", "' . _('Ok') . '", "../login.php")');
+	$tabIndex = 0;
+	parseHtml(null, $scriptTag, array(), false, $tabIndex, null);
 }
 catch (LAMException $e) {
-	metaRefresh('../login.php?configSaveFailed=1&configSaveFile=' . $confName);
+	$scriptTag = new htmlJavaScript('window.lam.dialog.showErrorMessageAndRedirect("' . htmlspecialchars($e->getTitle()) . '", "' . htmlspecialchars($e->getMessage()) . '", "' . _('Ok') . '", "../login.php")');
+	$tabIndex = 0;
+	parseHtml(null, $scriptTag, array(), false, $tabIndex, null);
 }
 finally {
 	// remove settings from session
@@ -78,3 +90,7 @@ finally {
 		}
 	}
 }
+
+?>
+</body>
+</html>

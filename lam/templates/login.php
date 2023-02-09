@@ -265,15 +265,6 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 			StatusMessage("INFO", _("Your settings were successfully saved."));
 			echo "<br>";
 		}
-		// check if a server profile was saved
-		if (isset($_GET['configSaveOk'])) {
-			StatusMessage("INFO", _("Your settings were successfully saved."), htmlspecialchars($_GET['configSaveFile']));
-			echo "<br>";
-		}
-		elseif (isset($_GET['configSaveFailed'])) {
-			StatusMessage("ERROR", _("Cannot open config file!"), htmlspecialchars($_GET['configSaveFile']));
-			echo "<br>";
-		}
 		// check if self service was saved
 		if (isset($_GET['selfserviceSaveOk'])) {
 			StatusMessage("INFO", _("Your settings were successfully saved."), htmlspecialchars($_GET['selfserviceSaveOk']));

@@ -1100,6 +1100,49 @@ window.lam.dialog.showModal = function(selector) {
 	}
 }
 
+/**
+ * Shows a success message and redirects to the given URL when dialog is closed.
+ * Dialog auto-closes after 3 seconds.
+ *
+ * @param title title
+ * @param message detail message
+ * @param buttonText text for confirm button
+ * @param redirectUrl redirect URL
+ */
+window.lam.dialog.showSuccessMessageAndRedirect = function(title, message, buttonText, redirectUrl) {
+	Swal.fire({
+		icon: 'success',
+		title: title,
+		confirmButtonText: buttonText,
+		text: message,
+		width: 'auto',
+		timer: 3000,
+		timerProgressBar: true
+	}).then(result => {
+		window.location = redirectUrl;
+	});
+}
+
+/**
+ * Shows an error message and redirects to the given URL when dialog is closed.
+ *
+ * @param title title
+ * @param message detail message
+ * @param buttonText text for confirm button
+ * @param redirectUrl redirect URL
+ */
+window.lam.dialog.showErrorMessageAndRedirect = function(title, message, buttonText, redirectUrl) {
+	Swal.fire({
+		icon: 'error',
+		title: title,
+		confirmButtonText: buttonText,
+		text: message,
+		width: 'auto'
+	}).then(result => {
+		window.location = redirectUrl;
+	});
+}
+
 window.lam.account = window.lam.account || {};
 
 /**
