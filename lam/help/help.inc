@@ -186,6 +186,8 @@ $helpArray = array (
 					"Text" => _("SMTP password")),
 				"256" => array ("Headline" => _("Encryption protocol"),
 					"Text" => _("Please select if the connection should be encrypted via TLS, SSL or not at all.")),
+				"257" => array ("Headline" => _("Hide LDAP details on failed login"),
+					"Text" => _("If activated, LAM will not display and details why the login to LAM failed. Use this if you have high security requirements and want to prevent e.g. user name guessing.")),
 				"260" => array ("Headline" => _("Additional LDAP filter"),
 					"Text" => _('Use this to enter an additional LDAP filter (e.g. "(cn!=admin)") to reduce the number of visible elements for this account type.')
 						. ' ' . _('You can use the wildcard @@LOGIN_DN@@ which will be substituted with the DN of the user who is currently logged in to LAM.')

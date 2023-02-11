@@ -546,12 +546,24 @@ if (isset($_POST['checklogin'])) {
                     cleanLDAPResult($searchInfo);
                     if (empty($searchInfo)) {
                         $searchSuccess = false;
-                        $searchError = _('Wrong password/user name combination. Please try again.');
+                        if ($default_Config->isHideLoginErrorDetails()) {
+							$searchError = _('Wrong password/user name combination. Please try again.');
+                        }
+                        else {
+							$searchError = _('Unable to find the user name in LDAP.');
+                        }
+						logNewMessage(LOG_ERR, 'User ' . $username . ' (' . $clientSource . ') failed to log in. Unable to find the user name in LDAP.');
 	                    header("HTTP/1.1 403 Forbidden");
                     }
                     elseif (sizeof($searchInfo) > 1) {
                         $searchSuccess = false;
-                        $searchError = _('The given user name matches multiple LDAP entries.');
+						if ($default_Config->isHideLoginErrorDetails()) {
+							$searchError = _('Wrong password/user name combination. Please try again.');
+						}
+						else {
+							$searchError = _('The given user name matches multiple LDAP entries.');
+						}
+						logNewMessage(LOG_ERR, 'User ' . $username . ' (' . $clientSource . ') failed to log in. The given user name matches multiple LDAP entries.');
 	                    header("HTTP/1.1 403 Forbidden");
                     }
                     else {
@@ -560,16 +572,28 @@ if (isset($_POST['checklogin'])) {
                 }
                 else {
                     $searchSuccess = false;
-                    $searchError = _('Unable to find the user name in LDAP.');
+					if ($default_Config->isHideLoginErrorDetails()) {
+						$searchError = _('Wrong password/user name combination. Please try again.');
+					}
+					else {
+						$searchError = _('Unable to find the user name in LDAP.');
+					}
 	                header("HTTP/1.1 403 Forbidden");
                     if (ldap_errno($searchLDAP->server()) != 0) {
                         $searchError .= ' ' . getDefaultLDAPErrorString($searchLDAP->server());
                     }
+					logNewMessage(LOG_ERR, 'User ' . $username . ' (' . $clientSource . ') failed to log in. Unable to find the user name in LDAP.');
                 }
             }
             else {
                 $searchSuccess = false;
-                $searchError = _('Unable to find the user name in LDAP.');
+				if ($default_Config->isHideLoginErrorDetails()) {
+					$searchError = _('Wrong password/user name combination. Please try again.');
+				}
+				else {
+					$searchError = _('Unable to find the user name in LDAP.');
+				}
+				logNewMessage(LOG_ERR, 'User ' . $username . ' (' . $clientSource . ') failed to log in. Unable to find the user name in LDAP.');
 	            header("HTTP/1.1 403 Forbidden");
                 if (ldap_errno($searchLDAP->server()) != 0) {
                     $searchError .= ' ' . getDefaultLDAPErrorString($searchLDAP->server());
@@ -577,7 +601,6 @@ if (isset($_POST['checklogin'])) {
             }
 			if (!$searchSuccess) {
 				$error_message = $searchError;
-				logNewMessage(LOG_ERR, 'User ' . $username . ' (' . $clientSource . ') failed to log in. ' . $searchError . '');
 				$searchLDAP->close();
 				display_LoginPage($licenseValidator, $error_message);
 				exit();
@@ -615,10 +638,16 @@ if (isset($_POST['checklogin'])) {
 		header("HTTP/1.1 403 Forbidden");
 		$extraMessage = null;
 		if (($searchLDAP !== null) && ($e->getLdapErrorCode() == 49)) {
-			$extraMessage = getExtraInvalidCredentialsMessage($searchLDAP->server(), $username);
+		    if (!$default_Config->isHideLoginErrorDetails()) {
+				$extraMessage = getExtraInvalidCredentialsMessage($searchLDAP->server(), $username);
+			}
 			$searchLDAP->close();
 		}
-		display_LoginPage($licenseValidator, $e->getTitle(), $e->getMessage(), $extraMessage);
+		$message = $e->getMessage();
+		if ($default_Config->isHideLoginErrorDetails()) {
+		    $message = null;
+		}
+		display_LoginPage($licenseValidator, $e->getTitle(), $message, $extraMessage);
 		exit();
     }
 }

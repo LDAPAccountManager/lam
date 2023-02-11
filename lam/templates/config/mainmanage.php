@@ -192,6 +192,8 @@ if (isset($_POST['submitFormData'])) {
 	}
 	// set session timeout
 	$cfg->sessionTimeout = $_POST['sessionTimeout'];
+	// set hide login error details
+	$cfg->hideLoginErrorDetails = (isset($_POST['hideLoginErrorDetails']) && ($_POST['hideLoginErrorDetails'] === 'on')) ? 'true' : 'false';
 	// set allowed hosts
 	if (isset($_POST['allowedHosts'])) {
 		$allowedHosts = $_POST['allowedHosts'];
@@ -451,10 +453,12 @@ if (isset($_POST['submitFormData'])) {
 	// security settings
 	$row->add(new htmlSubTitle(_("Security settings")), 12);
 	$options = array(5, 10, 20, 30, 60, 90, 120, 240);
-	$row->add(new htmlResponsiveSelect('sessionTimeout', $options, array($cfg->sessionTimeout), _("Session timeout"), '238'), 12);
-	$row->add(new htmlResponsiveInputTextarea('allowedHosts', implode("\n", explode(",", $cfg->allowedHosts)), '30', '7', _("Allowed hosts"), '241'), 12);
+	$row->add(new htmlResponsiveSelect('sessionTimeout', $options, array($cfg->sessionTimeout), _("Session timeout"), '238'));
+	$hideLoginErrorDetails = ($cfg->hideLoginErrorDetails === 'true');
+	$row->add(new htmlResponsiveInputCheckbox('hideLoginErrorDetails', $hideLoginErrorDetails, _('Hide LDAP details on failed login'), '257'));
+	$row->add(new htmlResponsiveInputTextarea('allowedHosts', implode("\n", explode(",", $cfg->allowedHosts)), '30', '7', _("Allowed hosts"), '241'));
 	if (isLAMProVersion()) {
-		$row->add(new htmlResponsiveInputTextarea('allowedHostsSelfService', implode("\n", explode(",", $cfg->allowedHostsSelfService)), '30', '7', _("Allowed hosts (self service)"), '241'), 12);
+		$row->add(new htmlResponsiveInputTextarea('allowedHostsSelfService', implode("\n", explode(",", $cfg->allowedHostsSelfService)), '30', '7', _("Allowed hosts (self service)"), '241'));
 	}
 	// SSL certificate
 	$row->addVerticalSpacer('1rem');
