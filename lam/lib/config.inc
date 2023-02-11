@@ -2951,6 +2951,9 @@ class LAMCfgMain {
 	/** Time of inactivity before session times out (minutes) */
 	public $sessionTimeout;
 
+	/** @var string hides detail messages for login errors */
+	public string $hideLoginErrorDetails = 'false';
+
 	/** log level */
 	public $logLevel;
 
@@ -3053,7 +3056,7 @@ class LAMCfgMain {
 	public $configDatabasePassword = '';
 
 	/** list of data fields to save in config file */
-	private $settings = array("password", "default", "sessionTimeout",
+	private $settings = array("password", "default", "sessionTimeout", "hideLoginErrorDetails",
 		"logLevel", "logDestination", "allowedHosts", "passwordMinLength",
 		"passwordMinUpper", "passwordMinLower", "passwordMinNumeric",
 		"passwordMinClasses", "passwordMinSymbol", 'checkedRulesCount',
@@ -3087,6 +3090,7 @@ class LAMCfgMain {
 		}
 		// set default values
 		$this->sessionTimeout = 30;
+		$this->hideLoginErrorDetails = 'false';
 		$this->logLevel = LOG_NOTICE;
 		$this->logDestination = "SYSLOG";
 		$this->allowedHosts = "";
@@ -3353,6 +3357,9 @@ class LAMCfgMain {
 			}
 			if (!in_array("sessionTimeout", $saved)) {
 				array_push($file_array, "sessionTimeout: " . $this->sessionTimeout . "\n");
+			}
+			if (!in_array("hideLoginErrorDetails", $saved)) {
+				array_push($file_array, "hideLoginErrorDetails: " . $this->hideLoginErrorDetails . "\n");
 			}
 			if (!in_array("logLevel", $saved)) {
 				array_push($file_array, "logLevel: " . $this->logLevel . "\n");
@@ -3778,6 +3785,15 @@ class LAMCfgMain {
 			return false;
 		}
 		return $timeStamp == $this->licenseEmailDateSent;
+	}
+
+	/**
+	 * Hide error details for failed logins.
+	 *
+	 * @return bool hide details
+	 */
+	public function isHideLoginErrorDetails(): bool {
+		return $this->hideLoginErrorDetails === 'true';
 	}
 
 }

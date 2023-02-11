@@ -113,6 +113,10 @@
       automatically invalidated. The selected value represents minutes of
       inactivity.</para>
 
+      <para>If you do not want to expose why the login to LAM failed then
+      activate "Hide LDAP details on failed logins". This way users will not
+      see if their account was not found or is e.g. locked.</para>
+
       <para>You may also set a list of IP addresses which are allowed to
       access LAM. The IPs can be specified as full IP (e.g. 123.123.123.123)
       or with the "*" wildcard (e.g. 123.123.123.*). Users which try to access
