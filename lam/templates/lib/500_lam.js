@@ -1571,10 +1571,12 @@ window.lam.html.activateLightboxes = function() {
  * Prevents enter key on input fields with class "lam-prevent-enter".
  */
 window.lam.html.preventEnter = function() {
-	jQuery('.lam-prevent-enter').keypress(function (event) {
-	    if (event.keyCode === 10 || event.keyCode === 13) {
-	        event.preventDefault();
-	    }
+	document.querySelectorAll('.lam-prevent-enter').forEach(item => {
+		item.addEventListener('keypress', function (event) {
+			if (event.keyCode === 10 || event.keyCode === 13) {
+				event.preventDefault();
+			}
+		});
 	});
 }
 

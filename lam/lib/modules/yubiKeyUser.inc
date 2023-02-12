@@ -5,7 +5,7 @@ use \LAM\PDF\PDFTableRow;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2018 - 2022  Roland Gruber
+  Copyright (C) 2018 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -387,6 +387,7 @@ class yubiKeyUser extends baseModule {
 			function yubiKeyIdAddKeyHandleReply(data) {
 				if (data.errorsOccurred == "false") {
 					jQuery(\'#yubiKeyIdDiv\').html(data.html);
+					window.lam.html.preventEnter();
 				}
 				else {
 					alert(data.errormessage);
