@@ -1830,19 +1830,19 @@ window.lam.webauthn.arrayToBase64String = function(input) {
  * Sets up the device management on the main configuration page.
  */
 window.lam.webauthn.setupDeviceManagement = function() {
-	var searchButton = jQuery('#btn_webauthn_search');
+	const searchButton = document.getElementById('btn_webauthn_search');
 	if (searchButton) {
-		searchButton.click(window.lam.webauthn.searchDevices);
+		searchButton.onclick = window.lam.webauthn.searchDevices;
 	}
-	var searchInput = jQuery('#webauthn_searchTerm');
+	const searchInput = document.getElementById('webauthn_searchTerm');
 	if (searchInput) {
-		searchInput.keydown(function (event) {
-			if (event.keyCode == 13) {
+		searchInput.onkeydown = function (event) {
+			if (event.key === "Enter") {
 				event.preventDefault();
 				searchButton.click();
 				return false;
 			}
-		});
+		};
 	}
 }
 
