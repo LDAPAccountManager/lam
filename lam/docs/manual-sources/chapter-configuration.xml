@@ -9,7 +9,7 @@
   inside the application. There is no need to edit configuration files.</para>
 
   <para>Please point you browser to the location where you installed LAM. E.g.
-  for Debian/RPM this is http://yourServer/lam. If you installed LAM via the
+  for Debian/Ubuntu/RPM this is http://yourServer/lam. If you installed LAM via the
   tar.bz2 then this may vary. You should see the following page:</para>
 
   <screenshot>
@@ -142,7 +142,7 @@
 
       <para>Please note that this can affect other web applications on the
       same server if they require different certificates. There seem to be
-      problems on Debian systems and you may also need to restart Apache. In
+      problems on Debian/Ubuntu systems and you may also need to restart Apache. In
       case of any problems please delete the uploaded certificates and use the
       <link linkend="ssl_certSystem">system setup</link>.</para>
 
@@ -1186,8 +1186,8 @@
         profile in config directory.</para>
 
         <para>You will need to install the SQLite PDO module for PHP
-        (pdo_sqlite.so). For Debian this is located in package
-        php5-sqlite.</para>
+        (pdo_sqlite.so). For Debian/Ubuntu this is located in package
+        php-sqlite3.</para>
 
         <screenshot>
           <mediaobject>
@@ -1203,8 +1203,8 @@
         database.</para>
 
         <para>You will need to install the MySQL PDO module for PHP
-        (pdo_mysql.so). For Debian this is located in package
-        php5-mysql.</para>
+        (pdo_mysql.so). For Debian/Ubuntu this is located in package
+        php-mysql.</para>
 
         <para>Steps to create a MySQL database and user:</para>
 

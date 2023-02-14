@@ -2306,7 +2306,7 @@ AuthorizedKeysCommandUser root</literallayout>
       <para>You need to install the SSL certificate of the CA that signed your
       server certificate. This is usually done by installing the certificate
       in /etc/ssl/certs. Different Linux distributions may offer different
-      ways to do this. For Debian please copy the certificate in
+      ways to do this. For Debian/Ubuntu please copy the certificate in
       "/usr/local/share/ca-certificates" and run "update-ca-certificates" as
       root.</para>
 

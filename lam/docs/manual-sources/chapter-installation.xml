@@ -76,7 +76,7 @@
       platforms.</para>
 
       <section>
-        <title>Debian</title>
+        <title>Debian/Ubuntu</title>
 
         <informaltable frame="none" tabstyle="noborder">
           <tgroup cols="2">
@@ -86,21 +86,25 @@
                     <imageobject>
                       <imagedata fileref="images/debian.png"/>
                     </imageobject>
+                  </inlinemediaobject><para/><inlinemediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/ubuntu.png"/>
+                    </imageobject>
                   </inlinemediaobject></entry>
 
-                <entry>LAM is part of the official Debian repository. New
-                releases are uploaded to unstable and will be available
+                <entry>LAM is part of the official Debian/Ubuntu repository.
+                New releases are uploaded to unstable and will be available
                 automatically in testing and the stable releases. You can
                 run<literal> </literal><para><emphasis role="bold">apt-get
                 install ldap-account-manager</emphasis></para>to install LAM
                 on your server. Additionally, you may download the latest LAM
-                Debian packages from the <ulink type=""
+                Debian/Ubuntu packages from the <ulink type=""
                 url="http://www.ldap-account-manager.org/">LAM
                 homepage</ulink> or the <ulink
                 url="http://packages.debian.org/search?keywords=ldap-account-manager">Debian
                 package homepage</ulink>.<para><emphasis
                 role="bold">Installation of the latest packages on
-                Debian</emphasis></para><orderedlist>
+                Debian/Ubuntu</emphasis></para><orderedlist>
                     <listitem>
                       <para>Install the LAM package</para>
 
@@ -517,7 +521,7 @@ docker run -p 8080:80 -it -d registry.gitlab.com/ldapaccountmanager/lampro:stabl
 
         <para>locale -a</para>
 
-        <para>Debian users can add locales with "dpkg-reconfigure
+        <para>Debian/Ubuntu users can add locales with "dpkg-reconfigure
         locales".</para>
       </section>
     </section>
@@ -566,7 +570,7 @@ docker run -p 8080:80 -it -d registry.gitlab.com/ldapaccountmanager/lampro:stabl
       calling "rpm -e ldap-account-manager
       ldap-account-manager-lamdaemon".</para>
 
-      <para>Debian needs no removal of old packages.</para>
+      <para>Debian/Ubuntu needs no removal of old packages.</para>
 
       <para>For tar.bz2 please remove the folder where you installed LAM via
       configure or by copying the files.</para>
@@ -800,8 +804,8 @@ docker run -p 8080:80 -it -d registry.gitlab.com/ldapaccountmanager/lampro:stabl
 
         <para>Apache configuration: LAM supports Apache 2.2 and 2.4. This
         requires that your Apache server has enabled the "version" module. For
-        Debian and Fedora this is the default setup. The Suse RPM will try to
-        enable the version module during installation.</para>
+        Debian/Ubuntu and Fedora this is the default setup. The Suse RPM will
+        try to enable the version module during installation.</para>
 
         <para>Kolab: User accounts get the object class "mailrecipient" by
         default. You can change this behaviour in the module settings section

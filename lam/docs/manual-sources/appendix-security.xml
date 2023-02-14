@@ -454,7 +454,7 @@ semodule -i httpdlocal.pp</programlisting>
 
       <para>You will need to change the alias location
       ("/usr/share/ldap-account-manager") and fastcgi_pass (e.g.
-      "/var/run/php5-fpm.sock" or "/var/run/php7-fpm.sock") to match your
+      "/var/run/php/php-fpm.sock" or "/var/run/php8-fpm.sock") to match your
       installation.</para>
 
       <programlisting>location /lam {
@@ -466,7 +466,7 @@ semodule -i httpdlocal.pp</programlisting>
 
   location ~ \.php$ {
     fastcgi_split_path_info ^(.+\.php)(/.+)$;
-    fastcgi_pass unix:/var/run/php5-fpm.sock;
+    fastcgi_pass unix:/var/run/php8-fpm.sock;
     fastcgi_index index.php;
     fastcgi_param SCRIPT_FILENAME $request_filename;
     include fastcgi_params;

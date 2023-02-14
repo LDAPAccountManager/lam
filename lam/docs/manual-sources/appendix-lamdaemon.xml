@@ -59,7 +59,7 @@
 
         <listitem>
           <para>Path to lamdaemon.pl, e.g.
-          /srv/www/htdocs/lam/lib/lamdaemon.pl If you installed a Debian or
+          /srv/www/htdocs/lam/lib/lamdaemon.pl If you installed a DEB or
           RPM package then the script will be located at
           /usr/share/ldap-account-manager/lib/lamdaemon.pl.</para>
         </listitem>
