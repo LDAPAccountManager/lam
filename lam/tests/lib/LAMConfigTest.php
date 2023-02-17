@@ -3,7 +3,7 @@ use PHPUnit\Framework\TestCase;
 /*
 
  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
- Copyright (C) 2016 - 2021  Roland Gruber
+ Copyright (C) 2016 - 2023  Roland Gruber
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -642,6 +642,39 @@ class LAMConfigTest extends TestCase {
 		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationAttribute());
 		$this->doSave();
 		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAuthenticationAttribute());
+	}
+
+	/**
+	 * Tests LAMConfig->getTwoFactorAllowToRememberDevice() and LAMConfig->setTwoFactorAllowToRememberDevice()
+	 */
+	public function testTwoFactorAllowToRememberDevice() {
+		$val = 'true';
+		$this->lAMConfig->setTwoFactorAllowToRememberDevice($val);
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAllowToRememberDevice());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorAllowToRememberDevice());
+	}
+
+	/**
+	 * Tests LAMConfig->getTwoFactorRememberDeviceDuration() and LAMConfig->setTwoFactorRememberDeviceDuration()
+	 */
+	public function testTwoFactorRememberDeviceDuration() {
+		$val = '12';
+		$this->lAMConfig->setTwoFactorRememberDeviceDuration($val);
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorRememberDeviceDuration());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorRememberDeviceDuration());
+	}
+
+	/**
+	 * Tests LAMConfig->getTwoFactorRememberDevicePassword() and LAMConfig->setTwoFactorRememberDevicePassword()
+	 */
+	public function testTwoFactorRememberDevicePassword() {
+		$val = '012345678901234567890123456789';
+		$this->lAMConfig->setTwoFactorRememberDevicePassword($val);
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorRememberDevicePassword());
+		$this->doSave();
+		$this->assertEquals($val, $this->lAMConfig->getTwoFactorRememberDevicePassword());
 	}
 
 	/**

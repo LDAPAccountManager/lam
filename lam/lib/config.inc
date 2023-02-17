@@ -714,6 +714,9 @@ class ServerProfilePersistenceStrategyFiles implements ServerProfilePersistenceS
 			$file_array[] = "\n" . "twoFactorAuthenticationOptional: " . $profile->getTwoFactorAuthenticationOptional() . "\n";
 			$file_array[] = "\n" . "twoFactorAuthenticationCaption: " . $profile->getTwoFactorAuthenticationCaption() . "\n";
 			$file_array[] = "\n" . "twoFactorAuthenticationAttribute: " . $profile->getTwoFactorAuthenticationAttribute() . "\n";
+			$file_array[] = "\n" . "twoFactorAllowToRememberDevice: " . $profile->getTwoFactorAllowToRememberDevice() . "\n";
+			$file_array[] = "\n" . "twoFactorRememberDeviceDuration: " . $profile->getTwoFactorRememberDeviceDuration() . "\n";
+			$file_array[] = "\n" . "twoFactorRememberDevicePassword: " . $profile->getTwoFactorRememberDevicePassword() . "\n";
 			$file_array[] = "\n" . "hideDnPart: " . $profile->getHideDnPart() . "\n";
 			$file_array[] = "\n" . "pwdPolicyMinLength: " . $profile->getPwdPolicyMinLength() . "\n";
 			$file_array[] = "\n" . "pwdPolicyMinLowercase: " . $profile->getPwdPolicyMinLowercase() . "\n";
@@ -1137,6 +1140,9 @@ class LAMConfig {
 	private $twoFactorAuthenticationOptional = false;
 	private $twoFactorAuthenticationCaption = '';
 	private $twoFactorAuthenticationAttribute = '';
+	private string $twoFactorAllowToRememberDevice = 'false';
+	private string $twoFactorRememberDeviceDuration = '8';
+	private string $twoFactorRememberDevicePassword = '';
 
 	private $hideDnPart = '';
 
@@ -1158,7 +1164,8 @@ class LAMConfig {
 		'scriptUserName', 'scriptSSHKey', 'scriptSSHKeyPassword', 'twoFactorAuthentication', 'twoFactorAuthenticationURL',
 		'twoFactorAuthenticationInsecure', 'twoFactorAuthenticationLabel', 'twoFactorAuthenticationOptional',
 		'twoFactorAuthenticationCaption', 'twoFactorAuthenticationClientId', 'twoFactorAuthenticationSecretKey',
-		'twoFactorAuthenticationDomain', 'twoFactorAuthenticationAttribute', 'referentialIntegrityOverlay',
+		'twoFactorAuthenticationDomain', 'twoFactorAuthenticationAttribute', 'twoFactorAllowToRememberDevice',
+		'twoFactorRememberDeviceDuration', 'twoFactorRememberDevicePassword', 'referentialIntegrityOverlay',
 		'hidePasswordPromptForExpiredPasswords', 'hideDnPart', 'pwdPolicyMinLength', 'pwdPolicyMinLowercase',
 		'pwdPolicyMinUppercase', 'pwdPolicyMinNumeric', 'pwdPolicyMinSymbolic'
 	);
@@ -2794,6 +2801,69 @@ class LAMConfig {
 	 */
 	public function setTwoFactorAuthenticationAttribute($twoFactorAuthenticationAttribute) {
 		$this->twoFactorAuthenticationAttribute = $twoFactorAuthenticationAttribute;
+	}
+
+	/**
+	 * Returns if remembering devices is allowed.
+	 *
+	 * @return string remembering allowed
+	 */
+	public function getTwoFactorAllowToRememberDevice(): string {
+		if (empty($this->twoFactorAllowToRememberDevice)) {
+			return 'false';
+		}
+		return $this->twoFactorAllowToRememberDevice;
+	}
+
+	/**
+	 * Sets the user attribute.
+	 *
+	 * @param string $twoFactorAllowToRememberDevice remembering allowed
+	 */
+	public function setTwoFactorAllowToRememberDevice(string $twoFactorAllowToRememberDevice): void {
+		$this->twoFactorAllowToRememberDevice = $twoFactorAllowToRememberDevice;
+	}
+
+	/**
+	 * Returns the duration for device remembering in hours.
+	 *
+	 * @return string duration
+	 */
+	public function getTwoFactorRememberDeviceDuration(): string {
+		if (empty($this->twoFactorRememberDeviceDuration)) {
+			return '8';
+		}
+		return $this->twoFactorRememberDeviceDuration;
+	}
+
+	/**
+	 * Sets the duration for device remembering in hours.
+	 *
+	 * @param string $twoFactorRememberDeviceDuration duration in hours
+	 */
+	public function setTwoFactorRememberDeviceDuration(string $twoFactorRememberDeviceDuration): void {
+		$this->twoFactorRememberDeviceDuration = $twoFactorRememberDeviceDuration;
+	}
+
+	/**
+	 * Returns the password for device remembering.
+	 *
+	 * @return string password
+	 */
+	public function getTwoFactorRememberDevicePassword(): string {
+		if (empty($this->twoFactorRememberDevicePassword)) {
+			return generateRandomPassword(30);
+		}
+		return $this->twoFactorRememberDevicePassword;
+	}
+
+	/**
+	 * Sets the password for device remembering.
+	 *
+	 * @param string $twoFactorRememberDevicePassword password
+	 */
+	public function setTwoFactorRememberDevicePassword(string $twoFactorRememberDevicePassword): void {
+		$this->twoFactorRememberDevicePassword = $twoFactorRememberDevicePassword;
 	}
 
 	/**
