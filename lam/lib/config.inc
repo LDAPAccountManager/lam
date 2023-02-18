@@ -1141,7 +1141,7 @@ class LAMConfig {
 	private $twoFactorAuthenticationCaption = '';
 	private $twoFactorAuthenticationAttribute = '';
 	private string $twoFactorAllowToRememberDevice = 'false';
-	private string $twoFactorRememberDeviceDuration = '8';
+	private string $twoFactorRememberDeviceDuration = '28800';
 	private string $twoFactorRememberDevicePassword = '';
 
 	private $hideDnPart = '';
@@ -2831,7 +2831,7 @@ class LAMConfig {
 	 */
 	public function getTwoFactorRememberDeviceDuration(): string {
 		if (empty($this->twoFactorRememberDeviceDuration)) {
-			return '8';
+			return strval(8 * 60 * 60);
 		}
 		return $this->twoFactorRememberDeviceDuration;
 	}

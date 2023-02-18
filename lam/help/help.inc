@@ -389,6 +389,8 @@ $helpArray = array (
 					"Text" => _('This email address will be set as To address of all mails.') . ' '
 						. _('Multiple values are separated by comma.')
 				),
+				"560" => array ("Headline" => _("Remember device"),
+					"Text" => _('This will remember your current device. You will not need to provide your 2nd factor for a configured period of time.')),
 				// 600 - 699
 				// OU-editor, domain page
 				"601" => array ("Headline" => _("OU-Editor") . " - " . _("New organisational unit"),

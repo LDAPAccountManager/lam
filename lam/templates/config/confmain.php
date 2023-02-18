@@ -563,7 +563,7 @@ if (extension_loaded('curl')) {
 	$rememberDeviceRow->add($twoFactorAllowToRememberDevice);
 	$rememberDeviceExtraRow = new htmlResponsiveRow();
 	$rememberDeviceExtraRow->setId('twoFactorAllowToRememberDeviceExtraOptions');
-	$twoFactorRememberDeviceDuration = new htmlResponsiveInputField(_("Duration to remember devices"), 'twoFactorRememberDeviceDuration', $conf->getTwoFactorRememberDeviceDuration(), '531');
+	$twoFactorRememberDeviceDuration = new htmlResponsiveInputField(_("Duration to remember devices"), 'twoFactorRememberDeviceDuration', formatSecondsToShortFormat($conf->getTwoFactorRememberDeviceDuration()), '531');
 	$rememberDeviceExtraRow->add($twoFactorRememberDeviceDuration);
 	$twoFactorRememberDevicePassword = new htmlResponsiveInputField(_("Password to remember devices"), 'twoFactorRememberDevicePassword', $conf->getTwoFactorRememberDevicePassword(), '532');
 	$twoFactorRememberDevicePassword->setIsPassword(true);
@@ -824,10 +824,13 @@ function checkInput(): array {
 		$conf->setTwoFactorAuthenticationClientId($_POST['twoFactorClientId']);
 		$conf->setTwoFactorAuthenticationSecretKey($_POST['twoFactorSecretKey']);
 		$conf->setTwoFactorAuthenticationDomain($_POST['twoFactorDomain']);
-		$conf->setTwoFactorAuthenticationInsecure(isset($_POST['twoFactorInsecure']) && ($_POST['twoFactorInsecure'] == 'on'));
+		$conf->setTwoFactorAuthenticationInsecure(isset($_POST['twoFactorInsecure']) && ($_POST['twoFactorInsecure'] === 'on'));
 		$conf->setTwoFactorAuthenticationLabel($_POST['twoFactorLabel']);
-		$conf->setTwoFactorAuthenticationOptional(isset($_POST['twoFactorOptional']) && ($_POST['twoFactorOptional'] == 'on'));
+		$conf->setTwoFactorAuthenticationOptional(isset($_POST['twoFactorOptional']) && ($_POST['twoFactorOptional'] === 'on'));
 		$conf->setTwoFactorAuthenticationCaption(str_replace(array("\r", "\n"), array('', ''), $_POST['twoFactorCaption']));
+		$conf->setTwoFactorAllowToRememberDevice(isset($_POST['twoFactorAllowToRememberDevice']) && ($_POST['twoFactorAllowToRememberDevice'] === 'on'));
+		$conf->setTwoFactorRememberDeviceDuration(unformatShortFormatToSeconds($_POST['twoFactorRememberDeviceDuration']));
+		$conf->setTwoFactorRememberDevicePassword($_POST['twoFactorRememberDevicePassword']);
 	}
 	// check if password was changed
 	if (isset($_POST['passwd1']) && ($_POST['passwd1'] != '')) {
