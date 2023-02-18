@@ -558,7 +558,8 @@ if (extension_loaded('curl')) {
 	$row->addVerticalSpacer('0.5rem');
 	$rememberDeviceRow = new htmlResponsiveRow();
 	$rememberDeviceRow->setId('twoFactorAllowToRememberDeviceOptions');
-	$twoFactorAllowToRememberDevice = new htmlResponsiveInputCheckbox('twoFactorAllowToRememberDevice', $conf->getTwoFactorAllowToRememberDevice(), _('Allow to remember device'), '530');
+	$twoFactorAllowToRememberDeviceChecked = ($conf->getTwoFactorAllowToRememberDevice() === 'true');
+	$twoFactorAllowToRememberDevice = new htmlResponsiveInputCheckbox('twoFactorAllowToRememberDevice', $twoFactorAllowToRememberDeviceChecked, _('Allow to remember device'), '530');
 	$twoFactorAllowToRememberDevice->setTableRowsToShow(array('twoFactorAllowToRememberDeviceExtraOptions'));
 	$rememberDeviceRow->add($twoFactorAllowToRememberDevice);
 	$rememberDeviceExtraRow = new htmlResponsiveRow();
@@ -828,7 +829,8 @@ function checkInput(): array {
 		$conf->setTwoFactorAuthenticationLabel($_POST['twoFactorLabel']);
 		$conf->setTwoFactorAuthenticationOptional(isset($_POST['twoFactorOptional']) && ($_POST['twoFactorOptional'] === 'on'));
 		$conf->setTwoFactorAuthenticationCaption(str_replace(array("\r", "\n"), array('', ''), $_POST['twoFactorCaption']));
-		$conf->setTwoFactorAllowToRememberDevice(isset($_POST['twoFactorAllowToRememberDevice']) && ($_POST['twoFactorAllowToRememberDevice'] === 'on'));
+		$twoFactorAllowToRememberDevice = (isset($_POST['twoFactorAllowToRememberDevice']) && ($_POST['twoFactorAllowToRememberDevice'] === 'on')) ? 'true' : 'false';
+		$conf->setTwoFactorAllowToRememberDevice($twoFactorAllowToRememberDevice);
 		$conf->setTwoFactorRememberDeviceDuration(unformatShortFormatToSeconds($_POST['twoFactorRememberDeviceDuration']));
 		$conf->setTwoFactorRememberDevicePassword($_POST['twoFactorRememberDevicePassword']);
 	}
