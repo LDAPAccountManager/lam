@@ -52,7 +52,7 @@ interface TwoFactorProvider {
 	 * @param string $user user name
 	 * @param string $password password
 	 * @return string[] serials
-	 * @throws \Exception error getting serials
+	 * @throws Exception error getting serials
 	 */
 	public function getSerials($user, $password);
 
@@ -64,7 +64,7 @@ interface TwoFactorProvider {
 	 * @param string $serial serial number of token
 	 * @param string $twoFactorInput input for 2nd factor
 	 * @return boolean true if verified and false if verification failed
-	 * @throws \Exception error during check
+	 * @throws Exception error during check
 	 */
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput);
 
@@ -322,7 +322,7 @@ class PrivacyIDEAProvider extends BaseProvider {
 	 * @inheritDoc
 	 */
 	public function supportsToRememberDevice(): bool {
-		return true;
+		return $this->config->twoFactorAllowToRememberDevice;
 	}
 
 }
@@ -406,7 +406,7 @@ class YubicoProvider extends BaseProvider {
 	 * @inheritDoc
 	 */
 	public function supportsToRememberDevice(): bool {
-		return true;
+		return $this->config->twoFactorAllowToRememberDevice;
 	}
 
 }
@@ -1001,7 +1001,7 @@ class WebauthnProvider extends BaseProvider {
 	 * @inheritDoc
 	 */
 	public function supportsToRememberDevice(): bool {
-		return true;
+		return $this->config->twoFactorAllowToRememberDevice;
 	}
 
 }
@@ -1102,7 +1102,18 @@ class TwoFactorProviderService {
 		);
 		$cookieOptions = lamDefaultCookieOptions();
 		$cookieOptions['expires'] = time() + intval($this->config->twoFactorRememberDeviceDuration);
-		setcookie('lam_remember_2fa', json_encode($data), $cookieOptions);
+		$this->setCookie('lam_remember_2fa', json_encode($data), $cookieOptions);
+	}
+
+	/**
+	 * Sets a cookie.
+	 *
+	 * @param string $name cookie name
+	 * @param string $value cookie value
+	 * @param array $options cookie options
+	 */
+	protected function setCookie(string $name, string $value, array $options): void {
+		setcookie($name, $value, $options);
 	}
 
 	/**
@@ -1240,9 +1251,9 @@ class TwoFactorProviderService {
 		if (($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA)
 			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_WEBAUTHN)
 			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO)) {
-			$tfConfig->twoFactorAllowToRememberDevice = strtolower($conf->getTwoFactorAllowToRememberDevice());
-			$tfConfig->twoFactorRememberDeviceDuration = strtolower($conf->getTwoFactorRememberDeviceDuration());
-			$tfConfig->twoFactorRememberDevicePassword = strtolower($conf->getTwoFactorRememberDevicePassword());
+			$tfConfig->twoFactorAllowToRememberDevice = ($conf->getTwoFactorAllowToRememberDevice() === 'true');
+			$tfConfig->twoFactorRememberDeviceDuration = $conf->getTwoFactorRememberDeviceDuration();
+			$tfConfig->twoFactorRememberDevicePassword = $conf->getTwoFactorRememberDevicePassword();
 		}
 		return $tfConfig;
 	}
