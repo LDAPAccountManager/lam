@@ -89,5 +89,33 @@ class TwoFactorTest extends TestCase {
 		$this->assertNotNull($service->getCookieValue());
 	}
 
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testTwoFactorProviderService_isValidRememberedDevice_invalid() {
+		$service = new TwoFactorProviderServiceSpy($this->serverProfile);
+		$this->assertFalse($service->isValidRememberedDevice(self::USER_NAME));
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testTwoFactorProviderService_isValidRememberedDevice_differentUser() {
+		$service = new TwoFactorProviderServiceSpy($this->serverProfile);
+		$service->rememberDevice("invalid");
+		$_COOKIE['lam_remember_2fa'] = $service->getCookieValue();
+		$this->assertFalse($service->isValidRememberedDevice(self::USER_NAME));
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testTwoFactorProviderService_isValidRememberedDevice_valid() {
+		$service = new TwoFactorProviderServiceSpy($this->serverProfile);
+		$service->rememberDevice(self::USER_NAME);
+		$_COOKIE['lam_remember_2fa'] = $service->getCookieValue();
+		$this->assertTrue($service->isValidRememberedDevice(self::USER_NAME));
+	}
+
 }
 
