@@ -570,7 +570,7 @@ window.lam.filterSelect.filterStandard = function(inputField, selectField) {
 			selectField.appendChild(newOption);
 		}
 		index++;
-	};
+	}
 	// select first entry for single-selects
 	if ((selectField.size === 1) && selectField.onchange) {
 		selectField.onchange();
@@ -1174,7 +1174,7 @@ window.lam.tools.addSavedSelectListener = function() {
 	if (!window.localStorage) {
 		return;
 	}
-	const selects = document.querySelectorAll('.lam-save-selection');
+	const selects = document.querySelectorAll('select.lam-save-selection');
 	selects.forEach(item => {
 		const name = item.name;
 		const storageKey = 'lam_selectionStore_' + name;
@@ -1189,6 +1189,21 @@ window.lam.tools.addSavedSelectListener = function() {
 		// add change listener
 		item.addEventListener('change', function() {
 			const selectedValue = item.value;
+			window.localStorage.setItem(storageKey, selectedValue);
+		});
+	});
+	const checkboxes = document.querySelectorAll('input.lam-save-selection');
+	checkboxes.forEach(item => {
+		const name = item.name;
+		const storageKey = 'lam_selectionStore_' + name;
+		// load value from local storage
+		const storageValue = window.localStorage.getItem(storageKey);
+		if (storageValue) {
+			item.checked = (storageValue === 'true');
+		}
+		// add change listener
+		item.addEventListener('change', function() {
+			const selectedValue = item.checked;
 			window.localStorage.setItem(storageKey, selectedValue);
 		});
 	});

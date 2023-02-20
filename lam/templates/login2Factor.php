@@ -216,6 +216,7 @@ echo $config->getTwoFactorAuthenticationCaption();
 	$row->add(new htmlSpacer('1em', '1em'));
     if ($provider->supportsToRememberDevice()) {
         $remember = new htmlResponsiveInputCheckbox('rememberDevice', false, _('Remember device'), '560');
+        $remember->setCSSClasses(array('lam-save-selection'));
         $row->add($remember);
         $row->add(new htmlSpacer('0.5em', '0.5em'));
     }
