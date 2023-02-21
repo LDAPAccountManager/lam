@@ -338,6 +338,14 @@
             <para><ulink
             url="https://en.wikipedia.org/wiki/WebAuthn">WebAuthn/FIDO2</ulink></para>
           </listitem>
+
+          <listitem>
+            <para><ulink url="https://www.okta.com/">Okta</ulink></para>
+          </listitem>
+
+          <listitem>
+            <para><ulink url="https://openid.net/">OpenID</ulink></para>
+          </listitem>
         </itemizedlist>
 
         <para><emphasis role="bold">privacyIDEA</emphasis></para>
@@ -581,6 +589,23 @@
             <para>Secret key: 59bdf504-b76e-4138-8421-ef662b2c6c83</para>
           </listitem>
         </itemizedlist>
+
+        <para><emphasis role="bold">Remember device</emphasis></para>
+
+        <para>You can allow users to remember the 2FA device for privacyIDEA,
+        WebAuthn and YubiKey. When a device is remembered then users can login
+        for the specified time without presenting their 2nd factor.</para>
+
+        <para>The password for the device remembering is used to authenticate
+        the device data. It can be any long passphrase (use &gt; 30
+        characters). LAM auto-generates one for you. If you change the
+        passphrase then all device data gets invalid and users need to
+        represent their 2nd factor again (which then can be saved
+        again).</para>
+
+        <screenshot>
+          <graphic fileref="images/selfService2FaRemember.png"/>
+        </screenshot>
 
         <para><emphasis role="bold">Login</emphasis></para>
 

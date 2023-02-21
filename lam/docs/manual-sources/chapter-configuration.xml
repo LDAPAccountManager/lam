@@ -1007,7 +1007,7 @@
         for the specified time without presenting their 2nd factor.</para>
 
         <para>The password for the device remembering is used to authenticate
-        the device data. It can be any long passphrase (use &gt; 20
+        the device data. It can be any long passphrase (use &gt; 30
         characters). LAM auto-generates one for you. If you change the
         passphrase then all device data gets invalid and users need to
         represent their 2nd factor again (which then can be saved
