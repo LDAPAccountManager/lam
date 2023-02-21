@@ -1210,6 +1210,13 @@ class TwoFactorProviderService {
 			}
 			$tfConfig->twoFactorAuthenticationSerialAttributeName = strtolower($attrName);
 		}
+		if (($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA)
+			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_WEBAUTHN)
+			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO)) {
+			$tfConfig->twoFactorAllowToRememberDevice = ($profile->twoFactorAllowToRememberDevice === 'true');
+			$tfConfig->twoFactorRememberDeviceDuration = $profile->twoFactorRememberDeviceDuration;
+			$tfConfig->twoFactorRememberDevicePassword = $profile->twoFactorRememberDevicePassword;
+		}
 		return $tfConfig;
 	}
 
