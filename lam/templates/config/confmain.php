@@ -25,7 +25,7 @@ use ServerProfilePersistenceManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2022  Roland Gruber
+  Copyright (C) 2003 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -510,51 +510,67 @@ if (extension_loaded('curl')) {
 	$twoFactorSelect->setHasDescriptiveElements(true);
 	$twoFactorSelect->setTableRowsToHide(array(
 		TwoFactorProviderService::TWO_FACTOR_NONE => array('twoFactorURL', 'twoFactorURLs', 'twoFactorInsecure', 'twoFactorLabel',
-			'twoFactorOptional', 'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute', 'twoFactorDomain'),
+			'twoFactorOptional', 'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute', 'twoFactorDomain',
+            'twoFactorAllowToRememberDeviceOptions'),
 		TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA => array('twoFactorURLs', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorDomain'),
 		TwoFactorProviderService::TWO_FACTOR_YUBICO => array('twoFactorURL', 'twoFactorAttribute', 'twoFactorDomain'),
-		TwoFactorProviderService::TWO_FACTOR_DUO => array('twoFactorURLs', 'twoFactorOptional', 'twoFactorInsecure', 'twoFactorLabel', 'twoFactorDomain'),
-		TwoFactorProviderService::TWO_FACTOR_OKTA => array('twoFactorURLs', 'twoFactorOptional', 'twoFactorInsecure', 'twoFactorLabel', 'twoFactorDomain'),
-		TwoFactorProviderService::TWO_FACTOR_OPENID => array('twoFactorURLs', 'twoFactorOptional', 'twoFactorInsecure', 'twoFactorLabel', 'twoFactorDomain'),
+		TwoFactorProviderService::TWO_FACTOR_DUO => array('twoFactorURLs', 'twoFactorOptional', 'twoFactorInsecure', 'twoFactorLabel', 'twoFactorDomain', 'twoFactorAllowToRememberDeviceOptions'),
+		TwoFactorProviderService::TWO_FACTOR_OKTA => array('twoFactorURLs', 'twoFactorOptional', 'twoFactorInsecure', 'twoFactorLabel', 'twoFactorDomain', 'twoFactorAllowToRememberDeviceOptions'),
+		TwoFactorProviderService::TWO_FACTOR_OPENID => array('twoFactorURLs', 'twoFactorOptional', 'twoFactorInsecure', 'twoFactorLabel', 'twoFactorDomain', 'twoFactorAllowToRememberDeviceOptions'),
 		TwoFactorProviderService::TWO_FACTOR_WEBAUTHN => array('twoFactorURL', 'twoFactorURLs', 'twoFactorInsecure', 'twoFactorLabel',
 			'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute'),
 	));
 	$twoFactorSelect->setTableRowsToShow(array(
 		TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA => array('twoFactorURL', 'twoFactorInsecure', 'twoFactorLabel',
-			'twoFactorOptional', 'twoFactorCaption', 'twoFactorAttribute'),
+			'twoFactorOptional', 'twoFactorCaption', 'twoFactorAttribute', 'twoFactorAllowToRememberDeviceOptions'),
 		TwoFactorProviderService::TWO_FACTOR_YUBICO => array('twoFactorURLs', 'twoFactorInsecure', 'twoFactorLabel',
-			'twoFactorOptional', 'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey'),
+			'twoFactorOptional', 'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAllowToRememberDeviceOptions'),
 		TwoFactorProviderService::TWO_FACTOR_DUO => array('twoFactorURL', 'twoFactorLabel',
 			'twoFactorCaption', 'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute'),
 		TwoFactorProviderService::TWO_FACTOR_OKTA => array('twoFactorURL', 'twoFactorCaption',
             'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute'),
 		TwoFactorProviderService::TWO_FACTOR_OPENID => array('twoFactorURL', 'twoFactorCaption',
             'twoFactorClientId', 'twoFactorSecretKey', 'twoFactorAttribute'),
-		TwoFactorProviderService::TWO_FACTOR_WEBAUTHN => array('twoFactorDomain', 'twoFactorOptional')
+		TwoFactorProviderService::TWO_FACTOR_WEBAUTHN => array('twoFactorDomain', 'twoFactorOptional', 'twoFactorAllowToRememberDeviceOptions')
 	));
-	$row->add($twoFactorSelect, 12);
+	$row->add($twoFactorSelect);
 	$twoFactorAttribute = new htmlResponsiveInputField(_("User name attribute"), 'twoFactorAttribute', $conf->getTwoFactorAuthenticationAttribute(), '528');
-	$row->add($twoFactorAttribute, 12);
+	$row->add($twoFactorAttribute);
 	$twoFactorUrl = new htmlResponsiveInputField(_("Base URL"), 'twoFactorURL', $conf->getTwoFactorAuthenticationURL(), '515');
 	$twoFactorUrl->setRequired(true);
-	$row->add($twoFactorUrl, 12);
+	$row->add($twoFactorUrl);
 	$twoFactorUrl = new htmlResponsiveInputTextarea('twoFactorURLs', $conf->getTwoFactorAuthenticationURL(), '80', '4', _("Base URLs"), '515a');
 	$twoFactorUrl->setRequired(true);
-	$row->add($twoFactorUrl, 12);
+	$row->add($twoFactorUrl);
 	$twoFactorClientId = new htmlResponsiveInputField(_("Client id"), 'twoFactorClientId', $conf->getTwoFactorAuthenticationClientId(), '524');
-	$row->add($twoFactorClientId, 12);
+	$row->add($twoFactorClientId);
 	$twoFactorSecretKey = new htmlResponsiveInputField(_("Secret key"), 'twoFactorSecretKey', $conf->getTwoFactorAuthenticationSecretKey(), '528');
-	$row->add($twoFactorSecretKey, 12);
+	$row->add($twoFactorSecretKey);
 	$twoFactorDomain = new htmlResponsiveInputField(_("Domain"), 'twoFactorDomain', $conf->getTwoFactorAuthenticationDomain(), '529');
-	$row->add($twoFactorDomain, 12);
+	$row->add($twoFactorDomain);
 	$twoFactorLabel = new htmlResponsiveInputField(_("Label"), 'twoFactorLabel', $conf->getTwoFactorAuthenticationLabel(), '517');
-	$row->add($twoFactorLabel, 12);
-	$row->add(new htmlResponsiveInputCheckbox('twoFactorOptional', $conf->getTwoFactorAuthenticationOptional(), _('Optional'), '519'), 12);
-	$row->add(new htmlResponsiveInputCheckbox('twoFactorInsecure', $conf->getTwoFactorAuthenticationInsecure(), _('Disable certificate check'), '516'), 12);
+	$row->add($twoFactorLabel);
+	$row->add(new htmlResponsiveInputCheckbox('twoFactorOptional', $conf->getTwoFactorAuthenticationOptional(), _('Optional'), '519'));
+	$row->add(new htmlResponsiveInputCheckbox('twoFactorInsecure', $conf->getTwoFactorAuthenticationInsecure(), _('Disable certificate check'), '516'));
 	$twoFactorCaption = new htmlResponsiveInputTextarea('twoFactorCaption', $conf->getTwoFactorAuthenticationCaption(), '80', '4', _("Caption"));
 	$twoFactorCaption->setIsRichEdit(true);
-	$twoFactorCaption->alignment = htmlElement::ALIGN_TOP;
-	$row->add($twoFactorCaption, 12);
+	$row->add($twoFactorCaption);
+	$row->addVerticalSpacer('0.5rem');
+	$rememberDeviceRow = new htmlResponsiveRow();
+	$rememberDeviceRow->setId('twoFactorAllowToRememberDeviceOptions');
+	$twoFactorAllowToRememberDeviceChecked = ($conf->getTwoFactorAllowToRememberDevice() === 'true');
+	$twoFactorAllowToRememberDevice = new htmlResponsiveInputCheckbox('twoFactorAllowToRememberDevice', $twoFactorAllowToRememberDeviceChecked, _('Allow to remember device'), '530');
+	$twoFactorAllowToRememberDevice->setTableRowsToShow(array('twoFactorAllowToRememberDeviceExtraOptions'));
+	$rememberDeviceRow->add($twoFactorAllowToRememberDevice);
+	$rememberDeviceExtraRow = new htmlResponsiveRow();
+	$rememberDeviceExtraRow->setId('twoFactorAllowToRememberDeviceExtraOptions');
+	$twoFactorRememberDeviceDuration = new htmlResponsiveInputField(_("Duration to remember devices"), 'twoFactorRememberDeviceDuration', formatSecondsToShortFormat($conf->getTwoFactorRememberDeviceDuration()), '531');
+	$rememberDeviceExtraRow->add($twoFactorRememberDeviceDuration);
+	$twoFactorRememberDevicePassword = new htmlResponsiveInputField(_("Password to remember devices"), 'twoFactorRememberDevicePassword', $conf->getTwoFactorRememberDevicePassword(), '532');
+	$twoFactorRememberDevicePassword->setIsPassword(true);
+	$rememberDeviceExtraRow->add($twoFactorRememberDevicePassword);
+	$rememberDeviceRow->add($rememberDeviceExtraRow);
+	$row->add($rememberDeviceRow);
 }
 
 // new password
@@ -809,10 +825,14 @@ function checkInput(): array {
 		$conf->setTwoFactorAuthenticationClientId($_POST['twoFactorClientId']);
 		$conf->setTwoFactorAuthenticationSecretKey($_POST['twoFactorSecretKey']);
 		$conf->setTwoFactorAuthenticationDomain($_POST['twoFactorDomain']);
-		$conf->setTwoFactorAuthenticationInsecure(isset($_POST['twoFactorInsecure']) && ($_POST['twoFactorInsecure'] == 'on'));
+		$conf->setTwoFactorAuthenticationInsecure(isset($_POST['twoFactorInsecure']) && ($_POST['twoFactorInsecure'] === 'on'));
 		$conf->setTwoFactorAuthenticationLabel($_POST['twoFactorLabel']);
-		$conf->setTwoFactorAuthenticationOptional(isset($_POST['twoFactorOptional']) && ($_POST['twoFactorOptional'] == 'on'));
+		$conf->setTwoFactorAuthenticationOptional(isset($_POST['twoFactorOptional']) && ($_POST['twoFactorOptional'] === 'on'));
 		$conf->setTwoFactorAuthenticationCaption(str_replace(array("\r", "\n"), array('', ''), $_POST['twoFactorCaption']));
+		$twoFactorAllowToRememberDevice = (isset($_POST['twoFactorAllowToRememberDevice']) && ($_POST['twoFactorAllowToRememberDevice'] === 'on')) ? 'true' : 'false';
+		$conf->setTwoFactorAllowToRememberDevice($twoFactorAllowToRememberDevice);
+		$conf->setTwoFactorRememberDeviceDuration(unformatShortFormatToSeconds($_POST['twoFactorRememberDeviceDuration']));
+		$conf->setTwoFactorRememberDevicePassword($_POST['twoFactorRememberDevicePassword']);
 	}
 	// check if password was changed
 	if (isset($_POST['passwd1']) && ($_POST['passwd1'] != '')) {

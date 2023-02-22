@@ -1,6 +1,5 @@
 <?php
 /*
-$Id$
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2005 - 2022  Roland Gruber

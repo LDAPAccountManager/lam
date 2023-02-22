@@ -2,6 +2,7 @@
 namespace LAM\LOGIN;
 use Exception;
 use htmlJavaScript;
+use htmlResponsiveInputCheckbox;
 use htmlStatusMessage;
 use \LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 use \htmlResponsiveRow;
@@ -58,6 +59,11 @@ $tabIndex = 1;
 try {
 	$service = new TwoFactorProviderService($config);
 	$provider = $service->getProvider();
+	if ($service->isValidRememberedDevice($user)) {
+		unset($_SESSION['2factorRequired']);
+		metaRefresh("main.php");
+		die();
+	}
 	$serials = $provider->getSerials($user, $password);
 }
 catch (Exception $e) {
@@ -108,6 +114,12 @@ if (isset($_POST['submit']) || isset($_POST['sig_response'])
 		$twoFactorValid = false;
 		try {
 			$twoFactorValid = $provider->verify2ndFactor($user, $password, $serial, $twoFactorInput);
+			if ($twoFactorValid
+                && $provider->supportsToRememberDevice()
+				&& isset($_POST['rememberDevice'])
+				&& ($_POST['rememberDevice'] === 'on')) {
+                $service->rememberDevice($user);
+			}
 		}
 		catch (Exception $e) {
 			logNewMessage(LOG_WARNING, '2-factor verification failed: ' . $e->getMessage());
@@ -202,6 +214,12 @@ echo $config->getTwoFactorAuthenticationCaption();
 
 	// buttons
 	$row->add(new htmlSpacer('1em', '1em'));
+    if ($provider->supportsToRememberDevice()) {
+        $remember = new htmlResponsiveInputCheckbox('rememberDevice', false, _('Remember device'), '560');
+        $remember->setCSSClasses(array('lam-save-selection'));
+        $row->add($remember);
+        $row->add(new htmlSpacer('0.5em', '0.5em'));
+    }
 	if ($provider->isShowSubmitButton()) {
 		$submit = new htmlButton('submit', _("Submit"));
 		$submit->setCSSClasses(array('fullwidth'));

@@ -6,7 +6,7 @@ use function LAM\PERSISTENCE\dbTableExists;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2021  Roland Gruber
+  Copyright (C) 2006 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -759,6 +759,9 @@ class selfServiceProfile {
 	public $twoFactorAuthenticationSecretKey = '';
 	public $twoFactorAuthenticationAttribute = 'uid';
 	public $twoFactorAuthenticationDomain = '';
+	public string $twoFactorAllowToRememberDevice = 'false';
+	public string $twoFactorRememberDeviceDuration = '28800';
+	public string $twoFactorRememberDevicePassword = '';
 
 	/** provider for captcha (-/google/hCaptcha/friendlyCaptcha) */
 	public $captchaProvider = '-';

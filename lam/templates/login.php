@@ -229,7 +229,7 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 	// include all JavaScript files
 	printJsIncludes('..');
 
-	if (isLAMProVersion() && $licenseValidator->isEvaluationLicense()) {
+	if (isLAMProVersion() && ($licenseValidator !== null) && $licenseValidator->isEvaluationLicense()) {
 		StatusMessage('INFO', _('Evaluation Licence'));
 	}
 	displayLoginHeader();
@@ -423,8 +423,8 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 		}
 		?>
 		<br><br>
-		<?PHP
-			if (isLAMProVersion() && $licenseValidator->isExpiringSoon()) {
+		<?php
+			if (isLAMProVersion() && ($licenseValidator !== null) && $licenseValidator->isExpiringSoon()) {
 				$expirationDate = $licenseValidator->getLicense()->getExpirationDate()->format('Y-m-d');
 				$expirationTimeStamp = $licenseValidator->getLicense()->getExpirationDate()->getTimestamp();
 				if ($cfgMain->showLicenseWarningOnScreen()) {

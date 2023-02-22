@@ -9,8 +9,9 @@
   inside the application. There is no need to edit configuration files.</para>
 
   <para>Please point you browser to the location where you installed LAM. E.g.
-  for Debian/Ubuntu/RPM this is http://yourServer/lam. If you installed LAM via the
-  tar.bz2 then this may vary. You should see the following page:</para>
+  for Debian/Ubuntu/RPM this is http://yourServer/lam. If you installed LAM
+  via the tar.bz2 then this may vary. You should see the following
+  page:</para>
 
   <screenshot>
     <mediaobject>
@@ -142,9 +143,9 @@
 
       <para>Please note that this can affect other web applications on the
       same server if they require different certificates. There seem to be
-      problems on Debian/Ubuntu systems and you may also need to restart Apache. In
-      case of any problems please delete the uploaded certificates and use the
-      <link linkend="ssl_certSystem">system setup</link>.</para>
+      problems on Debian/Ubuntu systems and you may also need to restart
+      Apache. In case of any problems please delete the uploaded certificates
+      and use the <link linkend="ssl_certSystem">system setup</link>.</para>
 
       <para>You can either upload a DER/PEM formatted certificate file or
       import the certificates directly from an LDAP server that is available
@@ -998,6 +999,25 @@
             <para>Secret key: 59bdf504-b76e-4138-8421-ef662b2c6c83</para>
           </listitem>
         </itemizedlist>
+
+        <para><emphasis role="bold">Remember device</emphasis></para>
+
+        <para>You can allow users to remember the 2FA device for privacyIDEA,
+        WebAuthn and YubiKey. When a device is remembered then users can login
+        for the specified time without presenting their 2nd factor.</para>
+
+        <para>The password for the device remembering is used to authenticate
+        the device data. It can be any long passphrase (use &gt; 30
+        characters). LAM auto-generates one for you. If you change the
+        passphrase then all device data gets invalid and users need to
+        represent their 2nd factor again (which then can be saved
+        again).<screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/configProfiles15.png"/>
+              </imageobject>
+            </mediaobject>
+          </screenshot></para>
 
         <para><emphasis role="bold">Login</emphasis></para>
 

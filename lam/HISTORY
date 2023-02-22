@@ -2,6 +2,7 @@ March 2023 8.3
   - Windows users: display name can be hidden in server profile
   - LDAP export: sort entries by DN
   - Security: you can hide login error details in LAM's main configuration
+  - 2 factor authentication: allow to remember device (must be activated in server/self service profile)
   - RPM package cleanup
   - LAM Pro:
    -> Custom scripts: new wildcard INFO.lamLoginDn for current user

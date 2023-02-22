@@ -1,5 +1,7 @@
 <?php
 namespace LAM\LIB\TWO_FACTOR;
+use DateInterval;
+use DateTime;
 use Exception;
 use \htmlResponsiveRow;
 use \LAM\LOGIN\WEBAUTHN\WebauthnManager;
@@ -18,7 +20,7 @@ use \Webauthn\PublicKeyCredentialCreationOptions;
 
 /*
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2017 - 2020  Roland Gruber
+  Copyright (C) 2017 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -50,7 +52,7 @@ interface TwoFactorProvider {
 	 * @param string $user user name
 	 * @param string $password password
 	 * @return string[] serials
-	 * @throws \Exception error getting serials
+	 * @throws Exception error getting serials
 	 */
 	public function getSerials($user, $password);
 
@@ -62,7 +64,7 @@ interface TwoFactorProvider {
 	 * @param string $serial serial number of token
 	 * @param string $twoFactorInput input for 2nd factor
 	 * @return boolean true if verified and false if verification failed
-	 * @throws \Exception error during check
+	 * @throws Exception error during check
 	 */
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput);
 
@@ -88,6 +90,13 @@ interface TwoFactorProvider {
 	 * @return bool show submit button
 	 */
 	public function isShowSubmitButton();
+
+	/**
+	 * Returns if the provider supports to remember the device.
+	 *
+	 * @return bool device remembering supported
+	 */
+	public function supportsToRememberDevice(): bool;
 }
 
 /**
@@ -203,20 +212,20 @@ class PrivacyIDEAProvider extends BaseProvider {
 		$json = curl_exec($curl);
 		curl_close($curl);
 		if (empty($json)) {
-			throw new \Exception("Unable to get server response from $url.");
+			throw new Exception("Unable to get server response from $url.");
 		}
 		$output = json_decode($json);
 		if (empty($output) || !isset($output->result) || !isset($output->result->status)) {
-			throw new \Exception("Unable to get json from $url.");
+			throw new Exception("Unable to get json from $url.");
 		}
 		$status = $output->result->status;
 		if ($status != 1) {
 			$errCode = isset($output->result->error) && isset($output->result->error->code) ? $output->result->error->code : '';
 			$errMessage = isset($output->result->error) && isset($output->result->error->message) ? $output->result->error->message : '';
-			throw new \Exception("Unable to login: " . $errCode . ' ' . $errMessage);
+			throw new Exception("Unable to login: " . $errCode . ' ' . $errMessage);
 		}
 		if (!isset($output->result->value) || !isset($output->result->value->token)) {
-			throw new \Exception("Unable to get token.");
+			throw new Exception("Unable to get token.");
 		}
 		return $output->result->value->token;
 	}
@@ -243,7 +252,7 @@ class PrivacyIDEAProvider extends BaseProvider {
 	 * @param string $user user name
 	 * @param string $token login token
 	 * @return string[] serials
-	 * @throws \Exception error during serial reading
+	 * @throws Exception error during serial reading
 	 */
 	private function getSerialsForUser($user, $token) {
 		$curl = $this->getCurl();
@@ -254,17 +263,17 @@ class PrivacyIDEAProvider extends BaseProvider {
 		$json = curl_exec($curl);
 		curl_close($curl);
 		if (empty($json)) {
-			throw new \Exception("Unable to get server response from $url.");
+			throw new Exception("Unable to get server response from $url.");
 		}
 		$output = json_decode($json);
 		if (empty($output) || !isset($output->result) || !isset($output->result->status)) {
-			throw new \Exception("Unable to get json from $url.");
+			throw new Exception("Unable to get json from $url.");
 		}
 		$status = $output->result->status;
 		if (($status != 1) || !isset($output->result->value) || !isset($output->result->value->tokens)) {
 			$errCode = isset($output->result->error) && isset($output->result->error->code) ? $output->result->error->code : '';
 			$errMessage = isset($output->result->error) && isset($output->result->error->message) ? $output->result->error->message : '';
-			throw new \Exception("Unable to get serials: " . $errCode . ' ' . $errMessage);
+			throw new Exception("Unable to get serials: " . $errCode . ' ' . $errMessage);
 		}
 		$serials = array();
 		foreach ($output->result->value->tokens as $tokenEntry) {
@@ -307,6 +316,13 @@ class PrivacyIDEAProvider extends BaseProvider {
 		}
 		logNewMessage(LOG_DEBUG, "Unable to verify token: " . print_r($output, true));
 		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function supportsToRememberDevice(): bool {
+		return $this->config->twoFactorAllowToRememberDevice;
 	}
 
 }
@@ -384,6 +400,13 @@ class YubicoProvider extends BaseProvider {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function supportsToRememberDevice(): bool {
+		return $this->config->twoFactorAllowToRememberDevice;
 	}
 
 }
@@ -480,6 +503,13 @@ class DuoProvider extends BaseProvider {
 			return true;
 		}
 		logNewMessage(LOG_ERR, 'DUO authentication failed');
+		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function supportsToRememberDevice(): bool {
 		return false;
 	}
 
@@ -667,6 +697,13 @@ class OktaProvider extends BaseProvider {
 		return $jsonData['access_token'];
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function supportsToRememberDevice(): bool {
+		return false;
+	}
+
 }
 
 /**
@@ -827,6 +864,13 @@ class OpenIdProvider extends BaseProvider {
 		return false;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function supportsToRememberDevice(): bool {
+		return false;
+	}
+
 }
 
 /**
@@ -953,6 +997,13 @@ class WebauthnProvider extends BaseProvider {
 		}
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function supportsToRememberDevice(): bool {
+		return $this->config->twoFactorAllowToRememberDevice;
+	}
+
 }
 
 /**
@@ -975,7 +1026,10 @@ class TwoFactorProviderService {
 	/** 2factor authentication via OpenId */
 	const TWO_FACTOR_OPENID = 'openid';
 
-	private $config;
+	/** date format when remembering devices */
+	const DEVICE_REMEMBER_DATE_FORMAT = 'Y-m-d H:i:s';
+
+	private TwoFactorConfiguration $config;
 
 	/**
 	 * Constructor.
@@ -996,7 +1050,7 @@ class TwoFactorProviderService {
 	 *
 	 * @param string $type authentication type
 	 * @return TwoFactorProvider provider
-	 * @throws \Exception unable to get provider
+	 * @throws Exception unable to get provider
 	 */
 	public function getProvider() {
 		if ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA) {
@@ -1017,7 +1071,120 @@ class TwoFactorProviderService {
 		elseif ($this->config->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OPENID) {
 			return new OpenIdProvider($this->config);
 		}
-		throw new \Exception('Invalid provider: ' . $this->config->twoFactorAuthentication);
+		throw new Exception('Invalid provider: ' . $this->config->twoFactorAuthentication);
+	}
+
+	/**
+	 * Remembers the users device.
+	 *
+	 * @param string $user user name
+	 * @throws Exception error getting provider
+	 */
+	public function rememberDevice(string $user): void {
+		if (!$this->getProvider()->supportsToRememberDevice()) {
+			logNewMessage(LOG_ERR, 'The selected 2FA provider does not support to remember devices.');
+			return;
+		}
+		if (empty($this->config->twoFactorRememberDevicePassword)) {
+			logNewMessage(LOG_ERR, 'The selected 2FA password to remember devices is empty.');
+			return;
+		}
+		$dataToEncrypt = array(
+			'user' => $user,
+			'timestamp' => getFormattedTime(self::DEVICE_REMEMBER_DATE_FORMAT),
+		);
+		if (!empty($_SERVER['HTTP_USER_AGENT'])) {
+			$dataToEncrypt['userAgent'] = $_SERVER['HTTP_USER_AGENT'];
+		}
+		if (!empty($_SERVER['REMOTE_ADDR'])) {
+			$dataToEncrypt['clientIp'] = $_SERVER['REMOTE_ADDR'];
+		}
+		$iv = openssl_random_pseudo_bytes(16);
+		$encryptedData = openssl_encrypt(json_encode($dataToEncrypt), lamEncryptionAlgo(),
+			$this->config->twoFactorRememberDevicePassword, 0, $iv);
+		$data = array(
+			'iv' => base64_encode($iv),
+			'data' => base64_encode($encryptedData)
+		);
+		$cookieOptions = lamDefaultCookieOptions();
+		$cookieOptions['expires'] = time() + intval($this->config->twoFactorRememberDeviceDuration);
+		$this->setCookie('lam_remember_2fa', json_encode($data), $cookieOptions);
+	}
+
+	/**
+	 * Sets a cookie.
+	 *
+	 * @param string $name cookie name
+	 * @param string $value cookie value
+	 * @param array $options cookie options
+	 */
+	protected function setCookie(string $name, string $value, array $options): void {
+		setcookie($name, $value, $options);
+	}
+
+	/**
+	 * Returns if the user has selected to save the device before.
+	 *
+	 * @param string $user user name
+	 * @return bool valid remembered device
+	 * @throws Exception error getting provider
+	 */
+	public function isValidRememberedDevice(string $user): bool {
+		if (!$this->getProvider()->supportsToRememberDevice()) {
+			logNewMessage(LOG_ERR, 'The selected 2FA provider does not support to remember devices.');
+			return false;
+		}
+		if (empty($this->config->twoFactorRememberDevicePassword)) {
+			logNewMessage(LOG_ERR, 'The selected 2FA password to remember devices is empty.');
+			return false;
+		}
+		if (empty($this->config->twoFactorRememberDeviceDuration)) {
+			logNewMessage(LOG_ERR, 'The selected 2FA duration to remember devices is empty.');
+			return false;
+		}
+		if (!isset($_COOKIE['lam_remember_2fa'])) {
+			return false;
+		}
+		$data = json_decode($_COOKIE['lam_remember_2fa'], true);
+		if (($data === null) || empty($data['iv']) || empty($data['data'])) {
+			return false;
+		}
+		$iv = base64_decode($data['iv']);
+		$decryptedData = openssl_decrypt(base64_decode($data['data']), lamEncryptionAlgo(),
+			$this->config->twoFactorRememberDevicePassword, 0, $iv);
+		if ($decryptedData === false) {
+			return false;
+		}
+		$decryptedData = json_decode($decryptedData, true);
+		if (!isset($decryptedData['user'])) {
+			return false;
+		}
+		if ($decryptedData['user'] !== $user) {
+			logNewMessage(LOG_DEBUG, 'User name for remembered device does not match. ' . $user . ' - ' . $decryptedData['user']);
+			return false;
+		}
+		if (!empty($decryptedData['userAgent'])
+			&& (empty($_SERVER['HTTP_USER_AGENT']) || ($decryptedData['userAgent'] !== $_SERVER['HTTP_USER_AGENT']))) {
+			logNewMessage(LOG_DEBUG, 'User agent for remembered device does not match. ' . $decryptedData['user']);
+			return false;
+		}
+		if (!empty($decryptedData['clientIp'])
+			&& (empty($_SERVER['REMOTE_ADDR']) || ($decryptedData['clientIp'] !== $_SERVER['REMOTE_ADDR']))) {
+			logNewMessage(LOG_DEBUG, 'Client IP for remembered device does not match. ' . $decryptedData['clientIp']);
+			return false;
+		}
+		try {
+			$acceptedTime = new DateTime('now', getTimeZone());
+			$acceptedTime = $acceptedTime->sub(new DateInterval('PT' . $this->config->twoFactorRememberDeviceDuration . 'S'));
+			$deviceDate = DateTime::createFromFormat(self::DEVICE_REMEMBER_DATE_FORMAT, $decryptedData['timestamp'], getTimeZone());
+			if ($deviceDate > $acceptedTime) {
+				return true;
+			}
+		}
+		catch (Exception $e) {
+			logNewMessage(LOG_ERR, 'Unable to check remembered device of ' . $user . ': ' . $e->getMessage());
+		}
+		return false;
 	}
 
 	/**
@@ -1026,7 +1193,7 @@ class TwoFactorProviderService {
 	 * @param selfServiceProfile $profile profile
 	 * @return TwoFactorConfiguration configuration
 	 */
-	private function getConfigSelfService(&$profile) {
+	private function getConfigSelfService(&$profile): TwoFactorConfiguration {
 		$tfConfig = new TwoFactorConfiguration();
 		$tfConfig->isSelfService = true;
 		$tfConfig->twoFactorAuthentication = $profile->twoFactorAuthentication;
@@ -1059,6 +1226,13 @@ class TwoFactorProviderService {
 			}
 			$tfConfig->twoFactorAuthenticationSerialAttributeName = strtolower($attrName);
 		}
+		if (($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA)
+			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_WEBAUTHN)
+			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO)) {
+			$tfConfig->twoFactorAllowToRememberDevice = ($profile->twoFactorAllowToRememberDevice === 'true');
+			$tfConfig->twoFactorRememberDeviceDuration = $profile->twoFactorRememberDeviceDuration;
+			$tfConfig->twoFactorRememberDevicePassword = $profile->twoFactorRememberDevicePassword;
+		}
 		return $tfConfig;
 	}
 
@@ -1068,7 +1242,7 @@ class TwoFactorProviderService {
 	 * @param LAMConfig $conf configuration
 	 * @return TwoFactorConfiguration configuration
 	 */
-	private function getConfigAdmin($conf) {
+	private function getConfigAdmin($conf): TwoFactorConfiguration {
 		$tfConfig = new TwoFactorConfiguration();
 		$tfConfig->isSelfService = false;
 		$tfConfig->twoFactorAuthentication = $conf->getTwoFactorAuthentication();
@@ -1097,6 +1271,13 @@ class TwoFactorProviderService {
 				|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_OPENID)) {
 			$tfConfig->twoFactorAuthenticationSerialAttributeName = strtolower($conf->getTwoFactorAuthenticationAttribute());
 		}
+		if (($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_PRIVACYIDEA)
+			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_WEBAUTHN)
+			|| ($tfConfig->twoFactorAuthentication == TwoFactorProviderService::TWO_FACTOR_YUBICO)) {
+			$tfConfig->twoFactorAllowToRememberDevice = ($conf->getTwoFactorAllowToRememberDevice() === 'true');
+			$tfConfig->twoFactorRememberDeviceDuration = $conf->getTwoFactorRememberDeviceDuration();
+			$tfConfig->twoFactorRememberDevicePassword = $conf->getTwoFactorRememberDevicePassword();
+		}
 		return $tfConfig;
 	}
 
@@ -1112,41 +1293,56 @@ class TwoFactorConfiguration {
 	/**
 	 * @var bool is self service
 	 */
-	public $isSelfService = false;
+	public bool $isSelfService = false;
 
 	/**
-	 * @var string provider id
+	 * @var ?string provider id
 	 */
-	public $twoFactorAuthentication = null;
+	public ?string $twoFactorAuthentication = null;
 
 	/**
 	 * @var string|array service URL(s)
 	 */
-	public $twoFactorAuthenticationURL = null;
+	public mixed $twoFactorAuthenticationURL = null;
 
 	/**
-	 * @var disable certificate check
+	 * @var bool disable certificate check
 	 */
-	public $twoFactorAuthenticationInsecure = false;
+	public bool $twoFactorAuthenticationInsecure = false;
 
 	/**
-	 * @var client ID for API access
+	 * @var ?string client ID for API access
 	 */
-	public $twoFactorAuthenticationClientId = null;
+	public ?string $twoFactorAuthenticationClientId = null;
 
 	/**
-	 * @var secret key for API access
+	 * @var ?string secret key for API access
 	 */
-	public $twoFactorAuthenticationSecretKey = null;
+	public ?string $twoFactorAuthenticationSecretKey = null;
 
 	/**
-	 * @var LDAP attribute name that stores the token serials
+	 * @var ?string LDAP attribute name that stores the token serials
 	 */
-	public $twoFactorAuthenticationSerialAttributeName = null;
+	public ?string $twoFactorAuthenticationSerialAttributeName = null;
 
 	/**
 	 * @var bool 2FA is optional
 	 */
-	public $twoFactorAuthenticationOptional = false;
+	public bool $twoFactorAuthenticationOptional = false;
+
+	/**
+	 * @var bool allow to remember 2nd factor
+	 */
+	public bool $twoFactorAllowToRememberDevice = false;
+
+	/**
+	 * @var string duration for remembering
+	 */
+	public string $twoFactorRememberDeviceDuration = '';
+
+	/**
+	 * @var string password for remembering
+	 */
+	public string $twoFactorRememberDevicePassword = '';
 
 }
