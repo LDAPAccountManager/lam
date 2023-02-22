@@ -212,20 +212,20 @@ class PrivacyIDEAProvider extends BaseProvider {
 		$json = curl_exec($curl);
 		curl_close($curl);
 		if (empty($json)) {
-			throw new \Exception("Unable to get server response from $url.");
+			throw new Exception("Unable to get server response from $url.");
 		}
 		$output = json_decode($json);
 		if (empty($output) || !isset($output->result) || !isset($output->result->status)) {
-			throw new \Exception("Unable to get json from $url.");
+			throw new Exception("Unable to get json from $url.");
 		}
 		$status = $output->result->status;
 		if ($status != 1) {
 			$errCode = isset($output->result->error) && isset($output->result->error->code) ? $output->result->error->code : '';
 			$errMessage = isset($output->result->error) && isset($output->result->error->message) ? $output->result->error->message : '';
-			throw new \Exception("Unable to login: " . $errCode . ' ' . $errMessage);
+			throw new Exception("Unable to login: " . $errCode . ' ' . $errMessage);
 		}
 		if (!isset($output->result->value) || !isset($output->result->value->token)) {
-			throw new \Exception("Unable to get token.");
+			throw new Exception("Unable to get token.");
 		}
 		return $output->result->value->token;
 	}
@@ -252,7 +252,7 @@ class PrivacyIDEAProvider extends BaseProvider {
 	 * @param string $user user name
 	 * @param string $token login token
 	 * @return string[] serials
-	 * @throws \Exception error during serial reading
+	 * @throws Exception error during serial reading
 	 */
 	private function getSerialsForUser($user, $token) {
 		$curl = $this->getCurl();
@@ -263,17 +263,17 @@ class PrivacyIDEAProvider extends BaseProvider {
 		$json = curl_exec($curl);
 		curl_close($curl);
 		if (empty($json)) {
-			throw new \Exception("Unable to get server response from $url.");
+			throw new Exception("Unable to get server response from $url.");
 		}
 		$output = json_decode($json);
 		if (empty($output) || !isset($output->result) || !isset($output->result->status)) {
-			throw new \Exception("Unable to get json from $url.");
+			throw new Exception("Unable to get json from $url.");
 		}
 		$status = $output->result->status;
 		if (($status != 1) || !isset($output->result->value) || !isset($output->result->value->tokens)) {
 			$errCode = isset($output->result->error) && isset($output->result->error->code) ? $output->result->error->code : '';
 			$errMessage = isset($output->result->error) && isset($output->result->error->message) ? $output->result->error->message : '';
-			throw new \Exception("Unable to get serials: " . $errCode . ' ' . $errMessage);
+			throw new Exception("Unable to get serials: " . $errCode . ' ' . $errMessage);
 		}
 		$serials = array();
 		foreach ($output->result->value->tokens as $tokenEntry) {
