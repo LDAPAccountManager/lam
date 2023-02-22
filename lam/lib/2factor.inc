@@ -1091,8 +1091,14 @@ class TwoFactorProviderService {
 		}
 		$dataToEncrypt = array(
 			'user' => $user,
-			'timestamp' => getFormattedTime(self::DEVICE_REMEMBER_DATE_FORMAT)
+			'timestamp' => getFormattedTime(self::DEVICE_REMEMBER_DATE_FORMAT),
 		);
+		if (!empty($_SERVER['HTTP_USER_AGENT'])) {
+			$dataToEncrypt['userAgent'] = $_SERVER['HTTP_USER_AGENT'];
+		}
+		if (!empty($_SERVER['REMOTE_ADDR'])) {
+			$dataToEncrypt['clientIp'] = $_SERVER['REMOTE_ADDR'];
+		}
 		$iv = openssl_random_pseudo_bytes(16);
 		$encryptedData = openssl_encrypt(json_encode($dataToEncrypt), lamEncryptionAlgo(),
 			$this->config->twoFactorRememberDevicePassword, 0, $iv);
@@ -1155,6 +1161,16 @@ class TwoFactorProviderService {
 		}
 		if ($decryptedData['user'] !== $user) {
 			logNewMessage(LOG_DEBUG, 'User name for remembered device does not match. ' . $user . ' - ' . $decryptedData['user']);
+			return false;
+		}
+		if (!empty($decryptedData['userAgent'])
+			&& (empty($_SERVER['HTTP_USER_AGENT']) || ($decryptedData['userAgent'] !== $_SERVER['HTTP_USER_AGENT']))) {
+			logNewMessage(LOG_DEBUG, 'User agent for remembered device does not match. ' . $decryptedData['user']);
+			return false;
+		}
+		if (!empty($decryptedData['clientIp'])
+			&& (empty($_SERVER['REMOTE_ADDR']) || ($decryptedData['clientIp'] !== $_SERVER['REMOTE_ADDR']))) {
+			logNewMessage(LOG_DEBUG, 'Client IP for remembered device does not match. ' . $decryptedData['clientIp']);
 			return false;
 		}
 		try {
