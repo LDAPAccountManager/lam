@@ -116,6 +116,9 @@ RUN wget http://prdownloads.sourceforge.net/lam/ldap-account-manager_${LAM_RELEA
     dpkg -i /tmp/ldap-account-manager_${LAM_RELEASE}-1_all.deb && \
     rm -f /tmp/ldap-account-manager_${LAM_RELEASE}-1_all.deb
 
+# remove link to manual as contents are removed on Docker instances
+RUN rm /usr/share/ldap-account-manager/docs
+
 # redirect Apache logging
 RUN sed -e 's,^ErrorLog.*,ErrorLog "|/bin/cat",' -i /etc/apache2/apache2.conf
 # because there is no logging set in the lam vhost logging goes to other_vhost_access.log
