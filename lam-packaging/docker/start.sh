@@ -19,11 +19,10 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+set -e # non-zero return values exit the whole script
+[ "${DEBUG:-false}" = "true" ] && set -x
 
-set -eu # unset variables are errors & non-zero return values exit the whole script
-[[ -n "$DEBUG" ]] && [[ "$DEBUG" = "true" ]] && set -x
-
-if [ "${LAM_DISABLE_TLS_CHECK:-}" == "true" ]; then
+if [ "${LAM_DISABLE_TLS_CHECK:-}" = "true" ]; then
   if ! grep -e '^TLS_REQCERT never$' /etc/ldap/ldap.conf > /dev/null; then
     echo "TLS_REQCERT never" >> /etc/ldap/ldap.conf
   fi

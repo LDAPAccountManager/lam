@@ -8,7 +8,7 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - lamconfig/:/var/lib/ldap-account-manager/config
+      - lamconfig:/var/lib/ldap-account-manager/config
     environment:
       - LAM_PASSWORD=${LAM_PASSWORD}
       - LAM_LANG=en_US
