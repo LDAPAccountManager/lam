@@ -2234,6 +2234,9 @@ class LAMConfig {
 	 * @return String mail address
 	 */
 	public function getLamProMailFrom() {
+		if (empty($this->lamProMailFrom)) {
+			return 'noreply@example.com';
+		}
 		return $this->lamProMailFrom;
 	}
 
