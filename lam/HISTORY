@@ -9,7 +9,8 @@ March 2023 8.3
    -> PPolicy: allow password policy for groups and hosts
    -> Simple security object: allow for hosts
    -> Apache Guacamole: added ssh, telnet and kubernetes protocols
-
+  - Fixed bugs:
+   -> SameSite value for cookies changed to Lax to not break Okta/OpenID
 
 13.12.2022 8.2
   - PHP 7.4 required

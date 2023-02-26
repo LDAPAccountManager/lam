@@ -59,7 +59,7 @@ function lamDefaultCookieOptions(): array {
 		'domain' => '',
 		'secure' => $secureFlag,
 		'httponly' => true,
-		'samesite' => 'Strict'
+		'samesite' => 'Lax'
 	);
 }
 
