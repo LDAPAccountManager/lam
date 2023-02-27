@@ -579,18 +579,20 @@ class OktaProvider extends BaseProvider {
 		$hash = hash('sha256', $_SESSION['okta_code_verifier'], true);
 		$codeChallenge = rtrim(strtr(base64_encode($hash), '+/', '-_'), '=');
 		$jsBlock = '
-	        if (window.location.href.indexOf("code=") < 0) {
-				var currentLocation = window.location.href;
-				if (currentLocation.includes("#")) {
-					currentLocation = currentLocation.substring(0, currentLocation.indexOf("#"));
+			document.addEventListener("DOMContentLoaded", function(event) {
+				if (window.location.href.indexOf("code=") < 0) {
+					var currentLocation = window.location.href;
+					if (currentLocation.includes("#")) {
+						currentLocation = currentLocation.substring(0, currentLocation.indexOf("#"));
+					}
+					window.location.href = "' . $this->config->twoFactorAuthenticationURL
+					. '/oauth2/default/v1/authorize?code_challenge_method=S256&response_type=code&scope=openid email profile&client_id='
+					. $this->config->twoFactorAuthenticationClientId
+					. '&code_challenge=' . $codeChallenge
+					. '&state=' . $_SESSION['okta_state']
+					. '&redirect_uri=" + currentLocation
 				}
-				window.location.href = "' . $this->config->twoFactorAuthenticationURL
-				. '/oauth2/default/v1/authorize?code_challenge_method=S256&response_type=code&scope=openid email profile&client_id='
-				. $this->config->twoFactorAuthenticationClientId
-				. '&code_challenge=' . $codeChallenge
-				. '&state=' . $_SESSION['okta_state']
-				. '&redirect_uri=" + currentLocation
-			}
+			});
 			';
 		$row->add(new htmlJavaScript($jsBlock));
 	}
@@ -742,10 +744,10 @@ class OpenIdProvider extends BaseProvider {
 		if (empty($loginAttribute)) {
 			throw new LAMException('Unable to read login attribute from ' . $userDn);
 		}
-		$content = new htmlResponsiveRow();
 		if ($this->verificationFailed) {
-			return $content;
+			return;
 		}
+		$content = new htmlResponsiveRow();
 		$pathPrefix = $this->config->isSelfService ? '../' : '';
 		$row->add(new htmlImage($pathPrefix . '../graphics/openid.png'), 12);
 		include_once __DIR__ . '/3rdParty/composer/autoload.php';
@@ -757,20 +759,22 @@ class OpenIdProvider extends BaseProvider {
 				['login_hint' => $loginAttribute]
 			);
 			$jsBlock = '
-			var currentLocation = window.location.href;
-			if (currentLocation.includes("?")) {
-				currentLocation = currentLocation.substring(0, currentLocation.indexOf("?"));
-			}
-			if (currentLocation.includes("#")) {
-				currentLocation = currentLocation.substring(0, currentLocation.indexOf("#"));
-			}
-	        if (window.location.href.indexOf("code=") > 0) {
-	        	var targetUrl = window.location.href + "&redirect_uri=" + currentLocation;
-				window.location.href = targetUrl;
-	        }
-	        else {
-				window.location.href = "' . $redirectAuthorizationUri . '&redirect_uri=" + currentLocation
-			}
+			document.addEventListener("DOMContentLoaded", function(event) {
+				var currentLocation = window.location.href;
+				if (currentLocation.includes("?")) {
+					currentLocation = currentLocation.substring(0, currentLocation.indexOf("?"));
+				}
+				if (currentLocation.includes("#")) {
+					currentLocation = currentLocation.substring(0, currentLocation.indexOf("#"));
+				}
+				if (window.location.href.indexOf("code=") > 0) {
+					var targetUrl = window.location.href + "&redirect_uri=" + currentLocation;
+					window.location.href = targetUrl;
+				}
+				else {
+					window.location.href = "' . $redirectAuthorizationUri . '&redirect_uri=" + currentLocation
+				}
+			});
 			';
 			$content->add(new htmlJavaScript($jsBlock));
 		}
