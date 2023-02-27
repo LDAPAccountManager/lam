@@ -30,7 +30,7 @@ class InstalledVersions
     'aliases' => 
     array (
     ),
-    'reference' => 'a04e299b1d47d14c0676c7b1a2f270f12a11c313',
+    'reference' => '39d18bca293e266e9e20a384ee9ad04f87e85bc2',
     'name' => '__root__',
   ),
   'versions' => 
@@ -42,7 +42,7 @@ class InstalledVersions
       'aliases' => 
       array (
       ),
-      'reference' => 'a04e299b1d47d14c0676c7b1a2f270f12a11c313',
+      'reference' => '39d18bca293e266e9e20a384ee9ad04f87e85bc2',
     ),
     'beberlei/assert' => 
     array (
@@ -52,15 +52,6 @@ class InstalledVersions
       array (
       ),
       'reference' => 'cb70015c04be1baee6f5f5c953703347c0ac1655',
-    ),
-    'bretterer/iso_duration_converter' => 
-    array (
-      'pretty_version' => 'v0.1.0',
-      'version' => '0.1.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '1fa460fd9aec9853db812369a120cecfaf3d9c7b',
     ),
     'brick/math' => 
     array (
@@ -125,15 +116,6 @@ class InstalledVersions
       ),
       'reference' => 'eef488991d53e58e60c9554b09b1201ca5ba9296',
     ),
-    'firebase/php-jwt' => 
-    array (
-      'pretty_version' => 'v5.5.1',
-      'version' => '5.5.1.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '83b609028194aa042ea33b5af2d41a7427de80e6',
-    ),
     'guzzlehttp/psr7' => 
     array (
       'pretty_version' => '1.9.0',
@@ -142,15 +124,6 @@ class InstalledVersions
       array (
       ),
       'reference' => 'e98e3e6d4f86621a9b75f623996e6bbdeb4b9318',
-    ),
-    'illuminate/cache' => 
-    array (
-      'pretty_version' => 'v8.83.26',
-      'version' => '8.83.26.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '7ae5b3661413dad7264b5c69037190d766bae50f',
     ),
     'illuminate/collections' => 
     array (
@@ -242,15 +215,6 @@ class InstalledVersions
       ),
       'reference' => 'f734364e38a876a23be4d906a2a089e1315be18a',
     ),
-    'okta/jwt-verifier' => 
-    array (
-      'pretty_version' => '1.4.0',
-      'version' => '1.4.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '16f09cac583ab4d0e5ca53b1046dd3e6805244d7',
-    ),
     'paragonie/constant_time_encoding' => 
     array (
       'pretty_version' => 'v2.6.3',
@@ -275,15 +239,6 @@ class InstalledVersions
       array (
         0 => '1.0',
       ),
-    ),
-    'php-http/client-common' => 
-    array (
-      'pretty_version' => '2.6.0',
-      'version' => '2.6.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '45db684cd4e186dcdc2b9c06b22970fe123796c0',
     ),
     'php-http/client-implementation' => 
     array (
@@ -470,13 +425,6 @@ class InstalledVersions
       array (
       ),
       'reference' => '408d5eafb83c57f6365a3ca330ff23aa4a5fa39b',
-    ),
-    'psr/simple-cache-implementation' => 
-    array (
-      'provided' => 
-      array (
-        0 => '1.0',
-      ),
     ),
     'ralouphie/getallheaders' => 
     array (

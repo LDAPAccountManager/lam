@@ -568,43 +568,31 @@ class OktaProvider extends BaseProvider {
 		if (empty($loginAttribute)) {
 			throw new LAMException('Unable to read login attribute from ' . $userDn);
 		}
-		$content = new htmlResponsiveRow();
 		if ($this->verificationFailed) {
-			return $content;
+			return;
 		}
+
 		$pathPrefix = $this->config->isSelfService ? '../' : '';
-		$row->add(new htmlImage($pathPrefix . '../graphics/okta.png'), 12);
-		$content->add(new htmlScript('https://global.oktacdn.com/okta-auth-js/4.1.1/okta-auth-js.min.js'), 12);
+		$row->add(new htmlImage($pathPrefix . '../graphics/okta.png'));
+		$_SESSION['okta_state'] = bin2hex(random_bytes(10));
+		$_SESSION['okta_code_verifier'] = bin2hex(random_bytes(50));
+		$hash = hash('sha256', $_SESSION['okta_code_verifier'], true);
+		$codeChallenge = rtrim(strtr(base64_encode($hash), '+/', '-_'), '=');
 		$jsBlock = '
-			var interval = setInterval(function() {
-			    if ((typeof OktaAuth === \'function\')) {
-			        clearInterval(interval);
-					var signIn = new OktaAuth({
-					    clientId: \'' . $this->config->twoFactorAuthenticationClientId . '\',
-					    issuer: \'' . $this->config->twoFactorAuthenticationURL . '/oauth2/default\',
-					    redirectUri: window.location
-					});
-			        if (window.location.href.indexOf("code=") > 0) {
-			            var codeVerifier = signIn.options.storageUtil.getPKCEStorage().getStorage().codeVerifier;
-			            form = jQuery("<form/>", {
-							action: window.location.href,
-							method: "POST"
-						});
-						form.append(jQuery("<input/>", {
-							type: "hidden",
-							name: "codeVerifier",
-							value: codeVerifier
-						}));
-						form.appendTo("body").submit();
-			        }
-			        else {
-						signIn.signInWithRedirect();
-					}
-			    }
-			  }, 200);
-		';
-		$content->add(new htmlJavaScript($jsBlock), 12);
-		$row->add($content, 12);
+	        if (window.location.href.indexOf("code=") < 0) {
+				var currentLocation = window.location.href;
+				if (currentLocation.includes("#")) {
+					currentLocation = currentLocation.substring(0, currentLocation.indexOf("#"));
+				}
+				window.location.href = "' . $this->config->twoFactorAuthenticationURL
+				. '/oauth2/default/v1/authorize?code_challenge_method=S256&response_type=code&scope=openid email profile&client_id='
+				. $this->config->twoFactorAuthenticationClientId
+				. '&code_challenge=' . $codeChallenge
+				. '&state=' . $_SESSION['okta_state']
+				. '&redirect_uri=" + currentLocation
+			}
+			';
+		$row->add(new htmlJavaScript($jsBlock));
 	}
 
 	/**
@@ -614,29 +602,27 @@ class OktaProvider extends BaseProvider {
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
 		$this->verificationFailed = true;
 		logNewMessage(LOG_DEBUG, 'OktaProvider: Checking 2nd factor for ' . $user);
+		if (empty($_GET['state']) || ($_GET['state'] !== $_SESSION['okta_state'])) {
+			logNewMessage(LOG_ERR, 'Okta state does not match.');
+			return false;
+		}
+		if (!empty($_GET['error'])) {
+			logNewMessage(LOG_ERR, 'Okta reported an error: ' . $_GET['error']);
+			return false;
+		}
 		$code = $_GET['code'];
-		$codeVerifier = $_POST['codeVerifier'];
-		if (empty($code) || empty($codeVerifier)) {
+		if (empty($code)) {
 			logNewMessage(LOG_DEBUG, 'No code provided for 2FA verification.');
 			return false;
 		}
-		$accessCode = $this->getAccessCode($code, $codeVerifier);
+		$accessCode = $this->getAccessCode($code);
 		if (empty($accessCode)) {
 			logNewMessage(LOG_DEBUG, 'No access code readable for Okta 2FA verification.');
 			return false;
 		}
-		include_once __DIR__ . '/3rdParty/composer/autoload.php';
-		$jwtVerifier = (new \Okta\JwtVerifier\JwtVerifierBuilder())
-			->setDiscovery(new \Okta\JwtVerifier\Discovery\Oauth)
-			->setAdaptor(new \Okta\JwtVerifier\Adaptors\FirebasePhpJwt)
-			->setAudience('api://default')
-			->setClientId($this->config->twoFactorAuthenticationClientId)
-			->setIssuer($this->config->twoFactorAuthenticationURL . '/oauth2/default')
-			->build();
 		try {
-			$jwt = $jwtVerifier->verify($accessCode);
-			$claims = $jwt->getClaims();
-			logNewMessage(LOG_DEBUG, print_r($claims, true));
+			$claims = json_decode(base64_decode(explode('.', $accessCode)[1]), true);
+			logNewMessage(LOG_DEBUG, 'Okta claims: ' . print_r($claims, true));
 			$loginAttribute = $this->getLoginAttributeValue($user);
 			if ($loginAttribute !== $claims['sub']) {
 				logNewMessage(LOG_ERR, 'User name ' . $loginAttribute . ' does not match claim sub: ' . $claims['sub']);
@@ -646,7 +632,7 @@ class OktaProvider extends BaseProvider {
 			return true;
 		}
 		catch (Exception $e) {
-			logNewMessage(LOG_ERR, 'Unable to validate JWT - ' . $e->getMessage());
+			logNewMessage(LOG_ERR, 'Unable to validate access code - ' . $e->getMessage());
 		}
 		return false;
 	}
@@ -655,31 +641,28 @@ class OktaProvider extends BaseProvider {
 	 * Reads the access code using code.
 	 *
 	 * @param string $code code parameter from request
-	 * @param string $codeVerifier code verifier
 	 * @return string|null access token
 	 */
-	private function getAccessCode($code, $codeVerifier) {
+	private function getAccessCode($code) {
 		$curl = curl_init();
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		$url = $this->config->twoFactorAuthenticationURL . '/oauth2/default/v1/token';
 		curl_setopt($curl, CURLOPT_URL, $url);
 		curl_setopt($curl, CURLOPT_POST, true);
 		$callingUrl = getCallingURL();
-		if ($this->config->isSelfService) {
-			$callingUrl = preg_replace('/&code=[^&]+/', '', $callingUrl);
-			$callingUrl = preg_replace('/&state=[^&]+/', '', $callingUrl);
-		}
-		else {
-			$callingUrl = substr($callingUrl, 0, strpos($callingUrl, '?'));
-		}
-		$callingUrlEncoded = urlencode($callingUrl);
-		$postFields = 'grant_type=authorization_code&code=' . $code . '&code_verifier=' . $codeVerifier . '&redirect_uri=' . $callingUrlEncoded;
-		logNewMessage(LOG_DEBUG, 'Get Okta access code with ' . $postFields);
-		curl_setopt($curl, CURLOPT_POSTFIELDS, $postFields);
+		$callingUrl = substr($callingUrl, 0, strpos($callingUrl, '?'));
+		logNewMessage(LOG_DEBUG, 'Get Okta access code.');
+		curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query(array(
+			'grant_type' => 'authorization_code',
+			'code' => $code,
+			'code_verifier' => $_SESSION['okta_code_verifier'],
+			'redirect_uri' => $callingUrl,
+			'client_id' => $this->config->twoFactorAuthenticationClientId,
+			'client_secret' => $this->config->twoFactorAuthenticationSecretKey
+		)));
 		curl_setopt($curl, CURLOPT_HTTPHEADER, array(
 			'accept: application/json',
 			'content-type: application/x-www-form-urlencoded',
-			'authorization: Basic ' . base64_encode($this->config->twoFactorAuthenticationClientId . ':' . $this->config->twoFactorAuthenticationSecretKey)
 		));
 		$results = curl_exec($curl);
 		$returnCode = curl_errno($curl);
