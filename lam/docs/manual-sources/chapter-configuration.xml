@@ -958,27 +958,32 @@
 
         <para>KeyCloack example configuration:</para>
 
-        <para>Create a new client, select "openid-connect" protocol and enter
-        a client ID. Root URL can be left empty.</para>
+        <para>Create a new client, select "OpenID Connect" client type and
+        enter a client ID.</para>
 
         <screenshot>
           <graphic fileref="images/openid1.png"/>
         </screenshot>
 
-        <para>Now choose access type "confidential" and enter the valid
-        redirect URLs. They are
-        "https://YOURDOMAIN/lam/templates/login2Factor.php" for admin
-        interface and
-        "https://YOURDOMAIN/lam/templates/selfService/selfService2Factor.php"
-        for self service. You will get an error message during login in case
-        it was wrong. Then save the configuration.</para>
-
-        <para>Next, switch to tab "Credentials" to get the client
-        secret.</para>
+        <para>Now enable "Client authentication" and enter the valid redirect
+        URLs in the last step.</para>
 
         <screenshot>
           <graphic fileref="images/openid2.png"/>
         </screenshot>
+
+        <para>They are "https://YOURDOMAIN/lam/templates/login2Factor.php" for
+        admin interface and
+        "https://YOURDOMAIN/lam/templates/selfService/selfService2Factor.php"
+        for self service. You will get an error message during login in case
+        it was wrong. Then save the configuration.</para>
+
+        <screenshot>
+          <graphic fileref="images/openid3.png"/>
+        </screenshot>
+
+        <para>Next, switch to tab "Credentials" to get the client
+        secret.</para>
 
         <para>Example configuration values:</para>
 
