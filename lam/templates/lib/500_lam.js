@@ -841,16 +841,14 @@ window.lam.upload = window.lam.upload || {};
  * @param tokenValue value of CSRF token
  */
 window.lam.upload.continueUpload = function(url, tokenName, tokenValue) {
-	var data = {
-		jsonInput: ''
-	};
-	data[tokenName] = tokenValue;
-	jQuery.ajax({
-		url: url,
+	let data = new FormData();
+	data.append(tokenName, tokenValue);
+	fetch(url, {
 		method: 'POST',
-		data: data
+		body: data
 	})
-	.done(function(jsonData){
+	.then(async response => {
+		const jsonData = await response.json();
 		if (!jsonData.accountsFinished) {
 			window.lam.upload.printBasicStatus(jsonData);
 		}
@@ -876,11 +874,11 @@ window.lam.upload.continueUpload = function(url, tokenName, tokenValue) {
  * @param jsonData status JSON
  */
 window.lam.upload.printBasicStatus = function(jsonData) {
-	var htmlOut = '<div class="title">';
+	let htmlOut = '<div class="title">';
 	htmlOut += '<h2 class="titleText">' + jsonData.title + '</h2>';
 	htmlOut += '</div>';
 	htmlOut += window.lam.progressbar.getMarkup('progressbarGeneral');
-	jQuery('#uploadContent').html(htmlOut);
+	document.getElementById('uploadContent').innerHTML = htmlOut;
 	window.lam.progressbar.setProgress('progressbarGeneral', jsonData.accountsProgress);
 };
 
@@ -890,7 +888,7 @@ window.lam.upload.printBasicStatus = function(jsonData) {
  * @param jsonData status JSON
  */
 window.lam.upload.printPostActionStatus = function(jsonData) {
-	var htmlOut = '<div class="title">';
+	let htmlOut = '<div class="title">';
 	htmlOut += '<h2 class="titleText">' + jsonData.title + '</h2>';
 	htmlOut += '</div>';
 	htmlOut += window.lam.progressbar.getMarkup('progressbarGeneral');
@@ -898,7 +896,7 @@ window.lam.upload.printPostActionStatus = function(jsonData) {
 		htmlOut += '<h2>' + jsonData.postActionsTitle + '</h2>';
 		htmlOut += window.lam.progressbar.getMarkup('progressbarPostActions');
 	}
-	jQuery('#uploadContent').html(htmlOut);
+	document.getElementById('uploadContent').innerHTML = htmlOut;
 	window.lam.progressbar.setProgress('progressbarGeneral', 100);
 	if (jsonData.postActionsTitle) {
 		window.lam.progressbar.setProgress('progressbarPostActions', jsonData.postActionsProgress);
@@ -911,13 +909,13 @@ window.lam.upload.printPostActionStatus = function(jsonData) {
  * @param jsonData status JSON
  */
 window.lam.upload.printPDFStatus = function(jsonData) {
-	var htmlOut = '<div class="title">';
+	let htmlOut = '<div class="title">';
 	htmlOut += '<h2 class="titleText">' + jsonData.title + '</h2>';
 	htmlOut += '</div>';
 	htmlOut += window.lam.progressbar.getMarkup('progressbarGeneral');
 	htmlOut += '<h2>' + jsonData.titlePDF + '</h2>';
 	htmlOut += window.lam.progressbar.getMarkup('progressbarPDF');
-	jQuery('#uploadContent').html(htmlOut);
+	document.getElementById('uploadContent').innerHTML = htmlOut;
 	window.lam.progressbar.setProgress('progressbarGeneral', 100);
 	window.lam.progressbar.setProgress('progressbarPDF', jsonData.pdfProgress);
 };
@@ -929,11 +927,11 @@ window.lam.upload.printPDFStatus = function(jsonData) {
  */
 window.lam.upload.uploadDone = function(jsonData) {
 	if (jsonData.errorHtml) {
-		var htmlOut = '<div class="subTitle">';
+		let htmlOut = '<div class="subTitle">';
 		htmlOut += '<h4  class="subTitleText">' + jsonData.titleErrors + '</h4>';
 		htmlOut += '</div>';
 		htmlOut += jsonData.errorHtml;
-		jQuery('#uploadContent').html(htmlOut);
+		document.getElementById('uploadContent').innerHTML = htmlOut;
 	}
 	else {
 		top.location.href = '../lists/list.php?type=' + jsonData.typeId + '&uploadAllOk';
