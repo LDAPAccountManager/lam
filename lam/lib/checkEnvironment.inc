@@ -8,7 +8,7 @@ use function LAM\LOGIN\displayLoginHeader;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2010 - 2021  Roland Gruber
+  Copyright (C) 2010 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -62,27 +62,27 @@ if (version_compare(phpversion(), '7.4.0') < 0) {
 // check environment
 $criticalErrors = array();
 // check if PHP has session support
-if (! function_exists('session_start')) {
+if (!function_exists('session_start')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no session support!", "Please install the session extension for PHP.");
 }
 // check if PHP has SPL support
-if (! function_exists('class_implements')) {
+if (!function_exists('class_implements')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no SPL support!", "Please install the SPL extension for PHP.");
 }
 // check if PHP has LDAP support
-if (! function_exists('ldap_search')) {
+if (!function_exists('ldap_search')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no LDAP support!", "Please install the LDAP extension for PHP.");
 }
 // check if PHP has gettext support
-if (! function_exists('gettext') || !function_exists('_')) {
+if (!function_exists('gettext') || !function_exists('_')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no gettext support!", "Please install gettext for PHP.");
 }
 // check if PHP has openssl support
-if (! function_exists('openssl_x509_parse')) {
+if (!function_exists('openssl_x509_parse')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no openssl support!", "Please install openssl for PHP.");
 }
 // check if PHP has XML support
-if (! function_exists('utf8_decode') || !extension_loaded('xml')) {
+if (!extension_loaded('xml')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no XML support!", "Please install the XML extension for PHP.");
 }
 if (!extension_loaded('libxml')) {

@@ -7,7 +7,7 @@
  * @author Simon Josefsson <simon@yubico.com>, Olov Danielson <olov@yubico.com>
  * @author Roland Gruber
  * @copyright 2007-2015 Yubico AB
- * @copyright 2018 Roland Gruber
+ * @copyright 2018 - 2023 Roland Gruber
  * @license https://opensource.org/licenses/bsd-license.php New BSD License
  * @version 2.0
  * @link https://www.yubico.com/
@@ -210,7 +210,7 @@ class Auth_Yubico {
 					}
 				}
 
-				$checksignature = base64_encode(hash_hmac('sha1', utf8_encode($check), $this->clientKey, true));
+				$checksignature = base64_encode(hash_hmac('sha1', $check, $this->clientKey, true));
 
 				if ($response['h'] == $checksignature) {
 					$this->checkStatus($status);
@@ -249,4 +249,3 @@ class Auth_Yubico {
 	}
 
 }
-?>
