@@ -110,6 +110,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 		$this->messages['homeDirectory'][1] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
 		$this->messages['homeDirectory'][2] = array('ERROR', _('Account %s:') . ' posixAccount_homedir', _('Homedirectory contains invalid characters.'));
 		$this->messages['homeDirectory'][3] = array('INFO', _('Home directory'), _('Home directory changed. To keep home directory you have to run the following command as root: \'mv %s %s\''));
+		$this->messages['homeDirectory'][4] = array('ERROR', _('Account %s:') . ' posixAccount_createHomeDir', _('Invalid remote server name.'));
 		$this->messages['uidNumber'][1] = array('ERROR', _('ID-Number'), _('No free ID-Number!'));
 		$this->messages['uidNumber'][2] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'));
 		$this->messages['uidNumber'][3] = array('ERROR', _('ID-Number'), _('ID is already in use'));
@@ -258,21 +259,23 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				'example' => _('/home/smiller'),
 				'default' => '/home/{posixAccount_userName}'
 			),
-			array(
-				'name' => 'posixAccount_createHomeDir',
-				'description' => _('Create home directory'),
-				'help' => 'createhomedir',
-				'example' => 'localhost',
-				'values' => implode(', ', $lamdaemonOptions)
-			),
-			array(
+			);
+			if (!empty($lamdaemonOptions)) {
+				$return['upload_columns'][] = array(
+					'name' => 'posixAccount_createHomeDir',
+					'description' => _('Create home directory'),
+					'help' => 'createhomedir',
+					'example' => 'localhost',
+					'values' => implode(', ', $lamdaemonOptions)
+				);
+			}
+			$return['upload_columns'][] = array(
 				'name' => 'posixAccount_shell',
 				'description' => _('Login shell'),
 				'help' => 'loginShell',
 				'example' => '/bin/bash',
 				'values' => implode(", ", $this->getShells()),
 				'default' => '/bin/bash'
-			),
 			);
 			if (self::areGroupOfNamesActive()) {
 				$return['upload_columns'][] = array(
@@ -2639,6 +2642,7 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				$gonList[] = $attr['cn'][0];
 			}
 		}
+		$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
 		// check input
 		foreach ($rawAccounts as $i => $rawAccount) {
 			if (!$this->skipObjectClass() && !in_array("posixAccount", $partialAccounts[$i]['objectClass'])) {
@@ -2780,6 +2784,21 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 					$errMsg = $this->messages['homeDirectory'][2];
 					array_push($errMsg, array($i));
 					$errors[] = $errMsg;
+				}
+				// create home directory
+				if (!empty($rawAccount[$ids['posixAccount_createHomeDir']])) {
+					$lamdaemonServerValid = false;
+					foreach ($lamdaemonServers as $lamdaemonServer) {
+						if ($lamdaemonServer->getServer() === $rawAccount[$ids['posixAccount_createHomeDir']]) {
+							$lamdaemonServerValid = true;
+							break;
+						}
+					}
+					if (!$lamdaemonServerValid) {
+						$errMsg = $this->messages['homeDirectory'][4];
+						array_push($errMsg, array($i));
+						$errors[] = $errMsg;
+					}
 				}
 				// login shell
 				if ($rawAccount[$ids['posixAccount_shell']] == "") {
