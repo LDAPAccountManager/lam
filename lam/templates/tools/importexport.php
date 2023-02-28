@@ -23,7 +23,7 @@ use LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2018 - 2022  Roland Gruber
+  Copyright (C) 2018 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -411,7 +411,7 @@ function printExportTabProcessing(&$tabindex): void {
 
 	$exportText = new htmlOutputText('');
 	$exportText->setPreformatted(true);
-	$container->add(new htmlDiv('exportResults', $exportText), 12);
+	$container->add(new htmlDiv('exportResults', $exportText));
 	$container->add(new htmlJavaScript(
 			'window.lam.importexport.startExport(\'' . getSecurityTokenName() . '\', \'' . getSecurityTokenValue() . '\');'
 		), 12);

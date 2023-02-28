@@ -1429,58 +1429,62 @@ window.lam.importexport.startImport = function(tokenName, tokenValue) {
  * @param tokenValue value of CSRF token
  */
 window.lam.importexport.startExport = function(tokenName, tokenValue) {
-	jQuery(document).ready(function() {
-		window.lam.progressbar.setProgress('progressbarExport', 50);
-		var output = jQuery('#exportResults');
-		var data = {
-			jsonInput: ''
-		};
-		data[tokenName] = tokenValue;
-		data['baseDn'] = jQuery('#baseDn').val();
-		data['searchScope'] = jQuery('#searchScope').val();
-		data['filter'] = jQuery('#filter').val();
-		data['attributes'] = jQuery('#attributes').val();
-		data['format'] = jQuery('#format').val();
-		data['ending'] = jQuery('#ending').val();
-		data['includeSystem'] = jQuery('#includeSystem').val();
-		data['saveAsFile'] = jQuery('#saveAsFile').val();
-		jQuery.ajax({
-			url: '../misc/ajax.php?function=export',
-			method: 'POST',
-			data: data
-		})
-		.done(function(jsonData){
-			if (jsonData.data && (jsonData.data != '')) {
-				output.append(jsonData.data);
-			}
-			if (jsonData.status == 'done') {
-				jQuery('#progressbarExport').hide();
-				jQuery('#btn_submitExportCancel').hide();
-				jQuery('#statusExportInprogress').hide();
-				jQuery('#statusExportDone').show();
-				jQuery('.newexport').show();
-				if (jsonData.output) {
-					jQuery('#exportResults > pre').text(jsonData.output);
-				}
-				else if (jsonData.file) {
-					window.open(jsonData.file, '_blank');
-				}
-			}
-			else {
-				jQuery('#progressbarExport').hide();
-				jQuery('#btn_submitExportCancel').hide();
-				jQuery('#statusExportInprogress').hide();
-				jQuery('#statusExportFailed').show();
-				jQuery('.newexport').show();
-			}
-		})
-		.fail(function() {
-			jQuery('#progressbarExport').hide();
-			jQuery('#btn_submitExportCancel').hide();
-			jQuery('#statusExportInprogress').hide();
-			jQuery('#statusExportFailed').show();
-			jQuery('.newexport').show();
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', function() {
+			window.lam.importexport.startExport(tokenName, tokenValue);
 		});
+		return;
+	}
+	window.lam.progressbar.setProgress('progressbarExport', 50);
+	const output = document.getElementById('exportResults');
+	let data = new FormData();
+	data.append(tokenName, tokenValue);
+	data.append('baseDn', document.getElementById('baseDn').value)
+	data.append('searchScope', document.getElementById('searchScope').value);
+	data.append('filter', document.getElementById('filter').value);
+	data.append('attributes', document.getElementById('attributes').value);
+	data.append('format', document.getElementById('format').value);
+	data.append('ending', document.getElementById('ending').value);
+	data.append('includeSystem', document.getElementById('includeSystem').value);
+	data.append('saveAsFile', document.getElementById('saveAsFile').value);
+	fetch('../misc/ajax.php?function=export', {
+		method: 'POST',
+		body: data
+	})
+	.then(async response => {
+		const jsonData = await response.json();
+		if (jsonData.data && (jsonData.data != '')) {
+			output.append(jsonData.data);
+		}
+		if (jsonData.status == 'done') {
+			document.getElementById('progressbarExport').classList.add('hidden');
+			document.getElementById('btn_submitExportCancel').classList.add('hidden');
+			document.getElementById('statusExportInprogress').classList.add('hidden');
+			document.getElementById('statusExportDone').classList.remove('hidden');
+			document.querySelector('.newexport').classList.remove('hidden');
+			if (jsonData.output) {
+				document.getElementById('exportResults').querySelector('pre').innerText = jsonData.output;
+			}
+			else if (jsonData.file) {
+				window.open(jsonData.file, '_blank');
+			}
+		}
+		else {
+			document.getElementById('progressbarExport').classList.add('hidden');
+			document.getElementById('btn_submitExportCancel').classList.add('hidden');
+			document.getElementById('statusExportDone').classList.add('hidden');
+			document.getElementById('statusExportInprogress').classList.add('hidden');
+			document.getElementById('statusExportFailed').classList.remove('hidden');
+			document.querySelector('.newexport').classList.remove('hidden');
+		}
+	})
+	.catch((error) => {
+		document.getElementById('progressbarExport').classList.add('hidden');
+		document.getElementById('btn_submitExportCancel').classList.add('hidden');
+		document.getElementById('statusExportDone').classList.add('hidden');
+		document.getElementById('statusExportInprogress').classList.add('hidden');
+		document.getElementById('statusExportFailed').classList.remove('hidden');
+		document.querySelector('.newexport').classList.remove('hidden');
 	});
 };
 
