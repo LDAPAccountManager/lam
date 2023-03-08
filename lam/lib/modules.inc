@@ -2218,7 +2218,7 @@ class accountContainer {
 						break;
 					}
 				}
-				// inser after depending module
+				// insert after depending module
 				if ($everything_found) {
 					$order[] = $depModules[$w];
 					unset($depModules[$w]);
