@@ -1290,7 +1290,7 @@ class TwoFactorConfiguration {
 	/**
 	 * @var string|array service URL(s)
 	 */
-	public mixed $twoFactorAuthenticationURL = null;
+	public ?mixed $twoFactorAuthenticationURL = null;
 
 	/**
 	 * @var bool disable certificate check
