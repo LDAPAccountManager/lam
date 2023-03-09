@@ -7,7 +7,7 @@ use function LAM\ACCOUNTLIST\isPasswordChangeByDefault;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2022  Roland Gruber
+                2005 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1152,17 +1152,19 @@ class sambaSamAccount extends baseModule implements passwordService,AccountStatu
 				$return->add(new htmlResponsiveInputCheckbox('forcePasswordChangeOption', $this->expirePassword, _('Password change at next login'), 'passwordIsExpired'), 12);
 				// last password change
 				if (!$this->isBooleanConfigOptionSet('sambaSamAccount_hideSambaPwdLastSet')) {
-					$sambaPwdLastSet = '';
+					$sambaPwdLastSet = null;
 					if (!empty($this->attributes['sambaPwdLastSet'][0])) {
 						$time = new DateTime('@' . $this->attributes['sambaPwdLastSet'][0], new DateTimeZone('UTC'));
 						$time->setTimezone(getTimeZone());
 						$sambaPwdLastSet = $time->format('d.m.Y H:i');
 					}
-					$return->addLabel(new htmlOutputText(_('Last password change')));
-					$sambaPwdLastSetGroup = new htmlGroup();
-					$sambaPwdLastSetGroup->addElement(new htmlOutputText($sambaPwdLastSet));
-					$sambaPwdLastSetGroup->addElement(new htmlHelpLink('sambaPwdLastSet'));
-					$return->addField($sambaPwdLastSetGroup);
+					if ($sambaPwdLastSet !== null) {
+						$return->addLabel(new htmlOutputText(_('Last password change')));
+						$sambaPwdLastSetGroup = new htmlGroup();
+						$sambaPwdLastSetGroup->addElement(new htmlOutputText($sambaPwdLastSet));
+						$sambaPwdLastSetGroup->addElement(new htmlHelpLink('sambaPwdLastSet'));
+						$return->addField($sambaPwdLastSetGroup);
+					}
 				}
 				// password can be changed
 				$return->addLabel(new htmlOutputText(_('User can change password')));
