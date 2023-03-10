@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2006 - 2022  Roland Gruber
+  Copyright (C) 2006 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -115,7 +115,12 @@ function startSecureSession($redirectToLogin = true, $initSecureData = false) {
 	if (!isset($_SESSION["sec_client_ip"]) || ($_SESSION["sec_client_ip"] != $_SERVER['REMOTE_ADDR'])) {
 		// IP is invalid
 		logNewMessage(LOG_WARNING, "Client IP changed, access denied (" . getClientIPForLogging() . ")");
-		die();
+		if ($redirectToLogin) {
+			logoffAndBackToLoginPage();
+		}
+		else {
+			die();
+		}
 	}
 	// check if session time has not expired
 	if (($_SESSION['sec_sessionTime'] + (60 * $_SESSION['cfgMain']->sessionTimeout)) > time()) {
