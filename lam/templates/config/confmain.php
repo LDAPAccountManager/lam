@@ -564,7 +564,7 @@ if (extension_loaded('curl')) {
 	$rememberDeviceRow->add($twoFactorAllowToRememberDevice);
 	$rememberDeviceExtraRow = new htmlResponsiveRow();
 	$rememberDeviceExtraRow->setId('twoFactorAllowToRememberDeviceExtraOptions');
-	$twoFactorRememberDeviceDuration = new htmlResponsiveInputField(_("Duration to remember devices"), 'twoFactorRememberDeviceDuration', formatSecondsToShortFormat($conf->getTwoFactorRememberDeviceDuration()), '531');
+	$twoFactorRememberDeviceDuration = new htmlResponsiveInputField(_("Remember device period"), 'twoFactorRememberDeviceDuration', formatSecondsToShortFormat($conf->getTwoFactorRememberDeviceDuration()), '531');
 	$rememberDeviceExtraRow->add($twoFactorRememberDeviceDuration);
 	$twoFactorRememberDevicePassword = new htmlResponsiveInputField(_("Password to remember devices"), 'twoFactorRememberDevicePassword', $conf->getTwoFactorRememberDevicePassword(), '532');
 	$twoFactorRememberDevicePassword->setIsPassword(true);
