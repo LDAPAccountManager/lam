@@ -1126,7 +1126,7 @@ class TwoFactorProviderService {
 			return false;
 		}
 		if (empty($this->config->twoFactorRememberDeviceDuration)) {
-			logNewMessage(LOG_ERR, 'The selected 2FA duration to remember devices is empty.');
+			logNewMessage(LOG_ERR, 'The selected 2FA remember device period is empty.');
 			return false;
 		}
 		if (!isset($_COOKIE['lam_remember_2fa'])) {

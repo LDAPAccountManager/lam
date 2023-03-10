@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LAM\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
-"PO-Revision-Date: 2023-03-04 20:54+0100\n"
+"PO-Revision-Date: 2023-03-10 07:50+0100\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: German <>\n"
 "Language: de\n"
@@ -580,11 +580,11 @@ msgstr "Account expiration"
 #: ../lib/modules/sambaSamAccount.inc:231
 #: ../lib/modules/sambaSamAccount.inc:367
 #: ../lib/modules/sambaSamAccount.inc:491
-#: ../lib/modules/sambaSamAccount.inc:1183
-#: ../lib/modules/sambaSamAccount.inc:1465
-#: ../lib/modules/sambaSamAccount.inc:1787
-#: ../lib/modules/sambaSamAccount.inc:2010
-#: ../lib/modules/sambaSamAccount.inc:3208 ../lib/modules/shadowAccount.inc:149
+#: ../lib/modules/sambaSamAccount.inc:1185
+#: ../lib/modules/sambaSamAccount.inc:1467
+#: ../lib/modules/sambaSamAccount.inc:1789
+#: ../lib/modules/sambaSamAccount.inc:2012
+#: ../lib/modules/sambaSamAccount.inc:3210 ../lib/modules/shadowAccount.inc:149
 #: ../lib/modules/shadowAccount.inc:191 ../lib/modules/shadowAccount.inc:214
 #: ../lib/modules/shadowAccount.inc:254 ../lib/modules/shadowAccount.inc:392
 #: ../lib/modules/shadowAccount.inc:501 ../lib/modules/shadowAccount.inc:599
@@ -605,7 +605,7 @@ msgstr "Account expiration date (read-only)"
 #: ../lib/modules/sambaSamAccount.inc:313
 #: ../lib/modules/sambaSamAccount.inc:483
 #: ../lib/modules/sambaSamAccount.inc:1148
-#: ../lib/modules/sambaSamAccount.inc:1783 ../lib/modules/windowsUser.inc:246
+#: ../lib/modules/sambaSamAccount.inc:1785 ../lib/modules/windowsUser.inc:246
 #: ../lib/modules/windowsUser.inc:483 ../lib/modules/windowsUser.inc:992
 #: ../lib/modules/windowsUser.inc:1474 ../lib/modules/windowsUser.inc:3284
 #: ../lib/plugins/extendedInvalidCredentials/Locking389DsExtraInvalidCredentialsProvider.inc:42
@@ -882,7 +882,7 @@ msgid "Add SSH public key extension"
 msgstr "Add SSH public key extension"
 
 #: ../lib/modules/sambaGroupMapping.inc:424
-#: ../lib/modules/sambaSamAccount.inc:1326
+#: ../lib/modules/sambaSamAccount.inc:1328
 msgid "Add Samba 3 extension"
 msgstr "Add Samba 3 extension"
 
@@ -1290,14 +1290,19 @@ msgstr "Allow multiple values"
 msgid "Allow password change"
 msgstr "Allow password change"
 
+#: ../templates/config/confmain.php:562
+#: ../templates/selfService/adminMain.php:625 ../help/help.inc:362
+msgid "Allow remembering device"
+msgstr "Allow remembering device"
+
 #: ../templates/config/confmain.php:346 ../help/help.inc:227
 msgid "Allow setting specific passwords"
 msgstr "Allow setting specific passwords"
 
 #: ../lib/modules/sambaSamAccount.inc:251
 #: ../lib/modules/sambaSamAccount.inc:373
-#: ../lib/modules/sambaSamAccount.inc:1531
-#: ../lib/modules/sambaSamAccount.inc:2019
+#: ../lib/modules/sambaSamAccount.inc:1533
+#: ../lib/modules/sambaSamAccount.inc:2021
 msgid "Allow terminal server login"
 msgstr "Allow terminal server login"
 
@@ -1308,11 +1313,6 @@ msgstr "Allow to display password on screen"
 #: ../lib/modules/passwordSelfReset.inc:170
 msgid "Allow to enter custom security questions."
 msgstr "Allow to enter custom security questions."
-
-#: ../templates/config/confmain.php:562
-#: ../templates/selfService/adminMain.php:625 ../help/help.inc:362
-msgid "Allow to remember device"
-msgstr "Allow to remember device"
 
 #: ../templates/selfService/adminMain.php:781
 msgid "Allow user input for this field."
@@ -1378,8 +1378,8 @@ msgstr "Allowed recipients"
 msgid "Allowed senders"
 msgstr "Allowed senders"
 
-#: ../lib/modules/sambaSamAccount.inc:1373
-#: ../lib/modules/sambaSamAccount.inc:1383 ../lib/modules/windowsUser.inc:2565
+#: ../lib/modules/sambaSamAccount.inc:1375
+#: ../lib/modules/sambaSamAccount.inc:1385 ../lib/modules/windowsUser.inc:2565
 #: ../lib/modules/windowsUser.inc:2575
 msgid "Allowed workstations"
 msgstr "Allowed workstations"
@@ -1777,7 +1777,7 @@ msgstr "Available roles"
 msgid "Available users"
 msgstr "Available users"
 
-#: ../lib/modules/sambaSamAccount.inc:1383 ../lib/modules/windowsUser.inc:2575
+#: ../lib/modules/sambaSamAccount.inc:1385 ../lib/modules/windowsUser.inc:2575
 msgid "Available workstations"
 msgstr "Available workstations"
 
@@ -1809,8 +1809,8 @@ msgstr "BCC address"
 #: ../lib/modules/windowsLDSUser.inc:1278
 #: ../lib/modules/windowsLDSUser.inc:1313 ../lib/modules/windowsGroup.inc:546
 #: ../lib/modules/windowsGroup.inc:721 ../lib/modules/windowsGroup.inc:770
-#: ../lib/modules/posixGroup.inc:352 ../lib/modules/sambaSamAccount.inc:1387
-#: ../lib/modules/sambaSamAccount.inc:1672
+#: ../lib/modules/posixGroup.inc:352 ../lib/modules/sambaSamAccount.inc:1389
+#: ../lib/modules/sambaSamAccount.inc:1674
 #: ../lib/modules/inetOrgPerson.inc:1754 ../lib/modules/inetOrgPerson.inc:1846
 #: ../lib/modules/inetOrgPerson.inc:1928 ../lib/modules/posixAccount.inc:2046
 #: ../lib/modules/posixAccount.inc:2120 ../lib/modules/windowsUser.inc:2216
@@ -2338,9 +2338,9 @@ msgstr "Can call forward"
 #: ../lib/modules/windowsLDSGroup.inc:425
 #: ../lib/modules/windowsLDSUser.inc:1441 ../lib/modules/windowsGroup.inc:605
 #: ../lib/modules/windowsGroup.inc:671 ../lib/modules/freeRadius.inc:584
-#: ../lib/modules/sambaSamAccount.inc:1453
-#: ../lib/modules/sambaSamAccount.inc:1514
-#: ../lib/modules/sambaSamAccount.inc:1600 ../lib/modules/shadowAccount.inc:527
+#: ../lib/modules/sambaSamAccount.inc:1455
+#: ../lib/modules/sambaSamAccount.inc:1516
+#: ../lib/modules/sambaSamAccount.inc:1602 ../lib/modules/shadowAccount.inc:527
 #: ../lib/modules/shadowAccount.inc:576 ../lib/modules/inetOrgPerson.inc:1812
 #: ../lib/modules/windowsUser.inc:2055 ../lib/modules/windowsUser.inc:2518
 #: ../lib/lists.inc:879 ../lib/lists.inc:955 ../lib/html.inc:656
@@ -2442,8 +2442,8 @@ msgstr "Car license"
 #: ../lib/modules/windowsLDSGroup.inc:356 ../lib/modules/windowsLDSUser.inc:962
 #: ../lib/modules/windowsLDSUser.inc:1437 ../lib/modules/windowsGroup.inc:369
 #: ../lib/modules/windowsGroup.inc:603 ../lib/modules/freeRadius.inc:386
-#: ../lib/modules/freeRadius.inc:578 ../lib/modules/sambaSamAccount.inc:1187
-#: ../lib/modules/sambaSamAccount.inc:1508 ../lib/modules/shadowAccount.inc:395
+#: ../lib/modules/freeRadius.inc:578 ../lib/modules/sambaSamAccount.inc:1189
+#: ../lib/modules/sambaSamAccount.inc:1510 ../lib/modules/shadowAccount.inc:395
 #: ../lib/modules/shadowAccount.inc:408 ../lib/modules/shadowAccount.inc:521
 #: ../lib/modules/shadowAccount.inc:570 ../lib/modules/inetOrgPerson.inc:1567
 #: ../lib/modules/windowsUser.inc:1464 ../lib/modules/windowsUser.inc:1488
@@ -2467,11 +2467,11 @@ msgstr "Change GID number of users and hosts"
 msgid "Change Kerberos password"
 msgstr "Change Kerberos password"
 
-#: ../lib/modules/sambaSamAccount.inc:2997
+#: ../lib/modules/sambaSamAccount.inc:2999
 msgid "Change Samba LM password"
 msgstr "Change Samba LM password"
 
-#: ../lib/modules/sambaSamAccount.inc:2995
+#: ../lib/modules/sambaSamAccount.inc:2997
 msgid "Change Samba NT password"
 msgstr "Change Samba NT password"
 
@@ -2642,8 +2642,8 @@ msgstr "Client id"
 
 #: ../lib/modules/sambaSamAccount.inc:263
 #: ../lib/modules/sambaSamAccount.inc:400
-#: ../lib/modules/sambaSamAccount.inc:1569
-#: ../lib/modules/sambaSamAccount.inc:2047
+#: ../lib/modules/sambaSamAccount.inc:1571
+#: ../lib/modules/sambaSamAccount.inc:2049
 msgid "Client printer is default"
 msgstr "Client printer is default"
 
@@ -2839,15 +2839,15 @@ msgstr "Conflicting module:"
 
 #: ../lib/modules/sambaSamAccount.inc:261
 #: ../lib/modules/sambaSamAccount.inc:394
-#: ../lib/modules/sambaSamAccount.inc:1565
-#: ../lib/modules/sambaSamAccount.inc:2037
+#: ../lib/modules/sambaSamAccount.inc:1567
+#: ../lib/modules/sambaSamAccount.inc:2039
 msgid "Connect client drives"
 msgstr "Connect client drives"
 
 #: ../lib/modules/sambaSamAccount.inc:262
 #: ../lib/modules/sambaSamAccount.inc:397
-#: ../lib/modules/sambaSamAccount.inc:1567
-#: ../lib/modules/sambaSamAccount.inc:2042
+#: ../lib/modules/sambaSamAccount.inc:1569
+#: ../lib/modules/sambaSamAccount.inc:2044
 msgid "Connect client printers"
 msgstr "Connect client printers"
 
@@ -2862,8 +2862,8 @@ msgid "Connection string"
 msgstr "Connection string"
 
 #: ../lib/modules/sambaSamAccount.inc:258
-#: ../lib/modules/sambaSamAccount.inc:1553
-#: ../lib/modules/sambaSamAccount.inc:2030
+#: ../lib/modules/sambaSamAccount.inc:1555
+#: ../lib/modules/sambaSamAccount.inc:2032
 msgid "Connection time limit"
 msgstr "Connection time limit"
 
@@ -2909,7 +2909,7 @@ msgstr "Courier"
 #: ../templates/pdfedit/pdfmain.php:358
 #: ../templates/profedit/profilemain.php:244 ../templates/initsuff.php:201
 #: ../lib/modules/nisMailAliasUser.inc:362
-#: ../lib/modules/sambaSamAccount.inc:1653 ../lib/modules/posixAccount.inc:2101
+#: ../lib/modules/sambaSamAccount.inc:1655 ../lib/modules/posixAccount.inc:2101
 #: ../lib/treeview.inc:1158
 msgid "Create"
 msgstr "Create"
@@ -3332,7 +3332,7 @@ msgid "Days to delete"
 msgstr "Days to delete"
 
 #: ../lib/modules/locking389ds.inc:597 ../lib/modules/locking389ds.inc:618
-#: ../lib/modules/sambaSamAccount.inc:3101 ../lib/modules/windowsUser.inc:4466
+#: ../lib/modules/sambaSamAccount.inc:3103 ../lib/modules/windowsUser.inc:4466
 #: ../lib/modules/windowsUser.inc:4494
 msgid "Deactivated"
 msgstr "Deactivated"
@@ -3464,7 +3464,7 @@ msgstr ""
 #: ../lib/modules/kopanoUser.inc:1402 ../lib/modules/kopanoUser.inc:1453
 #: ../lib/modules/powerDNS.inc:791 ../lib/modules/powerDNS.inc:993
 #: ../lib/modules/webauthn.inc:156 ../lib/modules/kolabUser.inc:677
-#: ../lib/modules/sambaSamAccount.inc:1645
+#: ../lib/modules/sambaSamAccount.inc:1647
 #: ../lib/modules/inetOrgPerson.inc:3148 ../lib/modules/inetOrgPerson.inc:3300
 #: ../lib/modules/posixAccount.inc:2093 ../lib/lists.inc:600
 #: ../lib/passwordExpirationJob.inc:531 ../lib/modules.inc:1373
@@ -3870,7 +3870,7 @@ msgid "Disable IMAP access"
 msgstr "Disable IMAP access"
 
 #: ../lib/modules/sambaSamAccount.inc:415
-#: ../lib/modules/sambaSamAccount.inc:1973
+#: ../lib/modules/sambaSamAccount.inc:1975
 msgid "Disable LM hashes"
 msgstr "Disable LM hashes"
 
@@ -3999,8 +3999,8 @@ msgid "Disconnect users outside logon hours"
 msgstr "Disconnect users outside logon hours"
 
 #: ../lib/modules/sambaSamAccount.inc:259
-#: ../lib/modules/sambaSamAccount.inc:1557
-#: ../lib/modules/sambaSamAccount.inc:2031
+#: ../lib/modules/sambaSamAccount.inc:1559
+#: ../lib/modules/sambaSamAccount.inc:2033
 msgid "Disconnection time limit"
 msgstr "Disconnection time limit"
 
@@ -4042,9 +4042,9 @@ msgstr "Display multiple groups as accordion"
 #: ../lib/modules/sambaSamAccount.inc:280
 #: ../lib/modules/sambaSamAccount.inc:447
 #: ../lib/modules/sambaSamAccount.inc:1139
-#: ../lib/modules/sambaSamAccount.inc:1779
-#: ../lib/modules/sambaSamAccount.inc:2002
-#: ../lib/modules/sambaSamAccount.inc:3207 ../lib/modules/inetOrgPerson.inc:173
+#: ../lib/modules/sambaSamAccount.inc:1781
+#: ../lib/modules/sambaSamAccount.inc:2004
+#: ../lib/modules/sambaSamAccount.inc:3209 ../lib/modules/inetOrgPerson.inc:173
 #: ../lib/modules/inetOrgPerson.inc:692 ../lib/modules/inetOrgPerson.inc:1251
 #: ../lib/modules/inetOrgPerson.inc:1993 ../lib/modules/inetOrgPerson.inc:2091
 #: ../lib/modules/inetOrgPerson.inc:2314 ../lib/modules/inetOrgPerson.inc:3118
@@ -4137,11 +4137,11 @@ msgstr "Do you really want to remove this device?"
 #: ../lib/modules/sambaSamAccount.inc:358
 #: ../lib/modules/sambaSamAccount.inc:440
 #: ../lib/modules/sambaSamAccount.inc:564
-#: ../lib/modules/sambaSamAccount.inc:1286
-#: ../lib/modules/sambaSamAccount.inc:1824
-#: ../lib/modules/sambaSamAccount.inc:1846
-#: ../lib/modules/sambaSamAccount.inc:2008
-#: ../lib/modules/sambaSamAccount.inc:3209 ../lib/modules/windowsUser.inc:162
+#: ../lib/modules/sambaSamAccount.inc:1288
+#: ../lib/modules/sambaSamAccount.inc:1826
+#: ../lib/modules/sambaSamAccount.inc:1848
+#: ../lib/modules/sambaSamAccount.inc:2010
+#: ../lib/modules/sambaSamAccount.inc:3211 ../lib/modules/windowsUser.inc:162
 #: ../lib/modules/windowsUser.inc:3332 ../help/help.inc:360
 msgid "Domain"
 msgstr "Domain"
@@ -4242,13 +4242,13 @@ msgid "Domain schema admins"
 msgstr "Domain schema admins"
 
 #: ../lib/modules/sambaSamAccount.inc:427
-#: ../lib/modules/sambaSamAccount.inc:2349
+#: ../lib/modules/sambaSamAccount.inc:2351
 msgid "Domain suffix"
 msgstr "Domain suffix"
 
 #: ../lib/modules/sambaGroupMapping.inc:68
 #: ../lib/modules/sambaSamAccount.inc:99
-#: ../lib/modules/sambaSamAccount.inc:2267
+#: ../lib/modules/sambaSamAccount.inc:2269
 msgid "Domain users"
 msgstr "Domain users"
 
@@ -4291,11 +4291,6 @@ msgstr "Dry run finished."
 msgid "Duplicate version entry found."
 msgstr "Duplicate version entry found."
 
-#: ../templates/config/confmain.php:567
-#: ../templates/selfService/adminMain.php:630 ../help/help.inc:364
-msgid "Duration to remember devices"
-msgstr "Duration to remember devices"
-
 #: ../lib/modules/dynamicList.inc:48
 msgid "Dynamic List"
 msgstr "Dynamic List"
@@ -4320,8 +4315,8 @@ msgstr ""
 #: ../templates/profedit/profilemain.php:264
 #: ../lib/modules/windowsLDSGroup.inc:193
 #: ../lib/modules/windowsLDSGroup.inc:222 ../lib/modules/windowsGroup.inc:392
-#: ../lib/modules/windowsGroup.inc:421 ../lib/modules/sambaSamAccount.inc:1292
-#: ../lib/modules/sambaSamAccount.inc:1300 ../lib/lists.inc:594
+#: ../lib/modules/windowsGroup.inc:421 ../lib/modules/sambaSamAccount.inc:1294
+#: ../lib/modules/sambaSamAccount.inc:1302 ../lib/lists.inc:594
 msgid "Edit"
 msgstr "Edit"
 
@@ -4354,7 +4349,7 @@ msgstr "Edit server profiles"
 msgid "Edit subgroups"
 msgstr "Edit subgroups"
 
-#: ../lib/modules/sambaSamAccount.inc:1243 ../lib/modules/windowsUser.inc:1519
+#: ../lib/modules/sambaSamAccount.inc:1245 ../lib/modules/windowsUser.inc:1519
 msgid "Edit workstations"
 msgstr "Edit workstations"
 
@@ -5149,7 +5144,7 @@ msgstr ""
 "For the upload please specify the entries in the format \"(HOST,USER,"
 "DOMAIN)\". Multiple entries are separated by semicolon."
 
-#: ../lib/modules/sambaSamAccount.inc:2999
+#: ../lib/modules/sambaSamAccount.inc:3001
 msgid "Force Samba password change"
 msgstr "Force Samba password change"
 
@@ -5202,7 +5197,7 @@ msgstr "Free printing"
 msgid "FreeRadius"
 msgstr "FreeRadius"
 
-#: ../lib/modules/sambaSamAccount.inc:1402
+#: ../lib/modules/sambaSamAccount.inc:1404
 msgid "Friday"
 msgstr "Friday"
 
@@ -6077,7 +6072,7 @@ msgstr ""
 #: ../lib/modules/asteriskAccount.inc:250
 #: ../lib/modules/asteriskAccount.inc:1243 ../lib/modules/freeRadius.inc:134
 #: ../lib/modules/freeRadius.inc:305 ../lib/modules/sambaSamAccount.inc:421
-#: ../lib/modules/sambaSamAccount.inc:1979 ../lib/modules/inetOrgPerson.inc:760
+#: ../lib/modules/sambaSamAccount.inc:1981 ../lib/modules/inetOrgPerson.inc:760
 #: ../lib/modules/inetOrgPerson.inc:4202 ../lib/modules/posixAccount.inc:346
 #: ../lib/modules/posixAccount.inc:2387 ../lib/modules/posixAccount.inc:2456
 #: ../lib/modules/windowsUser.inc:284 ../lib/modules/windowsUser.inc:4109
@@ -6153,8 +6148,8 @@ msgstr "Hold the CTRL-key to (de)select multiple roles."
 #: ../lib/modules/courierMailAccount.inc:491
 #: ../lib/modules/sambaSamAccount.inc:252
 #: ../lib/modules/sambaSamAccount.inc:376
-#: ../lib/modules/sambaSamAccount.inc:1533
-#: ../lib/modules/sambaSamAccount.inc:2020 ../lib/modules/posixAccount.inc:109
+#: ../lib/modules/sambaSamAccount.inc:1535
+#: ../lib/modules/sambaSamAccount.inc:2022 ../lib/modules/posixAccount.inc:109
 #: ../lib/modules/posixAccount.inc:110 ../lib/modules/posixAccount.inc:112
 #: ../lib/modules/posixAccount.inc:257 ../lib/modules/posixAccount.inc:327
 #: ../lib/modules/posixAccount.inc:379 ../lib/modules/posixAccount.inc:383
@@ -6182,12 +6177,12 @@ msgstr ""
 #: ../lib/modules/sambaSamAccount.inc:253
 #: ../lib/modules/sambaSamAccount.inc:324
 #: ../lib/modules/sambaSamAccount.inc:514
-#: ../lib/modules/sambaSamAccount.inc:1203
-#: ../lib/modules/sambaSamAccount.inc:1543
-#: ../lib/modules/sambaSamAccount.inc:1800
-#: ../lib/modules/sambaSamAccount.inc:1983
-#: ../lib/modules/sambaSamAccount.inc:2004
-#: ../lib/modules/sambaSamAccount.inc:2021 ../lib/modules/windowsUser.inc:292
+#: ../lib/modules/sambaSamAccount.inc:1205
+#: ../lib/modules/sambaSamAccount.inc:1545
+#: ../lib/modules/sambaSamAccount.inc:1802
+#: ../lib/modules/sambaSamAccount.inc:1985
+#: ../lib/modules/sambaSamAccount.inc:2006
+#: ../lib/modules/sambaSamAccount.inc:2023 ../lib/modules/windowsUser.inc:292
 #: ../lib/modules/windowsUser.inc:824 ../lib/modules/windowsUser.inc:1012
 #: ../lib/modules/windowsUser.inc:1553 ../lib/modules/windowsUser.inc:3304
 #: ../lib/modules/windowsUser.inc:3349 ../lib/modules/windowsUser.inc:4140
@@ -6199,10 +6194,10 @@ msgstr "Home drive"
 #: ../lib/modules/sambaSamAccount.inc:239
 #: ../lib/modules/sambaSamAccount.inc:327
 #: ../lib/modules/sambaSamAccount.inc:522
-#: ../lib/modules/sambaSamAccount.inc:1211
-#: ../lib/modules/sambaSamAccount.inc:1804
-#: ../lib/modules/sambaSamAccount.inc:1984
-#: ../lib/modules/sambaSamAccount.inc:2003
+#: ../lib/modules/sambaSamAccount.inc:1213
+#: ../lib/modules/sambaSamAccount.inc:1806
+#: ../lib/modules/sambaSamAccount.inc:1986
+#: ../lib/modules/sambaSamAccount.inc:2005
 msgid "Home path"
 msgstr "Home path"
 
@@ -6443,8 +6438,8 @@ msgid "Identifier"
 msgstr "Identifier"
 
 #: ../lib/modules/sambaSamAccount.inc:260
-#: ../lib/modules/sambaSamAccount.inc:1561
-#: ../lib/modules/sambaSamAccount.inc:2032
+#: ../lib/modules/sambaSamAccount.inc:1563
+#: ../lib/modules/sambaSamAccount.inc:2034
 msgid "Idle time limit"
 msgstr "Idle time limit"
 
@@ -6914,8 +6909,8 @@ msgstr "Information about the LDAP server."
 
 #: ../lib/modules/sambaSamAccount.inc:255
 #: ../lib/modules/sambaSamAccount.inc:382
-#: ../lib/modules/sambaSamAccount.inc:1547
-#: ../lib/modules/sambaSamAccount.inc:2027
+#: ../lib/modules/sambaSamAccount.inc:1549
+#: ../lib/modules/sambaSamAccount.inc:2029
 msgid "Inherit client startup configuration"
 msgstr "Inherit client startup configuration"
 
@@ -6933,8 +6928,8 @@ msgstr "Initial payment"
 
 #: ../lib/modules/sambaSamAccount.inc:256
 #: ../lib/modules/sambaSamAccount.inc:385
-#: ../lib/modules/sambaSamAccount.inc:1549
-#: ../lib/modules/sambaSamAccount.inc:2028
+#: ../lib/modules/sambaSamAccount.inc:1551
+#: ../lib/modules/sambaSamAccount.inc:2030
 msgid "Initial program"
 msgstr "Initial program"
 
@@ -7710,9 +7705,9 @@ msgstr "Last name of user. Only letters, - and spaces are allowed."
 #: ../lib/modules/windowsLDSUser.inc:974 ../lib/modules/windowsLDSUser.inc:1885
 #: ../lib/modules/windowsLDSUser.inc:2207
 #: ../lib/modules/sambaSamAccount.inc:418
-#: ../lib/modules/sambaSamAccount.inc:1161
-#: ../lib/modules/sambaSamAccount.inc:1987
-#: ../lib/modules/sambaSamAccount.inc:2403 ../lib/modules/shadowAccount.inc:188
+#: ../lib/modules/sambaSamAccount.inc:1162
+#: ../lib/modules/sambaSamAccount.inc:1989
+#: ../lib/modules/sambaSamAccount.inc:2405 ../lib/modules/shadowAccount.inc:188
 #: ../lib/modules/shadowAccount.inc:222 ../lib/modules/shadowAccount.inc:260
 #: ../lib/modules/shadowAccount.inc:405 ../lib/modules/shadowAccount.inc:565
 #: ../lib/modules/shadowAccount.inc:598 ../lib/modules/shadowAccount.inc:801
@@ -7943,7 +7938,7 @@ msgid "Lock password"
 msgstr "Lock password"
 
 #: ../lib/types/user.inc:610 ../lib/modules/locking389ds.inc:591
-#: ../lib/modules/sambaSamAccount.inc:3104
+#: ../lib/modules/sambaSamAccount.inc:3106
 msgid "Locked"
 msgstr "Locked"
 
@@ -8086,9 +8081,9 @@ msgstr "Logon for password change"
 #: ../lib/modules/sambaSamAccount.inc:361
 #: ../lib/modules/sambaSamAccount.inc:364
 #: ../lib/modules/sambaSamAccount.inc:554
-#: ../lib/modules/sambaSamAccount.inc:1290
-#: ../lib/modules/sambaSamAccount.inc:1836
-#: ../lib/modules/sambaSamAccount.inc:1989
+#: ../lib/modules/sambaSamAccount.inc:1292
+#: ../lib/modules/sambaSamAccount.inc:1838
+#: ../lib/modules/sambaSamAccount.inc:1991
 msgid "Logon hours"
 msgstr "Logon hours"
 
@@ -8101,10 +8096,10 @@ msgstr "Logon not permitted at this time"
 #: ../lib/modules/sambaSamAccount.inc:245
 #: ../lib/modules/sambaSamAccount.inc:333
 #: ../lib/modules/sambaSamAccount.inc:538
-#: ../lib/modules/sambaSamAccount.inc:1238
-#: ../lib/modules/sambaSamAccount.inc:1812
-#: ../lib/modules/sambaSamAccount.inc:1986
-#: ../lib/modules/sambaSamAccount.inc:2005 ../lib/modules/windowsUser.inc:259
+#: ../lib/modules/sambaSamAccount.inc:1240
+#: ../lib/modules/sambaSamAccount.inc:1814
+#: ../lib/modules/sambaSamAccount.inc:1988
+#: ../lib/modules/sambaSamAccount.inc:2007 ../lib/modules/windowsUser.inc:259
 #: ../lib/modules/windowsUser.inc:816 ../lib/modules/windowsUser.inc:878
 #: ../lib/modules/windowsUser.inc:1009 ../lib/modules/windowsUser.inc:1216
 #: ../lib/modules/windowsUser.inc:1539 ../lib/modules/windowsUser.inc:3302
@@ -8336,7 +8331,7 @@ msgstr "Manage existing profiles"
 msgid "Manage logos"
 msgstr "Manage logos"
 
-#: ../lib/modules/sambaSamAccount.inc:1225
+#: ../lib/modules/sambaSamAccount.inc:1227
 msgid "Manage profile directory"
 msgstr "Manage profile directory"
 
@@ -8883,7 +8878,7 @@ msgstr "Module settings"
 msgid "Modules"
 msgstr "Modules"
 
-#: ../lib/modules/sambaSamAccount.inc:1401
+#: ../lib/modules/sambaSamAccount.inc:1403
 msgid "Monday"
 msgstr "Monday"
 
@@ -9335,7 +9330,7 @@ msgstr "New organisational unit"
 #: ../templates/changePassword.php:130 ../templates/config/confmain.php:578
 #: ../lib/modules/passwordSelfReset.inc:1321
 #: ../lib/modules/simpleSecurityObject.inc:456
-#: ../lib/modules/sambaSamAccount.inc:2384 ../lib/modules/posixAccount.inc:3347
+#: ../lib/modules/sambaSamAccount.inc:2386 ../lib/modules/posixAccount.inc:3347
 #: ../lib/modules/windowsUser.inc:3449
 msgid "New password"
 msgstr "New password"
@@ -9953,8 +9948,8 @@ msgstr "Office name"
 #: ../lib/modules/passwordSelfReset.inc:1354 ../lib/modules/qmailGroup.inc:704
 #: ../lib/modules/selfRegistration.inc:574 ../lib/modules/webauthn.inc:130
 #: ../lib/modules/webauthn.inc:170 ../lib/modules/windowsLDSGroup.inc:483
-#: ../lib/modules/windowsGroup.inc:719 ../lib/modules/sambaSamAccount.inc:1452
-#: ../lib/modules/sambaSamAccount.inc:1599 ../lib/modules/imapAccess.inc:298
+#: ../lib/modules/windowsGroup.inc:719 ../lib/modules/sambaSamAccount.inc:1454
+#: ../lib/modules/sambaSamAccount.inc:1601 ../lib/modules/imapAccess.inc:298
 #: ../lib/modules/inetOrgPerson.inc:3223 ../lib/modules/inetOrgPerson.inc:3226
 #: ../lib/modules/inetOrgPerson.inc:3251 ../lib/modules/inetOrgPerson.inc:3358
 #: ../lib/modules/inetOrgPerson.inc:3361 ../lib/lists.inc:877
@@ -9977,8 +9972,8 @@ msgstr "On"
 
 #: ../lib/modules/sambaSamAccount.inc:265
 #: ../lib/modules/sambaSamAccount.inc:406
-#: ../lib/modules/sambaSamAccount.inc:1586
-#: ../lib/modules/sambaSamAccount.inc:2066
+#: ../lib/modules/sambaSamAccount.inc:1588
+#: ../lib/modules/sambaSamAccount.inc:2068
 msgid "On broken or timed out connection"
 msgstr "On broken or timed out connection"
 
@@ -10511,7 +10506,7 @@ msgstr "Password contains invalid characters. Valid characters are:"
 #: ../lib/modules/sambaSamAccount.inc:304
 #: ../lib/modules/sambaSamAccount.inc:475
 #: ../lib/modules/sambaSamAccount.inc:1146
-#: ../lib/modules/sambaSamAccount.inc:1785 ../lib/modules/windowsUser.inc:249
+#: ../lib/modules/sambaSamAccount.inc:1787 ../lib/modules/windowsUser.inc:249
 #: ../lib/modules/windowsUser.inc:491 ../lib/modules/windowsUser.inc:993
 #: ../lib/modules/windowsUser.inc:1477 ../lib/modules/windowsUser.inc:3289
 msgid "Password does not expire"
@@ -10562,8 +10557,8 @@ msgid "Password hash type"
 msgstr "Password hash type"
 
 #: ../lib/modules/sambaSamAccount.inc:430
-#: ../lib/modules/sambaSamAccount.inc:1968
-#: ../lib/modules/sambaSamAccount.inc:2357
+#: ../lib/modules/sambaSamAccount.inc:1970
+#: ../lib/modules/sambaSamAccount.inc:2359
 msgid "Password history"
 msgstr "Password history"
 
@@ -12687,13 +12682,13 @@ msgstr "Profile passwords are different or empty!"
 #: ../lib/modules/sambaSamAccount.inc:330
 #: ../lib/modules/sambaSamAccount.inc:379
 #: ../lib/modules/sambaSamAccount.inc:530
-#: ../lib/modules/sambaSamAccount.inc:1219
-#: ../lib/modules/sambaSamAccount.inc:1545
-#: ../lib/modules/sambaSamAccount.inc:1611
-#: ../lib/modules/sambaSamAccount.inc:1808
-#: ../lib/modules/sambaSamAccount.inc:1985
-#: ../lib/modules/sambaSamAccount.inc:2006
-#: ../lib/modules/sambaSamAccount.inc:2022 ../lib/modules/windowsUser.inc:255
+#: ../lib/modules/sambaSamAccount.inc:1221
+#: ../lib/modules/sambaSamAccount.inc:1547
+#: ../lib/modules/sambaSamAccount.inc:1613
+#: ../lib/modules/sambaSamAccount.inc:1810
+#: ../lib/modules/sambaSamAccount.inc:1987
+#: ../lib/modules/sambaSamAccount.inc:2008
+#: ../lib/modules/sambaSamAccount.inc:2024 ../lib/modules/windowsUser.inc:255
 #: ../lib/modules/windowsUser.inc:808 ../lib/modules/windowsUser.inc:881
 #: ../lib/modules/windowsUser.inc:1006 ../lib/modules/windowsUser.inc:1214
 #: ../lib/modules/windowsUser.inc:1535 ../lib/modules/windowsUser.inc:3301
@@ -13043,8 +13038,8 @@ msgstr "Recipients"
 
 #: ../lib/modules/sambaSamAccount.inc:266
 #: ../lib/modules/sambaSamAccount.inc:409
-#: ../lib/modules/sambaSamAccount.inc:1594
-#: ../lib/modules/sambaSamAccount.inc:2074
+#: ../lib/modules/sambaSamAccount.inc:1596
+#: ../lib/modules/sambaSamAccount.inc:2076
 msgid "Reconnect if disconnected"
 msgstr "Reconnect if disconnected"
 
@@ -13065,7 +13060,7 @@ msgstr "Records"
 #: ../templates/config/mainmanage.php:660 ../templates/config/confmain.php:580
 #: ../lib/modules/selfRegistration.inc:514
 #: ../lib/modules/simpleSecurityObject.inc:459
-#: ../lib/modules/sambaSamAccount.inc:2387 ../lib/modules/posixAccount.inc:3350
+#: ../lib/modules/sambaSamAccount.inc:2389 ../lib/modules/posixAccount.inc:3350
 #: ../lib/modules/windowsUser.inc:3453
 msgid "Reenter password"
 msgstr "Reenter password"
@@ -13173,6 +13168,11 @@ msgstr "Reject if conflicts"
 msgid "Remember device"
 msgstr "Remember device"
 
+#: ../templates/config/confmain.php:567
+#: ../templates/selfService/adminMain.php:630 ../help/help.inc:364
+msgid "Remember device period"
+msgstr "Remember device period"
+
 #: ../templates/login.php:360
 msgid "Remember user name"
 msgstr "Remember user name"
@@ -13191,7 +13191,7 @@ msgstr "Remote server"
 #: ../lib/modules/qmailUser.inc:738 ../lib/modules/windowsLDSGroup.inc:185
 #: ../lib/modules/windowsLDSUser.inc:1439 ../lib/modules/windowsGroup.inc:372
 #: ../lib/modules/freeRadius.inc:581 ../lib/modules/kolabUser.inc:724
-#: ../lib/modules/sambaSamAccount.inc:1511 ../lib/modules/shadowAccount.inc:524
+#: ../lib/modules/sambaSamAccount.inc:1513 ../lib/modules/shadowAccount.inc:524
 #: ../lib/modules/shadowAccount.inc:573 ../lib/modules/windowsUser.inc:2052
 #: ../lib/modules/windowsUser.inc:2516
 msgid "Remove"
@@ -13243,7 +13243,7 @@ msgid "Remove SSH public key extension"
 msgstr "Remove SSH public key extension"
 
 #: ../lib/modules/sambaGroupMapping.inc:419
-#: ../lib/modules/sambaSamAccount.inc:1321
+#: ../lib/modules/sambaSamAccount.inc:1323
 msgid "Remove Samba 3 extension"
 msgstr "Remove Samba 3 extension"
 
@@ -13422,7 +13422,7 @@ msgstr "Requires preauthentication"
 
 #: ../lib/modules/pykotaBillingCode.inc:99
 #: ../lib/modules/pykotaBillingCode.inc:181
-#: ../lib/modules/sambaSamAccount.inc:1313
+#: ../lib/modules/sambaSamAccount.inc:1315
 msgid "Reset"
 msgstr "Reset"
 
@@ -13431,7 +13431,7 @@ msgid "Reset changes"
 msgstr "Reset changes"
 
 #: ../lib/modules/sambaSamAccount.inc:286
-#: ../lib/modules/sambaSamAccount.inc:1311
+#: ../lib/modules/sambaSamAccount.inc:1313
 msgid "Reset password"
 msgstr "Reset password"
 
@@ -13697,9 +13697,9 @@ msgstr "SSL certificates"
 msgid "SSL port"
 msgstr "SSL port"
 
-#: ../lib/modules/sambaSamAccount.inc:3101
-#: ../lib/modules/sambaSamAccount.inc:3104
-#: ../lib/modules/sambaSamAccount.inc:3125
+#: ../lib/modules/sambaSamAccount.inc:3103
+#: ../lib/modules/sambaSamAccount.inc:3106
+#: ../lib/modules/sambaSamAccount.inc:3127
 msgid "Samba"
 msgstr "Samba"
 
@@ -13772,14 +13772,14 @@ msgstr "Samba password"
 #: ../lib/modules/sambaSamAccount.inc:336
 #: ../lib/modules/sambaSamAccount.inc:339
 #: ../lib/modules/sambaSamAccount.inc:546
-#: ../lib/modules/sambaSamAccount.inc:1241
-#: ../lib/modules/sambaSamAccount.inc:1816
-#: ../lib/modules/sambaSamAccount.inc:1988
-#: ../lib/modules/sambaSamAccount.inc:2007
+#: ../lib/modules/sambaSamAccount.inc:1243
+#: ../lib/modules/sambaSamAccount.inc:1818
+#: ../lib/modules/sambaSamAccount.inc:1990
+#: ../lib/modules/sambaSamAccount.inc:2009
 msgid "Samba workstations"
 msgstr "Samba workstations"
 
-#: ../lib/modules/sambaSamAccount.inc:1402
+#: ../lib/modules/sambaSamAccount.inc:1404
 msgid "Saturday"
 msgstr "Saturday"
 
@@ -14169,9 +14169,9 @@ msgstr "Session timeout"
 msgid "Set"
 msgstr "Set"
 
-#: ../lib/modules/sambaSamAccount.inc:1498
-#: ../lib/modules/sambaSamAccount.inc:1501
-#: ../lib/modules/sambaSamAccount.inc:1504 ../lib/modules/shadowAccount.inc:511
+#: ../lib/modules/sambaSamAccount.inc:1500
+#: ../lib/modules/sambaSamAccount.inc:1503
+#: ../lib/modules/sambaSamAccount.inc:1506 ../lib/modules/shadowAccount.inc:511
 #: ../lib/modules/shadowAccount.inc:514 ../lib/modules/shadowAccount.inc:517
 #: ../lib/modules/windowsUser.inc:2039 ../lib/modules/windowsUser.inc:2042
 #: ../lib/modules/windowsUser.inc:2045
@@ -14184,7 +14184,7 @@ msgid "Set also for Samba 3"
 msgstr "Set also for Samba 3"
 
 #: ../lib/modules/heimdalKerberos.inc:617 ../lib/modules/mitKerberos.inc:776
-#: ../lib/modules/sambaSamAccount.inc:1495 ../lib/modules/windowsUser.inc:2036
+#: ../lib/modules/sambaSamAccount.inc:1497 ../lib/modules/windowsUser.inc:2036
 msgid "Set also for Shadow"
 msgstr "Set also for Shadow"
 
@@ -14301,8 +14301,8 @@ msgstr "Shadow"
 
 #: ../lib/modules/sambaSamAccount.inc:264
 #: ../lib/modules/sambaSamAccount.inc:403
-#: ../lib/modules/sambaSamAccount.inc:1578
-#: ../lib/modules/sambaSamAccount.inc:2058
+#: ../lib/modules/sambaSamAccount.inc:1580
+#: ../lib/modules/sambaSamAccount.inc:2060
 msgid "Shadowing"
 msgstr "Shadowing"
 
@@ -14444,7 +14444,7 @@ msgid "Source"
 msgstr "Source"
 
 #: ../lib/modules/sambaSamAccount.inc:348
-#: ../lib/modules/sambaSamAccount.inc:1283
+#: ../lib/modules/sambaSamAccount.inc:1285
 msgid "Special user"
 msgstr "Special user"
 
@@ -14895,7 +14895,7 @@ msgstr "Suffix for UID/user name check"
 msgid "Suffix for new users"
 msgstr "Suffix for new users"
 
-#: ../lib/modules/sambaSamAccount.inc:1401
+#: ../lib/modules/sambaSamAccount.inc:1403
 msgid "Sunday"
 msgstr "Sunday"
 
@@ -15094,8 +15094,8 @@ msgid "Template"
 msgstr "Template"
 
 #: ../lib/modules/sambaSamAccount.inc:412
-#: ../lib/modules/sambaSamAccount.inc:1298
-#: ../lib/modules/sambaSamAccount.inc:1990
+#: ../lib/modules/sambaSamAccount.inc:1300
+#: ../lib/modules/sambaSamAccount.inc:1992
 msgid "Terminal server options"
 msgstr "Terminal server options"
 
@@ -15985,12 +15985,12 @@ msgstr "The parameter @@principal@@ will be replaced with the principal name."
 msgid "The password is invalid! Please try again."
 msgstr "The password is invalid! Please try again."
 
-#: ../lib/modules/mitKerberos.inc:1319 ../lib/security.inc:431
+#: ../lib/modules/mitKerberos.inc:1319 ../lib/security.inc:436
 #, php-format
 msgid "The password is too short. You have to enter at least %s characters."
 msgstr "The password is too short. You have to enter at least %s characters."
 
-#: ../lib/security.inc:507
+#: ../lib/security.inc:512
 #, php-format
 msgid ""
 "The password is too weak. It needs to match at least %s password complexity "
@@ -15999,7 +15999,7 @@ msgstr ""
 "The password is too weak. It needs to match at least %s password complexity "
 "rules."
 
-#: ../lib/modules/mitKerberos.inc:1322 ../lib/security.inc:500
+#: ../lib/modules/mitKerberos.inc:1322 ../lib/security.inc:505
 #, php-format
 msgid ""
 "The password is too weak. You have to enter at least %s different character "
@@ -16008,7 +16008,7 @@ msgstr ""
 "The password is too weak. You have to enter at least %s different character "
 "classes (upper/lower case, numbers and symbols)."
 
-#: ../lib/security.inc:459
+#: ../lib/security.inc:464
 #, php-format
 msgid ""
 "The password is too weak. You have to enter at least %s lower case "
@@ -16017,21 +16017,21 @@ msgstr ""
 "The password is too weak. You have to enter at least %s lower case "
 "characters."
 
-#: ../lib/security.inc:481
+#: ../lib/security.inc:486
 #, php-format
 msgid ""
 "The password is too weak. You have to enter at least %s numeric characters."
 msgstr ""
 "The password is too weak. You have to enter at least %s numeric characters."
 
-#: ../lib/security.inc:492
+#: ../lib/security.inc:497
 #, php-format
 msgid ""
 "The password is too weak. You have to enter at least %s symbolic characters."
 msgstr ""
 "The password is too weak. You have to enter at least %s symbolic characters."
 
-#: ../lib/security.inc:470
+#: ../lib/security.inc:475
 #, php-format
 msgid ""
 "The password is too weak. You have to enter at least %s upper case "
@@ -16040,7 +16040,7 @@ msgstr ""
 "The password is too weak. You have to enter at least %s upper case "
 "characters."
 
-#: ../lib/security.inc:528
+#: ../lib/security.inc:533
 msgid ""
 "The password is too weak. You may not use parts of the user name for the "
 "password."
@@ -16048,7 +16048,7 @@ msgstr ""
 "The password is too weak. You may not use parts of the user name for the "
 "password."
 
-#: ../lib/security.inc:541
+#: ../lib/security.inc:546
 msgid ""
 "The password is too weak. You may not use parts of user attributes for the "
 "password."
@@ -16056,7 +16056,7 @@ msgstr ""
 "The password is too weak. You may not use parts of user attributes for the "
 "password."
 
-#: ../lib/security.inc:515
+#: ../lib/security.inc:520
 msgid ""
 "The password is too weak. You may not use the user name as part of the "
 "password."
@@ -17718,7 +17718,7 @@ msgstr ""
 "This will set the user's account status. You may disable the mail account "
 "here."
 
-#: ../lib/modules/sambaSamAccount.inc:1401
+#: ../lib/modules/sambaSamAccount.inc:1403
 msgid "Thursday"
 msgstr "Thursday"
 
@@ -17741,7 +17741,7 @@ msgstr "Ticket lifetime"
 msgid "Ticket lifetime must be a number."
 msgstr "Ticket lifetime must be a number."
 
-#: ../templates/config/jobList.php:168 ../lib/modules/sambaSamAccount.inc:1401
+#: ../templates/config/jobList.php:168 ../lib/modules/sambaSamAccount.inc:1403
 msgid "Time"
 msgstr "Time"
 
@@ -17870,7 +17870,7 @@ msgstr "Tree suffix is invalid."
 msgid "Tree view"
 msgstr "Tree view"
 
-#: ../lib/modules/sambaSamAccount.inc:1401
+#: ../lib/modules/sambaSamAccount.inc:1403
 msgid "Tuesday"
 msgstr "Tuesday"
 
@@ -18384,7 +18384,7 @@ msgstr "Unknown delegate: %s"
 msgid "Unlock"
 msgstr "Unlock"
 
-#: ../lib/modules/sambaSamAccount.inc:2992
+#: ../lib/modules/sambaSamAccount.inc:2994
 msgid "Unlock Samba account"
 msgstr "Unlock Samba account"
 
@@ -18419,7 +18419,7 @@ msgstr "Unsolved dependency:"
 msgid "Up"
 msgstr "Up"
 
-#: ../lib/modules/sambaSamAccount.inc:3002
+#: ../lib/modules/sambaSamAccount.inc:3004
 msgid "Update Samba password timestamp"
 msgstr "Update Samba password timestamp"
 
@@ -18519,7 +18519,7 @@ msgstr "Use for all operations"
 #: ../lib/modules/sambaSamAccount.inc:298
 #: ../lib/modules/sambaSamAccount.inc:467
 #: ../lib/modules/sambaSamAccount.inc:1144
-#: ../lib/modules/sambaSamAccount.inc:1781
+#: ../lib/modules/sambaSamAccount.inc:1783
 msgid "Use no password"
 msgstr "Use no password"
 
@@ -18689,7 +18689,7 @@ msgid "User agent"
 msgstr "User agent"
 
 #: ../lib/modules/sambaSamAccount.inc:319
-#: ../lib/modules/sambaSamAccount.inc:1168
+#: ../lib/modules/sambaSamAccount.inc:1170
 msgid "User can change password"
 msgstr "User can change password"
 
@@ -18737,7 +18737,7 @@ msgstr "User modification"
 #: ../lib/modules/mitKerberos.inc:279 ../lib/modules/mitKerberos.inc:404
 #: ../lib/modules/mitKerberos.inc:711 ../lib/modules/mitKerberos.inc:932
 #: ../lib/modules/mitKerberos.inc:1549 ../lib/modules/sambaSamAccount.inc:321
-#: ../lib/modules/sambaSamAccount.inc:1175
+#: ../lib/modules/sambaSamAccount.inc:1177
 msgid "User must change password"
 msgstr "User must change password"
 
@@ -19167,7 +19167,7 @@ msgstr "WebAuthn devices"
 msgid "WebAuthn failed"
 msgstr "WebAuthn failed"
 
-#: ../lib/modules/sambaSamAccount.inc:1401
+#: ../lib/modules/sambaSamAccount.inc:1403
 msgid "Wednesday"
 msgstr "Wednesday"
 
@@ -19235,10 +19235,10 @@ msgstr "Windows domain name of account."
 #: ../lib/modules/sambaGroupMapping.inc:775
 #: ../lib/modules/sambaSamAccount.inc:233
 #: ../lib/modules/sambaSamAccount.inc:498
-#: ../lib/modules/sambaSamAccount.inc:1265
-#: ../lib/modules/sambaSamAccount.inc:1831
-#: ../lib/modules/sambaSamAccount.inc:2009
-#: ../lib/modules/sambaSamAccount.inc:3210
+#: ../lib/modules/sambaSamAccount.inc:1267
+#: ../lib/modules/sambaSamAccount.inc:1833
+#: ../lib/modules/sambaSamAccount.inc:2011
+#: ../lib/modules/sambaSamAccount.inc:3212
 msgid "Windows group"
 msgstr "Windows group"
 
@@ -19283,8 +19283,8 @@ msgstr "Workgroup"
 
 #: ../lib/modules/sambaSamAccount.inc:257
 #: ../lib/modules/sambaSamAccount.inc:388
-#: ../lib/modules/sambaSamAccount.inc:1551
-#: ../lib/modules/sambaSamAccount.inc:2029
+#: ../lib/modules/sambaSamAccount.inc:1553
+#: ../lib/modules/sambaSamAccount.inc:2031
 msgid "Working directory"
 msgstr "Working directory"
 
@@ -19337,14 +19337,14 @@ msgstr "Yearly"
 msgid "Yes"
 msgstr "Yes"
 
-#: ../lib/modules/sambaSamAccount.inc:2554
+#: ../lib/modules/sambaSamAccount.inc:2556
 msgid "You are not yet allowed to change your password."
 msgstr "You are not yet allowed to change your password."
 
 #: ../templates/lists/changePassword.php:452
 #: ../lib/modules/mitKerberos.inc:1407 ../lib/modules/ppolicyUser.inc:399
-#: ../lib/modules/ppolicyUser.inc:505 ../lib/modules/sambaSamAccount.inc:2517
-#: ../lib/modules/sambaSamAccount.inc:2611
+#: ../lib/modules/ppolicyUser.inc:505 ../lib/modules/sambaSamAccount.inc:2519
+#: ../lib/modules/sambaSamAccount.inc:2613
 msgid "You are reusing an old password. Please choose a different password."
 msgstr "You are reusing an old password. Please choose a different password."
 
@@ -19561,11 +19561,11 @@ msgstr ""
 msgid "Your password was changed to @@newPassword@@."
 msgstr "Your password was changed to @@newPassword@@."
 
-#: ../lib/security.inc:548
+#: ../lib/security.inc:553
 msgid "Your selected password is known to be insecure."
 msgstr "Your selected password is known to be insecure."
 
-#: ../lib/security.inc:242
+#: ../lib/security.inc:247
 msgid "Your session expired, click here to go back to the login page."
 msgstr "Your session expired, click here to go back to the login page."
 
@@ -19656,13 +19656,13 @@ msgstr "default"
 
 #: ../templates/selfService/adminMain.php:652 ../lib/modules/kopanoUser.inc:625
 #: ../lib/modules/kopanoUser.inc:1259 ../lib/modules/kopanoUser.inc:1300
-#: ../lib/modules/sambaSamAccount.inc:1572
-#: ../lib/modules/sambaSamAccount.inc:2049
+#: ../lib/modules/sambaSamAccount.inc:1574
+#: ../lib/modules/sambaSamAccount.inc:2051
 msgid "disabled"
 msgstr "disabled"
 
-#: ../lib/modules/sambaSamAccount.inc:1583
-#: ../lib/modules/sambaSamAccount.inc:2060
+#: ../lib/modules/sambaSamAccount.inc:1585
+#: ../lib/modules/sambaSamAccount.inc:2062
 msgid "disconnect"
 msgstr "disconnect"
 
@@ -19689,13 +19689,13 @@ msgstr "failed"
 msgid "force"
 msgstr "force"
 
-#: ../lib/modules/sambaSamAccount.inc:1591
-#: ../lib/modules/sambaSamAccount.inc:2068
+#: ../lib/modules/sambaSamAccount.inc:1593
+#: ../lib/modules/sambaSamAccount.inc:2070
 msgid "from any client"
 msgstr "from any client"
 
-#: ../lib/modules/sambaSamAccount.inc:1592
-#: ../lib/modules/sambaSamAccount.inc:2069
+#: ../lib/modules/sambaSamAccount.inc:1594
+#: ../lib/modules/sambaSamAccount.inc:2071
 msgid "from previous client only"
 msgstr "from previous client only"
 
@@ -19734,23 +19734,23 @@ msgstr "http://www.company.com"
 msgid "in progress"
 msgstr "in progress"
 
-#: ../lib/modules/sambaSamAccount.inc:1576
-#: ../lib/modules/sambaSamAccount.inc:2053
+#: ../lib/modules/sambaSamAccount.inc:1578
+#: ../lib/modules/sambaSamAccount.inc:2055
 msgid "input off, notify off"
 msgstr "input off, notify off"
 
-#: ../lib/modules/sambaSamAccount.inc:1575
-#: ../lib/modules/sambaSamAccount.inc:2052
+#: ../lib/modules/sambaSamAccount.inc:1577
+#: ../lib/modules/sambaSamAccount.inc:2054
 msgid "input off, notify on"
 msgstr "input off, notify on"
 
-#: ../lib/modules/sambaSamAccount.inc:1574
-#: ../lib/modules/sambaSamAccount.inc:2051
+#: ../lib/modules/sambaSamAccount.inc:1576
+#: ../lib/modules/sambaSamAccount.inc:2053
 msgid "input on, notify off"
 msgstr "input on, notify off"
 
-#: ../lib/modules/sambaSamAccount.inc:1573
-#: ../lib/modules/sambaSamAccount.inc:2050
+#: ../lib/modules/sambaSamAccount.inc:1575
+#: ../lib/modules/sambaSamAccount.inc:2052
 msgid "input on, notify on"
 msgstr "input on, notify on"
 
@@ -19804,14 +19804,14 @@ msgstr "mygroup"
 #: ../lib/modules/ppolicy.inc:499 ../lib/modules/ppolicy.inc:504
 #: ../lib/modules/ppolicy.inc:511 ../lib/modules/ppolicy.inc:514
 #: ../lib/modules/windowsLDSUser.inc:1530
-#: ../lib/modules/sambaSamAccount.inc:1966
-#: ../lib/modules/sambaSamAccount.inc:1972
-#: ../lib/modules/sambaSamAccount.inc:2017
-#: ../lib/modules/sambaSamAccount.inc:2025
-#: ../lib/modules/sambaSamAccount.inc:2035
-#: ../lib/modules/sambaSamAccount.inc:2040
-#: ../lib/modules/sambaSamAccount.inc:2045
-#: ../lib/modules/sambaSamAccount.inc:2355 ../lib/modules/windowsUser.inc:485
+#: ../lib/modules/sambaSamAccount.inc:1968
+#: ../lib/modules/sambaSamAccount.inc:1974
+#: ../lib/modules/sambaSamAccount.inc:2019
+#: ../lib/modules/sambaSamAccount.inc:2027
+#: ../lib/modules/sambaSamAccount.inc:2037
+#: ../lib/modules/sambaSamAccount.inc:2042
+#: ../lib/modules/sambaSamAccount.inc:2047
+#: ../lib/modules/sambaSamAccount.inc:2357 ../lib/modules/windowsUser.inc:485
 #: ../lib/modules/windowsUser.inc:486 ../lib/modules/windowsUser.inc:487
 #: ../lib/modules/windowsUser.inc:493 ../lib/modules/windowsUser.inc:494
 #: ../lib/modules/windowsUser.inc:495 ../lib/modules/windowsUser.inc:507
@@ -19860,8 +19860,8 @@ msgstr "printergroup1"
 msgid "required"
 msgstr "required"
 
-#: ../lib/modules/sambaSamAccount.inc:1584
-#: ../lib/modules/sambaSamAccount.inc:2061
+#: ../lib/modules/sambaSamAccount.inc:1586
+#: ../lib/modules/sambaSamAccount.inc:2063
 msgid "reset"
 msgstr "reset"
 
@@ -19964,12 +19964,12 @@ msgstr "users"
 #: ../lib/modules/ppolicy.inc:506 ../lib/modules/ppolicy.inc:509
 #: ../lib/modules/ppolicy.inc:516 ../lib/modules/windowsLDSUser.inc:529
 #: ../lib/modules/windowsLDSUser.inc:1530
-#: ../lib/modules/sambaSamAccount.inc:1972
-#: ../lib/modules/sambaSamAccount.inc:2015
-#: ../lib/modules/sambaSamAccount.inc:2023
-#: ../lib/modules/sambaSamAccount.inc:2033
-#: ../lib/modules/sambaSamAccount.inc:2038
-#: ../lib/modules/sambaSamAccount.inc:2043 ../lib/modules/inetOrgPerson.inc:470
+#: ../lib/modules/sambaSamAccount.inc:1974
+#: ../lib/modules/sambaSamAccount.inc:2017
+#: ../lib/modules/sambaSamAccount.inc:2025
+#: ../lib/modules/sambaSamAccount.inc:2035
+#: ../lib/modules/sambaSamAccount.inc:2040
+#: ../lib/modules/sambaSamAccount.inc:2045 ../lib/modules/inetOrgPerson.inc:470
 #: ../lib/modules/windowsUser.inc:487 ../lib/modules/windowsUser.inc:495
 #: ../lib/modules/windowsUser.inc:509 ../lib/modules/windowsUser.inc:730
 #: ../lib/modules/windowsUser.inc:844 ../lib/modules/windowsUser.inc:2736
@@ -19979,15 +19979,21 @@ msgstr "users"
 msgid "yes"
 msgstr "yes"
 
-#: ../lib/modules/sambaSamAccount.inc:1964
-#: ../lib/modules/sambaSamAccount.inc:2353
+#: ../lib/modules/sambaSamAccount.inc:1966
+#: ../lib/modules/sambaSamAccount.inc:2355
 msgid "yes - ordered ascending"
 msgstr "yes - ordered ascending"
 
-#: ../lib/modules/sambaSamAccount.inc:1965
-#: ../lib/modules/sambaSamAccount.inc:2354
+#: ../lib/modules/sambaSamAccount.inc:1967
+#: ../lib/modules/sambaSamAccount.inc:2356
 msgid "yes - ordered descending"
 msgstr "yes - ordered descending"
+
+#~ msgid "Allow to remember device"
+#~ msgstr "Allow to remember device"
+
+#~ msgid "Duration to remember devices"
+#~ msgstr "Duration to remember devices"
 
 #~ msgid "Please enter \"rdp\" or \"vnc\"."
 #~ msgstr "Please enter \"rdp\" or \"vnc\"."
