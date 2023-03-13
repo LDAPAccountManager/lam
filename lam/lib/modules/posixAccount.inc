@@ -10,7 +10,7 @@ use LAM\TYPES\ConfiguredType;
 
 	This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-    Copyright (C) 2005 - 2022  Roland Gruber
+    Copyright (C) 2005 - 2023  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -2972,26 +2972,31 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 				}
 			}
 			foreach ($data as $i => $dataRow) {
-				if (in_array($i, $failed)) continue; // ignore failed accounts
+				if (in_array($i, $failed)) {
+					continue; // ignore failed accounts
+				}
+				$groups = array();
 				if ($dataRow[$col] != "") {
 					$groups = explode(",", $dataRow[$col]);
-					if (isset($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0])
-						&& ($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0] == 'true')) {
-						if (get_preg($dataRow[$ids['posixAccount_group']], 'digit')) {
-							if (!in_array($groupMap[$dataRow[$ids['posixAccount_group']]], $groups)) {
-								$groups[] = $groupMap[$dataRow[$ids['posixAccount_group']]];
-							}
-						}
-						else {
-							if (!in_array($groupMap[$dataRow[$ids['posixAccount_group']]], $groups)) {
-								$groups[] = $dataRow[$ids['posixAccount_group']];
-							}
+				}
+				if (isset($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0])
+					&& ($this->moduleSettings['posixAccount_primaryGroupAsSecondary'][0] === 'true')) {
+					if (get_preg($dataRow[$ids['posixAccount_group']], 'digit')) {
+						if (!in_array($groupMap[$dataRow[$ids['posixAccount_group']]], $groups)) {
+							$groups[] = $groupMap[$dataRow[$ids['posixAccount_group']]];
 						}
 					}
-					for ($g = 0; $g < sizeof($groups); $g++) {
-						if (!in_array($groups[$g], $temp['groups'])) $temp['groups'][] = $groups[$g];
-						$temp['members'][$groups[$g]][] = $dataRow[$ids['posixAccount_userName']];
+					else {
+						if (!in_array($groupMap[$dataRow[$ids['posixAccount_group']]], $groups)) {
+							$groups[] = $dataRow[$ids['posixAccount_group']];
+						}
 					}
+				}
+				for ($g = 0; $g < sizeof($groups); $g++) {
+					if (!in_array($groups[$g], $temp['groups'])) {
+						$temp['groups'][] = $groups[$g];
+					}
+					$temp['members'][$groups[$g]][] = $dataRow[$ids['posixAccount_userName']];
 				}
 				if (isset($ids['posixAccount_gon']) && ($dataRow[$ids['posixAccount_gon']] != "")) {
 					$gons = explode(",", $dataRow[$ids['posixAccount_gon']]);
