@@ -33,7 +33,7 @@ use function LAM\SCHEMA\get_schema_objectclasses;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2021 - 2022  Roland Gruber
+  Copyright (C) 2021 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -912,6 +912,7 @@ class TreeView {
 			}
 		}
 		if (!empty($ldapChanges)) {
+			logNewMessage(LOG_DEBUG, 'LDAP changes to DN ' . $dn . ': ' . print_r($ldapChanges, true));
 			$saved = ldap_modify($_SESSION['ldap']->server(), $dn, $ldapChanges);
 			if ($saved) {
 				$message = new htmlStatusMessage('INFO', _('All changes were successful.'));
