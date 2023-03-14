@@ -19,12 +19,17 @@ final class UndefinedObject extends Base
 {
     public function __construct()
     {
-        parent::__construct(23, null);
+        parent::__construct(self::OBJECT_UNDEFINED, null);
+    }
+
+    public static function create(): self
+    {
+        return new self();
     }
 
     public static function supportedAdditionalInformation(): array
     {
-        return [23];
+        return [self::OBJECT_UNDEFINED];
     }
 
     public static function createFromLoadedData(int $additionalInformation, ?string $data): Base
@@ -32,6 +37,11 @@ final class UndefinedObject extends Base
         return new self();
     }
 
+    /**
+     * @deprecated The method will be removed on v3.0. Please rely on the CBOR\Normalizable interface
+     *
+     * @return string
+     */
     public function getNormalizedData(bool $ignoreTags = false)
     {
         return 'undefined';

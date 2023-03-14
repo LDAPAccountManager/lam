@@ -19,10 +19,10 @@
     "keywords": [ "x690", "x.690", "x.509", "x509", "asn1", "asn.1", "ber", "der", "binary", "encoding", "decoding" ],
 
     "require": {
-        "php": "~7.1.0 || ~7.2.0 || ~7.3.0 || ~7.4.0 || ~8.0.0 || ~8.1.0"
+        "php": "^7.1 || ^8.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.3 || ^7.0 || ^8.0",
+        "phpunit/phpunit": "^7.0 || ^8.0 || ^9.0",
         "php-coveralls/php-coveralls": "~2.0"
     },
     "suggest": {

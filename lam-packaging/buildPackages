@@ -81,10 +81,17 @@ find . -name .svnignore -exec rm {} \;
 find . -name .gitignore -exec rm {} \;
 find lam/lib/3rdParty -name LICENSE -exec rm {} \;
 find lam/lib/3rdParty -name README.md -exec rm {} \;
+find lam/lib/3rdParty -name readme.md -exec rm {} \;
+find lam/lib/3rdParty -name SECURITY.md -exec rm {} \;
 find lam/lib/3rdParty -name CHANGELOG.md -exec rm {} \;
 find lam/lib/3rdParty -name CHANGELOG.txt -exec rm {} \;
+find lam/lib/3rdParty -name CODE_OF_CONDUCT.md -exec rm {} \;
 find lam/lib/3rdParty -name .github | xargs rm -r
 find lam/lib/3rdParty -name .gitattributes | xargs rm -r
+find lam/lib/3rdParty -name .phpstorm.meta.php | xargs rm -r
+find lam/lib/3rdParty -name puli.json | xargs rm -r
+find lam/lib/3rdParty -name phpstan.neon | xargs rm -r
+find lam/lib/3rdParty -name infection.json.dist | xargs rm -r
 mv lam ldap-account-manager-$VERSION
 
 # create LAM manual

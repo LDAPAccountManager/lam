@@ -10,6 +10,15 @@ PHPASN1
 [![Latest Unstable Version](https://poser.pugx.org/fgrosse/phpasn1/v/unstable.png)](https://packagist.org/packages/fgrosse/phpasn1)
 [![License](https://poser.pugx.org/fgrosse/phpasn1/license.png)](https://packagist.org/packages/fgrosse/phpasn1)
 
+---
+
+<h2><span style="color:red">Notice: This library is no longer actively maintained!</span></h2>
+If you are currently using PHPASN1, this might not be an immediate problem for you, since this library was always rather stable.
+
+However, you are advised to migrate to alternative packages to ensure that your applications remain functional also with newer PHP versions.
+
+---
+
 A PHP Framework that allows you to encode and decode arbitrary [ASN.1][3] structures
 using the [ITU-T X.690 Encoding Rules][4].
 This encoding is very frequently used in [X.509 PKI environments][5] or the communication between heterogeneous computer systems.
@@ -135,14 +144,7 @@ To see some example usage of the API classes or some generated output check out 
 
 ### How do I contribute?
 
-If you found an issue or have a question submit a github issue with detailed information.
-
-In case you already know what caused the issue and feel in the mood to fix it, your code contributions are always welcome. Just fork the repository, implement your changes and make sure that you covered everything with tests.
-Afterwards submit a pull request via github and be a little patient :) I usually try to comment and/or merge as soon as possible.
-
-#### Mailing list
-
-New features or questions can be discussed in [this google group/mailing list][12].
+This project is no longer maintained and thus does not accept any new contributions.
 
 ### Thanks
 

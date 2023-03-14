@@ -21,6 +21,7 @@ abstract class AbstractCBORObject implements CBORObject
      * @var int
      */
     protected $additionalInformation;
+
     /**
      * @var int
      */

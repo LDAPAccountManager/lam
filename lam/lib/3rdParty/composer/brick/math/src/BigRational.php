@@ -108,7 +108,10 @@ final class BigRational extends BigNumber
      */
     public static function zero() : BigRational
     {
-        /** @psalm-suppress ImpureStaticVariable */
+        /**
+         * @psalm-suppress ImpureStaticVariable
+         * @var BigRational|null $zero
+         */
         static $zero;
 
         if ($zero === null) {
@@ -127,7 +130,10 @@ final class BigRational extends BigNumber
      */
     public static function one() : BigRational
     {
-        /** @psalm-suppress ImpureStaticVariable */
+        /**
+         * @psalm-suppress ImpureStaticVariable
+         * @var BigRational|null $one
+         */
         static $one;
 
         if ($one === null) {
@@ -146,7 +152,10 @@ final class BigRational extends BigNumber
      */
     public static function ten() : BigRational
     {
-        /** @psalm-suppress ImpureStaticVariable */
+        /**
+         * @psalm-suppress ImpureStaticVariable
+         * @var BigRational|null $ten
+         */
         static $ten;
 
         if ($ten === null) {
@@ -443,6 +452,40 @@ final class BigRational extends BigNumber
     }
 
     /**
+     * This method is required for serializing the object and SHOULD NOT be accessed directly.
+     *
+     * @internal
+     *
+     * @return array{numerator: BigInteger, denominator: BigInteger}
+     */
+    public function __serialize(): array
+    {
+        return ['numerator' => $this->numerator, 'denominator' => $this->denominator];
+    }
+
+    /**
+     * This method is only here to allow unserializing the object and cannot be accessed directly.
+     *
+     * @internal
+     * @psalm-suppress RedundantPropertyInitializationCheck
+     *
+     * @param array{numerator: BigInteger, denominator: BigInteger} $data
+     *
+     * @return void
+     *
+     * @throws \LogicException
+     */
+    public function __unserialize(array $data): void
+    {
+        if (isset($this->numerator)) {
+            throw new \LogicException('__unserialize() is an internal function, it must not be called directly.');
+        }
+
+        $this->numerator = $data['numerator'];
+        $this->denominator = $data['denominator'];
+    }
+
+    /**
      * This method is required by interface Serializable and SHOULD NOT be accessed directly.
      *
      * @internal
@@ -458,6 +501,7 @@ final class BigRational extends BigNumber
      * This method is only here to implement interface Serializable and cannot be accessed directly.
      *
      * @internal
+     * @psalm-suppress RedundantPropertyInitializationCheck
      *
      * @param string $value
      *

@@ -19,12 +19,17 @@ final class BreakObject extends Base
 {
     public function __construct()
     {
-        parent::__construct(0b00011111, null);
+        parent::__construct(self::OBJECT_BREAK, null);
+    }
+
+    public static function create(): self
+    {
+        return new self();
     }
 
     public static function supportedAdditionalInformation(): array
     {
-        return [0b00011111];
+        return [self::OBJECT_BREAK];
     }
 
     public static function createFromLoadedData(int $additionalInformation, ?string $data): Base
@@ -32,6 +37,9 @@ final class BreakObject extends Base
         return new self();
     }
 
+    /**
+     * @deprecated The method will be removed on v3.0. Please rely on the CBOR\Normalizable interface
+     */
     public function getNormalizedData(bool $ignoreTags = false): bool
     {
         return false;

@@ -13,18 +13,24 @@ declare(strict_types=1);
 
 namespace CBOR\OtherObject;
 
+use CBOR\Normalizable;
 use CBOR\OtherObject as Base;
 
-final class TrueObject extends Base
+final class TrueObject extends Base implements Normalizable
 {
     public function __construct()
     {
-        parent::__construct(21, null);
+        parent::__construct(self::OBJECT_TRUE, null);
+    }
+
+    public static function create(): self
+    {
+        return new self();
     }
 
     public static function supportedAdditionalInformation(): array
     {
-        return [21];
+        return [self::OBJECT_TRUE];
     }
 
     public static function createFromLoadedData(int $additionalInformation, ?string $data): Base
@@ -32,8 +38,16 @@ final class TrueObject extends Base
         return new self();
     }
 
-    public function getNormalizedData(bool $ignoreTags = false): bool
+    public function normalize(): bool
     {
         return true;
+    }
+
+    /**
+     * @deprecated The method will be removed on v3.0. Please rely on the CBOR\Normalizable interface
+     */
+    public function getNormalizedData(bool $ignoreTags = false): bool
+    {
+        return $this->normalize();
     }
 }

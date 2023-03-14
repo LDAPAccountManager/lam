@@ -12,9 +12,9 @@ use Cose\Algorithm\Signature\RSA\RS256;
 use Cose\Algorithm\Signature\RSA\RS384;
 use Cose\Algorithm\Signature\RSA\RS512;
 use \Cose\Algorithms;
+use Http\Discovery\Psr17Factory;
 use LAM\PERSISTENCE\ConfigurationDatabase;
 use LAMCfgMain;
-use Nyholm\Psr7\Factory\Psr17Factory;
 use PDO;
 use PDOException;
 use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
@@ -50,7 +50,7 @@ use function LAM\PERSISTENCE\dbTableExists;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2019 - 2021  Roland Gruber
+  Copyright (C) 2019 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by

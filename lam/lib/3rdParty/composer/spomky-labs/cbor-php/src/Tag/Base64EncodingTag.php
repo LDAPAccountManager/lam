@@ -14,46 +14,47 @@ declare(strict_types=1);
 namespace CBOR\Tag;
 
 use CBOR\ByteStringObject;
-use CBOR\ByteStringWithChunkObject;
 use CBOR\CBORObject;
-use CBOR\TagObject as Base;
+use CBOR\IndefiniteLengthByteStringObject;
+use CBOR\IndefiniteLengthTextStringObject;
+use CBOR\Tag;
 use CBOR\TextStringObject;
-use CBOR\TextStringWithChunkObject;
 use InvalidArgumentException;
 
-final class Base64EncodingTag extends Base
+final class Base64EncodingTag extends Tag
 {
     public static function getTagId(): int
     {
-        return 22;
+        return self::TAG_ENCODED_BASE64;
     }
 
-    public static function createFromLoadedData(int $additionalInformation, ?string $data, CBORObject $object): Base
+    public static function createFromLoadedData(int $additionalInformation, ?string $data, CBORObject $object): Tag
     {
         return new self($additionalInformation, $data, $object);
     }
 
-    public static function create(CBORObject $object): Base
+    public static function create(CBORObject $object): Tag
     {
-        if (!$object instanceof ByteStringObject && !$object instanceof ByteStringWithChunkObject && !$object instanceof TextStringObject && !$object instanceof TextStringWithChunkObject) {
-            throw new InvalidArgumentException('This tag only accepts Byte String, Infinite Byte String, Text String or Infinite Text String objects.');
-        }
+        [$ai, $data] = self::determineComponents(self::TAG_ENCODED_BASE64);
 
-        return new self(22, null, $object);
+        return new self($ai, $data, $object);
     }
 
+    /**
+     * @deprecated The method will be removed on v3.0. Please rely on the CBOR\Normalizable interface
+     */
     public function getNormalizedData(bool $ignoreTags = false)
     {
         if ($ignoreTags) {
             return $this->object->getNormalizedData($ignoreTags);
         }
 
-        if (!$this->object instanceof ByteStringObject && !$this->object instanceof ByteStringWithChunkObject && !$this->object instanceof TextStringObject && !$this->object instanceof TextStringWithChunkObject) {
+        if (! $this->object instanceof ByteStringObject && ! $this->object instanceof IndefiniteLengthByteStringObject && ! $this->object instanceof TextStringObject && ! $this->object instanceof IndefiniteLengthTextStringObject) {
             return $this->object->getNormalizedData($ignoreTags);
         }
 
         $result = base64_decode($this->object->getNormalizedData($ignoreTags), true);
-        if (false === $result) {
+        if ($result === false) {
             throw new InvalidArgumentException('Unable to decode the data');
         }
 

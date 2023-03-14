@@ -1,3 +1,9 @@
+#### v2.5.0 (2022-12)
+* Support PHP 8.2 [#99](https://github.com/fgrosse/PHPASN1/pull/99)
+* PHP 8 compatibility fix for DateTime::getLastErrors [#98](https://github.com/fgrosse/PHPASN1/pull/98)
+* Support more OIDs [#95](https://github.com/fgrosse/PHPASN1/pull/95)
+* FINAL RELEASE. Library is now no longer actively maintained and marked as archived on GitHub
+
 #### v2.4.0 (2021-12)
 * Drop support for PHP 7.0 [#89](https://github.com/fgrosse/PHPASN1/pull/89)
 

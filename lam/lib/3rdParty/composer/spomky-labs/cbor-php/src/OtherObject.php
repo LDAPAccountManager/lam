@@ -15,7 +15,7 @@ namespace CBOR;
 
 abstract class OtherObject extends AbstractCBORObject
 {
-    private const MAJOR_TYPE = 0b111;
+    private const MAJOR_TYPE = self::MAJOR_TYPE_OTHER_TYPE;
 
     /**
      * @var string|null
@@ -31,11 +31,16 @@ abstract class OtherObject extends AbstractCBORObject
     public function __toString(): string
     {
         $result = parent::__toString();
-        if (null !== $this->data) {
+        if ($this->data !== null) {
             $result .= $this->data;
         }
 
         return $result;
+    }
+
+    public function getContent(): ?string
+    {
+        return $this->data;
     }
 
     /**

@@ -14,12 +14,12 @@ declare(strict_types=1);
 namespace CBOR;
 
 use Brick\Math\BigInteger;
-use GMP;
 use InvalidArgumentException;
+use const STR_PAD_LEFT;
 
-final class UnsignedIntegerObject extends AbstractCBORObject
+final class UnsignedIntegerObject extends AbstractCBORObject implements Normalizable
 {
-    private const MAJOR_TYPE = 0b000;
+    private const MAJOR_TYPE = self::MAJOR_TYPE_UNSIGNED_INTEGER;
 
     /**
      * @var string|null
@@ -35,7 +35,7 @@ final class UnsignedIntegerObject extends AbstractCBORObject
     public function __toString(): string
     {
         $result = parent::__toString();
-        if (null !== $this->data) {
+        if ($this->data !== null) {
             $result .= $this->data;
         }
 
@@ -66,63 +66,33 @@ final class UnsignedIntegerObject extends AbstractCBORObject
         return self::createBigInteger($integer);
     }
 
-    /**
-     * @deprecated Deprecated since v1.1 and will be removed in v2.0. Please use "create" or "createFromString" instead
-     */
-    public static function createFromGmpValue(GMP $value): self
-    {
-        if (gmp_cmp($value, gmp_init(0)) < 0) {
-            throw new InvalidArgumentException('The value must be a positive integer.');
-        }
-
-        switch (true) {
-            case gmp_cmp($value, gmp_init(24)) < 0:
-                $ai = gmp_intval($value);
-                $data = null;
-                break;
-            case gmp_cmp($value, gmp_init('FF', 16)) < 0:
-                $ai = 24;
-                $data = self::hex2bin(str_pad(gmp_strval($value, 16), 2, '0', STR_PAD_LEFT));
-                break;
-            case gmp_cmp($value, gmp_init('FFFF', 16)) < 0:
-                $ai = 25;
-                $data = self::hex2bin(str_pad(gmp_strval($value, 16), 4, '0', STR_PAD_LEFT));
-                break;
-            case gmp_cmp($value, gmp_init('FFFFFFFF', 16)) < 0:
-                $ai = 26;
-                $data = self::hex2bin(str_pad(gmp_strval($value, 16), 8, '0', STR_PAD_LEFT));
-                break;
-            default:
-                throw new InvalidArgumentException('Out of range. Please use PositiveBigIntegerTag tag with ByteStringObject object instead.');
-        }
-
-        return new self($ai, $data);
-    }
-
     public function getMajorType(): int
     {
         return self::MAJOR_TYPE;
     }
 
-    public function getAdditionalInformation(): int
-    {
-        return $this->additionalInformation;
-    }
-
     public function getValue(): string
     {
-        return $this->getNormalizedData();
-    }
-
-    public function getNormalizedData(bool $ignoreTags = false): string
-    {
-        if (null === $this->data) {
+        if ($this->data === null) {
             return (string) $this->additionalInformation;
         }
 
         $integer = BigInteger::fromBase(bin2hex($this->data), 16);
 
         return $integer->toBase(10);
+    }
+
+    public function normalize(): string
+    {
+        return $this->getValue();
+    }
+
+    /**
+     * @deprecated The method will be removed on v3.0. Please rely on the CBOR\Normalizable interface
+     */
+    public function getNormalizedData(bool $ignoreTags = false): string
+    {
+        return $this->getValue();
     }
 
     private static function createBigInteger(BigInteger $integer): self
@@ -149,7 +119,9 @@ final class UnsignedIntegerObject extends AbstractCBORObject
                 $data = self::hex2bin(str_pad($integer->toBase(16), 8, '0', STR_PAD_LEFT));
                 break;
             default:
-                throw new InvalidArgumentException('Out of range. Please use PositiveBigIntegerTag tag with ByteStringObject object instead.');
+                throw new InvalidArgumentException(
+                    'Out of range. Please use PositiveBigIntegerTag tag with ByteStringObject object instead.'
+                );
         }
 
         return new self($ai, $data);
@@ -158,7 +130,7 @@ final class UnsignedIntegerObject extends AbstractCBORObject
     private static function hex2bin(string $data): string
     {
         $result = hex2bin($data);
-        if (false === $result) {
+        if ($result === false) {
             throw new InvalidArgumentException('Unable to convert the data');
         }
 

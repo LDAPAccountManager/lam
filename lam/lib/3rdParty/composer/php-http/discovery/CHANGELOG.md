@@ -1,5 +1,22 @@
 # Change Log
 
+## 1.15.2 - 2023-02-11
+
+- [#219](https://github.com/php-http/discovery/pull/219) - Fix handling of replaced packages
+
+## 1.15.1 - 2023-02-10
+
+- [#214](https://github.com/php-http/discovery/pull/214) - Fix resolving deps for psr/http-message-implementation
+- [#216](https://github.com/php-http/discovery/pull/216) - Fix keeping platform requirements when rebooting composer
+- [#217](https://github.com/php-http/discovery/pull/217) - Set extra.plugin-optional composer flag
+
+## 1.15.0 - 2023-02-09
+
+- [#209](https://github.com/php-http/discovery/pull/209) - Add generic `Psr17Factory` class
+- [#208](https://github.com/php-http/discovery/pull/208) - Add composer plugin to auto-install missing implementations.
+  When libraries require an http implementation but no packages providing that implementation is installed in the application, the plugin will automatically install one.
+  This is only done for libraries that directly require php-http/discovery to avoid unexpected dependency installation.
+
 ## 1.14.3 - 2022-07-11
 
 - [#207](https://github.com/php-http/discovery/pull/207) - Updates Exception to extend Throwable solving static analysis errors for consumers

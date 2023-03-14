@@ -99,7 +99,7 @@ abstract class Calculator
      * @param string $a The first operand.
      * @param string $b The second operand.
      *
-     * @return array{0: bool, 1: bool, 2: string, 3: string} Whether $a and $b are negative, followed by their digits.
+     * @return array{bool, bool, string, string} Whether $a and $b are negative, followed by their digits.
      */
     final protected function init(string $a, string $b) : array
     {
@@ -486,7 +486,7 @@ abstract class Calculator
      * Rounding is performed when the remainder of the division is not zero.
      *
      * @param string $a            The dividend.
-     * @param string $b            The divisor.
+     * @param string $b            The divisor, must not be zero.
      * @param int    $roundingMode The rounding mode.
      *
      * @return string
@@ -685,7 +685,7 @@ abstract class Calculator
     {
         $xor = \str_repeat("\xff", \strlen($number));
 
-        $number = $number ^ $xor;
+        $number ^= $xor;
 
         for ($i = \strlen($number) - 1; $i >= 0; $i--) {
             $byte = \ord($number[$i]);

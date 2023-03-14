@@ -1141,16 +1141,15 @@ main license and authors:
 lib/3rdParty/composer/beberlei                                       G  2013  Benjamin Eberlei
 lib/3rdParty/composer/brick                                          B        Benjamin Morel
 lib/3rdParty/composer/christian-riesen                               B        Christian Riesen
-lib/3rdParty/composer/clue                                           B        2015 Christian Lück
 lib/3rdParty/composer/composer                                       B        Nils Adermann, Jordi Boggiano
 lib/3rdParty/composer/doctrine                                       B        Doctrine Project
 lib/3rdParty/composer/facile-it                                      B        Thomas Vargiu
 lib/3rdParty/composer/fgrosse                                        B  2015  Friedrich Große
 lib/3rdParty/composer/guzzlehttp                                     B  2015  Michael Dowling
+lib/3rdParty/composer/http-interop                                   B  2016  Woody Gilk
 lib/3rdParty/composer/illuminate                                     B        Taylor Otwell
 lib/3rdParty/composer/league                                         B        ignace nyamagana butera
 lib/3rdParty/composer/nesbot                                         B        Brian Nesbitt
-lib/3rdParty/composer/nyholm                                         B  2016  Tobias Nyholm
 lib/3rdParty/composer/monolog                                        B  2011  Jordi Boggiano
 lib/3rdParty/composer/paragonie                                      B  2015  Paragon Initiative Enterprises
 lib/3rdParty/composer/php-http                                       B  2015  PHP HTTP Team
