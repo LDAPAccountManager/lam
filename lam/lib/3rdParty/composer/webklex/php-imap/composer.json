@@ -32,6 +32,9 @@
     "require-dev": {
         "phpunit/phpunit": "~4.0"
     },
+    "suggest": {
+        "symfony/mime": "Recomended for better extension support"
+    },
     "autoload": {
         "psr-4": {
             "Webklex\\PHPIMAP\\": "src"

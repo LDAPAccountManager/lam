@@ -15,6 +15,22 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 - NaN
 
 
+## [4.1.2] - 2022-12-14
+### Fixed
+- Attachment ID can return an empty value #318
+- Additional message date format added #345 (thanks @amorebietakoUdala)
+
+
+## [4.1.1] - 2022-11-16
+### Fixed
+- Fix for extension recognition #325 (thanks @pwoszczyk)
+- Missing null check added #327 (thanks @spanjeta)
+- Leading white-space in response causes an infinite loop #321 (thanks @thin-k-design)
+- Fix error when creating folders with special chars #319 (thanks @thin-k-design)
+- `Client::getFoldersWithStatus()` recursive loading fixed #312 (thanks @szymekjanaczek)
+- Fix Folder name encoding error in `Folder::appendMessage()` #306 #307 (thanks @rskrzypczak)
+
+
 ## [4.1.0] - 2022-10-18
 ### Fixed
 - Fix assumedNextTaggedLine bug #288 (thanks @Blear)

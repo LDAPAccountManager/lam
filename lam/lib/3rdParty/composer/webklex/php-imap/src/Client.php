@@ -411,7 +411,7 @@ class Client {
      * @param string $folder_name
      * @param string|bool|null $delimiter
      *
-     * @return mixed
+     * @return Folder|null
      * @throws ConnectionFailedException
      * @throws FolderFetchingException
      * @throws Exceptions\RuntimeException
@@ -434,7 +434,7 @@ class Client {
      * Get a folder instance by a folder name
      * @param $folder_name
      *
-     * @return mixed
+     * @return Folder|null
      * @throws ConnectionFailedException
      * @throws FolderFetchingException
      * @throws Exceptions\RuntimeException
@@ -447,7 +447,7 @@ class Client {
      * Get a folder instance by a folder path
      * @param $folder_path
      *
-     * @return mixed
+     * @return Folder|null
      * @throws ConnectionFailedException
      * @throws FolderFetchingException
      * @throws Exceptions\RuntimeException
@@ -521,7 +521,7 @@ class Client {
                 if ($hierarchical && $folder->hasChildren()) {
                     $pattern = $folder->full_name.$folder->delimiter.'%';
 
-                    $children = $this->getFolders(true, $pattern);
+                    $children = $this->getFoldersWithStatus(true, $pattern);
                     $folder->setChildren($children);
                 }
 
@@ -570,7 +570,7 @@ class Client {
 
         if($expunge) $this->expunge();
 
-        $folder = $this->getFolder($folder);
+        $folder = $this->getFolderByPath($folder);
         if($status && $folder) {
             $event = $this->getEvent("folder", "new");
             $event::dispatch($folder);

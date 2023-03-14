@@ -30,7 +30,7 @@ class InstalledVersions
     'aliases' => 
     array (
     ),
-    'reference' => 'dcdb60f967d5844edb901222194fd5e96dabb923',
+    'reference' => 'a46f1807b66a5a45907dfa9c1c4276c90082c913',
     'name' => '__root__',
   ),
   'versions' => 
@@ -42,7 +42,7 @@ class InstalledVersions
       'aliases' => 
       array (
       ),
-      'reference' => 'dcdb60f967d5844edb901222194fd5e96dabb923',
+      'reference' => 'a46f1807b66a5a45907dfa9c1c4276c90082c913',
     ),
     'beberlei/assert' => 
     array (
@@ -721,12 +721,12 @@ class InstalledVersions
     ),
     'webklex/php-imap' => 
     array (
-      'pretty_version' => '4.1.0',
-      'version' => '4.1.0.0',
+      'pretty_version' => '4.1.2',
+      'version' => '4.1.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '45843e1554cc280c738278b9e3b6af35a91f8b1f',
+      'reference' => '94bf93ae8868ac1e073cfbaef377f0ca1acac2bc',
     ),
   ),
 );

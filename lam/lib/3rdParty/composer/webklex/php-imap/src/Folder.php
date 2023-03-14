@@ -291,7 +291,7 @@ class Folder {
             $internal_date = $internal_date->format('d-M-Y H:i:s O');
         }
 
-        return $this->client->getConnection()->appendMessage($this->full_name, $message, $options, $internal_date);
+        return $this->client->getConnection()->appendMessage($this->path, $message, $options, $internal_date);
     }
 
     /**
