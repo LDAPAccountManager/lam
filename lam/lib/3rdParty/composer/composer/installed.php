@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '29698201630d9c4a7ca39e13ef17bb218458bdd4',
+    'reference' => '3c5a685061881349c74c238f0266595d99299631',
     'name' => '__root__',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '29698201630d9c4a7ca39e13ef17bb218458bdd4',
+      'reference' => '3c5a685061881349c74c238f0266595d99299631',
     ),
     'beberlei/assert' => 
     array (
@@ -286,12 +286,12 @@
     ),
     'phpmailer/phpmailer' => 
     array (
-      'pretty_version' => 'v6.6.5',
-      'version' => '6.6.5.0',
+      'pretty_version' => 'v6.8.0',
+      'version' => '6.8.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '8b6386d7417526d1ea4da9edb70b8352f7543627',
+      'reference' => 'df16b615e371d81fb79e506277faea67a1be18f1',
     ),
     'phpseclib/phpseclib' => 
     array (
