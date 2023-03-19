@@ -1437,7 +1437,7 @@ window.lam.importexport.startExport = function(tokenName, tokenValue) {
 	const output = document.getElementById('exportResults');
 	let data = new FormData();
 	data.append(tokenName, tokenValue);
-	data.append('baseDn', document.getElementById('baseDn').value)
+	data.append('baseDn', document.getElementById('baseDn').value);
 	data.append('searchScope', document.getElementById('searchScope').value);
 	data.append('filter', document.getElementById('filter').value);
 	data.append('attributes', document.getElementById('attributes').value);
