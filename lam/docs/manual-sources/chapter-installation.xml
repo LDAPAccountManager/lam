@@ -319,44 +319,9 @@
     <section>
       <title>Docker</title>
 
-      <para>You can run LAM inside Docker.</para>
-
-      <para>Possible environment variables are documented in the <ulink
-      url="https://github.com/LDAPAccountManager/lam/blob/develop/lam-packaging/docker/.env">sample
-      .env</ulink> file.</para>
-
-      <para>LAM repository:</para>
-
-      <para><ulink
-      url="https://hub.docker.com/r/ldapaccountmanager/lam">https://hub.docker.com/r/ldapaccountmanager/lam</ulink></para>
-
-      <para>LAM Pro repository:</para>
-
-      <para>See LAM repository for usage examples.</para>
-
-      <para>Please request access at support providing your Gitlab (<ulink
-      url="https://gitlab.com">https://gitlab.com</ulink>) user ID.</para>
-
-      <literallayout>docker login registry.gitlab.com
-docker pull registry.gitlab.com/ldapaccountmanager/lampro
-docker run -p 8080:80 -it -d registry.gitlab.com/ldapaccountmanager/lampro:stable
-</literallayout>
-
-      <para/>
-
-      <para><emphasis role="bold">Configuration files</emphasis></para>
-
-      <para>All configuration files are stored in:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>/etc/ldap-account-manager</para>
-        </listitem>
-
-        <listitem>
-          <para>/var/lib/ldap-account-manager</para>
-        </listitem>
-      </itemizedlist>
+      <para>You can run LAM and LAM Pro inside Docker. See <ulink
+      url="https://github.com/LDAPAccountManager/docker/pkgs/container/lam">here</ulink>
+      for detailed instructions.</para>
     </section>
 
     <section>
