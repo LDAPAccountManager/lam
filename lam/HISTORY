@@ -1,4 +1,4 @@
-March 2023 8.3
+24.03.2023 8.3
   - PHP 8.2 compatibility
   - Windows users: display name can be hidden in server profile
   - LDAP export: sort entries by DN
