@@ -3,7 +3,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2022  Roland Gruber
+  Copyright (C) 2005 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -320,11 +320,20 @@ class user extends baseType {
 
 		// locking part
 		if ($hasLockOptions) {
-			$lockContent = new htmlTable();
+			$lockContent = new htmlResponsiveRow();
 			foreach ($lockableOptions as $lockableOption) {
 				$preSelected = $lockableOption->isLocked();
-				$lockContent->addElement(new htmlImage('../../graphics/' . $lockableOption->getIcon(), '16px', '16px'));
-				$lockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusLock_' . $lockableOption->getId(), $preSelected, $lockableOption->getDetails(), null, false), true);
+				$lockContentGroup = new htmlGroup();
+				$image = new htmlImage('../../graphics/' . $lockableOption->getIcon(), '16px', '16px');
+				$image->setCSSClasses(array('align-middle'));
+				$lockContentGroup->addElement($image);
+				$checkbox = new htmlInputCheckbox('lam_accountStatusLock_' . $lockableOption->getId(), $preSelected);
+				$checkbox->setCSSClasses(array('align-middle'));
+				$lockContentGroup->addElement($checkbox);
+				$label = new htmlLabel('lam_accountStatusLock_' . $lockableOption->getId(), $lockableOption->getDetails());
+				$label->setCSSClasses(array('align-middle'));
+				$lockContentGroup->addElement($label);
+				$lockContent->add($lockContentGroup);
 			}
 
 			$lockDiv = new htmlDiv('lam_accountStatusDialogLockDiv', $lockContent);
@@ -335,10 +344,19 @@ class user extends baseType {
 		}
 		// unlocking part
 		if ($hasUnlockOptions) {
-			$unlockContent = new htmlTable();
+			$unlockContent = new htmlResponsiveRow();
 			foreach ($accountStatus->getDetails() as $detail) {
-				$unlockContent->addElement(new htmlImage('../../graphics/' . $detail->getIcon(), '16px', '16px'));
-				$unlockContent->addElement(new htmlTableExtendedInputCheckbox('lam_accountStatusUnlock_' . $detail->getId(), true, $detail->getDetails(), null, false), true);
+				$unlockContentGroup = new htmlGroup();
+				$image = new htmlImage('../../graphics/' . $detail->getIcon(), '16px', '16px');
+				$image->setCSSClasses(array('align-middle'));
+				$unlockContentGroup->addElement($image);
+				$checkbox = new htmlInputCheckbox('lam_accountStatusUnlock_' . $detail->getId(), true);
+				$checkbox->setCSSClasses(array('align-middle'));
+				$unlockContentGroup->addElement($checkbox);
+				$label = new htmlLabel('lam_accountStatusUnlock_' . $detail->getId(), $detail->getDetails());
+				$label->setCSSClasses(array('align-middle'));
+				$unlockContentGroup->addElement($label);
+				$unlockContent->add($unlockContentGroup);
 			}
 			$unlockDiv = new htmlDiv('lam_accountStatusDialogUnlockDiv', $unlockContent);
 			$container->add($unlockDiv);
