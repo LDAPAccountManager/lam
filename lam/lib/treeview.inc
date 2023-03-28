@@ -1529,6 +1529,9 @@ class TreeView {
 			die();
 		}
 		try {
+			if (strtolower($dn) === strtolower($targetDn)) {
+				throw new LAMException(_('Entry cannot be inserted into itself.'));
+			}
 			$entryAndChildren = ldapListDN($dn);
 			$childrenCount = sizeof($entryAndChildren);
 			logNewMessage(LOG_DEBUG, 'Paste operation for entry with ' . $childrenCount . ' child entries.');
