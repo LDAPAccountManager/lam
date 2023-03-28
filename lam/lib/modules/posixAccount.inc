@@ -1845,14 +1845,17 @@ class posixAccount extends baseModule implements passwordService,AccountStatusPr
 						$lamdaemonServers = $_SESSION['config']->getConfiguredScriptServers();
 						$homeDirLabel = new htmlOutputText(_('Create home directory'));
 						$return->addLabel($homeDirLabel);
-						$homeServerContainer = new htmlTable();
+						$homeServerContainer = new htmlResponsiveRow();
 						for ($h = 0; $h < sizeof($lamdaemonServers); $h++) {
-							$homeServerContainer->addElement(new htmlTableExtendedInputCheckbox('createhomedir_' . $h, in_array($lamdaemonServers[$h]->getServer(), $this->lamdaemonServers), $lamdaemonServers[$h]->getLabel(), null, false));
+							$createHomedirGroup = new htmlGroup();
+							$createHomedirGroup->addElement(new htmlInputCheckbox('createhomedir_' . $h, in_array($lamdaemonServers[$h]->getServer(), $this->lamdaemonServers)));
+							$createHomedirGroup->addElement(new htmlOutputText($lamdaemonServers[$h]->getLabel()));
 							if ($h === 0) {
+								$createHomedirGroup->addElement(new htmlSpacer('0.2rem'));
 								$homeDirHelp = new htmlHelpLink('createhomedir');
-								$homeServerContainer->addElement($homeDirHelp);
+								$createHomedirGroup->addElement($homeDirHelp);
 							}
-							$homeServerContainer->addNewLine();
+							$homeServerContainer->add($createHomedirGroup);
 						}
 						$return->addField($homeServerContainer);
 					}
