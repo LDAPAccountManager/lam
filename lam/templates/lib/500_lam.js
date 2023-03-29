@@ -587,6 +587,9 @@ window.lam.filterSelect.addFormListener = function() {
 			const selectFields = form.querySelectorAll('.lam-filteredOptions');
 			selectFields.forEach((item) => {
 				const storedOptions = JSON.parse(item.dataset.options);
+				item.querySelectorAll('option').forEach((optionItem) => {
+					storedOptions[optionItem.value].selected = optionItem.selected;
+				});
 				item.innerHTML = '';
 				for (const value in storedOptions) {
 					const option = storedOptions[value];
