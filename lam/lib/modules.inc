@@ -1977,18 +1977,19 @@ class accountContainer {
 			}
 			if (isset($attributes[$this->finalDN]['modify'])) {
 				foreach ($attributes[$this->finalDN]['modify'] as $key => $value) {
-					$prePostModifyAttributes[$key] = &$attributes[$this->finalDN]['modify'][$key];
-				}
-				foreach ($attributes[$this->finalDN]['modify'] as $key => $value) {
+					$prePostModifyAttributes[$key] = $value;
 					$prePostModifyAttributes['MOD.' . $key] = $value;
 				}
 			}
 			if (isset($attributes[$this->finalDN]['add'])) {
 				foreach ($attributes[$this->finalDN]['add'] as $key => $value) {
-					$prePostModifyAttributes[$key] = &$attributes[$this->finalDN]['add'][$key];
-				}
-				foreach ($attributes[$this->finalDN]['add'] as $key => $value) {
 					$prePostModifyAttributes['NEW.' . $key] = $value;
+					if (isset($prePostModifyAttributes[$key])) {
+						$prePostModifyAttributes[$key] = array_merge($prePostModifyAttributes[$key], $value);
+					}
+					else {
+						$prePostModifyAttributes[$key] = $value;
+					}
 				}
 			}
 			if (isset($attributes[$this->finalDN]['remove'])) {
