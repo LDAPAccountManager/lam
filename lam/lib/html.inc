@@ -2541,66 +2541,6 @@ class htmlInputTextarea extends htmlElement {
 }
 
 /**
- * Text area with label and help link.
- *
- * @package metaHTML
- */
-class htmlTableExtendedInputTextarea extends htmlInputTextarea {
-
-	/** descriptive label */
-	private $label;
-	/** help ID */
-	private $helpID;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param String $name unique name
-	 * @param String $value value
-	 * @param int $colCount number of characters per line
-	 * @param int $rowCount number of rows
-	 * @param String $label descriptive label
-	 * @param String $helpID help ID
-	 */
-	function __construct($name, $value, $colCount, $rowCount, $label, $helpID = null) {
-		parent::__construct($name, $value, $colCount, $rowCount);
-		$this->label = htmlspecialchars($label);
-		$this->helpID = $helpID;
-		$this->alignment = htmlElement::ALIGN_TOP;
-	}
-
-	/**
-	 * Prints the HTML code for this element.
-	 *
-	 * @param string $module Name of account module
-	 * @param array $input List of meta-HTML elements
-	 * @param array $values List of values which override the defaults in $input (name => value)
-	 * @param boolean $restricted If true then no buttons will be displayed
-	 * @param integer $tabindex Start value of tabulator index for input fields
-	 * @param string $scope Account type
-	 * @return array List of input field names and their type (name => type)
-	 */
-	function generateHTML($module, $input, $values, $restricted, &$tabindex, $scope) {
-		echo '<div class="nowrap">';
-		echo $this->label;
-		if ($this->required) {
-			echo htmlGetRequiredMarker();
-		}
-		echo '</div>';
-		echo "\n</td>\n<td>\n";
-		$return = parent::generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
-		// print help link
-		if ($this->helpID != null) {
-			echo "\n</td>\n<td valign=\"top\">\n";
-			$helpLink = new htmlHelpLink($this->helpID);
-			$helpLink->generateHTML($module, $input, $values, $restricted, $tabindex, $scope);
-		}
-		return $return;
-	}
-
-}
-
-/**
  * Prints the HTML code for a color picker field.
  *
  * @package metaHTML

@@ -1323,18 +1323,18 @@ abstract class baseModule {
 	public abstract function display_html_attributes();
 
 	/**
-	 * Adds a simple text input field to the given htmlTable/htmlResponsiveRow.
+	 * Adds a simple text input field to the given htmlResponsiveRow.
 	 * The field name will be the same as the attribute name. There must also be a help entry with the attribute name as ID.
 	 * A new line will also be added after this entry so multiple calls will show the fields one below the other.
 	 *
-	 * @param htmlTable|htmlResponsiveRow $container parent container
+	 * @param htmlResponsiveRow $container parent container
 	 * @param String $attrName attribute name
 	 * @param String $label label name
 	 * @param boolean $required this is a required field (default false)
 	 * @param integer $length field length
 	 * @param boolean $isTextArea show as text area (default false)
 	 * @param array $autoCompleteValues values for auto-completion
-	 * @return mixed reference to htmlTableExtendedInputField/htmlTableExtendedInputTextarea
+	 * @return mixed reference to htmlResponsiveInputField/htmlResponsiveInputTextarea
 	 */
 	protected function &addSimpleInputTextField(&$container, $attrName, $label, $required = false, $length = null, $isTextArea = false, $autoCompleteValues = null) {
 		$value = '';
@@ -1346,20 +1346,10 @@ abstract class baseModule {
 			if ($length != null) {
 				$cols = $length;
 			}
-			if ($container instanceof htmlResponsiveRow) {
-				$input = new htmlResponsiveInputTextarea($attrName, $value, $cols, 3, $label, $attrName);
-			}
-			else {
-				$input = new htmlTableExtendedInputTextarea($attrName, $value, $cols, 3, $label, $attrName);
-			}
+			$input = new htmlResponsiveInputTextarea($attrName, $value, $cols, 3, $label, $attrName);
 		}
 		else {
-			if ($container instanceof htmlResponsiveRow) {
-				$input = new htmlResponsiveInputField($label, $attrName, $value, $attrName);
-			}
-			else {
-				$input = new htmlTableExtendedInputField($label, $attrName, $value, $attrName);
-			}
+			$input = new htmlResponsiveInputField($label, $attrName, $value, $attrName);
 			if ($length != null) {
 				$input->setFieldSize($length);
 			}
@@ -1368,19 +1358,14 @@ abstract class baseModule {
 			}
 		}
 		$input->setRequired($required);
-		if ($container instanceof htmlResponsiveRow) {
-			$container->add($input, 12);
-		}
-		else {
-			$container->addElement($input, true);
-		}
+		$container->add($input);
 		return $input;
 	}
 
 	/**
 	 * Adds a simple read-only field to the given container.
 	 *
-	 * @param htmlTable|htmlResponsiveRow $container parent container
+	 * @param htmlResponsiveRow $container parent container
 	 * @param String $attrName attribute name
 	 * @param String $label field label
 	 */
@@ -1395,14 +1380,8 @@ abstract class baseModule {
 		if (!empty($this->attributes[$attrName]) && (sizeof($this->attributes[$attrName]) > 1)) {
 			$labelBox->alignment = htmlElement::ALIGN_TOP;
 		}
-		if ($container instanceof htmlTable) {
-			$container->addElement($labelBox);
-			$container->addElement(new htmlOutputText($val, false), true);
-		}
-		else {
-			$container->addLabel($labelBox);
-			$container->addField(new htmlOutputText($val, false));
-		}
+		$container->addLabel($labelBox);
+		$container->addField(new htmlOutputText($val, false));
 	}
 
 	/**
@@ -1431,13 +1410,13 @@ abstract class baseModule {
 	}
 
 	/**
-	 * Adds a text input field that may contain multiple values to the given htmlTable.
+	 * Adds a text input field that may contain multiple values to the given htmlResponsiveRow.
 	 * The field name will be the same as the attribute name plus a counting number (e.g. street_0).
 	 * The last field will be followed by a button to add a new value. This is named add_{attribute name} (e.g. add_street).
 	 * There must be a help entry with the attribute name as ID.
 	 * A new line will also be added after this entry so multiple calls will show the fields one below the other.
 	 *
-	 * @param htmlTable|htmlResponsiveRow $container parent container
+	 * @param htmlResponsiveRow $container parent container
 	 * @param String $attrName attribute name
 	 * @param String $label label name
 	 * @param boolean $required this is a required field (default false)
@@ -1462,12 +1441,7 @@ abstract class baseModule {
 			if ($label !== null) {
 				$labelTextOut = new htmlOutputText($label, true, $required);
 				$labelTextOut->alignment = htmlElement::ALIGN_TOP;
-				if ($container instanceof htmlTable) {
-					$container->addElement($labelTextOut);
-				}
-				else {
-					$container->addLabel($labelTextOut);
-				}
+				$container->addLabel($labelTextOut);
 			}
 			$help = new htmlHelpLink($attrName);
 			$help->alignment = htmlElement::ALIGN_TOP;
@@ -1514,23 +1488,15 @@ abstract class baseModule {
 					$addButton = new htmlButton('add_' . $attrName, 'add.svg', true);
 					$addButton->setCSSClasses(array('noMarginSides'));
 					$subContainer->addElement($addButton);
-					if ($container instanceof htmlResponsiveRow) {
-						$subContainer->addElement($help);
-					}
+					$subContainer->addElement($help);
 				}
 				$subContainer->addNewLine();
 			}
-			if ($container instanceof htmlTable) {
-				$container->addElement($subContainer);
-				$container->addElement($help, true);
+			if ($label !== null) {
+				$container->addField($subContainer);
 			}
 			else {
-				if ($label !== null) {
-					$container->addField($subContainer);
-				}
-				else {
-					$container->add($subContainer, 12);
-				}
+				$container->add($subContainer, 12);
 			}
 	}
 
