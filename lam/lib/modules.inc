@@ -1134,22 +1134,18 @@ class accountContainer {
 		echo "<div id=\"passwordDialogOuter\" class=\"modal modal-pwd-options\">\n";
 		echo "<div id=\"passwordDialog\" class=\"modal-content\">\n";
 		$printContainer = false;
-		$container = new htmlTable();
+		$container = new htmlResponsiveRow();
 		$container->setCSSClasses(array('text-left'));
 		$title = new htmlTitle(_('Set password'));
-		$title->colspan = 5;
-		$container->addElement($title, true);
+		$container->add($title);
 		// password fields
-		$container->addElement(new htmlOutputText(_('Password')));
-		$pwdInput1 = new htmlInputField('newPassword1');
+		$pwdInput1 = new htmlResponsiveInputField(_('Password'), 'newPassword1', null, '404');
 		$pwdInput1->setIsPassword(true, true);
-		$container->addElement($pwdInput1);
-		$container->addElement(new htmlHelpLink('404'), true);
-		$container->addElement(new htmlOutputText(_('Repeat password')));
-		$pwdInput2 = new htmlInputField('newPassword2');
+		$container->add($pwdInput1);
+		$pwdInput2 = new htmlResponsiveInputField(_('Repeat password'), 'newPassword2');
 		$pwdInput2->setIsPassword(true);
 		$pwdInput2->setSameValueFieldID('newPassword1');
-		$container->addElement($pwdInput2, true);
+		$container->add($pwdInput2);
 		// print force password change option
 		$forceChangeSupported = array();
 		foreach ($this->module as $name => $module) {
@@ -1158,7 +1154,7 @@ class accountContainer {
 			}
 		}
 		if (!empty($forceChangeSupported)) {
-			$container->addElement(new htmlLabel('lamForcePasswordChange', _('Force password change')));
+			$container->addLabel(new htmlLabel('lamForcePasswordChange', _('Force password change')));
 			$forcePwdGroup = new htmlGroup();
 			$forcePwdGroup->addElement(new htmlInputCheckbox('lamForcePasswordChange', false));
 			$forcePwdGroup->addElement(new htmlSpacer('1rem', null));
@@ -1166,14 +1162,13 @@ class accountContainer {
 				$forcePwdGroup->addElement(new htmlImage('../../graphics/' . $module->getIcon(), '16px', '16px', $module->get_alias(), $module->get_alias()));
 				$forcePwdGroup->addElement(new htmlSpacer('0.1rem', null));
 			}
-			$container->addElement($forcePwdGroup);
-			$container->addElement(new htmlHelpLink('406'), true);
+			$forcePwdGroup->addElement(new htmlHelpLink('406'), true);
+			$container->addField($forcePwdGroup);
 		}
 		if (isLAMProVersion() && (isset($this->attributes_orig['mail'][0]) || $this->anyModuleManagesMail())) {
-			$pwdMailCheckbox = new htmlTableExtendedInputCheckbox('lamPasswordChangeSendMail', false, _('Send via mail'));
+			$pwdMailCheckbox = new htmlResponsiveInputCheckbox('lamPasswordChangeSendMail', false, _('Send via mail'), '407');
 			$pwdMailCheckbox->setTableRowsToShow(array('lamPasswordChangeMailAddress'));
-			$container->addElement($pwdMailCheckbox);
-			$container->addElement(new htmlHelpLink('407'), true);
+			$container->add($pwdMailCheckbox);
 			if ($_SESSION['config']->getLamProMailAllowAlternateAddress() != 'false') {
 				$alternateMail = '';
 				$pwdResetModule = $this->getAccountModule('passwordSelfReset');
@@ -1183,11 +1178,11 @@ class accountContainer {
 						$alternateMail = $pwdResetModule->getBackupEmail();
 					}
 				}
-				$alternateMailInput = new htmlTableExtendedInputField(_('Alternate recipient'), 'lamPasswordChangeMailAddress', $alternateMail, '410');
-				$container->addElement($alternateMailInput, true);
+				$alternateMailInput = new htmlResponsiveInputField(_('Alternate recipient'), 'lamPasswordChangeMailAddress', $alternateMail, '410');
+				$container->add($alternateMailInput);
 			}
 		}
-		$container->addElement(new htmlSpacer(null, '0.25rem'), true);
+		$container->addVerticalSpacer('0.25rem');
 		// password modules
 		$moduleContainer = new htmlTable();
 		foreach ($this->module as $name => $module) {
@@ -1204,12 +1199,10 @@ class accountContainer {
 				$moduleContainer->addElement(new htmlSpacer('10px', null));
 			}
 		}
-		$moduleContainer->colspan = 5;
-		$container->addElement($moduleContainer, true);
+		$container->add($moduleContainer);
 		// buttons
-		$container->addVerticalSpace('1rem');
+		$container->addVerticalSpacer('1rem');
 		$buttonGroup = new htmlGroup();
-		$buttonGroup->colspan = 5;
 		$okButton = new htmlButton('changePwdOk', _('Ok'));
 		$okButton->setCSSClasses(array('lam-primary'));
 		$okButton->setOnClick("passwordHandleInput('false', '../misc/ajax.php?function=passwordChange&editKey="
@@ -1225,7 +1218,7 @@ class accountContainer {
 		$cancelButton = new htmlButton('changePwdCancel', _('Cancel'));
 		$cancelButton->setOnClick("document.querySelector('.modal-pwd-options').classList.remove('show-modal'); return false;");
 		$buttonGroup->addElement($cancelButton);
-		$container->addElement($buttonGroup, true);
+		$container->add($buttonGroup);
 		// generate HTML
 		$tabindex = 2000;
 		if ($printContainer) {
