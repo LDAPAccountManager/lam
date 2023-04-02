@@ -3,7 +3,7 @@ use LAM\TYPES\TypeManager;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2019  Roland Gruber
+  Copyright (C) 2013 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -168,7 +168,7 @@ class kolabGroup extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$container = new htmlTable();
+		$container = new htmlResponsiveRow();
 		if (isset($this->attributes['objectClass']) && in_array('kolabGroupOfUniqueNames', $this->attributes['objectClass'])) {
 			// mail
 			if ($this->manageMail($this->getAccountContainer()->get_type()->getModules())) {
@@ -181,7 +181,7 @@ class kolabGroup extends baseModule {
 		}
 		else {
 			// add button
-			$container->addElement(new htmlButton('addObjectClass', _('Add Kolab extension')));
+			$container->add(new htmlButton('addObjectClass', _('Add Kolab extension')));
 		}
 		return $container;
 	}
