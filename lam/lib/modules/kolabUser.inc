@@ -5,7 +5,7 @@ use \LAM\PDF\PDFTableRow;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2004 - 2022  Roland Gruber
+  Copyright (C) 2004 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -674,18 +674,22 @@ class kolabUser extends baseModule {
 			for ($i = 0; $i < sizeof($kolabDelegate); $i++) {
 				$delegateContainer->addElement(new htmlOutputText($kolabDelegate[$i]));
 				if (!in_array('kolabDelegate', $readOnlyFields)) {
-					$delegateContainer->addElement(new htmlTableExtendedInputCheckbox('delDelegate_' . $i, false, _('Delete'), null, false), true);
+					$delegateGroup = new htmlGroup();
+					$delegateGroup->addElement(new htmlInputCheckbox('delDelegate_' . $i, false));
+					$delegateGroup->addElement(new htmlOutputText(_('Delete')));
+					$delegateContainer->addElement(new htmlDiv(null, $delegateGroup, array('nowrap')));
 				}
-				else {
-					$delegateContainer->addNewLine();
-				}
+				$delegateContainer->addNewLine();
 			}
 			if (!in_array('kolabDelegate', $readOnlyFields)) {
 				$delegateSelect = new htmlSelect('new_delegate_value', $delegates);
 				$delegateSelect->setSortElements(false);
 				$delegateSelect->setHasDescriptiveElements(true);
 				$delegateContainer->addElement($delegateSelect);
-				$delegateContainer->addElement(new htmlTableExtendedInputCheckbox('new_delegate', false, _("Add"), null, false), true);
+				$delegateAddGroup = new htmlGroup();
+				$delegateAddGroup->addElement(new htmlInputCheckbox('new_delegate', false));
+				$delegateAddGroup->addElement(new htmlOutputText(_("Add")));
+				$delegateContainer->addElement(new htmlDiv(null, $delegateAddGroup, array('nowrap')));
 			}
 			$delegateLabel = new htmlOutputText($this->getSelfServiceLabel('kolabDelegate', _('Delegates')));
 			$row = new htmlResponsiveRow();
@@ -721,7 +725,10 @@ class kolabUser extends baseModule {
 					if (!in_array('kolabDelegate', $readOnlyFields)) {
 						$invitationContainer->addElement(new htmlInputField('invPol1' . $i, $parts[0]));
 						$invitationContainer->addElement(new htmlSelect('invPol2' . $i, array_values($this->invitationPolicies), array($this->invitationPolicies[$parts[1]])));
-						$invitationContainer->addElement(new htmlTableExtendedInputCheckbox('delInvPol' . $i, false, _("Remove"), null, false), true);
+						$invPolGroup = new htmlGroup();
+						$invPolGroup->addElement(new htmlInputCheckbox('delInvPol' . $i, false));
+						$invPolGroup->addElement(new htmlOutputText(_("Remove")));
+						$invitationContainer->addElement(new htmlDiv(null, $invPolGroup, array('nowrap')), true);
 					}
 					else {
 						$invitationContainer->addElement(new htmlOutputText($parts[0]));
@@ -733,7 +740,10 @@ class kolabUser extends baseModule {
 			if (!in_array('kolabDelegate', $readOnlyFields)) {
 				$invitationContainer->addElement(new htmlInputField('invPol1', ''));
 				$invitationContainer->addElement(new htmlSelect('invPol2', array_values($this->invitationPolicies)));
-				$invitationContainer->addElement(new htmlTableExtendedInputCheckbox('addInvPol', false, _("Add"), null, false), true);
+				$invPolAddGroup = new htmlGroup();
+				$invPolAddGroup->addElement(new htmlInputCheckbox('addInvPol', false));
+				$invPolAddGroup->addElement(new htmlOutputText(_("Add")));
+				$invitationContainer->addElement(new htmlDiv(null, $invPolAddGroup, array('nowrap')), true);
 			}
 			$invitationLabel = new htmlOutputText($this->getSelfServiceLabel('kolabInvitationPolicy', _('Invitation policy')));
 			$row = new htmlResponsiveRow();
