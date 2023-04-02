@@ -2,7 +2,7 @@
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2013 - 2022  Roland Gruber
+  Copyright (C) 2013 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -231,14 +231,13 @@ class kolabSharedFolder extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$container = new htmlTable();
-		$baseContainer = new htmlTable();
+		$container = new htmlResponsiveRow();
 		// name
-		$this->addSimpleInputTextField($baseContainer, 'cn', _('Name'), true);
+		$this->addSimpleInputTextField($container, 'cn', _('Name'), true);
 		// mail
-		$this->addSimpleInputTextField($baseContainer, 'mail', _('Email address'), true);
+		$this->addSimpleInputTextField($container, 'mail', _('Email address'), true);
 		// target folder
-		$this->addSimpleInputTextField($baseContainer, 'kolabTargetFolder', _('Target IMAP folder'), true);
+		$this->addSimpleInputTextField($container, 'kolabTargetFolder', _('Target IMAP folder'), true);
 		// folder type
 		$possibleTypes = $this->folderTypes;
 		$selectedTypes = array('mail');
@@ -248,17 +247,16 @@ class kolabSharedFolder extends baseModule {
 				$possibleTypes[$this->attributes['kolabFolderType'][0]] = $this->attributes['kolabFolderType'][0];
 			}
 		}
-		$typeSelect = new htmlTableExtendedSelect('kolabFolderType', $possibleTypes, $selectedTypes, _('Type'), 'kolabFolderType');
+		$typeSelect = new htmlResponsiveSelect('kolabFolderType', $possibleTypes, $selectedTypes, _('Type'), 'kolabFolderType');
 		$typeSelect->setHasDescriptiveElements(true);
-		$baseContainer->addElement($typeSelect, true);
-		$baseContainer->addVerticalSpace('10px');
+		$container->add($typeSelect);
+		$container->addVerticalSpacer('1rem');
 		// allowed recipients
-		$this->addMultiValueInputTextField($baseContainer, 'kolabAllowSMTPRecipient', _('Allowed recipients'));
+		$this->addMultiValueInputTextField($container, 'kolabAllowSMTPRecipient', _('Allowed recipients'));
 		// allowed senders
-		$this->addMultiValueInputTextField($baseContainer, 'kolabAllowSMTPSender', _('Allowed senders'));
-		$container->addElement($baseContainer, true);
+		$this->addMultiValueInputTextField($container, 'kolabAllowSMTPSender', _('Allowed senders'));
 		// mail aliases
-		$container->addElement(new htmlSubTitle(_('Email aliases')), true);
+		$container->add(new htmlSubTitle(_('Email aliases')));
 		$this->addMultiValueInputTextField($container, 'alias', null);
 		// delegates
 		$delegatesData = searchLDAPByAttribute('mail', '*', 'inetOrgPerson', array('dn'), array('user'));
@@ -267,9 +265,8 @@ class kolabSharedFolder extends baseModule {
 			$delegates[getAbstractDN($delegatesData[$i]['dn'])] = $delegatesData[$i]['dn'];
 		}
 		uksort($delegates, 'compareDN');
-		$container->addElement(new htmlSubTitle(_('Delegates')), true);
+		$container->add(new htmlSubTitle(_('Delegates')));
 		$delegatesContainer = new htmlTable();
-		$delegatesContainer->colspan = 3;
 		if (isset($this->attributes['kolabDelegate'])) {
 			for ($i = 0; $i < sizeof($this->attributes['kolabDelegate']); $i++) {
 				$delegateSelect = new htmlSelect('delegate' . $i, $delegates, array($this->attributes['kolabDelegate'][$i]));
@@ -289,7 +286,7 @@ class kolabSharedFolder extends baseModule {
 		if (empty($this->attributes['kolabDelegate'])) {
 			$delegatesContainer->addElement(new htmlHelpLink('delegate'));
 		}
-		$container->addElement($delegatesContainer, true);
+		$container->add($delegatesContainer);
 		return $container;
 	}
 
