@@ -228,7 +228,7 @@ class kolabUser extends baseModule {
 	 * @return htmlElement HTML meta data
 	 */
 	function display_html_attributes() {
-		$return = new htmlTable();
+		$return = new htmlResponsiveRow();
 		if (isset($this->attributes['objectClass']) && in_array('kolabInetOrgPerson', $this->attributes['objectClass'])) {
 			$attrsI = $this->getAccountContainer()->getAccountModule('inetOrgPerson')->getAttributes();
 			if ($this->getAccountContainer()->isNewAccount) {
@@ -236,33 +236,29 @@ class kolabUser extends baseModule {
 					$attrsP = $this->getAccountContainer()->getAccountModule('posixAccount')->getAttributes();
 					if (!isset($attrsP['userpassword'][0]) || ($attrsP['userpassword'][0] == '')) {
 						$message = new htmlStatusMessage('ERROR', _("Please enter a user password."));
-						$message->colspan = 5;
-						$return->addElement($message, true);
+						$return->add($message);
 					}
 				}
 				elseif (!isset($attrsI['userpassword'][0]) || ($attrsI['userpassword'][0] == '')) {
 					$message = new htmlStatusMessage('ERROR', _("Please enter a user password."));
-					$message->colspan = 5;
-					$return->addElement($message, true);
+					$return->add($message);
 				}
 			}
 			if (!isset($attrsI['mail'][0])) {
 				$message = new htmlStatusMessage('ERROR', _("Please enter an email address on this page: %s"), '', array($this->getAccountContainer()->getAccountModule('inetOrgPerson')->get_alias()));
-				$message->colspan = 5;
-				$return->addElement($message, true);
+				$return->add($message);
 			}
 			// mailbox quota
 			$mailQuota = '';
 			if (!empty($this->attributes['mailQuota'][0])) {
 				$mailQuota = $this->attributes['mailQuota'][0] / 1024;
 			}
-			$mailQuotaField = new htmlTableExtendedInputField(_('Mailbox quota'), 'mailQuota', $mailQuota, 'mailQuota');
+			$mailQuotaField = new htmlResponsiveInputField(_('Mailbox quota'), 'mailQuota', $mailQuota, 'mailQuota');
 			$mailQuotaField->setMinimumAndMaximumNumber();
-			$return->addElement($mailQuotaField, true);
+			$return->add($mailQuotaField);
 			// invitation policies
-			$return->addElement(new htmlSubTitle(_('Invitation policy')), true);
+			$return->add(new htmlSubTitle(_('Invitation policy')));
 			$invitationContainer = new htmlTable();
-			$invitationContainer->colspan = 3;
 			// default invitation policy
 			$defaultInvPol = $this->invitationPolicies['ACT_MANUAL'];
 			if (isset($this->attributes['kolabInvitationPolicy'])) {
@@ -294,9 +290,9 @@ class kolabUser extends baseModule {
 			$invitationContainer->addElement(new htmlSelect('invPol2', array_values($this->invitationPolicies)));
 			$invitationContainer->addElement(new htmlButton('addInvPol', 'add.svg', true));
 			$invitationContainer->addElement(new htmlHelpLink('invPol'), true);
-			$return->addElement($invitationContainer, true);
+			$return->add($invitationContainer);
 			// mail aliases
-			$return->addElement(new htmlSubTitle(_('Email aliases')), true);
+			$return->add(new htmlSubTitle(_('Email aliases')));
 			$this->addMultiValueInputTextField($return, 'alias', null);
 			// delegates
 			$delegatesData = searchLDAPByAttribute('mail', '*', 'inetOrgPerson', array('dn'), array('user'));
@@ -305,9 +301,8 @@ class kolabUser extends baseModule {
 				$delegates[getAbstractDN($delegatesData[$i]['dn'])] = $delegatesData[$i]['dn'];
 			}
 			uksort($delegates, 'compareDN');
-			$return->addElement(new htmlSubTitle(_('Delegates')), true);
+			$return->add(new htmlSubTitle(_('Delegates')));
 			$delegatesContainer = new htmlTable();
-			$delegatesContainer->colspan = 3;
 			if (isset($this->attributes['kolabDelegate'])) {
 				for ($i = 0; $i < sizeof($this->attributes['kolabDelegate']); $i++) {
 					$delegateSelect = new htmlSelect('delegate' . $i, $delegates, array($this->attributes['kolabDelegate'][$i]));
@@ -329,15 +324,15 @@ class kolabUser extends baseModule {
 			if (empty($this->attributes['kolabDelegate'])) {
 				$delegatesContainer->addElement(new htmlHelpLink('delegate'));
 			}
-			$return->addElement($delegatesContainer, true);
-			$return->addElement(new htmlSubTitle(_('Options')), true);
+			$return->add($delegatesContainer);
+			$return->add(new htmlSubTitle(_('Options')));
 			// allowed recipients
 			$this->addMultiValueInputTextField($return, 'kolabAllowSMTPRecipient', _('Allowed recipients'));
 			// allowed senders
 			$this->addMultiValueInputTextField($return, 'kolabAllowSMTPSender', _('Allowed senders'));
 		}
 		else {
-			$return->addElement(new htmlButton('addObjectClass', _('Add Kolab extension')));
+			$return->add(new htmlButton('addObjectClass', _('Add Kolab extension')));
 		}
 		return $return;
 	}
