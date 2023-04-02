@@ -1198,7 +1198,7 @@ class accountContainer {
 					if (!(strpos($buttonImage, 'http') === 0) && !(strpos($buttonImage, '/') === 0)) {
 						$buttonImage = '../../graphics/' . $buttonImage;
 					}
-					$moduleContainer->addElement(new htmlImage($buttonImage, null, null, getModuleAlias($name, $this->type->getScope())));
+					$moduleContainer->addElement(new htmlImage($buttonImage, '16px', '16px', getModuleAlias($name, $this->type->getScope())));
 				}
 				$moduleContainer->addElement(new htmlTableExtendedInputCheckbox('password_cb_' . $name, true, getModuleAlias($name, $this->type->getScope()), null, false));
 				$moduleContainer->addElement(new htmlSpacer('10px', null));
