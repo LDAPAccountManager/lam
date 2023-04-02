@@ -1184,10 +1184,10 @@ class accountContainer {
 					}
 				}
 				$alternateMailInput = new htmlTableExtendedInputField(_('Alternate recipient'), 'lamPasswordChangeMailAddress', $alternateMail, '410');
-				$container->addElement($alternateMailInput);
+				$container->addElement($alternateMailInput, true);
 			}
 		}
-		$container->addElement(new htmlSpacer(null, '10px'), true);
+		$container->addElement(new htmlSpacer(null, '0.25rem'), true);
 		// password modules
 		$moduleContainer = new htmlTable();
 		foreach ($this->module as $name => $module) {
