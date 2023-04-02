@@ -334,6 +334,10 @@ div.account-types-popup div.columns:last-child {
 		width: 100%;
 	}
 
+	.modal-content {
+		min-width: 90%;
+	}
+
 }
 
 /* tablet */

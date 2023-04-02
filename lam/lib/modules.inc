@@ -1166,6 +1166,7 @@ class accountContainer {
 			$container->addField($forcePwdGroup);
 		}
 		if (isLAMProVersion() && (isset($this->attributes_orig['mail'][0]) || $this->anyModuleManagesMail())) {
+			$container->addVerticalSpacer('0.25rem');
 			$pwdMailCheckbox = new htmlResponsiveInputCheckbox('lamPasswordChangeSendMail', false, _('Send via mail'), '407');
 			$pwdMailCheckbox->setTableRowsToShow(array('lamPasswordChangeMailAddress'));
 			$container->add($pwdMailCheckbox);
@@ -1184,7 +1185,7 @@ class accountContainer {
 		}
 		$container->addVerticalSpacer('0.25rem');
 		// password modules
-		$moduleContainer = new htmlTable();
+		$moduleContainer = new htmlGroup();
 		foreach ($this->module as $name => $module) {
 			if (($module instanceof passwordService) && $module->managesPasswordAttributes()) {
 				$printContainer = true;
@@ -1195,7 +1196,8 @@ class accountContainer {
 					}
 					$moduleContainer->addElement(new htmlImage($buttonImage, '16px', '16px', getModuleAlias($name, $this->type->getScope())));
 				}
-				$moduleContainer->addElement(new htmlTableExtendedInputCheckbox('password_cb_' . $name, true, getModuleAlias($name, $this->type->getScope()), null, false));
+				$moduleContainer->addElement(new htmlInputCheckbox('password_cb_' . $name, true));
+				$moduleContainer->addElement(new htmlOutputText(getModuleAlias($name, $this->type->getScope())));
 				$moduleContainer->addElement(new htmlSpacer('10px', null));
 			}
 		}
