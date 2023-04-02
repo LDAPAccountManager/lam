@@ -2974,15 +2974,19 @@ class htmlSpacer extends htmlElement {
 	/**
 	 * Constructor.
 	 *
-	 * @param String $width width (e.g. 10px)
-	 * @param String $height height (e.g. 10px)
+	 * @param string $width width (e.g. 10px)
+	 * @param string|null $height height (e.g. 10px)
+	 * @param array|null $cssClasses CSS classes
 	 */
-	function __construct($width, $height = null) {
+	function __construct($width, $height = null, ?array $cssClasses = array()) {
 		if ($width !== null) {
 			$this->width = htmlspecialchars($width);
 		}
 		if ($height !== null) {
 			$this->height = htmlspecialchars($height);
+		}
+		if (!empty($cssClasses)) {
+			$this->setCSSClasses($cssClasses);
 		}
 	}
 
@@ -3006,7 +3010,11 @@ class htmlSpacer extends htmlElement {
 		if ($this->height !== null) {
 			$height = 'height: ' . $this->height . ';';
 		}
-		echo "<div style=\"$width $height display: inline-block;\"></div>\n";
+		$classes = '';
+		if (!empty($this->cssClasses)) {
+			$classes = 'class="' . implode(' ', $this->cssClasses) . '"';
+		}
+		echo "<div $classes style=\"$width $height display: inline-block;\"></div>\n";
 		return array();
 	}
 

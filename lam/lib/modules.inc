@@ -1353,10 +1353,9 @@ class accountContainer {
 			$saveButton = new htmlButton('accountContainerSaveAccount', _('Save'));
 			$saveButton->setCSSClasses(array('fullwidth-mobile-only lam-primary'));
 			$leftButtonGroup->addElement($saveButton);
-			$leftButtonGroup->addElement(new htmlSpacer('1px', null));
 			// set password button
 			if ($this->showSetPasswordButton()) {
-				$leftButtonGroup->addElement(new htmlSpacer('15px', null));
+				$leftButtonGroup->addElement(new htmlSpacer('15px', null, array('hide-on-mobile')));
 				$passwordButton = new htmlButton('accountContainerPassword', _('Set password'));
 				$passwordButton->setCSSClasses(array('fullwidth-mobile-only lam-secondary'));
 				$passwordButton->setOnClick("window.lam.dialog.showModal('.modal-pwd-options');");
@@ -1364,12 +1363,12 @@ class accountContainer {
 			}
 			// delete button
 			if (!$this->isNewAccount && checkIfDeleteEntriesIsAllowed($this->get_type()->getId())) {
-				$leftButtonGroup->addElement(new htmlSpacer('15px', null));
+				$leftButtonGroup->addElement(new htmlSpacer('15px', null, array('hide-on-mobile')));
 				$deleteButton = new htmlButton('accountContainerDelete', _('Delete'));
 				$deleteButton->setCSSClasses(array('fullwidth-mobile-only lam-danger'));
 				$leftButtonGroup->addElement($deleteButton);
 			}
-			$leftButtonGroup->addElement(new htmlSpacer('15px', null));
+			$leftButtonGroup->addElement(new htmlSpacer('15px', null, array('hide-on-mobile')));
 			// reset button
 			if (!$this->isNewAccount) {
 				$resetButton = new htmlButton('accountContainerReset', _('Reset changes'));
