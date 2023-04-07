@@ -58,13 +58,13 @@ chop($hostname);
 #use strict; # Use strict for security reasons
 
 @quota_grp;
-@quota_usr; # Filesystems with enabled userquotas
+@quota_usr; # Filesystems with enabled user quotas
 	# vals = DN, PAssword, user, home, (add|rem),
 	#                            quota, (set|get),(u|g), (mountpoint,blocksoft,blockhard,filesoft,filehard)+
 	#                            chown  options
 $|=1; # Disable buffering
 
-sub get_fs { # Load mountpoints from mtab if enabled quotas
+sub get_fs { # Load mount points from mtab if enabled quotas
 	Quota::setmntent();
 	my $i=0;
 	my @args;
@@ -235,7 +235,7 @@ sub createHomedir {
 	}
 	if (! -e $homedir) {
 		system 'mkdir', '-m', $vals[4], $homedir; # Create homedir itself
-		system ("(cd /etc/skel && tar cf - .) | (cd $homedir && tar xmf -)"); # Copy /etc/sekl into homedir
+		system ("(cd /etc/skel && tar cf - .) | (cd $homedir && tar xmf -)"); # Copy /etc/skel into homedir
 		system 'chown', '-hR', "$vals[5]:$vals[6]" , $homedir; # Change owner to new user
 		if (-e '/usr/sbin/useradd.local') {
 			system '/usr/sbin/useradd.local', $vals[0]; # run useradd-script
@@ -249,7 +249,7 @@ sub createHomedir {
 		$return = "ERROR,Lamdaemon ($hostname),Home directory already exists (" . $homedir . ").";
 		logMessage(LOG_ERR, "Home directory already exists (" . $homedir . ")");
 	}
-	($<, $>) = ($>, $<); # Give up root previleges
+	($<, $>) = ($>, $<); # Give up root privileges
 }
 
 #
@@ -261,7 +261,7 @@ sub removeHomedir {
 		logMessage(LOG_ERR, "No home directory specified to delete.");
 		return;
 	}
-	($<, $>) = ($>, $<); # Get root previliges
+	($<, $>) = ($>, $<); # Get root privileges
 	if (-d $vals[3] && $vals[3] ne '/') {
 		if ((stat($vals[3]))[4] eq $vals[4]) {
 			system 'rm', '-R', $vals[3]; # delete home directory
@@ -280,7 +280,7 @@ sub removeHomedir {
 		$return = "Ok";
 		logMessage(LOG_INFO, "The directory " . $vals[3] . " which should be deleted was not found (skipped).");
 	}
-	($<, $>) = ($>, $<); # Give up root previleges
+	($<, $>) = ($>, $<); # Give up root privileges
 }
 
 #
@@ -300,7 +300,7 @@ sub moveHomedir {
 		logMessage(LOG_ERR, "Directory $homedirNew already exists.");
 		return;
 	}
-	($<, $>) = ($>, $<); # Get root previliges
+	($<, $>) = ($>, $<); # Get root privileges
 	if (-d $homedir && $homedir ne '/') {
 		if ((stat($homedir))[4] eq $owner) {
 			system 'mv', $homedir, $homedirNew; # move home directory
@@ -316,7 +316,7 @@ sub moveHomedir {
 		$return = "Ok";
 		logMessage(LOG_INFO, "The directory " . $homedir . " which should be moved was not found (skipped).");
 	}
-	($<, $>) = ($>, $<); # Give up root previleges
+	($<, $>) = ($>, $<); # Give up root privileges
 }
 
 #
@@ -331,7 +331,7 @@ sub chgrpHomedir {
 		logMessage(LOG_ERR, "No home directory specified to move.");
 		return;
 	}
-	($<, $>) = ($>, $<); # Get root previliges
+	($<, $>) = ($>, $<); # Get root privileges
 	if (-d $homedir && $homedir ne '/') {
 		if ((stat($homedir))[4] eq $owner) {
 			system 'chgrp', $group, $homedir; # change group
@@ -347,7 +347,7 @@ sub chgrpHomedir {
 		$return = "Ok";
 		logMessage(LOG_INFO, "The directory " . $homedir . " which should be changed was not found (skipped).");
 	}
-	($<, $>) = ($>, $<); # Give up root previleges
+	($<, $>) = ($>, $<); # Give up root privileges
 }
 
 #
@@ -410,7 +410,7 @@ sub createDirectory {
 		$return = "ERROR,Lamdaemon ($hostname),Directory already exists (" . $homedir . ").";
 		logMessage(LOG_ERR, "Directory already exists (" . $homedir . ")");
 	}
-	($<, $>) = ($>, $<); # Give up root previleges
+	($<, $>) = ($>, $<); # Give up root privileges
 }
 
 #
@@ -465,7 +465,7 @@ sub remQuotas {
 		$return = Quota::setqlim($dev,$user[2],0,0,0,0,1,$group);
 		$i++;
 		}
-	($<, $>) = ($>, $<); # Give up root previleges
+	($<, $>) = ($>, $<); # Give up root privileges
 }
 
 #
@@ -487,7 +487,7 @@ sub setQuotas {
 		}
 		$i++;
 		}
-	($<, $>) = ($>, $<); # Give up root previleges
+	($<, $>) = ($>, $<); # Give up root privileges
 }
 
 #
@@ -514,7 +514,7 @@ sub getQuotas {
 		else { $return = "QUOTA_ENTRY $quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }
 		$i++;
 		}
-	($<, $>) = ($>, $<); # Give up root previleges
+	($<, $>) = ($>, $<); # Give up root privileges
 }
 
 #
