@@ -11,10 +11,12 @@ use \htmlResponsiveRow;
 use \htmlResponsiveSelect;
 use \htmlResponsiveInputField;
 use \htmlGroup;
+use LAM\TYPES\TypeManager;
+
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2022  Roland Gruber
+  Copyright (C) 2003 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -186,7 +188,7 @@ function display_main(?string $message, ?string $error): void {
 		$container->add($msg, 12);
 	}
 
-	$typeManager = new \LAM\TYPES\TypeManager();
+	$typeManager = new TypeManager();
 	$typeList = $typeManager->getConfiguredTypes();
 	$types = array();
 	foreach ($typeList as $type) {
@@ -196,39 +198,49 @@ function display_main(?string $message, ?string $error): void {
 		$types[$type->getId()] = $type->getAlias();
 	}
 	natcasesort($types);
-	$options = array();
+	$optionsToDelete = array();
+	$optionsToInsert = array();
 	foreach ($types as $typeId => $title) {
 		$type = $typeManager->getConfiguredType($typeId);
 		$elements = array();
-		$units = searchLDAP($type->getSuffix(), '(objectclass=organizationalunit)', array('dn'));
+		$units = searchLDAP($type->getSuffix(), '(|(objectclass=organizationalunit)(objectclass=organization))', array('dn'));
 		foreach ($units as $unit) {
 			$elements[getAbstractDN($unit['dn'])] = $unit['dn'];
 		}
-		$options[$title] = $elements;
+		if (!empty($elements)) {
+			$optionsToDelete[$title] = $elements;
+			uasort($optionsToDelete[$title], 'compareDn');
+		}
+		$optionsToInsert[$title] = $elements;
+		if (empty($optionsToInsert[$title])) {
+			$optionsToInsert[$title] = array(getAbstractDN($type->getSuffix()) => $type->getSuffix());
+		}
+		uasort($optionsToInsert[$title], 'compareDn');
 	}
 
-	if (!empty($options)) {
+	if (!empty($optionsToInsert)) {
 		// new OU
-		$container->add(new htmlSubTitle(_("New organisational unit")), 12);
-		$parentOUSelect = new htmlResponsiveSelect('parentOU', $options, array(), _('Parent DN'), '601');
+		$container->add(new htmlSubTitle(_("New organisational unit")));
+		$parentOUSelect = new htmlResponsiveSelect('parentOU', $optionsToInsert, array(), _('Parent DN'), '601');
 		$parentOUSelect->setContainsOptgroups(true);
 		$parentOUSelect->setHasDescriptiveElements(true);
 		$parentOUSelect->setRightToLeftTextDirection(true);
 		$parentOUSelect->setSortElements(false);
-		$container->add($parentOUSelect, 12);
-		$container->add(new htmlResponsiveInputField(_('Name'), 'newOU'), 12);
+		$container->add($parentOUSelect);
+		$container->add(new htmlResponsiveInputField(_('Name'), 'newOU'));
 		$container->addLabel(new htmlOutputText('&nbsp;', false));
 		$container->addField(new htmlButton('createOU', _("Ok")));
 		$container->addVerticalSpacer('2rem');
-
+	}
+	if (!empty($optionsToDelete)) {
 		// delete OU
-		$container->add(new htmlSubTitle(_("Delete organisational unit")), 12);
-		$deleteableOUSelect = new htmlResponsiveSelect('deleteableOU', $options, array(), _('Organisational unit'), '602');
+		$container->add(new htmlSubTitle(_("Delete organisational unit")));
+		$deleteableOUSelect = new htmlResponsiveSelect('deleteableOU', $optionsToDelete, array(), _('Organisational unit'), '602');
 		$deleteableOUSelect->setContainsOptgroups(true);
 		$deleteableOUSelect->setHasDescriptiveElements(true);
 		$deleteableOUSelect->setRightToLeftTextDirection(true);
 		$deleteableOUSelect->setSortElements(false);
-		$container->add($deleteableOUSelect, 12);
+		$container->add($deleteableOUSelect);
 		$container->addLabel(new htmlOutputText('&nbsp;', false));
 		$container->addField(new htmlButton('deleteOU', _("Ok")));
 	}
