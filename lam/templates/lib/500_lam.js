@@ -54,7 +54,7 @@ function listOUchanged(type, element) {
  */
 function listPageNumberKeyPress(url, e) {
 	const pageNumber = document.getElementById('listNavPage').value;
-	if (e.keyCode == 13) {
+	if (e.key === 'Enter') {
 		if (e.preventDefault) {
 			e.preventDefault();
 		}
@@ -98,25 +98,26 @@ function listShowSettingsDialog(title, okText, cancelText) {
  * @returns Boolean result
  */
 function SubmitForm(id, e) {
-	if (e.keyCode == 13) {
+	if (e.key === 'Enter') {
 		if (e.preventDefault) {
 			e.preventDefault();
 		}
 		if (e.returnValue) {
 			e.returnValue = false;
 		}
-		if (window.lastKeyCode) {
+		if (window.lam_lastKey) {
 			// no submit if last key code was arrow key (browser autocompletion)
-			if (window.lastKeyCode == 33 || window.lastKeyCode == 34 ||
-				window.lastKeyCode == 38 || window.lastKeyCode == 40) {
-				window.lastKeyCode = e.keyCode;
+			if (window.lam_lastKey === 'ArrowUp' || window.lam_lastKey === 'ArrowDown' ||
+				window.lam_lastKey === 'PageUp' || window.lam_lastKey === 'PageDown'
+			) {
+				window.lam_lastKey = e.key;
 				return true;
 			}
 		}
 		document.getElementsByName(id)[0].click();
 		return false;
 	}
-	window.lastKeyCode = e.keyCode;
+	window.lam_lastKey = e.key;
 	return true;
 }
 
@@ -1593,7 +1594,7 @@ window.lam.html.activateLightboxes = function() {
 window.lam.html.preventEnter = function() {
 	document.querySelectorAll('.lam-prevent-enter').forEach(item => {
 		item.addEventListener('keypress', function (event) {
-			if (event.keyCode === 10 || event.keyCode === 13) {
+			if (event.key === 'Enter') {
 				event.preventDefault();
 			}
 		});

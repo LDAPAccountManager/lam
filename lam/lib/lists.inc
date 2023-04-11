@@ -508,7 +508,6 @@ class lamList {
 			$value = $this->filters[$attrName];
 		}
 		$filterInput = new htmlInputField('filter' . $attrName, $value, null);
-		$filterInput->setCSSClasses(array($this->type->getScope() . '-bright'));
 		$filterInput->setOnKeyPress("SubmitForm('apply_filter', event);");
 		$filterInput->setFieldSize(null);
 		return $filterInput;
