@@ -2,7 +2,7 @@
 
 #  This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
 #  Copyright (C) 2003 - 2006  Tilo Lutz
-#  Copyright (C) 2006 - 2018  Roland Gruber
+#  Copyright (C) 2006 - 2023  Roland Gruber
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -264,7 +264,7 @@ sub removeHomedir {
 	($<, $>) = ($>, $<); # Get root privileges
 	if (-d $vals[3] && $vals[3] ne '/') {
 		if ((stat($vals[3]))[4] eq $vals[4]) {
-			system 'rm', '-R', $vals[3]; # delete home directory
+			system 'rm', '-Rf', $vals[3]; # delete home directory
 			if (-e '/usr/sbin/userdel.local') {
 				system '/usr/sbin/userdel.local', $vals[0];
 			}
