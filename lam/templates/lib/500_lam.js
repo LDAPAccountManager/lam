@@ -673,9 +673,17 @@ window.lam.dynamicSelect.formListener = function(form) {
 			dynamicOptions = select.dataset.dynamicOptionsOrig;
 		}
 		dynamicOptions = JSON.parse(dynamicOptions);
+		if (select.dataset.dynamicOptionsOrig) {
+			// restore selections if list was filtered and selection was removed due to scrolling
+			const dynamicOptionsOld = JSON.parse(select.dataset.dynamicOptions);
+			for (const dynamicOptionOld of dynamicOptionsOld) {
+				dynamicOptions[dynamicOptionOld.index].selected = dynamicOptionOld.selected;
+			}
+		}
 		const children = Array.from(select.children);
 		children.forEach((option) => {
-			dynamicOptions[option.dataset.index].selected = option.selected;
+			// get selection state from currently displayed options
+			dynamicOptions[parseInt(option.dataset.index)].selected = option.selected;
 		});
 		select.innerHTML = '';
 		dynamicOptions.forEach((item) => {
@@ -708,7 +716,7 @@ window.lam.dynamicSelect.initSelect = function(selectField) {
 	const numOfOptionBeforeToLoadNextSet = 10;
 	const numberOfOptionsToLoad = 200;
 	for (let i = 0; (i < maxOptions) && (i < options.length); i++) {
-		selectField.append(window.lam.dynamicSelect.createOption(options[i], i));
+		selectField.append(window.lam.dynamicSelect.createOption(options[i], options[i].index));
 	}
 	if (options.length > maxOptions) {
 		// activate scrolling logic only if enough options are set
@@ -771,17 +779,26 @@ window.lam.dynamicSelect.onScroll = function(selectField, maxOptions, numOfOptio
  * @param numberOfOptionsToLoad number of options to add
  */
 window.lam.dynamicSelect.loadNextOptions = function(selectField, maxOptions, numberOfOptionsToLoad) {
+	if (selectField.children.length === 0) {
+		return;
+	}
 	const selectBoxHeight = parseInt(selectField.dataset.selectHeight);
 	const singleOptionHeight = parseInt(selectField.dataset.optionHeight);
 	const currentScrollPosition = parseInt(selectField.dataset.selectCurrentScrollTop) + selectBoxHeight;
 	const options = JSON.parse(selectField.dataset.dynamicOptions);
-	const lastIndex = parseInt(selectField.children[selectField.children.length - 1].dataset.index);
+	let lastIndex = parseInt(selectField.children[selectField.children.length - 1].dataset.index);
+	for (let i = 0; i < options.length; i++) {
+		if (options[i].index === lastIndex) {
+			lastIndex = i;
+			break;
+		}
+	}
 	for (let toAdd = 0; toAdd < numberOfOptionsToLoad; toAdd++) {
 		const addPos = lastIndex + 1 + toAdd;
 		if (options[addPos] === undefined) {
 			break;
 		}
-		selectField.append(window.lam.dynamicSelect.createOption(options[addPos], addPos));
+		selectField.append(window.lam.dynamicSelect.createOption(options[addPos], options[addPos].index));
 	}
 	const numberOfOptions = selectField.children.length;
 	let toRemove = numberOfOptions - maxOptions;
@@ -789,7 +806,11 @@ window.lam.dynamicSelect.loadNextOptions = function(selectField, maxOptions, num
 		for (let i = toRemove; i >= 0; i--) {
 			const optionToRemove = selectField.children[i];
 			const indexToRemove = parseInt(optionToRemove.dataset.index);
-			options[indexToRemove].selected = optionToRemove.selected;
+			for (const option of options) {
+				if (option.index === indexToRemove) {
+					option.selected = optionToRemove.selected;
+				}
+			}
 			optionToRemove.remove();
 		}
 	}
@@ -808,10 +829,19 @@ window.lam.dynamicSelect.loadNextOptions = function(selectField, maxOptions, num
  * @param numberOfOptionsToLoad number of options to add
  */
 window.lam.dynamicSelect.loadPreviousOptions = function(selectField, maxOptions, numberOfOptionsToLoad) {
+	if (selectField.children.length === 0) {
+		return;
+	}
 	const singleOptionHeight = parseInt(selectField.dataset.optionHeight);
 	const currentScrollPosition = parseInt(selectField.dataset.selectCurrentScrollTop);
 	const options = JSON.parse(selectField.dataset.dynamicOptions);
-	const lastIndex = parseInt(selectField.children[0].dataset.index);
+	let lastIndex = parseInt(selectField.children[0].dataset.index);
+	for (let i = 0; i < options.length; i++) {
+		if (options[i].index === lastIndex) {
+			lastIndex = i;
+			break;
+		}
+	}
 	let added = 0;
 	for (let toAdd = 0; toAdd < numberOfOptionsToLoad; toAdd++) {
 		const addPos = lastIndex - 1 - toAdd;
@@ -819,7 +849,7 @@ window.lam.dynamicSelect.loadPreviousOptions = function(selectField, maxOptions,
 			break;
 		}
 		added++;
-		selectField.prepend(window.lam.dynamicSelect.createOption(options[addPos], addPos));
+		selectField.prepend(window.lam.dynamicSelect.createOption(options[addPos], options[addPos].index));
 	}
 	const numberOfOptions = selectField.children.length;
 	const toRemove = numberOfOptions - maxOptions;
@@ -827,7 +857,11 @@ window.lam.dynamicSelect.loadPreviousOptions = function(selectField, maxOptions,
 		for (let i = maxOptions; i < selectField.children.length; i++) {
 			const optionToRemove = selectField.children[i];
 			const indexToRemove = parseInt(optionToRemove.dataset.index);
-			options[indexToRemove].selected = optionToRemove.selected;
+			for (const option of options) {
+				if (option.index === indexToRemove) {
+					option.selected = optionToRemove.selected;
+				}
+			}
 			optionToRemove.remove();
 		}
 	}

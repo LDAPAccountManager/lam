@@ -1661,6 +1661,7 @@ abstract class baseModule {
 		$firstSelect->setMultiSelect(true);
 		$firstSelect->setRightToLeftTextDirection($rightToLeftText);
 		$firstSelect->setSortElements(false);
+		$firstSelect->enableDynamicScrolling();
 		$firstRow->add($firstSelect, 12);
 		if ($showFilter) {
 			$firstFilterGroup = new htmlGroup();
@@ -1692,6 +1693,7 @@ abstract class baseModule {
 		$secondSelect->setMultiSelect(true);
 		$secondSelect->setRightToLeftTextDirection($rightToLeftText);
 		$secondSelect->setSortElements(false);
+		$secondSelect->enableDynamicScrolling();
 		$secondRow->add($secondSelect, 12);
 		if ($showFilter) {
 			$secondFilterGroup = new htmlGroup();
