@@ -30,7 +30,7 @@ class InstalledVersions
     'aliases' => 
     array (
     ),
-    'reference' => 'c44299430013bae161dceb0ae71a20a8d44b8efd',
+    'reference' => 'a4a883146ffb0ed5a42ff2365ad4dfcbee460905',
     'name' => '__root__',
   ),
   'versions' => 
@@ -42,7 +42,7 @@ class InstalledVersions
       'aliases' => 
       array (
       ),
-      'reference' => 'c44299430013bae161dceb0ae71a20a8d44b8efd',
+      'reference' => 'a4a883146ffb0ed5a42ff2365ad4dfcbee460905',
     ),
     'beberlei/assert' => 
     array (
@@ -240,12 +240,12 @@ class InstalledVersions
     ),
     'php-http/discovery' => 
     array (
-      'pretty_version' => '1.15.2',
-      'version' => '1.15.2.0',
+      'pretty_version' => '1.15.3',
+      'version' => '1.15.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => '5cc428320191ac1d0b6520034c2dc0698628ced5',
+      'reference' => '3ccd28dd9fb34b52db946abea1b538568e34eae8',
     ),
     'phpmailer/phpmailer' => 
     array (
@@ -276,12 +276,12 @@ class InstalledVersions
     ),
     'psr/http-client' => 
     array (
-      'pretty_version' => '1.0.1',
-      'version' => '1.0.1.0',
+      'pretty_version' => '1.0.2',
+      'version' => '1.0.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '2dfb5f6c5eff0e91e20e913f8c5452ed95b86621',
+      'reference' => '0955afe48220520692d2d09f7ab7e0f93ffd6a31',
     ),
     'psr/http-client-implementation' => 
     array (
@@ -293,29 +293,29 @@ class InstalledVersions
     ),
     'psr/http-factory' => 
     array (
-      'pretty_version' => '1.0.1',
-      'version' => '1.0.1.0',
+      'pretty_version' => '1.0.2',
+      'version' => '1.0.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '12ac7fcd07e5b077433f5f2bee95b3a771bf61be',
+      'reference' => 'e616d01114759c4c489f93b099585439f795fe35',
     ),
     'psr/http-factory-implementation' => 
     array (
       'provided' => 
       array (
-        0 => '*',
-        1 => '^1.0',
+        0 => '^1.0',
+        1 => '*',
       ),
     ),
     'psr/http-message' => 
     array (
-      'pretty_version' => '1.0.1',
-      'version' => '1.0.1.0',
+      'pretty_version' => '1.1',
+      'version' => '1.1.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'f6561bf28d520154e4b0ec72be95418abe6d9363',
+      'reference' => 'cb6ce4845ce34a8ad9e68117c10ee90a29919eba',
     ),
     'psr/http-message-implementation' => 
     array (
@@ -327,21 +327,21 @@ class InstalledVersions
     ),
     'psr/http-server-handler' => 
     array (
-      'pretty_version' => '1.0.1',
-      'version' => '1.0.1.0',
+      'pretty_version' => '1.0.2',
+      'version' => '1.0.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'aff2f80e33b7f026ec96bb42f63242dc50ffcae7',
+      'reference' => '84c4fb66179be4caaf8e97bd239203245302e7d4',
     ),
     'psr/http-server-middleware' => 
     array (
-      'pretty_version' => '1.0.1',
-      'version' => '1.0.1.0',
+      'pretty_version' => '1.0.2',
+      'version' => '1.0.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '2296f45510945530b9dceb8bcedb5cb84d40c5f5',
+      'reference' => 'c1481f747daaa6a0782775cd6a8c26a1bf4a3829',
     ),
     'psr/log' => 
     array (
@@ -431,12 +431,12 @@ class InstalledVersions
     ),
     'symfony/http-client' => 
     array (
-      'pretty_version' => 'v5.4.21',
-      'version' => '5.4.21.0',
+      'pretty_version' => 'v5.4.22',
+      'version' => '5.4.22.0',
       'aliases' => 
       array (
       ),
-      'reference' => '6b88914a7f1bf144df15904f60a19be78a67a3b2',
+      'reference' => '4cd1b7e7ee846c8b22cb47cbc435344af9b2a8bf',
     ),
     'symfony/http-client-contracts' => 
     array (
@@ -546,12 +546,12 @@ class InstalledVersions
     ),
     'symfony/process' => 
     array (
-      'pretty_version' => 'v5.4.21',
-      'version' => '5.4.21.0',
+      'pretty_version' => 'v5.4.22',
+      'version' => '5.4.22.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'd4ce417ebcb0b7d090b4c178ed6d3accc518e8bd',
+      'reference' => '4b850da0cc3a2a9181c1ed407adbca4733dc839b',
     ),
     'symfony/psr-http-message-bridge' => 
     array (
@@ -573,12 +573,12 @@ class InstalledVersions
     ),
     'symfony/translation' => 
     array (
-      'pretty_version' => 'v5.4.21',
-      'version' => '5.4.21.0',
+      'pretty_version' => 'v5.4.22',
+      'version' => '5.4.22.0',
       'aliases' => 
       array (
       ),
-      'reference' => '6996affeea65705086939894b77110e9a7f80874',
+      'reference' => '9a401392f01bc385aa42760eff481d213a0cc2ba',
     ),
     'symfony/translation-contracts' => 
     array (

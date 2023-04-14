@@ -25,6 +25,7 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         '16040cf78e404de30085045d3863ed51' => __DIR__ . '/..' . '/facile-it/php-jose-verifier/src/functions/jose_secret_key.php',
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
         'e39a8b23c42d4e1452234d762b03835a' => __DIR__ . '/..' . '/ramsey/uuid/src/functions.php',
+        '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
         '51fcf4e06c07cc00c920b44bcd900e7a' => __DIR__ . '/..' . '/thecodingmachine/safe/deprecated/apc.php',
         '47f619d9197b36cf5ab70738d7743fe2' => __DIR__ . '/..' . '/thecodingmachine/safe/deprecated/libevent.php',
         'ea6bb8a12ef9b68f6ada99058e530760' => __DIR__ . '/..' . '/thecodingmachine/safe/deprecated/mssql.php',
@@ -114,7 +115,6 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         '4af1dca6db8c527c6eed27bff85ff0e5' => __DIR__ . '/..' . '/thecodingmachine/safe/generated/yaz.php',
         'fe43ca06499ac37bc2dedd823af71eb5' => __DIR__ . '/..' . '/thecodingmachine/safe/generated/zip.php',
         '356736db98a6834f0a886b8d509b0ecd' => __DIR__ . '/..' . '/thecodingmachine/safe/generated/zlib.php',
-        '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
         'ba61337b858c088ff9f16a5fc3badbeb' => __DIR__ . '/..' . '/facile-it/php-openid-client/src/functions/base64url_decode.php',
         'd4a8a901fd39fc07eb96403508f8f03f' => __DIR__ . '/..' . '/facile-it/php-openid-client/src/functions/base64url_encode.php',
         'c81c91c32460d498a356b65d5a21fc4c' => __DIR__ . '/..' . '/facile-it/php-openid-client/src/functions/check_server_response.php',
@@ -357,8 +357,8 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-factory/src',
-            1 => __DIR__ . '/..' . '/psr/http-message/src',
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+            1 => __DIR__ . '/..' . '/psr/http-factory/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
