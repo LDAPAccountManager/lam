@@ -850,11 +850,11 @@
           </listitem>
 
           <listitem>
-            <para>Client id: please enter your integration key.</para>
+            <para>Client id: please enter your client id.</para>
           </listitem>
 
           <listitem>
-            <para>Secret key: please enter your secret key.</para>
+            <para>Secret key: please enter your client secret.</para>
           </listitem>
         </itemizedlist>
 
