@@ -103,6 +103,7 @@ if (empty($serials)) {
 
 if (isset($_POST['submit']) || isset($_POST['sig_response']) // WebAuthn
     || (isset($_GET['state']) && isset($_GET['code'])) // Okta
+	|| (isset($_GET['state']) && isset($_GET['duo_code'])) // Duo
     || (isset($_GET['session_state']) && isset($_GET['redirect_uri']))) { // OpenID
 	$twoFactorInput = isset($_POST['2factor']) ? $_POST['2factor'] : null;
 	$serial = isset($_POST['serial']) ? $_POST['serial'] : null;

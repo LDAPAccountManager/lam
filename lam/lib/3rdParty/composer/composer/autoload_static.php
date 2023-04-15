@@ -213,12 +213,14 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         ),
         'F' => 
         array (
+            'Firebase\\JWT\\' => 13,
             'Facile\\OpenIDClient\\' => 20,
             'Facile\\JoseVerifier\\' => 20,
             'FG\\' => 3,
         ),
         'D' => 
         array (
+            'Duo\\DuoUniversal\\' => 17,
             'Doctrine\\Inflector\\' => 19,
         ),
         'C' => 
@@ -357,8 +359,8 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -439,6 +441,10 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
         ),
+        'Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
         'Facile\\OpenIDClient\\' => 
         array (
             0 => __DIR__ . '/..' . '/facile-it/php-openid-client/src',
@@ -450,6 +456,10 @@ class ComposerStaticInited73ceb9c1bdec18b7c6d09764d1bce5
         'FG\\' => 
         array (
             0 => __DIR__ . '/..' . '/fgrosse/phpasn1/lib',
+        ),
+        'Duo\\DuoUniversal\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/duosecurity/duo_universal_php/src',
         ),
         'Doctrine\\Inflector\\' => 
         array (

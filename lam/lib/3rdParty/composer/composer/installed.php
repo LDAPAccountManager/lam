@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'a4a883146ffb0ed5a42ff2365ad4dfcbee460905',
+    'reference' => '286232b38c34803aa950ed853c2e2e35d38f6315',
     'name' => '__root__',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'a4a883146ffb0ed5a42ff2365ad4dfcbee460905',
+      'reference' => '286232b38c34803aa950ed853c2e2e35d38f6315',
     ),
     'beberlei/assert' => 
     array (
@@ -56,6 +56,15 @@
       ),
       'reference' => 'd9d313a36c872fd6ee06d9a6cbcf713eaa40f024',
     ),
+    'duosecurity/duo_universal_php' => 
+    array (
+      'pretty_version' => '1.0.2',
+      'version' => '1.0.2.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '8734a47480d2d2f0539e8ee782675e052025d026',
+    ),
     'facile-it/php-jose-verifier' => 
     array (
       'pretty_version' => '0.3.0',
@@ -82,6 +91,15 @@
       array (
       ),
       'reference' => '42060ed45344789fb9f21f9f1864fc47b9e3507b',
+    ),
+    'firebase/php-jwt' => 
+    array (
+      'pretty_version' => 'v6.4.0',
+      'version' => '6.4.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '4dd1e007f22a927ac77da5a3fbb067b42d3bc224',
     ),
     'guzzlehttp/psr7' => 
     array (

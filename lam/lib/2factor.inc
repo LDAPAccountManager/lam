@@ -2,6 +2,8 @@
 namespace LAM\LIB\TWO_FACTOR;
 use DateInterval;
 use DateTime;
+use Duo\DuoUniversal\Client;
+use Duo\DuoUniversal\DuoException;
 use Exception;
 use \htmlResponsiveRow;
 use \LAM\LOGIN\WEBAUTHN\WebauthnManager;
@@ -454,35 +456,55 @@ class DuoProvider extends BaseProvider {
 	 * @see \LAM\LIB\TWO_FACTOR\BaseProvider::addCustomInput()
 	 */
 	public function addCustomInput(&$row, $userDn) {
-		$loginAttribute = $this->getLoginAttributeValue($userDn);
-		$aKey = $this->getAKey();
-		include_once(__DIR__ . "/3rdParty/duo/Web.php");
-		$signedRequest = \Duo\Web::signRequest($this->config->twoFactorAuthenticationClientId,
-				$this->config->twoFactorAuthenticationSecretKey,
-				$aKey,
-				$loginAttribute);
-		if ($this->config->isSelfService) {
-			$row->add(new htmlScript("../lib/extra/duo/Duo-Web-v2.js", false, false), 12);
+		$pathPrefix = $this->config->isSelfService ? '../' : '';
+		$row->add(new htmlImage($pathPrefix . '../graphics/duo.png'));
+		if (!empty($_GET['duo_code'])) {
+			// authentication is verified
+			return;
 		}
-		else {
-			$row->add(new htmlScript("lib/extra/duo/Duo-Web-v2.js", false, false), 12);
+		// authentication not started, provide redirect URL
+		if (empty($_GET['duoRedirect'])) {
+			$jsBlock = '
+			document.addEventListener("DOMContentLoaded", function(event) {
+				var currentLocation = window.location.href;
+				if (currentLocation.includes("?")) {
+					currentLocation = currentLocation.substring(0, currentLocation.indexOf("?"));
+				}
+				if (currentLocation.includes("#")) {
+					currentLocation = currentLocation.substring(0, currentLocation.indexOf("#"));
+				}
+				var targetUrl = currentLocation + "?duoRedirect=" + currentLocation;
+				window.location.href = targetUrl;
+			});
+			';
+			$row->add(new htmlJavaScript($jsBlock));
 		}
-		$iframe = new htmlIframe('duo_iframe');
-		$iframe->addDataAttribute('host', $this->config->twoFactorAuthenticationURL);
-		$iframe->addDataAttribute('sig-request', $signedRequest);
-		$row->add($iframe, 12);
-	}
-
-	/**
-	 * Returns the aKey.
-	 *
-	 * @return String aKey
-	 */
-	private function getAKey() {
-		if (empty($_SESSION['duo_akey'])) {
-			$_SESSION['duo_akey'] = generateRandomPassword(40, false);
+		// start authentication
+		elseif (!empty($_GET['duoRedirect'])) {
+			include_once __DIR__ . '/3rdParty/composer/autoload.php';
+			try {
+				$duoClient = new Client(
+					$this->config->twoFactorAuthenticationClientId,
+					$this->config->twoFactorAuthenticationSecretKey,
+					$this->config->twoFactorAuthenticationURL,
+					$_GET['duoRedirect']
+				);
+				$duoClient->healthCheck();
+				$state = $duoClient->generateState();
+				$_SESSION['duo_state'] = $state;
+				$_SESSION['duo_redirect'] = $_GET['duoRedirect'];
+				$loginAttribute = $this->getLoginAttributeValue($userDn);
+				$redirectUrl = $duoClient->createAuthUrl($loginAttribute, $state);
+				$jsBlock = '
+					document.addEventListener("DOMContentLoaded", function(event) {
+						window.location.href = "' . $redirectUrl . '";
+					});
+				';
+				$row->add(new htmlJavaScript($jsBlock));
+			} catch (DuoException $e) {
+				$row->add(new htmlStatusMessage('ERROR', _('Duo connection failed'), $e->getMessage()));
+			}
 		}
-		return $_SESSION['duo_akey'];
 	}
 
 	/**
@@ -492,15 +514,26 @@ class DuoProvider extends BaseProvider {
 	public function verify2ndFactor($user, $password, $serial, $twoFactorInput) {
 		logNewMessage(LOG_DEBUG, 'DuoProvider: Checking 2nd factor for ' . $user);
 		$loginAttribute = $this->getLoginAttributeValue($user);
-		$response = $_POST['sig_response'];
-		include_once(__DIR__ . "/3rdParty/duo/Web.php");
-		$result = \Duo\Web::verifyResponse(
+		$state = $_GET['state'];
+		$code = $_GET['duo_code'];
+		if ($state !== $_SESSION['duo_state']) {
+			logNewMessage(LOG_ERR, 'DUO state does not match');
+			return false;
+		}
+		include_once __DIR__ . '/3rdParty/composer/autoload.php';
+		try {
+			$duoClient = new Client(
 				$this->config->twoFactorAuthenticationClientId,
 				$this->config->twoFactorAuthenticationSecretKey,
-				$this->getAKey(),
-				$response);
-		if ($result === $loginAttribute) {
+				$this->config->twoFactorAuthenticationURL,
+				$_SESSION['duo_redirect']
+			);
+			$duoResult = $duoClient->exchangeAuthorizationCodeFor2FAResult($code, $loginAttribute);
+			logNewMessage(LOG_DEBUG, print_r($duoResult, true));
 			return true;
+		} catch (DuoException $e) {
+			logNewMessage(LOG_ERR, 'DUO error: ' . $e->getMessage());
+			return false;
 		}
 		logNewMessage(LOG_ERR, 'DUO authentication failed');
 		return false;

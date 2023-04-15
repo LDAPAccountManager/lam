@@ -1143,8 +1143,10 @@ lib/3rdParty/composer/brick                                          B        Be
 lib/3rdParty/composer/christian-riesen                               B        Christian Riesen
 lib/3rdParty/composer/composer                                       B        Nils Adermann, Jordi Boggiano
 lib/3rdParty/composer/doctrine                                       B        Doctrine Project
+lib/3rdParty/composer/duo                                            E        Cisco Systems, Inc. and/or its affiliates
 lib/3rdParty/composer/facile-it                                      B        Thomas Vargiu
 lib/3rdParty/composer/fgrosse                                        B  2015  Friedrich Große
+lib/3rdParty/composer/firebase                                       F  2011  Neuman Vong
 lib/3rdParty/composer/guzzlehttp                                     B  2015  Michael Dowling
 lib/3rdParty/composer/http-interop                                   B  2016  Woody Gilk
 lib/3rdParty/composer/illuminate                                     B        Taylor Otwell
@@ -1177,8 +1179,6 @@ templates/lib/*sweetalert2*.js                                       B
 style/*sweetalert2*.css                                              B
 templates/lib/extra/cropperjs                                        B  2018  Chen Fengyuan
 style/600_cropper*.css                                               B  2018  Chen Fengyuan
-templates/lib/extra/duo/*.js                                         E  2019  Duo Security
-lib/3rdParty/duo/*.php                                               E  2019  Duo Security
 templates/lib/extra/friendlyCaptcha                                  B
 graphics/webauthn.svg                                                F  2017  Duo Security, Inc.
 templates/lib/400_Sortable*.js                                       B        RubaXa, owenm
