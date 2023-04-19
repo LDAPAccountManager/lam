@@ -246,6 +246,9 @@ class TreeView {
 		if (in_array('sambasamaccount', $objectClasses)) {
 			$icon = 'samba.svg';
 		}
+		elseif (in_array('pwdpolicy', $objectClasses)) {
+			$icon = 'locked.svg';
+		}
 		elseif (in_array('person', $objectClasses) ||
 			in_array('organizationalperson', $objectClasses) ||
 			in_array('inetorgperson', $objectClasses) ||
