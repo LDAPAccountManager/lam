@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '286232b38c34803aa950ed853c2e2e35d38f6315',
+    'reference' => '515c04fa1cb6ca63b5a0d01717fab1e318f2371e',
     'name' => '__root__',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '286232b38c34803aa950ed853c2e2e35d38f6315',
+      'reference' => '515c04fa1cb6ca63b5a0d01717fab1e318f2371e',
     ),
     'beberlei/assert' => 
     array (
@@ -103,12 +103,12 @@
     ),
     'guzzlehttp/psr7' => 
     array (
-      'pretty_version' => '1.9.0',
-      'version' => '1.9.0.0',
+      'pretty_version' => '1.9.1',
+      'version' => '1.9.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'e98e3e6d4f86621a9b75f623996e6bbdeb4b9318',
+      'reference' => 'e4490cabc77465aaee90b20cfc9a770f8c04be6b',
     ),
     'http-interop/http-factory-guzzle' => 
     array (
@@ -315,8 +315,8 @@
     array (
       'provided' => 
       array (
-        0 => '1.0',
-        1 => '*',
+        0 => '*',
+        1 => '1.0',
       ),
     ),
     'psr/http-server-handler' => 
