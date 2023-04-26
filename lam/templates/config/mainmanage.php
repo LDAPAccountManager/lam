@@ -601,18 +601,18 @@ if (isset($_POST['submitFormData'])) {
 	);
 	$errorLogSelect = new htmlResponsiveSelect('errorReporting', $errorLogOptions, array($cfg->errorReporting), _('PHP error reporting'), '244');
 	$errorLogSelect->setHasDescriptiveElements(true);
-	$row->add($errorLogSelect, 12);
+	$row->add($errorLogSelect);
 
 	// mail options
 	if (isLAMProVersion()) {
 		$row->add(new htmlSubTitle(_('Mail options')), 12);
 		$mailServer = new htmlResponsiveInputField(_("Mail server"), 'mailServer', $cfg->mailServer, '253');
-		$row->add($mailServer, 12);
+		$row->add($mailServer);
 		$mailUser = new htmlResponsiveInputField(_("User name"), 'mailUser', $cfg->mailUser, '254');
-		$row->add($mailUser, 12);
+		$row->add($mailUser);
 		$mailPassword = new htmlResponsiveInputField(_("Password"), 'mailPassword', $cfg->mailPassword, '255');
 		$mailPassword->setIsPassword(true);
-		$row->add($mailPassword, 12);
+		$row->add($mailPassword);
 		$mailEncryptionOptions = array(
 	        'TLS' => LAMCfgMain::SMTP_TLS,
 			'SSL' => LAMCfgMain::SMTP_SSL,
@@ -621,9 +621,14 @@ if (isset($_POST['submitFormData'])) {
 		$selectedMailEncryption = empty($cfg->mailEncryption) ? LAMCfgMain::SMTP_TLS : $cfg->mailEncryption;
 		$mailEncryptionSelect = new htmlResponsiveSelect('mailEncryption', $mailEncryptionOptions, array($selectedMailEncryption), _('Encryption protocol'), '256');
 		$mailEncryptionSelect->setHasDescriptiveElements(true);
-		$row->add($mailEncryptionSelect, 12);
+		$row->add($mailEncryptionSelect);
+		addSecurityTokenToSession(false);
+		$mailTestButton = new htmlButton('testSmtp', _('Test settings'));
+		$mailTestButton->setOnClick("window.lam.smtp.test(event, '" . getSecurityTokenName()
+            . "', '" . getSecurityTokenValue() . "', '" . _('Ok') . "')");
+		$row->addLabel(new htmlOutputText("&nbsp;", false));
+		$row->addField($mailTestButton);
 	}
-	$row->addVerticalSpacer('3rem');
 
 	// webauthn management
 	if (extension_loaded('PDO')
@@ -633,7 +638,7 @@ if (isset($_POST['submitFormData'])) {
 		try {
 			$database = $webAuthnManager->getDatabase();
 			if ($database->hasRegisteredCredentials()) {
-				$row->add(new htmlSubTitle(_('WebAuthn devices')), 12);
+				$row->add(new htmlSubTitle(_('WebAuthn devices')));
 				$webauthnSearchField = new htmlResponsiveInputField(_('User DN'), 'webauthn_searchTerm', null, '252');
 				$row->add($webauthnSearchField, 12);
 				$row->addVerticalSpacer('0.5rem');
@@ -641,19 +646,19 @@ if (isset($_POST['submitFormData'])) {
 				$resultDiv = new htmlDiv('webauthn_results', new htmlOutputText(''), array('lam-webauthn-results', 'text-left'));
 				addSecurityTokenToSession(false);
 				$resultDiv->addDataAttribute('sec_token_value', getSecurityTokenValue());
-				$row->add($resultDiv, 12);
+				$row->add($resultDiv);
 				$confirmationDiv = new htmlDiv('webauthnDeleteConfirm', new htmlOutputText(_('Do you really want to remove this device?')), array('hidden'));
-				$row->add($confirmationDiv, 12);
+				$row->add($confirmationDiv);
 			}
 		}
 		catch (LAMException $e) {
 		    logNewMessage(LOG_ERR, 'Webauthn error: ' . $e->getTitle() . ' ' . $e->getMessage());
-		    $row->add(new htmlStatusMessage('ERROR', $e->getTitle()), 12);
+		    $row->add(new htmlStatusMessage('ERROR', $e->getTitle()));
         }
 	}
 
 	// change master password
-	$row->add(new htmlSubTitle(_("Change master password")), 12);
+	$row->add(new htmlSubTitle(_("Change master password")));
 	$pwd1 = new htmlResponsiveInputField(_("New master password"), 'masterpassword', '', '235');
 	$pwd1->setIsPassword(true, false, true);
 	$row->add($pwd1, 12);

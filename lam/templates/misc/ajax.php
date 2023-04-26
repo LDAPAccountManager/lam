@@ -14,6 +14,7 @@ use \htmlOutputText;
 use \htmlButton;
 use \LAM\LOGIN\WEBAUTHN\WebauthnManager;
 use \LAMCfgMain;
+use LAMException;
 
 /*
 
@@ -117,6 +118,11 @@ class Ajax {
 		if ($function === 'webauthnDevices') {
 			$this->enforceUserIsLoggedInToMainConfiguration();
 			$this->manageWebauthnDevices();
+			die();
+		}
+		if ($function === 'testSmtp') {
+			$this->enforceUserIsLoggedInToMainConfiguration();
+			$this->testSmtpConnection();
 			die();
 		}
 		enforceUserIsLoggedIn();
@@ -563,6 +569,27 @@ class Ajax {
 		ob_end_clean();
 		$result = array('resultHtml' => $out);
 		echo json_encode($result);
+	}
+
+	private function testSmtpConnection() {
+		$server = $_POST['server'];
+		$user = $_POST['user'];
+		$password = $_POST['password'];
+		$encryption = $_POST['encryption'];
+		if (empty($server)) {
+			$result = array('info' => _('Local SMTP server cannot be tested.'));
+			echo json_encode($result);
+			return;
+		}
+		try {
+			testSmtpConnection($server, $user, $password, $encryption);
+			$result = array('info' => _('Connection to SMTP server was successful.'));
+			echo json_encode($result);
+		}
+		catch (LAMException $e) {
+			$result = array('error' => _('Unable to connect to SMTP server.'), 'details' => $e->getMessage());
+			echo json_encode($result);
+		}
 	}
 
 }

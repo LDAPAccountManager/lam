@@ -3,6 +3,7 @@ June 2023 8.4
   - Docker: support for linux/arm64 (Apple Silicon)
   - LAM Pro:
    -> PPolicy: support to edit existing policies that are not based on "device" (but e.g. on "person")
+   -> SMTP server settings: settings can be tested before saving
   - Fixed bugs:
    -> Selecting entries from a filtered list selection did not work (223)
    -> Lamdaemon: support to delete home directories if "rm" command is aliased to "rm -i"

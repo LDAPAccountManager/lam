@@ -1414,6 +1414,47 @@ function extractDNSuffix($dn) {
 }
 
 /**
+ * Checks if the SMTP connection with the given settings is fine.
+ *
+ * @param string $server SMTP server
+ * @param string $user user name
+ * @param string $password password
+ * @param string $encryption encryption type
+ * @throws LAMException error during SMTP connection
+ */
+function testSmtpConnection(string $server, string $user, string $password, string $encryption): void {
+	include_once __DIR__ . '/3rdParty/composer/autoload.php';
+	$mailer = new PHPMailer\PHPMailer\PHPMailer(true);
+	try {
+		$mailer->isSMTP();
+		$serverParts = explode(':', $server);
+		$mailer->Host = $serverParts[0];
+		$mailer->Port = $serverParts[1];
+		if (!empty($user)) {
+			$mailer->SMTPAuth = true;
+			$mailer->Username = $user;
+			$mailer->Password = $password;
+			$mailEncryption = $encryption;
+			if (empty($mailEncryption) || ($mailEncryption === LAMCfgMain::SMTP_TLS)) {
+				$mailer->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+			}
+			elseif ($mailEncryption === LAMCfgMain::SMTP_SSL) {
+				$mailer->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
+			}
+			else {
+				$mailer->SMTPAutoTLS = false;
+			}
+		}
+		$mailer->CharSet = PHPMailer\PHPMailer\PHPMailer::CHARSET_UTF8;
+		$mailer->Timeout = 30;
+		$mailer->smtpConnect();
+	}
+	catch (Exception $e) {
+		throw new LAMException(null, $e->getMessage());
+	}
+}
+
+/**
  * Sends the password mail.
  *
  * @param String $pwd new password

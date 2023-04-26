@@ -1009,6 +1009,23 @@ window.lam.dialog.showInfo = function(text, okText) {
 };
 
 /**
+ * Shows an error dialog.
+ *
+ * @param title dialog title
+ * @param text dialog text
+ * @param okText ok button text
+ */
+window.lam.dialog.showError = function(title, text, okText) {
+	Swal.fire({
+		icon: 'error',
+		title: title,
+		text: text,
+		confirmButtonText: okText,
+		width: 'auto'
+	});
+};
+
+/**
  * Shows a dialog message.
  *
  * @param title dialog title
@@ -3157,6 +3174,42 @@ window.lam.tooltip.init = function() {
 			arrow: false,
 			delay: [100, 20]
 		});
+	});
+}
+
+window.lam.smtp = window.lam.smtp || {};
+
+/**
+ * Tests the SMTP settings.
+ *
+ * @param event event
+ * @param tokenName security token name
+ * @param tokenValue security token value
+ * @param okText text to close dialog
+ */
+window.lam.smtp.test = function(event, tokenName, tokenValue, okText) {
+	event.preventDefault();
+	document.getElementById('btn_testSmtp').disabled = true;
+	let data = new FormData();
+	data.append(tokenName, tokenValue);
+	data.append('server', document.getElementById('mailServer').value);
+	data.append('user', document.getElementById('mailUser').value);
+	data.append('password', document.getElementById('mailPassword').value);
+	data.append('encryption', document.getElementById('mailEncryption').value);
+	const url = '../misc/ajax.php?function=testSmtp';
+	fetch(url, {
+		method: 'POST',
+		body: data
+	})
+	.then(async response => {
+		const jsonData = await response.json();
+		if (jsonData.info) {
+			window.lam.dialog.showInfo(jsonData.info, okText);
+		}
+		else if (jsonData.error) {
+			window.lam.dialog.showError(jsonData.error, jsonData.details, okText);
+		}
+		document.getElementById('btn_testSmtp').disabled = false;
 	});
 }
 
