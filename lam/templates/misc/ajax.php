@@ -571,7 +571,10 @@ class Ajax {
 		echo json_encode($result);
 	}
 
-	private function testSmtpConnection() {
+	/**
+	 * Checks if the SMTP settings in main config are valid.
+	 */
+	private function testSmtpConnection(): void {
 		$server = $_POST['server'];
 		$user = $_POST['user'];
 		$password = $_POST['password'];
