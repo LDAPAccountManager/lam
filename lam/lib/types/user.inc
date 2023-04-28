@@ -96,10 +96,14 @@ class user extends baseType {
 	 * @return String title text
 	 */
 	public function getTitleBarTitle($container) {
+		$title = '';
 		ob_start();
 		$tabIndex = 10000;
-		parseHtml(null, $this->buildAccountStatusIcon($container), array(), false, $tabIndex, $container->get_type()->getScope());
-		$title = ob_get_contents();
+		$iconContent = $this->buildAccountStatusIcon($container);
+		if ($iconContent !== null) {
+			parseHtml(null, $iconContent, array(), false, $tabIndex, $container->get_type()->getScope());
+			$title = ob_get_contents();
+		}
 		ob_end_clean();
 		// get attributes
 		$personalAttributes = null;
@@ -205,20 +209,25 @@ class user extends baseType {
 	 * Builds the HTML code for the icon that shows the account status (locked/unlocked).
 	 *
 	 * @param accountContainer $container account container
-	 * @return htmlElement status icon
+	 * @return htmlElement|null status icon
 	 */
-	private function buildAccountStatusIcon($container): htmlElement {
+	private function buildAccountStatusIcon(accountContainer $container): ?htmlElement {
 		$statusContent = new htmlGroup();
 		$details = array();
 		$lockableOptions = array();
+		$statusSupported = false;
 		foreach ($container->getAccountModules() as $module) {
 			$interfaces = class_implements($module);
 			if (!in_array('AccountStatusProvider', $interfaces)) {
 				continue;
 			}
+			$statusSupported = true;
 			$dummyAttributes = null;
 			$details = array_merge($details, $module->getAccountStatusDetails($container->get_type(), $dummyAttributes));
 			$lockableOptions = array_merge($lockableOptions, $module->getAccountStatusPossibleLockOptions($container->get_type(), $dummyAttributes));
+		}
+		if (!$statusSupported) {
+			return null;
 		}
 		$accountStatus = new AccountStatus($details);
 		$mainIcon = 'unlocked.svg';
