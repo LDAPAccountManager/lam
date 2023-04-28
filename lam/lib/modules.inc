@@ -9,7 +9,7 @@ use function LAM\TYPES\getScopeFromTypeId;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2022  Roland Gruber
+  Copyright (C) 2003 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -827,6 +827,8 @@ class accountContainer {
 	/** cache for existing OUs */
 	private $cachedOUs = null;
 
+	/** icon in title bar */
+	private $titleBarIcon = null;
 	/** main title in title bar */
 	private $titleBarTitle = null;
 	/** subtitle in title bar */
@@ -1033,6 +1035,7 @@ class accountContainer {
 				'<a href="#" id="lam-make-default-profile" data-name="%s" data-typeid="%s" data-ok="%s">' . _('Click here to make this your default profile.') . '</a>', array($profileName, $profileName, $this->get_type()->getId(), _('Ok')));
 		}
 		// update titles
+		$this->titleBarIcon = $typeObject->buildAccountStatusIcon($this);
 		$this->titleBarTitle = $typeObject->getTitleBarTitle($this);
 		$this->titleBarSubtitle = $typeObject->getTitleBarSubtitle($this);
 		// prints a module content page
@@ -1074,8 +1077,14 @@ class accountContainer {
 		// print title bar
 		$titleBarContainer = new htmlResponsiveRow();
 		$titleBarContainer->setCSSClasses(array('maxrow'));
+		$titleGroup = new htmlGroup();
+		if ($this->titleBarIcon !== null) {
+			$titleGroup->addElement($this->titleBarIcon);
+			$titleGroup->addElement(new htmlSpacer('1rem', null));
+		}
 		$titleBarTitleText = new htmlOutputText($this->titleBarTitle, false);
-		$titleBarContainer->add(new htmlDiv(null, $titleBarTitleText, array('titleBarTitle', 'text-left')), 12, 12, 4);
+		$titleGroup->addElement($titleBarTitleText);
+		$titleBarContainer->add(new htmlDiv(null, $titleGroup, array('titleBarTitle', 'text-left')), 12, 12, 4);
 		$titleBarSubtitleText = new htmlOutputText($this->titleBarSubtitle, false);
 		$titleBarContainer->add(new htmlDiv(null, $titleBarSubtitleText, array('titleBarSubtitle', 'responsiveLabel')), 12, 12, 8);
 		$titleBarSuffixRdn = new htmlResponsiveRow();
@@ -1735,6 +1744,7 @@ class accountContainer {
 		$this->sortModules();
 		// get titles
 		$typeObject = $this->type->getBaseType();
+		$this->titleBarIcon = $typeObject->buildAccountStatusIcon($this);
 		$this->titleBarTitle = $typeObject->getTitleBarTitle($this);
 		$this->titleBarSubtitle = $typeObject->getTitleBarSubtitle($this);
 		return array();
@@ -1862,6 +1872,7 @@ class accountContainer {
 		}
 		// get titles
 		$typeObject = $this->type->getBaseType();
+		$this->titleBarIcon = $typeObject->buildAccountStatusIcon($this);
 		$this->titleBarTitle = $typeObject->getTitleBarTitle($this);
 		$this->titleBarSubtitle = $typeObject->getTitleBarSubtitle($this);
 		return 0;

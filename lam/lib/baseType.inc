@@ -4,7 +4,7 @@ use LAM\TYPES\ConfiguredType;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2005 - 2020  Roland Gruber
+  Copyright (C) 2005 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -145,6 +145,189 @@ class baseType {
 	}
 
 	/**
+	 * Builds the HTML code for the icon that shows the account status (locked/unlocked).
+	 *
+	 * @param accountContainer $container account container
+	 * @return htmlElement|null status icon
+	 */
+	public function buildAccountStatusIcon(accountContainer $container): ?htmlElement {
+		$statusContent = new htmlGroup();
+		$details = array();
+		$lockableOptions = array();
+		$statusSupported = false;
+		foreach ($container->getAccountModules() as $module) {
+			$interfaces = class_implements($module);
+			if (!in_array('AccountStatusProvider', $interfaces)) {
+				continue;
+			}
+			$statusSupported = true;
+			$dummyAttributes = null;
+			$details = array_merge($details, $module->getAccountStatusDetails($container->get_type(), $dummyAttributes));
+			$lockableOptions = array_merge($lockableOptions, $module->getAccountStatusPossibleLockOptions($container->get_type(), $dummyAttributes));
+		}
+		if (!$statusSupported) {
+			return null;
+		}
+		$accountStatus = new AccountStatus($details);
+		$mainIcon = 'unlocked.svg';
+		if ($accountStatus->isLocked()) {
+			$mainIcon = 'locked.svg';
+		}
+		elseif ($accountStatus->isPartiallyLocked()) {
+			$mainIcon = 'partiallyLocked.svg';
+		}
+		elseif ($accountStatus->isExpired()) {
+			$mainIcon = 'expired.svg';
+		}
+		elseif ($accountStatus->isPartiallyExpired()) {
+			$mainIcon = 'expired.svg';
+		}
+		$statusIcon = new htmlImage('../../graphics/' . $mainIcon, 16, 16);
+		if (!empty($accountStatus->getDetails()) || !empty($lockableOptions)) {
+			$detailsTable = new htmlTable();
+			foreach ($accountStatus->getDetails() as $detail) {
+				$label = new htmlOutputText($detail->getDetails());
+				$label->setNoWrap(true);
+				$detailsTable->addElement($label);
+				$statusDetailIcon = new htmlImage('../../graphics/' . $detail->getIcon(), '16px', '16px');
+				$statusDetailIcon->setCSSClasses(array('fixed-size-16'));
+				$detailsTable->addElement($statusDetailIcon);
+				$detailsTable->addNewLine();
+			}
+			if (empty($accountStatus->getDetails())) {
+				$detailsTable->addElement(new htmlOutputText(_('Unlocked')));
+				$statusDetailIcon = new htmlImage('../../graphics/unlocked.svg', '16px', '16px');
+				$statusDetailIcon->setCSSClasses(array('fixed-size-16'));
+				$detailsTable->addElement($statusDetailIcon);
+				$detailsTable->addNewLine();
+			}
+			$detailsTable->addElement(new htmlSpacer(null, '1rem'), true);
+			$hintGroup = new htmlGroup();
+			$hintGroup->colspan = 2;
+			$hintGroup->addElement(new htmlImage('../../graphics/light.svg', '16px', '16px'));
+			$hintGroup->addElement(new htmlOutputText(_('Please click to lock/unlock this account.')));
+			$detailsTable->addElement($hintGroup);
+			$statusIcon->setHelpData(_('Account status'), $detailsTable);
+			if (checkIfWriteAccessIsAllowed($container->get_type()->getScope())) {
+				$statusIcon->setOnClick("window.lam.dialog.showModal('.modal-account-status')");
+				$statusIcon->setCSSClasses(array('clickable'));
+			}
+		}
+		$statusContent->addElement($statusIcon);
+		$dialogDiv = $this->buildAccountStatusDialogDiv($accountStatus, $lockableOptions);
+		$statusContent->addElement($dialogDiv);
+		return $statusContent;
+	}
+
+	/**
+	 * Builds the dialog to (un)lock parts of an account.
+	 *
+	 * @param AccountStatus $accountStatus account status
+	 * @param AccountStatusDetails[] $lockableOptions possible lock options
+	 * @return htmlElement dialog div
+	 */
+	private function buildAccountStatusDialogDiv(AccountStatus $accountStatus, array $lockableOptions): htmlElement {
+		$hasLockOptions = !empty($lockableOptions);
+		$hasUnlockOptions = $accountStatus->isLocked() || $accountStatus->isPartiallyLocked();
+		$container = new htmlResponsiveRow();
+		$container->add(new htmlTitle(_('Change account status')));
+
+		// show radio buttons for lock/unlock
+		$radioDisabled = true;
+		$selectedRadio = 'unlock';
+		$onchange = '';
+		if ($hasLockOptions && $hasUnlockOptions) {
+			$radioDisabled = false;
+			$onchange = 'if (jQuery(\'#lam_accountStatusAction0:checked\').val()) {' .
+				'jQuery(\'#lam_accountStatusDialogLockDiv\').removeClass(\'hidden\');' .
+				'jQuery(\'#lam_accountStatusDialogUnlockDiv\').addClass(\'hidden\');' .
+				'}' .
+				'else {' .
+				'jQuery(\'#lam_accountStatusDialogLockDiv\').addClass(\'hidden\');' .
+				'jQuery(\'#lam_accountStatusDialogUnlockDiv\').removeClass(\'hidden\');' .
+				'};';
+		}
+		if (!$hasUnlockOptions) {
+			$selectedRadio = 'lock';
+		}
+		if (!$radioDisabled) {
+			$radio = new htmlRadio('lam_accountStatusAction', array(_('Lock') => 'lock', _('Unlock') => 'unlock'), $selectedRadio);
+			$radio->setOnchangeEvent($onchange);
+			$container->add($radio, 12);
+		}
+		else {
+			$radio = new htmlRadio('lam_accountStatusActionDisabled', array(_('Lock') => 'lock', _('Unlock') => 'unlock'), $selectedRadio);
+			$radio->setIsEnabled(false);
+			$container->add($radio, 12);
+			$container->add(new htmlHiddenInput('lam_accountStatusAction', $selectedRadio), 12);
+		}
+		$container->addVerticalSpacer('1rem');
+
+		$container->add(new htmlHiddenInput('lam_accountStatusResult', 'cancel'), 12);
+
+		// locking part
+		if ($hasLockOptions) {
+			$lockContent = new htmlResponsiveRow();
+			foreach ($lockableOptions as $lockableOption) {
+				$preSelected = $lockableOption->isLocked();
+				$lockContentGroup = new htmlGroup();
+				$image = new htmlImage('../../graphics/' . $lockableOption->getIcon(), '16px', '16px');
+				$image->setCSSClasses(array('align-middle'));
+				$lockContentGroup->addElement($image);
+				$checkbox = new htmlInputCheckbox('lam_accountStatusLock_' . $lockableOption->getId(), $preSelected);
+				$checkbox->setCSSClasses(array('align-middle'));
+				$lockContentGroup->addElement($checkbox);
+				$label = new htmlLabel('lam_accountStatusLock_' . $lockableOption->getId(), $lockableOption->getDetails());
+				$label->setCSSClasses(array('align-middle'));
+				$lockContentGroup->addElement($label);
+				$lockContent->add($lockContentGroup);
+			}
+
+			$lockDiv = new htmlDiv('lam_accountStatusDialogLockDiv', $lockContent);
+			if ($hasUnlockOptions) {
+				$lockDiv->setCSSClasses(array('hidden'));
+			}
+			$container->add($lockDiv);
+		}
+		// unlocking part
+		if ($hasUnlockOptions) {
+			$unlockContent = new htmlResponsiveRow();
+			foreach ($accountStatus->getDetails() as $detail) {
+				$unlockContentGroup = new htmlGroup();
+				$image = new htmlImage('../../graphics/' . $detail->getIcon(), '16px', '16px');
+				$image->setCSSClasses(array('align-middle'));
+				$unlockContentGroup->addElement($image);
+				$checkbox = new htmlInputCheckbox('lam_accountStatusUnlock_' . $detail->getId(), true);
+				$checkbox->setCSSClasses(array('align-middle'));
+				$unlockContentGroup->addElement($checkbox);
+				$label = new htmlLabel('lam_accountStatusUnlock_' . $detail->getId(), $detail->getDetails());
+				$label->setCSSClasses(array('align-middle'));
+				$unlockContentGroup->addElement($label);
+				$unlockContent->add($unlockContentGroup);
+			}
+			$unlockDiv = new htmlDiv('lam_accountStatusDialogUnlockDiv', $unlockContent);
+			$container->add($unlockDiv);
+		}
+		$container->addVerticalSpacer('1rem');
+
+		$buttonGroup = new htmlGroup();
+		$okButton = new htmlButton('changeStatusOk', _('Ok'));
+		$okButton->setCSSClasses(array('lam-primary'));
+		$okButton->setOnClick("document.getElementById('lam_accountStatusResult').value = 'ok'; document.forms['inputForm'].submit();");
+		$buttonGroup->addElement($okButton);
+		$cancelButton = new htmlButton('changeStatusCancel', _('Cancel'));
+		$cancelButton->setOnClick("document.querySelector('.modal-account-status').classList.remove('show-modal'); return false;");
+		$buttonGroup->addElement($cancelButton);
+		$container->add($buttonGroup);
+
+		$innerDiv = new htmlDiv('lam_accountStatusDialogContent', $container);
+		$innerDiv->setCSSClasses(array('modal-content'));
+		$div = new htmlDiv('lam_accountStatusDialog', $innerDiv);
+		$div->setCSSClasses(array('modal modal-account-status'));
+		return $div;
+	}
+
+	/**
 	 * Returns the LDAP filter to find the possible suffixes for this account type.
 	 *
 	 * @return string LDAP filter
@@ -159,8 +342,44 @@ class baseType {
 	 *
 	 * @param accountContainer $container account container
 	 */
-	public function runEditPagePostAction(&$container) {
-
+	public function runEditPagePostAction(accountContainer $container): void {
+		// check if account status should be changed
+		if (isset($_POST['lam_accountStatusResult']) && ($_POST['lam_accountStatusResult'] == 'ok')) {
+			// lock account
+			if ($_POST['lam_accountStatusAction'] == 'lock') {
+				$lockIds = array();
+				foreach ($_POST as $key => $value) {
+					if (($value === 'on') && (strpos($key, 'lam_accountStatusLock_') === 0)) {
+						$lockIds[] = substr($key, strlen('lam_accountStatusLock_'));
+					}
+				}
+				foreach ($container->getAccountModules() as $module) {
+					$interfaces = class_implements($module);
+					if (!in_array('AccountStatusProvider', $interfaces)) {
+						continue;
+					}
+					$dummyAttributes = null;
+					$module->accountStatusPerformLock($container->get_type(), $dummyAttributes, $lockIds);
+				}
+			}
+			// unlock account
+			elseif ($_POST['lam_accountStatusAction'] == 'unlock') {
+				$unlockIds = array();
+				foreach ($_POST as $key => $value) {
+					if (($value === 'on') && (strpos($key, 'lam_accountStatusUnlock_') === 0)) {
+						$unlockIds[] = substr($key, strlen('lam_accountStatusUnlock_'));
+					}
+				}
+				foreach ($container->getAccountModules() as $module) {
+					$interfaces = class_implements($module);
+					if (!in_array('AccountStatusProvider', $interfaces)) {
+						continue;
+					}
+					$dummyAttributes = null;
+					$module->accountStatusPerformUnlock($container->get_type(), $dummyAttributes, $unlockIds);
+				}
+			}
+		}
 	}
 
 	/**
