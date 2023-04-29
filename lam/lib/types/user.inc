@@ -211,31 +211,11 @@ class lamUserList extends lamList {
 	/** Controls if GID number is translated to group name */
 	private $trans_primary = false;
 
-	/** Controls if the account status is shown */
-	private $showAccountStatus = false;
-
 	/** translates GID to group name */
 	private $trans_primary_hash = array();
 
-	/** filter value for account status */
-	private $accountStatusFilter = null;
-
 	/** ID for config option to translate primary group GIDs to group names */
 	const TRANS_PRIMARY_OPTION_NAME = "LU_TP";
-	/** ID for config option to show account status */
-	const ACCOUNT_STATUS_OPTION_NAME = "LU_AS";
-
-	/** virtual attribute name for account status column */
-	const ATTR_ACCOUNT_STATUS = 'lam_virtual_account_status';
-
-	/** filter value for expired accounts */
-	const FILTER_EXPIRED = 1;
-	/** filter value for locked accounts */
-	const FILTER_LOCKED = 2;
-	/** filter value for partially locked accounts */
-	const FILTER_SEMILOCKED = 3;
-	/** filter value for unlocked accounts */
-	const FILTER_UNLOCKED = 4;
 
 	/**
 	 * Constructor
@@ -272,10 +252,6 @@ class lamUserList extends lamList {
 		if ($this->trans_primary == "on") {
 			$this->refreshPrimaryGroupTranslation();
 		}
-		// show account status
-		if ($this->showAccountStatus) {
-			$this->injectAccountStatusAttribute();
-		}
 	}
 
 	/**
@@ -297,7 +273,7 @@ class lamUserList extends lamList {
 	 */
 	protected function getTableCellContent(&$entry, &$attribute) {
 		// check if there is something to display at all
-		if (($attribute != self::ATTR_ACCOUNT_STATUS) && (!isset($entry[$attribute]) || !is_array($entry[$attribute]) || (sizeof($entry[$attribute]) < 1))) {
+		if (!isset($entry[$attribute]) || !is_array($entry[$attribute]) || (sizeof($entry[$attribute]) < 1)) {
 			return parent::getTableCellContent($entry, $attribute);
 		}
 		// translate GID to group name
@@ -308,10 +284,6 @@ class lamUserList extends lamList {
 			else {
 				return parent::getTableCellContent($entry, $attribute);
 			}
-		}
-		// account status
-		elseif ($attribute == self::ATTR_ACCOUNT_STATUS) {
-			return $this->getAccountStatus($entry);
 		}
 		// print all other attributes
 		else {
@@ -327,7 +299,6 @@ class lamUserList extends lamList {
 	protected function listGetAllConfigOptions() {
 		$options = parent::listGetAllConfigOptions();
 		$options[] = new lamBooleanListOption(_('Translate GID number to group name'), self::TRANS_PRIMARY_OPTION_NAME);
-		$options[] = new lamBooleanListOption(_('Show account status'), self::ACCOUNT_STATUS_OPTION_NAME);
 		return $options;
 	}
 
@@ -338,36 +309,13 @@ class lamUserList extends lamList {
 		parent::listConfigurationChanged();
 		$tpOption = $this->listGetConfigOptionByID(self::TRANS_PRIMARY_OPTION_NAME);
 		$this->trans_primary = $tpOption->isSelected();
-		$asOption = $this->listGetConfigOptionByID(self::ACCOUNT_STATUS_OPTION_NAME);
-		// if account status was activated, reload LDAP data
-		$asOptionOldValue = $this->showAccountStatus;
-		$this->showAccountStatus = $asOption->isSelected();
-		if ($this->showAccountStatus && !$asOptionOldValue) {
-			$this->forceRefresh();
-		}
-	}
-
-	/**
-	* Returns an hash array containing with all attributes to be shown and their descriptions.
-	* <br>Format: array(attribute => description)
-	* <br>
-	* <br>The user list may display an additional account status column
-	*
-	* @return array attribute list
-	*/
-	protected function listGetAttributeDescriptionList() {
-		$list = parent::listGetAttributeDescriptionList();
-		if ($this->showAccountStatus) {
-			$list[self::ATTR_ACCOUNT_STATUS] = _('Account status');
-		}
-		return $list;
 	}
 
 	/**
 	 * Returns if the given attribute can be filtered.
 	 * If filtering is not possible then no filter box will be displayed.
 	 * <br>
-	 * <br>The user list allows no filtering for account status.
+	 * <br>The user list allows no filtering for photos.
 	 *
 	 * @param String $attr attribute name
 	 * @return boolean filtering possible
@@ -381,112 +329,9 @@ class lamUserList extends lamList {
 
 	/**
 	 * {@inheritDoc}
-	 * @see lamList::getFilterArea()
-	 */
-	protected function getFilterArea($attrName, $clearFilter) {
-		if ($attrName != self::ATTR_ACCOUNT_STATUS) {
-			return parent::getFilterArea($attrName, $clearFilter);
-		}
-		$value = "-";
-		if (!$clearFilter && isset($this->filters[$attrName])) {
-			$value = $this->filters[$attrName];
-		}
-		$filterOptions = array(
-			'' => '',
-			_('Unlocked') => self::FILTER_UNLOCKED,
-			_('Partially locked') => self::FILTER_SEMILOCKED,
-			_('Locked') => self::FILTER_LOCKED,
-			_('Expired') => self::FILTER_EXPIRED,
-		);
-		$filterInput = new htmlSelect('filter' . strtolower($attrName), $filterOptions, array($value));
-		$filterInput->setCSSClasses(array($this->type->getScope() . '-bright'));
-		$filterInput->setHasDescriptiveElements(true);
-		$filterInput->setOnchangeEvent('document.getElementsByName(\'apply_filter\')[0].click();');
-		return $filterInput;
-	}
-
-	/**
-	 * Builds the LDAP filter based on the filter entries in the GUI.
-	 *
-	 * @return String LDAP filter
-	 */
-	protected function buildLDAPAttributeFilter() {
-		$this->accountStatusFilter = null;
-		foreach ($this->filters as $attr => $filter) {
-			if ($attr == self::ATTR_ACCOUNT_STATUS) {
-				$this->accountStatusFilter = $filter;
-				break;
-			}
-		}
-		return parent::buildLDAPAttributeFilter();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see lamList::isAttributeFilteredByServer()
-	 */
-	protected function isAttributeFilteredByServer($attrName) {
-		// do not filter status server side
-		if ($attrName == self::ATTR_ACCOUNT_STATUS) {
-			return false;
-		}
-		return parent::isAttributeFilteredByServer($attrName);
-	}
-
-	/**
-	 * Returns a list of additional LDAP attributes that should be read.
-	 * This can be used to show additional data even if the user selected other attributes to show in the list.
-	 * <br>
-	 * <br>The user list reads pwdAccountLockedTime, sambaAcctFlags and userPassword
-	 *
-	 * @return array additional attribute names
-	 */
-	protected function getAdditionalLDAPAttributesToRead() {
-		$attrs = parent::getAdditionalLDAPAttributesToRead();
-		if ($this->showAccountStatus) {
-			$modules = $_SESSION['config']->get_AccountModules($this->type->getId());
-			foreach ($modules as $module) {
-				$interfaces = class_implements($module);
-				if (!in_array('AccountStatusProvider', $interfaces)) {
-					continue;
-				}
-				$moduleObject = moduleCache::getModule($module, $this->type->getScope());
-				$attrs = array_merge($attrs, $moduleObject->getAccountStatusRequiredAttributes($this->type));
-			}
-		}
-		return $attrs;
-	}
-
-	/**
-	 * Injects values for the virtual account status attribute to make it sortable.
-	 */
-	private function injectAccountStatusAttribute() {
-		$entryCount = sizeof($this->ldapEntries);
-		for ($i = 0; $i < $entryCount; $i++) {
-			$accountStatus = AccountStatus::fromAttributes($this->type, $this->ldapEntries[$i]);
-			$status = self::FILTER_UNLOCKED;
-			if ($accountStatus->isLocked()) {
-				$status = self::FILTER_LOCKED;
-			}
-			elseif ($accountStatus->isPartiallyLocked()) {
-				$status = self::FILTER_SEMILOCKED;
-			}
-			elseif ($accountStatus->isPartiallyExpired() || $accountStatus->isExpired()) {
-				$status = self::FILTER_EXPIRED;
-			}
-			// add virtual attribute
-			$this->ldapEntries[$i][self::ATTR_ACCOUNT_STATUS][0] = $status;
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
 	 * @see lamList::isFilterMatching()
 	 */
 	protected function isFilterMatching(&$data, $filterAttribute, $regex) {
-		if ($filterAttribute == self::ATTR_ACCOUNT_STATUS) {
-			return preg_match($regex, $data[self::ATTR_ACCOUNT_STATUS][0]);
-		}
 		if (($filterAttribute == 'gidnumber') && ($this->trans_primary == "on")) {
 			if (!isset($data[$filterAttribute])) {
 				return false;
@@ -497,46 +342,6 @@ class lamUserList extends lamList {
 			return preg_match($regex, $this->trans_primary_hash[$data[$filterAttribute][0]]);
 		}
 		return parent::isFilterMatching($data, $filterAttribute, $regex);
-	}
-
-	/**
-	 * Returns the account status.
-	 *
-	 * @param array $attrs LDAP attributes
-	 * @return htmlElement content
-	 */
-	private function getAccountStatus(&$attrs) {
-		$statusContent = new htmlGroup();
-		$accountStatus = AccountStatus::fromAttributes($this->type, $attrs);
-		$mainIcon = 'unlocked.svg';
-		if ($accountStatus->isLocked()) {
-			$mainIcon = 'locked.svg';
-		}
-		elseif ($accountStatus->isPartiallyLocked()) {
-			$mainIcon = 'partiallyLocked.svg';
-		}
-		elseif ($accountStatus->isExpired()) {
-			$mainIcon = 'expired.svg';
-		}
-		elseif ($accountStatus->isPartiallyExpired()) {
-			$mainIcon = 'expired.svg';
-		}
-		$statusIcon = new htmlImage('../../graphics/' . $mainIcon, 16, 16);
-		if (!empty($accountStatus->getDetails())) {
-			$detailsTable = new htmlTable();
-			foreach ($accountStatus->getDetails() as $detail) {
-				$label = new htmlOutputText($detail->getDetails());
-				$label->setNoWrap(true);
-				$detailsTable->addElement($label);
-				$statusDetailIcon = new htmlImage('../../graphics/' . $detail->getIcon(), '16px', '16px');
-				$statusDetailIcon->setCSSClasses(array('fixed-size-16'));
-				$detailsTable->addElement($statusDetailIcon);
-				$detailsTable->addNewLine();
-			}
-			$statusIcon->setHelpData(_('Account status'), $detailsTable);
-		}
-		$statusContent->addElement($statusIcon);
-		return $statusContent;
 	}
 
 }

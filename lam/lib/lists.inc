@@ -7,7 +7,7 @@ use function LAM\PDF\createModulePDF;
 /*
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
-  Copyright (C) 2003 - 2022  Roland Gruber
+  Copyright (C) 2003 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -49,6 +49,27 @@ include_once(__DIR__ . "/pdf.inc");
  *
  */
 class lamList {
+
+	/** ID for config option to show account status */
+	const ACCOUNT_STATUS_OPTION_NAME = "LU_AS";
+
+	/** virtual attribute name for account status column */
+	const ATTR_ACCOUNT_STATUS = 'lam_virtual_account_status';
+
+	/** filter value for expired accounts */
+	const FILTER_EXPIRED = 1;
+	/** filter value for locked accounts */
+	const FILTER_LOCKED = 2;
+	/** filter value for partially locked accounts */
+	const FILTER_SEMILOCKED = 3;
+	/** filter value for unlocked accounts */
+	const FILTER_UNLOCKED = 4;
+
+	/** Controls if the account status is shown */
+	protected $showAccountStatus = false;
+
+	/** filter value for account status */
+	protected $accountStatusFilter = null;
 
 	/** Account type */
 	protected $type;
@@ -498,11 +519,14 @@ class lamList {
 	/**
 	 * Prints the content of a single attribute filter area.
 	 *
-	 * @param String $attrName attribute name
-	 * @param boolean $clearFilter true if filter value should be cleared
+	 * @param string $attrName attribute name
+	 * @param bool $clearFilter true if filter value should be cleared
 	 * @return htmlElement element to show
 	 */
-	protected function getFilterArea($attrName, $clearFilter) {
+	protected function getFilterArea(string $attrName, bool $clearFilter): htmlElement {
+		if ($attrName === self::ATTR_ACCOUNT_STATUS) {
+			return $this->getAccountStatusFilterArea($clearFilter);
+		}
 		$value = "";
 		if (!$clearFilter && isset($this->filters[$attrName])) {
 			$value = $this->filters[$attrName];
@@ -510,6 +534,30 @@ class lamList {
 		$filterInput = new htmlInputField('filter' . $attrName, $value, null);
 		$filterInput->setOnKeyPress("SubmitForm('apply_filter', event);");
 		$filterInput->setFieldSize(null);
+		return $filterInput;
+	}
+
+	/**
+	 * Returns the filter for account status.
+     *
+     * @param bool $clearFilter filter should be cleared
+	 */
+	protected function getAccountStatusFilterArea(bool $clearFilter): htmlElement {
+		$value = "-";
+		if (!$clearFilter && isset($this->filters[self::ATTR_ACCOUNT_STATUS])) {
+			$value = $this->filters[self::ATTR_ACCOUNT_STATUS];
+		}
+		$filterOptions = array(
+			'' => '',
+			_('Unlocked') => self::FILTER_UNLOCKED,
+			_('Partially locked') => self::FILTER_SEMILOCKED,
+			_('Locked') => self::FILTER_LOCKED,
+			_('Expired') => self::FILTER_EXPIRED,
+		);
+		$filterInput = new htmlSelect('filter' . strtolower(self::ATTR_ACCOUNT_STATUS), $filterOptions, array($value));
+		$filterInput->setCSSClasses(array($this->type->getScope() . '-bright'));
+		$filterInput->setHasDescriptiveElements(true);
+		$filterInput->setOnchangeEvent('document.getElementsByName(\'apply_filter\')[0].click();');
 		return $filterInput;
 	}
 
@@ -653,6 +701,22 @@ class lamList {
     }
 
 	/**
+	 * Returns if this account supports the account status column.
+	 *
+	 * @return bool quick change supported
+	 */
+	private function isSupportingAccountStatus(): bool {
+		$modules = $this->type->getModules();
+		foreach ($modules as $module) {
+			if (!in_array('AccountStatusProvider', class_implements($module))) {
+				continue;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Returns if the given attribute can be filtered.
 	 * If filtering is not possible then no filter box will be displayed.
 	 * By default all attributes can be filtered.
@@ -672,6 +736,10 @@ class lamList {
 	 * @return htmlElement content
 	 */
 	protected function getTableCellContent(&$entry, &$attribute) {
+		// account status
+		if ($attribute === self::ATTR_ACCOUNT_STATUS) {
+			return $this->getAccountStatus($entry);
+		}
 		// print all attribute entries separated by "; "
 		if (isset($entry[$attribute]) && sizeof($entry[$attribute]) > 0) {
 			if (is_array($entry[$attribute])) {
@@ -1024,6 +1092,9 @@ class lamList {
 		foreach ($attrs as $attr) {
 			$ret[$attr->getAttributeName()] = $attr->getAlias($predefinedDescriptions);
 		}
+		if ($this->showAccountStatus) {
+			$ret[self::ATTR_ACCOUNT_STATUS] = _('Account status');
+		}
 		return $ret;
 	}
 
@@ -1140,6 +1211,10 @@ class lamList {
 		}
 		// generate list of possible suffixes
 		$this->possibleSuffixes = $this->type->getSuffixList();
+		// show account status
+		if ($this->showAccountStatus) {
+			$this->injectAccountStatusAttribute();
+		}
 	}
 
 	/**
@@ -1150,6 +1225,9 @@ class lamList {
 	protected function buildLDAPAttributeFilter() {
 		$text = '';
 		foreach ($this->filters as $attr => $filter) {
+			if ($attr == self::ATTR_ACCOUNT_STATUS) {
+				$this->accountStatusFilter = $filter;
+			}
 			if (!$this->isAttributeFilteredByServer($attr)) {
 				continue;
 			}
@@ -1178,6 +1256,10 @@ class lamList {
 	 * @return bool filter server side
 	 */
 	protected function isAttributeFilteredByServer($attrName) {
+		// do not filter status server side
+		if ($attrName === self::ATTR_ACCOUNT_STATUS) {
+			return false;
+		}
 		return in_array(strtolower($attrName), $this->serverSideFilterAttributes);
 	}
 
@@ -1240,6 +1322,9 @@ class lamList {
 	 * @param string $regex filter attribute regex
 	 */
 	protected function isFilterMatching(&$data, $filterAttribute, $regex) {
+		if ($filterAttribute == self::ATTR_ACCOUNT_STATUS) {
+			return preg_match($regex, $data[self::ATTR_ACCOUNT_STATUS][0]);
+		}
 		if (!isset($data[$filterAttribute])) {
 			return false;
 		}
@@ -1269,7 +1354,19 @@ class lamList {
 	 * @return array additional attribute names
 	 */
 	protected function getAdditionalLDAPAttributesToRead() {
-		return array();
+	    $attrs = array();
+		if ($this->showAccountStatus) {
+			$modules = $_SESSION['config']->get_AccountModules($this->type->getId());
+			foreach ($modules as $module) {
+				$interfaces = class_implements($module);
+				if (!in_array('AccountStatusProvider', $interfaces)) {
+					continue;
+				}
+				$moduleObject = moduleCache::getModule($module, $this->type->getScope());
+				$attrs = array_merge($attrs, $moduleObject->getAccountStatusRequiredAttributes($this->type));
+			}
+		}
+		return $attrs;
 	}
 
 	/**
@@ -1287,10 +1384,15 @@ class lamList {
 	 * @return array list of lamListOption objects
 	 */
 	protected function listGetAllConfigOptions() {
+	    $options = array();
 		$listSizeOption = new lamSelectListOption(_("Maximum list entries"), array(10, 20, 30, 50, 75, 100, 500, 1000), self::LIST_SIZE_OPTION_NAME);
 		$listSizeOption->setHelpID('208');
 		$listSizeOption->setValue($this->maxPageEntries);
-		return array($listSizeOption);
+		$options[] = $listSizeOption;
+		if ($this->isSupportingAccountStatus()) {
+			$options[] = new lamBooleanListOption(_('Show account status'), self::ACCOUNT_STATUS_OPTION_NAME);
+		}
+		return $options;
 	}
 
 	/**
@@ -1335,6 +1437,15 @@ class lamList {
 		if ($sizeOption->getValue() != null) {
 			$this->maxPageEntries = $sizeOption->getValue();
 		}
+		// if account status was activated, reload LDAP data
+        if ($this->isSupportingAccountStatus()) {
+			$asOption = $this->listGetConfigOptionByID(self::ACCOUNT_STATUS_OPTION_NAME);
+			$asOptionOldValue = $this->showAccountStatus;
+			$this->showAccountStatus = $asOption->isSelected();
+			if ($this->showAccountStatus && !$asOptionOldValue) {
+				$this->forceRefresh();
+			}
+		}
 	}
 
 	/**
@@ -1359,6 +1470,68 @@ class lamList {
 			}
 			unset($_SESSION['listRedirectMessages']);
 		}
+	}
+
+	/**
+	 * Injects values for the virtual account status attribute to make it sortable.
+	 */
+	private function injectAccountStatusAttribute() {
+		$entryCount = sizeof($this->ldapEntries);
+		for ($i = 0; $i < $entryCount; $i++) {
+			$accountStatus = AccountStatus::fromAttributes($this->type, $this->ldapEntries[$i]);
+			$status = self::FILTER_UNLOCKED;
+			if ($accountStatus->isLocked()) {
+				$status = self::FILTER_LOCKED;
+			}
+            elseif ($accountStatus->isPartiallyLocked()) {
+				$status = self::FILTER_SEMILOCKED;
+			}
+            elseif ($accountStatus->isPartiallyExpired() || $accountStatus->isExpired()) {
+				$status = self::FILTER_EXPIRED;
+			}
+			// add virtual attribute
+			$this->ldapEntries[$i][self::ATTR_ACCOUNT_STATUS][0] = $status;
+		}
+	}
+
+	/**
+	 * Returns the account status.
+	 *
+	 * @param array $attrs LDAP attributes
+	 * @return htmlElement content
+	 */
+	private function getAccountStatus(&$attrs) {
+		$statusContent = new htmlGroup();
+		$accountStatus = AccountStatus::fromAttributes($this->type, $attrs);
+		$mainIcon = 'unlocked.svg';
+		if ($accountStatus->isLocked()) {
+			$mainIcon = 'locked.svg';
+		}
+        elseif ($accountStatus->isPartiallyLocked()) {
+			$mainIcon = 'partiallyLocked.svg';
+		}
+        elseif ($accountStatus->isExpired()) {
+			$mainIcon = 'expired.svg';
+		}
+        elseif ($accountStatus->isPartiallyExpired()) {
+			$mainIcon = 'expired.svg';
+		}
+		$statusIcon = new htmlImage('../../graphics/' . $mainIcon, 16, 16);
+		if (!empty($accountStatus->getDetails())) {
+			$detailsTable = new htmlTable();
+			foreach ($accountStatus->getDetails() as $detail) {
+				$label = new htmlOutputText($detail->getDetails());
+				$label->setNoWrap(true);
+				$detailsTable->addElement($label);
+				$statusDetailIcon = new htmlImage('../../graphics/' . $detail->getIcon(), '16px', '16px');
+				$statusDetailIcon->setCSSClasses(array('fixed-size-16'));
+				$detailsTable->addElement($statusDetailIcon);
+				$detailsTable->addNewLine();
+			}
+			$statusIcon->setHelpData(_('Account status'), $detailsTable);
+		}
+		$statusContent->addElement($statusIcon);
+		return $statusContent;
 	}
 
 }

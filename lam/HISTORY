@@ -1,6 +1,7 @@
 June 2023 8.4
   - Duo 2FA: switch to frameless login and support for universal prompt
   - Docker: support for linux/arm64 (Apple Silicon)
+  - Account lists: support account status in table for any account type that supports it (e.g. groups with PPolicy attributes)
   - LAM Pro:
    -> PPolicy: support to edit existing policies that are not based on "device" (but e.g. on "person")
    -> SMTP server settings: settings can be tested before saving
