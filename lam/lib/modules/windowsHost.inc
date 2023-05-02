@@ -297,7 +297,7 @@ class windowsHost extends baseModule {
 	function process_managedBy() {
 		$return = array();
 		if (isset($_POST['form_subpage_' . get_class($this) . '_attributes_set'])) {
-			$this->attributes['managedBy'][] = $_POST['managedBy'];
+			$this->attributes['managedBy'][0] = $_POST['managedBy'];
 		}
 		return $return;
 	}
