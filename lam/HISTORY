@@ -8,6 +8,7 @@ June 2023 8.4
   - Fixed bugs:
    -> Selecting entries from a filtered list selection did not work (223)
    -> Lamdaemon: support to delete home directories if "rm" command is aliased to "rm -i"
+   -> Windows: "Managed by" was not changeable, account list rendering of manager/member/managedBy
 
 
 24.03.2023 8.3
