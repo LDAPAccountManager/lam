@@ -3329,7 +3329,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		// domain
 		$domains = $this->getDomains();
 		$domains[] = '';
-		$return->add(new htmlResponsiveSelect('windowsUser_userPrincipalNameDomain', $domains, array(), _('Domain'), 'userPrincipalNameDomain'), 12);
+		$return->add(new htmlResponsiveSelect('windowsUser_userPrincipalNameDomain', $domains, array(), _('Domain'), 'userPrincipalNameDomain'));
 		// group memberships
 		$groups = $this->findGroups();
 		$groupOptions = array();
@@ -3339,7 +3339,7 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 		$groupSelect = new htmlResponsiveSelect('windowsUser_groups', $groupOptions, array(), _('Groups'), 'groups', 10);
 		$groupSelect->setHasDescriptiveElements(true);
 		$groupSelect->setMultiSelect(true);
-		$return->add($groupSelect, 12);
+		$return->add($groupSelect);
 		// home drive
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hidehomeDrive')) {
 			$drives = array('-');
@@ -3347,14 +3347,17 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 				$drives[] = chr($i) . ':';
 			}
 			$driveSelect = new htmlResponsiveSelect('windowsUser_homeDrive', $drives, array('-'), _('Home drive'), 'homeDrive');
-			$return->add($driveSelect, 12);
+			$return->add($driveSelect);
 		}
 		// force password change
 		$passwordChangeCheckbox = new htmlResponsiveInputCheckbox('windowsUser_pwdMustChange', true, _('Password change at next login'), 'pwdMustChange');
-		$return->add($passwordChangeCheckbox, 12);
+		$return->add($passwordChangeCheckbox);
+		// password does not expire
+		$passwordNoExpireCheckbox = new htmlResponsiveInputCheckbox('windowsUser_pwdNoExpire', false, _('Password does not expire'), 'noExpire');
+		$return->add($passwordNoExpireCheckbox);
 		if (!$this->isBooleanConfigOptionSet('windowsUser_hideWorkstations')) {
 			// allowed workstations
-			$return->add(new htmlResponsiveInputField(_('Workstations'), 'windowsUser_userWorkstations', '', 'workstations'), 12);
+			$return->add(new htmlResponsiveInputField(_('Workstations'), 'windowsUser_userWorkstations', '', 'workstations'));
 		}
 		return $return;
 	}
@@ -3417,8 +3420,15 @@ class windowsUser extends baseModule implements passwordService,AccountStatusPro
 			$oList = preg_split('/;[ ]*/', $profile['windowsUser_o'][0]);
 			$this->attributes['o'] = $oList;
 		}
+		// no password expiration
+		if (isset($profile['windowsUser_pwdNoExpire'][0]) && ($profile['windowsUser_pwdNoExpire'][0] === "true")) {
+			if (!isset($this->attributes['useraccountcontrol'][0])) {
+				$this->attributes['useraccountcontrol'][0] = windowsUser::DEFAULT_ACCOUNT_CONTROL;
+			}
+			windowsUser::setIsNeverExpiring($this->attributes, true);
+		}
 		// force password change
-		if (isset($profile['windowsUser_pwdMustChange'][0]) && ($profile['windowsUser_pwdMustChange'][0] == "true")) {
+		if (isset($profile['windowsUser_pwdMustChange'][0]) && ($profile['windowsUser_pwdMustChange'][0] === "true")) {
 			$this->attributes['pwdLastSet'][0] = '0';
 		}
 		elseif (isset($profile['windowsUser_pwdMustChange'][0]) && ($profile['windowsUser_pwdMustChange'][0] == "false")) {
