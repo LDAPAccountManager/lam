@@ -7,38 +7,118 @@
   <section>
     <title>Reset configuration password</title>
 
-    <para>The password for the server profiles can be reset using the master
-    configuration password. Open LAM configuration -&gt; Edit server profiles
-    -&gt;Manage server profiles for this.</para>
+    <section>
+      <title>Server profiles</title>
 
-    <para>In case you lost your master configuration password you need to
-    manually edit the main configuration file (config.cfg) on the file
-    system.</para>
+      <para>The password for the server profiles can be reset using the master
+      configuration password. Open LAM configuration -&gt; Edit server
+      profiles -&gt;Manage server profiles for this.</para>
+    </section>
 
-    <orderedlist>
-      <listitem>
-        <para>Locate config.cfg: On DEB/RPM installations it is in
-        /usr/share/ldap-account-manager/config and for tar.bz2 in config
-        folder.</para>
-      </listitem>
+    <section>
+      <title>Main configuration</title>
 
-      <listitem>
-        <para>Locate the "password" entry in the file</para>
-      </listitem>
+      <section>
+        <title>File system storage</title>
 
-      <listitem>
-        <para>Replace the password hash after "password: " with your new
-        clear-text password (e.g. "secret")</para>
-      </listitem>
-    </orderedlist>
+        <para>In case you lost your master configuration password you need to
+        manually edit the main configuration file (config.cfg) on the file
+        system.</para>
 
-    <para>After the change the line should look like this:</para>
+        <orderedlist>
+          <listitem>
+            <para>Locate config.cfg: On DEB/RPM installations it is in
+            /usr/share/ldap-account-manager/config and for tar.bz2 in config
+            folder.</para>
+          </listitem>
 
-    <literallayout>password: secret</literallayout>
+          <listitem>
+            <para>Locate the "password" entry in the file</para>
+          </listitem>
 
-    <para>You can now login using your new password. Set the password once
-    again via GUI in main configuration settings. This will then put again a
-    hash value in the config.cfg file.</para>
+          <listitem>
+            <para>Replace the password hash after "password: " with your new
+            clear-text password (e.g. "secret")</para>
+          </listitem>
+        </orderedlist>
+
+        <para>After the change the line should look like this:</para>
+
+        <literallayout>password: secret</literallayout>
+
+        <para>You can now login using your new password. Set the password once
+        again via GUI in main configuration settings. This will then put again
+        a hash value in the config.cfg file.</para>
+      </section>
+
+      <section>
+        <title>Database storage</title>
+
+        <para>Use a database admin tool (e.g. MySQL Workbench/phpMyAdmin) and
+        connect to your database. Locate the table "main_configuration" and
+        the row with value "config" in column "name". You will now need to
+        edit this value which is in JSON format.</para>
+
+        <para>There is an entry "password" followed by a colon. Edit now the
+        value in quotes that comes directly after. Enter your new password in
+        clear text there. Do not remove the quotes.</para>
+
+        <screenshot>
+          <graphic fileref="images/configGeneral10.png"/>
+        </screenshot>
+
+        <para>You can now login using your new password. Set the password once
+        again via GUI in main configuration settings. This will then put again
+        a hash value in the config.cfg file.</para>
+      </section>
+    </section>
+  </section>
+
+  <section>
+    <title>Reset IP restriction</title>
+
+    <para>If you entered a wrong value into the allowed IP list then LAM might
+    lock you out of the system. You can reset the IP list like this.</para>
+
+    <section>
+      <title>File system storage</title>
+
+      <para>You need to manually edit the main configuration file (config.cfg)
+      on the file system.</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Locate config.cfg: On DEB/RPM installations it is in
+          /usr/share/ldap-account-manager/config and for tar.bz2 in config
+          folder.</para>
+        </listitem>
+
+        <listitem>
+          <para>Locate the "allowedHosts" entry in the file</para>
+        </listitem>
+
+        <listitem>
+          <para>Remove the line starting with "allowedHosts: "</para>
+        </listitem>
+      </orderedlist>
+
+      <para>Now you can edit the IP list again via LAM GUI.</para>
+    </section>
+
+    <section>
+      <title>Database storage</title>
+
+      <para>Use a database admin tool (e.g. MySQL Workbench/phpMyAdmin) and
+      connect to your database. Locate the table "main_configuration" and the
+      row with value "config" in column "name". You will now need to edit this
+      value which is in JSON format.</para>
+
+      <para>There is an entry "allowedHosts" followed by a colon. Now, remove
+      anything of the value in quotes that comes directly after. Do not remove
+      the quotes.</para>
+
+      <para>Now you can edit the IP list again via LAM GUI.</para>
+    </section>
   </section>
 
   <section>
@@ -226,7 +306,6 @@
           </imageobject>
         </mediaobject>
       </screenshot>
-
     </section>
   </section>
 </appendix>
