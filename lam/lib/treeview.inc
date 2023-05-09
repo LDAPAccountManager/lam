@@ -916,6 +916,7 @@ class TreeView {
 		}
 		if (!empty($ldapChanges)) {
 			logNewMessage(LOG_DEBUG, 'LDAP changes to DN ' . $dn . ': ' . print_r($ldapChanges, true));
+			$this->handleSpecialAttributes($dn, $ldapChanges, $attributes);
 			$saved = ldap_modify($_SESSION['ldap']->server(), $dn, $ldapChanges);
 			if ($saved) {
 				$message = new htmlStatusMessage('INFO', _('All changes were successful.'));
@@ -931,6 +932,27 @@ class TreeView {
 		ob_end_clean();
 		$jsonData['result'] = $messageContent;
 		return json_encode($jsonData);
+	}
+
+	/**
+	 * Handles attributes that require specific operations.
+	 *
+	 * @param string $dn DN
+	 * @param array $ldapChanges changes
+	 * @param array $attributes original attributes
+	 */
+	private function handleSpecialAttributes(string $dn, array &$ldapChanges, array $attributes): void {
+		// olcModuleLoad is add-only
+		if (isset($ldapChanges['olcmoduleload']) && isset($attributes['olcmoduleload'])) {
+			$newModules = array_delete($attributes['olcmoduleload'], $ldapChanges['olcmoduleload']);
+			unset($ldapChanges['olcmoduleload']);
+			if (!empty($newModules)) {
+				$isOk = ldap_mod_add($_SESSION['ldap']->server(), $dn, array('olcmoduleload' => $newModules));
+				if (!$isOk) {
+					logNewMessage(LOG_ERR, 'Changing olcmoduleload at ' . $dn . ' failed: ' . getExtendedLDAPErrorMessage($_SESSION['ldap']->server()));
+				}
+			}
+		}
 	}
 
 	/**
