@@ -1556,18 +1556,16 @@ window.lam.html = window.lam.html || {};
 window.lam.html.showDnSelection = function(fieldId, title, okText, cancelText, tokenName, tokenValue) {
 	const field = document.getElementById(fieldId);
 	const dnValue = field.value;
-	let data = {
-		jsonInput: ''
-	};
-	data[tokenName] = tokenValue;
-	data['fieldId'] = fieldId;
-	data['dn'] = dnValue;
-	jQuery.ajax({
-		url: '../misc/ajax.php?function=dnselection',
+	let data = new FormData();
+	data.append(tokenName, tokenValue);
+	data.append('fieldId', fieldId);
+	data.append('dn', dnValue);
+	fetch('../misc/ajax.php?function=dnselection', {
 		method: 'POST',
-		data: data
+		body: data
 	})
-	.done(function(jsonData) {
+	.then(async response => {
+		const jsonData = await response.json();
 		const dlgHtml = '<div id="dlg_' + fieldId + '">' + jsonData.dialogData + '</div>';
 		Swal.fire({
 			title: title,
@@ -1588,9 +1586,13 @@ window.lam.html.showDnSelection = function(fieldId, title, okText, cancelText, t
  * @returns boolean false
  */
 window.lam.html.selectDn = function(el, fieldId) {
-	let field = jQuery('#' + fieldId);
-	const dn = jQuery(el).parents('.row').data('dn');
-	field.val(dn);
+	const field = document.getElementById(fieldId);
+	let parent = el.parentElement;
+	while (!parent.classList.contains('row')) {
+		parent = parent.parentElement;
+	}
+	const dn = parent.dataset.dn;
+	field.value = dn;
 	Swal.close();
 	return false;
 }
@@ -1604,22 +1606,24 @@ window.lam.html.selectDn = function(el, fieldId) {
  * @param tokenValue CSRF token value
  */
 window.lam.html.updateDnSelection = function(el, fieldId, tokenName, tokenValue) {
-	const dn = jQuery(el).parents('.row').data('dn');
-	let data = {
-		jsonInput: ''
-	};
-	data[tokenName] = tokenValue;
-	data['fieldId'] = fieldId;
-	data['dn'] = dn;
-	jQuery.ajax({
-		url: '../misc/ajax.php?function=dnselection',
+	let parent = el.parentElement;
+	while (!parent.classList.contains('row')) {
+		parent = parent.parentElement;
+	}
+	const dn = parent.dataset.dn;
+	let data = new FormData();
+	data.append(tokenName, tokenValue);
+	data.append('fieldId', fieldId);
+	data.append('dn', dn);
+	fetch('../misc/ajax.php?function=dnselection', {
 		method: 'POST',
-		data: data
+		body: data
 	})
-	.done(function(jsonData) {
+	.then(async response => {
+		const jsonData = await response.json();
 		document.getElementById('dlg_' + fieldId).innerHTML = jsonData.dialogData;
 	})
-	.fail(function() {
+	.catch((error) => {
 		Swal.close();
 	});
 }
