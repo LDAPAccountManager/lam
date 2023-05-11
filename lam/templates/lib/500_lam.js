@@ -1665,18 +1665,22 @@ window.lam.selfservice = window.lam.selfservice || {};
  * @param delButton delete button that was clicked
  */
 window.lam.selfservice.delMultiValue = function(fieldNamePrefix, delButton) {
-	var fields = jQuery("input[name^='" + fieldNamePrefix + "']");
-	var isOnlyOneField = (fields.length === 1);
+	const fields = document.querySelectorAll("input[name^='" + fieldNamePrefix + "']");
+	const isOnlyOneField = (fields.length === 1);
 	if (!isOnlyOneField) {
 		// move add button if present
-		var addButton = jQuery(delButton).siblings('.add-link');
-		if (addButton.length === 1) {
-			var lastLastDelLink = jQuery(fields[fields.length - 2]).parent().parent().find('.del-link');
-			var lastLastDelLinkParent = jQuery(lastLastDelLink[0]).parent();
-			jQuery(addButton[0]).appendTo(lastLastDelLinkParent[0]);
+		const addButton = delButton.nextElementSibling;
+		if (addButton) {
+			const lastLastDelLink = fields[fields.length - 2].parentElement.parentElement.querySelector('.del-link');
+			const lastLastDelLinkParent = lastLastDelLink.parentElement;
+			lastLastDelLinkParent.append(addButton);
 		}
 		// delete row
-		var row = jQuery(delButton).closest(".row").parent();
+		let parent = delButton.parentElement;
+		while (!parent.classList.contains('row')) {
+			parent = parent.parentElement;
+		}
+		const row = parent.parentElement;
 		row.remove();
 	}
 	else {
@@ -1691,21 +1695,25 @@ window.lam.selfservice.delMultiValue = function(fieldNamePrefix, delButton) {
  * @param addButton add button that was clicked
  */
 window.lam.selfservice.addMultiValue = function(fieldNamePrefix, addButton) {
-	var fields = jQuery("input[name^='" + fieldNamePrefix + "']");
+	const fields = document.querySelectorAll("input[name^='" + fieldNamePrefix + "']");
 	// get next field number
-	var lastFieldName = fields[fields.length - 1].name;
-	var lastFieldNameIndex = lastFieldName.substring(fieldNamePrefix.length);
-	var newFieldNameIndex = parseInt(lastFieldNameIndex) + 1;
+	const lastFieldName = fields[fields.length - 1].name;
+	const lastFieldNameIndex = lastFieldName.substring(fieldNamePrefix.length);
+	const newFieldNameIndex = parseInt(lastFieldNameIndex) + 1;
 	// copy row
-	var row = jQuery(addButton).closest(".row").parent();
-	var clone = row.clone();
-	clone = clone.appendTo(row.parent());
-	var cloneInput = clone.find("input[name^='" + fieldNamePrefix + "']");
-	cloneInput[0].name = fieldNamePrefix + newFieldNameIndex;
-	cloneInput[0].id = fieldNamePrefix + newFieldNameIndex;
-	cloneInput[0].value = '';
+	let parent = addButton.parentElement;
+	while (!parent.classList.contains('row')) {
+		parent = parent.parentElement;
+	}
+	const row = parent.parentElement;
+	const clone = row.cloneNode(true);
+	row.parentElement.append(clone);
+	const cloneInput = clone.querySelector("input[name^='" + fieldNamePrefix + "']");
+	cloneInput.name = fieldNamePrefix + newFieldNameIndex;
+	cloneInput.id = fieldNamePrefix + newFieldNameIndex;
+	cloneInput.value = '';
 	// delete add link from old row
-	jQuery(addButton).remove();
+	addButton.remove();
 };
 
 window.lam.webauthn = window.lam.webauthn || {};
@@ -1727,11 +1735,9 @@ window.lam.webauthn.charAt = function (c) {
  * @param isSelfService runs as part of self service
  */
 window.lam.webauthn.start = function(prefix, isSelfService) {
-	jQuery(document).ready(
-		function() {
-			window.lam.webauthn.run(prefix, isSelfService);
-		}
-	);
+	document.addEventListener("DOMContentLoaded", function(){
+		window.lam.webauthn.run(prefix, isSelfService);
+	});
 }
 
 /**
