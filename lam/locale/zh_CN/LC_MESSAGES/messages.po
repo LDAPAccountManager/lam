@@ -5,16 +5,17 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: LAM 8.2\n"
+"Project-Id-Version: LAM 8.4\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2023-03-13 11:02+0800\n"
+"PO-Revision-Date: 2023-05-15 11:27+0800\n"
 "Last-Translator: needham@sina.com <needham@sina.com>\n"
 "Language-Team: Chinese(Simplified) <needham@sina.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Generator: Poedit 3.2.2\n"
 
@@ -31,7 +32,7 @@ msgstr ""
 #: ../lib/modules/kopanoGroup.inc:103 ../lib/modules/kopanoGroup.inc:106
 #: ../lib/modules/kopanoGroup.inc:109 ../lib/modules/kopanoGroup.inc:709
 #: ../lib/modules/kopanoUser.inc:167 ../lib/modules/kopanoUser.inc:170
-#: ../lib/modules/kopanoUser.inc:173 ../lib/modules/kopanoUser.inc:1751
+#: ../lib/modules/kopanoUser.inc:173 ../lib/modules/kopanoUser.inc:1753
 msgid "\"Send as\" attribute"
 msgstr "\"Send as\"属性"
 
@@ -47,7 +48,7 @@ msgstr "\"Send as\"属性"
 #: ../lib/modules/kopanoUser.inc:413 ../lib/modules/kopanoUser.inc:447
 #: ../lib/modules/kopanoUser.inc:485 ../lib/modules/kopanoUser.inc:812
 #: ../lib/modules/kopanoUser.inc:1208 ../lib/modules/kopanoUser.inc:1433
-#: ../lib/modules/kopanoUser.inc:1771
+#: ../lib/modules/kopanoUser.inc:1773
 msgid "\"Send as\" privileges"
 msgstr "\"Send as\"权限"
 
@@ -258,7 +259,7 @@ msgstr "帐号"
 #: ../lib/modules/ieee802device.inc:102 ../lib/modules/puppetClient.inc:199
 #: ../lib/modules/puppetClient.inc:201 ../lib/modules/puppetClient.inc:202
 #: ../lib/modules/puppetClient.inc:204 ../lib/modules/puppetClient.inc:205
-#: ../lib/modules/windowsHost.inc:153 ../lib/modules/eduPerson.inc:250
+#: ../lib/modules/windowsHost.inc:154 ../lib/modules/eduPerson.inc:250
 #: ../lib/modules/eduPerson.inc:252 ../lib/modules/eduPerson.inc:254
 #: ../lib/modules/eduPerson.inc:256 ../lib/modules/eduPerson.inc:257
 #: ../lib/modules/eduPerson.inc:258 ../lib/modules/eduPerson.inc:259
@@ -321,13 +322,13 @@ msgstr "帐号"
 #: ../lib/modules/bindDLZ.inc:618 ../lib/modules/bindDLZ.inc:620
 #: ../lib/modules/bindDLZ.inc:622 ../lib/modules/bindDLZ.inc:624
 #: ../lib/modules/bindDLZ.inc:625 ../lib/modules/bindDLZXfr.inc:96
-#: ../lib/modules/bindDLZXfr.inc:98 ../lib/modules/customFields.inc:3367
-#: ../lib/modules/customFields.inc:3371 ../lib/modules/customFields.inc:3375
-#: ../lib/modules/customFields.inc:3383 ../lib/modules/customFields.inc:3386
-#: ../lib/modules/customFields.inc:3395 ../lib/modules/customFields.inc:4015
-#: ../lib/modules/customFields.inc:4253 ../lib/modules/customFields.inc:4465
-#: ../lib/modules/customFields.inc:4471 ../lib/modules/customFields.inc:4474
-#: ../lib/modules/customFields.inc:4480 ../lib/modules/customFields.inc:6102
+#: ../lib/modules/bindDLZXfr.inc:98 ../lib/modules/customFields.inc:3374
+#: ../lib/modules/customFields.inc:3378 ../lib/modules/customFields.inc:3382
+#: ../lib/modules/customFields.inc:3390 ../lib/modules/customFields.inc:3393
+#: ../lib/modules/customFields.inc:3402 ../lib/modules/customFields.inc:4022
+#: ../lib/modules/customFields.inc:4260 ../lib/modules/customFields.inc:4489
+#: ../lib/modules/customFields.inc:4495 ../lib/modules/customFields.inc:4498
+#: ../lib/modules/customFields.inc:4504 ../lib/modules/customFields.inc:6136
 #: ../lib/modules/device.inc:137 ../lib/modules/device.inc:138
 #: ../lib/modules/heimdalKerberos.inc:253
 #: ../lib/modules/heimdalKerberos.inc:254
@@ -587,8 +588,8 @@ msgstr "帐号过期"
 #: ../lib/modules/windowsUser.inc:315 ../lib/modules/windowsUser.inc:319
 #: ../lib/modules/windowsUser.inc:499 ../lib/modules/windowsUser.inc:997
 #: ../lib/modules/windowsUser.inc:1484 ../lib/modules/windowsUser.inc:2007
-#: ../lib/modules/windowsUser.inc:3290 ../lib/modules/windowsUser.inc:3484
-#: ../lib/modules/windowsUser.inc:4540
+#: ../lib/modules/windowsUser.inc:3290 ../lib/modules/windowsUser.inc:3494
+#: ../lib/modules/windowsUser.inc:4550
 msgid "Account expiration date"
 msgstr "帐号过期日期"
 
@@ -604,11 +605,11 @@ msgstr "帐号过期日期(只读)"
 #: ../lib/modules/windowsUser.inc:483 ../lib/modules/windowsUser.inc:992
 #: ../lib/modules/windowsUser.inc:1474 ../lib/modules/windowsUser.inc:3284
 #: ../lib/plugins/extendedInvalidCredentials/Locking389DsExtraInvalidCredentialsProvider.inc:42
-#: ../lib/account.inc:1707
+#: ../lib/account.inc:1748
 msgid "Account is deactivated"
 msgstr "帐号已经停用"
 
-#: ../lib/modules/windowsUser.inc:4473 ../lib/account.inc:1711
+#: ../lib/modules/windowsUser.inc:4483 ../lib/account.inc:1752
 msgid "Account is expired"
 msgstr "帐号已经过期"
 
@@ -617,7 +618,7 @@ msgstr "帐号已经过期"
 #: ../lib/plugins/extendedInvalidCredentials/UserPasswordExtraInvalidCredentialsProvider.inc:32
 #: ../lib/plugins/extendedInvalidCredentials/Locking389DsExtraInvalidCredentialsProvider.inc:34
 #: ../lib/plugins/extendedInvalidCredentials/PPolicyExtraInvalidCredentialsProvider.inc:32
-#: ../lib/account.inc:1719
+#: ../lib/account.inc:1760
 msgid "Account is locked"
 msgstr "帐号锁定"
 
@@ -633,16 +634,15 @@ msgstr "帐号名:"
 msgid "Account profiles"
 msgstr "帐户配置文件"
 
-#: ../lib/types/user.inc:262 ../lib/types/user.inc:573
-#: ../lib/types/user.inc:748 ../lib/modules/qmailUser.inc:185
-#: ../lib/modules/qmailUser.inc:257 ../lib/modules/qmailUser.inc:367
-#: ../lib/modules/qmailUser.inc:493 ../lib/modules/qmailUser.inc:965
-#: ../lib/modules/qmailUser.inc:1094
+#: ../lib/modules/qmailUser.inc:185 ../lib/modules/qmailUser.inc:257
+#: ../lib/modules/qmailUser.inc:367 ../lib/modules/qmailUser.inc:493
+#: ../lib/modules/qmailUser.inc:965 ../lib/modules/qmailUser.inc:1094
+#: ../lib/baseType.inc:210 ../lib/lists.inc:1096 ../lib/lists.inc:1531
 msgid "Account status"
 msgstr "帐号状态"
 
-#: ../templates/upload/masscreate.php:170 ../lib/modules/customFields.inc:734
-#: ../lib/modules/customFields.inc:791 ../lib/modules/asteriskAccount.inc:126
+#: ../templates/upload/masscreate.php:170 ../lib/modules/customFields.inc:741
+#: ../lib/modules/customFields.inc:798 ../lib/modules/asteriskAccount.inc:126
 #: ../lib/modules/asteriskAccount.inc:262
 #: ../lib/modules/asteriskAccount.inc:275
 #: ../lib/modules/asteriskAccount.inc:337
@@ -669,13 +669,13 @@ msgstr ""
 "LDAP条目类型中的帐号类型定义必须是可管理的（比如user和group),帐号模块定义中的"
 "属性（例如 UNIX 和SAMBA）必须是可编辑的。"
 
-#: ../lib/modules.inc:1459
+#: ../lib/modules.inc:1462
 msgid "Account was created successfully."
 msgstr "新增帐号成功."
 
 #: ../templates/lists/changePassword.php:609
 #: ../templates/lists/changePassword.php:661
-#: ../templates/lists/changePassword.php:713 ../lib/modules.inc:1462
+#: ../templates/lists/changePassword.php:713 ../lib/modules.inc:1465
 msgid "Account was modified successfully."
 msgstr "帐号修改成功."
 
@@ -691,7 +691,7 @@ msgstr "功能"
 msgid "Action type"
 msgstr "动作类型"
 
-#: ../lib/lists.inc:403
+#: ../lib/lists.inc:424
 msgid "Actions"
 msgstr "操作"
 
@@ -762,7 +762,7 @@ msgstr "激活这个选项将会删除用户的主目录."
 #: ../lib/modules/kopanoGroup.inc:138 ../lib/modules/kopanoGroup.inc:171
 #: ../lib/modules/kopanoGroup.inc:258 ../lib/modules/kopanoGroup.inc:614
 #: ../lib/modules/kopanoUser.inc:107 ../lib/modules/kopanoUser.inc:282
-#: ../lib/modules/kopanoUser.inc:600 ../lib/modules/kopanoUser.inc:1775
+#: ../lib/modules/kopanoUser.inc:600 ../lib/modules/kopanoUser.inc:1777
 #: ../lib/modules/qmailUser.inc:49 ../lib/modules/qmailUser.inc:259
 msgid "Active"
 msgstr "激活"
@@ -794,18 +794,18 @@ msgstr "激活帐号类型"
 #: ../lib/modules/bindDLZ.inc:1082 ../lib/modules/bindDLZ.inc:1195
 #: ../lib/modules/bindDLZ.inc:1324 ../lib/modules/bindDLZ.inc:1489
 #: ../lib/modules/bindDLZ.inc:1597 ../lib/modules/bindDLZ.inc:1713
-#: ../lib/modules/customFields.inc:1331 ../lib/modules/customFields.inc:1347
-#: ../lib/modules/customFields.inc:2905 ../lib/modules/customFields.inc:2924
-#: ../lib/modules/customFields.inc:5757 ../lib/modules/customFields.inc:5776
-#: ../lib/modules/device.inc:261 ../lib/modules/groupOfNames.inc:395
-#: ../lib/modules/groupOfNames.inc:545 ../lib/modules/groupOfNames.inc:706
+#: ../lib/modules/customFields.inc:1338 ../lib/modules/customFields.inc:1354
+#: ../lib/modules/customFields.inc:2912 ../lib/modules/customFields.inc:2931
+#: ../lib/modules/customFields.inc:5791 ../lib/modules/customFields.inc:5810
+#: ../lib/modules/device.inc:261 ../lib/modules/groupOfNames.inc:396
+#: ../lib/modules/groupOfNames.inc:548 ../lib/modules/groupOfNames.inc:710
 #: ../lib/modules/kopanoContact.inc:375 ../lib/modules/kopanoGroup.inc:389
-#: ../lib/modules/kopanoUser.inc:857 ../lib/modules/kopanoUser.inc:1430
-#: ../lib/modules/kopanoUser.inc:1461 ../lib/modules/organizationalRole.inc:298
+#: ../lib/modules/kopanoUser.inc:857 ../lib/modules/kopanoUser.inc:1429
+#: ../lib/modules/kopanoUser.inc:1462 ../lib/modules/organizationalRole.inc:298
 #: ../lib/modules/powerDNS.inc:685 ../lib/modules/powerDNS.inc:796
 #: ../lib/modules/powerDNS.inc:1000 ../lib/modules/qmailGroup.inc:658
 #: ../lib/modules/windowsLDSGroup.inc:424 ../lib/modules/windowsGroup.inc:670
-#: ../lib/modules/kolabUser.inc:688 ../lib/modules/kolabUser.inc:736
+#: ../lib/modules/kolabUser.inc:686 ../lib/modules/kolabUser.inc:740
 #: ../lib/modules/inetOrgPerson.inc:1811
 msgid "Add"
 msgstr "增加"
@@ -843,7 +843,7 @@ msgid "Add Kerberos extension"
 msgstr "增加 Kerberos 扩展"
 
 #: ../lib/modules/kolabGroup.inc:112 ../lib/modules/kolabGroup.inc:124
-#: ../lib/modules/kolabGroup.inc:184 ../lib/modules/kolabUser.inc:340
+#: ../lib/modules/kolabGroup.inc:184 ../lib/modules/kolabUser.inc:335
 msgid "Add Kolab extension"
 msgstr "增加 Kolab 扩展"
 
@@ -883,7 +883,7 @@ msgstr "增加 Shadow 帐号扩展"
 msgid "Add Simple Security Object extension"
 msgstr "添加简单安全对象扩展"
 
-#: ../lib/modules/posixGroup.inc:272 ../lib/modules/posixAccount.inc:1895
+#: ../lib/modules/posixGroup.inc:272 ../lib/modules/posixAccount.inc:1898
 msgid "Add Unix extension"
 msgstr "增加Unix扩展"
 
@@ -899,16 +899,16 @@ msgstr "增加通讯录(ou=addressbook)"
 msgid "Add another rule"
 msgstr "增加另外一个规则"
 
-#: ../lib/modules/groupOfNames.inc:447 ../lib/modules/groupOfNames.inc:597
-#: ../lib/modules/groupOfNames.inc:758
+#: ../lib/modules/groupOfNames.inc:449 ../lib/modules/groupOfNames.inc:601
+#: ../lib/modules/groupOfNames.inc:762
 #: ../lib/modules/organizationalRole.inc:347 ../lib/modules/qmailGroup.inc:699
 #: ../lib/modules/windowsLDSGroup.inc:477 ../lib/modules/inetOrgPerson.inc:1845
 msgid "Add entries"
 msgstr "增加条目"
 
 #: ../lib/modules/sambaGroupMapping.inc:493 ../lib/modules/device.inc:305
-#: ../lib/modules/groupOfNames.inc:449 ../lib/modules/groupOfNames.inc:607
-#: ../lib/modules/groupOfNames.inc:760 ../lib/modules/kopanoContact.inc:419
+#: ../lib/modules/groupOfNames.inc:451 ../lib/modules/groupOfNames.inc:611
+#: ../lib/modules/groupOfNames.inc:764 ../lib/modules/kopanoContact.inc:419
 #: ../lib/modules/kopanoGroup.inc:434 ../lib/modules/kopanoUser.inc:907
 #: ../lib/modules/organizationalRole.inc:359 ../lib/modules/qmailGroup.inc:700
 #: ../lib/modules/windowsLDSGroup.inc:478 ../lib/modules/windowsGroup.inc:714
@@ -919,7 +919,7 @@ msgstr "增加类型条目:"
 msgid "Add existing host"
 msgstr "增加已有主机"
 
-#: ../lib/modules/customFields.inc:640
+#: ../lib/modules/customFields.inc:647
 msgid "Add extension"
 msgstr "增加扩展"
 
@@ -947,15 +947,15 @@ msgstr "增加邮件路由扩展"
 msgid "Add more fields"
 msgstr "增加更多的域"
 
-#: ../lib/modules/customFields.inc:4089
+#: ../lib/modules/customFields.inc:4096
 msgid "Add more mapping fields"
 msgstr "增加更多的映射域"
 
-#: ../lib/treeview.inc:390
+#: ../lib/treeview.inc:393
 msgid "Add new attribute"
 msgstr "新增属性"
 
-#: ../lib/modules/customFields.inc:1291 ../lib/modules/customFields.inc:1346
+#: ../lib/modules/customFields.inc:1298 ../lib/modules/customFields.inc:1353
 msgid "Add new field"
 msgstr "增加新域"
 
@@ -1016,8 +1016,8 @@ msgstr "本条目的附加邮件地址."
 
 #: ../lib/modules/posixAccount.inc:251 ../lib/modules/posixAccount.inc:326
 #: ../lib/modules/posixAccount.inc:375 ../lib/modules/posixAccount.inc:461
-#: ../lib/modules/posixAccount.inc:1831 ../lib/modules/posixAccount.inc:2141
-#: ../lib/modules/posixAccount.inc:2282
+#: ../lib/modules/posixAccount.inc:1831 ../lib/modules/posixAccount.inc:2144
+#: ../lib/modules/posixAccount.inc:2285
 msgid "Additional groups"
 msgstr "附加组"
 
@@ -1075,7 +1075,7 @@ msgstr "增加这个 Kolab 扩展."
 
 #: ../lib/modules/kopanoUser.inc:131 ../lib/modules/kopanoUser.inc:292
 #: ../lib/modules/kopanoUser.inc:398 ../lib/modules/kopanoUser.inc:609
-#: ../lib/modules/kopanoUser.inc:1236 ../lib/modules/kopanoUser.inc:1776
+#: ../lib/modules/kopanoUser.inc:1236 ../lib/modules/kopanoUser.inc:1778
 msgid "Admin"
 msgstr "管理"
 
@@ -1116,7 +1116,7 @@ msgid "Administrators group"
 msgstr "管理员组"
 
 #: ../templates/config/confmain.php:255 ../lib/modules/windowsLDSUser.inc:2226
-#: ../lib/modules/inetOrgPerson.inc:4281 ../lib/modules/windowsUser.inc:4185
+#: ../lib/modules/inetOrgPerson.inc:4281 ../lib/modules/windowsUser.inc:4195
 msgid "Advanced options"
 msgstr "高级选项"
 
@@ -1132,7 +1132,7 @@ msgid "Algorithmic RID base is not a number!"
 msgstr "RID算法的基数不是一个数字!"
 
 #: ../lib/modules/aliasEntry.inc:47 ../lib/modules/customFields.inc:94
-#: ../lib/modules/customFields.inc:738 ../lib/modules/customFields.inc:794
+#: ../lib/modules/customFields.inc:745 ../lib/modules/customFields.inc:801
 msgid "Alias"
 msgstr "别名"
 
@@ -1228,18 +1228,18 @@ msgstr "邮件的别名"
 msgid "Aliases for user name"
 msgstr "用户名的别名"
 
-#: ../lib/lists.inc:869
+#: ../lib/lists.inc:936
 #, php-format
 msgid "All accounts (%s)"
 msgstr "所有帐号( %s)"
 
 #: ../templates/selfService/selfServiceMain.php:404
-#: ../templates/initsuff.php:169 ../lib/treeview.inc:905
-#: ../lib/treeview.inc:917
+#: ../templates/initsuff.php:169 ../lib/treeview.inc:908
+#: ../lib/treeview.inc:922
 msgid "All changes were successful."
 msgstr "修改成功."
 
-#: ../lib/lists.inc:868
+#: ../lib/lists.inc:935
 #, php-format
 msgid "All selected accounts (%s)"
 msgstr "所有选中的帐号(%s)"
@@ -1264,16 +1264,16 @@ msgid "Allow machine password changes"
 msgstr "允许改变主机密码"
 
 #: ../lib/modules/customFields.inc:182 ../lib/modules/customFields.inc:186
-#: ../lib/modules/customFields.inc:2554 ../lib/modules/customFields.inc:2637
-#: ../lib/modules/customFields.inc:2646 ../lib/modules/customFields.inc:4298
-#: ../lib/modules/customFields.inc:4335 ../lib/modules/customFields.inc:4339
-#: ../lib/modules/customFields.inc:4526 ../lib/modules/customFields.inc:5542
+#: ../lib/modules/customFields.inc:2561 ../lib/modules/customFields.inc:2644
+#: ../lib/modules/customFields.inc:2653 ../lib/modules/customFields.inc:4305
+#: ../lib/modules/customFields.inc:4342 ../lib/modules/customFields.inc:4346
+#: ../lib/modules/customFields.inc:4550 ../lib/modules/customFields.inc:5576
 msgid "Allow multiple values"
 msgstr "允许多值"
 
 #: ../lib/modules/ppolicy.inc:135 ../lib/modules/ppolicy.inc:162
-#: ../lib/modules/ppolicy.inc:291 ../lib/modules/ppolicy.inc:513
-#: ../lib/modules/ppolicy.inc:540
+#: ../lib/modules/ppolicy.inc:305 ../lib/modules/ppolicy.inc:527
+#: ../lib/modules/ppolicy.inc:554
 msgid "Allow password change"
 msgstr "允许改变密码"
 
@@ -1341,11 +1341,11 @@ msgstr "允许的键/盐类型"
 #: ../lib/modules/kolabSharedFolder.inc:174
 #: ../lib/modules/kolabSharedFolder.inc:200
 #: ../lib/modules/kolabSharedFolder.inc:215
-#: ../lib/modules/kolabSharedFolder.inc:256
-#: ../lib/modules/kolabSharedFolder.inc:410 ../lib/modules/kolabUser.inc:135
+#: ../lib/modules/kolabSharedFolder.inc:255
+#: ../lib/modules/kolabSharedFolder.inc:407 ../lib/modules/kolabUser.inc:135
 #: ../lib/modules/kolabUser.inc:139 ../lib/modules/kolabUser.inc:185
 #: ../lib/modules/kolabUser.inc:202 ../lib/modules/kolabUser.inc:217
-#: ../lib/modules/kolabUser.inc:335 ../lib/modules/kolabUser.inc:620
+#: ../lib/modules/kolabUser.inc:330 ../lib/modules/kolabUser.inc:615
 msgid "Allowed recipients"
 msgstr "允许的接收者"
 
@@ -1357,11 +1357,11 @@ msgstr "允许的接收者"
 #: ../lib/modules/kolabSharedFolder.inc:180
 #: ../lib/modules/kolabSharedFolder.inc:201
 #: ../lib/modules/kolabSharedFolder.inc:217
-#: ../lib/modules/kolabSharedFolder.inc:258
-#: ../lib/modules/kolabSharedFolder.inc:411 ../lib/modules/kolabUser.inc:144
+#: ../lib/modules/kolabSharedFolder.inc:257
+#: ../lib/modules/kolabSharedFolder.inc:408 ../lib/modules/kolabUser.inc:144
 #: ../lib/modules/kolabUser.inc:148 ../lib/modules/kolabUser.inc:191
 #: ../lib/modules/kolabUser.inc:203 ../lib/modules/kolabUser.inc:219
-#: ../lib/modules/kolabUser.inc:337 ../lib/modules/kolabUser.inc:621
+#: ../lib/modules/kolabUser.inc:332 ../lib/modules/kolabUser.inc:616
 msgid "Allowed senders"
 msgstr "允许的发送者"
 
@@ -1408,7 +1408,7 @@ msgstr "允许在输入框设置密码。"
 msgid "Alternate address"
 msgstr "变更地址"
 
-#: ../lib/modules.inc:1186 ../lib/modules.inc:1312 ../help/help.inc:296
+#: ../lib/modules.inc:1191 ../lib/modules.inc:1316 ../help/help.inc:296
 msgid "Alternate recipient"
 msgstr "另外的接收者"
 
@@ -1462,12 +1462,12 @@ msgstr "其他的手机号."
 msgid "Any secondary pager numbers."
 msgstr "其他的传呼号."
 
-#: ../lib/modules/kolabUser.inc:279 ../lib/modules/kolabUser.inc:606
-#: ../lib/modules/kolabUser.inc:711 ../lib/modules/kolabUser.inc:714
+#: ../lib/modules/kolabUser.inc:275 ../lib/modules/kolabUser.inc:601
+#: ../lib/modules/kolabUser.inc:710 ../lib/modules/kolabUser.inc:713
 msgid "Anyone"
 msgstr "任何人"
 
-#: ../lib/modules/customFields.inc:716
+#: ../lib/modules/customFields.inc:723
 msgid "Appearance"
 msgstr "外观"
 
@@ -1509,7 +1509,7 @@ msgstr "审批设置"
 #: ../lib/modules/kopanoUser.inc:344 ../lib/modules/kopanoUser.inc:410
 #: ../lib/modules/kopanoUser.inc:561 ../lib/modules/kopanoUser.inc:950
 #: ../lib/modules/kopanoUser.inc:1210 ../lib/modules/kopanoUser.inc:1292
-#: ../lib/modules/kopanoUser.inc:1777
+#: ../lib/modules/kopanoUser.inc:1779
 msgid "Archive servers"
 msgstr "归档服务器"
 
@@ -1575,15 +1575,15 @@ msgstr "Asterisk语音邮件"
 msgid "Asterisk voicemail context."
 msgstr "Asterisk语音邮件的语境."
 
-#: ../lib/treeview.inc:391
+#: ../lib/treeview.inc:394
 msgid "Attribute"
 msgstr "属性"
 
 #: ../templates/tools/multiEdit.php:155 ../lib/modules/yubiKeyUser.inc:100
 #: ../lib/modules/yubiKeyUser.inc:584 ../lib/modules/yubiKeyUser.inc:595
 #: ../lib/modules/customFields.inc:110 ../lib/modules/customFields.inc:226
-#: ../lib/modules/customFields.inc:1314 ../lib/modules/customFields.inc:2234
-#: ../lib/modules/customFields.inc:4545
+#: ../lib/modules/customFields.inc:1321 ../lib/modules/customFields.inc:2241
+#: ../lib/modules/customFields.inc:4569
 msgid "Attribute name"
 msgstr "属性名"
 
@@ -1593,8 +1593,8 @@ msgstr "属性类型"
 
 #: ../templates/tools/importexport.php:287
 #: ../lib/modules/selfRegistration.inc:90
-#: ../lib/modules/selfRegistration.inc:232 ../lib/treeview.inc:368
-#: ../lib/treeview.inc:1362 ../help/help.inc:416
+#: ../lib/modules/selfRegistration.inc:232 ../lib/treeview.inc:371
+#: ../lib/treeview.inc:1388 ../help/help.inc:416
 msgid "Attributes"
 msgstr "属性"
 
@@ -1647,7 +1647,7 @@ msgstr "自动删除"
 msgid "Auto deletion can only be activated for new entries."
 msgstr "只能为新加的条目启用自动删除."
 
-#: ../lib/modules/customFields.inc:190 ../lib/modules/customFields.inc:2568
+#: ../lib/modules/customFields.inc:190 ../lib/modules/customFields.inc:2575
 msgid "Auto-completion"
 msgstr "自动填充"
 
@@ -1672,7 +1672,7 @@ msgstr "自动脚本"
 #: ../lib/modules/authorizedServiceObject.inc:90
 #: ../lib/modules/authorizedServiceObject.inc:114
 #: ../lib/modules/hostObject.inc:89 ../lib/modules/hostObject.inc:107
-#: ../lib/modules/customFields.inc:1112 ../lib/modules/kopanoContact.inc:90
+#: ../lib/modules/customFields.inc:1119 ../lib/modules/kopanoContact.inc:90
 #: ../lib/modules/kopanoContact.inc:604 ../lib/modules/kopanoUser.inc:159
 #: ../lib/modules/kopanoUser.inc:1278 ../lib/modules/openldapTotp.inc:80
 #: ../lib/modules/passwordSelfReset.inc:157
@@ -1683,7 +1683,7 @@ msgstr "自动脚本"
 #: ../lib/modules/sambaSamAccount.inc:185
 #: ../lib/modules/sambaSamAccount.inc:424 ../lib/modules/shadowAccount.inc:131
 #: ../lib/modules/shadowAccount.inc:218 ../lib/modules/posixAccount.inc:337
-#: ../lib/modules/posixAccount.inc:2184
+#: ../lib/modules/posixAccount.inc:2187
 msgid "Automatically add this extension"
 msgstr "自动增加这个扩展项"
 
@@ -1737,7 +1737,7 @@ msgstr "可选动作"
 #: ../lib/modules/nisnetgroup.inc:413 ../lib/modules/groupOfNamesUser.inc:182
 #: ../lib/modules/windowsLDSGroup.inc:295
 #: ../lib/modules/windowsLDSUser.inc:1275 ../lib/modules/windowsGroup.inc:542
-#: ../lib/modules/posixAccount.inc:1980 ../lib/modules/posixAccount.inc:2010
+#: ../lib/modules/posixAccount.inc:1983 ../lib/modules/posixAccount.inc:2013
 #: ../lib/modules/windowsUser.inc:2177
 msgid "Available groups"
 msgstr "可选组"
@@ -1763,8 +1763,8 @@ msgstr "可选工作站"
 msgid "B-Node (0x01)"
 msgstr "B-节点 (0x01)"
 
-#: ../lib/modules/selfRegistration.inc:258 ../lib/modules/windowsUser.inc:4802
-#: ../lib/modules/windowsUser.inc:4847 ../lib/passwordExpirationJob.inc:89
+#: ../lib/modules/selfRegistration.inc:258 ../lib/modules/windowsUser.inc:4833
+#: ../lib/modules/windowsUser.inc:4878 ../lib/passwordExpirationJob.inc:89
 #: ../lib/passwordExpirationJob.inc:142 ../help/help.inc:449
 msgid "BCC address"
 msgstr "秘密抄送地址"
@@ -1774,9 +1774,9 @@ msgstr "秘密抄送地址"
 #: ../templates/upload/massBuildAccounts.php:321
 #: ../lib/modules/sambaGroupMapping.inc:500 ../lib/modules/pykotaUser.inc:596
 #: ../lib/modules/pykotaUser.inc:639 ../lib/modules/nisnetgroup.inc:416
-#: ../lib/modules/device.inc:313 ../lib/modules/groupOfNames.inc:467
-#: ../lib/modules/groupOfNames.inc:617 ../lib/modules/groupOfNames.inc:778
-#: ../lib/modules/groupOfNames.inc:840 ../lib/modules/groupOfNamesUser.inc:220
+#: ../lib/modules/device.inc:313 ../lib/modules/groupOfNames.inc:469
+#: ../lib/modules/groupOfNames.inc:621 ../lib/modules/groupOfNames.inc:782
+#: ../lib/modules/groupOfNames.inc:844 ../lib/modules/groupOfNamesUser.inc:220
 #: ../lib/modules/groupOfNamesUser.inc:278 ../lib/modules/kopanoContact.inc:425
 #: ../lib/modules/kopanoGroup.inc:441 ../lib/modules/kopanoUser.inc:913
 #: ../lib/modules/kopanoUser.inc:961 ../lib/modules/organizationalRole.inc:366
@@ -1790,8 +1790,8 @@ msgstr "秘密抄送地址"
 #: ../lib/modules/posixGroup.inc:352 ../lib/modules/sambaSamAccount.inc:1389
 #: ../lib/modules/sambaSamAccount.inc:1674
 #: ../lib/modules/inetOrgPerson.inc:1754 ../lib/modules/inetOrgPerson.inc:1846
-#: ../lib/modules/inetOrgPerson.inc:1928 ../lib/modules/posixAccount.inc:2046
-#: ../lib/modules/posixAccount.inc:2120 ../lib/modules/windowsUser.inc:2216
+#: ../lib/modules/inetOrgPerson.inc:1928 ../lib/modules/posixAccount.inc:2049
+#: ../lib/modules/posixAccount.inc:2123 ../lib/modules/windowsUser.inc:2216
 #: ../lib/modules/windowsUser.inc:2384 ../lib/modules/windowsUser.inc:2579
 msgid "Back"
 msgstr "返回"
@@ -1971,7 +1971,7 @@ msgstr "Base (只有基本DN)"
 
 #: ../templates/tools/importexport.php:273
 #: ../templates/tools/importexport.php:432 ../lib/export.inc:127
-#: ../lib/export.inc:255 ../lib/treeview.inc:1349 ../lib/treeview.inc:1440
+#: ../lib/export.inc:255 ../lib/treeview.inc:1375 ../lib/treeview.inc:1466
 #: ../help/help.inc:412
 msgid "Base DN"
 msgstr "基本DN"
@@ -2128,7 +2128,7 @@ msgstr "内置组"
 #: ../lib/modules/windowsUser.inc:351 ../lib/modules/windowsUser.inc:752
 #: ../lib/modules/windowsUser.inc:912 ../lib/modules/windowsUser.inc:1096
 #: ../lib/modules/windowsUser.inc:1231 ../lib/modules/windowsUser.inc:1441
-#: ../lib/modules/windowsUser.inc:3273 ../lib/modules/windowsUser.inc:4131
+#: ../lib/modules/windowsUser.inc:3273 ../lib/modules/windowsUser.inc:4141
 msgid "Business category"
 msgstr "商业种类"
 
@@ -2182,7 +2182,7 @@ msgstr ""
 msgid "Bytes sent"
 msgstr "字节已发送"
 
-#: ../lib/modules/windowsUser.inc:4801 ../lib/modules/windowsUser.inc:4841
+#: ../lib/modules/windowsUser.inc:4832 ../lib/modules/windowsUser.inc:4872
 #: ../lib/passwordExpirationJob.inc:88 ../lib/passwordExpirationJob.inc:136
 #: ../help/help.inc:445
 msgid "CC address"
@@ -2251,13 +2251,13 @@ msgstr "可以置空."
 msgid "Can call forward"
 msgstr "可能呼叫转移"
 
-#: ../templates/misc/ajax.php:303 ../templates/lists/changePassword.php:286
+#: ../templates/misc/ajax.php:309 ../templates/lists/changePassword.php:286
 #: ../templates/lists/changePassword.php:324
 #: ../templates/lists/changePassword.php:343
 #: ../templates/lists/changePassword.php:362
 #: ../templates/tools/importexport.php:205
 #: ../templates/tools/importexport.php:404 ../templates/tools/treeView.php:156
-#: ../templates/tools/webauthn.php:117 ../templates/tools/ou_edit.php:143
+#: ../templates/tools/webauthn.php:117 ../templates/tools/ou_edit.php:145
 #: ../templates/config/jobList.php:189 ../templates/config/jobs.php:275
 #: ../templates/config/jobs.php:319 ../templates/config/profmanage.php:258
 #: ../templates/config/profmanage.php:272
@@ -2268,7 +2268,7 @@ msgstr "可能呼叫转移"
 #: ../templates/config/conftypes.php:320
 #: ../templates/config/moduleSettings.php:187
 #: ../templates/config/confImportExport.php:312
-#: ../templates/config/mainmanage.php:673 ../templates/config/confmain.php:597
+#: ../templates/config/mainmanage.php:678 ../templates/config/confmain.php:597
 #: ../templates/pdfedit/pdfmain.php:381 ../templates/pdfedit/pdfmain.php:390
 #: ../templates/pdfedit/pdfmain.php:398 ../templates/pdfedit/pdfmain.php:431
 #: ../templates/pdfedit/pdfmain.php:437 ../templates/pdfedit/pdfmain.php:645
@@ -2282,23 +2282,23 @@ msgstr "可能呼叫转移"
 #: ../templates/selfService/profManage.php:225
 #: ../templates/selfService/profManage.php:242
 #: ../templates/selfService/adminMain.php:934
-#: ../templates/selfService/selfService2Factor.php:237
+#: ../templates/selfService/selfService2Factor.php:239
 #: ../templates/initsuff.php:202 ../templates/delete.php:156
-#: ../templates/login2Factor.php:229 ../lib/types/automountType.inc:204
-#: ../lib/types/bind.inc:146 ../lib/types/user.inc:353
-#: ../lib/modules/pykotaPrinter.inc:437 ../lib/modules/nisMailAliasUser.inc:385
-#: ../lib/modules/windowsHost.inc:286 ../lib/modules/sambaGroupMapping.inc:481
-#: ../lib/modules/nisnetgroup.inc:495 ../lib/modules/fixed_ip.inc:608
-#: ../lib/modules/nisMailAlias.inc:391 ../lib/modules/aliasEntry.inc:159
-#: ../lib/modules/aliasEntry.inc:182 ../lib/modules/autoDelete.inc:172
-#: ../lib/modules/customFields.inc:1335 ../lib/modules/device.inc:263
-#: ../lib/modules/groupOfNames.inc:396 ../lib/modules/groupOfNames.inc:546
-#: ../lib/modules/groupOfNames.inc:707 ../lib/modules/heimdalKerberos.inc:631
-#: ../lib/modules/kopanoContact.inc:376 ../lib/modules/kopanoGroup.inc:390
-#: ../lib/modules/kopanoUser.inc:858 ../lib/modules/locking389ds.inc:211
-#: ../lib/modules/mitKerberos.inc:792 ../lib/modules/organizationalRole.inc:299
-#: ../lib/modules/qmailGroup.inc:659 ../lib/modules/qmailUser.inc:741
-#: ../lib/modules/webauthn.inc:171 ../lib/modules/windowsLDSGroup.inc:358
+#: ../templates/login2Factor.php:230 ../lib/types/automountType.inc:204
+#: ../lib/types/bind.inc:146 ../lib/modules/pykotaPrinter.inc:437
+#: ../lib/modules/nisMailAliasUser.inc:385 ../lib/modules/windowsHost.inc:287
+#: ../lib/modules/sambaGroupMapping.inc:481 ../lib/modules/nisnetgroup.inc:495
+#: ../lib/modules/fixed_ip.inc:608 ../lib/modules/nisMailAlias.inc:391
+#: ../lib/modules/aliasEntry.inc:159 ../lib/modules/aliasEntry.inc:182
+#: ../lib/modules/autoDelete.inc:172 ../lib/modules/customFields.inc:1342
+#: ../lib/modules/device.inc:263 ../lib/modules/groupOfNames.inc:397
+#: ../lib/modules/groupOfNames.inc:549 ../lib/modules/groupOfNames.inc:711
+#: ../lib/modules/heimdalKerberos.inc:631 ../lib/modules/kopanoContact.inc:376
+#: ../lib/modules/kopanoGroup.inc:390 ../lib/modules/kopanoUser.inc:858
+#: ../lib/modules/locking389ds.inc:211 ../lib/modules/mitKerberos.inc:792
+#: ../lib/modules/organizationalRole.inc:299 ../lib/modules/qmailGroup.inc:659
+#: ../lib/modules/qmailUser.inc:741 ../lib/modules/webauthn.inc:171
+#: ../lib/modules/windowsLDSGroup.inc:358
 #: ../lib/modules/windowsLDSGroup.inc:425
 #: ../lib/modules/windowsLDSUser.inc:1441 ../lib/modules/windowsGroup.inc:605
 #: ../lib/modules/windowsGroup.inc:671 ../lib/modules/freeRadius.inc:584
@@ -2307,8 +2307,9 @@ msgstr "可能呼叫转移"
 #: ../lib/modules/sambaSamAccount.inc:1602 ../lib/modules/shadowAccount.inc:527
 #: ../lib/modules/shadowAccount.inc:576 ../lib/modules/inetOrgPerson.inc:1812
 #: ../lib/modules/windowsUser.inc:2055 ../lib/modules/windowsUser.inc:2518
-#: ../lib/lists.inc:879 ../lib/lists.inc:955 ../lib/html.inc:656
-#: ../lib/modules.inc:1225 ../lib/modules.inc:1404 ../lib/treeview.inc:720
+#: ../lib/baseType.inc:318 ../lib/lists.inc:946 ../lib/lists.inc:1022
+#: ../lib/html.inc:656 ../lib/modules.inc:1229 ../lib/modules.inc:1407
+#: ../lib/treeview.inc:723
 msgid "Cancel"
 msgstr "取消"
 
@@ -2341,7 +2342,7 @@ msgstr "不能写入证书文件. 请检查config/serverCerts.pem的权限."
 #: ../lib/modules/kopanoUser.inc:143 ../lib/modules/kopanoUser.inc:274
 #: ../lib/modules/kopanoUser.inc:392 ../lib/modules/kopanoUser.inc:443
 #: ../lib/modules/kopanoUser.inc:553 ../lib/modules/kopanoUser.inc:1206
-#: ../lib/modules/kopanoUser.inc:1774
+#: ../lib/modules/kopanoUser.inc:1776
 msgid "Capacity"
 msgstr "容量"
 
@@ -2380,12 +2381,12 @@ msgstr "标题和标签"
 #: ../lib/modules/inetOrgPerson.inc:4262 ../lib/modules/inetOrgPerson.inc:4600
 #: ../lib/modules/windowsUser.inc:335 ../lib/modules/windowsUser.inc:728
 #: ../lib/modules/windowsUser.inc:1087 ../lib/modules/windowsUser.inc:1432
-#: ../lib/modules/windowsUser.inc:3270 ../lib/modules/windowsUser.inc:4128
+#: ../lib/modules/windowsUser.inc:3270 ../lib/modules/windowsUser.inc:4138
 msgid "Car license"
 msgstr "汽车执照"
 
 #: ../templates/selfService/adminMain.php:740
-#: ../lib/modules/windowsHost.inc:214 ../lib/modules/windowsHost.inc:285
+#: ../lib/modules/windowsHost.inc:215 ../lib/modules/windowsHost.inc:286
 #: ../lib/modules/asteriskExtension.inc:261 ../lib/modules/aliasEntry.inc:103
 #: ../lib/modules/autoDelete.inc:135 ../lib/modules/autoDelete.inc:171
 #: ../lib/modules/device.inc:185 ../lib/modules/groupOfNames.inc:240
@@ -2437,20 +2438,20 @@ msgstr "更改 Samba LM 密码"
 msgid "Change Samba NT password"
 msgstr "更改 Samba NT 密码"
 
-#: ../lib/modules/posixAccount.inc:4215
+#: ../lib/modules/posixAccount.inc:4223
 msgid "Change Unix password"
 msgstr "更改 Unix 密码"
 
-#: ../lib/modules/windowsLDSUser.inc:2412 ../lib/modules/windowsUser.inc:4411
+#: ../lib/modules/windowsLDSUser.inc:2412 ../lib/modules/windowsUser.inc:4421
 msgid "Change Windows password"
 msgstr "更改Windows 密码"
 
-#: ../lib/types/user.inc:286
+#: ../lib/baseType.inc:233
 msgid "Change account status"
 msgstr "改变帐号状态"
 
-#: ../lib/modules/windowsHost.inc:383 ../lib/modules/windowsGroup.inc:1110
-#: ../lib/modules/windowsUser.inc:4542
+#: ../lib/modules/windowsHost.inc:384 ../lib/modules/windowsGroup.inc:1110
+#: ../lib/modules/windowsUser.inc:4552
 msgid "Change date"
 msgstr "更改日期"
 
@@ -2463,11 +2464,11 @@ msgstr "更改缺省的配置文件"
 msgid "Change field label."
 msgstr "修改域标识."
 
-#: ../lib/lists.inc:955
+#: ../lib/lists.inc:1022
 msgid "Change list settings"
 msgstr "改变列表设置"
 
-#: ../templates/config/mainmanage.php:656 ../help/help.inc:149
+#: ../templates/config/mainmanage.php:661 ../help/help.inc:149
 msgid "Change master password"
 msgstr "更改管理员密码"
 
@@ -2476,9 +2477,9 @@ msgstr "更改管理员密码"
 #: ../templates/lists/changePassword.php:285
 #: ../templates/lists/changePassword.php:320
 #: ../templates/lists/changePassword.php:323
-#: ../lib/modules/customFields.inc:1948
+#: ../lib/modules/customFields.inc:1955
 #: ../lib/modules/simpleSecurityObject.inc:651
-#: ../lib/modules/inetOrgPerson.inc:4444 ../lib/lists.inc:623
+#: ../lib/modules/inetOrgPerson.inc:4444 ../lib/lists.inc:670
 #: ../help/help.inc:110
 msgid "Change password"
 msgstr "更改密码"
@@ -2492,7 +2493,7 @@ msgstr "现在更改密码?"
 msgid "Change passwords"
 msgstr "更改密码"
 
-#: ../lib/lists.inc:956
+#: ../lib/lists.inc:1023
 msgid "Change settings"
 msgstr "修改设置"
 
@@ -2506,11 +2507,11 @@ msgstr "值已改变,因为只能使用ASCII字符."
 msgid "Charlie"
 msgstr "Charlie"
 
-#: ../lib/treeview.inc:720
+#: ../lib/treeview.inc:723
 msgid "Check"
 msgstr "检查"
 
-#: ../lib/modules/posixAccount.inc:1861
+#: ../lib/modules/posixAccount.inc:1864
 msgid "Check home directories"
 msgstr "检查主目录"
 
@@ -2524,7 +2525,7 @@ msgid ""
 "modules."
 msgstr "检查LDAP的架构是否符合选中的帐号模块需求."
 
-#: ../lib/treeview.inc:717 ../lib/treeview.inc:720
+#: ../lib/treeview.inc:720 ../lib/treeview.inc:723
 msgid "Check password"
 msgstr "检查密码"
 
@@ -2538,7 +2539,7 @@ msgid ""
 "data."
 msgstr "请仔细检查输入,上传前程序仅做基本检查."
 
-#: ../lib/modules/customFields.inc:3807
+#: ../lib/modules/customFields.inc:3814
 msgid "Checkbox"
 msgstr "复选框"
 
@@ -2572,11 +2573,11 @@ msgid "Classes"
 msgstr "类"
 
 #: ../lib/modules/qmailUser.inc:1131 ../lib/modules/freeRadius.inc:848
-#: ../lib/modules/shadowAccount.inc:1270 ../lib/modules/windowsUser.inc:5160
+#: ../lib/modules/shadowAccount.inc:1270 ../lib/modules/windowsUser.inc:5191
 msgid "Cleanup expired user accounts"
 msgstr "清理过期用户账号"
 
-#: ../lib/lists.inc:480
+#: ../lib/lists.inc:501
 msgid "Clear filter"
 msgstr "清除过滤表达式"
 
@@ -2588,7 +2589,7 @@ msgstr "清除密码过期时间"
 msgid "Click here if you are not directed to the next page."
 msgstr "如果没有自动跳转到下一页请点此处."
 
-#: ../lib/modules.inc:1033
+#: ../lib/modules.inc:1035
 msgid "Click here to make this your default profile."
 msgstr "点击此处，将此设置为您的缺省配置文件."
 
@@ -2604,7 +2605,7 @@ msgstr "客户端ID号"
 msgid "Client printer is default"
 msgstr "缺省为客户打印机"
 
-#: ../lib/html.inc:2869
+#: ../lib/html.inc:2741
 msgid "Close"
 msgstr "关闭"
 
@@ -2617,7 +2618,7 @@ msgid "Color laser printer"
 msgstr "彩色打印机"
 
 #: ../templates/upload/masscreate.php:330 ../lib/modules/customFields.inc:166
-#: ../lib/modules/customFields.inc:3668
+#: ../lib/modules/customFields.inc:3675
 msgid "Columns"
 msgstr "列"
 
@@ -2679,14 +2680,14 @@ msgstr "普通的例子是 \"@givenname@%sn%\" 或 \"%givenname%.%sn%\"."
 #: ../lib/modules/inetOrgPerson.inc:2289 ../lib/modules/inetOrgPerson.inc:4271
 #: ../lib/modules/posixAccount.inc:139 ../lib/modules/posixAccount.inc:195
 #: ../lib/modules/posixAccount.inc:465 ../lib/modules/posixAccount.inc:491
-#: ../lib/modules/posixAccount.inc:1794 ../lib/modules/posixAccount.inc:2160
-#: ../lib/modules/posixAccount.inc:2254 ../lib/modules/posixAccount.inc:2284
-#: ../lib/modules/posixAccount.inc:2594 ../lib/modules/posixAccount.inc:3369
-#: ../lib/modules/posixAccount.inc:4419 ../lib/modules/windowsUser.inc:154
+#: ../lib/modules/posixAccount.inc:1794 ../lib/modules/posixAccount.inc:2163
+#: ../lib/modules/posixAccount.inc:2257 ../lib/modules/posixAccount.inc:2287
+#: ../lib/modules/posixAccount.inc:2597 ../lib/modules/posixAccount.inc:3377
+#: ../lib/modules/posixAccount.inc:4427 ../lib/modules/windowsUser.inc:154
 #: ../lib/modules/windowsUser.inc:477 ../lib/modules/windowsUser.inc:849
 #: ../lib/modules/windowsUser.inc:989 ../lib/modules/windowsUser.inc:1178
 #: ../lib/modules/windowsUser.inc:1332 ../lib/modules/windowsUser.inc:3241
-#: ../lib/modules/windowsUser.inc:4535
+#: ../lib/modules/windowsUser.inc:4545
 msgid "Common name"
 msgstr "全名"
 
@@ -2705,7 +2706,7 @@ msgstr "Asterisk 扩展的一般命名."
 #: ../lib/modules/windowsLDSUser.inc:2215 ../lib/modules/windowsUser.inc:387
 #: ../lib/modules/windowsUser.inc:688 ../lib/modules/windowsUser.inc:891
 #: ../lib/modules/windowsUser.inc:1114 ../lib/modules/windowsUser.inc:1444
-#: ../lib/modules/windowsUser.inc:3259 ../lib/modules/windowsUser.inc:4132
+#: ../lib/modules/windowsUser.inc:3259 ../lib/modules/windowsUser.inc:4142
 msgid "Company"
 msgstr "公司"
 
@@ -2819,7 +2820,11 @@ msgstr "连接字符串"
 msgid "Connection time limit"
 msgstr "连接时间限制"
 
-#: ../lib/modules/customFields.inc:5199
+#: ../templates/misc/ajax.php:589
+msgid "Connection to SMTP server was successful."
+msgstr "成功连接SMTP服务器。"
+
+#: ../lib/modules/customFields.inc:5233
 msgid "Constant"
 msgstr "常数"
 
@@ -2832,7 +2837,7 @@ msgstr "这个域的联系邮箱(比如 \"root.example.com.\")."
 msgid "Contact data"
 msgstr "联系数据"
 
-#: ../templates/tools/treeView.php:111 ../lib/lists.inc:607
+#: ../templates/tools/treeView.php:111 ../lib/lists.inc:654
 msgid "Copy"
 msgstr "复制"
 
@@ -2861,12 +2866,12 @@ msgstr "Courier"
 #: ../templates/pdfedit/pdfmain.php:358
 #: ../templates/profedit/profilemain.php:244 ../templates/initsuff.php:201
 #: ../lib/modules/nisMailAliasUser.inc:362
-#: ../lib/modules/sambaSamAccount.inc:1655 ../lib/modules/posixAccount.inc:2101
-#: ../lib/treeview.inc:1158
+#: ../lib/modules/sambaSamAccount.inc:1655 ../lib/modules/posixAccount.inc:2104
+#: ../lib/treeview.inc:1184
 msgid "Create"
 msgstr "建立"
 
-#: ../lib/lists.inc:616 ../lib/lists.inc:847 ../lib/modules.inc:1498
+#: ../lib/lists.inc:663 ../lib/lists.inc:914 ../lib/modules.inc:1501
 #: ../help/help.inc:282
 msgid "Create PDF file"
 msgstr "建立PDF文件"
@@ -2875,8 +2880,8 @@ msgstr "建立PDF文件"
 msgid "Create PDF files"
 msgstr "建立PDF文件"
 
-#: ../templates/tools/treeView.php:97 ../lib/treeview.inc:1001
-#: ../lib/treeview.inc:1082
+#: ../templates/tools/treeView.php:97 ../lib/treeview.inc:1027
+#: ../lib/treeview.inc:1108
 msgid "Create a child entry"
 msgstr "新建子条目"
 
@@ -2969,16 +2974,16 @@ msgstr "建立另外一个用户"
 msgid "Create another view"
 msgstr "建立另外一个视图"
 
-#: ../lib/lists.inc:858
+#: ../lib/lists.inc:925
 msgid "Create for"
 msgstr "建立"
 
-#: ../lib/modules/posixAccount.inc:1827 ../lib/modules/posixAccount.inc:2396
+#: ../lib/modules/posixAccount.inc:1827 ../lib/modules/posixAccount.inc:2399
 msgid "Create group with same name"
 msgstr "用同样的名字建组"
 
 #: ../lib/modules/selfRegistration.inc:237 ../lib/modules/posixAccount.inc:266
-#: ../lib/modules/posixAccount.inc:1846 ../lib/modules/posixAccount.inc:2170
+#: ../lib/modules/posixAccount.inc:1846 ../lib/modules/posixAccount.inc:2173
 msgid "Create home directory"
 msgstr "建立主目录"
 
@@ -2991,8 +2996,8 @@ msgstr "建立邮箱"
 msgid "Create new alias"
 msgstr "建立新的别名"
 
-#: ../lib/modules/customFields.inc:90 ../lib/modules/customFields.inc:726
-#: ../lib/modules/customFields.inc:742
+#: ../lib/modules/customFields.inc:90 ../lib/modules/customFields.inc:733
+#: ../lib/modules/customFields.inc:749
 msgid "Create new group"
 msgstr "建立新组"
 
@@ -3028,14 +3033,14 @@ msgstr "为给定的帐号类型建立新组。新组将建立一个对象类和
 msgid "Creates accounts by uploading a CSV formatted file."
 msgstr "上传一个CSV格式文件批量建立帐号."
 
-#: ../lib/treeview.inc:1253
+#: ../lib/treeview.inc:1279
 #, php-format
 msgid "Creation successful. DN <b>%s</b> has been created."
 msgstr "成功建立.DN<b>%s</b>已经建立."
 
-#: ../lib/modules/windowsHost.inc:382 ../lib/modules/generalInformation.inc:84
+#: ../lib/modules/windowsHost.inc:383 ../lib/modules/generalInformation.inc:84
 #: ../lib/modules/generalInformation.inc:171
-#: ../lib/modules/windowsGroup.inc:1109 ../lib/modules/windowsUser.inc:4541
+#: ../lib/modules/windowsGroup.inc:1109 ../lib/modules/windowsUser.inc:4551
 msgid "Creation time"
 msgstr "创建时间"
 
@@ -3060,7 +3065,7 @@ msgstr "为用户建立账单."
 msgid "Current connections"
 msgstr "当前连接"
 
-#: ../lib/modules/customFields.inc:6043
+#: ../lib/modules/customFields.inc:6077
 msgid "Current date"
 msgstr "当前日期"
 
@@ -3072,7 +3077,7 @@ msgstr "当前使用量(kB)"
 msgid "Custom entries"
 msgstr "自定义条目"
 
-#: ../lib/modules/customFields.inc:1361 ../lib/modules/customFields.inc:1699
+#: ../lib/modules/customFields.inc:1368 ../lib/modules/customFields.inc:1706
 msgid "Custom fields"
 msgstr "自定义域"
 
@@ -3129,7 +3134,7 @@ msgid "DHCP settings"
 msgstr "DHCP 设置"
 
 #: ../templates/lists/changePassword.php:231 ../templates/delete.php:127
-#: ../lib/modules.inc:452 ../lib/modules.inc:2196
+#: ../lib/modules.inc:452 ../lib/modules.inc:2202
 msgid "DN"
 msgstr "DN"
 
@@ -3249,7 +3254,7 @@ msgstr "数据库用户名和密码"
 
 #: ../lib/modules/pykotaUser.inc:576 ../lib/modules/pykotaUser.inc:622
 #: ../lib/modules/pykotaUser.inc:919 ../lib/modules/pykotaUser.inc:983
-#: ../lib/modules/pykotaUser.inc:1006 ../lib/modules/customFields.inc:2510
+#: ../lib/modules/pykotaUser.inc:1006 ../lib/modules/customFields.inc:2517
 msgid "Date"
 msgstr "日期"
 
@@ -3263,7 +3268,7 @@ msgid "Date after the user must change his password."
 msgstr "多少天后用户必须修改密码."
 
 #: ../lib/modules/customFields.inc:130 ../lib/modules/customFields.inc:134
-#: ../lib/modules/customFields.inc:2539 ../lib/modules/customFields.inc:2609
+#: ../lib/modules/customFields.inc:2546 ../lib/modules/customFields.inc:2616
 msgid "Date format"
 msgstr "日期格式"
 
@@ -3279,8 +3284,8 @@ msgid "Days to delete"
 msgstr "要删除的天数"
 
 #: ../lib/modules/locking389ds.inc:597 ../lib/modules/locking389ds.inc:618
-#: ../lib/modules/sambaSamAccount.inc:3103 ../lib/modules/windowsUser.inc:4466
-#: ../lib/modules/windowsUser.inc:4494
+#: ../lib/modules/sambaSamAccount.inc:3103 ../lib/modules/windowsUser.inc:4476
+#: ../lib/modules/windowsUser.inc:4504
 msgid "Deactivated"
 msgstr "非激活"
 
@@ -3328,7 +3333,7 @@ msgid "Default user"
 msgstr "缺省用户"
 
 #: ../templates/upload/masscreate.php:335 ../lib/modules/customFields.inc:162
-#: ../lib/modules/customFields.inc:3831
+#: ../lib/modules/customFields.inc:3838
 msgid "Default value"
 msgstr "缺省值"
 
@@ -3366,13 +3371,13 @@ msgstr "帐号过期后功能延期的天数."
 #: ../lib/modules/kolabSharedFolder.inc:122
 #: ../lib/modules/kolabSharedFolder.inc:192
 #: ../lib/modules/kolabSharedFolder.inc:203
-#: ../lib/modules/kolabSharedFolder.inc:270
-#: ../lib/modules/kolabSharedFolder.inc:413
-#: ../lib/modules/kolabSharedFolder.inc:432 ../lib/modules/kolabUser.inc:103
+#: ../lib/modules/kolabSharedFolder.inc:268
+#: ../lib/modules/kolabSharedFolder.inc:410
+#: ../lib/modules/kolabSharedFolder.inc:429 ../lib/modules/kolabUser.inc:103
 #: ../lib/modules/kolabUser.inc:119 ../lib/modules/kolabUser.inc:123
 #: ../lib/modules/kolabUser.inc:179 ../lib/modules/kolabUser.inc:201
-#: ../lib/modules/kolabUser.inc:308 ../lib/modules/kolabUser.inc:619
-#: ../lib/modules/kolabUser.inc:690
+#: ../lib/modules/kolabUser.inc:304 ../lib/modules/kolabUser.inc:614
+#: ../lib/modules/kolabUser.inc:689
 msgid "Delegates"
 msgstr "Delegates"
 
@@ -3384,10 +3389,10 @@ msgstr ""
 "在使用共享文件夹时允许使用委托. 在 Kolab smtp 服务器(Postfix)时会使用这个属"
 "性."
 
-#: ../templates/misc/ajax.php:293 ../templates/tools/serverInfo.php:293
+#: ../templates/misc/ajax.php:299 ../templates/tools/serverInfo.php:293
 #: ../templates/tools/serverInfo.php:355 ../templates/tools/treeView.php:148
 #: ../templates/tools/treeView.php:155 ../templates/tools/webauthn.php:106
-#: ../templates/tools/ou_edit.php:139 ../templates/tools/multiEdit.php:161
+#: ../templates/tools/ou_edit.php:141 ../templates/tools/multiEdit.php:161
 #: ../templates/config/profmanage.php:280
 #: ../templates/config/mainmanage.php:502 ../templates/pdfedit/pdfmain.php:379
 #: ../templates/pdfedit/pdfmain.php:380 ../templates/pdfedit/pdfmain.php:426
@@ -3403,15 +3408,15 @@ msgstr ""
 #: ../lib/modules/ldapPublicKey.inc:362 ../lib/modules/nisNetGroupUser.inc:193
 #: ../lib/modules/yubiKeyUser.inc:324 ../lib/modules/nisnetgroup.inc:263
 #: ../lib/modules/bindDLZ.inc:1319 ../lib/modules/bindDLZ.inc:1707
-#: ../lib/modules/customFields.inc:870 ../lib/modules/customFields.inc:2899
-#: ../lib/modules/customFields.inc:4891 ../lib/modules/customFields.inc:5751
-#: ../lib/modules/kopanoUser.inc:1402 ../lib/modules/kopanoUser.inc:1453
+#: ../lib/modules/customFields.inc:877 ../lib/modules/customFields.inc:2906
+#: ../lib/modules/customFields.inc:4925 ../lib/modules/customFields.inc:5785
+#: ../lib/modules/kopanoUser.inc:1400 ../lib/modules/kopanoUser.inc:1453
 #: ../lib/modules/powerDNS.inc:791 ../lib/modules/powerDNS.inc:993
-#: ../lib/modules/webauthn.inc:156 ../lib/modules/kolabUser.inc:677
+#: ../lib/modules/webauthn.inc:156 ../lib/modules/kolabUser.inc:674
 #: ../lib/modules/sambaSamAccount.inc:1647
 #: ../lib/modules/inetOrgPerson.inc:3148 ../lib/modules/inetOrgPerson.inc:3300
-#: ../lib/modules/posixAccount.inc:2093 ../lib/lists.inc:600
-#: ../lib/passwordExpirationJob.inc:531 ../lib/modules.inc:1373
+#: ../lib/modules/posixAccount.inc:2096 ../lib/lists.inc:647
+#: ../lib/passwordExpirationJob.inc:531 ../lib/modules.inc:1376
 msgid "Delete"
 msgstr "删除"
 
@@ -3419,11 +3424,11 @@ msgstr "删除"
 msgid "Delete all CA certificates"
 msgstr "删除全部 CA 证书"
 
-#: ../lib/modules/customFields.inc:869
+#: ../lib/modules/customFields.inc:876
 msgid "Delete group"
 msgstr "删除组"
 
-#: ../lib/modules/posixAccount.inc:1927
+#: ../lib/modules/posixAccount.inc:1930
 msgid "Delete home directory"
 msgstr "删除主目录"
 
@@ -3432,11 +3437,11 @@ msgid "Delete mailbox"
 msgstr "删除邮箱"
 
 #: ../lib/modules/posixGroup.inc:339 ../lib/modules/posixGroup.inc:347
-#: ../lib/modules/posixAccount.inc:2023 ../lib/modules/windowsUser.inc:2201
+#: ../lib/modules/posixAccount.inc:2026 ../lib/modules/windowsUser.inc:2201
 msgid "Delete non-matching entries"
 msgstr "删除不匹配的项"
 
-#: ../templates/tools/ou_edit.php:225 ../help/help.inc:398
+#: ../templates/tools/ou_edit.php:237 ../help/help.inc:398
 msgid "Delete organisational unit"
 msgstr "删除组织单元"
 
@@ -3519,7 +3524,7 @@ msgstr "删除已选择的组"
 msgid "Delete selected hosts"
 msgstr "删除选中的主机"
 
-#: ../lib/lists.inc:140
+#: ../lib/lists.inc:161
 msgid "Delete selected objects"
 msgstr "删除选中的对象"
 
@@ -3543,7 +3548,7 @@ msgstr "删除选中的共享文件夹"
 msgid "Delete selected sudo roles"
 msgstr "删除选中的sudo角色"
 
-#: ../lib/types/user.inc:464
+#: ../lib/types/user.inc:232
 msgid "Delete selected users"
 msgstr "删除选中的用户"
 
@@ -3551,7 +3556,7 @@ msgstr "删除选中的用户"
 msgid "Delete selected views"
 msgstr "删除选中的视图"
 
-#: ../lib/modules/posixAccount.inc:395 ../lib/modules/posixAccount.inc:1932
+#: ../lib/modules/posixAccount.inc:395 ../lib/modules/posixAccount.inc:1935
 msgid "Delete sudo rights"
 msgstr "删除sudo权限"
 
@@ -3614,7 +3619,7 @@ msgstr "删除日期"
 msgid "Deletion time"
 msgstr "删除时间"
 
-#: ../lib/lists.inc:1346
+#: ../lib/lists.inc:1456
 msgid "Deletion was successful."
 msgstr "删除操作成功."
 
@@ -3658,8 +3663,8 @@ msgstr "阻止打印"
 #: ../lib/modules/windowsUser.inc:355 ../lib/modules/windowsUser.inc:760
 #: ../lib/modules/windowsUser.inc:894 ../lib/modules/windowsUser.inc:1099
 #: ../lib/modules/windowsUser.inc:1146 ../lib/modules/windowsUser.inc:1447
-#: ../lib/modules/windowsUser.inc:3274 ../lib/modules/windowsUser.inc:3475
-#: ../lib/modules/windowsUser.inc:4133
+#: ../lib/modules/windowsUser.inc:3274 ../lib/modules/windowsUser.inc:3485
+#: ../lib/modules/windowsUser.inc:4143
 msgid "Department"
 msgstr "部门"
 
@@ -3671,8 +3676,8 @@ msgstr "部门"
 #: ../lib/modules/windowsUser.inc:363 ../lib/modules/windowsUser.inc:768
 #: ../lib/modules/windowsUser.inc:897 ../lib/modules/windowsUser.inc:1102
 #: ../lib/modules/windowsUser.inc:1147 ../lib/modules/windowsUser.inc:1450
-#: ../lib/modules/windowsUser.inc:3275 ../lib/modules/windowsUser.inc:3476
-#: ../lib/modules/windowsUser.inc:4134
+#: ../lib/modules/windowsUser.inc:3275 ../lib/modules/windowsUser.inc:3486
+#: ../lib/modules/windowsUser.inc:4144
 msgid "Department number"
 msgstr "部门编号"
 
@@ -3706,9 +3711,9 @@ msgstr ""
 #: ../lib/modules/account.inc:90 ../lib/modules/account.inc:100
 #: ../lib/modules/account.inc:108 ../lib/modules/account.inc:221
 #: ../lib/modules/account.inc:243 ../lib/modules/account.inc:297
-#: ../lib/modules/windowsHost.inc:87 ../lib/modules/windowsHost.inc:122
-#: ../lib/modules/windowsHost.inc:141 ../lib/modules/windowsHost.inc:172
-#: ../lib/modules/windowsHost.inc:345 ../lib/modules/windowsHost.inc:379
+#: ../lib/modules/windowsHost.inc:88 ../lib/modules/windowsHost.inc:123
+#: ../lib/modules/windowsHost.inc:142 ../lib/modules/windowsHost.inc:173
+#: ../lib/modules/windowsHost.inc:346 ../lib/modules/windowsHost.inc:380
 #: ../lib/modules/courierMailAlias.inc:94
 #: ../lib/modules/courierMailAlias.inc:103
 #: ../lib/modules/courierMailAlias.inc:128
@@ -3751,8 +3756,8 @@ msgstr ""
 #: ../lib/modules/device.inc:177 ../lib/modules/device.inc:446
 #: ../lib/modules/groupOfNames.inc:93 ../lib/modules/groupOfNames.inc:147
 #: ../lib/modules/groupOfNames.inc:191 ../lib/modules/groupOfNames.inc:231
-#: ../lib/modules/groupOfNames.inc:939 ../lib/modules/groupOfNames.inc:1284
-#: ../lib/modules/groupOfNames.inc:1296 ../lib/modules/nisObject.inc:74
+#: ../lib/modules/groupOfNames.inc:943 ../lib/modules/groupOfNames.inc:1288
+#: ../lib/modules/groupOfNames.inc:1300 ../lib/modules/nisObject.inc:74
 #: ../lib/modules/nisObject.inc:104 ../lib/modules/nisObject.inc:115
 #: ../lib/modules/nisObject.inc:156 ../lib/modules/nisObject.inc:209
 #: ../lib/modules/nisObject.inc:221 ../lib/modules/nsview.inc:64
@@ -3796,7 +3801,7 @@ msgstr ""
 #: ../lib/modules/inetOrgPerson.inc:4583 ../lib/modules/posixAccount.inc:487
 #: ../lib/modules/windowsUser.inc:170 ../lib/modules/windowsUser.inc:536
 #: ../lib/modules/windowsUser.inc:1018 ../lib/modules/windowsUser.inc:1340
-#: ../lib/modules/windowsUser.inc:3243 ../lib/modules/windowsUser.inc:4143
+#: ../lib/modules/windowsUser.inc:3243 ../lib/modules/windowsUser.inc:4153
 msgid "Description"
 msgstr "描述"
 
@@ -3951,21 +3956,21 @@ msgstr "断开连接时间限制"
 msgid "Disconnects users if they are logged in outside logon hours."
 msgstr "如果用户登录限制时间到则断开连接."
 
-#: ../lib/modules/groupOfNames.inc:130 ../lib/modules/groupOfNames.inc:1273
+#: ../lib/modules/groupOfNames.inc:130 ../lib/modules/groupOfNames.inc:1277
 #: ../lib/modules/kopanoGroup.inc:122 ../lib/modules/kopanoGroup.inc:718
-#: ../lib/modules/kopanoUser.inc:198 ../lib/modules/kopanoUser.inc:1759
+#: ../lib/modules/kopanoUser.inc:198 ../lib/modules/kopanoUser.inc:1761
 #: ../lib/modules/organizationalRole.inc:110
 #: ../lib/modules/organizationalRole.inc:716 ../lib/modules/windowsUser.inc:443
-#: ../lib/modules/windowsUser.inc:4105 ../lib/treeview.inc:1371
+#: ../lib/modules/windowsUser.inc:4115 ../lib/treeview.inc:1397
 msgid "Display format"
 msgstr "显示格式"
 
 #: ../lib/modules/customFields.inc:138 ../lib/modules/customFields.inc:238
-#: ../lib/modules/customFields.inc:6224
+#: ../lib/modules/customFields.inc:6258
 msgid "Display in local time"
 msgstr "显示当地时间"
 
-#: ../lib/modules/customFields.inc:214 ../lib/modules/customFields.inc:717
+#: ../lib/modules/customFields.inc:214 ../lib/modules/customFields.inc:724
 msgid "Display multiple groups as accordion"
 msgstr "将多个组显示成堆叠式"
 
@@ -3995,7 +4000,7 @@ msgstr "将多个组显示成堆叠式"
 #: ../lib/modules/windowsUser.inc:520 ../lib/modules/windowsUser.inc:851
 #: ../lib/modules/windowsUser.inc:1000 ../lib/modules/windowsUser.inc:1184
 #: ../lib/modules/windowsUser.inc:1334 ../lib/modules/windowsUser.inc:3244
-#: ../lib/modules/windowsUser.inc:4113 ../lib/modules/windowsUser.inc:4536
+#: ../lib/modules/windowsUser.inc:4123 ../lib/modules/windowsUser.inc:4546
 #: ../help/help.inc:209
 msgid "Display name"
 msgstr "显示名"
@@ -4011,7 +4016,7 @@ msgid ""
 "spreadsheet."
 msgstr "显示的帐号数以\"0\"开始,加2才是您的电子表格的行数."
 
-#: ../lib/modules/customFields.inc:230 ../lib/modules/customFields.inc:4548
+#: ../lib/modules/customFields.inc:230 ../lib/modules/customFields.inc:4572
 msgid "Displayed attributes"
 msgstr "显示的属性"
 
@@ -4023,7 +4028,7 @@ msgstr "显示当地时间而不是 UTC时间。"
 msgid "Distribution"
 msgstr "分发"
 
-#: ../lib/modules/posixAccount.inc:424 ../lib/modules/posixAccount.inc:2474
+#: ../lib/modules/posixAccount.inc:424 ../lib/modules/posixAccount.inc:2477
 msgid "Do not add object class"
 msgstr "不要增加对象类"
 
@@ -4032,7 +4037,7 @@ msgstr "不要增加对象类"
 msgid "Do not ask security question"
 msgstr "不需要安全提问"
 
-#: ../templates/tools/ou_edit.php:130
+#: ../templates/tools/ou_edit.php:132
 msgid "Do you really want to delete this OU?"
 msgstr "确认删除这个OU?"
 
@@ -4062,7 +4067,7 @@ msgstr "确认发送到这个邮件列表?"
 msgid "Do you really want to remove the following accounts?"
 msgstr "确认删除下列帐号?"
 
-#: ../templates/tools/webauthn.php:146 ../templates/config/mainmanage.php:645
+#: ../templates/tools/webauthn.php:146 ../templates/config/mainmanage.php:650
 #: ../lib/modules/webauthn.inc:127
 msgid "Do you really want to remove this device?"
 msgstr "是否确实要删除此设备？"
@@ -4194,7 +4199,7 @@ msgid "Domain users"
 msgstr "域内用户"
 
 #: ../lib/modules/windowsLDSUser.inc:221 ../lib/modules/windowsLDSUser.inc:2196
-#: ../lib/modules/windowsUser.inc:288 ../lib/modules/windowsUser.inc:4100
+#: ../lib/modules/windowsUser.inc:288 ../lib/modules/windowsUser.inc:4110
 msgid "Domains"
 msgstr "域"
 
@@ -4228,6 +4233,10 @@ msgstr "排练"
 msgid "Dry run finished."
 msgstr "排练结束."
 
+#: ../lib/2factor.inc:505
+msgid "Duo connection failed"
+msgstr "Duo连接失败"
+
 #: ../lib/import.inc:223
 msgid "Duplicate version entry found."
 msgstr "发现了重复的版本条目。"
@@ -4255,11 +4264,11 @@ msgstr "每一行代表一个LDAP属性. 请参考语法手册."
 #: ../lib/modules/windowsLDSGroup.inc:193
 #: ../lib/modules/windowsLDSGroup.inc:222 ../lib/modules/windowsGroup.inc:392
 #: ../lib/modules/windowsGroup.inc:421 ../lib/modules/sambaSamAccount.inc:1294
-#: ../lib/modules/sambaSamAccount.inc:1302 ../lib/lists.inc:594
+#: ../lib/modules/sambaSamAccount.inc:1302 ../lib/lists.inc:641
 msgid "Edit"
 msgstr "编辑"
 
-#: ../lib/modules.inc:1503
+#: ../lib/modules.inc:1506
 msgid "Edit again"
 msgstr "再次编辑"
 
@@ -4293,7 +4302,7 @@ msgid "Edit workstations"
 msgstr "编辑工作站"
 
 #: ../templates/config/mainmanage.php:427 ../lib/modules/nisMailAlias.inc:351
-#: ../lib/modules/customFields.inc:2513
+#: ../lib/modules/customFields.inc:2520
 #: ../lib/modules/kopanoDynamicGroup.inc:212
 #: ../lib/modules/kopanoDynamicGroup.inc:213
 #: ../lib/modules/kopanoDynamicGroup.inc:448 ../lib/modules/kopanoGroup.inc:209
@@ -4326,9 +4335,9 @@ msgstr "邮件 \"%s\" 已经被使用."
 #: ../lib/modules/kolabSharedFolder.inc:153
 #: ../lib/modules/kolabSharedFolder.inc:204
 #: ../lib/modules/kolabSharedFolder.inc:222
-#: ../lib/modules/kolabSharedFolder.inc:239
-#: ../lib/modules/kolabSharedFolder.inc:408
-#: ../lib/modules/kolabSharedFolder.inc:431
+#: ../lib/modules/kolabSharedFolder.inc:238
+#: ../lib/modules/kolabSharedFolder.inc:405
+#: ../lib/modules/kolabSharedFolder.inc:428
 #: ../lib/modules/asteriskVoicemail.inc:114
 #: ../lib/modules/asteriskVoicemail.inc:147
 #: ../lib/modules/asteriskVoicemail.inc:185
@@ -4375,8 +4384,8 @@ msgstr "邮件 \"%s\" 已经被使用."
 #: ../lib/modules/windowsUser.inc:592 ../lib/modules/windowsUser.inc:872
 #: ../lib/modules/windowsUser.inc:1027 ../lib/modules/windowsUser.inc:1206
 #: ../lib/modules/windowsUser.inc:1208 ../lib/modules/windowsUser.inc:1390
-#: ../lib/modules/windowsUser.inc:3248 ../lib/modules/windowsUser.inc:4150
-#: ../lib/modules/windowsUser.inc:4394 ../lib/modules/windowsUser.inc:4539
+#: ../lib/modules/windowsUser.inc:3248 ../lib/modules/windowsUser.inc:4160
+#: ../lib/modules/windowsUser.inc:4404 ../lib/modules/windowsUser.inc:4549
 msgid "Email address"
 msgstr "电子邮件地址"
 
@@ -4406,8 +4415,8 @@ msgstr "主持此列表的电子邮件地址（例如，批准邮件）。"
 #: ../lib/modules/windowsUser.inc:600 ../lib/modules/windowsUser.inc:875
 #: ../lib/modules/windowsUser.inc:1030 ../lib/modules/windowsUser.inc:1210
 #: ../lib/modules/windowsUser.inc:1212 ../lib/modules/windowsUser.inc:1393
-#: ../lib/modules/windowsUser.inc:3249 ../lib/modules/windowsUser.inc:3505
-#: ../lib/modules/windowsUser.inc:4151
+#: ../lib/modules/windowsUser.inc:3249 ../lib/modules/windowsUser.inc:3515
+#: ../lib/modules/windowsUser.inc:4161
 msgid "Email alias"
 msgstr "电子邮件别名"
 
@@ -4444,9 +4453,9 @@ msgstr "电子邮件别名列表格式非法!"
 
 #: ../lib/modules/kolabSharedFolder.inc:186
 #: ../lib/modules/kolabSharedFolder.inc:202
-#: ../lib/modules/kolabSharedFolder.inc:261
-#: ../lib/modules/kolabSharedFolder.inc:412
-#: ../lib/modules/kolabSharedFolder.inc:433
+#: ../lib/modules/kolabSharedFolder.inc:259
+#: ../lib/modules/kolabSharedFolder.inc:409
+#: ../lib/modules/kolabSharedFolder.inc:430
 #: ../lib/modules/kopanoContact.inc:134 ../lib/modules/kopanoContact.inc:167
 #: ../lib/modules/kopanoContact.inc:221 ../lib/modules/kopanoContact.inc:589
 #: ../lib/modules/kopanoDynamicGroup.inc:72
@@ -4462,9 +4471,9 @@ msgstr "电子邮件别名列表格式非法!"
 #: ../lib/modules/kopanoGroup.inc:603 ../lib/modules/kopanoUser.inc:215
 #: ../lib/modules/kopanoUser.inc:401 ../lib/modules/kopanoUser.inc:416
 #: ../lib/modules/kopanoUser.inc:481 ../lib/modules/kopanoUser.inc:1209
-#: ../lib/modules/kopanoUser.inc:1464 ../lib/modules/kopanoUser.inc:1780
+#: ../lib/modules/kopanoUser.inc:1466 ../lib/modules/kopanoUser.inc:1782
 #: ../lib/modules/kolabUser.inc:173 ../lib/modules/kolabUser.inc:200
-#: ../lib/modules/kolabUser.inc:299 ../lib/modules/kolabUser.inc:618
+#: ../lib/modules/kolabUser.inc:295 ../lib/modules/kolabUser.inc:613
 msgid "Email aliases"
 msgstr "电子邮件别名"
 
@@ -4481,7 +4490,7 @@ msgstr "电子邮件别名"
 #: ../lib/modules/inetOrgPerson.inc:4266 ../lib/modules/inetOrgPerson.inc:4608
 #: ../lib/modules/windowsUser.inc:339 ../lib/modules/windowsUser.inc:736
 #: ../lib/modules/windowsUser.inc:1090 ../lib/modules/windowsUser.inc:1435
-#: ../lib/modules/windowsUser.inc:3271 ../lib/modules/windowsUser.inc:4129
+#: ../lib/modules/windowsUser.inc:3271 ../lib/modules/windowsUser.inc:4139
 msgid "Employee number"
 msgstr "雇员号"
 
@@ -4498,7 +4507,7 @@ msgstr "雇员号"
 #: ../lib/modules/windowsUser.inc:343 ../lib/modules/windowsUser.inc:744
 #: ../lib/modules/windowsUser.inc:909 ../lib/modules/windowsUser.inc:1093
 #: ../lib/modules/windowsUser.inc:1229 ../lib/modules/windowsUser.inc:1438
-#: ../lib/modules/windowsUser.inc:3272 ../lib/modules/windowsUser.inc:4130
+#: ../lib/modules/windowsUser.inc:3272 ../lib/modules/windowsUser.inc:4140
 msgid "Employee type"
 msgstr "雇员类型"
 
@@ -4629,6 +4638,10 @@ msgstr "条目已经被发送"
 msgid "Entries will be search under this suffix."
 msgstr "将会在此后缀下进行帐号搜索."
 
+#: ../lib/treeview.inc:1558
+msgid "Entry cannot be inserted into itself."
+msgstr "条目不能插入自身。"
+
 #: ../lib/types/customType.inc:105
 #, php-format
 msgid "Entry count: %s"
@@ -4701,8 +4714,8 @@ msgstr "示例值"
 msgid "Examples"
 msgstr "示例"
 
-#: ../lib/modules/posixAccount.inc:428 ../lib/modules/posixAccount.inc:2401
-#: ../lib/modules/windowsUser.inc:431 ../lib/modules/windowsUser.inc:4178
+#: ../lib/modules/posixAccount.inc:428 ../lib/modules/posixAccount.inc:2404
+#: ../lib/modules/windowsUser.inc:431 ../lib/modules/windowsUser.inc:4188
 msgid "Exclude from group sync"
 msgstr "从组同步中排除"
 
@@ -4752,12 +4765,12 @@ msgid "Expiration warning"
 msgstr "过期告警"
 
 #: ../lib/modules/ppolicy.inc:119 ../lib/modules/ppolicy.inc:155
-#: ../lib/modules/ppolicy.inc:182 ../lib/modules/ppolicy.inc:214
-#: ../lib/modules/ppolicy.inc:486 ../lib/modules/ppolicy.inc:536
+#: ../lib/modules/ppolicy.inc:182 ../lib/modules/ppolicy.inc:228
+#: ../lib/modules/ppolicy.inc:500 ../lib/modules/ppolicy.inc:550
 msgid "Expire warning"
 msgstr "密码过期告警"
 
-#: ../lib/types/user.inc:611
+#: ../lib/lists.inc:555
 msgid "Expired"
 msgstr "已过期"
 
@@ -4872,8 +4885,8 @@ msgstr "失效恢复节点"
 #: ../lib/modules/mitKerberosPolicy.inc:379
 #: ../lib/modules/mitKerberosPolicy.inc:484 ../lib/modules/ppolicy.inc:115
 #: ../lib/modules/ppolicy.inc:160 ../lib/modules/ppolicy.inc:181
-#: ../lib/modules/ppolicy.inc:278 ../lib/modules/ppolicy.inc:485
-#: ../lib/modules/ppolicy.inc:535
+#: ../lib/modules/ppolicy.inc:292 ../lib/modules/ppolicy.inc:499
+#: ../lib/modules/ppolicy.inc:549
 msgid "Failure count interval"
 msgstr "失败记录间隔"
 
@@ -4891,13 +4904,13 @@ msgstr "失败记录间隔"
 #: ../lib/modules/windowsUser.inc:648 ../lib/modules/windowsUser.inc:1066
 #: ../lib/modules/windowsUser.inc:1136 ../lib/modules/windowsUser.inc:1192
 #: ../lib/modules/windowsUser.inc:1417 ../lib/modules/windowsUser.inc:3258
-#: ../lib/modules/windowsUser.inc:3465 ../lib/modules/windowsUser.inc:4115
+#: ../lib/modules/windowsUser.inc:3475 ../lib/modules/windowsUser.inc:4125
 msgid "Fax number"
 msgstr "传真号"
 
 #: ../lib/modules/kopanoUser.inc:178 ../lib/modules/kopanoUser.inc:407
 #: ../lib/modules/kopanoUser.inc:644 ../lib/modules/kopanoUser.inc:1262
-#: ../lib/modules/kopanoUser.inc:1301 ../lib/modules/kopanoUser.inc:1779
+#: ../lib/modules/kopanoUser.inc:1301 ../lib/modules/kopanoUser.inc:1781
 msgid "Features"
 msgstr "功能"
 
@@ -4916,7 +4929,7 @@ msgstr "文件"
 msgid "File does not exist."
 msgstr "文件不存在."
 
-#: ../lib/modules/customFields.inc:198 ../lib/modules/customFields.inc:4729
+#: ../lib/modules/customFields.inc:198 ../lib/modules/customFields.inc:4763
 msgid "File extension"
 msgstr "文件扩展名"
 
@@ -4947,8 +4960,8 @@ msgid "File path"
 msgstr "文件路径"
 
 #: ../templates/upload/masscreate.php:277 ../lib/tools/fileUpload.inc:45
-#: ../lib/modules/ldapPublicKey.inc:100 ../lib/modules/customFields.inc:4715
-#: ../lib/lists.inc:935
+#: ../lib/modules/ldapPublicKey.inc:100 ../lib/modules/customFields.inc:4749
+#: ../lib/lists.inc:1002
 msgid "File upload"
 msgstr "文件上传"
 
@@ -4963,9 +4976,9 @@ msgstr "文件上传失败!"
 #: ../lib/modules/nisNetGroupUser.inc:203 ../lib/modules/nisnetgroup.inc:108
 #: ../lib/modules/nisnetgroup.inc:479 ../lib/modules/nisMailAlias.inc:94
 #: ../lib/modules/nisMailAlias.inc:376 ../lib/modules/groupOfNames.inc:125
-#: ../lib/modules/groupOfNames.inc:357 ../lib/modules/groupOfNames.inc:432
-#: ../lib/modules/groupOfNames.inc:507 ../lib/modules/groupOfNames.inc:583
-#: ../lib/modules/groupOfNames.inc:668 ../lib/modules/groupOfNames.inc:743
+#: ../lib/modules/groupOfNames.inc:357 ../lib/modules/groupOfNames.inc:434
+#: ../lib/modules/groupOfNames.inc:509 ../lib/modules/groupOfNames.inc:587
+#: ../lib/modules/groupOfNames.inc:672 ../lib/modules/groupOfNames.inc:747
 #: ../lib/modules/groupOfNamesUser.inc:246
 #: ../lib/modules/groupOfNamesUser.inc:265
 #: ../lib/modules/kopanoAddressList.inc:80
@@ -4989,9 +5002,9 @@ msgstr "文件上传失败!"
 #: ../lib/modules/windowsLDSGroup.inc:109
 #: ../lib/modules/windowsLDSGroup.inc:389
 #: ../lib/modules/windowsLDSGroup.inc:455 ../lib/modules/windowsGroup.inc:636
-#: ../lib/modules/posixGroup.inc:474 ../lib/lists.inc:474
-#: ../lib/baseModule.inc:1701 ../lib/baseModule.inc:1732
-#: ../lib/treeview.inc:1025 ../help/help.inc:175
+#: ../lib/modules/posixGroup.inc:474 ../lib/lists.inc:495
+#: ../lib/baseModule.inc:1668 ../lib/baseModule.inc:1700
+#: ../lib/treeview.inc:1051 ../help/help.inc:175
 msgid "Filter"
 msgstr "过滤器"
 
@@ -5017,7 +5030,7 @@ msgstr "完成所有操作."
 #: ../lib/modules/windowsUser.inc:178 ../lib/modules/windowsUser.inc:465
 #: ../lib/modules/windowsUser.inc:990 ../lib/modules/windowsUser.inc:1186
 #: ../lib/modules/windowsUser.inc:1330 ../lib/modules/windowsUser.inc:3245
-#: ../lib/modules/windowsUser.inc:4537
+#: ../lib/modules/windowsUser.inc:4547
 msgid "First name"
 msgstr "名字"
 
@@ -5040,7 +5053,7 @@ msgstr "固定IP地址"
 msgid "Fixed list"
 msgstr "固定列表"
 
-#: ../lib/modules/posixGroup.inc:551 ../lib/modules/posixAccount.inc:2320
+#: ../lib/modules/posixGroup.inc:551 ../lib/modules/posixAccount.inc:2323
 msgid "Fixed range"
 msgstr "固定的范围"
 
@@ -5053,7 +5066,7 @@ msgstr "折叠记号"
 msgid "Follow referrals"
 msgstr "搜索引荐服务器"
 
-#: ../templates/upload/masscreate.php:316 ../lib/lists.inc:851
+#: ../templates/upload/masscreate.php:316 ../lib/lists.inc:918
 #: ../help/help.inc:298
 msgid "Font"
 msgstr "字体"
@@ -5081,7 +5094,7 @@ msgstr "强制改变Unix密码"
 #: ../lib/modules/locking389ds.inc:542 ../lib/modules/mitKerberos.inc:201
 #: ../lib/modules/mitKerberos.inc:473 ../lib/modules/ppolicyUser.inc:600
 #: ../lib/modules/shadowAccount.inc:410 ../lib/modules/windowsUser.inc:1501
-#: ../lib/modules.inc:1161 ../help/help.inc:288
+#: ../lib/modules.inc:1166 ../help/help.inc:288
 msgid "Force password change"
 msgstr "强制改变密码"
 
@@ -5097,7 +5110,7 @@ msgstr "强制同步组名"
 msgid "Forgot password?"
 msgstr "忘记密码?"
 
-#: ../lib/modules/customFields.inc:5546 ../help/help.inc:374
+#: ../lib/modules/customFields.inc:5580 ../help/help.inc:374
 msgid "Format"
 msgstr "格式"
 
@@ -5135,8 +5148,8 @@ msgstr "星期五"
 #: ../lib/modules/selfRegistration.inc:257
 #: ../lib/modules/selfRegistration.inc:279
 #: ../lib/modules/selfRegistration.inc:385
-#: ../lib/modules/selfRegistration.inc:397 ../lib/modules/windowsUser.inc:4799
-#: ../lib/modules/windowsUser.inc:4829 ../lib/passwordExpirationJob.inc:86
+#: ../lib/modules/selfRegistration.inc:397 ../lib/modules/windowsUser.inc:4830
+#: ../lib/modules/windowsUser.inc:4860 ../lib/passwordExpirationJob.inc:86
 #: ../lib/passwordExpirationJob.inc:124 ../help/help.inc:247
 #: ../help/help.inc:368 ../help/help.inc:423
 msgid "From address"
@@ -5191,7 +5204,7 @@ msgstr "联系人全称"
 #: ../lib/modules/asteriskVoicemail.inc:386
 #: ../lib/modules/asteriskVoicemail.inc:616
 #: ../lib/modules/windowsLDSUser.inc:2391 ../lib/modules/inetOrgPerson.inc:4420
-#: ../lib/modules/windowsUser.inc:4390
+#: ../lib/modules/windowsUser.inc:4400
 msgid "Full name"
 msgstr "全名"
 
@@ -5219,7 +5232,7 @@ msgstr "GID生成器"
 #: ../lib/modules/posixGroup.inc:441 ../lib/modules/posixGroup.inc:670
 #: ../lib/modules/posixGroup.inc:704 ../lib/modules/posixGroup.inc:1464
 #: ../lib/modules/posixAccount.inc:135 ../lib/modules/posixAccount.inc:324
-#: ../lib/modules/posixAccount.inc:2286 ../lib/modules/posixAccount.inc:4422
+#: ../lib/modules/posixAccount.inc:2289 ../lib/modules/posixAccount.inc:4430
 msgid "GID number"
 msgstr "GID编号"
 
@@ -5247,11 +5260,11 @@ msgid "GID number is already in use."
 msgstr "GID号已经被使用."
 
 #: ../lib/modules/posixAccount.inc:441 ../lib/modules/posixAccount.inc:479
-#: ../lib/modules/posixAccount.inc:1809 ../lib/modules/posixAccount.inc:2163
-#: ../lib/modules/posixAccount.inc:2257 ../lib/modules/posixAccount.inc:2289
-#: ../lib/modules/posixAccount.inc:2391 ../lib/modules/posixAccount.inc:2461
-#: ../lib/modules/posixAccount.inc:2602 ../lib/modules/posixAccount.inc:2610
-#: ../lib/modules/posixAccount.inc:4420
+#: ../lib/modules/posixAccount.inc:1809 ../lib/modules/posixAccount.inc:2166
+#: ../lib/modules/posixAccount.inc:2260 ../lib/modules/posixAccount.inc:2292
+#: ../lib/modules/posixAccount.inc:2394 ../lib/modules/posixAccount.inc:2464
+#: ../lib/modules/posixAccount.inc:2605 ../lib/modules/posixAccount.inc:2613
+#: ../lib/modules/posixAccount.inc:4428
 msgid "Gecos"
 msgstr "Gecos"
 
@@ -5315,8 +5328,8 @@ msgid ""
 msgstr "全球模板将始终复制到尚未具有此名称配置文件的所有服务器配置文件。"
 
 #: ../lib/modules/ppolicy.inc:103 ../lib/modules/ppolicy.inc:156
-#: ../lib/modules/ppolicy.inc:178 ../lib/modules/ppolicy.inc:221
-#: ../lib/modules/ppolicy.inc:482 ../lib/modules/ppolicy.inc:532
+#: ../lib/modules/ppolicy.inc:178 ../lib/modules/ppolicy.inc:235
+#: ../lib/modules/ppolicy.inc:496 ../lib/modules/ppolicy.inc:546
 msgid "Grace authentication limit"
 msgstr "缓期认证限制"
 
@@ -5403,7 +5416,7 @@ msgstr "组成员(包括主组)"
 #: ../lib/modules/nisnetgroup.inc:199 ../lib/modules/nisnetgroup.inc:572
 #: ../lib/modules/nisnetgroup.inc:656 ../lib/modules/groupOfNames.inc:89
 #: ../lib/modules/groupOfNames.inc:138 ../lib/modules/groupOfNames.inc:187
-#: ../lib/modules/groupOfNames.inc:938 ../lib/modules/kopanoDynamicGroup.inc:64
+#: ../lib/modules/groupOfNames.inc:942 ../lib/modules/kopanoDynamicGroup.inc:64
 #: ../lib/modules/kopanoDynamicGroup.inc:121
 #: ../lib/modules/kopanoDynamicGroup.inc:170
 #: ../lib/modules/kopanoDynamicGroup.inc:185
@@ -5531,7 +5544,7 @@ msgstr "组类型"
 #: ../lib/modules/windowsLDSUser.inc:1255
 #: ../lib/modules/windowsLDSUser.inc:1876
 #: ../lib/modules/windowsLDSUser.inc:1906 ../lib/modules/windowsGroup.inc:519
-#: ../lib/modules/posixGroup.inc:508 ../lib/modules/posixAccount.inc:3402
+#: ../lib/modules/posixGroup.inc:508 ../lib/modules/posixAccount.inc:3410
 #: ../lib/modules/windowsUser.inc:266 ../lib/modules/windowsUser.inc:269
 #: ../lib/modules/windowsUser.inc:513 ../lib/modules/windowsUser.inc:995
 #: ../lib/modules/windowsUser.inc:1598 ../lib/modules/windowsUser.inc:2138
@@ -5550,9 +5563,9 @@ msgstr "组(只读)"
 #: ../lib/modules/groupOfNamesUser.inc:79
 #: ../lib/modules/groupOfNamesUser.inc:498
 #: ../lib/modules/groupOfNamesUser.inc:536 ../lib/modules/posixAccount.inc:283
-#: ../lib/modules/posixAccount.inc:332 ../lib/modules/posixAccount.inc:1993
-#: ../lib/modules/posixAccount.inc:2152 ../lib/modules/posixAccount.inc:2300
-#: ../lib/modules/posixAccount.inc:2395
+#: ../lib/modules/posixAccount.inc:332 ../lib/modules/posixAccount.inc:1996
+#: ../lib/modules/posixAccount.inc:2155 ../lib/modules/posixAccount.inc:2303
+#: ../lib/modules/posixAccount.inc:2398
 msgid "Groups of names"
 msgstr "组名"
 
@@ -5565,7 +5578,7 @@ msgstr "H-节点 (0x08)"
 #: ../lib/modules/passwordSelfReset.inc:691
 #: ../lib/modules/selfRegistration.inc:247
 #: ../lib/modules/selfRegistration.inc:262
-#: ../lib/modules/selfRegistration.inc:284 ../lib/modules/windowsUser.inc:4804
+#: ../lib/modules/selfRegistration.inc:284 ../lib/modules/windowsUser.inc:4835
 #: ../lib/passwordExpirationJob.inc:91 ../help/help.inc:377
 msgid "HTML format"
 msgstr "HTML格式"
@@ -5581,7 +5594,7 @@ msgstr "HTTP认证"
 msgid "HTTP port"
 msgstr "HTTP端口"
 
-#: ../lib/modules/windowsUser.inc:4809
+#: ../lib/modules/windowsUser.inc:4840
 msgid "Half-yearly"
 msgstr "每半年"
 
@@ -5641,7 +5654,7 @@ msgstr "Heimdal Kerberos密码修改命令"
 msgid "Help"
 msgstr "帮助"
 
-#: ../lib/modules/customFields.inc:114 ../lib/modules/customFields.inc:2239
+#: ../lib/modules/customFields.inc:114 ../lib/modules/customFields.inc:2246
 msgid "Help text"
 msgstr "帮助文本"
 
@@ -5779,7 +5792,7 @@ msgid ""
 "existing)."
 msgstr "可以导入其他服务器配置文件的账号配置文件(覆盖已有)."
 
-#: ../lib/lists.inc:476 ../help/help.inc:176
+#: ../lib/lists.inc:497 ../help/help.inc:176
 msgid ""
 "Here you can input simple filter expressions (e.g. 'value' or 'v*'). The "
 "filter is case-insensitive."
@@ -5943,10 +5956,10 @@ msgstr ""
 
 #: ../lib/modules/nisMailAliasUser.inc:104
 #: ../lib/modules/nisMailAliasUser.inc:553 ../lib/modules/groupOfNames.inc:85
-#: ../lib/modules/groupOfNames.inc:1277 ../lib/modules/kopanoGroup.inc:114
+#: ../lib/modules/groupOfNames.inc:1281 ../lib/modules/kopanoGroup.inc:114
 #: ../lib/modules/kopanoGroup.inc:723 ../lib/modules/kopanoServer.inc:87
 #: ../lib/modules/kopanoServer.inc:374 ../lib/modules/kopanoUser.inc:155
-#: ../lib/modules/kopanoUser.inc:1763 ../lib/modules/organizationalRole.inc:85
+#: ../lib/modules/kopanoUser.inc:1765 ../lib/modules/organizationalRole.inc:85
 #: ../lib/modules/organizationalRole.inc:721
 #: ../lib/modules/passwordSelfReset.inc:165
 #: ../lib/modules/passwordSelfReset.inc:303 ../lib/modules/qmailGroup.inc:91
@@ -5959,8 +5972,8 @@ msgstr ""
 #: ../lib/modules/freeRadius.inc:305 ../lib/modules/sambaSamAccount.inc:421
 #: ../lib/modules/sambaSamAccount.inc:1981 ../lib/modules/inetOrgPerson.inc:760
 #: ../lib/modules/inetOrgPerson.inc:4202 ../lib/modules/posixAccount.inc:346
-#: ../lib/modules/posixAccount.inc:2387 ../lib/modules/posixAccount.inc:2456
-#: ../lib/modules/windowsUser.inc:284 ../lib/modules/windowsUser.inc:4109
+#: ../lib/modules/posixAccount.inc:2390 ../lib/modules/posixAccount.inc:2459
+#: ../lib/modules/windowsUser.inc:284 ../lib/modules/windowsUser.inc:4119
 msgid "Hidden options"
 msgstr "隐藏的选项"
 
@@ -6006,7 +6019,7 @@ msgid ""
 "correction."
 msgstr "提示:将电子表格的格式设定为文字,然后关闭自动更正功能."
 
-#: ../lib/treeview.inc:1037
+#: ../lib/treeview.inc:1063
 msgid ""
 "Hint: You must choose exactly one structural object class (shown in bold "
 "above)"
@@ -6034,13 +6047,13 @@ msgstr "按住CTRL键可以多选角色."
 #: ../lib/modules/posixAccount.inc:257 ../lib/modules/posixAccount.inc:327
 #: ../lib/modules/posixAccount.inc:379 ../lib/modules/posixAccount.inc:383
 #: ../lib/modules/posixAccount.inc:387 ../lib/modules/posixAccount.inc:391
-#: ../lib/modules/posixAccount.inc:1839 ../lib/modules/posixAccount.inc:2060
-#: ../lib/modules/posixAccount.inc:2165 ../lib/modules/posixAccount.inc:2287
-#: ../lib/modules/posixAccount.inc:4423 ../lib/modules/windowsUser.inc:295
+#: ../lib/modules/posixAccount.inc:1839 ../lib/modules/posixAccount.inc:2063
+#: ../lib/modules/posixAccount.inc:2168 ../lib/modules/posixAccount.inc:2290
+#: ../lib/modules/posixAccount.inc:4431 ../lib/modules/windowsUser.inc:295
 #: ../lib/modules/windowsUser.inc:832 ../lib/modules/windowsUser.inc:884
 #: ../lib/modules/windowsUser.inc:1015 ../lib/modules/windowsUser.inc:1221
 #: ../lib/modules/windowsUser.inc:1557 ../lib/modules/windowsUser.inc:3303
-#: ../lib/modules/windowsUser.inc:4141
+#: ../lib/modules/windowsUser.inc:4151
 msgid "Home directory"
 msgstr "个人目录"
 
@@ -6064,7 +6077,7 @@ msgstr ""
 #: ../lib/modules/sambaSamAccount.inc:2023 ../lib/modules/windowsUser.inc:292
 #: ../lib/modules/windowsUser.inc:824 ../lib/modules/windowsUser.inc:1012
 #: ../lib/modules/windowsUser.inc:1553 ../lib/modules/windowsUser.inc:3304
-#: ../lib/modules/windowsUser.inc:3349 ../lib/modules/windowsUser.inc:4140
+#: ../lib/modules/windowsUser.inc:3349 ../lib/modules/windowsUser.inc:4150
 msgid "Home drive"
 msgstr "个人驱动器"
 
@@ -6139,10 +6152,10 @@ msgid "Host list"
 msgstr "主机列表"
 
 #: ../lib/modules/account.inc:86 ../lib/modules/account.inc:215
-#: ../lib/modules/windowsHost.inc:83 ../lib/modules/windowsHost.inc:115
-#: ../lib/modules/windowsHost.inc:140 ../lib/modules/windowsHost.inc:152
-#: ../lib/modules/windowsHost.inc:171 ../lib/modules/windowsHost.inc:344
-#: ../lib/modules/windowsHost.inc:378 ../lib/modules/nisNetGroupUser.inc:97
+#: ../lib/modules/windowsHost.inc:84 ../lib/modules/windowsHost.inc:116
+#: ../lib/modules/windowsHost.inc:141 ../lib/modules/windowsHost.inc:153
+#: ../lib/modules/windowsHost.inc:172 ../lib/modules/windowsHost.inc:345
+#: ../lib/modules/windowsHost.inc:379 ../lib/modules/nisNetGroupUser.inc:97
 #: ../lib/modules/nisNetGroupUser.inc:185
 #: ../lib/modules/nisNetGroupUser.inc:435
 #: ../lib/modules/nisNetGroupUser.inc:478 ../lib/modules/nisnetgroup.inc:157
@@ -6159,7 +6172,7 @@ msgstr "主机列表"
 #: ../lib/modules/posixAccount.inc:126 ../lib/modules/posixAccount.inc:128
 #: ../lib/modules/posixAccount.inc:294 ../lib/modules/posixAccount.inc:317
 #: ../lib/modules/posixAccount.inc:475 ../lib/modules/posixAccount.inc:1787
-#: ../lib/modules/posixAccount.inc:2269
+#: ../lib/modules/posixAccount.inc:2272
 msgid "Host name"
 msgstr "主机名"
 
@@ -6167,7 +6180,7 @@ msgstr "主机名"
 msgid "Host name already exists!"
 msgstr "主机名已经存在!"
 
-#: ../lib/modules/windowsHost.inc:152 ../lib/modules/windowsHost.inc:153
+#: ../lib/modules/windowsHost.inc:153 ../lib/modules/windowsHost.inc:154
 #: ../lib/modules/nisNetGroupUser.inc:97 ../lib/modules/nisnetgroup.inc:157
 #: ../lib/modules/posixAccount.inc:126 ../lib/modules/posixAccount.inc:130
 msgid ""
@@ -6201,7 +6214,7 @@ msgstr ""
 #: ../lib/modules/sudoRole.inc:218 ../lib/modules/sudoRole.inc:230
 #: ../lib/modules/sudoRole.inc:304 ../lib/modules/sudoRole.inc:457
 #: ../lib/modules/posixAccount.inc:104 ../lib/modules/posixAccount.inc:105
-#: ../lib/modules/posixAccount.inc:107 ../lib/modules/posixAccount.inc:2409
+#: ../lib/modules/posixAccount.inc:107 ../lib/modules/posixAccount.inc:2412
 msgid "Hosts"
 msgstr "主机"
 
@@ -6299,7 +6312,7 @@ msgstr "DHCP里的IP"
 msgid "IPv6 address"
 msgstr "IPv6地址"
 
-#: ../lib/modules/customFields.inc:721
+#: ../lib/modules/customFields.inc:728
 msgid "Icon"
 msgstr "图标"
 
@@ -6761,7 +6774,7 @@ msgstr "初始化程序"
 #: ../lib/modules/inetOrgPerson.inc:4609 ../lib/modules/windowsUser.inc:182
 #: ../lib/modules/windowsUser.inc:528 ../lib/modules/windowsUser.inc:1021
 #: ../lib/modules/windowsUser.inc:1337 ../lib/modules/windowsUser.inc:3246
-#: ../lib/modules/windowsUser.inc:4142
+#: ../lib/modules/windowsUser.inc:4152
 msgid "Initials"
 msgstr "初始化"
 
@@ -6834,7 +6847,7 @@ msgstr "在配置路径中插入用户名或组名."
 msgid "Insufficient rights for this operation."
 msgstr "操作权限不足."
 
-#: ../lib/treeview.inc:442 ../lib/treeview.inc:807
+#: ../lib/treeview.inc:445 ../lib/treeview.inc:810
 msgid "Internal attributes"
 msgstr "内部属性"
 
@@ -6846,7 +6859,7 @@ msgstr "非法的MAC地址."
 msgid "Invalid RDN attribute!"
 msgstr "错误的RDN属性!"
 
-#: ../lib/modules/yubiKeyUser.inc:155 ../lib/modules/posixAccount.inc:1914
+#: ../lib/modules/yubiKeyUser.inc:155 ../lib/modules/posixAccount.inc:1917
 msgid ""
 "Invalid configuration detected. Please edit your server profile (module "
 "settings) and fill all required fields."
@@ -6863,9 +6876,9 @@ msgstr "无效数据"
 msgid "Invalid description."
 msgstr "非法的描述."
 
-#: ../lib/modules/customFields.inc:3113 ../lib/modules/customFields.inc:3163
-#: ../lib/modules/customFields.inc:3202 ../lib/modules/customFields.inc:3294
-#: ../lib/modules/customFields.inc:3366 ../lib/modules/customFields.inc:6098
+#: ../lib/modules/customFields.inc:3120 ../lib/modules/customFields.inc:3170
+#: ../lib/modules/customFields.inc:3209 ../lib/modules/customFields.inc:3301
+#: ../lib/modules/customFields.inc:3373 ../lib/modules/customFields.inc:6132
 #: ../lib/export.inc:174
 msgid "Invalid format"
 msgstr "无效格式"
@@ -6878,11 +6891,11 @@ msgstr "不符合附加属性规范的格式."
 msgid "Invalid licence"
 msgstr "无效的许可"
 
-#: ../lib/treeview.inc:1069 ../lib/treeview.inc:1102 ../lib/treeview.inc:1113
+#: ../lib/treeview.inc:1095 ../lib/treeview.inc:1128 ../lib/treeview.inc:1139
 msgid "Invalid object class."
 msgstr "无效的对象类."
 
-#: ../lib/modules/customFields.inc:4253 ../lib/modules/customFields.inc:4465
+#: ../lib/modules/customFields.inc:4260 ../lib/modules/customFields.inc:4489
 msgid "Invalid option"
 msgstr "非法选项"
 
@@ -6895,7 +6908,7 @@ msgid "Invalid remote server name."
 msgstr "无效的远程服务器名称。"
 
 #: ../lib/modules/ldapPublicKey.inc:691 ../lib/modules/yubiKeyUser.inc:542
-#: ../lib/modules/customFields.inc:1685 ../lib/modules/openldapTotp.inc:380
+#: ../lib/modules/customFields.inc:1692 ../lib/modules/openldapTotp.inc:380
 #: ../lib/modules/inetOrgPerson.inc:4015
 msgid "Invalid request"
 msgstr "无效请求"
@@ -6912,8 +6925,8 @@ msgstr "在\"%s\"域有非法字符."
 
 #: ../lib/modules/kolabUser.inc:104 ../lib/modules/kolabUser.inc:111
 #: ../lib/modules/kolabUser.inc:161 ../lib/modules/kolabUser.inc:198
-#: ../lib/modules/kolabUser.inc:263 ../lib/modules/kolabUser.inc:604
-#: ../lib/modules/kolabUser.inc:738
+#: ../lib/modules/kolabUser.inc:260 ../lib/modules/kolabUser.inc:599
+#: ../lib/modules/kolabUser.inc:743
 msgid "Invitation policy"
 msgstr "邀请原则"
 
@@ -6968,7 +6981,7 @@ msgstr "任务后缀"
 #: ../lib/modules/windowsUser.inc:720 ../lib/modules/windowsUser.inc:906
 #: ../lib/modules/windowsUser.inc:1084 ../lib/modules/windowsUser.inc:1227
 #: ../lib/modules/windowsUser.inc:1429 ../lib/modules/windowsUser.inc:3269
-#: ../lib/modules/windowsUser.inc:4127
+#: ../lib/modules/windowsUser.inc:4137
 msgid "Job title"
 msgstr "头衔"
 
@@ -6981,11 +6994,11 @@ msgstr "用户头衔:如总裁,部门经理..."
 msgid "Jobs"
 msgstr "任务"
 
-#: ../lib/lists.inc:333
+#: ../lib/lists.inc:354
 msgid "Jump 10 pages backward"
 msgstr "向后跳转10页"
 
-#: ../lib/lists.inc:365
+#: ../lib/lists.inc:386
 msgid "Jump 10 pages forward"
 msgstr "向前跳转10页"
 
@@ -7001,11 +7014,11 @@ msgstr "选择一个属性类型"
 msgid "Jump to an object class"
 msgstr "选择一个对象类"
 
-#: ../lib/lists.inc:325
+#: ../lib/lists.inc:346
 msgid "Jump to first page"
 msgstr "跳转到首页"
 
-#: ../lib/lists.inc:373
+#: ../lib/lists.inc:394
 msgid "Jump to last page"
 msgstr "跳转到末页"
 
@@ -7083,7 +7096,7 @@ msgstr "Kopano动态组"
 #: ../lib/modules/kopanoDynamicGroup.inc:434 ../lib/modules/kopanoGroup.inc:118
 #: ../lib/modules/kopanoGroup.inc:706 ../lib/modules/kopanoServer.inc:91
 #: ../lib/modules/kopanoServer.inc:369 ../lib/modules/kopanoUser.inc:194
-#: ../lib/modules/kopanoUser.inc:425 ../lib/modules/kopanoUser.inc:1747
+#: ../lib/modules/kopanoUser.inc:425 ../lib/modules/kopanoUser.inc:1749
 msgid "Kopano schema"
 msgstr "Kopano架构"
 
@@ -7167,8 +7180,8 @@ msgstr "LAM找不到这个组!"
 
 #: ../lib/modules/nisNetGroupUser.inc:580
 #: ../lib/modules/groupOfNamesUser.inc:618
-#: ../lib/modules/windowsLDSUser.inc:1806 ../lib/modules/posixAccount.inc:3052
-#: ../lib/modules/posixAccount.inc:3124 ../lib/modules/windowsUser.inc:3189
+#: ../lib/modules/windowsLDSUser.inc:1806 ../lib/modules/posixAccount.inc:3060
+#: ../lib/modules/posixAccount.inc:3132 ../lib/modules/windowsUser.inc:3189
 #, php-format
 msgid "LAM was unable to modify group memberships for group: %s"
 msgstr "LAM无法修改 %s组成员"
@@ -7231,7 +7244,7 @@ msgid "LDAP DN of default PPolicy password policy entry."
 msgstr "默认的Ppolicy密码策略条目的LDAP DN."
 
 #: ../templates/tools/multiEdit.php:236 ../templates/config/conftypes.php:376
-#: ../lib/modules/customFields.inc:4574
+#: ../lib/modules/customFields.inc:4598
 msgid "LDAP Suffix is invalid!"
 msgstr "LDAP后缀无效!"
 
@@ -7252,11 +7265,11 @@ msgstr "包含LDAP查询字符串的LDAP属性名。"
 msgid "LDAP connection ok."
 msgstr "LDAP连接成功."
 
-#: ../lib/modules/customFields.inc:5457
+#: ../lib/modules/customFields.inc:5491
 msgid "LDAP date"
 msgstr "LDAP日期"
 
-#: ../lib/modules/customFields.inc:6148
+#: ../lib/modules/customFields.inc:6182
 msgid "LDAP date and time"
 msgstr "LDAP日期和时间"
 
@@ -7276,12 +7289,12 @@ msgstr "这个列表中的用户的LDAP条目."
 msgid "LDAP entries that moderate this list (e.g. approve mails)."
 msgstr "主持这个列表(比如批准邮件)的LDAP条目."
 
-#: ../lib/account.inc:1723
+#: ../lib/account.inc:1764
 msgid "LDAP error, server says:"
 msgstr "LDAP错误,服务器错误消息:"
 
 #: ../templates/tools/multiEdit.php:150 ../templates/config/confmain.php:472
-#: ../lib/modules/customFields.inc:222 ../lib/modules/customFields.inc:4542
+#: ../lib/modules/customFields.inc:222 ../lib/modules/customFields.inc:4566
 #: ../help/help.inc:404
 msgid "LDAP filter"
 msgstr "LDAP过滤条件"
@@ -7306,7 +7319,7 @@ msgstr ""
 msgid "LDAP import/export"
 msgstr "LDAP 导入导出"
 
-#: ../lib/import.inc:574 ../lib/modules.inc:1479
+#: ../lib/import.inc:574 ../lib/modules.inc:1482
 msgid "LDAP operation successful."
 msgstr "LDAP操作成功."
 
@@ -7326,12 +7339,12 @@ msgstr "LDAP搜索属性"
 msgid "LDAP search failed! Please check your preferences."
 msgstr "LDAP搜索失败，请检查配置。"
 
-#: ../templates/config/confmain.php:218 ../lib/treeview.inc:1364
+#: ../templates/config/confmain.php:218 ../lib/treeview.inc:1390
 #: ../help/help.inc:131
 msgid "LDAP search limit"
 msgstr "LDAP搜索限制"
 
-#: ../lib/modules/customFields.inc:4512
+#: ../lib/modules/customFields.inc:4536
 msgid "LDAP search select list"
 msgstr "LDAP搜索可选列表"
 
@@ -7347,7 +7360,7 @@ msgstr "超过LDAP限制的大小,无法显示所有条目."
 #: ../templates/config/confmain.php:468
 #: ../templates/profedit/profilepage.php:217
 #: ../templates/selfService/adminMain.php:498
-#: ../lib/modules/customFields.inc:218 ../lib/modules/customFields.inc:4539
+#: ../lib/modules/customFields.inc:218 ../lib/modules/customFields.inc:4563
 #: ../help/help.inc:75 ../help/help.inc:302 ../help/help.inc:402
 msgid "LDAP suffix"
 msgstr "LDAP后缀"
@@ -7386,9 +7399,9 @@ msgstr "LDIF导入功能只支持版本1"
 
 #: ../templates/config/confmain.php:551
 #: ../templates/selfService/adminMain.php:614
-#: ../lib/modules/customFields.inc:106 ../lib/modules/customFields.inc:720
-#: ../lib/modules/customFields.inc:1306 ../lib/modules/customFields.inc:2230
-#: ../lib/modules/customFields.inc:4087 ../help/help.inc:336
+#: ../lib/modules/customFields.inc:106 ../lib/modules/customFields.inc:727
+#: ../lib/modules/customFields.inc:1313 ../lib/modules/customFields.inc:2237
+#: ../lib/modules/customFields.inc:4094 ../help/help.inc:336
 msgid "Label"
 msgstr "标签"
 
@@ -7452,7 +7465,7 @@ msgstr "语言设定"
 msgid "Last failed login"
 msgstr "上次失败登录"
 
-#: ../lib/modules/windowsHost.inc:103 ../lib/modules/windowsHost.inc:185
+#: ../lib/modules/windowsHost.inc:104 ../lib/modules/windowsHost.inc:186
 #: ../lib/modules/mitKerberos.inc:158 ../lib/modules/mitKerberos.inc:285
 #: ../lib/modules/mitKerberos.inc:438 ../lib/modules/mitKerberos.inc:944
 #: ../lib/modules/mitKerberos.inc:1555 ../lib/modules/windowsLDSUser.inc:225
@@ -7460,7 +7473,7 @@ msgstr "上次失败登录"
 #: ../lib/modules/windowsLDSUser.inc:1887
 #: ../lib/modules/windowsLDSUser.inc:2208 ../lib/modules/windowsUser.inc:311
 #: ../lib/modules/windowsUser.inc:1081 ../lib/modules/windowsUser.inc:1509
-#: ../lib/modules/windowsUser.inc:3320 ../lib/modules/windowsUser.inc:4124
+#: ../lib/modules/windowsUser.inc:3320 ../lib/modules/windowsUser.inc:4134
 msgid "Last login"
 msgstr "上次登录"
 
@@ -7478,7 +7491,7 @@ msgstr "上次登录"
 #: ../lib/modules/windowsUser.inc:214 ../lib/modules/windowsUser.inc:471
 #: ../lib/modules/windowsUser.inc:991 ../lib/modules/windowsUser.inc:1188
 #: ../lib/modules/windowsUser.inc:1331 ../lib/modules/windowsUser.inc:3254
-#: ../lib/modules/windowsUser.inc:4538
+#: ../lib/modules/windowsUser.inc:4548
 msgid "Last name"
 msgstr "姓"
 
@@ -7493,7 +7506,7 @@ msgstr "姓包含非法字符或为空!"
 msgid "Last name of user. Only letters, - and spaces are allowed."
 msgstr "用户姓.只允许字符,-和空格."
 
-#: ../lib/modules/windowsHost.inc:99 ../lib/modules/windowsHost.inc:176
+#: ../lib/modules/windowsHost.inc:100 ../lib/modules/windowsHost.inc:177
 #: ../lib/modules/mitKerberos.inc:154 ../lib/modules/mitKerberos.inc:284
 #: ../lib/modules/mitKerberos.inc:428 ../lib/modules/mitKerberos.inc:940
 #: ../lib/modules/mitKerberos.inc:1554 ../lib/modules/ppolicyUser.inc:106
@@ -7510,8 +7523,8 @@ msgstr "用户姓.只允许字符,-和空格."
 #: ../lib/modules/shadowAccount.inc:598 ../lib/modules/shadowAccount.inc:801
 #: ../lib/modules/shadowAccount.inc:1046 ../lib/modules/windowsUser.inc:307
 #: ../lib/modules/windowsUser.inc:1078 ../lib/modules/windowsUser.inc:1494
-#: ../lib/modules/windowsUser.inc:3318 ../lib/modules/windowsUser.inc:3479
-#: ../lib/modules/windowsUser.inc:4123
+#: ../lib/modules/windowsUser.inc:3318 ../lib/modules/windowsUser.inc:3489
+#: ../lib/modules/windowsUser.inc:4133
 msgid "Last password change"
 msgstr "最后密码变更"
 
@@ -7530,7 +7543,7 @@ msgstr "最后密码变更(只读)"
 msgid "Last qualify milliseconds"
 msgstr "最后的限定毫秒"
 
-#: ../templates/misc/ajax.php:292 ../templates/tools/webauthn.php:105
+#: ../templates/misc/ajax.php:298 ../templates/tools/webauthn.php:105
 #: ../lib/modules/webauthn.inc:155
 msgid "Last use"
 msgstr "上次使用"
@@ -7573,7 +7586,7 @@ msgstr "链接文本"
 msgid "Link to self service login page for your users"
 msgstr "对用户自助服务登录界面的链接"
 
-#: ../lib/treeview.inc:1368
+#: ../lib/treeview.inc:1394
 msgid "List"
 msgstr "列表"
 
@@ -7636,13 +7649,17 @@ msgstr "允许用户登录的工作站列表。留空代表所有工作站。"
 msgid "Listeners"
 msgstr "监听"
 
-#: ../lib/modules.inc:1400 ../help/help.inc:280
+#: ../lib/modules.inc:1403 ../help/help.inc:280
 msgid "Load profile"
 msgstr "调入配置文件"
 
 #: ../templates/tools/treeView.php:219
 msgid "Loading"
 msgstr "调用"
+
+#: ../templates/misc/ajax.php:583
+msgid "Local SMTP server cannot be tested."
+msgstr "无法测试本地SMTP服务器。"
 
 #: ../lib/modules/inetLocalMailRecipient.inc:89
 #: ../lib/modules/inetLocalMailRecipient.inc:104
@@ -7679,9 +7696,9 @@ msgstr "本地组"
 msgid "Local members"
 msgstr "本地成员"
 
-#: ../lib/modules/windowsHost.inc:91 ../lib/modules/windowsHost.inc:127
-#: ../lib/modules/windowsHost.inc:142 ../lib/modules/windowsHost.inc:173
-#: ../lib/modules/windowsHost.inc:346 ../lib/modules/windowsHost.inc:380
+#: ../lib/modules/windowsHost.inc:92 ../lib/modules/windowsHost.inc:128
+#: ../lib/modules/windowsHost.inc:143 ../lib/modules/windowsHost.inc:174
+#: ../lib/modules/windowsHost.inc:347 ../lib/modules/windowsHost.inc:381
 #: ../lib/modules/device.inc:89 ../lib/modules/device.inc:112
 #: ../lib/modules/device.inc:125 ../lib/modules/device.inc:182
 #: ../lib/modules/device.inc:444 ../lib/modules/ipHost.inc:80
@@ -7700,8 +7717,8 @@ msgstr "本地成员"
 #: ../lib/modules/windowsUser.inc:186 ../lib/modules/windowsUser.inc:568
 #: ../lib/modules/windowsUser.inc:863 ../lib/modules/windowsUser.inc:1024
 #: ../lib/modules/windowsUser.inc:1140 ../lib/modules/windowsUser.inc:1363
-#: ../lib/modules/windowsUser.inc:3247 ../lib/modules/windowsUser.inc:3472
-#: ../lib/modules/windowsUser.inc:4147
+#: ../lib/modules/windowsUser.inc:3247 ../lib/modules/windowsUser.inc:3482
+#: ../lib/modules/windowsUser.inc:4157
 msgid "Location"
 msgstr "地点"
 
@@ -7709,7 +7726,7 @@ msgstr "地点"
 msgid "Location where new alias is stored."
 msgstr "新别名的存放位置."
 
-#: ../lib/types/user.inc:307 ../lib/types/user.inc:312
+#: ../lib/baseType.inc:254 ../lib/baseType.inc:259
 msgid "Lock"
 msgstr "锁"
 
@@ -7726,12 +7743,12 @@ msgstr "锁定帐号?"
 #: ../lib/modules/simpleSecurityObject.inc:97
 #: ../lib/modules/simpleSecurityObject.inc:289
 #: ../lib/modules/posixGroup.inc:222 ../lib/modules/inetOrgPerson.inc:1594
-#: ../lib/modules/posixAccount.inc:1877 ../lib/modules/posixAccount.inc:2584
+#: ../lib/modules/posixAccount.inc:1880 ../lib/modules/posixAccount.inc:2587
 msgid "Lock password"
 msgstr "锁定密码"
 
-#: ../lib/types/user.inc:610 ../lib/modules/locking389ds.inc:591
-#: ../lib/modules/sambaSamAccount.inc:3106
+#: ../lib/modules/locking389ds.inc:591 ../lib/modules/sambaSamAccount.inc:3106
+#: ../lib/lists.inc:554
 msgid "Locked"
 msgstr "已锁定"
 
@@ -7740,7 +7757,7 @@ msgid "Locked permanently"
 msgstr "永久锁定"
 
 #: ../lib/modules/locking389ds.inc:120 ../lib/modules/locking389ds.inc:693
-#: ../lib/modules/windowsUser.inc:4470
+#: ../lib/modules/windowsUser.inc:4480
 msgid "Locked till"
 msgstr "已锁定直到"
 
@@ -7758,8 +7775,8 @@ msgstr "锁定至%s"
 #: ../lib/modules/mitKerberosPolicy.inc:386
 #: ../lib/modules/mitKerberosPolicy.inc:486 ../lib/modules/ppolicy.inc:107
 #: ../lib/modules/ppolicy.inc:158 ../lib/modules/ppolicy.inc:179
-#: ../lib/modules/ppolicy.inc:263 ../lib/modules/ppolicy.inc:483
-#: ../lib/modules/ppolicy.inc:533 ../lib/modules/sambaDomain.inc:140
+#: ../lib/modules/ppolicy.inc:277 ../lib/modules/ppolicy.inc:497
+#: ../lib/modules/ppolicy.inc:547 ../lib/modules/sambaDomain.inc:140
 #: ../lib/modules/sambaDomain.inc:205 ../lib/modules/sambaDomain.inc:230
 #: ../lib/modules/sambaDomain.inc:349 ../lib/modules/sambaDomain.inc:617
 msgid "Lockout duration"
@@ -7774,8 +7791,8 @@ msgid "Lockout time"
 msgstr "锁定的时间"
 
 #: ../lib/modules/ppolicy.inc:127 ../lib/modules/ppolicy.inc:157
-#: ../lib/modules/ppolicy.inc:257 ../lib/modules/ppolicy.inc:503
-#: ../lib/modules/ppolicy.inc:538
+#: ../lib/modules/ppolicy.inc:271 ../lib/modules/ppolicy.inc:517
+#: ../lib/modules/ppolicy.inc:552
 msgid "Lockout users"
 msgstr "锁定的用户"
 
@@ -7809,8 +7826,8 @@ msgstr "日志"
 #: ../templates/selfService/adminLogin.php:57
 #: ../templates/selfService/selfServiceLogin.php:281
 #: ../templates/selfService/selfServiceLogin.php:391
-#: ../templates/selfService/selfService2Factor.php:163
-#: ../templates/login.php:367 ../templates/login2Factor.php:144
+#: ../templates/selfService/selfService2Factor.php:165
+#: ../templates/login.php:367 ../templates/login2Factor.php:145
 #: ../help/help.inc:60
 msgid "Login"
 msgstr "登录"
@@ -7833,14 +7850,14 @@ msgstr "登录方法"
 
 #: ../lib/modules/posixAccount.inc:196 ../lib/modules/posixAccount.inc:274
 #: ../lib/modules/posixAccount.inc:328 ../lib/modules/posixAccount.inc:457
-#: ../lib/modules/posixAccount.inc:1868 ../lib/modules/posixAccount.inc:2167
-#: ../lib/modules/posixAccount.inc:2288 ../lib/modules/posixAccount.inc:3384
-#: ../lib/modules/posixAccount.inc:4424
+#: ../lib/modules/posixAccount.inc:1871 ../lib/modules/posixAccount.inc:2170
+#: ../lib/modules/posixAccount.inc:2291 ../lib/modules/posixAccount.inc:3392
+#: ../lib/modules/posixAccount.inc:4432
 msgid "Login shell"
 msgstr "登录shell"
 
 #: ../lib/modules/posixAccount.inc:206 ../lib/modules/posixAccount.inc:403
-#: ../lib/modules/posixAccount.inc:2471
+#: ../lib/modules/posixAccount.inc:2474
 msgid "Login shells"
 msgstr "登录shells"
 
@@ -7861,7 +7878,7 @@ msgstr "徽标导入成功。"
 msgid "Logo is still in use by PDF structure \"%s\" in account type \"%s\"."
 msgstr "标识用于在PDF结构\"%s\"中 ,属于账号类型 \"%s\"."
 
-#: ../lib/modules/windowsHost.inc:107 ../lib/modules/windowsHost.inc:194
+#: ../lib/modules/windowsHost.inc:108 ../lib/modules/windowsHost.inc:195
 msgid "Logon count"
 msgstr "登录次数总和"
 
@@ -7880,7 +7897,7 @@ msgstr "密码修改登录"
 msgid "Logon hours"
 msgstr "可登录时间"
 
-#: ../lib/account.inc:1699
+#: ../lib/account.inc:1740
 msgid "Logon not permitted at this time"
 msgstr "此时不允许登录"
 
@@ -7896,7 +7913,7 @@ msgstr "此时不允许登录"
 #: ../lib/modules/windowsUser.inc:816 ../lib/modules/windowsUser.inc:878
 #: ../lib/modules/windowsUser.inc:1009 ../lib/modules/windowsUser.inc:1216
 #: ../lib/modules/windowsUser.inc:1539 ../lib/modules/windowsUser.inc:3302
-#: ../lib/modules/windowsUser.inc:4139
+#: ../lib/modules/windowsUser.inc:4149
 msgid "Logon script"
 msgstr "登录脚本"
 
@@ -7955,8 +7972,8 @@ msgstr "MX记录"
 
 #: ../lib/modules/posixGroup.inc:491 ../lib/modules/posixGroup.inc:554
 #: ../lib/modules/posixGroup.inc:583 ../lib/modules/posixGroup.inc:720
-#: ../lib/modules/posixAccount.inc:420 ../lib/modules/posixAccount.inc:2323
-#: ../lib/modules/posixAccount.inc:2380 ../lib/modules/posixAccount.inc:2451
+#: ../lib/modules/posixAccount.inc:420 ../lib/modules/posixAccount.inc:2326
+#: ../lib/modules/posixAccount.inc:2383 ../lib/modules/posixAccount.inc:2454
 msgid "Magic number"
 msgstr "魔法号"
 
@@ -8026,7 +8043,7 @@ msgstr "邮件服务 (\"MX\" 记录)"
 msgid "Mail source"
 msgstr "邮件源"
 
-#: ../lib/account.inc:1468
+#: ../lib/account.inc:1509
 #, php-format
 msgid "Mail successfully sent to %s."
 msgstr "邮件已经成功发送到%s."
@@ -8082,7 +8099,7 @@ msgstr "邮件主机"
 #: ../lib/modules/courierMailAccount.inc:602 ../lib/modules/kolabUser.inc:94
 #: ../lib/modules/kolabUser.inc:153 ../lib/modules/kolabUser.inc:167
 #: ../lib/modules/kolabUser.inc:199 ../lib/modules/kolabUser.inc:221
-#: ../lib/modules/kolabUser.inc:259 ../lib/modules/kolabUser.inc:626
+#: ../lib/modules/kolabUser.inc:256 ../lib/modules/kolabUser.inc:621
 msgid "Mailbox quota"
 msgstr "邮箱限额"
 
@@ -8134,9 +8151,9 @@ msgstr "管理自助服务设置"
 msgid "Manage server profiles"
 msgstr "管理服务器设置"
 
-#: ../lib/modules/windowsHost.inc:95 ../lib/modules/windowsHost.inc:133
-#: ../lib/modules/windowsHost.inc:143 ../lib/modules/windowsHost.inc:202
-#: ../lib/modules/windowsHost.inc:351 ../lib/modules/windowsHost.inc:381
+#: ../lib/modules/windowsHost.inc:96 ../lib/modules/windowsHost.inc:134
+#: ../lib/modules/windowsHost.inc:144 ../lib/modules/windowsHost.inc:203
+#: ../lib/modules/windowsHost.inc:352 ../lib/modules/windowsHost.inc:382
 #: ../lib/modules/windowsLDSGroup.inc:105
 #: ../lib/modules/windowsLDSGroup.inc:137
 #: ../lib/modules/windowsLDSGroup.inc:148
@@ -8166,7 +8183,7 @@ msgstr "管理后缀"
 #: ../lib/modules/inetOrgPerson.inc:4264 ../lib/modules/inetOrgPerson.inc:4605
 #: ../lib/modules/windowsUser.inc:383 ../lib/modules/windowsUser.inc:792
 #: ../lib/modules/windowsUser.inc:1111 ../lib/modules/windowsUser.inc:1459
-#: ../lib/modules/windowsUser.inc:3278 ../lib/modules/windowsUser.inc:4137
+#: ../lib/modules/windowsUser.inc:3278 ../lib/modules/windowsUser.inc:4147
 msgid "Manager"
 msgstr "管理员"
 
@@ -8249,8 +8266,8 @@ msgstr "匹配规则"
 msgid "Max. file descriptors"
 msgstr "最大的文件描述符"
 
-#: ../lib/modules/customFields.inc:2561 ../lib/modules/customFields.inc:4305
-#: ../lib/modules/customFields.inc:4533
+#: ../lib/modules/customFields.inc:2568 ../lib/modules/customFields.inc:4312
+#: ../lib/modules/customFields.inc:4557
 msgid "Maximum"
 msgstr "最大"
 
@@ -8269,7 +8286,7 @@ msgstr "最大GID必须大于最小GID!"
 
 #: ../lib/modules/posixAccount.inc:103 ../lib/modules/posixAccount.inc:105
 #: ../lib/modules/posixAccount.inc:106 ../lib/modules/posixAccount.inc:107
-#: ../lib/modules/posixAccount.inc:2377 ../lib/modules/posixAccount.inc:2448
+#: ../lib/modules/posixAccount.inc:2380 ../lib/modules/posixAccount.inc:2451
 msgid "Maximum UID number"
 msgstr "最大UID号"
 
@@ -8290,28 +8307,28 @@ msgstr "最大UID号必须大于最小UID号!"
 #: ../lib/modules/mitKerberosPolicy.inc:381
 #: ../lib/modules/mitKerberosPolicy.inc:487 ../lib/modules/ppolicy.inc:111
 #: ../lib/modules/ppolicy.inc:159 ../lib/modules/ppolicy.inc:180
-#: ../lib/modules/ppolicy.inc:270 ../lib/modules/ppolicy.inc:484
-#: ../lib/modules/ppolicy.inc:534
+#: ../lib/modules/ppolicy.inc:284 ../lib/modules/ppolicy.inc:498
+#: ../lib/modules/ppolicy.inc:548
 msgid "Maximum failure count"
 msgstr "最大失败次数"
 
-#: ../lib/modules/customFields.inc:194 ../lib/modules/customFields.inc:4733
+#: ../lib/modules/customFields.inc:194 ../lib/modules/customFields.inc:4767
 msgid "Maximum file size"
 msgstr "最大文件大小"
 
 #: ../lib/modules/windowsLDSUser.inc:2225 ../lib/modules/inetOrgPerson.inc:2621
 #: ../lib/modules/inetOrgPerson.inc:2645 ../lib/modules/inetOrgPerson.inc:4280
-#: ../lib/modules/windowsUser.inc:4184
+#: ../lib/modules/windowsUser.inc:4194
 msgid "Maximum file size (kB)"
 msgstr "最大文件大小(kB)"
 
-#: ../lib/modules/customFields.inc:4763
+#: ../lib/modules/customFields.inc:4797
 msgid "Maximum file size must be a number. Please enter 0 for no limit."
 msgstr "文件大小的最大值必须是一个数字. 输入0表示无限制."
 
 #: ../lib/modules/windowsLDSUser.inc:2224 ../lib/modules/inetOrgPerson.inc:2620
 #: ../lib/modules/inetOrgPerson.inc:2642 ../lib/modules/inetOrgPerson.inc:4279
-#: ../lib/modules/windowsUser.inc:4183
+#: ../lib/modules/windowsUser.inc:4193
 msgid "Maximum height (px)"
 msgstr "最大高度(px)"
 
@@ -8332,7 +8349,7 @@ msgstr "最大释放时间"
 msgid "Maximum length"
 msgstr "最大长度"
 
-#: ../lib/lists.inc:1291 ../help/help.inc:102
+#: ../lib/lists.inc:1388 ../help/help.inc:102
 msgid "Maximum list entries"
 msgstr "最大列表条目"
 
@@ -8351,8 +8368,8 @@ msgstr "在中断一个通话之前的非活动秒数最大值。"
 #: ../lib/modules/mitKerberosPolicy.inc:385
 #: ../lib/modules/mitKerberosPolicy.inc:481 ../lib/modules/ppolicy.inc:91
 #: ../lib/modules/ppolicy.inc:151 ../lib/modules/ppolicy.inc:175
-#: ../lib/modules/ppolicy.inc:176 ../lib/modules/ppolicy.inc:207
-#: ../lib/modules/ppolicy.inc:480 ../lib/modules/ppolicy.inc:529
+#: ../lib/modules/ppolicy.inc:176 ../lib/modules/ppolicy.inc:221
+#: ../lib/modules/ppolicy.inc:494 ../lib/modules/ppolicy.inc:543
 #: ../lib/modules/sambaDomain.inc:136 ../lib/modules/sambaDomain.inc:204
 #: ../lib/modules/sambaDomain.inc:227 ../lib/modules/sambaDomain.inc:229
 #: ../lib/modules/sambaDomain.inc:341 ../lib/modules/sambaDomain.inc:616
@@ -8366,11 +8383,11 @@ msgstr "密码最长生命"
 
 #: ../lib/modules/windowsLDSUser.inc:2223 ../lib/modules/inetOrgPerson.inc:2619
 #: ../lib/modules/inetOrgPerson.inc:2639 ../lib/modules/inetOrgPerson.inc:4278
-#: ../lib/modules/windowsUser.inc:4182
+#: ../lib/modules/windowsUser.inc:4192
 msgid "Maximum width (px)"
 msgstr "最大宽度(px)"
 
-#: ../lib/modules/groupOfNames.inc:1295
+#: ../lib/modules/groupOfNames.inc:1299
 #: ../lib/modules/organizationalRole.inc:735
 msgid "Member count"
 msgstr "成员计数"
@@ -8413,8 +8430,8 @@ msgstr "成员"
 #: ../lib/modules/nisnetgroup.inc:659 ../lib/modules/groupOfNames.inc:113
 #: ../lib/modules/groupOfNames.inc:117 ../lib/modules/groupOfNames.inc:171
 #: ../lib/modules/groupOfNames.inc:179 ../lib/modules/groupOfNames.inc:188
-#: ../lib/modules/groupOfNames.inc:247 ../lib/modules/groupOfNames.inc:554
-#: ../lib/modules/groupOfNames.inc:977 ../lib/modules/groupOfNames.inc:1294
+#: ../lib/modules/groupOfNames.inc:247 ../lib/modules/groupOfNames.inc:557
+#: ../lib/modules/groupOfNames.inc:981 ../lib/modules/groupOfNames.inc:1298
 #: ../lib/modules/organizationalRole.inc:97
 #: ../lib/modules/organizationalRole.inc:101
 #: ../lib/modules/organizationalRole.inc:134
@@ -8434,7 +8451,7 @@ msgstr "成员"
 msgid "Members"
 msgstr "组成员"
 
-#: ../lib/modules/groupOfNames.inc:121 ../lib/modules/groupOfNames.inc:1264
+#: ../lib/modules/groupOfNames.inc:121 ../lib/modules/groupOfNames.inc:1268
 msgid "Members are optional"
 msgstr "组员是可选的"
 
@@ -8487,8 +8504,8 @@ msgstr "米勒"
 msgid "Minimal password length"
 msgstr "最短密码长度"
 
-#: ../lib/modules/customFields.inc:2557 ../lib/modules/customFields.inc:4301
-#: ../lib/modules/customFields.inc:4529
+#: ../lib/modules/customFields.inc:2564 ../lib/modules/customFields.inc:4308
+#: ../lib/modules/customFields.inc:4553
 msgid "Minimum"
 msgstr "最小"
 
@@ -8501,7 +8518,7 @@ msgid "Minimum GID number is invalid or empty!"
 msgstr "最小GID错误或为空!"
 
 #: ../lib/modules/posixAccount.inc:102 ../lib/modules/posixAccount.inc:104
-#: ../lib/modules/posixAccount.inc:2374 ../lib/modules/posixAccount.inc:2445
+#: ../lib/modules/posixAccount.inc:2377 ../lib/modules/posixAccount.inc:2448
 msgid "Minimum UID number"
 msgstr "最小UID号"
 
@@ -8543,8 +8560,8 @@ msgstr "最小的数字字符数"
 #: ../lib/modules/mitKerberosPolicy.inc:384
 #: ../lib/modules/mitKerberosPolicy.inc:482 ../lib/modules/ppolicy.inc:87
 #: ../lib/modules/ppolicy.inc:150 ../lib/modules/ppolicy.inc:174
-#: ../lib/modules/ppolicy.inc:200 ../lib/modules/ppolicy.inc:479
-#: ../lib/modules/ppolicy.inc:528 ../lib/modules/sambaDomain.inc:132
+#: ../lib/modules/ppolicy.inc:214 ../lib/modules/ppolicy.inc:493
+#: ../lib/modules/ppolicy.inc:542 ../lib/modules/sambaDomain.inc:132
 #: ../lib/modules/sambaDomain.inc:203 ../lib/modules/sambaDomain.inc:228
 #: ../lib/modules/sambaDomain.inc:333 ../lib/modules/sambaDomain.inc:615
 #: ../lib/modules/shadowAccount.inc:75 ../lib/modules/shadowAccount.inc:141
@@ -8564,8 +8581,8 @@ msgstr "密码最短生命"
 #: ../lib/modules/mitKerberosPolicy.inc:387
 #: ../lib/modules/mitKerberosPolicy.inc:489 ../lib/modules/ppolicy.inc:123
 #: ../lib/modules/ppolicy.inc:154 ../lib/modules/ppolicy.inc:183
-#: ../lib/modules/ppolicy.inc:249 ../lib/modules/ppolicy.inc:487
-#: ../lib/modules/ppolicy.inc:537
+#: ../lib/modules/ppolicy.inc:263 ../lib/modules/ppolicy.inc:501
+#: ../lib/modules/ppolicy.inc:551
 msgid "Minimum password length"
 msgstr "最短密码长度"
 
@@ -8591,11 +8608,11 @@ msgstr "最少的大字字母字符数"
 #: ../lib/modules/windowsLDSUser.inc:2203 ../lib/modules/windowsUser.inc:403
 #: ../lib/modules/windowsUser.inc:672 ../lib/modules/windowsUser.inc:1123
 #: ../lib/modules/windowsUser.inc:1200 ../lib/modules/windowsUser.inc:1405
-#: ../lib/modules/windowsUser.inc:3262 ../lib/modules/windowsUser.inc:4116
+#: ../lib/modules/windowsUser.inc:3262 ../lib/modules/windowsUser.inc:4126
 msgid "Mobile"
 msgstr "手机号码"
 
-#: ../lib/types/user.inc:196 ../lib/modules/inetOrgPerson.inc:83
+#: ../lib/types/user.inc:192 ../lib/modules/inetOrgPerson.inc:83
 #: ../lib/modules/inetOrgPerson.inc:166 ../lib/modules/inetOrgPerson.inc:370
 #: ../lib/modules/inetOrgPerson.inc:523 ../lib/modules/inetOrgPerson.inc:645
 #: ../lib/modules/inetOrgPerson.inc:649 ../lib/modules/inetOrgPerson.inc:1432
@@ -8670,7 +8687,7 @@ msgstr "模块"
 msgid "Monday"
 msgstr "星期一"
 
-#: ../lib/modules/windowsUser.inc:4807
+#: ../lib/modules/windowsUser.inc:4838
 msgid "Monthly"
 msgstr "每月"
 
@@ -8689,7 +8706,7 @@ msgstr "装配点包含非法字符."
 msgid "Mountpoint of device with enabled quotas."
 msgstr "可限制配额设备挂接点."
 
-#: ../lib/modules/customFields.inc:857 ../lib/passwordExpirationJob.inc:532
+#: ../lib/modules/customFields.inc:864 ../lib/passwordExpirationJob.inc:532
 msgid "Move"
 msgstr "移动"
 
@@ -8697,15 +8714,15 @@ msgstr "移动"
 msgid "Multi edit"
 msgstr "多次编辑"
 
-#: ../lib/modules/customFields.inc:4737
+#: ../lib/modules/customFields.inc:4771
 msgid "Multi value"
 msgstr "多值"
 
-#: ../lib/modules/customFields.inc:4325
+#: ../lib/modules/customFields.inc:4332
 msgid "Multi-select fields must not contain empty values."
 msgstr "多选域不能包含空值."
 
-#: ../lib/treeview.inc:1079
+#: ../lib/treeview.inc:1105
 msgid "Multiple structural object classes selected."
 msgstr "选定了多条的结构化对象类."
 
@@ -8788,7 +8805,7 @@ msgstr "彩铃"
 msgid "Music to play on hold."
 msgstr "彩铃."
 
-#: ../lib/modules/windowsHost.inc:129 ../lib/modules/device.inc:114
+#: ../lib/modules/windowsHost.inc:130 ../lib/modules/device.inc:114
 #: ../lib/modules/ipHost.inc:106 ../lib/modules/windowsLDSUser.inc:411
 #: ../lib/modules/inetOrgPerson.inc:332 ../lib/modules/inetOrgPerson.inc:340
 #: ../lib/modules/inetOrgPerson.inc:454 ../lib/modules/windowsUser.inc:570
@@ -8828,7 +8845,7 @@ msgstr "NIS"
 #: ../lib/modules/windowsGroup.inc:1090 ../lib/modules/windowsUser.inc:303
 #: ../lib/modules/windowsUser.inc:712 ../lib/modules/windowsUser.inc:887
 #: ../lib/modules/windowsUser.inc:1075 ../lib/modules/windowsUser.inc:1567
-#: ../lib/modules/windowsUser.inc:3268 ../lib/modules/windowsUser.inc:4122
+#: ../lib/modules/windowsUser.inc:3268 ../lib/modules/windowsUser.inc:4132
 msgid "NIS domain"
 msgstr "NIS域"
 
@@ -8842,7 +8859,7 @@ msgstr "NIS 域名."
 #: ../lib/modules/windowsGroup.inc:1089 ../lib/modules/windowsUser.inc:299
 #: ../lib/modules/windowsUser.inc:704 ../lib/modules/windowsUser.inc:1072
 #: ../lib/modules/windowsUser.inc:1223 ../lib/modules/windowsUser.inc:1564
-#: ../lib/modules/windowsUser.inc:3267 ../lib/modules/windowsUser.inc:4121
+#: ../lib/modules/windowsUser.inc:3267 ../lib/modules/windowsUser.inc:4131
 msgid "NIS name"
 msgstr "NIS名"
 
@@ -8893,8 +8910,8 @@ msgstr "NIS 对象"
 msgid "NS record"
 msgstr "NS条目"
 
-#: ../templates/misc/ajax.php:290 ../templates/tools/serverInfo.php:144
-#: ../templates/tools/webauthn.php:102 ../templates/tools/ou_edit.php:219
+#: ../templates/misc/ajax.php:296 ../templates/tools/serverInfo.php:144
+#: ../templates/tools/webauthn.php:102 ../templates/tools/ou_edit.php:230
 #: ../templates/config/jobList.php:168 ../templates/schema/schema.php:155
 #: ../templates/upload/masscreate.php:335 ../lib/types/automountType.inc:219
 #: ../lib/types/bind.inc:161 ../lib/modules/range.inc:121
@@ -8903,21 +8920,21 @@ msgstr "NS条目"
 #: ../lib/modules/kolabSharedFolder.inc:146
 #: ../lib/modules/kolabSharedFolder.inc:199
 #: ../lib/modules/kolabSharedFolder.inc:224
-#: ../lib/modules/kolabSharedFolder.inc:237
-#: ../lib/modules/kolabSharedFolder.inc:407
-#: ../lib/modules/kolabSharedFolder.inc:430
+#: ../lib/modules/kolabSharedFolder.inc:236
+#: ../lib/modules/kolabSharedFolder.inc:404
+#: ../lib/modules/kolabSharedFolder.inc:427
 #: ../lib/modules/asteriskExtension.inc:796 ../lib/modules/automount.inc:65
 #: ../lib/modules/automount.inc:81 ../lib/modules/automount.inc:104
 #: ../lib/modules/automount.inc:130 ../lib/modules/automount.inc:181
 #: ../lib/modules/automount.inc:192 ../lib/modules/customFields.inc:102
-#: ../lib/modules/customFields.inc:1297 ../lib/modules/device.inc:69
+#: ../lib/modules/customFields.inc:1304 ../lib/modules/device.inc:69
 #: ../lib/modules/device.inc:73 ../lib/modules/device.inc:135
 #: ../lib/modules/device.inc:174 ../lib/modules/device.inc:352
 #: ../lib/modules/device.inc:432 ../lib/modules/device.inc:443
 #: ../lib/modules/dynamicList.inc:64 ../lib/modules/dynamicList.inc:84
 #: ../lib/modules/dynamicList.inc:98 ../lib/modules/dynamicList.inc:124
 #: ../lib/modules/dynamicList.inc:209 ../lib/modules/dynamicList.inc:373
-#: ../lib/modules/groupOfNames.inc:228 ../lib/modules/groupOfNames.inc:1293
+#: ../lib/modules/groupOfNames.inc:228 ../lib/modules/groupOfNames.inc:1297
 #: ../lib/modules/mitKerberosPolicy.inc:64
 #: ../lib/modules/mitKerberosPolicy.inc:106
 #: ../lib/modules/mitKerberosPolicy.inc:161
@@ -8939,8 +8956,8 @@ msgstr "NS条目"
 #: ../lib/modules/powerDNS.inc:372 ../lib/modules/powerDNS.inc:458
 #: ../lib/modules/powerDNS.inc:1066 ../lib/modules/ppolicy.inc:83
 #: ../lib/modules/ppolicy.inc:149 ../lib/modules/ppolicy.inc:173
-#: ../lib/modules/ppolicy.inc:194 ../lib/modules/ppolicy.inc:478
-#: ../lib/modules/ppolicy.inc:527 ../lib/modules/webauthn.inc:152
+#: ../lib/modules/ppolicy.inc:208 ../lib/modules/ppolicy.inc:492
+#: ../lib/modules/ppolicy.inc:541 ../lib/modules/webauthn.inc:152
 #: ../lib/modules/posixGroup.inc:1462
 msgid "Name"
 msgstr "名"
@@ -9018,7 +9035,7 @@ msgstr "新DNS条目"
 msgid "New NIS object"
 msgstr "新 NIS 对象"
 
-#: ../templates/tools/ou_edit.php:91
+#: ../templates/tools/ou_edit.php:93
 msgid "New OU created successfully."
 msgstr "新OU建立成功."
 
@@ -9095,7 +9112,7 @@ msgstr "新主机"
 msgid "New import"
 msgstr "新的导入"
 
-#: ../templates/config/mainmanage.php:657
+#: ../templates/config/mainmanage.php:662
 msgid "New master password"
 msgstr "新管理员密码"
 
@@ -9103,19 +9120,19 @@ msgstr "新管理员密码"
 msgid "New master password set successfully."
 msgstr "新管理员密码设置成功."
 
-#: ../lib/lists.inc:139
+#: ../lib/lists.inc:160
 msgid "New object"
 msgstr "新对象"
 
-#: ../templates/tools/ou_edit.php:212 ../help/help.inc:396
+#: ../templates/tools/ou_edit.php:223 ../help/help.inc:396
 msgid "New organisational unit"
 msgstr "新组织单元"
 
 #: ../templates/changePassword.php:130 ../templates/config/confmain.php:578
 #: ../lib/modules/passwordSelfReset.inc:1321
 #: ../lib/modules/simpleSecurityObject.inc:456
-#: ../lib/modules/sambaSamAccount.inc:2386 ../lib/modules/posixAccount.inc:3347
-#: ../lib/modules/windowsUser.inc:3449
+#: ../lib/modules/sambaSamAccount.inc:2386 ../lib/modules/posixAccount.inc:3355
+#: ../lib/modules/windowsUser.inc:3459
 msgid "New password"
 msgstr "新密码"
 
@@ -9173,7 +9190,7 @@ msgstr "新sudo角色"
 msgid "New text area"
 msgstr "新建文本区域"
 
-#: ../lib/types/user.inc:161 ../lib/types/user.inc:463
+#: ../lib/types/user.inc:157 ../lib/types/user.inc:231
 msgid "New user"
 msgstr "新用户"
 
@@ -9189,7 +9206,7 @@ msgstr "新视图"
 msgid "New zone"
 msgstr "新域"
 
-#: ../lib/treeview.inc:1032
+#: ../lib/treeview.inc:1058
 msgid "Next"
 msgstr "下一步"
 
@@ -9317,7 +9334,7 @@ msgid ""
 "No default profile set. Please set it in the server profile configuration."
 msgstr "没有指定缺省的配置文件. 请在服务器配置中指定."
 
-#: ../templates/misc/ajax.php:285 ../templates/tools/webauthn.php:98
+#: ../templates/misc/ajax.php:291 ../templates/tools/webauthn.php:98
 #: ../lib/modules/webauthn.inc:209
 msgid "No devices found."
 msgstr "没有发现设备。"
@@ -9334,13 +9351,13 @@ msgstr "没有发现邮件地址."
 msgid "No entries found!"
 msgstr "未发现相关条目!"
 
-#: ../lib/modules/ldapPublicKey.inc:601 ../lib/modules/customFields.inc:5079
+#: ../lib/modules/ldapPublicKey.inc:601 ../lib/modules/customFields.inc:5113
 #: ../lib/modules/inetOrgPerson.inc:3887 ../lib/modules/inetOrgPerson.inc:3923
 msgid "No file received."
 msgstr "没有收到文件."
 
 #: ../templates/config/mainmanage.php:282 ../lib/modules/ldapPublicKey.inc:136
-#: ../lib/modules/customFields.inc:5015 ../lib/modules/windowsLDSUser.inc:798
+#: ../lib/modules/customFields.inc:5049 ../lib/modules/windowsLDSUser.inc:798
 #: ../lib/modules/inetOrgPerson.inc:111 ../lib/modules/windowsUser.inc:1234
 msgid "No file selected."
 msgstr "没有选择文件."
@@ -9391,7 +9408,7 @@ msgstr "无标志"
 msgid "No new entries"
 msgstr "没有新条目"
 
-#: ../templates/tools/multiEdit.php:350 ../lib/lists.inc:138
+#: ../templates/tools/multiEdit.php:350 ../lib/lists.inc:159
 msgid "No objects found!"
 msgstr "未发现对象!"
 
@@ -9457,7 +9474,7 @@ msgstr "未发现共享文件夹!"
 msgid "No static text specified"
 msgstr "没有指定静态文本"
 
-#: ../lib/treeview.inc:1076
+#: ../lib/treeview.inc:1102
 msgid "No structural object class selected."
 msgstr "没有选定结构化对象类."
 
@@ -9469,7 +9486,7 @@ msgstr "没有输入子网掩码."
 msgid "No sudo roles found!"
 msgstr "未发现sudo角色!"
 
-#: ../lib/types/user.inc:462
+#: ../lib/types/user.inc:230
 msgid "No users found!"
 msgstr "未发现用户!"
 
@@ -9515,16 +9532,16 @@ msgid "Notification period"
 msgstr "提示周期"
 
 #: ../lib/modules/qmailUser.inc:1201 ../lib/modules/freeRadius.inc:916
-#: ../lib/modules/shadowAccount.inc:1176 ../lib/modules/windowsUser.inc:5069
+#: ../lib/modules/shadowAccount.inc:1176 ../lib/modules/windowsUser.inc:5100
 msgid "Notify users about account expiration"
 msgstr "提示用户帐号过期"
 
 #: ../lib/modules/locking389ds.inc:718 ../lib/modules/ppolicyUser.inc:732
-#: ../lib/modules/shadowAccount.inc:1074 ../lib/modules/windowsUser.inc:4627
+#: ../lib/modules/shadowAccount.inc:1074 ../lib/modules/windowsUser.inc:4658
 msgid "Notify users about password expiration"
 msgstr "提示用户密码过期"
 
-#: ../lib/modules/windowsUser.inc:4783
+#: ../lib/modules/windowsUser.inc:4814
 msgid "Notify users about their managed groups"
 msgstr "为用户提示他们管理的组"
 
@@ -9602,23 +9619,23 @@ msgstr "OID"
 msgid "OTP parameters"
 msgstr "OTP 参数"
 
-#: ../templates/tools/ou_edit.php:97
+#: ../templates/tools/ou_edit.php:99
 msgid "OU already exists!"
 msgstr "OU已经存在!"
 
-#: ../templates/tools/ou_edit.php:108
+#: ../templates/tools/ou_edit.php:110
 msgid "OU deleted successfully."
 msgstr "OU删除成功."
 
-#: ../templates/tools/ou_edit.php:177 ../lib/tools/ouEditor.inc:45
+#: ../templates/tools/ou_edit.php:179 ../lib/tools/ouEditor.inc:45
 msgid "OU editor"
 msgstr "OU编辑器"
 
-#: ../templates/tools/ou_edit.php:101
+#: ../templates/tools/ou_edit.php:103
 msgid "OU is invalid!"
 msgstr "OU无效!"
 
-#: ../templates/tools/ou_edit.php:119 ../templates/tools/ou_edit.php:155
+#: ../templates/tools/ou_edit.php:121 ../templates/tools/ou_edit.php:157
 msgid "OU is not empty or invalid!"
 msgstr "OU不为空或非法!"
 
@@ -9634,13 +9651,13 @@ msgid "Object class"
 msgstr "对象类"
 
 #: ../templates/schema/schema.php:76 ../lib/modules/customFields.inc:98
-#: ../lib/modules/customFields.inc:799 ../lib/modules/selfRegistration.inc:86
-#: ../lib/modules/selfRegistration.inc:227 ../lib/treeview.inc:1018
-#: ../lib/treeview.inc:1090
+#: ../lib/modules/customFields.inc:806 ../lib/modules/selfRegistration.inc:86
+#: ../lib/modules/selfRegistration.inc:227 ../lib/treeview.inc:1044
+#: ../lib/treeview.inc:1116
 msgid "Object classes"
 msgstr "对象类"
 
-#: ../lib/lists.inc:137
+#: ../lib/lists.inc:158
 #, php-format
 msgid "Object count: %s"
 msgstr "对象总计: %s"
@@ -9669,19 +9686,19 @@ msgstr "关闭"
 #: ../lib/modules/windowsUser.inc:202 ../lib/modules/windowsUser.inc:584
 #: ../lib/modules/windowsUser.inc:869 ../lib/modules/windowsUser.inc:1036
 #: ../lib/modules/windowsUser.inc:1134 ../lib/modules/windowsUser.inc:1369
-#: ../lib/modules/windowsUser.inc:3251 ../lib/modules/windowsUser.inc:3463
-#: ../lib/modules/windowsUser.inc:4149
+#: ../lib/modules/windowsUser.inc:3251 ../lib/modules/windowsUser.inc:3473
+#: ../lib/modules/windowsUser.inc:4159
 msgid "Office name"
 msgstr "办公室名"
 
-#: ../templates/misc/ajax.php:302 ../templates/misc/ajax.php:466
-#: ../templates/misc/ajax.php:492 ../templates/lists/changePassword.php:286
+#: ../templates/misc/ajax.php:308 ../templates/misc/ajax.php:472
+#: ../templates/misc/ajax.php:498 ../templates/lists/changePassword.php:286
 #: ../templates/lists/changePassword.php:324
 #: ../templates/lists/changePassword.php:343
 #: ../templates/lists/changePassword.php:362
 #: ../templates/tests/lamdaemonTest.php:104 ../templates/tools/treeView.php:158
 #: ../templates/tools/webauthn.php:79 ../templates/tools/webauthn.php:116
-#: ../templates/tools/ou_edit.php:221 ../templates/tools/ou_edit.php:233
+#: ../templates/tools/ou_edit.php:232 ../templates/tools/ou_edit.php:245
 #: ../templates/config/jobList.php:159 ../templates/config/conflogin.php:152
 #: ../templates/config/confsave.php:75 ../templates/config/confsave.php:80
 #: ../templates/config/mainlogin.php:153 ../templates/config/profmanage.php:258
@@ -9692,6 +9709,7 @@ msgstr "办公室名"
 #: ../templates/config/profmanage.php:318
 #: ../templates/config/confImportExport.php:174
 #: ../templates/config/mainmanage.php:351
+#: ../templates/config/mainmanage.php:628
 #: ../templates/upload/masscreate.php:237 ../templates/pdfedit/pdfmain.php:380
 #: ../templates/pdfedit/pdfmain.php:390 ../templates/pdfedit/pdfmain.php:398
 #: ../templates/pdfedit/pdfmain.php:431 ../templates/pdfedit/pdfmain.php:437
@@ -9705,19 +9723,19 @@ msgstr "办公室名"
 #: ../templates/selfService/profManage.php:225
 #: ../templates/selfService/profManage.php:242
 #: ../templates/selfService/adminMain.php:355
-#: ../templates/selfService/selfService2Factor.php:88
-#: ../templates/selfService/selfService2Factor.php:102
+#: ../templates/selfService/selfService2Factor.php:89
+#: ../templates/selfService/selfService2Factor.php:103
 #: ../templates/login2Factor.php:72 ../templates/login2Factor.php:98
 #: ../lib/types/automountType.inc:204 ../lib/types/bind.inc:146
-#: ../lib/types/user.inc:349 ../lib/modules/sambaGroupMapping.inc:498
+#: ../lib/modules/sambaGroupMapping.inc:498
 #: ../lib/modules/ldapPublicKey.inc:420 ../lib/modules/ldapPublicKey.inc:443
 #: ../lib/modules/ldapPublicKey.inc:473 ../lib/modules/ldapPublicKey.inc:476
 #: ../lib/modules/nisnetgroup.inc:494 ../lib/modules/asteriskExtension.inc:470
 #: ../lib/modules/nisMailAlias.inc:390 ../lib/modules/aliasEntry.inc:157
-#: ../lib/modules/aliasEntry.inc:180 ../lib/modules/customFields.inc:4951
-#: ../lib/modules/customFields.inc:4954 ../lib/modules/device.inc:310
-#: ../lib/modules/groupOfNames.inc:463 ../lib/modules/groupOfNames.inc:613
-#: ../lib/modules/groupOfNames.inc:774 ../lib/modules/kopanoContact.inc:423
+#: ../lib/modules/aliasEntry.inc:180 ../lib/modules/customFields.inc:4985
+#: ../lib/modules/customFields.inc:4988 ../lib/modules/device.inc:310
+#: ../lib/modules/groupOfNames.inc:465 ../lib/modules/groupOfNames.inc:617
+#: ../lib/modules/groupOfNames.inc:778 ../lib/modules/kopanoContact.inc:423
 #: ../lib/modules/kopanoGroup.inc:439 ../lib/modules/kopanoUser.inc:911
 #: ../lib/modules/kopanoUser.inc:960 ../lib/modules/organizationalRole.inc:363
 #: ../lib/modules/passwordSelfReset.inc:1101
@@ -9728,15 +9746,16 @@ msgstr "办公室名"
 #: ../lib/modules/sambaSamAccount.inc:1601 ../lib/modules/imapAccess.inc:298
 #: ../lib/modules/inetOrgPerson.inc:3223 ../lib/modules/inetOrgPerson.inc:3226
 #: ../lib/modules/inetOrgPerson.inc:3251 ../lib/modules/inetOrgPerson.inc:3358
-#: ../lib/modules/inetOrgPerson.inc:3361 ../lib/lists.inc:877
-#: ../lib/lists.inc:955 ../lib/html.inc:656 ../lib/modules.inc:1033
-#: ../lib/modules.inc:1213 ../lib/modules.inc:1217 ../lib/modules.inc:1223
-#: ../lib/modules.inc:1404 ../lib/treeview.inc:720 ../lib/2factor.inc:941
+#: ../lib/modules/inetOrgPerson.inc:3361 ../lib/baseType.inc:314
+#: ../lib/lists.inc:944 ../lib/lists.inc:1022 ../lib/html.inc:656
+#: ../lib/modules.inc:1035 ../lib/modules.inc:1217 ../lib/modules.inc:1221
+#: ../lib/modules.inc:1227 ../lib/modules.inc:1407 ../lib/treeview.inc:723
+#: ../lib/2factor.inc:974
 msgid "Ok"
 msgstr "确定"
 
 #: ../lib/modules/simpleSecurityObject.inc:452
-#: ../lib/modules/posixAccount.inc:3343
+#: ../lib/modules/posixAccount.inc:3351
 msgid "Old password"
 msgstr "旧密码"
 
@@ -9753,7 +9772,7 @@ msgstr "On"
 msgid "On broken or timed out connection"
 msgstr "中断或超时连接"
 
-#: ../templates/tools/importexport.php:279 ../lib/treeview.inc:1354
+#: ../templates/tools/importexport.php:279 ../lib/treeview.inc:1380
 msgid "One (one level beneath base)"
 msgstr "One (基类下第一层)"
 
@@ -9761,7 +9780,7 @@ msgstr "One (基类下第一层)"
 msgid "One or more errors occurred. The invalid fields are marked."
 msgstr "发生了错误,非法域已经被标记."
 
-#: ../lib/2factor.inc:782
+#: ../lib/2factor.inc:815
 msgid "OpenID connection failed"
 msgstr "OpenID 连接失败"
 
@@ -9782,7 +9801,7 @@ msgstr "操作者"
 msgid "Optional"
 msgstr "可选的"
 
-#: ../templates/schema/schema.php:267 ../lib/treeview.inc:1151
+#: ../templates/schema/schema.php:267 ../lib/treeview.inc:1177
 msgid "Optional attributes"
 msgstr "可选属性"
 
@@ -9805,8 +9824,8 @@ msgstr "PC的描述(可选)."
 #: ../lib/modules/sudoRole.inc:124 ../lib/modules/sudoRole.inc:190
 #: ../lib/modules/sudoRole.inc:222 ../lib/modules/sudoRole.inc:234
 #: ../lib/modules/sudoRole.inc:312 ../lib/modules/sudoRole.inc:461
-#: ../lib/modules/sudoRole.inc:587 ../lib/modules/kolabUser.inc:333
-#: ../lib/modules/posixGroup.inc:531 ../lib/modules/posixAccount.inc:2468
+#: ../lib/modules/sudoRole.inc:587 ../lib/modules/kolabUser.inc:328
+#: ../lib/modules/posixGroup.inc:531 ../lib/modules/posixAccount.inc:2471
 msgid "Options"
 msgstr "选项"
 
@@ -9832,7 +9851,7 @@ msgstr "Oracle数据库"
 msgid "Order"
 msgstr "排序"
 
-#: ../lib/treeview.inc:1363
+#: ../lib/treeview.inc:1389
 msgid "Order by"
 msgstr "排序列"
 
@@ -9857,11 +9876,11 @@ msgstr "排序"
 #: ../lib/modules/windowsUser.inc:375 ../lib/modules/windowsUser.inc:379
 #: ../lib/modules/windowsUser.inc:784 ../lib/modules/windowsUser.inc:903
 #: ../lib/modules/windowsUser.inc:1108 ../lib/modules/windowsUser.inc:1456
-#: ../lib/modules/windowsUser.inc:3277 ../lib/modules/windowsUser.inc:4136
+#: ../lib/modules/windowsUser.inc:3277 ../lib/modules/windowsUser.inc:4146
 msgid "Organisation"
 msgstr "组织"
 
-#: ../templates/tools/ou_edit.php:226 ../lib/modules/windowsLDSUser.inc:273
+#: ../templates/tools/ou_edit.php:238 ../lib/modules/windowsLDSUser.inc:273
 #: ../lib/modules/windowsLDSUser.inc:277 ../lib/modules/windowsLDSUser.inc:575
 #: ../lib/modules/windowsLDSUser.inc:611 ../lib/modules/windowsLDSUser.inc:713
 #: ../lib/modules/windowsLDSUser.inc:951 ../lib/modules/windowsLDSUser.inc:1869
@@ -9875,7 +9894,7 @@ msgstr "组织"
 #: ../lib/modules/windowsUser.inc:367 ../lib/modules/windowsUser.inc:371
 #: ../lib/modules/windowsUser.inc:776 ../lib/modules/windowsUser.inc:900
 #: ../lib/modules/windowsUser.inc:1105 ../lib/modules/windowsUser.inc:1453
-#: ../lib/modules/windowsUser.inc:3276 ../lib/modules/windowsUser.inc:4135
+#: ../lib/modules/windowsUser.inc:3276 ../lib/modules/windowsUser.inc:4145
 msgid "Organisational unit"
 msgstr "组织单元"
 
@@ -9903,7 +9922,7 @@ msgstr "其它"
 #: ../lib/modules/windowsUser.inc:411 ../lib/modules/windowsUser.inc:680
 #: ../lib/modules/windowsUser.inc:1126 ../lib/modules/windowsUser.inc:1202
 #: ../lib/modules/windowsUser.inc:1408 ../lib/modules/windowsUser.inc:3263
-#: ../lib/modules/windowsUser.inc:4117
+#: ../lib/modules/windowsUser.inc:4127
 msgid "Other mobiles"
 msgstr "其他手机号码"
 
@@ -9915,7 +9934,7 @@ msgstr "其他手机号码"
 #: ../lib/modules/windowsUser.inc:399 ../lib/modules/windowsUser.inc:664
 #: ../lib/modules/windowsUser.inc:1120 ../lib/modules/windowsUser.inc:1198
 #: ../lib/modules/windowsUser.inc:1414 ../lib/modules/windowsUser.inc:3261
-#: ../lib/modules/windowsUser.inc:4119
+#: ../lib/modules/windowsUser.inc:4129
 msgid "Other pagers"
 msgstr "其他页"
 
@@ -9927,7 +9946,7 @@ msgstr "其他页"
 #: ../lib/modules/windowsUser.inc:198 ../lib/modules/windowsUser.inc:616
 #: ../lib/modules/windowsUser.inc:1033 ../lib/modules/windowsUser.inc:1194
 #: ../lib/modules/windowsUser.inc:1402 ../lib/modules/windowsUser.inc:3250
-#: ../lib/modules/windowsUser.inc:4153
+#: ../lib/modules/windowsUser.inc:4163
 msgid "Other telephone numbers"
 msgstr "其它的电话号码"
 
@@ -9937,7 +9956,7 @@ msgstr "其它的电话号码"
 #: ../lib/modules/windowsLDSUser.inc:2479 ../lib/modules/windowsUser.inc:234
 #: ../lib/modules/windowsUser.inc:238 ../lib/modules/windowsUser.inc:632
 #: ../lib/modules/windowsUser.inc:1054 ../lib/modules/windowsUser.inc:1423
-#: ../lib/modules/windowsUser.inc:3265 ../lib/modules/windowsUser.inc:4155
+#: ../lib/modules/windowsUser.inc:3265 ../lib/modules/windowsUser.inc:4165
 msgid "Other web sites"
 msgstr "其他web网站"
 
@@ -9981,7 +10000,7 @@ msgstr "覆盖"
 msgid "Owner"
 msgstr "拥有者"
 
-#: ../lib/modules/groupOfNames.inc:1298
+#: ../lib/modules/groupOfNames.inc:1302
 msgid "Owner count"
 msgstr "属主计数"
 
@@ -9990,9 +10009,9 @@ msgstr "属主计数"
 #: ../lib/modules/device.inc:184 ../lib/modules/device.inc:449
 #: ../lib/modules/groupOfNames.inc:97 ../lib/modules/groupOfNames.inc:101
 #: ../lib/modules/groupOfNames.inc:155 ../lib/modules/groupOfNames.inc:194
-#: ../lib/modules/groupOfNames.inc:238 ../lib/modules/groupOfNames.inc:403
-#: ../lib/modules/groupOfNames.inc:947 ../lib/modules/groupOfNames.inc:1282
-#: ../lib/modules/groupOfNames.inc:1297
+#: ../lib/modules/groupOfNames.inc:238 ../lib/modules/groupOfNames.inc:404
+#: ../lib/modules/groupOfNames.inc:951 ../lib/modules/groupOfNames.inc:1286
+#: ../lib/modules/groupOfNames.inc:1301
 msgid "Owners"
 msgstr "拥有者"
 
@@ -10005,7 +10024,7 @@ msgstr "P-节点 (0x02)"
 msgid "PC name"
 msgstr "PC机器名"
 
-#: ../lib/modules/windowsHost.inc:117
+#: ../lib/modules/windowsHost.inc:118
 msgid "PC01"
 msgstr "PC01"
 
@@ -10014,7 +10033,7 @@ msgstr "PC01"
 msgid "PDF editor"
 msgstr "PDF编辑器"
 
-#: ../templates/upload/masscreate.php:314 ../lib/lists.inc:849
+#: ../templates/upload/masscreate.php:314 ../lib/lists.inc:916
 #: ../help/help.inc:286
 msgid "PDF structure"
 msgstr "PDF架构"
@@ -10117,7 +10136,7 @@ msgstr "分页结果"
 #: ../lib/modules/windowsUser.inc:391 ../lib/modules/windowsUser.inc:656
 #: ../lib/modules/windowsUser.inc:1117 ../lib/modules/windowsUser.inc:1196
 #: ../lib/modules/windowsUser.inc:1411 ../lib/modules/windowsUser.inc:3260
-#: ../lib/modules/windowsUser.inc:4118
+#: ../lib/modules/windowsUser.inc:4128
 msgid "Pager"
 msgstr "呼号"
 
@@ -10125,11 +10144,11 @@ msgstr "呼号"
 msgid "Pager number for Asterisk voicemail."
 msgstr "Asterisk语音邮件的呼号."
 
-#: ../lib/treeview.inc:1005 ../lib/treeview.inc:1087
+#: ../lib/treeview.inc:1031 ../lib/treeview.inc:1113
 msgid "Parent"
 msgstr "父节点"
 
-#: ../templates/tools/ou_edit.php:213
+#: ../templates/tools/ou_edit.php:224
 msgid "Parent DN"
 msgstr "父DN"
 
@@ -10148,7 +10167,7 @@ msgstr "没有发现父节点."
 msgid "Parent to"
 msgstr "继承于"
 
-#: ../lib/types/user.inc:609
+#: ../lib/lists.inc:553
 msgid "Partially locked"
 msgstr "部分锁定"
 
@@ -10165,7 +10184,7 @@ msgstr "Passthrough"
 #: ../templates/selfService/selfServiceLogin.php:340 ../templates/login.php:322
 #: ../lib/modules/asteriskVoicemail.inc:106
 #: ../lib/modules/asteriskVoicemail.inc:172
-#: ../lib/modules/customFields.inc:3448 ../lib/modules/heimdalKerberos.inc:130
+#: ../lib/modules/customFields.inc:3455 ../lib/modules/heimdalKerberos.inc:130
 #: ../lib/modules/heimdalKerberos.inc:217
 #: ../lib/modules/heimdalKerberos.inc:229
 #: ../lib/modules/heimdalKerberos.inc:734
@@ -10201,14 +10220,14 @@ msgstr "Passthrough"
 #: ../lib/modules/inetOrgPerson.inc:2306 ../lib/modules/inetOrgPerson.inc:4267
 #: ../lib/modules/posixAccount.inc:119 ../lib/modules/posixAccount.inc:120
 #: ../lib/modules/posixAccount.inc:194 ../lib/modules/posixAccount.inc:329
-#: ../lib/modules/posixAccount.inc:449 ../lib/modules/posixAccount.inc:1874
-#: ../lib/modules/posixAccount.inc:2303 ../lib/modules/posixAccount.inc:2306
-#: ../lib/modules/posixAccount.inc:2392 ../lib/modules/posixAccount.inc:2578
+#: ../lib/modules/posixAccount.inc:449 ../lib/modules/posixAccount.inc:1877
+#: ../lib/modules/posixAccount.inc:2306 ../lib/modules/posixAccount.inc:2309
+#: ../lib/modules/posixAccount.inc:2395 ../lib/modules/posixAccount.inc:2581
 #: ../lib/modules/windowsUser.inc:272 ../lib/modules/windowsUser.inc:459
 #: ../lib/modules/windowsUser.inc:996 ../lib/modules/windowsUser.inc:1143
 #: ../lib/modules/windowsUser.inc:1218 ../lib/modules/windowsUser.inc:1219
 #: ../lib/modules/windowsUser.inc:3312 ../lib/modules/windowsUser.inc:3315
-#: ../lib/modules.inc:1143 ../lib/selfService.inc:842 ../help/help.inc:185
+#: ../lib/modules.inc:1151 ../lib/selfService.inc:842 ../help/help.inc:185
 #: ../help/help.inc:284
 msgid "Password"
 msgstr "密码"
@@ -10232,13 +10251,13 @@ msgstr "密码修改选项"
 
 #: ../lib/modules/ppolicyUser.inc:70 ../lib/modules/ppolicyUser.inc:93
 #: ../lib/modules/ppolicyUser.inc:157 ../lib/modules/ppolicyUser.inc:309
-#: ../lib/account.inc:1715
+#: ../lib/account.inc:1756
 msgid "Password change required"
 msgstr "需要修改密码"
 
 #: ../lib/modules/ppolicy.inc:139 ../lib/modules/ppolicy.inc:163
-#: ../lib/modules/ppolicy.inc:297 ../lib/modules/ppolicy.inc:518
-#: ../lib/modules/ppolicy.inc:541
+#: ../lib/modules/ppolicy.inc:311 ../lib/modules/ppolicy.inc:532
+#: ../lib/modules/ppolicy.inc:555
 msgid "Password change requires old password"
 msgstr "修改密码时需要旧密码"
 
@@ -10256,12 +10275,12 @@ msgstr "修改密码时需要旧密码"
 
 #: ../templates/changePassword.php:98
 #: ../lib/modules/simpleSecurityObject.inc:528
-#: ../lib/modules/posixAccount.inc:3533
+#: ../lib/modules/posixAccount.inc:3541
 msgid "Password changed."
 msgstr "密码已更改。"
 
 #: ../lib/modules/ppolicy.inc:143 ../lib/modules/ppolicy.inc:164
-#: ../lib/modules/ppolicy.inc:299 ../lib/modules/ppolicy.inc:488
+#: ../lib/modules/ppolicy.inc:313 ../lib/modules/ppolicy.inc:502
 msgid "Password check module"
 msgstr "密码检查模块"
 
@@ -10283,10 +10302,11 @@ msgstr "密码名包含非法字符,只能使用:"
 #: ../lib/modules/sambaSamAccount.inc:1787 ../lib/modules/windowsUser.inc:249
 #: ../lib/modules/windowsUser.inc:491 ../lib/modules/windowsUser.inc:993
 #: ../lib/modules/windowsUser.inc:1477 ../lib/modules/windowsUser.inc:3289
+#: ../lib/modules/windowsUser.inc:3356
 msgid "Password does not expire"
 msgstr "密码永不过期"
 
-#: ../templates/misc/ajax.php:555
+#: ../templates/misc/ajax.php:561
 msgid "Password does not match"
 msgstr "密码不匹配"
 
@@ -10307,7 +10327,7 @@ msgstr "密码超期必须是自然数或-1."
 
 #: ../lib/modules/locking389ds.inc:594
 #: ../lib/plugins/extendedInvalidCredentials/Locking389DsExtraInvalidCredentialsProvider.inc:38
-#: ../lib/account.inc:1703
+#: ../lib/account.inc:1744
 msgid "Password expired"
 msgstr "密码已过期"
 
@@ -10319,14 +10339,14 @@ msgstr "密码文本框标签"
 msgid "Password for voicemail mailbox."
 msgstr "语音邮箱的密码."
 
-#: ../lib/modules/customFields.inc:174 ../lib/modules/customFields.inc:3465
+#: ../lib/modules/customFields.inc:174 ../lib/modules/customFields.inc:3472
 #: ../lib/modules/simpleSecurityObject.inc:83
 #: ../lib/modules/simpleSecurityObject.inc:115
 #: ../lib/modules/simpleSecurityObject.inc:332
 #: ../lib/modules/posixGroup.inc:445 ../lib/modules/posixGroup.inc:538
 #: ../lib/modules/inetOrgPerson.inc:764 ../lib/modules/inetOrgPerson.inc:4197
 #: ../lib/modules/posixAccount.inc:205 ../lib/modules/posixAccount.inc:362
-#: ../lib/modules/posixAccount.inc:2470
+#: ../lib/modules/posixAccount.inc:2473
 msgid "Password hash type"
 msgstr "密码哈希类型"
 
@@ -10345,8 +10365,8 @@ msgstr "密码历史"
 #: ../lib/modules/mitKerberosPolicy.inc:380
 #: ../lib/modules/mitKerberosPolicy.inc:485 ../lib/modules/ppolicy.inc:95
 #: ../lib/modules/ppolicy.inc:152 ../lib/modules/ppolicy.inc:177
-#: ../lib/modules/ppolicy.inc:229 ../lib/modules/ppolicy.inc:481
-#: ../lib/modules/ppolicy.inc:530 ../lib/modules/sambaDomain.inc:112
+#: ../lib/modules/ppolicy.inc:243 ../lib/modules/ppolicy.inc:495
+#: ../lib/modules/ppolicy.inc:544 ../lib/modules/sambaDomain.inc:112
 #: ../lib/modules/sambaDomain.inc:198 ../lib/modules/sambaDomain.inc:292
 #: ../lib/modules/sambaDomain.inc:613
 msgid "Password history length"
@@ -10356,7 +10376,7 @@ msgstr "历史密码长度"
 msgid "Password mail settings"
 msgstr "密码邮件设置"
 
-#: ../templates/misc/ajax.php:551
+#: ../templates/misc/ajax.php:557
 msgid "Password matches"
 msgstr "密码匹配"
 
@@ -10419,8 +10439,8 @@ msgid "Password policy"
 msgstr "密码策略"
 
 #: ../lib/modules/ppolicy.inc:99 ../lib/modules/ppolicy.inc:153
-#: ../lib/modules/ppolicy.inc:241 ../lib/modules/ppolicy.inc:498
-#: ../lib/modules/ppolicy.inc:531
+#: ../lib/modules/ppolicy.inc:255 ../lib/modules/ppolicy.inc:512
+#: ../lib/modules/ppolicy.inc:545
 msgid "Password quality check"
 msgstr "密码质量检查"
 
@@ -10467,7 +10487,7 @@ msgid "Password warning must be are natural number."
 msgstr "密码提醒日期必须是自然数."
 
 #: ../templates/changePassword.php:76 ../templates/config/confmain.php:840
-#: ../lib/modules/passwordSelfReset.inc:1452 ../lib/modules.inc:1271
+#: ../lib/modules/passwordSelfReset.inc:1452 ../lib/modules.inc:1275
 msgid "Passwords are different!"
 msgstr "密码不同!"
 
@@ -10549,7 +10569,7 @@ msgstr "付费列表"
 msgid "Performs modifications on multiple LDAP entries."
 msgstr "修改多条LDAP条目时."
 
-#: ../lib/modules/windowsUser.inc:4812 ../help/help.inc:471
+#: ../lib/modules/windowsUser.inc:4843 ../help/help.inc:471
 msgid "Period"
 msgstr "周期"
 
@@ -10577,8 +10597,8 @@ msgstr "个人数据"
 #: ../lib/modules/inetOrgPerson.inc:568 ../lib/modules/inetOrgPerson.inc:2618
 #: ../lib/modules/inetOrgPerson.inc:2936 ../lib/modules/inetOrgPerson.inc:4233
 #: ../lib/modules/inetOrgPerson.inc:4267 ../lib/modules/inetOrgPerson.inc:4277
-#: ../lib/modules/inetOrgPerson.inc:4610 ../lib/modules/windowsUser.inc:4126
-#: ../lib/modules/windowsUser.inc:4181
+#: ../lib/modules/inetOrgPerson.inc:4610 ../lib/modules/windowsUser.inc:4136
+#: ../lib/modules/windowsUser.inc:4191
 msgid "Photo"
 msgstr "照片"
 
@@ -10625,7 +10645,7 @@ msgstr "如果你的脚本中会生成HTML输出,请激活这个选项.如果不
 msgid "Please add at least one extension owner."
 msgstr "至少需要增加一个扩展属主."
 
-#: ../lib/modules/windowsUser.inc:4855
+#: ../lib/modules/windowsUser.inc:4886
 msgid "Please add the wildcard for the list of managed groups."
 msgstr "请为管理组列表填加通配符。"
 
@@ -10633,7 +10653,7 @@ msgstr "请为管理组列表填加通配符。"
 msgid "Please add this line to your webserver's crontab."
 msgstr "请在WEB服务器的crontab文件中增加这样一行."
 
-#: ../lib/2factor.inc:919
+#: ../lib/2factor.inc:952
 msgid "Please authenticate with your security device."
 msgstr "请用你的安全设备进行认证。"
 
@@ -10657,7 +10677,7 @@ msgstr ""
 msgid "Please click here to continue: @@resetLink@@"
 msgstr "请点击这儿继续: @@resetLink@@"
 
-#: ../lib/types/user.inc:260
+#: ../lib/baseType.inc:208
 msgid "Please click to lock/unlock this account."
 msgstr "点击以锁定/解锁此账号."
 
@@ -10669,14 +10689,14 @@ msgstr "请在LAM服务配置文件中配置树后缀。"
 msgid "Please create a profile by clicking on the link below."
 msgstr "请点击如下链接来建立配置文件。"
 
-#: ../lib/lists.inc:1355
+#: ../lib/lists.inc:1465
 msgid ""
 "Please do not edit multiple accounts in parallel in multiple browser tabs."
 msgstr "请不要在多个浏览器标签页上并行编辑多个账号."
 
-#: ../lib/modules/customFields.inc:3191 ../lib/modules/customFields.inc:3233
-#: ../lib/modules/customFields.inc:3386 ../lib/modules/customFields.inc:4445
-#: ../lib/modules/customFields.inc:4474
+#: ../lib/modules/customFields.inc:3198 ../lib/modules/customFields.inc:3240
+#: ../lib/modules/customFields.inc:3393 ../lib/modules/customFields.inc:4469
+#: ../lib/modules/customFields.inc:4498
 #, php-format
 msgid "Please do not enter more than %s values."
 msgstr "请不要输入超过%s个值."
@@ -10686,8 +10706,8 @@ msgstr "请不要输入超过%s个值."
 msgid "Please enable captcha on general settings first."
 msgstr "请先在通用配置中激活验证码选项。"
 
-#: ../templates/selfService/selfService2Factor.php:123
-#: ../templates/login2Factor.php:110
+#: ../templates/selfService/selfService2Factor.php:125
+#: ../templates/login2Factor.php:111
 #, php-format
 msgid "Please enter \"%s\"."
 msgstr "请输入\"%s\"。"
@@ -10767,7 +10787,7 @@ msgstr "输入此条目的描述."
 msgid "Please enter a descriptive text for this group."
 msgstr "输入此组的描述信息."
 
-#: ../lib/modules/windowsHost.inc:88
+#: ../lib/modules/windowsHost.inc:89
 msgid "Please enter a descriptive text for this host."
 msgstr "输入此主机的描述信息."
 
@@ -10814,11 +10834,11 @@ msgstr "请输入视图的名字."
 msgid "Please enter a name."
 msgstr "请输入一个名字."
 
-#: ../lib/modules/customFields.inc:3691
+#: ../lib/modules/customFields.inc:3698
 msgid "Please enter a natural number for column count."
 msgstr "请为列的数量输入一个自然数。"
 
-#: ../lib/modules/customFields.inc:3701
+#: ../lib/modules/customFields.inc:3708
 msgid "Please enter a natural number for row count."
 msgstr "请为行的数量输入一个自然数."
 
@@ -10938,7 +10958,7 @@ msgstr "请这个域输入一个唯一的名字."
 msgid "Please enter a unique name for this password policy."
 msgstr "请为这个密码策略输入一个唯一的名字."
 
-#: ../lib/modules/kolabUser.inc:238 ../lib/modules/kolabUser.inc:244
+#: ../lib/modules/kolabUser.inc:238 ../lib/modules/kolabUser.inc:243
 msgid "Please enter a user password."
 msgstr "请输入用户密码."
 
@@ -10952,7 +10972,7 @@ msgstr "请输入有效的DN:"
 msgid "Please enter a valid DNS name."
 msgstr "请输入有效的DNS名称."
 
-#: ../lib/modules/customFields.inc:1454 ../lib/modules/customFields.inc:2267
+#: ../lib/modules/customFields.inc:1461 ../lib/modules/customFields.inc:2274
 msgid ""
 "Please enter a valid LDAP attribute name. Allowed characters are a-z, 0-9, _ "
 "and -."
@@ -11024,9 +11044,9 @@ msgstr "请输入日期,格式为(DD-MM-YYYY)."
 msgid "Please enter a valid date in format YYYY-MM-DD hh:mm:ss."
 msgstr "请输入一个有效日期格式 YYYY-MM-DD hh:mm:ss。"
 
-#: ../lib/modules/customFields.inc:3123 ../lib/modules/customFields.inc:3174
-#: ../lib/modules/customFields.inc:3211 ../lib/modules/customFields.inc:3303
-#: ../lib/modules/customFields.inc:3374
+#: ../lib/modules/customFields.inc:3130 ../lib/modules/customFields.inc:3181
+#: ../lib/modules/customFields.inc:3218 ../lib/modules/customFields.inc:3310
+#: ../lib/modules/customFields.inc:3381
 msgid "Please enter a valid date."
 msgstr "请输入有效的日期。"
 
@@ -11058,9 +11078,9 @@ msgstr "请输入有效的盘符."
 #: ../lib/modules/courierMailAlias.inc:143 ../lib/modules/pykotaUser.inc:289
 #: ../lib/modules/pykotaUser.inc:290 ../lib/modules/kolabSharedFolder.inc:222
 #: ../lib/modules/kolabSharedFolder.inc:223
-#: ../lib/modules/customFields.inc:3118 ../lib/modules/customFields.inc:3169
-#: ../lib/modules/customFields.inc:3207 ../lib/modules/customFields.inc:3299
-#: ../lib/modules/customFields.inc:3370
+#: ../lib/modules/customFields.inc:3125 ../lib/modules/customFields.inc:3176
+#: ../lib/modules/customFields.inc:3214 ../lib/modules/customFields.inc:3306
+#: ../lib/modules/customFields.inc:3377
 #: ../lib/modules/kopanoDynamicGroup.inc:190
 #: ../lib/modules/kopanoDynamicGroup.inc:191 ../lib/modules/kopanoGroup.inc:188
 #: ../lib/modules/kopanoGroup.inc:189 ../lib/modules/passwordSelfReset.inc:284
@@ -11082,11 +11102,11 @@ msgstr "请输入有效的盘符."
 #: ../lib/modules/windowsGroup.inc:287 ../lib/modules/windowsGroup.inc:288
 #: ../lib/modules/inetOrgPerson.inc:89 ../lib/modules/inetOrgPerson.inc:92
 #: ../lib/modules/windowsUser.inc:1206 ../lib/modules/windowsUser.inc:1207
-#: ../lib/modules/windowsUser.inc:4829 ../lib/modules/windowsUser.inc:4835
-#: ../lib/modules/windowsUser.inc:4841 ../lib/modules/windowsUser.inc:4847
+#: ../lib/modules/windowsUser.inc:4860 ../lib/modules/windowsUser.inc:4866
+#: ../lib/modules/windowsUser.inc:4872 ../lib/modules/windowsUser.inc:4878
 #: ../lib/passwordExpirationJob.inc:124 ../lib/passwordExpirationJob.inc:130
 #: ../lib/passwordExpirationJob.inc:136 ../lib/passwordExpirationJob.inc:142
-#: ../lib/modules.inc:1312
+#: ../lib/modules.inc:1316
 msgid "Please enter a valid email address!"
 msgstr "请输入有效的邮件地址!"
 
@@ -11118,7 +11138,7 @@ msgid ""
 "Please enter a valid field name. Only letters, numbers and dash are allowed."
 msgstr "请输入合法的域名.只允许字母,数字和下划线."
 
-#: ../lib/lists.inc:249
+#: ../lib/lists.inc:270
 msgid ""
 "Please enter a valid filter. Only letters, numbers and \" _*$.@-\" are "
 "allowed."
@@ -11212,9 +11232,9 @@ msgid "Please enter a valid number (e.g. \"1.5\")."
 msgstr "请输入有效的数字 (比如 \"1.5\")."
 
 #: ../lib/modules/pykotaPrinter.inc:219 ../lib/modules/pykotaPrinter.inc:220
-#: ../lib/modules/autoDelete.inc:103 ../lib/modules/customFields.inc:2637
-#: ../lib/modules/customFields.inc:2646 ../lib/modules/customFields.inc:4335
-#: ../lib/modules/customFields.inc:4339 ../lib/modules/posixGroup.inc:720
+#: ../lib/modules/autoDelete.inc:103 ../lib/modules/customFields.inc:2644
+#: ../lib/modules/customFields.inc:2653 ../lib/modules/customFields.inc:4342
+#: ../lib/modules/customFields.inc:4346 ../lib/modules/posixGroup.inc:720
 msgid "Please enter a valid number."
 msgstr "请输入有效的数字."
 
@@ -11324,11 +11344,11 @@ msgstr "请输入有效的用户名或邮件地址."
 msgid "Please enter a value between %s and %s!"
 msgstr "请输入有效值(介于%s和%s之间)!"
 
-#: ../lib/modules/customFields.inc:3849
+#: ../lib/modules/customFields.inc:3856
 msgid "Please enter a value for status \"checked\"."
 msgstr "请为状态\"选中\"输入一个值."
 
-#: ../lib/modules/customFields.inc:3856
+#: ../lib/modules/customFields.inc:3863
 msgid "Please enter a value for status \"unchecked\"."
 msgstr "请为状态\"未选中\"输入一个值."
 
@@ -11356,7 +11376,7 @@ msgstr "请为这个账号输入一个别名."
 msgid "Please enter an alias name."
 msgstr "请输入有效的别名."
 
-#: ../lib/modules/kolabUser.inc:250 ../lib/modules/imapAccess.inc:212
+#: ../lib/modules/kolabUser.inc:248 ../lib/modules/imapAccess.inc:212
 #, php-format
 msgid "Please enter an email address on this page: %s"
 msgstr "请在本页面输入邮件地址:%s"
@@ -11374,10 +11394,10 @@ msgstr "请输入任何额外的DHCP选项。"
 msgid "Please enter any additional DHCP statements."
 msgstr "请输入任何额外的DHCP声明。"
 
-#: ../lib/modules/customFields.inc:3188 ../lib/modules/customFields.inc:3230
-#: ../lib/modules/customFields.inc:3383 ../lib/modules/customFields.inc:3395
-#: ../lib/modules/customFields.inc:4442 ../lib/modules/customFields.inc:4471
-#: ../lib/modules/customFields.inc:4480
+#: ../lib/modules/customFields.inc:3195 ../lib/modules/customFields.inc:3237
+#: ../lib/modules/customFields.inc:3390 ../lib/modules/customFields.inc:3402
+#: ../lib/modules/customFields.inc:4466 ../lib/modules/customFields.inc:4495
+#: ../lib/modules/customFields.inc:4504
 #, php-format
 msgid "Please enter at least %s values."
 msgstr "请至少输入%s个值."
@@ -11387,7 +11407,7 @@ msgstr "请至少输入%s个值."
 msgid "Please enter at least one range for pool \"%s\"."
 msgstr "请为 \"%s\".地址池至少输入一个地址范围."
 
-#: ../lib/modules/customFields.inc:4015 ../lib/modules/windowsUser.inc:2942
+#: ../lib/modules/customFields.inc:4022 ../lib/modules/windowsUser.inc:2942
 #: ../lib/modules/windowsUser.inc:2951 ../lib/modules/windowsUser.inc:2972
 #: ../lib/modules/windowsUser.inc:2983
 msgid "Please enter either yes or no."
@@ -11516,7 +11536,7 @@ msgstr ""
 msgid "Please enter the account context."
 msgstr "请输入账号的背景."
 
-#: ../lib/modules.inc:1024
+#: ../lib/modules.inc:1026
 msgid "Please enter the account information on the other pages first."
 msgstr "请先在另一个页面输入帐号信息."
 
@@ -11612,7 +11632,7 @@ msgstr "请输入扩展的名字."
 msgid "Please enter the group name."
 msgstr "请输入组名."
 
-#: ../lib/modules/windowsHost.inc:84 ../lib/modules/asteriskAccount.inc:568
+#: ../lib/modules/windowsHost.inc:85 ../lib/modules/asteriskAccount.inc:568
 msgid "Please enter the host name."
 msgstr "请输入主机名."
 
@@ -11772,7 +11792,7 @@ msgstr ""
 "href=\"%s\">看这里</a>."
 
 #: ../templates/lists/changePassword.php:435
-#: ../lib/modules/customFields.inc:3549 ../lib/modules/selfRegistration.inc:676
+#: ../lib/modules/customFields.inc:3556 ../lib/modules/selfRegistration.inc:676
 #: ../lib/modules/windowsLDSUser.inc:789
 #: ../lib/modules/simpleSecurityObject.inc:40
 #: ../lib/modules/sambaSamAccount.inc:125 ../lib/modules/posixAccount.inc:119
@@ -11883,7 +11903,7 @@ msgstr "请提供 DER 或 PEM 格式的文件。"
 msgid "Please provide a file to upload."
 msgstr "请提供上传的文件。"
 
-#: ../lib/2factor.inc:922
+#: ../lib/2factor.inc:955
 msgid "Please register a security device."
 msgstr "请注册一个安全设备。"
 
@@ -11958,7 +11978,7 @@ msgid ""
 "be logged."
 msgstr "请选择日志等级,在此等级以下的日志不会被记录."
 
-#: ../lib/modules/windowsUser.inc:4852
+#: ../lib/modules/windowsUser.inc:4883
 msgid "Please set a email text."
 msgstr "请设置一个邮件文本。"
 
@@ -11970,7 +11990,7 @@ msgstr "请为账号类型设置一个唯一的标签."
 msgid "Please set the voicemail password with \"Set password\" before saving."
 msgstr "在保存前请设置语音邮件的密码."
 
-#: ../lib/modules.inc:974
+#: ../lib/modules.inc:976
 #, php-format
 msgid "Please set up all required attributes on page: %s"
 msgstr "请在页面%s上输入必须的属性"
@@ -12101,8 +12121,8 @@ msgstr "可能的通配符是: \"*\" = 任意字符, \"^\" = 行的开头, \"$\"
 #: ../lib/modules/windowsUser.inc:210 ../lib/modules/windowsUser.inc:552
 #: ../lib/modules/windowsUser.inc:857 ../lib/modules/windowsUser.inc:1042
 #: ../lib/modules/windowsUser.inc:1141 ../lib/modules/windowsUser.inc:1357
-#: ../lib/modules/windowsUser.inc:3253 ../lib/modules/windowsUser.inc:3473
-#: ../lib/modules/windowsUser.inc:4145
+#: ../lib/modules/windowsUser.inc:3253 ../lib/modules/windowsUser.inc:3483
+#: ../lib/modules/windowsUser.inc:4155
 msgid "Post office box"
 msgstr "邮政信箱"
 
@@ -12133,8 +12153,8 @@ msgstr "邮政地址,城市"
 #: ../lib/modules/windowsUser.inc:560 ../lib/modules/windowsUser.inc:860
 #: ../lib/modules/windowsUser.inc:1039 ../lib/modules/windowsUser.inc:1142
 #: ../lib/modules/windowsUser.inc:1204 ../lib/modules/windowsUser.inc:1360
-#: ../lib/modules/windowsUser.inc:3252 ../lib/modules/windowsUser.inc:3474
-#: ../lib/modules/windowsUser.inc:4146
+#: ../lib/modules/windowsUser.inc:3252 ../lib/modules/windowsUser.inc:3484
+#: ../lib/modules/windowsUser.inc:4156
 msgid "Postal code"
 msgstr "邮政编码"
 
@@ -12203,8 +12223,8 @@ msgstr "主要联系"
 #: ../lib/modules/posixAccount.inc:244 ../lib/modules/posixAccount.inc:308
 #: ../lib/modules/posixAccount.inc:325 ../lib/modules/posixAccount.inc:371
 #: ../lib/modules/posixAccount.inc:445 ../lib/modules/posixAccount.inc:483
-#: ../lib/modules/posixAccount.inc:1815 ../lib/modules/posixAccount.inc:2139
-#: ../lib/modules/posixAccount.inc:2181 ../lib/modules/posixAccount.inc:2280
+#: ../lib/modules/posixAccount.inc:1815 ../lib/modules/posixAccount.inc:2142
+#: ../lib/modules/posixAccount.inc:2184 ../lib/modules/posixAccount.inc:2283
 msgid "Primary group"
 msgstr "主要组"
 
@@ -12300,7 +12320,7 @@ msgstr "优先级"
 msgid "Profile"
 msgstr "配置"
 
-#: ../lib/modules.inc:1032
+#: ../lib/modules.inc:1034
 #, php-format
 msgid "Profile \"%s\" loaded."
 msgstr "配置文件\"%s\"已调入."
@@ -12377,7 +12397,7 @@ msgstr "配置文件密码不同或为空!"
 #: ../lib/modules/windowsUser.inc:808 ../lib/modules/windowsUser.inc:881
 #: ../lib/modules/windowsUser.inc:1006 ../lib/modules/windowsUser.inc:1214
 #: ../lib/modules/windowsUser.inc:1535 ../lib/modules/windowsUser.inc:3301
-#: ../lib/modules/windowsUser.inc:4138
+#: ../lib/modules/windowsUser.inc:4148
 msgid "Profile path"
 msgstr "配置文件路径"
 
@@ -12424,8 +12444,8 @@ msgstr "代理URL"
 #: ../lib/modules/windowsLDSUser.inc:2201 ../lib/modules/windowsUser.inc:415
 #: ../lib/modules/windowsUser.inc:419 ../lib/modules/windowsUser.inc:640
 #: ../lib/modules/windowsUser.inc:1063 ../lib/modules/windowsUser.inc:1396
-#: ../lib/modules/windowsUser.inc:3264 ../lib/modules/windowsUser.inc:3494
-#: ../lib/modules/windowsUser.inc:4114
+#: ../lib/modules/windowsUser.inc:3264 ../lib/modules/windowsUser.inc:3504
+#: ../lib/modules/windowsUser.inc:4124
 msgid "Proxy-Addresses"
 msgstr "代理地址"
 
@@ -12493,7 +12513,7 @@ msgstr "Qmail"
 msgid "Qualify"
 msgstr "合格"
 
-#: ../lib/modules/windowsUser.inc:4808
+#: ../lib/modules/windowsUser.inc:4839
 msgid "Quarterly"
 msgstr "每季度"
 
@@ -12557,7 +12577,7 @@ msgstr "%s 在 %s 的硬盘配额"
 #: ../lib/modules/kopanoUser.inc:123 ../lib/modules/kopanoUser.inc:257
 #: ../lib/modules/kopanoUser.inc:380 ../lib/modules/kopanoUser.inc:440
 #: ../lib/modules/kopanoUser.inc:529 ../lib/modules/kopanoUser.inc:1205
-#: ../lib/modules/kopanoUser.inc:1289 ../lib/modules/kopanoUser.inc:1770
+#: ../lib/modules/kopanoUser.inc:1289 ../lib/modules/kopanoUser.inc:1772
 msgid "Quota hard limit"
 msgstr "硬限额"
 
@@ -12573,7 +12593,7 @@ msgstr "限额(kB)"
 #: ../lib/modules/kopanoUser.inc:111 ../lib/modules/kopanoUser.inc:231
 #: ../lib/modules/kopanoUser.inc:371 ../lib/modules/kopanoUser.inc:515
 #: ../lib/modules/kopanoUser.inc:1216 ../lib/modules/kopanoUser.inc:1280
-#: ../lib/modules/kopanoUser.inc:1767
+#: ../lib/modules/kopanoUser.inc:1769
 msgid "Quota override"
 msgstr "限制覆盖"
 
@@ -12587,22 +12607,22 @@ msgstr "限制大小"
 #: ../lib/modules/kopanoUser.inc:119 ../lib/modules/kopanoUser.inc:249
 #: ../lib/modules/kopanoUser.inc:377 ../lib/modules/kopanoUser.inc:438
 #: ../lib/modules/kopanoUser.inc:524 ../lib/modules/kopanoUser.inc:1204
-#: ../lib/modules/kopanoUser.inc:1286 ../lib/modules/kopanoUser.inc:1769
+#: ../lib/modules/kopanoUser.inc:1286 ../lib/modules/kopanoUser.inc:1771
 msgid "Quota soft limit"
 msgstr "软限额"
 
 #: ../lib/modules/kopanoUser.inc:115 ../lib/modules/kopanoUser.inc:241
 #: ../lib/modules/kopanoUser.inc:374 ../lib/modules/kopanoUser.inc:436
 #: ../lib/modules/kopanoUser.inc:519 ../lib/modules/kopanoUser.inc:1203
-#: ../lib/modules/kopanoUser.inc:1283 ../lib/modules/kopanoUser.inc:1768
+#: ../lib/modules/kopanoUser.inc:1283 ../lib/modules/kopanoUser.inc:1770
 msgid "Quota warning limit"
 msgstr "限制告警点"
 
 #: ../templates/upload/masscreate.php:356
 #: ../templates/profedit/profilepage.php:228 ../lib/modules/dynamicList.inc:60
 #: ../lib/modules/dynamicList.inc:247 ../lib/modules/selfRegistration.inc:110
-#: ../lib/modules/selfRegistration.inc:224 ../lib/modules.inc:1100
-#: ../lib/treeview.inc:1142 ../help/help.inc:260 ../help/help.inc:278
+#: ../lib/modules/selfRegistration.inc:224 ../lib/modules.inc:1109
+#: ../lib/treeview.inc:1168 ../help/help.inc:260 ../help/help.inc:278
 msgid "RDN identifier"
 msgstr "RDN标志"
 
@@ -12636,7 +12656,7 @@ msgstr "RTP保持超时"
 msgid "RTP timeout"
 msgstr "RTP超时"
 
-#: ../lib/modules/customFields.inc:4044
+#: ../lib/modules/customFields.inc:4051
 msgid "Radio buttons"
 msgstr "单选按钮"
 
@@ -12664,7 +12684,7 @@ msgid "Read"
 msgstr "读"
 
 #: ../templates/config/conftypes.php:272 ../templates/config/confmain.php:230
-#: ../lib/modules/customFields.inc:122 ../lib/modules/customFields.inc:2244
+#: ../lib/modules/customFields.inc:122 ../lib/modules/customFields.inc:2251
 #: ../help/help.inc:203
 msgid "Read-only"
 msgstr "只读"
@@ -12740,11 +12760,11 @@ msgstr "记录"
 
 #: ../templates/config/profmanage.php:233
 #: ../templates/config/profmanage.php:294
-#: ../templates/config/mainmanage.php:660 ../templates/config/confmain.php:580
+#: ../templates/config/mainmanage.php:665 ../templates/config/confmain.php:580
 #: ../lib/modules/selfRegistration.inc:514
 #: ../lib/modules/simpleSecurityObject.inc:459
-#: ../lib/modules/sambaSamAccount.inc:2389 ../lib/modules/posixAccount.inc:3350
-#: ../lib/modules/windowsUser.inc:3453
+#: ../lib/modules/sambaSamAccount.inc:2389 ../lib/modules/posixAccount.inc:3358
+#: ../lib/modules/windowsUser.inc:3463
 msgid "Reenter password"
 msgstr "再次输入密码"
 
@@ -12762,7 +12782,7 @@ msgid "Referrals"
 msgstr "转交"
 
 #: ../templates/tools/treeView.php:174 ../lib/modules/asteriskExtension.inc:463
-#: ../lib/lists.inc:952
+#: ../lib/lists.inc:1019
 msgid "Refresh"
 msgstr "刷新"
 
@@ -12782,7 +12802,7 @@ msgstr "注册新帐号"
 msgid "Register new device"
 msgstr "注册新设备"
 
-#: ../lib/2factor.inc:932
+#: ../lib/2factor.inc:965
 msgid "Register new key"
 msgstr "注册新密钥"
 
@@ -12803,7 +12823,7 @@ msgstr "注册地址"
 msgid "Registered address, city"
 msgstr "注册地址,城市"
 
-#: ../templates/misc/ajax.php:291 ../templates/tools/webauthn.php:104
+#: ../templates/misc/ajax.php:297 ../templates/tools/webauthn.php:104
 #: ../lib/modules/webauthn.inc:154
 msgid "Registration"
 msgstr "注册"
@@ -12838,7 +12858,7 @@ msgstr "注册扩展"
 msgid "Registration server"
 msgstr "注册服务器"
 
-#: ../lib/modules/customFields.inc:2507
+#: ../lib/modules/customFields.inc:2514
 msgid "Regular expression"
 msgstr "正则表达式"
 
@@ -12846,8 +12866,8 @@ msgstr "正则表达式"
 msgid "Reject if conflicts"
 msgstr "如果冲突会被拒绝"
 
-#: ../templates/selfService/selfService2Factor.php:226
-#: ../templates/login2Factor.php:218 ../help/help.inc:392
+#: ../templates/selfService/selfService2Factor.php:228
+#: ../templates/login2Factor.php:219 ../help/help.inc:392
 msgid "Remember device"
 msgstr "记住设备"
 
@@ -12869,11 +12889,11 @@ msgid "Remote server"
 msgstr "远程服务器"
 
 #: ../templates/pdfedit/pdfpage.php:281 ../templates/pdfedit/pdfpage.php:356
-#: ../lib/modules/windowsHost.inc:217 ../lib/modules/heimdalKerberos.inc:629
+#: ../lib/modules/windowsHost.inc:218 ../lib/modules/heimdalKerberos.inc:629
 #: ../lib/modules/locking389ds.inc:208 ../lib/modules/mitKerberos.inc:789
 #: ../lib/modules/qmailUser.inc:738 ../lib/modules/windowsLDSGroup.inc:185
 #: ../lib/modules/windowsLDSUser.inc:1439 ../lib/modules/windowsGroup.inc:372
-#: ../lib/modules/freeRadius.inc:581 ../lib/modules/kolabUser.inc:724
+#: ../lib/modules/freeRadius.inc:581 ../lib/modules/kolabUser.inc:725
 #: ../lib/modules/sambaSamAccount.inc:1513 ../lib/modules/shadowAccount.inc:524
 #: ../lib/modules/shadowAccount.inc:573 ../lib/modules/windowsUser.inc:2052
 #: ../lib/modules/windowsUser.inc:2516
@@ -12938,7 +12958,7 @@ msgstr "删除 Shadow 帐号扩展"
 msgid "Remove Simple Security Object extension"
 msgstr "移除简单安全对象扩展"
 
-#: ../lib/modules/posixGroup.inc:265 ../lib/modules/posixAccount.inc:1888
+#: ../lib/modules/posixGroup.inc:265 ../lib/modules/posixAccount.inc:1891
 msgid "Remove Unix extension"
 msgstr "删除 Unix 扩展"
 
@@ -12946,20 +12966,20 @@ msgstr "删除 Unix 扩展"
 msgid "Remove YubiKey extension"
 msgstr "删除 YubiKey 扩展"
 
-#: ../templates/misc/ajax.php:301 ../templates/tools/webauthn.php:115
+#: ../templates/misc/ajax.php:307 ../templates/tools/webauthn.php:115
 #: ../lib/modules/webauthn.inc:169
 msgid "Remove device"
 msgstr "删除设备"
 
-#: ../lib/modules/customFields.inc:658 ../lib/modules/openldapTotp.inc:134
+#: ../lib/modules/customFields.inc:665 ../lib/modules/openldapTotp.inc:134
 msgid "Remove extension"
 msgstr "删除扩展"
 
-#: ../lib/modules/posixAccount.inc:4315
+#: ../lib/modules/posixAccount.inc:4323
 msgid "Remove from all Unix groups"
 msgstr "从所有的Unix组中删除"
 
-#: ../lib/modules/posixAccount.inc:4318
+#: ../lib/modules/posixAccount.inc:4326
 msgid "Remove from all group of (unique) names"
 msgstr "从所有的(唯一)名字组中删除"
 
@@ -12973,7 +12993,7 @@ msgstr "删除邮件路由扩展"
 
 #: ../lib/modules/simpleSecurityObject.inc:294
 #: ../lib/modules/posixGroup.inc:228 ../lib/modules/inetOrgPerson.inc:1600
-#: ../lib/modules/posixAccount.inc:1882
+#: ../lib/modules/posixAccount.inc:1885
 msgid "Remove password"
 msgstr "删除密码"
 
@@ -12985,8 +13005,8 @@ msgstr "删除密码自助复位扩展"
 msgid "Remove qmail extension"
 msgstr "删除Qmail扩展"
 
-#: ../lib/modules/device.inc:291 ../lib/modules/groupOfNames.inc:441
-#: ../lib/modules/groupOfNames.inc:591 ../lib/modules/groupOfNames.inc:752
+#: ../lib/modules/device.inc:291 ../lib/modules/groupOfNames.inc:443
+#: ../lib/modules/groupOfNames.inc:595 ../lib/modules/groupOfNames.inc:756
 #: ../lib/modules/kopanoContact.inc:402 ../lib/modules/kopanoGroup.inc:416
 #: ../lib/modules/kopanoUser.inc:889 ../lib/modules/organizationalRole.inc:342
 #: ../lib/modules/qmailGroup.inc:686 ../lib/modules/windowsLDSGroup.inc:463
@@ -13049,7 +13069,7 @@ msgstr "可重建寿命必须是数字."
 
 #: ../templates/lists/changePassword.php:305
 #: ../templates/changePassword.php:133
-#: ../lib/modules/passwordSelfReset.inc:1329 ../lib/modules.inc:1148
+#: ../lib/modules/passwordSelfReset.inc:1329 ../lib/modules.inc:1154
 msgid "Repeat password"
 msgstr "确认密码"
 
@@ -13061,8 +13081,8 @@ msgstr "替换已存在的组"
 msgid "Replaced $user or $group in homedir."
 msgstr "在homedir中已更改$user和$group."
 
-#: ../templates/config/confmain.php:377 ../lib/modules/windowsUser.inc:4800
-#: ../lib/modules/windowsUser.inc:4835 ../lib/passwordExpirationJob.inc:87
+#: ../templates/config/confmain.php:377 ../lib/modules/windowsUser.inc:4831
+#: ../lib/modules/windowsUser.inc:4866 ../lib/passwordExpirationJob.inc:87
 #: ../lib/passwordExpirationJob.inc:130 ../help/help.inc:379
 #: ../help/help.inc:427
 msgid "Reply-to address"
@@ -13073,23 +13093,23 @@ msgid "Reply-to address for password mails is invalid."
 msgstr "密码邮件的回复地址非法."
 
 #: ../lib/modules/ppolicy.inc:131 ../lib/modules/ppolicy.inc:161
-#: ../lib/modules/ppolicy.inc:285 ../lib/modules/ppolicy.inc:508
-#: ../lib/modules/ppolicy.inc:539
+#: ../lib/modules/ppolicy.inc:299 ../lib/modules/ppolicy.inc:522
+#: ../lib/modules/ppolicy.inc:553
 msgid "Require password change on first login"
 msgstr "第一次登录时需要修改密码"
 
 #: ../lib/modules/windowsUser.inc:252 ../lib/modules/windowsUser.inc:840
 #: ../lib/modules/windowsUser.inc:1003 ../lib/modules/windowsUser.inc:1481
-#: ../lib/modules/windowsUser.inc:3295 ../lib/modules/windowsUser.inc:4156
+#: ../lib/modules/windowsUser.inc:3295 ../lib/modules/windowsUser.inc:4166
 msgid "Require smartcard"
 msgstr "需要智能卡"
 
-#: ../lib/modules/customFields.inc:126 ../lib/modules/customFields.inc:2580
-#: ../lib/modules/customFields.inc:5538
+#: ../lib/modules/customFields.inc:126 ../lib/modules/customFields.inc:2587
+#: ../lib/modules/customFields.inc:5572
 msgid "Required"
 msgstr "必选"
 
-#: ../templates/schema/schema.php:259 ../lib/treeview.inc:1144
+#: ../templates/schema/schema.php:259 ../lib/treeview.inc:1170
 msgid "Required attributes"
 msgstr "必选属性"
 
@@ -13109,7 +13129,7 @@ msgstr "需要预认证"
 msgid "Reset"
 msgstr "复位"
 
-#: ../lib/modules.inc:1380
+#: ../lib/modules.inc:1383
 msgid "Reset changes"
 msgstr "复位设定"
 
@@ -13235,7 +13255,7 @@ msgstr "邮寄地址"
 msgid "Routing address (read-only)"
 msgstr "路由地址（只读）"
 
-#: ../lib/modules/customFields.inc:170 ../lib/modules/customFields.inc:3673
+#: ../lib/modules/customFields.inc:170 ../lib/modules/customFields.inc:3680
 msgid "Rows"
 msgstr "行"
 
@@ -13399,14 +13419,14 @@ msgstr "Samba 3 域SID非法!"
 msgid "Samba 3 domain entries"
 msgstr "Samba 3 域条目"
 
-#: ../lib/modules/posixGroup.inc:552 ../lib/modules/posixAccount.inc:2321
+#: ../lib/modules/posixGroup.inc:552 ../lib/modules/posixAccount.inc:2324
 msgid "Samba ID pool"
 msgstr "Samba ID 池"
 
 #: ../lib/modules/posixGroup.inc:466 ../lib/modules/posixGroup.inc:577
 #: ../lib/modules/posixGroup.inc:718 ../lib/modules/posixAccount.inc:141
-#: ../lib/modules/posixAccount.inc:412 ../lib/modules/posixAccount.inc:2368
-#: ../lib/modules/posixAccount.inc:2439
+#: ../lib/modules/posixAccount.inc:412 ../lib/modules/posixAccount.inc:2371
+#: ../lib/modules/posixAccount.inc:2442
 msgid "Samba ID pool DN"
 msgstr "Samba ID 池的DN"
 
@@ -13470,14 +13490,14 @@ msgstr "星期六"
 #: ../templates/config/jobs.php:316 ../templates/config/confmodules.php:150
 #: ../templates/config/conftypes.php:317
 #: ../templates/config/moduleSettings.php:184
-#: ../templates/config/mainmanage.php:669 ../templates/config/confmain.php:594
+#: ../templates/config/mainmanage.php:674 ../templates/config/confmain.php:594
 #: ../templates/pdfedit/pdfpage.php:459
 #: ../templates/profedit/profilepage.php:254
 #: ../templates/selfService/selfServiceMain.php:444
 #: ../templates/selfService/adminMain.php:931
-#: ../lib/modules/customFields.inc:4884 ../lib/modules/webauthn.inc:153
-#: ../lib/modules/inetOrgPerson.inc:3295 ../lib/modules.inc:1358
-#: ../lib/treeview.inc:432
+#: ../lib/modules/customFields.inc:4918 ../lib/modules/webauthn.inc:153
+#: ../lib/modules/inetOrgPerson.inc:3295 ../lib/modules.inc:1362
+#: ../lib/treeview.inc:435
 msgid "Save"
 msgstr "保存"
 
@@ -13532,12 +13552,12 @@ msgid "Script servers"
 msgstr "脚本服务器"
 
 #: ../templates/tools/serverInfo.php:272 ../templates/tools/serverInfo.php:348
-#: ../templates/tools/treeView.php:182 ../templates/config/mainmanage.php:640
-#: ../lib/treeview.inc:1348 ../lib/treeview.inc:1375
+#: ../templates/tools/treeView.php:182 ../templates/config/mainmanage.php:645
+#: ../lib/treeview.inc:1374 ../lib/treeview.inc:1401
 msgid "Search"
 msgstr "搜索"
 
-#: ../lib/treeview.inc:1439
+#: ../lib/treeview.inc:1465
 msgid "Search Results"
 msgstr "搜索结果"
 
@@ -13549,12 +13569,12 @@ msgid "Search domains"
 msgstr "搜索域"
 
 #: ../templates/tools/importexport.php:286 ../lib/export.inc:257
-#: ../lib/treeview.inc:1360 ../lib/treeview.inc:1443 ../help/help.inc:414
+#: ../lib/treeview.inc:1386 ../lib/treeview.inc:1469 ../help/help.inc:414
 msgid "Search filter"
 msgstr "搜索过滤器"
 
 #: ../templates/tools/importexport.php:282 ../lib/export.inc:256
-#: ../lib/treeview.inc:1356
+#: ../lib/treeview.inc:1382
 msgid "Search scope"
 msgstr "搜索范围"
 
@@ -13600,12 +13620,12 @@ msgstr "安全设定"
 #: ../templates/help.php:102 ../lib/modules/groupOfNames.inc:105
 #: ../lib/modules/groupOfNames.inc:109 ../lib/modules/groupOfNames.inc:163
 #: ../lib/modules/groupOfNames.inc:197 ../lib/modules/groupOfNames.inc:260
-#: ../lib/modules/groupOfNames.inc:714 ../lib/modules/groupOfNames.inc:962
-#: ../lib/modules/groupOfNames.inc:1283 ../lib/modules/groupOfNames.inc:1299
+#: ../lib/modules/groupOfNames.inc:718 ../lib/modules/groupOfNames.inc:966
+#: ../lib/modules/groupOfNames.inc:1287 ../lib/modules/groupOfNames.inc:1303
 msgid "See also"
 msgstr "同时参考"
 
-#: ../lib/modules/groupOfNames.inc:1300
+#: ../lib/modules/groupOfNames.inc:1304
 msgid "See also count"
 msgstr "另见计数"
 
@@ -13617,7 +13637,7 @@ msgstr "参考手册来解决本问题."
 msgid "Select host"
 msgstr "选择主机"
 
-#: ../lib/modules/customFields.inc:4284
+#: ../lib/modules/customFields.inc:4291
 msgid "Select list"
 msgstr "选项列表"
 
@@ -13637,7 +13657,7 @@ msgstr "选择用户"
 #: ../lib/modules/nisnetgroup.inc:413 ../lib/modules/groupOfNamesUser.inc:182
 #: ../lib/modules/windowsLDSGroup.inc:295
 #: ../lib/modules/windowsLDSUser.inc:1275 ../lib/modules/windowsGroup.inc:542
-#: ../lib/modules/posixAccount.inc:1980 ../lib/modules/posixAccount.inc:2010
+#: ../lib/modules/posixAccount.inc:1983 ../lib/modules/posixAccount.inc:2013
 #: ../lib/modules/windowsUser.inc:2177
 msgid "Selected groups"
 msgstr "已选择的组"
@@ -13701,7 +13721,7 @@ msgstr "通过邮件发送密码"
 
 #: ../templates/lists/changePassword.php:265
 #: ../templates/lists/changePassword.php:310
-#: ../templates/config/confmain.php:362 ../lib/modules.inc:1173
+#: ../templates/config/confmain.php:362 ../lib/modules.inc:1179
 #: ../help/help.inc:290
 msgid "Send via mail"
 msgstr "通过邮件发送"
@@ -13753,8 +13773,8 @@ msgid ""
 msgstr "把密码通过邮件发送给用户。请编辑LAM服务器配置文件来设定邮件的配置."
 
 #: ../templates/config/mainmanage.php:502
-#: ../templates/selfService/selfService2Factor.php:205
-#: ../templates/login2Factor.php:195 ../lib/modules/bindDLZ.inc:238
+#: ../templates/selfService/selfService2Factor.php:207
+#: ../templates/login2Factor.php:196 ../lib/modules/bindDLZ.inc:238
 #: ../lib/modules/bindDLZ.inc:414 ../lib/modules/bindDLZ.inc:504
 #: ../lib/modules/bindDLZ.inc:619 ../lib/modules/bindDLZ.inc:1300
 #: ../lib/modules/bindDLZ.inc:1891 ../lib/modules/device.inc:77
@@ -13868,11 +13888,11 @@ msgstr "同时也为Shadow设置"
 msgid "Set also for Windows"
 msgstr "同时也为Windows设置"
 
-#: ../lib/modules.inc:1139 ../lib/modules.inc:1365
+#: ../lib/modules.inc:1148 ../lib/modules.inc:1368
 msgid "Set password"
 msgstr "设置密码"
 
-#: ../lib/modules/posixAccount.inc:350 ../lib/modules/posixAccount.inc:2472
+#: ../lib/modules/posixAccount.inc:350 ../lib/modules/posixAccount.inc:2475
 msgid "Set primary group as memberUid"
 msgstr "为主组设置memberUid"
 
@@ -13882,7 +13902,7 @@ msgstr "为主组设置memberUid"
 msgid "Set profile password"
 msgstr "设置文件密码"
 
-#: ../lib/modules.inc:1219
+#: ../lib/modules.inc:1223
 msgid "Set random password"
 msgstr "设置随机密码"
 
@@ -13942,7 +13962,7 @@ msgstr "设置邮件服务器的优先级,越小的值具备更高的优先级."
 msgid "Sets this account type to read-only."
 msgstr "将此账号类型设为只读。"
 
-#: ../lib/modules.inc:1032
+#: ../lib/modules.inc:1034
 msgid "Setting saved"
 msgstr "设置已保存"
 
@@ -13987,7 +14007,7 @@ msgstr "共享邮件文件夹"
 
 #: ../lib/modules/kopanoUser.inc:135 ../lib/modules/kopanoUser.inc:302
 #: ../lib/modules/kopanoUser.inc:386 ../lib/modules/kopanoUser.inc:592
-#: ../lib/modules/kopanoUser.inc:1242 ../lib/modules/kopanoUser.inc:1772
+#: ../lib/modules/kopanoUser.inc:1242 ../lib/modules/kopanoUser.inc:1774
 msgid "Shared store only"
 msgstr "仅共享存储"
 
@@ -14003,7 +14023,7 @@ msgstr "增加一个固定IP地址到DNS服务器吗?"
 msgid "Show LDIF file"
 msgstr "显示LDIF文件"
 
-#: ../lib/types/user.inc:542
+#: ../lib/lists.inc:1393
 msgid "Show account status"
 msgstr "显示帐号状态"
 
@@ -14013,7 +14033,7 @@ msgstr "显示帐号状态"
 msgid "Show effective members"
 msgstr "显示受影响的用户"
 
-#: ../lib/treeview.inc:443
+#: ../lib/treeview.inc:446
 msgid "Show internal attributes"
 msgstr "显示内部属性"
 
@@ -14051,7 +14071,7 @@ msgstr "大小"
 msgid "Size limit in bytes for a single mail. Larger mails will be bounced."
 msgstr "单封邮件的大小限额(字节数).更大的邮件会被退回."
 
-#: ../lib/2factor.inc:936
+#: ../lib/2factor.inc:969
 msgid "Skip"
 msgstr "跳过"
 
@@ -14091,7 +14111,7 @@ msgstr ""
 "有些IMAP服务器在存储邮件时使用前缀(比如:在Cyrus中\"user\"的邮箱是\"user."
 "username\")."
 
-#: ../lib/modules.inc:973
+#: ../lib/modules.inc:975
 msgid "Some required information is missing"
 msgstr "缺少一些必要的信息"
 
@@ -14105,7 +14125,7 @@ msgstr "对不起，帮助标识'%s'不适用于模块'%s'。"
 msgid "Sorry this help number ({bold}%s{endbold}) is not available."
 msgstr "对不起,本帮助号({bold}%s{endbold})并不存在."
 
-#: ../lib/lists.inc:426
+#: ../lib/lists.inc:447
 msgid "Sort sequence"
 msgstr "排序顺序"
 
@@ -14359,8 +14379,8 @@ msgstr "开始时间"
 #: ../lib/modules/windowsUser.inc:218 ../lib/modules/windowsUser.inc:576
 #: ../lib/modules/windowsUser.inc:866 ../lib/modules/windowsUser.inc:1045
 #: ../lib/modules/windowsUser.inc:1139 ../lib/modules/windowsUser.inc:1366
-#: ../lib/modules/windowsUser.inc:3255 ../lib/modules/windowsUser.inc:3471
-#: ../lib/modules/windowsUser.inc:4148
+#: ../lib/modules/windowsUser.inc:3255 ../lib/modules/windowsUser.inc:3481
+#: ../lib/modules/windowsUser.inc:4158
 msgid "State"
 msgstr "地点"
 
@@ -14386,12 +14406,12 @@ msgstr "Steve"
 #: ../lib/modules/pykotaUser.inc:211 ../lib/modules/asteriskVoicemail.inc:181
 #: ../lib/modules/windowsLDSUser.inc:369 ../lib/modules/windowsLDSUser.inc:375
 #: ../lib/modules/sambaSamAccount.inc:449 ../lib/modules/inetOrgPerson.inc:2291
-#: ../lib/modules/inetOrgPerson.inc:2316 ../lib/modules/posixAccount.inc:2596
+#: ../lib/modules/inetOrgPerson.inc:2316 ../lib/modules/posixAccount.inc:2599
 #: ../lib/modules/windowsUser.inc:479 ../lib/modules/windowsUser.inc:522
 msgid "Steve Miller"
 msgstr "Steve Miller"
 
-#: ../lib/modules/posixAccount.inc:2604
+#: ../lib/modules/posixAccount.inc:2607
 msgid "Steve Miller,Room 2.14,123-123-1234,123-123-1234"
 msgstr "Steve Miller,Room 2.14,123-123-1234,123-123-1234"
 
@@ -14419,7 +14439,7 @@ msgstr "可以将密码存放在服务器配置文件中,但不推荐这么做."
 #: ../lib/modules/windowsUser.inc:544 ../lib/modules/windowsUser.inc:854
 #: ../lib/modules/windowsUser.inc:1048 ../lib/modules/windowsUser.inc:1138
 #: ../lib/modules/windowsUser.inc:1354 ../lib/modules/windowsUser.inc:3256
-#: ../lib/modules/windowsUser.inc:3470 ../lib/modules/windowsUser.inc:4144
+#: ../lib/modules/windowsUser.inc:3480 ../lib/modules/windowsUser.inc:4154
 msgid "Street"
 msgstr "街道"
 
@@ -14427,7 +14447,7 @@ msgstr "街道"
 msgid "Structure name"
 msgstr "结构名"
 
-#: ../templates/tools/importexport.php:280 ../lib/treeview.inc:1353
+#: ../templates/tools/importexport.php:280 ../lib/treeview.inc:1379
 msgid "Sub (entire subtree)"
 msgstr "Sub (条目的子树)"
 
@@ -14447,7 +14467,7 @@ msgstr "分组"
 #: ../lib/modules/selfRegistration.inc:259
 #: ../lib/modules/selfRegistration.inc:281
 #: ../lib/modules/selfRegistration.inc:388
-#: ../lib/modules/selfRegistration.inc:403 ../lib/modules/windowsUser.inc:4803
+#: ../lib/modules/selfRegistration.inc:403 ../lib/modules/windowsUser.inc:4834
 #: ../lib/passwordExpirationJob.inc:90 ../help/help.inc:370
 #: ../help/help.inc:431
 msgid "Subject"
@@ -14456,8 +14476,8 @@ msgstr "标题"
 #: ../templates/tools/importexport.php:170
 #: ../templates/tools/importexport.php:310 ../templates/changePassword.php:138
 #: ../templates/config/confImportExport.php:284
-#: ../templates/selfService/selfService2Factor.php:232
-#: ../templates/login2Factor.php:224
+#: ../templates/selfService/selfService2Factor.php:234
+#: ../templates/login2Factor.php:225
 msgid "Submit"
 msgstr "提交"
 
@@ -14505,7 +14525,7 @@ msgid "Sudo roles with higher order numbers are used if multiple roles match."
 msgstr "如果多角色匹配，就使用更高排序的Sudo角色."
 
 #: ../lib/modules/nisMailAliasUser.inc:92
-#: ../lib/modules/nisMailAliasUser.inc:355 ../lib/modules.inc:1092
+#: ../lib/modules/nisMailAliasUser.inc:355 ../lib/modules.inc:1101
 msgid "Suffix"
 msgstr "后缀"
 
@@ -14513,8 +14533,8 @@ msgstr "后缀"
 msgid "Suffix for GID/group name check"
 msgstr "GID/组名的后缀检查"
 
-#: ../lib/modules/posixAccount.inc:399 ../lib/modules/posixAccount.inc:2383
-#: ../lib/modules/posixAccount.inc:2454
+#: ../lib/modules/posixAccount.inc:399 ../lib/modules/posixAccount.inc:2386
+#: ../lib/modules/posixAccount.inc:2457
 msgid "Suffix for UID/user name check"
 msgstr "UID/用户名的后缀检查"
 
@@ -14571,15 +14591,15 @@ msgstr "用windows密码同步Unix密码"
 msgid "Sync Unix to Windows"
 msgstr "把Unix 密码同步到 Windows"
 
-#: ../lib/modules/posixAccount.inc:2027
+#: ../lib/modules/posixAccount.inc:2030
 msgid "Sync Unix to group of names"
 msgstr "将 Unix 同步到名称组"
 
-#: ../lib/modules/posixAccount.inc:2039
+#: ../lib/modules/posixAccount.inc:2042
 msgid "Sync Windows to Unix"
 msgstr "同步Windows 到 Unix"
 
-#: ../lib/modules/customFields.inc:1375
+#: ../lib/modules/customFields.inc:1382
 msgid "Sync fields with page layout"
 msgstr "页面布局的同步域"
 
@@ -14592,7 +14612,7 @@ msgstr "从%s同步"
 msgid "Sync from other user"
 msgstr "从其它同步"
 
-#: ../lib/modules/posixAccount.inc:2030
+#: ../lib/modules/posixAccount.inc:2033
 msgid "Sync group of names to Unix"
 msgstr "将名称组同步到Unix"
 
@@ -14600,9 +14620,9 @@ msgstr "将名称组同步到Unix"
 msgid "Sync group of names to Windows"
 msgstr "把组名同步到 Windows"
 
-#: ../lib/modules/groupOfNamesUser.inc:276 ../lib/modules/posixAccount.inc:2022
-#: ../lib/modules/posixAccount.inc:2398 ../lib/modules/windowsUser.inc:2200
-#: ../lib/modules/windowsUser.inc:4174
+#: ../lib/modules/groupOfNamesUser.inc:276 ../lib/modules/posixAccount.inc:2025
+#: ../lib/modules/posixAccount.inc:2401 ../lib/modules/windowsUser.inc:2200
+#: ../lib/modules/windowsUser.inc:4184
 msgid "Sync groups"
 msgstr "同步组"
 
@@ -14646,7 +14666,7 @@ msgstr "TXT记录"
 msgid "TXT records"
 msgstr "TXT记录"
 
-#: ../lib/treeview.inc:1369
+#: ../lib/treeview.inc:1395
 msgid "Table"
 msgstr "表格"
 
@@ -14666,8 +14686,8 @@ msgstr "目标DN"
 #: ../lib/modules/kolabSharedFolder.inc:160
 #: ../lib/modules/kolabSharedFolder.inc:205
 #: ../lib/modules/kolabSharedFolder.inc:225
-#: ../lib/modules/kolabSharedFolder.inc:241
-#: ../lib/modules/kolabSharedFolder.inc:409
+#: ../lib/modules/kolabSharedFolder.inc:240
+#: ../lib/modules/kolabSharedFolder.inc:406
 msgid "Target IMAP folder"
 msgstr "目标IMAP文件夹"
 
@@ -14684,7 +14704,7 @@ msgstr "目标服务器设置"
 msgid "Technical name"
 msgstr "技术名字"
 
-#: ../lib/types/user.inc:192 ../lib/modules/windowsLDSUser.inc:187
+#: ../lib/types/user.inc:188 ../lib/modules/windowsLDSUser.inc:187
 #: ../lib/modules/windowsLDSUser.inc:433 ../lib/modules/windowsLDSUser.inc:673
 #: ../lib/modules/windowsLDSUser.inc:769 ../lib/modules/windowsLDSUser.inc:904
 #: ../lib/modules/windowsLDSUser.inc:1852
@@ -14700,8 +14720,8 @@ msgstr "技术名字"
 #: ../lib/modules/windowsUser.inc:226 ../lib/modules/windowsUser.inc:608
 #: ../lib/modules/windowsUser.inc:1051 ../lib/modules/windowsUser.inc:1135
 #: ../lib/modules/windowsUser.inc:1190 ../lib/modules/windowsUser.inc:1399
-#: ../lib/modules/windowsUser.inc:3257 ../lib/modules/windowsUser.inc:3464
-#: ../lib/modules/windowsUser.inc:4152 ../lib/modules/windowsUser.inc:4398
+#: ../lib/modules/windowsUser.inc:3257 ../lib/modules/windowsUser.inc:3474
+#: ../lib/modules/windowsUser.inc:4162 ../lib/modules/windowsUser.inc:4408
 msgid "Telephone number"
 msgstr "电话号码"
 
@@ -14725,7 +14745,7 @@ msgstr "模板"
 msgid "Terminal server options"
 msgstr "终端服务选项"
 
-#: ../templates/config/jobs.php:217
+#: ../templates/config/jobs.php:217 ../templates/config/mainmanage.php:626
 msgid "Test settings"
 msgstr "测试设置"
 
@@ -14748,7 +14768,7 @@ msgstr "测试"
 #: ../lib/modules/selfRegistration.inc:264
 #: ../lib/modules/selfRegistration.inc:286
 #: ../lib/modules/selfRegistration.inc:392
-#: ../lib/modules/selfRegistration.inc:407 ../lib/modules/windowsUser.inc:4805
+#: ../lib/modules/selfRegistration.inc:407 ../lib/modules/windowsUser.inc:4836
 #: ../lib/passwordExpirationJob.inc:92 ../help/help.inc:372
 #: ../help/help.inc:435 ../help/help.inc:465
 msgid "Text"
@@ -14758,11 +14778,11 @@ msgstr "文本"
 msgid "Text (\"TXT\" records)"
 msgstr "文本(\"TXT\" 记录)"
 
-#: ../lib/modules/customFields.inc:3653
+#: ../lib/modules/customFields.inc:3660
 msgid "Text area"
 msgstr "文本区"
 
-#: ../lib/modules/customFields.inc:2490
+#: ../lib/modules/customFields.inc:2497
 msgid "Text field"
 msgstr "输入框"
 
@@ -14907,7 +14927,7 @@ msgstr ""
 "PDF结构定义了输出到PDF文件的信息和页面的结构.可以在PDF编辑器中管理PDF结构(在"
 "\"工具\"中)."
 
-#: ../lib/modules/selfRegistration.inc:732 ../lib/treeview.inc:1244
+#: ../lib/modules/selfRegistration.inc:732 ../lib/treeview.inc:1270
 msgid "The RDN field is empty."
 msgstr "RDN域是空的."
 
@@ -15061,11 +15081,11 @@ msgstr "删除日期不能在过去。"
 msgid "The device failed to register."
 msgstr "设备无法注册。"
 
-#: ../templates/misc/ajax.php:339 ../templates/tools/webauthn.php:185
+#: ../templates/misc/ajax.php:345 ../templates/tools/webauthn.php:185
 msgid "The device was deleted."
 msgstr "设备已删除。"
 
-#: ../templates/misc/ajax.php:342
+#: ../templates/misc/ajax.php:348
 msgid "The device was not found."
 msgstr "未发现设备。"
 
@@ -15236,7 +15256,7 @@ msgstr "新段的标题最少要有一个字符."
 msgid "The home directory will be connected under this drive letter."
 msgstr "将会从这个驱动器号上连接用户目录。"
 
-#: ../lib/modules/windowsHost.inc:96
+#: ../lib/modules/windowsHost.inc:97
 msgid "The host is managed by this contact person."
 msgstr "这台主机的管理者是这位联系人."
 
@@ -15312,7 +15332,7 @@ msgstr "这个节点的配置好的Puppet类列表(比如：ntp)."
 msgid "The list of hosts from which the user may run the commands."
 msgstr "用户可以运行命令的主机列表."
 
-#: ../lib/modules/customFields.inc:4124
+#: ../lib/modules/customFields.inc:4131
 msgid "The list of labels contains duplicates."
 msgstr "这个标签列表包含重复值."
 
@@ -15320,7 +15340,7 @@ msgstr "这个标签列表包含重复值."
 msgid "The list of users who own this sudo role and may run the commands."
 msgstr "具备sudo角色并可以运行命令的用户列表."
 
-#: ../lib/modules/customFields.inc:4121
+#: ../lib/modules/customFields.inc:4128
 msgid "The list of values contains duplicates."
 msgstr "这个值列表包含重复值."
 
@@ -15428,7 +15448,7 @@ msgstr "此打印机每项任务最大的用纸页数, 0意味着不限制."
 msgid "The minimum time \"%s\" must be a number."
 msgstr "最短时间 \"%s\"  必须是数字."
 
-#: ../lib/modules.inc:1023
+#: ../lib/modules.inc:1025
 #, php-format
 msgid "The module %s is not yet ready."
 msgstr "%s模块未准备好."
@@ -15490,7 +15510,7 @@ msgstr "网络掩码与子网掩码密切相关,LAM将会计算得出."
 msgid "The net mask is invalid."
 msgstr "子网掩码非法."
 
-#: ../lib/modules.inc:1319
+#: ../lib/modules.inc:1323
 msgid ""
 "The new password will be stored in the directory after you save this account."
 msgstr "保存帐号后新密码同时保存到目录服务器."
@@ -15526,7 +15546,7 @@ msgstr "在你的LDAP服务器中对象类%s不被支持。"
 msgid "The office name of the user (e.g. YourCompany, Human Resources)."
 msgstr "用户的办公室名(比如:某某公司,人力资源部)."
 
-#: ../templates/selfService/selfServiceMain.php:362 ../lib/modules.inc:2028
+#: ../templates/selfService/selfServiceMain.php:362 ../lib/modules.inc:2034
 msgid "The operation was stopped because of the above errors."
 msgstr "由于发生了以上错误，操作中止."
 
@@ -15632,7 +15652,7 @@ msgid ""
 "is stored in the LAM server profile."
 msgstr "IMAP管理员用户的密码.IMAP管理员用户登录名保存在LAM服务器的配置中."
 
-#: ../templates/lists/changePassword.php:518 ../lib/modules.inc:1265
+#: ../templates/lists/changePassword.php:518 ../lib/modules.inc:1269
 msgid "The password was set to:"
 msgstr "密码被设置为:"
 
@@ -15894,12 +15914,12 @@ msgid ""
 "caching DNS servers."
 msgstr "在缓冲服务器中指定一条缓冲记录可以保留的时间(秒)."
 
-#: ../lib/modules/customFields.inc:5000 ../lib/modules/customFields.inc:5086
+#: ../lib/modules/customFields.inc:5034 ../lib/modules/customFields.inc:5120
 #, php-format
 msgid "The uploaded file does not have the correct file extension (%s)."
 msgstr "上传文件没有正确的扩展名 (%s)."
 
-#: ../lib/modules/customFields.inc:4996 ../lib/modules/customFields.inc:5082
+#: ../lib/modules/customFields.inc:5030 ../lib/modules/customFields.inc:5116
 #, php-format
 msgid "The uploaded file is too large (> %s bytes)."
 msgstr "上传的文件太大了 (> %s 字节)."
@@ -16272,9 +16292,9 @@ msgstr "打开密码自助复位功能."
 msgid "This enables the self registration function."
 msgstr "打开自注册功能."
 
-#: ../templates/tools/importexport.php:432 ../lib/modules/customFields.inc:2609
-#: ../lib/modules/customFields.inc:3097 ../lib/modules/customFields.inc:5228
-#: ../lib/modules/customFields.inc:5942 ../lib/modules/device.inc:135
+#: ../templates/tools/importexport.php:432 ../lib/modules/customFields.inc:2616
+#: ../lib/modules/customFields.inc:3104 ../lib/modules/customFields.inc:5262
+#: ../lib/modules/customFields.inc:5976 ../lib/modules/device.inc:135
 #: ../lib/modules/kopanoAddressList.inc:156 ../lib/modules/nsview.inc:108
 #: ../lib/modules/nsview.inc:109 ../lib/modules/nsview.inc:110
 #: ../lib/modules/nsview.inc:111 ../lib/modules/selfRegistration.inc:385
@@ -16587,7 +16607,7 @@ msgstr "用户邮件别名."
 msgid "This is the group name which will be shown in Windows."
 msgstr "显示在Windows系统中的组名."
 
-#: ../lib/modules/windowsHost.inc:92
+#: ../lib/modules/windowsHost.inc:93
 msgid "This is the host's location (e.g. Munich, server room 3)."
 msgstr "这是主机的放置地点(比如慕尼黑,服务器室3号)."
 
@@ -16682,7 +16702,7 @@ msgid ""
 "deactivated. 0 means unlimited attempts."
 msgstr "在帐号被锁定前失败的登录次数(0-999)，0代表不限制。"
 
-#: ../lib/modules/windowsHost.inc:108
+#: ../lib/modules/windowsHost.inc:109
 msgid "This is the number of logins performed by this account."
 msgstr "本帐号登录次数。"
 
@@ -16818,12 +16838,12 @@ msgid "This is used to mark this account as resource."
 msgstr "用来标识此账号是一个资源."
 
 #: ../lib/modules/qmailUser.inc:1140 ../lib/modules/freeRadius.inc:857
-#: ../lib/modules/shadowAccount.inc:1279 ../lib/modules/windowsUser.inc:5169
+#: ../lib/modules/shadowAccount.inc:1279 ../lib/modules/windowsUser.inc:5200
 msgid "This job deletes or moves user accounts when they expire."
 msgstr "这项工作会删除或移动过期账号."
 
 #: ../lib/modules/qmailUser.inc:1209 ../lib/modules/freeRadius.inc:924
-#: ../lib/modules/shadowAccount.inc:1184 ../lib/modules/windowsUser.inc:5077
+#: ../lib/modules/shadowAccount.inc:1184 ../lib/modules/windowsUser.inc:5108
 msgid ""
 "This job sends out emails to inform your users that their account will "
 "expire soon."
@@ -16843,7 +16863,7 @@ msgstr "登录shell非法!"
 msgid "This mailbox will be created/deleted."
 msgstr "这个邮箱将会被建立或删除."
 
-#: ../lib/modules.inc:1403
+#: ../lib/modules.inc:1406
 msgid "This may overwrite existing values with profile data. Continue?"
 msgstr "将覆盖已有值,继续?"
 
@@ -16903,7 +16923,7 @@ msgstr ""
 msgid "This program is run after the login."
 msgstr "登录后运行的程序。"
 
-#: ../lib/2factor.inc:929
+#: ../lib/2factor.inc:962
 msgid "This service requires a browser with \"WebAuthn\" support."
 msgstr "此服务需要具有\"WebAuthn\"支持的浏览器。"
 
@@ -17091,7 +17111,7 @@ msgstr "这将记住你当前的设备。你将不需要在设置的时间段内
 msgid "This will reset the host's password to a default value."
 msgstr "将主机密码复位到缺省值."
 
-#: ../lib/modules/windowsUser.inc:4790
+#: ../lib/modules/windowsUser.inc:4821
 msgid ""
 "This will send each user a summary of the managed groups and their members."
 msgstr "将向每个用户发送管理组及其成员的汇总报告。"
@@ -17148,12 +17168,12 @@ msgstr "时间"
 msgid "Time limit"
 msgstr "时间限制"
 
-#: ../lib/modules/windowsHost.inc:104 ../lib/modules/windowsLDSUser.inc:226
+#: ../lib/modules/windowsHost.inc:105 ../lib/modules/windowsLDSUser.inc:226
 #: ../lib/modules/windowsUser.inc:312
 msgid "Time of user's last login."
 msgstr "用户上次登录时间."
 
-#: ../lib/modules/windowsHost.inc:100 ../lib/modules/windowsLDSUser.inc:230
+#: ../lib/modules/windowsHost.inc:101 ../lib/modules/windowsLDSUser.inc:230
 #: ../lib/modules/windowsUser.inc:308
 msgid "Time of user's last password change."
 msgstr "用户上次修改密码时间."
@@ -17252,7 +17272,7 @@ msgstr "总额"
 msgid "Total paid (read-only)"
 msgstr "支付总额(只读)"
 
-#: ../lib/types/user.inc:541
+#: ../lib/types/user.inc:301
 msgid "Translate GID number to group name"
 msgstr "将GID号改为组名"
 
@@ -17278,12 +17298,12 @@ msgstr "星期二"
 #: ../lib/modules/kolabSharedFolder.inc:138
 #: ../lib/modules/kolabSharedFolder.inc:167
 #: ../lib/modules/kolabSharedFolder.inc:206
-#: ../lib/modules/kolabSharedFolder.inc:251
-#: ../lib/modules/kolabSharedFolder.inc:420 ../lib/modules/customFields.inc:118
-#: ../lib/modules/customFields.inc:1323 ../lib/modules/customFields.inc:2227
+#: ../lib/modules/kolabSharedFolder.inc:250
+#: ../lib/modules/kolabSharedFolder.inc:417 ../lib/modules/customFields.inc:118
+#: ../lib/modules/customFields.inc:1330 ../lib/modules/customFields.inc:2234
 #: ../lib/modules/kopanoUser.inc:139 ../lib/modules/kopanoUser.inc:265
 #: ../lib/modules/kopanoUser.inc:389 ../lib/modules/kopanoUser.inc:547
-#: ../lib/modules/kopanoUser.inc:1225 ../lib/modules/kopanoUser.inc:1773
+#: ../lib/modules/kopanoUser.inc:1225 ../lib/modules/kopanoUser.inc:1775
 #: ../lib/env.inc:157
 msgid "Type"
 msgstr "类型"
@@ -17292,8 +17312,8 @@ msgstr "类型"
 msgid "UID"
 msgstr "UID"
 
-#: ../lib/modules/posixAccount.inc:407 ../lib/modules/posixAccount.inc:2349
-#: ../lib/modules/posixAccount.inc:2420
+#: ../lib/modules/posixAccount.inc:407 ../lib/modules/posixAccount.inc:2352
+#: ../lib/modules/posixAccount.inc:2423
 msgid "UID generator"
 msgstr "UID生成器"
 
@@ -17322,7 +17342,7 @@ msgstr "UID必须是一个数字,必须在配置文件中所定的UID范围内."
 #: ../lib/modules/posixAccount.inc:302 ../lib/modules/posixAccount.inc:323
 #: ../lib/modules/posixAccount.inc:354 ../lib/modules/posixAccount.inc:358
 #: ../lib/modules/posixAccount.inc:367 ../lib/modules/posixAccount.inc:1800
-#: ../lib/modules/posixAccount.inc:2285 ../lib/modules/posixAccount.inc:4421
+#: ../lib/modules/posixAccount.inc:2288 ../lib/modules/posixAccount.inc:4429
 msgid "UID number"
 msgstr "UID编号"
 
@@ -17385,7 +17405,7 @@ msgstr "在邮箱删除时无法改变IMAP服务器的ACL."
 msgid "Unable to change Kerberos password."
 msgstr "无法修改kerberos密码."
 
-#: ../lib/modules/windowsUser.inc:3615
+#: ../lib/modules/windowsUser.inc:3625
 msgid "Unable to change password."
 msgstr "无法修改密码."
 
@@ -17404,6 +17424,10 @@ msgstr "无法修改您的帐号,可能是您违反了密码策略."
 #: ../lib/modules/imapAccess.inc:710
 msgid "Unable to connect to IMAP server."
 msgstr "无法连接IMAP服务器。"
+
+#: ../templates/misc/ajax.php:593
+msgid "Unable to connect to SMTP server."
+msgstr "无法连接到SMTP服务器。"
 
 #: ../lib/checkEnvironment.inc:158 ../lib/config.inc:3306
 #: ../lib/config.inc:3311 ../lib/config.inc:3323 ../lib/config.inc:3327
@@ -17435,7 +17459,7 @@ msgstr "无法建立新账号."
 msgid "Unable to create mailbox on IMAP server."
 msgstr "无法在IMAP服务器上建立邮箱."
 
-#: ../templates/tools/ou_edit.php:94
+#: ../templates/tools/ou_edit.php:96
 msgid "Unable to create new OU!"
 msgstr "无法建立新OU!"
 
@@ -17473,7 +17497,7 @@ msgstr "无法删除DNS记录: \"%s\"."
 msgid "Unable to delete DNS record."
 msgstr "无法删除DNS记录."
 
-#: ../templates/tools/ou_edit.php:111
+#: ../templates/tools/ou_edit.php:113
 msgid "Unable to delete OU!"
 msgstr "无法删除OU!"
 
@@ -17505,8 +17529,8 @@ msgid "Unable to find a printer with name \"%s\"."
 msgstr "找不到打印机:  \"%s\"."
 
 #: ../lib/modules/nisNetGroupUser.inc:512 ../lib/modules/nisnetgroup.inc:543
-#: ../lib/modules/groupOfNamesUser.inc:559 ../lib/modules/posixAccount.inc:2744
-#: ../lib/modules/posixAccount.inc:2753 ../lib/modules/posixAccount.inc:3070
+#: ../lib/modules/groupOfNamesUser.inc:559 ../lib/modules/posixAccount.inc:2747
+#: ../lib/modules/posixAccount.inc:2756 ../lib/modules/posixAccount.inc:3078
 msgid "Unable to find group in LDAP."
 msgstr "LDAP中找不到组."
 
@@ -17541,8 +17565,8 @@ msgstr "无法导入任务数据。"
 msgid "Unable to import server certificate. Please use the upload function."
 msgstr "不能导入服务器证书. 请使用上传功能."
 
-#: ../templates/lists/changePassword.php:73 ../lib/modules.inc:1702
-#: ../lib/modules.inc:1706
+#: ../templates/lists/changePassword.php:73 ../lib/modules.inc:1705
+#: ../lib/modules.inc:1709
 msgid "Unable to load LDAP entry:"
 msgstr "无法调入LDAP条目:"
 
@@ -17661,7 +17685,7 @@ msgstr "无法保存自助服务配置文件。"
 msgid "Unable to save server profile."
 msgstr "无法存储服务器配置文件。"
 
-#: ../lib/account.inc:1437 ../lib/account.inc:1474
+#: ../lib/account.inc:1478 ../lib/account.inc:1515
 msgid "Unable to send mail!"
 msgstr "无法发送邮件!"
 
@@ -17675,8 +17699,8 @@ msgstr "无法在%s 上设置删除日期。"
 #: ../lib/modules/simpleSecurityObject.inc:422
 #: ../lib/modules/simpleSecurityObject.inc:525
 #: ../lib/modules/inetOrgPerson.inc:975 ../lib/modules/inetOrgPerson.inc:2583
-#: ../lib/modules/posixAccount.inc:994 ../lib/modules/posixAccount.inc:3147
-#: ../lib/modules/posixAccount.inc:3530
+#: ../lib/modules/posixAccount.inc:994 ../lib/modules/posixAccount.inc:3155
+#: ../lib/modules/posixAccount.inc:3538
 msgid "Unable to set password"
 msgstr "无法设置密码"
 
@@ -17684,14 +17708,14 @@ msgstr "无法设置密码"
 msgid "Unable to set quota."
 msgstr "无法设置限额。"
 
-#: ../templates/selfService/selfService2Factor.php:102
+#: ../templates/selfService/selfService2Factor.php:103
 #: ../templates/login2Factor.php:98
 msgid "Unable to start 2-factor authentication because no tokens were found."
 msgstr "因为没有找到令牌,所以无法开启双重认证."
 
-#: ../templates/selfService/selfService2Factor.php:88
-#: ../templates/selfService/selfService2Factor.php:221
-#: ../templates/login2Factor.php:72 ../templates/login2Factor.php:211
+#: ../templates/selfService/selfService2Factor.php:89
+#: ../templates/selfService/selfService2Factor.php:223
+#: ../templates/login2Factor.php:72 ../templates/login2Factor.php:212
 msgid "Unable to start 2-factor authentication."
 msgstr "无法开始双重认证."
 
@@ -17737,8 +17761,8 @@ msgid "Universal"
 msgstr "通用的"
 
 #: ../lib/modules/posixGroup.inc:382 ../lib/modules/posixAccount.inc:179
-#: ../lib/modules/posixAccount.inc:4276 ../lib/modules/posixAccount.inc:4279
-#: ../lib/modules/posixAccount.inc:4309 ../lib/modules/posixAccount.inc:4312
+#: ../lib/modules/posixAccount.inc:4284 ../lib/modules/posixAccount.inc:4287
+#: ../lib/modules/posixAccount.inc:4317 ../lib/modules/posixAccount.inc:4320
 msgid "Unix"
 msgstr "Unix"
 
@@ -17746,7 +17770,7 @@ msgstr "Unix"
 msgid "Unix account"
 msgstr "Unix帐号"
 
-#: ../lib/modules/posixAccount.inc:1962 ../lib/modules/posixAccount.inc:2397
+#: ../lib/modules/posixAccount.inc:1965 ../lib/modules/posixAccount.inc:2400
 msgid "Unix groups"
 msgstr "Unix组"
 
@@ -17770,7 +17794,7 @@ msgstr "不明的代表地址:%s"
 msgid "Unknown delegate: %s"
 msgstr "未知委托:%s"
 
-#: ../lib/types/user.inc:307 ../lib/types/user.inc:312
+#: ../lib/baseType.inc:254 ../lib/baseType.inc:259
 msgid "Unlock"
 msgstr "解锁"
 
@@ -17791,11 +17815,11 @@ msgstr "解锁账号?"
 
 #: ../lib/modules/simpleSecurityObject.inc:292
 #: ../lib/modules/posixGroup.inc:225 ../lib/modules/inetOrgPerson.inc:1597
-#: ../lib/modules/posixAccount.inc:1880
+#: ../lib/modules/posixAccount.inc:1883
 msgid "Unlock password"
 msgstr "解除密码锁定"
 
-#: ../lib/types/user.inc:250 ../lib/types/user.inc:608
+#: ../lib/baseType.inc:198 ../lib/lists.inc:552
 msgid "Unlocked"
 msgstr "解锁"
 
@@ -17834,8 +17858,8 @@ msgid "Upload CA certificate in DER/PEM format."
 msgstr "上传DEF/PEM格式的CA证书."
 
 #: ../lib/modules/ldapPublicKey.inc:159 ../lib/modules/ldapPublicKey.inc:382
-#: ../lib/modules/customFields.inc:202 ../lib/modules/customFields.inc:4810
-#: ../lib/modules/customFields.inc:4856 ../lib/modules/inetOrgPerson.inc:2995
+#: ../lib/modules/customFields.inc:202 ../lib/modules/customFields.inc:4844
+#: ../lib/modules/customFields.inc:4890 ../lib/modules/inetOrgPerson.inc:2995
 #: ../lib/modules/inetOrgPerson.inc:3156
 msgid "Upload a file"
 msgstr "上传一个文件"
@@ -17852,7 +17876,7 @@ msgstr "上传帐号到LDAP"
 msgid "Upload file and create accounts"
 msgstr "开始上传,建立帐号"
 
-#: ../lib/upload.inc:217 ../lib/lists.inc:1349
+#: ../lib/upload.inc:217 ../lib/lists.inc:1459
 msgid "Upload has finished"
 msgstr "上传完毕"
 
@@ -18043,13 +18067,13 @@ msgstr "用来限制SIP通讯的主叫或被叫只能来自于某个IP地址或�
 msgid "Used to regularly check that a device is still online."
 msgstr "用来定期检查一个设备是否在线."
 
-#: ../templates/misc/ajax.php:289 ../lib/modules/nisnetgroup.inc:228
+#: ../templates/misc/ajax.php:295 ../lib/modules/nisnetgroup.inc:228
 #: ../lib/modules/nisnetgroup.inc:579 ../lib/modules/nisMailAlias.inc:357
 #: ../lib/modules/sudoRole.inc:582
 msgid "User"
 msgstr "用户"
 
-#: ../templates/config/mainmanage.php:637 ../help/help.inc:179
+#: ../templates/config/mainmanage.php:642 ../help/help.inc:179
 msgid "User DN"
 msgstr "用户DN"
 
@@ -18078,7 +18102,7 @@ msgstr "用户可以修改密码"
 msgid "User certificates"
 msgstr "用户数字证书"
 
-#: ../lib/types/user.inc:461
+#: ../lib/types/user.inc:229
 #, php-format
 msgid "User count: %s"
 msgstr "帐号总计: %s"
@@ -18166,12 +18190,12 @@ msgstr "用户必须修改密码"
 #: ../lib/modules/posixAccount.inc:124 ../lib/modules/posixAccount.inc:127
 #: ../lib/modules/posixAccount.inc:230 ../lib/modules/posixAccount.inc:320
 #: ../lib/modules/posixAccount.inc:437 ../lib/modules/posixAccount.inc:1785
-#: ../lib/modules/posixAccount.inc:2267 ../lib/modules/posixAccount.inc:4196
-#: ../lib/modules/posixAccount.inc:4418 ../lib/modules/windowsUser.inc:158
+#: ../lib/modules/posixAccount.inc:2270 ../lib/modules/posixAccount.inc:4204
+#: ../lib/modules/posixAccount.inc:4426 ../lib/modules/windowsUser.inc:158
 #: ../lib/modules/windowsUser.inc:451 ../lib/modules/windowsUser.inc:988
 #: ../lib/modules/windowsUser.inc:1174 ../lib/modules/windowsUser.inc:1319
-#: ../lib/modules/windowsUser.inc:3240 ../lib/modules/windowsUser.inc:4379
-#: ../lib/modules/windowsUser.inc:4534 ../lib/selfService.inc:834
+#: ../lib/modules/windowsUser.inc:3240 ../lib/modules/windowsUser.inc:4389
+#: ../lib/modules/windowsUser.inc:4544 ../lib/selfService.inc:834
 #: ../help/help.inc:183 ../help/help.inc:235
 msgid "User name"
 msgstr "用户名"
@@ -18179,7 +18203,7 @@ msgstr "用户名"
 #: ../lib/modules/windowsUser.inc:166 ../lib/modules/windowsUser.inc:695
 #: ../lib/modules/windowsUser.inc:1069 ../lib/modules/windowsUser.inc:1182
 #: ../lib/modules/windowsUser.inc:1328 ../lib/modules/windowsUser.inc:3242
-#: ../lib/modules/windowsUser.inc:4120
+#: ../lib/modules/windowsUser.inc:4130
 msgid "User name (pre W2K)"
 msgstr "用户名(W2K以前)"
 
@@ -18262,7 +18286,7 @@ msgstr ""
 msgid "User name or email address"
 msgstr "用户名或用户邮件地址"
 
-#: ../lib/modules/posixAccount.inc:341 ../lib/modules/posixAccount.inc:2384
+#: ../lib/modules/posixAccount.inc:341 ../lib/modules/posixAccount.inc:2387
 msgid "User name suggestion"
 msgstr "用户名建议"
 
@@ -18281,17 +18305,17 @@ msgstr "用户自注册"
 #: ../lib/modules/kopanoUser.inc:151 ../lib/modules/kopanoUser.inc:312
 #: ../lib/modules/kopanoUser.inc:404 ../lib/modules/kopanoUser.inc:621
 #: ../lib/modules/kopanoUser.inc:1207 ../lib/modules/kopanoUser.inc:1297
-#: ../lib/modules/kopanoUser.inc:1778
+#: ../lib/modules/kopanoUser.inc:1780
 msgid "User server"
 msgstr "用户服务器"
 
-#: ../lib/types/user.inc:55 ../lib/modules/kopanoUser.inc:1750
+#: ../lib/types/user.inc:55 ../lib/modules/kopanoUser.inc:1752
 #: ../lib/modules/sudoRole.inc:75 ../lib/modules/sudoRole.inc:99
 #: ../lib/modules/sudoRole.inc:160 ../lib/modules/sudoRole.inc:217
 #: ../lib/modules/sudoRole.inc:229 ../lib/modules/sudoRole.inc:302
 #: ../lib/modules/sudoRole.inc:456 ../lib/modules/posixAccount.inc:102
 #: ../lib/modules/posixAccount.inc:103 ../lib/modules/posixAccount.inc:106
-#: ../lib/modules/posixAccount.inc:2338
+#: ../lib/modules/posixAccount.inc:2341
 msgid "Users"
 msgstr "用户"
 
@@ -18343,26 +18367,26 @@ msgstr "合法用户"
 msgid "Validate server certificate"
 msgstr "校验服务器数字证书"
 
-#: ../lib/modules/customFields.inc:2520
+#: ../lib/modules/customFields.inc:2527
 msgid "Validation"
 msgstr "合法性检查"
 
-#: ../lib/modules/customFields.inc:142 ../lib/modules/customFields.inc:2544
+#: ../lib/modules/customFields.inc:142 ../lib/modules/customFields.inc:2551
 msgid "Validation expression"
 msgstr "合法性检查表达式"
 
 #: ../lib/modules/customFields.inc:146 ../lib/modules/customFields.inc:150
-#: ../lib/modules/customFields.inc:2548 ../lib/modules/customFields.inc:5550
+#: ../lib/modules/customFields.inc:2555 ../lib/modules/customFields.inc:5584
 msgid "Validation message"
 msgstr "合法性检查消息"
 
 #: ../templates/tools/multiEdit.php:155 ../lib/modules/customFields.inc:234
-#: ../lib/modules/customFields.inc:4087 ../lib/modules/customFields.inc:5209
-#: ../lib/modules/customFields.inc:5228 ../lib/modules/customFields.inc:6046
+#: ../lib/modules/customFields.inc:4094 ../lib/modules/customFields.inc:5243
+#: ../lib/modules/customFields.inc:5262 ../lib/modules/customFields.inc:6080
 msgid "Value"
 msgstr "值"
 
-#: ../lib/modules/customFields.inc:154 ../lib/modules/customFields.inc:3821
+#: ../lib/modules/customFields.inc:154 ../lib/modules/customFields.inc:3828
 msgid "Value for \"checked\""
 msgstr "选定时的\"值\""
 
@@ -18371,11 +18395,11 @@ msgstr "选定时的\"值\""
 msgid "Value for \"pwdAccountLockedTime\" on unlock"
 msgstr "解锁时“帐号密码锁定时间”的值"
 
-#: ../lib/modules/customFields.inc:158 ../lib/modules/customFields.inc:3826
+#: ../lib/modules/customFields.inc:158 ../lib/modules/customFields.inc:3833
 msgid "Value for \"unchecked\""
 msgstr "未选定时的\"值\""
 
-#: ../lib/modules/customFields.inc:178 ../lib/modules/customFields.inc:4072
+#: ../lib/modules/customFields.inc:178 ../lib/modules/customFields.inc:4079
 msgid "Value mapping"
 msgstr "值映射"
 
@@ -18398,8 +18422,8 @@ msgstr "生产商"
 msgid "Vendor version"
 msgstr "生产商版本"
 
-#: ../templates/selfService/selfService2Factor.php:145
-#: ../templates/login2Factor.php:134
+#: ../templates/selfService/selfService2Factor.php:147
+#: ../templates/login2Factor.php:135
 msgid "Verification failed."
 msgstr "验证失败。"
 
@@ -18446,7 +18470,7 @@ msgstr "警告"
 #: ../lib/modules/windowsLDSGroup.inc:706
 #: ../lib/modules/windowsLDSUser.inc:1486 ../lib/modules/windowsGroup.inc:1031
 #: ../lib/modules/posixAccount.inc:921 ../lib/modules/windowsUser.inc:2680
-#: ../lib/modules.inc:2124
+#: ../lib/modules.inc:2130
 #, php-format
 msgid "Was unable to add attributes to DN: %s."
 msgstr "无法为DN: %s增加属性."
@@ -18454,7 +18478,7 @@ msgstr "无法为DN: %s增加属性."
 #: ../lib/modules/nisMailAliasUser.inc:485 ../lib/modules/range.inc:657
 #: ../lib/modules/inetOrgPerson.inc:954 ../lib/modules/inetOrgPerson.inc:2568
 #: ../lib/import.inc:462 ../lib/import.inc:619 ../lib/import.inc:681
-#: ../lib/import.inc:744 ../lib/modules.inc:2086 ../lib/account.inc:1086
+#: ../lib/import.inc:744 ../lib/modules.inc:2092 ../lib/account.inc:1086
 #: ../lib/account.inc:1088
 #, php-format
 msgid "Was unable to create DN: %s."
@@ -18477,12 +18501,12 @@ msgstr "无法修改DN: %s的属性."
 #: ../lib/modules/nisNetGroupUser.inc:372
 #: ../lib/modules/nisNetGroupUser.inc:407
 #: ../lib/modules/nisNetGroupUser.inc:419
-#: ../lib/modules/nisNetGroupUser.inc:566 ../lib/modules/customFields.inc:5303
+#: ../lib/modules/nisNetGroupUser.inc:566 ../lib/modules/customFields.inc:5337
 #: ../lib/modules/groupOfNamesUser.inc:423 ../lib/modules/locking389ds.inc:428
 #: ../lib/modules/openldapTotp.inc:203 ../lib/modules/posixAccount.inc:905
-#: ../lib/modules/posixAccount.inc:4371 ../lib/modules/posixAccount.inc:4395
+#: ../lib/modules/posixAccount.inc:4379 ../lib/modules/posixAccount.inc:4403
 #: ../lib/modules/windowsUser.inc:2706 ../lib/modules/windowsUser.inc:3212
-#: ../lib/modules.inc:2106 ../lib/treeview.inc:920
+#: ../lib/modules.inc:2112 ../lib/treeview.inc:925
 #, php-format
 msgid "Was unable to modify attributes of DN: %s."
 msgstr "不能修改DN: %s的属性."
@@ -18495,13 +18519,13 @@ msgstr "不能修改DN: %s的属性."
 #: ../lib/modules/windowsLDSGroup.inc:719
 #: ../lib/modules/windowsLDSUser.inc:1499 ../lib/modules/windowsGroup.inc:1044
 #: ../lib/modules/posixAccount.inc:938 ../lib/modules/windowsUser.inc:2693
-#: ../lib/modules.inc:2137
+#: ../lib/modules.inc:2143
 #, php-format
 msgid "Was unable to remove attributes from DN: %s."
 msgstr "无法删除DN: %s的属性."
 
-#: ../lib/modules/asteriskExtension.inc:876 ../lib/modules.inc:2066
-#: ../lib/account.inc:1109 ../lib/treeview.inc:909
+#: ../lib/modules/asteriskExtension.inc:876 ../lib/modules.inc:2072
+#: ../lib/account.inc:1109 ../lib/treeview.inc:912
 #, php-format
 msgid "Was unable to rename DN: %s."
 msgstr "无法重命名DN: %s."
@@ -18519,18 +18543,18 @@ msgstr "无法重命名DN: %s."
 #: ../lib/modules/windowsUser.inc:242 ../lib/modules/windowsUser.inc:624
 #: ../lib/modules/windowsUser.inc:1057 ../lib/modules/windowsUser.inc:1137
 #: ../lib/modules/windowsUser.inc:1420 ../lib/modules/windowsUser.inc:3266
-#: ../lib/modules/windowsUser.inc:3466 ../lib/modules/windowsUser.inc:4154
+#: ../lib/modules/windowsUser.inc:3476 ../lib/modules/windowsUser.inc:4164
 msgid "Web site"
 msgstr "网站"
 
-#: ../templates/tools/webauthn.php:67 ../templates/config/mainmanage.php:636
+#: ../templates/tools/webauthn.php:67 ../templates/config/mainmanage.php:641
 #: ../lib/tools/webauthn.inc:45 ../lib/persistence.inc:369
 #: ../lib/modules/webauthn.inc:67
 msgid "WebAuthn devices"
 msgstr "Webauthn设备"
 
 #: ../templates/tools/webauthn.php:80 ../lib/modules/webauthn.inc:131
-#: ../lib/2factor.inc:942
+#: ../lib/2factor.inc:975
 msgid "WebAuthn failed"
 msgstr "Webauthn失败"
 
@@ -18569,21 +18593,21 @@ msgid ""
 "in your certificate!"
 msgstr "当使用ldaps://或TLS协议时确认在证书中使用相同的ip/domain!"
 
-#: ../lib/modules/windowsHost.inc:71 ../lib/modules/windowsGroup.inc:110
-#: ../lib/modules/windowsUser.inc:137 ../lib/modules/windowsUser.inc:4627
-#: ../lib/modules/windowsUser.inc:4783 ../lib/modules/windowsUser.inc:5069
-#: ../lib/modules/windowsUser.inc:5160
+#: ../lib/modules/windowsHost.inc:72 ../lib/modules/windowsGroup.inc:110
+#: ../lib/modules/windowsUser.inc:137 ../lib/modules/windowsUser.inc:4658
+#: ../lib/modules/windowsUser.inc:4814 ../lib/modules/windowsUser.inc:5100
+#: ../lib/modules/windowsUser.inc:5191
 msgid "Windows"
 msgstr "Windows"
 
-#: ../lib/modules/posixGroup.inc:553 ../lib/modules/posixAccount.inc:2322
+#: ../lib/modules/posixGroup.inc:553 ../lib/modules/posixAccount.inc:2325
 msgid "Windows domain info"
 msgstr "Windows域信息"
 
 #: ../lib/modules/posixGroup.inc:470 ../lib/modules/posixGroup.inc:580
 #: ../lib/modules/posixGroup.inc:719 ../lib/modules/posixAccount.inc:142
-#: ../lib/modules/posixAccount.inc:416 ../lib/modules/posixAccount.inc:2371
-#: ../lib/modules/posixAccount.inc:2442
+#: ../lib/modules/posixAccount.inc:416 ../lib/modules/posixAccount.inc:2374
+#: ../lib/modules/posixAccount.inc:2445
 msgid "Windows domain info DN"
 msgstr "Windows域信息DN"
 
@@ -18657,8 +18681,8 @@ msgstr "初始化程序的工作目录。"
 #: ../lib/modules/windowsUser.inc:435 ../lib/modules/windowsUser.inc:439
 #: ../lib/modules/windowsUser.inc:800 ../lib/modules/windowsUser.inc:1060
 #: ../lib/modules/windowsUser.inc:1238 ../lib/modules/windowsUser.inc:1517
-#: ../lib/modules/windowsUser.inc:3279 ../lib/modules/windowsUser.inc:3357
-#: ../lib/modules/windowsUser.inc:4125
+#: ../lib/modules/windowsUser.inc:3279 ../lib/modules/windowsUser.inc:3360
+#: ../lib/modules/windowsUser.inc:4135
 msgid "Workstations"
 msgstr "工作站"
 
@@ -18684,7 +18708,7 @@ msgstr "错误的密码和用户组合,请重试."
 msgid "Wrong quota format. Quota must be numeric."
 msgstr "错误的配额类型.配额必须为数字."
 
-#: ../lib/modules/windowsUser.inc:4810
+#: ../lib/modules/windowsUser.inc:4841
 msgid "Yearly"
 msgstr "每年"
 
@@ -18721,7 +18745,7 @@ msgstr "您正在使用大写字符,这会造成一些问题,因为windows大小
 msgid "You can delete or move expired accounts."
 msgstr "您可以删除和移走过期的账号."
 
-#: ../lib/lists.inc:1351
+#: ../lib/lists.inc:1461
 #, php-format
 msgid ""
 "You can download your PDF files {link=%s}{color=#d2131a}here{endcolor}"
@@ -18809,7 +18833,7 @@ msgstr "您输入了一个或多个非常的DNS服务器."
 msgid "You entered two identical security questions."
 msgstr "您输入了两个相同的安全问题."
 
-#: ../lib/treeview.inc:883
+#: ../lib/treeview.inc:886
 msgid "You made no changes"
 msgstr "您没有做任何修改"
 
@@ -18886,7 +18910,7 @@ msgid ""
 "your user data."
 msgstr "你的新账号已经成功建立.请返回后登录并修改用户数据."
 
-#: ../lib/modules/windowsUser.inc:3612 ../lib/account.inc:1695
+#: ../lib/modules/windowsUser.inc:3622 ../lib/account.inc:1736
 msgid ""
 "Your password does not meet the password strength qualifications. Please "
 "retry with another one."
@@ -18919,7 +18943,7 @@ msgstr "设置保存成功."
 msgid "YourCompany"
 msgstr "您的公司"
 
-#: ../lib/2factor.inc:385
+#: ../lib/2factor.inc:387
 msgid "YubiKey id does not match allowed list of key ids."
 msgstr "YubiKey id 与允许的密钥 id 列表不匹配。"
 
@@ -19121,7 +19145,7 @@ msgstr "我的组"
 #: ../templates/config/confmain.php:209 ../templates/schema/schema.php:345
 #: ../templates/schema/schema.php:347 ../templates/schema/schema.php:349
 #: ../lib/modules/generalInformation.inc:104 ../lib/modules/fixed_ip.inc:771
-#: ../lib/modules/customFields.inc:3966
+#: ../lib/modules/customFields.inc:3973
 #: ../lib/modules/kopanoAddressList.inc:298
 #: ../lib/modules/kopanoAddressList.inc:301
 #: ../lib/modules/kopanoContact.inc:591
@@ -19131,9 +19155,9 @@ msgstr "我的组"
 #: ../lib/modules/kopanoServer.inc:312 ../lib/modules/kopanoUser.inc:608
 #: ../lib/modules/kopanoUser.inc:1212 ../lib/modules/kopanoUser.inc:1227
 #: ../lib/modules/kopanoUser.inc:1238 ../lib/modules/kopanoUser.inc:1244
-#: ../lib/modules/ppolicy.inc:36 ../lib/modules/ppolicy.inc:489
-#: ../lib/modules/ppolicy.inc:499 ../lib/modules/ppolicy.inc:504
-#: ../lib/modules/ppolicy.inc:511 ../lib/modules/ppolicy.inc:514
+#: ../lib/modules/ppolicy.inc:36 ../lib/modules/ppolicy.inc:503
+#: ../lib/modules/ppolicy.inc:513 ../lib/modules/ppolicy.inc:518
+#: ../lib/modules/ppolicy.inc:525 ../lib/modules/ppolicy.inc:528
 #: ../lib/modules/windowsLDSUser.inc:1530
 #: ../lib/modules/sambaSamAccount.inc:1968
 #: ../lib/modules/sambaSamAccount.inc:1974
@@ -19169,7 +19193,7 @@ msgstr "ou=accounts,dc=yourdomain,dc=org"
 msgid "pc01$"
 msgstr "pc01$"
 
-#: ../lib/modules/posixAccount.inc:2612
+#: ../lib/modules/posixAccount.inc:2615
 msgid "pc01,Room 2.34"
 msgstr "pc01,Room 2.34"
 
@@ -19204,7 +19228,7 @@ msgstr "role01,role02"
 #: ../lib/modules/simpleSecurityObject.inc:92
 #: ../lib/modules/asteriskAccount.inc:333 ../lib/modules/posixGroup.inc:415
 #: ../lib/modules/sambaSamAccount.inc:455 ../lib/modules/inetOrgPerson.inc:2308
-#: ../lib/modules/posixAccount.inc:2580 ../lib/modules/windowsUser.inc:461
+#: ../lib/modules/posixAccount.inc:2583 ../lib/modules/windowsUser.inc:461
 msgid "secret"
 msgstr "secret"
 
@@ -19279,7 +19303,7 @@ msgstr "用户"
 #: ../templates/schema/schema.php:322 ../templates/schema/schema.php:345
 #: ../templates/schema/schema.php:347 ../templates/schema/schema.php:349
 #: ../lib/modules/generalInformation.inc:106 ../lib/modules/fixed_ip.inc:769
-#: ../lib/modules/customFields.inc:3966
+#: ../lib/modules/customFields.inc:3973
 #: ../lib/modules/kopanoAddressList.inc:296
 #: ../lib/modules/kopanoAddressList.inc:303
 #: ../lib/modules/kopanoContact.inc:593
@@ -19289,9 +19313,9 @@ msgstr "用户"
 #: ../lib/modules/kopanoServer.inc:314 ../lib/modules/kopanoUser.inc:608
 #: ../lib/modules/kopanoUser.inc:1214 ../lib/modules/kopanoUser.inc:1230
 #: ../lib/modules/kopanoUser.inc:1240 ../lib/modules/kopanoUser.inc:1246
-#: ../lib/modules/ppolicy.inc:37 ../lib/modules/ppolicy.inc:501
-#: ../lib/modules/ppolicy.inc:506 ../lib/modules/ppolicy.inc:509
-#: ../lib/modules/ppolicy.inc:516 ../lib/modules/windowsLDSUser.inc:529
+#: ../lib/modules/ppolicy.inc:37 ../lib/modules/ppolicy.inc:515
+#: ../lib/modules/ppolicy.inc:520 ../lib/modules/ppolicy.inc:523
+#: ../lib/modules/ppolicy.inc:530 ../lib/modules/windowsLDSUser.inc:529
 #: ../lib/modules/windowsLDSUser.inc:1530
 #: ../lib/modules/sambaSamAccount.inc:1974
 #: ../lib/modules/sambaSamAccount.inc:2017
