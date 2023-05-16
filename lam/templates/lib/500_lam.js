@@ -1747,49 +1747,58 @@ window.lam.webauthn.start = function(prefix, isSelfService) {
  * @param isSelfService runs as part of self service
  */
 window.lam.webauthn.run = function(prefix, isSelfService) {
-	jQuery('#btn_skip_webauthn').click(function () {
-		var form = jQuery("#2faform");
-		form.append('<input type="hidden" name="sig_response" value="skip"/>');
-		form.submit();
-		return;
-	});
-	var token = jQuery('#sec_token').val();
+	const skipButton = document.getElementById('btn_skip_webauthn');
+	if (skipButton) {
+		skipButton.onclick = function () {
+			const form = document.getElementById("2faform");
+			const hiddenSkip = document.createElement('input');
+			hiddenSkip.type = 'hidden';
+			hiddenSkip.name = 'sig_response';
+			hiddenSkip.value = 'skip';
+			form.appendChild(hiddenSkip);
+			form.submit();
+			return;
+		};
+	}
+	const token = document.getElementById('sec_token').value;
 	// check for webauthn support
 	if (!navigator.credentials || (typeof(PublicKeyCredential) === "undefined")) {
-		jQuery('.webauthn-error').show();
+		document.querySelector('.webauthn-error').classList.remove('hidden');
 		return;
 	}
 
-	var data = {
-			action: 'status',
-			jsonInput: '',
-			sec_token: token
-	};
+	let data = new FormData();
+	data.append('sec_token', token);
+	data.append('action', 'status');
 	var extraParam = isSelfService ? '&selfservice=true' : '';
-	jQuery.ajax({
-		url: prefix + 'misc/ajax.php?function=webauthn' + extraParam,
+	fetch(prefix + 'misc/ajax.php?function=webauthn' + extraParam, {
 		method: 'POST',
-		data: data
+		body: data
 	})
-	.done(function(jsonData) {
+	.then(async response => {
+		const jsonData = await response.json();
 		if (jsonData.action === 'register') {
 			const registerFunction = function() {
-				var successCallback = function (publicKeyCredential) {
-					var form = jQuery("#2faform");
-					var response = btoa(JSON.stringify(publicKeyCredential));
-					form.append('<input type="hidden" name="sig_response" value="' + response + '"/>');
+				const successCallback = function (publicKeyCredential) {
+					const form = document.getElementById("2faform");
+					const response = btoa(JSON.stringify(publicKeyCredential));
+					const hiddenResponse = document.createElement('input');
+					hiddenResponse.type = 'hidden';
+					hiddenResponse.name = 'sig_response';
+					hiddenResponse.value = response;
+					form.appendChild(hiddenResponse);
 					form.submit();
 				};
-				var errorCallback = function(error) {
-					var errorDiv = jQuery('#generic-webauthn-error');
-					var buttonLabel = errorDiv.data('button');
-					var dialogTitle = errorDiv.data('title');
-					errorDiv.text(error.message);
+				const errorCallback = function(error) {
+					const errorDiv = document.getElementById('generic-webauthn-error');
+					const buttonLabel = errorDiv.dataset.button;
+					const dialogTitle = errorDiv.dataset.title;
+					errorDiv.innerText = error.message;
 					window.lam.dialog.showMessage(dialogTitle,
 						buttonLabel,
 						'generic-webauthn-error',
 						function () {
-							jQuery('#btn_logout').click();
+							document.getElementById('btn_logout').click();
 						});
 				};
 				window.lam.webauthn.register(jsonData.registration, successCallback, errorCallback);
@@ -1807,7 +1816,7 @@ window.lam.webauthn.run = function(prefix, isSelfService) {
 			window.lam.webauthn.authenticate(jsonData.authentication);
 		}
 	})
-	.fail(function() {
+	.catch(function(err) {
 		console.log('WebAuthn failed');
 	});
 }
@@ -1860,15 +1869,15 @@ window.lam.webauthn.register = function(publicKey, successCallback, errorCallbac
 window.lam.webauthn.authenticate = function(publicKey) {
 	publicKey.challenge = Uint8Array.from(window.atob(publicKey.challenge), window.lam.webauthn.charAt);
 	for (var i = 0; i < publicKey.allowCredentials.length; i++) {
-		var idOrig = publicKey.allowCredentials[i]['id'];
+		let idOrig = publicKey.allowCredentials[i]['id'];
 		idOrig = idOrig.replace(/-/g, "+").replace(/_/g, "/");
-		var idOrigDecoded = atob(idOrig);
-		var idArray = Uint8Array.from(idOrigDecoded, window.lam.webauthn.charAt)
+		const idOrigDecoded = atob(idOrig);
+		const idArray = Uint8Array.from(idOrigDecoded, window.lam.webauthn.charAt)
 		publicKey.allowCredentials[i]['id'] = idArray;
 	}
 	navigator.credentials.get({publicKey: publicKey})
 		.then(function(data) {
-			var publicKeyCredential = {
+			const publicKeyCredential = {
 				id: data.id,
 				type: data.type,
 				rawId: window.lam.webauthn.arrayToBase64String(new Uint8Array(data.rawId)),
@@ -1879,21 +1888,25 @@ window.lam.webauthn.authenticate = function(publicKey) {
 					userHandle: data.response.userHandle ? window.lam.webauthn.arrayToBase64String(new Uint8Array(data.response.userHandle)) : null
 				}
 			};
-			var form = jQuery("#2faform");
-			var response = btoa(JSON.stringify(publicKeyCredential));
-			form.append('<input type="hidden" name="sig_response" value="' + response + '"/>');
+			const form = document.getElementById("2faform");
+			const response = btoa(JSON.stringify(publicKeyCredential));
+			const hiddenResponse = document.createElement('input');
+			hiddenResponse.type = 'hidden';
+			hiddenResponse.name = 'sig_response';
+			hiddenResponse.value = response;
+			form.appendChild(hiddenResponse);
 			form.submit();
 		}, function(error) {
 			console.log(error.message);
-			var errorDiv = jQuery('#generic-webauthn-error');
-			var buttonLabel = errorDiv.data('button');
-			var dialogTitle = errorDiv.data('title');
-			errorDiv.text(error.message);
+			const errorDiv = document.getElementById('generic-webauthn-error');
+			const buttonLabel = errorDiv.dataset.button;
+			const dialogTitle = errorDiv.dataset.title;
+			errorDiv.innerText = error.message;
 			window.lam.dialog.showMessage(dialogTitle,
 				buttonLabel,
 				'generic-webauthn-error',
 				function () {
-					jQuery('#btn_logout').click();
+					document.getElementById('btn_logout').click();
 				});
 		});
 }
