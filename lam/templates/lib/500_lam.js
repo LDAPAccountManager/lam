@@ -1951,26 +1951,24 @@ window.lam.webauthn.searchDevices = function(event) {
 	if (event !== null) {
 		event.preventDefault();
 	}
-	var resultDiv = jQuery('#webauthn_results');
-	var tokenValue = resultDiv.data('sec_token_value');
-	var searchData = jQuery('#webauthn_searchTerm').val();
-	var data = {
-		action: 'search',
-		jsonInput: '',
-		sec_token: tokenValue,
-		searchTerm: searchData
-	};
-	jQuery.ajax({
-		url: '../misc/ajax.php?function=webauthnDevices',
+	const resultDiv = document.getElementById('webauthn_results');
+	const tokenValue = resultDiv.dataset.sec_token_value;
+	const searchData = document.getElementById('webauthn_searchTerm').value;
+	let data = new FormData();
+	data.append('sec_token', tokenValue);
+	data.append('action', 'search');
+	data.append('searchTerm', searchData);
+	fetch('../misc/ajax.php?function=webauthnDevices', {
 		method: 'POST',
-		data: data
+		body: data
 	})
-	.done(function(jsonData) {
-		resultDiv.html(jsonData.content);
+	.then(async response => {
+		const jsonData = await response.json();
+		resultDiv.innerHTML = jsonData.content;
 		window.lam.webauthn.addDeviceActionListeners();
 	})
-	.fail(function() {
-		console.log('WebAuthn search failed');
+	.catch(function (error) {
+		console.log('WebAuthn search failed: ' + error.message);
 	});
 	return false;
 }
@@ -1979,11 +1977,12 @@ window.lam.webauthn.searchDevices = function(event) {
  * Adds listeners to the device action buttons.
  */
 window.lam.webauthn.addDeviceActionListeners = function() {
-	var inputs = jQuery('.webauthn-delete');
-	inputs.each(function() {
-		jQuery(this).click(function(event) {
+	const inputs = document.querySelectorAll('.webauthn-delete');
+	inputs.forEach(item => {
+		item.onclick = function(event) {
 			window.lam.webauthn.removeDevice(event);
-		});
+			return false;
+		};
 	});
 }
 
@@ -1994,9 +1993,8 @@ window.lam.webauthn.addDeviceActionListeners = function() {
  */
 window.lam.webauthn.removeDevice = function(event) {
 	event.preventDefault();
-	var element = jQuery(event.target);
+	const element = event.target;
 	window.lam.webauthn.removeDeviceDialog(element, 'webauthnDevices');
-	return false;
 }
 
 /**
@@ -2007,20 +2005,20 @@ window.lam.webauthn.removeDevice = function(event) {
  */
 window.lam.webauthn.removeOwnDevice = function(event, isSelfService) {
 	event.preventDefault();
-	var element = jQuery(event.currentTarget);
-	var successCallback = null;
+	const element = event.currentTarget;
+	let successCallback = null;
 	if (!isSelfService) {
 		successCallback = function () {
-			var form = jQuery("#webauthnform");
-			jQuery('<input>').attr({
-				type: 'hidden',
-				name: 'removed',
-				value: 'true'
-			}).appendTo(form);
+			const form = document.getElementById("webauthnform");
+			const hiddenRemoved = document.createElement('input');
+			hiddenRemoved.type = 'hidden';
+			hiddenRemoved.name = 'removed';
+			hiddenRemoved.value = 'true';
+			form.appendChild(hiddenRemoved);
 			form.submit();
 		};
 	}
-	var action = 'webauthnOwnDevices';
+	let action = 'webauthnOwnDevices';
 	if (isSelfService) {
 		action = action + '&selfservice=true&module=webauthn&scope=user';
 	}
@@ -2036,9 +2034,9 @@ window.lam.webauthn.removeOwnDevice = function(event, isSelfService) {
  * @param successCallback callback if all was fine (optional)
  */
 window.lam.webauthn.removeDeviceDialog = function(element, action, successCallback) {
-	var dialogTitle = element.data('dialogtitle');
-	var okText = element.data('oktext');
-	var cancelText = element.data('canceltext');
+	const dialogTitle = element.dataset.dialogtitle;
+	const okText = element.dataset.oktext;
+	const cancelText = element.dataset.canceltext;
 	const dialogContent = document.getElementById('webauthnDeleteConfirm').cloneNode(true);
 	dialogContent.classList.remove('hidden');
 	Swal.fire({
@@ -2063,8 +2061,8 @@ window.lam.webauthn.removeDeviceDialog = function(element, action, successCallba
  * @param successCallback callback if all was fine (optional)
  */
 window.lam.webauthn.sendRemoveDeviceRequest = function(element, action, successCallback) {
-	var dn = element.data('dn');
-	var credential = element.data('credential');
+	var dn = element.dataset.dn;
+	var credential = element.dataset.credential;
 	var resultDiv = jQuery('#webauthn_results');
 	var tokenValue = resultDiv.data('sec_token_value');
 	var data = {
