@@ -2061,33 +2061,31 @@ window.lam.webauthn.removeDeviceDialog = function(element, action, successCallba
  * @param successCallback callback if all was fine (optional)
  */
 window.lam.webauthn.sendRemoveDeviceRequest = function(element, action, successCallback) {
-	var dn = element.dataset.dn;
-	var credential = element.dataset.credential;
-	var resultDiv = jQuery('#webauthn_results');
-	var tokenValue = resultDiv.data('sec_token_value');
-	var data = {
-		action: 'delete',
-		jsonInput: '',
-		sec_token: tokenValue,
-		dn: dn,
-		credentialId: credential
-	};
-	jQuery.ajax({
-		url: '../misc/ajax.php?function=' + action,
+	const dn = element.dataset.dn;
+	const credential = element.dataset.credential;
+	const resultDiv = document.getElementById('webauthn_results');
+	const tokenValue = resultDiv.dataset.sec_token_value;
+	let data = new FormData();
+	data.append('sec_token', tokenValue);
+	data.append('action', 'delete');
+	data.append('dn', dn);
+	data.append('credentialId', credential);
+	fetch('../misc/ajax.php?function=' + action, {
 		method: 'POST',
-		data: data
+		body: data
 	})
-		.done(function(jsonData) {
-			if (successCallback) {
-				successCallback();
-			}
-			else {
-				resultDiv.html(jsonData.content);
-			}
-		})
-		.fail(function() {
-			console.log('WebAuthn device deletion failed');
-		});
+	.then(async response => {
+		const jsonData = await response.json();
+		if (successCallback) {
+			successCallback();
+		}
+		else {
+			resultDiv.innerHTML = jsonData.content;
+		}
+	})
+	.catch(function(err) {
+		console.log('WebAuthn device deletion failed: ' + err.message);
+	});
 }
 
 /**
@@ -2098,41 +2096,38 @@ window.lam.webauthn.sendRemoveDeviceRequest = function(element, action, successC
  */
 window.lam.webauthn.updateOwnDeviceName = function(event, isSelfService) {
 	event.preventDefault();
-	var element = jQuery(event.currentTarget);
-	var dn = element.data('dn');
-	var nameElementId = element.data('nameelement');
-	var nameElement = jQuery('#' + nameElementId);
-	var name = nameElement.val();
-	var credential = element.data('credential');
-	var resultDiv = jQuery('#webauthn_results');
-	var tokenValue = resultDiv.data('sec_token_value');
-	var data = {
-		action: 'setName',
-		name: name,
-		jsonInput: '',
-		sec_token: tokenValue,
-		dn: dn,
-		credentialId: credential
-	};
-	var action = 'webauthnOwnDevices';
+	const element = event.currentTarget;
+	const dn = element.dataset.dn;
+	const nameElementId = element.dataset.nameelement;
+	const nameElement = document.getElementById(nameElementId);
+	const name = nameElement.value;
+	const credential = element.dataset.credential;
+	const resultDiv = document.getElementById('webauthn_results');
+	const tokenValue = resultDiv.dataset.sec_token_value;
+	let data = new FormData();
+	data.append('sec_token', tokenValue);
+	data.append('action', 'setName');
+	data.append('dn', dn);
+	data.append('name', name);
+	data.append('credentialId', credential);
+	let action = 'webauthnOwnDevices';
 	if (isSelfService) {
 		action = action + '&selfservice=true&module=webauthn&scope=user';
 	}
-	jQuery.ajax({
-		url: '../misc/ajax.php?function=' + action,
+	fetch('../misc/ajax.php?function=' + action, {
 		method: 'POST',
-		data: data
+		body: data
 	})
-	.done(function(jsonData) {
+	.then(async response => {
 		if (isSelfService) {
-			nameElement.addClass('markPass');
+			nameElement.classList.add('markPass');
 		}
 		else {
 			window.location.href = 'webauthn.php?updated=' + encodeURIComponent(credential);
 		}
 	})
-	.fail(function() {
-		console.log('WebAuthn device name change failed');
+	.catch(function(err) {
+		console.log('WebAuthn device name change failed: ' + err.message);
 	});
 	return false;
 }
