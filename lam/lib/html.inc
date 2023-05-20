@@ -2443,7 +2443,7 @@ class htmlInputFileUpload extends htmlElement {
 class htmlInputTextarea extends htmlElement {
 
 	/** unique name of input element */
-	private $name;
+	protected $name;
 	/** value */
 	private $value;
 	/** column count */
@@ -4148,7 +4148,8 @@ class htmlResponsiveInputField extends htmlInputField {
 		$row = new htmlResponsiveRow();
 		// label text
 		$labelGroup = new htmlGroup();
-		$labelGroup->addElement(new htmlOutputText($this->label));
+		$idValue = ($this->id !== null) ? $this->id : $this->fieldName;
+		$labelGroup->addElement(new htmlLabel($idValue, $this->label));
 		if ($this->required) {
 			$labelGroup->addElement(htmlGetRequiredMarkerElement());
 		}
@@ -4314,7 +4315,7 @@ class htmlResponsiveInputTextarea extends htmlInputTextarea {
 		$row = new htmlResponsiveRow();
 		// label text
 		$labelGroup = new htmlGroup();
-		$labelGroup->addElement(new htmlOutputText($this->label));
+		$labelGroup->addElement(new htmlLabel($this->name, $this->label));
 		if ($this->required) {
 			$labelGroup->addElement(htmlGetRequiredMarkerElement());
 		}

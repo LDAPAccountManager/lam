@@ -1,5 +1,6 @@
 <?php
 namespace LAM\LOGIN;
+use htmlLabel;
 use LAM\ENV\LAMLicenseValidator;
 use LAM\LIB\TWO_FACTOR\TwoFactorProviderService;
 use \LAMConfig;
@@ -273,7 +274,7 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 							$tabindex = 1;
 							$row = new htmlResponsiveRow();
 							// user name
-							$row->addLabel(new htmlOutputText(_("User name")));
+							$row->addLabel(new htmlLabel('username', _("User name")));
 							if ($config_object->getLoginMethod() == LAMConfig::LOGIN_LIST) {
 								$admins = $config_object->get_Admins();
 								$adminList = array();
@@ -319,7 +320,7 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 								}
 							}
 							// password
-							$row->addLabel(new \htmlOutputText(_("Password")));
+							$row->addLabel(new htmlLabel('passwd', _("Password")));
 							if (($config_object->getLoginMethod() == LAMConfig::LOGIN_SEARCH) && ($config_object->getHttpAuthentication() == 'true')) {
 								$passwordInputFake = new htmlDiv(null, new htmlOutputText('**********'));
 								$passwordInputFake->setCSSClasses(array('text-left', 'margin3'));
@@ -334,7 +335,7 @@ function display_LoginPage(?LAMLicenseValidator $licenseValidator, ?string $erro
 								$row->addField($passwordInput);
 							}
 							// language
-							$row->addLabel(new htmlOutputText(_("Language")));
+							$row->addLabel(new htmlLabel('language', _("Language")));
 							$possibleLanguages = getLanguages();
 							$languageList = array();
 							$defaultLanguage = array();
