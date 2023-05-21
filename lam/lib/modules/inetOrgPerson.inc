@@ -8,7 +8,7 @@ use LAM\TYPES\ConfiguredType;
 
   This code is part of LDAP Account Manager (http://www.ldap-account-manager.org/)
   Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2022  Roland Gruber
+                2005 - 2023  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -3137,7 +3137,7 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 			fwrite($outjpeg, $photo);
 			fclose ($outjpeg);
 			$photoFile = '../../tmp/' . $jpeg_filename;
-			$img = new htmlImage($photoFile);
+			$img = new htmlImage($photoFile, null, null, $this->getSelfServiceLabel('jpegPhoto', _('Photo')));
 			$img->setCSSClasses(array('photo'));
 			if ($crop) {
 				$img->enableCropping();
