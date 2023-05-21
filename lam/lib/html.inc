@@ -4934,9 +4934,12 @@ class htmlList extends htmlElement {
  */
 class htmlLabel extends htmlElement {
 
-	private $for = null;
+	private $for;
 
-	private $text = '';
+	private $text;
+
+	/** mark as required */
+	private bool $markAsRequired = false;
 
 	/**
 	 * Constructor.
@@ -4960,7 +4963,19 @@ class htmlLabel extends htmlElement {
 		echo '<label for="' . $this->for . '"' . $classesValue . '>';
 		echo $this->text;
 		echo '</label>';
+		if ($this->markAsRequired) {
+			echo htmlGetRequiredMarker();
+		}
 		return array();
+	}
+
+	/**
+	 * Adds a marker that indicates a required field.
+	 *
+	 * @param bool $markAsRequired add marker
+	 */
+	public function setMarkAsRequired(bool $markAsRequired = true): void {
+		$this->markAsRequired = $markAsRequired;
 	}
 
 }

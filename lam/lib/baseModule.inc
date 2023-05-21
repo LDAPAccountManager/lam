@@ -1721,6 +1721,9 @@ abstract class baseModule {
 	 * @param boolean $isTextArea display as text area
 	 */
 	protected function addSimpleSelfServiceTextField(&$container, $name, $label, &$fields, &$attributes, &$readOnlyFields, $required = false, $isTextArea = false) {
+		if (!in_array($name, $fields)) {
+			return;
+		}
 		$value = '';
 		if (isset($attributes[$name][0])) {
 			$value = $attributes[$name][0];
@@ -1744,7 +1747,9 @@ abstract class baseModule {
 			}
 		}
 		$row = new htmlResponsiveRow();
-		$row->addLabel(new htmlOutputText($this->getSelfServiceLabel($name, $label)));
+		$fieldLabel = new htmlLabel(get_class($this) . '_' . $name, $this->getSelfServiceLabel($name, $label));
+		$fieldLabel->setMarkAsRequired($required);
+		$row->addLabel($fieldLabel);
 		$row->addField($field);
 		$container[$name] = $row;
 	}
@@ -1797,17 +1802,20 @@ abstract class baseModule {
 	 * @param boolean $isTextArea display as text area
 	 */
 	protected function addMultiValueSelfServiceTextField(&$container, $name, $label, &$fields, &$attributes, &$readOnlyFields, $required = false, $isTextArea = false) {
+		if (!in_array($name, $fields)) {
+			return;
+		}
 		$values = array();
 		if (isset($attributes[$name][0])) {
 			$values = $attributes[$name];
 		}
 		$readOnly = in_array($name, $readOnlyFields);
 		$field = new htmlResponsiveRow();
+		$fieldNamePrefix = get_class($this) . '_' . $name . '_';
 		if (!$readOnly) {
 			if (empty($values)) {
 				$values[] = '';
 			}
-			$fieldNamePrefix = get_class($this) . '_' . $name . '_';
 			for ($i = 0; $i < sizeof($values); $i++) {
 				$fieldRow = new htmlResponsiveRow();
 				$value = $values[$i];
@@ -1850,9 +1858,9 @@ abstract class baseModule {
 			}
 		}
 		$row = new htmlResponsiveRow();
-		$label = new htmlOutputText($this->getSelfServiceLabel($name, $label));
-		$label->setMarkAsRequired($required);
-		$row->addLabel($label);
+		$fieldLabel = new htmlLabel($fieldNamePrefix . '0', $this->getSelfServiceLabel($name, $label));
+		$fieldLabel->setMarkAsRequired($required);
+		$row->addLabel($fieldLabel);
 		$row->addField($field);
 		$container[$name] = $row;
 	}
