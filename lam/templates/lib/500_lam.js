@@ -2140,45 +2140,43 @@ window.lam.webauthn.updateOwnDeviceName = function(event, isSelfService) {
  */
 window.lam.webauthn.registerOwnDevice = function(event, isSelfService) {
 	event.preventDefault();
-	var element = jQuery(event.target);
-	var dn = element.data('dn');
-	var tokenValue = element.data('sec_token_value');
-	var publicKey = element.data('publickey');
-	var successCallback = function (publicKeyCredential) {
-		var form = jQuery("#webauthnform");
-		var response = btoa(JSON.stringify(publicKeyCredential));
-		var registrationData = jQuery('#registrationData');
-		registrationData.val(response);
+	const element = event.target;
+	const dn = element.dataset.dn;
+	const tokenValue = element.dataset.sec_token_value;
+	const publicKey = JSON.parse(element.dataset.publickey);
+	let successCallback = function (publicKeyCredential) {
+		const form = document.getElementById("webauthnform");
+		const response = btoa(JSON.stringify(publicKeyCredential));
+		const registrationData = document.getElementById('registrationData');
+		registrationData.value = response;
 		form.submit();
 	};
 	if (isSelfService) {
 		successCallback = function (publicKeyCredential) {
-			var data = {
-				action: 'register',
-				jsonInput: '',
-				sec_token: tokenValue,
-				dn: dn,
-				credential: btoa(JSON.stringify(publicKeyCredential))
-			};
-			jQuery.ajax({
-				url: '../misc/ajax.php?selfservice=true&module=webauthn&scope=user',
+			let data = new FormData();
+			data.append('sec_token', tokenValue);
+			data.append('action', 'register');
+			data.append('dn', dn);
+			data.append('credential', btoa(JSON.stringify(publicKeyCredential)));
+			fetch('../misc/ajax.php?selfservice=true&module=webauthn&scope=user', {
 				method: 'POST',
-				data: data
+				body: data
 			})
-			.done(function(jsonData) {
-				var resultDiv = jQuery('#webauthn_results');
-				resultDiv.html(jsonData.content);
+			.then(async response => {
+				const jsonData = await response.json();
+				const resultDiv = document.getElementById('webauthn_results');
+				resultDiv.innerHTML = jsonData.content;
 			})
-			.fail(function() {
-				console.log('WebAuthn device registration failed');
+			.catch((error) => {
+				console.log('WebAuthn device registration failed: ' + error.message);
 			});
 		};
 	}
-	var errorCallback = function (error) {
-		var errorDiv = jQuery('#generic-webauthn-error');
-		var buttonLabel = errorDiv.data('button');
-		var dialogTitle = errorDiv.data('title');
-		errorDiv.text(error.message);
+	const errorCallback = function (error) {
+		const errorDiv = document.getElementById('generic-webauthn-error');
+		const buttonLabel = errorDiv.dataset.button;
+		const dialogTitle = errorDiv.dataset.title;
+		errorDiv.innerText = error.message;
 		window.lam.dialog.showMessage(dialogTitle,
 			buttonLabel,
 			'generic-webauthn-error'
