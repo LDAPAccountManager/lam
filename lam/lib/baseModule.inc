@@ -1719,14 +1719,16 @@ abstract class baseModule {
 	 * @param array $readOnlyFields list of read-only fields
 	 * @param boolean $required field is required
 	 * @param boolean $isTextArea display as text area
+	 * @param string $attributeName attribute name (defaults to $name)
 	 */
-	protected function addSimpleSelfServiceTextField(&$container, $name, $label, &$fields, &$attributes, &$readOnlyFields, $required = false, $isTextArea = false) {
+	protected function addSimpleSelfServiceTextField(&$container, $name, $label, &$fields, &$attributes, &$readOnlyFields, $required = false, $isTextArea = false, $attributeName = null) {
 		if (!in_array($name, $fields)) {
 			return;
 		}
+		$ldapAttrName = ($attributeName === null) ? $name : $attributeName;
 		$value = '';
-		if (isset($attributes[$name][0])) {
-			$value = $attributes[$name][0];
+		if (isset($attributes[$ldapAttrName][0])) {
+			$value = $attributes[$ldapAttrName][0];
 		}
 		if (!$isTextArea && !in_array($name, $readOnlyFields)) {
 			$field = new htmlInputField(get_class($this) . '_' . $name, $value);
@@ -1765,25 +1767,40 @@ abstract class baseModule {
 	 * @param string $fields input fields
 	 * @param array $readOnlyFields list of read-only fields
 	 * @param String $validationID validation ID for get_preg()
+	 * @param array $validationMessage validation message data (defaults to $this->messages[$name][0])
+	 * @param array $requiredMessage message data when no value is set by user (no check if null)
+	 * @param string $attributeName attribute name (defaults to $name)
 	 */
-	protected function checkSimpleSelfServiceTextField(&$container, $name, &$attributes, $fields, &$readOnlyFields, $validationID = null) {
+	protected function checkSimpleSelfServiceTextField(&$container, $name, &$attributes, $fields, &$readOnlyFields,
+		$validationID = null, $validationMessage = null, $requiredMessage = null, $attributeName = null) {
 		if (in_array($name, $fields) && !in_array($name, $readOnlyFields)) {
 			$fieldName = get_class($this) . '_' . $name;
-			if (isset($_POST[$fieldName]) && ($_POST[$fieldName] != '')) {
+			$ldapAttrName = ($attributeName === null) ? $name : $attributeName;
+			if (!empty($_POST[$fieldName])) {
 				if (($validationID != null) && !get_preg($_POST[$fieldName], $validationID)) {
-					$container['messages'][] = $this->messages[$name][0];
+					if ($validationMessage !== null) {
+						$container['messages'][] = $validationMessage;
+					}
+					else {
+						$container['messages'][] = $this->messages[$name][0];
+					}
 				}
 				else {
-					if (isset($attributes[$name]) && ($attributes[$name][0] != $_POST[$fieldName])) {
-						$container['mod'][$name] = array($_POST[$fieldName]);
+					if (isset($attributes[$ldapAttrName]) && ($attributes[$ldapAttrName][0] != $_POST[$fieldName])) {
+						$container['mod'][$ldapAttrName] = array($_POST[$fieldName]);
 					}
-					elseif (!isset($attributes[$name])) {
-						$container['add'][$name] = array($_POST[$fieldName]);
+					elseif (!isset($attributes[$ldapAttrName])) {
+						$container['add'][$ldapAttrName] = array($_POST[$fieldName]);
 					}
 				}
 			}
-			elseif (isset($attributes[$name])) {
-				$container['del'][$name] = $attributes[$name];
+			elseif (isset($attributes[$ldapAttrName])) {
+				if ($requiredMessage !== null) {
+					$container['messages'][] = $requiredMessage;
+				}
+				else {
+					$container['del'][$ldapAttrName] = $attributes[$ldapAttrName];
+				}
 			}
 		}
 	}

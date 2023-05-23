@@ -2663,45 +2663,13 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		if ($passwordChangeOnly) {
 			return $return; // no fields as long no LDAP content can be read
 		}
-		if (in_array('firstName', $fields)) {
-			$firstName = '';
-			if (isset($attributes['givenName'][0])) {
-				$firstName = $attributes['givenName'][0];
-			}
-			$firstNameField = new htmlInputField('inetOrgPerson_firstName', $firstName);
-			if (in_array('firstName', $readOnlyFields)) {
-				$firstNameField = new htmlOutputText($firstName);
-			}
-			$return['firstName'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('firstName', _('First name'))), $firstNameField
-			);
-		}
-		if (in_array('lastName', $fields)) {
-			$lastName = '';
-			if (isset($attributes['sn'][0])) {
-				$lastName = $attributes['sn'][0];
-			}
-			$lastNameField = new htmlInputField('inetOrgPerson_lastName', $lastName);
-			if (in_array('lastName', $readOnlyFields)) {
-				$lastNameField = new htmlOutputText($lastName);
-			}
-			$return['lastName'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('lastName', _('Last name'))), $lastNameField
-			);
-		}
-		if (in_array('mail', $fields)) {
-			$mail = '';
-			if (isset($attributes['mail'][0])) {
-				$mail = $attributes['mail'][0];
-			}
-			$mailField = new htmlInputField('inetOrgPerson_mail', $mail);
-			if (in_array('mail', $readOnlyFields)) {
-				$mailField = new htmlOutputText($mail);
-			}
-			$return['mail'] = new htmlResponsiveRow(
-				new htmlOutputText($this->getSelfServiceLabel('mail', _('Email address'))), $mailField
-			);
-		}
+		$this->addSimpleSelfServiceTextField($return, 'firstName', _('First name'), $fields,
+			$attributes, $readOnlyFields, false, false, 'givenName');
+		$this->addSimpleSelfServiceTextField($return, 'lastName', _('Last name'), $fields,
+			$attributes, $readOnlyFields, true, false, 'sn');
+		$this->addSimpleSelfServiceTextField($return, 'mail', _('Email address'), $fields,
+			$attributes, $readOnlyFields);
+
 		if (in_array('labeledURI', $fields)) {
 			$labeledURI = '';
 			if (isset($attributes['labeledURI'][0])) {
@@ -3394,52 +3362,15 @@ class inetOrgPerson extends baseModule implements passwordService,AccountStatusP
 		}
 		$attributeNames = array(); // list of attributes which should be checked for modification
 		$attributesNew = $attributes;
-		// first name
-		if (in_array('firstName', $fields) && !in_array('firstName', $readOnlyFields)) {
-			$attributeNames[] = 'givenName';
-			if (isset($_POST['inetOrgPerson_firstName']) && ($_POST['inetOrgPerson_firstName'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_firstName'], 'realname')) {
-					$return['messages'][] = $this->messages['givenName'][0];
-				}
-				else {
-					$attributesNew['givenName'][0] = $_POST['inetOrgPerson_firstName'];
-				}
-			}
-			elseif (isset($attributes['givenName'])) {
-				unset($attributesNew['givenName']);
-			}
-		}
-		// last name
-		if (in_array('lastName', $fields) && !in_array('lastName', $readOnlyFields)) {
-			$attributeNames[] = 'sn';
-			if (isset($_POST['inetOrgPerson_lastName']) && ($_POST['inetOrgPerson_lastName'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_lastName'], 'realname')) {
-					$return['messages'][] = $this->messages['lastname'][0];
-				}
-				else {
-					$attributesNew['sn'][0] = $_POST['inetOrgPerson_lastName'];
-				}
-			}
-			else {
-				// last name is required attribute
-				$return['messages'][] = $this->messages['lastname'][0];
-			}
-		}
-		// email
-		if (in_array('mail', $fields) && !in_array('mail', $readOnlyFields)) {
-			$attributeNames[] = 'mail';
-			if (isset($_POST['inetOrgPerson_mail']) && ($_POST['inetOrgPerson_mail'] != '')) {
-				if (!get_preg($_POST['inetOrgPerson_mail'], 'email')) {
-					$return['messages'][] = $this->messages['email'][0];
-				}
-				else {
-					$attributesNew['mail'][0] = $_POST['inetOrgPerson_mail'];
-				}
-			}
-			elseif (isset($attributes['mail'])) {
-				unset($attributesNew['mail']);
-			}
-		}
+		$this->checkSimpleSelfServiceTextField($return, 'firstName', $attributes, $fields,
+			$readOnlyFields, 'realname', $this->messages['givenName'][0], null,
+			'givenName');
+		$this->checkSimpleSelfServiceTextField($return, 'lastName', $attributes, $fields,
+			$readOnlyFields, 'realname', $this->messages['lastname'][0], $this->messages['lastname'][0],
+			'sn');
+		$this->checkSimpleSelfServiceTextField($return, 'mail', $attributes, $fields,
+			$readOnlyFields, 'email', $this->messages['email'][0]);
+
 		// labeledURI
 		if (in_array('labeledURI', $fields) && !in_array('labeledURI', $readOnlyFields)) {
 			$attributeNames[] = 'labeledURI';
